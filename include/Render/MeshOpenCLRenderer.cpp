@@ -19,26 +19,21 @@ MeshOpenCLRenderer::MeshOpenCLRenderer(Object3D *parent, std::vector<Triangle*> 
     clBufferTriangles = clCreateBuffer(context, CL_MEM_READ_WRITE, MAX_OPENCL_TRIANGLES * sizeof(OCTriangle), nullptr, nullptr);
     clBufferMeshContext = clCreateBuffer(context, CL_MEM_READ_ONLY, sizeof(OCLMeshContext), nullptr, nullptr );
     clBufferStencil = clCreateBuffer(context, CL_MEM_READ_WRITE, EngineBuffers::get()->sizeBuffers * sizeof(bool), nullptr, nullptr );
-    clBufferLights = clCreateBuffer(context, CL_MEM_READ_WRITE, MAX_OPENCL_LIGHTS * sizeof(OCLight), nullptr, nullptr);
 }
 
-void MeshOpenCLRenderer::onUpdate(Texture *texture)
+void MeshOpenCLRenderer::onUpdate(Image *texture)
 {
     if (object->isRemoved() || !object->isEnabled()) return;
 
     meshContext = Tools::openCLMeshContext(object);
 
-    updateLights();
-
     const int numTriangles = (int) oclTriangles.size();
     if (numTriangles <= 0) return;
 
-    int numLights = (int) oclLights.size();
 
     //makeOCLTriangles();
     //clEnqueueWriteBuffer(clQueue, clBufferTriangles, CL_TRUE, 0, numTriangles * sizeof(OCTriangle), oclTriangles.data(), 0, nullptr, nullptr);
     clEnqueueWriteBuffer(clQueue, clBufferMeshContext, CL_TRUE, 0, sizeof(OCLMeshContext), &meshContext, 0, nullptr, nullptr);
-    clEnqueueWriteBuffer(clQueue, clBufferLights, CL_TRUE, 0, numLights * sizeof(OCLight), oclLights.data(), 0, nullptr, nullptr);
 
     const bool useStencil = object->isStencilBufferEnabled();
     auto kernel = ComponentsManager::get()->getComponentRender()->getRendererKernel();
@@ -48,6 +43,9 @@ void MeshOpenCLRenderer::onUpdate(Texture *texture)
         clEnqueueFillBuffer(clQueue, clBufferStencil, &pattern, sizeof(cl_bool), 0, EngineBuffers::get()->sizeBuffers, 0, nullptr, nullptr);
     }
 
+    auto bufferLights = ComponentsManager::get()->getComponentRender()->getClBufferLights();
+    auto numLights =ComponentsManager::get()->getComponentRender()->getLightPoints().size();
+
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
@@ -55,12 +53,12 @@ void MeshOpenCLRenderer::onUpdate(Texture *texture)
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&clBufferMeshContext);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&clBufferTriangles);
     clSetKernelArg(kernel, 6, sizeof(int), &numTriangles);
-    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&texture->getImage()->openClTexture);
-    clSetKernelArg(kernel, 8, sizeof(int), &texture->getImage()->getSurface()->w);
-    clSetKernelArg(kernel, 9, sizeof(int), &texture->getImage()->getSurface()->h);
+    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&texture->openClTexture);
+    clSetKernelArg(kernel, 8, sizeof(int), &texture->getSurface()->w);
+    clSetKernelArg(kernel, 9, sizeof(int), &texture->getSurface()->h);
     clSetKernelArg(kernel, 10, sizeof(cl_mem), (void *)&clBufferStencil);
     clSetKernelArg(kernel, 11, sizeof(int), &useStencil);
-    clSetKernelArg(kernel, 12, sizeof(cl_mem), (void *)&clBufferLights);
+    clSetKernelArg(kernel, 12, sizeof(cl_mem), (void *)&bufferLights);
     clSetKernelArg(kernel, 13, sizeof(int), &numLights);
 
     size_t global_item_size = MAX_OPENCL_TRIANGLES;
@@ -75,7 +73,6 @@ MeshOpenCLRenderer::~MeshOpenCLRenderer()
     clReleaseMemObject(clBufferTriangles);
     clReleaseMemObject(clBufferMeshContext);
     clReleaseMemObject(clBufferStencil);
-    clReleaseMemObject(clBufferLights);
 }
 
 void MeshOpenCLRenderer::debugKernel() const
@@ -121,26 +118,6 @@ void MeshOpenCLRenderer::makeOCLTriangles()
     clEnqueueWriteBuffer(clQueue, clBufferTriangles, CL_TRUE, 0, triangles.size() * sizeof(OCTriangle), oclTriangles.data(), 0, nullptr, nullptr);
 }
 
-void MeshOpenCLRenderer::updateLights()
-{
-    oclLights.clear();
-
-    for (auto l : ComponentsManager::get()->getComponentRender()->getLightPoints()) {
-        auto forward = l->AxisForward();
-        auto ocl = OCLight(
-            Tools::vertexOCL(l->getPosition()),
-            Tools::vertexOCL(forward),
-            l->p,
-            l->kc,
-            l->kl,
-            l->kq,
-            l->specularComponent,
-            l->color.getColor(),
-            l->specularColor.getColor()
-        );
-        oclLights.emplace_back(ocl);
-    }
-}
 
 cl_mem *MeshOpenCLRenderer::getClBufferTriangles(){
     return &clBufferTriangles;
@@ -153,4 +130,3 @@ cl_mem *MeshOpenCLRenderer::getClBufferMeshContext(){
 const std::vector<OCTriangle> &MeshOpenCLRenderer::getOclTriangles() const {
     return oclTriangles;
 }
-

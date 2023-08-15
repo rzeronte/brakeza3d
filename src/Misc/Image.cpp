@@ -18,6 +18,13 @@ Image::Image(): surface(nullptr), texture(nullptr)
     this->loaded = false;
 }
 
+Image::Image(SDL_Surface *surface, SDL_Texture *texture)
+:
+    surface(surface), texture(texture)
+{
+    this->loaded = true;
+}
+
 void Image::createEmpty(int w, int h)
 {
     this->surface = SDL_CreateRGBSurface(SDL_PIXELFORMAT_RGBA32, w, h, 32, 0, 0, 0, 0);
@@ -145,8 +152,12 @@ float Image::getAreaForVertices(Vertex3D A, Vertex3D B, Vertex3D C, int lod)
     return area;
 }
 
-SDL_Surface *Image::getSurface() const {
+SDL_Surface *Image::getSurface() {
     return surface;
+}
+
+SDL_Texture *Image::getTexture()  {
+    return texture;
 }
 
 const std::string &Image::getFileName() const {

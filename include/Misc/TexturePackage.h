@@ -2,12 +2,12 @@
 #define BRAKEZA3D_TEXTUREPACKAGE_H
 
 
-#include "../Render/Texture.h"
 #include <vector>
+#include "Image.h"
 
 struct TexturePackageItem {
-    TexturePackageItem(Texture *texture, std::string label);
-    Texture *texture;
+    TexturePackageItem(Image *texture, std::string label);
+    Image *texture;
     std::string label;
 };
 
@@ -16,8 +16,8 @@ public:
     void addItem(const std::string &srcTexture, const std::string& label);
     int size();
 
-    Texture *getTextureByLabel(const std::string &label);
-    Texture *getTextureByIndex(int i);
+    Image *getTextureByLabel(const std::string &label);
+    Image *getTextureByIndex(int i);
 
     virtual ~TexturePackage();
 

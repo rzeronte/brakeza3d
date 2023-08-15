@@ -213,7 +213,7 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
             std::string FullPath = EngineSetup::get()->TEXTURES_FOLDER + base_filename;
 
             std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
-            this->modelTextures.push_back(new Texture(FullPath));
+            this->modelTextures.push_back(new Image(FullPath));
         } else {
             Logging::Log("ERROR: mMaterial[%s]: Not valid color", i);
         }
@@ -398,7 +398,7 @@ std::vector<Triangle *> &Mesh3D::getModelTriangles() {
     return modelTriangles;
 }
 
-std::vector<Texture *> &Mesh3D::getModelTextures() {
+std::vector<Image *> &Mesh3D::getModelTextures() {
     return modelTextures;
 }
 

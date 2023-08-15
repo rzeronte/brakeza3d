@@ -75,6 +75,8 @@ void ComponentRender::onUpdate()
 
     deleteRemovedObjects();
 
+    updateLightsOCL();
+
     onUpdateSceneObjects();
 
     if (SETUP->ENABLE_LIGHTS) {
@@ -240,7 +242,7 @@ void ComponentRender::extractLightPointsFromObjects3D()
     auto sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
         auto *lp = dynamic_cast<LightPoint3D *>(object);
-        if (lp != nullptr) {
+        if (lp != nullptr && lp->isEnabled()) {
             lp->clearShadowMappingBuffer();
             lightPoints.emplace_back(lp);
         }
@@ -712,7 +714,7 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
     if (t->isFlatTextureColor()) {
         pixelColor = t->flatColor;
     } else if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != nullptr) {
-        if (t->getTexture()->getImage()->getSurface() == nullptr) return;
+        if (t->getTexture()->getSurface() == nullptr) return;
 
         if (t->parent->isDecal()) {
             if ((fragment->texU < 0 || fragment->texU > 1) || (fragment->texV < 0 || fragment->texV > 1)) {
@@ -722,7 +724,7 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
 
         t->processPixelTexture(pixelColor, fragment->texU, fragment->texV, bilinear);
 
-        auto pixelFormat = t->getTexture()->getImage()->getSurface()->format;
+        auto pixelFormat = t->getTexture()->getSurface()->format;
         Uint8 red, green, blue, alpha;
         SDL_GetRGBA(pixelColor.getColor(), pixelFormat, &red, &green, &blue, &alpha);
 
@@ -783,7 +785,7 @@ void ComponentRender::drawTilesTriangles(std::vector<Triangle *> *visibleTriangl
 
 void ComponentRender::initTiles() {
     if (SETUP->screenWidth % this->sizeTileWidth != 0) {
-        printf("Bad sizetileWidth\r\n");
+        printf("Bad sizeTileWidth\r\n");
         exit(-1);
     }
     if (SETUP->screenHeight % this->sizeTileHeight != 0) {
@@ -1104,6 +1106,9 @@ void ComponentRender::initOpenCL()
     shaderDepthOfField = new ShaderDepthOfField(true);
 
     shaderBilinear = new ShaderBilinear(true);
+
+    clBufferLights = clCreateBuffer(clContext, CL_MEM_READ_WRITE, MAX_OPENCL_LIGHTS * sizeof(OCLight), nullptr, nullptr);
+
 }
 
 void ComponentRender::loadParticlesKernel()
@@ -1290,4 +1295,32 @@ _cl_kernel *ComponentRender::getExplosionKernel()
 _cl_kernel *ComponentRender::getBlinkKernel()
 {
     return blinkKernel;
+}
+
+_cl_mem *ComponentRender::getClBufferLights() {
+    return clBufferLights;
+}
+
+void ComponentRender::updateLightsOCL()
+{
+    oclLights.clear();
+
+    for (auto l : lightPoints) {
+        if (!l->isEnabled()) continue;
+        auto forward = l->AxisForward();
+        auto ocl = OCLight(
+                Tools::vertexOCL(l->getPosition()),
+                Tools::vertexOCL(forward),
+                l->p,
+                l->kc,
+                l->kl,
+                l->kq,
+                l->specularComponent,
+                l->color.getColor(),
+                l->specularColor.getColor()
+        );
+        oclLights.emplace_back(ocl);
+    }
+
+    clEnqueueWriteBuffer(clCommandQueue, clBufferLights, CL_TRUE, 0, (int) oclLights.size() * sizeof(OCLight), oclLights.data(), 0, nullptr, nullptr);
 }
