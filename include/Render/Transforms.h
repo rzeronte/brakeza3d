@@ -6,7 +6,6 @@
 #include "../Objects/Vertex3D.h"
 #include "../Components/Camera3D.h"
 #include "../Objects/Point2D.h"
-#include "Texture.h"
 #include "../Objects/LightPoint3D.h"
 
 class Transforms {

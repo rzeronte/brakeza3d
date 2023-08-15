@@ -16,6 +16,8 @@ private:
     SDL_Renderer *renderer;
     SDL_Surface *screenSurface;
     SDL_Texture *screenTexture;
+    SDL_Surface *applicationIcon;
+
     TTF_Font *fontDefault;
 public:
 

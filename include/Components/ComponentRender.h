@@ -6,6 +6,7 @@
 #define BRAKEDA3D_COMPONENTRENDER_H
 
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
+#define MAX_OPENCL_LIGHTS 16
 
 #include <vector>
 #include <mutex>
@@ -68,6 +69,10 @@ private:
     cl_kernel blinkKernel;
 
     ShaderBilinear *shaderBilinear;
+
+    cl_mem clBufferLights;
+    std::vector<OCLight> oclLights;
+
 public:
     ComponentRender();
 
@@ -208,6 +213,10 @@ public:
     _cl_kernel *getBlinkKernel();
 
     void onUpdateSceneObjectsSecondPass(std::vector<Object3D *> &sceneObjects) const;
+
+    _cl_mem *getClBufferLights();
+
+    void updateLightsOCL();
 };
 
 

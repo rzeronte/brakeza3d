@@ -68,7 +68,7 @@ void ComponentCollisions::initBulletSystem()
     debugDraw = new PhysicsDebugDraw(ComponentsManager::get()->getComponentCamera()->getCamera());
 
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    dynamicsWorld->setGravity(btVector3(0, -EngineSetup::get()->gravity.y, 0));
+    dynamicsWorld->setGravity(btVector3(0, 0, 0));
 
     dynamicsWorld->setDebugDrawer(debugDraw);
     dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
