@@ -101,8 +101,6 @@ public:
 
     static void makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCParticlesContext context, Color from, Color to);
 
-    static void makeExplosionSprite(Vertex3D position);
-
     static void makeFadeInSprite(Vertex3D position, TextureAnimated *animation);
 
     void makeSparkle(Vertex3D position, TextureAnimated *animation);
