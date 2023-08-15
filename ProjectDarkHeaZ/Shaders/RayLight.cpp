@@ -24,6 +24,11 @@ RayLight::RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D 
 
     rayCallback->m_collisionFilterGroup = filterGroup;
     rayCallback->m_collisionFilterMask = filterMask;
+
+    light = new LightPoint3D(20, 1, 0, 0, 0, PaletteColors::getStamina(), Color(15, 33, 92));
+    light->setRotation(180, 0, 0);
+    light->setEnabled(false);
+    Brakeza3D::get()->addObject3D(light, Brakeza3D::uniqueObjectLabel("rayLightPoint"));
 }
 
 void RayLight::update()
@@ -59,14 +64,13 @@ void RayLight::update()
         auto *bomb = dynamic_cast<ItemShieldGhost*> (brkObjectA);
 
         if (object != this->parent) {
-            auto palette = game->getPalette();
             btVector3 rayHitPosition = rayCallback->m_hitPointWorld;
             auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
             auto dt = Brakeza3D::get()->getDeltaTime() * 50;
 
             if (player != nullptr) {
                 middlePoint = Transforms::WorldToPoint(hitPosition, camera);
-                Tools::makeExplosion(player, hitPosition, 0.5, OCParticlesContext::forRayLight(), palette.getExplosionEnemyFrom(), palette.getExplosionEnemyTo());
+                Tools::makeExplosion(player, hitPosition, 0.5, OCParticlesContext::forRayLight(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
 
                 player->takeDamage(damage * dt );
                 increase = false;
@@ -84,7 +88,12 @@ void RayLight::update()
                 enemy->takeDamage(damage * dt);
                 increase = false;
 
-                Tools::makeExplosion(parent, hitPosition, 0.5, OCParticlesContext::forRayLight(), palette.getExplosionEnemyFrom(), palette.getExplosionEnemyTo());
+                Tools::makeExplosion(parent, hitPosition, 0.5, OCParticlesContext::forRayLight(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
+
+                light->setEnabled(true);
+                light->setPosition(hitPosition + Vertex3D(0, 0, -1000));
+                light->onUpdate();
+
             }
         }
     }
@@ -132,6 +141,9 @@ bool RayLight::isEnabled() const {
 
 void RayLight::setEnabled(bool enabled) {
     RayLight::enabled = enabled;
+    if (!enabled) {
+        light->setEnabled(false);
+    }
 }
 
 void RayLight::setColor(const Color &color) {

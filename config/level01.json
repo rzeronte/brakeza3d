@@ -14,6 +14,7 @@
       "avatarHud": "avatars/shuttle_hud.png",
       "position": { "x": 50, "y": 10 },
       "model": "spaceShuttle.fbx",
+      "size": { "x": 400, "y": 400,  "z": 1100 },
       "enableLights": true,
       "animated": false,
       "stamina": 500,
@@ -37,7 +38,7 @@
   ],
   "background": [
     {
-      "name": "Star",
+      "name": "Background: Star",
       "model": "marsh.fbx",
       "scale": 11,
       "position": { "x": 50, "y": 50, "z": 20000 },
@@ -45,7 +46,7 @@
       "rotationFrame": { "x": 0.05, "y": 0.01, "z": 0 }
     },
     {
-      "name":	"Marsh",
+      "name": "Background: Marsh",
       "position": { "x": 63,  "y":	35, "z": 35000 },
       "model":	"red_planet.fbx",
       "rotation": { "x": 0, "y": 0,  "z": 0 },
@@ -53,7 +54,7 @@
       "scale":	15
     },
     {
-      "name": "nave",
+      "name": "Background: Station",
       "position": { "x": 70,  "y":	40, "z": 90000 },
       "model":	"space_hexagon.fbx",
       "rotation": { "x": 60, "y": 0,  "z": 30 },

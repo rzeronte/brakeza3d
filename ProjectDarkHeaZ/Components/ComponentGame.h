@@ -49,9 +49,18 @@ private:
     Player *player;
     ShaderProjectiles *shaderProjectiles;
 
-    Sprite3D *explosionSpriteTemplate;
     TextureAnimated *radioWave;
-    Sprite2D *explosionSprite;
+
+    Sprite2D *fadeInSpriteRed;
+    Sprite2D *fadeInSpriteGreen;
+    Sprite2D *fadeInSpriteBlue;
+
+    Sprite2D *spriteSparklesRed;
+    Sprite2D *spriteSparklesGreen;
+    Sprite2D *spriteSparklesBlue;
+
+    std::vector<Sprite2D *> explosionSprites;
+
     TextureAnimated * test;
 
     Mesh3D *itemBoxFrame;
@@ -76,7 +85,6 @@ private:
 
     ShaderColor *shaderColor;
     ShaderShockWave *shaderShockWave;
-    ShaderEdgeObject *shaderEdgeObject;
 
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;
@@ -98,8 +106,6 @@ private:
     EnemyDialog *currentEnemyDialog;
 
     //PathFinder *pathFinder;
-
-    PaletteColors palette;
 public:
     ComponentGame();
 
@@ -199,8 +205,6 @@ public:
 
     void drawMedalAlpha(int type, int x, int y, float alpha);
 
-    [[nodiscard]] Sprite3D *getExplosionSpriteTemplate() const;
-
     [[nodiscard]] ShaderColor *getShaderColor() const;
 
     [[nodiscard]] ShaderImage *getShaderBackgroundImage() const;
@@ -268,12 +272,23 @@ public:
 
     void handleSpaceShipSelector();
 
-    [[nodiscard]] const PaletteColors &getPalette() const;
-
     [[nodiscard]] ShaderImage *getShaderForegroundImage() const;
 
-    Sprite2D *getExplosionSprite() const;
+    [[nodiscard]] Sprite2D *getExplosionSprite() const;
 
+    [[nodiscard]] Sprite2D *getFadeInSpriteRed();
+
+    [[nodiscard]] Sprite2D *getFadeInSpriteGreen();
+
+    [[nodiscard]] Sprite2D *getFadeInSpriteBlue();
+
+    Sprite2D *getSpriteSparklesRed() const;
+
+    Sprite2D *getSpriteSparklesGreen() const;
+
+    Sprite2D *getSpriteSparklesBlue() const;
+
+    ShaderEdgeObject *shaderEdgeObject;
 };
 
 
