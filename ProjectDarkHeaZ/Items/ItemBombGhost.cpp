@@ -34,7 +34,7 @@ void ItemBombGhost::onUpdate()
         setEnabled(false);
         removeCollisionObject();
         Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
-        Tools::makeExplosionSprite(getPosition());
+        Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getExplosionSprite()->getAnimation());
         Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
     }
 }
