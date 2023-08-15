@@ -214,13 +214,13 @@ public:
     surface_triangles_t *surface_triangles;
     std::vector<Triangle *> model_triangles;
 
-    std::vector<Texture*> textures;
+    std::vector<Image*> textures;
 
     entity_t *entities;
     int n_entities;
 
     lightmap_t *surface_lightmaps;   // info surface-lightmap
-    std::vector<Texture *> lightmaps;              // lightmaps textures
+    std::vector<Image *> lightmaps;              // lightmaps textures
 
     unsigned int palette[256];
 
@@ -454,7 +454,7 @@ public:
 
     int getTextureAnimatedFrames(const std::string& name);
 
-    Texture *getTexture(const std::string& name);
+    Image *getTexture(const std::string& name);
 
     void init(Camera3D *cam);
 

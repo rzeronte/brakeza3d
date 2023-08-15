@@ -7,10 +7,10 @@
 #include "../Components/Camera3D.h"
 #include "Point2D.h"
 #include "Object3D.h"
-#include "../Render/Texture.h"
 #include <list>
 #include <vector>
 #include "../Misc/Color.h"
+#include "../Misc/Image.h"
 
 
 class Triangle {
@@ -31,7 +31,7 @@ public:
     Color flatColor;
     Object3D *parent;
     Vertex3D normal;
-    Texture *texture;
+    Image *texture;
 
     // texture vertex coordinates
     float tex_u1, tex_v1;
@@ -72,7 +72,7 @@ public:
 
     void processPixelTexture(Color &pixelColor, float tex_u, float tex_v, bool bilinear) const;
 
-    void setTexture(Texture *texture);
+    void setTexture(Image *texture);
 
     void clipping(Frustum *frustum, Plane *planes, int startPlaneIndex, int endPlaneIndex, Object3D *newTrianglesParent, std::vector<Triangle *> &triangles) const;
 
@@ -96,7 +96,7 @@ public:
 
     [[nodiscard]] bool isClipped() const;
 
-    [[nodiscard]] Texture *getTexture() const;
+    [[nodiscard]] Image *getTexture() const;
 
     [[nodiscard]] Vertex3D getCenterOfMass() const;
 

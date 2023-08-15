@@ -248,18 +248,18 @@ void Triangle::processPixelTexture(Color &pixelColor, float tex_u, float tex_v, 
     }
 
     if (bilinear) {
-        pixelColor = Tools::readSurfacePixelFromBilinearUV(getTexture()->getImage()->getSurface(), tex_u, tex_v);
+        pixelColor = Tools::readSurfacePixelFromBilinearUV(getTexture()->getSurface(), tex_u, tex_v);
         return;
     }
 
-    pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getImage()->getSurface(), tex_u, tex_v);
+    pixelColor = Tools::readSurfacePixelFromUV(getTexture()->getSurface(), tex_u, tex_v);
 }
 
-Texture *Triangle::getTexture() const {
+Image *Triangle::getTexture() const {
     return texture;
 }
 
-void Triangle::setTexture(Texture *t) {
+void Triangle::setTexture(Image *t) {
     texture = t;
 }
 

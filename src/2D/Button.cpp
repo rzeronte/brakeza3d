@@ -2,7 +2,7 @@
 #include "../../include/2D/Button.h"
 #include "../../include/ComponentsManager.h"
 
-Button::Button(int x, int y, std::string imageFileName, void (*functionCallBack)()) : Texture(imageFileName) {
+Button::Button(int x, int y, const std::string& imageFileName, void (*functionCallBack)()) : Image(imageFileName) {
     setX(x);
     setY(y);
     setCallBack(functionCallBack);
@@ -33,7 +33,7 @@ void Button::setPressed(bool pressed) {
 }
 
 void Button::draw() {
-    getImage()->drawFlat(x, y);
+    drawFlat(x, y);
 
     if (isClicked()) {
         drawSelectedEffect();
@@ -58,8 +58,8 @@ bool Button::isClicked() {
 
     int x1 = getX();
     int y1 = getY();
-    int x2 = x1 + getImage()->width();
-    int y2 = y1 + getImage()->height();
+    int x2 = x1 + width();
+    int y2 = y1 + height();
 
     if (mouseX > x1 && mouseX < x2) {
         if (mouseY > y1 && mouseY < y2) {
@@ -78,12 +78,12 @@ void Button::drawSelectedEffect() {
     auto *buffer = EngineBuffers::get();
 
     Color c = Color::green();
-    for (int i = 0; i < getImage()->width(); i++) {
+    for (int i = 0; i < width(); i++) {
         buffer->setVideoBuffer(getX() + i, getY(), c.getColor());
-        buffer->setVideoBuffer(getX() + i, getY() + getImage()->height() - 1, c.getColor());
+        buffer->setVideoBuffer(getX() + i, getY() + height() - 1, c.getColor());
     }
-    for (int i = 0; i < getImage()->height(); i++) {
+    for (int i = 0; i < height(); i++) {
         buffer->setVideoBuffer(getX(), getY() + i, c.getColor());
-        buffer->setVideoBuffer(getX() + getImage()->width() - 1, getY() + i, c.getColor());
+        buffer->setVideoBuffer(getX() + width() - 1, getY() + i, c.getColor());
     }
 }

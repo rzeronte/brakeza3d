@@ -37,7 +37,7 @@ private:
 
 protected:
     std::vector<Triangle *> modelTriangles;
-    std::vector<Texture *> modelTextures;
+    std::vector<Image *> modelTextures;
     std::vector<Vertex3D *> modelVertices;
 
     Color flatColor;
@@ -93,7 +93,7 @@ public:
 
     [[nodiscard]] std::vector<Triangle *> &getModelTriangles() ;
 
-    [[nodiscard]] std::vector<Texture *> &getModelTextures() ;
+    [[nodiscard]] std::vector<Image *> &getModelTextures() ;
 
     [[nodiscard]] std::vector<Vertex3D *> &getModelVertices() ;
 
@@ -103,7 +103,7 @@ public:
 
     void onDrawHostBuffer() override;
 
-    cJSON * getJSON();
+    cJSON * getJSON() override;
 
     void onUpdateOpenCLRender();
 

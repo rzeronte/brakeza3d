@@ -385,7 +385,6 @@ public:
                 ImGui::Separator();
                 ImGui::EndMenu();
             }
-
             ImGui::EndMainMenuBar();
         }
 

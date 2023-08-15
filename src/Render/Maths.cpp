@@ -122,7 +122,7 @@ int Maths::TriangulatePolygon(
     Vertex3D normal,
     std::vector<Triangle *> &triangles,
     Object3D *parent,
-    Texture *texture,
+    Image *texture,
     bool clipped,
     bool isFlattenTextureColor,
     Color flatColor,

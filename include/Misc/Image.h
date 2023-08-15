@@ -15,6 +15,7 @@
 
 class Image {
 private:
+
     SDL_Surface *surface;
     SDL_Texture *texture;
     std::string fileName;
@@ -51,7 +52,7 @@ public:
 
     [[nodiscard]] const std::string &getFileName() const;
 
-    [[nodiscard]] SDL_Surface *getSurface() const;
+    [[nodiscard]] SDL_Surface *getSurface();
 
     [[nodiscard]] int width() const;
 
@@ -64,6 +65,10 @@ public:
     void setImage(const std::string &basicString);
 
     void refreshOpenCLBuffer();
+
+    Image(SDL_Surface *surface, SDL_Texture *texture);
+
+    SDL_Texture *getTexture();
 };
 
 #endif //BRAKEDA3D_IMAGE_H
