@@ -1114,19 +1114,19 @@ void ComponentRender::initOpenCL()
 void ComponentRender::loadParticlesKernel()
 {
     Logging::Message("Loading particles kernel");
-    loadKernel(particlesProgram, particlesKernel, EngineSetup::get()->DARKHEAZ_CL_SHADERS_FOLDER + "particles.cl");
+    loadKernel(particlesProgram, particlesKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "particles.cl");
 }
 
 void ComponentRender::loadExplosionKernel()
 {
     Logging::Message("Loading explosion kernel");
-    loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->DARKHEAZ_CL_SHADERS_FOLDER + "explosion.cl");
+    loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "explosion.cl");
 }
 
 void ComponentRender::loadBlinkKernel()
 {
     Logging::Message("Loading blink kernel");
-    loadKernel(blinkProgram, blinkKernel, EngineSetup::get()->DARKHEAZ_CL_SHADERS_FOLDER + "blink.opencl");
+    loadKernel(blinkProgram, blinkKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "blink.opencl");
 }
 
 
