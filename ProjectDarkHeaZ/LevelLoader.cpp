@@ -40,7 +40,8 @@ void LevelLoader::load(int levelIndex)
 {
     stats->reset();
 
-    Logging::Log("loading level: %d", levelIndex);
+    Logging::Message("[Project DarkHeaZ] Loading level: %d", levelIndex);
+
     setLevelStartedToPlay(true);
     setLevelFinished(false);
     setCurrentLevelIndex(levelIndex);
@@ -74,6 +75,7 @@ bool LevelLoader::loadNext()
     currentLevelIndex++;
     load(currentLevelIndex);
 
+    updateConfig(currentLevelIndex, "nvidia");
     return true;
 }
 
@@ -1012,4 +1014,55 @@ SalvageSpaceship* LevelLoader::makeSalvageSpaceship(Vertex3D position)
     Brakeza3D::get()->addObject3D(salvage, "salvage");
 
     return salvage;
+}
+
+void LevelLoader::loadConfig()
+{
+    Logging::Message("Loading Config...");
+
+    const std::string filePath = EngineSetup::get()->DARKHEAZ_ROOT_FOLDER + "setup.json";
+
+    size_t file_size;
+    auto contentFile = Tools::readFile(filePath, file_size);
+
+    cJSON *myDataJSON = cJSON_Parse(contentFile);
+
+    if (myDataJSON == nullptr) {
+        Logging::Message("[Load Config] Can't be loaded: %s", filePath.c_str());
+        exit(-1);
+    }
+
+    int level = cJSON_GetObjectItemCaseSensitive(myDataJSON, "level")->valueint;
+
+    if (level >= 0) {
+        currentLevelIndex = level - 1;
+    }
+
+    int gpu = cJSON_GetObjectItemCaseSensitive(myDataJSON, "gpu")->valueint;
+}
+
+void LevelLoader::updateConfig(int level, const char* gpu) {
+
+    std::string filePathStr = EngineSetup::get()->DARKHEAZ_ROOT_FOLDER + "setup.json";
+    const char* file_path = filePathStr.c_str();
+
+    cJSON *json = cJSON_CreateObject();
+
+    cJSON_AddNumberToObject(json, "level", level);
+    cJSON_AddStringToObject(json, "gpu", gpu);
+
+    char *output_string = cJSON_Print(json);
+
+    FILE *f = fopen(file_path, "w");
+    if (f == NULL) {
+        perror("Error opening file for writing");
+        cJSON_Delete(json);
+        free(output_string);
+        return;
+    }
+    fprintf(f, "%s", output_string);
+    fclose(f);
+
+    cJSON_Delete(json);
+    free(output_string);
 }

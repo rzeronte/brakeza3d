@@ -75,6 +75,7 @@ void ComponentGame::onStart()
     loadLevels();
     loadShaders();
     loadGameFonts();
+    levelLoader->loadConfig();
 
     swarm = new Swarm(Vertex3D(0, -1000, 500), Vertex3D(1000, 1000, 500));
 
@@ -872,26 +873,28 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 
 void ComponentGame::loadLevels()
 {
-    levelLoader = new LevelLoader(EngineSetup::get()->CONFIG_FOLDER + "level01.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level02.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level03.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level04.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level05.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level06.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level07.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level08.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level09.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level10.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level11.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level12.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level13.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level14.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level15.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level16.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level17.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level18.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level19.json");
-    levelLoader->addLevel(EngineSetup::get()->CONFIG_FOLDER + "level20.json");
+    auto basePath = EngineSetup::get()->DARKHEAZ_ROOT_FOLDER + "Levels/";
+    
+    levelLoader = new LevelLoader(basePath + "level01.json");
+    levelLoader->addLevel(basePath + "level02.json");
+    levelLoader->addLevel(basePath + "level03.json");
+    levelLoader->addLevel(basePath + "level04.json");
+    levelLoader->addLevel(basePath + "level05.json");
+    levelLoader->addLevel(basePath + "level06.json");
+    levelLoader->addLevel(basePath + "level07.json");
+    levelLoader->addLevel(basePath + "level08.json");
+    levelLoader->addLevel(basePath + "level09.json");
+    levelLoader->addLevel(basePath + "level10.json");
+    levelLoader->addLevel(basePath + "level11.json");
+    levelLoader->addLevel(basePath + "level12.json");
+    levelLoader->addLevel(basePath + "level13.json");
+    levelLoader->addLevel(basePath + "level14.json");
+    levelLoader->addLevel(basePath + "level15.json");
+    levelLoader->addLevel(basePath + "level16.json");
+    levelLoader->addLevel(basePath + "level17.json");
+    levelLoader->addLevel(basePath + "level18.json");
+    levelLoader->addLevel(basePath + "level19.json");
+    levelLoader->addLevel(basePath + "level20.json");
 }
 
 
@@ -1047,10 +1050,10 @@ void ComponentGame::setVisibleInGameObjects(bool value)
 
 void ComponentGame::loadWeapons()
 {
-    Logging::Log("Loading Weapons for game...");
+    Logging::Message("[Project DarkHeaZ] Loading Weapons...");
 
     std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;
-    std::string filePath = EngineSetup::get()->CONFIG_FOLDER + "playerWeapons.json";
+    std::string filePath = EngineSetup::get()->DARKHEAZ_ROOT_FOLDER + EngineSetup::get()->CFG_WEAPONS;
 
     size_t file_size;
     auto contentFile = Tools::readFile(filePath, file_size);
@@ -1058,8 +1061,8 @@ void ComponentGame::loadWeapons()
     cJSON *myDataJSON = cJSON_Parse(contentFile);
 
     if (myDataJSON == nullptr) {
-        Logging::Log("Can't be loaded: %s", filePath.c_str());
-        return;
+        Logging::Message("[Load Weapons] Can't be loaded: %s", filePath.c_str());
+        exit(-1);
     }
 
     cJSON *currentWeapon;
