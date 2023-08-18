@@ -177,6 +177,10 @@ public:
     ItemHumanGhost* makeItemHuman(Vertex3D vertex3D);
 
     SalvageSpaceship* makeSalvageSpaceship(Vertex3D vertex3D);
+
+    void loadConfig();
+
+    void updateConfig(int level, const char *gpu);
 };
 
 

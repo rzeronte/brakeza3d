@@ -117,7 +117,7 @@ void ComponentMenu::onSDLPollEvent(SDL_Event *event, bool &finish) {
 void ComponentMenu::loadMenuOptions()
 {
     size_t file_size;
-    auto contentFile = Tools::readFile(SETUP->CONFIG_FOLDER + SETUP->CFG_MENU, file_size);
+    auto contentFile = Tools::readFile(SETUP->DARKHEAZ_ROOT_FOLDER + SETUP->CFG_MENU, file_size);
     cJSON *myDataJSON = cJSON_Parse(contentFile);
     if (myDataJSON == nullptr) {
         Logging::Log("menu.json can't be loaded");
