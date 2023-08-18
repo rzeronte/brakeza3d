@@ -169,22 +169,6 @@ public:
                 if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED) {
                     ImGui::Separator();
                     ImGui::Checkbox("UV Bilinear", &EngineSetup::get()->TEXTURES_BILINEAR_INTERPOLATION);
-                    ImGui::Checkbox("Mip-Mapping", &EngineSetup::get()->ENABLE_MIPMAPPING);
-                    if (!EngineSetup::get()->ENABLE_MIPMAPPING) {
-                        if (ImGui::TreeNode("Force LOD level")) {
-                            static int selected = 1;
-                            for (int n = 1; n <= 8; n = 2 * n) {
-                                char buf[32];
-                                sprintf(buf, "LOD %d", n);
-                                if (ImGui::Selectable(buf, selected == n)) {
-                                    selected = n;
-                                    EngineSetup::get()->LOAD_OF_DETAIL = selected;
-                                }
-                            }
-                            ImGui::TreePop();
-                        }
-                    }
-
                     ImGui::Separator();
                     ImGui::Checkbox("Depth Of Field", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
                     if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
@@ -335,6 +319,17 @@ public:
             }
 
             if (ImGui::BeginMenu("View")) {
+                ImGui::Checkbox("FullScreen", &EngineSetup::get()->FULLSCREEN);
+                if (ImGui::IsItemEdited()) {
+                    if (EngineSetup::get()->FULLSCREEN) {
+                        SDL_SetWindowFullscreen(ComponentsManager::get()->getComponentWindow()->getWindow(), SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+                    } else {
+                        SDL_SetWindowFullscreen(ComponentsManager::get()->getComponentWindow()->getWindow(), 0);
+                    }
+                }
+                ImGui::Separator();
+                ImGui::Checkbox("Camera Inspector", &show_camera_info);
                 ImGui::Checkbox("3D Objects Inspector", &show_window_inspector);
                 ImGui::Checkbox("Camera Inspector", &show_camera_info);
                 ImGui::Separator();
@@ -391,7 +386,7 @@ public:
         if (show_about_window) ImGui::OpenPopup("New");
 
         if (ImGui::BeginPopup("New")) {
-            ImGui::Text("%s", std::string("Brakeza3D" + EngineSetup::get()->VERSION).c_str());
+            ImGui::Text("%s", std::string("Brakeza3D" + EngineSetup::get()->ENGINE_VERSION).c_str());
             ImGui::Text("Eduardo Rodríguez <eduardo@brakeza.com>");
             ImGui::Text("https://brakeza.com");
             ImGui::EndPopup();
