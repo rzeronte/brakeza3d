@@ -18,7 +18,9 @@ public:
 
     bool IMGUI_ENABLED = false;
 
-    std::string ENGINE_TITLE = "Brakeza3D v0.9.11";
+    std::string ENGINE_VERSION = "v.1.0.0";
+
+    std::string ENGINE_TITLE = "Project DarkHeaZ (" + ENGINE_VERSION + ")";
 
     std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";
@@ -109,6 +111,8 @@ public:
     bool DRAW_LIGHTS_DIRECTION = false;
     float LIGHTS_DIRECTION_SIZE = 2500;
 
+    bool FULLSCREEN = false;
+
     bool DRAW_FRUSTUM = false;
     bool DRAW_FPS = true;
 
@@ -131,7 +135,6 @@ public:
     std::string IMAGES_FOLDER = "../assets/images/";
     std::string ASSETS_FOLDER = "../assets/";
     std::string VIDEOS_FOLDER = "../assets/videos/";
-    std::string CONFIG_FOLDER = "../config/";
     std::string SOUNDS_FOLDER = "../assets/sounds/";
     std::string MODELS_FOLDER = "../assets/models/";
     std::string HUD_FOLDER = ASSETS_FOLDER + "textures/HUD/";
@@ -141,18 +144,7 @@ public:
     std::string GRIDS_FOLDER = ASSETS_FOLDER + "grids/";
     std::string ICONS_FOLDER = ASSETS_FOLDER + "icons/";
 
-    std::string DARKHEAZ_CL_SHADERS_FOLDER = "../kernels/";
-
-    std::string CFG_MAPS = "maps.json";
-    std::string CFG_MENU = "menu.json";
-    std::string CFG_WEAPONS = "playerWeapons.json";
-    std::string CFG_ENEMIES = "level01.json";
-    std::string CFG_SOUNDS = "sounds.json";
-
-    std::string CONCHARS_SPRITE_FILE = "conchars.png";
-    std::string DEFAULT_HELP_IMAGE = "xbox_one_controller.png";
-
-    std::string LOGO_BRAKEZA = "logo.png";
+    std::string CL_SHADERS_FOLDER = "../kernels/";
 
     bool SOUND_ENABLED = true;
     float SOUND_VOLUME_MUSIC = 20;
@@ -180,32 +172,14 @@ public:
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 
-    float TESTING = 64.0;
     float TESTING_INT1 = 1;
     float TESTING_INT2 = 2;
     float TESTING_INT3 = 3;
     float TESTING_INT4 = 4;
 
-    bool TESTING_BOOL = false;
-
-    int LOAD_OF_DETAIL = 1;
-    bool ENABLE_MIPMAPPING = true;
-
     bool ENABLE_DEPTH_OF_FIELD = true;
-    bool SHOW_LIGHTMAPPING = false;
     float LIGHTMAPPING_BLEND_INTENSITY = 0.05f;
     float LIGHTMAPPING_INTENSITY = 0.75f;
-
-    bool DRAW_HUD = true;
-
-    // BSP TEXTURES ANIMATED
-    bool TRIANGLE_TEXTURES_ANIMATED = true;
-
-    //BSP LAVA EFFECT
-    float LAVA_CLOSENESS = 1.0f;
-    float LAVA_INTENSITY = 0.5f;
-    float LAVA_SPEED = 0.5f;
-    float LAVA_SCALE = 1.f;
 
     //LIGHTNING EFFECT
     float LIGHTNING_GENERATIONS = 5;
@@ -213,14 +187,9 @@ public:
     float LIGHTNING_PROBABILITY_BRANCH = 1.5f;
     float LIGHTNING_SEGMENT_SHIFT = 2.5f;
 
-    //LIGHTNING  EFFECT
-    float FIRE_DIVISOR1 = 32;
-    float FIRE_DIVISOR2 = 129;
-
     bool LOG_COLLISION_OBJECTS = false;
     bool LOG_WEAPONS_SYSTEM = false;
 
-    bool ENABLE_IA = true;
     float ZOOM_FOV = 40;
 
     float PLAYER_CAPSULE_RADIUS = 16.00f;
@@ -249,7 +218,16 @@ public:
     float SHADER_PARTICLE_EXPLOSION_TTL = 1.0f;
     float SHADER_PARTICLE_EXPLOSION_EMISSION_TIME = 0.25f;
 
-    std::string VERSION = "v.1.0.0";
+    std::string CONFIG_FOLDER = "../config/";
+    std::string CFG_MENU = "menu.json";
+    std::string CFG_WEAPONS = "playerWeapons.json";
+    std::string CFG_SOUNDS = "sounds.json";
+
+    std::string DEFAULT_HELP_IMAGE = "xbox_one_controller.png";
+
+    std::string LOGO_BRAKEZA = "logo.png";
+
+    std::string DARKHEAZ_ROOT_FOLDER = ROOT_FOLDER + "ProjectDarkHeaZ/";
 
     enum collisionGroups {
         Player = 1,
@@ -288,7 +266,6 @@ public:
         STORE = 14,
         RADIO_MESSAGE = 15,
         SPACESHIP_SELECTOR = 16
-
     } GameState;
 
     typedef enum {
