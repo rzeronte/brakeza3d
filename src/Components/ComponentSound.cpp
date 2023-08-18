@@ -54,7 +54,7 @@ void ComponentSound::loadSoundsJSON()
     Logging::Log("Loading Sounds in package...");
 
     size_t file_size;
-    auto contentFile = Tools::readFile(EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_SOUNDS, file_size);
+    auto contentFile = Tools::readFile(EngineSetup::get()->ROOT_FOLDER + EngineSetup::get()->CFG_SOUNDS, file_size);
 
     cJSON *myDataJSON = cJSON_Parse(contentFile);
 

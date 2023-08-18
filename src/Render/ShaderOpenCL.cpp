@@ -34,7 +34,7 @@ void ShaderOpenCL::initOpenCLProgram()
 {
     size_t source_size;
     char * source_str = Tools::readFile(
-        EngineSetup::get()->DARKHEAZ_CL_SHADERS_FOLDER + this->kernelFilename,
+            EngineSetup::get()->CL_SHADERS_FOLDER + this->kernelFilename,
         source_size
     );
 
