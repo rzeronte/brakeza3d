@@ -183,7 +183,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 
         auto respawner = new EnemyGhostEmitter(enemy, 3);
         respawner->setPosition(enemy->getPosition());
-        Brakeza3D::get()->addObject3D(respawner, Brakeza3D::uniqueObjectLabel("rewpawner"));
+        Brakeza3D::get()->addObject3D(respawner, Brakeza3D::uniqueObjectLabel("respawner"));
         enemiesEmitter.push_back(respawner);
     }
 
@@ -203,6 +203,18 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         auto respawner = new EnemyGhostEmitter(asteroid, 3);
         respawner->setPosition(asteroid->getPosition());
         Brakeza3D::get()->addObject3D(respawner, Brakeza3D::uniqueObjectLabel("asteroid"));
+        enemiesEmitter.push_back(respawner);
+    }
+
+    cJSON *currentBoid;
+    cJSON_ArrayForEach(currentBoid, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "boids")) {
+        auto enemy = new EnemyGhost();
+        parseEnemyJSON(currentBoid, enemy);
+        enemy->setSwarmObject(ComponentsManager::get()->getComponentGame()->getSwarm()->createBoid(enemy));
+
+        auto respawner = new EnemyGhostEmitter(enemy, 3);
+        respawner->setPosition(enemy->getPosition());
+        Brakeza3D::get()->addObject3D(respawner, Brakeza3D::uniqueObjectLabel("respawner"));
         enemiesEmitter.push_back(respawner);
     }
 
@@ -444,7 +456,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     }
 
     enemy->updateBoundingBox();
-    Vertex3D aabbSize =enemy->getAabb().size().getScaled(0.3f);
+    Vertex3D aabbSize = enemy->getAabb().size().getScaled(0.3f);
 
     if (cJSON_GetObjectItemCaseSensitive(enemyJSON, "size") != nullptr) {
         aabbSize = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(enemyJSON, "size"));

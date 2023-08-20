@@ -94,7 +94,7 @@ bool Player::takeDamage(float dmg)
         return false;
     }
 
-    this->stamina -= dmg;
+    //this->stamina -= dmg;
 
     if (stamina <= 0) {
         stamina = 0;

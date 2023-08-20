@@ -77,18 +77,16 @@ void ComponentGame::onStart()
     loadGameFonts();
     levelLoader->loadConfig();
 
-    swarm = new Swarm(Vertex3D(0, -1000, 500), Vertex3D(1000, 1000, 500));
-
-    for (int i = 0; i < 250; i++) swarm->createBoid(EngineSetup::get()->MODELS_FOLDER + "red_pill.fbx");
-    for (int i = 0; i < 1; i++) swarm->createPredator(EngineSetup::get()->MODELS_FOLDER + "pill.fbx");
-
-    //Brakeza3D::get()->addObject3D(swarm, "swarm");
-
     ComponentSound::fadeInMusic(
         ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
         -1,
         SPLASH_TIME * 1000
     );
+
+    swarm = new Swarm(Vertex3D(0, -1000, 10000), Vertex3D(1000, 1000, 500));
+    swarm->setScale(10);
+    swarm->addPredator(new SwarmObject(player));
+    Brakeza3D::get()->addObject3D(swarm, "swarm");
 
     shaderExplosion = new ShaderExplosion(
         true,
@@ -950,6 +948,7 @@ void ComponentGame::removeInGameObjects()
         auto *particleEmitter = dynamic_cast<ParticleEmitter *> (object);
         auto bomb = dynamic_cast<ItemBombGhost *> (object);
         auto projectileRay = dynamic_cast<ProjectileRay *> (object);
+        auto rayLight = dynamic_cast<RayLight *> (object);
 
         if (enemy != nullptr) {
             enemy->remove();
@@ -966,7 +965,8 @@ void ComponentGame::removeInGameObjects()
             projectileEmitter != nullptr ||
             particleEmitter != nullptr ||
             bomb != nullptr ||
-            salvage != nullptr
+            salvage != nullptr ||
+            rayLight != nullptr
         ) {
             object->setRemoved(true);
             continue;
@@ -1252,6 +1252,7 @@ void ComponentGame::handleCountDownGameState()
 void ComponentGame::handlePressNewLevelKeyGameState()
 {
     removeInGameObjects();
+
     getPlayer()->respawn();
     getPlayer()->setEnabled(true);
     getPlayer()->getShaderLaser().setEnabled(false);
@@ -1259,8 +1260,10 @@ void ComponentGame::handlePressNewLevelKeyGameState()
 
     shaderBackgroundImage->resetOffsets();
     shaderForegroundImage->resetOffsets();
+    swarm->reset();
 
     getLevelLoader()->loadNext();
+
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
     getPlayer()->setEnergyShieldEnabled(false);
     getPlayer()->setPosition(playerStartPosition);
@@ -1574,3 +1577,6 @@ Sprite2D *ComponentGame::getSpriteSparklesBlue() const {
     return spriteSparklesBlue;
 }
 
+Swarm *ComponentGame::getSwarm() const {
+    return swarm;
+}

@@ -55,9 +55,11 @@ public:
 
     void setDirection(Vertex3D direction);
 
-    Object3D *getParent() const;
+    [[nodiscard]] Object3D *getParent() const;
 
     void setReach(int i);
+
+    virtual ~RayLight();
 };
 
 
