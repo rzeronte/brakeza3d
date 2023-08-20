@@ -31,6 +31,11 @@ RayLight::RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D 
     Brakeza3D::get()->addObject3D(light, Brakeza3D::uniqueObjectLabel("rayLightPoint"));
 }
 
+RayLight::~RayLight()
+{
+    light->setRemoved(true);
+}
+
 void RayLight::update()
 {
     if (!isEnabled()) return;

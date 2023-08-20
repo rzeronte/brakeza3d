@@ -39,6 +39,7 @@
 
 class ComponentGame : public Component {
 private:
+
     Vertex3D playerStartPosition;
     Vertex3D cameraCountDownPosition;
     Vertex3D cameraInGamePosition;
@@ -287,6 +288,8 @@ public:
     Sprite2D *getSpriteSparklesGreen() const;
 
     Sprite2D *getSpriteSparklesBlue() const;
+
+    Swarm *getSwarm() const;
 
     ShaderEdgeObject *shaderEdgeObject;
 };

@@ -13,6 +13,7 @@
 #include "../Items/EnemyDialog.h"
 #include "../ProjectileRay.h"
 #include "../../include/Behaviors/RotatableToTarget.h"
+#include "../../include/Objects/Swarm.h"
 
 class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy, public LivingObject, public RotatableToTarget {
 private:
@@ -23,6 +24,7 @@ private:
     AmmoProjectileBodyEmitter *projectileEmitter;
 
     ParticleEmitter *particleEmitter;
+    SwarmObject *swarmObject;
 protected:
     std::vector<ProjectileRay *> fixedLasers;
 public:
@@ -77,6 +79,8 @@ public:
     void initLight();
 
     void updateLight();
+
+    void setSwarmObject(SwarmObject *o);
 };
 
 
