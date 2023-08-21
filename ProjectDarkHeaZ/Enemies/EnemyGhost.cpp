@@ -465,14 +465,18 @@ void EnemyGhost::drawOnUpdateSecondPass()
 void EnemyGhost::takeDamage(float damageTaken)
 {
     this->stamina -= damageTaken;
-    if (this->stamina <= 0) {
-        blink->setEnabled(false);
-        if (swarmObject != nullptr) {
-            ComponentsManager::get()->getComponentGame()->getSwarm()->removeBoid(swarmObject);
-        }
-        ComponentsManager::get()->getComponentGame()->getPlayer()->increaseCoins(100);
-        setState(EnemyState::ENEMY_STATE_DIE);
+    if (this->stamina > 0) return;
+    die();
+}
+
+void EnemyGhost::die()
+{
+    blink->setEnabled(false);
+    if (swarmObject != nullptr) {
+        ComponentsManager::get()->getComponentGame()->getSwarm()->removeBoid(swarmObject);
     }
+    ComponentsManager::get()->getComponentGame()->getPlayer()->increaseCoins(100);
+    setState(ENEMY_STATE_DIE);
 }
 
 void EnemyGhost::initLight()

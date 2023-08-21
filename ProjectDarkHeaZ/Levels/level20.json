@@ -6,7 +6,7 @@
   "allowEnergyShield": true,
   "histories": ["histories/lore_20_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
-  "endLevel": true,
+  "endLevel": false,
   "enemies": [
   ],
   "items": [

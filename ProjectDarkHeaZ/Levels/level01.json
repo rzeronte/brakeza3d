@@ -30,66 +30,6 @@
   "asteroids": [
   ],
   "boids": [
-    {
-      "name": "spaceShuttle",
-      "avatar": "avatars/shuttle.png",
-      "avatarHud": "avatars/shuttle_hud.png",
-      "position": { "x": 10, "y": 20 },
-      "model": "spaceships/green_spaceship_03.fbx",
-      "size": { "x": 400, "y": 400,  "z": 400 },
-      "enableLights": true,
-      "animated": false,
-      "stamina": 500,
-      "reward": false
-    },
-    {
-      "name": "spaceShuttle",
-      "avatar": "avatars/shuttle.png",
-      "avatarHud": "avatars/shuttle_hud.png",
-      "position": { "x": 30, "y": 20 },
-      "model": "spaceships/green_spaceship_03.fbx",
-      "size": { "x": 400, "y": 400,  "z": 400 },
-      "enableLights": true,
-      "animated": false,
-      "stamina": 500,
-      "reward": false
-    },
-    {
-      "name": "spaceShuttle",
-      "avatar": "avatars/shuttle.png",
-      "avatarHud": "avatars/shuttle_hud.png",
-      "position": { "x": 60, "y": 20 },
-      "model": "spaceships/green_spaceship_03.fbx",
-      "size": { "x": 400, "y": 400,  "z": 400 },
-      "enableLights": true,
-      "animated": false,
-      "stamina": 500,
-      "reward": false
-    },
-    {
-      "name": "spaceShuttle",
-      "avatar": "avatars/shuttle.png",
-      "avatarHud": "avatars/shuttle_hud.png",
-      "position": { "x": 90, "y": 20 },
-      "model": "spaceships/green_spaceship_03.fbx",
-      "size": { "x": 400, "y": 400,  "z": 400 },
-      "enableLights": true,
-      "animated": false,
-      "stamina": 500,
-      "reward": false
-    },
-    {
-      "name": "spaceShuttle",
-      "avatar": "avatars/shuttle.png",
-      "avatarHud": "avatars/shuttle_hud.png",
-      "position": { "x": 50, "y": 50 },
-      "model": "spaceships/green_spaceship_03.fbx",
-      "size": { "x": 400, "y": 400,  "z": 400 },
-      "enableLights": true,
-      "animated": false,
-      "stamina": 500,
-      "reward": false
-    }
   ],
   "items": [
     {

@@ -524,7 +524,7 @@ void Weapon::shootHologram(Object3D *parent, Vertex3D position)
 
         ComponentsManager::get()->getComponentSound()->sound("gravitationalShield", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
-        //ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
+        ComponentsManager::get()->getComponentGame()->getSwarm()->addPredator(new SwarmObject(reflection));
 
         Brakeza3D::get()->addObject3D(reflection, reflection->getLabel());
         Tools::makeFadeInSprite(position, ComponentsManager::get()->getComponentGame()->getFadeInSpriteGreen()->getAnimation());

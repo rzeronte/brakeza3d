@@ -81,6 +81,8 @@ public:
     void updateLight();
 
     void setSwarmObject(SwarmObject *o);
+
+    void die();
 };
 
 

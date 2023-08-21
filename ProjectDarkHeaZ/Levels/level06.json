@@ -27,7 +27,7 @@
         "damage": 5,
         "amount": 1000,
         "startAmount": 10000,
-        "speed": 500,
+        "speed": 400,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.3,
