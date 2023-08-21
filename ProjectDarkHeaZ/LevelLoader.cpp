@@ -47,7 +47,10 @@ void LevelLoader::load(int levelIndex)
     setCurrentLevelIndex(levelIndex);
     setHasMusic(false);
 
-    ComponentsManager::get()->getComponentGame()->getPlayer()->setKillsCounter(0);
+    auto game = ComponentsManager::get()->getComponentGame();
+    game->getSwarm()->reset();
+    game->getSwarm()->addPredator(new SwarmObject(ComponentsManager::get()->getComponentGame()->getPlayer()));
+    game->getPlayer()->setKillsCounter(0);
 
     loadLevelFromJSON(levels[levelIndex]);
 }
@@ -181,6 +184,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         auto enemy = new EnemyGhost();
         parseEnemyJSON(currentEnemyJSON, enemy);
 
+        ComponentsManager::get()->getComponentGame()->getSwarm()->addPredator(new SwarmObject(enemy));
         auto respawner = new EnemyGhostEmitter(enemy, 3);
         respawner->setPosition(enemy->getPosition());
         Brakeza3D::get()->addObject3D(respawner, Brakeza3D::uniqueObjectLabel("respawner"));

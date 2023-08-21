@@ -9,6 +9,7 @@
 #include "../../include/Misc/Counter.h"
 #include "../Shaders/ShaderShockWave.h"
 #include "../../include/Shaders/ShaderBlink.h"
+#include "../../include/Objects/Swarm.h"
 
 class PlayerReflection : public Mesh3D {
 private:
@@ -16,7 +17,7 @@ private:
 
     ShaderBlink *blink;
     Counter counterDamageBlink;
-
+    SwarmObject *swarmObject;
 public:
     explicit PlayerReflection(float ttl);
 
@@ -25,6 +26,8 @@ public:
     void postUpdate() override;
 
     ~PlayerReflection() override;
+
+    void setSwarmObject(SwarmObject *swarmObject);
 };
 
 

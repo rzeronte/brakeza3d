@@ -136,8 +136,6 @@ public:
 
     void setAutoRotationToFacingSelectedObjectSpeed(float autoRotationSelectedObjectSpeed);
 
-    void startBlinkShaderForPlayer();
-
     void stopBlinkForPlayer();
 
     [[nodiscard]] int getKillsCounter() const;

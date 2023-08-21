@@ -25,7 +25,6 @@
 #include "../../include/Shaders/ShaderImageMask.h"
 #include "../Shaders/ShaderCRT.h"
 #include "../../include/Shaders/ShaderEdgeObject.h"
-#include "../Shaders/ShaderSwarm.h"
 #include "../PaletteColors.h"
 #include "../Items/SalvageSpaceship.h"
 #include "../../include/2D/Sprite2D.h"
@@ -93,7 +92,6 @@ private:
     std::vector<Weapon *> weapons;
 
     Swarm *swarm;
-    ShaderSwarm *shaderSwarm;
 
     TTF_Font *fontGame;
 

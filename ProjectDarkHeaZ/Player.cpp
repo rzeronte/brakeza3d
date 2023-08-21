@@ -94,7 +94,7 @@ bool Player::takeDamage(float dmg)
         return false;
     }
 
-    //this->stamina -= dmg;
+    this->stamina -= dmg;
 
     if (stamina <= 0) {
         stamina = 0;
@@ -117,7 +117,8 @@ bool Player::takeDamage(float dmg)
 
 void Player::startPlayerBlink()
 {
-    startBlinkShaderForPlayer();
+    counterDamageBlink.setEnabled(true);
+    blink->setEnabled(true);
 }
 
 void Player::respawn()
@@ -572,12 +573,6 @@ void Player::setWeaponTypeByIndex(int i) {
 
 void Player::setAutoRotationToFacingSelectedObjectSpeed(float value) {
     Player::rotationToTargetSpeed = value;
-}
-
-void Player::startBlinkShaderForPlayer()
-{
-    counterDamageBlink.setEnabled(true);
-    blink->setEnabled(true);
 }
 
 void Player::stopBlinkForPlayer()

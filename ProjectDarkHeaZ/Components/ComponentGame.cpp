@@ -893,6 +893,10 @@ void ComponentGame::loadLevels()
     levelLoader->addLevel(basePath + "level18.json");
     levelLoader->addLevel(basePath + "level19.json");
     levelLoader->addLevel(basePath + "level20.json");
+    levelLoader->addLevel(basePath + "level21.json");
+    levelLoader->addLevel(basePath + "level22.json");
+    levelLoader->addLevel(basePath + "level23.json");
+    levelLoader->addLevel(basePath + "level24.json");
 }
 
 
@@ -1260,7 +1264,6 @@ void ComponentGame::handlePressNewLevelKeyGameState()
 
     shaderBackgroundImage->resetOffsets();
     shaderForegroundImage->resetOffsets();
-    swarm->reset();
 
     getLevelLoader()->loadNext();
 
