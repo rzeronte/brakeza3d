@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-#set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS_DEBUG "-O3")
 #set(CMAKE_CXX_FLAGS_DEBUG "-O3 -fsanitize=leak")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -BRAKEZA_DEBUG")
 
@@ -217,8 +217,7 @@ add_executable(Brakeza3D
     ProjectDarkHeaZ/Shaders/ShaderCRT.h ProjectDarkHeaZ/Shaders/ShaderCRT.cpp
     ProjectDarkHeaZ/Shaders/ShaderEnergyShield.h ProjectDarkHeaZ/Shaders/ShaderEnergyShield.cpp
     ProjectDarkHeaZ/Shaders/ShaderProjectiles.h ProjectDarkHeaZ/Shaders/ShaderProjectiles.cpp
-    ProjectDarkHeaZ/Shaders/ShaderSwarm.h ProjectDarkHeaZ/Shaders/ShaderSwarm.cpp
-    ProjectDarkHeaZ/Shaders/ShaderZombie.h ProjectDarkHeaZ/Shaders/ShaderZombie.cpp
+        ProjectDarkHeaZ/Shaders/ShaderZombie.h ProjectDarkHeaZ/Shaders/ShaderZombie.cpp
 
     ProjectDarkHeaZ/Bosses/BossEnemy.h ProjectDarkHeaZ/Bosses/BossEnemy.cpp
     ProjectDarkHeaZ/Bosses/BossLevel10.h ProjectDarkHeaZ/Bosses/BossLevel10.cpp
