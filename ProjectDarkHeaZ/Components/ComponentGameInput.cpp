@@ -561,12 +561,6 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
         return;
     }
 
-    if (state == EngineSetup::GameState::RADIO_MESSAGE && (enter || isButtonGuidedPressed)) {
-        game->gameState = EngineSetup::GameState::GAMING;
-        game->setEnemiesBehaviors(true);
-        ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-        return;
-    }
     this->handleEscape(event);
 
 }

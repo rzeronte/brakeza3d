@@ -12,29 +12,44 @@
 #include "../../include/Objects/Object3D.h"
 
 class EnemyDialog {
+    int offsetX;
+    int offsetY;
+
+    float smoothEffect;
+
     bool showed;
     Object3D *parent;
     std::string message;
+    std::string sound;
     std::string from;
 
     Image *background;
 
+    Image *degradateBottom;
+
     TextWriter *writer;
-    Color color;
     Image *avatar;
     Image *avatarSmall;
+
+    Counter counterTTL;
 public:
-    EnemyDialog(Object3D *parent, Image *avatar, Image * avatarSmall, float staminaPercentage, const char *message, const char *from, TTF_Font *font, Color color);
+    EnemyDialog(Object3D *parent, Image *avatar, Image * avatarSmall, float staminaPercentage, const char *message, const char *sound,const char *from, TTF_Font *font);
 
     void update();
 
-    void drawDialog(float alpha, Image *avatar);
+    void drawDialog(float alpha);
 
     [[nodiscard]] bool isShowed() const;
 
     void setShowed(bool showed);
 
     float staminaPercentage;
+
+    void start();
+
+    void updateOffsets();
+
+    virtual ~EnemyDialog();
 };
 
 

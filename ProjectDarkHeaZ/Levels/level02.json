@@ -4,9 +4,16 @@
   "backgroundImage": "levels/02.png",
   "foregroundImage": "foregrounds/02.png",
   "allowEnergyShield": false,
-  "tutorials": ["tutorials/tutorial_weapon01.png", "tutorials/tutorial_weapon02.png", "tutorials/tutorial_weapon03.png", "tutorials/tutorial_humans.png"],
+  "tutorials": ["tutorials/tutorial_weapon01.png", "tutorials/tutorial_weapon02.png", "tutorials/tutorial_weapon03.png"],
   "histories": ["default_history.png"],
   "color": { "r": 0, "g": 0, "b": 0 },
+  "message": {
+    "from": "HeadQuarters",
+    "text": "Remember that you can improve the capabilities of your\nspaceship in the store at the end of a mission",
+    "sound": "radioLevel02",
+    "stamina": 100,
+    "avatarHud": "avatars/shuttle_hud.png"
+  },
   "enemies": [
     {
       "name": "spaceShuttle",
@@ -21,10 +28,7 @@
       "reward": false,
       "motion": {
         "type": 6
-      },
-      "messages": [
-        { "text": "Hi Commander!.\nOur mechanics are working on a few new features for the spaceship.\nYou will get them in next missions.\nChange and short...", "stamina": 90 }
-      ]
+      }
     },
     {
       "name": "spaceShuttle",
@@ -39,31 +43,23 @@
       "reward": false,
       "motion": {
         "type": 6
-      },
-      "messages": [
-        { "text": "Commander!.\nThe radar show several survivors floating through space.\nTry rescue them for us. We will send you a transport spaceship for bring back at home.\nThanks Commander!", "stamina": 90 }
-      ]
+      }
     }
   ],
   "items": [
     {
-      "type": 7,
-      "position": { "x": 50, "y": 5 },
-      "help": 3
-    },
-    {
       "type": 1,
-      "position": { "x": 30, "y": 30 },
+      "position": { "x": 30, "y": 20 },
       "help": 0
     },
     {
       "type": 3,
-      "position": { "x": 50, "y": 30 },
+      "position": { "x": 50, "y": 20 },
       "help": 1
     },
     {
       "type": 6,
-      "position": { "x": 70, "y": 30 },
+      "position": { "x": 70, "y": 20 },
       "help": 2
     }
   ],

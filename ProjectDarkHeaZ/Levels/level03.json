@@ -7,11 +7,18 @@
   "tutorials": ["tutorials/tutorial_stamina.png", "tutorials/tutorial_energy.png"],
   "histories": ["histories/lore_03_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
+  "message": {
+    "from": "Uprising Minor Combat Unit",
+    "text": "Its a pleasure to see you Commander, but\n it will be a greater pleasure to finish you off",
+    "sound": "radioLevel03",
+    "stamina": 100,
+    "avatarHud": "avatars/enemy_standard_hud.png"
+  },
   "enemies": [
     {
       "name": "Patrol",
       "avatar": "avatars/bob.png",
-      "avatarHud": "avatars/enemy_standard_hud.png",
+      "avatarHud": "avatars/shuttle_hud.png",
       "position": { "x": 20, "y": 50 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 800, "y": 400,  "z": 500 },
@@ -19,9 +26,6 @@
       "animated": true,
       "stamina": 1000,
       "reward": true,
-      "messages": [
-        { "text": "Hi Commander! Sorry about this\nI cannot let you pass, my mission is kill you", "stamina": 75 }
-      ],
       "motion": {
         "type": 1,
         "from": { "x": 10, "y": 10 },
@@ -55,12 +59,12 @@
   "items": [
     {
       "type": 4,
-      "position": { "x": 20, "y": 30 },
+      "position": { "x": 10, "y": 20 },
       "help": 0
     },
     {
       "type": 5,
-      "position": { "x": 80, "y": 30 },
+      "position": { "x": 90, "y": 20 },
       "help": 1
     }
   ],
