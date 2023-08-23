@@ -66,6 +66,7 @@ public:
     bool endLevel;
     LevelStats *stats;
     std::vector<Object3D*> objectsBackground;
+    EnemyDialog *mainMessage;
 private:
     std::vector<std::string> levels;
     std::vector<EnemyGhostEmitter*> enemiesEmitter;
@@ -181,6 +182,10 @@ public:
     void loadConfig();
 
     void updateConfig(int level, const char *gpu);
+
+    void parseMainMessageJSON(cJSON *message);
+
+    EnemyDialog *getMainMessage();
 };
 
 

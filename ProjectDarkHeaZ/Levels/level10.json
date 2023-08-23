@@ -6,6 +6,13 @@
   "allowEnergyShield": true,
   "histories": ["histories/lore_10_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
+  "message": {
+    "from": "Uprising Big Combat Unit",
+    "text": "ha ha ha ha ha...\nHA HA HA HA",
+    "sound": "boss10",
+    "stamina": 100,
+    "avatarHud": "avatars/boss_level_10.png"
+  },
   "enemies": [
     {
       "name": "Rayer",
@@ -93,7 +100,7 @@
       "type": 0,
       "name": "Leuman",
       "avatar": "avatars/boss10.png",
-      "avatarHud": "avatars/boss10_hud.png",
+      "avatarHud": "avatars/boss_level_10.png",
       "position": { "x": 50, "y": 15 },
       "model": "spaceships/Spitfire.fbx",
       "size": { "x": 2000, "y": 400,  "z": 400 },
@@ -102,7 +109,7 @@
       "stamina": 3000,
       "reward": true,
       "messages": [
-        { "text": "You are not welcome!\nThe Earth has been fallen. We are like a virus! They order us to die", "stamina": 75 }
+        { "text": "ha ha ha ha ha...\nHA HA HA HA", "sound": "boss10", "stamina": 55 }
       ],
       "weapon": {
         "index": 0,

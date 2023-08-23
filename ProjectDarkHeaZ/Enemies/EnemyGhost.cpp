@@ -113,9 +113,7 @@ void EnemyGhost::onUpdate()
     for ( auto dialog: dialogs) {
         const float staminaPercentage = (getStamina() * 100) / getStartStamina();
         if (staminaPercentage < dialog->staminaPercentage && !dialog->isShowed()) {
-            ComponentsManager::get()->getComponentSound()->sound("radioBeep", EngineSetup::SoundChannels::SND_GLOBAL, 0);
             dialog->setShowed(true);
-            ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::RADIO_MESSAGE);
             ComponentsManager::get()->getComponentGame()->setCurrentEnemyDialog(dialog);
         }
     }
@@ -493,4 +491,8 @@ void EnemyGhost::updateLight()
 
 void EnemyGhost::setSwarmObject(SwarmObject *o) {
     EnemyGhost::swarmObject = o;
+}
+
+std::vector<EnemyDialog *> &EnemyGhost::getDialogs() {
+    return dialogs;
 }

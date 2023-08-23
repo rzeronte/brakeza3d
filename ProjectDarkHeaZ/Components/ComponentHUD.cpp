@@ -47,6 +47,9 @@ void ComponentHUD::onUpdate()
     if (SETUP->DRAW_CROSSHAIR) {
         Drawable::drawCrossHair();
     }
+
+    drawIconWeaponAndLevelName();
+
 }
 
 void ComponentHUD::postUpdate()
@@ -89,7 +92,6 @@ void ComponentHUD::drawHUD()
     auto componentManager = ComponentsManager::get();
     auto textWriter = componentManager->getComponentGame()->getTextWriter();
 
-    drawIconWeaponAndLevelName();
 
     if (SETUP->DRAW_FPS) {
         textWriter->writeTTFCenterHorizontal(

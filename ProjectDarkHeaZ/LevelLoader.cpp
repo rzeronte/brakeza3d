@@ -174,6 +174,12 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         cJSON_GetObjectItemCaseSensitive(jsonContentFile, "allowEnergyShield")->valueint
     );
 
+    if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "message") != nullptr) {
+        parseMainMessageJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "message"));
+    } else {
+        mainMessage = nullptr;
+    }
+
     auto c = parseColorJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "color"));
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->getLight()->setColorSpecularity(c);
@@ -960,6 +966,7 @@ void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
     auto componentGame = ComponentsManager::get()->getComponentGame();
 
     std::string text = cJSON_GetObjectItemCaseSensitive(message, "text")->valuestring;
+    std::string sound = cJSON_GetObjectItemCaseSensitive(message, "sound")->valuestring;
 
     auto stamina = (float) cJSON_GetObjectItemCaseSensitive(message, "stamina")->valuedouble;
 
@@ -969,12 +976,34 @@ void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
         enemy->getAvatar(),
         stamina,
         text.c_str(),
+        sound.c_str(),
         enemy->getName().c_str(),
-        componentGame->getFontGame(),
-        PaletteColors::getCrt()
+        componentGame->getFontGame()
     );
 
-    enemy->dialogs.push_back(dialog);
+    enemy->getDialogs().push_back(dialog);
+}
+
+void LevelLoader::parseMainMessageJSON(cJSON *message)
+{
+    auto componentGame = ComponentsManager::get()->getComponentGame();
+
+    std::string from = cJSON_GetObjectItemCaseSensitive(message, "from")->valuestring;
+    std::string text = cJSON_GetObjectItemCaseSensitive(message, "text")->valuestring;
+    std::string sound = cJSON_GetObjectItemCaseSensitive(message, "sound")->valuestring;
+    std::string avatarHud = cJSON_GetObjectItemCaseSensitive(message, "avatarHud")->valuestring;
+    auto stamina = (float) cJSON_GetObjectItemCaseSensitive(message, "stamina")->valuedouble;
+
+    mainMessage = new EnemyDialog(
+        nullptr,
+        new Image(EngineSetup::get()->ICONS_FOLDER + avatarHud),
+        new Image(EngineSetup::get()->ICONS_FOLDER + avatarHud),
+        stamina,
+        text.c_str(),
+        sound.c_str(),
+        from.c_str(),
+        componentGame->getFontGame()
+    );
 }
 
 std::vector<Image*> &LevelLoader::getTutorials() {
@@ -1081,4 +1110,8 @@ void LevelLoader::updateConfig(int level, const char* gpu) {
 
     cJSON_Delete(json);
     free(output_string);
+}
+
+EnemyDialog *LevelLoader::getMainMessage(){
+    return mainMessage;
 }

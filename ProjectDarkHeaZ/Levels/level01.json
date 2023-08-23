@@ -7,6 +7,13 @@
   "histories": ["histories/lore_01_1.png", "histories/lore_01_2.png"],
   "tutorials": ["tutorials/tutorial_first.png"],
   "color": { "r": 255, "g": 0, "b": 0 },
+  "message": {
+    "from": "HeadQuarters",
+    "text": "Welcome Commander! We know you've been inactive for\na while. Let's practice shooting down the target in front\nof you and we can continue",
+    "sound": "radioLevel01",
+    "stamina": 100,
+    "avatarHud": "avatars/shuttle_hud.png"
+  },
   "enemies": [
     {
       "name": "spaceShuttle",
@@ -21,10 +28,7 @@
       "reward": false,
       "motion": {
         "type": 6
-      },
-      "messages": [
-        { "text": "Welcome Commander!.\nIn order to achieve targets, you will need to master piloting.\nPractice firing to crap spaceship. After erase all targets you will pass next mission.\nGood luck.", "stamina": 90 }
-      ]
+      }
     }
   ],
   "asteroids": [

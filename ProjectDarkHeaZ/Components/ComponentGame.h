@@ -255,8 +255,6 @@ public:
 
     [[nodiscard]] Mesh3D *getItemBoxFrame() const;
 
-    void handleEnableRadioMessage();
-
     void loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation);
 
     void increaseSpaceshipSelected();
@@ -290,6 +288,8 @@ public:
     Swarm *getSwarm() const;
 
     ShaderEdgeObject *shaderEdgeObject;
+
+    void onUpdateMessageRadio();
 };
 
 

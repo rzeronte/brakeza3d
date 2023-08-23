@@ -29,7 +29,7 @@
       "model": "spaceships/Dispatcher.fbx",
       "enableLights": false,
       "animated": true,
-      "stamina": 1000,
+      "stamina": 3000,
       "reward": true,
       "motion": {
         "type": 1,

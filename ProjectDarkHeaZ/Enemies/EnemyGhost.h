@@ -27,6 +27,7 @@ private:
     SwarmObject *swarmObject;
 protected:
     std::vector<ProjectileRay *> fixedLasers;
+    std::vector<EnemyDialog *> dialogs;
 public:
     EnemyGhost();
 
@@ -70,7 +71,6 @@ public:
 
     void drawOnUpdateSecondPass() override;
 
-    std::vector<EnemyDialog *> dialogs;
 
     void takeDamage(float damageTaken);
 
@@ -83,6 +83,8 @@ public:
     void setSwarmObject(SwarmObject *o);
 
     void die();
+
+    std::vector<EnemyDialog *> &getDialogs();
 };
 
 

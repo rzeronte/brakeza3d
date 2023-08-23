@@ -157,7 +157,7 @@ void ComponentGame::loadShaders()
     shaderBackgroundImage->setUseOffset(true);
     shaderForegroundImage->setUseOffset(true);
     shaderForegroundImage->setUseColors(false);
-    shaderColor = new ShaderColor(false, Color::red(), 0.75f);
+    shaderColor = new ShaderColor(false, PaletteColors::getStamina(), 0.75f);
     shaderProjectiles = new ShaderProjectiles();
     shaderShockWave = new ShaderShockWave(true);
 
@@ -258,21 +258,12 @@ void ComponentGame::onUpdate()
             handleTutorialImages(255);
             break;
         }
-        case EngineSetup::RADIO_MESSAGE: {
-            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
-
-            dialogBackground->setMaxAlpha((int) alpha);
-            dialogBackground->update();
-            boxTutorial->drawFlatAlpha(0, 0, alpha);
-            shaderCRT->setMaxAlpha((int) alpha);
-            shaderCRT->update();
-
-            currentEnemyDialog->update();
-            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", PaletteColors::getFive(), 0.2);
-
+        case EngineSetup::GAMING: {
+            onUpdateMessageRadio();
             break;
         }
         case EngineSetup::COUNTDOWN: {
+            onUpdateMessageRadio();
             zoomCameraCountDown();
             float oldAlpha = textWriter->getAlpha();
             // Obtén el tiempo total del contador y el tiempo acumulado
@@ -300,6 +291,9 @@ void ComponentGame::onUpdate()
             getLevelLoader()->getCountDown()->update();
 
             if (getLevelLoader()->getCountDown()->isFinished()) {
+                if (getLevelLoader()->getMainMessage() != nullptr) {
+                    setCurrentEnemyDialog(getLevelLoader()->getMainMessage());
+                }
                 setGameState(EngineSetup::GameState::GAMING);
             }
 
@@ -323,6 +317,8 @@ void ComponentGame::onUpdate()
             textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", PaletteColors::getFive(), 0.2);
 
             help->drawFlatAlpha(0, 0, alpha);
+            onUpdateMessageRadio();
+
             break;
         }
         case EngineSetup::HELP: {
@@ -639,10 +635,6 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
             setEnemiesBehaviors(false);
             break;
         case EngineSetup::STORE: {
-            break;
-        }
-        case EngineSetup::RADIO_MESSAGE: {
-            handleEnableRadioMessage();
             break;
         }
         case EngineSetup::SPACESHIP_SELECTOR: {
@@ -1178,8 +1170,7 @@ void ComponentGame::shaderBackgroundUpdate()
         gameState == EngineSetup::PRESS_KEY_NEW_LEVEL ||
         gameState == EngineSetup::PRESS_KEY_BY_WIN ||
         gameState == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL ||
-        gameState == EngineSetup::GAMING_TUTORIAL ||
-        gameState == EngineSetup::RADIO_MESSAGE
+        gameState == EngineSetup::GAMING_TUTORIAL
     ) {
         Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.000015);
 
@@ -1485,11 +1476,6 @@ Mesh3D *ComponentGame::getItemBoxFrame() const {
     return itemBoxFrame;
 }
 
-void ComponentGame::handleEnableRadioMessage()
-{
-    setEnemiesBehaviors(false);
-}
-
 void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation)
 {
     auto model = new Mesh3D();
@@ -1531,7 +1517,11 @@ void ComponentGame::decreaseSpaceshipSelected()
     shaderEdgeObject->setObject(spaceships[spaceshipSelectedIndex]);
 }
 
-void ComponentGame::setCurrentEnemyDialog(EnemyDialog *currentEnemyDialog) {
+void ComponentGame::setCurrentEnemyDialog(EnemyDialog *currentEnemyDialog)
+{
+    if (currentEnemyDialog != nullptr) {
+        currentEnemyDialog->start();
+    }
     ComponentGame::currentEnemyDialog = currentEnemyDialog;
 }
 
@@ -1582,4 +1572,11 @@ Sprite2D *ComponentGame::getSpriteSparklesBlue() const {
 
 Swarm *ComponentGame::getSwarm() const {
     return swarm;
+}
+
+void ComponentGame::onUpdateMessageRadio()
+{
+    if (currentEnemyDialog == nullptr) return;
+
+    currentEnemyDialog->update();
 }

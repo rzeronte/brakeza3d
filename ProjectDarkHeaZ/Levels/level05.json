@@ -5,6 +5,7 @@
   "foregroundImage": "foregrounds/03.png",
   "allowEnergyShield": true,
   "color": { "r": 255, "g": 0, "b": 255 },
+  "tutorials": ["tutorials/tutorial_humans.png"],
   "histories": ["histories/lore_05_1.png", "histories/lore_05_2.png"],
   "enemies": [
     {
@@ -91,7 +92,8 @@
   "items": [
     {
       "type": 7,
-      "position": { "x": 50, "y": 10 }
+      "position": { "x": 50, "y": 5 },
+      "help": 0
     }
   ],
   "background": [
