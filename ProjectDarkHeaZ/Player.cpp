@@ -30,6 +30,7 @@ Player::Player()
         500,
         0,
         Color::green(),
+        Color::orange(),
         EngineSetup::collisionGroups::Projectile,
         EngineSetup::collisionGroups::Enemy
     )),
@@ -42,20 +43,18 @@ Player::Player()
     currentWeaponIndex(0),
     satellite(PlayerSatellite(this)),
     avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png")),
-    shield(new Image(EngineSetup::get()->IMAGES_FOLDER + "shield.png")),
     dashPower(INITIAL_POWER_DASH),
     power(INITIAL_POWER),
     friction(INITIAL_FRICTION),
     maxVelocity(INITIAL_MAX_VELOCITY),
     rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED)
 {
-    light = new LightPoint3D(15, 1, 0, 0, 0, Color(100, 16, 22), Color(15, 33, 92));
+    light = new LightPoint3D(15, 1, 0, 0, 0, PaletteColors::getPlayerRayLight(), Color(15, 33, 92));
     light->setRotation(180, 0, 0);
     light->setEnabled(false);
     Brakeza3D::get()->addObject3D(light, "playerLight");
 
     shaderParticles = new ShaderParticles(true, PaletteColors::getParticlesPlayerFrom(), PaletteColors::getParticlesPlayerTo(), OCParticlesContext::forPlayerEngine());
-
     shaderParticlesTwo = new ShaderParticles(true, PaletteColors::getParticlesPlayerFrom(), PaletteColors::getParticlesPlayerTo(), OCParticlesContext::forPlayerEngine());
 
     shaderEnergyShield = new ShaderEnergyShield(
@@ -65,7 +64,9 @@ Player::Player()
         std::string(EngineSetup::get()->IMAGES_FOLDER + "shield_mask.png")
     );
 
-    spriteEnergyShield = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "Smoke45Frames.png"), 128, 128, 45, 45));
+    //spriteEnergyShield = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "Smoke45Frames.png"), 128, 128, 45, 45));
+    spriteEnergyShield = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "shield.png"), 80, 80, 20, 60));
+
     spriteEnergyShield->setEnabled(false);
     Brakeza3D::get()->addObject3D(spriteEnergyShield, "playerSpriteEnergyShield");
 }
@@ -94,7 +95,7 @@ bool Player::takeDamage(float dmg)
         return false;
     }
 
-    this->stamina -= dmg;
+    //this->stamina -= dmg;
 
     if (stamina <= 0) {
         stamina = 0;
@@ -147,11 +148,13 @@ void Player::shoot(float intensity)
                 EngineSetup::collisionGroups::Projectile,
                 EngineSetup::collisionGroups::Enemy,
                 true,
-                true
+                true,
+                PaletteColors::getParticlesPlayerProjectileFrom(),
+                PaletteColors::getParticlesPlayerProjectileTo()
             );
 
             if (resultShoot) {
-                getLight()->setColor(PaletteColors::getPlayerProjectileLight());
+                getWeaponLight()->setColor(PaletteColors::getPlayerProjectileLight());
                 initLight();
             }
             break;
@@ -169,7 +172,7 @@ void Player::shoot(float intensity)
             );
 
             if (resultShoot) {
-                getLight()->setColor(PaletteColors::getPlayerLaserLight());
+                getWeaponLight()->setColor(PaletteColors::getPlayerLaserLight());
                 initLight();
             }
 
@@ -194,7 +197,7 @@ void Player::shoot(float intensity)
             );
 
             weapon->shootRayLight(rayLight, intensity * 0.5f, PaletteColors::getPlayerRay());
-            getLight()->setColor(PaletteColors::getPlayerRayLight());
+            getWeaponLight()->setColor(PaletteColors::getPlayerRayLight());
             initLight();
             break;
         }
@@ -316,7 +319,6 @@ void Player::drawOnUpdateSecondPass()
 
     if (isEnergyShieldEnabled()) {
         auto p = Transforms::WorldToPoint(getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera());
-        shield->drawFlatAlpha(p.x - shield->width()/2, p.y - shield->height()/2, 200);
 
         shaderEnergyShield->update();
     }
@@ -326,11 +328,6 @@ void Player::onDrawHostBuffer()
 {
     Mesh3D::onDrawHostBuffer();
     if (isStucked()) {
-        Drawable::drawLightning(
-            getPosition() + Tools::randomVertex().getScaled(5),
-            getPosition() + Tools::randomVertex().getScaled(5),
-            PaletteColors::getCrt()
-        );
         counterStucked.update();
 
         if (counterStucked.isFinished()) {
@@ -611,9 +608,9 @@ void Player::setEnergyShieldEnabled(bool shieldEnabled)
     spriteEnergyShield->setEnabled(shieldEnabled);
 
     if (shieldEnabled) {
-        blink->setColor(PaletteColors::getFirst());
+        blink->setColor(PaletteColors::getPlayerBenefitBlink());
     } else {
-        blink->setColor(PaletteColors::getPlayerBlink());
+        blink->setColor(PaletteColors::getPlayerDamageBlink());
     }
 }
 
@@ -693,7 +690,7 @@ bool Player::isAllowEnergyShield() const
 
 void Player::onStartSetup()
 {
-    blink = new ShaderBlink(false, this, 0.05, PaletteColors::getPlayerBlink());
+    blink = new ShaderBlink(false, this, 0.05, PaletteColors::getPlayerDamageBlink());
     counterDamageBlink.setEnabled(false);
 
     loadSatellite();
@@ -708,6 +705,8 @@ void Player::makeStuck(float time)
 {
     counterStucked.setStep(time);
     counterStucked.setEnabled(true);
+
+    Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getSpriteStuck()->getAnimation());
 
     setStucked(true);
 
@@ -767,12 +766,7 @@ void Player::updateWeaponAutomaticStatus()
     }
 }
 
-RayLight &Player::getShaderLaser()
-{
-    return rayLight;
-}
-
-LightPoint3D *Player::getLight() const {
+LightPoint3D *Player::getWeaponLight() const {
     return light;
 }
 

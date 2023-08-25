@@ -182,7 +182,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 
     auto c = parseColorJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "color"));
 
-    ComponentsManager::get()->getComponentGame()->getPlayer()->getLight()->setColorSpecularity(c);
+    ComponentsManager::get()->getComponentGame()->getPlayer()->getWeaponLight()->setColorSpecularity(c);
     ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->updateFrustum();
 
     cJSON *currentEnemyJSON;
@@ -384,7 +384,7 @@ ItemWeaponGhost* LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
         frameBox = true;
     }
 
-    auto *weaponItem = new ItemWeaponGhost(weapons[indexWeapon], frameBox);
+    auto *weaponItem = new ItemWeaponGhost(weapons[indexWeapon], false);
     weaponItem->setLabel(Brakeza3D::uniqueObjectLabel("itemWeapon"));
     weaponItem->setEnableLights(false);
     weaponItem->clone(weapons[indexWeapon]->getModel());

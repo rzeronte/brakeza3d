@@ -13,8 +13,6 @@ ItemWeaponGhost::ItemWeaponGhost(Weapon *weaponType, bool hasFrame)
         frame->setRotationFrameEnabled(true);
         frame->setRotationFrame(Tools::randomVertex().getScaled(0.5));
     }
-
-    setScale(0.5);
 }
 
 Weapon *ItemWeaponGhost::getWeaponType() const {

@@ -87,7 +87,7 @@
       "type": 3,
       "icon": "icons/weapon_instant.png",
       "modelProjectile": "weapon_projectile_bomb.fbx",
-      "model": "weapon_bomb.fbx",
+      "model": "weapon_bomb_ammo.fbx",
       "flatTexture": false,
       "enableLights": false,
       "color": { "r": 0, "g": 255, "b": 0 }
@@ -110,7 +110,7 @@
       "type": 5,
       "icon": "icons/weapon_reflection.png",
       "modelProjectile": "weapon_projectile_reflection.fbx",
-      "model": "weapon_reflection.fbx",
+      "model": "weapon_reflection_ammo.fbx",
       "flatTexture": false,
       "enableLights": false,
       "color": { "r": 0, "g": 255, "b": 0 }
@@ -133,7 +133,7 @@
       "type": 6,
       "icon": "icons/weapon_shield.png",
       "modelProjectile": "weapon_projectile_shield.fbx",
-      "model": "weapon_shield.fbx",
+      "model": "weapon_shield_ammo.fbx",
       "flatTexture": false,
       "enableLights": false,
       "color": { "r": 0, "g": 255, "b": 0 }

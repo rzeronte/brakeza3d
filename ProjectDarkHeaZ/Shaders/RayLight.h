@@ -31,7 +31,7 @@ private:
     LightPoint3D *light;
 
 public:
-    explicit RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D startOffset, float speed, float damage, Color c, int filterGroup, int filterMask);
+    explicit RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D startOffset, float speed, float damage, Color c, Color hit, int filterGroup, int filterMask);
 
     void update();
 
@@ -60,6 +60,8 @@ public:
     void setReach(int i);
 
     virtual ~RayLight();
+
+    LightPoint3D *getLight();
 };
 
 

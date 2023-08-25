@@ -157,7 +157,9 @@ bool Weapon::shootProjectile(
     int filterGroup,
     int filterMask,
     bool sound,
-    bool allowMirror
+    bool allowMirror,
+    Color particlesFrom,
+    Color particlesTo
 )
 {
     if (getAmmoAmount() <= 0) return false;
@@ -207,9 +209,9 @@ bool Weapon::shootProjectile(
                 nullptr,
                 position,
                 0,
-                PaletteColors::getExplosionEnemyFrom(),
-                PaletteColors::getExplosionEnemyTo(),
-                OCParticlesContext()
+                particlesFrom,
+                particlesTo,
+                OCParticlesContext::forProjectile()
             )
         ), Brakeza3D::uniqueObjectLabel("weaponProjectile"));
 
@@ -234,9 +236,9 @@ bool Weapon::shootProjectile(
                     nullptr,
                     position,
                     0,
-                    PaletteColors::getExplosionEnemyFrom(),
-                    PaletteColors::getExplosionEnemyTo(),
-                    OCParticlesContext()
+                    particlesFrom,
+                    particlesTo,
+                    OCParticlesContext::forProjectile()
             )
             ), Brakeza3D::uniqueObjectLabel("weaponProjectile"));
         }
@@ -265,9 +267,16 @@ bool Weapon::shootLaserProjectile(
     }
 
     if (counterCadence->isFinished()) {
-        const float t = cadenceTime + ((1 - intensity) * cadenceTime);
+        float t = cadenceTime;
+
+        auto storeManager = ComponentsManager::get()->getComponentGame()->getStoreManager();
+        if (storeManager->isItemEnabled(EngineSetup::StoreItems::ITEM_FAST_SHOOT_CADENCE)){
+            t = t - (t * 0.25f);
+        }
+
         this->counterCadence->setStep(t);
         this->counterCadence->setEnabled(true);
+
 
         setStatus(WeaponStatus::PRESSED);
 
@@ -476,7 +485,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         projectile->setRotationFrameEnabled(true);
         projectile->setFlatTextureColor(false);
         projectile->makeSimpleGhostBody(
-            Vertex3D(600, 600, 600),
+            Vertex3D(400, 400, 400),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             EngineSetup::collisionGroups::Player,
             EngineSetup::collisionGroups::Enemy

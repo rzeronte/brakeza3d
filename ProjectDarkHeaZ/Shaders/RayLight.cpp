@@ -3,7 +3,7 @@
 #include "../../include/Brakeza3D.h"
 #include "../Items/ItemShieldGhost.h"
 
-RayLight::RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D startOffset, float speed, float damage, Color c, int filterGroup, int filterMask)
+RayLight::RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D startOffset, float speed, float damage, Color c, Color hit, int filterGroup, int filterMask)
 :
     enabled(enabled),
     intensity(0),
@@ -25,7 +25,7 @@ RayLight::RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D 
     rayCallback->m_collisionFilterGroup = filterGroup;
     rayCallback->m_collisionFilterMask = filterMask;
 
-    light = new LightPoint3D(20, 1, 0, 0, 0, PaletteColors::getStamina(), Color(15, 33, 92));
+    light = new LightPoint3D(8, 1, 0, 0, 0, hit, Color(15, 33, 92));
     light->setRotation(180, 0, 0);
     light->setEnabled(false);
     Brakeza3D::get()->addObject3D(light, Brakeza3D::uniqueObjectLabel("rayLightPoint"));
@@ -39,6 +39,8 @@ RayLight::~RayLight()
 void RayLight::update()
 {
     if (!isEnabled()) return;
+
+    light->setEnabled(false);
 
     auto game = ComponentsManager::get()->getComponentGame();
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
@@ -79,11 +81,20 @@ void RayLight::update()
 
                 player->takeDamage(damage * dt );
                 increase = false;
+
+                light->setEnabled(true);
+                light->setPosition(hitPosition + Vertex3D(0, 0, -1000));
+                light->onUpdate();
             }
 
             if (bomb != nullptr) {
+                Tools::makeExplosion(player, hitPosition, 0.5, OCParticlesContext::forRayLight(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
                 middlePoint = Transforms::WorldToPoint(hitPosition, camera);
                 increase = false;
+
+                light->setEnabled(true);
+                light->setPosition(hitPosition + Vertex3D(0, 0, -1000));
+                light->onUpdate();
             }
 
             if (enemy != nullptr) {
@@ -98,7 +109,6 @@ void RayLight::update()
                 light->setEnabled(true);
                 light->setPosition(hitPosition + Vertex3D(0, 0, -1000));
                 light->onUpdate();
-
             }
         }
     }
@@ -146,9 +156,7 @@ bool RayLight::isEnabled() const {
 
 void RayLight::setEnabled(bool enabled) {
     RayLight::enabled = enabled;
-    if (!enabled) {
-        light->setEnabled(false);
-    }
+    light->setEnabled(false);
 }
 
 void RayLight::setColor(const Color &color) {
@@ -175,4 +183,8 @@ Object3D *RayLight::getParent() const {
 
 void RayLight::setReach(int value) {
     reach = value;
+}
+
+LightPoint3D *RayLight::getLight() {
+    return light;
 }

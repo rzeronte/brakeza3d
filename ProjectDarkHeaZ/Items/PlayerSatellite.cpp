@@ -8,23 +8,16 @@
 PlayerSatellite::PlayerSatellite(Mesh3D *parent)
 :
     LivingObject(parent),
-    damage(100)
+    damage(500)
 {
     setParent(parent);
 
-    shaderParticles = new ShaderParticles(true, PaletteColors::getParticlesPlayerFrom(), PaletteColors::getParticlesPlayerTo(), OCParticlesContext(
-        0.0f,
-        0.0025f,
-        1.5f,
-        45.0f,
-        0.0f,
-        50.0f,
-        50.0f,
-        255.0f,
-        2.0f,
-        0.8f,
-        0.98f
-    ));
+    shaderParticles = new ShaderParticles(
+        true,
+        PaletteColors::getParticlesPlayerSatelliteFrom(),
+        PaletteColors::getParticlesPlayerSatelliteTo(),
+        OCParticlesContext::forPlayerSatellite()
+    );
 }
 
 void PlayerSatellite::onStartSetup()

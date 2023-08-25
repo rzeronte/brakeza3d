@@ -13,7 +13,7 @@ SalvageSpaceship::SalvageSpaceship()
     finished(false),
     timeGetting(Counter(3)),
     timeToRemove(Counter(3)),
-    blink(new ShaderBlink(true, this, 0.05, PaletteColors::getFirst()))
+    blink(new ShaderBlink(true, this, 0.05, PaletteColors::getSavageBlink()))
 {
     timeGetting.setEnabled(false);
 }
@@ -62,7 +62,7 @@ void SalvageSpaceship::onUpdate()
         ComponentsManager::get()->getComponentHUD()->getShaderLasers()->addLaser(
             startPositionX, startPositionY + topBarMargin,
             startPositionX + (int) (width * 1), startPositionY + topBarMargin,
-            PaletteColors::getFive(),
+            PaletteColors::getPressKeyToContinue(),
             stroke,
             false,
             false
