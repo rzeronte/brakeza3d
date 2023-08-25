@@ -197,7 +197,7 @@ void ComponentGameInput::handleFire() const
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto player = componentGame->getPlayer();
 
-    player->getShaderLaser().setEnabled(false);
+    player->getRayLight().setEnabled(false);
 
     Uint8 *keyboard = componentInput->getKeyboard();
     if (keyboard[SDL_SCANCODE_SPACE] || componentInput->getControllerAxisTriggerRight() > this->controllerAxisThreshold) {
@@ -528,6 +528,20 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
         if (enter || componentInput->getControllerButtonA()) {
             ComponentsManager::get()->getComponentGame()->selectSpaceshipAndStartGame();
+            return;
+        }
+    }
+
+    if (state == EngineSetup::GameState::HELP) {
+        if (cursorLeft || controllerLeft) {
+            game->decreaseHelpImage();
+            componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            return;
+        }
+
+        if (cursorRight || controllerRight) {
+            game->increaseHelpImage();
+            componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
             return;
         }
     }

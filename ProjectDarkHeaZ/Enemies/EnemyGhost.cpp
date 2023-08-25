@@ -12,7 +12,8 @@ EnemyGhost::EnemyGhost() :
         this->AxisUp().getScaled(1100),
         150,
         0,
-        PaletteColors::getFirst(),
+        PaletteColors::getEnemyRayLight(),
+        Color(212, 160, 0),
         EngineSetup::collisionGroups::ProjectileEnemy,
         EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::Enemy
     )),
@@ -60,8 +61,6 @@ void EnemyGhost::onUpdate()
 
     if (isRemoved()) return;
 
-    //zombie->update();
-
     counterLight.update();
     if (counterLight.isFinished()) {
         light->setEnabled(false);
@@ -89,12 +88,13 @@ void EnemyGhost::onUpdate()
         }
     }
 
-    auto playerState = ComponentsManager::get()->getComponentGame()->getPlayer()->getState();
-    auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
+    auto componentGame = ComponentsManager::get()->getComponentGame();
+    auto playerState = componentGame->getPlayer()->getState();
+
     if (
         state != EnemyState::ENEMY_STATE_DIE &&
         (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE) &&
-        gameState == EngineSetup::GAMING
+        componentGame->getGameState() == EngineSetup::GAMING
     ) {
         if (projectileEmitter != nullptr) {
             projectileEmitter->setPosition(getPosition());
@@ -114,14 +114,13 @@ void EnemyGhost::onUpdate()
         const float staminaPercentage = (getStamina() * 100) / getStartStamina();
         if (staminaPercentage < dialog->staminaPercentage && !dialog->isShowed()) {
             dialog->setShowed(true);
-            ComponentsManager::get()->getComponentGame()->setCurrentEnemyDialog(dialog);
+            componentGame->setCurrentEnemyDialog(dialog);
         }
     }
 
     if (getBehavior() != nullptr) {
         particleEmitter->drawOnUpdateSecondPass();
     }
-
 }
 
 void EnemyGhost::updateEmitterParticles()
@@ -141,7 +140,11 @@ void EnemyGhost::onDrawHostBuffer()
     Mesh3D::onDrawHostBuffer();
 
     if (isStuck()) {
-        Drawable::drawLightning(getPosition() + Tools::randomVertex().getScaled(4), getPosition() + Tools::randomVertex().getScaled(5), PaletteColors::getFirst());
+        /*Drawable::drawLightning(
+            getPosition() + Tools::randomVertex().getScaled(4),
+            getPosition() + Tools::randomVertex().getScaled(5),
+            PaletteColors::getEnemyLighting()
+        );*/
         counterStuck.update();
         if (counterStuck.isFinished()) {
             unstuck();
@@ -154,7 +157,16 @@ void EnemyGhost::handleDie()
     Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
     makeReward();
-    Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getFirst());
+
+    Tools::makeExplosion(
+        this,
+        getPosition(),
+        5,
+        OCParticlesContext::forExplosion(),
+        PaletteColors::getExplosionEnemyFrom(),
+        PaletteColors::getExplosionEnemyTo()
+     );
+
     Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getExplosionSprite()->getAnimation());
 
     ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
@@ -338,7 +350,9 @@ void EnemyGhost::shoot(Object3D *target)
                 EngineSetup::collisionGroups::ProjectileEnemy,
                 EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::Enemy,
                 false,
-                false
+                false,
+                PaletteColors::getParticlesEnemyProjectileFrom(),
+                PaletteColors::getParticlesEnemyProjectileTo()
             );
 
             if (shootResult) {
@@ -369,7 +383,6 @@ void EnemyGhost::shoot(Object3D *target)
             auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
 
             if (getPosition().distance(player->getPosition()) < 5000) {
-                Drawable::drawLightning(getPosition(), target->getPosition(), PaletteColors::getCrt());
 
                 if (player->getState() == PlayerState::GETTING_DAMAGE || player->getState() == PlayerState::DEAD) {
                     break;
@@ -409,12 +422,14 @@ void EnemyGhost::stuck(float time)
 {
     counterStuck.setStep(time);
     setStuck(true);
+    Tools::makeLoopSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getSpriteStuck()->getAnimation(), 5);
+
     counterStuck.setEnabled(true);
     if (getBehavior() != nullptr) {
         this->getBehavior()->setEnabled(false);
     }
 
-    ComponentsManager::get()->getComponentSound()->sound("electricStuck", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+    ComponentsManager::get()->getComponentSound()->sound("enemyExplosion", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
 
 void EnemyGhost::unstuck()

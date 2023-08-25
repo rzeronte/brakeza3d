@@ -97,7 +97,7 @@ void ComponentHUD::drawHUD()
         textWriter->writeTTFCenterHorizontal(
             10,
             std::to_string(componentManager->getComponentRender()->getFps()).c_str(),
-            PaletteColors::getFirst(),
+            PaletteColors::getMenuOptions(),
             0.3
         );
     }
@@ -138,7 +138,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         gatheringResourcesOffsetX + 16,
         gatheringResourcesOffsetY,
         (std::string("x") + std::to_string(player->getCoins())).c_str(),
-        PaletteColors::getFirst(),
+        PaletteColors::getMenuOptions(),
         0.25
     );
 
@@ -148,7 +148,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         gatheringResourcesOffsetX + 54,
         13,
         (std::string("x") + std::to_string(player->getRescuedHumans())).c_str(),
-        PaletteColors::getFirst(),
+        PaletteColors::getMenuOptions(),
         0.25
     );
 
@@ -160,7 +160,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         270,
         this->offsetY + player->getWeapon()->getIcon()->height(),
         (std::string("x") + std::to_string(player->getWeapon()->getAmmoAmount())).c_str(),
-        PaletteColors::getFirst(),
+        PaletteColors::getMenuOptions(),
         0.25
     );
 
@@ -174,7 +174,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
             330,
             this->offsetY + weaponBomb->getIcon()->height(),
             (std::string("x") + std::to_string(weaponBomb->getAmmoAmount())).c_str(),
-            PaletteColors::getFirst(),
+            PaletteColors::getMenuOptions(),
             0.25
         );
     }
@@ -189,7 +189,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
             360,
             this->offsetY + weaponShield->getIcon()->height(),
             (std::string("x") + std::to_string(weaponShield->getAmmoAmount())).c_str(),
-            PaletteColors::getFirst(),
+            PaletteColors::getMenuOptions(),
             0.25
         );
     }
@@ -200,7 +200,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         390,
         this->offsetY - 10,
         game->getLevelLoader()->getLevelName().c_str(),
-        PaletteColors::getFirst(),
+        PaletteColors::getMenuOptions(),
         0.7
     );
 
@@ -213,7 +213,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
             300,
             this->offsetY + weaponReflection->getIcon()->height(),
             (std::string("x") + std::to_string(weaponReflection->getAmmoAmount())).c_str(),
-            PaletteColors::getFirst(),
+            PaletteColors::getMenuOptions(),
             0.25
         );
     }

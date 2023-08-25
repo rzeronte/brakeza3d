@@ -82,10 +82,8 @@ private:
     ShaderParticles *shaderParticlesTwo;
 
     Image *avatar;
-    Image *shield;
     ShaderEnergyShield *shaderEnergyShield;
     Sprite2D *spriteEnergyShield;
-
 public:
 
     Player();
@@ -192,9 +190,7 @@ public:
 
     void updateWeaponAutomaticStatus();
 
-    [[nodiscard]] RayLight &getShaderLaser();
-
-    [[nodiscard]] LightPoint3D *getLight() const;
+    [[nodiscard]] LightPoint3D *getWeaponLight() const;
 
     void updateShaderParticles();
 

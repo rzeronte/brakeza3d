@@ -68,7 +68,7 @@ void EnemyDialog::drawDialog(float alpha)
     writer->writeTextTTFAutoSize(positionFrom.x, positionFrom.y, from.c_str(), PaletteColors::getCrt(), 0.25f);
 
     while (std::getline(stream, line)) {
-        writer->writeTextTTFAutoSize(positionText.x, positionText.y, line.c_str(), PaletteColors::getSecond(), 0.15f);
+        writer->writeTextTTFAutoSize(positionText.x, positionText.y, line.c_str(), PaletteColors::getEnemyMessage(), 0.15f);
         positionText.y += lineHeight;
     }
 }

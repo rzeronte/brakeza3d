@@ -59,6 +59,8 @@ private:
     Sprite2D *spriteSparklesGreen;
     Sprite2D *spriteSparklesBlue;
 
+    Sprite2D *spriteStuck;
+
     std::vector<Sprite2D *> explosionSprites;
 
     TextureAnimated * test;
@@ -66,7 +68,6 @@ private:
     Mesh3D *itemBoxFrame;
 
     Image *imageCredits;
-    Image *imageHelp;
     Image *imageSplash;
     Image *imageCrossFire;
     Image *imageCablesVertical;
@@ -75,6 +76,9 @@ private:
     Image *imageStatistics;
     Image *imageDead;
     Image *imageEndGame;
+
+    std::vector<Image*> helps;
+    int currentHelpIndex;
 
     Counter splashCounter;
 
@@ -290,6 +294,12 @@ public:
     ShaderEdgeObject *shaderEdgeObject;
 
     void onUpdateMessageRadio();
+
+    Sprite2D *getSpriteStuck() const;
+
+    void increaseHelpImage();
+
+    void decreaseHelpImage();
 };
 
 

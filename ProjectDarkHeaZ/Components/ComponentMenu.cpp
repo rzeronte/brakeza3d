@@ -195,11 +195,12 @@ void ComponentMenu::drawVersion()
     ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(
         447,
         "https://brakeza.com",
-        PaletteColors::getFive(),
+        PaletteColors::getPressKeyToContinue(),
         0.3
     );
 
-    ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(362, "v.1.21.7", PaletteColors::getFive(), 0.2);
+    ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(362, "v.1.21.7",
+                                                                                            PaletteColors::getPressKeyToContinue(), 0.2);
 }
 
 int ComponentMenu::getCurrentOption() const {
