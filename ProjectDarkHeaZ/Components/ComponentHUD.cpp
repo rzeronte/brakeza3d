@@ -32,7 +32,13 @@ void ComponentHUD::preUpdate()
 void ComponentHUD::onUpdate()
 {
     if (!isEnabled()) return;
-     const float alpha = ComponentsManager::get()->getComponentGame()->getTextWriter()->getAlpha();
+
+    auto textWriter = ComponentsManager::get()->getComponentGame()->getTextWriter();
+
+    const float alpha = textWriter->getAlpha();
+
+    textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());
+
 
     HUDTextures->getTextureByLabel("hudBackground")->drawFlatAlpha(0, 0, alpha);
 
@@ -90,11 +96,9 @@ void ComponentHUD::loadImages()
 void ComponentHUD::drawHUD()
 {
     auto componentManager = ComponentsManager::get();
-    auto textWriter = componentManager->getComponentGame()->getTextWriter();
-
 
     if (SETUP->DRAW_FPS) {
-        textWriter->writeTTFCenterHorizontal(
+        componentManager->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(
             10,
             std::to_string(componentManager->getComponentRender()->getFps()).c_str(),
             PaletteColors::getMenuOptions(),
@@ -132,6 +136,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     const int gatheringResourcesOffsetX = 530;
     const int gatheringResourcesOffsetY = 13;
 
+    const float sizeAmounts = 0.26f;
     //coins
     HUDTextures->getTextureByLabel("coinIcon")->drawFlatAlpha(gatheringResourcesOffsetX, gatheringResourcesOffsetY, 255);
     textWriter->writeTextTTFAutoSize(
@@ -139,7 +144,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         gatheringResourcesOffsetY,
         (std::string("x") + std::to_string(player->getCoins())).c_str(),
         PaletteColors::getMenuOptions(),
-        0.25
+        sizeAmounts
     );
 
     // human
@@ -149,7 +154,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         13,
         (std::string("x") + std::to_string(player->getRescuedHumans())).c_str(),
         PaletteColors::getMenuOptions(),
-        0.25
+        sizeAmounts
     );
 
     // weapon icon
@@ -161,7 +166,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
         this->offsetY + player->getWeapon()->getIcon()->height(),
         (std::string("x") + std::to_string(player->getWeapon()->getAmmoAmount())).c_str(),
         PaletteColors::getMenuOptions(),
-        0.25
+        sizeAmounts
     );
 
     // bomb icon
@@ -175,7 +180,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
             this->offsetY + weaponBomb->getIcon()->height(),
             (std::string("x") + std::to_string(weaponBomb->getAmmoAmount())).c_str(),
             PaletteColors::getMenuOptions(),
-            0.25
+            sizeAmounts
         );
     }
     weaponBomb->getIcon()->drawFlatAlpha(330, this->offsetY, bombAlpha);
@@ -190,18 +195,18 @@ void ComponentHUD::drawIconWeaponAndLevelName()
             this->offsetY + weaponShield->getIcon()->height(),
             (std::string("x") + std::to_string(weaponShield->getAmmoAmount())).c_str(),
             PaletteColors::getMenuOptions(),
-            0.25
+            sizeAmounts
         );
     }
     weaponShield->getIcon()->drawFlatAlpha(360, this->offsetY, bombAlpha);
 
     // level number
     textWriter->writeTextTTFAutoSize(
-        390,
-        this->offsetY - 10,
+        388,
+        this->offsetY,
         game->getLevelLoader()->getLevelName().c_str(),
         PaletteColors::getMenuOptions(),
-        0.7
+        0.9f
     );
 
     // icon player reflection
@@ -210,11 +215,11 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     if (weaponReflection->getAmmoAmount() > 0) {
         reflectionAlpha = 255;
         textWriter->writeTextTTFAutoSize(
-            300,
+            305,
             this->offsetY + weaponReflection->getIcon()->height(),
             (std::string("x") + std::to_string(weaponReflection->getAmmoAmount())).c_str(),
             PaletteColors::getMenuOptions(),
-            0.25
+            sizeAmounts
         );
     }
     weaponReflection->getIcon()->drawFlatAlpha(300, this->offsetY, reflectionAlpha);
@@ -266,7 +271,7 @@ void ComponentHUD::drawShaderLasers()
     if (enemy != nullptr) {
         const float enemyHealth = ((enemy->getStamina() * fixedWidth) / enemy->getStartStamina());
 
-        const int positionLaserX = 372 + width;
+        const int positionLaserX = 377 + width;
         const int positionLaserY = this->offsetY + topBarMargin;
         const int width = 146;
 
@@ -280,23 +285,23 @@ void ComponentHUD::drawShaderLasers()
             false
         );
 
-        enemy->getAvatar()->drawFlatAlpha(580, this->offsetY, 255);
+        enemy->getAvatar()->drawFlatAlpha(582, this->offsetY, 255);
 
         textWriter->writeTextTTFAutoSize(
-            418,
-            this->offsetY + 11,
+            424,
+            this->offsetY + 14,
             enemy->getName().c_str(),
             PaletteColors::getStamina(),
-            0.25
+            0.3
         );
     } else {
         HUDTextures->getTextureByLabel("emptyEnemy")->drawFlatAlpha(580, this->offsetY, 144);
         textWriter->writeTextTTFAutoSize(
-            537,
-            this->offsetY + 10,
+            526,
+            this->offsetY + 14,
             "No target",
             PaletteColors::getStamina(),
-            0.25
+            0.3
         );
 
     }

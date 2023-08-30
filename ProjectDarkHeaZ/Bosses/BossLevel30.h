@@ -13,14 +13,9 @@ typedef enum {
 
 class BossLevel30 : public BossEnemy {
 
-    Counter *counter;
-
-    EnemyGhost *turret;
 public:
     BossLevel30State state;
     BossLevel30();
-
-    void load();
 
     void onUpdate() override;
 

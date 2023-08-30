@@ -20,6 +20,7 @@
 #include "Bosses/BossLevel30.h"
 #include "LevelStats.h"
 #include "Items/EnemyDialog.h"
+#include "Enemies/BoidEnemyGhost.h"
 
 #include <utility>
 
@@ -138,8 +139,10 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 
     setEndLevel(false);
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "endLevel") != nullptr) {
-        setEndLevel(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "endLevel"));
+        setEndLevel(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "endLevel")->valueint);
     }
+
+    Logging::Message("El nivel es final? %d", isEndLevel());
 
     ComponentsManager::get()->getComponentGame()->getShaderBackgroundImage()->setImage(
        EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "backgroundImage")->valuestring
@@ -218,7 +221,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 
     cJSON *currentBoid;
     cJSON_ArrayForEach(currentBoid, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "boids")) {
-        auto enemy = new EnemyGhost();
+        auto enemy = new BoidEnemyGhost();
         parseEnemyJSON(currentBoid, enemy);
         enemy->setSwarmObject(ComponentsManager::get()->getComponentGame()->getSwarm()->createBoid(enemy));
 
@@ -781,7 +784,6 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
         }
         case BossesTypes::BOSS_LEVEL_30: {
             boss = new BossLevel30();
-            boss->load();
             break;
         }
     }
@@ -978,7 +980,7 @@ void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
         text.c_str(),
         sound.c_str(),
         enemy->getName().c_str(),
-        componentGame->getFontGame()
+        ComponentsManager::get()->getComponentWindow()->getFontDefault()
     );
 
     enemy->getDialogs().push_back(dialog);
@@ -986,8 +988,6 @@ void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
 
 void LevelLoader::parseMainMessageJSON(cJSON *message)
 {
-    auto componentGame = ComponentsManager::get()->getComponentGame();
-
     std::string from = cJSON_GetObjectItemCaseSensitive(message, "from")->valuestring;
     std::string text = cJSON_GetObjectItemCaseSensitive(message, "text")->valuestring;
     std::string sound = cJSON_GetObjectItemCaseSensitive(message, "sound")->valuestring;
@@ -1002,7 +1002,7 @@ void LevelLoader::parseMainMessageJSON(cJSON *message)
         text.c_str(),
         sound.c_str(),
         from.c_str(),
-        componentGame->getFontGame()
+        ComponentsManager::get()->getComponentWindow()->getFontAlternative()
     );
 }
 
@@ -1088,7 +1088,7 @@ void LevelLoader::loadConfig()
 
 void LevelLoader::updateConfig(int level, const char* gpu) {
 
-    std::string filePathStr = EngineSetup::get()->DARKHEAZ_ROOT_FOLDER + "setup.json";
+    std::string filePathStr = EngineSetup::get()->DARKHEAZ_ROOT_FOLDER + EngineSetup::get()->DARKHEAZ_MAIN_CONFIG;
     const char* file_path = filePathStr.c_str();
 
     cJSON *json = cJSON_CreateObject();
@@ -1099,12 +1099,14 @@ void LevelLoader::updateConfig(int level, const char* gpu) {
     char *output_string = cJSON_Print(json);
 
     FILE *f = fopen(file_path, "w");
-    if (f == NULL) {
-        perror("Error opening file for writing");
+    if (f == nullptr) {
+        Logging::Message("Error opening file for writing");
         cJSON_Delete(json);
         free(output_string);
+        fclose(f);
         return;
     }
+
     fprintf(f, "%s", output_string);
     fclose(f);
 

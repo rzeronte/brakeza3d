@@ -11,8 +11,8 @@
 #include "../../include/Render/ShaderOpenCL.h"
 #include "../ProjectileRay.h"
 
-#define MAX_PROJECTILES 250
-#define MAX_LASERS 100
+#define MAX_PROJECTILES 256
+#define MAX_LASERS 256
 
 struct OCLaser
 {

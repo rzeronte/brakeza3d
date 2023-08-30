@@ -9,7 +9,7 @@
   "color": { "r": 0, "g": 0, "b": 0 },
   "message": {
     "from": "HeadQuarters",
-    "text": "Remember that you can improve the capabilities of your\nspaceship in the store at the end of a mission",
+    "text": "Remember that you can improve the\ncapabilities of your spaceship in the store\nat the end of a mission.",
     "sound": "radioLevel02",
     "stamina": 100,
     "avatarHud": "avatars/shuttle_hud.png"

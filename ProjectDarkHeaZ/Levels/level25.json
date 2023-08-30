@@ -132,7 +132,7 @@
       "size": { "x": 400, "y": 400,  "z": 400 },
       "enableLights": true,
       "animated": false,
-      "stamina": 500,
+      "stamina": 250,
       "reward": false,
       "weapon": {
         "index": 0,
@@ -166,7 +166,7 @@
       "size": { "x": 400, "y": 400,  "z": 400 },
       "enableLights": true,
       "animated": false,
-      "stamina": 500,
+      "stamina": 250,
       "reward": false,
       "weapon": {
         "index": 0,
@@ -200,7 +200,7 @@
       "size": { "x": 400, "y": 400,  "z": 400 },
       "enableLights": true,
       "animated": false,
-      "stamina": 500,
+      "stamina": 250,
       "reward": false,
       "weapon": {
         "index": 0,
@@ -234,7 +234,7 @@
       "size": { "x": 400, "y": 400,  "z": 400 },
       "enableLights": true,
       "animated": false,
-      "stamina": 500,
+      "stamina": 250,
       "reward": false,
       "weapon": {
         "index": 0,
@@ -268,7 +268,7 @@
       "size": { "x": 400, "y": 400,  "z": 400 },
       "enableLights": true,
       "animated": false,
-      "stamina": 500,
+      "stamina": 250,
       "reward": false,
       "weapon": {
         "index": 0,
@@ -302,7 +302,7 @@
       "size": { "x": 400, "y": 400,  "z": 400 },
       "enableLights": true,
       "animated": false,
-      "stamina": 500,
+      "stamina": 250,
       "reward": false,
       "weapon": {
         "index": 0,

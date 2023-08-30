@@ -192,15 +192,19 @@ void ComponentMenu::setEnabled(bool value)
 
 void ComponentMenu::drawVersion()
 {
-    ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(
+
+    auto writer = ComponentsManager::get()->getComponentGame()->getTextWriter();
+
+    writer->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());
+
+    writer->writeTTFCenterHorizontal(
         447,
-        "https://brakeza.com",
+        "www.brakeza.com",
         PaletteColors::getPressKeyToContinue(),
-        0.3
+        0.35
     );
 
-    ComponentsManager::get()->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(362, "v.1.21.7",
-                                                                                            PaletteColors::getPressKeyToContinue(), 0.2);
+    ComponentsManager::get()->getComponentGame()->writeDialogTextToContinue("v.1.21.7");
 }
 
 int ComponentMenu::getCurrentOption() const {

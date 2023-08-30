@@ -57,16 +57,18 @@ void EnemyDialog::drawDialog(float alpha)
     avatar->drawFlatAlpha(positionAvatar.x, positionAvatar.y, alpha);
     background->drawFlatAlpha(positionBackground.x, positionBackground.y, alpha);
 
-    Point2D positionFrom(positionBackground.x + 275, positionBackground.y + 30);
-    Point2D positionText(positionBackground.x + 275, positionBackground.y + 55);
+    Point2D positionFrom(positionBackground.x + 265, positionBackground.y + 30);
+    Point2D positionText(positionBackground.x + 265, positionBackground.y + 55);
 
     std::istringstream stream(message);
     std::string line;
     int lineHeight = 15;
 
     writer->setAlpha(alpha);
-    writer->writeTextTTFAutoSize(positionFrom.x, positionFrom.y, from.c_str(), PaletteColors::getCrt(), 0.25f);
+    writer->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());
+    writer->writeTextTTFAutoSize(positionFrom.x, positionFrom.y, from.c_str(), PaletteColors::getCrt(), 0.35f);
 
+    writer->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
     while (std::getline(stream, line)) {
         writer->writeTextTTFAutoSize(positionText.x, positionText.y, line.c_str(), PaletteColors::getEnemyMessage(), 0.15f);
         positionText.y += lineHeight;
