@@ -97,8 +97,6 @@ private:
 
     Swarm *swarm;
 
-    TTF_Font *fontGame;
-
     StoreManager *storeManager;
 
     std::vector <Mesh3D*> spaceships;
@@ -226,10 +224,6 @@ public:
 
     void shaderBackgroundUpdate();
 
-    void loadGameFonts();
-
-    [[nodiscard]] TTF_Font *getFontGame() const;
-
     [[nodiscard]] TextureAnimated *getRadioWave() const;
 
     ShaderExplosion *shaderExplosion;
@@ -244,8 +238,6 @@ public:
     Image *boxStore;
 
     void handlePressKeyHelp();
-
-    TTF_Font *fontGameAlternative;
 
     static void setEnemiesBehaviors(bool value);
 
@@ -300,6 +292,8 @@ public:
     void increaseHelpImage();
 
     void decreaseHelpImage();
+
+    void writeDialogTextToContinue(const char *string);
 };
 
 

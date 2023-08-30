@@ -75,7 +75,6 @@ void ComponentGame::onStart()
     loadWeapons();
     loadLevels();
     loadShaders();
-    loadGameFonts();
     levelLoader->loadConfig();
 
     ComponentSound::fadeInMusic(
@@ -315,8 +314,8 @@ void ComponentGame::onUpdate()
             boxTutorial->drawFlatAlpha(0, 0, alpha);
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
-            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...",
-                                                 PaletteColors::getPressKeyToContinue(), 0.2);
+
+            writeDialogTextToContinue("Press ENTER to continue...");
 
             help->drawFlatAlpha(0, 0, alpha);
             onUpdateMessageRadio();
@@ -332,7 +331,8 @@ void ComponentGame::onUpdate()
 
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
-            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", PaletteColors::getPressKeyToContinue(), 0.2);
+
+            writeDialogTextToContinue("Press ESC to continue...");
 
             helps[currentHelpIndex]->drawFlatAlpha(0, 0, alpha);
 
@@ -360,7 +360,8 @@ void ComponentGame::onUpdate()
 
             storeManager->update(alpha);
 
-            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", PaletteColors::getPressKeyToContinue(), 0.2);
+            writeDialogTextToContinue("Press ESC to continue...");
+
             break;
         }
         case EngineSetup::CREDITS: {
@@ -373,7 +374,8 @@ void ComponentGame::onUpdate()
             boxTutorial->drawFlatAlpha(0, 0, alpha);
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
-            textWriter->writeTTFCenterHorizontal(362, "Press ESC to continue...", PaletteColors::getPressKeyToContinue(), 0.2);
+
+            writeDialogTextToContinue("Press ESC to continue...");
 
             ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
             break;
@@ -405,8 +407,7 @@ void ComponentGame::onUpdate()
             ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
             //spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha);
 
-            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to select spaceship...",
-                                                 PaletteColors::getPressKeyToContinue(), 0.2);
+            writeDialogTextToContinue("Press ENTER to select ...");
 
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
@@ -423,8 +424,7 @@ void ComponentGame::onUpdate()
             dialogBackground->setMaxAlpha((int) alpha);
             dialogBackground->update();
 
-            textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...",
-                                                 PaletteColors::getPressKeyToContinue(), 0.2);
+            writeDialogTextToContinue("Press ENTER to continue...");
 
             shaderCRT->setMaxAlpha((int) alpha);
             shaderCRT->update();
@@ -443,6 +443,7 @@ void ComponentGame::handleTutorialImages(float alpha)
 
         float oldAlpha = textWriter->getAlpha();
         textWriter->setAlpha(alpha);
+        textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
         std::string message = std::to_string(getLevelLoader()->getCurrentTutorialIndex() + 1) + " / " + std::to_string((int)getLevelLoader()->getTutorials().size());
         if (getLevelLoader()->getTutorials().size() > 1) {
             textWriter->writeTTFCenterHorizontal(323, message.c_str(), PaletteColors::getCrt(), 0.3f);
@@ -452,7 +453,7 @@ void ComponentGame::handleTutorialImages(float alpha)
         dialogBackground->update();
         boxTutorial->drawFlatAlpha(0, 0, alpha);
 
-        textWriter->writeTTFCenterHorizontal(362, "Press ENTER to start...", PaletteColors::getPressKeyToContinue(), 0.2);
+        writeDialogTextToContinue("Press ENTER to start...");
 
         textWriter->setAlpha(oldAlpha);
         shaderCRT->setMaxAlpha((int) alpha);
@@ -475,7 +476,7 @@ void ComponentGame::showLevelStatistics(float alpha)
 {
     imageCablesHorizontal->drawFlatAlpha(0, 0, alpha);
 
-    textWriter->setFont(fontGameAlternative);
+    textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
 
     dialogBackground->setMaxAlpha(alpha);
     dialogBackground->update();
@@ -517,13 +518,14 @@ void ComponentGame::showLevelStatistics(float alpha)
                                      PaletteColors::getStatisticsText(), 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_BOMB), offsetX, 250, alpha);
 
-    textWriter->setFont(fontGame);
+    textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
 
     //textWriter->writeTTFCenterHorizontal(350, "Press ENTER to START!", primaryColor, 0.5f);
 
     imageStatistics->drawFlatAlpha(0, 0, alpha);
 
-    textWriter->writeTTFCenterHorizontal(362, "Press ENTER to continue...", PaletteColors::getPressKeyToContinue(), 0.2);
+    writeDialogTextToContinue("Press ENTER to continue...");
+
     ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(313  , 300, alpha);
     textWriter->writeTTFCenterHorizontal(320, std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(),
                                          PaletteColors::getStatisticsText(), 0.3);
@@ -575,7 +577,7 @@ int ComponentGame::getLiveEnemiesCounter()
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
         auto *enemiesEmitter = dynamic_cast<EnemyGhostEmitter *> (object);
 
-        if (enemy != nullptr || enemiesEmitter != nullptr) {
+        if (enemy != nullptr) {
             cont++;
         }
     }
@@ -748,7 +750,6 @@ void ComponentGame::loadPlayer()
     player->setScale(1);
     player->setStamina(100);
     player->setStencilBufferEnabled(true);
-    player->setAutoRotationToFacingSelectedObjectSpeed(5);
     Brakeza3D::get()->addObject3D(player, "player");
 
     player->onStartSetup();
@@ -911,6 +912,8 @@ void ComponentGame::loadLevels()
     levelLoader->addLevel(basePath + "level26.json");
     levelLoader->addLevel(basePath + "level27.json");
     levelLoader->addLevel(basePath + "level28.json");
+    levelLoader->addLevel(basePath + "level29.json");
+    levelLoader->addLevel(basePath + "level30.json");
 }
 
 
@@ -1444,28 +1447,6 @@ void ComponentGame::handlePressKeyByWin()
     removeInGameObjects();
 }
 
-
-void ComponentGame::loadGameFonts()
-{
-    fontGame = TTF_OpenFont(std::string(EngineSetup::get()->FONTS_FOLDER + "TroubleFont.ttf").c_str(), 50);
-
-    if (!fontGame)  {
-        Logging::Log(TTF_GetError());
-        exit(-1);
-    }
-
-    fontGameAlternative = TTF_OpenFont(std::string(EngineSetup::get()->FONTS_FOLDER + "Open24DisplaySt.ttf").c_str(), 50);
-    if (!fontGameAlternative)  {
-        Logging::Log(TTF_GetError());
-        exit(-1);
-    }
-
-}
-
-TTF_Font *ComponentGame::getFontGame() const {
-    return fontGame;
-}
-
 TextureAnimated *ComponentGame::getRadioWave() const {
     return radioWave;
 }
@@ -1621,4 +1602,10 @@ void ComponentGame::decreaseHelpImage()
     if (currentHelpIndex > 0) {
         currentHelpIndex--;
     }
+}
+
+void ComponentGame::writeDialogTextToContinue(const char *string)
+{
+    textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());
+    textWriter->writeTTFCenterHorizontal(365, string, PaletteColors::getPressKeyToContinue(), 0.25);
 }

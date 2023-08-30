@@ -84,6 +84,7 @@ private:
     Image *avatar;
     ShaderEnergyShield *shaderEnergyShield;
     Sprite2D *spriteEnergyShield;
+
 public:
 
     Player();
@@ -118,8 +119,6 @@ public:
 
     void resolveCollision(Collisionable *with) override;
 
-    float rotationToTargetSpeed;
-
     void setState(PlayerState state);
 
     [[nodiscard]] Weapon *getWeapon() const;
@@ -131,8 +130,6 @@ public:
     Weapon *getWeaponTypeByLabel(const std::string& label);
 
     void setWeaponTypeByIndex(int i);
-
-    void setAutoRotationToFacingSelectedObjectSpeed(float autoRotationSelectedObjectSpeed);
 
     void stopBlinkForPlayer();
 

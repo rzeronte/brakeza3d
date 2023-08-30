@@ -43,7 +43,7 @@ public:
 
     void remove() override;
 
-    void shoot(Object3D *target);
+    virtual void shoot(Object3D *target);
 
     void postUpdate() override;
 
@@ -85,6 +85,8 @@ public:
     void die();
 
     std::vector<EnemyDialog *> &getDialogs();
+
+    void tryShoot();
 };
 
 

@@ -89,20 +89,8 @@ void EnemyGhost::onUpdate()
     }
 
     auto componentGame = ComponentsManager::get()->getComponentGame();
-    auto playerState = componentGame->getPlayer()->getState();
 
-    if (
-        state != EnemyState::ENEMY_STATE_DIE &&
-        (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE) &&
-        componentGame->getGameState() == EngineSetup::GAMING
-    ) {
-        if (projectileEmitter != nullptr) {
-            projectileEmitter->setPosition(getPosition());
-            projectileEmitter->onUpdate();
-        }
-
-        shoot(getTarget());
-    }
+    this->tryShoot();
 
     updateLasers();
 
@@ -246,11 +234,7 @@ void EnemyGhost::makeReward()
         }
         case 2: {
             int randomWeapon = Tools::random(0, 5);
-            bool frameBox = false;
-            if (randomWeapon == WEAPON_SHIELD || randomWeapon == WEAPON_REFLECTION || randomWeapon == WEAPON_BOMB) {
-                frameBox = true;
-            }
-            auto *weaponItem = new ItemWeaponGhost(playerWeapons[randomWeapon], frameBox);
+            auto *weaponItem = new ItemWeaponGhost(playerWeapons[randomWeapon], false);
             weaponItem->setLabel("itemWeapon");
             weaponItem->setEnableLights(false);
             weaponItem->setPosition(getPosition());
@@ -478,8 +462,9 @@ void EnemyGhost::drawOnUpdateSecondPass()
 void EnemyGhost::takeDamage(float damageTaken)
 {
     this->stamina -= damageTaken;
-    if (this->stamina > 0) return;
-    die();
+    if (this->stamina <= 0) {
+        die();
+    }
 }
 
 void EnemyGhost::die()
@@ -510,4 +495,22 @@ void EnemyGhost::setSwarmObject(SwarmObject *o) {
 
 std::vector<EnemyDialog *> &EnemyGhost::getDialogs() {
     return dialogs;
+}
+
+void EnemyGhost::tryShoot()
+{
+    auto componentGame = ComponentsManager::get()->getComponentGame();
+    auto playerState = componentGame->getPlayer()->getState();
+
+    if (
+        state != EnemyState::ENEMY_STATE_DIE &&
+        (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE) &&
+        componentGame->getGameState() == EngineSetup::GAMING
+    ) {
+        if (projectileEmitter != nullptr) {
+            projectileEmitter->setPosition(getPosition());
+            projectileEmitter->onUpdate();
+        }
+        shoot(getTarget());
+    }
 }

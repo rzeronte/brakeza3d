@@ -9,7 +9,7 @@
   "color": { "r": 255, "g": 0, "b": 0 },
   "message": {
     "from": "HeadQuarters",
-    "text": "Welcome Commander! We know you've been inactive for\na while. Let's practice shooting down the target in front\nof you and we can continue",
+    "text": "Welcome Commander! We know you've been\ninactive for a while. Let's practice\nshooting down the target in front of you.",
     "sound": "radioLevel01",
     "stamina": 100,
     "avatarHud": "avatars/shuttle_hud.png"

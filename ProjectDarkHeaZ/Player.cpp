@@ -46,9 +46,10 @@ Player::Player()
     dashPower(INITIAL_POWER_DASH),
     power(INITIAL_POWER),
     friction(INITIAL_FRICTION),
-    maxVelocity(INITIAL_MAX_VELOCITY),
-    rotationToTargetSpeed(PLAYER_ROTATION_TARGET_SPEED)
+    maxVelocity(INITIAL_MAX_VELOCITY)
 {
+    velocity = Vertex3D(0, 0, 0);
+
     light = new LightPoint3D(15, 1, 0, 0, 0, PaletteColors::getPlayerRayLight(), Color(15, 33, 92));
     light->setRotation(180, 0, 0);
     light->setEnabled(false);
@@ -279,7 +280,11 @@ void Player::onUpdate()
 void Player::updateTargetRotation()
 {
     setRotationTarget(ComponentsManager::get()->getComponentRender()->getSelectedObject());
+
     makeRotationToTarget();
+
+
+    //const float theta = newRot.X() * b;
 }
 
 void Player::updatePlayerEnergy()
@@ -318,8 +323,6 @@ void Player::drawOnUpdateSecondPass()
     }
 
     if (isEnergyShieldEnabled()) {
-        auto p = Transforms::WorldToPoint(getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera());
-
         shaderEnergyShield->update();
     }
 }
@@ -566,10 +569,6 @@ Weapon *Player::getWeaponTypeByLabel(const std::string& label)
 void Player::setWeaponTypeByIndex(int i) {
     setWeapon(weaponTypes[i]);
     this->currentWeaponIndex = i;
-}
-
-void Player::setAutoRotationToFacingSelectedObjectSpeed(float value) {
-    Player::rotationToTargetSpeed = value;
 }
 
 void Player::stopBlinkForPlayer()
