@@ -165,7 +165,7 @@ add_executable(Brakeza3D
 
         src/2D/Sprite2D.cpp include/2D/Sprite2D.h
 
-    renderer.cl
+        kernels/renderer.cl
 
     ProjectDarkHeaZ/Components/ComponentGameInput.h ProjectDarkHeaZ/Components/ComponentGameInput.cpp
     ProjectDarkHeaZ/Components/ComponentMenu.cpp ProjectDarkHeaZ/Components/ComponentMenu.h

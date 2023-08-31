@@ -1140,7 +1140,7 @@ void ComponentRender::loadBlinkKernel()
 void ComponentRender::loadRenderKernel()
 {
     Logging::Message("Loading renders kernel");
-    loadKernel(rendererProgram, rendererKernel, EngineSetup::get()->ROOT_FOLDER + "renderer.cl");
+    loadKernel(rendererProgram, rendererKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "renderer.cl");
 }
 
 void ComponentRender::OpenCLInfo()
