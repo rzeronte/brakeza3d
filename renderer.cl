@@ -82,20 +82,20 @@ typedef struct OCLMeshContext {
 } OCLMeshContext;
 
 /* FUNCTIONS */
-int orient2d(OCPoint2D *pa, OCPoint2D *pb, int pc_x, int pc_y);
+int orient2d(__global OCPoint2D *pa, __global OCPoint2D *pb, int pc_x, int pc_y);
 float processFullArea(__global OCPoint2D *pb, __global OCPoint2D *pc, __global OCPoint2D *pa);
 unsigned int createRGB(int r, int g, int b);
-struct OCVertex3D objectSpace(struct OCVertex3D *A, struct OCVertex3D *objectPosition, struct OCVertex3D *objectRotation, float oScale);
-struct OCVertex3D cameraSpace(struct OCVertex3D *V, struct OCVertex3D *camPos, struct OCVertex3D *camRot);
-struct OCVertex3D NDCSpace(struct OCVertex3D *v, struct OCVertex3D *vNL, struct OCVertex3D *vNR, struct OCVertex3D *vNT, struct OCVertex3D *vNB);
-struct OCPoint2D screenSpace(struct OCVertex3D *V, int screenWidth, int screenHeight);
+struct OCVertex3D objectSpace(__global struct OCVertex3D *A, __global struct OCVertex3D *objectPosition, __global struct OCVertex3D *objectRotation, float oScale);
+struct OCVertex3D cameraSpace(__global struct OCVertex3D *V, __global struct OCVertex3D *camPos, __global struct OCVertex3D *camRot);
+struct OCVertex3D NDCSpace(__global struct OCVertex3D *v, __global struct OCVertex3D *vNL, __global struct OCVertex3D *vNR, __global struct OCVertex3D *vNT, __global struct OCVertex3D *vNB);
+struct OCPoint2D screenSpace(__global struct OCVertex3D *V, int screenWidth, int screenHeight);
 void perspectiveDivision(struct OCVertex3D *v, float frustumNearDist);
 struct OCVertex3D rotateAxisX(struct OCVertex3D *V, float rads);
 struct OCVertex3D rotateAxisY(struct OCVertex3D *V, float rads);
 struct OCVertex3D rotateAxisZ(struct OCVertex3D *V, float rads);
 bool testForClipping(__global struct OCLPlane *planes, OCVertex3D Ao, OCVertex3D Bo, OCVertex3D Co);
-int isVector3DClippingPlane(__global struct OCLPlane *plane, struct Vector3D *V);
-float distancePlaneVertex(struct OCLPlane *plane, struct OCVertex3D *p);
+int isVector3DClippingPlane(__global struct OCLPlane *plane, __private struct Vector3D *V);
+float distancePlaneVertex(__global struct OCLPlane *plane, struct OCVertex3D p);
 struct OCVertex3D getNormal(__global struct OCTriangle *t);
 struct OCVertex3D getComponent(struct Vector3D *V);
 struct OCVertex3D crossProduct(struct OCVertex3D v1, struct OCVertex3D v2);
@@ -109,13 +109,13 @@ void updateScreenSpace(__global struct OCTriangle *t, int screenWidth, int scree
 void updateBoundingBox(__global struct OCTriangle *t);
 void updateFullArea(__global struct OCTriangle *t);
 void updateUVCache(__global struct OCTriangle *t);
-float dotProduct(struct OCVertex3D *a, struct OCVertex3D *b);
-bool isBackFaceCulling(__global struct OCTriangle *t, struct OCVertex3D *position);
-bool isVertexInside(struct OCVertex3D *v, __global struct OCLPlane *planes);
+float dotProduct(__private struct OCVertex3D *a, __private struct OCVertex3D *b);
+bool isBackFaceCulling(__global struct OCTriangle *t, __global struct OCVertex3D *position);
+bool isVertexInside(__global struct OCVertex3D *v, __global struct OCLPlane *planes);
 unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha);
 unsigned int processPixelLights(__global struct OCTriangle *t, __global struct OCLight *lights, int numLights, unsigned int color, float alpha, float theta, float gamma);
-unsigned int mixLightColor(__global struct OCLight *l, unsigned int color, struct OCVertex3D *Q, struct OCVertex3D *N);
-float distanceBetweenVertices(struct OCVertex3D *v1, struct OCVertex3D *v2);
+unsigned int mixLightColor(__global struct OCLight *l, unsigned int color, __private struct OCVertex3D *Q, __global struct OCVertex3D *N);
+float distanceBetweenVertices(__global struct OCVertex3D *v1, __private struct OCVertex3D *v2);
 unsigned int mixColors(unsigned int color1, unsigned int color2, float t);
 bool isPixelInWindow(int x, int y, int w, int h);
 
@@ -257,7 +257,7 @@ float processFullArea(__global OCPoint2D *pb, __global OCPoint2D *pc, __global O
     return (float) orient2d(pb, pc, pa->x, pa->y);
 }
 
-int orient2d(OCPoint2D *pa, OCPoint2D *pb, int pc_x, int pc_y)
+int orient2d(__global OCPoint2D *pa, __global OCPoint2D *pb, int pc_x, int pc_y)
 {
     return (pc_x - pa->x) * (pb->y - pa->y) - (pc_y - pa->y) * (pb->x - pa->x);
 }
@@ -267,7 +267,7 @@ unsigned int createRGB(int r, int g, int b)
     return (b << 16) + (g << 8) + (r);
 }
 
-struct OCVertex3D objectSpace(struct OCVertex3D *A, struct OCVertex3D *objectPosition, struct OCVertex3D *objectRotation, float oScale)
+struct OCVertex3D objectSpace(__global struct OCVertex3D *A, __global struct OCVertex3D *objectPosition, __global struct OCVertex3D *objectRotation, float oScale)
 {
     OCVertex3D output = *A;
 
@@ -286,7 +286,7 @@ struct OCVertex3D objectSpace(struct OCVertex3D *A, struct OCVertex3D *objectPos
     return output;
 }
 
-struct OCVertex3D cameraSpace(struct OCVertex3D *V, struct OCVertex3D *camPos, struct OCVertex3D *camRot)
+struct OCVertex3D cameraSpace(__global struct OCVertex3D *V, __global struct OCVertex3D *camPos, __global struct OCVertex3D *camRot)
 {
     OCVertex3D output = *V;
 
@@ -301,7 +301,7 @@ struct OCVertex3D cameraSpace(struct OCVertex3D *V, struct OCVertex3D *camPos, s
     return output;
 }
 
-struct OCVertex3D NDCSpace(struct OCVertex3D *v, struct OCVertex3D *vNL, struct OCVertex3D *vNR, struct OCVertex3D *vNT, struct OCVertex3D *vNB)
+struct OCVertex3D NDCSpace(__global struct OCVertex3D *v, __global struct OCVertex3D *vNL, __global struct OCVertex3D *vNR, __global struct OCVertex3D *vNT, __global struct OCVertex3D *vNB)
 {
     OCVertex3D A = *v;
 
@@ -329,7 +329,7 @@ struct OCVertex3D NDCSpace(struct OCVertex3D *v, struct OCVertex3D *vNL, struct 
     return A;
 }
 
-struct OCPoint2D screenSpace(struct OCVertex3D *V, int screenWidth, int screenHeight)
+struct OCPoint2D screenSpace(__global struct OCVertex3D *V, int screenWidth, int screenHeight)
 {
     OCPoint2D A;
 
@@ -404,28 +404,28 @@ bool testForClipping(__global struct OCLPlane *planes, OCVertex3D Ao, OCVertex3D
     return false;
 }
 
-int isVector3DClippingPlane(__global struct OCLPlane *P, struct Vector3D *V)
+int isVector3DClippingPlane(__global struct OCLPlane *P, __private struct Vector3D *V)
 {
-    if (distancePlaneVertex(P, &V->A) > FRUSTUM_CLIPPING_DISTANCE && distancePlaneVertex(P, &V->B) > FRUSTUM_CLIPPING_DISTANCE) {
+    if (distancePlaneVertex(P, V->A) > FRUSTUM_CLIPPING_DISTANCE && distancePlaneVertex(P, V->B) > FRUSTUM_CLIPPING_DISTANCE) {
         return 1;
     }
 
-    if (distancePlaneVertex(P, &V->B) > FRUSTUM_CLIPPING_DISTANCE && distancePlaneVertex(P, &V->A) < FRUSTUM_CLIPPING_DISTANCE) {
+    if (distancePlaneVertex(P, V->B) > FRUSTUM_CLIPPING_DISTANCE && distancePlaneVertex(P, V->A) < FRUSTUM_CLIPPING_DISTANCE) {
         return 2;
     }
 
-    if (distancePlaneVertex(P, &V->A) > FRUSTUM_CLIPPING_DISTANCE && distancePlaneVertex(P, &V->B) < FRUSTUM_CLIPPING_DISTANCE) {
+    if (distancePlaneVertex(P, V->A) > FRUSTUM_CLIPPING_DISTANCE && distancePlaneVertex(P, V->B) < FRUSTUM_CLIPPING_DISTANCE) {
         return 3;
     }
 
     return 0;
 }
 
-float distancePlaneVertex(struct OCLPlane *plane, struct OCVertex3D *p)
+float distancePlaneVertex(__global struct OCLPlane *plane, struct OCVertex3D p)
 {
     float D = - ( (plane->normal.x * plane->A.x) + (plane->normal.y * plane->A.y) + (plane->normal.z * plane->A.z) );
 
-    return ( (plane->normal.x * p->x) + (plane->normal.y * p->y) + (plane->normal.z * p->z) + D);
+    return ( (plane->normal.x * p.x) + (plane->normal.y * p.y) + (plane->normal.z * p.z) + D);
 }
 
 struct OCVertex3D getNormal(__global struct OCTriangle *t)
@@ -470,7 +470,8 @@ float getYTextureFromUV(int textureHeight, float v) {
     return (float) textureHeight * v;
 }
 
-void updateObjectSpace(__global struct OCTriangle *t, __global struct OCLMeshContext *context) {
+void updateObjectSpace(__global struct OCTriangle *t, __global struct OCLMeshContext *context)
+{
     t->Ao = objectSpace(&t->A, &context->objectData.position, &context->objectData.rotation, context->objectData.scale);
     t->Bo = objectSpace(&t->B, &context->objectData.position, &context->objectData.rotation, context->objectData.scale);
     t->Co = objectSpace(&t->C, &context->objectData.position, &context->objectData.rotation, context->objectData.scale);
@@ -524,7 +525,7 @@ void updateUVCache(__global struct OCTriangle *t) {
 }
 
 // (v0 - P) . N
-bool isBackFaceCulling(__global struct OCTriangle *t, struct OCVertex3D *position)
+bool isBackFaceCulling(__global struct OCTriangle *t, __global struct OCVertex3D *position)
 {
     OCVertex3D v;
 
@@ -532,17 +533,18 @@ bool isBackFaceCulling(__global struct OCTriangle *t, struct OCVertex3D *positio
     v.y = t->Ao.y - position->y;
     v.z = t->Ao.z - position->z;
 
-    return dotProduct(&v, &t->normal) >= 0;
+    OCVertex3D normal = t->normal;
+    return dotProduct(&v, &normal) >= 0;
 }
 
-float dotProduct(struct OCVertex3D *a, struct OCVertex3D *b) {
+float dotProduct(__private struct OCVertex3D *a, __private struct OCVertex3D *b) {
     return (a->x * b->x) + (a->y * b->y) + (a->z * b->z);
 }
 
-bool isVertexInside(struct OCVertex3D *v, __global struct OCLPlane *planes) {
+bool isVertexInside(__global struct OCVertex3D *v, __global struct OCLPlane *planes) {
 
     for (int i = 1; i <= 5; i++) {
-        float distance = distancePlaneVertex(&planes[i], v);
+        float distance = distancePlaneVertex(&planes[i], *v);
 
         if (distance  >= FRUSTUM_CLIPPING_DISTANCE) {
             return false;
@@ -561,7 +563,6 @@ unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int a
     return (rb & 0xff00ff) | (g & 0xff00);
 }
 
-
 unsigned int processPixelLights(__global struct OCTriangle *t, __global struct OCLight *lights, int numLights, unsigned int color, float alpha, float theta, float gamma)
 {
     OCVertex3D D;
@@ -576,7 +577,7 @@ unsigned int processPixelLights(__global struct OCTriangle *t, __global struct O
     return color;
 }
 
-unsigned int mixLightColor(__global struct OCLight *l, unsigned int color, struct OCVertex3D *Q, struct OCVertex3D *N)
+unsigned int mixLightColor(__global struct OCLight *l, unsigned int color, __private struct OCVertex3D *Q, __global struct OCVertex3D *N)
 {
     float distance = distanceBetweenVertices(&l->position, Q);
 
@@ -608,7 +609,7 @@ unsigned int mixLightColor(__global struct OCLight *l, unsigned int color, struc
     return diffuseColor;
 }
 
-float distanceBetweenVertices(struct OCVertex3D *v1, struct OCVertex3D *v2)
+float distanceBetweenVertices(__global struct OCVertex3D *v1, __private struct OCVertex3D *v2)
 {
     return sqrt( (v2->x - v1->x) * (v2->x - v1->x) + (v2->y - v1->y) * (v2->y - v1->y) + (v2->z - v1->z) * (v2->z - v1->z));
 }
@@ -619,14 +620,13 @@ unsigned int mixColors(unsigned int color1, unsigned int color2, float t)
     unsigned char *c2 = (unsigned char *)&color2;
 
     return createRGB(
-        mix((float) c1[0], (float) c2[0], t),
-        mix((float) c1[1], (float) c2[1], t),
-        mix((float) c1[2], (float) c2[2], t)
+            mix((float) c1[0], (float) c2[0], t),
+            mix((float) c1[1], (float) c2[1], t),
+            mix((float) c1[2], (float) c2[2], t)
     );
 }
 
-bool isPixelInWindow(int x, int y, int w, int h)
-{
+bool isPixelInWindow(int x, int y, int w, int h) {
     if (x < 0 || x >= w) return false;
     if (y < 0 || y >= h) return false;
 

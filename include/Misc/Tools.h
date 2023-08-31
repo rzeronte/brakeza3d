@@ -103,7 +103,7 @@ public:
 
     static void makeFadeInSprite(Vertex3D position, TextureAnimated *animation);
 
-    void makeSparkle(Vertex3D position, TextureAnimated *animation);
+    static void makeLoopSprite(Vertex3D position, TextureAnimated *animation, float ttl);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

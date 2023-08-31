@@ -31,7 +31,7 @@ public:
     static Color yellow() { return {255, 255, 0}; }
     static Color fuchsia() { return {255, 0, 255}; }
     static Color cyan() { return {0, 255, 255}; }
-    static Color orange() { return {100, 82, 42}; }
+    static Color orange() { return {255, 128, 42}; }
     static Color olive() { return {128, 128, 0}; }
     static Color gray() { return {128, 128, 128}; }
     static Color FOGDefault() { return {128, 128, 128}; }

@@ -20,7 +20,7 @@ void RotatableToTarget::makeRotationToTarget()
 
     if (rotationTarget != owner && rotationTarget != nullptr) {
         Vector3D way(rotationTarget->getPosition(), owner->getPosition());
-        M3 newRot = M3::getFromVectors(EngineSetup::get()->forward,way.getComponent().getNormalize());
+        M3 newRot = M3::getFromVectors(EngineSetup::get()->forward, way.getComponent().getNormalize());
         Vertex3D b = owner->getRotation() * EngineSetup::get()->up;
 
         const float theta = newRot.X() * b;

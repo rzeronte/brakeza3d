@@ -61,12 +61,13 @@ void ShaderParticles::executeKernelOpenCL()
     auto add = (int) this->stopAdd;
 
     auto kernel = ComponentsManager::get()->getComponentRender()->getParticlesKernel();
+    auto particlesVideoBuffer = ComponentsManager::get()->getComponentRender()->getClBufferVideoParticles();
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
     clSetKernelArg(kernel, 3, sizeof(float), &dt);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&particlesVideoBuffer);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&openCLBufferContext);
     clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)&openCLBufferParticles);
     clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&openCLBufferColorFrom);
@@ -80,6 +81,8 @@ void ShaderParticles::executeKernelOpenCL()
     size_t local_item_size = 64;
 
     clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
+
+    debugKernel("ShaderParticles");
 }
 
 ShaderParticles::~ShaderParticles()

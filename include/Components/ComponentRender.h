@@ -22,6 +22,7 @@
 #include "ComponentCamera.h"
 #include "../Shaders/ShaderBilinear.h"
 #include "../Shaders/ShaderDepthOfField.h"
+#include "../../src/Shaders/ShaderBlurBuffer.h"
 #include <CL/cl.h>
 
 class ComponentRender : public Component {
@@ -61,6 +62,7 @@ private:
 
     cl_program particlesProgram;
     cl_kernel particlesKernel;
+    cl_mem clBufferVideoParticles;
 
     cl_program explosionProgram;
     cl_kernel explosionKernel;
@@ -73,6 +75,7 @@ private:
     cl_mem clBufferLights;
     std::vector<OCLight> oclLights;
 
+    ShaderBlurBuffer *shaderBlurParticles;
 public:
     ComponentRender();
 
@@ -217,6 +220,8 @@ public:
     _cl_mem *getClBufferLights();
 
     void updateLightsOCL();
+
+    _cl_mem *getClBufferVideoParticles();
 };
 
 
