@@ -882,7 +882,7 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 
 void ComponentGame::loadLevels()
 {
-    auto basePath = EngineSetup::get()->DARKHEAZ_ROOT_FOLDER + "Levels/";
+    auto basePath = EngineSetup::get()->CONFIG_FOLDER + "Levels/";
     
     levelLoader = new LevelLoader(basePath + "level01.json");
     levelLoader->addLevel(basePath + "level02.json");
@@ -1074,7 +1074,7 @@ void ComponentGame::loadWeapons()
     Logging::Message("[Project DarkHeaZ] Loading Weapons...");
 
     std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;
-    std::string filePath = EngineSetup::get()->DARKHEAZ_ROOT_FOLDER + EngineSetup::get()->CFG_WEAPONS;
+    std::string filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_WEAPONS;
 
     size_t file_size;
     auto contentFile = Tools::readFile(filePath, file_size);
