@@ -32,6 +32,8 @@ private:
     int fpsFrameCounter;
     float frameTime;
 
+    std::string defaultGPU;
+
     std::vector<Triangle *> frameTriangles;
     std::vector<Triangle *> clippedTriangles;
     std::vector<Triangle *> visibleTriangles;
@@ -183,7 +185,7 @@ public:
 
     _cl_command_queue *getClCommandQueue();
 
-    cl_device_id selectNvidiaDevice();
+    cl_device_id selectDefaultGPUDevice();
 
     void writeOCLBuffersFromHost() const;
 
@@ -222,6 +224,8 @@ public:
     void updateLightsOCL();
 
     _cl_mem *getClBufferVideoParticles();
+
+    void loadConfig();
 };
 
 

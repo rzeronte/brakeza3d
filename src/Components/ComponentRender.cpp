@@ -1008,7 +1008,10 @@ void ComponentRender::onPostUpdateSceneObjects()
     }
 }
 
-cl_device_id ComponentRender::selectNvidiaDevice() {
+cl_device_id ComponentRender::selectDefaultGPUDevice()
+{
+    Logging::Message("[ComponentRender] Looking for GPU: %s", defaultGPU.c_str());
+
     cl_uint numPlatforms;
     cl_int ret = clGetPlatformIDs(0, nullptr, &numPlatforms);
     if (ret != CL_SUCCESS) {
@@ -1043,7 +1046,7 @@ cl_device_id ComponentRender::selectNvidiaDevice() {
                 continue;
             }
 
-            if (std::string(vendor).find("NVIDIA") != std::string::npos) {
+            if (std::string(vendor).find(defaultGPU) != std::string::npos) {
                 clPlatformId = platform;
                 return device;
             }
@@ -1055,6 +1058,8 @@ cl_device_id ComponentRender::selectNvidiaDevice() {
 
 void ComponentRender::initOpenCL()
 {
+    loadConfig();
+
     ret = clGetPlatformIDs(1, &clPlatformId, &ret_num_platforms) ;
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get platform_id");
@@ -1064,7 +1069,7 @@ void ComponentRender::initOpenCL()
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get cpu_device_id");
     }
-    clDeviceId = selectNvidiaDevice();
+    clDeviceId = selectDefaultGPUDevice();
     if (clDeviceId == nullptr) {
         Logging::Log("Unable to find a suitable NVIDIA device");
         return;
@@ -1098,7 +1103,7 @@ void ComponentRender::initOpenCL()
     Logging::Message("Selected device vendor: %s", vendor);
     Logging::Message("Selected device name: %s", deviceName);
 
-    OpenCLInfo();
+    //OpenCLInfo();
 
     loadRenderKernel();
     loadParticlesKernel();
@@ -1330,4 +1335,23 @@ void ComponentRender::updateLightsOCL()
 _cl_mem *ComponentRender::getClBufferVideoParticles()
 {
     return clBufferVideoParticles;
+}
+
+void ComponentRender::loadConfig()
+{
+    Logging::head("[ComponentRender] Loading setup.json...");
+
+    const std::string filePath = EngineSetup::get()->ROOT_FOLDER + "setup.json";
+
+    size_t file_size;
+    auto contentFile = Tools::readFile(filePath, file_size);
+
+    cJSON *myDataJSON = cJSON_Parse(contentFile);
+
+    if (myDataJSON == nullptr) {
+        Logging::Message("[Load Config] Can't be loaded: %s", filePath.c_str());
+        exit(-1);
+    }
+
+    defaultGPU = cJSON_GetObjectItemCaseSensitive(myDataJSON, "gpu")->valuestring;
 }
