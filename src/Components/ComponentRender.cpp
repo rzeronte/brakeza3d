@@ -286,6 +286,8 @@ void ComponentRender::onUpdateSceneObjects()
     if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
         shaderDepthOfField->update();
     }
+
+    shaderBlurParticles->update();
 }
 
 void ComponentRender::onUpdateSceneObjectsSecondPass(std::vector<Object3D *> &sceneObjects) const {
@@ -1104,11 +1106,11 @@ void ComponentRender::initOpenCL()
     loadBlinkKernel();
 
     shaderDepthOfField = new ShaderDepthOfField(true);
-
     shaderBilinear = new ShaderBilinear(true);
+    shaderBlurParticles = new ShaderBlurBuffer(true, 5);
 
     clBufferLights = clCreateBuffer(clContext, CL_MEM_READ_WRITE, MAX_OPENCL_LIGHTS * sizeof(OCLight), nullptr, nullptr);
-
+    clBufferVideoParticles = clCreateBuffer(clContext, CL_MEM_READ_WRITE, EngineSetup::get()->RESOLUTION * sizeof(Uint32), nullptr, nullptr);
 }
 
 void ComponentRender::loadParticlesKernel()
@@ -1323,4 +1325,9 @@ void ComponentRender::updateLightsOCL()
     }
 
     clEnqueueWriteBuffer(clCommandQueue, clBufferLights, CL_TRUE, 0, (int) oclLights.size() * sizeof(OCLight), oclLights.data(), 0, nullptr, nullptr);
+}
+
+_cl_mem *ComponentRender::getClBufferVideoParticles()
+{
+    return clBufferVideoParticles;
 }

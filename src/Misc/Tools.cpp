@@ -500,3 +500,20 @@ void Tools::makeFadeInSprite(Vertex3D position, TextureAnimated *animation)
         Brakeza3D::uniqueObjectLabel("fadeInSpriteExplosion")
     );
 }
+
+void Tools::makeLoopSprite(Vertex3D position, TextureAnimated *animation, float ttl)
+{
+    Vertex3D A;
+    const auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    Transforms::cameraSpace(A, position, cam);
+    A = Transforms::PerspectiveNDCSpace(A, cam->getFrustum());
+
+    Point2D P1;
+    Transforms::screenSpace(P1, A);
+
+    Brakeza3D::get()->addObject3D(
+        new Sprite2D( P1.x, P1.y, ttl, new TextureAnimated(animation)),
+        Brakeza3D::uniqueObjectLabel("fadeInSpriteExplosion")
+    );
+}

@@ -19,6 +19,7 @@ private:
     SDL_Surface *applicationIcon;
 
     TTF_Font *fontDefault;
+    TTF_Font *fontAlternative;
 public:
 
     ComponentWindow();
@@ -45,11 +46,13 @@ public:
 
     [[nodiscard]] SDL_Texture *getScreenTexture() const;
 
-    [[nodiscard]] TTF_Font *getFontDefault() const;
+    [[nodiscard]] TTF_Font *getFontDefault();
 
     void renderToWindow();
 
     void clearVideoBuffers();
+
+    TTF_Font *getFontAlternative();
 };
 
 
