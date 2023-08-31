@@ -228,6 +228,7 @@ public:
     std::string LOGO_BRAKEZA = "logo.png";
 
     std::string DARKHEAZ_ROOT_FOLDER = ROOT_FOLDER + "ProjectDarkHeaZ/";
+    std::string DARKHEAZ_MAIN_CONFIG = "setup.json";
 
     enum collisionGroups {
         Player = 1,
@@ -264,7 +265,6 @@ public:
         INTRO = 12,
         GAMING_TUTORIAL = 13,
         STORE = 14,
-        RADIO_MESSAGE = 15,
         SPACESHIP_SELECTOR = 16
     } GameState;
 
