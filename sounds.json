@@ -84,7 +84,8 @@
     { "file": "radio/level01.mp3", "label": "radioLevel01", "type": "sound" },
     { "file": "radio/level02.mp3", "label": "radioLevel02", "type": "sound" },
     { "file": "radio/level03.mp3", "label": "radioLevel03", "type": "sound" },
-    { "file": "radio/boss10.mp3", "label": "boss10", "type": "sound" }
+    { "file": "radio/boss10.mp3", "label": "boss10", "type": "sound" },
+    { "file": "radio/level11.mp3", "label": "radioLevel11", "type": "sound" }
 
   ]
 }
