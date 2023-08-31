@@ -21,7 +21,6 @@
 
     { "file": "dash.wav", "label": "dash", "type": "sound" },
 
-    { "file": "open_door.wav", "label": "openDoor", "type": "sound" },
     { "file": "get_weapon.wav", "label": "itemWeapon", "type": "sound" },
 
 
@@ -77,7 +76,16 @@
 
     { "file": "energy_off.wav", "label": "energyOff", "type": "sound" },
 
-    { "file": "yes.wav", "label": "yes", "type": "sound" }
+    { "file": "yes.wav", "label": "yes", "type": "sound" },
+
+    { "file": "gogogo.mp3", "label": "salvageConnection", "type": "sound" },
+    { "file": "salvage_finish.wav", "label": "salvageFinish", "type": "sound" },
+
+    { "file": "radio/level01.mp3", "label": "radioLevel01", "type": "sound" },
+    { "file": "radio/level02.mp3", "label": "radioLevel02", "type": "sound" },
+    { "file": "radio/level03.mp3", "label": "radioLevel03", "type": "sound" },
+    { "file": "radio/boss10.mp3", "label": "boss10", "type": "sound" },
+    { "file": "radio/level11.mp3", "label": "radioLevel11", "type": "sound" }
 
   ]
 }

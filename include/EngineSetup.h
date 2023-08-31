@@ -67,8 +67,8 @@ public:
     bool DRAW_TILES_GRID = false;
 
     // Draw axis
-    bool RENDER_MAIN_AXIS = true;
-    bool RENDER_OBJECTS_AXIS = true;
+    bool RENDER_MAIN_AXIS = false;
+    bool RENDER_OBJECTS_AXIS = false;
     float OBJECT_AXIS_SIZE = 600;
 
     bool EXECUTE_GAMEOBJECTS_ONUPDATE = true;
@@ -135,7 +135,6 @@ public:
     std::string IMAGES_FOLDER = "../assets/images/";
     std::string ASSETS_FOLDER = "../assets/";
     std::string VIDEOS_FOLDER = "../assets/videos/";
-    std::string CONFIG_FOLDER = "../config/";
     std::string SOUNDS_FOLDER = "../assets/sounds/";
     std::string MODELS_FOLDER = "../assets/models/";
     std::string HUD_FOLDER = ASSETS_FOLDER + "textures/HUD/";
@@ -219,6 +218,7 @@ public:
     float SHADER_PARTICLE_EXPLOSION_TTL = 1.0f;
     float SHADER_PARTICLE_EXPLOSION_EMISSION_TIME = 0.25f;
 
+    std::string CONFIG_FOLDER = "../config/";
     std::string CFG_MENU = "menu.json";
     std::string CFG_WEAPONS = "playerWeapons.json";
     std::string CFG_SOUNDS = "sounds.json";
@@ -228,6 +228,7 @@ public:
     std::string LOGO_BRAKEZA = "logo.png";
 
     std::string DARKHEAZ_ROOT_FOLDER = ROOT_FOLDER + "ProjectDarkHeaZ/";
+    std::string DARKHEAZ_MAIN_CONFIG = "setup.json";
 
     enum collisionGroups {
         Player = 1,
@@ -264,7 +265,6 @@ public:
         INTRO = 12,
         GAMING_TUTORIAL = 13,
         STORE = 14,
-        RADIO_MESSAGE = 15,
         SPACESHIP_SELECTOR = 16
     } GameState;
 
