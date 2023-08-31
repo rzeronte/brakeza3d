@@ -1,0 +1,91 @@
+{
+  "sounds": [
+    { "file": "music/menu.mp3", "label": "musicMainMenu", "type": "music" },
+    { "file": "music/music_level_01.mp3", "label": "musicLevel01", "type": "music" },
+    { "file": "music/music_level_05.mp3", "label": "musicLevel05", "type": "music" },
+    { "file": "music/music_level_11.mp3", "label": "musicLevel11", "type": "music" },
+
+    { "file": "music/boss_01_music.mp3", "label": "bossMusic01", "type": "music" },
+    { "file": "music/boss_02_music.mp3", "label": "bossMusic02", "type": "music" },
+
+    { "file": "music/game_over.mp3", "label": "gameOverMusic", "type": "music" },
+    { "file": "music/tutorial.mp3", "label": "tutorial", "type": "music" },
+
+    { "file": "start_game.wav", "label": "startGame", "type": "sound" },
+    { "file": "move_menu_option.wav", "label": "soundMenuClick", "type": "sound" },
+    { "file": "new_level.wav", "label": "newLevel", "type": "sound" },
+
+    { "file": "level_completed.wav", "label": "levelCompleted", "type": "sound" },
+
+    { "file": "explosion.wav", "label": "enemyExplosion", "type": "sound" },
+
+    { "file": "dash.wav", "label": "dash", "type": "sound" },
+
+    { "file": "get_weapon.wav", "label": "itemWeapon", "type": "sound" },
+
+
+    { "file": "enemy_damage.wav", "label": "enemyDamage", "type": "sound" },
+
+    { "file": "player_damage.wav", "label": "playerDamage", "type": "sound" },
+
+    { "file": "player_dead.wav", "label": "playerDead", "type": "sound" },
+    { "file": "gravitational_shield.wav", "label": "gravitationalShield", "type": "sound" },
+
+    { "file": "energy_shield.wav", "label": "energyShield", "type": "sound" },
+
+    { "file": "get_ammo.mp3", "label": "getAmmo", "type": "sound" },
+
+    { "file": "item_health.mp3", "label": "itemHealth", "type": "sound" },
+
+    { "file": "change_selected_enemy.wav", "label": "changedSelectedEnemy", "type": "sound" },
+
+    { "file": "projectile_standard.wav", "label": "projectileStandard", "type": "sound" },
+    { "file": "projectile_bomb.wav", "label": "projectileBomb", "type": "sound" },
+    { "file": "projectile_raylight.wav", "label": "projectileRaylight", "type": "sound" },
+    { "file": "laser_shoot.wav", "label": "projectileLaser", "type": "sound" },
+    { "file": "projectile_shield.mp3", "label": "projectileShield", "type": "sound" },
+
+    { "file": "electric_stuck.wav", "label": "electricStuck", "type": "sound" },
+
+    { "file": "switch_weapon.wav", "label": "switchWeapon", "type": "sound" },
+
+    { "file": "laser.wav", "label": "laser", "type": "sound" },
+
+    { "file": "tic.wav", "label": "tic", "type": "sound" },
+
+    { "file": "radio_beep.wav", "label": "radioBeep", "type": "sound" },
+
+    { "file": "crt.wav", "label": "crt", "type": "sound" },
+    { "file": "selling.wav", "label": "selling", "type": "sound" },
+
+    { "file": "error.wav", "label": "error", "type": "sound" },
+    { "file": "wrench.wav", "label": "wrench", "type": "sound" },
+
+    { "file": "human_damage.wav", "label": "humanDamage", "type": "sound" },
+
+    { "file": "metals/metal_hit_01.wav", "label": "metalHit01", "type": "sound" },
+    { "file": "metals/metal_hit_02.wav", "label": "metalHit02", "type": "sound" },
+    { "file": "metals/metal_hit_03.wav", "label": "metalHit03", "type": "sound" },
+    { "file": "metals/metal_hit_04.wav", "label": "metalHit04", "type": "sound" },
+    { "file": "metals/metal_hit_05.wav", "label": "metalHit05", "type": "sound" },
+    { "file": "metals/metal_hit_06.mp3", "label": "metalHit06", "type": "sound" },
+
+    { "file": "alarm-damage.wav", "label": "alarmDamage", "type": "sound" },
+    { "file": "energy_impact.wav", "label": "energyDamage", "type": "sound" },
+    { "file": "countdown_item.mp3", "label": "countdownItem", "type": "sound" },
+
+    { "file": "energy_off.wav", "label": "energyOff", "type": "sound" },
+
+    { "file": "yes.wav", "label": "yes", "type": "sound" },
+
+    { "file": "gogogo.mp3", "label": "salvageConnection", "type": "sound" },
+    { "file": "salvage_finish.wav", "label": "salvageFinish", "type": "sound" },
+
+    { "file": "radio/level01.mp3", "label": "radioLevel01", "type": "sound" },
+    { "file": "radio/level02.mp3", "label": "radioLevel02", "type": "sound" },
+    { "file": "radio/level03.mp3", "label": "radioLevel03", "type": "sound" },
+    { "file": "radio/boss10.mp3", "label": "boss10", "type": "sound" },
+    { "file": "radio/level11.mp3", "label": "radioLevel11", "type": "sound" }
+
+  ]
+}
