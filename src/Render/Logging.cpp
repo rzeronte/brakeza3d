@@ -1,6 +1,4 @@
 
-#include <utility>
-
 #include "../../include/Render/Logging.h"
 #include "../../include/EngineSetup.h"
 
@@ -18,13 +16,10 @@ Logging *Logging::getInstance()
 void Logging::Log(const char *message, ...)
 {
     if (!EngineSetup::get()->LOGGING) return;
-
     va_list args;
     va_start(args, message);
     vfprintf(stdout, message, args);
-
     std::cout << std::endl;
-
     va_end (args);
 }
 
@@ -33,9 +28,19 @@ void Logging::Message(const char *message, ...)
     va_list args;
     va_start(args, message);
     vfprintf(stdout, message, args);
-
     std::cout << std::endl;
+    va_end (args);
+}
 
+void Logging::head(const char *message, ...)
+{
+    std::cout << "*****************************************" << std::endl;
+    va_list args;
+    va_start(args, message);
+    vfprintf(stdout, message, args);
+    std::cout << std::endl;
+    std::cout << "*****************************************" << std::endl;
+    std::cout << std::endl;
     va_end (args);
 }
 

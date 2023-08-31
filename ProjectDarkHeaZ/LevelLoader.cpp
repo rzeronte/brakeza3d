@@ -142,8 +142,6 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         setEndLevel(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "endLevel")->valueint);
     }
 
-    Logging::Message("El nivel es final? %d", isEndLevel());
-
     ComponentsManager::get()->getComponentGame()->getShaderBackgroundImage()->setImage(
        EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "backgroundImage")->valuestring
     );
