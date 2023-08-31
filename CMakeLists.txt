@@ -223,7 +223,11 @@ add_executable(Brakeza3D
     ProjectDarkHeaZ/Bosses/BossLevel10.h ProjectDarkHeaZ/Bosses/BossLevel10.cpp
     ProjectDarkHeaZ/Bosses/BossLevel20.h ProjectDarkHeaZ/Bosses/BossLevel20.cpp
     ProjectDarkHeaZ/Bosses/BossLevel30.h ProjectDarkHeaZ/Bosses/BossLevel30.cpp
-        ProjectDarkHeaZ/PaletteColors.h ProjectDarkHeaZ/Items/SalvageSpaceship.cpp ProjectDarkHeaZ/Items/SalvageSpaceship.h src/2D/Sprite2D.cpp include/2D/Sprite2D.h)
+        ProjectDarkHeaZ/PaletteColors.h ProjectDarkHeaZ/Items/SalvageSpaceship.cpp ProjectDarkHeaZ/Items/SalvageSpaceship.h src/2D/Sprite2D.cpp include/2D/Sprite2D.h
+        src/Shaders/ShaderBlurBuffer.cpp
+        src/Shaders/ShaderBlurBuffer.h
+        ProjectDarkHeaZ/Enemies/BoidEnemyGhost.cpp
+        ProjectDarkHeaZ/Enemies/BoidEnemyGhost.h)
 
 target_link_libraries(Brakeza3D
     pthread
