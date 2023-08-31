@@ -29,7 +29,6 @@ void Brakeza3D::start()
     componentsManager->registerComponent(new ComponentRender(), "ComponentRender");
 
     // Custom components here
-
     mainLoop();
 }
 
