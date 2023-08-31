@@ -19,13 +19,12 @@ ShaderBlink::ShaderBlink(bool active, Mesh3D *o, float step, Color c) :
 
 void ShaderBlink::update()
 {
-    if (!isEnabled()) return;
-    if (this->object == nullptr) return;
-    if (object->isRemoved()) return;
+    if (!isEnabled() || this->object == nullptr || object->isRemoved()) return;
 
     counter.update();
 
     if (!this->object->isStencilBufferEnabled()) return;
+
 
     if (isBlinking) {
         if (counter.isFinished()) {
@@ -41,10 +40,9 @@ void ShaderBlink::update()
 
     if (isBlinking) {
         auto mesh = dynamic_cast<Mesh3D*> (object);
-        if (mesh == nullptr) {
-            return;
+        if (mesh != nullptr) {
+            executeKernelOpenCL();
         }
-        executeKernelOpenCL();
     }
 }
 

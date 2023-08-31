@@ -1,6 +1,5 @@
 unsigned int createRGBA(int r, int g, int b, int a);
 unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha);
-unsigned int calculateAlpha(int blurAmount, int numBlended);
 
 __kernel void onUpdate(
         int screenWidth,
@@ -74,13 +73,4 @@ unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int a
     g += ((color2 & 0x00ff00) - g) * alpha >> 8;
 
     return (rb & 0xff00ff) | (g & 0xff00);
-}
-
-unsigned int calculateAlpha(int blurAmount, int numBlended) {
-    if (blurAmount == 0) {
-        return 255;
-    } else {
-        float alpha = 255.0f / (blurAmount * 2 + 1);
-        return (unsigned int)alpha;
-    }
 }

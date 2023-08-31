@@ -65,7 +65,7 @@ void MeshOpenCLRenderer::onUpdate(Image *texture)
     size_t local_item_size = 64;
 
     clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
-    //debugKernel();
+    debugKernel();
 }
 
 MeshOpenCLRenderer::~MeshOpenCLRenderer()

@@ -1,5 +1,5 @@
 #define PI 3.14159265358979323846
-#define RADIUS 0.08f
+#define RADIUS 0.07f
 #define BRIGHTNESS 0.3f
 
 #define MASK_WIDTH 128

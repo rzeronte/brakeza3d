@@ -29,6 +29,7 @@ protected:
     float rotX, rotY, rotZ; // For easy management from UI
     bool alphaEnabled;
     float alpha;
+
 public:
 
     Object3D();

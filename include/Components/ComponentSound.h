@@ -46,6 +46,7 @@ public:
 
     Mix_Chunk *soundByLabel(const std::string &label);
 
+    float soundDuration(const std::string &sound);
 };
 
 
