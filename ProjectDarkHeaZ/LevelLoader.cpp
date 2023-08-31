@@ -1063,7 +1063,7 @@ void LevelLoader::loadConfig()
 {
     Logging::Message("Loading Config...");
 
-    const std::string filePath = EngineSetup::get()->CONFIG_FOLDER + "setup.json";
+    const std::string filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->DARKHEAZ_MAIN_CONFIG;
 
     size_t file_size;
     auto contentFile = Tools::readFile(filePath, file_size);

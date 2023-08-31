@@ -1341,7 +1341,7 @@ void ComponentRender::loadConfig()
 {
     Logging::head("[ComponentRender] Loading setup.json...");
 
-    const std::string filePath = EngineSetup::get()->ROOT_FOLDER + "setup.json";
+    const std::string filePath = EngineSetup::get()->CONFIG_FOLDER + "setup.json";
 
     size_t file_size;
     auto contentFile = Tools::readFile(filePath, file_size);
