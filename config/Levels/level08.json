@@ -2,7 +2,7 @@
   "name": "08",
   "music": "musicLevel05",
   "backgroundImage": "levels/08.png",
-  "foregroundImage": "foregrounds/03.png",
+  "foregroundImage": "foregrounds/06.png",
   "allowEnergyShield": true,
   "histories": ["default_history.png"],
   "color": { "r": 0, "g": 255, "b": 0 },

@@ -2,7 +2,7 @@
   "name": "04",
   "music": "musicLevel01",
   "backgroundImage": "levels/04.png",
-  "foregroundImage": "foregrounds/03.png",
+  "foregroundImage": "foregrounds/05.png",
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
   "tutorials": ["tutorials/tutorial_bomb.png"],
