@@ -474,7 +474,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
     const bool cursorLeft = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_LEFT];
     const bool cursorRight = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RIGHT];
-    const bool keyStorePressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_L];
+    const bool keyStorePressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_UP];
     const bool enter = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RETURN];
 
     if ((state == EngineSetup::GameState::PRESS_KEY_BY_WIN) && (enter || isButtonGuidedPressed)) {

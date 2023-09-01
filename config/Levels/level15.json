@@ -1,7 +1,7 @@
 {
   "name": "15",
   "backgroundImage": "levels/15.png",
-  "foregroundImage": "foregrounds/03.png",
+  "foregroundImage": "foregrounds/06.png",
   "music": "musicLevel05",
   "allowEnergyShield": true,
   "histories": ["histories/lore_15_1.png", "histories/lore_15_2.png"],
