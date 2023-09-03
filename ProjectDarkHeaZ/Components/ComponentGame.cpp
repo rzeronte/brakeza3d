@@ -1281,6 +1281,7 @@ void ComponentGame::handlePressNewLevelKeyGameState()
     shaderBackgroundImage->resetOffsets();
     shaderForegroundImage->resetOffsets();
 
+    ComponentsManager::get()->getComponentCollisions()->setEnabled(false);
     getLevelLoader()->loadNext();
 
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);

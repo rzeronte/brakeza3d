@@ -280,11 +280,17 @@ bool Weapon::shootLaserProjectile(
 
         setStatus(WeaponStatus::PRESSED);
 
+        auto test  = Vertex3D();
+        test.x += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
+        test.y += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
+        test.z = 0;
+        test = test.getScaled(0.005);
+
         auto *projectile = new ProjectileRay(
             parent,
             position,
             getDamage(),
-            direction,
+            direction + test,
             direction.getNormalize().getScaled((float) getSpeed()),
             filterGroup,
             filterMask,

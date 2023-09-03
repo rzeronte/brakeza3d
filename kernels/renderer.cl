@@ -190,8 +190,7 @@ __kernel void onUpdate(
             int w2 = w2_row;
 
             for (int x = t->minX ; x < t->maxX ; x++) {
-                if ((w0 | w1 | w2) > 0) {
-
+                if ((w0 | w1 | w2) > 0 && isPixelInWindow(x, y, screenWidth, screenHeight)) {
                     const int bufferIndex = y * screenWidth + x;
 
                     alpha = (float) w0 * reciprocalFullArea;
@@ -235,10 +234,8 @@ __kernel void onUpdate(
                         }
 
                         //video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
-                        if (isPixelInWindow(x, y, screenWidth, screenHeight)) {
-                            video[bufferIndex] = color;
-                            stencil[bufferIndex] = true;
-                        }
+                        video[bufferIndex] = color;
+                        stencil[bufferIndex] = true;
                     }
                 }
                 w0 += A12;
