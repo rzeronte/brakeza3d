@@ -111,10 +111,10 @@ public:
     bool DRAW_LIGHTS_DIRECTION = false;
     float LIGHTS_DIRECTION_SIZE = 2500;
 
-    bool FULLSCREEN = false;
+    bool FULLSCREEN = true;
 
     bool DRAW_FRUSTUM = false;
-    bool DRAW_FPS = true;
+    bool DRAW_FPS = false;
 
     // FRUSTUM PLANES
     int NEAR_PLANE = 0;

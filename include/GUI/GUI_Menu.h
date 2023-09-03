@@ -226,7 +226,7 @@ public:
             }
 
             if (ImGui::BeginMenu("Bullet")) {
-                ImGui::Checkbox("StepSimulation", &EngineSetup::get()->BULLET_STEP_SIMULATION);
+                ImGui::Checkbox("Step Simulation", &EngineSetup::get()->BULLET_STEP_SIMULATION);
                 ImGui::Checkbox("Collisions between objects", &EngineSetup::get()->BULLET_CHECK_ALL_PAIRS);
                 ImGui::Separator();
                 ImGui::Checkbox("Draw debug mode", &EngineSetup::get()->BULLET_DEBUG_MODE);
