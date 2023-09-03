@@ -25,7 +25,16 @@ void MeshOpenCLRenderer::onUpdate(Image *texture)
 {
     if (object->isRemoved() || !object->isEnabled()) return;
 
-    meshContext = Tools::openCLMeshContext(object);
+    meshContext = OCLMeshContext(
+        ObjectData(
+                OCVertex3D(object->getPosition().x, object->getPosition().y, object->getPosition().z),
+                OCVertex3D(object->getRotation().getPitch(), object->getRotation().getYaw(), object->getRotation().getRoll()),
+                object->getScale(),
+                object->isEnableLights()
+        ),
+        ComponentsManager::get()->getComponentCamera()->getCameraData(),
+        ComponentsManager::get()->getComponentCamera()->getFrustumData()
+    );
 
     const int numTriangles = (int) oclTriangles.size();
     if (numTriangles <= 0) return;

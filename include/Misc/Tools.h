@@ -95,8 +95,6 @@ public:
 
     static OCPoint2D pointOCL(Point2D v);
 
-    static OCLMeshContext openCLMeshContext(Object3D *object);
-
     static void addSceneObject(const std::string& filename, const std::string& name);
 
     static void makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCParticlesContext context, Color from, Color to);
