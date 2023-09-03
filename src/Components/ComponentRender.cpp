@@ -37,10 +37,6 @@ void ComponentRender::onStart()
 void ComponentRender::preUpdate()
 {
     this->updateFPS(Brakeza3D::get()->getDeltaTimeMicro());
-
-    if (!isEnabled()) {
-        return;
-    }
 }
 
 void ComponentRender::drawObjetsInHostBuffer()
@@ -107,7 +103,6 @@ void ComponentRender::postUpdate()
 
 void ComponentRender::writeOCLBufferIntoHost() const
 {
-
     clEnqueueReadBuffer(clCommandQueue,
         EngineBuffers::get()->videoBufferOCL,
         CL_TRUE,
@@ -276,6 +271,8 @@ void ComponentRender::deleteRemovedObjects()
 void ComponentRender::onUpdateSceneObjects()
 {
     auto sceneObjects = Brakeza3D::get()->getSceneObjects();
+
+    ComponentsManager::get()->getComponentCamera()->updateOCLContext();
 
     for (auto object : sceneObjects) {
         if (object != nullptr && object->isEnabled()) {
