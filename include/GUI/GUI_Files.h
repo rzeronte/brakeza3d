@@ -39,7 +39,7 @@ public:
             if ((dir = opendir (directory_path.c_str())) != NULL) {
                 int index = 1;
                 while ((ent = readdir (dir)) != NULL) {
-                    if (ent->d_type == DT_DIR) continue;
+                    //if (ent->d_type == DT_DIR) continue;
                     result.push_back(ent->d_name);
                 }
                 std::sort( result.begin(), result.end() );

@@ -416,44 +416,6 @@ OCPoint2D Tools::pointOCL(Point2D v)
     return OCPoint2D(v.x, v.y);
 }
 
-OCLMeshContext Tools::openCLMeshContext(Object3D *object)
-{
-    auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
-    auto rp = cam->getRotation();
-
-    auto frustum = cam->getFrustum();
-
-    std::vector<OCLPlane> planesOCL;
-    for (int i = EngineSetup::get()->NEAR_PLANE ; i <= EngineSetup::get()->BOTTOM_PLANE ; i++) {
-        OCVertex3D A( frustum->planes[i].A.x, frustum->planes[i].A.y, frustum->planes[i].A.z );
-        OCVertex3D B( frustum->planes[i].B.x, frustum->planes[i].B.y, frustum->planes[i].B.z );
-        OCVertex3D C( frustum->planes[i].C.x, frustum->planes[i].C.y, frustum->planes[i].C.z );
-        OCVertex3D normal( frustum->planes[i].normal.x, frustum->planes[i].normal.y, frustum->planes[i].normal.z );
-
-        planesOCL.emplace_back(A, B, C, normal);
-    }
-
-    return OCLMeshContext(
-        ObjectData(
-              OCVertex3D(object->getPosition().x, object->getPosition().y, object->getPosition().z),
-              OCVertex3D(object->getRotation().getPitch(), object->getRotation().getYaw(), object->getRotation().getRoll()),
-              object->getScale(),
-              object->isEnableLights()
-          ),
-        CameraData(
-            OCVertex3D(cam->getPosition().x, cam->getPosition().y, cam->getPosition().z),
-            OCVertex3D(rp.getPitch(), rp.getYaw(), rp.getRoll())
-        ),
-        FrustumData(
-            OCVertex3D(frustum->vNLs.x, frustum->vNLs.y, frustum->vNLs.z ),
-            OCVertex3D(frustum->vNRs.x, frustum->vNRs.y, frustum->vNRs.z ),
-            OCVertex3D(frustum->vNTs.x, frustum->vNTs.y, frustum->vNTs.z ),
-            OCVertex3D(frustum->vNBs.x, frustum->vNBs.y, frustum->vNBs.z ),
-            planesOCL
-        )
-    );
-}
-
 void Tools::addSceneObject(const std::string& filename, const std::string& name)
 {
     Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10000);

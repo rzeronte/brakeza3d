@@ -179,9 +179,9 @@ __kernel void onUpdate(
 
         float alpha, theta, gamma;
 
-        float fullArea = processFullArea(&t->Bs, &t->Cs, &t->As);
+        const float fullArea = processFullArea(&t->Bs, &t->Cs, &t->As);
 
-        float reciprocalFullArea = 1 / fullArea;
+        const float reciprocalFullArea = 1 / fullArea;
 
         for (int y = t->minY ; y < t->maxY ; y++) {
 
@@ -197,9 +197,9 @@ __kernel void onUpdate(
                     theta = (float) w1 * reciprocalFullArea;
                     gamma = (float) w2 * reciprocalFullArea;
 
-                    float depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
+                    const float depth = alpha * (t->An.z) + theta * (t->Bn.z) + gamma * (t->Cn.z);
 
-                    unsigned int depthInt = (int) depth * 10000;
+                    const unsigned int depthInt = (int) depth * 10000;
                     if (depthInt < bufferDepth[bufferIndex]) {
                         atomic_min(&bufferDepth[bufferIndex], depthInt);
 
@@ -207,20 +207,9 @@ __kernel void onUpdate(
                         float texU = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;
                         float texV = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;
 
-                        int tx = (int) getXTextureFromUV(surfaceWidth, texU);
-                        int ty = (int) getYTextureFromUV(surfaceHeight, texV);
+                        const int tx = (int) (surfaceWidth * texU);
+                        const int ty = (int) (surfaceHeight * texV);
 
-                        if (texU < 0.0f) {
-                            texU = 1.0f - fmod(fabs(texU), 1.0f);
-                        } else {
-                            texU = fmod(texU, 1.0f);
-                        }
-
-                        if (texV < 0.0f) {
-                            texV = 1.0f - fmod(fabs(texV), 1.0f);
-                        } else {
-                            texV = fmod(texV, 1.0f);
-                        }
                         unsigned int color = texture[ty * surfaceWidth + tx];
 
                         unsigned char *color_bytes = (unsigned char *)&color;
@@ -624,8 +613,5 @@ unsigned int mixColors(unsigned int color1, unsigned int color2, float t)
 }
 
 bool isPixelInWindow(int x, int y, int w, int h) {
-    if (x < 0 || x >= w) return false;
-    if (y < 0 || y >= h) return false;
-
-    return true;
+    return (x >= 0 && x < w && y >= 0 && y < h);
 }
