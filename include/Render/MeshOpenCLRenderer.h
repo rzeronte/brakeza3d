@@ -25,6 +25,7 @@ class MeshOpenCLRenderer {
 
     cl_mem clBufferTriangles;
     cl_mem clBufferMeshContext;
+    cl_mem clBufferStencil;
 
     std::vector<Triangle*> &triangles;
 
@@ -33,6 +34,7 @@ class MeshOpenCLRenderer {
     Object3D *object;
 
     OCLMeshContext meshContext;
+    bool loaded;
 public:
     virtual ~MeshOpenCLRenderer();
 
@@ -46,13 +48,17 @@ public:
 
     void updateTriangles();
 
-    cl_mem clBufferStencil;
-
     cl_mem *getClBufferTriangles();
 
     cl_mem *getClBufferMeshContext();
 
     [[nodiscard]] const std::vector<OCTriangle> &getOclTriangles() const;
+
+    [[nodiscard]] bool isLoaded() const;
+
+    cl_mem *getClBufferStencil();
+
+    void createBuffers();
 };
 
 
