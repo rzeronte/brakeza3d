@@ -223,7 +223,7 @@ public:
 
     void updateLightsOCL();
 
-    _cl_mem *getClBufferVideoParticles();
+    cl_mem *getClBufferVideoParticles();
 
     void loadConfig();
 };
