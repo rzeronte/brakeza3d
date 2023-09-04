@@ -16,10 +16,9 @@ __kernel void onUpdate(
     __global unsigned int *output
 )
 {
-    int i = get_global_id(0);
-
-    int x = i % screenWidth;
-    int y = i / screenWidth;
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * screenWidth + x;
 
     if(x < screenWidth-1 && y < screenHeight-1) {
         unsigned int colorTL = input[y*screenWidth + x];

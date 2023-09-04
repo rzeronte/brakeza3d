@@ -10,7 +10,9 @@ __kernel void onUpdate(
     float b
 )
 {
-   int i = get_global_id(0);
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * screenWidth + x;
 
     if (stencil[i]) {
         video[i] = createRGB((int) r, (int) g, (int) b);

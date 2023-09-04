@@ -1,5 +1,5 @@
 #define SDL_MAIN_HANDLED
-#define CL_TARGET_OPENCL_VERSION 300
+#define CL_TARGET_OPENCL_VERSION 120
 
 #include "include/Brakeza3D.h"
 

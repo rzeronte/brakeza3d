@@ -43,31 +43,26 @@ void ShaderImage::executeKernelOpenCL(float increaseOffsetX, float increaseOffse
     clSetKernelArg(kernel, 7, sizeof(float), &offsetY);
     clSetKernelArg(kernel, 8, sizeof(int), &useColors);
 
-    size_t global_item_size = this->bufferSize;
-    size_t local_item_size = 64;
+    //size_t global_item_size = this->bufferSize;
+    //size_t local_item_size = 64;
 
-    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
+    size_t global_item_size[2] = {640, 480}; // Tamaño global de trabajo (ancho x alto)
+    size_t local_item_size[2] = {16, 16};    // Tamaño local de trabajo (puede ajustarse según la GPU)
+
+    // Ejecutar el kernel
+    //clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
+    clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
 
     debugKernel("ShaderImage");
 }
 
 void ShaderImage::limitOffset()
 {
-    if (offsetY < -100) {
-        offsetY = -100;
-    }
+    const float maxOffset = 100.0f;
+    const float minOffset = -100.0f;
 
-    if (offsetY > 100) {
-        offsetY = 100;
-    }
-
-    if (offsetX < -100) {
-        offsetX = -100;
-    }
-
-    if (offsetX > 100) {
-        offsetX = 100;
-    }
+    offsetX = fminf(maxOffset, fmaxf(minOffset, offsetX));
+    offsetY = fminf(maxOffset, fmaxf(minOffset, offsetY));
 }
 
 void ShaderImage::resetOffsets()

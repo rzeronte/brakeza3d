@@ -13,10 +13,9 @@ __kernel void onUpdate(
         float intensity
 )
 {
-    int i = get_global_id(0);
-
-    int x = i % screenWidth;
-    int y = i / screenWidth;
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * screenWidth + x;
 
     unsigned int depthInt = bufferDepth[y * screenWidth + x];
     float depth = (float)(depthInt / 1000.0f) * intensity;
