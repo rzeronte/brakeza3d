@@ -37,7 +37,7 @@ void ShaderEnergyShield::executeKernelOpenCL()
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&this->parent->getOpenClRenderer()->clBufferStencil);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)this->parent->getOpenClRenderer()->getClBufferStencil());
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&texture.openClTexture);
     clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)&mask.openClTexture);
     clSetKernelArg(kernel, 7, sizeof(unsigned int), &point.x);
