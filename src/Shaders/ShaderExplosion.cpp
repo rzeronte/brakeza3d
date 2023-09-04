@@ -46,13 +46,12 @@ void ShaderExplosion::executeKernelOpenCL()
     //clEnqueueWriteBuffer(clQueue, openCLBufferContext, CL_TRUE, 0, sizeof(OCParticlesContext), &particlesContext, 0, nullptr, nullptr);
 
     auto kernel = ComponentsManager::get()->getComponentRender()->getExplosionKernel();
-    auto particlesVideoBuffer = ComponentsManager::get()->getComponentRender()->getClBufferVideoParticles();
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &executionTime);
     clSetKernelArg(kernel, 3, sizeof(float), &dt);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&particlesVideoBuffer);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)ComponentsManager::get()->getComponentRender()->getClBufferVideoParticles());
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&openCLBufferContext);
     clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)&openCLBufferParticles);
     clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&openCLBufferColorFrom);

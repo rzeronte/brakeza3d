@@ -1329,9 +1329,9 @@ void ComponentRender::updateLightsOCL()
     clEnqueueWriteBuffer(clCommandQueue, clBufferLights, CL_TRUE, 0, (int) oclLights.size() * sizeof(OCLight), oclLights.data(), 0, nullptr, nullptr);
 }
 
-_cl_mem *ComponentRender::getClBufferVideoParticles()
+cl_mem *ComponentRender::getClBufferVideoParticles()
 {
-    return clBufferVideoParticles;
+    return &clBufferVideoParticles;
 }
 
 void ComponentRender::loadConfig()

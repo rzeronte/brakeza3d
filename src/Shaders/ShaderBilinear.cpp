@@ -42,10 +42,10 @@ void ShaderBilinear::executeKernelOpenCL()
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&videoOutputBufferOCL);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
 
-    size_t global_item_size = this->bufferSize;
-    size_t local_item_size = 64;
+    size_t global_item_size[2] = {640, 480}; // Tamaño global de trabajo (ancho x alto)
+    size_t local_item_size[2] = {16, 16};    // Tamaño local de trabajo (puede ajustarse según la GPU)
 
-    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
+    clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
 
 
     debugKernel("ShaderBilinear");

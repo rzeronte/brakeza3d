@@ -23,10 +23,9 @@ __kernel void onUpdate(
     int usingColors
 )
 {
-    int i = get_global_id(0);
-
-    int x = i % screenWidth;
-    int y = i / screenWidth;
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * screenWidth + x;
 
     const float2 uv = { (float)x, (float)y };
     const float2 resolution = { (float)screenWidth, (float)screenHeight };
