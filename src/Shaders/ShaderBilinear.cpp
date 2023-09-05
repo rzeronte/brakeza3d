@@ -42,7 +42,7 @@ void ShaderBilinear::executeKernelOpenCL()
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&videoOutputBufferOCL);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
 
-    size_t global_item_size[2] = {640, 480}; // Tamaño global de trabajo (ancho x alto)
+    size_t global_item_size[2] = {(size_t) EngineSetup::get()->screenWidth, (size_t) EngineSetup::get()->screenHeight};
     size_t local_item_size[2] = {16, 16};    // Tamaño local de trabajo (puede ajustarse según la GPU)
 
     clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);

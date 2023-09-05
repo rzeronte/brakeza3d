@@ -76,10 +76,9 @@ void ShaderParticles::executeKernelOpenCL()
     clSetKernelArg(kernel, 11, sizeof(float), &intensity);
     clSetKernelArg(kernel, 12, sizeof(int), &add);
 
-    size_t global_item_size = MAX_OPENCL_PARTICLES;
-    size_t local_item_size = 64;
-
-    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
+    size_t global_item_size[2] = {64, 16};
+    size_t local_item_size[2] = {16, 16};
+    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
 
     debugKernel("ShaderParticles");
 }
