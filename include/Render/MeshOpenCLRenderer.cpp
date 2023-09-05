@@ -77,10 +77,10 @@ void MeshOpenCLRenderer::onUpdate(Image *texture)
     clSetKernelArg(kernel, 12, sizeof(cl_mem), (void *)&bufferLights);
     clSetKernelArg(kernel, 13, sizeof(int), &numLights);
 
-    size_t global_item_size = MAX_OPENCL_TRIANGLES;
-    size_t local_item_size = 64;
+    size_t global_item_size[2] = {640, 16}; // == MAX_OPENCL_TRIANGLES
+    size_t local_item_size[2] = {16, 16};    // Tamaño local de trabajo (puede ajustarse según la GPU)
 
-    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
+    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
 
     debugKernel();
 }

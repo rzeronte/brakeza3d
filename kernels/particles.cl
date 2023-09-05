@@ -59,7 +59,10 @@ __kernel void onUpdate(
     int stopAdd
 )
 {
-    int i = get_global_id(0);
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * get_global_size(0) + x;
+
     __global OCParticle *p = (__global OCParticle *)&particles[i];
 
     if ((totalExecutionTimeInSeconds > i * context->step_add_particle && !p->active) && stopAdd == 0) {
