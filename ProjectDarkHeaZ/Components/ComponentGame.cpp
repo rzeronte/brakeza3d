@@ -21,6 +21,7 @@ ComponentGame::ComponentGame()
         shaderColor(nullptr),
         shaderShockWave(nullptr),
         spaceshipSelectedIndex(0),
+        currentEnemyDialog(nullptr),
         gameState(EngineSetup::GameState::NONE)
 {
 }
@@ -250,7 +251,8 @@ void ComponentGame::onUpdate()
     addProjectilesToShaderLasers();
     updateShaders();
 
-    shaderExplosion->update();
+
+    const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
 
     switch(gameState) {
         case EngineSetup::PRESS_KEY_NEW_LEVEL:
@@ -263,45 +265,10 @@ void ComponentGame::onUpdate()
             break;
         }
         case EngineSetup::COUNTDOWN: {
-            onUpdateMessageRadio();
-            zoomCameraCountDown();
-            float oldAlpha = textWriter->getAlpha();
-            // Obtén el tiempo total del contador y el tiempo acumulado
-            float accumulatedTime = getLevelLoader()->getCountDown()->getAcumulatedTime();
-
-            static float lastUpdateTime = 0;
-            static int lastRestTime = -1;
-
-            int restTime = (int) (getLevelLoader()->getCountDown()->getStep() - accumulatedTime + 1);
-
-            if (restTime != lastRestTime) {
-                lastUpdateTime = accumulatedTime;
-                lastRestTime = restTime;
-            }
-
-            // Calcula la proporción de tiempo restante en el segundo actual
-            float timeSinceLastUpdate = accumulatedTime - lastUpdateTime;
-            float timeRatio = 1 - timeSinceLastUpdate;
-
-            // Establece el alfa en función de la proporción de tiempo restante
-            textWriter->setAlpha(timeRatio * 255);
-
-            textWriter->writeTTFCenterHorizontal(140, std::to_string(restTime).c_str(), PaletteColors::getEnergy(), 2);
-
-            getLevelLoader()->getCountDown()->update();
-
-            if (getLevelLoader()->getCountDown()->isFinished()) {
-                if (getLevelLoader()->getMainMessage() != nullptr) {
-                    setCurrentEnemyDialog(getLevelLoader()->getMainMessage());
-                }
-                setGameState(EngineSetup::GameState::GAMING);
-            }
-
-            textWriter->setAlpha(oldAlpha);
+            handleOnUpdateCountDown();
             break;
         }
         case EngineSetup::PRESS_KEY_BY_WIN: {
-            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
             showLevelStatistics(alpha);
             break;
         }
@@ -323,8 +290,6 @@ void ComponentGame::onUpdate()
             break;
         }
         case EngineSetup::HELP: {
-            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
-
             dialogBackground->setMaxAlpha((int) alpha);
             dialogBackground->update();
             boxTutorial->drawFlatAlpha(0, 0, alpha);
@@ -345,8 +310,6 @@ void ComponentGame::onUpdate()
             break;
         }
         case EngineSetup::STORE: {
-            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
-
             imageCablesStore->drawFlatAlpha(0, 0, alpha);
 
             dialogBackground->setMaxAlpha((int) alpha);
@@ -365,8 +328,6 @@ void ComponentGame::onUpdate()
             break;
         }
         case EngineSetup::CREDITS: {
-            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
-
             imageCredits->drawFlatAlpha(0, 0, alpha);
 
             dialogBackground->setMaxAlpha((int) alpha);
@@ -396,8 +357,6 @@ void ComponentGame::onUpdate()
             break;
         }*/
         case EngineSetup::SPACESHIP_SELECTOR: {
-            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
-
             imageCablesStore->drawFlatAlpha(0, 0, alpha);
 
             dialogBackground->setMaxAlpha((int) alpha);
@@ -415,7 +374,6 @@ void ComponentGame::onUpdate()
             break;
         }
         case EngineSetup::PRESS_KEY_GAMEOVER: {
-            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
             imageCablesStore->drawFlatAlpha(0, 0, alpha);
 
             boxTutorial->drawFlatAlpha(0, 0, alpha);
@@ -432,7 +390,6 @@ void ComponentGame::onUpdate()
             imageEndGame->drawFlatAlpha(0, 0, alpha);
             break;
         }
-
     }
 }
 
@@ -664,7 +621,7 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
 
     this->gameState = state;
 
-    Logging::Log("GameState changed to: %d", state);
+    Logging::Message("GameState changed to: %d", state);
 }
 
 void ComponentGame::onEnd() {
@@ -1178,6 +1135,7 @@ void ComponentGame::updateShaders()
     shaderColor->update();
     shaderProjectiles->update();
     shaderShockWave->update();
+    shaderExplosion->update();
 
     Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.000015);
     Vertex3D offset(vel.x, vel.y, 0);
@@ -1609,4 +1567,41 @@ void ComponentGame::writeDialogTextToContinue(const char *string)
 {
     textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());
     textWriter->writeTTFCenterHorizontal(365, string, PaletteColors::getPressKeyToContinue(), 0.25);
+}
+
+void ComponentGame::handleOnUpdateCountDown()
+{
+    onUpdateMessageRadio();
+    zoomCameraCountDown();
+
+    float oldAlpha = textWriter->getAlpha();
+    float accumulatedTime = getLevelLoader()->getCountDown()->getAcumulatedTime();
+
+    static float lastUpdateTime = 0;
+    static int lastRestTime = -1;
+
+    int restTime = (int) (getLevelLoader()->getCountDown()->getStep() - accumulatedTime + 1);
+
+    if (restTime != lastRestTime) {
+        lastUpdateTime = accumulatedTime;
+        lastRestTime = restTime;
+    }
+
+    float timeSinceLastUpdate = accumulatedTime - lastUpdateTime;
+    float timeRatio = 1 - timeSinceLastUpdate;
+
+    textWriter->setAlpha(timeRatio * 255);
+
+    textWriter->writeTTFCenterHorizontal(140, std::to_string(restTime).c_str(), PaletteColors::getEnergy(), 2);
+
+    getLevelLoader()->getCountDown()->update();
+
+    if (getLevelLoader()->getCountDown()->isFinished()) {
+        if (getLevelLoader()->getMainMessage() != nullptr) {
+            setCurrentEnemyDialog(getLevelLoader()->getMainMessage());
+        }
+        setGameState(EngineSetup::GameState::GAMING);
+    }
+
+    textWriter->setAlpha(oldAlpha);
 }

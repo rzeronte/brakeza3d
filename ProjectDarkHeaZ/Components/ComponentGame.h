@@ -294,6 +294,8 @@ public:
     void decreaseHelpImage();
 
     void writeDialogTextToContinue(const char *string);
+
+    void handleOnUpdateCountDown();
 };
 
 
