@@ -27,11 +27,11 @@ ComponentGame::ComponentGame()
 
 void ComponentGame::onStart()
 {
+    Logging::head("ComponentGame onStart");
+
     Brakeza3D::get()->addObject3D(new LightPoint3D(11, 1, 0, 0, 0, Color(100, 16, 22), Color(15, 33, 92)), "epe");
 
     player = new Player();
-
-    Logging::Log("ComponentGame onStart");
 
     setGameState(EngineSetup::GameState::NONE);
 
@@ -1071,10 +1071,10 @@ void ComponentGame::setVisibleInGameObjects(bool value)
 
 void ComponentGame::loadWeapons()
 {
-    Logging::Message("[Project DarkHeaZ] Loading Weapons...");
-
     std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;
     std::string filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_WEAPONS;
+
+    Logging::Message("Loading weapons from file %s", filePath.c_str());
 
     size_t file_size;
     auto contentFile = Tools::readFile(filePath, file_size);

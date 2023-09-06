@@ -191,8 +191,6 @@ public:
 
     void writeOCLBufferIntoHost() const;
 
-    void loadRenderKernel();
-
     _cl_program *getRendererProgram();
 
     _cl_kernel *getRendererKernel();
@@ -201,19 +199,13 @@ public:
 
     void deleteRemovedObjects();
 
-    void loadParticlesKernel();
-
     _cl_kernel *getParticlesKernel();
-
-    void loadExplosionKernel();
 
     void loadKernel(cl_program &program, cl_kernel &kernel, const std::string& source);
 
     _cl_kernel *getExplosionKernel();
 
     ShaderDepthOfField *shaderDepthOfField;
-
-    void loadBlinkKernel();
 
     _cl_kernel *getBlinkKernel();
 
@@ -226,6 +218,8 @@ public:
     cl_mem *getClBufferVideoParticles();
 
     void loadConfig();
+
+    void loadCommonKernels();
 };
 
 

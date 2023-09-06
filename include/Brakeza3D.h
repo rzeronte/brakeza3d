@@ -30,6 +30,9 @@ private:
     float executionTime = 0;
 
     std::vector<Object3D *> sceneObjects;
+
+    bool finish = false;
+
 public:
     Brakeza3D();
 
@@ -81,7 +84,6 @@ public:
 
     static void LoadDemo();
 
-    bool finish = false;
 };
 
 

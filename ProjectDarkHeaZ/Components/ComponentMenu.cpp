@@ -23,7 +23,7 @@ ComponentMenu::~ComponentMenu()
 
 void ComponentMenu::onStart()
 {
-    Logging::Log("ComponentMenu onStart");
+    Logging::head("ComponentMenu onStart");
 
     loadDecorative3DMesh();
     loadMenuOptions();

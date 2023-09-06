@@ -11,7 +11,7 @@ ComponentHUD::ComponentHUD()
 
 void ComponentHUD::onStart()
 {
-    Logging::Log("ComponentHUD onStart");
+    Logging::head("ComponentHUD onStart");
 
     HUDTextures = new TexturePackage();
 

@@ -43,10 +43,10 @@ void ShaderEdgeObject::executeKernelOpenCL()
     clSetKernelArg(kernel, 6, sizeof(float), &this->color.g);
     clSetKernelArg(kernel, 7, sizeof(float), &this->color.b);
 
-    size_t global_item_size = this->bufferSize;
-    size_t local_item_size = 16;
+    size_t global_item_size[2] = {(size_t) EngineSetup::get()->screenWidth, (size_t) EngineSetup::get()->screenHeight};
+    size_t local_item_size[2] = {16, 16};
 
-    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr );
+    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
 
     this->debugKernel("ShaderEdge");
 }
