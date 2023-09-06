@@ -27,7 +27,7 @@ ComponentRender::ComponentRender() :
 
 void ComponentRender::onStart()
 {
-    Logging::Log("ComponentRender onStart");
+    Logging::head("ComponentRender onStart");
     setEnabled(true);
 
     initTiles();
@@ -1007,7 +1007,7 @@ void ComponentRender::onPostUpdateSceneObjects()
 
 cl_device_id ComponentRender::selectDefaultGPUDevice()
 {
-    Logging::Message("[ComponentRender] Looking for GPU: %s", defaultGPU.c_str());
+    Logging::Message("Looking for GPU: %s", defaultGPU.c_str());
 
     cl_uint numPlatforms;
     cl_int ret = clGetPlatformIDs(0, nullptr, &numPlatforms);
@@ -1102,10 +1102,7 @@ void ComponentRender::initOpenCL()
 
     //OpenCLInfo();
 
-    loadRenderKernel();
-    loadParticlesKernel();
-    loadExplosionKernel();
-    loadBlinkKernel();
+    loadCommonKernels();
 
     shaderDepthOfField = new ShaderDepthOfField(true);
     shaderBilinear = new ShaderBilinear(true);
@@ -1113,31 +1110,6 @@ void ComponentRender::initOpenCL()
 
     clBufferLights = clCreateBuffer(clContext, CL_MEM_READ_WRITE, MAX_OPENCL_LIGHTS * sizeof(OCLight), nullptr, nullptr);
     clBufferVideoParticles = clCreateBuffer(clContext, CL_MEM_READ_WRITE, EngineSetup::get()->RESOLUTION * sizeof(Uint32), nullptr, nullptr);
-}
-
-void ComponentRender::loadParticlesKernel()
-{
-    Logging::Message("Loading particles kernel");
-    loadKernel(particlesProgram, particlesKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "particles.cl");
-}
-
-void ComponentRender::loadExplosionKernel()
-{
-    Logging::Message("Loading explosion kernel");
-    loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "explosion.cl");
-}
-
-void ComponentRender::loadBlinkKernel()
-{
-    Logging::Message("Loading blink kernel");
-    loadKernel(blinkProgram, blinkKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "blink.opencl");
-}
-
-
-void ComponentRender::loadRenderKernel()
-{
-    Logging::Message("Loading renders kernel");
-    loadKernel(rendererProgram, rendererKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "renderer.cl");
 }
 
 void ComponentRender::OpenCLInfo()
@@ -1336,7 +1308,7 @@ cl_mem *ComponentRender::getClBufferVideoParticles()
 
 void ComponentRender::loadConfig()
 {
-    Logging::head("[ComponentRender] Loading setup.json...");
+    Logging::Message("Loading setup.json...");
 
     const std::string filePath = EngineSetup::get()->CONFIG_FOLDER + "setup.json";
 
@@ -1351,4 +1323,15 @@ void ComponentRender::loadConfig()
     }
 
     defaultGPU = cJSON_GetObjectItemCaseSensitive(myDataJSON, "gpu")->valuestring;
+}
+
+void ComponentRender::loadCommonKernels()
+{
+    Logging::Message("Loading common OpenCL kernels");
+
+    loadKernel(rendererProgram, rendererKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "renderer.cl");
+    loadKernel(particlesProgram, particlesKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "particles.cl");
+    loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "explosion.cl");
+    loadKernel(blinkProgram, blinkKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "blink.opencl");
+
 }

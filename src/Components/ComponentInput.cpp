@@ -30,7 +30,7 @@ ComponentInput::ComponentInput()
 
 void ComponentInput::onStart()
 {
-    Logging::Log("ComponentInput onStart");
+    Logging::head("ComponentInput onStart");
     this->initJoystick();
 }
 
@@ -247,7 +247,7 @@ void ComponentInput::initJoystick()
 {
     //Check for joysticks
     if ( SDL_NumJoysticks() < 1 ) {
-        printf( "Warning: No joysticks connected!\n" );
+        Logging::Message("[WARNING] No joysticks connected!" );
     } else {
         gameController = SDL_GameControllerOpen( 0 );
 

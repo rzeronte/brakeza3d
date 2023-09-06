@@ -11,7 +11,7 @@ ComponentSound::ComponentSound()
 
 void ComponentSound::onStart()
 {
-    Logging::Log("ComponentSound onStart");
+    Logging::head("ComponentSound onStart");
     loadSoundsJSON();
 }
 
@@ -51,10 +51,11 @@ void ComponentSound::initSoundSystem()
 
 void ComponentSound::loadSoundsJSON()
 {
-    Logging::Message("Loading Sounds in package...");
+    auto filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_SOUNDS;
+    Logging::Message("Loading Sounds (%s)", filePath.c_str());
 
     size_t file_size;
-    auto contentFile = Tools::readFile(EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_SOUNDS, file_size);
+    auto contentFile = Tools::readFile(filePath.c_str(), file_size);
 
     cJSON *myDataJSON = cJSON_Parse(contentFile);
 
