@@ -26,8 +26,8 @@ void ShaderCRT::executeKernelOpenCL()
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&image.openClTexture);
-    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&mask.openClTexture);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)image.getOpenClTexture());
+    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)mask.getOpenClTexture());
     clSetKernelArg(kernel, 6, sizeof(unsigned int), &maxAlpha);
 
     size_t global_item_size = this->bufferSize;

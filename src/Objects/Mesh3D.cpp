@@ -194,7 +194,7 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
     for (unsigned int i = 0; i < pScene->mNumMaterials; i++) {
 
         aiMaterial *pMaterial = pScene->mMaterials[i];
-        std::cout << "Import material: " << pMaterial->GetName().C_Str() << std::endl;
+        Logging::Message("[ASSIMP] Loading material: %s", pMaterial->GetName().C_Str());
 
         if (std::string(pMaterial->GetName().C_Str()) == AI_DEFAULT_MATERIAL_NAME) {
             continue;
@@ -212,7 +212,8 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
 
             std::string FullPath = EngineSetup::get()->TEXTURES_FOLDER + base_filename;
 
-            std::cout << "Import texture " << FullPath << " for ASSIMP Mesh" << std::endl;
+            Logging::Message("[ASSIMP] Loading '%s' as texture for mesh: %s", FullPath.c_str(), Filename.c_str());
+
             this->modelTextures.push_back(new Image(FullPath));
         } else {
             Logging::Log("ERROR: mMaterial[%s]: Not valid color", i);

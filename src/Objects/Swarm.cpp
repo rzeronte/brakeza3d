@@ -217,6 +217,14 @@ void Swarm::onDrawHostBuffer()
 
 void Swarm::reset()
 {
+    for (auto o: objects) {
+        delete o;
+    }
+
+    for (auto o: predators) {
+        delete o;
+    }
+
     objects.clear();
     predators.clear();
 }

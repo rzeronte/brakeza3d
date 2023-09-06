@@ -42,15 +42,15 @@ void EngineBuffers::setDepthBuffer(int x, int y, float value) const {
     depthBuffer[y * this->widthVideoBuffer + x] = value;
 }
 
-void EngineBuffers::setDepthBuffer(const int i, const float value) const {
+void EngineBuffers::setDepthBuffer(int i, const float value) const {
     depthBuffer[i] = value;
 }
 
-void EngineBuffers::setVideoBuffer(const int x, const int y, Uint32 value) const {
+void EngineBuffers::setVideoBuffer(int x, int y, Uint32 value) const {
     videoBuffer[y * this->widthVideoBuffer + x] = value;
 }
 
-void EngineBuffers::setVideoBuffer(const int i, Uint32 value) const {
+void EngineBuffers::setVideoBuffer(int i, Uint32 value) const {
     videoBuffer[i] = value;
 }
 

@@ -8,7 +8,7 @@ ComponentGameInput::ComponentGameInput() : controllerAxisThreshold(0.1), lockRig
 
 void ComponentGameInput::onStart()
 {
-    Logging::Log("ComponentGameInput onStart");
+    Logging::head("ComponentGameInput onStart");
 }
 
 void ComponentGameInput::preUpdate()

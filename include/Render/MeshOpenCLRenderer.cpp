@@ -69,7 +69,7 @@ void MeshOpenCLRenderer::onUpdate(Image *texture)
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&clBufferMeshContext);
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&clBufferTriangles);
     clSetKernelArg(kernel, 6, sizeof(int), &numTriangles);
-    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&texture->openClTexture);
+    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)texture->getOpenClTexture());
     clSetKernelArg(kernel, 8, sizeof(int), &texture->getSurface()->w);
     clSetKernelArg(kernel, 9, sizeof(int), &texture->getSurface()->h);
     clSetKernelArg(kernel, 10, sizeof(cl_mem), (void *)&clBufferStencil);

@@ -21,6 +21,13 @@ Brakeza3D *Brakeza3D::get()
 
 void Brakeza3D::start()
 {
+    Logging::Message("Brakeza3D - Open source game toolkit for old school lovers");
+    Logging::Message("By Eduardo Rodríguez (eduardo@brakeza.com)");
+    Logging::Message("https://brakeza.com");
+    Logging::Message("Let's start!");
+
+    Logging::Message("Running %s", EngineSetup::get()->ENGINE_TITLE.c_str());
+
     componentsManager->registerComponent(new ComponentWindow(), "ComponentWindow");
     componentsManager->registerComponent(new ComponentCamera(), "ComponentCamera");
     componentsManager->registerComponent(new ComponentCollisions(), "ComponentCollisions");

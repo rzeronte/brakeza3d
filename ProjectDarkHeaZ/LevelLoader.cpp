@@ -41,7 +41,7 @@ void LevelLoader::load(int levelIndex)
 {
     stats->reset();
 
-    Logging::Message("[Project DarkHeaZ] Loading level: %d", levelIndex);
+    Logging::Message("Loading level: %d", levelIndex);
 
     setLevelStartedToPlay(true);
     setLevelFinished(false);
@@ -105,9 +105,7 @@ int LevelLoader::getCurrentLevelIndex() const {
 
 void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 {
-    Logging::Message("*************************************");
-    Logging::Message("Loading Level: %s", filePath.c_str());
-    Logging::Message("*************************************");
+    Logging::head("Loading Level: %s", filePath.c_str());
 
     enemiesEmitter.resize(0);
 
@@ -142,19 +140,18 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         setEndLevel(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "endLevel")->valueint);
     }
 
-    ComponentsManager::get()->getComponentGame()->getShaderBackgroundImage()->setImage(
+    ComponentsManager::get()->getComponentGame()->getShaderBackgroundImage()->getImage().setImage(
        EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "backgroundImage")->valuestring
     );
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "foregroundImage") != nullptr) {
         ComponentsManager::get()->getComponentGame()->getShaderForegroundImage()->setEnabled(true);
-        ComponentsManager::get()->getComponentGame()->getShaderForegroundImage()->setImage(
-            EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "foregroundImage")->valuestring
-        );
+        auto fileForeground = EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "foregroundImage")->valuestring;
+        ComponentsManager::get()->getComponentGame()->getShaderForegroundImage()->getImage().setImage(fileForeground);
+
     } else {
         ComponentsManager::get()->getComponentGame()->getShaderForegroundImage()->setEnabled(false);
     }
-
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "histories") != nullptr) {
         cJSON *currentHistory;
@@ -234,6 +231,8 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         this->parseBackgroundItem(currentBackground);
     }
 
+    Logging::head("End loading Level: %s", filePath.c_str());
+
     free(contentFile);
     cJSON_Delete(jsonContentFile);
 }
@@ -242,7 +241,7 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
 {
     int index = cJSON_GetObjectItemCaseSensitive(weaponJson, "index")->valueint;
 
-    Logging::Message("Loading Weapon with index: %d", index);
+    Logging::head("Loading weapon (%d)", index);
 
     bool selectable = false;
     if (cJSON_GetObjectItemCaseSensitive(weaponJson, "selectable") != nullptr) {
@@ -1061,7 +1060,7 @@ SalvageSpaceship* LevelLoader::makeSalvageSpaceship(Vertex3D position)
 
 void LevelLoader::loadConfig()
 {
-    Logging::Message("Loading Config...");
+    Logging::head("Loading Project DarkHeaZ (%s)", "project-darkheaz.json");
 
     const std::string filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->DARKHEAZ_MAIN_CONFIG;
 

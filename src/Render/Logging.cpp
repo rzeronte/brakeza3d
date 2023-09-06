@@ -34,12 +34,11 @@ void Logging::Message(const char *message, ...)
 
 void Logging::head(const char *message, ...)
 {
-    std::cout << "*****************************************" << std::endl;
+    std::cout << "*********************** ";
     va_list args;
     va_start(args, message);
     vfprintf(stdout, message, args);
-    std::cout << std::endl;
-    std::cout << "*****************************************" << std::endl;
+    std::cout << " ************************" << std::endl;
     std::cout << std::endl;
     va_end (args);
 }

@@ -37,7 +37,7 @@ void ShaderZombie::update()
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
     clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)object->getOpenClRenderer()->getClBufferStencil());
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&EngineBuffers::get()->depthBufferOCL);
-    clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)&image.openClTexture);
+    clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)image.getOpenClTexture());
     clSetKernelArg(kernel, 7, sizeof(int), &offsetX);
     clSetKernelArg(kernel, 8, sizeof(int), &offsetY);
 
