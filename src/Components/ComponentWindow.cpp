@@ -25,8 +25,8 @@ void ComponentWindow::preUpdate()
 
 void ComponentWindow::clearVideoBuffers()
 {
-    BUFFERS->clearDepthBuffer();
-    BUFFERS->clearVideoBuffer();
+    //BUFFERS->clearDepthBuffer();
+    //BUFFERS->clearVideoBuffer();
 }
 
 void ComponentWindow::renderToWindow()
@@ -85,7 +85,7 @@ void ComponentWindow::initWindow() {
 
         screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
         SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_MOD);
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
 
         screenTexture = SDL_CreateTexture(
             renderer,

@@ -22,7 +22,7 @@ Brakeza3D *Brakeza3D::get()
 void Brakeza3D::start()
 {
     Logging::Message("Brakeza3D - Open source game toolkit for old school lovers");
-    Logging::Message("By Eduardo Rodríguez (eduardo@brakeza.com)");
+    Logging::Message("By Eduardo Rodriguez (eduardo@brakeza.com)");
     Logging::Message("https://brakeza.com");
     Logging::Message("Let's start!");
 
@@ -141,54 +141,42 @@ float Brakeza3D::getDeltaTimeMicro() const {
 
 void Brakeza3D::onStartComponents()
 {
-    std::vector<Component *>::iterator it;
-    for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
-        Component *component = *(it);
+    for (Component*& component : this->componentsManager->components) {
         component->onStart();
     }
 }
 
 void Brakeza3D::preUpdateComponents()
 {
-    std::vector<Component *>::iterator it;
-    for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
-        Component *component = *(it);
+    for (Component*& component : this->componentsManager->components) {
         component->preUpdate();
     }
 }
 
 void Brakeza3D::onUpdateComponents()
 {
-    std::vector<Component *>::iterator it;
-    for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
-        Component *component = *(it);
+    for (Component*& component : this->componentsManager->components) {
         component->onUpdate();
     }
 }
 
 void Brakeza3D::postUpdateComponents()
 {
-    std::vector<Component *>::iterator it;
-    for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
-        Component *component = *(it);
+    for (Component*& component : this->componentsManager->components) {
         component->postUpdate();
     }
 }
 
 void Brakeza3D::onEndComponents()
 {
-    std::vector<Component *>::iterator it;
-    for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
-        Component *component = *(it);
+    for (Component*& component : this->componentsManager->components) {
         component->onEnd();
     }
 }
 
 void Brakeza3D::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish)
 {
-    std::vector<Component *>::iterator it;
-    for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
-        Component *component = *(it);
+    for (Component* &component : this->componentsManager->components) {
         component->onSDLPollEvent(event, finish);
     }
 }
