@@ -115,7 +115,7 @@ void ComponentRender::writeOCLBufferIntoHost() const
 {
     clEnqueueReadBuffer(clCommandQueue,
         EngineBuffers::get()->videoBufferOCL,
-        CL_TRUE,
+        CL_FALSE,
         0,
         EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
         EngineBuffers::get()->videoBuffer,
@@ -1295,20 +1295,20 @@ void ComponentRender::updateLightsOCL()
         if (!l->isEnabled()) continue;
         auto forward = l->AxisForward();
         auto ocl = OCLight(
-                Tools::vertexOCL(l->getPosition()),
-                Tools::vertexOCL(forward),
-                l->p,
-                l->kc,
-                l->kl,
-                l->kq,
-                l->specularComponent,
-                l->color.getColor(),
-                l->specularColor.getColor()
+            Tools::vertexOCL(l->getPosition()),
+            Tools::vertexOCL(forward),
+            l->p,
+            l->kc,
+            l->kl,
+            l->kq,
+            l->specularComponent,
+            l->color.getColor(),
+            l->specularColor.getColor()
         );
         oclLights.emplace_back(ocl);
     }
 
-    clEnqueueWriteBuffer(clCommandQueue, clBufferLights, CL_TRUE, 0, (int) oclLights.size() * sizeof(OCLight), oclLights.data(), 0, nullptr, nullptr);
+    clEnqueueWriteBuffer(clCommandQueue, clBufferLights, CL_FALSE, 0, (int) oclLights.size() * sizeof(OCLight), oclLights.data(), 0, nullptr, nullptr);
 }
 
 cl_mem *ComponentRender::getClBufferVideoParticles()
