@@ -87,7 +87,6 @@ public:
     bool DRAW_DECAL_WIREFRAMES = false;
 
     bool TEXTURES_BILINEAR_INTERPOLATION = true;
-    bool LIGHTMAPS_BILINEAR_INTERPOLATION = false;
 
     bool DRAW_OBJECT3D_BILLBOARD = false;
     bool DRAW_LIGHTPOINTS_BILLBOARD = true;

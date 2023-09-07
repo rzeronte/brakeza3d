@@ -77,7 +77,7 @@ void Brakeza3D::mainLoop()
 
         onUpdateComponents();
 
-        componentsManager->getComponentRender()->onUpdateSceneObjectsSecondPass(sceneObjects);
+        componentsManager->getComponentRender()->onUpdateSceneObjectsSecondPass();
 
         if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
 
@@ -99,7 +99,7 @@ void Brakeza3D::controlFrameRate() const
 {
     if (!EngineSetup::get()->LIMIT_FRAMERATE) return;
 
-    float frameDelay = 1000.0f / (float) EngineSetup::get()->FRAMERATE;
+    const float frameDelay = 1000.0f / (float) EngineSetup::get()->FRAMERATE;
 
     if (deltaTime < frameDelay) {
         SDL_Delay(floor(frameDelay - deltaTime));
@@ -127,7 +127,6 @@ void Brakeza3D::updateTimer()
     current_ticks = (float) engineTimer.getTicks();
     deltaTime = current_ticks - last_ticks;
     last_ticks = current_ticks;
-
     executionTime += deltaTime / 1000.f;
 }
 
@@ -141,37 +140,39 @@ float Brakeza3D::getDeltaTimeMicro() const {
 
 void Brakeza3D::onStartComponents()
 {
-    for (Component*& component : this->componentsManager->components) {
+    for (Component*& component : componentsManager->components) {
         component->onStart();
     }
 }
 
 void Brakeza3D::preUpdateComponents()
 {
-    for (Component*& component : this->componentsManager->components) {
+    for (Component*& component : componentsManager->components) {
         component->preUpdate();
     }
 }
 
 void Brakeza3D::onUpdateComponents()
 {
-    for (Component*& component : this->componentsManager->components) {
+    for (Component*& component : componentsManager->components) {
         component->onUpdate();
     }
 }
 
 void Brakeza3D::postUpdateComponents()
 {
-    for (Component*& component : this->componentsManager->components) {
+    for (Component*& component : componentsManager->components) {
         component->postUpdate();
     }
 }
 
 void Brakeza3D::onEndComponents()
 {
-    for (Component*& component : this->componentsManager->components) {
+    for (Component*& component : componentsManager->components) {
         component->onEnd();
     }
+
+    Logging::head("Exiting... good bye! ;)");
 }
 
 void Brakeza3D::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish)
@@ -241,7 +242,8 @@ Brakeza3D::~Brakeza3D()
     }
 }
 
-float &Brakeza3D::getExecutionTime() {
+float &Brakeza3D::getExecutionTime()
+{
     return executionTime;
 }
 

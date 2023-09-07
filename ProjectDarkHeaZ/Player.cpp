@@ -228,6 +228,8 @@ void Player::onUpdate()
 {
     Mesh3D::onUpdate();
 
+    updateWeaponInteractionStatus();
+
     counterLight.update();
     if (counterLight.isFinished()) {
         light->setEnabled(false);
@@ -760,7 +762,6 @@ void Player::updateWeaponAutomaticStatus()
 
     if (getWeapon()->getStatus() == RELEASED) {
         rayLight.resetReach();
-        //ComponentSound::stopChannel(EngineSetup::SND_GLOBAL);
         getWeapon()->setStatus(NONE);
     }
 }

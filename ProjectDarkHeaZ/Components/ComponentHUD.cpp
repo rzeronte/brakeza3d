@@ -34,28 +34,15 @@ void ComponentHUD::onUpdate()
     if (!isEnabled()) return;
 
     auto textWriter = ComponentsManager::get()->getComponentGame()->getTextWriter();
-
-    const float alpha = textWriter->getAlpha();
-
     textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());
 
-
-    HUDTextures->getTextureByLabel("hudBackground")->drawFlatAlpha(0, 0, alpha);
-
-    auto stamina = HUDTextures->getTextureByLabel("staminaIcon");
-    auto energy = HUDTextures->getTextureByLabel("energyIcon");
-
-    stamina->drawFlatAlpha(38, this->offsetY - 2, alpha);
-    energy->drawFlatAlpha(38, this->offsetY + playerBarSeparation, alpha);
+    HUDTextures->getTextureByLabel("hudBackground")->drawFlatAlpha(0, 0, textWriter->getAlpha());
+    HUDTextures->getTextureByLabel("staminaIcon")->drawFlatAlpha(38, this->offsetY - 2, textWriter->getAlpha());
+    HUDTextures->getTextureByLabel("energyIcon")->drawFlatAlpha(38, this->offsetY + playerBarSeparation, textWriter->getAlpha());
 
     drawShaderLasers();
 
-    if (SETUP->DRAW_CROSSHAIR) {
-        Drawable::drawCrossHair();
-    }
-
     drawIconWeaponAndLevelName();
-
 }
 
 void ComponentHUD::postUpdate()
@@ -95,17 +82,6 @@ void ComponentHUD::loadImages()
 
 void ComponentHUD::drawHUD()
 {
-    auto componentManager = ComponentsManager::get();
-
-    if (SETUP->DRAW_FPS) {
-        componentManager->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(
-            10,
-            std::to_string(componentManager->getComponentRender()->getFps()).c_str(),
-            PaletteColors::getMenuOptions(),
-            0.3
-        );
-    }
-
     for (auto & button : buttons) {
         button->draw();
     }
@@ -119,7 +95,8 @@ void ComponentHUD::addButton(Button *button) {
     this->buttons.push_back(button);
 }
 
-void ComponentHUD::loadButtons() {
+void ComponentHUD::loadButtons()
+{
     const int offsetY = getButtonsOffsetY();
     const int offsetX = 16;
     int currentX = 1;
@@ -224,7 +201,7 @@ void ComponentHUD::drawIconWeaponAndLevelName()
     }
     weaponReflection->getIcon()->drawFlatAlpha(300, this->offsetY, reflectionAlpha);
 
-    ComponentsManager::get()->getComponentGame()->getStoreManager()->drawHUD(255);
+    ComponentsManager::get()->getComponentGame()->getStoreManager()->drawBoughtItemsOnHUD(255);
 }
 
 int ComponentHUD::getButtonsOffsetY()

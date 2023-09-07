@@ -49,8 +49,6 @@ private:
     Player *player;
     ShaderProjectiles *shaderProjectiles;
 
-    TextureAnimated *radioWave;
-
     Sprite2D *fadeInSpriteRed;
     Sprite2D *fadeInSpriteGreen;
     Sprite2D *fadeInSpriteBlue;
@@ -76,6 +74,8 @@ private:
     Image *imageStatistics;
     Image *imageDead;
     Image *imageEndGame;
+    Image *boxStore;
+    Image *help;
 
     std::vector<Image*> helps;
     int currentHelpIndex;
@@ -90,6 +90,8 @@ private:
     ShaderColor *shaderColor;
     ShaderShockWave *shaderShockWave;
 
+    ShaderCRT *shaderCRT;
+
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;
 
@@ -103,8 +105,9 @@ private:
     std::vector <Image*> spaceshipsInformation;
     unsigned int spaceshipSelectedIndex;
 
-
     EnemyDialog *currentEnemyDialog;
+
+    ShaderExplosion *shaderExplosion;
 
     //PathFinder *pathFinder;
 public:
@@ -126,7 +129,7 @@ public:
 
     [[nodiscard]] Player *getPlayer() const;
 
-    void loadPlayer();
+    void initPlayer();
 
     void blockPlayerPositionInCamera();
 
@@ -220,29 +223,6 @@ public:
 
     [[nodiscard]] LevelLoader *getLevelLoader() const;
 
-    void loadShaders();
-
-    void shaderBackgroundUpdate();
-
-    [[nodiscard]] TextureAnimated *getRadioWave() const;
-
-    ShaderExplosion *shaderExplosion;
-
-    void handleTutorialImages(float alpha);
-
-    ShaderImageMask *dialogBackground;
-    ShaderCRT *shaderCRT;
-    Image *boxTutorial;
-    Image *help;
-
-    Image *boxStore;
-
-    void handlePressKeyHelp();
-
-    static void setEnemiesBehaviors(bool value);
-
-    void setHelp(Image *help);
-
     [[nodiscard]] StoreManager *getStoreManager() const;
 
     EngineSetup::GameState gameState;
@@ -250,6 +230,38 @@ public:
     [[nodiscard]] PlayerReflection *getClosestReflection(Vertex3D from) const;
 
     [[nodiscard]] Mesh3D *getItemBoxFrame() const;
+
+    [[nodiscard]] ShaderImage *getShaderForegroundImage() const;
+
+    [[nodiscard]] Sprite2D *getExplosionSprite() const;
+
+    [[nodiscard]] Sprite2D *getFadeInSpriteRed();
+
+    [[nodiscard]] Sprite2D *getFadeInSpriteGreen();
+
+    [[nodiscard]] Sprite2D *getFadeInSpriteBlue();
+
+    [[nodiscard]] Sprite2D *getSpriteSparklesRed() const;
+
+    [[nodiscard]] Sprite2D *getSpriteSparklesGreen() const;
+
+    [[nodiscard]] Sprite2D *getSpriteSparklesBlue() const;
+
+    [[nodiscard]] Swarm *getSwarm() const;
+
+    [[nodiscard]] Sprite2D *getSpriteStuck() const;
+
+    void loadShaders();
+
+    void shaderBackgroundUpdate();
+
+    void handleOnUpdateTutorialImages(float alpha);
+
+    void handlePressKeyHelp();
+
+    static void setEnemiesBehaviors(bool value);
+
+    void setHelp(Image *help);
 
     void loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation);
 
@@ -265,29 +277,7 @@ public:
 
     void handleSpaceShipSelector();
 
-    [[nodiscard]] ShaderImage *getShaderForegroundImage() const;
-
-    [[nodiscard]] Sprite2D *getExplosionSprite() const;
-
-    [[nodiscard]] Sprite2D *getFadeInSpriteRed();
-
-    [[nodiscard]] Sprite2D *getFadeInSpriteGreen();
-
-    [[nodiscard]] Sprite2D *getFadeInSpriteBlue();
-
-    Sprite2D *getSpriteSparklesRed() const;
-
-    Sprite2D *getSpriteSparklesGreen() const;
-
-    Sprite2D *getSpriteSparklesBlue() const;
-
-    Swarm *getSwarm() const;
-
-    ShaderEdgeObject *shaderEdgeObject;
-
-    void onUpdateMessageRadio();
-
-    Sprite2D *getSpriteStuck() const;
+    void handleOnUpdateMessageRadio();
 
     void increaseHelpImage();
 
@@ -296,6 +286,26 @@ public:
     void writeDialogTextToContinue(const char *string);
 
     void handleOnUpdateCountDown();
+
+    void handleOnUpdateGamingTutorial(float alpha);
+
+    void handleOnUpdateHelp(float alpha);
+
+    void handleOnUpdateStore(float alpha);
+
+    void handleOnUpdateSpaceshipSelector(float alpha);
+
+    void handleOnUpdatePressKeyGameOver(float alpha);
+
+    void handleOnUpdateCredits(float alpha);
+
+    void handleOnUpdatePressKeyByDead(float alpha);
+
+    void handleOnUpdateSplash(float alpha);
+
+    ShaderImageMask *dialogBackground;
+    Image *boxTutorial;
+    ShaderEdgeObject *shaderEdgeObject;
 };
 
 

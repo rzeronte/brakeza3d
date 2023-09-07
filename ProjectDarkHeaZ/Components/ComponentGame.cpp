@@ -5,24 +5,24 @@
 
 ComponentGame::ComponentGame()
 :
-        cameraCountDownPosition(Vertex3D(0, 3000, 5000)),
-        cameraInGamePosition(Vertex3D(0, -1000, -1000)),
-        textWriter(nullptr),
-        fadeToGameState(nullptr),
-        player(nullptr),
-        shaderProjectiles(nullptr),
-        imageCredits(nullptr),
-        imageSplash(nullptr),
-        imageCrossFire(nullptr),
-        currentHelpIndex(0),
-        levelLoader(nullptr),
-        shaderBackgroundImage(nullptr),
-        shaderForegroundImage(nullptr),
-        shaderColor(nullptr),
-        shaderShockWave(nullptr),
-        spaceshipSelectedIndex(0),
-        currentEnemyDialog(nullptr),
-        gameState(EngineSetup::GameState::NONE)
+    cameraCountDownPosition(Vertex3D(0, 3000, 5000)),
+    cameraInGamePosition(Vertex3D(0, -1000, -1000)),
+    textWriter(nullptr),
+    fadeToGameState(nullptr),
+    player(nullptr),
+    shaderProjectiles(nullptr),
+    imageCredits(nullptr),
+    imageSplash(nullptr),
+    imageCrossFire(nullptr),
+    currentHelpIndex(0),
+    levelLoader(nullptr),
+    shaderBackgroundImage(nullptr),
+    shaderForegroundImage(nullptr),
+    shaderColor(nullptr),
+    shaderShockWave(nullptr),
+    spaceshipSelectedIndex(0),
+    currentEnemyDialog(nullptr),
+    gameState(EngineSetup::GameState::NONE)
 {
 }
 
@@ -39,12 +39,7 @@ void ComponentGame::onStart()
     auto componentWindow = ComponentsManager::get()->getComponentWindow();
     textWriter = new TextWriter(componentWindow->getRenderer(), componentWindow->getFontDefault());
 
-    fadeToGameState = new FaderToGameStates(
-        Color(3, 3, 111),
-        0.01f,
-        EngineSetup::GameState::SPLASH,
-        false
-    );
+    fadeToGameState = new FaderToGameStates(Color(3, 3, 111), 0.01f, EngineSetup::GameState::SPLASH, false);
 
     imageCrossFire = new Image(SETUP->IMAGES_FOLDER + "crossfire.png");
     imageCredits = new Image(SETUP->IMAGES_FOLDER + "credits.png");
@@ -57,22 +52,25 @@ void ComponentGame::onStart()
     imageStatistics = new Image(SETUP->IMAGES_FOLDER + "statistics_screen.png");
     imageDead = new Image(SETUP->IMAGES_FOLDER + "game_over.png");
     imageEndGame = new Image(SETUP->IMAGES_FOLDER + "end_game.png");
+    boxTutorial = new Image(SETUP->IMAGES_FOLDER + "tutorial_box.png");
+    boxStore = new Image(SETUP->IMAGES_FOLDER + "store_box.png");
+
     splashCounter.setStep(SPLASH_TIME);
 
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 
     playerStartPosition = Vertex3D(-40, 2990, Z_COORDINATE_GAMEPLAY);
 
-    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
+    auto componentCamera = ComponentsManager::get()->getComponentCamera();
+    componentCamera->getCamera()->setPosition(cameraCountDownPosition);
+    componentCamera->setAutoScroll(false);
+    componentCamera->setAutoScrollSpeed(Vertex3D(0, -0.0, 0));
+    componentCamera->setFreeLook(FREE_LOOK_ENABLED);
 
-    ComponentsManager::get()->getComponentCamera()->setAutoScroll(false);
-    ComponentsManager::get()->getComponentCamera()->setAutoScrollSpeed(Vertex3D(0, -0.0, 0));
-
-    ComponentsManager::get()->getComponentCamera()->setFreeLook(FREE_LOOK_ENABLED);
     ComponentsManager::get()->getComponentInput()->setEnabled(FREE_LOOK_ENABLED);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
 
-    loadPlayer();
+    initPlayer();
     loadWeapons();
     loadLevels();
     loadShaders();
@@ -89,35 +87,13 @@ void ComponentGame::onStart()
     swarm->addPredator(new SwarmObject(player));
     Brakeza3D::get()->addObject3D(swarm, "swarm");
 
-    shaderExplosion = new ShaderExplosion(
-        true,
-        Color::white(),
-        Color::green(),
-        Point2D(320, 240),
-        -1,
-        OCParticlesContext(
-            0,
-            0.025f,
-            10.00f,
-            0.0f,
-            0.0f,
-            0.0000025f,
-            100.0f,
-            200.0f,
-            100.0f,
-            1.0f,
-            0.999f
-        )
-    );
+    shaderExplosion = new ShaderExplosion(true, Color::white(), Color::green(), Point2D(320, 240), -1, OCParticlesContext::forSplash());
     shaderExplosion->setIntensity(1);
 
     dialogBackground = new ShaderImageMask(true, SETUP->IMAGES_FOLDER + "gridTutorial.png", SETUP->IMAGES_FOLDER + "/tutorial_mask.png");
-    boxTutorial = new Image(SETUP->IMAGES_FOLDER + "tutorial_box.png");
 
     shaderCRT = new ShaderCRT(true, SETUP->IMAGES_FOLDER + "cloud.png", SETUP->IMAGES_FOLDER + "tutorial_mask.png");
     shaderCRT->setMaxAlpha(255);
-
-    boxStore = new Image(SETUP->IMAGES_FOLDER + "store_box.png");
 
     storeManager = new StoreManager(player, textWriter);
 
@@ -149,7 +125,6 @@ void ComponentGame::onStart()
     explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion_b.png"), 128, 128, 15, 35)));
     explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion_c.png"), 128, 128, 15, 35)));
     explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion_d.png"), 128, 128, 15, 35)));
-
 }
 
 void ComponentGame::loadShaders()
@@ -196,52 +171,6 @@ ComponentGame::~ComponentGame()
 void ComponentGame::preUpdate()
 {
     shaderBackgroundUpdate();
-
-    if (gameState == EngineSetup::GameState::SPLASH) {
-        splashCounter.update();
-
-        imageSplash->drawFlatAlpha(0, 0, 255 - getFadeToGameState()->getProgress() * 255);
-
-        if (splashCounter.isFinished() && splashCounter.isEnabled()) {
-            splashCounter.setEnabled(false);
-            //setGameState(EngineSetup::GameState::MENU);
-            getFadeToGameState()->setSpeed(FADE_SPEED_MENU_FIRST_TIME);
-            makeFadeToGameState(EngineSetup::GameState::MENU, false);
-
-            //videoPlayer->play();
-        }
-    }
-
-    getPlayer()->updateWeaponInteractionStatus();
-
-    const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
-    textWriter->setAlpha(alpha);
-
-    switch(gameState) {
-        case EngineSetup::PRESS_KEY_BY_DEAD: {
-            imageDead->drawFlatAlpha(0, 0, alpha);
-            shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50f);
-            break;
-        }
-        case EngineSetup::GAMING: {
-            blockPlayerPositionInCamera();
-            checkForEndLevel();
-            break;
-        }
-        case EngineSetup::INTRO: {
-            break;
-        }
-        case EngineSetup::NONE:
-        case EngineSetup::SPLASH:
-        case EngineSetup::MENU:
-            break;
-        case EngineSetup::SPACESHIP_SELECTOR: {
-            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
-
-            spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha);
-            break;
-        }
-    }
 }
 
 void ComponentGame::onUpdate()
@@ -251,17 +180,23 @@ void ComponentGame::onUpdate()
     addProjectilesToShaderLasers();
     updateShaders();
 
-
     const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
+    textWriter->setAlpha(alpha);
 
     switch(gameState) {
+        case EngineSetup::SPLASH: {
+            handleOnUpdateSplash(alpha);
+            break;
+        }
         case EngineSetup::PRESS_KEY_NEW_LEVEL:
         case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL: {
-            handleTutorialImages(255);
+            handleOnUpdateTutorialImages(255);
             break;
         }
         case EngineSetup::GAMING: {
-            onUpdateMessageRadio();
+            blockPlayerPositionInCamera();
+            checkForEndLevel();
+            handleOnUpdateMessageRadio();
             break;
         }
         case EngineSetup::COUNTDOWN: {
@@ -273,72 +208,23 @@ void ComponentGame::onUpdate()
             break;
         }
         case EngineSetup::GAMING_TUTORIAL: {
-            const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
-            imageCablesHorizontal->drawFlatAlpha(0, 0, alpha);
-
-            dialogBackground->setMaxAlpha((int) alpha);
-            dialogBackground->update();
-            boxTutorial->drawFlatAlpha(0, 0, alpha);
-            shaderCRT->setMaxAlpha((int) alpha);
-            shaderCRT->update();
-
-            writeDialogTextToContinue("Press ENTER to continue...");
-
-            help->drawFlatAlpha(0, 0, alpha);
-            onUpdateMessageRadio();
-
+            handleOnUpdateGamingTutorial(alpha);
             break;
         }
         case EngineSetup::HELP: {
-            dialogBackground->setMaxAlpha((int) alpha);
-            dialogBackground->update();
-            boxTutorial->drawFlatAlpha(0, 0, alpha);
-
-            shaderCRT->setMaxAlpha((int) alpha);
-            shaderCRT->update();
-
-            writeDialogTextToContinue("Press ESC to continue...");
-
-            helps[currentHelpIndex]->drawFlatAlpha(0, 0, alpha);
-
-            std::string message = std::to_string(currentHelpIndex + 1) + " / " + std::to_string((int)helps.size());
-            if (helps.size() > 1) {
-                textWriter->writeTTFCenterHorizontal(323, message.c_str(), PaletteColors::getCrt(), 0.3f);
-            }
-
-            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+            handleOnUpdateHelp(alpha);
             break;
         }
         case EngineSetup::STORE: {
-            imageCablesStore->drawFlatAlpha(0, 0, alpha);
-
-            dialogBackground->setMaxAlpha((int) alpha);
-            dialogBackground->update();
-
-            shaderCRT->setMaxAlpha((int) alpha);
-            shaderCRT->update();
-
-            boxTutorial->drawFlatAlpha(0, 0, alpha);
-            boxStore->drawFlatAlpha(0, 0, alpha);
-
-            storeManager->update(alpha);
-
-            writeDialogTextToContinue("Press ESC to continue...");
-
+            handleOnUpdateStore(alpha);
             break;
         }
         case EngineSetup::CREDITS: {
-            imageCredits->drawFlatAlpha(0, 0, alpha);
-
-            dialogBackground->setMaxAlpha((int) alpha);
-            dialogBackground->update();
-            boxTutorial->drawFlatAlpha(0, 0, alpha);
-            shaderCRT->setMaxAlpha((int) alpha);
-            shaderCRT->update();
-
-            writeDialogTextToContinue("Press ESC to continue...");
-
-            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+            handleOnUpdateCredits(alpha);
+            break;
+        }
+        case EngineSetup::PRESS_KEY_BY_DEAD: {
+            handleOnUpdatePressKeyByDead(alpha);
             break;
         }
         /*case EngineSetup::VAT: {
@@ -357,43 +243,17 @@ void ComponentGame::onUpdate()
             break;
         }*/
         case EngineSetup::SPACESHIP_SELECTOR: {
-            imageCablesStore->drawFlatAlpha(0, 0, alpha);
-
-            dialogBackground->setMaxAlpha((int) alpha);
-            dialogBackground->update();
-
-            boxTutorial->drawFlatAlpha(0, 0, alpha);
-            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
-            //spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha);
-
-            writeDialogTextToContinue("Press ENTER to select ...");
-
-            shaderCRT->setMaxAlpha((int) alpha);
-            shaderCRT->update();
-            shaderEdgeObject->update();
+            handleOnUpdateSpaceshipSelector(alpha);
             break;
         }
         case EngineSetup::PRESS_KEY_GAMEOVER: {
-            imageCablesStore->drawFlatAlpha(0, 0, alpha);
-
-            boxTutorial->drawFlatAlpha(0, 0, alpha);
-            ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
-
-            dialogBackground->setMaxAlpha((int) alpha);
-            dialogBackground->update();
-
-            writeDialogTextToContinue("Press ENTER to continue...");
-
-            shaderCRT->setMaxAlpha((int) alpha);
-            shaderCRT->update();
-
-            imageEndGame->drawFlatAlpha(0, 0, alpha);
+            handleOnUpdatePressKeyGameOver(alpha);
             break;
         }
     }
 }
 
-void ComponentGame::handleTutorialImages(float alpha)
+void ComponentGame::handleOnUpdateTutorialImages(float alpha)
 {
     if (!getLevelLoader()->getTutorials().empty()) {
         imageCablesVertical->drawFlatAlpha(0, 0, alpha);
@@ -435,11 +295,11 @@ void ComponentGame::showLevelStatistics(float alpha)
 
     textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
 
-    dialogBackground->setMaxAlpha(alpha);
+    dialogBackground->setMaxAlpha((int)alpha);
     dialogBackground->update();
     boxTutorial->drawFlatAlpha(0, 0, alpha);
 
-    shaderCRT->setMaxAlpha(alpha);
+    shaderCRT->setMaxAlpha((int)alpha);
     shaderCRT->update();
 
     int offsetX = 160;
@@ -490,13 +350,13 @@ void ComponentGame::showLevelStatistics(float alpha)
 
 void ComponentGame::updateFadeToGameState()
 {
-    getFadeToGameState()->onUpdate();
-    if (getFadeToGameState()->isEndFadeOut()) {
-        getFadeToGameState()->setEndFadeOut(false);
-        setGameState(getFadeToGameState()->getGameStateWhenEnds());
+    fadeToGameState->onUpdate();
+    if (fadeToGameState->isEndFadeOut()) {
+        fadeToGameState->setEndFadeOut(false);
+        setGameState(fadeToGameState->getGameStateWhenEnds());
     }
 
-    if (getFadeToGameState()->isFinished()) {
+    if (fadeToGameState->isFinished()) {
         ComponentsManager::get()->getComponentGameInput()->setEnabled(true);
     }
 }
@@ -512,19 +372,20 @@ void ComponentGame::updateEnemyTargetedCrossFire()
 
     auto selected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
 
-    if (selected != nullptr) {
-        auto direction = selected->getPosition() - spaceCrossFirePosition;
+    if (selected == nullptr) return;
 
-        const float speed = 0.4f;
-        spaceCrossFirePosition = spaceCrossFirePosition + direction.getScaled(speed);
+    const auto direction = selected->getPosition() - spaceCrossFirePosition;
 
-        imageCrossFireScreenPosition = Transforms::WorldToPoint(spaceCrossFirePosition, ComponentsManager::get()->getComponentCamera()->getCamera());
+    const float speed = 0.4f;
+    spaceCrossFirePosition = spaceCrossFirePosition + direction.getScaled(speed);
 
-        imageCrossFireScreenPosition.x -= imageCrossFire->width() / 2;
-        imageCrossFireScreenPosition.y -= imageCrossFire->height() / 2;
+    imageCrossFireScreenPosition = Transforms::WorldToPoint(spaceCrossFirePosition, ComponentsManager::get()->getComponentCamera()->getCamera());
 
-        imageCrossFire->drawFlat(imageCrossFireScreenPosition.x, imageCrossFireScreenPosition.y);
-    };
+    imageCrossFireScreenPosition.x -= imageCrossFire->width() / 2;
+    imageCrossFireScreenPosition.y -= imageCrossFire->height() / 2;
+
+    imageCrossFire->drawFlat(imageCrossFireScreenPosition.x, imageCrossFireScreenPosition.y);
+
 }
 
 int ComponentGame::getLiveEnemiesCounter()
@@ -696,7 +557,7 @@ void ComponentGame::loadSelectedSpaceshipModel()
     );
 }
 
-void ComponentGame::loadPlayer()
+void ComponentGame::initPlayer()
 {
     player->setLabel("player");
     player->setRotation(0, 0, 0);
@@ -710,8 +571,6 @@ void ComponentGame::loadPlayer()
     Brakeza3D::get()->addObject3D(player, "player");
 
     player->onStartSetup();
-
-   radioWave = new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "radio/radio"), 7, 10);
 }
 
 Object3D *ComponentGame::getClosesObject3DDirection(Vertex3D from, Vertex3D direction, bool skipPlayer, bool skipCurrentSelected) const
@@ -1138,9 +997,9 @@ void ComponentGame::updateShaders()
     shaderExplosion->update();
 
     Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.000015);
-    Vertex3D offset(vel.x, vel.y, 0);
+    vel.z = 0;
 
-    levelLoader->moveBackgroundObjects(offset.getScaled(20000).getInverse());
+    levelLoader->moveBackgroundObjects(vel.getScaled(20000).getInverse());
 }
 
 void ComponentGame::shaderBackgroundUpdate()
@@ -1158,7 +1017,7 @@ void ComponentGame::shaderBackgroundUpdate()
         Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.000015);
 
         shaderBackgroundImage->update(vel.x, vel.y);
-        shaderForegroundImage->update(vel.x/2, vel.y/2);
+        shaderForegroundImage->update(vel.x * 0.5, vel.y * 0.5);
     }
 }
 
@@ -1177,7 +1036,7 @@ void ComponentGame::zoomCameraCountDown()
     int alpha = 255 - (t * 255 * 2.5);
     alpha = std::max(0, std::min(alpha, 255));
 
-    handleTutorialImages(alpha);
+    handleOnUpdateTutorialImages(alpha);
 }
 
 void ComponentGame::handleMenuGameState()
@@ -1368,11 +1227,9 @@ void ComponentGame::addProjectilesToShaderLasers()
     if (gameState != EngineSetup::GAMING && gameState != EngineSetup::COUNTDOWN && gameState != EngineSetup::PRESS_KEY_BY_WIN) return;
 
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
-        if (object->isRemoved()) continue;
-
-        auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
-        auto ray = dynamic_cast<ProjectileRay *> (object);
-        auto wave = dynamic_cast<ShockWave *> (object);
+        const auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
+        const auto ray = dynamic_cast<ProjectileRay *> (object);
+        const auto wave = dynamic_cast<ShockWave *> (object);
 
         if (projectile != nullptr && !projectile->isWasCollision()) {
             shaderProjectiles->addProjectile(
@@ -1404,10 +1261,6 @@ void ComponentGame::handlePressKeyByWin()
 {
     getLevelLoader()->getWaitingToWin()->setEnabled(false);
     removeInGameObjects();
-}
-
-TextureAnimated *ComponentGame::getRadioWave() const {
-    return radioWave;
 }
 
 void ComponentGame::setEnemiesBehaviors(bool value)
@@ -1536,7 +1389,7 @@ Swarm *ComponentGame::getSwarm() const {
     return swarm;
 }
 
-void ComponentGame::onUpdateMessageRadio()
+void ComponentGame::handleOnUpdateMessageRadio()
 {
     if (currentEnemyDialog == nullptr) return;
 
@@ -1571,7 +1424,7 @@ void ComponentGame::writeDialogTextToContinue(const char *string)
 
 void ComponentGame::handleOnUpdateCountDown()
 {
-    onUpdateMessageRadio();
+    handleOnUpdateMessageRadio();
     zoomCameraCountDown();
 
     float oldAlpha = textWriter->getAlpha();
@@ -1604,4 +1457,136 @@ void ComponentGame::handleOnUpdateCountDown()
     }
 
     textWriter->setAlpha(oldAlpha);
+}
+
+void ComponentGame::handleOnUpdateGamingTutorial(const float alpha)
+{
+    imageCablesHorizontal->drawFlatAlpha(0, 0, alpha);
+
+    dialogBackground->setMaxAlpha((int) alpha);
+    dialogBackground->update();
+    boxTutorial->drawFlatAlpha(0, 0, alpha);
+    shaderCRT->setMaxAlpha((int) alpha);
+    shaderCRT->update();
+
+    writeDialogTextToContinue("Press ENTER to continue...");
+
+    help->drawFlatAlpha(0, 0, alpha);
+    handleOnUpdateMessageRadio();
+
+}
+
+void ComponentGame::handleOnUpdateHelp(const float alpha)
+{
+    dialogBackground->setMaxAlpha((int) alpha);
+    dialogBackground->update();
+    boxTutorial->drawFlatAlpha(0, 0, alpha);
+
+    shaderCRT->setMaxAlpha((int) alpha);
+    shaderCRT->update();
+
+    writeDialogTextToContinue("Press ESC to continue...");
+
+    helps[currentHelpIndex]->drawFlatAlpha(0, 0, alpha);
+
+    std::string message = std::to_string(currentHelpIndex + 1) + " / " + std::to_string((int)helps.size());
+    if (helps.size() > 1) {
+        textWriter->writeTTFCenterHorizontal(323, message.c_str(), PaletteColors::getCrt(), 0.3f);
+    }
+
+    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+}
+
+void ComponentGame::handleOnUpdateStore(const float alpha)
+{
+    imageCablesStore->drawFlatAlpha(0, 0, alpha);
+
+    dialogBackground->setMaxAlpha((int) alpha);
+    dialogBackground->update();
+
+    shaderCRT->setMaxAlpha((int) alpha);
+    shaderCRT->update();
+
+    boxTutorial->drawFlatAlpha(0, 0, alpha);
+    boxStore->drawFlatAlpha(0, 0, alpha);
+
+    storeManager->update(alpha);
+
+    writeDialogTextToContinue("Press ESC to continue...");
+
+}
+
+void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)
+{
+    spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha);
+
+    imageCablesStore->drawFlatAlpha(0, 0, alpha);
+
+    dialogBackground->setMaxAlpha((int) alpha);
+    dialogBackground->update();
+
+    boxTutorial->drawFlatAlpha(0, 0, alpha);
+    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+
+    writeDialogTextToContinue("Press ENTER to select ...");
+
+    shaderCRT->setMaxAlpha((int) alpha);
+    shaderCRT->update();
+    shaderEdgeObject->update();
+}
+
+void ComponentGame::handleOnUpdatePressKeyGameOver(const float alpha)
+{
+    imageCablesStore->drawFlatAlpha(0, 0, alpha);
+
+    boxTutorial->drawFlatAlpha(0, 0, alpha);
+    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+
+    dialogBackground->setMaxAlpha((int) alpha);
+    dialogBackground->update();
+
+    writeDialogTextToContinue("Press ENTER to continue...");
+
+    shaderCRT->setMaxAlpha((int) alpha);
+    shaderCRT->update();
+
+    imageEndGame->drawFlatAlpha(0, 0, alpha);
+}
+
+void ComponentGame::handleOnUpdateCredits(const float alpha)
+{
+    imageCredits->drawFlatAlpha(0, 0, alpha);
+
+    dialogBackground->setMaxAlpha((int) alpha);
+    dialogBackground->update();
+    boxTutorial->drawFlatAlpha(0, 0, alpha);
+    shaderCRT->setMaxAlpha((int) alpha);
+    shaderCRT->update();
+
+    writeDialogTextToContinue("Press ESC to continue...");
+
+    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+}
+
+void ComponentGame::handleOnUpdatePressKeyByDead(const float alpha)
+{
+    imageDead->drawFlatAlpha(0, 0, alpha);
+    shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50f);
+}
+
+void ComponentGame::handleOnUpdateSplash(const float alpha)
+{
+    splashCounter.update();
+
+    imageSplash->drawFlatAlpha(0, 0, alpha);
+
+    if (splashCounter.isFinished() && splashCounter.isEnabled()) {
+        splashCounter.setEnabled(false);
+        //setGameState(EngineSetup::GameState::MENU);
+        getFadeToGameState()->setSpeed(FADE_SPEED_MENU_FIRST_TIME);
+        makeFadeToGameState(EngineSetup::GameState::MENU, false);
+
+        //videoPlayer->play();
+    }
+
 }

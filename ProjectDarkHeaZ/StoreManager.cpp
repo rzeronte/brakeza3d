@@ -170,15 +170,15 @@ void StoreManager::loadDefaultItems()
     ));
 }
 
-void StoreManager::drawHUD(float alpha)
+void StoreManager::drawBoughtItemsOnHUD(float alpha)
 {
-    int x = 40;
-    int y = 15;
-    int separation = 30;
+    const int x = 40;
+    const int y = 15;
+    const int separation = 30;
 
     int cont = 0;
     for (auto item: items) {
-        if (item->isAvailable() && item->isBought()) {
+        if (item->isBought() && item->isAvailable()) {
             item->getImageSmall()->drawFlatAlpha(x + cont * separation, y, alpha);
             cont++;
         }
