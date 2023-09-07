@@ -52,8 +52,6 @@ void ComponentWindow::onEnd()
     SDL_FreeSurface(screenSurface);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
-
-    Logging::Message("Brakeza3D exit, good bye ;)");
 }
 
 void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish) {

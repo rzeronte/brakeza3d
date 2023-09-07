@@ -141,7 +141,7 @@ public:
 
     void updateLights();
 
-    void updateFPS(float deltaTime);
+    void updateFPS();
 
     std::vector<Triangle *> &getFrameTriangles();
 
@@ -209,7 +209,7 @@ public:
 
     _cl_kernel *getBlinkKernel();
 
-    void onUpdateSceneObjectsSecondPass(std::vector<Object3D *> &sceneObjects) const;
+    void onUpdateSceneObjectsSecondPass() const;
 
     _cl_mem *getClBufferLights();
 
