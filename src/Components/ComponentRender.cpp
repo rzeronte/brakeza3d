@@ -73,7 +73,7 @@ void ComponentRender::onUpdate()
 
     updateLightsOCL();
 
-    onUpdateSceneObjects();
+    //onUpdateSceneObjects();
 
     if (SETUP->ENABLE_LIGHTS) {
         this->extractLightPointsFromObjects3D();

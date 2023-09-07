@@ -31,6 +31,7 @@ void ComponentHUD::preUpdate()
 
 void ComponentHUD::onUpdate()
 {
+    return;
     if (!isEnabled()) return;
 
     auto textWriter = ComponentsManager::get()->getComponentGame()->getTextWriter();

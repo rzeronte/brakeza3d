@@ -195,7 +195,7 @@ ComponentGame::~ComponentGame()
 
 void ComponentGame::preUpdate()
 {
-    shaderBackgroundUpdate();
+    //shaderBackgroundUpdate();
 
     if (gameState == EngineSetup::GameState::SPLASH) {
         splashCounter.update();
@@ -249,7 +249,7 @@ void ComponentGame::onUpdate()
     updateFadeToGameState();
     updateEnemyTargetedCrossFire();
     addProjectilesToShaderLasers();
-    updateShaders();
+    //updateShaders();
 
 
     const float alpha = 255 - getFadeToGameState()->getProgress() * 255;
