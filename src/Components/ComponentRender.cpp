@@ -36,24 +36,36 @@ void ComponentRender::onStart()
 
 void ComponentRender::preUpdate()
 {
-    this->updateFPS(Brakeza3D::get()->getDeltaTimeMicro());
+    this->updateFPS();
 }
 
 void ComponentRender::drawObjetsInHostBuffer()
 {
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
-        if (object != nullptr && !object->isRemoved()) {
-            object->onDrawHostBuffer();
-        }
+        object->onDrawHostBuffer();
     }
 
+    auto components = ComponentsManager::get();
     if (SETUP->RENDER_MAIN_AXIS) {
-        Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
+        Drawable::drawMainAxis(components->getComponentCamera()->getCamera());
+    }
+
+    if (SETUP->DRAW_CROSSHAIR) {
+        Drawable::drawCrossHair();
     }
 
     if (SETUP->BULLET_DEBUG_MODE) {
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
+        components->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
+    }
+
+    if (SETUP->DRAW_FPS) {
+        components->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(
+            10,
+            std::to_string(components->getComponentRender()->getFps()).c_str(),
+            PaletteColors::getMenuOptions(),
+            0.3
+        );
     }
 
     //this->hiddenSurfaceRemoval();
@@ -65,9 +77,7 @@ void ComponentRender::drawObjetsInHostBuffer()
 
 void ComponentRender::onUpdate()
 {
-    if (!isEnabled()) {
-        return;
-    }
+    if (!isEnabled()) return;
 
     deleteRemovedObjects();
 
@@ -144,14 +154,14 @@ void ComponentRender::writeOCLBuffersFromHost() const
     );
 
     if (ret != CL_SUCCESS) {
-        printf("Error al escribir en el buffer de vídeo: %d\n", ret);
+        Logging::Log("Error writing to Video OCL Buffer: (%d)", ret);
     }
 
     float max_value = 100000;
     clEnqueueFillBuffer(clCommandQueue, EngineBuffers::get()->depthBufferOCL, &max_value, sizeof(float), 0, EngineBuffers::get()->sizeBuffers * sizeof(unsigned int), 0, NULL, NULL);
 
     if (ret != CL_SUCCESS) {
-        printf("Error al escribir en el buffer de depth: %d\n", ret);
+        Logging::Log("Error writing to Depth OCL Buffer (%d)", ret);
     }
 }
 void ComponentRender::onEnd() {
@@ -244,7 +254,8 @@ void ComponentRender::extractLightPointsFromObjects3D()
     }
 }
 
-std::vector<LightPoint3D *> &ComponentRender::getLightPoints() {
+std::vector<LightPoint3D *> &ComponentRender::getLightPoints()
+{
     return lightPoints;
 }
 
@@ -287,7 +298,9 @@ void ComponentRender::onUpdateSceneObjects()
     shaderBlurParticles->update();
 }
 
-void ComponentRender::onUpdateSceneObjectsSecondPass(std::vector<Object3D *> &sceneObjects) const {
+void ComponentRender::onUpdateSceneObjectsSecondPass() const
+{
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
         if (object != nullptr && object->isEnabled()) {
             object->drawOnUpdateSecondPass();
@@ -938,15 +951,16 @@ void ComponentRender::drawWireframe(Triangle *t)
     Drawable::drawLine2D(Line2D(t->Cs.x, t->Cs.y, t->As.x, t->As.y), Color::green());
 }
 
-void ComponentRender::updateFPS( float deltaTime) {
+void ComponentRender::updateFPS()
+{
     if (!EngineSetup::get()->DRAW_FPS) return;
 
-    frameTime += deltaTime;
+    frameTime += Brakeza3D::get()->getDeltaTimeMicro();
     ++fpsFrameCounter;
 
-    if (frameTime >= 1000.0f) { // Ahora frameTime se mide en milisegundos
+    if (frameTime >= 1000.0f) {
         fps = fpsFrameCounter;
-        frameTime -= 1000.0f; // Restamos 1 segundo en milisegundos, manteniendo el tiempo restante
+        frameTime -= 1000.0f;
         fpsFrameCounter = 0;
     }
 }
@@ -997,10 +1011,6 @@ void ComponentRender::setSelectedObject(Object3D *o) {
 void ComponentRender::onPostUpdateSceneObjects()
 {
     for (auto &object : Brakeza3D::get()->getSceneObjects()) {
-        if (!object->isEnabled() || object->isRemoved()) {
-            continue;
-        }
-
         object->postUpdate();
     }
 }

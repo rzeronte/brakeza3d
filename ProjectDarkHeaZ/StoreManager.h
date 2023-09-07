@@ -33,7 +33,7 @@ public:
 
     void loadDefaultItems();
 
-    void drawHUD(float alpha);
+    void drawBoughtItemsOnHUD(float alpha);
 
     bool isItemEnabled(int index);
 };
