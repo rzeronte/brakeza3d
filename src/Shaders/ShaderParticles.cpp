@@ -53,8 +53,8 @@ void ShaderParticles::executeKernelOpenCL()
     ocOrigin = Tools::pointOCL(origin);
     ocDirection = Tools::vertexOCL(direction);
 
-    clEnqueueWriteBuffer(clQueue, openCLBufferOrigin, CL_TRUE, 0, sizeof(OCPoint2D), &ocOrigin, 0, nullptr, nullptr);
-    clEnqueueWriteBuffer(clQueue, openCLBufferDirection, CL_TRUE, 0, sizeof(OCVertex3D), &ocDirection, 0, nullptr, nullptr);
+    clEnqueueWriteBuffer(clQueue, openCLBufferOrigin, CL_FALSE, 0, sizeof(OCPoint2D), &ocOrigin, 0, nullptr, nullptr);
+    clEnqueueWriteBuffer(clQueue, openCLBufferDirection, CL_FALSE, 0, sizeof(OCVertex3D), &ocDirection, 0, nullptr, nullptr);
 
     auto dt = Brakeza3D::get()->getDeltaTime();
 
