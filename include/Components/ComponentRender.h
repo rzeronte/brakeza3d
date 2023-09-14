@@ -5,7 +5,6 @@
 #ifndef BRAKEDA3D_COMPONENTRENDER_H
 #define BRAKEDA3D_COMPONENTRENDER_H
 
-#define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 #define MAX_OPENCL_LIGHTS 16
 
 #include <vector>
@@ -50,8 +49,12 @@ private:
 
     Object3D *selectedObject;
 
-    cl_platform_id clPlatformId;
-    cl_device_id clDeviceId;
+    cl_platform_id clPlatformIds;
+    cl_device_id clDeviceIds;
+
+    cl_device_id selectedClDeviceId;
+    cl_platform_id selectedPlatform;
+
     cl_uint ret_num_devices;
     cl_uint ret_num_platforms;
     cl_int ret;
@@ -211,7 +214,7 @@ public:
 
     void onUpdateSceneObjectsSecondPass() const;
 
-    _cl_mem *getClBufferLights();
+    cl_mem *getClBufferLights();
 
     void updateLightsOCL();
 

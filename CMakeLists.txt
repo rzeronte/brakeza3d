@@ -228,7 +228,9 @@ add_executable(Brakeza3D
         src/Shaders/ShaderBlurBuffer.cpp
         src/Shaders/ShaderBlurBuffer.h
         ProjectDarkHeaZ/Enemies/BoidEnemyGhost.cpp
-        ProjectDarkHeaZ/Enemies/BoidEnemyGhost.h)
+        ProjectDarkHeaZ/Enemies/BoidEnemyGhost.h
+        src/Objects/TentacleIK.cpp
+        include/Objects/TentacleIK.h)
 
 target_link_libraries(Brakeza3D
     pthread
