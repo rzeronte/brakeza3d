@@ -5,23 +5,23 @@
 #include "../../include/Render/Transforms.h"
 
 ComponentRender::ComponentRender() :
-    fps(0),
-    fpsFrameCounter(0),
-    frameTime(0),
-    sizeTileWidth((EngineSetup::get()->screenWidth / 2)),
-    sizeTileHeight((EngineSetup::get()->screenHeight / 2)),
-    tilesWidth(0),
-    tilesHeight(0),
-    numTiles(0),
-    tilePixelsBufferSize(0),
-    selectedObject(nullptr),
-    clPlatformId(nullptr),
-    clDeviceId(nullptr),
-    ret_num_devices(0),
-    ret_num_platforms(0),
-    ret(0),
-    clContext(nullptr),
-    clCommandQueue(nullptr)
+        fps(0),
+        fpsFrameCounter(0),
+        frameTime(0),
+        sizeTileWidth((EngineSetup::get()->screenWidth / 2)),
+        sizeTileHeight((EngineSetup::get()->screenHeight / 2)),
+        tilesWidth(0),
+        tilesHeight(0),
+        numTiles(0),
+        tilePixelsBufferSize(0),
+        selectedObject(nullptr),
+        clPlatformIds(nullptr),
+        clDeviceIds(nullptr),
+        ret_num_devices(0),
+        ret_num_platforms(0),
+        ret(0),
+        clContext(nullptr),
+        clCommandQueue(nullptr)
 {
 }
 
@@ -115,7 +115,7 @@ void ComponentRender::writeOCLBufferIntoHost() const
 {
     clEnqueueReadBuffer(clCommandQueue,
         EngineBuffers::get()->videoBufferOCL,
-        CL_FALSE,
+        CL_TRUE,
         0,
         EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
         EngineBuffers::get()->videoBuffer,
@@ -139,9 +139,7 @@ void ComponentRender::writeOCLBufferIntoHost() const
 
 void ComponentRender::writeOCLBuffersFromHost() const
 {
-    cl_int ret;
-
-    ret = clEnqueueWriteBuffer(
+    clEnqueueWriteBuffer(
         clCommandQueue,
         EngineBuffers::get()->videoBufferOCL,
         CL_TRUE,
@@ -153,16 +151,18 @@ void ComponentRender::writeOCLBuffersFromHost() const
         nullptr
     );
 
-    if (ret != CL_SUCCESS) {
-        Logging::Log("Error writing to Video OCL Buffer: (%d)", ret);
-    }
-
     float max_value = 100000;
-    clEnqueueFillBuffer(clCommandQueue, EngineBuffers::get()->depthBufferOCL, &max_value, sizeof(float), 0, EngineBuffers::get()->sizeBuffers * sizeof(unsigned int), 0, NULL, NULL);
-
-    if (ret != CL_SUCCESS) {
-        Logging::Log("Error writing to Depth OCL Buffer (%d)", ret);
-    }
+    clEnqueueFillBuffer(
+        clCommandQueue,
+        EngineBuffers::get()->depthBufferOCL,
+        &max_value,
+        sizeof(float),
+        0,
+        EngineBuffers::get()->sizeBuffers * sizeof(unsigned int),
+        0,
+        NULL,
+        NULL
+    );
 }
 void ComponentRender::onEnd() {
 }
@@ -1054,7 +1054,7 @@ cl_device_id ComponentRender::selectDefaultGPUDevice()
             }
 
             if (std::string(vendor).find(defaultGPU) != std::string::npos) {
-                clPlatformId = platform;
+                clPlatformIds = platform;
                 return device;
             }
         }
@@ -1065,43 +1065,47 @@ cl_device_id ComponentRender::selectDefaultGPUDevice()
 
 void ComponentRender::initOpenCL()
 {
+    OpenCLInfo();
+
     loadConfig();
 
-    ret = clGetPlatformIDs(1, &clPlatformId, &ret_num_platforms) ;
+    ret = clGetPlatformIDs(1, &clPlatformIds, &ret_num_platforms) ;
+
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get platform_id");
     }
 
-    ret = clGetDeviceIDs(clPlatformId, CL_DEVICE_TYPE_GPU, 1, &clDeviceId, &ret_num_devices);
+    ret = clGetDeviceIDs(clPlatformIds, CL_DEVICE_TYPE_GPU, 1, &clDeviceIds, &ret_num_devices);
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get cpu_device_id");
     }
-    clDeviceId = selectDefaultGPUDevice();
-    if (clDeviceId == nullptr) {
+
+    selectedClDeviceId = selectDefaultGPUDevice();
+    if (selectedClDeviceId == nullptr) {
         Logging::Log("Unable to find a suitable NVIDIA device");
         return;
     }
 
+    cl_context_properties properties[] = {
+        CL_CONTEXT_PLATFORM,
+        (cl_context_properties) clPlatformIds,
+        0
+    };
 
-    cl_context_properties properties[3];
-    properties[0]= CL_CONTEXT_PLATFORM;
-    properties[1]= (cl_context_properties) clPlatformId;
-    properties[2]= 0;
-
-    clContext = clCreateContext(properties, 1, &clDeviceId, NULL, NULL, &ret);
-    clCommandQueue = clCreateCommandQueue(clContext, clDeviceId, NULL, &ret);
+    clContext = clCreateContext(properties, ret_num_devices, &clDeviceIds, NULL, NULL, &ret);
+    clCommandQueue = clCreateCommandQueue(clContext, selectedClDeviceId, NULL, &ret);
 
     EngineBuffers::get()->createOpenCLBuffers(clContext, clCommandQueue);
 
     // Get device information
     char vendor[128];
     char deviceName[128];
-    ret = clGetDeviceInfo(clDeviceId, CL_DEVICE_VENDOR, sizeof(vendor), vendor, nullptr);
+    ret = clGetDeviceInfo(selectedClDeviceId, CL_DEVICE_VENDOR, sizeof(vendor), vendor, nullptr);
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get device vendor");
     }
 
-    ret = clGetDeviceInfo(clDeviceId, CL_DEVICE_NAME, sizeof(deviceName), deviceName, nullptr);
+    ret = clGetDeviceInfo(selectedClDeviceId, CL_DEVICE_NAME, sizeof(deviceName), deviceName, nullptr);
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get device name");
     }
@@ -1109,8 +1113,6 @@ void ComponentRender::initOpenCL()
     // Print device information
     Logging::Message("Selected device vendor: %s", vendor);
     Logging::Message("Selected device name: %s", deviceName);
-
-    //OpenCLInfo();
 
     loadCommonKernels();
 
@@ -1139,7 +1141,7 @@ void ComponentRender::OpenCLInfo()
     clGetPlatformIDs(platformCount, platforms, NULL);
 
     for (i = 0; i < platformCount; i++) {
-
+        Logging::Message("--");
         // get all devices
         clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_ALL, 0, NULL, &deviceCount);
         devices = (cl_device_id*) malloc(sizeof(cl_device_id) * deviceCount);
@@ -1208,11 +1210,11 @@ int ComponentRender::getFps(){
 }
 
 _cl_platform_id *ComponentRender::getClPlatformId(){
-    return clPlatformId;
+    return clPlatformIds;
 }
 
 _cl_device_id *ComponentRender::getClDeviceId() {
-    return clDeviceId;
+    return this->clDeviceIds;
 }
 
 _cl_context *ComponentRender::getClContext() {
@@ -1266,7 +1268,7 @@ void ComponentRender::loadKernel(cl_program &program, cl_kernel &kernel, const s
         &ret
     );
 
-    clBuildProgram(program, 1, &clDeviceId, nullptr, nullptr, nullptr);
+    clBuildProgram(program, ret_num_devices, &clDeviceIds, nullptr, nullptr, nullptr);
     kernel = clCreateKernel(program, "onUpdate", &ret);
 
     free(source_str);
@@ -1283,8 +1285,8 @@ _cl_kernel *ComponentRender::getBlinkKernel()
     return blinkKernel;
 }
 
-_cl_mem *ComponentRender::getClBufferLights() {
-    return clBufferLights;
+cl_mem *ComponentRender::getClBufferLights() {
+    return &clBufferLights;
 }
 
 void ComponentRender::updateLightsOCL()
@@ -1343,5 +1345,4 @@ void ComponentRender::loadCommonKernels()
     loadKernel(particlesProgram, particlesKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "particles.cl");
     loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "explosion.cl");
     loadKernel(blinkProgram, blinkKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "blink.opencl");
-
 }

@@ -17,7 +17,6 @@
 class ComponentHUD : public Component {
 private:
     std::vector<Button*> buttons;
-    ShaderProjectiles *shaderLasers;
     TexturePackage *HUDTextures;
     int offsetY = 430;
     int playerBarSeparation = 15;
@@ -55,8 +54,6 @@ public:
     void drawShaderLasers();
 
     [[nodiscard]] TexturePackage *getHudTextures() const;
-
-    [[nodiscard]] ShaderProjectiles *getShaderLasers() const;
 };
 
 

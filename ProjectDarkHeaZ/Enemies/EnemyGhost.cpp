@@ -88,9 +88,7 @@ void EnemyGhost::onUpdate()
         }
     }
 
-    auto componentGame = ComponentsManager::get()->getComponentGame();
-
-    this->tryShoot();
+    tryShoot();
 
     updateLasers();
 
@@ -98,7 +96,8 @@ void EnemyGhost::onUpdate()
 
     updateEmitterParticles();
 
-    for ( auto dialog: dialogs) {
+    auto componentGame = ComponentsManager::get()->getComponentGame();
+    for (auto dialog: dialogs) {
         const float staminaPercentage = (getStamina() * 100) / getStartStamina();
         if (staminaPercentage < dialog->staminaPercentage && !dialog->isShowed()) {
             dialog->setShowed(true);

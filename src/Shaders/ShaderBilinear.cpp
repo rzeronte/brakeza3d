@@ -11,9 +11,9 @@ ShaderBilinear::ShaderBilinear(bool active) : ShaderOpenCL(active, "bilinear.cl"
 {
     videoOutputBufferOCL = clCreateBuffer(
         context,
-        CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+        CL_MEM_READ_WRITE,
         EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
-        videoBuffer,
+        nullptr,
         nullptr
     );
 }

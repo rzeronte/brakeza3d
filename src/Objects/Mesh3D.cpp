@@ -136,10 +136,9 @@ void Mesh3D::drawOnUpdateSecondPass()
     }
 }
 
-void Mesh3D::onUpdateOpenCLRender() {
-    if ((int) modelTriangles.size() > 0) {
-        openClRenderer->onUpdate(modelTextures[0]);
-    }
+void Mesh3D::onUpdateOpenCLRender()
+{
+    if ((int) modelTriangles.size() > 0) openClRenderer->onUpdate(modelTextures[0]);
 }
 
 void Mesh3D::postUpdate()

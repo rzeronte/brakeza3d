@@ -46,11 +46,7 @@ public:
 
     void onUpdate() override;
 
-    void setActive(bool value);
-
     [[nodiscard]] bool isActive() const;
-
-    [[nodiscard]] bool isStopAdd() const;
 
     void setStopAdd(bool stopAdd);
 

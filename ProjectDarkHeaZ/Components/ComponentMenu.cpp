@@ -161,7 +161,7 @@ void ComponentMenu::drawOptions()
         float currentAlpha = componentGame->getTextWriter()->getAlpha();
 
         if (i == currentOption) {
-            float currentSelectionAlpha = 0.5f * (float) (1+sin(5 * PI * Brakeza3D::get()->getExecutionTime()));
+            float currentSelectionAlpha = 0.5f * (float) (1 + sin(5 * M_PI * Brakeza3D::get()->getExecutionTime()));
             componentGame->getTextWriter()->setAlpha(currentAlpha * currentSelectionAlpha);
         }
 

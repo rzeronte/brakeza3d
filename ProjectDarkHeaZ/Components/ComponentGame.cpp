@@ -2,6 +2,7 @@
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
 #include "../Items/ItemBombGhost.h"
+#include "../../include/Objects/TentacleIK.h"
 
 ComponentGame::ComponentGame()
 :
@@ -29,8 +30,6 @@ ComponentGame::ComponentGame()
 void ComponentGame::onStart()
 {
     Logging::head("ComponentGame onStart");
-
-    Brakeza3D::get()->addObject3D(new LightPoint3D(11, 1, 0, 0, 0, Color(100, 16, 22), Color(15, 33, 92)), "epe");
 
     player = new Player();
 
@@ -64,7 +63,6 @@ void ComponentGame::onStart()
     auto componentCamera = ComponentsManager::get()->getComponentCamera();
     componentCamera->getCamera()->setPosition(cameraCountDownPosition);
     componentCamera->setAutoScroll(false);
-    componentCamera->setAutoScrollSpeed(Vertex3D(0, -0.0, 0));
     componentCamera->setFreeLook(FREE_LOOK_ENABLED);
 
     ComponentsManager::get()->getComponentInput()->setEnabled(FREE_LOOK_ENABLED);
@@ -125,6 +123,21 @@ void ComponentGame::onStart()
     explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion_b.png"), 128, 128, 15, 35)));
     explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion_c.png"), 128, 128, 15, 35)));
     explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion_d.png"), 128, 128, 15, 35)));
+
+    tentacle = new TentacleIK(player->getPosition(), player);
+    tentacle->setRotation(M3::getMatrixRotationForEulerAngles(0, 0, 90));
+    Vertex3D lastEnd = player->getPosition() + Vertex3D(2500, -3000, 0);
+
+    for (int i = 0; i < 9; i++) {
+        auto start = lastEnd;
+        auto end = start + Vertex3D(0, -500, 0);
+        auto rotation = M3::getMatrixRotationForEulerAngles(0, 0, 10 + (i*2));
+
+        tentacle->addJoint( new TentacleSegment(start, end, rotation));
+        lastEnd = end;
+    }
+    tentacle->updateRotations();
+    Brakeza3D::get()->addObject3D(tentacle, "tentacle");
 }
 
 void ComponentGame::loadShaders()
@@ -505,7 +518,7 @@ void ComponentGame::blockPlayerPositionInCamera()
     homogeneousPosition = Transforms::PerspectiveNDCSpace(homogeneousPosition, camera->getFrustum());
 
     if (homogeneousPosition.y > 1) {
-        player->setPosition(player->getPosition() + ComponentsManager::get()->getComponentCamera()->getAutoScrollSpeed());
+        player->setPosition(player->getPosition());
         if (player->getVelocity().y > 0) {
             Vertex3D newVelocity = player->getVelocity();
             newVelocity.y = -1;
@@ -526,7 +539,7 @@ void ComponentGame::blockPlayerPositionInCamera()
     if (homogeneousPosition.x > 1) {
         if (player->getVelocity().x > 0) {
             Vertex3D newVelocity = player->getVelocity();
-            newVelocity.x = -2;
+            newVelocity.x = 0;
             player->setVelocity(newVelocity);
         }
     }
@@ -535,7 +548,7 @@ void ComponentGame::blockPlayerPositionInCamera()
     if (homogeneousPosition.x < -1) {
         if (player->getVelocity().x < 0) {
             Vertex3D newVelocity = player->getVelocity();
-            newVelocity.x = 2;
+            newVelocity.x = 0;
             player->setVelocity(newVelocity);
         }
     }
