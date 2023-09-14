@@ -128,6 +128,19 @@ M3 M3::RZ(float degrees) {
     );
 }
 
+M3 M3::arbitraryAxis(Vertex3D A, float degrees) {
+
+    auto c =  cos(degrees);
+    auto s = sin(degrees);
+
+    return M3(
+        c + (1 - c) * (A.x * A.x),       (1-c) * A.x * A.y - s * A.z,        (1-c) * A.x * A.z + s * A.y,
+        (1-c) * A.x * A.y + s * A.z,     c + (1 - c) * (A.y * A.y),          (1-c) * A.y * A.z - s * A.x,
+        (1-c) * A.x * A.z - s * A.y, (1-c) * A.y * A.z + s * A.x,         c + (1 - c) * (A.z * A.z)
+    );
+}
+
+
 M3 M3::ScaleMatrix(float scale) {
     M3 M(
         scale, 0, 0,

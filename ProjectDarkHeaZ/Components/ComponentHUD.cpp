@@ -4,7 +4,6 @@
 
 ComponentHUD::ComponentHUD()
 :
-    shaderLasers(nullptr),
     HUDTextures(nullptr)
 {
 }
@@ -14,9 +13,6 @@ void ComponentHUD::onStart()
     Logging::head("ComponentHUD onStart");
 
     HUDTextures = new TexturePackage();
-
-    shaderLasers = new ShaderProjectiles();
-    shaderLasers->setEnabled(true);
 
     loadImages();
     loadButtons();
@@ -223,6 +219,8 @@ void ComponentHUD::drawShaderLasers()
     const float stroke = 0.15f;
     const float topBarMargin = 5;
 
+    auto shaderLasers =ComponentsManager::get()->getComponentGame()->getShaderLasers();
+
     shaderLasers->addLaser(
         startPositionX, this->offsetY + topBarMargin,
         startPositionX + (int) (width * health), this->offsetY + topBarMargin,
@@ -282,20 +280,13 @@ void ComponentHUD::drawShaderLasers()
         );
 
     }
-
-    shaderLasers->update();
 }
 
 ComponentHUD::~ComponentHUD()
 {
-    delete shaderLasers;
     delete HUDTextures;
 }
 
 TexturePackage *ComponentHUD::getHudTextures() const {
     return HUDTextures;
-}
-
-ShaderProjectiles *ComponentHUD::getShaderLasers() const {
-    return shaderLasers;
 }

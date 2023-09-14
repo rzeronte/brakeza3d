@@ -61,7 +61,12 @@ void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish) {
 void ComponentWindow::initWindow() {
     Logging::Log("Initializating ComponentWindow...");
 
-    //Initialize SDL
+    for( int i = 0; i < SDL_GetNumRenderDrivers(); ++i ){
+        SDL_RendererInfo rendererInfo = {};
+        SDL_GetRenderDriverInfo( i, &rendererInfo );
+        Logging::Message("Driver rendering: %s", rendererInfo.name);
+    }
+
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(-1);
@@ -80,6 +85,10 @@ void ComponentWindow::initWindow() {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
             exit(-1);
         }
+
+#ifdef WIN32
+        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "direct3d11");
+#endif
 
         screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
         SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_MOD);
@@ -105,6 +114,7 @@ void ComponentWindow::initFontsTTF()
         Logging::Log(TTF_GetError());
         exit(-1);
     }
+
     std::string pathFont = SETUP->FONTS_FOLDER + "TheLastCall-Regular.ttf";
     Logging::Log("Loading FONT: %s", pathFont.c_str());
 
@@ -132,10 +142,6 @@ SDL_Window *ComponentWindow::getWindow() const {
 
 SDL_Renderer *ComponentWindow::getRenderer() const {
     return renderer;
-}
-
-SDL_Texture *ComponentWindow::getScreenTexture() const {
-    return screenTexture;
 }
 
 TTF_Font *ComponentWindow::getFontDefault() {

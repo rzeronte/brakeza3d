@@ -28,6 +28,7 @@
 #include "../PaletteColors.h"
 #include "../Items/SalvageSpaceship.h"
 #include "../../include/2D/Sprite2D.h"
+#include "../../include/Objects/TentacleIK.h"
 
 #define Z_COORDINATE_GAMEPLAY 10000
 #define FREE_LOOK_ENABLED false
@@ -38,7 +39,8 @@
 
 class ComponentGame : public Component {
 private:
-
+    TentacleIK *tentacle;
+    TentacleIK *tentacle2;
     Vertex3D playerStartPosition;
     Vertex3D cameraCountDownPosition;
     Vertex3D cameraInGamePosition;

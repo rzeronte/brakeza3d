@@ -30,8 +30,9 @@ void MeshOpenCLRenderer::createBuffers()
 
 void MeshOpenCLRenderer::onUpdate(Image *texture)
 {
-    if (object->isRemoved() || !object->isEnabled() || !isLoaded()) return;
+    if (!object->isEnabled() || !isLoaded()) return;
 
+    auto componentCamera = ComponentsManager::get()->getComponentCamera();
     meshContext = OCLMeshContext(
         ObjectData(
                 OCVertex3D(object->getPosition().x, object->getPosition().y, object->getPosition().z),
@@ -39,27 +40,26 @@ void MeshOpenCLRenderer::onUpdate(Image *texture)
                 object->getScale(),
                 object->isEnableLights()
         ),
-        ComponentsManager::get()->getComponentCamera()->getCameraData(),
-        ComponentsManager::get()->getComponentCamera()->getFrustumData()
+        componentCamera->getCameraData(),
+        componentCamera->getFrustumData()
     );
 
     const int numTriangles = (int) oclTriangles.size();
     if (numTriangles <= 0) return;
-
 
     //makeOCLTriangles();
     //clEnqueueWriteBuffer(clQueue, clBufferTriangles, CL_TRUE, 0, numTriangles * sizeof(OCTriangle), oclTriangles.data(), 0, nullptr, nullptr);
     clEnqueueWriteBuffer(clQueue, clBufferMeshContext, CL_TRUE, 0, sizeof(OCLMeshContext), &meshContext, 0, nullptr, nullptr);
 
     const bool useStencil = object->isStencilBufferEnabled();
-    auto kernel = ComponentsManager::get()->getComponentRender()->getRendererKernel();
+    const auto componentRender = ComponentsManager::get()->getComponentRender();
+    auto kernel = componentRender->getRendererKernel();
 
     if (useStencil) {
         cl_int pattern = 0;
         clEnqueueFillBuffer(clQueue, clBufferStencil, &pattern, sizeof(cl_bool), 0, EngineBuffers::get()->sizeBuffers, 0, nullptr, nullptr);
     }
 
-    auto bufferLights = ComponentsManager::get()->getComponentRender()->getClBufferLights();
     auto numLights = ComponentsManager::get()->getComponentRender()->getLightPoints().size();
 
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
@@ -74,11 +74,11 @@ void MeshOpenCLRenderer::onUpdate(Image *texture)
     clSetKernelArg(kernel, 9, sizeof(int), &texture->getSurface()->h);
     clSetKernelArg(kernel, 10, sizeof(cl_mem), (void *)&clBufferStencil);
     clSetKernelArg(kernel, 11, sizeof(int), &useStencil);
-    clSetKernelArg(kernel, 12, sizeof(cl_mem), (void *)&bufferLights);
+    clSetKernelArg(kernel, 12, sizeof(cl_mem), (void *)componentRender->getClBufferLights());
     clSetKernelArg(kernel, 13, sizeof(int), &numLights);
 
-    size_t global_item_size[2] = {640, 16}; // == MAX_OPENCL_TRIANGLES
-    size_t local_item_size[2] = {16, 16};    // Tamaño local de trabajo (puede ajustarse según la GPU)
+    size_t global_item_size[2] = {640, 16};
+    size_t local_item_size[2] = {16, 16};
 
     clRet = clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
 

@@ -271,14 +271,15 @@ void Object3D::lookAt(Object3D *o)
 {
     Vertex3D direction = (o->getPosition() - position).getNormalize();
 
-    Vertex3D rightVector = ((getRotation().getTranspose() * EngineSetup::get()->up) % direction).getNormalize();
+    // Calcular el eje de rotación
+    Vertex3D rightVector = Vertex3D(0, 0, -1) % (direction).getNormalize();
+    Vertex3D correctedUpVector = direction % (rightVector).getNormalize();
 
-    Vertex3D correctedUpVector = (direction % rightVector);
-
+    // Crear una matriz de rotación
     M3 r;
-    r.setX(rightVector.x, correctedUpVector.x, direction.x);
-    r.setY(rightVector.y, correctedUpVector.y, direction.y);
-    r.setZ(rightVector.z, correctedUpVector.z, direction.z);
+    r.setX(rightVector.x, correctedUpVector.x, -direction.x);
+    r.setY(rightVector.y, correctedUpVector.y, -direction.y);
+    r.setZ(rightVector.z, correctedUpVector.z, -direction.z);
 
     setRotation(r);
 }

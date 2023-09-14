@@ -262,7 +262,7 @@ void Player::onUpdate()
 
     auto isGameStateDistinctOfGameOver = componentGame->getGameState() != EngineSetup::PRESS_KEY_BY_DEAD;
     if (warningDamage && isGameStateDistinctOfGameOver && state != PlayerState::DEAD) {
-        float currentSelectionAlpha = 0.5f * (float) (1 + sin(5 * PI * Brakeza3D::get()->getExecutionTime()));
+        float currentSelectionAlpha = 0.5f * (float) (1 + sin(5 * M_PI * Brakeza3D::get()->getExecutionTime()));
         ComponentsManager::get()->getComponentGame()->getShaderColor()->setProgress(currentSelectionAlpha);
     }
 
@@ -284,9 +284,6 @@ void Player::updateTargetRotation()
     setRotationTarget(ComponentsManager::get()->getComponentRender()->getSelectedObject());
 
     makeRotationToTarget();
-
-
-    //const float theta = newRot.X() * b;
 }
 
 void Player::updatePlayerEnergy()

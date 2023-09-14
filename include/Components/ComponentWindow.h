@@ -44,8 +44,6 @@ public:
 
     [[nodiscard]] SDL_Renderer *getRenderer() const;
 
-    [[nodiscard]] SDL_Texture *getScreenTexture() const;
-
     [[nodiscard]] TTF_Font *getFontDefault();
 
     void renderToWindow();

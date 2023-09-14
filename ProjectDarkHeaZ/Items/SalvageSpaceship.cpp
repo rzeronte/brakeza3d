@@ -50,7 +50,7 @@ void SalvageSpaceship::onUpdate()
         const float topBarMargin = 5;
         float progress = timeGetting.currentPercentage() / 100;
 
-        ComponentsManager::get()->getComponentHUD()->getShaderLasers()->addLaser(
+        ComponentsManager::get()->getComponentGame()->getShaderLasers()->addLaser(
             startPositionX, startPositionY + topBarMargin,
             startPositionX + (int) (width * progress), startPositionY + topBarMargin,
             PaletteColors::getStamina(),
@@ -59,7 +59,7 @@ void SalvageSpaceship::onUpdate()
             false
         );
 
-        ComponentsManager::get()->getComponentHUD()->getShaderLasers()->addLaser(
+        ComponentsManager::get()->getComponentGame()->getShaderLasers()->addLaser(
             startPositionX, startPositionY + topBarMargin,
             startPositionX + (int) (width * 1), startPositionY + topBarMargin,
             PaletteColors::getPressKeyToContinue(),
