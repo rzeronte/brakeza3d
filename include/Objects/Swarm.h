@@ -118,6 +118,10 @@ public:
     void reset();
 
     void removeBoid(SwarmObject *o);
+
+    const char *getTypeObject() override;
+
+    const char *getTypeIcon() override;
 };
 
 

@@ -53,6 +53,21 @@ void EnemyGhost::onStart()
 {
     blink = new ShaderBlink(true, this, 0.05, PaletteColors::getEnemyBlink());
     zombie = new ShaderZombie(true, EngineSetup::get()->IMAGES_FOLDER + "alien.png", this, this->getOpenClRenderer());
+
+    tentacle = new TentacleIK(getPosition(), this, ComponentsManager::get()->getComponentGame()->getPlayer(), 12000);
+
+    tentacle->setRotation(M3::getMatrixRotationForEulerAngles(0, 0, 45));
+    Vertex3D lastEnd = getPosition() + Vertex3D(-5000, 3000, 0);
+
+    for (int i = 0; i < 20; i++) {
+        auto start = lastEnd;
+        auto end = start + Vertex3D(-200, -200, 0);
+        auto rotation = M3::getMatrixRotationForEulerAngles(0, 0, 10 + (i*2));
+
+        tentacle->addJoint( new TentacleSegment(start, end, rotation));
+        lastEnd = end;
+    }
+    tentacle->updateRotations();
 }
 
 void EnemyGhost::onUpdate()
@@ -125,6 +140,8 @@ void EnemyGhost::updateEmitterParticles()
 void EnemyGhost::onDrawHostBuffer()
 {
     Mesh3D::onDrawHostBuffer();
+    tentacle->setTarget(ComponentsManager::get()->getComponentGame()->getPlayer());
+    tentacle->onDrawHostBuffer();
 
     if (isStuck()) {
         /*Drawable::drawLightning(

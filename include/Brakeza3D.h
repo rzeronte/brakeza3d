@@ -14,13 +14,15 @@
 #include "Components/ComponentRender.h"
 #include "ComponentsManager.h"
 #include "GUI/GUIManager.h"
+#include "../sol/sol.hpp"
 #include <thread>
 
 class Brakeza3D {
 private:
-    GUIManager managerGUI;
+    sol::state lua;
 
     ComponentsManager *componentsManager;
+    GUIManager *managerGUI;
 
     Timer engineTimer;
 
@@ -84,6 +86,13 @@ public:
 
     static void LoadDemo();
 
+    sol::state &getLua();
+
+    void initLUATypes();
+
+    GUIManager *getManagerGui();
+
+    void welcomeMessage() const;
 };
 
 

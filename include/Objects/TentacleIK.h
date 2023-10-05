@@ -16,10 +16,14 @@ public:
     :
         start(start),
         end(anEnd),
-        rotation(rotation)
+        rotation(rotation),
+        intensity(1.0f),
+        active(true)
     {
     }
 
+    bool active;
+    float intensity;
     Vertex3D start;
     M3 rotation;
     Vertex3D end;
@@ -30,10 +34,14 @@ public:
 
 class TentacleIK: public Object3D {
     std::vector<TentacleSegment *> joints;
-    Object3D *target;
+    Vertex3D target;
+    Vertex3D followPosition;
     Vertex3D velocity;
+    float maxLength;
+    Counter cadence;
+
 public:
-    TentacleIK(Vertex3D position, Object3D *target);
+    TentacleIK(Vertex3D position, Object3D* parent, Object3D *target, float maxLength);
 
     void onUpdate() override;
 
@@ -50,6 +58,7 @@ public:
 private:
 
     void transformJoints();
+
     void applySinusoidalMovement(float amplitude, float frequency, float time);
 
 public:
@@ -59,12 +68,23 @@ public:
 
     void IKForwardSolver();
 
-    void attractRootToTarget();
-
     void transformJoint(int i);
-    void transformJointSpiral(int i);
 
-    void updateInertiaRoot();
+    void setRootPosition(Vertex3D position);
+
+    void moveFinalToTargetPosition();
+
+    void moveFinalToRandomNear();
+
+    void drawTargetPosition();
+
+    void fadeOut();
+
+    void fadeIn();
+
+    void hide();
+
+    void show();
 };
 
 #endif //BRAKEZA3D_TENTACLEIK_H

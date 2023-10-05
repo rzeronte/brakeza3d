@@ -16,9 +16,6 @@
 #include "../../include/Render/Drawable.h"
 #include "../../include/Physics/BillboardBody.h"
 #include "../../include/Render/Maths.h"
-#include "ComponentWindow.h"
-#include "ComponentCollisions.h"
-#include "ComponentCamera.h"
 #include "../Shaders/ShaderBilinear.h"
 #include "../Shaders/ShaderDepthOfField.h"
 #include "../../src/Shaders/ShaderBlurBuffer.h"
@@ -49,11 +46,8 @@ private:
 
     Object3D *selectedObject;
 
-    cl_platform_id clPlatformIds;
-    cl_device_id clDeviceIds;
-
-    cl_device_id selectedClDeviceId;
-    cl_platform_id selectedPlatform;
+    cl_platform_id clPlatformId;
+    cl_device_id clDeviceId;
 
     cl_uint ret_num_devices;
     cl_uint ret_num_platforms;
@@ -81,6 +75,9 @@ private:
     std::vector<OCLight> oclLights;
 
     ShaderBlurBuffer *shaderBlurParticles;
+
+    EngineSetup::LuaStateScripts stateScripts;
+
 public:
     ComponentRender();
 
@@ -223,6 +220,13 @@ public:
     void loadConfig();
 
     void loadCommonKernels();
+
+    EngineSetup::LuaStateScripts getStateScripts();
+
+    void playScripts();
+    void stopScripts();
+
+    void reloadScripts();
 };
 
 

@@ -26,6 +26,10 @@ public:
 
 
     void updatePosition(int x, int y);
+
+    const char *getTypeObject() override;
+
+    const char *getTypeIcon() override;
 };
 
 

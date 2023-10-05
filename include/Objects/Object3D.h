@@ -2,12 +2,15 @@
 #define SDL2_3D_ENGINE_OBJECT3D_H
 
 #include <string>
+#include <vector>
 #include "Vertex3D.h"
 #include "Vector3D.h"
 #include "../../include/Render/M3.h"
 #include "../Behaviors/Object3DBehavior.h"
 #include "Point2D.h"
 #include "../Misc/cJSON.h"
+#include "ScriptLUA.h"
+#include "../../sol/sol.hpp"
 
 class Object3D {
 
@@ -29,6 +32,9 @@ protected:
     float rotX, rotY, rotZ; // For easy management from UI
     bool alphaEnabled;
     float alpha;
+
+    std::vector<ScriptLUA*> scripts;
+    sol::environment luaEnvironment;
 
 public:
 
@@ -142,6 +148,20 @@ public:
     [[nodiscard]] const Vertex3D &getRotationFrame() const;
 
     void lookAt(Object3D *o);
+
+    virtual void drawImGuiProperties();
+
+    void attachScript(ScriptLUA *script);
+
+    void runScripts();
+
+    void reloadScriptsEnvironment();
+
+    void reloadScriptsCode();
+
+    virtual const char *getTypeObject();
+
+    virtual const char *getTypeIcon();
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

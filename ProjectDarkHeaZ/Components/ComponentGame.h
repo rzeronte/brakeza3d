@@ -39,8 +39,7 @@
 
 class ComponentGame : public Component {
 private:
-    TentacleIK *tentacle;
-    TentacleIK *tentacle2;
+
     Vertex3D playerStartPosition;
     Vertex3D cameraCountDownPosition;
     Vertex3D cameraInGamePosition;
@@ -110,6 +109,8 @@ private:
     EnemyDialog *currentEnemyDialog;
 
     ShaderExplosion *shaderExplosion;
+
+    std::vector<ScriptLUA*> scripts;
 
     //PathFinder *pathFinder;
 public:
@@ -308,6 +309,12 @@ public:
     ShaderImageMask *dialogBackground;
     Image *boxTutorial;
     ShaderEdgeObject *shaderEdgeObject;
+
+    std::vector<ScriptLUA*> &getScripts();
+
+    void addLUAScript(ScriptLUA *script);
+
+    void reloadScriptsEnvironment();
 };
 
 

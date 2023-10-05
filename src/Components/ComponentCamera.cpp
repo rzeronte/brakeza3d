@@ -1,6 +1,6 @@
 
 #include "../../include/Components/ComponentCamera.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Render/Logging.h"
 
 ComponentCamera::ComponentCamera()
 :

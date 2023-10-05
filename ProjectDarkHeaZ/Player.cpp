@@ -878,3 +878,11 @@ void Player::updateSpriteEnergyShield()
 
     spriteEnergyShield->updatePosition(P1.x, P1.y);
 }
+
+const char *Player::getTypeObject() {
+    return "Player";
+}
+
+const char *Player::getTypeIcon() {
+    return "playerIcon";
+}

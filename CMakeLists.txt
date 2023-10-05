@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS "-O3")
 #set(CMAKE_CXX_FLAGS_DEBUG "-O3 -fsanitize=leak")
-#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -BRAKEZA_DEBUG")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -103,9 +102,7 @@ add_executable(Brakeza3D
     src/Misc/PathFinder.cpp include/Misc/PathFinder.h
 
     include/GUI/GUI.h
-    include/GUI/GUI_Camera.h
-    include/GUI/GUI_Menu.h
-    include/GUI/GUI_Objects3D.h
+        include/GUI/GUI_Objects3D.h
     include/GUI/GUI_Tiles.h
         include/GUI/GUIManager.h
 
@@ -121,10 +118,10 @@ add_executable(Brakeza3D
     imgui/imstb_truetype.h
     imgui/imgui_tables.cpp
 
-    imgui/backends/imgui_impl_sdl.h
-    imgui/backends/imgui_impl_sdl.cpp
-    imgui/backends/imgui_impl_sdlrenderer.h
-    imgui/backends/imgui_impl_sdlrenderer.cpp
+    imgui/backends/imgui_impl_sdl2.h
+    imgui/backends/imgui_impl_sdl2.cpp
+    imgui/backends/imgui_impl_sdlrenderer2.h
+    imgui/backends/imgui_impl_sdlrenderer2.cpp
 
     include/Render/Fragment.cpp include/Render/Fragment.h
     src/Render/M4.cpp include/Render/M4.h
@@ -230,7 +227,10 @@ add_executable(Brakeza3D
         ProjectDarkHeaZ/Enemies/BoidEnemyGhost.cpp
         ProjectDarkHeaZ/Enemies/BoidEnemyGhost.h
         src/Objects/TentacleIK.cpp
-        include/Objects/TentacleIK.h)
+        include/Objects/TentacleIK.h
+        src/Objects/ScriptLUA.cpp
+        include/Objects/ScriptLUA.h
+        include/GUI/GUIConsole.h)
 
 target_link_libraries(Brakeza3D
     pthread
@@ -244,5 +244,6 @@ target_link_libraries(Brakeza3D
     LinearMath
     assimp
     OpenCL
+    lua5.2
 )
 
