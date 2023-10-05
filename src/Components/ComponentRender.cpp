@@ -5,23 +5,24 @@
 #include "../../include/Render/Transforms.h"
 
 ComponentRender::ComponentRender() :
-        fps(0),
-        fpsFrameCounter(0),
-        frameTime(0),
-        sizeTileWidth((EngineSetup::get()->screenWidth / 2)),
-        sizeTileHeight((EngineSetup::get()->screenHeight / 2)),
-        tilesWidth(0),
-        tilesHeight(0),
-        numTiles(0),
-        tilePixelsBufferSize(0),
-        selectedObject(nullptr),
-        clPlatformIds(nullptr),
-        clDeviceIds(nullptr),
-        ret_num_devices(0),
-        ret_num_platforms(0),
-        ret(0),
-        clContext(nullptr),
-        clCommandQueue(nullptr)
+    fps(0),
+    fpsFrameCounter(0),
+    frameTime(0),
+    sizeTileWidth((EngineSetup::get()->screenWidth / 2)),
+    sizeTileHeight((EngineSetup::get()->screenHeight / 2)),
+    tilesWidth(0),
+    tilesHeight(0),
+    numTiles(0),
+    tilePixelsBufferSize(0),
+    selectedObject(nullptr),
+    clPlatformId(nullptr),
+    clDeviceId(nullptr),
+    ret_num_devices(0),
+    ret_num_platforms(0),
+    ret(0),
+    clContext(nullptr),
+    clCommandQueue(nullptr),
+    stateScripts(EngineSetup::LuaStateScripts::LUA_STOP)
 {
 }
 
@@ -31,7 +32,6 @@ void ComponentRender::onStart()
     setEnabled(true);
 
     initTiles();
-    initOpenCL();
 }
 
 void ComponentRender::preUpdate()
@@ -115,7 +115,7 @@ void ComponentRender::writeOCLBufferIntoHost() const
 {
     clEnqueueReadBuffer(clCommandQueue,
         EngineBuffers::get()->videoBufferOCL,
-        CL_TRUE,
+        CL_FALSE,
         0,
         EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
         EngineBuffers::get()->videoBuffer,
@@ -139,7 +139,9 @@ void ComponentRender::writeOCLBufferIntoHost() const
 
 void ComponentRender::writeOCLBuffersFromHost() const
 {
-    clEnqueueWriteBuffer(
+    cl_int ret;
+
+    ret = clEnqueueWriteBuffer(
         clCommandQueue,
         EngineBuffers::get()->videoBufferOCL,
         CL_TRUE,
@@ -151,18 +153,16 @@ void ComponentRender::writeOCLBuffersFromHost() const
         nullptr
     );
 
+    if (ret != CL_SUCCESS) {
+        Logging::Log("Error writing to Video OCL Buffer: (%d)", ret);
+    }
+
     float max_value = 100000;
-    clEnqueueFillBuffer(
-        clCommandQueue,
-        EngineBuffers::get()->depthBufferOCL,
-        &max_value,
-        sizeof(float),
-        0,
-        EngineBuffers::get()->sizeBuffers * sizeof(unsigned int),
-        0,
-        NULL,
-        NULL
-    );
+    clEnqueueFillBuffer(clCommandQueue, EngineBuffers::get()->depthBufferOCL, &max_value, sizeof(float), 0, EngineBuffers::get()->sizeBuffers * sizeof(unsigned int), 0, NULL, NULL);
+
+    if (ret != CL_SUCCESS) {
+        Logging::Log("Error writing to Depth OCL Buffer (%d)", ret);
+    }
 }
 void ComponentRender::onEnd() {
 }
@@ -1054,7 +1054,7 @@ cl_device_id ComponentRender::selectDefaultGPUDevice()
             }
 
             if (std::string(vendor).find(defaultGPU) != std::string::npos) {
-                clPlatformIds = platform;
+                clPlatformId = platform;
                 return device;
             }
         }
@@ -1069,43 +1069,42 @@ void ComponentRender::initOpenCL()
 
     loadConfig();
 
-    ret = clGetPlatformIDs(1, &clPlatformIds, &ret_num_platforms) ;
+    ret = clGetPlatformIDs(1, &clPlatformId, &ret_num_platforms) ;
 
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get platform_id");
     }
 
-    ret = clGetDeviceIDs(clPlatformIds, CL_DEVICE_TYPE_GPU, 1, &clDeviceIds, &ret_num_devices);
+    ret = clGetDeviceIDs(clPlatformId, CL_DEVICE_TYPE_GPU, 1, &clDeviceId, &ret_num_devices);
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get cpu_device_id");
     }
 
-    selectedClDeviceId = selectDefaultGPUDevice();
-    if (selectedClDeviceId == nullptr) {
+    clDeviceId = selectDefaultGPUDevice();
+    if (clDeviceId == nullptr) {
         Logging::Log("Unable to find a suitable NVIDIA device");
         return;
     }
 
-    cl_context_properties properties[] = {
-        CL_CONTEXT_PLATFORM,
-        (cl_context_properties) clPlatformIds,
-        0
-    };
+    cl_context_properties properties[3];
+    properties[0]= CL_CONTEXT_PLATFORM;
+    properties[1]= (cl_context_properties) clPlatformId;
+    properties[2]= 0;
 
-    clContext = clCreateContext(properties, ret_num_devices, &clDeviceIds, NULL, NULL, &ret);
-    clCommandQueue = clCreateCommandQueue(clContext, selectedClDeviceId, NULL, &ret);
+    clContext = clCreateContext(properties, 1, &clDeviceId, NULL, NULL, &ret);
+    clCommandQueue = clCreateCommandQueue(clContext, clDeviceId, NULL, &ret);
 
     EngineBuffers::get()->createOpenCLBuffers(clContext, clCommandQueue);
 
     // Get device information
     char vendor[128];
     char deviceName[128];
-    ret = clGetDeviceInfo(selectedClDeviceId, CL_DEVICE_VENDOR, sizeof(vendor), vendor, nullptr);
+    ret = clGetDeviceInfo(clDeviceId, CL_DEVICE_VENDOR, sizeof(vendor), vendor, nullptr);
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get device vendor");
     }
 
-    ret = clGetDeviceInfo(selectedClDeviceId, CL_DEVICE_NAME, sizeof(deviceName), deviceName, nullptr);
+    ret = clGetDeviceInfo(clDeviceId, CL_DEVICE_NAME, sizeof(deviceName), deviceName, nullptr);
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get device name");
     }
@@ -1210,11 +1209,11 @@ int ComponentRender::getFps(){
 }
 
 _cl_platform_id *ComponentRender::getClPlatformId(){
-    return clPlatformIds;
+    return clPlatformId;
 }
 
 _cl_device_id *ComponentRender::getClDeviceId() {
-    return this->clDeviceIds;
+    return clDeviceId;
 }
 
 _cl_context *ComponentRender::getClContext() {
@@ -1268,7 +1267,7 @@ void ComponentRender::loadKernel(cl_program &program, cl_kernel &kernel, const s
         &ret
     );
 
-    clBuildProgram(program, ret_num_devices, &clDeviceIds, nullptr, nullptr, nullptr);
+    clBuildProgram(program, 1, &clDeviceId, nullptr, nullptr, nullptr);
     kernel = clCreateKernel(program, "onUpdate", &ret);
 
     free(source_str);
@@ -1345,4 +1344,36 @@ void ComponentRender::loadCommonKernels()
     loadKernel(particlesProgram, particlesKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "particles.cl");
     loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "explosion.cl");
     loadKernel(blinkProgram, blinkKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "blink.opencl");
+}
+
+EngineSetup::LuaStateScripts ComponentRender::getStateScripts() {
+    return stateScripts;
+}
+
+void ComponentRender::playScripts()
+{
+    Logging::Message("LUA Scripts state changed to PLAY");
+
+    stateScripts = EngineSetup::LuaStateScripts::LUA_PLAY;
+}
+
+void ComponentRender::stopScripts()
+{
+    Logging::Message("LUA Scripts state changed to STOP");
+
+    stateScripts = EngineSetup::LuaStateScripts::LUA_STOP;
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    for (auto object : sceneObjects) {
+        object->reloadScriptsEnvironment();
+    }
+}
+
+void ComponentRender::reloadScripts()
+{
+    Logging::Message("Reloading LUA Scripts...");
+
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    for (auto object : sceneObjects) {
+        object->reloadScriptsCode();
+    }
 }

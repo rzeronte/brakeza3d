@@ -59,7 +59,9 @@ void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish) {
 }
 
 void ComponentWindow::initWindow() {
-    Logging::Log("Initializating ComponentWindow...");
+    Logging::Message("Initializating ComponentWindow...");
+
+    Logging::Message("Available video drivers:");
 
     for( int i = 0; i < SDL_GetNumRenderDrivers(); ++i ){
         SDL_RendererInfo rendererInfo = {};
@@ -87,7 +89,7 @@ void ComponentWindow::initWindow() {
         }
 
 #ifdef WIN32
-        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "direct3d11");
+        //SDL_SetHint(SDL_HINT_RENDER_DRIVER, "direct3d11");
 #endif
 
         screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);

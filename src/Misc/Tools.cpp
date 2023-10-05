@@ -479,3 +479,13 @@ void Tools::makeLoopSprite(Vertex3D position, TextureAnimated *animation, float 
         Brakeza3D::uniqueObjectLabel("fadeInSpriteExplosion")
     );
 }
+
+std::string Tools::getExtensionFromFilename(const std::string& filename)
+{
+    size_t dotPosition = filename.find_last_of(".");
+    if (dotPosition != std::string::npos) {
+        return filename.substr(dotPosition + 1);
+    }
+
+    return "";
+}

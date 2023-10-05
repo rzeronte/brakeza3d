@@ -4,7 +4,6 @@
 
 #include <SDL2/SDL.h>
 #include "Component.h"
-#include "ComponentCamera.h"
 
 class ComponentInput : public Component {
 private:

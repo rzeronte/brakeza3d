@@ -8,7 +8,6 @@
 #include "../EngineSetup.h"
 #include "../Render/M3.h"
 #include "Component.h"
-#include "ComponentWindow.h"
 #include "Camera3D.h"
 #include "ComponentCollisions.h"
 #include <BulletDynamics/Character/btKinematicCharacterController.h>

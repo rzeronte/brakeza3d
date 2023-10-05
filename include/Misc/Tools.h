@@ -102,6 +102,8 @@ public:
     static void makeFadeInSprite(Vertex3D position, TextureAnimated *animation);
 
     static void makeLoopSprite(Vertex3D position, TextureAnimated *animation, float ttl);
+
+    static std::string getExtensionFromFilename(const std::string &filename);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H
