@@ -142,6 +142,7 @@ public:
     std::string TEXTURES_FOLDER = ASSETS_FOLDER + "textures/";
     std::string GRIDS_FOLDER = ASSETS_FOLDER + "grids/";
     std::string ICONS_FOLDER = ASSETS_FOLDER + "icons/";
+    std::string SCRIPTS_FOLDER = ASSETS_FOLDER + "scripts/";
 
     std::string CL_SHADERS_FOLDER = "../kernels/";
 
@@ -171,10 +172,10 @@ public:
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 
-    float TESTING_INT1 = 1;
-    float TESTING_INT2 = 2;
-    float TESTING_INT3 = 3;
-    float TESTING_INT4 = 4;
+    float TESTING_INT1 = 0.1f;
+    float TESTING_INT2 = 0.03f;
+    float TESTING_INT3 = 1;
+    float TESTING_INT4 = 0.1f;
 
     bool ENABLE_DEPTH_OF_FIELD = true;
     float LIGHTMAPPING_BLEND_INTENSITY = 0.05f;
@@ -275,6 +276,11 @@ public:
         ITEM_EXTRA_DASH = 4,
         ITEM_FAST_SHOOT_CADENCE = 5
     } StoreItems;
+
+    typedef enum {
+        LUA_STOP = 0,
+        LUA_PLAY = 1,
+    } LuaStateScripts;
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

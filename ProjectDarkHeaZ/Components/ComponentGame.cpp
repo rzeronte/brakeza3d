@@ -32,6 +32,9 @@ void ComponentGame::onStart()
     Logging::head("ComponentGame onStart");
 
     player = new Player();
+    player->attachScript(new ScriptLUA("object.lua", "object.json"));
+
+    addLUAScript(new ScriptLUA("project.lua", "project.json"));
 
     setGameState(EngineSetup::GameState::NONE);
 
@@ -124,20 +127,7 @@ void ComponentGame::onStart()
     explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion_c.png"), 128, 128, 15, 35)));
     explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion_d.png"), 128, 128, 15, 35)));
 
-    tentacle = new TentacleIK(player->getPosition(), player);
-    tentacle->setRotation(M3::getMatrixRotationForEulerAngles(0, 0, 90));
-    Vertex3D lastEnd = player->getPosition() + Vertex3D(2500, -3000, 0);
-
-    for (int i = 0; i < 9; i++) {
-        auto start = lastEnd;
-        auto end = start + Vertex3D(0, -500, 0);
-        auto rotation = M3::getMatrixRotationForEulerAngles(0, 0, 10 + (i*2));
-
-        tentacle->addJoint( new TentacleSegment(start, end, rotation));
-        lastEnd = end;
-    }
-    tentacle->updateRotations();
-    Brakeza3D::get()->addObject3D(tentacle, "tentacle");
+    ComponentsManager::get()->getComponentRender()->setSelectedObject(player);
 }
 
 void ComponentGame::loadShaders()
@@ -1602,4 +1592,22 @@ void ComponentGame::handleOnUpdateSplash(const float alpha)
         //videoPlayer->play();
     }
 
+}
+
+std::vector<ScriptLUA*> &ComponentGame::getScripts()
+{
+    return scripts;
+}
+
+void ComponentGame::addLUAScript(ScriptLUA *script)
+{
+    scripts.push_back(script);
+    reloadScriptsEnvironment();
+}
+
+void ComponentGame::reloadScriptsEnvironment()
+{
+    for(auto script : scripts) {
+        script->reloadGlobals();
+    }
 }

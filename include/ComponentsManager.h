@@ -12,6 +12,7 @@
 #include "../ProjectDarkHeaZ/Components/ComponentHUD.h"
 #include "../ProjectDarkHeaZ/Components/ComponentGame.h"
 #include "../ProjectDarkHeaZ/Components/ComponentGameInput.h"
+#include "Components/ComponentWindow.h"
 
 enum ComponentID {
     COMPONENT_WINDOW = 0,

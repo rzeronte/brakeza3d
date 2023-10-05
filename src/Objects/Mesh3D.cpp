@@ -491,3 +491,21 @@ Mesh3DRenderLayer Mesh3D::getLayer() const {
 void Mesh3D::setLayer(Mesh3DRenderLayer layer) {
     Mesh3D::layer = layer;
 }
+
+void Mesh3D::drawImGuiProperties()
+{
+    Object3D::drawImGuiProperties();
+
+    if (ImGui::TreeNode("Cositas de Mesh3D")) {
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "ese");
+        ImGui::TreePop();
+    }
+}
+
+const char *Mesh3D::getTypeObject() {
+    return "Mesh3D";
+}
+
+const char *Mesh3D::getTypeIcon() {
+    return "meshIcon";
+}

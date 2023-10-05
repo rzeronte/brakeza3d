@@ -6,17 +6,22 @@
 //  [X] Platform: Keyboard support. Since 1.87 we are using the io.AddKeyEvent() function. Pass ImGuiKey values to all key functions e.g. ImGui::IsKeyPressed(ImGuiKey_Space). [Legacy ALLEGRO_KEY_* values will also be supported unless IMGUI_DISABLE_OBSOLETE_KEYIO is set]
 //  [X] Platform: Clipboard support (from Allegro 5.1.12)
 //  [X] Platform: Mouse cursor shape and visibility. Disable with 'io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange'.
-// Issues:
-//  [ ] Renderer: The renderer is suboptimal as we need to unindex our buffers and convert vertices manually.
+// Missing features:
+//  [ ] Renderer: Multi-viewport support (multiple windows)..
+//  [ ] Renderer: The renderer is suboptimal as we need to convert vertices manually.
 //  [ ] Platform: Missing gamepad support.
 
 // You can use unmodified imgui_impl_* files in your project. See examples/ folder for examples of using this.
 // Prefer including the entire imgui/ repository into your project (either as a copy or as a submodule), and only build the backends you need.
-// If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
-// Read online: https://github.com/ocornut/imgui/tree/master/docs
+// Learn about Dear ImGui:
+// - FAQ                  https://dearimgui.com/faq
+// - Getting Started      https://dearimgui.com/getting-started
+// - Documentation        https://dearimgui.com/docs (same as your local docs/ folder).
+// - Introduction, links and more at the top of imgui.cpp
 
 // CHANGELOG
 // (minor and older changes stripped away, please see git history for details)
+//  2022-11-30: Renderer: Restoring using al_draw_indexed_prim() when Allegro version is >= 5.2.5.
 //  2022-10-11: Using 'nullptr' instead of 'NULL' as per our switch to C++11.
 //  2022-09-26: Inputs: Renamed ImGuiKey_ModXXX introduced in 1.87 to ImGuiMod_XXX (old names still supported).
 //  2022-01-26: Inputs: replaced short-lived io.AddKeyModsEvent() (added two weeks ago) with io.AddKeyEvent() using ImGuiKey_ModXXX flags. Sorry for the confusion.
@@ -37,6 +42,7 @@
 //  2018-11-30: Misc: Setting up io.BackendPlatformName/io.BackendRendererName so they can be displayed in the About Window.
 //  2018-06-13: Platform: Added clipboard support (from Allegro 5.1.12).
 //  2018-06-13: Renderer: Use draw_data->DisplayPos and draw_data->DisplaySize to setup projection matrix and clipping rectangle.
+//  2018-06-13: Renderer: Stopped using al_draw_indexed_prim() as it is buggy in Allegro's DX9 backend.
 //  2018-06-13: Renderer: Backup/restore transform and clipping rectangle.
 //  2018-06-11: Misc: Setup io.BackendFlags ImGuiBackendFlags_HasMouseCursors flag + honor ImGuiConfigFlags_NoMouseCursorChange flag.
 //  2018-04-18: Misc: Renamed file from imgui_impl_a5.cpp to imgui_impl_allegro5.cpp.
@@ -45,10 +51,11 @@
 //  2018-02-06: Misc: Removed call to ImGui::Shutdown() which is not available from 1.60 WIP, user needs to call CreateContext/DestroyContext themselves.
 //  2018-02-06: Inputs: Added mapping for ImGuiKey_Space.
 
+#include "imgui.h"
+#ifndef IMGUI_DISABLE
+#include "imgui_impl_allegro5.h"
 #include <stdint.h>     // uint64_t
 #include <cstring>      // memcpy
-#include "imgui.h"
-#include "imgui_impl_allegro5.h"
 
 // Allegro
 #include <allegro5/allegro.h>
@@ -56,12 +63,26 @@
 #ifdef _WIN32
 #include <allegro5/allegro_windows.h>
 #endif
-#define ALLEGRO_HAS_CLIPBOARD   (ALLEGRO_VERSION_INT >= ((5 << 24) | (1 << 16) | (12 << 8)))    // Clipboard only supported from Allegro 5.1.12
+#define ALLEGRO_HAS_CLIPBOARD           (ALLEGRO_VERSION_INT >= ((5 << 24) | (1 << 16) | (12 << 8))) // Clipboard only supported from Allegro 5.1.12
+#define ALLEGRO_HAS_DRAW_INDEXED_PRIM   (ALLEGRO_VERSION_INT >= ((5 << 24) | (2 << 16) | ( 5 << 8))) // DX9 implementation of al_draw_indexed_prim() got fixed in Allegro 5.2.5
 
 // Visual Studio warnings
 #ifdef _MSC_VER
 #pragma warning (disable: 4127) // condition expression is constant
 #endif
+
+struct ImDrawVertAllegro
+{
+    ImVec2          pos;
+    ImVec2          uv;
+    ALLEGRO_COLOR   col;
+};
+
+// FIXME-OPT: Unfortunately Allegro doesn't support 32-bit packed colors so we have to convert them to 4 float as well..
+// FIXME-OPT: Consider inlining al_map_rgba()?
+// see https://github.com/liballeg/allegro5/blob/master/src/pixels.c#L554
+// and https://github.com/liballeg/allegro5/blob/master/include/allegro5/internal/aintern_pixels.h
+#define DRAW_VERT_IMGUI_TO_ALLEGRO(DST, SRC)  { (DST)->pos = (SRC)->pos; (DST)->uv = (SRC)->uv; unsigned char* c = (unsigned char*)&(SRC)->col; (DST)->col = al_map_rgba(c[0], c[1], c[2], c[3]); }
 
 // Allegro Data
 struct ImGui_ImplAllegro5_Data
@@ -73,6 +94,9 @@ struct ImGui_ImplAllegro5_Data
     ALLEGRO_VERTEX_DECL*        VertexDecl;
     char*                       ClipboardTextData;
 
+    ImVector<ImDrawVertAllegro> BufVertices;
+    ImVector<int>               BufIndices;
+
     ImGui_ImplAllegro5_Data()   { memset((void*)this, 0, sizeof(*this)); }
 };
 
@@ -80,13 +104,6 @@ struct ImGui_ImplAllegro5_Data
 // It is STRONGLY preferred that you use docking branch with multi-viewports (== single Dear ImGui context + multiple windows) instead of multiple Dear ImGui contexts.
 // FIXME: multi-context support is not well tested and probably dysfunctional in this backend.
 static ImGui_ImplAllegro5_Data* ImGui_ImplAllegro5_GetBackendData()     { return ImGui::GetCurrentContext() ? (ImGui_ImplAllegro5_Data*)ImGui::GetIO().BackendPlatformUserData : nullptr; }
-
-struct ImDrawVertAllegro
-{
-    ImVec2 pos;
-    ImVec2 uv;
-    ALLEGRO_COLOR col;
-};
 
 static void ImGui_ImplAllegro5_SetupRenderState(ImDrawData* draw_data)
 {
@@ -132,35 +149,40 @@ void ImGui_ImplAllegro5_RenderDrawData(ImDrawData* draw_data)
     {
         const ImDrawList* cmd_list = draw_data->CmdLists[n];
 
-        // Allegro's implementation of al_draw_indexed_prim() for DX9 is completely broken. Unindex our buffers ourselves.
-        // FIXME-OPT: Unfortunately Allegro doesn't support 32-bit packed colors so we have to convert them to 4 float as well..
-        static ImVector<ImDrawVertAllegro> vertices;
-        vertices.resize(cmd_list->IdxBuffer.Size);
-        for (int i = 0; i < cmd_list->IdxBuffer.Size; i++)
+        ImVector<ImDrawVertAllegro>& vertices = bd->BufVertices;
+#if ALLEGRO_HAS_DRAW_INDEXED_PRIM
+        vertices.resize(cmd_list->VtxBuffer.Size);
+        for (int i = 0; i < cmd_list->VtxBuffer.Size; i++)
         {
-            const ImDrawVert* src_v = &cmd_list->VtxBuffer[cmd_list->IdxBuffer[i]];
+            const ImDrawVert* src_v = &cmd_list->VtxBuffer[i];
             ImDrawVertAllegro* dst_v = &vertices[i];
-            dst_v->pos = src_v->pos;
-            dst_v->uv = src_v->uv;
-            unsigned char* c = (unsigned char*)&src_v->col;
-            dst_v->col = al_map_rgba(c[0], c[1], c[2], c[3]);
+            DRAW_VERT_IMGUI_TO_ALLEGRO(dst_v, src_v);
         }
-
         const int* indices = nullptr;
         if (sizeof(ImDrawIdx) == 2)
         {
-            // FIXME-OPT: Unfortunately Allegro doesn't support 16-bit indices.. You can '#define ImDrawIdx int' in imconfig.h to request Dear ImGui to output 32-bit indices.
+            // FIXME-OPT: Allegro doesn't support 16-bit indices.
+            // You can '#define ImDrawIdx int' in imconfig.h to request Dear ImGui to output 32-bit indices.
             // Otherwise, we convert them from 16-bit to 32-bit at runtime here, which works perfectly but is a little wasteful.
-            static ImVector<int> indices_converted;
-            indices_converted.resize(cmd_list->IdxBuffer.Size);
+            bd->BufIndices.resize(cmd_list->IdxBuffer.Size);
             for (int i = 0; i < cmd_list->IdxBuffer.Size; ++i)
-                indices_converted[i] = (int)cmd_list->IdxBuffer.Data[i];
-            indices = indices_converted.Data;
+                bd->BufIndices[i] = (int)cmd_list->IdxBuffer.Data[i];
+            indices = bd->BufIndices.Data;
         }
         else if (sizeof(ImDrawIdx) == 4)
         {
             indices = (const int*)cmd_list->IdxBuffer.Data;
         }
+#else
+        // Allegro's implementation of al_draw_indexed_prim() for DX9 was broken until 5.2.5. Unindex buffers ourselves while converting vertex format.
+        vertices.resize(cmd_list->IdxBuffer.Size);
+        for (int i = 0; i < cmd_list->IdxBuffer.Size; i++)
+        {
+            const ImDrawVert* src_v = &cmd_list->VtxBuffer[cmd_list->IdxBuffer[i]];
+            ImDrawVertAllegro* dst_v = &vertices[i];
+            DRAW_VERT_IMGUI_TO_ALLEGRO(dst_v, src_v);
+        }
+#endif
 
         // Render command lists
         ImVec2 clip_off = draw_data->DisplayPos;
@@ -187,7 +209,11 @@ void ImGui_ImplAllegro5_RenderDrawData(ImDrawData* draw_data)
                 // Apply scissor/clipping rectangle, Draw
                 ALLEGRO_BITMAP* texture = (ALLEGRO_BITMAP*)pcmd->GetTexID();
                 al_set_clipping_rectangle(clip_min.x, clip_min.y, clip_max.x - clip_min.x, clip_max.y - clip_min.y);
+#if ALLEGRO_HAS_DRAW_INDEXED_PRIM
+                al_draw_indexed_prim(&vertices[0], bd->VertexDecl, texture, &indices[pcmd->IdxOffset], pcmd->ElemCount, ALLEGRO_PRIM_TRIANGLE_LIST);
+#else
                 al_draw_prim(&vertices[0], bd->VertexDecl, texture, pcmd->IdxOffset, pcmd->IdxOffset + pcmd->ElemCount, ALLEGRO_PRIM_TRIANGLE_LIST);
+#endif
             }
         }
     }
@@ -254,7 +280,7 @@ void ImGui_ImplAllegro5_InvalidateDeviceObjects()
     ImGui_ImplAllegro5_Data* bd = ImGui_ImplAllegro5_GetBackendData();
     if (bd->Texture)
     {
-        io.Fonts->SetTexID(nullptr);
+        io.Fonts->SetTexID(0);
         al_destroy_bitmap(bd->Texture);
         bd->Texture = nullptr;
     }
@@ -441,8 +467,9 @@ void ImGui_ImplAllegro5_Shutdown()
     if (bd->ClipboardTextData)
         al_free(bd->ClipboardTextData);
 
-    io.BackendPlatformUserData = nullptr;
     io.BackendPlatformName = io.BackendRendererName = nullptr;
+    io.BackendPlatformUserData = nullptr;
+    io.BackendFlags &= ~ImGuiBackendFlags_HasMouseCursors;
     IM_DELETE(bd);
 }
 
@@ -581,3 +608,7 @@ void ImGui_ImplAllegro5_NewFrame()
     // Setup mouse cursor shape
     ImGui_ImplAllegro5_UpdateMouseCursor();
 }
+
+//-----------------------------------------------------------------------------
+
+#endif // #ifndef IMGUI_DISABLE

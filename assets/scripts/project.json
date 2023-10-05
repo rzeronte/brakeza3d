@@ -1,0 +1,12 @@
+{
+	"types":	[
+		{
+			"name":	"globalita",
+			"value":	"1"
+		},
+		{
+			"name":	"globalita2",
+			"value":	"1"
+		}
+	]
+}

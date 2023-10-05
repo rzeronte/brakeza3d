@@ -35,10 +35,10 @@ void MeshOpenCLRenderer::onUpdate(Image *texture)
     auto componentCamera = ComponentsManager::get()->getComponentCamera();
     meshContext = OCLMeshContext(
         ObjectData(
-                OCVertex3D(object->getPosition().x, object->getPosition().y, object->getPosition().z),
-                OCVertex3D(object->getRotation().getPitch(), object->getRotation().getYaw(), object->getRotation().getRoll()),
-                object->getScale(),
-                object->isEnableLights()
+            OCVertex3D(object->getPosition().x, object->getPosition().y, object->getPosition().z),
+            OCVertex3D(object->getRotation().getPitch(), object->getRotation().getYaw(), object->getRotation().getRoll()),
+            object->getScale(),
+            object->isEnableLights()
         ),
         componentCamera->getCameraData(),
         componentCamera->getFrustumData()

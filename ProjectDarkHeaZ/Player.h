@@ -224,6 +224,10 @@ public:
     void initLight();
 
     void updateSpriteEnergyShield();
+
+    const char *getTypeObject() override;
+
+    const char *getTypeIcon() override;
 };
 
 

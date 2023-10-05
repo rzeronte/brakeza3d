@@ -1,0 +1,9 @@
+{
+	"types":	[{
+			"name":	"test",
+			"value":	"1"
+		}, {
+			"name":	"step",
+			"value":	"2"
+		}]
+}

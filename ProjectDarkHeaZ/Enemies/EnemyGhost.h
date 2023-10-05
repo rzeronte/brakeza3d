@@ -14,6 +14,7 @@
 #include "../ProjectileRay.h"
 #include "../../include/Behaviors/RotatableToTarget.h"
 #include "../../include/Objects/Swarm.h"
+#include "../../include/Objects/TentacleIK.h"
 
 class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy, public LivingObject, public RotatableToTarget {
 private:
@@ -25,6 +26,7 @@ private:
 
     ParticleEmitter *particleEmitter;
     SwarmObject *swarmObject;
+    TentacleIK *tentacle;
 protected:
     std::vector<ProjectileRay *> fixedLasers;
     std::vector<EnemyDialog *> dialogs;

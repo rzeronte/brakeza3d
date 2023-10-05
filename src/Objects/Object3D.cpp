@@ -2,8 +2,8 @@
 #include <iostream>
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/EngineSetup.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
 Object3D::Object3D() :
     position(Vertex3D(1, 1, 1)),
@@ -21,8 +21,10 @@ Object3D::Object3D() :
     alpha(0),
     enableLights(false),
     scale(1),
-    rotationFrameEnabled(false)
+    rotationFrameEnabled(false),
+    luaEnvironment(sol::environment(Brakeza3D::get()->getLua(), sol::create, Brakeza3D::get()->getLua().globals()))
 {
+    luaEnvironment.set("this", this);
 }
 
 Vertex3D &Object3D::getPosition() {
@@ -151,6 +153,17 @@ void Object3D::onUpdate()
 
     if (getBehavior() != nullptr) {
         motion->onUpdate(position);
+    }
+
+    if (ComponentsManager::get()->getComponentRender()->getStateScripts() == EngineSetup::LUA_PLAY) {
+        runScripts();
+    }
+}
+
+void Object3D::runScripts()
+{
+    for (auto script: scripts) {
+        script->run(luaEnvironment);
     }
 }
 
@@ -282,4 +295,58 @@ void Object3D::lookAt(Object3D *o)
     r.setZ(rightVector.z, correctedUpVector.z, -direction.z);
 
     setRotation(r);
+}
+
+void Object3D::drawImGuiProperties()
+{
+    ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Selected object: ");
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", getLabel().c_str());
+
+    if (ImGui::TreeNode("Position")) {
+        const float range_min = -500000;
+        const float range_max = 500000;
+
+        ImGui::SliderScalar("X", ImGuiDataType_Float, &position.x, &range_min, &range_max, "%f");
+        ImGui::SliderScalar("Y", ImGuiDataType_Float, &position.y, &range_min, &range_max, "%f");
+        ImGui::SliderScalar("Z", ImGuiDataType_Float, &position.z, &range_min, &range_max, "%f");
+
+        ImGui::TreePop();
+    }
+
+    if (ImGui::TreeNode("Scripts")) {
+        for (auto script: scripts) {
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", script->scriptFilename.c_str());
+        }
+        ImGui::TreePop();
+    }
+}
+
+void Object3D::attachScript(ScriptLUA *script)
+{
+    scripts.push_back(script);
+    reloadScriptsEnvironment();
+}
+
+void Object3D::reloadScriptsEnvironment()
+{
+    for (auto script : scripts) {
+        script->reloadEnvironment(luaEnvironment);
+    }
+}
+
+void Object3D::reloadScriptsCode()
+{
+    for (auto script : scripts) {
+        script->reloadScriptCode();
+    }
+}
+
+const char *Object3D::getTypeObject() {
+    return "Object3D";
+}
+
+
+const char *Object3D::getTypeIcon() {
+    return "objectIcon";
 }
