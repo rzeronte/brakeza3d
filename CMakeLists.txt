@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_FLAGS "-g")
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS "-O3")
+set(CMAKE_CXX_FLAGS "-g")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+#set(CMAKE_CXX_FLAGS "-O3")
 #set(CMAKE_CXX_FLAGS_DEBUG "-O3 -fsanitize=leak")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -230,7 +230,8 @@ add_executable(Brakeza3D
         include/Objects/TentacleIK.h
         src/Objects/ScriptLUA.cpp
         include/Objects/ScriptLUA.h
-        include/GUI/GUIConsole.h)
+        include/GUI/GUIConsole.h
+        src/LUAIntegration.h)
 
 target_link_libraries(Brakeza3D
     pthread

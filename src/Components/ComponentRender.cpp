@@ -32,6 +32,8 @@ void ComponentRender::onStart()
     setEnabled(true);
 
     initTiles();
+
+    addLUAScript(new ScriptLUA("project.lua", "project.json"));
 }
 
 void ComponentRender::preUpdate()
@@ -1375,5 +1377,38 @@ void ComponentRender::reloadScripts()
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
         object->reloadScriptsCode();
+    }
+}
+
+
+
+std::vector<ScriptLUA*> &ComponentRender::getScripts()
+{
+    return scripts;
+}
+
+void ComponentRender::addLUAScript(ScriptLUA *script)
+{
+    scripts.push_back(script);
+    reloadScriptsEnvironment();
+}
+
+void ComponentRender::reloadScriptsEnvironment()
+{
+    for(auto script : scripts) {
+        script->reloadGlobals();
+    }
+}
+
+void ComponentRender::removeScript(ScriptLUA *script)
+{
+    Logging::Message("Removing game script %s", script->scriptFilename.c_str());
+
+    for (auto it = scripts.begin(); it != scripts.end(); ++it) {
+        if ((*it)->scriptFilename == script->scriptFilename) {
+            delete *it;
+            scripts.erase(it);
+            return;
+        }
     }
 }

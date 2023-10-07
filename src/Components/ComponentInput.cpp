@@ -2,6 +2,7 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Render/Logging.h"
 
+
 ComponentInput::ComponentInput()
 :
     mouseMotion(false),
@@ -23,9 +24,10 @@ ComponentInput::ComponentInput()
     mouseY(0),
     relativeRendererMouseX(0),
     relativeRendererMouseY(0),
-    gameController(nullptr)
+    gameController(nullptr),
+    keyUpEvent(false),
+    keyDownEvent(false)
 {
-    setEnabled(true);
 }
 
 void ComponentInput::onStart()
@@ -38,6 +40,9 @@ void ComponentInput::preUpdate()
 {
     updateKeyboardMapping();
     updateMouseMapping();
+
+    keyDownEvent = false;
+    keyUpEvent = false;
 }
 
 void ComponentInput::onUpdate()
@@ -56,8 +61,10 @@ void ComponentInput::onEnd()
 
 void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
 {
+
     updateMouseStates(e);
     updateGamePadStates();
+    updateKeyboardStates(e);
     handleWindowEvents(e, finish);
     handleToggleImGui(e);
 
@@ -66,7 +73,6 @@ void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
     handleMouse(e);
     handleProjectileDemo(e);
 }
-
 
 void ComponentInput::handleMouse(SDL_Event *event) {
     ImGuiIO& io = ImGui::GetIO();
@@ -129,6 +135,7 @@ void ComponentInput::handleWindowEvents(SDL_Event *e, bool &end) {
 void ComponentInput::updateKeyboardMapping()
 {
     this->keyboard = (unsigned char *) SDL_GetKeyboardState(nullptr);
+
 }
 
 void ComponentInput::updateMouseStates(SDL_Event *event)
@@ -310,5 +317,40 @@ void ComponentInput::handleToggleImGui(SDL_Event *event)
         if (keyboard[SDL_SCANCODE_LCTRL]) {
             EngineSetup::get()->IMGUI_ENABLED = !EngineSetup::get()->IMGUI_ENABLED;
         }
+    }
+}
+
+bool ComponentInput::isCharPressed(const char *character)
+{
+
+    if (character == nullptr)
+        return false;
+
+    SDL_Scancode keyCode = SDL_GetScancodeFromName(character);
+
+    if (keyCode != SDL_SCANCODE_UNKNOWN && keyboard[keyCode])
+        return true;
+
+    return false;
+}
+
+bool ComponentInput::isKeyEventDown() const
+{
+    return keyDownEvent;
+}
+
+bool ComponentInput::isKeyEventUp() const
+{
+    return keyUpEvent;
+}
+
+void ComponentInput::updateKeyboardStates(SDL_Event *event)
+{
+    if (event->type == SDL_KEYDOWN) {
+        keyDownEvent = true;
+    }
+
+    if (event->type == SDL_KEYUP) {
+        keyUpEvent = true;
     }
 }
