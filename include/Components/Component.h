@@ -43,6 +43,8 @@ public:
     [[nodiscard]] bool isEnabled() const;
 
     virtual void setEnabled(bool enabled);
+
+    virtual ~Component();
 };
 
 

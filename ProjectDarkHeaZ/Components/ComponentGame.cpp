@@ -34,8 +34,6 @@ void ComponentGame::onStart()
     player = new Player();
     player->attachScript(new ScriptLUA("object.lua", "object.json"));
 
-    addLUAScript(new ScriptLUA("project.lua", "project.json"));
-
     setGameState(EngineSetup::GameState::NONE);
 
     auto componentWindow = ComponentsManager::get()->getComponentWindow();
@@ -128,6 +126,7 @@ void ComponentGame::onStart()
     explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion_d.png"), 128, 128, 15, 35)));
 
     ComponentsManager::get()->getComponentRender()->setSelectedObject(player);
+
 }
 
 void ComponentGame::loadShaders()
@@ -1592,22 +1591,4 @@ void ComponentGame::handleOnUpdateSplash(const float alpha)
         //videoPlayer->play();
     }
 
-}
-
-std::vector<ScriptLUA*> &ComponentGame::getScripts()
-{
-    return scripts;
-}
-
-void ComponentGame::addLUAScript(ScriptLUA *script)
-{
-    scripts.push_back(script);
-    reloadScriptsEnvironment();
-}
-
-void ComponentGame::reloadScriptsEnvironment()
-{
-    for(auto script : scripts) {
-        script->reloadGlobals();
-    }
 }

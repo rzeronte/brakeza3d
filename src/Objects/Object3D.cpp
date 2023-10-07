@@ -22,7 +22,10 @@ Object3D::Object3D() :
     enableLights(false),
     scale(1),
     rotationFrameEnabled(false),
-    luaEnvironment(sol::environment(Brakeza3D::get()->getLua(), sol::create, Brakeza3D::get()->getLua().globals()))
+    luaEnvironment(sol::environment(
+        EngineBuffers::get()->getLua(),
+        sol::create, EngineBuffers::get()->getLua().globals())
+    )
 {
     luaEnvironment.set("this", this);
 }
@@ -299,10 +302,6 @@ void Object3D::lookAt(Object3D *o)
 
 void Object3D::drawImGuiProperties()
 {
-    ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Selected object: ");
-    ImGui::SameLine();
-    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", getLabel().c_str());
-
     if (ImGui::TreeNode("Position")) {
         const float range_min = -500000;
         const float range_max = 500000;
@@ -314,12 +313,6 @@ void Object3D::drawImGuiProperties()
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Scripts")) {
-        for (auto script: scripts) {
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 1.0f, 1.0f), "%s", script->scriptFilename.c_str());
-        }
-        ImGui::TreePop();
-    }
 }
 
 void Object3D::attachScript(ScriptLUA *script)
@@ -342,6 +335,19 @@ void Object3D::reloadScriptsCode()
     }
 }
 
+void Object3D::removeScript(ScriptLUA *script)
+{
+    Logging::Message("Removing object script %s", script->scriptFilename.c_str());
+
+    for (auto it = scripts.begin(); it != scripts.end(); ++it) {
+        if ((*it)->scriptFilename == script->scriptFilename) {
+            delete *it;
+            scripts.erase(it);
+            return;
+        }
+    }
+}
+
 const char *Object3D::getTypeObject() {
     return "Object3D";
 }
@@ -349,4 +355,8 @@ const char *Object3D::getTypeObject() {
 
 const char *Object3D::getTypeIcon() {
     return "objectIcon";
+}
+
+const std::vector<ScriptLUA *> &Object3D::getScripts() const {
+    return scripts;
 }

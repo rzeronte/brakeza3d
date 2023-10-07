@@ -77,6 +77,7 @@ private:
     ShaderBlurBuffer *shaderBlurParticles;
 
     EngineSetup::LuaStateScripts stateScripts;
+    std::vector<ScriptLUA*> scripts;
 
 public:
     ComponentRender();
@@ -224,9 +225,18 @@ public:
     EngineSetup::LuaStateScripts getStateScripts();
 
     void playScripts();
+
     void stopScripts();
 
     void reloadScripts();
+
+    std::vector<ScriptLUA*> &getScripts();
+
+    void addLUAScript(ScriptLUA *script);
+
+    void reloadScriptsEnvironment();
+
+    void removeScript(ScriptLUA *script);
 };
 
 

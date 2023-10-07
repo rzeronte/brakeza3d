@@ -34,6 +34,9 @@ private:
     int relativeRendererMouseY;
 
     _SDL_GameController *gameController;
+    bool keyUpEvent;
+    bool keyDownEvent;
+
 public:
     ComponentInput();
 
@@ -106,6 +109,13 @@ public:
     [[nodiscard]] float getControllerAxisRightY() const;
 
     void handleToggleImGui(SDL_Event *event);
+
+    [[maybe_unused]] bool isCharPressed(const char *character);
+
+    void updateKeyboardStates(SDL_Event *event);
+
+    bool isKeyEventDown() const;
+    bool isKeyEventUp() const;
 };
 
 
