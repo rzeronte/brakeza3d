@@ -113,3 +113,7 @@ void TextWriter::setFont(TTF_Font *font) {
     TextWriter::font = font;
 }
 
+TTF_Font *TextWriter::getFont() const {
+    return font;
+}
+

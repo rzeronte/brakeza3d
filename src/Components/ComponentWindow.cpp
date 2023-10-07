@@ -25,8 +25,8 @@ void ComponentWindow::preUpdate()
 
 void ComponentWindow::clearVideoBuffers()
 {
-    BUFFERS->clearDepthBuffer();
-    BUFFERS->clearVideoBuffer();
+    //BUFFERS->clearDepthBuffer();
+    //BUFFERS->clearVideoBuffer();
 }
 
 void ComponentWindow::renderToWindow()
@@ -52,8 +52,6 @@ void ComponentWindow::onEnd()
     SDL_FreeSurface(screenSurface);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
-
-    Logging::Message("Brakeza3D exit, good bye ;)");
 }
 
 void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish) {
@@ -61,9 +59,16 @@ void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish) {
 }
 
 void ComponentWindow::initWindow() {
-    Logging::Log("Initializating ComponentWindow...");
+    Logging::Message("Initializating ComponentWindow...");
 
-    //Initialize SDL
+    Logging::Message("Available video drivers:");
+
+    for( int i = 0; i < SDL_GetNumRenderDrivers(); ++i ){
+        SDL_RendererInfo rendererInfo = {};
+        SDL_GetRenderDriverInfo( i, &rendererInfo );
+        Logging::Message("Driver rendering: %s", rendererInfo.name);
+    }
+
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(-1);
@@ -83,9 +88,13 @@ void ComponentWindow::initWindow() {
             exit(-1);
         }
 
+#ifdef WIN32
+        //SDL_SetHint(SDL_HINT_RENDER_DRIVER, "direct3d11");
+#endif
+
         screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
         SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_MOD);
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
 
         screenTexture = SDL_CreateTexture(
             renderer,
@@ -107,12 +116,23 @@ void ComponentWindow::initFontsTTF()
         Logging::Log(TTF_GetError());
         exit(-1);
     }
-    std::string pathFont = SETUP->FONTS_FOLDER + "TroubleFont.ttf";
+
+    std::string pathFont = SETUP->FONTS_FOLDER + "TheLastCall-Regular.ttf";
     Logging::Log("Loading FONT: %s", pathFont.c_str());
 
-    fontDefault = TTF_OpenFont(pathFont.c_str(), 50);
+    fontDefault = TTF_OpenFont(pathFont.c_str(), 35);
 
     if (!fontDefault)  {
+        Logging::Log(TTF_GetError());
+        exit(-1);
+    }
+
+    std::string pathAlternativeFont = SETUP->FONTS_FOLDER + "DisposableDroidBB.ttf";
+    Logging::Log("Loading FONT: %s", pathAlternativeFont.c_str());
+
+    fontAlternative = TTF_OpenFont(pathAlternativeFont.c_str(), 65);
+
+    if (!fontAlternative)  {
         Logging::Log(TTF_GetError());
         exit(-1);
     }
@@ -126,10 +146,10 @@ SDL_Renderer *ComponentWindow::getRenderer() const {
     return renderer;
 }
 
-SDL_Texture *ComponentWindow::getScreenTexture() const {
-    return screenTexture;
+TTF_Font *ComponentWindow::getFontDefault() {
+    return fontDefault;
 }
 
-TTF_Font *ComponentWindow::getFontDefault() const {
-    return fontDefault;
+TTF_Font *ComponentWindow::getFontAlternative() {
+    return fontAlternative;
 }

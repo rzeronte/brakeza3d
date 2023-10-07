@@ -2,6 +2,7 @@
 // This is a slightly modified version of stb_textedit.h 1.14.
 // Those changes would need to be pushed into nothings/stb:
 // - Fix in stb_textedit_discard_redo (see https://github.com/nothings/stb/issues/321)
+// - Fix in stb_textedit_find_charpos to handle last line (see https://github.com/ocornut/imgui/issues/6000 + #6783)
 // Grep for [DEAR IMGUI] to find the changes.
 
 // stb_textedit.h - v1.14  - public domain - Sean Barrett
@@ -257,11 +258,11 @@
 // as possible. (For example, to locate the mouse pointer in the text, we
 // could define functions that return the X and Y positions of characters
 // and binary search Y and then X, but if we're doing dynamic layout this
-// will run the layout algorithm many times, so instead we manually search
+// will runEnvironment the layout algorithm many times, so instead we manually search
 // forward in one pass. Similar logic applies to e.g. up-arrow and
 // down-arrow movement.)
 //
-// If it's run in a widget that *has* cached the layout, then this is less
+// If it's runEnvironment in a widget that *has* cached the layout, then this is less
 // efficient, but it's not horrible on modern computers. But you wouldn't
 // want to edit million-line files with it.
 
@@ -524,29 +525,14 @@ static void stb_textedit_find_charpos(StbFindState *find, STB_TEXTEDIT_STRING *s
    int z = STB_TEXTEDIT_STRINGLEN(str);
    int i=0, first;
 
-   if (n == z) {
-      // if it's at the end, then find the last line -- simpler than trying to
-      // explicitly handle this case in the regular code
-      if (single_line) {
-         STB_TEXTEDIT_LAYOUTROW(&r, str, 0);
-         find->y = 0;
-         find->first_char = 0;
-         find->length = z;
-         find->height = r.ymax - r.ymin;
-         find->x = r.x1;
-      } else {
-         find->y = 0;
-         find->x = 0;
-         find->height = 1;
-         while (i < z) {
-            STB_TEXTEDIT_LAYOUTROW(&r, str, i);
-            prev_start = i;
-            i += r.num_chars;
-         }
-         find->first_char = i;
-         find->length = 0;
-         find->prev_first = prev_start;
-      }
+   if (n == z && single_line) {
+      // special case if it's at the end (may not be needed?)
+      STB_TEXTEDIT_LAYOUTROW(&r, str, 0);
+      find->y = 0;
+      find->first_char = 0;
+      find->length = z;
+      find->height = r.ymax - r.ymin;
+      find->x = r.x1;
       return;
    }
 
@@ -557,9 +543,16 @@ static void stb_textedit_find_charpos(StbFindState *find, STB_TEXTEDIT_STRING *s
       STB_TEXTEDIT_LAYOUTROW(&r, str, i);
       if (n < i + r.num_chars)
          break;
+      if (i + r.num_chars == z && z > 0 && STB_TEXTEDIT_GETCHAR(str, z - 1) != STB_TEXTEDIT_NEWLINE)  // [DEAR IMGUI] special handling for last line
+         break;   // [DEAR IMGUI]
       prev_start = i;
       i += r.num_chars;
       find->y += r.baseline_y_delta;
+      if (i == z) // [DEAR IMGUI]
+      {
+         r.num_chars = 0; // [DEAR IMGUI]
+         break;   // [DEAR IMGUI]
+      }
    }
 
    find->first_char = first = i;

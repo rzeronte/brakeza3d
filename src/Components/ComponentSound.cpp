@@ -11,7 +11,7 @@ ComponentSound::ComponentSound()
 
 void ComponentSound::onStart()
 {
-    Logging::Log("ComponentSound onStart");
+    Logging::head("ComponentSound onStart");
     loadSoundsJSON();
 }
 
@@ -51,10 +51,11 @@ void ComponentSound::initSoundSystem()
 
 void ComponentSound::loadSoundsJSON()
 {
-    Logging::Log("Loading Sounds in package...");
+    auto filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_SOUNDS;
+    Logging::Message("Loading Sounds (%s)", filePath.c_str());
 
     size_t file_size;
-    auto contentFile = Tools::readFile(EngineSetup::get()->ROOT_FOLDER + EngineSetup::get()->CFG_SOUNDS, file_size);
+    auto contentFile = Tools::readFile(filePath.c_str(), file_size);
 
     cJSON *myDataJSON = cJSON_Parse(contentFile);
 
@@ -102,10 +103,10 @@ int ComponentSound::playSound(Mix_Chunk *chunk, int channel, int times)
 int ComponentSound::sound(const std::string& sound, int channel, int times)
 {
     return ComponentSound::playSound(
-            soundPackage.getByLabel(sound),
-            channel,
-            times
-    );;
+        soundPackage.getByLabel(sound),
+        channel,
+        times
+    );
 }
 
 void ComponentSound::playMusic(Mix_Music *music, int loops = -1)
@@ -135,3 +136,43 @@ Mix_Chunk *ComponentSound::soundByLabel(const std::string &label) {
     return soundPackage.getByLabel(label);
 }
 
+float ComponentSound::soundDuration(const std::string& sound)
+{
+    auto chunk = soundPackage.getByLabel(sound);
+
+    if (!chunk) {
+        return 0.0;
+    }
+
+    int frequency, channels;
+    Uint16 format;
+
+    // Obtiene el formato actual de audio
+    if (Mix_QuerySpec(&frequency, &format, &channels) == 0) {
+        return 0.0; // No se pudo obtener el formato de audio
+    }
+
+    int bytesPerSample;
+    switch (format) {
+        case AUDIO_U8:
+        case AUDIO_S8:
+            bytesPerSample = 1;
+            break;
+        case AUDIO_U16SYS:
+        case AUDIO_S16SYS:
+            bytesPerSample = 2;
+            break;
+        case AUDIO_S32SYS:
+            bytesPerSample = 4;
+            break;
+        case AUDIO_F32SYS:
+            bytesPerSample = 4;
+            break;
+        default:
+            return 0.0; // Formato no soportado
+    }
+
+    // Calcula la duración en segundos
+    double totalSamples = chunk->alen / (bytesPerSample * channels);
+    return totalSamples / frequency;
+}

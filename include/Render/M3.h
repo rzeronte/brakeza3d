@@ -83,6 +83,8 @@ public:
     static M3 getFromVectors(Vertex3D ZAxis, Vertex3D YAxis);
 
     float m[9];
+
+    static M3 arbitraryAxis(Vertex3D A, float degrees);
 };
 
 

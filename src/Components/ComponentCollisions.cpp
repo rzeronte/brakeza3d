@@ -17,7 +17,8 @@ ComponentCollisions::ComponentCollisions()
 
 void ComponentCollisions::onStart()
 {
-    Logging::Log("ComponentCollisions onStart");
+    Logging::head("ComponentCollisions onStart");
+    ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 }
 
 void ComponentCollisions::preUpdate()
@@ -114,6 +115,8 @@ void ComponentCollisions::checkCollisionsForAll()
 
 void ComponentCollisions::updatePhysicObjects()
 {
+    if (!isEnabled()) return;
+
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         if (object->isRemoved()) continue;
         
@@ -125,9 +128,9 @@ void ComponentCollisions::updatePhysicObjects()
     }
 }
 
-void ComponentCollisions::stepSimulation(float deltaTime) {
-
-    if (SETUP->BULLET_STEP_SIMULATION) {
+void ComponentCollisions::stepSimulation(float deltaTime)
+{
+    if (!isEnabled() || SETUP->BULLET_STEP_SIMULATION) {
         getDynamicsWorld()->stepSimulation(deltaTime);
         updatePhysicObjects();
     }

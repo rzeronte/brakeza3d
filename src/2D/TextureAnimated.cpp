@@ -14,9 +14,10 @@ TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps) :
     endAnimation(false),
     paused(false)
 {
+    Logging::Message("Loading 2D animation: %s", base_file.c_str());
+
     for (int i = 0; i < numberFramesToLoad; i++) {
         std::string file = this->base_file + "_" + std::to_string(i) + ".png";
-        std::cout << "Importing 2D animation file: " << file << std::endl;
         this->frames.push_back(new Image(file));
     }
     updateStep();

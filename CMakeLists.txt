@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-O3")
+set(CMAKE_CXX_FLAGS "-g")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+#set(CMAKE_CXX_FLAGS "-O3")
 #set(CMAKE_CXX_FLAGS_DEBUG "-O3 -fsanitize=leak")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -BRAKEZA_DEBUG")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -102,9 +102,7 @@ add_executable(Brakeza3D
     src/Misc/PathFinder.cpp include/Misc/PathFinder.h
 
     include/GUI/GUI.h
-    include/GUI/GUI_Camera.h
-    include/GUI/GUI_Menu.h
-    include/GUI/GUI_Objects3D.h
+        include/GUI/GUI_Objects3D.h
     include/GUI/GUI_Tiles.h
         include/GUI/GUIManager.h
 
@@ -120,10 +118,10 @@ add_executable(Brakeza3D
     imgui/imstb_truetype.h
     imgui/imgui_tables.cpp
 
-    imgui/backends/imgui_impl_sdl.h
-    imgui/backends/imgui_impl_sdl.cpp
-    imgui/backends/imgui_impl_sdlrenderer.h
-    imgui/backends/imgui_impl_sdlrenderer.cpp
+    imgui/backends/imgui_impl_sdl2.h
+    imgui/backends/imgui_impl_sdl2.cpp
+    imgui/backends/imgui_impl_sdlrenderer2.h
+    imgui/backends/imgui_impl_sdlrenderer2.cpp
 
     include/Render/Fragment.cpp include/Render/Fragment.h
     src/Render/M4.cpp include/Render/M4.h
@@ -165,8 +163,75 @@ add_executable(Brakeza3D
 
         src/2D/Sprite2D.cpp include/2D/Sprite2D.h
 
-    renderer.cl
-)
+        kernels/renderer.cl
+
+    ProjectDarkHeaZ/Components/ComponentGameInput.h ProjectDarkHeaZ/Components/ComponentGameInput.cpp
+    ProjectDarkHeaZ/Components/ComponentMenu.cpp ProjectDarkHeaZ/Components/ComponentMenu.h
+    ProjectDarkHeaZ/Components/ComponentGame.cpp ProjectDarkHeaZ/Components/ComponentGame.h
+    ProjectDarkHeaZ/Components/ComponentHUD.h ProjectDarkHeaZ/Components/ComponentHUD.cpp
+
+    ProjectDarkHeaZ/Behaviors/EnemyBehaviorPatrol.cpp
+    ProjectDarkHeaZ/Behaviors/EnemyBehaviorPatrol.h
+    ProjectDarkHeaZ/Behaviors/EnemyBehaviorCircle.cpp
+    ProjectDarkHeaZ/Behaviors/EnemyBehaviorCircle.h
+    ProjectDarkHeaZ/Behaviors/EnemyBehaviorFollow.cpp
+    ProjectDarkHeaZ/Behaviors/EnemyBehaviorFollow.h
+    ProjectDarkHeaZ/Behaviors/EnemyBehaviorPath.cpp
+    ProjectDarkHeaZ/Behaviors/EnemyBehaviorPath.h
+    ProjectDarkHeaZ/Behaviors/EnemyBehaviorRandom.cpp
+    ProjectDarkHeaZ/Behaviors/EnemyBehaviorRandom.h
+
+    ProjectDarkHeaZ/Enemies/AsteroidEnemyGhost.h ProjectDarkHeaZ/Enemies/AsteroidEnemyGhost.cpp
+    ProjectDarkHeaZ/Enemies/Enemy.h ProjectDarkHeaZ/Enemies/Enemy.cpp
+    ProjectDarkHeaZ/Enemies/EnemyGhost.h ProjectDarkHeaZ/Enemies/EnemyGhost.cpp
+    ProjectDarkHeaZ/Enemies/EnemyGhostEmitter.h ProjectDarkHeaZ/Enemies/EnemyGhostEmitter.cpp
+
+    ProjectDarkHeaZ/Items/ItemBombGhost.h ProjectDarkHeaZ/Items/ItemBombGhost.cpp
+    ProjectDarkHeaZ/Items/ItemHumanGhost.h ProjectDarkHeaZ/Items/ItemHumanGhost.cpp
+    ProjectDarkHeaZ/Items/ItemEnergyGhost.h ProjectDarkHeaZ/Items/ItemEnergyGhost.cpp
+    ProjectDarkHeaZ/Items/ItemHealthGhost.h ProjectDarkHeaZ/Items/ItemHealthGhost.cpp
+    ProjectDarkHeaZ/Items/ItemShieldGhost.h ProjectDarkHeaZ/Items/ItemShieldGhost.cpp
+    ProjectDarkHeaZ/Items/ItemWeaponGhost.h ProjectDarkHeaZ/Items/ItemWeaponGhost.cpp
+    ProjectDarkHeaZ/Items/ItemWithTutorial.h ProjectDarkHeaZ/Items/ItemWithTutorial.cpp
+    ProjectDarkHeaZ/Items/StoreItem.h ProjectDarkHeaZ/Items/StoreItem.cpp
+    ProjectDarkHeaZ/Items/LivingObject.h ProjectDarkHeaZ/Items/LivingObject.cpp
+    ProjectDarkHeaZ/Items/EnemyDialog.h ProjectDarkHeaZ/Items/EnemyDialog.cpp
+    ProjectDarkHeaZ/Items/PlayerSatellite.h ProjectDarkHeaZ/Items/PlayerSatellite.cpp
+    ProjectDarkHeaZ/Items/PlayerReflection.h ProjectDarkHeaZ/Items/PlayerReflection.cpp
+
+    ProjectDarkHeaZ/Player.h ProjectDarkHeaZ/Player.cpp
+    ProjectDarkHeaZ/LevelLoader.h ProjectDarkHeaZ/LevelLoader.cpp
+    ProjectDarkHeaZ/StoreManager.h ProjectDarkHeaZ/StoreManager.cpp
+    ProjectDarkHeaZ/ProjectileRay.h ProjectDarkHeaZ/ProjectileRay.cpp
+    ProjectDarkHeaZ/FaderToGameStates.h
+
+    ProjectDarkHeaZ/Weapons/AmmoProjectile.h
+    ProjectDarkHeaZ/Weapons/AmmoProjectileBody.h ProjectDarkHeaZ/Weapons/AmmoProjectileBody.cpp
+    ProjectDarkHeaZ/Weapons/AmmoProjectileBodyEmitter.h ProjectDarkHeaZ/Weapons/AmmoProjectileBodyEmitter.cpp
+    ProjectDarkHeaZ/Weapons/Weapon.h ProjectDarkHeaZ/Weapons/Weapon.cpp
+
+    ProjectDarkHeaZ/Shaders/RayLight.h ProjectDarkHeaZ/Shaders/RayLight.cpp
+    ProjectDarkHeaZ/Shaders/ShaderShockWave.h ProjectDarkHeaZ/Shaders/ShaderShockWave.cpp
+    ProjectDarkHeaZ/Shaders/ShaderCRT.h ProjectDarkHeaZ/Shaders/ShaderCRT.cpp
+    ProjectDarkHeaZ/Shaders/ShaderEnergyShield.h ProjectDarkHeaZ/Shaders/ShaderEnergyShield.cpp
+    ProjectDarkHeaZ/Shaders/ShaderProjectiles.h ProjectDarkHeaZ/Shaders/ShaderProjectiles.cpp
+        ProjectDarkHeaZ/Shaders/ShaderZombie.h ProjectDarkHeaZ/Shaders/ShaderZombie.cpp
+
+    ProjectDarkHeaZ/Bosses/BossEnemy.h ProjectDarkHeaZ/Bosses/BossEnemy.cpp
+    ProjectDarkHeaZ/Bosses/BossLevel10.h ProjectDarkHeaZ/Bosses/BossLevel10.cpp
+    ProjectDarkHeaZ/Bosses/BossLevel20.h ProjectDarkHeaZ/Bosses/BossLevel20.cpp
+    ProjectDarkHeaZ/Bosses/BossLevel30.h ProjectDarkHeaZ/Bosses/BossLevel30.cpp
+        ProjectDarkHeaZ/PaletteColors.h ProjectDarkHeaZ/Items/SalvageSpaceship.cpp ProjectDarkHeaZ/Items/SalvageSpaceship.h src/2D/Sprite2D.cpp include/2D/Sprite2D.h
+        src/Shaders/ShaderBlurBuffer.cpp
+        src/Shaders/ShaderBlurBuffer.h
+        ProjectDarkHeaZ/Enemies/BoidEnemyGhost.cpp
+        ProjectDarkHeaZ/Enemies/BoidEnemyGhost.h
+        src/Objects/TentacleIK.cpp
+        include/Objects/TentacleIK.h
+        src/Objects/ScriptLUA.cpp
+        include/Objects/ScriptLUA.h
+        include/GUI/GUIConsole.h
+        src/LUAIntegration.h)
 
 target_link_libraries(Brakeza3D
     pthread
@@ -180,5 +245,6 @@ target_link_libraries(Brakeza3D
     LinearMath
     assimp
     OpenCL
+    lua5.2
 )
 
