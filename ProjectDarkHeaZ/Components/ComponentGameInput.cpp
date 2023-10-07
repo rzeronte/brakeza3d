@@ -18,6 +18,7 @@ void ComponentGameInput::preUpdate()
     if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::MENU) return;
 
     if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::GAMING) {
+
         this->handleKeyboardMovingPlayer();
         this->handleGamePadMovingPlayer();
         this->handleFire();

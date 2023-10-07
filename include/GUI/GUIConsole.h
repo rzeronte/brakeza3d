@@ -21,8 +21,8 @@ struct ImGuiConsoleApp
     ImGuiTextFilter       Filter;
     bool                  AutoScroll;
     bool                  ScrollToBottom;
-
-    ImGuiConsoleApp()
+    sol::state &lua;
+    ImGuiConsoleApp(sol::state &lua): lua(lua)
     {
         ClearLog();
         memset(InputBuf, 0, sizeof(InputBuf));
@@ -153,7 +153,7 @@ struct ImGuiConsoleApp
             char* s = InputBuf;
             Strtrim(s);
             if (s[0])
-                ExecCommand(s);
+                ExecCommand(s, lua);
             strcpy(s, "");
             reclaim_focus = true;
         }
@@ -166,7 +166,7 @@ struct ImGuiConsoleApp
         ImGui::End();
     }
 
-    void    ExecCommand(const char* command_line)
+    void    ExecCommand(const char* command_line, sol::state &lua)
     {
         AddLog("# %s\n", command_line);
 
@@ -182,26 +182,10 @@ struct ImGuiConsoleApp
             }
         History.push_back(Strdup(command_line));
 
-        // Process command
-        if (Stricmp(command_line, "CLEAR") == 0)
-        {
-            ClearLog();
-        }
-        else if (Stricmp(command_line, "HELP") == 0)
-        {
-            AddLog("Commands:");
-            for (int i = 0; i < Commands.Size; i++)
-                AddLog("- %s", Commands[i]);
-        }
-        else if (Stricmp(command_line, "HISTORY") == 0)
-        {
-            int first = History.Size - 10;
-            for (int i = first > 0 ? first : 0; i < History.Size; i++)
-                AddLog("%3d: %s\n", i, History[i]);
-        }
-        else
-        {
-            AddLog("Unknown command: '%s'\n", command_line);
+        try {
+            lua.script(command_line);
+        } catch (const sol::error& e) {
+            Logging::Message("LUA command error: %s", e.what());
         }
 
         // On command input, we scroll to bottom even if AutoScroll==false

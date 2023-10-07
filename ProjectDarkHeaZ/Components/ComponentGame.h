@@ -29,6 +29,7 @@
 #include "../Items/SalvageSpaceship.h"
 #include "../../include/2D/Sprite2D.h"
 #include "../../include/Objects/TentacleIK.h"
+#include "../../include/Misc/TexturePackage.h"
 
 #define Z_COORDINATE_GAMEPLAY 10000
 #define FREE_LOOK_ENABLED false
@@ -110,9 +111,10 @@ private:
 
     ShaderExplosion *shaderExplosion;
 
-    std::vector<ScriptLUA*> scripts;
 
     //PathFinder *pathFinder;
+
+
 public:
     ComponentGame();
 
@@ -310,11 +312,6 @@ public:
     Image *boxTutorial;
     ShaderEdgeObject *shaderEdgeObject;
 
-    std::vector<ScriptLUA*> &getScripts();
-
-    void addLUAScript(ScriptLUA *script);
-
-    void reloadScriptsEnvironment();
 };
 
 

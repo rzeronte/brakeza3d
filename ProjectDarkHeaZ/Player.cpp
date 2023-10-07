@@ -70,6 +70,8 @@ Player::Player()
 
     spriteEnergyShield->setEnabled(false);
     Brakeza3D::get()->addObject3D(spriteEnergyShield, "playerSpriteEnergyShield");
+    luaEnvironment.set("this", this);
+
 }
 
 void Player::loadSatellite()

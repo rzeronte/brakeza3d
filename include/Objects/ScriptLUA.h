@@ -47,7 +47,7 @@ public:
 
     void updateFileTypes();
 
-    bool updateFileTypesWith(const std::string &content) const;
+    [[nodiscard]] bool updateFileTypesWith(const std::string &content) const;
 
     void reloadEnvironment(sol::environment &environment);
 

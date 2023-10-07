@@ -1,11 +1,24 @@
----
---- Generated1 by Luanalysis
---- Created by eduardo.
---- DateTime: 3/10/23 6:57
----
+mensaje = this:getTypeObject()
+pepe = this:getPosition()
+hola = this:isStucked()
+tiempo = brakeza:getExecutionTime()
 
-test = test + 3
+camera = componentsManager:getComponentCamera():getCamera()
 
-print("(object.lua, test)"..test)
-print("(object.lua, globalita)"..globalita)
-print("(object.lua, globalita)"..globalita2)
+position = camera:getPosition()
+
+left = componentsManager:getComponentInput():isClickLeft()
+
+if (componentsManager:getComponentInput():isCharPressed("A")) then
+    print("pulsada!")
+end
+
+if (componentsManager:getComponentInput():isKeyEventDown()) then
+    print("Down2!")
+end
+
+if (componentsManager:getComponentInput():isKeyEventUp()) then
+    print("Up1!")
+end
+
+print("DeltaTime: " .. tonumber(tiempo))

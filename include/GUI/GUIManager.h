@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include "../ComponentsManager.h"
 #include "GUIConsole.h"
+#include "../Brakeza3D.h"
 
 static char editableSource[1024 * 16];
 
@@ -25,8 +26,9 @@ private:
 
     std::string selected_file;
     ImGuiConsoleApp *console;
-    TexturePackage HUDTextures;
 
+    TexturePackage ImGuiTextures;
+    
 public:
 
     GUIManager(std::vector<Object3D *> &gameObjects)
@@ -35,18 +37,20 @@ public:
         directory_path(EngineSetup::get()->SCRIPTS_FOLDER),
         directory_path_models(EngineSetup::get()->MODELS_FOLDER),
         script(nullptr),
-        console(new ImGuiConsoleApp)
+        console(new ImGuiConsoleApp(EngineBuffers::get()->getLua()))
     {
-        HUDTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/stop.png", "stopIcon");
-        HUDTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/play.png", "playIcon");
-        HUDTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/reload.png", "reloadIcon");
-        HUDTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/object.png", "objectIcon");
-        HUDTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/light.png", "lightIcon");
-        HUDTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/script.png", "scriptIcon");
-        HUDTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/swarm.png", "swarmIcon");
-        HUDTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/mesh.png", "meshIcon");
-        HUDTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/player.png", "playerIcon");
-        HUDTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite.png", "spriteIcon");
+
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/stop.png", "stopIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/play.png", "playIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/reload.png", "reloadIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/object.png", "objectIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/light.png", "lightIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/script.png", "scriptIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/swarm.png", "swarmIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/mesh.png", "meshIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/player.png", "playerIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite.png", "spriteIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/remove.png", "removeIcon");
     }
 
     void drawFiles(std::vector<std::string> result)
@@ -240,8 +244,13 @@ public:
         bool p_open = true;
         console->Draw("Logging/Console", &p_open);
 
-        auto title = std::string("Scene Objects: ") + std::to_string(gameObjects.size());
-        if (ImGui::Begin(title.c_str())) {
+        if (ImGui::Begin("Scene Objects")) {
+            auto title = std::string("Number objects: ") + std::to_string(gameObjects.size());
+
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", title.c_str());
+
+            ImGui::Separator();
+
             for (int i = 0; i < gameObjects.size(); i++) {
                 auto o = gameObjects[i];
                 std::string optionText = std::to_string(i + 1) + ") " + o->getLabel();
@@ -261,7 +270,7 @@ public:
                 }
 
                 ImGui::SameLine(250);
-                ImGui::Image((ImTextureID)HUDTextures.getTextureByLabel(o->getTypeIcon())->getTexture(), ImVec2(16, 16));
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel(o->getTypeIcon())->getTexture(), ImVec2(16, 16));
                 ImGui::SameLine(270);
                 ImGui::Text("%s", o->getTypeObject());
             }
@@ -271,6 +280,39 @@ public:
         if (ImGui::Begin("Properties")) {
             if (selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size()) {
                 auto o = gameObjects[selectedObjectIndex];
+                ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Selected object: ");
+                ImGui::SameLine();
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", o->getLabel().c_str());
+
+                ImGui::Separator();
+
+                auto objectScripts = o->getScripts();
+                for (int i = 0; i < (int) objectScripts.size(); i++) {
+                    auto currentScript = objectScripts[i];
+                    ImGui::PushID(i);
+
+                    std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
+
+                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getTexture(), ImVec2(20, 20));
+                    ImGui::SameLine(32);
+
+                    if (ImGui::Button(optionText.c_str())) {
+                        delete script;
+                        selectedScriptFilename = currentScript->scriptFilename;
+                        script = new ScriptLUA(selectedScriptFilename, ScriptLUA::dataTypesFileFor(selectedScriptFilename));
+                        strcpy(editableSource, script->content);
+                    }
+
+                    ImGui::SameLine();
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getTexture(), ImVec2(14, 14))) {
+                        o->removeScript(currentScript);
+                    }
+
+                    ImGui::PopID();
+                }
+
+                ImGui::Separator();
+
                 o->drawImGuiProperties();
             } else {
                 ImGui::Text("None selection was done");
@@ -312,7 +354,7 @@ public:
 
 
         if (ImGui::Begin("Project")) {
-
+            auto componentRender = ComponentsManager::get()->getComponentRender();
             static char name[256];
 
             strncpy(name, EngineSetup::get()->ENGINE_TITLE.c_str(), sizeof(name));
@@ -324,17 +366,25 @@ public:
 
             ImGui::Separator();
 
-            auto scripts = ComponentsManager::get()->getComponentGame()->getScripts();
+            auto scripts = componentRender->getScripts();
             for (int i = 0; i < (int) scripts.size(); i++) {
                 auto currentScript = scripts[i];
+                ImGui::PushID(i);
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getTexture(), ImVec2(20, 20));
+                ImGui::SameLine(32);
                 std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
-                if (ImGui::Selectable(optionText.c_str(), selectedObjectIndex == i)) {
+                if (ImGui::Button(optionText.c_str())) {
                     selectedScriptFilename = currentScript->scriptFilename;
                     delete script;
                     script = new ScriptLUA(selectedScriptFilename, ScriptLUA::dataTypesFileFor(selectedScriptFilename));
                     strcpy(editableSource, script->content);
-
                 }
+                ImGui::SameLine();
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getTexture(), ImVec2(14, 14))) {
+                    componentRender->removeScript(currentScript);
+                }
+
+                ImGui::PopID();
             }
 
             ImGui::Separator();
@@ -343,7 +393,7 @@ public:
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
                     Logging::Message("Dropping script (%s) in global space", payload->Data);
-                    ComponentsManager::get()->getComponentGame()->addLUAScript(new ScriptLUA(
+                    componentRender->addLUAScript(new ScriptLUA(
                         std::string((char*) payload->Data),
                         ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
                     );
@@ -822,19 +872,19 @@ public:
     {
         if (ImGui::Begin("MainToolBar")) {
             if (ComponentsManager::get()->getComponentRender()->getStateScripts() == EngineSetup::LuaStateScripts::LUA_STOP) {
-                if (ImGui::ImageButton((ImTextureID)HUDTextures.getTextureByIndex(1)->getTexture(), ImVec2(24, 24))) {
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByIndex(1)->getTexture(), ImVec2(24, 24))) {
                     ComponentsManager::get()->getComponentRender()->playScripts();
                 }
                 ImGui::SameLine();
             }
 
             if (ComponentsManager::get()->getComponentRender()->getStateScripts() == EngineSetup::LuaStateScripts::LUA_PLAY) {
-                if (ImGui::ImageButton((ImTextureID)HUDTextures.getTextureByIndex(0)->getTexture(), ImVec2(24, 24))) {
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByIndex(0)->getTexture(), ImVec2(24, 24))) {
                     ComponentsManager::get()->getComponentRender()->stopScripts();
                 }
                 ImGui::SameLine();
             }
-            if (ImGui::ImageButton((ImTextureID)HUDTextures.getTextureByIndex(2)->getTexture(), ImVec2(24, 24))) {
+            if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByIndex(2)->getTexture(), ImVec2(24, 24))) {
                 ComponentsManager::get()->getComponentRender()->reloadScripts();
             }
         }

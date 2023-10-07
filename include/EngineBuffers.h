@@ -14,6 +14,7 @@
 class EngineBuffers {
 
 private:
+    sol::state lua;
     static EngineBuffers *instance;
     std::vector<OCParticle> particles;
 
@@ -60,6 +61,10 @@ public:
     void loadParticlesEmptyBuffer();
 
     [[nodiscard]] const std::vector<OCParticle> &getParticles() const;
+
+    sol::state &getLua();
+
+    void initLUATypes();
 };
 
 #endif

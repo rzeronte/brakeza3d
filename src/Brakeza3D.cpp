@@ -3,6 +3,7 @@
 #include "../imgui/backends/imgui_impl_sdl2.h"
 #include "../imgui/backends/imgui_impl_sdlrenderer2.h"
 
+
 Brakeza3D *Brakeza3D::instance = nullptr;
 
 Brakeza3D::Brakeza3D() : managerGUI(nullptr)
@@ -67,7 +68,7 @@ void Brakeza3D::mainLoop()
 
     welcomeMessage();
 
-    initLUATypes();
+    EngineBuffers::get()->initLUATypes();
 
     while (!finish) {
         controlFrameRate();
@@ -270,23 +271,7 @@ void Brakeza3D::LoadDemo()
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("eye"));
 }
 
-sol::state &Brakeza3D::getLua()
-{
-    return lua;
-}
 
-void Brakeza3D::initLUATypes()
-{
-    lua.open_libraries(sol::lib::base);
-
-    lua.new_usertype<Vertex3D>("Vertex3D",
-                               sol::constructors<Vertex3D(), Vertex3D(float, float, float)>());
-
-    lua.new_usertype<Object3D>("Object",
-                               "addToPosition", &Object3D::addToPosition,
-                               "getPosition", &Object3D::getPosition,
-                               "setPosition", &Object3D::setPosition);
-}
 
 GUIManager *Brakeza3D::getManagerGui()
 {

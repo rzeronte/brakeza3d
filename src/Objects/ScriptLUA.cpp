@@ -53,8 +53,13 @@ char *ScriptLUA::readFile(const std::string &name, size_t &source_size)
 
 void ScriptLUA::run(sol::environment &environment)
 {
-    sol::state &lua = Brakeza3D::get()->getLua();
-    lua.script(content, environment);
+    sol::state &lua = EngineBuffers::get()->getLua();
+
+    try {
+        lua.script(content, environment);
+    } catch (const sol::error& e) {
+        Logging::Message("LUA script error: %s", e.what());
+    }
 }
 
 void ScriptLUA::addDataType(const char *name, const char *value)
@@ -194,7 +199,7 @@ void ScriptLUA::reloadScriptCode()
 
 void ScriptLUA::reloadGlobals()
 {
-    sol::state &lua = Brakeza3D::get()->getLua();
+    sol::state &lua = EngineBuffers::get()->getLua();
     for (const auto& type : dataTypes) {
         lua[type.name] = type.value;
     }

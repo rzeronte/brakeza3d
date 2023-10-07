@@ -3,6 +3,7 @@
 #include "../include/EngineBuffers.h"
 #include "../include/ComponentsManager.h"
 #include "../include/Shaders/ShaderExplosion.h"
+#include "LUAIntegration.h"
 
 EngineBuffers *EngineBuffers::instance = nullptr;
 
@@ -115,4 +116,19 @@ void EngineBuffers::loadParticlesEmptyBuffer()
 
 const std::vector<OCParticle> &EngineBuffers::getParticles() const {
     return particles;
+}
+
+
+
+sol::state &EngineBuffers::getLua()
+{
+    return lua;
+}
+
+void EngineBuffers::initLUATypes()
+{
+    lua.open_libraries(sol::lib::base);
+    lua["brakeza"] = Brakeza3D::get();
+    lua["componentsManager"] = ComponentsManager::get();
+    LUAIntegration(lua);
 }

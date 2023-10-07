@@ -19,7 +19,6 @@
 
 class Brakeza3D {
 private:
-    sol::state lua;
 
     ComponentsManager *componentsManager;
     GUIManager *managerGUI;
@@ -85,10 +84,6 @@ public:
     static std::string uniqueObjectLabel(const char *prefix);
 
     static void LoadDemo();
-
-    sol::state &getLua();
-
-    void initLUATypes();
 
     GUIManager *getManagerGui();
 

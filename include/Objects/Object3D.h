@@ -162,6 +162,10 @@ public:
     virtual const char *getTypeObject();
 
     virtual const char *getTypeIcon();
+
+    void removeScript(ScriptLUA *script);
+
+    const std::vector<ScriptLUA *> &getScripts() const;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H
