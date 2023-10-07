@@ -66,18 +66,10 @@ void ParticleEmitter::drawOnUpdateSecondPass()
     }
 }
 
-void ParticleEmitter::setActive(bool value) {
-    this->active = value;
-}
-
 ParticleEmitter::~ParticleEmitter()
 {
     delete shaderParticles;
     delete shaderExplosion;
-}
-
-bool ParticleEmitter::isStopAdd() const {
-    return stopAdd;
 }
 
 void ParticleEmitter::setStopAdd(bool stopAdd)

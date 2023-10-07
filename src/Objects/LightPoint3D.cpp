@@ -175,3 +175,11 @@ void LightPoint3D::setLinear(float value) {
 void LightPoint3D::setCuadratic(float value) {
     this->kq = value;
 }
+
+const char *LightPoint3D::getTypeObject() {
+    return "LightPoint";
+}
+
+const char *LightPoint3D::getTypeIcon() {
+    return "lightIcon";
+}

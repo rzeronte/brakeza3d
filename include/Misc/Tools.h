@@ -95,15 +95,15 @@ public:
 
     static OCPoint2D pointOCL(Point2D v);
 
-    static OCLMeshContext openCLMeshContext(Object3D *object);
-
     static void addSceneObject(const std::string& filename, const std::string& name);
 
     static void makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCParticlesContext context, Color from, Color to);
 
     static void makeFadeInSprite(Vertex3D position, TextureAnimated *animation);
 
-    void makeSparkle(Vertex3D position, TextureAnimated *animation);
+    static void makeLoopSprite(Vertex3D position, TextureAnimated *animation, float ttl);
+
+    static std::string getExtensionFromFilename(const std::string &filename);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

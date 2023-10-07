@@ -53,8 +53,8 @@ void ShaderParticles::executeKernelOpenCL()
     ocOrigin = Tools::pointOCL(origin);
     ocDirection = Tools::vertexOCL(direction);
 
-    clEnqueueWriteBuffer(clQueue, openCLBufferOrigin, CL_TRUE, 0, sizeof(OCPoint2D), &ocOrigin, 0, nullptr, nullptr);
-    clEnqueueWriteBuffer(clQueue, openCLBufferDirection, CL_TRUE, 0, sizeof(OCVertex3D), &ocDirection, 0, nullptr, nullptr);
+    clEnqueueWriteBuffer(clQueue, openCLBufferOrigin, CL_FALSE, 0, sizeof(OCPoint2D), &ocOrigin, 0, nullptr, nullptr);
+    clEnqueueWriteBuffer(clQueue, openCLBufferDirection, CL_FALSE, 0, sizeof(OCVertex3D), &ocDirection, 0, nullptr, nullptr);
 
     auto dt = Brakeza3D::get()->getDeltaTime();
 
@@ -66,7 +66,7 @@ void ShaderParticles::executeKernelOpenCL()
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
     clSetKernelArg(kernel, 3, sizeof(float), &dt);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)ComponentsManager::get()->getComponentRender()->getClBufferVideoParticles());
     clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&openCLBufferContext);
     clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)&openCLBufferParticles);
     clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&openCLBufferColorFrom);
@@ -76,10 +76,11 @@ void ShaderParticles::executeKernelOpenCL()
     clSetKernelArg(kernel, 11, sizeof(float), &intensity);
     clSetKernelArg(kernel, 12, sizeof(int), &add);
 
-    size_t global_item_size = MAX_OPENCL_PARTICLES;
-    size_t local_item_size = 64;
+    size_t global_item_size[2] = {64, 16};
+    size_t local_item_size[2] = {16, 16};
+    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
 
-    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
+    debugKernel("ShaderParticles");
 }
 
 ShaderParticles::~ShaderParticles()

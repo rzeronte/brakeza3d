@@ -112,6 +112,14 @@ public:
     Mesh3DRenderLayer getLayer() const;
 
     void setLayer(Mesh3DRenderLayer layer);
+
+    void drawImGuiProperties() override;
+
+    const char *getTypeObject() override;
+
+    const char *getTypeIcon() override;
+
+    static Mesh3D* create();
 };
 
 

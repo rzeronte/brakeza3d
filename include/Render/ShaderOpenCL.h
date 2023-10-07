@@ -21,6 +21,7 @@ protected:
 
     cl_program program;
     cl_kernel kernel;
+
     bool useCustomProgram;
 public:
     explicit ShaderOpenCL(bool active, const std::string& kernelFilename);

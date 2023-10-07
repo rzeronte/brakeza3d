@@ -8,6 +8,7 @@
 #include "../../include/Render/Maths.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Objects/Decal.h"
 
 Triangle::Triangle()
 :

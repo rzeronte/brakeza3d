@@ -21,6 +21,8 @@ void Projectile3DBody::makeProjectileRigidBody(
     Mesh3DBody::makeSimpleRigidBody(mass, getPosition(), rotation, size, world, collisionGroup, collisionMask);
 
     direction = direction.getScaled(forceImpulse);
+    direction.x += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
+    direction.y += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
 
     btVector3 impulse;
     direction.saveToBtVector3(&impulse);

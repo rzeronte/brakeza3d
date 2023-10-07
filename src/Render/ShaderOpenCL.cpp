@@ -33,10 +33,7 @@ ShaderOpenCL::ShaderOpenCL(bool active): Shader(active), useCustomProgram(false)
 void ShaderOpenCL::initOpenCLProgram()
 {
     size_t source_size;
-    char * source_str = Tools::readFile(
-            EngineSetup::get()->CL_SHADERS_FOLDER + this->kernelFilename,
-        source_size
-    );
+    char * source_str = Tools::readFile(EngineSetup::get()->CL_SHADERS_FOLDER + this->kernelFilename,source_size);
 
     program = clCreateProgramWithSource(
         context,

@@ -1,11 +1,13 @@
 
 #include "../include/Brakeza3D.h"
-#include "../imgui/backends/imgui_impl_sdl.h"
-#include "../imgui/backends/imgui_impl_sdlrenderer.h"
+#include "../imgui/backends/imgui_impl_sdl2.h"
+#include "../imgui/backends/imgui_impl_sdlrenderer2.h"
+#include "../include/Render/Logging.h"
+
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 
-Brakeza3D::Brakeza3D()
+Brakeza3D::Brakeza3D() : managerGUI(nullptr)
 {
     componentsManager = ComponentsManager::get();
 }
@@ -29,7 +31,17 @@ void Brakeza3D::start()
     componentsManager->registerComponent(new ComponentRender(), "ComponentRender");
 
     // Custom components here
+
     mainLoop();
+}
+
+void Brakeza3D::welcomeMessage() const {
+    Logging::Message("Brakeza3D - Open source game toolkit for old school lovers");
+    Logging::Message("By Eduardo Rodriguez (eduardo@brakeza.com)");
+    Logging::Message("https://brakeza.com");
+    Logging::Message("Let's start!");
+
+    Logging::Message("Running %s", EngineSetup::get()->ENGINE_TITLE.c_str());
 }
 
 void Brakeza3D::mainLoop()
@@ -38,14 +50,22 @@ void Brakeza3D::mainLoop()
 
     engineTimer.start();
 
-    ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
+    componentsManager->getComponentRender()->initOpenCL();
+
+    managerGUI = new GUIManager(sceneObjects);
+
+    componentsManager->getComponentWindow()->clearVideoBuffers();
     ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
 
     onStartComponents();
 
-    LoadDemo();
+    //LoadDemo();
 
     ImGuiInitialize();
+
+    welcomeMessage();
+
+    EngineBuffers::get()->initLUATypes();
 
     while (!finish) {
         controlFrameRate();
@@ -65,7 +85,7 @@ void Brakeza3D::mainLoop()
 
         onUpdateComponents();
 
-        componentsManager->getComponentRender()->onUpdateSceneObjectsSecondPass(sceneObjects);
+        componentsManager->getComponentRender()->onUpdateSceneObjectsSecondPass();
 
         if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
 
@@ -87,7 +107,7 @@ void Brakeza3D::controlFrameRate() const
 {
     if (!EngineSetup::get()->LIMIT_FRAMERATE) return;
 
-    float frameDelay = 1000.0f / (float) EngineSetup::get()->FRAMERATE;
+    const float frameDelay = 1000.0f / (float) EngineSetup::get()->FRAMERATE;
 
     if (deltaTime < frameDelay) {
         SDL_Delay(floor(frameDelay - deltaTime));
@@ -115,7 +135,6 @@ void Brakeza3D::updateTimer()
     current_ticks = (float) engineTimer.getTicks();
     deltaTime = current_ticks - last_ticks;
     last_ticks = current_ticks;
-
     executionTime += deltaTime / 1000.f;
 }
 
@@ -129,54 +148,44 @@ float Brakeza3D::getDeltaTimeMicro() const {
 
 void Brakeza3D::onStartComponents()
 {
-    std::vector<Component *>::iterator it;
-    for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
-        Component *component = *(it);
+    for (Component*& component : componentsManager->components) {
         component->onStart();
     }
 }
 
 void Brakeza3D::preUpdateComponents()
 {
-    std::vector<Component *>::iterator it;
-    for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
-        Component *component = *(it);
+    for (Component*& component : componentsManager->components) {
         component->preUpdate();
     }
 }
 
 void Brakeza3D::onUpdateComponents()
 {
-    std::vector<Component *>::iterator it;
-    for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
-        Component *component = *(it);
+    for (Component*& component : componentsManager->components) {
         component->onUpdate();
     }
 }
 
 void Brakeza3D::postUpdateComponents()
 {
-    std::vector<Component *>::iterator it;
-    for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
-        Component *component = *(it);
+    for (Component*& component : componentsManager->components) {
         component->postUpdate();
     }
 }
 
 void Brakeza3D::onEndComponents()
 {
-    std::vector<Component *>::iterator it;
-    for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
-        Component *component = *(it);
+    for (Component*& component : componentsManager->components) {
         component->onEnd();
     }
+
+    Logging::head("Exiting... good bye! ;)");
 }
 
 void Brakeza3D::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish)
 {
-    std::vector<Component *>::iterator it;
-    for (it = this->componentsManager->components.begin(); it != componentsManager->components.end(); it++) {
-        Component *component = *(it);
+    for (Component* &component : this->componentsManager->components) {
         component->onSDLPollEvent(event, finish);
     }
 }
@@ -186,32 +195,25 @@ ComponentsManager *Brakeza3D::getComponentsManager() const
     return componentsManager;
 }
 
-
 void Brakeza3D::ImGuiOnUpdate()
 {
-    ImGui_ImplSDLRenderer_NewFrame();
+    ImGui_ImplSDLRenderer2_NewFrame();
     ImGui_ImplSDL2_NewFrame(getComponentsManager()->getComponentWindow()->getWindow());
 
     ImGui::NewFrame();
-    this->managerGUI.draw(
+    managerGUI->draw(
         Brakeza3D::get()->getDeltaTime(),
-        finish,
-        Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(),
-        Brakeza3D::get()->getSceneObjects(),
-        Brakeza3D::get()->getComponentsManager()->getComponentRender()->getLightPoints(),
-        Brakeza3D::get()->getComponentsManager()->getComponentRender()->getTiles(),
-        Brakeza3D::get()->getComponentsManager()->getComponentRender()->getTilesWidth()
+        finish
     );
 
-    //ImGui::ShowDemoWindow();
-
     ImGui::Render();
-    ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
+    ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Brakeza3D::ImGuiInitialize() const
 {
-    std::cout << "ImGuiInitialize" << std::endl;
+    Logging::Message("ImGui initialization...");
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
 
@@ -220,11 +222,12 @@ void Brakeza3D::ImGuiInitialize() const
         getComponentsManager()->getComponentWindow()->getRenderer()
     );
 
-    ImGui_ImplSDLRenderer_Init(getComponentsManager()->getComponentWindow()->getRenderer());
+    ImGui_ImplSDLRenderer2_Init(getComponentsManager()->getComponentWindow()->getRenderer());
 
     ImGuiIO &io = ImGui::GetIO();
     io.WantCaptureMouse = false;
     io.WantCaptureKeyboard = false;
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Enable docking
 
     // Setup style
     ImGui::StyleColorsDark();
@@ -241,25 +244,34 @@ Brakeza3D::~Brakeza3D()
     }
 }
 
-float &Brakeza3D::getExecutionTime() {
+float &Brakeza3D::getExecutionTime()
+{
     return executionTime;
 }
 
 std::string Brakeza3D::uniqueObjectLabel(const char *prefix)
 {
-    return prefix + std::string("_") + std::to_string(Brakeza3D::get()->getSceneObjects().size() + 1);
+    return prefix + std::string("_") + std::to_string(Tools::random(0, 100));
 }
 
 void Brakeza3D::LoadDemo()
 {
     auto *newObject = new Mesh3D();
     newObject->setEnabled(true);
+    newObject->setBelongToScene(false);
     newObject->setStencilBufferEnabled(true);
     newObject->setRotationFrameEnabled(true);
     newObject->setRotationFrame(Vertex3D(1, 0, 0));
     newObject->setPosition(Vertex3D(0, 0, 6000));
-    newObject->setScale(1);
+    newObject->setScale(0.5);
     newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "eye.fbx"));
 
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("eye"));
+}
+
+
+
+GUIManager *Brakeza3D::getManagerGui()
+{
+    return managerGUI;
 }

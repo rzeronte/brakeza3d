@@ -21,43 +21,58 @@ ComponentRender::ComponentRender() :
     ret_num_platforms(0),
     ret(0),
     clContext(nullptr),
-    clCommandQueue(nullptr)
+    clCommandQueue(nullptr),
+    stateScripts(EngineSetup::LuaStateScripts::LUA_STOP),
+    luaEnvironment(sol::environment(
+        EngineBuffers::get()->getLua(),
+        sol::create, EngineBuffers::get()->getLua().globals())
+    )
 {
 }
 
 void ComponentRender::onStart()
 {
-    Logging::Log("ComponentRender onStart");
+    Logging::head("ComponentRender onStart");
     setEnabled(true);
 
     initTiles();
-    initOpenCL();
+
+    textWriter = new TextWriter(ComponentsManager::get()->getComponentWindow()->getRenderer(), ComponentsManager::get()->getComponentWindow()->getFontDefault());
+
 }
 
 void ComponentRender::preUpdate()
 {
-    this->updateFPS(Brakeza3D::get()->getDeltaTimeMicro());
-
-    if (!isEnabled()) {
-        return;
-    }
+    this->updateFPS();
 }
 
 void ComponentRender::drawObjetsInHostBuffer()
 {
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
-        if (object != nullptr && !object->isRemoved()) {
-            object->onDrawHostBuffer();
-        }
+        object->onDrawHostBuffer();
     }
 
+    auto components = ComponentsManager::get();
     if (SETUP->RENDER_MAIN_AXIS) {
-        Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
+        Drawable::drawMainAxis(components->getComponentCamera()->getCamera());
+    }
+
+    if (SETUP->DRAW_CROSSHAIR) {
+        Drawable::drawCrossHair();
     }
 
     if (SETUP->BULLET_DEBUG_MODE) {
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
+        components->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
+    }
+
+    if (SETUP->DRAW_FPS) {
+        textWriter->writeTTFCenterHorizontal(
+            10,
+            std::to_string(components->getComponentRender()->getFps()).c_str(),
+            Color::green(),
+            0.3
+        );
     }
 
     //this->hiddenSurfaceRemoval();
@@ -69,9 +84,7 @@ void ComponentRender::drawObjetsInHostBuffer()
 
 void ComponentRender::onUpdate()
 {
-    if (!isEnabled()) {
-        return;
-    }
+    if (!isEnabled()) return;
 
     deleteRemovedObjects();
 
@@ -98,6 +111,10 @@ void ComponentRender::onUpdate()
     if (EngineSetup::get()->TEXTURES_BILINEAR_INTERPOLATION) {
         shaderBilinear->update();
     }
+
+    if (stateScripts == EngineSetup::LUA_PLAY) {
+        runScripts();
+    }
 }
 
 void ComponentRender::postUpdate()
@@ -107,10 +124,9 @@ void ComponentRender::postUpdate()
 
 void ComponentRender::writeOCLBufferIntoHost() const
 {
-
     clEnqueueReadBuffer(clCommandQueue,
         EngineBuffers::get()->videoBufferOCL,
-        CL_TRUE,
+        CL_FALSE,
         0,
         EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
         EngineBuffers::get()->videoBuffer,
@@ -149,14 +165,14 @@ void ComponentRender::writeOCLBuffersFromHost() const
     );
 
     if (ret != CL_SUCCESS) {
-        printf("Error al escribir en el buffer de vídeo: %d\n", ret);
+        Logging::Log("Error writing to Video OCL Buffer: (%d)", ret);
     }
 
     float max_value = 100000;
     clEnqueueFillBuffer(clCommandQueue, EngineBuffers::get()->depthBufferOCL, &max_value, sizeof(float), 0, EngineBuffers::get()->sizeBuffers * sizeof(unsigned int), 0, NULL, NULL);
 
     if (ret != CL_SUCCESS) {
-        printf("Error al escribir en el buffer de depth: %d\n", ret);
+        Logging::Log("Error writing to Depth OCL Buffer (%d)", ret);
     }
 }
 void ComponentRender::onEnd() {
@@ -249,7 +265,8 @@ void ComponentRender::extractLightPointsFromObjects3D()
     }
 }
 
-std::vector<LightPoint3D *> &ComponentRender::getLightPoints() {
+std::vector<LightPoint3D *> &ComponentRender::getLightPoints()
+{
     return lightPoints;
 }
 
@@ -277,6 +294,8 @@ void ComponentRender::onUpdateSceneObjects()
 {
     auto sceneObjects = Brakeza3D::get()->getSceneObjects();
 
+    ComponentsManager::get()->getComponentCamera()->updateOCLContext();
+
     for (auto object : sceneObjects) {
         if (object != nullptr && object->isEnabled()) {
             object->onUpdate();
@@ -286,9 +305,13 @@ void ComponentRender::onUpdateSceneObjects()
     if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
         shaderDepthOfField->update();
     }
+
+    shaderBlurParticles->update();
 }
 
-void ComponentRender::onUpdateSceneObjectsSecondPass(std::vector<Object3D *> &sceneObjects) const {
+void ComponentRender::onUpdateSceneObjectsSecondPass() const
+{
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
         if (object != nullptr && object->isEnabled()) {
             object->drawOnUpdateSecondPass();
@@ -939,15 +962,16 @@ void ComponentRender::drawWireframe(Triangle *t)
     Drawable::drawLine2D(Line2D(t->Cs.x, t->Cs.y, t->As.x, t->As.y), Color::green());
 }
 
-void ComponentRender::updateFPS( float deltaTime) {
+void ComponentRender::updateFPS()
+{
     if (!EngineSetup::get()->DRAW_FPS) return;
 
-    frameTime += deltaTime;
+    frameTime += Brakeza3D::get()->getDeltaTimeMicro();
     ++fpsFrameCounter;
 
-    if (frameTime >= 1000.0f) { // Ahora frameTime se mide en milisegundos
+    if (frameTime >= 1000.0f) {
         fps = fpsFrameCounter;
-        frameTime -= 1000.0f; // Restamos 1 segundo en milisegundos, manteniendo el tiempo restante
+        frameTime -= 1000.0f;
         fpsFrameCounter = 0;
     }
 }
@@ -998,15 +1022,14 @@ void ComponentRender::setSelectedObject(Object3D *o) {
 void ComponentRender::onPostUpdateSceneObjects()
 {
     for (auto &object : Brakeza3D::get()->getSceneObjects()) {
-        if (!object->isEnabled() || object->isRemoved()) {
-            continue;
-        }
-
         object->postUpdate();
     }
 }
 
-cl_device_id ComponentRender::selectNvidiaDevice() {
+cl_device_id ComponentRender::selectDefaultGPUDevice()
+{
+    Logging::Message("Looking for GPU: %s", defaultGPU.c_str());
+
     cl_uint numPlatforms;
     cl_int ret = clGetPlatformIDs(0, nullptr, &numPlatforms);
     if (ret != CL_SUCCESS) {
@@ -1041,7 +1064,7 @@ cl_device_id ComponentRender::selectNvidiaDevice() {
                 continue;
             }
 
-            if (std::string(vendor).find("NVIDIA") != std::string::npos) {
+            if (std::string(vendor).find(defaultGPU) != std::string::npos) {
                 clPlatformId = platform;
                 return device;
             }
@@ -1053,7 +1076,12 @@ cl_device_id ComponentRender::selectNvidiaDevice() {
 
 void ComponentRender::initOpenCL()
 {
+    OpenCLInfo();
+
+    loadConfig();
+
     ret = clGetPlatformIDs(1, &clPlatformId, &ret_num_platforms) ;
+
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get platform_id");
     }
@@ -1062,12 +1090,12 @@ void ComponentRender::initOpenCL()
     if (ret != CL_SUCCESS) {
         Logging::Log("Unable to get cpu_device_id");
     }
-    clDeviceId = selectNvidiaDevice();
+
+    clDeviceId = selectDefaultGPUDevice();
     if (clDeviceId == nullptr) {
         Logging::Log("Unable to find a suitable NVIDIA device");
         return;
     }
-
 
     cl_context_properties properties[3];
     properties[0]= CL_CONTEXT_PLATFORM;
@@ -1096,44 +1124,14 @@ void ComponentRender::initOpenCL()
     Logging::Message("Selected device vendor: %s", vendor);
     Logging::Message("Selected device name: %s", deviceName);
 
-    OpenCLInfo();
-
-    loadRenderKernel();
-    loadParticlesKernel();
-    loadExplosionKernel();
-    loadBlinkKernel();
+    loadCommonKernels();
 
     shaderDepthOfField = new ShaderDepthOfField(true);
-
     shaderBilinear = new ShaderBilinear(true);
+    shaderBlurParticles = new ShaderBlurBuffer(true, 5);
 
     clBufferLights = clCreateBuffer(clContext, CL_MEM_READ_WRITE, MAX_OPENCL_LIGHTS * sizeof(OCLight), nullptr, nullptr);
-
-}
-
-void ComponentRender::loadParticlesKernel()
-{
-    Logging::Message("Loading particles kernel");
-    loadKernel(particlesProgram, particlesKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "particles.cl");
-}
-
-void ComponentRender::loadExplosionKernel()
-{
-    Logging::Message("Loading explosion kernel");
-    loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "explosion.cl");
-}
-
-void ComponentRender::loadBlinkKernel()
-{
-    Logging::Message("Loading blink kernel");
-    loadKernel(blinkProgram, blinkKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "blink.opencl");
-}
-
-
-void ComponentRender::loadRenderKernel()
-{
-    Logging::Message("Loading renders kernel");
-    loadKernel(rendererProgram, rendererKernel, EngineSetup::get()->ROOT_FOLDER + "renderer.cl");
+    clBufferVideoParticles = clCreateBuffer(clContext, CL_MEM_READ_WRITE, EngineSetup::get()->RESOLUTION * sizeof(Uint32), nullptr, nullptr);
 }
 
 void ComponentRender::OpenCLInfo()
@@ -1153,7 +1151,7 @@ void ComponentRender::OpenCLInfo()
     clGetPlatformIDs(platformCount, platforms, NULL);
 
     for (i = 0; i < platformCount; i++) {
-
+        Logging::Message("--");
         // get all devices
         clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_ALL, 0, NULL, &deviceCount);
         devices = (cl_device_id*) malloc(sizeof(cl_device_id) * deviceCount);
@@ -1254,6 +1252,8 @@ ComponentRender::~ComponentRender()
     for (auto &l : frameTriangles) {
         delete l;
     }
+
+    delete textWriter;
 }
 
 _cl_program *ComponentRender::getRendererProgram(){
@@ -1297,8 +1297,8 @@ _cl_kernel *ComponentRender::getBlinkKernel()
     return blinkKernel;
 }
 
-_cl_mem *ComponentRender::getClBufferLights() {
-    return clBufferLights;
+cl_mem *ComponentRender::getClBufferLights() {
+    return &clBufferLights;
 }
 
 void ComponentRender::updateLightsOCL()
@@ -1309,18 +1309,161 @@ void ComponentRender::updateLightsOCL()
         if (!l->isEnabled()) continue;
         auto forward = l->AxisForward();
         auto ocl = OCLight(
-                Tools::vertexOCL(l->getPosition()),
-                Tools::vertexOCL(forward),
-                l->p,
-                l->kc,
-                l->kl,
-                l->kq,
-                l->specularComponent,
-                l->color.getColor(),
-                l->specularColor.getColor()
+            Tools::vertexOCL(l->getPosition()),
+            Tools::vertexOCL(forward),
+            l->p,
+            l->kc,
+            l->kl,
+            l->kq,
+            l->specularComponent,
+            l->color.getColor(),
+            l->specularColor.getColor()
         );
         oclLights.emplace_back(ocl);
     }
 
-    clEnqueueWriteBuffer(clCommandQueue, clBufferLights, CL_TRUE, 0, (int) oclLights.size() * sizeof(OCLight), oclLights.data(), 0, nullptr, nullptr);
+    clEnqueueWriteBuffer(clCommandQueue, clBufferLights, CL_FALSE, 0, (int) oclLights.size() * sizeof(OCLight), oclLights.data(), 0, nullptr, nullptr);
+}
+
+cl_mem *ComponentRender::getClBufferVideoParticles()
+{
+    return &clBufferVideoParticles;
+}
+
+void ComponentRender::loadConfig()
+{
+    Logging::Message("Loading setup.json...");
+
+    const std::string filePath = EngineSetup::get()->CONFIG_FOLDER + "setup.json";
+
+    size_t file_size;
+    auto contentFile = Tools::readFile(filePath, file_size);
+
+    cJSON *myDataJSON = cJSON_Parse(contentFile);
+
+    if (myDataJSON == nullptr) {
+        Logging::Message("[Load Config] Can't be loaded: %s", filePath.c_str());
+        exit(-1);
+    }
+
+    defaultGPU = cJSON_GetObjectItemCaseSensitive(myDataJSON, "gpu")->valuestring;
+}
+
+void ComponentRender::loadCommonKernels()
+{
+    Logging::Message("Loading common OpenCL kernels");
+
+    loadKernel(rendererProgram, rendererKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "renderer.cl");
+    loadKernel(particlesProgram, particlesKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "particles.cl");
+    loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "explosion.cl");
+    loadKernel(blinkProgram, blinkKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "blink.opencl");
+}
+
+EngineSetup::LuaStateScripts ComponentRender::getStateScripts() {
+    return stateScripts;
+}
+
+void ComponentRender::playScripts()
+{
+    Logging::Message("LUA Scripts state changed to PLAY");
+
+    onStartScripts();
+
+    stateScripts = EngineSetup::LuaStateScripts::LUA_PLAY;
+}
+
+void ComponentRender::stopScripts()
+{
+    Logging::Message("LUA Scripts state changed to STOP");
+    stateScripts = EngineSetup::LuaStateScripts::LUA_STOP;
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        object->reloadScriptsEnvironment();
+    }
+
+    reloadScriptsEnvironment();
+
+    Logging::Message("Removing objects creating by LUA...");
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        if (!object->isBelongToScene()) {
+            object->setRemoved(true);
+        }
+    }
+}
+
+void ComponentRender::reloadScripts()
+{
+    Logging::Message("Reloading LUA Scripts...");
+
+    for(auto script : scripts) {
+        script->reloadScriptCode();
+    }
+
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    for (auto object : sceneObjects) {
+        object->reloadScriptsCode();
+    }
+
+    reloadScriptsEnvironment();
+}
+
+std::vector<ScriptLUA*> &ComponentRender::getScripts()
+{
+    return scripts;
+}
+
+void ComponentRender::addLUAScript(ScriptLUA *script)
+{
+    scripts.push_back(script);
+    reloadScriptsEnvironment();
+}
+
+void ComponentRender::runScripts()
+{
+    for(auto script : scripts) {
+        script->runEnvironment(luaEnvironment);
+    }
+}
+
+void ComponentRender::reloadScriptsEnvironment()
+{
+    Logging::Message("reloadScriptsEnvironment");
+
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    for (auto script : scripts) {
+        script->reloadEnvironment(luaEnvironment);
+        for (auto object : sceneObjects) {
+            object->insertGlobalIntoEnvironment(script);
+        }
+    }
+}
+
+void ComponentRender::removeScript(ScriptLUA *script)
+{
+    Logging::Message("Removing game script %s", script->scriptFilename.c_str());
+
+    for (auto it = scripts.begin(); it != scripts.end(); ++it) {
+        if ((*it)->scriptFilename == script->scriptFilename) {
+            delete *it;
+            scripts.erase(it);
+            return;
+        }
+    }
+}
+
+void ComponentRender::onStartScripts()
+{
+    Logging::Message("Executing OnStart for project scripts...");
+
+    for (auto script : scripts) {
+        script->runStart(luaEnvironment);
+    }
+
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    for (auto object : sceneObjects) {
+        object->runStartScripts();
+    }
+}
+
+const sol::environment &ComponentRender::getLuaEnvironment() const {
+    return luaEnvironment;
 }

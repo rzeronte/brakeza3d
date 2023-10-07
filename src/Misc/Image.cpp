@@ -42,8 +42,8 @@ void Image::loadTGA(const std::string& filename)
 
         this->fileName = filename;
         this->loaded = true;
-        Logging::Message("Loading TGA texture '%s'", filename.c_str());
 
+        Logging::Message("Loading Image file (%s) (%dx%d)", filename.c_str(), width(), height());
         return;
     }
 
@@ -51,12 +51,13 @@ void Image::loadTGA(const std::string& filename)
     exit(-1);
 }
 
-void Image::loadOpenCLBuffer() {
+void Image::loadOpenCLBuffer()
+{
     cl_int errCode;
 
     openClTexture = clCreateBuffer(
         ComponentsManager::get()->getComponentRender()->getClContext(),
-        CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
+        CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
         (width() * height()) * sizeof(Uint32),
         pixels(),
         &errCode
@@ -66,13 +67,6 @@ void Image::loadOpenCLBuffer() {
         std::cerr << "Error al crear el buffer de OpenCL: " << errCode << std::endl;
         exit(-1);
     }
-}
-
-void Image::refreshOpenCLBuffer()
-{
-    clReleaseMemObject(openClTexture);
-    openClTexture = clCreateBuffer(ComponentsManager::get()->getComponentRender()->getClContext(), CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, (width() * height()) * sizeof(Uint32), nullptr, nullptr);
-    clEnqueueWriteBuffer(ComponentsManager::get()->getComponentRender()->getClCommandQueue(), openClTexture, CL_TRUE, 0, (width() * height()) * sizeof(Uint32), pixels(), 0, nullptr, nullptr );
 }
 
 void Image::drawFlatAlpha(int pos_x, int pos_y, float alpha)
@@ -188,7 +182,6 @@ void Image::setSurface(SDL_Surface *surface) {
 void Image::setTextureAlpha(int value)
 {
     SDL_SetTextureAlphaMod(texture, value);
-
 }
 
 cl_mem *Image::getOpenClTexture() {
@@ -206,7 +199,7 @@ void Image::setImage(const std::string &filename)
         this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
-        refreshOpenCLBuffer();
+        clEnqueueWriteBuffer(ComponentsManager::get()->getComponentRender()->getClCommandQueue(), openClTexture, CL_TRUE, 0, (width() * height()) * sizeof(Uint32), pixels(), 0, nullptr, nullptr );
 
         this->fileName = filename;
         this->loaded = true;

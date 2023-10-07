@@ -5,7 +5,6 @@
 #ifndef BRAKEDA3D_COMPONENTRENDER_H
 #define BRAKEDA3D_COMPONENTRENDER_H
 
-#define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 #define MAX_OPENCL_LIGHTS 16
 
 #include <vector>
@@ -17,11 +16,10 @@
 #include "../../include/Render/Drawable.h"
 #include "../../include/Physics/BillboardBody.h"
 #include "../../include/Render/Maths.h"
-#include "ComponentWindow.h"
-#include "ComponentCollisions.h"
-#include "ComponentCamera.h"
 #include "../Shaders/ShaderBilinear.h"
 #include "../Shaders/ShaderDepthOfField.h"
+#include "../../src/Shaders/ShaderBlurBuffer.h"
+#include "../2D/TextWriter.h"
 #include <CL/cl.h>
 
 class ComponentRender : public Component {
@@ -30,6 +28,8 @@ private:
     int fps;
     int fpsFrameCounter;
     float frameTime;
+
+    std::string defaultGPU;
 
     std::vector<Triangle *> frameTriangles;
     std::vector<Triangle *> clippedTriangles;
@@ -49,6 +49,7 @@ private:
 
     cl_platform_id clPlatformId;
     cl_device_id clDeviceId;
+
     cl_uint ret_num_devices;
     cl_uint ret_num_platforms;
     cl_int ret;
@@ -61,6 +62,7 @@ private:
 
     cl_program particlesProgram;
     cl_kernel particlesKernel;
+    cl_mem clBufferVideoParticles;
 
     cl_program explosionProgram;
     cl_kernel explosionKernel;
@@ -72,6 +74,13 @@ private:
 
     cl_mem clBufferLights;
     std::vector<OCLight> oclLights;
+
+    ShaderBlurBuffer *shaderBlurParticles;
+
+    EngineSetup::LuaStateScripts stateScripts;
+    std::vector<ScriptLUA*> scripts;
+    TextWriter *textWriter;
+    sol::environment luaEnvironment;
 
 public:
     ComponentRender();
@@ -136,7 +145,7 @@ public:
 
     void updateLights();
 
-    void updateFPS(float deltaTime);
+    void updateFPS();
 
     std::vector<Triangle *> &getFrameTriangles();
 
@@ -180,13 +189,11 @@ public:
 
     _cl_command_queue *getClCommandQueue();
 
-    cl_device_id selectNvidiaDevice();
+    cl_device_id selectDefaultGPUDevice();
 
     void writeOCLBuffersFromHost() const;
 
     void writeOCLBufferIntoHost() const;
-
-    void loadRenderKernel();
 
     _cl_program *getRendererProgram();
 
@@ -196,11 +203,7 @@ public:
 
     void deleteRemovedObjects();
 
-    void loadParticlesKernel();
-
     _cl_kernel *getParticlesKernel();
-
-    void loadExplosionKernel();
 
     void loadKernel(cl_program &program, cl_kernel &kernel, const std::string& source);
 
@@ -208,15 +211,41 @@ public:
 
     ShaderDepthOfField *shaderDepthOfField;
 
-    void loadBlinkKernel();
-
     _cl_kernel *getBlinkKernel();
 
-    void onUpdateSceneObjectsSecondPass(std::vector<Object3D *> &sceneObjects) const;
+    void onUpdateSceneObjectsSecondPass() const;
 
-    _cl_mem *getClBufferLights();
+    cl_mem *getClBufferLights();
 
     void updateLightsOCL();
+
+    cl_mem *getClBufferVideoParticles();
+
+    void loadConfig();
+
+    void loadCommonKernels();
+
+    EngineSetup::LuaStateScripts getStateScripts();
+
+    void playScripts();
+
+    void stopScripts();
+
+    void reloadScripts();
+
+    std::vector<ScriptLUA*> &getScripts();
+
+    void addLUAScript(ScriptLUA *script);
+
+    void reloadScriptsEnvironment();
+
+    void removeScript(ScriptLUA *script);
+
+    void onStartScripts();
+
+    void runScripts();
+
+    const sol::environment &getLuaEnvironment() const;
 };
 
 
