@@ -11,10 +11,9 @@ __kernel void onUpdate(
     __global unsigned int *layer
 )
 {
-    int i = get_global_id(0);
-
-    int x = i % screenWidth;
-    int y = i / screenWidth;
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * screenWidth + x;
 
     // Efecto caja
     int rSum = 0, gSum = 0, bSum = 0, count = 0;

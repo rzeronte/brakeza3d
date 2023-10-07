@@ -29,3 +29,7 @@ bool Component::isEnabled() const {
 void Component::setEnabled(bool enabled) {
     Component::enabled = enabled;
 }
+
+Component::~Component() {
+
+}

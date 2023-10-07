@@ -2,8 +2,8 @@
 #include <iostream>
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/EngineSetup.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
 Object3D::Object3D() :
     position(Vertex3D(1, 1, 1)),
@@ -21,8 +21,14 @@ Object3D::Object3D() :
     alpha(0),
     enableLights(false),
     scale(1),
-    rotationFrameEnabled(false)
+    rotationFrameEnabled(false),
+    belongToScene(false),
+    luaEnvironment(sol::environment(
+        EngineBuffers::get()->getLua(),
+        sol::create, EngineBuffers::get()->getLua().globals())
+    )
 {
+    luaEnvironment.set("this", this);
 }
 
 Vertex3D &Object3D::getPosition() {
@@ -152,10 +158,23 @@ void Object3D::onUpdate()
     if (getBehavior() != nullptr) {
         motion->onUpdate(position);
     }
+
+    if (ComponentsManager::get()->getComponentRender()->getStateScripts() == EngineSetup::LUA_PLAY) {
+        runScripts();
+    }
+}
+
+void Object3D::runScripts()
+{
+    for (auto script: scripts) {
+        script->runEnvironment(luaEnvironment);
+    }
 }
 
 void Object3D::postUpdate()
 {
+    if (!isEnabled()) return;
+
     if (isRotationFrameEnabled()) {
         setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));
     }
@@ -269,14 +288,99 @@ void Object3D::lookAt(Object3D *o)
 {
     Vertex3D direction = (o->getPosition() - position).getNormalize();
 
-    Vertex3D rightVector = ((getRotation().getTranspose() * EngineSetup::get()->up) % direction).getNormalize();
+    // Calcular el eje de rotación
+    Vertex3D rightVector = Vertex3D(0, 0, -1) % (direction).getNormalize();
+    Vertex3D correctedUpVector = direction % (rightVector).getNormalize();
 
-    Vertex3D correctedUpVector = (direction % rightVector);
-
+    // Crear una matriz de rotación
     M3 r;
-    r.setX(rightVector.x, correctedUpVector.x, direction.x);
-    r.setY(rightVector.y, correctedUpVector.y, direction.y);
-    r.setZ(rightVector.z, correctedUpVector.z, direction.z);
+    r.setX(rightVector.x, correctedUpVector.x, -direction.x);
+    r.setY(rightVector.y, correctedUpVector.y, -direction.y);
+    r.setZ(rightVector.z, correctedUpVector.z, -direction.z);
 
     setRotation(r);
+}
+
+void Object3D::drawImGuiProperties()
+{
+    if (ImGui::TreeNode("Position")) {
+        const float range_min = -500000;
+        const float range_max = 500000;
+
+        ImGui::SliderScalar("X", ImGuiDataType_Float, &position.x, &range_min, &range_max, "%f");
+        ImGui::SliderScalar("Y", ImGuiDataType_Float, &position.y, &range_min, &range_max, "%f");
+        ImGui::SliderScalar("Z", ImGuiDataType_Float, &position.z, &range_min, &range_max, "%f");
+
+        ImGui::TreePop();
+    }
+
+}
+
+void Object3D::attachScript(ScriptLUA *script)
+{
+    scripts.push_back(script);
+    reloadScriptsEnvironment();
+}
+
+void Object3D::reloadScriptsEnvironment()
+{
+    for (auto script : scripts) {
+        Logging::Message("Reloading script environment variables for %s", getLabel().c_str());
+        script->reloadEnvironment(luaEnvironment);
+    }
+}
+
+void Object3D::reloadScriptsCode()
+{
+    for (auto script : scripts) {
+        script->reloadScriptCode();
+    }
+}
+
+void Object3D::removeScript(ScriptLUA *script)
+{
+    Logging::Message("Removing object script %s", script->scriptFilename.c_str());
+
+    for (auto it = scripts.begin(); it != scripts.end(); ++it) {
+        if ((*it)->scriptFilename == script->scriptFilename) {
+            delete *it;
+            scripts.erase(it);
+            return;
+        }
+    }
+}
+
+const char *Object3D::getTypeObject() {
+    return "Object3D";
+}
+
+
+const char *Object3D::getTypeIcon() {
+    return "objectIcon";
+}
+
+const std::vector<ScriptLUA *> &Object3D::getScripts() const {
+    return scripts;
+}
+
+void Object3D::runStartScripts()
+{
+    for (auto script : scripts) {
+        script->runStart(luaEnvironment);
+    }
+}
+
+bool Object3D::isBelongToScene() const {
+    return belongToScene;
+}
+
+void Object3D::setBelongToScene(bool belongToScene) {
+    Object3D::belongToScene = belongToScene;
+}
+
+void Object3D::insertGlobalIntoEnvironment(ScriptLUA *scriptToInsert)
+{
+    for (auto script: scripts) {
+        script->insertGlobalsIntoEnvironment(scriptToInsert, luaEnvironment);
+    }
 }

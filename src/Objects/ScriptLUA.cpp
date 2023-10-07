@@ -1,0 +1,233 @@
+//
+// Created by eduardo on 3/10/23.
+//
+
+#include <fstream>
+#include "../../include/Objects/ScriptLUA.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/Brakeza3D.h"
+
+ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
+:
+    scriptFilename(script),
+    fileTypes(std::move(properties)),
+    content(nullptr)
+{
+    Logging::Message("Loading LUA Script (%s, %s)", script.c_str(), fileTypes.c_str());
+
+    getCode(script);
+    parseTypes();
+}
+
+void ScriptLUA::getCode(const std::string &script)
+{
+    size_t file_size;
+    content = readFile(EngineSetup::get()->SCRIPTS_FOLDER + script, file_size);
+}
+
+char *ScriptLUA::readFile(const std::string &name, size_t &source_size)
+{
+    FILE *fp = fopen(name.c_str(), "r");
+
+    if (!fp) {
+        Logging::Message("File %s can't be loaded!", name.c_str());
+        return nullptr;
+    }
+
+    fseek(fp, 0, SEEK_END);
+    source_size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    char *file_str = (char *)malloc(source_size + 1);
+    if (!file_str) {
+        fclose(fp);
+        return nullptr;
+    }
+
+    fread(file_str, 1, source_size, fp);
+    file_str[source_size] = '\0';
+    fclose(fp);
+
+    return file_str;
+}
+
+void ScriptLUA::runEnvironment(sol::environment &environment)
+{
+    if (paused) return;
+    sol::state &lua = EngineBuffers::get()->getLua();
+
+    try {
+        lua.script(content, environment);
+
+        if (environment["onUpdate"]) {
+            environment["onUpdate"]();
+        }
+    } catch (const sol::error& e) {
+        Logging::Message("LUA script error: %s", e.what());
+    }
+}
+
+void ScriptLUA::runStart(sol::environment &environment)
+{
+    if (paused) return;
+
+    try {
+        sol::state &lua = EngineBuffers::get()->getLua();
+
+        lua.script(content, environment);
+
+        if (environment["onStart"]) {
+            environment["onStart"]();
+        }
+    } catch (const sol::error& e) {
+        Logging::Message("LUA script error: %s", e.what());
+    }
+}
+
+
+void ScriptLUA::addDataType(const char *name, const char *value)
+{
+    dataTypes.emplace_back(name, value);
+}
+
+void ScriptLUA::reloadEnvironment(sol::environment &environment)
+{
+    Logging::Message("Reloading LUA Environment (%s)", this->fileTypes.c_str());
+    parseTypes();
+
+    for (const auto& type : dataTypes) {
+        Logging::Message("Setting environment variable  ('%s' => '%s')", type.name.c_str(), type.value.c_str());
+        environment[type.name] = sol::make_object(environment.lua_state(), type.value);
+    }
+}
+
+[[maybe_unused]] void ScriptLUA::insertGlobalsIntoEnvironment(ScriptLUA *script, sol::environment &environment) const
+{
+    for (const auto& type : script->dataTypes) {
+        Logging::Message("Load global variable into environment ('%s' => '%s' | %s -> %s)", type.name.c_str(), type.value.c_str(), script->scriptFilename.c_str(), this->scriptFilename.c_str());
+        environment[type.name] = sol::make_object(environment.lua_state(), type.value);
+    }
+}
+
+void ScriptLUA::parseTypes()
+{
+    dataTypes.clear();
+
+    size_t file_size;
+    auto contentFile = readFile(EngineSetup::get()->SCRIPTS_FOLDER + fileTypes, file_size);
+
+    cJSON *currentType;
+    cJSON_ArrayForEach(currentType, cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types")) {
+        std::string name = cJSON_GetObjectItemCaseSensitive(currentType, "name")->valuestring;
+        std::string value = cJSON_GetObjectItemCaseSensitive(currentType, "value")->valuestring;
+
+        addDataType(name.c_str(), value.c_str());
+    }
+}
+
+std::string ScriptLUA::dataTypesFileFor(std::string basicString)
+{
+    return ScriptLUA::removeFilenameExtension(basicString) + ".json";
+}
+
+std::string ScriptLUA::removeFilenameExtension(std::string& filename)
+{
+    size_t dotPosition = filename.find_last_of('.');
+
+    if (dotPosition != std::string::npos) {
+        return filename.substr(0, dotPosition);
+    }
+
+    return filename;
+}
+
+void ScriptLUA::removeDataType(ScriptLUATypeData data)
+{
+    for (auto it = dataTypes.begin(); it != dataTypes.end(); ++it) {
+        if (it->name == data.name) {
+            dataTypes.erase(it);
+            return;
+        }
+    }
+}
+
+void ScriptLUA::updateFileTypes()
+{
+    Logging::Message("Updating types file (%s)", this->fileTypes.c_str());
+
+    cJSON *root = cJSON_CreateObject();
+    cJSON *typesArray = cJSON_CreateArray();
+
+    for (const auto &type : dataTypes) {
+        cJSON *typeObject = cJSON_CreateObject();
+        cJSON_AddStringToObject(typeObject, "name", type.name.c_str());
+        cJSON_AddStringToObject(typeObject, "value", type.value.c_str());
+        cJSON_AddItemToArray(typesArray, typeObject);
+    }
+
+    cJSON_AddItemToObject(root, "types", typesArray);
+
+    char *jsonString = cJSON_Print(root);
+
+    std::string jsonResult(jsonString);
+    updateFileTypesWith(jsonString);
+
+    cJSON_Delete(root);
+}
+
+void ScriptLUA::updateFileTypesWith(const std::string& content) const
+{
+    std::ofstream file(EngineSetup::get()->SCRIPTS_FOLDER + this->fileTypes, std::ios::trunc);
+
+    if (!file.is_open()) {
+        Logging::Message("File %s can't be loaded!", fileTypes.c_str());
+        return;
+    }
+
+    file << content;
+    file.close();
+
+    if (file.fail()) {
+        Logging::Message("Error writing to file %s", fileTypes.c_str());
+        return;
+    }
+
+}
+
+bool ScriptLUA::updateScriptCodeWith(const std::string& content) const
+{
+    Logging::Message("Writing content in file (%s)", scriptFilename.c_str());
+
+    std::ofstream file(EngineSetup::get()->SCRIPTS_FOLDER + this->scriptFilename, std::ios::trunc);
+
+    if (!file.is_open()) {
+        std::cerr << "Error al abrir el archivo." << std::endl;
+        return false;
+    }
+
+    file << content;
+    file.close();
+
+    if (file.fail()) {
+        Logging::Message("Error writing to file %s", fileTypes.c_str());
+        return false;
+    }
+    Logging::Message("Done!");
+
+    return true;
+}
+
+void ScriptLUA::reloadScriptCode()
+{
+    getCode(scriptFilename);
+}
+
+bool ScriptLUA::isPaused() const {
+    return paused;
+}
+
+void ScriptLUA::setPaused(bool paused) {
+    Logging::Message("Script %s has been paused to %d", scriptFilename.c_str(), paused);
+    ScriptLUA::paused = paused;
+}
+

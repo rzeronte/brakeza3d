@@ -37,15 +37,13 @@ __kernel void onUpdate(
     int numberProjectiles
 )
 {
-    int i = get_global_id(0);
-
-    int x = i % screenWidth;
-    int y = i / screenWidth;
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * screenWidth + x;
 
     float2 uv = { (float) x, (float) y };
     float2 resolution = { (float) screenWidth, (float) screenHeight};
     float2 st = uv / resolution;
-
 
     unsigned int mixedColor = video[i];
     unsigned char *mi = &mixedColor;

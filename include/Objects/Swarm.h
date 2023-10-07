@@ -36,9 +36,11 @@ struct OCSwarmContext {
 class SwarmObject
 {
 public:
+    SwarmObject() {}
+
+    explicit SwarmObject(Object3D *object) : object(object) {}
     Object3D *object;
     Vertex3D velocity;
-    bool avoidMove;
 };
 
 class Swarm : public Object3D {
@@ -48,13 +50,13 @@ class Swarm : public Object3D {
 
     Vertex3D minBounds;
     Vertex3D maxBounds;
+
 public:
     Swarm(Vertex3D position, Vertex3D size);
 
     void updateBoids();
 
-    void add(SwarmObject *o);
-    void createPredator(std::string filename);
+    SwarmObject* createBoid(Object3D *object);
 
     void separation(SwarmObject *swarmObject, std::vector<SwarmObject*> &objects, float weight) const;
 
@@ -68,25 +70,23 @@ public:
 
     void onUpdate() override;
 
-    float separationWeight = 0.5f;
-    float alignmentWeight = 0.f;
-    float cohesionWeight = 0.5f;
-    float neighborDist = 2500;
+    float separationWeight = 0.9f;
+    float alignmentWeight = 0.8;
+    float cohesionWeight = 0.6f;
+    float neighborDist = 3000;
 
-    float maxSpeed = 50.0f;
+    float maxSpeed = 100.0f;
     float centerThreshold = 1.0;
 
-    float velocityBoidsFactor = 1.0;
+    float velocityBoidsFactor = 25.0;
     float velocityPredatorsFactor = 1.0;
 
-    float predatorThreshold = 1.0f;
-    float predatorAvoidanceWeight = 1.0;
+    float predatorThreshold = 3000.0f;
+    float predatorAvoidanceWeight = 30.0;
     float predatorAttractionWeight = 1.0f;
     float predatorSeparationWeight = 0.5;
     float predatorCohesionWeight = 0.5;
     float predatorAlignmentWeight = 0.5f;
-
-    void createBoid(const std::string& filename);
 
     float scaleObject = 0.1f;
 
@@ -97,18 +97,11 @@ public:
     Vertex3D rotationObject;
     Vertex3D size;
 
-    void addFromObject(Object3D *o);
-
 private:
-    void postUpdate() override;
 
     void onDrawHostBuffer() override;
 
     Vertex3D randomVertexInsideAABB();
-
-    Vertex3D calculateCenter();
-
-    Vertex3D avoidPosition;
 
 public:
     float centerAttractionWeight = 1.0;
@@ -116,11 +109,19 @@ public:
 
     void avoidPredators(SwarmObject *swarmObject);
 
-    void updatePredators();
-
     void updatePosition(SwarmObject *o, float weight);
 
     void checkBoundsAndAdjustVelocity(SwarmObject *swarmObject, float turnFactor);
+
+    void addPredator(SwarmObject *o);
+
+    void reset();
+
+    void removeBoid(SwarmObject *o);
+
+    const char *getTypeObject() override;
+
+    const char *getTypeIcon() override;
 };
 
 

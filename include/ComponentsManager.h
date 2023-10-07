@@ -8,6 +8,7 @@
 #include "Components/ComponentRender.h"
 #include "Components/ComponentInput.h"
 #include "Components/ComponentSound.h"
+#include "Components/ComponentWindow.h"
 
 enum ComponentID {
     COMPONENT_WINDOW = 0,
@@ -59,6 +60,7 @@ public:
     };
 
     // -- Custom components here --
+
 };
 
 

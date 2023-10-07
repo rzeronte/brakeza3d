@@ -19,6 +19,8 @@ private:
     SDL_Surface *surface;
     SDL_Texture *texture;
     std::string fileName;
+    cl_mem openClTexture;
+
     bool loaded;
 public:
     Image();
@@ -60,11 +62,7 @@ public:
 
     void loadOpenCLBuffer();
 
-    cl_mem openClTexture;
-
     void setImage(const std::string &basicString);
-
-    void refreshOpenCLBuffer();
 
     Image(SDL_Surface *surface, SDL_Texture *texture);
 

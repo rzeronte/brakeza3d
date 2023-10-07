@@ -58,14 +58,13 @@ __kernel void onUpdate(
     float emissionTime
 )
 {
-    int i = get_global_id(0);
-
-    int x = i % screenWidth;
-    int y = i / screenWidth;
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * get_global_size(0) + x;
 
     float2 uv = { x, y };
 
-    OCParticle *p = &particles[i];
+    __global OCParticle *p = (__global OCParticle *)&particles[i];
     if (totalExecutionTimeInSeconds > i * context->step_add_particle && !p->active && (emissionTime < 0.0f || totalExecutionTimeInSeconds < emissionTime)) {
         p->active = true;
         float randVal = rand(uv * sin(totalExecutionTimeInSeconds));

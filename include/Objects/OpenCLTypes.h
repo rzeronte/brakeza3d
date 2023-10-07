@@ -220,7 +220,13 @@ struct OCParticlesContext {
         return OCParticlesContext(0.0f, 0.0025f, 1.5f, 0.0f, 50.0f, 125.0f, 125.0f, 255.0f, 4.5f, 4.5f, 0.99);
     }
     static OCParticlesContext forPlayerEngine() {
-        return OCParticlesContext(0.0f, 0.0025f, 2.5f, 45.0f, 0.0f, 50.0f, 20.0f, 255.0f, 2.0f, 1.8f, 0.98f );
+        return OCParticlesContext(0.0f, 0.0025f, 2.5f, 45.0f, 0.0f, 50.0f, 20.0f, 255.0f, 2.0f, 1.8f, 0.98f);
+    }
+    static OCParticlesContext forPlayerSatellite() {
+        return OCParticlesContext(0.0f, 0.0025f, 1.5f, 45.0f, 0.0f, 50.0f, 50.0f, 255.0f, 2.0f, 0.8f, 0.98f);
+    }
+    static OCParticlesContext forSplash() {
+        return OCParticlesContext(0, 0.025f, 10.00f, 0.0f, 0.0f, 0.0000025f, 100.0f, 200.0f, 100.0f, 1.0f, 0.999f);
     }
 
     float GRAVITY = EngineSetup::get()->PARTICLES_SHADER_GRAVITY;

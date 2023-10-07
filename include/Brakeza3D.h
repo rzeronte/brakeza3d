@@ -14,13 +14,14 @@
 #include "Components/ComponentRender.h"
 #include "ComponentsManager.h"
 #include "GUI/GUIManager.h"
+#include "../sol/sol.hpp"
 #include <thread>
 
 class Brakeza3D {
 private:
-    GUIManager managerGUI;
 
     ComponentsManager *componentsManager;
+    GUIManager *managerGUI;
 
     Timer engineTimer;
 
@@ -30,6 +31,9 @@ private:
     float executionTime = 0;
 
     std::vector<Object3D *> sceneObjects;
+
+    bool finish = false;
+
 public:
     Brakeza3D();
 
@@ -81,7 +85,9 @@ public:
 
     static void LoadDemo();
 
-    bool finish = false;
+    GUIManager *getManagerGui();
+
+    void welcomeMessage() const;
 };
 
 

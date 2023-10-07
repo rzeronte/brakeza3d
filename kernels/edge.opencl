@@ -12,10 +12,9 @@ __kernel void onUpdate(
     float b
 )
 {
-   int i = get_global_id(0);
-
-   int x = i % screenWidth;
-   int y = i / screenWidth;
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * get_global_size(0) + x;
 
    float2 uv = { x, y };
    float2 resolution = { screenWidth, screenHeight};

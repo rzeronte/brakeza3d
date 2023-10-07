@@ -57,10 +57,13 @@ __kernel void onUpdate(
     __global OCPoint2D *origin,
     float intensity,
     int stopAdd
-    )
+)
 {
-    int i = get_global_id(0);
-    OCParticle *p = &particles[i];
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * get_global_size(0) + x;
+
+    __global OCParticle *p = (__global OCParticle *)&particles[i];
 
     if ((totalExecutionTimeInSeconds > i * context->step_add_particle && !p->active) && stopAdd == 0) {
         p->active = true;
@@ -98,27 +101,23 @@ __kernel void onUpdate(
 
     if (p->active) {
         p->timeLiving -= deltaTimeInSeconds;
-        unsigned int randVal = lcg(i);
 
         if (p->timeLiving <= 0) {
             p->active = false;
             p->position = (OCVertex3D) {origin->x, origin->y, 0, 0, 0};
-
         } else {
             p->velocity.y += context->gravity * deltaTimeInSeconds;
             p->position.x += p->velocity.x * deltaTimeInSeconds;
             p->position.y += p->velocity.y * deltaTimeInSeconds;
             p->position.z += p->velocity.z * deltaTimeInSeconds;
 
-            // Añade la desaceleración aquí
             p->velocity.x *= context->deceleration_factor;
             p->velocity.y *= context->deceleration_factor;
             p->velocity.z *= context->deceleration_factor;
 
-            // Calcula la relación de vida para escalar el ruido en la velocidad
             float lifeRatio = p->timeLiving / p->timeToLive;
+            unsigned int randVal = lcg(i);
 
-            // Ajusta el ruido en función de la relación de vida
             float velocityNoiseX = getRandomFloat(-context->velocity_noise, context->velocity_noise, &randVal) * lifeRatio;
             float velocityNoiseY = getRandomFloat(-context->velocity_noise, context->velocity_noise, &randVal) * lifeRatio;
 
@@ -139,7 +138,7 @@ __kernel void onUpdate(
                 float alpha = getRandomFloat(context->alpha_min, context->alpha_max, &randVal);
 
                 unsigned int index = y * screenWidth + x;
-                unsigned int c2 = createRGBA(color.x, color.y, color.z, 0);
+                unsigned int c2 = createRGBA(color.x, color.y, color.z, 255);
                 unsigned int c1 = video[index];
 
                 video[index] = alphaBlend(c2, c1, (int) alpha);

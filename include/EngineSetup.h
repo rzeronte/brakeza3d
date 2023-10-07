@@ -16,11 +16,11 @@ public:
 
     bool LOGGING = false;
 
-    bool IMGUI_ENABLED = false;
+    bool IMGUI_ENABLED = true;
 
     std::string ENGINE_VERSION = "v.1.0.0";
 
-    std::string ENGINE_TITLE = "Project DarkHeaZ (" + ENGINE_VERSION + ")";
+    std::string ENGINE_TITLE = "Brakeza3D Demo (" + ENGINE_VERSION + ")";
 
     std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";
@@ -87,7 +87,6 @@ public:
     bool DRAW_DECAL_WIREFRAMES = false;
 
     bool TEXTURES_BILINEAR_INTERPOLATION = true;
-    bool LIGHTMAPS_BILINEAR_INTERPOLATION = false;
 
     bool DRAW_OBJECT3D_BILLBOARD = false;
     bool DRAW_LIGHTPOINTS_BILLBOARD = true;
@@ -114,7 +113,7 @@ public:
     bool FULLSCREEN = false;
 
     bool DRAW_FRUSTUM = false;
-    bool DRAW_FPS = true;
+    bool DRAW_FPS = false;
 
     // FRUSTUM PLANES
     int NEAR_PLANE = 0;
@@ -143,6 +142,7 @@ public:
     std::string TEXTURES_FOLDER = ASSETS_FOLDER + "textures/";
     std::string GRIDS_FOLDER = ASSETS_FOLDER + "grids/";
     std::string ICONS_FOLDER = ASSETS_FOLDER + "icons/";
+    std::string SCRIPTS_FOLDER = ASSETS_FOLDER + "scripts/";
 
     std::string CL_SHADERS_FOLDER = "../kernels/";
 
@@ -172,10 +172,10 @@ public:
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 
-    float TESTING_INT1 = 1;
-    float TESTING_INT2 = 2;
-    float TESTING_INT3 = 3;
-    float TESTING_INT4 = 4;
+    float TESTING_INT1 = 0.1f;
+    float TESTING_INT2 = 0.03f;
+    float TESTING_INT3 = 1;
+    float TESTING_INT4 = 0.1f;
 
     bool ENABLE_DEPTH_OF_FIELD = true;
     float LIGHTMAPPING_BLEND_INTENSITY = 0.05f;
@@ -227,9 +227,6 @@ public:
 
     std::string LOGO_BRAKEZA = "logo.png";
 
-    std::string DARKHEAZ_ROOT_FOLDER = ROOT_FOLDER + "ProjectDarkHeaZ/";
-    std::string DARKHEAZ_MAIN_CONFIG = "setup.json";
-
     enum collisionGroups {
         Player = 1,
         Enemy = 2,
@@ -244,38 +241,10 @@ public:
         SND_GLOBAL = -1,
     };
 
-    enum ShadersPhaseRender {
-        PREUPDATE = 0,
-        POSTUPDATE = 1,
-    };
-
     typedef enum {
-        NONE = 0,
-        SPLASH = 1,
-        MENU = 2,
-        PRESS_KEY_NEW_LEVEL = 3,
-        PRESS_KEY_PREVIOUS_LEVEL = 4,
-        PRESS_KEY_BY_DEAD = 5,
-        COUNTDOWN = 6,
-        GAMING = 7,
-        HELP = 8,
-        PRESS_KEY_GAMEOVER = 9,
-        CREDITS = 10,
-        PRESS_KEY_BY_WIN = 11,
-        INTRO = 12,
-        GAMING_TUTORIAL = 13,
-        STORE = 14,
-        SPACESHIP_SELECTOR = 16
-    } GameState;
-
-    typedef enum {
-        ITEM_EXTRA_POWER = 0,
-        ITEM_FAST_ENERGY_RELOAD = 1,
-        ITEM_SATELLITE = 2,
-        ITEM_MIRROR_SHOOT = 3,
-        ITEM_EXTRA_DASH = 4,
-        ITEM_FAST_SHOOT_CADENCE = 5
-    } StoreItems;
+        LUA_STOP = 0,
+        LUA_PLAY = 1,
+    } LuaStateScripts;
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

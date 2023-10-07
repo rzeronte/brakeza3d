@@ -23,19 +23,18 @@ __kernel void onUpdate(
     int usingColors
 )
 {
-    int i = get_global_id(0);
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * screenWidth + x;
 
-    int x = i % screenWidth;
-    int y = i / screenWidth;
-
-    float2 uv = { (float)x, (float)y };
-    float2 resolution = { (float)screenWidth, (float)screenHeight };
+    const float2 uv = { (float)x, (float)y };
+    const float2 resolution = { (float)screenWidth, (float)screenHeight };
     float2 st = uv / resolution;
 
-    float2 center = { 0.5f, 0.5f };
-    float2 offsetToCenter = { 0.25f, 0.25f }; // center screen
+    const float2 center = { 0.5f, 0.5f };
+    const float2 offsetToCenter = { 0.25f, 0.25f }; // center screen
 
-    float2 offsetInput = { offsetX, offsetY };
+    const float2 offsetInput = { offsetX, offsetY };
 
     if (usingOffset > 0) {
         st /= 1.75f;

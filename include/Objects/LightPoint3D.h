@@ -67,6 +67,10 @@ public:
     void drawDeepMap(int pos_x, int pos_y) const;
 
     void onDrawHostBuffer() override;
+
+    const char *getTypeObject() override;
+
+    const char *getTypeIcon() override;
 };
 
 

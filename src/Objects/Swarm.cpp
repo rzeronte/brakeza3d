@@ -1,4 +1,5 @@
 
+
 #include "../../include/Objects/Swarm.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/ComponentsManager.h"
@@ -12,7 +13,7 @@ Swarm::Swarm(Vertex3D position, Vertex3D size) : size(size)
 
 void Swarm::updateBounds()
 {
-    auto newSize = size.getScaled(getScale());
+    const auto newSize = size.getScaled(getScale());
     Vertex3D halfSize = newSize.getScaled(0.5);
 
     minBounds = getPosition() - halfSize;
@@ -27,32 +28,8 @@ void Swarm::updateBounds()
 void Swarm::onUpdate()
 {
     Object3D::onUpdate();
-
     updateBounds();
-    updatePredators();
     updateBoids();
-}
-
-void Swarm::postUpdate()
-{
-}
-
-void Swarm::onDrawHostBuffer()
-{
-    Object3D::onDrawHostBuffer();
-    for (auto o: objects) {
-        //o->object->onDraw();
-        Drawable::drawVertex(o->object->getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera(), Color::red());
-    }
-
-    for (auto o: predators) {
-        //o->object->onDraw();
-        Drawable::drawVertex(o->object->getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera(), Color::red());
-    }
-
-    if (EngineSetup::get()->DRAW_MESH3D_AABB) {
-        Drawable::drawAABB(&this->aabb, Color::yellow());
-    }
 }
 
 void Swarm::separation(SwarmObject* swarmObject, std::vector<SwarmObject*> &objects, float weight) const
@@ -65,7 +42,7 @@ void Swarm::separation(SwarmObject* swarmObject, std::vector<SwarmObject*> &obje
             direction = swarmObject->object->getPosition() - o->object->getPosition();
             direction = direction.getNormalize();
             direction = direction.divide(distance);
-            swarmObject->velocity = swarmObject->velocity + direction.getScaled(weight);
+            swarmObject->velocity = swarmObject->velocity + direction.getScaled(weight * 600);
         }
     }
 }
@@ -87,7 +64,8 @@ void Swarm::alignment(SwarmObject* object, std::vector<SwarmObject*> &objects, f
     }
 }
 
-void Swarm::cohesion(SwarmObject* swarmObject, std::vector<SwarmObject*> &objects, float weight) {
+void Swarm::cohesion(SwarmObject* swarmObject, std::vector<SwarmObject*> &objects, float weight)
+{
     Vertex3D center;
     int count = 0;
     for (auto o: objects) {
@@ -112,7 +90,7 @@ void Swarm::updateBoids()
         alignment(o, objects, alignmentWeight * globalBiasAligniment);
         cohesion(o, objects, cohesionWeight * globalBiasCohesion);
 
-        attractTo(o, getPosition(), false, centerAttractionWeight * globalBiasSeparation);
+        attractTo(o, getPosition(), true, centerAttractionWeight * globalBiasSeparation);
         checkBoundsAndAdjustVelocity(o, 1.2);
         avoidPredators(o);
 
@@ -122,72 +100,26 @@ void Swarm::updateBoids()
     }
 }
 
-void Swarm::updatePredators()
+void Swarm::addPredator(SwarmObject *o)
 {
-    for (auto& predator : predators) {
-        separation(predator, predators, predatorSeparationWeight * globalBiasSeparation);
-        alignment(predator, predators, predatorAlignmentWeight * globalBiasAligniment);
-        cohesion(predator, predators, predatorCohesionWeight * globalBiasCohesion);
-
-        attractTo(predator, calculateCenter(), false, predatorAttractionWeight * globalBiasSeparation);
-        checkBoundsAndAdjustVelocity(predator, 1.2);
-
-        limitVelocity(predator);
-
-        updatePosition(predator, velocityPredatorsFactor);
-    }
-}
-
-void Swarm::add(SwarmObject *o)
-{
-    o->object->setStencilBufferEnabled(false);
-    o->velocity = Tools::randomVertex().getNormalize().getScaled(maxSpeed);
-    o->object->setPosition(randomVertexInsideAABB());
-
-    objects.emplace_back(o);
-}
-
-void Swarm::createBoid(const std::string& filename)
-{
-    auto o = new SwarmObject();
-
-    auto mesh  = new Object3D();
-    mesh->setScale(0.25);
-    //mesh->AssimpLoadGeometryFromFile(filename);
-    mesh->setStencilBufferEnabled(false);
-    mesh->setPosition(randomVertexInsideAABB());
-
-    o->object = mesh;
-    o->velocity = Tools::randomVertex().getNormalize().getScaled(maxSpeed);
-
-    objects.emplace_back(o);
-}
-
-
-void Swarm::createPredator(std::string filename)
-{
-    auto o = new SwarmObject();
-
-    auto mesh  = new Object3D();
-    mesh->setScale(0.25);
-    //mesh->AssimpLoadGeometryFromFile(filename);
-    mesh->setStencilBufferEnabled(false);
-    mesh->setPosition(randomVertexInsideAABB());
-
-    o->object = mesh;
-    o->velocity = Tools::randomVertex().getNormalize().getScaled(maxSpeed);
-
+    o->velocity = Tools::randomVertex().getNormalize();
     predators.emplace_back(o);
 }
 
-void Swarm::addFromObject(Object3D *o)
+SwarmObject* Swarm::createBoid(Object3D *mesh)
 {
-    auto so = new SwarmObject();
-    so->object = o;
-    so->avoidMove = true;
+    mesh->setScale(0.50);
+    auto o = new SwarmObject();
 
-    objects.emplace_back(so);
+    o->object = mesh;
+    o->velocity = Tools::randomVertex().getNormalize();
+    o->velocity.z = 0;
+
+    objects.emplace_back(o);
+
+    return o;
 }
+
 void Swarm::limitVelocity(SwarmObject* object) const {
 
     // Calcula la magnitud actual de la velocidad
@@ -197,23 +129,16 @@ void Swarm::limitVelocity(SwarmObject* object) const {
     if (currentSpeed > maxSpeed) {
         object->velocity = object->velocity.getNormalize().getScaled(maxSpeed);
     }
+
+    object->velocity.z = 0;
 }
 
 Vertex3D Swarm::randomVertexInsideAABB()
 {
     float x = Tools::random(minBounds.x, maxBounds.x);
     float y = Tools::random(minBounds.y, maxBounds.y);
-    float z = Tools::random(minBounds.z, maxBounds.z);
+    float z = getPosition().z; //Tools::random(minBounds.z, maxBounds.z);
     return Vertex3D(x, y, z);
-}
-
-Vertex3D Swarm::calculateCenter()
-{
-    Vertex3D center(0, 0, 0);
-    for (auto o: objects) {
-        center = center + o->object->getPosition();
-    }
-    return center.divide(objects.size());
 }
 
 void Swarm::attractTo(SwarmObject* swarmObject, Vertex3D center, bool ignoreThresold, float weight)
@@ -235,27 +160,25 @@ void Swarm::attractTo(SwarmObject* swarmObject, Vertex3D center, bool ignoreThre
 
 void Swarm::avoidPredators(SwarmObject* swarmObject) {
     for(auto& predator : predators) {
-        Vertex3D directionFromPredator = swarmObject->object->getPosition() - predator->object->getPosition();
+        Vertex3D directionFromPredator = swarmObject->object->getPosition() -  predator->object->getPosition();
 
         // Calcula la distancia al depredador.
         float distanceFromPredator = directionFromPredator.getModule();
 
         // Si la distancia al depredador es menor que un cierto umbral, aplica una fuerza que empuja a la partícula lejos del depredador.
         if (distanceFromPredator < predatorThreshold) {
-            Vertex3D predatorForce = directionFromPredator.getNormalize().getScaled(predatorAvoidanceWeight);
+            float forceMagnitude = predatorAvoidanceWeight * (1 - distanceFromPredator / predatorThreshold);
+            Vertex3D predatorForce = directionFromPredator.getNormalize().getScaled(forceMagnitude);
 
             // Aplica la fuerza al vector de velocidad de la partícula.
             swarmObject->velocity = swarmObject->velocity + predatorForce;
         }
     }
-
-    // Limita la velocidad a un valor máximo
-    limitVelocity(swarmObject);
 }
 
 void Swarm::updatePosition(SwarmObject *o, float weight)
 {
-    o->object->setPosition(o->object->getPosition() + (o->velocity.getScaled(weight * Brakeza3D::get()->getDeltaTime())));
+    o->object->setPosition(o->object->getPosition() + (o->velocity.getScaled(weight * Brakeza3D::get()->getDeltaTime())).getScaled(1, 1, 0));
 }
 
 void Swarm::checkBoundsAndAdjustVelocity(SwarmObject* swarmObject, float turnFactor) {
@@ -281,4 +204,40 @@ void Swarm::checkBoundsAndAdjustVelocity(SwarmObject* swarmObject, float turnFac
     if (position.z > maxBounds.z) {
         swarmObject->velocity.z = swarmObject->velocity.z - turnFactor;
     }
+}
+
+void Swarm::onDrawHostBuffer()
+{
+    Object3D::onDrawHostBuffer();
+
+    if (EngineSetup::get()->DRAW_MESH3D_AABB) {
+        Drawable::drawAABB(&this->aabb, Color::yellow());
+    }
+}
+
+void Swarm::reset()
+{
+    for (auto o: objects) {
+        delete o;
+    }
+
+    for (auto o: predators) {
+        delete o;
+    }
+
+    objects.clear();
+    predators.clear();
+}
+
+void Swarm::removeBoid(SwarmObject *o)
+{
+    objects.erase(std::remove(objects.begin(), objects.end(), o), objects.end());
+}
+
+const char *Swarm::getTypeObject() {
+    return "Swarm";
+}
+
+const char *Swarm::getTypeIcon() {
+    return "swarmIcon";
 }

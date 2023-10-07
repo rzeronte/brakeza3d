@@ -39,7 +39,7 @@ public:
 
     void setFont(TTF_Font *font);
 
-
+    TTF_Font *getFont() const;
 
 };
 

@@ -1,6 +1,5 @@
 unsigned int createRGBA(int r, int g, int b, int a);
 unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha);
-unsigned int calculateAlpha(int blurAmount, int numBlended);
 
 __kernel void onUpdate(
         int screenWidth,
@@ -14,10 +13,9 @@ __kernel void onUpdate(
         float intensity
 )
 {
-    int i = get_global_id(0);
-
-    int x = i % screenWidth;
-    int y = i / screenWidth;
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * screenWidth + x;
 
     unsigned int depthInt = bufferDepth[y * screenWidth + x];
     float depth = (float)(depthInt / 1000.0f) * intensity;
@@ -74,13 +72,4 @@ unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int a
     g += ((color2 & 0x00ff00) - g) * alpha >> 8;
 
     return (rb & 0xff00ff) | (g & 0xff00);
-}
-
-unsigned int calculateAlpha(int blurAmount, int numBlended) {
-    if (blurAmount == 0) {
-        return 255;
-    } else {
-        float alpha = 255.0f / (blurAmount * 2 + 1);
-        return (unsigned int)alpha;
-    }
 }

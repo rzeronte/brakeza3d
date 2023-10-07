@@ -14,6 +14,7 @@
 class EngineBuffers {
 
 private:
+    sol::state lua;
     static EngineBuffers *instance;
     std::vector<OCParticle> particles;
 
@@ -49,9 +50,9 @@ public:
 
     void clearVideoBuffer() const;
 
-    void setVideoBuffer(const int x, const int y, Uint32 value) const;
+    void setVideoBuffer(int x,int y, Uint32 value) const;
 
-    void setVideoBuffer(const int i, Uint32 value) const;
+    void setVideoBuffer(int i, Uint32 value) const;
 
     void flipVideoBufferToSurface(SDL_Surface *);
 
@@ -59,7 +60,11 @@ public:
 
     void loadParticlesEmptyBuffer();
 
-    const std::vector<OCParticle> &getParticles() const;
+    [[nodiscard]] const std::vector<OCParticle> &getParticles() const;
+
+    sol::state &getLua();
+
+    void initLUATypes();
 };
 
 #endif
