@@ -22,11 +22,7 @@ ComponentRender::ComponentRender() :
     ret(0),
     clContext(nullptr),
     clCommandQueue(nullptr),
-    stateScripts(EngineSetup::LuaStateScripts::LUA_STOP),
-    luaEnvironment(sol::environment(
-        EngineBuffers::get()->getLua(),
-        sol::create, EngineBuffers::get()->getLua().globals())
-    )
+    stateScripts(EngineSetup::LuaStateScripts::LUA_STOP)
 {
 }
 
@@ -1375,12 +1371,14 @@ void ComponentRender::playScripts()
 void ComponentRender::stopScripts()
 {
     Logging::Message("LUA Scripts state changed to STOP");
+
     stateScripts = EngineSetup::LuaStateScripts::LUA_STOP;
+
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         object->reloadScriptsEnvironment();
     }
 
-    reloadScriptsEnvironment();
+    reloadScriptGlobals();
 
     Logging::Message("Removing objects creating by LUA...");
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
@@ -1394,6 +1392,9 @@ void ComponentRender::reloadScripts()
 {
     Logging::Message("Reloading LUA Scripts...");
 
+    auto &lua = EngineBuffers::get()->getLua();
+    lua.collect_garbage();
+
     for(auto script : scripts) {
         script->reloadScriptCode();
     }
@@ -1401,9 +1402,10 @@ void ComponentRender::reloadScripts()
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
         object->reloadScriptsCode();
+        object->reloadScriptsEnvironment();
     }
 
-    reloadScriptsEnvironment();
+    reloadScriptGlobals();
 }
 
 std::vector<ScriptLUA*> &ComponentRender::getScripts()
@@ -1414,26 +1416,20 @@ std::vector<ScriptLUA*> &ComponentRender::getScripts()
 void ComponentRender::addLUAScript(ScriptLUA *script)
 {
     scripts.push_back(script);
-    reloadScriptsEnvironment();
+    reloadScriptGlobals();
 }
 
 void ComponentRender::runScripts()
 {
     for(auto script : scripts) {
-        script->runEnvironment(luaEnvironment);
+        script->runGlobal();
     }
 }
 
-void ComponentRender::reloadScriptsEnvironment()
+void ComponentRender::reloadScriptGlobals()
 {
-    Logging::Message("reloadScriptsEnvironment");
-
-    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto script : scripts) {
-        script->reloadEnvironment(luaEnvironment);
-        for (auto object : sceneObjects) {
-            object->insertGlobalIntoEnvironment(script);
-        }
+        script->reloadGlobals();
     }
 }
 
@@ -1455,15 +1451,11 @@ void ComponentRender::onStartScripts()
     Logging::Message("Executing OnStart for project scripts...");
 
     for (auto script : scripts) {
-        script->runStart(luaEnvironment);
+        script->runStartGlobal();
     }
 
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
         object->runStartScripts();
     }
-}
-
-const sol::environment &ComponentRender::getLuaEnvironment() const {
-    return luaEnvironment;
 }
