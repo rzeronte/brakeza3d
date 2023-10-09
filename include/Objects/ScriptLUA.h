@@ -1,10 +1,10 @@
 //
 // Created by eduardo on 3/10/23.
 //
-
 #ifndef BRAKEZA3D_SCRIPTLUA_H
 #define BRAKEZA3D_SCRIPTLUA_H
 
+#define SOL_ALL_SAFETIES_ON 1
 
 #include <cstdio>
 #include <string>
@@ -36,7 +36,9 @@ public:
     char *readFile(const std::string &name, size_t &source_size);
 
     void runStart(sol::environment &environment);
+    void runStartGlobal();
     void runEnvironment(sol::environment&);
+    void runGlobal();
     void addDataType(const char *name, const char* value);
 
     void parseTypes();
@@ -58,11 +60,11 @@ public:
 
     [[nodiscard]] bool updateScriptCodeWith(const std::string &content) const;
 
+    void reloadGlobals();
+
     [[nodiscard]] bool isPaused() const;
 
     void setPaused(bool paused);
-
-    [[maybe_unused]] void insertGlobalsIntoEnvironment(ScriptLUA *script, sol::environment &environment) const;
 };
 
 

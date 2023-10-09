@@ -1,12 +1,9 @@
 {
-	"types":	[
-		{
+	"types":	[{
 			"name":	"edu",
-			"value":	"1"
-		},
-		{
+			"value":	"5"
+		}, {
 			"name":	"andre",
-			"value":	"1"
-		}
-	]
+			"value":	"hola"
+		}]
 }

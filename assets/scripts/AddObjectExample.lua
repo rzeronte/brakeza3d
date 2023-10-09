@@ -9,7 +9,7 @@ function onStart()
     eye:setScale(1)
     eye:AssimpLoadGeometryFromFile("../assets/models/eye.fbx")
 
-    brakeza:addObject3D(eye, brakeza:getExecutionTime())
+    brakeza:addObject3D(eye, object)
 end
 
 function onUpdate()

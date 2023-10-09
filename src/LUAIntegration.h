@@ -5,6 +5,7 @@
 #ifndef BRAKEZA3D_LUAINTEGRATION_H
 #define BRAKEZA3D_LUAINTEGRATION_H
 
+#define SOL_ALL_SAFETIES_ON 1
 
 #include "../sol/sol.hpp"
 #include "../include/Objects/Vertex3D.h"
@@ -15,13 +16,10 @@
 
 void LUAIntegration(sol::state &lua)
 {
-    lua.open_libraries(sol::lib::base);
-
     lua.new_usertype<Vertex3D>("Vertex3D",
                                sol::constructors<Vertex3D(), Vertex3D(float, float, float)>());
 
-    lua.new_usertype<Object3D>("Object",
-                               sol::constructors<Object3D(), Object3D(/* parámetros personalizados */)>(),
+    lua.new_usertype<Object3D>("Object3D",
                                "addToPosition", &Object3D::addToPosition,
                                "getPosition", &Object3D::getPosition,
                                "setPosition", &Object3D::setPosition,
@@ -33,7 +31,16 @@ void LUAIntegration(sol::state &lua)
                                "setRotationFrameEnabled", &Object3D::setRotationFrameEnabled,
                                "setEnabled", &Object3D::setEnabled,
                                "setRemoved", &Object3D::setRemoved,
+                               "setLabel", &Object3D::setLabel,
                                "setScale", &Object3D::setScale
+    );
+
+    lua.new_usertype<SharedLUAContext>("SharedLUAContext",
+                               "prueba", &SharedLUAContext::prueba,
+                               "addPair", &SharedLUAContext::addPair,
+                               "get", &SharedLUAContext::get,
+                               "set", &SharedLUAContext::set,
+                               "remove", &SharedLUAContext::remove
     );
 
     lua.new_usertype<Component>("Component",
@@ -74,7 +81,9 @@ void LUAIntegration(sol::state &lua)
                                 "getExecutionTime", &Brakeza3D::getExecutionTime,
                                 "uniqueObjectLabel", &Brakeza3D::uniqueObjectLabel,
                                 "LoadDemo", &Brakeza3D::LoadDemo,
-                                "addObject3D",  &Brakeza3D::addObject3D
+                                "addObject3D",  &Brakeza3D::addObject3D,
+                                "getSceneObjectById",&Brakeza3D::getSceneObjectById,
+                                "getSceneObjectByLabel",&Brakeza3D::getSceneObjectByLabel
     );
 
     lua.new_usertype<Camera3D>("Camera3D",
@@ -82,12 +91,13 @@ void LUAIntegration(sol::state &lua)
     );
 
     lua.new_usertype<Mesh3D>("Mesh3D",
-                               sol::constructors<Mesh3D(), Mesh3D(/* parámetros personalizados */)>(),
+                               sol::constructors<Mesh3D(), Mesh3D()>(),
                                sol::base_classes, sol::bases<Object3D>(),
                              "AssimpLoadGeometryFromFile", &Mesh3D::AssimpLoadGeometryFromFile,
     "create", &Mesh3D::create
 
     );
+
 }
 
 #endif //BRAKEZA3D_LUAINTEGRATION_H

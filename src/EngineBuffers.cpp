@@ -25,6 +25,8 @@ EngineBuffers::EngineBuffers()
     videoBuffer = new Uint32[sizeBuffers];
 
     loadParticlesEmptyBuffer();
+
+    sharedLuaContext = new SharedLUAContext();
 }
 
 void EngineBuffers::clearDepthBuffer() const {
@@ -118,8 +120,6 @@ const std::vector<OCParticle> &EngineBuffers::getParticles() const {
     return particles;
 }
 
-
-
 sol::state &EngineBuffers::getLua()
 {
     return lua;
@@ -128,8 +128,27 @@ sol::state &EngineBuffers::getLua()
 void EngineBuffers::initLUATypes()
 {
     lua.open_libraries(sol::lib::base);
+    LUAIntegration(lua);
+
     lua["brakeza"] = Brakeza3D::get();
     lua["componentsManager"] = ComponentsManager::get();
+    lua["context"] = sharedLuaContext;
     lua.set_function("print", &Logging::Message);
-    LUAIntegration(lua);
+}
+
+Object3D &EngineBuffers::getSceneObjectById(int i)
+{
+    auto sceneObjects = Brakeza3D::get()->getSceneObjects();
+
+    return *sceneObjects[i];
+}
+
+
+inline void EngineBuffers::my_panic(sol::optional<std::string> maybe_msg) {
+    std::cerr << "Lua is in a panic state and will now abort() the application" << std::endl;
+    if (maybe_msg) {
+        const std::string& msg = maybe_msg.value();
+        std::cerr << "\terror message: " << msg << std::endl;
+    }
+    // When this function exits, Lua will exhibit default behavior and abort()
 }

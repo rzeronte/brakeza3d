@@ -1,6 +1,8 @@
 #ifndef SDL2_3D_ENGINE_OBJECT3D_H
 #define SDL2_3D_ENGINE_OBJECT3D_H
 
+#define SOL_ALL_SAFETIES_ON 1
+
 #include <string>
 #include <vector>
 #include "Vertex3D.h"
@@ -173,8 +175,6 @@ public:
     bool isBelongToScene() const;
 
     void setBelongToScene(bool belongToScene);
-
-    void insertGlobalIntoEnvironment(ScriptLUA *scrip);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H
