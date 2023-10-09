@@ -20,6 +20,7 @@
 #include "../Shaders/ShaderDepthOfField.h"
 #include "../../src/Shaders/ShaderBlurBuffer.h"
 #include "../2D/TextWriter.h"
+#include "../Misc/SharedLUAContext.h"
 #include <CL/cl.h>
 
 class ComponentRender : public Component {
@@ -80,7 +81,6 @@ private:
     EngineSetup::LuaStateScripts stateScripts;
     std::vector<ScriptLUA*> scripts;
     TextWriter *textWriter;
-    sol::environment luaEnvironment;
 
 public:
     ComponentRender();
@@ -237,7 +237,7 @@ public:
 
     void addLUAScript(ScriptLUA *script);
 
-    void reloadScriptsEnvironment();
+    void reloadScriptGlobals();
 
     void removeScript(ScriptLUA *script);
 
@@ -245,7 +245,6 @@ public:
 
     void runScripts();
 
-    const sol::environment &getLuaEnvironment() const;
 };
 
 

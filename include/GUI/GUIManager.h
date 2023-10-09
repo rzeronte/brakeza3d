@@ -235,10 +235,6 @@ public:
                     if(ImGui::Selectable(title.c_str(), selected_file == file)){
                         selected_file = file;
                     }
-
-                    if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
-                        selected_file = file;
-                    }
                 }
             }
         } else {
@@ -404,7 +400,7 @@ public:
             static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
             if (ImGui::BeginTable("GlobalVariablesTable", 2, flags)) {
                 auto scripts = ComponentsManager::get()->getComponentRender()->getScripts();
-                auto luaEnvironment = ComponentsManager::get()->getComponentRender()->getLuaEnvironment();
+                auto &lua = EngineBuffers::get()->getLua();
                 int count = 0;
 
                 for (auto currentScript : scripts) {
@@ -415,7 +411,7 @@ public:
                         ImGui::Text("%s", std::string(dataType.name).c_str());
 
                         ImGui::TableSetColumnIndex(1);
-                        ImGui::Text("%s", std::string(luaEnvironment[dataType.name]).c_str());
+                        ImGui::Text("%s", std::string(lua[dataType.name]).c_str());
                         count++;
                     }
                 }

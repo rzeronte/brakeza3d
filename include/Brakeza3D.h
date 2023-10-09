@@ -1,6 +1,8 @@
 #ifndef BRAKEDA3D_BRAKEZA3D_H
 #define BRAKEDA3D_BRAKEZA3D_H
 
+#define SOL_ALL_SAFETIES_ON 1
+
 #include <vector>
 #include "Objects/Object3D.h"
 #include "Objects/LightPoint3D.h"
@@ -88,6 +90,10 @@ public:
     GUIManager *getManagerGui();
 
     void welcomeMessage() const;
+
+    Object3D &getSceneObjectByLabel(const std::string &label);
+
+    Object3D *getSceneObjectById(int i);
 };
 
 

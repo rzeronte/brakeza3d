@@ -2,8 +2,6 @@
 #include "../include/Brakeza3D.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
 #include "../imgui/backends/imgui_impl_sdlrenderer2.h"
-#include "../include/Render/Logging.h"
-
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 
@@ -59,7 +57,7 @@ void Brakeza3D::mainLoop()
 
     onStartComponents();
 
-    //LoadDemo();
+    LoadDemo();
 
     ImGuiInitialize();
 
@@ -258,7 +256,7 @@ void Brakeza3D::LoadDemo()
 {
     auto *newObject = new Mesh3D();
     newObject->setEnabled(true);
-    newObject->setBelongToScene(false);
+    newObject->setBelongToScene(true);
     newObject->setStencilBufferEnabled(true);
     newObject->setRotationFrameEnabled(true);
     newObject->setRotationFrame(Vertex3D(1, 0, 0));
@@ -266,12 +264,27 @@ void Brakeza3D::LoadDemo()
     newObject->setScale(0.5);
     newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "eye.fbx"));
 
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("eye"));
+    Brakeza3D::get()->addObject3D(newObject, "DemoObject3D");
 }
-
-
 
 GUIManager *Brakeza3D::getManagerGui()
 {
     return managerGUI;
 }
+
+Object3D &Brakeza3D::getSceneObjectByLabel(const std::string &label)
+{
+    for (unsigned int i = 0; i < this->sceneObjects.size(); i++) {
+        if (sceneObjects[i]->getLabel() == label) {
+            return *sceneObjects[i];
+        }
+    }
+
+    throw std::runtime_error("Object not found");
+}
+
+Object3D *Brakeza3D::getSceneObjectById(int i)
+{
+    return sceneObjects[i];
+}
+

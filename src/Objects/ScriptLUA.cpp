@@ -58,32 +58,77 @@ void ScriptLUA::runEnvironment(sol::environment &environment)
 
     try {
         lua.script(content, environment);
+        sol::function f = environment["onUpdate"];
+        sol::function_result result = f();
 
-        if (environment["onUpdate"]) {
-            environment["onUpdate"]();
+        if (!result.valid()) {
+            sol::error err = result;
+            Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), err.what());
+
         }
     } catch (const sol::error& e) {
-        Logging::Message("LUA script error: %s", e.what());
+        Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), e.what());
+    }
+}
+
+void ScriptLUA::runGlobal()
+{
+    if (paused) return;
+    sol::state &lua = EngineBuffers::get()->getLua();
+
+    try {
+        lua.script(content);
+        sol::function f = lua["onUpdate"];
+        sol::function_result result = f();
+
+        if (!result.valid()) {
+            sol::error err = result;
+            Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), err.what());
+        }
+    } catch (const sol::error& e) {
+        Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), e.what());
     }
 }
 
 void ScriptLUA::runStart(sol::environment &environment)
 {
     if (paused) return;
+    sol::state &lua = EngineBuffers::get()->getLua();
 
     try {
-        sol::state &lua = EngineBuffers::get()->getLua();
-
         lua.script(content, environment);
+        sol::function f = environment["onStart"];
+        sol::function_result result = f();
 
-        if (environment["onStart"]) {
-            environment["onStart"]();
+        if (!result.valid()) {
+            sol::error err = result;
+            Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), err.what());
         }
     } catch (const sol::error& e) {
-        Logging::Message("LUA script error: %s", e.what());
+        Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), e.what());
     }
 }
 
+
+void ScriptLUA::runStartGlobal()
+{
+    if (paused) return;
+
+    sol::state &lua = EngineBuffers::get()->getLua();
+
+    try {
+        lua.script(content);
+        sol::function f = lua["onStart"];
+        sol::function_result result = f();
+
+        if (!result.valid()) {
+            sol::error err = result;
+            Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), err.what());
+        }
+    } catch (const sol::error& e) {
+        Logging::Message("LUA script error %s: %s", scriptFilename.c_str(), e.what());
+    }
+}
 
 void ScriptLUA::addDataType(const char *name, const char *value)
 {
@@ -96,16 +141,13 @@ void ScriptLUA::reloadEnvironment(sol::environment &environment)
     parseTypes();
 
     for (const auto& type : dataTypes) {
-        Logging::Message("Setting environment variable  ('%s' => '%s')", type.name.c_str(), type.value.c_str());
-        environment[type.name] = sol::make_object(environment.lua_state(), type.value);
-    }
-}
-
-[[maybe_unused]] void ScriptLUA::insertGlobalsIntoEnvironment(ScriptLUA *script, sol::environment &environment) const
-{
-    for (const auto& type : script->dataTypes) {
-        Logging::Message("Load global variable into environment ('%s' => '%s' | %s -> %s)", type.name.c_str(), type.value.c_str(), script->scriptFilename.c_str(), this->scriptFilename.c_str());
-        environment[type.name] = sol::make_object(environment.lua_state(), type.value);
+        Logging::Message("reloadEnvironment ('%s' => '%s')", type.name.c_str(), type.value.c_str());
+        try {
+            double numericValue = std::stod(type.value);
+            environment[type.name] = numericValue;
+        } catch (const std::invalid_argument&) {
+            environment[type.name] = type.value;
+        }
     }
 }
 
@@ -120,7 +162,7 @@ void ScriptLUA::parseTypes()
     cJSON_ArrayForEach(currentType, cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types")) {
         std::string name = cJSON_GetObjectItemCaseSensitive(currentType, "name")->valuestring;
         std::string value = cJSON_GetObjectItemCaseSensitive(currentType, "value")->valuestring;
-
+        Logging::Message("Loading variable script (%s, %s)", name.c_str(), value.c_str());
         addDataType(name.c_str(), value.c_str());
     }
 }
@@ -220,6 +262,19 @@ bool ScriptLUA::updateScriptCodeWith(const std::string& content) const
 void ScriptLUA::reloadScriptCode()
 {
     getCode(scriptFilename);
+}
+
+void ScriptLUA::reloadGlobals()
+{
+    Logging::Message("Reloading LUA Global Environment (%s)", this->fileTypes.c_str());
+
+    parseTypes();
+
+    sol::state &lua = EngineBuffers::get()->getLua();
+    for (const auto& type : dataTypes) {
+        Logging::Message("Setting GLOBAL variable for script '%s' ('%s' => '%s')", scriptFilename.c_str(), type.name.c_str(), type.value.c_str());
+        lua[type.name] = type.value;
+    }
 }
 
 bool ScriptLUA::isPaused() const {

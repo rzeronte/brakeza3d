@@ -325,7 +325,6 @@ void Object3D::attachScript(ScriptLUA *script)
 void Object3D::reloadScriptsEnvironment()
 {
     for (auto script : scripts) {
-        Logging::Message("Reloading script environment variables for %s", getLabel().c_str());
         script->reloadEnvironment(luaEnvironment);
     }
 }
@@ -376,11 +375,4 @@ bool Object3D::isBelongToScene() const {
 
 void Object3D::setBelongToScene(bool belongToScene) {
     Object3D::belongToScene = belongToScene;
-}
-
-void Object3D::insertGlobalIntoEnvironment(ScriptLUA *scriptToInsert)
-{
-    for (auto script: scripts) {
-        script->insertGlobalsIntoEnvironment(scriptToInsert, luaEnvironment);
-    }
 }

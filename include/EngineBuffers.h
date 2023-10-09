@@ -9,6 +9,7 @@
 #include "Misc/Timer.h"
 #include "Objects/Sprite3D.h"
 #include "Misc/SoundPackage.h"
+#include "Misc/SharedLUAContext.h"
 
 // Singleton
 class EngineBuffers {
@@ -19,6 +20,7 @@ private:
     std::vector<OCParticle> particles;
 
     EngineBuffers();
+    SharedLUAContext *sharedLuaContext;
 
 public:
     static EngineBuffers *get();
@@ -65,6 +67,10 @@ public:
     sol::state &getLua();
 
     void initLUATypes();
+
+    void my_panic(sol::optional<std::string> maybe_msg);
+
+    static Object3D &getSceneObjectById(int i);
 };
 
 #endif
