@@ -25,6 +25,7 @@ private:
 
     std::string directory_path;
     std::string directory_path_models;
+    std::string directory_path_scenes;
 
     std::string selected_file;
     ImGuiConsoleApp *console;
@@ -38,6 +39,7 @@ public:
         gameObjects(gameObjects),
         directory_path(EngineSetup::get()->SCRIPTS_FOLDER),
         directory_path_models(EngineSetup::get()->MODELS_FOLDER),
+        directory_path_scenes(EngineSetup::get()->SCENES_FOLDER),
         script(nullptr),
         console(new ImGuiConsoleApp(EngineBuffers::get()->getLua()))
     {
@@ -56,6 +58,10 @@ public:
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/pause.png", "pauseIcon");
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/lock.png", "lockIcon");
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/unlock.png", "unlockIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/add.png", "addIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/scene.png", "sceneIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/save.png", "saveIcon");
+
     }
 
     void drawFiles(std::vector<std::string> result)
@@ -211,6 +217,8 @@ public:
             ImGui::DragScalar("Speed Z", ImGuiDataType_Float, &ComponentsManager::get()->getComponentCamera()->getAutoScrollSpeed().z,range_autoscroll_sensibility, &range_autoscroll_min, &range_autoscroll_max, "%f", 1.0f);
             ImGui::TreePop();
         }
+        ImGui::Checkbox("Free Look", &ComponentsManager::get()->getComponentCamera()->freeLook);
+
         ImGui::Separator();
     }
 
@@ -219,10 +227,8 @@ public:
         struct dirent *ent;
         std::vector<std::string> result;
         if ((dir = opendir (directory_path_models.c_str())) != NULL) {
-            int index = 1;
             while ((ent = readdir (dir)) != NULL) {
-                //if (ent->d_type == DT_DIR) continue;
-                result.push_back(ent->d_name);
+                result.emplace_back(ent->d_name);
             }
             std::sort( result.begin(), result.end() );
 
@@ -232,24 +238,56 @@ public:
                 auto file = result[i];
                 auto title = std::to_string(i-1) + ") " + file;
                 if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                    if(ImGui::Selectable(title.c_str(), selected_file == file)){
-                        selected_file = file;
+                    ImGui::PushID(i);
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("addIcon")->getTexture(), ImVec2(12, 12))) {
+                        Tools::addSceneObject(file, "added_item");
                     }
+                    ImGui::SameLine();
+                    ImGui::Text("%s", title.c_str());
+                    ImGui::PopID();
+               }
+            }
+        } else {
+            ImGui::Text("Could not open directory");
+        }
+    }
+
+    void drawScenesFiles() {
+        DIR *dir;
+        struct dirent *ent;
+        std::vector<std::string> result;
+        if ((dir = opendir (directory_path_scenes.c_str())) != NULL) {
+            while ((ent = readdir (dir)) != NULL) {
+                if (Tools::getExtensionFromFilename(ent->d_name) == "json") {
+                    result.emplace_back(ent->d_name);
+                }
+            }
+            std::sort( result.begin(), result.end() );
+
+            closedir (dir);
+
+            for (int i = 0; i < result.size(); i++) {
+                auto file = result[i];
+                auto title = std::to_string(i+1) + ") " + file;
+                if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
+                    ImGui::PushID(i);
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("sceneIcon")->getTexture(), ImVec2(14, 14))) {
+                        ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(file);
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("saveIcon")->getTexture(), ImVec2(14, 14))) {
+                        ComponentsManager::get()->getComponentRender()->getSceneLoader().saveScene(file);
+                    }
+                    ImGui::SameLine();
+
+                    ImGui::Text("%s", title.c_str());
+                    ImGui::PopID();
                 }
             }
         } else {
             ImGui::Text("Could not open directory");
         }
 
-        if (ImGui::Button("Load model")) {
-            if (!selected_file.empty()) {
-                Tools::addSceneObject(selected_file, "added_item");
-
-                selected_file = "";
-            } else {
-                ImGui::Text("No file selected");
-            }
-        }
     }
 
     void drawObjectsWindow()
@@ -286,10 +324,17 @@ public:
                     }
                     ImGui::EndDragDropTarget();
                 }
+                ImGui::SameLine();
+                if (o->isEnabled()) {
+                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getTexture(), ImVec2(14, 14));
+                } else {
+                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getTexture(), ImVec2(14, 14));
+                }
+                ImGui::SameLine();
 
-                ImGui::SameLine(250);
+                ImGui::SameLine(200);
                 ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel(o->getTypeIcon())->getTexture(), ImVec2(16, 16));
-                ImGui::SameLine(270);
+                ImGui::SameLine(220);
                 ImGui::Text("%s", o->getTypeObject());
             }
         }
@@ -305,13 +350,19 @@ public:
                 ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Selected object: ");
                 ImGui::SameLine();
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", o->getLabel().c_str());
+                ImGui::SameLine();
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel(o->getTypeIcon())->getTexture(), ImVec2(16, 16));
+
+                ImGui::Separator();
+
+                o->drawImGuiProperties();
 
                 ImGui::Separator();
 
                 auto objectScripts = o->getScripts();
 
                 if ((int) objectScripts.size() <= 0) {
-                    ImGui::Text("%s", "No scripts attached");
+                    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No scripts attached");
                 }
 
                 for (int i = 0; i < (int) objectScripts.size(); i++) {
@@ -351,11 +402,18 @@ public:
 
                 ImGui::Separator();
 
-                o->drawImGuiProperties();
 
                 ImGui::Button("Remove");
                 if (ImGui::IsItemClicked()) {
                     o->setRemoved(true);
+                }
+                ImGui::SameLine();
+
+                ImGui::Button("Get JSON!");
+                if (ImGui::IsItemClicked()) {
+                    Logging::Message("getJSON");
+                    std::string json = cJSON_Print(o->getJSON());
+                    Logging::Message(json.c_str());
                 }
 
             } else {
@@ -496,6 +554,10 @@ public:
         if (ImGui::Begin("Models")) {
             drawModelFiles();
         }
+
+        if (ImGui::Begin("Scenes")) {
+            drawScenesFiles();
+        }
         ImGui::End();
 
     }
@@ -505,7 +567,7 @@ public:
         ImGui::Separator();
 
         static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-        ImGui::InputTextMultiline("##source", editableSource, IM_ARRAYSIZE(editableSource), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 25), flags);
+        ImGui::InputTextMultiline("##source", editableSource, IM_ARRAYSIZE(editableSource), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 10), flags);
         if (ImGui::Button(std::string("Save").c_str())) {
             script->updateScriptCodeWith(editableSource);
             script->reloadScriptCode();
@@ -625,7 +687,20 @@ public:
                 if (ImGui::MenuItem("Exit", "CTRL+W")) finish = true;
                 ImGui::EndMenu();
             }
-
+            if (ImGui::BeginMenu("Add")) {
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("objectIcon")->getTexture(), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem("Object3D", "CTRL+O")) {
+                    Tools::createObjectInScene();
+                }
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getTexture(), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem("LightPoint", "CTRL+O")) {
+                    Tools::createLightPointInScene();
+                    Logging::Message("Add light");
+                }
+                ImGui::EndMenu();
+            }
             if (ImGui::BeginMenu("Render")) {
                 ImGui::Separator();
 
@@ -945,6 +1020,10 @@ public:
             }
             if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("reloadIcon")->getTexture(), ImVec2(24, 24))) {
                 ComponentsManager::get()->getComponentRender()->reloadScripts();
+            }
+            ImGui::SameLine();
+            if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getTexture(), ImVec2(24, 24))) {
+                ComponentsManager::get()->getComponentRender()->getSceneLoader().clearScene();
             }
         }
         ImGui::End();

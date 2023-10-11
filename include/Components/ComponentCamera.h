@@ -20,7 +20,6 @@ typedef float vec3_t[3];
 class ComponentCamera : public Component {
 private:
     Camera3D *camera;
-    bool freeLook;
     bool autoScroll;
     Vertex3D autoScrollSpeed;
 
@@ -61,6 +60,8 @@ public:
     const CameraData &getCameraData() const;
 
     const FrustumData &getFrustumData() const;
+
+    bool freeLook;
 };
 
 

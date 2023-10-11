@@ -4,6 +4,7 @@
 #include <vector>
 #include <SDL2/SDL_system.h>
 #include <algorithm>
+#include <fstream>
 #include "../../include/Misc/Tools.h"
 #include "../../include/EngineSetup.h"
 #include "../../include/EngineBuffers.h"
@@ -336,50 +337,6 @@ M3 Tools::BulletM3ToM3(btMatrix3x3 m) {
     );
 }
 
-ColorHSV Tools::getColorHSV(Color in)
-{
-    ColorHSV out;
-    double min, max, delta;
-
-    min = in.r < in.g ? in.r : in.g;
-    min = min  < in.b ? min  : in.b;
-
-    max = in.r > in.g ? in.r : in.g;
-    max = max  > in.b ? max  : in.b;
-
-    out.v = max;                                // v
-    delta = max - min;
-    if (delta < 0.00001)
-    {
-        out.s = 0;
-        out.h = 0; // undefined, maybe nan?
-        return out;
-    }
-    if( max > 0.0 ) { // NOTE: if Max is == 0, this divide would cause a crash
-        out.s = (delta / max);                  // s
-    } else {
-        // if max is 0, then r = g = b = 0
-        // s = 0, h is undefined
-        out.s = 0.0;
-        out.h = NAN;                            // its now undefined
-        return out;
-    }
-    if( in.r >= max )                           // > is bogus, just keeps compilor happy
-        out.h = ( in.g - in.b ) / delta;        // between yellow & magenta
-    else
-    if( in.g >= max )
-        out.h = 2.0 + ( in.b - in.r ) / delta;  // between cyan & yellow
-    else
-        out.h = 4.0 + ( in.r - in.g ) / delta;  // between magenta & cyan
-
-    out.h *= 60.0;                              // degrees
-
-    if( out.h < 0.0 )
-        out.h += 360.0;
-
-    return out;
-}
-
 Vertex3D Tools::randomVertex() {
     return Vertex3D(
         Tools::random(-2, 2),
@@ -491,4 +448,36 @@ std::string Tools::getExtensionFromFilename(const std::string& filename)
     }
 
     return "";
+}
+
+void Tools::createObjectInScene() {
+    auto o = new Object3D();
+    o->setBelongToScene(true);
+    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
+}
+
+void Tools::createLightPointInScene() {
+    auto o = new LightPoint3D(11, 1, 0, 0, 0, Color::red(), Color::green());
+    o->setBelongToScene(true);
+    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
+}
+
+void Tools::writeToFile(const std::string& fileName, const char *content)
+{
+    Logging::Message("Writing to file %s!", fileName.c_str());
+
+    std::ofstream file(fileName, std::ios::trunc);
+
+    if (!file.is_open()) {
+        Logging::Message("File %s can't be loaded!", fileName.c_str());
+        return;
+    }
+
+    file << content;
+    file.close();
+
+    if (file.fail()) {
+        Logging::Message("Error writing to file %s", fileName.c_str());
+        return;
+    }
 }
