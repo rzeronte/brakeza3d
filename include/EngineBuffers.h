@@ -68,8 +68,6 @@ public:
 
     void initLUATypes();
 
-    void my_panic(sol::optional<std::string> maybe_msg);
-
     static Object3D &getSceneObjectById(int i);
 };
 

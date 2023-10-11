@@ -24,7 +24,6 @@ typedef enum {
 
 class Mesh3D : public Object3D {
 private:
-    std::string sourceFile;
 
     Octree *octree;
     Grid3D *grid;
@@ -42,6 +41,7 @@ protected:
 
     Color flatColor;
     MeshOpenCLRenderer *openClRenderer;
+    std::string sourceFile;
 public:
     Mesh3D();
 
@@ -120,6 +120,10 @@ public:
     const char *getTypeIcon() override;
 
     static Mesh3D* create();
+
+    static void createFromJSON(cJSON *object);
+
+    static void setPropertiesFromJSON(cJSON *object, Mesh3D *o);
 };
 
 

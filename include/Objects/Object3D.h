@@ -1,7 +1,15 @@
+
+//#define SOL_ALL_SAFETIES_ON 1
+
+#define SOL_SAFE_USERTYPE 1
+#define SOL_SAFE_REFERENCES  0
+#define SOL_SAFE_FUNCTION 0
+#define SOL_SAFE_NUMERICS 1
+#define SOL_SAFE_GETTER 0
+#define SOL_SAFE_FUNCTION_CALLS 0
+
 #ifndef SDL2_3D_ENGINE_OBJECT3D_H
 #define SDL2_3D_ENGINE_OBJECT3D_H
-
-#define SOL_ALL_SAFETIES_ON 1
 
 #include <string>
 #include <vector>
@@ -33,6 +41,7 @@ protected:
 
     std::string label;
     float rotX, rotY, rotZ; // For easy management from UI
+    float rotXFrame, rotYFrame, rotZFrame; // For easy management from UI
     bool alphaEnabled;
     float alpha;
 
@@ -168,13 +177,17 @@ public:
 
     void removeScript(ScriptLUA *script);
 
-    const std::vector<ScriptLUA *> &getScripts() const;
+    [[nodiscard]] const std::vector<ScriptLUA *> &getScripts() const;
 
     void runStartScripts();
 
-    bool isBelongToScene() const;
+    [[nodiscard]] bool isBelongToScene() const;
 
     void setBelongToScene(bool belongToScene);
+
+    static void createFromJSON(cJSON *currentType);
+
+    static void setPropertiesFromJSON(cJSON *object, Object3D *o);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

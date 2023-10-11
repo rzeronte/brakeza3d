@@ -11,8 +11,6 @@
 
 class ShaderBlink : public ShaderOpenCL {
     bool isBlinking;
-    int screenWidth;
-    int screenHeight;
     Mesh3D* object;
     Color color;
     Counter counter;

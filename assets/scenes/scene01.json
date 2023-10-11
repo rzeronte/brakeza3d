@@ -1,0 +1,82 @@
+{
+	"objects":	[{
+			"name":	"DemoObject3D",
+			"scale":	0.25,
+			"position":	{
+				"x":	0,
+				"y":	0,
+				"z":	6000
+			},
+			"rotation":	{
+				"x":	28,
+				"y":	205,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/eye.fbx",
+			"enableLights":	true,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"DemoLightPoint",
+			"scale":	1,
+			"position":	{
+				"x":	1570,
+				"y":	1183,
+				"z":	4620
+			},
+			"rotation":	{
+				"x":	7,
+				"y":	188,
+				"z":	1
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"kc":	1.3999999761581421,
+			"kl":	0,
+			"kq":	0,
+			"p":	35,
+			"color":	{
+				"r":	70,
+				"g":	208,
+				"b":	2
+			},
+			"specularColor":	{
+				"r":	0,
+				"g":	255,
+				"b":	0
+			},
+			"specularComponent":	0,
+			"type":	"LightPoint3D"
+		}, {
+			"name":	"added_item_64",
+			"scale":	4.119999885559082,
+			"position":	{
+				"x":	2928,
+				"y":	751,
+				"z":	9549
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/marsh.fbx",
+			"enableLights":	true,
+			"type":	"Mesh3D"
+		}],
+	"camera":	{
+		"position":	{
+			"x":	-668.78363037109375,
+			"y":	1788.0494384765625,
+			"z":	-794.85333251953125
+		},
+		"rotation":	{
+			"x":	-7,
+			"y":	341.75,
+			"z":	0
+		}
+	}
+}

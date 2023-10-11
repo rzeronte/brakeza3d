@@ -143,6 +143,7 @@ public:
     std::string GRIDS_FOLDER = ASSETS_FOLDER + "grids/";
     std::string ICONS_FOLDER = ASSETS_FOLDER + "icons/";
     std::string SCRIPTS_FOLDER = ASSETS_FOLDER + "scripts/";
+    std::string SCENES_FOLDER = ASSETS_FOLDER + "scenes/";
 
     std::string CL_SHADERS_FOLDER = "../kernels/";
 

@@ -33,6 +33,7 @@ ComponentInput::ComponentInput()
 void ComponentInput::onStart()
 {
     Logging::head("ComponentInput onStart");
+    setEnabled(true);
     this->initJoystick();
 }
 
@@ -61,7 +62,6 @@ void ComponentInput::onEnd()
 
 void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
 {
-
     updateMouseStates(e);
     updateGamePadStates();
     updateKeyboardStates(e);

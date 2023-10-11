@@ -1,3 +1,4 @@
+
 #include "../../include/Components/ComponentRender.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Misc/Parallells.h"
@@ -1458,4 +1459,8 @@ void ComponentRender::onStartScripts()
     for (auto object : sceneObjects) {
         object->runStartScripts();
     }
+}
+
+SceneLoader &ComponentRender::getSceneLoader() {
+    return sceneLoader;
 }

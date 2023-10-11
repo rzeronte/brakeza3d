@@ -13,7 +13,7 @@ ComponentCamera::ComponentCamera()
 void ComponentCamera::onStart()
 {
     Logging::head("ComponentCamera onStart");
-
+    setFreeLook(true);
     this->getCamera()->updateFrustum();
 }
 

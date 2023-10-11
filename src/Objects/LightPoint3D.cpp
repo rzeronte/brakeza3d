@@ -4,6 +4,7 @@
 #include "../../include/EngineBuffers.h"
 #include "../../include/Render/Maths.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
 LightPoint3D::LightPoint3D(
     float power,
@@ -177,9 +178,146 @@ void LightPoint3D::setCuadratic(float value) {
 }
 
 const char *LightPoint3D::getTypeObject() {
-    return "LightPoint";
+    return "LightPoint3D";
 }
 
 const char *LightPoint3D::getTypeIcon() {
     return "lightIcon";
+}
+
+void LightPoint3D::drawImGuiProperties()
+{
+    Object3D::drawImGuiProperties();
+
+    if (ImGui::TreeNode("LightPoint")) {
+        static ImVec4 imguiColor;
+        imguiColor.x = color.r/255;
+        imguiColor.y = color.g/255;
+        imguiColor.z = color.b/255;
+        static ImVec4 imguiColorSpecularity;
+        imguiColorSpecularity.x = specularColor.r;
+        imguiColorSpecularity.y = specularColor.g;
+        imguiColorSpecularity.z = specularColor.b;
+
+        bool changed_color_specular = false;
+        std::string attenuation_text = "Attenuation##";
+        std::string colorpicker_text = "RGB##";
+        std::string colorpicker_text_specularity = "Specularity##";
+        std::string show_deep_map_text = "Show ZBuffer##";
+        std::string show_frustum_map_text = "Show Frustum##";
+        std::string specularity_RGB_text = "RGB##";
+        std::string color_text = "Color##";
+
+        const float range_potence_min = 0;
+        const float range_potence_max = 1000;
+        const float range_potence_sensibility = 0.1f;
+
+        const float range_min = -90000;
+        const float range_max = 90000;
+
+        if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER) {
+            ImGui::Checkbox(show_deep_map_text.c_str(), &showDeepMapping);
+            ImGui::Checkbox(show_frustum_map_text.c_str(), &showFrustum);
+        }
+
+        // Color
+        if (ImGui::TreeNode(color_text.c_str())) {
+            bool changed_color = ImGui::ColorEdit4(colorpicker_text.c_str(), (float *) &imguiColor, ImGuiColorEditFlags_NoOptions);
+            if (changed_color) {
+                setColor(
+                        Color(
+                                (int) (imguiColor.x * 256),
+                                (int) (imguiColor.y * 256),
+                                (int) (imguiColor.z * 256)
+                        )
+                );
+            }
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNode(attenuation_text.c_str())) {
+            ImGui::DragScalar("P", ImGuiDataType_Float, &p, range_potence_sensibility,&range_potence_min, &range_potence_max, "%f", 1.0f);
+            ImGui::DragScalar("Constant", ImGuiDataType_Float, &kc, range_potence_sensibility,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Linear", ImGuiDataType_Float, &kl, range_potence_sensibility,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Quadratic", ImGuiDataType_Float, &kq, range_potence_sensibility,&range_min, &range_max, "%f", 1.0f);
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNode(colorpicker_text_specularity.c_str())) {
+            ImGui::DragScalar("m", ImGuiDataType_Float, &specularComponent, range_potence_sensibility,&range_potence_min, &range_potence_max, "%f", 1.0f);
+            changed_color_specular = ImGui::ColorEdit4(specularity_RGB_text.c_str(), (float *) &imguiColorSpecularity, ImGuiColorEditFlags_NoOptions);
+            if (changed_color_specular) {
+                setColorSpecularity(
+                        Color(
+                                (int) (imguiColorSpecularity.x * 256),
+                                (int) (imguiColorSpecularity.y * 256),
+                                (int) (imguiColorSpecularity.z * 256)
+                        )
+                );
+            }
+            ImGui::TreePop();
+        }
+    }
+}
+
+cJSON *LightPoint3D::getJSON()
+{
+    cJSON *root = Object3D::getJSON();
+
+    cJSON_AddNumberToObject(root, "kc", this->kc);
+    cJSON_AddNumberToObject(root, "kl", this->kl);
+    cJSON_AddNumberToObject(root, "kq", this->kq);
+    cJSON_AddNumberToObject(root, "p", this->p);
+
+    cJSON *colorJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(colorJSON, "r", color.r);
+    cJSON_AddNumberToObject(colorJSON, "g", color.g);
+    cJSON_AddNumberToObject(colorJSON, "b", color.b);
+    cJSON_AddItemToObject(root, "color", colorJSON);
+
+    cJSON *colorSpecularJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(colorSpecularJSON, "r", specularColor.r);
+    cJSON_AddNumberToObject(colorSpecularJSON, "g", specularColor.g);
+    cJSON_AddNumberToObject(colorSpecularJSON, "b", specularColor.b);
+    cJSON_AddItemToObject(root, "specularColor", colorSpecularJSON);
+
+    cJSON_AddNumberToObject(root, "specularComponent", this->specularComponent);
+
+    return root;
+}
+
+void LightPoint3D::setPropertiesFromJSON(cJSON *object, LightPoint3D *o)
+{
+    o->setBelongToScene(true);
+    Object3D::setPropertiesFromJSON(object, o);
+
+    o->setConstant((float)cJSON_GetObjectItemCaseSensitive(object, "kc")->valuedouble);
+    o->setLinear((float)cJSON_GetObjectItemCaseSensitive(object, "kl")->valuedouble);
+    o->setCuadratic((float)cJSON_GetObjectItemCaseSensitive(object, "kq")->valuedouble);
+    o->setPower((float)cJSON_GetObjectItemCaseSensitive(object, "p")->valuedouble);
+
+    auto color = cJSON_GetObjectItemCaseSensitive(object, "color");
+    o->setColor(Color(
+        cJSON_GetObjectItemCaseSensitive(color, "r")->valueint,
+        cJSON_GetObjectItemCaseSensitive(color, "g")->valueint,
+        cJSON_GetObjectItemCaseSensitive(color, "b")->valueint
+    ));
+
+    auto specularColor = cJSON_GetObjectItemCaseSensitive(object, "specularColor");
+    o->setColorSpecularity(Color(
+        cJSON_GetObjectItemCaseSensitive(specularColor, "r")->valueint,
+        cJSON_GetObjectItemCaseSensitive(specularColor, "g")->valueint,
+        cJSON_GetObjectItemCaseSensitive(specularColor, "b")->valueint
+    ));
+
+    o->setSpecularComponent((float) cJSON_GetObjectItemCaseSensitive(object, "specularComponent")->valuedouble);
+}
+
+void LightPoint3D::createFromJSON(cJSON *object)
+{
+    auto o = new LightPoint3D(10, 1, 0, 0, 0, Color::red(), Color::green());
+
+    LightPoint3D::setPropertiesFromJSON(object, o);
+
+    Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
