@@ -1,0 +1,64 @@
+{
+	"objects":	[{
+			"name":	"DemoObject3D",
+			"scale":	0.5,
+			"position":	{
+				"x":	0,
+				"y":	0,
+				"z":	6000
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	109,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/eye.fbx",
+			"enableLights":	true,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"DemoLight",
+			"scale":	1,
+			"position":	{
+				"x":	780,
+				"y":	191,
+				"z":	2558
+			},
+			"rotation":	{
+				"x":	4,
+				"y":	164,
+				"z":	4
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"kc":	1.3999999761581421,
+			"kl":	0,
+			"kq":	0,
+			"p":	133.60000610351562,
+			"color":	{
+				"r":	143,
+				"g":	249,
+				"b":	0
+			},
+			"specularColor":	{
+				"r":	0,
+				"g":	255,
+				"b":	0
+			},
+			"specularComponent":	0,
+			"type":	"LightPoint3D"
+		}],
+	"camera":	{
+		"position":	{
+			"x":	1,
+			"y":	1,
+			"z":	1
+		},
+		"rotation":	{
+			"x":	0,
+			"y":	109,
+			"z":	0
+		}
+	}
+}

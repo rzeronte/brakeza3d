@@ -438,68 +438,12 @@ void Mesh3D::onDrawHostBuffer()
 
 }
 
-cJSON * Mesh3D::getJSON()
-{
-    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-    cJSON *root = cJSON_CreateObject();
-
-    cJSON_AddStringToObject(root, "name", getLabel().c_str());
-
-    Vertex3D homogeneousPosition;
-    Vertex3D destinyPoint = getPosition();
-    Transforms::cameraSpace(homogeneousPosition, destinyPoint, camera);
-    homogeneousPosition = Transforms::PerspectiveNDCSpace(homogeneousPosition, camera->getFrustum());
-
-    Point2D P1;
-    Transforms::screenSpace(P1, homogeneousPosition);
-    Logging::Message("%d %d", P1.x, P1.y);
-
-    float x = (P1.x / (float) EngineSetup::get()->screenWidth) * 100;
-    float y = (P1.y / (float)  EngineSetup::get()->screenHeight) * 100;
-
-    cJSON *position = cJSON_CreateObject();
-    cJSON_AddNumberToObject(position, "x", (int) x);
-    cJSON_AddNumberToObject(position, "y", (int) y);
-    cJSON_AddItemToObject(root, "position", position);
-
-    cJSON_AddStringToObject(root, "model", sourceFile.c_str());
-
-    auto r = getRotation();
-    cJSON *rotation = cJSON_CreateObject();
-    cJSON_AddNumberToObject(rotation, "x", (int)getRotX());
-    cJSON_AddNumberToObject(rotation, "y", (int)getRotY());
-    cJSON_AddNumberToObject(rotation, "z", (int)getRotZ());
-    cJSON_AddItemToObject(root, "rotation", rotation);
-
-    auto rotFrame = getRotationFrame();
-    cJSON *rFrame = cJSON_CreateObject();
-    cJSON_AddNumberToObject(rFrame, "x", (int) rotFrame.x);
-    cJSON_AddNumberToObject(rFrame, "y", (int) rotFrame.y);
-    cJSON_AddNumberToObject(rFrame, "z", (int) rotFrame.z);
-    cJSON_AddItemToObject(root, "rotationFrame", rFrame);
-
-    cJSON_AddNumberToObject(root, "scale", getScale());
-
-    return root;
-}
-
 Mesh3DRenderLayer Mesh3D::getLayer() const {
     return layer;
 }
 
 void Mesh3D::setLayer(Mesh3DRenderLayer layer) {
     Mesh3D::layer = layer;
-}
-
-void Mesh3D::drawImGuiProperties()
-{
-    Object3D::drawImGuiProperties();
-
-    if (ImGui::TreeNode("Cositas de Mesh3D")) {
-        ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "ese");
-        ImGui::TreePop();
-    }
 }
 
 const char *Mesh3D::getTypeObject() {
@@ -512,4 +456,44 @@ const char *Mesh3D::getTypeIcon() {
 
 Mesh3D *Mesh3D::create() {
     return new Mesh3D();
+}
+
+void Mesh3D::drawImGuiProperties()
+{
+    Object3D::drawImGuiProperties();
+
+    if (ImGui::TreeNode("Mesh3D")) {
+        ImGui::Checkbox(std::string("Enable lights").c_str(), &enableLights);
+
+        std::string numTriangles = "Triangles: " + std::to_string(getModelTriangles().size());
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), numTriangles.c_str());
+        ImGui::TreePop();
+    }
+}
+
+cJSON * Mesh3D::getJSON()
+{
+    cJSON *root = Object3D::getJSON();
+
+    cJSON_AddStringToObject(root, "model", sourceFile.c_str());
+    cJSON_AddBoolToObject(root, "enableLights", isEnableLights());
+
+    return root;
+}
+
+void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
+{
+    o->setBelongToScene(true);
+    Object3D::setPropertiesFromJSON(object, o);
+    o->setEnableLights(cJSON_GetObjectItemCaseSensitive(object, "enableLights")->valueint);
+    o->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring);
+}
+
+void Mesh3D::createFromJSON(cJSON *object)
+{
+    auto o = new Mesh3D();
+
+    Mesh3D::setPropertiesFromJSON(object, o);
+
+    Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }

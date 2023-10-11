@@ -100,6 +100,8 @@ bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &filename) {
 
     openClRenderer->makeOCLTriangles();
 
+    this->sourceFile = filename;
+
     return true;
 }
 

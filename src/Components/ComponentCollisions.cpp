@@ -18,7 +18,8 @@ ComponentCollisions::ComponentCollisions()
 void ComponentCollisions::onStart()
 {
     Logging::head("ComponentCollisions onStart");
-    ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
+
+    setEnabled(true);
 }
 
 void ComponentCollisions::preUpdate()
@@ -141,6 +142,7 @@ void ComponentCollisions::stepSimulation(float deltaTime)
 void ComponentCollisions::demoProjectile(int type) {
 
     std::string fileName;
+    Logging::Message("Launching %s", fileName.c_str());
 
     switch (type) {
         case 0:

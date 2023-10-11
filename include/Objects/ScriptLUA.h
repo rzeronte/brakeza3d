@@ -4,8 +4,6 @@
 #ifndef BRAKEZA3D_SCRIPTLUA_H
 #define BRAKEZA3D_SCRIPTLUA_H
 
-#define SOL_ALL_SAFETIES_ON 1
-
 #include <cstdio>
 #include <string>
 #include <utility>

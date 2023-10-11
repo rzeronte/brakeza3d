@@ -51,6 +51,7 @@ void Brakeza3D::mainLoop()
     componentsManager->getComponentRender()->initOpenCL();
 
     managerGUI = new GUIManager(sceneObjects);
+    ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 
     componentsManager->getComponentWindow()->clearVideoBuffers();
     ComponentsManager::get()->getComponentCamera()->setFreeLook(true);

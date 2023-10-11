@@ -200,6 +200,9 @@ void Object3D::setRotationFrameEnabled(bool value) {
 }
 
 void Object3D::setRotationFrame(Vertex3D r) {
+    this->rotXFrame = r.x;
+    this->rotYFrame = r.x;
+    this->rotZFrame = r.x;
     this->rotationFrame = r;
 }
 
@@ -272,11 +275,6 @@ void Object3D::setEnableLights(bool enableLights) {
     Object3D::enableLights = enableLights;
 }
 
-cJSON *Object3D::getJSON()
-{
-    return nullptr;
-}
-
 const Vertex3D &Object3D::getRotationFrame() const {
     return rotationFrame;
 }
@@ -299,21 +297,6 @@ void Object3D::lookAt(Object3D *o)
     r.setZ(rightVector.z, correctedUpVector.z, -direction.z);
 
     setRotation(r);
-}
-
-void Object3D::drawImGuiProperties()
-{
-    if (ImGui::TreeNode("Position")) {
-        const float range_min = -500000;
-        const float range_max = 500000;
-
-        ImGui::SliderScalar("X", ImGuiDataType_Float, &position.x, &range_min, &range_max, "%f");
-        ImGui::SliderScalar("Y", ImGuiDataType_Float, &position.y, &range_min, &range_max, "%f");
-        ImGui::SliderScalar("Z", ImGuiDataType_Float, &position.z, &range_min, &range_max, "%f");
-
-        ImGui::TreePop();
-    }
-
 }
 
 void Object3D::attachScript(ScriptLUA *script)
@@ -375,4 +358,176 @@ bool Object3D::isBelongToScene() const {
 
 void Object3D::setBelongToScene(bool belongToScene) {
     Object3D::belongToScene = belongToScene;
+}
+
+
+void Object3D::drawImGuiProperties()
+{
+    ImGui::Checkbox("Enabled", &enabled);
+    ImGui::SameLine();
+
+    static char name[256];
+    strncpy(name, label.c_str(), sizeof(name));
+    ImGui::InputText("Name##nameObject", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
+    if (ImGui::IsItemEdited()) {
+        setLabel(name);
+    }
+    ImGui::Separator();
+
+    if (ImGui::TreeNode("Position")) {
+        const float range_min = -500000;
+        const float range_max = 500000;
+        const float range_sensibility = 1;
+
+        ImGui::DragScalar("X", ImGuiDataType_Float, &getPosition().x, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+        ImGui::DragScalar("Y", ImGuiDataType_Float, &getPosition().y, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+        ImGui::DragScalar("Z", ImGuiDataType_Float, &getPosition().z, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+
+        ImGui::TreePop();
+    }
+    ImGui::Separator();
+
+    // rotation
+    if (ImGui::TreeNode("Rotation")) {
+        const float range_angle_min = -360;
+        const float range_angle_max = 360;
+        const float range_angle_sensibility = 0.1;
+
+        bool needUpdateRotation = false;
+        ImGui::DragScalar("X", ImGuiDataType_Float, &getRotX(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+        if (ImGui::IsItemEdited()) {
+            needUpdateRotation = true;
+        }
+        ImGui::DragScalar("Y", ImGuiDataType_Float, &getRotY(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+        if (ImGui::IsItemEdited()) {
+            needUpdateRotation = true;
+        }
+        ImGui::DragScalar("Z", ImGuiDataType_Float, &getRotZ(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+        if (ImGui::IsItemEdited()) {
+            needUpdateRotation = true;
+        }
+        if (needUpdateRotation) {
+            setRotation(M3::getMatrixRotationForEulerAngles(getRotX(), getRotY(), getRotZ()));
+        }
+
+        ImGui::Checkbox("Rotation Frame", &rotationFrameEnabled);
+
+        ImGui::Separator();
+
+        if (rotationFrameEnabled) {
+            if (ImGui::TreeNode("Rotation Each Frame")) {
+                ImGui::DragScalar("X", ImGuiDataType_Float, &rotationFrame.x, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                ImGui::DragScalar("Y", ImGuiDataType_Float, &rotationFrame.y, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                ImGui::DragScalar("Z", ImGuiDataType_Float, &rotationFrame.z, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                ImGui::TreePop();
+            }
+        }
+        ImGui::TreePop();
+    }
+    ImGui::Separator();
+
+    if (ImGui::TreeNode("Scale")) {
+        // scale
+        const float range_scale_min = -360;
+        const float range_scale_max = 360;
+        const float range_scale_sensibility = 0.01;
+        ImGui::DragScalar("Scale", ImGuiDataType_Float, &scale, range_scale_sensibility, &range_scale_min, &range_scale_max, "%f", 1.0f);
+
+        ImGui::TreePop();
+    }
+    ImGui::Separator();
+
+    if (ImGui::TreeNode("Alpha")) {
+        ImGui::Checkbox("Enable Alpha", &isAlphaEnabled());
+
+        if (isAlphaEnabled()) {
+            const float range_alpha_min = 0;
+            const float range_alpha_max = 255;
+            const float range_alpha_sensibility = 1;
+
+            ImGui::DragScalar("Alpha", ImGuiDataType_Float, &getAlpha(), range_alpha_sensibility, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
+        }
+
+        ImGui::TreePop();
+    }
+
+    ImGui::Separator();
+
+}
+
+cJSON *Object3D::getJSON()
+{
+    cJSON *root = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(root, "name", getLabel().c_str());
+    cJSON_AddNumberToObject(root, "scale", getScale());
+
+    cJSON *position = cJSON_CreateObject();
+    cJSON_AddNumberToObject(position, "x", (int) getPosition().x);
+    cJSON_AddNumberToObject(position, "y", (int) getPosition().y);
+    cJSON_AddNumberToObject(position, "z", (int) getPosition().z);
+    cJSON_AddItemToObject(root, "position", position);
+
+    cJSON *rotation = cJSON_CreateObject();
+    cJSON_AddNumberToObject(rotation, "x", (int) rotX);
+    cJSON_AddNumberToObject(rotation, "y", (int) rotY);
+    cJSON_AddNumberToObject(rotation, "z", (int) rotZ);
+    cJSON_AddItemToObject(root, "rotation", rotation);
+
+    cJSON_AddBoolToObject(root, "rotationFrameEnabled", isRotationFrameEnabled());
+
+    if (isRotationFrameEnabled()) {
+        cJSON *rFrame = cJSON_CreateObject();
+        cJSON_AddNumberToObject(rFrame, "x", (int) rotXFrame);
+        cJSON_AddNumberToObject(rFrame, "y", (int) rotYFrame);
+        cJSON_AddNumberToObject(rFrame, "z", (int) rotZFrame);
+        cJSON_AddItemToObject(root, "rotationFrame", rFrame);
+    }
+
+    cJSON *scriptsArray = cJSON_CreateArray();
+    for ( auto script : scripts) {
+        cJSON_AddItemToArray(scriptsArray, cJSON_CreateString(script->scriptFilename.c_str()));
+    }
+    cJSON_AddItemToObject(root, "scripts", scriptsArray);
+
+    return root;
+}
+
+void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
+{
+    o->setBelongToScene(true);
+
+    o->setPosition(SceneLoader::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(object, "position")));
+    o->setScale((float)cJSON_GetObjectItemCaseSensitive(object, "scale")->valuedouble);
+
+    if (cJSON_GetObjectItemCaseSensitive(object, "rotation") != nullptr) {
+        cJSON *rotation = cJSON_GetObjectItemCaseSensitive(object, "rotation");
+        o->setRotation(
+                (float) cJSON_GetObjectItemCaseSensitive(rotation, "x")->valuedouble,
+                (float) cJSON_GetObjectItemCaseSensitive(rotation, "y")->valuedouble,
+                (float) cJSON_GetObjectItemCaseSensitive(rotation, "z")->valuedouble
+        );
+    }
+
+    o->setRotationFrameEnabled(cJSON_GetObjectItemCaseSensitive(object, "rotationFrameEnabled")->valueint);
+
+    if (cJSON_GetObjectItemCaseSensitive(object, "rotationFrame") != nullptr) {
+        o->setRotationFrame(SceneLoader::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(object, "rotationFrame")));
+    }
+
+    if (cJSON_GetObjectItemCaseSensitive(object, "scripts") != nullptr) {
+        cJSON *currentScript;
+        cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(object, "scripts")) {
+            o->attachScript(new ScriptLUA(currentScript->valuestring, ScriptLUA::dataTypesFileFor(currentScript->valuestring)));
+        }
+    }
+}
+
+void Object3D::createFromJSON(cJSON *object)
+{
+    auto o = new Object3D();
+
+    Object3D::setPropertiesFromJSON(object, o);
+
+    Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }

@@ -9,8 +9,6 @@
 ShaderBlink::ShaderBlink(bool active, Mesh3D *o, float step, Color c) :
     ShaderOpenCL(active),
     isBlinking(false),
-    screenWidth(EngineSetup::get()->screenWidth),
-    screenHeight(EngineSetup::get()->screenHeight),
     object(o),
     color(c),
     counter(Counter(step))
@@ -24,7 +22,6 @@ void ShaderBlink::update()
     counter.update();
 
     if (!this->object->isStencilBufferEnabled()) return;
-
 
     if (isBlinking) {
         if (counter.isFinished()) {
@@ -50,8 +47,8 @@ void ShaderBlink::executeKernelOpenCL()
 {
     auto kernel = ComponentsManager::get()->getComponentRender()->getBlinkKernel();
 
-    clSetKernelArg(kernel, 0, sizeof(int), &screenWidth);
-    clSetKernelArg(kernel, 1, sizeof(int), &screenHeight);
+    clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
+    clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
     clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
     clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)object->getOpenClRenderer()->getClBufferStencil());
     clSetKernelArg(kernel, 4, sizeof(float), &this->color.r);

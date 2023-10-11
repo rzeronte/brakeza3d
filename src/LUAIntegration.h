@@ -5,8 +5,6 @@
 #ifndef BRAKEZA3D_LUAINTEGRATION_H
 #define BRAKEZA3D_LUAINTEGRATION_H
 
-#define SOL_ALL_SAFETIES_ON 1
-
 #include "../sol/sol.hpp"
 #include "../include/Objects/Vertex3D.h"
 #include "../include/Objects/Object3D.h"
@@ -53,6 +51,11 @@ void LUAIntegration(sol::state &lua)
                                       "getCamera", &ComponentCamera::getCamera
     );
 
+    lua.new_usertype<ComponentRender>("ComponentRender",
+                                      sol::base_classes, sol::bases<Component>(),
+                                      "getSceneLoader", &ComponentRender::getSceneLoader
+    );
+
     lua.new_usertype<ComponentInput>("ComponentInput",
                                      sol::base_classes, sol::bases<Component>(),
                                      "isKeyEventDown", &ComponentInput::isKeyEventDown,
@@ -94,10 +97,19 @@ void LUAIntegration(sol::state &lua)
                                sol::constructors<Mesh3D(), Mesh3D()>(),
                                sol::base_classes, sol::bases<Object3D>(),
                              "AssimpLoadGeometryFromFile", &Mesh3D::AssimpLoadGeometryFromFile,
-    "create", &Mesh3D::create
+                             "create", &Mesh3D::create
 
     );
 
+    lua.new_usertype<ScriptLUATypeData>("ScriptLUATypeData",
+                                        "name", &ScriptLUATypeData::name,
+                                        "value", &ScriptLUATypeData::value
+    );
+    lua.new_usertype<SceneLoader>("SceneLoader",
+                                  "clearScene", &SceneLoader::clearScene,
+                                  "saveScene", &SceneLoader::saveScene,
+                                  "loadScene", &SceneLoader::loadScene
+    );
 }
 
 #endif //BRAKEZA3D_LUAINTEGRATION_H

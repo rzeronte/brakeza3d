@@ -21,6 +21,7 @@
 #include "../../src/Shaders/ShaderBlurBuffer.h"
 #include "../2D/TextWriter.h"
 #include "../Misc/SharedLUAContext.h"
+#include "../Misc/SceneLoader.h"
 #include <CL/cl.h>
 
 class ComponentRender : public Component {
@@ -72,16 +73,16 @@ private:
     cl_kernel blinkKernel;
 
     ShaderBilinear *shaderBilinear;
+    ShaderBlurBuffer *shaderBlurParticles;
 
     cl_mem clBufferLights;
     std::vector<OCLight> oclLights;
 
-    ShaderBlurBuffer *shaderBlurParticles;
 
     EngineSetup::LuaStateScripts stateScripts;
     std::vector<ScriptLUA*> scripts;
     TextWriter *textWriter;
-
+    SceneLoader sceneLoader;
 public:
     ComponentRender();
 
@@ -245,6 +246,7 @@ public:
 
     void runScripts();
 
+    SceneLoader &getSceneLoader();
 };
 
 

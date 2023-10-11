@@ -83,8 +83,6 @@ public:
 
     static M3 BulletM3ToM3(btMatrix3x3 m);
 
-    static ColorHSV getColorHSV(Color in);
-
     static Vertex3D randomVertex();
 
     static const char *sprintf(const char *, ...);
@@ -104,6 +102,12 @@ public:
     static void makeLoopSprite(Vertex3D position, TextureAnimated *animation, float ttl);
 
     static std::string getExtensionFromFilename(const std::string &filename);
+
+    static void createObjectInScene();
+
+    static void createLightPointInScene();
+
+    static void writeToFile(const std::string& file, const char *content);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

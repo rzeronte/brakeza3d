@@ -92,7 +92,7 @@ void Camera3D::StrafeLeft() {
 }
 
 void Camera3D::UpdatePositionForVelocity() {
-    this->setPosition(this->velocity.vertex2);
+    this->addToPosition(this->velocity.getComponent());
 }
 
 void Camera3D::UpdateVelocity() {

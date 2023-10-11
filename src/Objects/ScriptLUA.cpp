@@ -64,7 +64,6 @@ void ScriptLUA::runEnvironment(sol::environment &environment)
         if (!result.valid()) {
             sol::error err = result;
             Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), err.what());
-
         }
     } catch (const sol::error& e) {
         Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), e.what());
@@ -97,7 +96,7 @@ void ScriptLUA::runStart(sol::environment &environment)
 
     try {
         lua.script(content, environment);
-        sol::function f = environment["onStart"];
+        sol::safe_function f = environment["onStart"];
         sol::function_result result = f();
 
         if (!result.valid()) {
@@ -118,7 +117,7 @@ void ScriptLUA::runStartGlobal()
 
     try {
         lua.script(content);
-        sol::function f = lua["onStart"];
+        sol::safe_function f = lua["onStart"];
         sol::function_result result = f();
 
         if (!result.valid()) {
@@ -135,6 +134,19 @@ void ScriptLUA::addDataType(const char *name, const char *value)
     dataTypes.emplace_back(name, value);
 }
 
+void ScriptLUA::reloadGlobals()
+{
+    Logging::Message("Reloading LUA Global Environment (%s)", this->fileTypes.c_str());
+
+    parseTypes();
+
+    sol::state &lua = EngineBuffers::get()->getLua();
+    for (auto type : dataTypes) {
+        Logging::Message("Setting GLOBAL variable for script '%s' ('%s' => '%s')", scriptFilename.c_str(), type.name.c_str(), type.value.c_str());
+        lua[type.name] = type.value;
+    }
+}
+
 void ScriptLUA::reloadEnvironment(sol::environment &environment)
 {
     Logging::Message("Reloading LUA Environment (%s)", this->fileTypes.c_str());
@@ -142,12 +154,7 @@ void ScriptLUA::reloadEnvironment(sol::environment &environment)
 
     for (const auto& type : dataTypes) {
         Logging::Message("reloadEnvironment ('%s' => '%s')", type.name.c_str(), type.value.c_str());
-        try {
-            double numericValue = std::stod(type.value);
-            environment[type.name] = numericValue;
-        } catch (const std::invalid_argument&) {
-            environment[type.name] = type.value;
-        }
+        environment[type.name] = type.value.c_str();
     }
 }
 
@@ -233,7 +240,6 @@ void ScriptLUA::updateFileTypesWith(const std::string& content) const
         Logging::Message("Error writing to file %s", fileTypes.c_str());
         return;
     }
-
 }
 
 bool ScriptLUA::updateScriptCodeWith(const std::string& content) const
@@ -262,19 +268,6 @@ bool ScriptLUA::updateScriptCodeWith(const std::string& content) const
 void ScriptLUA::reloadScriptCode()
 {
     getCode(scriptFilename);
-}
-
-void ScriptLUA::reloadGlobals()
-{
-    Logging::Message("Reloading LUA Global Environment (%s)", this->fileTypes.c_str());
-
-    parseTypes();
-
-    sol::state &lua = EngineBuffers::get()->getLua();
-    for (const auto& type : dataTypes) {
-        Logging::Message("Setting GLOBAL variable for script '%s' ('%s' => '%s')", scriptFilename.c_str(), type.name.c_str(), type.value.c_str());
-        lua[type.name] = type.value;
-    }
 }
 
 bool ScriptLUA::isPaused() const {
