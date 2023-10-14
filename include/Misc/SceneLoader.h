@@ -32,6 +32,14 @@ public:
     static Vertex3D parseVertex3DJSON(cJSON *vertex3DJSON);
 
     void clearScene();
+
+    static void createObjectInScene();
+
+    static void createLightPointInScene();
+
+    static void createMesh3DBodyToScene(const std::string &filename, const char *name);
+
+    static void createGhostBody3DToScene(const std::string &filename, const char *name);
 };
 
 

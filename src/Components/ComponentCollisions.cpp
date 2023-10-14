@@ -180,7 +180,7 @@ void ComponentCollisions::demoProjectile(int type) {
         (float) Tools::random(0, 180)
     );
     projectile->setFlatTextureColor(true);
-    projectile->setPosition( camera->getPosition());
+    projectile->setPosition( camera->getPosition() + direction.getScaled(1000));
     projectile->setEnabled(true);
     projectile->makeProjectileRigidBody(
         EngineSetup::get()->PROJECTILE_DEMO_MASS,

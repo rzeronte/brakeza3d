@@ -22,9 +22,17 @@ public:
 
     virtual void remove();
 
-    virtual ~Mesh3DGhost();
+    ~Mesh3DGhost() override;
 
     void magnetizableTo(Object3D *object);
+
+    void drawImGuiProperties() override;
+
+    void runResolveCollisionScripts(Collisionable *with);
+
+    const char *getTypeIcon() override;
+
+    const char *getTypeObject() override;
 };
 
 #endif //BRAKEDA3D_MESH3DGHOST_H

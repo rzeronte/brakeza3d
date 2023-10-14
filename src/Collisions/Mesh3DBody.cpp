@@ -2,6 +2,7 @@
 #include <btBulletDynamicsCommon.h>
 #include "../../include/Physics/Mesh3DBody.h"
 #include "../../include/Render/Logging.h"
+#include "../../include/Brakeza3D.h"
 
 Mesh3DBody::Mesh3DBody()
 {
@@ -177,4 +178,57 @@ void Mesh3DBody::resolveCollision(Collisionable *with)
         auto *object = dynamic_cast<Object3D*> (with);
         Logging::Log("Mesh3DBody: Collision %s with %s", getLabel().c_str(), object->getLabel().c_str());
     }
+}
+
+void Mesh3DBody::drawImGuiProperties()
+{
+    Mesh3D::drawImGuiProperties();
+    ImGui::Separator();
+    if (ImGui::TreeNode("Rigid Body")) {
+        const float range_sensibility = 1;
+        const float range_min = 10000;
+        const float range_max = -10000;
+
+        ImGui::DragScalar("Mass", ImGuiDataType_Float, &mass, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+        if (ImGui::IsItemEdited()) {
+            setMass(mass);
+        }
+        ImGui::Separator();
+
+        if (ImGui::Button("Box shape")) {
+            Logging::Message("Making object %s physics with: Box shape", getLabel().c_str());
+            removeCollisionObject();
+            updateBoundingBox();
+            this->makeSimpleRigidBody(
+                mass,
+                getPosition(),
+                getRotation(),
+                getAabb().size(),
+                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                EngineSetup::AllFilter,
+                EngineSetup::AllFilter
+            );
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Mesh3D shape")) {
+            Logging::Message("Making object %s physics with: Mesh3D shape", getLabel().c_str());
+            removeCollisionObject();
+            this->makeRigidBody(
+                mass,
+                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                EngineSetup::AllFilter,
+                EngineSetup::AllFilter
+            );
+        }
+
+        ImGui::TreePop();
+    }
+}
+
+const char *Mesh3DBody::getTypeObject() {
+    return "Mesh3DBody";
+}
+
+const char *Mesh3DBody::getTypeIcon() {
+    return "gearIcon";
 }

@@ -29,6 +29,11 @@ private:
 protected:
     void resolveCollision(Collisionable *collisionable) override;
 
+    void drawImGuiProperties() override;
+
+    const char *getTypeObject();
+
+    const char *getTypeIcon();
 };
 
 
