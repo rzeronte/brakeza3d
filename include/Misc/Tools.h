@@ -103,10 +103,6 @@ public:
 
     static std::string getExtensionFromFilename(const std::string &filename);
 
-    static void createObjectInScene();
-
-    static void createLightPointInScene();
-
     static void writeToFile(const std::string& file, const char *content);
 };
 
