@@ -110,3 +110,58 @@ void SceneLoader::clearScene()
         object->setRemoved(true);
     }
 }
+
+
+void SceneLoader::createObjectInScene() {
+    auto o = new Object3D();
+    o->setBelongToScene(true);
+    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
+}
+
+void SceneLoader::createLightPointInScene() {
+    auto o = new LightPoint3D(11, 1, 0, 0, 0, Color::red(), Color::green());
+    o->setBelongToScene(true);
+    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
+}
+
+void SceneLoader::createMesh3DBodyToScene(const std::string& filename, const char *name) {
+    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10000);
+
+    auto *newObject = new Mesh3DBody();
+    newObject->setBelongToScene(true);
+    newObject->setPosition(position);
+    newObject->setScale(1);
+    newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + filename));
+    newObject->makeRigidBody(1, Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), EngineSetup::AllFilter, EngineSetup::AllFilter );
+
+    Logging::Message("Loading Mesh3DBody from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
+
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name));
+}
+
+
+void SceneLoader::createGhostBody3DToScene(const std::string& filename, const char *name) {
+    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10000);
+
+    auto *newObject = new Mesh3DGhost();
+    newObject->setBelongToScene(true);
+    newObject->setPosition(position);
+    newObject->setScale(1);
+    newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + filename));
+    newObject->updateBoundingBox();
+    /*newObject->makeGhostBody(
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            newObject,
+            EngineSetup::AllFilter,
+            EngineSetup::AllFilter
+    );*/
+    newObject->makeSimpleGhostBody(
+            newObject->getAabb().size(),
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            EngineSetup::AllFilter,
+            EngineSetup::AllFilter
+    );
+    Logging::Message("Loading GhostBody from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
+
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name));
+}

@@ -51,16 +51,18 @@ char *ScriptLUA::readFile(const std::string &name, size_t &source_size)
     return file_str;
 }
 
-void ScriptLUA::runEnvironment(sol::environment &environment)
+void ScriptLUA::runEnvironment(sol::environment &environment, const std::string& func) const
 {
     if (paused) return;
     sol::state &lua = EngineBuffers::get()->getLua();
 
     try {
         lua.script(content, environment);
-        sol::function f = environment["onUpdate"];
+        if (!environment[func.c_str()]) {
+            return;
+        }
+        sol::function f = environment[func];
         sol::function_result result = f();
-
         if (!result.valid()) {
             sol::error err = result;
             Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), err.what());
@@ -70,14 +72,17 @@ void ScriptLUA::runEnvironment(sol::environment &environment)
     }
 }
 
-void ScriptLUA::runGlobal()
+void ScriptLUA::runGlobal(const std::string& func) const
 {
     if (paused) return;
     sol::state &lua = EngineBuffers::get()->getLua();
 
     try {
         lua.script(content);
-        sol::function f = lua["onUpdate"];
+        if (!lua[func]) {
+            return;
+        }
+        sol::function f = lua[func];
         sol::function_result result = f();
 
         if (!result.valid()) {
@@ -86,46 +91,6 @@ void ScriptLUA::runGlobal()
         }
     } catch (const sol::error& e) {
         Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), e.what());
-    }
-}
-
-void ScriptLUA::runStart(sol::environment &environment)
-{
-    if (paused) return;
-    sol::state &lua = EngineBuffers::get()->getLua();
-
-    try {
-        lua.script(content, environment);
-        sol::safe_function f = environment["onStart"];
-        sol::function_result result = f();
-
-        if (!result.valid()) {
-            sol::error err = result;
-            Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), err.what());
-        }
-    } catch (const sol::error& e) {
-        Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), e.what());
-    }
-}
-
-
-void ScriptLUA::runStartGlobal()
-{
-    if (paused) return;
-
-    sol::state &lua = EngineBuffers::get()->getLua();
-
-    try {
-        lua.script(content);
-        sol::safe_function f = lua["onStart"];
-        sol::function_result result = f();
-
-        if (!result.valid()) {
-            sol::error err = result;
-            Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), err.what());
-        }
-    } catch (const sol::error& e) {
-        Logging::Message("LUA script error %s: %s", scriptFilename.c_str(), e.what());
     }
 }
 

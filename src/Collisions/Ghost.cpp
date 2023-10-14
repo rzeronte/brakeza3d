@@ -101,4 +101,3 @@ Ghost::~Ghost()
     delete ghostObject;
     delete convexHullShape;
 }
-

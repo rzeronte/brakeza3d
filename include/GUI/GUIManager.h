@@ -61,6 +61,8 @@ public:
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/add.png", "addIcon");
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/scene.png", "sceneIcon");
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/save.png", "saveIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/gear.png", "gearIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/ghost.png", "ghostIcon");
 
     }
 
@@ -627,6 +629,84 @@ public:
         }
     }
 
+    void drawMesh3DItemsToLoad() {
+        DIR *dir;
+        struct dirent *ent;
+        std::vector<std::string> result;
+        if ((dir = opendir (directory_path_models.c_str())) != NULL) {
+            while ((ent = readdir (dir)) != NULL) {
+                result.emplace_back(ent->d_name);
+            }
+            std::sort( result.begin(), result.end() );
+
+            closedir (dir);
+
+            for (int i = 0; i < result.size(); i++) {
+                auto file = result[i];
+                auto title = std::to_string(i-1) + ") " + file;
+                if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
+                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getTexture(), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::MenuItem(file.c_str())) {
+                        Tools::addSceneObject(file, "added_item");
+                    }
+                }
+            }
+        }
+    }
+
+    void drawRigidBodiesItemsToLoad() {
+        DIR *dir;
+        struct dirent *ent;
+        std::vector<std::string> result;
+        if ((dir = opendir (directory_path_models.c_str())) != NULL) {
+            while ((ent = readdir (dir)) != NULL) {
+                result.emplace_back(ent->d_name);
+            }
+            std::sort( result.begin(), result.end() );
+
+            closedir (dir);
+
+            for (int i = 0; i < result.size(); i++) {
+                auto file = result[i];
+                auto title = std::to_string(i-1) + ") " + file;
+                if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
+                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("gearIcon")->getTexture(), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::MenuItem(file.c_str())) {
+                        SceneLoader::createMesh3DBodyToScene(file, "added_item");
+                    }
+                }
+            }
+        }
+    }
+
+    void drawGhostItemsToLoad() {
+        DIR *dir;
+        struct dirent *ent;
+        std::vector<std::string> result;
+        if ((dir = opendir (directory_path_models.c_str())) != NULL) {
+            while ((ent = readdir (dir)) != NULL) {
+                result.emplace_back(ent->d_name);
+            }
+            std::sort( result.begin(), result.end() );
+
+            closedir (dir);
+
+            for (int i = 0; i < result.size(); i++) {
+                auto file = result[i];
+                auto title = std::to_string(i-1) + ") " + file;
+                if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
+                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("ghostIcon")->getTexture(), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::MenuItem(file.c_str())) {
+                        SceneLoader::createGhostBody3DToScene(file, "added_item");
+                    }
+                }
+            }
+        }
+    }
+
     void RenderMenu(bool &finish)
     {
 
@@ -687,17 +767,35 @@ public:
                 if (ImGui::MenuItem("Exit", "CTRL+W")) finish = true;
                 ImGui::EndMenu();
             }
-            if (ImGui::BeginMenu("Add")) {
+            if (ImGui::BeginMenu("Add object")) {
                 ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("objectIcon")->getTexture(), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("Object3D", "CTRL+O")) {
-                    Tools::createObjectInScene();
+                    SceneLoader::createObjectInScene();
+                }
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("lightIcon")->getTexture(), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem("LightPoint", "CTRL+O")) {
+                    SceneLoader::createLightPointInScene();
+                    Logging::Message("Add light");
                 }
                 ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getTexture(), ImVec2(16, 16));
                 ImGui::SameLine();
-                if (ImGui::MenuItem("LightPoint", "CTRL+O")) {
-                    Tools::createLightPointInScene();
-                    Logging::Message("Add light");
+                if (ImGui::BeginMenu("Mesh3D")) {
+                    drawMesh3DItemsToLoad();
+                    ImGui::EndMenu();
+                }
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("gearIcon")->getTexture(), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::BeginMenu("RigidBody")) {
+                    drawRigidBodiesItemsToLoad();
+                    ImGui::EndMenu();
+                }
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("ghostIcon")->getTexture(), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::BeginMenu("GhostBody")) {
+                    drawGhostItemsToLoad();
+                    ImGui::EndMenu();
                 }
                 ImGui::EndMenu();
             }

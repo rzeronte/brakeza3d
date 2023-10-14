@@ -1423,7 +1423,7 @@ void ComponentRender::addLUAScript(ScriptLUA *script)
 void ComponentRender::runScripts()
 {
     for(auto script : scripts) {
-        script->runGlobal();
+        script->runGlobal("onUpdate");
     }
 }
 
@@ -1452,7 +1452,7 @@ void ComponentRender::onStartScripts()
     Logging::Message("Executing OnStart for project scripts...");
 
     for (auto script : scripts) {
-        script->runStartGlobal();
+        script->runGlobal("onStart");
     }
 
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();

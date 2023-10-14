@@ -1,6 +1,7 @@
 #include "../../include/Physics/Mesh3DGhost.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Physics/Projectile3DBody.h"
+#include "../../include/Brakeza3D.h"
 
 Mesh3DGhost::Mesh3DGhost() {
 }
@@ -30,6 +31,10 @@ void Mesh3DGhost::resolveCollision(Collisionable *with)
         auto *object = dynamic_cast<Object3D*> (with);
         Logging::Log("Mesh3DGhost: Collision %s with %s",  getLabel().c_str(), object->getLabel().c_str());
     }
+
+    if (ComponentsManager::get()->getComponentRender()->getStateScripts() == EngineSetup::LUA_PLAY) {
+        runResolveCollisionScripts(with);
+    }
 }
 
 void Mesh3DGhost::remove()
@@ -57,3 +62,50 @@ void Mesh3DGhost::magnetizableTo(Object3D *object)
     }
 }
 
+void Mesh3DGhost::drawImGuiProperties() {
+    Mesh3D::drawImGuiProperties();
+    ImGui::Separator();
+    if (ImGui::TreeNode("Ghost Body")) {
+
+        if (ImGui::Button("Box shape")) {
+            Logging::Message("Making object %s physics with: Box shape", getLabel().c_str());
+            removeCollisionObject();
+            updateBoundingBox();
+            this->makeSimpleGhostBody(
+                    getAabb().size(),
+                    Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                    EngineSetup::AllFilter,
+                    EngineSetup::AllFilter
+            );
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Mesh3D shape")) {
+            Logging::Message("Making object %s physics with: Mesh3D shape", getLabel().c_str());
+            removeCollisionObject();
+            this->makeGhostBody(
+                    Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                    this,
+                    EngineSetup::AllFilter,
+                    EngineSetup::AllFilter
+            );
+        }
+
+        ImGui::TreePop();
+    }
+}
+
+void Mesh3DGhost::runResolveCollisionScripts(Collisionable *with)
+{
+    for (auto script : scripts) {
+        script->runEnvironment(luaEnvironment, "onCollision");
+    }
+}
+
+
+const char *Mesh3DGhost::getTypeObject() {
+    return "Mesh3DGhost";
+}
+
+const char *Mesh3DGhost::getTypeIcon() {
+    return "ghostIcon";
+}

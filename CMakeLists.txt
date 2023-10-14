@@ -80,8 +80,7 @@ add_executable(Brakeza3D
     src/Misc/TexturePackage.cpp include/Misc/TexturePackage.h
     src/Misc/SoundPackage.cpp include/Misc/SoundPackage.h
     include/Misc/Parallells.h
-    include/Misc/VariablePackage.cpp include/Misc/VariablePackage.h
-    src/Collisions/BillboardBody.cpp include/Physics/BillboardBody.h
+        src/Collisions/BillboardBody.cpp include/Physics/BillboardBody.h
     src/Components/Component.cpp include/Components/Component.h
     src/Components/ComponentRender.cpp include/Components/ComponentRender.h
     src/Components/ComponentWindow.cpp include/Components/ComponentWindow.h
@@ -136,8 +135,7 @@ add_executable(Brakeza3D
     src/Particles/ParticleEmitterFireworks.cpp include/Particles/ParticleEmitterFireworks.h
 
     include/Objects/Vector2D.cpp include/Objects/Vector2D.h
-    include/Misc/ColorHSV.cpp include/Misc/ColorHSV.h
-    src/Render/ShaderOpenCL.cpp include/Render/ShaderOpenCL.h
+        src/Render/ShaderOpenCL.cpp include/Render/ShaderOpenCL.h
     src/Shaders/ShaderImage.cpp include/Shaders/ShaderImage.h
     src/Shaders/ShaderEdgeObject.cpp include/Shaders/ShaderEdgeObject.h
     src/Shaders/ShaderColor.cpp include/Shaders/ShaderColor.h
@@ -171,7 +169,9 @@ add_executable(Brakeza3D
         include/Objects/ScriptLUA.h
         include/GUI/GUIConsole.h
         src/LUAIntegration.h
-        include/Misc/SharedLUAContext.h)
+        include/Misc/SharedLUAContext.h
+        src/Misc/SceneLoader.cpp
+        include/Misc/SceneLoader.h)
 
 target_link_libraries(Brakeza3D
     pthread

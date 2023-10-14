@@ -33,10 +33,8 @@ public:
 
     char *readFile(const std::string &name, size_t &source_size);
 
-    void runStart(sol::environment &environment);
-    void runStartGlobal();
-    void runEnvironment(sol::environment&);
-    void runGlobal();
+    void runEnvironment(sol::environment&, const std::string& func) const;
+    void runGlobal(const std::string& func) const;
     void addDataType(const char *name, const char* value);
 
     void parseTypes();

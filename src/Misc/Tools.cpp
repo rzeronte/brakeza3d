@@ -450,17 +450,6 @@ std::string Tools::getExtensionFromFilename(const std::string& filename)
     return "";
 }
 
-void Tools::createObjectInScene() {
-    auto o = new Object3D();
-    o->setBelongToScene(true);
-    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
-}
-
-void Tools::createLightPointInScene() {
-    auto o = new LightPoint3D(11, 1, 0, 0, 0, Color::red(), Color::green());
-    o->setBelongToScene(true);
-    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
-}
 
 void Tools::writeToFile(const std::string& fileName, const char *content)
 {

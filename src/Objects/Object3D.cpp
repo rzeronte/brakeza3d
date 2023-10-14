@@ -167,7 +167,7 @@ void Object3D::onUpdate()
 void Object3D::runScripts()
 {
     for (auto script: scripts) {
-        script->runEnvironment(luaEnvironment);
+        script->runEnvironment(luaEnvironment, "onUpdate");
     }
 }
 
@@ -336,7 +336,6 @@ const char *Object3D::getTypeObject() {
     return "Object3D";
 }
 
-
 const char *Object3D::getTypeIcon() {
     return "objectIcon";
 }
@@ -348,7 +347,7 @@ const std::vector<ScriptLUA *> &Object3D::getScripts() const {
 void Object3D::runStartScripts()
 {
     for (auto script : scripts) {
-        script->runStart(luaEnvironment);
+        script->runEnvironment(luaEnvironment, "onStart");
     }
 }
 
