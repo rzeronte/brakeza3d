@@ -16,7 +16,7 @@
 			"scripts":	[],
 			"model":	"../assets/models/axisPlanes.fbx",
 			"enableLights":	false,
-			"typeShape":	1,
+			"typeShape":	0,
 			"type":	"Mesh3DBody"
 		}],
 	"camera":	{

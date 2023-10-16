@@ -6,5 +6,5 @@ function onUpdate()
 end
 
 function onCollision()
-    print("entro")
+    print("Collision!")
 end

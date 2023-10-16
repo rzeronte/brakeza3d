@@ -7,7 +7,6 @@
 class Collisionable {
 private:
     bool collisionsEnabled;
-    float mass;
 public:
 
     Collisionable();

@@ -1,7 +1,7 @@
 
 #include "Collisionable.h"
 
-Collisionable::Collisionable(): collisionsEnabled(true), mass(0) {
+Collisionable::Collisionable(): collisionsEnabled(true) {
 }
 
 void Collisionable::integrate() {

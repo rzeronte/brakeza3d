@@ -228,16 +228,6 @@ public:
 
     std::string LOGO_BRAKEZA = "logo.png";
 
-    enum collisionGroups {
-        Player = 1,
-        Enemy = 2,
-        Projectile = 4,
-        ProjectileEnemy = 8,
-        Health = 16,
-        Weapon = 32,
-        AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
-    };
-
     enum SoundChannels {
         SND_GLOBAL = -1,
     };

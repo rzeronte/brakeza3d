@@ -5,7 +5,14 @@
 #include "BillboardBody.h"
 #include "../Objects/Mesh3D.h"
 
+enum GhostTypeShape {
+    GHOST_SIMPLE_SHAPE = 0,
+    GHOST_TRIANGLE3D_MESH_SHAPE = 1
+};
+
 class Ghost: public Collisionable {
+protected:
+    GhostTypeShape typeShape;
 public:
     Ghost();
 
@@ -15,7 +22,6 @@ public:
 
     void makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh, int collisionGroup, int collisionMask);
     void removeCollisionObject() const;
-    void addCollisionObject() const;
 
     bool CheckGhost(btPairCachingGhostObject *Ghost);
 
@@ -27,6 +33,10 @@ public:
         int collisionGroup,
         int collisionMask
     );
+
+    [[nodiscard]] GhostTypeShape getTypeShape() const;
+
+    void setTypeShape(GhostTypeShape typeShape);
 };
 
 

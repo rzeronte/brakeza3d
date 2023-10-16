@@ -2,7 +2,11 @@
 #include "../../include/Misc/Tools.h"
 #include "../../include/ComponentsManager.h"
 
-Body::Body(): mass(0), body(nullptr)
+Body::Body()
+    :
+    typeShape(BodyTypeShape::BODY_SIMPLE_SHAPE),
+    mass(0),
+    body(nullptr)
 {
 }
 
@@ -24,5 +28,13 @@ Body::~Body()
         this->removeCollisionObject();
     }
     delete body;
+}
+
+BodyTypeShape Body::getTypeShape() const {
+    return typeShape;
+}
+
+void Body::setTypeShape(BodyTypeShape typeShape) {
+    Body::typeShape = typeShape;
 }
 
