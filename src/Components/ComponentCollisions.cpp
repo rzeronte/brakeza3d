@@ -190,8 +190,8 @@ void ComponentCollisions::demoProjectile(int type) {
         EngineSetup::get()->PROJECTILE_DEMO_IMPULSE,
         EngineSetup::get()->PROJECTILE_DEMO_ACCURACY,
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-        EngineSetup::collisionGroups::Projectile,
-        EngineSetup::collisionGroups::AllFilter
+        btBroadphaseProxy::DefaultFilter,
+        btBroadphaseProxy::DefaultFilter
     );
 
     Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("demoProjectile"));
