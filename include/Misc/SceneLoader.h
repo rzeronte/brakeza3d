@@ -13,16 +13,18 @@
 enum class SceneObjectLoaderMapping {
     Object3D,
     Mesh3D,
-    LightPoint3D
+    LightPoint3D,
+    Mesh3DGhost,
+    Mesh3DBody
 };
-
-
 
 class SceneLoader {
     std::map<std::string, SceneObjectLoaderMapping> sceneTypes = {
             {"Object3D", SceneObjectLoaderMapping::Object3D},
             {"Mesh3D", SceneObjectLoaderMapping::Mesh3D},
-            {"LightPoint3D", SceneObjectLoaderMapping::LightPoint3D}
+            {"LightPoint3D", SceneObjectLoaderMapping::LightPoint3D},
+            {"Mesh3DGhost", SceneObjectLoaderMapping::Mesh3DGhost},
+            {"Mesh3DBody", SceneObjectLoaderMapping::Mesh3DBody}
     };
 public:
     explicit SceneLoader();

@@ -57,6 +57,14 @@ void SceneLoader::loadScene(const std::string& filename)
                 LightPoint3D::createFromJSON(currentObject);
                 break;
             }
+            case SceneObjectLoaderMapping::Mesh3DGhost : {
+                Mesh3DGhost::createFromJSON(currentObject);
+                break;
+            }
+            case SceneObjectLoaderMapping::Mesh3DBody : {
+                Mesh3DBody::createFromJSON(currentObject);
+                break;
+            }
         }
     }
 }
@@ -132,7 +140,12 @@ void SceneLoader::createMesh3DBodyToScene(const std::string& filename, const cha
     newObject->setPosition(position);
     newObject->setScale(1);
     newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + filename));
-    newObject->makeRigidBody(1, Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), EngineSetup::AllFilter, EngineSetup::AllFilter );
+    newObject->makeRigidBody(
+        1,
+        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        btBroadphaseProxy::DefaultFilter,
+         btBroadphaseProxy::DefaultFilter
+     );
 
     Logging::Message("Loading Mesh3DBody from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
 
@@ -149,17 +162,11 @@ void SceneLoader::createGhostBody3DToScene(const std::string& filename, const ch
     newObject->setScale(1);
     newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + filename));
     newObject->updateBoundingBox();
-    /*newObject->makeGhostBody(
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            newObject,
-            EngineSetup::AllFilter,
-            EngineSetup::AllFilter
-    );*/
     newObject->makeSimpleGhostBody(
             newObject->getAabb().size(),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            EngineSetup::AllFilter,
-            EngineSetup::AllFilter
+            btBroadphaseProxy::DefaultFilter,
+            btBroadphaseProxy::DefaultFilter
     );
     Logging::Message("Loading GhostBody from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
 

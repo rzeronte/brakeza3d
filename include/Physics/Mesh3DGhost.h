@@ -33,6 +33,12 @@ public:
     const char *getTypeIcon() override;
 
     const char *getTypeObject() override;
+
+    cJSON *getJSON();
+
+    static void createFromJSON(cJSON *object);
+
+    static void setPropertiesFromJSON(cJSON *object, Mesh3DGhost *o);
 };
 
 #endif //BRAKEDA3D_MESH3DGHOST_H
