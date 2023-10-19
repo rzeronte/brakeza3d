@@ -2,8 +2,6 @@
 // Created by eduardo on 10/10/23.
 //
 
-#include <utility>
-
 #include "../../include/Misc/SceneLoader.h"
 #include "../../include/EngineSetup.h"
 #include "../../include/Misc/Tools.h"
@@ -13,8 +11,7 @@
 #include "../../include/Brakeza3D.h"
 
 SceneLoader::SceneLoader()
-{
-}
+= default;
 
 void SceneLoader::loadScene(const std::string& filename)
 {
@@ -67,7 +64,45 @@ void SceneLoader::loadScene(const std::string& filename)
             }
         }
     }
-}
+
+    cJSON *currentShaderJSON;
+    cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(contentJSON, "shaders")) {
+        std::string typeObject = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
+        auto sceneShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getSceneShaderTypes();
+
+        switch(sceneShaderTypes[typeObject.c_str()]) {
+            case SceneShaderLoaderMapping::ShaderImage : {
+                auto shader = dynamic_cast<ShaderImage*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(0));
+                shader->getImage().setImage(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "image")->valuestring);
+                shader->setUseOffset((bool) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "usingOffset")->valueint);
+                shader->setOffsets(
+                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "offsetX")->valuedouble,
+                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "offsetY")->valuedouble
+                );
+                break;
+            }
+            case SceneShaderLoaderMapping::ShaderDepthOfField : {
+                auto shader = dynamic_cast<ShaderDepthOfField*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(1));
+                shader->setup(
+                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "focusPlaneDepth")->valuedouble,
+                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "focusRange")->valuedouble,
+                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "blurSize")->valuedouble,
+                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "intensity")->valuedouble
+                );
+                break;
+            }
+        }
+    }
+
+    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
+        cJSON *currentScript;
+        cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
+            std::string fileName = (const char*) currentScript->valuestring;
+            ComponentsManager::get()->getComponentRender()->addLUAScript(
+                new ScriptLUA(fileName, ScriptLUA::dataTypesFileFor(fileName))
+            );
+        }
+    }}
 
 Vertex3D SceneLoader::parseVertex3DJSON(cJSON *vertex3DJSON)
 {
@@ -82,14 +117,30 @@ void SceneLoader::saveScene(const std::string &filename)
 {
     cJSON *root = cJSON_CreateObject();
 
+    //scripts
     cJSON *scriptsArray = cJSON_CreateArray();
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         if (!object->isBelongToScene()) continue;
         auto objectJson = object->getJSON();
         cJSON_AddStringToObject(objectJson, "type", object->getTypeObject());
-        cJSON_AddItemToArray(scriptsArray, objectJson );
+        cJSON_AddItemToArray(scriptsArray, objectJson);
     }
     cJSON_AddItemToObject(root, "objects", scriptsArray);
+
+    //shaders
+    cJSON *shadersArrayJSON = cJSON_CreateArray();
+    for (auto shader : ComponentsManager::get()->getComponentRender()->getSceneShaders()) {
+        auto objectJson = shader->getJSON();
+        cJSON_AddItemToArray(shadersArrayJSON, objectJson);
+    }
+    cJSON_AddItemToObject(root, "shaders", shadersArrayJSON);
+
+    //scripts
+    cJSON *sceneScriptsArray = cJSON_CreateArray();
+    for (auto script : ComponentsManager::get()->getComponentRender()->getLUAScripts()) {
+        cJSON_AddItemToArray(sceneScriptsArray, cJSON_CreateString(script->scriptFilename.c_str()));
+    }
+    cJSON_AddItemToObject(root, "scripts", sceneScriptsArray);
 
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
@@ -118,7 +169,6 @@ void SceneLoader::clearScene()
         object->setRemoved(true);
     }
 }
-
 
 void SceneLoader::createObjectInScene() {
     auto o = new Object3D();
@@ -171,4 +221,16 @@ void SceneLoader::createGhostBody3DToScene(const std::string& filename, const ch
     Logging::Message("Loading GhostBody from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
 
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name));
+}
+
+std::map<std::string, SceneObjectLoaderMapping> &SceneLoader::getSceneTypes() {
+    return sceneTypes;
+}
+
+std::map<std::string, Mesh3DShaderLoaderMapping> &SceneLoader::getMesh3DShaderTypes() {
+    return mesh3DShaderTypes;
+}
+
+std::map<std::string, SceneShaderLoaderMapping> &SceneLoader::getSceneShaderTypes() {
+    return sceneShaderTypes;
 }

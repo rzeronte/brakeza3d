@@ -77,7 +77,7 @@ void EngineBuffers::clearVideoBuffer() const {
         return;
     }
 
-    std::fill(videoBuffer, videoBuffer + sizeBuffers, Color::black().getColor());
+    std::fill(videoBuffer, videoBuffer + sizeBuffers, 0);
 }
 
 void EngineBuffers::flipVideoBufferToSurface(SDL_Surface *surface) {
@@ -89,7 +89,7 @@ void EngineBuffers::createOpenCLBuffers(_cl_context *context, cl_command_queue &
 {
     videoBufferOCL = clCreateBuffer(
         context,
-        CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+        CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
         sizeBuffers * sizeof(Uint32),
         videoBuffer,
         nullptr

@@ -32,7 +32,7 @@ void Mesh3DGhost::resolveCollision(Collisionable *with)
         Logging::Log("Mesh3DGhost: Collision %s with %s",  getLabel().c_str(), object->getLabel().c_str());
     }
 
-    if (ComponentsManager::get()->getComponentRender()->getStateScripts() == EngineSetup::LUA_PLAY) {
+    if (ComponentsManager::get()->getComponentRender()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
         runResolveCollisionScripts(with);
     }
 }

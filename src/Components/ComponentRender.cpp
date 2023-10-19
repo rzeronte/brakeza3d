@@ -23,7 +23,8 @@ ComponentRender::ComponentRender() :
     ret(0),
     clContext(nullptr),
     clCommandQueue(nullptr),
-    stateScripts(EngineSetup::LuaStateScripts::LUA_STOP)
+    stateScripts(EngineSetup::LuaStateScripts::LUA_STOP),
+    sceneShadersEnabled(true)
 {
 }
 
@@ -41,6 +42,10 @@ void ComponentRender::onStart()
 void ComponentRender::preUpdate()
 {
     this->updateFPS();
+
+    if (isSceneShadersEnabled()) {
+        runShadersOpenCLPreUpdate();
+    }
 }
 
 void ComponentRender::drawObjetsInHostBuffer()
@@ -77,6 +82,7 @@ void ComponentRender::drawObjetsInHostBuffer()
 
     //frameTriangles.clear();
     //spritesTriangles.clear();
+
 }
 
 void ComponentRender::onUpdate()
@@ -106,24 +112,30 @@ void ComponentRender::onUpdate()
     }
 
     if (EngineSetup::get()->TEXTURES_BILINEAR_INTERPOLATION) {
-        shaderBilinear->update();
+        //todo
+        //shaderBilinear->update();
     }
 
     if (stateScripts == EngineSetup::LUA_PLAY) {
         runScripts();
     }
+    if (isSceneShadersEnabled()) {
+        runShadersOpenCLPostUpdate();
+    }
 }
 
 void ComponentRender::postUpdate()
 {
+
     this->onPostUpdateSceneObjects();
 }
+
 
 void ComponentRender::writeOCLBufferIntoHost() const
 {
     clEnqueueReadBuffer(clCommandQueue,
         EngineBuffers::get()->videoBufferOCL,
-        CL_FALSE,
+        CL_TRUE,
         0,
         EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
         EngineBuffers::get()->videoBuffer,
@@ -149,17 +161,19 @@ void ComponentRender::writeOCLBuffersFromHost() const
 {
     cl_int ret;
 
-    ret = clEnqueueWriteBuffer(
+    /*ret = clEnqueueWriteBuffer(
         clCommandQueue,
         EngineBuffers::get()->videoBufferOCL,
-        CL_TRUE,
+        CL_FALSE,
         0,
         EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
         EngineBuffers::get()->videoBuffer,
         0,
         nullptr,
         nullptr
-    );
+    );*/
+    float max_value2 = 0;
+    clEnqueueFillBuffer(clCommandQueue, EngineBuffers::get()->videoBufferOCL, &max_value2, sizeof(float), 0, EngineBuffers::get()->sizeBuffers * sizeof(unsigned int), 0, NULL, NULL);
 
     if (ret != CL_SUCCESS) {
         Logging::Log("Error writing to Video OCL Buffer: (%d)", ret);
@@ -300,10 +314,12 @@ void ComponentRender::onUpdateSceneObjects()
     }
 
     if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
-        shaderDepthOfField->update();
+        //todo
+        //shaderDepthOfField->update();
     }
 
-    shaderBlurParticles->update();
+    //todo
+    //shaderBlurParticles->update();
 }
 
 void ComponentRender::onUpdateSceneObjectsSecondPass() const
@@ -1123,9 +1139,10 @@ void ComponentRender::initOpenCL()
 
     loadCommonKernels();
 
-    shaderDepthOfField = new ShaderDepthOfField(true);
-    shaderBilinear = new ShaderBilinear(true);
-    shaderBlurParticles = new ShaderBlurBuffer(true, 5);
+    addShaderToScene(new ShaderImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png"));
+    addShaderToScene(new ShaderDepthOfField(true));
+    addShaderToScene(new ShaderBilinear(true));
+    addShaderToScene(new ShaderParticlesBlurBuffer(true, 5));
 
     clBufferLights = clCreateBuffer(clContext, CL_MEM_READ_WRITE, MAX_OPENCL_LIGHTS * sizeof(OCLight), nullptr, nullptr);
     clBufferVideoParticles = clCreateBuffer(clContext, CL_MEM_READ_WRITE, EngineSetup::get()->RESOLUTION * sizeof(Uint32), nullptr, nullptr);
@@ -1250,6 +1267,10 @@ ComponentRender::~ComponentRender()
         delete l;
     }
 
+    for (auto s: sceneShaders) {
+        delete s;
+    }
+
     delete textWriter;
 }
 
@@ -1261,7 +1282,7 @@ _cl_kernel *ComponentRender::getRendererKernel() {
     return rendererKernel;
 }
 
- _cl_kernel *ComponentRender::getParticlesKernel() {
+_cl_kernel *ComponentRender::getParticlesKernel() {
     return particlesKernel;
 }
 
@@ -1354,13 +1375,15 @@ void ComponentRender::loadCommonKernels()
     loadKernel(particlesProgram, particlesKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "particles.cl");
     loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "explosion.cl");
     loadKernel(blinkProgram, blinkKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "blink.opencl");
+    loadKernel(edgeProgram, edgeKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "edge.opencl");
+
 }
 
-EngineSetup::LuaStateScripts ComponentRender::getStateScripts() {
+EngineSetup::LuaStateScripts ComponentRender::getStateLUAScripts() {
     return stateScripts;
 }
 
-void ComponentRender::playScripts()
+void ComponentRender::playLUAScripts()
 {
     Logging::Message("LUA Scripts state changed to PLAY");
 
@@ -1369,7 +1392,7 @@ void ComponentRender::playScripts()
     stateScripts = EngineSetup::LuaStateScripts::LUA_PLAY;
 }
 
-void ComponentRender::stopScripts()
+void ComponentRender::stopLUAScripts()
 {
     Logging::Message("LUA Scripts state changed to STOP");
 
@@ -1389,7 +1412,7 @@ void ComponentRender::stopScripts()
     }
 }
 
-void ComponentRender::reloadScripts()
+void ComponentRender::reloadLUAScripts()
 {
     Logging::Message("Reloading LUA Scripts...");
 
@@ -1409,7 +1432,7 @@ void ComponentRender::reloadScripts()
     reloadScriptGlobals();
 }
 
-std::vector<ScriptLUA*> &ComponentRender::getScripts()
+std::vector<ScriptLUA*> &ComponentRender::getLUAScripts()
 {
     return scripts;
 }
@@ -1463,4 +1486,49 @@ void ComponentRender::onStartScripts()
 
 SceneLoader &ComponentRender::getSceneLoader() {
     return sceneLoader;
+}
+
+std::vector<ShaderOpenCL *> &ComponentRender::getSceneShaders() {
+    return sceneShaders;
+}
+
+ShaderOpenCL *ComponentRender::getSceneShaderByIndex(int i) {
+    return sceneShaders[i];
+}
+
+void ComponentRender::addShaderToScene(ShaderOpenCL *shader)
+{
+    sceneShaders.push_back(shader);
+}
+
+bool ComponentRender::isSceneShadersEnabled() const {
+    return sceneShadersEnabled;
+}
+
+void ComponentRender::setSceneShadersEnabled(bool sceneShadersEnabled) {
+    ComponentRender::sceneShadersEnabled = sceneShadersEnabled;
+}
+
+void ComponentRender::runShadersOpenCLPostUpdate() {
+    for( auto s: sceneShaders) {
+        if (!s->isEnabled()) continue;
+        s->postUpdate();
+    }
+}
+
+void ComponentRender::runShadersOpenCLPreUpdate() {
+    for( auto s: sceneShaders) {
+        if (!s->isEnabled()) continue;
+        s->preUpdate();
+    }
+}
+
+void ComponentRender::removeShader(int index) {
+    if (index >= 0 && index < sceneShaders.size()) {
+        sceneShaders.erase(sceneShaders.begin() + index);
+    }
+}
+
+_cl_kernel *ComponentRender::getEdgeKernel() {
+    return edgeKernel;
 }

@@ -2,25 +2,36 @@
 // Created by eduardo on 24/08/23.
 //
 
-#include "ShaderBlurBuffer.h"
+#include "ShaderParticlesBlurBuffer.h"
 #include "../../include/EngineSetup.h"
 #include "../../include/EngineBuffers.h"
 #include "../../include/ComponentsManager.h"
 
-ShaderBlurBuffer::ShaderBlurBuffer(bool active, int blurSize)
+ShaderParticlesBlurBuffer::ShaderParticlesBlurBuffer(bool active, int blurSize)
 :
     ShaderOpenCL(active, "blurBuffer.cl"),
     blurSize(blurSize)
 {
+    setLabel("ShaderParticlesBlurBuffer");
 }
 
-void ShaderBlurBuffer::update()
+void ShaderParticlesBlurBuffer::preUpdate()
 {
-    Shader::update();
+}
+
+void ShaderParticlesBlurBuffer::postUpdate()
+{
+    if (!this->enabled) return;
+    update();
     executeKernelOpenCL();
 }
 
-void ShaderBlurBuffer::executeKernelOpenCL()
+void ShaderParticlesBlurBuffer::update()
+{
+    Shader::update();
+}
+
+void ShaderParticlesBlurBuffer::executeKernelOpenCL()
 {
     clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
     clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
@@ -34,4 +45,13 @@ void ShaderBlurBuffer::executeKernelOpenCL()
     clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
 
     debugKernel("ShaderBlurBuffer");
+}
+
+
+cJSON *ShaderParticlesBlurBuffer::getJSON()
+{
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "type", this->getLabel().c_str());
+
+    return root;
 }

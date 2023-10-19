@@ -25,8 +25,8 @@ void ComponentWindow::preUpdate()
 
 void ComponentWindow::clearVideoBuffers()
 {
-    //BUFFERS->clearDepthBuffer();
-    //BUFFERS->clearVideoBuffer();
+   BUFFERS->clearDepthBuffer();
+   BUFFERS->clearVideoBuffer();
 }
 
 void ComponentWindow::renderToWindow()

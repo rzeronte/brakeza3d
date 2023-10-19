@@ -1,7 +1,36 @@
 {
 	"objects":	[{
-			"name":	"added_item_38",
-			"scale":	1,
+			"name":	"Eye",
+			"scale":	0.5,
+			"stencilBufferEnabled":	true,
+			"position":	{
+				"x":	0,
+				"y":	0,
+				"z":	6000
+			},
+			"rotation":	{
+				"x":	186,
+				"y":	21,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/eye.fbx",
+			"enableLights":	false,
+			"shaders":	[{
+					"type":	"ShaderEdgeObject",
+					"size":	2.5,
+					"color":	{
+						"r":	0,
+						"g":	255,
+						"b":	0
+					}
+				}],
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Moon",
+			"scale":	7.559999942779541,
+			"stencilBufferEnabled":	true,
 			"position":	{
 				"x":	0,
 				"y":	0,
@@ -14,20 +43,38 @@
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
-			"model":	"../assets/models/axisPlanes.fbx",
+			"model":	"../assets/models/moon_planet.fbx",
 			"enableLights":	false,
-			"typeShape":	1,
-			"type":	"Mesh3DBody"
+			"shaders":	[],
+			"type":	"Mesh3D"
 		}],
+	"shaders":	[{
+			"type":	"ShaderImage",
+			"image":	"../assets/images/galaxy.png",
+			"usingOffset":	true,
+			"offsetX":	0,
+			"offsetY":	0
+		}, {
+			"type":	"ShaderDepthOfField",
+			"focusPlaneDepth":	15000,
+			"focusRange":	4500,
+			"blurSize":	2.4999999368446879e-06,
+			"intensity":	1.1499999761581421
+		}, {
+			"type":	"ShaderBilinear"
+		}, {
+			"type":	"ShaderParticlesBlurBuffer"
+		}],
+	"scripts":	["Project.lua"],
 	"camera":	{
 		"position":	{
-			"x":	1408.153076171875,
-			"y":	-1855.74169921875,
-			"z":	-7374.24365234375
+			"x":	-27.736003875732422,
+			"y":	-452.50576782226562,
+			"z":	-4378.1845703125
 		},
 		"rotation":	{
-			"x":	11.25,
-			"y":	14.5,
+			"x":	15,
+			"y":	3,
 			"z":	0
 		}
 	}

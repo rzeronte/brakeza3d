@@ -18,6 +18,17 @@ enum class SceneObjectLoaderMapping {
     Mesh3DBody
 };
 
+enum class Mesh3DShaderLoaderMapping {
+    ShaderEdgeObject,
+};
+
+enum class SceneShaderLoaderMapping {
+    ShaderImage,
+    ShaderDepthOfField,
+    ShaderBilinear,
+    ShaderParticlesBlurBuffer
+};
+
 class SceneLoader {
     std::map<std::string, SceneObjectLoaderMapping> sceneTypes = {
             {"Object3D", SceneObjectLoaderMapping::Object3D},
@@ -26,14 +37,25 @@ class SceneLoader {
             {"Mesh3DGhost", SceneObjectLoaderMapping::Mesh3DGhost},
             {"Mesh3DBody", SceneObjectLoaderMapping::Mesh3DBody}
     };
+
+    std::map<std::string, Mesh3DShaderLoaderMapping> mesh3DShaderTypes = {
+            {"ShaderEdgeObject", Mesh3DShaderLoaderMapping::ShaderEdgeObject}
+    };
+
+    std::map<std::string, SceneShaderLoaderMapping> sceneShaderTypes = {
+            {"ShaderEdgeObject", SceneShaderLoaderMapping::ShaderImage},
+            {"ShaderDepthOfField", SceneShaderLoaderMapping::ShaderDepthOfField},
+            {"ShaderBilinear", SceneShaderLoaderMapping::ShaderBilinear},
+            {"ShaderParticlesBlurBuffer", SceneShaderLoaderMapping::ShaderParticlesBlurBuffer}
+    };
 public:
     explicit SceneLoader();
     void loadScene(const std::string& filename);
-    void saveScene(const std::string& filename);
+    static void saveScene(const std::string& filename);
 
     static Vertex3D parseVertex3DJSON(cJSON *vertex3DJSON);
 
-    void clearScene();
+    static void clearScene();
 
     static void createObjectInScene();
 
@@ -42,6 +64,12 @@ public:
     static void createMesh3DBodyToScene(const std::string &filename, const char *name);
 
     static void createGhostBody3DToScene(const std::string &filename, const char *name);
+
+    std::map<std::string, SceneObjectLoaderMapping> &getSceneTypes();
+
+    std::map<std::string, Mesh3DShaderLoaderMapping> &getMesh3DShaderTypes();
+
+    std::map<std::string, SceneShaderLoaderMapping> &getSceneShaderTypes();
 };
 
 

@@ -1,60 +1,40 @@
 {
 	"objects":	[{
-			"name":	"DemoObject3D",
-			"scale":	0.25,
+			"name":	"Eye",
+			"scale":	1.1399999856948853,
+			"stencilBufferEnabled":	true,
 			"position":	{
 				"x":	0,
-				"y":	0,
+				"y":	-2722,
 				"z":	6000
 			},
 			"rotation":	{
-				"x":	28,
-				"y":	205,
-				"z":	0
+				"x":	218,
+				"y":	71,
+				"z":	46
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
 			"model":	"../assets/models/eye.fbx",
-			"enableLights":	true,
+			"enableLights":	false,
+			"shaders":	[{
+					"type":	"ShaderEdgeObject",
+					"size":	2.5,
+					"color":	{
+						"r":	0,
+						"g":	255,
+						"b":	0
+					}
+				}],
 			"type":	"Mesh3D"
 		}, {
-			"name":	"DemoLightPoint",
-			"scale":	1,
+			"name":	"Moon",
+			"scale":	7.559999942779541,
+			"stencilBufferEnabled":	true,
 			"position":	{
-				"x":	1570,
-				"y":	1183,
-				"z":	4620
-			},
-			"rotation":	{
-				"x":	7,
-				"y":	188,
-				"z":	1
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"kc":	1.3999999761581421,
-			"kl":	0,
-			"kq":	0,
-			"p":	35,
-			"color":	{
-				"r":	70,
-				"g":	208,
-				"b":	2
-			},
-			"specularColor":	{
-				"r":	0,
-				"g":	255,
-				"b":	0
-			},
-			"specularComponent":	0,
-			"type":	"LightPoint3D"
-		}, {
-			"name":	"added_item_64",
-			"scale":	4.119999885559082,
-			"position":	{
-				"x":	2928,
-				"y":	751,
-				"z":	9549
+				"x":	0,
+				"y":	0,
+				"z":	10016
 			},
 			"rotation":	{
 				"x":	0,
@@ -63,19 +43,78 @@
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
-			"model":	"../assets/models/marsh.fbx",
-			"enableLights":	true,
+			"model":	"../assets/models/moon_planet.fbx",
+			"enableLights":	false,
+			"shaders":	[],
+			"type":	"Mesh3D"
+		}, {
+			"name":	"SpaceShuttle",
+			"scale":	2.2300000190734863,
+			"stencilBufferEnabled":	false,
+			"position":	{
+				"x":	6702,
+				"y":	519,
+				"z":	7480
+			},
+			"rotation":	{
+				"x":	5,
+				"y":	-18,
+				"z":	341
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/spaceShuttle.fbx",
+			"enableLights":	false,
+			"shaders":	[],
+			"type":	"Mesh3D"
+		}, {
+			"name":	"StarGate",
+			"scale":	8.15999984741211,
+			"stencilBufferEnabled":	false,
+			"position":	{
+				"x":	-3103,
+				"y":	515,
+				"z":	7424
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-81,
+				"z":	13
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/stargate.fbx",
+			"enableLights":	false,
+			"shaders":	[],
 			"type":	"Mesh3D"
 		}],
+	"shaders":	[{
+			"type":	"ShaderImage",
+			"image":	"../assets/images/galaxy.png",
+			"usingOffset":	true,
+			"offsetX":	0,
+			"offsetY":	0
+		}, {
+			"type":	"ShaderDepthOfField",
+			"focusPlaneDepth":	15000,
+			"focusRange":	4500,
+			"blurSize":	2.4999999368446879e-06,
+			"intensity":	3.5999999046325684
+		}, {
+			"type":	"ShaderBilinear"
+		}, {
+			"type":	"ShaderParticlesBlurBuffer"
+		}],
+	"scripts":	["Project.lua"],
 	"camera":	{
 		"position":	{
-			"x":	-668.78363037109375,
-			"y":	1788.0494384765625,
-			"z":	-794.85333251953125
+			"x":	10792.212890625,
+			"y":	590.4688720703125,
+			"z":	2109.500732421875
 		},
 		"rotation":	{
-			"x":	-7,
-			"y":	341.75,
+			"x":	-0.75,
+			"y":	46,
 			"z":	0
 		}
 	}

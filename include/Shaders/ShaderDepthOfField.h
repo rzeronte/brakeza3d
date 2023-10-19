@@ -19,6 +19,16 @@ public:
     float focusRange;
     float blurSize;
     float intensity;
+
+    void preUpdate();
+
+    void postUpdate();
+
+    cJSON *getJSON();
+
+    void drawImGuiProperties();
+
+    void setup(float focusPlaneDepth, float focusRange, float blurSize, float intensity);
 };
 
 
