@@ -162,7 +162,7 @@ add_executable(Brakeza3D
 
         src/2D/Sprite2D.cpp include/2D/Sprite2D.h
         src/Shaders/ShaderBlurBuffer.cpp
-        src/Shaders/ShaderBlurBuffer.h
+        src/Shaders/ShaderParticlesBlurBuffer.h
         src/Objects/TentacleIK.cpp
         include/Objects/TentacleIK.h
         src/Objects/ScriptLUA.cpp
@@ -171,7 +171,9 @@ add_executable(Brakeza3D
         src/LUAIntegration.h
         include/Misc/SharedLUAContext.h
         src/Misc/SceneLoader.cpp
-        include/Misc/SceneLoader.h)
+        include/Misc/SceneLoader.h
+        include/Render/ObjectShaderOpenCL.cpp
+        include/Render/ObjectShaderOpenCL.h)
 
 target_link_libraries(Brakeza3D
     pthread

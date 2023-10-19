@@ -18,10 +18,11 @@
 #include "../../include/Render/Maths.h"
 #include "../Shaders/ShaderBilinear.h"
 #include "../Shaders/ShaderDepthOfField.h"
-#include "../../src/Shaders/ShaderBlurBuffer.h"
+#include "../../src/Shaders/ShaderParticlesBlurBuffer.h"
 #include "../2D/TextWriter.h"
 #include "../Misc/SharedLUAContext.h"
 #include "../Misc/SceneLoader.h"
+#include "../Shaders/ShaderImage.h"
 #include <CL/cl.h>
 
 class ComponentRender : public Component {
@@ -72,8 +73,8 @@ private:
     cl_program blinkProgram;
     cl_kernel blinkKernel;
 
-    ShaderBilinear *shaderBilinear;
-    ShaderBlurBuffer *shaderBlurParticles;
+    cl_program edgeProgram;
+    cl_kernel edgeKernel;
 
     cl_mem clBufferLights;
     std::vector<OCLight> oclLights;
@@ -83,10 +84,14 @@ private:
     std::vector<ScriptLUA*> scripts;
     TextWriter *textWriter;
     SceneLoader sceneLoader;
+
+    bool sceneShadersEnabled;
+    std::vector<ShaderOpenCL*> sceneShaders;
+
 public:
     ComponentRender();
 
-    virtual ~ComponentRender();
+    ~ComponentRender() override;
 
     void onStart() override;
 
@@ -210,8 +215,6 @@ public:
 
     _cl_kernel *getExplosionKernel();
 
-    ShaderDepthOfField *shaderDepthOfField;
-
     _cl_kernel *getBlinkKernel();
 
     void onUpdateSceneObjectsSecondPass() const;
@@ -226,15 +229,15 @@ public:
 
     void loadCommonKernels();
 
-    EngineSetup::LuaStateScripts getStateScripts();
+    EngineSetup::LuaStateScripts getStateLUAScripts();
 
-    void playScripts();
+    void playLUAScripts();
 
-    void stopScripts();
+    void stopLUAScripts();
 
-    void reloadScripts();
+    void reloadLUAScripts();
 
-    std::vector<ScriptLUA*> &getScripts();
+    std::vector<ScriptLUA*> &getLUAScripts();
 
     void addLUAScript(ScriptLUA *script);
 
@@ -247,6 +250,24 @@ public:
     void runScripts();
 
     SceneLoader &getSceneLoader();
+
+    std::vector<ShaderOpenCL *> &getSceneShaders();
+
+    void addShaderToScene(ShaderOpenCL *shader);
+
+    [[nodiscard]] bool isSceneShadersEnabled() const;
+
+    void setSceneShadersEnabled(bool sceneShadersEnabled);
+
+    void runShadersOpenCLPostUpdate();
+
+    void removeShader(int index);
+
+    void runShadersOpenCLPreUpdate();
+
+    _cl_kernel *getEdgeKernel();
+
+    ShaderOpenCL *getSceneShaderByIndex(int i);
 };
 
 
