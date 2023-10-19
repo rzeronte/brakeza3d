@@ -19,8 +19,7 @@ __kernel void onUpdate(
     __global unsigned int *image,
     int usingOffset,
     float offsetX,
-    float offsetY,
-    int usingColors
+    float offsetY
 )
 {
     int x = get_global_id(0);
@@ -41,9 +40,6 @@ __kernel void onUpdate(
         st += center - offsetToCenter + offsetInput;
     }
 
-    // -- WAVE EFFECT
-    st.x += sin(st.y * NUMBER_OF_WAVES * PI + iTime * FLOW_SPEED_FACTOR) * (1.0f / resolution.x) * AMPLITUDE_FACTOR;
-
     st = wrap(st, resolution);
 
     int cx = (int) (st.x * resolution.x);
@@ -58,20 +54,10 @@ __kernel void onUpdate(
 
     __global unsigned char *im = &image[index];
 
-    float s = sin(iTime);
-    float c = cos(iTime);
-    float t = s * c;
-
-    if (usingColors <= 0) {
-        s = 1;
-        c = 1;
-        t = 1;
-    }
-
     unsigned int new = createRGB(
-        min((int) (im[0] * (1.0f - s * 0.2f)), 200),
-        min((int) (im[1] * (1.0f - c * 0.2f)), 200),
-        min((int) (im[2] * (1.0f - t * 0.2f)), 200)
+        min((int) im[0], 255),
+        min((int) im[1], 255),
+        min((int) im[2], 255    )
     );
 
     unsigned int alpha = (image[index] >> 24) & 0xFF;  // Suponemos que el canal alfa está en el byte más significativo.

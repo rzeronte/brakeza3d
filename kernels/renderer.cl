@@ -167,13 +167,13 @@ __kernel void onUpdate(
             return;
         }
 
-        int A01 = (int) -( t->As.y - t->Bs.y );
-        int A12 = (int) -( t->Bs.y - t->Cs.y );
-        int A20 = (int) -( t->Cs.y - t->As.y );
+        const int A01 = (int) -( t->As.y - t->Bs.y );
+        const int A12 = (int) -( t->Bs.y - t->Cs.y );
+        const int A20 = (int) -( t->Cs.y - t->As.y );
 
-        int B01 = (int) -( t->Bs.x - t->As.x );
-        int B12 = (int) -( t->Cs.x - t->Bs.x );
-        int B20 = (int) -( t->As.x - t->Cs.x );
+        const int B01 = (int) -( t->Bs.x - t->As.x );
+        const int B12 = (int) -( t->Cs.x - t->Bs.x );
+        const int B20 = (int) -( t->As.x - t->Cs.x );
 
         int w0_row = orient2d( &t->Bs, &t->Cs, t->minX, t->minY );
         int w1_row = orient2d( &t->Cs, &t->As, t->minX, t->minY );

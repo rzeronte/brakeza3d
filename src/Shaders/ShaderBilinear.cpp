@@ -9,6 +9,7 @@
 
 ShaderBilinear::ShaderBilinear(bool active) : ShaderOpenCL(active, "bilinear.cl")
 {
+    setLabel("ShaderBilinear");
     videoOutputBufferOCL = clCreateBuffer(
         context,
         CL_MEM_READ_WRITE,
@@ -18,10 +19,20 @@ ShaderBilinear::ShaderBilinear(bool active) : ShaderOpenCL(active, "bilinear.cl"
     );
 }
 
+void ShaderBilinear::preUpdate()
+{
+}
+
+void ShaderBilinear::postUpdate()
+{
+    if (!this->enabled) return;
+    update();
+    executeKernelOpenCL();
+}
+
 void ShaderBilinear::update()
 {
     Shader::update();
-    executeKernelOpenCL();
 }
 
 void ShaderBilinear::executeKernelOpenCL()
@@ -39,4 +50,12 @@ void ShaderBilinear::executeKernelOpenCL()
     clRet = clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
 
     debugKernel("ShaderBilinear");
+}
+
+cJSON *ShaderBilinear::getJSON()
+{
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "type", this->getLabel().c_str());
+
+    return root;
 }

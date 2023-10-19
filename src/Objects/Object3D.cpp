@@ -159,7 +159,7 @@ void Object3D::onUpdate()
         motion->onUpdate(position);
     }
 
-    if (ComponentsManager::get()->getComponentRender()->getStateScripts() == EngineSetup::LUA_PLAY) {
+    if (ComponentsManager::get()->getComponentRender()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
         runScripts();
     }
 }
@@ -449,6 +449,12 @@ void Object3D::drawImGuiProperties()
 
         ImGui::TreePop();
     }
+    ImGui::Separator();
+
+    if (ImGui::TreeNode("Stencil buffer")) {
+        ImGui::Checkbox("Enable", &isStencilBufferEnabled());
+        ImGui::TreePop();
+    }
 
     ImGui::Separator();
 
@@ -460,6 +466,7 @@ cJSON *Object3D::getJSON()
 
     cJSON_AddStringToObject(root, "name", getLabel().c_str());
     cJSON_AddNumberToObject(root, "scale", getScale());
+    cJSON_AddBoolToObject(root, "stencilBufferEnabled", isStencilBufferEnabled());
 
     cJSON *position = cJSON_CreateObject();
     cJSON_AddNumberToObject(position, "x", (int) getPosition().x);
@@ -507,7 +514,7 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
                 (float) cJSON_GetObjectItemCaseSensitive(rotation, "z")->valuedouble
         );
     }
-
+    o->setStencilBufferEnabled(cJSON_GetObjectItemCaseSensitive(object, "stencilBufferEnabled")->valueint);
     o->setRotationFrameEnabled(cJSON_GetObjectItemCaseSensitive(object, "rotationFrameEnabled")->valueint);
 
     if (cJSON_GetObjectItemCaseSensitive(object, "rotationFrame") != nullptr) {

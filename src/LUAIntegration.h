@@ -97,6 +97,7 @@ void LUAIntegration(sol::state &lua)
                                sol::constructors<Mesh3D(), Mesh3D()>(),
                                sol::base_classes, sol::bases<Object3D>(),
                              "AssimpLoadGeometryFromFile", &Mesh3D::AssimpLoadGeometryFromFile,
+                             "addMesh3DShader", &Mesh3D::addMesh3DShader,
                              "create", &Mesh3D::create
 
     );
@@ -109,6 +110,30 @@ void LUAIntegration(sol::state &lua)
                                   "clearScene", &SceneLoader::clearScene,
                                   "saveScene", &SceneLoader::saveScene,
                                   "loadScene", &SceneLoader::loadScene
+    );
+
+    lua.new_usertype<Shader>("Shader",
+                             "getLabel", &Shader::getLabel,
+                             "setLabel", &Shader::setLabel,
+                             "isEnabled", &Shader::isEnabled,
+                             "setEnabled", &Shader::setEnabled
+    );
+
+    lua.new_usertype<ShaderOpenCL>("ShaderOpenCL",
+                             sol::base_classes, sol::bases<Shader>(),
+                             "getJSON", &ShaderOpenCL::getJSON
+    );
+    lua.new_usertype<ObjectShaderOpenCL>("ObjectShaderOpenCL",
+                                   sol::base_classes, sol::bases<ShaderOpenCL>(),
+                                   "setObject", &ObjectShaderOpenCL::setObject,
+                                   "getObject", &ObjectShaderOpenCL::getObject
+    );
+
+    lua.new_usertype<ShaderEdgeObject>("ShaderEdgeObject",
+                                   sol::base_classes, sol::bases<ShaderOpenCL>(),
+                                   "create", &ShaderEdgeObject::create,
+                                   "setSize", &ShaderEdgeObject::setSize,
+                                   "getSize", &ShaderEdgeObject::getSize
     );
 }
 

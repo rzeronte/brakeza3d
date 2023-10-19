@@ -17,6 +17,7 @@ Mesh3D::Mesh3D()
 {
     decal = false;
     openClRenderer = new MeshOpenCLRenderer(this, this->modelTriangles);
+    luaEnvironment.set("this", this);
 }
 
 void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles)
@@ -125,6 +126,10 @@ void Mesh3D::onUpdate()
     if (layer == Mesh3DRenderLayer::ONUPDATE) {
         onUpdateOpenCLRender();
     }
+
+    for (auto s: shaders) {
+        s->preUpdate();
+    }
 }
 
 void Mesh3D::drawOnUpdateSecondPass()
@@ -144,6 +149,10 @@ void Mesh3D::onUpdateOpenCLRender()
 void Mesh3D::postUpdate()
 {
     Object3D::postUpdate();
+
+    for (auto s: shaders) {
+        s->postUpdate();
+    }
 }
 
 void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
@@ -461,12 +470,47 @@ Mesh3D *Mesh3D::create() {
 void Mesh3D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
+    std::string title = "Mesh3D (Triangles: " + std::to_string(getModelTriangles().size()) + ")";
 
-    if (ImGui::TreeNode("Mesh3D")) {
+    if (ImGui::TreeNode(title.c_str())) {
         ImGui::Checkbox(std::string("Enable lights").c_str(), &enableLights);
 
-        std::string numTriangles = "Triangles: " + std::to_string(getModelTriangles().size());
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), numTriangles.c_str());
+        ImGui::Separator();
+
+        auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
+
+        if (ImGui::TreeNode("Shaders")) {
+            if ((int) shaders.size() <= 0) {
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No shaders attached");
+            }
+
+            for (int i = 0; i < (int) shaders.size(); i++) {
+                auto s = shaders[i];
+                ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("shaderIcon")->getTexture(), ImVec2(24, 24));
+                ImGui::SameLine(100);
+
+                if (!s->isEnabled()) {
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("unlockIcon")->getTexture(), ImVec2(14, 14))) {
+                        s->setEnabled(true);
+                    }
+                } else {
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("lockIcon")->getTexture(), ImVec2(14, 14))) {
+                        s->setEnabled(false);
+                    }
+                }
+                ImGui::SameLine();
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("removeIcon")->getTexture(), ImVec2(14, 14))) {
+                    removeShader(i);
+                }
+                ImGui::SameLine();
+                if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {
+                    ImGui::PushID(i);
+                    s->drawImGuiProperties();
+                    ImGui::PopID();
+                }
+            }
+            ImGui::TreePop();
+        }
         ImGui::TreePop();
     }
 }
@@ -478,6 +522,12 @@ cJSON * Mesh3D::getJSON()
     cJSON_AddStringToObject(root, "model", sourceFile.c_str());
     cJSON_AddBoolToObject(root, "enableLights", isEnableLights());
 
+    cJSON *shadersArrayJSON = cJSON_CreateArray();
+    for ( auto s : shaders) {
+        cJSON_AddItemToArray(shadersArrayJSON, s->getJSON());
+    }
+    cJSON_AddItemToObject(root, "shaders", shadersArrayJSON);
+
     return root;
 }
 
@@ -487,6 +537,31 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
     Object3D::setPropertiesFromJSON(object, o);
     o->setEnableLights(cJSON_GetObjectItemCaseSensitive(object, "enableLights")->valueint);
     o->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring);
+
+    if (cJSON_GetObjectItemCaseSensitive(object, "shaders") != nullptr) {
+        auto mesh3DShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getMesh3DShaderTypes();
+        cJSON *currentShader;
+        cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
+            auto type = cJSON_GetObjectItemCaseSensitive(currentShader, "type")->valuestring;
+            switch(mesh3DShaderTypes[type]) {
+                case Mesh3DShaderLoaderMapping::ShaderEdgeObject: {
+                    auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
+                    auto color = Color(
+                        cJSON_GetObjectItemCaseSensitive(edgeColor, "r")->valueint,
+                        cJSON_GetObjectItemCaseSensitive(edgeColor, "g")->valueint,
+                        cJSON_GetObjectItemCaseSensitive(edgeColor, "b")->valueint
+                    );
+                    auto shader = new ShaderEdgeObject(
+                        true,
+                        color,
+                        (float)cJSON_GetObjectItemCaseSensitive(currentShader, "size")->valuedouble
+                    );
+                    o->addMesh3DShader(shader);
+                    break;
+                }
+            }
+        }
+    }
 }
 
 void Mesh3D::createFromJSON(cJSON *object)
@@ -496,4 +571,19 @@ void Mesh3D::createFromJSON(cJSON *object)
     Mesh3D::setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
+}
+
+std::vector<ObjectShaderOpenCL *> &Mesh3D::getShaders() {
+    return shaders;
+}
+
+void Mesh3D::addMesh3DShader(ObjectShaderOpenCL *shader) {
+    shader->setObject(this);
+    shaders.push_back(shader);
+}
+
+void Mesh3D::removeShader(int index) {
+    if (index >= 0 && index < shaders.size()) {
+        shaders.erase(shaders.begin() + index);
+    }
 }

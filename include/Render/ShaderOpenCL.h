@@ -8,6 +8,7 @@
 
 #include <CL/cl.h>
 #include "Shader.h"
+#include "../Misc/cJSON.h"
 
 class ShaderOpenCL: public Shader {
 protected:
@@ -31,7 +32,15 @@ public:
 
     void initOpenCLProgram();
 
-    void debugKernel(std::string from) const;
+    void debugKernel(const std::string& from) const;
+
+    virtual void preUpdate();
+
+    virtual void postUpdate();
+
+    virtual void drawImGuiProperties();
+
+    virtual cJSON * getJSON();
 };
 
 

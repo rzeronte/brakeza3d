@@ -4,12 +4,17 @@
 
 #include "../../include/Render/ShaderOpenCL.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/EngineSetup.h"
 #include "../../include/EngineBuffers.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
 
-ShaderOpenCL::ShaderOpenCL(bool active, const std::string& kernelFilename): Shader(active), useCustomProgram(true)
+ShaderOpenCL::ShaderOpenCL(bool active, const std::string& kernelFilename)
+:
+    Shader(active),
+    useCustomProgram(true),
+    clRet(0),
+    program(nullptr),
+    kernel(nullptr)
 {
     this->clDeviceId = ComponentsManager::get()->getComponentRender()->getClDeviceId();
     this->clQueue = ComponentsManager::get()->getComponentRender()->getClCommandQueue();
@@ -21,7 +26,13 @@ ShaderOpenCL::ShaderOpenCL(bool active, const std::string& kernelFilename): Shad
     Logging::Log("Loading '%s' kernel", kernelFilename.c_str());
 }
 
-ShaderOpenCL::ShaderOpenCL(bool active): Shader(active), useCustomProgram(false)
+ShaderOpenCL::ShaderOpenCL(bool active)
+:
+    Shader(active),
+    useCustomProgram(false),
+    clRet(0),
+    program(nullptr),
+    kernel(nullptr)
 {
     this->clDeviceId = ComponentsManager::get()->getComponentRender()->getClDeviceId();
     this->clQueue = ComponentsManager::get()->getComponentRender()->getClCommandQueue();
@@ -50,7 +61,7 @@ void ShaderOpenCL::initOpenCLProgram()
     free(source_str);
 }
 
-void ShaderOpenCL::debugKernel(std::string from) const
+void ShaderOpenCL::debugKernel(const std::string& from) const
 {
     if (!EngineSetup::get()->LOGGING) return;
 
@@ -79,4 +90,20 @@ ShaderOpenCL::~ShaderOpenCL()
         clReleaseProgram(program);
         clReleaseKernel(kernel);
     }
+}
+
+void ShaderOpenCL::preUpdate() {
+
+}
+
+void ShaderOpenCL::postUpdate() {
+
+}
+
+void ShaderOpenCL::drawImGuiProperties() {
+
+}
+
+cJSON * ShaderOpenCL::getJSON() {
+
 }

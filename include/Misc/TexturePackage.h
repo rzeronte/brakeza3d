@@ -21,6 +21,8 @@ public:
 
     virtual ~TexturePackage();
 
+    std::vector<TexturePackageItem *> &getItems();
+
 private:
     std::vector<TexturePackageItem *> items;
 };

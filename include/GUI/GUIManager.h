@@ -2,6 +2,7 @@
 #ifndef SDL2_3D_ENGINE_GUI_ENGINE_H
 #define SDL2_3D_ENGINE_GUI_ENGINE_H
 
+#include <string>
 #include <dirent.h>
 #include <vector>
 #include "../Objects/Object3D.h"
@@ -11,6 +12,7 @@
 #include "../Brakeza3D.h"
 #include "../Misc/TexturePackage.h"
 #include "../Render/Logging.h"
+#include "../Shaders/ShaderEdgeObject.h"
 
 static char editableSource[1024 * 16];
 
@@ -20,25 +22,44 @@ private:
 
     int selectedObjectIndex = -1;
     std::string selectedScriptFilename;
-
+    ShaderOpenCL *selectedShader;
     ScriptLUA *script;
 
     std::string directory_path;
     std::string directory_path_models;
+    std::string directory_path_images;
     std::string directory_path_scenes;
 
     std::string selected_file;
     ImGuiConsoleApp *console;
 
     TexturePackage ImGuiTextures;
-    
+    TexturePackage imagesFolder;
+
+    const char *availableMesh3DShaders[1] = {"Edge"};
 public:
+
+    void loadImagesFolder() {
+        DIR *dir;
+        struct dirent *ent;
+
+        if ((dir = opendir (directory_path_images.c_str())) != NULL) {
+            while ((ent = readdir (dir)) != NULL) {
+                if (Tools::getExtensionFromFilename(ent->d_name) == "png") {
+                    imagesFolder.addItem(EngineSetup::get()->IMAGES_FOLDER + ent->d_name, ent->d_name);
+                }
+            }
+
+            closedir (dir);
+        }
+    }
 
     GUIManager(std::vector<Object3D *> &gameObjects)
     :
         gameObjects(gameObjects),
         directory_path(EngineSetup::get()->SCRIPTS_FOLDER),
         directory_path_models(EngineSetup::get()->MODELS_FOLDER),
+        directory_path_images(EngineSetup::get()->IMAGES_FOLDER),
         directory_path_scenes(EngineSetup::get()->SCENES_FOLDER),
         script(nullptr),
         console(new ImGuiConsoleApp(EngineBuffers::get()->getLua()))
@@ -63,7 +84,9 @@ public:
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/save.png", "saveIcon");
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/gear.png", "gearIcon");
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/ghost.png", "ghostIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/shader.png", "shaderIcon");
 
+        loadImagesFolder();
     }
 
     void drawFiles(std::vector<std::string> result)
@@ -85,7 +108,7 @@ public:
                 strcpy(editableSource, script->content);
             }
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-                ImGui::SetDragDropPayload("SCRIPT_ITEM", file.c_str(), file.length());  // Asigna el nombre del elemento como carga útil
+                ImGui::SetDragDropPayload("SCRIPT_ITEM", file.c_str(), file.size() + 1);  // Asigna el nombre del elemento como carga útil
                 ImGui::Text("%s", file.c_str());  // Esto es lo que se muestra mientras se arrastra
                 ImGui::EndDragDropSource();
             }
@@ -224,36 +247,6 @@ public:
         ImGui::Separator();
     }
 
-    void drawModelFiles() {
-        DIR *dir;
-        struct dirent *ent;
-        std::vector<std::string> result;
-        if ((dir = opendir (directory_path_models.c_str())) != NULL) {
-            while ((ent = readdir (dir)) != NULL) {
-                result.emplace_back(ent->d_name);
-            }
-            std::sort( result.begin(), result.end() );
-
-            closedir (dir);
-
-            for (int i = 0; i < result.size(); i++) {
-                auto file = result[i];
-                auto title = std::to_string(i-1) + ") " + file;
-                if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                    ImGui::PushID(i);
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("addIcon")->getTexture(), ImVec2(12, 12))) {
-                        Tools::addSceneObject(file, "added_item");
-                    }
-                    ImGui::SameLine();
-                    ImGui::Text("%s", title.c_str());
-                    ImGui::PopID();
-               }
-            }
-        } else {
-            ImGui::Text("Could not open directory");
-        }
-    }
-
     void drawScenesFiles() {
         DIR *dir;
         struct dirent *ent;
@@ -292,6 +285,56 @@ public:
 
     }
 
+    void drawSceneShaders() {
+
+        auto shaders = ComponentsManager::get()->getComponentRender()->getSceneShaders();
+
+        for (int i = 0; i < shaders.size(); i++) {
+            auto s = shaders[i];
+            ImGui::PushID(i);
+            ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("shaderIcon")->getTexture(), ImVec2(26, 26));
+            ImGui::SameLine(46);
+            if (!s->isEnabled()) {
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getTexture(), ImVec2(14, 14))) {
+                    s->setEnabled(true);
+                }
+            } else {
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getTexture(), ImVec2(14, 14))) {
+                    s->setEnabled(false);
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getTexture(), ImVec2(14, 14))) {
+                ComponentsManager::get()->getComponentRender()->removeShader(i);
+            }
+            ImGui::SameLine();
+            if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {
+                ImGui::PushID(i);
+                s->drawImGuiProperties();
+                ImGui::PopID();
+            }
+            ImGui::PopID();
+            ImGui::Separator();
+        }
+    }
+
+    void drawMesh3DShaders() {
+
+        for(int i = 0; i < 1; i++) {
+            ImGui::PushID(i);
+            std::string optionText = std::to_string(i + 1) + ") " + availableMesh3DShaders[i];
+            if (ImGui::Selectable(optionText.c_str())) {
+            }
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+                ImGui::SetDragDropPayload("MESH3D_SHADER_ITEM", std::to_string(i).c_str(), sizeof(int));
+                ImGui::Text("%s", availableMesh3DShaders[i]);
+                ImGui::EndDragDropSource();
+            }
+
+            ImGui::PopID();
+        }
+    }
+
     void drawObjectsWindow()
     {
         bool p_open = true;
@@ -320,9 +363,27 @@ public:
                         Logging::Message("Dropping script (%s) in %s", payload->Data, o->getLabel().c_str());
                         IM_ASSERT(payload->DataSize == sizeof(int));
                         o->attachScript(new ScriptLUA(
-                            std::string((char*) payload->Data),
+                            std::string((const char*) payload->Data),
                             ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
                         );
+                    }
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MESH3D_SHADER_ITEM")) {
+                        Logging::Message("Dropping shader (%s) in %s", payload->Data, o->getLabel().c_str());
+                        IM_ASSERT(payload->DataSize == sizeof(int));
+                        auto mesh = dynamic_cast<Mesh3D*> (o);
+                        if (mesh) {
+                            int selection = std::stoi((char*) payload->Data);
+                            switch(selection) {
+                                case 0: {
+                                    auto shader = new ShaderEdgeObject(true, Color::green(), 1);
+                                    mesh->addMesh3DShader(shader);
+                                }
+                                case 1: {
+                                    break;
+                                }
+
+                            }
+                        }
                     }
                     ImGui::EndDragDropTarget();
                 }
@@ -373,8 +434,8 @@ public:
 
                     std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
 
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getTexture(), ImVec2(20, 20));
-                    ImGui::SameLine(32);
+                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getTexture(), ImVec2(24, 24));
+                    ImGui::SameLine(48);
 
                     if (ImGui::Button(optionText.c_str())) {
                         delete script;
@@ -459,7 +520,7 @@ public:
         if (ImGui::Begin("Variables")) {
             static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
             if (ImGui::BeginTable("GlobalVariablesTable", 2, flags)) {
-                auto scripts = ComponentsManager::get()->getComponentRender()->getScripts();
+                auto scripts = ComponentsManager::get()->getComponentRender()->getLUAScripts();
                 auto &lua = EngineBuffers::get()->getLua();
                 int count = 0;
 
@@ -498,12 +559,12 @@ public:
 
             ImGui::Separator();
 
-            auto scripts = componentRender->getScripts();
+            auto scripts = componentRender->getLUAScripts();
             for (int i = 0; i < (int) scripts.size(); i++) {
                 auto currentScript = scripts[i];
                 ImGui::PushID(i);
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getTexture(), ImVec2(20, 20));
-                ImGui::SameLine(32);
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getTexture(), ImVec2(24, 24));
+                ImGui::SameLine(48);
                 std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
                 if (ImGui::Button(optionText.c_str())) {
                     selectedScriptFilename = currentScript->scriptFilename;
@@ -543,6 +604,7 @@ public:
                 }
                 ImGui::EndDragDropTarget();
             }
+            ImGui::Separator();
         }
         ImGui::End();
 
@@ -553,15 +615,44 @@ public:
         ImGui::End();
 
 
-        if (ImGui::Begin("Models")) {
-            drawModelFiles();
+        if (ImGui::Begin("Shaders")) {
+            drawSceneShaders();
         }
+
+        if (ImGui::Begin("Mesh3D Shaders")) {
+            drawMesh3DShaders();
+        }
+
 
         if (ImGui::Begin("Scenes")) {
             drawScenesFiles();
         }
         ImGui::End();
 
+        if (ImGui::Begin("Images")) {
+            auto tableName = "ImageProperties###";
+            static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit;
+
+            auto items = imagesFolder.getItems();
+            for (int i = 0; i < items.size(); i++) {
+                auto a = items[i];
+
+                ImGui::Image((ImTextureID)a->texture->getTexture(), ImVec2(96, 96));
+                ImGui::SameLine();
+                ImGui::BeginGroup();
+                ImGui::Selectable(a->label.c_str());
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+                    ImGui::SetDragDropPayload("IMAGE_ITEM", a->label.c_str(), a->label.size() + 1);
+                    ImGui::Text("%s", a->label.c_str());
+                    ImGui::EndDragDropSource();
+                }
+                ImGui::Text("%d x %d", a->texture->width(), a->texture->height());
+                ImGui::EndGroup();
+
+                ImGui::Separator();
+            }
+        }
+        ImGui::End();
     }
 
     void drawImGuiScriptCode()
@@ -881,19 +972,6 @@ public:
                 ImGui::Checkbox("Solid", &EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID);
                 ImGui::Separator();
                 ImGui::Checkbox("Textures", &EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED);
-                if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED) {
-                    ImGui::Separator();
-                    ImGui::Checkbox("UV Bilinear", &EngineSetup::get()->TEXTURES_BILINEAR_INTERPOLATION);
-                    ImGui::Separator();
-                    ImGui::Checkbox("Depth Of Field", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
-                    if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
-                        auto shader = ComponentsManager::get()->getComponentRender()->shaderDepthOfField;
-                        ImGui::DragScalar("focusPlaneDepth", ImGuiDataType_Float, &shader->focusPlaneDepth, 10.0f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                        ImGui::DragScalar("focusRange", ImGuiDataType_Float, &shader->focusRange, 10.0f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                        ImGui::DragScalar("blurSize", ImGuiDataType_Float, &shader->blurSize, 0.000001f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                        ImGui::DragScalar("intensity", ImGuiDataType_Float, &shader->intensity, 0.0001f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    }
-                }
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Bones", &EngineSetup::get()->DRAW_ANIMATION_BONES);
                 ImGui::Separator();
@@ -1105,19 +1183,19 @@ public:
     void ToolbarUI()
     {
         if (ImGui::Begin("MainToolBar")) {
-            if (ComponentsManager::get()->getComponentRender()->getStateScripts() == EngineSetup::LuaStateScripts::LUA_STOP) {
+            if (ComponentsManager::get()->getComponentRender()->getStateLUAScripts() == EngineSetup::LuaStateScripts::LUA_STOP) {
                 if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("playIcon")->getTexture(), ImVec2(24, 24))) {
-                    ComponentsManager::get()->getComponentRender()->playScripts();
+                    ComponentsManager::get()->getComponentRender()->playLUAScripts();
                 }
                 ImGui::SameLine();
             } else {
                 if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("stopIcon")->getTexture(), ImVec2(24, 24))) {
-                    ComponentsManager::get()->getComponentRender()->stopScripts();
+                    ComponentsManager::get()->getComponentRender()->stopLUAScripts();
                 }
                 ImGui::SameLine();
             }
             if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("reloadIcon")->getTexture(), ImVec2(24, 24))) {
-                ComponentsManager::get()->getComponentRender()->reloadScripts();
+                ComponentsManager::get()->getComponentRender()->reloadLUAScripts();
             }
             ImGui::SameLine();
             if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getTexture(), ImVec2(24, 24))) {
@@ -1131,6 +1209,9 @@ public:
         return console;
     }
 
+    TexturePackage *getImGuiTextures() {
+        return &ImGuiTextures;
+    }
 };
 
 #endif //SDL2_3D_ENGINE_GUI_ENGINE_H
