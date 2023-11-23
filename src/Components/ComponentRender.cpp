@@ -6,25 +6,25 @@
 #include "../../include/Render/Transforms.h"
 
 ComponentRender::ComponentRender() :
-    fps(0),
-    fpsFrameCounter(0),
-    frameTime(0),
-    sizeTileWidth((EngineSetup::get()->screenWidth / 2)),
-    sizeTileHeight((EngineSetup::get()->screenHeight / 2)),
-    tilesWidth(0),
-    tilesHeight(0),
-    numTiles(0),
-    tilePixelsBufferSize(0),
-    selectedObject(nullptr),
-    clPlatformId(nullptr),
-    clDeviceId(nullptr),
-    ret_num_devices(0),
-    ret_num_platforms(0),
-    ret(0),
-    clContext(nullptr),
-    clCommandQueue(nullptr),
-    stateScripts(EngineSetup::LuaStateScripts::LUA_STOP),
-    sceneShadersEnabled(true)
+        fps(0),
+        fpsFrameCounter(0),
+        frameTime(0),
+        sizeTileWidth((EngineSetup::get()->screenWidth / 2)),
+        sizeTileHeight((EngineSetup::get()->screenHeight / 2)),
+        numberTilesHorizontal(0),
+        numberTilesVertical(0),
+        numberTiles(0),
+        tilePixelsBufferSize(0),
+        selectedObject(nullptr),
+        clPlatformId(nullptr),
+        clDeviceId(nullptr),
+        ret_num_devices(0),
+        ret_num_platforms(0),
+        ret(0),
+        clContext(nullptr),
+        clCommandQueue(nullptr),
+        stateScripts(EngineSetup::LuaStateScripts::LUA_STOP),
+        sceneShadersEnabled(true)
 {
 }
 
@@ -36,7 +36,6 @@ void ComponentRender::onStart()
     initTiles();
 
     textWriter = new TextWriter(ComponentsManager::get()->getComponentWindow()->getRenderer(), ComponentsManager::get()->getComponentWindow()->getFontDefault());
-
 }
 
 void ComponentRender::preUpdate()
@@ -205,6 +204,10 @@ void ComponentRender::updateSelectedObject3D()
             input->getRelativeRendererMouseX(),
             input->getRelativeRendererMouseY()
         );
+
+        if (selectedObject != nullptr){
+            Logging::Message("Selected object: %s", selectedObject->getLabel().c_str());
+        }
     }
 
     if (input->isClickRight() && !input->isMouseMotion()) {
@@ -484,29 +487,29 @@ void ComponentRender::drawVisibleTriangles() {
 }
 
 void ComponentRender::handleTrianglesToTiles(std::vector<Triangle *> &triangles) {
-    for (int i = 0; i < this->numTiles; i++) {
+    for (int i = 0; i < this->numberTiles; i++) {
         this->tiles[i].triangleIds.clear();
     }
 
     for (unsigned int i = 0; i < triangles.size(); i++) {
         int tileStartX = (int) std::max((float) (triangles[i]->minX / this->sizeTileWidth), 0.0f);
         int tileEndX = (int) std::min((float) (triangles[i]->maxX / this->sizeTileWidth),
-                                (float) this->tilesWidth - 1);
+                                      (float) this->numberTilesHorizontal - 1);
 
         int tileStartY = (int) std::max((float) (triangles[i]->minY / this->sizeTileHeight), 0.0f);
         int tileEndY = (int) std::min((float) (triangles[i]->maxY / this->sizeTileHeight),
-                                (float) this->tilesHeight - 1);
+                                      (float) this->numberTilesVertical - 1);
 
         for (int y = tileStartY; y <= tileEndY; y++) {
             for (int x = tileStartX; x <= tileEndX; x++) {
-                this->tiles[y * tilesWidth + x].triangleIds.emplace_back(i);
+                this->tiles[y * numberTilesHorizontal + x].triangleIds.emplace_back(i);
             }
         }
     }
 }
 
 void ComponentRender::drawTilesGrid() {
-    for (int j = 0; j < (this->tilesWidth * this->tilesHeight); j++) {
+    for (int j = 0; j < (this->numberTilesHorizontal * this->numberTilesVertical); j++) {
         Tile *t = &this->tiles[j];
         Color color = Color::white();
 
@@ -796,7 +799,7 @@ void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, co
 void ComponentRender::drawTilesTriangles(std::vector<Triangle *> *visibleTriangles)
 {
     std::vector<std::thread> threads;
-    for (int i = 0; i < numTiles; i++) {
+    for (int i = 0; i < numberTiles; i++) {
         if (!tiles[i].draw) continue;
 
         if (SETUP->BASED_TILE_RENDER_THREADED) {
@@ -830,9 +833,9 @@ void ComponentRender::initTiles() {
     }
 
     // Tiles Raster setup
-    this->tilesWidth = SETUP->screenWidth / this->sizeTileWidth;
-    this->tilesHeight = SETUP->screenHeight / this->sizeTileHeight;
-    this->numTiles = tilesWidth * tilesHeight;
+    this->numberTilesHorizontal = SETUP->screenWidth / this->sizeTileWidth;
+    this->numberTilesVertical = SETUP->screenHeight / this->sizeTileHeight;
+    this->numberTiles = numberTilesHorizontal * numberTilesVertical;
     this->tilePixelsBufferSize = this->sizeTileWidth * this->sizeTileHeight;
 
     for (int y = 0; y < SETUP->screenHeight; y += this->sizeTileHeight) {
@@ -843,7 +846,7 @@ void ComponentRender::initTiles() {
             t.draw = true;
             t.id_x = (x / this->sizeTileWidth);
             t.id_y = (y / this->sizeTileHeight);
-            t.id = t.id_y * this->tilesWidth + t.id_x;
+            t.id = t.id_y * this->numberTilesHorizontal + t.id_x;
             t.start_x = x;
             t.start_y = y;
 
@@ -853,7 +856,7 @@ void ComponentRender::initTiles() {
     }
 
     // Create local buffers and openCL buffer pointers
-    for (int i = 0; i < numTiles; i++) {
+    for (int i = 0; i < numberTiles; i++) {
 
         this->tiles[i].buffer = new unsigned int[tilePixelsBufferSize];
         for (int j = 0; j < tilePixelsBufferSize; j++) {
@@ -1008,16 +1011,23 @@ Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
     Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition, camera);
     Vector3D ray(camera->getPosition(),nearPlaneVertex);
 
-    for (auto &triangle : getVisibleTriangles()) {
-        auto *p = new Plane(triangle->Ao, triangle->Bo, triangle->Co);
-        triangle->updateObjectSpace();
-        float t;
-        if (Maths::isVector3DClippingPlane(*p, ray)) {
-            Vertex3D intersectionPoint  = p->getPointIntersection(ray.origin(), ray.end(), t);
-            if (triangle->isPointInside(intersectionPoint)) {
-                return triangle->parent;
+    for (auto o: Brakeza3D::get()->getSceneObjects()){
+        auto mesh = dynamic_cast<Mesh3D*>(o);
+
+        if (mesh == nullptr) continue;
+
+        for (auto &triangle : mesh->getModelTriangles()) {
+            auto *p = new Plane(triangle->Ao, triangle->Bo, triangle->Co);
+            triangle->updateObjectSpace();
+            float t;
+            if (Maths::isVector3DClippingPlane(*p, ray)) {
+                Vertex3D intersectionPoint  = p->getPointIntersection(ray.origin(), ray.end(), t);
+                if (triangle->isPointInside(intersectionPoint)) {
+                    return triangle->parent;
+                }
             }
         }
+
     }
 
     return nullptr;
@@ -1218,15 +1228,15 @@ std::vector<Tile> &ComponentRender::getTiles() {
 }
 
 int ComponentRender::getTilesWidth() const {
-    return tilesWidth;
+    return numberTilesHorizontal;
 }
 
 int ComponentRender::getTilesHeight() const {
-    return tilesHeight;
+    return numberTilesVertical;
 }
 
 int ComponentRender::getNumTiles() const {
-    return numTiles;
+    return numberTiles;
 }
 
 int ComponentRender::getFps(){
@@ -1372,11 +1382,16 @@ void ComponentRender::loadCommonKernels()
     Logging::Message("Loading common OpenCL kernels");
 
     loadKernel(rendererProgram, rendererKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "renderer.cl");
+    loadKernel(fragmentsProgram, fragmentsKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "fragments.cl");
+    loadKernel(rasterizeProgram, rasterizeKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "rasterizer.cl");
+
+
     loadKernel(particlesProgram, particlesKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "particles.cl");
     loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "explosion.cl");
     loadKernel(blinkProgram, blinkKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "blink.opencl");
     loadKernel(edgeProgram, edgeKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "edge.opencl");
 
+    clBufferFragments = clCreateBuffer(clContext, CL_MEM_WRITE_ONLY, EngineBuffers::get()->sizeBuffers * sizeof(OCFragment), nullptr, nullptr );
 }
 
 EngineSetup::LuaStateScripts ComponentRender::getStateLUAScripts() {
@@ -1531,4 +1546,12 @@ void ComponentRender::removeShader(int index) {
 
 _cl_kernel *ComponentRender::getEdgeKernel() {
     return edgeKernel;
+}
+
+_cl_kernel *ComponentRender::getFragmentsKernel(){
+    return fragmentsKernel;
+}
+
+_cl_kernel *ComponentRender::getRasterizeKernel() {
+    return rasterizeKernel;
 }
