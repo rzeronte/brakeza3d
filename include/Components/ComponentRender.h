@@ -176,7 +176,7 @@ public:
 
     void initOpenCL();
 
-    static Object3D *getObject3DFromClickPoint(int xClick, int yClick);
+    static Object3D *getObject3DFromClickPoint(int xClick, int yClick, int &objectIndex);
 
     void updateSelectedObject3D();
 

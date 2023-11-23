@@ -1212,6 +1212,10 @@ public:
     TexturePackage *getImGuiTextures() {
         return &ImGuiTextures;
     }
+
+    void setSelectedObjectIndex(int selectedObjectIndex) {
+        GUIManager::selectedObjectIndex = selectedObjectIndex;
+    }
 };
 
 #endif //SDL2_3D_ENGINE_GUI_ENGINE_H

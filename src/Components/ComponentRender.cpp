@@ -200,13 +200,16 @@ void ComponentRender::updateSelectedObject3D()
     auto input = ComponentsManager::get()->getComponentInput();
 
     if (input->isClickLeft() && !input->isMouseMotion()) {
+        int index = -1;
         selectedObject = getObject3DFromClickPoint(
             input->getRelativeRendererMouseX(),
-            input->getRelativeRendererMouseY()
+            input->getRelativeRendererMouseY(),
+            index
         );
 
         if (selectedObject != nullptr){
             Logging::Message("Selected object: %s", selectedObject->getLabel().c_str());
+            Brakeza3D::get()->getManagerGui()->setSelectedObjectIndex(index);
         }
     }
 
@@ -1003,7 +1006,7 @@ void ComponentRender::updateLights()
     }
 }
 
-Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
+Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick, int &objectIndex)
 {
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
@@ -1011,6 +1014,7 @@ Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
     Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition, camera);
     Vector3D ray(camera->getPosition(),nearPlaneVertex);
 
+    int i = 0;
     for (auto o: Brakeza3D::get()->getSceneObjects()){
         auto mesh = dynamic_cast<Mesh3D*>(o);
 
@@ -1023,11 +1027,12 @@ Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
             if (Maths::isVector3DClippingPlane(*p, ray)) {
                 Vertex3D intersectionPoint  = p->getPointIntersection(ray.origin(), ray.end(), t);
                 if (triangle->isPointInside(intersectionPoint)) {
+                    objectIndex = i;
                     return triangle->parent;
                 }
             }
         }
-
+        i++;
     }
 
     return nullptr;
