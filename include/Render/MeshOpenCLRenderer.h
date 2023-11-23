@@ -30,6 +30,10 @@ class MeshOpenCLRenderer {
     std::vector<Triangle*> &triangles;
 
     std::vector<OCTriangle> oclTriangles;
+    int* indicesClipping;
+    cl_mem clBufferIndicesClipping;
+    int numTrianglesClipped;
+    cl_mem clBufferNumTrianglesClipped;
 
     Object3D *object;
 
@@ -59,6 +63,12 @@ public:
     cl_mem *getClBufferStencil();
 
     void createBuffers();
+
+    void renderClippedTriangles();
+
+    void renderFragments(Image *texture);
+
+    void renderTriangles();
 };
 
 

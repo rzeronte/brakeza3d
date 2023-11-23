@@ -167,7 +167,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     Assimp::Importer assimpImporter;
     const aiScene *scene = assimpImporter.ReadFile(
         fileName,
-        aiProcess_Triangulate | aiProcess_SortByPType | aiProcess_FlipUVs
+        aiProcess_Triangulate | aiProcess_SortByPType | aiProcess_FlipUVs | aiProcess_OptimizeMeshes
     );
 
     if (!scene) {

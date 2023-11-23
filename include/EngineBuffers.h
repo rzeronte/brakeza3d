@@ -10,6 +10,7 @@
 #include "Objects/Sprite3D.h"
 #include "Misc/SoundPackage.h"
 #include "Misc/SharedLUAContext.h"
+#include "Misc/TileManager.h"
 
 // Singleton
 class EngineBuffers {
@@ -23,6 +24,8 @@ private:
     SharedLUAContext *sharedLuaContext;
 
 public:
+    TileManager *tileManager;
+
     static EngineBuffers *get();
 
     float *depthBuffer;

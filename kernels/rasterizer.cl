@@ -47,7 +47,6 @@ typedef struct OCTriangle {
     int maxX, minX, maxY, minY;
     bool clipped;
     float w0_row, w1_row, w2_row;
-
 } OCTriangle;
 
 typedef struct OCLPlane {
@@ -97,6 +96,17 @@ typedef struct OCFragment {
     float v;
 } OCFragment;
 
+typedef struct OCTileRender {
+    bool draw;
+    int id;
+    int id_x;
+    int id_y;
+    int start_x;
+    int start_y;
+    int width;
+    int height;
+} OCTileRender;
+
 /* FUNCTIONS */
 int orient2d(__global OCPoint2D *pa, __global OCPoint2D *pb, int pc_x, int pc_y);
 float processFullArea(__global OCPoint2D *pb, __global OCPoint2D *pc, __global OCPoint2D *pa);
@@ -134,117 +144,48 @@ unsigned int mixLightColor(__global struct OCLight *l, unsigned int color, __pri
 float distanceBetweenVertices(__global struct OCVertex3D *v1, __private struct OCVertex3D *v2);
 unsigned int mixColors(unsigned int color1, unsigned int color2, float t);
 bool isPixelInWindow(int x, int y, int w, int h);
+bool isTriangleInTile(__global struct OCTriangle *triangle, __global struct OCTileRender *tile);
+void rasterizeTriangle(__global struct OCTriangle *t,  __global struct OCTileRender *tile, __global OCFragment *fragments, __global bool *stencil, int screenWidth, int screenHeight, __global unsigned int *video);
+bool isPixelInTile(int x, int y, __global struct OCTileRender *tile);
 
 /* KERNEL */
 __kernel void onUpdate(
     int screenWidth,
     int screenHeight,
     __global unsigned int *video,
-    __global unsigned int *bufferDepth,
-    __global OCLMeshContext *context,
     __global OCTriangle *triangles,
     int numTriangles,
+    __global OCTileRender *tiles,
     __global bool *stencil,
-    int useStencil,
-    __global OCFragment *fragments,
-    __global int *clippedIndexes,
-    __global int *numTriangulosClipping,
-    int useClipping
+    __global OCFragment *fragments
 )
 {
-    int x = get_global_id(0);
-    int y = get_global_id(1);
-    int i = y * get_global_size(0) + x;
+    int tileX = get_global_id(0);
+    int tileY = get_global_id(1);
 
-    if (i < numTriangles) {
+    int i = tileY * get_global_size(0) + tileX;
 
-        __global struct OCTriangle *t = &triangles[i];
+    __global struct OCTileRender *tile = &tiles[i];
 
-        updateObjectSpace(t, context);
-        updateNormal(t);
-        updateCameraSpace(t, context);
-        updatePerspectiveNDCSpace(t, context);
-        updateScreenSpace(t, screenWidth, screenHeight);
-        updateBoundingBox(t);
-        updateFullArea(t);
-        updateUVCache(t);
-        t->fullArea = processFullArea(&t->Bs, &t->Cs, &t->As);
-        t->reciprocalFullArea = 1 / t->fullArea;
+    unsigned int position = tile->start_y * screenWidth + tile->start_x;
+    video[position] = createRGB(255, 0, 0);
 
-        if (useClipping == 1) {
-            t->clipped = testForClipping(context->frustumData.planes, t->Ao, t->Bo, t->Co);
-            if (t->clipped) {
-            int indice = atomic_add(numTriangulosClipping, 1);
-            clippedIndexes[indice] = i;
-            return;
+    for (int j = 0; j < tile->width; j++) {
+        for (int k = 0; k < tile->height; k++) {
+            const int nIndex = (tile->start_y + k) * screenWidth + (tile->start_x + j);
+
+            bool hasTriangles = false;
+
+            for (int x = 0; x < numTriangles; x++) {
+                __global struct OCTriangle *t = &triangles[x];
+                if (!isTriangleInTile(t, tile)) continue;
+                rasterizeTriangle(t, tile, fragments, stencil, screenWidth, screenHeight, video);
+                hasTriangles = true;
             }
-        }
 
-        if (isBackFaceCulling(t, &context->cameraData.position)) return;
-
-        if (
-            !isVertexInside(&t->Ao, context->frustumData.planes) &&
-            !isVertexInside(&t->Bo, context->frustumData.planes) &&
-            !isVertexInside(&t->Co, context->frustumData.planes)
-        ) {
-            return;
-        }
-
-        const int A01 = (int) -( t->As.y - t->Bs.y );
-        const int A12 = (int) -( t->Bs.y - t->Cs.y );
-        const int A20 = (int) -( t->Cs.y - t->As.y );
-
-        const int B01 = (int) -( t->Bs.x - t->As.x );
-        const int B12 = (int) -( t->Cs.x - t->Bs.x );
-        const int B20 = (int) -( t->As.x - t->Cs.x );
-
-        int w0_row = orient2d( &t->Bs, &t->Cs, t->minX, t->minY );
-        int w1_row = orient2d( &t->Cs, &t->As, t->minX, t->minY );
-        int w2_row = orient2d( &t->As, &t->Bs, t->minX, t->minY );
-
-        t->w0_row = w0_row;
-        t->w1_row = w1_row;
-        t->w2_row = w2_row;
-
-        float alpha, theta, gamma;
-
-        for (int y = t->minY ; y < t->maxY ; y++) {
-
-            int w0 = w0_row;
-            int w1 = w1_row;
-            int w2 = w2_row;
-
-            for (int x = t->minX ; x < t->maxX ; x++) {
-                if ((w0 | w1 | w2) > 0 && isPixelInWindow(x, y, screenWidth, screenHeight)) {
-                    const int bufferIndex = y * screenWidth + x;
-                    alpha = (float) w0 * t->reciprocalFullArea;
-                    theta = (float) w1 * t->reciprocalFullArea;
-                    gamma = (float) w2 * t->reciprocalFullArea;
-
-                    const float depth = alpha * t->An.z + theta * t->Bn.z + gamma * t->Cn.z;
-
-                    if (stencil[bufferIndex] && depth > bufferDepth[bufferIndex]) continue;
-                    bufferDepth[bufferIndex] = depth;
-                    const float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
-
-                    fragments[bufferIndex].x = x;
-                    fragments[bufferIndex].y = y;
-                    fragments[bufferIndex].u = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;;
-                    fragments[bufferIndex].v = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;;
-                    fragments[bufferIndex].alpha = alpha;
-                    fragments[bufferIndex].gamma = gamma;
-                    fragments[bufferIndex].theta = theta;
-                    fragments[bufferIndex].depth = depth;
-
-                    stencil[bufferIndex] = true;
-                }
-                w0 += A12;
-                w1 += A20;
-                w2 += A01;
+            if (hasTriangles) {
+                //video[nIndex] = createRGB(j * 255, 0, 0);
             }
-            w0_row += B12;
-            w1_row += B20;
-            w2_row += B01;
         }
     }
 }
@@ -625,4 +566,89 @@ unsigned int mixColors(unsigned int color1, unsigned int color2, float t)
 
 bool isPixelInWindow(int x, int y, int w, int h) {
     return (x >= 0 && x < w && y >= 0 && y < h);
+}
+
+bool isTriangleInTile(__global struct OCTriangle *triangle, __global struct OCTileRender *tile)
+{
+    if (triangle->minX <= (tile->start_x + tile->width) &&
+        triangle->maxX >= tile->start_x &&
+        triangle->minY <= (tile->start_y + tile->height) &&
+        triangle->maxY >= tile->start_y) {
+        return true; // El triángulo se superpone parcial o totalmente con el azulejo.
+    }
+
+    return false; // El triángulo está completamente fuera del azulejo.
+}
+
+void rasterizeTriangle(__global struct OCTriangle *t, __global struct OCTileRender *tile, __global OCFragment *fragments, __global bool *stencil, int screenWidth, int screenHeight, __global unsigned int *video)
+{
+    float alpha, theta, gamma;
+
+    const int A01 = (int) -( t->As.y - t->Bs.y );
+    const int A12 = (int) -( t->Bs.y - t->Cs.y );
+    const int A20 = (int) -( t->Cs.y - t->As.y );
+
+    const int B01 = (int) -( t->Bs.x - t->As.x );
+    const int B12 = (int) -( t->Cs.x - t->Bs.x );
+    const int B20 = (int) -( t->As.x - t->Cs.x );
+
+    int w0_row = t->w0_row;
+    int w1_row = t->w1_row;
+    int w2_row = t->w2_row;
+
+    for (int y = t->minY ; y < t->maxY ; y++) {
+
+        int w0 = w0_row;
+        int w1 = w1_row;
+        int w2 = w2_row;
+
+        for (int x = t->minX ; x < t->maxX ; x++) {
+            if ((w0 | w1 | w2) > 0 && isPixelInTile(x, y, tile)) {
+                const int bufferIndex = y * screenWidth + x;
+
+                alpha = (float) w0 * t->reciprocalFullArea;
+                theta = (float) w1 * t->reciprocalFullArea;
+                gamma = (float) w2 * t->reciprocalFullArea;
+
+                const float depth = alpha * t->An.z + theta * t->Bn.z + gamma * t->Cn.z;
+
+                //if (stencil[bufferIndex] && depth > fragments[bufferIndex].depth) continue;
+
+                const float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
+
+                OCFragment fragment;
+                fragment.x = x;
+                fragment.y = y;
+                fragment.u = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;;
+                fragment.v = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;;
+                fragment.alpha = alpha;
+                fragment.gamma = gamma;
+                fragment.theta = theta;
+                fragment.depth = depth;
+
+                //fragments[bufferIndex] =fragment;
+                //video[bufferIndex] = createRGB(255, 0, 0);
+            }
+            w0 += A12;
+            w1 += A20;
+            w2 += A01;
+        }
+        w0_row += B12;
+        w1_row += B20;
+        w2_row += B01;
+    }
+}
+
+bool isPixelInTile(int x, int y, __global struct OCTileRender *tile)
+{
+    int tileX1 = tile->start_x;
+    int tileX2 = tile->start_x + tile->width;
+    int tileY1 = tile->start_y;
+    int tileY2 = tile->start_y + tile->height;
+
+    if (x >= tileX1 && x < tileX2 && y >= tileY1 && y < tileY2) {
+        return true;
+    }
+
+    return false;
 }

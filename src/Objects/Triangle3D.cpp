@@ -177,7 +177,8 @@ void Triangle::clipping(
         int oldNumTriangles = (int) triangles.size();
 
         Maths::TriangulatePolygon(
-            num_inputvertices, input_vertices,
+            num_inputvertices,
+            input_vertices,
             this->getNormal(),
             triangles,
             newTrianglesParent,

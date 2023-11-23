@@ -1,33 +1,5 @@
 {
 	"objects":	[{
-			"name":	"Eye",
-			"scale":	1.1399999856948853,
-			"stencilBufferEnabled":	true,
-			"position":	{
-				"x":	0,
-				"y":	-2722,
-				"z":	6000
-			},
-			"rotation":	{
-				"x":	218,
-				"y":	71,
-				"z":	46
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models/eye.fbx",
-			"enableLights":	false,
-			"shaders":	[{
-					"type":	"ShaderEdgeObject",
-					"size":	2.5,
-					"color":	{
-						"r":	0,
-						"g":	255,
-						"b":	0
-					}
-				}],
-			"type":	"Mesh3D"
-		}, {
 			"name":	"Moon",
 			"scale":	7.559999942779541,
 			"stencilBufferEnabled":	true,
@@ -48,42 +20,22 @@
 			"shaders":	[],
 			"type":	"Mesh3D"
 		}, {
-			"name":	"SpaceShuttle",
-			"scale":	2.2300000190734863,
+			"name":	"eje",
+			"scale":	1.8799999952316284,
 			"stencilBufferEnabled":	false,
 			"position":	{
-				"x":	6702,
-				"y":	519,
-				"z":	7480
+				"x":	1739,
+				"y":	-902,
+				"z":	9823
 			},
 			"rotation":	{
-				"x":	5,
-				"y":	-18,
-				"z":	341
+				"x":	180,
+				"y":	15,
+				"z":	0
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
-			"model":	"../assets/models/spaceShuttle.fbx",
-			"enableLights":	false,
-			"shaders":	[],
-			"type":	"Mesh3D"
-		}, {
-			"name":	"StarGate",
-			"scale":	8.15999984741211,
-			"stencilBufferEnabled":	false,
-			"position":	{
-				"x":	-3103,
-				"y":	515,
-				"z":	7424
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	-81,
-				"z":	13
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models/stargate.fbx",
+			"model":	"../assets/models/eye.fbx",
 			"enableLights":	false,
 			"shaders":	[],
 			"type":	"Mesh3D"
@@ -99,22 +51,22 @@
 			"focusPlaneDepth":	15000,
 			"focusRange":	4500,
 			"blurSize":	2.4999999368446879e-06,
-			"intensity":	3.5999999046325684
+			"intensity":	1.1499999761581421
 		}, {
 			"type":	"ShaderBilinear"
 		}, {
 			"type":	"ShaderParticlesBlurBuffer"
 		}],
-	"scripts":	["Project.lua"],
+	"scripts":	["Project.lua", "Project.lua"],
 	"camera":	{
 		"position":	{
-			"x":	10792.212890625,
-			"y":	590.4688720703125,
-			"z":	2109.500732421875
+			"x":	13193.513671875,
+			"y":	-825.634521484375,
+			"z":	-7638.52685546875
 		},
 		"rotation":	{
-			"x":	-0.75,
-			"y":	46,
+			"x":	8,
+			"y":	15.5,
 			"z":	0
 		}
 	}
