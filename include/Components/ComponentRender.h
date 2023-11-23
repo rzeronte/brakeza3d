@@ -52,6 +52,7 @@ private:
 
     cl_platform_id clPlatformId;
     cl_device_id clDeviceId;
+
     cl_uint ret_num_devices;
     cl_uint ret_num_platforms;
     cl_int ret;
@@ -61,6 +62,12 @@ private:
 
     cl_program rendererProgram;
     cl_kernel rendererKernel;
+
+    cl_program fragmentsProgram;
+    cl_kernel fragmentsKernel;
+
+    cl_program rasterizeProgram;
+    cl_kernel rasterizeKernel;
 
     cl_program particlesProgram;
     cl_kernel particlesKernel;
@@ -79,6 +86,7 @@ private:
 
     ShaderBlurBuffer *shaderBlurParticles;
 public:
+    cl_mem clBufferFragments;
     ComponentRender();
 
     virtual ~ComponentRender();
@@ -211,7 +219,7 @@ public:
 
     void onUpdateSceneObjectsSecondPass() const;
 
-    _cl_mem *getClBufferLights();
+    cl_mem *getClBufferLights();
 
     void updateLightsOCL();
 
@@ -220,6 +228,9 @@ public:
     void loadConfig();
 
     void loadCommonKernels();
+
+    _cl_kernel *getFragmentsKernel();
+
 };
 
 
