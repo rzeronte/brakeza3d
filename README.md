@@ -43,8 +43,8 @@ In Unix systems we will only have to make sure that we have installed the develo
 
 ``` 
 apt-get install libsdl2-2.0-0 libsdl2-dev libsdl2-image-dev libsdl2-image-2.0-0 libsdl2-ttf-dev \
-libsdl2-ttf-2.0-0 libsdl2-mixer-dev libsdl2-mixer-2.0-0 libbullet-dev libbullet2.88 libassimp-dev \
-libassimp5 assimp-utils intel-opencl-icd intel-opencl-icd libglm-dev
+libsdl2-ttf-2.0-0 libsdl2-mixer-dev libsdl2-mixer-2.0-0 libbullet-dev libbullet3.06 libassimp-dev \
+libassimp5 assimp-utils intel-opencl-icd intel-opencl-icd ocl-icd-opencl-dev libglm-dev liblua5.2-dev
 ```
 
 ``` 
