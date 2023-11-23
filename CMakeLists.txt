@@ -173,7 +173,9 @@ add_executable(Brakeza3D
         src/Misc/SceneLoader.cpp
         include/Misc/SceneLoader.h
         include/Render/ObjectShaderOpenCL.cpp
-        include/Render/ObjectShaderOpenCL.h)
+        include/Render/ObjectShaderOpenCL.h
+        include/Misc/TileManager.cpp
+        include/Misc/TileManager.h)
 
 target_link_libraries(Brakeza3D
     pthread

@@ -99,13 +99,15 @@ struct OCTriangle
     OCVertex3D Ac, Bc, Cc;
     OCVertex3D An, Bn, Cn;
     OCPoint2D As, Bs, Cs;
-    float fullArea, reciprocalFullArea ;
+    float fullArea;
+    float reciprocalFullArea ;
     OCVertex3D normal;
     float tex_u1_Ac_z, tex_u2_Bc_z, tex_u3_Cc_z;
     float tex_v1_Ac_z, tex_v2_Bc_z, tex_v3_Cc_z;
     float persp_correct_Az, persp_correct_Bz, persp_correct_Cz;
     int maxX, minX, maxY, minY;
     bool clipped;
+    float w0_row, w1_row, w2_row;
 };
 
 
@@ -177,6 +179,19 @@ struct OCLMeshContext {
     FrustumData frustumData;
 };
 
+struct OCFragment {
+    int x;
+    int y;
+
+    float depth;
+
+    float alpha;
+    float gamma;
+    float theta;
+
+    float u;
+    float v;
+};
 
 struct OCParticlesContext {
     OCParticlesContext() = default;

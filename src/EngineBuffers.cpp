@@ -102,6 +102,9 @@ void EngineBuffers::createOpenCLBuffers(_cl_context *context, cl_command_queue &
         nullptr,
         nullptr
     );
+
+    tileManager = new TileManager(40, 30);
+
 }
 
 void EngineBuffers::loadParticlesEmptyBuffer()

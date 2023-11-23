@@ -43,9 +43,9 @@ private:
     std::vector<Tile> tiles;
     int sizeTileWidth;
     int sizeTileHeight;
-    int tilesWidth;
-    int tilesHeight;
-    int numTiles;
+    int numberTilesHorizontal;
+    int numberTilesVertical;
+    int numberTiles;
     int tilePixelsBufferSize;
 
     Object3D *selectedObject;
@@ -62,6 +62,12 @@ private:
 
     cl_program rendererProgram;
     cl_kernel rendererKernel;
+
+    cl_program fragmentsProgram;
+    cl_kernel fragmentsKernel;
+
+    cl_program rasterizeProgram;
+    cl_kernel rasterizeKernel;
 
     cl_program particlesProgram;
     cl_kernel particlesKernel;
@@ -89,6 +95,7 @@ private:
     std::vector<ShaderOpenCL*> sceneShaders;
 
 public:
+    cl_mem clBufferFragments;
     ComponentRender();
 
     ~ComponentRender() override;
@@ -169,7 +176,7 @@ public:
 
     void initOpenCL();
 
-    Object3D *getObject3DFromClickPoint(int xClick, int yClick);
+    static Object3D *getObject3DFromClickPoint(int xClick, int yClick);
 
     void updateSelectedObject3D();
 
@@ -268,6 +275,10 @@ public:
     _cl_kernel *getEdgeKernel();
 
     ShaderOpenCL *getSceneShaderByIndex(int i);
+
+    _cl_kernel *getFragmentsKernel();
+
+    _cl_kernel *getRasterizeKernel();
 };
 
 

@@ -4,8 +4,6 @@
 #include "../Objects/Triangle3D.h"
 #include <vector>
 
-#define MAX_TILE_TRIANGLES 3000
-
 struct Tile {
     bool draw;
     int id;
