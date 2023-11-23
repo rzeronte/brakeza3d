@@ -15,7 +15,8 @@ MeshOpenCLRenderer::MeshOpenCLRenderer(Object3D *parent, std::vector<Triangle*> 
     context(ComponentsManager::get()->getComponentRender()->getClContext()),
     triangles(triangles),
     object(parent),
-    loaded(false)
+    loaded(false),
+    numTrianglesClipped(0)
 {
     //createBuffers();
 }
@@ -30,59 +31,34 @@ void MeshOpenCLRenderer::createBuffers()
 
 void MeshOpenCLRenderer::onUpdate(Image *texture)
 {
-    if (object->isRemoved() || !object->isEnabled() || !isLoaded()) return;
+    if (!object->isEnabled() || !isLoaded()) return;
 
+    auto componentCamera = ComponentsManager::get()->getComponentCamera();
     meshContext = OCLMeshContext(
         ObjectData(
-                OCVertex3D(object->getPosition().x, object->getPosition().y, object->getPosition().z),
-                OCVertex3D(object->getRotation().getPitch(), object->getRotation().getYaw(), object->getRotation().getRoll()),
-                object->getScale(),
-                object->isEnableLights()
+            OCVertex3D(object->getPosition().x, object->getPosition().y, object->getPosition().z),
+            OCVertex3D(object->getRotation().getPitch(), object->getRotation().getYaw(), object->getRotation().getRoll()),
+            object->getScale(),
+            object->isEnableLights()
         ),
-        ComponentsManager::get()->getComponentCamera()->getCameraData(),
-        ComponentsManager::get()->getComponentCamera()->getFrustumData()
+        componentCamera->getCameraData(),
+        componentCamera->getFrustumData()
     );
 
     const int numTriangles = (int) oclTriangles.size();
     if (numTriangles <= 0) return;
 
-
     //makeOCLTriangles();
     //clEnqueueWriteBuffer(clQueue, clBufferTriangles, CL_TRUE, 0, numTriangles * sizeof(OCTriangle), oclTriangles.data(), 0, nullptr, nullptr);
     clEnqueueWriteBuffer(clQueue, clBufferMeshContext, CL_TRUE, 0, sizeof(OCLMeshContext), &meshContext, 0, nullptr, nullptr);
 
-    const bool useStencil = object->isStencilBufferEnabled();
-    auto kernel = ComponentsManager::get()->getComponentRender()->getRendererKernel();
+    renderTriangles();
 
-    if (useStencil) {
-        cl_int pattern = 0;
-        clEnqueueFillBuffer(clQueue, clBufferStencil, &pattern, sizeof(cl_bool), 0, EngineBuffers::get()->sizeBuffers, 0, nullptr, nullptr);
-    }
+    clEnqueueReadBuffer(clQueue, clBufferIndicesClipping, CL_TRUE, 0, sizeof(int) * this->triangles.size(), indicesClipping, 0, NULL, NULL);
+    clEnqueueReadBuffer(clQueue, clBufferNumTrianglesClipped, CL_TRUE, 0, sizeof(int), &numTrianglesClipped, 0, NULL, NULL);
 
-    auto bufferLights = ComponentsManager::get()->getComponentRender()->getClBufferLights();
-    auto numLights = ComponentsManager::get()->getComponentRender()->getLightPoints().size();
-
-    clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
-    clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
-    clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->depthBufferOCL);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&clBufferMeshContext);
-    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&clBufferTriangles);
-    clSetKernelArg(kernel, 6, sizeof(int), &numTriangles);
-    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)texture->getOpenClTexture());
-    clSetKernelArg(kernel, 8, sizeof(int), &texture->getSurface()->w);
-    clSetKernelArg(kernel, 9, sizeof(int), &texture->getSurface()->h);
-    clSetKernelArg(kernel, 10, sizeof(cl_mem), (void *)&clBufferStencil);
-    clSetKernelArg(kernel, 11, sizeof(int), &useStencil);
-    clSetKernelArg(kernel, 12, sizeof(cl_mem), (void *)&bufferLights);
-    clSetKernelArg(kernel, 13, sizeof(int), &numLights);
-
-    size_t global_item_size[2] = {640, 16}; // == MAX_OPENCL_TRIANGLES
-    size_t local_item_size[2] = {16, 16};    // Tamaño local de trabajo (puede ajustarse según la GPU)
-
-    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
-
-    debugKernel();
+    renderClippedTriangles();
+    renderFragments(texture);
 }
 
 MeshOpenCLRenderer::~MeshOpenCLRenderer()
@@ -136,6 +112,9 @@ void MeshOpenCLRenderer::makeOCLTriangles()
     }
 
     clEnqueueWriteBuffer(clQueue, clBufferTriangles, CL_TRUE, 0, triangles.size() * sizeof(OCTriangle), oclTriangles.data(), 0, nullptr, nullptr);
+
+    indicesClipping = new int[this->triangles.size()];
+    clBufferIndicesClipping = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, sizeof(int) * this->triangles.size(), indicesClipping, nullptr);
 }
 
 
@@ -157,4 +136,133 @@ bool MeshOpenCLRenderer::isLoaded() const {
 
 cl_mem *MeshOpenCLRenderer::getClBufferStencil() {
     return &clBufferStencil;
+}
+
+void MeshOpenCLRenderer::renderClippedTriangles()
+{
+    const bool useStencil = object->isStencilBufferEnabled();
+    const auto componentRender = ComponentsManager::get()->getComponentRender();
+    auto kernel = componentRender->getRendererKernel();
+
+    auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
+    auto SETUP = EngineSetup::get();
+    std::vector<Triangle *> clippedTriangles;
+    if (numTrianglesClipped > 0){
+        for (int h = 0; h < numTrianglesClipped; h++) {
+            int i = indicesClipping[h];
+
+            auto t = triangles[i];
+            t->updateObjectSpace();
+            t->updateNormal();
+            t->updateCameraSpace(cam);
+            t->updatePerspectiveNDCSpace(cam->getFrustum());
+            t->updateScreenSpace();
+            t->updateBoundingBox();
+            t->updateFullArea();
+            t->updateUVCache();
+            t->clipping(
+                cam->getFrustum(),
+                cam->getFrustum()->planes,
+                SETUP->LEFT_PLANE,
+                SETUP->BOTTOM_PLANE,
+                triangles[h]->parent,
+                clippedTriangles
+            );
+        }
+
+        std::vector<OCTriangle> oclClippedTriangles;
+        for (auto t : clippedTriangles) {
+            oclClippedTriangles.emplace_back(OCVertex3D(t->A), OCVertex3D(t->B), OCVertex3D(t->C));
+        }
+
+        cl_mem clBufferClippedTriangles = clCreateBuffer(context, CL_MEM_READ_WRITE, clippedTriangles.size() * sizeof(OCTriangle), nullptr, nullptr);
+        clEnqueueWriteBuffer(clQueue, clBufferClippedTriangles, CL_TRUE, 0, clippedTriangles.size() * sizeof(OCTriangle), oclClippedTriangles.data(), 0, nullptr, nullptr);
+
+        int numClippedTriangles = (int) clippedTriangles.size();
+        int useClipping = 0;
+        clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
+        clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
+        clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
+        clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->depthBufferOCL);
+        clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&clBufferMeshContext);
+        clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&clBufferClippedTriangles);
+        clSetKernelArg(kernel, 6, sizeof(int), &numClippedTriangles);
+        clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&clBufferStencil);
+        clSetKernelArg(kernel, 8, sizeof(int), &useStencil);
+        clSetKernelArg(kernel, 9, sizeof(cl_mem), (void *)&componentRender->clBufferFragments);
+        clSetKernelArg(kernel, 10, sizeof(cl_mem), (void *)&clBufferIndicesClipping);
+        clSetKernelArg(kernel, 11, sizeof(cl_mem), (void *)&clBufferNumTrianglesClipped);
+        clSetKernelArg(kernel, 12, sizeof(int), &useClipping);
+
+        size_t global_item_size[2] = {640, 16};
+        size_t local_item_size[2] = {16, 16};
+
+        clRet = clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
+        debugKernel();
+    }
+}
+
+void MeshOpenCLRenderer::renderFragments(Image *texture)
+{
+    const auto componentRender = ComponentsManager::get()->getComponentRender();
+    auto kernel = componentRender->getFragmentsKernel();
+    const bool useStencil = object->isStencilBufferEnabled();
+    auto numLights = ComponentsManager::get()->getComponentRender()->getLightPoints().size();
+
+    clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
+    clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
+    clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->depthBufferOCL);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)texture->getOpenClTexture());
+    clSetKernelArg(kernel, 5, sizeof(int), &texture->getSurface()->w);
+    clSetKernelArg(kernel, 6, sizeof(int), &texture->getSurface()->h);
+    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&clBufferStencil);
+    clSetKernelArg(kernel, 8, sizeof(int), &useStencil);
+    clSetKernelArg(kernel, 9, sizeof(cl_mem), (void *)componentRender->getClBufferLights());
+    clSetKernelArg(kernel, 10, sizeof(int), &numLights);
+    clSetKernelArg(kernel, 11, sizeof(cl_mem), (void *)&componentRender->clBufferFragments);
+
+    size_t global_item_size2[2] = {(size_t) EngineSetup::get()->screenWidth, (size_t) EngineSetup::get()->screenHeight};
+    size_t local_item_size2[2] = {32, 32};
+
+    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size2, local_item_size2, 0, NULL, NULL);
+    debugKernel();
+}
+
+void MeshOpenCLRenderer::renderTriangles()
+{
+    const int numTriangles = (int) oclTriangles.size();
+
+    const bool useStencil = object->isStencilBufferEnabled();
+    const auto componentRender = ComponentsManager::get()->getComponentRender();
+    auto kernel = componentRender->getRendererKernel();
+
+    //if (useStencil) {
+    cl_int pattern = 0;
+    clEnqueueFillBuffer(clQueue, clBufferStencil, &pattern, sizeof(cl_bool), 0, EngineBuffers::get()->sizeBuffers, 0, nullptr, nullptr);
+    //}
+
+    numTrianglesClipped = 0;
+    clBufferNumTrianglesClipped = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR, sizeof(int), &numTrianglesClipped, nullptr);
+
+    int useClipping = 1;
+    clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
+    clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
+    clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
+    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)&EngineBuffers::get()->depthBufferOCL);
+    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)&clBufferMeshContext);
+    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&clBufferTriangles);
+    clSetKernelArg(kernel, 6, sizeof(int), &numTriangles);
+    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&clBufferStencil);
+    clSetKernelArg(kernel, 8, sizeof(int), &useStencil);
+    clSetKernelArg(kernel, 9, sizeof(cl_mem), (void *)&componentRender->clBufferFragments);
+    clSetKernelArg(kernel, 10, sizeof(cl_mem), (void *)&clBufferIndicesClipping);
+    clSetKernelArg(kernel, 11, sizeof(cl_mem), (void *)&clBufferNumTrianglesClipped);
+    clSetKernelArg(kernel, 12, sizeof(int), &useClipping);
+
+    size_t global_item_size[2] = {640, 16};
+    size_t local_item_size[2] = {16, 16};
+
+    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
+    debugKernel();
 }

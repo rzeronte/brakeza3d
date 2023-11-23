@@ -1283,8 +1283,8 @@ _cl_kernel *ComponentRender::getBlinkKernel()
     return blinkKernel;
 }
 
-_cl_mem *ComponentRender::getClBufferLights() {
-    return clBufferLights;
+cl_mem *ComponentRender::getClBufferLights() {
+    return &clBufferLights;
 }
 
 void ComponentRender::updateLightsOCL()
@@ -1340,8 +1340,18 @@ void ComponentRender::loadCommonKernels()
     Logging::Message("Loading common OpenCL kernels");
 
     loadKernel(rendererProgram, rendererKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "renderer.cl");
+    loadKernel(fragmentsProgram, fragmentsKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "fragments.cl");
+    loadKernel(rasterizeProgram, rasterizeKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "rasterizer.cl");
+
+
     loadKernel(particlesProgram, particlesKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "particles.cl");
     loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "explosion.cl");
     loadKernel(blinkProgram, blinkKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "blink.opencl");
 
+    clBufferFragments = clCreateBuffer(clContext, CL_MEM_WRITE_ONLY, EngineBuffers::get()->sizeBuffers * sizeof(OCFragment), nullptr, nullptr );
+
+}
+
+_cl_kernel *ComponentRender::getFragmentsKernel(){
+    return fragmentsKernel;
 }

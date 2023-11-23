@@ -47,7 +47,6 @@ typedef struct OCTriangle {
     int maxX, minX, maxY, minY;
     bool clipped;
     float w0_row, w1_row, w2_row;
-
 } OCTriangle;
 
 typedef struct OCLPlane {
@@ -141,111 +140,38 @@ __kernel void onUpdate(
     int screenHeight,
     __global unsigned int *video,
     __global unsigned int *bufferDepth,
-    __global OCLMeshContext *context,
-    __global OCTriangle *triangles,
-    int numTriangles,
+    __global unsigned int *texture,
+    int surfaceWidth,
+    int surfaceHeight,
     __global bool *stencil,
     int useStencil,
-    __global OCFragment *fragments,
-    __global int *clippedIndexes,
-    __global int *numTriangulosClipping,
-    int useClipping
+    __global OCLight *lights,
+    int numLights,
+    __global OCFragment *fragments
 )
 {
     int x = get_global_id(0);
     int y = get_global_id(1);
-    int i = y * get_global_size(0) + x;
+    int i = y * screenWidth + x;
 
-    if (i < numTriangles) {
+    if (stencil[i]) {
 
-        __global struct OCTriangle *t = &triangles[i];
+        __global struct OCFragment *fragment = &fragments[i];
 
-        updateObjectSpace(t, context);
-        updateNormal(t);
-        updateCameraSpace(t, context);
-        updatePerspectiveNDCSpace(t, context);
-        updateScreenSpace(t, screenWidth, screenHeight);
-        updateBoundingBox(t);
-        updateFullArea(t);
-        updateUVCache(t);
-        t->fullArea = processFullArea(&t->Bs, &t->Cs, &t->As);
-        t->reciprocalFullArea = 1 / t->fullArea;
+        bufferDepth[i] = fragment->depth;
 
-        if (useClipping == 1) {
-            t->clipped = testForClipping(context->frustumData.planes, t->Ao, t->Bo, t->Co);
-            if (t->clipped) {
-            int indice = atomic_add(numTriangulosClipping, 1);
-            clippedIndexes[indice] = i;
-            return;
-            }
-        }
+        const int tx = (int) (surfaceWidth * fragment->u);
+        const int ty = (int) (surfaceHeight * fragment->v);
 
-        if (isBackFaceCulling(t, &context->cameraData.position)) return;
+        unsigned int color = texture[ty * surfaceWidth + tx];
 
-        if (
-            !isVertexInside(&t->Ao, context->frustumData.planes) &&
-            !isVertexInside(&t->Bo, context->frustumData.planes) &&
-            !isVertexInside(&t->Co, context->frustumData.planes)
-        ) {
-            return;
-        }
+        /*unsigned char *color_bytes = (unsigned char *)&color;
+        unsigned char alphaChannel = color_bytes[3];
+        if (alphaChannel < 255) {
+            color = alphaBlend(video[i], color, alphaChannel);
+        }*/
 
-        const int A01 = (int) -( t->As.y - t->Bs.y );
-        const int A12 = (int) -( t->Bs.y - t->Cs.y );
-        const int A20 = (int) -( t->Cs.y - t->As.y );
-
-        const int B01 = (int) -( t->Bs.x - t->As.x );
-        const int B12 = (int) -( t->Cs.x - t->Bs.x );
-        const int B20 = (int) -( t->As.x - t->Cs.x );
-
-        int w0_row = orient2d( &t->Bs, &t->Cs, t->minX, t->minY );
-        int w1_row = orient2d( &t->Cs, &t->As, t->minX, t->minY );
-        int w2_row = orient2d( &t->As, &t->Bs, t->minX, t->minY );
-
-        t->w0_row = w0_row;
-        t->w1_row = w1_row;
-        t->w2_row = w2_row;
-
-        float alpha, theta, gamma;
-
-        for (int y = t->minY ; y < t->maxY ; y++) {
-
-            int w0 = w0_row;
-            int w1 = w1_row;
-            int w2 = w2_row;
-
-            for (int x = t->minX ; x < t->maxX ; x++) {
-                if ((w0 | w1 | w2) > 0 && isPixelInWindow(x, y, screenWidth, screenHeight)) {
-                    const int bufferIndex = y * screenWidth + x;
-                    alpha = (float) w0 * t->reciprocalFullArea;
-                    theta = (float) w1 * t->reciprocalFullArea;
-                    gamma = (float) w2 * t->reciprocalFullArea;
-
-                    const float depth = alpha * t->An.z + theta * t->Bn.z + gamma * t->Cn.z;
-
-                    if (stencil[bufferIndex] && depth > bufferDepth[bufferIndex]) continue;
-                    bufferDepth[bufferIndex] = depth;
-                    const float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
-
-                    fragments[bufferIndex].x = x;
-                    fragments[bufferIndex].y = y;
-                    fragments[bufferIndex].u = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;;
-                    fragments[bufferIndex].v = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;;
-                    fragments[bufferIndex].alpha = alpha;
-                    fragments[bufferIndex].gamma = gamma;
-                    fragments[bufferIndex].theta = theta;
-                    fragments[bufferIndex].depth = depth;
-
-                    stencil[bufferIndex] = true;
-                }
-                w0 += A12;
-                w1 += A20;
-                w2 += A01;
-            }
-            w0_row += B12;
-            w1_row += B20;
-            w2_row += B01;
-        }
+        video[i] = color;
     }
 }
 
