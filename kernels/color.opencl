@@ -11,7 +11,7 @@ __kernel void onUpdate(
     float progress
 )
 {
-   int i = get_global_id(0);
+   const int i = get_global_id(0);
 
    __global unsigned char *c = &video[i];
 

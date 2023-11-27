@@ -140,7 +140,9 @@ __kernel void onUpdate(
     int screenHeight,
     __global unsigned int *video,
     __global unsigned int *bufferDepth,
-    __global unsigned int *texture,
+    __global OCLMeshContext *context,
+__global OCTriangle *triangles,
+__global unsigned int *texture,
     int surfaceWidth,
     int surfaceHeight,
     __global bool *stencil,
@@ -158,20 +160,22 @@ __kernel void onUpdate(
 
         __global struct OCFragment *fragment = &fragments[i];
 
-        bufferDepth[i] = fragment->depth;
-
         const int tx = (int) (surfaceWidth * fragment->u);
         const int ty = (int) (surfaceHeight * fragment->v);
 
         unsigned int color = texture[ty * surfaceWidth + tx];
 
-        /*unsigned char *color_bytes = (unsigned char *)&color;
+        unsigned char *color_bytes = (unsigned char *)&color;
         unsigned char alphaChannel = color_bytes[3];
         if (alphaChannel < 255) {
             color = alphaBlend(video[i], color, alphaChannel);
-        }*/
+        }
 
-        video[i] = color;
+        if (context->objectData.light) {
+            color = processPixelLights(t, lights, numLights, color, alpha, theta, gamma);
+        }
+
+video[i] = color;
     }
 }
 

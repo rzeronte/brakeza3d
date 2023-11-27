@@ -58,9 +58,9 @@ __kernel void onUpdate(
     float emissionTime
 )
 {
-    int x = get_global_id(0);
-    int y = get_global_id(1);
-    int i = y * get_global_size(0) + x;
+    const int x = get_global_id(0);
+    const int y = get_global_id(1);
+    const int i = y * get_global_size(0) + x;
 
     float2 uv = { x, y };
 

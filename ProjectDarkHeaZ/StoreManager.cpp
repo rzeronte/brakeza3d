@@ -5,8 +5,8 @@ StoreManager::StoreManager(Player *player, TextWriter *writer)
 :
     player(player),
     writer(writer),
-    offsetX(130),
-    offsetY(180),
+    offsetX(220),
+    offsetY(270),
     currentItemIndex(0),
     itemSelector(new Image(EngineSetup::get()->IMAGES_FOLDER + "store/item_selector.png")),
     itemBought(new Image(EngineSetup::get()->IMAGES_FOLDER + "store/item_bought.png"))
@@ -172,8 +172,8 @@ void StoreManager::loadDefaultItems()
 
 void StoreManager::drawBoughtItemsOnHUD(float alpha)
 {
-    const int x = 40;
-    const int y = 15;
+    const int x = 60;
+    const int y = 25;
     const int separation = 30;
 
     int cont = 0;

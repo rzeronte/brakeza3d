@@ -104,7 +104,7 @@
       "model":	"space_hexagon.fbx",
       "rotation": { "x": 60, "y": 0,  "z": 30 },
       "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0.0 },
-      "scale":	0.6
+      "scale":	0.3
     }
   ]
 }

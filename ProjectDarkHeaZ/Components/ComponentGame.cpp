@@ -87,7 +87,17 @@ void ComponentGame::onStart()
     swarm->addPredator(new SwarmObject(player));
     Brakeza3D::get()->addObject3D(swarm, "swarm");
 
-    shaderExplosion = new ShaderExplosion(true, Color::white(), Color::green(), Point2D(320, 240), -1, OCParticlesContext::forSplash());
+    shaderExplosion = new ShaderExplosion(
+            true,
+            Color::white(),
+            Color::green(),
+            Point2D(
+                EngineSetup::get()->screenWidth / 2,
+                EngineSetup::get()->screenHeight / 2
+            ),
+            -1,
+            OCParticlesContext::forSplash()
+    );
     shaderExplosion->setIntensity(1);
 
     dialogBackground = new ShaderImageMask(true, SETUP->IMAGES_FOLDER + "gridTutorial.png", SETUP->IMAGES_FOLDER + "/tutorial_mask.png");
@@ -302,38 +312,39 @@ void ComponentGame::showLevelStatistics(float alpha)
     shaderCRT->setMaxAlpha((int)alpha);
     shaderCRT->update();
 
-    int offsetX = 160;
+    int offsetX = 340;
+    int offsetY = 100;
     const int space = 100;
-    player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_PROJECTILE).c_str(),
+    player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha);
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, getLevelLoader()->getStats()->stats(WEAPON_PROJECTILE).c_str(),
                                      PaletteColors::getStatisticsText(), 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_PROJECTILE).c_str(),
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_PROJECTILE).c_str(),
                                      PaletteColors::getStatisticsText(), 0.3);
-    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_PROJECTILE), offsetX, 250, alpha);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_PROJECTILE), offsetX, offsetY + 250, alpha);
 
     offsetX += space;
-    player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_LASER).c_str(),
+    player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha);
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, getLevelLoader()->getStats()->stats(WEAPON_LASER).c_str(),
                                      PaletteColors::getStatisticsText(), 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER).c_str(),
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER).c_str(),
                                      PaletteColors::getStatisticsText(), 0.3);
-    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER), offsetX, 250, alpha);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER), offsetX, offsetY + 250, alpha);
 
     offsetX += space;
-    player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_RAYLIGHT).c_str(),
+    player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha);
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, getLevelLoader()->getStats()->stats(WEAPON_RAYLIGHT).c_str(),
                                      PaletteColors::getStatisticsText(), 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_RAYLIGHT).c_str(),
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_RAYLIGHT).c_str(),
                                      PaletteColors::getStatisticsText(), 0.3);
-    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_RAYLIGHT), offsetX, 250, alpha);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_RAYLIGHT), offsetX, offsetY + 250, alpha);
 
     offsetX += space;
-    player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(offsetX, 160, alpha);
-    textWriter->writeTextTTFAutoSize(offsetX, 195, getLevelLoader()->getStats()->stats(WEAPON_BOMB).c_str(),
+    player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha);
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, getLevelLoader()->getStats()->stats(WEAPON_BOMB).c_str(),
                                      PaletteColors::getStatisticsText(), 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_BOMB).c_str(),
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_BOMB).c_str(),
                                      PaletteColors::getStatisticsText(), 0.3);
-    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_BOMB), offsetX, 250, alpha);
+    drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_BOMB), offsetX, offsetY + 250, alpha);
 
     textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
 
@@ -343,8 +354,8 @@ void ComponentGame::showLevelStatistics(float alpha)
 
     writeDialogTextToContinue("Press ENTER to continue...");
 
-    ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(313  , 300, alpha);
-    textWriter->writeTTFCenterHorizontal(320, std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(),
+    ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(EngineSetup::get()->screenWidth/2-8 , offsetY + 300, alpha);
+    textWriter->writeTTFCenterHorizontal(offsetY + 320, std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(),
                                          PaletteColors::getStatisticsText(), 0.3);
 }
 
@@ -1117,31 +1128,11 @@ void ComponentGame::handlePressNewLevelKeyGameState()
     ComponentsManager::get()->getComponentSound()->sound("crt", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
 
-void ComponentGame::reloadLevel(int level)
+void ComponentGame::reloadLevel(int level) const
 {
-    removeInGameObjects();
-    getPlayer()->respawn();
-    getPlayer()->setEnabled(true);
-
-    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraInGamePosition);
-
-    shaderBackgroundImage->resetOffsets();
-    shaderForegroundImage->resetOffsets();
-
-    getLevelLoader()->load(level);
-
-    getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
-    getPlayer()->setEnergyShieldEnabled(false);
-    getPlayer()->setPosition(playerStartPosition);
-    setVisibleInGameObjects(true);
-
-    ComponentsManager::get()->getComponentHUD()->setEnabled(false);
-    ComponentsManager::get()->getComponentMenu()->setEnabled(false);
-    ComponentsManager::get()->getComponentRender()->setEnabled(true);
-
-    getLevelLoader()->startCountDown();
-    gameState = EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL;
-    getPlayer()->startPlayerBlink();
+    getLevelLoader()->setCurrentLevelIndex(level - 1);
+    makeFadeToGameState(EngineSetup::PRESS_KEY_NEW_LEVEL, true);
+    ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
 
 void ComponentGame::handlePressKeyByDead()
@@ -1419,7 +1410,7 @@ void ComponentGame::decreaseHelpImage()
 void ComponentGame::writeDialogTextToContinue(const char *string)
 {
     textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());
-    textWriter->writeTTFCenterHorizontal(365, string, PaletteColors::getPressKeyToContinue(), 0.25);
+    textWriter->writeTTFCenterHorizontal(584, string, PaletteColors::getPressKeyToContinue(), 0.5);
 }
 
 void ComponentGame::handleOnUpdateCountDown()

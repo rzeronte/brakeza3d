@@ -23,9 +23,9 @@ __kernel void onUpdate(
     int usingColors
 )
 {
-    int x = get_global_id(0);
-    int y = get_global_id(1);
-    int i = y * screenWidth + x;
+    const int x = get_global_id(0);
+    const int y = get_global_id(1);
+    const int i = y * screenWidth + x;
 
     const float2 uv = { (float)x, (float)y };
     const float2 resolution = { (float)screenWidth, (float)screenHeight };
@@ -33,7 +33,6 @@ __kernel void onUpdate(
 
     const float2 center = { 0.5f, 0.5f };
     const float2 offsetToCenter = { 0.25f, 0.25f }; // center screen
-
     const float2 offsetInput = { offsetX, offsetY };
 
     if (usingOffset > 0) {
@@ -56,28 +55,9 @@ __kernel void onUpdate(
 
     int index = cy * screenWidth + cx;
 
-    __global unsigned char *im = &image[index];
-
-    float s = sin(iTime);
-    float c = cos(iTime);
-    float t = s * c;
-
-    if (usingColors <= 0) {
-        s = 1;
-        c = 1;
-        t = 1;
-    }
-
-    unsigned int new = createRGB(
-        min((int) (im[0] * (1.0f - s * 0.2f)), 200),
-        min((int) (im[1] * (1.0f - c * 0.2f)), 200),
-        min((int) (im[2] * (1.0f - t * 0.2f)), 200)
-    );
-
     unsigned int alpha = (image[index] >> 24) & 0xFF;  // Suponemos que el canal alfa está en el byte más significativo.
 
-    video[i] = alphaBlend(video[i], new, alpha);
-
+    video[i] = alphaBlend(video[i], image[index], alpha);
 }
 
 unsigned int createRGB(int r, int g, int b)

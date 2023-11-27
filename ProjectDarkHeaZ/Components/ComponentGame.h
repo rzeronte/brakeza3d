@@ -135,7 +135,7 @@ public:
 
     void zoomCameraCountDown();
 
-    void reloadLevel(int level);
+    void reloadLevel(int level) const;
 
     void setGameState(EngineSetup::GameState state);
 
