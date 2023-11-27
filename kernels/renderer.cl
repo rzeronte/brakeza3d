@@ -95,6 +95,8 @@ typedef struct OCFragment {
 
     float u;
     float v;
+
+    int indexTriangle;
 } OCFragment;
 
 /* FUNCTIONS */
@@ -144,9 +146,13 @@ __kernel void onUpdate(
     __global OCLMeshContext *context,
     __global OCTriangle *triangles,
     int numTriangles,
+    __global unsigned int *texture,
+    int surfaceWidth,
+    int surfaceHeight,
     __global bool *stencil,
     int useStencil,
-    __global OCFragment *fragments,
+    __global OCLight *lights,
+    int numLights,
     __global int *clippedIndexes,
     __global int *numTriangulosClipping,
     int useClipping
@@ -171,16 +177,16 @@ __kernel void onUpdate(
         t->fullArea = processFullArea(&t->Bs, &t->Cs, &t->As);
         t->reciprocalFullArea = 1 / t->fullArea;
 
+        if (isBackFaceCulling(t, &context->cameraData.position)) return;
+
         if (useClipping == 1) {
             t->clipped = testForClipping(context->frustumData.planes, t->Ao, t->Bo, t->Co);
             if (t->clipped) {
-            int indice = atomic_add(numTriangulosClipping, 1);
-            clippedIndexes[indice] = i;
-            return;
+                int indice = atomic_add(numTriangulosClipping, 1);
+                clippedIndexes[indice] = i;
+                return;
             }
         }
-
-        if (isBackFaceCulling(t, &context->cameraData.position)) return;
 
         if (
             !isVertexInside(&t->Ao, context->frustumData.planes) &&
@@ -215,7 +221,7 @@ __kernel void onUpdate(
             int w2 = w2_row;
 
             for (int x = t->minX ; x < t->maxX ; x++) {
-                if ((w0 | w1 | w2) > 0 && isPixelInWindow(x, y, screenWidth, screenHeight)) {
+                if ((w0 | w1 | w2) > 0) {
                     const int bufferIndex = y * screenWidth + x;
                     alpha = (float) w0 * t->reciprocalFullArea;
                     theta = (float) w1 * t->reciprocalFullArea;
@@ -223,20 +229,34 @@ __kernel void onUpdate(
 
                     const float depth = alpha * t->An.z + theta * t->Bn.z + gamma * t->Cn.z;
 
-                    if (stencil[bufferIndex] && depth > bufferDepth[bufferIndex]) continue;
-                    bufferDepth[bufferIndex] = depth;
-                    const float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
+                    const unsigned int depthInt = (int) depth * 10000;
+                    if (depthInt < bufferDepth[bufferIndex]) {
+                        atomic_min(&bufferDepth[bufferIndex], depthInt);
 
-                    fragments[bufferIndex].x = x;
-                    fragments[bufferIndex].y = y;
-                    fragments[bufferIndex].u = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;;
-                    fragments[bufferIndex].v = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;;
-                    fragments[bufferIndex].alpha = alpha;
-                    fragments[bufferIndex].gamma = gamma;
-                    fragments[bufferIndex].theta = theta;
-                    fragments[bufferIndex].depth = depth;
+                        float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
+                        float texU = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;
+                        float texV = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;
 
-                    stencil[bufferIndex] = true;
+                        const int tx = (int) (surfaceWidth * texU);
+                        const int ty = (int) (surfaceHeight * texV);
+
+                        unsigned int color = texture[ty * surfaceWidth + tx];
+
+                        unsigned char *color_bytes = (unsigned char *)&color;
+                        unsigned char alphaChannel = color_bytes[3];
+                        if (alphaChannel < 255) {
+                            color = alphaBlend(video[bufferIndex], color, alphaChannel);
+                        }
+
+                        if (context->objectData.light) {
+                            color = processPixelLights(t, lights, numLights, color, alpha, theta, gamma);
+                        }
+
+                        //video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
+                        video[bufferIndex] = color;
+                        stencil[bufferIndex] = true;
+                    }
+
                 }
                 w0 += A12;
                 w1 += A20;

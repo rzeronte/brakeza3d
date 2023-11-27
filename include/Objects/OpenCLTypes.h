@@ -191,6 +191,8 @@ struct OCFragment {
 
     float u;
     float v;
+
+    int indexTriangle;
 };
 
 struct OCParticlesContext {

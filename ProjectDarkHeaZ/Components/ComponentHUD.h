@@ -19,7 +19,8 @@ private:
     std::vector<Button*> buttons;
     ShaderProjectiles *shaderLasers;
     TexturePackage *HUDTextures;
-    int offsetY = 430;
+    int offsetY = 710;
+    int offsetX = 170;
     int playerBarSeparation = 15;
 public:
     ComponentHUD();
@@ -48,7 +49,7 @@ public:
 
     void loadButtons();
 
-    void drawIconWeaponAndLevelName();
+    void drawIconWeaponsAndLevelName() const;
 
     int getButtonsOffsetY();
 
@@ -57,6 +58,10 @@ public:
     [[nodiscard]] TexturePackage *getHudTextures() const;
 
     [[nodiscard]] ShaderProjectiles *getShaderLasers() const;
+
+    void drawGhateringResources();
+
+    void drawEnemyIconAndName();
 };
 
 

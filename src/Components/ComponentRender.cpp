@@ -1110,7 +1110,7 @@ void ComponentRender::initOpenCL()
     Logging::Message("Selected device vendor: %s", vendor);
     Logging::Message("Selected device name: %s", deviceName);
 
-    //OpenCLInfo();
+    OpenCLInfo();
 
     loadCommonKernels();
 

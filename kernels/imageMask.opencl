@@ -39,7 +39,6 @@ __kernel void onUpdate(
     unsigned int alpha = (maskPixel >> 24) & 0xFF;  // Suponemos que el canal alfa está en el byte más significativo.
 
     video[i] = alphaBlend(video[i], imgPixel, clamp((int)alpha, 0, (int) maxAlpha));  // Mezcla en base a la máscara
-
 }
 
 unsigned int createRGB(int r, int g, int b)

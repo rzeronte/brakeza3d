@@ -64,11 +64,11 @@ public:
 
     void createBuffers();
 
-    void renderClippedTriangles();
+    void renderClippedTriangles(Image *texture);
 
     void renderFragments(Image *texture);
 
-    void renderTriangles();
+    void renderTriangles(Image *texture);
 };
 
 

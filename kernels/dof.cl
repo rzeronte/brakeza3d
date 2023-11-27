@@ -55,8 +55,7 @@ __kernel void onUpdate(
     }
 
     if (weightSum > 0) {
-        unsigned int blendedColor = createRGBA(colorSum[0] / weightSum, colorSum[1] / weightSum, colorSum[2] / weightSum, colorSum[3] / weightSum);
-        video[y * screenWidth + x] = blendedColor;
+        video[y * screenWidth + x] = createRGBA(colorSum[0] / weightSum, colorSum[1] / weightSum, colorSum[2] / weightSum, colorSum[3] / weightSum);
     }
 }
 

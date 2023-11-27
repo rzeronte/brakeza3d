@@ -37,13 +37,13 @@ __kernel void onUpdate(
     int numberProjectiles
 )
 {
-    int i = get_global_id(0);
+    const int i = get_global_id(0);
 
-    int x = i % screenWidth;
-    int y = i / screenWidth;
+    const int x = i % screenWidth;
+    const int y = i / screenWidth;
 
-    float2 uv = { (float) x, (float) y };
-    float2 resolution = { (float) screenWidth, (float) screenHeight};
+    const float2 uv = { (float) x, (float) y };
+    const float2 resolution = { (float) screenWidth, (float) screenHeight};
     float2 st = uv / resolution;
 
 

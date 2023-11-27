@@ -72,7 +72,7 @@
     {
       "name": "Star",
       "model": "marsh.fbx",
-      "scale": 18,
+      "scale": 14,
       "position": { "x": 30, "y": 40, "z": 20000 },
       "rotation": { "x": 90, "y": 0, "z": 0 },
       "rotationFrame": { "x": 0.1, "y": 0.1, "z": 0 }

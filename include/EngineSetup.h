@@ -41,13 +41,13 @@ public:
     Vertex3D gravity = Vertex3D(0, -900.0f, 0);
 
     // Screen dimension constants
-    const int screenWidth = 640;
-    const int screenHeight = 480;
+    const int screenWidth = 1024;
+    const int screenHeight = 768;
 
     float screenWidthHalf = (float) screenWidth / 2;
     float screenHeightHalf = (float) screenHeight / 2;
 
-    bool LIMIT_FRAMERATE = true;
+    bool LIMIT_FRAMERATE = false;
     int FRAMERATE = 60;
 
     int RESOLUTION = screenWidth * screenHeight;
@@ -113,7 +113,7 @@ public:
     bool FULLSCREEN = true;
 
     bool DRAW_FRUSTUM = false;
-    bool DRAW_FPS = false;
+    bool DRAW_FPS = true;
 
     // FRUSTUM PLANES
     int NEAR_PLANE = 0;

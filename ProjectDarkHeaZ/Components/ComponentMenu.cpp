@@ -45,11 +45,11 @@ void ComponentMenu::loadDecorative3DMesh()
     planet->setEnabled(false);
     planet->setAlpha(255);
     planet->setEnableLights(false);
-    planet->setPosition(Vertex3D(-1540, 17000, 30000));
+    planet->setPosition(Vertex3D(-1540, 1000, 30000));
     planet->setRotationFrameEnabled(true);
     planet->setRotationFrame(Vertex3D(0.1f, 0.0, 0));
     planet->setRotation(0, 0, 0);
-    planet->setScale(61.9);
+    planet->setScale(31.9);
     planet->setStencilBufferEnabled(true);
     planet->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_planet.fbx"));
     planet->updateBoundingBox();
@@ -146,7 +146,7 @@ void ComponentMenu::drawOptions()
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto levelInfo = componentGame->getLevelLoader();
 
-    int offsetY = 140;
+    int offsetY = 250;
     int stepY = 40;
 
     auto color = PaletteColors::getCrt();

@@ -10,13 +10,13 @@ __kernel void onUpdate(
     float b
 )
 {
-    int x = get_global_id(0);
-    int y = get_global_id(1);
-    int i = y * screenWidth + x;
+    const int x = get_global_id(0);
+    const int y = get_global_id(1);
+    const int i = y * screenWidth + x;
 
-    if (stencil[i]) {
-        video[i] = createRGB((int) r, (int) g, (int) b);
-    }
+    if (!stencil[i]) return;
+
+    video[i] = createRGB((int) r, (int) g, (int) b);
 }
 
 unsigned int createRGB(int r, int g, int b)

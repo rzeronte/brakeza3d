@@ -15,16 +15,16 @@ __kernel void onUpdate(
     unsigned int maxAlpha
 )
 {
-    int i = get_global_id(0);
+    const int i = get_global_id(0);
 
-    int x = i % screenWidth;
-    int y = i / screenWidth;
+    const int x = i % screenWidth;
+    const int y = i / screenWidth;
 
     unsigned int color = video[i];
 
     // Configura el espaciado y la altura de las barras
-    int barSpacing = 150;
-    int barHeight = 100;
+    const int barSpacing = 150;
+    const int barHeight = 100;
 
     // Calcula la posición y el movimiento de las barras
     float rawBarPosition = y + time * 75 + sin(x * 0.01f + time);
@@ -33,7 +33,7 @@ __kernel void onUpdate(
     rawBarPosition += pseudoRandom(x + y * screenWidth + (int)time) * 20.0f;
 
     // Aplica módulo después de añadir ruido
-    int barPosition = (int)rawBarPosition % barSpacing;
+    const int barPosition = (int)rawBarPosition % barSpacing;
 
     // Si la posición está dentro de la altura de la barra, pinta la barra de verde
     if (barPosition < barHeight && mask[i] > 0) {  // Se aplica el efecto solo donde la máscara es distinta de cero
