@@ -4,6 +4,7 @@
 
 ComponentWindow::ComponentWindow()
 :
+    Component(true),
     window(nullptr),
     renderer(nullptr),
     screenSurface(nullptr),

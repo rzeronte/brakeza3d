@@ -1,9 +1,9 @@
 #include "../../include/Components/ComponentInput.h"
 #include "../../include/ComponentsManager.h"
-#include "../../include/Render/Logging.h"
 
 ComponentInput::ComponentInput()
 :
+    Component(true),
     mouseMotion(false),
     mouseLeftButton(false),
     mouseRightButton(false),
