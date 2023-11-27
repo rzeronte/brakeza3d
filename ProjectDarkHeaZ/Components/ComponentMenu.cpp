@@ -5,6 +5,7 @@
 
 ComponentMenu::ComponentMenu()
 :
+    Component(false),
     shaderBackgroundImage(nullptr),
     planet(nullptr),
     pendulum(nullptr),

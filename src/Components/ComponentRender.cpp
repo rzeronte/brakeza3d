@@ -5,6 +5,7 @@
 #include "../../include/Render/Transforms.h"
 
 ComponentRender::ComponentRender() :
+    Component(true),
     fps(0),
     fpsFrameCounter(0),
     frameTime(0),
@@ -27,6 +28,9 @@ ComponentRender::ComponentRender() :
 
 void ComponentRender::onStart()
 {
+    auto componentWindow = ComponentsManager::get()->getComponentWindow();
+    textWriter = new TextWriter(componentWindow->getRenderer(), componentWindow->getFontDefault());
+
     Logging::head("ComponentRender onStart");
     setEnabled(true);
 
@@ -60,7 +64,7 @@ void ComponentRender::drawObjetsInHostBuffer()
     }
 
     if (SETUP->DRAW_FPS) {
-        components->getComponentGame()->getTextWriter()->writeTTFCenterHorizontal(
+        textWriter->writeTTFCenterHorizontal(
             10,
             std::to_string(components->getComponentRender()->getFps()).c_str(),
             PaletteColors::getMenuOptions(),
@@ -141,7 +145,7 @@ void ComponentRender::writeOCLBuffersFromHost() const
 {
     cl_int ret;
 
-    ret = clEnqueueWriteBuffer(
+    /*ret = clEnqueueWriteBuffer(
         clCommandQueue,
         EngineBuffers::get()->videoBufferOCL,
         CL_TRUE,
@@ -151,7 +155,7 @@ void ComponentRender::writeOCLBuffersFromHost() const
         0,
         nullptr,
         nullptr
-    );
+    );*/
 
     if (ret != CL_SUCCESS) {
         Logging::Log("Error writing to Video OCL Buffer: (%d)", ret);
@@ -298,13 +302,12 @@ void ComponentRender::onUpdateSceneObjects()
     shaderBlurParticles->update();
 }
 
-void ComponentRender::onUpdateSceneObjectsSecondPass() const
+void ComponentRender::onUpdateSceneObjectsSecondPass()
 {
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
-        if (object != nullptr && object->isEnabled()) {
-            object->drawOnUpdateSecondPass();
-        }
+        if (!object->isEnabled()) continue;
+        object->drawOnUpdateSecondPass();
     }
 }
 
@@ -1116,7 +1119,7 @@ void ComponentRender::initOpenCL()
 
     shaderDepthOfField = new ShaderDepthOfField(true);
     shaderBilinear = new ShaderBilinear(true);
-    shaderBlurParticles = new ShaderBlurBuffer(true, 5);
+    shaderBlurParticles = new ShaderBlurBuffer(true, 4);
 
     clBufferLights = clCreateBuffer(clContext, CL_MEM_READ_WRITE, MAX_OPENCL_LIGHTS * sizeof(OCLight), nullptr, nullptr);
     clBufferVideoParticles = clCreateBuffer(clContext, CL_MEM_READ_WRITE, EngineSetup::get()->RESOLUTION * sizeof(Uint32), nullptr, nullptr);

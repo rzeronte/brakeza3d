@@ -14,9 +14,10 @@ private:
     int id;
     std::string label;
     bool enabled;
+    bool core;
 public:
 
-    Component();
+    Component(bool core);
 
     void setId(int newId);
 
@@ -43,6 +44,8 @@ public:
     [[nodiscard]] bool isEnabled() const;
 
     virtual void setEnabled(bool enabled);
+
+    bool isCore() const;
 };
 
 

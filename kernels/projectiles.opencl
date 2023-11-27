@@ -1,3 +1,10 @@
+/* TYPES */
+#define RADIUS_CIRCLE 0.025
+#define WIDTH_CIRCLE 0.4
+
+#define RADIUS_CIRCLE_LASER 0.0035
+#define WIDTH_CIRCLE_LASER 0.12
+
 struct OCLaser
 {
     int x1;
@@ -62,13 +69,11 @@ __kernel void onUpdate(
         float l = line(A, B, st, 0.015f * laser.intensity);
 
         //--
-        float rad  = 0.025f;
-        float width = 0.4f;
-        float len = length(A-st);
-        float circleStart = smoothstep(rad-width, rad, len) - smoothstep(0, rad, len);
+        float len = length(A - st);
+        float circleStart = smoothstep((float)(RADIUS_CIRCLE-WIDTH_CIRCLE), (float) RADIUS_CIRCLE, len) - smoothstep(0, (float) RADIUS_CIRCLE, len);
 
         len = length(B-st);
-        float circleEnd = smoothstep(rad-width, rad, len) - smoothstep(0, rad, len);
+        float circleEnd = smoothstep((float)(RADIUS_CIRCLE-WIDTH_CIRCLE), (float) RADIUS_CIRCLE, len) - smoothstep(0, (float) RADIUS_CIRCLE, len);
 
         float3 colorStartCircle = {0.f, 0.f, 0.f};
         float3 colorEndCircle = {0.f, 0.f, 0.f};
@@ -101,7 +106,7 @@ __kernel void onUpdate(
 
         __global unsigned char *ci = &image[index];
 
-        float n = ci[0];
+        const float n = ci[0];
 
         float3 colorLine = {laser.r, laser.g, laser.b};
         colorLine = (colorLine/255.0f) * l * n;
@@ -124,14 +129,13 @@ __kernel void onUpdate(
 
         A = A / resolution;
 
-        float rad  = 0.0035f * projectile.intensity;
-        float len = length(A-st);
-        float width =  0.12f;
-        float circle = smoothstep(rad-width, rad, len) - smoothstep(0, rad, len);
+        float rad = RADIUS_CIRCLE_LASER * projectile.intensity;
+        float len = length(A - st);
+        float circle = smoothstep((float)(rad-WIDTH_CIRCLE_LASER), rad, len) - smoothstep(0, rad, len);
 
         __global unsigned char *ci = &image[i];
 
-        float n = ci[0] * 1.5f;
+        const float n = ci[0] * 1.5f;
 
         float3 colorCircle = {projectile.r, projectile.g, projectile.b};
         colorCircle = (colorCircle/255) * circle * n;

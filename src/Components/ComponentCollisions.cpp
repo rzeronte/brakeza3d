@@ -4,6 +4,7 @@
 
 ComponentCollisions::ComponentCollisions()
 :
+    Component(true),
     bspMap(nullptr),
     collisionConfiguration(nullptr),
     dispatcher(nullptr),

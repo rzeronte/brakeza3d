@@ -16,7 +16,6 @@ ShaderDepthOfField::ShaderDepthOfField(bool active)
 void ShaderDepthOfField::update()
 {
     Shader::update();
-
     executeKernelOpenCL();
 }
 

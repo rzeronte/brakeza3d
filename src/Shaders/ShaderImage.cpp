@@ -18,9 +18,7 @@ ShaderImage::ShaderImage(const std::string& filename)
 void ShaderImage::update(float increaseOffsetX, float increaseOffsetY)
 {
     Shader::update();
-
     if (!this->enabled) return;
-
     executeKernelOpenCL(increaseOffsetX, increaseOffsetY);
 }
 

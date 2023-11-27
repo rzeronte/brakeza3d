@@ -2,6 +2,11 @@
 #include "../include/Brakeza3D.h"
 #include "../imgui/backends/imgui_impl_sdl.h"
 #include "../imgui/backends/imgui_impl_sdlrenderer.h"
+#include <thread>
+
+void threadRenderLoop() {
+    Brakeza3D::get()->renderLoop();
+}
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 
@@ -41,24 +46,11 @@ void Brakeza3D::start()
     componentsManager->registerComponent(new ComponentHUD(), "ComponentHUD");
     componentsManager->registerComponent(new ComponentGameInput(), "ComponentGameInput");
 
-    mainLoop();
+    startLoop();
 }
 
-void Brakeza3D::mainLoop()
+void Brakeza3D::renderLoop()
 {
-    SDL_Event e;
-
-    engineTimer.start();
-
-    ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
-    ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
-
-    onStartComponents();
-
-    //LoadDemo();
-
-    ImGuiInitialize();
-
     while (!finish) {
         controlFrameRate();
 
@@ -70,14 +62,9 @@ void Brakeza3D::mainLoop()
 
         preUpdateComponents();
 
-        while (SDL_PollEvent(&e)) {
-            onUpdateSDLPollEventComponents(&e, finish);
-            ImGui_ImplSDL2_ProcessEvent(&e);
-        }
-
         onUpdateComponents();
 
-        componentsManager->getComponentRender()->onUpdateSceneObjectsSecondPass();
+        ComponentRender::onUpdateSceneObjectsSecondPass();
 
         if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
 
@@ -89,6 +76,34 @@ void Brakeza3D::mainLoop()
 
         componentsManager->getComponentWindow()->renderToWindow();
     }
+}
+
+void Brakeza3D::mainLoop()
+{
+    while (!finish) {
+        while (SDL_PollEvent(&e)) {
+            onUpdateSDLPollEventComponents(&e, finish);
+            ImGui_ImplSDL2_ProcessEvent(&e);
+        }
+    }
+}
+
+void Brakeza3D::startLoop()
+{
+
+    engineTimer.start();
+
+    ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
+    ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
+
+    onStartComponents();
+
+    //LoadDemo();
+    std::thread renderThread(threadRenderLoop);
+
+    ImGuiInitialize();
+
+    mainLoop();
 
     onEndComponents();
 
@@ -148,6 +163,7 @@ void Brakeza3D::onStartComponents()
 void Brakeza3D::preUpdateComponents()
 {
     for (Component*& component : componentsManager->components) {
+        if (!component->isCore()) continue;
         component->preUpdate();
     }
 }
@@ -155,6 +171,7 @@ void Brakeza3D::preUpdateComponents()
 void Brakeza3D::onUpdateComponents()
 {
     for (Component*& component : componentsManager->components) {
+        if (!component->isCore()) continue;
         component->onUpdate();
     }
 }
@@ -162,6 +179,7 @@ void Brakeza3D::onUpdateComponents()
 void Brakeza3D::postUpdateComponents()
 {
     for (Component*& component : componentsManager->components) {
+        if (!component->isCore()) continue;
         component->postUpdate();
     }
 }
