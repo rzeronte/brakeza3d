@@ -1,12 +1,12 @@
 #include "../../include/Components/Component.h"
 
-Component::Component()
+Component::Component(bool core)
 :
     id(-1),
     enabled(false),
     BUFFERS(EngineBuffers::get()),
-    SETUP(EngineSetup::get()
-)
+    SETUP(EngineSetup::get()),
+    core(core)
 {
 }
 
@@ -28,4 +28,8 @@ bool Component::isEnabled() const {
 
 void Component::setEnabled(bool enabled) {
     Component::enabled = enabled;
+}
+
+bool Component::isCore() const {
+    return core;
 }

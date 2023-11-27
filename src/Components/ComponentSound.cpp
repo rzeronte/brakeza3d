@@ -1,10 +1,11 @@
 #include <SDL2/SDL_mixer.h>
 #include "../../include/Components/ComponentSound.h"
-#include "../../include/Misc/cJSON.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Misc/Tools.h"
 
 ComponentSound::ComponentSound()
+:
+    Component(true)
 {
     initSoundSystem();
 }

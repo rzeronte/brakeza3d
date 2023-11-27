@@ -127,7 +127,7 @@ void updateScreenSpace(__global struct OCTriangle *t, int screenWidth, int scree
 void updateBoundingBox(__global struct OCTriangle *t);
 void updateFullArea(__global struct OCTriangle *t);
 void updateUVCache(__global struct OCTriangle *t);
-float dotProduct(__private struct OCVertex3D *a, __private struct OCVertex3D *b);
+float dotProduct(struct OCVertex3D *a, struct OCVertex3D *b);
 bool isBackFaceCulling(__global struct OCTriangle *t, __global struct OCVertex3D *position);
 bool isVertexInside(__global struct OCVertex3D *v, __global struct OCLPlane *planes);
 unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha);
@@ -163,7 +163,6 @@ __kernel void onUpdate(
     int i = y * get_global_size(0) + x;
 
     if (i < numTriangles) {
-
         __global struct OCTriangle *t = &triangles[i];
 
         updateObjectSpace(t, context);
@@ -174,6 +173,7 @@ __kernel void onUpdate(
         updateBoundingBox(t);
         updateFullArea(t);
         updateUVCache(t);
+
         t->fullArea = processFullArea(&t->Bs, &t->Cs, &t->As);
         t->reciprocalFullArea = 1 / t->fullArea;
 
@@ -229,13 +229,13 @@ __kernel void onUpdate(
 
                     const float depth = alpha * t->An.z + theta * t->Bn.z + gamma * t->Cn.z;
 
-                    const unsigned int depthInt = (int) depth * 10000;
+                    const unsigned int depthInt = (int) depth;
                     if (depthInt < bufferDepth[bufferIndex]) {
                         atomic_min(&bufferDepth[bufferIndex], depthInt);
 
-                        float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
-                        float texU = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;
-                        float texV = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;
+                        const float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
+                        const float texU = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;
+                        const float texV = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;
 
                         const int tx = (int) (surfaceWidth * texU);
                         const int ty = (int) (surfaceHeight * texV);
@@ -252,11 +252,9 @@ __kernel void onUpdate(
                             color = processPixelLights(t, lights, numLights, color, alpha, theta, gamma);
                         }
 
-                        //video[bufferIndex] = createRGB(alpha * 255, theta * 255, gamma * 255);
                         video[bufferIndex] = color;
                         stencil[bufferIndex] = true;
                     }
-
                 }
                 w0 += A12;
                 w1 += A20;
@@ -440,41 +438,37 @@ int isVector3DClippingPlane(__global struct OCLPlane *P, __private struct Vector
 
 float distancePlaneVertex(__global struct OCLPlane *plane, struct OCVertex3D p)
 {
-    float D = - ( (plane->normal.x * plane->A.x) + (plane->normal.y * plane->A.y) + (plane->normal.z * plane->A.z) );
+    const float D = - ( (plane->normal.x * plane->A.x) + (plane->normal.y * plane->A.y) + (plane->normal.z * plane->A.z) );
 
     return ( (plane->normal.x * p.x) + (plane->normal.y * p.y) + (plane->normal.z * p.z) + D);
 }
 
 struct OCVertex3D getNormal(__global struct OCTriangle *t)
 {
-    Vector3D vector1;
-    vector1.A = t->Ao;
-    vector1.B = t->Bo;
-
-    Vector3D vector2;
-    vector2.A = t->Ao;
-    vector2.B = t->Co;
+    Vector3D vector1 = {t->Ao, t->Bo};
+    Vector3D vector2 = {t->Ao, t->Co};
 
     return crossProduct( getComponent(&vector1), getComponent(&vector2) );
 }
 
 struct OCVertex3D getComponent(struct Vector3D *V)
 {
-    OCVertex3D c;
-
-    c.x = V->B.x - V->A.x;
-    c.y = V->B.y - V->A.y;
-    c.z = V->B.z - V->A.z;
+    OCVertex3D c = {
+        V->B.x - V->A.x,
+        V->B.y - V->A.y,
+        V->B.z - V->A.z,
+    };
 
     return c;
 }
 
-struct OCVertex3D crossProduct(struct OCVertex3D v1, struct OCVertex3D v2) {
-    OCVertex3D r;
-
-    r.x = (v1.y * v2.z) - (v1.z * v2.y);
-    r.y = (v1.z * v2.x) - (v1.x * v2.z);
-    r.z = (v1.x * v2.y) - (v1.y * v2.x);
+struct OCVertex3D crossProduct(struct OCVertex3D v1, struct OCVertex3D v2)
+{
+    OCVertex3D r = {
+        (v1.y * v2.z) - (v1.z * v2.y),
+        (v1.z * v2.x) - (v1.x * v2.z),
+        (v1.x * v2.y) - (v1.y * v2.x)
+    };
 
     return r;
 }
@@ -544,17 +538,18 @@ void updateUVCache(__global struct OCTriangle *t) {
 // (v0 - P) . N
 bool isBackFaceCulling(__global struct OCTriangle *t, __global struct OCVertex3D *position)
 {
-    OCVertex3D v;
+    OCVertex3D v = {
+        t->Ao.x - position->x,
+        t->Ao.y - position->y,
+        t->Ao.z - position->z,
+        0,
+        0
+    };
 
-    v.x = t->Ao.x - position->x;
-    v.y = t->Ao.y - position->y;
-    v.z = t->Ao.z - position->z;
-
-    OCVertex3D normal = t->normal;
-    return dotProduct(&v, &normal) >= 0;
+    return dotProduct(&v, &t->normal) >= 0;
 }
 
-float dotProduct(__private struct OCVertex3D *a, __private struct OCVertex3D *b) {
+float dotProduct(struct OCVertex3D *a, struct OCVertex3D *b) {
     return (a->x * b->x) + (a->y * b->y) + (a->z * b->z);
 }
 
@@ -571,7 +566,8 @@ bool isVertexInside(__global struct OCVertex3D *v, __global struct OCLPlane *pla
     return true;
 }
 
-unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha) {
+unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha)
+{
     unsigned int rb = color1 & 0xff00ff;
     unsigned int g = color1 & 0x00ff00;
     rb += ((color2 & 0xff00ff) - rb) * alpha >> 8;
@@ -582,10 +578,11 @@ unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int a
 
 unsigned int processPixelLights(__global struct OCTriangle *t, __global struct OCLight *lights, int numLights, unsigned int color, float alpha, float theta, float gamma)
 {
-    OCVertex3D D;
-    D.x = alpha * t->Ao.x + theta * t->Bo.x + gamma * t->Co.x;
-    D.y = alpha * t->Ao.y + theta * t->Bo.y + gamma * t->Co.y;
-    D.z = alpha * t->Ao.z + theta * t->Bo.z + gamma * t->Co.z;
+    OCVertex3D D = {
+        alpha * t->Ao.x + theta * t->Bo.x + gamma * t->Co.x,
+        alpha * t->Ao.y + theta * t->Bo.y + gamma * t->Co.y,
+        alpha * t->Ao.z + theta * t->Bo.z + gamma * t->Co.z,
+    };
 
     for (int i = 0; i < numLights; i++) {
         color = mixLightColor(&lights[i], color, &D, &t->normal);
@@ -601,20 +598,21 @@ unsigned int mixLightColor(__global struct OCLight *l, unsigned int color, __pri
     OCVertex3D R = l->forward;
 
     // Vector(Q, P)
-    OCVertex3D component;
-    component.x = l->position.x - Q->x;
-    component.y = l->position.y - Q->y;
-    component.z = l->position.z - Q->z;
+    OCVertex3D component = {
+        l->position.x - Q->x,
+        l->position.y - Q->y,
+        l->position.z - Q->z,
+    };
 
-    float modulo = sqrt((component.x * component.x) + (component.y * component.y) + (component.z * component.z));
+    const float modulo = sqrt((component.x * component.x) + (component.y * component.y) + (component.z * component.z));
 
-    OCVertex3D L;
-    L.x = component.x / modulo;
-    L.y = component.y / modulo;
-    L.z = component.z / modulo;
-    //
+    OCVertex3D L = {
+        component.x / modulo,
+        component.y / modulo,
+        component.z / modulo,
+    };
 
-    float C = pow(max(dotProduct(&R, &L), 0.0f), l->power) / (l->kc + l->kl * distance + l->kq * (distance * distance));
+    const float C = pow(max(dotProduct(&R, &L), 0.0f), l->power) / (l->kc + l->kl * distance + l->kq * (distance * distance));
 
     unsigned int diffuseColor;
     if (C >= 1) {

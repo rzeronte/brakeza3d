@@ -23,6 +23,7 @@
 #include "../Shaders/ShaderBilinear.h"
 #include "../Shaders/ShaderDepthOfField.h"
 #include "../../src/Shaders/ShaderBlurBuffer.h"
+#include "../2D/TextWriter.h"
 #include <CL/cl.h>
 
 class ComponentRender : public Component {
@@ -85,6 +86,8 @@ private:
     std::vector<OCLight> oclLights;
 
     ShaderBlurBuffer *shaderBlurParticles;
+
+    TextWriter *textWriter;
 public:
     cl_mem clBufferFragments;
     ComponentRender();
@@ -217,7 +220,7 @@ public:
 
     _cl_kernel *getBlinkKernel();
 
-    void onUpdateSceneObjectsSecondPass() const;
+    static void onUpdateSceneObjectsSecondPass() ;
 
     cl_mem *getClBufferLights();
 

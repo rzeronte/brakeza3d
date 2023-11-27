@@ -32,7 +32,7 @@ private:
     std::vector<Object3D *> sceneObjects;
 
     bool finish = false;
-
+    SDL_Event e;
 public:
     Brakeza3D();
 
@@ -68,7 +68,7 @@ public:
 
     void onEndComponents();
 
-    void mainLoop();
+    void startLoop();
 
     [[nodiscard]] ComponentsManager *getComponentsManager() const;
 
@@ -84,6 +84,9 @@ public:
 
     static void LoadDemo();
 
+    void renderLoop();
+
+    void mainLoop();
 };
 
 

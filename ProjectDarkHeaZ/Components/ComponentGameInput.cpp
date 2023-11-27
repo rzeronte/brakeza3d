@@ -2,7 +2,11 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
-ComponentGameInput::ComponentGameInput() : controllerAxisThreshold(0.1), lockRightStick(false)
+ComponentGameInput::ComponentGameInput()
+:
+    Component(false),
+    controllerAxisThreshold(0.1),
+    lockRightStick(false)
 {
 }
 

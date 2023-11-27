@@ -5,6 +5,7 @@
 
 ComponentGame::ComponentGame()
 :
+    Component(false),
     cameraCountDownPosition(Vertex3D(0, 3000, 5000)),
     cameraInGamePosition(Vertex3D(0, -1000, -1000)),
     textWriter(nullptr),
