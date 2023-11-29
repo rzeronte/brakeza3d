@@ -43,7 +43,7 @@ void ShaderImageMask::executeKernelOpenCL()
     clSetKernelArg(kernel, 6, sizeof(unsigned int), &maxAlpha);
 
     size_t global_item_size = this->bufferSize;
-    size_t local_item_size = 64;
+    size_t local_item_size = 4;
 
     clRet = clEnqueueNDRangeKernel(clQueue, kernel, 1, nullptr, &global_item_size, &local_item_size, 0, nullptr, nullptr);
 }

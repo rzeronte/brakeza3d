@@ -9,7 +9,6 @@ ShaderImage::ShaderImage(const std::string& filename)
     ShaderOpenCL(true, "image.opencl"),
     image(Image(filename)),
     useOffset(true),
-    useColors(true),
     offsetX(0),
     offsetY(0)
 {
@@ -37,10 +36,9 @@ void ShaderImage::executeKernelOpenCL(float increaseOffsetX, float increaseOffse
     clSetKernelArg(kernel, 5, sizeof(int), &useOffset);
     clSetKernelArg(kernel, 6, sizeof(float), &offsetX);
     clSetKernelArg(kernel, 7, sizeof(float), &offsetY);
-    clSetKernelArg(kernel, 8, sizeof(int), &useColors);
 
     size_t global_item_size[2] = {(size_t) EngineSetup::get()->screenWidth, (size_t) EngineSetup::get()->screenHeight};
-    size_t local_item_size[2] = {16, 16};
+    size_t local_item_size[2] = {8, 8};
 
     clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
 
@@ -68,13 +66,6 @@ bool ShaderImage::isUseOffset() const {
 
 void ShaderImage::setUseOffset(bool value) {
     ShaderImage::useOffset = value;
-}
-
-ShaderImage::~ShaderImage() {
-}
-
-void ShaderImage::setUseColors(int useColors) {
-    ShaderImage::useColors = useColors;
 }
 
 Image &ShaderImage::getImage() {

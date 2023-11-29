@@ -174,7 +174,7 @@ void MeshOpenCLRenderer::renderTriangles(Image *texture)
     clSetKernelArg(kernel, 16, sizeof(int), &useClipping);
 
     size_t global_item_size[2] = {640, 16};
-    size_t local_item_size[2] = {16, 16};
+    size_t local_item_size[2] = {1, 1};
 
     clRet = clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
     debugKernel();

@@ -4,10 +4,6 @@
 #include "../imgui/backends/imgui_impl_sdlrenderer.h"
 #include <thread>
 
-void threadRenderLoop() {
-    Brakeza3D::get()->renderLoop();
-}
-
 Brakeza3D *Brakeza3D::instance = nullptr;
 
 Brakeza3D::Brakeza3D()
@@ -99,7 +95,7 @@ void Brakeza3D::startLoop()
     onStartComponents();
 
     //LoadDemo();
-    std::thread renderThread(threadRenderLoop);
+    std::thread renderThread(&Brakeza3D::renderLoop, this);
 
     ImGuiInitialize();
 
@@ -163,7 +159,7 @@ void Brakeza3D::onStartComponents()
 void Brakeza3D::preUpdateComponents()
 {
     for (Component*& component : componentsManager->components) {
-        if (!component->isCore()) continue;
+        //if (!component->isCore()) continue;
         component->preUpdate();
     }
 }
@@ -171,7 +167,7 @@ void Brakeza3D::preUpdateComponents()
 void Brakeza3D::onUpdateComponents()
 {
     for (Component*& component : componentsManager->components) {
-        if (!component->isCore()) continue;
+        //if (!component->isCore()) continue;
         component->onUpdate();
     }
 }
@@ -179,7 +175,7 @@ void Brakeza3D::onUpdateComponents()
 void Brakeza3D::postUpdateComponents()
 {
     for (Component*& component : componentsManager->components) {
-        if (!component->isCore()) continue;
+        //if (!component->isCore()) continue;
         component->postUpdate();
     }
 }

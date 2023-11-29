@@ -9,7 +9,7 @@
   "color": { "r": 0, "g": 255, "b": 0 },
   "message": {
     "from": "Uprising Minor Combat Unit",
-    "text": "Its a pleasure to see you Commander, but\n it will be a greater pleasure to finish you\noff.",
+    "text": "Its a pleasure to see you Commander, but\nit will be a greater pleasure to finish you\noff.",
     "sound": "radioLevel03",
     "stamina": 100,
     "avatarHud": "avatars/enemy_standard_hud.png"
