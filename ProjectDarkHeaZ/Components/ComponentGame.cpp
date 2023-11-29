@@ -200,7 +200,6 @@ void ComponentGame::onUpdate()
         }
         case EngineSetup::PRESS_KEY_NEW_LEVEL:
         case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL: {
-            Logging::Message("%f", alpha);
             handleOnUpdateTutorialImages(255);
             break;
         }
