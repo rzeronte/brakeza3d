@@ -74,7 +74,7 @@ void ComponentWindow::initWindow() {
             SDL_WINDOWPOS_UNDEFINED,
             SETUP->screenWidth,
             SETUP->screenHeight,
-            SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_FULLSCREEN_DESKTOP
+            SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE //| SDL_WINDOW_FULLSCREEN_DESKTOP
         );
 
         if (window == nullptr) {

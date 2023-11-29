@@ -2,23 +2,22 @@ unsigned int createRGBA(int r, int g, int b, int a);
 unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha);
 
 __kernel void onUpdate(
-        int screenWidth,
-        int screenHeight,
-        float deltaTime,
-        __global unsigned int *video,
-        __global unsigned int *bufferDepth,
-        float focusPlaneDepth,
-        float focusRange,
-        float blurSize,
-        float intensity
+    int screenWidth,
+    int screenHeight,
+    float deltaTime,
+    __global unsigned int *video,
+    __global unsigned int *bufferDepth,
+    float focusPlaneDepth,
+    float focusRange,
+    float blurSize,
+    float intensity
 )
 {
     int x = get_global_id(0);
     int y = get_global_id(1);
     int i = y * screenWidth + x;
 
-    unsigned int depthInt = bufferDepth[y * screenWidth + x];
-    float depth = (float)(depthInt / 1000.0f) * intensity;
+    const float depth = bufferDepth[i] * intensity;
 
     float depthDifference = fabs(depth - focusPlaneDepth);
 
@@ -26,10 +25,9 @@ __kernel void onUpdate(
     if (depthDifference > focusRange) {
         blurAmount = (depthDifference - focusRange) * blurSize;
     }
-
     blurAmount = clamp(blurAmount, 0, 10);
 
-    float colorSum[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+    float4 colorSum = {0.0f, 0.0f, 0.0f, 0.0f};
     float weightSum = 0.0f;
 
     for (int dy = -blurAmount; dy <= blurAmount; dy++) {
@@ -37,25 +35,27 @@ __kernel void onUpdate(
             int nx = clamp(x + dx, 0, screenWidth - 1);
             int ny = clamp(y + dy, 0, screenHeight - 1);
 
-            float thisDepth = (float)(bufferDepth[ny * screenWidth + nx] / 1000000.0f);
-            float depthDifference = fabs(depth - thisDepth);
-            float weight = 1.0f / (1.0f + depthDifference * depthDifference * blurSize);
+            const float thisDepth = (float)(bufferDepth[ny * screenWidth + nx] / 1000000.0f);
+            const float depthDifference = fabs(depth - thisDepth);
+            const float weight = 1.0f / (1.0f + depthDifference * depthDifference * blurSize);
 
             unsigned int color = video[ny * screenWidth + nx];
             unsigned int r = color & 0xFF;
             unsigned int g = (color >> 8) & 0xFF;
             unsigned int b = (color >> 16) & 0xFF;
             unsigned int a = (color >> 24) & 0xFF;
-            colorSum[0] += weight * r;
-            colorSum[1] += weight * g;
-            colorSum[2] += weight * b;
-            colorSum[3] += weight * a;
+            colorSum.x += weight * r;
+            colorSum.y += weight * g;
+            colorSum.z += weight * b;
+            colorSum.w += weight * a;
             weightSum += weight;
         }
     }
 
+    colorSum = colorSum / weightSum;
+
     if (weightSum > 0) {
-        video[y * screenWidth + x] = createRGBA(colorSum[0] / weightSum, colorSum[1] / weightSum, colorSum[2] / weightSum, colorSum[3] / weightSum);
+        video[i] = createRGBA(colorSum.x, colorSum.y, colorSum.z, colorSum.w);
     }
 }
 

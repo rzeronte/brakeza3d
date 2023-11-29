@@ -199,9 +199,9 @@ void ComponentMenu::drawVersion()
     writer->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());
 
     writer->writeTTFCenterHorizontal(
-        447,
+        756,
         "www.brakeza.com",
-        PaletteColors::getPressKeyToContinue(),
+        Color::white(),
         0.35
     );
 

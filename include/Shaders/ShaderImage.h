@@ -13,14 +13,11 @@
 class ShaderImage: public ShaderOpenCL {
     Image image;
     int useOffset;
-    int useColors;
 
     float offsetX;
     float offsetY;
 public:
     explicit ShaderImage(const std::string& filename);
-
-    ~ShaderImage() override;
 
     void update(float increaseOffsetX, float increaseOffsetY);
 
@@ -33,8 +30,6 @@ public:
     [[nodiscard]] bool isUseOffset() const;
 
     void limitOffset();
-
-    void setUseColors(int useColors);
 
     Image &getImage();
 };

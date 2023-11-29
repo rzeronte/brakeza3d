@@ -144,7 +144,6 @@ void ComponentGame::loadShaders()
     shaderForegroundImage = new ShaderImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
     shaderBackgroundImage->setUseOffset(true);
     shaderForegroundImage->setUseOffset(true);
-    shaderForegroundImage->setUseColors(false);
     shaderColor = new ShaderColor(false, PaletteColors::getStamina(), 0.75f);
     shaderProjectiles = new ShaderProjectiles();
     shaderShockWave = new ShaderShockWave(true);
@@ -201,6 +200,7 @@ void ComponentGame::onUpdate()
         }
         case EngineSetup::PRESS_KEY_NEW_LEVEL:
         case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL: {
+            Logging::Message("%f", alpha);
             handleOnUpdateTutorialImages(255);
             break;
         }
