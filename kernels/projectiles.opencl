@@ -4,6 +4,8 @@
 
 #define RADIUS_CIRCLE_LASER 0.0035
 #define WIDTH_CIRCLE_LASER 0.12
+#define AVERAGE_255 1/255
+#define AVERAGE_177 1/77
 
 struct OCLaser
 {
@@ -49,7 +51,7 @@ __kernel void onUpdate(
 {
     int x = get_global_id(0);
     int y = get_global_id(1);
-    int i = y * get_global_size(0) + x;
+    int i = y * screenWidth + x;
 
     const float2 uv = { (float) x, (float) y };
     const float2 resolution = { (float) screenWidth, (float) screenHeight};
@@ -58,7 +60,7 @@ __kernel void onUpdate(
     unsigned int mixedColor = video[i];
 
     processLasers(i, &mixedColor,  st, screenWidth,  screenHeight, lasers, numberLasers, iTime, video, image, resolution);
-    processProjectiles(i, &mixedColor,  st, screenWidth,  screenHeight, projectiles, numberProjectiles, iTime, video, image, resolution);
+    //processProjectiles(i, &mixedColor,  st, screenWidth,  screenHeight, projectiles, numberProjectiles, iTime, video, image, resolution);
 
     video[i] = mixedColor;
 }
@@ -117,7 +119,9 @@ void processLasers(int i, unsigned int *mixedColor, float2 st, int screenWidth, 
     unsigned char *mi = mixedColor;
     unsigned char *t = &video[i];
 
-    float2 invResolution = 1.0f / resolution;
+    const float2 invResolution = 1.0f / resolution;
+
+    const float lineWeight = (RADIUS_CIRCLE - WIDTH_CIRCLE);
 
     for (int j = 0; j < num; j++) {
         struct OCLaser laser = lasers[j];
@@ -131,27 +135,10 @@ void processLasers(int i, unsigned int *mixedColor, float2 st, int screenWidth, 
         float l = line(A, B, st, 0.015f * laser.intensity);
 
         float len = length(A - st);
-        float circleStart = smoothstep((float)(RADIUS_CIRCLE-WIDTH_CIRCLE), (float) RADIUS_CIRCLE, len) - smoothstep(0, (float) RADIUS_CIRCLE, len);
+        float circleStart = smoothstep(lineWeight, (float) RADIUS_CIRCLE, len) - smoothstep(0, (float) RADIUS_CIRCLE, len);
 
         len = length(B-st);
-        float circleEnd = smoothstep((float)(RADIUS_CIRCLE-WIDTH_CIRCLE), (float) RADIUS_CIRCLE, len) - smoothstep(0, (float) RADIUS_CIRCLE, len);
-
-        float3 colorStartCircle = {0.f, 0.f, 0.f};
-        float3 colorEndCircle = {0.f, 0.f, 0.f};
-
-        if (laser.startCircle) {
-            colorStartCircle.x = circleStart * laser.r;
-            colorStartCircle.y = circleStart * laser.g;
-            colorStartCircle.z = circleStart * laser.b;
-        }
-
-        if (laser.endCircle) {
-            colorEndCircle.x = circleEnd * laser.r;
-            colorEndCircle.y = circleEnd * laser.g;
-            colorEndCircle.z = circleEnd * laser.b;
-        }
-
-        //--
+        float circleEnd = smoothstep(lineWeight, (float) RADIUS_CIRCLE, len) - smoothstep(0, (float) RADIUS_CIRCLE, len);
 
         float2 nst = st;
         float2 offset = normalize(A-B) * iTime * 1.50f;
@@ -168,15 +155,12 @@ void processLasers(int i, unsigned int *mixedColor, float2 st, int screenWidth, 
         __global unsigned char *ci = &image[index];
 
         float3 colorLine = {laser.r, laser.g, laser.b};
-        colorLine = (colorLine/255.0f) * l * ci[0];
-
-        colorStartCircle = colorStartCircle/177.0f * ci[0];
-        colorEndCircle = colorEndCircle/177.0f * ci[0];
+        colorLine = colorLine * (float) AVERAGE_255 * l * ci[0];
 
         *mixedColor = createRGB(
-                min(colorStartCircle.x + colorEndCircle.x + colorLine.x + mi[0], 255.0f),
-                min(colorStartCircle.y + colorEndCircle.y + colorLine.y + mi[1], 255.0f),
-                min(colorStartCircle.z + colorEndCircle.z + colorLine.z + mi[2], 255.0f)
+            min(colorLine.x + mi[0], 255.0f),
+            min(colorLine.y + mi[1], 255.0f),
+            min(colorLine.z + mi[2], 255.0f)
         );
     }
 }
