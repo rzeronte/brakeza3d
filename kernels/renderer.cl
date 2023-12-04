@@ -47,7 +47,6 @@ typedef struct OCTriangle {
     int maxX, minX, maxY, minY;
     bool clipped;
     float w0_row, w1_row, w2_row;
-
 } OCTriangle;
 
 typedef struct OCLPlane {
@@ -117,8 +116,6 @@ float distancePlaneVertex(__global struct OCLPlane *plane, struct OCVertex3D p);
 struct OCVertex3D getNormal(__global struct OCTriangle *t);
 struct OCVertex3D getComponent(struct Vector3D *V);
 struct OCVertex3D crossProduct(struct OCVertex3D v1, struct OCVertex3D v2);
-float getXTextureFromUV(int textureWidth, float u);
-float getYTextureFromUV(int textureHeight, float v);
 void updateObjectSpace(__global struct OCTriangle *t, __global struct OCLMeshContext *context);
 void updateNormal(__global struct OCTriangle *t);
 void updateCameraSpace(__global struct OCTriangle *t, __global struct OCLMeshContext *context);
@@ -158,9 +155,9 @@ __kernel void onUpdate(
     int useClipping
 )
 {
-    int x = get_global_id(0);
-    int y = get_global_id(1);
-    int i = y * get_global_size(0) + x;
+    const int x = get_global_id(0);
+    const int y = get_global_id(1);
+    const int i = y * get_global_size(0) + x;
 
     if (i < numTriangles) {
         __global struct OCTriangle *t = &triangles[i];
@@ -346,49 +343,49 @@ struct OCVertex3D NDCSpace(__global struct OCVertex3D *v, __global struct OCVert
 
 struct OCPoint2D screenSpace(__global struct OCVertex3D *V, int screenWidth, int screenHeight)
 {
-    OCPoint2D A;
-
-    A.x = (1 + V->x) * ((float) screenWidth/2);
-    A.y = (1 + V->y) * ((float) screenHeight/2);
+    OCPoint2D A = {
+        (1 + V->x) * ((float) screenWidth * 0.5),
+        (1 + V->y) * ((float) screenHeight * 0.5)
+    };
 
     return A;
 }
 
 void perspectiveDivision(struct OCVertex3D *V, float frustumNearDist)
 {
-    V->x = ( frustumNearDist * V->x) / V->z;
-    V->y = ( frustumNearDist * V->y) / V->z;
+    V->x = (frustumNearDist * V->x) / V->z;
+    V->y = (frustumNearDist * V->y) / V->z;
 }
 
 struct OCVertex3D rotateAxisX(struct OCVertex3D *V, float rads)
 {
-    OCVertex3D  A;
-
-    A.x = 1 * V->x;
-    A.y = cos(rads) * V->y - sin(rads) * V->z;
-    A.z = sin(rads) * V->y + cos(rads) * V->z;
+    OCVertex3D A = {
+         1 * V->x,
+         cos(rads) * V->y - sin(rads) * V->z,
+         sin(rads) * V->y + cos(rads) * V->z
+    };
 
     return A;
 }
 
 struct OCVertex3D rotateAxisY(struct OCVertex3D *V, float rads)
 {
-    OCVertex3D  A;
-
-    A.x = ( cos(rads) * V->x ) + ( sin(rads) * V->z );
-    A.y = 1 * V->y;
-    A.z = ( -sin(rads) * V->x ) + ( cos(rads) * V->z );
+    OCVertex3D A = {
+         ( cos(rads) * V->x ) + ( sin(rads) * V->z ),
+         1 * V->y,
+         ( -sin(rads) * V->x ) + ( cos(rads) * V->z )
+    };
 
     return A;
 }
 
 struct OCVertex3D rotateAxisZ(struct OCVertex3D *V, float rads)
 {
-    OCVertex3D  A;
-
-    A.x = ( cos(rads) * V->x ) - ( sin(rads) * V->y );
-    A.y = ( sin(rads) * V->x ) + ( cos(rads) * V->y );
-    A.z = 1 * V->z ;
+    OCVertex3D A = {
+        ( cos(rads) * V->x ) - ( sin(rads) * V->y ),
+        ( sin(rads) * V->x ) + ( cos(rads) * V->y ),
+        1 * V->z
+    };
 
     return A;
 }
@@ -440,7 +437,7 @@ float distancePlaneVertex(__global struct OCLPlane *plane, struct OCVertex3D p)
 {
     const float D = - ( (plane->normal.x * plane->A.x) + (plane->normal.y * plane->A.y) + (plane->normal.z * plane->A.z) );
 
-    return ( (plane->normal.x * p.x) + (plane->normal.y * p.y) + (plane->normal.z * p.z) + D);
+    return (plane->normal.x * p.x) + (plane->normal.y * p.y) + (plane->normal.z * p.z) + D;
 }
 
 struct OCVertex3D getNormal(__global struct OCTriangle *t)
@@ -471,14 +468,6 @@ struct OCVertex3D crossProduct(struct OCVertex3D v1, struct OCVertex3D v2)
     };
 
     return r;
-}
-
-float getXTextureFromUV(int textureWidth, float u) {
-    return (float) textureWidth * u;
-}
-
-float getYTextureFromUV(int textureHeight, float v) {
-    return (float) textureHeight * v;
 }
 
 void updateObjectSpace(__global struct OCTriangle *t, __global struct OCLMeshContext *context)
@@ -558,7 +547,7 @@ bool isVertexInside(__global struct OCVertex3D *v, __global struct OCLPlane *pla
     for (int i = 1; i <= 5; i++) {
         float distance = distancePlaneVertex(&planes[i], *v);
 
-        if (distance  >= FRUSTUM_CLIPPING_DISTANCE) {
+        if (distance >= FRUSTUM_CLIPPING_DISTANCE) {
             return false;
         }
     }
@@ -593,7 +582,7 @@ unsigned int processPixelLights(__global struct OCTriangle *t, __global struct O
 
 unsigned int mixLightColor(__global struct OCLight *l, unsigned int color, __private struct OCVertex3D *Q, __global struct OCVertex3D *N)
 {
-    float distance = distanceBetweenVertices(&l->position, Q);
+    const float distance = distanceBetweenVertices(&l->position, Q);
 
     OCVertex3D R = l->forward;
 
@@ -635,9 +624,9 @@ unsigned int mixColors(unsigned int color1, unsigned int color2, float t)
     unsigned char *c2 = (unsigned char *)&color2;
 
     return createRGB(
-            mix((float) c1[0], (float) c2[0], t),
-            mix((float) c1[1], (float) c2[1], t),
-            mix((float) c1[2], (float) c2[2], t)
+        mix((float) c1[0], (float) c2[0], t),
+        mix((float) c1[1], (float) c2[1], t),
+        mix((float) c1[2], (float) c2[2], t)
     );
 }
 
