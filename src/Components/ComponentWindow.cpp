@@ -1,6 +1,12 @@
+#define GL_GLEXT_PROTOTYPES
+
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 #include "../../include/Components/ComponentWindow.h"
 #include "../../include/Render/Logging.h"
+#include "../../include/Misc/Tools.h"
+#include "../../include/Render/ShaderOpenGLImage.h"
+#include "../../include/Render/ShaderOpenGLRender.h"
 
 ComponentWindow::ComponentWindow()
 :
@@ -25,14 +31,15 @@ void ComponentWindow::preUpdate()
 
 void ComponentWindow::clearVideoBuffers()
 {
-   BUFFERS->clearDepthBuffer();
-   BUFFERS->clearVideoBuffer();
+   //BUFFERS->clearDepthBuffer();
+   //BUFFERS->clearVideoBuffer();
 }
 
 void ComponentWindow::renderToWindow()
 {
+    SDL_GL_SwapWindow(window);
     SDL_RenderPresent(renderer);
-    SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
+    //SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 }
 
 void ComponentWindow::onUpdate()
@@ -63,6 +70,17 @@ void ComponentWindow::initWindow() {
 
     Logging::Message("Available video drivers:");
 
+    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+    SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
+    SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
+    SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
+    SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
+    SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
+
+    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
+    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
+    SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+
     for( int i = 0; i < SDL_GetNumRenderDrivers(); ++i ){
         SDL_RendererInfo rendererInfo = {};
         SDL_GetRenderDriverInfo( i, &rendererInfo );
@@ -80,8 +98,9 @@ void ComponentWindow::initWindow() {
             SDL_WINDOWPOS_UNDEFINED,
             SETUP->screenWidth,
             SETUP->screenHeight,
-            SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
+            SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
         );
+        context = SDL_GL_CreateContext( window );
 
         if (window == nullptr) {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -95,6 +114,7 @@ void ComponentWindow::initWindow() {
         screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
         SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_MOD);
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
+        initOpenGL();
 
         screenTexture = SDL_CreateTexture(
             renderer,
@@ -103,6 +123,7 @@ void ComponentWindow::initWindow() {
             EngineSetup::get()->screenWidth,
             EngineSetup::get()->screenHeight
         );
+
 
         SDL_SetWindowIcon(this->window, applicationIcon);
     }
@@ -152,4 +173,31 @@ TTF_Font *ComponentWindow::getFontDefault() {
 
 TTF_Font *ComponentWindow::getFontAlternative() {
     return fontAlternative;
+}
+
+void ComponentWindow::initOpenGL()
+{
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    shaderOGLRender = new ShaderOpenGLRender(
+        "../shaders/Render.vertexshader",
+        "../shaders/Render.fragmentshader"
+    );
+
+    shaderOGLImage = new ShaderOpenGLImage(
+        "../shaders/Image.vertexshader",
+        "../shaders/Image.fragmentshader"
+    );
+}
+
+ShaderOpenGLImage *ComponentWindow::getShaderOGLImage() const {
+    return shaderOGLImage;
+}
+
+ShaderOpenGLRender *ComponentWindow::getShaderOGLRender() const {
+    return shaderOGLRender;
 }
