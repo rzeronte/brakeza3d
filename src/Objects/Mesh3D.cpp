@@ -1,6 +1,8 @@
+#define GL_GLEXT_PROTOTYPES
 
 #include <vector>
 #include <assimp/cimport.h>
+#include <ext/matrix_float4x4.hpp>
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
@@ -124,7 +126,15 @@ void Mesh3D::onUpdate()
     }
 
     if (layer == Mesh3DRenderLayer::ONUPDATE) {
-        onUpdateOpenCLRender();
+        //onUpdateOpenCLRender();
+        ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
+            getModelMatrix(),
+            modelTextures[0]->getOGLTextureID(),
+            vertexbuffer,
+            uvbuffer,
+            normalbuffer,
+            (int) vertices.size()
+        );
     }
 
     for (auto s: shaders) {
@@ -137,7 +147,8 @@ void Mesh3D::drawOnUpdateSecondPass()
     Object3D::drawOnUpdateSecondPass();
 
     if (layer == Mesh3DRenderLayer::SECONDARY) {
-        onUpdateOpenCLRender();
+        //onUpdateOpenCLRender();
+        //renderOpenGL();
     }
 }
 
@@ -181,6 +192,9 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     openClRenderer->makeOCLTriangles();
 
     sourceFile = fileName;
+
+    //bool res = Tools::loadOBJ("../suzanne.obj", vertices, uvs, normals);
+    fillBuffers();
 }
 
 void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filename)
@@ -263,6 +277,13 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
         v.v = pTexCoord->y;
 
         localMeshVertices[j] = v;
+        vertices.emplace_back(vf.x, vf.y, vf.z);
+        uvs.emplace_back(v.u, v.v);
+    }
+
+    for (unsigned int j = 0; j < mesh->mNumVertices; j++) {
+        aiVector3t vf = mesh->mNormals[j];
+        normals.emplace_back(vf.x, vf.y, vf.z);
     }
 
     for (unsigned int k = 0; k < mesh->mNumFaces; k++) {
@@ -586,4 +607,19 @@ void Mesh3D::removeShader(int index) {
     if (index >= 0 && index < shaders.size()) {
         shaders.erase(shaders.begin() + index);
     }
+}
+
+void Mesh3D::fillBuffers()
+{
+    glGenBuffers(1, &vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+
+    glGenBuffers(1, &uvbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+    glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+
+    glGenBuffers(1, &normalbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+    glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
 }

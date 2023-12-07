@@ -266,11 +266,11 @@ public:
                 auto title = std::to_string(i+1) + ") " + file;
                 if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                     ImGui::PushID(i);
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("sceneIcon")->getTexture(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("sceneIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                         ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(file);
                     }
                     ImGui::SameLine();
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("saveIcon")->getTexture(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("saveIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                         ComponentsManager::get()->getComponentRender()->getSceneLoader().saveScene(file);
                     }
                     ImGui::SameLine();
@@ -292,19 +292,19 @@ public:
         for (int i = 0; i < shaders.size(); i++) {
             auto s = shaders[i];
             ImGui::PushID(i);
-            ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("shaderIcon")->getTexture(), ImVec2(26, 26));
+            ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(26, 26));
             ImGui::SameLine(46);
             if (!s->isEnabled()) {
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getTexture(), ImVec2(14, 14))) {
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                     s->setEnabled(true);
                 }
             } else {
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getTexture(), ImVec2(14, 14))) {
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                     s->setEnabled(false);
                 }
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getTexture(), ImVec2(14, 14))) {
+            if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                 ComponentsManager::get()->getComponentRender()->removeShader(i);
             }
             ImGui::SameLine();
@@ -389,14 +389,14 @@ public:
                 }
                 ImGui::SameLine();
                 if (o->isEnabled()) {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getTexture(), ImVec2(14, 14));
+                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14));
                 } else {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getTexture(), ImVec2(14, 14));
+                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14));
                 }
                 ImGui::SameLine();
 
                 ImGui::SameLine(200);
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel(o->getTypeIcon())->getTexture(), ImVec2(16, 16));
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel(o->getTypeIcon())->getOGLTextureID(), ImVec2(16, 16));
                 ImGui::SameLine(220);
                 ImGui::Text("%s", o->getTypeObject());
             }
@@ -414,7 +414,7 @@ public:
                 ImGui::SameLine();
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", o->getLabel().c_str());
                 ImGui::SameLine();
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel(o->getTypeIcon())->getTexture(), ImVec2(16, 16));
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel(o->getTypeIcon())->getOGLTextureID(), ImVec2(16, 16));
 
                 ImGui::Separator();
 
@@ -434,7 +434,7 @@ public:
 
                     std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
 
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getTexture(), ImVec2(24, 24));
+                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getOGLTextureID(), ImVec2(24, 24));
                     ImGui::SameLine(48);
 
                     if (ImGui::Button(optionText.c_str())) {
@@ -447,16 +447,16 @@ public:
                     ImGui::SameLine();
 
                     if (currentScript->isPaused()) {
-                        if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getTexture(), ImVec2(14, 14))) {
+                        if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                             currentScript->setPaused(false);
                         }
                     } else {
-                        if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getTexture(), ImVec2(14, 14))) {
+                        if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                             currentScript->setPaused(true);
                         }
                     }
                     ImGui::SameLine();
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getTexture(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                         o->removeScript(currentScript);
                     }
 
@@ -563,7 +563,7 @@ public:
             for (int i = 0; i < (int) scripts.size(); i++) {
                 auto currentScript = scripts[i];
                 ImGui::PushID(i);
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getTexture(), ImVec2(24, 24));
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getOGLTextureID(), ImVec2(24, 24));
                 ImGui::SameLine(48);
                 std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
                 if (ImGui::Button(optionText.c_str())) {
@@ -575,16 +575,16 @@ public:
                 ImGui::SameLine();
 
                 if (currentScript->isPaused()) {
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getTexture(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                         currentScript->setPaused(false);
                     }
                 } else {
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getTexture(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                         currentScript->setPaused(true);
                     }
                 }
                 ImGui::SameLine();
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getTexture(), ImVec2(14, 14))) {
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                     componentRender->removeScript(currentScript);
                 }
 
@@ -637,7 +637,7 @@ public:
             for (int i = 0; i < items.size(); i++) {
                 auto a = items[i];
 
-                ImGui::Image((ImTextureID)a->texture->getTexture(), ImVec2(96, 96));
+                ImGui::Image((ImTextureID)a->texture->getOGLTextureID(), ImVec2(96, 96));
                 ImGui::SameLine();
                 ImGui::BeginGroup();
                 ImGui::Selectable(a->label.c_str());
@@ -736,7 +736,7 @@ public:
                 auto file = result[i];
                 auto title = std::to_string(i-1) + ") " + file;
                 if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getTexture(), ImVec2(16, 16));
+                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getOGLTextureID(), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::MenuItem(file.c_str())) {
                         Tools::addSceneObject(file, "added_item");
@@ -762,7 +762,7 @@ public:
                 auto file = result[i];
                 auto title = std::to_string(i-1) + ") " + file;
                 if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("gearIcon")->getTexture(), ImVec2(16, 16));
+                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("gearIcon")->getOGLTextureID(), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::MenuItem(file.c_str())) {
                         SceneLoader::createMesh3DBodyToScene(file, "added_item");
@@ -788,7 +788,7 @@ public:
                 auto file = result[i];
                 auto title = std::to_string(i-1) + ") " + file;
                 if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("ghostIcon")->getTexture(), ImVec2(16, 16));
+                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("ghostIcon")->getOGLTextureID(), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::MenuItem(file.c_str())) {
                         SceneLoader::createGhostBody3DToScene(file, "added_item");
@@ -859,30 +859,30 @@ public:
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Add object")) {
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("objectIcon")->getTexture(), ImVec2(16, 16));
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("objectIcon")->getOGLTextureID(), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("Object3D", "CTRL+O")) {
                     SceneLoader::createObjectInScene();
                 }
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("lightIcon")->getTexture(), ImVec2(16, 16));
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("lightIcon")->getOGLTextureID(), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("LightPoint", "CTRL+O")) {
                     SceneLoader::createLightPointInScene();
                     Logging::Message("Add light");
                 }
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getTexture(), ImVec2(16, 16));
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getOGLTextureID(), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("Mesh3D")) {
                     drawMesh3DItemsToLoad();
                     ImGui::EndMenu();
                 }
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("gearIcon")->getTexture(), ImVec2(16, 16));
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("gearIcon")->getOGLTextureID(), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("RigidBody")) {
                     drawRigidBodiesItemsToLoad();
                     ImGui::EndMenu();
                 }
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("ghostIcon")->getTexture(), ImVec2(16, 16));
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("ghostIcon")->getOGLTextureID(), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("GhostBody")) {
                     drawGhostItemsToLoad();
@@ -1184,21 +1184,21 @@ public:
     {
         if (ImGui::Begin("MainToolBar")) {
             if (ComponentsManager::get()->getComponentRender()->getStateLUAScripts() == EngineSetup::LuaStateScripts::LUA_STOP) {
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("playIcon")->getTexture(), ImVec2(24, 24))) {
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("playIcon")->getOGLTextureID(), ImVec2(24, 24))) {
                     ComponentsManager::get()->getComponentRender()->playLUAScripts();
                 }
                 ImGui::SameLine();
             } else {
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("stopIcon")->getTexture(), ImVec2(24, 24))) {
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("stopIcon")->getOGLTextureID(), ImVec2(24, 24))) {
                     ComponentsManager::get()->getComponentRender()->stopLUAScripts();
                 }
                 ImGui::SameLine();
             }
-            if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("reloadIcon")->getTexture(), ImVec2(24, 24))) {
+            if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("reloadIcon")->getOGLTextureID(), ImVec2(24, 24))) {
                 ComponentsManager::get()->getComponentRender()->reloadLUAScripts();
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getTexture(), ImVec2(24, 24))) {
+            if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(24, 24))) {
                 ComponentsManager::get()->getComponentRender()->getSceneLoader().clearScene();
             }
         }

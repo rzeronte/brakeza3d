@@ -49,12 +49,13 @@ void ComponentRender::preUpdate()
 
 void ComponentRender::drawObjetsInHostBuffer()
 {
-    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    auto components = ComponentsManager::get();
+
+    /*auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
         object->onDrawHostBuffer();
     }
 
-    auto components = ComponentsManager::get();
     if (SETUP->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis(components->getComponentCamera()->getCamera());
     }
@@ -65,7 +66,7 @@ void ComponentRender::drawObjetsInHostBuffer()
 
     if (SETUP->BULLET_DEBUG_MODE) {
         components->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
-    }
+    }*/
 
     if (SETUP->DRAW_FPS) {
         textWriter->writeTTFCenterHorizontal(

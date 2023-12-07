@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_FLAGS "-g")
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS "-O3")
+set(CMAKE_CXX_FLAGS "-g")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+#set(CMAKE_CXX_FLAGS "-O3")
 #set(CMAKE_CXX_FLAGS_DEBUG "-O3 -fsanitize=leak")
 
 set(SDL2_INCLUDE_DIRS /usr/include/SDL2)
@@ -12,6 +12,8 @@ set(BULLET_INCLUDE_DIRS /usr/include/bullet)
 set(ASSIMP_INCLUDE_DIRS /usr/include/assimp)
 set(GLM_INCLUDE_DIRS /usr/include/glm)
 set(DEARIMGUI_INCLUDE_DIRS imgui)
+
+find_package(OpenGL REQUIRED)
 
 if (WIN32)
     set(BASE_INCLUDE_DIRECTORY C:\\Users\\Eduardo\\Desktop\\include\\)
@@ -30,6 +32,7 @@ include_directories(
     ${GLM_INCLUDE_DIRS}
     ${DEARIMGUI_INCLUDE_DIRS}
     ${OPENCL_LIBRARIES_DIR}
+    ${OPENGL_INCLUDE_DIR}
 )
 
 add_executable(Brakeza3D
@@ -117,8 +120,8 @@ add_executable(Brakeza3D
 
     imgui/backends/imgui_impl_sdl2.h
     imgui/backends/imgui_impl_sdl2.cpp
-    imgui/backends/imgui_impl_sdlrenderer2.h
-    imgui/backends/imgui_impl_sdlrenderer2.cpp
+    imgui/backends/imgui_impl_opengl3.h
+    imgui/backends/imgui_impl_opengl3.cpp
 
     include/Render/Fragment.cpp include/Render/Fragment.h
     src/Render/M4.cpp include/Render/M4.h
@@ -175,7 +178,13 @@ add_executable(Brakeza3D
         include/Render/ObjectShaderOpenCL.cpp
         include/Render/ObjectShaderOpenCL.h
         include/Misc/TileManager.cpp
-        include/Misc/TileManager.h)
+        include/Misc/TileManager.h
+        include/Render/ShaderOpenGL.cpp
+        include/Render/ShaderOpenGL.h
+        include/Render/ShaderOpenGLImage.cpp
+        include/Render/ShaderOpenGLImage.h
+        include/Render/ShaderOpenGLRender.cpp
+        include/Render/ShaderOpenGLRender.h)
 
 target_link_libraries(Brakeza3D
     pthread
@@ -190,5 +199,6 @@ target_link_libraries(Brakeza3D
     assimp
     OpenCL
     lua5.2
+    ${OPENGL_LIBRARIES}
 )
 

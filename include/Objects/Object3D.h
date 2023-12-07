@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include <detail/type_mat4x4.hpp>
 #include "Vertex3D.h"
 #include "Vector3D.h"
 #include "../../include/Render/M3.h"
@@ -188,6 +189,8 @@ public:
     static void createFromJSON(cJSON *currentType);
 
     static void setPropertiesFromJSON(cJSON *object, Object3D *o);
+
+    glm::mat4 getModelMatrix();
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H
