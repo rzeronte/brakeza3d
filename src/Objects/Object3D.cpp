@@ -1,9 +1,11 @@
 
 #include <iostream>
+#include <ext/matrix_transform.hpp>
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+#include <glm/gtx/euler_angles.hpp>
 
 Object3D::Object3D() :
     position(Vertex3D(1, 1, 1)),
@@ -536,4 +538,21 @@ void Object3D::createFromJSON(cJSON *object)
     Object3D::setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
+}
+
+glm::mat4 Object3D::getModelMatrix()
+{
+    // Escalado, rotación y translación proporcionados
+    glm::vec3 escala(this->scale);
+    glm::vec3 angulosEuler(glm::radians(rotX), glm::radians(rotY), glm::radians(rotZ));
+    glm::vec3 translacion(position.x, position.y, position.z);
+
+    // Combinar las matrices para obtener la transformación final (escalado * rotación * translación)
+    glm::mat4 matrizTransformacion =
+        glm::translate(glm::mat4(1.0f), translacion) *
+        (glm::eulerAngleX(angulosEuler.x) * glm::eulerAngleY(angulosEuler.y) * glm::eulerAngleZ(angulosEuler.z)) *
+        glm::scale(glm::mat4(1.0f), escala)
+    ;
+
+    return matrizTransformacion;
 }

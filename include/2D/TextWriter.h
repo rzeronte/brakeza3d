@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <SDL2/SDL_ttf.h>
+#include <SDL_opengl.h>
 #include "../Misc/Color.h"
 
 
@@ -40,7 +41,6 @@ public:
     void setFont(TTF_Font *font);
 
     TTF_Font *getFont() const;
-
 };
 
 

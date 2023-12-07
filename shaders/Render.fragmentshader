@@ -1,0 +1,123 @@
+#version 330 core
+
+struct Material
+{
+    float shininess;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+struct PointLight
+{
+    vec3 position;
+
+    float constant;
+    float linear;
+    float quadratic;
+
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+vec3 CalcPointLight(Material material, PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+
+// Interpolated values from the vertex shaders
+in vec2 UV;
+in vec3 Position_worldspace;
+in vec3 Normal_cameraspace;
+in vec3 EyeDirection_cameraspace;
+in vec3 LightDirection_cameraspace;
+
+// Ouput data
+out vec3 color;
+
+// Values that stay constant for the whole mesh.
+uniform sampler2D myTextureSampler;
+uniform mat4 MV;
+uniform vec3 LightPosition_worldspace;
+
+vec3 pepe(Material m, PointLight light) {
+    // Light emission properties
+    // You probably want to put them as uniforms
+    vec3 LightColor = light.diffuse;
+    float LightPower = 5000000.0f;
+
+    // Material properties
+    vec3 MaterialDiffuseColor = m.diffuse;
+    vec3 MaterialAmbientColor = m.ambient * m.diffuse;
+    vec3 MaterialSpecularColor = m.specular;
+
+    // Distance to the light
+    float distance = length( LightPosition_worldspace - Position_worldspace );
+
+    // Normal of the computed fragment, in camera space
+    vec3 n = normalize( Normal_cameraspace );
+    vec3 l = normalize( LightDirection_cameraspace );
+    float cosTheta = clamp( dot( n,l ), 0,1 );
+
+    vec3 E = normalize(EyeDirection_cameraspace);
+    vec3 R = reflect(-l,n);
+    float cosAlpha = clamp( dot( E,R ), 0,1 );
+
+    vec3 finalColor =
+    // Ambient : simulates indirect lighting
+    MaterialAmbientColor +
+    // Diffuse : "color" of the object
+    MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
+    // Specular : reflective highlight, like a mirror
+    MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance);
+
+    return finalColor;
+}
+
+void main() {
+
+    vec3 MaterialDiffuseColor = texture( myTextureSampler, UV ).rgb;
+
+    Material material;
+    material.shininess = 0.1f;
+    material.specular = vec3(1.0f, 1.0f, 1.0f);
+    material.ambient = vec3(0.0f, 0.0f, 1.0f);
+    material.diffuse = MaterialDiffuseColor;
+
+    PointLight l;
+    l.ambient = vec3(1.0f);
+    l.specular = vec3(1.0f, 1.0f, 1.0f);
+    l.diffuse = vec3(0.0f, 1.0f, 0.0f);
+    l.position = LightPosition_worldspace;
+    l.quadratic = 1.0f;
+    l.linear = 0.9f;
+    l.constant = 0.32f;
+
+    //vec3 FinalColor = pepe(material, l);
+    vec3 viewDir = normalize(viewPos - Position_worldspace);
+
+    vec3 FinalColor2 = CalcPointLight(material, l, normalize(Normal_cameraspace), Position_worldspace, normalize(EyeDirection_cameraspace));
+
+    color = MaterialDiffuseColor * FinalColor2;
+}
+
+vec3 CalcPointLight(Material material, PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
+{
+    vec3 lightDir = normalize(light.position - fragPos);
+
+    vec3 reflectDir = reflect(-lightDir, normal);
+
+    float ambientStrength = 1.0f;
+    float diffuseStrength = max(dot(normal, lightDir), 0.0);
+    float specularStrength = pow(max(dot(viewDir, reflectDir), 0.0f), material.shininess);
+
+    float attenuation = 1.0f / (1.0f + 0.01f*pow(length(light.position - fragPos), 2));
+
+    vec3 ambient = light.ambient * material.ambient * ambientStrength;
+    vec3 diffuse = light.diffuse * material.diffuse * diffuseStrength;
+    vec3 specular = light.specular * material.specular * specularStrength;
+
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
+
+    return vec3(ambient + diffuse + specular);
+}

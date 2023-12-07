@@ -1,7 +1,9 @@
+#define GL_GLEXT_PROTOTYPES
 
 #include "../include/Brakeza3D.h"
+#include "../imgui/backends/imgui_impl_opengl3.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
-#include "../imgui/backends/imgui_impl_sdlrenderer2.h"
+#include <SDL2/SDL_opengl.h>
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 
@@ -44,11 +46,12 @@ void Brakeza3D::welcomeMessage() const {
 
 void Brakeza3D::mainLoop()
 {
+
     SDL_Event e;
 
     engineTimer.start();
 
-    componentsManager->getComponentRender()->initOpenCL();
+    //componentsManager->getComponentRender()->initOpenCL();
 
     managerGUI = new GUIManager(sceneObjects);
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
@@ -67,28 +70,35 @@ void Brakeza3D::mainLoop()
     EngineBuffers::get()->initLUATypes();
 
     while (!finish) {
+
         controlFrameRate();
 
-        this->updateTimer();
+        updateTimer();
 
         componentsManager->getComponentWindow()->clearVideoBuffers();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        componentsManager->getComponentRender()->writeOCLBuffersFromHost();
+        //componentsManager->getComponentRender()->writeOCLBuffersFromHost();
 
         preUpdateComponents();
+
+        checkForResizeOpenGLWindow(e);
 
         while (SDL_PollEvent(&e)) {
             onUpdateSDLPollEventComponents(&e, finish);
             ImGui_ImplSDL2_ProcessEvent(&e);
+
+            break;
         }
 
         onUpdateComponents();
+        if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
 
         componentsManager->getComponentRender()->onUpdateSceneObjectsSecondPass();
 
-        if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
 
-        componentsManager->getComponentRender()->writeOCLBufferIntoHost();
+        //componentsManager->getComponentRender()->writeOCLBufferIntoHost();
+
 
         componentsManager->getComponentRender()->drawObjetsInHostBuffer();
 
@@ -100,6 +110,15 @@ void Brakeza3D::mainLoop()
     onEndComponents();
 
     delete componentsManager;
+}
+
+void Brakeza3D::checkForResizeOpenGLWindow(SDL_Event &e) {
+    if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+        int width = e.window.data1;
+        int height = e.window.data2;
+        Logging::Message("%f, %f", width, height);
+        glViewport(0,0,(GLsizei)width,(GLsizei)height);
+    }
 }
 
 void Brakeza3D::controlFrameRate() const
@@ -196,8 +215,8 @@ ComponentsManager *Brakeza3D::getComponentsManager() const
 
 void Brakeza3D::ImGuiOnUpdate()
 {
-    ImGui_ImplSDLRenderer2_NewFrame();
-    ImGui_ImplSDL2_NewFrame(getComponentsManager()->getComponentWindow()->getWindow());
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame();
 
     ImGui::NewFrame();
     managerGUI->draw(
@@ -206,7 +225,7 @@ void Brakeza3D::ImGuiOnUpdate()
     );
 
     ImGui::Render();
-    ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Brakeza3D::ImGuiInitialize() const
@@ -221,7 +240,10 @@ void Brakeza3D::ImGuiInitialize() const
         getComponentsManager()->getComponentWindow()->getRenderer()
     );
 
-    ImGui_ImplSDLRenderer2_Init(getComponentsManager()->getComponentWindow()->getRenderer());
+    // Setup Platform/Renderer backends
+    ImGui_ImplSDL2_InitForOpenGL(getComponentsManager()->getComponentWindow()->getWindow(), getComponentsManager()->getComponentWindow()->context);
+    const char* glsl_version = "#version 130";
+    ImGui_ImplOpenGL3_Init(glsl_version);
 
     ImGuiIO &io = ImGui::GetIO();
     io.WantCaptureMouse = false;

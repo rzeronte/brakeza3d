@@ -17,6 +17,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_opengl.h>
+#include <vec3.hpp>
+#include <vec2.hpp>
 
 #define PLANE_BACKSIDE 0x000001
 #define PLANE_FRONT    0x000010
@@ -104,6 +107,9 @@ public:
     static std::string getExtensionFromFilename(const std::string &filename);
 
     static void writeToFile(const std::string& file, const char *content);
+
+    static bool loadOBJ(const char *path, std::vector<glm::vec3> &out_vertices, std::vector<glm::vec2> &out_uvs,
+                 std::vector<glm::vec3> &out_normals);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

@@ -15,6 +15,8 @@
 #include <assimp/Importer.hpp>      // C++ assimpImporter interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
+#include <vec3.hpp>
+#include <vec2.hpp>
 
 typedef float vec3_t[3];
 
@@ -25,6 +27,10 @@ typedef enum {
 
 class Mesh3D : public Object3D {
 private:
+
+    GLuint vertexbuffer;
+    GLuint uvbuffer;
+    GLuint normalbuffer;
 
     Octree *octree;
     Grid3D *grid;
@@ -131,6 +137,12 @@ public:
     void addMesh3DShader(ObjectShaderOpenCL *shader);
 
     void removeShader(int i);
+
+    void fillBuffers();
+
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> uvs;
 };
 
 

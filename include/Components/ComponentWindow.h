@@ -9,10 +9,14 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
 #include "Component.h"
+#include "../Render/ShaderOpenGL.h"
+#include "../Render/ShaderOpenGLImage.h"
+#include "../Render/ShaderOpenGLRender.h"
 
 class ComponentWindow : public Component {
 private:
     SDL_Window *window;
+
     SDL_Renderer *renderer;
     SDL_Surface *screenSurface;
     SDL_Texture *screenTexture;
@@ -20,6 +24,9 @@ private:
     TTF_Font *fontDefault;
     TTF_Font *fontAlternative;
 
+
+    ShaderOpenGLRender *shaderOGLRender;
+    ShaderOpenGLImage *shaderOGLImage;
 public:
 
     ComponentWindow();
@@ -53,6 +60,14 @@ public:
     TTF_Font *getFontAlternative();
 
     SDL_Surface *applicationIcon;
+
+    void initOpenGL();
+
+    SDL_GLContext context;
+
+    [[nodiscard]] ShaderOpenGLImage *getShaderOGLImage() const;
+
+    [[nodiscard]] ShaderOpenGLRender *getShaderOGLRender() const;
 };
 
 

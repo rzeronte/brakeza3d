@@ -92,6 +92,8 @@ public:
     Object3D &getSceneObjectByLabel(const std::string &label);
 
     Object3D *getSceneObjectById(int i);
+
+    void checkForResizeOpenGLWindow(SDL_Event &e);
 };
 
 
