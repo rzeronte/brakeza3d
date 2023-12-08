@@ -130,6 +130,7 @@ void Mesh3D::onUpdate()
         ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
             getModelMatrix(),
             modelTextures[0]->getOGLTextureID(),
+            modelTextures[0]->getOGLTextureID(),
             vertexbuffer,
             uvbuffer,
             normalbuffer,
@@ -237,6 +238,7 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
             Logging::Message("[ASSIMP] Loading '%s' as texture for mesh: %s", FullPath.c_str(), Filename.c_str());
 
             this->modelTextures.push_back(new Image(FullPath));
+            this->modelSpecularTextures.push_back(new Image(FullPath));
         } else {
             Logging::Log("ERROR: mMaterial[%s]: Not valid color", i);
         }

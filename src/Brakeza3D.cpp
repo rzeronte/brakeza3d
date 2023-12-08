@@ -82,13 +82,11 @@ void Brakeza3D::mainLoop()
 
         preUpdateComponents();
 
-        checkForResizeOpenGLWindow(e);
 
         while (SDL_PollEvent(&e)) {
+            checkForResizeOpenGLWindow(e);
             onUpdateSDLPollEventComponents(&e, finish);
             ImGui_ImplSDL2_ProcessEvent(&e);
-
-            break;
         }
 
         onUpdateComponents();

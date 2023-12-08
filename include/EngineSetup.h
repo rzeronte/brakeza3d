@@ -160,10 +160,10 @@ public:
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
-    float WALKING_SPEED = 45.0f;
-    float TURN_SPEED = 5.f;
-    float PITCH_SPEED = 5.f;
-    float STRAFE_SPEED = 45.0f;
+    float WALKING_SPEED = 0.1f;
+    float TURN_SPEED = 0.1f;
+    float PITCH_SPEED = 0.1f;
+    float STRAFE_SPEED = 0.1f;
 
     // MOUSE
     float MOUSE_SENSITIVITY = 0.250;

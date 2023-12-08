@@ -44,6 +44,7 @@ private:
 protected:
     std::vector<Triangle *> modelTriangles;
     std::vector<Image *> modelTextures;
+    std::vector<Image *> modelSpecularTextures;
     std::vector<Vertex3D *> modelVertices;
 
     Color flatColor;
