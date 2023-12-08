@@ -108,8 +108,6 @@ public:
 
     static void writeToFile(const std::string& file, const char *content);
 
-    static bool loadOBJ(const char *path, std::vector<glm::vec3> &out_vertices, std::vector<glm::vec2> &out_uvs,
-                 std::vector<glm::vec3> &out_normals);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H
