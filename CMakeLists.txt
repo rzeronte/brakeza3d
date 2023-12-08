@@ -184,7 +184,8 @@ add_executable(Brakeza3D
         include/Render/ShaderOpenGLImage.cpp
         include/Render/ShaderOpenGLImage.h
         include/Render/ShaderOpenGLRender.cpp
-        include/Render/ShaderOpenGLRender.h)
+        include/Render/ShaderOpenGLRender.h
+        include/Objects/OpenGLShaderTypes.h)
 
 target_link_libraries(Brakeza3D
     pthread
