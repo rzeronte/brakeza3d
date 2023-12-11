@@ -164,6 +164,7 @@ void Object3D::onUpdate()
     if (ComponentsManager::get()->getComponentRender()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
         runScripts();
     }
+
 }
 
 void Object3D::runScripts()
@@ -179,6 +180,16 @@ void Object3D::postUpdate()
 
     if (isRotationFrameEnabled()) {
         setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));
+    }
+
+    if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
+        Drawable::drawObject3DAxis(
+                this,
+                ComponentsManager::get()->getComponentCamera()->getCamera(),
+                true,
+                true,
+                true
+        );
     }
 }
 
@@ -378,7 +389,7 @@ void Object3D::drawImGuiProperties()
     if (ImGui::TreeNode("Position")) {
         const float range_min = -500000;
         const float range_max = 500000;
-        const float range_sensibility = 1;
+        const float range_sensibility = 0.1;
 
         ImGui::DragScalar("X", ImGuiDataType_Float, &getPosition().x, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
         ImGui::DragScalar("Y", ImGuiDataType_Float, &getPosition().y, range_sensibility ,&range_min, &range_max, "%f", 1.0f);

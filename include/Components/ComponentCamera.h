@@ -55,8 +55,6 @@ public:
 
     [[nodiscard]] bool isFreeLookEnabled() const;
 
-    void updateOCLContext();
-
     const CameraData &getCameraData() const;
 
     const FrustumData &getFrustumData() const;

@@ -114,47 +114,17 @@ public:
 
     void onUpdateSceneObjects();
 
-    void hiddenSurfaceRemoval();
-
-    void hiddenSurfaceRemovalTriangle(Triangle *t);
-
-    void hiddenSurfaceRemovalTriangleForLight(Triangle *t, LightPoint3D *l, std::vector<Triangle *> &visibleTrianglesForLight, std::vector<Triangle *> &clippedTriangles);
-
     void hiddenOctreeRemoval();
 
     void hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle *> &triangles);
 
-    void drawVisibleTriangles();
-
-    void handleTrianglesToTiles(std::vector<Triangle *> &triangles);
-
-    void drawTilesGrid();
-
-    void drawTriangles(std::vector<Triangle *> &visibleTriangles);
-
-    void render(Triangle *t);
-
-    void triangleRasterizer(Triangle *t);
-
-    void triangleRasterizerForDepthMapping(Triangle *t, LightPoint3D *ligthpoint);
-
     std::vector<LightPoint3D *> &getLightPoints();
 
-    void processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *, bool bilinear);
-
-    void drawTilesTriangles(std::vector<Triangle *> *visibleTriangles);
-
     void initTiles();
-
-    void drawTileTriangles(int i, std::vector<Triangle *> &trianglesToDraw);
 
     void softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY);
 
     static void drawWireframe(Triangle *t);
-
-    Color processPixelFog(Fragment *fragment, Color pixelColor);
-
-    Color processPixelLights(Triangle *t, Fragment *f, Color c);
 
     void updateLights();
 
@@ -165,10 +135,6 @@ public:
     std::vector<Triangle *> &getVisibleTriangles();
 
     std::vector<Triangle *> &getSpritesTriangles();
-
-    void extractLightPointsFromObjects3D();
-
-    void createLightPointsDepthMappings();
 
     [[nodiscard]] Object3D* getSelectedObject() const;
 

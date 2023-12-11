@@ -15,10 +15,6 @@ ShaderOpenGLRender::ShaderOpenGLRender(const std::string &vertexFilename, const 
     glBindVertexArray(VertexArrayID);
 }
 
-GLuint ShaderOpenGLRender::getVertexArrayID() const {
-    return VertexArrayID;
-}
-
 void ShaderOpenGLRender::render(
     glm::mat4 ModelMatrix,
     GLint textureID,
@@ -29,82 +25,42 @@ void ShaderOpenGLRender::render(
     int size
 )
 {
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-
     glUseProgram(programID);
-    glBindVertexArray(getVertexArrayID());
+    glBindVertexArray(VertexArrayID);
 
     glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix();
     glm::mat4 ProjectionMatrix = Camera3D::getProjectionMatrix();
 
-    setMat4("projection", ProjectionMatrix);
-    setMat4("view", ViewMatrix);
-    setMat4("model", ModelMatrix);
-
     auto cameraPosition = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
     glm::vec3 cameraPos = glm::vec3(cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
+    setMat4("projection", ProjectionMatrix);
+    setMat4("view", ViewMatrix);
+    setMat4("model", ModelMatrix);
+    setVec3("viewPos", cameraPos);
+
+    setInt("numLights", (int) pointsLights.size());
+
     setInt("material.diffuse", 0);
     setInt("material.specular", 1);
-
-    setVec3("viewPos", cameraPos);
     setFloat("material.shininess", 32.0f);
-
-    glm::vec3 pointLightPositions[] = {
-            glm::vec3( 0.7f,  0.2f,  2.0f),
-            glm::vec3( 2.3f, -3.3f, -4.0f),
-            glm::vec3(-4.0f,  2.0f, -12.0f),
-            glm::vec3( 0.0f,  0.0f, -3.0f)
-    };
 
     // directional light
     setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
     setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
     setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
     setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
-    // point light 1
-    setVec3("pointLights[0].position", pointLightPositions[0]);
-    setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-    setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-    setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-    setFloat("pointLights[0].constant", 1.0f);
-    setFloat("pointLights[0].linear", 0.09f);
-    setFloat("pointLights[0].quadratic", 0.032f);
 
-    // point light 2
-    setVec3("pointLights[1].position", pointLightPositions[1]);
-    setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-    setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
-    setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
-    setFloat("pointLights[1].constant", 1.0f);
-    setFloat("pointLights[1].linear", 0.09f);
-    setFloat("pointLights[1].quadratic", 0.032f);
-    // point light 3
-    setVec3("pointLights[2].position", pointLightPositions[2]);
-    setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-    setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
-    setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
-    setFloat("pointLights[2].constant", 1.0f);
-    setFloat("pointLights[2].linear", 0.09f);
-    setFloat("pointLights[2].quadratic", 0.032f);
-    // point light 4
-    setVec3("pointLights[3].position", pointLightPositions[3]);
-    setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-    setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
-    setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
-    setFloat("pointLights[3].constant", 1.0f);
-    setFloat("pointLights[3].linear", 0.09f);
-    setFloat("pointLights[3].quadratic", 0.032f);
+    //fillPointLightsUniform();
 
+    getPointLightFromSceneObjects();
+    fillPointLightsUBO();
 
     Vertex3D forward = ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose() * Vertex3D(0, 0, 1);
 
-    const auto f = glm::vec3(forward.x, forward.y, forward.z);
-
     // spotLight
     setVec3("spotLight.position", cameraPos);
-    setVec3("spotLight.direction", f);
+    setVec3("spotLight.direction", forward.x, forward.y, forward.z);
     setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
     setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
     setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
@@ -114,16 +70,44 @@ void ShaderOpenGLRender::render(
     setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
     setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
+    selectActiveTextures(textureID, textureSpecularID);
+    setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
 
-    // bind diffuse map
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    glDrawArrays(GL_TRIANGLES, 0, (GLint) size );
 
-    // bind specular map
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, textureSpecularID);
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
 
-    // 1rst attribute buffer : vertices
+    glDeleteBuffers(1, &bufferUBO);
+}
+
+void ShaderOpenGLRender::fillPointLightsUBO()
+{
+    glGenBuffers(1, &bufferUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, bufferUBO);
+    glBufferData(GL_UNIFORM_BUFFER, (int) (pointsLights.size() * sizeof(PointLight)), pointsLights.data(), GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferUBO);
+    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
+}
+
+void ShaderOpenGLRender::fillPointLightsUniform() const {
+    for (int i = 0; i < (int) pointsLights.size(); ++i) {
+        const PointLight& light = pointsLights[i];
+        std::string prefix = "pointLights[" + std::to_string(i) + "].";
+
+        setVec4(prefix + "position", light.position);
+        setVec4(prefix + "ambient", light.ambient);
+        setVec4(prefix + "diffuse", light.diffuse);
+        setVec4(prefix + "specular", light.specular);
+        setFloat(prefix + "constant", light.constant);
+        setFloat(prefix + "linear", light.linear);
+        setFloat(prefix + "quadratic", light.quadratic);
+    }
+}
+
+void ShaderOpenGLRender::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
+{
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glVertexAttribPointer(
@@ -157,17 +141,37 @@ void ShaderOpenGLRender::render(
             0,                                // stride
             nullptr
     );
-
-
-    // Draw the triangles !
-    glDrawArrays(GL_TRIANGLES, 0, (GLint) size );
-
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
 }
 
-void ShaderOpenGLRender::initDEMO() {
+void ShaderOpenGLRender::selectActiveTextures(GLint textureID, GLint textureSpecularID)
+{
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureID);
 
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, textureSpecularID);
+}
+
+void ShaderOpenGLRender::getPointLightFromSceneObjects()
+{
+    pointsLights.clear();
+
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    for (auto o : sceneObjects) {
+        auto l = dynamic_cast<LightPoint3D*>(o);
+        auto p = o->getPosition();
+
+        if (l == nullptr) continue;
+
+        pointsLights.push_back({
+            glm::vec4(p.x, p.y, p.z, 0),
+            l->ambient,
+            l->diffuse,
+            l->specular,
+            l->constant,
+            l->linear,
+            l->quadratic
+        });
+    }
 
 }
