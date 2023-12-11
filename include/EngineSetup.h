@@ -69,7 +69,7 @@ public:
     // Draw axis
     bool RENDER_MAIN_AXIS = false;
     bool RENDER_OBJECTS_AXIS = false;
-    float OBJECT_AXIS_SIZE = 600;
+    float OBJECT_AXIS_SIZE = 1;
 
     bool EXECUTE_GAMEOBJECTS_ONUPDATE = true;
 
@@ -86,11 +86,8 @@ public:
     bool DRAW_ANIMATION_BONES = false;
     bool DRAW_DECAL_WIREFRAMES = false;
 
-    bool TEXTURES_BILINEAR_INTERPOLATION = true;
-
     bool DRAW_OBJECT3D_BILLBOARD = false;
     bool DRAW_LIGHTPOINTS_BILLBOARD = true;
-    bool DRAW_LIGHTPOINTS_AXIS = true;
     bool DRAW_PENDULUM_THREAD = false;
 
 
@@ -103,10 +100,7 @@ public:
     bool DRAW_MESH3D_GRID_NO_EMPTY = true;
 
     // Z BUFFER
-    bool CREATE_LIGHT_ZBUFFER = false;
-    bool ENABLE_SHADOW_MAPPING = false;
     bool ENABLE_LIGHTS = true;
-    bool ENABLE_LIGHTS_SPECULAR = true;
     bool DRAW_LIGHTS_DIRECTION = false;
     float LIGHTS_DIRECTION_SIZE = 2500;
 

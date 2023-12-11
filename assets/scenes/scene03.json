@@ -1,40 +1,12 @@
 {
 	"objects":	[{
-			"name":	"Eye",
-			"scale":	0.5,
-			"stencilBufferEnabled":	true,
+			"name":	"added_item_11",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
 			"position":	{
-				"x":	0,
-				"y":	0,
-				"z":	6000
-			},
-			"rotation":	{
-				"x":	186,
-				"y":	21,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models/eye.fbx",
-			"enableLights":	false,
-			"shaders":	[{
-					"type":	"ShaderEdgeObject",
-					"size":	2.5,
-					"color":	{
-						"r":	0,
-						"g":	255,
-						"b":	0
-					}
-				}],
-			"type":	"Mesh3D"
-		}, {
-			"name":	"Moon",
-			"scale":	7.559999942779541,
-			"stencilBufferEnabled":	true,
-			"position":	{
-				"x":	0,
-				"y":	0,
-				"z":	10016
+				"x":	1,
+				"y":	1,
+				"z":	1
 			},
 			"rotation":	{
 				"x":	0,
@@ -43,38 +15,57 @@
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
-			"model":	"../assets/models/moon_planet.fbx",
+			"model":	"../assets/models/planet_cube_02.fbx",
 			"enableLights":	false,
 			"shaders":	[],
 			"type":	"Mesh3D"
+		}, {
+			"name":	"new_object_16",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"position":	{
+				"x":	3,
+				"y":	-1,
+				"z":	-2
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"ambient":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	1,
+			"linear":	0.090000003576278687,
+			"quadratic":	0.032000001519918442,
+			"type":	"LightPoint3D"
 		}],
-	"shaders":	[{
-			"type":	"ShaderImage",
-			"image":	"../assets/images/galaxy.png",
-			"usingOffset":	true,
-			"offsetX":	0,
-			"offsetY":	0
-		}, {
-			"type":	"ShaderDepthOfField",
-			"focusPlaneDepth":	15000,
-			"focusRange":	4500,
-			"blurSize":	2.4999999368446879e-06,
-			"intensity":	1.1499999761581421
-		}, {
-			"type":	"ShaderBilinear"
-		}, {
-			"type":	"ShaderParticlesBlurBuffer"
-		}],
-	"scripts":	["scene02.json"],
+	"shaders":	[],
+	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-27.736003875732422,
-			"y":	-452.50576782226562,
-			"z":	-4378.1845703125
+			"x":	8.2125883102417,
+			"y":	0.93151462078094482,
+			"z":	-7.0098147392272949
 		},
 		"rotation":	{
-			"x":	15,
-			"y":	3,
+			"x":	2,
+			"y":	51,
 			"z":	0
 		}
 	}

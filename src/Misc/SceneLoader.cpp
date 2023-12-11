@@ -177,7 +177,15 @@ void SceneLoader::createObjectInScene() {
 }
 
 void SceneLoader::createLightPointInScene() {
-    auto o = new LightPoint3D(11, 1, 0, 0, 0, Color::red(), Color::green());
+    auto o = new LightPoint3D(
+        glm::vec4(0.05f, 0.05f, 0.05f, 0),
+        glm::vec4(1.0f, 0.0f, 0.0f, 0),
+        glm::vec4(1.0f, 1.0f, 1.0f, 0),
+        1.0f,
+        0.09f,
+        0.032f
+    );
+    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
     o->setBelongToScene(true);
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
 }

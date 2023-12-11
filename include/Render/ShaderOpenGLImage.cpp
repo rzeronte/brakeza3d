@@ -46,8 +46,8 @@ ShaderOpenGLImage::ShaderOpenGLImage(const std::string &vertexFilename, const st
 
 void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int h) const
 {
-
     glEnable(GL_BLEND);
+    glDisable(GL_DEPTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glUseProgram(programID);

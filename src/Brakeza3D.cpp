@@ -78,6 +78,7 @@ void Brakeza3D::mainLoop()
         componentsManager->getComponentWindow()->clearVideoBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
         //componentsManager->getComponentRender()->writeOCLBuffersFromHost();
 
         preUpdateComponents();
@@ -90,6 +91,7 @@ void Brakeza3D::mainLoop()
         }
 
         onUpdateComponents();
+
         if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
 
         componentsManager->getComponentRender()->onUpdateSceneObjectsSecondPass();
