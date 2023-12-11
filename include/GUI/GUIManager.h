@@ -1049,13 +1049,6 @@ public:
 
             if (ImGui::BeginMenu("Lights")) {
                 ImGui::Checkbox("Light System", &EngineSetup::get()->ENABLE_LIGHTS);
-                ImGui::Checkbox("Create lights Z-Buffer", &EngineSetup::get()->CREATE_LIGHT_ZBUFFER);
-                if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER) {
-                    ImGui::Checkbox("Lights Deep Test", &EngineSetup::get()->ENABLE_SHADOW_MAPPING);
-                }
-                ImGui::Separator();
-                ImGui::Checkbox("Specularity", &EngineSetup::get()->ENABLE_LIGHTS_SPECULAR);
-
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Lights Billboards", &EngineSetup::get()->DRAW_LIGHTPOINTS_BILLBOARD);
                 ImGui::Separator();
@@ -1133,9 +1126,8 @@ public:
                 ImGui::Checkbox("Draw Main Axis", &EngineSetup::get()->RENDER_MAIN_AXIS);
                 ImGui::Checkbox("Draw Object3D Axis", &EngineSetup::get()->RENDER_OBJECTS_AXIS);
                 if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
-                    ImGui::Checkbox("Draw Lights Axis", &EngineSetup::get()->DRAW_LIGHTPOINTS_AXIS);
                     ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &EngineSetup::get()->OBJECT_AXIS_SIZE,
-                                      range_test_sensibility, &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                                      range_min_lightmap_intensity, &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
 
                 }
                 ImGui::Separator();

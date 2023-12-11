@@ -12,6 +12,7 @@
 #include "../Render/ShaderOpenGL.h"
 #include "../Render/ShaderOpenGLImage.h"
 #include "../Render/ShaderOpenGLRender.h"
+#include "../Render/ShaderOpenGLLine.h"
 
 class ComponentWindow : public Component {
 private:
@@ -24,9 +25,9 @@ private:
     TTF_Font *fontDefault;
     TTF_Font *fontAlternative;
 
-
     ShaderOpenGLRender *shaderOGLRender;
     ShaderOpenGLImage *shaderOGLImage;
+    ShaderOpenGLLine *shaderOGLLine;
 public:
 
     ComponentWindow();
@@ -68,6 +69,9 @@ public:
     [[nodiscard]] ShaderOpenGLImage *getShaderOGLImage() const;
 
     [[nodiscard]] ShaderOpenGLRender *getShaderOGLRender() const;
+
+    ShaderOpenGLLine *getShaderOGLLine() const;
+
 };
 
 

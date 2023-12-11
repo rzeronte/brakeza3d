@@ -219,6 +219,7 @@ void Drawable::drawLineLighting(Line2D L, Color color)
     }
 }
 
+
 void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Color color)
 {
     if (!Tools::isValidVector(V.vertex1) || !Tools::isValidVector(V.vertex2)) {
@@ -253,8 +254,7 @@ void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Color color)
     Transforms::screenSpace(P1, V1);
     Transforms::screenSpace(P2, V2);
 
-    Line2D line(P1.x, P1.y, P2.x, P2.y);
-    Drawable::drawLine2D(line, color);
+    ComponentsManager::get()->getComponentWindow()->getShaderOGLLine()->render(P1, P2, color, 0.0001f);
 }
 
 
@@ -341,7 +341,7 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bo
         return;
     }
 
-    float size = EngineSetup::get()->OBJECT_AXIS_SIZE;
+    const float size = EngineSetup::get()->OBJECT_AXIS_SIZE;
     Vertex3D endRight = object->getPosition() + object->AxisRight().getScaled(size);
     Vertex3D endUp = object->getPosition() + object->AxisUp().getScaled(size);
     Vertex3D endForward = object->getPosition() + object->AxisForward().getScaled(size);

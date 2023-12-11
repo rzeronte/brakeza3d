@@ -70,14 +70,14 @@ void ComponentWindow::initWindow() {
 
     Logging::Message("Available video drivers:");
 
-    /*SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
     SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
     SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
     SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
     SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
-    SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );*/
+    SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
 
-    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
+    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
     SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
     SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 
@@ -113,16 +113,16 @@ void ComponentWindow::initWindow() {
 
         screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
         SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_MOD);
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_TARGETTEXTURE);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         initOpenGL();
 
-        screenTexture = SDL_CreateTexture(
+        /*screenTexture = SDL_CreateTexture(
             renderer,
             SDL_PIXELFORMAT_RGBA32,
             SDL_TEXTUREACCESS_STREAMING,
             EngineSetup::get()->screenWidth,
             EngineSetup::get()->screenHeight
-        );
+        );*/
 
 
         SDL_SetWindowIcon(this->window, applicationIcon);
@@ -179,7 +179,7 @@ void ComponentWindow::initOpenGL()
 {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -192,6 +192,11 @@ void ComponentWindow::initOpenGL()
         "../shaders/Image.vertexshader",
         "../shaders/Image.fragmentshader"
     );
+
+    shaderOGLLine = new ShaderOpenGLLine(
+        "../shaders/Line.vertexshader",
+        "../shaders/Line.fragmentshader"
+    );
 }
 
 ShaderOpenGLImage *ComponentWindow::getShaderOGLImage() const {
@@ -200,4 +205,8 @@ ShaderOpenGLImage *ComponentWindow::getShaderOGLImage() const {
 
 ShaderOpenGLRender *ComponentWindow::getShaderOGLRender() const {
     return shaderOGLRender;
+}
+
+ShaderOpenGLLine *ComponentWindow::getShaderOGLLine() const {
+    return shaderOGLLine;
 }
