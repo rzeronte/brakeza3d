@@ -36,3 +36,7 @@ TexturePackage::~TexturePackage()
         delete item;
     }
 }
+
+std::vector<TexturePackageItem *> &TexturePackage::getItems(){
+    return items;
+}

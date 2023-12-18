@@ -1,9 +1,13 @@
+#define GL_GLEXT_PROTOTYPES
 
 #include <SDL2/SDL_image.h>
 #include "../../include/2D/TextWriter.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
+#include <SDL2/SDL_opengl.h>
+#include <glm/ext/matrix_float4x4.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
 
 TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font)
 :
@@ -15,25 +19,21 @@ TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font)
 
 void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Color c)
 {
-    SDL_Color color;
-
-    color.r = (int) c.r;
-    color.g = (int) c.g;
-    color.b = (int) c.b;
+    SDL_Color color = {(Uint8) c.r, (Uint8) c.g, (Uint8) c.b};
 
     auto *surfaceTTF = TTF_RenderText_Blended(font, text, color);
     auto *textureTTF = SDL_CreateTextureFromSurface(renderer, surfaceTTF);
 
-    SDL_SetTextureAlphaMod(textureTTF, (int) alpha);
-
-    SDL_Rect msgRect;
+    /*SDL_Rect msgRect;
     msgRect.x = convertPositionXAspect(x);
     msgRect.y = convertPositionYAspect(y);
     msgRect.w = convertPositionXAspect(w);
-    msgRect.h = convertPositionYAspect(h);
+    msgRect.h = convertPositionYAspect(h);*/
 
-    SDL_RenderCopy(renderer, textureTTF, nullptr, &msgRect);
+    GLuint texID = Image::makeOGLImage(surfaceTTF);
+    ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(texID, x, y, w, h);
 
+    glDeleteTextures(1, &texID);
     SDL_FreeSurface(surfaceTTF);
     SDL_DestroyTexture(textureTTF);
 }

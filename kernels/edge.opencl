@@ -9,7 +9,8 @@ __kernel void onUpdate(
     __global bool *stencil,
     float r,
     float g,
-    float b
+    float b,
+    float size
 )
 {
     int x = get_global_id(0);
@@ -19,9 +20,6 @@ __kernel void onUpdate(
    float2 uv = { x, y };
    float2 resolution = { screenWidth, screenHeight};
    float2 st = uv / resolution;
-
-
-    float size = 2.0;
 
     float2 dML = {size, 0.0};
     float2 dMR = {0.0, size};

@@ -5,7 +5,6 @@
 
 ComponentGame::ComponentGame()
 :
-    Component(false),
     cameraCountDownPosition(Vertex3D(0, 3000, 5000)),
     cameraInGamePosition(Vertex3D(0, -1000, -1000)),
     textWriter(nullptr),
@@ -30,8 +29,6 @@ ComponentGame::ComponentGame()
 void ComponentGame::onStart()
 {
     Logging::head("ComponentGame onStart");
-
-    Brakeza3D::get()->addObject3D(new LightPoint3D(11, 1, 0, 0, 0, Color(100, 16, 22), Color(15, 33, 92)), "epe");
 
     player = new Player();
 
@@ -148,7 +145,7 @@ void ComponentGame::loadShaders()
     shaderProjectiles = new ShaderProjectiles();
     shaderShockWave = new ShaderShockWave(true);
 
-    shaderEdgeObject = new ShaderEdgeObject(false, PaletteColors::getStatisticsText());
+    shaderEdgeObject = new ShaderEdgeObject(false, nullptr, PaletteColors::getStatisticsText(), 2.0f);
 }
 
 ComponentGame::~ComponentGame()

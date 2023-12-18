@@ -5,28 +5,36 @@
 #ifndef BRAKEZA3D_SHADEREDGEOBJECT_H
 #define BRAKEZA3D_SHADEREDGEOBJECT_H
 
-
 #include "../Render/ShaderOpenCL.h"
 #include "../Misc/Image.h"
-#include "../Objects/Object3D.h"
 #include "../Objects/Mesh3D.h"
+#include "../Render/ObjectShaderOpenCL.h"
 
-class ShaderEdgeObject : public ShaderOpenCL {
+class ShaderEdgeObject : public ObjectShaderOpenCL {
 private:
-    Mesh3D* object;
     Color color;
+    float size;
 public:
-    explicit ShaderEdgeObject(bool active, Color c);
+
+    ShaderEdgeObject(bool active, Object3D *object, const Color &color, float size);
 
     void update() override;
 
-    ~ShaderEdgeObject() override;
-
-    void executeKernelOpenCL();
-
     void setColor(Color c);
 
-    void setObject(Mesh3D *object);
+    void preUpdate() override;
+
+    void postUpdate() override;
+
+    void drawImGuiProperties() override;
+
+    cJSON * getJSON() override;
+
+    void setSize(float size);
+
+    [[nodiscard]] float getSize() const;
+
+    static ShaderEdgeObject *create();
 };
 
 

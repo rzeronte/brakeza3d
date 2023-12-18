@@ -109,9 +109,8 @@ void AmmoProjectileBody::onUpdate()
         startEndingCounter();
     }
 
-    particleEmitter->shaderParticles->setOrigin(Transforms::WorldToPoint(getPosition(), ComponentsManager::get()->getComponentCamera()->getCamera()));
-    particleEmitter->shaderParticles->setDirection(AxisForward());
     particleEmitter->setPosition(getPosition());
+    particleEmitter->setRotation(getRotation());
 
     particleEmitter->onUpdate();
     particleEmitter->drawOnUpdateSecondPass();

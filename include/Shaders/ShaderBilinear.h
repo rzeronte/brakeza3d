@@ -16,6 +16,12 @@ public:
     void update() override;
 
     void executeKernelOpenCL();
+
+    void preUpdate();
+
+    void postUpdate();
+
+    cJSON *getJSON();
 };
 
 

@@ -8,7 +8,6 @@ void Mesh3DAnimated::onUpdate()
     if (this->scene != nullptr) {
         this->updateFrameTransformations();
     }
-    openClRenderer->updateTriangles();
     Mesh3D::onUpdate();
 }
 
@@ -81,13 +80,14 @@ void Mesh3DAnimated::updateFrameTransformations() {
 }
 
 bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &filename) {
-    Logging::Log("AssimpLoad for %s", filename.c_str());
+    Logging::Log("AssimpLoadAnimation for %s", filename.c_str());
 
     this->scene = importer.ReadFile(
         filename,
         aiProcess_Triangulate |
         aiProcess_SortByPType |
-        aiProcess_FlipUVs
+        aiProcess_FlipUVs|
+        aiProcess_GenNormals
     );
 
     if (!scene) {
@@ -98,7 +98,9 @@ bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &filename) {
     this->AssimpInitMaterials(scene, filename);
     this->ReadNodes();
 
-    openClRenderer->makeOCLTriangles();
+    //bool res = Tools::loadOBJ("../suzanne.obj", vertices, uvs, normals);
+    fillBuffers();
+    this->sourceFile = filename;
 
     return true;
 }
@@ -139,6 +141,13 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh) {
         v.v = pTexCoord->y;
 
         localMeshVertices[j] = v;
+        vertices.emplace_back(vf.x, vf.y, vf.z);
+        uvs.emplace_back(v.u, v.v);
+    }
+
+    for (unsigned int j = 0; j < mesh->mNumVertices; j++) {
+        aiVector3t vf = mesh->mNormals[j];
+        normals.emplace_back(vf.x, vf.y, vf.z);
     }
 
     this->meshVertices[i] = localMeshVertices;

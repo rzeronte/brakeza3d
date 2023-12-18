@@ -3,6 +3,12 @@
 #include "../include/EngineBuffers.h"
 #include "../include/ComponentsManager.h"
 #include "../include/Shaders/ShaderExplosion.h"
+#include "LUAIntegration.h"
+
+inline void my_panic(sol::optional<std::string> maybe_msg) {
+    const std::string& msg = maybe_msg.value();
+    throw std::runtime_error(   msg);
+}
 
 EngineBuffers *EngineBuffers::instance = nullptr;
 
@@ -24,6 +30,8 @@ EngineBuffers::EngineBuffers()
     videoBuffer = new Uint32[sizeBuffers];
 
     loadParticlesEmptyBuffer();
+
+    sharedLuaContext = new SharedLUAContext();
 }
 
 void EngineBuffers::clearDepthBuffer() const {
@@ -69,7 +77,7 @@ void EngineBuffers::clearVideoBuffer() const {
         return;
     }
 
-    std::fill(videoBuffer, videoBuffer + sizeBuffers, Color::black().getColor());
+    std::fill(videoBuffer, videoBuffer + sizeBuffers, 0);
 }
 
 void EngineBuffers::flipVideoBufferToSurface(SDL_Surface *surface) {
@@ -81,7 +89,7 @@ void EngineBuffers::createOpenCLBuffers(_cl_context *context, cl_command_queue &
 {
     videoBufferOCL = clCreateBuffer(
         context,
-        CL_MEM_READ_WRITE | CL_MEM_USE_HOST_PTR,
+        CL_MEM_WRITE_ONLY | CL_MEM_USE_HOST_PTR,
         sizeBuffers * sizeof(Uint32),
         videoBuffer,
         nullptr
@@ -94,25 +102,42 @@ void EngineBuffers::createOpenCLBuffers(_cl_context *context, cl_command_queue &
         nullptr,
         nullptr
     );
+
+    tileManager = new TileManager(40, 30);
+
 }
 
 void EngineBuffers::loadParticlesEmptyBuffer()
 {
 
-    for (int i = 0; i < MAX_OPENCL_PARTICLES; i++) {
-        particles.emplace_back(
-                OCVertex3D(0, 0, 0),
-                OCVertex3D(0, 0, 0),
-                OCVertex3D(0, 0, 0),
-                OCVertex3D(0, 0, 0),
-                OCVertex3D(0, 0, 0),
-                0,
-                0,
-                false
-        );
-    }
 }
 
 const std::vector<OCParticle> &EngineBuffers::getParticles() const {
     return particles;
 }
+
+sol::state &EngineBuffers::getLua()
+{
+    return lua;
+}
+
+void EngineBuffers::initLUATypes()
+{
+    lua.open_libraries(sol::lib::base);
+
+    LUAIntegration(lua);
+
+    lua["brakeza"] = Brakeza3D::get();
+    lua["componentsManager"] = ComponentsManager::get();
+    lua["context"] = sharedLuaContext;
+    lua.set_function("print", &Logging::Message);
+}
+
+Object3D &EngineBuffers::getSceneObjectById(int i)
+{
+    auto sceneObjects = Brakeza3D::get()->getSceneObjects();
+
+    return *sceneObjects[i];
+}
+
+

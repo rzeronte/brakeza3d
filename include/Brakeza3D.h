@@ -14,13 +14,14 @@
 #include "Components/ComponentRender.h"
 #include "ComponentsManager.h"
 #include "GUI/GUIManager.h"
+#include "../sol/sol.hpp"
 #include <thread>
 
 class Brakeza3D {
 private:
-    GUIManager managerGUI;
 
     ComponentsManager *componentsManager;
+    GUIManager *managerGUI;
 
     Timer engineTimer;
 
@@ -32,7 +33,7 @@ private:
     std::vector<Object3D *> sceneObjects;
 
     bool finish = false;
-    SDL_Event e;
+
 public:
     Brakeza3D();
 
@@ -68,7 +69,7 @@ public:
 
     void onEndComponents();
 
-    void startLoop();
+    void mainLoop();
 
     [[nodiscard]] ComponentsManager *getComponentsManager() const;
 
@@ -84,9 +85,16 @@ public:
 
     static void LoadDemo();
 
-    void renderLoop();
+    GUIManager *getManagerGui();
 
-    void mainLoop();
+    void welcomeMessage() const;
+
+    Object3D &getSceneObjectByLabel(const std::string &label);
+
+    Object3D *getSceneObjectById(int i);
+
+    static void checkForResizeOpenGLWindow(SDL_Event &e);
+
 };
 
 

@@ -1,12 +1,18 @@
 #include "../../include/Physics/Ghost.h"
 #include "../../include/Brakeza3D.h"
 
-Ghost::Ghost() {
-    this->ghostObject = new btPairCachingGhostObject();
-    this->convexHullShape = new btConvexHullShape();
+Ghost::Ghost()
+:
+    typeShape(GhostTypeShape::GHOST_SIMPLE_SHAPE),
+    ghostObject( new btPairCachingGhostObject()),
+    convexHullShape(nullptr)
+{
 }
 
-void Ghost::makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh, int collisionGroup, int collisionMask) {
+void Ghost::makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh, int collisionGroup, int collisionMask)
+{
+    setTypeShape(GhostTypeShape::GHOST_TRIANGLE3D_MESH_SHAPE);
+    convexHullShape = new btConvexHullShape();
 
     mesh->updateBoundingBox();
     for (auto & modelTriangle : mesh->getModelTriangles()) {
@@ -32,6 +38,8 @@ void Ghost::makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh, int coll
 
 void Ghost::makeSimpleGhostBody(Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
+    setTypeShape(GhostTypeShape::GHOST_SIMPLE_SHAPE);
+
     btTransform transformation;
     transformation.setIdentity();
     transformation.setOrigin(btVector3(0, 0, 0));
@@ -43,6 +51,8 @@ void Ghost::makeSimpleGhostBody(Vertex3D dimensions, btDiscreteDynamicsWorld *wo
     ghostObject->setCollisionShape(convexHullShape);
     ghostObject->setWorldTransform(transformation);
     ghostObject->setUserPointer(dynamic_cast<Ghost *> (this));
+
+    ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 }
@@ -88,11 +98,6 @@ void Ghost::removeCollisionObject() const
     ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(getGhostObject());
 }
 
-void Ghost::addCollisionObject() const
-{
-    //ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->addCollisionObject(getGhostObject());
-};
-
 Ghost::~Ghost()
 {
     if (ghostObject != nullptr) {
@@ -102,3 +107,10 @@ Ghost::~Ghost()
     delete convexHullShape;
 }
 
+GhostTypeShape Ghost::getTypeShape() const {
+    return typeShape;
+}
+
+void Ghost::setTypeShape(GhostTypeShape typeShape) {
+    Ghost::typeShape = typeShape;
+}

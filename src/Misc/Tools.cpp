@@ -1,9 +1,12 @@
+#define GL_GLEXT_PROTOTYPES
 
 #include <string>
 #include <ctime>
 #include <vector>
 #include <SDL2/SDL_system.h>
 #include <algorithm>
+#include <fstream>
+#include <SDL2/SDL_opengl.h>
 #include "../../include/Misc/Tools.h"
 #include "../../include/EngineSetup.h"
 #include "../../include/EngineBuffers.h"
@@ -12,6 +15,10 @@
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/2D/Sprite2D.h"
+#include "../../include/Objects/Mesh3DAnimated.h"
+#include "../../include/Particles/ParticleEmitter.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #define MAX_SOURCE_SIZE (0x100000)
 
@@ -334,50 +341,6 @@ M3 Tools::BulletM3ToM3(btMatrix3x3 m) {
     );
 }
 
-ColorHSV Tools::getColorHSV(Color in)
-{
-    ColorHSV out;
-    double min, max, delta;
-
-    min = in.r < in.g ? in.r : in.g;
-    min = min  < in.b ? min  : in.b;
-
-    max = in.r > in.g ? in.r : in.g;
-    max = max  > in.b ? max  : in.b;
-
-    out.v = max;                                // v
-    delta = max - min;
-    if (delta < 0.00001)
-    {
-        out.s = 0;
-        out.h = 0; // undefined, maybe nan?
-        return out;
-    }
-    if( max > 0.0 ) { // NOTE: if Max is == 0, this divide would cause a crash
-        out.s = (delta / max);                  // s
-    } else {
-        // if max is 0, then r = g = b = 0
-        // s = 0, h is undefined
-        out.s = 0.0;
-        out.h = NAN;                            // its now undefined
-        return out;
-    }
-    if( in.r >= max )                           // > is bogus, just keeps compilor happy
-        out.h = ( in.g - in.b ) / delta;        // between yellow & magenta
-    else
-    if( in.g >= max )
-        out.h = 2.0 + ( in.b - in.r ) / delta;  // between cyan & yellow
-    else
-        out.h = 4.0 + ( in.r - in.g ) / delta;  // between magenta & cyan
-
-    out.h *= 60.0;                              // degrees
-
-    if( out.h < 0.0 )
-        out.h += 360.0;
-
-    return out;
-}
-
 Vertex3D Tools::randomVertex() {
     return Vertex3D(
         Tools::random(-2, 2),
@@ -406,21 +369,13 @@ float Tools::percentage(int value, int total)
     return (float) ((float) value * 100 / (float) total);
 }
 
-OCVertex3D Tools::vertexOCL(Vertex3D &v)
-{
-    return OCVertex3D(v.x, v.y, v.z, v.u, v.v);
-}
-
-OCPoint2D Tools::pointOCL(Point2D v)
-{
-    return OCPoint2D(v.x, v.y);
-}
 
 void Tools::addSceneObject(const std::string& filename, const std::string& name)
 {
-    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10000);
+    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
 
     auto *newObject = new Mesh3DAnimated();
+    newObject->setBelongToScene(true);
     newObject->setPosition(position);
     newObject->setScale(1);
     newObject->AssimpLoadAnimation(std::string(EngineSetup::get()->MODELS_FOLDER + filename));
@@ -478,4 +433,34 @@ void Tools::makeLoopSprite(Vertex3D position, TextureAnimated *animation, float 
         new Sprite2D( P1.x, P1.y, ttl, new TextureAnimated(animation)),
         Brakeza3D::uniqueObjectLabel("fadeInSpriteExplosion")
     );
+}
+
+std::string Tools::getExtensionFromFilename(const std::string& filename)
+{
+    size_t dotPosition = filename.find_last_of(".");
+    if (dotPosition != std::string::npos) {
+        return filename.substr(dotPosition + 1);
+    }
+
+    return "";
+}
+
+void Tools::writeToFile(const std::string& fileName, const char *content)
+{
+    Logging::Message("Writing to file %s!", fileName.c_str());
+
+    std::ofstream file(fileName, std::ios::trunc);
+
+    if (!file.is_open()) {
+        Logging::Message("File %s can't be loaded!", fileName.c_str());
+        return;
+    }
+
+    file << content;
+    file.close();
+
+    if (file.fail()) {
+        Logging::Message("Error writing to file %s", fileName.c_str());
+        return;
+    }
 }

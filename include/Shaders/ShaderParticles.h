@@ -16,13 +16,6 @@
 
 class ShaderParticles : public ShaderOpenCL
 {
-    cl_mem openCLBufferParticles;
-    cl_mem openCLBufferColorFrom;
-    cl_mem openCLBufferColorTo;
-    cl_mem openCLBufferDirection;
-    cl_mem openCLBufferOrigin;
-    cl_mem openCLBufferContext;
-
     Point2D origin;
     OCPoint2D ocOrigin;
 
@@ -43,8 +36,6 @@ public:
 
     void update(Point2D origin, Vertex3D direction, float intensity);
     void update() override;
-
-    ~ShaderParticles() override;
 
     void executeKernelOpenCL();
 

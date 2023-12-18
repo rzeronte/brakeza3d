@@ -6,8 +6,14 @@
 #include "../Objects/Vertex3D.h"
 #include "../../src/Collisions/Collisionable.h"
 
-class Body: public Collisionable {
+enum BodyTypeShape {
+    BODY_SIMPLE_SHAPE = 0,
+    BODY_TRIANGLE3D_MESH_SHAPE = 1
+};
 
+class Body: public Collisionable {
+protected:
+    BodyTypeShape typeShape;
 public:
     Body();
 
@@ -20,6 +26,10 @@ public:
     void setMass(float m);
 
     void removeCollisionObject() const;
+
+    [[nodiscard]] BodyTypeShape getTypeShape() const;
+
+    void setTypeShape(BodyTypeShape typeShape);
 
     virtual ~Body();
 };

@@ -6,6 +6,11 @@ unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int a
 #define AMPLITUDE_FACTOR 3.0f
 #define NUMBER_OF_WAVES 20.0f
 
+float2 wrap(float2 uv, float2 resolution)
+{
+    return fmod(uv, resolution);
+}
+
 __kernel void onUpdate(
     int screenWidth,
     int screenHeight,
@@ -17,35 +22,48 @@ __kernel void onUpdate(
     float offsetY
 )
 {
-    const int x = get_global_id(0);
-    const int y = get_global_id(1);
-    const int i = y * screenWidth + x;
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * screenWidth + x;
 
     const float2 uv = { (float)x, (float)y };
     const float2 resolution = { (float)screenWidth, (float)screenHeight };
     float2 st = uv / resolution;
 
-    if (usingOffset > 0) {
-        const float2 center = { 0.5f, 0.5f };
-        const float2 offsetToCenter = { 0.25f, 0.25f }; // center screen
-        const float2 offsetInput = { offsetX, offsetY };
+    const float2 center = { 0.5f, 0.5f };
+    const float2 offsetToCenter = { 0.25f, 0.25f }; // center screen
 
+    const float2 offsetInput = { offsetX, offsetY };
+
+    if (usingOffset > 0) {
         st /= 1.75f;
         st += center - offsetToCenter + offsetInput;
     }
 
-    // -- WAVE EFFECT
-    st.x += sin(st.y * NUMBER_OF_WAVES * PI + iTime * FLOW_SPEED_FACTOR) * (1.0f / resolution.x) * AMPLITUDE_FACTOR;
+    st = wrap(st, resolution);
 
-    st = fmod(st, resolution);
+    int cx = (int) (st.x * resolution.x);
+    int cy = (int) (st.y * resolution.y);
 
-    float2 cXY = st * resolution;
+    if (cx < 0) cx = 0;
+    if (cx >= screenWidth) cx = screenWidth - 1;
+    if (cy < 0) cy = 0;
+    if (cy >= screenHeight) cy = screenHeight - 1;
 
-    const int index = (int) cXY.y * screenWidth + (int) cXY.x;
+    int index = cy * screenWidth + cx;
 
-    unsigned int alpha = (image[index] >> 24) & 0xFF;
+    __global unsigned char *im = &image[index];
 
-    video[i] = alphaBlend(video[i], image[index], alpha);
+    unsigned int new = createRGB(
+        min((int) im[0], 255),
+        min((int) im[1], 255),
+        min((int) im[2], 255    )
+    );
+
+    unsigned int alpha = (image[index] >> 24) & 0xFF;  // Suponemos que el canal alfa está en el byte más significativo.
+
+    video[i] = alphaBlend(video[i], new, alpha);
+
 }
 
 unsigned int createRGB(int r, int g, int b)

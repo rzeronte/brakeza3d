@@ -25,7 +25,7 @@ RayLight::RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D 
     rayCallback->m_collisionFilterGroup = filterGroup;
     rayCallback->m_collisionFilterMask = filterMask;
 
-    light = new LightPoint3D(8, 1, 0, 0, 0, hit, Color(15, 33, 92));
+    light = new LightPoint3D(glm::vec4(1), glm::vec4(1), glm::vec4(1), 1, 1, 1);
     light->setRotation(180, 0, 0);
     light->setEnabled(false);
     Brakeza3D::get()->addObject3D(light, Brakeza3D::uniqueObjectLabel("rayLightPoint"));

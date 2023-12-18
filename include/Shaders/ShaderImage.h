@@ -32,6 +32,18 @@ public:
     void limitOffset();
 
     Image &getImage();
+
+    void update() override;
+
+    void postUpdate() override;
+
+    void preUpdate() override;
+
+    void drawImGuiProperties() override;
+
+    cJSON *getJSON() override;
+
+    void setOffsets(float x, float y);
 };
 
 

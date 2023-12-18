@@ -10,9 +10,6 @@ private:
     float width;
     float height;
 
-    Triangle T1;
-    Triangle T2;
-
     Vertex3D Q1;
     Vertex3D Q2;
     Vertex3D Q3;
@@ -20,6 +17,9 @@ private:
 
     Image *texture;
     std::vector<Triangle *> triangles;
+
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> uvs;
 public:
     Billboard(float width, float height);
 
@@ -27,15 +27,14 @@ public:
 
     void loadTexture(const std::string &name);
 
-    void setTrianglesTexture(Image *);
+    void setTexture(Image *texture);
 
-    void reassignTexture();
+    void fillBuffers();
 
-    Triangle *getT1();
-
-    Triangle *getT2();
-
-    std::vector<Triangle *> &getTriangles();
+    GLuint vertexbuffer;
+    GLuint uvbuffer;
+    GLuint normalbuffer;
+    std::vector<glm::vec3> vertices;
 };
 
 

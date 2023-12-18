@@ -9,17 +9,23 @@
 #include "Misc/Timer.h"
 #include "Objects/Sprite3D.h"
 #include "Misc/SoundPackage.h"
+#include "Misc/SharedLUAContext.h"
+#include "Misc/TileManager.h"
 
 // Singleton
 class EngineBuffers {
 
 private:
+    sol::state lua;
     static EngineBuffers *instance;
     std::vector<OCParticle> particles;
 
     EngineBuffers();
+    SharedLUAContext *sharedLuaContext;
 
 public:
+    TileManager *tileManager;
+
     static EngineBuffers *get();
 
     float *depthBuffer;
@@ -60,6 +66,12 @@ public:
     void loadParticlesEmptyBuffer();
 
     [[nodiscard]] const std::vector<OCParticle> &getParticles() const;
+
+    sol::state &getLua();
+
+    void initLUATypes();
+
+    static Object3D &getSceneObjectById(int i);
 };
 
 #endif

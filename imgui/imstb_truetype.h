@@ -1016,7 +1016,7 @@ STBTT_DEF unsigned char * stbtt_GetCodepointSDF(const stbtt_fontinfo *info, floa
 // But you can use the provided functions in two possible ways:
 //     stbtt_FindMatchingFont() will use *case-sensitive* comparisons on
 //             unicode-encoded names to try to find the font you want;
-//             you can run this before calling stbtt_InitFont()
+//             you can runEnvironment this before calling stbtt_InitFont()
 //
 //     stbtt_GetFontNameString() lets you get any of the various strings
 //             from the file yourself and do your own comparisons on them.
@@ -2008,7 +2008,7 @@ static stbtt__buf stbtt__cid_get_glyph_subrs(const stbtt_fontinfo *info, int gly
          start = end;
       }
    }
-   if (fdselector == -1) stbtt__new_buf(NULL, 0);
+   if (fdselector == -1) return stbtt__new_buf(NULL, 0); // [DEAR IMGUI] fixed, see #6007 and nothings/stb#1422
    return stbtt__get_subrs(info->cff, stbtt__cff_index_get(info->fontdicts, fdselector));
 }
 

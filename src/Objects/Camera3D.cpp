@@ -1,7 +1,10 @@
 #include <BulletCollision/CollisionShapes/btCapsuleShape.h>
+#include <ext/matrix_transform.hpp>
+#include <gtx/euler_angles.hpp>
 #include "../../include/Components/Camera3D.h"
 #include "../../include/Render/Maths.h"
 #include "../../include/EngineSetup.h"
+#include "../../include/Render/Logging.h"
 
 Camera3D::Camera3D(): speed(0), strafe(0), jump(0), m_ghostObject(nullptr)
 {
@@ -92,7 +95,7 @@ void Camera3D::StrafeLeft() {
 }
 
 void Camera3D::UpdatePositionForVelocity() {
-    this->setPosition(this->velocity.vertex2);
+    this->addToPosition(this->velocity.getComponent());
 }
 
 void Camera3D::UpdateVelocity() {
@@ -181,5 +184,22 @@ Vector3D &Camera3D::getVelocity() {
 
 const Vertex3D &Camera3D::getFollowToPositionOffset() const {
     return followToPositionOffset;
+}
+
+glm::mat4 Camera3D::getViewMatrix()  {
+    Vertex3D forward = getRotation().getTranspose() * Vertex3D(0, 0, 1);
+
+    const auto p = glm::vec3(position.x, position.y, position.z);
+    ViewMatrix = glm::lookAt(
+            p,
+            p + glm::vec3(forward.x, forward.y, forward.z),
+            glm::vec3(0,-1,0)
+    );
+
+    return ViewMatrix;
+}
+
+glm::mat4 Camera3D::getProjectionMatrix() {
+    return glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 10000000.0f);
 }
 

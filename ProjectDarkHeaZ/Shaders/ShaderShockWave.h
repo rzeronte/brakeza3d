@@ -26,11 +26,8 @@ struct OCShockWave {
 
 class ShaderShockWave: public ShaderOpenCL {
     std::vector<OCShockWave> waves;
-    cl_mem opencl_buffer_waves;
 public:
     explicit ShaderShockWave(bool active);
-
-    ~ShaderShockWave() override;
 
     void update() override;
 

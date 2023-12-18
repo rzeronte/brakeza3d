@@ -10,63 +10,44 @@
 
 class LightPoint3D : public Object3D {
 public:
+    glm::vec4 ambient;
+    glm::vec4 diffuse;
+    glm::vec4 specular;
+    float constant;
+    float linear;
+    float quadratic;
 
     LightPoint3D(
-        float power,
-        float kc,
-        float kl,
-        float kq,
-        float specularComponent,
-        Color c,
-        Color specularityColor
+        glm::vec4 ambient,
+        glm::vec4 diffuse,
+        glm::vec4 specular,
+        float constant,
+        float linear,
+        float quadratic
     );
-
-    void syncFrustum();
-
-    void clearShadowMappingBuffer() const;
-
-    [[nodiscard]] float getShadowMappingBuffer(int x, int y) const;
-
-    void setShadowMappingBuffer(int x, int y, float value) const;
-
-    Color color;
-    Color specularColor;
-
-    float kc = 1;   // constant attenuation
-    float kl = 0;   // linear attenuation
-    float kq = 0;   // quadratic attenuation
-
-    float p = 100;
-
-    Frustum *frustum;
-
-    float *shadowMappingBuffer;
-    int sizeBuffer;
-
-    float specularComponent = 20;
-
-    bool showDeepMapping;
-    bool showFrustum;
 
     void setColor(Color c);
     void setColorSpecularity(Color c);
 
-    Color mixColor(Color colorTexture, Vertex3D Q, Fragment *);
-
     void onUpdate();
-
-    void setPower(float p);
 
     void setConstant(float value);
     void setLinear(float value);
     void setCuadratic(float value);
 
-    Vertex3D getHalfWay(Vertex3D v);
-    void setSpecularComponent(float m);
-
-    void drawDeepMap(int pos_x, int pos_y) const;
-
     void onDrawHostBuffer() override;
+
+    const char *getTypeObject() override;
+
+    const char *getTypeIcon() override;
+
+    void drawImGuiProperties() override;
+
+    cJSON *getJSON() override;
+
+    static void createFromJSON(cJSON *object);
+
+    static void setPropertiesFromJSON(cJSON *object, LightPoint3D *o);
 };
 
 

@@ -59,13 +59,11 @@ void BillboardBody::updateTrianglesCoordinatesAndTexture(Camera3D *cam) {
     Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::get()->right;
 
     this->updateUnconstrainedQuad(this, up, right);
-
-    this->reassignTexture();
 }
 
 void BillboardBody::onUpdate() {
     Object3D::onUpdate();
 
     this->updateTrianglesCoordinatesAndTexture(ComponentsManager::get()->getComponentCamera()->getCamera());
-    Drawable::drawBillboard(this, &ComponentsManager::get()->getComponentRender()->getFrameTriangles());
+    //Drawable::drawBillboard(this, &ComponentsManager::get()->getComponentRender()->getFrameTriangles());
 }

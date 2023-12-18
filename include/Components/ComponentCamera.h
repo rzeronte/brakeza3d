@@ -8,7 +8,6 @@
 #include "../EngineSetup.h"
 #include "../Render/M3.h"
 #include "Component.h"
-#include "ComponentWindow.h"
 #include "Camera3D.h"
 #include "ComponentCollisions.h"
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
@@ -21,7 +20,6 @@ typedef float vec3_t[3];
 class ComponentCamera : public Component {
 private:
     Camera3D *camera;
-    bool freeLook;
     bool autoScroll;
     Vertex3D autoScrollSpeed;
 
@@ -57,11 +55,11 @@ public:
 
     [[nodiscard]] bool isFreeLookEnabled() const;
 
-    void updateOCLContext();
-
     const CameraData &getCameraData() const;
 
     const FrustumData &getFrustumData() const;
+
+    bool freeLook;
 };
 
 

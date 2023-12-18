@@ -1,6 +1,8 @@
+#define GL_GLEXT_PROTOTYPES
 
 #include <vector>
 #include <assimp/cimport.h>
+#include <ext/matrix_float4x4.hpp>
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
@@ -16,7 +18,7 @@ Mesh3D::Mesh3D()
     layer(Mesh3DRenderLayer::ONUPDATE)
 {
     decal = false;
-    openClRenderer = new MeshOpenCLRenderer(this, this->modelTriangles);
+    luaEnvironment.set("this", this);
 }
 
 void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles)
@@ -108,8 +110,6 @@ void Mesh3D::clone(Mesh3D *source)
     this->modelTextures = source->modelTextures;
     this->scale = source->scale;
     this->sharedTextures = true;
-
-    openClRenderer->makeOCLTriangles();
 }
 
 void Mesh3D::onUpdate()
@@ -118,13 +118,55 @@ void Mesh3D::onUpdate()
 
     if (isRemoved()) return;
 
-    if (isRender()) {
-        //this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
+    for (auto s: shaders) {
+        s->preUpdate();
     }
 
     if (layer == Mesh3DRenderLayer::ONUPDATE) {
-        onUpdateOpenCLRender();
+        //onUpdateOpenCLRender();
+        if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID) {
+            ComponentsManager::get()->getComponentWindow()->getShaderOglShading()->render(
+                    getModelMatrix(),
+                    vertexbuffer,
+                    uvbuffer,
+                    normalbuffer,
+                    (int) vertices.size()
+            );
+        }
+
+        if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED) {
+
+            if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
+                Drawable::drawOutline(this);
+            }
+
+            glEnable(GL_DEPTH);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+            ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
+                this,
+                modelTextures[0]->getOGLTextureID(),
+                modelTextures[0]->getOGLTextureID(),
+                vertexbuffer,
+                uvbuffer,
+                normalbuffer,
+                (int) vertices.size()
+            );
+        }
+
+        if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME){
+            ComponentsManager::get()->getComponentWindow()->getShaderOglWireframe()->render(
+                    getModelMatrix(),
+                    vertexbuffer,
+                    uvbuffer,
+                    normalbuffer,
+                    (int) vertices.size()
+            );
+        }
+
     }
+
 }
 
 void Mesh3D::drawOnUpdateSecondPass()
@@ -132,19 +174,22 @@ void Mesh3D::drawOnUpdateSecondPass()
     Object3D::drawOnUpdateSecondPass();
 
     if (layer == Mesh3DRenderLayer::SECONDARY) {
-        onUpdateOpenCLRender();
+        //onUpdateOpenCLRender();
+        //renderOpenGL();
     }
 }
 
-void Mesh3D::onUpdateOpenCLRender() {
-    if ((int) modelTriangles.size() > 0) {
-        openClRenderer->onUpdate(modelTextures[0]);
-    }
+void Mesh3D::onUpdateOpenCLRender()
+{
 }
 
 void Mesh3D::postUpdate()
 {
     Object3D::postUpdate();
+
+    for (auto s: shaders) {
+        s->postUpdate();
+    }
 }
 
 void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
@@ -159,7 +204,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     Assimp::Importer assimpImporter;
     const aiScene *scene = assimpImporter.ReadFile(
         fileName,
-        aiProcess_Triangulate | aiProcess_SortByPType | aiProcess_FlipUVs
+        aiProcess_Triangulate | aiProcess_SortByPType | aiProcess_FlipUVs | aiProcess_OptimizeMeshes
     );
 
     if (!scene) {
@@ -170,9 +215,10 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     AssimpInitMaterials(scene, fileName);
     AssimpProcessNodes(scene, scene->mRootNode);
 
-    openClRenderer->makeOCLTriangles();
-
     sourceFile = fileName;
+
+    //bool res = Tools::loadOBJ("../suzanne.obj", vertices, uvs, normals);
+    fillBuffers();
 }
 
 void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filename)
@@ -215,6 +261,7 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
             Logging::Message("[ASSIMP] Loading '%s' as texture for mesh: %s", FullPath.c_str(), Filename.c_str());
 
             this->modelTextures.push_back(new Image(FullPath));
+            this->modelSpecularTextures.push_back(new Image(FullPath));
         } else {
             Logging::Log("ERROR: mMaterial[%s]: Not valid color", i);
         }
@@ -255,6 +302,13 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
         v.v = pTexCoord->y;
 
         localMeshVertices[j] = v;
+        vertices.emplace_back(vf.x, vf.y, vf.z);
+        uvs.emplace_back(v.u, v.v);
+    }
+
+    for (unsigned int j = 0; j < mesh->mNumVertices; j++) {
+        aiVector3t vf = mesh->mNormals[j];
+        normals.emplace_back(vf.x, vf.y, vf.z);
     }
 
     for (unsigned int k = 0; k < mesh->mNumFaces; k++) {
@@ -383,8 +437,6 @@ Mesh3D::~Mesh3D()
             delete texture;
         }
     }
-
-    delete openClRenderer;
 }
 
 bool Mesh3D::isRender() const {
@@ -411,11 +463,6 @@ AABB3D &Mesh3D::getAabb(){
     return aabb;
 }
 
-
-MeshOpenCLRenderer *Mesh3D::getOpenClRenderer() const {
-    return openClRenderer;
-}
-
 void Mesh3D::onDrawHostBuffer()
 {
     Object3D::onDrawHostBuffer();
@@ -439,56 +486,159 @@ void Mesh3D::onDrawHostBuffer()
 
 }
 
-cJSON * Mesh3D::getJSON()
-{
-    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-    cJSON *root = cJSON_CreateObject();
-
-    cJSON_AddStringToObject(root, "name", getLabel().c_str());
-
-    Vertex3D homogeneousPosition;
-    Vertex3D destinyPoint = getPosition();
-    Transforms::cameraSpace(homogeneousPosition, destinyPoint, camera);
-    homogeneousPosition = Transforms::PerspectiveNDCSpace(homogeneousPosition, camera->getFrustum());
-
-    Point2D P1;
-    Transforms::screenSpace(P1, homogeneousPosition);
-    Logging::Message("%d %d", P1.x, P1.y);
-
-    float x = (P1.x / (float) EngineSetup::get()->screenWidth) * 100;
-    float y = (P1.y / (float)  EngineSetup::get()->screenHeight) * 100;
-
-    cJSON *position = cJSON_CreateObject();
-    cJSON_AddNumberToObject(position, "x", (int) x);
-    cJSON_AddNumberToObject(position, "y", (int) y);
-    cJSON_AddItemToObject(root, "position", position);
-
-    cJSON_AddStringToObject(root, "model", sourceFile.c_str());
-
-    auto r = getRotation();
-    cJSON *rotation = cJSON_CreateObject();
-    cJSON_AddNumberToObject(rotation, "x", (int)getRotX());
-    cJSON_AddNumberToObject(rotation, "y", (int)getRotY());
-    cJSON_AddNumberToObject(rotation, "z", (int)getRotZ());
-    cJSON_AddItemToObject(root, "rotation", rotation);
-
-    auto rotFrame = getRotationFrame();
-    cJSON *rFrame = cJSON_CreateObject();
-    cJSON_AddNumberToObject(rFrame, "x", (int) rotFrame.x);
-    cJSON_AddNumberToObject(rFrame, "y", (int) rotFrame.y);
-    cJSON_AddNumberToObject(rFrame, "z", (int) rotFrame.z);
-    cJSON_AddItemToObject(root, "rotationFrame", rFrame);
-
-    cJSON_AddNumberToObject(root, "scale", getScale());
-
-    return root;
-}
-
 Mesh3DRenderLayer Mesh3D::getLayer() const {
     return layer;
 }
 
 void Mesh3D::setLayer(Mesh3DRenderLayer layer) {
     Mesh3D::layer = layer;
+}
+
+const char *Mesh3D::getTypeObject() {
+    return "Mesh3D";
+}
+
+const char *Mesh3D::getTypeIcon() {
+    return "meshIcon";
+}
+
+Mesh3D *Mesh3D::create() {
+    return new Mesh3D();
+}
+
+void Mesh3D::drawImGuiProperties()
+{
+    Object3D::drawImGuiProperties();
+    std::string title = "Mesh3D (Triangles: " + std::to_string(getModelTriangles().size()) + ")";
+
+    if (ImGui::TreeNode(title.c_str())) {
+        ImGui::Checkbox(std::string("Enable lights").c_str(), &enableLights);
+
+        ImGui::Separator();
+
+        auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
+
+        if (ImGui::TreeNode("Shaders")) {
+            if ((int) shaders.size() <= 0) {
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No shaders attached");
+            }
+
+            for (int i = 0; i < (int) shaders.size(); i++) {
+                auto s = shaders[i];
+                ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(24, 24));
+                ImGui::SameLine(100);
+
+                if (!s->isEnabled()) {
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                        s->setEnabled(true);
+                    }
+                } else {
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                        s->setEnabled(false);
+                    }
+                }
+                ImGui::SameLine();
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    removeShader(i);
+                }
+                ImGui::SameLine();
+                if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {
+                    ImGui::PushID(i);
+                    s->drawImGuiProperties();
+                    ImGui::PopID();
+                }
+            }
+            ImGui::TreePop();
+        }
+        ImGui::TreePop();
+    }
+}
+
+cJSON * Mesh3D::getJSON()
+{
+    cJSON *root = Object3D::getJSON();
+
+    cJSON_AddStringToObject(root, "model", sourceFile.c_str());
+    cJSON_AddBoolToObject(root, "enableLights", isEnableLights());
+
+    cJSON *shadersArrayJSON = cJSON_CreateArray();
+    for ( auto s : shaders) {
+        cJSON_AddItemToArray(shadersArrayJSON, s->getJSON());
+    }
+    cJSON_AddItemToObject(root, "shaders", shadersArrayJSON);
+
+    return root;
+}
+
+void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
+{
+    o->setBelongToScene(true);
+    Object3D::setPropertiesFromJSON(object, o);
+    o->setEnableLights(cJSON_GetObjectItemCaseSensitive(object, "enableLights")->valueint);
+    o->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring);
+
+    if (cJSON_GetObjectItemCaseSensitive(object, "shaders") != nullptr) {
+        auto mesh3DShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getMesh3DShaderTypes();
+        cJSON *currentShader;
+        cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
+            auto type = cJSON_GetObjectItemCaseSensitive(currentShader, "type")->valuestring;
+            switch(mesh3DShaderTypes[type]) {
+                case Mesh3DShaderLoaderMapping::ShaderEdgeObject: {
+                    auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
+                    auto color = Color(
+                        cJSON_GetObjectItemCaseSensitive(edgeColor, "r")->valueint,
+                        cJSON_GetObjectItemCaseSensitive(edgeColor, "g")->valueint,
+                        cJSON_GetObjectItemCaseSensitive(edgeColor, "b")->valueint
+                    );
+                    auto shader = new ShaderEdgeObject(
+                        true,
+                        o,
+                        color,
+                        (float)cJSON_GetObjectItemCaseSensitive(currentShader, "size")->valuedouble
+                    );
+                    o->addMesh3DShader(shader);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void Mesh3D::createFromJSON(cJSON *object)
+{
+    auto o = new Mesh3D();
+
+    Mesh3D::setPropertiesFromJSON(object, o);
+
+    Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
+}
+
+std::vector<ObjectShaderOpenCL *> &Mesh3D::getShaders() {
+    return shaders;
+}
+
+void Mesh3D::addMesh3DShader(ObjectShaderOpenCL *shader) {
+    shader->setObject(this);
+    shaders.push_back(shader);
+}
+
+void Mesh3D::removeShader(int index) {
+    if (index >= 0 && index < shaders.size()) {
+        shaders.erase(shaders.begin() + index);
+    }
+}
+
+void Mesh3D::fillBuffers()
+{
+    glGenBuffers(1, &vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+
+    glGenBuffers(1, &uvbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+    glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+
+    glGenBuffers(1, &normalbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+    glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
 }

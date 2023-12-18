@@ -5,26 +5,32 @@
 #include "../../include/Shaders/ShaderBlink.h"
 #include "../../include/ComponentsManager.h"
 
-
 ShaderBlink::ShaderBlink(bool active, Mesh3D *o, float step, Color c) :
-    ShaderOpenCL(active),
+    ObjectShaderOpenCL(active, o),
     isBlinking(false),
-    screenWidth(EngineSetup::get()->screenWidth),
-    screenHeight(EngineSetup::get()->screenHeight),
     object(o),
     color(c),
     counter(Counter(step))
 {
+    setLabel("ShaderBlink");
+}
+
+void ShaderBlink::preUpdate()
+{
+    ShaderOpenCL::preUpdate();
+    update();
+}
+
+void ShaderBlink::postUpdate()
+{
+    ShaderOpenCL::postUpdate();
 }
 
 void ShaderBlink::update()
 {
-    if (!isEnabled() || this->object == nullptr || object->isRemoved()) return;
+    if (!isEnabled() || this->object == nullptr) return;
 
     counter.update();
-
-    if (!this->object->isStencilBufferEnabled()) return;
-
 
     if (isBlinking) {
         if (counter.isFinished()) {
@@ -48,22 +54,17 @@ void ShaderBlink::update()
 
 void ShaderBlink::executeKernelOpenCL()
 {
-    auto kernel = ComponentsManager::get()->getComponentRender()->getBlinkKernel();
+    glDisable(GL_DEPTH);
+    glDisable(GL_BLEND);
 
-    clSetKernelArg(kernel, 0, sizeof(int), &screenWidth);
-    clSetKernelArg(kernel, 1, sizeof(int), &screenHeight);
-    clSetKernelArg(kernel, 2, sizeof(cl_mem), (void *)&EngineBuffers::get()->videoBufferOCL);
-    clSetKernelArg(kernel, 3, sizeof(cl_mem), (void *)object->getOpenClRenderer()->getClBufferStencil());
-    clSetKernelArg(kernel, 4, sizeof(float), &this->color.r);
-    clSetKernelArg(kernel, 5, sizeof(float), &this->color.g);
-    clSetKernelArg(kernel, 6, sizeof(float), &this->color.b);
-
-    size_t global_item_size[2] = {(size_t) EngineSetup::get()->screenWidth, (size_t) EngineSetup::get()->screenHeight};
-    size_t local_item_size[2] = {16, 16};
-
-    clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
-
-    //this->debugKernel("ShaderBlink");
+    ComponentsManager::get()->getComponentWindow()->getShaderOglColor()->render(
+        this->object,
+        this->object->vertexbuffer,
+        this->object->uvbuffer,
+        this->object->normalbuffer,
+        (int) this->object->vertices.size(),
+        false
+    );
 }
 
 void ShaderBlink::setColor(Color color) {

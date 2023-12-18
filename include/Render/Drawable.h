@@ -38,8 +38,6 @@ public:
 
     static void drawMainAxis(Camera3D *cam);
 
-    static void drawBillboard(Billboard *B, std::vector<Triangle *> *frameTriangles);
-
     static void drawMainAxisOffset(Camera3D *cam, Vertex3D offset);
 
     static void drawLightning(Vertex3D, Vertex3D, Color color);
@@ -61,6 +59,8 @@ public:
     static void drawMainDeepMapFromCamera(int pos_x, int pos_y);
 
     static void drawTriangleNormal(Triangle *triangle, Color color);
+
+    static void drawOutline(Mesh3D *m);
 };
 
 
