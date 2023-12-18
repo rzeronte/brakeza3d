@@ -406,4 +406,3 @@ Object3D *Brakeza3D::getSceneObjectById(int i)
 {
     return sceneObjects[i];
 }
-

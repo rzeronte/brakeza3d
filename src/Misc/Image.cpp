@@ -22,6 +22,8 @@ Image::Image(SDL_Surface *surface, SDL_Texture *texture)
 :
     surface(surface), texture(texture)
 {
+    texturaID = Image::makeOGLImage(surface);
+
     this->loaded = true;
 }
 
@@ -91,7 +93,13 @@ void Image::drawFlat(int pos_x, int pos_y) const
     dstRect.w = (surface->w * windowWidth) / EngineSetup::get()->screenWidth;
     dstRect.h = (surface->h * windowHeight) / EngineSetup::get()->screenHeight;
 
-    SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);
+    ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(
+        texturaID,
+        dstRect.x,
+        dstRect.y,
+        dstRect.w,
+        dstRect.h
+    );
 }
 
 void Image::loadFromRaw(unsigned int *texture, int w, int h)

@@ -80,6 +80,8 @@ public:
     static void createParticleEmitterInScene();
 
     static void createSprite3DInScene();
+
+    static void createSprite2DInScene();
 };
 
 

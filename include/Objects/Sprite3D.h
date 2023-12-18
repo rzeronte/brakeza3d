@@ -30,8 +30,6 @@ public:
 
     void onUpdate() override;
 
-    void postUpdate() override;
-
     void updateStep();
 
     void setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation);
@@ -40,7 +38,7 @@ public:
 
     TextureAnimated *getCurrentTextureAnimation();
 
-    void addAnimation(const std::string&, int numFrames, int fps);
+    void addAnimation(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps);
 
     void setAnimation(int);
 
@@ -50,6 +48,9 @@ public:
 
     [[nodiscard]] bool isAutoRemoveAfterAnimation() const;
 
+    const char *getTypeObject();
+
+    const char *getTypeIcon();
 };
 
 

@@ -15,7 +15,6 @@ class Sprite2D : public Object3D {
     bool removeWhenEnds;
     TextureAnimated *animation;
     Counter *ttl;
-
 public:
     explicit Sprite2D(int x, int y, bool removeWhenEnds, TextureAnimated *animation);
     explicit Sprite2D(int x, int y, float ttl, TextureAnimated *animation);

@@ -30,7 +30,6 @@ void ShaderOpenGLRender::render(
     int size
 )
 {
-
     glUseProgram(programID);
     glBindVertexArray(VertexArrayID);
 
