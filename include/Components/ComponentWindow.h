@@ -9,10 +9,16 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
 #include "Component.h"
-#include "../Render/ShaderOpenGL.h"
-#include "../Render/ShaderOpenGLImage.h"
-#include "../Render/ShaderOpenGLRender.h"
-#include "../Render/ShaderOpenGLLine.h"
+#include "../OpenGL/ShaderOpenGL.h"
+#include "../OpenGL/ShaderOpenGLImage.h"
+#include "../OpenGL/ShaderOpenGLRender.h"
+#include "../OpenGL/ShaderOpenGLLine.h"
+#include "../OpenGL/ShaderOpenGLWireframe.h"
+#include "../OpenGL/ShaderOpenGLShading.h"
+#include "../OpenGL/ShaderOpenGLPoints.h"
+#include "../OpenGL/ShaderCustomOpenGLParticles.h"
+#include "../OpenGL/ShaderOpenGLOutliner.h"
+#include "../OpenGL/ShaderOpenGLColor.h"
 
 class ComponentWindow : public Component {
 private:
@@ -28,6 +34,13 @@ private:
     ShaderOpenGLRender *shaderOGLRender;
     ShaderOpenGLImage *shaderOGLImage;
     ShaderOpenGLLine *shaderOGLLine;
+    ShaderOpenGLWireframe *shaderOGLWireframe;
+    ShaderOpenGLShading *shaderOGLShading;
+    ShaderOpenGLPoints *shaderOGLPoints;
+    ShaderCustomOpenGLParticles *shaderCustomOGLParticles;
+    ShaderOpenGLOutliner *shaderOGLStencil;
+    ShaderOpenGLColor *shaderOGLColor;
+
 public:
 
     ComponentWindow();
@@ -71,6 +84,18 @@ public:
     [[nodiscard]] ShaderOpenGLRender *getShaderOGLRender() const;
 
     ShaderOpenGLLine *getShaderOGLLine() const;
+
+    ShaderOpenGLWireframe *getShaderOglWireframe() const;
+
+    ShaderOpenGLShading *getShaderOglShading() const;
+
+    ShaderOpenGLPoints *getShaderOGLPoints() const;
+
+    ShaderCustomOpenGLParticles *getShaderCustomOGLParticles() const;
+
+    ShaderOpenGLOutliner *getShaderOglStencil() const;
+
+    ShaderOpenGLColor *getShaderOglColor() const;
 
 };
 

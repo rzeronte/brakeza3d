@@ -37,7 +37,6 @@ struct OCTileRender {
 class TileManager {
 public:
     TileManager(int sizeTileWidth, int sizeTileHeight);
-    cl_mem tilesBufferOCL;
 
     std::vector<OCTileRender> tiles;
     int sizeTileWidth;

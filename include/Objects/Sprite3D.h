@@ -9,7 +9,6 @@
 #include "../2D/TextureAnimated.h"
 #include "../Render/Billboard.h"
 #include "../Misc/Counter.h"
-#include "../Render/MeshOpenCLRenderer.h"
 #include <vector>
 
 class Sprite3D : public Object3D {
@@ -24,7 +23,6 @@ private:
     bool autoRemoveAfterAnimation;
     bool sharedTextures;
 
-    MeshOpenCLRenderer *openClRenderer;
 public:
     Sprite3D(float width, float height);
 
@@ -52,7 +50,6 @@ public:
 
     [[nodiscard]] bool isAutoRemoveAfterAnimation() const;
 
-    MeshOpenCLRenderer *getOpenClRenderer() const;
 };
 
 

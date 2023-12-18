@@ -116,8 +116,8 @@ void SpriteDirectional3D::onUpdate()
 
     this->updateTrianglesCoordinates(ComponentsManager::get()->getComponentCamera()->getCamera());
 
-    Drawable::drawBillboard(
+    /*Drawable::drawBillboard(
             this->getBillboard(),
             &ComponentsManager::get()->getComponentRender()->getFrameTriangles()
-    );
+    );*/
 }

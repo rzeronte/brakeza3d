@@ -11,8 +11,8 @@
 #include "../Render/M3.h"
 #include "Grid3D.h"
 #include "PathFinder.h"
-#include "../Render/MeshOpenCLRenderer.h"
 #include "../2D/TextureAnimated.h"
+#include "../Objects/OpenCLTypes.h"
 #include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -91,10 +91,6 @@ public:
     static const char *sprintf(const char *, ...);
 
     static float percentage(int value, int total);
-
-    static OCVertex3D vertexOCL(Vertex3D &v);
-
-    static OCPoint2D pointOCL(Point2D v);
 
     static void addSceneObject(const std::string& filename, const std::string& name);
 

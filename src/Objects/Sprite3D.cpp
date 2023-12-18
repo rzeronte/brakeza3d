@@ -12,8 +12,6 @@ Sprite3D::Sprite3D(float width, float height):
 {
     this->counter = Counter();
     this->counter.setEnabled(true);
-
-    openClRenderer = new MeshOpenCLRenderer(this, this->billboard->getTriangles());
     //openClRenderer->makeOCLTriangles();
 }
 
@@ -29,8 +27,6 @@ void Sprite3D::onUpdate()
     */
 
     this->updateTrianglesCoordinatesAndTexture();
-
-    openClRenderer->onUpdate(billboard->getT1()->getTexture());
 }
 
 void Sprite3D::postUpdate()
@@ -81,6 +77,16 @@ void Sprite3D::updateTrianglesCoordinatesAndTexture()
 
     billboard->updateUnconstrainedQuad(this, up, right);
     updateTexture();
+
+    ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
+            this,
+            getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
+            getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
+            billboard->vertexbuffer,
+            billboard->uvbuffer,
+            billboard->normalbuffer,
+            (int) billboard->vertices.size()
+    );
 }
 
 bool Sprite3D::isAutoRemoveAfterAnimation() const {
@@ -116,10 +122,4 @@ Sprite3D::~Sprite3D()
             delete animation;
         }
     }
-
-    delete openClRenderer;
-}
-
-MeshOpenCLRenderer *Sprite3D::getOpenClRenderer() const {
-    return openClRenderer;
 }

@@ -85,6 +85,8 @@ public:
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/gear.png", "gearIcon");
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/ghost.png", "ghostIcon");
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/shader.png", "shaderIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/spotlight.png", "spotLightIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/particles.png", "particlesIcon");
 
         loadImagesFolder();
     }
@@ -556,6 +558,41 @@ public:
             if (ImGui::IsItemEdited()) {
                 EngineSetup::get()->ENGINE_TITLE = name;
             }
+            ImGui::Separator();
+
+            if (ImGui::TreeNode("Global illumination")) {
+                const float range_illumination_min_settings = -1.0f;
+                const float range_illumination_max_settings = 1.0f;
+                const float sens_illumination_settings = 0.01f;
+                auto dirLight = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->getDirectionalLight();
+                if (ImGui::TreeNode("Direction")) {
+                    ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->direction.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->direction.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->direction.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNode("Ambient")) {
+                    ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->ambient.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->ambient.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->ambient.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNode("Diffuse")) {
+                    ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->diffuse.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->diffuse.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->diffuse.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::TreePop();
+                }
+                if (ImGui::TreeNode("Specular")) {
+                    ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->specular.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->specular.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->specular.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::TreePop();
+                }
+                ImGui::TreePop();
+            }
 
             ImGui::Separator();
 
@@ -866,11 +903,18 @@ public:
                 }
                 ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("lightIcon")->getOGLTextureID(), ImVec2(16, 16));
                 ImGui::SameLine();
-                if (ImGui::MenuItem("LightPoint", "CTRL+O")) {
-                    SceneLoader::createLightPointInScene();
-                    Logging::Message("Add light");
+                if (ImGui::MenuItem("PointLight", "CTRL+O")) {
+                    SceneLoader::createPointLight3DInScene();
+                    Logging::Message("Add PointLight");
+                }
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("spotLightIcon")->getOGLTextureID(), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem("SpotLight", "CTRL+O")) {
+                    SceneLoader::createSpotLight3DInScene();
+                    Logging::Message("Add SpotLight");
                 }
                 ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getOGLTextureID(), ImVec2(16, 16));
+
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("Mesh3D")) {
                     drawMesh3DItemsToLoad();
@@ -887,6 +931,17 @@ public:
                 if (ImGui::BeginMenu("GhostBody")) {
                     drawGhostItemsToLoad();
                     ImGui::EndMenu();
+                }
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("particlesIcon")->getOGLTextureID(), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem("ParticleEmitter", "CTRL+x")) {
+                    SceneLoader::createParticleEmitterInScene();
+                    ImGui::EndMenu();
+                }
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("objectIcon")->getOGLTextureID(), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem("Sprite3D", "CTRL+2")) {
+                    SceneLoader::createSprite3DInScene();
                 }
                 ImGui::EndMenu();
             }
@@ -1114,14 +1169,7 @@ public:
                         SDL_SetWindowFullscreen(ComponentsManager::get()->getComponentWindow()->getWindow(), 0);
                     }
                 }
-                ImGui::Separator();
-                //ImGui::Checkbox("Camera Inspector", &show_camera_info);
-                //ImGui::Checkbox("3D Objects Inspector", &show_window_inspector);
-                //ImGui::Checkbox("Camera Inspector", &show_camera_info);
-                ImGui::Separator();
                 //ImGui::Checkbox("Tiles", &show_window_physics);
-                ImGui::Separator();
-                ImGui::Checkbox("Draw main Frustum", &EngineSetup::get()->DRAW_FRUSTUM);
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Main Axis", &EngineSetup::get()->RENDER_MAIN_AXIS);
                 ImGui::Checkbox("Draw Object3D Axis", &EngineSetup::get()->RENDER_OBJECTS_AXIS);
@@ -1130,7 +1178,6 @@ public:
                                       range_min_lightmap_intensity, &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
 
                 }
-                ImGui::Separator();
                 ImGui::Separator();
                 ImGui::Checkbox("Draw light direction", &EngineSetup::get()->DRAW_LIGHTS_DIRECTION);
                 if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {

@@ -16,10 +16,6 @@ ShaderOpenCL::ShaderOpenCL(bool active, const std::string& kernelFilename)
     program(nullptr),
     kernel(nullptr)
 {
-    this->clDeviceId = ComponentsManager::get()->getComponentRender()->getClDeviceId();
-    this->clQueue = ComponentsManager::get()->getComponentRender()->getClCommandQueue();
-    this->kernelFilename = kernelFilename;
-    this->context = ComponentsManager::get()->getComponentRender()->getClContext();
 
     initOpenCLProgram();
 
@@ -34,10 +30,6 @@ ShaderOpenCL::ShaderOpenCL(bool active)
     program(nullptr),
     kernel(nullptr)
 {
-    this->clDeviceId = ComponentsManager::get()->getComponentRender()->getClDeviceId();
-    this->clQueue = ComponentsManager::get()->getComponentRender()->getClCommandQueue();
-    this->context = ComponentsManager::get()->getComponentRender()->getClContext();
-
     Logging::Log("Reusing '%s' kernel", kernelFilename.c_str());
 }
 

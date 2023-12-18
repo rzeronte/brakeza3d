@@ -20,6 +20,9 @@ private:
 
     Image *texture;
     std::vector<Triangle *> triangles;
+
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> uvs;
 public:
     Billboard(float width, float height);
 
@@ -36,6 +39,13 @@ public:
     Triangle *getT2();
 
     std::vector<Triangle *> &getTriangles();
+
+    void fillBuffers();
+
+    GLuint vertexbuffer;
+    GLuint uvbuffer;
+    GLuint normalbuffer;
+    std::vector<glm::vec3> vertices;
 };
 
 

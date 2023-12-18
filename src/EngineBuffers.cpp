@@ -110,18 +110,6 @@ void EngineBuffers::createOpenCLBuffers(_cl_context *context, cl_command_queue &
 void EngineBuffers::loadParticlesEmptyBuffer()
 {
 
-    for (int i = 0; i < MAX_OPENCL_PARTICLES; i++) {
-        particles.emplace_back(
-                OCVertex3D(0, 0, 0),
-                OCVertex3D(0, 0, 0),
-                OCVertex3D(0, 0, 0),
-                OCVertex3D(0, 0, 0),
-                OCVertex3D(0, 0, 0),
-                0,
-                0,
-                false
-        );
-    }
 }
 
 const std::vector<OCParticle> &EngineBuffers::getParticles() const {

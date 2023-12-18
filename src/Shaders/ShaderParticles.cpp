@@ -9,26 +9,6 @@ ShaderParticles::ShaderParticles(bool active, Color from, Color to, OCParticlesC
     intensity(1),
     stopAdd(false)
 {
-    openCLBufferParticles = clCreateBuffer(context, CL_MEM_READ_WRITE, MAX_OPENCL_PARTICLES * sizeof(OCParticle), nullptr, nullptr);
-    clEnqueueWriteBuffer(clQueue, openCLBufferParticles, CL_TRUE, 0, MAX_OPENCL_PARTICLES * sizeof(OCParticle), EngineBuffers::get()->getParticles().data(), 0, nullptr, nullptr );
-
-    Vertex3D vFrom(from.r, from.g, from.b);
-    auto oclFrom = Tools::vertexOCL(vFrom);
-
-    Vertex3D vTo(to.r, to.g, to.b);
-    auto oclTo = Tools::vertexOCL(vTo);
-
-    direction = Vertex3D(0, 10, 0);
-
-    ocOrigin = Tools::pointOCL(origin);
-    ocDirection = Tools::vertexOCL(direction);
-
-    openCLBufferColorFrom = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCVertex3D), &oclFrom, nullptr );
-    openCLBufferColorTo = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCVertex3D), &oclTo, nullptr );
-    openCLBufferContext = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCParticlesContext), &particlesContext, nullptr );
-
-    openCLBufferDirection = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCVertex3D), &ocDirection, nullptr );
-    openCLBufferOrigin = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCPoint2D), &ocOrigin, nullptr );
 }
 
 void ShaderParticles::update(Point2D origin, Vertex3D direction, float intensity)
@@ -50,37 +30,7 @@ void ShaderParticles::update()
 
 void ShaderParticles::executeKernelOpenCL()
 {
-    ocOrigin = Tools::pointOCL(origin);
-    ocDirection = Tools::vertexOCL(direction);
 
-    clEnqueueWriteBuffer(clQueue, openCLBufferOrigin, CL_FALSE, 0, sizeof(OCPoint2D), &ocOrigin, 0, nullptr, nullptr);
-    clEnqueueWriteBuffer(clQueue, openCLBufferDirection, CL_FALSE, 0, sizeof(OCVertex3D), &ocDirection, 0, nullptr, nullptr);
-
-    auto dt = Brakeza3D::get()->getDeltaTime();
-
-    auto add = (int) this->stopAdd;
-
-    auto kernel = ComponentsManager::get()->getComponentRender()->getParticlesKernel();
-
-    clSetKernelArg(kernel, 0, sizeof(int), &EngineSetup::get()->screenWidth);
-    clSetKernelArg(kernel, 1, sizeof(int), &EngineSetup::get()->screenHeight);
-    clSetKernelArg(kernel, 2, sizeof(float), &Brakeza3D::get()->getExecutionTime());
-    clSetKernelArg(kernel, 3, sizeof(float), &dt);
-    clSetKernelArg(kernel, 4, sizeof(cl_mem), (void *)ComponentsManager::get()->getComponentRender()->getClBufferVideoParticles());
-    clSetKernelArg(kernel, 5, sizeof(cl_mem), (void *)&openCLBufferContext);
-    clSetKernelArg(kernel, 6, sizeof(cl_mem), (void *)&openCLBufferParticles);
-    clSetKernelArg(kernel, 7, sizeof(cl_mem), (void *)&openCLBufferColorFrom);
-    clSetKernelArg(kernel, 8, sizeof(cl_mem), (void *)&openCLBufferColorTo);
-    clSetKernelArg(kernel, 9, sizeof(cl_mem), (void *)&openCLBufferDirection);
-    clSetKernelArg(kernel, 10, sizeof(cl_mem), (void *)&openCLBufferOrigin);
-    clSetKernelArg(kernel, 11, sizeof(float), &intensity);
-    clSetKernelArg(kernel, 12, sizeof(int), &add);
-
-    size_t global_item_size[2] = {64, 16};
-    size_t local_item_size[2] = {16, 16};
-    clRet = clEnqueueNDRangeKernel(clQueue, kernel, 2, NULL, global_item_size, local_item_size, 0, NULL, NULL);
-
-    debugKernel("ShaderParticles");
 }
 
 ShaderParticles::~ShaderParticles()

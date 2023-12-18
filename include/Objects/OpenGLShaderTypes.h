@@ -15,7 +15,7 @@ struct Material {
     float shininess;
 };
 
-struct DirLight {
+struct DirLightOpenGL {
     glm::vec3 direction;
 
     glm::vec3 ambient;
@@ -23,7 +23,7 @@ struct DirLight {
     glm::vec3 specular;
 };
 
-struct PointLight {
+struct PointLightOpenGL {
     glm::vec4 position;
     glm::vec4 ambient;
     glm::vec4 diffuse;
@@ -34,19 +34,20 @@ struct PointLight {
     float padding;
 };
 
-struct SpotLight {
-    glm::vec3 position;
-    glm::vec3 direction;
-    float cutOff;
-    float outerCutOff;
-
+struct SpotLightOpenGL {
+    glm::vec4 position;
+    glm::vec4 direction;
+    glm::vec4 ambient;
+    glm::vec4 diffuse;
+    glm::vec4 specular;
     float constant;
     float linear;
     float quadratic;
-
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
+    float cutOff;
+    float outerCutOff;
+    float padding;
+    float padding1;
+    float padding2;
 };
 
 #endif //BRAKEZA3D_OPENGLSHADERTYPES_H

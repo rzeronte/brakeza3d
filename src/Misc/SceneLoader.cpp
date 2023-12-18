@@ -9,6 +9,7 @@
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Particles/ParticleEmitter.h"
 
 SceneLoader::SceneLoader()
 = default;
@@ -54,12 +55,20 @@ void SceneLoader::loadScene(const std::string& filename)
                 LightPoint3D::createFromJSON(currentObject);
                 break;
             }
+            case SceneObjectLoaderMapping::SpotLight3D : {
+                SpotLight3D::createFromJSON(currentObject);
+                break;
+            }
             case SceneObjectLoaderMapping::Mesh3DGhost : {
                 Mesh3DGhost::createFromJSON(currentObject);
                 break;
             }
             case SceneObjectLoaderMapping::Mesh3DBody : {
                 Mesh3DBody::createFromJSON(currentObject);
+                break;
+            }
+            case SceneObjectLoaderMapping::ParticleEmitter : {
+                ParticleEmitter::createFromJSON(currentObject);
                 break;
             }
         }
@@ -176,7 +185,7 @@ void SceneLoader::createObjectInScene() {
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
 }
 
-void SceneLoader::createLightPointInScene() {
+void SceneLoader::createPointLight3DInScene() {
     auto o = new LightPoint3D(
         glm::vec4(0.05f, 0.05f, 0.05f, 0),
         glm::vec4(1.0f, 0.0f, 0.0f, 0),
@@ -188,6 +197,23 @@ void SceneLoader::createLightPointInScene() {
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
     o->setBelongToScene(true);
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
+}
+
+void SceneLoader::createSpotLight3DInScene() {
+    auto o = new SpotLight3D(
+            glm::vec4(0.0f, 0.0f, 1.0f, 0),
+            glm::vec4(0.05f, 0.05f, 0.05f, 0),
+            glm::vec4(1.0f, 0.0f, 0.0f, 0),
+            glm::vec4(1.0f, 1.0f, 1.0f, 0),
+            1.0f,
+            0.09f,
+            0.032f,
+            1,
+            1
+    );
+    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
+    o->setBelongToScene(true);
+    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_lightpoint"));
 }
 
 void SceneLoader::createMesh3DBodyToScene(const std::string& filename, const char *name) {
@@ -210,6 +236,47 @@ void SceneLoader::createMesh3DBodyToScene(const std::string& filename, const cha
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name));
 }
 
+void SceneLoader::createSprite3DInScene() {
+    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2);
+
+    auto *newObject = new Sprite3D(1, 1);
+    newObject->addAnimation();
+
+    newObject->setBelongToScene(true);
+    Logging::Message("Loading ParticleEmitter");
+
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_particleEmitter"));
+}
+
+void SceneLoader::createParticleEmitterInScene() {
+    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2);
+
+    auto *newObject = new ParticleEmitter(
+        ParticleEmitterState::DEFAULT,
+        nullptr,
+        position,
+        9999,
+        Color::red(),
+        Color::green(),
+        OCParticlesContext(
+                0.0f,
+                0.05f,
+                1.5f,
+                25.0f,
+                10.1f,
+                2.0f,
+                125.0f,
+                255.0f,
+                0.02f,
+                0.04f,
+                0.99f
+        )
+    );
+    newObject->setBelongToScene(true);
+    Logging::Message("Loading ParticleEmitter");
+
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_particleEmitter"));
+}
 
 void SceneLoader::createGhostBody3DToScene(const std::string& filename, const char *name) {
     Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10000);

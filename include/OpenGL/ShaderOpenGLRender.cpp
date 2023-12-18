@@ -13,10 +13,15 @@ ShaderOpenGLRender::ShaderOpenGLRender(const std::string &vertexFilename, const 
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
+
+    directionalLight.direction = glm::vec3(-0.2f, -1.0f, -0.3f);
+    directionalLight.ambient = glm::vec3(0.05f, 0.05f, 0.05f);
+    directionalLight.diffuse = glm::vec3(0.4f, 0.4f, 0.4f);
+    directionalLight.specular = glm::vec3(0.5f, 0.5f, 0.5f);
 }
 
 void ShaderOpenGLRender::render(
-    glm::mat4 ModelMatrix,
+    Object3D *o,
     GLint textureID,
     GLint textureSpecularID,
     GLuint vertexbuffer,
@@ -25,6 +30,7 @@ void ShaderOpenGLRender::render(
     int size
 )
 {
+
     glUseProgram(programID);
     glBindVertexArray(VertexArrayID);
 
@@ -36,22 +42,21 @@ void ShaderOpenGLRender::render(
 
     setMat4("projection", ProjectionMatrix);
     setMat4("view", ViewMatrix);
-    setMat4("model", ModelMatrix);
+    setMat4("model", o->getModelMatrix());
     setVec3("viewPos", cameraPos);
 
     setInt("numLights", (int) pointsLights.size());
+    setInt("numSpotLights", (int) spotLights.size());
 
     setInt("material.diffuse", 0);
     setInt("material.specular", 1);
     setFloat("material.shininess", 32.0f);
 
     // directional light
-    setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-    setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-    setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-    setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
-
-    //fillPointLightsUniform();
+    setVec3("dirLight.direction", directionalLight.direction);
+    setVec3("dirLight.ambient", directionalLight.ambient);
+    setVec3("dirLight.diffuse", directionalLight.diffuse);
+    setVec3("dirLight.specular", directionalLight.diffuse);
 
     getPointLightFromSceneObjects();
     fillPointLightsUBO();
@@ -59,11 +64,11 @@ void ShaderOpenGLRender::render(
     Vertex3D forward = ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose() * Vertex3D(0, 0, 1);
 
     // spotLight
-    setVec3("spotLight.position", cameraPos);
-    setVec3("spotLight.direction", forward.x, forward.y, forward.z);
-    setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-    setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-    setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+    setVec4("spotLight.position", glm::vec4(cameraPos, 0));
+    setVec4("spotLight.direction", forward.x, forward.y, forward.z, 0);
+    setVec4("spotLight.ambient", 0.0f, 0.0f, 0.0f, 0);
+    setVec4("spotLight.diffuse", 1.0f, 1.0f, 1.0f, 0);
+    setVec4("spotLight.specular", 1.0f, 1.0f, 1.0f, 0);
     setFloat("spotLight.constant", 1.0f);
     setFloat("spotLight.linear", 0.09f);
     setFloat("spotLight.quadratic", 0.032f);
@@ -80,30 +85,22 @@ void ShaderOpenGLRender::render(
     glDisableVertexAttribArray(2);
 
     glDeleteBuffers(1, &bufferUBO);
+    glDeleteBuffers(1, &bufferUBOSpot);
 }
 
 void ShaderOpenGLRender::fillPointLightsUBO()
 {
     glGenBuffers(1, &bufferUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, bufferUBO);
-    glBufferData(GL_UNIFORM_BUFFER, (int) (pointsLights.size() * sizeof(PointLight)), pointsLights.data(), GL_STATIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, (int) (pointsLights.size() * sizeof(PointLightOpenGL)), pointsLights.data(), GL_STATIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferUBO);
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
-}
 
-void ShaderOpenGLRender::fillPointLightsUniform() const {
-    for (int i = 0; i < (int) pointsLights.size(); ++i) {
-        const PointLight& light = pointsLights[i];
-        std::string prefix = "pointLights[" + std::to_string(i) + "].";
-
-        setVec4(prefix + "position", light.position);
-        setVec4(prefix + "ambient", light.ambient);
-        setVec4(prefix + "diffuse", light.diffuse);
-        setVec4(prefix + "specular", light.specular);
-        setFloat(prefix + "constant", light.constant);
-        setFloat(prefix + "linear", light.linear);
-        setFloat(prefix + "quadratic", light.quadratic);
-    }
+    glGenBuffers(1, &bufferUBOSpot);
+    glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOSpot);
+    glBufferData(GL_UNIFORM_BUFFER, (int) (spotLights.size() * sizeof(SpotLightOpenGL)), spotLights.data(), GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, bufferUBOSpot);
+    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
 }
 
 void ShaderOpenGLRender::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
@@ -155,23 +152,48 @@ void ShaderOpenGLRender::selectActiveTextures(GLint textureID, GLint textureSpec
 void ShaderOpenGLRender::getPointLightFromSceneObjects()
 {
     pointsLights.clear();
+    spotLights.clear();
 
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto o : sceneObjects) {
-        auto l = dynamic_cast<LightPoint3D*>(o);
+        if (!o->isEnabled()) continue;
+        Vertex3D forward = o->getRotation().getTranspose() * Vertex3D(0, 0, 1);
+
         auto p = o->getPosition();
 
-        if (l == nullptr) continue;
+        auto s = dynamic_cast<SpotLight3D*>(o);
+        if (s != nullptr) {
+            spotLights.push_back(SpotLightOpenGL{
+                glm::vec4(p.x, p.y, p.z, 0),
+                glm::vec4(forward.x, forward.y, forward.z, 0),
+                s->ambient,
+                s->diffuse,
+                s->specular,
+                s->constant,
+                s->linear,
+                s->quadratic,
+                s->cutOff,
+                s->outerCutOff
+            });
+            continue;
+        }
 
-        pointsLights.push_back({
-            glm::vec4(p.x, p.y, p.z, 0),
-            l->ambient,
-            l->diffuse,
-            l->specular,
-            l->constant,
-            l->linear,
-            l->quadratic
-        });
+        auto l = dynamic_cast<LightPoint3D*>(o);
+        if (l != nullptr) {
+            pointsLights.push_back({
+               glm::vec4(p.x, p.y, p.z, 0),
+               l->ambient,
+               l->diffuse,
+               l->specular,
+               l->constant,
+               l->linear,
+               l->quadratic
+           });
+           continue;
+        }
     }
+}
 
+ DirLightOpenGL *ShaderOpenGLRender::getDirectionalLight() {
+    return &directionalLight;
 }

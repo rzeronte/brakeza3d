@@ -10,6 +10,7 @@
 #include <vector>
 #include "Vertex3D.h"
 #include "../EngineSetup.h"
+#include <glm/vec4.hpp>
 
 
 struct OCPoint2D {
@@ -34,36 +35,13 @@ struct OCVertex3D {
 };
 
 struct OCParticle {
-    OCParticle(
-        const OCVertex3D &position,
-        const OCVertex3D &rotation,
-        const OCVertex3D &colorFrom,
-        const OCVertex3D &colorTo,
-        const OCVertex3D &velocity,
-        float timeToLive,
-        float force,
-        bool active
-    ) :
-        position(position),
-        rotation(rotation),
-        timeToLive(timeToLive),
-        timeLiving(0),
-        force(force), velocity(velocity),
-        colorFrom(colorFrom),
-        colorTo(colorTo),
-        active(active)
-    {
-    }
-
-    OCVertex3D position;
-    OCVertex3D rotation;
+    glm::vec4 position;
+    glm::vec4 rotation;
+    glm::vec4 velocity;
     float timeToLive;
     float timeLiving;
     float force;
-    OCVertex3D velocity;
-    OCVertex3D colorFrom;
-    OCVertex3D colorTo;
-    bool active;
+    float active;
 };
 
 struct OCLight {
@@ -221,11 +199,10 @@ struct OCParticlesContext {
     VELOCITY_NOISE(velocityNoise),
     DECELERATION_FACTOR(decelerationFactor)
     {
-
     }
 
     static OCParticlesContext forProjectile() {
-        return OCParticlesContext(0.0f, 0.0025f, 0.5f, 25.0f, 0.0f, 97.0f, 125.0f, 255.0f, 2.0f, 2.4f, 0.98f);
+        return OCParticlesContext(0.0f, 0.0025f, 0.5f, 25.0f, 0.0f, 2.0f, 125.0f, 255.0f, 0.02f, 0.04f, 0.99f);
     }
 
     static OCParticlesContext forRayLight() {

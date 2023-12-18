@@ -91,7 +91,6 @@ void LightPoint3D::drawImGuiProperties()
         const float range_col_min = 0.0f;
         const float range_col_max = 1.0f;
 
-
         // Color
         if (ImGui::TreeNode(color_text.c_str())) {
             bool changed_color = ImGui::ColorEdit4(colorpicker_text.c_str(), (float *) &imguiColor, ImGuiColorEditFlags_NoOptions);

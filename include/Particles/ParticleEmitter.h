@@ -24,10 +24,9 @@ private:
     bool active;
     bool stopAdd;
     ParticleEmitterState state;
-
+    OCParticlesContext context;
+    GLuint particlesBuffer;
 protected:
-    std::vector<OCParticle> oclParticles;
-
     Counter lifeCounter;
     Color colorTo;
     Color colorFrom;
@@ -42,18 +41,29 @@ public:
         OCParticlesContext particlesContext
     );
 
-    ~ParticleEmitter() override;
-
     void onUpdate() override;
 
     [[nodiscard]] bool isActive() const;
 
     void setStopAdd(bool stopAdd);
 
-    void drawOnUpdateSecondPass() override;
+    const char *getTypeObject() override;
 
-    ShaderExplosion *shaderExplosion;
-    ShaderParticles *shaderParticles;
+    const char *getTypeIcon() override;
+
+    void drawImGuiProperties() override;
+
+    cJSON *getJSON() override;
+
+    static void createFromJSON(cJSON *object);
+
+    static void setPropertiesFromJSON(cJSON *object, ParticleEmitter *o);
+
+    void setContext(const OCParticlesContext &context);
+
+    void setColorTo(const Color &colorTo);
+
+    void setColorFrom(const Color &colorFrom);
 };
 
 

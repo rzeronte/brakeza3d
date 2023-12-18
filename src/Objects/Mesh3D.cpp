@@ -18,7 +18,6 @@ Mesh3D::Mesh3D()
     layer(Mesh3DRenderLayer::ONUPDATE)
 {
     decal = false;
-    openClRenderer = new MeshOpenCLRenderer(this, this->modelTriangles);
     luaEnvironment.set("this", this);
 }
 
@@ -111,8 +110,6 @@ void Mesh3D::clone(Mesh3D *source)
     this->modelTextures = source->modelTextures;
     this->scale = source->scale;
     this->sharedTextures = true;
-
-    openClRenderer->makeOCLTriangles();
 }
 
 void Mesh3D::onUpdate()
@@ -127,15 +124,43 @@ void Mesh3D::onUpdate()
 
     if (layer == Mesh3DRenderLayer::ONUPDATE) {
         //onUpdateOpenCLRender();
-        ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
-            getModelMatrix(),
-            modelTextures[0]->getOGLTextureID(),
-            modelTextures[0]->getOGLTextureID(),
-            vertexbuffer,
-            uvbuffer,
-            normalbuffer,
-            (int) vertices.size()
-        );
+        if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID) {
+            ComponentsManager::get()->getComponentWindow()->getShaderOglShading()->render(
+                    getModelMatrix(),
+                    vertexbuffer,
+                    uvbuffer,
+                    normalbuffer,
+                    (int) vertices.size()
+            );
+        }
+
+        if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED) {
+
+            if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
+                Drawable::drawOutline(this);
+            }
+
+            ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
+                this,
+                modelTextures[0]->getOGLTextureID(),
+                modelTextures[0]->getOGLTextureID(),
+                vertexbuffer,
+                uvbuffer,
+                normalbuffer,
+                (int) vertices.size()
+            );
+        }
+
+        if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME){
+            ComponentsManager::get()->getComponentWindow()->getShaderOglWireframe()->render(
+                    getModelMatrix(),
+                    vertexbuffer,
+                    uvbuffer,
+                    normalbuffer,
+                    (int) vertices.size()
+            );
+        }
+
     }
 
     for (auto s: shaders) {
@@ -155,7 +180,6 @@ void Mesh3D::drawOnUpdateSecondPass()
 
 void Mesh3D::onUpdateOpenCLRender()
 {
-    if ((int) modelTriangles.size() > 0) openClRenderer->onUpdate(modelTextures[0]);
 }
 
 void Mesh3D::postUpdate()
@@ -189,8 +213,6 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 
     AssimpInitMaterials(scene, fileName);
     AssimpProcessNodes(scene, scene->mRootNode);
-
-    openClRenderer->makeOCLTriangles();
 
     sourceFile = fileName;
 
@@ -414,8 +436,6 @@ Mesh3D::~Mesh3D()
             delete texture;
         }
     }
-
-    delete openClRenderer;
 }
 
 bool Mesh3D::isRender() const {
@@ -440,11 +460,6 @@ std::vector<Vertex3D *> &Mesh3D::getModelVertices(){
 
 AABB3D &Mesh3D::getAabb(){
     return aabb;
-}
-
-
-MeshOpenCLRenderer *Mesh3D::getOpenClRenderer() const {
-    return openClRenderer;
 }
 
 void Mesh3D::onDrawHostBuffer()

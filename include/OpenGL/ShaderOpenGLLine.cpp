@@ -4,7 +4,7 @@
 
 #include <gtc/type_ptr.hpp>
 #include "ShaderOpenGLLine.h"
-#include "Logging.h"
+#include "../Render/Logging.h"
 #include "../EngineSetup.h"
 
 ShaderOpenGLLine::ShaderOpenGLLine(const std::string &vertexFilename, const std::string &fragmentFilename)

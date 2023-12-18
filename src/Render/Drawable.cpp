@@ -1,3 +1,5 @@
+#define GL_GLEXT_PROTOTYPES
+
 
 #include <utility>
 
@@ -219,40 +221,22 @@ void Drawable::drawLineLighting(Line2D L, Color color)
     }
 }
 
-
 void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Color color)
 {
-    if (!Tools::isValidVector(V.vertex1) || !Tools::isValidVector(V.vertex2)) {
-        return;
-    }
+    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix();
+    glm::mat4 ProjectionMatrix = Camera3D::getProjectionMatrix();
 
-    if (!cam->getFrustum()->isVertexInside(V.vertex1) && !cam->getFrustum()->isVertexInside(V.vertex2)) {
-        return;
-    }
+    glm::vec4 position1 = ProjectionMatrix * ViewMatrix * glm::vec4(V.vertex1.x, V.vertex1.y, V.vertex1.z, 1.0);
+    position1 /= position1.w;
 
-    Vertex3D V1, V2;
+    glm::vec4 position2 = ProjectionMatrix * ViewMatrix * glm::vec4(V.vertex2.x, V.vertex2.y, V.vertex2.z, 1.0);
+    position2 /= position2.w;
 
-    Transforms::cameraSpace(V1, V.vertex1, cam);
-    Transforms::cameraSpace(V2, V.vertex2, cam);
+    const auto windowWidth = EngineSetup::get()->screenWidth;
+    const auto windowHeight = EngineSetup::get()->screenHeight;
 
-    if (!Tools::isValidVector(V1) || !Tools::isValidVector(V2)) {
-        return;
-    }
-
-    V1 = Transforms::PerspectiveNDCSpace(V1, cam->getFrustum());
-    if (V1.z < 0) {
-        return;
-    }
-
-    V2 = Transforms::PerspectiveNDCSpace(V2, cam->getFrustum());
-    if (V2.z < 0) {
-        return;
-    }
-
-    // get 2d coordinates
-    Point2D P1, P2;
-    Transforms::screenSpace(P1, V1);
-    Transforms::screenSpace(P2, V2);
+    Point2D P1((int)((position1.x + 1.0) * 0.5 * windowWidth), (int)((1.0 - position1.y) * 0.5 * windowHeight));
+    Point2D P2((int)((position2.x + 1.0) * 0.5 * windowWidth), (int)((1.0 - position2.y) * 0.5 * windowHeight));
 
     ComponentsManager::get()->getComponentWindow()->getShaderOGLLine()->render(P1, P2, color, 0.0001f);
 }
@@ -569,3 +553,20 @@ void Drawable::drawTriangleNormal(Triangle *triangle, Color color)
     Drawable::drawVector3D(v, ComponentsManager::get()->getComponentCamera()->getCamera(), color);
 }
 
+void Drawable::drawOutline(Mesh3D *m) {
+    ComponentsManager::get()->getComponentWindow()->getShaderOglColor()->render(
+            m,
+            m->vertexbuffer,
+            m->uvbuffer,
+            m->normalbuffer,
+            (int) m->vertices.size()
+    );
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    ComponentsManager::get()->getComponentWindow()->getShaderOglStencil()->render(
+            m,
+            ComponentsManager::get()->getComponentWindow()->getShaderOglColor()->textureColorbuffer
+    );
+    glDeleteTextures(1, &ComponentsManager::get()->getComponentWindow()->getShaderOglColor()->textureColorbuffer);
+
+}
