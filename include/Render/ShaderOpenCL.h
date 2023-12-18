@@ -12,27 +12,8 @@
 
 class ShaderOpenCL: public Shader {
 protected:
-
-    std::string kernelFilename;
-
-    cl_command_queue clQueue;
-    cl_device_id clDeviceId;
-    cl_int clRet;
-    cl_context context;
-
-    cl_program program;
-    cl_kernel kernel;
-
-    bool useCustomProgram;
 public:
-    explicit ShaderOpenCL(bool active, const std::string& kernelFilename);
     explicit ShaderOpenCL(bool active);
-
-    virtual ~ShaderOpenCL();
-
-    void initOpenCLProgram();
-
-    void debugKernel(const std::string& from) const;
 
     virtual void preUpdate();
 

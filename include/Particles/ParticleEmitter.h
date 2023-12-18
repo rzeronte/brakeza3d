@@ -7,11 +7,11 @@
 
 
 #include <vector>
+#include <SDL2/SDL_opengl.h>
 #include "../Objects/Object3D.h"
 #include "../Misc/Timer.h"
 #include "../Misc/Counter.h"
 #include "../Misc/Color.h"
-#include "../Shaders/ShaderParticles.h"
 #include "../Shaders/ShaderExplosion.h"
 
 typedef enum {

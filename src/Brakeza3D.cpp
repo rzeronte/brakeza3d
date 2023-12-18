@@ -78,12 +78,9 @@ void Brakeza3D::mainLoop()
 
     engineTimer.start();
 
-    //componentsManager->getComponentRender()->initOpenCL();
-
     managerGUI = new GUIManager(sceneObjects);
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 
-    componentsManager->getComponentWindow()->clearVideoBuffers();
     ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
 
     onStartComponents();
@@ -102,14 +99,9 @@ void Brakeza3D::mainLoop()
 
         updateTimer();
 
-        componentsManager->getComponentWindow()->clearVideoBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-
-        //componentsManager->getComponentRender()->writeOCLBuffersFromHost();
-
         preUpdateComponents();
-
 
         while (SDL_PollEvent(&e)) {
             checkForResizeOpenGLWindow(e);
@@ -122,10 +114,6 @@ void Brakeza3D::mainLoop()
         if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
 
         componentsManager->getComponentRender()->onUpdateSceneObjectsSecondPass();
-
-
-        //componentsManager->getComponentRender()->writeOCLBufferIntoHost();
-
 
         componentsManager->getComponentRender()->drawObjetsInHostBuffer();
 

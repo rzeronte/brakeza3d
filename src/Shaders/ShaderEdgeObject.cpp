@@ -1,23 +1,26 @@
 #include "../../include/Shaders/ShaderEdgeObject.h"
 #include "../../include/EngineBuffers.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Render/Drawable.h"
+#include "../../include/Render/Logging.h"
 
-ShaderEdgeObject::ShaderEdgeObject(bool active, Color c, float size)
+ShaderEdgeObject::ShaderEdgeObject(bool active, Object3D *object, const Color &color, float size)
 :
-    ObjectShaderOpenCL(active, nullptr),
-    color(c),
+    ObjectShaderOpenCL(active, object),
+    color(color),
     size(size)
+
 {
     setLabel("ShaderEdgeObject");
 }
 
-void ShaderEdgeObject::preUpdate() {
+void ShaderEdgeObject::preUpdate()
+{
     ShaderOpenCL::preUpdate();
     update();
-
 }
 
-void ShaderEdgeObject::postUpdate() {
+void ShaderEdgeObject::postUpdate()
+{
     ShaderOpenCL::postUpdate();
 }
 
@@ -31,25 +34,12 @@ void ShaderEdgeObject::update()
         return;
     }
 
-    if (!this->object->isStencilBufferEnabled()) {
-        return;
-    }
-
     auto mesh = dynamic_cast<Mesh3D*> (object);
     if (mesh == nullptr) {
         return;
     }
 
-    executeKernelOpenCL();
-}
-
-void ShaderEdgeObject::executeKernelOpenCL()
-{
-
-}
-
-ShaderEdgeObject::~ShaderEdgeObject() {
-
+    Drawable::drawOutline(mesh);
 }
 
 void ShaderEdgeObject::setColor(Color c) {
@@ -110,6 +100,7 @@ float ShaderEdgeObject::getSize() const {
     return size;
 }
 
-ShaderEdgeObject *ShaderEdgeObject::create() {
-    return new ShaderEdgeObject(true, Color::green(), 1);
+ShaderEdgeObject *ShaderEdgeObject::create()
+{
+    return new ShaderEdgeObject(true, nullptr, Color::green(), 1);
 }

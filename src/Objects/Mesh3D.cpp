@@ -528,20 +528,20 @@ void Mesh3D::drawImGuiProperties()
 
             for (int i = 0; i < (int) shaders.size(); i++) {
                 auto s = shaders[i];
-                ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("shaderIcon")->getTexture(), ImVec2(24, 24));
+                ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(24, 24));
                 ImGui::SameLine(100);
 
                 if (!s->isEnabled()) {
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("unlockIcon")->getTexture(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                         s->setEnabled(true);
                     }
                 } else {
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("lockIcon")->getTexture(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                         s->setEnabled(false);
                     }
                 }
                 ImGui::SameLine();
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("removeIcon")->getTexture(), ImVec2(14, 14))) {
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                     removeShader(i);
                 }
                 ImGui::SameLine();
@@ -595,6 +595,7 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
                     );
                     auto shader = new ShaderEdgeObject(
                         true,
+                        o,
                         color,
                         (float)cJSON_GetObjectItemCaseSensitive(currentShader, "size")->valuedouble
                     );

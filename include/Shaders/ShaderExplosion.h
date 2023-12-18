@@ -9,7 +9,6 @@
 #include "../Render/ShaderOpenCL.h"
 #include "../Objects/Point2D.h"
 #include "../Objects/OpenCLTypes.h"
-#include "ShaderParticles.h"
 #include "../Misc/Counter.h"
 
 #define MAX_OPENCL_PARTICLES 1024
