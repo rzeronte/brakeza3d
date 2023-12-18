@@ -68,7 +68,7 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
 
-    void onUpdateSceneObjects();
+    static void onUpdateSceneObjects();
 
     void hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle *> &triangles);
 

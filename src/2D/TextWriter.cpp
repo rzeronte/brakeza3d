@@ -33,6 +33,7 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
     GLuint texID = Image::makeOGLImage(surfaceTTF);
     ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(texID, x, y, w, h);
 
+    glDeleteTextures(1, &texID);
     SDL_FreeSurface(surfaceTTF);
     SDL_DestroyTexture(textureTTF);
 }

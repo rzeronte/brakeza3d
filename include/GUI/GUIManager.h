@@ -74,7 +74,8 @@ public:
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/swarm.png", "swarmIcon");
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/mesh.png", "meshIcon");
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/player.png", "playerIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite.png", "spriteIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite2d.png", "sprite2DIcon");
+        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite3d.png", "sprite3DIcon");
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/remove.png", "removeIcon");
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/pause.png", "pauseIcon");
         ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/lock.png", "lockIcon");
@@ -938,11 +939,17 @@ public:
                     SceneLoader::createParticleEmitterInScene();
                     ImGui::EndMenu();
                 }
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("objectIcon")->getOGLTextureID(), ImVec2(16, 16));
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("sprite3DIcon")->getOGLTextureID(), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("Sprite3D", "CTRL+2")) {
                     SceneLoader::createSprite3DInScene();
                 }
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("sprite2DIcon")->getOGLTextureID(), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem("Sprite2D", "CTRL+2")) {
+                    SceneLoader::createSprite2DInScene();
+                }
+
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Render")) {

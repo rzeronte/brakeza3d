@@ -339,11 +339,6 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bo
     if (drawForward) Drawable::drawVector3D(vForward, cam, Color::blue());
 }
 
-void Drawable::drawBillboard(Billboard *B, std::vector<Triangle *> *frameTriangles) {
-    frameTriangles->emplace_back(B->getT1());
-    frameTriangles->emplace_back(B->getT2());
-}
-
 void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
     Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
 
