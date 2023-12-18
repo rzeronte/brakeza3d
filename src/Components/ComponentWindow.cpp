@@ -5,8 +5,8 @@
 #include "../../include/Components/ComponentWindow.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/Render/ShaderOpenGLImage.h"
-#include "../../include/Render/ShaderOpenGLRender.h"
+#include "../../include/OpenGL/ShaderOpenGLImage.h"
+#include "../../include/OpenGL/ShaderOpenGLRender.h"
 
 ComponentWindow::ComponentWindow()
 :
@@ -70,24 +70,13 @@ void ComponentWindow::initWindow() {
 
     Logging::Message("Available video drivers:");
 
-    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-    SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
-    SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
-    SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 8 );
-    SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 8 );
-    SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 8 );
-
-    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
-    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
-    SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
-
     for( int i = 0; i < SDL_GetNumRenderDrivers(); ++i ){
         SDL_RendererInfo rendererInfo = {};
         SDL_GetRenderDriverInfo( i, &rendererInfo );
         Logging::Message("Driver rendering: %s", rendererInfo.name);
     }
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER) < 0) {
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(-1);
     } else {
@@ -102,6 +91,17 @@ void ComponentWindow::initWindow() {
         );
         context = SDL_GL_CreateContext( window );
 
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 3 );
+        SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1 );
+        SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8 );
+        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8 );
+        SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8 );
+        SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8 );
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+
+        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
+        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
+        SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
         if (window == nullptr) {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
             exit(-1);
@@ -180,6 +180,9 @@ void ComponentWindow::initOpenGL()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glEnable(GL_CULL_FACE);
+    glEnable(GL_STENCIL_TEST);
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -197,6 +200,33 @@ void ComponentWindow::initOpenGL()
         "../shaders/Line.vertexshader",
         "../shaders/Line.fragmentshader"
     );
+
+    shaderOGLWireframe = new ShaderOpenGLWireframe(
+        "../shaders/Wireframe.vertexshader",
+        "../shaders/Wireframe.fragmentshader"
+    );
+
+    shaderOGLShading = new ShaderOpenGLShading(
+        "../shaders/Shading.vertexshader",
+        "../shaders/Shading.fragmentshader"
+    );
+
+    shaderOGLPoints = new ShaderOpenGLPoints(
+        "../shaders/Points.vertexshader",
+        "../shaders/Points.fragmentshader"
+    );
+
+    shaderOGLStencil = new ShaderOpenGLOutliner(
+        "../shaders/Outliner.vertexshader",
+        "../shaders/Outliner.fragmentshader"
+    );
+
+    shaderOGLColor = new ShaderOpenGLColor(
+        "../shaders/Color.vertexshader",
+        "../shaders/Color.fragmentshader"
+    );
+
+    shaderCustomOGLParticles = new ShaderCustomOpenGLParticles("../shaders/Particles.shader");
 }
 
 ShaderOpenGLImage *ComponentWindow::getShaderOGLImage() const {
@@ -209,4 +239,28 @@ ShaderOpenGLRender *ComponentWindow::getShaderOGLRender() const {
 
 ShaderOpenGLLine *ComponentWindow::getShaderOGLLine() const {
     return shaderOGLLine;
+}
+
+ShaderOpenGLWireframe *ComponentWindow::getShaderOglWireframe() const {
+    return shaderOGLWireframe;
+}
+
+ShaderOpenGLShading *ComponentWindow::getShaderOglShading() const {
+    return shaderOGLShading;
+}
+
+ShaderOpenGLPoints *ComponentWindow::getShaderOGLPoints() const {
+    return shaderOGLPoints;
+}
+
+ShaderCustomOpenGLParticles *ComponentWindow::getShaderCustomOGLParticles() const {
+    return shaderCustomOGLParticles;
+}
+
+ShaderOpenGLOutliner *ComponentWindow::getShaderOglStencil() const {
+    return shaderOGLStencil;
+}
+
+ShaderOpenGLColor *ComponentWindow::getShaderOglColor() const {
+    return shaderOGLColor;
 }

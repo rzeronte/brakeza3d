@@ -5,8 +5,6 @@
 #ifndef BRAKEDA3D_COMPONENTRENDER_H
 #define BRAKEDA3D_COMPONENTRENDER_H
 
-#define MAX_OPENCL_LIGHTS 16
-
 #include <vector>
 #include <mutex>
 #include "Component.h"
@@ -34,11 +32,6 @@ private:
 
     std::string defaultGPU;
 
-    std::vector<Triangle *> frameTriangles;
-    std::vector<Triangle *> clippedTriangles;
-    std::vector<Triangle *> visibleTriangles;
-    std::vector<Triangle *> spritesTriangles;
-    std::vector<LightPoint3D *> lightPoints;
 
     std::vector<Tile> tiles;
     int sizeTileWidth;
@@ -50,42 +43,6 @@ private:
 
     Object3D *selectedObject;
 
-    cl_platform_id clPlatformId;
-    cl_device_id clDeviceId;
-
-    cl_uint ret_num_devices;
-    cl_uint ret_num_platforms;
-    cl_int ret;
-    cl_context clContext;
-
-    cl_command_queue clCommandQueue;
-
-    cl_program rendererProgram;
-    cl_kernel rendererKernel;
-
-    cl_program fragmentsProgram;
-    cl_kernel fragmentsKernel;
-
-    cl_program rasterizeProgram;
-    cl_kernel rasterizeKernel;
-
-    cl_program particlesProgram;
-    cl_kernel particlesKernel;
-    cl_mem clBufferVideoParticles;
-
-    cl_program explosionProgram;
-    cl_kernel explosionKernel;
-
-    cl_program blinkProgram;
-    cl_kernel blinkKernel;
-
-    cl_program edgeProgram;
-    cl_kernel edgeKernel;
-
-    cl_mem clBufferLights;
-    std::vector<OCLight> oclLights;
-
-
     EngineSetup::LuaStateScripts stateScripts;
     std::vector<ScriptLUA*> scripts;
     TextWriter *textWriter;
@@ -95,7 +52,6 @@ private:
     std::vector<ShaderOpenCL*> sceneShaders;
 
 public:
-    cl_mem clBufferFragments;
     ComponentRender();
 
     ~ComponentRender() override;
@@ -114,41 +70,21 @@ public:
 
     void onUpdateSceneObjects();
 
-    void hiddenOctreeRemoval();
-
     void hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle *> &triangles);
 
     std::vector<LightPoint3D *> &getLightPoints();
 
     void initTiles();
 
-    void softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY);
-
-    static void drawWireframe(Triangle *t);
-
-    void updateLights();
-
     void updateFPS();
-
-    std::vector<Triangle *> &getFrameTriangles();
-
-    std::vector<Triangle *> &getVisibleTriangles();
-
-    std::vector<Triangle *> &getSpritesTriangles();
 
     [[nodiscard]] Object3D* getSelectedObject() const;
 
     void setSelectedObject(Object3D *o);
 
-    void initOpenCL();
-
     static Object3D *getObject3DFromClickPoint(int xClick, int yClick, int &objectIndex);
 
     void updateSelectedObject3D();
-
-    void onPostUpdateSceneObjects();
-
-    void OpenCLInfo();
 
     std::vector<Tile> &getTiles();
 
@@ -158,49 +94,16 @@ public:
 
     [[nodiscard]] int getNumTiles() const;
 
-    [[nodiscard]] int getFps();
-
-    _cl_platform_id *getClPlatformId();
-
-    _cl_device_id *getClDeviceId();
-
-    _cl_context *getClContext();
-
-    _cl_command_queue *getClCommandQueue();
-
-    cl_device_id selectDefaultGPUDevice();
-
-    void writeOCLBuffersFromHost() const;
-
-    void writeOCLBufferIntoHost() const;
-
-    _cl_program *getRendererProgram();
-
-    _cl_kernel *getRendererKernel();
+    [[nodiscard]] int getFps() const;
 
     void drawObjetsInHostBuffer();
 
     void deleteRemovedObjects();
 
-    _cl_kernel *getParticlesKernel();
-
-    void loadKernel(cl_program &program, cl_kernel &kernel, const std::string& source);
-
-    _cl_kernel *getExplosionKernel();
-
-    _cl_kernel *getBlinkKernel();
 
     void onUpdateSceneObjectsSecondPass() const;
 
-    cl_mem *getClBufferLights();
-
-    void updateLightsOCL();
-
-    cl_mem *getClBufferVideoParticles();
-
     void loadConfig();
-
-    void loadCommonKernels();
 
     EngineSetup::LuaStateScripts getStateLUAScripts();
 
@@ -238,13 +141,8 @@ public:
 
     void runShadersOpenCLPreUpdate();
 
-    _cl_kernel *getEdgeKernel();
-
     ShaderOpenCL *getSceneShaderByIndex(int i);
 
-    _cl_kernel *getFragmentsKernel();
-
-    _cl_kernel *getRasterizeKernel();
 };
 
 
