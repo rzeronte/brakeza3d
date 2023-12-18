@@ -32,10 +32,7 @@ void ShaderExplosion::executeKernelOpenCL()
 
 void ShaderExplosion::resetContext()
 {
-    Logging::Message("resetContext");
-    particlesContext = OCParticlesContext();
-    clReleaseMemObject(openCLBufferContext);
-    openCLBufferContext = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, sizeof(OCParticlesContext), &particlesContext, nullptr );
+
 }
 
 void ShaderExplosion::setIntensity(float intensity) {

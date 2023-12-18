@@ -9,7 +9,7 @@
 
 ShaderParticlesBlurBuffer::ShaderParticlesBlurBuffer(bool active, int blurSize)
 :
-    ShaderOpenCL(active, "blurBuffer.cl"),
+    ShaderOpenCL(active),
     blurSize(blurSize)
 {
     setLabel("ShaderParticlesBlurBuffer");

@@ -29,12 +29,6 @@ void ComponentWindow::preUpdate()
 {
 }
 
-void ComponentWindow::clearVideoBuffers()
-{
-   //BUFFERS->clearDepthBuffer();
-   //BUFFERS->clearVideoBuffer();
-}
-
 void ComponentWindow::renderToWindow()
 {
     SDL_GL_SwapWindow(window);

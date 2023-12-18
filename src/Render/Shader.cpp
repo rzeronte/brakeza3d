@@ -1,7 +1,3 @@
-//
-// Created by eduardo on 13/2/22.
-//
-
 #include <functional>
 #include "../../include/Render/Shader.h"
 #include "../../include/EngineSetup.h"
@@ -11,7 +7,6 @@ Shader::Shader(bool enabled)
     enabled(enabled),
     w(EngineSetup::get()->screenHeight),
     h(EngineSetup::get()->screenWidth),
-    bufferSize(EngineSetup::get()->screenWidth * EngineSetup::get()->screenHeight),
     resolution(Vector2D((float) EngineSetup::get()->screenWidth, (float) EngineSetup::get()->screenHeight)),
     deltaTime(0),
     last_ticks(0),
@@ -26,7 +21,6 @@ void Shader::update()
     current_ticks = (float) this->t.getTicks();
     deltaTime = current_ticks - last_ticks;
     last_ticks = current_ticks;
-
     executionTime += deltaTime / 1000.f;
 }
 

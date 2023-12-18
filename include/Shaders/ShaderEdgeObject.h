@@ -7,7 +7,6 @@
 
 #include "../Render/ShaderOpenCL.h"
 #include "../Misc/Image.h"
-#include "../Objects/Object3D.h"
 #include "../Objects/Mesh3D.h"
 #include "../Render/ObjectShaderOpenCL.h"
 
@@ -16,11 +15,10 @@ private:
     Color color;
     float size;
 public:
-    explicit ShaderEdgeObject(bool active, Color c, float size);
+
+    ShaderEdgeObject(bool active, Object3D *object, const Color &color, float size);
 
     void update() override;
-
-    void executeKernelOpenCL();
 
     void setColor(Color c);
 
@@ -29,8 +27,6 @@ public:
     void postUpdate() override;
 
     void drawImGuiProperties() override;
-
-    ~ShaderEdgeObject() override;
 
     cJSON * getJSON() override;
 

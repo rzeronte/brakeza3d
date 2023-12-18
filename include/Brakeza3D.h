@@ -93,7 +93,7 @@ public:
 
     Object3D *getSceneObjectById(int i);
 
-    void checkForResizeOpenGLWindow(SDL_Event &e);
+    static void checkForResizeOpenGLWindow(SDL_Event &e);
 
 };
 

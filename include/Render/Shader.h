@@ -16,7 +16,6 @@ protected:
     int w;
     int h;
 
-    int bufferSize;
     Vector2D resolution;
 
     float deltaTime;
