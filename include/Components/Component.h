@@ -14,10 +14,9 @@ private:
     int id;
     std::string label;
     bool enabled;
-    bool core;
 public:
 
-    Component(bool core);
+    Component();
 
     void setId(int newId);
 
@@ -45,7 +44,7 @@ public:
 
     virtual void setEnabled(bool enabled);
 
-    bool isCore() const;
+    virtual ~Component();
 };
 
 

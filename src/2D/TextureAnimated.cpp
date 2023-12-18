@@ -45,6 +45,8 @@ TextureAnimated::TextureAnimated(const std::string& spriteSheetFile, int spriteW
     currentFrame(0),
     endAnimation(false)
 {
+    Logging::Message("Loading sheet: %s", spriteSheetFile.c_str());
+
     SDL_Surface* spriteSheetSurface = IMG_Load(spriteSheetFile.c_str());
     if (!spriteSheetSurface) {
         Logging::Log("Failed to load sprite sheet: %s", SDL_GetError());
@@ -72,6 +74,7 @@ TextureAnimated::TextureAnimated(const std::string& spriteSheetFile, int spriteW
                 SDL_FreeSurface(spriteSheetSurface);
                 return;
             }
+            Logging::Message("Loading frame: %d", frames.size());
 
             frames.push_back(new Image(destinySurface, spriteTexture));
         }

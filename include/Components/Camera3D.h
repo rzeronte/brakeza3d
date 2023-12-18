@@ -4,6 +4,7 @@
 
 #include <bullet/BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <bullet/BulletDynamics/Character/btKinematicCharacterController.h>
+#include <ext/matrix_float4x4.hpp>
 #include "../Render/Frustum.h"
 #include "../Objects/Vector3D.h"
 
@@ -22,6 +23,10 @@ private:
     Vertex3D followToPositionOffset;
 
     btPairCachingGhostObject *m_ghostObject;
+
+    glm::mat4 ViewMatrix;
+    glm::mat4 ProjectionMatrix;
+
 public:
 
     [[nodiscard]] Object3D *getFollowTo() const;
@@ -84,9 +89,11 @@ public:
 
     float pitch = 0;
     float yaw = 0;
-// Direction of travel
-// Neck angle
-float roll = 0;
+    float roll = 0;
+
+    [[nodiscard]] glm::mat4 getViewMatrix();
+
+    [[nodiscard]] static glm::mat4 getProjectionMatrix() ;
 };
 
 

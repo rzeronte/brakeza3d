@@ -4,8 +4,6 @@
 #include "../../include/Misc/Tools.h"
 
 ComponentSound::ComponentSound()
-:
-    Component(true)
 {
     initSoundSystem();
 }

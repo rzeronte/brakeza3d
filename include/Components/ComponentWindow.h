@@ -9,17 +9,38 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
 #include "Component.h"
+#include "../OpenGL/ShaderOpenGL.h"
+#include "../OpenGL/ShaderOpenGLImage.h"
+#include "../OpenGL/ShaderOpenGLRender.h"
+#include "../OpenGL/ShaderOpenGLLine.h"
+#include "../OpenGL/ShaderOpenGLWireframe.h"
+#include "../OpenGL/ShaderOpenGLShading.h"
+#include "../OpenGL/ShaderOpenGLPoints.h"
+#include "../OpenGL/ShaderCustomOpenGLParticles.h"
+#include "../OpenGL/ShaderOpenGLOutliner.h"
+#include "../OpenGL/ShaderOpenGLColor.h"
 
 class ComponentWindow : public Component {
 private:
     SDL_Window *window;
+
     SDL_Renderer *renderer;
     SDL_Surface *screenSurface;
     SDL_Texture *screenTexture;
-    SDL_Surface *applicationIcon;
 
     TTF_Font *fontDefault;
     TTF_Font *fontAlternative;
+
+    ShaderOpenGLRender *shaderOGLRender;
+    ShaderOpenGLImage *shaderOGLImage;
+    ShaderOpenGLLine *shaderOGLLine;
+    ShaderOpenGLWireframe *shaderOGLWireframe;
+    ShaderOpenGLShading *shaderOGLShading;
+    ShaderOpenGLPoints *shaderOGLPoints;
+    ShaderCustomOpenGLParticles *shaderCustomOGLParticles;
+    ShaderOpenGLOutliner *shaderOGLStencil;
+    ShaderOpenGLColor *shaderOGLColor;
+
 public:
 
     ComponentWindow();
@@ -44,15 +65,36 @@ public:
 
     [[nodiscard]] SDL_Renderer *getRenderer() const;
 
-    [[nodiscard]] SDL_Texture *getScreenTexture() const;
-
     [[nodiscard]] TTF_Font *getFontDefault();
 
     void renderToWindow();
 
-    void clearVideoBuffers();
-
     TTF_Font *getFontAlternative();
+
+    SDL_Surface *applicationIcon;
+
+    void initOpenGL();
+
+    SDL_GLContext context;
+
+    [[nodiscard]] ShaderOpenGLImage *getShaderOGLImage() const;
+
+    [[nodiscard]] ShaderOpenGLRender *getShaderOGLRender() const;
+
+    ShaderOpenGLLine *getShaderOGLLine() const;
+
+    ShaderOpenGLWireframe *getShaderOglWireframe() const;
+
+    ShaderOpenGLShading *getShaderOglShading() const;
+
+    ShaderOpenGLPoints *getShaderOGLPoints() const;
+
+    ShaderCustomOpenGLParticles *getShaderCustomOGLParticles() const;
+
+    ShaderOpenGLOutliner *getShaderOglStencil() const;
+
+    ShaderOpenGLColor *getShaderOglColor() const;
+
 };
 
 

@@ -4,7 +4,6 @@
 
 ComponentCollisions::ComponentCollisions()
 :
-    Component(true),
     bspMap(nullptr),
     collisionConfiguration(nullptr),
     dispatcher(nullptr),
@@ -19,6 +18,8 @@ ComponentCollisions::ComponentCollisions()
 void ComponentCollisions::onStart()
 {
     Logging::head("ComponentCollisions onStart");
+
+    setEnabled(true);
 }
 
 void ComponentCollisions::preUpdate()
@@ -141,6 +142,7 @@ void ComponentCollisions::stepSimulation(float deltaTime)
 void ComponentCollisions::demoProjectile(int type) {
 
     std::string fileName;
+    Logging::Message("Launching %s", fileName.c_str());
 
     switch (type) {
         case 0:
@@ -178,7 +180,7 @@ void ComponentCollisions::demoProjectile(int type) {
         (float) Tools::random(0, 180)
     );
     projectile->setFlatTextureColor(true);
-    projectile->setPosition( camera->getPosition());
+    projectile->setPosition( camera->getPosition() + direction.getScaled(1000));
     projectile->setEnabled(true);
     projectile->makeProjectileRigidBody(
         EngineSetup::get()->PROJECTILE_DEMO_MASS,
@@ -188,8 +190,8 @@ void ComponentCollisions::demoProjectile(int type) {
         EngineSetup::get()->PROJECTILE_DEMO_IMPULSE,
         EngineSetup::get()->PROJECTILE_DEMO_ACCURACY,
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-        EngineSetup::collisionGroups::Projectile,
-        EngineSetup::collisionGroups::AllFilter
+        btBroadphaseProxy::DefaultFilter,
+        btBroadphaseProxy::DefaultFilter
     );
 
     Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("demoProjectile"));
