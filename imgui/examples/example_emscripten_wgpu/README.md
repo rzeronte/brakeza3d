@@ -2,7 +2,7 @@
 
 - You need to install Emscripten from https://emscripten.org/docs/getting_started/downloads.html, and have the environment variables set, as described in https://emscripten.org/docs/getting_started/downloads.html#installation-instructions
 
-- Depending on your configuration, in Windows you may need to run `emsdk/emsdk_env.bat` in your console to access the Emscripten command-line tools.
+- Depending on your configuration, in Windows you may need to runEnvironment `emsdk/emsdk_env.bat` in your console to access the Emscripten command-line tools.
 
 - You may also refer to our [Continuous Integration setup](https://github.com/ocornut/imgui/tree/master/.github/workflows) for Emscripten setup.
 
@@ -12,7 +12,7 @@
 
 ## How to Run
 
-To run on a local machine:
+To runEnvironment on a local machine:
 - Make sure your browse supports WGPU and it is enabled. WGPU is still WIP not enabled by default in most browser.
 - `make serve` will use Python3 to spawn a local webserver, you can then browse http://localhost:8000 to access your build.
 - Otherwise, generally you will need a local webserver:

@@ -4,7 +4,6 @@
 
 ComponentHUD::ComponentHUD()
 :
-    Component(false),
     shaderLasers(nullptr),
     HUDTextures(nullptr)
 {

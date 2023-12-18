@@ -5,6 +5,7 @@
 #include "../Objects/Vertex3D.h"
 #include "../Objects/Mesh3D.h"
 #include "Body.h"
+#include "Mesh3DGhost.h"
 
 
 class Mesh3DBody : public Mesh3D, public Body {
@@ -21,6 +22,8 @@ public:
 
     void setGravity(Vertex3D g);
 
+    static void createFromJSON(cJSON *object);
+
 private:
     btConvexHullShape *getConvexHullShapeFromMesh();
 
@@ -28,6 +31,16 @@ private:
 
 protected:
     void resolveCollision(Collisionable *collisionable) override;
+
+    void drawImGuiProperties() override;
+
+    const char *getTypeObject() override;
+
+    const char *getTypeIcon() override;
+
+    cJSON *getJSON() override;
+
+    static void setPropertiesFromJSON(cJSON *object, Mesh3DBody *o);
 
 };
 

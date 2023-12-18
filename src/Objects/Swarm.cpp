@@ -233,3 +233,11 @@ void Swarm::removeBoid(SwarmObject *o)
 {
     objects.erase(std::remove(objects.begin(), objects.end(), o), objects.end());
 }
+
+const char *Swarm::getTypeObject() {
+    return "Swarm";
+}
+
+const char *Swarm::getTypeIcon() {
+    return "swarmIcon";
+}

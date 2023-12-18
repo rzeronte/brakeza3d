@@ -6,7 +6,7 @@ _(You may browse this at https://github.com/ocornut/imgui/blob/master/docs/BACKE
 your application or engine to easily integrate Dear ImGui.** Each backend is typically self-contained in a pair of files: imgui_impl_XXXX.cpp + imgui_impl_XXXX.h.
 
 - The 'Platform' backends are in charge of: mouse/keyboard/gamepad inputs, cursor shape, timing, and windowing.<BR>
-  e.g. Windows ([imgui_impl_win32.cpp](https://github.com/ocornut/imgui/blob/master/backends/imgui_impl_win32.cpp)), GLFW ([imgui_impl_glfw.cpp](https://github.com/ocornut/imgui/blob/master/backends/imgui_impl_glfw.cpp)), SDL2 ([imgui_impl_sdl.cpp](https://github.com/ocornut/imgui/blob/master/backends/imgui_impl_sdl.cpp)), etc.
+  e.g. Windows ([imgui_impl_win32.cpp](https://github.com/ocornut/imgui/blob/master/backends/imgui_impl_win32.cpp)), GLFW ([imgui_impl_glfw.cpp](https://github.com/ocornut/imgui/blob/master/backends/imgui_impl_glfw.cpp)), SDL2 ([imgui_impl_sdl2.cpp](https://github.com/ocornut/imgui/blob/master/backends/imgui_impl_sdl2.cpp)), etc.
 
 - The 'Renderer' backends are in charge of: creating atlas texture, and rendering imgui draw data.<BR>
   e.g. DirectX11 ([imgui_impl_dx11.cpp](https://github.com/ocornut/imgui/blob/master/backends/imgui_impl_dx11.cpp)), OpenGL/WebGL ([imgui_impl_opengl3.cpp](https://github.com/ocornut/imgui/blob/master/backends/imgui_impl_opengl3.cpp)), Vulkan ([imgui_impl_vulkan.cpp](https://github.com/ocornut/imgui/blob/master/backends/imgui_impl_vulkan.cpp)), etc.
@@ -17,12 +17,12 @@ your application or engine to easily integrate Dear ImGui.** Each backend is typ
 An application usually combines one Platform backend + one Renderer backend + main Dear ImGui sources.
 For example, the [example_win32_directx11](https://github.com/ocornut/imgui/tree/master/examples/example_win32_directx11) application combines imgui_impl_win32.cpp + imgui_impl_dx11.cpp. There are 20+ examples in the [examples/](https://github.com/ocornut/imgui/blob/master/examples/) folder. See [EXAMPLES.MD](https://github.com/ocornut/imgui/blob/master/docs/EXAMPLES.md) for details.
 
-**Once Dear ImGui is setup and running, run and refer to `ImGui::ShowDemoWindow()` in imgui_demo.cpp for usage of the end-user API.**
+**Once Dear ImGui is setup and running, runEnvironment and refer to `ImGui::ShowDemoWindow()` in imgui_demo.cpp for usage of the end-user API.**
 
 
 ### What are backends?
 
-Dear ImGui is highly portable and only requires a few things to run and render, typically:
+Dear ImGui is highly portable and only requires a few things to runEnvironment and render, typically:
 
  - Required: providing mouse/keyboard inputs (fed into the `ImGuiIO` structure).
  - Required: uploading the font atlas texture into graphics memory.
@@ -62,7 +62,8 @@ List of Platforms Backends:
     imgui_impl_android.cpp    ; Android native app API
     imgui_impl_glfw.cpp       ; GLFW (Windows, macOS, Linux, etc.) http://www.glfw.org/
     imgui_impl_osx.mm         ; macOS native API (not as feature complete as glfw/sdl backends)
-    imgui_impl_sdl.cpp        ; SDL2 (Windows, macOS, Linux, iOS, Android) https://www.libsdl.org
+    imgui_impl_sdl2.cpp       ; SDL2 (Windows, macOS, Linux, iOS, Android) https://www.libsdl.org
+    imgui_impl_sdl3.cpp       ; SDL3 (Windows, macOS, Linux, iOS, Android) https://www.libsdl.org (*EXPERIMENTAL UNTIL SDL3 IS RELEASED*)
     imgui_impl_win32.cpp      ; Win32 native API (Windows)
     imgui_impl_glut.cpp       ; GLUT/FreeGLUT (this is prehistoric software and absolutely not recommended today!)
 
@@ -75,7 +76,8 @@ List of Renderer Backends:
     imgui_impl_metal.mm       ; Metal (with ObjC)
     imgui_impl_opengl2.cpp    ; OpenGL 2 (legacy, fixed pipeline <- don't use with modern OpenGL context)
     imgui_impl_opengl3.cpp    ; OpenGL 3/4, OpenGL ES 2, OpenGL ES 3 (modern programmable pipeline)
-    imgui_impl_sdlrenderer.cpp; SDL_Renderer (optional component of SDL2 available from SDL 2.0.18+)
+    imgui_impl_sdlrenderer2.cpp ; SDL_Renderer (optional component of SDL2 available from SDL 2.0.18+)
+    imgui_impl_sdlrenderer3.cpp ; SDL_Renderer (optional component of SDL3 available from SDL 3.0.0+)
     imgui_impl_vulkan.cpp     ; Vulkan
     imgui_impl_wgpu.cpp       ; WebGPU
 
@@ -83,8 +85,8 @@ List of high-level Frameworks Backends (combining Platform + Renderer):
 
     imgui_impl_allegro5.cpp
 
-Emscripten is also supported.
-The [example_emscripten_opengl3](https://github.com/ocornut/imgui/tree/master/examples/example_emscripten_opengl3) app uses imgui_impl_sdl.cpp + imgui_impl_opengl3.cpp, but other combos are possible.
+Emscripten is also supported!
+The SDL+GL, GLFW+GL and SDL+WebGPU examples are all ready to build and runEnvironment with Emscripten.
 
 ### Backends for third-party frameworks, graphics API or other languages
 
@@ -97,7 +99,7 @@ If you are not sure which backend to use, the recommended platform/frameworks fo
 |Library |Website |Backend |Note |
 |--------|--------|--------|-----|
 | GLFW | https://github.com/glfw/glfw | imgui_impl_glfw.cpp | |
-| SDL2 | https://www.libsdl.org | imgui_impl_sdl.cpp | |
+| SDL2 | https://www.libsdl.org | imgui_impl_sdl2.cpp | |
 | Sokol | https://github.com/floooh/sokol | [util/sokol_imgui.h](https://github.com/floooh/sokol/blob/master/util/sokol_imgui.h) | Lower-level than GLFW/SDL |
 
 

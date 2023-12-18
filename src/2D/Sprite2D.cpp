@@ -68,3 +68,11 @@ void Sprite2D::updatePosition(int x, int y)
     this->x = x;
     this->y = y;
 }
+
+const char *Sprite2D::getTypeObject() {
+    return "Sprite2D";
+}
+
+const char *Sprite2D::getTypeIcon() {
+    return "sprite2DIcon";
+}

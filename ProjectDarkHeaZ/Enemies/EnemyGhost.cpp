@@ -52,7 +52,6 @@ EnemyGhost::EnemyGhost() :
 void EnemyGhost::onStart()
 {
     blink = new ShaderBlink(true, this, 0.05, PaletteColors::getEnemyBlink());
-    zombie = new ShaderZombie(true, EngineSetup::get()->IMAGES_FOLDER + "alien.png", this, this->getOpenClRenderer());
 }
 
 void EnemyGhost::onUpdate()
@@ -113,14 +112,8 @@ void EnemyGhost::onUpdate()
 
 void EnemyGhost::updateEmitterParticles()
 {
-    particleEmitter->shaderParticles->setOrigin(
-        Transforms::WorldToPoint(
-            getPosition() - AxisUp().getScaled(-700),
-            ComponentsManager::get()->getComponentCamera()->getCamera()
-        )
-    );
-    particleEmitter->shaderParticles->setDirection(AxisForward());
     particleEmitter->setPosition(getPosition());
+    particleEmitter->setRotation(getRotation());
 }
 
 void EnemyGhost::onDrawHostBuffer()

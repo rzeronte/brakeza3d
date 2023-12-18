@@ -9,7 +9,6 @@
 #include "../../include/Render/ShaderOpenCL.h"
 #include "../../include/Misc/Image.h"
 #include "../../include/Objects/Object3D.h"
-#include "../../include/Shaders/ShaderParticles.h"
 #include "../../include/Objects/LightPoint3D.h"
 
 class RayLight {

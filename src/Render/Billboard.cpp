@@ -1,17 +1,18 @@
+#define GL_GLEXT_PROTOTYPES
 
 #include "../../include/Render/Billboard.h"
 #include "../../include/Render/Transforms.h"
+#include "../../include/ComponentsManager.h"
 
 Billboard::Billboard(float width, float height)
 :
     width(width),
     height(height),
-    T1(Triangle()),
-    T2(Triangle()),
     texture(nullptr)
 {
-    triangles.push_back(&T1);
-    triangles.push_back(&T2);
+    glGenBuffers(1, &vertexbuffer);
+    glGenBuffers(1, &uvbuffer);
+    glGenBuffers(1, &normalbuffer);
 }
 
 void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D &U, Vertex3D &R)
@@ -56,40 +57,52 @@ void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D &U, Vertex3D &R)
     Q4.u = 1.0f;
     Q4.v = 0.0001;
 
-    this->T1.A = Q3;
-    this->T1.B = Q2;
-    this->T1.C = Q1;
-    this->T1.parent = o;
+    auto normal = U % R;
+    vertices.clear();
+    uvs.clear();
+    normals.clear();
 
-    this->T2.A = Q4;
-    this->T2.B = Q3;
-    this->T2.C = Q1;
-    this->T2.parent = o;
+    vertices.emplace_back(Q3.x, Q3.y, Q3.z);
+    vertices.emplace_back(Q2.x, Q2.y, Q2.z);
+    vertices.emplace_back(Q1.x, Q1.y, Q1.z);
+    vertices.emplace_back(Q4.x, Q4.y, Q4.z);
+    vertices.emplace_back(Q3.x, Q3.y, Q3.z);
+    vertices.emplace_back(Q1.x, Q1.y, Q1.z);
+
+    uvs.emplace_back(Q3.u, Q3.v);
+    uvs.emplace_back(Q2.u, Q2.v);
+    uvs.emplace_back(Q1.u, Q1.v);
+    uvs.emplace_back(Q4.u, Q4.v);
+    uvs.emplace_back(Q3.u, Q3.v);
+    uvs.emplace_back(Q1.u, Q1.v);
+
+    normals.emplace_back(normal.x, normal.y, normal.z);
+    normals.emplace_back(normal.x, normal.y, normal.z);
+    normals.emplace_back(normal.x, normal.y, normal.z);
+    normals.emplace_back(normal.x, normal.y, normal.z);
+    normals.emplace_back(normal.x, normal.y, normal.z);
+    normals.emplace_back(normal.x, normal.y, normal.z);
+
+    fillBuffers();
 }
 
 void Billboard::loadTexture(const std::string &fileName)
 {
     texture->loadTGA(fileName);
-    setTrianglesTexture(texture);
 }
 
-void Billboard::setTrianglesTexture(Image *t) {
-    this->T1.setTexture(t);
-    this->T2.setTexture(t);
+void Billboard::fillBuffers()
+{
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+    glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+    glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
 }
 
-void Billboard::reassignTexture() {
-    setTrianglesTexture(this->texture);
-}
-
-Triangle *Billboard::getT1() {
-    return &T1;
-}
-
-Triangle *Billboard::getT2() {
-    return &T2;
-}
-
-std::vector<Triangle *> &Billboard::getTriangles() {
-    return triangles;
+void Billboard::setTexture(Image *texture) {
+    Billboard::texture = texture;
 }

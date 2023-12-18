@@ -1,82 +1,56 @@
+
 #include "../../include/Components/ComponentRender.h"
 #include "../../include/ComponentsManager.h"
-#include "../../include/Misc/Parallells.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Transforms.h"
 
-ComponentRender::ComponentRender() :
-    Component(true),
+ComponentRender::ComponentRender()
+:
+    textWriter(nullptr),
     fps(0),
     fpsFrameCounter(0),
     frameTime(0),
     sizeTileWidth((EngineSetup::get()->screenWidth / 2)),
     sizeTileHeight((EngineSetup::get()->screenHeight / 2)),
-    tilesWidth(0),
-    tilesHeight(0),
-    numTiles(0),
+    numberTilesHorizontal(0),
+    numberTilesVertical(0),
+    numberTiles(0),
     tilePixelsBufferSize(0),
     selectedObject(nullptr),
-    clPlatformId(nullptr),
-    clDeviceId(nullptr),
-    ret_num_devices(0),
-    ret_num_platforms(0),
-    ret(0),
-    clContext(nullptr),
-    clCommandQueue(nullptr)
+    stateScripts(EngineSetup::LuaStateScripts::LUA_STOP),
+    sceneShadersEnabled(true)
 {
 }
 
 void ComponentRender::onStart()
 {
-    auto componentWindow = ComponentsManager::get()->getComponentWindow();
-    textWriter = new TextWriter(componentWindow->getRenderer(), componentWindow->getFontDefault());
-
     Logging::head("ComponentRender onStart");
     setEnabled(true);
 
     initTiles();
-    initOpenCL();
+
+    textWriter = new TextWriter(ComponentsManager::get()->getComponentWindow()->getRenderer(), ComponentsManager::get()->getComponentWindow()->getFontDefault());
+    addShaderToScene(new ShaderImage(EngineSetup::get()->IMAGES_FOLDER + "noise_color.png"));
 }
 
 void ComponentRender::preUpdate()
 {
     this->updateFPS();
+
 }
 
 void ComponentRender::drawObjetsInHostBuffer()
 {
-    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
-    for (auto object : sceneObjects) {
-        object->onDrawHostBuffer();
-    }
-
     auto components = ComponentsManager::get();
-    if (SETUP->RENDER_MAIN_AXIS) {
-        Drawable::drawMainAxis(components->getComponentCamera()->getCamera());
-    }
-
-    if (SETUP->DRAW_CROSSHAIR) {
-        Drawable::drawCrossHair();
-    }
-
-    if (SETUP->BULLET_DEBUG_MODE) {
-        components->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
-    }
 
     if (SETUP->DRAW_FPS) {
         textWriter->writeTTFCenterHorizontal(
             10,
             std::to_string(components->getComponentRender()->getFps()).c_str(),
-            PaletteColors::getMenuOptions(),
+            Color::green(),
             0.3
         );
     }
-
-    //this->hiddenSurfaceRemoval();
-    //this->drawVisibleTriangles();
-
-    //frameTriangles.clear();
-    //spritesTriangles.clear();
 }
 
 void ComponentRender::onUpdate()
@@ -84,90 +58,34 @@ void ComponentRender::onUpdate()
     if (!isEnabled()) return;
 
     deleteRemovedObjects();
-
-    updateLightsOCL();
+    if (isSceneShadersEnabled()) {
+        runShadersOpenCLPreUpdate();
+    }
 
     onUpdateSceneObjects();
 
+    if (SETUP->RENDER_MAIN_AXIS) {
+        Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
+    }
+
     if (SETUP->ENABLE_LIGHTS) {
-        this->extractLightPointsFromObjects3D();
-        this->updateLights();
-        if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER) {
-            this->createLightPointsDepthMappings();
-        }
     }
 
-    if (EngineSetup::get()->CREATE_LIGHT_ZBUFFER){
-        for (auto & lightpoint : this->lightPoints) {
-            if (!lightpoint->isEnabled()) {
-                lightpoint->clearShadowMappingBuffer();
-            }
-        }
+    if (stateScripts == EngineSetup::LUA_PLAY) {
+        runScripts();
     }
-
-    if (EngineSetup::get()->TEXTURES_BILINEAR_INTERPOLATION) {
-        shaderBilinear->update();
+    if (isSceneShadersEnabled()) {
+        runShadersOpenCLPostUpdate();
     }
 }
 
 void ComponentRender::postUpdate()
 {
-    this->onPostUpdateSceneObjects();
-}
-
-void ComponentRender::writeOCLBufferIntoHost() const
-{
-    clEnqueueReadBuffer(clCommandQueue,
-        EngineBuffers::get()->videoBufferOCL,
-        CL_FALSE,
-        0,
-        EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
-        EngineBuffers::get()->videoBuffer,
-        0,
-        nullptr,
-        nullptr
-    );
-
-    /*clEnqueueReadBuffer(
-        clCommandQueue,
-        EngineBuffers::get()->depthBufferOCL,
-        CL_TRUE,
-        0,
-        EngineBuffers::get()->sizeBuffers * sizeof(float),
-        EngineBuffers::get()->depthBuffer,
-        0,
-        nullptr,
-        nullptr
-    );*/
-}
-
-void ComponentRender::writeOCLBuffersFromHost() const
-{
-    cl_int ret;
-
-    /*ret = clEnqueueWriteBuffer(
-        clCommandQueue,
-        EngineBuffers::get()->videoBufferOCL,
-        CL_TRUE,
-        0,
-        EngineBuffers::get()->sizeBuffers * sizeof(Uint32),
-        EngineBuffers::get()->videoBuffer,
-        0,
-        nullptr,
-        nullptr
-    );*/
-
-    if (ret != CL_SUCCESS) {
-        Logging::Log("Error writing to Video OCL Buffer: (%d)", ret);
-    }
-
-    float max_value = 100000;
-    clEnqueueFillBuffer(clCommandQueue, EngineBuffers::get()->depthBufferOCL, &max_value, sizeof(float), 0, EngineBuffers::get()->sizeBuffers * sizeof(unsigned int), 0, NULL, NULL);
-
-    if (ret != CL_SUCCESS) {
-        Logging::Log("Error writing to Depth OCL Buffer (%d)", ret);
+    for (auto &object : Brakeza3D::get()->getSceneObjects()) {
+        object->postUpdate();
     }
 }
+
 void ComponentRender::onEnd() {
 }
 
@@ -183,84 +101,22 @@ void ComponentRender::updateSelectedObject3D()
     auto input = ComponentsManager::get()->getComponentInput();
 
     if (input->isClickLeft() && !input->isMouseMotion()) {
+        int index = -1;
         selectedObject = getObject3DFromClickPoint(
             input->getRelativeRendererMouseX(),
-            input->getRelativeRendererMouseY()
+            input->getRelativeRendererMouseY(),
+            index
         );
+
+        if (selectedObject != nullptr){
+            Logging::Message("Selected object: %s", selectedObject->getLabel().c_str());
+            Brakeza3D::get()->getManagerGui()->setSelectedObjectIndex(index);
+        }
     }
 
     if (input->isClickRight() && !input->isMouseMotion()) {
         setSelectedObject(nullptr);
     }
-}
-
-
-std::vector<Triangle *> &ComponentRender::getFrameTriangles() {
-    return frameTriangles;
-}
-
-std::vector<Triangle *> &ComponentRender::getVisibleTriangles() {
-    return visibleTriangles;
-}
-
-std::vector<Triangle *> &ComponentRender::getSpritesTriangles() {
-    return spritesTriangles;
-}
-
-void ComponentRender::createLightPointsDepthMappings() {
-
-    for (auto & lightpoint : this->lightPoints) {
-        if (!lightpoint->isEnabled()) {
-            continue;
-        }
-
-        std::vector<Triangle *> visibleTrianglesFromLight;
-        std::vector<Triangle *> clippedTrianglesFromLight;
-
-        for (auto & ft : frameTriangles) {
-            this->hiddenSurfaceRemovalTriangleForLight(ft, lightpoint, visibleTrianglesFromLight, clippedTrianglesFromLight);
-        }
-
-        /*visibleTrianglesFromLight.insert(
-                visibleTrianglesFromLight.end(),
-                std::make_move_iterator(clippedTrianglesFromLight.begin()),
-                std::make_move_iterator(clippedTrianglesFromLight.end())
-        );*/
-
-        for (auto & t : visibleTrianglesFromLight) {
-            this->triangleRasterizerForDepthMapping(t, lightpoint);
-        }
-
-        if (lightpoint->showDeepMapping) {
-            lightpoint->drawDeepMap(0, 0);
-        }
-
-        if (lightpoint->showFrustum) {
-            Drawable::drawFrustum(
-                    lightpoint->frustum,
-                    ComponentsManager::get()->getComponentCamera()->getCamera(),
-                    true, true, false
-            );
-        }
-    }
-}
-
-void ComponentRender::extractLightPointsFromObjects3D()
-{
-    this->lightPoints.resize(0);
-    auto sceneObjects = Brakeza3D::get()->getSceneObjects();
-    for (auto object : sceneObjects) {
-        auto *lp = dynamic_cast<LightPoint3D *>(object);
-        if (lp != nullptr && lp->isEnabled()) {
-            lp->clearShadowMappingBuffer();
-            lightPoints.emplace_back(lp);
-        }
-    }
-}
-
-std::vector<LightPoint3D *> &ComponentRender::getLightPoints()
-{
-    return lightPoints;
 }
 
 void ComponentRender::deleteRemovedObjects()
@@ -286,148 +142,29 @@ void ComponentRender::deleteRemovedObjects()
 void ComponentRender::onUpdateSceneObjects()
 {
     auto sceneObjects = Brakeza3D::get()->getSceneObjects();
+    auto cameraPosition = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
 
-    ComponentsManager::get()->getComponentCamera()->updateOCLContext();
+    std::map<float, Object3D*> sorted;
+    for (auto & sceneObject : sceneObjects) {
+        float distance = cameraPosition.distance(sceneObject->position);
+        sorted[distance] = sceneObject;
+    }
 
-    for (auto object : sceneObjects) {
-        if (object != nullptr && object->isEnabled()) {
-            object->onUpdate();
+    for (auto it = sorted.rbegin(); it != sorted.rend(); ++it) {
+        if (it->second->isEnabled()) {
+            it->second->onUpdate();
         }
     }
-
-    if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
-        shaderDepthOfField->update();
-    }
-
-    shaderBlurParticles->update();
 }
 
-void ComponentRender::onUpdateSceneObjectsSecondPass()
+void ComponentRender::onUpdateSceneObjectsSecondPass() const
 {
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
-        if (!object->isEnabled()) continue;
-        object->drawOnUpdateSecondPass();
-    }
-}
-
-void ComponentRender::hiddenSurfaceRemovalTriangleForLight(
-    Triangle *t,
-    LightPoint3D *l,
-    std::vector<Triangle *> &visibleTrianglesForLight,
-    std::vector<Triangle *> &clippedTriangles
-) {
-
-    t->updateObjectSpace();
-    t->updateNormal();
-
-    // back face culling (needs objectSpace)
-    if (t->isBackFaceCulling(&l->getPosition())) {
-        return;
-    }
-
-    // Clipping (needs objectSpace)
-    if (t->testForClipping(l->frustum->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE)) {
-        if (SETUP->ENABLE_CLIPPING) {
-            t->clipping(
-                l->frustum,
-                l->frustum->planes,
-                SETUP->LEFT_PLANE,
-                SETUP->BOTTOM_PLANE,
-                t->parent,
-                clippedTriangles
-            );
+        if (object != nullptr && object->isEnabled()) {
+            object->drawOnUpdateSecondPass();
         }
-
-        return;
     }
-
-    // Frustum Culling (needs objectSpace)
-    if (!l->frustum->isVertexInside(t->Ao) && !l->frustum->isVertexInside(t->Bo) && !l->frustum->isVertexInside(t->Co) ) {
-        return;
-    }
-
-    t->updateCameraSpace(l);
-    t->updateOrthographicNDCSpace(l->frustum);
-    t->updateScreenSpace();
-    t->updateBoundingBox();
-    t->updateFullArea();
-
-    visibleTrianglesForLight.push_back(t);
-}
-
-void ComponentRender::hiddenSurfaceRemovalTriangle(Triangle *t) {
-    Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-    t->updateObjectSpace();
-    t->updateNormal();
-
-    // back face culling (needs objectSpace)
-    if (t->isBackFaceCulling(&cam->getPosition())) {
-        return;
-    }
-
-    // Clipping (needs objectSpace)
-    if (t->testForClipping(cam->getFrustum()->planes, SETUP->LEFT_PLANE, SETUP->BOTTOM_PLANE)) {
-        if (SETUP->ENABLE_CLIPPING) {
-            t->clipping(
-                cam->getFrustum(),
-                cam->getFrustum()->planes,
-                SETUP->LEFT_PLANE,
-                SETUP->BOTTOM_PLANE,
-                t->parent,
-                clippedTriangles
-            );
-        }
-
-        return;
-    }
-
-    // Frustum Culling (needs objectSpace)
-    if (!cam->getFrustum()->isVertexInside(t->Ao) && !cam->getFrustum()->isVertexInside(t->Bo) && !cam->getFrustum()->isVertexInside(t->Co) ) {
-        return;
-    }
-
-    // Triangle precached data
-    // Estas operaciones las hacemos después de descartar triángulos
-    // para optimización en el rasterizador por software
-    t->updateCameraSpace(cam);
-    t->updatePerspectiveNDCSpace(cam->getFrustum());
-    t->updateScreenSpace();
-    t->updateBoundingBox();
-    t->updateFullArea();
-    t->updateUVCache();
-
-    visibleTriangles.emplace_back(t);
-}
-
-void ComponentRender::hiddenSurfaceRemoval() {
-    for (auto & clippedTriangle : clippedTriangles) {
-        delete clippedTriangle;
-    }
-    clippedTriangles.clear();
-
-    visibleTriangles.clear();
-
-    for (auto & frameTriangle : frameTriangles) {
-        this->hiddenSurfaceRemovalTriangle(frameTriangle);
-    }
-
-    for (auto & frameTriangle : spritesTriangles) {
-        this->hiddenSurfaceRemovalTriangle(frameTriangle);
-    }
-
-    visibleTriangles.insert(
-        visibleTriangles.end(),
-        std::make_move_iterator(clippedTriangles.begin()),
-        std::make_move_iterator(clippedTriangles.end())
-    );
-}
-
-void ComponentRender::hiddenOctreeRemoval() {
-    std::vector<Triangle *> newFrameTriangles;
-
-    this->frameTriangles = newFrameTriangles;
 }
 
 void ComponentRender::hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle *> &triangles)
@@ -446,358 +183,6 @@ void ComponentRender::hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Tria
     }
 }
 
-void ComponentRender::drawVisibleTriangles() {
-    if (SETUP->BASED_TILE_RENDER) {
-
-        this->handleTrianglesToTiles(visibleTriangles);
-        this->drawTilesTriangles(&visibleTriangles);
-
-        if (SETUP->DRAW_TILES_GRID) {
-            this->drawTilesGrid();
-        }
-
-        return;
-    }
-
-    this->drawTriangles(visibleTriangles);
-}
-
-void ComponentRender::handleTrianglesToTiles(std::vector<Triangle *> &triangles) {
-    for (int i = 0; i < this->numTiles; i++) {
-        this->tiles[i].triangleIds.clear();
-    }
-
-    for (unsigned int i = 0; i < triangles.size(); i++) {
-        int tileStartX = (int) std::max((float) (triangles[i]->minX / this->sizeTileWidth), 0.0f);
-        int tileEndX = (int) std::min((float) (triangles[i]->maxX / this->sizeTileWidth),
-                                (float) this->tilesWidth - 1);
-
-        int tileStartY = (int) std::max((float) (triangles[i]->minY / this->sizeTileHeight), 0.0f);
-        int tileEndY = (int) std::min((float) (triangles[i]->maxY / this->sizeTileHeight),
-                                (float) this->tilesHeight - 1);
-
-        for (int y = tileStartY; y <= tileEndY; y++) {
-            for (int x = tileStartX; x <= tileEndX; x++) {
-                this->tiles[y * tilesWidth + x].triangleIds.emplace_back(i);
-            }
-        }
-    }
-}
-
-void ComponentRender::drawTilesGrid() {
-    for (int j = 0; j < (this->tilesWidth * this->tilesHeight); j++) {
-        Tile *t = &this->tiles[j];
-        Color color = Color::white();
-
-        if (!t->triangleIds.empty()) {
-            color = Color::red();
-        }
-
-        Line2D top = Line2D(t->start_x, t->start_y, t->start_x + sizeTileWidth, t->start_y);
-        Line2D left = Line2D(t->start_x, t->start_y, t->start_x, t->start_y + sizeTileHeight);
-        Drawable::drawLine2D(top, color);
-        Drawable::drawLine2D(left, color);
-    }
-}
-
-void ComponentRender::drawTriangles(std::vector<Triangle *> &visibleTriangles)
-{
-    std::vector<Triangle *>::iterator it;
-    for (it = visibleTriangles.begin(); it != visibleTriangles.end(); it++) {
-        Triangle *triangle = *(it);
-        render(triangle);
-    }
-
-    if (SETUP->DRAW_MAIN_DEEP_MAPPING) {
-        Drawable::drawMainDeepMapFromCamera(0, 0);
-    }
-}
-
-void ComponentRender::render(Triangle *t)
-{
-    // degradate
-    if (t->getTexture() != nullptr && SETUP->TRIANGLE_MODE_TEXTURIZED) {
-        triangleRasterizer(t);
-    }
-
-    // texture
-    if (SETUP->TRIANGLE_MODE_COLOR_SOLID) {
-        triangleRasterizer(t);
-    }
-
-    // wireframe
-    if (SETUP->TRIANGLE_MODE_WIREFRAME || (t->parent->isDecal() && SETUP->DRAW_DECAL_WIREFRAMES)) {
-        drawWireframe(t);
-    }
-
-    // Pixels
-    if (SETUP->TRIANGLE_MODE_PIXELS) {
-        Camera3D *CC = ComponentsManager::get()->getComponentCamera()->getCamera();
-        Drawable::drawVertex(t->Co, CC, Color::green());
-        Drawable::drawVertex(t->Bo, CC, Color::green());
-        Drawable::drawVertex(t->Co, CC, Color::green());
-    }
-}
-
-void ComponentRender::triangleRasterizerForDepthMapping(Triangle *t, LightPoint3D *ligthpoint) {
-    // Triangle setup
-    int A01 = (int) (-t->As.y + t->Bs.y);
-    int A12 = (int) (-t->Bs.y + t->Cs.y);
-    int A20 = (int) (-t->Cs.y + t->As.y);
-
-    int B01 = (int) (-t->Bs.x + t->As.x);
-    int B12 = (int) (-t->Cs.x + t->Bs.x);
-    int B20 = (int) (-t->As.x + t->Cs.x);
-
-    Point2D startP(t->minX, t->minY);
-    int w0_row = Maths::orient2d(t->Bs, t->Cs, startP);
-    int w1_row = Maths::orient2d(t->Cs, t->As, startP);
-    int w2_row = Maths::orient2d(t->As, t->Bs, startP);
-
-    Fragment fragment = Fragment();
-
-    for (int y = t->minY; y < t->maxY; y++) {
-        int w0 = w0_row;
-        int w1 = w1_row;
-        int w2 = w2_row;
-
-        for (int x = t->minX; x < t->maxX; x++) {
-
-            if ((w0 | w1 | w2) > 0) {
-
-                fragment.alpha = (float) w0 * t->reciprocalFullArea;
-                fragment.theta = (float) w1 * t->reciprocalFullArea;
-                fragment.gamma = 1 - fragment.alpha - fragment.theta;
-
-                fragment.depth = (fragment.alpha * t->An.z) + (fragment.theta * t->Bn.z) + (fragment.gamma * t->Cn.z);
-
-                if (Tools::isPixelInWindow(x, y)) {
-                    float buffer_shadowmapping_z = ligthpoint->getShadowMappingBuffer(x, y);
-                    if (buffer_shadowmapping_z != NULL) {
-                        if ( fragment.depth < buffer_shadowmapping_z) {
-                            ligthpoint->setShadowMappingBuffer(x, y, fragment.depth);
-                        }
-                    } else {
-                        ligthpoint->setShadowMappingBuffer( x, y, fragment.depth);
-                    }
-                }
-            }
-
-            // edge function increments
-            w0 += A12;
-            w1 += A20;
-            w2 += A01;
-        }
-
-        w0_row += B12;
-        w1_row += B20;
-        w2_row += B01;
-    }
-}
-
-void ComponentRender::triangleRasterizer(Triangle *t)
-{
-    // Triangle setup
-    int A01 = (int) (-t->As.y + t->Bs.y);
-    int A12 = (int) (-t->Bs.y + t->Cs.y);
-    int A20 = (int) (-t->Cs.y + t->As.y);
-
-    int B01 = (int) (-t->Bs.x + t->As.x);
-    int B12 = (int) (-t->Cs.x + t->Bs.x);
-    int B20 = (int) (-t->As.x + t->Cs.x);
-
-    Point2D startP(t->minX, t->minY);
-    int w0_row = Maths::orient2d(t->Bs, t->Cs, startP);
-    int w1_row = Maths::orient2d(t->Cs, t->As, startP);
-    int w2_row = Maths::orient2d(t->As, t->Bs, startP);
-
-    Fragment fragment = Fragment();
-    bool bilinearInterpolation = EngineSetup::get()->TEXTURES_BILINEAR_INTERPOLATION;
-
-    for (int y = t->minY; y < t->maxY; y++) {
-        int w0 = w0_row;
-        int w1 = w1_row;
-        int w2 = w2_row;
-
-        for (int x = t->minX; x < t->maxX; x++) {
-
-            if ((w0 | w1 | w2) > 0) {
-                fragment.alpha = (float) w0 * t->reciprocalFullArea;
-                fragment.theta = (float) w1 * t->reciprocalFullArea;
-                fragment.gamma = 1 - fragment.alpha - fragment.theta;
-
-                fragment.depth = (fragment.alpha * t->An.z) + (fragment.theta * t->Bn.z) + (fragment.gamma * t->Cn.z);
-
-                int bufferIndex = (y * SETUP->screenWidth) + x;
-
-                if (t->parent->isDecal()) {
-                    fragment.depth -= 1;
-                }
-
-                if (fragment.depth < BUFFERS->getDepthBuffer(bufferIndex)) {
-                    fragment.affineUV = 1 / (fragment.alpha * (t->persp_correct_Az) +
-                                              fragment.theta * (t->persp_correct_Bz) +
-                                              fragment.gamma * (t->persp_correct_Cz));
-                    fragment.texU = (fragment.alpha * (t->tex_u1_Ac_z) + fragment.theta * (t->tex_u2_Bc_z) + fragment.gamma * (t->tex_u3_Cc_z)) * fragment.affineUV;
-                    fragment.texV = (fragment.alpha * (t->tex_v1_Ac_z) + fragment.theta * (t->tex_v2_Bc_z) + fragment.gamma * (t->tex_v3_Cc_z)) * fragment.affineUV;
-
-                    this->processPixel(t, bufferIndex, x, y, &fragment, bilinearInterpolation);
-                }
-            }
-
-            // edge function increments
-            w0 += A12;
-            w1 += A20;
-            w2 += A01;
-        }
-
-        w0_row += B12;
-        w1_row += B20;
-        w2_row += B01;
-    }
-}
-
-Color ComponentRender::processPixelFog(Fragment *fragment, Color pixelColor) {
-    float nZ = Maths::normalizeToRange(fragment->depth, 0, SETUP->FOG_DISTANCE*2);
-
-    pixelColor = Tools::mixColor(pixelColor, SETUP->FOG_COLOR, SETUP->FOG_INTENSITY * nZ  );
-
-    if (nZ > 1) {
-        pixelColor = SETUP->FOG_COLOR;
-    }
-
-    return pixelColor;
-}
-
-Color ComponentRender::processPixelLights(Triangle *t, Fragment *f, Color c)
-{
-    if (this->lightPoints.empty()) {
-        return c;
-    }
-
-    // object space
-    Vertex3D D(
-        f->alpha * t->Ao.x + f->theta * t->Bo.x + f->gamma * t->Co.x,
-        f->alpha * t->Ao.y + f->theta * t->Bo.y + f->gamma * t->Co.y,
-        f->alpha * t->Ao.z + f->theta * t->Bo.z + f->gamma * t->Co.z
-    );
-
-    Vertex3D Dl;
-    Point2D DP;
-    for (auto & lightpoint : this->lightPoints) {
-        if (!lightpoint->isEnabled()) {
-            continue;
-        }
-
-        if (SETUP->ENABLE_SHADOW_MAPPING && SETUP->CREATE_LIGHT_ZBUFFER) {
-            Transforms::cameraSpace(Dl, D, lightpoint);
-            Dl = Transforms::OrthographicNDCSpace(Dl, lightpoint->frustum);
-            float depth = Dl.z;
-            Transforms::screenSpace(DP, Dl);
-
-            if (!Tools::isPixelInWindow(DP.x, DP.y)) {
-                continue;
-            }
-
-            float bufferShadowMappingDepth = lightpoint->getShadowMappingBuffer(DP.x,DP.y);
-            if (depth <= bufferShadowMappingDepth + 0.0005) {
-                c = lightpoint->mixColor(c, D, f);
-            }
-
-            continue;
-        }
-
-        c = lightpoint->mixColor(c, D, f);
-    }
-
-    return c;
-}
-
-void ComponentRender::processPixel(Triangle *t, int bufferIndex, const int x, const int y, Fragment *fragment, bool bilinear)
-{
-    Color pixelColor(0, 0, 0);
-
-    if (SETUP->TRIANGLE_MODE_COLOR_SOLID) {
-        pixelColor = Color(
-            fragment->alpha * 255,
-            fragment->theta * 255,
-            fragment->gamma * 255
-        );
-    }
-
-    // Texture
-    if (t->isFlatTextureColor()) {
-        pixelColor = t->flatColor;
-    } else if (SETUP->TRIANGLE_MODE_TEXTURIZED && t->getTexture() != nullptr) {
-        if (t->getTexture()->getSurface() == nullptr) return;
-
-        if (t->parent->isDecal()) {
-            if ((fragment->texU < 0 || fragment->texU > 1) || (fragment->texV < 0 || fragment->texV > 1)) {
-                return;
-            }
-        }
-
-        t->processPixelTexture(pixelColor, fragment->texU, fragment->texV, bilinear);
-
-        auto pixelFormat = t->getTexture()->getSurface()->format;
-        Uint8 red, green, blue, alpha;
-        SDL_GetRGBA(pixelColor.getColor(), pixelFormat, &red, &green, &blue, &alpha);
-
-        if (alpha < 255) {
-            Uint8 redOld, greenOld, blueOld, alphaOld;
-            SDL_GetRGBA(BUFFERS->getVideoBuffer(bufferIndex),pixelFormat, &redOld, &greenOld, &blueOld, &alphaOld);
-
-            pixelColor = Tools::alphaBlend(
-                Color(redOld, greenOld, blueOld, alphaOld).getColor(),
-                pixelColor.getColor(),
-                alpha
-            );
-        }
-    }
-
-    if (EngineSetup::get()->ENABLE_LIGHTS && t->isEnableLights()) {
-        pixelColor = this->processPixelLights(t, fragment, pixelColor);
-    }
-
-    if (SETUP->ENABLE_FOG) {
-        pixelColor = this->processPixelFog(fragment, pixelColor);
-    }
-
-    if (t->parent->isAlphaEnabled()) {
-        const float alpha = t->parent->getAlpha() / 255.0f;
-        pixelColor = Tools::mixColor(Color(BUFFERS->getVideoBuffer(bufferIndex)), pixelColor, alpha);
-    }
-
-    BUFFERS->setDepthBuffer(bufferIndex, fragment->depth);
-    BUFFERS->setVideoBuffer(bufferIndex, pixelColor.getColor());
-}
-
-void ComponentRender::drawTilesTriangles(std::vector<Triangle *> *visibleTriangles)
-{
-    std::vector<std::thread> threads;
-    for (int i = 0; i < numTiles; i++) {
-        if (!tiles[i].draw) continue;
-
-        if (SETUP->BASED_TILE_RENDER_THREADED) {
-            threads.push_back(std::thread(ParallellDrawTileTriangles, i, visibleTriangles));
-        } else {
-            this->drawTileTriangles(i, *visibleTriangles);
-        }
-    }
-
-    if (SETUP->BASED_TILE_RENDER_THREADED) {
-        for (std::thread &th : threads) {
-            if (th.joinable()) {
-                th.join();
-            }
-        }
-    }
-
-    if (SETUP->DRAW_MAIN_DEEP_MAPPING) {
-        Drawable::drawMainDeepMapFromCamera(0, 0);
-    }
-}
-
 void ComponentRender::initTiles() {
     if (SETUP->screenWidth % this->sizeTileWidth != 0) {
         printf("Bad sizeTileWidth\r\n");
@@ -809,9 +194,9 @@ void ComponentRender::initTiles() {
     }
 
     // Tiles Raster setup
-    this->tilesWidth = SETUP->screenWidth / this->sizeTileWidth;
-    this->tilesHeight = SETUP->screenHeight / this->sizeTileHeight;
-    this->numTiles = tilesWidth * tilesHeight;
+    this->numberTilesHorizontal = SETUP->screenWidth / this->sizeTileWidth;
+    this->numberTilesVertical = SETUP->screenHeight / this->sizeTileHeight;
+    this->numberTiles = numberTilesHorizontal * numberTilesVertical;
     this->tilePixelsBufferSize = this->sizeTileWidth * this->sizeTileHeight;
 
     for (int y = 0; y < SETUP->screenHeight; y += this->sizeTileHeight) {
@@ -822,7 +207,7 @@ void ComponentRender::initTiles() {
             t.draw = true;
             t.id_x = (x / this->sizeTileWidth);
             t.id_y = (y / this->sizeTileHeight);
-            t.id = t.id_y * this->tilesWidth + t.id_x;
+            t.id = t.id_y * this->numberTilesHorizontal + t.id_x;
             t.start_x = x;
             t.start_y = y;
 
@@ -832,7 +217,7 @@ void ComponentRender::initTiles() {
     }
 
     // Create local buffers and openCL buffer pointers
-    for (int i = 0; i < numTiles; i++) {
+    for (int i = 0; i < numberTiles; i++) {
 
         this->tiles[i].buffer = new unsigned int[tilePixelsBufferSize];
         for (int j = 0; j < tilePixelsBufferSize; j++) {
@@ -844,114 +229,6 @@ void ComponentRender::initTiles() {
             this->tiles[i].bufferDepth[j] = 0;
         }
     }
-}
-
-void ComponentRender::drawTileTriangles(int i, std::vector<Triangle *> &trianglesToDraw) {
-    for (int j = 0; j < this->tiles[i].triangleIds.size(); j++) {
-        int triangleId = this->tiles[i].triangleIds[j];
-        Tile *t = &this->tiles[i];
-
-        this->softwareRasterizerForTile(
-                trianglesToDraw[triangleId],
-                t->start_x,
-                t->start_y,
-                t->start_x + sizeTileWidth,
-                t->start_y + sizeTileHeight
-        );
-
-        // wireframe
-        if (SETUP->TRIANGLE_MODE_WIREFRAME ||
-            (
-                    trianglesToDraw[triangleId]->parent->isDecal() &&
-                    SETUP->DRAW_DECAL_WIREFRAMES
-            )
-        ) {
-            drawWireframe(trianglesToDraw[triangleId]);
-        }
-
-        // Pixels
-        if (SETUP->TRIANGLE_MODE_PIXELS) {
-            Camera3D *CC = ComponentsManager::get()->getComponentCamera()->getCamera();
-            Drawable::drawVertex(trianglesToDraw[triangleId]->Co, CC, Color::green());
-            Drawable::drawVertex(trianglesToDraw[triangleId]->Bo, CC, Color::green());
-            Drawable::drawVertex(trianglesToDraw[triangleId]->Co, CC, Color::green());
-        }
-    }
-}
-
-void ComponentRender::softwareRasterizerForTile(Triangle *t, int minTileX, int minTileY, int maxTileX, int maxTileY)
-{
-    // Triangle setup
-    int A01 = (int) (-t->As.y + t->Bs.y);
-    int A12 = (int) (-t->Bs.y + t->Cs.y);
-    int A20 = (int) (-t->Cs.y + t->As.y);
-
-    int B01 = (int) (-t->Bs.x + t->As.x);
-    int B12 = (int) (-t->Cs.x + t->Bs.x);
-    int B20 = (int) (-t->As.x + t->Cs.x);
-
-    Point2D startP(t->minX, t->minY);
-    int w0_row = Maths::orient2d(t->Bs, t->Cs, startP);
-    int w1_row = Maths::orient2d(t->Cs, t->As, startP);
-    int w2_row = Maths::orient2d(t->As, t->Bs, startP);
-
-    Fragment fragment = Fragment();
-
-    Vertex3D normal = t->getNormal().getNormalize();
-
-    bool bilinear = EngineSetup::get()->TEXTURES_BILINEAR_INTERPOLATION;
-
-    for (int y = t->minY; y < t->maxY; y++) {
-        int w0 = w0_row;
-        int w1 = w1_row;
-        int w2 = w2_row;
-
-        for (int x = t->minX; x < t->maxX; x++) {
-
-            if ((w0 | w1 | w2) > 0) {
-                if (!((x < minTileX || x > maxTileX) || (y < minTileY || y > maxTileY))) {
-
-                    fragment.alpha = w0 * t->reciprocalFullArea;
-                    fragment.theta = w1 * t->reciprocalFullArea;
-                    fragment.gamma = 1 - fragment.alpha - fragment.theta;
-
-                    fragment.depth = (fragment.alpha * t->An.z) + (fragment.theta * t->Bn.z) + (fragment.gamma * t->Cn.z);
-
-                    const int bufferIndex = y * SETUP->screenWidth + x;
-                    if (fragment.depth < BUFFERS->getDepthBuffer(bufferIndex)) {
-                        fragment.affineUV = 1 / ((fragment.alpha * t->persp_correct_Az) +
-                                                 (fragment.theta * t->persp_correct_Bz) +
-                                                 (fragment.gamma * t->persp_correct_Cz));
-
-                        fragment.texU = ((fragment.alpha * t->tex_u1_Ac_z) + (fragment.theta * t->tex_u2_Bc_z) + (fragment.gamma * t->tex_u3_Cc_z)) * fragment.affineUV;
-                        fragment.texV = ((fragment.alpha * t->tex_v1_Ac_z) + (fragment.theta * t->tex_v2_Bc_z) + (fragment.gamma * t->tex_v3_Cc_z)) * fragment.affineUV;
-
-                        fragment.normalZ = normal.x;
-                        fragment.normalY = normal.y;
-                        fragment.normalZ = normal.z;
-
-                        processPixel(t, bufferIndex, x, y, &fragment, bilinear);
-                    }
-                }
-            }
-
-            // edge function increments
-            w0 += A12;
-            w1 += A20;
-            w2 += A01;
-        }
-
-        w0_row += B12;
-        w1_row += B20;
-        w2_row += B01;
-    }
-}
-
-void ComponentRender::drawWireframe(Triangle *t)
-{
-    Drawable::drawLine2D(Line2D(t->As.x, t->As.y, t->Bs.x, t->Bs.y), Color::green());
-    Drawable::drawLine2D(Line2D(t->Bs.x, t->Bs.y, t->Cs.x, t->Cs.y), Color::green());
-    Drawable::drawLine2D(Line2D(t->Cs.x, t->Cs.y, t->As.x, t->As.y), Color::green());
 }
 
 void ComponentRender::updateFPS()
@@ -968,18 +245,7 @@ void ComponentRender::updateFPS()
     }
 }
 
-void ComponentRender::updateLights()
-{
-    for (auto & lightpoint : this->lightPoints) {
-        if (!lightpoint->isEnabled()) {
-            continue;
-        }
-
-        lightpoint->syncFrustum();
-    }
-}
-
-Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
+Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick, int &objectIndex)
 {
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
@@ -987,16 +253,25 @@ Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
     Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition, camera);
     Vector3D ray(camera->getPosition(),nearPlaneVertex);
 
-    for (auto &triangle : getVisibleTriangles()) {
-        auto *p = new Plane(triangle->Ao, triangle->Bo, triangle->Co);
-        triangle->updateObjectSpace();
-        float t;
-        if (Maths::isVector3DClippingPlane(*p, ray)) {
-            Vertex3D intersectionPoint  = p->getPointIntersection(ray.origin(), ray.end(), t);
-            if (triangle->isPointInside(intersectionPoint)) {
-                return triangle->parent;
+    int i = 0;
+    for (auto o: Brakeza3D::get()->getSceneObjects()){
+        auto mesh = dynamic_cast<Mesh3D*>(o);
+
+        if (mesh == nullptr) continue;
+
+        for (auto &triangle : mesh->getModelTriangles()) {
+            auto *p = new Plane(triangle->Ao, triangle->Bo, triangle->Co);
+            triangle->updateObjectSpace();
+            float t;
+            if (Maths::isVector3DClippingPlane(*p, ray)) {
+                Vertex3D intersectionPoint  = p->getPointIntersection(ray.origin(), ray.end(), t);
+                if (triangle->isPointInside(intersectionPoint)) {
+                    objectIndex = i;
+                    return triangle->parent;
+                }
             }
         }
+        i++;
     }
 
     return nullptr;
@@ -1011,312 +286,33 @@ void ComponentRender::setSelectedObject(Object3D *o) {
     this->selectedObject = o;
 }
 
-void ComponentRender::onPostUpdateSceneObjects()
-{
-    for (auto &object : Brakeza3D::get()->getSceneObjects()) {
-        object->postUpdate();
-    }
-}
-
-cl_device_id ComponentRender::selectDefaultGPUDevice()
-{
-    Logging::Message("Looking for GPU: %s", defaultGPU.c_str());
-
-    cl_uint numPlatforms;
-    cl_int ret = clGetPlatformIDs(0, nullptr, &numPlatforms);
-    if (ret != CL_SUCCESS) {
-        Logging::Log("Unable to get number of platforms");
-        return nullptr;
-    }
-
-    std::vector<cl_platform_id> platforms(numPlatforms);
-    ret = clGetPlatformIDs(numPlatforms, platforms.data(), nullptr);
-    if (ret != CL_SUCCESS) {
-        Logging::Log("Unable to get platform IDs");
-        return nullptr;
-    }
-
-    for (const auto &platform : platforms) {
-        cl_uint numDevices;
-        ret = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, nullptr, &numDevices);
-        if (ret != CL_SUCCESS || numDevices == 0) {
-            continue;
-        }
-
-        std::vector<cl_device_id> devices(numDevices);
-        ret = clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices, devices.data(), nullptr);
-        if (ret != CL_SUCCESS) {
-            continue;
-        }
-
-        for (const auto &device : devices) {
-            char vendor[128];
-            ret = clGetDeviceInfo(device, CL_DEVICE_VENDOR, sizeof(vendor), vendor, nullptr);
-            if (ret != CL_SUCCESS) {
-                continue;
-            }
-
-            if (std::string(vendor).find(defaultGPU) != std::string::npos) {
-                clPlatformId = platform;
-                return device;
-            }
-        }
-    }
-
-    return nullptr;
-}
-
-void ComponentRender::initOpenCL()
-{
-    loadConfig();
-
-    ret = clGetPlatformIDs(1, &clPlatformId, &ret_num_platforms) ;
-    if (ret != CL_SUCCESS) {
-        Logging::Log("Unable to get platform_id");
-    }
-
-    ret = clGetDeviceIDs(clPlatformId, CL_DEVICE_TYPE_GPU, 1, &clDeviceId, &ret_num_devices);
-    if (ret != CL_SUCCESS) {
-        Logging::Log("Unable to get cpu_device_id");
-    }
-    clDeviceId = selectDefaultGPUDevice();
-    if (clDeviceId == nullptr) {
-        Logging::Log("Unable to find a suitable NVIDIA device");
-        return;
-    }
-
-
-    cl_context_properties properties[3];
-    properties[0]= CL_CONTEXT_PLATFORM;
-    properties[1]= (cl_context_properties) clPlatformId;
-    properties[2]= 0;
-
-    clContext = clCreateContext(properties, 1, &clDeviceId, NULL, NULL, &ret);
-    clCommandQueue = clCreateCommandQueue(clContext, clDeviceId, NULL, &ret);
-
-    EngineBuffers::get()->createOpenCLBuffers(clContext, clCommandQueue);
-
-    // Get device information
-    char vendor[128];
-    char deviceName[128];
-    ret = clGetDeviceInfo(clDeviceId, CL_DEVICE_VENDOR, sizeof(vendor), vendor, nullptr);
-    if (ret != CL_SUCCESS) {
-        Logging::Log("Unable to get device vendor");
-    }
-
-    ret = clGetDeviceInfo(clDeviceId, CL_DEVICE_NAME, sizeof(deviceName), deviceName, nullptr);
-    if (ret != CL_SUCCESS) {
-        Logging::Log("Unable to get device name");
-    }
-
-    // Print device information
-    Logging::Message("Selected device vendor: %s", vendor);
-    Logging::Message("Selected device name: %s", deviceName);
-
-    OpenCLInfo();
-
-    loadCommonKernels();
-
-    shaderDepthOfField = new ShaderDepthOfField(true);
-    shaderBilinear = new ShaderBilinear(true);
-    shaderBlurParticles = new ShaderBlurBuffer(true, 4);
-
-    clBufferLights = clCreateBuffer(clContext, CL_MEM_READ_WRITE, MAX_OPENCL_LIGHTS * sizeof(OCLight), nullptr, nullptr);
-    clBufferVideoParticles = clCreateBuffer(clContext, CL_MEM_READ_WRITE, EngineSetup::get()->RESOLUTION * sizeof(Uint32), nullptr, nullptr);
-}
-
-void ComponentRender::OpenCLInfo()
-{
-    int i, j;
-    char* value;
-    size_t valueSize;
-    cl_uint platformCount;
-    cl_platform_id* platforms;
-    cl_uint deviceCount;
-    cl_device_id* devices;
-    cl_uint maxComputeUnits;
-
-    // get all platforms
-    clGetPlatformIDs(0, NULL, &platformCount);
-    platforms = (cl_platform_id*) malloc(sizeof(cl_platform_id) * platformCount);
-    clGetPlatformIDs(platformCount, platforms, NULL);
-
-    for (i = 0; i < platformCount; i++) {
-
-        // get all devices
-        clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_ALL, 0, NULL, &deviceCount);
-        devices = (cl_device_id*) malloc(sizeof(cl_device_id) * deviceCount);
-        clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_ALL, deviceCount, devices, NULL);
-
-        // for each device print critical attributes
-        for (j = 0; j < deviceCount; j++) {
-
-            // print device name
-            clGetDeviceInfo(devices[j], CL_DEVICE_NAME, 0, NULL, &valueSize);
-            value = (char*) malloc(valueSize);
-            clGetDeviceInfo(devices[j], CL_DEVICE_NAME, valueSize, value, NULL);
-            printf("%d. Device: %s\n", j+1, value);
-            free(value);
-
-            // print hardware device version
-            clGetDeviceInfo(devices[j], CL_DEVICE_VERSION, 0, NULL, &valueSize);
-            value = (char*) malloc(valueSize);
-            clGetDeviceInfo(devices[j], CL_DEVICE_VERSION, valueSize, value, NULL);
-            printf(" %d.%d Hardware version: %s\n", j+1, 1, value);
-            free(value);
-
-            // print software driver version
-            clGetDeviceInfo(devices[j], CL_DRIVER_VERSION, 0, NULL, &valueSize);
-            value = (char*) malloc(valueSize);
-            clGetDeviceInfo(devices[j], CL_DRIVER_VERSION, valueSize, value, NULL);
-            printf(" %d.%d Software version: %s\n", j+1, 2, value);
-            free(value);
-
-            // print c version supported by compiler for device
-            clGetDeviceInfo(devices[j], CL_DEVICE_OPENCL_C_VERSION, 0, NULL, &valueSize);
-            value = (char*) malloc(valueSize);
-            clGetDeviceInfo(devices[j], CL_DEVICE_OPENCL_C_VERSION, valueSize, value, NULL);
-            printf(" %d.%d OpenCL C version: %s\n", j+1, 3, value);
-            free(value);
-
-            // print parallel compute units
-            clGetDeviceInfo(devices[j], CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(maxComputeUnits), &maxComputeUnits, NULL);
-            printf(" %d.%d Parallel compute units: %d\n", j+1, 4, maxComputeUnits);
-        }
-
-        free(devices);
-    }
-
-    free(platforms);
-}
-
 std::vector<Tile> &ComponentRender::getTiles() {
     return tiles;
 }
 
 int ComponentRender::getTilesWidth() const {
-    return tilesWidth;
+    return numberTilesHorizontal;
 }
 
 int ComponentRender::getTilesHeight() const {
-    return tilesHeight;
+    return numberTilesVertical;
 }
 
 int ComponentRender::getNumTiles() const {
-    return numTiles;
+    return numberTiles;
 }
 
-int ComponentRender::getFps(){
+int ComponentRender::getFps() const{
     return fps;
-}
-
-_cl_platform_id *ComponentRender::getClPlatformId(){
-    return clPlatformId;
-}
-
-_cl_device_id *ComponentRender::getClDeviceId() {
-    return clDeviceId;
-}
-
-_cl_context *ComponentRender::getClContext() {
-    return clContext;
-}
-
-_cl_command_queue *ComponentRender::getClCommandQueue() {
-    return clCommandQueue;
 }
 
 ComponentRender::~ComponentRender()
 {
-    for (auto &l : lightPoints) {
-        delete l;
+    for (auto s: sceneShaders) {
+        delete s;
     }
 
-    for (auto &l : clippedTriangles) {
-        delete l;
-    }
-
-    for (auto &l : visibleTriangles) {
-        delete l;
-    }
-
-    for (auto &l : frameTriangles) {
-        delete l;
-    }
-}
-
-_cl_program *ComponentRender::getRendererProgram(){
-    return rendererProgram;
-}
-
-_cl_kernel *ComponentRender::getRendererKernel() {
-    return rendererKernel;
-}
-
- _cl_kernel *ComponentRender::getParticlesKernel() {
-    return particlesKernel;
-}
-
-void ComponentRender::loadKernel(cl_program &program, cl_kernel &kernel, const std::string& source)
-{
-    size_t source_size;
-    char * source_str = Tools::readFile(source, source_size );
-    program = clCreateProgramWithSource(
-        clContext,
-        1,
-        (const char **)&source_str,
-        (const size_t *)&source_size,
-        &ret
-    );
-
-    clBuildProgram(program, 1, &clDeviceId, nullptr, nullptr, nullptr);
-    kernel = clCreateKernel(program, "onUpdate", &ret);
-
-    free(source_str);
-}
-
-_cl_kernel *ComponentRender::getExplosionKernel()
-{
-    return explosionKernel;
-}
-
-
-_cl_kernel *ComponentRender::getBlinkKernel()
-{
-    return blinkKernel;
-}
-
-cl_mem *ComponentRender::getClBufferLights() {
-    return &clBufferLights;
-}
-
-void ComponentRender::updateLightsOCL()
-{
-    oclLights.clear();
-
-    for (auto l : lightPoints) {
-        if (!l->isEnabled()) continue;
-        auto forward = l->AxisForward();
-        auto ocl = OCLight(
-            Tools::vertexOCL(l->getPosition()),
-            Tools::vertexOCL(forward),
-            l->p,
-            l->kc,
-            l->kl,
-            l->kq,
-            l->specularComponent,
-            l->color.getColor(),
-            l->specularColor.getColor()
-        );
-        oclLights.emplace_back(ocl);
-    }
-
-    clEnqueueWriteBuffer(clCommandQueue, clBufferLights, CL_FALSE, 0, (int) oclLights.size() * sizeof(OCLight), oclLights.data(), 0, nullptr, nullptr);
-}
-
-cl_mem *ComponentRender::getClBufferVideoParticles()
-{
-    return &clBufferVideoParticles;
+    delete textWriter;
 }
 
 void ComponentRender::loadConfig()
@@ -1338,23 +334,153 @@ void ComponentRender::loadConfig()
     defaultGPU = cJSON_GetObjectItemCaseSensitive(myDataJSON, "gpu")->valuestring;
 }
 
-void ComponentRender::loadCommonKernels()
-{
-    Logging::Message("Loading common OpenCL kernels");
-
-    loadKernel(rendererProgram, rendererKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "renderer.cl");
-    loadKernel(fragmentsProgram, fragmentsKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "fragments.cl");
-    loadKernel(rasterizeProgram, rasterizeKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "rasterizer.cl");
-
-
-    loadKernel(particlesProgram, particlesKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "particles.cl");
-    loadKernel(explosionProgram, explosionKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "explosion.cl");
-    loadKernel(blinkProgram, blinkKernel, EngineSetup::get()->CL_SHADERS_FOLDER + "blink.opencl");
-
-    clBufferFragments = clCreateBuffer(clContext, CL_MEM_WRITE_ONLY, EngineBuffers::get()->sizeBuffers * sizeof(OCFragment), nullptr, nullptr );
-
+EngineSetup::LuaStateScripts ComponentRender::getStateLUAScripts() {
+    return stateScripts;
 }
 
-_cl_kernel *ComponentRender::getFragmentsKernel(){
-    return fragmentsKernel;
+void ComponentRender::playLUAScripts()
+{
+    Logging::Message("LUA Scripts state changed to PLAY");
+
+    onStartScripts();
+
+    stateScripts = EngineSetup::LuaStateScripts::LUA_PLAY;
+}
+
+void ComponentRender::stopLUAScripts()
+{
+    Logging::Message("LUA Scripts state changed to STOP");
+
+    stateScripts = EngineSetup::LuaStateScripts::LUA_STOP;
+
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        object->reloadScriptsEnvironment();
+    }
+
+    reloadScriptGlobals();
+
+    Logging::Message("Removing objects creating by LUA...");
+    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+        if (!object->isBelongToScene()) {
+            object->setRemoved(true);
+        }
+    }
+}
+
+void ComponentRender::reloadLUAScripts()
+{
+    Logging::Message("Reloading LUA Scripts...");
+
+    auto &lua = EngineBuffers::get()->getLua();
+    lua.collect_garbage();
+
+    for(auto script : scripts) {
+        script->reloadScriptCode();
+    }
+
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    for (auto object : sceneObjects) {
+        object->reloadScriptsCode();
+        object->reloadScriptsEnvironment();
+    }
+
+    reloadScriptGlobals();
+}
+
+std::vector<ScriptLUA*> &ComponentRender::getLUAScripts()
+{
+    return scripts;
+}
+
+void ComponentRender::addLUAScript(ScriptLUA *script)
+{
+    scripts.push_back(script);
+    reloadScriptGlobals();
+}
+
+void ComponentRender::runScripts()
+{
+    for(auto script : scripts) {
+        script->runGlobal("onUpdate");
+    }
+}
+
+void ComponentRender::reloadScriptGlobals()
+{
+    for (auto script : scripts) {
+        script->reloadGlobals();
+    }
+}
+
+void ComponentRender::removeScript(ScriptLUA *script)
+{
+    Logging::Message("Removing game script %s", script->scriptFilename.c_str());
+
+    for (auto it = scripts.begin(); it != scripts.end(); ++it) {
+        if ((*it)->scriptFilename == script->scriptFilename) {
+            delete *it;
+            scripts.erase(it);
+            return;
+        }
+    }
+}
+
+void ComponentRender::onStartScripts()
+{
+    Logging::Message("Executing OnStart for project scripts...");
+
+    for (auto script : scripts) {
+        script->runGlobal("onStart");
+    }
+
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    for (auto object : sceneObjects) {
+        object->runStartScripts();
+    }
+}
+
+SceneLoader &ComponentRender::getSceneLoader() {
+    return sceneLoader;
+}
+
+std::vector<ShaderOpenCL *> &ComponentRender::getSceneShaders() {
+    return sceneShaders;
+}
+
+ShaderOpenCL *ComponentRender::getSceneShaderByIndex(int i) {
+    return sceneShaders[i];
+}
+
+void ComponentRender::addShaderToScene(ShaderOpenCL *shader)
+{
+    sceneShaders.push_back(shader);
+}
+
+bool ComponentRender::isSceneShadersEnabled() const {
+    return sceneShadersEnabled;
+}
+
+void ComponentRender::setSceneShadersEnabled(bool sceneShadersEnabled) {
+    ComponentRender::sceneShadersEnabled = sceneShadersEnabled;
+}
+
+void ComponentRender::runShadersOpenCLPostUpdate()
+{
+    for( auto s: sceneShaders) {
+        if (!s->isEnabled()) continue;
+        s->postUpdate();
+    }
+}
+
+void ComponentRender::runShadersOpenCLPreUpdate() {
+    for( auto s: sceneShaders) {
+        if (!s->isEnabled()) continue;
+        s->preUpdate();
+    }
+}
+
+void ComponentRender::removeShader(int index) {
+    if (index >= 0 && index < sceneShaders.size()) {
+        sceneShaders.erase(sceneShaders.begin() + index);
+    }
 }

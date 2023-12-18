@@ -11,12 +11,15 @@
 #include "../Render/M3.h"
 #include "Grid3D.h"
 #include "PathFinder.h"
-#include "../Render/MeshOpenCLRenderer.h"
 #include "../2D/TextureAnimated.h"
+#include "../Objects/OpenCLTypes.h"
 #include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_opengl.h>
+#include <vec3.hpp>
+#include <vec2.hpp>
 
 #define PLANE_BACKSIDE 0x000001
 #define PLANE_FRONT    0x000010
@@ -83,17 +86,11 @@ public:
 
     static M3 BulletM3ToM3(btMatrix3x3 m);
 
-    static ColorHSV getColorHSV(Color in);
-
     static Vertex3D randomVertex();
 
     static const char *sprintf(const char *, ...);
 
     static float percentage(int value, int total);
-
-    static OCVertex3D vertexOCL(Vertex3D &v);
-
-    static OCPoint2D pointOCL(Point2D v);
 
     static void addSceneObject(const std::string& filename, const std::string& name);
 
@@ -102,6 +99,11 @@ public:
     static void makeFadeInSprite(Vertex3D position, TextureAnimated *animation);
 
     static void makeLoopSprite(Vertex3D position, TextureAnimated *animation, float ttl);
+
+    static std::string getExtensionFromFilename(const std::string &filename);
+
+    static void writeToFile(const std::string& file, const char *content);
+
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

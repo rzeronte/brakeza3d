@@ -10,6 +10,7 @@
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_image.h>
 #include <CL/cl.h>
+#include <SDL_opengl.h>
 #include "../Objects/Vertex3D.h"
 #include "Color.h"
 
@@ -22,6 +23,8 @@ private:
     cl_mem openClTexture;
 
     bool loaded;
+    GLuint texturaID;
+
 public:
     Image();
 
@@ -67,6 +70,11 @@ public:
     Image(SDL_Surface *surface, SDL_Texture *texture);
 
     SDL_Texture *getTexture();
+
+    [[nodiscard]] GLuint getOGLTextureID() const;
+
+    static GLuint makeOGLImage(SDL_Surface *surfaceTTF);
+
 };
 
 #endif //BRAKEDA3D_IMAGE_H

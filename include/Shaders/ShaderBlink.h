@@ -9,10 +9,8 @@
 #include "../Render/Logging.h"
 #include "../Render/ShaderOpenCL.h"
 
-class ShaderBlink : public ShaderOpenCL {
+class ShaderBlink : public ObjectShaderOpenCL {
     bool isBlinking;
-    int screenWidth;
-    int screenHeight;
     Mesh3D* object;
     Color color;
     Counter counter;
@@ -24,5 +22,9 @@ public:
     void executeKernelOpenCL();
 
     void setColor(Color color);
+
+    void preUpdate() override;
+
+    void postUpdate() override;
 };
 #endif //BRAKEDA3D_SHADERBLINK_H

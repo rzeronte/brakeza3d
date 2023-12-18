@@ -8,29 +8,20 @@
 
 #include <CL/cl.h>
 #include "Shader.h"
+#include "../Misc/cJSON.h"
 
 class ShaderOpenCL: public Shader {
 protected:
-
-    std::string kernelFilename;
-
-    cl_command_queue clQueue;
-    cl_device_id clDeviceId;
-    cl_int clRet;
-    cl_context context;
-
-    cl_program program;
-    cl_kernel kernel;
-    bool useCustomProgram;
 public:
-    explicit ShaderOpenCL(bool active, const std::string& kernelFilename);
     explicit ShaderOpenCL(bool active);
 
-    virtual ~ShaderOpenCL();
+    virtual void preUpdate();
 
-    void initOpenCLProgram();
+    virtual void postUpdate();
 
-    void debugKernel(std::string from) const;
+    virtual void drawImGuiProperties();
+
+    virtual cJSON * getJSON();
 };
 
 

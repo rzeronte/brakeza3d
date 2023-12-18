@@ -1,18 +1,31 @@
+
+//#define SOL_ALL_SAFETIES_ON 1
+
+#define SOL_SAFE_USERTYPE 1
+#define SOL_SAFE_REFERENCES  0
+#define SOL_SAFE_FUNCTION 0
+#define SOL_SAFE_NUMERICS 1
+#define SOL_SAFE_GETTER 0
+#define SOL_SAFE_FUNCTION_CALLS 0
+
 #ifndef SDL2_3D_ENGINE_OBJECT3D_H
 #define SDL2_3D_ENGINE_OBJECT3D_H
 
 #include <string>
+#include <vector>
+#include <detail/type_mat4x4.hpp>
 #include "Vertex3D.h"
 #include "Vector3D.h"
 #include "../../include/Render/M3.h"
 #include "../Behaviors/Object3DBehavior.h"
 #include "Point2D.h"
 #include "../Misc/cJSON.h"
+#include "ScriptLUA.h"
+#include "../../sol/sol.hpp"
 
 class Object3D {
 
 protected:
-    Vertex3D position;
     Vertex3D drawOffset;
     M3 rotation;
 
@@ -24,11 +37,16 @@ protected:
     bool decal; // Decals exclude UV Coordinates out of [0, 1]
     bool followCamera;
     bool stencilBufferEnabled;
+    bool belongToScene;
 
     std::string label;
     float rotX, rotY, rotZ; // For easy management from UI
+    float rotXFrame, rotYFrame, rotZFrame; // For easy management from UI
     bool alphaEnabled;
     float alpha;
+
+    std::vector<ScriptLUA*> scripts;
+    sol::environment luaEnvironment;
 
 public:
 
@@ -142,6 +160,38 @@ public:
     [[nodiscard]] const Vertex3D &getRotationFrame() const;
 
     void lookAt(Object3D *o);
+
+    virtual void drawImGuiProperties();
+
+    void attachScript(ScriptLUA *script);
+
+    void runScripts();
+
+    void reloadScriptsEnvironment();
+
+    void reloadScriptsCode();
+
+    virtual const char *getTypeObject();
+
+    virtual const char *getTypeIcon();
+
+    void removeScript(ScriptLUA *script);
+
+    [[nodiscard]] const std::vector<ScriptLUA *> &getScripts() const;
+
+    void runStartScripts();
+
+    [[nodiscard]] bool isBelongToScene() const;
+
+    void setBelongToScene(bool belongToScene);
+
+    static void createFromJSON(cJSON *currentType);
+
+    static void setPropertiesFromJSON(cJSON *object, Object3D *o);
+
+    glm::mat4 getModelMatrix();
+
+    Vertex3D position;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

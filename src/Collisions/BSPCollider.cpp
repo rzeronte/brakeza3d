@@ -519,7 +519,7 @@ int BSPCollider::SV_FlyMove(model_collision_t *ent, float time, trace_t *steptra
             }
         }
 
-        // run the impact function
+        // runEnvironment the impact function
         //SV_Impact (ent, trace.ent);
         //if (ent->free)
         //    break;		// removed by the impact function

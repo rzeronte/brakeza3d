@@ -22,6 +22,8 @@ Image::Image(SDL_Surface *surface, SDL_Texture *texture)
 :
     surface(surface), texture(texture)
 {
+    texturaID = Image::makeOGLImage(surface);
+
     this->loaded = true;
 }
 
@@ -38,10 +40,13 @@ void Image::loadTGA(const std::string& filename)
         this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
-        loadOpenCLBuffer();
+        //loadOpenCLBuffer();
 
         this->fileName = filename;
         this->loaded = true;
+
+        texturaID = Image::makeOGLImage(surface);
+        //loadOpenGLImage();
 
         Logging::Message("Loading Image file (%s) (%dx%d)", filename.c_str(), width(), height());
         return;
@@ -54,14 +59,6 @@ void Image::loadTGA(const std::string& filename)
 void Image::loadOpenCLBuffer()
 {
     cl_int errCode;
-
-    openClTexture = clCreateBuffer(
-        ComponentsManager::get()->getComponentRender()->getClContext(),
-        CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-        (width() * height()) * sizeof(Uint32),
-        pixels(),
-        &errCode
-    );
 
     if (errCode != CL_SUCCESS) {
         std::cerr << "Error al crear el buffer de OpenCL: " << errCode << std::endl;
@@ -96,7 +93,13 @@ void Image::drawFlat(int pos_x, int pos_y) const
     dstRect.w = (surface->w * windowWidth) / EngineSetup::get()->screenWidth;
     dstRect.h = (surface->h * windowHeight) / EngineSetup::get()->screenHeight;
 
-    SDL_RenderCopy(renderer, texture, &srcRect, &dstRect);
+    ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(
+        texturaID,
+        dstRect.x,
+        dstRect.y,
+        dstRect.w,
+        dstRect.h
+    );
 }
 
 void Image::loadFromRaw(unsigned int *texture, int w, int h)
@@ -199,8 +202,6 @@ void Image::setImage(const std::string &filename)
         this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
-        clEnqueueWriteBuffer(ComponentsManager::get()->getComponentRender()->getClCommandQueue(), openClTexture, CL_TRUE, 0, (width() * height()) * sizeof(Uint32), pixels(), 0, nullptr, nullptr );
-
         this->fileName = filename;
         this->loaded = true;
         Logging::Message("Loading TGA texture '%s'", filename.c_str());
@@ -210,4 +211,29 @@ void Image::setImage(const std::string &filename)
 
     Logging::Log("Error loading TGA texture '%s'", filename.c_str());
     exit(-1);
+}
+
+GLuint Image::getOGLTextureID() const {
+    return texturaID;
+}
+
+GLuint Image::makeOGLImage(SDL_Surface *surfaceTTF)
+{
+    GLuint texID;
+    glGenTextures(1, &texID);
+    glBindTexture(GL_TEXTURE_2D, texID);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    GLenum Mode = GL_RGB;
+    if (surfaceTTF->format->BytesPerPixel == 4) {
+        Mode = GL_RGBA;
+    }
+
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surfaceTTF->w, surfaceTTF->h, 0, Mode, GL_UNSIGNED_BYTE, surfaceTTF->pixels);
+
+    return texID;
 }

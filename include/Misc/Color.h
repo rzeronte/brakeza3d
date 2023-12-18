@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <cstdint>
-#include "ColorHSV.h"
 
 class Color {
 public:

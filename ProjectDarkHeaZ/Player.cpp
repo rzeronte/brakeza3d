@@ -50,7 +50,7 @@ Player::Player()
 {
     velocity = Vertex3D(0, 0, 0);
 
-    light = new LightPoint3D(15, 1, 0, 0, 0, PaletteColors::getPlayerRayLight(), Color(15, 33, 92));
+    light = new LightPoint3D(glm::vec4(1), glm::vec4(1), glm::vec4(1), 1, 1, 1);
     light->setRotation(180, 0, 0);
     light->setEnabled(false);
     Brakeza3D::get()->addObject3D(light, "playerLight");
@@ -262,7 +262,7 @@ void Player::onUpdate()
 
     auto isGameStateDistinctOfGameOver = componentGame->getGameState() != EngineSetup::PRESS_KEY_BY_DEAD;
     if (warningDamage && isGameStateDistinctOfGameOver && state != PlayerState::DEAD) {
-        float currentSelectionAlpha = 0.5f * (float) (1 + sin(5 * PI * Brakeza3D::get()->getExecutionTime()));
+        float currentSelectionAlpha = 0.5f * (float) (1 + sin(5 * M_PI * Brakeza3D::get()->getExecutionTime()));
         ComponentsManager::get()->getComponentGame()->getShaderColor()->setProgress(currentSelectionAlpha);
     }
 

@@ -12,35 +12,42 @@ Sprite3D::Sprite3D(float width, float height):
 {
     this->counter = Counter();
     this->counter.setEnabled(true);
-
-    openClRenderer = new MeshOpenCLRenderer(this, this->billboard->getTriangles());
-    //openClRenderer->makeOCLTriangles();
 }
 
 void Sprite3D::onUpdate()
 {
     Object3D::onUpdate();
 
-    if (isRemoved()) return;
-
-    /* CPU Render
-     ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT1());
-     ComponentsManager::get()->getComponentRender()->getSpritesTriangles().emplace_back(billboard->getT2());
-    */
-
     this->updateTrianglesCoordinatesAndTexture();
 
-    openClRenderer->onUpdate(billboard->getT1()->getTexture());
+    glEnable(GL_BLEND);
+    glDisable(GL_DEPTH);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
+        this,
+        this->getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
+        this->getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
+        billboard->vertexbuffer,
+        billboard->uvbuffer,
+        billboard->normalbuffer,
+        (int) billboard->vertices.size()
+    );
+
+    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME){
+        ComponentsManager::get()->getComponentWindow()->getShaderOglWireframe()->render(
+            getModelMatrix(),
+            billboard->vertexbuffer,
+            billboard->uvbuffer,
+            billboard->normalbuffer,
+            (int) billboard->vertices.size()
+        );
+    }
 }
 
-void Sprite3D::postUpdate()
+void Sprite3D::addAnimation(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps)
 {
-    Object3D::postUpdate();
-}
-
-void Sprite3D::addAnimation(const std::string& animation2d, int num_frames, int fps)
-{
-    this->animations.emplace_back(new TextureAnimated(animation2d, num_frames, fps));
+    this->animations.emplace_back(new TextureAnimated(spriteSheetFile, spriteWidth, spriteHeight, numFrames, fps));
 }
 
 void Sprite3D::setAnimation(int index_animation)
@@ -69,7 +76,7 @@ void Sprite3D::updateTexture()
         }
     }
 
-    billboard->setTrianglesTexture(this->animations[currentAnimationIndex]->getCurrentFrame());
+    billboard->setTexture(this->animations[currentAnimationIndex]->getCurrentFrame());
 }
 
 void Sprite3D::updateTrianglesCoordinatesAndTexture()
@@ -116,10 +123,12 @@ Sprite3D::~Sprite3D()
             delete animation;
         }
     }
-
-    delete openClRenderer;
 }
 
-MeshOpenCLRenderer *Sprite3D::getOpenClRenderer() const {
-    return openClRenderer;
+const char *Sprite3D::getTypeObject() {
+    return "Sprite3D";
+}
+
+const char *Sprite3D::getTypeIcon() {
+    return "sprite3DIcon";
 }

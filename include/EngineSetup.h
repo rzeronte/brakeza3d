@@ -16,11 +16,11 @@ public:
 
     bool LOGGING = false;
 
-    bool IMGUI_ENABLED = false;
+    bool IMGUI_ENABLED = true;
 
     std::string ENGINE_VERSION = "v.1.0.0";
 
-    std::string ENGINE_TITLE = "Project DarkHeaZ (" + ENGINE_VERSION + ")";
+    std::string ENGINE_TITLE = "Brakeza3D Demo (" + ENGINE_VERSION + ")";
 
     std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";
@@ -47,7 +47,7 @@ public:
     float screenWidthHalf = (float) screenWidth / 2;
     float screenHeightHalf = (float) screenHeight / 2;
 
-    bool LIMIT_FRAMERATE = false;
+    bool LIMIT_FRAMERATE = true;
     int FRAMERATE = 60;
 
     int RESOLUTION = screenWidth * screenHeight;
@@ -69,7 +69,7 @@ public:
     // Draw axis
     bool RENDER_MAIN_AXIS = false;
     bool RENDER_OBJECTS_AXIS = false;
-    float OBJECT_AXIS_SIZE = 600;
+    float OBJECT_AXIS_SIZE = 1;
 
     bool EXECUTE_GAMEOBJECTS_ONUPDATE = true;
 
@@ -86,11 +86,8 @@ public:
     bool DRAW_ANIMATION_BONES = false;
     bool DRAW_DECAL_WIREFRAMES = false;
 
-    bool TEXTURES_BILINEAR_INTERPOLATION = true;
-
     bool DRAW_OBJECT3D_BILLBOARD = false;
     bool DRAW_LIGHTPOINTS_BILLBOARD = true;
-    bool DRAW_LIGHTPOINTS_AXIS = true;
     bool DRAW_PENDULUM_THREAD = false;
 
 
@@ -103,17 +100,13 @@ public:
     bool DRAW_MESH3D_GRID_NO_EMPTY = true;
 
     // Z BUFFER
-    bool CREATE_LIGHT_ZBUFFER = false;
-    bool ENABLE_SHADOW_MAPPING = false;
     bool ENABLE_LIGHTS = true;
-    bool ENABLE_LIGHTS_SPECULAR = true;
     bool DRAW_LIGHTS_DIRECTION = false;
     float LIGHTS_DIRECTION_SIZE = 2500;
 
-    bool FULLSCREEN = true;
+    bool FULLSCREEN = false;
 
-    bool DRAW_FRUSTUM = false;
-    bool DRAW_FPS = true;
+    bool DRAW_FPS = false;
 
     // FRUSTUM PLANES
     int NEAR_PLANE = 0;
@@ -142,6 +135,8 @@ public:
     std::string TEXTURES_FOLDER = ASSETS_FOLDER + "textures/";
     std::string GRIDS_FOLDER = ASSETS_FOLDER + "grids/";
     std::string ICONS_FOLDER = ASSETS_FOLDER + "icons/";
+    std::string SCRIPTS_FOLDER = ASSETS_FOLDER + "scripts/";
+    std::string SCENES_FOLDER = ASSETS_FOLDER + "scenes/";
 
     std::string CL_SHADERS_FOLDER = "../kernels/";
 
@@ -158,10 +153,10 @@ public:
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
-    float WALKING_SPEED = 45.0f;
-    float TURN_SPEED = 5.f;
-    float PITCH_SPEED = 5.f;
-    float STRAFE_SPEED = 45.0f;
+    float WALKING_SPEED = 0.1f;
+    float TURN_SPEED = 0.1f;
+    float PITCH_SPEED = 0.1f;
+    float STRAFE_SPEED = 0.1f;
 
     // MOUSE
     float MOUSE_SENSITIVITY = 0.250;
@@ -171,10 +166,10 @@ public:
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 
-    float TESTING_INT1 = 1;
-    float TESTING_INT2 = 2;
-    float TESTING_INT3 = 3;
-    float TESTING_INT4 = 4;
+    float TESTING_INT1 = 0.1f;
+    float TESTING_INT2 = 0.03f;
+    float TESTING_INT3 = 1;
+    float TESTING_INT4 = 0.1f;
 
     bool ENABLE_DEPTH_OF_FIELD = true;
     float LIGHTMAPPING_BLEND_INTENSITY = 0.05f;
@@ -207,11 +202,11 @@ public:
     float PARTICLES_SHADER_PARTICLE_LIFESPAN = 1.5f;
     float PARTICLES_SHADER_SMOKE_ANGLE_RANGE = 25.0f;
     float PARTICLES_SHADER_MIN_VELOCITY = 0.0f;
-    float PARTICLES_SHADER_MAX_VELOCITY = 50.0f;
+    float PARTICLES_SHADER_MAX_VELOCITY = 0.1f;
     float PARTICLES_SHADER_ALPHA_MIN = 125.0f;
     float PARTICLES_SHADER_ALPHA_MAX = 255.0f;
-    float PARTICLES_SHADER_POSITION_NOISE = 2.0f;
-    float PARTICLES_SHADER_VELOCITY_NOISE = 0.1f;
+    float PARTICLES_SHADER_POSITION_NOISE = 0.2f;
+    float PARTICLES_SHADER_VELOCITY_NOISE = 0.91f;
     float PARTICLES_SHADER_DECELERATION_FACTOR = 0.98f;
 
     float SHADER_PARTICLE_EXPLOSION_TTL = 1.0f;
@@ -243,10 +238,10 @@ public:
         SND_GLOBAL = -1,
     };
 
-    enum ShadersPhaseRender {
-        PREUPDATE = 0,
-        POSTUPDATE = 1,
-    };
+    typedef enum {
+        LUA_STOP = 0,
+        LUA_PLAY = 1,
+    } LuaStateScripts;
 
     typedef enum {
         NONE = 0,

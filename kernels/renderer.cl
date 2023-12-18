@@ -47,6 +47,7 @@ typedef struct OCTriangle {
     int maxX, minX, maxY, minY;
     bool clipped;
     float w0_row, w1_row, w2_row;
+
 } OCTriangle;
 
 typedef struct OCLPlane {
@@ -94,8 +95,6 @@ typedef struct OCFragment {
 
     float u;
     float v;
-
-    int indexTriangle;
 } OCFragment;
 
 /* FUNCTIONS */
@@ -116,6 +115,8 @@ float distancePlaneVertex(__global struct OCLPlane *plane, struct OCVertex3D p);
 struct OCVertex3D getNormal(__global struct OCTriangle *t);
 struct OCVertex3D getComponent(struct Vector3D *V);
 struct OCVertex3D crossProduct(struct OCVertex3D v1, struct OCVertex3D v2);
+float getXTextureFromUV(int textureWidth, float u);
+float getYTextureFromUV(int textureHeight, float v);
 void updateObjectSpace(__global struct OCTriangle *t, __global struct OCLMeshContext *context);
 void updateNormal(__global struct OCTriangle *t);
 void updateCameraSpace(__global struct OCTriangle *t, __global struct OCLMeshContext *context);
@@ -124,7 +125,7 @@ void updateScreenSpace(__global struct OCTriangle *t, int screenWidth, int scree
 void updateBoundingBox(__global struct OCTriangle *t);
 void updateFullArea(__global struct OCTriangle *t);
 void updateUVCache(__global struct OCTriangle *t);
-float dotProduct(struct OCVertex3D *a, struct OCVertex3D *b);
+float dotProduct(__private struct OCVertex3D *a, __private struct OCVertex3D *b);
 bool isBackFaceCulling(__global struct OCTriangle *t, __global struct OCVertex3D *position);
 bool isVertexInside(__global struct OCVertex3D *v, __global struct OCLPlane *planes);
 unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha);
@@ -143,23 +144,20 @@ __kernel void onUpdate(
     __global OCLMeshContext *context,
     __global OCTriangle *triangles,
     int numTriangles,
-    __global unsigned int *texture,
-    int surfaceWidth,
-    int surfaceHeight,
     __global bool *stencil,
     int useStencil,
-    __global OCLight *lights,
-    int numLights,
+    __global OCFragment *fragments,
     __global int *clippedIndexes,
     __global int *numTriangulosClipping,
     int useClipping
 )
 {
-    const int x = get_global_id(0);
-    const int y = get_global_id(1);
-    const int i = y * get_global_size(0) + x;
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+    int i = y * get_global_size(0) + x;
 
     if (i < numTriangles) {
+
         __global struct OCTriangle *t = &triangles[i];
 
         updateObjectSpace(t, context);
@@ -170,20 +168,19 @@ __kernel void onUpdate(
         updateBoundingBox(t);
         updateFullArea(t);
         updateUVCache(t);
-
         t->fullArea = processFullArea(&t->Bs, &t->Cs, &t->As);
         t->reciprocalFullArea = 1 / t->fullArea;
-
-        if (isBackFaceCulling(t, &context->cameraData.position)) return;
 
         if (useClipping == 1) {
             t->clipped = testForClipping(context->frustumData.planes, t->Ao, t->Bo, t->Co);
             if (t->clipped) {
-                int indice = atomic_add(numTriangulosClipping, 1);
-                clippedIndexes[indice] = i;
-                return;
+            int indice = atomic_add(numTriangulosClipping, 1);
+            clippedIndexes[indice] = i;
+            return;
             }
         }
+
+        if (isBackFaceCulling(t, &context->cameraData.position)) return;
 
         if (
             !isVertexInside(&t->Ao, context->frustumData.planes) &&
@@ -218,7 +215,7 @@ __kernel void onUpdate(
             int w2 = w2_row;
 
             for (int x = t->minX ; x < t->maxX ; x++) {
-                if ((w0 | w1 | w2) > 0) {
+                if ((w0 | w1 | w2) > 0 && isPixelInWindow(x, y, screenWidth, screenHeight)) {
                     const int bufferIndex = y * screenWidth + x;
                     alpha = (float) w0 * t->reciprocalFullArea;
                     theta = (float) w1 * t->reciprocalFullArea;
@@ -226,32 +223,20 @@ __kernel void onUpdate(
 
                     const float depth = alpha * t->An.z + theta * t->Bn.z + gamma * t->Cn.z;
 
-                    const unsigned int depthInt = (int) depth;
-                    if (depthInt < bufferDepth[bufferIndex]) {
-                        atomic_min(&bufferDepth[bufferIndex], depthInt);
+                    if (stencil[bufferIndex] && depth > bufferDepth[bufferIndex]) continue;
+                    bufferDepth[bufferIndex] = depth;
+                    const float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
 
-                        const float affineUV = 1 / ((alpha * t->persp_correct_Az) + (theta * t->persp_correct_Bz) + (gamma * t->persp_correct_Cz));
-                        const float texU = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;
-                        const float texV = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;
+                    fragments[bufferIndex].x = x;
+                    fragments[bufferIndex].y = y;
+                    fragments[bufferIndex].u = ((alpha * t->tex_u1_Ac_z) + (theta * t->tex_u2_Bc_z) + (gamma * t->tex_u3_Cc_z)) * affineUV;;
+                    fragments[bufferIndex].v = ((alpha * t->tex_v1_Ac_z) + (theta * t->tex_v2_Bc_z) + (gamma * t->tex_v3_Cc_z)) * affineUV;;
+                    fragments[bufferIndex].alpha = alpha;
+                    fragments[bufferIndex].gamma = gamma;
+                    fragments[bufferIndex].theta = theta;
+                    fragments[bufferIndex].depth = depth;
 
-                        const int tx = (int) (surfaceWidth * texU);
-                        const int ty = (int) (surfaceHeight * texV);
-
-                        unsigned int color = texture[ty * surfaceWidth + tx];
-
-                        unsigned char *color_bytes = (unsigned char *)&color;
-                        unsigned char alphaChannel = color_bytes[3];
-                        if (alphaChannel < 255) {
-                            color = alphaBlend(video[bufferIndex], color, alphaChannel);
-                        }
-
-                        if (context->objectData.light) {
-                            color = processPixelLights(t, lights, numLights, color, alpha, theta, gamma);
-                        }
-
-                        video[bufferIndex] = color;
-                        stencil[bufferIndex] = true;
-                    }
+                    stencil[bufferIndex] = true;
                 }
                 w0 += A12;
                 w1 += A20;
@@ -343,49 +328,49 @@ struct OCVertex3D NDCSpace(__global struct OCVertex3D *v, __global struct OCVert
 
 struct OCPoint2D screenSpace(__global struct OCVertex3D *V, int screenWidth, int screenHeight)
 {
-    OCPoint2D A = {
-        (1 + V->x) * ((float) screenWidth * 0.5),
-        (1 + V->y) * ((float) screenHeight * 0.5)
-    };
+    OCPoint2D A;
+
+    A.x = (1 + V->x) * ((float) screenWidth/2);
+    A.y = (1 + V->y) * ((float) screenHeight/2);
 
     return A;
 }
 
 void perspectiveDivision(struct OCVertex3D *V, float frustumNearDist)
 {
-    V->x = (frustumNearDist * V->x) / V->z;
-    V->y = (frustumNearDist * V->y) / V->z;
+    V->x = ( frustumNearDist * V->x) / V->z;
+    V->y = ( frustumNearDist * V->y) / V->z;
 }
 
 struct OCVertex3D rotateAxisX(struct OCVertex3D *V, float rads)
 {
-    OCVertex3D A = {
-         1 * V->x,
-         cos(rads) * V->y - sin(rads) * V->z,
-         sin(rads) * V->y + cos(rads) * V->z
-    };
+    OCVertex3D  A;
+
+    A.x = 1 * V->x;
+    A.y = cos(rads) * V->y - sin(rads) * V->z;
+    A.z = sin(rads) * V->y + cos(rads) * V->z;
 
     return A;
 }
 
 struct OCVertex3D rotateAxisY(struct OCVertex3D *V, float rads)
 {
-    OCVertex3D A = {
-         ( cos(rads) * V->x ) + ( sin(rads) * V->z ),
-         1 * V->y,
-         ( -sin(rads) * V->x ) + ( cos(rads) * V->z )
-    };
+    OCVertex3D  A;
+
+    A.x = ( cos(rads) * V->x ) + ( sin(rads) * V->z );
+    A.y = 1 * V->y;
+    A.z = ( -sin(rads) * V->x ) + ( cos(rads) * V->z );
 
     return A;
 }
 
 struct OCVertex3D rotateAxisZ(struct OCVertex3D *V, float rads)
 {
-    OCVertex3D A = {
-        ( cos(rads) * V->x ) - ( sin(rads) * V->y ),
-        ( sin(rads) * V->x ) + ( cos(rads) * V->y ),
-        1 * V->z
-    };
+    OCVertex3D  A;
+
+    A.x = ( cos(rads) * V->x ) - ( sin(rads) * V->y );
+    A.y = ( sin(rads) * V->x ) + ( cos(rads) * V->y );
+    A.z = 1 * V->z ;
 
     return A;
 }
@@ -435,39 +420,51 @@ int isVector3DClippingPlane(__global struct OCLPlane *P, __private struct Vector
 
 float distancePlaneVertex(__global struct OCLPlane *plane, struct OCVertex3D p)
 {
-    const float D = - ( (plane->normal.x * plane->A.x) + (plane->normal.y * plane->A.y) + (plane->normal.z * plane->A.z) );
+    float D = - ( (plane->normal.x * plane->A.x) + (plane->normal.y * plane->A.y) + (plane->normal.z * plane->A.z) );
 
-    return (plane->normal.x * p.x) + (plane->normal.y * p.y) + (plane->normal.z * p.z) + D;
+    return ( (plane->normal.x * p.x) + (plane->normal.y * p.y) + (plane->normal.z * p.z) + D);
 }
 
 struct OCVertex3D getNormal(__global struct OCTriangle *t)
 {
-    Vector3D vector1 = {t->Ao, t->Bo};
-    Vector3D vector2 = {t->Ao, t->Co};
+    Vector3D vector1;
+    vector1.A = t->Ao;
+    vector1.B = t->Bo;
+
+    Vector3D vector2;
+    vector2.A = t->Ao;
+    vector2.B = t->Co;
 
     return crossProduct( getComponent(&vector1), getComponent(&vector2) );
 }
 
 struct OCVertex3D getComponent(struct Vector3D *V)
 {
-    OCVertex3D c = {
-        V->B.x - V->A.x,
-        V->B.y - V->A.y,
-        V->B.z - V->A.z,
-    };
+    OCVertex3D c;
+
+    c.x = V->B.x - V->A.x;
+    c.y = V->B.y - V->A.y;
+    c.z = V->B.z - V->A.z;
 
     return c;
 }
 
-struct OCVertex3D crossProduct(struct OCVertex3D v1, struct OCVertex3D v2)
-{
-    OCVertex3D r = {
-        (v1.y * v2.z) - (v1.z * v2.y),
-        (v1.z * v2.x) - (v1.x * v2.z),
-        (v1.x * v2.y) - (v1.y * v2.x)
-    };
+struct OCVertex3D crossProduct(struct OCVertex3D v1, struct OCVertex3D v2) {
+    OCVertex3D r;
+
+    r.x = (v1.y * v2.z) - (v1.z * v2.y);
+    r.y = (v1.z * v2.x) - (v1.x * v2.z);
+    r.z = (v1.x * v2.y) - (v1.y * v2.x);
 
     return r;
+}
+
+float getXTextureFromUV(int textureWidth, float u) {
+    return (float) textureWidth * u;
+}
+
+float getYTextureFromUV(int textureHeight, float v) {
+    return (float) textureHeight * v;
 }
 
 void updateObjectSpace(__global struct OCTriangle *t, __global struct OCLMeshContext *context)
@@ -527,18 +524,17 @@ void updateUVCache(__global struct OCTriangle *t) {
 // (v0 - P) . N
 bool isBackFaceCulling(__global struct OCTriangle *t, __global struct OCVertex3D *position)
 {
-    OCVertex3D v = {
-        t->Ao.x - position->x,
-        t->Ao.y - position->y,
-        t->Ao.z - position->z,
-        0,
-        0
-    };
+    OCVertex3D v;
 
-    return dotProduct(&v, &t->normal) >= 0;
+    v.x = t->Ao.x - position->x;
+    v.y = t->Ao.y - position->y;
+    v.z = t->Ao.z - position->z;
+
+    OCVertex3D normal = t->normal;
+    return dotProduct(&v, &normal) >= 0;
 }
 
-float dotProduct(struct OCVertex3D *a, struct OCVertex3D *b) {
+float dotProduct(__private struct OCVertex3D *a, __private struct OCVertex3D *b) {
     return (a->x * b->x) + (a->y * b->y) + (a->z * b->z);
 }
 
@@ -547,7 +543,7 @@ bool isVertexInside(__global struct OCVertex3D *v, __global struct OCLPlane *pla
     for (int i = 1; i <= 5; i++) {
         float distance = distancePlaneVertex(&planes[i], *v);
 
-        if (distance >= FRUSTUM_CLIPPING_DISTANCE) {
+        if (distance  >= FRUSTUM_CLIPPING_DISTANCE) {
             return false;
         }
     }
@@ -555,8 +551,7 @@ bool isVertexInside(__global struct OCVertex3D *v, __global struct OCLPlane *pla
     return true;
 }
 
-unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha)
-{
+unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int alpha) {
     unsigned int rb = color1 & 0xff00ff;
     unsigned int g = color1 & 0x00ff00;
     rb += ((color2 & 0xff00ff) - rb) * alpha >> 8;
@@ -567,11 +562,10 @@ unsigned int alphaBlend(unsigned int color1, unsigned int color2, unsigned int a
 
 unsigned int processPixelLights(__global struct OCTriangle *t, __global struct OCLight *lights, int numLights, unsigned int color, float alpha, float theta, float gamma)
 {
-    OCVertex3D D = {
-        alpha * t->Ao.x + theta * t->Bo.x + gamma * t->Co.x,
-        alpha * t->Ao.y + theta * t->Bo.y + gamma * t->Co.y,
-        alpha * t->Ao.z + theta * t->Bo.z + gamma * t->Co.z,
-    };
+    OCVertex3D D;
+    D.x = alpha * t->Ao.x + theta * t->Bo.x + gamma * t->Co.x;
+    D.y = alpha * t->Ao.y + theta * t->Bo.y + gamma * t->Co.y;
+    D.z = alpha * t->Ao.z + theta * t->Bo.z + gamma * t->Co.z;
 
     for (int i = 0; i < numLights; i++) {
         color = mixLightColor(&lights[i], color, &D, &t->normal);
@@ -582,26 +576,25 @@ unsigned int processPixelLights(__global struct OCTriangle *t, __global struct O
 
 unsigned int mixLightColor(__global struct OCLight *l, unsigned int color, __private struct OCVertex3D *Q, __global struct OCVertex3D *N)
 {
-    const float distance = distanceBetweenVertices(&l->position, Q);
+    float distance = distanceBetweenVertices(&l->position, Q);
 
     OCVertex3D R = l->forward;
 
     // Vector(Q, P)
-    OCVertex3D component = {
-        l->position.x - Q->x,
-        l->position.y - Q->y,
-        l->position.z - Q->z,
-    };
+    OCVertex3D component;
+    component.x = l->position.x - Q->x;
+    component.y = l->position.y - Q->y;
+    component.z = l->position.z - Q->z;
 
-    const float modulo = sqrt((component.x * component.x) + (component.y * component.y) + (component.z * component.z));
+    float modulo = sqrt((component.x * component.x) + (component.y * component.y) + (component.z * component.z));
 
-    OCVertex3D L = {
-        component.x / modulo,
-        component.y / modulo,
-        component.z / modulo,
-    };
+    OCVertex3D L;
+    L.x = component.x / modulo;
+    L.y = component.y / modulo;
+    L.z = component.z / modulo;
+    //
 
-    const float C = pow(max(dotProduct(&R, &L), 0.0f), l->power) / (l->kc + l->kl * distance + l->kq * (distance * distance));
+    float C = pow(max(dotProduct(&R, &L), 0.0f), l->power) / (l->kc + l->kl * distance + l->kq * (distance * distance));
 
     unsigned int diffuseColor;
     if (C >= 1) {
@@ -624,9 +617,9 @@ unsigned int mixColors(unsigned int color1, unsigned int color2, float t)
     unsigned char *c2 = (unsigned char *)&color2;
 
     return createRGB(
-        mix((float) c1[0], (float) c2[0], t),
-        mix((float) c1[1], (float) c2[1], t),
-        mix((float) c1[2], (float) c2[2], t)
+            mix((float) c1[0], (float) c2[0], t),
+            mix((float) c1[1], (float) c2[1], t),
+            mix((float) c1[2], (float) c2[2], t)
     );
 }
 

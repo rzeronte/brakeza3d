@@ -13,7 +13,6 @@ class ShaderCRT : public ShaderOpenCL  {
     Image image;
     Image mask;
     unsigned int maxAlpha;
-
 public:
     ShaderCRT(bool active, const std::string& imageFilename, const std::string& maskFilename);
 

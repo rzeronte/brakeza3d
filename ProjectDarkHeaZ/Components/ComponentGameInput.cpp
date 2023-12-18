@@ -4,7 +4,6 @@
 
 ComponentGameInput::ComponentGameInput()
 :
-    Component(false),
     controllerAxisThreshold(0.1),
     lockRightStick(false)
 {

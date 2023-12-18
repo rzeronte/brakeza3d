@@ -10,10 +10,12 @@
 #include "Object3D.h"
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
-#include "../Render/MeshOpenCLRenderer.h"
+#include "../Render/ObjectShaderOpenCL.h"
 #include <assimp/Importer.hpp>      // C++ assimpImporter interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
+#include <vec3.hpp>
+#include <vec2.hpp>
 
 typedef float vec3_t[3];
 
@@ -24,7 +26,6 @@ typedef enum {
 
 class Mesh3D : public Object3D {
 private:
-    std::string sourceFile;
 
     Octree *octree;
     Grid3D *grid;
@@ -34,14 +35,15 @@ private:
     bool flatTextureColor;
     bool render;
     Mesh3DRenderLayer layer;
-
+    std::vector<ObjectShaderOpenCL*> shaders;
 protected:
     std::vector<Triangle *> modelTriangles;
     std::vector<Image *> modelTextures;
+    std::vector<Image *> modelSpecularTextures;
     std::vector<Vertex3D *> modelVertices;
 
     Color flatColor;
-    MeshOpenCLRenderer *openClRenderer;
+    std::string sourceFile;
 public:
     Mesh3D();
 
@@ -99,8 +101,6 @@ public:
 
     AABB3D &getAabb();
 
-    [[nodiscard]] MeshOpenCLRenderer *getOpenClRenderer() const;
-
     void onDrawHostBuffer() override;
 
     cJSON * getJSON() override;
@@ -112,6 +112,33 @@ public:
     Mesh3DRenderLayer getLayer() const;
 
     void setLayer(Mesh3DRenderLayer layer);
+
+    void drawImGuiProperties() override;
+
+    const char *getTypeObject() override;
+
+    const char *getTypeIcon() override;
+
+    static Mesh3D* create();
+
+    static void createFromJSON(cJSON *object);
+
+    static void setPropertiesFromJSON(cJSON *object, Mesh3D *o);
+
+    std::vector<ObjectShaderOpenCL *> &getShaders();
+
+    void addMesh3DShader(ObjectShaderOpenCL *shader);
+
+    void removeShader(int i);
+
+    void fillBuffers();
+
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> uvs;
+    GLuint vertexbuffer;
+    GLuint uvbuffer;
+    GLuint normalbuffer;
 };
 
 

@@ -17,8 +17,6 @@
 
 class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy, public LivingObject, public RotatableToTarget {
 private:
-    ShaderZombie *zombie;
-
     RayLight rayLight;
     Counter counterStuck;
     AmmoProjectileBodyEmitter *projectileEmitter;

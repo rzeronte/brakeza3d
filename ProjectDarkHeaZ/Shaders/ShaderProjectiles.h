@@ -42,16 +42,10 @@ class ShaderProjectiles : public ShaderOpenCL {
 private:
     Image image;
 
-    cl_mem opencl_buffer_pixels_image;
-    cl_mem clBufferLasers;
-    cl_mem clBufferProjectiles;
-
     std::vector<OCLaser> lasers;
     std::vector<OCProjectile> projectiles;
 public:
     ShaderProjectiles();
-
-    ~ShaderProjectiles() override;
 
     void update() override;
 

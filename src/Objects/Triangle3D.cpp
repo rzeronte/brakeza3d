@@ -8,6 +8,7 @@
 #include "../../include/Render/Maths.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Objects/Decal.h"
 
 Triangle::Triangle()
 :
@@ -176,7 +177,8 @@ void Triangle::clipping(
         int oldNumTriangles = (int) triangles.size();
 
         Maths::TriangulatePolygon(
-            num_inputvertices, input_vertices,
+            num_inputvertices,
+            input_vertices,
             this->getNormal(),
             triangles,
             newTrianglesParent,
