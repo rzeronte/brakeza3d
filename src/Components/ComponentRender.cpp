@@ -6,6 +6,7 @@
 
 ComponentRender::ComponentRender()
 :
+    textWriter(nullptr),
     fps(0),
     fpsFrameCounter(0),
     frameTime(0),
@@ -29,29 +30,18 @@ void ComponentRender::onStart()
     initTiles();
 
     textWriter = new TextWriter(ComponentsManager::get()->getComponentWindow()->getRenderer(), ComponentsManager::get()->getComponentWindow()->getFontDefault());
+    addShaderToScene(new ShaderImage(EngineSetup::get()->IMAGES_FOLDER + "noise_color.png"));
 }
 
 void ComponentRender::preUpdate()
 {
     this->updateFPS();
 
-    if (isSceneShadersEnabled()) {
-        runShadersOpenCLPreUpdate();
-    }
 }
 
 void ComponentRender::drawObjetsInHostBuffer()
 {
     auto components = ComponentsManager::get();
-
-    /*auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
-    for (auto object : sceneObjects) {
-        object->onDrawHostBuffer();
-    }
-
-    if (SETUP->BULLET_DEBUG_MODE) {
-        components->getComponentCollisions()->getDynamicsWorld()->debugDrawWorld();
-    }*/
 
     if (SETUP->DRAW_FPS) {
         textWriter->writeTTFCenterHorizontal(
@@ -68,6 +58,9 @@ void ComponentRender::onUpdate()
     if (!isEnabled()) return;
 
     deleteRemovedObjects();
+    if (isSceneShadersEnabled()) {
+        runShadersOpenCLPreUpdate();
+    }
 
     onUpdateSceneObjects();
 
@@ -471,7 +464,8 @@ void ComponentRender::setSceneShadersEnabled(bool sceneShadersEnabled) {
     ComponentRender::sceneShadersEnabled = sceneShadersEnabled;
 }
 
-void ComponentRender::runShadersOpenCLPostUpdate() {
+void ComponentRender::runShadersOpenCLPostUpdate()
+{
     for( auto s: sceneShaders) {
         if (!s->isEnabled()) continue;
         s->postUpdate();

@@ -13,6 +13,7 @@
 #include "../Misc/TexturePackage.h"
 #include "../Render/Logging.h"
 #include "../Shaders/ShaderEdgeObject.h"
+#include "../Shaders/ShaderBlink.h"
 
 static char editableSource[1024 * 16];
 
@@ -36,7 +37,7 @@ private:
     TexturePackage ImGuiTextures;
     TexturePackage imagesFolder;
 
-    const char *availableMesh3DShaders[1] = {"Edge"};
+    const char *availableMesh3DShaders[2] = {"Edge", "Blink"};
 public:
 
     void loadImagesFolder() {
@@ -323,19 +324,29 @@ public:
 
     void drawMesh3DShaders() {
 
-        for(int i = 0; i < 1; i++) {
-            ImGui::PushID(i);
-            std::string optionText = std::to_string(i + 1) + ") " + availableMesh3DShaders[i];
-            if (ImGui::Selectable(optionText.c_str())) {
-            }
-            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-                ImGui::SetDragDropPayload("MESH3D_SHADER_ITEM", std::to_string(i).c_str(), sizeof(int));
-                ImGui::Text("%s", availableMesh3DShaders[i]);
-                ImGui::EndDragDropSource();
-            }
-
-            ImGui::PopID();
+        int i = 0;
+        ImGui::PushID(i);
+        std::string optionText = std::to_string(i + 1) + ") " + availableMesh3DShaders[i];
+        if (ImGui::Selectable(optionText.c_str())) {
         }
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+            ImGui::SetDragDropPayload("MESH3D_SHADER_ITEM", std::to_string(i).c_str(), sizeof(int));
+            ImGui::Text("%s", availableMesh3DShaders[i]);
+            ImGui::EndDragDropSource();
+        }
+        ImGui::PopID();
+
+        i = 1;
+        ImGui::PushID(i);
+        optionText = std::to_string(i + 1) + ") " + availableMesh3DShaders[i];
+        if (ImGui::Selectable(optionText.c_str())) {
+        }
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+            ImGui::SetDragDropPayload("MESH3D_SHADER_ITEM", std::to_string(i).c_str(), sizeof(int));
+            ImGui::Text("%s", availableMesh3DShaders[i]);
+            ImGui::EndDragDropSource();
+        }
+        ImGui::PopID();
     }
 
     void drawObjectsWindow()
@@ -382,6 +393,8 @@ public:
                                     mesh->addMesh3DShader(shader);
                                 }
                                 case 1: {
+                                    auto shader = new ShaderBlink(true, mesh, 0.1f ,Color::green());
+                                    mesh->addMesh3DShader(shader);
                                     break;
                                 }
 

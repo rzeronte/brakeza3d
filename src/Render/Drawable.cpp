@@ -554,7 +554,8 @@ void Drawable::drawOutline(Mesh3D *m) {
             m->vertexbuffer,
             m->uvbuffer,
             m->normalbuffer,
-            (int) m->vertices.size()
+            (int) m->vertices.size(),
+            true
     );
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
