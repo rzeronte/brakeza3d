@@ -18,7 +18,7 @@ public:
 
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
 
-    void render(Object3D *o, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size);
+    void render(Object3D *o, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size, bool toFramebuffer);
 
     GLuint textureColorbuffer;
 };

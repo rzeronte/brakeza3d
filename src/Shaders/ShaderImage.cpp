@@ -41,6 +41,13 @@ void ShaderImage::update(float increaseOffsetX, float increaseOffsetY)
 
 void ShaderImage::executeKernelOpenCL(float increaseOffsetX, float increaseOffsetY)
 {
+    ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(
+        this->image.getOGLTextureID(),
+        0, 0,
+        this->image.width(),
+        this->image.height()
+    );
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void ShaderImage::limitOffset()

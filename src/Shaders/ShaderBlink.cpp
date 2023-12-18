@@ -5,23 +5,32 @@
 #include "../../include/Shaders/ShaderBlink.h"
 #include "../../include/ComponentsManager.h"
 
-
 ShaderBlink::ShaderBlink(bool active, Mesh3D *o, float step, Color c) :
-    ShaderOpenCL(active),
+    ObjectShaderOpenCL(active, o),
     isBlinking(false),
     object(o),
     color(c),
     counter(Counter(step))
 {
+    setLabel("ShaderBlink");
+}
+
+void ShaderBlink::preUpdate()
+{
+    ShaderOpenCL::preUpdate();
+    update();
+}
+
+void ShaderBlink::postUpdate()
+{
+    ShaderOpenCL::postUpdate();
 }
 
 void ShaderBlink::update()
 {
-    if (!isEnabled() || this->object == nullptr || object->isRemoved()) return;
+    if (!isEnabled() || this->object == nullptr) return;
 
     counter.update();
-
-    if (!this->object->isStencilBufferEnabled()) return;
 
     if (isBlinking) {
         if (counter.isFinished()) {
@@ -45,6 +54,17 @@ void ShaderBlink::update()
 
 void ShaderBlink::executeKernelOpenCL()
 {
+    glDisable(GL_DEPTH);
+    glDisable(GL_BLEND);
+
+    ComponentsManager::get()->getComponentWindow()->getShaderOglColor()->render(
+        this->object,
+        this->object->vertexbuffer,
+        this->object->uvbuffer,
+        this->object->normalbuffer,
+        (int) this->object->vertices.size(),
+        false
+    );
 }
 
 void ShaderBlink::setColor(Color color) {
