@@ -69,8 +69,6 @@ public:
 
     void renderToWindow();
 
-    void clearVideoBuffers();
-
     TTF_Font *getFontAlternative();
 
     SDL_Surface *applicationIcon;

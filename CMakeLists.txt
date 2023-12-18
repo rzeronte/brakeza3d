@@ -145,8 +145,7 @@ add_executable(Brakeza3D
     src/Collisions/RayCollisionable.cpp include/Physics/RayCollisionable.h
     src/Shaders/ShockWave.cpp include/Shaders/ShockWave.h
 
-        src/Shaders/ShaderParticles.cpp include/Shaders/ShaderParticles.h
-    src/Shaders/ShaderBilinear.cpp include/Shaders/ShaderBilinear.h
+        src/Shaders/ShaderBilinear.cpp include/Shaders/ShaderBilinear.h
     src/Objects/Swarm.cpp include/Objects/Swarm.h
     src/Shaders/ShaderExplosion.cpp include/Shaders/ShaderExplosion.h
     src/Shaders/ShaderDepthOfField.cpp include/Shaders/ShaderDepthOfField.h

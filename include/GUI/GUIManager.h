@@ -378,7 +378,7 @@ public:
                             int selection = std::stoi((char*) payload->Data);
                             switch(selection) {
                                 case 0: {
-                                    auto shader = new ShaderEdgeObject(true, Color::green(), 1);
+                                    auto shader = new ShaderEdgeObject(true, mesh, Color::green(), 1);
                                     mesh->addMesh3DShader(shader);
                                 }
                                 case 1: {
