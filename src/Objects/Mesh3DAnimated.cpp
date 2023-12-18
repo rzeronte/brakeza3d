@@ -8,7 +8,6 @@ void Mesh3DAnimated::onUpdate()
     if (this->scene != nullptr) {
         this->updateFrameTransformations();
     }
-    openClRenderer->updateTriangles();
     Mesh3D::onUpdate();
 }
 
@@ -99,7 +98,6 @@ bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &filename) {
     this->AssimpInitMaterials(scene, filename);
     this->ReadNodes();
 
-    openClRenderer->makeOCLTriangles();
     //bool res = Tools::loadOBJ("../suzanne.obj", vertices, uvs, normals);
     fillBuffers();
     this->sourceFile = filename;

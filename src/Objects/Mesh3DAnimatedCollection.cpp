@@ -33,9 +33,9 @@ void Mesh3DAnimatedCollection::onUpdate() {
     }
 
     this->onUpdateCurrentMesh3D();
-    this->getCurrentMesh3DAnimated()->sendTrianglesToFrame(
+    /*this->getCurrentMesh3DAnimated()->sendTrianglesToFrame(
             &ComponentsManager::get()->getComponentRender()->getFrameTriangles()
-    );
+    );*/
 }
 
 void Mesh3DAnimatedCollection::onUpdateCurrentMesh3D() {

@@ -67,5 +67,5 @@ void BillboardBody::onUpdate() {
     Object3D::onUpdate();
 
     this->updateTrianglesCoordinatesAndTexture(ComponentsManager::get()->getComponentCamera()->getCamera());
-    Drawable::drawBillboard(this, &ComponentsManager::get()->getComponentRender()->getFrameTriangles());
+    //Drawable::drawBillboard(this, &ComponentsManager::get()->getComponentRender()->getFrameTriangles());
 }

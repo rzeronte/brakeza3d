@@ -58,14 +58,6 @@ void Image::loadOpenCLBuffer()
 {
     cl_int errCode;
 
-    openClTexture = clCreateBuffer(
-        ComponentsManager::get()->getComponentRender()->getClContext(),
-        CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-        (width() * height()) * sizeof(Uint32),
-        pixels(),
-        &errCode
-    );
-
     if (errCode != CL_SUCCESS) {
         std::cerr << "Error al crear el buffer de OpenCL: " << errCode << std::endl;
         exit(-1);
@@ -201,8 +193,6 @@ void Image::setImage(const std::string &filename)
         this->surface = IMG_Load(filename.c_str());
         this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-
-        clEnqueueWriteBuffer(ComponentsManager::get()->getComponentRender()->getClCommandQueue(), openClTexture, CL_TRUE, 0, (width() * height()) * sizeof(Uint32), pixels(), 0, nullptr, nullptr );
 
         this->fileName = filename;
         this->loaded = true;

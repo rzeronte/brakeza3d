@@ -10,7 +10,6 @@
 #include "Object3D.h"
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
-#include "../Render/MeshOpenCLRenderer.h"
 #include "../Render/ObjectShaderOpenCL.h"
 #include <assimp/Importer.hpp>      // C++ assimpImporter interface
 #include <assimp/scene.h>           // Output data structure
@@ -28,10 +27,6 @@ typedef enum {
 class Mesh3D : public Object3D {
 private:
 
-    GLuint vertexbuffer;
-    GLuint uvbuffer;
-    GLuint normalbuffer;
-
     Octree *octree;
     Grid3D *grid;
     AABB3D aabb;
@@ -48,7 +43,6 @@ protected:
     std::vector<Vertex3D *> modelVertices;
 
     Color flatColor;
-    MeshOpenCLRenderer *openClRenderer;
     std::string sourceFile;
 public:
     Mesh3D();
@@ -107,8 +101,6 @@ public:
 
     AABB3D &getAabb();
 
-    [[nodiscard]] MeshOpenCLRenderer *getOpenClRenderer() const;
-
     void onDrawHostBuffer() override;
 
     cJSON * getJSON() override;
@@ -144,6 +136,9 @@ public:
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> uvs;
+    GLuint vertexbuffer;
+    GLuint uvbuffer;
+    GLuint normalbuffer;
 };
 
 

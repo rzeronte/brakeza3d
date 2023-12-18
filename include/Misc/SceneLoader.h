@@ -15,7 +15,9 @@ enum class SceneObjectLoaderMapping {
     Mesh3D,
     LightPoint3D,
     Mesh3DGhost,
-    Mesh3DBody
+    Mesh3DBody,
+    SpotLight3D,
+    ParticleEmitter
 };
 
 enum class Mesh3DShaderLoaderMapping {
@@ -34,8 +36,10 @@ class SceneLoader {
             {"Object3D", SceneObjectLoaderMapping::Object3D},
             {"Mesh3D", SceneObjectLoaderMapping::Mesh3D},
             {"LightPoint3D", SceneObjectLoaderMapping::LightPoint3D},
+            {"SpotLight3D", SceneObjectLoaderMapping::SpotLight3D},
             {"Mesh3DGhost", SceneObjectLoaderMapping::Mesh3DGhost},
-            {"Mesh3DBody", SceneObjectLoaderMapping::Mesh3DBody}
+            {"Mesh3DBody", SceneObjectLoaderMapping::Mesh3DBody},
+            {"ParticleEmitter", SceneObjectLoaderMapping::ParticleEmitter}
     };
 
     std::map<std::string, Mesh3DShaderLoaderMapping> mesh3DShaderTypes = {
@@ -59,7 +63,7 @@ public:
 
     static void createObjectInScene();
 
-    static void createLightPointInScene();
+    static void createPointLight3DInScene();
 
     static void createMesh3DBodyToScene(const std::string &filename, const char *name);
 
@@ -70,6 +74,12 @@ public:
     std::map<std::string, Mesh3DShaderLoaderMapping> &getMesh3DShaderTypes();
 
     std::map<std::string, SceneShaderLoaderMapping> &getSceneShaderTypes();
+
+    static void createSpotLight3DInScene();
+
+    static void createParticleEmitterInScene();
+
+    static void createSprite3DInScene();
 };
 
 

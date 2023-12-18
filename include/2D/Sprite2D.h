@@ -24,7 +24,6 @@ public:
 
     [[nodiscard]] TextureAnimated *getAnimation() const;
 
-
     void updatePosition(int x, int y);
 
     const char *getTypeObject() override;

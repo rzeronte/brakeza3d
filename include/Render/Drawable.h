@@ -61,6 +61,8 @@ public:
     static void drawMainDeepMapFromCamera(int pos_x, int pos_y);
 
     static void drawTriangleNormal(Triangle *triangle, Color color);
+
+    static void drawOutline(Mesh3D *m);
 };
 
 

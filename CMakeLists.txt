@@ -82,7 +82,6 @@ add_executable(Brakeza3D
     src/Misc/Counter.cpp include/Misc/Counter.h
     src/Misc/TexturePackage.cpp include/Misc/TexturePackage.h
     src/Misc/SoundPackage.cpp include/Misc/SoundPackage.h
-    include/Misc/Parallells.h
         src/Collisions/BillboardBody.cpp include/Physics/BillboardBody.h
     src/Components/Component.cpp include/Components/Component.h
     src/Components/ComponentRender.cpp include/Components/ComponentRender.h
@@ -145,9 +144,8 @@ add_executable(Brakeza3D
     src/Collisions/Mesh3DAnimatedGhost.cpp include/Physics/Mesh3DAnimatedGhost.h
     src/Collisions/RayCollisionable.cpp include/Physics/RayCollisionable.h
     src/Shaders/ShockWave.cpp include/Shaders/ShockWave.h
-    include/Render/MeshOpenCLRenderer.cpp include/Render/MeshOpenCLRenderer.h
 
-    src/Shaders/ShaderParticles.cpp include/Shaders/ShaderParticles.h
+        src/Shaders/ShaderParticles.cpp include/Shaders/ShaderParticles.h
     src/Shaders/ShaderBilinear.cpp include/Shaders/ShaderBilinear.h
     src/Objects/Swarm.cpp include/Objects/Swarm.h
     src/Shaders/ShaderExplosion.cpp include/Shaders/ShaderExplosion.h
@@ -179,13 +177,32 @@ add_executable(Brakeza3D
         include/Render/ObjectShaderOpenCL.h
         include/Misc/TileManager.cpp
         include/Misc/TileManager.h
-        include/Render/ShaderOpenGL.cpp
-        include/Render/ShaderOpenGL.h
-        include/Render/ShaderOpenGLImage.cpp
-        include/Render/ShaderOpenGLImage.h
-        include/Render/ShaderOpenGLRender.cpp
-        include/Render/ShaderOpenGLRender.h
-        include/Objects/OpenGLShaderTypes.h)
+        include/OpenGL/ShaderOpenGL.cpp
+        include/OpenGL/ShaderOpenGL.h
+        include/OpenGL/ShaderOpenGLImage.cpp
+        include/OpenGL/ShaderOpenGLImage.h
+        include/OpenGL/ShaderOpenGLRender.cpp
+        include/OpenGL/ShaderOpenGLRender.h
+        include/Objects/OpenGLShaderTypes.h
+        include/OpenGL/ShaderOpenGLLine.cpp
+        include/OpenGL/ShaderOpenGLLine.h
+        src/Objects/SpotLight3D.cpp
+        src/Objects/SpotLight3D.h
+        include/OpenGL/ShaderOpenGLWireframe.cpp
+        include/OpenGL/ShaderOpenGLWireframe.h
+        include/OpenGL/ShaderOpenGLShading.cpp
+        include/OpenGL/ShaderOpenGLShading.h
+        include/OpenGL/ShaderOpenGLPoints.cpp
+        include/OpenGL/ShaderOpenGLPoints.h
+        include/OpenGL/ShaderOpenGLCustom.cpp
+        include/OpenGL/ShaderOpenGLCustom.h
+        include/OpenGL/ShaderCustomOpenGLParticles.cpp
+        include/OpenGL/ShaderCustomOpenGLParticles.h
+        include/OpenGL/ShaderOpenGLCustom.cpp
+        include/OpenGL/ShaderOpenGLOutliner.cpp
+        include/OpenGL/ShaderOpenGLOutliner.h
+        include/OpenGL/ShaderOpenGLColor.cpp
+        include/OpenGL/ShaderOpenGLColor.h)
 
 target_link_libraries(Brakeza3D
     pthread

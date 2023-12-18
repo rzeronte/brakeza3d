@@ -46,6 +46,33 @@ void Brakeza3D::welcomeMessage() const {
 
 void Brakeza3D::mainLoop()
 {
+    std::vector<OCParticle> particles;
+    particles = std::vector<OCParticle>(SHADERGL_NUM_PARTICLES, OCParticle{
+            glm::vec4(0),
+            glm::vec4(0),
+            glm::vec4(0),
+            0, 0, 0, 0
+    });
+
+    auto particlesContext = OCParticlesContext(
+            0.0f,
+            0.025f,
+            1.5f,
+            25.0f,
+            10.1f,
+            2.0f,
+            125.0f,
+            255.0f,
+            0.02f,
+            0.04f,
+            0.99f
+    );
+    GLuint particlesBuffer;
+    glGenBuffers(1, &particlesBuffer);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, particlesBuffer);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, (int) (particles.size() * sizeof(OCParticle)), &particles[0], GL_STATIC_DRAW);
+
+    ///////////
 
     SDL_Event e;
 
@@ -76,7 +103,7 @@ void Brakeza3D::mainLoop()
         updateTimer();
 
         componentsManager->getComponentWindow()->clearVideoBuffers();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 
         //componentsManager->getComponentRender()->writeOCLBuffersFromHost();

@@ -41,8 +41,8 @@ public:
     Vertex3D gravity = Vertex3D(0, -900.0f, 0);
 
     // Screen dimension constants
-    const int screenWidth = 640;
-    const int screenHeight = 480;
+    const int screenWidth = 1024;
+    const int screenHeight = 768;
 
     float screenWidthHalf = (float) screenWidth / 2;
     float screenHeightHalf = (float) screenHeight / 2;
@@ -106,7 +106,6 @@ public:
 
     bool FULLSCREEN = false;
 
-    bool DRAW_FRUSTUM = false;
     bool DRAW_FPS = false;
 
     // FRUSTUM PLANES
@@ -203,11 +202,11 @@ public:
     float PARTICLES_SHADER_PARTICLE_LIFESPAN = 1.5f;
     float PARTICLES_SHADER_SMOKE_ANGLE_RANGE = 25.0f;
     float PARTICLES_SHADER_MIN_VELOCITY = 0.0f;
-    float PARTICLES_SHADER_MAX_VELOCITY = 50.0f;
+    float PARTICLES_SHADER_MAX_VELOCITY = 0.1f;
     float PARTICLES_SHADER_ALPHA_MIN = 125.0f;
     float PARTICLES_SHADER_ALPHA_MAX = 255.0f;
-    float PARTICLES_SHADER_POSITION_NOISE = 2.0f;
-    float PARTICLES_SHADER_VELOCITY_NOISE = 0.1f;
+    float PARTICLES_SHADER_POSITION_NOISE = 0.2f;
+    float PARTICLES_SHADER_VELOCITY_NOISE = 0.91f;
     float PARTICLES_SHADER_DECELERATION_FACTOR = 0.98f;
 
     float SHADER_PARTICLE_EXPLOSION_TTL = 1.0f;

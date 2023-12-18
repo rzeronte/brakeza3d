@@ -50,14 +50,6 @@ TileManager::TileManager(int sizeTileWidth, int sizeTileHeight)
         }
     }
 
-    tilesBufferOCL = clCreateBuffer(
-        ComponentsManager::get()->getComponentRender()->getClContext(),
-        CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR,
-        this->tiles.size() * sizeof(OCTileRender),
-        this->tiles.data(),
-        nullptr
-    );
-
     printf("TileManager -> Number Tiles: %d | tileSize(%d x %d) | Horizontal: %d | Vertrical: %d\n",
            numberTiles,
            this->sizeTileWidth,
