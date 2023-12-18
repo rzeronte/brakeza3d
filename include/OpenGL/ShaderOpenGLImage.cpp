@@ -1,7 +1,3 @@
-//
-// Created by edu on 7/12/23.
-//
-
 #include <ext/matrix_float4x4.hpp>
 #include <ext/matrix_clip_space.hpp>
 #include <ext/matrix_transform.hpp>
@@ -42,7 +38,6 @@ ShaderOpenGLImage::ShaderOpenGLImage(const std::string &vertexFilename, const st
     spriteColorUniform = glGetUniformLocation(programID, "spriteColor");
     textureUniform = glGetUniformLocation(programID, "image");
 }
-
 
 void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int h) const
 {

@@ -118,8 +118,8 @@ void Mesh3D::onUpdate()
 
     if (isRemoved()) return;
 
-    if (isRender()) {
-        //this->sendTrianglesToFrame(&ComponentsManager::get()->getComponentRender()->getFrameTriangles());
+    for (auto s: shaders) {
+        s->preUpdate();
     }
 
     if (layer == Mesh3DRenderLayer::ONUPDATE) {
@@ -167,9 +167,6 @@ void Mesh3D::onUpdate()
 
     }
 
-    for (auto s: shaders) {
-        s->preUpdate();
-    }
 }
 
 void Mesh3D::drawOnUpdateSecondPass()
