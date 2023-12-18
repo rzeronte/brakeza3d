@@ -140,6 +140,10 @@ void Mesh3D::onUpdate()
                 Drawable::drawOutline(this);
             }
 
+            glEnable(GL_DEPTH);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
             ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
                 this,
                 modelTextures[0]->getOGLTextureID(),

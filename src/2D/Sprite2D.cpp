@@ -74,5 +74,5 @@ const char *Sprite2D::getTypeObject() {
 }
 
 const char *Sprite2D::getTypeIcon() {
-    return "spriteIcon";
+    return "sprite2DIcon";
 }

@@ -10,9 +10,6 @@ private:
     float width;
     float height;
 
-    Triangle T1;
-    Triangle T2;
-
     Vertex3D Q1;
     Vertex3D Q2;
     Vertex3D Q3;
@@ -30,15 +27,7 @@ public:
 
     void loadTexture(const std::string &name);
 
-    void setTrianglesTexture(Image *);
-
-    void reassignTexture();
-
-    Triangle *getT1();
-
-    Triangle *getT2();
-
-    std::vector<Triangle *> &getTriangles();
+    void setTexture(Image *texture);
 
     void fillBuffers();
 

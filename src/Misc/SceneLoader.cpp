@@ -10,6 +10,7 @@
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Particles/ParticleEmitter.h"
+#include "../../include/2D/Sprite2D.h"
 
 SceneLoader::SceneLoader()
 = default;
@@ -236,16 +237,38 @@ void SceneLoader::createMesh3DBodyToScene(const std::string& filename, const cha
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name));
 }
 
-void SceneLoader::createSprite3DInScene() {
+void SceneLoader::createSprite2DInScene()
+{
+    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2);
+
+    auto *newObject = new Sprite2D(
+        100,
+        100,
+        false,
+        new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "Smoke45Frames.png"), 128, 128, 45, 24)
+    );
+    newObject->setPosition(position);
+
+    newObject->setBelongToScene(true);
+    Logging::Message("Loading Sprite2D");
+
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_sprite3D"));
+}
+
+
+void SceneLoader::createSprite3DInScene()
+{
     Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2);
 
     auto *newObject = new Sprite3D(1, 1);
-    newObject->addAnimation();
+    newObject->setPosition(position);
+    newObject->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "Smoke45Frames.png"), 128, 128, 45, 24);
+    newObject->setAnimation(0);
 
     newObject->setBelongToScene(true);
-    Logging::Message("Loading ParticleEmitter");
+    Logging::Message("Loading Sprite3D");
 
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_particleEmitter"));
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_sprite3D"));
 }
 
 void SceneLoader::createParticleEmitterInScene() {

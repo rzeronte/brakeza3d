@@ -56,9 +56,9 @@ void SpriteDirectional3D::updateTextureFromCameraAngle(Object3D *o, Camera3D *ca
     }
 
     if (getCurrentTextureAnimationDirectional()->isZeroDirection) {
-        this->getBillboard()->setTrianglesTexture(getCurrentTextureAnimationDirectional()->getCurrentFrame(0));
+        this->getBillboard()->setTexture(getCurrentTextureAnimationDirectional()->getCurrentFrame(0));
     } else {
-        this->getBillboard()->setTrianglesTexture(getCurrentTextureAnimationDirectional()->getCurrentFrame(direction));
+        this->getBillboard()->setTexture(getCurrentTextureAnimationDirectional()->getCurrentFrame(direction));
     }
 }
 

@@ -149,10 +149,17 @@ void ComponentRender::deleteRemovedObjects()
 void ComponentRender::onUpdateSceneObjects()
 {
     auto sceneObjects = Brakeza3D::get()->getSceneObjects();
+    auto cameraPosition = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
 
-    for (auto object : sceneObjects) {
-        if (object != nullptr && object->isEnabled()) {
-            object->onUpdate();
+    std::map<float, Object3D*> sorted;
+    for (auto & sceneObject : sceneObjects) {
+        float distance = cameraPosition.distance(sceneObject->position);
+        sorted[distance] = sceneObject;
+    }
+
+    for (auto it = sorted.rbegin(); it != sorted.rend(); ++it) {
+        if (it->second->isEnabled()) {
+            it->second->onUpdate();
         }
     }
 }

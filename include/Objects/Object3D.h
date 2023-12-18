@@ -26,7 +26,6 @@
 class Object3D {
 
 protected:
-    Vertex3D position;
     Vertex3D drawOffset;
     M3 rotation;
 
@@ -191,6 +190,8 @@ public:
     static void setPropertiesFromJSON(cJSON *object, Object3D *o);
 
     glm::mat4 getModelMatrix();
+
+    Vertex3D position;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H
