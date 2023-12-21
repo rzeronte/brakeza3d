@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <cstdint>
+#include <vec3.hpp>
+#include <SDL2/SDL.h>
 
 class Color {
 public:
@@ -12,7 +14,7 @@ public:
     float a;
 
     Color();
-    Color(int r, int g, int b, int a = 0);
+    Color(float r, float g, float b, float a = 0);
     explicit Color(uint32_t v);
 
     Color operator+(const Color &pm) const;
@@ -22,18 +24,18 @@ public:
     Color operator*(float s) const;
     Color operator/(float s) const;
 
-    static Color white() { return {255, 255, 255}; }
-    static Color red() { return {255, 0, 0}; }
-    static Color green() { return {0, 255, 0}; }
-    static Color blue() { return {0, 0, 255}; }
+    static Color white() { return {1, 1, 1}; }
+    static Color red() { return {1, 0, 0}; }
+    static Color green() { return {0, 1, 0}; }
+    static Color blue() { return {0, 0, 1}; }
     static Color black() { return {0, 0, 0}; }
-    static Color yellow() { return {255, 255, 0}; }
-    static Color fuchsia() { return {255, 0, 255}; }
-    static Color cyan() { return {0, 255, 255}; }
-    static Color orange() { return {255, 128, 42}; }
-    static Color olive() { return {128, 128, 0}; }
-    static Color gray() { return {128, 128, 128}; }
-    static Color FOGDefault() { return {128, 128, 128}; }
+    static Color yellow() { return {1, 1, 0}; }
+    static Color fuchsia() { return {1, 0, 1}; }
+    static Color cyan() { return {0, 1, 1}; }
+    static Color orange() { return {1, 0.5f, 0.2f}; }
+    static Color olive() { return {0.5f, 0.5f, 0}; }
+    static Color gray() { return {0.5f, 0.5f, 0.5f}; }
+    static Color FOGDefault() { return {0.5f, 0.5f, 0.5f}; }
     static Color mixColor(Color &c1, Color &c2, float c2Intensity);
 
     void setRed(float v);
@@ -42,12 +44,15 @@ public:
 
     uint32_t getColor() const;
 
-    unsigned int getA() const;
+    float getA() const;
 
-    void setAlpha(unsigned int a);
+    void setAlpha(float a);
 
     uint32_t color;
 
+    [[nodiscard]] glm::vec3 toGLM() const;
+
+    [[nodiscard]] SDL_Color toSDL() const;
 };
 
 

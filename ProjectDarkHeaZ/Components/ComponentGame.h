@@ -29,7 +29,7 @@
 #include "../Items/SalvageSpaceship.h"
 #include "../../include/2D/Sprite2D.h"
 
-#define Z_COORDINATE_GAMEPLAY 10000
+#define Z_COORDINATE_GAMEPLAY 20
 #define FREE_LOOK_ENABLED false
 #define SPLASH_TIME 3.0f
 #define FADE_SPEED_FADEOUT_TIME 0.04

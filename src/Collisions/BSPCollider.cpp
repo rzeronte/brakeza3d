@@ -1416,7 +1416,7 @@ void BSPCollider::checkTrace(Vertex3D start, Vertex3D finish, vec3_t mins, vec3_
 
     // debug draw
     Vector3D ray(start, finish);
-    Drawable::drawVector3D(ray, ComponentsManager::get()->getComponentCamera()->getCamera(), Color::cyan());
+    Drawable::drawVector3D(ray, Color::cyan());
 }
 
 vec_t BSPCollider::VectorLength(const vec3_t v) {

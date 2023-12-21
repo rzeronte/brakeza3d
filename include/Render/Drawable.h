@@ -20,7 +20,7 @@ public:
     static void drawVertex(Vertex3D v, Camera3D *cam, Color color);
     static void drawVertex3D(Vertex3D v, Color color);
 
-    static void drawVector3D(Vector3D V, Camera3D *cam, Color color);
+    static void drawVector3D(Vector3D V, Color color);
 
     static void drawLightingVector3D(Vector3D V, Camera3D *cam, Color color);
 
@@ -31,8 +31,6 @@ public:
     static void drawLinePoints(Vertex3D from, Vertex3D to, Color color);
 
     static void drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward);
-
-    static void drawFrustum(Frustum *f, Camera3D *cam, bool drawNP, bool drawFP, bool drawSides);
 
     static void drawPlane(Plane P, Camera3D *cam, Color color);
 

@@ -1,11 +1,12 @@
 
+#include <SDL_rect.h>
 #include "../../include/Misc/Color.h"
 
 Color::Color(): r(0), g(0), b(0), a(0), color(0)
 {
 }
 
-Color::Color(int r, int g, int b, int a): r(r), g(g), b(b), a(a), color(0)
+Color::Color(float r, float g, float b, float a): r(r), g(g), b(b), a(a), color(0)
 {
     auto s = (unsigned char*) &this->color;
 
@@ -86,10 +87,20 @@ Color Color::mixColor(Color &c1, Color &c2, float c2Intensity)
     return (c1 * (1.0f - c2Intensity)) + (c2 * c2Intensity);
 }
 
-unsigned int Color::getA() const {
+float Color::getA() const {
     return a;
 }
 
-void Color::setAlpha(unsigned int value) {
+void Color::setAlpha(float value) {
     Color::a = value;
+}
+
+glm::vec3 Color::toGLM() const
+{
+    return {r, g, b};
+}
+
+SDL_Color Color::toSDL() const
+{
+    return  {(Uint8) (b * 255), (Uint8) (r* 255), (Uint8) (g* 255)};
 }

@@ -20,27 +20,37 @@ void ShaderProjectiles::update()
 
 void ShaderProjectiles::executeKernelOpenCL()
 {
+    for(auto l: lasers) {
+        ComponentsManager::get()->getComponentWindow()->getShaderOGLLine()->render(
+            Point2D(l.from),
+            Point2D(l.to),
+            Color(l.color.r, l.color.g, l.color.b),
+            l.intensity
+        );
+    }
+
+    this->lasers.clear();
+    this->projectiles.clear();
 }
 
-void ShaderProjectiles::addLaser(int x1, int y1, int x2, int y2, Color color, float i, bool startCircle, bool endCircle)
+void ShaderProjectiles::addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float i, bool startCircle, bool endCircle)
 {
-    this->lasers.emplace_back(OCLaser {x1, y1, x2, y2, (int) color.r, (int) color.g, (int) color.b, i, startCircle, endCircle });
+    this->lasers.emplace_back(OCLaser {from, to, color, i, startCircle, endCircle });
 }
 
 void ShaderProjectiles::addLaserFromRay(ProjectileRay *ray)
 {
-    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     auto color = ray->getColor();
 
-    Point2D screenPoint = Transforms::WorldToPoint(ray->getPosition(), camera);
+    Point2D screenPoint = Transforms::WorldToPoint(ray->getPosition());
 
     Vertex3D end = ray->getPosition() + ray->getRay();
-    Point2D middlePoint = Transforms::WorldToPoint(end, camera);
+    Point2D middlePoint = Transforms::WorldToPoint(end);
 
     this->addLaser(
-        screenPoint.x, screenPoint.y,
-        middlePoint.x, middlePoint.y,
-        color,
+        glm::vec2(screenPoint.x, screenPoint.y),
+        glm::vec2(middlePoint.x, middlePoint.y),
+        color.toGLM(),
         ray->getIntensity(),
         false,
         false
@@ -49,7 +59,7 @@ void ShaderProjectiles::addLaserFromRay(ProjectileRay *ray)
 
 void ShaderProjectiles::addProjectile(Vertex3D position, Color color, float i)
 {
-    Point2D screenPoint = Transforms::WorldToPoint(position, ComponentsManager::get()->getComponentCamera()->getCamera());
+    Point2D screenPoint = Transforms::WorldToPoint(position);
 
     this->projectiles.emplace_back(OCProjectile {
         screenPoint.x,

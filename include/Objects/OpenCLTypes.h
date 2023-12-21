@@ -212,7 +212,19 @@ struct OCParticlesContext {
         return OCParticlesContext(0.0f, 0.0025f, 1.5f, 0.0f, 50.0f, 125.0f, 125.0f, 255.0f, 4.5f, 4.5f, 0.99);
     }
     static OCParticlesContext forPlayerEngine() {
-        return OCParticlesContext(0.0f, 0.0025f, 2.5f, 45.0f, 0.0f, 50.0f, 20.0f, 255.0f, 2.0f, 1.8f, 0.98f);
+        return OCParticlesContext(
+                0.0f,
+                0.05f,
+                1.5f,
+                1.0f,
+                1.1f,
+                10.0f,
+                125.0f,
+                255.0f,
+                0.02f,
+                0.04f,
+                0.99f
+        );
     }
     static OCParticlesContext forPlayerSatellite() {
         return OCParticlesContext(0.0f, 0.0025f, 1.5f, 45.0f, 0.0f, 50.0f, 50.0f, 255.0f, 2.0f, 0.8f, 0.98f);

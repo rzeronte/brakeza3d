@@ -24,19 +24,19 @@ void ComponentHUD::onStart()
 
 void ComponentHUD::preUpdate()
 {
-    if (!isEnabled()) {
-        return;
-    }
+    if (!isEnabled()) return;
+
+    HUDTextures->getTextureByLabel("hudBackground")->drawFlatAlpha(
+        0,
+        0,
+        ComponentsManager::get()->getComponentGame()->getTextWriter()->getAlpha()
+    );
 }
 
 void ComponentHUD::onUpdate()
 {
     if (!isEnabled()) return;
 
-    auto textWriter = ComponentsManager::get()->getComponentGame()->getTextWriter();
-    HUDTextures->getTextureByLabel("hudBackground")->drawFlatAlpha(0, 0, textWriter->getAlpha());
-
-    drawShaderLasers();
     drawIconWeaponsAndLevelName();
     drawEnemyIconAndName();
     drawGhateringResources();
@@ -49,6 +49,8 @@ void ComponentHUD::postUpdate()
     if (!isEnabled()) return;
 
     drawHUD();
+    drawShaderLasers();
+
 }
 
 void ComponentHUD::onEnd()
@@ -186,7 +188,7 @@ void ComponentHUD::drawIconWeaponsAndLevelName() const
             sizeAmounts
         );
     }
-    weaponShield->getIcon()->drawFlatAlpha(this->offsetX + 360, this->offsetY, bombAlpha);
+    weaponShield->getIcon()->drawFlatAlpha(this->offsetX + 360, this->offsetY, shieldAlpha);
 
     // level number
     textWriter->writeTextTTFAutoSize(
@@ -259,14 +261,14 @@ void ComponentHUD::drawShaderLasers()
 
     const int startPositionX = this->offsetX + 60.0f;
     const int width = 195.0f;
-    const float stroke = 0.15f;
+    const float stroke = 0.0001f;
     const float topBarMargin = 5;
 
     // stamina
     shaderLasers->addLaser(
-        startPositionX, this->offsetY + topBarMargin,
-        startPositionX + (int) (width * health), this->offsetY + topBarMargin,
-        PaletteColors::getStamina(),
+        glm::vec2(startPositionX, offsetY + topBarMargin),
+        glm::vec2(startPositionX + (int) (width * health), offsetY + topBarMargin),
+        PaletteColors::getStamina().toGLM(),
         stroke,
         false,
         false
@@ -274,9 +276,9 @@ void ComponentHUD::drawShaderLasers()
 
     // energy
     shaderLasers->addLaser(
-        startPositionX, this->offsetY + playerBarSeparation + topBarMargin,
-        startPositionX + (int) (width * energy), this->offsetY + playerBarSeparation + topBarMargin,
-        PaletteColors::getEnergy(),
+        glm::vec2(startPositionX, this->offsetY + playerBarSeparation + topBarMargin),
+        glm::vec2(startPositionX + (int) (width * energy), this->offsetY + playerBarSeparation + topBarMargin),
+        PaletteColors::getEnergy().toGLM(),
         stroke,
         false,
         false
@@ -293,13 +295,12 @@ void ComponentHUD::drawShaderLasers()
         const int width = 146;
 
         shaderLasers->addLaser(
-                positionLaserX, positionLaserY,
-                positionLaserX - (int)(width * enemyHealth),
-                positionLaserY,
-                PaletteColors::getStamina(),
-                stroke,
-                false,
-                false
+            glm::vec2(positionLaserX, positionLaserY),
+            glm::vec2(positionLaserX - (int)(width * enemyHealth), positionLaserY),
+            PaletteColors::getStamina().toGLM(),
+            stroke,
+            false,
+            false
         );
     }
 }

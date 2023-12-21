@@ -14,7 +14,8 @@ void ShaderCustomOpenGLParticles::render(
     Vertex3D direction,
     OCParticlesContext context,
     Color cf,
-    Color ct
+    Color ct,
+    float executionTime
 ) {
     glUseProgram(programID);
 
@@ -33,7 +34,7 @@ void ShaderCustomOpenGLParticles::render(
     setVec3("smokeDirection", glm::vec3(direction.x, direction.y, direction.z));
     setVec3("origin", glm::vec3(origin.x, origin.y, origin.z));
 
-    setFloat("totalExecutionTimeInSeconds", Brakeza3D::get()->getExecutionTime());
+    setFloat("totalExecutionTimeInSeconds", executionTime);
     setFloat("deltaTimeInSeconds",  Brakeza3D::get()->getDeltaTime());
     setBool("stopAdd", false);
     setFloat("intensity", 1.0f);

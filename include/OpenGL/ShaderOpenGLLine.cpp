@@ -9,6 +9,8 @@
 
 ShaderOpenGLLine::ShaderOpenGLLine(const std::string &vertexFilename, const std::string &fragmentFilename)
 :
+    quadVAO(0),
+    VBO(0),
     ShaderOpenGL(vertexFilename, fragmentFilename)
 {
     glGenVertexArrays(1, &quadVAO);

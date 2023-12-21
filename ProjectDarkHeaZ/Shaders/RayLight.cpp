@@ -43,13 +43,12 @@ void RayLight::update()
     light->setEnabled(false);
 
     auto game = ComponentsManager::get()->getComponentGame();
-    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     Vertex3D start = parent->getPosition() + startOffset;
-    Point2D screenPoint = Transforms::WorldToPoint(start, camera);
+    Point2D screenPoint = Transforms::WorldToPoint(start);
 
     Vertex3D end = parent->getPosition() + direction.getScaled(reach);
-    Point2D middlePoint = Transforms::WorldToPoint(end, camera);
+    Point2D middlePoint = Transforms::WorldToPoint(end);
 
     rayCallback->m_rayFromWorld = btVector3(start.x, start.y, start.z);
     rayCallback->m_rayToWorld = btVector3(end.x, end.y, end.z);
@@ -76,20 +75,20 @@ void RayLight::update()
             auto dt = Brakeza3D::get()->getDeltaTime() * 50;
 
             if (player != nullptr) {
-                middlePoint = Transforms::WorldToPoint(hitPosition, camera);
+                middlePoint = Transforms::WorldToPoint(hitPosition);
                 Tools::makeExplosion(player, hitPosition, 0.5, OCParticlesContext::forRayLight(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
 
                 player->takeDamage(damage * dt );
                 increase = false;
 
                 light->setEnabled(true);
-                light->setPosition(hitPosition + Vertex3D(0, 0, -1000));
+                light->setPosition(hitPosition + Vertex3D(0, 0, -1));
                 light->onUpdate();
             }
 
             if (bomb != nullptr) {
                 Tools::makeExplosion(player, hitPosition, 0.5, OCParticlesContext::forRayLight(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
-                middlePoint = Transforms::WorldToPoint(hitPosition, camera);
+                middlePoint = Transforms::WorldToPoint(hitPosition);
                 increase = false;
 
                 light->setEnabled(true);
@@ -98,7 +97,7 @@ void RayLight::update()
             }
 
             if (enemy != nullptr) {
-                middlePoint = Transforms::WorldToPoint(hitPosition, camera);
+                middlePoint = Transforms::WorldToPoint(hitPosition);
                 ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_RAYLIGHT);
 
                 enemy->takeDamage(damage * dt);
@@ -107,7 +106,7 @@ void RayLight::update()
                 Tools::makeExplosion(parent, hitPosition, 0.5, OCParticlesContext::forRayLight(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
 
                 light->setEnabled(true);
-                light->setPosition(hitPosition + Vertex3D(0, 0, -1000));
+                light->setPosition(hitPosition + Vertex3D(0, 0, -1));
                 light->onUpdate();
             }
         }
@@ -118,16 +117,16 @@ void RayLight::update()
     }
 
     game->getShaderLasers()->addLaser(
-        screenPoint.x, screenPoint.y,
-        middlePoint.x, middlePoint.y,
-        color,
+        glm::vec2(screenPoint.x, screenPoint.y),
+        glm::vec2(middlePoint.x, middlePoint.y),
+        color.toGLM(),
         intensity,
         true,
         true
     );
 
     if (EngineSetup::get()->BULLET_DEBUG_MODE) {
-        Drawable::drawVector3D(Vector3D(start, end), ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow());
+        Drawable::drawVector3D(Vector3D(start, end), Color::yellow());
     }
 
     rayCallback->m_closestHitFraction = btScalar(1.),
@@ -147,7 +146,7 @@ void RayLight::setDamage(float value) {
 }
 
 void RayLight::increaseReach() {
-    reach = reach + 1 * speed;
+    reach = reach + 0.001f * speed;
 }
 
 bool RayLight::isEnabled() const {

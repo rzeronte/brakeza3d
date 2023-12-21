@@ -40,35 +40,25 @@ void Image::loadTGA(const std::string& filename)
         this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
-        //loadOpenCLBuffer();
-
         this->fileName = filename;
         this->loaded = true;
 
         texturaID = Image::makeOGLImage(surface);
-        //loadOpenGLImage();
 
         Logging::Message("Loading Image file (%s) (%dx%d)", filename.c_str(), width(), height());
         return;
     }
 
+    std::cout << "Error loading TGA texture '%s'" << filename.c_str() << std::endl;
+
     Logging::Log("Error loading TGA texture '%s'", filename.c_str());
     exit(-1);
 }
 
-void Image::loadOpenCLBuffer()
-{
-    cl_int errCode;
-
-    if (errCode != CL_SUCCESS) {
-        std::cerr << "Error al crear el buffer de OpenCL: " << errCode << std::endl;
-        exit(-1);
-    }
-}
 
 void Image::drawFlatAlpha(int pos_x, int pos_y, float alpha)
 {
-    setTextureAlpha((int) alpha);
+    setAlpha(alpha);
     drawFlat(pos_x, pos_y);
 }
 
@@ -98,7 +88,8 @@ void Image::drawFlat(int pos_x, int pos_y) const
         dstRect.x,
         dstRect.y,
         dstRect.w,
-        dstRect.h
+        dstRect.h,
+        alpha
     );
 }
 
@@ -165,7 +156,6 @@ Image::~Image()
 {
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
-    clReleaseMemObject(openClTexture);
 }
 
 Color Image::getColor(int x, int y)
@@ -175,20 +165,6 @@ Color Image::getColor(int x, int y)
     const int index = y * this->surface->w + x;
 
     return Color(pixels[index]);
-}
-
-void Image::setSurface(SDL_Surface *surface) {
-    Image::surface = surface;
-    this->loaded = true;
-}
-
-void Image::setTextureAlpha(int value)
-{
-    SDL_SetTextureAlphaMod(texture, value);
-}
-
-cl_mem *Image::getOpenClTexture() {
-    return &openClTexture;
 }
 
 void Image::setImage(const std::string &filename)
@@ -201,6 +177,8 @@ void Image::setImage(const std::string &filename)
         this->surface = IMG_Load(filename.c_str());
         this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+
+        texturaID = Image::makeOGLImage(surface);
 
         this->fileName = filename;
         this->loaded = true;
@@ -236,4 +214,12 @@ GLuint Image::makeOGLImage(SDL_Surface *surfaceTTF)
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, surfaceTTF->w, surfaceTTF->h, 0, Mode, GL_UNSIGNED_BYTE, surfaceTTF->pixels);
 
     return texID;
+}
+
+float Image::getAlpha() const {
+    return alpha;
+}
+
+void Image::setAlpha(float alpha) {
+    Image::alpha = alpha;
 }

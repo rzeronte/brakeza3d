@@ -154,8 +154,8 @@ void TentacleIK::draw()
     for (auto & joint : joints) {
         if (!joint->active) continue;
 
-        Point2D startScreenPoint = Transforms::WorldToPoint(joint->startWorld, camera);
-        Point2D endScreenPoint = Transforms::WorldToPoint(joint->endWorld, camera);
+        Point2D startScreenPoint = Transforms::WorldToPoint(joint->startWorld);
+        Point2D endScreenPoint = Transforms::WorldToPoint(joint->endWorld);
 
         const float intensity = joint->intensity * EngineSetup::get()->TESTING_INT1;
 
@@ -237,7 +237,7 @@ void TentacleIK::setRootPosition(Vertex3D position)
     Vertex3D distance = position - joints.front()->start;
 
     Vector3D v(position, joints.front()->start);
-    Drawable::drawVector3D(v, ComponentsManager::get()->getComponentCamera()->getCamera(), Color::red());
+    Drawable::drawVector3D(v, Color::red());
 
     joints[0]->start = joints[0]->start + distance.getScaled(0.2);
     joints[0]->end = joints[0]->end + distance.getScaled(0.2);

@@ -13,25 +13,17 @@ TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font)
 :
     renderer(renderer),
     font(font),
-    alpha(255)
+    alpha(1.0f)
 {
 }
 
 void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Color c)
 {
-    SDL_Color color = {(Uint8) c.r, (Uint8) c.g, (Uint8) c.b};
-
-    auto *surfaceTTF = TTF_RenderText_Blended(font, text, color);
+    auto *surfaceTTF = TTF_RenderText_Blended(font, text, c.toSDL());
     auto *textureTTF = SDL_CreateTextureFromSurface(renderer, surfaceTTF);
 
-    /*SDL_Rect msgRect;
-    msgRect.x = convertPositionXAspect(x);
-    msgRect.y = convertPositionYAspect(y);
-    msgRect.w = convertPositionXAspect(w);
-    msgRect.h = convertPositionYAspect(h);*/
-
     GLuint texID = Image::makeOGLImage(surfaceTTF);
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(texID, x, y, w, h);
+    ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(texID, x, y, w, h, alpha);
 
     glDeleteTextures(1, &texID);
     SDL_FreeSurface(surfaceTTF);

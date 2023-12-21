@@ -16,11 +16,8 @@
 
 class ShaderParticles : public ShaderOpenCL
 {
-    Point2D origin;
-    OCPoint2D ocOrigin;
-
+    Vertex3D origin;
     Vertex3D direction;
-    OCVertex3D ocDirection;
 
     Color colorFrom;
     Color colorTo;
@@ -31,15 +28,21 @@ class ShaderParticles : public ShaderOpenCL
 
     bool stopAdd;
 
+    GLuint particlesBuffer;
+    Timer timer;
+    float deltaTime = 0;
+    float last_ticks = 0;
+    float current_ticks = 0;
+    float executionTime = 0;
 public:
     ShaderParticles(bool active, Color from, Color to, OCParticlesContext context);
 
-    void update(Point2D origin, Vertex3D direction, float intensity);
+    void update(Vertex3D origin, Vertex3D direction, float intensity);
     void update() override;
 
     void executeKernelOpenCL();
 
-    void setOrigin(const Point2D &origin);
+    void setOrigin(const Vertex3D &origin);
 
     void setDirection(const Vertex3D &direction);
 

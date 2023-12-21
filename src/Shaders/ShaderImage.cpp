@@ -10,7 +10,8 @@ ShaderImage::ShaderImage(const std::string& filename)
     image(Image(filename)),
     useOffset(true),
     offsetX(0),
-    offsetY(0)
+    offsetY(0),
+    alpha(1.0f)
 {
     setLabel("ShaderImage");
 }
@@ -45,7 +46,8 @@ void ShaderImage::executeKernelOpenCL(float increaseOffsetX, float increaseOffse
         this->image.getOGLTextureID(),
         0, 0,
         this->image.width(),
-        this->image.height()
+        this->image.height(),
+        alpha
     );
     glClear(GL_DEPTH_BUFFER_BIT);
 }

@@ -1,17 +1,22 @@
 #include "../../include/Render/PhysicsDebugDraw.h"
 #include "../../include/Render/Drawable.h"
+#include "../../include/Render/Logging.h"
 
-PhysicsDebugDraw::PhysicsDebugDraw(Camera3D *cam) {
-    this->cam = cam;
+PhysicsDebugDraw::PhysicsDebugDraw() {
 }
 
-void PhysicsDebugDraw::drawLine(const btVector3 &from, const btVector3 &to, const btVector3 &color) {
+void PhysicsDebugDraw::drawLine(const btVector3 &from, const btVector3 &to, const btVector3 &color)
+{
     Vertex3D a = Vertex3D(from.x(), from.y(), from.z());
     Vertex3D b = Vertex3D(to.x(), to.y(), to.z());
 
-    if (cam->getFrustum()->isVertexInside(a) && cam->getFrustum()->isVertexInside(b)) {
-        Drawable::drawVector3D(Vector3D(a, b), cam, Color::red());
-    }
+    Drawable::drawVector3D(Vector3D(a, b), Color::red());
+
+    glColor3f(color.x(), color.y(), color.z());
+    glBegin(GL_LINES);
+    glVertex3f(from.x(), from.y(), from.z());
+    glVertex3f(to.x(), to.y(), to.z());
+    glEnd();
 }
 
 void PhysicsDebugDraw::drawContactPoint(const btVector3 &PointOnB, const btVector3 &normalOnB, btScalar distance,

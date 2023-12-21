@@ -48,7 +48,7 @@ private:
     float cadenceTime;
     Counter *counterCadence;
 
-    int speed;
+    float speed;
 
     Image *icon;
 
@@ -65,7 +65,7 @@ public:
         int ammoAmount,
         int startAmmoAmount,
         float damage,
-        int speed,
+        float speed,
         int dispersion,
         float accuracy,
         float cadenceTime,
@@ -81,7 +81,7 @@ public:
 
     void setAvailable(bool available);
 
-    void setSpeed(int speed);
+    void setSpeed(float speed);
 
     void setDamage(float value);
 
@@ -161,7 +161,7 @@ public:
 
     [[nodiscard]] bool isAvailable() const;
 
-    [[nodiscard]] int getSpeed() const;
+    [[nodiscard]] float getSpeed() const;
 
     [[nodiscard]] float getDamage() const;
 

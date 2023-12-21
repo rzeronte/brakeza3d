@@ -53,9 +53,9 @@ void Mesh3DGhost::magnetizableTo(Object3D *object)
     Vector3D direction(getPosition(), to);
 
     const float distance = getPosition().distance(to);
-    const float speed = powf(5000 / distance, 3) * 0.00075f;
+    const float speed = powf(1 / distance, 3) * 0.5f;
 
-    if (distance < 100) {
+    if (distance < 0.01) {
         setPosition(to);
     } else {
         setPosition(getPosition() + direction.getComponent().getScaled(speed));

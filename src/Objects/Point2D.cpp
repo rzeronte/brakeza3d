@@ -12,15 +12,10 @@ Point2D::Point2D(int x, int y) {
     this->y = y;
 }
 
-void Point2D::consoleInfo(const std::string& label, bool jump) const {
-
-    std::cout << "Point2D " << label << ": " << x << ", " << y << " | ";
-
-    if (jump) {
-        std::cout << std::endl;
-    }
+Point2D::Point2D(glm::vec2 v) {
+    this->x = v.x;
+    this->y = v.y;
 }
-
 
 float Point2D::operator*(const Point2D &v) const
 {

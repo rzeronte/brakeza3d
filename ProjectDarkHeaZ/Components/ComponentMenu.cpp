@@ -23,7 +23,7 @@ ComponentMenu::~ComponentMenu()
 
 void ComponentMenu::onStart()
 {
-    Logging::head("ComponentMenu onStart");
+    Logging::Message("ComponentMenu onStart");
 
     loadDecorative3DMesh();
     loadMenuOptions();
@@ -42,6 +42,7 @@ void ComponentMenu::onStart()
 void ComponentMenu::loadDecorative3DMesh()
 {
     planet = new Mesh3D();
+
     planet->setEnabled(false);
     planet->setAlpha(255);
     planet->setEnableLights(false);
@@ -51,6 +52,7 @@ void ComponentMenu::loadDecorative3DMesh()
     planet->setRotation(0, 0, 0);
     planet->setScale(31.9);
     planet->setStencilBufferEnabled(true);
+
     planet->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_planet.fbx"));
     planet->updateBoundingBox();
     Brakeza3D::get()->addObject3D(planet, "planetMenu");
@@ -71,6 +73,7 @@ void ComponentMenu::loadDecorative3DMesh()
 
     pendulum = new SimplePendulum(0, 5, 5000, 0.0);
     pendulum->setRotation(-40, 0, 0);
+
 }
 
 void ComponentMenu::preUpdate()
@@ -80,6 +83,13 @@ void ComponentMenu::preUpdate()
     }
 
     shaderBackgroundImage->update(0, 0);
+
+    const float alpha = 1 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress();
+
+    ComponentsManager::get()->getComponentGame()->boxTutorial->drawFlatAlpha(0, 0, alpha);
+    border->drawFlatAlpha(0, 0, alpha);
+    imageLogoBox->drawFlatAlpha(0, 0, alpha);
+
 }
 
 void ComponentMenu::onUpdate()
@@ -89,16 +99,12 @@ void ComponentMenu::onUpdate()
     pendulum->onUpdate();
     //astronaut->setRotation(pendulum->pendulumRotation);
 
-    const float alpha = 255 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress() * 255;
+    //ComponentsManager::get()->getComponentGame()->dialogBackground->setMaxAlpha((int) alpha);
+    //ComponentsManager::get()->getComponentGame()->dialogBackground->update();
 
-    ComponentsManager::get()->getComponentGame()->dialogBackground->setMaxAlpha((int) alpha);
-    ComponentsManager::get()->getComponentGame()->dialogBackground->update();
-    ComponentsManager::get()->getComponentGame()->boxTutorial->drawFlatAlpha(0, 0, alpha);
-
-    border->drawFlatAlpha(0, 0, alpha);
-    imageLogoBox->drawFlatAlpha(0, 0, alpha);
-    shaderMenuTitle->update();
     drawOptions();
+
+    //shaderMenuTitle->update();
     drawVersion();
 }
 

@@ -43,7 +43,7 @@ uniform int screenHeight;
 
 uniform OCParticlesContext particlesContext;
 
-void updateParticleDisabled(uint i);
+void resetParticle(uint i);
 void updateParticleEnabled(uint i);
 uint lcg(uint prev);
 float getRandomFloat(float a, float b, inout uint randVal);
@@ -51,7 +51,7 @@ float getRandomFloat(float a, float b, inout uint randVal);
 void main()
 {
     uint indexParticle = gl_GlobalInvocationID.x;
-    updateParticleDisabled(indexParticle);
+
     updateParticleEnabled(indexParticle);
 }
 
@@ -66,9 +66,8 @@ float getRandomFloat(float a, float b, inout uint randVal) {
     return a + (float(randVal) / 0x7fffffffu) * (b - a);
 }
 
-void updateParticleDisabled(uint i)
+void resetParticle(uint i)
 {
-    if ((totalExecutionTimeInSeconds > i * particlesContext.step_add_particle && particles[i].enabled < 1) && !stopAdd) {
         particles[i].enabled = 1.0f;
         uint randVal = lcg(i);
         float positionNoiseX = getRandomFloat(-particlesContext.position_noise, particlesContext.position_noise, randVal) * intensity;
@@ -97,19 +96,16 @@ void updateParticleDisabled(uint i)
             0
         );
 
-        particles[i].timeToLive = particlesContext.particle_lifespan;
+        particles[i].timeToLive = particlesContext.particle_lifespan; //getRandomFloat(-particlesContext.particle_lifespan / 2.0f, particlesContext.particle_lifespan / 2.0f, randVal);
         particles[i].timeLiving = particlesContext.particle_lifespan;
-    }
 }
 
 void updateParticleEnabled(uint i)
 {
-    if (particles[i].enabled > 0) {
         particles[i].timeLiving -= deltaTimeInSeconds;
 
         if (particles[i].timeLiving <= 0) {
-            particles[i].enabled = 0.0f;
-            particles[i].position = vec4(origin.x, origin.y, origin.z, 0);
+            resetParticle(i);
         } else {
 
             particles[i].velocity.y += particlesContext.gravity * deltaTimeInSeconds;
@@ -127,5 +123,5 @@ void updateParticleEnabled(uint i)
 
             particles[i].velocity += noiseVelocity;
         }
-    }
+
 }

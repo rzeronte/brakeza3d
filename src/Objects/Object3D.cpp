@@ -555,7 +555,7 @@ glm::mat4 Object3D::getModelMatrix()
 {
     // Escalado, rotación y translación proporcionados
     glm::vec3 escala(this->scale);
-    glm::vec3 angulosEuler(glm::radians(rotX), glm::radians(rotY), glm::radians(rotZ));
+    glm::vec3 angulosEuler(glm::radians(getRotation().getPitchDegree()), glm::radians(getRotation().getYawDegree()), glm::radians(getRotation().getRollDegree()));
     glm::vec3 translacion(position.x, position.y, position.z);
 
     // Combinar las matrices para obtener la transformación final (escalado * rotación * translación)

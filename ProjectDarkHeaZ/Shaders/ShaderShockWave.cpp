@@ -26,10 +26,7 @@ void ShaderShockWave::executeKernelOpenCL()
 
 void ShaderShockWave::addShockWave(ShockWave *wave)
 {
-    Point2D focalPoint = Transforms::WorldToPoint(
-        wave->getPosition(),
-        ComponentsManager::get()->getComponentCamera()->getCamera(
-    ));
+    Point2D focalPoint = Transforms::WorldToPoint(wave->getPosition());
 
     this->waves.push_back(OCShockWave{
         wave->getTtlWave().getAcumulatedTime(),

@@ -37,12 +37,14 @@ ShaderOpenGLImage::ShaderOpenGLImage(const std::string &vertexFilename, const st
     projectionMatrixUniform = glGetUniformLocation(programID, "projection");
     spriteColorUniform = glGetUniformLocation(programID, "spriteColor");
     textureUniform = glGetUniformLocation(programID, "image");
+    alphaUniform = glGetUniformLocation(programID, "alpha");
 }
 
-void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int h) const
+void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha) const
 {
+    glDisable(GL_DEPTH);
+    glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    glEnable(GL_DEPTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glUseProgram(programID);
@@ -64,6 +66,7 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
     glUniformMatrix4fv(modelMatrixUniform, 1, GL_FALSE, &model[0][0]);
     glUniformMatrix4fv(projectionMatrixUniform, 1, GL_FALSE, &projection[0][0]);
     glUniform3fv(spriteColorUniform, 1, &color[0]);
+    glUniform1fv(alphaUniform, 1, &alpha);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, TextureID);
@@ -73,5 +76,8 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glBindVertexArray(0);
+
+    glEnable(GL_DEPTH);
+    glEnable(GL_DEPTH_TEST);
 }
 
