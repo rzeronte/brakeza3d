@@ -24,6 +24,7 @@ void ComponentCollisions::onStart()
 
 void ComponentCollisions::preUpdate()
 {
+
 }
 
 void ComponentCollisions::onUpdate()
@@ -67,7 +68,7 @@ void ComponentCollisions::initBulletSystem()
     solver = new btSequentialImpulseConstraintSolver;
 
     /// Debug drawer
-    debugDraw = new PhysicsDebugDraw(ComponentsManager::get()->getComponentCamera()->getCamera());
+    debugDraw = new PhysicsDebugDraw();
 
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
     dynamicsWorld->setGravity(btVector3(0, 0, 0));
@@ -136,6 +137,10 @@ void ComponentCollisions::stepSimulation(float deltaTime)
         updatePhysicObjects();
     }
 
+    if (EngineSetup::get()->BULLET_DEBUG_MODE) {
+        dynamicsWorld->debugDrawWorld();
+    }
+
     checkCollisionsForAll();
 }
 
@@ -184,7 +189,7 @@ void ComponentCollisions::demoProjectile(int type) {
     projectile->setEnabled(true);
     projectile->makeProjectileRigidBody(
         EngineSetup::get()->PROJECTILE_DEMO_MASS,
-        Vertex3D(50, 50, 50),
+        Vertex3D(1, 1, 1),
         direction,
         M3::getMatrixIdentity(),
         EngineSetup::get()->PROJECTILE_DEMO_IMPULSE,

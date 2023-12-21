@@ -464,3 +464,33 @@ void Tools::writeToFile(const std::string& fileName, const char *content)
         return;
     }
 }
+
+Vertex3D Tools::screenToWorld(float x, float y, float screenWidth, float screenHeight, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix) {
+    // Escalar las coordenadas de pantalla a las dimensiones deseadas (de 0 a 1)
+    float normalizedX = x / screenWidth;
+    float normalizedY = 1.0f - y / screenHeight;
+
+    // Mapear las coordenadas normalizadas al espacio de la cámara
+    float viewX = normalizedX * 2.0f - 1.0f;
+    float viewY = normalizedY * 2.0f - 1.0f;
+
+    // Crear un vector de clip
+    glm::vec4 clipCoords(viewX, viewY, -1.0f, 1.0f);
+
+    // Obtener la matriz inversa de la matriz de proyección
+    glm::mat4 inverseProjection = glm::inverse(projectionMatrix);
+
+    // Obtener las coordenadas de vista
+    glm::vec4 eyeCoords = inverseProjection * clipCoords;
+    eyeCoords.z = -1.0f;
+    eyeCoords.w = 1.0f;
+
+    // Obtener la matriz inversa de la matriz de vista
+    glm::mat4 inverseView = glm::inverse(viewMatrix);
+
+    // Obtener las coordenadas del mundo
+    glm::vec4 rayWorld = inverseView * eyeCoords;
+    glm::vec3 rayDirection = glm::normalize(glm::vec3(rayWorld));
+
+    return Vertex3D(rayDirection.x, rayDirection.y, rayDirection.z);
+}

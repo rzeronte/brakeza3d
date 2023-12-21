@@ -148,12 +148,7 @@ void ComponentRender::onUpdateSceneObjects()
     for (auto & sceneObject : sceneObjects) {
         float distance = cameraPosition.distance(sceneObject->position);
         sorted[distance] = sceneObject;
-    }
-
-    for (auto it = sorted.rbegin(); it != sorted.rend(); ++it) {
-        if (it->second->isEnabled()) {
-            it->second->onUpdate();
-        }
+        if (sceneObject->isEnabled()) sceneObject->onUpdate();
     }
 }
 
