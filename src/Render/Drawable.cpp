@@ -27,36 +27,6 @@ void Drawable::drawBox2D(SDL_Rect r) {
     Drawable::drawLine2D(l4, Color::green());
 }
 
-void Drawable::drawFrustum(Frustum *f, Camera3D *cam, bool drawNP, bool drawFP, bool drawSides) {
-    // Center Near Plane
-    Drawable::drawVertex( f->fc, cam, Color::red());
-    Drawable::drawVertex( f->nc, cam, Color::white());
-
-
-    if (drawSides) {
-        Drawable::drawPlane(f->planes[EngineSetup::get()->LEFT_PLANE], cam, Color::white());
-        Drawable::drawPlane(f->planes[EngineSetup::get()->RIGHT_PLANE], cam, Color::white());
-        Drawable::drawPlane(f->planes[EngineSetup::get()->TOP_PLANE], cam, Color::white());
-        Drawable::drawPlane(f->planes[EngineSetup::get()->BOTTOM_PLANE], cam, Color::white());
-    }
-
-    if (drawFP) {
-        // draw FAR PLANE
-        Drawable::drawVector3D(f->far_top, cam, Color::red());
-        Drawable::drawVector3D(f->far_bottom, cam, Color::green());
-        Drawable::drawVector3D(f->far_left, cam, Color::blue());
-        Drawable::drawVector3D(f->far_right, cam, Color::fuchsia());
-    }
-
-    if (drawNP) {
-        // draw NEAR PLANE
-        Drawable::drawVector3D(f->near_top, cam, Color::red());
-        Drawable::drawVector3D(f->near_bottom, cam, Color::green());
-        Drawable::drawVector3D(f->near_left, cam, Color::blue());
-        Drawable::drawVector3D(f->near_right, cam, Color::fuchsia());
-    }
-}
-
 void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color) {
     Vertex3D A;
 
@@ -221,7 +191,7 @@ void Drawable::drawLineLighting(Line2D L, Color color)
     }
 }
 
-void Drawable::drawVector3D(Vector3D V, Camera3D *cam, Color color)
+void Drawable::drawVector3D(Vector3D V, Color color)
 {
     glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix();
     glm::mat4 ProjectionMatrix = Camera3D::getProjectionMatrix();
@@ -285,9 +255,9 @@ void Drawable::drawPlane(Plane plane, Camera3D *cam, Color color) {
     Vector3D AC = Vector3D(plane.A, plane.C);
     Vector3D BC = Vector3D(plane.B, plane.C);
 
-    Drawable::drawVector3D(AB, cam, color);
-    Drawable::drawVector3D(AC, cam, color);
-    Drawable::drawVector3D(BC, cam, color);
+    Drawable::drawVector3D(AB, color);
+    Drawable::drawVector3D(AC, color);
+    Drawable::drawVector3D(BC, color);
 }
 
 void Drawable::drawMainAxis(Camera3D *cam) {
@@ -314,9 +284,9 @@ void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset) {
     Vector3D axis_y = Vector3D(VYstart, VYend);
     Vector3D axis_z = Vector3D(VZstart, VZend);
 
-    Drawable::drawVector3D(axis_x, cam, Color::red());
-    Drawable::drawVector3D(axis_y, cam, Color::green());
-    Drawable::drawVector3D(axis_z, cam, Color::blue());
+    Drawable::drawVector3D(axis_x, Color::red());
+    Drawable::drawVector3D(axis_y, Color::green());
+    Drawable::drawVector3D(axis_z, Color::blue());
 
 }
 
@@ -334,9 +304,9 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bo
     Vector3D vUp = Vector3D(object->getPosition(), endUp);
     Vector3D vForward = Vector3D(object->getPosition(), endForward);
 
-    if (drawRight) Drawable::drawVector3D(vRight, cam, Color::green());
-    if (drawUp) Drawable::drawVector3D(vUp, cam, Color::red());
-    if (drawForward) Drawable::drawVector3D(vForward, cam, Color::blue());
+    if (drawRight) Drawable::drawVector3D(vRight, Color::green());
+    if (drawUp) Drawable::drawVector3D(vUp, Color::red());
+    if (drawForward) Drawable::drawVector3D(vForward, Color::blue());
 }
 
 void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
@@ -423,18 +393,18 @@ void Drawable::drawAABB(AABB3D *aabb, Color color)
 
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
-    Drawable::drawVector3D(v01, camera, color);
-    Drawable::drawVector3D(v02, camera, color);
-    Drawable::drawVector3D(v03, camera, color);
-    Drawable::drawVector3D(v04, camera, color);
-    Drawable::drawVector3D(v05, camera, color);
-    Drawable::drawVector3D(v06, camera, color);
-    Drawable::drawVector3D(v07, camera, color);
-    Drawable::drawVector3D(v08, camera, color);
-    Drawable::drawVector3D(v09, camera, color);
-    Drawable::drawVector3D(v10, camera, color);
-    Drawable::drawVector3D(v11, camera, color);
-    Drawable::drawVector3D(v12, camera, color);
+    Drawable::drawVector3D(v01, color);
+    Drawable::drawVector3D(v02, color);
+    Drawable::drawVector3D(v03, color);
+    Drawable::drawVector3D(v04, color);
+    Drawable::drawVector3D(v05, color);
+    Drawable::drawVector3D(v06, color);
+    Drawable::drawVector3D(v07, color);
+    Drawable::drawVector3D(v08, color);
+    Drawable::drawVector3D(v09, color);
+    Drawable::drawVector3D(v10, color);
+    Drawable::drawVector3D(v11, color);
+    Drawable::drawVector3D(v12, color);
 
     Drawable::drawVertex(aabb->max, camera, Color::red());
     Drawable::drawVertex(aabb->min, camera, Color::green());
@@ -522,7 +492,7 @@ void Drawable::drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder)
 void Drawable::drawLinePoints(Vertex3D from, Vertex3D to, Color color)
 {
     Vector3D V = Vector3D(from, to);
-    Drawable::drawVector3D(V, ComponentsManager::get()->getComponentCamera()->getCamera(), Color::olive());
+    Drawable::drawVector3D(V, Color::olive());
 }
 
 void Drawable::drawMainDeepMapFromCamera(int pos_x, int pos_y)
@@ -545,7 +515,7 @@ void Drawable::drawTriangleNormal(Triangle *triangle, Color color)
 
     Vertex3D destiny = origin + normal.getNormalize().getScaled(5);
     Vector3D v = Vector3D(origin, destiny);
-    Drawable::drawVector3D(v, ComponentsManager::get()->getComponentCamera()->getCamera(), color);
+    Drawable::drawVector3D(v, color);
 }
 
 void Drawable::drawOutline(Mesh3D *m) {

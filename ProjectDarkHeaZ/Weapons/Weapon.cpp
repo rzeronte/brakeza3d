@@ -19,7 +19,7 @@ Weapon::Weapon(
     int ammoAmount,
     int startAmmoAmount,
     float damage,
-    int speed,
+    float speed,
     int dispersion,
     float accuracy,
     float cadenceTime,
@@ -93,7 +93,7 @@ void Weapon::stopSoundChannel() const {
     ComponentSound::stopChannel(getSoundChannel());
 }
 
-void Weapon::setSpeed(int value) {
+void Weapon::setSpeed(float value) {
     this->speed = value;
 }
 
@@ -122,7 +122,7 @@ void Weapon::setDispersion(int value) {
     Weapon::dispersion = value;
 }
 
-int Weapon::getSpeed() const {
+float Weapon::getSpeed() const {
     return speed;
 }
 
@@ -195,10 +195,10 @@ bool Weapon::shootProjectile(
             parent,
             this,
             rotation,
-            Vertex3D(50, 50, 50),
+            Vertex3D(0.1, 0.1, 0.1),
             direction,
             getDamage(),
-            (float) getSpeed(),
+            getSpeed(),
             getAccuracy(),
             color,
             intensity,
@@ -222,10 +222,10 @@ bool Weapon::shootProjectile(
                 parent,
                 this,
                 rotation,
-                Vertex3D(50, 50, 50),
+                Vertex3D(0.1, 0.1, 0.1),
                 direction.getInverse(),
                 getDamage(),
-                (float) getSpeed(),
+                 getSpeed(),
                 getAccuracy(),
                 color,
                 intensity,
@@ -291,7 +291,7 @@ bool Weapon::shootLaserProjectile(
             position,
             getDamage(),
             direction + test,
-            direction.getNormalize().getScaled((float) getSpeed()),
+            direction.getNormalize().getScaled(getSpeed()),
             filterGroup,
             filterMask,
             getSpeed(),
@@ -446,7 +446,7 @@ void Weapon::shootShield(Object3D *parent, Vertex3D position)
         projectile->setRotationFrameEnabled(true);
         projectile->setFlatTextureColor(false);
         projectile->makeSimpleGhostBody(
-            Vertex3D(800, 800, 800),
+            Vertex3D(1, 1, 1),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             EngineSetup::collisionGroups::Player,
             EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::ProjectileEnemy
@@ -491,7 +491,7 @@ void Weapon::shootBomb(Object3D *parent, Vertex3D position)
         projectile->setRotationFrameEnabled(true);
         projectile->setFlatTextureColor(false);
         projectile->makeSimpleGhostBody(
-            Vertex3D(400, 400, 400),
+            Vertex3D(1, 1, 1),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             EngineSetup::collisionGroups::Player,
             EngineSetup::collisionGroups::Enemy
@@ -560,7 +560,7 @@ bool Weapon::shootRayLight(RayLight &rayLight, float intensity, Color color)
     rayLight.setColor(color);
     rayLight.setDamage(getDamage());
     rayLight.setEnabled(true);
-    rayLight.setIntensity(0.25f);
+    rayLight.setIntensity(intensity);
 
     if (getStatus() == PRESSED) {
         ComponentsManager::get()->getComponentSound()->sound("projectileRaylight", EngineSetup::SoundChannels::SND_GLOBAL, 0);

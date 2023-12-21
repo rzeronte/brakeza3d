@@ -12,6 +12,7 @@
 
 class ShaderImage: public ShaderOpenCL {
     Image image;
+    float alpha;
     int useOffset;
 
     float offsetX;

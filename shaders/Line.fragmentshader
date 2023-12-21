@@ -1,5 +1,7 @@
 #version 330 core
+
 in vec2 TexCoords;
+
 out vec4 FragColor;
 
 uniform vec4 lineColor;
@@ -11,9 +13,7 @@ float line(vec2 A, vec2 B, vec2 C, float thickness);
 
 void main()
 {
-    float lineFactor = line(lineStart, lineEnd, TexCoords, weight);
-    vec4 Line = mix(vec4(0, 0, 0, 0), lineColor, lineFactor);
-    FragColor = Line;
+    FragColor = mix(vec4(0, 0, 0, 0), lineColor, line(lineStart, lineEnd, TexCoords, weight));
 }
 
 float line(vec2 A, vec2 B, vec2 C, float thickness)

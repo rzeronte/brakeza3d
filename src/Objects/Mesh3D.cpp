@@ -30,41 +30,29 @@ void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles)
 
 void Mesh3D::updateBoundingBox()
 {
-    float maxX = -9999999, minX = 9999999, maxY = -9999999, minY = 9999999, maxZ = -9999999, minZ = 9999999;
+    // Obtener la matriz de modelo-vista-proyección
+    glm::mat4 mvpMatrix = Camera3D::getProjectionMatrix() * ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix() * getModelMatrix();
 
-    for (auto & modelTriangle : this->modelTriangles) {
-        modelTriangle->updateObjectSpace();
+    // Inicializar los valores extremos
+    float maxX = -FLT_MAX, minX = FLT_MAX, maxY = -FLT_MAX, minY = FLT_MAX, maxZ = -FLT_MAX, minZ = FLT_MAX;
 
-        maxX = std::fmax(maxX, modelTriangle->Ao.x);
-        minX = std::fmin(minX, modelTriangle->Ao.x);
+    for (auto &vertex : this->vertices) {
+        // Transformar el vértice por la matriz de modelo-vista-proyección
+        glm::vec4 transformedVertex = mvpMatrix * glm::vec4(vertex, 1.0f);
 
-        maxY = std::fmax(maxY, modelTriangle->Ao.y);
-        minY = std::fmin(minY, modelTriangle->Ao.y);
+        // Normalizar las coordenadas w para obtener coordenadas de clip
+        transformedVertex /= transformedVertex.w;
 
-        maxZ = std::fmax(maxZ, modelTriangle->Ao.z);
-        minZ = std::fmin(minZ, modelTriangle->Ao.z);
-
-        //
-        maxX = std::fmax(maxX, modelTriangle->Bo.x);
-        minX = std::fmin(minX, modelTriangle->Bo.x);
-
-        maxY = std::fmax(maxY, modelTriangle->Bo.y);
-        minY = std::fmin(minY, modelTriangle->Bo.y);
-
-        maxZ = std::fmax(maxZ, modelTriangle->Bo.z);
-        minZ = std::fmin(minZ, modelTriangle->Bo.z);
-
-        //
-        maxX = std::fmax(maxX, modelTriangle->Co.x);
-        minX = std::fmin(minX, modelTriangle->Co.x);
-
-        maxY = std::fmax(maxY, modelTriangle->Co.y);
-        minY = std::fmin(minY, modelTriangle->Co.y);
-
-        maxZ = std::fmax(maxZ, modelTriangle->Co.z);
-        minZ = std::fmin(minZ, modelTriangle->Co.z);
+        // Actualizar los valores máximos y mínimos
+        maxX = std::max(maxX, transformedVertex.x);
+        minX = std::min(minX, transformedVertex.x);
+        maxY = std::max(maxY, transformedVertex.y);
+        minY = std::min(minY, transformedVertex.y);
+        maxZ = std::max(maxZ, transformedVertex.z);
+        minZ = std::min(minZ, transformedVertex.z);
     }
 
+    // Actualizar el bounding box
     this->aabb.max.x = maxX;
     this->aabb.max.y = maxY;
     this->aabb.max.z = maxZ;
@@ -73,6 +61,7 @@ void Mesh3D::updateBoundingBox()
     this->aabb.min.y = minY;
     this->aabb.min.z = minZ;
 
+    // Actualizar los vértices del bounding box (si es necesario)
     this->aabb.updateVertices();
 }
 
@@ -108,8 +97,17 @@ void Mesh3D::clone(Mesh3D *source)
     }
 
     this->modelTextures = source->modelTextures;
+    this->modelSpecularTextures = source->modelSpecularTextures;
     this->scale = source->scale;
     this->sharedTextures = true;
+
+    this->uvbuffer = source->uvbuffer;
+    this->normalbuffer = source->normalbuffer;
+    this->vertexbuffer = source->vertexbuffer;
+
+    this->uvs = source->uvs;
+    this->normals = source->normals;
+    this->vertices = source->vertices;
 }
 
 void Mesh3D::onUpdate()
@@ -122,51 +120,51 @@ void Mesh3D::onUpdate()
         s->preUpdate();
     }
 
-    if (layer == Mesh3DRenderLayer::ONUPDATE) {
-        //onUpdateOpenCLRender();
-        if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID) {
-            ComponentsManager::get()->getComponentWindow()->getShaderOglShading()->render(
-                    getModelMatrix(),
-                    vertexbuffer,
-                    uvbuffer,
-                    normalbuffer,
-                    (int) vertices.size()
-            );
-        }
-
-        if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED) {
-
-            if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
-                Drawable::drawOutline(this);
-            }
-
-            glEnable(GL_DEPTH);
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-            ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
-                this,
-                modelTextures[0]->getOGLTextureID(),
-                modelTextures[0]->getOGLTextureID(),
-                vertexbuffer,
-                uvbuffer,
-                normalbuffer,
-                (int) vertices.size()
-            );
-        }
-
-        if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME){
-            ComponentsManager::get()->getComponentWindow()->getShaderOglWireframe()->render(
-                    getModelMatrix(),
-                    vertexbuffer,
-                    uvbuffer,
-                    normalbuffer,
-                    (int) vertices.size()
-            );
-        }
-
+    if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
+        ComponentsManager::get()->getComponentWindow()->getShaderOglShading()->render(
+            getModelMatrix(),
+            vertexbuffer,
+            uvbuffer,
+            normalbuffer,
+            (int) vertices.size()
+        );
     }
 
+    if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
+
+        if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
+            Drawable::drawOutline(this);
+        }
+
+        glEnable(GL_DEPTH);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
+            this,
+            modelTextures[0]->getOGLTextureID(),
+            modelTextures[0]->getOGLTextureID(),
+            vertexbuffer,
+            uvbuffer,
+            normalbuffer,
+            (int) vertices.size()
+        );
+    }
+
+    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()){
+        ComponentsManager::get()->getComponentWindow()->getShaderOglWireframe()->render(
+            getModelMatrix(),
+            vertexbuffer,
+            uvbuffer,
+            normalbuffer,
+            (int) vertices.size()
+        );
+    }
+
+    if (EngineSetup::get()->DRAW_MESH3D_AABB && isRender()) {
+        this->updateBoundingBox();
+        Drawable::drawAABB(&this->aabb, Color::white());
+    }
 }
 
 void Mesh3D::drawOnUpdateSecondPass()
@@ -194,10 +192,12 @@ void Mesh3D::postUpdate()
 
 void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 {
-    Logging::Log("AssimpLoadGeometryFromFile for %s", fileName.c_str());
+    Logging::Message("AssimpLoadGeometryFromFile for %s", fileName.c_str());
+    std::cout << "AssimpLoadGeometryFromFile:" << fileName.c_str() << std::endl;
 
     if (!Tools::fileExists(fileName.c_str())) {
-        Logging::Log("Error import 3D file not exist");
+        Logging::Message("Error import 3D file not exist");
+        std::cout << "Error import 3D file not exist" << std::endl;
         exit(-1);
     }
 
@@ -217,7 +217,6 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 
     sourceFile = fileName;
 
-    //bool res = Tools::loadOBJ("../suzanne.obj", vertices, uvs, normals);
     fillBuffers();
 }
 
@@ -479,10 +478,6 @@ void Mesh3D::onDrawHostBuffer()
         }
     }
 
-    if (EngineSetup::get()->DRAW_MESH3D_AABB) {
-        this->updateBoundingBox();
-        Drawable::drawAABB(&this->aabb, Color::white());
-    }
 
 }
 

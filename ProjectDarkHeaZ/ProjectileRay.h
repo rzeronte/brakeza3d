@@ -15,7 +15,7 @@
 class ProjectileRay: public RayCollisionable, public Projectile, public AmmoProjectile {
 private:
     Color color;
-    int speed;
+    float speed;
     bool indestructible;
 public:
     ProjectileRay(
@@ -26,7 +26,7 @@ public:
         const Vertex3D &ray,
         int filterGroup,
         int filterMask,
-        int speed,
+        float speed,
         const Color &color,
         float intensity,
         bool indestructible
@@ -36,9 +36,9 @@ public:
 
     void resolveCollision(Collisionable *objectWithCollision) override;
 
-    [[nodiscard]] int getSpeed() const;
+    [[nodiscard]] float getSpeed() const;
 
-    void setSpeed(int value);
+    void setSpeed(float value);
 
     void integrate() override;
 };

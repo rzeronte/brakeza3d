@@ -29,10 +29,12 @@ AmmoProjectileBody::AmmoProjectileBody(
 {
     setPosition(position);
     setParent(parent);
-    setRender(false);
+    setRender(true);
     setStencilBufferEnabled(false);
 
     ending.setEnabled(false);
+
+    clone(weaponType->getModelProjectile());
 
     makeProjectileRigidBody(
         0.1,

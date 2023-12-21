@@ -259,7 +259,7 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
         cJSON_GetObjectItemCaseSensitive(weaponJson, "amount")->valueint,
         cJSON_GetObjectItemCaseSensitive(weaponJson, "startAmount")->valueint,
         (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "damage")->valuedouble,
-        cJSON_GetObjectItemCaseSensitive(weaponJson, "speed")->valueint,
+        (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "speed")->valuedouble,
         cJSON_GetObjectItemCaseSensitive(weaponJson, "dispersion")->valueint,
         (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "accuracy")->valuedouble,
         (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "cadenceTime")->valuedouble,
@@ -339,7 +339,7 @@ ItemHumanGhost* LevelLoader::makeItemHuman(Vertex3D position)
     human->setScale(1);
     human->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "astronaut.fbx"));
     human->makeSimpleGhostBody(
-        Vertex3D(500, 500, 500),
+        Vertex3D(1, 1, 1),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Player,
         EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::ProjectileEnemy | EngineSetup::collisionGroups::Player
@@ -363,7 +363,7 @@ ItemEnergyGhost* LevelLoader::makeItemEnergyGhost(Vertex3D position)
     energyItem->setScale(1);
     energyItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "pill.fbx"));
     energyItem->makeSimpleGhostBody(
-        Vertex3D(500, 500, 500),
+        Vertex3D(1, 1, 1),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Weapon,
         EngineSetup::collisionGroups::Player
@@ -390,7 +390,7 @@ ItemWeaponGhost* LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
     weaponItem->clone(weapons[indexWeapon]->getModel());
     weaponItem->setPosition(position);
     weaponItem->makeSimpleGhostBody(
-        Vertex3D(500, 500, 500),
+        Vertex3D(1, 1, 1),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Weapon,
         EngineSetup::collisionGroups::Player
@@ -399,7 +399,6 @@ ItemWeaponGhost* LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
     weaponItem->setRotationFrameEnabled(true);
     weaponItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
     weaponItem->setStencilBufferEnabled(true);
-    weaponItem->setScale(1);
     weaponItem->updateBulletFromMesh3D();
 
     Brakeza3D::get()->addObject3D(weaponItem, weaponItem->getLabel());
@@ -677,6 +676,7 @@ Vertex3D LevelLoader::getPositionFromScreenPoint(Point2D fixedPosition, float de
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition, camera);
+
     Vector3D ray(camera->getPosition(),nearPlaneVertex);
 
     return ray.getComponent().getScaled(depth);
@@ -1046,7 +1046,7 @@ SalvageSpaceship* LevelLoader::makeSalvageSpaceship(Vertex3D position)
     salvage->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "/spaceships/salvage.fbx"));
     salvage->setPosition(position + Vertex3D(0, 0, 2000));
     salvage->makeSimpleGhostBody(
-        Vertex3D(800, 800, 5000),
+        Vertex3D(1, 1, 1),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Weapon,
         EngineSetup::collisionGroups::Player

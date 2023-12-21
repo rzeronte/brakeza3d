@@ -1,0 +1,48 @@
+{
+  "name": "01",
+  "music": "musicLevel01",
+  "backgroundImage": "levels/01.png",
+  "foregroundImage": "foregrounds/05.png",
+  "allowEnergyShield": false,
+  "histories": ["histories/lore_01_1.png", "histories/lore_01_2.png"],
+  "tutorials": ["tutorials/tutorial_first.png"],
+  "color": { "r": 255, "g": 0, "b": 0 },
+  "message": {
+    "from": "HeadQuarters",
+    "text": "Welcome Commander! We know you've been\ninactive for a while. Let's practice\nshooting down the target in front of you.",
+    "sound": "radioLevel01",
+    "stamina": 100,
+    "avatarHud": "avatars/shuttle_hud.png"
+  },
+  "enemies": [
+    {
+      "name": "spaceShuttle",
+      "avatar": "avatars/shuttle.png",
+      "avatarHud": "avatars/shuttle_hud.png",
+      "position": { "x": 50, "y": 10 },
+      "model": "spaceShuttle.fbx",
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "enableLights": true,
+      "animated": false,
+      "stamina": 500,
+      "reward": false,
+      "motion": {
+        "type": 6
+      }
+    }
+  ],
+  "asteroids": [
+  ],
+  "boids": [
+  ],
+  "items": [
+    {
+      "type": 1,
+      "position": { "x": 50, "y": 35 },
+      "help": 0
+    }
+  ],
+  "background": [
+
+  ]
+}

@@ -31,7 +31,7 @@ void ComponentWindow::preUpdate()
 
 void ComponentWindow::renderToWindow()
 {
-    SDL_GL_SwapWindow(window);
+    //SDL_GL_SwapWindow(window);
     SDL_RenderPresent(renderer);
     //SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 }
@@ -81,7 +81,7 @@ void ComponentWindow::initWindow() {
             SDL_WINDOWPOS_UNDEFINED,
             SETUP->screenWidth,
             SETUP->screenHeight,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
+            SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS
         );
         context = SDL_GL_CreateContext( window );
 
@@ -95,7 +95,7 @@ void ComponentWindow::initWindow() {
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
+        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
         if (window == nullptr) {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());

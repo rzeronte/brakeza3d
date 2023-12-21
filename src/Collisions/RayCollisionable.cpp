@@ -74,7 +74,7 @@ void RayCollisionable::onUpdate()
     if (EngineSetup::get()->BULLET_DEBUG_MODE) {
         auto end = getPosition() + ray;
         auto vector = Vector3D(getPosition(), end);
-        Drawable::drawVector3D(vector, ComponentsManager::get()->getComponentCamera()->getCamera(), Color::yellow());
+        Drawable::drawVector3D(vector, Color::yellow());
     }
 }
 

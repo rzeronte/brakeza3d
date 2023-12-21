@@ -1,0 +1,74 @@
+{
+  "name": "28",
+  "music": "musicLevel05",
+  "backgroundImage": "levels/08.png",
+  "foregroundImage": "foregrounds/01.png",
+  "allowEnergyShield": true,
+  "histories": ["default_history.png"],
+  "color": { "r": 0, "g": 255, "b": 0 },
+  "endLevel": true,
+  "enemies": [
+  ],
+  "bosses": [
+    {
+      "type": 3,
+      "name": "SpaceBirds",
+      "avatar": "avatars/default.png",
+      "avatarHud": "avatars/shuttle.png",
+      "position": { "x": 50, "y": 99 },
+      "model": "spaceships/red_black.fbx",
+      "enableLights": false,
+      "animated": true,
+      "stamina": 3000,
+      "reward": true,
+      "motion": {
+        "type": 1,
+        "from": { "x": 48, "y": 10 },
+        "to": { "x": 52, "y": 10 },
+        "speed": 0.5
+      },
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 999,
+        "startAmount": 100000,
+        "speed": 100,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.40,
+        "stop": true,
+        "stopDuration": 1,
+        "stopEvery": 1,
+        "type": 2,
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 144, "g": 0, "b": 0 }
+      },
+      "emitter": {
+        "rotation": { "x": 90, "y": 0, "z": 0 },
+        "rotationFrame": { "x": 0, "y": 1, "z": 0 },
+        "cadenceTime": 0.25,
+        "type": 3,
+        "stop": false,
+        "stopDuration": 0,
+        "stopEvery": 9,
+        "color": { "r": 255, "g": 0, "b": 0 }
+      },
+      "lasers": [
+      ]
+    }
+  ],
+  "items": [
+  ],
+  "boids": [
+  ],
+  "asteroids": [
+  ],
+  "background": [
+  ]
+}

@@ -16,13 +16,9 @@
 
 struct OCLaser
 {
-    int x1;
-    int y1;
-    int x2;
-    int y2;
-    int r;
-    int g;
-    int b;
+    glm::vec2 from;
+    glm::vec2 to;
+    glm::vec3 color;
     float intensity;
     bool startCircle;
     bool endCircle;
@@ -49,7 +45,7 @@ public:
 
     void update() override;
 
-    void addLaser(int x1, int y1, int x2, int y2, Color color, float intensity, bool startCircle, bool endCircle);
+    void addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float intensity, bool startCircle, bool endCircle);
     void addProjectile(Vertex3D position, Color color, float i);
     void addLaserFromRay(ProjectileRay *pRay);
 

@@ -20,10 +20,10 @@ private:
     SDL_Surface *surface;
     SDL_Texture *texture;
     std::string fileName;
-    cl_mem openClTexture;
 
     bool loaded;
     GLuint texturaID;
+    float alpha = 0;
 
 public:
     Image();
@@ -45,25 +45,17 @@ public:
     void* pixels();
     bool isLoaded();
 
-    void setSurface(SDL_Surface *surface);
-
     void createEmpty(int w, int h);
 
     float getAreaForVertices(Vertex3D A, Vertex3D B, Vertex3D C, int lod);
 
     Color getColor(int x, int y);
 
-    void setTextureAlpha(int value);
-
     [[nodiscard]] const std::string &getFileName() const;
 
     [[nodiscard]] SDL_Surface *getSurface();
 
     [[nodiscard]] int width() const;
-
-    cl_mem *getOpenClTexture();
-
-    void loadOpenCLBuffer();
 
     void setImage(const std::string &basicString);
 
@@ -74,6 +66,10 @@ public:
     [[nodiscard]] GLuint getOGLTextureID() const;
 
     static GLuint makeOGLImage(SDL_Surface *surfaceTTF);
+
+    float getAlpha() const;
+
+    void setAlpha(float alpha);
 
 };
 

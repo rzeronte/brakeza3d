@@ -141,7 +141,7 @@ void Player::shoot(float intensity)
             bool resultShoot = weapon->shootProjectile(
                 this,
                 getPosition(),
-                AxisUp().getScaled(1000),
+                AxisUp().getScaled(0.01),
                 AxisUp().getInverse(),
                 getRotation(),
                 PaletteColors::getPlayerProjectile(),
@@ -163,9 +163,9 @@ void Player::shoot(float intensity)
         case WeaponTypes::WEAPON_LASER: {
             bool resultShoot = weapon->shootLaserProjectile(
                 this,
-                getPosition() - AxisUp().getScaled(1000),
+                getPosition() - AxisUp().getScaled(0.01),
                 AxisUp().getInverse(),
-                0.1f,
+                0.001f,
                 true,
                 PaletteColors::getPlayerLaser(),
                 EngineSetup::collisionGroups::Projectile,
@@ -194,10 +194,10 @@ void Player::shoot(float intensity)
         case WeaponTypes::WEAPON_RAYLIGHT: {
             rayLight.updateDirection(
                 rayLight.getParent()->AxisDown().getNormalize(),
-                rayLight.getParent()->AxisDown().getScaled(1100)
+                rayLight.getParent()->AxisDown().getScaled(0.01)
             );
 
-            weapon->shootRayLight(rayLight, intensity * 0.5f, PaletteColors::getPlayerRay());
+            weapon->shootRayLight(rayLight, 0.001, PaletteColors::getPlayerRay());
             getWeaponLight()->setColor(PaletteColors::getPlayerRayLight());
             initLight();
             break;
@@ -346,22 +346,16 @@ void Player::onDrawHostBuffer()
 void Player::updateShaderParticles()
 {
     shaderParticles->update(
-        Transforms::WorldToPoint(
-            getPosition() - AxisUp().getScaled(-1150) - AxisLeft().getScaled(220),
-            ComponentsManager::get()->getComponentCamera()->getCamera()
-        ),
+        getPosition() - AxisUp().getScaled(-1) - AxisLeft().getScaled(2),
         AxisUp(),
-        (velocity.getModule() / maxVelocity) + 0.1f
+        0.001f
     );
 
-    shaderParticlesTwo->update(
-        Transforms::WorldToPoint(
-            getPosition() - AxisUp().getScaled(-1150) + AxisLeft().getScaled(220),
-            ComponentsManager::get()->getComponentCamera()->getCamera()
-        ),
+    /*shaderParticlesTwo->update(
+        getPosition() - AxisUp().getScaled(-1) + AxisLeft().getScaled(2),
         AxisUp(),
         (velocity.getModule() / maxVelocity) + 0.1f
-    );
+    );*/
 }
 
 void Player::postUpdate()

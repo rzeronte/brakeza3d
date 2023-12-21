@@ -9,7 +9,7 @@ ProjectileRay::ProjectileRay(
     const Vertex3D &ray,
     int filterGroup,
     int filterMask,
-    int speed,
+    float speed,
     const Color &color,
     float intensity,
     bool indestructible
@@ -30,10 +30,10 @@ void ProjectileRay::onUpdate()
 
     if (!isEnabled()) return;
 
-    if (!indestructible && !ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition())) {
+    /*if (!indestructible && !ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition())) {
         this->setRemoved(true);
         return;
-    }
+    }*/
 
     addToPosition(getDirection().getScaled((float) speed));
 }
@@ -72,11 +72,11 @@ void ProjectileRay::resolveCollision(Collisionable *objectWithCollision)
     Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getSpriteSparklesGreen()->getAnimation());
 }
 
-int ProjectileRay::getSpeed() const {
+float ProjectileRay::getSpeed() const {
     return speed;
 }
 
-void ProjectileRay::setSpeed(int value) {
+void ProjectileRay::setSpeed(float value) {
     ProjectileRay::speed = value;
 }
 

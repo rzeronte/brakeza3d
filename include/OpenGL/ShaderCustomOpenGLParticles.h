@@ -11,7 +11,7 @@ class ShaderCustomOpenGLParticles : public ShaderOpenGLCustom {
 public:
     explicit ShaderCustomOpenGLParticles(const std::string &shaderFilename);
 
-    void render(GLint particlesBuffer, int numberParticles, Vertex3D origin, Vertex3D direction, OCParticlesContext context, Color cf, Color ct);
+    void render(GLint particlesBuffer, int numberParticles, Vertex3D origin, Vertex3D direction, OCParticlesContext context, Color cf, Color ct, float executionTime);
 };
 
 

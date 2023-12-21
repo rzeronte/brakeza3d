@@ -68,7 +68,8 @@ void ParticleEmitter::onUpdate()
         direction,
         context,
         colorFrom,
-        colorTo
+        colorTo,
+        Brakeza3D::get()->getExecutionTime()
     );
 }
 

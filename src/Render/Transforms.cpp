@@ -2,6 +2,7 @@
 #include "../../include/Misc/Tools.h"
 #include "../../include/EngineSetup.h"
 #include "../../include/Render/M4.h"
+#include "../../include/ComponentsManager.h"
 
 void Transforms::objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o)
 {
@@ -104,39 +105,47 @@ Vertex3D Transforms::cameraToWorld(Vertex3D &V, Camera3D *cam) {
 }
 
 Vertex3D Transforms::Point2DToWorld(Point2D &p, Camera3D *cam) {
-    // 0 ... 1
-    float xt = Tools::interpolate(p.x, 0, (float) EngineSetup::get()->screenWidth);
-    float yt = Tools::interpolate(p.y, 0, (float) EngineSetup::get()->screenHeight);
+    // Mapear las coordenadas de (0, 0) a (100, 100) a la esquina superior izquierda e inferior derecha del plano cercano
+    float mappedX = 2.0f * p.x / EngineSetup::get()->screenWidth - 1;
+    float mappedY = 1.0f - 2.0f * p.y / EngineSetup::get()->screenHeight;
 
-    Vertex3D vNLs = cam->getFrustum()->vNLs;
-    Vertex3D vNRs = cam->getFrustum()->vNRs;
-    Vertex3D vNTs = cam->getFrustum()->vNTs;
-    Vertex3D vNBs = cam->getFrustum()->vNBs;
+    // Obtener la matriz de proyección y la matriz de vista
+    glm::mat4 projectionMatrix = Camera3D::getProjectionMatrix();
+    glm::mat4 viewMatrix = cam->getViewMatrix();
 
-    float vNLx = vNLs.x;
-    float vNRx = vNRs.x;
-    float tx1 = (xt) * (vNRx - vNLx);
+    // Invertir la matriz de proyección y la matriz de vista
+    glm::mat4 inverseProjectionMatrix = glm::inverse(projectionMatrix);
+    glm::mat4 inverseViewMatrix = glm::inverse(viewMatrix);
 
-    float vNBy = vNBs.y;
-    float vNTy = vNTs.y;
-    float ty1 = (yt) * (vNTy - vNBy);
+    // Crear el vector de clip
+    glm::vec4 clipCoords(mappedX, mappedY, -1.0f, 1.0f);
 
-    Vertex3D v(
-        vNRx + tx1,
-        vNTy + ty1,
-        cam->getFrustum()->nearDist
-    );
+    // Aplicar la inversa de la matriz de proyección y la inversa de la matriz de vista
+    glm::vec4 eyeCoords = inverseProjectionMatrix * clipCoords;
+    eyeCoords.z = -1.0f;
+    eyeCoords.w = 1.0f;
 
-    return Transforms::cameraToWorld(v, cam);
+    glm::vec4 worldCoords = inverseViewMatrix * eyeCoords;
+
+    // Normalizar las coordenadas w para obtener coordenadas del mundo
+    worldCoords /= worldCoords.w;
+
+    Vertex3D v(worldCoords.x, worldCoords.y, worldCoords.z);
+
+    return v;
 }
 
-Point2D Transforms::WorldToPoint(Vertex3D v, Camera3D *camera)
+Point2D Transforms::WorldToPoint(Vertex3D v)
 {
-    Transforms::cameraSpace(v, v, camera);
-    v = Transforms::PerspectiveNDCSpace(v, camera->getFrustum());
+    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix();
+    glm::mat4 ProjectionMatrix = Camera3D::getProjectionMatrix();
 
-    Point2D screenPoint;
-    Transforms::screenSpace(screenPoint, v);
+    glm::vec4 position1 = ProjectionMatrix * ViewMatrix * glm::vec4(v.x, v.y, v.z, 1.0);
+    position1 /= position1.w;
 
+    const auto windowWidth = EngineSetup::get()->screenWidth;
+    const auto windowHeight = EngineSetup::get()->screenHeight;
+
+    Point2D screenPoint((int)((position1.x + 1.0) * 0.5 * windowWidth), (int)((1.0 - position1.y) * 0.5 * windowHeight));
     return screenPoint;
 }

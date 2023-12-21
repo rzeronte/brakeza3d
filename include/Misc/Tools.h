@@ -104,6 +104,7 @@ public:
 
     static void writeToFile(const std::string& file, const char *content);
 
+    static Vertex3D screenToWorld(float x, float y, float screenWidth, float screenHeight, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

@@ -22,12 +22,12 @@ PlayerSatellite::PlayerSatellite(Mesh3D *parent)
 
 void PlayerSatellite::onStartSetup()
 {
-    makeSimpleGhostBody(
-        Vertex3D(200, 200, 200),
+    /*makeSimpleGhostBody(
+        Vertex3D(1, 1, 1),
         Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Projectile,
         EngineSetup::collisionGroups::Enemy
-    );
+    );*/
 
     blink = new ShaderBlink(false, this, 0.05, Color::red());
 }
@@ -91,10 +91,7 @@ float PlayerSatellite::getDamage() const {
 void PlayerSatellite::updateShaderParticles()
 {
     shaderParticles->update(
-        Transforms::WorldToPoint(
-            getPosition(),
-            ComponentsManager::get()->getComponentCamera()->getCamera()
-        ),
+        getPosition(),
         AxisUp(),
         1.0f
     );

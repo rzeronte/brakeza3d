@@ -1,0 +1,8 @@
+{
+    "options": [
+        { "name": "New game", "alt": "Resume game",  "action": 0 },
+        { "name": "Credits",  "alt": "",        "action": 1 },
+        { "name": "Help",     "alt": "",        "action": 2 },
+        { "name": "Exit",     "alt": "",        "action": 3 }
+    ]
+}

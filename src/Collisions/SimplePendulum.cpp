@@ -41,7 +41,7 @@ void SimplePendulum::onUpdate() {
 
     if (EngineSetup::get()->DRAW_PENDULUM_THREAD) {
         Vector3D V(start, end);
-        Drawable::drawVector3D(V, ComponentsManager::get()->getComponentCamera()->getCamera(), Color::fuchsia());
+        Drawable::drawVector3D(V, Color::fuchsia());
     }
 }
 
