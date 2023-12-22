@@ -13,6 +13,8 @@
 #include "../Misc/Counter.h"
 #include "../Misc/Color.h"
 #include "../Shaders/ShaderExplosion.h"
+#include "../Misc/Image.h"
+#include "../OpenGL/ShaderOpenGLParticles.h"
 
 typedef enum {
     DEFAULT = 0,
@@ -25,9 +27,19 @@ private:
     bool stopAdd;
     ParticleEmitterState state;
     OCParticlesContext context;
-    GLuint particlesBuffer;
+    Image *texture;
+
+
+
+    Particle ParticlesContainer[MaxParticles];
+    int LastUsedParticle = 0;
+
+    GLuint billboard_vertex_buffer;
+    GLuint particles_position_buffer;
+    GLuint particles_color_buffer;
 protected:
     Counter lifeCounter;
+
     Color colorTo;
     Color colorFrom;
 public:
@@ -64,6 +76,12 @@ public:
     void setColorTo(const Color &colorTo);
 
     void setColorFrom(const Color &colorFrom);
+
+    void SortParticles();
+
+    int FindUnusedParticle();
+
+    glm::vec3 addNoiseToDirection(const glm::vec3 &direction, int noiseRange);
 };
 
 
