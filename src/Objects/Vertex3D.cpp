@@ -198,3 +198,7 @@ Vertex3D Vertex3D::divide(float value) {
     return v;
 }
 
+glm::vec3 Vertex3D::toGLM() {
+    return glm::vec3(x, y, z);
+}
+

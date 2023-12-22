@@ -1,5 +1,6 @@
 #define GL_GLEXT_PROTOTYPES
 
+#include <ext/matrix_transform.hpp>
 #include "../../include/Particles/ParticleEmitter.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/ComponentsManager.h"
@@ -21,23 +22,44 @@ ParticleEmitter::ParticleEmitter(
     colorTo(colorTo),
     colorFrom(colorFrom),
     context(particlesContext),
-    particlesBuffer(0)
+    texture(new Image(EngineSetup::get()->IMAGES_FOLDER + "particle.png"))
 {
     setParent(parent);
     setPosition(position);
 
     lifeCounter.setEnabled(true);
 
-    auto particles = std::vector<OCParticle>(SHADERGL_NUM_PARTICLES, OCParticle{
-        glm::vec4(0),
-        glm::vec4(0),
-        glm::vec4(0),
-        0, 0, 0, 0
-    });
+    // The VBO containing the 4 vertices of the particles.
+    // Thanks to instancing, they will be shared by all particles.
+    static const GLfloat g_vertex_buffer_data[] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            -0.5f,  0.5f, 0.0f,
+            0.5f,  0.5f, 0.0f,
+    };
 
-    glGenBuffers(1, &particlesBuffer);
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, particlesBuffer);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, (int) (particles.size() * sizeof(OCParticle)), &particles[0], GL_STATIC_DRAW);
+    glGenBuffers(1, &billboard_vertex_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, billboard_vertex_buffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
+
+    // The VBO containing the positions and sizes of the particles
+    glGenBuffers(1, &particles_position_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, particles_position_buffer);
+    // Initialize with empty (NULL) buffer : it will be updated later, each frame.
+    glBufferData(GL_ARRAY_BUFFER, MaxParticles * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+
+    // The VBO containing the colors of the particles
+    glGenBuffers(1, &particles_color_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, particles_color_buffer);
+    // Initialize with empty (NULL) buffer : it will be updated later, each frame.
+    glBufferData(GL_ARRAY_BUFFER, MaxParticles * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
+
+
+    for (int i=0; i<MaxParticles; i++){
+        ParticlesContainer[i].life = -1.0f;
+        ParticlesContainer[i].cameradistance = -1.0f;
+    }
+
 }
 
 bool ParticleEmitter::isActive() const {
@@ -61,14 +83,115 @@ void ParticleEmitter::onUpdate()
 
     auto direction = getRotation() * Vertex3D(0, 0, 1);
 
-    ComponentsManager::get()->getComponentWindow()->getShaderCustomOGLParticles()->render(
-        (int) particlesBuffer,
-        SHADERGL_NUM_PARTICLES,
-        getPosition(),
-        direction,
-        context,
-        colorFrom,
-        colorTo
+    float delta = Brakeza3D::get()->getDeltaTime();
+    glm::vec3 CameraPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition().toGLM());
+
+    // Define la frecuencia deseada en partículas por segundo
+    float particlesPerSecond = context.PARTICLES_BY_SECOND;
+
+    // Calcula el tiempo necesario para generar una partícula
+    float timePerParticle = 1.0 / particlesPerSecond;
+
+    int newparticles = (int)(delta * 100 *context.PARTICLES_BY_SECOND);
+
+    int ParticlesCount = 0;
+
+    for(int i=0; i<newparticles; i++){
+        int particleIndex = FindUnusedParticle();
+        ParticlesContainer[particleIndex].life = context.PARTICLE_LIFESPAN; // This particle will live 5 seconds.
+        ParticlesContainer[particleIndex].pos = getPosition().toGLM();
+
+        ParticlesContainer[particleIndex].pos += glm::vec3(
+            (float) Tools::random(0, context.POSITION_NOISE),
+            (float) Tools::random(0, context.POSITION_NOISE),
+            (float) Tools::random(0, context.POSITION_NOISE)
+        ) * delta;
+
+        glm::vec3 maindir = direction.toGLM();
+        glm::vec3 randomDir = addNoiseToDirection(maindir, context.SMOKE_ANGLE_RANGE);
+
+        ParticlesContainer[particleIndex].speed = (maindir + randomDir) * (Tools::random(context.MIN_VELOCITY, context.MAX_VELOCITY) * delta);
+
+        // Very bad way to generate a random color
+        ParticlesContainer[particleIndex].r = rand() % 256;
+        ParticlesContainer[particleIndex].g = rand() % 256;
+        ParticlesContainer[particleIndex].b = rand() % 256;
+        ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
+
+        ParticlesContainer[particleIndex].size = (rand()%1000)/2000.0f + 0.1f;
+
+    }
+
+    static GLfloat* g_particule_position_size_data = new GLfloat[MaxParticles * 4];
+    static GLubyte* g_particule_color_data         = new GLubyte[MaxParticles * 4];
+
+    // Simulate all particles
+    for (int i=0; i<MaxParticles; i++){
+
+        Particle& p = ParticlesContainer[i]; // shortcut
+
+        if(p.life > 0.0f){
+
+            // Decrease life
+            p.life -= delta;
+            if (p.life > 0.0f){
+
+                // Simulate simple physics : gravity only, no collisions
+                p.speed += glm::vec3(0.0f,context.GRAVITY, 0.0f) * delta;
+
+                // Generar factores de ruido para cada componente de glm::vec3
+                p.speed += glm::vec3(
+                    (float) Tools::random(0, context.VELOCITY_NOISE),
+                    (float) Tools::random(0, context.VELOCITY_NOISE),
+                    (float) Tools::random(0, context.VELOCITY_NOISE)
+                ) * delta;
+
+                p.speed *= context.DECELERATION_FACTOR;
+
+                p.pos += p.speed * delta;
+                p.cameradistance = glm::length( p.pos - CameraPosition );
+
+                float lifeRatio = p.life / context.PARTICLE_LIFESPAN;
+                p.r = colorFrom.r * lifeRatio + colorTo.r * (1 - lifeRatio);
+                p.g = colorFrom.g * lifeRatio + colorTo.g * (1 - lifeRatio);
+                p.b = colorFrom.b * lifeRatio + colorTo.b * (1 - lifeRatio);
+
+                // Fill the GPU buffer
+                g_particule_position_size_data[4*ParticlesCount+0] = p.pos.x;
+                g_particule_position_size_data[4*ParticlesCount+1] = p.pos.y;
+                g_particule_position_size_data[4*ParticlesCount+2] = p.pos.z;
+
+                g_particule_position_size_data[4*ParticlesCount+3] = p.size;
+
+                g_particule_color_data[4*ParticlesCount+0] = p.r;
+                g_particule_color_data[4*ParticlesCount+1] = p.g;
+                g_particule_color_data[4*ParticlesCount+2] = p.b;
+                g_particule_color_data[4*ParticlesCount+3] = p.a;
+
+            }else{
+                // Particles that just died will be put at the end of the buffer in SortParticles();
+                p.cameradistance = -1.0f;
+            }
+            ParticlesCount++;
+        }
+    }
+
+    SortParticles();
+
+    glBindBuffer(GL_ARRAY_BUFFER, particles_position_buffer);
+    glBufferData(GL_ARRAY_BUFFER, MaxParticles * 4 * sizeof(GLfloat), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
+    glBufferSubData(GL_ARRAY_BUFFER, 0, ParticlesCount * sizeof(GLfloat) * 4, g_particule_position_size_data);
+
+    glBindBuffer(GL_ARRAY_BUFFER, particles_color_buffer);
+    glBufferData(GL_ARRAY_BUFFER, MaxParticles * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
+    glBufferSubData(GL_ARRAY_BUFFER, 0, ParticlesCount * sizeof(GLubyte) * 4, g_particule_color_data);
+
+    ComponentsManager::get()->getComponentWindow()->getShaderOglParticles()->render(
+        billboard_vertex_buffer,
+        particles_position_buffer,
+        particles_color_buffer,
+        (int) texture->getOGLTextureID(),
+        ParticlesCount
     );
 }
 
@@ -116,16 +239,18 @@ void ParticleEmitter::drawImGuiProperties()
             const float range_min = -100;
             const float range_max = 100;
 
+            const int range_min_int = 5;
+            const int range_max_int = 255;
+
             ImGui::DragScalar("Gravity", ImGuiDataType_Float, &context.GRAVITY, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Step to Add Particle", ImGuiDataType_Float, &context.STEP_ADD_PARTICLE, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
             ImGui::DragScalar("Particle lifespan", ImGuiDataType_Float, &context.PARTICLE_LIFESPAN, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Angle range", ImGuiDataType_Float, &context.SMOKE_ANGLE_RANGE, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Min. Velocity", ImGuiDataType_Float, &context.MIN_VELOCITY, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Max. Velocity", ImGuiDataType_Float, &context.MAX_VELOCITY, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Alpha min", ImGuiDataType_Float, &context.ALPHA_MIN, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Alpha max", ImGuiDataType_Float, &context.ALPHA_MAX, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Position noise", ImGuiDataType_Float, &context.POSITION_NOISE, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Velocity noise", ImGuiDataType_Float, &context.VELOCITY_NOISE, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Particles/sec", ImGuiDataType_S32, &context.PARTICLES_BY_SECOND, 1.f , &range_min_int, &range_max_int, "%d", 1.0f);
+            ImGui::DragScalar("Angle range", ImGuiDataType_S32, &context.SMOKE_ANGLE_RANGE, 1.f ,&range_min_int, &range_max_int, "%d", 1.0f);
+            ImGui::DragScalar("Min. Velocity", ImGuiDataType_S32, &context.MIN_VELOCITY,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
+            ImGui::DragScalar("Max. Velocity", ImGuiDataType_S32, &context.MAX_VELOCITY, 1.f ,&range_min_int, &range_max_int, "%d", 1.0f);
+            ImGui::DragScalar("Position noise", ImGuiDataType_S32, &context.POSITION_NOISE, 1.f ,&range_min_int, &range_max_int, "%d", 1.0f);
+            ImGui::DragScalar("Velocity noise", ImGuiDataType_S32, &context.VELOCITY_NOISE, 1.f ,&range_min_int, &range_max_int, "%d", 1.0f);
+
             ImGui::DragScalar("Deceleration", ImGuiDataType_Float, &context.DECELERATION_FACTOR, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
 
             ImGui::TreePop();
@@ -140,13 +265,11 @@ cJSON * ParticleEmitter::getJSON()
 
     cJSON *contextParticles = cJSON_CreateObject();
     cJSON_AddNumberToObject(contextParticles, "GRAVITY", context.GRAVITY);
-    cJSON_AddNumberToObject(contextParticles, "STEP_ADD_PARTICLE", context.STEP_ADD_PARTICLE);
+    cJSON_AddNumberToObject(contextParticles, "PARTICLES_BY_SECOND", context.PARTICLES_BY_SECOND);
     cJSON_AddNumberToObject(contextParticles, "PARTICLE_LIFESPAN", context.PARTICLE_LIFESPAN);
     cJSON_AddNumberToObject(contextParticles, "SMOKE_ANGLE_RANGE", context.SMOKE_ANGLE_RANGE);
     cJSON_AddNumberToObject(contextParticles, "MIN_VELOCITY", context.MIN_VELOCITY);
     cJSON_AddNumberToObject(contextParticles, "MAX_VELOCITY", context.MAX_VELOCITY);
-    cJSON_AddNumberToObject(contextParticles, "ALPHA_MIN", context.ALPHA_MIN);
-    cJSON_AddNumberToObject(contextParticles, "ALPHA_MAX", context.ALPHA_MAX);
     cJSON_AddNumberToObject(contextParticles, "POSITION_NOISE", context.POSITION_NOISE);
     cJSON_AddNumberToObject(contextParticles, "VELOCITY_NOISE", context.VELOCITY_NOISE);
     cJSON_AddNumberToObject(contextParticles, "DECELERATION_FACTOR", context.DECELERATION_FACTOR);
@@ -191,13 +314,11 @@ void ParticleEmitter::setPropertiesFromJSON(cJSON *object, ParticleEmitter *o)
     OCParticlesContext context;
     auto contextJSON = cJSON_GetObjectItemCaseSensitive(object, "context");
     context.GRAVITY = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "GRAVITY")->valuedouble;
-    context.STEP_ADD_PARTICLE = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "STEP_ADD_PARTICLE")->valuedouble;
+    context.PARTICLES_BY_SECOND = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "PARTICLES_BY_SECOND")->valuedouble;
     context.PARTICLE_LIFESPAN = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "PARTICLE_LIFESPAN")->valuedouble;
     context.SMOKE_ANGLE_RANGE = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "SMOKE_ANGLE_RANGE")->valuedouble;
     context.MIN_VELOCITY = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "MIN_VELOCITY")->valuedouble;
     context.MAX_VELOCITY = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "MAX_VELOCITY")->valuedouble;
-    context.ALPHA_MIN = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "ALPHA_MIN")->valuedouble;
-    context.ALPHA_MAX = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "ALPHA_MAX")->valuedouble;
     context.POSITION_NOISE = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "POSITION_NOISE")->valuedouble;
     context.VELOCITY_NOISE = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "VELOCITY_NOISE")->valuedouble;
     context.DECELERATION_FACTOR = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "DECELERATION_FACTOR")->valuedouble;
@@ -228,4 +349,48 @@ void ParticleEmitter::setColorTo(const Color &colorTo) {
 
 void ParticleEmitter::setColorFrom(const Color &colorFrom) {
     ParticleEmitter::colorFrom = colorFrom;
+}
+
+[[maybe_unused]] void ParticleEmitter::SortParticles(){
+    std::sort(&ParticlesContainer[0], &ParticlesContainer[MaxParticles]);
+}
+
+
+int ParticleEmitter::FindUnusedParticle(){
+
+    for(int i=LastUsedParticle; i<MaxParticles; i++){
+        if (ParticlesContainer[i].life < 0){
+            LastUsedParticle = i;
+            return i;
+        }
+    }
+
+    for(int i=0; i<LastUsedParticle; i++){
+        if (ParticlesContainer[i].life < 0){
+            LastUsedParticle = i;
+            return i;
+        }
+    }
+
+    return 0; // All particles are taken, override the first one
+}
+
+
+
+// Función para agregar ruido a un glm::vec3 que representa una dirección
+glm::vec3 ParticleEmitter::addNoiseToDirection(const glm::vec3& direction, int noiseRange) {
+    // Generar ángulos de ruido en los tres ejes
+    float noiseX = glm::radians(static_cast<float>(Tools::random(-noiseRange, noiseRange)));
+    float noiseY = glm::radians(static_cast<float>(Tools::random(-noiseRange, noiseRange)));
+    float noiseZ = glm::radians(static_cast<float>(Tools::random(-noiseRange, noiseRange)));
+
+    // Crear una matriz de rotación a partir de los ángulos de ruido
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), noiseX, glm::vec3(1.0f, 0.0f, 0.0f));
+    rotationMatrix = glm::rotate(rotationMatrix, noiseY, glm::vec3(0.0f, 1.0f, 0.0f));
+    rotationMatrix = glm::rotate(rotationMatrix, noiseZ, glm::vec3(0.0f, 0.0f, 1.0f));
+
+    // Aplicar la matriz de rotación al vector de dirección original
+    glm::vec3 noisyDirection = glm::vec3(rotationMatrix * glm::vec4(direction, 1.0f));
+
+    return glm::normalize(noisyDirection);  // Normalizar el vector resultante
 }

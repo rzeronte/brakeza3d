@@ -5,6 +5,7 @@
 #include <SDL2/SDL_surface.h>
 #include <string>
 #include <bullet/LinearMath/btVector3.h>
+#include <vec3.hpp>
 #include "Vertex4D.h"
 
 
@@ -68,6 +69,7 @@ public:
 
     Vertex4D createVertex4D();
 
+    glm::vec3 toGLM();
 };
 
 #endif //SDL2_3D_ENGINE_VERTEX_H
