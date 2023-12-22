@@ -2,13 +2,10 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "-g")
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-#set(CMAKE_CXX_FLAGS "-O3")
+#set(CMAKE_CXX_FLAGS "-g")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS "-O3")
 #set(CMAKE_CXX_FLAGS_DEBUG "-O3 -fsanitize=leak")
-#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -BRAKEZA_DEBUG")
-
-set(CMAKE_VERBOSE_MAKEFILE ON)
 
 set(SDL2_INCLUDE_DIRS /usr/include/SDL2)
 set(BULLET_INCLUDE_DIRS /usr/include/bullet)
@@ -201,8 +198,6 @@ add_executable(Brakeza3D
         include/OpenGL/ShaderOpenGLPoints.h
         include/OpenGL/ShaderOpenGLCustom.cpp
         include/OpenGL/ShaderOpenGLCustom.h
-        include/OpenGL/ShaderCustomOpenGLParticles.cpp
-        include/OpenGL/ShaderCustomOpenGLParticles.h
         include/OpenGL/ShaderOpenGLCustom.cpp
         include/OpenGL/ShaderOpenGLOutliner.cpp
         include/OpenGL/ShaderOpenGLOutliner.h

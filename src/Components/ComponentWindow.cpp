@@ -221,7 +221,10 @@ void ComponentWindow::initOpenGL()
         "../shaders/Color.fragmentshader"
     );
 
-    shaderCustomOGLParticles = new ShaderCustomOpenGLParticles("../shaders/Particles.shader");
+    shaderOGLParticles = new ShaderOpenGLParticles(
+        "../shaders/Particle.vertexshader",
+        "../shaders/Particle.fragmentshader"
+    );
 }
 
 ShaderOpenGLImage *ComponentWindow::getShaderOGLImage() const {
@@ -248,14 +251,14 @@ ShaderOpenGLPoints *ComponentWindow::getShaderOGLPoints() const {
     return shaderOGLPoints;
 }
 
-ShaderCustomOpenGLParticles *ComponentWindow::getShaderCustomOGLParticles() const {
-    return shaderCustomOGLParticles;
-}
-
 ShaderOpenGLOutliner *ComponentWindow::getShaderOglStencil() const {
     return shaderOGLStencil;
 }
 
 ShaderOpenGLColor *ComponentWindow::getShaderOglColor() const {
     return shaderOGLColor;
+}
+
+ShaderOpenGLParticles *ComponentWindow::getShaderOglParticles() const {
+    return shaderOGLParticles;
 }
