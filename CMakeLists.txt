@@ -195,13 +195,13 @@ add_executable(Brakeza3D
         include/OpenGL/ShaderOpenGLPoints.h
         include/OpenGL/ShaderOpenGLCustom.cpp
         include/OpenGL/ShaderOpenGLCustom.h
-        include/OpenGL/ShaderCustomOpenGLParticles.cpp
-        include/OpenGL/ShaderCustomOpenGLParticles.h
         include/OpenGL/ShaderOpenGLCustom.cpp
         include/OpenGL/ShaderOpenGLOutliner.cpp
         include/OpenGL/ShaderOpenGLOutliner.h
         include/OpenGL/ShaderOpenGLColor.cpp
-        include/OpenGL/ShaderOpenGLColor.h)
+        include/OpenGL/ShaderOpenGLColor.h
+        include/OpenGL/ShaderOpenGLParticles.cpp
+        include/OpenGL/ShaderOpenGLParticles.h)
 
 target_link_libraries(Brakeza3D
     pthread

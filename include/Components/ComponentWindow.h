@@ -16,9 +16,9 @@
 #include "../OpenGL/ShaderOpenGLWireframe.h"
 #include "../OpenGL/ShaderOpenGLShading.h"
 #include "../OpenGL/ShaderOpenGLPoints.h"
-#include "../OpenGL/ShaderCustomOpenGLParticles.h"
 #include "../OpenGL/ShaderOpenGLOutliner.h"
 #include "../OpenGL/ShaderOpenGLColor.h"
+#include "../OpenGL/ShaderOpenGLParticles.h"
 
 class ComponentWindow : public Component {
 private:
@@ -37,10 +37,9 @@ private:
     ShaderOpenGLWireframe *shaderOGLWireframe;
     ShaderOpenGLShading *shaderOGLShading;
     ShaderOpenGLPoints *shaderOGLPoints;
-    ShaderCustomOpenGLParticles *shaderCustomOGLParticles;
     ShaderOpenGLOutliner *shaderOGLStencil;
     ShaderOpenGLColor *shaderOGLColor;
-
+    ShaderOpenGLParticles *shaderOGLParticles;
 public:
 
     ComponentWindow();
@@ -89,11 +88,11 @@ public:
 
     ShaderOpenGLPoints *getShaderOGLPoints() const;
 
-    ShaderCustomOpenGLParticles *getShaderCustomOGLParticles() const;
-
     ShaderOpenGLOutliner *getShaderOglStencil() const;
 
     ShaderOpenGLColor *getShaderOglColor() const;
+
+    ShaderOpenGLParticles *getShaderOglParticles() const;
 
 };
 
