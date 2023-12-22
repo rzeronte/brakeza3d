@@ -282,17 +282,17 @@ void SceneLoader::createParticleEmitterInScene() {
         Color::red(),
         Color::green(),
         OCParticlesContext(
-                0.0f,
-                0.05f,
-                1.5f,
-                25.0f,
-                10.1f,
-                2.0f,
-                125.0f,
-                255.0f,
-                0.02f,
-                0.04f,
-                0.99f
+            0.0f,
+            0.5f,
+            1.5f,
+            25.0f,
+            1,
+            10,
+            125.0f,
+            255.0f,
+            1,
+            1,
+            0.99f
         )
     );
     newObject->setBelongToScene(true);

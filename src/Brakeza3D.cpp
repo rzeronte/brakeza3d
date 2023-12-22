@@ -63,6 +63,8 @@ void Brakeza3D::mainLoop()
 
     //LoadDemo();
 
+    SceneLoader::createParticleEmitterInScene();
+
     ImGuiInitialize();
 
     welcomeMessage();
