@@ -5,9 +5,9 @@
 #include "ShaderOpenGLShading.h"
 #include "../ComponentsManager.h"
 
-ShaderOpenGLShading::ShaderOpenGLShading(const std::string &vertexFilename, const std::string &fragmentFilename)
-        :
-        ShaderOpenGL(vertexFilename, fragmentFilename)
+ShaderOpenGLShading::ShaderOpenGLShading()
+:
+    ShaderOpenGL("../shaders/Shading.vertexshader","../shaders/Shading.fragmentshader")
 {
 }
 

@@ -4,9 +4,9 @@
 #include <ext/matrix_transform.hpp>
 #include "ShaderOpenGLOutliner.h"
 
-ShaderOpenGLOutliner::ShaderOpenGLOutliner(const std::string &vertexFilename, const std::string &fragmentFilename)
+ShaderOpenGLOutliner::ShaderOpenGLOutliner()
 :
-    ShaderOpenGL(vertexFilename, fragmentFilename)
+    ShaderOpenGL("../shaders/Outliner.vertexshader","../shaders/Outliner.fragmentshader")
 {
     glGenVertexArrays(1, &quadVAO);
     glBindVertexArray(quadVAO);

@@ -3,6 +3,7 @@
 //
 
 #include "../../include/2D/Sprite2D.h"
+#include "../../include/ComponentsManager.h"
 
 Sprite2D::Sprite2D(int x, int y, bool removeWhenEnds, TextureAnimated *animation)
 :
@@ -51,7 +52,7 @@ void Sprite2D::onUpdate()
     const auto h = animation->getCurrentFrame()->height();
 
 
-    animation->getCurrentFrame()->drawFlatAlpha(x - w/2, y - h/2, alpha);
+    animation->getCurrentFrame()->drawFlatAlpha(x - w/2, y - h/2, alpha, ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer());
 
     if (removeWhenEnds && animation->isEndAnimation()) {
         this->setRemoved(true);

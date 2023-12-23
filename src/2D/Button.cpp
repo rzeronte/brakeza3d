@@ -32,8 +32,8 @@ void Button::setPressed(bool pressed) {
     Button::pressed = pressed;
 }
 
-void Button::draw() {
-    drawFlat(x, y);
+void Button::draw(GLuint framebuffer) {
+    drawFlat(x, y, framebuffer);
 
     if (isClicked()) {
         drawSelectedEffect();

@@ -6,10 +6,10 @@
 #include "../ComponentsManager.h"
 #include "../Brakeza3D.h"
 
-ShaderOpenGLRender::ShaderOpenGLRender(const std::string &vertexFilename, const std::string &fragmentFilename)
+ShaderOpenGLRender::ShaderOpenGLRender()
 :
     VertexArrayID(0),
-    ShaderOpenGL(vertexFilename, fragmentFilename)
+    ShaderOpenGL("../shaders/Render.vertexshader","../shaders/Render.fragmentshader")
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
@@ -27,11 +27,17 @@ void ShaderOpenGLRender::render(
     GLuint vertexbuffer,
     GLuint uvbuffer,
     GLuint normalbuffer,
-    int size
+    int size,
+    GLuint framebuffer
 )
 {
+    glEnable(GL_DEPTH);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     glUseProgram(programID);
     glBindVertexArray(VertexArrayID);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
     glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix();
     glm::mat4 ProjectionMatrix = Camera3D::getProjectionMatrix();

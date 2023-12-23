@@ -14,7 +14,7 @@ class ShaderOpenGLColor: public ShaderOpenGL {
 
     GLuint framebuffer;
 public:
-    ShaderOpenGLColor(const std::string &vertexFilename, const std::string &fragmentFilename);
+    ShaderOpenGLColor();
 
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
 

@@ -8,7 +8,7 @@
 class ShaderOpenGLPoints : public ShaderOpenGL {
     GLuint VertexArrayID;
 public:
-    ShaderOpenGLPoints(const std::string &vertexFilename, const std::string &fragmentFilename);
+    ShaderOpenGLPoints();
 
     void render(GLint particlesBuffer, int numberPoints, Color cf, Color ct);
 

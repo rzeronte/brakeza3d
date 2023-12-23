@@ -3,14 +3,16 @@
 #include <ext/matrix_transform.hpp>
 #include "ShaderOpenGLImage.h"
 #include "../EngineSetup.h"
+#include "../ComponentsManager.h"
 
-ShaderOpenGLImage::ShaderOpenGLImage(const std::string &vertexFilename, const std::string &fragmentFilename)
+ShaderOpenGLImage::ShaderOpenGLImage()
 :
     quadVAO(0),
     VBO(0),
-    ShaderOpenGL(vertexFilename, fragmentFilename)
+    ShaderOpenGL("../shaders/Image.vertexshader","../shaders/Image.fragmentshader")
 {
     float vertices[] = {
+
         // pos      // tex
         0.0f, 1.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 1.0f, 0.0f,
@@ -38,18 +40,20 @@ ShaderOpenGLImage::ShaderOpenGLImage(const std::string &vertexFilename, const st
     spriteColorUniform = glGetUniformLocation(programID, "spriteColor");
     textureUniform = glGetUniformLocation(programID, "image");
     alphaUniform = glGetUniformLocation(programID, "alpha");
+    inverseUniform = glGetUniformLocation(programID, "inverse");
 }
 
-void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha) const
+void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha, bool inverse, GLuint framebuffer, float z) const
 {
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
     glDisable(GL_DEPTH);
     glDisable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glUseProgram(programID);
 
     glm::mat4 projection = glm::ortho(0.0f, (float) EngineSetup::get()->screenWidth, (float) EngineSetup::get()->screenHeight, 0.0f, -1.0f, 1.0f);
+
     glm::vec2 position = glm::vec2(x, y);
 
     glm::vec2 size = glm::vec2(w, h);
@@ -57,7 +61,7 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
     glm::vec3 color = glm::vec3(1.0f);
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(position, 0.0f));
+    model = glm::translate(model, glm::vec3(position, z));
     model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
     model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
@@ -67,6 +71,8 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
     glUniformMatrix4fv(projectionMatrixUniform, 1, GL_FALSE, &projection[0][0]);
     glUniform3fv(spriteColorUniform, 1, &color[0]);
     glUniform1fv(alphaUniform, 1, &alpha);
+    glUniform1i(inverseUniform, inverse);
+    setInt("depth", 0);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, TextureID);

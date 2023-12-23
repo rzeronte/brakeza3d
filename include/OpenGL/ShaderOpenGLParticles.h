@@ -21,7 +21,7 @@ struct Particle{
     }
 };
 
-#define MaxParticles 100000
+#define MaxParticles 1024
 
 class ShaderOpenGLParticles : ShaderOpenGL {
     GLuint VertexArrayID;
@@ -33,7 +33,7 @@ class ShaderOpenGLParticles : ShaderOpenGL {
 
 
 public:
-    ShaderOpenGLParticles(const std::string &vertexFilename, const std::string &fragmentFilename);
+    ShaderOpenGLParticles();
     void render(
         GLuint billboard_vertex_buffer,
         GLuint particles_position_buffer,
@@ -41,10 +41,6 @@ public:
         GLint textureID,
         int particlesCount
     );
-
-    int FindUnusedParticle();
-
-    void SortParticles();
 };
 
 

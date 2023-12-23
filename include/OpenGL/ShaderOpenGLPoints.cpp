@@ -1,10 +1,10 @@
 #include "ShaderOpenGLPoints.h"
 #include "../ComponentsManager.h"
 
-ShaderOpenGLPoints::ShaderOpenGLPoints(const std::string &vertexFilename, const std::string &fragmentFilename)
+ShaderOpenGLPoints::ShaderOpenGLPoints()
 :
     VertexArrayID(0),
-    ShaderOpenGL(vertexFilename, fragmentFilename)
+    ShaderOpenGL("../shaders/Points.vertexshader","../shaders/Points.fragmentshader")
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);

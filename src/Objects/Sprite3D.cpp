@@ -31,7 +31,8 @@ void Sprite3D::onUpdate()
         billboard->vertexbuffer,
         billboard->uvbuffer,
         billboard->normalbuffer,
-        (int) billboard->vertices.size()
+        (int) billboard->vertices.size(),
+        ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
     );
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME){

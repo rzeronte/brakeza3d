@@ -55,8 +55,27 @@ Player::Player()
     light->setEnabled(false);
     Brakeza3D::get()->addObject3D(light, "playerLight");
 
-    shaderParticles = new ShaderParticles(true, PaletteColors::getParticlesPlayerFrom(), PaletteColors::getParticlesPlayerTo(), OCParticlesContext::forPlayerEngine());
-    shaderParticlesTwo = new ShaderParticles(true, PaletteColors::getParticlesPlayerFrom(), PaletteColors::getParticlesPlayerTo(), OCParticlesContext::forPlayerEngine());
+    particleEngineLeft = new ParticleEmitter(
+        ParticleEmitterState::DEFAULT,
+        nullptr,
+        position,
+        9999,
+        PaletteColors::getParticlesPlayerFrom(),
+        PaletteColors::getParticlesPlayerTo(),
+        OCParticlesContext(
+            0.0f,
+            5,
+            1.5f,
+            25.0f,
+            1,
+            10,
+            125.0f,
+            255.0f,
+            1,
+            1,
+            0.99f
+        )
+    );
 
     shaderEnergyShield = new ShaderEnergyShield(
         true,
@@ -345,11 +364,9 @@ void Player::onDrawHostBuffer()
 
 void Player::updateShaderParticles()
 {
-    shaderParticles->update(
-        getPosition() - AxisUp().getScaled(-1) - AxisLeft().getScaled(2),
-        AxisUp(),
-        0.001f
-    );
+    particleEngineLeft->onUpdate();
+    particleEngineLeft->setPosition(getPosition());
+    particleEngineLeft->setRotation(getRotation());
 
     /*shaderParticlesTwo->update(
         getPosition() - AxisUp().getScaled(-1) + AxisLeft().getScaled(2),
@@ -375,6 +392,9 @@ void Player::postUpdate()
     if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
         satellite.postUpdate();
     }
+
+    particleEngineLeft->postUpdate();
+
 }
 
 Vertex3D Player::getVelocity()
@@ -770,16 +790,11 @@ Player::~Player()
     delete blink;
     delete avatar;
     delete shaderEnergyShield;
-    delete shaderParticles;
-    delete shaderParticlesTwo;
+    delete particleEngineLeft;
 
     for (auto w : weaponTypes) {
         delete w;
     }
-}
-
-ShaderParticles *Player::getShaderParticles() const {
-    return shaderParticles;
 }
 
 Image *Player::getAvatar() {
@@ -874,4 +889,13 @@ void Player::updateSpriteEnergyShield()
     Transforms::screenSpace(P1, A);
 
     spriteEnergyShield->updatePosition(P1.x, P1.y);
+}
+
+void Player::drawImGuiProperties()
+{
+    Mesh3DGhost::drawImGuiProperties();
+    if (ImGui::TreeNode("Engine Left")) {
+        particleEngineLeft->drawImGuiProperties();
+        ImGui::TreePop();
+    }
 }

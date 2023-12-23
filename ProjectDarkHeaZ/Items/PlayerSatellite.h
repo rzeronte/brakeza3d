@@ -8,11 +8,9 @@
 
 #include "../../include/Physics/Mesh3DGhost.h"
 #include "LivingObject.h"
-#include "../../include/Shaders/ShaderParticles.h"
 
 class PlayerSatellite : public Mesh3DGhost, public LivingObject  {
     float damage;
-    ShaderParticles *shaderParticles;
 public:
     explicit PlayerSatellite(Mesh3D *parent);
 

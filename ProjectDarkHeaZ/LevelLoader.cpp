@@ -1009,7 +1009,7 @@ std::vector<Image*> &LevelLoader::getTutorials() {
 
 void LevelLoader::drawCurrentTutorialImage(float alpha)
 {
-    this->levelHistories[currentTutorialIndex]->drawFlatAlpha(0, 0, alpha);
+    this->levelHistories[currentTutorialIndex]->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 }
 
 void LevelLoader::increaseTutorialImage()

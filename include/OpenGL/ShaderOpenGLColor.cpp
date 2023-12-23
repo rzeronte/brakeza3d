@@ -6,9 +6,9 @@
 #include "ShaderOpenGLColor.h"
 #include "../ComponentsManager.h"
 
-ShaderOpenGLColor::ShaderOpenGLColor(const std::string &vertexFilename, const std::string &fragmentFilename)
+ShaderOpenGLColor::ShaderOpenGLColor()
 :
-    ShaderOpenGL(vertexFilename, fragmentFilename)
+    ShaderOpenGL("../shaders/Color.vertexshader","../shaders/Color.fragmentshader")
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);

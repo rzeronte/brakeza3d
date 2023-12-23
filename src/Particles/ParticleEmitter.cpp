@@ -81,16 +81,13 @@ void ParticleEmitter::onUpdate()
         setRemoved(true);
     }
 
-    auto direction = getRotation() * Vertex3D(0, 0, 1);
+    Vertex3D direction = getRotation() * Vertex3D(0, 1, 0);
 
     float delta = Brakeza3D::get()->getDeltaTime();
     glm::vec3 CameraPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition().toGLM());
 
     // Define la frecuencia deseada en partículas por segundo
     float particlesPerSecond = context.PARTICLES_BY_SECOND;
-
-    // Calcula el tiempo necesario para generar una partícula
-    float timePerParticle = 1.0 / particlesPerSecond;
 
     int newparticles = (int)(delta * 100 *context.PARTICLES_BY_SECOND);
 
@@ -102,15 +99,15 @@ void ParticleEmitter::onUpdate()
         ParticlesContainer[particleIndex].pos = getPosition().toGLM();
 
         ParticlesContainer[particleIndex].pos += glm::vec3(
-            (float) Tools::random(0, context.POSITION_NOISE),
-            (float) Tools::random(0, context.POSITION_NOISE),
-            (float) Tools::random(0, context.POSITION_NOISE)
+            (float) Tools::random(-context.POSITION_NOISE/2, context.POSITION_NOISE/2),
+            (float) Tools::random(-context.POSITION_NOISE/2, context.POSITION_NOISE/2),
+            (float) Tools::random(-context.POSITION_NOISE/2, context.POSITION_NOISE/2)
         ) * delta;
 
         glm::vec3 maindir = direction.toGLM();
-        glm::vec3 randomDir = addNoiseToDirection(maindir, context.SMOKE_ANGLE_RANGE);
+        maindir = addNoiseToDirection(maindir, context.SMOKE_ANGLE_RANGE/2);
 
-        ParticlesContainer[particleIndex].speed = (maindir + randomDir) * (Tools::random(context.MIN_VELOCITY, context.MAX_VELOCITY) * delta);
+        ParticlesContainer[particleIndex].speed = (maindir) * (Tools::random(context.MIN_VELOCITY, context.MAX_VELOCITY) * delta);
 
         // Very bad way to generate a random color
         ParticlesContainer[particleIndex].r = rand() % 256;
@@ -140,11 +137,7 @@ void ParticleEmitter::onUpdate()
                 p.speed += glm::vec3(0.0f,context.GRAVITY, 0.0f) * delta;
 
                 // Generar factores de ruido para cada componente de glm::vec3
-                p.speed += glm::vec3(
-                    (float) Tools::random(0, context.VELOCITY_NOISE),
-                    (float) Tools::random(0, context.VELOCITY_NOISE),
-                    (float) Tools::random(0, context.VELOCITY_NOISE)
-                ) * delta;
+                p.speed = addNoiseToDirection(p.speed, context.VELOCITY_NOISE/2);
 
                 p.speed *= context.DECELERATION_FACTOR;
 

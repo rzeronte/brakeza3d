@@ -5,9 +5,9 @@
 #include "ShaderOpenGLWireframe.h"
 #include "../ComponentsManager.h"
 
-ShaderOpenGLWireframe::ShaderOpenGLWireframe(const std::string &vertexFilename, const std::string &fragmentFilename)
+ShaderOpenGLWireframe::ShaderOpenGLWireframe()
 :
-    ShaderOpenGL(vertexFilename, fragmentFilename)
+    ShaderOpenGL("../shaders/Wireframe.vertexshader","../shaders/Wireframe.fragmentshader")
 {
 }
 
