@@ -26,6 +26,7 @@ void StoreManager::update(float alpha)
 
     int numRows = 3;
     int numColumns = 3;
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
     for (int row = 0; row < numRows; row++) {
         for (int col = 0; col < numColumns; col++) {
@@ -37,7 +38,7 @@ void StoreManager::update(float alpha)
                 drawItem(items[index], offsetX, offsetY, alpha);
 
                 if (index == currentItemIndex) {
-                    itemSelector->drawFlatAlpha(offsetX, offsetY, alpha);
+                    itemSelector->drawFlatAlpha(offsetX, offsetY, alpha, fb);
                     drawItemDetails(items[index], alpha);
                 }
             }
@@ -45,23 +46,25 @@ void StoreManager::update(float alpha)
     }
 
     auto game = ComponentsManager::get()->getComponentGame();
-    ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(130, 155, alpha);
+    ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(130, 155, alpha, fb);
     writer->writeTextTTFAutoSize(150, 155, std::to_string(game->getPlayer()->getCoins()).c_str(),
                                  PaletteColors::getMenuOptions(), 0.25f);
 }
 
 void StoreManager::drawItem(StoreItem *item, int x, int y, float alpha)
 {
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+
     if (item->isAvailable()) {
-        item->getImage()->drawFlatAlpha(x, y, alpha);
+        item->getImage()->drawFlatAlpha(x, y, alpha, fb);
 
         if (item->isBought()) {
-            itemBought->drawFlatAlpha(x, y, alpha);
+            itemBought->drawFlatAlpha(x, y, alpha, fb);
         }
         return;
     }
 
-    item->getImageOff()->drawFlatAlpha(x, y, alpha);
+    item->getImageOff()->drawFlatAlpha(x, y, alpha, fb);
 }
 
 void StoreManager::increaseItemSelected()
@@ -80,9 +83,11 @@ void StoreManager::decreaseItemSelected()
 
 void StoreManager::drawItemDetails(StoreItem *item, float alpha)
 {
-    item->getDescription()->drawFlatAlpha(0, 0, alpha);
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
-    ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(345, 323, alpha);
+    item->getDescription()->drawFlatAlpha(0, 0, alpha, fb);
+
+    ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(345, 323, alpha, fb);
 
     writer->writeTextTTFAutoSize(365, 323, std::to_string(item->getCost()).c_str(), PaletteColors::getStatisticsText(), 0.25f);
 }
@@ -175,11 +180,12 @@ void StoreManager::drawBoughtItemsOnHUD(float alpha)
     const int x = 60;
     const int y = 25;
     const int separation = 30;
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
     int cont = 0;
     for (auto item: items) {
         if (item->isBought() && item->isAvailable()) {
-            item->getImageSmall()->drawFlatAlpha(x + cont * separation, y, alpha);
+            item->getImageSmall()->drawFlatAlpha(x + cont * separation, y, alpha, fb);
             cont++;
         }
     }

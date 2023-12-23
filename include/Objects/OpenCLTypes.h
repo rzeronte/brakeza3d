@@ -176,7 +176,7 @@ struct OCParticlesContext {
 
     OCParticlesContext(
         float gravity,
-        float stepAddParticle,
+        float particlesByFrame,
         float particleLifespan,
         int smokeAngleRange,
         int minVelocity,
@@ -189,7 +189,7 @@ struct OCParticlesContext {
     )
     :
             GRAVITY(gravity),
-            PARTICLES_BY_SECOND(stepAddParticle),
+            PARTICLES_BY_SECOND(particlesByFrame),
             PARTICLE_LIFESPAN(particleLifespan),
             SMOKE_ANGLE_RANGE(smokeAngleRange),
             MIN_VELOCITY(minVelocity),

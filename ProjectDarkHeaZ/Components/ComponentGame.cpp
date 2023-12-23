@@ -190,6 +190,19 @@ void ComponentGame::onUpdate()
     textWriter->setAlpha(alpha);
 
     switch(gameState) {
+        case EngineSetup::COUNTDOWN: {
+            handleOnUpdateCountDown();
+            break;
+        }
+        case EngineSetup::PRESS_KEY_NEW_LEVEL:
+        case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL: {
+            handleOnUpdateTutorialImages(alpha);
+            break;
+        }
+        case EngineSetup::GAMING_TUTORIAL: {
+            handleOnUpdateGamingTutorial(alpha);
+            break;
+        }
         case EngineSetup::SPLASH: {
             handleOnUpdateSplash(alpha);
             break;
@@ -252,29 +265,12 @@ void ComponentGame::onUpdate()
 void ComponentGame::postUpdate()
 {
     player->updateWeaponAutomaticStatus();
-    const float alpha = 1 - getFadeToGameState()->getProgress();
-
-    switch(gameState) {
-        case EngineSetup::GAMING_TUTORIAL: {
-            handleOnUpdateGamingTutorial(alpha);
-            break;
-        }
-        case EngineSetup::COUNTDOWN: {
-            handleOnUpdateCountDown();
-            break;
-        }
-        case EngineSetup::PRESS_KEY_NEW_LEVEL:
-        case EngineSetup::PRESS_KEY_PREVIOUS_LEVEL: {
-            handleOnUpdateTutorialImages(alpha);
-            break;
-        }
-    }
 }
 
 void ComponentGame::handleOnUpdateTutorialImages(float alpha)
 {
     if (!getLevelLoader()->getTutorials().empty()) {
-        Logging::Message("handleOnUpdateTutorialImages");
+
         float oldAlpha = textWriter->getAlpha();
         textWriter->setAlpha(alpha);
         textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
@@ -284,11 +280,11 @@ void ComponentGame::handleOnUpdateTutorialImages(float alpha)
         }
         dialogBackground->setMaxAlpha((int) alpha);
         dialogBackground->update();
-        imageCablesVertical->drawFlatAlpha(0, 0, alpha);
-        boxTutorial->drawFlatAlpha(0, 0, alpha);
+        //imageCablesVertical->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+        boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
         getLevelLoader()->drawCurrentTutorialImage(alpha);
 
-        writeDialogTextToContinue("Press ENTER to start...");
+        writeDialogTextToContinue("Press ENTER to start0...");
 
         textWriter->setAlpha(oldAlpha);
         shaderCRT->setMaxAlpha((int) alpha);
@@ -296,26 +292,44 @@ void ComponentGame::handleOnUpdateTutorialImages(float alpha)
     }
 }
 
+void ComponentGame::handleOnUpdateGamingTutorial(float alpha)
+{
+    //imageCablesHorizontal->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+
+    dialogBackground->setMaxAlpha((int) alpha);
+    dialogBackground->update();
+    boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+
+    shaderCRT->setMaxAlpha((int) alpha);
+    shaderCRT->update();
+    help->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+
+    writeDialogTextToContinue("Press ENTER to continue2...");
+
+    /*keep show message radio so that it keep consuming his time*/
+    handleOnUpdateMessageRadio();
+}
+
 void ComponentGame::drawMedalAlpha(int type, int x, int y, float alpha)
 {
     auto hudTexturePackage = ComponentsManager::get()->getComponentHUD()->getHudTextures();
     switch(type) {
-        case 0: { hudTexturePackage->getTextureByLabel("medalBronze")->drawFlatAlpha(x, y, alpha); break; }
-        case 1: { hudTexturePackage->getTextureByLabel("medalSilver")->drawFlatAlpha(x, y, alpha); break; }
-        case 2: { hudTexturePackage->getTextureByLabel("medalGold")->drawFlatAlpha(x, y, alpha); break; }
+        case 0: { hudTexturePackage->getTextureByLabel("medalBronze")->drawFlatAlpha(x, y, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()); break; }
+        case 1: { hudTexturePackage->getTextureByLabel("medalSilver")->drawFlatAlpha(x, y, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()); break; }
+        case 2: { hudTexturePackage->getTextureByLabel("medalGold")->drawFlatAlpha(x, y, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()); break; }
         default: break;
     }
 }
 
 void ComponentGame::showLevelStatistics(float alpha)
 {
-    imageCablesHorizontal->drawFlatAlpha(0, 0, alpha);
+    imageCablesHorizontal->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
 
     dialogBackground->setMaxAlpha((int)alpha);
     dialogBackground->update();
-    boxTutorial->drawFlatAlpha(0, 0, alpha);
+    boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     shaderCRT->setMaxAlpha((int)alpha);
     shaderCRT->update();
@@ -323,7 +337,7 @@ void ComponentGame::showLevelStatistics(float alpha)
     int offsetX = 340;
     int offsetY = 100;
     const int space = 100;
-    player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha);
+    player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, getLevelLoader()->getStats()->stats(WEAPON_PROJECTILE).c_str(),
                                      PaletteColors::getStatisticsText(), 0.3);
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_PROJECTILE).c_str(),
@@ -331,7 +345,7 @@ void ComponentGame::showLevelStatistics(float alpha)
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_PROJECTILE), offsetX, offsetY + 250, alpha);
 
     offsetX += space;
-    player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha);
+    player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, getLevelLoader()->getStats()->stats(WEAPON_LASER).c_str(),
                                      PaletteColors::getStatisticsText(), 0.3);
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER).c_str(),
@@ -339,7 +353,7 @@ void ComponentGame::showLevelStatistics(float alpha)
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER), offsetX, offsetY + 250, alpha);
 
     offsetX += space;
-    player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha);
+    player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, getLevelLoader()->getStats()->stats(WEAPON_RAYLIGHT).c_str(),
                                      PaletteColors::getStatisticsText(), 0.3);
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_RAYLIGHT).c_str(),
@@ -347,7 +361,7 @@ void ComponentGame::showLevelStatistics(float alpha)
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_RAYLIGHT), offsetX, offsetY + 250, alpha);
 
     offsetX += space;
-    player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha);
+    player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, getLevelLoader()->getStats()->stats(WEAPON_BOMB).c_str(),
                                      PaletteColors::getStatisticsText(), 0.3);
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_BOMB).c_str(),
@@ -358,11 +372,11 @@ void ComponentGame::showLevelStatistics(float alpha)
 
     //textWriter->writeTTFCenterHorizontal(350, "Press ENTER to START!", primaryColor, 0.5f);
 
-    imageStatistics->drawFlatAlpha(0, 0, alpha);
+    imageStatistics->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     writeDialogTextToContinue("Press ENTER to continue...");
 
-    ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(EngineSetup::get()->screenWidth/2-8 , offsetY + 300, alpha);
+    ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(EngineSetup::get()->screenWidth/2-8 , offsetY + 300, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     textWriter->writeTTFCenterHorizontal(offsetY + 320, std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(),
                                          PaletteColors::getStatisticsText(), 0.3);
 }
@@ -399,7 +413,7 @@ void ComponentGame::updateEnemyTargetedCrossFire()
     imageCrossFireScreenPosition.x -= imageCrossFire->width() / 2;
     imageCrossFireScreenPosition.y -= imageCrossFire->height() / 2;
 
-    imageCrossFire->drawFlat(imageCrossFireScreenPosition.x, imageCrossFireScreenPosition.y);
+    imageCrossFire->drawFlat(imageCrossFireScreenPosition.x, imageCrossFireScreenPosition.y, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
 }
 
@@ -1456,47 +1470,30 @@ void ComponentGame::handleOnUpdateCountDown()
     textWriter->setAlpha(oldAlpha);
 }
 
-void ComponentGame::handleOnUpdateGamingTutorial(const float alpha)
-{
-    imageCablesHorizontal->drawFlatAlpha(0, 0, alpha);
-
-    dialogBackground->setMaxAlpha(alpha);
-    //dialogBackground->update();
-    boxTutorial->drawFlatAlpha(0, 0, alpha);
-    shaderCRT->setMaxAlpha(alpha);
-    //shaderCRT->update();
-
-
-    help->drawFlatAlpha(0, 0, alpha);
-    writeDialogTextToContinue("Press ENTER to continue...");
-    handleOnUpdateMessageRadio();
-
-}
-
 void ComponentGame::handleOnUpdateHelp(const float alpha)
 {
     dialogBackground->setMaxAlpha((int) alpha);
     dialogBackground->update();
-    boxTutorial->drawFlatAlpha(0, 0, alpha);
+    boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     shaderCRT->setMaxAlpha((int) alpha);
     shaderCRT->update();
 
     writeDialogTextToContinue("Press ESC to continue...");
 
-    helps[currentHelpIndex]->drawFlatAlpha(0, 0, alpha);
+    helps[currentHelpIndex]->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     std::string message = std::to_string(currentHelpIndex + 1) + " / " + std::to_string((int)helps.size());
     if (helps.size() > 1) {
         textWriter->writeTTFCenterHorizontal(323, message.c_str(), PaletteColors::getCrt(), 0.3f);
     }
 
-    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 }
 
 void ComponentGame::handleOnUpdateStore(const float alpha)
 {
-    imageCablesStore->drawFlatAlpha(0, 0, alpha);
+    imageCablesStore->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     dialogBackground->setMaxAlpha((int) alpha);
     dialogBackground->update();
@@ -1504,8 +1501,8 @@ void ComponentGame::handleOnUpdateStore(const float alpha)
     shaderCRT->setMaxAlpha((int) alpha);
     shaderCRT->update();
 
-    boxTutorial->drawFlatAlpha(0, 0, alpha);
-    boxStore->drawFlatAlpha(0, 0, alpha);
+    boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    boxStore->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     storeManager->update(alpha);
 
@@ -1515,15 +1512,15 @@ void ComponentGame::handleOnUpdateStore(const float alpha)
 
 void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)
 {
-    spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha);
+    spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
-    imageCablesStore->drawFlatAlpha(0, 0, alpha);
+    imageCablesStore->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     dialogBackground->setMaxAlpha((int) alpha);
     dialogBackground->update();
 
-    boxTutorial->drawFlatAlpha(0, 0, alpha);
-    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+    boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     writeDialogTextToContinue("Press ENTER to select ...");
 
@@ -1534,10 +1531,10 @@ void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)
 
 void ComponentGame::handleOnUpdatePressKeyGameOver(const float alpha)
 {
-    imageCablesStore->drawFlatAlpha(0, 0, alpha);
+    imageCablesStore->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
-    boxTutorial->drawFlatAlpha(0, 0, alpha);
-    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+    boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     dialogBackground->setMaxAlpha((int) alpha);
     dialogBackground->update();
@@ -1547,27 +1544,27 @@ void ComponentGame::handleOnUpdatePressKeyGameOver(const float alpha)
     shaderCRT->setMaxAlpha((int) alpha);
     shaderCRT->update();
 
-    imageEndGame->drawFlatAlpha(0, 0, alpha);
+    imageEndGame->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 }
 
 void ComponentGame::handleOnUpdateCredits(const float alpha)
 {
-    imageCredits->drawFlatAlpha(0, 0, alpha);
+    imageCredits->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
-    //dialogBackground->setMaxAlpha((int) alpha);
-    //dialogBackground->update();
-    boxTutorial->drawFlatAlpha(0, 0, alpha);
-    //shaderCRT->setMaxAlpha((int) alpha);
-    //shaderCRT->update();
+    dialogBackground->setMaxAlpha((int) alpha);
+    dialogBackground->update();
+    boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    shaderCRT->setMaxAlpha((int) alpha);
+    shaderCRT->update();
 
     writeDialogTextToContinue("Press ESC to continue...");
 
-    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha);
+    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 }
 
 void ComponentGame::handleOnUpdatePressKeyByDead(const float alpha)
 {
-    imageDead->drawFlatAlpha(0, 0, alpha);
+    imageDead->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50f);
 }
 
@@ -1575,7 +1572,7 @@ void ComponentGame::handleOnUpdateSplash(const float alpha)
 {
     splashCounter.update();
 
-    imageSplash->drawFlatAlpha(0, 0, alpha);
+    imageSplash->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     if (splashCounter.isFinished() && splashCounter.isEnabled()) {
         splashCounter.setEnabled(false);

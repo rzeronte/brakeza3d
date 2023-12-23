@@ -47,7 +47,10 @@ void ShaderImage::executeKernelOpenCL(float increaseOffsetX, float increaseOffse
         0, 0,
         this->image.width(),
         this->image.height(),
-        alpha
+        alpha,
+        false,
+        ComponentsManager::get()->getComponentWindow()->getBackgroundFramebuffer(),
+        0
     );
     glClear(GL_DEPTH_BUFFER_BIT);
 }

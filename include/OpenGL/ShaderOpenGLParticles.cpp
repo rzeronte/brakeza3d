@@ -7,10 +7,10 @@
 #include "../Brakeza3D.h"
 
 
-ShaderOpenGLParticles::ShaderOpenGLParticles(const std::string &vertexFilename, const std::string &fragmentFilename)
+ShaderOpenGLParticles::ShaderOpenGLParticles()
 :
     VertexArrayID(0),
-    ShaderOpenGL(vertexFilename, fragmentFilename)
+    ShaderOpenGL("../shaders/Particle.vertexshader","../shaders/Particle.fragmentshader")
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);

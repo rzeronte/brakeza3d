@@ -12,12 +12,6 @@ PlayerSatellite::PlayerSatellite(Mesh3D *parent)
 {
     setParent(parent);
 
-    shaderParticles = new ShaderParticles(
-        true,
-        PaletteColors::getParticlesPlayerSatelliteFrom(),
-        PaletteColors::getParticlesPlayerSatelliteTo(),
-        OCParticlesContext::forPlayerSatellite()
-    );
 }
 
 void PlayerSatellite::onStartSetup()
@@ -90,9 +84,5 @@ float PlayerSatellite::getDamage() const {
 
 void PlayerSatellite::updateShaderParticles()
 {
-    shaderParticles->update(
-        getPosition(),
-        AxisUp(),
-        1.0f
-    );
+
 }

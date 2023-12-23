@@ -19,9 +19,10 @@ class ShaderOpenGLImage : public ShaderOpenGL {
     GLint spriteColorUniform;
     GLint textureUniform;
     GLint alphaUniform;
+    GLint inverseUniform;
 public:
-    ShaderOpenGLImage(const std::string &vertexFilename, const std::string &fragmentFilename);
-    void renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha) const;
+    ShaderOpenGLImage();
+    void renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha, bool inverse, GLuint framebuffer, float z) const;
 };
 
 

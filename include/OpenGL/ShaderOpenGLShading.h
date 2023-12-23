@@ -11,7 +11,7 @@
 class ShaderOpenGLShading : public ShaderOpenGL {
     GLuint VertexArrayID;
 public:
-    ShaderOpenGLShading(const std::string &vertexFilename, const std::string &fragmentFilename);
+    ShaderOpenGLShading();
 
     void render(glm::mat4 ModelMatrix, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size);
 

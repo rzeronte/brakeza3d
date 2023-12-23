@@ -34,9 +34,9 @@ public:
 
     void loadFromRaw(unsigned int *texture, int w, int h);
 
-    void drawFlat(int, int) const;
+    void drawFlat(int, int, GLuint framebuffer) const;
 
-    void drawFlatAlpha(int pos_x, int pos_y, float alpha);
+    void drawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint framebuffer);
 
     void loadTGA(const std::string& filename);
 

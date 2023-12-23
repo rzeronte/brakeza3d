@@ -32,6 +32,7 @@ void ComponentWindow::preUpdate()
 void ComponentWindow::renderToWindow()
 {
     //SDL_GL_SwapWindow(window);
+    renderFramebuffer();
     SDL_RenderPresent(renderer);
     //SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 }
@@ -42,7 +43,6 @@ void ComponentWindow::onUpdate()
 
 void ComponentWindow::postUpdate()
 {
-    SDL_UpdateTexture(screenTexture, nullptr, BUFFERS->videoBuffer, screenSurface->pitch);
 }
 
 void ComponentWindow::onEnd()
@@ -179,52 +179,67 @@ void ComponentWindow::initOpenGL()
     glStencilFunc(GL_ALWAYS, 1, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-    shaderOGLRender = new ShaderOpenGLRender(
-        "../shaders/Render.vertexshader",
-        "../shaders/Render.fragmentshader"
-    );
+    glGenFramebuffers(1, &sceneFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, sceneFramebuffer);
 
-    shaderOGLImage = new ShaderOpenGLImage(
-        "../shaders/Image.vertexshader",
-        "../shaders/Image.fragmentshader"
-    );
+    int w = 0, h = 0;
+    SDL_GetWindowSize(getWindow(), &w, &h);
 
-    shaderOGLLine = new ShaderOpenGLLine(
-        "../shaders/Line.vertexshader",
-        "../shaders/Line.fragmentshader"
-    );
+    glGenTextures(1, &sceneTexture);
+    glBindTexture(GL_TEXTURE_2D, sceneTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sceneTexture, 0);
 
-    shaderOGLWireframe = new ShaderOpenGLWireframe(
-        "../shaders/Wireframe.vertexshader",
-        "../shaders/Wireframe.fragmentshader"
-    );
+    glGenTextures(1, &depthTexture);
+    glBindTexture(GL_TEXTURE_2D, depthTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, w, h, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
 
-    shaderOGLShading = new ShaderOpenGLShading(
-        "../shaders/Shading.vertexshader",
-        "../shaders/Shading.fragmentshader"
-    );
+    glGenFramebuffers(1, &backgroundFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, backgroundFramebuffer);
 
-    shaderOGLPoints = new ShaderOpenGLPoints(
-        "../shaders/Points.vertexshader",
-        "../shaders/Points.fragmentshader"
-    );
+    glGenTextures(1, &backgroundTexture);
+    glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, backgroundTexture, 0);
 
-    shaderOGLStencil = new ShaderOpenGLOutliner(
-        "../shaders/Outliner.vertexshader",
-        "../shaders/Outliner.fragmentshader"
-    );
+    glGenFramebuffers(1, &foregroundFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, foregroundFramebuffer);
 
-    shaderOGLColor = new ShaderOpenGLColor(
-        "../shaders/Color.vertexshader",
-        "../shaders/Color.fragmentshader"
-    );
+    glGenTextures(1, &foregroundTexture);
+    glBindTexture(GL_TEXTURE_2D, foregroundTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, foregroundTexture, 0);
 
-    shaderOGLParticles = new ShaderOpenGLParticles(
-        "../shaders/Particle.vertexshader",
-        "../shaders/Particle.fragmentshader"
-    );
+    glGenFramebuffers(1, &uiFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, uiFramebuffer);
+
+    glGenTextures(1, &uiTexture);
+    glBindTexture(GL_TEXTURE_2D, uiTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, uiTexture, 0);
+
+    shaderOGLRender = new ShaderOpenGLRender();
+    shaderOGLImage = new ShaderOpenGLImage();
+    shaderOGLLine = new ShaderOpenGLLine();
+    shaderOGLWireframe = new ShaderOpenGLWireframe();
+    shaderOGLShading = new ShaderOpenGLShading();
+    shaderOGLPoints = new ShaderOpenGLPoints();
+    shaderOGLStencil = new ShaderOpenGLOutliner();
+    shaderOGLColor = new ShaderOpenGLColor();
+    shaderOGLParticles = new ShaderOpenGLParticles();
 }
 
 ShaderOpenGLImage *ComponentWindow::getShaderOGLImage() const {
@@ -261,4 +276,52 @@ ShaderOpenGLColor *ComponentWindow::getShaderOglColor() const {
 
 ShaderOpenGLParticles *ComponentWindow::getShaderOglParticles() const {
     return shaderOGLParticles;
+}
+
+GLuint ComponentWindow::getSceneFramebuffer() const {
+    return sceneFramebuffer;
+}
+
+GLuint ComponentWindow::getBackgroundFramebuffer() const {
+    return backgroundFramebuffer;
+}
+
+GLuint ComponentWindow::getUIFramebuffer() const {
+    return uiFramebuffer;
+}
+
+GLuint ComponentWindow::getForegroundFramebuffer() const {
+    return foregroundFramebuffer;
+}
+
+void ComponentWindow::renderFramebuffer()
+{
+    const int w = EngineSetup::get()->screenWidth;
+    const int h = EngineSetup::get()->screenHeight;
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    shaderOGLImage->renderTexture(backgroundTexture, 0, 0, w, h, 1.0, true, 0, 0);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    shaderOGLImage->renderTexture(sceneTexture, 0, 0, w, h, 1.0, true, 0, 0);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    shaderOGLImage->renderTexture(foregroundTexture, 0, 0, w, h, 1.0, true, 0, 0);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    shaderOGLImage->renderTexture(uiTexture, 0, 0, w, h, 1.0, true, 0, 0);
+
+    if (screenShoot) {
+        Tools::saveTextureToFile(sceneTexture, w, h, "screenShootScene.png");
+        Tools::saveTextureToFile(backgroundTexture, w, h, "screenShootBackground.png");
+        Tools::saveTextureToFile(uiTexture, w, h, "screenShootUI.png");
+        screenShoot = false;
+    }
+
+    // Restaura la configuración de blending predeterminada
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

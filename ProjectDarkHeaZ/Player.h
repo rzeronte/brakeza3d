@@ -78,8 +78,7 @@ private:
 
     PlayerSatellite satellite;
 
-    ShaderParticles *shaderParticles;
-    ShaderParticles *shaderParticlesTwo;
+    ParticleEmitter *particleEngineLeft;
 
     Image *avatar;
     ShaderEnergyShield *shaderEnergyShield;
@@ -191,8 +190,6 @@ public:
 
     void updateShaderParticles();
 
-    [[nodiscard]] ShaderParticles *getShaderParticles() const;
-
     void drawOnUpdateSecondPass() override;
 
     void onDrawHostBuffer() override;
@@ -224,6 +221,8 @@ public:
     void initLight();
 
     void updateSpriteEnergyShield();
+
+    void drawImGuiProperties();
 };
 
 

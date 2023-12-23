@@ -29,7 +29,8 @@ void ComponentHUD::preUpdate()
     HUDTextures->getTextureByLabel("hudBackground")->drawFlatAlpha(
         0,
         0,
-        ComponentsManager::get()->getComponentGame()->getTextWriter()->getAlpha()
+        ComponentsManager::get()->getComponentGame()->getTextWriter()->getAlpha(),
+        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 }
 
@@ -84,7 +85,7 @@ void ComponentHUD::loadImages()
 void ComponentHUD::drawHUD()
 {
     for (auto & button : buttons) {
-        button->draw();
+        button->draw(ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     }
 }
 
@@ -114,8 +115,10 @@ void ComponentHUD::drawGhateringResources()
     auto textWriter = game->getTextWriter();
     auto player = game->getPlayer();
 
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
     //coins
-    HUDTextures->getTextureByLabel("coinIcon")->drawFlatAlpha(gatheringResourcesOffsetX, gatheringResourcesOffsetY, 255);
+    HUDTextures->getTextureByLabel("coinIcon")->drawFlatAlpha(gatheringResourcesOffsetX, gatheringResourcesOffsetY, 255, fb);
+
     textWriter->writeTextTTFAutoSize(
             gatheringResourcesOffsetX + 16,
             gatheringResourcesOffsetY,
@@ -125,7 +128,7 @@ void ComponentHUD::drawGhateringResources()
     );
 
     // human
-    HUDTextures->getTextureByLabel("astrounautIcon")->drawFlatAlpha(gatheringResourcesOffsetX + 40, 13, 255);
+    HUDTextures->getTextureByLabel("astrounautIcon")->drawFlatAlpha(gatheringResourcesOffsetX + 40, 13, 255, fb);
     textWriter->writeTextTTFAutoSize(
             gatheringResourcesOffsetX + 54,
             13,
@@ -139,16 +142,18 @@ void ComponentHUD::drawIconWeaponsAndLevelName() const
 {
     auto game = ComponentsManager::get()->getComponentGame();
     auto textWriter = game->getTextWriter();
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+
     textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());
 
-    HUDTextures->getTextureByLabel("staminaIcon")->drawFlatAlpha(this->offsetX + 38, this->offsetY - 2, textWriter->getAlpha());
-    HUDTextures->getTextureByLabel("energyIcon")->drawFlatAlpha(this->offsetX + 38, this->offsetY + playerBarSeparation, textWriter->getAlpha());
+    HUDTextures->getTextureByLabel("staminaIcon")->drawFlatAlpha(this->offsetX + 38, this->offsetY - 2, textWriter->getAlpha(), fb);
+    HUDTextures->getTextureByLabel("energyIcon")->drawFlatAlpha(this->offsetX + 38, this->offsetY + playerBarSeparation, textWriter->getAlpha(), fb);
 
     auto player = game->getPlayer();
     const float sizeAmounts = 0.26f;
 
     // weapon icon
-    player->getWeapon()->getIcon()->drawFlatAlpha(this->offsetX + 270, this->offsetY, 255);
+    player->getWeapon()->getIcon()->drawFlatAlpha(this->offsetX + 270, this->offsetY, 255, fb);
 
     // ammo amount
     textWriter->writeTextTTFAutoSize(
@@ -173,7 +178,7 @@ void ComponentHUD::drawIconWeaponsAndLevelName() const
             sizeAmounts
         );
     }
-    weaponBomb->getIcon()->drawFlatAlpha(this->offsetX + 330, this->offsetY, bombAlpha);
+    weaponBomb->getIcon()->drawFlatAlpha(this->offsetX + 330, this->offsetY, bombAlpha, fb);
 
     // shield
     auto weaponShield = player->getWeaponTypeByLabel("shield");
@@ -188,7 +193,7 @@ void ComponentHUD::drawIconWeaponsAndLevelName() const
             sizeAmounts
         );
     }
-    weaponShield->getIcon()->drawFlatAlpha(this->offsetX + 360, this->offsetY, shieldAlpha);
+    weaponShield->getIcon()->drawFlatAlpha(this->offsetX + 360, this->offsetY, shieldAlpha, fb);
 
     // level number
     textWriter->writeTextTTFAutoSize(
@@ -212,7 +217,7 @@ void ComponentHUD::drawIconWeaponsAndLevelName() const
             sizeAmounts
         );
     }
-    weaponReflection->getIcon()->drawFlatAlpha(this->offsetX + 300, this->offsetY, reflectionAlpha);
+    weaponReflection->getIcon()->drawFlatAlpha(this->offsetX + 300, this->offsetY, reflectionAlpha, fb);
 
     ComponentsManager::get()->getComponentGame()->getStoreManager()->drawBoughtItemsOnHUD(255);
 }
@@ -228,10 +233,11 @@ void ComponentHUD::drawEnemyIconAndName()
 {
     auto objectSelected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
     auto textWriter = ComponentsManager::get()->getComponentGame()->getTextWriter();
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
     auto enemy = dynamic_cast<EnemyGhost*>(objectSelected);
     if (enemy != nullptr) {
-        enemy->getAvatar()->drawFlatAlpha(this->offsetX + 582, this->offsetY, 255);
+        enemy->getAvatar()->drawFlatAlpha(this->offsetX + 582, this->offsetY, 255, fb);
 
         textWriter->writeTextTTFAutoSize(
                 this->offsetX + 424,
@@ -241,7 +247,7 @@ void ComponentHUD::drawEnemyIconAndName()
                 0.3
         );
     } else {
-        HUDTextures->getTextureByLabel("emptyEnemy")->drawFlatAlpha(this->offsetX + 580, this->offsetY, 144);
+        HUDTextures->getTextureByLabel("emptyEnemy")->drawFlatAlpha(this->offsetX + 580, this->offsetY, 144, fb);
         textWriter->writeTextTTFAutoSize(
                 this->offsetX + 526,
                 this->offsetY + 14,

@@ -31,6 +31,18 @@ private:
     TTF_Font *fontDefault;
     TTF_Font *fontAlternative;
 
+    GLuint sceneFramebuffer;
+    GLuint sceneTexture, depthTexture;
+
+    GLuint backgroundFramebuffer;
+    GLuint backgroundTexture;
+
+    GLuint foregroundFramebuffer;
+    GLuint foregroundTexture;
+
+    GLuint uiFramebuffer;
+    GLuint uiTexture;
+
     ShaderOpenGLRender *shaderOGLRender;
     ShaderOpenGLImage *shaderOGLImage;
     ShaderOpenGLLine *shaderOGLLine;
@@ -40,6 +52,7 @@ private:
     ShaderOpenGLOutliner *shaderOGLStencil;
     ShaderOpenGLColor *shaderOGLColor;
     ShaderOpenGLParticles *shaderOGLParticles;
+
 public:
 
     ComponentWindow();
@@ -94,7 +107,21 @@ public:
 
     ShaderOpenGLParticles *getShaderOglParticles() const;
 
+    GLuint getSceneFramebuffer() const;
+
+    void renderFramebuffer();
+
+    GLuint getBackgroundFramebuffer() const;
+
+    GLuint getUIFramebuffer() const;
+
+    GLuint getForegroundFramebuffer() const;
+
+    unsigned int blendSourceType = GL_ONE;
+    unsigned int blendDestinationType = GL_ONE;
+    bool screenShoot = false;
 };
 
 
 #endif //BRAKEDA3D_COMPONENTWINDOW_H
+

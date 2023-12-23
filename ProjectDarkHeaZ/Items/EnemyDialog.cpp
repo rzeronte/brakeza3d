@@ -45,7 +45,7 @@ void EnemyDialog::update()
 
     updateOffsets();
 
-    drawDialog(255);
+    drawDialog(1);
 }
 
 void EnemyDialog::drawDialog(float alpha)
@@ -53,9 +53,10 @@ void EnemyDialog::drawDialog(float alpha)
     Point2D positionAvatar(0, -avatar->height() + (avatar->height() * smoothEffect));
     Point2D positionBackground(0, -background->height() + (background->height() * smoothEffect));
 
-    degradateBottom->drawFlatAlpha(positionBackground.x, positionBackground.y, alpha);
-    avatar->drawFlatAlpha(positionAvatar.x, positionAvatar.y, alpha);
-    background->drawFlatAlpha(positionBackground.x, positionBackground.y, alpha);
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+    degradateBottom->drawFlatAlpha(positionBackground.x, positionBackground.y, alpha, fb);
+    avatar->drawFlatAlpha(positionAvatar.x, positionAvatar.y, alpha, fb);
+    background->drawFlatAlpha(positionBackground.x, positionBackground.y, alpha, fb);
 
     Point2D positionFrom(positionBackground.x + 420, positionBackground.y + 30);
     Point2D positionText(positionBackground.x + 420, positionBackground.y + 55);

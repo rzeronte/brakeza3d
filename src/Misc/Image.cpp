@@ -55,14 +55,13 @@ void Image::loadTGA(const std::string& filename)
     exit(-1);
 }
 
-
-void Image::drawFlatAlpha(int pos_x, int pos_y, float alpha)
+void Image::drawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint framebuffer)
 {
     setAlpha(alpha);
-    drawFlat(pos_x, pos_y);
+    drawFlat(pos_x, pos_y, framebuffer);
 }
 
-void Image::drawFlat(int pos_x, int pos_y) const
+void Image::drawFlat(int pos_x, int pos_y, GLuint framebuffer) const
 {
     if (!loaded) return;
 
@@ -89,7 +88,10 @@ void Image::drawFlat(int pos_x, int pos_y) const
         dstRect.y,
         dstRect.w,
         dstRect.h,
-        alpha
+        alpha,
+        false,
+        framebuffer,
+        0
     );
 }
 

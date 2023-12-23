@@ -86,9 +86,11 @@ void ComponentMenu::preUpdate()
 
     const float alpha = 1 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress();
 
-    ComponentsManager::get()->getComponentGame()->boxTutorial->drawFlatAlpha(0, 0, alpha);
-    border->drawFlatAlpha(0, 0, alpha);
-    imageLogoBox->drawFlatAlpha(0, 0, alpha);
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+
+    ComponentsManager::get()->getComponentGame()->boxTutorial->drawFlatAlpha(0, 0, alpha, fb);
+    border->drawFlatAlpha(0, 0, alpha, fb);
+    imageLogoBox->drawFlatAlpha(0, 0, alpha, fb);
 
 }
 

@@ -162,8 +162,6 @@ add_executable(Brakeza3D
 
         src/2D/Sprite2D.cpp
         include/2D/Sprite2D.h
-        include/Shaders/ShaderParticles.h
-        src/Shaders/ShaderParticles.cpp
         src/Shaders/ShaderBlurBuffer.cpp
         src/Shaders/ShaderParticlesBlurBuffer.h
         src/Objects/TentacleIK.cpp
@@ -181,6 +179,8 @@ add_executable(Brakeza3D
         include/Misc/TileManager.h
         include/OpenGL/ShaderOpenGL.cpp
         include/OpenGL/ShaderOpenGL.h
+        include/OpenGL/ShaderOpenGLParticles.h
+        include/OpenGL/ShaderOpenGLParticles.cpp
         include/OpenGL/ShaderOpenGLImage.cpp
         include/OpenGL/ShaderOpenGLImage.h
         include/OpenGL/ShaderOpenGLRender.cpp
@@ -264,6 +264,8 @@ add_executable(Brakeza3D
         ProjectDarkHeaZ/Items/SalvageSpaceship.h
         ProjectDarkHeaZ/Enemies/BoidEnemyGhost.cpp
         ProjectDarkHeaZ/Enemies/BoidEnemyGhost.h
+        include/OpenGL/ShaderOpenGLDOF.cpp
+        include/OpenGL/ShaderOpenGLDOF.h
 )
 
 target_link_libraries(Brakeza3D

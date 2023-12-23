@@ -18,7 +18,7 @@ class ShaderOpenGLOutliner : public ShaderOpenGL {
     GLint textureUniform;
 
 public:
-    ShaderOpenGLOutliner(const std::string &vertexFilename, const std::string &fragmentFilename);
+    ShaderOpenGLOutliner();
 
     void render(Object3D *o, GLint textureID);
 

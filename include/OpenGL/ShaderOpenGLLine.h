@@ -17,7 +17,7 @@ class ShaderOpenGLLine : public ShaderOpenGL {
     GLint modelMatrixUniform;
     GLint projectionMatrixUniform;
 public:
-    ShaderOpenGLLine(const std::string &vertexFilename, const std::string &fragmentFilename);
+    ShaderOpenGLLine();
 
     void render(Point2D a, Point2D b, Color c, float weight);
 };

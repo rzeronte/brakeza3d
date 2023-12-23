@@ -77,7 +77,20 @@ void Brakeza3D::mainLoop()
 
         updateTimer();
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getForegroundFramebuffer());
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getUIFramebuffer());
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getBackgroundFramebuffer());
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getSceneFramebuffer());
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         preUpdateComponents();
 
@@ -89,13 +102,13 @@ void Brakeza3D::mainLoop()
 
         onUpdateComponents();
 
-        if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
-
         componentsManager->getComponentRender()->onUpdateSceneObjectsSecondPass();
 
         componentsManager->getComponentRender()->drawObjetsInHostBuffer();
 
         postUpdateComponents();
+
+        if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
 
         componentsManager->getComponentWindow()->renderToWindow();
     }
@@ -208,6 +221,8 @@ ComponentsManager *Brakeza3D::getComponentsManager() const
 
 void Brakeza3D::ImGuiOnUpdate()
 {
+    glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentWindow()->getUIFramebuffer());
+
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
 

@@ -23,8 +23,8 @@ class ShaderOpenGLRender: public ShaderOpenGL {
     GLuint bufferUBOSpot;
 
 public:
-    ShaderOpenGLRender(const std::string &vertexFilename, const std::string &fragmentFilename);
-    void render(Object3D *o, GLint textureID, GLint textureSpecularID, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size);
+    ShaderOpenGLRender();
+    void render(Object3D *o, GLint textureID, GLint textureSpecularID, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size, GLuint framebuffer);
 
     static void selectActiveTextures(GLint textureID, GLint textureSpecularID) ;
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer) ;

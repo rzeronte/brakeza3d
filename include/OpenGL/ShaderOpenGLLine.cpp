@@ -7,11 +7,11 @@
 #include "../Render/Logging.h"
 #include "../EngineSetup.h"
 
-ShaderOpenGLLine::ShaderOpenGLLine(const std::string &vertexFilename, const std::string &fragmentFilename)
+ShaderOpenGLLine::ShaderOpenGLLine()
 :
     quadVAO(0),
     VBO(0),
-    ShaderOpenGL(vertexFilename, fragmentFilename)
+    ShaderOpenGL("../shaders/Line.vertexshader","../shaders/Line.fragmentshader")
 {
     glGenVertexArrays(1, &quadVAO);
     glBindVertexArray(quadVAO);

@@ -29,8 +29,6 @@ private:
     OCParticlesContext context;
     Image *texture;
 
-
-
     Particle ParticlesContainer[MaxParticles];
     int LastUsedParticle = 0;
 
