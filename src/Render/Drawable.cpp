@@ -528,7 +528,7 @@ void Drawable::drawOutline(Mesh3D *m) {
             true
     );
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer());
     ComponentsManager::get()->getComponentWindow()->getShaderOglStencil()->render(
             m,
             ComponentsManager::get()->getComponentWindow()->getShaderOglColor()->textureColorbuffer

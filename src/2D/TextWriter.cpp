@@ -23,7 +23,16 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
     auto *textureTTF = SDL_CreateTextureFromSurface(renderer, surfaceTTF);
 
     GLuint texID = Image::makeOGLImage(surfaceTTF);
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(texID, x, y, w, h, alpha);
+
+    ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(
+        texID,
+        x, y,
+        w, h,
+        alpha,
+        false,
+        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer(),
+        0
+    );
 
     glDeleteTextures(1, &texID);
     SDL_FreeSurface(surfaceTTF);

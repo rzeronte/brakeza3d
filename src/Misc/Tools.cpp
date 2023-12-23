@@ -494,3 +494,53 @@ Vertex3D Tools::screenToWorld(float x, float y, float screenWidth, float screenH
 
     return Vertex3D(rayDirection.x, rayDirection.y, rayDirection.z);
 }
+
+// Función para guardar el contenido de una textura OpenGL en un archivo de imagen
+bool Tools::saveTextureToFile(GLuint textureID, int width, int height, const char* fileName) {
+    // Crear un surface para copiar el contenido de la textura
+    SDL_Surface* surface = SDL_CreateRGBSurface(0, width, height, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+
+    // Verificar si se creó el surface correctamente
+    if (surface == nullptr) {
+        SDL_Log("Error al crear el surface: %s", SDL_GetError());
+        return false;
+    }
+
+    // Guardar el estado actual de OpenGL
+    GLint previousFramebuffer;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFramebuffer);
+
+    // Crear un framebuffer temporal y asociar la textura a él
+    GLuint framebuffer;
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
+
+    // Leer los píxeles de la textura al surface
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+
+    // Restaurar el estado previo de OpenGL
+    glBindFramebuffer(GL_FRAMEBUFFER, previousFramebuffer);
+    glDeleteFramebuffers(1, &framebuffer);
+
+    // Invertir los píxeles verticalmente para que coincida con la orientación de la imagen guardada
+    int pitch = surface->pitch;
+    void* pixels = surface->pixels;
+    for (int i = 0; i < height / 2; ++i) {
+        void* top = static_cast<uint8_t*>(pixels) + i * pitch;
+        void* bottom = static_cast<uint8_t*>(pixels) + (height - 1 - i) * pitch;
+        std::swap_ranges(static_cast<uint8_t*>(top), static_cast<uint8_t*>(top) + pitch, static_cast<uint8_t*>(bottom));
+    }
+
+    // Guardar el surface como una imagen
+    if (IMG_SavePNG(surface, fileName) != 0) {
+        SDL_Log("Error al guardar la imagen: %s", IMG_GetError());
+        SDL_FreeSurface(surface);
+        return false;
+    }
+
+    // Liberar el surface
+    SDL_FreeSurface(surface);
+
+    return true;
+}

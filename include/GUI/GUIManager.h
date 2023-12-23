@@ -1178,6 +1178,9 @@ public:
             }
 
             if (ImGui::BeginMenu("View")) {
+                ImGui::Checkbox("Screenshot", &ComponentsManager::get()->getComponentWindow()->screenShoot);
+                ImGui::Separator();
+
                 ImGui::Checkbox("FullScreen", &EngineSetup::get()->FULLSCREEN);
                 if (ImGui::IsItemEdited()) {
                     if (EngineSetup::get()->FULLSCREEN) {
@@ -1186,6 +1189,107 @@ public:
                     } else {
                         SDL_SetWindowFullscreen(ComponentsManager::get()->getComponentWindow()->getWindow(), 0);
                     }
+                }
+
+                if (ImGui::TreeNode("Blend Source")) {
+
+                    auto flags = ImGuiComboFlags_None;
+                    const char* items[] = { "Select", "GL_ZERO", "GL_ONE", "GL_SRC_COLOR", "GL_ONE_MINUS_SRC_COLOR", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA" };
+                    int item_current_idx = 0;
+
+                    const char* combo_preview_value = items[item_current_idx];
+                    auto titleCombo = "Blend Source###";
+
+                    if (ImGui::TreeNode("Blend Source##")) {
+                        if (ImGui::BeginCombo(titleCombo, combo_preview_value, flags)) {
+                            for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
+                                const bool is_selected = (item_current_idx == n);
+                                if (ImGui::Selectable(items[n], is_selected)) {
+                                    item_current_idx = n;
+                                    if (!is_selected) {
+                                        switch (n) {
+                                            case 1: {
+                                                ComponentsManager::get()->getComponentWindow()->blendSourceType = GL_ZERO;
+                                                break;
+                                            }
+                                            case 2: {
+                                                ComponentsManager::get()->getComponentWindow()->blendSourceType = GL_ONE;
+                                                break;
+                                            }
+                                            case 3: {
+                                                ComponentsManager::get()->getComponentWindow()->blendSourceType = GL_SRC_COLOR;
+                                                break;
+                                            }
+                                            case 4: {
+                                                ComponentsManager::get()->getComponentWindow()->blendSourceType = GL_ONE_MINUS_SRC_COLOR;
+                                                break;
+                                            }
+                                            case 5: {
+                                                ComponentsManager::get()->getComponentWindow()->blendSourceType = GL_SRC_ALPHA;
+                                                break;
+                                            }
+                                            case 6: {
+                                                ComponentsManager::get()->getComponentWindow()->blendSourceType = GL_ONE_MINUS_SRC_ALPHA;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            ImGui::EndCombo();
+                        }
+                        ImGui::TreePop();
+                    }
+                    if (ImGui::TreeNode("Blend Destination##")) {
+
+                        auto flags = ImGuiComboFlags_None;
+                        const char *items[] = {"Select", "GL_ZERO", "GL_ONE", "GL_DST_COLOR", "GL_ONE_MINUS_DST_COLOR",
+                                               "GL_DST_ALPHA", "GL_ONE_MINUS_DST_ALPHA"};
+                        int item_current_idx = 0;
+
+                        const char *combo_preview_value = items[item_current_idx];
+                        auto titleCombo = "Blend Destination###";
+
+                        if (ImGui::BeginCombo(titleCombo, combo_preview_value, flags)) {
+                            for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
+                                const bool is_selected = (item_current_idx == n);
+                                if (ImGui::Selectable(items[n], is_selected)) {
+                                    item_current_idx = n;
+                                    if (!is_selected) {
+                                        switch (n) {
+                                            case 1: {
+                                                ComponentsManager::get()->getComponentWindow()->blendDestinationType = GL_ZERO;
+                                                break;
+                                            }
+                                            case 2: {
+                                                ComponentsManager::get()->getComponentWindow()->blendDestinationType = GL_ONE;
+                                                break;
+                                            }
+                                            case 3: {
+                                                ComponentsManager::get()->getComponentWindow()->blendDestinationType = GL_DST_COLOR;
+                                                break;
+                                            }
+                                            case 4: {
+                                                ComponentsManager::get()->getComponentWindow()->blendDestinationType = GL_ONE_MINUS_DST_COLOR;
+                                                break;
+                                            }
+                                            case 5: {
+                                                ComponentsManager::get()->getComponentWindow()->blendDestinationType = GL_DST_ALPHA;
+                                                break;
+                                            }
+                                            case 6: {
+                                                ComponentsManager::get()->getComponentWindow()->blendDestinationType = GL_ONE_MINUS_DST_ALPHA;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            ImGui::EndCombo();
+                        }
+                        ImGui::TreePop();
+                    }
+                    ImGui::TreePop();
                 }
                 //ImGui::Checkbox("Tiles", &show_window_physics);
                 ImGui::Separator();
