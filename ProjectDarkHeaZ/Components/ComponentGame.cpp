@@ -1305,7 +1305,6 @@ Mesh3D *ComponentGame::getItemBoxFrame() const {
 void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation)
 {
     auto model = new Mesh3D();
-    model->setLayer(Mesh3DRenderLayer::ONUPDATE);
     model->setRotation(0, 0, 0);
     model->setRotationFrameEnabled(true);
     model->setRotationFrame(Vertex3D(0, 1, 0));

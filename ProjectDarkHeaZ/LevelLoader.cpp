@@ -1037,7 +1037,6 @@ Counter *LevelLoader::getWaitingToWin() {
 SalvageSpaceship* LevelLoader::makeSalvageSpaceship(Vertex3D position)
 {
     auto salvage = new SalvageSpaceship();
-    salvage->setLayer(Mesh3DRenderLayer::ONUPDATE);
     salvage->setRotation(10, 10, 0);
     salvage->setEnabled(true);
     salvage->setAlpha(255);

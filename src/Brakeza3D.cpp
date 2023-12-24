@@ -39,7 +39,7 @@ void Brakeza3D::start()
     mainLoop();
 }
 
-void Brakeza3D::welcomeMessage() const {
+void Brakeza3D::welcomeMessage() {
     Logging::Message("Brakeza3D - Open source game toolkit for old school lovers");
     Logging::Message("By Eduardo Rodriguez (eduardo@brakeza.com)");
     Logging::Message("https://brakeza.com");
@@ -53,69 +53,49 @@ void Brakeza3D::mainLoop()
     SDL_Event e;
 
     engineTimer.start();
-
     managerGUI = new GUIManager(sceneObjects);
-    ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
-
-    ComponentsManager::get()->getComponentCamera()->setFreeLook(true);
-
+    componentsManager->getComponentCollisions()->initBulletSystem();
+    componentsManager->getComponentCamera()->setFreeLook(true);
     onStartComponents();
-
     //LoadDemo();
-
-    SceneLoader::createParticleEmitterInScene();
-
     ImGuiInitialize();
-
     welcomeMessage();
-
     EngineBuffers::get()->initLUATypes();
 
     while (!finish) {
-
         controlFrameRate();
-
         updateTimer();
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getForegroundFramebuffer());
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getUIFramebuffer());
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getBackgroundFramebuffer());
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getSceneFramebuffer());
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        cleanFramebuffers();
         preUpdateComponents();
-
         while (SDL_PollEvent(&e)) {
             checkForResizeOpenGLWindow(e);
             onUpdateSDLPollEventComponents(&e, finish);
             ImGui_ImplSDL2_ProcessEvent(&e);
         }
-
         onUpdateComponents();
-
-        componentsManager->getComponentRender()->onUpdateSceneObjectsSecondPass();
-
-        componentsManager->getComponentRender()->drawObjetsInHostBuffer();
-
         postUpdateComponents();
-
         if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
-
         componentsManager->getComponentWindow()->renderToWindow();
     }
-
     onEndComponents();
-
     delete componentsManager;
+}
+
+void Brakeza3D::cleanFramebuffers() {
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getForegroundFramebuffer());
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getUIFramebuffer());
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getBackgroundFramebuffer());
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getSceneFramebuffer());
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Brakeza3D::checkForResizeOpenGLWindow(SDL_Event &e) {

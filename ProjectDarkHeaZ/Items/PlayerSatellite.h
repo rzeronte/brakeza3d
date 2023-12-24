@@ -24,8 +24,6 @@ public:
 
     void resolveCollision(Collisionable *collisionable) override;
 
-    void drawOnUpdateSecondPass() override;
-
     [[nodiscard]] float getDamage() const;
 
     void updateShaderParticles();

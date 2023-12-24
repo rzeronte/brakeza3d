@@ -52,15 +52,6 @@ void ItemWeaponGhost::onDrawHostBuffer()
     }
 }
 
-void ItemWeaponGhost::drawOnUpdateSecondPass()
-{
-    Object3D::drawOnUpdateSecondPass();
-
-    if (hasFrame) {
-        frame->drawOnUpdateSecondPass();
-    }
-}
-
 ItemWeaponGhost::~ItemWeaponGhost()
 {
     delete frame;

@@ -31,10 +31,8 @@ void ComponentWindow::preUpdate()
 
 void ComponentWindow::renderToWindow()
 {
-    //SDL_GL_SwapWindow(window);
     renderFramebuffer();
     SDL_RenderPresent(renderer);
-    //SDL_RenderCopy(renderer, screenTexture, nullptr, nullptr);
 }
 
 void ComponentWindow::onUpdate()

@@ -96,12 +96,7 @@ public:
 
     [[nodiscard]] int getFps() const;
 
-    void drawObjetsInHostBuffer();
-
     void deleteRemovedObjects();
-
-
-    void onUpdateSceneObjectsSecondPass() const;
 
     void loadConfig();
 

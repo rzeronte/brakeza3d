@@ -190,8 +190,6 @@ public:
 
     void updateShaderParticles();
 
-    void drawOnUpdateSecondPass() override;
-
     void onDrawHostBuffer() override;
 
     Image *getAvatar();

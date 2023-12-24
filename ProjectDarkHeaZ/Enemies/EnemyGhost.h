@@ -67,9 +67,6 @@ public:
 
     void onDrawHostBuffer() override;
 
-    void drawOnUpdateSecondPass() override;
-
-
     void takeDamage(float damageTaken);
 
     void updateEmitterParticles();

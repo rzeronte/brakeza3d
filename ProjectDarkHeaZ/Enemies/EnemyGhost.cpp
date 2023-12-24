@@ -106,7 +106,7 @@ void EnemyGhost::onUpdate()
     }
 
     if (getBehavior() != nullptr) {
-        particleEmitter->drawOnUpdateSecondPass();
+        particleEmitter->onUpdate();
     }
 }
 
@@ -445,11 +445,6 @@ void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 {
     fixedLasers.push_back(ray);
     Brakeza3D::get()->addObject3D(ray, Brakeza3D::uniqueObjectLabel("fixedRay"));
-}
-
-void EnemyGhost::drawOnUpdateSecondPass()
-{
-    Mesh3D::drawOnUpdateSecondPass();
 }
 
 void EnemyGhost::takeDamage(float damageTaken)

@@ -20,8 +20,6 @@ public:
 
     void onDrawHostBuffer() override;
 
-    void drawOnUpdateSecondPass() override;
-
     void postUpdate() override;
 
     ~ItemWeaponGhost() override;
