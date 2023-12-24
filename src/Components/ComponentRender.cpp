@@ -39,20 +39,6 @@ void ComponentRender::preUpdate()
 
 }
 
-void ComponentRender::drawObjetsInHostBuffer()
-{
-    auto components = ComponentsManager::get();
-
-    if (SETUP->DRAW_FPS) {
-        textWriter->writeTTFCenterHorizontal(
-            10,
-            std::to_string(components->getComponentRender()->getFps()).c_str(),
-            Color::green(),
-            0.3
-        );
-    }
-}
-
 void ComponentRender::onUpdate()
 {
     if (!isEnabled()) return;
@@ -76,6 +62,15 @@ void ComponentRender::onUpdate()
     }
     if (isSceneShadersEnabled()) {
         runShadersOpenCLPostUpdate();
+    }
+
+    if (SETUP->DRAW_FPS) {
+        textWriter->writeTTFCenterHorizontal(
+            10,
+            std::to_string(getFps()).c_str(),
+            Color::green(),
+            0.3
+        );
     }
 }
 
@@ -149,16 +144,6 @@ void ComponentRender::onUpdateSceneObjects()
         float distance = cameraPosition.distance(sceneObject->position);
         sorted[distance] = sceneObject;
         if (sceneObject->isEnabled()) sceneObject->onUpdate();
-    }
-}
-
-void ComponentRender::onUpdateSceneObjectsSecondPass() const
-{
-    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
-    for (auto object : sceneObjects) {
-        if (object != nullptr && object->isEnabled()) {
-            object->drawOnUpdateSecondPass();
-        }
     }
 }
 

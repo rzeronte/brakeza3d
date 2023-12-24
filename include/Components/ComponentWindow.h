@@ -93,32 +93,30 @@ public:
 
     [[nodiscard]] ShaderOpenGLRender *getShaderOGLRender() const;
 
-    ShaderOpenGLLine *getShaderOGLLine() const;
+    [[nodiscard]] ShaderOpenGLLine *getShaderOGLLine() const;
 
-    ShaderOpenGLWireframe *getShaderOglWireframe() const;
+    [[nodiscard]] ShaderOpenGLWireframe *getShaderOglWireframe() const;
 
-    ShaderOpenGLShading *getShaderOglShading() const;
+    [[nodiscard]] ShaderOpenGLShading *getShaderOglShading() const;
 
-    ShaderOpenGLPoints *getShaderOGLPoints() const;
+    [[nodiscard]] ShaderOpenGLPoints *getShaderOGLPoints() const;
 
-    ShaderOpenGLOutliner *getShaderOglStencil() const;
+    [[nodiscard]] ShaderOpenGLOutliner *getShaderOglStencil() const;
 
-    ShaderOpenGLColor *getShaderOglColor() const;
+    [[nodiscard]] ShaderOpenGLColor *getShaderOglColor() const;
 
-    ShaderOpenGLParticles *getShaderOglParticles() const;
+    [[nodiscard]] ShaderOpenGLParticles *getShaderOglParticles() const;
 
-    GLuint getSceneFramebuffer() const;
+    [[nodiscard]] GLuint getSceneFramebuffer() const;
 
     void renderFramebuffer();
 
-    GLuint getBackgroundFramebuffer() const;
+    [[nodiscard]] GLuint getBackgroundFramebuffer() const;
 
-    GLuint getUIFramebuffer() const;
+    [[nodiscard]] GLuint getUIFramebuffer() const;
 
-    GLuint getForegroundFramebuffer() const;
+    [[nodiscard]] GLuint getForegroundFramebuffer() const;
 
-    unsigned int blendSourceType = GL_ONE;
-    unsigned int blendDestinationType = GL_ONE;
     bool screenShoot = false;
 };
 
