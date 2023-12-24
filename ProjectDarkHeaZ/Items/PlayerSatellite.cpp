@@ -31,7 +31,6 @@ void PlayerSatellite::onUpdate()
     Mesh3D::onUpdate();
     Mesh3DGhost::integrate();
 
-
     setPosition(ComponentsManager::get()->getComponentGame()->getPlayer()->getPosition());
 
     auto l = Vertex3D(1800, 0, 0);
@@ -41,6 +40,13 @@ void PlayerSatellite::onUpdate()
 
     updateShaderParticles();
 
+    if (counterDamageBlink.isEnabled()) {
+        counterDamageBlink.update();
+        blink->update();
+        if (counterDamageBlink.isFinished()) {
+            blink->setEnabled(false);
+        }
+    }
 }
 
 void PlayerSatellite::postUpdate()
@@ -61,20 +67,6 @@ void PlayerSatellite::resolveCollision(Collisionable *collisionable)
         blink->setEnabled(true);
         counterDamageBlink.setEnabled(true);
     }
-}
-
-void PlayerSatellite::drawOnUpdateSecondPass()
-{
-    Object3D::drawOnUpdateSecondPass();
-
-    if (counterDamageBlink.isEnabled()) {
-        counterDamageBlink.update();
-        blink->update();
-        if (counterDamageBlink.isFinished()) {
-            blink->setEnabled(false);
-        }
-    }
-
 }
 
 float PlayerSatellite::getDamage() const {

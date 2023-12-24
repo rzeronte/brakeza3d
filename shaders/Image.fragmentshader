@@ -5,10 +5,21 @@ in vec2 TexCoords;
 uniform sampler2D image;
 uniform vec3 spriteColor;
 uniform float alpha;
+uniform int inverse;
+uniform int depth;
 
 out vec4 color;
 
 void main()
 {
-    color = vec4(spriteColor, alpha) * texture(image, TexCoords);
+    vec2 tc = TexCoords;
+    if (inverse > 0){
+        tc = vec2(TexCoords.x, -TexCoords.y);
+    }
+
+    vec4 c = texture(image, tc);
+    if (depth > 0) {
+        c = vec4(1, 1, 1, c.r);
+    }
+    color = vec4(spriteColor, alpha) * c;
 }

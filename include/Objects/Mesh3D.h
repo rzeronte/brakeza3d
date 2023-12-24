@@ -19,11 +19,6 @@
 
 typedef float vec3_t[3];
 
-typedef enum {
-    ONUPDATE = 0,
-    SECONDARY = 1,
-} Mesh3DRenderLayer;
-
 class Mesh3D : public Object3D {
 private:
 
@@ -34,7 +29,6 @@ private:
     bool sharedTextures;
     bool flatTextureColor;
     bool render;
-    Mesh3DRenderLayer layer;
     std::vector<ObjectShaderOpenCL*> shaders;
 protected:
     std::vector<Triangle *> modelTriangles;
@@ -106,12 +100,6 @@ public:
     cJSON * getJSON() override;
 
     void onUpdateOpenCLRender();
-
-    void drawOnUpdateSecondPass() override;
-
-    Mesh3DRenderLayer getLayer() const;
-
-    void setLayer(Mesh3DRenderLayer layer);
 
     void drawImGuiProperties() override;
 

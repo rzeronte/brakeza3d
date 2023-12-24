@@ -14,8 +14,7 @@ Mesh3D::Mesh3D()
     grid(nullptr),
     sharedTextures(false),
     flatTextureColor(false),
-    render(true),
-    layer(Mesh3DRenderLayer::ONUPDATE)
+    render(true)
 {
     decal = false;
     luaEnvironment.set("this", this);
@@ -161,16 +160,6 @@ void Mesh3D::onUpdate()
     if (EngineSetup::get()->DRAW_MESH3D_AABB && isRender()) {
         this->updateBoundingBox();
         Drawable::drawAABB(&this->aabb, Color::white());
-    }
-}
-
-void Mesh3D::drawOnUpdateSecondPass()
-{
-    Object3D::drawOnUpdateSecondPass();
-
-    if (layer == Mesh3DRenderLayer::SECONDARY) {
-        //onUpdateOpenCLRender();
-        //renderOpenGL();
     }
 }
 
@@ -476,14 +465,6 @@ void Mesh3D::onDrawHostBuffer()
     }
 
 
-}
-
-Mesh3DRenderLayer Mesh3D::getLayer() const {
-    return layer;
-}
-
-void Mesh3D::setLayer(Mesh3DRenderLayer layer) {
-    Mesh3D::layer = layer;
 }
 
 const char *Mesh3D::getTypeObject() {

@@ -98,8 +98,6 @@ public:
 
     virtual void postUpdate();
 
-    virtual void drawOnUpdateSecondPass();
-
     bool isRotationFrameEnabled();
 
     void setRotationFrameEnabled(bool value);

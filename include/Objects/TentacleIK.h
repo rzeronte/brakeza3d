@@ -47,8 +47,6 @@ public:
 
     void postUpdate() override;
 
-    void drawOnUpdateSecondPass() override;
-
     void onDrawHostBuffer() override;
 
     void addJoint(TentacleSegment *joint);

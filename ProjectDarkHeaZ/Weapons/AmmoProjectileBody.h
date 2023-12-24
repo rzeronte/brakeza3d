@@ -43,8 +43,6 @@ public:
 
     [[nodiscard]] bool isWasCollision() const;
 
-    void drawOnUpdateSecondPass() override;
-
     ~AmmoProjectileBody() override;
 };
 

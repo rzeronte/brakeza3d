@@ -28,10 +28,6 @@ void TentacleIK::postUpdate() {
     Object3D::postUpdate();
 }
 
-void TentacleIK::drawOnUpdateSecondPass() {
-    Object3D::drawOnUpdateSecondPass();
-}
-
 void TentacleIK::onDrawHostBuffer()
 {
     Object3D::onDrawHostBuffer();

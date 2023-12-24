@@ -296,6 +296,18 @@ void Player::onUpdate()
         warningDamage = false;
         ComponentsManager::get()->getComponentSound()->stopChannel(warningSoundChannel);
     }
+
+    if (counterDamageBlink.isEnabled()) {
+        counterDamageBlink.update();
+        blink->update();
+        if (counterDamageBlink.isFinished()) {
+            stopBlinkForPlayer();
+        }
+    }
+
+    if (isEnergyShieldEnabled()) {
+        shaderEnergyShield->update();
+    }
 }
 
 void Player::updateTargetRotation()
@@ -326,25 +338,6 @@ void Player::updatePlayerEnergy()
             setEnergyShieldEnabled(false);
             //ComponentsManager::get()->getComponentSound()->sound("energyOff", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
-    }
-}
-
-void Player::drawOnUpdateSecondPass()
-{
-    if (counterDamageBlink.isEnabled()) {
-        counterDamageBlink.update();
-        blink->update();
-        if (counterDamageBlink.isFinished()) {
-            stopBlinkForPlayer();
-        }
-    }
-
-    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
-        satellite.drawOnUpdateSecondPass();
-    }
-
-    if (isEnergyShieldEnabled()) {
-        shaderEnergyShield->update();
     }
 }
 

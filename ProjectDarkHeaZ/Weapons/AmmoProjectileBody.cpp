@@ -115,13 +115,6 @@ void AmmoProjectileBody::onUpdate()
     particleEmitter->setRotation(getRotation());
 
     particleEmitter->onUpdate();
-    particleEmitter->drawOnUpdateSecondPass();
-
-}
-
-void AmmoProjectileBody::drawOnUpdateSecondPass()
-{
-    Object3D::drawOnUpdateSecondPass();
 }
 
 void AmmoProjectileBody::startEndingCounter()

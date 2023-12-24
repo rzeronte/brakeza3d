@@ -87,7 +87,7 @@ public:
 
     GUIManager *getManagerGui();
 
-    void welcomeMessage() const;
+    static void welcomeMessage() ;
 
     Object3D &getSceneObjectByLabel(const std::string &label);
 
@@ -95,6 +95,7 @@ public:
 
     static void checkForResizeOpenGLWindow(SDL_Event &e);
 
+    void cleanFramebuffers();
 };
 
 

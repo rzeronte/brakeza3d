@@ -292,9 +292,6 @@ const Vertex3D &Object3D::getRotationFrame() const {
     return rotationFrame;
 }
 
-void Object3D::drawOnUpdateSecondPass() {
-}
-
 void Object3D::lookAt(Object3D *o)
 {
     Vertex3D direction = (o->getPosition() - position).getNormalize();
