@@ -30,8 +30,7 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
         w, h,
         alpha,
         false,
-        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer(),
-        0
+        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 
     glDeleteTextures(1, &texID);

@@ -208,7 +208,13 @@ void Drawable::drawVector3D(Vector3D V, Color color)
     Point2D P1((int)((position1.x + 1.0) * 0.5 * windowWidth), (int)((1.0 - position1.y) * 0.5 * windowHeight));
     Point2D P2((int)((position2.x + 1.0) * 0.5 * windowWidth), (int)((1.0 - position2.y) * 0.5 * windowHeight));
 
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLLine()->render(P1, P2, color, 0.0001f);
+    ComponentsManager::get()->getComponentWindow()->getShaderOGLLine()->render(
+        P1,
+        P2,
+        color,
+        0.0001f,
+        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+    );
 }
 
 
@@ -528,11 +534,11 @@ void Drawable::drawOutline(Mesh3D *m) {
             true
     );
 
-    glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer());
+    glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentWindow()->getBackgroundFramebuffer());
     ComponentsManager::get()->getComponentWindow()->getShaderOglStencil()->render(
             m,
             ComponentsManager::get()->getComponentWindow()->getShaderOglColor()->textureColorbuffer
     );
     glDeleteTextures(1, &ComponentsManager::get()->getComponentWindow()->getShaderOglColor()->textureColorbuffer);
-
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

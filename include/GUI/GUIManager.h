@@ -610,6 +610,31 @@ public:
 
             ImGui::Separator();
 
+            if (ImGui::TreeNode("DOF Settings")) {
+                const float focalMinValues = 0;
+                const float focalMaxValues = 1;
+                const float focalValueSens = 0.001;
+
+                const float depthMinValues = 0;
+                const float depthMaxValues = 100;
+                const float depthValueSens = 0.1;
+
+                const int minBlurRadius = 0;
+                const int maxBlurRadius = 10;
+
+                ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
+                ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
+                ImGui::Separator();
+                ImGui::Checkbox("Show Depth Map", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
+                ImGui::Separator();
+
+                ImGui::TreePop();
+            }
+            ImGui::Separator();
+
             auto scripts = componentRender->getLUAScripts();
             for (int i = 0; i < (int) scripts.size(); i++) {
                 auto currentScript = scripts[i];
@@ -858,10 +883,6 @@ public:
 
         ImVec4 FOG_IMGUI_COLOR;
 
-        const float range_min_lightmap_intensity = 0;
-        const float range_max_lightmap_intensity = 1;
-        const float range_sensibility_lightmap_intensity = 0.0001;
-
         const float range_min_fog_intensity = 0;
         const float range_max_fog_intensity = 1;
         const float range_sensibility_fog_intensity = 0.1;
@@ -887,17 +908,13 @@ public:
         const float range_min_frustum_fardistance = 1;
         const float range_max_frustum_fardistance = 10000;
 
-        const float range_frustum_clipping_distance_sensibility = 0.00001;
-        const float range_min_frustum_clipping_distance = 0;
-        const float range_max_frustum_clipping_distance = 1;
+        const float range_far_plane_distance_sensibility = 1.0f;
+        const float range_far_plane_min = 0;
+        const float range_max_plane_max = 1000000;
 
         const int range_framerate_sensibility = 1;
         const int range_min_framerate_distance = 0;
         const int range_max_framerate_distance = 500;
-
-        const float range_fov_sensibility = 1;
-        const float range_min_fov = 20;
-        const float range_max_fov = 160;
 
         bool changedFOGcolor = false;
         int misc_flags = ImGuiColorEditFlags_NoOptions;
@@ -979,21 +996,6 @@ public:
                 ImGui::Checkbox("Draw Main Z-Buffer", &EngineSetup::get()->DRAW_MAIN_DEEP_MAPPING);
 
                 ImGui::Separator();
-                ImGui::DragScalar("FOV", ImGuiDataType_Float, &EngineSetup::get()->HORIZONTAL_FOV, range_fov_sensibility, &range_min_fov, &range_max_fov, "%f", 1.0f);
-
-                if (ImGui::IsItemEdited()) {
-                    cam->getFrustum()->setup(
-                            cam->getPosition(),
-                            Vertex3D(0, 0, 1),
-                            EngineSetup::get()->up,
-                            EngineSetup::get()->right,
-                            EngineSetup::get()->HORIZONTAL_FOV,
-                            ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
-                            EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
-                    );
-                    cam->updateFrustum();
-                }
-                ImGui::Separator();
 
                 ImGui::Checkbox("Tiled Based", &EngineSetup::get()->BASED_TILE_RENDER);
 
@@ -1004,23 +1006,8 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Frustum Clipping", &EngineSetup::get()->ENABLE_CLIPPING);
                 if (EngineSetup::get()->ENABLE_CLIPPING) {
-                    ImGui::DragScalar("Frustum Clipping Distance", ImGuiDataType_Float,&EngineSetup::get()->FRUSTUM_CLIPPING_DISTANCE,range_frustum_clipping_distance_sensibility, &range_min_frustum_clipping_distance,&range_max_frustum_clipping_distance, "%f", 1.0f);
-                    ImGui::DragScalar("EPSILON", ImGuiDataType_Float, &EngineSetup::get()->EPSILON,range_frustum_clipping_distance_sensibility, &range_min_frustum_clipping_distance,&range_max_frustum_clipping_distance, "%f", 1.0f);
-                }
-
-                ImGui::Separator();
-                ImGui::DragScalar("Frustum FarDistance", ImGuiDataType_Float,&EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE,range_frustum_fardistance_sensibility, &range_min_frustum_fardistance,&range_max_frustum_fardistance, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) {
-                    cam->getFrustum()->setup(
-                            cam->getPosition(),
-                            Vertex3D(0, 0, 1),
-                            EngineSetup::get()->up,
-                            EngineSetup::get()->right,
-                            EngineSetup::get()->HORIZONTAL_FOV,
-                            ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
-                            EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
-                    );
-                    cam->updateFrustum();
+                    ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
+                    ImGui::DragScalar("EPSILON", ImGuiDataType_Float, &EngineSetup::get()->EPSILON, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
                 }
 
                 ImGui::Separator();
@@ -1127,17 +1114,8 @@ public:
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Lights Billboards", &EngineSetup::get()->DRAW_LIGHTPOINTS_BILLBOARD);
                 ImGui::Separator();
-                ImGui::DragScalar("Lightmap Blend Intensity", ImGuiDataType_Float,
-                                  &EngineSetup::get()->LIGHTMAPPING_BLEND_INTENSITY,
-                                  range_sensibility_lightmap_intensity, &range_min_lightmap_intensity,
-                                  &range_max_lightmap_intensity, "%f", 1.0f);
-                ImGui::DragScalar("Lightmap Intensity", ImGuiDataType_Float,
-                                  &EngineSetup::get()->LIGHTMAPPING_INTENSITY,
-                                  range_sensibility_lightmap_intensity, &range_min_lightmap_intensity,
-                                  &range_max_lightmap_intensity, "%f", 1.0f);
                 ImGui::EndMenu();
             }
-
 
             if (ImGui::BeginMenu("Effects FX")) {
                 if (ImGui::BeginMenu("Shader Particles")) {
@@ -1178,9 +1156,8 @@ public:
             }
 
             if (ImGui::BeginMenu("View")) {
-                ImGui::Checkbox("Screenshot", &ComponentsManager::get()->getComponentWindow()->screenShoot);
-                ImGui::Separator();
                 ImGui::Checkbox("FullScreen", &EngineSetup::get()->FULLSCREEN);
+
                 if (ImGui::IsItemEdited()) {
                     if (EngineSetup::get()->FULLSCREEN) {
                         SDL_SetWindowFullscreen(ComponentsManager::get()->getComponentWindow()->getWindow(), SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -1193,8 +1170,12 @@ public:
                 ImGui::Checkbox("Draw Main Axis", &EngineSetup::get()->RENDER_MAIN_AXIS);
                 ImGui::Checkbox("Draw Object3D Axis", &EngineSetup::get()->RENDER_OBJECTS_AXIS);
                 if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
+                    const float focalMinValues = 0;
+                    const float focalMaxValues = 1000;
+                    const float focalValueSens = 0.01;
+
                     ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &EngineSetup::get()->OBJECT_AXIS_SIZE,
-                                      range_min_lightmap_intensity, &range_min_lightmap_intensity, &range_max_lightmap_intensity, "%f", 1.0f);
+                                      focalMinValues, &focalMinValues, &focalMaxValues, "%f", 1.0f);
 
                 }
                 ImGui::Separator();
