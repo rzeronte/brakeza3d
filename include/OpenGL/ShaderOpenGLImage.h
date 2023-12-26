@@ -11,11 +11,8 @@ class ShaderOpenGLImage : public ShaderOpenGL {
     GLuint quadVAO;
     GLuint VBO;
 
-    glm::mat4 projection;
-
     GLint modelMatrixUniform;
     GLint projectionMatrixUniform;
-    GLint spriteColorUniform;
     GLint textureUniform;
     GLint alphaUniform;
     GLint inverseUniform;
