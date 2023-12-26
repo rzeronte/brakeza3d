@@ -28,8 +28,8 @@ void ShaderOpenGLColor::render(
 )
 {
     if (toFramebuffer) {
-        int w = 0, h = 0;
-        SDL_GetWindowSize(ComponentsManager::get()->getComponentWindow()->getWindow(), &w, &h);
+        int w = ComponentsManager::get()->getComponentWindow()->getWidth();
+        int h = ComponentsManager::get()->getComponentWindow()->getHeight();
 
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glGenTextures(1, &textureColorbuffer);

@@ -22,8 +22,6 @@ public:
 
     virtual ~TextWriter();
 
-    int convertPositionYAspect(int value);
-
     void writeTextTTFAutoSize(int x, int y, const char *text, Color c, float sizeRatio);
 
     void writeTextTTF(int x, int y, int w, int h, const char *text, Color c);
@@ -31,8 +29,6 @@ public:
     void writeTextTTFMiddleScreen(const char *text, Color c, float sizeRatio);
 
     void writeTTFCenterHorizontal(int y, const char *text, Color c, float sizeRatio);
-
-    int convertPositionXAspect(int value);
 
     [[nodiscard]] float getAlpha() const;
 
