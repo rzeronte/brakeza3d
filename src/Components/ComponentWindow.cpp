@@ -197,7 +197,7 @@ ShaderOpenGLDOF *ComponentWindow::getShaderOGLDOF() const {
     return shaderOGLDOF;
 }
 
-ShaderOpenGLOutliner *ComponentWindow::getShaderOglStencil() const {
+ShaderOpenGLOutline *ComponentWindow::getShaderOglStencil() const {
     return shaderOGLStencil;
 }
 
@@ -339,7 +339,7 @@ void ComponentWindow::initOpenGL()
     shaderOGLWireframe = new ShaderOpenGLWireframe();
     shaderOGLShading = new ShaderOpenGLShading();
     shaderOGLPoints = new ShaderOpenGLPoints();
-    shaderOGLStencil = new ShaderOpenGLOutliner();
+    shaderOGLStencil = new ShaderOpenGLOutline();
     shaderOGLColor = new ShaderOpenGLColor();
     shaderOGLParticles = new ShaderOpenGLParticles();
     shaderOGLDOF = new ShaderOpenGLDOF();
@@ -354,21 +354,21 @@ void ComponentWindow::renderFramebuffer()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    shaderOGLImage->renderTexture(backgroundTexture, 0, 0, w, h, 1.0, true, globalFramebuffer);
-    shaderOGLImage->renderTexture(sceneTexture, 0, 0, w, h, 1.0, true, globalFramebuffer);
+    shaderOGLImage->renderTexture(backgroundTexture, 0, 0, w, h, 1, true, globalFramebuffer);
+    shaderOGLImage->renderTexture(sceneTexture, 0, 0, w, h, 1, true, globalFramebuffer);
 
     if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
         shaderOGLDOF->render(globalTexture, depthTexture);
-        shaderOGLImage->renderTexture(shaderOGLDOF->getTextureResult(), 0, 0, w, h, 1.0, false, globalFramebuffer);
+        shaderOGLImage->renderTexture(shaderOGLDOF->getTextureResult(), 0, 0, w, h, 1, false, globalFramebuffer);
     }
 
     if (EngineSetup::get()->SHOW_DEPTH_OF_FIELD) {
         shaderOGLDepthMap->render(depthTexture, globalFramebuffer);
     }
-    shaderOGLImage->renderTexture(foregroundTexture, 0, 0, w, h, 1.0, true, globalFramebuffer);
 
-    shaderOGLImage->renderTexture(globalTexture, 0, 0, w, h, 1.0, true, 0);
-    shaderOGLImage->renderTexture(uiTexture, 0, 0, w, h, 1.0, true, 0);
+    shaderOGLImage->renderTexture(foregroundTexture, 0, 0, w, h, 1, true, globalFramebuffer);
+    shaderOGLImage->renderTexture(globalTexture, 0, 0, w, h, 1, true, 0);
+    shaderOGLImage->renderTexture(uiTexture, 0, 0, w, h, 1, true, 0);
 }
 
 void ComponentWindow::cleanFrameBuffers() const

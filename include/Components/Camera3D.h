@@ -35,8 +35,6 @@ public:
 
     Camera3D();
 
-    void updateFrustum();
-
     void UpdateVelocity();
 
     void UpdatePositionForVelocity();

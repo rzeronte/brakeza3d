@@ -14,7 +14,6 @@ void ComponentCamera::onStart()
 {
     Logging::head("ComponentCamera onStart");
     setFreeLook(true);
-    this->getCamera()->updateFrustum();
 }
 
 void ComponentCamera::preUpdate()
@@ -41,8 +40,6 @@ void ComponentCamera::postUpdate()
     /*if (getCamera()->getFollowTo() != nullptr) {
         updatePositionForTrackingObject();
     }*/
-
-    this->getCamera()->updateFrustum();
 }
 
 void ComponentCamera::onEnd() {

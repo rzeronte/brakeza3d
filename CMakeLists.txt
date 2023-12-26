@@ -199,8 +199,8 @@ add_executable(Brakeza3D
         include/OpenGL/ShaderOpenGLCustom.cpp
         include/OpenGL/ShaderOpenGLCustom.h
         include/OpenGL/ShaderOpenGLCustom.cpp
-        include/OpenGL/ShaderOpenGLOutliner.cpp
-        include/OpenGL/ShaderOpenGLOutliner.h
+        include/OpenGL/ShaderOpenGLOutline.cpp
+        include/OpenGL/ShaderOpenGLOutline.h
         include/OpenGL/ShaderOpenGLColor.cpp
         include/OpenGL/ShaderOpenGLColor.h
 
@@ -266,6 +266,8 @@ add_executable(Brakeza3D
         ProjectDarkHeaZ/Enemies/BoidEnemyGhost.h
         include/OpenGL/ShaderOpenGLDOF.cpp
         include/OpenGL/ShaderOpenGLDOF.h
+        include/OpenGL/ShaderOpenGLDepthMap.cpp
+        include/OpenGL/ShaderOpenGLDepthMap.h
 )
 
 target_link_libraries(Brakeza3D
