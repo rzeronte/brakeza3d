@@ -61,7 +61,7 @@ public:
     float FOG_DISTANCE = 4500;
     float FOG_INTENSITY = 1.f;
     Color FOG_COLOR = Color::FOGDefault();
-    float FRUSTUM_FARPLANE_DISTANCE = 9000000;
+    float FRUSTUM_FARPLANE_DISTANCE = 100000;
     float HORIZONTAL_FOV = 90;
 
     bool DRAW_TILES_GRID = false;
@@ -171,9 +171,7 @@ public:
     float TESTING_INT3 = 1;
     float TESTING_INT4 = 0.1f;
 
-    bool ENABLE_DEPTH_OF_FIELD = true;
-    float LIGHTMAPPING_BLEND_INTENSITY = 0.05f;
-    float LIGHTMAPPING_INTENSITY = 0.75f;
+    bool ENABLE_DEPTH_OF_FIELD = false;
 
     //LIGHTNING EFFECT
     float LIGHTNING_GENERATIONS = 5;

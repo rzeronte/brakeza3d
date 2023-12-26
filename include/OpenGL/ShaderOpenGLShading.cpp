@@ -23,7 +23,6 @@ void ShaderOpenGLShading::render(
     glBindVertexArray(VertexArrayID);
 
     glDisable(GL_BLEND);
-    glDisable(GL_DEPTH);
 
     glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix();
     glm::mat4 ProjectionMatrix = Camera3D::getProjectionMatrix();
@@ -39,6 +38,8 @@ void ShaderOpenGLShading::render(
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+
+    glEnable(GL_BLEND);
 }
 
 void ShaderOpenGLShading::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)

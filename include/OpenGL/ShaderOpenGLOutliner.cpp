@@ -6,6 +6,9 @@
 
 ShaderOpenGLOutliner::ShaderOpenGLOutliner()
 :
+    VertexArrayID(0),
+    quadVAO(0),
+    VBO(0),
     ShaderOpenGL("../shaders/Outliner.vertexshader","../shaders/Outliner.fragmentshader")
 {
     glGenVertexArrays(1, &quadVAO);
@@ -43,7 +46,6 @@ void ShaderOpenGLOutliner::render(
 )
 {
     glEnable(GL_BLEND);
-    glDisable(GL_DEPTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glUseProgram(programID);
@@ -71,7 +73,6 @@ void ShaderOpenGLOutliner::render(
 
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDisable(GL_BLEND);
 
     glBindVertexArray(0);
 }

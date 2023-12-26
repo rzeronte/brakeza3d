@@ -51,7 +51,6 @@ void ComponentHUD::postUpdate()
 
     drawHUD();
     drawShaderLasers();
-
 }
 
 void ComponentHUD::onEnd()

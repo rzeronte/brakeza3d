@@ -18,10 +18,10 @@ void Sprite3D::onUpdate()
 {
     Object3D::onUpdate();
 
+    return;
     this->updateTrianglesCoordinatesAndTexture();
 
     glEnable(GL_BLEND);
-    glDisable(GL_DEPTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
@@ -32,7 +32,7 @@ void Sprite3D::onUpdate()
         billboard->uvbuffer,
         billboard->normalbuffer,
         (int) billboard->vertices.size(),
-        ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+        ComponentsManager::get()->getComponentWindow()->getBackgroundFramebuffer()
     );
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME){

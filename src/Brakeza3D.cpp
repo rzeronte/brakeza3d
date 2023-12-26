@@ -65,7 +65,6 @@ void Brakeza3D::mainLoop()
     while (!finish) {
         controlFrameRate();
         updateTimer();
-        cleanFramebuffers();
         preUpdateComponents();
         while (SDL_PollEvent(&e)) {
             checkForResizeOpenGLWindow(e);
@@ -79,23 +78,6 @@ void Brakeza3D::mainLoop()
     }
     onEndComponents();
     delete componentsManager;
-}
-
-void Brakeza3D::cleanFramebuffers() {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getForegroundFramebuffer());
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getUIFramebuffer());
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getBackgroundFramebuffer());
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, componentsManager->getComponentWindow()->getSceneFramebuffer());
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Brakeza3D::checkForResizeOpenGLWindow(SDL_Event &e) {
@@ -214,6 +196,8 @@ void Brakeza3D::ImGuiOnUpdate()
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Brakeza3D::ImGuiInitialize() const

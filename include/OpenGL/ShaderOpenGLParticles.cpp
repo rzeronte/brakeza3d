@@ -31,6 +31,8 @@ void ShaderOpenGLParticles::render(
     int particlesCount
 )
 {
+    glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+
     glUseProgram(programID);
     glBindVertexArray(VertexArrayID);
 

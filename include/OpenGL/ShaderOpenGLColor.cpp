@@ -8,6 +8,9 @@
 
 ShaderOpenGLColor::ShaderOpenGLColor()
 :
+    VertexArrayID(0),
+    framebuffer(0),
+    textureColorbuffer(0),
     ShaderOpenGL("../shaders/Color.vertexshader","../shaders/Color.fragmentshader")
 {
     glGenVertexArrays(1, &VertexArrayID);
@@ -59,6 +62,8 @@ void ShaderOpenGLColor::render(
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void ShaderOpenGLColor::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)

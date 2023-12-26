@@ -13,7 +13,6 @@ class ShaderOpenGLImage : public ShaderOpenGL {
 
     glm::mat4 projection;
 
-
     GLint modelMatrixUniform;
     GLint projectionMatrixUniform;
     GLint spriteColorUniform;
@@ -22,7 +21,7 @@ class ShaderOpenGLImage : public ShaderOpenGL {
     GLint inverseUniform;
 public:
     ShaderOpenGLImage();
-    void renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha, bool inverse, GLuint framebuffer, float z) const;
+    void renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha, bool inverse, GLuint framebuffer) const;
 };
 
 

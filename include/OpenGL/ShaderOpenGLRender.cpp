@@ -31,13 +31,18 @@ void ShaderOpenGLRender::render(
     GLuint framebuffer
 )
 {
-    glEnable(GL_DEPTH);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
     glUseProgram(programID);
     glBindVertexArray(VertexArrayID);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDepthFunc(GL_LESS);
+    glDisable(GL_CULL_FACE);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
 
     glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix();
     glm::mat4 ProjectionMatrix = Camera3D::getProjectionMatrix();
@@ -91,6 +96,8 @@ void ShaderOpenGLRender::render(
 
     glDeleteBuffers(1, &bufferUBO);
     glDeleteBuffers(1, &bufferUBOSpot);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void ShaderOpenGLRender::fillPointLightsUBO()

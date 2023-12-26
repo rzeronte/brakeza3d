@@ -43,11 +43,10 @@ ShaderOpenGLImage::ShaderOpenGLImage()
     inverseUniform = glGetUniformLocation(programID, "inverse");
 }
 
-void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha, bool inverse, GLuint framebuffer, float z) const
+void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha, bool inverse, GLuint framebuffer) const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-    glDisable(GL_DEPTH);
     glDisable(GL_DEPTH_TEST);
 
     glUseProgram(programID);
@@ -61,7 +60,7 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
     glm::vec3 color = glm::vec3(1.0f);
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(position, z));
+    model = glm::translate(model, glm::vec3(position, 0));
     model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
     model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f));
     model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
@@ -83,7 +82,8 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
 
     glBindVertexArray(0);
 
-    glEnable(GL_DEPTH);
     glEnable(GL_DEPTH_TEST);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

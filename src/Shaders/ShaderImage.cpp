@@ -49,10 +49,8 @@ void ShaderImage::executeKernelOpenCL(float increaseOffsetX, float increaseOffse
         this->image.height(),
         alpha,
         false,
-        ComponentsManager::get()->getComponentWindow()->getBackgroundFramebuffer(),
-        0
+        ComponentsManager::get()->getComponentWindow()->getBackgroundFramebuffer()
     );
-    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void ShaderImage::limitOffset()
