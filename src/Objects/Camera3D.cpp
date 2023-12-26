@@ -3,7 +3,6 @@
 #include <gtx/euler_angles.hpp>
 #include "../../include/Components/Camera3D.h"
 #include "../../include/Render/Maths.h"
-#include "../../include/EngineSetup.h"
 #include "../../include/Render/Logging.h"
 
 Camera3D::Camera3D(): speed(0), strafe(0), jump(0), m_ghostObject(nullptr)
@@ -34,17 +33,6 @@ Camera3D::Camera3D(): speed(0), strafe(0), jump(0), m_ghostObject(nullptr)
     this->setLabel(EngineSetup::get()->cameraNameIdentifier);
 
     this->consoleInfo();
-}
-
-void Camera3D::updateFrustum() {
-    frustum->setPosition( this->getPosition() );
-    frustum->setRotation( this->getRotation() );
-
-    frustum->direction = this->getRotation().getTranspose() * EngineSetup::get()->forward;
-    frustum->up = this->getRotation().getTranspose() * EngineSetup::get()->up;
-    frustum->right = this->getRotation().getTranspose() * EngineSetup::get()->right;
-
-    frustum->updateFrustum();
 }
 
 void Camera3D::consoleInfo() const {
@@ -186,14 +174,15 @@ const Vertex3D &Camera3D::getFollowToPositionOffset() const {
     return followToPositionOffset;
 }
 
-glm::mat4 Camera3D::getViewMatrix()  {
+glm::mat4 Camera3D::getViewMatrix()
+{
     Vertex3D forward = getRotation().getTranspose() * Vertex3D(0, 0, 1);
 
-    const auto p = glm::vec3(position.x, position.y, position.z);
+    const auto p = position.toGLM();
     ViewMatrix = glm::lookAt(
-            p,
-            p + glm::vec3(forward.x, forward.y, forward.z),
-            glm::vec3(0,-1,0)
+        p,
+        p + forward.toGLM(),
+        glm::vec3(0,-1,0)
     );
 
     return ViewMatrix;

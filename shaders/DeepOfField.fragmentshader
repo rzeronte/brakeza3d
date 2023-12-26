@@ -1,6 +1,8 @@
 #version 330 core
 
 in vec2 TexCoords;
+in vec2 invScreenSize;
+
 out vec4 FragColor;
 
 uniform sampler2D sceneTexture;
@@ -11,8 +13,6 @@ uniform float focalRange;
 uniform int blurRadius;
 uniform float far_plane;
 uniform float intensity;
-uniform int screenWidth;
-uniform int screenHeight;
 
 float near_plane = 0.1f;
 
@@ -25,7 +25,7 @@ float LinearizeDepth(float depth)
 void main()
 {
     float depthValue = texture(depthTexture, TexCoords).r * intensity;
-    float depth = LinearizeDepth(depthValue)/ far_plane;
+    float depth = LinearizeDepth(depthValue) / far_plane;
 
     // Calcular la diferencia de profundidad con respecto al plano de enfoque
     float depthDifference = abs(depth - focalDistance);
@@ -42,7 +42,7 @@ void main()
     for (int dy = -blurAmount; dy <= blurAmount; ++dy) {
         for (int dx = -blurAmount; dx <= blurAmount; ++dx) {
             // Calcular las coordenadas del píxel vecino
-            vec2 offsetTexCoord = TexCoords + vec2(float(dx) / screenWidth, float(dy) / screenHeight);
+            vec2 offsetTexCoord = TexCoords + vec2(float(dx), float(dy)) * invScreenSize;
 
             // Obtener la profundidad del píxel vecino desde el buffer de profundidad
             float thisDepth = texture(depthTexture, offsetTexCoord).r * intensity;
@@ -50,7 +50,7 @@ void main()
 
             // Calcular la diferencia de profundidad y el peso del píxel
             float depthDifference = abs(depth - thisDepth);
-            float weight = 1.0 / (1.0 + depthDifference * depthDifference * blurRadius);
+            float weight = 1.0 / (1.0 + depthDifference * depthDifference * blurAmount);
 
             // Obtener el color del píxel vecino desde la textura de video
             vec4 neighborColor = texture(sceneTexture, offsetTexCoord);

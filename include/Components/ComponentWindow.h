@@ -16,7 +16,7 @@
 #include "../OpenGL/ShaderOpenGLWireframe.h"
 #include "../OpenGL/ShaderOpenGLShading.h"
 #include "../OpenGL/ShaderOpenGLPoints.h"
-#include "../OpenGL/ShaderOpenGLOutliner.h"
+#include "../OpenGL/ShaderOpenGLOutline.h"
 #include "../OpenGL/ShaderOpenGLColor.h"
 #include "../OpenGL/ShaderOpenGLParticles.h"
 #include "../OpenGL/ShaderOpenGLDOF.h"
@@ -55,7 +55,7 @@ private:
     ShaderOpenGLWireframe *shaderOGLWireframe;
     ShaderOpenGLShading *shaderOGLShading;
     ShaderOpenGLPoints *shaderOGLPoints;
-    ShaderOpenGLOutliner *shaderOGLStencil;
+    ShaderOpenGLOutline *shaderOGLStencil;
     ShaderOpenGLColor *shaderOGLColor;
     ShaderOpenGLParticles *shaderOGLParticles;
     ShaderOpenGLDOF *shaderOGLDOF;
@@ -109,7 +109,7 @@ public:
 
     [[nodiscard]] ShaderOpenGLPoints *getShaderOGLPoints() const;
 
-    [[nodiscard]] ShaderOpenGLOutliner *getShaderOglStencil() const;
+    [[nodiscard]] ShaderOpenGLOutline *getShaderOglStencil() const;
 
     [[nodiscard]] ShaderOpenGLColor *getShaderOglColor() const;
 

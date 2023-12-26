@@ -524,21 +524,23 @@ void Drawable::drawTriangleNormal(Triangle *triangle, Color color)
     Drawable::drawVector3D(v, color);
 }
 
-void Drawable::drawOutline(Mesh3D *m) {
-    ComponentsManager::get()->getComponentWindow()->getShaderOglColor()->render(
-            m,
-            m->vertexbuffer,
-            m->uvbuffer,
-            m->normalbuffer,
-            (int) m->vertices.size(),
-            true
+void Drawable::drawOutline(Mesh3D *m)
+{
+    auto componentWindow = ComponentsManager::get()->getComponentWindow();
+
+    componentWindow->getShaderOglColor()->render(
+        m,
+        m->vertexbuffer,
+        m->uvbuffer,
+        m->normalbuffer,
+        (int) m->vertices.size(),
+        true
     );
 
-    glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentWindow()->getBackgroundFramebuffer());
-    ComponentsManager::get()->getComponentWindow()->getShaderOglStencil()->render(
-            m,
-            ComponentsManager::get()->getComponentWindow()->getShaderOglColor()->textureColorbuffer
-    );
-    glDeleteTextures(1, &ComponentsManager::get()->getComponentWindow()->getShaderOglColor()->textureColorbuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, componentWindow->getBackgroundFramebuffer());
+
+    componentWindow->getShaderOglStencil()->render(componentWindow->getShaderOglColor()->textureColorbuffer);
+    glDeleteTextures(1, &componentWindow->getShaderOglColor()->textureColorbuffer);
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

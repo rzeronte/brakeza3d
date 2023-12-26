@@ -279,8 +279,6 @@ void ComponentGameInput::handleZoom(SDL_Event *event)
             ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
             EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
         );
-
-        ComponentsManager::get()->getComponentCamera()->getCamera()->updateFrustum();
     }
 }
 
