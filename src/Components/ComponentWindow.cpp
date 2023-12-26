@@ -356,15 +356,14 @@ void ComponentWindow::renderFramebuffer()
     shaderOGLImage->renderTexture(backgroundTexture, 0, 0, w, h, 1.0, true, globalFramebuffer);
     shaderOGLImage->renderTexture(sceneTexture, 0, 0, w, h, 1.0, true, globalFramebuffer);
 
-    shaderOGLDOF->render(globalTexture, depthTexture);
-
-    shaderOGLImage->renderTexture(shaderOGLDOF->getTextureResult(), 0, 0, w, h, 1.0, false, 0);
-
-    //shaderOGLImage->renderTexture(globalTexture, 0, 0, w, h, 1.0, true, 0);
+    if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
+        shaderOGLDOF->render(globalTexture, depthTexture);
+        shaderOGLImage->renderTexture(shaderOGLDOF->getTextureResult(), 0, 0, w, h, 1.0, false, 0);
+    } else{
+        shaderOGLImage->renderTexture(globalTexture, 0, 0, w, h, 1.0, true, 0);
+    }
 
     shaderOGLImage->renderTexture(foregroundTexture, 0, 0, w, h, 1.0, true, 0);
-
-    // -- UI
     shaderOGLImage->renderTexture(uiTexture, 0, 0, w, h, 1.0, true, 0);
 }
 

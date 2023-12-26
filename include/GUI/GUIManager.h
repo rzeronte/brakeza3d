@@ -628,7 +628,10 @@ public:
                 ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
                 ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
                 ImGui::Separator();
-                ImGui::Checkbox("Show Depth Map", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
+                ImGui::Checkbox("Depth of Field", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
+                if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
+                    ImGui::Checkbox("Show Depth Map", &EngineSetup::get()->SHOW_DEPTH_OF_FIELD);
+                }
                 ImGui::Separator();
 
                 ImGui::TreePop();
