@@ -343,6 +343,7 @@ void ComponentWindow::initOpenGL()
     shaderOGLColor = new ShaderOpenGLColor();
     shaderOGLParticles = new ShaderOpenGLParticles();
     shaderOGLDOF = new ShaderOpenGLDOF();
+    shaderOGLDepthMap = new ShaderOpenGLDepthMap();
 }
 
 void ComponentWindow::renderFramebuffer()
@@ -358,12 +359,15 @@ void ComponentWindow::renderFramebuffer()
 
     if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
         shaderOGLDOF->render(globalTexture, depthTexture);
-        shaderOGLImage->renderTexture(shaderOGLDOF->getTextureResult(), 0, 0, w, h, 1.0, false, 0);
-    } else{
-        shaderOGLImage->renderTexture(globalTexture, 0, 0, w, h, 1.0, true, 0);
+        shaderOGLImage->renderTexture(shaderOGLDOF->getTextureResult(), 0, 0, w, h, 1.0, false, globalFramebuffer);
     }
 
-    shaderOGLImage->renderTexture(foregroundTexture, 0, 0, w, h, 1.0, true, 0);
+    if (EngineSetup::get()->SHOW_DEPTH_OF_FIELD) {
+        shaderOGLDepthMap->render(depthTexture, globalFramebuffer);
+    }
+    shaderOGLImage->renderTexture(foregroundTexture, 0, 0, w, h, 1.0, true, globalFramebuffer);
+
+    shaderOGLImage->renderTexture(globalTexture, 0, 0, w, h, 1.0, true, 0);
     shaderOGLImage->renderTexture(uiTexture, 0, 0, w, h, 1.0, true, 0);
 }
 
