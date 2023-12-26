@@ -21,6 +21,7 @@
 #include "../OpenGL/ShaderOpenGLParticles.h"
 #include "../OpenGL/ShaderOpenGLDOF.h"
 #include "../OpenGL/ShaderOpenGLDepthMap.h"
+#include "../OpenGL/ShaderOpenGLFOG.h"
 
 class ComponentWindow : public Component {
 private:
@@ -60,7 +61,10 @@ private:
     ShaderOpenGLParticles *shaderOGLParticles;
     ShaderOpenGLDOF *shaderOGLDOF;
     ShaderOpenGLDepthMap *shaderOGLDepthMap;
+    ShaderOpenGLFOG *shaderOGLFOG;
 
+    int width;
+    int height;
 public:
 
     ComponentWindow();
@@ -130,6 +134,12 @@ public:
     bool screenShoot = false;
 
     void cleanFrameBuffers() const;
+
+    ShaderOpenGLFOG *getShaderOGLFOG() const;
+
+    int getWidth() const;
+
+    int getHeight() const;
 };
 
 

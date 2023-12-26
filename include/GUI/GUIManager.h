@@ -609,7 +609,6 @@ public:
             }
 
             ImGui::Separator();
-
             if (ImGui::TreeNode("DOF Settings")) {
                 const float focalMinValues = 0;
                 const float focalMaxValues = 1;
@@ -622,21 +621,46 @@ public:
                 const int minBlurRadius = 0;
                 const int maxBlurRadius = 10;
 
-                ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-                ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-                ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
-                ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-                ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
-                ImGui::Separator();
-                ImGui::Checkbox("Depth of Field", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
-                if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
-                    ImGui::Checkbox("Show Depth Map", &EngineSetup::get()->SHOW_DEPTH_OF_FIELD);
-                }
-                ImGui::Separator();
+                ImGui::Checkbox("Enable DOF", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
 
+                if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
+                    ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                    ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                    ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
+                    ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                    ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
+                }
                 ImGui::TreePop();
             }
             ImGui::Separator();
+            if (ImGui::TreeNode("FOG Settings")) {
+                ImGui::Checkbox("Enable FOG", &EngineSetup::get()->ENABLE_FOG);
+
+                if (EngineSetup::get()->ENABLE_FOG) {
+                    const float rangeFogSens = 0.1;
+                    const float rangeFogMin = 0;
+                    const float rangeFogMax = 0;
+
+                    ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+                    ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+                    ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->intensity, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+
+                    if (ImGui::TreeNode("FOG Color")) {
+                        const float fogColorSend = 0.01;
+                        const float fogColorMin = 0;
+                        const float fogColorMax = 1;
+
+                        ImGui::DragScalar("x", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.r, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
+                        ImGui::DragScalar("y", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.g, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
+                        ImGui::DragScalar("z", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.b, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
+                        ImGui::TreePop();
+                    }
+                }
+                ImGui::Separator();
+                ImGui::TreePop();
+            }
+            ImGui::Separator();
+            ImGui::Checkbox("Show Depth Map", &EngineSetup::get()->SHOW_DEPTH_OF_FIELD);
 
             auto scripts = componentRender->getLUAScripts();
             for (int i = 0; i < (int) scripts.size(); i++) {
@@ -884,15 +908,6 @@ public:
 
         bool show_about_window = false;
 
-        ImVec4 FOG_IMGUI_COLOR;
-
-        const float range_min_fog_intensity = 0;
-        const float range_max_fog_intensity = 1;
-        const float range_sensibility_fog_intensity = 0.1;
-
-        const float range_min_fog_distance = 0;
-        const float range_max_fog_distance = 50000;
-        const float range_sensibility_fog_distance = 5;
 
         const float range_sensibility_lightnin = 0.5;
         const float range_sensibility_lightnin_min = -10000;
@@ -919,7 +934,6 @@ public:
         const int range_min_framerate_distance = 0;
         const int range_max_framerate_distance = 500;
 
-        bool changedFOGcolor = false;
         int misc_flags = ImGuiColorEditFlags_NoOptions;
 
         if (ImGui::BeginMainMenuBar()) {
@@ -1015,23 +1029,6 @@ public:
 
                 ImGui::Separator();
 
-                ImGui::Checkbox("Enable FOG", &EngineSetup::get()->ENABLE_FOG);
-                changedFOGcolor = ImGui::ColorEdit4("FOG Color", (float *) &FOG_IMGUI_COLOR,
-                                                    misc_flags);
-                if (changedFOGcolor) {
-                    EngineSetup::get()->FOG_COLOR = Color(
-                            FOG_IMGUI_COLOR.x * 256,
-                            FOG_IMGUI_COLOR.y * 256,
-                            FOG_IMGUI_COLOR.z * 256
-                    );
-                }
-
-                ImGui::Separator();
-
-                ImGui::DragScalar("FOG Intensity", ImGuiDataType_Float, &EngineSetup::get()->FOG_INTENSITY,range_sensibility_fog_intensity, &range_min_fog_intensity, &range_max_fog_intensity,"%f", 1.0f);
-                ImGui::DragScalar("FOG Distance", ImGuiDataType_Float, &EngineSetup::get()->FOG_DISTANCE,range_sensibility_fog_distance, &range_min_fog_distance, &range_max_fog_distance,"%f", 1.0f);
-
-                ImGui::Separator();
                 ImGui::Checkbox("Vertex", &EngineSetup::get()->TRIANGLE_MODE_PIXELS);
                 ImGui::Checkbox("WireFrame", &EngineSetup::get()->TRIANGLE_MODE_WIREFRAME);
                 ImGui::Checkbox("Solid", &EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID);

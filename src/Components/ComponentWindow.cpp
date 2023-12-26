@@ -27,6 +27,7 @@ void ComponentWindow::onStart()
 
 void ComponentWindow::preUpdate()
 {
+    SDL_GetWindowSize(window, &width, &height);
 }
 
 void ComponentWindow::renderToWindow()
@@ -80,7 +81,7 @@ void ComponentWindow::initWindow() {
             SDL_WINDOWPOS_UNDEFINED,
             SETUP->screenWidth,
             SETUP->screenHeight,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS
+            SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
         );
         context = SDL_GL_CreateContext( window );
 
@@ -225,6 +226,9 @@ GLuint ComponentWindow::getForegroundFramebuffer() const {
     return foregroundFramebuffer;
 }
 
+ShaderOpenGLFOG *ComponentWindow::getShaderOGLFOG() const {
+    return shaderOGLFOG;
+}
 
 void ComponentWindow::initOpenGL()
 {
@@ -344,31 +348,34 @@ void ComponentWindow::initOpenGL()
     shaderOGLParticles = new ShaderOpenGLParticles();
     shaderOGLDOF = new ShaderOpenGLDOF();
     shaderOGLDepthMap = new ShaderOpenGLDepthMap();
+    shaderOGLFOG = new ShaderOpenGLFOG();
 }
 
 void ComponentWindow::renderFramebuffer()
 {
-    const int w = EngineSetup::get()->screenWidth;
-    const int h = EngineSetup::get()->screenHeight;
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    shaderOGLImage->renderTexture(backgroundTexture, 0, 0, w, h, 1, true, globalFramebuffer);
-    shaderOGLImage->renderTexture(sceneTexture, 0, 0, w, h, 1, true, globalFramebuffer);
+    shaderOGLImage->renderTexture(backgroundTexture, 0, 0, width, height, 1, true, globalFramebuffer);
+    shaderOGLImage->renderTexture(sceneTexture, 0, 0, width, height, 1, true, globalFramebuffer);
+
+    if (EngineSetup::get()->ENABLE_FOG) {
+        shaderOGLFOG->render(globalTexture, depthTexture);
+        shaderOGLImage->renderTexture(shaderOGLFOG->getTextureResult(), 0, 0, width, height, 1, false, globalFramebuffer);
+    }
 
     if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
         shaderOGLDOF->render(globalTexture, depthTexture);
-        shaderOGLImage->renderTexture(shaderOGLDOF->getTextureResult(), 0, 0, w, h, 1, false, globalFramebuffer);
+        shaderOGLImage->renderTexture(shaderOGLDOF->getTextureResult(), 0, 0, width, height, 1, false, globalFramebuffer);
     }
 
     if (EngineSetup::get()->SHOW_DEPTH_OF_FIELD) {
         shaderOGLDepthMap->render(depthTexture, globalFramebuffer);
     }
 
-    shaderOGLImage->renderTexture(foregroundTexture, 0, 0, w, h, 1, true, globalFramebuffer);
-    shaderOGLImage->renderTexture(globalTexture, 0, 0, w, h, 1, true, 0);
-    shaderOGLImage->renderTexture(uiTexture, 0, 0, w, h, 1, true, 0);
+    shaderOGLImage->renderTexture(foregroundTexture, 0, 0, width, height, 1, true, globalFramebuffer);
+    shaderOGLImage->renderTexture(globalTexture, 0, 0, width, height, 1, true, 0);
+    shaderOGLImage->renderTexture(uiTexture, 0, 0, width, height, 1, true, 0);
 }
 
 void ComponentWindow::cleanFrameBuffers() const
@@ -390,4 +397,12 @@ void ComponentWindow::cleanFrameBuffers() const
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+int ComponentWindow::getWidth() const {
+    return width;
+}
+
+int ComponentWindow::getHeight() const {
+    return height;
 }

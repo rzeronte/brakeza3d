@@ -57,8 +57,8 @@ void TextWriter::writeTextTTFMiddleScreen(const char *text, Color c, float sizeR
     textWidth *= sizeRatio;
     textHeight *= sizeRatio;
 
-    int totalW = EngineSetup::get()->screenWidth;
-    int totalH = EngineSetup::get()->screenHeight;
+    int totalW = ComponentsManager::get()->getComponentWindow()->getWidth();
+    int totalH = ComponentsManager::get()->getComponentWindow()->getWidth();
 
     int xPosition = (totalW / 2) - textWidth / 2;
     int yPosition = totalH / 2;
@@ -74,27 +74,11 @@ void TextWriter::writeTTFCenterHorizontal(int y, const char *text, Color c, floa
     w *= sizeRatio;
     h *= sizeRatio;
 
-    int totalW = EngineSetup::get()->screenWidth;
+    int totalW = ComponentsManager::get()->getComponentWindow()->getWidth();
 
     int xPosition = (totalW / 2) - w / 2;
 
     writeTextTTFAutoSize(xPosition, y, text, c, sizeRatio);
-}
-
-int TextWriter::convertPositionXAspect(int value)
-{
-    int windowWidth, windowHeight;
-    SDL_GetRendererOutputSize(renderer, &windowWidth, &windowHeight);
-
-    return (value * windowWidth) / EngineSetup::get()->screenWidth;
-}
-
-int TextWriter::convertPositionYAspect(int value)
-{
-    int w, h;
-    SDL_GetRendererOutputSize(renderer, &w, &h);
-
-    return (value * h) / EngineSetup::get()->screenHeight;
 }
 
 float TextWriter::getAlpha() const {
