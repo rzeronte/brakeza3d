@@ -13,6 +13,8 @@ public:
     void render(GLint particlesBuffer, int numberPoints, Color cf, Color ct);
 
     static void setVAOAttributes(GLint particlesBuffer) ;
+
+    void destroy() override;
 };
 
 

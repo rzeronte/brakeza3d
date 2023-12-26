@@ -24,10 +24,21 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
 
     GLuint texID = Image::makeOGLImage(surfaceTTF);
 
+    auto renderer = ComponentsManager::get()->getComponentWindow();
+
+    int windowWidth = renderer->width;
+    int windowHeight = renderer->height;
+
+    SDL_Rect dstRect;
+    dstRect.x = (x * windowWidth) / EngineSetup::get()->screenWidth;
+    dstRect.y = (y * windowHeight) / EngineSetup::get()->screenHeight;
+    dstRect.w = (w * windowWidth) / EngineSetup::get()->screenWidth;
+    dstRect.h = (h * windowHeight) / EngineSetup::get()->screenHeight;
+
     ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(
         texID,
-        x, y,
-        w, h,
+        dstRect.x, dstRect.y,
+        dstRect.w, dstRect.h,
         alpha,
         false,
         ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
@@ -57,8 +68,8 @@ void TextWriter::writeTextTTFMiddleScreen(const char *text, Color c, float sizeR
     textWidth *= sizeRatio;
     textHeight *= sizeRatio;
 
-    int totalW = ComponentsManager::get()->getComponentWindow()->getWidth();
-    int totalH = ComponentsManager::get()->getComponentWindow()->getWidth();
+    int totalW = ComponentsManager::get()->getComponentWindow()->width;
+    int totalH = ComponentsManager::get()->getComponentWindow()->height;
 
     int xPosition = (totalW / 2) - textWidth / 2;
     int yPosition = totalH / 2;
@@ -74,7 +85,7 @@ void TextWriter::writeTTFCenterHorizontal(int y, const char *text, Color c, floa
     w *= sizeRatio;
     h *= sizeRatio;
 
-    int totalW = ComponentsManager::get()->getComponentWindow()->getWidth();
+    int totalW = EngineSetup::get()->screenWidth;
 
     int xPosition = (totalW / 2) - w / 2;
 

@@ -41,6 +41,9 @@ public:
         GLint textureID,
         int particlesCount
     );
+    void destroy() override;
+
+private:
 };
 
 

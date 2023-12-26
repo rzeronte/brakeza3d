@@ -19,6 +19,8 @@ class ShaderOpenGLImage : public ShaderOpenGL {
 public:
     ShaderOpenGLImage();
     void renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha, bool inverse, GLuint framebuffer) const;
+
+    void destroy() override;
 };
 
 

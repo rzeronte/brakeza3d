@@ -209,3 +209,8 @@ void ShaderOpenGLRender::getPointLightFromSceneObjects()
  DirLightOpenGL *ShaderOpenGLRender::getDirectionalLight() {
     return &directionalLight;
 }
+
+void ShaderOpenGLRender::destroy() {
+
+}
+

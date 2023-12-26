@@ -29,6 +29,7 @@ public:
     ShaderOpenGLDOF();
 
     void render(GLuint sceneTexture, GLuint depthTexture);
+    void createFramebuffer();
 
     GLuint resultFramebuffer;
     GLuint textureResult;
@@ -40,6 +41,7 @@ public:
     float farPlane;
 
     GLuint getTextureResult() const;
+    void destroy() override;
 };
 
 

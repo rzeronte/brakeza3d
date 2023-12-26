@@ -10,21 +10,16 @@
 
 ShaderOpenGLFOG::ShaderOpenGLFOG()
 :
+    resultFramebuffer(0),
+    textureResult(0),
+    quadVAO(0),
+    VBO(0),
     fogMinDist(0.1f),
-    fogMaxDist(8.0f),
+    fogMaxDist(150.0f),
+    intensity(1.0f),
     ShaderOpenGL("../shaders/FOG.vertexshader", "../shaders/FOG.fragmentshader")
 {
-    glGenFramebuffers(1, &resultFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, resultFramebuffer);
-
-    int w = EngineSetup::get()->screenWidth, h = EngineSetup::get()->screenHeight;
-
-    glGenTextures(1, &textureResult);
-    glBindTexture(GL_TEXTURE_2D, textureResult);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureResult, 0);
+    createFramebuffer();
 
     float vertices[] = {
             // pos      // tex
@@ -79,8 +74,9 @@ void ShaderOpenGLFOG::render(GLuint sceneTexture, GLuint depthTexture)
 
     const int x = 0;
     const int y = 0;
-    const int w = EngineSetup::get()->screenWidth;
-    const int h = EngineSetup::get()->screenHeight;
+    auto window = ComponentsManager::get()->getComponentWindow();
+    const int w = window->width;
+    const int h = window->height;
 
     glm::mat4 projection = glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f);
 
@@ -111,4 +107,28 @@ void ShaderOpenGLFOG::render(GLuint sceneTexture, GLuint depthTexture)
 
 GLuint ShaderOpenGLFOG::getTextureResult() const {
     return textureResult;
+}
+
+void ShaderOpenGLFOG::destroy()
+{
+    glDeleteFramebuffers(1, &resultFramebuffer);
+    glDeleteTextures(1, &textureResult);
+
+    createFramebuffer();
+}
+
+void ShaderOpenGLFOG::createFramebuffer()
+{
+    glGenFramebuffers(1, &resultFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, resultFramebuffer);
+
+    int w, h;
+    SDL_GetWindowSize(ComponentsManager::get()->getComponentWindow()->getWindow(), &w, &h);
+
+    glGenTextures(1, &textureResult);
+    glBindTexture(GL_TEXTURE_2D, textureResult);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureResult, 0);
 }

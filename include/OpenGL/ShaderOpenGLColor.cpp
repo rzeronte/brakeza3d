@@ -48,9 +48,6 @@ void ShaderOpenGLColor::render(
     glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix();
     glm::mat4 ProjectionMatrix = Camera3D::getProjectionMatrix();
 
-    auto cameraPosition = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
-    glm::vec3 cameraPos = glm::vec3(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-
     setMat4("projection", ProjectionMatrix);
     setMat4("view", ViewMatrix);
     setMat4("model", o->getModelMatrix());
@@ -101,4 +98,8 @@ void ShaderOpenGLColor::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, G
             0,                                // stride
             nullptr
     );
+}
+
+void ShaderOpenGLColor::destroy() {
+
 }

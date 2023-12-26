@@ -24,6 +24,8 @@ public:
 
     void render(GLint textureID);
 
+    void destroy() override;
+
 };
 
 

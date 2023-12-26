@@ -82,10 +82,10 @@ void Brakeza3D::mainLoop()
 
 void Brakeza3D::checkForResizeOpenGLWindow(SDL_Event &e) {
     if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-        int width = e.window.data1;
-        int height = e.window.data2;
-        Logging::Message("%f, %f", width, height);
-        glViewport(0,0,(GLsizei)width,(GLsizei)height);
+        auto window = ComponentsManager::get()->getComponentWindow();
+        SDL_GetWindowSize(window->getWindow(), &window->width, &window->height);
+        glViewport(0,0,(GLsizei)window->width,(GLsizei)window->height);
+        ComponentsManager::get()->getComponentWindow()->resetFramebuffer();
     }
 }
 

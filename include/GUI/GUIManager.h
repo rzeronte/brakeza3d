@@ -411,9 +411,9 @@ public:
                 }
                 ImGui::SameLine();
 
-                ImGui::SameLine(200);
+                ImGui::SameLine(250);
                 ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel(o->getTypeIcon())->getOGLTextureID(), ImVec2(16, 16));
-                ImGui::SameLine(220);
+                ImGui::SameLine(270);
                 ImGui::Text("%s", o->getTypeObject());
             }
         }
@@ -656,7 +656,6 @@ public:
                         ImGui::TreePop();
                     }
                 }
-                ImGui::Separator();
                 ImGui::TreePop();
             }
             ImGui::Separator();

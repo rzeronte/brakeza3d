@@ -35,6 +35,8 @@ public:
 
     DirLightOpenGL *getDirectionalLight();
 
+    void destroy() override;
+
 };
 
 
