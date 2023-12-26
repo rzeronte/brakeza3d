@@ -58,9 +58,6 @@ public:
     float EPSILON = 0.00001f;
 
     bool ENABLE_FOG = false;
-    float FOG_DISTANCE = 4500;
-    float FOG_INTENSITY = 1.f;
-    Color FOG_COLOR = Color::FOGDefault();
     float FRUSTUM_FARPLANE_DISTANCE = 100000;
     float HORIZONTAL_FOV = 90;
 

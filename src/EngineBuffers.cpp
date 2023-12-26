@@ -72,12 +72,7 @@ uint32_t EngineBuffers::getVideoBuffer(int bufferIndex) const
 }
 
 void EngineBuffers::clearVideoBuffer() const {
-    if (EngineSetup::get()->ENABLE_FOG) {
-        std::fill(videoBuffer, videoBuffer + sizeBuffers, EngineSetup::get()->FOG_COLOR.getColor());
-        return;
-    }
 
-    std::fill(videoBuffer, videoBuffer + sizeBuffers, 0);
 }
 
 void EngineBuffers::flipVideoBufferToSurface(SDL_Surface *surface) {

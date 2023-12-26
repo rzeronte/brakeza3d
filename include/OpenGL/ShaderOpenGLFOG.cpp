@@ -1,22 +1,18 @@
+//
+// Created by edu on 26/12/23.
+//
 
 #include <ext/matrix_clip_space.hpp>
 #include <ext/matrix_transform.hpp>
-#include "ShaderOpenGLDOF.h"
+#include "ShaderOpenGLFOG.h"
 #include "../EngineSetup.h"
 #include "../ComponentsManager.h"
 
-ShaderOpenGLDOF::ShaderOpenGLDOF()
+ShaderOpenGLFOG::ShaderOpenGLFOG()
 :
-    VBO(0),
-    quadVAO(0),
-    focalRange(0),
-    focalDistance(0),
-    blurRadius(10),
-    farPlane(100.0),
-    intensity(1.0f),
-    resultFramebuffer(0),
-    textureResult(0),
-    ShaderOpenGL("../shaders/DeepOfField.vertexshader", "../shaders/DeepOfField.fragmentshader")
+    fogMinDist(0.1f),
+    fogMaxDist(8.0f),
+    ShaderOpenGL("../shaders/FOG.vertexshader", "../shaders/FOG.fragmentshader")
 {
     glGenFramebuffers(1, &resultFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, resultFramebuffer);
@@ -31,14 +27,14 @@ ShaderOpenGLDOF::ShaderOpenGLDOF()
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureResult, 0);
 
     float vertices[] = {
-        // pos      // tex
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f,
+            // pos      // tex
+            0.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 0.0f,
 
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f
+            0.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 1.0f,
+            1.0f, 0.0f, 1.0f, 0.0f
     };
 
     glGenVertexArrays(1, &quadVAO);
@@ -55,20 +51,18 @@ ShaderOpenGLDOF::ShaderOpenGLDOF()
     modelMatrixUniform = glGetUniformLocation(programID, "model");
     projectionMatrixUniform = glGetUniformLocation(programID, "projection");
 
-    focalDistanceUniform = glGetUniformLocation(programID, "focalDistance");
-    focalRangeUniform = glGetUniformLocation(programID, "focalRange");
-    blurRadiusUniform = glGetUniformLocation(programID, "blurRadius");
-    intensityUniform = glGetUniformLocation(programID, "intensity");
-    farPlaneUniform = glGetUniformLocation(programID, "far_plane");
+    fogMaxDistUniform = glGetUniformLocation(programID, "fogMaxDist");
+    fogMinDistUniform = glGetUniformLocation(programID, "fogMinDist");;
+    fogColourUniform = glGetUniformLocation(programID, "fogColor");;
 
     depthTextureUniform = glGetUniformLocation(programID, "depthTexture");
     sceneTextureUniform = glGetUniformLocation(programID, "sceneTexture");
 
-    widthUniform = glGetUniformLocation(programID, "screenWidth");
-    heightUniform = glGetUniformLocation(programID, "screenHeight");
+    intensityUniform = glGetUniformLocation(programID, "intensity");
+    farPlaneUniform = glGetUniformLocation(programID, "farPlane");;
 }
 
-void ShaderOpenGLDOF::render(GLuint sceneTexture, GLuint depthTexture)
+void ShaderOpenGLFOG::render(GLuint sceneTexture, GLuint depthTexture)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, resultFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -103,13 +97,11 @@ void ShaderOpenGLDOF::render(GLuint sceneTexture, GLuint depthTexture)
     glUniformMatrix4fv(modelMatrixUniform, 1, GL_FALSE, &model[0][0]);
     glUniformMatrix4fv(projectionMatrixUniform, 1, GL_FALSE, &projection[0][0]);
 
-    glUniform1f(focalDistanceUniform, focalDistance);
-    glUniform1f(focalRangeUniform, focalRange);
-    glUniform1i(blurRadiusUniform, blurRadius);
+    glUniform1f(fogMaxDistUniform, fogMaxDist);
+    glUniform1f(fogMinDistUniform, fogMinDist);
     glUniform1f(intensityUniform, intensity);
-    glUniform1f(farPlaneUniform, farPlane);
-    glUniform1i(widthUniform, EngineSetup::get()->screenWidth);
-    glUniform1i(heightUniform, EngineSetup::get()->screenHeight);
+    glUniform1f(farPlaneUniform, ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->farPlane);
+    glUniform3fv(fogColourUniform, 1, &fogColor.toGLM()[0]);
 
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -117,6 +109,6 @@ void ShaderOpenGLDOF::render(GLuint sceneTexture, GLuint depthTexture)
     glBindVertexArray(0);
 }
 
-GLuint ShaderOpenGLDOF::getTextureResult() const {
+GLuint ShaderOpenGLFOG::getTextureResult() const {
     return textureResult;
 }
