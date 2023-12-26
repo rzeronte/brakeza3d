@@ -20,6 +20,7 @@
 #include "../OpenGL/ShaderOpenGLColor.h"
 #include "../OpenGL/ShaderOpenGLParticles.h"
 #include "../OpenGL/ShaderOpenGLDOF.h"
+#include "../OpenGL/ShaderOpenGLDepthMap.h"
 
 class ComponentWindow : public Component {
 private:
@@ -58,6 +59,7 @@ private:
     ShaderOpenGLColor *shaderOGLColor;
     ShaderOpenGLParticles *shaderOGLParticles;
     ShaderOpenGLDOF *shaderOGLDOF;
+    ShaderOpenGLDepthMap *shaderOGLDepthMap;
 
 public:
 
