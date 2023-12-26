@@ -1,18 +1,16 @@
-#include <ext/matrix_float4x4.hpp>
 #include <ext/matrix_clip_space.hpp>
 #include <ext/matrix_transform.hpp>
-#include "ShaderOpenGLImage.h"
+#include "ShaderOpenGLDepthMap.h"
 #include "../EngineSetup.h"
 #include "../ComponentsManager.h"
 
-ShaderOpenGLImage::ShaderOpenGLImage()
+ShaderOpenGLDepthMap::ShaderOpenGLDepthMap()
 :
     quadVAO(0),
     VBO(0),
-    ShaderOpenGL("../shaders/Image.vertexshader","../shaders/Image.fragmentshader")
+    ShaderOpenGL("../shaders/DepthMap.vertexshader", "../shaders/DepthMap.fragmentshader")
 {
     float vertices[] = {
-
         // pos      // tex
         0.0f, 1.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 1.0f, 0.0f,
@@ -37,13 +35,13 @@ ShaderOpenGLImage::ShaderOpenGLImage()
 
     modelMatrixUniform = glGetUniformLocation(programID, "model");
     projectionMatrixUniform = glGetUniformLocation(programID, "projection");
-    spriteColorUniform = glGetUniformLocation(programID, "spriteColor");
-    textureUniform = glGetUniformLocation(programID, "image");
-    alphaUniform = glGetUniformLocation(programID, "alpha");
-    inverseUniform = glGetUniformLocation(programID, "inverse");
+    textureUniform = glGetUniformLocation(programID, "depthTexture");
+
+    intensityUniform = glGetUniformLocation(programID, "intensity");
+    farPlaneUniform = glGetUniformLocation(programID, "far_plane");
 }
 
-void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha, bool inverse, GLuint framebuffer) const
+void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint framebuffer)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
@@ -53,9 +51,9 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
 
     glm::mat4 projection = glm::ortho(0.0f, (float) EngineSetup::get()->screenWidth, (float) EngineSetup::get()->screenHeight, 0.0f, -1.0f, 1.0f);
 
-    glm::vec2 position = glm::vec2(x, y);
+    glm::vec2 position = glm::vec2(0, 0);
 
-    glm::vec2 size = glm::vec2(w, h);
+    glm::vec2 size = glm::vec2((float) EngineSetup::get()->screenWidth, (float) EngineSetup::get()->screenHeight);
     float rotate = 0.0f;
     glm::vec3 color = glm::vec3(1.0f);
 
@@ -68,12 +66,12 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
 
     glUniformMatrix4fv(modelMatrixUniform, 1, GL_FALSE, &model[0][0]);
     glUniformMatrix4fv(projectionMatrixUniform, 1, GL_FALSE, &projection[0][0]);
-    glUniform3fv(spriteColorUniform, 1, &color[0]);
-    glUniform1fv(alphaUniform, 1, &alpha);
-    glUniform1i(inverseUniform, inverse);
+
+    glUniform1f(intensityUniform, ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->intensity);
+    glUniform1f(farPlaneUniform, ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->farPlane);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, TextureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
     glUniform1i(textureUniform, 0);
 
     glBindVertexArray(quadVAO);
@@ -85,4 +83,3 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
-

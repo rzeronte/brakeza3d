@@ -13,7 +13,6 @@ uniform float far_plane;
 uniform float intensity;
 uniform int screenWidth;
 uniform int screenHeight;
-uniform bool showDepthMapTexture;
 
 float near_plane = 0.1f;
 
@@ -23,20 +22,8 @@ float LinearizeDepth(float depth)
     return (2.0 * near_plane * far_plane) / (far_plane + near_plane - z * (far_plane - near_plane));
 }
 
-void showDepthMap()
-{
-    float depthValue = texture(depthTexture, TexCoords).r * intensity;
-    FragColor = vec4(vec3(LinearizeDepth(depthValue) / far_plane), 1.0);
-    //FragColor = vec4(vec3(depthValue), 1.0); // orthographic
-}
-
 void main()
 {
-    if (showDepthMapTexture) {
-        showDepthMap();
-        return;
-    }
-
     float depthValue = texture(depthTexture, TexCoords).r * intensity;
     float depth = LinearizeDepth(depthValue)/ far_plane;
 
