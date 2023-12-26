@@ -172,6 +172,7 @@ public:
     float TESTING_INT4 = 0.1f;
 
     bool ENABLE_DEPTH_OF_FIELD = false;
+    bool SHOW_DEPTH_OF_FIELD = false;
 
     //LIGHTNING EFFECT
     float LIGHTNING_GENERATIONS = 5;
