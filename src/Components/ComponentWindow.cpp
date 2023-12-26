@@ -23,11 +23,26 @@ ComponentWindow::ComponentWindow()
 
 void ComponentWindow::onStart()
 {
+    createFramebuffer();
+
+    shaderOGLRender = new ShaderOpenGLRender();
+    shaderOGLImage = new ShaderOpenGLImage();
+    shaderOGLLine = new ShaderOpenGLLine();
+    shaderOGLWireframe = new ShaderOpenGLWireframe();
+    shaderOGLShading = new ShaderOpenGLShading();
+    shaderOGLPoints = new ShaderOpenGLPoints();
+    shaderOGLStencil = new ShaderOpenGLOutline();
+    shaderOGLColor = new ShaderOpenGLColor();
+    shaderOGLParticles = new ShaderOpenGLParticles();
+    shaderOGLDOF = new ShaderOpenGLDOF();
+    shaderOGLDepthMap = new ShaderOpenGLDepthMap();
+    shaderOGLFOG = new ShaderOpenGLFOG();
 }
 
 void ComponentWindow::preUpdate()
 {
     SDL_GetWindowSize(window, &width, &height);
+    glViewport(0,0, width, height);
 }
 
 void ComponentWindow::renderToWindow()
@@ -81,7 +96,7 @@ void ComponentWindow::initWindow() {
             SDL_WINDOWPOS_UNDEFINED,
             SETUP->screenWidth,
             SETUP->screenHeight,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
+            SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE
         );
         context = SDL_GL_CreateContext( window );
 
@@ -238,9 +253,13 @@ void ComponentWindow::initOpenGL()
     glDepthMask(GL_TRUE);
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+}
 
-    int w = EngineSetup::get()->screenWidth;
-    int h = EngineSetup::get()->screenHeight;
+void ComponentWindow::createFramebuffer()
+{
+    int w, h;
+    SDL_GetRendererOutputSize(renderer, &w, &h);
+
     GLenum framebufferStatus;
 
     glGenFramebuffers(1, &globalFramebuffer);
@@ -337,18 +356,40 @@ void ComponentWindow::initOpenGL()
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    shaderOGLRender = new ShaderOpenGLRender();
-    shaderOGLImage = new ShaderOpenGLImage();
-    shaderOGLLine = new ShaderOpenGLLine();
-    shaderOGLWireframe = new ShaderOpenGLWireframe();
-    shaderOGLShading = new ShaderOpenGLShading();
-    shaderOGLPoints = new ShaderOpenGLPoints();
-    shaderOGLStencil = new ShaderOpenGLOutline();
-    shaderOGLColor = new ShaderOpenGLColor();
-    shaderOGLParticles = new ShaderOpenGLParticles();
-    shaderOGLDOF = new ShaderOpenGLDOF();
-    shaderOGLDepthMap = new ShaderOpenGLDepthMap();
-    shaderOGLFOG = new ShaderOpenGLFOG();
+}
+
+void ComponentWindow::resetFramebuffer()
+{
+    glDeleteFramebuffers(1, &globalFramebuffer);
+    glDeleteTextures(1, &globalTexture);
+
+    glDeleteFramebuffers(1, &sceneFramebuffer);
+    glDeleteTextures(1, &sceneTexture);
+    glDeleteTextures(1, &depthTexture);
+
+    glDeleteFramebuffers(1, &backgroundFramebuffer);
+    glDeleteTextures(1, &backgroundTexture);
+
+    glDeleteFramebuffers(1, &foregroundFramebuffer);
+    glDeleteTextures(1, &foregroundTexture);
+
+    glDeleteFramebuffers(1, &uiFramebuffer);
+    glDeleteTextures(1, &uiTexture);
+
+    createFramebuffer();
+
+    shaderOGLRender->destroy();
+    shaderOGLImage->destroy();
+    shaderOGLLine->destroy();
+    shaderOGLWireframe->destroy();
+    shaderOGLShading->destroy();
+    shaderOGLPoints->destroy();
+    shaderOGLStencil->destroy();
+    shaderOGLColor->destroy();
+    shaderOGLParticles->destroy();
+    shaderOGLDOF->destroy();
+    shaderOGLDepthMap->destroy();
+    shaderOGLFOG->destroy();
 }
 
 void ComponentWindow::renderFramebuffer()
