@@ -90,8 +90,7 @@ void Image::drawFlat(int pos_x, int pos_y, GLuint framebuffer) const
         dstRect.h,
         alpha,
         false,
-        framebuffer,
-        0
+        framebuffer
     );
 }
 

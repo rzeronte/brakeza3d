@@ -5,19 +5,41 @@
 #ifndef BRAKEZA3D_SHADEROPENGLDOF_H
 #define BRAKEZA3D_SHADEROPENGLDOF_H
 
-
 #include "ShaderOpenGL.h"
 
 class ShaderOpenGLDOF : ShaderOpenGL {
-    GLuint VertexArrayID;
+    GLuint quadVAO, VBO;
 
-    GLuint framebuffer;
-    GLuint sceneTexture, depthTexture;
-    GLuint quadVAO, quadVBO;
+    GLint modelMatrixUniform;
+    GLint projectionMatrixUniform;
+
+    GLint focalDistanceUniform;
+    GLint focalRangeUniform;
+    GLint blurRadiusUniform;
+    GLint intensityUniform;
+    GLint farPlaneUniform;
+
+    GLint depthTextureUniform;
+    GLint sceneTextureUniform;
+
+    GLint widthUniform;
+    GLint heightUniform;
+
 public:
-    ShaderOpenGLDOF(const std::string &vertexFilename, const std::string &fragmentFilename);
+    ShaderOpenGLDOF();
 
-    void render();
+    void render(GLuint sceneTexture, GLuint depthTexture);
+
+    GLuint resultFramebuffer;
+    GLuint textureResult;
+
+    float focalRange;
+    float focalDistance;
+    int blurRadius;
+    float intensity;
+    float farPlane;
+
+    GLuint getTextureResult() const;
 };
 
 

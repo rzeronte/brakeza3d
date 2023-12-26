@@ -19,7 +19,7 @@ class ShaderOpenGLLine : public ShaderOpenGL {
 public:
     ShaderOpenGLLine();
 
-    void render(Point2D a, Point2D b, Color c, float weight);
+    void render(Point2D a, Point2D b, Color c, float weight, GLuint framebuffer);
 };
 
 

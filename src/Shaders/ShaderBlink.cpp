@@ -54,7 +54,6 @@ void ShaderBlink::update()
 
 void ShaderBlink::executeKernelOpenCL()
 {
-    glDisable(GL_DEPTH);
     glDisable(GL_BLEND);
 
     ComponentsManager::get()->getComponentWindow()->getShaderOglColor()->render(
@@ -65,6 +64,8 @@ void ShaderBlink::executeKernelOpenCL()
         (int) this->object->vertices.size(),
         false
     );
+
+    glEnable(GL_BLEND);
 }
 
 void ShaderBlink::setColor(Color color) {

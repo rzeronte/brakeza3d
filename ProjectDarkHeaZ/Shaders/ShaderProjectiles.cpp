@@ -25,7 +25,8 @@ void ShaderProjectiles::executeKernelOpenCL()
             Point2D(l.from),
             Point2D(l.to),
             Color(l.color.r, l.color.g, l.color.b),
-            l.intensity
+            l.intensity,
+            ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
         );
     }
 

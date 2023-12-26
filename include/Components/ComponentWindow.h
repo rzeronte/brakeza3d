@@ -19,6 +19,7 @@
 #include "../OpenGL/ShaderOpenGLOutliner.h"
 #include "../OpenGL/ShaderOpenGLColor.h"
 #include "../OpenGL/ShaderOpenGLParticles.h"
+#include "../OpenGL/ShaderOpenGLDOF.h"
 
 class ComponentWindow : public Component {
 private:
@@ -32,7 +33,8 @@ private:
     TTF_Font *fontAlternative;
 
     GLuint sceneFramebuffer;
-    GLuint sceneTexture, depthTexture;
+    GLuint sceneTexture;
+    GLuint depthTexture;
 
     GLuint backgroundFramebuffer;
     GLuint backgroundTexture;
@@ -43,6 +45,9 @@ private:
     GLuint uiFramebuffer;
     GLuint uiTexture;
 
+    GLuint globalFramebuffer;
+    GLuint globalTexture;
+
     ShaderOpenGLRender *shaderOGLRender;
     ShaderOpenGLImage *shaderOGLImage;
     ShaderOpenGLLine *shaderOGLLine;
@@ -52,6 +57,7 @@ private:
     ShaderOpenGLOutliner *shaderOGLStencil;
     ShaderOpenGLColor *shaderOGLColor;
     ShaderOpenGLParticles *shaderOGLParticles;
+    ShaderOpenGLDOF *shaderOGLDOF;
 
 public:
 
@@ -117,7 +123,11 @@ public:
 
     [[nodiscard]] GLuint getForegroundFramebuffer() const;
 
+    ShaderOpenGLDOF *getShaderOGLDOF() const;
+
     bool screenShoot = false;
+
+    void cleanFrameBuffers() const;
 };
 
 

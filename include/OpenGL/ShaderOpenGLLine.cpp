@@ -35,14 +35,16 @@ ShaderOpenGLLine::ShaderOpenGLLine()
     projectionMatrixUniform = glGetUniformLocation(programID, "projection");
 }
 
-void ShaderOpenGLLine::render(Point2D a, Point2D b, Color c, float weight)
+void ShaderOpenGLLine::render(Point2D a, Point2D b, Color c, float weight, GLuint framebuffer)
 {
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
     glUseProgram(programID);
     glBindVertexArray(quadVAO);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDisable(GL_DEPTH);
+    glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
 
     glEnableVertexAttribArray(0);
@@ -75,8 +77,7 @@ void ShaderOpenGLLine::render(Point2D a, Point2D b, Color c, float weight)
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
-    glDisable(GL_BLEND);
-    glEnable(GL_DEPTH);
+    glEnable(GL_DEPTH_TEST);
 
     glDepthMask(GL_TRUE);
 

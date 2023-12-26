@@ -77,6 +77,7 @@ public:
     ComponentMenu *getComponentMenu() {
         return dynamic_cast<ComponentMenu *>(components[ComponentID::COMPONENT_MENU]);
     };
+
 };
 
 
