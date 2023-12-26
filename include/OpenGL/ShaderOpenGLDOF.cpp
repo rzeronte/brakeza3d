@@ -108,7 +108,7 @@ void ShaderOpenGLDOF::render(GLuint sceneTexture, GLuint depthTexture)
     glUniform1i(widthUniform, EngineSetup::get()->screenWidth);
     glUniform1i(heightUniform, EngineSetup::get()->screenHeight);
 
-    setBool("showDepthMapTexture", EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
+    setBool("showDepthMapTexture", EngineSetup::get()->SHOW_DEPTH_OF_FIELD);
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
