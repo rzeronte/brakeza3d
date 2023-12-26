@@ -49,11 +49,13 @@ void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint framebuffer)
 
     glUseProgram(programID);
 
-    glm::mat4 projection = glm::ortho(0.0f, (float) EngineSetup::get()->screenWidth, (float) EngineSetup::get()->screenHeight, 0.0f, -1.0f, 1.0f);
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    glm::mat4 projection = glm::ortho(0.0f, (float) window->width, (float) window->height, 0.0f, -1.0f, 1.0f);
 
     glm::vec2 position = glm::vec2(0, 0);
 
-    glm::vec2 size = glm::vec2((float) EngineSetup::get()->screenWidth, (float) EngineSetup::get()->screenHeight);
+    glm::vec2 size = glm::vec2(window->width, (float) window->height);
     float rotate = 0.0f;
     glm::vec3 color = glm::vec3(1.0f);
 
@@ -82,4 +84,8 @@ void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint framebuffer)
     glEnable(GL_DEPTH_TEST);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ShaderOpenGLDepthMap::destroy() {
+
 }

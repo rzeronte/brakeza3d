@@ -77,3 +77,7 @@ void ShaderOpenGLWireframe::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffe
             nullptr
     );
 }
+
+void ShaderOpenGLWireframe::destroy() {
+
+}

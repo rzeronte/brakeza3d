@@ -20,6 +20,8 @@ public:
     ShaderOpenGLLine();
 
     void render(Point2D a, Point2D b, Color c, float weight, GLuint framebuffer);
+
+    void destroy() override;
 };
 
 

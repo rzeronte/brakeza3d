@@ -3,6 +3,7 @@
 #include <ext/matrix_transform.hpp>
 #include "ShaderOpenGLImage.h"
 #include "../EngineSetup.h"
+#include "../ComponentsManager.h"
 
 ShaderOpenGLImage::ShaderOpenGLImage()
 :
@@ -48,7 +49,8 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
 
     glUseProgram(programID);
 
-    glm::mat4 projection = glm::ortho(0.0f, (float) EngineSetup::get()->screenWidth, (float) EngineSetup::get()->screenHeight, 0.0f, -1.0f, 1.0f);
+    auto window = ComponentsManager::get()->getComponentWindow();
+    glm::mat4 projection = glm::ortho(0.0f, (float) window->width, (float) window->height, 0.0f, -1.0f, 1.0f);
 
     glm::vec2 position = glm::vec2(x, y);
 
@@ -79,3 +81,6 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void ShaderOpenGLImage::destroy() {
+
+}

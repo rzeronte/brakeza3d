@@ -16,6 +16,8 @@ public:
     void render(glm::mat4 ModelMatrix, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size);
 
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
+
+    void destroy() override;
 };
 
 

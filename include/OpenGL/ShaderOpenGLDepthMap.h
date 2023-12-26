@@ -21,6 +21,8 @@ class ShaderOpenGLDepthMap : public ShaderOpenGL {
 public:
     ShaderOpenGLDepthMap();
     void render(GLuint textureID, GLuint framebuffer);
+
+    void destroy() override;
 };
 
 

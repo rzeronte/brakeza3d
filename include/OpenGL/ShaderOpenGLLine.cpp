@@ -6,6 +6,7 @@
 #include "ShaderOpenGLLine.h"
 #include "../Render/Logging.h"
 #include "../EngineSetup.h"
+#include "../ComponentsManager.h"
 
 ShaderOpenGLLine::ShaderOpenGLLine()
 :
@@ -51,8 +52,10 @@ void ShaderOpenGLLine::render(Point2D a, Point2D b, Color c, float weight, GLuin
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
 
-    const glm::mat4 projection = glm::ortho(0.0f, (float) EngineSetup::get()->screenWidth, (float) EngineSetup::get()->screenHeight, 0.0f, -1.0f, 1.0f);
-    const glm::vec2 size = glm::vec2(EngineSetup::get()->screenWidth, EngineSetup::get()->screenHeight);
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    const glm::mat4 projection = glm::ortho(0.0f, (float) window->width, (float) window->height, 0.0f, -1.0f, 1.0f);
+    const glm::vec2 size = glm::vec2((float) window->width, (float) window->height);
     float rotate = 0.0f;
 
     glm::mat4 model = glm::transpose(glm::mat4(1.0f));
@@ -84,4 +87,8 @@ void ShaderOpenGLLine::render(Point2D a, Point2D b, Color c, float weight, GLuin
     glDisableVertexAttribArray(0);
     glBindVertexArray(0);
     glUseProgram(0);
+}
+
+void ShaderOpenGLLine::destroy() {
+
 }

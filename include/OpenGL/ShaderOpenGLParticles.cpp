@@ -113,6 +113,10 @@ void ShaderOpenGLParticles::render(
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+}
 
+void ShaderOpenGLParticles::destroy() {
 
 }
+
+

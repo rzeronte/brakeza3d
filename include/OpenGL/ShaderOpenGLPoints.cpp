@@ -54,3 +54,7 @@ void ShaderOpenGLPoints::setVAOAttributes(GLint particlesBuffer)
     glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(OCParticle), (GLvoid*)offsetof(OCParticle, timeLiving));
 }
+
+void ShaderOpenGLPoints::destroy() {
+
+}

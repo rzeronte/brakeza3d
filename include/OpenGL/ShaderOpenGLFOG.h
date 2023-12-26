@@ -23,22 +23,22 @@ class ShaderOpenGLFOG : public ShaderOpenGL {
     GLint fogColourUniform;
     GLint farPlaneUniform;
 
-
     GLint depthTextureUniform;
     GLint sceneTextureUniform;
-
 
 public:
     ShaderOpenGLFOG();
 
     void render(GLuint sceneTexture, GLuint depthTexture);
+    void createFramebuffer();
 
     float fogMaxDist;
     float fogMinDist;
     float intensity;
     Color fogColor;
 
-    GLuint getTextureResult() const;
+    [[nodiscard]] GLuint getTextureResult() const;
+    void destroy() override;
 };
 
 

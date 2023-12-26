@@ -78,3 +78,7 @@ void ShaderOpenGLShading::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer,
             nullptr
     );
 }
+
+void ShaderOpenGLShading::destroy() {
+
+}

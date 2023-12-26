@@ -17,6 +17,8 @@ public:
     ShaderOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename);
     static GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path);
 
+    virtual void destroy() = 0;
+
     [[nodiscard]] GLuint getProgramID() const;
 
     void setBool(const std::string &name, bool value) const;

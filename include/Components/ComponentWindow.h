@@ -62,9 +62,6 @@ private:
     ShaderOpenGLDOF *shaderOGLDOF;
     ShaderOpenGLDepthMap *shaderOGLDepthMap;
     ShaderOpenGLFOG *shaderOGLFOG;
-
-    int width;
-    int height;
 public:
 
     ComponentWindow();
@@ -122,6 +119,7 @@ public:
     [[nodiscard]] GLuint getSceneFramebuffer() const;
 
     void renderFramebuffer();
+    void resetFramebuffer();
 
     [[nodiscard]] GLuint getBackgroundFramebuffer() const;
 
@@ -140,6 +138,12 @@ public:
     int getWidth() const;
 
     int getHeight() const;
+
+
+    int width;
+    int height;
+
+    void createFramebuffer();
 };
 
 

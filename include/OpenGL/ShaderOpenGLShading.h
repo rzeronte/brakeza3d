@@ -17,6 +17,8 @@ public:
 
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
 
+    void destroy() override;
+
 };
 
 

@@ -20,6 +20,8 @@ public:
 
     void render(Object3D *o, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size, bool toFramebuffer);
 
+    void destroy() override;
+
     GLuint textureColorbuffer;
 };
 

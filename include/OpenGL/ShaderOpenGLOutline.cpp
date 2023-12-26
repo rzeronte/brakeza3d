@@ -3,6 +3,7 @@
 #include <ext/matrix_clip_space.hpp>
 #include <ext/matrix_transform.hpp>
 #include "ShaderOpenGLOutline.h"
+#include "../ComponentsManager.h"
 
 ShaderOpenGLOutline::ShaderOpenGLOutline()
 :
@@ -49,10 +50,11 @@ void ShaderOpenGLOutline::render(GLint textureID)
 
     glUseProgram(programID);
 
-    glm::mat4 projection = glm::ortho(0.0f, (float) EngineSetup::get()->screenWidth, (float) EngineSetup::get()->screenHeight, 0.0f, -1.0f, 1.0f);
+    auto window = ComponentsManager::get()->getComponentWindow();
+    const glm::mat4 projection = glm::ortho(0.0f, (float) window->width, (float) window->height, 0.0f, -1.0f, 1.0f);
     glm::vec2 position = glm::vec2(0, 0);
 
-    glm::vec2 size = glm::vec2(EngineSetup::get()->screenWidth, EngineSetup::get()->screenHeight);
+    glm::vec2 size = glm::vec2((float) window->width, (float) window->height);
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position, 0.0f));
@@ -73,4 +75,8 @@ void ShaderOpenGLOutline::render(GLint textureID)
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glBindVertexArray(0);
+}
+
+void ShaderOpenGLOutline::destroy() {
+
 }
