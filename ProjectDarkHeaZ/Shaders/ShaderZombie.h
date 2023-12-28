@@ -6,11 +6,11 @@
 #define BRAKEZA3D_SHADERZOMBIE_H
 
 
-#include "../../include/Render/ShaderOpenCL.h"
+#include "../../include/OpenGL/FXEffectOpenGL.h"
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Misc/Counter.h"
 
-class ShaderZombie : public ShaderOpenCL {
+class ShaderZombie : public FXEffectOpenGL {
     Mesh3D* object;
     int offsetX;
     int offsetY;

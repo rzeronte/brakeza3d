@@ -84,24 +84,6 @@ void ComponentGame::onStart()
     swarm->addPredator(new SwarmObject(player));
     Brakeza3D::get()->addObject3D(swarm, "swarm");
 
-    shaderExplosion = new ShaderExplosion(
-            true,
-            Color::white(),
-            Color::green(),
-            Point2D(
-                EngineSetup::get()->screenWidth / 2,
-                EngineSetup::get()->screenHeight / 2
-            ),
-            -1,
-            OCParticlesContext::forSplash()
-    );
-    shaderExplosion->setIntensity(1);
-
-    dialogBackground = new ShaderImageMask(true, SETUP->IMAGES_FOLDER + "gridTutorial.png", SETUP->IMAGES_FOLDER + "/tutorial_mask.png");
-
-    shaderCRT = new ShaderCRT(true, SETUP->IMAGES_FOLDER + "cloud.png", SETUP->IMAGES_FOLDER + "tutorial_mask.png");
-    shaderCRT->setMaxAlpha(1);
-
     storeManager = new StoreManager(player, textWriter);
 
     itemBoxFrame = new Mesh3D();
@@ -132,19 +114,21 @@ void ComponentGame::onStart()
     explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion_b.png"), 128, 128, 15, 35)));
     explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion_c.png"), 128, 128, 15, 35)));
     explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion_d.png"), 128, 128, 15, 35)));
+
+    shaderOGLLineLaser = new ShaderOpenGLLineLaser();
 }
 
 void ComponentGame::loadShaders()
 {
-    shaderBackgroundImage = new ShaderImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
-    shaderForegroundImage = new ShaderImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
+    shaderBackgroundImage = new FXOffsetImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
+    shaderForegroundImage = new FXOffsetImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
     shaderBackgroundImage->setUseOffset(true);
     shaderForegroundImage->setUseOffset(true);
-    shaderColor = new ShaderColor(false, PaletteColors::getStamina(), 0.75f);
+    shaderColor = new FXColorTint(false, PaletteColors::getStamina(), 0.75f);
     shaderProjectiles = new ShaderProjectiles();
     shaderShockWave = new ShaderShockWave(true);
 
-    shaderEdgeObject = new ShaderEdgeObject(false, nullptr, PaletteColors::getStatisticsText(), 2.0f);
+    shaderEdgeObject = new FXOutliner(false, nullptr, PaletteColors::getStatisticsText(), 2.0f);
 }
 
 ComponentGame::~ComponentGame()
@@ -278,17 +262,13 @@ void ComponentGame::handleOnUpdateTutorialImages(float alpha)
         if (getLevelLoader()->getTutorials().size() > 1) {
             textWriter->writeTTFCenterHorizontal(323, message.c_str(), PaletteColors::getCrt(), 0.3f);
         }
-        dialogBackground->setMaxAlpha((int) alpha);
-        dialogBackground->update();
         //imageCablesVertical->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
         boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
         getLevelLoader()->drawCurrentTutorialImage(alpha);
 
-        writeDialogTextToContinue("Press ENTER to start0...");
+        writeDialogTextToContinue("Press ENTER to start...");
 
         textWriter->setAlpha(oldAlpha);
-        shaderCRT->setMaxAlpha((int) alpha);
-        shaderCRT->update();
     }
 }
 
@@ -296,12 +276,8 @@ void ComponentGame::handleOnUpdateGamingTutorial(float alpha)
 {
     //imageCablesHorizontal->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
-    dialogBackground->setMaxAlpha((int) alpha);
-    dialogBackground->update();
     boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
-    shaderCRT->setMaxAlpha((int) alpha);
-    shaderCRT->update();
     help->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     writeDialogTextToContinue("Press ENTER to continue2...");
@@ -327,12 +303,7 @@ void ComponentGame::showLevelStatistics(float alpha)
 
     textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
 
-    dialogBackground->setMaxAlpha((int)alpha);
-    dialogBackground->update();
     boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
-    shaderCRT->setMaxAlpha((int)alpha);
-    shaderCRT->update();
 
     int offsetX = 340;
     int offsetY = 100;
@@ -1023,7 +994,6 @@ void ComponentGame::updateShaders()
     shaderColor->update();
     shaderProjectiles->update();
     shaderShockWave->update();
-    shaderExplosion->update();
 
     Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.000015);
     vel.z = 0;
@@ -1216,15 +1186,15 @@ void ComponentGame::handlePressKeyHelp()
     ComponentsManager::get()->getComponentMenu()->setMenuEnabled(false);
 }
 
-ShaderColor *ComponentGame::getShaderColor() const {
+FXColorTint *ComponentGame::getShaderColor() const {
     return shaderColor;
 }
 
-ShaderImage *ComponentGame::getShaderBackgroundImage() const {
+FXOffsetImage *ComponentGame::getShaderBackgroundImage() const {
     return shaderBackgroundImage;
 }
 
-ShaderImage *ComponentGame::getShaderForegroundImage() const {
+FXOffsetImage *ComponentGame::getShaderForegroundImage() const {
     return shaderForegroundImage;
 }
 
@@ -1471,12 +1441,7 @@ void ComponentGame::handleOnUpdateCountDown()
 
 void ComponentGame::handleOnUpdateHelp(const float alpha)
 {
-    dialogBackground->setMaxAlpha((int) alpha);
-    dialogBackground->update();
     boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
-    shaderCRT->setMaxAlpha((int) alpha);
-    shaderCRT->update();
 
     writeDialogTextToContinue("Press ESC to continue...");
 
@@ -1494,12 +1459,6 @@ void ComponentGame::handleOnUpdateStore(const float alpha)
 {
     imageCablesStore->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
-    dialogBackground->setMaxAlpha((int) alpha);
-    dialogBackground->update();
-
-    shaderCRT->setMaxAlpha((int) alpha);
-    shaderCRT->update();
-
     boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     boxStore->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
@@ -1515,16 +1474,11 @@ void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)
 
     imageCablesStore->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
-    dialogBackground->setMaxAlpha((int) alpha);
-    dialogBackground->update();
-
     boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     writeDialogTextToContinue("Press ENTER to select ...");
 
-    shaderCRT->setMaxAlpha((int) alpha);
-    shaderCRT->update();
     shaderEdgeObject->update();
 }
 
@@ -1535,13 +1489,7 @@ void ComponentGame::handleOnUpdatePressKeyGameOver(const float alpha)
     boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
-    dialogBackground->setMaxAlpha((int) alpha);
-    dialogBackground->update();
-
     writeDialogTextToContinue("Press ENTER to continue...");
-
-    shaderCRT->setMaxAlpha((int) alpha);
-    shaderCRT->update();
 
     imageEndGame->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 }
@@ -1550,11 +1498,7 @@ void ComponentGame::handleOnUpdateCredits(const float alpha)
 {
     imageCredits->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
-    dialogBackground->setMaxAlpha((int) alpha);
-    dialogBackground->update();
     boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-    shaderCRT->setMaxAlpha((int) alpha);
-    shaderCRT->update();
 
     writeDialogTextToContinue("Press ESC to continue...");
 
@@ -1582,4 +1526,8 @@ void ComponentGame::handleOnUpdateSplash(const float alpha)
         //videoPlayer->play();
     }
 
+}
+
+ShaderOpenGLLineLaser *ComponentGame::getShaderOGLLineLaser() {
+    return shaderOGLLineLaser;
 }

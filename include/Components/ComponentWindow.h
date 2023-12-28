@@ -22,6 +22,8 @@
 #include "../OpenGL/ShaderOpenGLDOF.h"
 #include "../OpenGL/ShaderOpenGLDepthMap.h"
 #include "../OpenGL/ShaderOpenGLFOG.h"
+#include "../OpenGL/ShaderOpenGLShockWave.h"
+#include "../../ProjectDarkHeaZ/OpenGLShaders/ShaderOpenGLLineLaser.h"
 
 class ComponentWindow : public Component {
 private:
@@ -35,7 +37,6 @@ private:
     TTF_Font *fontAlternative;
 
     GLuint sceneFramebuffer;
-    GLuint sceneTexture;
     GLuint depthTexture;
 
     GLuint backgroundFramebuffer;
@@ -48,7 +49,7 @@ private:
     GLuint uiTexture;
 
     GLuint globalFramebuffer;
-    GLuint globalTexture;
+    GLuint postProcessingFramebuffer;
 
     ShaderOpenGLRender *shaderOGLRender;
     ShaderOpenGLImage *shaderOGLImage;
@@ -62,6 +63,7 @@ private:
     ShaderOpenGLDOF *shaderOGLDOF;
     ShaderOpenGLDepthMap *shaderOGLDepthMap;
     ShaderOpenGLFOG *shaderOGLFOG;
+    ShaderOpenGLShockWave *shaderOGLShockWave;
 public:
 
     ComponentWindow();
@@ -94,7 +96,7 @@ public:
 
     SDL_Surface *applicationIcon;
 
-    void initOpenGL();
+    static void initOpenGL();
 
     SDL_GLContext context;
 
@@ -133,17 +135,27 @@ public:
 
     void cleanFrameBuffers() const;
 
-    ShaderOpenGLFOG *getShaderOGLFOG() const;
+    [[nodiscard]] ShaderOpenGLFOG *getShaderOGLFOG() const;
 
-    int getWidth() const;
+    [[nodiscard]] int getWidth() const;
 
-    int getHeight() const;
-
+    [[nodiscard]] int getHeight() const;
 
     int width;
     int height;
 
     void createFramebuffer();
+
+    [[nodiscard]] ShaderOpenGLShockWave *getShaderOGLShockWave() const;
+
+    GLuint sceneTexture;
+
+    [[nodiscard]] GLuint getGlobalFramebuffer() const;
+
+    GLuint globalTexture;
+    GLuint postProcessingTexture;
+
+    [[nodiscard]] GLuint getPostProcessingFramebuffer() const;
 };
 
 

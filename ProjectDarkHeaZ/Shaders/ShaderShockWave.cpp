@@ -7,13 +7,13 @@
 
 ShaderShockWave::ShaderShockWave(bool active)
 :
-    ShaderOpenCL(active)
+        FXEffectOpenGL(active)
 {
 }
 
 void ShaderShockWave::update()
 {
-    Shader::update();
+    FXEffectBase::update();
 
     if (!isEnabled()) return;
 

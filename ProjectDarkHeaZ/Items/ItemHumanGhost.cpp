@@ -11,7 +11,7 @@ ItemHumanGhost::ItemHumanGhost()
 
 void ItemHumanGhost::onStart()
 {
-    blink = new ShaderBlink(true, this, 0.05, Color::red());
+    blink = new FXBlink(true, this, 0.05, Color::red());
 }
 
 void ItemHumanGhost::resolveCollision(Collisionable *withObject)

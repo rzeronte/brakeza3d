@@ -8,14 +8,11 @@
 
 #include "ShaderOpenGL.h"
 #include "../Misc/Color.h"
+#include "ShaderQuadOpenGL.h"
 
-class ShaderOpenGLFOG : public ShaderOpenGL {
-    GLuint quadVAO, VBO;
+class ShaderOpenGLFOG : public ShaderOpenGL, public ShaderQuadOpenGL {
     GLuint resultFramebuffer;
     GLuint textureResult;
-
-    GLint modelMatrixUniform;
-    GLint projectionMatrixUniform;
 
     GLint intensityUniform;
     GLint fogMaxDistUniform;

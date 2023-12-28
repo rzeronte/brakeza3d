@@ -22,6 +22,7 @@
 #include "../Misc/cJSON.h"
 #include "ScriptLUA.h"
 #include "../../sol/sol.hpp"
+#include "../OpenGL/FXEffectOpenGL.h"
 
 class Object3D {
 
@@ -47,6 +48,7 @@ protected:
 
     std::vector<ScriptLUA*> scripts;
     sol::environment luaEnvironment;
+    std::vector<FXEffectOpenGL*> shaders;
 
 public:
 
@@ -190,6 +192,12 @@ public:
     glm::mat4 getModelMatrix();
 
     Vertex3D position;
+
+    std::vector<FXEffectOpenGL *> &getShaders();
+
+    void addMesh3DShader(FXEffectOpenGL *shader);
+
+    void removeShader(int i);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

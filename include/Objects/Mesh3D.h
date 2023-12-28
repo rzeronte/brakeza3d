@@ -10,7 +10,7 @@
 #include "Object3D.h"
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
-#include "../Render/ObjectShaderOpenCL.h"
+#include "../OpenGL/FXEffectOpenGLObject.h"
 #include <assimp/Importer.hpp>      // C++ assimpImporter interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
@@ -29,7 +29,6 @@ private:
     bool sharedTextures;
     bool flatTextureColor;
     bool render;
-    std::vector<ObjectShaderOpenCL*> shaders;
 protected:
     std::vector<Triangle *> modelTriangles;
     std::vector<Image *> modelTextures;
@@ -112,12 +111,6 @@ public:
     static void createFromJSON(cJSON *object);
 
     static void setPropertiesFromJSON(cJSON *object, Mesh3D *o);
-
-    std::vector<ObjectShaderOpenCL *> &getShaders();
-
-    void addMesh3DShader(ObjectShaderOpenCL *shader);
-
-    void removeShader(int i);
 
     void fillBuffers();
 

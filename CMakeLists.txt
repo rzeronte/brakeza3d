@@ -127,43 +127,35 @@ add_executable(Brakeza3D
     src/Objects/Vertex4D.cpp include/Objects/Vertex4D.h
     src/Particles/ParticleEmitter.cpp include/Particles/ParticleEmitter.h
     src/Collisions/SimplePendulum.cpp include/Physics/SimplePendulum.h
-    src/Render/Shader.cpp include/Render/Shader.h
+        include/OpenGL/FXEffectBase.h
     src/Misc/Image.cpp include/Misc/Image.h
     src/Collisions/Collisionable.cpp src/Collisions/Collisionable.h
     src/2D/Button.cpp include/2D/Button.h
-    include/2D/ButtonsCallbacks.h include/Shaders/ShaderBlink.h
+    include/2D/ButtonsCallbacks.h include/FXEffect/FXBlink.h
 
     src/Behaviors/Object3DBehavior.cpp include/Behaviors/Object3DBehavior.h
     src/Particles/ParticleEmitterFireworks.cpp include/Particles/ParticleEmitterFireworks.h
 
     include/Objects/Vector2D.cpp include/Objects/Vector2D.h
-        src/Render/ShaderOpenCL.cpp include/Render/ShaderOpenCL.h
-    src/Shaders/ShaderImage.cpp include/Shaders/ShaderImage.h
-    src/Shaders/ShaderEdgeObject.cpp include/Shaders/ShaderEdgeObject.h
-    src/Shaders/ShaderColor.cpp include/Shaders/ShaderColor.h
+        include/OpenGL/FXEffectOpenGL.h
+        src/FXEffect/ShaderImage.cpp include/FXEffect/FXOffsetImage.h
+        src/FXEffect/FXOutliner.cpp include/FXEffect/FXOutliner.h
+        src/FXEffect/FXColorTint.cpp include/FXEffect/FXColorTint.h
     src/Collisions/Mesh3DAnimatedGhost.cpp include/Physics/Mesh3DAnimatedGhost.h
     src/Collisions/RayCollisionable.cpp include/Physics/RayCollisionable.h
-    src/Shaders/ShockWave.cpp include/Shaders/ShockWave.h
+        src/PostProcessing/ShockWave.cpp include/PostProcessing/ShockWave.h
 
-        src/Shaders/ShaderBilinear.cpp include/Shaders/ShaderBilinear.h
-    src/Objects/Swarm.cpp include/Objects/Swarm.h
-    src/Shaders/ShaderExplosion.cpp include/Shaders/ShaderExplosion.h
-    src/Shaders/ShaderDepthOfField.cpp include/Shaders/ShaderDepthOfField.h
-    src/Shaders/ShaderImageMask.cpp include/Shaders/ShaderImageMask.h
-    src/Behaviors/RotatableToTarget.cpp include/Behaviors/RotatableToTarget.h
+        src/Objects/Swarm.cpp include/Objects/Swarm.h
+        src/Behaviors/RotatableToTarget.cpp include/Behaviors/RotatableToTarget.h
 
-    src/Shaders/ShaderBlink.cpp
+        src/FXEffect/FXBlink.cpp
         include/Objects/OpenCLTypes.h
     include/Physics/Projectile.h
 
         src/2D/Sprite2D.cpp include/2D/Sprite2D.h
 
-        kernels/renderer.cl
-
         src/2D/Sprite2D.cpp
         include/2D/Sprite2D.h
-        src/Shaders/ShaderBlurBuffer.cpp
-        src/Shaders/ShaderParticlesBlurBuffer.h
         src/Objects/TentacleIK.cpp
         include/Objects/TentacleIK.h
         src/Objects/ScriptLUA.cpp
@@ -174,34 +166,34 @@ add_executable(Brakeza3D
         src/Misc/SceneLoader.cpp
         include/Misc/SceneLoader.h
         include/Render/ObjectShaderOpenCL.cpp
-        include/Render/ObjectShaderOpenCL.h
+        include/OpenGL/FXEffectOpenGLObject.h
         include/Misc/TileManager.cpp
         include/Misc/TileManager.h
-        include/OpenGL/ShaderOpenGL.cpp
+        src/OpenGL/ShaderOpenGL.cpp
         include/OpenGL/ShaderOpenGL.h
         include/OpenGL/ShaderOpenGLParticles.h
-        include/OpenGL/ShaderOpenGLParticles.cpp
-        include/OpenGL/ShaderOpenGLImage.cpp
+        src/OpenGL/ShaderOpenGLParticles.cpp
+        src/OpenGL/ShaderOpenGLImage.cpp
         include/OpenGL/ShaderOpenGLImage.h
-        include/OpenGL/ShaderOpenGLRender.cpp
+        src/OpenGL/ShaderOpenGLRender.cpp
         include/OpenGL/ShaderOpenGLRender.h
         include/Objects/OpenGLShaderTypes.h
-        include/OpenGL/ShaderOpenGLLine.cpp
+        src/OpenGL/ShaderOpenGLLine.cpp
         include/OpenGL/ShaderOpenGLLine.h
         src/Objects/SpotLight3D.cpp
         src/Objects/SpotLight3D.h
-        include/OpenGL/ShaderOpenGLWireframe.cpp
+        src/OpenGL/ShaderOpenGLWireframe.cpp
         include/OpenGL/ShaderOpenGLWireframe.h
-        include/OpenGL/ShaderOpenGLShading.cpp
+        src/OpenGL/ShaderOpenGLShading.cpp
         include/OpenGL/ShaderOpenGLShading.h
-        include/OpenGL/ShaderOpenGLPoints.cpp
+        src/OpenGL/ShaderOpenGLPoints.cpp
         include/OpenGL/ShaderOpenGLPoints.h
-        include/OpenGL/ShaderOpenGLCustom.cpp
+        src/OpenGL/ShaderOpenGLCustom.cpp
         include/OpenGL/ShaderOpenGLCustom.h
-        include/OpenGL/ShaderOpenGLCustom.cpp
-        include/OpenGL/ShaderOpenGLOutline.cpp
+        src/OpenGL/ShaderOpenGLCustom.cpp
+        src/OpenGL/ShaderOpenGLOutline.cpp
         include/OpenGL/ShaderOpenGLOutline.h
-        include/OpenGL/ShaderOpenGLColor.cpp
+        src/OpenGL/ShaderOpenGLColor.cpp
         include/OpenGL/ShaderOpenGLColor.h
 
         ProjectDarkHeaZ/Components/ComponentGameInput.h ProjectDarkHeaZ/Components/ComponentGameInput.cpp
@@ -251,7 +243,6 @@ add_executable(Brakeza3D
 
         ProjectDarkHeaZ/Shaders/RayLight.h ProjectDarkHeaZ/Shaders/RayLight.cpp
         ProjectDarkHeaZ/Shaders/ShaderShockWave.h ProjectDarkHeaZ/Shaders/ShaderShockWave.cpp
-        ProjectDarkHeaZ/Shaders/ShaderCRT.h ProjectDarkHeaZ/Shaders/ShaderCRT.cpp
         ProjectDarkHeaZ/Shaders/ShaderEnergyShield.h ProjectDarkHeaZ/Shaders/ShaderEnergyShield.cpp
         ProjectDarkHeaZ/Shaders/ShaderProjectiles.h ProjectDarkHeaZ/Shaders/ShaderProjectiles.cpp
         ProjectDarkHeaZ/Shaders/ShaderZombie.h ProjectDarkHeaZ/Shaders/ShaderZombie.cpp
@@ -264,10 +255,18 @@ add_executable(Brakeza3D
         ProjectDarkHeaZ/Items/SalvageSpaceship.h
         ProjectDarkHeaZ/Enemies/BoidEnemyGhost.cpp
         ProjectDarkHeaZ/Enemies/BoidEnemyGhost.h
-        include/OpenGL/ShaderOpenGLDOF.cpp
+        src/OpenGL/ShaderOpenGLDOF.cpp
         include/OpenGL/ShaderOpenGLDOF.h
-        include/OpenGL/ShaderOpenGLDepthMap.cpp
+        src/OpenGL/ShaderOpenGLDepthMap.cpp
         include/OpenGL/ShaderOpenGLDepthMap.h
+        src/OpenGL/ShaderOpenGLFOG.cpp
+        include/OpenGL/ShaderOpenGLFOG.h
+        src/OpenGL/ShaderQuadOpenGL.cpp
+        include/OpenGL/ShaderQuadOpenGL.h
+        src/OpenGL/ShaderOpenGLShockWave.cpp
+        include/OpenGL/ShaderOpenGLShockWave.h
+        ProjectDarkHeaZ/OpenGLShaders/ShaderOpenGLLineLaser.cpp
+        ProjectDarkHeaZ/OpenGLShaders/ShaderOpenGLLineLaser.h
 )
 
 target_link_libraries(Brakeza3D

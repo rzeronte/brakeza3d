@@ -1,5 +1,5 @@
 function onStart()
-	shader = ShaderEdgeObject:create()
+	shader = FXOutliner:create()
 	this:addMesh3DShader(shader)
 end
 

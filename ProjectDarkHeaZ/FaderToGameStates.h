@@ -7,7 +7,7 @@
 
 #include "../include/Misc/Color.h"
 #include "../include/EngineBuffers.h"
-#include "../include/Shaders/ShaderColor.h"
+#include "../include/FXEffect/FXColorTint.h"
 
 enum ShaderFadeToColorDirection {
     STOP = 0,
@@ -27,7 +27,7 @@ private:
     int screenHeight;
     EngineSetup::GameState gameStateWhenEnds;
     ShaderFadeToColorDirection direction;
-    ShaderColor *shader;
+    FXColorTint *shader;
 public:
     FaderToGameStates(Color color, float speed, EngineSetup::GameState gameStateWhenEnds, bool onlyFadeIn) {
         setEnabled(true);
@@ -46,7 +46,7 @@ public:
         screenHeight = EngineSetup::get()->screenHeight;
         screenWidth = EngineSetup::get()->screenWidth;
 
-        shader = new ShaderColor(true, Color::black(), 0);
+        shader = new FXColorTint(true, Color::black(), 0);
         shader->setEnabled(true);
     }
 

@@ -30,11 +30,10 @@ void ComponentMenu::onStart()
 
     Vertex3D lightPosition = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition() + Vertex3D(0, 0, 3000);
 
-    shaderBackgroundImage = new ShaderImage(SETUP->IMAGES_FOLDER + "menuBackground.png");
+    shaderBackgroundImage = new FXOffsetImage(SETUP->IMAGES_FOLDER + "menuBackground.png");
     shaderBackgroundImage->setEnabled(true);
     shaderBackgroundImage->setUseOffset(false);
 
-    shaderMenuTitle = new ShaderImageMask(true, SETUP->IMAGES_FOLDER + "menuTitle.png", SETUP->IMAGES_FOLDER + "menuTitleMask.png");
     border = new Image(SETUP->IMAGES_FOLDER + "hud_background.png");
     imageLogoBox =  new Image(SETUP->IMAGES_FOLDER + "logo_box.png");
 }

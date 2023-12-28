@@ -2,7 +2,6 @@
 #include <SDL2/SDL_surface.h>
 #include "../include/EngineBuffers.h"
 #include "../include/ComponentsManager.h"
-#include "../include/Shaders/ShaderExplosion.h"
 #include "LUAIntegration.h"
 
 inline void my_panic(sol::optional<std::string> maybe_msg) {

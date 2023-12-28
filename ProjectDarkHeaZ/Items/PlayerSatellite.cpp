@@ -23,7 +23,7 @@ void PlayerSatellite::onStartSetup()
         EngineSetup::collisionGroups::Enemy
     );*/
 
-    blink = new ShaderBlink(false, this, 0.05, Color::red());
+    blink = new FXBlink(false, this, 0.05, Color::red());
 }
 
 void PlayerSatellite::onUpdate()

@@ -2,20 +2,20 @@
 // Created by eduardo on 16/10/23.
 //
 
-#include "ObjectShaderOpenCL.h"
+#include "../OpenGL/FXEffectOpenGLObject.h"
 
-ObjectShaderOpenCL::ObjectShaderOpenCL(bool active, Object3D *object)
+FXEffectOpenGLObject::FXEffectOpenGLObject(bool active, Object3D *object)
 :
-    ShaderOpenCL(active),
-    object(object)
+        FXEffectOpenGL(active),
+        object(object)
 {
 }
 
-Object3D *ObjectShaderOpenCL::getObject() const {
+Object3D *FXEffectOpenGLObject::getObject() const {
     return object;
 }
 
-void ObjectShaderOpenCL::setObject(Object3D *object) {
-    ObjectShaderOpenCL::object = object;
+void FXEffectOpenGLObject::setObject(Object3D *object) {
+    FXEffectOpenGLObject::object = object;
 }
 

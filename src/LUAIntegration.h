@@ -112,28 +112,28 @@ void LUAIntegration(sol::state &lua)
                                   "loadScene", &SceneLoader::loadScene
     );
 
-    lua.new_usertype<Shader>("Shader",
-                             "getLabel", &Shader::getLabel,
-                             "setLabel", &Shader::setLabel,
-                             "isEnabled", &Shader::isEnabled,
-                             "setEnabled", &Shader::setEnabled
+    lua.new_usertype<FXEffectBase>("FXEffectBase",
+                             "getLabel", &FXEffectBase::getLabel,
+                             "setLabel", &FXEffectBase::setLabel,
+                             "isEnabled", &FXEffectBase::isEnabled,
+                             "setEnabled", &FXEffectBase::setEnabled
     );
 
-    lua.new_usertype<ShaderOpenCL>("ShaderOpenCL",
-                             sol::base_classes, sol::bases<Shader>(),
-                             "getJSON", &ShaderOpenCL::getJSON
+    lua.new_usertype<FXEffectOpenGL>("ShaderOpenCL",
+                                     sol::base_classes, sol::bases<FXEffectBase>(),
+                                     "getJSON", &FXEffectOpenGL::getJSON
     );
-    lua.new_usertype<ObjectShaderOpenCL>("ObjectShaderOpenCL",
-                                   sol::base_classes, sol::bases<ShaderOpenCL>(),
-                                   "setObject", &ObjectShaderOpenCL::setObject,
-                                   "getObject", &ObjectShaderOpenCL::getObject
+    lua.new_usertype<FXEffectOpenGLObject>("ObjectShaderOpenCL",
+                                           sol::base_classes, sol::bases<FXEffectOpenGL>(),
+                                           "setObject", &FXEffectOpenGLObject::setObject,
+                                           "getObject", &FXEffectOpenGLObject::getObject
     );
 
-    lua.new_usertype<ShaderEdgeObject>("ShaderEdgeObject",
-                                   sol::base_classes, sol::bases<ShaderOpenCL>(),
-                                   "create", &ShaderEdgeObject::create,
-                                   "setSize", &ShaderEdgeObject::setSize,
-                                   "getSize", &ShaderEdgeObject::getSize
+    lua.new_usertype<FXOutliner>("FXOutliner",
+                                 sol::base_classes, sol::bases<FXEffectOpenGL>(),
+                                 "create", &FXOutliner::create,
+                                 "setSize", &FXOutliner::setSize,
+                                 "getSize", &FXOutliner::getSize
     );
 }
 

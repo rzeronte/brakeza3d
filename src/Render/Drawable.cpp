@@ -212,7 +212,7 @@ void Drawable::drawVector3D(Vector3D V, Color color)
         P1,
         P2,
         color,
-        0.0001f,
+        0.001f,
         ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 }

@@ -4,14 +4,14 @@
 
 ShaderProjectiles::ShaderProjectiles()
 :
-    ShaderOpenCL(true),
-    image(Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png"))
+        FXEffectOpenGL(true),
+        image(Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png"))
 {
 }
 
 void ShaderProjectiles::update()
 {
-    Shader::update();
+    FXEffectBase::update();
 
     if (!isEnabled()) return;
 
@@ -21,7 +21,7 @@ void ShaderProjectiles::update()
 void ShaderProjectiles::executeKernelOpenCL()
 {
     for(auto l: lasers) {
-        ComponentsManager::get()->getComponentWindow()->getShaderOGLLine()->render(
+        ComponentsManager::get()->getComponentGame()->getShaderOGLLineLaser()->render(
             Point2D(l.from),
             Point2D(l.to),
             Color(l.color.r, l.color.g, l.color.b),

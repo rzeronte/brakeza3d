@@ -43,11 +43,11 @@ class SceneLoader {
     };
 
     std::map<std::string, Mesh3DShaderLoaderMapping> mesh3DShaderTypes = {
-            {"ShaderEdgeObject", Mesh3DShaderLoaderMapping::ShaderEdgeObject}
+            {"FXOutliner", Mesh3DShaderLoaderMapping::ShaderEdgeObject}
     };
 
     std::map<std::string, SceneShaderLoaderMapping> sceneShaderTypes = {
-            {"ShaderEdgeObject", SceneShaderLoaderMapping::ShaderImage},
+            {"ShaderImage", SceneShaderLoaderMapping::ShaderImage},
             {"ShaderDepthOfField", SceneShaderLoaderMapping::ShaderDepthOfField},
             {"ShaderBilinear", SceneShaderLoaderMapping::ShaderBilinear},
             {"ShaderParticlesBlurBuffer", SceneShaderLoaderMapping::ShaderParticlesBlurBuffer}
