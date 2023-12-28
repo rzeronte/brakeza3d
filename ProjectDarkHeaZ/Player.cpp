@@ -698,7 +698,7 @@ bool Player::isAllowEnergyShield() const
 
 void Player::onStartSetup()
 {
-    blink = new ShaderBlink(false, this, 0.05, PaletteColors::getPlayerDamageBlink());
+    blink = new FXBlink(false, this, 0.05, PaletteColors::getPlayerDamageBlink());
     counterDamageBlink.setEnabled(false);
 
     loadSatellite();
@@ -829,7 +829,7 @@ void Player::dashMovement()
 
         Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
 
-        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1.5, true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
         float power = dashPower;
         if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_EXTRA_DASH)) {

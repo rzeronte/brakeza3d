@@ -6,7 +6,7 @@
 #define BRAKEZA3D_RAYLIGHT_H
 
 #include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
-#include "../../include/Render/ShaderOpenCL.h"
+#include "../../include/OpenGL/FXEffectOpenGL.h"
 #include "../../include/Misc/Image.h"
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Objects/LightPoint3D.h"

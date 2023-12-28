@@ -13,7 +13,7 @@ SalvageSpaceship::SalvageSpaceship()
     finished(false),
     timeGetting(Counter(3)),
     timeToRemove(Counter(3)),
-    blink(new ShaderBlink(true, this, 0.05, PaletteColors::getSavageBlink()))
+    blink(new FXBlink(true, this, 0.05, PaletteColors::getSavageBlink()))
 {
     timeGetting.setEnabled(false);
 }

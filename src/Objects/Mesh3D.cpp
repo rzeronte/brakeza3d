@@ -170,10 +170,6 @@ void Mesh3D::onUpdateOpenCLRender()
 void Mesh3D::postUpdate()
 {
     Object3D::postUpdate();
-
-    for (auto s: shaders) {
-        s->postUpdate();
-    }
 }
 
 void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
@@ -486,43 +482,6 @@ void Mesh3D::drawImGuiProperties()
 
     if (ImGui::TreeNode(title.c_str())) {
         ImGui::Checkbox(std::string("Enable lights").c_str(), &enableLights);
-
-        ImGui::Separator();
-
-        auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
-
-        if (ImGui::TreeNode("Shaders")) {
-            if ((int) shaders.size() <= 0) {
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No shaders attached");
-            }
-
-            for (int i = 0; i < (int) shaders.size(); i++) {
-                auto s = shaders[i];
-                ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(24, 24));
-                ImGui::SameLine(100);
-
-                if (!s->isEnabled()) {
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                        s->setEnabled(true);
-                    }
-                } else {
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                        s->setEnabled(false);
-                    }
-                }
-                ImGui::SameLine();
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                    removeShader(i);
-                }
-                ImGui::SameLine();
-                if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {
-                    ImGui::PushID(i);
-                    s->drawImGuiProperties();
-                    ImGui::PopID();
-                }
-            }
-            ImGui::TreePop();
-        }
         ImGui::TreePop();
     }
 }
@@ -558,16 +517,15 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
             switch(mesh3DShaderTypes[type]) {
                 case Mesh3DShaderLoaderMapping::ShaderEdgeObject: {
                     auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
-                    auto color = Color(
-                        cJSON_GetObjectItemCaseSensitive(edgeColor, "r")->valueint,
-                        cJSON_GetObjectItemCaseSensitive(edgeColor, "g")->valueint,
-                        cJSON_GetObjectItemCaseSensitive(edgeColor, "b")->valueint
-                    );
-                    auto shader = new ShaderEdgeObject(
-                        true,
-                        o,
-                        color,
-                        (float)cJSON_GetObjectItemCaseSensitive(currentShader, "size")->valuedouble
+                    auto shader = new FXOutliner(
+                            true,
+                            o,
+                            Color(
+                                cJSON_GetObjectItemCaseSensitive(edgeColor, "r")->valueint,
+                                cJSON_GetObjectItemCaseSensitive(edgeColor, "g")->valueint,
+                                cJSON_GetObjectItemCaseSensitive(edgeColor, "b")->valueint
+                            ),
+                            (float)cJSON_GetObjectItemCaseSensitive(currentShader, "size")->valuedouble
                     );
                     o->addMesh3DShader(shader);
                     break;
@@ -584,21 +542,6 @@ void Mesh3D::createFromJSON(cJSON *object)
     Mesh3D::setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
-}
-
-std::vector<ObjectShaderOpenCL *> &Mesh3D::getShaders() {
-    return shaders;
-}
-
-void Mesh3D::addMesh3DShader(ObjectShaderOpenCL *shader) {
-    shader->setObject(this);
-    shaders.push_back(shader);
-}
-
-void Mesh3D::removeShader(int index) {
-    if (index >= 0 && index < shaders.size()) {
-        shaders.erase(shaders.begin() + index);
-    }
 }
 
 void Mesh3D::fillBuffers()

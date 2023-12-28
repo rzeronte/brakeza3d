@@ -11,8 +11,8 @@
 #include "../../include/Objects/Vertex3D.h"
 #include "../../include/Objects/Point2D.h"
 #include "../../include/Misc/Counter.h"
-#include "../../include/Render/ShaderOpenCL.h"
-#include "../../include/Shaders/ShockWave.h"
+#include "../../include/OpenGL/FXEffectOpenGL.h"
+#include "../../include/PostProcessing/ShockWave.h"
 
 #define MAX_SHOCK_WAVES 5
 
@@ -24,7 +24,7 @@ struct OCShockWave {
     float currentSize;
 };
 
-class ShaderShockWave: public ShaderOpenCL {
+class ShaderShockWave: public FXEffectOpenGL {
     std::vector<OCShockWave> waves;
 public:
     explicit ShaderShockWave(bool active);

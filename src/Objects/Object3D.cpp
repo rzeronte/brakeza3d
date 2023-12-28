@@ -178,6 +178,10 @@ void Object3D::postUpdate()
 {
     if (!isEnabled()) return;
 
+    for (auto s: shaders) {
+        s->postUpdate();
+    }
+
     if (isRotationFrameEnabled()) {
         setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));
     }
@@ -369,7 +373,6 @@ void Object3D::setBelongToScene(bool belongToScene) {
     Object3D::belongToScene = belongToScene;
 }
 
-
 void Object3D::drawImGuiProperties()
 {
     ImGui::Checkbox("Enabled", &enabled);
@@ -461,13 +464,41 @@ void Object3D::drawImGuiProperties()
     }
     ImGui::Separator();
 
-    if (ImGui::TreeNode("Stencil buffer")) {
-        ImGui::Checkbox("Enable", &isStencilBufferEnabled());
+    if (ImGui::TreeNode("Shaders")) {
+        if ((int) shaders.size() <= 0) {
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No shaders attached");
+        }
+        auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
+
+        for (int i = 0; i < (int) shaders.size(); i++) {
+            auto s = shaders[i];
+            ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(24, 24));
+            ImGui::SameLine(100);
+
+            if (!s->isEnabled()) {
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    s->setEnabled(true);
+                }
+            } else {
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    s->setEnabled(false);
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                removeShader(i);
+            }
+            ImGui::SameLine();
+            if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {
+                ImGui::PushID(i);
+                s->drawImGuiProperties();
+                ImGui::PopID();
+            }
+        }
         ImGui::TreePop();
     }
 
     ImGui::Separator();
-
 }
 
 cJSON *Object3D::getJSON()
@@ -537,6 +568,19 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
             o->attachScript(new ScriptLUA(currentScript->valuestring, ScriptLUA::dataTypesFileFor(currentScript->valuestring)));
         }
     }
+
+    if (cJSON_GetObjectItemCaseSensitive(object, "shaders") != nullptr) {
+        auto mesh3DShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getMesh3DShaderTypes();
+        cJSON *currentShader;
+        cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
+            auto type = cJSON_GetObjectItemCaseSensitive(currentShader, "type")->valuestring;
+            switch(mesh3DShaderTypes[type]) {
+                case Mesh3DShaderLoaderMapping::ShaderEdgeObject: {
+                    break;
+                }
+            }
+        }
+    }
 }
 
 void Object3D::createFromJSON(cJSON *object)
@@ -563,4 +607,18 @@ glm::mat4 Object3D::getModelMatrix()
     ;
 
     return matrizTransformacion;
+}
+
+std::vector<FXEffectOpenGL *> &Object3D::getShaders() {
+    return shaders;
+}
+
+void Object3D::addMesh3DShader(FXEffectOpenGL *shader) {
+    shaders.push_back(shader);
+}
+
+void Object3D::removeShader(int index) {
+    if (index >= 0 && index < shaders.size()) {
+        shaders.erase(shaders.begin() + index);
+    }
 }

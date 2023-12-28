@@ -12,17 +12,17 @@ ShaderEnergyShield::ShaderEnergyShield(
     const std::string &maskFilename
 )
 :
-    ShaderOpenCL(active),
-    texture(Image(textureFilename)),
-    mask(Image(maskFilename)),
-    maxAlpha(255),
-    parent(parent)
+        FXEffectOpenGL(active),
+        texture(Image(textureFilename)),
+        mask(Image(maskFilename)),
+        maxAlpha(255),
+        parent(parent)
 {
 }
 
 void ShaderEnergyShield::update()
 {
-    Shader::update();
+    FXEffectBase::update();
 
     if (!isEnabled()) return;
 

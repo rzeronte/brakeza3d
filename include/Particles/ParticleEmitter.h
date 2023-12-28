@@ -12,9 +12,9 @@
 #include "../Misc/Timer.h"
 #include "../Misc/Counter.h"
 #include "../Misc/Color.h"
-#include "../Shaders/ShaderExplosion.h"
 #include "../Misc/Image.h"
 #include "../OpenGL/ShaderOpenGLParticles.h"
+#include "../Objects/OpenCLTypes.h"
 
 typedef enum {
     DEFAULT = 0,

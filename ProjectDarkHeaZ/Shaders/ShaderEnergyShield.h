@@ -7,10 +7,10 @@
 
 
 #include "../../include/Misc/Image.h"
-#include "../../include/Render/ShaderOpenCL.h"
+#include "../../include/OpenGL/FXEffectOpenGL.h"
 #include "../../include/Objects/Mesh3D.h"
 
-class ShaderEnergyShield : public ShaderOpenCL{
+class ShaderEnergyShield : public FXEffectOpenGL{
     Image texture;
     Image mask;
     unsigned int maxAlpha;

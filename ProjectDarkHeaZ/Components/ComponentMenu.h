@@ -11,13 +11,11 @@
 #include "../../include/Objects/Mesh3DAnimated.h"
 #include "../../include/Physics/Mesh3DAnimatedGhost.h"
 #include "../../include/Physics/SimplePendulum.h"
-#include "../../include/Shaders/ShaderImage.h"
-#include "../../include/Shaders/ShaderImageMask.h"
+#include "../../include/FXEffect/FXOffsetImage.h"
 
 class ComponentMenu : public Component {
 private:
-    ShaderImage *shaderBackgroundImage;
-    ShaderImageMask *shaderMenuTitle;
+    FXOffsetImage *shaderBackgroundImage;
 
     Mesh3D *planet;
 
@@ -31,7 +29,7 @@ private:
 public:
     ComponentMenu();
 
-    virtual ~ComponentMenu();
+    ~ComponentMenu() override;
 
     void onStart() override;
 

@@ -8,7 +8,7 @@
 
 #include <CL/cl.h>
 #include "../../include/Misc/Image.h"
-#include "../../include/Render/ShaderOpenCL.h"
+#include "../../include/OpenGL/FXEffectOpenGL.h"
 #include "../ProjectileRay.h"
 
 #define MAX_PROJECTILES 256
@@ -34,7 +34,7 @@ struct OCProjectile
     float intensity;
 };
 
-class ShaderProjectiles : public ShaderOpenCL {
+class ShaderProjectiles : public FXEffectOpenGL {
 private:
     Image image;
 

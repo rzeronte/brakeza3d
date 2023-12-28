@@ -82,7 +82,7 @@ void SceneLoader::loadScene(const std::string& filename)
 
         switch(sceneShaderTypes[typeObject.c_str()]) {
             case SceneShaderLoaderMapping::ShaderImage : {
-                auto shader = dynamic_cast<ShaderImage*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(0));
+                auto shader = dynamic_cast<FXOffsetImage*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(0));
                 shader->getImage().setImage(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "image")->valuestring);
                 shader->setUseOffset((bool) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "usingOffset")->valueint);
                 shader->setOffsets(
@@ -91,7 +91,7 @@ void SceneLoader::loadScene(const std::string& filename)
                 );
                 break;
             }
-            case SceneShaderLoaderMapping::ShaderDepthOfField : {
+            /*case SceneShaderLoaderMapping::ShaderDepthOfField : {
                 auto shader = dynamic_cast<ShaderDepthOfField*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(1));
                 shader->setup(
                     (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "focusPlaneDepth")->valuedouble,
@@ -100,7 +100,7 @@ void SceneLoader::loadScene(const std::string& filename)
                     (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "intensity")->valuedouble
                 );
                 break;
-            }
+            }*/
         }
     }
 

@@ -6,7 +6,6 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/OpenGL/ShaderOpenGLImage.h"
-#include "../../include/OpenGL/ShaderOpenGLRender.h"
 
 ComponentWindow::ComponentWindow()
 :
@@ -37,6 +36,7 @@ void ComponentWindow::onStart()
     shaderOGLDOF = new ShaderOpenGLDOF();
     shaderOGLDepthMap = new ShaderOpenGLDepthMap();
     shaderOGLFOG = new ShaderOpenGLFOG();
+    shaderOGLShockWave = new ShaderOpenGLShockWave();
 }
 
 void ComponentWindow::preUpdate()
@@ -278,6 +278,17 @@ void ComponentWindow::createFramebuffer()
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    // --
+    glGenFramebuffers(1, &postProcessingFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, postProcessingFramebuffer);
+
+    glGenTextures(1, &postProcessingTexture);
+    glBindTexture(GL_TEXTURE_2D, postProcessingTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, postProcessingTexture, 0);
+
     // ----
 
     glGenFramebuffers(1, &sceneFramebuffer);
@@ -390,6 +401,7 @@ void ComponentWindow::resetFramebuffer()
     shaderOGLDOF->destroy();
     shaderOGLDepthMap->destroy();
     shaderOGLFOG->destroy();
+    shaderOGLShockWave->destroy();
 }
 
 void ComponentWindow::renderFramebuffer()
@@ -399,6 +411,7 @@ void ComponentWindow::renderFramebuffer()
 
     shaderOGLImage->renderTexture(backgroundTexture, 0, 0, width, height, 1, true, globalFramebuffer);
     shaderOGLImage->renderTexture(sceneTexture, 0, 0, width, height, 1, true, globalFramebuffer);
+    shaderOGLImage->renderTexture(postProcessingTexture, 0, 0, width, height, 1, true, globalFramebuffer);
 
     if (EngineSetup::get()->ENABLE_FOG) {
         shaderOGLFOG->render(globalTexture, depthTexture);
@@ -421,6 +434,9 @@ void ComponentWindow::renderFramebuffer()
 
 void ComponentWindow::cleanFrameBuffers() const
 {
+    glBindFramebuffer(GL_FRAMEBUFFER, postProcessingFramebuffer);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     glBindFramebuffer(GL_FRAMEBUFFER, foregroundFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -446,4 +462,16 @@ int ComponentWindow::getWidth() const {
 
 int ComponentWindow::getHeight() const {
     return height;
+}
+
+ShaderOpenGLShockWave *ComponentWindow::getShaderOGLShockWave() const {
+    return shaderOGLShockWave;
+}
+
+GLuint ComponentWindow::getGlobalFramebuffer() const {
+    return globalFramebuffer;
+}
+
+GLuint ComponentWindow::getPostProcessingFramebuffer() const {
+    return postProcessingFramebuffer;
 }

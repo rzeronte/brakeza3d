@@ -4,7 +4,7 @@
 PlayerReflection::PlayerReflection(float ttl)
 :
     timeToLive(Counter(ttl)),
-    blink(new ShaderBlink(false, this, 0.05, PaletteColors::getPlayerDamageBlink()))
+    blink(new FXBlink(false, this, 0.05, PaletteColors::getPlayerDamageBlink()))
 {
     timeToLive.setEnabled(true);
 }

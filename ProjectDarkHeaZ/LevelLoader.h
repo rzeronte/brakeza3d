@@ -181,7 +181,7 @@ public:
 
     void loadConfig();
 
-    void updateConfig(int level, const char *gpu);
+    static void updateConfig(int level);
 
     void parseMainMessageJSON(cJSON *message);
 

@@ -8,14 +8,14 @@
 #include "GravitationalGhost.h"
 #include "../../include/Misc/Counter.h"
 #include "../Shaders/ShaderShockWave.h"
-#include "../../include/Shaders/ShaderBlink.h"
+#include "../../include/FXEffect/FXBlink.h"
 #include "../../include/Objects/Swarm.h"
 
 class PlayerReflection : public Mesh3D {
 private:
     Counter timeToLive;
 
-    ShaderBlink *blink;
+    FXBlink *blink;
     Counter counterDamageBlink;
     SwarmObject *swarmObject;
 public:

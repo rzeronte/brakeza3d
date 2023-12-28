@@ -51,7 +51,7 @@ EnemyGhost::EnemyGhost() :
 
 void EnemyGhost::onStart()
 {
-    blink = new ShaderBlink(true, this, 0.05, PaletteColors::getEnemyBlink());
+    blink = new FXBlink(true, this, 0.05, PaletteColors::getEnemyBlink());
 }
 
 void EnemyGhost::onUpdate()

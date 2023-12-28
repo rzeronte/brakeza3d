@@ -79,7 +79,7 @@ bool LevelLoader::loadNext()
     currentLevelIndex++;
     load(currentLevelIndex);
 
-    updateConfig(currentLevelIndex, "nvidia");
+    updateConfig(currentLevelIndex);
     return true;
 }
 
@@ -148,7 +148,6 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         ComponentsManager::get()->getComponentGame()->getShaderForegroundImage()->setEnabled(true);
         auto fileForeground = EngineSetup::get()->IMAGES_FOLDER + cJSON_GetObjectItemCaseSensitive(jsonContentFile, "foregroundImage")->valuestring;
         ComponentsManager::get()->getComponentGame()->getShaderForegroundImage()->getImage().setImage(fileForeground);
-
     } else {
         ComponentsManager::get()->getComponentGame()->getShaderForegroundImage()->setEnabled(false);
     }
@@ -1078,11 +1077,9 @@ void LevelLoader::loadConfig()
     if (level >= 0) {
         currentLevelIndex = level - 1;
     }
-
-    int gpu = cJSON_GetObjectItemCaseSensitive(myDataJSON, "gpu")->valueint;
 }
 
-void LevelLoader::updateConfig(int level, const char* gpu) {
+void LevelLoader::updateConfig(int level) {
 
     std::string filePathStr = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->DARKHEAZ_MAIN_CONFIG;
     const char* file_path = filePathStr.c_str();
@@ -1090,7 +1087,6 @@ void LevelLoader::updateConfig(int level, const char* gpu) {
     cJSON *json = cJSON_CreateObject();
 
     cJSON_AddNumberToObject(json, "level", level);
-    cJSON_AddStringToObject(json, "gpu", gpu);
 
     char *output_string = cJSON_Print(json);
 

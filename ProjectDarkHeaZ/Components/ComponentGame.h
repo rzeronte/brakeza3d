@@ -18,16 +18,15 @@
 #include "../Shaders/ShaderProjectiles.h"
 #include "../Player.h"
 #include "../Items/EnemyDialog.h"
-#include "../../include/Shaders/ShaderColor.h"
-#include "../../include/Shaders/ShaderImage.h"
+#include "../../include/FXEffect/FXColorTint.h"
+#include "../../include/FXEffect/FXOffsetImage.h"
 #include "../LevelLoader.h"
 #include "../StoreManager.h"
-#include "../../include/Shaders/ShaderImageMask.h"
-#include "../Shaders/ShaderCRT.h"
-#include "../../include/Shaders/ShaderEdgeObject.h"
+#include "../../include/FXEffect/FXOutliner.h"
 #include "../PaletteColors.h"
 #include "../Items/SalvageSpaceship.h"
 #include "../../include/2D/Sprite2D.h"
+#include "../OpenGLShaders/ShaderOpenGLLineLaser.h"
 
 #define Z_COORDINATE_GAMEPLAY 20
 #define FREE_LOOK_ENABLED false
@@ -84,13 +83,11 @@ private:
 
     LevelLoader *levelLoader;
 
-    ShaderImage *shaderBackgroundImage;
-    ShaderImage *shaderForegroundImage;
+    FXOffsetImage *shaderBackgroundImage;
+    FXOffsetImage *shaderForegroundImage;
 
-    ShaderColor *shaderColor;
+    FXColorTint *shaderColor;
     ShaderShockWave *shaderShockWave;
-
-    ShaderCRT *shaderCRT;
 
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;
@@ -107,8 +104,7 @@ private:
 
     EnemyDialog *currentEnemyDialog;
 
-    ShaderExplosion *shaderExplosion;
-
+    ShaderOpenGLLineLaser *shaderOGLLineLaser;
     //PathFinder *pathFinder;
 public:
     ComponentGame();
@@ -209,9 +205,9 @@ public:
 
     void drawMedalAlpha(int type, int x, int y, float alpha);
 
-    [[nodiscard]] ShaderColor *getShaderColor() const;
+    [[nodiscard]] FXColorTint *getShaderColor() const;
 
-    [[nodiscard]] ShaderImage *getShaderBackgroundImage() const;
+    [[nodiscard]] FXOffsetImage *getShaderBackgroundImage() const;
 
     [[nodiscard]] ShaderProjectiles *getShaderLasers() const;
 
@@ -231,7 +227,7 @@ public:
 
     [[nodiscard]] Mesh3D *getItemBoxFrame() const;
 
-    [[nodiscard]] ShaderImage *getShaderForegroundImage() const;
+    [[nodiscard]] FXOffsetImage *getShaderForegroundImage() const;
 
     [[nodiscard]] Sprite2D *getExplosionSprite() const;
 
@@ -303,9 +299,10 @@ public:
 
     void handleOnUpdateSplash(float alpha);
 
-    ShaderImageMask *dialogBackground;
+    ShaderOpenGLLineLaser *getShaderOGLLineLaser();
+
     Image *boxTutorial;
-    ShaderEdgeObject *shaderEdgeObject;
+    FXOutliner *shaderEdgeObject;
 };
 
 

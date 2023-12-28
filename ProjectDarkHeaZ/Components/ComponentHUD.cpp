@@ -266,7 +266,7 @@ void ComponentHUD::drawShaderLasers()
 
     const int startPositionX = this->offsetX + 60.0f;
     const int width = 195.0f;
-    const float stroke = 0.0001f;
+    const float stroke = 0.002f;
     const float topBarMargin = 5;
 
     // stamina

@@ -115,7 +115,6 @@ public:
 
     // CONFIG VALUES
     float FRUSTUM_CLIPPING_DISTANCE = 0.00075f;
-    bool ENABLE_CLIPPING = true;
 
     // BSP ITEM BILLBOARDS
     std::string ROOT_FOLDER = "../";
@@ -135,7 +134,7 @@ public:
     std::string SCRIPTS_FOLDER = ASSETS_FOLDER + "scripts/";
     std::string SCENES_FOLDER = ASSETS_FOLDER + "scenes/";
 
-    std::string CL_SHADERS_FOLDER = "../kernels/";
+    std::string SHADERS_FOLDER = "../GLSL/";
 
     bool SOUND_ENABLED = true;
     float SOUND_VOLUME_MUSIC = 20;
