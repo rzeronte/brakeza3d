@@ -12,8 +12,8 @@
 #include "../Brakeza3D.h"
 #include "../Misc/TexturePackage.h"
 #include "../Render/Logging.h"
-#include "../Shaders/ShaderEdgeObject.h"
-#include "../Shaders/ShaderBlink.h"
+#include "../FXEffect/FXOutliner.h"
+#include "../FXEffect/FXBlink.h"
 
 static char editableSource[1024 * 16];
 
@@ -23,7 +23,7 @@ private:
 
     int selectedObjectIndex = -1;
     std::string selectedScriptFilename;
-    ShaderOpenCL *selectedShader;
+    FXEffectOpenGL *selectedShader;
     ScriptLUA *script;
 
     std::string directory_path;
@@ -389,11 +389,11 @@ public:
                             int selection = std::stoi((char*) payload->Data);
                             switch(selection) {
                                 case 0: {
-                                    auto shader = new ShaderEdgeObject(true, mesh, Color::green(), 1);
+                                    auto shader = new FXOutliner(true, mesh, Color::green(), 1);
                                     mesh->addMesh3DShader(shader);
                                 }
                                 case 1: {
-                                    auto shader = new ShaderBlink(true, mesh, 0.1f ,Color::green());
+                                    auto shader = new FXBlink(true, mesh, 0.1f , Color::green());
                                     mesh->addMesh3DShader(shader);
                                     break;
                                 }
@@ -1020,14 +1020,8 @@ public:
                     ImGui::Checkbox("Show Tiles Grid", &EngineSetup::get()->DRAW_TILES_GRID);
                 }
                 ImGui::Separator();
-                ImGui::Checkbox("Frustum Clipping", &EngineSetup::get()->ENABLE_CLIPPING);
-                if (EngineSetup::get()->ENABLE_CLIPPING) {
-                    ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
-                    ImGui::DragScalar("EPSILON", ImGuiDataType_Float, &EngineSetup::get()->EPSILON, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
-                }
-
+                ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
                 ImGui::Separator();
-
                 ImGui::Checkbox("Vertex", &EngineSetup::get()->TRIANGLE_MODE_PIXELS);
                 ImGui::Checkbox("WireFrame", &EngineSetup::get()->TRIANGLE_MODE_WIREFRAME);
                 ImGui::Checkbox("Solid", &EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID);
@@ -1169,12 +1163,12 @@ public:
                 ImGui::Checkbox("Draw Main Axis", &EngineSetup::get()->RENDER_MAIN_AXIS);
                 ImGui::Checkbox("Draw Object3D Axis", &EngineSetup::get()->RENDER_OBJECTS_AXIS);
                 if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
-                    const float focalMinValues = 0;
-                    const float focalMaxValues = 1000;
-                    const float focalValueSens = 0.01;
+                    const float sizeAxisMin = 0;
+                    const float sizeAxisMax = 1;
+                    const float sizeAxisSens = 0.01;
 
                     ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &EngineSetup::get()->OBJECT_AXIS_SIZE,
-                                      focalMinValues, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                                      sizeAxisSens, &sizeAxisMin, &sizeAxisMax, "%f", 1.0f);
 
                 }
                 ImGui::Separator();

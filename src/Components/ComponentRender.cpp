@@ -30,7 +30,7 @@ void ComponentRender::onStart()
     initTiles();
 
     textWriter = new TextWriter(ComponentsManager::get()->getComponentWindow()->getRenderer(), ComponentsManager::get()->getComponentWindow()->getFontDefault());
-    //addShaderToScene(new ShaderImage(EngineSetup::get()->IMAGES_FOLDER + "noise_color.png"));
+    //addShaderToScene(new FXOffsetImage(EngineSetup::get()->IMAGES_FOLDER + "noise_color.png"));
 }
 
 void ComponentRender::preUpdate()
@@ -423,15 +423,15 @@ SceneLoader &ComponentRender::getSceneLoader() {
     return sceneLoader;
 }
 
-std::vector<ShaderOpenCL *> &ComponentRender::getSceneShaders() {
+std::vector<FXEffectOpenGL *> &ComponentRender::getSceneShaders() {
     return sceneShaders;
 }
 
-ShaderOpenCL *ComponentRender::getSceneShaderByIndex(int i) {
+FXEffectOpenGL *ComponentRender::getSceneShaderByIndex(int i) {
     return sceneShaders[i];
 }
 
-void ComponentRender::addShaderToScene(ShaderOpenCL *shader)
+void ComponentRender::addShaderToScene(FXEffectOpenGL *shader)
 {
     sceneShaders.push_back(shader);
 }

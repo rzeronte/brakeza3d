@@ -14,13 +14,10 @@
 #include "../../include/Render/Drawable.h"
 #include "../../include/Physics/BillboardBody.h"
 #include "../../include/Render/Maths.h"
-#include "../Shaders/ShaderBilinear.h"
-#include "../Shaders/ShaderDepthOfField.h"
-#include "../../src/Shaders/ShaderParticlesBlurBuffer.h"
 #include "../2D/TextWriter.h"
 #include "../Misc/SharedLUAContext.h"
 #include "../Misc/SceneLoader.h"
-#include "../Shaders/ShaderImage.h"
+#include "../FXEffect/FXOffsetImage.h"
 #include <CL/cl.h>
 
 class ComponentRender : public Component {
@@ -49,7 +46,7 @@ private:
     SceneLoader sceneLoader;
 
     bool sceneShadersEnabled;
-    std::vector<ShaderOpenCL*> sceneShaders;
+    std::vector<FXEffectOpenGL*> sceneShaders;
 
 public:
     ComponentRender();
@@ -122,9 +119,9 @@ public:
 
     SceneLoader &getSceneLoader();
 
-    std::vector<ShaderOpenCL *> &getSceneShaders();
+    std::vector<FXEffectOpenGL *> &getSceneShaders();
 
-    void addShaderToScene(ShaderOpenCL *shader);
+    void addShaderToScene(FXEffectOpenGL *shader);
 
     [[nodiscard]] bool isSceneShadersEnabled() const;
 
@@ -136,7 +133,7 @@ public:
 
     void runShadersOpenCLPreUpdate();
 
-    ShaderOpenCL *getSceneShaderByIndex(int i);
+    FXEffectOpenGL *getSceneShaderByIndex(int i);
 
 };
 
