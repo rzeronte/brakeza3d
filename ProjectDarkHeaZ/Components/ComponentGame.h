@@ -10,12 +10,12 @@
 #include "../../include/Misc/Grid3D.h"
 #include "../../include/Misc/PathFinder.h"
 #include "../../include/Physics/Mesh3DBody.h"
-#include "../../include/Particles/ParticleEmitterFireworks.h"
+#include "../../include/Objects/ParticleEmitterFireworks.h"
 #include "../../include/Physics/RayCollisionable.h"
 #include "../../include/2D/TextWriter.h"
 #include "../../include/Objects/Swarm.h"
 #include "../FaderToGameStates.h"
-#include "../Shaders/ShaderProjectiles.h"
+#include "../Shaders/FXLaser.h"
 #include "../Player.h"
 #include "../Items/EnemyDialog.h"
 #include "../../include/FXEffect/FXColorTint.h"
@@ -23,7 +23,7 @@
 #include "../LevelLoader.h"
 #include "../StoreManager.h"
 #include "../../include/FXEffect/FXOutliner.h"
-#include "../PaletteColors.h"
+#include "../Common/PaletteColors.h"
 #include "../Items/SalvageSpaceship.h"
 #include "../../include/2D/Sprite2D.h"
 #include "../OpenGLShaders/ShaderOpenGLLineLaser.h"
@@ -46,7 +46,7 @@ private:
 
     FaderToGameStates *fadeToGameState;
     Player *player;
-    ShaderProjectiles *shaderProjectiles;
+    FXLaser *shaderProjectiles;
 
     Sprite2D *fadeInSpriteRed;
     Sprite2D *fadeInSpriteGreen;
@@ -87,7 +87,6 @@ private:
     FXOffsetImage *shaderForegroundImage;
 
     FXColorTint *shaderColor;
-    ShaderShockWave *shaderShockWave;
 
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;
@@ -209,7 +208,7 @@ public:
 
     [[nodiscard]] FXOffsetImage *getShaderBackgroundImage() const;
 
-    [[nodiscard]] ShaderProjectiles *getShaderLasers() const;
+    [[nodiscard]] FXLaser *getShaderLasers() const;
 
     [[nodiscard]] const std::vector<Weapon *> &getWeapons() const;
 

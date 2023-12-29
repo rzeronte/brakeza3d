@@ -1,15 +1,15 @@
-#include "ShaderProjectiles.h"
+#include "FXLaser.h"
 #include "../../include/EngineBuffers.h"
 #include "../../include/Brakeza3D.h"
 
-ShaderProjectiles::ShaderProjectiles()
+FXLaser::FXLaser()
 :
         FXEffectOpenGL(true),
         image(Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png"))
 {
 }
 
-void ShaderProjectiles::update()
+void FXLaser::update()
 {
     FXEffectBase::update();
 
@@ -18,7 +18,7 @@ void ShaderProjectiles::update()
     executeKernelOpenCL();
 }
 
-void ShaderProjectiles::executeKernelOpenCL()
+void FXLaser::executeKernelOpenCL()
 {
     for(auto l: lasers) {
         ComponentsManager::get()->getComponentGame()->getShaderOGLLineLaser()->render(
@@ -34,12 +34,12 @@ void ShaderProjectiles::executeKernelOpenCL()
     this->projectiles.clear();
 }
 
-void ShaderProjectiles::addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float i, bool startCircle, bool endCircle)
+void FXLaser::addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float i, bool startCircle, bool endCircle)
 {
     this->lasers.emplace_back(OCLaser {from, to, color, i, startCircle, endCircle });
 }
 
-void ShaderProjectiles::addLaserFromRay(ProjectileRay *ray)
+void FXLaser::addLaserFromRay(ProjectileRay *ray)
 {
     auto color = ray->getColor();
 
@@ -58,7 +58,7 @@ void ShaderProjectiles::addLaserFromRay(ProjectileRay *ray)
     );
 }
 
-void ShaderProjectiles::addProjectile(Vertex3D position, Color color, float i)
+void FXLaser::addProjectile(Vertex3D position, Color color, float i)
 {
     Point2D screenPoint = Transforms::WorldToPoint(position);
 

@@ -1,5 +1,6 @@
 #include "PlayerReflection.h"
 #include "../../include/Brakeza3D.h"
+#include "../Common/ShockWave.h"
 
 PlayerReflection::PlayerReflection(float ttl)
 :
@@ -29,7 +30,7 @@ void PlayerReflection::onUpdate()
         setRemoved(true);
         setEnabled(false);
         Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
-        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
     }
 }
 

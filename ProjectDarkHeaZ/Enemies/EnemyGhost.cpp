@@ -1,6 +1,7 @@
 
 #include "EnemyGhost.h"
 #include "../../include/Brakeza3D.h"
+#include "../Common/ShockWave.h"
 
 EnemyGhost::EnemyGhost() :
     LivingObject(this),
@@ -135,7 +136,7 @@ void EnemyGhost::onDrawHostBuffer()
 
 void EnemyGhost::handleDie()
 {
-    Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+    Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
     makeReward();
 

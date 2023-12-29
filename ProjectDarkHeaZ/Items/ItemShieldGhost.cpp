@@ -4,6 +4,7 @@
 
 #include "ItemShieldGhost.h"
 #include "../../include/Brakeza3D.h"
+#include "../Common/ShockWave.h"
 
 ItemShieldGhost::ItemShieldGhost(float ttl, float damage)
 :
@@ -38,7 +39,7 @@ void ItemShieldGhost::onUpdate()
         setEnabled(false);
         removeCollisionObject();
         Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
-        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
     }
 }
 

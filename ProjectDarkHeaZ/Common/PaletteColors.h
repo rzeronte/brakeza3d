@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_PALETTECOLORS_H
 #define BRAKEZA3D_PALETTECOLORS_H
 
-#include "../include/Misc/Color.h"
+#include "../../include/Misc/Color.h"
 
 class PaletteColors {
 

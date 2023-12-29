@@ -14,6 +14,7 @@
 #include "../Render/Logging.h"
 #include "../FXEffect/FXOutliner.h"
 #include "../FXEffect/FXBlink.h"
+#include "../FXEffect/FXShockWave.h"
 
 static char editableSource[1024 * 16];
 
@@ -37,7 +38,7 @@ private:
     TexturePackage ImGuiTextures;
     TexturePackage imagesFolder;
 
-    const char *availableMesh3DShaders[2] = {"Edge", "Blink"};
+    const char *availableMesh3DShaders[3] = {"Edge", "Blink", "ShockWave"};
 public:
 
     void loadImagesFolder() {
@@ -347,6 +348,19 @@ public:
             ImGui::EndDragDropSource();
         }
         ImGui::PopID();
+
+        i = 2;
+        ImGui::PushID(i);
+        optionText = std::to_string(i + 1) + ") " + availableMesh3DShaders[i];
+        if (ImGui::Selectable(optionText.c_str())) {
+        }
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+            ImGui::SetDragDropPayload("MESH3D_SHADER_ITEM", std::to_string(i).c_str(), sizeof(int));
+            ImGui::Text("%s", availableMesh3DShaders[i]);
+            ImGui::EndDragDropSource();
+        }
+        ImGui::PopID();
+
     }
 
     void drawObjectsWindow()
@@ -384,9 +398,16 @@ public:
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MESH3D_SHADER_ITEM")) {
                         Logging::Message("Dropping shader (%s) in %s", payload->Data, o->getLabel().c_str());
                         IM_ASSERT(payload->DataSize == sizeof(int));
+                        int selection = std::stoi((char*) payload->Data);
+                        switch(selection) {
+                            case 2: {
+                                auto shader = new FXShockWave(true, o, 1.5f);
+                                o->addMesh3DShader(shader);
+                                break;
+                            }
+                        }
                         auto mesh = dynamic_cast<Mesh3D*> (o);
                         if (mesh) {
-                            int selection = std::stoi((char*) payload->Data);
                             switch(selection) {
                                 case 0: {
                                     auto shader = new FXOutliner(true, mesh, Color::green(), 1);

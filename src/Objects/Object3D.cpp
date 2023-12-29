@@ -19,6 +19,9 @@ Object3D::Object3D() :
     rotX(0),
     rotY(0),
     rotZ(0),
+    rotXFrame(0),
+    rotYFrame(0),
+    rotZFrame(0),
     alphaEnabled(false),
     alpha(0),
     enableLights(false),
@@ -31,6 +34,7 @@ Object3D::Object3D() :
     )
 {
     luaEnvironment.set("this", this);
+    timer.start();
 }
 
 Vertex3D &Object3D::getPosition() {
@@ -188,11 +192,11 @@ void Object3D::postUpdate()
 
     if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
         Drawable::drawObject3DAxis(
-                this,
-                ComponentsManager::get()->getComponentCamera()->getCamera(),
-                true,
-                true,
-                true
+            this,
+            ComponentsManager::get()->getComponentCamera()->getCamera(),
+            true,
+            true,
+            true
         );
     }
 }
@@ -621,4 +625,8 @@ void Object3D::removeShader(int index) {
     if (index >= 0 && index < shaders.size()) {
         shaders.erase(shaders.begin() + index);
     }
+}
+
+const Timer &Object3D::getTimer() const {
+    return timer;
 }

@@ -3,14 +3,12 @@
 
 #include "../include/Objects/Object3D.h"
 #include "../include/Misc/Counter.h"
-#include "../include/Particles/ParticleEmitter.h"
+#include "../include/Objects/ParticleEmitter.h"
 #include "../include/Physics/Mesh3DGhost.h"
 #include "Weapons/Weapon.h"
-#include "Shaders/ShaderShockWave.h"
 #include "Items/PlayerReflection.h"
 #include "Shaders/RayLight.h"
-#include "Shaders/ShaderZombie.h"
-#include "Shaders/ShaderEnergyShield.h"
+#include "Shaders/FXEnergyShield.h"
 #include "Items/LivingObject.h"
 #include "Items/PlayerSatellite.h"
 #include "../include/Behaviors/RotatableToTarget.h"
@@ -81,7 +79,7 @@ private:
     ParticleEmitter *particleEngineLeft;
 
     Image *avatar;
-    ShaderEnergyShield *shaderEnergyShield;
+    FXEnergyShield *shaderEnergyShield;
     Sprite2D *spriteEnergyShield;
 
 public:

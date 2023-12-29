@@ -6,30 +6,22 @@
 #define BRAKEZA3D_SHOCKWAVE_H
 
 
-#include "../Objects/Object3D.h"
-#include "../Misc/Counter.h"
+#include "../../include/Objects/Object3D.h"
+#include "../../include/Misc/Counter.h"
 
 class ShockWave : public Object3D {
 private:
     float speed;
-    float startSize;
-    float currentSize;
-    Counter ttlWave;
     bool deleteWhenEnds;
+    float ttl;
 public:
-    ShockWave(Vertex3D position, float speed, float currentSize, float ttl, bool deleteWhenEnds);
+    ShockWave(Vertex3D position, float speed, float ttl, bool deleteWhenEnds);
 
     void onUpdate() override;
 
     void postUpdate() override;
 
     [[nodiscard]] float getSpeed() const;
-
-    [[nodiscard]] float getCurrentSize() const;
-
-    [[nodiscard]] Counter &getTtlWave();
-
-    void reset();
 };
 
 

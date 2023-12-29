@@ -1,5 +1,5 @@
 #include "ProjectileRay.h"
-#include "../include/ComponentsManager.h"
+#include "../../include/ComponentsManager.h"
 
 ProjectileRay::ProjectileRay(
     Object3D *parent,

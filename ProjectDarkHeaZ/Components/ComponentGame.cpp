@@ -20,7 +20,6 @@ ComponentGame::ComponentGame()
     shaderBackgroundImage(nullptr),
     shaderForegroundImage(nullptr),
     shaderColor(nullptr),
-    shaderShockWave(nullptr),
     spaceshipSelectedIndex(0),
     currentEnemyDialog(nullptr),
     gameState(EngineSetup::GameState::NONE)
@@ -125,8 +124,7 @@ void ComponentGame::loadShaders()
     shaderBackgroundImage->setUseOffset(true);
     shaderForegroundImage->setUseOffset(true);
     shaderColor = new FXColorTint(false, PaletteColors::getStamina(), 0.75f);
-    shaderProjectiles = new ShaderProjectiles();
-    shaderShockWave = new ShaderShockWave(true);
+    shaderProjectiles = new FXLaser();
 
     shaderEdgeObject = new FXOutliner(false, nullptr, PaletteColors::getStatisticsText(), 2.0f);
 }
@@ -993,7 +991,6 @@ void ComponentGame::updateShaders()
 {
     shaderColor->update();
     shaderProjectiles->update();
-    shaderShockWave->update();
 
     Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.000015);
     vel.z = 0;
@@ -1210,7 +1207,6 @@ void ComponentGame::addProjectilesToShaderLasers()
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         const auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
         const auto ray = dynamic_cast<ProjectileRay *> (object);
-        const auto wave = dynamic_cast<ShockWave *> (object);
 
         if (projectile != nullptr && !projectile->isWasCollision()) {
             shaderProjectiles->addProjectile(
@@ -1220,17 +1216,13 @@ void ComponentGame::addProjectilesToShaderLasers()
             );
         }
 
-        if (wave != nullptr) {
-            shaderShockWave->addShockWave(wave);
-        }
-
         if (ray != nullptr && ray->isEnabled()) {
             shaderProjectiles->addLaserFromRay(ray);
         }
     }
 }
 
-ShaderProjectiles *ComponentGame::getShaderLasers() const {
+FXLaser *ComponentGame::getShaderLasers() const {
     return shaderProjectiles;
 }
 

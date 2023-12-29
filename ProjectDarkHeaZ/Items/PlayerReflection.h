@@ -7,7 +7,6 @@
 
 #include "GravitationalGhost.h"
 #include "../../include/Misc/Counter.h"
-#include "../Shaders/ShaderShockWave.h"
 #include "../../include/FXEffect/FXBlink.h"
 #include "../../include/Objects/Swarm.h"
 

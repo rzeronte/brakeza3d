@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_AMMOPROJECTILE_H
 #define BRAKEZA3D_AMMOPROJECTILE_H
 
-#include "../../include/Particles/ParticleEmitter.h"
+#include "../../include/Objects/ParticleEmitter.h"
 
 class AmmoProjectile {
     float damage;

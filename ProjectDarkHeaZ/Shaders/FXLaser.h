@@ -2,14 +2,14 @@
 // Created by eduardo on 19/01/23.
 //
 
-#ifndef BRAKEZA3D_SHADERPROJECTILES_H
-#define BRAKEZA3D_SHADERPROJECTILES_H
+#ifndef BRAKEZA3D_FXLASER_H
+#define BRAKEZA3D_FXLASER_H
 
 
 #include <CL/cl.h>
 #include "../../include/Misc/Image.h"
 #include "../../include/OpenGL/FXEffectOpenGL.h"
-#include "../ProjectileRay.h"
+#include "../Weapons/ProjectileRay.h"
 
 #define MAX_PROJECTILES 256
 #define MAX_LASERS 256
@@ -34,14 +34,14 @@ struct OCProjectile
     float intensity;
 };
 
-class ShaderProjectiles : public FXEffectOpenGL {
+class FXLaser : public FXEffectOpenGL {
 private:
     Image image;
 
     std::vector<OCLaser> lasers;
     std::vector<OCProjectile> projectiles;
 public:
-    ShaderProjectiles();
+    FXLaser();
 
     void update() override;
 
@@ -53,4 +53,4 @@ public:
 };
 
 
-#endif //BRAKEZA3D_SHADERPROJECTILES_H
+#endif //BRAKEZA3D_FXLASER_H

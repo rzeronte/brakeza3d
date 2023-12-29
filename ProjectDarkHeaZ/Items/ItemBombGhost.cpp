@@ -1,5 +1,6 @@
 #include "ItemBombGhost.h"
 #include "../../include/Brakeza3D.h"
+#include "../Common/ShockWave.h"
 
 ItemBombGhost::ItemBombGhost(float ttl, float damage)
 :
@@ -35,7 +36,7 @@ void ItemBombGhost::onUpdate()
         removeCollisionObject();
         Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
         Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getExplosionSprite()->getAnimation());
-        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
     }
 }
 

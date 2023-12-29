@@ -15,7 +15,7 @@ void ComponentHUD::onStart()
 
     HUDTextures = new TexturePackage();
 
-    shaderLasers = new ShaderProjectiles();
+    shaderLasers = new FXLaser();
     shaderLasers->setEnabled(true);
 
     loadImages();
@@ -320,6 +320,6 @@ TexturePackage *ComponentHUD::getHudTextures() const {
     return HUDTextures;
 }
 
-ShaderProjectiles *ComponentHUD::getShaderLasers() const {
+FXLaser *ComponentHUD::getShaderLasers() const {
     return shaderLasers;
 }

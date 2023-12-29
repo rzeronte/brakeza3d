@@ -16,7 +16,7 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/2D/Sprite2D.h"
 #include "../../include/Objects/Mesh3DAnimated.h"
-#include "../../include/Particles/ParticleEmitter.h"
+#include "../../include/Objects/ParticleEmitter.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 

@@ -50,6 +50,8 @@ protected:
     sol::environment luaEnvironment;
     std::vector<FXEffectOpenGL*> shaders;
 
+    Timer timer;
+
 public:
 
     Object3D();
@@ -198,6 +200,8 @@ public:
     void addMesh3DShader(FXEffectOpenGL *shader);
 
     void removeShader(int i);
+
+    const Timer &getTimer() const;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H
