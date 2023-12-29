@@ -29,6 +29,8 @@ public:
 
     [[nodiscard]] bool isPaused() const;
 
+    [[nodiscard]] float getTotalTime() const;
+
 private:
     //The clock time when the timer started
     Uint32 mStartTicks;

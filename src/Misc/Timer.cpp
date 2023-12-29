@@ -87,3 +87,18 @@ bool Timer::isPaused() const {
     //Timer is running and paused
     return mPaused && mStarted;
 }
+
+float Timer::getTotalTime() const
+{
+    float totalTime = 0;
+
+    if (mStarted) {
+        if (mPaused) {
+            totalTime = (float) mPausedTicks;
+        } else {
+            totalTime = (float) SDL_GetTicks() - (float) mStartTicks;
+        }
+    }
+
+    return (float) totalTime / 1000;
+}
