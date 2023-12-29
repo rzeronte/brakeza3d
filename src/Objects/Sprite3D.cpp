@@ -18,7 +18,6 @@ void Sprite3D::onUpdate()
 {
     Object3D::onUpdate();
 
-    return;
     this->updateTrianglesCoordinatesAndTexture();
 
     glEnable(GL_BLEND);

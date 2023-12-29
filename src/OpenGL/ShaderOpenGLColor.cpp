@@ -12,8 +12,8 @@ ShaderOpenGLColor::ShaderOpenGLColor()
     framebuffer(0),
     textureColorbuffer(0),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "Color.vs",
-            EngineSetup::get()->SHADERS_FOLDER + "Color.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Color.vs",
+        EngineSetup::get()->SHADERS_FOLDER + "Color.fs"
     )
 {
     glGenVertexArrays(1, &VertexArrayID);
@@ -27,7 +27,8 @@ void ShaderOpenGLColor::render(
     GLuint uvbuffer,
     GLuint normalbuffer,
     int size,
-    bool toFramebuffer
+    bool toFramebuffer,
+    Color color
 )
 {
     if (toFramebuffer) {
@@ -54,6 +55,8 @@ void ShaderOpenGLColor::render(
     setMat4("projection", ProjectionMatrix);
     setMat4("view", ViewMatrix);
     setMat4("model", o->getModelMatrix());
+
+    setVec3("color", color.toGLM());
 
     setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
 

@@ -4,7 +4,7 @@
 #include "../../include/Misc/Image.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Render/Logging.h"
-#include "../../include/EngineBuffers.h"
+#include "../../include/LUAManager.h"
 #include "../../include/Render/Maths.h"
 #include "../../include/ComponentsManager.h"
 

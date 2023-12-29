@@ -54,7 +54,7 @@ char *ScriptLUA::readFile(const std::string &name, size_t &source_size)
 void ScriptLUA::runEnvironment(sol::environment &environment, const std::string& func) const
 {
     if (paused) return;
-    sol::state &lua = EngineBuffers::get()->getLua();
+    sol::state &lua = LUAManager::get()->getLua();
 
     try {
         lua.script(content, environment);
@@ -75,7 +75,7 @@ void ScriptLUA::runEnvironment(sol::environment &environment, const std::string&
 void ScriptLUA::runGlobal(const std::string& func) const
 {
     if (paused) return;
-    sol::state &lua = EngineBuffers::get()->getLua();
+    sol::state &lua = LUAManager::get()->getLua();
 
     try {
         lua.script(content);
@@ -105,7 +105,7 @@ void ScriptLUA::reloadGlobals()
 
     parseTypes();
 
-    sol::state &lua = EngineBuffers::get()->getLua();
+    sol::state &lua = LUAManager::get()->getLua();
     for (auto type : dataTypes) {
         Logging::Message("Setting GLOBAL variable for script '%s' ('%s' => '%s')", scriptFilename.c_str(), type.name.c_str(), type.value.c_str());
         lua[type.name] = type.value;

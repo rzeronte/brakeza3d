@@ -1,6 +1,7 @@
 
 #include <SDL_rect.h>
 #include "../../include/Misc/Color.h"
+#include "imgui.h"
 
 Color::Color(): r(0), g(0), b(0), a(0), color(0)
 {
@@ -103,4 +104,9 @@ glm::vec3 Color::toGLM() const
 SDL_Color Color::toSDL() const
 {
     return  {(Uint8) (b * 255), (Uint8) (r* 255), (Uint8) (g* 255)};
+}
+
+ImVec4 Color::toImVec4() const
+{
+    return ImVec4 {r, g, b, a};
 }

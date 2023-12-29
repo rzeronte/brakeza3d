@@ -1,7 +1,8 @@
 #include "../../include/FXEffect/FXOutliner.h"
-#include "../../include/EngineBuffers.h"
+#include "../../include/LUAManager.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/Render/Logging.h"
+#include "../../include/ComponentsManager.h"
 
 FXOutliner::FXOutliner(bool active, Object3D *object, const Color &color, float size)
 :
@@ -39,7 +40,7 @@ void FXOutliner::update()
         return;
     }
 
-    Drawable::drawOutline(mesh);
+    ComponentsManager::get()->getComponentWindow()->getShaderOGLOutline()->drawOutline(mesh, color, size);
 }
 
 void FXOutliner::setColor(Color c) {
@@ -58,20 +59,10 @@ void FXOutliner::drawImGuiProperties()
 
     // Color
     if (ImGui::TreeNode(("Edge color##" + getLabel()).c_str())) {
-        static ImVec4 imguiColor;
-        imguiColor.x = color.r/255;
-        imguiColor.y = color.g/255;
-        imguiColor.z = color.b/255;
+        ImVec4 imguiColor = color.toImVec4();
 
-        bool changed_color = ImGui::ColorEdit4("Color", (float *) &imguiColor, ImGuiColorEditFlags_NoOptions);
-        if (changed_color) {
-            setColor(
-                    Color(
-                            (int) (imguiColor.x * 256),
-                            (int) (imguiColor.y * 256),
-                            (int) (imguiColor.z * 256)
-                    )
-            );
+        if (ImGui::ColorEdit4("Color", (float *) &imguiColor, ImGuiColorEditFlags_NoOptions)) {
+            setColor(Color(imguiColor.x,imguiColor.y,imguiColor.z));
         }
         ImGui::TreePop();
     }

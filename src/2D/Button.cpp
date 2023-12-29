@@ -75,15 +75,5 @@ void Button::setCallBack(void (*pFunction)()) {
 }
 
 void Button::drawSelectedEffect() {
-    auto *buffer = EngineBuffers::get();
 
-    Color c = Color::green();
-    for (int i = 0; i < width(); i++) {
-        buffer->setVideoBuffer(getX() + i, getY(), c.getColor());
-        buffer->setVideoBuffer(getX() + i, getY() + height() - 1, c.getColor());
-    }
-    for (int i = 0; i < height(); i++) {
-        buffer->setVideoBuffer(getX(), getY() + i, c.getColor());
-        buffer->setVideoBuffer(getX() + width() - 1, getY() + i, c.getColor());
-    }
 }

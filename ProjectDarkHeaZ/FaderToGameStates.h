@@ -6,7 +6,7 @@
 #define BRAKEDA3D_FADERTOGAMESTATES_H
 
 #include "../include/Misc/Color.h"
-#include "../include/EngineBuffers.h"
+#include "../include/LUAManager.h"
 #include "../include/FXEffect/FXColorTint.h"
 
 enum ShaderFadeToColorDirection {

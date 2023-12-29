@@ -67,7 +67,7 @@ public:
         directory_path(EngineSetup::get()->SCRIPTS_FOLDER),
         directory_path_images(EngineSetup::get()->IMAGES_FOLDER),
         directory_path_scenes(EngineSetup::get()->SCENES_FOLDER),
-        console(new ImGuiConsoleApp(EngineBuffers::get()->getLua())),
+        console(new ImGuiConsoleApp(LUAManager::get()->getLua())),
         widgetObjects3D(new GUIWidgetObjects3D(packageIcons, this->gameObjects)),
         widgetObject3DProperties(new GUIWidgetObject3DProperties(packageIcons, this->gameObjects, scriptEditableManager)),
         widgetProjectSettings(new GUIWidgetProjectSettings(packageIcons, scriptEditableManager)),
@@ -415,7 +415,7 @@ public:
             static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
             if (ImGui::BeginTable("GlobalVariablesTable", 2, flags)) {
                 auto scripts = ComponentsManager::get()->getComponentRender()->getLUAScripts();
-                auto &lua = EngineBuffers::get()->getLua();
+                auto &lua = LUAManager::get()->getLua();
                 int count = 0;
 
                 for (auto currentScript : scripts) {

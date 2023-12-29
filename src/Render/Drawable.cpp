@@ -5,27 +5,8 @@
 
 #include "../../include/Render/Drawable.h"
 #include "../../include/Render/Transforms.h"
-#include "../../include/EngineBuffers.h"
+#include "../../include/LUAManager.h"
 #include "../../include/Brakeza3D.h"
-
-void Drawable::drawBox2D(SDL_Rect r) {
-    int x = r.x;
-    int y = r.y;
-
-    // top
-    Line2D l1 = Line2D(x, y, x + r.w, y);
-    //left
-    Line2D l2 = Line2D(x, y, x, y + r.h);
-    //bottom
-    Line2D l3 = Line2D(x, y + r.h, x + r.w, y + r.h);
-    //right
-    Line2D l4 = Line2D(x + r.w, y, x + r.w, y + r.h);
-
-    Drawable::drawLine2D(l1, Color::green());
-    Drawable::drawLine2D(l2, Color::green());
-    Drawable::drawLine2D(l3, Color::green());
-    Drawable::drawLine2D(l4, Color::green());
-}
 
 void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color) {
     Vertex3D A;
@@ -37,158 +18,12 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color) {
     Transforms::screenSpace(P1, A);
 
     if (Tools::isPixelInWindow(P1.x, P1.y)) {
-        EngineBuffers::get()->setVideoBuffer((int)P1.x, (int)P1.y, color.getColor());
-    }
-}
 
-void Drawable::drawVertex3D(Vertex3D V, Color color)
-{
-    Vertex3D A;
-
-    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-    Transforms::cameraSpace(A, V, camera);
-    A = Transforms::PerspectiveNDCSpace(A, camera->getFrustum());
-
-    Point2D P1;
-    Transforms::screenSpace(P1, A);
-
-    if (Tools::isPixelInWindow(P1.x, P1.y)) {
-        EngineBuffers::get()->setVideoBuffer(P1.x, P1.y, color.getColor());
-    }
-}
-
-void Drawable::drawLine2D(Line2D L, Color color) {
-
-    int x1 = L.x1;
-    int y1 = L.y1;
-    int x2 = L.x2;
-    int y2 = L.y2;
-
-    int pasoy = 0;
-    int pasox = 0;
-    int deltaX = (x2 - x1);
-    int deltaY = (y2 - y1);
-
-    if (deltaY < 0) {
-        deltaY = -deltaY;
-        pasoy = -1;
-    } else {
-        pasoy = 1;
-    }
-
-
-    if (deltaX < 0) {
-        deltaX = -deltaX;
-        pasox = -1;
-    } else {
-        pasox = 1;
-    }
-
-    int x = x1;
-    int y = y1;
-
-    if (x == y) return;
-
-    if (deltaX > deltaY) {
-        int p = 2 * deltaY - deltaX;
-        int incE = 2 * deltaY;
-        int incNE = 2 * (deltaY - deltaX);
-        while (x != x2) {
-            x = x + pasox;
-            if (p < 0) {
-                p = p + incE;
-            } else {
-                y = y + pasoy;
-                p = p + incNE;
-            }
-            if (Tools::isPixelInWindow(x, y)) {
-                EngineBuffers::get()->setVideoBuffer(x, y, color.getColor());
-            }
-        }
-    } else {
-        int p = 2 * deltaX - deltaY;
-        int incE = 2 * deltaX;
-        int incNE = 2 * (deltaX - deltaY);
-        while (y != y2) {
-            y = y + pasoy;
-            if (p < 0) {
-                p = p + incE;
-            } else {
-                x = x + pasox;
-                p = p + incNE;
-            }
-            if (Tools::isPixelInWindow(x, y)) {
-                EngineBuffers::get()->setVideoBuffer(x, y, color.getColor());
-            }
-        }
     }
 }
 
 void Drawable::drawLineLighting(Line2D L, Color color)
 {
-    int x1 = L.x1;
-    int y1 = L.y1;
-    int x2 = L.x2;
-    int y2 = L.y2;
-
-    int pasoy = 0;
-    int pasox = 0;
-    int deltaX = (x2 - x1);
-    int deltaY = (y2 - y1);
-
-    if (deltaY < 0) {
-        deltaY = -deltaY;
-        pasoy = -1;
-    } else {
-        pasoy = 1;
-    }
-
-
-    if (deltaX < 0) {
-        deltaX = -deltaX;
-        pasox = -1;
-    } else {
-        pasox = 1;
-    }
-
-    int x = x1;
-    int y = y1;
-
-    if (x == y) return;
-
-    if (deltaX > deltaY) {
-        int p = 2 * deltaY - deltaX;
-        int incE = 2 * deltaY;
-        int incNE = 2 * (deltaY - deltaX);
-        while (x != x2) {
-            x = x + pasox;
-            if (p < 0) {
-                p = p + incE;
-            } else {
-                y = y + pasoy;
-                p = p + incNE;
-            }
-            if (Tools::isPixelInWindow(x, y)) {
-                EngineBuffers::get()->setVideoBuffer(x, y, color.getColor());
-            }
-        }
-    } else {
-        int p = 2 * deltaX - deltaY;
-        int incE = 2 * deltaX;
-        int incNE = 2 * (deltaX - deltaY);
-        while (y != y2) {
-            y = y + pasoy;
-            if (p < 0) {
-                p = p + incE;
-            } else {
-                x = x + pasox;
-                p = p + incNE;
-            }
-            if (Tools::isPixelInWindow(x, y)) {
-                EngineBuffers::get()->setVideoBuffer(x, y, color.getColor());
-            }
-        }
-    }
 }
 
 void Drawable::drawVector3D(Vector3D V, Color color)
@@ -254,16 +89,6 @@ void Drawable::drawLightingVector3D(Vector3D V, Camera3D *cam, Color color)
 
     Line2D line(P1.x, P1.y, P2.x, P2.y);
     Drawable::drawLineLighting(line, color);
-}
-
-void Drawable::drawPlane(Plane plane, Camera3D *cam, Color color) {
-    Vector3D AB = Vector3D(plane.A, plane.B);
-    Vector3D AC = Vector3D(plane.A, plane.C);
-    Vector3D BC = Vector3D(plane.B, plane.C);
-
-    Drawable::drawVector3D(AB, color);
-    Drawable::drawVector3D(AC, color);
-    Drawable::drawVector3D(BC, color);
 }
 
 void Drawable::drawMainAxis(Camera3D *cam) {
@@ -365,20 +190,6 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
     }
     for ( auto ir = segmentList.begin(); ir != segmentList.end(); ++ir) {
         Drawable::drawLightingVector3D(*ir.base(), cam, color);
-    }
-}
-
-void Drawable::drawCrossHair() {
-
-    int x = EngineSetup::get()->screenWidth / 2;
-    int y = EngineSetup::get()->screenHeight / 2;
-
-    Uint32 color = EngineSetup::get()->CROSSHAIR_COLOR;
-    for (int cw = 1; cw < 3; cw++) {
-        EngineBuffers::get()->setVideoBuffer(x + cw, y, color);
-        EngineBuffers::get()->setVideoBuffer(x - cw, y, color);
-        EngineBuffers::get()->setVideoBuffer(x, y + cw, color);
-        EngineBuffers::get()->setVideoBuffer(x, y - cw, color);
     }
 }
 
@@ -493,54 +304,4 @@ void Drawable::drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder)
 
     if (cubeDest != nullptr)
         Drawable::drawAABB(cubeDest->box, Color::red());
-}
-
-void Drawable::drawLinePoints(Vertex3D from, Vertex3D to, Color color)
-{
-    Vector3D V = Vector3D(from, to);
-    Drawable::drawVector3D(V, Color::olive());
-}
-
-void Drawable::drawMainDeepMapFromCamera(int pos_x, int pos_y)
-{
-    int width = EngineSetup::get()->screenWidth;
-    int height = EngineSetup::get()->screenHeight;
-
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            auto pixelColor = EngineBuffers::get()->getDepthBuffer(j, i);
-            EngineBuffers::get()->setVideoBuffer(j + pos_x, i + pos_y, Color(pixelColor / 10, pixelColor / 10, pixelColor / 10).getColor());
-        }
-    }
-}
-
-void Drawable::drawTriangleNormal(Triangle *triangle, Color color)
-{
-    Vertex3D normal = triangle->getNormal();
-    Vertex3D origin = triangle->getCenterOfMass();
-
-    Vertex3D destiny = origin + normal.getNormalize().getScaled(5);
-    Vector3D v = Vector3D(origin, destiny);
-    Drawable::drawVector3D(v, color);
-}
-
-void Drawable::drawOutline(Mesh3D *m)
-{
-    auto componentWindow = ComponentsManager::get()->getComponentWindow();
-
-    componentWindow->getShaderOglColor()->render(
-        m,
-        m->vertexbuffer,
-        m->uvbuffer,
-        m->normalbuffer,
-        (int) m->vertices.size(),
-        true
-    );
-
-    glBindFramebuffer(GL_FRAMEBUFFER, componentWindow->getBackgroundFramebuffer());
-
-    componentWindow->getShaderOglStencil()->render(componentWindow->getShaderOglColor()->textureColorbuffer);
-    glDeleteTextures(1, &componentWindow->getShaderOglColor()->textureColorbuffer);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

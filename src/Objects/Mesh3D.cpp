@@ -132,7 +132,7 @@ void Mesh3D::onUpdate()
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
 
         if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
-            Drawable::drawOutline(this);
+            ComponentsManager::get()->getComponentWindow()->getShaderOGLOutline()->drawOutline(this, Color::red(), 1.0f);
         }
 
         ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(

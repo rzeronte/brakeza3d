@@ -1,5 +1,5 @@
 #include "../../include/FXEffect/FXOffsetImage.h"
-#include "../../include/EngineBuffers.h"
+#include "../../include/LUAManager.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
 

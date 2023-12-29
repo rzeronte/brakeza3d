@@ -60,7 +60,7 @@ void Brakeza3D::mainLoop()
     //LoadDemo();
     ImGuiInitialize();
     welcomeMessage();
-    EngineBuffers::get()->initLUATypes();
+    LUAManager::get()->initLUATypes();
 
     while (!finish) {
         controlFrameRate();

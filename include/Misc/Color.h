@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <vec3.hpp>
 #include <SDL2/SDL.h>
+#include "imgui.h"
 
 class Color {
 public:
@@ -53,6 +54,8 @@ public:
     [[nodiscard]] glm::vec3 toGLM() const;
 
     [[nodiscard]] SDL_Color toSDL() const;
+
+    ImVec4 toImVec4() const;
 };
 
 
