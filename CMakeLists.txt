@@ -179,7 +179,7 @@ add_executable(Brakeza3D
         src/OpenGL/ShaderOpenGLLine.cpp
         include/OpenGL/ShaderOpenGLLine.h
         src/Objects/SpotLight3D.cpp
-        src/Objects/SpotLight3D.h
+        include/Objects/SpotLight3D.h
         src/OpenGL/ShaderOpenGLWireframe.cpp
         include/OpenGL/ShaderOpenGLWireframe.h
         src/OpenGL/ShaderOpenGLShading.cpp
