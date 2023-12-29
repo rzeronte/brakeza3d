@@ -12,8 +12,8 @@ ShaderOpenGLColor::ShaderOpenGLColor()
     framebuffer(0),
     textureColorbuffer(0),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "Color.vertexshader",
-            EngineSetup::get()->SHADERS_FOLDER + "Color.fragmentshader"
+            EngineSetup::get()->SHADERS_FOLDER + "Color.vs",
+            EngineSetup::get()->SHADERS_FOLDER + "Color.fs"
     )
 {
     glGenVertexArrays(1, &VertexArrayID);

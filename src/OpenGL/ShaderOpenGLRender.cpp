@@ -10,8 +10,8 @@ ShaderOpenGLRender::ShaderOpenGLRender()
 :
     VertexArrayID(0),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "Render.vertexshader",
-            EngineSetup::get()->SHADERS_FOLDER + "Render.fragmentshader"
+            EngineSetup::get()->SHADERS_FOLDER + "Render.vs",
+            EngineSetup::get()->SHADERS_FOLDER + "Render.fs"
      )
 {
     glGenVertexArrays(1, &VertexArrayID);

@@ -7,8 +7,8 @@ ShaderOpenGLShockWave::ShaderOpenGLShockWave()
     focalPointX(500),
     focalPointY(500),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "ShockWave.vertexshader",
-            EngineSetup::get()->SHADERS_FOLDER + "ShockWave.fragmentshader"
+            EngineSetup::get()->SHADERS_FOLDER + "ShockWave.vs",
+            EngineSetup::get()->SHADERS_FOLDER + "ShockWave.fs"
     )
 {
     setupQuadUniforms(programID);

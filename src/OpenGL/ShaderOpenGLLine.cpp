@@ -13,8 +13,8 @@ ShaderOpenGLLine::ShaderOpenGLLine()
     quadVAO(0),
     VBO(0),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "Line.vertexshader",
-            EngineSetup::get()->SHADERS_FOLDER + "Line.fragmentshader"
+            EngineSetup::get()->SHADERS_FOLDER + "Line.vs",
+            EngineSetup::get()->SHADERS_FOLDER + "Line.fs"
     )
 {
     glGenVertexArrays(1, &quadVAO);

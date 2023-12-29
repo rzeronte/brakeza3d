@@ -11,8 +11,8 @@ ShaderOpenGLParticles::ShaderOpenGLParticles()
 :
     VertexArrayID(0),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "Particle.vertexshader",
-            EngineSetup::get()->SHADERS_FOLDER + "Particle.fragmentshader"
+            EngineSetup::get()->SHADERS_FOLDER + "Particle.vs",
+            EngineSetup::get()->SHADERS_FOLDER + "Particle.fs"
     )
 {
     glGenVertexArrays(1, &VertexArrayID);

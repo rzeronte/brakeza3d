@@ -8,8 +8,8 @@
 ShaderOpenGLShading::ShaderOpenGLShading()
 :
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "Shading.vertexshader",
-            EngineSetup::get()->SHADERS_FOLDER + "Shading.fragmentshader"
+            EngineSetup::get()->SHADERS_FOLDER + "Shading.vs",
+            EngineSetup::get()->SHADERS_FOLDER + "Shading.fs"
     )
 {
 }

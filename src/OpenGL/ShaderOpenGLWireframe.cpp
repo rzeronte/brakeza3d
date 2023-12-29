@@ -8,8 +8,8 @@
 ShaderOpenGLWireframe::ShaderOpenGLWireframe()
 :
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "Wireframe.vertexshader",
-            EngineSetup::get()->SHADERS_FOLDER + "Wireframe.fragmentshader"
+            EngineSetup::get()->SHADERS_FOLDER + "Wireframe.vs",
+            EngineSetup::get()->SHADERS_FOLDER + "Wireframe.fs"
     )
 {
 }

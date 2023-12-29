@@ -16,8 +16,8 @@ ShaderOpenGLFOG::ShaderOpenGLFOG()
     fogMaxDist(150.0f),
     intensity(1.0f),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "FOG.vertexshader",
-            EngineSetup::get()->SHADERS_FOLDER + "FOG.fragmentshader"
+            EngineSetup::get()->SHADERS_FOLDER + "FOG.vs",
+            EngineSetup::get()->SHADERS_FOLDER + "FOG.fs"
     )
 {
     createFramebuffer();

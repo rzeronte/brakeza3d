@@ -17,8 +17,8 @@ ShaderOpenGLDOF::ShaderOpenGLDOF()
     resultFramebuffer(0),
     textureResult(0),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.vertexshader",
-            EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.fragmentshader"
+            EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.vs",
+            EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.fs"
     )
 {
     createFramebuffer();
