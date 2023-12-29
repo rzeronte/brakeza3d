@@ -1,6 +1,7 @@
 #include "ComponentGameInput.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+#include "../Common/ShockWave.h"
 
 ComponentGameInput::ComponentGameInput()
 :
@@ -417,7 +418,7 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
             }
 
             player->setEnergyShieldEnabled(true);
-            Brakeza3D::get()->addObject3D(new ShockWave(player->getPosition(), 0.75, 50, 0.5, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+            Brakeza3D::get()->addObject3D(new ShockWave(player->getPosition(), 0.75, 0.5, true), Brakeza3D::uniqueObjectLabel("shockWave"));
             ComponentsManager::get()->getComponentSound()->sound("energyShield", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
 
@@ -433,7 +434,7 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
         }
 
         player->setEnergyShieldEnabled(true);
-        Brakeza3D::get()->addObject3D(new ShockWave(player->getPosition(), 0.75, 50, 0.5, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+        Brakeza3D::get()->addObject3D(new ShockWave(player->getPosition(), 0.75, 0.5, true), Brakeza3D::uniqueObjectLabel("shockWave"));
         ComponentsManager::get()->getComponentSound()->sound("energyShield", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     }
 

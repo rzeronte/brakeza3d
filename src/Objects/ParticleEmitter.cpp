@@ -1,7 +1,7 @@
 #define GL_GLEXT_PROTOTYPES
 
 #include <ext/matrix_transform.hpp>
-#include "../../include/Particles/ParticleEmitter.h"
+#include "../../include/Objects/ParticleEmitter.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"

@@ -9,9 +9,8 @@
 #include "../../include/Physics/Mesh3DAnimatedGhost.h"
 #include "../Weapons/AmmoProjectileBodyEmitter.h"
 #include "../../include/Physics/RayCollisionable.h"
-#include "../Shaders/ShaderZombie.h"
 #include "../Items/EnemyDialog.h"
-#include "../ProjectileRay.h"
+#include "../Weapons/ProjectileRay.h"
 #include "../../include/Behaviors/RotatableToTarget.h"
 #include "../../include/Objects/Swarm.h"
 

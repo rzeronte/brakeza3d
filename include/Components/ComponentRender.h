@@ -29,7 +29,6 @@ private:
 
     std::string defaultGPU;
 
-
     std::vector<Tile> tiles;
     int sizeTileWidth;
     int sizeTileHeight;

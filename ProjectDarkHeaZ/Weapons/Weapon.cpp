@@ -6,6 +6,7 @@
 #include "AmmoProjectileBody.h"
 #include "../Items/ItemBombGhost.h"
 #include "../Items/ItemShieldGhost.h"
+#include "../Common/ShockWave.h"
 
 
 Weapon::Weapon(
@@ -460,7 +461,7 @@ void Weapon::shootShield(Object3D *parent, Vertex3D position)
 
         Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("projectile"));
 
-        Brakeza3D::get()->addObject3D(new ShockWave(position, 0.50, 50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+        Brakeza3D::get()->addObject3D(new ShockWave(position, 0.50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
         Tools::makeFadeInSprite(position, ComponentsManager::get()->getComponentGame()->getFadeInSpriteBlue()->getAnimation());
     }

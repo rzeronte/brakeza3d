@@ -8,7 +8,7 @@
 
 #include "ShaderOpenGL.h"
 #include "ShaderQuadOpenGL.h"
-#include "../../ProjectDarkHeaZ/Shaders/ShaderShockWave.h"
+#include "../Objects/Point2D.h"
 
 class ShaderOpenGLShockWave: public ShaderOpenGL, public ShaderQuadOpenGL {
     float timeLive;
@@ -32,7 +32,6 @@ public:
     void setPoint(Point2D p);
 
     void setTimeLive(float timeLive);
-
 };
 
 

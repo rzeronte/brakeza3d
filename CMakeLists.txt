@@ -125,7 +125,7 @@ add_executable(Brakeza3D
     include/Render/Fragment.cpp include/Render/Fragment.h
     src/Render/M4.cpp include/Render/M4.h
     src/Objects/Vertex4D.cpp include/Objects/Vertex4D.h
-    src/Particles/ParticleEmitter.cpp include/Particles/ParticleEmitter.h
+        src/Objects/ParticleEmitter.cpp include/Objects/ParticleEmitter.h
     src/Collisions/SimplePendulum.cpp include/Physics/SimplePendulum.h
         include/OpenGL/FXEffectBase.h
     src/Misc/Image.cpp include/Misc/Image.h
@@ -134,16 +134,16 @@ add_executable(Brakeza3D
     include/2D/ButtonsCallbacks.h include/FXEffect/FXBlink.h
 
     src/Behaviors/Object3DBehavior.cpp include/Behaviors/Object3DBehavior.h
-    src/Particles/ParticleEmitterFireworks.cpp include/Particles/ParticleEmitterFireworks.h
+        src/Objects/ParticleEmitterFireworks.cpp include/Objects/ParticleEmitterFireworks.h
 
     include/Objects/Vector2D.cpp include/Objects/Vector2D.h
         include/OpenGL/FXEffectOpenGL.h
-        src/FXEffect/ShaderImage.cpp include/FXEffect/FXOffsetImage.h
+        src/FXEffect/FXOffsetImage.cpp include/FXEffect/FXOffsetImage.h
         src/FXEffect/FXOutliner.cpp include/FXEffect/FXOutliner.h
         src/FXEffect/FXColorTint.cpp include/FXEffect/FXColorTint.h
     src/Collisions/Mesh3DAnimatedGhost.cpp include/Physics/Mesh3DAnimatedGhost.h
     src/Collisions/RayCollisionable.cpp include/Physics/RayCollisionable.h
-        src/PostProcessing/ShockWave.cpp include/PostProcessing/ShockWave.h
+        ProjectDarkHeaZ/Common/ShockWave.cpp ProjectDarkHeaZ/Common/ShockWave.h
 
         src/Objects/Swarm.cpp include/Objects/Swarm.h
         src/Behaviors/RotatableToTarget.cpp include/Behaviors/RotatableToTarget.h
@@ -233,7 +233,7 @@ add_executable(Brakeza3D
         ProjectDarkHeaZ/Player.h ProjectDarkHeaZ/Player.cpp
         ProjectDarkHeaZ/LevelLoader.h ProjectDarkHeaZ/LevelLoader.cpp
         ProjectDarkHeaZ/StoreManager.h ProjectDarkHeaZ/StoreManager.cpp
-        ProjectDarkHeaZ/ProjectileRay.h ProjectDarkHeaZ/ProjectileRay.cpp
+        ProjectDarkHeaZ/Weapons/ProjectileRay.h ProjectDarkHeaZ/Weapons/ProjectileRay.cpp
         ProjectDarkHeaZ/FaderToGameStates.h
 
         ProjectDarkHeaZ/Weapons/AmmoProjectile.h
@@ -242,16 +242,14 @@ add_executable(Brakeza3D
         ProjectDarkHeaZ/Weapons/Weapon.h ProjectDarkHeaZ/Weapons/Weapon.cpp
 
         ProjectDarkHeaZ/Shaders/RayLight.h ProjectDarkHeaZ/Shaders/RayLight.cpp
-        ProjectDarkHeaZ/Shaders/ShaderShockWave.h ProjectDarkHeaZ/Shaders/ShaderShockWave.cpp
-        ProjectDarkHeaZ/Shaders/ShaderEnergyShield.h ProjectDarkHeaZ/Shaders/ShaderEnergyShield.cpp
-        ProjectDarkHeaZ/Shaders/ShaderProjectiles.h ProjectDarkHeaZ/Shaders/ShaderProjectiles.cpp
-        ProjectDarkHeaZ/Shaders/ShaderZombie.h ProjectDarkHeaZ/Shaders/ShaderZombie.cpp
+        ProjectDarkHeaZ/Shaders/FXEnergyShield.h ProjectDarkHeaZ/Shaders/FXEnergyShield.cpp
+        ProjectDarkHeaZ/Shaders/FXLaser.h ProjectDarkHeaZ/Shaders/FXLaser.cpp
 
         ProjectDarkHeaZ/Bosses/BossEnemy.h ProjectDarkHeaZ/Bosses/BossEnemy.cpp
         ProjectDarkHeaZ/Bosses/BossLevel10.h ProjectDarkHeaZ/Bosses/BossLevel10.cpp
         ProjectDarkHeaZ/Bosses/BossLevel20.h ProjectDarkHeaZ/Bosses/BossLevel20.cpp
         ProjectDarkHeaZ/Bosses/BossLevel30.h ProjectDarkHeaZ/Bosses/BossLevel30.cpp
-        ProjectDarkHeaZ/PaletteColors.h ProjectDarkHeaZ/Items/SalvageSpaceship.cpp
+        ProjectDarkHeaZ/Common/PaletteColors.h ProjectDarkHeaZ/Items/SalvageSpaceship.cpp
         ProjectDarkHeaZ/Items/SalvageSpaceship.h
         ProjectDarkHeaZ/Enemies/BoidEnemyGhost.cpp
         ProjectDarkHeaZ/Enemies/BoidEnemyGhost.h
@@ -267,6 +265,8 @@ add_executable(Brakeza3D
         include/OpenGL/ShaderOpenGLShockWave.h
         ProjectDarkHeaZ/OpenGLShaders/ShaderOpenGLLineLaser.cpp
         ProjectDarkHeaZ/OpenGLShaders/ShaderOpenGLLineLaser.h
+        src/FXEffect/FXShockWave.cpp
+        include/FXEffect/FXShockWave.h
 )
 
 target_link_libraries(Brakeza3D

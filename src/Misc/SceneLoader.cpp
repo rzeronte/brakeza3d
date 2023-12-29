@@ -9,7 +9,7 @@
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Particles/ParticleEmitter.h"
+#include "../../include/Objects/ParticleEmitter.h"
 #include "../../include/2D/Sprite2D.h"
 
 SceneLoader::SceneLoader()

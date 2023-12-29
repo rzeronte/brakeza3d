@@ -12,12 +12,12 @@
 #include "../../include/2D/TextWriter.h"
 #include "../../include/2D/Button.h"
 #include "../../include/Objects/Mesh3D.h"
-#include "../Shaders/ShaderProjectiles.h"
+#include "../Shaders/FXLaser.h"
 
 class ComponentHUD : public Component {
 private:
     std::vector<Button*> buttons;
-    ShaderProjectiles *shaderLasers;
+    FXLaser *shaderLasers;
     TexturePackage *HUDTextures;
     int offsetY = 710;
     int offsetX = 170;
@@ -57,7 +57,7 @@ public:
 
     [[nodiscard]] TexturePackage *getHudTextures() const;
 
-    [[nodiscard]] ShaderProjectiles *getShaderLasers() const;
+    [[nodiscard]] FXLaser *getShaderLasers() const;
 
     void drawGhateringResources();
 

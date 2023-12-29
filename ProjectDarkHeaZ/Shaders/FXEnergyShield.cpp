@@ -2,10 +2,10 @@
 // Created by eduardo on 26/06/23.
 //
 
-#include "ShaderEnergyShield.h"
+#include "FXEnergyShield.h"
 #include "../../include/Brakeza3D.h"
 
-ShaderEnergyShield::ShaderEnergyShield(
+FXEnergyShield::FXEnergyShield(
     bool active,
     Mesh3D* parent,
     const std::string &textureFilename,
@@ -20,7 +20,7 @@ ShaderEnergyShield::ShaderEnergyShield(
 {
 }
 
-void ShaderEnergyShield::update()
+void FXEnergyShield::update()
 {
     FXEffectBase::update();
 
@@ -29,10 +29,10 @@ void ShaderEnergyShield::update()
     executeKernelOpenCL();
 }
 
-void ShaderEnergyShield::executeKernelOpenCL()
+void FXEnergyShield::executeKernelOpenCL()
 {
 }
 
-void ShaderEnergyShield::setMaxAlpha(unsigned int maxAlpha) {
-    ShaderEnergyShield::maxAlpha = maxAlpha;
+void FXEnergyShield::setMaxAlpha(unsigned int maxAlpha) {
+    FXEnergyShield::maxAlpha = maxAlpha;
 }

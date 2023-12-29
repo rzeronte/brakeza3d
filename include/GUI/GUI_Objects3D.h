@@ -14,7 +14,7 @@
 #include "../Render/Logging.h"
 #include "../Objects/Decal.h"
 #include "../Objects/Mesh3DAnimatedCollection.h"
-#include "../Particles/ParticleEmitter.h"
+#include "../Objects/ParticleEmitter.h"
 #include "../Physics/SimplePendulum.h"
 #include "../Objects/Swarm.h"
 

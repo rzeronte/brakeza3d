@@ -8,13 +8,13 @@
 
 #include <vector>
 #include <SDL2/SDL_opengl.h>
-#include "../Objects/Object3D.h"
+#include "Object3D.h"
 #include "../Misc/Timer.h"
 #include "../Misc/Counter.h"
 #include "../Misc/Color.h"
 #include "../Misc/Image.h"
 #include "../OpenGL/ShaderOpenGLParticles.h"
-#include "../Objects/OpenCLTypes.h"
+#include "OpenCLTypes.h"
 
 typedef enum {
     DEFAULT = 0,

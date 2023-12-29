@@ -7,6 +7,7 @@
 #include "Items/ItemEnergyGhost.h"
 #include "Items/PlayerReflection.h"
 #include "Items/LivingObject.h"
+#include "Common/ShockWave.h"
 
 Player::Player()
 :
@@ -77,7 +78,7 @@ Player::Player()
         )
     );
 
-    shaderEnergyShield = new ShaderEnergyShield(
+    shaderEnergyShield = new FXEnergyShield(
         true,
         this,
         std::string(EngineSetup::get()->IMAGES_FOLDER + "noise_color.png"),
@@ -829,7 +830,7 @@ void Player::dashMovement()
 
         Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
 
-        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 50, 1.5, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1.5, true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
         float power = dashPower;
         if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_EXTRA_DASH)) {

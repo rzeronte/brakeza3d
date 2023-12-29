@@ -6,11 +6,11 @@
 #define BRAKEZA3D_PROJECTILERAY_H
 
 
-#include "../include/Physics/RayCollisionable.h"
-#include "../include/Misc/Counter.h"
-#include "../include/Misc/Color.h"
-#include "../include/Physics/Projectile.h"
-#include "Weapons/AmmoProjectile.h"
+#include "../../include/Physics/RayCollisionable.h"
+#include "../../include/Misc/Counter.h"
+#include "../../include/Misc/Color.h"
+#include "../../include/Physics/Projectile.h"
+#include "AmmoProjectile.h"
 
 class ProjectileRay: public RayCollisionable, public Projectile, public AmmoProjectile {
 private:

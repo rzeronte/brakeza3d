@@ -3,7 +3,7 @@
 //
 
 #include "BoidEnemyGhost.h"
-#include "../PaletteColors.h"
+#include "../Common/PaletteColors.h"
 
 void BoidEnemyGhost::shoot(Object3D *target)
 {
