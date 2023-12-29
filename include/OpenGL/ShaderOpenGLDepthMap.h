@@ -7,13 +7,9 @@
 
 
 #include "ShaderOpenGL.h"
+#include "ShaderQuadOpenGL.h"
 
-class ShaderOpenGLDepthMap : public ShaderOpenGL {
-    GLuint quadVAO;
-    GLuint VBO;
-
-    GLint modelMatrixUniform;
-    GLint projectionMatrixUniform;
+class ShaderOpenGLDepthMap : public ShaderOpenGL, public ShaderQuadOpenGL {
     GLint textureUniform;
 
     GLint intensityUniform;

@@ -5,8 +5,8 @@ ShaderOpenGLPoints::ShaderOpenGLPoints()
 :
     VertexArrayID(0),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "Points.vs",
-            EngineSetup::get()->SHADERS_FOLDER + "Points.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Points.vs",
+        EngineSetup::get()->SHADERS_FOLDER + "Points.fs"
     )
 {
     glGenVertexArrays(1, &VertexArrayID);

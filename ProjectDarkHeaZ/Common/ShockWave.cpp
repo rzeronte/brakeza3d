@@ -5,8 +5,9 @@
 #include "ShockWave.h"
 #include "../../include/Brakeza3D.h"
 
-ShockWave::ShockWave(Vertex3D position, float speed, float ttl, bool deleteWhenEnds)
+ShockWave::ShockWave(Vertex3D position, float speed, float ttl, ShockWaveParams params, bool deleteWhenEnds)
 :
+    params(params),
     ttl(ttl),
     speed(speed),
     deleteWhenEnds(deleteWhenEnds)
@@ -24,13 +25,15 @@ void ShockWave::onUpdate()
         }
     }
 
+    auto window = ComponentsManager::get()->getComponentWindow();
     auto p = Transforms::WorldToPoint(getPosition());
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLShockWave()->setPoint(p);
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLShockWave()->setTimeLive(t);
-
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLShockWave()->render(
-        ComponentsManager::get()->getComponentWindow()->sceneTexture,
-        ComponentsManager::get()->getComponentWindow()->getPostProcessingFramebuffer()
+    window->getShaderOGLShockWave()->render(
+        p,
+        t,
+        speed,
+        params,
+        window->sceneTexture,
+        window->getPostProcessingFramebuffer()
     );
 }
 

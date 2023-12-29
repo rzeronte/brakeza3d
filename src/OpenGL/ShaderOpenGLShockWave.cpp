@@ -3,12 +3,9 @@
 
 ShaderOpenGLShockWave::ShaderOpenGLShockWave()
 :
-    timeLive(0),
-    focalPointX(500),
-    focalPointY(500),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "ShockWave.vs",
-            EngineSetup::get()->SHADERS_FOLDER + "ShockWave.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "ShockWave.vs",
+        EngineSetup::get()->SHADERS_FOLDER + "ShockWave.fs"
     )
 {
     setupQuadUniforms(programID);
@@ -20,9 +17,11 @@ ShaderOpenGLShockWave::ShaderOpenGLShockWave()
     screenWidthUniform = glGetUniformLocation(programID, "screenWidth");
     screenHeightUniform = glGetUniformLocation(programID, "screenHeight");
     textureUniform = glGetUniformLocation(programID, "sceneTexture");
+
+    speedUniform = glGetUniformLocation(programID, "speed");
 }
 
-void ShaderOpenGLShockWave::render(GLuint textureID, GLuint framebuffer)
+void ShaderOpenGLShockWave::render(Point2D position, float timeLive, float speed, ShockWaveParams params, GLuint textureID, GLuint framebuffer)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     glUseProgram(programID);
@@ -31,17 +30,21 @@ void ShaderOpenGLShockWave::render(GLuint textureID, GLuint framebuffer)
 
     glUniform1f(timeUniform, timeLive);
 
-    auto w = ComponentsManager::get()->getComponentWindow();
-
-    const float posX = ((float) focalPointX / (float) w->getWidth());
-    const float posY = ((float) focalPointY / (float) w->getHeight());
+    const float posX = ((float) position.x / (float) EngineSetup::get()->screenWidth);
+    const float posY = ((float) position.y / (float) EngineSetup::get()->screenHeight);
 
     glUniform1f(focalPointXUniform, posX);
     glUniform1f(focalPointYUniform, posY);
 
+    glUniform1f(speedUniform, speed);
+
     auto window = ComponentsManager::get()->getComponentWindow();
     glUniform1i(screenWidthUniform, window->getWidth());
     glUniform1i(screenHeightUniform, window->getHeight());
+
+    setFloat("shockParams.x", params.param1);
+    setFloat("shockParams.y", params.param2);
+    setFloat("shockParams.z", params.param3);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureID);
@@ -55,14 +58,4 @@ void ShaderOpenGLShockWave::render(GLuint textureID, GLuint framebuffer)
 void ShaderOpenGLShockWave::destroy()
 {
     resetQuadMatrix();
-}
-
-void ShaderOpenGLShockWave::setPoint(Point2D p)
-{
-    focalPointX = p.x;
-    focalPointY = p.y;
-}
-
-void ShaderOpenGLShockWave::setTimeLive(float timeLive) {
-    ShaderOpenGLShockWave::timeLive = timeLive;
 }

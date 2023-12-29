@@ -64,7 +64,12 @@ struct GUIWidgetObjects3D {
                         int selection = std::stoi((char*) payload->Data);
                         switch(selection) {
                             case 2: {
-                                auto shader = new FXShockWave(true, o, 1.5f);
+                                auto shader = new FXShockWave(true, o, 1.5f, ShockWaveParams::standard());
+                                o->addMesh3DShader(shader);
+                                break;
+                            }
+                            case 3: {
+                                auto shader = new FXColorTint(true, Color::red(), 0.0f);
                                 o->addMesh3DShader(shader);
                                 break;
                             }

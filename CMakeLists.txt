@@ -270,6 +270,8 @@ add_executable(Brakeza3D
         include/GUI/GUIWidgetProjectSettings.h
         include/GUI/GUIWidgetMenu.h
         include/GUI/GUIWidgetToolbar.h
+        src/OpenGL/ShaderOpenGLTint.cpp
+        src/OpenGL/ShaderOpenGLTint.h
 )
 
 target_link_libraries(Brakeza3D

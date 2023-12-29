@@ -7,8 +7,6 @@
 
 ShaderOpenGLDOF::ShaderOpenGLDOF()
 :
-    VBO(0),
-    quadVAO(0),
     focalRange(0),
     focalDistance(0),
     blurRadius(10),
@@ -17,36 +15,12 @@ ShaderOpenGLDOF::ShaderOpenGLDOF()
     resultFramebuffer(0),
     textureResult(0),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.vs",
-            EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.vs",
+        EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.fs"
     )
 {
+    setupQuadUniforms(programID);
     createFramebuffer();
-
-    float vertices[] = {
-        // pos      // tex
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f,
-
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f
-    };
-
-    glGenVertexArrays(1, &quadVAO);
-    glGenBuffers(1, &VBO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindVertexArray(quadVAO);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    modelMatrixUniform = glGetUniformLocation(programID, "model");
-    projectionMatrixUniform = glGetUniformLocation(programID, "projection");
 
     focalDistanceUniform = glGetUniformLocation(programID, "focalDistance");
     focalRangeUniform = glGetUniformLocation(programID, "focalRange");
@@ -76,39 +50,19 @@ void ShaderOpenGLDOF::render(GLuint sceneTexture, GLuint depthTexture)
     glBindTexture(GL_TEXTURE_2D, depthTexture);
     glUniform1i(depthTextureUniform, 1);
 
-    const int x = 0;
-    const int y = 0;
+    loadQuadMatrixUniforms();
+
     auto window = ComponentsManager::get()->getComponentWindow();
-    const int w = window->getWidth();
-    const int h = window->getHeight();
-
-    glm::mat4 projection = glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f);
-
-    glm::vec2 position = glm::vec2(x, y);
-    glm::vec2 size = glm::vec2(w, h);
-
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(position, 0));
-    model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
-    model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
-    model = glm::scale(model, glm::vec3(size, 1.0f));
-
-    glUniformMatrix4fv(modelMatrixUniform, 1, GL_FALSE, &model[0][0]);
-    glUniformMatrix4fv(projectionMatrixUniform, 1, GL_FALSE, &projection[0][0]);
 
     glUniform1f(focalDistanceUniform, focalDistance);
     glUniform1f(focalRangeUniform, focalRange);
     glUniform1i(blurRadiusUniform, blurRadius);
     glUniform1f(intensityUniform, intensity);
     glUniform1f(farPlaneUniform, farPlane);
-    glUniform1i(widthUniform, w);
-    glUniform1i(heightUniform, h);
+    glUniform1i(widthUniform, window->getWidth());
+    glUniform1i(heightUniform, window->getHeight());
 
-    glBindVertexArray(quadVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-
-    glBindVertexArray(0);
+    drawQuad();
 }
 
 GLuint ShaderOpenGLDOF::getTextureResult() const {
@@ -137,4 +91,6 @@ void ShaderOpenGLDOF::destroy()
     glDeleteTextures(1, &textureResult);
 
     createFramebuffer();
+
+    resetQuadMatrix();
 }

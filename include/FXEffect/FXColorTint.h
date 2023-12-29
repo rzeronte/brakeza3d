@@ -18,9 +18,17 @@ public:
 
     void update() override;
 
-    void executeKernelOpenCL();
-
     void setProgress(float progress);
+
+    void drawImGuiProperties();
+
+    void setColor(const Color &color);
+
+    void preUpdate() override;
+
+    void postUpdate() override;
+
+    cJSON *getJSON() override;
 };
 
 

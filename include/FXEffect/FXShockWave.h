@@ -8,12 +8,16 @@
 
 #include "../OpenGL/FXEffectOpenGLObject.h"
 #include "../Misc/Counter.h"
+#include "../OpenGL/ShaderOpenGLShockWave.h"
 
 class FXShockWave : public FXEffectOpenGLObject {
     Counter ttlWave;
     bool deleteWhenEnds;
+    float speed;
+
+    ShockWaveParams params;
 public:
-    FXShockWave(bool active, Object3D *object, float ttl);
+    FXShockWave(bool active, Object3D *object, float ttl, ShockWaveParams params);
 
     void update() override;
 

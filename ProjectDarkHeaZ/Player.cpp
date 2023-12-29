@@ -830,7 +830,7 @@ void Player::dashMovement()
 
         Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
 
-        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1.5, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1.5, ShockWaveParams::standard(), true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
         float power = dashPower;
         if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_EXTRA_DASH)) {

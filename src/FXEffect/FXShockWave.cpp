@@ -6,8 +6,10 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/ComponentsManager.h"
 
-FXShockWave::FXShockWave(bool active, Object3D *object, float ttl)
+FXShockWave::FXShockWave(bool active, Object3D *object, float ttl, ShockWaveParams params)
 :
+    params(params),
+    speed(1.0),
     deleteWhenEnds(false),
     ttlWave(Counter(ttl)),
     FXEffectOpenGLObject(active, object)
@@ -28,12 +30,16 @@ void FXShockWave::update()
         }
     }
 
-    auto p = Transforms::WorldToPoint(object->getPosition());
-
     auto window = ComponentsManager::get()->getComponentWindow();
-    window->getShaderOGLShockWave()->setPoint(p);
-    window->getShaderOGLShockWave()->setTimeLive(ttlWave.getAcumulatedTime());
-    window->getShaderOGLShockWave()->render(window->sceneTexture,window->getPostProcessingFramebuffer());
+
+    window->getShaderOGLShockWave()->render(
+        Transforms::WorldToPoint(object->getPosition()),
+        ttlWave.getAcumulatedTime(),
+        speed,
+        params,
+        window->sceneTexture,
+        window->getPostProcessingFramebuffer()
+    );
 }
 
 void FXShockWave::preUpdate() {
@@ -47,6 +53,20 @@ void FXShockWave::postUpdate() {
 
 void FXShockWave::drawImGuiProperties() {
     FXEffectOpenGL::drawImGuiProperties();
+
+    const float rangeMin = 0;
+    const float rangeMax = 1;
+    const float rangeSens = 0.01f;
+
+    ImGui::DragScalar("Step", ImGuiDataType_Float, &speed, rangeSens, &rangeMin, &rangeMax, "%f", 1.0f);
+
+    const float rangeParamMin = 0;
+    const float rangeParamMax = 25;
+    const float rangeParamSens = 0.01f;
+
+    ImGui::DragScalar("x", ImGuiDataType_Float, &params.param1, rangeParamSens, &rangeParamMin, &rangeParamMax, "%f", 1.0f);
+    ImGui::DragScalar("y", ImGuiDataType_Float, &params.param2, rangeParamSens, &rangeParamMin, &rangeParamMax, "%f", 1.0f);
+    ImGui::DragScalar("z", ImGuiDataType_Float, &params.param3, rangeParamSens, &rangeParamMin, &rangeParamMax, "%f", 1.0f);
 }
 
 cJSON *FXShockWave::getJSON() {

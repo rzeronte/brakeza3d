@@ -1,5 +1,11 @@
 #version 330 core
 
+struct ShockWaveParams {
+    float x;
+    float y;
+    float z;
+};
+
 in vec2 TexCoords;
 
 uniform sampler2D sceneTexture;
@@ -7,9 +13,9 @@ uniform sampler2D sceneTexture;
 uniform float shockwaveTime;
 uniform float shockwaveFocalPointX;
 uniform float shockwaveFocalPointY;
+uniform float speed;
 
-vec3 shockParams = vec3(10, 0.8, 0.1);
-float shockwaveSpeed = 2.0;
+uniform ShockWaveParams shockParams; //vec3 shockParams = vec3(10, 0.8, 0.1);
 
 out vec4 FragColor;
 
@@ -20,9 +26,8 @@ void main()
     vec2 uv = TexCoords.xy;
     vec2 texCoord = uv;
 
-    float dist = distance(uv, center)* shockwaveSpeed;
-    if ((dist <= (shockwaveTime + shockParams.z)) && (dist >= (shockwaveTime - shockParams.z)))
-    {
+    float dist = distance(uv, center) * 1/speed;
+    if ((dist <= (shockwaveTime + shockParams.z)) && (dist >= (shockwaveTime - shockParams.z))) {
         float diff = (dist - shockwaveTime);
         float powDiff = 1.0 - pow(abs(diff * shockParams.x), shockParams.y);
 

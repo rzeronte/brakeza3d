@@ -9,13 +9,9 @@
 #include "ShaderOpenGL.h"
 #include "../Objects/Point2D.h"
 #include "../Misc/Color.h"
+#include "ShaderQuadOpenGL.h"
 
-class ShaderOpenGLLine : public ShaderOpenGL {
-    GLuint quadVAO;
-    GLuint VBO;
-
-    GLint modelMatrixUniform;
-    GLint projectionMatrixUniform;
+class ShaderOpenGLLine : public ShaderOpenGL, public ShaderQuadOpenGL  {
 public:
     ShaderOpenGLLine();
 
