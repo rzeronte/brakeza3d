@@ -1,5 +1,5 @@
 #include "RayLight.h"
-#include "../../include/EngineBuffers.h"
+#include "../../include/LUAManager.h"
 #include "../../include/Brakeza3D.h"
 #include "../Items/ItemShieldGhost.h"
 

@@ -102,7 +102,7 @@ public:
 
     virtual void postUpdate();
 
-    bool isRotationFrameEnabled();
+    bool isRotationFrameEnabled() const;
 
     void setRotationFrameEnabled(bool value);
 
@@ -195,13 +195,11 @@ public:
 
     Vertex3D position;
 
-    std::vector<FXEffectOpenGL *> &getShaders();
-
     void addMesh3DShader(FXEffectOpenGL *shader);
 
     void removeShader(int i);
 
-    const Timer &getTimer() const;
+    [[nodiscard]] const Timer &getTimer() const;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

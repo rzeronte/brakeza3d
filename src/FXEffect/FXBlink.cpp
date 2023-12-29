@@ -7,6 +7,7 @@
 
 FXBlink::FXBlink(bool active, Mesh3D *o, float step, Color c) :
     FXEffectOpenGLObject(active, o),
+    step(step),
     isBlinking(false),
     object(o),
     color(c),
@@ -56,13 +57,14 @@ void FXBlink::executeKernelOpenCL()
 {
     glDisable(GL_BLEND);
 
-    ComponentsManager::get()->getComponentWindow()->getShaderOglColor()->render(
-            object,
-            object->vertexbuffer,
-            object->uvbuffer,
-            object->normalbuffer,
-            (int) object->vertices.size(),
-            false
+    ComponentsManager::get()->getComponentWindow()->getShaderOGLColor()->render(
+        object,
+        object->vertexbuffer,
+        object->uvbuffer,
+        object->normalbuffer,
+        (int) object->vertices.size(),
+        false,
+        color
     );
 
     glEnable(GL_BLEND);
@@ -70,4 +72,29 @@ void FXBlink::executeKernelOpenCL()
 
 void FXBlink::setColor(Color color) {
     this->color = color;
+}
+
+void FXBlink::drawImGuiProperties()
+{
+    const float rangeMin = 0;
+    const float rangeMax = 10;
+    const float rangeSens = 0.01f;
+
+    if (ImGui::DragScalar("Step", ImGuiDataType_Float, &step, rangeSens, &rangeMin, &rangeMax, "%f", 1.0f)){
+        setCounter(step);
+    }
+
+    if (ImGui::TreeNode(("Blink color##" + getLabel()).c_str())) {
+        ImVec4 imguiColor = color.toImVec4();
+
+        if (ImGui::ColorEdit4("Color", (float *) &imguiColor, ImGuiColorEditFlags_NoOptions)) {
+            setColor(Color(imguiColor.x,imguiColor.y,imguiColor.z));
+        }
+        ImGui::TreePop();
+    }
+}
+
+void FXBlink::setCounter(float step) {
+    counter.setStep(step);
+    counter.setEnabled(true);
 }

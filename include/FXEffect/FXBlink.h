@@ -3,7 +3,7 @@
 #define BRAKEDA3D_SHADERBLINK_H
 #include "../Misc/Color.h"
 #include "../Misc/Tools.h"
-#include "../EngineBuffers.h"
+#include "../LUAManager.h"
 #include "../Render/Transforms.h"
 #include "../Render/Drawable.h"
 #include "../Render/Logging.h"
@@ -11,6 +11,7 @@
 
 class FXBlink : public FXEffectOpenGLObject {
     bool isBlinking;
+    float step;
     Mesh3D* object;
     Color color;
     Counter counter;
@@ -26,5 +27,9 @@ public:
     void preUpdate() override;
 
     void postUpdate() override;
+
+    void drawImGuiProperties();
+
+    void setCounter(float step);
 };
 #endif //BRAKEDA3D_SHADERBLINK_H

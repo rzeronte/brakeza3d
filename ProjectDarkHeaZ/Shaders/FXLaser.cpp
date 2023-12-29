@@ -1,5 +1,5 @@
 #include "FXLaser.h"
-#include "../../include/EngineBuffers.h"
+#include "../../include/LUAManager.h"
 #include "../../include/Brakeza3D.h"
 
 FXLaser::FXLaser()

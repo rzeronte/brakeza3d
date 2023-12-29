@@ -30,7 +30,7 @@ void ComponentWindow::onStart()
     shaderOGLWireframe = new ShaderOpenGLWireframe();
     shaderOGLShading = new ShaderOpenGLShading();
     shaderOGLPoints = new ShaderOpenGLPoints();
-    shaderOGLStencil = new ShaderOpenGLOutline();
+    shaderOGLOutline = new ShaderOpenGLOutline();
     shaderOGLColor = new ShaderOpenGLColor();
     shaderOGLParticles = new ShaderOpenGLParticles();
     shaderOGLDOF = new ShaderOpenGLDOF();
@@ -213,15 +213,15 @@ ShaderOpenGLDOF *ComponentWindow::getShaderOGLDOF() const {
     return shaderOGLDOF;
 }
 
-ShaderOpenGLOutline *ComponentWindow::getShaderOglStencil() const {
-    return shaderOGLStencil;
+ShaderOpenGLOutline *ComponentWindow::getShaderOGLOutline() const {
+    return shaderOGLOutline;
 }
 
-ShaderOpenGLColor *ComponentWindow::getShaderOglColor() const {
+ShaderOpenGLColor *ComponentWindow::getShaderOGLColor() const {
     return shaderOGLColor;
 }
 
-ShaderOpenGLParticles *ComponentWindow::getShaderOglParticles() const {
+ShaderOpenGLParticles *ComponentWindow::getShaderOGLParticles() const {
     return shaderOGLParticles;
 }
 
@@ -395,7 +395,7 @@ void ComponentWindow::resetFramebuffer()
     shaderOGLWireframe->destroy();
     shaderOGLShading->destroy();
     shaderOGLPoints->destroy();
-    shaderOGLStencil->destroy();
+    shaderOGLOutline->destroy();
     shaderOGLColor->destroy();
     shaderOGLParticles->destroy();
     shaderOGLDOF->destroy();

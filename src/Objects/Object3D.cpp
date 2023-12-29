@@ -29,8 +29,8 @@ Object3D::Object3D() :
     rotationFrameEnabled(false),
     belongToScene(false),
     luaEnvironment(sol::environment(
-        EngineBuffers::get()->getLua(),
-        sol::create, EngineBuffers::get()->getLua().globals())
+            LUAManager::get()->getLua(),
+            sol::create, LUAManager::get()->getLua().globals())
     )
 {
     luaEnvironment.set("this", this);
@@ -212,7 +212,7 @@ void Object3D::addToPosition(Vertex3D v) {
     this->position = this->position + v;
 }
 
-bool Object3D::isRotationFrameEnabled() {
+bool Object3D::isRotationFrameEnabled() const {
     return rotationFrameEnabled;
 }
 
@@ -261,6 +261,9 @@ void Object3D::setAlphaEnabled(bool alphaEnabled) {
 
 Object3D::~Object3D()
 {
+    for (auto s: shaders) {
+        delete s;
+    }
 }
 
 float &Object3D::getRotX() {
@@ -475,6 +478,8 @@ void Object3D::drawImGuiProperties()
         auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
 
         for (int i = 0; i < (int) shaders.size(); i++) {
+            ImGui::PushID(i);
+
             auto s = shaders[i];
             ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(24, 24));
             ImGui::SameLine(100);
@@ -498,6 +503,7 @@ void Object3D::drawImGuiProperties()
                 s->drawImGuiProperties();
                 ImGui::PopID();
             }
+            ImGui::PopID();
         }
         ImGui::TreePop();
     }
@@ -598,23 +604,17 @@ void Object3D::createFromJSON(cJSON *object)
 
 glm::mat4 Object3D::getModelMatrix()
 {
-    // Escalado, rotación y translación proporcionados
-    glm::vec3 escala(this->scale);
-    glm::vec3 angulosEuler(glm::radians(getRotation().getPitchDegree()), glm::radians(getRotation().getYawDegree()), glm::radians(getRotation().getRollDegree()));
-    glm::vec3 translacion(position.x, position.y, position.z);
+    glm::vec3 scaled(scale);
+    glm::vec3 rotated(glm::radians(getRotation().getPitchDegree()), glm::radians(getRotation().getYawDegree()), glm::radians(getRotation().getRollDegree()));
+    glm::vec3 translated = position.toGLM();
 
-    // Combinar las matrices para obtener la transformación final (escalado * rotación * translación)
-    glm::mat4 matrizTransformacion =
-        glm::translate(glm::mat4(1.0f), translacion) *
-        (glm::eulerAngleX(angulosEuler.x) * glm::eulerAngleY(angulosEuler.y) * glm::eulerAngleZ(angulosEuler.z)) *
-        glm::scale(glm::mat4(1.0f), escala)
+    glm::mat4 modelMatrix =
+        glm::translate(glm::mat4(1.0f), translated) *
+        (glm::eulerAngleX(rotated.x) * glm::eulerAngleY(rotated.y) * glm::eulerAngleZ(rotated.z)) *
+        glm::scale(glm::mat4(1.0f), scaled)
     ;
 
-    return matrizTransformacion;
-}
-
-std::vector<FXEffectOpenGL *> &Object3D::getShaders() {
-    return shaders;
+    return modelMatrix;
 }
 
 void Object3D::addMesh3DShader(FXEffectOpenGL *shader) {
