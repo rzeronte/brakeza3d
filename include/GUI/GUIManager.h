@@ -15,27 +15,32 @@
 #include "../FXEffect/FXOutliner.h"
 #include "../FXEffect/FXBlink.h"
 #include "../FXEffect/FXShockWave.h"
-
-static char editableSource[1024 * 16];
+#include "GUIWidgetObjects3D.h"
+#include "GUIWidgetObject3DProperties.h"
+#include "GUIWidgetProjectSettings.h"
+#include "GUIWidgetMenu.h"
+#include "GUIWidgetToolbar.h"
 
 class GUIManager {
 private:
     std::vector<Object3D *> &gameObjects;
 
     int selectedObjectIndex = -1;
-    std::string selectedScriptFilename;
-    FXEffectOpenGL *selectedShader;
-    ScriptLUA *script;
+    ScriptEditableManager scriptEditableManager;
 
     std::string directory_path;
-    std::string directory_path_models;
     std::string directory_path_images;
     std::string directory_path_scenes;
 
     std::string selected_file;
     ImGuiConsoleApp *console;
+    GUIWidgetObjects3D *widgetObjects3D;
+    GUIWidgetObject3DProperties *widgetObject3DProperties;
+    GUIWidgetProjectSettings *widgetProjectSettings;
+    GUIWidgetMenu *widgetMenu;
+    GUIWidgetToolbar *widgetToolbar;
 
-    TexturePackage ImGuiTextures;
+    TexturePackage packageIcons;
     TexturePackage imagesFolder;
 
     const char *availableMesh3DShaders[3] = {"Edge", "Blink", "ShockWave"};
@@ -60,38 +65,44 @@ public:
     :
         gameObjects(gameObjects),
         directory_path(EngineSetup::get()->SCRIPTS_FOLDER),
-        directory_path_models(EngineSetup::get()->MODELS_FOLDER),
         directory_path_images(EngineSetup::get()->IMAGES_FOLDER),
         directory_path_scenes(EngineSetup::get()->SCENES_FOLDER),
-        script(nullptr),
-        console(new ImGuiConsoleApp(EngineBuffers::get()->getLua()))
+        console(new ImGuiConsoleApp(EngineBuffers::get()->getLua())),
+        widgetObjects3D(new GUIWidgetObjects3D(packageIcons, this->gameObjects)),
+        widgetObject3DProperties(new GUIWidgetObject3DProperties(packageIcons, this->gameObjects, scriptEditableManager)),
+        widgetProjectSettings(new GUIWidgetProjectSettings(packageIcons, scriptEditableManager)),
+        widgetMenu(new GUIWidgetMenu(packageIcons)),
+        widgetToolbar(new GUIWidgetToolbar(packageIcons))
     {
-
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/stop.png", "stopIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/play.png", "playIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/reload.png", "reloadIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/object.png", "objectIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/light.png", "lightIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/script.png", "scriptIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/swarm.png", "swarmIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/mesh.png", "meshIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/player.png", "playerIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite2d.png", "sprite2DIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite3d.png", "sprite3DIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/remove.png", "removeIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/pause.png", "pauseIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/lock.png", "lockIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/unlock.png", "unlockIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/add.png", "addIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/scene.png", "sceneIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/save.png", "saveIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/gear.png", "gearIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/ghost.png", "ghostIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/shader.png", "shaderIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/spotlight.png", "spotLightIcon");
-        ImGuiTextures.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/particles.png", "particlesIcon");
-
+        LoadUIIcons();
         loadImagesFolder();
+    }
+
+    void LoadUIIcons()
+    {
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/stop.png", "stopIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/play.png", "playIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/reload.png", "reloadIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/object.png", "objectIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/light.png", "lightIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/script.png", "scriptIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/swarm.png", "swarmIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/mesh.png", "meshIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/player.png", "playerIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite2d.png", "sprite2DIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite3d.png", "sprite3DIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/remove.png", "removeIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/pause.png", "pauseIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/lock.png", "lockIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/unlock.png", "unlockIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/add.png", "addIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/scene.png", "sceneIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/save.png", "saveIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/gear.png", "gearIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/ghost.png", "ghostIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/shader.png", "shaderIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/spotlight.png", "spotLightIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/particles.png", "particlesIcon");
     }
 
     void drawFiles(std::vector<std::string> result)
@@ -107,10 +118,13 @@ public:
             ImGui::PushID(n);
             std::string optionText = std::to_string(n + 1) + ") " + file;
             if (ImGui::Selectable(optionText.c_str())) {
-                delete script;
-                selectedScriptFilename = file;
-                script = new ScriptLUA(selectedScriptFilename, ScriptLUA::dataTypesFileFor(selectedScriptFilename));
-                strcpy(editableSource, script->content);
+                delete scriptEditableManager.script;
+                scriptEditableManager.selectedScriptFilename = file;
+                scriptEditableManager.script = new ScriptLUA(
+                    scriptEditableManager.selectedScriptFilename,
+                    ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename)
+                );
+                strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content);
             }
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
                 ImGui::SetDragDropPayload("SCRIPT_ITEM", file.c_str(), file.size() + 1);  // Asigna el nombre del elemento como carga útil
@@ -126,14 +140,14 @@ public:
     {
         ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Script properties for: ");
         ImGui::SameLine();
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", script->scriptFilename.c_str());
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", scriptEditableManager.script->scriptFilename.c_str());
 
         ImGui::Separator();
 
         if (ImGui::BeginTable("ScriptProperties", 3)) {
-            for (int i = 0; i < script->dataTypes.size(); i++) {
+            for (int i = 0; i < scriptEditableManager.script->dataTypes.size(); i++) {
                 ImGui::TableNextRow();
-                auto type = &script->dataTypes[i];
+                auto type = &scriptEditableManager.script->dataTypes[i];
 
                 static char name[256];
                 static char value[256];
@@ -155,8 +169,8 @@ public:
 
                 ImGui::TableSetColumnIndex(2);
                 if (ImGui::Button(std::string("Remove##id" + std::to_string(i)).c_str())) {
-                    script->removeDataType(*type);
-                    script->updateFileTypes();
+                    scriptEditableManager.script->removeDataType(*type);
+                    scriptEditableManager.script->updateFileTypes();
                 }
             }
 
@@ -164,7 +178,7 @@ public:
         }
 
         if (ImGui::Button(std::string("Apply").c_str())) {
-            script->updateFileTypes();
+            scriptEditableManager.script->updateFileTypes();
         }
 
     }
@@ -271,11 +285,11 @@ public:
                 auto title = std::to_string(i+1) + ") " + file;
                 if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                     ImGui::PushID(i);
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("sceneIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("sceneIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                         ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(file);
                     }
                     ImGui::SameLine();
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("saveIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("saveIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                         ComponentsManager::get()->getComponentRender()->getSceneLoader().saveScene(file);
                     }
                     ImGui::SameLine();
@@ -297,19 +311,19 @@ public:
         for (int i = 0; i < shaders.size(); i++) {
             auto s = shaders[i];
             ImGui::PushID(i);
-            ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(26, 26));
+            ImGui::Image((ImTextureID)packageIcons.getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(26, 26));
             ImGui::SameLine(46);
             if (!s->isEnabled()) {
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                     s->setEnabled(true);
                 }
             } else {
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                     s->setEnabled(false);
                 }
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+            if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                 ComponentsManager::get()->getComponentRender()->removeShader(i);
             }
             ImGui::SameLine();
@@ -363,165 +377,8 @@ public:
 
     }
 
-    void drawObjectsWindow()
+    void drawWidgets()
     {
-        bool p_open = true;
-        console->Draw("Logging/Console", &p_open);
-
-        if (ImGui::Begin("Scene Objects")) {
-            auto title = std::string("Number objects: ") + std::to_string(gameObjects.size());
-
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", title.c_str());
-
-            ImGui::Separator();
-
-            for (int i = 0; i < gameObjects.size(); i++) {
-                auto o = gameObjects[i];
-
-                if (o->isRemoved()) {
-                    continue;
-                }
-
-                std::string optionText = std::to_string(i + 1) + ") " + o->getLabel();
-                if (ImGui::Selectable(optionText.c_str(), selectedObjectIndex == i)) {
-                    selectedObjectIndex = i;
-                }
-                if (ImGui::BeginDragDropTarget()) {
-                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
-                        Logging::Message("Dropping script (%s) in %s", payload->Data, o->getLabel().c_str());
-                        IM_ASSERT(payload->DataSize == sizeof(int));
-                        o->attachScript(new ScriptLUA(
-                            std::string((const char*) payload->Data),
-                            ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
-                        );
-                    }
-                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MESH3D_SHADER_ITEM")) {
-                        Logging::Message("Dropping shader (%s) in %s", payload->Data, o->getLabel().c_str());
-                        IM_ASSERT(payload->DataSize == sizeof(int));
-                        int selection = std::stoi((char*) payload->Data);
-                        switch(selection) {
-                            case 2: {
-                                auto shader = new FXShockWave(true, o, 1.5f);
-                                o->addMesh3DShader(shader);
-                                break;
-                            }
-                        }
-                        auto mesh = dynamic_cast<Mesh3D*> (o);
-                        if (mesh) {
-                            switch(selection) {
-                                case 0: {
-                                    auto shader = new FXOutliner(true, mesh, Color::green(), 1);
-                                    mesh->addMesh3DShader(shader);
-                                }
-                                case 1: {
-                                    auto shader = new FXBlink(true, mesh, 0.1f , Color::green());
-                                    mesh->addMesh3DShader(shader);
-                                    break;
-                                }
-
-                            }
-                        }
-                    }
-                    ImGui::EndDragDropTarget();
-                }
-                ImGui::SameLine();
-                if (o->isEnabled()) {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14));
-                } else {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14));
-                }
-                ImGui::SameLine();
-
-                ImGui::SameLine(250);
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel(o->getTypeIcon())->getOGLTextureID(), ImVec2(16, 16));
-                ImGui::SameLine(270);
-                ImGui::Text("%s", o->getTypeObject());
-            }
-        }
-        ImGui::End();
-
-        if (ImGui::Begin("Properties")) {
-            if (selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size()) {
-                auto o = gameObjects[selectedObjectIndex];
-                if (o->isRemoved()) {
-                    return;
-                }
-
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Selected object: ");
-                ImGui::SameLine();
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", o->getLabel().c_str());
-                ImGui::SameLine();
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel(o->getTypeIcon())->getOGLTextureID(), ImVec2(16, 16));
-
-                ImGui::Separator();
-
-                o->drawImGuiProperties();
-
-                ImGui::Separator();
-
-                auto objectScripts = o->getScripts();
-
-                if ((int) objectScripts.size() <= 0) {
-                    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No scripts attached");
-                }
-
-                for (int i = 0; i < (int) objectScripts.size(); i++) {
-                    auto currentScript = objectScripts[i];
-                    ImGui::PushID(i);
-
-                    std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
-
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getOGLTextureID(), ImVec2(24, 24));
-                    ImGui::SameLine(48);
-
-                    if (ImGui::Button(optionText.c_str())) {
-                        delete script;
-                        selectedScriptFilename = currentScript->scriptFilename;
-                        script = new ScriptLUA(selectedScriptFilename, ScriptLUA::dataTypesFileFor(selectedScriptFilename));
-                        strcpy(editableSource, script->content);
-                    }
-
-                    ImGui::SameLine();
-
-                    if (currentScript->isPaused()) {
-                        if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                            currentScript->setPaused(false);
-                        }
-                    } else {
-                        if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                            currentScript->setPaused(true);
-                        }
-                    }
-                    ImGui::SameLine();
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                        o->removeScript(currentScript);
-                    }
-
-                    ImGui::PopID();
-                }
-
-                ImGui::Separator();
-
-
-                ImGui::Button("Remove");
-                if (ImGui::IsItemClicked()) {
-                    o->setRemoved(true);
-                }
-                ImGui::SameLine();
-
-                ImGui::Button("Get JSON!");
-                if (ImGui::IsItemClicked()) {
-                    Logging::Message("getJSON");
-                    std::string json = cJSON_Print(o->getJSON());
-                    Logging::Message(json.c_str());
-                }
-
-            } else {
-                ImGui::Text("Select an object...");
-            }
-        }
-        ImGui::End();
-
         if (ImGui::Begin("Scripts")) {
             DIR *dir;
             struct dirent *ent;
@@ -547,7 +404,7 @@ public:
         ImGui::End();
 
         if (ImGui::Begin("Script Preview")) {
-            if (!selectedScriptFilename.empty()) {
+            if (!scriptEditableManager.selectedScriptFilename.empty()) {
                 drawImGuiScriptProperties();
                 drawImGuiScriptCode();
             }
@@ -582,155 +439,7 @@ public:
         }
         ImGui::End();
 
-
-        if (ImGui::Begin("Project")) {
-            auto componentRender = ComponentsManager::get()->getComponentRender();
-            static char name[256];
-
-            strncpy(name, EngineSetup::get()->ENGINE_TITLE.c_str(), sizeof(name));
-
-            ImGui::InputText("Project name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll);
-            if (ImGui::IsItemEdited()) {
-                EngineSetup::get()->ENGINE_TITLE = name;
-            }
-            ImGui::Separator();
-
-            if (ImGui::TreeNode("Global illumination")) {
-                const float range_illumination_min_settings = -1.0f;
-                const float range_illumination_max_settings = 1.0f;
-                const float sens_illumination_settings = 0.01f;
-                auto dirLight = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->getDirectionalLight();
-                if (ImGui::TreeNode("Direction")) {
-                    ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->direction.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->direction.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->direction.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::TreePop();
-                }
-
-                if (ImGui::TreeNode("Ambient")) {
-                    ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->ambient.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->ambient.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->ambient.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::TreePop();
-                }
-
-                if (ImGui::TreeNode("Diffuse")) {
-                    ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->diffuse.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->diffuse.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->diffuse.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::TreePop();
-                }
-                if (ImGui::TreeNode("Specular")) {
-                    ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->specular.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->specular.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->specular.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::TreePop();
-                }
-                ImGui::TreePop();
-            }
-
-            ImGui::Separator();
-            if (ImGui::TreeNode("DOF Settings")) {
-                const float focalMinValues = 0;
-                const float focalMaxValues = 1;
-                const float focalValueSens = 0.001;
-
-                const float depthMinValues = 0;
-                const float depthMaxValues = 100;
-                const float depthValueSens = 0.1;
-
-                const int minBlurRadius = 0;
-                const int maxBlurRadius = 10;
-
-                ImGui::Checkbox("Enable DOF", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
-
-                if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
-                    ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-                    ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-                    ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
-                    ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-                    ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
-                }
-                ImGui::TreePop();
-            }
-            ImGui::Separator();
-            if (ImGui::TreeNode("FOG Settings")) {
-                ImGui::Checkbox("Enable FOG", &EngineSetup::get()->ENABLE_FOG);
-
-                if (EngineSetup::get()->ENABLE_FOG) {
-                    const float rangeFogSens = 0.1;
-                    const float rangeFogMin = 0;
-                    const float rangeFogMax = 0;
-
-                    ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-                    ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-                    ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->intensity, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-
-                    if (ImGui::TreeNode("FOG Color")) {
-                        const float fogColorSend = 0.01;
-                        const float fogColorMin = 0;
-                        const float fogColorMax = 1;
-
-                        ImGui::DragScalar("x", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.r, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
-                        ImGui::DragScalar("y", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.g, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
-                        ImGui::DragScalar("z", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.b, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
-                        ImGui::TreePop();
-                    }
-                }
-                ImGui::TreePop();
-            }
-            ImGui::Separator();
-            ImGui::Checkbox("Show Depth Map", &EngineSetup::get()->SHOW_DEPTH_OF_FIELD);
-
-            auto scripts = componentRender->getLUAScripts();
-            for (int i = 0; i < (int) scripts.size(); i++) {
-                auto currentScript = scripts[i];
-                ImGui::PushID(i);
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getOGLTextureID(), ImVec2(24, 24));
-                ImGui::SameLine(48);
-                std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
-                if (ImGui::Button(optionText.c_str())) {
-                    selectedScriptFilename = currentScript->scriptFilename;
-                    delete script;
-                    script = new ScriptLUA(selectedScriptFilename, ScriptLUA::dataTypesFileFor(selectedScriptFilename));
-                    strcpy(editableSource, script->content);
-                }
-                ImGui::SameLine();
-
-                if (currentScript->isPaused()) {
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                        currentScript->setPaused(false);
-                    }
-                } else {
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                        currentScript->setPaused(true);
-                    }
-                }
-                ImGui::SameLine();
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                    componentRender->removeScript(currentScript);
-                }
-
-                ImGui::PopID();
-            }
-
-            ImGui::Separator();
-
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Drop here LUA scripts...");
-            if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
-                    Logging::Message("Dropping script (%s) in global space", payload->Data);
-                    componentRender->addLUAScript(new ScriptLUA(
-                        std::string((char*) payload->Data),
-                        ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
-                    );
-                }
-                ImGui::EndDragDropTarget();
-            }
-            ImGui::Separator();
-        }
-        ImGui::End();
-
+        widgetProjectSettings->draw();
 
         if (ImGui::Begin("Camera settings")) {
             drawCameraSettings();
@@ -783,10 +492,10 @@ public:
         ImGui::Separator();
 
         static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-        ImGui::InputTextMultiline("##source", editableSource, IM_ARRAYSIZE(editableSource), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 10), flags);
+        ImGui::InputTextMultiline("##source", scriptEditableManager.editableSource, IM_ARRAYSIZE(scriptEditableManager.editableSource), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 10), flags);
         if (ImGui::Button(std::string("Save").c_str())) {
-            script->updateScriptCodeWith(editableSource);
-            script->reloadScriptCode();
+            scriptEditableManager.script->updateScriptCodeWith(scriptEditableManager.editableSource);
+            scriptEditableManager.script->reloadScriptCode();
         }
     }
 
@@ -794,467 +503,53 @@ public:
     {
         //bool show_demo_window = true;
         //ImGui::ShowDemoWindow(&show_demo_window);
+        static bool opt_fullscreen_persistant = true;
+        bool opt_fullscreen = opt_fullscreen_persistant;
+        static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 
-        {
-            static bool opt_fullscreen_persistant = true;
-            bool opt_fullscreen = opt_fullscreen_persistant;
-            static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
-
-            // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
-            // because it would be confusing to have two docking targets within each other.
-            ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-            if (opt_fullscreen) {
-                ImGuiViewport* viewport = ImGui::GetMainViewport();
-                ImGui::SetNextWindowPos(viewport->Pos);
-                ImGui::SetNextWindowSize(viewport->Size);
-                ImGui::SetNextWindowViewport(viewport->ID);
-                ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-                ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-                window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-                window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-            }
-
-            if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
-                window_flags |= ImGuiWindowFlags_NoBackground;
-
-            // Important: note that we proceed even if Begin() returns false (aka window is collapsed).
-            // This is because we want to keep our DockSpace() active. If a DockSpace() is inactive,
-            // all active windows docked into it will lose their parent and become undocked.
-            // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
-            // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-            ImGui::Begin("DockSpace Demo", &opt_fullscreen, window_flags);
-            ImGui::PopStyleVar();
-
-            if (opt_fullscreen)
-                ImGui::PopStyleVar(2);
-
-            // DockSpace
-            ImGuiIO& io = ImGui::GetIO();
-            ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-            ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-
-            drawObjectsWindow();
-
-            RenderMenu(finish);
-            ToolbarUI();
-
-            ImGui::End();
+        // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
+        // because it would be confusing to have two docking targets within each other.
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+        if (opt_fullscreen) {
+            ImGuiViewport* viewport = ImGui::GetMainViewport();
+            ImGui::SetNextWindowPos(viewport->Pos);
+            ImGui::SetNextWindowSize(viewport->Size);
+            ImGui::SetNextWindowViewport(viewport->ID);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+            window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+            window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
         }
-    }
 
-    void drawMesh3DItemsToLoad() {
-        DIR *dir;
-        struct dirent *ent;
-        std::vector<std::string> result;
-        if ((dir = opendir (directory_path_models.c_str())) != NULL) {
-            while ((ent = readdir (dir)) != NULL) {
-                result.emplace_back(ent->d_name);
-            }
-            std::sort( result.begin(), result.end() );
+        if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
+            window_flags |= ImGuiWindowFlags_NoBackground;
 
-            closedir (dir);
+        // Important: note that we proceed even if Begin() returns false (aka window is collapsed).
+        // This is because we want to keep our DockSpace() active. If a DockSpace() is inactive,
+        // all active windows docked into it will lose their parent and become undocked.
+        // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
+        // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        ImGui::Begin("DockSpace Demo", &opt_fullscreen, window_flags);
+        ImGui::PopStyleVar();
 
-            for (int i = 0; i < result.size(); i++) {
-                auto file = result[i];
-                auto title = std::to_string(i-1) + ") " + file;
-                if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getOGLTextureID(), ImVec2(16, 16));
-                    ImGui::SameLine();
-                    if (ImGui::MenuItem(file.c_str())) {
-                        Tools::addSceneObject(file, "added_item");
-                    }
-                }
-            }
-        }
-    }
+        if (opt_fullscreen)
+            ImGui::PopStyleVar(2);
 
-    void drawRigidBodiesItemsToLoad() {
-        DIR *dir;
-        struct dirent *ent;
-        std::vector<std::string> result;
-        if ((dir = opendir (directory_path_models.c_str())) != NULL) {
-            while ((ent = readdir (dir)) != NULL) {
-                result.emplace_back(ent->d_name);
-            }
-            std::sort( result.begin(), result.end() );
+        // DockSpace
+        ImGuiIO& io = ImGui::GetIO();
+        ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
-            closedir (dir);
+        bool p_open = true;
+        console->Draw("Logging/Console", &p_open);
+        widgetObjects3D->draw(selectedObjectIndex);
+        widgetObject3DProperties->draw(selectedObjectIndex);
+        widgetMenu->draw(finish);
+        widgetToolbar->draw();
 
-            for (int i = 0; i < result.size(); i++) {
-                auto file = result[i];
-                auto title = std::to_string(i-1) + ") " + file;
-                if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("gearIcon")->getOGLTextureID(), ImVec2(16, 16));
-                    ImGui::SameLine();
-                    if (ImGui::MenuItem(file.c_str())) {
-                        SceneLoader::createMesh3DBodyToScene(file, "added_item");
-                    }
-                }
-            }
-        }
-    }
+        drawWidgets();
 
-    void drawGhostItemsToLoad() {
-        DIR *dir;
-        struct dirent *ent;
-        std::vector<std::string> result;
-        if ((dir = opendir (directory_path_models.c_str())) != NULL) {
-            while ((ent = readdir (dir)) != NULL) {
-                result.emplace_back(ent->d_name);
-            }
-            std::sort( result.begin(), result.end() );
-
-            closedir (dir);
-
-            for (int i = 0; i < result.size(); i++) {
-                auto file = result[i];
-                auto title = std::to_string(i-1) + ") " + file;
-                if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("ghostIcon")->getOGLTextureID(), ImVec2(16, 16));
-                    ImGui::SameLine();
-                    if (ImGui::MenuItem(file.c_str())) {
-                        SceneLoader::createGhostBody3DToScene(file, "added_item");
-                    }
-                }
-            }
-        }
-    }
-
-    void RenderMenu(bool &finish)
-    {
-
-        auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-        bool show_about_window = false;
-
-
-        const float range_sensibility_lightnin = 0.5;
-        const float range_sensibility_lightnin_min = -10000;
-        const float range_sensibility_lightnin_max = 100000;
-
-        const float range_sensibility = 0.75f;
-        const float range_test_sensibility = 0.1;
-        const float range_max_sensibility = 999;
-        const float range_min_sensibility = -999;
-
-        const float range_sensibility_volume = 1;
-        const float range_min_volume = 1;
-        const float range_max_volume = 128;
-
-        const float range_frustum_fardistance_sensibility = 1;
-        const float range_min_frustum_fardistance = 1;
-        const float range_max_frustum_fardistance = 10000;
-
-        const float range_far_plane_distance_sensibility = 1.0f;
-        const float range_far_plane_min = 0;
-        const float range_max_plane_max = 1000000;
-
-        const int range_framerate_sensibility = 1;
-        const int range_min_framerate_distance = 0;
-        const int range_max_framerate_distance = 500;
-
-        int misc_flags = ImGuiColorEditFlags_NoOptions;
-
-        if (ImGui::BeginMainMenuBar()) {
-            if (ImGui::BeginMenu("Brakeza3D")) {
-                if (ImGui::MenuItem("About Brakeza", "CTRL+I")) show_about_window = true;
-                ImGui::Separator();
-                if (ImGui::MenuItem("Exit", "CTRL+W")) finish = true;
-                ImGui::EndMenu();
-            }
-            if (ImGui::BeginMenu("Add object")) {
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("objectIcon")->getOGLTextureID(), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::MenuItem("Object3D", "CTRL+O")) {
-                    SceneLoader::createObjectInScene();
-                }
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("lightIcon")->getOGLTextureID(), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::MenuItem("PointLight", "CTRL+O")) {
-                    SceneLoader::createPointLight3DInScene();
-                    Logging::Message("Add PointLight");
-                }
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("spotLightIcon")->getOGLTextureID(), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::MenuItem("SpotLight", "CTRL+O")) {
-                    SceneLoader::createSpotLight3DInScene();
-                    Logging::Message("Add SpotLight");
-                }
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getOGLTextureID(), ImVec2(16, 16));
-
-                ImGui::SameLine();
-                if (ImGui::BeginMenu("Mesh3D")) {
-                    drawMesh3DItemsToLoad();
-                    ImGui::EndMenu();
-                }
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("gearIcon")->getOGLTextureID(), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::BeginMenu("RigidBody")) {
-                    drawRigidBodiesItemsToLoad();
-                    ImGui::EndMenu();
-                }
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("ghostIcon")->getOGLTextureID(), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::BeginMenu("GhostBody")) {
-                    drawGhostItemsToLoad();
-                    ImGui::EndMenu();
-                }
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("particlesIcon")->getOGLTextureID(), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::MenuItem("ParticleEmitter", "CTRL+x")) {
-                    SceneLoader::createParticleEmitterInScene();
-                    ImGui::EndMenu();
-                }
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("sprite3DIcon")->getOGLTextureID(), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::MenuItem("Sprite3D", "CTRL+2")) {
-                    SceneLoader::createSprite3DInScene();
-                }
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("sprite2DIcon")->getOGLTextureID(), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::MenuItem("Sprite2D", "CTRL+2")) {
-                    SceneLoader::createSprite2DInScene();
-                }
-
-                ImGui::EndMenu();
-            }
-            if (ImGui::BeginMenu("Render")) {
-                ImGui::Separator();
-
-                ImGui::Checkbox("Limit frame rate", &EngineSetup::get()->LIMIT_FRAMERATE);
-                if (EngineSetup::get()->LIMIT_FRAMERATE) {
-                    ImGui::DragScalar("Limite frames to:", ImGuiDataType_S32, &EngineSetup::get()->FRAMERATE, range_framerate_sensibility, &range_min_framerate_distance,&range_max_framerate_distance, "%d", 1.0f);
-
-                }
-                ImGui::Separator();
-
-                ImGui::Checkbox("update Objects", &EngineSetup::get()->EXECUTE_GAMEOBJECTS_ONUPDATE);
-                ImGui::Checkbox("Draw Main Z-Buffer", &EngineSetup::get()->DRAW_MAIN_DEEP_MAPPING);
-
-                ImGui::Separator();
-
-                ImGui::Checkbox("Tiled Based", &EngineSetup::get()->BASED_TILE_RENDER);
-
-                if (EngineSetup::get()->BASED_TILE_RENDER) {
-                    ImGui::Checkbox("Tiled Based Threaded", &EngineSetup::get()->BASED_TILE_RENDER_THREADED);
-                    ImGui::Checkbox("Show Tiles Grid", &EngineSetup::get()->DRAW_TILES_GRID);
-                }
-                ImGui::Separator();
-                ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
-                ImGui::Separator();
-                ImGui::Checkbox("Vertex", &EngineSetup::get()->TRIANGLE_MODE_PIXELS);
-                ImGui::Checkbox("WireFrame", &EngineSetup::get()->TRIANGLE_MODE_WIREFRAME);
-                ImGui::Checkbox("Solid", &EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID);
-                ImGui::Separator();
-                ImGui::Checkbox("Textures", &EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED);
-                ImGui::Separator();
-                ImGui::Checkbox("Draw Bones", &EngineSetup::get()->DRAW_ANIMATION_BONES);
-                ImGui::Separator();
-                ImGui::Checkbox("Internal click selection", &EngineSetup::get()->CLICK_SELECT_OBJECT3D);
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Sound")) {
-                ImGui::Checkbox("Global enable", &EngineSetup::get()->SOUND_ENABLED);
-                if (ImGui::IsItemDeactivatedAfterEdit()) {
-                    if (!EngineSetup::get()->SOUND_ENABLED) {
-                        Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, 0);
-                        Mix_VolumeMusic((int) EngineSetup::get()->SOUND_VOLUME_MUSIC);
-                        Mix_VolumeMusic(0);
-                    } else {
-                        Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) EngineSetup::get()->SOUND_CHANNEL_GLOBAL);
-                        Mix_VolumeMusic((int) EngineSetup::get()->SOUND_VOLUME_MUSIC);
-                    }
-                }
-
-                ImGui::DragScalar("Music volume", ImGuiDataType_Float, &EngineSetup::get()->SOUND_VOLUME_MUSIC, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) { Mix_VolumeMusic((int )EngineSetup::get()->SOUND_VOLUME_MUSIC); }
-
-                ImGui::DragScalar("Global Channel volume", ImGuiDataType_Float, &EngineSetup::get()->SOUND_CHANNEL_GLOBAL, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) {
-                    Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) EngineSetup::get()->SOUND_CHANNEL_GLOBAL);
-                }
-
-                /*ImGui::DragScalar("Player vol.", ImGuiDataType_Float, &EngineSetup::get()->SOUND_VOLUME_PLAYER,range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) {
-                    Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, EngineSetup::get()->SOUND_VOLUME_PLAYER);
-                }
-
-                ImGui::DragScalar("Enemies vol.", ImGuiDataType_Float, &EngineSetup::get()->SOUND_VOLUME_ENEMIES,range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) {
-                    Mix_Volume(EngineSetup::SoundChannels::SND_ENEMIES, EngineSetup::get()->SOUND_VOLUME_ENEMIES);
-                }
-
-                ImGui::DragScalar("Environment vol.", ImGuiDataType_Float,&EngineSetup::get()->SOUND_VOLUME_ENVIRONMENT, range_sensibility_volume,&range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) {
-                    Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT,EngineSetup::get()->SOUND_VOLUME_ENVIRONMENT);
-                }*/
-
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Bullet")) {
-                ImGui::Checkbox("Step Simulation", &EngineSetup::get()->BULLET_STEP_SIMULATION);
-                ImGui::Checkbox("Collisions between objects", &EngineSetup::get()->BULLET_CHECK_ALL_PAIRS);
-                ImGui::Separator();
-                ImGui::Checkbox("Draw debug mode", &EngineSetup::get()->BULLET_DEBUG_MODE);
-                ImGui::Separator();
-                // gravity
-                ImGui::DragScalar("X Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.x, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("Y Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.y, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("Z Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.z, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::Separator();
-                ImGui::DragScalar("Projectile Impulse", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_IMPULSE, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("Projectile Accuracy", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_ACCURACY, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("Projectile Mass", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_MASS, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Logging")) {
-                ImGui::Checkbox("Output to Console", &EngineSetup::get()->LOGGING);
-                ImGui::Separator();
-                ImGui::Checkbox("Show debug data", &EngineSetup::get()->DEBUG_RENDER_INFO);
-                ImGui::Separator();
-                ImGui::Checkbox("Collision objects", &EngineSetup::get()->LOG_COLLISION_OBJECTS);
-                ImGui::Separator();
-                ImGui::Checkbox("Weapon System", &EngineSetup::get()->LOG_WEAPONS_SYSTEM);
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Lights")) {
-                ImGui::Checkbox("Light System", &EngineSetup::get()->ENABLE_LIGHTS);
-                ImGui::Separator();
-                ImGui::Checkbox("Draw Lights Billboards", &EngineSetup::get()->DRAW_LIGHTPOINTS_BILLBOARD);
-                ImGui::Separator();
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Effects FX")) {
-                if (ImGui::BeginMenu("Shader Particles")) {
-                    ImGui::DragScalar("PARTICLES_SHADER_GRAVITY", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_GRAVITY, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_STEP_ADD_PARTICLE", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_STEP_ADD_PARTICLE, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_PARTICLE_LIFESPAN", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_PARTICLE_LIFESPAN, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_SMOKE_ANGLE_RANGE", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_SMOKE_ANGLE_RANGE, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_MIN_VELOCITY", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_MIN_VELOCITY, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_MAX_VELOCITY", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_MAX_VELOCITY, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_POSITION_NOISE", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_POSITION_NOISE, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_VELOCITY_NOISE", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_VELOCITY_NOISE, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_DECELERATION_FACTOR", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_DECELERATION_FACTOR, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::Separator();
-                    ImGui::DragScalar("SHADER EXPLOSION TTL", ImGuiDataType_Float, &EngineSetup::get()->SHADER_PARTICLE_EXPLOSION_TTL, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("SHADER_PARTICLE_EXPLOSION_EMISSION_TIME", ImGuiDataType_Float, &EngineSetup::get()->SHADER_PARTICLE_EXPLOSION_EMISSION_TIME, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::EndMenu();
-                }
-
-                if (ImGui::BeginMenu("Lightning")) {
-                    ImGui::DragScalar("Generations", ImGuiDataType_Float,
-                                      &EngineSetup::get()->LIGHTNING_GENERATIONS, range_sensibility_lightnin,
-                                      &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("Offset reduction", ImGuiDataType_Float,
-                                      &EngineSetup::get()->LIGHTNING_OFFSET_REDUCTION,
-                                      range_sensibility_lightnin, &range_sensibility_lightnin_min,
-                                      &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("Probability branch", ImGuiDataType_Float,
-                                      &EngineSetup::get()->LIGHTNING_PROBABILITY_BRANCH,
-                                      range_sensibility_lightnin, &range_sensibility_lightnin_min,
-                                      &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("Segment shift ", ImGuiDataType_Float,
-                                      &EngineSetup::get()->LIGHTNING_SEGMENT_SHIFT, range_sensibility_lightnin,
-                                      &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::EndMenu();
-                }
-
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("View")) {
-                ImGui::Checkbox("FullScreen", &EngineSetup::get()->FULLSCREEN);
-
-                if (ImGui::IsItemEdited()) {
-                    if (EngineSetup::get()->FULLSCREEN) {
-                        SDL_SetWindowFullscreen(ComponentsManager::get()->getComponentWindow()->getWindow(), SDL_WINDOW_FULLSCREEN_DESKTOP);
-
-                    } else {
-                        SDL_SetWindowFullscreen(ComponentsManager::get()->getComponentWindow()->getWindow(), 0);
-                    }
-                }
-                ImGui::Separator();
-                ImGui::Checkbox("Draw Main Axis", &EngineSetup::get()->RENDER_MAIN_AXIS);
-                ImGui::Checkbox("Draw Object3D Axis", &EngineSetup::get()->RENDER_OBJECTS_AXIS);
-                if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
-                    const float sizeAxisMin = 0;
-                    const float sizeAxisMax = 1;
-                    const float sizeAxisSens = 0.01;
-
-                    ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &EngineSetup::get()->OBJECT_AXIS_SIZE,
-                                      sizeAxisSens, &sizeAxisMin, &sizeAxisMax, "%f", 1.0f);
-
-                }
-                ImGui::Separator();
-                ImGui::Checkbox("Draw light direction", &EngineSetup::get()->DRAW_LIGHTS_DIRECTION);
-                if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
-                    ImGui::DragScalar("Size Direction", ImGuiDataType_Float, &EngineSetup::get()->LIGHTS_DIRECTION_SIZE,
-                                      range_test_sensibility, &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                }
-
-                ImGui::Separator();
-
-                ImGui::Checkbox("Draw Mesh3D AABB", &EngineSetup::get()->DRAW_MESH3D_AABB);
-                ImGui::Checkbox("Draw Mesh3D Octree", &EngineSetup::get()->DRAW_MESH3D_OCTREE);
-                ImGui::Checkbox("Draw Mesh3D Grid", &EngineSetup::get()->DRAW_MESH3D_GRID);
-                if (EngineSetup::get()->DRAW_MESH3D_GRID) {
-                    ImGui::Separator();
-                    ImGui::Checkbox("Grid3D: Empty", &EngineSetup::get()->DRAW_MESH3D_GRID_EMPTY);
-                    ImGui::Checkbox("Grid3D: No Empty", &EngineSetup::get()->DRAW_MESH3D_GRID_NO_EMPTY);
-                    ImGui::Separator();
-                    ImGui::Checkbox("Grid3D: Draw Center", &EngineSetup::get()->DRAW_MESH3D_GRID_POINTS);
-                    ImGui::Checkbox("Grid3D: Draw AABB", &EngineSetup::get()->DRAW_MESH3D_GRID_CUBES);
-                    ImGui::Separator();
-                }
-                ImGui::Separator();
-                ImGui::Checkbox("Pendulum thread", &EngineSetup::get()->DRAW_PENDULUM_THREAD);
-                ImGui::Checkbox("Draw Object3D Billboards", &EngineSetup::get()->DRAW_OBJECT3D_BILLBOARD);
-                ImGui::Checkbox("Draw Decals wireframe", &EngineSetup::get()->DRAW_DECAL_WIREFRAMES);
-                ImGui::Separator();
-                ImGui::Checkbox("Object3D Text Label", &EngineSetup::get()->TEXT_ON_OBJECT3D);
-                ImGui::Separator();
-                ImGui::Checkbox("Show CrossHair", &EngineSetup::get()->DRAW_CROSSHAIR);
-                ImGui::Separator();
-                ImGui::Checkbox("Show FPS", &EngineSetup::get()->DRAW_FPS);
-                ImGui::Separator();
-                ImGui::EndMenu();
-            }
-            static const char *itemCurrent = "--Niveles--"; // Here our selection is a single pointer stored outside the object.
-            static ImGuiComboFlags flags = 0;
-
-            ImGui::EndMainMenuBar();
-        }
-    }
-
-    void ToolbarUI()
-    {
-        if (ImGui::Begin("MainToolBar")) {
-            if (ComponentsManager::get()->getComponentRender()->getStateLUAScripts() == EngineSetup::LuaStateScripts::LUA_STOP) {
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("playIcon")->getOGLTextureID(), ImVec2(24, 24))) {
-                    ComponentsManager::get()->getComponentRender()->playLUAScripts();
-                }
-                ImGui::SameLine();
-            } else {
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("stopIcon")->getOGLTextureID(), ImVec2(24, 24))) {
-                    ComponentsManager::get()->getComponentRender()->stopLUAScripts();
-                }
-                ImGui::SameLine();
-            }
-            if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("reloadIcon")->getOGLTextureID(), ImVec2(24, 24))) {
-                ComponentsManager::get()->getComponentRender()->reloadLUAScripts();
-            }
-            ImGui::SameLine();
-            if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(24, 24))) {
-                ComponentsManager::get()->getComponentRender()->getSceneLoader().clearScene();
-            }
-        }
         ImGui::End();
     }
 
@@ -1263,7 +558,7 @@ public:
     }
 
     TexturePackage *getImGuiTextures() {
-        return &ImGuiTextures;
+        return &packageIcons;
     }
 
     void setSelectedObjectIndex(int selectedObjectIndex) {

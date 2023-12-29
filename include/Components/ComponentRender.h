@@ -94,8 +94,6 @@ public:
 
     void deleteRemovedObjects();
 
-    void loadConfig();
-
     EngineSetup::LuaStateScripts getStateLUAScripts();
 
     void playLUAScripts();
