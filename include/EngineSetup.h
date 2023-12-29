@@ -188,7 +188,7 @@ public:
     float PROJECTILE_DEMO_ACCURACY = 100;
     float PROJECTILE_DEMO_MASS = 1;
 
-    bool CLICK_SELECT_OBJECT3D = true;
+    bool CLICK_SELECT_OBJECT3D = false;
     bool GAMEPAD_CONTROLLER_ENABLED = true;
 
     // PARTICLES_SHADER
@@ -214,7 +214,6 @@ public:
 
     std::string LOGO_BRAKEZA = "logo.png";
 
-    std::string DARKHEAZ_ROOT_FOLDER = ROOT_FOLDER + "ProjectDarkHeaZ/";
     std::string DARKHEAZ_MAIN_CONFIG = "project-darkheaz.json";
 
     enum collisionGroups {

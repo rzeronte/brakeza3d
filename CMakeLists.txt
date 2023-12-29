@@ -101,8 +101,6 @@ add_executable(Brakeza3D
     src/Misc/PathFinder.cpp include/Misc/PathFinder.h
 
     include/GUI/GUI.h
-        include/GUI/GUI_Objects3D.h
-    include/GUI/GUI_Tiles.h
         include/GUI/GUIManager.h
 
     imgui/imconfig.h
@@ -267,6 +265,11 @@ add_executable(Brakeza3D
         ProjectDarkHeaZ/OpenGLShaders/ShaderOpenGLLineLaser.h
         src/FXEffect/FXShockWave.cpp
         include/FXEffect/FXShockWave.h
+        include/GUI/GUIWidgetObjects3D.h
+        include/GUI/GUIWidgetObject3DProperties.h
+        include/GUI/GUIWidgetProjectSettings.h
+        include/GUI/GUIWidgetMenu.h
+        include/GUI/GUIWidgetToolbar.h
 )
 
 target_link_libraries(Brakeza3D
