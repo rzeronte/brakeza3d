@@ -1,6 +1,6 @@
 
 #include <trigonometric.hpp>
-#include "SpotLight3D.h"
+#include "../../include/Objects/SpotLight3D.h"
 #include "../../include/Brakeza3D.h"
 
 SpotLight3D::SpotLight3D(

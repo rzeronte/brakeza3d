@@ -6,7 +6,7 @@
 #define BRAKEZA3D_SPOTLIGHT3D_H
 
 
-#include "../../include/Objects/LightPoint3D.h"
+#include "LightPoint3D.h"
 
 class SpotLight3D : public LightPoint3D {
 public:
