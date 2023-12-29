@@ -9,8 +9,8 @@ ShaderOpenGLDepthMap::ShaderOpenGLDepthMap()
     quadVAO(0),
     VBO(0),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "DepthMap.vertexshader",
-            EngineSetup::get()->SHADERS_FOLDER + "DepthMap.fragmentshader"
+            EngineSetup::get()->SHADERS_FOLDER + "DepthMap.vs",
+            EngineSetup::get()->SHADERS_FOLDER + "DepthMap.fs"
     )
 {
     float vertices[] = {

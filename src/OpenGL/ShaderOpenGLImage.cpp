@@ -10,8 +10,8 @@ ShaderOpenGLImage::ShaderOpenGLImage()
     quadVAO(0),
     VBO(0),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "Image.vertexshader",
-            EngineSetup::get()->SHADERS_FOLDER + "Image.fragmentshader"
+            EngineSetup::get()->SHADERS_FOLDER + "Image.vs",
+            EngineSetup::get()->SHADERS_FOLDER + "Image.fs"
     )
 {
     float vertices[] = {

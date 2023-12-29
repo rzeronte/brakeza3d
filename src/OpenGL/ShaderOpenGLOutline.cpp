@@ -11,8 +11,8 @@ ShaderOpenGLOutline::ShaderOpenGLOutline()
     VBO(0),
     lineColor(Color::red()),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "Outliner.vertexshader",
-            EngineSetup::get()->SHADERS_FOLDER + "Outliner.fragmentshader"
+            EngineSetup::get()->SHADERS_FOLDER + "Outliner.vs",
+            EngineSetup::get()->SHADERS_FOLDER + "Outliner.fs"
     )
 {
     glGenVertexArrays(1, &quadVAO);
