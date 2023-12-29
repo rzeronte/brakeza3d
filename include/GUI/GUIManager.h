@@ -43,7 +43,7 @@ private:
     TexturePackage packageIcons;
     TexturePackage imagesFolder;
 
-    const char *availableMesh3DShaders[3] = {"Edge", "Blink", "ShockWave"};
+    const char *availableMesh3DShaders[4] = {"Edge", "Blink", "ShockWave", "Tint"};
 public:
 
     void loadImagesFolder() {
@@ -375,6 +375,17 @@ public:
         }
         ImGui::PopID();
 
+        i = 3;
+        ImGui::PushID(i);
+        optionText = std::to_string(i + 1) + ") " + availableMesh3DShaders[i];
+        if (ImGui::Selectable(optionText.c_str())) {
+        }
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+            ImGui::SetDragDropPayload("MESH3D_SHADER_ITEM", std::to_string(i).c_str(), sizeof(int));
+            ImGui::Text("%s", availableMesh3DShaders[i]);
+            ImGui::EndDragDropSource();
+        }
+        ImGui::PopID();
     }
 
     void drawWidgets()

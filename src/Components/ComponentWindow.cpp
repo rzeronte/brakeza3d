@@ -37,6 +37,7 @@ void ComponentWindow::onStart()
     shaderOGLDepthMap = new ShaderOpenGLDepthMap();
     shaderOGLFOG = new ShaderOpenGLFOG();
     shaderOGLShockWave = new ShaderOpenGLShockWave();
+    shaderOGLTint = new ShaderOpenGLTint();
 }
 
 void ComponentWindow::preUpdate()
@@ -474,4 +475,8 @@ GLuint ComponentWindow::getGlobalFramebuffer() const {
 
 GLuint ComponentWindow::getPostProcessingFramebuffer() const {
     return postProcessingFramebuffer;
+}
+
+ShaderOpenGLTint *ComponentWindow::getShaderOGLTint() const {
+    return shaderOGLTint;
 }

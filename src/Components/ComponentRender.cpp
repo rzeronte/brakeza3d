@@ -30,7 +30,7 @@ void ComponentRender::onStart()
     initTiles();
 
     textWriter = new TextWriter(ComponentsManager::get()->getComponentWindow()->getRenderer(), ComponentsManager::get()->getComponentWindow()->getFontDefault());
-    //addShaderToScene(new FXOffsetImage(EngineSetup::get()->IMAGES_FOLDER + "noise_color.png"));
+    addShaderToScene(new FXColorTint(false, Color::red(), 0));
 }
 
 void ComponentRender::preUpdate()
