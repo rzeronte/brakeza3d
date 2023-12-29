@@ -10,8 +10,8 @@ ShaderOpenGLImage::ShaderOpenGLImage()
     quadVAO(0),
     VBO(0),
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "Image.vs",
-            EngineSetup::get()->SHADERS_FOLDER + "Image.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Image.vs",
+        EngineSetup::get()->SHADERS_FOLDER + "Image.fs"
     )
 {
     float vertices[] = {
@@ -56,7 +56,6 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
     glm::mat4 projection = glm::ortho(0.0f, (float) window->width, (float) window->height, 0.0f, -1.0f, 1.0f);
 
     glm::vec2 position = glm::vec2(x, y);
-
     glm::vec2 size = glm::vec2(w, h);
 
     glm::mat4 model = glm::mat4(1.0f);

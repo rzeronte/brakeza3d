@@ -24,6 +24,7 @@
 #include "../OpenGL/ShaderOpenGLFOG.h"
 #include "../OpenGL/ShaderOpenGLShockWave.h"
 #include "../../ProjectDarkHeaZ/OpenGLShaders/ShaderOpenGLLineLaser.h"
+#include "../../src/OpenGL/ShaderOpenGLTint.h"
 
 class ComponentWindow : public Component {
 private:
@@ -64,6 +65,7 @@ private:
     ShaderOpenGLDepthMap *shaderOGLDepthMap;
     ShaderOpenGLFOG *shaderOGLFOG;
     ShaderOpenGLShockWave *shaderOGLShockWave;
+    ShaderOpenGLTint *shaderOGLTint;
 public:
 
     ComponentWindow();
@@ -156,6 +158,8 @@ public:
     GLuint postProcessingTexture;
 
     [[nodiscard]] GLuint getPostProcessingFramebuffer() const;
+
+    ShaderOpenGLTint *getShaderOGLTint() const;
 };
 
 

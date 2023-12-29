@@ -10,28 +10,26 @@
 #include "ShaderQuadOpenGL.h"
 #include "../Objects/Point2D.h"
 
-class ShaderOpenGLShockWave: public ShaderOpenGL, public ShaderQuadOpenGL {
-    float timeLive;
-    float speed;
-    int focalPointX;
-    int focalPointY;
+struct ShockWaveParams {
+    float param1;
+    float param2;
+    float param3;
+    [[nodiscard]] static ShockWaveParams standard() { return {10.0f, 0.8f, 0.1f}; }
+};
 
+class ShaderOpenGLShockWave: public ShaderOpenGL, public ShaderQuadOpenGL {
     GLint timeUniform;
     GLint focalPointXUniform;
     GLint focalPointYUniform;
-
+    GLint speedUniform;
     GLint screenWidthUniform;
     GLint screenHeightUniform;
 
     GLint textureUniform;
 public:
     ShaderOpenGLShockWave();
-    void render(GLuint textureID, GLuint framebuffer);
+    void render(Point2D position, float timeLive, float speed, ShockWaveParams params, GLuint textureID, GLuint framebuffer);
     void destroy() override;
-
-    void setPoint(Point2D p);
-
-    void setTimeLive(float timeLive);
 };
 
 

@@ -1070,7 +1070,6 @@ void ComponentGame::handleGamingGameState()
 
     shaderColor->setEnabled(false);
     shaderProjectiles->setEnabled(true);
-
 }
 
 void ComponentGame::handleCountDownGameState()

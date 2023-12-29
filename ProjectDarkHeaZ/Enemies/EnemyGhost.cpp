@@ -136,7 +136,7 @@ void EnemyGhost::onDrawHostBuffer()
 
 void EnemyGhost::handleDie()
 {
-    Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1, true), Brakeza3D::uniqueObjectLabel("shockWave"));
+    Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1, ShockWaveParams::standard(), true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
     makeReward();
 

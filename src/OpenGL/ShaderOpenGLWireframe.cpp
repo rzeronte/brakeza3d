@@ -8,8 +8,8 @@
 ShaderOpenGLWireframe::ShaderOpenGLWireframe()
 :
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "Wireframe.vs",
-            EngineSetup::get()->SHADERS_FOLDER + "Wireframe.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Wireframe.vs",
+        EngineSetup::get()->SHADERS_FOLDER + "Wireframe.fs"
     )
 {
 }

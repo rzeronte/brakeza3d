@@ -6,12 +6,9 @@
 #define BRAKEZA3D_SHADEROPENGLDOF_H
 
 #include "ShaderOpenGL.h"
+#include "ShaderQuadOpenGL.h"
 
-class ShaderOpenGLDOF : ShaderOpenGL {
-    GLuint quadVAO, VBO;
-
-    GLint modelMatrixUniform;
-    GLint projectionMatrixUniform;
+class ShaderOpenGLDOF : ShaderOpenGL, public ShaderQuadOpenGL  {
 
     GLint focalDistanceUniform;
     GLint focalRangeUniform;

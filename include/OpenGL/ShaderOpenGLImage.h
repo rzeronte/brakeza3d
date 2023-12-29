@@ -6,6 +6,7 @@
 
 #include <SDL2/SDL_opengl.h>
 #include "ShaderOpenGL.h"
+#include "ShaderQuadOpenGL.h"
 
 class ShaderOpenGLImage : public ShaderOpenGL {
     GLuint quadVAO;
@@ -18,6 +19,7 @@ class ShaderOpenGLImage : public ShaderOpenGL {
     GLint inverseUniform;
 public:
     ShaderOpenGLImage();
+
     void renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha, bool inverse, GLuint framebuffer) const;
 
     void destroy() override;

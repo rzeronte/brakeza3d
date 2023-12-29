@@ -8,18 +8,18 @@
 ShaderOpenGLShading::ShaderOpenGLShading()
 :
     ShaderOpenGL(
-            EngineSetup::get()->SHADERS_FOLDER + "Shading.vs",
-            EngineSetup::get()->SHADERS_FOLDER + "Shading.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Shading.vs",
+        EngineSetup::get()->SHADERS_FOLDER + "Shading.fs"
     )
 {
 }
 
 void ShaderOpenGLShading::render(
-        glm::mat4 ModelMatrix,
-        GLuint vertexbuffer,
-        GLuint uvbuffer,
-        GLuint normalbuffer,
-        int size
+    glm::mat4 ModelMatrix,
+    GLuint vertexbuffer,
+    GLuint uvbuffer,
+    GLuint normalbuffer,
+    int size
 )
 {
     glUseProgram(programID);

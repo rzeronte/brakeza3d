@@ -8,14 +8,16 @@
 
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Misc/Counter.h"
+#include "../../include/OpenGL/ShaderOpenGLShockWave.h"
 
 class ShockWave : public Object3D {
 private:
     float speed;
     bool deleteWhenEnds;
     float ttl;
+    ShockWaveParams params;
 public:
-    ShockWave(Vertex3D position, float speed, float ttl, bool deleteWhenEnds);
+    ShockWave(Vertex3D position, float speed, float ttl, ShockWaveParams params, bool deleteWhenEnds);
 
     void onUpdate() override;
 
