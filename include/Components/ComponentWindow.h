@@ -57,7 +57,7 @@ private:
     ShaderOpenGLWireframe *shaderOGLWireframe;
     ShaderOpenGLShading *shaderOGLShading;
     ShaderOpenGLPoints *shaderOGLPoints;
-    ShaderOpenGLOutline *shaderOGLStencil;
+    ShaderOpenGLOutline *shaderOGLOutline;
     ShaderOpenGLColor *shaderOGLColor;
     ShaderOpenGLParticles *shaderOGLParticles;
     ShaderOpenGLDOF *shaderOGLDOF;
@@ -112,11 +112,11 @@ public:
 
     [[nodiscard]] ShaderOpenGLPoints *getShaderOGLPoints() const;
 
-    [[nodiscard]] ShaderOpenGLOutline *getShaderOglStencil() const;
+    [[nodiscard]] ShaderOpenGLOutline *getShaderOGLOutline() const;
 
-    [[nodiscard]] ShaderOpenGLColor *getShaderOglColor() const;
+    [[nodiscard]] ShaderOpenGLColor *getShaderOGLColor() const;
 
-    [[nodiscard]] ShaderOpenGLParticles *getShaderOglParticles() const;
+    [[nodiscard]] ShaderOpenGLParticles *getShaderOGLParticles() const;
 
     [[nodiscard]] GLuint getSceneFramebuffer() const;
 

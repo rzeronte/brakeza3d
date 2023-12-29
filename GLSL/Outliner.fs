@@ -5,8 +5,8 @@ out vec4 pixelColor;
 
 uniform sampler2D image;
 uniform vec3 lineColor;
+uniform float borderThickness;   // Ajusta según la resolución de tu imagen
 
-const float borderThickness = 0.002;  // Ajusta según la resolución de tu imagen
 const float edgeThreshold = 0.6;      // Ajusta según la intensidad del borde que quieres detectar
 
 void main() {
@@ -26,7 +26,7 @@ void main() {
 
         for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
-                        vec3 samp = texture(image, texCoord + vec2(j, i) * borderThickness).rgb;
+                        vec3 samp = texture(image, texCoord + vec2(j, i) * borderThickness * 0.001f).rgb;
                         int index = (i + 1) * 3 + (j + 1);
                         edgeX += dot(samp, vec3(sobelX[index]));
                         edgeY += dot(samp, vec3(sobelY[index]));

@@ -10,7 +10,7 @@
 #include "Component.h"
 #include "../Objects/Triangle3D.h"
 #include "../Render/Tile.h"
-#include "../EngineBuffers.h"
+#include "../LUAManager.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/Physics/BillboardBody.h"
 #include "../../include/Render/Maths.h"

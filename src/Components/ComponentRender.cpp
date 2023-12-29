@@ -332,7 +332,7 @@ void ComponentRender::reloadLUAScripts()
 {
     Logging::Message("Reloading LUA Scripts...");
 
-    auto &lua = EngineBuffers::get()->getLua();
+    auto &lua = LUAManager::get()->getLua();
     lua.collect_garbage();
 
     for(auto script : scripts) {

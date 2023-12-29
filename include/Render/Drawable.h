@@ -15,32 +15,21 @@
 
 class Drawable {
 public:
-    static void drawBox2D(SDL_Rect r);
-
     static void drawVertex(Vertex3D v, Camera3D *cam, Color color);
-    static void drawVertex3D(Vertex3D v, Color color);
 
     static void drawVector3D(Vector3D V, Color color);
 
     static void drawLightingVector3D(Vector3D V, Camera3D *cam, Color color);
 
-    static void drawLine2D(Line2D L, Color color);
-
     static void drawLineLighting(Line2D L, Color color);
 
-    static void drawLinePoints(Vertex3D from, Vertex3D to, Color color);
-
     static void drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward);
-
-    static void drawPlane(Plane P, Camera3D *cam, Color color);
 
     static void drawMainAxis(Camera3D *cam);
 
     static void drawMainAxisOffset(Camera3D *cam, Vertex3D offset);
 
     static void drawLightning(Vertex3D, Vertex3D, Color color);
-
-    static void drawCrossHair();
 
     static void drawAABB(AABB3D *, Color);
 
@@ -54,11 +43,6 @@ public:
 
     static void drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder);
 
-    static void drawMainDeepMapFromCamera(int pos_x, int pos_y);
-
-    static void drawTriangleNormal(Triangle *triangle, Color color);
-
-    static void drawOutline(Mesh3D *m);
 };
 
 

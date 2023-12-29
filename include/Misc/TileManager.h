@@ -45,8 +45,6 @@ public:
     int numberTilesVertical;
     int numberTiles;
     int tilePixelsBufferSize;
-
-
 };
 
 

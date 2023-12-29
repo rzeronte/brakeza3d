@@ -4,7 +4,7 @@ Component::Component()
 :
     id(-1),
     enabled(false),
-    BUFFERS(EngineBuffers::get()),
+    BUFFERS(LUAManager::get()),
     SETUP(EngineSetup::get()
 )
 {
