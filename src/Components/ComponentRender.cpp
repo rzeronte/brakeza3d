@@ -295,25 +295,6 @@ ComponentRender::~ComponentRender()
     delete textWriter;
 }
 
-void ComponentRender::loadConfig()
-{
-    Logging::Message("Loading setup.json...");
-
-    const std::string filePath = EngineSetup::get()->CONFIG_FOLDER + "setup.json";
-
-    size_t file_size;
-    auto contentFile = Tools::readFile(filePath, file_size);
-
-    cJSON *myDataJSON = cJSON_Parse(contentFile);
-
-    if (myDataJSON == nullptr) {
-        Logging::Message("[Load Config] Can't be loaded: %s", filePath.c_str());
-        exit(-1);
-    }
-
-    defaultGPU = cJSON_GetObjectItemCaseSensitive(myDataJSON, "gpu")->valuestring;
-}
-
 EngineSetup::LuaStateScripts ComponentRender::getStateLUAScripts() {
     return stateScripts;
 }
