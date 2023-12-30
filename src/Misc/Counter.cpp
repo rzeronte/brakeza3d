@@ -18,7 +18,6 @@ Counter::Counter(float step)
     timer(Brakeza3D::get()->getTimer()),
     finished(false)
 {
-
 }
 
 void Counter::update()
