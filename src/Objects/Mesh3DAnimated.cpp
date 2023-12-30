@@ -1,7 +1,5 @@
 #include "../../include/Objects/Mesh3DAnimated.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Render/Transforms.h"
-
 
 void Mesh3DAnimated::onUpdate()
 {
@@ -60,10 +58,6 @@ void Mesh3DAnimated::updateFrameTransformations() {
             T->A = V1;
             T->B = V2;
             T->C = V3;
-
-            if ((int) this->modelTextures.size() > 0) {
-                T->setTexture(this->modelTextures[this->scene->mMeshes[i]->mMaterialIndex]);
-            }
 
             numModelTriangles++;
         }
@@ -163,16 +157,9 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh) {
         Vertex3D V3 = localMeshVertices.at(Face.mIndices[2]);
 
         auto t = new Triangle(V1, V2, V3, this);
-        t->setFlatTextureColor(this->isFlatTextureColor());
         t->setFlatColor(flatColor);
         t->setEnableLights(this->isEnableLights());
         this->modelTriangles.push_back(t);
-
-        if (this->modelTextures.size() > 0) {
-            if (this->modelTextures[mesh->mMaterialIndex] != nullptr) {
-                this->modelTriangles[k]->setTexture(this->modelTextures[mesh->mMaterialIndex]);
-            }
-        }
     }
 }
 

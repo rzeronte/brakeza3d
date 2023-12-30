@@ -65,8 +65,6 @@ public:
 
     void makeKineticCharacter(const btTransform& transform, btConvexShape *capsule);
 
-    void consoleInfo() const;
-
     [[nodiscard]] btPairCachingGhostObject *getGhostObject() const;
 
     void setRotationFromEulerAngles(float x, float y, float z);

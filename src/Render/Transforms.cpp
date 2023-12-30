@@ -18,61 +18,6 @@ void Transforms::objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o)
     dst.v = src.v;
 }
 
-void Transforms::cameraSpace(Vertex3D &dst, Vertex3D &src, Object3D *cam) {
-    dst = src;
-
-    dst = dst - cam->getPosition();
-    dst = cam->getRotation() * dst;
-
-    dst.u = src.u;
-    dst.v = src.v;
-}
-
-Vertex3D Transforms::PerspectiveNDCSpace(Vertex3D &V, Frustum *frustum) {
-    const float f = frustum->farDist;
-    const float n = frustum->nearDist;
-
-    const float l = frustum->vNLs.x;
-    const float r = frustum->vNRs.x;
-
-    const float b = frustum->vNBs.y;
-    const float t = frustum->vNTs.y;
-
-    Vertex3D R(M4::getFrustumProjection(f, n, l, r, b, t) * V.createVertex4D());
-
-    R.u = V.u;
-    R.v = V.v;
-    R.z = -V.z;
-
-    return R.getInverse();
-}
-
-Vertex3D Transforms::OrthographicNDCSpace(Vertex3D &V, Frustum *frustum)
-{
-    const float f = frustum->farDist;
-    const float n = frustum->nearDist;
-
-    const float l = frustum->vNLs.x;
-    const float r = frustum->vNRs.x;
-
-    const float b = frustum->vNBs.y;
-    const float t = frustum->vNTs.y;
-
-    Vertex3D R(M4::getFrustumOrthographic(f, n, l, r, b, t) * V.createVertex4D());
-
-    R.u = V.u;
-    R.v = V.v;
-    R.z = -V.z;
-
-    return R.getInverse();
-}
-
-void Transforms::screenSpace(Point2D &P, Vertex3D &V)
-{
-    P.x = (int) ((1 + V.x) * EngineSetup::get()->screenWidthHalf);
-    P.y = (int) ((1 + V.y) * EngineSetup::get()->screenHeightHalf);
-}
-
 Vertex3D Transforms::objectToLocal(Vertex3D &V, Object3D *o)
 {
     Vertex3D T;
@@ -92,19 +37,8 @@ Vertex3D Transforms::objectToLocal(Vertex3D &V, Object3D *o)
     return T;
 }
 
-Vertex3D Transforms::cameraToWorld(Vertex3D &V, Camera3D *cam) {
-    Vertex3D A;
-
-    A = cam->getRotation().getTranspose() * V;
-    A = A + cam->getPosition();
-
-    A.u = V.u;
-    A.v = V.v;
-
-    return A;
-}
-
-Vertex3D Transforms::Point2DToWorld(Point2D &p, Camera3D *cam) {
+Vertex3D Transforms::Point2DToWorld(Point2D &p, Camera3D *cam)
+{
     // Mapear las coordenadas de (0, 0) a (100, 100) a la esquina superior izquierda e inferior derecha del plano cercano
     float mappedX = 2.0f * p.x / EngineSetup::get()->screenWidth - 1;
     float mappedY = 1.0f - 2.0f * p.y / EngineSetup::get()->screenHeight;

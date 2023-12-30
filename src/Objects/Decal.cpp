@@ -68,19 +68,6 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
             continue;
         }
 
-        if (triangle->testForClipping(cube->planes, 0, 5)) {
-            triangle->clipping(
-                camera->getFrustum(),
-                cube->planes,
-                0,
-                5,
-                this,
-                this->modelTriangles
-            );
-            clipped++;
-            continue;
-        }
-
         if (!cube->isPointInside(triangle->Ao) &&
             !cube->isPointInside(triangle->Bo) &&
             !cube->isPointInside(triangle->Co)

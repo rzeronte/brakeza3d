@@ -8,16 +8,6 @@
 Camera3D::Camera3D(): speed(0), strafe(0), jump(0), m_ghostObject(nullptr)
 {
     frustum = new Frustum();
-    frustum->setParent(this);
-    frustum->setup(
-        this->getPosition(),
-        Vertex3D(0, 0, 1),
-        AxisUp(),
-        AxisRight(),
-        EngineSetup::get()->HORIZONTAL_FOV,
-        ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
-        EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
-    );
 
     btConvexShape *capsule = new btCapsuleShapeZ(
         EngineSetup::get()->PLAYER_CAPSULE_RADIUS,
@@ -31,12 +21,6 @@ Camera3D::Camera3D(): speed(0), strafe(0), jump(0), m_ghostObject(nullptr)
     this->makeKineticCharacter(startTransform, capsule);
 
     this->setLabel(EngineSetup::get()->cameraNameIdentifier);
-
-    this->consoleInfo();
-}
-
-void Camera3D::consoleInfo() const {
-    this->frustum->consoleInfo();
 }
 
 void Camera3D::Pitch(float newPitch) {

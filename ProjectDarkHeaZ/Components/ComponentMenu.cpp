@@ -28,11 +28,7 @@ void ComponentMenu::onStart()
     loadDecorative3DMesh();
     loadMenuOptions();
 
-    Vertex3D lightPosition = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition() + Vertex3D(0, 0, 3000);
-
-    shaderBackgroundImage = new FXOffsetImage(SETUP->IMAGES_FOLDER + "menuBackground.png");
-    shaderBackgroundImage->setEnabled(true);
-    shaderBackgroundImage->setUseOffset(false);
+    shaderBackgroundImage = new Image(SETUP->IMAGES_FOLDER + "menuBackground.png");
 
     border = new Image(SETUP->IMAGES_FOLDER + "hud_background.png");
     imageLogoBox =  new Image(SETUP->IMAGES_FOLDER + "logo_box.png");
@@ -72,7 +68,6 @@ void ComponentMenu::loadDecorative3DMesh()
 
     pendulum = new SimplePendulum(0, 5, 5000, 0.0);
     pendulum->setRotation(-40, 0, 0);
-
 }
 
 void ComponentMenu::preUpdate()
@@ -81,13 +76,14 @@ void ComponentMenu::preUpdate()
         return;
     }
 
-    shaderBackgroundImage->update(0, 0);
+    auto game = ComponentsManager::get()->getComponentGame();
 
-    const float alpha = 1 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress();
+    const float alpha = 1 - game->getFadeToGameState()->getProgress();
 
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
-    ComponentsManager::get()->getComponentGame()->boxTutorial->drawFlatAlpha(0, 0, alpha, fb);
+    shaderBackgroundImage->drawFlatAlpha(0, 0, 0.5, fb);
+    game->boxTutorial->drawFlatAlpha(0, 0, alpha, fb);
     border->drawFlatAlpha(0, 0, alpha, fb);
     imageLogoBox->drawFlatAlpha(0, 0, alpha, fb);
 
@@ -98,14 +94,8 @@ void ComponentMenu::onUpdate()
     if (!isEnabled()|| !isMenuEnabled()) return;
 
     pendulum->onUpdate();
-    //astronaut->setRotation(pendulum->pendulumRotation);
-
-    //ComponentsManager::get()->getComponentGame()->dialogBackground->setMaxAlpha((int) alpha);
-    //ComponentsManager::get()->getComponentGame()->dialogBackground->update();
 
     drawOptions();
-
-    //shaderMenuTitle->update();
     drawVersion();
 }
 

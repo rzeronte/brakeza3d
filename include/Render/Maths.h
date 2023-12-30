@@ -20,40 +20,9 @@ public:
 
     static int isVector3DClippingPlane(Plane &P, Vector3D &V);
 
-    static float barycentricSide(int x, int y, Point2D pa, Point2D pb);
-
-    static void getBarycentricCoordinates(float &, float &, float &, int, int, Point2D, Point2D, Point2D);
-
-    static int orient2d(const Point2D &a, const Point2D &b, const Point2D &c);
-
-    static Vertex3D getCenterVertices(Vertex3D vertices[], int num_vertices);
-
-    static void VertexSwap(Vertex3D *vertexes, int i, int j);
-
     static float distanceBetweenVertices(Vertex3D v1, Vertex3D v2);
 
     static float getHorizontalAngleBetweenObject3DAndCamera(Object3D *object, Camera3D *cam);
-
-    static long GetNextActive(long x, long vertexCount, const bool *active);
-
-    static long GetPrevActive(long x, long vertexCount, const bool *active);
-
-    static int TriangulatePolygon(
-            long vertexCount,
-            Vertex3D *vertices,
-            Vertex3D normal,
-            std::vector<Triangle *> &triangles,
-            Object3D *parent,
-            Image *texture,
-            bool isClipped,
-            bool isFlattenTextureColor,
-            Color flatColor,
-            bool enableLights
-    );
-
-    static bool ClippingPolygon(Vertex3D *input, int numInput, Vertex3D *output, int &numOutput, int plane_id, Plane *planes);
-
-    static float distancePointVector(Vertex3D, Vector3D);
 
     static bool sameSide(Vertex3D p1, Vertex3D p2, Vertex3D a, Vertex3D b);
 

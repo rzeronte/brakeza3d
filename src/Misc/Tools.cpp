@@ -403,14 +403,7 @@ void Tools::makeExplosion(Object3D *parent, Vertex3D position, float ttl, OCPart
 
 void Tools::makeFadeInSprite(Vertex3D position, TextureAnimated *animation)
 {
-    Vertex3D A;
-    const auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-    Transforms::cameraSpace(A, position, cam);
-    A = Transforms::PerspectiveNDCSpace(A, cam->getFrustum());
-
-    Point2D P1;
-    Transforms::screenSpace(P1, A);
+    Point2D P1 = Transforms::WorldToPoint(position);
 
     Brakeza3D::get()->addObject3D(
         new Sprite2D( P1.x, P1.y, true, new TextureAnimated(animation)),
@@ -420,14 +413,7 @@ void Tools::makeFadeInSprite(Vertex3D position, TextureAnimated *animation)
 
 void Tools::makeLoopSprite(Vertex3D position, TextureAnimated *animation, float ttl)
 {
-    Vertex3D A;
-    const auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-    Transforms::cameraSpace(A, position, cam);
-    A = Transforms::PerspectiveNDCSpace(A, cam->getFrustum());
-
-    Point2D P1;
-    Transforms::screenSpace(P1, A);
+    Point2D P1 = Transforms::WorldToPoint(position);
 
     Brakeza3D::get()->addObject3D(
         new Sprite2D( P1.x, P1.y, ttl, new TextureAnimated(animation)),

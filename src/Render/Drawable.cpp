@@ -8,14 +8,9 @@
 #include "../../include/LUAManager.h"
 #include "../../include/Brakeza3D.h"
 
-void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color) {
-    Vertex3D A;
-
-    Transforms::cameraSpace(A, V, cam);
-    A = Transforms::PerspectiveNDCSpace(A, cam->getFrustum());
-
-    Point2D P1;
-    Transforms::screenSpace(P1, A);
+void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color)
+{
+    Point2D P1 = Transforms::WorldToPoint(V);
 
     if (Tools::isPixelInWindow(P1.x, P1.y)) {
 
@@ -63,31 +58,10 @@ void Drawable::drawLightingVector3D(Vector3D V, Camera3D *cam, Color color)
         return;
     }
 
-    Vertex3D V1, V2;
+    auto V1 = Transforms::WorldToPoint(V.vertex1);
+    auto V2 = Transforms::WorldToPoint(V.vertex2);
 
-    Transforms::cameraSpace(V1, V.vertex1, cam);
-    Transforms::cameraSpace(V2, V.vertex2, cam);
-
-    if (!Tools::isValidVector(V1) || !Tools::isValidVector(V2)) {
-        return;
-    }
-
-    V1 = Transforms::PerspectiveNDCSpace(V1, cam->getFrustum());
-    if (V1.z < 0) {
-        return;
-    }
-
-    V2 = Transforms::PerspectiveNDCSpace(V2, cam->getFrustum());
-    if (V2.z < 0) {
-        return;
-    }
-
-    // get 2d coordinates
-    Point2D P1, P2;
-    Transforms::screenSpace(P1, V1);
-    Transforms::screenSpace(P2, V2);
-
-    Line2D line(P1.x, P1.y, P2.x, P2.y);
+    Line2D line(V1.x, V1.y, V2.x, V2.y);
     Drawable::drawLineLighting(line, color);
 }
 
@@ -96,8 +70,9 @@ void Drawable::drawMainAxis(Camera3D *cam) {
     Drawable::drawMainAxisOffset(cam, Transforms::Point2DToWorld(fixedPosition, cam));
 }
 
-void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset) {
-    float axis_length = 0.1;
+void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset)
+{
+    float axis_length = EngineSetup::get()->OBJECT_AXIS_SIZE;
     Vertex3D origin = offset;
 
     // Creamos unas coordenadas de eje sobre 0, 0, 0

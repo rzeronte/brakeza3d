@@ -15,7 +15,7 @@
 
 class ComponentMenu : public Component {
 private:
-    FXOffsetImage *shaderBackgroundImage;
+    Image *shaderBackgroundImage;
 
     Mesh3D *planet;
 

@@ -873,14 +873,7 @@ void Player::updateSpriteEnergyShield()
 {
     if (!spriteEnergyShield->isEnabled()) return;
 
-    Vertex3D A;
-    const auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-    Transforms::cameraSpace(A, getPosition(), cam);
-    A = Transforms::PerspectiveNDCSpace(A, cam->getFrustum());
-
-    Point2D P1;
-    Transforms::screenSpace(P1, A);
+    Point2D P1 = Transforms::WorldToPoint(getPosition());
 
     spriteEnergyShield->updatePosition(P1.x, P1.y);
 }

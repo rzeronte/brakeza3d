@@ -3,15 +3,14 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
 
-
 FXOffsetImage::FXOffsetImage(const std::string& filename)
 :
     FXEffectOpenGL(true),
     image(Image(filename)),
-    useOffset(true),
     offsetX(0),
     offsetY(0),
-    alpha(1.0f)
+    alpha(1.0f),
+    intensity(0.75f)
 {
     setLabel("FXOffsetImage");
 }
@@ -20,7 +19,6 @@ void FXOffsetImage::preUpdate()
 {
     if (!this->enabled) return;
     update();
-    executeKernelOpenCL(0, 0);
 }
 
 void FXOffsetImage::postUpdate()
@@ -32,31 +30,34 @@ void FXOffsetImage::update()
     FXEffectBase::update();
 }
 
-void FXOffsetImage::update(float increaseOffsetX, float increaseOffsetY)
+void FXOffsetImage::update(float newOffsetX, float newOffsetY)
 {
     FXEffectBase::update();
 
-    if (!this->enabled) return;
-    executeKernelOpenCL(increaseOffsetX, increaseOffsetY);
-}
+    if (!isEnabled()) return;
 
-void FXOffsetImage::executeKernelOpenCL(float increaseOffsetX, float increaseOffsetY)
-{
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(
+    offsetX += newOffsetX;
+    offsetY += newOffsetY;
+
+    limitOffset();
+
+    auto game = ComponentsManager::get()->getComponentGame();
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    game->getShaderOGLImageOffset()->render(
         this->image.getOGLTextureID(),
-        0, 0,
-        this->image.width(),
-        this->image.height(),
+        offsetX,
+        offsetY,
+        intensity,
         alpha,
-        false,
-        ComponentsManager::get()->getComponentWindow()->getBackgroundFramebuffer()
+        window->getBackgroundFramebuffer()
     );
 }
 
 void FXOffsetImage::limitOffset()
 {
-    const float maxOffset = 100.0f;
-    const float minOffset = -100.0f;
+    const float maxOffset = 0.1f;
+    const float minOffset = -0.1f;
 
     offsetX = fminf(maxOffset, fmaxf(minOffset, offsetX));
     offsetY = fminf(maxOffset, fmaxf(minOffset, offsetY));
@@ -68,45 +69,21 @@ void FXOffsetImage::resetOffsets()
     offsetY = 0;
 }
 
-bool FXOffsetImage::isUseOffset() const {
-    return useOffset;
-}
-
-void FXOffsetImage::setUseOffset(bool value) {
-    FXOffsetImage::useOffset = value;
-}
-
 Image &FXOffsetImage::getImage() {
     return image;
 }
 
 void FXOffsetImage::drawImGuiProperties()
 {
-    if (ImGui::TreeNode("Image")) {
-        ImGui::Image((ImTextureID)image.getTexture(), ImVec2(128, 128));
-        if (ImGui::BeginDragDropTarget()) {
-            if (const ImGuiPayload *payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
-                Logging::Message("Dropping IMAGE (%s) in %s", payload->Data, getLabel().c_str());
-                IM_ASSERT(payload->DataSize == sizeof(int));
-                std::string fileName = (const char *) payload->Data;
-                image.setImage(EngineSetup::get()->IMAGES_FOLDER + fileName);
-            }
-        }
-        ImGui::TreePop();
-    }
-    if (ImGui::TreeNode("Offset")) {
-        ImGui::Checkbox("Use offsets", reinterpret_cast<bool *>(&useOffset));
-        if (useOffset) {
-            const float range_min = -0;
-            const float range_max = 1;
-            const float range_sensibility = 0.001;
+    const float range_min = -0;
+    const float range_max = 1;
+    const float range_sensibility = 0.001;
 
-            ImGui::DragScalar("OffsetX", ImGuiDataType_Float, &offsetX, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("OffsetY", ImGuiDataType_Float, &offsetY, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-        }
+    ImGui::DragScalar("Intensity", ImGuiDataType_Float, &intensity, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+    ImGui::DragScalar("OffsetX", ImGuiDataType_Float, &offsetX, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+    ImGui::DragScalar("OffsetY", ImGuiDataType_Float, &offsetY, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
 
-        ImGui::TreePop();
-    }
+    ImGui::TreePop();
 }
 
 cJSON *FXOffsetImage::getJSON()
@@ -115,9 +92,9 @@ cJSON *FXOffsetImage::getJSON()
 
     cJSON_AddStringToObject(root, "type", this->getLabel().c_str());
     cJSON_AddStringToObject(root, "image", image.getFileName().c_str());
-    cJSON_AddBoolToObject(root, "usingOffset", (bool) useOffset);
     cJSON_AddNumberToObject(root, "offsetX", offsetX);
     cJSON_AddNumberToObject(root, "offsetY", offsetY);
+    cJSON_AddNumberToObject(root, "intensity", intensity);
 
     return root;
 }

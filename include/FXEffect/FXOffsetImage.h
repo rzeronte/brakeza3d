@@ -9,26 +9,21 @@
 #include <CL/cl.h>
 #include "../Misc/Image.h"
 #include "../OpenGL/FXEffectOpenGL.h"
+#include "../Objects/Point2D.h"
 
 class FXOffsetImage: public FXEffectOpenGL {
     Image image;
     float alpha;
-    int useOffset;
+    float intensity;
 
     float offsetX;
     float offsetY;
 public:
     explicit FXOffsetImage(const std::string& filename);
 
-    void update(float increaseOffsetX, float increaseOffsetY);
-
-    void executeKernelOpenCL(float increaseOffsetX, float increaseOffsetY);
+    void update(float offsetX, float offsetY);
 
     void resetOffsets();
-
-    void setUseOffset(bool value);
-
-    [[nodiscard]] bool isUseOffset() const;
 
     void limitOffset();
 

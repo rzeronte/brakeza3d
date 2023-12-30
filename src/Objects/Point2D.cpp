@@ -55,15 +55,15 @@ Point2D Point2D::operator+(const Point2D &v) const {
     );
 }
 
-float Point2D::getLength()
-{
-    return Maths::sqrt1(x * x + y*y);
-}
-
 Point2D Point2D::getScaled(float v) const
 {
     return Point2D(
         this->x * v,
         this->y * v
     );
+}
+
+glm::vec2 Point2D::toGLM()
+{
+    return glm::vec2(x, y);
 }
