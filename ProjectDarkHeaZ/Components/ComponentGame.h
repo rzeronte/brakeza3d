@@ -146,15 +146,15 @@ public:
 
     void checkForEndLevel();
 
-    void removeProjectiles() const;
+    static void removeProjectiles() ;
 
     void makeFadeToGameState(EngineSetup::GameState value, bool blockInput) const;
 
     void setVisibleInGameObjects(bool value);
 
-    void setEnemyWeaponsEnabled(bool value);
+    static void setEnemyWeaponsEnabled(bool value);
 
-    void removeInGameObjects();
+    void removeInGameObjects() const;
 
     void loadWeapons();
 
@@ -168,7 +168,7 @@ public:
 
     int getLiveEnemiesCounter();
 
-    void silenceInGameObjects();
+    static void silenceInGameObjects();
 
     void updateShaders();
 
