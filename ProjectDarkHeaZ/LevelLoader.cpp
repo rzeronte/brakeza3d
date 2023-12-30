@@ -388,7 +388,7 @@ ItemWeaponGhost* LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
     weaponItem->clone(weapons[indexWeapon]->getModel());
     weaponItem->setPosition(position);
     weaponItem->makeSimpleGhostBody(
-        Vertex3D(1, 1, 1),
+        Vertex3D(0.5, 0.5, 0.5),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Weapon,
         EngineSetup::collisionGroups::Player
@@ -437,7 +437,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     this->setLasersForEnemy(lasers, enemy);
 
     enemy->setEnabled(true);
-    enemy->setLabel(Brakeza3D::uniqueObjectLabel("npc"));
+    enemy->setLabel(Brakeza3D::uniqueObjectLabel("NPC"));
     enemy->setEnableLights(enableLights);
     enemy->setPosition(worldPosition);
     enemy->setStencilBufferEnabled(true);

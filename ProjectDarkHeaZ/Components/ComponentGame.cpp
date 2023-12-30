@@ -37,7 +37,7 @@ void ComponentGame::onStart()
     auto componentWindow = ComponentsManager::get()->getComponentWindow();
     textWriter = new TextWriter(componentWindow->getRenderer(), componentWindow->getFontDefault());
 
-    fadeToGameState = new FaderToGameStates(Color(3, 3, 111), 0.01f, EngineSetup::GameState::SPLASH, false);
+    fadeToGameState = new FaderToGameStates(Color::black(), 0.01f, EngineSetup::GameState::SPLASH, false);
 
     imageCrossFire = new Image(SETUP->IMAGES_FOLDER + "crossfire.png");
     imageCredits = new Image(SETUP->IMAGES_FOLDER + "credits.png");
@@ -741,7 +741,7 @@ LevelLoader *ComponentGame::getLevelLoader() const
     return levelLoader;
 }
 
-void ComponentGame::removeProjectiles() const
+void ComponentGame::removeProjectiles()
 {
     auto objects = Brakeza3D::get()->getSceneObjects();
     for (auto object : objects) {
@@ -769,7 +769,7 @@ void ComponentGame::makeFadeToGameState(EngineSetup::GameState value, bool block
     getFadeToGameState()->resetTo(value);
 }
 
-void ComponentGame::removeInGameObjects()
+void ComponentGame::removeInGameObjects() const
 {
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         auto *enemy = dynamic_cast<EnemyGhost *> (object);
@@ -833,6 +833,9 @@ void ComponentGame::setEnemyWeaponsEnabled(bool value)
         }
 
         if (enemy != nullptr) {
+            if (enemy->getWeapon() != nullptr) {
+                enemy->getWeapon()->getCounterCadence()->setEnabled(value);
+            }
             if (enemy->getProjectileEmitter() != nullptr) {
                 enemy->getProjectileEmitter()->setActive(value);
             }
@@ -1516,13 +1519,11 @@ void ComponentGame::handleOnUpdateSplash(const float alpha)
 
         //videoPlayer->play();
     }
-
 }
 
 ShaderOpenGLLineLaser *ComponentGame::getShaderOGLLineLaser() {
     return shaderOGLLineLaser;
 }
-
 
 ShaderOpenGLImageOffset *ComponentGame::getShaderOGLImageOffset() const {
     return shaderOGLImageOffset;

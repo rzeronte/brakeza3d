@@ -32,7 +32,8 @@ Weapon::Weapon(
     bool selectable
 )
 :
-    selectable(selectable)
+    selectable(selectable),
+    cadenceTime(cadenceTime)
 {
     setLabel(name);
     setStatus(WeaponStatus::NONE);
@@ -74,6 +75,8 @@ Weapon::Weapon(
 void Weapon::onUpdate()
 {
     counterCadence->update();
+    Logging::Message("step %d, %f", counterCadence->isEnabled(), counterCadence->getAcumulatedTime());
+
     if (isStop()) {
         counterStopEvery.update();
         counterStopDuration.update();
@@ -170,7 +173,6 @@ bool Weapon::shootProjectile(
     }
 
     auto storeManager = ComponentsManager::get()->getComponentGame()->getStoreManager();
-
     if (counterCadence->isFinished()) {
         float t = cadenceTime;
 
@@ -209,7 +211,7 @@ bool Weapon::shootProjectile(
                 ParticleEmitterState::DEFAULT,
                 nullptr,
                 position,
-                0,
+                0.5,
                 particlesFrom,
                 particlesTo,
                 OCParticlesContext::forProjectile()
@@ -277,7 +279,6 @@ bool Weapon::shootLaserProjectile(
 
         this->counterCadence->setStep(t);
         this->counterCadence->setEnabled(true);
-
 
         setStatus(WeaponStatus::PRESSED);
 
@@ -433,8 +434,6 @@ void Weapon::shootShield(Object3D *parent, Vertex3D position)
     if (counterCadence->isFinished()) {
         counterCadence->setEnabled(true);
         setStatus(WeaponStatus::PRESSED);
-
-        Logging::Log("Weapon shootBomb from %s", parent->getLabel().c_str());
 
         auto *projectile = new ItemShieldGhost(5, this->getDamage());
         projectile->setStencilBufferEnabled(true);

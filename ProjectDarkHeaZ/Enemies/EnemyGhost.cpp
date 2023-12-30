@@ -313,7 +313,7 @@ void EnemyGhost::shoot(Object3D *target)
     Vector3D way(getPosition(), target->getPosition());
 
     Vertex3D direction = way.getComponent().getNormalize();
-    Vertex3D positionProjectile = getPosition() - AxisUp().getScaled(1000);
+    Vertex3D positionProjectile = getPosition() + AxisUp().getScaled(0.01);
 
     switch(weapon->getType()) {
         case WeaponTypes::WEAPON_PROJECTILE: {
