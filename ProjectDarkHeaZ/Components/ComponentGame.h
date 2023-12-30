@@ -15,7 +15,7 @@
 #include "../../include/2D/TextWriter.h"
 #include "../../include/Objects/Swarm.h"
 #include "../FaderToGameStates.h"
-#include "../Shaders/FXLaser.h"
+#include "../FX/FXLaser.h"
 #include "../Player.h"
 #include "../Items/EnemyDialog.h"
 #include "../../include/FXEffect/FXColorTint.h"
@@ -27,6 +27,7 @@
 #include "../Items/SalvageSpaceship.h"
 #include "../../include/2D/Sprite2D.h"
 #include "../OpenGLShaders/ShaderOpenGLLineLaser.h"
+#include "../OpenGLShaders/ShaderOpenGLImageOffset.h"
 
 #define Z_COORDINATE_GAMEPLAY 20
 #define FREE_LOOK_ENABLED false
@@ -104,6 +105,7 @@ private:
     EnemyDialog *currentEnemyDialog;
 
     ShaderOpenGLLineLaser *shaderOGLLineLaser;
+    ShaderOpenGLImageOffset *shaderOGLImageOffset;
     //PathFinder *pathFinder;
 public:
     ComponentGame();
@@ -299,6 +301,8 @@ public:
     void handleOnUpdateSplash(float alpha);
 
     ShaderOpenGLLineLaser *getShaderOGLLineLaser();
+
+    ShaderOpenGLImageOffset *getShaderOGLImageOffset() const;
 
     Image *boxTutorial;
     FXOutliner *shaderEdgeObject;

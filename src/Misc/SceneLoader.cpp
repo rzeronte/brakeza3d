@@ -84,7 +84,6 @@ void SceneLoader::loadScene(const std::string& filename)
             case SceneShaderLoaderMapping::ShaderImage : {
                 auto shader = dynamic_cast<FXOffsetImage*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(0));
                 shader->getImage().setImage(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "image")->valuestring);
-                shader->setUseOffset((bool) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "usingOffset")->valueint);
                 shader->setOffsets(
                     (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "offsetX")->valuedouble,
                     (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "offsetY")->valuedouble

@@ -12,7 +12,7 @@
 #include "../../include/2D/TextWriter.h"
 #include "../../include/2D/Button.h"
 #include "../../include/Objects/Mesh3D.h"
-#include "../Shaders/FXLaser.h"
+#include "../FX/FXLaser.h"
 
 class ComponentHUD : public Component {
 private:

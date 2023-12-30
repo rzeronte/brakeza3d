@@ -7,7 +7,7 @@
 #include "../../include/Objects/Sprite3D.h"
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Objects/Mesh3DAnimatedCollection.h"
-#include "../Shaders/RayLight.h"
+#include "../FX/RayLight.h"
 
 enum WeaponTypes {
     WEAPON_PROJECTILE = 0,

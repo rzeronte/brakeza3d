@@ -10,13 +10,9 @@
 #include "../../include/Objects/Point2D.h"
 #include "../../include/Misc/Color.h"
 #include "../../include/Misc/Image.h"
+#include "../../include/OpenGL/ShaderQuadOpenGL.h"
 
-class ShaderOpenGLLineLaser : public ShaderOpenGL  {
-    GLuint quadVAO;
-    GLuint VBO;
-
-    GLint modelMatrixUniform;
-    GLint projectionMatrixUniform;
+class ShaderOpenGLLineLaser : public ShaderOpenGL, public ShaderQuadOpenGL  {
     GLint textureUniform;
     Image *image;
 public:

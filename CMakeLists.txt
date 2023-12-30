@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_FLAGS "-g")
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS "-O3")
+set(CMAKE_CXX_FLAGS "-g")
+#set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+#set(CMAKE_CXX_FLAGS "-O3")
 #set(CMAKE_CXX_FLAGS_DEBUG "-O3 -fsanitize=leak")
 
 set(SDL2_INCLUDE_DIRS /usr/include/SDL2)
@@ -239,9 +239,9 @@ add_executable(Brakeza3D
         ProjectDarkHeaZ/Weapons/AmmoProjectileBodyEmitter.h ProjectDarkHeaZ/Weapons/AmmoProjectileBodyEmitter.cpp
         ProjectDarkHeaZ/Weapons/Weapon.h ProjectDarkHeaZ/Weapons/Weapon.cpp
 
-        ProjectDarkHeaZ/Shaders/RayLight.h ProjectDarkHeaZ/Shaders/RayLight.cpp
-        ProjectDarkHeaZ/Shaders/FXEnergyShield.h ProjectDarkHeaZ/Shaders/FXEnergyShield.cpp
-        ProjectDarkHeaZ/Shaders/FXLaser.h ProjectDarkHeaZ/Shaders/FXLaser.cpp
+        ProjectDarkHeaZ/FX/RayLight.h ProjectDarkHeaZ/FX/RayLight.cpp
+        ProjectDarkHeaZ/FX/FXEnergyShield.h ProjectDarkHeaZ/FX/FXEnergyShield.cpp
+        ProjectDarkHeaZ/FX/FXLaser.h ProjectDarkHeaZ/FX/FXLaser.cpp
 
         ProjectDarkHeaZ/Bosses/BossEnemy.h ProjectDarkHeaZ/Bosses/BossEnemy.cpp
         ProjectDarkHeaZ/Bosses/BossLevel10.h ProjectDarkHeaZ/Bosses/BossLevel10.cpp
@@ -272,6 +272,8 @@ add_executable(Brakeza3D
         include/GUI/GUIWidgetToolbar.h
         src/OpenGL/ShaderOpenGLTint.cpp
         src/OpenGL/ShaderOpenGLTint.h
+        ProjectDarkHeaZ/OpenGLShaders/ShaderOpenGLImageOffset.cpp
+        ProjectDarkHeaZ/OpenGLShaders/ShaderOpenGLImageOffset.h
 )
 
 target_link_libraries(Brakeza3D

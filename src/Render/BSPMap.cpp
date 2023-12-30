@@ -429,19 +429,6 @@ bool BSPMap::triangulateQuakeSurface(Vertex3D vertices[], int num_vertices, int 
     normal = normal.getInverse();
     surface_t *surf = this->getSurface(surface);
 
-    Maths::TriangulatePolygon(
-        num_vertices,
-        vertices,
-        normal,
-        model_triangles,
-        this,
-        textures[this->getTextureInfo(surface)->texid],
-        false,
-        false,
-        Color::green(),
-        false
-    );
-
     return true;
 }
 
@@ -573,7 +560,6 @@ void BSPMap::createBulletPhysicsShape() {
 
         for (int i = offset; i < offset + num; i++) {
             //model_triangles[i].drawWireframe();
-            this->model_triangles[i]->updateFullVertexSpaces(this->camera->getFrustum());
             btVector3 a = btVector3(this->model_triangles[i]->Ao.x, this->model_triangles[i]->Ao.y,
                                     this->model_triangles[i]->Ao.z);
             btVector3 b = btVector3(this->model_triangles[i]->Bo.x, this->model_triangles[i]->Bo.y,

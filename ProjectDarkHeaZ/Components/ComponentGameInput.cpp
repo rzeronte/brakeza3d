@@ -270,16 +270,6 @@ void ComponentGameInput::handleZoom(SDL_Event *event)
         if (event->type == SDL_KEYUP) {
             horizontal_fov = SETUP->HORIZONTAL_FOV;
         }
-
-        ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->setup(
-            ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
-            Vertex3D(0, 0, 1),
-            SETUP->up,
-            SETUP->right,
-            horizontal_fov,
-            ((float) EngineSetup::get()->screenHeight / (float) EngineSetup::get()->screenWidth),
-            EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE
-        );
     }
 }
 

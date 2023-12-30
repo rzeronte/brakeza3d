@@ -69,8 +69,6 @@ void Mesh3D::cloneParts(Mesh3D *source, bool isFlatTextureColor, bool isEnableLi
     for (auto &triangle : source->modelTriangles) {
         auto *t = new Triangle(triangle->A, triangle->B, triangle->C, this);
 
-        t->setTexture(triangle->getTexture());
-        t->setFlatTextureColor(isFlatTextureColor);
         t->setFlatColor(color);
         t->setEnableLights(isEnableLights);
 
@@ -86,12 +84,7 @@ void Mesh3D::clone(Mesh3D *source)
 {
     for (auto &triangle : source->modelTriangles) {
         auto *t = new Triangle(triangle->A, triangle->B, triangle->C,this);
-
-        t->setTexture(triangle->getTexture());
-        t->setFlatTextureColor(source->isFlatTextureColor());
-        t->setFlatColor(source->getFlatColor());
         t->setEnableLights(triangle->isEnableLights());
-
         this->modelTriangles.push_back(t);
     }
 
@@ -302,14 +295,9 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
         Vertex3D V3 = localMeshVertices.at(Face.mIndices[2]);
 
         auto t = new Triangle(V3, V2, V1, this);
-        t->setFlatTextureColor(this->isFlatTextureColor());
         t->setEnableLights(this->isEnableLights());
         t->setFlatColor(this->flatColor);
         this->modelTriangles.push_back(t);
-
-        if (!this->modelTriangles.empty()) {
-            this->modelTriangles[k]->setTexture(this->modelTextures[mesh->mMaterialIndex]);
-        }
     }
 }
 

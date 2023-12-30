@@ -115,14 +115,13 @@ void ComponentGame::onStart()
     explosionSprites.push_back(new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosion_d.png"), 128, 128, 15, 35)));
 
     shaderOGLLineLaser = new ShaderOpenGLLineLaser();
+    shaderOGLImageOffset = new ShaderOpenGLImageOffset();
 }
 
 void ComponentGame::loadShaders()
 {
     shaderBackgroundImage = new FXOffsetImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
     shaderForegroundImage = new FXOffsetImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
-    shaderBackgroundImage->setUseOffset(true);
-    shaderForegroundImage->setUseOffset(true);
     shaderColor = new FXColorTint(false, PaletteColors::getStamina(), 0.75f);
     shaderProjectiles = new FXLaser();
 
@@ -496,23 +495,24 @@ Player *ComponentGame::getPlayer() const {
 void ComponentGame::blockPlayerPositionInCamera()
 {
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    auto window = ComponentsManager::get()->getComponentWindow();
 
-    Vertex3D homogeneousPosition;
     Vertex3D destinyPoint = player->getPosition() + player->getVelocity();
-    Transforms::cameraSpace(homogeneousPosition, destinyPoint, camera);
-    homogeneousPosition = Transforms::PerspectiveNDCSpace(homogeneousPosition, camera->getFrustum());
+    Point2D homogeneousPosition = Transforms::WorldToPoint(destinyPoint);
 
-    if (homogeneousPosition.y > 1) {
-        player->setPosition(player->getPosition() + ComponentsManager::get()->getComponentCamera()->getAutoScrollSpeed());
+    float sX = (float) homogeneousPosition.x / window->getWidth();
+    float sY = (float) homogeneousPosition.y / window->getHeight();
+
+    if (sY >= 1) {
         if (player->getVelocity().y > 0) {
             Vertex3D newVelocity = player->getVelocity();
-            newVelocity.y = -1;
+            newVelocity.y = 0;
             player->setVelocity(newVelocity);
         }
     }
 
     // top
-    if (homogeneousPosition.y < -1) {
+    if (sY <= 0) {
         if (player->getVelocity().y < 0) {
             Vertex3D newVelocity = player->getVelocity();
             newVelocity.y = 0;
@@ -521,19 +521,19 @@ void ComponentGame::blockPlayerPositionInCamera()
     }
 
     //right
-    if (homogeneousPosition.x > 1) {
+    if (sX > 1) {
         if (player->getVelocity().x > 0) {
             Vertex3D newVelocity = player->getVelocity();
-            newVelocity.x = -2;
+            newVelocity.x = 0;
             player->setVelocity(newVelocity);
         }
     }
 
     //left;
-    if (homogeneousPosition.x < -1) {
+    if (sX <= 0) {
         if (player->getVelocity().x < 0) {
             Vertex3D newVelocity = player->getVelocity();
-            newVelocity.x = 2;
+            newVelocity.x = 0;
             player->setVelocity(newVelocity);
         }
     }
@@ -1010,7 +1010,7 @@ void ComponentGame::shaderBackgroundUpdate()
         gameState == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL ||
         gameState == EngineSetup::GAMING_TUTORIAL
     ) {
-        Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.000015);
+        Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.0075f);
 
         shaderBackgroundImage->update(vel.x, vel.y);
         shaderForegroundImage->update(vel.x * 0.5, vel.y * 0.5);
@@ -1521,4 +1521,9 @@ void ComponentGame::handleOnUpdateSplash(const float alpha)
 
 ShaderOpenGLLineLaser *ComponentGame::getShaderOGLLineLaser() {
     return shaderOGLLineLaser;
+}
+
+
+ShaderOpenGLImageOffset *ComponentGame::getShaderOGLImageOffset() const {
+    return shaderOGLImageOffset;
 }
