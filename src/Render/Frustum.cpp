@@ -3,18 +3,22 @@
 #include "../../include/Render/Maths.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Render/Logging.h"
+#include "../../include/ComponentsManager.h"
 
 Frustum::Frustum()
 {
 }
 
-bool Frustum::isVertexInside(Vertex3D &v) {
-    EngineSetup *setup = EngineSetup::get();
+bool Frustum::isVertexInside(Vertex3D &v)
+{
+    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
-    for (int i = setup->FAR_PLANE; i <= setup->BOTTOM_PLANE; i++) {
-        if (planes[i].distance(v) >= EngineSetup::get()->FRUSTUM_CLIPPING_DISTANCE) {
-            return false;
-        }
+    glm::vec4 clipSpacePos = Camera3D::getProjectionMatrix() * camera->getViewMatrix() * glm::vec4(v.toGLM(), 1);
+
+    if (clipSpacePos.x < -clipSpacePos.w || clipSpacePos.x > clipSpacePos.w ||
+        clipSpacePos.y < -clipSpacePos.w || clipSpacePos.y > clipSpacePos.w ||
+        clipSpacePos.z < -clipSpacePos.w || clipSpacePos.z > clipSpacePos.w) {
+        return false;
     }
 
     return true;

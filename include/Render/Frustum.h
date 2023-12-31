@@ -22,7 +22,7 @@ public:
 public:
     Frustum();
 
-    bool isVertexInside(Vertex3D &v);
+    static bool isVertexInside(Vertex3D &v);
 
     bool isAABBInFrustum(AABB3D *aabb);
 };
