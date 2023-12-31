@@ -342,9 +342,9 @@ void EnemyGhost::shoot(Object3D *target)
         case WeaponTypes::WEAPON_LASER: {
             bool shootResult = weapon->shootLaserProjectile(
                 this,
-                getPosition() - AxisUp().getScaled(1000),
+                getPosition() - AxisUp().getScaled(0.01),
                 AxisUp().getInverse(),
-                0.1f,
+                0.001f,
                 false,
                 PaletteColors::getPlayerRayLight(),
                 EngineSetup::collisionGroups::ProjectileEnemy,
@@ -375,9 +375,9 @@ void EnemyGhost::shoot(Object3D *target)
             rayLight.setEnabled(true);
             rayLight.updateDirection(
                 rayLight.getParent()->AxisDown().getNormalize(),
-                rayLight.getParent()->AxisDown().getScaled(1100)
+                rayLight.getParent()->AxisDown().getScaled(0.01)
             );
-            bool shootResult = weapon->shootRayLight(rayLight, 0.5, PaletteColors::getEnemyLaser());
+            bool shootResult = weapon->shootRayLight(rayLight, 0.001f, PaletteColors::getEnemyLaser());
             if (shootResult) {
                 getLight()->setColor(PaletteColors::getEnemyRayLight());
                 initLight();

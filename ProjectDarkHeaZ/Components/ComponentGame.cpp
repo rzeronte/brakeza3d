@@ -272,12 +272,9 @@ void ComponentGame::handleOnUpdateTutorialImages(float alpha)
 void ComponentGame::handleOnUpdateGamingTutorial(float alpha)
 {
     //imageCablesHorizontal->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
     boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
+    writeDialogTextToContinue("Press ENTER to continue...");
     help->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
-    writeDialogTextToContinue("Press ENTER to continue2...");
 
     /*keep show message radio so that it keep consuming his time*/
     handleOnUpdateMessageRadio();
@@ -995,10 +992,10 @@ void ComponentGame::updateShaders()
     shaderColor->update();
     shaderProjectiles->update();
 
-    Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.000015);
+    Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(5);
     vel.z = 0;
 
-    levelLoader->moveBackgroundObjects(vel.getScaled(20000).getInverse());
+    levelLoader->moveBackgroundObjects(vel.getInverse());
 }
 
 void ComponentGame::shaderBackgroundUpdate()
@@ -1439,14 +1436,15 @@ void ComponentGame::handleOnUpdateHelp(const float alpha)
 
     writeDialogTextToContinue("Press ESC to continue...");
 
-    helps[currentHelpIndex]->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
     std::string message = std::to_string(currentHelpIndex + 1) + " / " + std::to_string((int)helps.size());
     if (helps.size() > 1) {
         textWriter->writeTTFCenterHorizontal(323, message.c_str(), PaletteColors::getCrt(), 0.3f);
     }
 
     ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+
+    helps[currentHelpIndex]->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+
 }
 
 void ComponentGame::handleOnUpdateStore(const float alpha)
@@ -1490,13 +1488,10 @@ void ComponentGame::handleOnUpdatePressKeyGameOver(const float alpha)
 
 void ComponentGame::handleOnUpdateCredits(const float alpha)
 {
-    imageCredits->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
     boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
     writeDialogTextToContinue("Press ESC to continue...");
-
     ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    imageCredits->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 }
 
 void ComponentGame::handleOnUpdatePressKeyByDead(const float alpha)

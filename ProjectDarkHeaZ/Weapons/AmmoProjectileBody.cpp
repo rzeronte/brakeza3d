@@ -47,7 +47,6 @@ AmmoProjectileBody::AmmoProjectileBody(
         collisionGroup,
         collisionMask
     );
-
 }
 
 Weapon *AmmoProjectileBody::getWeaponType() const {

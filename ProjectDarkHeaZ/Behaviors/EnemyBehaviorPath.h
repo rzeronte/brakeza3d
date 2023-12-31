@@ -19,7 +19,7 @@ class EnemyBehaviorPath: public Object3DBehavior {
 
     int currentPointIndex;
 public:
-    EnemyBehaviorPath(float speed);
+    explicit EnemyBehaviorPath(float speed);
 
     void onUpdate(Vertex3D &position) override;
 
@@ -30,7 +30,7 @@ public:
 
     Object3DBehavior *clone() override;
 
-    int getReturnedCounter() const;
+    [[nodiscard]] int getReturnedCounter() const;
 
     void setReturnedCounter(int returnedCounter);
 };

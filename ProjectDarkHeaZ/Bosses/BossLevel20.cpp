@@ -24,7 +24,7 @@ void BossLevel20::onStart()
 {
     EnemyGhost::onStart();
     for (auto fixedLaser : fixedLasers) {
-        fixedLaser->setIntensity(0.25f);
+        fixedLaser->setIntensity(0.001f);
     }
 }
 

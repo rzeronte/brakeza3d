@@ -19,7 +19,8 @@
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
       "avatarHud": "avatars/shuttle.png",
-      "position": { "x": 75,  "y": 30 },
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "position": { "x": 75,  "y": 40 },
       "model": "energy_ball.fbx",
       "enableLights": true,
       "animated": true,
@@ -32,7 +33,7 @@
       "lasers": [
         {
           "damage": 300,
-          "length": 4700,
+          "length": 5,
           "direction": { "x": -1, "y": 0, "z": 0 },
           "color": { "r": 255, "g": 0, "b": 0 }
         }
@@ -44,7 +45,7 @@
         "damage": 15,
         "amount": 999,
         "startAmount": 100,
-        "speed": 500,
+        "speed": 1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 1.0,
@@ -74,7 +75,8 @@
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
       "avatarHud": "avatars/shuttle.png",
-      "position": { "x": 25,  "y": 30 },
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "position": { "x": 25,  "y": 40 },
       "model": "energy_ball.fbx",
       "enableLights": true,
       "animated": true,
@@ -87,7 +89,7 @@
       "lasers": [
         {
           "damage": 300,
-          "length": 4700,
+          "length": 5,
           "direction": { "x": 1, "y": 0, "z": 0 },
           "color": { "r": 144, "g": 0, "b": 0 }
         }
@@ -99,7 +101,7 @@
         "damage": 20,
         "amount": 999,
         "startAmount": 100,
-        "speed": 500,
+        "speed": 1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 1.0,
@@ -131,11 +133,11 @@
   "background": [
     {
       "name": "nave",
-      "position": { "x": 70,  "y":	40, "z": 90000 },
+      "position": { "x": 70,  "y":	40, "z": 290 },
       "model":	"stargate.fbx",
       "rotation": { "x": -30, "y": 30,  "z": 0 },
       "rotationFrame": { "x": 0.0, "y": 0.0, "z": 0.1 },
-      "scale":	60.0
+      "scale":	0.1
     }
   ]
 }

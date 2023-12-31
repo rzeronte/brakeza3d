@@ -175,7 +175,7 @@ public:
 
     [[nodiscard]] Counter *getWaitingToWin();
 
-    ItemHumanGhost* makeItemHuman(Vertex3D vertex3D);
+    static ItemHumanGhost* makeItemHuman(Vertex3D vertex3D);
 
     SalvageSpaceship* makeSalvageSpaceship(Vertex3D vertex3D);
 

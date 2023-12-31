@@ -311,11 +311,11 @@ ItemHealthGhost* LevelLoader::makeItemHealthGhost(Vertex3D position)
     healthItem->setStencilBufferEnabled(true);
     healthItem->setScale(1);
     healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_pill.fbx"));
-    healthItem->makeGhostBody(
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-        healthItem,
-        EngineSetup::collisionGroups::Health,
-        EngineSetup::collisionGroups::Player
+    healthItem->makeSimpleGhostBody(
+            Vertex3D(0.5, 0.5, 0.5),
+            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+            EngineSetup::collisionGroups::Weapon,
+            EngineSetup::collisionGroups::Player
     );
     healthItem->updateBulletFromMesh3D();
 
@@ -337,7 +337,7 @@ ItemHumanGhost* LevelLoader::makeItemHuman(Vertex3D position)
     human->setScale(1);
     human->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "astronaut.fbx"));
     human->makeSimpleGhostBody(
-        Vertex3D(1, 1, 1),
+        Vertex3D(0.5, 0.5, 0.5),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Player,
         EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::ProjectileEnemy | EngineSetup::collisionGroups::Player
@@ -361,7 +361,7 @@ ItemEnergyGhost* LevelLoader::makeItemEnergyGhost(Vertex3D position)
     energyItem->setScale(1);
     energyItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "pill.fbx"));
     energyItem->makeSimpleGhostBody(
-        Vertex3D(1, 1, 1),
+        Vertex3D(0.5, 0.5, 0.5),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
         EngineSetup::collisionGroups::Weapon,
         EngineSetup::collisionGroups::Player
@@ -614,7 +614,7 @@ void LevelLoader::addLasersForEnemy(cJSON *laser, EnemyGhost *enemy)
         EngineSetup::collisionGroups::Player,
         0,
         parseColorJSON(cJSON_GetObjectItemCaseSensitive(laser, "color")),
-        0.1f,
+        0.001f,
         true
     ));
 }
