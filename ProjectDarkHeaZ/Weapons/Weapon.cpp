@@ -75,7 +75,6 @@ Weapon::Weapon(
 void Weapon::onUpdate()
 {
     counterCadence->update();
-    Logging::Message("step %d, %f", counterCadence->isEnabled(), counterCadence->getAcumulatedTime());
 
     if (isStop()) {
         counterStopEvery.update();

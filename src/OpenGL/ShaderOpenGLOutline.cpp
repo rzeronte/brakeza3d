@@ -53,7 +53,7 @@ void ShaderOpenGLOutline::drawOutline(Mesh3D *m, Color c, float borderThickness)
         Color::white()
     );
 
-    glBindFramebuffer(GL_FRAMEBUFFER, componentWindow->getBackgroundFramebuffer());
+    glBindFramebuffer(GL_FRAMEBUFFER, componentWindow->getSceneFramebuffer());
 
     render(shaderColor->textureColorbuffer, c, borderThickness);
 

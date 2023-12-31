@@ -20,6 +20,7 @@
 #include "GUIWidgetProjectSettings.h"
 #include "GUIWidgetMenu.h"
 #include "GUIWidgetToolbar.h"
+#include "../../ProjectDarkHeaZ/GUI/GUIWidgetProjectDarkHeaZ.h"
 
 class GUIManager {
 private:
@@ -33,12 +34,13 @@ private:
     std::string directory_path_scenes;
 
     std::string selected_file;
-    ImGuiConsoleApp *console;
+    ImGuiConsoleApp *widgetConsole;
     GUIWidgetObjects3D *widgetObjects3D;
     GUIWidgetObject3DProperties *widgetObject3DProperties;
     GUIWidgetProjectSettings *widgetProjectSettings;
     GUIWidgetMenu *widgetMenu;
     GUIWidgetToolbar *widgetToolbar;
+    GUIWidgetProjectDarkHeaZ * widgetProjectDarkHeaZ;
 
     TexturePackage packageIcons;
     TexturePackage imagesFolder;
@@ -67,7 +69,7 @@ public:
         directory_path(EngineSetup::get()->SCRIPTS_FOLDER),
         directory_path_images(EngineSetup::get()->IMAGES_FOLDER),
         directory_path_scenes(EngineSetup::get()->SCENES_FOLDER),
-        console(new ImGuiConsoleApp(LUAManager::get()->getLua())),
+        widgetConsole(new ImGuiConsoleApp(LUAManager::get()->getLua())),
         widgetObjects3D(new GUIWidgetObjects3D(packageIcons, this->gameObjects)),
         widgetObject3DProperties(new GUIWidgetObject3DProperties(packageIcons, this->gameObjects, scriptEditableManager)),
         widgetProjectSettings(new GUIWidgetProjectSettings(packageIcons, scriptEditableManager)),
@@ -183,7 +185,7 @@ public:
 
     }
 
-    void drawCameraSettings()
+    static void drawCameraSettings()
     {
         auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
@@ -390,6 +392,8 @@ public:
 
     void drawWidgets()
     {
+        widgetProjectDarkHeaZ->draw();
+
         if (ImGui::Begin("Scripts")) {
             DIR *dir;
             struct dirent *ent;
@@ -553,7 +557,7 @@ public:
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
         bool p_open = true;
-        console->Draw("Logging/Console", &p_open);
+        widgetConsole->Draw("Logging/Console", &p_open);
         widgetObjects3D->draw(selectedObjectIndex);
         widgetObject3DProperties->draw(selectedObjectIndex);
         widgetMenu->draw(finish);
@@ -565,7 +569,7 @@ public:
     }
 
     ImGuiConsoleApp *getConsole(){
-        return console;
+        return widgetConsole;
     }
 
     TexturePackage *getImGuiTextures() {

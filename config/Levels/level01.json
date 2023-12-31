@@ -19,7 +19,7 @@
       "name": "spaceShuttle",
       "avatar": "avatars/shuttle.png",
       "avatarHud": "avatars/shuttle_hud.png",
-      "position": { "x": 50, "y": 10 },
+      "position": { "x": 50, "y": 15 },
       "model": "spaceShuttle.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,

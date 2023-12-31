@@ -82,11 +82,11 @@ void Mesh3D::cloneParts(Mesh3D *source, bool isFlatTextureColor, bool isEnableLi
 
 void Mesh3D::clone(Mesh3D *source)
 {
-    for (auto &triangle : source->modelTriangles) {
+    /*for (auto &triangle : source->modelTriangles) {
         auto *t = new Triangle(triangle->A, triangle->B, triangle->C,this);
         t->setEnableLights(triangle->isEnableLights());
         this->modelTriangles.push_back(t);
-    }
+    }*/
 
     this->modelTextures = source->modelTextures;
     this->modelSpecularTextures = source->modelSpecularTextures;

@@ -11,7 +11,7 @@
       "name": "Rayer",
       "avatar": "avatars/executioner.png",
       "avatarHud": "avatars/shuttle.png",
-      "position": { "x": 50, "y": 5 },
+      "position": { "x": 50, "y": 15 },
       "model": "spaceships/Executioner.fbx",
       "enableLights": true,
       "animated": true,
@@ -27,7 +27,7 @@
         "damage": 5,
         "amount": 1000,
         "startAmount": 10000,
-        "speed": 400,
+        "speed": 0.5,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.3,
@@ -49,7 +49,7 @@
       "avatarHud": "avatars/shuttle.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
-      "size": { "x": 800, "y": 400,  "z": 500 },
+      "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
@@ -67,7 +67,7 @@
         "damage": 10,
         "amount": 999,
         "startAmount": 1000,
-        "speed": 500,
+        "speed": 1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.4,
@@ -89,7 +89,7 @@
       "avatarHud": "avatars/shuttle.png",
       "position": { "x": 80, "y": 20 },
       "model": "spaceships/Bob.fbx",
-      "size": { "x": 800, "y": 400,  "z": 500 },
+      "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
@@ -107,7 +107,7 @@
         "damage": 10,
         "amount": 999,
         "startAmount": 1000,
-        "speed": 500,
+        "speed": 1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.4,
@@ -127,11 +127,11 @@
   "items": [
     {
       "type": 7,
-      "position": { "x": 10, "y": 5 }
+      "position": { "x": 10, "y": 10 }
     },
     {
       "type": 7,
-      "position": { "x": 90, "y": 5 }
+      "position": { "x": 90, "y": 10 }
     }
   ],
   "background": [
