@@ -31,6 +31,7 @@ AmmoProjectileBody::AmmoProjectileBody(
     setParent(parent);
     setRender(true);
     setStencilBufferEnabled(false);
+    setTransparent(true);
 
     ending.setEnabled(false);
 

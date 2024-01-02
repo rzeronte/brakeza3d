@@ -39,6 +39,7 @@ struct GUIWidgetProjectSettings {
                 const float range_illumination_max_settings = 1.0f;
                 const float sens_illumination_settings = 0.01f;
                 auto dirLight = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->getDirectionalLight();
+
                 if (ImGui::TreeNode("Direction")) {
                     ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->direction.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
                     ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->direction.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
@@ -46,25 +47,23 @@ struct GUIWidgetProjectSettings {
                     ImGui::TreePop();
                 }
 
-                if (ImGui::TreeNode("Ambient")) {
-                    ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->ambient.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->ambient.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->ambient.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::TreePop();
+                ImVec4 color = {dirLight->ambient.x, dirLight->ambient.y, dirLight->ambient.z, 1};
+                bool changed_color = ImGui::ColorEdit4("Ambient##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+                if (changed_color) {
+                    dirLight->ambient = {color.x, color.y, color.z};
+                }
+                color = {dirLight->specular.x, dirLight->specular.y, dirLight->specular.z, 1};
+                changed_color = ImGui::ColorEdit4("Specular##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+                if (changed_color) {
+                    dirLight->specular = {color.x, color.y, color.z};
                 }
 
-                if (ImGui::TreeNode("Diffuse")) {
-                    ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->diffuse.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->diffuse.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->diffuse.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::TreePop();
+                color = {dirLight->diffuse.x, dirLight->diffuse.y, dirLight->diffuse.z, 1};
+                changed_color = ImGui::ColorEdit4("Diffuse##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+                if (changed_color) {
+                    dirLight->diffuse = {color.x, color.y, color.z};
                 }
-                if (ImGui::TreeNode("Specular")) {
-                    ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->specular.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->specular.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->specular.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::TreePop();
-                }
+
                 ImGui::TreePop();
             }
 

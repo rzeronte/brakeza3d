@@ -23,12 +23,27 @@ LightPoint3D::LightPoint3D(
 {
 }
 
+LightPoint3D *LightPoint3D::base() {
+    return new LightPoint3D(
+        glm::vec4(0.05f, 0.05f, 0.05f, 0),
+        glm::vec4(1.0f, 0.0f, 0.0f, 0),
+        glm::vec4(1.0f, 1.0f, 1.0f, 0),
+        1.0f,
+        0.09f,
+        0.032f
+    );
+}
+
 void LightPoint3D::setColor(Color value) {
     this->diffuse = glm::vec4(value.r, value.g, value.b, 1);
 }
 
-void LightPoint3D::setColorSpecularity(Color value) {
-    this->specular = glm::vec4(value.r, value.g, value.b, 1);
+void LightPoint3D::setAmbient(Color value) {
+    this->ambient = glm::vec4(value.r, value.g, value.b, 1);
+}
+
+void LightPoint3D::setColorSpecular(Color c) {
+    this->specular = glm::vec4(c.r, c.g, c.b, 1);
 }
 
 void LightPoint3D::onDrawHostBuffer()
@@ -65,63 +80,26 @@ void LightPoint3D::drawImGuiProperties()
     Object3D::drawImGuiProperties();
 
     if (ImGui::TreeNode("LightPoint")) {
-        static ImVec4 imguiColor;
-        imguiColor.x = diffuse.x;
-        imguiColor.y = diffuse.y;
-        imguiColor.z = diffuse.z;
-        static ImVec4 imguiColorSpecularity;
-        imguiColorSpecularity.x = specular.x;
-        imguiColorSpecularity.y = specular.g;
-        imguiColorSpecularity.z = specular.b;
 
-        bool changed_color_specular = false;
-        std::string colorpicker_text = "RGB##";
-        std::string colorpicker_text_specularity = "Specularity##";
-        std::string show_deep_map_text = "Show ZBuffer##";
-        std::string show_frustum_map_text = "Show Frustum##";
-        std::string specularity_RGB_text = "RGB##";
-        std::string color_text = "Color##";
-
-        const float range_potence_sensibility = 0.1f;
-        const float range_color_sensibility = 0.01f;
-
+        const float range_potence_sensibility = 0.01f;
         const float range_min = -90000;
         const float range_max = 90000;
 
-        const float range_col_min = 0.0f;
-        const float range_col_max = 1.0f;
+        ImVec4 color = {diffuse.x, diffuse.y, diffuse.z, 1};
+        bool changed_color = ImGui::ColorEdit4("Diffuse##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+        if (changed_color) {
+            setColor(Color(color.x,color.y,color.z));
+        }
+        color = {specular.x, specular.y, specular.z, 1};
+        changed_color = ImGui::ColorEdit4("Specular##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+        if (changed_color) {
+            setColorSpecular(Color(color.x, color.y, color.z));
+        }
 
-        // Color
-        if (ImGui::TreeNode(color_text.c_str())) {
-            bool changed_color = ImGui::ColorEdit4(colorpicker_text.c_str(), (float *) &imguiColor, ImGuiColorEditFlags_NoOptions);
-            if (changed_color) {
-                setColor(
-                        Color(
-                            imguiColor.x,
-                            imguiColor.y,
-                            imguiColor.z
-                        )
-                );
-            }
-            ImGui::TreePop();
-        }
-        if (ImGui::TreeNode("Ambient##")) {
-            ImGui::DragScalar("x", ImGuiDataType_Float, &ambient.x, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::DragScalar("y", ImGuiDataType_Float, &ambient.y, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::DragScalar("z", ImGuiDataType_Float, &ambient.z, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::TreePop();
-        }
-        if (ImGui::TreeNode("Diffuse##")) {
-            ImGui::DragScalar("x", ImGuiDataType_Float, &diffuse.x, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::DragScalar("y", ImGuiDataType_Float, &diffuse.y, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::DragScalar("z", ImGuiDataType_Float, &diffuse.z, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::TreePop();
-        }
-        if (ImGui::TreeNode("Specular##")) {
-            ImGui::DragScalar("x", ImGuiDataType_Float, &specular.x, range_potence_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::DragScalar("y", ImGuiDataType_Float, &specular.y, range_potence_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::DragScalar("z", ImGuiDataType_Float, &specular.z, range_potence_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::TreePop();
+        color = {ambient.x, ambient.y, ambient.z, 1};
+        changed_color = ImGui::ColorEdit4("Ambient##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+        if (changed_color) {
+            setAmbient(Color(color.x, color.y,color.z));
         }
 
         ImGui::DragScalar("Constant", ImGuiDataType_Float, &constant, range_potence_sensibility,&range_min, &range_max, "%f", 1.0f);

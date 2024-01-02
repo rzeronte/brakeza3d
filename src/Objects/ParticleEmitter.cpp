@@ -25,6 +25,7 @@ ParticleEmitter::ParticleEmitter(
     texture(new Image(EngineSetup::get()->IMAGES_FOLDER + "particle.png"))
 {
     setParent(parent);
+    setTransparent(true);
     setPosition(position);
 
     lifeCounter.setEnabled(true);
@@ -54,12 +55,10 @@ ParticleEmitter::ParticleEmitter(
     // Initialize with empty (NULL) buffer : it will be updated later, each frame.
     glBufferData(GL_ARRAY_BUFFER, MaxParticles * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 
-
     for (int i=0; i<MaxParticles; i++){
         ParticlesContainer[i].life = -1.0f;
         ParticlesContainer[i].cameradistance = -1.0f;
     }
-
 }
 
 bool ParticleEmitter::isActive() const {
@@ -87,13 +86,11 @@ void ParticleEmitter::onUpdate()
     glm::vec3 CameraPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition().toGLM());
 
     // Define la frecuencia deseada en partículas por segundo
-    float particlesPerSecond = context.PARTICLES_BY_SECOND;
-
-    int newparticles = (int)(delta * 100 *context.PARTICLES_BY_SECOND);
+    int newparticles = (int)(delta * 100 * context.PARTICLES_BY_SECOND);
 
     int ParticlesCount = 0;
 
-    for(int i=0; i<newparticles; i++){
+    for (int i=0; i < newparticles; i++){
         int particleIndex = FindUnusedParticle();
         ParticlesContainer[particleIndex].life = context.PARTICLE_LIFESPAN; // This particle will live 5 seconds.
         ParticlesContainer[particleIndex].pos = getPosition().toGLM();
@@ -116,7 +113,6 @@ void ParticleEmitter::onUpdate()
         ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
 
         ParticlesContainer[particleIndex].size = (rand()%1000)/2000.0f + 0.1f;
-
     }
 
     static GLfloat* g_particule_position_size_data = new GLfloat[MaxParticles * 4];
@@ -145,9 +141,9 @@ void ParticleEmitter::onUpdate()
                 p.cameradistance = glm::length( p.pos - CameraPosition );
 
                 float lifeRatio = p.life / context.PARTICLE_LIFESPAN;
-                p.r = colorFrom.r * lifeRatio + colorTo.r * (1 - lifeRatio);
-                p.g = colorFrom.g * lifeRatio + colorTo.g * (1 - lifeRatio);
-                p.b = colorFrom.b * lifeRatio + colorTo.b * (1 - lifeRatio);
+                p.r = colorFrom.r * 255 * lifeRatio + colorTo.r * 255 * (1 - lifeRatio);
+                p.g = colorFrom.g * 255 * lifeRatio + colorTo.g * 255 * (1 - lifeRatio);
+                p.b = colorFrom.b * 255 * lifeRatio + colorTo.b * 255 * (1 - lifeRatio);
 
                 // Fill the GPU buffer
                 g_particule_position_size_data[4*ParticlesCount+0] = p.pos.x;
@@ -207,25 +203,19 @@ void ParticleEmitter::drawImGuiProperties()
 
     if (ImGui::TreeNode("ParticleEmitter")) {
         ImGui::Checkbox(std::string("stopAdd").c_str(), &stopAdd);
-        const float range_color_sensibility = 0.01f;
-        const float range_col_min = 0;
-        const float range_col_max = 1;
 
         ImGui::Separator();
-        if (ImGui::TreeNode("ColorFrom")) {
-            ImGui::DragScalar("x", ImGuiDataType_Float, &colorFrom.r, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::DragScalar("y", ImGuiDataType_Float, &colorFrom.g, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::DragScalar("z", ImGuiDataType_Float, &colorFrom.b, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::TreePop();
+        ImVec4 color = {colorFrom.r, colorFrom.g, colorFrom.b, 1};
+        bool changed_color = ImGui::ColorEdit4("Color From##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+        if (changed_color) {
+            setColorFrom(Color(color.x,color.y,color.z));
         }
-        ImGui::Separator();
+        color = {colorTo.r, colorTo.g, colorTo.b, 1};
+        changed_color = ImGui::ColorEdit4("Color To##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+        if (changed_color) {
+            setColorTo(Color(color.x,color.y,color.z));
+        }
 
-        if (ImGui::TreeNode("ColorTo")) {
-            ImGui::DragScalar("x", ImGuiDataType_Float, &colorTo.r, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::DragScalar("y", ImGuiDataType_Float, &colorTo.g, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::DragScalar("z", ImGuiDataType_Float, &colorTo.b, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::TreePop();
-        }
         ImGui::Separator();
         if (ImGui::TreeNode("ParticlesContext")) {
             const float range_sensibility = 0.01f;

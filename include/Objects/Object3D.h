@@ -38,6 +38,7 @@ protected:
     bool decal; // Decals exclude UV Coordinates out of [0, 1]
     bool followCamera;
     bool stencilBufferEnabled;
+    bool transparent;
     bool belongToScene;
 
     std::string label;
@@ -51,7 +52,7 @@ protected:
     std::vector<FXEffectOpenGL*> shaders;
 
     Timer timer;
-
+    float distanceToCamera;
 public:
 
     Object3D();
@@ -200,6 +201,12 @@ public:
     void removeShader(int i);
 
     [[nodiscard]] const Timer &getTimer() const;
+
+    bool isTransparent() const;
+
+    void setTransparent(bool transparent);
+
+    float getDistanceToCamera() const;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

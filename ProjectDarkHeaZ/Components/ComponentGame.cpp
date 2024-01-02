@@ -164,8 +164,6 @@ void ComponentGame::preUpdate()
 void ComponentGame::onUpdate()
 {
     updateFadeToGameState();
-    addProjectilesToShaderLasers();
-    updateShaders();
 
     const float alpha = 1 - getFadeToGameState()->getProgress();
     textWriter->setAlpha(alpha);
@@ -188,19 +186,16 @@ void ComponentGame::onUpdate()
             handleOnUpdateSplash(alpha);
             break;
         }
-
         case EngineSetup::GAMING: {
             blockPlayerPositionInCamera();
             checkForEndLevel();
             handleOnUpdateMessageRadio();
             break;
         }
-
         case EngineSetup::PRESS_KEY_BY_WIN: {
             showLevelStatistics(alpha);
             break;
         }
-
         case EngineSetup::HELP: {
             handleOnUpdateHelp(alpha);
             break;
@@ -217,21 +212,6 @@ void ComponentGame::onUpdate()
             handleOnUpdatePressKeyByDead(alpha);
             break;
         }
-        /*case EngineSetup::VAT: {
-            Vertex3D origin = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
-            Vertex3D to = player->getPosition() - player->AxisLeft().getScaled(-2000) - player->AxisUp().getScaled(-2000);
-
-            Vector3D direction(origin, to);
-
-            float t = Brakeza3D::get()->getDeltaTime();
-            auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-            auto selected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
-            camera->setPosition(to);
-            if (selected != nullptr) {
-                camera->lookAt(selected);
-            }
-            break;
-        }*/
         case EngineSetup::SPACESHIP_SELECTOR: {
             handleOnUpdateSpaceshipSelector(alpha);
             break;
@@ -246,6 +226,8 @@ void ComponentGame::onUpdate()
 void ComponentGame::postUpdate()
 {
     player->updateWeaponAutomaticStatus();
+    addProjectilesToShaderLasers();
+    updateShaders();
 }
 
 void ComponentGame::handleOnUpdateTutorialImages(float alpha)

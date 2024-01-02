@@ -27,9 +27,9 @@ public:
     );
 
     void setColor(Color c);
-    void setColorSpecularity(Color c);
+    void setColorSpecular(Color c);
 
-    void onUpdate();
+    void onUpdate() override;
 
     void setConstant(float value);
     void setLinear(float value);
@@ -48,6 +48,10 @@ public:
     static void createFromJSON(cJSON *object);
 
     static void setPropertiesFromJSON(cJSON *object, LightPoint3D *o);
+
+    static LightPoint3D* base();
+
+    void setAmbient(Color value);
 };
 
 

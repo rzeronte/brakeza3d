@@ -179,7 +179,8 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 
     auto c = parseColorJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "color"));
 
-    ComponentsManager::get()->getComponentGame()->getPlayer()->getWeaponLight()->setColorSpecularity(c);
+    ComponentsManager::get()->getComponentGame()->getPlayer()->getWeaponLight()->setColor(c);
+    ComponentsManager::get()->getComponentGame()->getPlayer()->getWeaponLight()->setColorSpecular(c);
 
     cJSON *currentEnemyJSON;
     cJSON_ArrayForEach(currentEnemyJSON, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "enemies")) {
@@ -425,13 +426,13 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     cJSON *emitter = cJSON_GetObjectItemCaseSensitive(enemyJSON, "emitter");
     cJSON *lasers = cJSON_GetObjectItemCaseSensitive(enemyJSON, "lasers");
 
-    Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(enemyJSON, "position"), Z_COORDINATE_GAMEPLAY);
+    Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(enemyJSON, "position"), Z_COORDINATE_GAMEPLAY + 1);
 
     enemy->setRewards(reward);
     enemy->setName(name);
 
     if (motion != nullptr) {
-        this->setBehaviorFromJSON(motion, enemy, Z_COORDINATE_GAMEPLAY);
+        this->setBehaviorFromJSON(motion, enemy, Z_COORDINATE_GAMEPLAY + 1);
     }
 
     this->setLasersForEnemy(lasers, enemy);
@@ -889,9 +890,9 @@ AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)
 Color LevelLoader::parseColorJSON(cJSON *color)
 {
     return Color(
-        cJSON_GetObjectItemCaseSensitive(color, "r")->valueint,
-        cJSON_GetObjectItemCaseSensitive(color, "g")->valueint,
-        cJSON_GetObjectItemCaseSensitive(color, "b")->valueint
+        cJSON_GetObjectItemCaseSensitive(color, "r")->valueint/255,
+        cJSON_GetObjectItemCaseSensitive(color, "g")->valueint/255,
+        cJSON_GetObjectItemCaseSensitive(color, "b")->valueint/255
     );
 }
 
@@ -921,6 +922,7 @@ void LevelLoader::parseBackgroundItem(cJSON *object)
     cJSON *motion = cJSON_GetObjectItemCaseSensitive(object, "motion");
 
     auto mesh = new Mesh3D();
+    mesh->setTransparent(false);
     mesh->setScale(scale);
     mesh->setRotation(M3::getMatrixRotationForEulerAngles(
         (float) cJSON_GetObjectItemCaseSensitive(rotationJSON, "x")->valueint,

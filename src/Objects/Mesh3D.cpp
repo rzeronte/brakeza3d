@@ -124,20 +124,13 @@ void Mesh3D::onUpdate()
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
 
+        auto window = ComponentsManager::get()->getComponentWindow();
+
         if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
-            ComponentsManager::get()->getComponentWindow()->getShaderOGLOutline()->drawOutline(this, Color::red(), 1.0f);
+            window->getShaderOGLOutline()->drawOutline(this, Color::red(), 1.0f);
         }
 
-        ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
-            this,
-            modelTextures[0]->getOGLTextureID(),
-            modelTextures[0]->getOGLTextureID(),
-            vertexbuffer,
-            uvbuffer,
-            normalbuffer,
-            (int) vertices.size(),
-            ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
-        );
+        window->getShaderOGLRender()->renderMesh(this,window->getSceneFramebuffer());
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()){
@@ -422,6 +415,10 @@ std::vector<Triangle *> &Mesh3D::getModelTriangles() {
 
 std::vector<Image *> &Mesh3D::getModelTextures() {
     return modelTextures;
+}
+
+const std::vector<Image *> &Mesh3D::getModelSpecularTextures() const {
+    return modelSpecularTextures;
 }
 
 std::vector<Vertex3D *> &Mesh3D::getModelVertices(){

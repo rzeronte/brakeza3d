@@ -15,18 +15,13 @@ void FXLaser::update()
 
     if (!isEnabled()) return;
 
-    executeKernelOpenCL();
-}
-
-void FXLaser::executeKernelOpenCL()
-{
     for(auto l: lasers) {
         ComponentsManager::get()->getComponentGame()->getShaderOGLLineLaser()->render(
-            Point2D(l.from),
-            Point2D(l.to),
-            Color(l.color.r, l.color.g, l.color.b),
-            l.intensity,
-            ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+                Point2D(l.from),
+                Point2D(l.to),
+                Color(l.color.r, l.color.g, l.color.b),
+                l.intensity,
+                ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
         );
     }
 

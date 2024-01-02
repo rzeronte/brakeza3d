@@ -13,6 +13,7 @@ Sprite2D::Sprite2D(int x, int y, bool removeWhenEnds, TextureAnimated *animation
     animation(animation),
     ttl(nullptr)
 {
+    setTransparent(true);
 }
 
 Sprite2D::Sprite2D(int x, int y, float ttl, TextureAnimated *animation)
@@ -24,6 +25,7 @@ Sprite2D::Sprite2D(int x, int y, float ttl, TextureAnimated *animation)
     ttl(new Counter(ttl))
 {
     this->ttl->setEnabled(true);
+    setTransparent(true);
 }
 
 void Sprite2D::onUpdate()
@@ -48,11 +50,16 @@ void Sprite2D::onUpdate()
             setRemoved(true);
         }
     }
+
     const auto w = animation->getCurrentFrame()->width();
     const auto h = animation->getCurrentFrame()->height();
 
-
-    animation->getCurrentFrame()->drawFlatAlpha(x - w/2, y - h/2, alpha, ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer());
+    animation->getCurrentFrame()->drawFlatAlpha(
+        x - w/2,
+        y - h/2,
+        alpha,
+        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+    );
 
     if (removeWhenEnds && animation->isEndAnimation()) {
         this->setRemoved(true);

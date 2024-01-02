@@ -185,15 +185,9 @@ void SceneLoader::createObjectInScene() {
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
 }
 
-void SceneLoader::createPointLight3DInScene() {
-    auto o = new LightPoint3D(
-        glm::vec4(0.05f, 0.05f, 0.05f, 0),
-        glm::vec4(1.0f, 0.0f, 0.0f, 0),
-        glm::vec4(1.0f, 1.0f, 1.0f, 0),
-        1.0f,
-        0.09f,
-        0.032f
-    );
+void SceneLoader::createPointLight3DInScene()
+{
+    auto o = LightPoint3D::base();
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
     o->setBelongToScene(true);
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));

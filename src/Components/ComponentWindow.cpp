@@ -4,7 +4,6 @@
 #include <SDL2/SDL_opengl.h>
 #include "../../include/Components/ComponentWindow.h"
 #include "../../include/Render/Logging.h"
-#include "../../include/Misc/Tools.h"
 #include "../../include/OpenGL/ShaderOpenGLImage.h"
 
 ComponentWindow::ComponentWindow()
@@ -49,7 +48,7 @@ void ComponentWindow::preUpdate()
 void ComponentWindow::renderToWindow()
 {
     renderFramebuffer();
-    SDL_RenderPresent(renderer);
+    SDL_GL_SwapWindow(window);
     cleanFrameBuffers();
 }
 
@@ -75,7 +74,8 @@ void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish) {
 
 }
 
-void ComponentWindow::initWindow() {
+void ComponentWindow::initWindow()
+{
     Logging::Message("Initializating ComponentWindow...");
 
     Logging::Message("Available video drivers:");
@@ -90,7 +90,6 @@ void ComponentWindow::initWindow() {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(-1);
     } else {
-        //Create window
         window = SDL_CreateWindow(
             SETUP->ENGINE_TITLE.c_str(),
             SDL_WINDOWPOS_UNDEFINED,
@@ -99,7 +98,8 @@ void ComponentWindow::initWindow() {
             SETUP->screenHeight,
             SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE
         );
-        context = SDL_GL_CreateContext( window );
+
+        context = SDL_GL_CreateContext(window);
 
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1 );
@@ -111,8 +111,9 @@ void ComponentWindow::initWindow() {
         SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 8);
 
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
+        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+
         if (window == nullptr) {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
             exit(-1);
@@ -121,20 +122,13 @@ void ComponentWindow::initWindow() {
 #ifdef WIN32
         //SDL_SetHint(SDL_HINT_RENDER_DRIVER, "direct3d11");
 #endif
-
         screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
+
         SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_MOD);
+
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
         initOpenGL();
-
-        /*screenTexture = SDL_CreateTexture(
-            renderer,
-            SDL_PIXELFORMAT_RGBA32,
-            SDL_TEXTUREACCESS_STREAMING,
-            EngineSetup::get()->screenWidth,
-            EngineSetup::get()->screenHeight
-        );*/
-
 
         SDL_SetWindowIcon(this->window, applicationIcon);
     }
@@ -142,7 +136,7 @@ void ComponentWindow::initWindow() {
 
 void ComponentWindow::initFontsTTF()
 {
-    Logging::Log("Initializating TTF...");
+    Logging::Log("Initializing TTF...");
 
     if (TTF_Init() < 0) {
         Logging::Log(TTF_GetError());
@@ -250,8 +244,11 @@ void ComponentWindow::initOpenGL()
 {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LEQUAL);
     glEnable(GL_CULL_FACE);
     glDepthMask(GL_TRUE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
@@ -366,8 +363,8 @@ void ComponentWindow::createFramebuffer()
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
         std::cerr << "Error al configurar el framebuffer" << std::endl;
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void ComponentWindow::resetFramebuffer()

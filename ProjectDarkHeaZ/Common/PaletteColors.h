@@ -44,7 +44,7 @@ public:
 
     [[nodiscard]] static Color getParticlesPlayerFrom() { return {1.0f, 0.0f, 0.0f}; }
 
-    [[nodiscard]] static Color getParticlesPlayerTo() { return {1.0f, 1.0f, 0.0f}; }
+    [[nodiscard]] static Color getParticlesPlayerTo() { return {0.0f, 1.0f, 0.0f}; }
 
     [[nodiscard]] static Color getEnemyLaser() { return {0.56f, 0.0f, 0.0f}; }
 

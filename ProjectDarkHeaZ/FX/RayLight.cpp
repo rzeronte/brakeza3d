@@ -15,17 +15,15 @@ RayLight::RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D 
     direction(direction),
     startOffset(startOffset)
 {
-    Vertex3D start = parent->getPosition();
-
     rayCallback = new btCollisionWorld::ClosestRayResultCallback(
-        btVector3(start.x, start.y, start.z),
-        btVector3(start.x, start.y, start.z)
+        parent->getPosition().toBullet(),
+        parent->getPosition().toBullet()
     );
 
     rayCallback->m_collisionFilterGroup = filterGroup;
     rayCallback->m_collisionFilterMask = filterMask;
 
-    light = new LightPoint3D(glm::vec4(1), glm::vec4(1), glm::vec4(1), 1, 1, 1);
+    light = LightPoint3D::base();
     light->setRotation(180, 0, 0);
     light->setEnabled(false);
     Brakeza3D::get()->addObject3D(light, Brakeza3D::uniqueObjectLabel("rayLightPoint"));
@@ -50,12 +48,12 @@ void RayLight::update()
     Vertex3D end = parent->getPosition() + direction.getScaled(reach);
     Point2D middlePoint = Transforms::WorldToPoint(end);
 
-    rayCallback->m_rayFromWorld = btVector3(start.x, start.y, start.z);
-    rayCallback->m_rayToWorld = btVector3(end.x, end.y, end.z);
+    rayCallback->m_rayFromWorld = start.toBullet();
+    rayCallback->m_rayToWorld = end.toBullet();
 
     ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->rayTest(
-        btVector3(start.x, start.y, start.z),
-        btVector3(end.x, end.y, end.z),
+        start.toBullet(),
+        end.toBullet(),
         *rayCallback
     );
 
@@ -180,10 +178,6 @@ Object3D *RayLight::getParent() const {
     return parent;
 }
 
-void RayLight::setReach(int value) {
+void RayLight::setReach(float value) {
     reach = value;
-}
-
-LightPoint3D *RayLight::getLight() {
-    return light;
 }
