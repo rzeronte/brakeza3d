@@ -132,6 +132,7 @@ public:
 
     FXEffectOpenGL *getSceneShaderByIndex(int i);
 
+    static bool compareDistances(Object3D *obj1, Object3D *obj2);
 };
 
 

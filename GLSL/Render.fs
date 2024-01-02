@@ -1,5 +1,6 @@
 #version 330 core
-#define NR_POINT_LIGHTS 128
+
+#define NR_POINT_LIGHTS 64
 
 out vec4 FragColor;
 
@@ -55,21 +56,22 @@ uniform int numSpotLights;
 layout (std140) uniform PointLightsBlock { PointLight pointLights[NR_POINT_LIGHTS]; };
 layout (std140) uniform SpotLightsBlock { SpotLight spotLights[NR_POINT_LIGHTS]; };
 
-// function prototypes
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main()
 {
-    // properties
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
+
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
-    for(int i = 0; i < numLights; i++) {
+
+    for (int i = 0; i < numLights; i++) {
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
     }
-    for(int i = 0; i < numSpotLights; i++) {
+
+    for (int i = 0; i < numSpotLights; i++) {
         result += CalcSpotLight(spotLights[i], norm, FragPos, viewDir);
     }
 

@@ -2,7 +2,6 @@
 #include "../../include/Components/ComponentRender.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Render/Transforms.h"
 
 ComponentRender::ComponentRender()
 :
@@ -36,7 +35,6 @@ void ComponentRender::onStart()
 void ComponentRender::preUpdate()
 {
     this->updateFPS();
-
 }
 
 void ComponentRender::onUpdate()
@@ -44,6 +42,9 @@ void ComponentRender::onUpdate()
     if (!isEnabled()) return;
 
     deleteRemovedObjects();
+
+    ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->createUBOFromLights();
+
     if (isSceneShadersEnabled()) {
         runShadersOpenCLPreUpdate();
     }
@@ -54,12 +55,10 @@ void ComponentRender::onUpdate()
         Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
     }
 
-    if (SETUP->ENABLE_LIGHTS) {
-    }
-
     if (stateScripts == EngineSetup::LUA_PLAY) {
         runScripts();
     }
+
     if (isSceneShadersEnabled()) {
         runShadersOpenCLPostUpdate();
     }
@@ -76,8 +75,20 @@ void ComponentRender::onUpdate()
 
 void ComponentRender::postUpdate()
 {
-    for (auto &object : Brakeza3D::get()->getSceneObjects()) {
-        object->postUpdate();
+    std::vector<Object3D *> sceneObjects = Brakeza3D::get()->getSceneObjects();
+
+    std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
+
+    for (auto o: sceneObjects) {
+        if (o->isEnabled() && !o->isTransparent()) {
+            o->postUpdate();
+        }
+    }
+
+    for (auto o: sceneObjects) {
+        if (o->isEnabled() && o->isTransparent()){
+            o->postUpdate();
+        }
     }
 }
 
@@ -136,14 +147,20 @@ void ComponentRender::deleteRemovedObjects()
 
 void ComponentRender::onUpdateSceneObjects()
 {
-    auto sceneObjects = Brakeza3D::get()->getSceneObjects();
-    auto cameraPosition = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
+    std::vector<Object3D *> sceneObjects = Brakeza3D::get()->getSceneObjects();
 
-    std::map<float, Object3D*> sorted;
-    for (auto & sceneObject : sceneObjects) {
-        float distance = cameraPosition.distance(sceneObject->position);
-        sorted[distance] = sceneObject;
-        if (sceneObject->isEnabled()) sceneObject->onUpdate();
+    std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
+
+    for (auto o: sceneObjects) {
+        if (o->isEnabled() && !o->isTransparent()) {
+            o->onUpdate();
+        }
+    }
+
+    for (auto o: sceneObjects) {
+        if (o->isEnabled() && o->isTransparent()){
+            o->onUpdate();
+        }
     }
 }
 
@@ -444,4 +461,9 @@ void ComponentRender::removeShader(int index) {
     if (index >= 0 && index < sceneShaders.size()) {
         sceneShaders.erase(sceneShaders.begin() + index);
     }
+}
+
+bool ComponentRender::compareDistances(Object3D* obj1, Object3D* obj2)
+{
+    return obj1->getDistanceToCamera() > obj2->getDistanceToCamera();
 }
