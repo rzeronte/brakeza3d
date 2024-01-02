@@ -19,7 +19,8 @@ EnemyGhost::EnemyGhost() :
         EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::Enemy
     )),
     counterStuck(Counter(5)),
-    projectileEmitter(nullptr)
+    projectileEmitter(nullptr),
+    projectileStartOffsetPosition(1.4)
 {
     counterDamageBlink.setEnabled(false);
     counterStuck.setEnabled(false);
@@ -228,7 +229,7 @@ void EnemyGhost::makeReward()
         }
         case 2: {
             int randomWeapon = Tools::random(0, 5);
-            auto *weaponItem = new ItemWeaponGhost(playerWeapons[randomWeapon], false);
+            auto *weaponItem = new ItemWeaponGhost(playerWeapons[randomWeapon]);
             weaponItem->setLabel("itemWeapon");
             weaponItem->setEnableLights(false);
             weaponItem->setPosition(getPosition());
@@ -320,7 +321,7 @@ void EnemyGhost::shoot(Object3D *target)
             bool shootResult = weapon->shootProjectile(
                 this,
                 positionProjectile,
-                AxisUp().getScaled(0.1),
+                AxisUp().getScaled(projectileStartOffsetPosition),
                 direction,
                 getRotation(),
                 PaletteColors::getEnemyProjectile(),

@@ -341,7 +341,6 @@ void ComponentGame::updateFadeToGameState()
     }
 }
 
-
 void ComponentGame::updateEnemyTargetedCrossFire()
 {
     if (gameState != EngineSetup::GAMING) return;
@@ -352,7 +351,7 @@ void ComponentGame::updateEnemyTargetedCrossFire()
 
     const auto direction = selected->getPosition() - spaceCrossFirePosition;
 
-    const float speed = 0.4f;
+    const float speed = 0.1f;
     spaceCrossFirePosition = spaceCrossFirePosition + direction.getScaled(speed);
 
     imageCrossFireScreenPosition = Transforms::WorldToPoint(spaceCrossFirePosition);
@@ -360,8 +359,12 @@ void ComponentGame::updateEnemyTargetedCrossFire()
     imageCrossFireScreenPosition.x -= imageCrossFire->width() / 2;
     imageCrossFireScreenPosition.y -= imageCrossFire->height() / 2;
 
-    imageCrossFire->drawFlat(imageCrossFireScreenPosition.x, imageCrossFireScreenPosition.y, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
+    imageCrossFire->drawFlatAlpha(
+        imageCrossFireScreenPosition.x,
+        imageCrossFireScreenPosition.y,
+        1.0,
+        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+    );
 }
 
 int ComponentGame::getLiveEnemiesCounter()

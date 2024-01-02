@@ -1,16 +1,13 @@
 #ifndef BRAKEDA3D_ITEMWEAPONGHOST_H
 #define BRAKEDA3D_ITEMWEAPONGHOST_H
 
-
 #include "../../include/Physics/Mesh3DGhost.h"
 #include "../Weapons/Weapon.h"
 #include "ItemWithTutorial.h"
 
 class ItemWeaponGhost : public Mesh3DGhost, public ItemWithTutorial  {
-    Mesh3D *frame;
-    bool hasFrame;
 public:
-    explicit ItemWeaponGhost(Weapon *weaponType, bool frame);
+    explicit ItemWeaponGhost(Weapon *weaponType);
 
     Weapon *weaponType;
 
@@ -21,8 +18,6 @@ public:
     void onDrawHostBuffer() override;
 
     void postUpdate() override;
-
-    ~ItemWeaponGhost() override;
 };
 
 

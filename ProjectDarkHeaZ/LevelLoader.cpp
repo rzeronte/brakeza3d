@@ -383,7 +383,7 @@ ItemWeaponGhost* LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
         frameBox = true;
     }
 
-    auto *weaponItem = new ItemWeaponGhost(weapons[indexWeapon], false);
+    auto *weaponItem = new ItemWeaponGhost(weapons[indexWeapon]);
     weaponItem->setLabel(Brakeza3D::uniqueObjectLabel("itemWeapon"));
     weaponItem->setEnableLights(false);
     weaponItem->clone(weapons[indexWeapon]->getModel());
