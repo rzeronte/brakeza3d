@@ -4,15 +4,15 @@
 
 Enemy::Enemy()
 :
-    light(new LightPoint3D(glm::vec4(1), glm::vec4(1), glm::vec4(1), 1, 1, 1)),
-    counterLight(Counter(0.05)),
+    light(LightPoint3D::base()),
+    counterLight(Counter(0.1)),
     stuck(false),
     state(EnemyState::ENEMY_STATE_STOP),
     weapon(nullptr),
     range(0),
     soundChannel(-1),
     rewards(false),
-    lightPositionOffset(Vertex3D(0, 0, -1000))
+    lightPositionOffset(Vertex3D(0, 0, -2))
 {
     light->setRotation(180, 0, 0);
     light->setEnabled(false);

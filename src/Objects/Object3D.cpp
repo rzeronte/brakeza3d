@@ -11,6 +11,7 @@ Object3D::Object3D() :
     position(Vertex3D(1, 1, 1)),
     motion(nullptr),
     parent(nullptr),
+    transparent(false),
     enabled(true),
     removed(false),
     decal(false),
@@ -156,9 +157,13 @@ void Object3D::onUpdate()
 
     if (!isEnabled()) return;
 
+    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    distanceToCamera = camera->getPosition().distance(getPosition());
+
     if (this->isFollowCamera()) {
-        this->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
-        this->setRotation(ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose());
+        this->setPosition(camera->getPosition());
+        this->setRotation(camera->getRotation().getTranspose());
     }
 
     if (getBehavior() != nullptr) {
@@ -168,7 +173,6 @@ void Object3D::onUpdate()
     if (ComponentsManager::get()->getComponentRender()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
         runScripts();
     }
-
 }
 
 void Object3D::runScripts()
@@ -384,6 +388,8 @@ void Object3D::drawImGuiProperties()
 {
     ImGui::Checkbox("Enabled", &enabled);
     ImGui::SameLine();
+    ImGui::Checkbox("Transparent", &transparent);
+    ImGui::SameLine();
 
     static char name[256];
     strncpy(name, label.c_str(), sizeof(name));
@@ -518,6 +524,7 @@ cJSON *Object3D::getJSON()
     cJSON_AddStringToObject(root, "name", getLabel().c_str());
     cJSON_AddNumberToObject(root, "scale", getScale());
     cJSON_AddBoolToObject(root, "stencilBufferEnabled", isStencilBufferEnabled());
+    cJSON_AddBoolToObject(root, "transparent", isTransparent());
 
     cJSON *position = cJSON_CreateObject();
     cJSON_AddNumberToObject(position, "x", (int) getPosition().x);
@@ -629,4 +636,16 @@ void Object3D::removeShader(int index) {
 
 const Timer &Object3D::getTimer() const {
     return timer;
+}
+
+bool Object3D::isTransparent() const {
+    return transparent;
+}
+
+void Object3D::setTransparent(bool transparent) {
+    Object3D::transparent = transparent;
+}
+
+float Object3D::getDistanceToCamera() const {
+    return distanceToCamera;
 }

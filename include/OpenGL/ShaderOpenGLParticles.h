@@ -21,7 +21,7 @@ struct Particle{
     }
 };
 
-#define MaxParticles 1024
+#define MaxParticles 512
 
 class ShaderOpenGLParticles : ShaderOpenGL {
     GLuint VertexArrayID;

@@ -27,7 +27,7 @@ Player::Player()
         false,
         this,
         this->AxisDown().getNormalize(),
-        this->AxisDown().getScaled(1100),
+        this->AxisDown().getScaled(0.1),
         500,
         0,
         Color::green(),
@@ -39,7 +39,8 @@ Player::Player()
     energyShieldEnabled(false),
     allowEnergyShield(false),
     counterLight(Counter(0.05)),
-    lightPositionOffset(Vertex3D(0, 0, -1000)),
+    lightPositionOffset(Vertex3D(0, 0, -1)),
+    particlesEngineLeftOffset(Vertex3D(0, 0.2, 0)),
     state(PlayerState::EMPTY),
     currentWeaponIndex(0),
     satellite(PlayerSatellite(this)),
@@ -47,11 +48,12 @@ Player::Player()
     dashPower(INITIAL_POWER_DASH),
     power(INITIAL_POWER),
     friction(INITIAL_FRICTION),
-    maxVelocity(INITIAL_MAX_VELOCITY)
+    maxVelocity(INITIAL_MAX_VELOCITY),
+    velocity(Vertex3D(0, 0, 0))
 {
-    velocity = Vertex3D(0, 0, 0);
+    setTransparent(false);
 
-    light = new LightPoint3D(glm::vec4(1), glm::vec4(1), glm::vec4(1), 1, 1, 1);
+    light = LightPoint3D::base();
     light->setRotation(180, 0, 0);
     light->setEnabled(false);
     Brakeza3D::get()->addObject3D(light, "playerLight");
@@ -85,7 +87,6 @@ Player::Player()
         std::string(EngineSetup::get()->IMAGES_FOLDER + "shield_mask.png")
     );
 
-    //spriteEnergyShield = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "Smoke45Frames.png"), 128, 128, 45, 45));
     spriteEnergyShield = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "shield.png"), 80, 80, 20, 60));
 
     spriteEnergyShield->setEnabled(false);
@@ -116,7 +117,7 @@ bool Player::takeDamage(float dmg)
         return false;
     }
 
-    this->stamina -= dmg;
+    //this->stamina -= dmg;
 
     if (stamina <= 0) {
         stamina = 0;
@@ -161,7 +162,7 @@ void Player::shoot(float intensity)
             bool resultShoot = weapon->shootProjectile(
                 this,
                 getPosition(),
-                AxisUp().getScaled(0.01),
+                AxisUp().getScaled(0.1),
                 AxisUp().getInverse(),
                 getRotation(),
                 PaletteColors::getPlayerProjectile(),
@@ -359,7 +360,7 @@ void Player::onDrawHostBuffer()
 void Player::updateShaderParticles()
 {
     particleEngineLeft->onUpdate();
-    particleEngineLeft->setPosition(getPosition());
+    particleEngineLeft->setPosition(getPosition() + particlesEngineLeftOffset - AxisUp().getScaled(-1));
     particleEngineLeft->setRotation(getRotation());
 
     /*shaderParticlesTwo->update(
@@ -411,8 +412,7 @@ void Player::setVelocity(Vertex3D v)
 
 void Player::updateLight()
 {
-    light->setPosition(getPosition() + lightPositionOffset + AxisUp().getScaled(-1000));
-    light->onUpdate();
+    light->setPosition(getPosition() + lightPositionOffset + AxisUp().getScaled(-0.5));
 }
 
 void Player::resolveCollision(Collisionable *with)
@@ -881,8 +881,35 @@ void Player::updateSpriteEnergyShield()
 void Player::drawImGuiProperties()
 {
     Mesh3DGhost::drawImGuiProperties();
-    if (ImGui::TreeNode("Engine Left")) {
-        particleEngineLeft->drawImGuiProperties();
-        ImGui::TreePop();
+
+    ImGui::Separator();
+
+    if (ImGui::TreeNode("Player Settings")) {
+        if (ImGui::TreeNode("Engine Left")) {
+            particleEngineLeft->drawImGuiProperties();
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
+        if (ImGui::TreeNode("Light Offset##")) {
+            const float range_color_sensibility = 0.01f;
+            const float range_col_min = -100.0f;
+            const float range_col_max = 100.0f;
+
+            ImGui::DragScalar("x", ImGuiDataType_Float, &lightPositionOffset.x, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
+            ImGui::DragScalar("y", ImGuiDataType_Float, &lightPositionOffset.y, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
+            ImGui::DragScalar("z", ImGuiDataType_Float, &lightPositionOffset.z, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
+        if (ImGui::TreeNode("Engine Left Position Offset##")) {
+            const float range_color_sensibility = 0.01f;
+            const float range_col_min = -100.0f;
+            const float range_col_max = 100.0f;
+
+            ImGui::DragScalar("x", ImGuiDataType_Float, &particlesEngineLeftOffset.x, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
+            ImGui::DragScalar("y", ImGuiDataType_Float, &particlesEngineLeftOffset.y, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
+            ImGui::DragScalar("z", ImGuiDataType_Float, &particlesEngineLeftOffset.z, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
+            ImGui::TreePop();
+        }
     }
 }

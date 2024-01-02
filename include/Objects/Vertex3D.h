@@ -11,9 +11,14 @@
 
 class Vertex3D {
 public:
-    Vertex3D();
 
-    Vertex3D(Vertex4D v);
+    float x;
+    float y;
+    float z;
+    float u;
+    float v;
+
+    Vertex3D();
 
     Vertex3D operator+(const Vertex3D &pm) const;
 
@@ -27,49 +32,35 @@ public:
 
     bool operator==(const Vertex3D &pm) const;
 
-    float x;
-    float y;
-    float z;
-
-    // texture coordenates
-    float u;
-    float v;
-
     Vertex3D(float, float, float);
 
-    Vertex3D(const float[3]);
+    explicit Vertex3D(const float[3]);
 
-    Vertex3D getNormalize() const;
+    [[nodiscard]] Vertex3D getNormalize() const;
 
-    Vertex3D getInverse() const;
+    [[nodiscard]] Vertex3D getInverse() const;
 
-    Vertex3D getAbsolute() const;
+    [[nodiscard]] float getModule() const;
 
-    float getModule() const;
+    [[nodiscard]] float getSquaredLength() const;
 
-    float getSquaredLength() const;
+    [[nodiscard]] Vertex3D getScaled(float) const;
 
-    Vertex3D getScaled(float) const;
-
-    Vertex3D getScaled(float xs, float ys, float zs) const;
+    [[nodiscard]] Vertex3D getScaled(float xs, float ys, float zs) const;
 
     void setScaled(float);
 
-    void setLength(float);
-
     float distance(Vertex3D);
 
-    Vertex3D divide(float value);
+    [[nodiscard]] Vertex3D divide(float value) const;
 
     static Vertex3D zero();
 
-    void saveToFloat3(float *v) const;
-
     void saveToBtVector3(btVector3 *v) const;
 
-    Vertex4D createVertex4D();
+    [[nodiscard]] btVector3 toBullet() const;
 
-    glm::vec3 toGLM();
+    [[nodiscard]] glm::vec3 toGLM() const;
 };
 
 #endif //SDL2_3D_ENGINE_VERTEX_H

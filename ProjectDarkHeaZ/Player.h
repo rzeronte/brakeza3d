@@ -42,7 +42,6 @@ enum WeaponStatus {
 
 class Player : public Mesh3DGhost, public LivingObject, public RotatableToTarget {
 private:
-
     float energy;
     float startEnergy;
     float recoverEnergySpeed;
@@ -68,6 +67,7 @@ private:
     Counter counterLight;
 
     Vertex3D lightPositionOffset;
+    Vertex3D particlesEngineLeftOffset;
 
     PlayerState state;
 
@@ -81,7 +81,6 @@ private:
     Image *avatar;
     FXEnergyShield *shaderEnergyShield;
     Sprite2D *spriteEnergyShield;
-
 public:
 
     Player();

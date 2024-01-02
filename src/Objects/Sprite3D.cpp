@@ -12,6 +12,7 @@ Sprite3D::Sprite3D(float width, float height):
 {
     this->counter = Counter();
     this->counter.setEnabled(true);
+    setTransparent(true);
 }
 
 void Sprite3D::onUpdate()
@@ -19,9 +20,6 @@ void Sprite3D::onUpdate()
     Object3D::onUpdate();
 
     this->updateTrianglesCoordinatesAndTexture();
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
         this,

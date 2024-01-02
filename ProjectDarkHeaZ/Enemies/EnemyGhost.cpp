@@ -61,12 +61,6 @@ void EnemyGhost::onUpdate()
 
     if (isRemoved()) return;
 
-    counterLight.update();
-    if (counterLight.isFinished()) {
-        light->setEnabled(false);
-        counterLight.setEnabled(false);
-    }
-
     if (!rotationFrameEnabled) {
         rotateToTarget();
     }
@@ -90,7 +84,7 @@ void EnemyGhost::onUpdate()
 
     auto componentGame = ComponentsManager::get()->getComponentGame();
 
-    this->tryShoot();
+    tryShoot();
 
     updateLasers();
 
@@ -108,6 +102,25 @@ void EnemyGhost::onUpdate()
 
     if (getBehavior() != nullptr) {
         particleEmitter->onUpdate();
+    }
+}
+
+void EnemyGhost::postUpdate()
+{
+    Mesh3D::postUpdate();
+
+    if (!isEnabled()) {
+        return;
+    }
+
+    counterLight.update();
+    if (counterLight.isFinished()) {
+        light->setEnabled(false);
+        counterLight.setEnabled(false);
+    }
+
+    if (projectileEmitter != nullptr) {
+        projectileEmitter->postUpdate();
     }
 }
 
@@ -164,19 +177,6 @@ void EnemyGhost::updateLasers()
     for (auto ray : fixedLasers) {
         ray->setRay(getRotation() * ray->getDirection());
         ray->setPosition(getPosition());
-    }
-}
-
-void EnemyGhost::postUpdate()
-{
-    Mesh3D::postUpdate();
-
-    if (!isEnabled()) {
-        return;
-    }
-
-    if (projectileEmitter != nullptr) {
-        projectileEmitter->postUpdate();
     }
 }
 
@@ -320,7 +320,7 @@ void EnemyGhost::shoot(Object3D *target)
             bool shootResult = weapon->shootProjectile(
                 this,
                 positionProjectile,
-                Vertex3D(0, 0, 0),
+                AxisUp().getScaled(0.1),
                 direction,
                 getRotation(),
                 PaletteColors::getEnemyProjectile(),
@@ -474,8 +474,7 @@ void EnemyGhost::initLight()
 
 void EnemyGhost::updateLight()
 {
-    light->setPosition(getPosition() + lightPositionOffset + AxisUp().getScaled(-700));
-    light->onUpdate();
+    light->setPosition(getPosition() + lightPositionOffset + AxisUp().getScaled(-0.1));
 }
 
 void EnemyGhost::setSwarmObject(SwarmObject *o) {

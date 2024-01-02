@@ -13,6 +13,7 @@ ShockWave::ShockWave(Vertex3D position, float speed, float ttl, ShockWaveParams 
     deleteWhenEnds(deleteWhenEnds)
 {
     setPosition(position);
+    setTransparent(true);
 }
 
 void ShockWave::onUpdate()

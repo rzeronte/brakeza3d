@@ -1,3 +1,5 @@
+#define GL_GLEXT_PROTOTYPES
+
 //
 // Created by eduardo on 18/07/23.
 //
@@ -48,26 +50,23 @@ void FXBlink::update()
     if (isBlinking) {
         auto mesh = dynamic_cast<Mesh3D*> (object);
         if (mesh != nullptr) {
-            executeKernelOpenCL();
+            glDisable(GL_BLEND);
+
+            glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+            ComponentsManager::get()->getComponentWindow()->getShaderOGLColor()->render(
+                object,
+                object->vertexbuffer,
+                object->uvbuffer,
+                object->normalbuffer,
+                (int) object->vertices.size(),
+                false,
+                color
+            );
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+            glEnable(GL_BLEND);
         }
     }
-}
-
-void FXBlink::executeKernelOpenCL()
-{
-    glDisable(GL_BLEND);
-
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLColor()->render(
-        object,
-        object->vertexbuffer,
-        object->uvbuffer,
-        object->normalbuffer,
-        (int) object->vertices.size(),
-        false,
-        color
-    );
-
-    glEnable(GL_BLEND);
 }
 
 void FXBlink::setColor(Color color) {

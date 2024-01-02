@@ -56,11 +56,9 @@ public:
 
     [[nodiscard]] Object3D *getParent() const;
 
-    void setReach(int i);
+    void setReach(float reach);
 
     virtual ~RayLight();
-
-    LightPoint3D *getLight();
 };
 
 

@@ -45,6 +45,9 @@ struct GUIWidgetObjects3D {
                     continue;
                 }
 
+                auto projectile = dynamic_cast<Projectile3DBody*> (o);
+                if (projectile != nullptr) continue;
+
                 std::string optionText = std::to_string(i + 1) + ") " + o->getLabel();
                 if (ImGui::Selectable(optionText.c_str(), selectedObjectIndex == i)) {
                     selectedObjectIndex = i;

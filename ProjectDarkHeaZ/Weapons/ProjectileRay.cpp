@@ -22,6 +22,7 @@ ProjectileRay::ProjectileRay(
 {
     setParent(parent);
     setPosition(position);
+    setTransparent(true);
 }
 
 void ProjectileRay::onUpdate()
@@ -30,10 +31,10 @@ void ProjectileRay::onUpdate()
 
     if (!isEnabled()) return;
 
-    /*if (!indestructible && !ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition())) {
+    if (!indestructible && !ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition())) {
         this->setRemoved(true);
         return;
-    }*/
+    }
 
     addToPosition(getDirection().getScaled((float) speed));
 }
@@ -68,8 +69,8 @@ void ProjectileRay::resolveCollision(Collisionable *objectWithCollision)
         this->setRemoved(true);
     }
 
-    Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forProjectile(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
-    Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getSpriteSparklesGreen()->getAnimation());
+    Tools::makeExplosion(this, getPosition() + Vertex3D(0, 0, -1), 1, OCParticlesContext::forProjectile(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
+    Tools::makeFadeInSprite(getPosition() + Vertex3D(0, 0, -2), ComponentsManager::get()->getComponentGame()->getSpriteSparklesGreen()->getAnimation());
 }
 
 float ProjectileRay::getSpeed() const {

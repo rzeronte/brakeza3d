@@ -9,6 +9,7 @@
 #include "ShaderOpenGL.h"
 #include "../Objects/OpenGLShaderTypes.h"
 #include "../Objects/SpotLight3D.h"
+#include "../Objects/Mesh3D.h"
 #include <SDL2/SDL_opengl.h>
 #include <ext/matrix_float4x4.hpp>
 #include <vector>
@@ -17,26 +18,44 @@ class ShaderOpenGLRender: public ShaderOpenGL {
     GLuint VertexArrayID;
 
     DirLightOpenGL directionalLight;
+
     std::vector<PointLightOpenGL> pointsLights;
     std::vector<SpotLightOpenGL> spotLights;
-    GLuint bufferUBO;
-    GLuint bufferUBOSpot;
+    GLuint bufferUBOLightPoints;
+    GLuint bufferUBOSpotLights;
+
+    GLint matrixProjectionUniform;
+    GLint matrixViewUniform;
+    GLint matrixModelUniform;
+
+    GLint viewPositionUniform;
+    GLint numLightPointsUniform;
+    GLint numSpotLightsUniform;
+
+    GLint directionalLightDirectionUniform;
+    GLint directionalLightAmbientUniform;
+    GLint directionalLightDiffuseUniform;
+    GLint directionalLightSpecularUniform;
+
+    GLint materialTextureDiffuseUniform;
+    GLint materialTextureSpecularUniform;
+    GLint materialShininessUniform;
 
 public:
     ShaderOpenGLRender();
     void render(Object3D *o, GLint textureID, GLint textureSpecularID, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size, GLuint framebuffer);
 
-    static void selectActiveTextures(GLint textureID, GLint textureSpecularID) ;
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer) ;
 
-    void fillPointLightsUBO();
-
-    void getPointLightFromSceneObjects();
+    void createUBOFromLights();
 
     DirLightOpenGL *getDirectionalLight();
 
     void destroy() override;
 
+    void renderMesh(Mesh3D *o, GLuint framebuffer);
+
+    void foo();
 };
 
 
