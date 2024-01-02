@@ -8,7 +8,6 @@
 #include "../Items/ItemShieldGhost.h"
 #include "../Common/ShockWave.h"
 
-
 Weapon::Weapon(
     const std::string& name,
     const std::string& weaponModel,
@@ -210,7 +209,7 @@ bool Weapon::shootProjectile(
                 ParticleEmitterState::DEFAULT,
                 nullptr,
                 position,
-                0.5,
+                0,
                 particlesFrom,
                 particlesTo,
                 OCParticlesContext::forProjectile()

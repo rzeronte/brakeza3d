@@ -20,6 +20,7 @@ Player::Player()
     warningDamage(false),
     rescuedHumans(0),
     coins(5000),
+    projectileStartOffsetPosition(1.4),
     weapon(nullptr),
     counterStucked(Counter(5)),
     counterDashCadence(Counter(1)),
@@ -65,19 +66,7 @@ Player::Player()
         9999,
         PaletteColors::getParticlesPlayerFrom(),
         PaletteColors::getParticlesPlayerTo(),
-        OCParticlesContext(
-            0.0f,
-            5,
-            1.5f,
-            25.0f,
-            1,
-            10,
-            125.0f,
-            255.0f,
-            1,
-            1,
-            0.99f
-        )
+        OCParticlesContext::forPlayerEngine()
     );
 
     shaderEnergyShield = new FXEnergyShield(
@@ -162,7 +151,7 @@ void Player::shoot(float intensity)
             bool resultShoot = weapon->shootProjectile(
                 this,
                 getPosition(),
-                AxisUp().getScaled(0.1),
+                AxisUp().getScaled(projectileStartOffsetPosition),
                 AxisUp().getInverse(),
                 getRotation(),
                 PaletteColors::getPlayerProjectile(),
@@ -434,7 +423,7 @@ void Player::resolveCollision(Collisionable *with)
         } else {
             makeRandomPlayerDamageSound();
             takeDamage(dmg);
-            projectile->setRemoved(true);
+            //projectile->setRemoved(true);
         }
     }
 

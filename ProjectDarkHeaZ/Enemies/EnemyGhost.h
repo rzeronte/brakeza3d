@@ -22,6 +22,7 @@ private:
 
     ParticleEmitter *particleEmitter;
     SwarmObject *swarmObject;
+    float projectileStartOffsetPosition;
 protected:
     std::vector<ProjectileRay *> fixedLasers;
     std::vector<EnemyDialog *> dialogs;

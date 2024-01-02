@@ -81,6 +81,8 @@ private:
     Image *avatar;
     FXEnergyShield *shaderEnergyShield;
     Sprite2D *spriteEnergyShield;
+
+    float projectileStartOffsetPosition;
 public:
 
     Player();

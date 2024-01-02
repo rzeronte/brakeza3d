@@ -89,8 +89,9 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
 
     particleEmitter->setStopAdd(true);
     startEndingCounter();
+    setRender(false);
 
-    Tools::makeExplosion(this, getPosition(), 0.75f, OCParticlesContext::forProjectile(), from, to);
+    //Tools::makeExplosion(this, getPosition(), 0.75f, OCParticlesContext::forProjectile(), from, to);
     Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getSpriteSparklesRed()->getAnimation());
 }
 
@@ -109,6 +110,8 @@ void AmmoProjectileBody::onUpdate()
 
     if (!ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition()) && !isWasCollision()) {
         startEndingCounter();
+        particleEmitter->setStopAdd(true);
+        setRender(false);
     }
 
     particleEmitter->setPosition(getPosition());
