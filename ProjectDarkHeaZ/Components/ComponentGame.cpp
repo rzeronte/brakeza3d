@@ -85,15 +85,6 @@ void ComponentGame::onStart()
 
     storeManager = new StoreManager(player, textWriter);
 
-    itemBoxFrame = new Mesh3D();
-    itemBoxFrame->setRotation(0, 0, 0);
-    itemBoxFrame->setEnabled(false);
-    itemBoxFrame->setAlpha(255);
-    itemBoxFrame->setEnableLights(true);
-    itemBoxFrame->setScale(1);
-    itemBoxFrame->setStencilBufferEnabled(true);
-    itemBoxFrame->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "frame_box.fbx"));
-
     loadSpaceship("spaceships/player.fbx", "spaceships/spaceship_01.png");
     loadSpaceship("spaceships/player02.fbx", "spaceships/spaceship_02.png");
     loadSpaceship("spaceships/player03.fbx", "spaceships/spaceship_03.png");
@@ -125,7 +116,7 @@ void ComponentGame::loadShaders()
     shaderColor = new FXColorTint(false, PaletteColors::getStamina(), 0.75f);
     shaderProjectiles = new FXLaser();
 
-    shaderEdgeObject = new FXOutliner(false, nullptr, PaletteColors::getStatisticsText(), 2.0f);
+    shaderEdgeObject = new FXOutliner(false, nullptr, PaletteColors::getEnergy(), 1.0f);
 }
 
 ComponentGame::~ComponentGame()
@@ -237,17 +228,18 @@ void ComponentGame::handleOnUpdateTutorialImages(float alpha)
         float oldAlpha = textWriter->getAlpha();
         textWriter->setAlpha(alpha);
         textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
-        std::string message = std::to_string(getLevelLoader()->getCurrentTutorialIndex() + 1) + " / " + std::to_string((int)getLevelLoader()->getTutorials().size());
-        if (getLevelLoader()->getTutorials().size() > 1) {
-            textWriter->writeTTFCenterHorizontal(323, message.c_str(), PaletteColors::getCrt(), 0.3f);
-        }
+        std::string message = std::to_string(getLevelLoader()->getCurrentTutorialIndex() + 1) + " of " + std::to_string((int)getLevelLoader()->getTutorials().size());
+
         //imageCablesVertical->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
         boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
         getLevelLoader()->drawCurrentTutorialImage(alpha);
 
         writeDialogTextToContinue("Press ENTER to start...");
-
+        if (getLevelLoader()->getTutorials().size() > 1) {
+            textWriter->writeTTFCenterHorizontal(495, message.c_str(), PaletteColors::getCrt(), 0.5f);
+        }
         textWriter->setAlpha(oldAlpha);
+
     }
 }
 
@@ -528,6 +520,7 @@ EngineSetup::GameState ComponentGame::getGameState() {
 void ComponentGame::loadSelectedSpaceshipModel()
 {
     player->clone(spaceships[spaceshipSelectedIndex]);
+    player->setScale(1);
     //player->updateBoundingBox();
     player->makeSimpleGhostBody(
         Vertex3D(1, 1, 1),
@@ -977,7 +970,7 @@ void ComponentGame::updateShaders()
     shaderColor->update();
     shaderProjectiles->update();
 
-    Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(5);
+    Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.25);
     vel.z = 0;
 
     levelLoader->moveBackgroundObjects(vel.getInverse());
@@ -993,12 +986,13 @@ void ComponentGame::shaderBackgroundUpdate()
         gameState == EngineSetup::PRESS_KEY_NEW_LEVEL ||
         gameState == EngineSetup::PRESS_KEY_BY_WIN ||
         gameState == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL ||
-        gameState == EngineSetup::GAMING_TUTORIAL
+        gameState == EngineSetup::GAMING_TUTORIAL ||
+        gameState == EngineSetup::STORE
     ) {
         Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.0075f);
 
         shaderBackgroundImage->update(vel.x, vel.y);
-        shaderForegroundImage->update(vel.x * 0.5, vel.y * 0.5);
+        shaderForegroundImage->update(vel.x * 0.5f, vel.y * 0.5f);
     }
 }
 
@@ -1010,12 +1004,11 @@ void ComponentGame::zoomCameraCountDown()
     Vector3D direction(origin, to);
     auto counter = getLevelLoader()->getCountDown();
 
-    float t = counter->getAcumulatedTime() / counter->getStep();
+    const float t = counter->getAcumulatedTime() / counter->getStep();
 
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(origin + direction.getComponent().getScaled(t * 0.025f));
 
-    int alpha = 1 - (t * 2.5);
-    alpha = std::max(0, std::min(alpha, 1));
+    const float alpha = std::fmax(0.0f, std::fmin(1.0f - (t * 2.5f), 1.0f));
 
     handleOnUpdateTutorialImages(alpha);
 }
@@ -1244,10 +1237,6 @@ StoreManager *ComponentGame::getStoreManager() const {
     return storeManager;
 }
 
-Mesh3D *ComponentGame::getItemBoxFrame() const {
-    return itemBoxFrame;
-}
-
 void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation)
 {
     auto model = new Mesh3D();
@@ -1257,10 +1246,10 @@ void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::s
     model->setEnabled(false);
     model->setAlpha(1);
     model->setEnableLights(true);
-    model->setScale(1);
+    model->setScale(2);
     model->setStencilBufferEnabled(true);
     model->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + fileNameModel));
-    model->setPosition(Vertex3D(-3, -3, 20));
+    model->setPosition(Vertex3D(-2, -1, 20));
 
     Brakeza3D::get()->addObject3D(model, "spaceshipForSelection_" + std::to_string(spaceships.size()));
     spaceships.push_back(model);
@@ -1375,7 +1364,7 @@ void ComponentGame::decreaseHelpImage()
 void ComponentGame::writeDialogTextToContinue(const char *string)
 {
     textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());
-    textWriter->writeTTFCenterHorizontal(584, string, PaletteColors::getPressKeyToContinue(), 0.5);
+    textWriter->writeTTFCenterHorizontal(545, string, PaletteColors::getPressKeyToContinue(), 0.5);
 }
 
 void ComponentGame::handleOnUpdateCountDown()
@@ -1421,9 +1410,9 @@ void ComponentGame::handleOnUpdateHelp(const float alpha)
 
     writeDialogTextToContinue("Press ESC to continue...");
 
-    std::string message = std::to_string(currentHelpIndex + 1) + " / " + std::to_string((int)helps.size());
+    std::string message = std::to_string(currentHelpIndex + 1) + " of " + std::to_string((int)helps.size());
     if (helps.size() > 1) {
-        textWriter->writeTTFCenterHorizontal(323, message.c_str(), PaletteColors::getCrt(), 0.3f);
+        textWriter->writeTTFCenterHorizontal(495, message.c_str(), PaletteColors::getCrt(), 0.0f);
     }
 
     ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
@@ -1434,7 +1423,7 @@ void ComponentGame::handleOnUpdateHelp(const float alpha)
 
 void ComponentGame::handleOnUpdateStore(const float alpha)
 {
-    imageCablesStore->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    //imageCablesStore->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     boxStore->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
@@ -1442,7 +1431,6 @@ void ComponentGame::handleOnUpdateStore(const float alpha)
     storeManager->update(alpha);
 
     writeDialogTextToContinue("Press ESC to continue...");
-
 }
 
 void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)

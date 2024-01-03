@@ -82,11 +82,6 @@ void Mesh3D::cloneParts(Mesh3D *source, bool isFlatTextureColor, bool isEnableLi
 
 void Mesh3D::clone(Mesh3D *source)
 {
-    /*for (auto &triangle : source->modelTriangles) {
-        auto *t = new Triangle(triangle->A, triangle->B, triangle->C,this);
-        t->setEnableLights(triangle->isEnableLights());
-        this->modelTriangles.push_back(t);
-    }*/
 
     this->modelTextures = source->modelTextures;
     this->modelSpecularTextures = source->modelSpecularTextures;
@@ -127,7 +122,7 @@ void Mesh3D::onUpdate()
         auto window = ComponentsManager::get()->getComponentWindow();
 
         if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
-            window->getShaderOGLOutline()->drawOutline(this, Color::red(), 1.0f);
+            window->getShaderOGLOutline()->drawOutline(this, Color::red(), 0.5f);
         }
 
         window->getShaderOGLRender()->renderMesh(this,window->getSceneFramebuffer());

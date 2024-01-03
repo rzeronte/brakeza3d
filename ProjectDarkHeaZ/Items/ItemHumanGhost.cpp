@@ -54,7 +54,6 @@ void ItemHumanGhost::takeDamage(float damage)
     if (this->stamina <= 0) {
         blink->setEnabled(false);
         ComponentsManager::get()->getComponentSound()->sound("humanDamage", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), PaletteColors::getPlayerLaser(), PaletteColors::getStamina());
         removeCollisionObject();
         setRemoved(true);
         setRender(false);

@@ -57,7 +57,7 @@ void Sprite2D::onUpdate()
     animation->getCurrentFrame()->drawFlatAlpha(
         x - w/2,
         y - h/2,
-        alpha,
+        alpha/255,
         ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 

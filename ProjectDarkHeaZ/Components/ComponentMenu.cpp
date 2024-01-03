@@ -41,14 +41,14 @@ void ComponentMenu::loadDecorative3DMesh()
     planet->setEnabled(false);
     planet->setAlpha(255);
     planet->setEnableLights(false);
-    planet->setPosition(Vertex3D(-1540, 1000, 30000));
+    planet->setPosition(Vertex3D(-1540, 1000, 300));
     planet->setRotationFrameEnabled(true);
     planet->setRotationFrame(Vertex3D(0.1f, 0.0, 0));
     planet->setRotation(0, 0, 0);
     planet->setScale(31.9);
     planet->setStencilBufferEnabled(true);
 
-    planet->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_planet.fbx"));
+    planet->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "planet_earth.fbx"));
     planet->updateBoundingBox();
     Brakeza3D::get()->addObject3D(planet, "planetMenu");
 
@@ -56,7 +56,7 @@ void ComponentMenu::loadDecorative3DMesh()
     hexagonStation->setEnabled(false);
     hexagonStation->setAlpha(255);
     hexagonStation->setEnableLights(false);
-    hexagonStation->setPosition(Vertex3D(-3800, 1000, 10000));
+    hexagonStation->setPosition(Vertex3D(-3800, 1000, 100));
     hexagonStation->setRotationFrameEnabled(true);
     hexagonStation->setRotationFrame(Vertex3D(0.02f, 0.1f, 0.01));
     hexagonStation->setRotation(20, 40, 0);
@@ -82,7 +82,7 @@ void ComponentMenu::preUpdate()
 
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
-    shaderBackgroundImage->drawFlatAlpha(0, 0, 0.5, fb);
+    shaderBackgroundImage->drawFlatAlpha(0, 0, alpha, fb);
     game->boxTutorial->drawFlatAlpha(0, 0, alpha, fb);
     border->drawFlatAlpha(0, 0, alpha, fb);
     imageLogoBox->drawFlatAlpha(0, 0, alpha, fb);
@@ -99,16 +99,13 @@ void ComponentMenu::onUpdate()
     drawVersion();
 }
 
-void ComponentMenu::postUpdate()
-{
+void ComponentMenu::postUpdate(){
 }
 
-void ComponentMenu::onEnd() {
-
+void ComponentMenu::onEnd(){
 }
 
 void ComponentMenu::onSDLPollEvent(SDL_Event *event, bool &finish) {
-
 }
 
 void ComponentMenu::loadMenuOptions()
@@ -143,8 +140,8 @@ void ComponentMenu::drawOptions()
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto levelInfo = componentGame->getLevelLoader();
 
-    int offsetY = 250;
-    int stepY = 40;
+    int offsetY = 150;
+    int stepY = 50;
 
     auto color = PaletteColors::getCrt();
 
@@ -166,7 +163,7 @@ void ComponentMenu::drawOptions()
             stepY + offsetY,
             text.c_str(),
             color,
-            0.5
+            1.5
         );
 
         if (i == currentOption) {

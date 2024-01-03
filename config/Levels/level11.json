@@ -13,7 +13,6 @@
     "stamina": 100,
     "avatarHud": "avatars/shuttle_hud.png"
   },
-
   "enemies": [
     {
       "name": "RedBallLaser",
@@ -91,7 +90,7 @@
           "damage": 300,
           "length": 5,
           "direction": { "x": 1, "y": 0, "z": 0 },
-          "color": { "r": 144, "g": 0, "b": 0 }
+          "color": { "r": 255, "g": 0, "b": 0 }
         }
       ],
       "weapon": {

@@ -35,27 +35,17 @@ public:
     Vertex3D down = up.getInverse();
     Vertex3D backward = forward.getInverse();
 
-    Vertex3D defaultCameraPosition = Vertex3D(1, 1, 1);
-    Vertex3D defaultCameraAnglesRotation = Vertex3D(190, 0, 0);
-
     Vertex3D gravity = Vertex3D(0, -900.0f, 0);
 
     // Screen dimension constants
-    const int screenWidth = 1024;
-    const int screenHeight = 768;
-
-    float screenWidthHalf = (float) screenWidth / 2;
-    float screenHeightHalf = (float) screenHeight / 2;
+    const int screenWidth = 1280;
+    const int screenHeight = 720;
 
     bool LIMIT_FRAMERATE = true;
     int FRAMERATE = 60;
 
-    int RESOLUTION = screenWidth * screenHeight;
-
     bool BASED_TILE_RENDER = false;
     bool BASED_TILE_RENDER_THREADED = false;
-
-    float EPSILON = 0.00001f;
 
     bool ENABLE_FOG = false;
     float FRUSTUM_FARPLANE_DISTANCE = 100000;
@@ -105,14 +95,6 @@ public:
 
     bool DRAW_FPS = false;
 
-    // FRUSTUM PLANES
-    int NEAR_PLANE = 0;
-    int FAR_PLANE = 1;
-    int LEFT_PLANE = 2;
-    int RIGHT_PLANE = 3;
-    int TOP_PLANE = 4;
-    int BOTTOM_PLANE = 5;
-
     // CONFIG VALUES
     float FRUSTUM_CLIPPING_DISTANCE = 0.00075f;
 
@@ -144,7 +126,6 @@ public:
     float BILLBOARD_WIDTH_DEFAULT = 100.f;
     float BILLBOARD_HEIGHT_DEFAULT = 100.f;
 
-    Uint32 CROSSHAIR_COLOR = 0x00FF00; // GREEN
     bool DRAW_CROSSHAIR = false;
     bool TEXT_ON_OBJECT3D = false;
 

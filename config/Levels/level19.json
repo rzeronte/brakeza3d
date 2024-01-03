@@ -286,7 +286,7 @@
   "background": [
     {
       "name": "Star",
-      "model": "marsh.fbx",
+      "model": "planet_earth.fbx",
       "scale": 20,
       "position": { "x": 50, "y": 80, "z": 20000 },
       "rotation": { "x": 90, "y": 0, "z": 0 },

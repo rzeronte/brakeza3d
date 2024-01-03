@@ -42,7 +42,7 @@
         "speed": 1.0,
         "dispersion": 10,
         "accuracy": 90,
-        "cadenceTime": 0.40,
+        "cadenceTime": 0.50,
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 6,
@@ -57,95 +57,32 @@
     }
   ],
   "items": [
-    {
-      "type": 4,
-      "position": { "x": 10, "y": 20 },
-      "help": 0
-    },
-    {
-      "type": 5,
-      "position": { "x": 90, "y": 20 },
-      "help": 1
-    }
+
   ],
   "background": [
     {
-      "name": "Star",
-      "model": "marsh.fbx",
-      "scale": 14,
-      "position": { "x": 30, "y": 40, "z": 20000 },
+      "name": "Background: Star",
+      "model": "planet_earth.fbx",
+      "scale": 0.1,
+      "position": { "x": 50, "y": 50, "z": 200 },
       "rotation": { "x": 90, "y": 0, "z": 0 },
-      "rotationFrame": { "x": 0.1, "y": 0.1, "z": 0 }
+      "rotationFrame": { "x": 0.05, "y": 0.01, "z": 0 }
     },
     {
-      "name": "asteroid01",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
+      "name": "Background: Marsh",
+      "position": { "x": 63,  "y":	35, "z": 450 },
+      "model":	"planet_sun.fbx",
       "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.02, "y": 0.07, "z": 0.11 },
-      "scale":	1.5,
-      "motion": {
-        "type": 1,
-        "to": { "x": 110, "y": -10 },
-        "from": { "x": -20, "y": 95 },
-        "speed": 0.09
-      }
+      "rotationFrame": { "x": 0.01, "y": 0.1, "z": 0.05 },
+      "scale":0.1
     },
     {
-      "name": "asteroid02",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.03, "y": 0.07, "z": 0.11 },
-      "scale":	2.5,
-      "motion": {
-        "type": 1,
-        "to": { "x": 110, "y": -20 },
-        "from": { "x": 30, "y": 70 },
-        "speed": 0.09
-      }
-    },
-    {
-      "name": "asteroid03",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.05, "y": 0.03, "z": 0.14 },
-      "scale":	2.0,
-      "motion": {
-        "type": 1,
-        "to": { "x": 110, "y": 0 },
-        "from": { "x": 20, "y": 75 },
-        "speed": 0.09
-      }
-    },
-    {
-      "name": "asteroid04",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.03, "y": 0.17, "z": 0.21 },
-      "scale":	3,
-      "motion": {
-        "type": 1,
-        "to": { "x": 105, "y": 50 },
-        "from": { "x": 10, "y": 100 },
-        "speed": 0.09
-      }
-    },
-    {
-      "name": "asteroid05",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.03, "y": 0.17, "z": 0.21 },
-      "scale":	5,
-      "motion": {
-        "type": 1,
-        "to": { "x": 105, "y": 40 },
-        "from": { "x": 45, "y": 80 },
-        "speed": 0.09
-      }
+      "name": "Background: Station",
+      "position": { "x": 80,  "y":	40, "z": 400 },
+      "model":	"space_hexagon.fbx",
+      "rotation": { "x": 60, "y": 0,  "z": 30 },
+      "rotationFrame": { "x": 0.0, "y": 0.04, "z": 0.0 },
+      "scale": 5
     }
   ]
 }

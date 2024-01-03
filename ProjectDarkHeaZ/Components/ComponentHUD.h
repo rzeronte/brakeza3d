@@ -19,13 +19,11 @@ private:
     std::vector<Button*> buttons;
     FXLaser *shaderLasers;
     TexturePackage *HUDTextures;
-    int offsetY = 710;
-    int offsetX = 170;
     int playerBarSeparation = 15;
 public:
     ComponentHUD();
 
-    virtual ~ComponentHUD();
+    ~ComponentHUD() override;
 
     void onStart() override;
 
@@ -62,6 +60,9 @@ public:
     void drawGhateringResources();
 
     void drawEnemyIconAndName();
+
+    int offsetX = 300;
+    int offsetY = 660;
 };
 
 
