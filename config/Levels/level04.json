@@ -107,7 +107,7 @@
     },
     {
       "name": "marsh",
-      "model": "marsh.fbx",
+      "model": "planet_earth.fbx",
       "scale": 0.1,
       "position": { "x": 75, "y": 50, "z": 400 },
       "rotation": { "x": 90, "y": 0, "z": 0 },

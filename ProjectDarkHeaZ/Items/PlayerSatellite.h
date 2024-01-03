@@ -24,6 +24,8 @@ public:
 
     void resolveCollision(Collisionable *collisionable) override;
 
+    void setEnabled(bool enabled) override;
+
     [[nodiscard]] float getDamage() const;
 
     void updateShaderParticles();

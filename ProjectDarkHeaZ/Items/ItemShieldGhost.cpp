@@ -38,7 +38,6 @@ void ItemShieldGhost::onUpdate()
         setRemoved(true);
         setEnabled(false);
         removeCollisionObject();
-        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
         Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1, ShockWaveParams::standard(), true), Brakeza3D::uniqueObjectLabel("shockWave"));
     }
 }
@@ -56,7 +55,6 @@ void ItemShieldGhost::resolveCollision(Collisionable *collisionable)
 
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_BOMB);
         enemy->takeDamage(getDamage());
-        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
     }
 }
 

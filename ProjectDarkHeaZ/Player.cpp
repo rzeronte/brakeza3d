@@ -84,7 +84,7 @@ Player::Player()
 
 void Player::loadSatellite()
 {
-    satellite.setEnabled(true);
+    satellite.setEnabled(false);
     satellite.setLabel("satellitePlayer");
     satellite.AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "droid_ball.fbx"));
     satellite.setParent(parent);
@@ -137,7 +137,11 @@ void Player::respawn()
 {
     Logging::Log("Respawn Player");
     setState(PlayerState::LIVE);
+
     setStamina(INITIAL_STAMINA);
+    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
+        satellite.setEnabled(true);
+    }
 }
 
 void Player::shoot(float intensity)
@@ -373,12 +377,13 @@ void Player::postUpdate()
         weapon->onUpdate();
     }
 
-    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
+    auto game = ComponentsManager::get()->getComponentGame();
+
+    if (game->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
         satellite.postUpdate();
     }
 
     particleEngineLeft->postUpdate();
-
 }
 
 Vertex3D Player::getVelocity()
@@ -423,7 +428,6 @@ void Player::resolveCollision(Collisionable *with)
         } else {
             makeRandomPlayerDamageSound();
             takeDamage(dmg);
-            //projectile->setRemoved(true);
         }
     }
 
@@ -453,7 +457,6 @@ void Player::resolveCollision(Collisionable *with)
         Logging::Log("Added Weapon to Player: %s", weapon->getWeaponType()->getLabel().c_str());
 
         weapon->setRemoved(true);
-        Tools::makeExplosion(this, weapon->getPosition(), 5, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
 
         if (weapon->isHasTutorial()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
@@ -471,7 +474,6 @@ void Player::resolveCollision(Collisionable *with)
         ComponentsManager::get()->getComponentSound()->sound("itemHealth", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         receiveAid(health->getAid());
         health->remove();
-        Tools::makeExplosion(this, health->getPosition(), 5, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
 
         if (health->isHasTutorial()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
@@ -507,7 +509,6 @@ void Player::resolveCollision(Collisionable *with)
         ComponentsManager::get()->getComponentSound()->sound("itemHealth", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         receiveEnergy(energy->getEnergy());
         energy->remove();
-        Tools::makeExplosion(this, energy->getPosition(), 5, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
 
         if (energy->isHasTutorial()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
@@ -688,7 +689,7 @@ bool Player::isAllowEnergyShield() const
 
 void Player::onStartSetup()
 {
-    blink = new FXBlink(false, this, 0.05, PaletteColors::getPlayerDamageBlink());
+    blink = new FXBlink(false, this, 0.05f, PaletteColors::getPlayerDamageBlink());
     counterDamageBlink.setEnabled(false);
 
     loadSatellite();
@@ -817,8 +818,6 @@ void Player::dashMovement()
 
         ComponentsManager::get()->getComponentSound()->sound("dash", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
-        Tools::makeExplosion(this, getPosition(), 1, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
-
         Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1.5, ShockWaveParams::standard(), true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
         float power = dashPower;
@@ -874,9 +873,30 @@ void Player::drawImGuiProperties()
     ImGui::Separator();
 
     if (ImGui::TreeNode("Player Settings")) {
+        if (ImGui::TreeNode("Satellite")) {
+            satellite.drawImGuiProperties();
+            ImGui::TreePop();
+        }
+
         if (ImGui::TreeNode("Engine Left")) {
             particleEngineLeft->drawImGuiProperties();
+
+            ImGui::Separator();
+            ImGui::Separator();
+
+            if (ImGui::TreeNode("Position Offset##")) {
+                const float range_color_sensibility = 0.01f;
+                const float range_col_min = -100.0f;
+                const float range_col_max = 100.0f;
+
+                ImGui::DragScalar("x", ImGuiDataType_Float, &particlesEngineLeftOffset.x, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
+                ImGui::DragScalar("y", ImGuiDataType_Float, &particlesEngineLeftOffset.y, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
+                ImGui::DragScalar("z", ImGuiDataType_Float, &particlesEngineLeftOffset.z, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
+                ImGui::TreePop();
+            }
+
             ImGui::TreePop();
+
         }
         ImGui::Separator();
         if (ImGui::TreeNode("Light Offset##")) {
@@ -887,17 +907,6 @@ void Player::drawImGuiProperties()
             ImGui::DragScalar("x", ImGuiDataType_Float, &lightPositionOffset.x, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
             ImGui::DragScalar("y", ImGuiDataType_Float, &lightPositionOffset.y, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
             ImGui::DragScalar("z", ImGuiDataType_Float, &lightPositionOffset.z, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::TreePop();
-        }
-        ImGui::Separator();
-        if (ImGui::TreeNode("Engine Left Position Offset##")) {
-            const float range_color_sensibility = 0.01f;
-            const float range_col_min = -100.0f;
-            const float range_col_max = 100.0f;
-
-            ImGui::DragScalar("x", ImGuiDataType_Float, &particlesEngineLeftOffset.x, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::DragScalar("y", ImGuiDataType_Float, &particlesEngineLeftOffset.y, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
-            ImGui::DragScalar("z", ImGuiDataType_Float, &particlesEngineLeftOffset.z, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
             ImGui::TreePop();
         }
     }

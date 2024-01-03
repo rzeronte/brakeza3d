@@ -19,7 +19,7 @@
       "name": "spaceShuttle",
       "avatar": "avatars/default.png",
       "avatarHud": "avatars/shuttle_hud.png",
-      "position": { "x": 15, "y": 12 },
+      "position": { "x": 15, "y": 20 },
       "model": "spaceShuttle.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
@@ -34,7 +34,7 @@
       "name": "spaceShuttle",
       "avatar": "avatars/default.png",
       "avatarHud": "avatars/shuttle_hud.png",
-      "position": { "x": 85, "y": 12 },
+      "position": { "x": 85, "y": 20 },
       "model": "spaceShuttle.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
@@ -49,17 +49,17 @@
   "items": [
     {
       "type": 1,
-      "position": { "x": 30, "y": 20 },
+      "position": { "x": 30, "y": 25 },
       "help": 0
     },
     {
       "type": 3,
-      "position": { "x": 50, "y": 20 },
+      "position": { "x": 50, "y": 25 },
       "help": 1
     },
     {
       "type": 6,
-      "position": { "x": 70, "y": 20 },
+      "position": { "x": 70, "y": 25 },
       "help": 2
     }
   ],
@@ -67,28 +67,28 @@
   ],
   "background": [
     {
-      "name": "Star",
-      "model": "marsh.fbx",
-      "scale": 16,
-      "position": { "x": 30, "y": 50, "z": 20000 },
+      "name": "Sun",
+      "model": "planet_sun.fbx",
+      "scale": 1,
+      "position": { "x": 40, "y": 50, "z": 45 },
       "rotation": { "x": 90, "y": 0, "z": 0 },
       "rotationFrame": { "x": 0.1, "y": 0.1, "z": 0 }
     },
     {
-      "name":	"Marsh",
-      "position": { "x": 53,  "y":	35, "z": 30000 },
-      "model":	"red_planet.fbx",
+      "name":	"Earth",
+      "position": { "x": 53,  "y":	30, "z": 30 },
+      "model":	"planet_earth.fbx",
       "rotation": { "x": 0, "y": 0,  "z": 0 },
       "rotationFrame": { "x": 0.1, "y": 0.2, "z": 0.11 },
-      "scale":	18
+      "scale":	1
     },
     {
       "name": "nave",
-      "position": { "x": 70,  "y":	40, "z": 90000 },
+      "position": { "x": 70,  "y":	40, "z": 40 },
       "model":	"space_hexagon.fbx",
       "rotation": { "x": 60, "y": 0,  "z": 30 },
       "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0.0 },
-      "scale":	0.09
+      "scale":	0.5
     }
   ]
 }

@@ -74,7 +74,6 @@ void RayLight::update()
 
             if (player != nullptr) {
                 middlePoint = Transforms::WorldToPoint(hitPosition);
-                Tools::makeExplosion(player, hitPosition, 0.5, OCParticlesContext::forRayLight(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
 
                 player->takeDamage(damage * dt );
                 increase = false;
@@ -85,7 +84,6 @@ void RayLight::update()
             }
 
             if (bomb != nullptr) {
-                Tools::makeExplosion(player, hitPosition, 0.5, OCParticlesContext::forRayLight(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
                 middlePoint = Transforms::WorldToPoint(hitPosition);
                 increase = false;
 
@@ -100,8 +98,6 @@ void RayLight::update()
 
                 enemy->takeDamage(damage * dt);
                 increase = false;
-
-                Tools::makeExplosion(parent, hitPosition, 0.5, OCParticlesContext::forRayLight(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
 
                 light->setEnabled(true);
                 light->setPosition(hitPosition + Vertex3D(0, 0, -1));

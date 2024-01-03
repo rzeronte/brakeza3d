@@ -29,7 +29,6 @@ void PlayerReflection::onUpdate()
     if (timeToLive.isFinished()) {
         setRemoved(true);
         setEnabled(false);
-        Tools::makeExplosion(this, getPosition(), 5, OCParticlesContext::forExplosion(), PaletteColors::getExplosionEnemyFrom(), PaletteColors::getExplosionEnemyTo());
         Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1, ShockWaveParams::standard(), true), Brakeza3D::uniqueObjectLabel("shockWave"));
     }
 }

@@ -235,8 +235,8 @@ void SceneLoader::createSprite2DInScene()
     Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2);
 
     auto *newObject = new Sprite2D(
-        100,
-        100,
+        EngineSetup::get()->screenWidth/2,
+        EngineSetup::get()->screenHeight/2,
         false,
         new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "Smoke45Frames.png"), 128, 128, 45, 24)
     );

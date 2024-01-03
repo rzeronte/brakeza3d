@@ -107,33 +107,39 @@ void ComponentHUD::loadButtons()
 }
 void ComponentHUD::drawGhateringResources()
 {
-    const float sizeAmounts = 0.26f;
+    const float sizeAmounts = 1.0f;
     const int gatheringResourcesOffsetX = 530;
-    const int gatheringResourcesOffsetY = 13;
+    const int gatheringResourcesOffsetY = 20;
     auto game = ComponentsManager::get()->getComponentGame();
     auto textWriter = game->getTextWriter();
     auto player = game->getPlayer();
 
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+
     //coins
     HUDTextures->getTextureByLabel("coinIcon")->drawFlatAlpha(gatheringResourcesOffsetX, gatheringResourcesOffsetY, 255, fb);
 
     textWriter->writeTextTTFAutoSize(
-            gatheringResourcesOffsetX + 16,
-            gatheringResourcesOffsetY,
-            (std::string("x") + std::to_string(player->getCoins())).c_str(),
-            PaletteColors::getMenuOptions(),
-            sizeAmounts
+        gatheringResourcesOffsetX + 42,
+        gatheringResourcesOffsetY,
+        (std::string("x") + std::to_string(player->getCoins())).c_str(),
+        PaletteColors::getMenuOptions(),
+        sizeAmounts
     );
 
     // human
-    HUDTextures->getTextureByLabel("astrounautIcon")->drawFlatAlpha(gatheringResourcesOffsetX + 40, 13, 255, fb);
+    HUDTextures->getTextureByLabel("astrounautIcon")->drawFlatAlpha(
+        gatheringResourcesOffsetX + 145,
+        gatheringResourcesOffsetY,
+        255,
+        fb
+    );
     textWriter->writeTextTTFAutoSize(
-            gatheringResourcesOffsetX + 54,
-            13,
-            (std::string("x") + std::to_string(player->getRescuedHumans())).c_str(),
-            PaletteColors::getMenuOptions(),
-            sizeAmounts
+        gatheringResourcesOffsetX + 190,
+        gatheringResourcesOffsetY,
+        (std::string("x") + std::to_string(player->getRescuedHumans())).c_str(),
+        PaletteColors::getMenuOptions(),
+        sizeAmounts
     );
 }
 
@@ -200,7 +206,7 @@ void ComponentHUD::drawIconWeaponsAndLevelName() const
         this->offsetY,
         game->getLevelLoader()->getLevelName().c_str(),
         PaletteColors::getMenuOptions(),
-        0.9f
+        1.0f
     );
 
     // icon player reflection
@@ -236,23 +242,23 @@ void ComponentHUD::drawEnemyIconAndName()
 
     auto enemy = dynamic_cast<EnemyGhost*>(objectSelected);
     if (enemy != nullptr) {
-        enemy->getAvatar()->drawFlatAlpha(this->offsetX + 582, this->offsetY, 255, fb);
+        enemy->getAvatar()->drawFlatAlpha(this->offsetX + 605, this->offsetY, 255, fb);
 
         textWriter->writeTextTTFAutoSize(
-                this->offsetX + 424,
+                this->offsetX + 430,
                 this->offsetY + 14,
                 enemy->getName().c_str(),
                 PaletteColors::getStamina(),
                 0.3
         );
     } else {
-        HUDTextures->getTextureByLabel("emptyEnemy")->drawFlatAlpha(this->offsetX + 580, this->offsetY, 144, fb);
+        HUDTextures->getTextureByLabel("emptyEnemy")->drawFlatAlpha(this->offsetX + 605, this->offsetY, 144, fb);
         textWriter->writeTextTTFAutoSize(
-                this->offsetX + 526,
-                this->offsetY + 14,
-                "No target",
-                PaletteColors::getStamina(),
-                0.3
+            this->offsetX + 426,
+            this->offsetY,
+            "No target",
+            PaletteColors::getStamina(),
+            1.0f
         );
     }
 }
@@ -266,7 +272,7 @@ void ComponentHUD::drawShaderLasers()
 
     const int startPositionX = this->offsetX + 60.0f;
     const int width = 195.0f;
-    const float stroke = 0.002f;
+    const float stroke = 0.0015f;
     const float topBarMargin = 5;
 
     // stamina
@@ -293,10 +299,10 @@ void ComponentHUD::drawShaderLasers()
     auto objectSelected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
     auto enemy = dynamic_cast<EnemyGhost*>(objectSelected);
     if (enemy != nullptr) {
-        const float enemyHealth = ((enemy->getStamina() * fixedWidth) / enemy->getStartStamina());
+        const float enemyHealth = (enemy->getStamina() * fixedWidth) / enemy->getStartStamina();
 
-        const int positionLaserX = this->offsetX + 377 + width;
-        const int positionLaserY = this->offsetY + topBarMargin;
+        const int positionLaserX = offsetX + 386 + width;
+        const int positionLaserY = offsetY + topBarMargin;
         const int width = 146;
 
         shaderLasers->addLaser(

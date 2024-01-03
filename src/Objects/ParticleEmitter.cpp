@@ -90,40 +90,42 @@ void ParticleEmitter::onUpdate()
 
     int ParticlesCount = 0;
 
-    for (int i=0; i < newparticles; i++){
-        int particleIndex = FindUnusedParticle();
-        ParticlesContainer[particleIndex].life = context.PARTICLE_LIFESPAN; // This particle will live 5 seconds.
-        ParticlesContainer[particleIndex].pos = getPosition().toGLM();
+    if (!stopAdd) {
+        for (int i = 0; i < newparticles; i++){
+            int particleIndex = FindUnusedParticle();
+            ParticlesContainer[particleIndex].life = context.PARTICLE_LIFESPAN; // This particle will live 5 seconds.
+            ParticlesContainer[particleIndex].pos = getPosition().toGLM();
 
-        ParticlesContainer[particleIndex].pos += glm::vec3(
-            (float) Tools::random(-context.POSITION_NOISE/2, context.POSITION_NOISE/2),
-            (float) Tools::random(-context.POSITION_NOISE/2, context.POSITION_NOISE/2),
-            (float) Tools::random(-context.POSITION_NOISE/2, context.POSITION_NOISE/2)
-        ) * delta;
+            ParticlesContainer[particleIndex].pos += glm::vec3(
+                    (float) Tools::random(-context.POSITION_NOISE/2, context.POSITION_NOISE/2),
+                    (float) Tools::random(-context.POSITION_NOISE/2, context.POSITION_NOISE/2),
+                    (float) Tools::random(-context.POSITION_NOISE/2, context.POSITION_NOISE/2)
+            ) * delta;
 
-        glm::vec3 maindir = direction.toGLM();
-        maindir = addNoiseToDirection(maindir, context.SMOKE_ANGLE_RANGE/2);
+            glm::vec3 maindir = direction.toGLM();
+            maindir = addNoiseToDirection(maindir, context.SMOKE_ANGLE_RANGE/2);
 
-        ParticlesContainer[particleIndex].speed = (maindir) * (Tools::random(context.MIN_VELOCITY, context.MAX_VELOCITY) * delta);
+            ParticlesContainer[particleIndex].speed = (maindir) * (Tools::random(context.MIN_VELOCITY, context.MAX_VELOCITY) * delta);
 
-        // Very bad way to generate a random color
-        ParticlesContainer[particleIndex].r = rand() % 256;
-        ParticlesContainer[particleIndex].g = rand() % 256;
-        ParticlesContainer[particleIndex].b = rand() % 256;
-        ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
+            // Very bad way to generate a random color
+            ParticlesContainer[particleIndex].r = rand() % 256;
+            ParticlesContainer[particleIndex].g = rand() % 256;
+            ParticlesContainer[particleIndex].b = rand() % 256;
+            ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
 
-        ParticlesContainer[particleIndex].size = (rand()%1000)/2000.0f + 0.1f;
+            ParticlesContainer[particleIndex].size = (rand()%1000)/2000.0f + 0.1f;
+        }
     }
 
     static GLfloat* g_particule_position_size_data = new GLfloat[MaxParticles * 4];
     static GLubyte* g_particule_color_data         = new GLubyte[MaxParticles * 4];
 
     // Simulate all particles
-    for (int i=0; i<MaxParticles; i++){
+    for (int i = 0; i < MaxParticles; i++){
 
         Particle& p = ParticlesContainer[i]; // shortcut
 
-        if(p.life > 0.0f){
+        if (p.life > 0.0f) {
 
             // Decrease life
             p.life -= delta;

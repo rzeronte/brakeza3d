@@ -58,8 +58,8 @@ void EnemyDialog::drawDialog(float alpha)
     avatar->drawFlatAlpha(positionAvatar.x, positionAvatar.y, alpha, fb);
     background->drawFlatAlpha(positionBackground.x, positionBackground.y, alpha, fb);
 
-    Point2D positionFrom(positionBackground.x + 420, positionBackground.y + 30);
-    Point2D positionText(positionBackground.x + 420, positionBackground.y + 55);
+    Point2D positionFrom(positionBackground.x + 525, positionBackground.y + 30);
+    Point2D positionText(positionBackground.x + 525, positionBackground.y + 55);
 
     std::istringstream stream(message);
     std::string line;

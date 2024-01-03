@@ -13,6 +13,7 @@
       "avatarHud": "avatars/shuttle.png",
       "position": { "x": 50, "y": 15 },
       "model": "spaceships/Executioner.fbx",
+      "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
@@ -139,7 +140,7 @@
       "name": "Star",
       "model": "broken_planet.fbx",
       "scale": 15,
-      "position": { "x": 50, "y": 40, "z": 20000 },
+      "position": { "x": 50, "y": 40, "z": 200 },
       "rotation": { "x": 20, "y": 0, "z": 0 },
       "rotationFrame": { "x": 0.001, "y": 0.1, "z": 0 }
     }

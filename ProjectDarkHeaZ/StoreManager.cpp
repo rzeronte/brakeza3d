@@ -5,7 +5,7 @@ StoreManager::StoreManager(Player *player, TextWriter *writer)
 :
     player(player),
     writer(writer),
-    offsetX(220),
+    offsetX(340),
     offsetY(270),
     currentItemIndex(0),
     itemSelector(new Image(EngineSetup::get()->IMAGES_FOLDER + "store/item_selector.png")),
@@ -46,9 +46,21 @@ void StoreManager::update(float alpha)
     }
 
     auto game = ComponentsManager::get()->getComponentGame();
-    ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(130, 155, alpha, fb);
-    writer->writeTextTTFAutoSize(150, 155, std::to_string(game->getPlayer()->getCoins()).c_str(),
-                                 PaletteColors::getMenuOptions(), 0.25f);
+    auto hud = ComponentsManager::get()->getComponentHUD();
+
+    auto const offsetYCoins = 160;
+    hud->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(
+        this->offsetX,
+        this->offsetY + offsetYCoins,
+        alpha,
+        fb
+    );
+    writer->writeTextTTFAutoSize(
+        this->offsetX + 40,
+        this->offsetY + offsetYCoins,
+        std::to_string(game->getPlayer()->getCoins()).c_str(),PaletteColors::getMenuOptions(),
+        1.0f
+    );
 }
 
 void StoreManager::drawItem(StoreItem *item, int x, int y, float alpha)
@@ -87,9 +99,23 @@ void StoreManager::drawItemDetails(StoreItem *item, float alpha)
 
     item->getDescription()->drawFlatAlpha(0, 0, alpha, fb);
 
-    ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(345, 323, alpha, fb);
+    auto hud = ComponentsManager::get()->getComponentHUD();
+    const int offsetItemCost = -42;
 
-    writer->writeTextTTFAutoSize(365, 323, std::to_string(item->getCost()).c_str(), PaletteColors::getStatisticsText(), 0.25f);
+    hud->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(
+        offsetX + offsetItemCost + 40,
+        offsetY + offsetItemCost,
+        alpha,
+        fb
+    );
+
+    writer->writeTextTTFAutoSize(
+        offsetX + offsetItemCost + 82,
+        offsetY + offsetItemCost,
+        std::to_string(item->getCost()).c_str(),
+        PaletteColors::getStatisticsText(),
+        1.0f
+    );
 }
 
 void StoreManager::buyCurrentSelected()
@@ -177,7 +203,7 @@ void StoreManager::loadDefaultItems()
 
 void StoreManager::drawBoughtItemsOnHUD(float alpha)
 {
-    const int x = 60;
+    const int x = 80;
     const int y = 25;
     const int separation = 30;
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();

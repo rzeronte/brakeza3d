@@ -21,6 +21,8 @@ private:
     AmmoProjectileBodyEmitter *projectileEmitter;
 
     ParticleEmitter *particleEmitter;
+    Vertex3D particlesEngineOffset;
+
     SwarmObject *swarmObject;
     float projectileStartOffsetPosition;
 protected:
@@ -82,6 +84,8 @@ public:
     std::vector<EnemyDialog *> &getDialogs();
 
     void tryShoot();
+
+    void drawImGuiProperties() override;
 };
 
 

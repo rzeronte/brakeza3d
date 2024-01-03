@@ -19,7 +19,7 @@
       "name": "spaceShuttle",
       "avatar": "avatars/shuttle.png",
       "avatarHud": "avatars/shuttle_hud.png",
-      "position": { "x": 50, "y": 15 },
+      "position": { "x": 50, "y": 20 },
       "model": "spaceShuttle.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
@@ -45,27 +45,27 @@
   "background": [
     {
       "name": "Background: Star",
-      "model": "marsh.fbx",
-      "scale": 0.1,
-      "position": { "x": 50, "y": 50, "z": 200 },
+      "model": "planet_earth.fbx",
+      "scale": 1,
+      "position": { "x": 50, "y": 50, "z": 40 },
       "rotation": { "x": 90, "y": 0, "z": 0 },
       "rotationFrame": { "x": 0.05, "y": 0.01, "z": 0 }
     },
     {
-      "name": "Background: Marsh",
-      "position": { "x": 63,  "y":	35, "z": 35000 },
-      "model":	"red_planet.fbx",
+      "name": "Sun",
+      "position": { "x": 63,  "y":	35, "z": 45 },
+      "model":	"planet_sun.fbx",
       "rotation": { "x": 0, "y": 0,  "z": 0 },
       "rotationFrame": { "x": 0.01, "y": 0.1, "z": 0.05 },
-      "scale":	15
+      "scale": 1
     },
     {
       "name": "Background: Station",
-      "position": { "x": 70,  "y":	40, "z": 90000 },
+      "position": { "x": 80,  "y":	40, "z": 60 },
       "model":	"space_hexagon.fbx",
       "rotation": { "x": 60, "y": 0,  "z": 30 },
       "rotationFrame": { "x": 0.0, "y": 0.04, "z": 0.0 },
-      "scale":	1
+      "scale": 1
     }
   ]
 }

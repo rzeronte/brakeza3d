@@ -14,15 +14,10 @@ PlayerSatellite::PlayerSatellite(Mesh3D *parent)
 
 }
 
+
 void PlayerSatellite::onStartSetup()
 {
-    /*makeSimpleGhostBody(
-        Vertex3D(1, 1, 1),
-        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-        EngineSetup::collisionGroups::Projectile,
-        EngineSetup::collisionGroups::Enemy
-    );*/
-
+    setEnabled(false);
     blink = new FXBlink(false, this, 0.05, Color::red());
 }
 
@@ -33,7 +28,7 @@ void PlayerSatellite::onUpdate()
 
     setPosition(ComponentsManager::get()->getComponentGame()->getPlayer()->getPosition());
 
-    auto l = Vertex3D(1800, 0, 0);
+    auto l = Vertex3D(2, 0, 0);
     auto r = getRotation() * M3::getMatrixRotationForEulerAngles(1, 0, 0);
 
     addToPosition(r * l);
@@ -77,4 +72,20 @@ float PlayerSatellite::getDamage() const {
 void PlayerSatellite::updateShaderParticles()
 {
 
+}
+
+void PlayerSatellite::setEnabled(bool enabled)
+{
+    Object3D::setEnabled(enabled);
+
+    if (enabled) {
+        makeSimpleGhostBody(
+            Vertex3D(0.75, 0.75, 0.75),
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            EngineSetup::collisionGroups::Projectile,
+            EngineSetup::collisionGroups::Enemy
+        );
+    } else {
+        removeCollisionObject();
+    }
 }

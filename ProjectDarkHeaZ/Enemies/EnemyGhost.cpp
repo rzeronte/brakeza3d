@@ -20,32 +20,20 @@ EnemyGhost::EnemyGhost() :
     )),
     counterStuck(Counter(5)),
     projectileEmitter(nullptr),
-    projectileStartOffsetPosition(1.4)
-{
-    counterDamageBlink.setEnabled(false);
-    counterStuck.setEnabled(false);
-
-    particleEmitter = new ParticleEmitter(
+    particleEmitter (new ParticleEmitter(
         ParticleEmitterState::DEFAULT,
-        this,
+        nullptr,
         getPosition(),
         0,
         PaletteColors::getParticlesPlayerFrom(),
         PaletteColors::getParticlesPlayerTo(),
-        OCParticlesContext(
-            0.0f,
-            0.0025f,
-            1.5f,
-            45.0f,
-            0.0f,
-            150.0f,
-            50.0f,
-            255.0f,
-            2.0f,
-            0.8f,
-            0.98f
-        )
-    );
+        OCParticlesContext::forPlayerEngine()
+    )),
+    projectileStartOffsetPosition(1.4f),
+    particlesEngineOffset(Vertex3D(0, 0.25f, 0))
+{
+    counterDamageBlink.setEnabled(false);
+    counterStuck.setEnabled(false);
     particleEmitter->setEnabled(true);
 
     setStuck(false);
@@ -53,7 +41,7 @@ EnemyGhost::EnemyGhost() :
 
 void EnemyGhost::onStart()
 {
-    blink = new FXBlink(true, this, 0.05, PaletteColors::getEnemyBlink());
+    blink = new FXBlink(true, this, 0.05f, PaletteColors::getEnemyBlink());
 }
 
 void EnemyGhost::onUpdate()
@@ -91,8 +79,6 @@ void EnemyGhost::onUpdate()
 
     updateLight();
 
-    updateEmitterParticles();
-
     for ( auto dialog: dialogs) {
         const float staminaPercentage = (getStamina() * 100) / getStartStamina();
         if (staminaPercentage < dialog->staminaPercentage && !dialog->isShowed()) {
@@ -103,6 +89,8 @@ void EnemyGhost::onUpdate()
 
     if (getBehavior() != nullptr) {
         particleEmitter->onUpdate();
+        particleEmitter->setPosition(getPosition() + particlesEngineOffset - AxisUp().getScaled(-1));
+        particleEmitter->setRotation(getRotation());
     }
 }
 
@@ -153,15 +141,6 @@ void EnemyGhost::handleDie()
     Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1, ShockWaveParams::standard(), true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
     makeReward();
-
-    Tools::makeExplosion(
-        this,
-        getPosition(),
-        5,
-        OCParticlesContext::forExplosion(),
-        PaletteColors::getExplosionEnemyFrom(),
-        PaletteColors::getExplosionEnemyTo()
-     );
 
     Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getExplosionSprite()->getAnimation());
 
@@ -216,7 +195,6 @@ void EnemyGhost::makeReward()
             healthItem->setRotationFrameEnabled(true);
             healthItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
             healthItem->setStencilBufferEnabled(true);
-            healthItem->setScale(1);
             healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "pill.fbx"));
             healthItem->makeGhostBody(
                 ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
@@ -237,13 +215,12 @@ void EnemyGhost::makeReward()
             weaponItem->setRotationFrameEnabled(true);
             weaponItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
             weaponItem->setStencilBufferEnabled(true);
-            weaponItem->setScale(1);
             weaponItem->clone(playerWeapons[randomWeapon]->getModel());
-            weaponItem->makeGhostBody(
-                ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-                weaponItem,
-                EngineSetup::Weapon,
-                EngineSetup::Player
+            weaponItem->makeSimpleGhostBody(
+                    Vertex3D(0.5, 0.5, 0.5),
+                    ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+                    EngineSetup::collisionGroups::Weapon,
+                    EngineSetup::collisionGroups::Player
             );
             Brakeza3D::get()->addObject3D(weaponItem, weaponItem->getLabel());
             break;
@@ -501,5 +478,23 @@ void EnemyGhost::tryShoot()
             projectileEmitter->onUpdate();
         }
         shoot(getTarget());
+    }
+}
+
+void EnemyGhost::drawImGuiProperties()
+{
+    Mesh3D::drawImGuiProperties();
+
+    if (ImGui::TreeNode("Enemy##")) {
+        if (ImGui::TreeNode("Particles Offset##")) {
+            const float range_color_sensibility = 0.01f;
+            const float range_col_min = -100.0f;
+            const float range_col_max = 100.0f;
+
+            ImGui::DragScalar("x", ImGuiDataType_Float, &particlesEngineOffset.x, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
+            ImGui::DragScalar("y", ImGuiDataType_Float, &particlesEngineOffset.y, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
+            ImGui::DragScalar("z", ImGuiDataType_Float, &particlesEngineOffset.z, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
+            ImGui::TreePop();
+        }
     }
 }

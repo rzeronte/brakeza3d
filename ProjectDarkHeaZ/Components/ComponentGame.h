@@ -63,8 +63,6 @@ private:
 
     TextureAnimated * test;
 
-    Mesh3D *itemBoxFrame;
-
     Image *imageCredits;
     Image *imageSplash;
     Image *imageCrossFire;
@@ -225,8 +223,6 @@ public:
     EngineSetup::GameState gameState;
 
     [[nodiscard]] PlayerReflection *getClosestReflection(Vertex3D from) const;
-
-    [[nodiscard]] Mesh3D *getItemBoxFrame() const;
 
     [[nodiscard]] FXOffsetImage *getShaderForegroundImage() const;
 
