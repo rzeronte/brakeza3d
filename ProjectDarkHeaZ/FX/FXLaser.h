@@ -20,8 +20,6 @@ struct OCLaser
     glm::vec2 to;
     glm::vec3 color;
     float intensity;
-    bool startCircle;
-    bool endCircle;
 };
 
 struct OCProjectile
@@ -36,17 +34,13 @@ struct OCProjectile
 
 class FXLaser : public FXEffectOpenGL {
 private:
-    Image image;
-
     std::vector<OCLaser> lasers;
-    std::vector<OCProjectile> projectiles;
 public:
     FXLaser();
 
     void update() override;
 
-    void addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float intensity, bool startCircle, bool endCircle);
-    void addProjectile(Vertex3D position, Color color, float i);
+    void addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float intensity);
     void addLaserFromRay(ProjectileRay *pRay);
 };
 

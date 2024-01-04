@@ -178,7 +178,7 @@ void Image::setImage(const std::string &filename)
         this->surface = IMG_Load(filename.c_str());
         this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-
+        glDeleteTextures(1, &texturaID);
         texturaID = Image::makeOGLImage(surface);
 
         this->fileName = filename;

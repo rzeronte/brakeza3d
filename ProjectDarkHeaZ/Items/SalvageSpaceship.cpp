@@ -50,22 +50,19 @@ void SalvageSpaceship::onUpdate()
         const float topBarMargin = 5;
         float progress = timeGetting.currentPercentage() / 100;
 
-        ComponentsManager::get()->getComponentHUD()->getShaderLasers()->addLaser(
+        auto shader = ComponentsManager::get()->getComponentHUD()->getShaderLasers();
+        shader->addLaser(
             glm::vec2(startPositionX, startPositionY + topBarMargin),
             glm::vec2(startPositionX + (int) (width * progress), startPositionY + topBarMargin),
             PaletteColors::getStamina().toGLM(),
-            stroke,
-            false,
-            false
+            stroke
         );
 
-        ComponentsManager::get()->getComponentHUD()->getShaderLasers()->addLaser(
+        shader->addLaser(
             glm::vec2(startPositionX, startPositionY + topBarMargin),
             glm::vec2(startPositionX + (int) (width * 1), startPositionY + topBarMargin),
             PaletteColors::getPressKeyToContinue().toGLM(),
-            stroke,
-            false,
-            false
+            stroke
         );
 
     }

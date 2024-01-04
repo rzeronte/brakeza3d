@@ -15,11 +15,11 @@
 
 class ComponentMenu : public Component {
 private:
-    Image *shaderBackgroundImage;
+    Image *glassEffect;
+    Image *background;
+    Image *boxTutorial;
 
     Mesh3D *planet;
-
-    SimplePendulum *pendulum;
 
     std::vector<MenuOption> options;
     int currentOption;
@@ -51,7 +51,7 @@ public:
 
     void loadDecorative3DMesh();
 
-    void drawVersion();
+    static void drawVersion();
 
     [[nodiscard]] std::vector<MenuOption> &getOptions();
 
@@ -75,7 +75,6 @@ public:
         MNU_HELP = 2,
         MNU_EXIT = 3,
     };
-    Mesh3D *hexagonStation;
 };
 
 

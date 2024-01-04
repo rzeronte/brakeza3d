@@ -4,8 +4,7 @@
 
 FXLaser::FXLaser()
 :
-        FXEffectOpenGL(true),
-        image(Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png"))
+    FXEffectOpenGL(true)
 {
 }
 
@@ -15,23 +14,25 @@ void FXLaser::update()
 
     if (!isEnabled()) return;
 
+    auto shader = ComponentsManager::get()->getComponentGame()->getShaderOGLLineLaser();
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+
     for(auto l: lasers) {
-        ComponentsManager::get()->getComponentGame()->getShaderOGLLineLaser()->render(
-                Point2D(l.from),
-                Point2D(l.to),
-                Color(l.color.r, l.color.g, l.color.b),
-                l.intensity,
-                ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+        shader->render(
+            Point2D(l.from),
+            Point2D(l.to),
+            Color(l.color.r, l.color.g, l.color.b),
+            l.intensity,
+            fb
         );
     }
 
     this->lasers.clear();
-    this->projectiles.clear();
 }
 
-void FXLaser::addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float i, bool startCircle, bool endCircle)
+void FXLaser::addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float intensity)
 {
-    this->lasers.emplace_back(OCLaser {from, to, color, i, startCircle, endCircle });
+    this->lasers.emplace_back(OCLaser {from, to, color, intensity});
 }
 
 void FXLaser::addLaserFromRay(ProjectileRay *ray)
@@ -39,30 +40,13 @@ void FXLaser::addLaserFromRay(ProjectileRay *ray)
     auto color = ray->getColor();
 
     Point2D screenPoint = Transforms::WorldToPoint(ray->getPosition());
-
     Vertex3D end = ray->getPosition() + ray->getRay();
     Point2D middlePoint = Transforms::WorldToPoint(end);
 
     this->addLaser(
-        glm::vec2(screenPoint.x, screenPoint.y),
-        glm::vec2(middlePoint.x, middlePoint.y),
+        screenPoint.toGLM(),
+        middlePoint.toGLM(),
         color.toGLM(),
-        ray->getIntensity(),
-        false,
-        false
+        ray->getIntensity()
     );
-}
-
-void FXLaser::addProjectile(Vertex3D position, Color color, float i)
-{
-    Point2D screenPoint = Transforms::WorldToPoint(position);
-
-    this->projectiles.emplace_back(OCProjectile {
-        screenPoint.x,
-        screenPoint.y,
-        (int) color.r,
-        (int) color.g,
-        (int) color.b,
-        i
-    });
 }

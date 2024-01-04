@@ -280,9 +280,7 @@ void ComponentHUD::drawShaderLasers()
         glm::vec2(startPositionX, offsetY + topBarMargin),
         glm::vec2(startPositionX + (int) (width * health), offsetY + topBarMargin),
         PaletteColors::getStamina().toGLM(),
-        stroke,
-        false,
-        false
+        stroke
     );
 
     // energy
@@ -290,9 +288,7 @@ void ComponentHUD::drawShaderLasers()
         glm::vec2(startPositionX, this->offsetY + playerBarSeparation + topBarMargin),
         glm::vec2(startPositionX + (int) (width * energy), this->offsetY + playerBarSeparation + topBarMargin),
         PaletteColors::getEnergy().toGLM(),
-        stroke,
-        false,
-        false
+        stroke
     );
 
     // Enemy stamina
@@ -309,9 +305,7 @@ void ComponentHUD::drawShaderLasers()
             glm::vec2(positionLaserX, positionLaserY),
             glm::vec2(positionLaserX - (int)(width * enemyHealth), positionLaserY),
             PaletteColors::getStamina().toGLM(),
-            stroke,
-            false,
-            false
+            stroke
         );
     }
 }

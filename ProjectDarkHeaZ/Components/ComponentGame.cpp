@@ -39,24 +39,24 @@ void ComponentGame::onStart()
 
     fadeToGameState = new FaderToGameStates(Color::black(), 0.01f, EngineSetup::GameState::SPLASH, false);
 
-    imageCrossFire = new Image(SETUP->IMAGES_FOLDER + "crossfire.png");
-    imageCredits = new Image(SETUP->IMAGES_FOLDER + "credits.png");
-    helps.push_back(new Image(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_HELP_IMAGE));
-    helps.push_back(new Image(SETUP->IMAGES_FOLDER + "keyboard.png"));
-    imageSplash = new Image(SETUP->IMAGES_FOLDER + SETUP->LOGO_BRAKEZA);
-    imageCablesVertical = new Image(SETUP->IMAGES_FOLDER + "cables_hud_vertical.png");
-    imageCablesHorizontal = new Image(SETUP->IMAGES_FOLDER + "cables_hud_horizontal.png");
-    imageCablesStore = new Image(SETUP->IMAGES_FOLDER + "cables_hud_store.png");
-    imageStatistics = new Image(SETUP->IMAGES_FOLDER + "statistics_screen.png");
-    imageDead = new Image(SETUP->IMAGES_FOLDER + "game_over.png");
-    imageEndGame = new Image(SETUP->IMAGES_FOLDER + "end_game.png");
-    boxTutorial = new Image(SETUP->IMAGES_FOLDER + "tutorial_box.png");
-    boxStore = new Image(SETUP->IMAGES_FOLDER + "store_box.png");
+    auto const baseFolder = SETUP->IMAGES_FOLDER;
+
+    imageCrossFire = new Image(baseFolder + "crossfire.png");
+    imageCredits = new Image(baseFolder + "credits.png");
+    helps.push_back(new Image(baseFolder + SETUP->DEFAULT_HELP_IMAGE));
+    helps.push_back(new Image(baseFolder + "keyboard.png"));
+    imageSplash = new Image(baseFolder + SETUP->LOGO_BRAKEZA);
+    imageStatistics = new Image(baseFolder + "statistics_screen.png");
+    imageDead = new Image(baseFolder + "game_over.png");
+    imageEndGame = new Image(baseFolder + "end_game.png");
+    boxTutorial = new Image(baseFolder + "tutorial_box.png");
+    boxStore = new Image(baseFolder + "store_box.png");
+    backgroundSpaceshipSelection = new Image(baseFolder + "backgroundSpaceshipSelection.png");
+    glassEffect = new Image(SETUP->IMAGES_FOLDER + "menuBackground.png");
 
     splashCounter.setStep(SPLASH_TIME);
 
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
-
 
     auto componentCamera = ComponentsManager::get()->getComponentCamera();
     componentCamera->getCamera()->setPosition(cameraCountDownPosition);
@@ -111,8 +111,8 @@ void ComponentGame::onStart()
 
 void ComponentGame::loadShaders()
 {
-    shaderBackgroundImage = new FXOffsetImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
-    shaderForegroundImage = new FXOffsetImage(EngineSetup::get()->IMAGES_FOLDER + "cloud.png");
+    shaderBackgroundImage = new FXOffsetImage(EngineSetup::get()->IMAGES_FOLDER + "empty.png");
+    shaderForegroundImage = new FXOffsetImage(EngineSetup::get()->IMAGES_FOLDER + "empty.png");
     shaderColor = new FXColorTint(false, PaletteColors::getStamina(), 0.75f);
     shaderProjectiles = new FXLaser();
 
@@ -217,7 +217,7 @@ void ComponentGame::onUpdate()
 void ComponentGame::postUpdate()
 {
     player->updateWeaponAutomaticStatus();
-    addProjectilesToShaderLasers();
+    addRayLightsToShaderLaserLine();
     updateShaders();
 }
 
@@ -232,6 +232,7 @@ void ComponentGame::handleOnUpdateTutorialImages(float alpha)
 
         //imageCablesVertical->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
         boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+        glassEffect->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
         getLevelLoader()->drawCurrentTutorialImage(alpha);
 
         writeDialogTextToContinue("Press ENTER to start...");
@@ -239,16 +240,16 @@ void ComponentGame::handleOnUpdateTutorialImages(float alpha)
             textWriter->writeTTFCenterHorizontal(495, message.c_str(), PaletteColors::getCrt(), 0.5f);
         }
         textWriter->setAlpha(oldAlpha);
-
     }
 }
 
 void ComponentGame::handleOnUpdateGamingTutorial(float alpha)
 {
-    //imageCablesHorizontal->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-    boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+    boxTutorial->drawFlatAlpha(0, 0, alpha, fb);
+    glassEffect->drawFlatAlpha(0, 0, alpha, fb);
+    help->drawFlatAlpha(0, 0, alpha, fb);
     writeDialogTextToContinue("Press ENTER to continue...");
-    help->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     /*keep show message radio so that it keep consuming his time*/
     handleOnUpdateMessageRadio();
@@ -267,10 +268,7 @@ void ComponentGame::drawMedalAlpha(int type, int x, int y, float alpha)
 
 void ComponentGame::showLevelStatistics(float alpha)
 {
-    imageCablesHorizontal->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
     textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
-
     boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     int offsetX = 340;
@@ -991,8 +989,8 @@ void ComponentGame::shaderBackgroundUpdate()
     ) {
         Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.0075f);
 
-        shaderBackgroundImage->update(vel.x, vel.y);
-        shaderForegroundImage->update(vel.x * 0.5f, vel.y * 0.5f);
+        shaderBackgroundImage->update(vel.y, vel.x);
+        shaderForegroundImage->update(vel.y * 0.5f, vel.x * 0.5f);
     }
 }
 
@@ -1177,21 +1175,12 @@ void ComponentGame::handleSplash()
     splashCounter.setEnabled(true);
 }
 
-void ComponentGame::addProjectilesToShaderLasers()
+void ComponentGame::addRayLightsToShaderLaserLine()
 {
     if (gameState != EngineSetup::GAMING && gameState != EngineSetup::COUNTDOWN && gameState != EngineSetup::PRESS_KEY_BY_WIN) return;
 
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
-        const auto projectile = dynamic_cast<AmmoProjectileBody *> (object);
         const auto ray = dynamic_cast<ProjectileRay *> (object);
-
-        if (projectile != nullptr && !projectile->isWasCollision()) {
-            shaderProjectiles->addProjectile(
-                object->getPosition(),
-                projectile->getColor(),
-                projectile->getIntensity()
-            );
-        }
 
         if (ray != nullptr && ray->isEnabled()) {
             shaderProjectiles->addLaserFromRay(ray);
@@ -1289,19 +1278,13 @@ void ComponentGame::handleSpaceShipSelector()
 {
     spaceships[spaceshipSelectedIndex]->setEnabled(true);
     shaderEdgeObject->setEnabled(true);
-
     shaderEdgeObject->setObject(spaceships[spaceshipSelectedIndex]);
-
-    ComponentsManager::get()->getComponentMenu()->hexagonStation->setEnabled(false);
-
 }
 
 Sprite2D *ComponentGame::getExplosionSprite() const
 {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
-
     const int index = std::rand() % explosionSprites.size();
-
     return explosionSprites[index];
 }
 
@@ -1390,7 +1373,7 @@ void ComponentGame::handleOnUpdateCountDown()
 
     textWriter->setAlpha(timeRatio);
 
-    textWriter->writeTTFCenterHorizontal(140, std::to_string(restTime).c_str(), PaletteColors::getEnergy(), 2);
+    textWriter->writeTTFCenterHorizontal(300, std::to_string(restTime).c_str(), PaletteColors::getEnergy(), 5);
 
     getLevelLoader()->getCountDown()->update();
 
@@ -1418,7 +1401,6 @@ void ComponentGame::handleOnUpdateHelp(const float alpha)
     ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
     helps[currentHelpIndex]->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
 }
 
 void ComponentGame::handleOnUpdateStore(const float alpha)
@@ -1435,22 +1417,19 @@ void ComponentGame::handleOnUpdateStore(const float alpha)
 
 void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)
 {
-    spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    auto bb = ComponentsManager::get()->getComponentWindow()->getBackgroundFramebuffer();
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
-    imageCablesStore->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
-    boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
-    writeDialogTextToContinue("Press ENTER to select ...");
-
-    shaderEdgeObject->update();
+    backgroundSpaceshipSelection->drawFlatAlpha(0, 0, 1.0f,  bb);
+    spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha, fb);
+    boxTutorial->drawFlatAlpha(0, 0, alpha, fb);
+    ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha, fb);
+    writeDialogTextToContinue("Press ENTER to select...");
+    glassEffect->drawFlatAlpha(0, 0, alpha, bb);
 }
 
 void ComponentGame::handleOnUpdatePressKeyGameOver(const float alpha)
 {
-    imageCablesStore->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
     boxTutorial->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     ComponentsManager::get()->getComponentMenu()->getBorder()->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 

@@ -110,7 +110,7 @@ void SpriteDirectional3D::updateStep() {
 
 void SpriteDirectional3D::onUpdate()
 {
-    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(this->getPosition())) {
+    if (!Frustum::isVertexInside(this->getPosition())) {
         return;
     }
 

@@ -14,9 +14,8 @@ void EnemyBehaviorRandom::onUpdate(Vertex3D &position)
 
     if (!isEnabled()) return;
 
-    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
-    if (!camera->getFrustum()->isVertexInside(position)) {
+    if (!Frustum::isVertexInside(position)) {
         Vector3D direction(position, player->getPosition());
         this->direction = direction.getComponent().getNormalize().getScaled(speed);
     }

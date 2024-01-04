@@ -4,8 +4,6 @@
 
 #include "ShaderOpenGLLineLaser.h"
 
-
-#include <gtc/type_ptr.hpp>
 #include "../../include/OpenGL/ShaderOpenGLLine.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/EngineSetup.h"
@@ -23,6 +21,14 @@ ShaderOpenGLLineLaser::ShaderOpenGLLineLaser()
     setupQuadUniforms(programID);
 
     textureUniform = glGetUniformLocation(programID, "mask");
+    maskDirectionUniform = glGetUniformLocation(programID, "maskDirection");
+    lineStartUniform = glGetUniformLocation(programID, "lineStart");
+    lineEndUniform = glGetUniformLocation(programID, "lineEnd");
+    lineColorUniform = glGetUniformLocation(programID, "lineColor");
+    weightUniform = glGetUniformLocation(programID, "weight");
+    timeUniform = glGetUniformLocation(programID, "time");
+    maskSpeedUniform = glGetUniformLocation(programID, "maskSpeed");
+    maskIntensityUniform = glGetUniformLocation(programID, "maskIntensity");
 }
 
 void ShaderOpenGLLineLaser::render(Point2D a, Point2D b, Color c, float weight, GLuint framebuffer)
@@ -44,11 +50,14 @@ void ShaderOpenGLLineLaser::render(Point2D a, Point2D b, Color c, float weight, 
     const auto normBx = (float) ((float)b.y / (float) EngineSetup::get()->screenHeight);
     const auto normBy = (float) ((float)b.x / (float) EngineSetup::get()->screenWidth);
 
-    setVec2("lineStart", glm::vec2(normAx, normAy));
-    setVec2("lineEnd", glm::vec2(normBx, normBy));
-    setVec4("lineColor", glm::vec4(c.r, c.g, c.b, 1.0f));
-    setFloat("weight", weight);
-    setFloat("time", Brakeza3D::get()->getExecutionTime());
+    setVec2Uniform(lineStartUniform, glm::vec2(normAx, normAy));
+    setVec2Uniform(lineEndUniform, glm::vec2(normBx, normBy));
+    setVec4Uniform(lineColorUniform, glm::vec4(c.r, c.g, c.b, 1.0f));
+    setFloatUniform(weightUniform, weight);
+    setFloatUniform(timeUniform, Brakeza3D::get()->getExecutionTime());
+    setVec2Uniform(maskDirectionUniform, glm::vec2(0, 1 ));
+    setFloatUniform(maskSpeedUniform, 0.5f);
+    setFloatUniform(maskIntensityUniform, 1.0f);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, image->getOGLTextureID());

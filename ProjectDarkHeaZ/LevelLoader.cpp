@@ -674,7 +674,7 @@ Vertex3D LevelLoader::getPositionFromScreenPoint(Point2D fixedPosition, float de
 {
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
-    Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition, camera);
+    Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition);
 
     Vector3D ray(camera->getPosition(),nearPlaneVertex);
 

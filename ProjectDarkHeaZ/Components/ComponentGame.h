@@ -66,14 +66,13 @@ private:
     Image *imageCredits;
     Image *imageSplash;
     Image *imageCrossFire;
-    Image *imageCablesVertical;
-    Image *imageCablesHorizontal;
-    Image *imageCablesStore;
     Image *imageStatistics;
     Image *imageDead;
     Image *imageEndGame;
     Image *boxStore;
     Image *help;
+    Image *backgroundSpaceshipSelection;
+    Image *glassEffect;
 
     std::vector<Image*> helps;
     int currentHelpIndex;
@@ -190,7 +189,7 @@ public:
 
     void handleSplash();
 
-    void addProjectilesToShaderLasers();
+    void addRayLightsToShaderLaserLine();
 
     void pressedKeyForWin();
 

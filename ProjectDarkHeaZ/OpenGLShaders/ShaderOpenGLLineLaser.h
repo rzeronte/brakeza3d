@@ -14,6 +14,14 @@
 
 class ShaderOpenGLLineLaser : public ShaderOpenGL, public ShaderQuadOpenGL  {
     GLint textureUniform;
+    GLint maskDirectionUniform;
+    GLint lineStartUniform;
+    GLint lineEndUniform;
+    GLint lineColorUniform;
+    GLint weightUniform;
+    GLint timeUniform;
+    GLint maskSpeedUniform;
+    GLint maskIntensityUniform;
     Image *image;
 public:
     ShaderOpenGLLineLaser();
@@ -23,6 +31,5 @@ public:
     void destroy() override;
 
 };
-
 
 #endif //BRAKEZA3D_SHADEROPENGLLINELASER_H

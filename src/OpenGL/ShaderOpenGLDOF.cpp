@@ -9,7 +9,7 @@ ShaderOpenGLDOF::ShaderOpenGLDOF()
 :
     focalRange(0),
     focalDistance(0),
-    blurRadius(10),
+    blurRadius(4),
     farPlane(100.0),
     intensity(1.0f),
     resultFramebuffer(0),

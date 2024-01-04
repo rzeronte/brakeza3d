@@ -114,9 +114,7 @@ void RayLight::update()
         glm::vec2(screenPoint.x, screenPoint.y),
         glm::vec2(middlePoint.x, middlePoint.y),
         color.toGLM(),
-        intensity,
-        true,
-        true
+        intensity
     );
 
     if (EngineSetup::get()->BULLET_DEBUG_MODE) {

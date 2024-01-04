@@ -5,9 +5,10 @@
 
 ComponentMenu::ComponentMenu()
 :
-    shaderBackgroundImage(nullptr),
+    boxTutorial(nullptr),
+    background(nullptr),
+    glassEffect(nullptr),
     planet(nullptr),
-    pendulum(nullptr),
     currentOption(0),
     menuEnabled(false)
 {
@@ -15,10 +16,9 @@ ComponentMenu::ComponentMenu()
 
 ComponentMenu::~ComponentMenu()
 {
-    delete shaderBackgroundImage;
+    delete background;
+    delete glassEffect;
     delete planet;
-    delete hexagonStation;
-    delete pendulum;
 }
 
 void ComponentMenu::onStart()
@@ -28,10 +28,11 @@ void ComponentMenu::onStart()
     loadDecorative3DMesh();
     loadMenuOptions();
 
-    shaderBackgroundImage = new Image(SETUP->IMAGES_FOLDER + "menuBackground.png");
-
+    glassEffect = new Image(SETUP->IMAGES_FOLDER + "menuBackground.png");
     border = new Image(SETUP->IMAGES_FOLDER + "hud_background.png");
-    imageLogoBox =  new Image(SETUP->IMAGES_FOLDER + "logo_box.png");
+    imageLogoBox = new Image(SETUP->IMAGES_FOLDER + "logo_box.png");
+    background = new Image(SETUP->IMAGES_FOLDER + "backgroundMenu.png");
+    boxTutorial = new Image(SETUP->IMAGES_FOLDER + "tutorial_box.png");
 }
 
 void ComponentMenu::loadDecorative3DMesh()
@@ -40,34 +41,15 @@ void ComponentMenu::loadDecorative3DMesh()
 
     planet->setEnabled(false);
     planet->setAlpha(255);
-    planet->setEnableLights(false);
-    planet->setPosition(Vertex3D(-1540, 1000, 300));
+    planet->setScale(1.5f);
+    planet->setPosition(Vertex3D(0, 0, 30));
     planet->setRotationFrameEnabled(true);
     planet->setRotationFrame(Vertex3D(0.1f, 0.0, 0));
     planet->setRotation(0, 0, 0);
-    planet->setScale(31.9);
-    planet->setStencilBufferEnabled(true);
 
     planet->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "planet_earth.fbx"));
     planet->updateBoundingBox();
     Brakeza3D::get()->addObject3D(planet, "planetMenu");
-
-    hexagonStation = new Mesh3D();
-    hexagonStation->setEnabled(false);
-    hexagonStation->setAlpha(255);
-    hexagonStation->setEnableLights(false);
-    hexagonStation->setPosition(Vertex3D(-3800, 1000, 100));
-    hexagonStation->setRotationFrameEnabled(true);
-    hexagonStation->setRotationFrame(Vertex3D(0.02f, 0.1f, 0.01));
-    hexagonStation->setRotation(20, 40, 0);
-    hexagonStation->setScale(0.2);
-    hexagonStation->setStencilBufferEnabled(true);
-    hexagonStation->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "space_hexagon.fbx"));
-    hexagonStation->updateBoundingBox();
-    Brakeza3D::get()->addObject3D(hexagonStation, "astronautMenu");
-
-    pendulum = new SimplePendulum(0, 5, 5000, 0.0);
-    pendulum->setRotation(-40, 0, 0);
 }
 
 void ComponentMenu::preUpdate()
@@ -76,24 +58,22 @@ void ComponentMenu::preUpdate()
         return;
     }
 
-    auto game = ComponentsManager::get()->getComponentGame();
+    const float alpha = 1 - ComponentsManager::get()->getComponentGame()->getFadeToGameState()->getProgress();
 
-    const float alpha = 1 - game->getFadeToGameState()->getProgress();
+    auto window = ComponentsManager::get()->getComponentWindow();
+    auto fb = window->getForegroundFramebuffer();
+    auto bb = window->getBackgroundFramebuffer();
 
-    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
-
-    shaderBackgroundImage->drawFlatAlpha(0, 0, alpha, fb);
-    game->boxTutorial->drawFlatAlpha(0, 0, alpha, fb);
+    background->drawFlatAlpha(0, 0, alpha, bb);
+    boxTutorial->drawFlatAlpha(0, 0, alpha, fb);
     border->drawFlatAlpha(0, 0, alpha, fb);
     imageLogoBox->drawFlatAlpha(0, 0, alpha, fb);
-
+    glassEffect->drawFlatAlpha(0, 0, alpha, fb);
 }
 
 void ComponentMenu::onUpdate()
 {
     if (!isEnabled()|| !isMenuEnabled()) return;
-
-    pendulum->onUpdate();
 
     drawOptions();
     drawVersion();
@@ -177,16 +157,12 @@ void ComponentMenu::drawOptions()
 void ComponentMenu::setEnabled(bool value)
 {
     Component::setEnabled(value);
-
     planet->setEnabled(value);
-    hexagonStation->setEnabled(value);
-
     setMenuEnabled(value);
 }
 
 void ComponentMenu::drawVersion()
 {
-
     auto writer = ComponentsManager::get()->getComponentGame()->getTextWriter();
 
     writer->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());

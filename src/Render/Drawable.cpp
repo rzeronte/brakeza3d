@@ -13,7 +13,6 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color)
     Point2D P1 = Transforms::WorldToPoint(V);
 
     if (Tools::isPixelInWindow(P1.x, P1.y)) {
-
     }
 }
 
@@ -48,13 +47,13 @@ void Drawable::drawVector3D(Vector3D V, Color color)
 }
 
 
-void Drawable::drawLightingVector3D(Vector3D V, Camera3D *cam, Color color)
+void Drawable::drawLightingVector3D(Vector3D V, Color color)
 {
     if (!Tools::isValidVector(V.vertex1) || !Tools::isValidVector(V.vertex2)) {
         return;
     }
 
-    if (!cam->getFrustum()->isVertexInside(V.vertex1) && !cam->getFrustum()->isVertexInside(V.vertex2)) {
+    if (!Frustum::isVertexInside(V.vertex1) && !Frustum::isVertexInside(V.vertex2)) {
         return;
     }
 
@@ -65,12 +64,13 @@ void Drawable::drawLightingVector3D(Vector3D V, Camera3D *cam, Color color)
     Drawable::drawLineLighting(line, color);
 }
 
-void Drawable::drawMainAxis(Camera3D *cam) {
+void Drawable::drawMainAxis()
+{
     Point2D fixedPosition = Point2D(EngineSetup::get()->screenWidth - 50, 30);
-    Drawable::drawMainAxisOffset(cam, Transforms::Point2DToWorld(fixedPosition, cam));
+    Drawable::drawMainAxisOffset(Transforms::Point2DToWorld(fixedPosition));
 }
 
-void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset)
+void Drawable::drawMainAxisOffset(Vertex3D offset)
 {
     float axis_length = EngineSetup::get()->OBJECT_AXIS_SIZE;
     Vertex3D origin = offset;
@@ -96,8 +96,9 @@ void Drawable::drawMainAxisOffset(Camera3D *cam, Vertex3D offset)
 
 }
 
-void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward) {
-    if (!cam->getFrustum()->isVertexInside(object->getPosition())) {
+void Drawable::drawObject3DAxis(Object3D *object, bool drawUp, bool drawRight, bool drawForward)
+{
+    if (!Frustum::isVertexInside(object->getPosition())) {
         return;
     }
 
@@ -116,7 +117,6 @@ void Drawable::drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bo
 }
 
 void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
-    Camera3D *cam = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     float generations = EngineSetup::get()->LIGHTNING_GENERATIONS;
     std::vector<Vector3D> segmentList;
@@ -127,9 +127,9 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
     float multiplier = EngineSetup::get()->LIGHTNING_SEGMENT_SHIFT;
     float probabilityBranch = EngineSetup::get()->LIGHTNING_PROBABILITY_BRANCH;
 
-    segmentList.push_back(Vector3D(A, B));
+    segmentList.emplace_back(A, B);
 
-    for (int i = 0; i < generations; i++) {
+    for (int i = 0; i < (int) generations; i++) {
         tmpList = segmentList;
         int j = 0;
         for (auto ir = tmpList.begin(); ir != tmpList.end(); ++j) {
@@ -139,7 +139,7 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
             midPoint.y += (float) Tools::random((int) -offsetAmount, (int) offsetAmount) * multiplier;
             midPoint.z += (float) Tools::random((int) -offsetAmount, (int) offsetAmount) * multiplier;
 
-            if (Tools::random(1, 10) > 10 - probabilityBranch) {
+            if ((float) Tools::random(1, 10) > 10 - probabilityBranch) {
 
                 Vertex3D splitEnd;
                 Vertex3D direction = ir.base()->getComponent().getNormalize().getScaled(offsetAmount * 2);
@@ -164,7 +164,7 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
         offsetAmount /= 2;
     }
     for ( auto ir = segmentList.begin(); ir != segmentList.end(); ++ir) {
-        Drawable::drawLightingVector3D(*ir.base(), cam, color);
+        Drawable::drawLightingVector3D(*ir.base(), color);
     }
 }
 
