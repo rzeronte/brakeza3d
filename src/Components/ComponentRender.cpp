@@ -52,7 +52,7 @@ void ComponentRender::onUpdate()
     onUpdateSceneObjects();
 
     if (SETUP->RENDER_MAIN_AXIS) {
-        Drawable::drawMainAxis(ComponentsManager::get()->getComponentCamera()->getCamera());
+        Drawable::drawMainAxis();
     }
 
     if (stateScripts == EngineSetup::LUA_PLAY) {
@@ -65,10 +65,10 @@ void ComponentRender::onUpdate()
 
     if (SETUP->DRAW_FPS) {
         textWriter->writeTTFCenterHorizontal(
-            10,
+            15,
             std::to_string(getFps()).c_str(),
             Color::green(),
-            0.3
+            0.5
         );
     }
 }
@@ -247,7 +247,7 @@ Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick, int
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     Point2D  fixedPosition = Point2D(xClick,yClick);
-    Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition, camera);
+    Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition);
     Vector3D ray(camera->getPosition(),nearPlaneVertex);
 
     int i = 0;
