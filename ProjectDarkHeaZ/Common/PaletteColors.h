@@ -24,7 +24,7 @@ public:
 
     [[nodiscard]] static Color getSavageBlink() { return {0.44f, 0.0f, 0.0f}; }
 
-    [[nodiscard]] static Color getCrt() { return {0.5, 0.4, 0}; }
+    [[nodiscard]] static Color getCrt() { return {0.1, 0.7, 0}; }
 
     [[nodiscard]] static Color getPlayerProjectile() { return {0.95f, 0.77f, 0.24f}; }
 
@@ -42,9 +42,9 @@ public:
 
     [[nodiscard]] static Color getPlayerBenefitBlink() { return {1.0f, 0.0f, 0.0f}; }
 
-    [[nodiscard]] static Color getParticlesPlayerFrom() { return {1.0f, 0.0f, 0.0f}; }
+    [[nodiscard]] static Color getParticlesPlayerFrom() { return {1.0f, 1.0f, 1.0f}; }
 
-    [[nodiscard]] static Color getParticlesPlayerTo() { return {0.0f, 1.0f, 0.0f}; }
+    [[nodiscard]] static Color getParticlesPlayerTo() { return {1.0f, 1.0f, 0.0f}; }
 
     [[nodiscard]] static Color getEnemyLaser() { return {0.56f, 0.0f, 0.0f}; }
 

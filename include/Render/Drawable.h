@@ -19,15 +19,15 @@ public:
 
     static void drawVector3D(Vector3D V, Color color);
 
-    static void drawLightingVector3D(Vector3D V, Camera3D *cam, Color color);
+    static void drawLightingVector3D(Vector3D V, Color color);
 
     static void drawLineLighting(Line2D L, Color color);
 
-    static void drawObject3DAxis(Object3D *object, Camera3D *cam, bool drawUp, bool drawRight, bool drawForward);
+    static void drawObject3DAxis(Object3D *object, bool drawUp, bool drawRight, bool drawForward);
 
-    static void drawMainAxis(Camera3D *cam);
+    static void drawMainAxis();
 
-    static void drawMainAxisOffset(Camera3D *cam, Vertex3D offset);
+    static void drawMainAxisOffset(Vertex3D offset);
 
     static void drawLightning(Vertex3D, Vertex3D, Color color);
 

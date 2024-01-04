@@ -6,11 +6,10 @@ out vec4 FragColor;
 
 uniform sampler2D mask;
 
-vec2 maskDirection = vec2(0, 1);
-float maskSpeed = 0.5f;
-float maskIntensity = 1.5f;  // Nuevo factor de intensidad
-uniform float time;  // Nueva variable para el tiempo
-
+uniform float maskSpeed;
+uniform float maskIntensity;
+uniform float time;
+uniform vec2 maskDirection;
 uniform vec4 lineColor;
 uniform vec2 lineStart;
 uniform vec2 lineEnd;

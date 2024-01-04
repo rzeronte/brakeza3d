@@ -37,7 +37,7 @@ Vertex3D Transforms::objectToLocal(Vertex3D &V, Object3D *o)
     return T;
 }
 
-Vertex3D Transforms::Point2DToWorld(Point2D &p, Camera3D *cam)
+Vertex3D Transforms::Point2DToWorld(Point2D &p)
 {
     // Mapear las coordenadas de (0, 0) a (100, 100) a la esquina superior izquierda e inferior derecha del plano cercano
     float mappedX = 2.0f * p.x / EngineSetup::get()->screenWidth - 1;
@@ -45,6 +45,7 @@ Vertex3D Transforms::Point2DToWorld(Point2D &p, Camera3D *cam)
 
     // Obtener la matriz de proyección y la matriz de vista
     glm::mat4 projectionMatrix = Camera3D::getProjectionMatrix();
+    auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
     glm::mat4 viewMatrix = cam->getViewMatrix();
 
     // Invertir la matriz de proyección y la matriz de vista

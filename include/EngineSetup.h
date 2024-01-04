@@ -47,8 +47,8 @@ public:
     bool BASED_TILE_RENDER = false;
     bool BASED_TILE_RENDER_THREADED = false;
 
-    bool ENABLE_FOG = false;
-    float FRUSTUM_FARPLANE_DISTANCE = 100000;
+    bool ENABLE_FOG = true;
+    float FRUSTUM_FARPLANE_DISTANCE = 1000;
     float HORIZONTAL_FOV = 90;
 
     bool DRAW_TILES_GRID = false;
@@ -148,7 +148,7 @@ public:
     float TESTING_INT3 = 1;
     float TESTING_INT4 = 0.1f;
 
-    bool ENABLE_DEPTH_OF_FIELD = false;
+    bool ENABLE_DEPTH_OF_FIELD = true;
     bool SHOW_DEPTH_OF_FIELD = false;
 
     //LIGHTNING EFFECT

@@ -160,8 +160,6 @@ public:
 
     virtual cJSON *getJSON();
 
-    [[nodiscard]] const Vertex3D &getRotationFrame() const;
-
     void lookAt(Object3D *o);
 
     virtual void drawImGuiProperties();

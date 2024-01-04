@@ -17,6 +17,7 @@ Object3D::Object3D() :
     decal(false),
     followCamera(false),
     stencilBufferEnabled(false),
+    distanceToCamera(0),
     rotX(0),
     rotY(0),
     rotZ(0),
@@ -195,13 +196,7 @@ void Object3D::postUpdate()
     }
 
     if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
-        Drawable::drawObject3DAxis(
-            this,
-            ComponentsManager::get()->getComponentCamera()->getCamera(),
-            true,
-            true,
-            true
-        );
+        Drawable::drawObject3DAxis(this,true,true,true);
     }
 }
 
@@ -259,7 +254,8 @@ bool &Object3D::isAlphaEnabled() {
     return alphaEnabled;
 }
 
-void Object3D::setAlphaEnabled(bool alphaEnabled) {
+void Object3D::setAlphaEnabled(bool alphaEnabled)
+{
     Object3D::alphaEnabled = alphaEnabled;
 }
 
@@ -285,13 +281,7 @@ float &Object3D::getRotZ() {
 void Object3D::onDrawHostBuffer()
 {
     if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
-        Drawable::drawObject3DAxis(
-            this,
-            ComponentsManager::get()->getComponentCamera()->getCamera(),
-            true,
-            true,
-            true
-        );
+        Drawable::drawObject3DAxis(this,true,true,true);
     }
 }
 
@@ -301,10 +291,6 @@ bool Object3D::isEnableLights() const {
 
 void Object3D::setEnableLights(bool enableLights) {
     Object3D::enableLights = enableLights;
-}
-
-const Vertex3D &Object3D::getRotationFrame() const {
-    return rotationFrame;
 }
 
 void Object3D::lookAt(Object3D *o)
@@ -567,9 +553,9 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
     if (cJSON_GetObjectItemCaseSensitive(object, "rotation") != nullptr) {
         cJSON *rotation = cJSON_GetObjectItemCaseSensitive(object, "rotation");
         o->setRotation(
-                (float) cJSON_GetObjectItemCaseSensitive(rotation, "x")->valuedouble,
-                (float) cJSON_GetObjectItemCaseSensitive(rotation, "y")->valuedouble,
-                (float) cJSON_GetObjectItemCaseSensitive(rotation, "z")->valuedouble
+            (float) cJSON_GetObjectItemCaseSensitive(rotation, "x")->valuedouble,
+            (float) cJSON_GetObjectItemCaseSensitive(rotation, "y")->valuedouble,
+            (float) cJSON_GetObjectItemCaseSensitive(rotation, "z")->valuedouble
         );
     }
     o->setStencilBufferEnabled(cJSON_GetObjectItemCaseSensitive(object, "stencilBufferEnabled")->valueint);

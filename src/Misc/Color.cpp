@@ -103,7 +103,7 @@ glm::vec3 Color::toGLM() const
 
 SDL_Color Color::toSDL() const
 {
-    return  {(Uint8) (b * 255), (Uint8) (r* 255), (Uint8) (g* 255)};
+    return  {(Uint8) (b * 255), (Uint8) (g * 255), (Uint8) (r * 255)};
 }
 
 ImVec4 Color::toImVec4() const

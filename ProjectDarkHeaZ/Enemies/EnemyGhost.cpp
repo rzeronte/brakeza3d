@@ -428,7 +428,7 @@ void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 
 void EnemyGhost::takeDamage(float damageTaken)
 {
-    this->stamina -= damageTaken;
+    //this->stamina -= damageTaken;
     if (this->stamina <= 0) {
         die();
     }
@@ -484,6 +484,8 @@ void EnemyGhost::tryShoot()
 void EnemyGhost::drawImGuiProperties()
 {
     Mesh3D::drawImGuiProperties();
+
+    ImGui::Separator();
 
     if (ImGui::TreeNode("Enemy##")) {
         if (ImGui::TreeNode("Particles Offset##")) {

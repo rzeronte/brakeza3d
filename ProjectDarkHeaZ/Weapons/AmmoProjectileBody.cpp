@@ -108,7 +108,7 @@ void AmmoProjectileBody::onUpdate()
         return;
     }
 
-    if (!ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isVertexInside(getPosition()) && !isWasCollision()) {
+    if (!Frustum::isVertexInside(getPosition()) && !isWasCollision()) {
         startEndingCounter();
         particleEmitter->setStopAdd(true);
         setRender(false);
@@ -116,7 +116,6 @@ void AmmoProjectileBody::onUpdate()
 
     particleEmitter->setPosition(getPosition());
     particleEmitter->setRotation(getRotation());
-
     particleEmitter->onUpdate();
 }
 
