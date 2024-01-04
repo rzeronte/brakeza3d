@@ -14,8 +14,7 @@ void ComponentHUD::onStart()
     Logging::head("ComponentHUD onStart");
 
     HUDTextures = new TexturePackage();
-
-    shaderLasers = new FXLaser();
+    shaderLasers = new FXLaser(new Image(EngineSetup::get()->IMAGES_FOLDER + "noiseCloud.png"));
     shaderLasers->setEnabled(true);
 
     loadImages();

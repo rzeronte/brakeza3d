@@ -107,7 +107,17 @@ public:
         Color particlesTo
     );
 
-    bool shootLaserProjectile(Object3D *parent, Vertex3D position, Vertex3D direction, float intensity, bool sound, Color color, int filterGroup, int filterMask);
+    bool shootLaserProjectile(
+        Object3D *parent,
+        Vertex3D position,
+        Vertex3D offsetPosition,
+        Vertex3D direction,
+        float intensity,
+        bool sound,
+        Color color,
+        int filterGroup,
+        int filterMask
+    );
 
     void setCadenceTime(float value);
 

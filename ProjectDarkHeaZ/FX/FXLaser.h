@@ -11,9 +11,6 @@
 #include "../../include/OpenGL/FXEffectOpenGL.h"
 #include "../Weapons/ProjectileRay.h"
 
-#define MAX_PROJECTILES 256
-#define MAX_LASERS 256
-
 struct OCLaser
 {
     glm::vec2 from;
@@ -22,21 +19,12 @@ struct OCLaser
     float intensity;
 };
 
-struct OCProjectile
-{
-    int x;
-    int y;
-    int r;
-    int g;
-    int b;
-    float intensity;
-};
-
 class FXLaser : public FXEffectOpenGL {
 private:
+    Image *mask;
     std::vector<OCLaser> lasers;
 public:
-    FXLaser();
+    FXLaser(Image *mask);
 
     void update() override;
 

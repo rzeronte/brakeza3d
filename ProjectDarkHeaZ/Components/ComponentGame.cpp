@@ -114,7 +114,7 @@ void ComponentGame::loadShaders()
     shaderBackgroundImage = new FXOffsetImage(EngineSetup::get()->IMAGES_FOLDER + "empty.png");
     shaderForegroundImage = new FXOffsetImage(EngineSetup::get()->IMAGES_FOLDER + "empty.png");
     shaderColor = new FXColorTint(false, PaletteColors::getStamina(), 0.75f);
-    shaderProjectiles = new FXLaser();
+    shaderProjectiles = new FXLaser(new Image(EngineSetup::get()->IMAGES_FOLDER + "noiseCloud.png"));
 
     shaderEdgeObject = new FXOutliner(false, nullptr, PaletteColors::getEnergy(), 1.0f);
 }

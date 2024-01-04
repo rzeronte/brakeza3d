@@ -2,8 +2,9 @@
 #include "../../include/LUAManager.h"
 #include "../../include/Brakeza3D.h"
 
-FXLaser::FXLaser()
+FXLaser::FXLaser(Image *mask)
 :
+    mask(mask),
     FXEffectOpenGL(true)
 {
 }
@@ -17,8 +18,9 @@ void FXLaser::update()
     auto shader = ComponentsManager::get()->getComponentGame()->getShaderOGLLineLaser();
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
-    for(auto l: lasers) {
+    for (auto l: lasers) {
         shader->render(
+            mask->getOGLTextureID(),
             Point2D(l.from),
             Point2D(l.to),
             Color(l.color.r, l.color.g, l.color.b),

@@ -20,7 +20,7 @@ float line(vec2 A, vec2 B, vec2 C, float thickness);
 void main()
 {
     // Calcula nuevas coordenadas de textura para simular el movimiento perpetuo de la máscara
-    vec2 shiftedCoords = TexCoords + maskDirection * maskSpeed * time;
+    vec2 shiftedCoords = TexCoords + normalize(maskDirection) * maskSpeed * time;
 
     shiftedCoords.x = fract(shiftedCoords.x);
     shiftedCoords.y = fract(shiftedCoords.y);

@@ -1,6 +1,3 @@
-//
-// Created by eduardo on 26/08/23.
-//
 
 #include "BoidEnemyGhost.h"
 #include "../Common/PaletteColors.h"
@@ -41,7 +38,8 @@ void BoidEnemyGhost::shoot(Object3D *target)
         case WeaponTypes::WEAPON_LASER: {
             bool shootResult = weapon->shootLaserProjectile(
                 this,
-                getPosition() - AxisUp().getScaled(1000),
+                getPosition(),
+                AxisUp().getScaled(projectileStartOffsetPosition),
                 AxisUp().getInverse(),
                 0.1f,
                 false,

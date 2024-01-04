@@ -20,7 +20,7 @@ Player::Player()
     warningDamage(false),
     rescuedHumans(0),
     coins(5000),
-    projectileStartOffsetPosition(1.4),
+    projectileStartOffsetPosition(1.3),
     weapon(nullptr),
     counterStucked(Counter(5)),
     counterDashCadence(Counter(1)),
@@ -50,7 +50,8 @@ Player::Player()
     power(INITIAL_POWER),
     friction(INITIAL_FRICTION),
     maxVelocity(INITIAL_MAX_VELOCITY),
-    velocity(Vertex3D(0, 0, 0))
+    velocity(Vertex3D(0, 0, 0)),
+    warningSoundChannel(0)
 {
     setTransparent(false);
 
@@ -72,7 +73,7 @@ Player::Player()
     shaderEnergyShield = new FXEnergyShield(
         true,
         this,
-        std::string(EngineSetup::get()->IMAGES_FOLDER + "noise_color.png"),
+        std::string(EngineSetup::get()->IMAGES_FOLDER + "noiseCloud2.png"),
         std::string(EngineSetup::get()->IMAGES_FOLDER + "shield_mask.png")
     );
 
@@ -113,7 +114,7 @@ bool Player::takeDamage(float dmg)
         setState(PlayerState::DEAD);
         if (warningDamage) {
             warningDamage = false;
-            ComponentsManager::get()->getComponentSound()->stopChannel(warningSoundChannel);
+            ComponentSound::stopChannel(warningSoundChannel);
         }
         ComponentsManager::get()->getComponentSound()->sound("playerDead", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         componentGame->makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_BY_DEAD, true);
@@ -177,7 +178,8 @@ void Player::shoot(float intensity)
         case WeaponTypes::WEAPON_LASER: {
             bool resultShoot = weapon->shootLaserProjectile(
                 this,
-                getPosition() - AxisUp().getScaled(0.01),
+                getPosition(),
+                AxisUp().getScaled(projectileStartOffsetPosition),
                 AxisUp().getInverse(),
                 0.001f,
                 true,
@@ -289,7 +291,7 @@ void Player::onUpdate()
     if ((currentStaminaPercentage() >= 25 && warningDamage) && isGameStateDistinctOfGameOver && state != PlayerState::DEAD) {
         ComponentsManager::get()->getComponentGame()->getShaderColor()->setEnabled(false);
         warningDamage = false;
-        ComponentsManager::get()->getComponentSound()->stopChannel(warningSoundChannel);
+        ComponentSound::stopChannel(warningSoundChannel);
     }
 
     if (counterDamageBlink.isEnabled()) {
@@ -664,7 +666,7 @@ void Player::previousWeapon()
     auto currentWeapon = getWeapon();
     auto currentIterator = std::find(weaponTypes.begin(), weaponTypes.end(), currentWeapon);
 
-    int index = std::distance(weaponTypes.begin(), currentIterator);
+    int index = (int) std::distance(weaponTypes.begin(), currentIterator);
 
     for (int i = index; i >= 0; i--) {
         if (weaponTypes[i] == currentWeapon) {
@@ -737,7 +739,7 @@ void Player::setEnabled(bool value)
     Object3D::setEnabled(value);
 }
 
-void Player::updateWeaponInteractionStatus()
+void Player::updateWeaponInteractionStatus() const
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto componentGameInput = ComponentsManager::get()->getComponentGameInput();
@@ -836,7 +838,7 @@ void Player::increaseHumans()
     rescuedHumans++;
 }
 
-int Player::getRescuedHumans() {
+int Player::getRescuedHumans() const {
     return rescuedHumans;
 }
 
