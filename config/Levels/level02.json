@@ -1,5 +1,6 @@
 {
   "name": "02",
+  "scene": "scene02.json",
   "music": "musicLevel01",
   "backgroundImage": "levels/02.png",
   "foregroundImage": "foregrounds/02.png",
@@ -61,34 +62,6 @@
       "type": 6,
       "position": { "x": 70, "y": 25 },
       "help": 2
-    }
-  ],
-  "asteroids": [
-  ],
-  "background": [
-    {
-      "name": "Sun",
-      "model": "planet_sun.fbx",
-      "scale": 1,
-      "position": { "x": 40, "y": 50, "z": 45 },
-      "rotation": { "x": 90, "y": 0, "z": 0 },
-      "rotationFrame": { "x": 0.1, "y": 0.1, "z": 0 }
-    },
-    {
-      "name":	"Earth",
-      "position": { "x": 53,  "y":	30, "z": 30 },
-      "model":	"planet_earth.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.1, "y": 0.2, "z": 0.11 },
-      "scale":	1
-    },
-    {
-      "name": "nave",
-      "position": { "x": 70,  "y":	40, "z": 40 },
-      "model":	"space_hexagon.fbx",
-      "rotation": { "x": 60, "y": 0,  "z": 30 },
-      "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0.0 },
-      "scale":	0.5
     }
   ]
 }

@@ -1,5 +1,6 @@
 {
   "name": "08",
+  "scene": "scene01.json",
   "music": "musicLevel05",
   "backgroundImage": "levels/08.png",
   "foregroundImage": "foregrounds/06.png",
@@ -143,78 +144,6 @@
     {
       "type": 7,
       "position": { "x": 75, "y": 10 }
-    }
-  ],
-  "background": [
-    {
-      "name": "asteroid01",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.02, "y": 0.07, "z": 0.11 },
-      "scale":	1.5,
-      "motion": {
-        "type": 1,
-        "to": { "x": 110, "y": -10 },
-        "from": { "x": -20, "y": 95 },
-        "speed": 0.09
-      }
-    },
-    {
-      "name": "asteroid02",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.03, "y": 0.07, "z": 0.11 },
-      "scale":	2.5,
-      "motion": {
-        "type": 1,
-        "to": { "x": 110, "y": -20 },
-        "from": { "x": 30, "y": 70 },
-        "speed": 0.09
-      }
-    },
-    {
-      "name": "asteroid03",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.05, "y": 0.03, "z": 0.14 },
-      "scale":	2.0,
-      "motion": {
-        "type": 1,
-        "to": { "x": 110, "y": 0 },
-        "from": { "x": 20, "y": 75 },
-        "speed": 0.09
-      }
-    },
-    {
-      "name": "asteroid04",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.03, "y": 0.17, "z": 0.21 },
-      "scale":	3,
-      "motion": {
-        "type": 1,
-        "to": { "x": 105, "y": 50 },
-        "from": { "x": 10, "y": 100 },
-        "speed": 0.09
-      }
-    },
-    {
-      "name": "asteroid05",
-      "position": { "x": 900,  "y":	0, "z": 40000 },
-      "model":	"asteroid_01.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.03, "y": 0.17, "z": 0.21 },
-      "scale":	5,
-      "motion": {
-        "type": 1,
-        "to": { "x": 105, "y": 40 },
-        "from": { "x": 45, "y": 80 },
-        "speed": 0.09
-      }
     }
   ]
 }

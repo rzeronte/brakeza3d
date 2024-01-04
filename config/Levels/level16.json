@@ -1,5 +1,6 @@
 {
   "name": "16",
+  "scene": "scene01.json",
   "backgroundImage": "levels/16.png",
   "foregroundImage": "foregrounds/02.png",
   "music": "musicLevel05",
@@ -165,15 +166,5 @@
     }
   ],
   "items": [
-  ],
-  "background": [
-    {
-      "name": "Star",
-      "model": "planet_earth.fbx",
-      "scale": 11,
-      "position": { "x": 25, "y": 30, "z": 20000 },
-      "rotation": { "x": 90, "y": 0, "z": 0 },
-      "rotationFrame": { "x": 0.05, "y": 0.01, "z": 0 }
-    }
   ]
 }

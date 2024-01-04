@@ -210,10 +210,10 @@ void Player::shoot(float intensity)
         case WeaponTypes::WEAPON_RAYLIGHT: {
             rayLight.updateDirection(
                 rayLight.getParent()->AxisDown().getNormalize(),
-                rayLight.getParent()->AxisDown().getScaled(0.01)
+                rayLight.getParent()->AxisUp().getScaled(-1.3f)
             );
 
-            weapon->shootRayLight(rayLight, 0.001, PaletteColors::getPlayerRay());
+            weapon->shootRayLight(rayLight, 0.005, PaletteColors::getPlayerRay());
             getWeaponLight()->setColor(PaletteColors::getPlayerRayLight());
             initLight();
             break;

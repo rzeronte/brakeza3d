@@ -1,5 +1,6 @@
 {
   "name": "15",
+  "scene": "scene01.json",
   "backgroundImage": "levels/15.png",
   "foregroundImage": "foregrounds/06.png",
   "music": "musicLevel05",
@@ -132,15 +133,5 @@
       "type": 10,
       "position": { "x": 20, "y": 15 }
     }
-  ],
-  "background": [
-    {
-      "name":	"moon",
-      "position": { "x":	50,  "y":	50, "z": 40000 },
-      "model":	"moon_planet.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.01, "y": 0.07, "z": 0.011 },
-      "scale":	10
-    }
   ]
-  }
+}

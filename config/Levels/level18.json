@@ -1,5 +1,6 @@
 {
   "name": "18",
+  "scene": "scene01.json",
   "backgroundImage": "levels/18.png",
   "foregroundImage": "foregrounds/03.png",
   "music": "musicLevel05",
@@ -202,17 +203,5 @@
     }
   ],
   "items": [
-  ],
-  "asteroids": [
-  ],
-  "background": [
-    {
-      "name":	"moon",
-      "position": { "x":	50,  "y":	50, "z": 20000 },
-      "model":	"moon_planet.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.0, "y": 0.0, "z": 0.01 },
-      "scale":	10
-    }
   ]
 }

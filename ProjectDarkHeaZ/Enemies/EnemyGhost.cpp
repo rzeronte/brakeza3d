@@ -429,7 +429,7 @@ void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 
 void EnemyGhost::takeDamage(float damageTaken)
 {
-    //this->stamina -= damageTaken;
+    this->stamina -= damageTaken;
     if (this->stamina <= 0) {
         die();
     }

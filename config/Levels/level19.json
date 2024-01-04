@@ -1,5 +1,6 @@
 {
   "name": "19",
+  "scene": "scene01.json",
   "backgroundImage": "levels/19.png",
   "foregroundImage": "foregrounds/03.png",
   "music": "musicLevel05",
@@ -280,17 +281,5 @@
     }
   ],
   "items": [
-  ],
-  "asteroids": [
-  ],
-  "background": [
-    {
-      "name": "Star",
-      "model": "planet_earth.fbx",
-      "scale": 20,
-      "position": { "x": 50, "y": 80, "z": 20000 },
-      "rotation": { "x": 90, "y": 0, "z": 0 },
-      "rotationFrame": { "x": 0.05, "y": 0.01, "z": 0 }
-    }
   ]
 }

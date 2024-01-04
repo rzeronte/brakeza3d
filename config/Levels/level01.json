@@ -1,8 +1,9 @@
 {
   "name": "01",
+  "scene": "scene01.json",
   "music": "musicLevel01",
   "backgroundImage": "levels/01.png",
-  "foregroundImage": "foregrounds/05.png",
+  "foregroundImage": "foregrounds/02.png",
   "allowEnergyShield": false,
   "histories": ["histories/lore_01_1.png", "histories/lore_01_2.png"],
   "tutorials": ["tutorials/tutorial_first.png"],
@@ -31,8 +32,6 @@
       }
     }
   ],
-  "asteroids": [
-  ],
   "boids": [
   ],
   "items": [
@@ -40,32 +39,6 @@
       "type": 1,
       "position": { "x": 50, "y": 35 },
       "help": 0
-    }
-  ],
-  "background": [
-    {
-      "name": "Background: Star",
-      "model": "planet_earth.fbx",
-      "scale": 1,
-      "position": { "x": 50, "y": 50, "z": 40 },
-      "rotation": { "x": 90, "y": 0, "z": 0 },
-      "rotationFrame": { "x": 0.05, "y": 0.01, "z": 0 }
-    },
-    {
-      "name": "Sun",
-      "position": { "x": 63,  "y":	35, "z": 45 },
-      "model":	"planet_sun.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.01, "y": 0.1, "z": 0.05 },
-      "scale": 1
-    },
-    {
-      "name": "Background: Station",
-      "position": { "x": 80,  "y":	40, "z": 60 },
-      "model":	"space_hexagon.fbx",
-      "rotation": { "x": 60, "y": 0,  "z": 30 },
-      "rotationFrame": { "x": 0.0, "y": 0.04, "z": 0.0 },
-      "scale": 1
     }
   ]
 }

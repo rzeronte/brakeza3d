@@ -1,12 +1,13 @@
 {
 	"objects":	[{
-			"name":	"added_item_56",
-			"scale":	1,
+			"name":	"Sun",
+			"scale":	2,
 			"stencilBufferEnabled":	false,
+			"transparent":	false,
 			"position":	{
-				"x":	1,
-				"y":	1,
-				"z":	1
+				"x":	-7,
+				"y":	0,
+				"z":	40
 			},
 			"rotation":	{
 				"x":	0,
@@ -15,55 +16,40 @@
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
-			"model":	"../assets/models/planet_cube_02.fbx",
+			"model":	"../assets/models/planet_sun.fbx",
 			"enableLights":	false,
 			"shaders":	[],
 			"type":	"Mesh3D"
 		}, {
-			"name":	"new_object_85",
-			"scale":	1,
+			"name":	"Earth",
+			"scale":	1.5,
 			"stencilBufferEnabled":	false,
+			"transparent":	false,
 			"position":	{
-				"x":	1,
-				"y":	1,
-				"z":	0
+				"x":	6,
+				"y":	0,
+				"z":	45
 			},
 			"rotation":	{
-				"x":	38,
-				"y":	-30,
-				"z":	11
+				"x":	0,
+				"y":	0,
+				"z":	0
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
-			"ambient":	{
-				"x":	1,
-				"y":	1,
-				"z":	1
-			},
-			"diffuse":	{
-				"x":	1,
-				"y":	1,
-				"z":	1
-			},
-			"specular":	{
-				"x":	1,
-				"y":	1,
-				"z":	1
-			},
-			"constant":	0.89999997615814209,
-			"linear":	0.28999999165534973,
-			"quadratic":	0.63200002908706665,
-			"cutOff":	0.59988200664520264,
-			"outerCutOff":	0.46990001201629639,
-			"type":	"SpotLight3D"
+			"model":	"../assets/models/planet_earth.fbx",
+			"enableLights":	false,
+			"shaders":	[],
+			"type":	"Mesh3D"
 		}, {
-			"name":	"new_object_20",
+			"name":	"Hexagon",
 			"scale":	1,
 			"stencilBufferEnabled":	false,
+			"transparent":	false,
 			"position":	{
-				"x":	3,
-				"y":	-2,
-				"z":	3
+				"x":	31,
+				"y":	-5,
+				"z":	100
 			},
 			"rotation":	{
 				"x":	0,
@@ -72,37 +58,22 @@
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
-			"ambient":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"diffuse":	{
-				"x":	1,
-				"y":	0,
-				"z":	0
-			},
-			"specular":	{
-				"x":	1,
-				"y":	1,
-				"z":	1
-			},
-			"constant":	1.3999999761581421,
-			"linear":	0.090000003576278687,
-			"quadratic":	0.032000001519918442,
-			"type":	"LightPoint3D"
+			"model":	"../assets/models/space_hexagon.fbx",
+			"enableLights":	false,
+			"shaders":	[],
+			"type":	"Mesh3D"
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	10.790281295776367,
-			"y":	-6.3116607666015625,
-			"z":	-9.1710138320922852
+			"x":	0,
+			"y":	0,
+			"z":	0.107350192964077
 		},
 		"rotation":	{
-			"x":	38.75,
-			"y":	44,
+			"x":	0,
+			"y":	0,
 			"z":	0
 		}
 	}

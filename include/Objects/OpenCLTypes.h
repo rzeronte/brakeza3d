@@ -91,8 +91,8 @@ struct OCParticlesContext {
             10,
             125.0f,
             255.0f,
-            1,
-            1,
+            5,
+            10,
             0.99f
         );
     }

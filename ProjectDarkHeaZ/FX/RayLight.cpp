@@ -45,7 +45,7 @@ void RayLight::update()
     Vertex3D start = parent->getPosition() + startOffset;
     Point2D screenPoint = Transforms::WorldToPoint(start);
 
-    Vertex3D end = parent->getPosition() + direction.getScaled(reach);
+    Vertex3D end = parent->getPosition() + startOffset + direction.getScaled(reach);
     Point2D middlePoint = Transforms::WorldToPoint(end);
 
     rayCallback->m_rayFromWorld = start.toBullet();

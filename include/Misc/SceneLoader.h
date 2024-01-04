@@ -54,7 +54,9 @@ class SceneLoader {
     };
 public:
     explicit SceneLoader();
+
     void loadScene(const std::string& filename);
+
     static void saveScene(const std::string& filename);
 
     static Vertex3D parseVertex3DJSON(cJSON *vertex3DJSON);

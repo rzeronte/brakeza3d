@@ -1,5 +1,6 @@
 {
   "name": "07",
+  "scene": "scene01.json",
   "music": "musicLevel05",
   "backgroundImage": "levels/07.png",
   "foregroundImage": "foregrounds/02.png",
@@ -136,16 +137,6 @@
     {
       "type": 1,
       "position": { "x": 95, "y": 1 }
-    }
-  ],
-  "background": [
-    {
-      "name": "nave",
-      "position": { "x": 50,  "y":	80, "z": 450 },
-      "model":	"planet_sun.fbx",
-      "rotation": { "x": 60, "y": 0,  "z": 30 },
-      "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0.0 },
-      "scale":	45
     }
   ]
 }

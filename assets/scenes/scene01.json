@@ -1,12 +1,13 @@
 {
 	"objects":	[{
-			"name":	"new_particleEmitter_79",
-			"scale":	1,
+			"name":	"Sun",
+			"scale":	2,
 			"stencilBufferEnabled":	false,
+			"transparent":	false,
 			"position":	{
-				"x":	0,
+				"x":	-8,
 				"y":	0,
-				"z":	2
+				"z":	40
 			},
 			"rotation":	{
 				"x":	0,
@@ -15,42 +16,51 @@
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
-			"context":	{
-				"GRAVITY":	0,
-				"STEP_ADD_PARTICLE":	0.05000000074505806,
-				"PARTICLE_LIFESPAN":	1.5,
-				"SMOKE_ANGLE_RANGE":	25,
-				"MIN_VELOCITY":	10.100000381469727,
-				"MAX_VELOCITY":	2,
-				"ALPHA_MIN":	125,
-				"ALPHA_MAX":	255,
-				"POSITION_NOISE":	0.019999999552965164,
-				"VELOCITY_NOISE":	0.039999999105930328,
-				"DECELERATION_FACTOR":	0.99000000953674316
+			"model":	"../assets/models/planet_sun.fbx",
+			"enableLights":	false,
+			"shaders":	[],
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Earth",
+			"scale":	1.5,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	4,
+				"y":	0,
+				"z":	45
 			},
-			"colorFrom":	{
-				"r":	255,
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/planet_earth.fbx",
+			"enableLights":	false,
+			"shaders":	[],
+			"type":	"Mesh3D"
+		}],
+	"shaders":	[{
+			"type":	"FXColorTint",
+			"alpha":	0,
+			"color":	{
+				"r":	1,
 				"g":	0,
 				"b":	0
-			},
-			"colorTo":	{
-				"r":	0,
-				"g":	255,
-				"b":	0
-			},
-			"type":	"ParticleEmitter"
+			}
 		}],
-	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	1.3217648267745972,
-			"y":	1.1242656707763672,
-			"z":	-4.9725551605224609
+			"x":	0,
+			"y":	0,
+			"z":	0.10627667605876923
 		},
 		"rotation":	{
-			"x":	-3.75,
-			"y":	9.75,
+			"x":	0,
+			"y":	0,
 			"z":	0
 		}
 	}

@@ -1,5 +1,6 @@
 {
   "name": "13",
+  "scene": "scene01.json",
   "backgroundImage": "levels/13.png",
   "foregroundImage": "foregrounds/03.png",
   "music": "musicLevel11",
@@ -193,30 +194,6 @@
     {
       "type": 7,
       "position": { "x": 85, "y": 5 }
-    }
-  ],
-  "background": [
-    {
-      "name": "nave",
-      "position": { "x": 900,  "y":	0, "z": 50000 },
-      "model":	"spaceships/destroyer.fbx",
-      "rotation": { "x": 90, "y": 90,  "z": 30 },
-      "rotationFrame": { "x": 0.0, "y": 0.0, "z": 0.001 },
-      "scale":	4,
-      "motion": {
-        "type": 1,
-        "from": { "x": 10, "y": 25 },
-        "to": { "x": 130, "y": 45 },
-        "speed": 0.05
-      }
-    },
-    {
-      "name":	"moon",
-      "position": { "x":	60,  "y":	40, "z": 50000 },
-      "model":	"moon_planet.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0, "y": 0, "z": 0.1 },
-      "scale":	15
     }
   ]
 }
