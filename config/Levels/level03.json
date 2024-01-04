@@ -1,5 +1,6 @@
 {
   "name": "03",
+  "scene": "scene03.json",
   "music": "musicLevel01",
   "backgroundImage": "levels/03.png",
   "foregroundImage": "foregrounds/03.png",
@@ -57,32 +58,5 @@
     }
   ],
   "items": [
-
-  ],
-  "background": [
-    {
-      "name": "Background: Star",
-      "model": "planet_earth.fbx",
-      "scale": 0.1,
-      "position": { "x": 50, "y": 50, "z": 200 },
-      "rotation": { "x": 90, "y": 0, "z": 0 },
-      "rotationFrame": { "x": 0.05, "y": 0.01, "z": 0 }
-    },
-    {
-      "name": "Background: Marsh",
-      "position": { "x": 63,  "y":	35, "z": 450 },
-      "model":	"planet_sun.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.01, "y": 0.1, "z": 0.05 },
-      "scale":0.1
-    },
-    {
-      "name": "Background: Station",
-      "position": { "x": 80,  "y":	40, "z": 400 },
-      "model":	"space_hexagon.fbx",
-      "rotation": { "x": 60, "y": 0,  "z": 30 },
-      "rotationFrame": { "x": 0.0, "y": 0.04, "z": 0.0 },
-      "scale": 5
-    }
   ]
 }

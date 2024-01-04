@@ -56,9 +56,6 @@ Weapon *AmmoProjectileBody::getWeaponType() const {
 
 void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
 {
-    Color from = PaletteColors::getExplosionEnemyFrom();
-    Color to = PaletteColors::getExplosionEnemyTo();
-
     auto projectile = dynamic_cast<AmmoProjectileBody*> (collisionable);
     if (projectile != nullptr) {
         return;
@@ -76,8 +73,6 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
 
     auto human = dynamic_cast<ItemHumanGhost*> (collisionable);
     if (human != nullptr) {
-        from = Color::red();
-        to = Color::red();
     }
 
     auto object = dynamic_cast<Object3D*> (collisionable);
@@ -91,7 +86,6 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
     startEndingCounter();
     setRender(false);
 
-    //Tools::makeExplosion(this, getPosition(), 0.75f, OCParticlesContext::forProjectile(), from, to);
     Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getSpriteSparklesRed()->getAnimation());
 }
 

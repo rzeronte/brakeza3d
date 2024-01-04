@@ -65,7 +65,6 @@ public:
 
     bool endLevel;
     LevelStats *stats;
-    std::vector<Object3D*> objectsBackground;
     EnemyDialog *mainMessage;
 private:
     std::vector<std::string> levels;
@@ -74,6 +73,7 @@ private:
     bool hasMusic;
     std::string music;
     std::string levelName;
+    std::string levelScene;
     int currentLevelIndex;
     bool levelStartedToPlay;
     bool levelFinished;
@@ -141,10 +141,6 @@ public:
 
     void setHasMusic(bool hasMusic);
 
-    AsteroidEnemyGhost* parseAsteroidJSON(cJSON *asteroidJSON);
-
-    Point2D convertPointPercentRelativeToScreen(Point2D point);
-
     static Color parseColorJSON(cJSON *color);
 
     [[nodiscard]] const std::vector<std::string> &getLevels() const;
@@ -155,11 +151,9 @@ public:
 
     [[nodiscard]] LevelStats *getStats() const;
 
-    void parseBackgroundItem(cJSON *object);
+    static void removeBackgroundObjects();
 
-    void removeBackgroundObjects();
-
-    void moveBackgroundObjects(Vertex3D offset);
+    static void moveBackgroundObjects(Vertex3D offset);
 
     static void parseMessageJSON(cJSON *pJson, EnemyGhost *pGhost);
 
@@ -186,6 +180,8 @@ public:
     void parseMainMessageJSON(cJSON *message);
 
     EnemyDialog *getMainMessage();
+
+    void setLevelScene(const std::string &levelScene);
 };
 
 

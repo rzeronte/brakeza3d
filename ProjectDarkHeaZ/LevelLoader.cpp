@@ -135,6 +135,11 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 
     setLevelName(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "name")->valuestring);
 
+    if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "scene") != nullptr) {
+        setLevelScene(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "scene")->valuestring);
+        ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(levelScene);
+    }
+
     setEndLevel(false);
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "endLevel") != nullptr) {
         setEndLevel(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "endLevel")->valueint);
@@ -204,15 +209,6 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         this->parseBossJSON(currentBoss);
     }
 
-    cJSON *currentAsteroid;
-    cJSON_ArrayForEach(currentAsteroid, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "asteroids")) {
-        auto asteroid = this->parseAsteroidJSON(currentAsteroid);
-        auto respawner = new EnemyGhostEmitter(asteroid, 3);
-        respawner->setPosition(asteroid->getPosition());
-        Brakeza3D::get()->addObject3D(respawner, Brakeza3D::uniqueObjectLabel("asteroid"));
-        enemiesEmitter.push_back(respawner);
-    }
-
     cJSON *currentBoid;
     cJSON_ArrayForEach(currentBoid, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "boids")) {
         auto enemy = new BoidEnemyGhost();
@@ -223,11 +219,6 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         respawner->setPosition(enemy->getPosition());
         Brakeza3D::get()->addObject3D(respawner, Brakeza3D::uniqueObjectLabel("respawner"));
         enemiesEmitter.push_back(respawner);
-    }
-
-    cJSON *currentBackground;
-    cJSON_ArrayForEach(currentBackground, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "background")) {
-        this->parseBackgroundItem(currentBackground);
     }
 
     Logging::head("End loading Level: %s", filePath.c_str());
@@ -656,14 +647,6 @@ void LevelLoader::setProjectileEmitterForEnemy(cJSON *emitter, EnemyGhost *enemy
     enemy->setProjectileEmitter(projectileEmitter);
 }
 
-Point2D LevelLoader::convertPointPercentRelativeToScreen(Point2D point)
-{
-    return Point2D(
-        ( point.x * EngineSetup::get()->screenWidth) / 100,
-        ( point.y * EngineSetup::get()->screenHeight) / 100
-    );
-}
-
 Vertex3D LevelLoader::getVertex3DFromJSONPosition(cJSON *positionJSON, float depth)
 {
     Point2D fixedPosition = parsePositionJSON(positionJSON);
@@ -802,91 +785,6 @@ void LevelLoader::setHasMusic(bool value)
     LevelLoader::hasMusic = value;
 }
 
-AsteroidEnemyGhost* LevelLoader::parseAsteroidJSON(cJSON *asteroidJSON)
-{
-    std::string name = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "name")->valuestring;
-    std::string model = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "model")->valuestring;
-    int stamina = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "stamina")->valueint;
-    bool explode = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "explode")->valueint;
-    int speed = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "speed")->valueint;
-    cJSON *motion = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "motion");
-
-    Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(asteroidJSON, "position"), Z_COORDINATE_GAMEPLAY);
-
-    Object3DBehavior *behavior;
-    const int typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valueint;
-    switch(typeMotion) {
-        case EnemyBehaviorTypes::BEHAVIOR_PATROL: {
-            Vertex3D from = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "from"), Z_COORDINATE_GAMEPLAY);
-            Vertex3D to = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "to"), Z_COORDINATE_GAMEPLAY);
-
-            float behaviorSpeed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-            behavior = new EnemyBehaviorPatrol(from, to, behaviorSpeed);
-            break;
-        }
-        case EnemyBehaviorTypes::BEHAVIOR_FOLLOW: {
-            behavior = new EnemyBehaviorFollow(
-                ComponentsManager::get()->getComponentGame()->getPlayer(),
-                (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint,
-                (float) cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint
-            );
-            break;
-        }
-        case EnemyBehaviorTypes::BEHAVIOR_CIRCLE: {
-            Vertex3D center = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "center"), Z_COORDINATE_GAMEPLAY);
-
-            behavior = new EnemyBehaviorCircle(
-                center,
-                (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble,
-                (float) cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble
-            );
-            break;
-        }
-        case EnemyBehaviorTypes::BEHAVIOR_RANDOM: {
-            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-            behavior = new EnemyBehaviorRandom(speed);
-            break;
-        }
-    }
-
-    auto *asteroid = new AsteroidEnemyGhost();
-    asteroid->setEnabled(true);
-    asteroid->setLabel(Brakeza3D::uniqueObjectLabel("npc"));
-    asteroid->setEnableLights(false);
-    asteroid->setPosition(worldPosition);
-    asteroid->setStencilBufferEnabled(true);
-    asteroid->setScale(1);
-    asteroid->setStamina(stamina);
-    asteroid->setStartStamina(stamina);
-    asteroid->setEnableLights(true);
-    asteroid->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + model));
-    asteroid->makeGhostBody(
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-        asteroid,
-        EngineSetup::collisionGroups::Enemy,
-        EngineSetup::collisionGroups::Player
-    );
-    asteroid->setSoundChannel(enemiesEmitter.size() + 2);
-    asteroid->setExplode(explode);
-
-    if (explode) {
-        std::string modelPartitions = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "modelPartitions")->valuestring;
-        auto mesh = new Mesh3D();
-        mesh->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + modelPartitions));
-        asteroid->setModelPartitions(mesh);
-
-        int numberPartitions = cJSON_GetObjectItemCaseSensitive(asteroidJSON, "numberPartitions")->valueint;
-        asteroid->setExplodeNumberPartitions(numberPartitions);
-
-    }
-
-    if (typeMotion > 0) {
-        asteroid->setBehavior(behavior);
-    }
-
-    return asteroid;
-}
-
 Color LevelLoader::parseColorJSON(cJSON *color)
 {
     return Color(
@@ -912,51 +810,21 @@ LevelStats *LevelLoader::getStats() const {
     return stats;
 }
 
-void LevelLoader::parseBackgroundItem(cJSON *object)
-{
-    std::string name = cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring;
-    std::string model = cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring;
-    cJSON *rotationJSON = cJSON_GetObjectItemCaseSensitive(object, "rotation");
-    float scale = (float) cJSON_GetObjectItemCaseSensitive(object, "scale")->valuedouble;
-    cJSON *positionJSON = cJSON_GetObjectItemCaseSensitive(object, "position");
-    cJSON *motion = cJSON_GetObjectItemCaseSensitive(object, "motion");
-
-    auto mesh = new Mesh3D();
-    mesh->setTransparent(false);
-    mesh->setScale(scale);
-    mesh->setRotation(M3::getMatrixRotationForEulerAngles(
-        (float) cJSON_GetObjectItemCaseSensitive(rotationJSON, "x")->valueint,
-        (float) cJSON_GetObjectItemCaseSensitive(rotationJSON, "y")->valueint,
-        (float) cJSON_GetObjectItemCaseSensitive(rotationJSON, "z")->valueint
-    ));
-    mesh->setRotationFrameEnabled(true);
-    mesh->setRotationFrame(parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(object, "rotationFrame")));
-    mesh->AssimpLoadGeometryFromFile(EngineSetup::get()->MODELS_FOLDER + model);
-
-    auto position = getVertex3DFromJSONPosition(positionJSON, (float) cJSON_GetObjectItemCaseSensitive(positionJSON, "z")->valueint);
-
-    mesh->setPosition(position);
-
-    if (motion != nullptr) {
-        setBehaviorFromJSON(motion, mesh, position.z);
-    }
-    objectsBackground.emplace_back(mesh);
-
-    Brakeza3D::get()->addObject3D(mesh, name);
-}
-
 void LevelLoader::removeBackgroundObjects()
 {
-    for (auto o : objectsBackground) {
-        o->setRemoved(true);
+    for (auto o : Brakeza3D::get()->getSceneObjects()) {
+        if (o->isBelongToScene()) {
+            o->setRemoved(true);
+        }
     }
-    objectsBackground.clear();
 }
 
 void LevelLoader::moveBackgroundObjects(Vertex3D offset)
 {
-    for (auto o : objectsBackground) {
-        o->addToPosition(offset);
+    for (auto o : Brakeza3D::get()->getSceneObjects()) {
+        if (o->isBelongToScene()) {
+            o->addToPosition(offset);
+        }
     }
 }
 
@@ -1109,4 +977,8 @@ void LevelLoader::updateConfig(int level) {
 
 EnemyDialog *LevelLoader::getMainMessage(){
     return mainMessage;
+}
+
+void LevelLoader::setLevelScene(const std::string &levelScene) {
+    LevelLoader::levelScene = levelScene;
 }

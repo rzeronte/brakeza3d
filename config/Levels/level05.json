@@ -1,5 +1,6 @@
 {
   "name": "05",
+  "scene": "scene01.json",
   "music": "musicLevel05",
   "backgroundImage": "levels/05.png",
   "foregroundImage": "foregrounds/06.png",
@@ -94,17 +95,6 @@
       "type": 7,
       "position": { "x": 50, "y": 5 },
       "help": 0
-    }
-  ],
-  "background": [
-
-    {
-      "name": "nave",
-      "position": { "x": 20,  "y":	60, "z": 25000 },
-      "model":	"space_hexagon.fbx",
-      "rotation": { "x": 60, "y": 0,  "z": 30 },
-      "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0.0 },
-      "scale":	0.3
     }
   ]
 }

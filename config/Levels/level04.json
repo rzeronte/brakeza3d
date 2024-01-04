@@ -1,5 +1,6 @@
 {
   "name": "04",
+  "scene": "scene01.json",
   "music": "musicLevel01",
   "backgroundImage": "levels/04.png",
   "foregroundImage": "foregrounds/05.png",
@@ -94,24 +95,6 @@
       "type": 2,
       "position": { "x": 50, "y": 20 },
       "help": 0
-    }
-  ],
-  "background": [
-    {
-      "name": "nave",
-      "position": { "x": 40,  "y":	40, "z": 35000 },
-      "model":	"space_hexagon.fbx",
-      "rotation": { "x": 60, "y": 0,  "z": 30 },
-      "rotationFrame": { "x": 0.0, "y": 0.1, "z": 0.0 },
-      "scale":	0.4
-    },
-    {
-      "name": "marsh",
-      "model": "planet_earth.fbx",
-      "scale": 0.1,
-      "position": { "x": 75, "y": 50, "z": 400 },
-      "rotation": { "x": 90, "y": 0, "z": 0 },
-      "rotationFrame": { "x": 0.1, "y": 0.1, "z": 0 }
     }
   ]
 }

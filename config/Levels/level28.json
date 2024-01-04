@@ -1,5 +1,6 @@
 {
   "name": "28",
+  "scene": "scene01.json",
   "music": "musicLevel05",
   "backgroundImage": "levels/08.png",
   "foregroundImage": "foregrounds/01.png",
@@ -136,11 +137,5 @@
   "items": [
   ],
   "boids": [
-
-  ],
-  "asteroids": [
-  ],
-  "background": [
-
   ]
 }

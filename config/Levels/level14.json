@@ -1,4 +1,5 @@
 {
+  "scene": "scene01.json",
   "name": "14",
   "backgroundImage": "levels/14.png",
   "foregroundImage": "foregrounds/05.png",
@@ -221,16 +222,6 @@
     {
       "type": 7,
       "position": { "x": 10, "y": 80 }
-    }
-  ],
-  "background": [
-    {
-      "name": "nave",
-      "position": { "x": 50,  "y":	50, "z": 25000 },
-      "model":	"spaceships/destroyer.fbx",
-      "rotation": { "x": 90, "y": 90,  "z": 30 },
-      "rotationFrame": { "x": 0.0, "y": 0.0, "z": 0.001 },
-      "scale":	1.7
     }
   ]
 }

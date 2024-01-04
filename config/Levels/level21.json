@@ -1,5 +1,6 @@
 {
   "name": "21",
+  "scene": "scene01.json",
   "music": "musicLevel01",
   "backgroundImage": "levels/01.png",
   "foregroundImage": "foregrounds/02.png",
@@ -258,18 +259,6 @@
         "enableLights": false,
         "color": { "r": 144, "g": 0, "b": 0 }
       }
-    }
-  ],
-  "asteroids": [
-  ],
-  "background": [
-    {
-      "name": "Background: Star",
-      "model": "planet_blue.fbx",
-      "scale": 12,
-      "position": { "x": 25, "y": 25, "z": 20000 },
-      "rotation": { "x": 90, "y": 0, "z": 0 },
-      "rotationFrame": { "x": 0.05, "y": 0.01, "z": 0 }
     }
   ]
 }

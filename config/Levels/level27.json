@@ -1,5 +1,6 @@
 {
   "name": "27",
+  "scene": "scene01.json",
   "music": "musicLevel05",
   "backgroundImage": "levels/06.png",
   "foregroundImage": "foregrounds/03.png",
@@ -102,25 +103,5 @@
   "items": [
   ],
   "boids": [
-  ],
-  "asteroids": [
-  ],
-  "background": [
-    {
-      "name": "Background: Star",
-      "model": "planet_blue.fbx",
-      "scale": 12,
-      "position": { "x": 25, "y": 25, "z": 20000 },
-      "rotation": { "x": 90, "y": 0, "z": 0 },
-      "rotationFrame": { "x": 0.05, "y": 0.01, "z": 0 }
-    },
-    {
-      "name": "Background: Beholder",
-      "position": { "x": 70,  "y":	40, "z": 90000 },
-      "model":	"beholder.fbx",
-      "rotation": { "x": 60, "y": 0,  "z": 30 },
-      "rotationFrame": { "x": 0.0, "y": 0.04, "z": 0.0 },
-      "scale":	5
-    }
   ]
 }

@@ -1,5 +1,6 @@
 {
   "name": "12",
+  "scene": "scene01.json",
   "backgroundImage": "levels/12.png",
   "foregroundImage": "foregrounds/04.png",
   "music": "musicLevel11",
@@ -155,16 +156,6 @@
     {
       "type": 7,
       "position": { "x": 90, "y": 85 }
-    }
-  ],
-  "background": [
-    {
-      "name": "nave",
-      "position": { "x": 50,  "y":	40, "z": 30000 },
-      "model":	"stargate.fbx",
-      "rotation": { "x": 0, "y": 0,  "z": 0 },
-      "rotationFrame": { "x": 0.0, "y": 0.0, "z": 0.1 },
-      "scale":	20.0
     }
   ]
 }

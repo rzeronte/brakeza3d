@@ -848,10 +848,6 @@ void ComponentGame::setVisibleInGameObjects(bool value)
         }
     }
 
-    for (auto object: getLevelLoader()->objectsBackground) {
-        object->setEnabled(value);
-    }
-
     for (auto spaceship: spaceships) {
         spaceship->setEnabled(false);
     }
