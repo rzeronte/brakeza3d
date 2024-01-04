@@ -181,7 +181,7 @@ public:
 
     void setEnabled(bool value) override;
 
-    void updateWeaponInteractionStatus();
+    void updateWeaponInteractionStatus() const;
 
     void updateWeaponAutomaticStatus();
 
@@ -205,9 +205,9 @@ public:
 
     void increaseHumans();
 
-    int getRescuedHumans();
+    int getRescuedHumans() const;
 
-    void makeRandomPlayerDamageSound();
+    static void makeRandomPlayerDamageSound();
 
     void updatePlayerEnergy();
 

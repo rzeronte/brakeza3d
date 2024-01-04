@@ -12,10 +12,9 @@
 
 ShaderOpenGLLineLaser::ShaderOpenGLLineLaser()
 :
-    image(new Image(EngineSetup::get()->IMAGES_FOLDER + "cloud.png")),
     ShaderOpenGL(
-    "../ProjectDarkHeaZ/OpenGLShaders/LineLaser.vertexshader",
-"../ProjectDarkHeaZ/OpenGLShaders/LineLaser.fragmentshader"
+    "../ProjectDarkHeaZ/OpenGLShaders/LineLaser.vs",
+"../ProjectDarkHeaZ/OpenGLShaders/LineLaser.fs"
      )
 {
     setupQuadUniforms(programID);
@@ -31,7 +30,7 @@ ShaderOpenGLLineLaser::ShaderOpenGLLineLaser()
     maskIntensityUniform = glGetUniformLocation(programID, "maskIntensity");
 }
 
-void ShaderOpenGLLineLaser::render(Point2D a, Point2D b, Color c, float weight, GLuint framebuffer)
+void ShaderOpenGLLineLaser::render(GLuint textureMaskID, Point2D a, Point2D b, Color c, float weight, GLuint framebuffer)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
@@ -50,17 +49,20 @@ void ShaderOpenGLLineLaser::render(Point2D a, Point2D b, Color c, float weight, 
     const auto normBx = (float) ((float)b.y / (float) EngineSetup::get()->screenHeight);
     const auto normBy = (float) ((float)b.x / (float) EngineSetup::get()->screenWidth);
 
-    setVec2Uniform(lineStartUniform, glm::vec2(normAx, normAy));
-    setVec2Uniform(lineEndUniform, glm::vec2(normBx, normBy));
+    auto start = glm::vec2(normAx, normAy);
+    auto end = glm::vec2(normBx, normBy);
+
+    setVec2Uniform(lineStartUniform, start);
+    setVec2Uniform(lineEndUniform, end);
     setVec4Uniform(lineColorUniform, glm::vec4(c.r, c.g, c.b, 1.0f));
     setFloatUniform(weightUniform, weight);
     setFloatUniform(timeUniform, Brakeza3D::get()->getExecutionTime());
-    setVec2Uniform(maskDirectionUniform, glm::vec2(0, 1 ));
+    setVec2Uniform(maskDirectionUniform, start - end);
     setFloatUniform(maskSpeedUniform, 0.5f);
     setFloatUniform(maskIntensityUniform, 1.0f);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, image->getOGLTextureID());
+    glBindTexture(GL_TEXTURE_2D, textureMaskID);
     glUniform1i(textureUniform, 0);
 
     drawQuad();

@@ -253,6 +253,7 @@ bool Weapon::shootProjectile(
 bool Weapon::shootLaserProjectile(
     Object3D *parent,
     Vertex3D position,
+    Vertex3D offsetPosition,
     Vertex3D direction,
     float intensity,
     bool sound,
@@ -288,7 +289,7 @@ bool Weapon::shootLaserProjectile(
 
         auto *projectile = new ProjectileRay(
             parent,
-            position,
+            position - offsetPosition,
             getDamage(),
             direction + test,
             direction.getNormalize().getScaled(getSpeed()),

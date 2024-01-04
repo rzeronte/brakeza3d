@@ -24,10 +24,10 @@ private:
     Vertex3D particlesEngineOffset;
 
     SwarmObject *swarmObject;
-    float projectileStartOffsetPosition;
 protected:
     std::vector<ProjectileRay *> fixedLasers;
     std::vector<EnemyDialog *> dialogs;
+    float projectileStartOffsetPosition;
 public:
     EnemyGhost();
 

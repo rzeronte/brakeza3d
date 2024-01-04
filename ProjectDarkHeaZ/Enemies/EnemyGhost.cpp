@@ -320,7 +320,8 @@ void EnemyGhost::shoot(Object3D *target)
         case WeaponTypes::WEAPON_LASER: {
             bool shootResult = weapon->shootLaserProjectile(
                 this,
-                getPosition() - AxisUp().getScaled(0.01),
+                getPosition(),
+                AxisUp().getScaled(projectileStartOffsetPosition),
                 AxisUp().getInverse(),
                 0.001f,
                 false,
