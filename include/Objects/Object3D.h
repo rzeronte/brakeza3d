@@ -40,6 +40,7 @@ protected:
     bool stencilBufferEnabled;
     bool transparent;
     bool belongToScene;
+    bool multiScene;
 
     std::string label;
     float rotX, rotY, rotZ; // For easy management from UI
@@ -205,6 +206,10 @@ public:
     void setTransparent(bool transparent);
 
     float getDistanceToCamera() const;
+
+    bool isMultiScene() const;
+
+    void setMultiScene(bool multiScene);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

@@ -44,11 +44,11 @@ void FXShockWave::update()
 
 void FXShockWave::preUpdate() {
     FXEffectOpenGL::preUpdate();
+    update();
 }
 
 void FXShockWave::postUpdate() {
     FXEffectOpenGL::postUpdate();
-    update();
 }
 
 void FXShockWave::drawImGuiProperties() {

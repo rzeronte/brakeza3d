@@ -93,7 +93,8 @@ void FXBlink::drawImGuiProperties()
     }
 }
 
-void FXBlink::setCounter(float step) {
+void FXBlink::setCounter(float step)
+{
     counter.setStep(step);
     counter.setEnabled(true);
 }

@@ -20,7 +20,7 @@ public:
 
     void setProgress(float progress);
 
-    void drawImGuiProperties();
+    void drawImGuiProperties() override;
 
     void setColor(const Color &color);
 

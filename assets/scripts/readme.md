@@ -1,5 +1,5 @@
 mensaje = this:getTypeObject()
-pepe = this:getPosition()
+RenderLayersToMain = this:getPosition()
 hola = this:isStucked()
 tiempo = brakeza:getExecutionTime()
 

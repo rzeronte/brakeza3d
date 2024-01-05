@@ -30,6 +30,7 @@ Object3D::Object3D() :
     scale(1),
     rotationFrameEnabled(false),
     belongToScene(false),
+    multiScene(false),
     luaEnvironment(sol::environment(
             LUAManager::get()->getLua(),
             sol::create, LUAManager::get()->getLua().globals())
@@ -634,4 +635,12 @@ void Object3D::setTransparent(bool transparent) {
 
 float Object3D::getDistanceToCamera() const {
     return distanceToCamera;
+}
+
+bool Object3D::isMultiScene() const {
+    return multiScene;
+}
+
+void Object3D::setMultiScene(bool multiScene) {
+    Object3D::multiScene = multiScene;
 }

@@ -54,8 +54,10 @@ Player::Player()
     warningSoundChannel(0)
 {
     setTransparent(false);
+    setMultiScene(true);
 
     light = LightPoint3D::base();
+    light->setMultiScene(true);
     light->setRotation(180, 0, 0);
     light->setEnabled(false);
     Brakeza3D::get()->addObject3D(light, "playerLight");
@@ -80,6 +82,7 @@ Player::Player()
     spriteEnergyShield = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "shield.png"), 80, 80, 20, 60));
 
     spriteEnergyShield->setEnabled(false);
+    spriteEnergyShield->setMultiScene(true);
     Brakeza3D::get()->addObject3D(spriteEnergyShield, "playerSpriteEnergyShield");
 }
 

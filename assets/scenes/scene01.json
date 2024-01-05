@@ -5,7 +5,7 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-8,
+				"x":	-7,
 				"y":	0,
 				"z":	40
 			},
@@ -26,7 +26,49 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	4,
+				"x":	6,
+				"y":	0,
+				"z":	45
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/planet_earth.fbx",
+			"enableLights":	false,
+			"shaders":	[],
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Sun",
+			"scale":	2,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-7,
+				"y":	0,
+				"z":	40
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/planet_sun.fbx",
+			"enableLights":	false,
+			"shaders":	[],
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Earth",
+			"scale":	1.5,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	6,
 				"y":	0,
 				"z":	45
 			},
@@ -44,9 +86,10 @@
 		}],
 	"shaders":	[{
 			"type":	"FXColorTint",
-			"alpha":	0,
+			"enabled":	true,
+			"alpha":	0.60000002384185791,
 			"color":	{
-				"r":	1,
+				"r":	255,
 				"g":	0,
 				"b":	0
 			}
@@ -56,7 +99,7 @@
 		"position":	{
 			"x":	0,
 			"y":	0,
-			"z":	0.10627667605876923
+			"z":	0.11074206978082657
 		},
 		"rotation":	{
 			"x":	0,
