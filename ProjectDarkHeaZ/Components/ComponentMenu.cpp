@@ -38,7 +38,7 @@ void ComponentMenu::onStart()
 void ComponentMenu::loadDecorative3DMesh()
 {
     planet = new Mesh3D();
-
+    planet->setMultiScene(true);
     planet->setEnabled(false);
     planet->setAlpha(255);
     planet->setScale(1.5f);

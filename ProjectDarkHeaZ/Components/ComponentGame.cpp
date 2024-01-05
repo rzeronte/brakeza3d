@@ -79,6 +79,7 @@ void ComponentGame::onStart()
     );
 
     swarm = new Swarm(Vertex3D(0, -1000, 10000), Vertex3D(1000, 1000, 500));
+    swarm->setMultiScene(true);
     swarm->setScale(10);
     swarm->addPredator(new SwarmObject(player));
     Brakeza3D::get()->addObject3D(swarm, "swarm");
@@ -781,7 +782,7 @@ void ComponentGame::removeInGameObjects() const
         }
     }
 
-    getLevelLoader()->removeBackgroundObjects();
+    LevelLoader::removeBackgroundObjects();
 }
 
 void ComponentGame::silenceInGameObjects()
@@ -967,7 +968,7 @@ void ComponentGame::updateShaders()
     Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.25);
     vel.z = 0;
 
-    levelLoader->moveBackgroundObjects(vel.getInverse());
+    LevelLoader::moveBackgroundObjects(vel.getInverse());
 }
 
 void ComponentGame::shaderBackgroundUpdate()
@@ -1225,6 +1226,7 @@ StoreManager *ComponentGame::getStoreManager() const {
 void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation)
 {
     auto model = new Mesh3D();
+    model->setMultiScene(true);
     model->setRotation(0, 0, 0);
     model->setRotationFrameEnabled(true);
     model->setRotationFrame(Vertex3D(0, 1, 0));

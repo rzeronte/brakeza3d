@@ -80,7 +80,17 @@ void SceneLoader::loadScene(const std::string& filename)
         std::string typeObject = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
         auto sceneShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getSceneShaderTypes();
 
+        Logging::Message("Shader ID: %s", typeObject.c_str());
+
         switch(sceneShaderTypes[typeObject.c_str()]) {
+            case SceneShaderLoaderMapping::FXColorTint : {
+                Logging::Message("Setup FXColorTint shader...");
+                auto shader = dynamic_cast<FXColorTint*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(0));
+                shader->setColor(parseColorJSON(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "color")));
+                shader->setProgress((float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "alpha")->valuedouble);
+                shader->setEnabled(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "enabled")->valueint);
+                break;
+            }
             case SceneShaderLoaderMapping::ShaderImage : {
                 auto shader = dynamic_cast<FXOffsetImage*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(0));
                 shader->getImage().setImage(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "image")->valuestring);
@@ -120,6 +130,15 @@ Vertex3D SceneLoader::parseVertex3DJSON(cJSON *vertex3DJSON)
     const auto z = (float) cJSON_GetObjectItemCaseSensitive(vertex3DJSON, "z")->valuedouble;
 
     return {x, y, z};
+}
+
+Color SceneLoader::parseColorJSON(cJSON *color)
+{
+    return Color(
+        cJSON_GetObjectItemCaseSensitive(color, "r")->valueint,
+        cJSON_GetObjectItemCaseSensitive(color, "g")->valueint,
+        cJSON_GetObjectItemCaseSensitive(color, "b")->valueint
+    );
 }
 
 void SceneLoader::saveScene(const std::string &filename)
@@ -175,7 +194,9 @@ void SceneLoader::saveScene(const std::string &filename)
 void SceneLoader::clearScene()
 {
     for (auto object: Brakeza3D::get()->getSceneObjects()) {
-        object->setRemoved(true);
+        if (!object->isMultiScene()) {
+            object->setRemoved(true);
+        }
     }
 }
 

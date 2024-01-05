@@ -66,15 +66,18 @@ void Brakeza3D::mainLoop()
         controlFrameRate();
         updateTimer();
         preUpdateComponents();
+        componentsManager->getComponentRender()->runShadersOpenCLPreUpdate();
         while (SDL_PollEvent(&e)) {
             checkForResizeOpenGLWindow(e);
             onUpdateSDLPollEventComponents(&e, finish);
             ImGui_ImplSDL2_ProcessEvent(&e);
         }
         onUpdateComponents();
+        componentsManager->getComponentWindow()->RenderLayersToGlobalFramebuffer();
         postUpdateComponents();
+        componentsManager->getComponentRender()->runShadersOpenCLPostUpdate();
         if (EngineSetup::get()->IMGUI_ENABLED) ImGuiOnUpdate();
-        componentsManager->getComponentWindow()->renderToWindow();
+        componentsManager->getComponentWindow()->RenderLayersToMain();
     }
     onEndComponents();
     delete componentsManager;

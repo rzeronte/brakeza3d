@@ -9,6 +9,7 @@
 #include <map>
 #include "../Objects/Vertex3D.h"
 #include "cJSON.h"
+#include "Color.h"
 
 enum class SceneObjectLoaderMapping {
     Object3D,
@@ -25,6 +26,7 @@ enum class Mesh3DShaderLoaderMapping {
 };
 
 enum class SceneShaderLoaderMapping {
+    FXColorTint,
     ShaderImage,
     ShaderDepthOfField,
     ShaderBilinear,
@@ -50,8 +52,10 @@ class SceneLoader {
             {"ShaderImage", SceneShaderLoaderMapping::ShaderImage},
             {"ShaderDepthOfField", SceneShaderLoaderMapping::ShaderDepthOfField},
             {"ShaderBilinear", SceneShaderLoaderMapping::ShaderBilinear},
-            {"ShaderParticlesBlurBuffer", SceneShaderLoaderMapping::ShaderParticlesBlurBuffer}
+            {"ShaderParticlesBlurBuffer", SceneShaderLoaderMapping::ShaderParticlesBlurBuffer},
+            {"FXColorTint", SceneShaderLoaderMapping::FXColorTint}
     };
+
 public:
     explicit SceneLoader();
 
@@ -84,6 +88,8 @@ public:
     static void createSprite3DInScene();
 
     static void createSprite2DInScene();
+
+    static Color parseColorJSON(cJSON *color);
 };
 
 

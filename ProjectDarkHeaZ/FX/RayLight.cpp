@@ -24,6 +24,7 @@ RayLight::RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D 
     rayCallback->m_collisionFilterMask = filterMask;
 
     light = LightPoint3D::base();
+    light->setMultiScene(true);
     light->setRotation(180, 0, 0);
     light->setEnabled(false);
     Brakeza3D::get()->addObject3D(light, Brakeza3D::uniqueObjectLabel("rayLightPoint"));

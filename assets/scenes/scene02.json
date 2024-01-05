@@ -42,13 +42,22 @@
 			"shaders":	[],
 			"type":	"Mesh3D"
 		}],
-	"shaders":	[],
+	"shaders":	[{
+			"type":	"FXColorTint",
+			"enabled":	false,
+			"alpha":	0.60000002384185791,
+			"color":	{
+				"r":	255,
+				"g":	0,
+				"b":	0
+			}
+		}],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
 			"x":	0,
 			"y":	0,
-			"z":	0.20947231352329254
+			"z":	0.10658265650272369
 		},
 		"rotation":	{
 			"x":	0,

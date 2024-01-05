@@ -18,14 +18,14 @@ void FXColorTint::update()
 {
     FXEffectBase::update();
 
-    if(!isEnabled()) return;
+    if (!isEnabled()) return;
 
     auto windows = ComponentsManager::get()->getComponentWindow();
 
     windows->getShaderOGLTint()->render(
         color,
         progress,
-        windows->getPostProcessingFramebuffer()
+        windows->getGlobalFramebuffer()
     );
 }
 
@@ -58,20 +58,11 @@ void FXColorTint::setColor(const Color &color) {
 void FXColorTint::preUpdate()
 {
     FXEffectOpenGL::preUpdate();
-
-    if (!isEnabled()) return;
-
-    auto window = ComponentsManager::get()->getComponentWindow();
-
-    window->getShaderOGLTint()->render(
-        color,
-        progress,
-        window->getPostProcessingFramebuffer()
-    );
 }
 
 void FXColorTint::postUpdate() {
     FXEffectOpenGL::postUpdate();
+    update();
 }
 
 cJSON *FXColorTint::getJSON()
@@ -79,6 +70,7 @@ cJSON *FXColorTint::getJSON()
     cJSON *root = cJSON_CreateObject();
 
     cJSON_AddStringToObject(root, "type", this->getLabel().c_str());
+    cJSON_AddBoolToObject(root, "enabled", isEnabled());
     cJSON_AddNumberToObject(root, "alpha", progress);
     cJSON *colorJSON = cJSON_CreateObject();
     cJSON_AddNumberToObject(colorJSON, "r", color.r);
