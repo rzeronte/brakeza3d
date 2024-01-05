@@ -45,13 +45,6 @@ void ComponentWindow::preUpdate()
     glViewport(0,0, width, height);
 }
 
-void ComponentWindow::renderToWindow()
-{
-    renderFramebuffer();
-    SDL_GL_SwapWindow(window);
-    cleanFrameBuffers();
-}
-
 void ComponentWindow::onUpdate()
 {
 }
@@ -402,7 +395,7 @@ void ComponentWindow::resetFramebuffer()
     shaderOGLShockWave->destroy();
 }
 
-void ComponentWindow::renderFramebuffer()
+void ComponentWindow::RenderLayersToGlobalFramebuffer()
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -424,10 +417,17 @@ void ComponentWindow::renderFramebuffer()
     if (EngineSetup::get()->SHOW_DEPTH_OF_FIELD) {
         shaderOGLDepthMap->render(depthTexture, globalFramebuffer);
     }
+}
 
+void ComponentWindow::RenderLayersToMain()
+{
     shaderOGLImage->renderTexture(foregroundTexture, 0, 0, width, height, 1, true, globalFramebuffer);
     shaderOGLImage->renderTexture(globalTexture, 0, 0, width, height, 1, true, 0);
     shaderOGLImage->renderTexture(uiTexture, 0, 0, width, height, 1, true, 0);
+
+    SDL_GL_SwapWindow(window);
+
+    cleanFrameBuffers();
 }
 
 void ComponentWindow::cleanFrameBuffers() const

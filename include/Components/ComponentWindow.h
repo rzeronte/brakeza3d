@@ -92,8 +92,6 @@ public:
 
     [[nodiscard]] TTF_Font *getFontDefault();
 
-    void renderToWindow();
-
     TTF_Font *getFontAlternative();
 
     SDL_Surface *applicationIcon;
@@ -122,7 +120,7 @@ public:
 
     [[nodiscard]] GLuint getSceneFramebuffer() const;
 
-    void renderFramebuffer();
+    void RenderLayersToGlobalFramebuffer();
     void resetFramebuffer();
 
     [[nodiscard]] GLuint getBackgroundFramebuffer() const;
@@ -160,6 +158,8 @@ public:
     [[nodiscard]] GLuint getPostProcessingFramebuffer() const;
 
     ShaderOpenGLTint *getShaderOGLTint() const;
+
+    void RenderLayersToMain();
 };
 
 

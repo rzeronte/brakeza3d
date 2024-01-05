@@ -46,7 +46,7 @@ void ComponentRender::onUpdate()
     ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->createUBOFromLights();
 
     if (isSceneShadersEnabled()) {
-        runShadersOpenCLPreUpdate();
+        //runShadersOpenCLPreUpdate();
     }
 
     onUpdateSceneObjects();
@@ -60,7 +60,7 @@ void ComponentRender::onUpdate()
     }
 
     if (isSceneShadersEnabled()) {
-        runShadersOpenCLPostUpdate();
+        //runShadersOpenCLPostUpdate();
     }
 
     if (SETUP->DRAW_FPS) {
@@ -339,7 +339,7 @@ void ComponentRender::stopLUAScripts()
 
     Logging::Message("Removing objects creating by LUA...");
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
-        if (!object->isBelongToScene()) {
+        if (!object->isBelongToScene() && !object->isMultiScene()) {
             object->setRemoved(true);
         }
     }
