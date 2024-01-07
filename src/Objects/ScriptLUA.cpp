@@ -23,7 +23,7 @@ ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
 ScriptLUA::ScriptLUA(const std::string &script, cJSON *types)
 :
     scriptFilename(script),
-    fileTypes(""),
+    fileTypes(ScriptLUA::dataTypesFileFor(script)),
     content(nullptr),
     paused(false)
 {
@@ -36,33 +36,7 @@ ScriptLUA::ScriptLUA(const std::string &script, cJSON *types)
 void ScriptLUA::getCode(const std::string &script)
 {
     size_t file_size;
-    content = readFile(EngineSetup::get()->SCRIPTS_FOLDER + script, file_size);
-}
-
-char *ScriptLUA::readFile(const std::string &name, size_t &source_size)
-{
-    FILE *fp = fopen(name.c_str(), "r");
-
-    if (!fp) {
-        Logging::Message("File %s can't be loaded!", name.c_str());
-        return nullptr;
-    }
-
-    fseek(fp, 0, SEEK_END);
-    source_size = ftell(fp);
-    fseek(fp, 0, SEEK_SET);
-
-    char *file_str = (char *)malloc(source_size + 1);
-    if (!file_str) {
-        fclose(fp);
-        return nullptr;
-    }
-
-    fread(file_str, 1, source_size, fp);
-    file_str[source_size] = '\0';
-    fclose(fp);
-
-    return file_str;
+    content = Tools::readFile(EngineSetup::get()->SCRIPTS_FOLDER + script, file_size);
 }
 
 void ScriptLUA::runEnvironment(sol::environment &environment, const std::string& func) const
@@ -108,6 +82,31 @@ void ScriptLUA::runGlobal(const std::string& func) const
     }
 }
 
+void ScriptLUA::addDataTypeEmpty(const char *name, const char *type)
+{
+    LUADataValue LUAValue;
+
+    switch (LUADataTypesMapping[type]) {
+        case LUADataType::INT: {
+            LUAValue = 0;
+            break;
+        }
+        case LUADataType::FLOAT: {
+            LUAValue = 0.0f;
+            break;
+        }
+        case LUADataType::VERTEX3D: {
+            LUAValue = Vertex3D();
+            break;
+        }
+        default:
+            break;
+    }
+
+    dataTypes.emplace_back(name, type, LUAValue);
+    dataTypesDefaultValues.emplace_back(name, type, LUAValue);
+}
+
 void ScriptLUA::addDataType(const char *name, const char *type, cJSON *value)
 {
     LUADataValue LUAValue;
@@ -126,11 +125,22 @@ void ScriptLUA::addDataType(const char *name, const char *type, cJSON *value)
             break;
         }
         default:
-            std::cerr << "Unknown data type." << std::endl;
+            break;
     }
 
     dataTypes.emplace_back(name, type, LUAValue);
     dataTypesDefaultValues.emplace_back(name, type, LUAValue);
+}
+
+bool ScriptLUA::existDataType(const char *name, const char *type)
+{
+    for (const auto& t: dataTypes) {
+        if (t.name == name && t.type == type) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void ScriptLUA::reloadGlobals()
@@ -149,6 +159,8 @@ void ScriptLUA::reloadEnvironment(sol::environment &environment)
 {
     Logging::Message("Reloading LUA Environment (%s)", this->fileTypes.c_str());
 
+    parseTypesFromFileAttributes();
+
     dataTypes = dataTypesDefaultValues;
 
     for (const auto& type : dataTypes) {
@@ -160,27 +172,29 @@ void ScriptLUA::reloadEnvironment(sol::environment &environment)
 void ScriptLUA::parseTypesFromFileAttributes()
 {
     size_t file_size;
-    auto contentFile = readFile(EngineSetup::get()->SCRIPTS_FOLDER + fileTypes, file_size);
+    auto contentFile = Tools::readFile(EngineSetup::get()->SCRIPTS_FOLDER + fileTypes, file_size);
+    Logging::Message("Parsing attributes from: '%s'", fileTypes.c_str());
 
     setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
 }
 
 void ScriptLUA::setDataTypesFromJSON(cJSON *typesJSON)
 {
-    dataTypes.clear();
+    //dataTypes.clear();
+    //dataTypesDefaultValues.clear();
 
     cJSON *currentType;
     cJSON_ArrayForEach(currentType, typesJSON) {
-        std::string name = cJSON_GetObjectItemCaseSensitive(currentType, "name")->valuestring;
-        std::string type = cJSON_GetObjectItemCaseSensitive(currentType, "type")->valuestring;
+        auto name = cJSON_GetObjectItemCaseSensitive(currentType, "name")->valuestring;
+        auto type = cJSON_GetObjectItemCaseSensitive(currentType, "type")->valuestring;
+        auto value = cJSON_GetObjectItemCaseSensitive(currentType, "value");
 
-        Logging::Message("Loading variable script (%s, %s)", name.c_str(), type.c_str());
-
-        addDataType(
-            name.c_str(),
-            type.c_str(),
-            cJSON_GetObjectItemCaseSensitive(currentType, "value")
-        );
+        if (!existDataType(name, type)){
+            addDataType(name,type,value);
+            Logging::Message("Loading script variable (%s, %s)", name, type);
+        } else {
+            Logging::Message("Keeping script variable (%s, %s)", name, type);
+        }
     }
 }
 
@@ -200,7 +214,7 @@ std::string ScriptLUA::removeFilenameExtension(std::string& filename)
     return filename;
 }
 
-void ScriptLUA::removeDataType(ScriptLUATypeData data)
+void ScriptLUA::removeDataType(const ScriptLUATypeData& data)
 {
     for (auto it = dataTypes.begin(); it != dataTypes.end(); ++it) {
         if (it->name == data.name) {
@@ -213,25 +227,11 @@ void ScriptLUA::removeDataType(ScriptLUATypeData data)
 void ScriptLUA::updateFileTypes()
 {
     Logging::Message("Updating types file (%s)", this->fileTypes.c_str());
+    char *output_string = cJSON_Print(getTypesJSON());
 
-    cJSON *root = cJSON_CreateObject();
-    cJSON *typesArray = cJSON_CreateArray();
+    updateFileTypesWith( output_string);
 
-    for (const auto &type : dataTypes) {
-        cJSON *typeObject = cJSON_CreateObject();
-        cJSON_AddStringToObject(typeObject, "name", type.name.c_str());
-        //cJSON_AddStringToObject(typeObject, "value", type.value.c_str());
-        cJSON_AddItemToArray(typesArray, typeObject);
-    }
-
-    cJSON_AddItemToObject(root, "types", typesArray);
-
-    char *jsonString = cJSON_Print(root);
-
-    std::string jsonResult(jsonString);
-    updateFileTypesWith(jsonString);
-
-    cJSON_Delete(root);
+    delete output_string;
 }
 
 void ScriptLUA::updateFileTypesWith(const std::string& content) const
@@ -351,11 +351,10 @@ const std::vector<ScriptLUATypeData> &ScriptLUA::getDataTypes() const {
     return dataTypes;
 }
 
-cJSON *ScriptLUA::getJSON()
+cJSON *ScriptLUA::getTypesJSON()
 {
     cJSON *scriptJSON = cJSON_CreateObject();
     cJSON_AddStringToObject(scriptJSON, "name", getScriptFilename().c_str());
-
 
     cJSON *typesArray = cJSON_CreateArray();
     for (auto dataType : getDataTypes()) {
@@ -371,7 +370,7 @@ cJSON *ScriptLUA::getJSON()
                 break;
             }
             case LUADataType::FLOAT: {
-                int valueFloat = std::get<float>(dataType.value);
+                float valueFloat = std::get<float>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueFloat);
                 break;
             }

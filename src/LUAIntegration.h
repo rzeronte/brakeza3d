@@ -143,7 +143,7 @@ void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<FXEffectOpenGL>("ShaderOpenCL",
                                      sol::base_classes, sol::bases<FXEffectBase>(),
-                                     "getJSON", &FXEffectOpenGL::getJSON
+                                     "getTypesJSON", &FXEffectOpenGL::getJSON
     );
     lua.new_usertype<FXEffectOpenGLObject>("ObjectShaderOpenCL",
                                            sol::base_classes, sol::bases<FXEffectOpenGL>(),
