@@ -330,19 +330,6 @@ void ComponentRender::stopLUAScripts()
     Logging::Message("LUA Scripts state changed to STOP");
 
     stateScripts = EngineSetup::LuaStateScripts::LUA_STOP;
-
-    for (auto object : Brakeza3D::get()->getSceneObjects()) {
-        object->reloadScriptsEnvironment();
-    }
-
-    reloadScriptGlobals();
-
-    Logging::Message("Removing objects creating by LUA...");
-    for (auto object : Brakeza3D::get()->getSceneObjects()) {
-        if (!object->isBelongToScene() && !object->isMultiScene()) {
-            object->setRemoved(true);
-        }
-    }
 }
 
 void ComponentRender::reloadLUAScripts()
