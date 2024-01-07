@@ -11,7 +11,8 @@ ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
 :
     scriptFilename(script),
     fileTypes(std::move(properties)),
-    content(nullptr)
+    content(nullptr),
+    paused(false)
 {
     Logging::Message("Loading LUA Script (%s, %s)", script.c_str(), fileTypes.c_str());
 
@@ -23,7 +24,8 @@ ScriptLUA::ScriptLUA(const std::string &script, cJSON *types)
 :
     scriptFilename(script),
     fileTypes(""),
-    content(nullptr)
+    content(nullptr),
+    paused(false)
 {
     Logging::Message("Loading LUA Script (%s, %s)", script.c_str(), fileTypes.c_str());
 
@@ -145,7 +147,7 @@ void ScriptLUA::reloadGlobals()
 
 void ScriptLUA::reloadEnvironment(sol::environment &environment)
 {
-    Logging::Message("Reloading LUA Environment (%s) for object: %s", this->fileTypes.c_str());
+    Logging::Message("Reloading LUA Environment (%s)", this->fileTypes.c_str());
 
     dataTypes = dataTypesDefaultValues;
 

@@ -35,6 +35,7 @@ struct ScriptLUATypeData {
 
 class ScriptLUA {
 private:
+    bool paused;
     std::map<std::string, LUADataType> LUADataTypesMapping = {
             {"int", LUADataType::INT},
             {"float", LUADataType::FLOAT},
