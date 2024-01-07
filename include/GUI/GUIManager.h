@@ -151,23 +151,11 @@ public:
                 ImGui::TableNextRow();
                 auto type = &scriptEditableManager.script->dataTypes[i];
 
-                static char name[256];
-                static char value[256];
-
-                strncpy(name, type->name.c_str(), sizeof(name));
-                strncpy(value, type->value.c_str(), sizeof(value));
-
                 ImGui::TableSetColumnIndex(0);
-                ImGui::InputText(std::string("Name##id" + std::to_string(i)).c_str(), name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll);
-                if (ImGui::IsItemEdited()) {
-                    type->name = name;
-                }
+                ImGui::Text("%s", type->name.c_str());
 
                 ImGui::TableSetColumnIndex(1);
-                ImGui::InputText(std::string("Value##id" + std::to_string(i)).c_str(), value, IM_ARRAYSIZE(value), ImGuiInputTextFlags_AutoSelectAll);
-                if (ImGui::IsItemEdited()) {
-                    type->value = value;
-                }
+                ImGui::Text("%s", type->type.c_str());
 
                 ImGui::TableSetColumnIndex(2);
                 if (ImGui::Button(std::string("Remove##id" + std::to_string(i)).c_str())) {

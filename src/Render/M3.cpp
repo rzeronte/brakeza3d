@@ -52,7 +52,7 @@ M3 M3::operator*(const float scalar) {
     );
 }
 
-Vertex3D M3::operator*(const Vertex3D A) {
+Vertex3D M3::operator*(Vertex3D A) {
     return Vertex3D(
             (m[0] * A.x) + (m[1] * A.y) + (m[2] * A.z),
             (m[3] * A.x) + (m[4] * A.y) + (m[5] * A.z),
@@ -76,29 +76,12 @@ M3 M3::operator-(const M3 &v) {
     );
 }
 
-void M3::consoleInfo(const std::string& label) const {
-    printf("%s: \r\n", label.c_str());
-    std::cout << m[0] << " " << m[1] << " " << m[2] << std::endl;
-    std::cout << m[3] << " " << m[4] << " " << m[5] << std::endl;
-    std::cout << m[6] << " " << m[7] << " " << m[8] << std::endl;
-}
-
 M3 M3::getMatrixIdentity() {
     return M3(
         1, 0, 0,
         0, 1, 0,
         0, 0, 1
     );
-}
-
-M3 M3::getMatrixNULL() {
-    M3 M(
-        0, 0, 0,
-        0, 0, 0,
-        0, 0, 0
-    );
-
-    return M;
 }
 
 M3 M3::RX(float degrees) {
@@ -187,10 +170,6 @@ void M3::setMatrixIdentity() {
         0, 1, 0,
         0, 0, 1
     );
-}
-
-void M3::setMatrixNULL() {
-    this->setup(0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 void M3::setMatrixRotationForEulerAngles(float x, float y, float z) {
