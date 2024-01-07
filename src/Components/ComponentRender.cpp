@@ -339,7 +339,7 @@ void ComponentRender::reloadLUAScripts()
     auto &lua = LUAManager::get()->getLua();
     lua.collect_garbage();
 
-    for(auto script : scripts) {
+    for (auto script : scripts) {
         script->reloadScriptCode();
     }
 

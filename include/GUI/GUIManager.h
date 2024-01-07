@@ -45,6 +45,8 @@ private:
     TexturePackage packageIcons;
     TexturePackage imagesFolder;
 
+    std::string currentVariableToAddName;
+
     const char *availableMesh3DShaders[4] = {"Edge", "Blink", "ShockWave", "Tint"};
 public:
 
@@ -74,7 +76,8 @@ public:
         widgetObject3DProperties(new GUIWidgetObject3DProperties(packageIcons, this->gameObjects, scriptEditableManager)),
         widgetProjectSettings(new GUIWidgetProjectSettings(packageIcons, scriptEditableManager)),
         widgetMenu(new GUIWidgetMenu(packageIcons)),
-        widgetToolbar(new GUIWidgetToolbar(packageIcons))
+        widgetToolbar(new GUIWidgetToolbar(packageIcons)),
+        currentVariableToAddName("")
     {
         LoadUIIcons();
         loadImagesFolder();
@@ -138,14 +141,31 @@ public:
         }
     }
 
-    void drawImGuiScriptProperties()
+    void drawWidgetScriptProperties()
     {
         ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Script properties for: ");
         ImGui::SameLine();
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", scriptEditableManager.script->scriptFilename.c_str());
 
         ImGui::Separator();
+        static char name[256];
 
+        strncpy(name, currentVariableToAddName.c_str(), sizeof(name));
+
+        if (ImGui::InputText("Variable name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+            currentVariableToAddName = name;
+        }
+
+        const char* items[] = { "int", "float", "Vertex3D" };
+        static int selectedItem = 0;
+        ImGui::Combo("Type", &selectedItem, items, IM_ARRAYSIZE(items));
+
+        if (ImGui::Button(std::string("Create").c_str())) {
+            LUADataValue LUAValue;
+            scriptEditableManager.script->addDataTypeEmpty(currentVariableToAddName.c_str(), items[selectedItem]);
+        }
+
+        ImGui::Separator();
         if (ImGui::BeginTable("ScriptProperties", 3)) {
             for (int i = 0; i < scriptEditableManager.script->dataTypes.size(); i++) {
                 ImGui::TableNextRow();
@@ -170,7 +190,6 @@ public:
         if (ImGui::Button(std::string("Apply").c_str())) {
             scriptEditableManager.script->updateFileTypes();
         }
-
     }
 
     static void drawCameraSettings()
@@ -408,7 +427,7 @@ public:
 
         if (ImGui::Begin("Script Preview")) {
             if (!scriptEditableManager.selectedScriptFilename.empty()) {
-                drawImGuiScriptProperties();
+                drawWidgetScriptProperties();
                 drawImGuiScriptCode();
             }
         }
