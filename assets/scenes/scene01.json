@@ -1,26 +1,5 @@
 {
 	"objects":	[{
-			"name":	"Sun",
-			"scale":	2,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-7,
-				"y":	0,
-				"z":	40
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models/planet_sun.fbx",
-			"enableLights":	false,
-			"shaders":	[],
-			"type":	"Mesh3D"
-		}, {
 			"name":	"Earth",
 			"scale":	1.5,
 			"stencilBufferEnabled":	false,
@@ -36,7 +15,34 @@
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
-			"scripts":	[],
+			"scripts":	[{
+					"name":	"BehaviorCircle.lua",
+					"types":	[{
+							"name":	"radius",
+							"type":	"int",
+							"value":	3
+						}, {
+							"name":	"speed",
+							"type":	"float",
+							"value":	3
+						}, {
+							"name":	"offset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	2,
+								"z":	0
+							}
+						}, {
+							"name":	"center",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	0,
+								"z":	20
+							}
+						}]
+				}],
 			"model":	"../assets/models/planet_earth.fbx",
 			"enableLights":	false,
 			"shaders":	[],
@@ -57,36 +63,42 @@
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
-			"scripts":	[],
+			"scripts":	[{
+					"name":	"BehaviorCircle.lua",
+					"types":	[{
+							"name":	"radius",
+							"type":	"int",
+							"value":	3
+						}, {
+							"name":	"speed",
+							"type":	"float",
+							"value":	2
+						}, {
+							"name":	"offset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	2,
+								"z":	0
+							}
+						}, {
+							"name":	"center",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	0,
+								"z":	20
+							}
+						}]
+				}],
 			"model":	"../assets/models/planet_sun.fbx",
-			"enableLights":	false,
-			"shaders":	[],
-			"type":	"Mesh3D"
-		}, {
-			"name":	"Earth",
-			"scale":	1.5,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	6,
-				"y":	0,
-				"z":	45
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models/planet_earth.fbx",
 			"enableLights":	false,
 			"shaders":	[],
 			"type":	"Mesh3D"
 		}],
 	"shaders":	[{
 			"type":	"FXColorTint",
-			"enabled":	true,
+			"enabled":	false,
 			"alpha":	0.60000002384185791,
 			"color":	{
 				"r":	255,
@@ -99,7 +111,7 @@
 		"position":	{
 			"x":	0,
 			"y":	0,
-			"z":	0.11074206978082657
+			"z":	0.22545075416564941
 		},
 		"rotation":	{
 			"x":	0,

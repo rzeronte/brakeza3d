@@ -14,24 +14,46 @@
 
 void LUAIntegration(sol::state &lua)
 {
-    lua.new_usertype<Vertex3D>("Vertex3D",
-                               sol::constructors<Vertex3D(), Vertex3D(float, float, float)>());
-
-    lua.new_usertype<Object3D>("Object3D",
-                               "addToPosition", &Object3D::addToPosition,
-                               "getPosition", &Object3D::getPosition,
-                               "setPosition", &Object3D::setPosition,
-                               "getTypeObject", &Object3D::getTypeObject,
-                               "getLabel", &Object3D::getLabel,
-                               "setBelongToScene", &Object3D::getLabel,
-                               "setRotationFrame", &Object3D::setRotationFrame,
-                               "setStencilBufferEnabled", &Object3D::setStencilBufferEnabled,
-                               "setRotationFrameEnabled", &Object3D::setRotationFrameEnabled,
-                               "setEnabled", &Object3D::setEnabled,
-                               "setRemoved", &Object3D::setRemoved,
-                               "setLabel", &Object3D::setLabel,
-                               "setScale", &Object3D::setScale
+    lua.new_usertype<Vertex3D>(
+        "Vertex3D",
+        sol::constructors<Vertex3D(), Vertex3D(float, float, float)>(),
+        "x", sol::property(&Vertex3D::x, &Vertex3D::x),
+        "y", sol::property(&Vertex3D::y, &Vertex3D::y),
+        "z", sol::property(&Vertex3D::z, &Vertex3D::z),
+        "__add", sol::overload(&Vertex3D::operator+)
     );
+
+    lua.new_usertype<M3>(
+            "M3",
+            sol::constructors<M3()>(),
+            "__mul", sol::overload(
+                    sol::resolve<Vertex3D(Vertex3D const)>(&M3::operator*)
+            ),
+    "getMatrixRotationForEulerAngles", &M3::getMatrixRotationForEulerAngles
+    );
+
+    lua.new_usertype<Object3D>(
+            "Object3D",  // Nombre del tipo en Lua
+            // Lista de funciones y propiedades que deseas exponer
+            "addToPosition", &Object3D::addToPosition,
+            "getPosition", &Object3D::getPosition,
+            "setPosition", &Object3D::setPosition,
+            "setRotation", sol::overload(
+                    static_cast<void (Object3D::*)(M3)>(&Object3D::setRotation)  // Ajusta el tipo de argumento
+            ),
+            "getTypeObject", &Object3D::getTypeObject,
+            "getLabel", &Object3D::getLabel,
+            "setBelongToScene", &Object3D::setBelongToScene,
+            "setRotationFrame", &Object3D::setRotationFrame,
+            "setStencilBufferEnabled", &Object3D::setStencilBufferEnabled,
+            "setRotationFrameEnabled", &Object3D::setRotationFrameEnabled,
+            "setEnabled", &Object3D::setEnabled,
+            "setRemoved", &Object3D::setRemoved,
+            "setLabel", &Object3D::setLabel,
+            "setScale", &Object3D::setScale
+            // Agrega más funciones y propiedades según sea necesario
+    );
+
 
     lua.new_usertype<SharedLUAContext>("SharedLUAContext",
                                "prueba", &SharedLUAContext::prueba,

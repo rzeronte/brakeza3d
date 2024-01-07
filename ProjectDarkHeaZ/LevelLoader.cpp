@@ -418,7 +418,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     cJSON *lasers = cJSON_GetObjectItemCaseSensitive(enemyJSON, "lasers");
 
     Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(enemyJSON, "position"), Z_COORDINATE_GAMEPLAY + 1);
-
+    enemy->setMultiScene(true);
     enemy->setRewards(reward);
     enemy->setName(name);
 
