@@ -2,41 +2,31 @@
 #ifndef SDL2_3D_ENGINE_MATRIX3D_H
 #define SDL2_3D_ENGINE_MATRIX3D_H
 
-
 #include "../Objects/Vertex3D.h"
 
 class M3 {
 public:
     M3();
 
-    M3(
-       float, float, float,
-       float, float, float,
-       float, float, float
-   );
+    M3(float, float, float, float, float, float, float, float, float);
 
     M3(float, float, float);
 
     M3 operator*(const M3 &pm);
 
-    M3 operator*(const float scalar);
+    M3 operator*(float scalar);
 
-    Vertex3D operator*(const Vertex3D);
+    Vertex3D operator*(Vertex3D);
 
     M3 operator+(const M3 &pm);
 
     M3 operator-(const M3 &pm);
-
-
-    static M3 getMatrixNULL();
 
     static M3 getMatrixIdentity();
 
     static M3 getMatrixRotationForEulerAngles(float x, float y, float z);
 
     M3 getTranspose();
-
-    void setMatrixNULL();
 
     void setMatrixIdentity();
 
@@ -53,8 +43,6 @@ public:
     static M3 ScaleMatrix(float, float, float);
 
     void setup(float, float, float, float, float, float, float, float, float);
-
-    void consoleInfo(const std::string& label) const;
 
     float getPitch();
 

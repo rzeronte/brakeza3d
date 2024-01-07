@@ -13,7 +13,6 @@ EnemyBehaviorCircle::EnemyBehaviorCircle(const Vertex3D &center, float speed, fl
 {
 }
 
-
 void EnemyBehaviorCircle::onUpdate(Vertex3D &position)
 {
     Object3DBehavior::onUpdate(position);

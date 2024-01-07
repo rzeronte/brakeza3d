@@ -1,5 +1,26 @@
 {
 	"objects":	[{
+			"name":	"Earth",
+			"scale":	1.5,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	6,
+				"y":	0,
+				"z":	45
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/planet_earth.fbx",
+			"enableLights":	false,
+			"shaders":	[],
+			"type":	"Mesh3D"
+		}, {
 			"name":	"Sun",
 			"scale":	2,
 			"stencilBufferEnabled":	false,
@@ -15,7 +36,34 @@
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
-			"scripts":	[],
+			"scripts":	[{
+					"name":	"BehaviorCircle.lua",
+					"types":	[{
+							"name":	"radius",
+							"type":	"int",
+							"value":	3
+						}, {
+							"name":	"speed",
+							"type":	"float",
+							"value":	2
+						}, {
+							"name":	"offset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	2,
+								"z":	0
+							}
+						}, {
+							"name":	"center",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	4.1999998092651367,
+								"y":	3.9000000953674316,
+								"z":	26.899999618530273
+							}
+						}]
+				}],
 			"model":	"../assets/models/planet_sun.fbx",
 			"enableLights":	false,
 			"shaders":	[],
@@ -41,35 +89,23 @@
 			"enableLights":	false,
 			"shaders":	[],
 			"type":	"Mesh3D"
-		}, {
-			"name":	"Hexagon",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	31,
-				"y":	-5,
-				"z":	100
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models/space_hexagon.fbx",
-			"enableLights":	false,
-			"shaders":	[],
-			"type":	"Mesh3D"
 		}],
-	"shaders":	[],
+	"shaders":	[{
+			"type":	"FXColorTint",
+			"enabled":	false,
+			"alpha":	0.60000002384185791,
+			"color":	{
+				"r":	255,
+				"g":	0,
+				"b":	0
+			}
+		}],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
 			"x":	0,
 			"y":	0,
-			"z":	0.107350192964077
+			"z":	0.10727088898420334
 		},
 		"rotation":	{
 			"x":	0,

@@ -536,8 +536,8 @@ cJSON *Object3D::getJSON()
     }
 
     cJSON *scriptsArray = cJSON_CreateArray();
-    for ( auto script : scripts) {
-        cJSON_AddItemToArray(scriptsArray, cJSON_CreateString(script->scriptFilename.c_str()));
+    for (auto script : scripts) {
+        cJSON_AddItemToArray(scriptsArray, script->getJSON());
     }
     cJSON_AddItemToObject(root, "scripts", scriptsArray);
 
@@ -569,7 +569,9 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
     if (cJSON_GetObjectItemCaseSensitive(object, "scripts") != nullptr) {
         cJSON *currentScript;
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(object, "scripts")) {
-            o->attachScript(new ScriptLUA(currentScript->valuestring, ScriptLUA::dataTypesFileFor(currentScript->valuestring)));
+            auto filename = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
+            auto typesJSON = cJSON_GetObjectItemCaseSensitive(currentScript, "types");
+            o->attachScript(new ScriptLUA(filename, typesJSON));
         }
     }
 

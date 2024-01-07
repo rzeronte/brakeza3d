@@ -93,6 +93,8 @@ struct GUIWidgetObject3DProperties {
                         o->removeScript(currentScript);
                     }
 
+                    currentScript->drawImGuiProperties();
+
                     ImGui::PopID();
                 }
 

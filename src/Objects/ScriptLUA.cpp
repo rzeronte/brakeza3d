@@ -16,7 +16,19 @@ ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
     Logging::Message("Loading LUA Script (%s, %s)", script.c_str(), fileTypes.c_str());
 
     getCode(script);
-    parseTypes();
+    parseTypesFromFileAttributes();
+}
+
+ScriptLUA::ScriptLUA(const std::string &script, cJSON *types)
+:
+    scriptFilename(script),
+    fileTypes(""),
+    content(nullptr)
+{
+    Logging::Message("Loading LUA Script (%s, %s)", script.c_str(), fileTypes.c_str());
+
+    getCode(script);
+    setDataTypesFromJSON(types);
 }
 
 void ScriptLUA::getCode(const std::string &script)
@@ -94,48 +106,79 @@ void ScriptLUA::runGlobal(const std::string& func) const
     }
 }
 
-void ScriptLUA::addDataType(const char *name, const char *value)
+void ScriptLUA::addDataType(const char *name, const char *type, cJSON *value)
 {
-    dataTypes.emplace_back(name, value);
+    LUADataValue LUAValue;
+
+    switch (LUADataTypesMapping[type]) {
+        case LUADataType::INT: {
+            LUAValue = value->valueint;
+            break;
+        }
+        case LUADataType::FLOAT: {
+            LUAValue = (float) value->valuedouble;
+            break;
+        }
+        case LUADataType::VERTEX3D: {
+            LUAValue = SceneLoader::parseVertex3DJSON(value);
+            break;
+        }
+        default:
+            std::cerr << "Unknown data type." << std::endl;
+    }
+
+    dataTypes.emplace_back(name, type, LUAValue);
+    dataTypesDefaultValues.emplace_back(name, type, LUAValue);
 }
 
 void ScriptLUA::reloadGlobals()
 {
     Logging::Message("Reloading LUA Global Environment (%s)", this->fileTypes.c_str());
 
-    parseTypes();
-
     sol::state &lua = LUAManager::get()->getLua();
-    for (auto type : dataTypes) {
-        Logging::Message("Setting GLOBAL variable for script '%s' ('%s' => '%s')", scriptFilename.c_str(), type.name.c_str(), type.value.c_str());
+    for (const auto& type : dataTypes) {
+        std::cout << "Setting GLOBAL variable for script '(" << scriptFilename.c_str() << ", " << type.name.c_str() << std::endl;
+        Logging::Message("Setting GLOBAL variable for script '%s' ('%s' => '%s')", scriptFilename.c_str(), type.name.c_str());
         lua[type.name] = type.value;
     }
 }
 
 void ScriptLUA::reloadEnvironment(sol::environment &environment)
 {
-    Logging::Message("Reloading LUA Environment (%s)", this->fileTypes.c_str());
-    parseTypes();
+    Logging::Message("Reloading LUA Environment (%s) for object: %s", this->fileTypes.c_str());
+
+    dataTypes = dataTypesDefaultValues;
 
     for (const auto& type : dataTypes) {
-        Logging::Message("reloadEnvironment ('%s' => '%s')", type.name.c_str(), type.value.c_str());
-        environment[type.name] = type.value.c_str();
+        Logging::Message("reloadEnvironment ('%s' => '%s')", type.name.c_str(), type.type.c_str());
+        environment[type.name] = type.value;
     }
 }
 
-void ScriptLUA::parseTypes()
+void ScriptLUA::parseTypesFromFileAttributes()
 {
-    dataTypes.clear();
-
     size_t file_size;
     auto contentFile = readFile(EngineSetup::get()->SCRIPTS_FOLDER + fileTypes, file_size);
 
+    setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
+}
+
+void ScriptLUA::setDataTypesFromJSON(cJSON *typesJSON)
+{
+    dataTypes.clear();
+
     cJSON *currentType;
-    cJSON_ArrayForEach(currentType, cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types")) {
+    cJSON_ArrayForEach(currentType, typesJSON) {
         std::string name = cJSON_GetObjectItemCaseSensitive(currentType, "name")->valuestring;
-        std::string value = cJSON_GetObjectItemCaseSensitive(currentType, "value")->valuestring;
-        Logging::Message("Loading variable script (%s, %s)", name.c_str(), value.c_str());
-        addDataType(name.c_str(), value.c_str());
+        std::string type = cJSON_GetObjectItemCaseSensitive(currentType, "type")->valuestring;
+
+        Logging::Message("Loading variable script (%s, %s)", name.c_str(), type.c_str());
+
+        addDataType(
+            name.c_str(),
+            type.c_str(),
+            cJSON_GetObjectItemCaseSensitive(currentType, "value")
+        );
     }
 }
 
@@ -175,7 +218,7 @@ void ScriptLUA::updateFileTypes()
     for (const auto &type : dataTypes) {
         cJSON *typeObject = cJSON_CreateObject();
         cJSON_AddStringToObject(typeObject, "name", type.name.c_str());
-        cJSON_AddStringToObject(typeObject, "value", type.value.c_str());
+        //cJSON_AddStringToObject(typeObject, "value", type.value.c_str());
         cJSON_AddItemToArray(typesArray, typeObject);
     }
 
@@ -244,3 +287,112 @@ void ScriptLUA::setPaused(bool paused) {
     ScriptLUA::paused = paused;
 }
 
+void ScriptLUA::drawImGuiProperties()
+{
+    if (ImGui::TreeNode("Script Settings")) {
+        for (auto&  type: dataTypes) {
+            switch (LUADataTypesMapping[type.type]) {
+                case LUADataType::INT: {
+                    const float rangeMin = -500000;
+                    const float rangeMax = 500000;
+
+                    int valueInt = std::get<int>(type.value);
+                    if (ImGui::DragScalar(type.name.c_str(), ImGuiDataType_S32, &valueInt, 1.0 , &rangeMin, &rangeMax, "%d", 1.0f)) {
+                        type.value = valueInt;
+                    }
+                    break;
+                }
+                case LUADataType::FLOAT: {
+                    const float rangeMin = -500000;
+                    const float rangeMax = 500000;
+                    const float rangeSensibility = 0.1;
+
+                    float valueFloat = std::get<float>(type.value);
+                    if (ImGui::DragScalar(type.name.c_str(), ImGuiDataType_Float, &valueFloat, rangeSensibility , &rangeMin, &rangeMax, "%f", 1.0f)) {
+                        type.value = valueFloat;
+                    }
+                    break;
+                }
+                case LUADataType::VERTEX3D: {
+                    if (ImGui::TreeNode(type.name.c_str())) {
+                        const float range_min = -50000;
+                        const float range_max = 50000;
+                        const float range_sensibility = 0.1;
+                        Vertex3D valueVertex = std::get<Vertex3D>(type.value);
+
+                        if (ImGui::DragScalar("X", ImGuiDataType_Float, &valueVertex.x, range_sensibility ,&range_min, &range_max, "%f", 1.0f)) {
+                            type.value = valueVertex;
+                        }
+                        if (ImGui::DragScalar("Y", ImGuiDataType_Float, &valueVertex.y, range_sensibility ,&range_min, &range_max, "%f", 1.0f)) {
+                            type.value = valueVertex;
+                        }
+                        if (ImGui::DragScalar("Z", ImGuiDataType_Float, &valueVertex.z, range_sensibility ,&range_min, &range_max, "%f", 1.0f)) {
+                            type.value = valueVertex;
+                        }
+
+                        ImGui::TreePop();
+                    }
+
+                    break;
+                }
+                default:
+                    std::cerr << "Unknown data type." << std::endl;
+            }
+
+        }
+
+        ImGui::TreePop();
+    }
+}
+
+const std::vector<ScriptLUATypeData> &ScriptLUA::getDataTypes() const {
+    return dataTypes;
+}
+
+cJSON *ScriptLUA::getJSON()
+{
+    cJSON *scriptJSON = cJSON_CreateObject();
+    cJSON_AddStringToObject(scriptJSON, "name", getScriptFilename().c_str());
+
+
+    cJSON *typesArray = cJSON_CreateArray();
+    for (auto dataType : getDataTypes()) {
+        cJSON *typeJSON = cJSON_CreateObject();
+        cJSON_AddStringToObject(typeJSON, "name", dataType.name.c_str());
+        cJSON_AddStringToObject(typeJSON, "type", dataType.type.c_str());
+
+        std::string name = dataType.name + "("+ dataType.type +")";
+        switch (LUADataTypesMapping[dataType.type]) {
+            case LUADataType::INT: {
+                int valueInt = std::get<int>(dataType.value);
+                cJSON_AddNumberToObject(typeJSON, "value", valueInt);
+                break;
+            }
+            case LUADataType::FLOAT: {
+                int valueFloat = std::get<float>(dataType.value);
+                cJSON_AddNumberToObject(typeJSON, "value", valueFloat);
+                break;
+            }
+            case LUADataType::VERTEX3D: {
+                cJSON *vertexJSON = cJSON_CreateObject();
+                auto valueVertex = std::get<Vertex3D>(dataType.value);
+                cJSON_AddNumberToObject(vertexJSON, "x", valueVertex.x);
+                cJSON_AddNumberToObject(vertexJSON, "y", valueVertex.y);
+                cJSON_AddNumberToObject(vertexJSON, "z", valueVertex.z);
+                cJSON_AddItemToObject(typeJSON, "value", vertexJSON);
+                break;
+            }
+            default:
+                std::cerr << "Unknown data typeJSON." << std::endl;
+        }
+        cJSON_AddItemToArray(typesArray, typeJSON);
+    }
+
+    cJSON_AddItemToObject(scriptJSON, "types", typesArray);
+
+    return scriptJSON;
+}
+
+const std::string &ScriptLUA::getScriptFilename() const {
+    return scriptFilename;
+}
