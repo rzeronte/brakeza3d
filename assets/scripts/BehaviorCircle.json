@@ -1,27 +1,48 @@
 {
-    "types": [{
-        "name":	"radius",
-        "type": "int",
-        "value": 3
-    }, {
-        "name":	"speed",
-        "type": "float",
-        "value": 2.0
-    },{
-        "name":	"offset",
-        "type": "Vertex3D",
-        "value": {
-            "x": 0,
-            "y": 2,
-            "z": 0
-        }
-    },{
-        "name":	"center",
-        "type": "Vertex3D",
-        "value": {
-            "x": 0,
-            "y": 0,
-            "z": 20
-        }
-    }]
+	"name":	"BehaviorCircle.lua",
+	"types":	[{
+			"name":	"radius",
+			"type":	"int",
+			"value":	3
+		}, {
+			"name":	"speed",
+			"type":	"float",
+			"value":	2
+		}, {
+			"name":	"offset",
+			"type":	"Vertex3D",
+			"value":	{
+				"x":	0,
+				"y":	2,
+				"z":	0
+			}
+		}, {
+			"name":	"center",
+			"type":	"Vertex3D",
+			"value":	{
+				"x":	0,
+				"y":	0,
+				"z":	20
+			}
+		}, {
+			"name":	"pepe",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"juan",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"oop",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"yo",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"ya",
+			"type":	"int",
+			"value":	0
+		}]
 }

@@ -537,7 +537,7 @@ cJSON *Object3D::getJSON()
 
     cJSON *scriptsArray = cJSON_CreateArray();
     for (auto script : scripts) {
-        cJSON_AddItemToArray(scriptsArray, script->getJSON());
+        cJSON_AddItemToArray(scriptsArray, script->getTypesJSON());
     }
     cJSON_AddItemToObject(root, "scripts", scriptsArray);
 

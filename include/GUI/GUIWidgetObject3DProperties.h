@@ -109,7 +109,7 @@ struct GUIWidgetObject3DProperties {
 
                 ImGui::Button("Get JSON!");
                 if (ImGui::IsItemClicked()) {
-                    Logging::Message("getJSON");
+                    Logging::Message("getTypesJSON");
                     std::string json = cJSON_Print(o->getJSON());
                     Logging::Message(json.c_str());
                 }

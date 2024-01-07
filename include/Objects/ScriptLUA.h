@@ -54,8 +54,6 @@ public:
     std::string scriptFilename;
     std::string fileTypes;
 
-    char *readFile(const std::string &name, size_t &source_size);
-
     void runEnvironment(sol::environment&, const std::string& func) const;
 
     void runGlobal(const std::string& func) const;
@@ -68,7 +66,7 @@ public:
 
     static std::string removeFilenameExtension(std::string& filename);
 
-    void removeDataType(ScriptLUATypeData data);
+    void removeDataType(const ScriptLUATypeData& data);
 
     void updateFileTypes();
 
@@ -92,11 +90,15 @@ public:
 
     const std::vector<ScriptLUATypeData> &getDataTypes() const;
 
-    cJSON *getJSON();
+    cJSON *getTypesJSON();
 
     const std::string &getScriptFilename() const;
 
     void setDataTypesFromJSON(cJSON *typesJSON);
+
+    void addDataTypeEmpty(const char *name, const char *type);
+
+    bool existDataType(const char *name, const char *type);
 };
 
 
