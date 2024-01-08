@@ -20,7 +20,6 @@
 #include "GUIWidgetProjectSettings.h"
 #include "GUIWidgetMenu.h"
 #include "GUIWidgetToolbar.h"
-#include "../../ProjectDarkHeaZ/GUI/GUIWidgetProjectDarkHeaZ.h"
 
 class GUIManager {
 private:
@@ -40,7 +39,6 @@ private:
     GUIWidgetProjectSettings *widgetProjectSettings;
     GUIWidgetMenu *widgetMenu;
     GUIWidgetToolbar *widgetToolbar;
-    GUIWidgetProjectDarkHeaZ * widgetProjectDarkHeaZ;
 
     TexturePackage packageIcons;
     TexturePackage imagesFolder;
@@ -399,8 +397,6 @@ public:
 
     void drawWidgets()
     {
-        widgetProjectDarkHeaZ->draw();
-
         if (ImGui::Begin("Scripts")) {
             DIR *dir;
             struct dirent *ent;
