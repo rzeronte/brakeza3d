@@ -30,10 +30,6 @@ struct GUIWidgetMenu
     {
         bool show_about_window = false;
 
-        const float range_sensibility_lightnin = 0.5;
-        const float range_sensibility_lightnin_min = -10000;
-        const float range_sensibility_lightnin_max = 100000;
-
         const float range_sensibility = 0.75f;
         const float range_test_sensibility = 0.1;
         const float range_max_sensibility = 999;
@@ -123,19 +119,6 @@ struct GUIWidgetMenu
 
                 }
                 ImGui::Separator();
-
-                ImGui::Checkbox("update Objects", &EngineSetup::get()->EXECUTE_GAMEOBJECTS_ONUPDATE);
-                ImGui::Checkbox("Draw Main Z-Buffer", &EngineSetup::get()->DRAW_MAIN_DEEP_MAPPING);
-
-                ImGui::Separator();
-
-                ImGui::Checkbox("Tiled Based", &EngineSetup::get()->BASED_TILE_RENDER);
-
-                if (EngineSetup::get()->BASED_TILE_RENDER) {
-                    ImGui::Checkbox("Tiled Based Threaded", &EngineSetup::get()->BASED_TILE_RENDER_THREADED);
-                    ImGui::Checkbox("Show Tiles Grid", &EngineSetup::get()->DRAW_TILES_GRID);
-                }
-                ImGui::Separator();
                 ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
                 ImGui::Separator();
                 ImGui::Checkbox("Vertex", &EngineSetup::get()->TRIANGLE_MODE_PIXELS);
@@ -213,54 +196,6 @@ struct GUIWidgetMenu
                 ImGui::Checkbox("Show debug data", &EngineSetup::get()->DEBUG_RENDER_INFO);
                 ImGui::Separator();
                 ImGui::Checkbox("Collision objects", &EngineSetup::get()->LOG_COLLISION_OBJECTS);
-                ImGui::Separator();
-                ImGui::Checkbox("Weapon System", &EngineSetup::get()->LOG_WEAPONS_SYSTEM);
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Lights")) {
-                ImGui::Checkbox("Light System", &EngineSetup::get()->ENABLE_LIGHTS);
-                ImGui::Separator();
-                ImGui::Checkbox("Draw Lights Billboards", &EngineSetup::get()->DRAW_LIGHTPOINTS_BILLBOARD);
-                ImGui::Separator();
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Effects FX")) {
-                if (ImGui::BeginMenu("Shader Particles")) {
-                    ImGui::DragScalar("PARTICLES_SHADER_GRAVITY", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_GRAVITY, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_STEP_ADD_PARTICLE", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_STEP_ADD_PARTICLE, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_PARTICLE_LIFESPAN", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_PARTICLE_LIFESPAN, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_SMOKE_ANGLE_RANGE", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_SMOKE_ANGLE_RANGE, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_MIN_VELOCITY", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_MIN_VELOCITY, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_MAX_VELOCITY", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_MAX_VELOCITY, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_POSITION_NOISE", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_POSITION_NOISE, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_VELOCITY_NOISE", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_VELOCITY_NOISE, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("PARTICLES_SHADER_DECELERATION_FACTOR", ImGuiDataType_Float, &EngineSetup::get()->PARTICLES_SHADER_DECELERATION_FACTOR, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::Separator();
-                    ImGui::DragScalar("SHADER EXPLOSION TTL", ImGuiDataType_Float, &EngineSetup::get()->SHADER_PARTICLE_EXPLOSION_TTL, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("SHADER_PARTICLE_EXPLOSION_EMISSION_TIME", ImGuiDataType_Float, &EngineSetup::get()->SHADER_PARTICLE_EXPLOSION_EMISSION_TIME, 0.1f, &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::EndMenu();
-                }
-
-                if (ImGui::BeginMenu("Lightning")) {
-                    ImGui::DragScalar("Generations", ImGuiDataType_Float,
-                                      &EngineSetup::get()->LIGHTNING_GENERATIONS, range_sensibility_lightnin,
-                                      &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("Offset reduction", ImGuiDataType_Float,
-                                      &EngineSetup::get()->LIGHTNING_OFFSET_REDUCTION,
-                                      range_sensibility_lightnin, &range_sensibility_lightnin_min,
-                                      &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("Probability branch", ImGuiDataType_Float,
-                                      &EngineSetup::get()->LIGHTNING_PROBABILITY_BRANCH,
-                                      range_sensibility_lightnin, &range_sensibility_lightnin_min,
-                                      &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::DragScalar("Segment shift ", ImGuiDataType_Float,
-                                      &EngineSetup::get()->LIGHTNING_SEGMENT_SHIFT, range_sensibility_lightnin,
-                                      &range_sensibility_lightnin_min, &range_sensibility_lightnin_max, "%f", 1.0f);
-                    ImGui::EndMenu();
-                }
-
                 ImGui::EndMenu();
             }
 
@@ -270,7 +205,6 @@ struct GUIWidgetMenu
                 if (ImGui::IsItemEdited()) {
                     if (EngineSetup::get()->FULLSCREEN) {
                         SDL_SetWindowFullscreen(ComponentsManager::get()->getComponentWindow()->getWindow(), SDL_WINDOW_FULLSCREEN_DESKTOP);
-
                     } else {
                         SDL_SetWindowFullscreen(ComponentsManager::get()->getComponentWindow()->getWindow(), 0);
                     }
@@ -288,7 +222,11 @@ struct GUIWidgetMenu
 
                 }
                 ImGui::Separator();
-                ImGui::Checkbox("Draw light direction", &EngineSetup::get()->DRAW_LIGHTS_DIRECTION);
+                ImGui::Checkbox("Light System", &EngineSetup::get()->ENABLE_LIGHTS);
+                if (EngineSetup::get()->ENABLE_LIGHTS) {
+                    ImGui::Checkbox("Draw light direction", &EngineSetup::get()->DRAW_LIGHTS_DIRECTION);
+                    ImGui::Separator();
+                }
                 if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
                     ImGui::DragScalar("Size Direction", ImGuiDataType_Float, &EngineSetup::get()->LIGHTS_DIRECTION_SIZE,
                                       range_test_sensibility, &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
@@ -309,13 +247,7 @@ struct GUIWidgetMenu
                     ImGui::Separator();
                 }
                 ImGui::Separator();
-                ImGui::Checkbox("Pendulum thread", &EngineSetup::get()->DRAW_PENDULUM_THREAD);
-                ImGui::Checkbox("Draw Object3D Billboards", &EngineSetup::get()->DRAW_OBJECT3D_BILLBOARD);
-                ImGui::Checkbox("Draw Decals wireframe", &EngineSetup::get()->DRAW_DECAL_WIREFRAMES);
-                ImGui::Separator();
                 ImGui::Checkbox("Object3D Text Label", &EngineSetup::get()->TEXT_ON_OBJECT3D);
-                ImGui::Separator();
-                ImGui::Checkbox("Show CrossHair", &EngineSetup::get()->DRAW_CROSSHAIR);
                 ImGui::Separator();
                 ImGui::Checkbox("Show FPS", &EngineSetup::get()->DRAW_FPS);
                 ImGui::Separator();

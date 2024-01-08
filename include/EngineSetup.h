@@ -44,39 +44,24 @@ public:
     bool LIMIT_FRAMERATE = true;
     int FRAMERATE = 60;
 
-    bool BASED_TILE_RENDER = false;
-    bool BASED_TILE_RENDER_THREADED = false;
-
     bool ENABLE_FOG = true;
     float FRUSTUM_FARPLANE_DISTANCE = 1000;
     float HORIZONTAL_FOV = 90;
-
-    bool DRAW_TILES_GRID = false;
 
     // Draw axis
     bool RENDER_MAIN_AXIS = false;
     bool RENDER_OBJECTS_AXIS = false;
     float OBJECT_AXIS_SIZE = 1;
 
-    bool EXECUTE_GAMEOBJECTS_ONUPDATE = true;
-
     bool DEBUG_RENDER_INFO = false;
-
 
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;
     bool TRIANGLE_MODE_WIREFRAME = false;
     bool TRIANGLE_MODE_COLOR_SOLID = false;
     bool TRIANGLE_MODE_TEXTURIZED = true;
-    bool DRAW_MAIN_DEEP_MAPPING = false;
 
     bool DRAW_ANIMATION_BONES = false;
-    bool DRAW_DECAL_WIREFRAMES = false;
-
-    bool DRAW_OBJECT3D_BILLBOARD = false;
-    bool DRAW_LIGHTPOINTS_BILLBOARD = true;
-    bool DRAW_PENDULUM_THREAD = false;
-
 
     bool DRAW_MESH3D_AABB = false;
     bool DRAW_MESH3D_OCTREE = false;
@@ -126,7 +111,6 @@ public:
     float BILLBOARD_WIDTH_DEFAULT = 100.f;
     float BILLBOARD_HEIGHT_DEFAULT = 100.f;
 
-    bool DRAW_CROSSHAIR = false;
     bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
@@ -158,7 +142,6 @@ public:
     float LIGHTNING_SEGMENT_SHIFT = 2.5f;
 
     bool LOG_COLLISION_OBJECTS = false;
-    bool LOG_WEAPONS_SYSTEM = false;
 
     float ZOOM_FOV = 40;
 
@@ -171,20 +154,6 @@ public:
 
     bool CLICK_SELECT_OBJECT3D = false;
     bool GAMEPAD_CONTROLLER_ENABLED = true;
-
-    // PARTICLES_SHADER
-    float PARTICLES_SHADER_GRAVITY = 0.0f;
-    int PARTICLES_SHADER_STEP_ADD_PARTICLE = 1;
-    float PARTICLES_SHADER_PARTICLE_LIFESPAN = 1.5f;
-    int PARTICLES_SHADER_SMOKE_ANGLE_RANGE = 25;
-    int PARTICLES_SHADER_MIN_VELOCITY = 5;
-    int PARTICLES_SHADER_MAX_VELOCITY = 10;
-    int PARTICLES_SHADER_POSITION_NOISE = 2;
-    int PARTICLES_SHADER_VELOCITY_NOISE = 9;
-    float PARTICLES_SHADER_DECELERATION_FACTOR = 0.98f;
-
-    float SHADER_PARTICLE_EXPLOSION_TTL = 1.0f;
-    float SHADER_PARTICLE_EXPLOSION_EMISSION_TIME = 0.25f;
 
     std::string CONFIG_FOLDER = "../config/";
     std::string CFG_SOUNDS = "sounds.json";
