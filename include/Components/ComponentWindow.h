@@ -23,7 +23,6 @@
 #include "../OpenGL/ShaderOpenGLDepthMap.h"
 #include "../OpenGL/ShaderOpenGLFOG.h"
 #include "../OpenGL/ShaderOpenGLShockWave.h"
-#include "../../ProjectDarkHeaZ/OpenGLShaders/ShaderOpenGLLineLaser.h"
 #include "../../src/OpenGL/ShaderOpenGLTint.h"
 
 class ComponentWindow : public Component {
