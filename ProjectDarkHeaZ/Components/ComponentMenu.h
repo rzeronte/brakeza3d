@@ -11,7 +11,7 @@
 #include "../../include/Objects/Mesh3DAnimated.h"
 #include "../../include/Physics/Mesh3DAnimatedGhost.h"
 #include "../../include/Physics/SimplePendulum.h"
-#include "../../include/FXEffect/FXOffsetImage.h"
+#include "../FX/FXOffsetImage.h"
 
 class ComponentMenu : public Component {
 private:

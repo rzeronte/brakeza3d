@@ -19,7 +19,7 @@
 #include "../Player.h"
 #include "../Items/EnemyDialog.h"
 #include "../../include/FXEffect/FXColorTint.h"
-#include "../../include/FXEffect/FXOffsetImage.h"
+#include "../FX/FXOffsetImage.h"
 #include "../LevelLoader.h"
 #include "../StoreManager.h"
 #include "../../include/FXEffect/FXOutliner.h"

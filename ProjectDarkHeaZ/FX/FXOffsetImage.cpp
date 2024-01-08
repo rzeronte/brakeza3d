@@ -1,4 +1,4 @@
-#include "../../include/FXEffect/FXOffsetImage.h"
+#include "FXOffsetImage.h"
 #include "../../include/LUAManager.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"

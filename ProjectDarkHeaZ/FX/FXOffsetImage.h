@@ -7,9 +7,9 @@
 
 
 #include <CL/cl.h>
-#include "../Misc/Image.h"
-#include "../OpenGL/FXEffectOpenGL.h"
-#include "../Objects/Point2D.h"
+#include "../../include/Misc/Image.h"
+#include "../../include/OpenGL/FXEffectOpenGL.h"
+#include "../../include/Objects/Point2D.h"
 
 class FXOffsetImage: public FXEffectOpenGL {
     Image image;
