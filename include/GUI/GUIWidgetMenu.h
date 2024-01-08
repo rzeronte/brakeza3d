@@ -225,7 +225,6 @@ struct GUIWidgetMenu
                 ImGui::Checkbox("Light System", &EngineSetup::get()->ENABLE_LIGHTS);
                 if (EngineSetup::get()->ENABLE_LIGHTS) {
                     ImGui::Checkbox("Draw light direction", &EngineSetup::get()->DRAW_LIGHTS_DIRECTION);
-                    ImGui::Separator();
                 }
                 if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
                     ImGui::DragScalar("Size Direction", ImGuiDataType_Float, &EngineSetup::get()->LIGHTS_DIRECTION_SIZE,
@@ -250,7 +249,6 @@ struct GUIWidgetMenu
                 ImGui::Checkbox("Object3D Text Label", &EngineSetup::get()->TEXT_ON_OBJECT3D);
                 ImGui::Separator();
                 ImGui::Checkbox("Show FPS", &EngineSetup::get()->DRAW_FPS);
-                ImGui::Separator();
                 ImGui::EndMenu();
             }
             static const char *itemCurrent = "--Niveles--"; // Here our selection is a single pointer stored outside the object.
