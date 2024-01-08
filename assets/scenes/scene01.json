@@ -1,13 +1,13 @@
 {
 	"objects":	[{
 			"name":	"Earth",
-			"scale":	1.5,
+			"scale":	0.68000000715255737,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	6,
+				"x":	0,
 				"y":	0,
-				"z":	45
+				"z":	20
 			},
 			"rotation":	{
 				"x":	0,
@@ -20,11 +20,11 @@
 					"types":	[{
 							"name":	"radius",
 							"type":	"int",
-							"value":	3
+							"value":	1
 						}, {
 							"name":	"speed",
 							"type":	"float",
-							"value":	3
+							"value":	2
 						}, {
 							"name":	"offset",
 							"type":	"Vertex3D",
@@ -41,6 +41,30 @@
 								"y":	0,
 								"z":	20
 							}
+						}, {
+							"name":	"pepe",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"juan",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"oop",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"yo",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"ya",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"me",
+							"type":	"int",
+							"value":	0
 						}]
 				}],
 			"model":	"../assets/models/planet_earth.fbx",
@@ -49,17 +73,89 @@
 			"type":	"Mesh3D"
 		}, {
 			"name":	"Sun",
-			"scale":	2,
+			"scale":	0.82999998331069946,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-7,
+				"x":	-1,
 				"y":	0,
-				"z":	40
+				"z":	20
 			},
 			"rotation":	{
 				"x":	0,
 				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"BehaviorCircle.lua",
+					"types":	[{
+							"name":	"radius",
+							"type":	"int",
+							"value":	2
+						}, {
+							"name":	"speed",
+							"type":	"float",
+							"value":	2
+						}, {
+							"name":	"offset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	2,
+								"z":	0
+							}
+						}, {
+							"name":	"center",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	0,
+								"z":	20
+							}
+						}, {
+							"name":	"pepe",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"juan",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"oop",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"yo",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"ya",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"me",
+							"type":	"int",
+							"value":	0
+						}]
+				}],
+			"model":	"../assets/models/planet_sun.fbx",
+			"enableLights":	false,
+			"shaders":	[],
+			"type":	"Mesh3D"
+		}, {
+			"name":	"eye",
+			"scale":	0.0010000000474974513,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-2,
+				"y":	-1,
+				"z":	20
+			},
+			"rotation":	{
+				"x":	180,
+				"y":	-2,
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
@@ -89,9 +185,33 @@
 								"y":	0,
 								"z":	20
 							}
+						}, {
+							"name":	"pepe",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"juan",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"oop",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"yo",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"ya",
+							"type":	"int",
+							"value":	0
+						}, {
+							"name":	"me",
+							"type":	"int",
+							"value":	0
 						}]
 				}],
-			"model":	"../assets/models/planet_sun.fbx",
+			"model":	"../assets/models/eye.fbx",
 			"enableLights":	false,
 			"shaders":	[],
 			"type":	"Mesh3D"
@@ -111,7 +231,7 @@
 		"position":	{
 			"x":	0,
 			"y":	0,
-			"z":	0.22545075416564941
+			"z":	0.22352419793605804
 		},
 		"rotation":	{
 			"x":	0,
