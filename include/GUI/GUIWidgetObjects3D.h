@@ -11,6 +11,8 @@
 #include "../FXEffect/FXOutliner.h"
 #include "../FXEffect/FXBlink.h"
 #include "../Misc/TexturePackage.h"
+#include "../Physics/Projectile3DBody.h"
+#include "../FXEffect/FXColorTint.h"
 
 #ifndef BRAKEZA3D_GUIOBJECTPROPERTIES_H
 #define BRAKEZA3D_GUIOBJECTPROPERTIES_H

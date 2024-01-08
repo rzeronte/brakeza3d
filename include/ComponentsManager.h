@@ -8,10 +8,7 @@
 #include "Components/ComponentRender.h"
 #include "Components/ComponentInput.h"
 #include "Components/ComponentSound.h"
-#include "../ProjectDarkHeaZ/Components/ComponentMenu.h"
-#include "../ProjectDarkHeaZ/Components/ComponentHUD.h"
-#include "../ProjectDarkHeaZ/Components/ComponentGame.h"
-#include "../ProjectDarkHeaZ/Components/ComponentGameInput.h"
+#include "Components/ComponentWindow.h"
 
 enum ComponentID {
     COMPONENT_WINDOW = 0,
@@ -61,23 +58,6 @@ public:
     ComponentSound *getComponentSound() {
         return dynamic_cast<ComponentSound *>(components[ComponentID::COMPONENT_SOUND]);
     };
-
-    // -- Custom components here --
-    ComponentHUD *getComponentHUD() {
-        return dynamic_cast<ComponentHUD *>(components[ComponentID::COMPONENT_HUD]);
-    };
-    ComponentGame *getComponentGame() {
-        return dynamic_cast<ComponentGame *>(components[ComponentID::COMPONENT_GAME]);
-    };
-
-    ComponentGameInput *getComponentGameInput() {
-        return dynamic_cast<ComponentGameInput *>(components[ComponentID::COMPONENT_GAME_INPUT]);
-    };
-
-    ComponentMenu *getComponentMenu() {
-        return dynamic_cast<ComponentMenu *>(components[ComponentID::COMPONENT_MENU]);
-    };
-
 };
 
 

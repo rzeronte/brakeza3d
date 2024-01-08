@@ -91,15 +91,15 @@ void SceneLoader::loadScene(const std::string& filename)
                 shader->setEnabled(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "enabled")->valueint);
                 break;
             }
-            case SceneShaderLoaderMapping::ShaderImage : {
-                auto shader = dynamic_cast<FXOffsetImage*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(0));
+            /*case SceneShaderLoaderMapping::ShaderImage : {
+                auto shader = dynamic_cast<FXImage*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(0));
                 shader->getImage().setImage(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "image")->valuestring);
                 shader->setOffsets(
                     (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "offsetX")->valuedouble,
                     (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "offsetY")->valuedouble
                 );
                 break;
-            }
+            }*/
             /*case SceneShaderLoaderMapping::ShaderDepthOfField : {
                 auto shader = dynamic_cast<ShaderDepthOfField*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(1));
                 shader->setup(
