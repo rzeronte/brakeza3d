@@ -187,15 +187,12 @@ public:
     float SHADER_PARTICLE_EXPLOSION_EMISSION_TIME = 0.25f;
 
     std::string CONFIG_FOLDER = "../config/";
-    std::string CFG_MENU = "menu.json";
-    std::string CFG_WEAPONS = "playerWeapons.json";
     std::string CFG_SOUNDS = "sounds.json";
 
     std::string DEFAULT_HELP_IMAGE = "xbox_one_controller.png";
 
     std::string LOGO_BRAKEZA = "logo.png";
 
-    std::string DARKHEAZ_MAIN_CONFIG = "project-darkheaz.json";
 
     enum collisionGroups {
         Player = 1,
