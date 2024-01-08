@@ -39,9 +39,7 @@ void SimplePendulum::onUpdate() {
     start = getPosition() + (pendulumRotation * start);
     end = getPosition() + (pendulumRotation * end);
 
-    if (EngineSetup::get()->DRAW_PENDULUM_THREAD) {
-        Vector3D V(start, end);
-        Drawable::drawVector3D(V, Color::fuchsia());
-    }
+    //Vector3D V(start, end);
+    //Drawable::drawVector3D(V, Color::fuchsia());
 }
 
