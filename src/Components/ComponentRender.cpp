@@ -127,8 +127,6 @@ void ComponentRender::updateSelectedObject3D()
 
 void ComponentRender::deleteRemovedObjects()
 {
-    if (!SETUP->EXECUTE_GAMEOBJECTS_ONUPDATE) return;
-
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     sceneObjects.erase(
         std::remove_if(
