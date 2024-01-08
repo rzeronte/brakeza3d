@@ -136,7 +136,7 @@ add_executable(Brakeza3D
 
     include/Objects/Vector2D.cpp include/Objects/Vector2D.h
         include/OpenGL/FXEffectOpenGL.h
-        src/FXEffect/FXOffsetImage.cpp include/FXEffect/FXOffsetImage.h
+        ProjectDarkHeaZ/FX/FXOffsetImage.cpp ProjectDarkHeaZ/FX/FXOffsetImage.h
         src/FXEffect/FXOutliner.cpp include/FXEffect/FXOutliner.h
         src/FXEffect/FXColorTint.cpp include/FXEffect/FXColorTint.h
     src/Collisions/Mesh3DAnimatedGhost.cpp include/Physics/Mesh3DAnimatedGhost.h

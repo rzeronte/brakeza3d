@@ -17,7 +17,6 @@
 #include "../2D/TextWriter.h"
 #include "../Misc/SharedLUAContext.h"
 #include "../Misc/SceneLoader.h"
-#include "../FXEffect/FXOffsetImage.h"
 #include <CL/cl.h>
 
 class ComponentRender : public Component {
