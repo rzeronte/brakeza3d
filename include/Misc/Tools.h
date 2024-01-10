@@ -105,6 +105,8 @@ public:
     static Vertex3D screenToWorld(float x, float y, float screenWidth, float screenHeight, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix);
 
     static bool saveTextureToFile(GLuint textureID, int width, int height, const char* fileName);
+
+    static std::string getFilenameWithoutExtension(const std::string &filename);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

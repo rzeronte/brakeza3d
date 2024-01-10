@@ -46,6 +46,7 @@ private:
     TexturePackage imagesFolder;
 
     std::string currentVariableToAddName;
+    std::string currentVariableToCreateCustomShader;
 
     const char *availableMesh3DShaders[4] = {"Edge", "Blink", "ShockWave", "Tint"};
 public:
@@ -88,6 +89,7 @@ public:
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/stop.png", "stopIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/play.png", "playIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/reload.png", "reloadIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/rebuild.png", "rebuildIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/object.png", "objectIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/light.png", "lightIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/script.png", "scriptIcon");
@@ -110,7 +112,7 @@ public:
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/particles.png", "particlesIcon");
     }
 
-    void drawFiles(std::vector<std::string> result)
+    void drawScriptFiles(std::vector<std::string> result)
     {
         static bool disable_mouse_wheel = false;
         static bool disable_menu = false;
@@ -187,7 +189,7 @@ public:
             ImGui::EndTable();
         }
 
-        if (ImGui::Button(std::string("Apply").c_str())) {
+        if (ImGui::Button(std::string("Save script types").c_str())) {
             scriptEditableManager.script->updateFileTypes();
         }
     }
@@ -313,7 +315,23 @@ public:
 
     }
 
-    void drawSceneShaders() {
+    void drawCustomShaders() {
+
+        static char name[256];
+
+        strncpy(name, currentVariableToCreateCustomShader.c_str(), sizeof(name));
+
+        if (ImGui::InputText("Shader name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+            currentVariableToCreateCustomShader = name;
+        }
+
+        if (ImGui::Button(std::string("Create custom shader").c_str())) {
+            ComponentsManager::get()->getComponentRender()->addShaderToScene(
+                ShaderOpenGLCustom::createEmptyCustomShader(currentVariableToCreateCustomShader)
+            );
+        }
+
+        ImGui::Separator();
 
         auto shaders = ComponentsManager::get()->getComponentRender()->getSceneShaders();
 
@@ -332,6 +350,10 @@ public:
                 }
             }
             ImGui::SameLine();
+            if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("rebuildIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                s->compile();
+            }
+            ImGui::SameLine();
             if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                 ComponentsManager::get()->getComponentRender()->removeShader(i);
             }
@@ -342,7 +364,42 @@ public:
                 ImGui::PopID();
             }
             ImGui::PopID();
-            ImGui::Separator();
+        }
+
+        ImGui::Separator();
+        if (ImGui::Begin("Custom Shaders")) {
+            DIR *dir;
+            struct dirent *ent;
+            std::vector<std::string> result;
+            if ((dir = opendir (EngineSetup::get()->CUSTOM_SHADERS.c_str())) != nullptr) {
+                while ((ent = readdir (dir)) != nullptr) {
+                    if (Tools::getExtensionFromFilename(ent->d_name) == "fs") {
+                        result.emplace_back(ent->d_name);
+                    }
+                }
+                std::sort( result.begin(), result.end() );
+
+                closedir (dir);
+
+                for (int i = 0; i < result.size(); i++) {
+                    auto file = result[i];
+                    auto title = std::to_string(i+1) + ") " + file;
+                    if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
+                        ImGui::PushID(i);
+                        if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                            std::string name = Tools::getFilenameWithoutExtension(file.c_str());
+                            ComponentsManager::get()->getComponentRender()->addShaderToScene(
+                                    new ShaderOpenGLCustom(name, EngineSetup::get()->CUSTOM_SHADERS + file)
+                            );
+                        }
+                        ImGui::SameLine();
+                        ImGui::Text("%s", title.c_str());
+                        ImGui::PopID();
+                    }
+                }
+            } else {
+                ImGui::Text("Could not open directory");
+            }
         }
     }
 
@@ -416,7 +473,7 @@ public:
                 std::sort( result.begin(), result.end() );
                 closedir (dir);
 
-                drawFiles(result);
+                drawScriptFiles(result);
 
             } else {
                 ImGui::Text("Could not open directory");
@@ -469,8 +526,8 @@ public:
         ImGui::End();
 
 
-        if (ImGui::Begin("Shaders")) {
-            drawSceneShaders();
+        if (ImGui::Begin("Scene Shaders")) {
+            drawCustomShaders();
         }
 
         if (ImGui::Begin("Mesh3D Shaders")) {
@@ -514,7 +571,7 @@ public:
         ImGui::Separator();
 
         static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-        ImGui::InputTextMultiline("##source", scriptEditableManager.editableSource, IM_ARRAYSIZE(scriptEditableManager.editableSource), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 10), flags);
+        ImGui::InputTextMultiline("##source", scriptEditableManager.editableSource, IM_ARRAYSIZE(scriptEditableManager.editableSource), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 40), flags);
         if (ImGui::Button(std::string("Save").c_str())) {
             scriptEditableManager.script->updateScriptCodeWith(scriptEditableManager.editableSource);
             scriptEditableManager.script->reloadScriptCode();

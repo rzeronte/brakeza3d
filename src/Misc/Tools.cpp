@@ -145,7 +145,7 @@ char *Tools::readFile(const std::string &name, size_t &source_size)
     fp = fopen(name.c_str(), "r");
 
     if (!fp) {
-        Logging::Log("File %s can't be loaded!", name.c_str());
+        Logging::Message("File %s can't be loaded!", name.c_str());
         return nullptr;
     }
     char *file_str = (char *) malloc(MAX_SOURCE_SIZE);
@@ -412,6 +412,16 @@ std::string Tools::getExtensionFromFilename(const std::string& filename)
     }
 
     return "";
+}
+
+std::string Tools::getFilenameWithoutExtension(const std::string& filename)
+{
+    size_t dotPosition = filename.find_last_of(".");
+    if (dotPosition != std::string::npos) {
+        return filename.substr(0, dotPosition);
+    }
+
+    return filename;
 }
 
 void Tools::writeToFile(const std::string& fileName, const char *content)
