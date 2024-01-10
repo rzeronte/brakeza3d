@@ -1,6 +1,5 @@
 #include "../../include/FXEffect/FXOutliner.h"
 #include "../../include/LUAManager.h"
-#include "../../include/Render/Drawable.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
 

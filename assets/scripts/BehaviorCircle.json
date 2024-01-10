@@ -24,25 +24,5 @@
 				"y":	0,
 				"z":	20
 			}
-		}, {
-			"name":	"pepe",
-			"type":	"int",
-			"value":	0
-		}, {
-			"name":	"juan",
-			"type":	"int",
-			"value":	0
-		}, {
-			"name":	"oop",
-			"type":	"int",
-			"value":	0
-		}, {
-			"name":	"yo",
-			"type":	"int",
-			"value":	0
-		}, {
-			"name":	"ya",
-			"type":	"int",
-			"value":	0
 		}]
 }

@@ -22,16 +22,11 @@ enum class SceneObjectLoaderMapping {
 };
 
 enum class Mesh3DShaderLoaderMapping {
-    ShaderEdgeObject,
+    FXOutliner,
+    FXBlink,
+    FXTint,
 };
 
-enum class SceneShaderLoaderMapping {
-    FXColorTint,
-    ShaderImage,
-    ShaderDepthOfField,
-    ShaderBilinear,
-    ShaderParticlesBlurBuffer
-};
 
 class SceneLoader {
     std::map<std::string, SceneObjectLoaderMapping> sceneTypes = {
@@ -45,15 +40,9 @@ class SceneLoader {
     };
 
     std::map<std::string, Mesh3DShaderLoaderMapping> mesh3DShaderTypes = {
-            {"FXOutliner", Mesh3DShaderLoaderMapping::ShaderEdgeObject}
-    };
-
-    std::map<std::string, SceneShaderLoaderMapping> sceneShaderTypes = {
-            {"ShaderImage", SceneShaderLoaderMapping::ShaderImage},
-            {"ShaderDepthOfField", SceneShaderLoaderMapping::ShaderDepthOfField},
-            {"ShaderBilinear", SceneShaderLoaderMapping::ShaderBilinear},
-            {"ShaderParticlesBlurBuffer", SceneShaderLoaderMapping::ShaderParticlesBlurBuffer},
-            {"FXColorTint", SceneShaderLoaderMapping::FXColorTint}
+            {"FXOutliner", Mesh3DShaderLoaderMapping::FXOutliner},
+            {"FXBlink", Mesh3DShaderLoaderMapping::FXBlink},
+            {"FXColorTint", Mesh3DShaderLoaderMapping::FXTint},
     };
 
 public:
@@ -78,8 +67,6 @@ public:
     std::map<std::string, SceneObjectLoaderMapping> &getSceneTypes();
 
     std::map<std::string, Mesh3DShaderLoaderMapping> &getMesh3DShaderTypes();
-
-    std::map<std::string, SceneShaderLoaderMapping> &getSceneShaderTypes();
 
     static void createSpotLight3DInScene();
 

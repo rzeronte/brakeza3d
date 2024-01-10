@@ -12,8 +12,7 @@
 #include "../../include/Objects/ParticleEmitter.h"
 #include "../../include/2D/Sprite2D.h"
 
-SceneLoader::SceneLoader()
-= default;
+SceneLoader::SceneLoader() = default;
 
 void SceneLoader::loadScene(const std::string& filename)
 {
@@ -77,40 +76,11 @@ void SceneLoader::loadScene(const std::string& filename)
 
     cJSON *currentShaderJSON;
     cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(contentJSON, "shaders")) {
-        std::string typeObject = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
-        auto sceneShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getSceneShaderTypes();
-
-        Logging::Message("Shader ID: %s", typeObject.c_str());
-
-        switch(sceneShaderTypes[typeObject.c_str()]) {
-            case SceneShaderLoaderMapping::FXColorTint : {
-                Logging::Message("Setup FXColorTint shader...");
-                auto shader = dynamic_cast<FXColorTint*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(0));
-                shader->setColor(parseColorJSON(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "color")));
-                shader->setProgress((float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "alpha")->valuedouble);
-                shader->setEnabled(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "enabled")->valueint);
-                break;
-            }
-            case SceneShaderLoaderMapping::ShaderImage : {
-                auto shader = dynamic_cast<FXOffsetImage*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(0));
-                shader->getImage().setImage(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "image")->valuestring);
-                shader->setOffsets(
-                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "offsetX")->valuedouble,
-                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "offsetY")->valuedouble
-                );
-                break;
-            }
-            /*case SceneShaderLoaderMapping::ShaderDepthOfField : {
-                auto shader = dynamic_cast<ShaderDepthOfField*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(1));
-                shader->setup(
-                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "focusPlaneDepth")->valuedouble,
-                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "focusRange")->valuedouble,
-                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "blurSize")->valuedouble,
-                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "intensity")->valuedouble
-                );
-                break;
-            }*/
-        }
+        std::string nameFragmentCodeFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "file")->valuestring;
+        std::string shaderCustomName = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
+        ComponentsManager::get()->getComponentRender()->addShaderToScene(
+            new ShaderOpenGLCustom(shaderCustomName, nameFragmentCodeFile)
+        );
     }
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
@@ -158,7 +128,7 @@ void SceneLoader::saveScene(const std::string &filename)
     //shaders
     cJSON *shadersArrayJSON = cJSON_CreateArray();
     for (auto shader : ComponentsManager::get()->getComponentRender()->getSceneShaders()) {
-        auto objectJson = shader->getJSON();
+        auto objectJson = shader->getTypesJSON();
         cJSON_AddItemToArray(shadersArrayJSON, objectJson);
     }
     cJSON_AddItemToObject(root, "shaders", shadersArrayJSON);
@@ -341,8 +311,4 @@ std::map<std::string, SceneObjectLoaderMapping> &SceneLoader::getSceneTypes() {
 
 std::map<std::string, Mesh3DShaderLoaderMapping> &SceneLoader::getMesh3DShaderTypes() {
     return mesh3DShaderTypes;
-}
-
-std::map<std::string, SceneShaderLoaderMapping> &SceneLoader::getSceneShaderTypes() {
-    return sceneShaderTypes;
 }

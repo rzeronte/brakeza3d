@@ -541,6 +541,12 @@ cJSON *Object3D::getJSON()
     }
     cJSON_AddItemToObject(root, "scripts", scriptsArray);
 
+    cJSON *shadersArrayJSON = cJSON_CreateArray();
+    for ( auto s : shaders) {
+        cJSON_AddItemToArray(shadersArrayJSON, s->getJSON());
+    }
+    cJSON_AddItemToObject(root, "shaders", shadersArrayJSON);
+
     return root;
 }
 
@@ -581,7 +587,12 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
         cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
             auto type = cJSON_GetObjectItemCaseSensitive(currentShader, "type")->valuestring;
             switch(mesh3DShaderTypes[type]) {
-                case Mesh3DShaderLoaderMapping::ShaderEdgeObject: {
+                case Mesh3DShaderLoaderMapping::FXTint: {
+                    auto c = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
+                    auto alpha = (float) cJSON_GetObjectItemCaseSensitive(currentShader, "alpha")->valuedouble;
+                    auto enabled = (bool) cJSON_GetObjectItemCaseSensitive(currentShader, "enabled")->valueint;
+                    auto shader = new FXColorTint(enabled, SceneLoader::parseColorJSON(c), alpha);
+                    o->addMesh3DShader(shader);
                     break;
                 }
             }

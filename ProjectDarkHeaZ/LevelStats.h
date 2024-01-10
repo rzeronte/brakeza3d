@@ -87,7 +87,7 @@ public:
         return medalType;
     }
 
-    [[nodiscard]] std::string accuracyPercentageFormatted(int weaponType) const
+    [[nodiscard]] std::string accuracyPercentFormatted(int weaponType) const
     {
         std::string output;
 
