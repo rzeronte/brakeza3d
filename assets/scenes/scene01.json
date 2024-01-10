@@ -6,8 +6,8 @@
 			"transparent":	false,
 			"position":	{
 				"x":	0,
-				"y":	0,
-				"z":	20
+				"y":	1,
+				"z":	50
 			},
 			"rotation":	{
 				"x":	0,
@@ -20,11 +20,11 @@
 					"types":	[{
 							"name":	"radius",
 							"type":	"int",
-							"value":	1
+							"value":	4
 						}, {
 							"name":	"speed",
 							"type":	"float",
-							"value":	2
+							"value":	1
 						}, {
 							"name":	"offset",
 							"type":	"Vertex3D",
@@ -39,32 +39,8 @@
 							"value":	{
 								"x":	0,
 								"y":	0,
-								"z":	20
+								"z":	50
 							}
-						}, {
-							"name":	"pepe",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"juan",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"oop",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"yo",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"ya",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"me",
-							"type":	"int",
-							"value":	0
 						}]
 				}],
 			"model":	"../assets/models/planet_earth.fbx",
@@ -77,85 +53,13 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-1,
+				"x":	0,
 				"y":	0,
-				"z":	20
+				"z":	40
 			},
 			"rotation":	{
 				"x":	0,
 				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[{
-					"name":	"BehaviorCircle.lua",
-					"types":	[{
-							"name":	"radius",
-							"type":	"int",
-							"value":	2
-						}, {
-							"name":	"speed",
-							"type":	"float",
-							"value":	2
-						}, {
-							"name":	"offset",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	2,
-								"z":	0
-							}
-						}, {
-							"name":	"center",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	0,
-								"z":	20
-							}
-						}, {
-							"name":	"pepe",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"juan",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"oop",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"yo",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"ya",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"me",
-							"type":	"int",
-							"value":	0
-						}]
-				}],
-			"model":	"../assets/models/planet_sun.fbx",
-			"enableLights":	false,
-			"shaders":	[],
-			"type":	"Mesh3D"
-		}, {
-			"name":	"eye",
-			"scale":	0.0010000000474974513,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-2,
-				"y":	-1,
-				"z":	20
-			},
-			"rotation":	{
-				"x":	180,
-				"y":	-2,
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
@@ -185,30 +89,54 @@
 								"y":	0,
 								"z":	20
 							}
-						}, {
-							"name":	"pepe",
+						}]
+				}],
+			"model":	"../assets/models/planet_sun.fbx",
+			"enableLights":	false,
+			"shaders":	[],
+			"type":	"Mesh3D"
+		}, {
+			"name":	"eye",
+			"scale":	0.0010000000474974513,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	0,
+				"y":	2,
+				"z":	60
+			},
+			"rotation":	{
+				"x":	180,
+				"y":	-2,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"BehaviorCircle.lua",
+					"types":	[{
+							"name":	"radius",
 							"type":	"int",
-							"value":	0
+							"value":	8
 						}, {
-							"name":	"juan",
-							"type":	"int",
-							"value":	0
+							"name":	"speed",
+							"type":	"float",
+							"value":	1
 						}, {
-							"name":	"oop",
-							"type":	"int",
-							"value":	0
+							"name":	"offset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	2,
+								"z":	0
+							}
 						}, {
-							"name":	"yo",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"ya",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"me",
-							"type":	"int",
-							"value":	0
+							"name":	"center",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	0,
+								"z":	60
+							}
 						}]
 				}],
 			"model":	"../assets/models/eye.fbx",
@@ -216,22 +144,13 @@
 			"shaders":	[],
 			"type":	"Mesh3D"
 		}],
-	"shaders":	[{
-			"type":	"FXColorTint",
-			"enabled":	false,
-			"alpha":	0.60000002384185791,
-			"color":	{
-				"r":	255,
-				"g":	0,
-				"b":	0
-			}
-		}],
+	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
 			"x":	0,
 			"y":	0,
-			"z":	0.22352419793605804
+			"z":	0.21681126952171326
 		},
 		"rotation":	{
 			"x":	0,

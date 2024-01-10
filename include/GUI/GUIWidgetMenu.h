@@ -12,6 +12,7 @@
 #include "../Render/Logging.h"
 #include "../Misc/SceneLoader.h"
 #include "../ComponentsManager.h"
+#include "imgui_internal.h"
 
 struct GUIWidgetMenu
 {
@@ -196,6 +197,19 @@ struct GUIWidgetMenu
                 ImGui::Checkbox("Show debug data", &EngineSetup::get()->DEBUG_RENDER_INFO);
                 ImGui::Separator();
                 ImGui::Checkbox("Collision objects", &EngineSetup::get()->LOG_COLLISION_OBJECTS);
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Layout")) {
+                if (ImGui::MenuItem("Default", "CTRL+D")) {
+                    ComponentsManager::get()->getComponentWindow()->ImGuiConfigChanged = ImGUIConfigs::DEFAULT;
+                }
+                if (ImGui::MenuItem("Coding", "CTRL+C")) {
+                    ComponentsManager::get()->getComponentWindow()->ImGuiConfigChanged = ImGUIConfigs::CODING;
+                }
+                if (ImGui::MenuItem("Design", "CTRL+D")) {
+                    ComponentsManager::get()->getComponentWindow()->ImGuiConfigChanged = ImGUIConfigs::DESIGN;
+                }
                 ImGui::EndMenu();
             }
 

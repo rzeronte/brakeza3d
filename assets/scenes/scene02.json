@@ -1,11 +1,59 @@
 {
 	"objects":	[{
-			"name":	"Sun",
-			"scale":	2,
+			"name":	"Earth",
+			"scale":	0.68000000715255737,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-7,
+				"x":	0,
+				"y":	1,
+				"z":	50
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"BehaviorCircle.lua",
+					"types":	[{
+							"name":	"radius",
+							"type":	"int",
+							"value":	4
+						}, {
+							"name":	"speed",
+							"type":	"float",
+							"value":	1
+						}, {
+							"name":	"offset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	2,
+								"z":	0
+							}
+						}, {
+							"name":	"center",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	0,
+								"z":	50
+							}
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models/planet_earth.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Sun",
+			"scale":	0.82999998331069946,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	0,
 				"y":	0,
 				"z":	40
 			},
@@ -15,49 +63,119 @@
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
-			"scripts":	[],
+			"scripts":	[{
+					"name":	"BehaviorCircle.lua",
+					"types":	[{
+							"name":	"radius",
+							"type":	"int",
+							"value":	3
+						}, {
+							"name":	"speed",
+							"type":	"float",
+							"value":	2
+						}, {
+							"name":	"offset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	2,
+								"z":	0
+							}
+						}, {
+							"name":	"center",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	0,
+								"z":	20
+							}
+						}]
+				}],
+			"shaders":	[{
+					"type":	"FXOutliner",
+					"size":	1,
+					"color":	{
+						"r":	0,
+						"g":	1,
+						"b":	0
+					}
+				}, {
+					"type":	"FXBlink",
+					"step":	0.10000000149011612,
+					"color":	{
+						"r":	0,
+						"g":	1,
+						"b":	0
+					}
+				}, {
+					"type":	"FXColorTint",
+					"enabled":	true,
+					"alpha":	0.34999999403953552,
+					"color":	{
+						"r":	1,
+						"g":	0,
+						"b":	0
+					}
+				}],
 			"model":	"../assets/models/planet_sun.fbx",
 			"enableLights":	false,
-			"shaders":	[],
 			"type":	"Mesh3D"
 		}, {
-			"name":	"Earth",
-			"scale":	1.5,
+			"name":	"eye",
+			"scale":	0.0010000000474974513,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	6,
-				"y":	0,
-				"z":	45
+				"x":	0,
+				"y":	2,
+				"z":	60
 			},
 			"rotation":	{
-				"x":	0,
-				"y":	0,
+				"x":	180,
+				"y":	-2,
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models/planet_earth.fbx",
-			"enableLights":	false,
+			"scripts":	[{
+					"name":	"BehaviorCircle.lua",
+					"types":	[{
+							"name":	"radius",
+							"type":	"int",
+							"value":	8
+						}, {
+							"name":	"speed",
+							"type":	"float",
+							"value":	1
+						}, {
+							"name":	"offset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	2,
+								"z":	0
+							}
+						}, {
+							"name":	"center",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	0,
+								"z":	60
+							}
+						}]
+				}],
 			"shaders":	[],
+			"model":	"../assets/models/eye.fbx",
+			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],
-	"shaders":	[{
-			"type":	"FXColorTint",
-			"enabled":	false,
-			"alpha":	0.60000002384185791,
-			"color":	{
-				"r":	255,
-				"g":	0,
-				"b":	0
-			}
-		}],
+	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
 			"x":	0,
 			"y":	0,
-			"z":	0.10658265650272369
+			"z":	0.22311177849769592
 		},
 		"rotation":	{
 			"x":	0,

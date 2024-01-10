@@ -9,10 +9,10 @@
 #include <SDL2/SDL_opengl.h>
 
 class ShaderOpenGL {
-    std::string vertexFilename;
-    std::string fragmentFilename;
 protected:
     GLuint programID;
+    std::string vertexFilename;
+    std::string fragmentFilename;
 public:
     ShaderOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename);
     static GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path);

@@ -21,7 +21,6 @@ class Brakeza3D {
 private:
 
     ComponentsManager *componentsManager;
-    GUIManager *managerGUI;
 
     Timer engineTimer;
 
@@ -31,8 +30,6 @@ private:
     float executionTime = 0;
 
     std::vector<Object3D *> sceneObjects;
-
-    bool finish = false;
 
 public:
     Brakeza3D();
@@ -73,10 +70,6 @@ public:
 
     [[nodiscard]] ComponentsManager *getComponentsManager() const;
 
-    void ImGuiInitialize() const;
-
-    void ImGuiOnUpdate();
-
     void controlFrameRate() const;
 
     float &getExecutionTime();
@@ -94,6 +87,9 @@ public:
     Object3D *getSceneObjectById(int i);
 
     static void checkForResizeOpenGLWindow(SDL_Event &e);
+
+    GUIManager *managerGUI;
+    bool finish = false;
 };
 
 

@@ -275,48 +275,57 @@ void ComponentGame::showLevelStatistics(float alpha)
     int offsetX = 340;
     int offsetY = 100;
     const int space = 100;
-    player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, getLevelLoader()->getStats()->stats(WEAPON_PROJECTILE).c_str(),
-                                     PaletteColors::getStatisticsText(), 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_PROJECTILE).c_str(),
-                                     PaletteColors::getStatisticsText(), 0.3);
+
+    auto window = ComponentsManager::get()->getComponentWindow();
+    auto stats = getLevelLoader()->getStats();
+    auto c = PaletteColors::getStatisticsText();
+    auto fb = window->getForegroundFramebuffer();
+    auto bb = window->getBackgroundFramebuffer();
+
+    glassEffect->drawFlatAlpha(0, 0, alpha, fb);
+
+    player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, fb);
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, stats->stats(WEAPON_PROJECTILE).c_str(), c, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, stats->accuracyPercentFormatted(WEAPON_PROJECTILE).c_str(), c, 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_PROJECTILE), offsetX, offsetY + 250, alpha);
 
     offsetX += space;
-    player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, getLevelLoader()->getStats()->stats(WEAPON_LASER).c_str(),
-                                     PaletteColors::getStatisticsText(), 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_LASER).c_str(),
-                                     PaletteColors::getStatisticsText(), 0.3);
+    player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, fb);
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, stats->stats(WEAPON_LASER).c_str(), c, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, stats->accuracyPercentFormatted(WEAPON_LASER).c_str(), c, 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER), offsetX, offsetY + 250, alpha);
 
     offsetX += space;
-    player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, getLevelLoader()->getStats()->stats(WEAPON_RAYLIGHT).c_str(),
-                                     PaletteColors::getStatisticsText(), 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_RAYLIGHT).c_str(),
-                                     PaletteColors::getStatisticsText(), 0.3);
+    player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, fb);
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, stats->stats(WEAPON_RAYLIGHT).c_str(), c, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, stats->accuracyPercentFormatted(WEAPON_RAYLIGHT).c_str(), c, 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_RAYLIGHT), offsetX, offsetY + 250, alpha);
 
     offsetX += space;
-    player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, getLevelLoader()->getStats()->stats(WEAPON_BOMB).c_str(),
-                                     PaletteColors::getStatisticsText(), 0.3);
-    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, getLevelLoader()->getStats()->accuracyPercentageFormatted(WEAPON_BOMB).c_str(),
-                                     PaletteColors::getStatisticsText(), 0.3);
+    player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, fb);
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, stats->stats(WEAPON_BOMB).c_str(), c, 0.3);
+    textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, stats->accuracyPercentFormatted(WEAPON_BOMB).c_str(), c, 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_BOMB), offsetX, offsetY + 250, alpha);
 
-    textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
+    textWriter->setFont(window->getFontAlternative());
 
-    //textWriter->writeTTFCenterHorizontal(350, "Press ENTER to START!", primaryColor, 0.5f);
-
-    imageStatistics->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    imageStatistics->drawFlatAlpha(0, 0, alpha, fb);
 
     writeDialogTextToContinue("Press ENTER to continue...");
 
-    ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(EngineSetup::get()->screenWidth/2-8 , offsetY + 300, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-    textWriter->writeTTFCenterHorizontal(offsetY + 320, std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(),
-                                         PaletteColors::getStatisticsText(), 0.3);
+    ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(
+        EngineSetup::get()->screenWidth/2-16 ,
+        offsetY + 300,
+        alpha,
+        fb
+    );
+
+    textWriter->writeTTFCenterHorizontal(
+        offsetY + 340,
+        std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(),
+        c,
+        0.5
+    );
 }
 
 void ComponentGame::updateFadeToGameState()

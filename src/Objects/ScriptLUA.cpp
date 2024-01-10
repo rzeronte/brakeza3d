@@ -180,9 +180,6 @@ void ScriptLUA::parseTypesFromFileAttributes()
 
 void ScriptLUA::setDataTypesFromJSON(cJSON *typesJSON)
 {
-    //dataTypes.clear();
-    //dataTypesDefaultValues.clear();
-
     cJSON *currentType;
     cJSON_ArrayForEach(currentType, typesJSON) {
         auto name = cJSON_GetObjectItemCaseSensitive(currentType, "name")->valuestring;
@@ -229,27 +226,9 @@ void ScriptLUA::updateFileTypes()
     Logging::Message("Updating types file (%s)", this->fileTypes.c_str());
     char *output_string = cJSON_Print(getTypesJSON());
 
-    updateFileTypesWith( output_string);
+    Tools::writeToFile(EngineSetup::get()->SCRIPTS_FOLDER + this->fileTypes, output_string);
 
     delete output_string;
-}
-
-void ScriptLUA::updateFileTypesWith(const std::string& content) const
-{
-    std::ofstream file(EngineSetup::get()->SCRIPTS_FOLDER + this->fileTypes, std::ios::trunc);
-
-    if (!file.is_open()) {
-        Logging::Message("File %s can't be loaded!", fileTypes.c_str());
-        return;
-    }
-
-    file << content;
-    file.close();
-
-    if (file.fail()) {
-        Logging::Message("Error writing to file %s", fileTypes.c_str());
-        return;
-    }
 }
 
 bool ScriptLUA::updateScriptCodeWith(const std::string& content) const

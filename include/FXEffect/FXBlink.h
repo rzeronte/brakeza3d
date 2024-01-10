@@ -20,16 +20,16 @@ public:
 
     void update() override;
 
-    void executeKernelOpenCL();
-
     void setColor(Color color);
 
     void preUpdate() override;
 
     void postUpdate() override;
 
-    void drawImGuiProperties();
+    void drawImGuiProperties() override;
 
     void setCounter(float step);
+
+    cJSON *getJSON() override;
 };
 #endif //BRAKEDA3D_SHADERBLINK_H
