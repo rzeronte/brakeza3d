@@ -33,7 +33,6 @@ typedef enum {
 } PlayerState;
 
 enum WeaponStatus {
-    NONE = -1,
     PRESSED = 1,
     SUSTAINED = 2,
     RELEASED = 3,
@@ -55,8 +54,6 @@ private:
     Weapon *weapon;
     Counter counterStucked;
     Counter counterDashCadence;
-
-    RayLight rayLight;
 
     int killsCounter;
     bool energyShieldEnabled;
@@ -181,10 +178,6 @@ public:
 
     void setEnabled(bool value) override;
 
-    void updateWeaponInteractionStatus() const;
-
-    void updateWeaponAutomaticStatus();
-
     [[nodiscard]] LightPoint3D *getWeaponLight() const;
 
     void updateShaderParticles();
@@ -212,8 +205,6 @@ public:
     void updatePlayerEnergy();
 
     void updateTargetRotation();
-
-    RayLight &getRayLight();
 
     void initLight();
 

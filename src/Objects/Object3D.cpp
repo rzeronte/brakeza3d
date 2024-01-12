@@ -159,6 +159,10 @@ void Object3D::onUpdate()
 
     if (!isEnabled()) return;
 
+    for (auto a: attached) {
+        if (a->isEnabled()) a->onUpdate();
+    }
+
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     distanceToCamera = camera->getPosition().distance(getPosition());
@@ -190,6 +194,10 @@ void Object3D::postUpdate()
 
     for (auto s: shaders) {
         s->postUpdate();
+    }
+
+    for (auto a: attached) {
+        if (a->isEnabled())  a->postUpdate();
     }
 
     if (isRotationFrameEnabled()) {
@@ -500,6 +508,17 @@ void Object3D::drawImGuiProperties()
         }
         ImGui::TreePop();
     }
+    ImGui::Separator();
+
+    if (ImGui::TreeNode("Attached")) {
+        for (auto a: attached) {
+            if (ImGui::TreeNode(a->getLabel().c_str())) {
+                a->drawImGuiProperties();
+            }
+        }
+
+        ImGui::TreePop();
+    }
 
     ImGui::Separator();
 }
@@ -656,4 +675,13 @@ bool Object3D::isMultiScene() const {
 
 void Object3D::setMultiScene(bool multiScene) {
     Object3D::multiScene = multiScene;
+}
+
+const std::vector<Object3D *> &Object3D::getAttached() const {
+    return attached;
+}
+
+void Object3D::attachObject(Object3D* o)
+{
+    attached.push_back(o);
 }

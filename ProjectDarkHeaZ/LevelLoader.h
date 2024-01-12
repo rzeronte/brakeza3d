@@ -56,7 +56,7 @@ public:
     void load(int levelIndex);
     bool loadNext();
     void addLevel(std::string filename);
-    Weapon *parseWeaponJSON(cJSON *weaponJson);
+    static Weapon *parseWeaponJSON(Object3D *parent, cJSON *weaponJson, bool isPlayer);
 
     Counter countDown;
     std::vector<Image*> levelHistories;
@@ -126,7 +126,7 @@ public:
     Point2D parsePositionJSON(cJSON *positionJSON);
     Vertex3D parseVertex3DJSON(cJSON *vertex3DJSON);
 
-    void setProjectileEmitterForEnemy(cJSON *emitter, EnemyGhost *enemy);
+    static void setProjectileEmitterForEnemy(cJSON *emitter, EnemyGhost *enemy);
 
     void setLasersForEnemy(cJSON *lasers, EnemyGhost *enemy);
     void addLasersForEnemy(cJSON *laser, EnemyGhost *enemy);

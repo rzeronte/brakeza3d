@@ -24,7 +24,6 @@ struct GUIWidgetMenu
         ImGuiTextures(imGuiTextures),
         directory_path_models(EngineSetup::get()->MODELS_FOLDER)
     {
-
     }
 
     void draw(bool &finish)
@@ -267,89 +266,78 @@ struct GUIWidgetMenu
                 ImGui::Separator();
                 ImGui::EndMenu();
             }
-            static const char *itemCurrent = "--Niveles--"; // Here our selection is a single pointer stored outside the object.
-            static ImGuiComboFlags flags = 0;
 
             ImGui::EndMainMenuBar();
         }
     }
-    void drawMesh3DItemsToLoad() {
+
+    static std::vector<std::string> getFolder(const std::string& path, const std::string& extension) {
         DIR *dir;
         struct dirent *ent;
         std::vector<std::string> result;
-        if ((dir = opendir (directory_path_models.c_str())) != NULL) {
-            while ((ent = readdir (dir)) != NULL) {
+        if ((dir = opendir (path.c_str())) != nullptr) {
+            while ((ent = readdir (dir)) != nullptr) {
+                if (Tools::getExtensionFromFilename(ent->d_name) != extension) continue;
                 result.emplace_back(ent->d_name);
             }
             std::sort( result.begin(), result.end() );
 
             closedir (dir);
+        }
 
-            for (int i = 0; i < result.size(); i++) {
-                auto file = result[i];
-                auto title = std::to_string(i-1) + ") " + file;
-                if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getOGLTextureID(), ImVec2(16, 16));
-                    ImGui::SameLine();
-                    if (ImGui::MenuItem(file.c_str())) {
-                        Tools::addSceneObject(file, "added_item");
-                    }
+        return result;
+    }
+
+    void drawMesh3DItemsToLoad()
+    {
+        auto result = getFolder(directory_path_models, "fbx");
+
+        for (int i = 0; i < result.size(); i++) {
+            auto file = result[i];
+            auto title = std::to_string(i-1) + ") " + file;
+            if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getOGLTextureID(), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem(file.c_str())) {
+                    Tools::addSceneObject(file, "added_item");
                 }
             }
         }
     }
 
     void drawRigidBodiesItemsToLoad() {
-        DIR *dir;
-        struct dirent *ent;
-        std::vector<std::string> result;
-        if ((dir = opendir (directory_path_models.c_str())) != NULL) {
-            while ((ent = readdir (dir)) != NULL) {
-                result.emplace_back(ent->d_name);
-            }
-            std::sort( result.begin(), result.end() );
 
-            closedir (dir);
+        auto result = getFolder(directory_path_models, "fbx");
 
-            for (int i = 0; i < result.size(); i++) {
-                auto file = result[i];
-                auto title = std::to_string(i-1) + ") " + file;
-                if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("gearIcon")->getOGLTextureID(), ImVec2(16, 16));
-                    ImGui::SameLine();
-                    if (ImGui::MenuItem(file.c_str())) {
-                        SceneLoader::createMesh3DBodyToScene(file, "added_item");
-                    }
+        for (int i = 0; i < result.size(); i++) {
+            auto file = result[i];
+            auto title = std::to_string(i-1) + ") " + file;
+            if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("gearIcon")->getOGLTextureID(), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem(file.c_str())) {
+                    SceneLoader::createMesh3DBodyToScene(file, "added_item");
                 }
             }
         }
     }
 
     void drawGhostItemsToLoad() {
-        DIR *dir;
-        struct dirent *ent;
-        std::vector<std::string> result;
-        if ((dir = opendir (directory_path_models.c_str())) != NULL) {
-            while ((ent = readdir (dir)) != NULL) {
-                result.emplace_back(ent->d_name);
-            }
-            std::sort( result.begin(), result.end() );
 
-            closedir (dir);
+        auto result = getFolder(directory_path_models, "fbx");
 
-            for (int i = 0; i < result.size(); i++) {
-                auto file = result[i];
-                auto title = std::to_string(i-1) + ") " + file;
-                if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("ghostIcon")->getOGLTextureID(), ImVec2(16, 16));
-                    ImGui::SameLine();
-                    if (ImGui::MenuItem(file.c_str())) {
-                        SceneLoader::createGhostBody3DToScene(file, "added_item");
-                    }
+        for (int i = 0; i < result.size(); i++) {
+            auto file = result[i];
+            auto title = std::to_string(i-1) + ") " + file;
+            if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("ghostIcon")->getOGLTextureID(), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem(file.c_str())) {
+                    SceneLoader::createGhostBody3DToScene(file, "added_item");
                 }
             }
         }
     }
-
 };
+
 #endif //BRAKEZA3D_GUIWIDGETMENU_H

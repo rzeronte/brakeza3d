@@ -12,6 +12,10 @@
 #include "ShaderQuadOpenGL.h"
 
 class ShaderOpenGLLine : public ShaderOpenGL, public ShaderQuadOpenGL  {
+    GLint lineStartUniform;
+    GLint lineEndUniform;
+    GLint lineColorUniform;
+    GLint weightUniform;
 public:
     ShaderOpenGLLine();
 

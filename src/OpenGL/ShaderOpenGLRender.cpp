@@ -7,20 +7,20 @@
 #include "../../include/Brakeza3D.h"
 
 ShaderOpenGLRender::ShaderOpenGLRender()
-:
-    bufferUBOSpotLights(0),
-    bufferUBOLightPoints(0),
-    directionalLight(DirLightOpenGL{
-    glm::vec3(0, 0, 1),
-    glm::vec3(0.3f, 0.3f, 0.3f),
-    glm::vec3(0.4f, 0.4f, 0.4f),
-    glm::vec3(0.5f, 0.5f, 0.5f)
-    }),
+        :
+        bufferUBOSpotLights(0),
+        bufferUBOLightPoints(0),
+        directionalLight(DirLightOpenGL{
+                glm::vec3(0, 0, 1),
+                glm::vec3(0.3f, 0.3f, 0.3f),
+                glm::vec3(0.4f, 0.4f, 0.4f),
+                glm::vec3(0.5f, 0.5f, 0.5f)
+        }),
         VertexArrayID(0),
         ShaderOpenGL(
-        EngineSetup::get()->SHADERS_FOLDER + "Render.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Render.fs"
-     )
+                EngineSetup::get()->SHADERS_FOLDER + "Render.vs",
+                EngineSetup::get()->SHADERS_FOLDER + "Render.fs"
+        )
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
@@ -47,26 +47,26 @@ ShaderOpenGLRender::ShaderOpenGLRender()
 void ShaderOpenGLRender::renderMesh(Mesh3D *o, GLuint framebuffer)
 {
     render(
-        o,
-        o->getModelTextures()[0]->getOGLTextureID(),
-        o->getModelTextures()[0]->getOGLTextureID(),
-        o->vertexbuffer,
-        o->uvbuffer,
-        o->normalbuffer,
-        o->vertices.size(),
-        framebuffer
+            o,
+            o->getModelTextures()[0]->getOGLTextureID(),
+            o->getModelTextures()[0]->getOGLTextureID(),
+            o->vertexbuffer,
+            o->uvbuffer,
+            o->normalbuffer,
+            o->vertices.size(),
+            framebuffer
     );
 }
 
 void ShaderOpenGLRender::render(
-    Object3D *o,
-    GLint textureID,
-    GLint textureSpecularID,
-    GLuint vertexbuffer,
-    GLuint uvbuffer,
-    GLuint normalbuffer,
-    int size,
-    GLuint framebuffer
+        Object3D *o,
+        GLint textureID,
+        GLint textureSpecularID,
+        GLuint vertexbuffer,
+        GLuint uvbuffer,
+        GLuint normalbuffer,
+        int size,
+        GLuint framebuffer
 )
 {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -157,29 +157,41 @@ void ShaderOpenGLRender::createUBOFromLights()
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto o : sceneObjects) {
         if (!o->isEnabled()) continue;
-        Vertex3D forward = o->getRotation().getTranspose() * Vertex3D(0, 0, 1);
-
-        auto p = o->getPosition();
-
-        auto s = dynamic_cast<SpotLight3D*>(o);
-        if (s != nullptr) {
-            spotLights.push_back(SpotLightOpenGL{
-                glm::vec4(p.x, p.y, p.z, 0),
-                glm::vec4(forward.x, forward.y, forward.z, 0),
-                s->ambient,
-                s->diffuse,
-                s->specular,
-                s->constant,
-                s->linear,
-                s->quadratic,
-                s->cutOff,
-                s->outerCutOff
-            });
+        extractLights(o);
+        for (auto a: o->getAttached()) {
+            if (!a->isEnabled()) continue;
+            extractLights(a);
         }
+    }
 
-        auto l = dynamic_cast<LightPoint3D*>(o);
-        if (l != nullptr) {
-            pointsLights.push_back({
+    fillUBOLights();
+}
+
+void ShaderOpenGLRender::extractLights(Object3D *o)
+{
+    Vertex3D forward = o->getRotation().getTranspose() * Vertex3D(0, 0, 1);
+
+    auto p = o->getPosition();
+
+    auto s = dynamic_cast<SpotLight3D*>(o);
+    if (s != nullptr) {
+        spotLights.push_back(SpotLightOpenGL{
+            glm::vec4(p.x, p.y, p.z, 0),
+            glm::vec4(forward.x, forward.y, forward.z, 0),
+            s->ambient,
+            s->diffuse,
+            s->specular,
+            s->constant,
+            s->linear,
+            s->quadratic,
+            s->cutOff,
+            s->outerCutOff
+        });
+    }
+
+    auto l = dynamic_cast<LightPoint3D*>(o);
+    if (l != nullptr) {
+        pointsLights.push_back({
                glm::vec4(p.x, p.y, p.z, 0),
                l->ambient,
                l->diffuse,
@@ -187,15 +199,11 @@ void ShaderOpenGLRender::createUBOFromLights()
                l->constant,
                l->linear,
                l->quadratic
-           });
-        }
+       });
     }
-
-    foo();
-
 }
 
-void ShaderOpenGLRender::foo()
+void ShaderOpenGLRender::fillUBOLights()
 {
     glDeleteBuffers(1, &bufferUBOLightPoints);
     glDeleteBuffers(1, &bufferUBOSpotLights);

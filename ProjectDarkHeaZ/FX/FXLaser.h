@@ -17,6 +17,8 @@ struct OCLaser
     glm::vec2 to;
     glm::vec3 color;
     float intensity;
+    float weight;
+    float speed;
 };
 
 class FXLaser : public FXEffectOpenGL {
@@ -28,7 +30,7 @@ public:
 
     void update() override;
 
-    void addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float intensity);
+    void addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float intensity, float weight, float maskSpeed);
     void addLaserFromRay(ProjectileRay *pRay);
 };
 

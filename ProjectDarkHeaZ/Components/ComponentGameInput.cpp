@@ -76,20 +76,20 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
 void ComponentGameInput::updateWeaponStatus(SDL_Event *event)
 {
     auto game = ComponentsManager::get()->getComponentGame();
-
     auto player = game->getPlayer();
 
-    if (event->type == SDL_CONTROLLERBUTTONUP && event->cbutton.button == SDL_CONTROLLER_BUTTON_A) {
+    const bool releasedFireController = event->type == SDL_CONTROLLERBUTTONUP && event->cbutton.button == SDL_CONTROLLER_BUTTON_A;
+    const bool releaseFireKeyboard = event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_SPACE;
+
+    const bool pressedFireController = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_A;
+    const bool pressedFireKeyboard = event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_SPACE;;
+
+    if (releaseFireKeyboard || releasedFireController) {
         player->getWeapon()->setStatus(WeaponStatus::RELEASED);
-        player->getRayLight().setReach(0);
     }
 
-    if (event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_A) {
+    if (pressedFireKeyboard || pressedFireController) {
         player->getWeapon()->setStatus(WeaponStatus::PRESSED);
-    }
-
-    if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_SPACE) {
-        player->getRayLight().setReach(0);
     }
 }
 
@@ -200,8 +200,6 @@ void ComponentGameInput::handleFire() const
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto player = componentGame->getPlayer();
-
-    player->getRayLight().setEnabled(false);
 
     Uint8 *keyboard = componentInput->getKeyboard();
     if (keyboard[SDL_SCANCODE_SPACE] || componentInput->getControllerAxisTriggerRight() > this->controllerAxisThreshold) {

@@ -42,7 +42,7 @@ void ComponentMenu::loadDecorative3DMesh()
     planet->setEnabled(false);
     planet->setAlpha(255);
     planet->setScale(1.5f);
-    planet->setPosition(Vertex3D(0, 0, 30));
+    planet->setPosition(Vertex3D(0, 0, 20));
     planet->setRotationFrameEnabled(true);
     planet->setRotationFrame(Vertex3D(0.1f, 0.0, 0));
     planet->setRotation(0, 0, 0);

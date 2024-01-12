@@ -80,6 +80,6 @@ void BossLevel20::updateRays()
         rayLight->setEnabled(true);
         rayLight->setIntensity(0.25f);
         rayLight->setReach(progress * 1000);
-        rayLight->update();
+        rayLight->update(true);
     }
 }

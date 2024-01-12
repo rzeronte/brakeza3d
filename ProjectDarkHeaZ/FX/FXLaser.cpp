@@ -16,14 +16,17 @@ void FXLaser::update()
     if (!isEnabled()) return;
 
     auto shader = ComponentsManager::get()->getComponentGame()->getShaderOGLLineLaser();
-    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+    auto fb = ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer();
 
     for (auto l: lasers) {
         shader->render(
             mask->getOGLTextureID(),
             Point2D(l.from),
             Point2D(l.to),
+            normalize(l.to - l.from),
             Color(l.color.r, l.color.g, l.color.b),
+            l.speed,
+            l.weight,
             l.intensity,
             fb
         );
@@ -32,9 +35,9 @@ void FXLaser::update()
     this->lasers.clear();
 }
 
-void FXLaser::addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float intensity)
+void FXLaser::addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float intensity, float weight, float maskSpeed)
 {
-    this->lasers.emplace_back(OCLaser {from, to, color, intensity});
+    this->lasers.emplace_back(OCLaser {from, to, color, intensity, weight, maskSpeed});
 }
 
 void FXLaser::addLaserFromRay(ProjectileRay *ray)
@@ -49,6 +52,8 @@ void FXLaser::addLaserFromRay(ProjectileRay *ray)
         screenPoint.toGLM(),
         middlePoint.toGLM(),
         color.toGLM(),
-        ray->getIntensity()
+        2.5f,
+        ray->getIntensity(),
+        0.5f
     );
 }

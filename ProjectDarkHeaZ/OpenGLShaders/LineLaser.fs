@@ -31,9 +31,8 @@ void main()
     // Ajusta la intensidad de la máscara
     maskValue *= maskIntensity;
 
-    // Calcula el color final de la línea multiplicando el color de la máscara
-    // por la mezcla original de la línea y el color de fondo
-    FragColor = mix(vec4(0, 0, 0, 0), lineColor, line(lineStart, lineEnd, TexCoords, weight)) * maskValue;
+    vec4 lc = lineColor * line(lineStart, lineEnd, TexCoords, weight);
+    FragColor = lc * maskValue;
 }
 
 float line(vec2 A, vec2 B, vec2 C, float thickness)
@@ -47,5 +46,5 @@ float line(vec2 A, vec2 B, vec2 C, float thickness)
     vec2 Q = A + t * AB;
 
     float dist = length(Q - C);
-    return smoothstep(0.003f, -dist, -thickness) + smoothstep(-0.004f, dist, thickness);
+    return smoothstep(0.003f, -dist, -thickness) + smoothstep(-0.002f, dist, thickness);
 }

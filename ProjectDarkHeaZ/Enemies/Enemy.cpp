@@ -15,6 +15,7 @@ Enemy::Enemy()
     lightPositionOffset(Vertex3D(0, 0, -2))
 {
     light->setRotation(180, 0, 0);
+    light->setMultiScene(true);
     light->setEnabled(false);
     Brakeza3D::get()->addObject3D(light, "enemyLight");
 }

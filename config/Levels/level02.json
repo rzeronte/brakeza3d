@@ -1,6 +1,6 @@
 {
   "name": "02",
-  "scene": "scene02.json",
+  "scene": "scene03.json",
   "music": "musicLevel01",
   "backgroundImage": "levels/02.png",
   "foregroundImage": "foregrounds/02.png",
