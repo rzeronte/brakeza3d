@@ -9,6 +9,7 @@
 #include "../Common/ShockWave.h"
 
 Weapon::Weapon(
+    Object3D *parent,
     const std::string& name,
     const std::string& weaponModel,
     const std::string& projectileModel,
@@ -28,14 +29,17 @@ Weapon::Weapon(
     float stopDuration,
     int type,
     bool available,
-    bool selectable
+    bool selectable,
+    RayLight *rayLight
 )
 :
+    parent(parent),
     selectable(selectable),
-    cadenceTime(cadenceTime)
+    cadenceTime(cadenceTime),
+    rayLight(rayLight)
 {
     setLabel(name);
-    setStatus(WeaponStatus::NONE);
+    setStatus(WeaponStatus::RELEASED);
 
     this->model = new Mesh3D();
     this->counterCadence = new Counter(this->cadenceTime);
@@ -89,6 +93,16 @@ void Weapon::onUpdate()
             counterStopDuration.setEnabled(false);
         }
     }
+
+    if (type == WeaponTypes::WEAPON_RAYLIGHT) {
+        if (status == WeaponStatus::RELEASED && rayLight != nullptr) {
+            rayLight->setReach(0);
+            rayLight->update(false);
+            Logging::Message("decrease: %f", rayLight->getReach());
+        } else {
+            rayLight->update(true);
+        }
+    }
 }
 
 void Weapon::stopSoundChannel() const {
@@ -98,7 +112,6 @@ void Weapon::stopSoundChannel() const {
 void Weapon::setSpeed(float value) {
     this->speed = value;
 }
-
 
 float Weapon::getDamage() const {
     return this->damage;
@@ -365,9 +378,9 @@ int Weapon::getStatus() const {
 
 void Weapon::setStatus(int value)
 {
+    Logging::Message("Change weapon %s status to %d", getLabel().c_str(), value);
     Weapon::status = value;
 }
-
 
 int Weapon::getStartAmmoAmount() const {
     return startAmmoAmount;
@@ -545,31 +558,34 @@ void Weapon::shootHologram(Object3D *parent, Vertex3D position)
     }
 }
 
-bool Weapon::shootRayLight(RayLight &rayLight, float intensity, Color color)
+bool Weapon::shootRayLight(float intensity, Color color)
 {
     if (getAmmoAmount() <= 0) return false;
 
     if (isStop() && counterStopDuration.isEnabled()) {
-        rayLight.setReach(0);
+        rayLight->setReach(0);
         return false;
     }
 
     setAmmoAmount(ammoAmount - 1);
 
-    rayLight.setColor(color);
-    rayLight.setDamage(getDamage());
-    rayLight.setEnabled(true);
-    rayLight.setIntensity(intensity);
+    rayLight->setColor(color);
+    rayLight->setDamage(getDamage());
+    rayLight->setIntensity(intensity);
 
     if (getStatus() == PRESSED) {
         ComponentsManager::get()->getComponentSound()->sound("projectileRaylight", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     }
 
-    ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
+    if (counterCadence->isFinished()) {
+        counterCadence->setEnabled(true);
+        setStatus(WeaponStatus::PRESSED);
 
-    rayLight.update();
+        ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(getType());
+        return true;
+    }
 
-    return true;
+    return false;
 }
 
 void Weapon::setLabel(const std::string &value) {
@@ -584,7 +600,22 @@ bool Weapon::isSelectable() const {
     return selectable;
 }
 
-void Weapon::setSelectable(bool selectable) {
-    Weapon::selectable = selectable;
+RayLight *Weapon::getRayLight() const {
+    return rayLight;
 }
 
+void Weapon::drawImGuiProperties()
+{
+    if (ImGui::TreeNode("Weapon Model")) {
+        model->drawImGuiProperties();
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Weapon Model Projectile")) {
+        modelProjectile->drawImGuiProperties();
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Weapon RayLight")) {
+        rayLight->drawImGuiProperties();
+        ImGui::TreePop();
+    }
+}

@@ -271,7 +271,6 @@ void ComponentHUD::drawShaderLasers()
 
     const int startPositionX = this->offsetX + 60.0f;
     const int width = 195.0f;
-    const float stroke = 0.0015f;
     const float topBarMargin = 5;
 
     // stamina
@@ -279,7 +278,9 @@ void ComponentHUD::drawShaderLasers()
         glm::vec2(startPositionX, offsetY + topBarMargin),
         glm::vec2(startPositionX + (int) (width * health), offsetY + topBarMargin),
         PaletteColors::getStamina().toGLM(),
-        stroke
+        strokeBars,
+        intensityBars,
+        0.05f
     );
 
     // energy
@@ -287,7 +288,9 @@ void ComponentHUD::drawShaderLasers()
         glm::vec2(startPositionX, this->offsetY + playerBarSeparation + topBarMargin),
         glm::vec2(startPositionX + (int) (width * energy), this->offsetY + playerBarSeparation + topBarMargin),
         PaletteColors::getEnergy().toGLM(),
-        stroke
+        strokeBars,
+        intensityBars,
+        0.05f
     );
 
     // Enemy stamina
@@ -304,7 +307,9 @@ void ComponentHUD::drawShaderLasers()
             glm::vec2(positionLaserX, positionLaserY),
             glm::vec2(positionLaserX - (int)(width * enemyHealth), positionLaserY),
             PaletteColors::getStamina().toGLM(),
-            stroke
+            strokeBars,
+            intensityBars,
+            0.05f
         );
     }
 }

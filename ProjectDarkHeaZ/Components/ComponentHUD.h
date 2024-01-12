@@ -63,6 +63,8 @@ public:
 
     int offsetX = 300;
     int offsetY = 660;
+    float strokeBars = 10.0f;
+    float intensityBars = 0.002f;
 };
 
 

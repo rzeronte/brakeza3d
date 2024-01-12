@@ -16,7 +16,6 @@
 
 class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy, public LivingObject, public RotatableToTarget {
 private:
-    RayLight rayLight;
     Counter counterStuck;
     AmmoProjectileBodyEmitter *projectileEmitter;
 
@@ -82,8 +81,6 @@ public:
     void die();
 
     std::vector<EnemyDialog *> &getDialogs();
-
-    void tryShoot();
 
     void drawImGuiProperties() override;
 };

@@ -24,18 +24,6 @@ Player::Player()
     weapon(nullptr),
     counterStucked(Counter(5)),
     counterDashCadence(Counter(1)),
-    rayLight(RayLight(
-        false,
-        this,
-        this->AxisDown().getNormalize(),
-        this->AxisDown().getScaled(0.1),
-        500,
-        0,
-        Color::green(),
-        Color::orange(),
-        EngineSetup::collisionGroups::Projectile,
-        EngineSetup::collisionGroups::Enemy
-    )),
     killsCounter(0),
     energyShieldEnabled(false),
     allowEnergyShield(false),
@@ -57,10 +45,11 @@ Player::Player()
     setMultiScene(true);
 
     light = LightPoint3D::base();
+    light->setLabel("PlayerLightPoint");
     light->setMultiScene(true);
     light->setRotation(180, 0, 0);
     light->setEnabled(false);
-    Brakeza3D::get()->addObject3D(light, "playerLight");
+    attachObject(light);
 
     particleEngineLeft = new ParticleEmitter(
         ParticleEmitterState::DEFAULT,
@@ -83,7 +72,8 @@ Player::Player()
 
     spriteEnergyShield->setEnabled(false);
     spriteEnergyShield->setMultiScene(true);
-    Brakeza3D::get()->addObject3D(spriteEnergyShield, "playerSpriteEnergyShield");
+    spriteEnergyShield->setLabel("playerSpriteEnergyShield");
+    attachObject(spriteEnergyShield);
 }
 
 void Player::loadSatellite()
@@ -184,7 +174,7 @@ void Player::shoot(float intensity)
                 getPosition(),
                 AxisUp().getScaled(projectileStartOffsetPosition),
                 AxisUp().getInverse(),
-                0.001f,
+                0.00075f,
                 true,
                 PaletteColors::getPlayerLaser(),
                 EngineSetup::collisionGroups::Projectile,
@@ -211,12 +201,7 @@ void Player::shoot(float intensity)
             break;
         }
         case WeaponTypes::WEAPON_RAYLIGHT: {
-            rayLight.updateDirection(
-                rayLight.getParent()->AxisDown().getNormalize(),
-                rayLight.getParent()->AxisUp().getScaled(-1.3f)
-            );
-
-            weapon->shootRayLight(rayLight, 0.005, PaletteColors::getPlayerRay());
+            weapon->shootRayLight(0.00075f, PaletteColors::getPlayerRay());
             getWeaponLight()->setColor(PaletteColors::getPlayerRayLight());
             initLight();
             break;
@@ -247,9 +232,8 @@ void Player::onUpdate()
 {
     Mesh3D::onUpdate();
 
-    updateWeaponInteractionStatus();
-
     counterLight.update();
+
     if (counterLight.isFinished()) {
         light->setEnabled(false);
         counterLight.setEnabled(false);
@@ -360,12 +344,6 @@ void Player::updateShaderParticles()
     particleEngineLeft->onUpdate();
     particleEngineLeft->setPosition(getPosition() + particlesEngineLeftOffset - AxisUp().getScaled(-1));
     particleEngineLeft->setRotation(getRotation());
-
-    /*shaderParticlesTwo->update(
-        getPosition() - AxisUp().getScaled(-1) + AxisLeft().getScaled(2),
-        AxisUp(),
-        (velocity.getModule() / maxVelocity) + 0.1f
-    );*/
 }
 
 void Player::postUpdate()
@@ -742,33 +720,6 @@ void Player::setEnabled(bool value)
     Object3D::setEnabled(value);
 }
 
-void Player::updateWeaponInteractionStatus() const
-{
-    auto componentInput = ComponentsManager::get()->getComponentInput();
-    auto componentGameInput = ComponentsManager::get()->getComponentGameInput();
-    auto weaponStatus = getWeapon()->getStatus();
-
-    if (weaponStatus == WeaponStatus::SUSTAINED && componentInput->getControllerAxisTriggerRight() < componentGameInput->getControllerAxisThreshold()) {
-        getWeapon()->setStatus(WeaponStatus::RELEASED);
-    }
-
-    if (weaponStatus == WeaponStatus::NONE && componentInput->getControllerAxisTriggerRight() >= componentGameInput->getControllerAxisThreshold()) {
-        getWeapon()->setStatus(WeaponStatus::PRESSED);
-    }
-}
-
-void Player::updateWeaponAutomaticStatus()
-{
-    if (getWeapon()->getStatus() == PRESSED) {
-        getWeapon()->setStatus(SUSTAINED);
-    }
-
-    if (getWeapon()->getStatus() == RELEASED) {
-        rayLight.resetReach();
-        getWeapon()->setStatus(NONE);
-    }
-}
-
 LightPoint3D *Player::getWeaponLight() const {
     return light;
 }
@@ -852,10 +803,6 @@ void Player::makeRandomPlayerDamageSound()
     ComponentsManager::get()->getComponentSound()->sound(randomMetalSound, EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
 
-RayLight &Player::getRayLight() {
-    return rayLight;
-}
-
 void Player::initLight()
 {
     counterLight.setEnabled(true);
@@ -883,7 +830,12 @@ void Player::drawImGuiProperties()
             ImGui::TreePop();
         }
 
-        if (ImGui::TreeNode("Engine Left")) {
+        if (ImGui::TreeNode("Weapon")) {
+            getWeapon()->drawImGuiProperties();
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNode("ParticlesEngine")) {
             particleEngineLeft->drawImGuiProperties();
 
             ImGui::Separator();

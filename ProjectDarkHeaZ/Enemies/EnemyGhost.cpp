@@ -3,21 +3,10 @@
 #include "../../include/Brakeza3D.h"
 #include "../Common/ShockWave.h"
 
-EnemyGhost::EnemyGhost() :
+EnemyGhost::EnemyGhost()
+:
     LivingObject(this),
     RotatableToTarget(ComponentsManager::get()->getComponentGame()->getPlayer(), this, 1.0f),
-    rayLight(RayLight(
-        false,
-        this,
-        this->AxisUp().getNormalize(),
-        this->AxisUp().getScaled(1100),
-        150,
-        0,
-        PaletteColors::getEnemyRayLight(),
-        Color(212, 160, 0),
-        EngineSetup::collisionGroups::ProjectileEnemy,
-        EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::Enemy
-    )),
     counterStuck(Counter(5)),
     projectileEmitter(nullptr),
     particleEmitter (new ParticleEmitter(
@@ -54,10 +43,6 @@ void EnemyGhost::onUpdate()
         rotateToTarget();
     }
 
-    if (getWeapon() != nullptr) {
-        getWeapon()->onUpdate();
-    }
-
     if (getState() == EnemyState::ENEMY_STATE_DIE) {
         handleDie();
     }
@@ -73,7 +58,22 @@ void EnemyGhost::onUpdate()
 
     auto componentGame = ComponentsManager::get()->getComponentGame();
 
-    tryShoot();
+    auto playerState = componentGame->getPlayer()->getState();
+
+    if (state != EnemyState::ENEMY_STATE_DIE &&
+        (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE) &&
+        componentGame->getGameState() == EngineSetup::GAMING
+        ) {
+        if (projectileEmitter != nullptr) {
+            projectileEmitter->setPosition(getPosition());
+            projectileEmitter->onUpdate();
+        }
+        shoot(getTarget());
+    }
+
+    if (getWeapon() != nullptr) {
+        getWeapon()->onUpdate();
+    }
 
     updateLasers();
 
@@ -124,11 +124,6 @@ void EnemyGhost::onDrawHostBuffer()
     Mesh3D::onDrawHostBuffer();
 
     if (isStuck()) {
-        /*Drawable::drawLightning(
-            getPosition() + Tools::randomVertex().getScaled(4),
-            getPosition() + Tools::randomVertex().getScaled(5),
-            PaletteColors::getEnemyLighting()
-        );*/
         counterStuck.update();
         if (counterStuck.isFinished()) {
             unstuck();
@@ -293,6 +288,9 @@ void EnemyGhost::shoot(Object3D *target)
     Vertex3D direction = way.getComponent().getNormalize();
     Vertex3D positionProjectile = getPosition() + AxisUp().getScaled(0.01);
 
+    if (weapon->getCounterCadence()->isFinished()) {
+        weapon->setStatus(RELEASED);
+    }
     switch(weapon->getType()) {
         case WeaponTypes::WEAPON_PROJECTILE: {
             bool shootResult = weapon->shootProjectile(
@@ -339,7 +337,7 @@ void EnemyGhost::shoot(Object3D *target)
         case WeaponTypes::SHOCK: {
             auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
 
-            if (getPosition().distance(player->getPosition()) < 5000) {
+            if (getPosition().distance(player->getPosition()) < 3) {
 
                 if (player->getState() == PlayerState::GETTING_DAMAGE || player->getState() == PlayerState::DEAD) {
                     break;
@@ -347,16 +345,10 @@ void EnemyGhost::shoot(Object3D *target)
 
                 player->makeStuck(4.0);
             }
-
             break;
         }
         case WeaponTypes::WEAPON_RAYLIGHT: {
-            rayLight.setEnabled(true);
-            rayLight.updateDirection(
-                rayLight.getParent()->AxisDown().getNormalize(),
-                rayLight.getParent()->AxisDown().getScaled(0.01)
-            );
-            bool shootResult = weapon->shootRayLight(rayLight, 0.001f, PaletteColors::getEnemyLaser());
+            bool shootResult = weapon->shootRayLight(0.00075f, PaletteColors::getEnemyLaser());
             if (shootResult) {
                 getLight()->setColor(PaletteColors::getEnemyRayLight());
                 initLight();
@@ -429,7 +421,7 @@ void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 
 void EnemyGhost::takeDamage(float damageTaken)
 {
-    this->stamina -= damageTaken;
+    //this->stamina -= damageTaken;
     if (this->stamina <= 0) {
         die();
     }
@@ -448,7 +440,9 @@ void EnemyGhost::die()
 void EnemyGhost::initLight()
 {
     counterLight.setEnabled(true);
-    light->setEnabled(true);
+    if (light != nullptr) {
+        light->setEnabled(true);
+    }
 }
 
 void EnemyGhost::updateLight()
@@ -462,24 +456,6 @@ void EnemyGhost::setSwarmObject(SwarmObject *o) {
 
 std::vector<EnemyDialog *> &EnemyGhost::getDialogs() {
     return dialogs;
-}
-
-void EnemyGhost::tryShoot()
-{
-    auto componentGame = ComponentsManager::get()->getComponentGame();
-    auto playerState = componentGame->getPlayer()->getState();
-
-    if (
-        state != EnemyState::ENEMY_STATE_DIE &&
-        (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE) &&
-        componentGame->getGameState() == EngineSetup::GAMING
-    ) {
-        if (projectileEmitter != nullptr) {
-            projectileEmitter->setPosition(getPosition());
-            projectileEmitter->onUpdate();
-        }
-        shoot(getTarget());
-    }
 }
 
 void EnemyGhost::drawImGuiProperties()

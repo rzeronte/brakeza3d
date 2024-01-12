@@ -30,8 +30,17 @@ ShaderOpenGLLineLaser::ShaderOpenGLLineLaser()
     maskIntensityUniform = glGetUniformLocation(programID, "maskIntensity");
 }
 
-void ShaderOpenGLLineLaser::render(GLuint textureMaskID, Point2D a, Point2D b, Color c, float weight, GLuint framebuffer)
-{
+void ShaderOpenGLLineLaser::render(
+    GLuint textureMaskID,
+    Point2D a,
+    Point2D b,
+    glm::vec2 direction,
+    Color c,
+    float speed,
+    float weight,
+    float intensity,
+    GLuint framebuffer
+) {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
     glUseProgram(programID);
@@ -57,9 +66,9 @@ void ShaderOpenGLLineLaser::render(GLuint textureMaskID, Point2D a, Point2D b, C
     setVec4Uniform(lineColorUniform, glm::vec4(c.r, c.g, c.b, 1.0f));
     setFloatUniform(weightUniform, weight);
     setFloatUniform(timeUniform, Brakeza3D::get()->getExecutionTime());
-    setVec2Uniform(maskDirectionUniform, start - end);
-    setFloatUniform(maskSpeedUniform, 0.5f);
-    setFloatUniform(maskIntensityUniform, 1.0f);
+    setVec2Uniform(maskDirectionUniform, direction);
+    setFloatUniform(maskSpeedUniform, speed);
+    setFloatUniform(maskIntensityUniform, intensity);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureMaskID);

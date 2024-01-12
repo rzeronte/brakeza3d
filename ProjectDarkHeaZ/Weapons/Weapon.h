@@ -21,6 +21,7 @@ enum WeaponTypes {
 
 class Weapon {
 private:
+    Object3D *parent;
     bool available;
     bool selectable;
     int status;
@@ -28,8 +29,6 @@ private:
     int soundChannel;
 
     std::string label;
-
-    Mesh3D *modelProjectile;
 
     int ammoAmount;
     int startAmmoAmount;
@@ -51,10 +50,12 @@ private:
     float speed;
 
     Image *icon;
-
     Mesh3D *model;
+    Mesh3D *modelProjectile;
+    RayLight *rayLight;
 public:
     Weapon(
+        Object3D *parent,
         const std::string& name,
         const std::string& weaponModel,
         const std::string& projectileModel,
@@ -74,7 +75,8 @@ public:
         float stopDuration,
         int type,
         bool available,
-        bool selectable
+        bool selectable,
+        RayLight *rayLight
     );
 
     void onUpdate();
@@ -151,7 +153,7 @@ public:
 
     void shootShield(Object3D *parent, Vertex3D position);
 
-    bool shootRayLight(RayLight &rayLight, float intensity, Color color);
+    bool shootRayLight(float intensity, Color color);
 
     void setLabel(const std::string &value);
 
@@ -193,9 +195,11 @@ public:
 
     void shootHologram(Object3D *parent, Vertex3D position);
 
-    bool isSelectable() const;
+    [[nodiscard]] bool isSelectable() const;
 
-    void setSelectable(bool selectable);
+    [[nodiscard]] RayLight *getRayLight() const;
+
+    void drawImGuiProperties();
 };
 
 

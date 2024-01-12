@@ -227,7 +227,7 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     cJSON_Delete(jsonContentFile);
 }
 
-Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
+Weapon *LevelLoader::parseWeaponJSON(Object3D *parent, cJSON *weaponJson, bool isPlayer)
 {
     int index = cJSON_GetObjectItemCaseSensitive(weaponJson, "index")->valueint;
 
@@ -237,8 +237,42 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
     if (cJSON_GetObjectItemCaseSensitive(weaponJson, "selectable") != nullptr) {
         selectable = (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "selectable")->valueint;
     }
+    auto type = cJSON_GetObjectItemCaseSensitive(weaponJson, "type")->valueint;
+
+    RayLight *rayLight = nullptr;
+
+    if (type == WeaponTypes::WEAPON_RAYLIGHT) {
+        if (isPlayer) {
+            rayLight = new RayLight(
+                true,
+                parent,
+                parent->AxisDown().getNormalize(),
+                parent->AxisDown().getScaled(0.1),
+                500,
+                0,
+                Color::green(),
+                Color::green(),
+                EngineSetup::collisionGroups::Projectile,
+                EngineSetup::collisionGroups::Enemy
+            );
+        } else {
+            rayLight = new RayLight(
+                true,
+                parent,
+                parent->AxisDown().getNormalize(),
+                parent->AxisDown().getScaled(0.1),
+                500,
+                0,
+                Color::red(),
+                Color::orange(),
+                EngineSetup::collisionGroups::ProjectileEnemy,
+                EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::Enemy
+            );
+        }
+    }
 
     return new Weapon(
+        parent,
         cJSON_GetObjectItemCaseSensitive(weaponJson, "name")->valuestring,
         std::string(EngineSetup::get()->MODELS_FOLDER + cJSON_GetObjectItemCaseSensitive(weaponJson, "model")->valuestring),
         std::string(EngineSetup::get()->MODELS_FOLDER + cJSON_GetObjectItemCaseSensitive(weaponJson, "modelProjectile")->valuestring),
@@ -256,9 +290,10 @@ Weapon *LevelLoader::parseWeaponJSON(cJSON *weaponJson)
         (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "stop")->valueint,
         (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopEvery")->valuedouble,
         (float) cJSON_GetObjectItemCaseSensitive(weaponJson, "stopDuration")->valuedouble,
-        cJSON_GetObjectItemCaseSensitive(weaponJson, "type")->valueint,
+        type,
         (bool) cJSON_GetObjectItemCaseSensitive(weaponJson, "available")->valueint,
-        selectable
+        selectable,
+        rayLight
     );
 }
 
@@ -470,7 +505,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     enemy->setSoundChannel((int) enemiesEmitter.size() + 2);
 
     if (weapon != nullptr) {
-        auto weaponType = parseWeaponJSON(weapon);
+        auto weaponType = parseWeaponJSON(enemy, weapon, false);
         weaponType->setSoundChannel(enemy->getSoundChannel());
         enemy->setWeapon(weaponType);
     }

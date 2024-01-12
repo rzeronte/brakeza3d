@@ -156,6 +156,7 @@ void ComponentGame::preUpdate()
 void ComponentGame::onUpdate()
 {
     updateFadeToGameState();
+    updateShaders();
 
     const float alpha = 1 - getFadeToGameState()->getProgress();
     textWriter->setAlpha(alpha);
@@ -217,9 +218,7 @@ void ComponentGame::onUpdate()
 
 void ComponentGame::postUpdate()
 {
-    player->updateWeaponAutomaticStatus();
     addRayLightsToShaderLaserLine();
-    updateShaders();
 }
 
 void ComponentGame::handleOnUpdateTutorialImages(float alpha)
@@ -884,7 +883,7 @@ void ComponentGame::loadWeapons()
 
     cJSON *currentWeapon;
     cJSON_ArrayForEach(currentWeapon, cJSON_GetObjectItemCaseSensitive(myDataJSON, "weapons")) {
-        auto weapon = getLevelLoader()->parseWeaponJSON(currentWeapon);
+        auto weapon = LevelLoader::parseWeaponJSON(player, currentWeapon, true);
         weapon->setSoundChannel(1);
         weapons.push_back(weapon);
     }
@@ -997,6 +996,7 @@ void ComponentGame::shaderBackgroundUpdate()
 
         shaderBackgroundImage->update(vel.y, vel.x);
         shaderForegroundImage->update(vel.y * 0.5f, vel.x * 0.5f);
+        ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->getDirectionalLight()->direction += glm::vec3(vel.x * 15, vel.y * 15, 0);
     }
 }
 
@@ -1070,7 +1070,6 @@ void ComponentGame::handlePressNewLevelKeyGameState()
 
     getPlayer()->respawn();
     getPlayer()->setEnabled(true);
-    getPlayer()->getRayLight().setEnabled(false);
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
 
     shaderBackgroundImage->resetOffsets();

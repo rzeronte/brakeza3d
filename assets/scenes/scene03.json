@@ -189,18 +189,7 @@
 			"shaders":	[],
 			"type":	"Mesh3D"
 		}],
-	"shaders":	[{
-			"name":	"../GLSL/Custom.fs",
-			"types":	[{
-					"name":	"test1",
-					"type":	"int",
-					"value":	24
-				}, {
-					"name":	"test2",
-					"type":	"float",
-					"value":	4.3000001907348633
-				}]
-		}],
+	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{

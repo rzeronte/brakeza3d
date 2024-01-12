@@ -55,14 +55,18 @@ void SalvageSpaceship::onUpdate()
             glm::vec2(startPositionX, startPositionY + topBarMargin),
             glm::vec2(startPositionX + (int) (width * progress), startPositionY + topBarMargin),
             PaletteColors::getStamina().toGLM(),
-            stroke
+            stroke,
+            0.5f,
+            0.5f
         );
 
         shader->addLaser(
             glm::vec2(startPositionX, startPositionY + topBarMargin),
             glm::vec2(startPositionX + (int) (width * 1), startPositionY + topBarMargin),
             PaletteColors::getPressKeyToContinue().toGLM(),
-            stroke
+            stroke,
+            0.5f,
+            0.5f
         );
 
     }

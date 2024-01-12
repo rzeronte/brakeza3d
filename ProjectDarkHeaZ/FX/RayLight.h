@@ -10,6 +10,7 @@
 #include "../../include/Misc/Image.h"
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Objects/LightPoint3D.h"
+#include "../../include/Objects/ParticleEmitter.h"
 
 class RayLight {
 private:
@@ -21,24 +22,23 @@ private:
     float damage;
 
     Color color;
+    Color hit;
     Object3D* parent;
 
     Vertex3D direction;
     Vertex3D startOffset;
 
     btCollisionWorld::ClosestRayResultCallback *rayCallback;
-    LightPoint3D *light;
+    ParticleEmitter *particles;
 
 public:
     explicit RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D startOffset, float speed, float damage, Color c, Color hit, int filterGroup, int filterMask);
 
-    void update();
+    void update(bool increase);
 
     void updateDirection(Vertex3D direction, Vertex3D startOffset);
 
     void setIntensity(float intensity);
-
-    void resetReach();
 
     void setDamage(float damage);
 
@@ -54,11 +54,13 @@ public:
 
     void setDirection(Vertex3D direction);
 
-    [[nodiscard]] Object3D *getParent() const;
-
     void setReach(float reach);
 
     virtual ~RayLight();
+
+    [[nodiscard]] float getReach() const;
+
+    void drawImGuiProperties();
 };
 
 

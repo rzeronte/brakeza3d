@@ -3,7 +3,18 @@
 #include "../../include/Brakeza3D.h"
 #include "../Items/ItemShieldGhost.h"
 
-RayLight::RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D startOffset, float speed, float damage, Color c, Color hit, int filterGroup, int filterMask)
+RayLight::RayLight(
+    bool enabled,
+    Object3D *parent,
+    Vertex3D direction,
+    Vertex3D startOffset,
+    float speed,
+    float damage,
+    Color c,
+    Color hit,
+    int filterGroup,
+    int filterMask
+)
 :
     enabled(enabled),
     intensity(0),
@@ -11,6 +22,7 @@ RayLight::RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D 
     speed(speed),
     damage(damage),
     color(c),
+    hit(hit),
     parent(parent),
     direction(direction),
     startOffset(startOffset)
@@ -23,23 +35,27 @@ RayLight::RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D 
     rayCallback->m_collisionFilterGroup = filterGroup;
     rayCallback->m_collisionFilterMask = filterMask;
 
-    light = LightPoint3D::base();
-    light->setMultiScene(true);
-    light->setRotation(180, 0, 0);
-    light->setEnabled(false);
-    Brakeza3D::get()->addObject3D(light, Brakeza3D::uniqueObjectLabel("rayLightPoint"));
+    particles = new ParticleEmitter(
+            ParticleEmitterState::DEFAULT,
+        nullptr,
+        parent->getPosition(),
+        9999,
+        Color::red(),
+            Color::yellow(),
+        OCParticlesContext::forPlayerEngine()
+    );
 }
 
 RayLight::~RayLight()
 {
-    light->setRemoved(true);
+    delete particles;
 }
 
-void RayLight::update()
+void RayLight::update(bool increase)
 {
-    if (!isEnabled()) return;
+    updateDirection(parent->AxisDown().getNormalize(),parent->AxisUp().getScaled(-1.3f));
 
-    light->setEnabled(false);
+    particles->onUpdate();
 
     auto game = ComponentsManager::get()->getComponentGame();
 
@@ -58,8 +74,6 @@ void RayLight::update()
         *rayCallback
     );
 
-    bool increase = true;
-
     if (rayCallback->hasHit()) {
         auto *brkObjectA = (Collisionable *) rayCallback->m_collisionObject->getUserPointer();
 
@@ -68,9 +82,10 @@ void RayLight::update()
         auto *player = dynamic_cast<Player*> (brkObjectA);
         auto *bomb = dynamic_cast<ItemShieldGhost*> (brkObjectA);
 
+        btVector3 rayHitPosition = rayCallback->m_hitPointWorld;
+        auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
+
         if (object != this->parent) {
-            btVector3 rayHitPosition = rayCallback->m_hitPointWorld;
-            auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
             auto dt = Brakeza3D::get()->getDeltaTime() * 50;
 
             if (player != nullptr) {
@@ -78,19 +93,19 @@ void RayLight::update()
 
                 player->takeDamage(damage * dt );
                 increase = false;
-
-                light->setEnabled(true);
-                light->setPosition(hitPosition + Vertex3D(0, 0, -1));
-                light->onUpdate();
+                game->getShaderLasers()->addLaser(
+                    glm::vec2(middlePoint.x, middlePoint.y),
+                    glm::vec2(middlePoint.x, middlePoint.y),
+                    hit.toGLM(),
+                    12.0f,
+                    intensity,
+                    1.25f
+                );
             }
 
             if (bomb != nullptr) {
                 middlePoint = Transforms::WorldToPoint(hitPosition);
                 increase = false;
-
-                light->setEnabled(true);
-                light->setPosition(hitPosition + Vertex3D(0, 0, -1000));
-                light->onUpdate();
             }
 
             if (enemy != nullptr) {
@@ -100,12 +115,20 @@ void RayLight::update()
                 enemy->takeDamage(damage * dt);
                 increase = false;
 
-                light->setEnabled(true);
-                light->setPosition(hitPosition + Vertex3D(0, 0, -1));
-                light->onUpdate();
+                game->getShaderLasers()->addLaser(
+                    glm::vec2(middlePoint.x, middlePoint.y),
+                    glm::vec2(middlePoint.x, middlePoint.y),
+                    hit.toGLM(),
+                    12.0f,
+                    intensity,
+                    5.0f
+                );
             }
         }
+        end = hitPosition;
     }
+
+    particles->setPosition(end);
 
     if (increase) {
         increaseReach();
@@ -115,7 +138,9 @@ void RayLight::update()
         glm::vec2(screenPoint.x, screenPoint.y),
         glm::vec2(middlePoint.x, middlePoint.y),
         color.toGLM(),
-        intensity
+        10.0f,
+        intensity,
+        0.25f
     );
 
     if (EngineSetup::get()->BULLET_DEBUG_MODE) {
@@ -128,10 +153,6 @@ void RayLight::update()
 
 void RayLight::setIntensity(float value) {
     RayLight::intensity = value;
-}
-
-void RayLight::resetReach() {
-    this->reach = 0;
 }
 
 void RayLight::setDamage(float value) {
@@ -148,7 +169,6 @@ bool RayLight::isEnabled() const {
 
 void RayLight::setEnabled(bool enabled) {
     RayLight::enabled = enabled;
-    light->setEnabled(false);
 }
 
 void RayLight::setColor(const Color &color) {
@@ -169,10 +189,15 @@ void RayLight::updateDirection(Vertex3D direction, Vertex3D startsOffset)
     this->startOffset = startsOffset;
 }
 
-Object3D *RayLight::getParent() const {
-    return parent;
-}
-
 void RayLight::setReach(float value) {
     reach = value;
+}
+
+float RayLight::getReach() const {
+    return reach;
+}
+
+void RayLight::drawImGuiProperties()
+{
+    particles->drawImGuiProperties();
 }

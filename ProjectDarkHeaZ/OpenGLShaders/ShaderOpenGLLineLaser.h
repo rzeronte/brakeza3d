@@ -25,7 +25,7 @@ class ShaderOpenGLLineLaser : public ShaderOpenGL, public ShaderQuadOpenGL  {
 public:
     ShaderOpenGLLineLaser();
 
-    void render(GLuint textureMaskID, Point2D a, Point2D b, Color c, float weight, GLuint framebuffer);
+    void render(GLuint textureMaskID, Point2D a, Point2D b, glm::vec2 direction, Color c, float speed, float weight, float intensity, GLuint framebuffer);
 
     void destroy() override;
 
