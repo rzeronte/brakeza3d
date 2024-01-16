@@ -23,7 +23,6 @@
 #define ENERGY_DELTATIME_COST 5.0f
 #define INITIAL_FRICTION 5
 #define INITIAL_MAX_VELOCITY 5
-#define PLAYER_ROTATION_TARGET_SPEED 1.5
 
 typedef enum {
     EMPTY = -1,
@@ -52,8 +51,10 @@ private:
 
     Vertex3D velocity;
     Weapon *weapon;
+
     Counter counterStucked;
     Counter counterDashCadence;
+    Counter counterLight;
 
     int killsCounter;
     bool energyShieldEnabled;
@@ -61,14 +62,13 @@ private:
     bool allowEnergyShield;
 
     LightPoint3D *light;
-    Counter counterLight;
 
     Vertex3D lightPositionOffset;
     Vertex3D particlesEngineLeftOffset;
 
     PlayerState state;
 
-    std::vector<Weapon *> weaponTypes;
+    std::vector<Weapon *> weapons;
     int currentWeaponIndex;
 
     PlayerSatellite satellite;
@@ -76,6 +76,8 @@ private:
     ParticleEmitter *particleEngineLeft;
 
     Image *avatar;
+    std::vector<Image *> damages;
+
     FXEnergyShield *shaderEnergyShield;
     Sprite2D *spriteEnergyShield;
 
@@ -211,6 +213,10 @@ public:
     void updateSpriteEnergyShield();
 
     void drawImGuiProperties();
+
+    static void shiftCamera();
+
+    Image *randomDamage();
 };
 
 

@@ -19,7 +19,6 @@ private:
     std::vector<Button*> buttons;
     FXLaser *shaderLasers;
     TexturePackage *HUDTextures;
-    int playerBarSeparation = 15;
 public:
     ComponentHUD();
 
@@ -61,8 +60,18 @@ public:
 
     void drawEnemyIconAndName();
 
-    int offsetX = 300;
-    int offsetY = 660;
+    Point2D globalOffset;
+    Point2D offsetIcons;
+    Point2D iconHealthOffset;
+    Point2D iconEnergyOffset;
+    Point2D resourcesOffset;
+
+    Point2D staminaOffset;
+    Point2D energyOffset;
+    Point2D staminaEnemyOffset;
+
+    Point2D avatarEnemyOffset;
+
     float strokeBars = 10.0f;
     float intensityBars = 0.002f;
 };

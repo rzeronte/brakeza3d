@@ -402,7 +402,7 @@ ItemEnergyGhost* LevelLoader::makeItemEnergyGhost(Vertex3D position)
 
 ItemWeaponGhost* LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
 {
-    auto weapons = ComponentsManager::get()->getComponentGame()->getWeapons();
+    auto weapons = ComponentsManager::get()->getComponentGame()->getLevelLoader()->getWeapons();
 
     bool frameBox = false;
     if (indexWeapon == WEAPON_SHIELD || indexWeapon == WEAPON_REFLECTION || indexWeapon == WEAPON_BOMB) {
@@ -960,7 +960,7 @@ SalvageSpaceship* LevelLoader::makeSalvageSpaceship(Vertex3D position)
     return salvage;
 }
 
-void LevelLoader::loadConfig()
+void LevelLoader::LoadConfig()
 {
     Logging::head("Loading Project DarkHeaZ (%s)", "project-darkheaz.json");
 
@@ -1016,4 +1016,52 @@ EnemyDialog *LevelLoader::getMainMessage(){
 
 void LevelLoader::setLevelScene(const std::string &levelScene) {
     LevelLoader::levelScene = levelScene;
+}
+
+void LevelLoader::LoadJSONWeapons()
+{
+    std::string sndPath = EngineSetup::get()->SOUNDS_FOLDER;
+    std::string filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_WEAPONS;
+
+    Logging::Message("Loading weapons from file %s", filePath.c_str());
+
+    size_t file_size;
+    auto contentFile = Tools::readFile(filePath, file_size);
+
+    cJSON *myDataJSON = cJSON_Parse(contentFile);
+
+    if (myDataJSON == nullptr) {
+        Logging::Message("[Load Weapons] Can't be loaded: %s", filePath.c_str());
+        exit(-1);
+    }
+
+    auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
+
+    cJSON *currentWeapon;
+    cJSON_ArrayForEach(currentWeapon, cJSON_GetObjectItemCaseSensitive(myDataJSON, "weapons")) {
+        auto weapon = LevelLoader::parseWeaponJSON(player, currentWeapon, true);
+        weapon->setSoundChannel(1);
+        weapons.push_back(weapon);
+    }
+
+    for (auto weapon : weapons) {
+        player->addWeapon(weapon);
+    }
+
+    player->setWeaponTypeByIndex(0);
+
+    free (contentFile);
+    cJSON_Delete(myDataJSON);
+}
+
+const std::vector<Weapon *> &LevelLoader::getWeapons() const
+{
+    return weapons;
+}
+
+LevelLoader::~LevelLoader()
+{
+    for (auto weapon: weapons) {
+        delete weapon;
+    }
 }

@@ -14,7 +14,7 @@
       "avatarHud": "avatars/shuttle.png",
       "position": { "x": 5, "y": 40},
       "model": "spaceships/Pancake.fbx",
-      "size": { "x": 1000, "y": 1000,  "z": 600 },
+      "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
@@ -32,7 +32,7 @@
         "damage": 10,
         "amount": 999,
         "startAmount": 1000,
-        "speed": 250,
+        "speed": 0.1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.35,
@@ -45,7 +45,7 @@
         "model": "item_weapon_01.fbx",
         "flatTexture": true,
         "enableLights": false,
-        "color": { "r": 144, "g": 255, "b": 0 }
+        "color": { "r": 255, "g": 255, "b": 0 }
       },
       "emitter": {
         "rotation": { "x": 90, "y": 0, "z": 0 },
@@ -55,7 +55,7 @@
         "stop": false,
         "stopDuration": 0,
         "stopEvery": 9,
-        "color": { "r": 144, "g": 0, "b": 0 }
+        "color": { "r": 255, "g": 255, "b": 0 }
       }
     },
     {
@@ -64,7 +64,7 @@
       "avatarHud": "avatars/shuttle.png",
       "position": { "x": 95, "y": 40 },
       "model": "spaceships/Pancake.fbx",
-      "size": { "x": 1000, "y": 1000,  "z": 600 },
+      "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
@@ -82,7 +82,7 @@
         "damage": 10,
         "amount": 999,
         "startAmount": 1000,
-        "speed": 250,
+        "speed": 0.1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.35,
@@ -95,7 +95,7 @@
         "model": "item_weapon_01.fbx",
         "flatTexture": true,
         "enableLights": false,
-        "color": { "r": 144, "g": 255, "b": 0 }
+        "color": { "r": 255, "g": 0, "b": 0 }
       },
       "emitter": {
         "rotation": { "x": 90, "y": 0, "z": 0 },
@@ -105,15 +105,16 @@
         "stop": false,
         "stopDuration": 0,
         "stopEvery": 9,
-        "color": { "r": 144, "g": 0, "b": 0 }
+        "color": { "r": 255, "g": 255, "b": 0 }
       }
     },
     {
       "name": "Shocker",
       "avatar": "avatars/imperial.png",
       "avatarHud": "avatars/shuttle.png",
-      "position": { "x": 50,  "y": 10 },
+      "position": { "x": 50,  "y": 15 },
       "model": "spaceships/Imperial.fbx",
+      "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
       "animated": true,
       "stamina": 1500,
@@ -128,7 +129,7 @@
         "damage": 20,
         "amount": 1000,
         "startAmount": 10000,
-        "speed": 500,
+        "speed": 1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.50,
@@ -150,6 +151,7 @@
       "avatarHud": "avatars/shuttle.png",
       "position": { "x": 50,  "y": 50 },
       "model": "energy_ball.fbx",
+      "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
       "animated": true,
       "stamina": 600,
@@ -161,9 +163,9 @@
       "lasers": [
         {
           "damage": 30,
-          "length": 3000,
+          "length": 3,
           "direction": { "x": 1, "y": 0, "z": 0 },
-          "color": { "r": 144, "g": 0, "b": 0 }
+          "color": { "r": 255, "g": 0, "b": 0 }
         }
       ],
       "weapon": {
@@ -173,7 +175,7 @@
         "damage": 20,
         "amount": 999,
         "startAmount": 100,
-        "speed": 500,
+        "speed": 1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 1.0,
@@ -195,6 +197,7 @@
       "avatarHud": "avatars/shuttle.png",
       "position": { "x": 20,  "y": 70 },
       "model": "energy_ball.fbx",
+      "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
       "animated": true,
       "stamina": 600,
@@ -206,9 +209,9 @@
       "lasers": [
         {
           "damage": 30,
-          "length": 3000,
+          "length": 3,
           "direction": { "x": 1, "y": 0, "z": 0 },
-          "color": { "r": 144, "g": 0, "b": 0 }
+          "color": { "r": 255, "g": 0, "b": 0 }
         }
       ],
       "weapon": {
@@ -218,7 +221,7 @@
         "damage": 20,
         "amount": 999,
         "startAmount": 100,
-        "speed": 500,
+        "speed": 1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 1.0,
@@ -240,6 +243,7 @@
       "avatarHud": "avatars/shuttle.png",
       "position": { "x": 80,  "y": 70 },
       "model": "energy_ball.fbx",
+      "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
       "animated": true,
       "stamina": 600,
@@ -251,9 +255,9 @@
       "lasers": [
         {
           "damage": 30,
-          "length": 3000,
+          "length": 3,
           "direction": { "x": -1, "y": 0, "z": 0 },
-          "color": { "r": 144, "g": 0, "b": 0 }
+          "color": { "r": 255, "g": 0, "b": 0 }
         }
       ],
       "weapon": {

@@ -5,9 +5,11 @@
 
 ComponentMenu::ComponentMenu()
 :
-    boxTutorial(nullptr),
-    background(nullptr),
-    glassEffect(nullptr),
+    imageLogoBox(Image(SETUP->IMAGES_FOLDER + "logo_box.png")),
+    boxTutorial(Image(SETUP->IMAGES_FOLDER + "tutorial_box.png")),
+    background(Image(SETUP->IMAGES_FOLDER + "backgroundMenu.png")),
+    border(Image(SETUP->IMAGES_FOLDER + "hud_background.png")),
+    glassEffect(Image(SETUP->IMAGES_FOLDER + "menuBackground.png")),
     planet(nullptr),
     currentOption(0),
     menuEnabled(false)
@@ -16,8 +18,6 @@ ComponentMenu::ComponentMenu()
 
 ComponentMenu::~ComponentMenu()
 {
-    delete background;
-    delete glassEffect;
     delete planet;
 }
 
@@ -27,12 +27,6 @@ void ComponentMenu::onStart()
 
     loadDecorative3DMesh();
     loadMenuOptions();
-
-    glassEffect = new Image(SETUP->IMAGES_FOLDER + "menuBackground.png");
-    border = new Image(SETUP->IMAGES_FOLDER + "hud_background.png");
-    imageLogoBox = new Image(SETUP->IMAGES_FOLDER + "logo_box.png");
-    background = new Image(SETUP->IMAGES_FOLDER + "backgroundMenu.png");
-    boxTutorial = new Image(SETUP->IMAGES_FOLDER + "tutorial_box.png");
 }
 
 void ComponentMenu::loadDecorative3DMesh()
@@ -41,8 +35,8 @@ void ComponentMenu::loadDecorative3DMesh()
     planet->setMultiScene(true);
     planet->setEnabled(false);
     planet->setAlpha(255);
-    planet->setScale(1.5f);
-    planet->setPosition(Vertex3D(0, 0, 20));
+    planet->setScale(10.0f);
+    planet->setPosition(Vertex3D(0, 0, 100));
     planet->setRotationFrameEnabled(true);
     planet->setRotationFrame(Vertex3D(0.1f, 0.0, 0));
     planet->setRotation(0, 0, 0);
@@ -64,11 +58,11 @@ void ComponentMenu::preUpdate()
     auto fb = window->getForegroundFramebuffer();
     auto bb = window->getBackgroundFramebuffer();
 
-    background->drawFlatAlpha(0, 0, alpha, bb);
-    boxTutorial->drawFlatAlpha(0, 0, alpha, fb);
-    border->drawFlatAlpha(0, 0, alpha, fb);
-    imageLogoBox->drawFlatAlpha(0, 0, alpha, fb);
-    glassEffect->drawFlatAlpha(0, 0, alpha, fb);
+    background.drawFlatAlpha(0, 0, alpha, bb);
+    boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
+    border.drawFlatAlpha(0, 0, alpha, fb);
+    imageLogoBox.drawFlatAlpha(0, 0, alpha, fb);
+    glassEffect.drawFlatAlpha(0, 0, alpha, fb);
 }
 
 void ComponentMenu::onUpdate()
@@ -206,8 +200,4 @@ void ComponentMenu::setMenuEnabled(bool menuEnabled) {
 
 bool ComponentMenu::isMenuEnabled() const {
     return menuEnabled;
-}
-
-Image *ComponentMenu::getBorder() const {
-    return border;
 }

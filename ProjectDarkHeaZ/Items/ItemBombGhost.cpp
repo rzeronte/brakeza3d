@@ -50,6 +50,8 @@ void ItemBombGhost::resolveCollision(Collisionable *collisionable)
         setEnabled(false);
         setRemoved(true);
 
+        Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getExplosionSprite()->getAnimation());
+
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_BOMB);
 
         enemy->takeDamage(getDamage());
@@ -59,8 +61,4 @@ void ItemBombGhost::resolveCollision(Collisionable *collisionable)
 
 float ItemBombGhost::getDamage() const {
     return damage;
-}
-
-void ItemBombGhost::setDamage(float damage) {
-    ItemBombGhost::damage = damage;
 }

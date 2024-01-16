@@ -432,8 +432,6 @@ void Object3D::drawImGuiProperties()
 
         ImGui::Checkbox("Rotation Frame", &rotationFrameEnabled);
 
-        ImGui::Separator();
-
         if (rotationFrameEnabled) {
             if (ImGui::TreeNode("Rotation Each Frame")) {
                 ImGui::DragScalar("X", ImGuiDataType_Float, &rotationFrame.x, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
@@ -442,6 +440,7 @@ void Object3D::drawImGuiProperties()
                 ImGui::TreePop();
             }
         }
+
         ImGui::TreePop();
     }
     ImGui::Separator();
@@ -533,24 +532,24 @@ cJSON *Object3D::getJSON()
     cJSON_AddBoolToObject(root, "transparent", isTransparent());
 
     cJSON *position = cJSON_CreateObject();
-    cJSON_AddNumberToObject(position, "x", (int) getPosition().x);
-    cJSON_AddNumberToObject(position, "y", (int) getPosition().y);
-    cJSON_AddNumberToObject(position, "z", (int) getPosition().z);
+    cJSON_AddNumberToObject(position, "x", (float) getPosition().x);
+    cJSON_AddNumberToObject(position, "y", (float) getPosition().y);
+    cJSON_AddNumberToObject(position, "z", (float) getPosition().z);
     cJSON_AddItemToObject(root, "position", position);
 
     cJSON *rotation = cJSON_CreateObject();
-    cJSON_AddNumberToObject(rotation, "x", (int) rotX);
-    cJSON_AddNumberToObject(rotation, "y", (int) rotY);
-    cJSON_AddNumberToObject(rotation, "z", (int) rotZ);
+    cJSON_AddNumberToObject(rotation, "x", (float) rotX);
+    cJSON_AddNumberToObject(rotation, "y", (float) rotY);
+    cJSON_AddNumberToObject(rotation, "z", (float) rotZ);
     cJSON_AddItemToObject(root, "rotation", rotation);
 
     cJSON_AddBoolToObject(root, "rotationFrameEnabled", isRotationFrameEnabled());
 
     if (isRotationFrameEnabled()) {
         cJSON *rFrame = cJSON_CreateObject();
-        cJSON_AddNumberToObject(rFrame, "x", (int) rotXFrame);
-        cJSON_AddNumberToObject(rFrame, "y", (int) rotYFrame);
-        cJSON_AddNumberToObject(rFrame, "z", (int) rotZFrame);
+        cJSON_AddNumberToObject(rFrame, "x", (float) rotationFrame.x);
+        cJSON_AddNumberToObject(rFrame, "y", (float) rotationFrame.y);
+        cJSON_AddNumberToObject(rFrame, "z", (float) rotationFrame.z);
         cJSON_AddItemToObject(root, "rotationFrame", rFrame);
     }
 

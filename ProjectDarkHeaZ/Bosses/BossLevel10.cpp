@@ -10,17 +10,17 @@ BossLevel10::BossLevel10()
     auto levelLoader = game->getLevelLoader();
 
     behaviorPhaseTwo = new EnemyBehaviorPatrol(
-        levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 5), Z_COORDINATE_GAMEPLAY),
+        levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 10), Z_COORDINATE_GAMEPLAY),
         levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 50), Z_COORDINATE_GAMEPLAY),
         1.0f
     );
 
     behaviorPhaseOne = new EnemyBehaviorPath(0.5f);
-    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 5), Z_COORDINATE_GAMEPLAY));
-    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(5, 5), Z_COORDINATE_GAMEPLAY));
-    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 5), Z_COORDINATE_GAMEPLAY));
-    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(90, 5), Z_COORDINATE_GAMEPLAY));
-    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 5), Z_COORDINATE_GAMEPLAY));
+    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 10), Z_COORDINATE_GAMEPLAY));
+    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(10, 10), Z_COORDINATE_GAMEPLAY));
+    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 10), Z_COORDINATE_GAMEPLAY));
+    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(90, 10), Z_COORDINATE_GAMEPLAY));
+    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 10), Z_COORDINATE_GAMEPLAY));
     behaviorPhaseOne->start();
     setBehavior(behaviorPhaseOne);
 }

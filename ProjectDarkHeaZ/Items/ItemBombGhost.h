@@ -17,8 +17,6 @@ public:
 
     [[nodiscard]] float getDamage() const;
 
-    void setDamage(float damage);
-
     void onUpdate() override;
 
     void resolveCollision(Collisionable *collisionable) override;

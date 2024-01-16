@@ -6,8 +6,8 @@
 #include "BossEnemy.h"
 #include "BossLevel10.h"
 
-#define SPEED_BOSS_LASERS 3
-#define BOSS_LASER_LENGTH 10
+#define SPEED_BOSS_LASERS 0.5
+#define BOSS_LASER_LENGTH 4
 
 class BossLevel20 : public BossEnemy {
 private:

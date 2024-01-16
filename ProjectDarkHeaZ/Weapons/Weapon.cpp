@@ -97,9 +97,11 @@ void Weapon::onUpdate()
     if (type == WeaponTypes::WEAPON_RAYLIGHT) {
         if (status == WeaponStatus::RELEASED && rayLight != nullptr) {
             rayLight->setReach(0);
+            rayLight->updateDirection(parent->AxisDown().getNormalize(),parent->AxisUp().getScaled(-1.3f));
             rayLight->update(false);
             Logging::Message("decrease: %f", rayLight->getReach());
         } else {
+            rayLight->updateDirection(parent->AxisDown().getNormalize(),parent->AxisUp().getScaled(-1.3f));
             rayLight->update(true);
         }
     }
@@ -598,10 +600,6 @@ Counter *Weapon::getCounterCadence() const {
 
 bool Weapon::isSelectable() const {
     return selectable;
-}
-
-RayLight *Weapon::getRayLight() const {
-    return rayLight;
 }
 
 void Weapon::drawImGuiProperties()

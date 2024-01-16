@@ -197,8 +197,6 @@ public:
 
     [[nodiscard]] bool isSelectable() const;
 
-    [[nodiscard]] RayLight *getRayLight() const;
-
     void drawImGuiProperties();
 };
 

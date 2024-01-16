@@ -68,12 +68,20 @@ Player::Player()
         std::string(EngineSetup::get()->IMAGES_FOLDER + "shield_mask.png")
     );
 
-    spriteEnergyShield = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "shield.png"), 80, 80, 20, 60));
+    spriteEnergyShield = new Sprite2D(
+        0, 0,
+        false,
+        new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "shield.png"), 180, 180, 20, 60)
+    );
 
     spriteEnergyShield->setEnabled(false);
     spriteEnergyShield->setMultiScene(true);
     spriteEnergyShield->setLabel("playerSpriteEnergyShield");
     attachObject(spriteEnergyShield);
+
+    damages.push_back(new Image(EngineSetup::get()->IMAGES_FOLDER + "blood_splatter_01.png"));
+    damages.push_back(new Image(EngineSetup::get()->IMAGES_FOLDER + "blood_splatter_02.png"));
+    damages.push_back(new Image(EngineSetup::get()->IMAGES_FOLDER + "blood_splatter_03.png"));
 }
 
 void Player::loadSatellite()
@@ -282,6 +290,11 @@ void Player::onUpdate()
     }
 
     if (counterDamageBlink.isEnabled()) {
+        shiftCamera();
+        auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+        float progress = counterDamageBlink.currentPercentage() / 100;
+        randomDamage()->drawFlatAlpha(0, 0, 1 - progress, fb);
+        
         counterDamageBlink.update();
         blink->update();
         if (counterDamageBlink.isFinished()) {
@@ -535,12 +548,12 @@ void Player::addWeapon(Weapon *weaponType)
         return;
     }
 
-    this->weaponTypes.emplace_back(weaponType);
+    this->weapons.emplace_back(weaponType);
 }
 
 Weapon *Player::getWeaponTypeByLabel(const std::string& label)
 {
-    for (auto & weaponType : this->weaponTypes) {
+    for (auto & weaponType : this->weapons) {
         if (weaponType->getLabel() == label) {
             return weaponType;
         }
@@ -550,7 +563,7 @@ Weapon *Player::getWeaponTypeByLabel(const std::string& label)
 }
 
 void Player::setWeaponTypeByIndex(int i) {
-    setWeapon(weaponTypes[i]);
+    setWeapon(weapons[i]);
     this->currentWeaponIndex = i;
 }
 
@@ -576,7 +589,7 @@ void Player::increaseKills()
 }
 
 const std::vector<Weapon *> &Player::getWeapons() const {
-    return weaponTypes;
+    return weapons;
 }
 
 bool Player::isEnergyShieldEnabled() const {
@@ -628,9 +641,9 @@ void Player::setRecoverEnergySpeed(float value) {
 void Player::nextWeapon()
 {
     auto currentWeapon = getWeapon();
-    auto currentIterator = std::find(weaponTypes.begin(), weaponTypes.end(), currentWeapon);
+    auto currentIterator = std::find(weapons.begin(), weapons.end(), currentWeapon);
 
-    for (auto it = currentIterator; it != weaponTypes.end(); it++) {
+    for (auto it = currentIterator; it != weapons.end(); it++) {
         if (*(it) == currentWeapon) {
             continue;
         }
@@ -645,15 +658,15 @@ void Player::nextWeapon()
 void Player::previousWeapon()
 {
     auto currentWeapon = getWeapon();
-    auto currentIterator = std::find(weaponTypes.begin(), weaponTypes.end(), currentWeapon);
+    auto currentIterator = std::find(weapons.begin(), weapons.end(), currentWeapon);
 
-    int index = (int) std::distance(weaponTypes.begin(), currentIterator);
+    int index = (int) std::distance(weapons.begin(), currentIterator);
 
     for (int i = index; i >= 0; i--) {
-        if (weaponTypes[i] == currentWeapon) {
+        if (weapons[i] == currentWeapon) {
             continue;
         }
-        auto weapon = weaponTypes[i];
+        auto weapon = weapons[i];
         if (weapon->isAvailable()) {
             setWeapon(weapon);
             return;
@@ -732,7 +745,7 @@ Player::~Player()
     delete shaderEnergyShield;
     delete particleEngineLeft;
 
-    for (auto w : weaponTypes) {
+    for (auto w : weapons) {
         delete w;
     }
 }
@@ -867,4 +880,27 @@ void Player::drawImGuiProperties()
             ImGui::TreePop();
         }
     }
+}
+
+void Player::shiftCamera()
+{
+    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    auto p = camera->getPosition();
+    float intensity = 0.01f;
+
+    auto random = Vertex3D(
+        (float) Tools::random(-1, 1) * intensity,
+        (float) Tools::random(-1, 1) * intensity,
+        0
+    );
+
+    camera->setPosition(p + random);
+}
+
+
+Image *Player::randomDamage()
+{
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    const int index = std::rand() % damages.size();
+    return damages[index];
 }

@@ -15,16 +15,17 @@
 
 class ComponentMenu : public Component {
 private:
-    Image *glassEffect;
-    Image *background;
-    Image *boxTutorial;
+    Image glassEffect;
+    Image background;
+    Image boxTutorial;
+    Image border;
+    Image imageLogoBox;
 
     Mesh3D *planet;
 
     std::vector<MenuOption> options;
     int currentOption;
-    Image *border;
-    Image *imageLogoBox;
+
     bool menuEnabled;
 public:
     ComponentMenu();
@@ -66,8 +67,6 @@ public:
     void setMenuEnabled(bool menuEnabled);
 
     [[nodiscard]] bool isMenuEnabled() const;
-
-    [[nodiscard]] Image *getBorder() const;
 
     enum MenuActions {
         MNU_NEW_GAME = 0,

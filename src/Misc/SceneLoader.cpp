@@ -9,8 +9,6 @@
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Objects/ParticleEmitter.h"
-#include "../../include/2D/Sprite2D.h"
 
 SceneLoader::SceneLoader() = default;
 
@@ -23,6 +21,19 @@ void SceneLoader::loadScene(const std::string& filename)
     Logging::Message("Loading scene: %s", filename.c_str());
 
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    auto shaderRender = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender();
+
+    cJSON *adsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "ads");
+
+    if (adsJSON != nullptr) {
+        auto ambient = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "ambient"));
+        auto diffuse = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "diffuse"));
+        auto specular = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "specular"));
+
+        shaderRender->getDirectionalLight()->ambient = ambient.toGLM();
+        shaderRender->getDirectionalLight()->diffuse = diffuse.toGLM();
+        shaderRender->getDirectionalLight()->specular = specular.toGLM();
+    }
 
     cJSON *cameraJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "camera");
 
@@ -114,6 +125,29 @@ Color SceneLoader::parseColorJSON(cJSON *color)
 void SceneLoader::saveScene(const std::string &filename)
 {
     cJSON *root = cJSON_CreateObject();
+
+    auto ads = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender();
+    // illumination ADS
+    cJSON *adsJSON = cJSON_CreateObject();
+    cJSON *adsDiffuseJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(adsDiffuseJSON, "x", ads->getDirectionalLight()->diffuse.x);
+    cJSON_AddNumberToObject(adsDiffuseJSON, "y", ads->getDirectionalLight()->diffuse.y);
+    cJSON_AddNumberToObject(adsDiffuseJSON, "z", ads->getDirectionalLight()->diffuse.z);
+    cJSON_AddItemToObject(adsJSON, "diffuse", adsDiffuseJSON);
+
+    cJSON *adsSpecularJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(adsSpecularJSON, "x", ads->getDirectionalLight()->specular.x);
+    cJSON_AddNumberToObject(adsSpecularJSON, "y", ads->getDirectionalLight()->specular.y);
+    cJSON_AddNumberToObject(adsSpecularJSON, "z", ads->getDirectionalLight()->specular.z);
+    cJSON_AddItemToObject(adsJSON, "specular", adsSpecularJSON);
+
+    cJSON *adsAmbientJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(adsAmbientJSON, "x", ads->getDirectionalLight()->ambient.x);
+    cJSON_AddNumberToObject(adsAmbientJSON, "y", ads->getDirectionalLight()->ambient.y);
+    cJSON_AddNumberToObject(adsAmbientJSON, "z", ads->getDirectionalLight()->ambient.z);
+    cJSON_AddItemToObject(adsJSON, "ambient", adsAmbientJSON);
+
+    cJSON_AddItemToObject(root, "ads", adsJSON);
 
     //scripts
     cJSON *scriptsArray = cJSON_CreateArray();
@@ -229,7 +263,13 @@ void SceneLoader::createSprite2DInScene()
         EngineSetup::get()->screenWidth/2,
         EngineSetup::get()->screenHeight/2,
         false,
-        new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "Smoke45Frames.png"), 128, 128, 45, 24)
+        new TextureAnimated(
+            std::string(EngineSetup::get()->SPRITES_FOLDER + "pulsating_star.png"),
+            64,
+            64,
+            6,
+            12
+        )
     );
     newObject->setPosition(position);
 
@@ -239,14 +279,19 @@ void SceneLoader::createSprite2DInScene()
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_sprite3D"));
 }
 
-
 void SceneLoader::createSprite3DInScene()
 {
     Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2);
 
     auto *newObject = new Sprite3D(1, 1);
     newObject->setPosition(position);
-    newObject->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "Smoke45Frames.png"), 128, 128, 45, 24);
+    newObject->addAnimation(
+        std::string(EngineSetup::get()->SPRITES_FOLDER + "pulsating_star.png"),
+        128,
+        128,
+        6,
+        6
+    );
     newObject->setAnimation(0);
 
     newObject->setBelongToScene(true);

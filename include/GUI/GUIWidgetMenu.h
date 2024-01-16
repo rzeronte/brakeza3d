@@ -7,6 +7,7 @@
 
 #include <SDL_mixer.h>
 #include <dirent.h>
+#include <sys/stat.h>
 #include "imgui.h"
 #include "../EngineSetup.h"
 #include "../Render/Logging.h"
@@ -76,7 +77,7 @@ struct GUIWidgetMenu
 
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("Mesh3D")) {
-                    drawMesh3DItemsToLoad();
+                    drawMesh3DItemsToLoad(directory_path_models);
                     ImGui::EndMenu();
                 }
                 ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("gearIcon")->getOGLTextureID(), ImVec2(16, 16));
@@ -271,13 +272,44 @@ struct GUIWidgetMenu
         }
     }
 
-    static std::vector<std::string> getFolder(const std::string& path, const std::string& extension) {
+    static std::vector<std::string> getFolderFolders(const std::string& path)
+    {
         DIR *dir;
         struct dirent *ent;
         std::vector<std::string> result;
         if ((dir = opendir (path.c_str())) != nullptr) {
             while ((ent = readdir (dir)) != nullptr) {
+                auto fileName = ent->d_name;
+
+                if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
+                std::string fullPath = path + "/" + fileName;
+
+                struct stat fileStat;
+                if (stat(fullPath.c_str(), &fileStat) == 0) {
+                    if (S_ISDIR(fileStat.st_mode)) {
+                        result.emplace_back(fileName);
+                    }
+                }
+            }
+            std::sort( result.begin(), result.end() );
+
+            closedir (dir);
+        }
+
+        return result;
+    }
+
+    static std::vector<std::string> getFolderFiles(const std::string& path, const std::string& extension) {
+        DIR *dir;
+        struct dirent *ent;
+        std::vector<std::string> result;
+        if ((dir = opendir (path.c_str())) != nullptr) {
+            while ((ent = readdir (dir)) != nullptr) {
+                auto fileName = ent->d_name;
+
                 if (Tools::getExtensionFromFilename(ent->d_name) != extension) continue;
+                if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
+
                 result.emplace_back(ent->d_name);
             }
             std::sort( result.begin(), result.end() );
@@ -288,26 +320,37 @@ struct GUIWidgetMenu
         return result;
     }
 
-    void drawMesh3DItemsToLoad()
+    void drawMesh3DItemsToLoad(const std::string& folder)
     {
-        auto result = getFolder(directory_path_models, "fbx");
+        auto files = getFolderFiles(folder, "fbx");
+        auto folders = getFolderFolders(folder);
 
-        for (int i = 0; i < result.size(); i++) {
-            auto file = result[i];
+        for (const auto & i : folders) {
+            auto fullPath = folder + "/" + i;
+            ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("folderIcon")->getOGLTextureID(), ImVec2(16, 16));
+            ImGui::SameLine();
+            if (ImGui::BeginMenu(i.c_str())) {
+                drawMesh3DItemsToLoad(fullPath);
+                ImGui::EndMenu();
+            }
+        }
+
+        for (int i = 0; i < files.size(); i++) {
+            auto file = files[i];
             auto title = std::to_string(i-1) + ") " + file;
-            if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getOGLTextureID(), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::MenuItem(file.c_str())) {
-                    Tools::addSceneObject(file, "added_item");
-                }
+
+            auto fullPath = folder + "/" + file;
+            ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("meshIcon")->getOGLTextureID(), ImVec2(16, 16));
+            ImGui::SameLine();
+            if (ImGui::MenuItem(file.c_str())) {
+                Tools::addSceneObject(fullPath, "added_item");
             }
         }
     }
 
     void drawRigidBodiesItemsToLoad() {
 
-        auto result = getFolder(directory_path_models, "fbx");
+        auto result = getFolderFiles(directory_path_models, "fbx");
 
         for (int i = 0; i < result.size(); i++) {
             auto file = result[i];
@@ -324,7 +367,7 @@ struct GUIWidgetMenu
 
     void drawGhostItemsToLoad() {
 
-        auto result = getFolder(directory_path_models, "fbx");
+        auto result = getFolderFiles(directory_path_models, "fbx");
 
         for (int i = 0; i < result.size(); i++) {
             auto file = result[i];

@@ -1,20 +1,42 @@
 {
+	"ads":	{
+		"diffuse":	{
+			"x":	0.4754098653793335,
+			"y":	0.4754098653793335,
+			"z":	0.4754098653793335
+		},
+		"specular":	{
+			"x":	0.31147539615631104,
+			"y":	0.31147539615631104,
+			"z":	0.31147539615631104
+		},
+		"ambient":	{
+			"x":	0.48770493268966675,
+			"y":	0.48770493268966675,
+			"z":	0.48770493268966675
+		}
+	},
 	"objects":	[{
 			"name":	"Earth",
-			"scale":	0.68000000715255737,
+			"scale":	14.4399995803833,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	0,
-				"y":	1,
-				"z":	50
+				"x":	-44.547210693359375,
+				"y":	-55.759967803955078,
+				"z":	338.10000610351562
 			},
 			"rotation":	{
 				"x":	0,
 				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.05000000074505806,
+				"y":	0.05000000074505806,
+				"z":	0
+			},
 			"scripts":	[{
 					"name":	"BehaviorCircle.lua",
 					"types":	[{
@@ -43,26 +65,31 @@
 							}
 						}]
 				}],
+			"shaders":	[],
 			"model":	"../assets/models/planet_earth.fbx",
 			"enableLights":	false,
-			"shaders":	[],
 			"type":	"Mesh3D"
 		}, {
 			"name":	"Sun",
-			"scale":	0.82999998331069946,
+			"scale":	17.930000305175781,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	0,
-				"y":	0,
-				"z":	40
+				"x":	24.45271110534668,
+				"y":	0.10240829735994339,
+				"z":	404.70001220703125
 			},
 			"rotation":	{
-				"x":	0,
+				"x":	-13.699999809265137,
 				"y":	0,
+				"z":	14.59999942779541
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
 			"scripts":	[{
 					"name":	"BehaviorCircle.lua",
 					"types":	[{
@@ -91,66 +118,148 @@
 							}
 						}]
 				}],
+			"shaders":	[],
 			"model":	"../assets/models/planet_sun.fbx",
 			"enableLights":	false,
-			"shaders":	[],
 			"type":	"Mesh3D"
 		}, {
-			"name":	"eye",
-			"scale":	0.0010000000474974513,
+			"name":	"dish",
+			"scale":	3.0299999713897705,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	0,
-				"y":	2,
-				"z":	60
+				"x":	87.065765380859375,
+				"y":	53.0753173828125,
+				"z":	180.6168212890625
 			},
 			"rotation":	{
-				"x":	180,
-				"y":	-2,
+				"x":	0,
+				"y":	-3.9000000953674316,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[{
-					"name":	"BehaviorCircle.lua",
-					"types":	[{
-							"name":	"radius",
-							"type":	"int",
-							"value":	8
-						}, {
-							"name":	"speed",
-							"type":	"float",
-							"value":	1
-						}, {
-							"name":	"offset",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	2,
-								"z":	0
-							}
-						}, {
-							"name":	"center",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	0,
-								"z":	60
-							}
-						}]
-				}],
-			"model":	"../assets/models/eye.fbx",
-			"enableLights":	false,
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.10000000149011612,
+				"y":	0.10000000149011612,
+				"z":	0
+			},
+			"scripts":	[],
 			"shaders":	[],
+			"model":	"../assets/models/dish.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"added_item_3",
+			"scale":	0.019999999552965164,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-86.64105224609375,
+				"y":	-20.389331817626953,
+				"z":	243.08688354492188
+			},
+			"rotation":	{
+				"x":	7.6999998092651367,
+				"y":	126.80000305175781,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0010000000474974513,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//spaceships/red_spaceship_01.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"added_item_61",
+			"scale":	0.029999999329447746,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	150.49443054199219,
+				"y":	-59.798553466796875,
+				"z":	361.6868896484375
+			},
+			"rotation":	{
+				"x":	88.700004577636719,
+				"y":	219.30000305175781,
+				"z":	111.40000152587891
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//spaceships/red_spaceship_02.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"added_item_87",
+			"scale":	0.019999999552965164,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	32.681861877441406,
+				"y":	11.950839042663574,
+				"z":	324.6868896484375
+			},
+			"rotation":	{
+				"x":	121,
+				"y":	319.60000610351562,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//spaceships/red_spaceship_03.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"added_item_88",
+			"scale":	23.029998779296875,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	113.29052734375,
+				"y":	44.166744232177734,
+				"z":	261.22979736328125
+			},
+			"rotation":	{
+				"x":	-23.899999618530273,
+				"y":	33.100002288818359,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.10000000149011612,
+				"y":	0.10000000149011612,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//rune01.fbx",
+			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	0,
-			"y":	0,
-			"z":	0.21681126952171326
+			"x":	0.050522029399871826,
+			"y":	-0.10325584560632706,
+			"z":	0.22975553572177887
 		},
 		"rotation":	{
 			"x":	0,
