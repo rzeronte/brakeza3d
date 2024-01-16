@@ -5,8 +5,6 @@
 #ifndef BRAKEZA3D_FXOFFSETIMAGE_H
 #define BRAKEZA3D_FXOFFSETIMAGE_H
 
-
-#include <CL/cl.h>
 #include "../../include/Misc/Image.h"
 #include "../../include/OpenGL/FXEffectOpenGL.h"
 #include "../../include/Objects/Point2D.h"

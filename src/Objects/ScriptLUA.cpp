@@ -11,7 +11,6 @@ ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
 :
     scriptFilename(script),
     fileTypes(std::move(properties)),
-    content(nullptr),
     paused(false)
 {
     Logging::Message("Loading LUA Script (%s, %s)", script.c_str(), fileTypes.c_str());
@@ -20,22 +19,22 @@ ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
     parseTypesFromFileAttributes();
 }
 
-ScriptLUA::ScriptLUA(const std::string &script, cJSON *types)
+ScriptLUA::ScriptLUA(const std::string &scriptFilename, cJSON *types)
 :
-    scriptFilename(script),
-    fileTypes(ScriptLUA::dataTypesFileFor(script)),
-    content(nullptr),
+    scriptFilename(scriptFilename),
+    fileTypes(ScriptLUA::dataTypesFileFor(scriptFilename)),
     paused(false)
 {
-    Logging::Message("Loading LUA Script (%s, %s)", script.c_str(), fileTypes.c_str());
+    Logging::Message("Loading LUA Script (%s, %s)", scriptFilename.c_str(), fileTypes.c_str());
 
-    getCode(script);
+    getCode(scriptFilename);
     setDataTypesFromJSON(types);
 }
 
 void ScriptLUA::getCode(const std::string &script)
 {
     size_t file_size;
+    content.clear();
     content = Tools::readFile(EngineSetup::get()->SCRIPTS_FOLDER + script, file_size);
 }
 
@@ -319,7 +318,6 @@ void ScriptLUA::drawImGuiProperties()
                 default:
                     std::cerr << "Unknown data type." << std::endl;
             }
-
         }
 
         ImGui::TreePop();

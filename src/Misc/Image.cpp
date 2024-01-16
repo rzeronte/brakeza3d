@@ -155,6 +155,7 @@ const std::string &Image::getFileName() const {
 
 Image::~Image()
 {
+    glDeleteTextures(1, &texturaID);
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
 }

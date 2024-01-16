@@ -74,7 +74,7 @@ struct GUIWidgetObject3DProperties {
                         delete scriptEditableManager.script;
                         scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
                         scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename));
-                        strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content);
+                        strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
                     }
 
                     ImGui::SameLine();

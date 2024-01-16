@@ -1017,6 +1017,7 @@ void ComponentGame::handlePressNewLevelKeyGameState()
     getPlayer()->respawn();
     getPlayer()->setEnabled(true);
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
+    ComponentsManager::get()->getComponentRender()->playLUAScripts();
 
     shaderBackgroundImage->resetOffsets();
     shaderForegroundImage->resetOffsets();
@@ -1150,6 +1151,7 @@ TextWriter *ComponentGame::getTextWriter() {
 void ComponentGame::handlePressKeyByWin() const
 {
     getLevelLoader()->getWaitingToWin()->setEnabled(false);
+    ComponentsManager::get()->getComponentRender()->stopLUAScripts();
     removeInGameObjects();
 }
 

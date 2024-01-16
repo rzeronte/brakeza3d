@@ -41,9 +41,9 @@ private:
 public:
     explicit ScriptLUA(const std::string& script, std::string properties);
 
-    ScriptLUA(const std::string &script, cJSON *types);
+    ScriptLUA(const std::string &scriptFilename, cJSON *types);
 
-    char *content;
+    std::string content;
     std::vector<ScriptLUATypeData> dataTypes;
     std::vector<ScriptLUATypeData> dataTypesDefaultValues;
 

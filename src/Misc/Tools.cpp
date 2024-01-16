@@ -71,18 +71,41 @@ bool Tools::fileExists(const char *name)
 
 char *Tools::readFile(const std::string &name, size_t &source_size)
 {
-    // Load the kernel source code into the array source_str
     FILE *fp;
 
     fp = fopen(name.c_str(), "r");
 
     if (!fp) {
-        Logging::Message("File %s can't be loaded!", name.c_str());
+        perror(("Error opening file " + name).c_str());
         return nullptr;
     }
-    char *file_str = (char *) malloc(MAX_SOURCE_SIZE);
 
-    source_size = fread(file_str, 1, MAX_SOURCE_SIZE, fp);
+    fseek(fp, 0, SEEK_END);
+    source_size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    if (source_size <= 0) {
+        Logging::Message("File %s is empty or has an error!", name.c_str());
+        fclose(fp);
+        return nullptr;
+    }
+
+    char *file_str = (char *)malloc(source_size + 1);
+
+    if (!file_str) {
+        Logging::Message("Memory allocation failed!");
+        fclose(fp);
+        return nullptr;
+    }
+
+    if (fread(file_str, 1, source_size, fp) != source_size) {
+        Logging::Message("Error reading file %s!", name.c_str());
+        fclose(fp);
+        free(file_str);
+        return nullptr;
+    }
+
+    file_str[source_size] = '\0';
 
     fclose(fp);
 
