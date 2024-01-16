@@ -18,7 +18,6 @@
 #include "../Misc/SharedLUAContext.h"
 #include "../Misc/SceneLoader.h"
 #include "../OpenGL/ShaderOpenGLCustom.h"
-#include <CL/cl.h>
 
 class ComponentRender : public Component {
 private:

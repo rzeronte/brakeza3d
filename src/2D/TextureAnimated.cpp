@@ -7,17 +7,17 @@
 #include "../../include/ComponentsManager.h"
 
 TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps) :
-    base_file(std::move(baseFile)),
+    baseFilename(std::move(baseFile)),
     numberFramesToLoad(numFrames),
     currentFrame(0),
     fps(fps),
     endAnimation(false),
     paused(false)
 {
-    Logging::Message("Loading 2D animation: %s", base_file.c_str());
+    Logging::Message("Loading 2D animation: %s", baseFilename.c_str());
 
     for (int i = 0; i < numberFramesToLoad; i++) {
-        std::string file = this->base_file + "_" + std::to_string(i) + ".png";
+        std::string file = this->baseFilename + "_" + std::to_string(i) + ".png";
         this->frames.push_back(new Image(file));
     }
     updateStep();
@@ -25,7 +25,7 @@ TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps) :
 
 TextureAnimated::TextureAnimated(TextureAnimated *textureAnimated)
 :
-    base_file(textureAnimated->base_file),
+    baseFilename(textureAnimated->baseFilename),
     numberFramesToLoad(textureAnimated->numberFramesToLoad),
     currentFrame(0),
     fps(textureAnimated->fps),
@@ -40,18 +40,34 @@ TextureAnimated::TextureAnimated(TextureAnimated *textureAnimated)
 
 TextureAnimated::TextureAnimated(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps)
 :
+    baseFilename(spriteSheetFile),
+    numberFramesToLoad(numFrames),
     fps(fps),
     paused(false),
     currentFrame(0),
-    endAnimation(false)
+    endAnimation(false),
+    currentSpriteWidth(spriteWidth),
+    currentspriteHeight(spriteHeight)
 {
     Logging::Message("Loading sheet: %s", spriteSheetFile.c_str());
+
+    setup(spriteSheetFile, spriteWidth, spriteHeight, numFrames, fps);
+}
+
+void TextureAnimated::setup(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps)
+{
+    deleteFrames();
+
+    Logging::Message("TextureAnimated Setup: (Sprite: %s, w: %d, h: %d, nf: %d, fps: %d)", spriteSheetFile.c_str(), spriteWidth, spriteHeight, numFrames, fps);
 
     SDL_Surface* spriteSheetSurface = IMG_Load(spriteSheetFile.c_str());
     if (!spriteSheetSurface) {
         Logging::Log("Failed to load sprite sheet: %s", SDL_GetError());
         return;
     }
+
+    currentSpriteWidth = spriteWidth;
+    currentspriteHeight = spriteHeight;
 
     const int numRows = spriteSheetSurface->h / spriteHeight;
     const int numColumns = spriteSheetSurface->w / spriteWidth;
@@ -74,7 +90,6 @@ TextureAnimated::TextureAnimated(const std::string& spriteSheetFile, int spriteW
                 SDL_FreeSurface(spriteSheetSurface);
                 return;
             }
-            Logging::Message("Loading frame: %d", frames.size());
 
             frames.push_back(new Image(destinySurface, spriteTexture));
         }
@@ -83,6 +98,8 @@ TextureAnimated::TextureAnimated(const std::string& spriteSheetFile, int spriteW
     SDL_FreeSurface(spriteSheetSurface);
 
     numberFramesToLoad = (int) frames.size();
+    setFps(fps);
+
     updateStep();
 }
 
@@ -138,6 +155,7 @@ void TextureAnimated::updateStep()
 {
     float step = (float) 1 / (float) getFps();
     this->counter.setStep(step);
+    this->counter.setEnabled(true);
 }
 
 void TextureAnimated::update()
@@ -147,6 +165,42 @@ void TextureAnimated::update()
     if (counter.isFinished()) {
         counter.setEnabled(true);
         nextFrame();
+    }
+}
 
+void TextureAnimated::deleteFrames()
+{
+    for (auto f: frames){
+        delete f;
+    }
+    frames.clear();
+}
+
+const std::string &TextureAnimated::getBaseFilename() const {
+    return baseFilename;
+}
+
+void TextureAnimated::drawImGuiProperties()
+{
+    if (ImGui::TreeNode("Current Animation Setup")) {
+        static int width = currentSpriteWidth;
+        static int height = currentspriteHeight;
+        static int numFrames = numberFramesToLoad;
+        static int fps = this->fps;
+
+        const int range_min_int = 1;
+        const int range_max_int = 1280;
+
+        ImGui::DragScalar("Sprite Width", ImGuiDataType_S32, &width,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
+        ImGui::DragScalar("Sprite Height", ImGuiDataType_S32, &height,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
+        ImGui::DragScalar("Number frames", ImGuiDataType_S32, &numFrames,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
+        ImGui::DragScalar("FPS", ImGuiDataType_S32, &fps,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
+
+        if (ImGui::Button("Apply")) {
+            auto spriteFile = getBaseFilename();
+            setup(spriteFile, width, height, numFrames, fps);
+            updateStep();
+        }
+        ImGui::TreePop();
     }
 }

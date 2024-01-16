@@ -124,7 +124,7 @@ public:
                     scriptEditableManager.selectedScriptFilename,
                     ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename)
                 );
-                strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content);
+                strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
             }
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
                 ImGui::SetDragDropPayload("SCRIPT_ITEM", file.c_str(), file.size() + 1);  // Asigna el nombre del elemento como carga útil
@@ -290,9 +290,12 @@ public:
                 if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                     ImGui::PushID(i);
                     if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("sceneIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                        ComponentsManager::get()->getComponentRender()->getSceneLoader().clearScene();
                         ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(file);
                     }
+
                     ImGui::SameLine();
+
                     if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("saveIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                         ComponentsManager::get()->getComponentRender()->getSceneLoader().saveScene(file);
                     }
