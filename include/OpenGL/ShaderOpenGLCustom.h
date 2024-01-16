@@ -10,42 +10,104 @@
 #include <vec3.hpp>
 #include <vec4.hpp>
 #include <ext/matrix_float2x2.hpp>
+#include <variant>
+#include <map>
+#include "ShaderOpenGL.h"
+#include "ShaderQuadOpenGL.h"
+#include "../Misc/cJSON.h"
+#include <sstream>
+#include <vector>
 
-class ShaderOpenGLCustom {
-    std::string shaderFilename;
+enum class ShaderOpenGLCustomDataType {
+    INT,
+    FLOAT,
+    VEC2,
+    VEC3,
+    VEC4
+};
 
+typedef std::variant<int, float, glm::vec2, glm::vec3, glm::vec4> ShaderOpenGLCustomDataValue;
+
+struct ShaderOpenGLCustomType {
+    ShaderOpenGLCustomType(const char *name, const char *type, ShaderOpenGLCustomDataValue value)
+    :name(name), type(type), value(value)
+    {}
+    std::string name;
+    std::string type;
+    ShaderOpenGLCustomDataValue value;
+};
+
+class ShaderOpenGLCustom: ShaderOpenGL, ShaderQuadOpenGL
+{
+    std::map<std::string, ShaderOpenGLCustomDataType> LUADataTypesMapping = {
+        {"int", ShaderOpenGLCustomDataType::INT},
+        {"float", ShaderOpenGLCustomDataType::FLOAT},
+        {"vec2", ShaderOpenGLCustomDataType::VEC2},
+        {"vec3", ShaderOpenGLCustomDataType::VEC3},
+        {"vec4", ShaderOpenGLCustomDataType::VEC4},
+    };
+
+    std::string label;
+    std::string sourceFS;
+
+    bool enabled;
+    std::string fileTypes;
+
+    std::vector<ShaderOpenGLCustomType> dataTypes;
+    std::vector<ShaderOpenGLCustomType> dataTypesDefaultValues;
+
+    GLint textureUniform;
+
+    // imgui
+    std::string currentVariableToAddName;
+    char editableSource[1024 * 16];
 protected:
-    GLuint programID;
 public:
-    explicit ShaderOpenGLCustom(const std::string &shaderFilename);
+    explicit ShaderOpenGLCustom(std::string label, const std::string &fragmentFilename);
+
+    void render(GLuint textureID, GLuint framebuffer);
+
+    void drawImGuiProperties();
+
+    GLuint compile();
 
 protected:
-    static GLuint LoadShaders(const char *file_path);
 
-    void setBool(const std::string &name, bool value) const;
+    bool existDataType(const char *name, const char *type);
 
-    void setInt(const std::string &name, int value) const;
+    void parseTypesFromFileAttributes();
 
-    void setFloat(const std::string &name, float value) const;
+    static std::string dataTypesFileFor(std::string basicString);
 
-    void setVec2(const std::string &name, const glm::vec2 &value) const;
+    static std::string removeFilenameExtension(std::string &filename);
 
-    void setVec2(const std::string &name, float x, float y) const;
+    void setDataTypesFromJSON(cJSON *typesJSON);
 
-    void setVec3(const std::string &name, const glm::vec3 &value) const;
+    void addDataType(const char *name, const char *type, cJSON *value);
 
-    void setVec3(const std::string &name, float x, float y, float z) const;
+private:
+    void destroy() override;
 
-    void setVec4(const std::string &name, const glm::vec4 &value) const;
+public:
+    [[nodiscard]] bool isEnabled() const;
 
-    void setVec4(const std::string &name, float x, float y, float z, float w) const;
+    void setEnabled(bool enabled);
 
-    void setMat2(const std::string &name, const glm::mat2 &mat) const;
+    void onUpdate();
+    void postUpdate();
 
-    void setMat3(const std::string &name, const glm::mat3 &mat) const;
+    [[nodiscard]] const std::string &getLabel() const;
+    cJSON* getTypesJSON();
 
-    void setMat4(const std::string &name, const glm::mat4 &mat) const;
+    void setDataTypesUniforms();
 
+    void updateFileTypes();
+
+    void addDataTypeEmpty(const char *name, const char *type);
+
+    void removeDataType(const ShaderOpenGLCustomType &data);
+
+    static ShaderOpenGLCustom *createEmptyCustomShader(const std::string& name);
 };
 
 

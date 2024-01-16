@@ -100,6 +100,7 @@ public:
     std::string ICONS_FOLDER = ASSETS_FOLDER + "icons/";
     std::string SCRIPTS_FOLDER = ASSETS_FOLDER + "scripts/";
     std::string SCENES_FOLDER = ASSETS_FOLDER + "scenes/";
+    std::string CUSTOM_SHADERS = ASSETS_FOLDER + "shaders/";
 
     std::string SHADERS_FOLDER = "../GLSL/";
 
@@ -110,8 +111,6 @@ public:
     // SpriteDirectional3D Default size
     float BILLBOARD_WIDTH_DEFAULT = 100.f;
     float BILLBOARD_HEIGHT_DEFAULT = 100.f;
-
-    bool TEXT_ON_OBJECT3D = false;
 
     // KEYBOARD
     float WALKING_SPEED = 0.1f;

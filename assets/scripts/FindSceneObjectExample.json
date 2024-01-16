@@ -1,6 +1,8 @@
 {
+	"name":	"FindSceneObjectExample.json",
 	"types":	[{
-			"name":	"object",
-			"value":	"MyObject"
-		}]
+		"name":	"object",
+		"type":	"string",
+		"value":	"MyObject"
+	}]
 }

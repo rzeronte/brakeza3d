@@ -11,7 +11,7 @@
 
 class TextureAnimated {
 public:
-    std::string base_file;
+    std::string baseFilename;
 
     int numberFramesToLoad;
     int currentFrame;
@@ -22,6 +22,9 @@ public:
     bool paused;
 
     Counter counter;
+
+    int currentSpriteWidth;
+    int currentspriteHeight;
 
     TextureAnimated(std::string baseFile, int numFrames, int fps);
 
@@ -51,6 +54,13 @@ public:
 
     void update();
 
+    const std::string &getBaseFilename() const;
+
+    void setup(const std::string &spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps);
+
+    void deleteFrames();
+
+    void drawImGuiProperties();
 };
 
 

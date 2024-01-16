@@ -28,6 +28,15 @@ public:
     const char *getTypeObject() override;
 
     const char *getTypeIcon() override;
+
+    void drawImGuiProperties() override;
+
+    cJSON *getJSON() override;
+
+    static void createFromJSON(cJSON *object);
+
+    static void setPropertiesFromJSON(cJSON *object, Sprite2D *o);
+
 };
 
 

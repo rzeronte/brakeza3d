@@ -1,0 +1,76 @@
+{
+	"ads":	{
+		"diffuse":	{
+			"x":	0.4754098653793335,
+			"y":	0.4754098653793335,
+			"z":	0.4754098653793335
+		},
+		"specular":	{
+			"x":	0.31147539615631104,
+			"y":	0.31147539615631104,
+			"z":	0.31147539615631104
+		},
+		"ambient":	{
+			"x":	0.48770493268966675,
+			"y":	0.48770493268966675,
+			"z":	0.48770493268966675
+		}
+	},
+	"objects":	[{
+			"name":	"Landscape",
+			"scale":	50,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-53.5418701171875,
+				"y":	39.349113464355469,
+				"z":	100
+			},
+			"rotation":	{
+				"x":	180,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/landscape03.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"added_item_74",
+			"scale":	6.929999828338623,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-16.951360702514648,
+				"y":	2.7102484703063965,
+				"z":	62.09735107421875
+			},
+			"rotation":	{
+				"x":	153,
+				"y":	57.300003051757812,
+				"z":	-21.5
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//spaceShuttle.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}],
+	"shaders":	[],
+	"scripts":	[],
+	"camera":	{
+		"position":	{
+			"x":	-0.14026868343353271,
+			"y":	0.17938342690467834,
+			"z":	0.097352489829063416
+		},
+		"rotation":	{
+			"x":	0,
+			"y":	0,
+			"z":	0
+		}
+	}
+}

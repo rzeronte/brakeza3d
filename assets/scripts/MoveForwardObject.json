@@ -1,0 +1,8 @@
+{
+	"name":	"MoveForwardObject.lua",
+	"types":	[{
+			"name":	"speed",
+			"type":	"float",
+			"value":	0
+		}]
+}

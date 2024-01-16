@@ -14,10 +14,10 @@
 class Sprite3D : public Object3D {
     Billboard *billboard;
 private:
+    float width;
+    float height;
     int currentAnimationIndex;
-    float step;
 
-    Counter counter;
     std::vector<TextureAnimated*> animations;
 
     bool autoRemoveAfterAnimation;
@@ -29,8 +29,6 @@ public:
     ~Sprite3D() override;
 
     void onUpdate() override;
-
-    void updateStep();
 
     void setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation);
 
@@ -48,9 +46,19 @@ public:
 
     [[nodiscard]] bool isAutoRemoveAfterAnimation() const;
 
-    const char *getTypeObject();
+    const char *getTypeObject() override;
 
-    const char *getTypeIcon();
+    const char *getTypeIcon() override;
+
+    void drawImGuiProperties() override;
+
+    cJSON *getJSON() override;
+
+    static void createFromJSON(cJSON *object);
+
+    static void setPropertiesFromJSON(cJSON *object, Sprite3D *o);
+
+    void updateBillboardSize();
 };
 
 

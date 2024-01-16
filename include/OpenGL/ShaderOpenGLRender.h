@@ -55,7 +55,9 @@ public:
 
     void renderMesh(Mesh3D *o, GLuint framebuffer);
 
-    void foo();
+    void fillUBOLights();
+
+    void extractLights(Object3D *o);
 };
 
 

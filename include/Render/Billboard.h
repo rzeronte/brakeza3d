@@ -35,6 +35,8 @@ public:
     GLuint uvbuffer;
     GLuint normalbuffer;
     std::vector<glm::vec3> vertices;
+
+    void updateSize(float d, float d1);
 };
 
 

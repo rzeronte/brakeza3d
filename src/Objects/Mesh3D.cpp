@@ -473,12 +473,6 @@ cJSON * Mesh3D::getJSON()
     cJSON_AddStringToObject(root, "model", sourceFile.c_str());
     cJSON_AddBoolToObject(root, "enableLights", isEnableLights());
 
-    cJSON *shadersArrayJSON = cJSON_CreateArray();
-    for ( auto s : shaders) {
-        cJSON_AddItemToArray(shadersArrayJSON, s->getJSON());
-    }
-    cJSON_AddItemToObject(root, "shaders", shadersArrayJSON);
-
     return root;
 }
 
@@ -495,7 +489,7 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
         cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
             auto type = cJSON_GetObjectItemCaseSensitive(currentShader, "type")->valuestring;
             switch(mesh3DShaderTypes[type]) {
-                case Mesh3DShaderLoaderMapping::ShaderEdgeObject: {
+                case Mesh3DShaderLoaderMapping::FXOutliner: {
                     auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
                     auto shader = new FXOutliner(
                             true,
@@ -510,6 +504,14 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
                     o->addMesh3DShader(shader);
                     break;
                 }
+                case Mesh3DShaderLoaderMapping::FXBlink: {
+                    auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
+                    auto blinkStep = (float) cJSON_GetObjectItemCaseSensitive(currentShader, "step")->valuedouble;
+                    auto shader = new FXBlink( true,o,blinkStep,SceneLoader::parseColorJSON(edgeColor));
+                    o->addMesh3DShader(shader);
+                    break;
+                }
+
             }
         }
     }

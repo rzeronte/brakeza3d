@@ -5,8 +5,6 @@
 #ifndef BRAKEZA3D_FXEFFECTOPENGL_H
 #define BRAKEZA3D_FXEFFECTOPENGL_H
 
-
-#include <CL/cl.h>
 #include "FXEffectBase.h"
 #include "../Misc/cJSON.h"
 

@@ -17,7 +17,7 @@
 #include "../2D/TextWriter.h"
 #include "../Misc/SharedLUAContext.h"
 #include "../Misc/SceneLoader.h"
-#include <CL/cl.h>
+#include "../OpenGL/ShaderOpenGLCustom.h"
 
 class ComponentRender : public Component {
 private:
@@ -44,7 +44,7 @@ private:
     SceneLoader sceneLoader;
 
     bool sceneShadersEnabled;
-    std::vector<FXEffectOpenGL*> sceneShaders;
+    std::vector<ShaderOpenGLCustom*> sceneShaders;
 
 public:
     ComponentRender();
@@ -67,8 +67,6 @@ public:
 
     void hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle *> &triangles);
 
-    std::vector<LightPoint3D *> &getLightPoints();
-
     void initTiles();
 
     void updateFPS();
@@ -80,14 +78,6 @@ public:
     static Object3D *getObject3DFromClickPoint(int xClick, int yClick, int &objectIndex);
 
     void updateSelectedObject3D();
-
-    std::vector<Tile> &getTiles();
-
-    [[nodiscard]] int getTilesWidth() const;
-
-    [[nodiscard]] int getTilesHeight() const;
-
-    [[nodiscard]] int getNumTiles() const;
 
     [[nodiscard]] int getFps() const;
 
@@ -115,9 +105,9 @@ public:
 
     SceneLoader &getSceneLoader();
 
-    std::vector<FXEffectOpenGL *> &getSceneShaders();
+    std::vector<ShaderOpenGLCustom *> &getSceneShaders();
 
-    void addShaderToScene(FXEffectOpenGL *shader);
+    void addShaderToScene(ShaderOpenGLCustom *shader);
 
     [[nodiscard]] bool isSceneShadersEnabled() const;
 
@@ -129,7 +119,7 @@ public:
 
     void runShadersOpenCLPreUpdate();
 
-    FXEffectOpenGL *getSceneShaderByIndex(int i);
+    ShaderOpenGLCustom *getSceneShaderByIndex(int i);
 
     static bool compareDistances(Object3D *obj1, Object3D *obj2);
 };

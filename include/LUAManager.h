@@ -5,7 +5,6 @@
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_audio.h>
 #include <SDL2/SDL_mixer.h>
-#include <CL/cl.h>
 #include "Misc/Timer.h"
 #include "Objects/Sprite3D.h"
 #include "Misc/SoundPackage.h"

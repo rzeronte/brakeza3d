@@ -159,6 +159,10 @@ void Object3D::onUpdate()
 
     if (!isEnabled()) return;
 
+    for (auto a: attached) {
+        if (a->isEnabled()) a->onUpdate();
+    }
+
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     distanceToCamera = camera->getPosition().distance(getPosition());
@@ -190,6 +194,10 @@ void Object3D::postUpdate()
 
     for (auto s: shaders) {
         s->postUpdate();
+    }
+
+    for (auto a: attached) {
+        if (a->isEnabled())  a->postUpdate();
     }
 
     if (isRotationFrameEnabled()) {
@@ -424,8 +432,6 @@ void Object3D::drawImGuiProperties()
 
         ImGui::Checkbox("Rotation Frame", &rotationFrameEnabled);
 
-        ImGui::Separator();
-
         if (rotationFrameEnabled) {
             if (ImGui::TreeNode("Rotation Each Frame")) {
                 ImGui::DragScalar("X", ImGuiDataType_Float, &rotationFrame.x, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
@@ -434,6 +440,7 @@ void Object3D::drawImGuiProperties()
                 ImGui::TreePop();
             }
         }
+
         ImGui::TreePop();
     }
     ImGui::Separator();
@@ -500,6 +507,17 @@ void Object3D::drawImGuiProperties()
         }
         ImGui::TreePop();
     }
+    ImGui::Separator();
+
+    if (ImGui::TreeNode("Attached")) {
+        for (auto a: attached) {
+            if (ImGui::TreeNode(a->getLabel().c_str())) {
+                a->drawImGuiProperties();
+            }
+        }
+
+        ImGui::TreePop();
+    }
 
     ImGui::Separator();
 }
@@ -514,24 +532,24 @@ cJSON *Object3D::getJSON()
     cJSON_AddBoolToObject(root, "transparent", isTransparent());
 
     cJSON *position = cJSON_CreateObject();
-    cJSON_AddNumberToObject(position, "x", (int) getPosition().x);
-    cJSON_AddNumberToObject(position, "y", (int) getPosition().y);
-    cJSON_AddNumberToObject(position, "z", (int) getPosition().z);
+    cJSON_AddNumberToObject(position, "x", (float) getPosition().x);
+    cJSON_AddNumberToObject(position, "y", (float) getPosition().y);
+    cJSON_AddNumberToObject(position, "z", (float) getPosition().z);
     cJSON_AddItemToObject(root, "position", position);
 
     cJSON *rotation = cJSON_CreateObject();
-    cJSON_AddNumberToObject(rotation, "x", (int) rotX);
-    cJSON_AddNumberToObject(rotation, "y", (int) rotY);
-    cJSON_AddNumberToObject(rotation, "z", (int) rotZ);
+    cJSON_AddNumberToObject(rotation, "x", (float) rotX);
+    cJSON_AddNumberToObject(rotation, "y", (float) rotY);
+    cJSON_AddNumberToObject(rotation, "z", (float) rotZ);
     cJSON_AddItemToObject(root, "rotation", rotation);
 
     cJSON_AddBoolToObject(root, "rotationFrameEnabled", isRotationFrameEnabled());
 
     if (isRotationFrameEnabled()) {
         cJSON *rFrame = cJSON_CreateObject();
-        cJSON_AddNumberToObject(rFrame, "x", (int) rotXFrame);
-        cJSON_AddNumberToObject(rFrame, "y", (int) rotYFrame);
-        cJSON_AddNumberToObject(rFrame, "z", (int) rotZFrame);
+        cJSON_AddNumberToObject(rFrame, "x", (float) rotationFrame.x);
+        cJSON_AddNumberToObject(rFrame, "y", (float) rotationFrame.y);
+        cJSON_AddNumberToObject(rFrame, "z", (float) rotationFrame.z);
         cJSON_AddItemToObject(root, "rotationFrame", rFrame);
     }
 
@@ -540,6 +558,12 @@ cJSON *Object3D::getJSON()
         cJSON_AddItemToArray(scriptsArray, script->getTypesJSON());
     }
     cJSON_AddItemToObject(root, "scripts", scriptsArray);
+
+    cJSON *shadersArrayJSON = cJSON_CreateArray();
+    for ( auto s : shaders) {
+        cJSON_AddItemToArray(shadersArrayJSON, s->getJSON());
+    }
+    cJSON_AddItemToObject(root, "shaders", shadersArrayJSON);
 
     return root;
 }
@@ -581,7 +605,12 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
         cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
             auto type = cJSON_GetObjectItemCaseSensitive(currentShader, "type")->valuestring;
             switch(mesh3DShaderTypes[type]) {
-                case Mesh3DShaderLoaderMapping::ShaderEdgeObject: {
+                case Mesh3DShaderLoaderMapping::FXTint: {
+                    auto c = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
+                    auto alpha = (float) cJSON_GetObjectItemCaseSensitive(currentShader, "alpha")->valuedouble;
+                    auto enabled = (bool) cJSON_GetObjectItemCaseSensitive(currentShader, "enabled")->valueint;
+                    auto shader = new FXColorTint(enabled, SceneLoader::parseColorJSON(c), alpha);
+                    o->addMesh3DShader(shader);
                     break;
                 }
             }
@@ -645,4 +674,13 @@ bool Object3D::isMultiScene() const {
 
 void Object3D::setMultiScene(bool multiScene) {
     Object3D::multiScene = multiScene;
+}
+
+const std::vector<Object3D *> &Object3D::getAttached() const {
+    return attached;
+}
+
+void Object3D::attachObject(Object3D* o)
+{
+    attached.push_back(o);
 }

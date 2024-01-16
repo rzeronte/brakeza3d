@@ -98,3 +98,18 @@ void FXBlink::setCounter(float step)
     counter.setStep(step);
     counter.setEnabled(true);
 }
+
+cJSON *FXBlink::getJSON()
+{
+    cJSON *root = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(root, "type", this->getLabel().c_str());
+    cJSON_AddNumberToObject(root, "step", step);
+    cJSON *colorJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(colorJSON, "r", color.r);
+    cJSON_AddNumberToObject(colorJSON, "g", color.g);
+    cJSON_AddNumberToObject(colorJSON, "b", color.b);
+    cJSON_AddItemToObject(root, "color", colorJSON);
+
+    return root;
+}

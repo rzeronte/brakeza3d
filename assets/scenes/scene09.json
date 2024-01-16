@@ -1,0 +1,91 @@
+{
+	"ads":	{
+		"diffuse":	{
+			"x":	0.4754098653793335,
+			"y":	0.4754098653793335,
+			"z":	0.4754098653793335
+		},
+		"specular":	{
+			"x":	0.31147539615631104,
+			"y":	0.31147539615631104,
+			"z":	0.31147539615631104
+		},
+		"ambient":	{
+			"x":	0.48770493268966675,
+			"y":	0.48770493268966675,
+			"z":	0.48770493268966675
+		}
+	},
+	"objects":	[{
+			"name":	"sprite3D_3",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	true,
+			"position":	{
+				"x":	0,
+				"y":	8.0185251135844737e-05,
+				"z":	2.0033895969390869
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"width":	0.699999988079071,
+			"height":	1.2000000476837158,
+			"animations":	[{
+					"sprite":	"../assets/sprites//Smoke45Frames.png",
+					"width":	128,
+					"height":	128,
+					"numberFrames":	45,
+					"fps":	30
+				}],
+			"currentIndexAnimation":	0,
+			"type":	"Sprite3D"
+		}, {
+			"name":	"new_sprite3D_40",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	true,
+			"position":	{
+				"x":	-0.60000002384185791,
+				"y":	2.0804611492223311e-15,
+				"z":	5.003389835357666
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"x":	191,
+			"y":	360,
+			"animation":	{
+				"sprite":	"../assets/sprites//Smoke45Frames.png",
+				"width":	128,
+				"height":	128,
+				"numberFrames":	45,
+				"fps":	30
+			},
+			"type":	"Sprite2D"
+		}],
+	"shaders":	[],
+	"scripts":	[],
+	"camera":	{
+		"position":	{
+			"x":	0.09473785012960434,
+			"y":	0.070486597716808319,
+			"z":	0.23387116193771362
+		},
+		"rotation":	{
+			"x":	0,
+			"y":	0,
+			"z":	0
+		}
+	}
+}

@@ -11,7 +11,6 @@ ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
 :
     scriptFilename(script),
     fileTypes(std::move(properties)),
-    content(nullptr),
     paused(false)
 {
     Logging::Message("Loading LUA Script (%s, %s)", script.c_str(), fileTypes.c_str());
@@ -20,22 +19,22 @@ ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
     parseTypesFromFileAttributes();
 }
 
-ScriptLUA::ScriptLUA(const std::string &script, cJSON *types)
+ScriptLUA::ScriptLUA(const std::string &scriptFilename, cJSON *types)
 :
-    scriptFilename(script),
-    fileTypes(ScriptLUA::dataTypesFileFor(script)),
-    content(nullptr),
+    scriptFilename(scriptFilename),
+    fileTypes(ScriptLUA::dataTypesFileFor(scriptFilename)),
     paused(false)
 {
-    Logging::Message("Loading LUA Script (%s, %s)", script.c_str(), fileTypes.c_str());
+    Logging::Message("Loading LUA Script (%s, %s)", scriptFilename.c_str(), fileTypes.c_str());
 
-    getCode(script);
+    getCode(scriptFilename);
     setDataTypesFromJSON(types);
 }
 
 void ScriptLUA::getCode(const std::string &script)
 {
     size_t file_size;
+    content.clear();
     content = Tools::readFile(EngineSetup::get()->SCRIPTS_FOLDER + script, file_size);
 }
 
@@ -180,9 +179,6 @@ void ScriptLUA::parseTypesFromFileAttributes()
 
 void ScriptLUA::setDataTypesFromJSON(cJSON *typesJSON)
 {
-    //dataTypes.clear();
-    //dataTypesDefaultValues.clear();
-
     cJSON *currentType;
     cJSON_ArrayForEach(currentType, typesJSON) {
         auto name = cJSON_GetObjectItemCaseSensitive(currentType, "name")->valuestring;
@@ -229,27 +225,9 @@ void ScriptLUA::updateFileTypes()
     Logging::Message("Updating types file (%s)", this->fileTypes.c_str());
     char *output_string = cJSON_Print(getTypesJSON());
 
-    updateFileTypesWith( output_string);
+    Tools::writeToFile(EngineSetup::get()->SCRIPTS_FOLDER + this->fileTypes, output_string);
 
     delete output_string;
-}
-
-void ScriptLUA::updateFileTypesWith(const std::string& content) const
-{
-    std::ofstream file(EngineSetup::get()->SCRIPTS_FOLDER + this->fileTypes, std::ios::trunc);
-
-    if (!file.is_open()) {
-        Logging::Message("File %s can't be loaded!", fileTypes.c_str());
-        return;
-    }
-
-    file << content;
-    file.close();
-
-    if (file.fail()) {
-        Logging::Message("Error writing to file %s", fileTypes.c_str());
-        return;
-    }
 }
 
 bool ScriptLUA::updateScriptCodeWith(const std::string& content) const
@@ -340,7 +318,6 @@ void ScriptLUA::drawImGuiProperties()
                 default:
                     std::cerr << "Unknown data type." << std::endl;
             }
-
         }
 
         ImGui::TreePop();

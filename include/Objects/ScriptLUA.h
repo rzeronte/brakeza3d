@@ -23,11 +23,8 @@ typedef std::variant<int, float, Vertex3D> LUADataValue;
 
 struct ScriptLUATypeData {
     ScriptLUATypeData(const char *name, const char *type, LUADataValue value)
-    :
-        name(name), type(type), value(value)
-    {
-    }
-
+    :name(name), type(type), value(value)
+    {}
     std::string name;
     std::string type;
     LUADataValue value;
@@ -44,9 +41,9 @@ private:
 public:
     explicit ScriptLUA(const std::string& script, std::string properties);
 
-    ScriptLUA(const std::string &script, cJSON *types);
+    ScriptLUA(const std::string &scriptFilename, cJSON *types);
 
-    char *content;
+    std::string content;
     std::vector<ScriptLUATypeData> dataTypes;
     std::vector<ScriptLUATypeData> dataTypesDefaultValues;
 
@@ -69,8 +66,6 @@ public:
     void removeDataType(const ScriptLUATypeData& data);
 
     void updateFileTypes();
-
-    void updateFileTypesWith(const std::string &content) const;
 
     void reloadEnvironment(sol::environment &environment);
 
