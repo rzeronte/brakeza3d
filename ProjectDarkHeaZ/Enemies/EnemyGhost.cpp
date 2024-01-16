@@ -24,7 +24,7 @@ EnemyGhost::EnemyGhost()
     counterDamageBlink.setEnabled(false);
     counterStuck.setEnabled(false);
     particleEmitter->setEnabled(true);
-
+    attachObject(light);
     setStuck(false);
 }
 
@@ -421,7 +421,7 @@ void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 
 void EnemyGhost::takeDamage(float damageTaken)
 {
-    //this->stamina -= damageTaken;
+    this->stamina -= damageTaken;
     if (this->stamina <= 0) {
         die();
     }

@@ -22,7 +22,7 @@
       "motion": {
         "type": 1,
         "from": { "x": 5, "y": 20 },
-        "to": { "x": 5, "y": 90 },
+        "to": { "x": 5, "y": 85 },
         "speed": 0.75
       },
       "weapon": {
@@ -112,7 +112,7 @@
         "damage": 5,
         "amount": 1000,
         "startAmount": 10000,
-        "speed": 10,
+        "speed": 1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.3,

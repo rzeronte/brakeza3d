@@ -1,171 +1,253 @@
 {
+	"ads":	{
+		"diffuse":	{
+			"x":	0.4754098653793335,
+			"y":	0.4754098653793335,
+			"z":	0.4754098653793335
+		},
+		"specular":	{
+			"x":	0.31147539615631104,
+			"y":	0.31147539615631104,
+			"z":	0.31147539615631104
+		},
+		"ambient":	{
+			"x":	0.48770493268966675,
+			"y":	0.48770493268966675,
+			"z":	0.48770493268966675
+		}
+	},
 	"objects":	[{
-			"name":	"Earth",
-			"scale":	0.68000000715255737,
+			"name":	"asteroid01",
+			"scale":	5.690000057220459,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	0,
-				"y":	1,
-				"z":	50
+				"x":	21.277929306030273,
+				"y":	8.7847013473510742,
+				"z":	50.116813659667969
 			},
 			"rotation":	{
 				"x":	0,
 				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[{
-					"name":	"BehaviorCircle.lua",
-					"types":	[{
-							"name":	"radius",
-							"type":	"int",
-							"value":	4
-						}, {
-							"name":	"speed",
-							"type":	"float",
-							"value":	1
-						}, {
-							"name":	"offset",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	2,
-								"z":	0
-							}
-						}, {
-							"name":	"center",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	0,
-								"z":	50
-							}
-						}]
-				}],
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.10000000149011612,
+				"y":	0.10000000149011612,
+				"z":	0
+			},
+			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models/planet_earth.fbx",
+			"model":	"../assets/models/asteroid_01.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"Sun",
-			"scale":	0.82999998331069946,
+			"name":	"asteroid02",
+			"scale":	4.1999998092651367,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	0,
-				"y":	0,
-				"z":	40
+				"x":	-11.622105598449707,
+				"y":	-5.4152431488037109,
+				"z":	50.016811370849609
 			},
 			"rotation":	{
 				"x":	0,
 				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[{
-					"name":	"BehaviorCircle.lua",
-					"types":	[{
-							"name":	"radius",
-							"type":	"int",
-							"value":	3
-						}, {
-							"name":	"speed",
-							"type":	"float",
-							"value":	2
-						}, {
-							"name":	"offset",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	2,
-								"z":	0
-							}
-						}, {
-							"name":	"center",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	0,
-								"z":	20
-							}
-						}]
-				}],
-			"shaders":	[{
-					"type":	"FXOutliner",
-					"size":	1,
-					"color":	{
-						"r":	0,
-						"g":	1,
-						"b":	0
-					}
-				}, {
-					"type":	"FXBlink",
-					"step":	0.10000000149011612,
-					"color":	{
-						"r":	0,
-						"g":	1,
-						"b":	0
-					}
-				}, {
-					"type":	"FXColorTint",
-					"enabled":	true,
-					"alpha":	0.34999999403953552,
-					"color":	{
-						"r":	1,
-						"g":	0,
-						"b":	0
-					}
-				}],
-			"model":	"../assets/models/planet_sun.fbx",
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.10000000149011612,
+				"y":	0.10000000149011612,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/asteroid_01.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"eye",
-			"scale":	0.0010000000474974513,
+			"name":	"asteroid03",
+			"scale":	2.7599999904632568,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	0,
-				"y":	2,
-				"z":	60
+				"x":	15.777919769287109,
+				"y":	19.984640121459961,
+				"z":	50.716812133789062
 			},
 			"rotation":	{
-				"x":	180,
-				"y":	-2,
+				"x":	0,
+				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[{
-					"name":	"BehaviorCircle.lua",
-					"types":	[{
-							"name":	"radius",
-							"type":	"int",
-							"value":	8
-						}, {
-							"name":	"speed",
-							"type":	"float",
-							"value":	1
-						}, {
-							"name":	"offset",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	2,
-								"z":	0
-							}
-						}, {
-							"name":	"center",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	0,
-								"z":	60
-							}
-						}]
-				}],
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.10000000149011612,
+				"y":	0.10000000149011612,
+				"z":	0
+			},
+			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models/eye.fbx",
+			"model":	"../assets/models/asteroid_01.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"asteroid04",
+			"scale":	1.1699999570846558,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	7.177912712097168,
+				"y":	3.3847088813781738,
+				"z":	50.716812133789062
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.10000000149011612,
+				"y":	0.10000000149011612,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/asteroid_02.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"asteroid05",
+			"scale":	1.6499999761581421,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-10.122122764587402,
+				"y":	9.48469066619873,
+				"z":	50.91680908203125
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.10000000149011612,
+				"y":	0.10000000149011612,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/asteroid_02.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"asteroid06",
+			"scale":	2.1600000858306885,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	3.5778763294219971,
+				"y":	15.584794044494629,
+				"z":	50.316810607910156
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.10000000149011612,
+				"y":	0.10000000149011612,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/asteroid_02.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Beholder",
+			"scale":	0.014999999664723873,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	1.4118670225143433,
+				"y":	6.5550365447998047,
+				"z":	317.89999389648438
+			},
+			"rotation":	{
+				"x":	71.300003051757812,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/beholder.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"AlienMoon",
+			"scale":	0.14000000059604645,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	207.34555053710938,
+				"y":	-69.879219055175781,
+				"z":	566.2401123046875
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/alien_moon.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"AlienMoon2",
+			"scale":	0.059999998658895493,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-77.180328369140625,
+				"y":	41.926288604736328,
+				"z":	98.94012451171875
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0010000000474974513,
+				"y":	0.0010000000474974513,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/alien_moon2.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],
@@ -173,9 +255,9 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	0,
-			"y":	0,
-			"z":	0.22311177849769592
+			"x":	-0.13999998569488525,
+			"y":	0.2200000137090683,
+			"z":	0.24011898040771484
 		},
 		"rotation":	{
 			"x":	0,

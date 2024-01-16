@@ -118,7 +118,7 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
         (float) weaponType->getSpeed(),
         100,
         color,
-        2.5f,
+        0.001f,
         EngineSetup::collisionGroups::ProjectileEnemy,
         EngineSetup::collisionGroups::Player,
         new ParticleEmitter(
@@ -170,7 +170,7 @@ void AmmoProjectileBodyEmitter::launchUniqueLaser()
             EngineSetup::collisionGroups::Player,
             weaponType->getSpeed(),
             color,
-            0.1f,
+            0.001f,
             false
         ),
         Brakeza3D::uniqueObjectLabel("laser")

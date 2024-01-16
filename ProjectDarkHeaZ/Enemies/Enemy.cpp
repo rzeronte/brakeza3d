@@ -17,7 +17,6 @@ Enemy::Enemy()
     light->setRotation(180, 0, 0);
     light->setMultiScene(true);
     light->setEnabled(false);
-    Brakeza3D::get()->addObject3D(light, "enemyLight");
 }
 
 EnemyState Enemy::getState() const {

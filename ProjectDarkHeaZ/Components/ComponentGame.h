@@ -61,18 +61,17 @@ private:
 
     std::vector<Sprite2D *> explosionSprites;
 
-    TextureAnimated * test;
-
-    Image *imageCredits;
-    Image *imageSplash;
-    Image *imageCrossFire;
-    Image *imageStatistics;
-    Image *imageDead;
-    Image *imageEndGame;
-    Image *boxStore;
-    Image *help;
-    Image *backgroundSpaceshipSelection;
-    Image *glassEffect;
+    Image imageCredits;
+    Image imageSplash;
+    Image imageCrossFire;
+    Image imageStatistics;
+    Image imageDead;
+    Image imageEndGame;
+    Image boxStore;
+    Image help;
+    Image backgroundSpaceshipSelection;
+    Image glassEffect;
+    Image border;
 
     std::vector<Image*> helps;
     int currentHelpIndex;
@@ -88,8 +87,6 @@ private:
 
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;
-
-    std::vector<Weapon *> weapons;
 
     Swarm *swarm;
 
@@ -107,7 +104,7 @@ private:
 public:
     ComponentGame();
 
-    virtual ~ComponentGame();
+    ~ComponentGame() override;
 
     void onStart() override;
 
@@ -133,13 +130,13 @@ public:
 
     void setGameState(EngineSetup::GameState state);
 
-    EngineSetup::GameState getGameState();
+    EngineSetup::GameState getGameState() const;
 
     void selectClosestObject3DFromPlayer();
 
     Object3D *getClosesObject3DFromPosition(Vertex3D to, bool skipPlayer, bool skipCurrentSelected);
 
-    void loadLevels();
+    void LoadLevels();
 
     void checkForEndLevel();
 
@@ -151,19 +148,17 @@ public:
 
     static void setEnemyWeaponsEnabled(bool value);
 
-    void removeInGameObjects() const;
-
-    void loadWeapons();
+    static void removeInGameObjects() ;
 
     void pressedKeyForNewGameOrResumeGame();
 
     void pressedKeyForBeginLevel();
 
-    void pressedKeyForFinishGameAndRestart();
+    void pressedKeyForFinishGameAndRestart() const;
 
     void pressedKeyByDead();
 
-    int getLiveEnemiesCounter();
+    static int getLiveEnemiesCounter();
 
     static void silenceInGameObjects();
 
@@ -197,7 +192,7 @@ public:
 
     void updateFadeToGameState();
 
-    void handlePressKeyByWin();
+    void handlePressKeyByWin() const;
 
     void showLevelStatistics(float alpha);
 
@@ -209,8 +204,6 @@ public:
 
     [[nodiscard]] FXLaser *getShaderLasers() const;
 
-    [[nodiscard]] const std::vector<Weapon *> &getWeapons() const;
-
     [[nodiscard]] Object3D *getClosesObject3DDirection(Vertex3D from, Vertex3D direction, bool skipPlayer, bool skipCurrentSelected) const;
 
     [[nodiscard]] FaderToGameStates *getFadeToGameState() const;
@@ -221,7 +214,7 @@ public:
 
     EngineSetup::GameState gameState;
 
-    [[nodiscard]] PlayerReflection *getClosestReflection(Vertex3D from) const;
+    [[nodiscard]] static PlayerReflection *getClosestReflection(Vertex3D from) ;
 
     [[nodiscard]] FXOffsetImage *getShaderForegroundImage() const;
 
@@ -243,13 +236,13 @@ public:
 
     [[nodiscard]] Sprite2D *getSpriteStuck() const;
 
-    void loadShaders();
+    void LoadFXAndShaders();
 
     void shaderBackgroundUpdate();
 
     void handleOnUpdateTutorialImages(float alpha);
 
-    void handlePressKeyHelp();
+    static void handlePressKeyHelp();
 
     static void setEnemiesBehaviors(bool value);
 
@@ -297,9 +290,9 @@ public:
 
     ShaderOpenGLLineLaser *getShaderOGLLineLaser();
 
-    ShaderOpenGLImageOffset *getShaderOGLImageOffset() const;
+    [[nodiscard]] ShaderOpenGLImageOffset *getShaderOGLImageOffset() const;
 
-    Image *boxTutorial;
+    Image boxTutorial;
     FXOutliner *shaderEdgeObject;
 };
 

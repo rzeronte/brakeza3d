@@ -14,10 +14,10 @@ BossLevel20::BossLevel20()
     const auto filter = EngineSetup::collisionGroups::ProjectileEnemy;
     const auto mask = EngineSetup::collisionGroups::Player;
 
-    rays.push_back(new RayLight(false, this, Vertex3D(1, 0, 0), Vertex3D::zero(), 500, 0, PaletteColors::getEnemyLaser(), Color::orange(), filter, mask ));
-    rays.push_back(new RayLight(false, this, Vertex3D(-1, 0, 0), Vertex3D::zero(), 500, 0, PaletteColors::getEnemyLaser(), Color::orange(), filter, mask ));
-    rays.push_back(new RayLight(false, this, Vertex3D(0, 1, 0), Vertex3D::zero(), 500, 0, PaletteColors::getEnemyLaser(), Color::orange(), filter, mask ));
-    rays.push_back(new RayLight(false, this, Vertex3D(0, -1, 0), Vertex3D::zero(), 500, 0, PaletteColors::getEnemyLaser(), Color::orange(), filter, mask ));
+    rays.push_back(new RayLight(false, this, Vertex3D(1, 0, 0), Vertex3D::zero(), 0.1, 0, PaletteColors::getEnemyLaser(), Color::orange(), filter, mask ));
+    rays.push_back(new RayLight(false, this, Vertex3D(-1, 0, 0), Vertex3D::zero(), 0.1, 0, PaletteColors::getEnemyLaser(), Color::orange(), filter, mask ));
+    rays.push_back(new RayLight(false, this, Vertex3D(0, 1, 0), Vertex3D::zero(), 0.1, 0, PaletteColors::getEnemyLaser(), Color::orange(), filter, mask ));
+    rays.push_back(new RayLight(false, this, Vertex3D(0, -1, 0), Vertex3D::zero(), 0.1, 0, PaletteColors::getEnemyLaser(), Color::orange(), filter, mask ));
 }
 
 void BossLevel20::onStart()
@@ -70,7 +70,6 @@ void BossLevel20::invertPhase()
     }
 }
 
-
 void BossLevel20::updateRays()
 {
     for (auto rayLight : rays) {
@@ -78,8 +77,8 @@ void BossLevel20::updateRays()
         rayLight->setColor(PaletteColors::getEnemyLaser());
         rayLight->setDamage(1);
         rayLight->setEnabled(true);
-        rayLight->setIntensity(0.25f);
-        rayLight->setReach(progress * 1000);
-        rayLight->update(true);
+        rayLight->setIntensity(0.0015f);
+        rayLight->setReach(progress * 10.0f);
+        rayLight->update(false);
     }
 }

@@ -67,6 +67,8 @@ public:
     LevelStats *stats;
     EnemyDialog *mainMessage;
 private:
+    std::vector<Weapon *> weapons;
+
     std::vector<std::string> levels;
     std::vector<EnemyGhostEmitter*> enemiesEmitter;
 
@@ -109,7 +111,7 @@ public:
 
     static ItemEnergyGhost* makeItemEnergyGhost(Vertex3D position);
 
-    ItemWeaponGhost* makeItemWeapon(int index, Vertex3D position);
+    static ItemWeaponGhost* makeItemWeapon(int index, Vertex3D position);
 
     [[nodiscard]] bool isLevelFinished() const;
 
@@ -173,7 +175,7 @@ public:
 
     SalvageSpaceship* makeSalvageSpaceship(Vertex3D vertex3D);
 
-    void loadConfig();
+    void LoadConfig();
 
     static void updateConfig(int level);
 
@@ -182,6 +184,12 @@ public:
     EnemyDialog *getMainMessage();
 
     void setLevelScene(const std::string &levelScene);
+
+    void LoadJSONWeapons();
+
+    [[nodiscard]] const std::vector<Weapon *> &getWeapons() const;
+
+    virtual ~LevelLoader();
 };
 
 

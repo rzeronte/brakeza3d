@@ -53,8 +53,6 @@ RayLight::~RayLight()
 
 void RayLight::update(bool increase)
 {
-    updateDirection(parent->AxisDown().getNormalize(),parent->AxisUp().getScaled(-1.3f));
-
     particles->onUpdate();
 
     auto game = ComponentsManager::get()->getComponentGame();

@@ -16,7 +16,7 @@ void FXLaser::update()
     if (!isEnabled()) return;
 
     auto shader = ComponentsManager::get()->getComponentGame()->getShaderOGLLineLaser();
-    auto fb = ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer();
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
     for (auto l: lasers) {
         shader->render(
