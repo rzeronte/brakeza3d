@@ -16,10 +16,6 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color)
     }
 }
 
-void Drawable::drawLineLighting(Line2D L, Color color)
-{
-}
-
 void Drawable::drawVector3D(Vector3D V, Color color)
 {
     glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix();
@@ -41,27 +37,9 @@ void Drawable::drawVector3D(Vector3D V, Color color)
         P1,
         P2,
         color,
-        0.001f,
+        0.0001f,
         ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
-}
-
-
-void Drawable::drawLightingVector3D(Vector3D V, Color color)
-{
-    if (!Tools::isValidVector(V.vertex1) || !Tools::isValidVector(V.vertex2)) {
-        return;
-    }
-
-    if (!Frustum::isVertexInside(V.vertex1) && !Frustum::isVertexInside(V.vertex2)) {
-        return;
-    }
-
-    auto V1 = Transforms::WorldToPoint(V.vertex1);
-    auto V2 = Transforms::WorldToPoint(V.vertex2);
-
-    Line2D line(V1.x, V1.y, V2.x, V2.y);
-    Drawable::drawLineLighting(line, color);
 }
 
 void Drawable::drawMainAxis()
@@ -164,7 +142,7 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
         offsetAmount /= 2;
     }
     for ( auto ir = segmentList.begin(); ir != segmentList.end(); ++ir) {
-        Drawable::drawLightingVector3D(*ir.base(), color);
+        Drawable::drawVector3D(*ir.base(), color);
     }
 }
 

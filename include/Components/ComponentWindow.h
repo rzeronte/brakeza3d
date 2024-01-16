@@ -24,6 +24,13 @@
 #include "../OpenGL/ShaderOpenGLFOG.h"
 #include "../OpenGL/ShaderOpenGLShockWave.h"
 #include "../../src/OpenGL/ShaderOpenGLTint.h"
+#include "../OpenGL/ShaderOpenGLCustom.h"
+
+enum class ImGUIConfigs {
+    DEFAULT,
+    DESIGN,
+    CODING
+};
 
 class ComponentWindow : public Component {
 private:
@@ -65,6 +72,9 @@ private:
     ShaderOpenGLFOG *shaderOGLFOG;
     ShaderOpenGLShockWave *shaderOGLShockWave;
     ShaderOpenGLTint *shaderOGLTint;
+
+    ImGUIConfigs ImGuiConfig;
+
 public:
 
     ComponentWindow();
@@ -159,6 +169,12 @@ public:
     ShaderOpenGLTint *getShaderOGLTint() const;
 
     void RenderLayersToMain();
+
+    void ImGuiInitialize(const std::string &configFile);
+
+    void ImGuiOnUpdate();
+
+    ImGUIConfigs ImGuiConfigChanged;
 };
 
 

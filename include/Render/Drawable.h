@@ -19,10 +19,6 @@ public:
 
     static void drawVector3D(Vector3D V, Color color);
 
-    static void drawLightingVector3D(Vector3D V, Color color);
-
-    static void drawLineLighting(Line2D L, Color color);
-
     static void drawObject3DAxis(Object3D *object, bool drawUp, bool drawRight, bool drawForward);
 
     static void drawMainAxis();

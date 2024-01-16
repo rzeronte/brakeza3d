@@ -6,9 +6,7 @@
 #define BRAKEZA3D_TILEMANAGER_H
 
 #include <vector>
-#include <CL/cl.h>
 #include "../Objects/OpenCLTypes.h"
-
 
 struct OCTileRender {
     OCTileRender(bool draw, int id, int idX, int idY, int startX, int startY, int w, int h)
