@@ -17,45 +17,40 @@
 		}
 	},
 	"objects":	[{
-			"name":	"Earth",
-			"scale":	14.4399995803833,
+			"name":	"Landscape",
+			"scale":	1,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-43.579837799072266,
-				"y":	-55.844394683837891,
-				"z":	338.10000610351562
+				"x":	0.050522029399871826,
+				"y":	-0.10325584560632706,
+				"z":	50
 			},
 			"rotation":	{
-				"x":	0,
+				"x":	124.79998779296875,
 				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	true,
-			"rotationFrame":	{
-				"x":	0.05000000074505806,
-				"y":	0.05000000074505806,
-				"z":	0
-			},
+			"rotationFrameEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models/planet_earth.fbx",
+			"model":	"../assets/models//landscape01.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"Sun",
-			"scale":	17.930000305175781,
+			"name":	"marsh",
+			"scale":	22.559999465942383,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	25.420141220092773,
-				"y":	0.01801016554236412,
-				"z":	404.70001220703125
+				"x":	-40.098323822021484,
+				"y":	-36.399188995361328,
+				"z":	116.92331695556641
 			},
 			"rotation":	{
-				"x":	-13.699999809265137,
+				"x":	106.40000152587891,
 				"y":	0,
-				"z":	14.59999942779541
+				"z":	0
 			},
 			"rotationFrameEnabled":	true,
 			"rotationFrame":	{
@@ -65,150 +60,7 @@
 			},
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models/planet_sun.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"dish",
-			"scale":	3.0299999713897705,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	88.033111572265625,
-				"y":	52.990890502929688,
-				"z":	180.6168212890625
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	-3.9000000953674316,
-				"z":	0
-			},
-			"rotationFrameEnabled":	true,
-			"rotationFrame":	{
-				"x":	0.10000000149011612,
-				"y":	0.10000000149011612,
-				"z":	0
-			},
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models/dish.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"Spaceship01",
-			"scale":	0.019999999552965164,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-172.93635559082031,
-				"y":	45.732990264892578,
-				"z":	212.73196411132812
-			},
-			"rotation":	{
-				"x":	-0.800000011920929,
-				"y":	79.9000015258789,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[{
-					"name":	"MoveForwardObject.lua",
-					"types":	[{
-							"name":	"speed",
-							"type":	"float",
-							"value":	0.059999998658895493
-						}]
-				}],
-			"shaders":	[],
-			"model":	"../assets/models//spaceships/red_spaceship_01.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"Spaceship02",
-			"scale":	0.029999999329447746,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	151.4617919921875,
-				"y":	-59.882980346679688,
-				"z":	361.6868896484375
-			},
-			"rotation":	{
-				"x":	-7,
-				"y":	-9.6000003814697266,
-				"z":	-2.7999999523162842
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[{
-					"name":	"MoveForwardObject.lua",
-					"types":	[{
-							"name":	"speed",
-							"type":	"float",
-							"value":	0.05000000074505806
-						}]
-				}],
-			"shaders":	[],
-			"model":	"../assets/models//spaceships/red_spaceship_02.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"Spaceship03",
-			"scale":	0.019999999552965164,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-103.85076141357422,
-				"y":	138.66644287109375,
-				"z":	324.6868896484375
-			},
-			"rotation":	{
-				"x":	64.699996948242188,
-				"y":	12.300000190734863,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[{
-					"name":	"MoveForwardObject.lua",
-					"types":	[{
-							"name":	"speed",
-							"type":	"float",
-							"value":	0.05000000074505806
-						}]
-				}],
-			"shaders":	[],
-			"model":	"../assets/models//spaceships/red_spaceship_03.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"Spaceship04",
-			"scale":	23.029998779296875,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	114.25787353515625,
-				"y":	44.082317352294922,
-				"z":	261.22979736328125
-			},
-			"rotation":	{
-				"x":	-23.899999618530273,
-				"y":	33.100002288818359,
-				"z":	0
-			},
-			"rotationFrameEnabled":	true,
-			"rotationFrame":	{
-				"x":	0.10000000149011612,
-				"y":	0.10000000149011612,
-				"z":	0
-			},
-			"scripts":	[{
-					"name":	"MoveForwardObject.lua",
-					"types":	[{
-							"name":	"speed",
-							"type":	"float",
-							"value":	0.05000000074505806
-						}]
-				}],
-			"shaders":	[],
-			"model":	"../assets/models//rune01.fbx",
+			"model":	"../assets/models//p_marsh.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],
@@ -216,13 +68,13 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	0.050522029399871826,
-			"y":	-0.10325584560632706,
-			"z":	0.22975553572177887
+			"x":	1.55123770236969,
+			"y":	0.73570996522903442,
+			"z":	13.532439231872559
 		},
 		"rotation":	{
-			"x":	0,
-			"y":	0,
+			"x":	-6.75,
+			"y":	2,
 			"z":	0
 		}
 	}
