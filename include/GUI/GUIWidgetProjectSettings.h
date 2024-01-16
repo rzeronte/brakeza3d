@@ -131,7 +131,7 @@ struct GUIWidgetProjectSettings {
                     scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
                     delete scriptEditableManager.script;
                     scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename));
-                    strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content);
+                    strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
                 }
                 ImGui::SameLine();
 

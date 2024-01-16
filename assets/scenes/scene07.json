@@ -22,8 +22,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-52.700820922851562,
-				"y":	35.50823974609375,
+				"x":	-53.5418701171875,
+				"y":	39.349113464355469,
 				"z":	100
 			},
 			"rotation":	{
@@ -37,13 +37,34 @@
 			"model":	"../assets/models/landscape03.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
+		}, {
+			"name":	"added_item_74",
+			"scale":	6.929999828338623,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-16.951360702514648,
+				"y":	2.7102484703063965,
+				"z":	62.09735107421875
+			},
+			"rotation":	{
+				"x":	153,
+				"y":	57.300003051757812,
+				"z":	-21.5
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//spaceShuttle.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-0.010268693789839745,
-			"y":	0.069383405148983,
+			"x":	-0.14026868343353271,
+			"y":	0.17938342690467834,
 			"z":	0.097352489829063416
 		},
 		"rotation":	{

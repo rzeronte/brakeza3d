@@ -82,6 +82,14 @@ void SceneLoader::loadScene(const std::string& filename)
                 ParticleEmitter::createFromJSON(currentObject);
                 break;
             }
+            case SceneObjectLoaderMapping::Sprite3D : {
+                Sprite3D::createFromJSON(currentObject);
+                break;
+            }
+            case SceneObjectLoaderMapping::Sprite2D : {
+                Sprite2D::createFromJSON(currentObject);
+                break;
+            }
         }
     }
 
@@ -255,7 +263,7 @@ void SceneLoader::createMesh3DBodyToScene(const std::string& filename, const cha
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name));
 }
 
-void SceneLoader::createSprite2DInScene()
+void SceneLoader::createSprite2DInScene(const std::string& filename, const std::string& name)
 {
     Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2);
 
@@ -263,13 +271,7 @@ void SceneLoader::createSprite2DInScene()
         EngineSetup::get()->screenWidth/2,
         EngineSetup::get()->screenHeight/2,
         false,
-        new TextureAnimated(
-            std::string(EngineSetup::get()->SPRITES_FOLDER + "pulsating_star.png"),
-            64,
-            64,
-            6,
-            12
-        )
+        new TextureAnimated(filename,1,1,1,1)
     );
     newObject->setPosition(position);
 
@@ -279,25 +281,19 @@ void SceneLoader::createSprite2DInScene()
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_sprite3D"));
 }
 
-void SceneLoader::createSprite3DInScene()
+void SceneLoader::createSprite3DInScene(const std::string& filename, const std::string& name)
 {
     Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2);
 
     auto *newObject = new Sprite3D(1, 1);
     newObject->setPosition(position);
-    newObject->addAnimation(
-        std::string(EngineSetup::get()->SPRITES_FOLDER + "pulsating_star.png"),
-        128,
-        128,
-        6,
-        6
-    );
+    newObject->addAnimation(filename,1,1,1,1);
     newObject->setAnimation(0);
 
     newObject->setBelongToScene(true);
     Logging::Message("Loading Sprite3D");
 
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_sprite3D"));
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("sprite3D"));
 }
 
 void SceneLoader::createParticleEmitterInScene() {

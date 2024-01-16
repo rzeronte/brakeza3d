@@ -5,8 +5,6 @@
 #ifndef BRAKEZA3D_FXLASER_H
 #define BRAKEZA3D_FXLASER_H
 
-
-#include <CL/cl.h>
 #include "../../include/Misc/Image.h"
 #include "../../include/OpenGL/FXEffectOpenGL.h"
 #include "../Weapons/ProjectileRay.h"
@@ -26,7 +24,7 @@ private:
     Image *mask;
     std::vector<OCLaser> lasers;
 public:
-    FXLaser(Image *mask);
+    explicit FXLaser(Image *mask);
 
     void update() override;
 

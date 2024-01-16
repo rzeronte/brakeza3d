@@ -112,8 +112,6 @@ public:
     float BILLBOARD_WIDTH_DEFAULT = 100.f;
     float BILLBOARD_HEIGHT_DEFAULT = 100.f;
 
-    bool TEXT_ON_OBJECT3D = false;
-
     // KEYBOARD
     float WALKING_SPEED = 0.1f;
     float TURN_SPEED = 0.1f;

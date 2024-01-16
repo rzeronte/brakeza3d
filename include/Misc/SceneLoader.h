@@ -18,7 +18,9 @@ enum class SceneObjectLoaderMapping {
     Mesh3DGhost,
     Mesh3DBody,
     SpotLight3D,
-    ParticleEmitter
+    ParticleEmitter,
+    Sprite3D,
+    Sprite2D
 };
 
 enum class Mesh3DShaderLoaderMapping {
@@ -36,7 +38,9 @@ class SceneLoader {
             {"SpotLight3D", SceneObjectLoaderMapping::SpotLight3D},
             {"Mesh3DGhost", SceneObjectLoaderMapping::Mesh3DGhost},
             {"Mesh3DBody", SceneObjectLoaderMapping::Mesh3DBody},
-            {"ParticleEmitter", SceneObjectLoaderMapping::ParticleEmitter}
+            {"ParticleEmitter", SceneObjectLoaderMapping::ParticleEmitter},
+            {"Sprite3D", SceneObjectLoaderMapping::Sprite3D},
+            {"Sprite2D", SceneObjectLoaderMapping::Sprite2D}
     };
 
     std::map<std::string, Mesh3DShaderLoaderMapping> mesh3DShaderTypes = {
@@ -72,9 +76,9 @@ public:
 
     static void createParticleEmitterInScene();
 
-    static void createSprite3DInScene();
+    static void createSprite3DInScene(const std::string& filename, const std::string& name);
 
-    static void createSprite2DInScene();
+    static void createSprite2DInScene(const std::string& filename, const std::string& name);
 
     static Color parseColorJSON(cJSON *color);
 };

@@ -99,7 +99,6 @@ void Weapon::onUpdate()
             rayLight->setReach(0);
             rayLight->updateDirection(parent->AxisDown().getNormalize(),parent->AxisUp().getScaled(-1.3f));
             rayLight->update(false);
-            Logging::Message("decrease: %f", rayLight->getReach());
         } else {
             rayLight->updateDirection(parent->AxisDown().getNormalize(),parent->AxisUp().getScaled(-1.3f));
             rayLight->update(true);
@@ -380,7 +379,6 @@ int Weapon::getStatus() const {
 
 void Weapon::setStatus(int value)
 {
-    Logging::Message("Change weapon %s status to %d", getLabel().c_str(), value);
     Weapon::status = value;
 }
 

@@ -20,7 +20,11 @@ void LUAIntegration(sol::state &lua)
         "x", sol::property(&Vertex3D::x, &Vertex3D::x),
         "y", sol::property(&Vertex3D::y, &Vertex3D::y),
         "z", sol::property(&Vertex3D::z, &Vertex3D::z),
-        "__add", sol::overload(&Vertex3D::operator+)
+        "__add", sol::overload(&Vertex3D::operator+),
+        "getScaled", sol::overload(
+                static_cast<Vertex3D (Vertex3D::*)(float) const>(&Vertex3D::getScaled),
+                static_cast<Vertex3D (Vertex3D::*)(float, float, float) const>(&Vertex3D::getScaled)
+        )
     );
 
     lua.new_usertype<M3>(
@@ -50,8 +54,8 @@ void LUAIntegration(sol::state &lua)
             "setEnabled", &Object3D::setEnabled,
             "setRemoved", &Object3D::setRemoved,
             "setLabel", &Object3D::setLabel,
-            "setScale", &Object3D::setScale
-            // Agrega más funciones y propiedades según sea necesario
+            "setScale", &Object3D::setScale,
+            "AxisForward", &Object3D::AxisForward
     );
 
 

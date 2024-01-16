@@ -115,7 +115,7 @@ void ComponentMenu::drawOptions()
     auto levelInfo = componentGame->getLevelLoader();
 
     int offsetY = 150;
-    int stepY = 50;
+    int stepY = 70;
 
     auto color = PaletteColors::getCrt();
 
