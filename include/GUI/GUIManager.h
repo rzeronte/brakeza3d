@@ -29,11 +29,6 @@ private:
     int selectedObjectIndex = -1;
     ScriptEditableManager scriptEditableManager;
 
-    std::string directory_path;
-    std::string directory_path_images;
-    std::string directory_path_scenes;
-
-    std::string selected_file;
     ImGuiConsoleApp *widgetConsole;
     GUIWidgetObjects3D *widgetObjects3D;
     GUIWidgetObject3DProperties *widgetObject3DProperties;
@@ -45,6 +40,7 @@ private:
     TexturePackage packageIcons;
     TexturePackage imagesFolder;
 
+    std::string selected_file;
     std::string currentVariableToAddName;
     std::string currentVariableToCreateCustomShader;
 
@@ -55,7 +51,7 @@ public:
         DIR *dir;
         struct dirent *ent;
 
-        if ((dir = opendir (directory_path_images.c_str())) != NULL) {
+        if ((dir = opendir (EngineSetup::get()->IMAGES_FOLDER.c_str())) != NULL) {
             while ((ent = readdir (dir)) != NULL) {
                 if (Tools::getExtensionFromFilename(ent->d_name) == "png") {
                     imagesFolder.addItem(EngineSetup::get()->IMAGES_FOLDER + ent->d_name, ent->d_name);
@@ -69,16 +65,12 @@ public:
     GUIManager(std::vector<Object3D *> &gameObjects)
     :
         gameObjects(gameObjects),
-        directory_path(EngineSetup::get()->SCRIPTS_FOLDER),
-        directory_path_images(EngineSetup::get()->IMAGES_FOLDER),
-        directory_path_scenes(EngineSetup::get()->SCENES_FOLDER),
         widgetConsole(new ImGuiConsoleApp(LUAManager::get()->getLua())),
         widgetObjects3D(new GUIWidgetObjects3D(packageIcons, this->gameObjects)),
         widgetObject3DProperties(new GUIWidgetObject3DProperties(packageIcons, this->gameObjects, scriptEditableManager)),
         widgetProjectSettings(new GUIWidgetProjectSettings(packageIcons, scriptEditableManager)),
         widgetMenu(new GUIWidgetMenu(packageIcons)),
-        widgetToolbar(new GUIWidgetToolbar(packageIcons)),
-        currentVariableToAddName("")
+        widgetToolbar(new GUIWidgetToolbar(packageIcons))
     {
         LoadUIIcons();
         loadImagesFolder();
@@ -95,6 +87,7 @@ public:
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/script.png", "scriptIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/swarm.png", "swarmIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/mesh.png", "meshIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/folder.png", "folderIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/player.png", "playerIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite2d.png", "sprite2DIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite3d.png", "sprite3DIcon");
@@ -281,7 +274,7 @@ public:
         DIR *dir;
         struct dirent *ent;
         std::vector<std::string> result;
-        if ((dir = opendir (directory_path_scenes.c_str())) != NULL) {
+        if ((dir = opendir (EngineSetup::get()->SCENES_FOLDER.c_str())) != NULL) {
             while ((ent = readdir (dir)) != NULL) {
                 if (Tools::getExtensionFromFilename(ent->d_name) == "json") {
                     result.emplace_back(ent->d_name);
@@ -463,7 +456,7 @@ public:
             struct dirent *ent;
             std::vector<std::string> result;
 
-            if ((dir = opendir (directory_path.c_str())) != NULL) {
+            if ((dir = opendir (EngineSetup::get()->SCRIPTS_FOLDER.c_str())) != NULL) {
                 while ((ent = readdir (dir)) != NULL) {
                     if (Tools::getExtensionFromFilename(ent->d_name) == "lua") {
                         result.emplace_back(ent->d_name);
