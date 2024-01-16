@@ -74,7 +74,7 @@ struct GUIWidgetObject3DProperties {
                         delete scriptEditableManager.script;
                         scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
                         scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename));
-                        strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content);
+                        strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
                     }
 
                     ImGui::SameLine();
@@ -106,13 +106,6 @@ struct GUIWidgetObject3DProperties {
                     o->setRemoved(true);
                 }
                 ImGui::SameLine();
-
-                ImGui::Button("Get JSON!");
-                if (ImGui::IsItemClicked()) {
-                    Logging::Message("getTypesJSON");
-                    std::string json = cJSON_Print(o->getJSON());
-                    Logging::Message(json.c_str());
-                }
 
             } else {
                 ImGui::Text("Select an object...");

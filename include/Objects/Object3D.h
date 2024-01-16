@@ -49,6 +49,7 @@ protected:
     float alpha;
 
     std::vector<ScriptLUA*> scripts;
+    std::vector<Object3D*> attached;
     sol::environment luaEnvironment;
     std::vector<FXEffectOpenGL*> shaders;
 
@@ -210,6 +211,10 @@ public:
     bool isMultiScene() const;
 
     void setMultiScene(bool multiScene);
+
+    const std::vector<Object3D *> &getAttached() const;
+
+    void attachObject(Object3D *o);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

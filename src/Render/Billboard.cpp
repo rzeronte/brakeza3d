@@ -106,3 +106,9 @@ void Billboard::fillBuffers()
 void Billboard::setTexture(Image *texture) {
     Billboard::texture = texture;
 }
+
+void Billboard::updateSize(float w, float h)
+{
+    width = w;
+    height = h;
+}

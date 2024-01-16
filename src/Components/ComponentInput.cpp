@@ -314,7 +314,7 @@ float ComponentInput::getControllerAxisRightY() const {
 void ComponentInput::handleToggleImGui(SDL_Event *event)
 {
     if (event->type == SDL_KEYDOWN) {
-        if (keyboard[SDL_SCANCODE_LCTRL]) {
+        if (keyboard[SDL_SCANCODE_F1]) {
             EngineSetup::get()->IMGUI_ENABLED = !EngineSetup::get()->IMGUI_ENABLED;
         }
     }

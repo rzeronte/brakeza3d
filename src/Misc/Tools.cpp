@@ -57,74 +57,6 @@ float Tools::getYTextureFromUV(SDL_Surface *surface, float v) {
     return surface->h * v;
 }
 
-Color Tools::readSurfacePixelFromBilinearUV(SDL_Surface *surface, float u, float v) {
-    float x = Tools::getXTextureFromUV(surface, u);
-    float y = Tools::getYTextureFromUV(surface, v);
-
-    int x1 = Tools::int_floor(x);    // current pixel
-    int y1 = Tools::int_floor(y);
-
-    if (x1 + 1 == surface->w || y1 + 1 == surface->h) {
-        return Tools::readSurfacePixel(surface, x, y);
-    }
-
-    int x2 = x1 + 1;    // next pixel
-    int y2 = y1 + 1;
-
-    Uint8 Q1red, Q1green, Q1blue, Q1alpha;
-    Uint8 Q2red, Q2green, Q2blue, Q2alpha;
-    Uint8 Q3red, Q3green, Q3blue, Q3alpha;
-    Uint8 Q4red, Q4green, Q4blue, Q4alpha;
-
-    Color Q1 = Tools::readSurfacePixel(surface, x1, y1);
-    Color Q3 = Tools::readSurfacePixel(surface, x1, y2);
-    Color Q2 = Tools::readSurfacePixel(surface, x2, y1);
-    Color Q4 = Tools::readSurfacePixel(surface, x2, y2);
-
-    SDL_GetRGBA(Q1.getColor(), surface->format, &Q1red, &Q1green, &Q1blue, &Q1alpha);
-    SDL_GetRGBA(Q2.getColor(), surface->format, &Q2red, &Q2green, &Q2blue, &Q2alpha);
-    SDL_GetRGBA(Q3.getColor(), surface->format, &Q3red, &Q3green, &Q3blue, &Q3alpha);
-    SDL_GetRGBA(Q4.getColor(), surface->format, &Q4red, &Q4green, &Q4blue, &Q4alpha);
-
-    float f1 = (x2 - x) / (x2 - x1);
-    float f2 = (x - x1) / (x2 - x1);
-
-    Uint8 R1red, R1green, R1blue;
-    R1red = (f1 * Q1red) + (f2 * Q2red);
-    R1green = (f1 * Q1green) + (f2 * Q2green);
-    R1blue = (f1 * Q1blue) + (f2 * Q2blue);
-
-    Uint8 R2red, R2green, R2blue;
-    R2red = (f1 * Q3red) + (f2 * Q4red);
-    R2green = (f1 * Q3green) + (f2 * Q4green);
-    R2blue = (f1 * Q3blue) + (f2 * Q4blue);
-
-    float fy1 = (y2 - y) / (y2 - y1);
-    float fy2 = (y - y1) / (y2 - y1);
-
-    Uint8 Cred, Cgreen, Cblue;
-    Cred = (fy1 * R1red) + (fy2 * R2red);
-    Cgreen = (fy1 * R1green) + (fy2 * R2green);
-    Cblue = (fy1 * R1blue) + (fy2 * R2blue);
-
-    return Color(Cred, Cgreen, Cblue);
-}
-
-Color Tools::readSurfacePixelFromUV(SDL_Surface *surface, float &u, float &v) {
-    return Tools::readSurfacePixel(
-            surface,
-            Tools::getXTextureFromUV(surface, u),
-            Tools::getYTextureFromUV(surface, v)
-    );
-}
-
-Color Tools::readSurfacePixel(SDL_Surface *surface, int x, int y)
-{
-    auto *pixels = (Uint32 *) surface->pixels;
-
-    return Color(pixels[y * surface->w + x]);
-}
-
 bool Tools::fileExists(const char *name)
 {
     if (FILE *file = fopen(name, "r")) {
@@ -139,18 +71,41 @@ bool Tools::fileExists(const char *name)
 
 char *Tools::readFile(const std::string &name, size_t &source_size)
 {
-    // Load the kernel source code into the array source_str
     FILE *fp;
 
     fp = fopen(name.c_str(), "r");
 
     if (!fp) {
-        Logging::Log("File %s can't be loaded!", name.c_str());
+        perror(("Error opening file " + name).c_str());
         return nullptr;
     }
-    char *file_str = (char *) malloc(MAX_SOURCE_SIZE);
 
-    source_size = fread(file_str, 1, MAX_SOURCE_SIZE, fp);
+    fseek(fp, 0, SEEK_END);
+    source_size = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    if (source_size <= 0) {
+        Logging::Message("File %s is empty or has an error!", name.c_str());
+        fclose(fp);
+        return nullptr;
+    }
+
+    char *file_str = (char *)malloc(source_size + 1);
+
+    if (!file_str) {
+        Logging::Message("Memory allocation failed!");
+        fclose(fp);
+        return nullptr;
+    }
+
+    if (fread(file_str, 1, source_size, fp) != source_size) {
+        Logging::Message("Error reading file %s!", name.c_str());
+        fclose(fp);
+        free(file_str);
+        return nullptr;
+    }
+
+    file_str[source_size] = '\0';
 
     fclose(fp);
 
@@ -186,30 +141,6 @@ int Tools::random(int min, int max) //range : [min, max)
         first = false;
     }
     return min + rand() % ((max + 1) - min);
-}
-
-
-Vertex3D Tools::wedge(Vertex3D v1, Vertex3D v2) {
-    Vertex3D result;
-
-    result.x = (v1.y * v2.z) - (v2.y * v1.z);
-    result.y = (v1.z * v2.x) - (v2.z * v1.x);
-    result.z = (v1.x * v2.y) - (v2.x * v1.y);
-
-    return (result);
-}
-
-int Tools::classifyPoint(Vertex3D point, Vertex3D pO, Vertex3D pN) {
-
-    Vertex3D dir = pO - point;
-    double d = (dir * pN);
-
-    if (d < -0.001f)
-        return PLANE_FRONT;
-    else if (d > 0.001f)
-        return PLANE_BACKSIDE;
-
-    return ON_PLANE;
 }
 
 bool Tools::isZeroVector(Vertex3D &v) {
@@ -258,11 +189,6 @@ Color Tools::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha) {
 
 Color Tools::mixColor(Color a, Color b, float f) {
     return (a * (1.0f - f)) + (b * f);
-}
-
-int Tools::int_floor(float x) {
-    int i = (int) x; /* truncate */
-    return i - (i > x); /* convert trunc to floor */
 }
 
 void Tools::consoleVec3(vec3_t v, const std::string& name) {
@@ -319,21 +245,12 @@ std::vector<Vertex3D> Tools::getVerticesFromPathFinderPath(Grid3D *grid, std::st
     return result;
 }
 
-btMatrix3x3 Tools::M3ToBulletM3(M3 m) {
-    return btMatrix3x3(
-            m.m[0],
-            m.m[1],
-            m.m[2],
-            m.m[3],
-            m.m[4],
-            m.m[5],
-            m.m[6],
-            m.m[7],
-            m.m[8]
-    );
+btMatrix3x3 Tools::M3ToBulletM3(M3 m)
+{
+    return btMatrix3x3(m.m[0],m.m[1],m.m[2],m.m[3],m.m[4],m.m[5],m.m[6],m.m[7],m.m[8]);
 }
 
-M3 Tools::BulletM3ToM3(btMatrix3x3 m) {
+M3 Tools::BulletM3ToM3(const btMatrix3x3& m) {
     return M3(
         m.getRow(0).getX(), m.getRow(0).getY(), m.getRow(0).getZ(),
         m.getRow(1).getX(), m.getRow(1).getY(), m.getRow(1).getZ(),
@@ -377,9 +294,9 @@ void Tools::addSceneObject(const std::string& filename, const std::string& name)
     auto *newObject = new Mesh3DAnimated();
     newObject->setBelongToScene(true);
     newObject->setPosition(position);
-    newObject->AssimpLoadAnimation(std::string(EngineSetup::get()->MODELS_FOLDER + filename));
+    newObject->AssimpLoadAnimation(filename);
 
-    Logging::Message("Loading from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
+    Logging::Message("Loading from file: %s", std::string(filename).c_str());
 
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name.c_str()));
 }
@@ -412,6 +329,16 @@ std::string Tools::getExtensionFromFilename(const std::string& filename)
     }
 
     return "";
+}
+
+std::string Tools::getFilenameWithoutExtension(const std::string& filename)
+{
+    size_t dotPosition = filename.find_last_of(".");
+    if (dotPosition != std::string::npos) {
+        return filename.substr(0, dotPosition);
+    }
+
+    return filename;
 }
 
 void Tools::writeToFile(const std::string& fileName, const char *content)

@@ -29,7 +29,6 @@ void ComponentRender::onStart()
     initTiles();
 
     textWriter = new TextWriter(ComponentsManager::get()->getComponentWindow()->getRenderer(), ComponentsManager::get()->getComponentWindow()->getFontDefault());
-    addShaderToScene(new FXColorTint(false, Color::red(), 0));
 }
 
 void ComponentRender::preUpdate()
@@ -60,7 +59,7 @@ void ComponentRender::onUpdate()
     }
 
     if (isSceneShadersEnabled()) {
-        //runShadersOpenCLPostUpdate();
+        runShadersOpenCLPostUpdate();
     }
 
     if (SETUP->DRAW_FPS) {
@@ -281,22 +280,6 @@ void ComponentRender::setSelectedObject(Object3D *o) {
     this->selectedObject = o;
 }
 
-std::vector<Tile> &ComponentRender::getTiles() {
-    return tiles;
-}
-
-int ComponentRender::getTilesWidth() const {
-    return numberTilesHorizontal;
-}
-
-int ComponentRender::getTilesHeight() const {
-    return numberTilesVertical;
-}
-
-int ComponentRender::getNumTiles() const {
-    return numberTiles;
-}
-
 int ComponentRender::getFps() const{
     return fps;
 }
@@ -406,15 +389,15 @@ SceneLoader &ComponentRender::getSceneLoader() {
     return sceneLoader;
 }
 
-std::vector<FXEffectOpenGL *> &ComponentRender::getSceneShaders() {
+std::vector<ShaderOpenGLCustom *> &ComponentRender::getSceneShaders() {
     return sceneShaders;
 }
 
-FXEffectOpenGL *ComponentRender::getSceneShaderByIndex(int i) {
+ShaderOpenGLCustom *ComponentRender::getSceneShaderByIndex(int i) {
     return sceneShaders[i];
 }
 
-void ComponentRender::addShaderToScene(FXEffectOpenGL *shader)
+void ComponentRender::addShaderToScene(ShaderOpenGLCustom *shader)
 {
     sceneShaders.push_back(shader);
 }
@@ -438,7 +421,7 @@ void ComponentRender::runShadersOpenCLPostUpdate()
 void ComponentRender::runShadersOpenCLPreUpdate() {
     for( auto s: sceneShaders) {
         if (!s->isEnabled()) continue;
-        s->preUpdate();
+        s->onUpdate();
     }
 }
 

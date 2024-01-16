@@ -12,8 +12,7 @@
 #include "../../include/Objects/ParticleEmitter.h"
 #include "../../include/2D/Sprite2D.h"
 
-SceneLoader::SceneLoader()
-= default;
+SceneLoader::SceneLoader() = default;
 
 void SceneLoader::loadScene(const std::string& filename)
 {
@@ -24,6 +23,19 @@ void SceneLoader::loadScene(const std::string& filename)
     Logging::Message("Loading scene: %s", filename.c_str());
 
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    auto shaderRender = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender();
+
+    cJSON *adsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "ads");
+
+    if (adsJSON != nullptr) {
+        auto ambient = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "ambient"));
+        auto diffuse = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "diffuse"));
+        auto specular = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "specular"));
+
+        shaderRender->getDirectionalLight()->ambient = ambient.toGLM();
+        shaderRender->getDirectionalLight()->diffuse = diffuse.toGLM();
+        shaderRender->getDirectionalLight()->specular = specular.toGLM();
+    }
 
     cJSON *cameraJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "camera");
 
@@ -72,45 +84,24 @@ void SceneLoader::loadScene(const std::string& filename)
                 ParticleEmitter::createFromJSON(currentObject);
                 break;
             }
+            case SceneObjectLoaderMapping::Sprite3D : {
+                Sprite3D::createFromJSON(currentObject);
+                break;
+            }
+            case SceneObjectLoaderMapping::Sprite2D : {
+                Sprite2D::createFromJSON(currentObject);
+                break;
+            }
         }
     }
 
     cJSON *currentShaderJSON;
     cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(contentJSON, "shaders")) {
-        std::string typeObject = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
-        auto sceneShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getSceneShaderTypes();
-
-        Logging::Message("Shader ID: %s", typeObject.c_str());
-
-        switch(sceneShaderTypes[typeObject.c_str()]) {
-            case SceneShaderLoaderMapping::FXColorTint : {
-                Logging::Message("Setup FXColorTint shader...");
-                auto shader = dynamic_cast<FXColorTint*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(0));
-                shader->setColor(parseColorJSON(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "color")));
-                shader->setProgress((float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "alpha")->valuedouble);
-                shader->setEnabled(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "enabled")->valueint);
-                break;
-            }
-            /*case SceneShaderLoaderMapping::ShaderImage : {
-                auto shader = dynamic_cast<FXImage*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(0));
-                shader->getImage().setImage(cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "image")->valuestring);
-                shader->setOffsets(
-                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "offsetX")->valuedouble,
-                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "offsetY")->valuedouble
-                );
-                break;
-            }*/
-            /*case SceneShaderLoaderMapping::ShaderDepthOfField : {
-                auto shader = dynamic_cast<ShaderDepthOfField*> (ComponentsManager::get()->getComponentRender()->getSceneShaderByIndex(1));
-                shader->setup(
-                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "focusPlaneDepth")->valuedouble,
-                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "focusRange")->valuedouble,
-                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "blurSize")->valuedouble,
-                    (float) cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "intensity")->valuedouble
-                );
-                break;
-            }*/
-        }
+        std::string nameFragmentCodeFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "file")->valuestring;
+        std::string shaderCustomName = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
+        ComponentsManager::get()->getComponentRender()->addShaderToScene(
+            new ShaderOpenGLCustom(shaderCustomName, nameFragmentCodeFile)
+        );
     }
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
@@ -145,6 +136,29 @@ void SceneLoader::saveScene(const std::string &filename)
 {
     cJSON *root = cJSON_CreateObject();
 
+    auto ads = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender();
+    // illumination ADS
+    cJSON *adsJSON = cJSON_CreateObject();
+    cJSON *adsDiffuseJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(adsDiffuseJSON, "x", ads->getDirectionalLight()->diffuse.x);
+    cJSON_AddNumberToObject(adsDiffuseJSON, "y", ads->getDirectionalLight()->diffuse.y);
+    cJSON_AddNumberToObject(adsDiffuseJSON, "z", ads->getDirectionalLight()->diffuse.z);
+    cJSON_AddItemToObject(adsJSON, "diffuse", adsDiffuseJSON);
+
+    cJSON *adsSpecularJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(adsSpecularJSON, "x", ads->getDirectionalLight()->specular.x);
+    cJSON_AddNumberToObject(adsSpecularJSON, "y", ads->getDirectionalLight()->specular.y);
+    cJSON_AddNumberToObject(adsSpecularJSON, "z", ads->getDirectionalLight()->specular.z);
+    cJSON_AddItemToObject(adsJSON, "specular", adsSpecularJSON);
+
+    cJSON *adsAmbientJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(adsAmbientJSON, "x", ads->getDirectionalLight()->ambient.x);
+    cJSON_AddNumberToObject(adsAmbientJSON, "y", ads->getDirectionalLight()->ambient.y);
+    cJSON_AddNumberToObject(adsAmbientJSON, "z", ads->getDirectionalLight()->ambient.z);
+    cJSON_AddItemToObject(adsJSON, "ambient", adsAmbientJSON);
+
+    cJSON_AddItemToObject(root, "ads", adsJSON);
+
     //scripts
     cJSON *scriptsArray = cJSON_CreateArray();
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
@@ -158,7 +172,7 @@ void SceneLoader::saveScene(const std::string &filename)
     //shaders
     cJSON *shadersArrayJSON = cJSON_CreateArray();
     for (auto shader : ComponentsManager::get()->getComponentRender()->getSceneShaders()) {
-        auto objectJson = shader->getJSON();
+        auto objectJson = shader->getTypesJSON();
         cJSON_AddItemToArray(shadersArrayJSON, objectJson);
     }
     cJSON_AddItemToObject(root, "shaders", shadersArrayJSON);
@@ -251,7 +265,7 @@ void SceneLoader::createMesh3DBodyToScene(const std::string& filename, const cha
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name));
 }
 
-void SceneLoader::createSprite2DInScene()
+void SceneLoader::createSprite2DInScene(const std::string& filename, const std::string& name)
 {
     Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2);
 
@@ -259,7 +273,7 @@ void SceneLoader::createSprite2DInScene()
         EngineSetup::get()->screenWidth/2,
         EngineSetup::get()->screenHeight/2,
         false,
-        new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "Smoke45Frames.png"), 128, 128, 45, 24)
+        new TextureAnimated(filename,1,1,1,1)
     );
     newObject->setPosition(position);
 
@@ -269,20 +283,19 @@ void SceneLoader::createSprite2DInScene()
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_sprite3D"));
 }
 
-
-void SceneLoader::createSprite3DInScene()
+void SceneLoader::createSprite3DInScene(const std::string& filename, const std::string& name)
 {
     Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2);
 
     auto *newObject = new Sprite3D(1, 1);
     newObject->setPosition(position);
-    newObject->addAnimation(std::string(EngineSetup::get()->SPRITES_FOLDER + "Smoke45Frames.png"), 128, 128, 45, 24);
+    newObject->addAnimation(filename,1,1,1,1);
     newObject->setAnimation(0);
 
     newObject->setBelongToScene(true);
     Logging::Message("Loading Sprite3D");
 
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_sprite3D"));
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("sprite3D"));
 }
 
 void SceneLoader::createParticleEmitterInScene() {
@@ -341,8 +354,4 @@ std::map<std::string, SceneObjectLoaderMapping> &SceneLoader::getSceneTypes() {
 
 std::map<std::string, Mesh3DShaderLoaderMapping> &SceneLoader::getMesh3DShaderTypes() {
     return mesh3DShaderTypes;
-}
-
-std::map<std::string, SceneShaderLoaderMapping> &SceneLoader::getSceneShaderTypes() {
-    return sceneShaderTypes;
 }

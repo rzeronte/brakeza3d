@@ -15,7 +15,6 @@ ShaderOpenGL::ShaderOpenGL(const std::string &vertexFilename, const std::string 
     );
 }
 
-
 GLuint ShaderOpenGL::LoadShaders(const char * vertex_file_path, const char * fragment_file_path)
 {
     // Create the shaders

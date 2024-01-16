@@ -21,10 +21,6 @@
 #include <vec3.hpp>
 #include <vec2.hpp>
 
-#define PLANE_BACKSIDE 0x000001
-#define PLANE_FRONT    0x000010
-#define ON_PLANE       0x000100
-
 typedef float vec3_t[3];
 
 class Tools {
@@ -37,12 +33,6 @@ public:
     static float getXTextureFromUV(SDL_Surface *surface, float u);
 
     static float getYTextureFromUV(SDL_Surface *surface, float v);
-
-    static Color readSurfacePixelFromUV(SDL_Surface *surface, float &u, float &v);
-
-    static Color readSurfacePixelFromBilinearUV(SDL_Surface *surface, float u, float v);
-
-    static Color readSurfacePixel(SDL_Surface *surface, int x, int y);
 
     static bool fileExists(const char *name);
 
@@ -58,10 +48,6 @@ public:
 
     static int random(int min, int max); //range : [min, max)
 
-    static Vertex3D wedge(Vertex3D v1, Vertex3D v2);
-
-    static int classifyPoint(Vertex3D point, Vertex3D pO, Vertex3D pN);
-
     static bool isZeroVector(Vertex3D &v);
 
     static bool isValidVector(Vertex3D &v);
@@ -71,8 +57,6 @@ public:
     static Color alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha);
 
     static Color mixColor(Color color1, Color color2, float color2Intensity);
-
-    static int int_floor(float x);
 
     static void consoleVec3(vec3_t v, const std::string&);
 
@@ -84,7 +68,7 @@ public:
 
     static btMatrix3x3 M3ToBulletM3(M3 m);
 
-    static M3 BulletM3ToM3(btMatrix3x3 m);
+    static M3 BulletM3ToM3(const btMatrix3x3& m);
 
     static Vertex3D randomVertex();
 
@@ -105,6 +89,8 @@ public:
     static Vertex3D screenToWorld(float x, float y, float screenWidth, float screenHeight, const glm::mat4 &projectionMatrix, const glm::mat4 &viewMatrix);
 
     static bool saveTextureToFile(GLuint textureID, int width, int height, const char* fileName);
+
+    static std::string getFilenameWithoutExtension(const std::string &filename);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

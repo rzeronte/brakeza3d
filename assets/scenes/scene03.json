@@ -1,111 +1,258 @@
 {
+	"ads":	{
+		"diffuse":	{
+			"x":	0.4754098653793335,
+			"y":	0.4754098653793335,
+			"z":	0.4754098653793335
+		},
+		"specular":	{
+			"x":	0.31147539615631104,
+			"y":	0.31147539615631104,
+			"z":	0.31147539615631104
+		},
+		"ambient":	{
+			"x":	0.48770493268966675,
+			"y":	0.48770493268966675,
+			"z":	0.48770493268966675
+		}
+	},
 	"objects":	[{
-			"name":	"Earth",
-			"scale":	1.5,
+			"name":	"mercury",
+			"scale":	1,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	6,
-				"y":	0,
-				"z":	45
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models/planet_earth.fbx",
-			"enableLights":	false,
-			"shaders":	[],
-			"type":	"Mesh3D"
-		}, {
-			"name":	"Sun",
-			"scale":	2,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-7,
-				"y":	0,
+				"x":	-1,
+				"y":	1.0008047819137573,
 				"z":	40
 			},
 			"rotation":	{
-				"x":	0,
+				"x":	105,
 				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[{
-					"name":	"BehaviorCircle.lua",
-					"types":	[{
-							"name":	"radius",
-							"type":	"int",
-							"value":	3
-						}, {
-							"name":	"speed",
-							"type":	"float",
-							"value":	2
-						}, {
-							"name":	"offset",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	2,
-								"z":	0
-							}
-						}, {
-							"name":	"center",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	4.1999998092651367,
-								"y":	3.9000000953674316,
-								"z":	26.899999618530273
-							}
-						}]
-				}],
-			"model":	"../assets/models/planet_sun.fbx",
-			"enableLights":	false,
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
 			"shaders":	[],
+			"model":	"../assets/models/p_mercury.fbx",
+			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"Earth",
-			"scale":	1.5,
+			"name":	"venus",
+			"scale":	1,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	6,
+				"x":	-2.0549484247567307e-07,
+				"y":	1.0008047819137573,
+				"z":	50
+			},
+			"rotation":	{
+				"x":	88,
 				"y":	0,
-				"z":	45
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/p_venus.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"earth",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	1,
+				"y":	0.00080540886847302318,
+				"z":	60
+			},
+			"rotation":	{
+				"x":	121,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/p_earth.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"moon",
+			"scale":	0.40999999642372131,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	2,
+				"y":	-0.9991946816444397,
+				"z":	60
+			},
+			"rotation":	{
+				"x":	86,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/p_moon.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"jupiter",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	8,
+				"y":	-0.9991946816444397,
+				"z":	80
+			},
+			"rotation":	{
+				"x":	98,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/p_jupiter.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"saturn",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	16,
+				"y":	-2.9991960525512695,
+				"z":	90
+			},
+			"rotation":	{
+				"x":	32,
+				"y":	0,
+				"z":	135
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/p_saturn.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"uranus",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	24,
+				"y":	-5.9991974830627441,
+				"z":	100
+			},
+			"rotation":	{
+				"x":	82,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/p_uranus.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"sun",
+			"scale":	6,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-6,
+				"y":	3.0008039474487305,
+				"z":	30
 			},
 			"rotation":	{
 				"x":	0,
 				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
 			"scripts":	[],
-			"model":	"../assets/models/planet_earth.fbx",
-			"enableLights":	false,
 			"shaders":	[],
+			"model":	"../assets/models/p_sun.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"marsh",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	3,
+				"y":	-0.9991946816444397,
+				"z":	70
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models/p_marsh.fbx",
+			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],
-	"shaders":	[{
-			"type":	"FXColorTint",
-			"enabled":	false,
-			"alpha":	0.60000002384185791,
-			"color":	{
-				"r":	255,
-				"g":	0,
-				"b":	0
-			}
-		}],
+	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
 			"x":	0,
 			"y":	0,
-			"z":	0.10727088898420334
+			"z":	0.20245787501335144
 		},
 		"rotation":	{
 			"x":	0,
