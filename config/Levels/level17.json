@@ -20,7 +20,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 2,
+        "type": "follow",
         "speed": 0.5,
         "separation": 4
       },
@@ -69,7 +69,7 @@
       "stamina": 1250,
       "reward": true,
       "motion": {
-        "type": 0
+        "type": ""
       },
       "weapon": {
         "index": 0,
@@ -116,7 +116,7 @@
       "stamina": 1250,
       "reward": true,
       "motion": {
-        "type": 0
+        "type": ""
       },
       "weapon": {
         "index": 0,

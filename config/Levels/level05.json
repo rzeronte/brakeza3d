@@ -21,7 +21,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 1,
+        "type": "patrol",
         "from": { "x": 15, "y": 20 },
         "to": { "x": 15, "y": 60 },
         "speed": 0.5
@@ -61,7 +61,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 1,
+        "type": "patrol",
         "from": { "x": 85, "y": 20 },
         "to": { "x": 85, "y": 60 },
         "speed": 0.5

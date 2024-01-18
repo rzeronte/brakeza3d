@@ -20,7 +20,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 1,
+        "type": "patrol",
         "from":  { "x": 5,  "y": 40 },
         "to":  { "x": 30,  "y": 10 },
         "speed": 0.5
@@ -70,7 +70,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 1,
+        "type": "patrol",
         "from":  { "x": 95,  "y": 40 },
         "to":  { "x": 70,  "y": 10 },
         "speed": 0.5
@@ -120,7 +120,7 @@
       "stamina": 1500,
       "reward": true,
       "motion": {
-        "type": 0
+        "type": ""
       },
       "weapon": {
         "index": 0,
@@ -157,7 +157,7 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": 6,
+        "type": "rotation",
         "rotation": { "x": 0, "y": 0, "z": -1 }
       },
       "lasers": [
@@ -203,7 +203,7 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": 6,
+        "type": "rotation",
         "rotation": { "x": 0, "y": 0, "z": 1 }
       },
       "lasers": [
@@ -249,7 +249,7 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": 6,
+        "type": "rotation",
         "rotation": { "x": 0, "y": 0, "z": -1 }
       },
       "lasers": [

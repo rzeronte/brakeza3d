@@ -20,8 +20,7 @@ private:
     Image boxTutorial;
     Image border;
     Image imageLogoBox;
-
-    Mesh3D *planet;
+    std::string sceneMenu;
 
     std::vector<MenuOption> options;
     int currentOption;
@@ -29,8 +28,6 @@ private:
     bool menuEnabled;
 public:
     ComponentMenu();
-
-    ~ComponentMenu() override;
 
     void onStart() override;
 
@@ -49,8 +46,6 @@ public:
     void drawOptions();
 
     void loadMenuOptions();
-
-    void loadDecorative3DMesh();
 
     static void drawVersion();
 
@@ -74,6 +69,8 @@ public:
         MNU_HELP = 2,
         MNU_EXIT = 3,
     };
+
+    void LoadScene();
 };
 
 

@@ -20,7 +20,7 @@
       "name": "spaceShuttle",
       "avatar": "avatars/shuttle.png",
       "avatarHud": "avatars/shuttle_hud.png",
-      "position": { "x": 50, "y": 25 },
+      "position": { "x": 50, "y": 20 },
       "model": "spaceShuttle.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
@@ -28,16 +28,14 @@
       "stamina": 500,
       "reward": false,
       "motion": {
-        "type": 6
+        "type": "rotation"
       }
     }
-  ],
-  "boids": [
   ],
   "items": [
     {
       "type": 1,
-      "position": { "x": 50, "y": 35 },
+      "position": { "x": 50, "y": 40 },
       "help": 0
     }
   ]

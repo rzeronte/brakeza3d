@@ -21,7 +21,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 5,
+        "type": "path",
         "speed": 0.3,
         "points": [
           { "x": 10, "y": 75 },
@@ -66,7 +66,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 5,
+        "type": "path",
         "speed": 0.3,
         "points": [
           { "x": 90, "y": 10},
@@ -101,7 +101,5 @@
     }
   ],
   "items": [
-  ],
-  "boids": [
   ]
 }

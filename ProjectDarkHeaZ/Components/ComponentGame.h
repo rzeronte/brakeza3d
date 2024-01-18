@@ -88,8 +88,6 @@ private:
     Vertex3D spaceCrossFirePosition;
     Point2D imageCrossFireScreenPosition;
 
-    Swarm *swarm;
-
     StoreManager *storeManager;
 
     std::vector <Mesh3D*> spaceships;
@@ -231,8 +229,6 @@ public:
     [[nodiscard]] Sprite2D *getSpriteSparklesGreen() const;
 
     [[nodiscard]] Sprite2D *getSpriteSparklesBlue() const;
-
-    [[nodiscard]] Swarm *getSwarm() const;
 
     [[nodiscard]] Sprite2D *getSpriteStuck() const;
 

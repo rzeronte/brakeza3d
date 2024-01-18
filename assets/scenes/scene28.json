@@ -1,29 +1,92 @@
 {
 	"ads":	{
 		"diffuse":	{
-			"x":	0.4754098653793335,
-			"y":	0.4754098653793335,
-			"z":	0.4754098653793335
+			"x":	1,
+			"y":	1,
+			"z":	1
 		},
 		"specular":	{
-			"x":	0.31147539615631104,
-			"y":	0.31147539615631104,
-			"z":	0.31147539615631104
+			"x":	0,
+			"y":	0,
+			"z":	0
 		},
 		"ambient":	{
-			"x":	0.48770493268966675,
-			"y":	0.48770493268966675,
-			"z":	0.48770493268966675
+			"x":	0.84426230192184448,
+			"y":	0.84426230192184448,
+			"z":	0.84426230192184448
 		}
 	},
-	"objects":	[],
+	"objects":	[{
+			"name":	"added_item_69",
+			"scale":	0.25,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-28.921085357666016,
+				"y":	1.2540407180786133,
+				"z":	100
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//bomb01.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"added_item_71",
+			"scale":	0.25,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	34.5789794921875,
+				"y":	1.2540407180786133,
+				"z":	100
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//bomb02.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"added_item_50",
+			"scale":	0.25,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-1.2210789918899536,
+				"y":	1.2540407180786133,
+				"z":	100
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//bomb03.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	0.09473785012960434,
-			"y":	0.070486597716808319,
-			"z":	0.03387116193771362
+			"x":	0.039623022079467773,
+			"y":	-0.20239757001399994,
+			"z":	0.097845762968063354
 		},
 		"rotation":	{
 			"x":	0,

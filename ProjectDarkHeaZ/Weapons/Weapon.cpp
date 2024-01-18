@@ -1,7 +1,6 @@
 
 #include "Weapon.h"
 
-#include <utility>
 #include "../../include/Brakeza3D.h"
 #include "AmmoProjectileBody.h"
 #include "../Items/ItemBombGhost.h"
@@ -550,8 +549,6 @@ void Weapon::shootHologram(Object3D *parent, Vertex3D position)
         setAmmoAmount(ammoAmount - 1);
 
         ComponentsManager::get()->getComponentSound()->sound("gravitationalShield", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-
-        ComponentsManager::get()->getComponentGame()->getSwarm()->addPredator(new SwarmObject(reflection));
 
         Brakeza3D::get()->addObject3D(reflection, reflection->getLabel());
         Tools::makeFadeInSprite(position, ComponentsManager::get()->getComponentGame()->getFadeInSpriteGreen()->getAnimation());

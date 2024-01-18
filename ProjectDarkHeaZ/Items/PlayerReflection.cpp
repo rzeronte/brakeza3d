@@ -40,12 +40,4 @@ void PlayerReflection::postUpdate()
 
 PlayerReflection::~PlayerReflection()
 {
-    if (swarmObject != nullptr) {
-        ComponentsManager::get()->getComponentGame()->getSwarm()->removeBoid(swarmObject);
-    }
-}
-
-void PlayerReflection::setSwarmObject(SwarmObject *swarmObject)
-{
-    PlayerReflection::swarmObject = swarmObject;
 }

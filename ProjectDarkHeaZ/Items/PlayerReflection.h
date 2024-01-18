@@ -16,7 +16,6 @@ private:
 
     FXBlink *blink;
     Counter counterDamageBlink;
-    SwarmObject *swarmObject;
 public:
     explicit PlayerReflection(float ttl);
 
@@ -25,8 +24,6 @@ public:
     void postUpdate() override;
 
     ~PlayerReflection() override;
-
-    void setSwarmObject(SwarmObject *swarmObject);
 };
 
 

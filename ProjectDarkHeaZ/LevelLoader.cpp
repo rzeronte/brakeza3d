@@ -13,14 +13,12 @@
 #include "Items/ItemWeaponGhost.h"
 #include "Bosses/BossEnemy.h"
 #include "Behaviors/EnemyBehaviorRandom.h"
-#include "Enemies/AsteroidEnemyGhost.h"
 #include "Bosses/BossLevel10.h"
 #include "Bosses/BossLevel20.h"
 #include "Behaviors/EnemyBehaviorPath.h"
 #include "Bosses/BossLevel30.h"
 #include "LevelStats.h"
 #include "Items/EnemyDialog.h"
-#include "Enemies/BoidEnemyGhost.h"
 
 #include <utility>
 
@@ -49,8 +47,6 @@ void LevelLoader::load(int levelIndex)
     setHasMusic(false);
 
     auto game = ComponentsManager::get()->getComponentGame();
-    game->getSwarm()->reset();
-    game->getSwarm()->addPredator(new SwarmObject(ComponentsManager::get()->getComponentGame()->getPlayer()));
     game->getPlayer()->setKillsCounter(0);
 
     loadLevelFromJSON(levels[levelIndex]);
@@ -192,7 +188,6 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         auto enemy = new EnemyGhost();
         parseEnemyJSON(currentEnemyJSON, enemy);
 
-        ComponentsManager::get()->getComponentGame()->getSwarm()->addPredator(new SwarmObject(enemy));
         auto respawner = new EnemyGhostEmitter(enemy, 3);
         respawner->setPosition(enemy->getPosition());
         Brakeza3D::get()->addObject3D(respawner, Brakeza3D::uniqueObjectLabel("respawner"));
@@ -201,24 +196,12 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
 
     cJSON *currentItem;
     cJSON_ArrayForEach(currentItem, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "items")) {
-        this->parseItemJSON(currentItem);
+        LevelLoader::parseItemJSON(currentItem);
     }
 
     cJSON *currentBoss;
     cJSON_ArrayForEach(currentBoss, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "bosses")) {
         this->parseBossJSON(currentBoss);
-    }
-
-    cJSON *currentBoid;
-    cJSON_ArrayForEach(currentBoid, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "boids")) {
-        auto enemy = new BoidEnemyGhost();
-        parseEnemyJSON(currentBoid, enemy);
-        enemy->setSwarmObject(ComponentsManager::get()->getComponentGame()->getSwarm()->createBoid(enemy));
-
-        auto respawner = new EnemyGhostEmitter(enemy, 3);
-        respawner->setPosition(enemy->getPosition());
-        Brakeza3D::get()->addObject3D(respawner, Brakeza3D::uniqueObjectLabel("respawner"));
-        enemiesEmitter.push_back(respawner);
     }
 
     Logging::head("End loading Level: %s", filePath.c_str());
@@ -404,11 +387,6 @@ ItemWeaponGhost* LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
 {
     auto weapons = ComponentsManager::get()->getComponentGame()->getLevelLoader()->getWeapons();
 
-    bool frameBox = false;
-    if (indexWeapon == WEAPON_SHIELD || indexWeapon == WEAPON_REFLECTION || indexWeapon == WEAPON_BOMB) {
-        frameBox = true;
-    }
-
     auto *weaponItem = new ItemWeaponGhost(weapons[indexWeapon]);
     weaponItem->setLabel(Brakeza3D::uniqueObjectLabel("itemWeapon"));
     weaponItem->setEnableLights(false);
@@ -458,10 +436,10 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     enemy->setName(name);
 
     if (motion != nullptr) {
-        this->setBehaviorFromJSON(motion, enemy, Z_COORDINATE_GAMEPLAY + 1);
+        LevelLoader::setBehaviorFromJSON(motion, enemy, Z_COORDINATE_GAMEPLAY + 1);
     }
 
-    this->setLasersForEnemy(lasers, enemy);
+    LevelLoader::setLasersForEnemy(lasers, enemy);
 
     enemy->setEnabled(true);
     enemy->setLabel(Brakeza3D::uniqueObjectLabel("NPC"));
@@ -472,6 +450,11 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     enemy->setScale(1);
     enemy->setStamina(stamina);
     enemy->setStartStamina(stamina);
+
+    if (cJSON_GetObjectItemCaseSensitive(enemyJSON, "explode")) {
+        enemy->setExplode(true);
+        enemy->setExplodeDamage((float)cJSON_GetObjectItemCaseSensitive(enemyJSON, "explode")->valuedouble);
+    }
 
     if (cJSON_GetObjectItemCaseSensitive(enemyJSON, "avatar") != nullptr) {
         std::string avatar = cJSON_GetObjectItemCaseSensitive(enemyJSON, "avatar")->valuestring;
@@ -511,7 +494,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     }
 
     if (emitter != nullptr) {
-        this->setProjectileEmitterForEnemy(emitter, enemy);
+        LevelLoader::setProjectileEmitterForEnemy(emitter, enemy);
     }
 
     if (cJSON_GetObjectItemCaseSensitive(enemyJSON, "messages") != nullptr) {
@@ -524,9 +507,9 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
 
 void LevelLoader::setBehaviorFromJSON(cJSON *motion, Object3D *enemy, float depth)
 {
-    const int typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valueint;
+    std::string typeMotion = cJSON_GetObjectItemCaseSensitive(motion, "type")->valuestring;
 
-    switch(typeMotion) {
+    switch(behaviorTypes[typeMotion]) {
         case EnemyBehaviorTypes::ROTATE_FRAME: {
             enemy->setRotationFrameEnabled(true);
 
@@ -541,7 +524,7 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, Object3D *enemy, float dept
             Vertex3D from = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "from"), depth);
             Vertex3D to = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "to"), depth);
 
-            float behaviorSpeed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            auto behaviorSpeed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
             auto behavior = new EnemyBehaviorPatrol(from, to, behaviorSpeed);
             enemy->setBehavior(behavior);
 
@@ -555,8 +538,8 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, Object3D *enemy, float dept
         case EnemyBehaviorTypes::BEHAVIOR_FOLLOW: {
             auto behavior = new EnemyBehaviorFollow(
                 ComponentsManager::get()->getComponentGame()->getPlayer(),
-                cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint,
-                cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint
+                (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valueint,
+                (float) cJSON_GetObjectItemCaseSensitive(motion, "separation")->valueint
             );
             behavior->setEnabled(false);
             enemy->setBehavior(behavior);
@@ -565,22 +548,22 @@ void LevelLoader::setBehaviorFromJSON(cJSON *motion, Object3D *enemy, float dept
         case EnemyBehaviorTypes::BEHAVIOR_CIRCLE: {
             Vertex3D center = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(motion, "center"), depth);
 
-            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
-            float radius = (float) cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble;
+            auto speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            auto radius = (float) cJSON_GetObjectItemCaseSensitive(motion, "radius")->valuedouble;
 
             auto behavior = new EnemyBehaviorCircle(center, speed, radius);
             enemy->setBehavior(behavior);
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_RANDOM: {
-            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            auto speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
 
             auto behavior = new EnemyBehaviorRandom(speed);
             enemy->setBehavior(behavior);
             break;
         }
         case EnemyBehaviorTypes::BEHAVIOR_PATH: {
-            float speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
+            auto speed = (float) cJSON_GetObjectItemCaseSensitive(motion, "speed")->valuedouble;
             auto behavior = new EnemyBehaviorPath(speed);
 
             auto pointsJSON = cJSON_GetObjectItemCaseSensitive(motion, "points");
@@ -602,7 +585,7 @@ Point2D LevelLoader::parsePositionJSON(cJSON *positionJSON)
     const int x = (cJSON_GetObjectItemCaseSensitive(positionJSON, "x")->valueint * EngineSetup::get()->screenWidth) / 100;
     const int y = (cJSON_GetObjectItemCaseSensitive(positionJSON, "y")->valueint * EngineSetup::get()->screenHeight) / 100;
 
-    return Point2D(x, y);
+    return {x, y};
 }
 
 Vertex3D LevelLoader::parseVertex3DJSON(cJSON *vertex3DJSON)
@@ -611,7 +594,7 @@ Vertex3D LevelLoader::parseVertex3DJSON(cJSON *vertex3DJSON)
     const auto y = (float) cJSON_GetObjectItemCaseSensitive(vertex3DJSON, "y")->valuedouble;
     const auto z = (float) cJSON_GetObjectItemCaseSensitive(vertex3DJSON, "z")->valuedouble;
 
-    return Vertex3D(x, y, z);
+    return {x, y, z};
 }
 
 void LevelLoader::setLasersForEnemy(cJSON *lasers, EnemyGhost *enemy)
@@ -715,61 +698,61 @@ void LevelLoader::parseItemJSON(cJSON *itemJSON)
 
     switch(typeItem) {
         case LevelInfoItemsTypes::ITEM_ENERGY: {
-            auto item = this->makeItemEnergyGhost(position);
+            auto item = LevelLoader::makeItemEnergyGhost(position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_HEALTH: {
-            auto item = this->makeItemHealthGhost(position);
+            auto item = LevelLoader::makeItemHealthGhost(position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_WEAPON_PROJECTILE: {
-            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_PROJECTILE, position);
+            auto item = LevelLoader::makeItemWeapon(WeaponTypes::WEAPON_PROJECTILE, position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_WEAPON_RAYLIGHT: {
-            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_RAYLIGHT, position);
+            auto item = LevelLoader::makeItemWeapon(WeaponTypes::WEAPON_RAYLIGHT, position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_WEAPON_LASER: {
-            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_LASER, position);
+            auto item = LevelLoader::makeItemWeapon(WeaponTypes::WEAPON_LASER, position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_WEAPON_BOMB: {
-            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_BOMB, position);
+            auto item = LevelLoader::makeItemWeapon(WeaponTypes::WEAPON_BOMB, position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_WEAPON_REFLECTION: {
-            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_REFLECTION, position);
+            auto item = LevelLoader::makeItemWeapon(WeaponTypes::WEAPON_REFLECTION, position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_SHIELD: {
-            auto item = this->makeItemWeapon(WeaponTypes::WEAPON_SHIELD, position);
+            auto item = LevelLoader::makeItemWeapon(WeaponTypes::WEAPON_SHIELD, position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_HUMAN: {
-            auto item = this->makeItemHuman(position);
+            auto item = LevelLoader::makeItemHuman(position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;
         }
         case LevelInfoItemsTypes::ITEM_SALVAGE_SPACESHIP: {
-            auto item = this->makeSalvageSpaceship(position);
+            auto item = LevelLoader::makeSalvageSpaceship(position);
             item->setHasTutorial(help);
             item->setTutorialIndex(helpIndex);
             break;
@@ -822,11 +805,11 @@ void LevelLoader::setHasMusic(bool value)
 
 Color LevelLoader::parseColorJSON(cJSON *color)
 {
-    return Color(
-        cJSON_GetObjectItemCaseSensitive(color, "r")->valueint/255,
-        cJSON_GetObjectItemCaseSensitive(color, "g")->valueint/255,
-        cJSON_GetObjectItemCaseSensitive(color, "b")->valueint/255
-    );
+    return {
+    (float) cJSON_GetObjectItemCaseSensitive(color, "r")->valueint/255,
+    (float) cJSON_GetObjectItemCaseSensitive(color, "g")->valueint/255,
+    (float) cJSON_GetObjectItemCaseSensitive(color, "b")->valueint/255
+    };
 }
 
 const std::vector<std::string> &LevelLoader::getLevels() const {
@@ -865,8 +848,6 @@ void LevelLoader::moveBackgroundObjects(Vertex3D offset)
 
 void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
 {
-    auto componentGame = ComponentsManager::get()->getComponentGame();
-
     std::string text = cJSON_GetObjectItemCaseSensitive(message, "text")->valuestring;
     std::string sound = cJSON_GetObjectItemCaseSensitive(message, "sound")->valuestring;
 
@@ -1010,7 +991,8 @@ void LevelLoader::updateConfig(int level) {
     free(output_string);
 }
 
-EnemyDialog *LevelLoader::getMainMessage(){
+EnemyDialog *LevelLoader::getMainMessage() const
+{
     return mainMessage;
 }
 

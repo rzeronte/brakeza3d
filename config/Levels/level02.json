@@ -28,7 +28,7 @@
       "stamina": 500,
       "reward": false,
       "motion": {
-        "type": 6
+        "type": "rotation"
       }
     },
     {
@@ -43,7 +43,7 @@
       "stamina": 500,
       "reward": false,
       "motion": {
-        "type": 6
+        "type": "rotation"
       }
     }
   ],

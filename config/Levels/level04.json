@@ -21,7 +21,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 3,
+        "type": "circle",
         "center": { "x": 75, "y": 25 },
         "speed": 0.5,
         "radius": 3
@@ -61,7 +61,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 3,
+        "type": "circle",
         "center": { "x": 25, "y": 25 },
         "speed": -0.5,
         "radius": 3

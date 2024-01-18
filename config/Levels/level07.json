@@ -20,7 +20,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 1,
+        "type": "patrol",
         "from": { "x": 5, "y": 20 },
         "to": { "x": 5, "y": 85 },
         "speed": 0.75
@@ -60,7 +60,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 1,
+        "type": "patrol",
         "from": { "x": 95, "y": 20 },
         "to": { "x": 95, "y": 90 },
         "speed": 0.75
@@ -100,7 +100,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": 1,
+        "type": "patrol",
         "from": { "x": 20, "y": 10 },
         "to": { "x": 80, "y": 10 },
         "speed": 1

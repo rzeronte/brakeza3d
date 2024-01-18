@@ -37,9 +37,57 @@ struct GUIWidgetProjectDarkHeaZ
                     ImGui::TreePop();
                 }
 
-                if (ImGui::TreeNode("Offset Weapons Icons")) {
-                    ImGui::DragScalar("X", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->offsetIcons.x, 1.0f, &range_min, &range_max, "%d", 1.0f);
-                    ImGui::DragScalar("Y", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->offsetIcons.y, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                if (ImGui::TreeNode("Weapons Icons")) {
+                    if (ImGui::TreeNode("Global Offset")) {
+                        ImGui::DragScalar("X", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->offsetIcons.x, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->offsetIcons.y, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::TreePop();
+                    }
+                    if (ImGui::TreeNode("Weapon Icon Offset")) {
+                        ImGui::DragScalar("X", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->weaponIconOffset.x, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->weaponIconOffset.y, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::TreePop();
+                    }
+                    if (ImGui::TreeNode("Ammo Amount Offset")) {
+                        ImGui::DragScalar("X", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->ammoAmountOffset.x, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->ammoAmountOffset.y, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::TreePop();
+                    }
+                    if (ImGui::TreeNode("Bomb Icon Offset")) {
+                        ImGui::DragScalar("X", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->bombIconOffset.x, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->bombIconOffset.y, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::TreePop();
+                    }
+                    if (ImGui::TreeNode("Ammo Bomb Offset")) {
+                        ImGui::DragScalar("X", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->ammoBombOffset.x, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->ammoBombOffset.y, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::TreePop();
+                    }
+                    if (ImGui::TreeNode("Shield Icon Offset")) {
+                        ImGui::DragScalar("X", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->shieldIconOffset.x, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->shieldIconOffset.y, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::TreePop();
+                    }
+                    if (ImGui::TreeNode("Ammo Shield Offset")) {
+                        ImGui::DragScalar("X", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->ammoShieldOffset.x, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->ammoShieldOffset.y, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::TreePop();
+                    }
+                    if (ImGui::TreeNode("Reflection Icon Offset")) {
+                        ImGui::DragScalar("X", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->reflectionIconOffset.x, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->reflectionIconOffset.y, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::TreePop();
+                    }
+                    if (ImGui::TreeNode("Ammo Reflection Offset")) {
+                        ImGui::DragScalar("X", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->ammoReflectionOffset.x, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->ammoReflectionOffset.y, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::TreePop();
+                    }
+                    if (ImGui::TreeNode("Level Number Offset")) {
+                        ImGui::DragScalar("X", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->levelNumberOffset.x, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_S32, &ComponentsManager::get()->getComponentHUD()->levelNumberOffset.y, 1.0f, &range_min, &range_max, "%d", 1.0f);
+                        ImGui::TreePop();
+                    }
                     ImGui::TreePop();
                 }
 

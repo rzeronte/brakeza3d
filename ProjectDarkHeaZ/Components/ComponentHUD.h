@@ -62,6 +62,17 @@ public:
 
     Point2D globalOffset;
     Point2D offsetIcons;
+
+    Point2D weaponIconOffset;
+    Point2D ammoAmountOffset;
+    Point2D bombIconOffset;
+    Point2D ammoBombOffset;
+    Point2D shieldIconOffset;
+    Point2D ammoShieldOffset;
+    Point2D levelNumberOffset;
+    Point2D reflectionIconOffset;
+    Point2D ammoReflectionOffset;
+
     Point2D iconHealthOffset;
     Point2D iconEnergyOffset;
     Point2D resourcesOffset;
@@ -72,8 +83,8 @@ public:
 
     Point2D avatarEnemyOffset;
 
-    float strokeBars = 10.0f;
-    float intensityBars = 0.002f;
+    float strokeBars = 9.0f;
+    float intensityBars = 0.001f;
 };
 
 

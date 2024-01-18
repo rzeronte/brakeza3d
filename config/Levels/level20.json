@@ -34,7 +34,7 @@
       "stamina": 3000,
       "reward": true,
       "motion": {
-        "type": 1,
+        "type": "patrol",
         "from": { "x": 48, "y": 20 },
         "to": { "x": 52, "y": 20 },
         "speed": 0.5

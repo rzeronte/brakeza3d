@@ -13,8 +13,9 @@
 #include "../Weapons/ProjectileRay.h"
 #include "../../include/Behaviors/RotatableToTarget.h"
 #include "../../include/Objects/Swarm.h"
+#include "../Items/ExplotableObject.h"
 
-class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy, public LivingObject, public RotatableToTarget {
+class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy, public LivingObject, public RotatableToTarget, public ExplotableObject {
 private:
     Counter counterStuck;
     AmmoProjectileBodyEmitter *projectileEmitter;
@@ -22,7 +23,6 @@ private:
     ParticleEmitter *particleEmitter;
     Vertex3D particlesEngineOffset;
 
-    SwarmObject *swarmObject;
 protected:
     std::vector<ProjectileRay *> fixedLasers;
     std::vector<EnemyDialog *> dialogs;
@@ -75,8 +75,6 @@ public:
     void initLight();
 
     void updateLight();
-
-    void setSwarmObject(SwarmObject *o);
 
     void die();
 

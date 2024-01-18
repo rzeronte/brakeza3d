@@ -60,7 +60,8 @@ void ComponentGame::onStart()
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 
     auto camera = ComponentsManager::get()->getComponentCamera();
-    camera->getCamera()->setPosition(cameraCountDownPosition);
+    camera->getCamera()->setPosition(cameraInGamePosition);
+
     camera->setAutoScroll(false);
     camera->setAutoScrollSpeed(Vertex3D(0, -0.0, 0));
     camera->setFreeLook(FREE_LOOK_ENABLED);
@@ -80,12 +81,6 @@ void ComponentGame::onStart()
         -1,
         SPLASH_TIME * 1000
     );
-
-    swarm = new Swarm(Vertex3D(0, -10, 10), Vertex3D(100, 100, 50));
-    swarm->setMultiScene(true);
-    swarm->setScale(10);
-    swarm->addPredator(new SwarmObject(player));
-    Brakeza3D::get()->addObject3D(swarm, "swarm");
 
     storeManager = new StoreManager(player, textWriter);
 
@@ -216,19 +211,22 @@ void ComponentGame::postUpdate()
 void ComponentGame::handleOnUpdateTutorialImages(float alpha)
 {
     if (!getLevelLoader()->getTutorials().empty()) {
+        auto window = ComponentsManager::get()->getComponentWindow();
         float oldAlpha = textWriter->getAlpha();
         textWriter->setAlpha(alpha);
-        textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
+        textWriter->setFont(window->getFontAlternative());
         std::string message = std::to_string(getLevelLoader()->getCurrentTutorialIndex() + 1) + " of " + std::to_string((int)getLevelLoader()->getTutorials().size());
 
-        boxTutorial.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-        glassEffect.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+        boxTutorial.drawFlatAlpha(0, 0, alpha, window->getForegroundFramebuffer());
+        glassEffect.drawFlatAlpha(0, 0, alpha, window->getForegroundFramebuffer());
         getLevelLoader()->drawCurrentTutorialImage(alpha);
 
         writeDialogTextToContinue("Press ENTER to start...");
         if (getLevelLoader()->getTutorials().size() > 1) {
             textWriter->writeTTFCenterHorizontal(495, message.c_str(), PaletteColors::getCrt(), 0.5f);
         }
+        auto bb = window->getBackgroundFramebuffer();
+        glassEffect.drawFlatAlpha(0, 0, alpha, bb);
         textWriter->setAlpha(oldAlpha);
     }
 }
@@ -269,7 +267,6 @@ void ComponentGame::showLevelStatistics(float alpha)
     auto stats = getLevelLoader()->getStats();
     auto c = PaletteColors::getStatisticsText();
     auto fb = window->getForegroundFramebuffer();
-    auto bb = window->getBackgroundFramebuffer();
 
     glassEffect.drawFlatAlpha(0, 0, alpha, fb);
 
@@ -965,6 +962,8 @@ void ComponentGame::zoomCameraCountDown()
 
 void ComponentGame::handleMenuGameState()
 {
+    Logging::Message("ieah");
+
     ComponentsManager::get()->getComponentHUD()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(true);
@@ -974,8 +973,6 @@ void ComponentGame::handleMenuGameState()
     getPlayer()->stopBlinkForPlayer();
     getPlayer()->setEnergyShieldEnabled(false);
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
-
-    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraInGamePosition);
 
     setVisibleInGameObjects(false);
 }
@@ -1267,10 +1264,6 @@ Sprite2D *ComponentGame::getSpriteSparklesBlue() const {
     return spriteSparklesBlue;
 }
 
-Swarm *ComponentGame::getSwarm() const {
-    return swarm;
-}
-
 void ComponentGame::handleOnUpdateMessageRadio()
 {
     if (currentEnemyDialog == nullptr) return;
@@ -1365,6 +1358,8 @@ void ComponentGame::handleOnUpdateStore(const float alpha)
 
 void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)
 {
+    ComponentsManager::get()->getComponentRender()->getSceneLoader().clearScene();
+
     auto bb = ComponentsManager::get()->getComponentWindow()->getBackgroundFramebuffer();
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
@@ -1408,6 +1403,7 @@ void ComponentGame::handleOnUpdateSplash(const float alpha)
         splashCounter.setEnabled(false);
         getFadeToGameState()->setSpeed(FADE_SPEED_MENU_FIRST_TIME);
         makeFadeToGameState(EngineSetup::GameState::MENU, false);
+        ComponentsManager::get()->getComponentMenu()->LoadScene();
         //videoPlayer->play();
     }
 }

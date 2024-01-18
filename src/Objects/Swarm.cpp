@@ -1,9 +1,14 @@
 
-
 #include "../../include/Objects/Swarm.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+
+SwarmObject::SwarmObject()
+:
+    object(nullptr)
+{
+}
 
 Swarm::Swarm(Vertex3D position, Vertex3D size) : size(size)
 {
@@ -28,6 +33,11 @@ void Swarm::updateBounds()
 void Swarm::onUpdate()
 {
     Object3D::onUpdate();
+
+    if (debug) {
+        Drawable::drawAABB(&this->aabb, Color::yellow());
+    }
+
     updateBounds();
     updateBoids();
 }
@@ -42,12 +52,13 @@ void Swarm::separation(SwarmObject* swarmObject, std::vector<SwarmObject*> &obje
             direction = swarmObject->object->getPosition() - o->object->getPosition();
             direction = direction.getNormalize();
             direction = direction.divide(distance);
-            swarmObject->velocity = swarmObject->velocity + direction.getScaled(weight * 600);
+            swarmObject->velocity = swarmObject->velocity + direction.getScaled(weight);
         }
     }
 }
 
-void Swarm::alignment(SwarmObject* object, std::vector<SwarmObject*> &objects, float weight) {
+void Swarm::alignment(SwarmObject* object, std::vector<SwarmObject*> &objects, float weight) const
+{
     Vertex3D avgDirection;
     int count = 0;
     for (auto o: objects) {
@@ -58,13 +69,13 @@ void Swarm::alignment(SwarmObject* object, std::vector<SwarmObject*> &objects, f
         }
     }
     if (count > 0) {
-        avgDirection = avgDirection.divide(count);
+        avgDirection = avgDirection.divide((float) count);
         avgDirection = avgDirection.getNormalize();
         object->velocity = object->velocity + avgDirection.getScaled(weight);
     }
 }
 
-void Swarm::cohesion(SwarmObject* swarmObject, std::vector<SwarmObject*> &objects, float weight)
+void Swarm::cohesion(SwarmObject* swarmObject, std::vector<SwarmObject*> &objects, float weight) const
 {
     Vertex3D center;
     int count = 0;
@@ -76,7 +87,7 @@ void Swarm::cohesion(SwarmObject* swarmObject, std::vector<SwarmObject*> &object
         }
     }
     if (count > 0) {
-        center = center.divide(count);
+        center = center.divide((float) count);
         center = center - swarmObject->object->getPosition();
         center = center.getNormalize();
         swarmObject->velocity = swarmObject->velocity + center.getScaled(weight);
@@ -87,16 +98,18 @@ void Swarm::updateBoids()
 {
     for (auto o: objects) {
         separation(o, objects, separationWeight * globalBiasSeparation);
-        alignment(o, objects, alignmentWeight * globalBiasAligniment);
+        alignment(o, objects, alignmentWeight * globalBiasAlignment);
         cohesion(o, objects, cohesionWeight * globalBiasCohesion);
 
         attractTo(o, getPosition(), true, centerAttractionWeight * globalBiasSeparation);
-        checkBoundsAndAdjustVelocity(o, 1.2);
+
+        checkBoundsAndAdjustVelocity(o);
         avoidPredators(o);
 
         limitVelocity(o);
 
         updatePosition(o, velocityBoidsFactor);
+        o->object->lookAt(this);
     }
 }
 
@@ -120,40 +133,35 @@ SwarmObject* Swarm::createBoid(Object3D *mesh)
     return o;
 }
 
-void Swarm::limitVelocity(SwarmObject* object) const {
-
-    // Calcula la magnitud actual de la velocidad
+void Swarm::limitVelocity(SwarmObject* object) const
+{
     float currentSpeed = object->velocity.getModule();
 
-    // Si la velocidad actual es mayor que la velocidad máxima, reescala la velocidad
     if (currentSpeed > maxSpeed) {
         object->velocity = object->velocity.getNormalize().getScaled(maxSpeed);
     }
 
-    object->velocity.z = 0;
+    //object->velocity.z = 0;
 }
 
 Vertex3D Swarm::randomVertexInsideAABB()
 {
-    float x = Tools::random(minBounds.x, maxBounds.x);
-    float y = Tools::random(minBounds.y, maxBounds.y);
+    auto x = (float) Tools::random((int) minBounds.x, (int) maxBounds.x);
+    auto y = (float) Tools::random((int) minBounds.y, (int) maxBounds.y);
     float z = getPosition().z; //Tools::random(minBounds.z, maxBounds.z);
-    return Vertex3D(x, y, z);
+
+    return {x, y, z};
 }
 
-void Swarm::attractTo(SwarmObject* swarmObject, Vertex3D center, bool ignoreThresold, float weight)
+void Swarm::attractTo(SwarmObject* swarmObject, Vertex3D center, bool ignoreThresold, float weight) const
 {
     Vertex3D directionFromCenter = swarmObject->object->getPosition() - center;
 
-    // Calcula la distancia al centro.
     float distanceFromCenter = directionFromCenter.getModule();
 
-    // Si la distancia al centro es mayor que un cierto umbral, aplica una fuerza que empuja a la partícula de vuelta hacia el centro.
     if (distanceFromCenter > centerThreshold || ignoreThresold) {
-        // La fuerza es proporcional al cuadrado de la distancia al centro.
         Vertex3D centerForce = directionFromCenter.getNormalize().getScaled(-weight);
 
-        // Aplica la fuerza al vector de velocidad de la partícula.
         swarmObject->velocity = swarmObject->velocity + centerForce;
     }
 }
@@ -162,15 +170,12 @@ void Swarm::avoidPredators(SwarmObject* swarmObject) {
     for(auto& predator : predators) {
         Vertex3D directionFromPredator = swarmObject->object->getPosition() -  predator->object->getPosition();
 
-        // Calcula la distancia al depredador.
         float distanceFromPredator = directionFromPredator.getModule();
 
-        // Si la distancia al depredador es menor que un cierto umbral, aplica una fuerza que empuja a la partícula lejos del depredador.
         if (distanceFromPredator < predatorThreshold) {
             float forceMagnitude = predatorAvoidanceWeight * (1 - distanceFromPredator / predatorThreshold);
             Vertex3D predatorForce = directionFromPredator.getNormalize().getScaled(forceMagnitude);
 
-            // Aplica la fuerza al vector de velocidad de la partícula.
             swarmObject->velocity = swarmObject->velocity + predatorForce;
         }
     }
@@ -178,41 +183,25 @@ void Swarm::avoidPredators(SwarmObject* swarmObject) {
 
 void Swarm::updatePosition(SwarmObject *o, float weight)
 {
-    o->object->setPosition(o->object->getPosition() + (o->velocity.getScaled(weight * Brakeza3D::get()->getDeltaTime())).getScaled(1, 1, 0));
+    o->object->setPosition(o->object->getPosition() + (o->velocity.getScaled(weight * Brakeza3D::get()->getDeltaTime())).getScaled(1, 1, 1));
 }
 
-void Swarm::checkBoundsAndAdjustVelocity(SwarmObject* swarmObject, float turnFactor) {
+void Swarm::checkBoundsAndAdjustVelocity(SwarmObject* swarmObject) {
     // Obtén la posición del objeto
     Vertex3D position = swarmObject->object->getPosition();
 
-    // Si el objeto ha excedido los límites del AABB, ajusta su velocidad
-    if (position.x < minBounds.x) {
-        swarmObject->velocity.x = swarmObject->velocity.x + turnFactor;
-    }
-    if (position.x > maxBounds.x) {
-        swarmObject->velocity.x = swarmObject->velocity.x - turnFactor;
-    }
-    if (position.y < minBounds.y) {
-        swarmObject->velocity.y = swarmObject->velocity.y + turnFactor;
-    }
-    if (position.y > maxBounds.y) {
-        swarmObject->velocity.y = swarmObject->velocity.y - turnFactor;
-    }
-    if (position.z < minBounds.z) {
-        swarmObject->velocity.z = swarmObject->velocity.z + turnFactor;
-    }
-    if (position.z > maxBounds.z) {
-        swarmObject->velocity.z = swarmObject->velocity.z - turnFactor;
+    // Si el objeto ha excedido los límites del AABB, aplica fuerza inversa (fricción)
+    if (position.x < minBounds.x || position.x > maxBounds.x ||
+        position.y < minBounds.y || position.y > maxBounds.y ||
+        position.z < minBounds.z || position.z > maxBounds.z) {
+
+        attractTo(swarmObject, getPosition(), false, centerAttractionWeight);
     }
 }
 
 void Swarm::onDrawHostBuffer()
 {
     Object3D::onDrawHostBuffer();
-
-    if (EngineSetup::get()->DRAW_MESH3D_AABB) {
-        Drawable::drawAABB(&this->aabb, Color::yellow());
-    }
 }
 
 void Swarm::reset()
@@ -240,4 +229,54 @@ const char *Swarm::getTypeObject() {
 
 const char *Swarm::getTypeIcon() {
     return "swarmIcon";
+}
+
+void Swarm::drawImGuiProperties()
+{
+    Object3D::drawImGuiProperties();
+
+    if (ImGui::TreeNode("Swarm Settings")) {
+        const float range_min = -1000;
+        const float range_max = 100;
+        const float range_sensibility = 0.1;
+
+        ImGui::Checkbox("Debug", &debug);
+
+        if (ImGui::TreeNode("Size")) {
+            ImGui::DragScalar("X", ImGuiDataType_Float, &size.x, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Y", ImGuiDataType_Float, &size.y, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Z", ImGuiDataType_Float, &size.z, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNode("Weights")) {
+            ImGui::DragScalar("separation", ImGuiDataType_Float, &separationWeight, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("alignment", ImGuiDataType_Float, &alignmentWeight, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("cohesion", ImGuiDataType_Float, &cohesionWeight, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNode("Global Bias")) {
+            ImGui::DragScalar("Bias Separation", ImGuiDataType_Float, &globalBiasSeparation, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Bias Alignment", ImGuiDataType_Float, &globalBiasAlignment, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Bias Cohesion", ImGuiDataType_Float, &globalBiasCohesion, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNode("Predator")) {
+            ImGui::DragScalar("Threshold", ImGuiDataType_Float, &predatorThreshold, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Avoidance Weight", ImGuiDataType_Float, &predatorAvoidanceWeight, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNode("Center")) {
+            ImGui::DragScalar("Center threshold", ImGuiDataType_Float, &centerThreshold, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Center attraction", ImGuiDataType_Float, &centerAttractionWeight, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::TreePop();
+        }
+
+        ImGui::DragScalar("Max. Speed", ImGuiDataType_Float, &maxSpeed, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+        ImGui::DragScalar("Neighbor dist.", ImGuiDataType_Float, &neighborDist, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+        ImGui::DragScalar("Velocity Boids factor", ImGuiDataType_Float, &velocityBoidsFactor, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+        ImGui::DragScalar("Turn factor", ImGuiDataType_Float, &turnFactor, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+
+        ImGui::TreePop();
+    }
 }

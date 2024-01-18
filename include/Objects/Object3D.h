@@ -56,6 +56,10 @@ protected:
     Timer timer;
     float distanceToCamera;
 public:
+    bool enableLights;
+    float scale;
+    Vertex3D rotationFrame;
+    bool rotationFrameEnabled;
 
     Object3D();
 
@@ -105,7 +109,7 @@ public:
 
     virtual void postUpdate();
 
-    bool isRotationFrameEnabled() const;
+    [[nodiscard]] bool isRotationFrameEnabled() const;
 
     void setRotationFrameEnabled(bool value);
 
@@ -155,11 +159,6 @@ public:
 
     void setEnableLights(bool enableLights);
 
-    bool enableLights;
-    float scale;
-    Vertex3D rotationFrame;
-    bool rotationFrameEnabled;
-
     virtual cJSON *getJSON();
 
     void lookAt(Object3D *o);
@@ -202,17 +201,17 @@ public:
 
     [[nodiscard]] const Timer &getTimer() const;
 
-    bool isTransparent() const;
+    [[nodiscard]] bool isTransparent() const;
 
     void setTransparent(bool transparent);
 
-    float getDistanceToCamera() const;
+    [[nodiscard]] float getDistanceToCamera() const;
 
-    bool isMultiScene() const;
+    [[nodiscard]] bool isMultiScene() const;
 
     void setMultiScene(bool multiScene);
 
-    const std::vector<Object3D *> &getAttached() const;
+    [[nodiscard]] const std::vector<Object3D *> &getAttached() const;
 
     void attachObject(Object3D *o);
 };

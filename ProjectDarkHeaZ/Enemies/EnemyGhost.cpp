@@ -268,6 +268,13 @@ void EnemyGhost::resolveCollision(Collisionable *withObject)
 
         this->takeDamage(satellite->getDamage() * Brakeza3D::get()->getDeltaTime());
     }
+    auto *player = dynamic_cast<Player*> (withObject);
+    if (player != nullptr) {
+        if (isExplode()) {
+            takeDamage(getStamina());
+            player->takeDamage(getExplodeDamage());
+        }
+    }
 }
 
 void EnemyGhost::remove()
@@ -430,9 +437,6 @@ void EnemyGhost::takeDamage(float damageTaken)
 void EnemyGhost::die()
 {
     blink->setEnabled(false);
-    if (swarmObject != nullptr) {
-        ComponentsManager::get()->getComponentGame()->getSwarm()->removeBoid(swarmObject);
-    }
     ComponentsManager::get()->getComponentGame()->getPlayer()->increaseCoins(100);
     setState(ENEMY_STATE_DIE);
 }
@@ -450,10 +454,6 @@ void EnemyGhost::updateLight()
     light->setPosition(getPosition() + lightPositionOffset + AxisUp().getScaled(-0.1));
 }
 
-void EnemyGhost::setSwarmObject(SwarmObject *o) {
-    EnemyGhost::swarmObject = o;
-}
-
 std::vector<EnemyDialog *> &EnemyGhost::getDialogs() {
     return dialogs;
 }
@@ -465,6 +465,8 @@ void EnemyGhost::drawImGuiProperties()
     ImGui::Separator();
 
     if (ImGui::TreeNode("Enemy##")) {
+        ImGui::Checkbox("Explode", &explode);
+
         if (ImGui::TreeNode("Particles Offset##")) {
             const float range_color_sensibility = 0.01f;
             const float range_col_min = -100.0f;

@@ -6,15 +6,24 @@ ComponentHUD::ComponentHUD()
 :
     shaderLasers(nullptr),
     HUDTextures(nullptr),
-    globalOffset(Point2D(110, 672)),
-    offsetIcons(Point2D(-16, -13)),
-    staminaOffset(Point2D(0, 0)),
-    energyOffset(Point2D(474, 0)),
-    staminaEnemyOffset(Point2D(146, -615)),
-    avatarEnemyOffset(Point2D(-28, -625)),
+    globalOffset(Point2D(110, 652)),
+    offsetIcons(Point2D(242, -20)),
+    staminaOffset(Point2D(0, -12)),
+    energyOffset(Point2D(0, 23)),
+    staminaEnemyOffset(Point2D(55, -609)),
+    avatarEnemyOffset(Point2D(-26, -630)),
     iconHealthOffset(Point2D(-7, -9)),
     iconEnergyOffset(Point2D(462, -11)),
-    resourcesOffset(Point2D(869, -14))
+    resourcesOffset(Point2D(466, -20)),
+    weaponIconOffset(Point2D(0, 0)),
+    ammoAmountOffset(Point2D(0, 55)),
+    bombIconOffset(Point2D(56, 0)),
+    ammoBombOffset(Point2D(56, 55)),
+    shieldIconOffset(Point2D(112, 0)),
+    ammoShieldOffset(Point2D(112, 55)),
+    levelNumberOffset(Point2D(802, 22)),
+    reflectionIconOffset(Point2D(167, 0)),
+    ammoReflectionOffset(Point2D(167, 55))
 {
 }
 
@@ -114,7 +123,7 @@ void ComponentHUD::loadButtons()
 }
 void ComponentHUD::drawGhateringResources()
 {
-    const float sizeAmounts = 1.0f;
+    const float sizeAmounts = 0.5f;
     const int gatheringResourcesOffsetX = globalOffset.x + resourcesOffset.x;
     const int gatheringResourcesOffsetY = globalOffset.y + resourcesOffset.y;
 
@@ -133,8 +142,8 @@ void ComponentHUD::drawGhateringResources()
     );
 
     textWriter->writeTextTTFAutoSize(
-        gatheringResourcesOffsetX + 42,
-        gatheringResourcesOffsetY,
+        gatheringResourcesOffsetX,
+        gatheringResourcesOffsetY + 48 + 5,
         (std::string("x") + std::to_string(player->getCoins())).c_str(),
         PaletteColors::getMenuOptions(),
         sizeAmounts
@@ -142,14 +151,14 @@ void ComponentHUD::drawGhateringResources()
 
     // human
     HUDTextures->getTextureByLabel("astrounautIcon")->drawFlatAlpha(
-        gatheringResourcesOffsetX + 145,
+        gatheringResourcesOffsetX + 48 + 7,
         gatheringResourcesOffsetY,
         255,
         fb
     );
     textWriter->writeTextTTFAutoSize(
-        gatheringResourcesOffsetX + 190,
-        gatheringResourcesOffsetY,
+        gatheringResourcesOffsetX + 48 + 7,
+        gatheringResourcesOffsetY + 48 + 5,
         (std::string("x") + std::to_string(player->getRescuedHumans())).c_str(),
         PaletteColors::getMenuOptions(),
         sizeAmounts
@@ -179,19 +188,25 @@ void ComponentHUD::drawIconWeaponsAndLevelName() const
     );
 
     auto player = game->getPlayer();
-    const float sizeAmounts = 0.26f;
+    const float sizeAmounts = 0.5f;
 
     // weapon icon
-    player->getWeapon()->getIcon()->drawFlatAlpha(globalOffset.x + offsetIcons.x + 270, globalOffset.y + offsetIcons.y, 255, fb);
+    player->getWeapon()->getIcon()->drawFlatAlpha(
+        globalOffset.x + offsetIcons.x + weaponIconOffset.x,
+        globalOffset.y + offsetIcons.y + weaponIconOffset.y,
+        255,
+        fb
+    );
 
     // ammo amount
     textWriter->writeTextTTFAutoSize(
-        globalOffset.x + offsetIcons.x + 270,
-        globalOffset.y + offsetIcons.y + player->getWeapon()->getIcon()->height(),
+        globalOffset.x + offsetIcons.x + ammoAmountOffset.x,
+        globalOffset.y + offsetIcons.y + ammoAmountOffset.y,
         (std::string("x") + std::to_string(player->getWeapon()->getAmmoAmount())).c_str(),
         PaletteColors::getMenuOptions(),
         sizeAmounts
     );
+
 
     // bomb icon
     auto weaponBomb = player->getWeaponTypeByLabel("bomb");
@@ -200,14 +215,19 @@ void ComponentHUD::drawIconWeaponsAndLevelName() const
         bombAlpha = 255;
         // bomb ammo
         textWriter->writeTextTTFAutoSize(
-            globalOffset.x + offsetIcons.x + 330,
-            globalOffset.y + offsetIcons.y + weaponBomb->getIcon()->height(),
+            globalOffset.x + offsetIcons.x + ammoBombOffset.x,
+            globalOffset.y + offsetIcons.y + ammoBombOffset.y,
             (std::string("x") + std::to_string(weaponBomb->getAmmoAmount())).c_str(),
             PaletteColors::getMenuOptions(),
             sizeAmounts
         );
     }
-    weaponBomb->getIcon()->drawFlatAlpha(globalOffset.x + offsetIcons.x + 330, globalOffset.y + offsetIcons.y, bombAlpha, fb);
+    weaponBomb->getIcon()->drawFlatAlpha(
+        globalOffset.x + offsetIcons.x + bombIconOffset.x,
+        globalOffset.y + offsetIcons.y + bombIconOffset.y,
+        bombAlpha,
+        fb
+    );
 
     // shield
     auto weaponShield = player->getWeaponTypeByLabel("shield");
@@ -215,22 +235,27 @@ void ComponentHUD::drawIconWeaponsAndLevelName() const
     if (weaponShield->getAmmoAmount() > 0) {
         shieldAlpha = 255;
         textWriter->writeTextTTFAutoSize(
-            globalOffset.x + offsetIcons.x + 360,
-            globalOffset.y + offsetIcons.y + weaponShield->getIcon()->height(),
+            globalOffset.x + offsetIcons.x + ammoShieldOffset.x,
+            globalOffset.y + offsetIcons.y + ammoShieldOffset.y,
             (std::string("x") + std::to_string(weaponShield->getAmmoAmount())).c_str(),
             PaletteColors::getMenuOptions(),
             sizeAmounts
         );
     }
-    weaponShield->getIcon()->drawFlatAlpha(globalOffset.x + offsetIcons.x + 360, globalOffset.y + offsetIcons.y, shieldAlpha, fb);
+    weaponShield->getIcon()->drawFlatAlpha(
+        globalOffset.x + offsetIcons.x + shieldIconOffset.x,
+        globalOffset.y + offsetIcons.y + shieldIconOffset.y,
+        shieldAlpha,
+        fb
+    );
 
     // level number
     textWriter->writeTextTTFAutoSize(
-        globalOffset.x + offsetIcons.x + 388,
-        globalOffset.y + offsetIcons.y,
+        globalOffset.x + offsetIcons.x + levelNumberOffset.x,
+        globalOffset.y + offsetIcons.y + levelNumberOffset.y,
         game->getLevelLoader()->getLevelName().c_str(),
         PaletteColors::getMenuOptions(),
-        1.0f
+        1.75f
     );
 
     // icon player reflection
@@ -239,8 +264,8 @@ void ComponentHUD::drawIconWeaponsAndLevelName() const
     if (weaponReflection->getAmmoAmount() > 0) {
         reflectionAlpha = 255;
         textWriter->writeTextTTFAutoSize(
-            globalOffset.x + offsetIcons.x + 305,
-            globalOffset.y + offsetIcons.y + weaponReflection->getIcon()->height(),
+            globalOffset.x + offsetIcons.x + ammoReflectionOffset.x,
+            globalOffset.y + offsetIcons.y + ammoReflectionOffset.y,
             (std::string("x") + std::to_string(weaponReflection->getAmmoAmount())).c_str(),
             PaletteColors::getMenuOptions(),
             sizeAmounts
@@ -248,8 +273,8 @@ void ComponentHUD::drawIconWeaponsAndLevelName() const
     }
 
     weaponReflection->getIcon()->drawFlatAlpha(
-        globalOffset.x + offsetIcons.x + 300,
-        globalOffset.y + offsetIcons.y,
+        globalOffset.x + offsetIcons.x + reflectionIconOffset.x,
+        globalOffset.y + offsetIcons.y + reflectionIconOffset.y,
         reflectionAlpha, fb
     );
 
@@ -283,7 +308,7 @@ void ComponentHUD::drawEnemyIconAndName()
             globalOffset.y + avatarEnemyOffset.y + enemy->getAvatar()->height() + 5,
             enemy->getName().c_str(),
             PaletteColors::getStamina(),
-            1.0f
+            0.75f
         );
     } else {
         HUDTextures->getTextureByLabel("emptyEnemy")->drawFlatAlpha(
@@ -298,7 +323,7 @@ void ComponentHUD::drawEnemyIconAndName()
             globalOffset.y + avatarEnemyOffset.y + (int) HUDTextures->getTextureByLabel("emptyEnemy")->height() + 5,
             "No target",
             PaletteColors::getStamina(),
-            1.0f
+            0.75f
         );
     }
 }
@@ -346,7 +371,7 @@ void ComponentHUD::drawShaderLasers()
 
         shaderLasers->addLaser(
             glm::vec2(positionLaserX, positionLaserY),
-            glm::vec2(positionLaserX - (int)(width * enemyHealth), positionLaserY),
+            glm::vec2(positionLaserX + (int)(width * enemyHealth), positionLaserY),
             PaletteColors::getStamina().toGLM(),
             strokeBars,
             intensityBars,

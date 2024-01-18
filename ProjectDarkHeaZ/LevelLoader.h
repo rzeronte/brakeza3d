@@ -49,6 +49,14 @@ typedef enum {
     ROTATE_FRAME = 6
 } EnemyBehaviorTypes;
 
+static std::map<std::string, EnemyBehaviorTypes> behaviorTypes = {
+    {"patrol", EnemyBehaviorTypes::BEHAVIOR_PATROL},
+    {"follow", EnemyBehaviorTypes::BEHAVIOR_FOLLOW},
+    {"circle", EnemyBehaviorTypes::BEHAVIOR_CIRCLE},
+    {"random", EnemyBehaviorTypes::BEHAVIOR_RANDOM},
+    {"path", EnemyBehaviorTypes::BEHAVIOR_PATH},
+    {"rotation", EnemyBehaviorTypes::ROTATE_FRAME},
+};
 
 class LevelLoader {
 public:
@@ -119,23 +127,23 @@ public:
 
     void parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy);
 
-    void setBehaviorFromJSON(cJSON *behavior, Object3D *enemy, float depth);
+    static void setBehaviorFromJSON(cJSON *behavior, Object3D *enemy, float depth);
 
-    void parseItemJSON(cJSON *itemJSON);
+    static void parseItemJSON(cJSON *itemJSON);
 
     void parseBossJSON(cJSON *bossJSON);
 
-    Point2D parsePositionJSON(cJSON *positionJSON);
-    Vertex3D parseVertex3DJSON(cJSON *vertex3DJSON);
+    static Point2D parsePositionJSON(cJSON *positionJSON);
+    static Vertex3D parseVertex3DJSON(cJSON *vertex3DJSON);
 
     static void setProjectileEmitterForEnemy(cJSON *emitter, EnemyGhost *enemy);
 
-    void setLasersForEnemy(cJSON *lasers, EnemyGhost *enemy);
-    void addLasersForEnemy(cJSON *laser, EnemyGhost *enemy);
+    static void setLasersForEnemy(cJSON *lasers, EnemyGhost *enemy);
+    static void addLasersForEnemy(cJSON *laser, EnemyGhost *enemy);
 
-    Vertex3D getVertex3DFromJSONPosition(cJSON *positionJSON, float depth);
+    static Vertex3D getVertex3DFromJSONPosition(cJSON *positionJSON, float depth);
 
-    Vertex3D getPositionFromScreenPoint(Point2D fixedPosition, float depth);
+    static Vertex3D getPositionFromScreenPoint(Point2D fixedPosition, float depth);
 
     void loadPrevious();
 
@@ -173,7 +181,7 @@ public:
 
     static ItemHumanGhost* makeItemHuman(Vertex3D vertex3D);
 
-    SalvageSpaceship* makeSalvageSpaceship(Vertex3D vertex3D);
+    static SalvageSpaceship* makeSalvageSpaceship(Vertex3D vertex3D);
 
     void LoadConfig();
 
@@ -181,7 +189,7 @@ public:
 
     void parseMainMessageJSON(cJSON *message);
 
-    EnemyDialog *getMainMessage();
+    EnemyDialog *getMainMessage() const;
 
     void setLevelScene(const std::string &levelScene);
 

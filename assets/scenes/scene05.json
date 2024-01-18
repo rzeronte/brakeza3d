@@ -37,28 +37,8 @@
 			"model":	"../assets/models/landscape02.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
-		}, {
-			"name":	"Nodriza",
-			"scale":	0.059999998658895493,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-148.32763671875,
-				"y":	49.547573089599609,
-				"z":	625.79998779296875
-			},
-			"rotation":	{
-				"x":	237.89999389648438,
-				"y":	-24.100000381469727,
-				"z":	37.400001525878906
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//spaceships/destroyer.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}],
+		}
+	],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{

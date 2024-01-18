@@ -27,7 +27,7 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": 6,
+        "type": "rotation",
         "rotation": { "x": 0, "y": 0, "z": 1 }
       },
       "lasers": [
@@ -83,7 +83,7 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": 6,
+        "type": "rotation",
         "rotation": { "x": 0, "y": 0, "z": -1 }
       },
       "lasers": [

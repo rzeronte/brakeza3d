@@ -10,40 +10,22 @@ ComponentMenu::ComponentMenu()
     background(Image(SETUP->IMAGES_FOLDER + "backgroundMenu.png")),
     border(Image(SETUP->IMAGES_FOLDER + "hud_background.png")),
     glassEffect(Image(SETUP->IMAGES_FOLDER + "menuBackground.png")),
-    planet(nullptr),
+    sceneMenu("menu.json"),
     currentOption(0),
     menuEnabled(false)
 {
+    loadMenuOptions();
 }
 
-ComponentMenu::~ComponentMenu()
+void ComponentMenu::LoadScene()
 {
-    delete planet;
+    ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(sceneMenu);
+    ComponentsManager::get()->getComponentRender()->playLUAScripts();
 }
 
 void ComponentMenu::onStart()
 {
     Logging::Message("ComponentMenu onStart");
-
-    loadDecorative3DMesh();
-    loadMenuOptions();
-}
-
-void ComponentMenu::loadDecorative3DMesh()
-{
-    planet = new Mesh3D();
-    planet->setMultiScene(true);
-    planet->setEnabled(false);
-    planet->setAlpha(255);
-    planet->setScale(10.0f);
-    planet->setPosition(Vertex3D(0, 0, 100));
-    planet->setRotationFrameEnabled(true);
-    planet->setRotationFrame(Vertex3D(0.1f, 0.0, 0));
-    planet->setRotation(0, 0, 0);
-
-    planet->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "planet_earth.fbx"));
-    planet->updateBoundingBox();
-    Brakeza3D::get()->addObject3D(planet, "planetMenu");
 }
 
 void ComponentMenu::preUpdate()
@@ -151,7 +133,6 @@ void ComponentMenu::drawOptions()
 void ComponentMenu::setEnabled(bool value)
 {
     Component::setEnabled(value);
-    planet->setEnabled(value);
     setMenuEnabled(value);
 }
 
