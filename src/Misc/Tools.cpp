@@ -307,7 +307,7 @@ void Tools::makeFadeInSprite(Vertex3D position, TextureAnimated *animation)
 
     Brakeza3D::get()->addObject3D(
         new Sprite2D( P1.x, P1.y, true, new TextureAnimated(animation)),
-        Brakeza3D::uniqueObjectLabel("fadeInSpriteExplosion")
+        Brakeza3D::uniqueObjectLabel("Sprite2DLive")
     );
 }
 
