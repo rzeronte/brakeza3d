@@ -16,24 +16,73 @@ enum WeaponTypes {
     WEAPON_BOMB = 3,
     WEAPON_REFLECTION = 4,
     WEAPON_SHIELD = 5,
-    SHOCK = 6,
+    WEAPON_SHOCK = 6,
+};
+
+static std::map<std::string, WeaponTypes> WeaponTypesMapping = {
+    {"projectile", WeaponTypes::WEAPON_PROJECTILE},
+    {"laser", WeaponTypes::WEAPON_LASER},
+    {"raylight", WeaponTypes::WEAPON_RAYLIGHT},
+    {"bomb", WeaponTypes::WEAPON_BOMB},
+    {"reflection", WeaponTypes::WEAPON_REFLECTION},
+    {"shield", WeaponTypes::WEAPON_SHIELD},
+    {"shock", WeaponTypes::WEAPON_SHOCK},
+};
+
+struct WeaponShootAttributes {
+    WeaponShootAttributes(
+        Vertex3D direction,
+        float startOffset,
+        int filterGroup,
+        int filterMask
+    )
+    :
+    direction(direction),
+    startOffset(startOffset),
+    filterGroup(filterGroup),
+    filterMask(filterMask)
+    {}
+    Vertex3D direction = Vertex3D(0, 0, 0);
+    float startOffset = 0;
+    int filterGroup = 0;
+    int filterMask = 0;
+};
+
+struct WeaponAttributes {
+    Object3D *parent;
+    const std::string& name;
+    const std::string& weaponModel;
+    const std::string& projectileModel;
+    const std::string& icon;
+            Color projectileColor;
+    bool projectileFlatTexture;
+    bool projectileEnableLights;
+    int ammoAmount;
+    int startAmmoAmount;
+    float damage;
+    float speed;
+    int dispersion;
+    float accuracy;
+    float cadenceTime;
+    bool stop;
+    float stopEver;
+    float stopDuration;
+    bool available;
+    bool selectable;
+    RayLight *rayLight;
 };
 
 class Weapon {
 private:
-    Object3D *parent;
+
     bool available;
     bool selectable;
-    int status;
-    int type;
     int soundChannel;
 
     std::string label;
 
-    int ammoAmount;
     int startAmmoAmount;
 
-    Counter counterStopDuration;
     Counter counterStopEvery;
     bool stop;
     float stopDuration;
@@ -41,45 +90,26 @@ private:
 
     float damage;
     float damageRadius;
-    float accuracy;
     int dispersion;
-
-    float cadenceTime;
-    Counter *counterCadence;
 
     float speed;
 
     Image *icon;
     Mesh3D *model;
     Mesh3D *modelProjectile;
+protected:
+    int status;
     RayLight *rayLight;
+    Object3D *parent;
+    Counter *counterCadence;
+    float cadenceTime;
+    Counter counterStopDuration;
+    float accuracy;
+    int ammoAmount;
 public:
-    Weapon(
-        Object3D *parent,
-        const std::string& name,
-        const std::string& weaponModel,
-        const std::string& projectileModel,
-        const std::string& icon,
-        Color projectileColor,
-        bool projectileFlatTexture,
-        bool projectileEnableLights,
-        int ammoAmount,
-        int startAmmoAmount,
-        float damage,
-        float speed,
-        int dispersion,
-        float accuracy,
-        float cadenceTime,
-        bool stop,
-        float stopEver,
-        float stopDuration,
-        int type,
-        bool available,
-        bool selectable,
-        RayLight *rayLight
-    );
+    Weapon(WeaponAttributes attributes);
 
-    void onUpdate();
+    virtual void onUpdate();
 
     void setAvailable(bool available);
 
@@ -93,33 +123,7 @@ public:
 
     void setDispersion(int value);
 
-    bool shootProjectile(
-        Object3D *parent,
-        Vertex3D position,
-        Vertex3D offsetPosition,
-        Vertex3D direction,
-        M3 rotation,
-        Color color,
-        float intensity,
-        int filterGroup,
-        int filterMask,
-        bool sound,
-        bool allowMirror,
-        Color particlesFrom,
-        Color particlesTo
-    );
-
-    bool shootLaserProjectile(
-        Object3D *parent,
-        Vertex3D position,
-        Vertex3D offsetPosition,
-        Vertex3D direction,
-        float intensity,
-        bool sound,
-        Color color,
-        int filterGroup,
-        int filterMask
-    );
+    virtual bool shoot(WeaponShootAttributes attributes);
 
     void setCadenceTime(float value);
 
@@ -130,8 +134,6 @@ public:
     void addAmount(int amount);
 
     Mesh3D *getModelProjectile();
-
-    void setType(int type);
 
     void setStatus(int status);
 
@@ -148,12 +150,6 @@ public:
     void stopSoundChannel() const;
 
     virtual ~Weapon();
-
-    void shootBomb(Object3D *parent, Vertex3D position);
-
-    void shootShield(Object3D *parent, Vertex3D position);
-
-    bool shootRayLight(float intensity, Color color);
 
     void setLabel(const std::string &value);
 
@@ -191,9 +187,6 @@ public:
 
     [[nodiscard]] int getAmmoAmount() const;
 
-    [[nodiscard]] int getType() const;
-
-    void shootHologram(Object3D *parent, Vertex3D position);
 
     [[nodiscard]] bool isSelectable() const;
 

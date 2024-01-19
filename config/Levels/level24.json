@@ -49,7 +49,7 @@
         "stop": false,
         "stopDuration": 2,
         "stopEvery": 6,
-        "type": 1,
+        "type": "laser",
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_02.fbx",
@@ -108,7 +108,7 @@
         "stop": false,
         "stopDuration": 2,
         "stopEvery": 6,
-        "type": 1,
+        "type": "laser",
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_02.fbx",
@@ -125,6 +125,48 @@
         "stopDuration": 2,
         "stopEvery": 4,
         "color": { "r": 144, "g": 0, "b": 0 }
+      }
+    },{
+      "name": "Bomb",
+      "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/shuttle.png",
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "position": { "x": 10,  "y": 80 },
+      "model": "bomb02.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 600,
+      "reward": true,
+      "motion": {
+        "type": "patrol",
+        "from":  { "x": 50,  "y": 5 },
+        "to":  { "x": 50,  "y": 60 },
+        "speed": 0.5
+      },
+      "lasers": [
+      ],
+      "explode": 100,
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 15,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 1,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": "laser",
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0 }
       }
     }
   ],

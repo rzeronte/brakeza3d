@@ -1,5 +1,10 @@
 {
 	"ads":	{
+		"direction":	{
+			"x":	-1.0956156311920243e-25,
+			"y":	0,
+			"z":	1
+		},
 		"diffuse":	{
 			"x":	0.4754098653793335,
 			"y":	0.4754098653793335,
@@ -16,14 +21,35 @@
 			"z":	0.48770493268966675
 		}
 	},
-	"objects":	[],
+	"objects":	[{
+			"name":	"added_item_63",
+			"scale":	1.3899999856948853,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-2.0082294940948486,
+				"y":	0.67451989650726318,
+				"z":	48.833869934082031
+			},
+			"rotation":	{
+				"x":	180,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//landscape05.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
 			"x":	0.09473785012960434,
 			"y":	0.070486597716808319,
-			"z":	0.03387116193771362
+			"z":	0.033871162682771683
 		},
 		"rotation":	{
 			"x":	0,

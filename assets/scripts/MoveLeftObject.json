@@ -1,0 +1,8 @@
+{
+	"name":	"MoveLeftObject.lua",
+	"types":	[{
+			"name":	"speed",
+			"type":	"float",
+			"value":	0
+		}]
+}

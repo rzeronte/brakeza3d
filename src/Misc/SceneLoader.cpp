@@ -26,10 +26,12 @@ void SceneLoader::loadScene(const std::string& filename)
     cJSON *adsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "ads");
 
     if (adsJSON != nullptr) {
+        auto direction = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "direction"));
         auto ambient = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "ambient"));
         auto diffuse = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "diffuse"));
         auto specular = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "specular"));
 
+        shaderRender->getDirectionalLight()->direction = direction.toGLM();
         shaderRender->getDirectionalLight()->ambient = ambient.toGLM();
         shaderRender->getDirectionalLight()->diffuse = diffuse.toGLM();
         shaderRender->getDirectionalLight()->specular = specular.toGLM();
@@ -137,6 +139,13 @@ void SceneLoader::saveScene(const std::string &filename)
     auto ads = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender();
     // illumination ADS
     cJSON *adsJSON = cJSON_CreateObject();
+
+    cJSON *adsDirectionJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(adsDirectionJSON, "x", ads->getDirectionalLight()->direction.x);
+    cJSON_AddNumberToObject(adsDirectionJSON, "y", ads->getDirectionalLight()->direction.y);
+    cJSON_AddNumberToObject(adsDirectionJSON, "z", ads->getDirectionalLight()->direction.z);
+    cJSON_AddItemToObject(adsJSON, "direction", adsDirectionJSON);
+
     cJSON *adsDiffuseJSON = cJSON_CreateObject();
     cJSON_AddNumberToObject(adsDiffuseJSON, "x", ads->getDirectionalLight()->diffuse.x);
     cJSON_AddNumberToObject(adsDiffuseJSON, "y", ads->getDirectionalLight()->diffuse.y);

@@ -236,7 +236,7 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event)
             ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
         if (keyboard[SDL_SCANCODE_5] ) {
-            componentGame->getPlayer()->setWeaponTypeByIndex(4);
+            componentGame->getPlayer()->setWeaponByIndex(4);
             ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }*/
 
@@ -447,7 +447,7 @@ void ComponentGameInput::handleMakeReflection(SDL_Event *event)
     if (controllerXButtonPressed || reflectionKeyPressed) {
         auto weapon = player->getWeaponTypeByLabel("reflection");
         weapon->onUpdate();
-        weapon->shootHologram(player, player->getPosition());
+        weapon->shoot({Vertex3D(), 0,  0, 0});
     }
 }
 
@@ -595,7 +595,7 @@ void ComponentGameInput::handleBomb(SDL_Event *event)
     if (controllerXButtonPressed || bombKeyPressed) {
         auto weapon = player->getWeaponTypeByLabel("bomb");
         weapon->onUpdate();
-        weapon->shootBomb(player, player->getPosition());
+        weapon->shoot({Vertex3D(), 0, 0, 0});
     }
 }
 
@@ -612,7 +612,7 @@ void ComponentGameInput::handleShield(SDL_Event *event)
     if (controllerYButtonPressed || bombKeyPressed) {
         auto weapon = player->getWeaponTypeByLabel("shield");
         weapon->onUpdate();
-        weapon->shootShield(player, player->getPosition());
+        weapon->shoot({Vertex3D(), 0, 0,  0});
     }
 }
 

@@ -41,6 +41,7 @@ typedef enum {
 } BossesTypes;
 
 typedef enum {
+    BEHAVIOR_NONE = 0,
     BEHAVIOR_PATROL = 1,
     BEHAVIOR_FOLLOW = 2,
     BEHAVIOR_CIRCLE = 3,
@@ -50,6 +51,7 @@ typedef enum {
 } EnemyBehaviorTypes;
 
 static std::map<std::string, EnemyBehaviorTypes> behaviorTypes = {
+    {"none", EnemyBehaviorTypes::BEHAVIOR_NONE},
     {"patrol", EnemyBehaviorTypes::BEHAVIOR_PATROL},
     {"follow", EnemyBehaviorTypes::BEHAVIOR_FOLLOW},
     {"circle", EnemyBehaviorTypes::BEHAVIOR_CIRCLE},

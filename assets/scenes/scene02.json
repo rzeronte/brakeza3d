@@ -1,9 +1,14 @@
 {
 	"ads":	{
+		"direction":	{
+			"x":	0,
+			"y":	0,
+			"z":	1
+		},
 		"diffuse":	{
-			"x":	0.4754098653793335,
-			"y":	0.4754098653793335,
-			"z":	0.4754098653793335
+			"x":	1,
+			"y":	1,
+			"z":	1
 		},
 		"specular":	{
 			"x":	0.31147539615631104,
@@ -11,9 +16,9 @@
 			"z":	0.31147539615631104
 		},
 		"ambient":	{
-			"x":	0.48770493268966675,
-			"y":	0.48770493268966675,
-			"z":	0.48770493268966675
+			"x":	0.639886736869812,
+			"y":	0.6598360538482666,
+			"z":	0.051380693912506104
 		}
 	},
 	"objects":	[{
@@ -22,8 +27,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	21.277929306030273,
-				"y":	8.7847013473510742,
+				"x":	23.861799240112305,
+				"y":	11.463379859924316,
 				"z":	50.116813659667969
 			},
 			"rotation":	{
@@ -48,8 +53,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-11.622105598449707,
-				"y":	-5.4152431488037109,
+				"x":	-9.038238525390625,
+				"y":	-2.7365500926971436,
 				"z":	50.016811370849609
 			},
 			"rotation":	{
@@ -74,8 +79,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	15.777919769287109,
-				"y":	19.984640121459961,
+				"x":	18.361749649047852,
+				"y":	22.663280487060547,
 				"z":	50.716812133789062
 			},
 			"rotation":	{
@@ -100,8 +105,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	7.177912712097168,
-				"y":	3.3847088813781738,
+				"x":	9.7617645263671875,
+				"y":	6.0633926391601562,
 				"z":	50.716812133789062
 			},
 			"rotation":	{
@@ -126,8 +131,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-10.122122764587402,
-				"y":	9.48469066619873,
+				"x":	-7.5382542610168457,
+				"y":	12.163371086120605,
 				"z":	50.91680908203125
 			},
 			"rotation":	{
@@ -152,8 +157,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	3.5778763294219971,
-				"y":	15.584794044494629,
+				"x":	6.1617131233215332,
+				"y":	18.263446807861328,
 				"z":	50.316810607910156
 			},
 			"rotation":	{
@@ -173,18 +178,18 @@
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"Beholder",
-			"scale":	0.014999999664723873,
+			"name":	"added_item_18",
+			"scale":	2.8599998950958252,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	1.4118670225143433,
-				"y":	6.5550365447998047,
-				"z":	317.89999389648438
+				"x":	2.7213079929351807,
+				"y":	18.395217895507812,
+				"z":	291.42306518554688
 			},
 			"rotation":	{
-				"x":	71.300003051757812,
-				"y":	0,
+				"x":	40.100002288818359,
+				"y":	4.5,
 				"z":	0
 			},
 			"rotationFrameEnabled":	true,
@@ -195,59 +200,54 @@
 			},
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models/beholder.fbx",
+			"model":	"../assets/models//planets/planet_c.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"AlienMoon",
-			"scale":	0.14000000059604645,
+			"name":	"added_item_71",
+			"scale":	2.5499999523162842,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	207.34555053710938,
-				"y":	-69.879219055175781,
-				"z":	566.2401123046875
+				"x":	2.4363820552825928,
+				"y":	48.651161193847656,
+				"z":	177.52305603027344
 			},
 			"rotation":	{
 				"x":	0,
-				"y":	0,
+				"y":	66.5999984741211,
 				"z":	0
 			},
 			"rotationFrameEnabled":	true,
 			"rotationFrame":	{
 				"x":	0.0099999997764825821,
-				"y":	0.0099999997764825821,
-				"z":	0
-			},
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models/alien_moon.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"AlienMoon2",
-			"scale":	0.059999998658895493,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-77.180328369140625,
-				"y":	41.926288604736328,
-				"z":	98.94012451171875
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	true,
-			"rotationFrame":	{
-				"x":	0.0010000000474974513,
 				"y":	0.0010000000474974513,
 				"z":	0
 			},
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models/alien_moon2.fbx",
+			"model":	"../assets/models//planets/planet_b.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Station",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-25.540729522705078,
+				"y":	10.033476829528809,
+				"z":	36.923057556152344
+			},
+			"rotation":	{
+				"x":	99.699996948242188,
+				"y":	40,
+				"z":	-22.5
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//station01.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],
@@ -255,9 +255,9 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-0.13999998569488525,
-			"y":	0.2200000137090683,
-			"z":	0.24011898040771484
+			"x":	-0.14128543436527252,
+			"y":	0.13819460570812225,
+			"z":	0.22305718064308167
 		},
 		"rotation":	{
 			"x":	0,

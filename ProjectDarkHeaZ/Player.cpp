@@ -24,14 +24,12 @@ Player::Player()
     weapon(nullptr),
     counterStucked(Counter(5)),
     counterDashCadence(Counter(1)),
-    killsCounter(0),
     energyShieldEnabled(false),
     allowEnergyShield(false),
     counterLight(Counter(0.05)),
     lightPositionOffset(Vertex3D(0, 0, -1)),
     particlesEngineLeftOffset(Vertex3D(0, 0.2, 0)),
     state(PlayerState::EMPTY),
-    currentWeaponIndex(0),
     satellite(PlayerSatellite(this)),
     avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png")),
     dashPower(INITIAL_POWER_DASH),
@@ -152,70 +150,16 @@ void Player::shoot(float intensity)
         return;
     }
 
-    switch (getWeapon()->getType()) {
-        case WeaponTypes::WEAPON_PROJECTILE: {
-            bool resultShoot = weapon->shootProjectile(
-                this,
-                getPosition(),
-                AxisUp().getScaled(projectileStartOffsetPosition),
-                AxisUp().getInverse(),
-                getRotation(),
-                PaletteColors::getPlayerProjectile(),
-                intensity,
-                EngineSetup::collisionGroups::Projectile,
-                EngineSetup::collisionGroups::Enemy,
-                true,
-                true,
-                PaletteColors::getParticlesPlayerProjectileFrom(),
-                PaletteColors::getParticlesPlayerProjectileTo()
-            );
+    bool wasShoot = weapon->shoot({
+        AxisUp().getInverse(),
+        projectileStartOffsetPosition,
+        EngineSetup::collisionGroups::Projectile,
+        EngineSetup::collisionGroups::Enemy,
+    });
 
-            if (resultShoot) {
-                getWeaponLight()->setColor(PaletteColors::getPlayerProjectileLight());
-                initLight();
-            }
-            break;
-        }
-        case WeaponTypes::WEAPON_LASER: {
-            bool resultShoot = weapon->shootLaserProjectile(
-                this,
-                getPosition(),
-                AxisUp().getScaled(projectileStartOffsetPosition),
-                AxisUp().getInverse(),
-                0.00075f,
-                true,
-                PaletteColors::getPlayerLaser(),
-                EngineSetup::collisionGroups::Projectile,
-                EngineSetup::collisionGroups::Enemy
-            );
-
-            if (resultShoot) {
-                getWeaponLight()->setColor(PaletteColors::getPlayerLaserLight());
-                initLight();
-            }
-
-            break;
-        }
-        case WeaponTypes::WEAPON_BOMB: {
-            weapon->shootBomb(this, getPosition());
-            break;
-        }
-        case WeaponTypes::WEAPON_SHIELD: {
-            weapon->shootShield(this, getPosition());
-            break;
-        }
-        case WeaponTypes::WEAPON_REFLECTION: {
-            weapon->shootHologram(this, getPosition());
-            break;
-        }
-        case WeaponTypes::WEAPON_RAYLIGHT: {
-            weapon->shootRayLight(0.00075f, PaletteColors::getPlayerRay());
-            getWeaponLight()->setColor(PaletteColors::getPlayerRayLight());
-            initLight();
-            break;
-        }
-        default:
-            Logging::Log("Not weapon type shoot!");
+    if (wasShoot) {
+        getWeaponLight()->setColor(PaletteColors::getPlayerProjectileLight());
+        initLight();
     }
 }
 
@@ -564,7 +508,6 @@ Weapon *Player::getWeaponTypeByLabel(const std::string& label)
 
 void Player::setWeaponTypeByIndex(int i) {
     setWeapon(weapons[i]);
-    this->currentWeaponIndex = i;
 }
 
 void Player::stopBlinkForPlayer()
@@ -572,20 +515,6 @@ void Player::stopBlinkForPlayer()
     setState(PlayerState::LIVE);
     counterDamageBlink.setEnabled(false);
     blink->setEnabled(false);
-}
-
-int Player::getKillsCounter() const {
-    return killsCounter;
-}
-
-void Player::setKillsCounter(int value)
-{
-    Player::killsCounter = value;
-}
-
-void Player::increaseKills()
-{
-    killsCounter++;
 }
 
 const std::vector<Weapon *> &Player::getWeapons() const {
@@ -624,18 +553,6 @@ void Player::setEnergy(float value) {
 
 float Player::getStartEnergy() const {
     return startEnergy;
-}
-
-void Player::setStartEnergy(float value) {
-    Player::startEnergy = value;
-}
-
-float Player::getRecoverEnergySpeed() const {
-    return recoverEnergySpeed;
-}
-
-void Player::setRecoverEnergySpeed(float value) {
-    Player::recoverEnergySpeed = value;
 }
 
 void Player::nextWeapon()

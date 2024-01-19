@@ -1,5 +1,10 @@
 {
 	"ads":	{
+		"direction": {
+			"x":	0.0,
+			"y":	0.0,
+			"z":	1.0
+		},
 		"diffuse":	{
 			"x":	1,
 			"y":	1,
@@ -16,28 +21,7 @@
 			"z":	0.84426230192184448
 		}
 	},
-	"objects":	[{
-			"name":	"added_item_79",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-0.070877477526664734,
-				"y":	-0.010642627254128456,
-				"z":	7.40456485748291
-			},
-			"rotation":	{
-				"x":	-35.600002288818359,
-				"y":	72.700004577636719,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//spaceships/spaceship_gray_04.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}],
+	"objects":	[],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{

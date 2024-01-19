@@ -1,5 +1,10 @@
 {
 	"ads":	{
+		"direction":	{
+			"x":	-0.72166770696640015,
+			"y":	-0.220767080783844,
+			"z":	1
+		},
 		"diffuse":	{
 			"x":	0.4754098653793335,
 			"y":	0.4754098653793335,
@@ -16,14 +21,68 @@
 			"z":	0.48770493268966675
 		}
 	},
-	"objects":	[],
+	"objects":	[{
+			"name":	"added_item_81",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	2.0134198665618896,
+				"y":	-18.322849273681641,
+				"z":	48.133872985839844
+			},
+			"rotation":	{
+				"x":	275,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//station01.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"added_item_27",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-10.529045104980469,
+				"y":	-0.85862547159194946,
+				"z":	13.333871841430664
+			},
+			"rotation":	{
+				"x":	176.10000610351562,
+				"y":	52.300003051757812,
+				"z":	25.30000114440918
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.05000000074505806,
+				"y":	0,
+				"z":	0
+			},
+			"scripts":	[{
+					"name":	"MoveLeftObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.0099999997764825821
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//satellite01.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	0.09473785012960434,
-			"y":	0.070486597716808319,
-			"z":	0.03387116193771362
+			"x":	0.19473788142204285,
+			"y":	0.24048663675785065,
+			"z":	0.033871162682771683
 		},
 		"rotation":	{
 			"x":	0,

@@ -43,8 +43,8 @@ void ComponentMenu::preUpdate()
     background.drawFlatAlpha(0, 0, alpha, bb);
     boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
     border.drawFlatAlpha(0, 0, alpha, fb);
-    imageLogoBox.drawFlatAlpha(0, 0, alpha, fb);
     glassEffect.drawFlatAlpha(0, 0, alpha, fb);
+    imageLogoBox.drawFlatAlpha(0, 0, alpha, fb);
 }
 
 void ComponentMenu::onUpdate()
@@ -99,7 +99,7 @@ void ComponentMenu::drawOptions()
     int offsetY = 150;
     int stepY = 70;
 
-    auto color = PaletteColors::getCrt();
+    auto color = PaletteColors::getMenuOptions();
 
     for (int i = 0; i < (int) options.size() ; i++) {
         std::string text = this->options[i].getLabel();

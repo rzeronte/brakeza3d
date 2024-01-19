@@ -1,19 +1,24 @@
 {
 	"ads":	{
+		"direction": {
+			"x":	0.0,
+			"y":	0.0,
+			"z":	1.0
+		},
 		"diffuse":	{
-			"x":	0.4754098653793335,
-			"y":	0.4754098653793335,
-			"z":	0.4754098653793335
+			"x":	0.49050390720367432,
+			"y":	0.52868854999542236,
+			"z":	0.34234750270843506
 		},
 		"specular":	{
-			"x":	0.31147539615631104,
-			"y":	0.31147539615631104,
-			"z":	0.31147539615631104
+			"x":	0.6598360538482666,
+			"y":	0,
+			"z":	0.097352899610996246
 		},
 		"ambient":	{
-			"x":	0.48770493268966675,
-			"y":	0.48770493268966675,
-			"z":	0.48770493268966675
+			"x":	0.50819671154022217,
+			"y":	0.039572708308696747,
+			"z":	0.039572708308696747
 		}
 	},
 	"objects":	[{
@@ -22,8 +27,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	0.070732772350311279,
-				"y":	0.39732316136360168,
+				"x":	-2.7961616516113281,
+				"y":	-1.0408890247344971,
 				"z":	900
 			},
 			"rotation":	{
@@ -35,6 +40,60 @@
 			"scripts":	[],
 			"shaders":	[],
 			"model":	"../assets/models/landscape01.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Shuttle",
+			"scale":	6.2699999809265137,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-39.080108642578125,
+				"y":	-3.9449691772460938,
+				"z":	125.84011840820312
+			},
+			"rotation":	{
+				"x":	134.5,
+				"y":	47.600002288818359,
+				"z":	-5.4000000953674316
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.05000000074505806,
+				"y":	0,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//spaceShuttle.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Spaceship",
+			"scale":	18.69999885559082,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	61.549301147460938,
+				"y":	73.915458679199219,
+				"z":	162.17002868652344
+			},
+			"rotation":	{
+				"x":	83.300003051757812,
+				"y":	-34.099998474121094,
+				"z":	23.600002288818359
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"MoveForwardObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.05000000074505806
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//spaceships/spaceship_gray_02.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],

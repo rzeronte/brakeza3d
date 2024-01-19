@@ -21,8 +21,15 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": "rotation",
-        "rotation": { "x": 0, "y": 0, "z": 1 }
+        "type": "path",
+        "speed": 0.1,
+        "points": [
+          { "x": 15, "y": 75 },
+          { "x": 15, "y": 15 },
+          { "x": 90, "y": 15 },
+          { "x": 90, "y": 75 },
+          { "x": 15, "y": 75 }
+        ]
       },
       "lasers": [
       ],
@@ -41,34 +48,119 @@
         "stop": false,
         "stopDuration": 2,
         "stopEvery": 6,
-        "type": 1,
+        "type": "laser",
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_02.fbx",
         "flatTexture": true,
         "enableLights": false,
         "color": { "r": 255, "g": 255, "b": 0 }
+      }
+    },
+    {
+      "name": "RedBallLaser",
+      "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/shuttle.png",
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "position": { "x": 75,  "y": 40 },
+      "model": "bomb03.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 600,
+      "reward": true,
+      "motion": {
+        "type": "path",
+        "speed": 0.75,
+        "points": [
+          { "x": 35, "y": 50 },
+          { "x": 35, "y": 35 },
+          { "x": 65, "y": 35 },
+          { "x": 65, "y": 50 },
+          { "x": 35, "y": 50 }
+        ]
       },
-      "emitter": {
-        "rotation": { "x": 90, "y": 0, "z": 0},
-        "rotationFrame": {"x": 0, "y": -1, "z": 0},
-        "cadenceTime": 0.30,
-        "type": 0,
+      "lasers": [
+      ],
+      "explode": 100,
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 15,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 1,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
         "stop": false,
         "stopDuration": 2,
-        "stopEvery": 4,
-        "color": { "r": 255, "g": 0, "b": 0 }
+        "stopEvery": 6,
+        "type": "laser",
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      }
+    }, {
+      "name": "RedBallLaser",
+      "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/shuttle.png",
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "position": { "x": 75,  "y": 40 },
+      "model": "bomb02.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 600,
+      "reward": true,
+      "motion": {
+        "type": "path",
+        "speed": 0.1,
+        "points": [
+          { "x": 90, "y": 15 },
+          { "x": 90, "y": 75 },
+          { "x": 15, "y": 75 },
+          { "x": 15, "y": 15 },
+          { "x": 90, "y": 15 }
+        ]
+      },
+      "lasers": [
+      ],
+      "explode": 100,
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 15,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 1,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": "laser",
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0 }
       }
     }
   ],
   "items": [
     {
       "type": 4,
-      "position": { "x": 5, "y": 75 }
+      "position": { "x": 5, "y": 15 }
     },
     {
       "type": 5,
-      "position": { "x": 95, "y": 75 }
+      "position": { "x": 95, "y": 15 }
     }
   ]
 }

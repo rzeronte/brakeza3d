@@ -249,8 +249,6 @@ add_executable(Brakeza3D
         ProjectDarkHeaZ/Bosses/BossLevel30.h ProjectDarkHeaZ/Bosses/BossLevel30.cpp
         ProjectDarkHeaZ/Common/PaletteColors.h ProjectDarkHeaZ/Items/SalvageSpaceship.cpp
         ProjectDarkHeaZ/Items/SalvageSpaceship.h
-        ProjectDarkHeaZ/Enemies/BoidEnemyGhost.cpp
-        ProjectDarkHeaZ/Enemies/BoidEnemyGhost.h
         src/OpenGL/ShaderOpenGLDOF.cpp
         include/OpenGL/ShaderOpenGLDOF.h
         src/OpenGL/ShaderOpenGLDepthMap.cpp
@@ -275,6 +273,20 @@ add_executable(Brakeza3D
         ProjectDarkHeaZ/OpenGLShaders/ShaderOpenGLImageOffset.cpp
         ProjectDarkHeaZ/OpenGLShaders/ShaderOpenGLImageOffset.h
         ProjectDarkHeaZ/GUI/GUIWidgetProjectDarkHeaZ.h
+        ProjectDarkHeaZ/Items/ExplotableObject.cpp
+        ProjectDarkHeaZ/Items/ExplotableObject.h
+        ProjectDarkHeaZ/Weapons/WeaponProjectiles.cpp
+        ProjectDarkHeaZ/Weapons/WeaponProjectiles.h
+        ProjectDarkHeaZ/Weapons/WeaponLaser.cpp
+        ProjectDarkHeaZ/Weapons/WeaponLaser.h
+        ProjectDarkHeaZ/Weapons/WeaponRayLight.cpp
+        ProjectDarkHeaZ/Weapons/WeaponRayLight.h
+        ProjectDarkHeaZ/Weapons/WeaponReflection.cpp
+        ProjectDarkHeaZ/Weapons/WeaponReflection.h
+        ProjectDarkHeaZ/Weapons/WeaponShield.cpp
+        ProjectDarkHeaZ/Weapons/WeaponShield.h
+        ProjectDarkHeaZ/Weapons/WeaponBomb.cpp
+        ProjectDarkHeaZ/Weapons/WeaponBomb.h
 )
 
 target_link_libraries(Brakeza3D

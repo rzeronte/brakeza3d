@@ -57,7 +57,7 @@ public:
 
     static void updateWeaponStatus(SDL_Event *event);
 
-    void handleShield(SDL_Event *event);
+    static void handleShield(SDL_Event *event);
 };
 
 

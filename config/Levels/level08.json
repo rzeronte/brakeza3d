@@ -39,7 +39,7 @@
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 2,
-        "type": 0,
+        "type": "projectile",
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
@@ -79,7 +79,7 @@
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 2,
-        "type": 0,
+        "type": "projectile",
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
@@ -100,7 +100,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": ""
+        "type": "none"
       },
       "weapon": {
         "index": 0,
@@ -116,7 +116,7 @@
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 6,
-        "type": 0,
+        "type": "projectile",
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",

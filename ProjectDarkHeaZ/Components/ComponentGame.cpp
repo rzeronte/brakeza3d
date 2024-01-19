@@ -270,25 +270,25 @@ void ComponentGame::showLevelStatistics(float alpha)
 
     glassEffect.drawFlatAlpha(0, 0, alpha, fb);
 
-    player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, fb);
+    player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(offsetX, offsetY + 125, alpha, fb);
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, stats->stats(WEAPON_PROJECTILE).c_str(), c, 0.3);
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, stats->accuracyPercentFormatted(WEAPON_PROJECTILE).c_str(), c, 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_PROJECTILE), offsetX, offsetY + 250, alpha);
 
     offsetX += space;
-    player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, fb);
+    player->getWeaponTypeByLabel("laser")->getIcon()->drawFlatAlpha(offsetX, offsetY + 125, alpha, fb);
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, stats->stats(WEAPON_LASER).c_str(), c, 0.3);
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, stats->accuracyPercentFormatted(WEAPON_LASER).c_str(), c, 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_LASER), offsetX, offsetY + 250, alpha);
 
     offsetX += space;
-    player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, fb);
+    player->getWeaponTypeByLabel("ray")->getIcon()->drawFlatAlpha(offsetX, offsetY + 125, alpha, fb);
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, stats->stats(WEAPON_RAYLIGHT).c_str(), c, 0.3);
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, stats->accuracyPercentFormatted(WEAPON_RAYLIGHT).c_str(), c, 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_RAYLIGHT), offsetX, offsetY + 250, alpha);
 
     offsetX += space;
-    player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(offsetX, offsetY + 160, alpha, fb);
+    player->getWeaponTypeByLabel("bomb")->getIcon()->drawFlatAlpha(offsetX, offsetY + 125, alpha, fb);
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, stats->stats(WEAPON_BOMB).c_str(), c, 0.3);
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 220, stats->accuracyPercentFormatted(WEAPON_BOMB).c_str(), c, 0.3);
     drawMedalAlpha(getLevelLoader()->getStats()->medalType(WEAPON_BOMB), offsetX, offsetY + 250, alpha);
@@ -378,7 +378,6 @@ void ComponentGame::checkForEndLevel()
         }
 
         if (waiting->isFinished()) {
-            getPlayer()->setKillsCounter(0);
             getLevelLoader()->setLevelFinished(true);
             getLevelLoader()->setLevelStartedToPlay(false);
             removeProjectiles();
@@ -461,14 +460,13 @@ Player *ComponentGame::getPlayer() const {
 
 void ComponentGame::blockPlayerPositionInCamera()
 {
-    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     auto window = ComponentsManager::get()->getComponentWindow();
 
     Vertex3D destinyPoint = player->getPosition() + player->getVelocity();
     Point2D homogeneousPosition = Transforms::WorldToPoint(destinyPoint);
 
-    float sX = (float) homogeneousPosition.x / window->getWidth();
-    float sY = (float) homogeneousPosition.y / window->getHeight();
+    float sX = (float) homogeneousPosition.x / (float) window->getWidth();
+    float sY = (float) homogeneousPosition.y / (float) window->getHeight();
 
     if (sY >= 1) {
         if (player->getVelocity().y > 0) {
@@ -857,21 +855,19 @@ void ComponentGame::selectSpaceshipAndStartGame()
     player->respawn();
 }
 
-void ComponentGame::pressedKeyForNewGameOrResumeGame()
+void ComponentGame::pressedKeyForNewGameOrResumeGame() const
 {
     if (!getLevelLoader()->isLevelStartedToPlay()) {
         getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
-
         ComponentsManager::get()->getComponentSound()->sound("levelCompleted", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         ComponentsManager::get()->getComponentMenu()->setMenuEnabled(false);
         makeFadeToGameState(EngineSetup::GameState::SPACESHIP_SELECTOR, true);
-
     } else {
         makeFadeToGameState(EngineSetup::GameState::GAMING, true);
     }
 }
 
-void ComponentGame::pressedKeyForWin()
+void ComponentGame::pressedKeyForWin() const
 {
     makeFadeToGameState(EngineSetup::PRESS_KEY_NEW_LEVEL, true);
     ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
@@ -891,7 +887,6 @@ void ComponentGame::pressedKeyForBeginLevel()
 
     getLevelLoader()->startCountDown();
     setGameState(EngineSetup::GameState::COUNTDOWN);
-    getPlayer()->startPlayerBlink();
 }
 
 void ComponentGame::pressedKeyForFinishGameAndRestart() const
@@ -984,7 +979,6 @@ void ComponentGame::handleGamingGameState()
     setEnemiesBehaviors(true);
 
     getPlayer()->setEnabled(true);
-    getPlayer()->startPlayerBlink();
 
     ComponentsManager::get()->getComponentHUD()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
@@ -1227,16 +1221,15 @@ void ComponentGame::setCurrentEnemyDialog(EnemyDialog *currentEnemyDialog)
 
 void ComponentGame::handleSpaceShipSelector()
 {
+    ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     spaceships[spaceshipSelectedIndex]->setEnabled(true);
     shaderEdgeObject->setEnabled(true);
     shaderEdgeObject->setObject(spaceships[spaceshipSelectedIndex]);
 }
 
-Sprite2D *ComponentGame::getExplosionSprite() const
+Sprite2D *ComponentGame::getRandomExplosionSprite() const
 {
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
-    const int index = std::rand() % explosionSprites.size();
-    return explosionSprites[index];
+    return explosionSprites[Tools::random(0, (int) explosionSprites.size()-1)];
 }
 
 Sprite2D *ComponentGame::getFadeInSpriteRed()  {
@@ -1334,18 +1327,15 @@ void ComponentGame::handleOnUpdateCountDown()
 
 void ComponentGame::handleOnUpdateHelp(const float alpha)
 {
-    boxTutorial.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
-    writeDialogTextToContinue("Press ESC to continue...");
-
-    std::string message = std::to_string(currentHelpIndex + 1) + " of " + std::to_string((int)helps.size());
+    const auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+    boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
+    border.drawFlatAlpha(0, 0, alpha, fb);
+    helps[currentHelpIndex]->drawFlatAlpha(0, 0, alpha, fb);
     if (helps.size() > 1) {
+        std::string message = std::to_string(currentHelpIndex + 1) + " of " + std::to_string((int)helps.size());
         textWriter->writeTTFCenterHorizontal(495, message.c_str(), PaletteColors::getCrt(), 0.0f);
     }
-
-    border.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-
-    helps[currentHelpIndex]->drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    writeDialogTextToContinue("Press ESC to continue...");
 }
 
 void ComponentGame::handleOnUpdateStore(const float alpha)
@@ -1358,33 +1348,31 @@ void ComponentGame::handleOnUpdateStore(const float alpha)
 
 void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)
 {
-    ComponentsManager::get()->getComponentRender()->getSceneLoader().clearScene();
-
-    auto bb = ComponentsManager::get()->getComponentWindow()->getBackgroundFramebuffer();
-    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
-
+    SceneLoader::clearScene();
+    const auto bb = ComponentsManager::get()->getComponentWindow()->getBackgroundFramebuffer();
+    const auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
     backgroundSpaceshipSelection.drawFlatAlpha(0, 0, 1.0f,  bb);
     spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha, fb);
-    boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
     border.drawFlatAlpha(0, 0, alpha, fb);
     writeDialogTextToContinue("Press ENTER to select...");
-    glassEffect.drawFlatAlpha(0, 0, alpha, bb);
 }
 
 void ComponentGame::handleOnUpdatePressKeyGameOver(const float alpha)
 {
-    boxTutorial.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-    border.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+    boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
+    border.drawFlatAlpha(0, 0, alpha, fb);
+    imageEndGame.drawFlatAlpha(0, 0, alpha, fb);
     writeDialogTextToContinue("Press ENTER to continue...");
-    imageEndGame.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 }
 
 void ComponentGame::handleOnUpdateCredits(const float alpha)
 {
-    boxTutorial.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+    boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
+    border.drawFlatAlpha(0, 0, alpha, fb);
+    imageCredits.drawFlatAlpha(0, 0, alpha, fb);
     writeDialogTextToContinue("Press ESC to continue...");
-    border.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-    imageCredits.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 }
 
 void ComponentGame::handleOnUpdatePressKeyByDead(const float alpha)

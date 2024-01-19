@@ -2,8 +2,8 @@
   "name": "01",
   "scene": "scene01.json",
   "music": "musicLevel01",
-  "backgroundImage": "levels/01.png",
-  "foregroundImage": "foregrounds/02.png",
+  "backgroundImage": "levels/07.png",
+  "foregroundImage": "foregrounds/01.png",
   "allowEnergyShield": false,
   "histories": ["histories/lore_01_1.png", "histories/lore_01_2.png"],
   "tutorials": ["tutorials/tutorial_first.png"],
@@ -33,10 +33,5 @@
     }
   ],
   "items": [
-    {
-      "type": 1,
-      "position": { "x": 50, "y": 40 },
-      "help": 0
-    }
   ]
 }

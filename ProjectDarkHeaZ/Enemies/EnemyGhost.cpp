@@ -111,17 +111,6 @@ void EnemyGhost::postUpdate()
     if (projectileEmitter != nullptr) {
         projectileEmitter->postUpdate();
     }
-}
-
-void EnemyGhost::updateEmitterParticles()
-{
-    particleEmitter->setPosition(getPosition());
-    particleEmitter->setRotation(getRotation());
-}
-
-void EnemyGhost::onDrawHostBuffer()
-{
-    Mesh3D::onDrawHostBuffer();
 
     if (isStuck()) {
         counterStuck.update();
@@ -131,15 +120,19 @@ void EnemyGhost::onDrawHostBuffer()
     }
 }
 
+void EnemyGhost::onDrawHostBuffer()
+{
+    Mesh3D::onDrawHostBuffer();
+
+}
+
 void EnemyGhost::handleDie()
 {
     Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1, ShockWaveParams::standard(), true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
     makeReward();
 
-    Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getExplosionSprite()->getAnimation());
-
-    ComponentsManager::get()->getComponentGame()->getPlayer()->increaseKills();
+    Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getRandomExplosionSprite()->getAnimation());
 
     ComponentsManager::get()->getComponentSound()->sound("enemyExplosion", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
@@ -290,78 +283,22 @@ void EnemyGhost::shoot(Object3D *target)
 {
     if (getWeapon() == nullptr || !getWeapon()->isAvailable()) return;
 
-    Vector3D way(getPosition(), target->getPosition());
-
-    Vertex3D direction = way.getComponent().getNormalize();
-    Vertex3D positionProjectile = getPosition() + AxisUp().getScaled(0.01);
+    Vector3D direction(getPosition(), target->getPosition());
 
     if (weapon->getCounterCadence()->isFinished()) {
         weapon->setStatus(RELEASED);
     }
-    switch(weapon->getType()) {
-        case WeaponTypes::WEAPON_PROJECTILE: {
-            bool shootResult = weapon->shootProjectile(
-                this,
-                positionProjectile,
-                AxisUp().getScaled(projectileStartOffsetPosition),
-                direction,
-                getRotation(),
-                PaletteColors::getEnemyProjectile(),
-                2.5f,
-                EngineSetup::collisionGroups::ProjectileEnemy,
-                EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::Enemy,
-                false,
-                false,
-                PaletteColors::getParticlesEnemyProjectileFrom(),
-                PaletteColors::getParticlesEnemyProjectileTo()
-            );
 
-            if (shootResult) {
-                getLight()->setColor(PaletteColors::getEnemyProjectileLight());
-                initLight();
-            }
-            break;
-        }
-        case WeaponTypes::WEAPON_LASER: {
-            bool shootResult = weapon->shootLaserProjectile(
-                this,
-                getPosition(),
-                AxisUp().getScaled(projectileStartOffsetPosition),
-                AxisUp().getInverse(),
-                0.001f,
-                false,
-                PaletteColors::getPlayerRayLight(),
-                EngineSetup::collisionGroups::ProjectileEnemy,
-                EngineSetup::collisionGroups::Player
-            );
+    bool wasShoot = weapon->shoot({
+        direction.getComponent().getNormalize(),
+        projectileStartOffsetPosition,
+        EngineSetup::collisionGroups::ProjectileEnemy,
+        EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::Enemy,
+    });
 
-            if (shootResult) {
-                getLight()->setColor(PaletteColors::getEnemyLaserLight());
-                initLight();
-            }
-            break;
-        }
-        case WeaponTypes::SHOCK: {
-            auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
-
-            if (getPosition().distance(player->getPosition()) < 3) {
-
-                if (player->getState() == PlayerState::GETTING_DAMAGE || player->getState() == PlayerState::DEAD) {
-                    break;
-                }
-
-                player->makeStuck(4.0);
-            }
-            break;
-        }
-        case WeaponTypes::WEAPON_RAYLIGHT: {
-            bool shootResult = weapon->shootRayLight(0.00075f, PaletteColors::getEnemyLaser());
-            if (shootResult) {
-                getLight()->setColor(PaletteColors::getEnemyRayLight());
-                initLight();
-            }
-            break;
-        }
+    if (wasShoot) {
+        getLight()->setColor(PaletteColors::getPlayerProjectileLight());
+        initLight();
     }
 }
 

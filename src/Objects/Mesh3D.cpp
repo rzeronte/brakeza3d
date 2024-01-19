@@ -458,7 +458,7 @@ Mesh3D *Mesh3D::create() {
 void Mesh3D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    std::string title = "Mesh3D (Triangles: " + std::to_string(getModelTriangles().size()) + ")";
+    std::string title = "Mesh3D (File: " + sourceFile + "Triangles: " + std::to_string(getModelTriangles().size()) + ")";
 
     if (ImGui::TreeNode(title.c_str())) {
         ImGui::Checkbox(std::string("Enable lights").c_str(), &enableLights);

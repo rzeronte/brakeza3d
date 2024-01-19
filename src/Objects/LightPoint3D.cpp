@@ -113,21 +113,21 @@ cJSON *LightPoint3D::getJSON()
     cJSON *root = Object3D::getJSON();
 
     cJSON *ambientJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(ambientJSON, "x", (int) ambient.x);
-    cJSON_AddNumberToObject(ambientJSON, "y", (int) ambient.y);
-    cJSON_AddNumberToObject(ambientJSON, "z", (int) ambient.z);
+    cJSON_AddNumberToObject(ambientJSON, "x", ambient.x);
+    cJSON_AddNumberToObject(ambientJSON, "y", ambient.y);
+    cJSON_AddNumberToObject(ambientJSON, "z", ambient.z);
     cJSON_AddItemToObject(root, "ambient", ambientJSON);
 
     cJSON *diffuseJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(diffuseJSON, "x", (int) diffuse.x);
-    cJSON_AddNumberToObject(diffuseJSON, "y", (int) diffuse.y);
-    cJSON_AddNumberToObject(diffuseJSON, "z", (int) diffuse.z);
+    cJSON_AddNumberToObject(diffuseJSON, "x", diffuse.x);
+    cJSON_AddNumberToObject(diffuseJSON, "y", diffuse.y);
+    cJSON_AddNumberToObject(diffuseJSON, "z", diffuse.z);
     cJSON_AddItemToObject(root, "diffuse", diffuseJSON);
 
     cJSON *specularJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(specularJSON, "x", (int) specular.x);
-    cJSON_AddNumberToObject(specularJSON, "y", (int) specular.y);
-    cJSON_AddNumberToObject(specularJSON, "z", (int) specular.z);
+    cJSON_AddNumberToObject(specularJSON, "x", specular.x);
+    cJSON_AddNumberToObject(specularJSON, "y", specular.y);
+    cJSON_AddNumberToObject(specularJSON, "z", specular.z);
     cJSON_AddItemToObject(root, "specular", specularJSON);
 
     cJSON_AddNumberToObject(root, "constant", constant);

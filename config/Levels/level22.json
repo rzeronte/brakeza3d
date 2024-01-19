@@ -13,9 +13,9 @@
       "name": "Colossus",
       "avatar": "avatars/challenger.png",
       "avatarHud": "avatars/shuttle.png",
-      "position": { "x": 50, "y": 10 },
+      "position": { "x": 50, "y": 40 },
       "model": "spaceships/Challenger.fbx",
-      "size": { "x": 1000, "y": 1000,  "z": 500 },
+      "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
@@ -39,13 +39,108 @@
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 6,
-        "type": 2,
+        "type": "raylight",
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_02.fbx",
         "flatTexture": true,
         "enableLights": false,
         "color": { "r": 255, "g": 0, "b": 0 }
+      }
+    },
+    {
+      "name": "RedBallLaser",
+      "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/shuttle.png",
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "position": { "x": 75,  "y": 40 },
+      "model": "bomb02.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 600,
+      "reward": true,
+      "motion": {
+        "type": "path",
+        "speed": 0.25,
+        "points": [
+          { "x": 15, "y": 75 },
+          { "x": 15, "y": 15 },
+          { "x": 90, "y": 15 },
+          { "x": 90, "y": 75 },
+          { "x": 15, "y": 75 }
+        ]
+      },
+      "lasers": [
+      ],
+      "explode": 100,
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 15,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 1,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": "laser",
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      }
+    }, {
+      "name": "RedBallLaser",
+      "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/shuttle.png",
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "position": { "x": 75,  "y": 40 },
+      "model": "bomb02.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 600,
+      "reward": true,
+      "motion": {
+        "type": "path",
+        "speed": 0.25,
+        "points": [
+          { "x": 90, "y": 15 },
+          { "x": 90, "y": 75 },
+          { "x": 15, "y": 75 },
+          { "x": 15, "y": 15 },
+          { "x": 90, "y": 15 }
+        ]
+      },
+      "lasers": [
+      ],
+      "explode": 100,
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 15,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 1,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": "laser",
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0 }
       }
     }
   ],
@@ -56,7 +151,7 @@
     },
     {
       "type": 5,
-      "position": { "x": 95, "y": 75 }
+      "position": { "x": 95, "y": 10 }
     }
   ]
 }

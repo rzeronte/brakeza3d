@@ -1,9 +1,14 @@
 {
 	"ads":	{
+		"direction": {
+			"x":	0.0,
+			"y":	0.0,
+			"z":	1.0
+		},
 		"diffuse":	{
-			"x":	0.4754098653793335,
-			"y":	0.4754098653793335,
-			"z":	0.4754098653793335
+			"x":	0.59836065769195557,
+			"y":	0.59836065769195557,
+			"z":	0.59836065769195557
 		},
 		"specular":	{
 			"x":	0.31147539615631104,
@@ -11,23 +16,49 @@
 			"z":	0.31147539615631104
 		},
 		"ambient":	{
-			"x":	0.48770493268966675,
-			"y":	0.48770493268966675,
-			"z":	0.48770493268966675
+			"x":	0.76229506731033325,
+			"y":	0.76229506731033325,
+			"z":	0.76229506731033325
 		}
 	},
 	"objects":	[{
-			"name":	"DestroyPlanet",
-			"scale":	18.25,
+			"name":	"Purple",
+			"scale":	1.2899999618530273,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-55.576656341552734,
-				"y":	-1.5393160581588745,
-				"z":	326.54013061523438
+				"x":	-3.513416051864624,
+				"y":	-17.573837280273438,
+				"z":	162.94012451171875
 			},
 			"rotation":	{
-				"x":	100.80000305175781,
+				"x":	0,
+				"y":	51.100002288818359,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//planets/planet_c.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Green",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-25.313394546508789,
+				"y":	-5.0739283561706543,
+				"z":	258.44012451171875
+			},
+			"rotation":	{
+				"x":	0,
 				"y":	0,
 				"z":	0
 			},
@@ -39,44 +70,65 @@
 			},
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models/broken_planet.fbx",
+			"model":	"../assets/models//planets/planet_b.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"DestroyDish",
-			"scale":	3.9700000286102295,
+			"name":	"Station",
+			"scale":	0.41999998688697815,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	0.40352633595466614,
-				"y":	4.0482540130615234,
-				"z":	124.44012451171875
+				"x":	-10.311127662658691,
+				"y":	-11.473905563354492,
+				"z":	127.04012298583984
 			},
 			"rotation":	{
-				"x":	7.1100001335144043,
-				"y":	70.810005187988281,
-				"z":	-22
+				"x":	65,
+				"y":	140.5,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//station01.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"asteroid01",
+			"scale":	2.940000057220459,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	18.23570442199707,
+				"y":	0.24369241297245026,
+				"z":	59.740119934082031
+			},
+			"rotation":	{
+				"x":	0.0099999997764825821,
+				"y":	0,
+				"z":	0
 			},
 			"rotationFrameEnabled":	true,
 			"rotationFrame":	{
-				"x":	0.05000000074505806,
-				"y":	0.05000000074505806,
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
 				"z":	0
 			},
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models/dish_dead.fbx",
+			"model":	"../assets/models//asteroid_01.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"DestroyDish02",
-			"scale":	5.6599998474121094,
+			"name":	"asteroid02",
+			"scale":	3.880000114440918,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-40.851844787597656,
-				"y":	-25.003280639648438,
-				"z":	120.94012451171875
+				"x":	-19.750154495239258,
+				"y":	13.87979793548584,
+				"z":	45.540119171142578
 			},
 			"rotation":	{
 				"x":	0,
@@ -85,39 +137,39 @@
 			},
 			"rotationFrameEnabled":	true,
 			"rotationFrame":	{
-				"x":	0.05000000074505806,
-				"y":	0.05000000074505806,
+				"x":	0.10000000149011612,
+				"y":	0.10000000149011612,
 				"z":	0
 			},
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models/dish_dead.fbx",
+			"model":	"../assets/models//asteroid_02.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"DestroyDish03",
-			"scale":	6.5999999046325684,
+			"name":	"AsteroidsField",
+			"scale":	1.9199999570846558,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-41.371994018554688,
-				"y":	35.752342224121094,
-				"z":	143.94012451171875
+				"x":	-2.7427897453308105,
+				"y":	-14.022441864013672,
+				"z":	155.04013061523438
 			},
 			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
+				"x":	5.8000001907348633,
+				"y":	-8.5000009536743164,
+				"z":	25.899999618530273
 			},
 			"rotationFrameEnabled":	true,
 			"rotationFrame":	{
-				"x":	0.05000000074505806,
-				"y":	0.05000000074505806,
+				"x":	0.0099999997764825821,
+				"y":	0,
 				"z":	0
 			},
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models/dish_dead.fbx",
+			"model":	"../assets/models//asteroids_field.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],

@@ -10,7 +10,7 @@
 class PaletteColors {
 
 public:
-    [[nodiscard]] static Color getMenuOptions() { return {0.30f, 0.47f, 0.31f}; }
+    [[nodiscard]] static Color getMenuOptions() { return {0.68f, 0.5f, 0.18f}; }
 
     [[nodiscard]] static Color getStatisticsText() { return {1.0f, 0.f, 0.f}; }
 

@@ -70,8 +70,6 @@ public:
 
     void takeDamage(float damageTaken);
 
-    void updateEmitterParticles();
-
     void initLight();
 
     void updateLight();

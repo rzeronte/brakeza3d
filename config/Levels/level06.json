@@ -20,7 +20,7 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": ""
+        "type": "none"
       },
       "weapon": {
         "index": 0,
@@ -29,14 +29,14 @@
         "damage": 5,
         "amount": 1000,
         "startAmount": 10000,
-        "speed": 0.5,
+        "speed": 0.1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.3,
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 2,
-        "type": 1,
+        "type": "laser",
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
@@ -76,7 +76,7 @@
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 6,
-        "type": 0,
+        "type": "projectile",
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",
@@ -116,7 +116,7 @@
         "stop": true,
         "stopDuration": 2,
         "stopEvery": 6,
-        "type": 0,
+        "type": "projectile",
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
         "model": "item_weapon_01.fbx",

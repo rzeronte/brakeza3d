@@ -148,7 +148,7 @@ public:
 
     static void removeInGameObjects() ;
 
-    void pressedKeyForNewGameOrResumeGame();
+    void pressedKeyForNewGameOrResumeGame() const;
 
     void pressedKeyForBeginLevel();
 
@@ -184,7 +184,7 @@ public:
 
     void addRayLightsToShaderLaserLine();
 
-    void pressedKeyForWin();
+    void pressedKeyForWin() const;
 
     TextWriter *getTextWriter();
 
@@ -194,7 +194,7 @@ public:
 
     void showLevelStatistics(float alpha);
 
-    void drawMedalAlpha(int type, int x, int y, float alpha);
+    static void drawMedalAlpha(int type, int x, int y, float alpha);
 
     [[nodiscard]] FXColorTint *getShaderColor() const;
 
@@ -216,7 +216,7 @@ public:
 
     [[nodiscard]] FXOffsetImage *getShaderForegroundImage() const;
 
-    [[nodiscard]] Sprite2D *getExplosionSprite() const;
+    [[nodiscard]] Sprite2D *getRandomExplosionSprite() const;
 
     [[nodiscard]] Sprite2D *getFadeInSpriteRed();
 

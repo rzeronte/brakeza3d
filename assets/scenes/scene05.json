@@ -1,51 +1,107 @@
 {
 	"ads":	{
+		"direction": {
+			"x":	0.0,
+			"y":	0.0,
+			"z":	1.0
+		},
 		"diffuse":	{
-			"x":	0.4754098653793335,
-			"y":	0.4754098653793335,
-			"z":	0.4754098653793335
+			"x":	1,
+			"y":	1,
+			"z":	1
 		},
 		"specular":	{
-			"x":	0.31147539615631104,
-			"y":	0.31147539615631104,
-			"z":	0.31147539615631104
+			"x":	0,
+			"y":	0,
+			"z":	0
 		},
 		"ambient":	{
-			"x":	0.48770493268966675,
-			"y":	0.48770493268966675,
-			"z":	0.48770493268966675
+			"x":	0.84426230192184448,
+			"y":	0.84426230192184448,
+			"z":	0.84426230192184448
 		}
 	},
 	"objects":	[{
-			"name":	"landscape",
-			"scale":	21,
+			"name":	"PlanetFire",
+			"scale":	4.5500001907348633,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-33.898239135742188,
-				"y":	1.0094153881072998,
-				"z":	900
+				"x":	-136.93220520019531,
+				"y":	-74.913261413574219,
+				"z":	349.00454711914062
 			},
 			"rotation":	{
-				"x":	180,
+				"x":	-4.1999998092651367,
 				"y":	0,
 				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//planets/planet_a.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Rings",
+			"scale":	2.559999942779541,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	81.501152038574219,
+				"y":	72.817153930664062,
+				"z":	387.20458984375
+			},
+			"rotation":	{
+				"x":	149.30000305175781,
+				"y":	70.5999984741211,
+				"z":	4.6999998092651367
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models/landscape02.fbx",
+			"model":	"../assets/models//planets/planet_ring.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
-		}
-	],
+		}, {
+			"name":	"WhitePlanet",
+			"scale":	2.8599998950958252,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	95.7011489868164,
+				"y":	80.617156982421875,
+				"z":	400
+			},
+			"rotation":	{
+				"x":	-15.200000762939453,
+				"y":	91.9000015258789,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//planets/planet_d.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-0.62999975681304932,
-			"y":	1.9699985980987549,
-			"z":	0.24011898040771484
+			"x":	-0.0608774796128273,
+			"y":	-0.000642627477645874,
+			"z":	0.1045653373003006
 		},
 		"rotation":	{
 			"x":	0,

@@ -1,5 +1,10 @@
 {
 	"ads":	{
+		"direction": {
+			"x":	0.0,
+			"y":	0.0,
+			"z":	1.0
+		},
 		"diffuse":	{
 			"x":	1,
 			"y":	1,
@@ -16,70 +21,7 @@
 			"z":	0.84426230192184448
 		}
 	},
-	"objects":	[{
-			"name":	"added_item_69",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-5.5,
-				"y":	0.25404098629951477,
-				"z":	20.100002288818359
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//bomb01.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"added_item_71",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-2.5,
-				"y":	0,
-				"z":	20
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//bomb02.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"added_item_50",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	1.5,
-				"y":	0,
-				"z":	20
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//bomb03.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}],
+	"objects":	[],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{

@@ -56,7 +56,6 @@ private:
     Counter counterDashCadence;
     Counter counterLight;
 
-    int killsCounter;
     bool energyShieldEnabled;
 
     bool allowEnergyShield;
@@ -69,7 +68,6 @@ private:
     PlayerState state;
 
     std::vector<Weapon *> weapons;
-    int currentWeaponIndex;
 
     PlayerSatellite satellite;
 
@@ -130,12 +128,6 @@ public:
 
     void stopBlinkForPlayer();
 
-    [[nodiscard]] int getKillsCounter() const;
-
-    void setKillsCounter(int killsCounter);
-
-    void increaseKills();
-
     [[nodiscard]] const std::vector<Weapon *> &getWeapons() const;
 
     [[nodiscard]] bool isEnergyShieldEnabled() const;
@@ -149,12 +141,6 @@ public:
     void setEnergy(float energy);
 
     [[nodiscard]] float getStartEnergy() const;
-
-    void setStartEnergy(float startEnergy);
-
-    [[nodiscard]] float getRecoverEnergySpeed() const;
-
-    void setRecoverEnergySpeed(float recoverEnergySpeed);
 
     void startPlayerBlink();
 
@@ -212,7 +198,7 @@ public:
 
     void updateSpriteEnergyShield();
 
-    void drawImGuiProperties();
+    void drawImGuiProperties() override;
 
     static void shiftCamera();
 
