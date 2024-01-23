@@ -21,11 +21,6 @@ void ComponentGameInput::preUpdate()
 
     if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::MENU) return;
 
-    if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::GAMING) {
-        this->handleKeyboardMovingPlayer();
-        this->handleGamePadMovingPlayer();
-        this->handleFire();
-    }
 }
 
 void ComponentGameInput::onUpdate()
@@ -34,6 +29,11 @@ void ComponentGameInput::onUpdate()
 
 void ComponentGameInput::postUpdate()
 {
+    if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::GAMING) {
+        this->handleKeyboardMovingPlayer();
+        this->handleGamePadMovingPlayer();
+        this->handleFire();
+    }
 }
 
 void ComponentGameInput::onEnd()
@@ -82,14 +82,15 @@ void ComponentGameInput::updateWeaponStatus(SDL_Event *event)
     const bool releaseFireKeyboard = event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_SPACE;
 
     const bool pressedFireController = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_A;
-    const bool pressedFireKeyboard = event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_SPACE;;
+    const bool pressedFireKeyboard = event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_SPACE;
 
+    auto weapon = player->getWeapon();
     if (releaseFireKeyboard || releasedFireController) {
-        player->getWeapon()->setStatus(WeaponStatus::RELEASED);
+        weapon->setStatus(WeaponStatus::RELEASED);
     }
 
     if (pressedFireKeyboard || pressedFireController) {
-        player->getWeapon()->setStatus(WeaponStatus::PRESSED);
+        weapon->setStatus(WeaponStatus::PRESSED);
     }
 }
 
@@ -126,6 +127,10 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
             return;
         }
 
+        if (gameState == EngineSetup::GameState::SPACESHIP_SELECTOR)  {
+            return;
+        }
+
         if (gameState == EngineSetup::GameState::COUNTDOWN ||
             gameState == EngineSetup::GameState::PRESS_KEY_NEW_LEVEL ||
             gameState == EngineSetup::GameState::PRESS_KEY_BY_DEAD ||
@@ -149,7 +154,7 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto componentMenu = ComponentsManager::get()->getComponentMenu();
     auto componentInput = ComponentsManager::get()->getComponentInput();
-
+    auto sound = ComponentsManager::get()->getComponentSound();
     auto menuOptions = componentMenu->getOptions();
 
     int currentOption = componentMenu->getCurrentOption();
@@ -160,14 +165,14 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
     if (keyboard[SDL_SCANCODE_DOWN] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
         if (currentOption + 1 < componentMenu->getNumOptions()) {
             componentMenu->increaseMenuOption();
-            ComponentsManager::get()->getComponentSound()->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            sound->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
     }
 
     if (keyboard[SDL_SCANCODE_UP] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)) {
         if (currentOption > 0) {
             componentMenu->decreaseMenuOption();
-            ComponentsManager::get()->getComponentSound()->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            sound->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
     }
 
@@ -179,12 +184,22 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
         }
 
         if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_NEW_GAME) {
-            ComponentsManager::get()->getComponentGame()->pressedKeyForNewGameOrResumeGame();
+            if (!componentGame->getLevelLoader()->isLevelStartedToPlay()) {
+                EngineSetup::get()->SOUND_VOLUME_MUSIC -= 20;
+                EngineSetup::get()->SOUND_CHANNEL_GLOBAL += 20;
+                Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) EngineSetup::get()->SOUND_CHANNEL_GLOBAL);
+                Mix_VolumeMusic((int) EngineSetup::get()->SOUND_VOLUME_MUSIC);
+
+                sound->sound("startIntro", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+                sound->sound("introHistory", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+                componentGame->makeFadeToGameState(EngineSetup::GameState::INTRO, true);
+            } else {
+                componentGame->pressedKeyForNewGameOrResumeGame();
+            }
         }
 
         if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_HELP) {
             componentGame->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
-
             componentGame->makeFadeToGameState(EngineSetup::GameState::HELP, true);
         }
 
@@ -447,7 +462,7 @@ void ComponentGameInput::handleMakeReflection(SDL_Event *event)
     if (controllerXButtonPressed || reflectionKeyPressed) {
         auto weapon = player->getWeaponTypeByLabel("reflection");
         weapon->onUpdate();
-        weapon->shoot({Vertex3D(), 0,  0, 0});
+        weapon->shoot({Vertex3D(), 0,  0, 0, true});
     }
 }
 
@@ -485,6 +500,23 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
         game->setGameState(EngineSetup::GAMING);
         componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         return;
+    }
+
+    if (state == EngineSetup::INTRO) {
+        if ((enter || isButtonGuidedPressed)) {
+            game->pressedKeyForNewGameOrResumeGame();
+            return;
+        }
+
+        if (cursorLeft || controllerLeft) {
+            game->decreaseIntroImage();
+            return;
+        }
+
+        if (cursorRight || controllerRight) {
+            game->increaseIntroImage();
+            return;
+        }
     }
 
     if (state == EngineSetup::GameState::STORE) {
@@ -595,7 +627,7 @@ void ComponentGameInput::handleBomb(SDL_Event *event)
     if (controllerXButtonPressed || bombKeyPressed) {
         auto weapon = player->getWeaponTypeByLabel("bomb");
         weapon->onUpdate();
-        weapon->shoot({Vertex3D(), 0, 0, 0});
+        weapon->shoot({Vertex3D(), 0, 0, 0, true});
     }
 }
 
@@ -612,7 +644,7 @@ void ComponentGameInput::handleShield(SDL_Event *event)
     if (controllerYButtonPressed || bombKeyPressed) {
         auto weapon = player->getWeaponTypeByLabel("shield");
         weapon->onUpdate();
-        weapon->shoot({Vertex3D(), 0, 0,  0});
+        weapon->shoot({Vertex3D(), 0, 0,  0, true});
     }
 }
 

@@ -71,6 +71,8 @@ public:
     bool DRAW_MESH3D_GRID_EMPTY = true;
     bool DRAW_MESH3D_GRID_NO_EMPTY = true;
 
+    bool FREE_LOOK = false;
+
     // Z BUFFER
     bool ENABLE_LIGHTS = true;
     bool DRAW_LIGHTS_DIRECTION = false;
@@ -105,7 +107,7 @@ public:
     std::string SHADERS_FOLDER = "../GLSL/";
 
     bool SOUND_ENABLED = true;
-    float SOUND_VOLUME_MUSIC = 20;
+    float SOUND_VOLUME_MUSIC = 40;
     float SOUND_CHANNEL_GLOBAL = 50;
 
     // SpriteDirectional3D Default size

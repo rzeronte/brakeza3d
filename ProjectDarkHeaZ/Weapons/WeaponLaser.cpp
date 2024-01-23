@@ -40,8 +40,6 @@ bool WeaponLaser::shootLaserProjectile(
         this->counterCadence->setStep(t);
         this->counterCadence->setEnabled(true);
 
-        setStatus(WeaponStatus::PRESSED);
-
         auto test  = Vertex3D();
         test.x += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
         test.y += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy));
@@ -86,7 +84,7 @@ bool WeaponLaser::shoot(WeaponShootAttributes attributes)
         parent->AxisUp().getScaled(attributes.startOffset),
         attributes.direction,
         0.00075f,
-        true,
+        attributes.sound,
         PaletteColors::getPlayerLaser(),
         attributes.filterGroup,
         attributes.filterMask

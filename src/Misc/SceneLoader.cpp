@@ -327,7 +327,8 @@ void SceneLoader::createParticleEmitterInScene() {
             1,
             1,
             0.99f
-        )
+        ),
+        ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle01")
     );
     newObject->setBelongToScene(true);
     Logging::Message("Loading ParticleEmitter");

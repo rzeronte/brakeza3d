@@ -247,7 +247,7 @@
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models//station01.fbx",
+			"model":	"../assets/models/stations/station01.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],
@@ -255,9 +255,9 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-0.14128543436527252,
-			"y":	0.13819460570812225,
-			"z":	0.22305718064308167
+			"x":	0,
+			"y":	0,
+			"z":	5
 		},
 		"rotation":	{
 			"x":	0,

@@ -41,9 +41,9 @@ void ComponentMenu::preUpdate()
     auto bb = window->getBackgroundFramebuffer();
 
     background.drawFlatAlpha(0, 0, alpha, bb);
-    boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
+    //boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
     border.drawFlatAlpha(0, 0, alpha, fb);
-    glassEffect.drawFlatAlpha(0, 0, alpha, fb);
+    //glassEffect.drawFlatAlpha(0, 0, alpha, fb);
     imageLogoBox.drawFlatAlpha(0, 0, alpha, fb);
 }
 
@@ -111,7 +111,7 @@ void ComponentMenu::drawOptions()
         float currentAlpha = componentGame->getTextWriter()->getAlpha();
 
         if (i == currentOption) {
-            float currentSelectionAlpha = 0.5f * (float) (1+sin(5 * M_PI * Brakeza3D::get()->getExecutionTime()));
+            float currentSelectionAlpha = 0.5f * (float) (1+sin(2.5f * M_PI * Brakeza3D::get()->getExecutionTime()));
             componentGame->getTextWriter()->setAlpha(currentAlpha * currentSelectionAlpha);
         }
 
@@ -148,8 +148,8 @@ void ComponentMenu::drawVersion()
         Color::white(),
         0.35
     );
+    writer->writeTextTTFAutoSize(1160, 690, "v.1.21.7", PaletteColors::getMenuOptions(), 0.5);
 
-    ComponentsManager::get()->getComponentGame()->writeDialogTextToContinue("v.1.21.7");
 }
 
 int ComponentMenu::getCurrentOption() const {

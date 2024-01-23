@@ -128,7 +128,8 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
             10,
             PaletteColors::getExplosionEnemyFrom(),
             PaletteColors::getExplosionEnemyTo(),
-            OCParticlesContext::forProjectile()
+            OCParticlesContext::forProjectile(),
+            ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle01")
         )
     ), Brakeza3D::uniqueObjectLabel("emitterProjectile"));
 }

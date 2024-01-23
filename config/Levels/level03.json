@@ -1,7 +1,6 @@
 {
   "name": "03",
   "scene": "scene03.json",
-  "music": "musicLevel01",
   "backgroundImage": "levels/03.png",
   "foregroundImage": "foregrounds/03.png",
   "allowEnergyShield": true,
@@ -44,7 +43,7 @@
         "dispersion": 10,
         "accuracy": 90,
         "cadenceTime": 0.50,
-        "stop": true,
+        "stop": false,
         "stopDuration": 2,
         "stopEvery": 6,
         "type": "projectile",

@@ -20,7 +20,6 @@ WeaponShield::WeaponShield(const WeaponAttributes &attributes) : Weapon(attribut
 
     if (counterCadence->isFinished()) {
         counterCadence->setEnabled(true);
-        setStatus(WeaponStatus::PRESSED);
 
         auto *projectile = new ItemShieldGhost(5, this->getDamage());
         projectile->setStencilBufferEnabled(true);

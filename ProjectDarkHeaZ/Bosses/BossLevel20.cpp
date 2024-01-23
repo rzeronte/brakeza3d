@@ -76,7 +76,6 @@ void BossLevel20::updateRays()
         rayLight->setDirection(M3::getMatrixRotationForEulerAngles(0, 0, 0.5) * rayLight->getDirection());
         rayLight->setColor(PaletteColors::getEnemyLaser());
         rayLight->setDamage(1);
-        rayLight->setEnabled(true);
         rayLight->setIntensity(0.0015f);
         rayLight->setReach(progress * 10.0f);
         rayLight->update(false);

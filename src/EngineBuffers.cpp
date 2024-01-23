@@ -26,7 +26,7 @@ sol::state &LUAManager::getLua()
 
 void LUAManager::initLUATypes()
 {
-    lua.open_libraries(sol::lib::base);
+    lua.open_libraries(sol::lib::base, sol::lib::math);
 
     LUAIntegration(lua);
 

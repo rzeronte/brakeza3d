@@ -10,6 +10,8 @@
 
 class WeaponRayLight : public Weapon {
 public:
+    bool isPlayer;
+    ParticleEmitter *particles;
 
     explicit WeaponRayLight(const WeaponAttributes &attributes);
 
@@ -20,6 +22,10 @@ public:
     void onUpdate() override;
 
     bool shootRayLight(float intensity, Color color);
+
+    void setIsForPlayer(bool avoidCheckWeaponStatus);
+
+    void setEnabled(bool enabled) override;
 };
 
 

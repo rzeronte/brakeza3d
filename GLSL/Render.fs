@@ -52,6 +52,7 @@ uniform SpotLight spotLight;
 uniform Material material;
 uniform int numLights;
 uniform int numSpotLights;
+uniform float alpha;
 
 layout (std140) uniform PointLightsBlock { PointLight pointLights[NR_POINT_LIGHTS]; };
 layout (std140) uniform SpotLightsBlock { SpotLight spotLights[NR_POINT_LIGHTS]; };
@@ -77,7 +78,7 @@ void main()
 
     result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
 
-    FragColor = vec4(result, texture(material.diffuse, TexCoords).a);
+    FragColor = vec4(result, texture(material.diffuse, TexCoords).a * alpha);
 }
 
 // calculates the color when using a directional light.

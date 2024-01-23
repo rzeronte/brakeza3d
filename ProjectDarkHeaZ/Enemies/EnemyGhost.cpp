@@ -16,7 +16,8 @@ EnemyGhost::EnemyGhost()
         0,
         PaletteColors::getParticlesPlayerFrom(),
         PaletteColors::getParticlesPlayerTo(),
-        OCParticlesContext::forPlayerEngine()
+        OCParticlesContext::forPlayerEngine(),
+        ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle01")
     )),
     projectileStartOffsetPosition(1.4f),
     particlesEngineOffset(Vertex3D(0, 0.25f, 0))
@@ -60,21 +61,21 @@ void EnemyGhost::onUpdate()
 
     auto playerState = componentGame->getPlayer()->getState();
 
-    if (state != EnemyState::ENEMY_STATE_DIE &&
-        (playerState == PlayerState::LIVE || playerState == PlayerState::GETTING_DAMAGE) &&
+    if (getWeapon() != nullptr) {
+        getWeapon()->onUpdate();
+    }
+
+    if (
+        state != EnemyState::ENEMY_STATE_DIE &&
+        playerState == PlayerState::LIVE &&
         componentGame->getGameState() == EngineSetup::GAMING
-        ) {
+    ) {
         if (projectileEmitter != nullptr) {
             projectileEmitter->setPosition(getPosition());
             projectileEmitter->onUpdate();
         }
         shoot(getTarget());
     }
-
-    if (getWeapon() != nullptr) {
-        getWeapon()->onUpdate();
-    }
-
     updateLasers();
 
     updateLight();
@@ -285,15 +286,12 @@ void EnemyGhost::shoot(Object3D *target)
 
     Vector3D direction(getPosition(), target->getPosition());
 
-    if (weapon->getCounterCadence()->isFinished()) {
-        weapon->setStatus(RELEASED);
-    }
-
     bool wasShoot = weapon->shoot({
         direction.getComponent().getNormalize(),
         projectileStartOffsetPosition,
         EngineSetup::collisionGroups::ProjectileEnemy,
         EngineSetup::collisionGroups::Player | EngineSetup::collisionGroups::Enemy,
+        false
     });
 
     if (wasShoot) {
@@ -413,6 +411,13 @@ void EnemyGhost::drawImGuiProperties()
             ImGui::DragScalar("y", ImGuiDataType_Float, &particlesEngineOffset.y, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
             ImGui::DragScalar("z", ImGuiDataType_Float, &particlesEngineOffset.z, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
             ImGui::TreePop();
+        }
+
+        if (weapon != nullptr) {
+            if (ImGui::TreeNode("Weapon")) {
+                getWeapon()->drawImGuiProperties();
+                ImGui::TreePop();
+            }
         }
     }
 }

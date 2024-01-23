@@ -7,20 +7,20 @@
 #include "../../include/Brakeza3D.h"
 
 ShaderOpenGLRender::ShaderOpenGLRender()
-        :
-        bufferUBOSpotLights(0),
-        bufferUBOLightPoints(0),
-        directionalLight(DirLightOpenGL{
-                glm::vec3(0, 0, 1),
-                glm::vec3(0.3f, 0.3f, 0.3f),
-                glm::vec3(0.4f, 0.4f, 0.4f),
-                glm::vec3(0.5f, 0.5f, 0.5f)
-        }),
-        VertexArrayID(0),
-        ShaderOpenGL(
-                EngineSetup::get()->SHADERS_FOLDER + "Render.vs",
-                EngineSetup::get()->SHADERS_FOLDER + "Render.fs"
-        )
+:
+    bufferUBOSpotLights(0),
+    bufferUBOLightPoints(0),
+    directionalLight(DirLightOpenGL{
+        glm::vec3(0, 0, 1),
+        glm::vec3(0.3f, 0.3f, 0.3f),
+        glm::vec3(0.4f, 0.4f, 0.4f),
+        glm::vec3(0.5f, 0.5f, 0.5f)
+    }),
+    VertexArrayID(0),
+    ShaderOpenGL(
+        EngineSetup::get()->SHADERS_FOLDER + "Render.vs",
+        EngineSetup::get()->SHADERS_FOLDER + "Render.fs"
+    )
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
@@ -42,31 +42,35 @@ ShaderOpenGLRender::ShaderOpenGLRender()
     materialTextureDiffuseUniform = glGetUniformLocation(programID, "material.diffuse");
     materialTextureSpecularUniform = glGetUniformLocation(programID, "material.specular");
     materialShininessUniform = glGetUniformLocation(programID, "material.shininess");
+
+    alphaUniform = glGetUniformLocation(programID, "alpha");
 }
 
 void ShaderOpenGLRender::renderMesh(Mesh3D *o, GLuint framebuffer)
 {
     render(
-            o,
-            o->getModelTextures()[0]->getOGLTextureID(),
-            o->getModelTextures()[0]->getOGLTextureID(),
-            o->vertexbuffer,
-            o->uvbuffer,
-            o->normalbuffer,
-            o->vertices.size(),
-            framebuffer
+        o,
+        o->getModelTextures()[0]->getOGLTextureID(),
+        o->getModelTextures()[0]->getOGLTextureID(),
+        o->vertexbuffer,
+        o->uvbuffer,
+        o->normalbuffer,
+        o->vertices.size(),
+        o->getAlpha(),
+        framebuffer
     );
 }
 
 void ShaderOpenGLRender::render(
-        Object3D *o,
-        GLint textureID,
-        GLint textureSpecularID,
-        GLuint vertexbuffer,
-        GLuint uvbuffer,
-        GLuint normalbuffer,
-        int size,
-        GLuint framebuffer
+    Object3D *o,
+    GLint textureID,
+    GLint textureSpecularID,
+    GLuint vertexbuffer,
+    GLuint uvbuffer,
+    GLuint normalbuffer,
+    int size,
+    float alpha,
+    GLuint framebuffer
 )
 {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -95,6 +99,7 @@ void ShaderOpenGLRender::render(
 
     setIntUniform(numLightPointsUniform, (int) pointsLights.size());
     setIntUniform(numSpotLightsUniform, (int) spotLights.size());
+    setFloatUniform(alphaUniform, alpha);
 
     Vertex3D forward = ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose() * Vertex3D(0, 0, 1);
 
@@ -120,13 +125,11 @@ void ShaderOpenGLRender::render(
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
 
-
     glDrawArrays(GL_TRIANGLES, 0, size );
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
-
 
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -16,7 +16,6 @@ RayLight::RayLight(
     int filterMask
 )
 :
-    enabled(enabled),
     intensity(0),
     reach(0),
     speed(speed),
@@ -34,27 +33,14 @@ RayLight::RayLight(
 
     rayCallback->m_collisionFilterGroup = filterGroup;
     rayCallback->m_collisionFilterMask = filterMask;
-
-    particles = new ParticleEmitter(
-            ParticleEmitterState::DEFAULT,
-        nullptr,
-        parent->getPosition(),
-        9999,
-        Color::red(),
-            Color::yellow(),
-        OCParticlesContext::forPlayerEngine()
-    );
 }
 
 RayLight::~RayLight()
 {
-    delete particles;
 }
 
 void RayLight::update(bool increase)
 {
-    particles->onUpdate();
-
     auto game = ComponentsManager::get()->getComponentGame();
 
     Vertex3D start = parent->getPosition() + startOffset;
@@ -72,7 +58,12 @@ void RayLight::update(bool increase)
         *rayCallback
     );
 
+    result.wasHit = false;
+    result.position = end;
+
     if (rayCallback->hasHit()) {
+        result.wasHit = true;
+
         auto *brkObjectA = (Collisionable *) rayCallback->m_collisionObject->getUserPointer();
 
         auto *object = dynamic_cast<Object3D*> (brkObjectA);
@@ -82,6 +73,7 @@ void RayLight::update(bool increase)
 
         btVector3 rayHitPosition = rayCallback->m_hitPointWorld;
         auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
+        result.position = hitPosition;
 
         if (object != this->parent) {
             auto dt = Brakeza3D::get()->getDeltaTime() * 50;
@@ -126,8 +118,6 @@ void RayLight::update(bool increase)
         end = hitPosition;
     }
 
-    particles->setPosition(end);
-
     if (increase) {
         increaseReach();
     }
@@ -161,14 +151,6 @@ void RayLight::increaseReach() {
     reach = reach + 0.001f * speed;
 }
 
-bool RayLight::isEnabled() const {
-    return enabled;
-}
-
-void RayLight::setEnabled(bool enabled) {
-    RayLight::enabled = enabled;
-}
-
 void RayLight::setColor(const Color &color) {
     RayLight::color = color;
 }
@@ -197,5 +179,14 @@ float RayLight::getReach() const {
 
 void RayLight::drawImGuiProperties()
 {
-    particles->drawImGuiProperties();
+}
+
+void RayLight::setCollisionMask(int filterGroup, int filterMask)
+{
+    rayCallback->m_collisionFilterGroup = filterGroup;
+    rayCallback->m_collisionFilterMask = filterMask;
+}
+
+ResultRay RayLight::getResult() {
+    return result;
 }

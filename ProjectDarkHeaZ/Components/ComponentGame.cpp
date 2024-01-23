@@ -5,9 +5,10 @@
 
 ComponentGame::ComponentGame()
 :
+    currentIndexIntro(0),
     cameraCountDownPosition(Vertex3D(0, 0, 5)),
     cameraInGamePosition(Vertex3D(0, 0, 0)),
-    playerStartPosition(Vertex3D(0, 5, Z_COORDINATE_GAMEPLAY)),
+    playerStartPosition(Vertex3D(0, 4, Z_COORDINATE_GAMEPLAY)),
     textWriter(nullptr),
     fadeToGameState(nullptr),
     player(nullptr),
@@ -15,6 +16,7 @@ ComponentGame::ComponentGame()
     glassEffect(Image(SETUP->IMAGES_FOLDER + "menuBackground.png")),
     backgroundSpaceshipSelection(Image(SETUP->IMAGES_FOLDER + "backgroundSpaceshipSelection.png")),
     boxStore(Image(SETUP->IMAGES_FOLDER + "store_box.png")),
+    imageBlack(Image(SETUP->IMAGES_FOLDER + "black.png")),
     boxTutorial(Image(SETUP->IMAGES_FOLDER + "tutorial_box.png")),
     imageEndGame(Image(SETUP->IMAGES_FOLDER + "end_game.png")),
     imageDead(Image(SETUP->IMAGES_FOLDER + "game_over.png")),
@@ -38,6 +40,9 @@ void ComponentGame::onStart()
 {
     Logging::Message("ComponentGame onStart");
 
+    images.addItem(EngineSetup::get()->IMAGES_FOLDER + "particle.png", "particle01");
+    images.addItem(EngineSetup::get()->IMAGES_FOLDER + "particle02.png", "particle02");
+
     player = new Player();
 
     setGameState(EngineSetup::GameState::NONE);
@@ -52,10 +57,28 @@ void ComponentGame::onStart()
         false
     );
 
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/01.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/02.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/03.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/04.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/05.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/06.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/07.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/08.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/09.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/10.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/11.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/12.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/13.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/14.png"));
+    imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/15.png"));
+
     helps.push_back(new Image(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_HELP_IMAGE));
     helps.push_back(new Image(SETUP->IMAGES_FOLDER + "keyboard.png"));
 
     splashCounter.setStep(SPLASH_TIME);
+    introCounter.setStep(5.0f);
+    introCounter.setEnabled(false);
 
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
 
@@ -87,15 +110,14 @@ void ComponentGame::onStart()
     loadSpaceship("spaceships/player.fbx", "spaceships/spaceship_01.png");
     loadSpaceship("spaceships/player02.fbx", "spaceships/spaceship_02.png");
     loadSpaceship("spaceships/player03.fbx", "spaceships/spaceship_03.png");
-    loadSpaceship("spaceships/player04.fbx", "spaceships/spaceship_04.png");
 
     fadeInSpriteRed = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "flash01.png"), 96, 96, 37, 45));
     fadeInSpriteGreen = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "flash02.png"), 96, 96, 37, 45));
     fadeInSpriteBlue = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "flash03.png"), 96, 96, 37, 45));
 
-    spriteSparklesRed = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "impact_a.png"), 48, 48, 9, 60));
-    spriteSparklesGreen = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "impact02.png"), 64, 64, 40, 160));
-    spriteSparklesBlue = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "impact03.png"), 64, 64, 40, 160));
+    spriteSparklesRed = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosions/05.png"), 64, 64, 16, 40));
+    spriteSparklesGreen = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosions/02.png"), 64, 64, 16, 40));
+    spriteSparklesBlue = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "explosions/05.png"), 64, 64, 16, 40));
 
     spriteStuck = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "Smoke45Frames.png"), 128, 128, 45, 24));
 
@@ -149,6 +171,10 @@ void ComponentGame::onUpdate()
     textWriter->setAlpha(alpha);
 
     switch(gameState) {
+        case EngineSetup::INTRO: {
+            handleOnUpdateIntro(alpha);
+            break;
+        }
         case EngineSetup::COUNTDOWN: {
             handleOnUpdateCountDown();
             break;
@@ -217,17 +243,18 @@ void ComponentGame::handleOnUpdateTutorialImages(float alpha)
         textWriter->setFont(window->getFontAlternative());
         std::string message = std::to_string(getLevelLoader()->getCurrentTutorialIndex() + 1) + " of " + std::to_string((int)getLevelLoader()->getTutorials().size());
 
-        boxTutorial.drawFlatAlpha(0, 0, alpha, window->getForegroundFramebuffer());
-        glassEffect.drawFlatAlpha(0, 0, alpha, window->getForegroundFramebuffer());
+        //glassEffect.drawFlatAlpha(0, 0, alpha, window->getForegroundFramebuffer());
         getLevelLoader()->drawCurrentTutorialImage(alpha);
-
         writeDialogTextToContinue("Press ENTER to start...");
         if (getLevelLoader()->getTutorials().size() > 1) {
             textWriter->writeTTFCenterHorizontal(495, message.c_str(), PaletteColors::getCrt(), 0.5f);
         }
         auto bb = window->getBackgroundFramebuffer();
-        glassEffect.drawFlatAlpha(0, 0, alpha, bb);
+        boxTutorial.drawFlatAlpha(0, 0, alpha, window->getForegroundFramebuffer());
+        //glassEffect.drawFlatAlpha(0, 0, alpha, bb);
         textWriter->setAlpha(oldAlpha);
+    } else {
+        writeDialogTextToContinue("Press ENTER to start...");
     }
 }
 
@@ -441,6 +468,10 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         case EngineSetup::SPACESHIP_SELECTOR: {
             handleSpaceShipSelector();
         }
+        case EngineSetup::INTRO:
+            ComponentsManager::get()->getComponentMenu()->setEnabled(false);
+            introCounter.setEnabled(true);
+            break;
     }
 
     this->gameState = state;
@@ -847,7 +878,12 @@ void ComponentGame::setVisibleInGameObjects(bool value)
 void ComponentGame::selectSpaceshipAndStartGame()
 {
     makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEW_LEVEL, true);
-    ComponentsManager::get()->getComponentSound()->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+    EngineSetup::get()->SOUND_VOLUME_MUSIC += 40;
+    EngineSetup::get()->SOUND_CHANNEL_GLOBAL -= 0;
+    Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) EngineSetup::get()->SOUND_CHANNEL_GLOBAL);
+    Mix_VolumeMusic((int) EngineSetup::get()->SOUND_VOLUME_MUSIC);
+
+    ComponentsManager::get()->getComponentSound()->sound("startIntro", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     loadSelectedSpaceshipModel();
     spaceships[spaceshipSelectedIndex]->setEnabled(false);
     shaderEdgeObject->setEnabled(false);
@@ -858,8 +894,11 @@ void ComponentGame::selectSpaceshipAndStartGame()
 void ComponentGame::pressedKeyForNewGameOrResumeGame() const
 {
     if (!getLevelLoader()->isLevelStartedToPlay()) {
-        getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
-        ComponentsManager::get()->getComponentSound()->sound("levelCompleted", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        getFadeToGameState()->setSpeed(0.004);
+        ComponentsManager::get()->getComponentSound()->stopChannel(EngineSetup::SoundChannels::SND_GLOBAL);
+        ComponentsManager::get()->getComponentSound()->stopMusic();
+
+        ComponentsManager::get()->getComponentSound()->sound("startIntro", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         ComponentsManager::get()->getComponentMenu()->setMenuEnabled(false);
         makeFadeToGameState(EngineSetup::GameState::SPACESHIP_SELECTOR, true);
     } else {
@@ -957,8 +996,6 @@ void ComponentGame::zoomCameraCountDown()
 
 void ComponentGame::handleMenuGameState()
 {
-    Logging::Message("ieah");
-
     ComponentsManager::get()->getComponentHUD()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(true);
@@ -1026,9 +1063,11 @@ void ComponentGame::handlePressNewLevelKeyGameState()
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
 
-    ComponentSound::fadeInMusic(
-        ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("tutorial"), -1, 3000
-    );
+    if (getLevelLoader()->getTutorials().size() > 1) {
+        ComponentSound::fadeInMusic(
+                ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("tutorial"), -1, 3000
+        );
+    }
 
     ComponentsManager::get()->getComponentSound()->sound("crt", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
@@ -1178,12 +1217,12 @@ void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::s
     model->setRotationFrameEnabled(true);
     model->setRotationFrame(Vertex3D(0, 1, 0));
     model->setEnabled(false);
-    model->setAlpha(1);
+    model->setAlpha(0);
     model->setEnableLights(true);
     model->setScale(2);
     model->setStencilBufferEnabled(true);
     model->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + fileNameModel));
-    model->setPosition(Vertex3D(-2, -1, 20));
+    model->setPosition(Vertex3D(-4, -1, 20));
 
     Brakeza3D::get()->addObject3D(model, "spaceshipOption_" + std::to_string(spaceships.size()));
     spaceships.push_back(model);
@@ -1221,6 +1260,8 @@ void ComponentGame::setCurrentEnemyDialog(EnemyDialog *currentEnemyDialog)
 
 void ComponentGame::handleSpaceShipSelector()
 {
+    getFadeToGameState()->setSpeed(FADE_SPEED_MENU_FIRST_TIME);
+    SceneLoader::clearScene();
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     spaceships[spaceshipSelectedIndex]->setEnabled(true);
     shaderEdgeObject->setEnabled(true);
@@ -1285,7 +1326,7 @@ void ComponentGame::decreaseHelpImage()
 void ComponentGame::writeDialogTextToContinue(const char *string)
 {
     textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());
-    textWriter->writeTTFCenterHorizontal(545, string, PaletteColors::getPressKeyToContinue(), 0.5);
+    textWriter->writeTTFCenterHorizontal(600, string, PaletteColors::getMenuOptions(), 0.75f);
 }
 
 void ComponentGame::handleOnUpdateCountDown()
@@ -1348,12 +1389,16 @@ void ComponentGame::handleOnUpdateStore(const float alpha)
 
 void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)
 {
-    SceneLoader::clearScene();
+    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(Vertex3D(0, 0, 0));
+
+    for (auto s: spaceships) {
+        s->setAlpha(alpha);
+    }
     const auto bb = ComponentsManager::get()->getComponentWindow()->getBackgroundFramebuffer();
     const auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
-    backgroundSpaceshipSelection.drawFlatAlpha(0, 0, 1.0f,  bb);
+    backgroundSpaceshipSelection.drawFlatAlpha(0, 0, alpha,  bb);
     spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha, fb);
-    border.drawFlatAlpha(0, 0, alpha, fb);
+    border.drawFlatAlpha(0, 0, alpha,  fb);
     writeDialogTextToContinue("Press ENTER to select...");
 }
 
@@ -1402,4 +1447,52 @@ ShaderOpenGLLineLaser *ComponentGame::getShaderOGLLineLaser() {
 
 ShaderOpenGLImageOffset *ComponentGame::getShaderOGLImageOffset() const {
     return shaderOGLImageOffset;
+}
+
+TexturePackage *ComponentGame::getImages() {
+    return &images;
+}
+
+void ComponentGame::handleOnUpdateIntro(float alpha)
+{
+    introCounter.update();
+
+    if (!imagesIntro.empty()) {
+
+        if (introCounter.isFinished()) {
+            increaseIntroImage();
+            introCounter.setEnabled(true);
+        }
+        auto window = ComponentsManager::get()->getComponentWindow();
+        auto fb = window->getForegroundFramebuffer();
+        auto bb = window->getBackgroundFramebuffer();
+
+        float oldAlpha = textWriter->getAlpha();
+        textWriter->setAlpha(alpha);
+
+        //glassEffect.drawFlatAlpha(0, 0, alpha, fb);
+        imagesIntro[currentIndexIntro]->drawFlatAlpha(0, 0, alpha, fb);
+
+        if ((int) imagesIntro.size() > 1) {
+            std::string message = std::to_string(currentIndexIntro + 1) + " of " + std::to_string((int)imagesIntro.size());
+            textWriter->writeTTFCenterHorizontal(560, message.c_str(), PaletteColors::getMenuOptions(), 0.75f);
+        }
+        writeDialogTextToContinue("Press ENTER to START...");
+        boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
+        textWriter->setAlpha(oldAlpha);
+    }
+}
+
+void ComponentGame::decreaseIntroImage() {
+    if (currentIndexIntro > 0) {
+        ComponentsManager::get()->getComponentSound()->sound("slideMachine", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        currentIndexIntro--;
+    }
+}
+
+void ComponentGame::increaseIntroImage() {
+    if (currentIndexIntro + 1 < (unsigned int) imagesIntro.size()) {
+        ComponentsManager::get()->getComponentSound()->sound("slideMachine", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        currentIndexIntro++;
+    }
 }

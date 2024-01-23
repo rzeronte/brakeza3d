@@ -9,6 +9,7 @@
 
 Weapon::Weapon(WeaponAttributes attr)
 :
+    enabled(false),
     parent(attr.parent),
     selectable(attr.selectable),
     cadenceTime(attr.cadenceTime),
@@ -16,12 +17,12 @@ Weapon::Weapon(WeaponAttributes attr)
     model(new Mesh3D()),
     modelProjectile(new Mesh3D()),
     counterCadence(new Counter(attr.cadenceTime)),
-    soundChannel(EngineSetup::SoundChannels::SND_GLOBAL)
+    soundChannel(EngineSetup::SoundChannels::SND_GLOBAL),
+    status(WeaponStatus::RELEASED)
 {
     setLabel(attr.name);
-    setStatus(WeaponStatus::RELEASED);
 
-    this->counterCadence->setEnabled(false);
+    counterCadence->setEnabled(false);
 
     getModel()->AssimpLoadGeometryFromFile(attr.weaponModel);
 
@@ -72,6 +73,10 @@ void Weapon::onUpdate()
             counterStopEvery.setEnabled(true);
             counterStopDuration.setEnabled(false);
         }
+    }
+
+    if (status == PRESSED) {
+        setStatus(SUSTAINED);
     }
 }
 
@@ -253,4 +258,41 @@ void Weapon::drawImGuiProperties()
         rayLight->drawImGuiProperties();
         ImGui::TreePop();
     }
+
+    if (ImGui::TreeNode("Controls")) {
+        auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
+
+        ImGui::Text("Pressed");
+        ImGui::SameLine();
+        if (getStatus() == WeaponStatus::PRESSED) {
+            ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(18, 18));
+        } else {
+            ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(18, 18));
+        }
+
+        ImGui::Text("Sustained");
+        ImGui::SameLine();
+        if (getStatus() == WeaponStatus::SUSTAINED) {
+            ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(18, 18));
+        } else {
+            ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(18, 18));
+        }
+
+        ImGui::Text("Released");
+        ImGui::SameLine();
+        if (getStatus() == WeaponStatus::RELEASED) {
+            ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(18, 18));
+        } else {
+            ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(18, 18));
+        }
+        ImGui::TreePop();
+    }
+}
+
+bool Weapon::isEnabled() const {
+    return enabled;
+}
+
+void Weapon::setEnabled(bool enabled) {
+    Weapon::enabled = enabled;
 }

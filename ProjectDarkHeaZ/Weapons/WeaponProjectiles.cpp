@@ -41,8 +41,6 @@ bool WeaponProjectiles::shootProjectile(
         this->counterCadence->setStep(t);
         this->counterCadence->setEnabled(true);
 
-        setStatus(WeaponStatus::PRESSED);
-
         setAmmoAmount(getAmmoAmount() - 1);
 
         if (sound) {
@@ -66,13 +64,14 @@ bool WeaponProjectiles::shootProjectile(
             filterGroup,
             filterMask,
             new ParticleEmitter(
-                    ParticleEmitterState::DEFAULT,
-                    nullptr,
-                    position,
-                    0,
-                    particlesFrom,
-                    particlesTo,
-                    OCParticlesContext::forProjectile()
+                ParticleEmitterState::DEFAULT,
+                nullptr,
+                position,
+                0,
+                particlesFrom,
+                particlesTo,
+                OCParticlesContext::forProjectile(),
+                ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle01")
             )
         ), Brakeza3D::uniqueObjectLabel("weaponProjectile"));
 
@@ -92,13 +91,14 @@ bool WeaponProjectiles::shootProjectile(
                     filterGroup,
                     filterMask,
                     new ParticleEmitter(
-                            ParticleEmitterState::DEFAULT,
-                            nullptr,
-                            position,
-                            0,
-                            particlesFrom,
-                            particlesTo,
-                            OCParticlesContext::forProjectile()
+                        ParticleEmitterState::DEFAULT,
+                        nullptr,
+                        position,
+                        0,
+                        particlesFrom,
+                        particlesTo,
+                        OCParticlesContext::forProjectile(),
+                        ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle01")
                     )
             ), Brakeza3D::uniqueObjectLabel("weaponProjectile"));
         }
@@ -121,7 +121,7 @@ bool WeaponProjectiles::shoot(WeaponShootAttributes attributes)
         0.0f,
         attributes.filterGroup,
         attributes.filterMask,
-        true,
+        attributes.sound,
         true,
         PaletteColors::getParticlesPlayerProjectileFrom(),
         PaletteColors::getParticlesPlayerProjectileTo()

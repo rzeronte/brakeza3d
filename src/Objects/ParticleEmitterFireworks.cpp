@@ -4,6 +4,7 @@
 
 #include "../../include/Objects/ParticleEmitterFireworks.h"
 #include "../../include/Misc/Tools.h"
+#include "../../include/ComponentsManager.h"
 
 ParticleEmitterFireworks::ParticleEmitterFireworks(
     Vertex3D position,
@@ -16,7 +17,16 @@ ParticleEmitterFireworks::ParticleEmitterFireworks(
     int maxFires,
     int particlesByFire
 ) :
-    ParticleEmitter(ParticleEmitterState::DEFAULT, this, position, ttlEmitter, colorFrom, colorTo, OCParticlesContext()),
+    ParticleEmitter(
+        ParticleEmitterState::DEFAULT,
+        this,
+        position,
+        ttlEmitter,
+        colorFrom,
+        colorTo,
+        OCParticlesContext(),
+        ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle01")
+    ),
     maxFires(maxFires),
     particlesByFire(particlesByFire),
     firesCounter(0)

@@ -28,6 +28,7 @@
 #include "../../include/2D/Sprite2D.h"
 #include "../OpenGLShaders/ShaderOpenGLLineLaser.h"
 #include "../OpenGLShaders/ShaderOpenGLImageOffset.h"
+#include "../../include/Misc/TexturePackage.h"
 
 #define Z_COORDINATE_GAMEPLAY 20
 #define FREE_LOOK_ENABLED false
@@ -38,6 +39,7 @@
 
 class ComponentGame : public Component {
 private:
+    TexturePackage images;
 
     Vertex3D playerStartPosition;
     Vertex3D cameraCountDownPosition;
@@ -68,6 +70,7 @@ private:
     Image imageDead;
     Image imageEndGame;
     Image boxStore;
+    Image imageBlack;
     Image help;
     Image backgroundSpaceshipSelection;
     Image glassEffect;
@@ -77,6 +80,7 @@ private:
     int currentHelpIndex;
 
     Counter splashCounter;
+    Counter introCounter;
 
     LevelLoader *levelLoader;
 
@@ -98,6 +102,9 @@ private:
 
     ShaderOpenGLLineLaser *shaderOGLLineLaser;
     ShaderOpenGLImageOffset *shaderOGLImageOffset;
+
+    std::vector<Image*> imagesIntro;
+    int currentIndexIntro;
     //PathFinder *pathFinder;
 public:
     ComponentGame();
@@ -288,8 +295,16 @@ public:
 
     [[nodiscard]] ShaderOpenGLImageOffset *getShaderOGLImageOffset() const;
 
+    TexturePackage *getImages();
+
     Image boxTutorial;
     FXOutliner *shaderEdgeObject;
+
+    void handleOnUpdateIntro(float alpha);
+
+    void decreaseIntroImage();
+
+    void increaseIntroImage();
 };
 
 

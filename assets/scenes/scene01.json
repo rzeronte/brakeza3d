@@ -64,8 +64,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-1.6535108089447021,
-				"y":	0.92738920450210571,
+				"x":	0,
+				"y":	-2.4271795749664307,
 				"z":	45.807308197021484
 			},
 			"rotation":	{
@@ -74,9 +74,16 @@
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
-			"scripts":	[],
+			"scripts":	[{
+					"name":	"MoveUpDownObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.0099999997764825821
+						}]
+				}],
 			"shaders":	[],
-			"model":	"../assets/models//station01.fbx",
+			"model":	"../assets/models/stations/station01.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],

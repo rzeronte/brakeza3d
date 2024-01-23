@@ -1,12 +1,10 @@
 {
   "name": "02",
   "scene": "scene02.json",
-  "music": "musicLevel01",
   "backgroundImage": "levels/02.png",
   "foregroundImage": "foregrounds/02.png",
   "allowEnergyShield": false,
   "tutorials": ["tutorials/tutorial_weapon01.png", "tutorials/tutorial_weapon02.png", "tutorials/tutorial_weapon03.png"],
-  "histories": ["default_history.png"],
   "color": { "r": 0, "g": 0, "b": 0 },
   "message": {
     "from": "HeadQuarters",
@@ -50,18 +48,15 @@
   "items": [
     {
       "type": 1,
-      "position": { "x": 30, "y": 25 },
-      "help": 0
+      "position": { "x": 30, "y": 25 }
     },
     {
       "type": 3,
-      "position": { "x": 50, "y": 25 },
-      "help": 1
+      "position": { "x": 50, "y": 25 }
     },
     {
       "type": 6,
-      "position": { "x": 70, "y": 25 },
-      "help": 2
+      "position": { "x": 70, "y": 25 }
     }
   ]
 }

@@ -272,7 +272,9 @@ Weapon *LevelLoader::parseWeaponJSON(Object3D *parent, cJSON *weaponJson, bool i
             return new WeaponLaser(attributes);
         }
         case WeaponTypes::WEAPON_RAYLIGHT: {
-            return new WeaponRayLight(attributes);
+            auto ray = new WeaponRayLight(attributes);
+            ray->setIsForPlayer(isPlayer);
+            return ray;
         }
         case WeaponTypes::WEAPON_BOMB: {
             return new WeaponBomb(attributes);
@@ -495,6 +497,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
 
     if (weapon != nullptr) {
         auto weaponType = parseWeaponJSON(enemy, weapon, false);
+        weaponType->setEnabled(true);
         weaponType->setSoundChannel(enemy->getSoundChannel());
         enemy->setWeapon(weaponType);
     }
@@ -1030,6 +1033,7 @@ void LevelLoader::LoadJSONWeapons()
     cJSON *currentWeapon;
     cJSON_ArrayForEach(currentWeapon, cJSON_GetObjectItemCaseSensitive(myDataJSON, "weapons")) {
         auto weapon = LevelLoader::parseWeaponJSON(player, currentWeapon, true);
+        weapon->setEnabled(false);
         weapon->setSoundChannel(1);
         weapons.push_back(weapon);
     }

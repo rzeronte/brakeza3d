@@ -13,7 +13,8 @@ ParticleEmitter::ParticleEmitter(
     float ttlEmitter,
     Color colorFrom,
     Color colorTo,
-    OCParticlesContext particlesContext
+    OCParticlesContext particlesContext,
+    Image *image
 ) :
     active(true),
     stopAdd(false),
@@ -22,7 +23,7 @@ ParticleEmitter::ParticleEmitter(
     colorTo(colorTo),
     colorFrom(colorFrom),
     context(particlesContext),
-    texture(new Image(EngineSetup::get()->IMAGES_FOLDER + "particle.png"))
+    texture(image)
 {
     setParent(parent);
     setTransparent(true);
@@ -63,6 +64,10 @@ ParticleEmitter::ParticleEmitter(
 
 bool ParticleEmitter::isActive() const {
     return active;
+}
+
+void ParticleEmitter::postUpdate() {
+    Object3D::postUpdate();
 }
 
 void ParticleEmitter::onUpdate()
@@ -111,7 +116,7 @@ void ParticleEmitter::onUpdate()
             ParticlesContainer[particleIndex].r = rand() % 256;
             ParticlesContainer[particleIndex].g = rand() % 256;
             ParticlesContainer[particleIndex].b = rand() % 256;
-            ParticlesContainer[particleIndex].a = (rand() % 256) / 3;
+            ParticlesContainer[particleIndex].a = Tools::random(context.MIN_ALPHA, context.MAX_ALPHA);
 
             ParticlesContainer[particleIndex].size = (rand()%1000)/2000.0f + 0.1f;
         }
@@ -204,6 +209,24 @@ void ParticleEmitter::drawImGuiProperties()
     Object3D::drawImGuiProperties();
 
     if (ImGui::TreeNode("ParticleEmitter")) {
+
+        if (ImGui::TreeNode("Image")) {
+            ImGui::Image((ImTextureID) texture->getOGLTextureID(),ImVec2(32, 32));
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
+                    Logging::Message("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
+                    IM_ASSERT(payload->DataSize == sizeof(int));
+                    auto selection = (char*) payload->Data;
+                    auto fullPath = EngineSetup::get()->IMAGES_FOLDER + selection;
+                    texture->setImage(fullPath);
+                    Logging::Message("File %s", selection);
+
+                }
+                ImGui::EndDragDropTarget();
+            }
+            ImGui::TreePop();
+        }
+
         ImGui::Checkbox(std::string("stopAdd").c_str(), &stopAdd);
 
         ImGui::Separator();
@@ -231,11 +254,12 @@ void ParticleEmitter::drawImGuiProperties()
             ImGui::DragScalar("Particle lifespan", ImGuiDataType_Float, &context.PARTICLE_LIFESPAN, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
             ImGui::DragScalar("Particles/sec", ImGuiDataType_S32, &context.PARTICLES_BY_SECOND, 1.f , &range_min_int, &range_max_int, "%d", 1.0f);
             ImGui::DragScalar("Angle range", ImGuiDataType_S32, &context.SMOKE_ANGLE_RANGE, 1.f ,&range_min_int, &range_max_int, "%d", 1.0f);
-            ImGui::DragScalar("Min. Velocity", ImGuiDataType_S32, &context.MIN_VELOCITY,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
-            ImGui::DragScalar("Max. Velocity", ImGuiDataType_S32, &context.MAX_VELOCITY, 1.f ,&range_min_int, &range_max_int, "%d", 1.0f);
+            ImGui::DragScalar("Velocity min", ImGuiDataType_S32, &context.MIN_VELOCITY,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
+            ImGui::DragScalar("Velocity max", ImGuiDataType_S32, &context.MAX_VELOCITY, 1.f ,&range_min_int, &range_max_int, "%d", 1.0f);
+            ImGui::DragScalar("Alpha min", ImGuiDataType_S32, &context.MIN_ALPHA,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
+            ImGui::DragScalar("Alpha max", ImGuiDataType_S32, &context.MAX_ALPHA, 1.f ,&range_min_int, &range_max_int, "%d", 1.0f);
             ImGui::DragScalar("Position noise", ImGuiDataType_S32, &context.POSITION_NOISE, 1.f ,&range_min_int, &range_max_int, "%d", 1.0f);
             ImGui::DragScalar("Velocity noise", ImGuiDataType_S32, &context.VELOCITY_NOISE, 1.f ,&range_min_int, &range_max_int, "%d", 1.0f);
-
             ImGui::DragScalar("Deceleration", ImGuiDataType_Float, &context.DECELERATION_FACTOR, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
 
             ImGui::TreePop();
@@ -284,7 +308,8 @@ void ParticleEmitter::createFromJSON(cJSON *object)
         9999,
         Color::red(),
         Color::green(),
-        OCParticlesContext::forExplosion()
+        OCParticlesContext::forExplosion(),
+        ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle01")
     );
     ParticleEmitter::setPropertiesFromJSON(object, o);
 
@@ -359,8 +384,6 @@ int ParticleEmitter::FindUnusedParticle(){
 
     return 0; // All particles are taken, override the first one
 }
-
-
 
 // Función para agregar ruido a un glm::vec3 que representa una dirección
 glm::vec3 ParticleEmitter::addNoiseToDirection(const glm::vec3& direction, int noiseRange) {

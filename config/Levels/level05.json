@@ -1,7 +1,7 @@
 {
   "name": "05",
   "scene": "scene05.json",
-  "music": "musicLevel05",
+  "music": "musicLevels02",
   "backgroundImage": "levels/05.png",
   "foregroundImage": "foregrounds/06.png",
   "allowEnergyShield": true,

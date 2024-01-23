@@ -19,7 +19,6 @@ void WeaponBomb::shootBomb(Object3D *parent, Vertex3D position)
 
     if (counterCadence->isFinished()) {
         counterCadence->setEnabled(true);
-        setStatus(WeaponStatus::PRESSED);
 
         Logging::Log("Weapon shootBomb from %s", parent->getLabel().c_str());
 

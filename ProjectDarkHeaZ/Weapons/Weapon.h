@@ -34,42 +34,46 @@ struct WeaponShootAttributes {
         Vertex3D direction,
         float startOffset,
         int filterGroup,
-        int filterMask
+        int filterMask,
+        bool sound
     )
     :
-    direction(direction),
-    startOffset(startOffset),
-    filterGroup(filterGroup),
-    filterMask(filterMask)
-    {}
+        direction(direction),
+        startOffset(startOffset),
+        filterGroup(filterGroup),
+        filterMask(filterMask),
+        sound(sound)
+    {
+    }
     Vertex3D direction = Vertex3D(0, 0, 0);
     float startOffset = 0;
     int filterGroup = 0;
     int filterMask = 0;
+    bool sound = false;
 };
 
 struct WeaponAttributes {
-    Object3D *parent;
+    Object3D *parent = nullptr;
     const std::string& name;
     const std::string& weaponModel;
     const std::string& projectileModel;
     const std::string& icon;
-            Color projectileColor;
-    bool projectileFlatTexture;
-    bool projectileEnableLights;
-    int ammoAmount;
-    int startAmmoAmount;
-    float damage;
-    float speed;
-    int dispersion;
-    float accuracy;
-    float cadenceTime;
-    bool stop;
-    float stopEver;
-    float stopDuration;
-    bool available;
-    bool selectable;
-    RayLight *rayLight;
+    Color projectileColor;
+    bool projectileFlatTexture = false;
+    bool projectileEnableLights = false;
+    int ammoAmount = 0;
+    int startAmmoAmount = 0;
+    float damage = 0;
+    float speed = 0;
+    int dispersion = 0;
+    float accuracy = 0;
+    float cadenceTime = 0;
+    bool stop = false;
+    float stopEver = 0;
+    float stopDuration = 0;
+    bool available = false;
+    bool selectable = false;
+    RayLight *rayLight = nullptr;
 };
 
 class Weapon {
@@ -77,6 +81,7 @@ private:
 
     bool available;
     bool selectable;
+    bool enabled;
     int soundChannel;
 
     std::string label;
@@ -103,11 +108,10 @@ protected:
     Object3D *parent;
     Counter *counterCadence;
     float cadenceTime;
-    Counter counterStopDuration;
     float accuracy;
     int ammoAmount;
 public:
-    Weapon(WeaponAttributes attributes);
+    explicit Weapon(WeaponAttributes attributes);
 
     virtual void onUpdate();
 
@@ -191,6 +195,12 @@ public:
     [[nodiscard]] bool isSelectable() const;
 
     void drawImGuiProperties();
+
+    bool isEnabled() const;
+
+    virtual void setEnabled(bool enabled);
+
+    Counter counterStopDuration;
 };
 
 

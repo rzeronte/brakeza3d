@@ -299,7 +299,7 @@ void ComponentHUD::drawEnemyIconAndName()
         enemy->getAvatar()->drawFlatAlpha(
             globalOffset.x + avatarEnemyOffset.x,
             globalOffset.y + avatarEnemyOffset.y,
-            255,
+            1,
             fb
         );
 
@@ -307,14 +307,14 @@ void ComponentHUD::drawEnemyIconAndName()
             globalOffset.x + avatarEnemyOffset.x,
             globalOffset.y + avatarEnemyOffset.y + enemy->getAvatar()->height() + 5,
             enemy->getName().c_str(),
-            PaletteColors::getStamina(),
+            PaletteColors::getMenuOptions(),
             0.75f
         );
     } else {
         HUDTextures->getTextureByLabel("emptyEnemy")->drawFlatAlpha(
             globalOffset.x + avatarEnemyOffset.x,
             globalOffset.y + avatarEnemyOffset.y,
-            144,
+            1,
             fb
         );
 
@@ -322,7 +322,7 @@ void ComponentHUD::drawEnemyIconAndName()
             globalOffset.x + avatarEnemyOffset.x,
             globalOffset.y + avatarEnemyOffset.y + (int) HUDTextures->getTextureByLabel("emptyEnemy")->height() + 5,
             "No target",
-            PaletteColors::getStamina(),
+            PaletteColors::getMenuOptions(),
             0.75f
         );
     }

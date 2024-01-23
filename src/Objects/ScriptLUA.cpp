@@ -94,6 +94,10 @@ void ScriptLUA::addDataTypeEmpty(const char *name, const char *type)
             LUAValue = 0.0f;
             break;
         }
+        case LUADataType::STRING: {
+            LUAValue = "";
+            break;
+        }
         case LUADataType::VERTEX3D: {
             LUAValue = Vertex3D();
             break;
@@ -117,6 +121,10 @@ void ScriptLUA::addDataType(const char *name, const char *type, cJSON *value)
         }
         case LUADataType::FLOAT: {
             LUAValue = (float) value->valuedouble;
+            break;
+        }
+        case LUADataType::STRING: {
+            LUAValue = value->valuestring;
             break;
         }
         case LUADataType::VERTEX3D: {
@@ -282,6 +290,17 @@ void ScriptLUA::drawImGuiProperties()
                     }
                     break;
                 }
+                case LUADataType::STRING: {
+                    std::string valueString = std::get<const char*>(type.value);
+                    static char name[256];
+                    strncpy(name, valueString.c_str(), sizeof(name));
+                    ImGui::InputText(type.name.c_str(), name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
+                    if (ImGui::IsItemEdited()) {
+                        type.value = name;
+                    }
+
+                    break;
+                }
                 case LUADataType::FLOAT: {
                     const float rangeMin = -500000;
                     const float rangeMax = 500000;
@@ -344,6 +363,11 @@ cJSON *ScriptLUA::getTypesJSON()
             case LUADataType::INT: {
                 int valueInt = std::get<int>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueInt);
+                break;
+            }
+            case LUADataType::STRING: {
+                std::string valueString = std::get<const char *>(dataType.value);
+                cJSON_AddStringToObject(typeJSON, "value", valueString.c_str());
                 break;
             }
             case LUADataType::FLOAT: {

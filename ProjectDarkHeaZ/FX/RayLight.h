@@ -12,10 +12,13 @@
 #include "../../include/Objects/LightPoint3D.h"
 #include "../../include/Objects/ParticleEmitter.h"
 
+struct ResultRay {
+    bool wasHit = false;
+    Vertex3D position;
+};
+
 class RayLight {
 private:
-    bool enabled;
-
     float intensity;
     float reach;
     float speed;
@@ -29,8 +32,8 @@ private:
     Vertex3D startOffset;
 
     btCollisionWorld::ClosestRayResultCallback *rayCallback;
-    ParticleEmitter *particles;
 
+    ResultRay result;
 public:
     explicit RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D startOffset, float speed, float damage, Color c, Color hit, int filterGroup, int filterMask);
 
@@ -43,10 +46,6 @@ public:
     void setDamage(float damage);
 
     void increaseReach();
-
-    [[nodiscard]] bool isEnabled() const;
-
-    void setEnabled(bool enabled);
 
     void setColor(const Color &color);
 
@@ -61,6 +60,10 @@ public:
     [[nodiscard]] float getReach() const;
 
     void drawImGuiProperties();
+
+    void setCollisionMask(int filterGroup, int filterMask);
+
+    ResultRay getResult();
 };
 
 

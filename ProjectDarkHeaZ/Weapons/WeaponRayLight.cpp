@@ -6,24 +6,65 @@
 #include "../Player.h"
 #include "../../include/ComponentsManager.h"
 
-WeaponRayLight::WeaponRayLight(const WeaponAttributes &attributes) : Weapon(attributes)
-{}
+WeaponRayLight::WeaponRayLight(const WeaponAttributes &attributes)
+:
+        isPlayer(true),
+        Weapon(attributes)
+{
+    particles = new ParticleEmitter(
+        ParticleEmitterState::DEFAULT,
+        nullptr,
+        parent->getPosition(),
+        9999,
+        Color::red(),
+        Color::yellow(),
+        OCParticlesContext::forPlayerEngine(),
+        ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle02")
+    );
+}
 
 void WeaponRayLight::onUpdate()
 {
     Weapon::onUpdate();
 
-    if (status == WeaponStatus::RELEASED) {
-        rayLight->setReach(0);
-        rayLight->updateDirection(parent->AxisDown().getNormalize(),parent->AxisUp().getScaled(-1.3f));
-        rayLight->update(false);
+    particles->onUpdate();
+
+    if (!isEnabled()) return;
+
+    rayLight->updateDirection(parent->AxisDown().getNormalize(),parent->AxisUp().getScaled(-1.3f));
+
+    if (isPlayer) {
+        if (status == WeaponStatus::RELEASED) {
+            rayLight->setReach(0);
+            rayLight->update(false);
+        }
+
+        if (status == WeaponStatus::PRESSED || status == WeaponStatus::SUSTAINED) {
+            rayLight->update(true);
+        }
     } else {
-        rayLight->updateDirection(parent->AxisDown().getNormalize(),parent->AxisUp().getScaled(-1.3f));
-        rayLight->update(true);
+        auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
+
+        if (isStop() && counterStopDuration.isEnabled() || gameState != EngineSetup::GAMING) {
+            rayLight->setReach(0);
+            rayLight->update(false);
+        } else {
+            rayLight->update(true);
+        }
+    }
+
+    auto result = rayLight->getResult();
+    if (result.wasHit) {
+        particles->setPosition(result.position);
+    } else {
+        particles->setPosition(result.position);
+
     }
 }
 
-bool WeaponRayLight::shootRayLight(float intensity, Color color) {
+bool WeaponRayLight::shootRayLight(float intensity, Color color)
+{
+    Logging::Message("shootRayLight");
     if (getAmmoAmount() <= 0) return false;
 
     if (isStop() && counterStopDuration.isEnabled()) {
@@ -37,14 +78,8 @@ bool WeaponRayLight::shootRayLight(float intensity, Color color) {
     rayLight->setDamage(getDamage());
     rayLight->setIntensity(intensity);
 
-    if (getStatus() == PRESSED) {
-        ComponentsManager::get()->getComponentSound()->sound("projectileRaylight",
-                                                             EngineSetup::SoundChannels::SND_GLOBAL, 0);
-    }
-
     if (counterCadence->isFinished()) {
         counterCadence->setEnabled(true);
-        setStatus(WeaponStatus::PRESSED);
 
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increase(WeaponTypes::WEAPON_RAYLIGHT);
         return true;
@@ -55,5 +90,15 @@ bool WeaponRayLight::shootRayLight(float intensity, Color color) {
 
 bool WeaponRayLight::shoot(WeaponShootAttributes attributes)
 {
+    rayLight->setCollisionMask(attributes.filterGroup, attributes.filterMask);
     return shootRayLight(0.00075f, PaletteColors::getPlayerRayLight());
+}
+
+void WeaponRayLight::setIsForPlayer(bool avoidCheckWeaponStatus) {
+    WeaponRayLight::isPlayer = avoidCheckWeaponStatus;
+}
+
+void WeaponRayLight::setEnabled(bool value) {
+    Weapon::setEnabled(value);
+    particles->setStopAdd(!value);
 }

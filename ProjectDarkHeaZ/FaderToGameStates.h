@@ -8,6 +8,7 @@
 #include "../include/Misc/Color.h"
 #include "../include/LUAManager.h"
 #include "../include/FXEffect/FXColorTint.h"
+#include "../include/Render/Logging.h"
 
 enum ShaderFadeToColorDirection {
     STOP = 0,
@@ -117,6 +118,7 @@ public:
     }
 
     void setSpeed(float speed) {
+        Logging::Message("Change fade speed to %f", speed);
         FaderToGameStates::speed = speed;
     }
 

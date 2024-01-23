@@ -56,14 +56,8 @@ Player::Player()
         9999,
         PaletteColors::getParticlesPlayerFrom(),
         PaletteColors::getParticlesPlayerTo(),
-        OCParticlesContext::forPlayerEngine()
-    );
-
-    shaderEnergyShield = new FXEnergyShield(
-        true,
-        this,
-        std::string(EngineSetup::get()->IMAGES_FOLDER + "noiseCloud2.png"),
-        std::string(EngineSetup::get()->IMAGES_FOLDER + "shield_mask.png")
+        OCParticlesContext::forPlayerEngine(),
+        ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle01")
     );
 
     spriteEnergyShield = new Sprite2D(
@@ -155,6 +149,7 @@ void Player::shoot(float intensity)
         projectileStartOffsetPosition,
         EngineSetup::collisionGroups::Projectile,
         EngineSetup::collisionGroups::Enemy,
+        true
     });
 
     if (wasShoot) {
@@ -245,10 +240,6 @@ void Player::onUpdate()
             stopBlinkForPlayer();
         }
     }
-
-    if (isEnergyShieldEnabled()) {
-        shaderEnergyShield->update();
-    }
 }
 
 void Player::updateTargetRotation()
@@ -313,10 +304,6 @@ void Player::postUpdate()
         return;
     }
 
-    if (weapon != nullptr) {
-        weapon->onUpdate();
-    }
-
     auto game = ComponentsManager::get()->getComponentGame();
 
     if (game->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
@@ -324,6 +311,12 @@ void Player::postUpdate()
     }
 
     particleEngineLeft->postUpdate();
+
+    if (weapon != nullptr) {
+        for ( auto w: weapons) {
+            w->onUpdate();
+        }
+    }
 }
 
 Vertex3D Player::getVelocity()
@@ -480,6 +473,10 @@ void Player::setWeapon(Weapon *weaponType)
 {
     Logging::Log("Set Player Weapon to %s", weaponType->getLabel().c_str());
     Player::weapon = weaponType;
+    for (auto w: weapons) {
+        w->setEnabled(false);
+    }
+    weapon->setEnabled(true);
     ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
 
@@ -659,7 +656,6 @@ Player::~Player()
     delete light;
     delete blink;
     delete avatar;
-    delete shaderEnergyShield;
     delete particleEngineLeft;
 
     for (auto w : weapons) {
@@ -755,6 +751,7 @@ void Player::drawImGuiProperties()
     ImGui::Separator();
 
     if (ImGui::TreeNode("Player Settings")) {
+
         if (ImGui::TreeNode("Satellite")) {
             satellite.drawImGuiProperties();
             ImGui::TreePop();
@@ -768,7 +765,6 @@ void Player::drawImGuiProperties()
         if (ImGui::TreeNode("ParticlesEngine")) {
             particleEngineLeft->drawImGuiProperties();
 
-            ImGui::Separator();
             ImGui::Separator();
 
             if (ImGui::TreeNode("Position Offset##")) {

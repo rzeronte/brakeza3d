@@ -54,7 +54,7 @@ public:
 
     void update();
 
-    const std::string &getBaseFilename() const;
+    [[nodiscard]] const std::string &getBaseFilename() const;
 
     void setup(const std::string &spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps);
 

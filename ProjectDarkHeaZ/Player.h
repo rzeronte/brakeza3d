@@ -8,7 +8,6 @@
 #include "Weapons/Weapon.h"
 #include "Items/PlayerReflection.h"
 #include "FX/RayLight.h"
-#include "FX/FXEnergyShield.h"
 #include "Items/LivingObject.h"
 #include "Items/PlayerSatellite.h"
 #include "../include/Behaviors/RotatableToTarget.h"
@@ -57,7 +56,6 @@ private:
     Counter counterLight;
 
     bool energyShieldEnabled;
-
     bool allowEnergyShield;
 
     LightPoint3D *light;
@@ -76,7 +74,6 @@ private:
     Image *avatar;
     std::vector<Image *> damages;
 
-    FXEnergyShield *shaderEnergyShield;
     Sprite2D *spriteEnergyShield;
 
     float projectileStartOffsetPosition;

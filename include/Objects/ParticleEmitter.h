@@ -48,7 +48,8 @@ public:
         float ttlEmitter,
         Color colorFrom,
         Color colorTo,
-        OCParticlesContext particlesContext
+        OCParticlesContext particlesContext,
+        Image *image
     );
 
     void onUpdate() override;
@@ -80,6 +81,8 @@ public:
     int FindUnusedParticle();
 
     glm::vec3 addNoiseToDirection(const glm::vec3 &direction, int noiseRange);
+
+    void postUpdate() override;
 };
 
 

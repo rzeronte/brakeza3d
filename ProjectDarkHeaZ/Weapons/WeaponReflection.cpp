@@ -21,7 +21,6 @@ void WeaponReflection::shootHologram(Object3D *parent, Vertex3D position)
 
     if (counterCadence->isFinished()) {
         counterCadence->setEnabled(true);
-        setStatus(WeaponStatus::PRESSED);
 
         Logging::Log("Weapon shootHologram from %s", parent->getLabel().c_str());
 

@@ -91,7 +91,7 @@
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models//station01.fbx",
+			"model":	"../assets/models/stations/station01.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
