@@ -240,7 +240,6 @@ add_executable(Brakeza3D
         ProjectDarkHeaZ/Weapons/Weapon.h ProjectDarkHeaZ/Weapons/Weapon.cpp
 
         ProjectDarkHeaZ/FX/RayLight.h ProjectDarkHeaZ/FX/RayLight.cpp
-        ProjectDarkHeaZ/FX/FXEnergyShield.h ProjectDarkHeaZ/FX/FXEnergyShield.cpp
         ProjectDarkHeaZ/FX/FXLaser.h ProjectDarkHeaZ/FX/FXLaser.cpp
 
         ProjectDarkHeaZ/Bosses/BossEnemy.h ProjectDarkHeaZ/Bosses/BossEnemy.cpp
