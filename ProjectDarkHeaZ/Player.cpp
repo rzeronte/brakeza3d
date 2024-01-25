@@ -13,11 +13,10 @@ Player::Player()
 :
     LivingObject(this),
     RotatableToTarget(nullptr, this, 1.5f),
-    energy(INITIAL_ENERGY),
-    startEnergy(INITIAL_ENERGY),
+    energy(0),
+    startEnergy(0),
     recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
     stuck(false),
-    warningDamage(false),
     rescuedHumans(0),
     coins(5000),
     projectileStartOffsetPosition(1.3),
@@ -33,11 +32,10 @@ Player::Player()
     satellite(PlayerSatellite(this)),
     avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png")),
     dashPower(INITIAL_POWER_DASH),
-    power(INITIAL_POWER),
+    power(0),
     friction(INITIAL_FRICTION),
-    maxVelocity(INITIAL_MAX_VELOCITY),
-    velocity(Vertex3D(0, 0, 0)),
-    warningSoundChannel(0)
+    maxVelocity(1),
+    velocity(Vertex3D(0, 0, 0))
 {
     setTransparent(false);
     setMultiScene(true);
@@ -105,10 +103,10 @@ bool Player::takeDamage(float dmg)
     if (stamina <= 0) {
         stamina = 0;
         setState(PlayerState::DEAD);
-        if (warningDamage) {
-            warningDamage = false;
-            ComponentSound::stopChannel(warningSoundChannel);
-        }
+
+        Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getRandomExplosionSprite()->getAnimation());
+        ComponentsManager::get()->getComponentSound()->sound("enemyExplosion", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        setEnabled(false);
         ComponentsManager::get()->getComponentSound()->sound("playerDead", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         componentGame->makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_BY_DEAD, true);
         componentGame->getFadeToGameState()->setupForFadeIn();
@@ -132,7 +130,7 @@ void Player::respawn()
     Logging::Log("Respawn Player");
     setState(PlayerState::LIVE);
 
-    setStamina(INITIAL_STAMINA);
+    setStamina(getStartStamina());
     if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
         satellite.setEnabled(true);
     }
@@ -208,24 +206,6 @@ void Player::onUpdate()
     auto componentGame = ComponentsManager::get()->getComponentGame();
     if (componentGame->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_SATELLITE)) {
         satellite.onUpdate();
-    }
-
-    auto isGameStateDistinctOfGameOver = componentGame->getGameState() != EngineSetup::PRESS_KEY_BY_DEAD;
-    if (warningDamage && isGameStateDistinctOfGameOver && state != PlayerState::DEAD) {
-        float currentSelectionAlpha = 0.5f * (float) (1 + sin(5 * M_PI * Brakeza3D::get()->getExecutionTime()));
-        ComponentsManager::get()->getComponentGame()->getShaderColor()->setProgress(currentSelectionAlpha);
-    }
-
-    if ((currentStaminaPercentage() < 25 && !warningDamage) && isGameStateDistinctOfGameOver && state != PlayerState::DEAD) {
-        ComponentsManager::get()->getComponentGame()->getShaderColor()->setEnabled(true);
-        warningDamage = true;
-        warningSoundChannel = ComponentsManager::get()->getComponentSound()->sound("alarmDamage", EngineSetup::SoundChannels::SND_GLOBAL, -1);
-    }
-
-    if ((currentStaminaPercentage() >= 25 && warningDamage) && isGameStateDistinctOfGameOver && state != PlayerState::DEAD) {
-        ComponentsManager::get()->getComponentGame()->getShaderColor()->setEnabled(false);
-        warningDamage = false;
-        ComponentSound::stopChannel(warningSoundChannel);
     }
 
     if (counterDamageBlink.isEnabled()) {
@@ -816,4 +796,16 @@ Image *Player::randomDamage()
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     const int index = std::rand() % damages.size();
     return damages[index];
+}
+
+void Player::setMaxVelocity(float maxVelocity) {
+    Player::maxVelocity = maxVelocity;
+}
+
+void Player::setStartEnergy(float startEnergy) {
+    Player::startEnergy = startEnergy;
+}
+
+void Player::setPower(float power) {
+    Player::power = power;
 }

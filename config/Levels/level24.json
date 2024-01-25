@@ -2,17 +2,17 @@
   "name": "24",
   "scene": "scene24.json",
   "music": "musicLevels01",
-  "backgroundImage": "levels/04.png",
+  "backgroundImage": "levels/bg_05.png",
   "foregroundImage": "foregrounds/01.png",
   "allowEnergyShield": true,
-  "histories": ["default_history.png"],
+  "histories": [],
   "color": { "r": 0, "g": 255, "b": 0 },
   "endLevel": false,
   "enemies": [
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 75,  "y": 30 },
       "model": "energy_ball.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -71,7 +71,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 25,  "y": 30 },
       "model": "energy_ball.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -129,7 +129,7 @@
     },{
       "name": "Bomb",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "position": { "x": 10,  "y": 80 },
       "model": "bomb02.fbx",

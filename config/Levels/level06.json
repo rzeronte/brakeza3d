@@ -1,16 +1,16 @@
 {
   "name": "06",
   "scene": "scene06.json",
-  "backgroundImage": "levels/06.png",
+  "backgroundImage": "levels/bg_02.png",
   "foregroundImage": "foregrounds/04.png",
   "allowEnergyShield": true,
-  "histories": ["default_history.png"],
+  "histories": [],
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
     {
-      "name": "Rayer",
-      "avatar": "avatars/executioner.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor Destroyer",
+      "avatar": "avatars/enemy_06.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 50, "y": 15 },
       "model": "spaceships/Executioner.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -45,9 +45,9 @@
       }
     },
     {
-      "name": "Patrol",
-      "avatar": "avatars/bob.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor pilot 01",
+      "avatar": "avatars/enemy_08.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -85,9 +85,9 @@
       }
     },
     {
-      "name": "Patrol",
-      "avatar": "avatars/bob.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor pilot 02",
+      "avatar": "avatars/enemy_08.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 80, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },

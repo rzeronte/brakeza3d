@@ -10,17 +10,17 @@ BossLevel10::BossLevel10()
     auto levelLoader = game->getLevelLoader();
 
     behaviorPhaseTwo = new EnemyBehaviorPatrol(
-        levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 10), Z_COORDINATE_GAMEPLAY),
-        levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 50), Z_COORDINATE_GAMEPLAY),
+        LevelLoader::getPositionFromScreenPoint(getScreenPoint(50, 10), Z_COORDINATE_GAMEPLAY),
+        LevelLoader::getPositionFromScreenPoint(getScreenPoint(50, 50), Z_COORDINATE_GAMEPLAY),
         1.0f
     );
 
     behaviorPhaseOne = new EnemyBehaviorPath(0.5f);
-    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 10), Z_COORDINATE_GAMEPLAY));
-    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(10, 10), Z_COORDINATE_GAMEPLAY));
-    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 10), Z_COORDINATE_GAMEPLAY));
-    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(90, 10), Z_COORDINATE_GAMEPLAY));
-    behaviorPhaseOne->addPoint(levelLoader->getPositionFromScreenPoint(getScreenPoint(50, 10), Z_COORDINATE_GAMEPLAY));
+    behaviorPhaseOne->addPoint(LevelLoader::getPositionFromScreenPoint(getScreenPoint(50, 10), Z_COORDINATE_GAMEPLAY));
+    behaviorPhaseOne->addPoint(LevelLoader::getPositionFromScreenPoint(getScreenPoint(10, 10), Z_COORDINATE_GAMEPLAY));
+    behaviorPhaseOne->addPoint(LevelLoader::getPositionFromScreenPoint(getScreenPoint(50, 10), Z_COORDINATE_GAMEPLAY));
+    behaviorPhaseOne->addPoint(LevelLoader::getPositionFromScreenPoint(getScreenPoint(90, 10), Z_COORDINATE_GAMEPLAY));
+    behaviorPhaseOne->addPoint(LevelLoader::getPositionFromScreenPoint(getScreenPoint(50, 10), Z_COORDINATE_GAMEPLAY));
     behaviorPhaseOne->start();
     setBehavior(behaviorPhaseOne);
 }
@@ -55,12 +55,4 @@ void BossLevel10::invertPhase()
         setBehavior(behaviorPhaseOne);
         return;
     }
-}
-
-Point2D BossLevel10::getScreenPoint(int x, int y)
-{
-    const int xFrom = x * EngineSetup::get()->screenWidth / 100;
-    const int yFrom = y * EngineSetup::get()->screenHeight / 100;
-
-    return Point2D(xFrom, yFrom);
 }

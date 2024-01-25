@@ -2,23 +2,23 @@
   "name": "10",
   "scene": "scene10.json",
   "music": "musicLevels03",
-  "backgroundImage": "levels/10.png",
-  "foregroundImage": "foregrounds/06.png",
+  "backgroundImage": "levels/bg_03.png",
+  "foregroundImage": "foregrounds/04.png",
   "allowEnergyShield": true,
-  "histories": ["histories/lore_10_1.png"],
+  "histories": ["histories/lore_10_1.png", "histories/lore_10_2.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "message": {
     "from": "Uprising Big Combat Unit",
     "text": "ha ha ha ha ha...\nHA HA HA HA",
     "sound": "boss10",
     "stamina": 100,
-    "avatarHud": "avatars/boss_level_10.png"
+    "avatarHud": "avatars/message_boss_10.png"
   },
   "enemies": [
     {
       "name": "Rayer",
-      "avatar": "avatars/bob.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 10, "y": 30 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -57,8 +57,8 @@
     },
     {
       "name": "Rayer",
-      "avatar": "avatars/bob.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 90, "y": 30 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -98,10 +98,10 @@
   ],
   "bosses": [
     {
-      "type": 0,
+      "type": 1,
       "name": "Leuman",
       "avatar": "avatars/boss10.png",
-      "avatarHud": "avatars/boss_level_10.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 50, "y": 15 },
       "model": "spaceships/Spitfire.fbx",
       "size": { "x": 2, "y": 2,  "z": 2 },

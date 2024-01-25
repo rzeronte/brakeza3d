@@ -2,7 +2,7 @@
   "name": "25",
   "scene": "scene25.json",
   "music": "musicLevels01",
-  "backgroundImage": "levels/05.png",
+  "backgroundImage": "levels/bg_06.png",
   "foregroundImage": "foregrounds/02.png",
   "allowEnergyShield": true,
   "histories": ["default_history.png"],
@@ -12,7 +12,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "position": { "x": 50,  "y": 40 },
       "model": "bomb03.fbx",
@@ -51,8 +51,8 @@
     },
     {
       "name": "Rayer",
-      "avatar": "avatars/executioner.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 75, "y": 40 },
       "model": "spaceships/Executioner.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -88,8 +88,8 @@
     },
     {
       "name": "Rayer",
-      "avatar": "avatars/executioner.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 25, "y": 40 },
       "model": "spaceships/Executioner.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -125,7 +125,7 @@
     },{
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "position": { "x": 75,  "y": 40 },
       "model": "bomb02.fbx",
@@ -172,7 +172,7 @@
     }, {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "position": { "x": 75,  "y": 40 },
       "model": "bomb02.fbx",
@@ -216,6 +216,61 @@
         "enableLights": false,
         "color": { "r": 255, "g": 255, "b": 0 }
       }
+    }
+  ],
+  "bosses": [
+    {
+      "type": 4,
+      "name": "Prolis",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
+      "position": { "x": 50, "y": 10 },
+      "model": "spaceships/Dispatcher.fbx",
+      "size": { "x": 2, "y": 2,  "z": 2 },
+      "enableLights": false,
+      "animated": true,
+      "stamina": 3000,
+      "reward": true,
+      "motion": {
+        "type": "patrol",
+        "from": { "x": 48, "y": 20 },
+        "to": { "x": 52, "y": 20 },
+        "speed": 0.5
+      },
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 999,
+        "startAmount": 1000,
+        "speed": 1,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.40,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": "projectile",
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 0, "b": 0 }
+      },
+      "emitter": {
+        "rotation": { "x": 90, "y": 0, "z": 0 },
+        "rotationFrame": { "x": 0, "y": 4, "z": 0 },
+        "cadenceTime": 0.35,
+        "type": 1,
+        "stop": false,
+        "stopDuration": 0,
+        "stopEvery": 9,
+        "color": { "r": 255, "g": 0, "b": 0 }
+      },
+      "lasers": [
+      ]
     }
   ],
   "items": [

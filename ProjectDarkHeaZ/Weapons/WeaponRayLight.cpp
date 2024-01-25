@@ -91,7 +91,7 @@ bool WeaponRayLight::shootRayLight(float intensity, Color color)
 bool WeaponRayLight::shoot(WeaponShootAttributes attributes)
 {
     rayLight->setCollisionMask(attributes.filterGroup, attributes.filterMask);
-    return shootRayLight(0.00075f, PaletteColors::getPlayerRayLight());
+    return shootRayLight(0.00025f, PaletteColors::getPlayerRayLight());
 }
 
 void WeaponRayLight::setIsForPlayer(bool avoidCheckWeaponStatus) {

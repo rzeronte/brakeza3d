@@ -37,6 +37,12 @@
 #define FADE_SPEED_MENU_FIRST_TIME 0.003
 #define COUNTDOWN_TO_START 3
 
+struct SpaceshipAttributes {
+    float power;
+    float stamina;
+    float energy;
+};
+
 class ComponentGame : public Component {
 private:
     TexturePackage images;
@@ -67,7 +73,6 @@ private:
     Image imageSplash;
     Image imageCrossFire;
     Image imageStatistics;
-    Image imageDead;
     Image imageEndGame;
     Image boxStore;
     Image imageBlack;
@@ -95,7 +100,10 @@ private:
     StoreManager *storeManager;
 
     std::vector <Mesh3D*> spaceships;
+    std::vector <SpaceshipAttributes> spaceshipsAttributes;
     std::vector <Image*> spaceshipsInformation;
+
+
     unsigned int spaceshipSelectedIndex;
 
     EnemyDialog *currentEnemyDialog;
@@ -105,6 +113,10 @@ private:
 
     std::vector<Image*> imagesIntro;
     int currentIndexIntro;
+
+    std::vector <Image*> imagesDead;
+    int currentIndexDeadImage;
+
     //PathFinder *pathFinder;
 public:
     ComponentGame();
@@ -251,7 +263,7 @@ public:
 
     void setHelp(Image *help);
 
-    void loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation);
+    void loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation, SpaceshipAttributes attr);
 
     void increaseSpaceshipSelected();
 

@@ -21,70 +21,30 @@
 			"z":	0.84426230192184448
 		}
 	},
-	"objects":	[{
-			"name":	"added_item_69",
-			"scale":	0.25,
+	"objects":	[
+		{
+			"name":	"city",
+			"scale":	1.3700000047683716,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-28.921085357666016,
-				"y":	1.2540407180786133,
-				"z":	100
+				"x":	-4.4525699615478516,
+				"y":	1.7422741651535034,
+				"z":	37.533870697021484
 			},
 			"rotation":	{
-				"x":	0,
+				"x":	180,
 				"y":	0,
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models//bomb01.fbx",
+			"model":	"../assets/models//city.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
-		}, {
-			"name":	"added_item_71",
-			"scale":	0.25,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	34.5789794921875,
-				"y":	1.2540407180786133,
-				"z":	100
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//bomb02.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"added_item_50",
-			"scale":	0.25,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-1.2210789918899536,
-				"y":	1.2540407180786133,
-				"z":	100
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//bomb03.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}],
+		}
+	],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{

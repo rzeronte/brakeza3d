@@ -1,24 +1,24 @@
 {
   "name": "11",
   "scene": "scene11.json",
-  "backgroundImage": "levels/11.png",
+  "backgroundImage": "levels/bg_03.png",
   "foregroundImage": "foregrounds/02.png",
   "music": "musicLevels03",
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
-  "histories": ["histories/lore_11_1.png", "histories/lore_11_2.png"],
+  "histories": [],
   "message": {
     "from": "HeadQuarters",
     "text": "Commander I'm glad to know you're okay. We have to\nmeet, go to the main station on Earth",
     "sound": "radioLevel11",
     "stamina": 100,
-    "avatarHud": "avatars/shuttle_hud.png"
+    "avatarHud": "avatars/message_friend.png"
   },
   "enemies": [
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "position": { "x": 75,  "y": 40 },
       "model": "energy_ball.fbx",
@@ -74,7 +74,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "position": { "x": 25,  "y": 40 },
       "model": "energy_ball.fbx",

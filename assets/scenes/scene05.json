@@ -1,9 +1,9 @@
 {
 	"ads":	{
-		"direction": {
-			"x":	0.0,
-			"y":	0.0,
-			"z":	1.0
+		"direction":	{
+			"x":	-0.99709087610244751,
+			"y":	-0.23616740107536316,
+			"z":	1
 		},
 		"diffuse":	{
 			"x":	1,
@@ -22,65 +22,98 @@
 		}
 	},
 	"objects":	[{
-			"name":	"PlanetFire",
-			"scale":	4.5500001907348633,
+			"name":	"Shuttle",
+			"scale":	6.2699999809265137,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-136.93220520019531,
-				"y":	-74.913261413574219,
-				"z":	349.00454711914062
+				"x":	53.399555206298828,
+				"y":	-2.9073615074157715,
+				"z":	147.84011840820312
 			},
 			"rotation":	{
-				"x":	-4.1999998092651367,
+				"x":	134.5,
+				"y":	47.600002288818359,
+				"z":	-5.4000000953674316
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.05000000074505806,
+				"y":	0,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//spaceShuttle.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Spaceship",
+			"scale":	18.69999885559082,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-1558.978515625,
+				"y":	-2306.2646484375,
+				"z":	442.4725341796875
+			},
+			"rotation":	{
+				"x":	83.300003051757812,
+				"y":	-34.099998474121094,
+				"z":	23.600002288818359
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"MoveForwardObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.05000000074505806
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//spaceships/spaceship_gray_02.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Station",
+			"scale":	1.2999999523162842,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	1.06977379322052,
+				"y":	9.9876413345336914,
+				"z":	43.740119934082031
+			},
+			"rotation":	{
+				"x":	180,
 				"y":	0,
 				"z":	0
 			},
 			"rotationFrameEnabled":	true,
 			"rotationFrame":	{
-				"x":	0.0099999997764825821,
-				"y":	0.0099999997764825821,
-				"z":	0
+				"x":	0,
+				"y":	0,
+				"z":	0.075000002980232239
 			},
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models//planets/planet_a.fbx",
+			"model":	"../assets/models//stations/station02.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"Rings",
-			"scale":	2.559999942779541,
+			"name":	"Planet",
+			"scale":	1.5099999904632568,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	81.501152038574219,
-				"y":	72.817153930664062,
-				"z":	387.20458984375
+				"x":	2.5697736740112305,
+				"y":	3.487607479095459,
+				"z":	135.14012145996094
 			},
 			"rotation":	{
-				"x":	149.30000305175781,
-				"y":	70.5999984741211,
-				"z":	4.6999998092651367
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//planets/planet_ring.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"WhitePlanet",
-			"scale":	2.8599998950958252,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	95.7011489868164,
-				"y":	80.617156982421875,
-				"z":	400
-			},
-			"rotation":	{
-				"x":	-15.200000762939453,
-				"y":	91.9000015258789,
+				"x":	70.5,
+				"y":	0.10000000149011612,
 				"z":	0
 			},
 			"rotationFrameEnabled":	true,
@@ -94,14 +127,35 @@
 			"model":	"../assets/models//planets/planet_d.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
+		}, {
+			"name":	"Rings",
+			"scale":	1.5299999713897705,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-6.0302300453186035,
+				"y":	3.0876059532165527,
+				"z":	131.54013061523438
+			},
+			"rotation":	{
+				"x":	107.59999847412109,
+				"y":	0,
+				"z":	46.800003051757812
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//planets/planet_ring.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-0.0608774796128273,
-			"y":	-0.000642627477645874,
-			"z":	0.1045653373003006
+			"x":	0,
+			"y":	0,
+			"z":	0.18461376428604126
 		},
 		"rotation":	{
 			"x":	0,

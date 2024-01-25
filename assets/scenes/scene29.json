@@ -21,7 +21,30 @@
 			"z":	0.84426230192184448
 		}
 	},
-	"objects":	[],
+	"objects":	[
+		{
+			"name":	"city",
+			"scale":	1.3700000047683716,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-4.4525699615478516,
+				"y":	1.7422741651535034,
+				"z":	37.533870697021484
+			},
+			"rotation":	{
+				"x":	180,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//city.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}
+	],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{

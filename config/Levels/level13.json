@@ -1,17 +1,17 @@
 {
   "name": "13",
   "scene": "scene13.json",
-  "backgroundImage": "levels/13.png",
+  "backgroundImage": "levels/bg_03.png",
   "foregroundImage": "foregrounds/03.png",
   "music": "musicLevels03",
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
-  "histories": ["default_history.png"],
+  "histories": [],
   "enemies": [
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x":10,  "y": 10 },
       "model": "energy_ball.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -69,8 +69,8 @@
     },
     {
       "name": "Rayer",
-      "avatar": "avatars/executioner.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 30, "y": 1 },
       "model": "spaceships/Executioner.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -109,8 +109,8 @@
     },
     {
       "name": "Rayer",
-      "avatar": "avatars/green03.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 30, "y": 1 },
       "model": "spaceships/green_spaceship_03.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -149,8 +149,8 @@
     },
     {
       "name": "Rayer",
-      "avatar": "avatars/green03.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 30, "y": 1 },
       "model": "spaceships/green_spaceship_03.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },

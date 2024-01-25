@@ -22,6 +22,15 @@ public:
     void onUpdate() override;
 
     virtual void load();
+
+    static Point2D getScreenPoint(int x, int y)
+    {
+        const int xFrom = x * EngineSetup::get()->screenWidth / 100;
+        const int yFrom = y * EngineSetup::get()->screenHeight / 100;
+
+        return Point2D(xFrom, yFrom);
+    }
+
 };
 
 

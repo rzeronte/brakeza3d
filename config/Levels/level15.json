@@ -1,51 +1,63 @@
 {
   "name": "15",
   "scene": "scene15.json",
-  "backgroundImage": "levels/15.png",
+  "backgroundImage": "levels/bg_04.png",
   "foregroundImage": "foregrounds/06.png",
   "music": "musicLevels01",
   "allowEnergyShield": true,
   "histories": ["histories/lore_15_1.png", "histories/lore_15_2.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
-  "enemies": [
+  "enemies": [],
+  "bosses": [
     {
-      "name": "Colossus",
-      "avatar": "avatars/challenger.png",
-      "avatarHud": "avatars/shuttle.png",
-      "position": { "x": 50, "y": 20 },
-      "model": "spaceships/Challenger.fbx",
+      "type": 2,
+      "name": "SpaceBirds",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
+      "position": { "x": 50, "y": 45 },
+      "model": "spaceships/spaceship_gray_01.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
-      "enableLights": true,
+      "enableLights": false,
       "animated": true,
-      "stamina": 1000,
+      "stamina": 3000,
       "reward": true,
       "motion": {
-        "type": "follow",
-        "speed": 0.5,
-        "separation": 2
+        "type": "none"
       },
       "weapon": {
         "index": 0,
-        "available": true,
-        "name": "Linear",
-        "damage": 20,
-        "amount": 5000,
-        "startAmount": 100,
-        "speed": 1,
+        "available": false,
+        "name": "None",
+        "damage": 10,
+        "amount": 999,
+        "startAmount": 100000,
+        "speed": 0.1,
         "dispersion": 10,
         "accuracy": 100,
-        "cadenceTime": 6.0,
+        "cadenceTime": 0.40,
         "stop": true,
-        "stopDuration": 2,
-        "stopEvery": 6,
-        "type": "raylight",
+        "stopDuration": 3,
+        "stopEvery": 3,
+        "type": "projectile",
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01.fbx",
-        "model": "item_weapon_02.fbx",
+        "model": "item_weapon_01.fbx",
         "flatTexture": true,
         "enableLights": false,
+        "color": { "r": 144, "g": 0, "b": 0 }
+      },
+      "emitter": {
+        "rotation": { "x": 90, "y": 0, "z": 0 },
+        "rotationFrame": { "x": 0, "y": 1, "z": 0 },
+        "cadenceTime": 1.0,
+        "type": 1,
+        "stop": false,
+        "stopDuration": 0,
+        "stopEvery": 9,
         "color": { "r": 255, "g": 0, "b": 0 }
-      }
+      },
+      "lasers": [
+      ]
     }
   ],
   "items": [

@@ -2,17 +2,17 @@
   "name": "21",
   "scene": "scene21.json",
   "music": "musicLevels01",
-  "backgroundImage": "levels/01.png",
+  "backgroundImage": "levels/bg_05.png",
   "foregroundImage": "foregrounds/02.png",
   "allowEnergyShield": true,
-  "histories": ["histories/lore_20_1.png"],
+  "histories": [],
   "color": { "r": 0, "g": 255, "b": 0 },
   "endLevel": false,
   "enemies": [
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "position": { "x": 75,  "y": 40 },
       "model": "bomb02.fbx",
@@ -60,7 +60,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "position": { "x": 75,  "y": 40 },
       "model": "bomb03.fbx",
@@ -107,7 +107,7 @@
     }, {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "position": { "x": 75,  "y": 40 },
       "model": "bomb02.fbx",

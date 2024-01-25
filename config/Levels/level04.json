@@ -1,17 +1,16 @@
 {
   "name": "04",
   "scene": "scene04.json",
-  "backgroundImage": "levels/04.png",
+  "backgroundImage": "levels/bg_01.png",
   "foregroundImage": "foregrounds/05.png",
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
-  "tutorials": ["tutorials/tutorial_bomb.png"],
-  "histories": ["default_history.png"],
+  "tutorials": [],
   "enemies": [
     {
-      "name": "Patrol",
-      "avatar": "avatars/bob.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor pilot 01",
+      "avatar": "avatars/enemy_04.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 20, "y": 30 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -32,11 +31,11 @@
         "damage": 25,
         "amount": 1000,
         "startAmount": 1000,
-        "speed": 1,
+        "speed": 0.75,
         "dispersion": 10,
         "accuracy": 90,
         "cadenceTime": 0.75,
-        "stop": false,
+        "stop": true,
         "stopDuration": 2,
         "stopEvery": 6,
         "type": "projectile",
@@ -49,9 +48,9 @@
       }
     },
     {
-      "name": "Patrol",
-      "avatar": "avatars/bob.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor pilot 02",
+      "avatar": "avatars/enemy_06.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 20, "y": 30 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -72,11 +71,11 @@
         "damage": 25,
         "amount": 1000,
         "startAmount": 1000,
-        "speed": 1,
+        "speed": 0.75,
         "dispersion": 10,
         "accuracy": 90,
         "cadenceTime": 0.75,
-        "stop": false,
+        "stop": true,
         "stopDuration": 2,
         "stopEvery": 6,
         "type": "projectile",
@@ -92,8 +91,7 @@
   "items": [
     {
       "type": 2,
-      "position": { "x": 50, "y": 20 },
-      "help": 0
+      "position": { "x": 50, "y": 20 }
     }
   ]
 }

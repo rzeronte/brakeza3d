@@ -1,23 +1,23 @@
 {
   "name": "02",
   "scene": "scene02.json",
-  "backgroundImage": "levels/02.png",
+  "backgroundImage": "levels/bg_01.png",
   "foregroundImage": "foregrounds/02.png",
   "allowEnergyShield": false,
-  "tutorials": ["tutorials/tutorial_weapon01.png", "tutorials/tutorial_weapon02.png", "tutorials/tutorial_weapon03.png"],
+  "tutorials": [],
   "color": { "r": 0, "g": 0, "b": 0 },
   "message": {
     "from": "HeadQuarters",
-    "text": "Remember that you can improve the\ncapabilities of your spaceship in the store\nat the end of a mission.",
+    "text": "Commander, it seems that enemy ships\nare approaching. Complete the training\nand intercept them",
     "sound": "radioLevel02",
     "stamina": 100,
-    "avatarHud": "avatars/shuttle_hud.png"
+    "avatarHud": "avatars/message_friend.png"
   },
   "enemies": [
     {
-      "name": "spaceShuttle",
-      "avatar": "avatars/default.png",
-      "avatarHud": "avatars/shuttle_hud.png",
+      "name": "Enemy simulation 01",
+      "avatar": "avatars/friend.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 15, "y": 25 },
       "model": "spaceShuttle.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -30,9 +30,9 @@
       }
     },
     {
-      "name": "spaceShuttle",
-      "avatar": "avatars/default.png",
-      "avatarHud": "avatars/shuttle_hud.png",
+      "name": "Enemy simulation 02",
+      "avatar": "avatars/friend.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 85, "y": 25 },
       "model": "spaceShuttle.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },

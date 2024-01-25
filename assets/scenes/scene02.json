@@ -1,8 +1,8 @@
 {
 	"ads":	{
 		"direction":	{
-			"x":	0,
-			"y":	0,
+			"x":	-0.24307957291603088,
+			"y":	0.2661152780056,
 			"z":	1
 		},
 		"diffuse":	{
@@ -16,9 +16,9 @@
 			"z":	0.31147539615631104
 		},
 		"ambient":	{
-			"x":	0.639886736869812,
-			"y":	0.6598360538482666,
-			"z":	0.051380693912506104
+			"x":	0.6803278923034668,
+			"y":	0.48926562070846558,
+			"z":	0.15056435763835907
 		}
 	},
 	"objects":	[{
@@ -27,8 +27,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	23.861799240112305,
-				"y":	11.463379859924316,
+				"x":	24.367326736450195,
+				"y":	10.909948348999023,
 				"z":	50.116813659667969
 			},
 			"rotation":	{
@@ -53,8 +53,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-9.038238525390625,
-				"y":	-2.7365500926971436,
+				"x":	-8.5327062606811523,
+				"y":	-3.2899858951568604,
 				"z":	50.016811370849609
 			},
 			"rotation":	{
@@ -79,8 +79,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	18.361749649047852,
-				"y":	22.663280487060547,
+				"x":	18.867277145385742,
+				"y":	22.109836578369141,
 				"z":	50.716812133789062
 			},
 			"rotation":	{
@@ -105,8 +105,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	9.7617645263671875,
-				"y":	6.0633926391601562,
+				"x":	10.267295837402344,
+				"y":	5.5099554061889648,
 				"z":	50.716812133789062
 			},
 			"rotation":	{
@@ -131,8 +131,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-7.5382542610168457,
-				"y":	12.163371086120605,
+				"x":	-7.0327324867248535,
+				"y":	11.609939575195312,
 				"z":	50.91680908203125
 			},
 			"rotation":	{
@@ -157,8 +157,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	6.1617131233215332,
-				"y":	18.263446807861328,
+				"x":	6.6672348976135254,
+				"y":	17.710002899169922,
 				"z":	50.316810607910156
 			},
 			"rotation":	{
@@ -183,8 +183,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	2.7213079929351807,
-				"y":	18.395217895507812,
+				"x":	3.2268352508544922,
+				"y":	17.841773986816406,
 				"z":	291.42306518554688
 			},
 			"rotation":	{
@@ -209,8 +209,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	2.4363820552825928,
-				"y":	48.651161193847656,
+				"x":	2.9419078826904297,
+				"y":	48.097713470458984,
 				"z":	177.52305603027344
 			},
 			"rotation":	{
@@ -235,8 +235,8 @@
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-25.540729522705078,
-				"y":	10.033476829528809,
+				"x":	-25.035202026367188,
+				"y":	9.4959049224853516,
 				"z":	36.923057556152344
 			},
 			"rotation":	{
@@ -245,7 +245,14 @@
 				"z":	-22.5
 			},
 			"rotationFrameEnabled":	false,
-			"scripts":	[],
+			"scripts":	[{
+					"name":	"MoveUpDownObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.0099999997764825821
+						}]
+				}],
 			"shaders":	[],
 			"model":	"../assets/models/stations/station01.fbx",
 			"enableLights":	false,

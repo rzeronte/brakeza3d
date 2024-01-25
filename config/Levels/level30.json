@@ -2,7 +2,7 @@
   "name": "30",
   "scene": "scene30.json",
   "music": "musicLevels01",
-  "backgroundImage": "levels/08.png",
+  "backgroundImage": "levels/bg_06.png",
   "foregroundImage": "foregrounds/01.png",
   "allowEnergyShield": true,
   "histories": ["default_history.png"],
@@ -12,7 +12,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "position": { "x": 75,  "y": 50 },
       "model": "bomb02.fbx",
@@ -59,7 +59,7 @@
     }, {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "position": { "x": 75,  "y": 40 },
       "model": "bomb02.fbx",
@@ -107,10 +107,10 @@
   ],
   "bosses": [
     {
-      "type": 3,
+      "type": 5,
       "name": "SpaceBirds",
-      "avatar": "avatars/default.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 50, "y": 45 },
       "model": "spaceships/red_black.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },

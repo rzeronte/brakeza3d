@@ -1,16 +1,16 @@
 {
   "name": "09",
   "scene": "scene09.json",
-  "backgroundImage": "levels/09.png",
+  "backgroundImage": "levels/bg_02.png",
   "foregroundImage": "foregrounds/03.png",
   "allowEnergyShield": true,
-  "histories": ["default_history.png"],
+  "histories": [],
   "color": { "r": 0, "g": 0, "b": 255 },
   "enemies": [
     {
-      "name": "Patrol",
-      "avatar": "avatars/bob.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor pilot 01",
+      "avatar": "avatars/enemy_08.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -48,9 +48,9 @@
       }
     },
     {
-      "name": "Patrol",
-      "avatar": "avatars/bob.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor pilot 02",
+      "avatar": "avatars/enemy_08.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -88,10 +88,9 @@
       }
     },
     {
-      "name": "Rayer",
-      "size": { "x": 1, "y": 1,  "z": 1 },
-      "avatar": "avatars/executioner.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor Destroyer 01",
+      "avatar": "avatars/enemy_06.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 30, "y": 10 },
       "model": "spaceships/Executioner.fbx",
       "enableLights": true,
@@ -128,12 +127,12 @@
       }
     },
     {
-      "name": "Rayer",
-      "size": { "x": 1, "y": 1,  "z": 1 },
-      "avatar": "avatars/executioner.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor Destroyer 02",
+      "avatar": "avatars/enemy_06.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 5, "y": 70 },
       "model": "spaceships/Executioner.fbx",
+      "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
       "animated": true,
       "stamina": 1000,
@@ -165,10 +164,10 @@
       }
     },
     {
-      "name": "Rayer",
+      "name": "Traitor Destroyer 03",
+      "avatar": "avatars/enemy_06.png",
+      "avatarHud": "avatars/empty.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
-      "avatar": "avatars/executioner.png",
-      "avatarHud": "avatars/shuttle.png",
       "position": { "x": 95, "y": 70 },
       "model": "spaceships/Executioner.fbx",
       "enableLights": true,

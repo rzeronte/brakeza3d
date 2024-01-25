@@ -1,8 +1,8 @@
 {
 	"ads":	{
 		"direction":	{
-			"x":	0,
-			"y":	0,
+			"x":	-0.277055561542511,
+			"y":	0.97119361162185669,
 			"z":	1
 		},
 		"diffuse":	{
@@ -22,18 +22,100 @@
 		}
 	},
 	"objects":	[{
-			"name":	"added_item_40",
-			"scale":	3.0499999523162842,
+			"name":	"Shuttle",
+			"scale":	6.2699999809265137,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	6.4597320556640625,
-				"y":	0.27938345074653625,
-				"z":	250
+				"x":	45.547752380371094,
+				"y":	-12.797208786010742,
+				"z":	125.84011840820312
 			},
 			"rotation":	{
-				"x":	0,
-				"y":	54.000003814697266,
+				"x":	134.5,
+				"y":	47.600002288818359,
+				"z":	-5.4000000953674316
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.05000000074505806,
+				"y":	0,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//spaceShuttle.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Spaceship",
+			"scale":	18.69999885559082,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-2878.401123046875,
+				"y":	-4243.44970703125,
+				"z":	669.11865234375
+			},
+			"rotation":	{
+				"x":	83.300003051757812,
+				"y":	-34.099998474121094,
+				"z":	23.600002288818359
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"MoveForwardObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.05000000074505806
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//spaceships/spaceship_gray_02.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Station",
+			"scale":	5.3600001335144043,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-44.913459777832031,
+				"y":	23.298761367797852,
+				"z":	118.54013061523438
+			},
+			"rotation":	{
+				"x":	134.90000915527344,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"MoveUpDownObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.0099999997764825821
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//stations/station02.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Planet",
+			"scale":	2,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	59.618003845214844,
+				"y":	-18.702239990234375,
+				"z":	186.54011535644531
+			},
+			"rotation":	{
+				"x":	92.5999984741211,
+				"y":	-20.899999618530273,
 				"z":	0
 			},
 			"rotationFrameEnabled":	true,
@@ -48,19 +130,19 @@
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"added_item_18",
-			"scale":	2.2699999809265137,
+			"name":	"Rings",
+			"scale":	1.7899999618530273,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-0.14026868343353271,
-				"y":	0.27938345074653625,
-				"z":	250
+				"x":	48.517997741699219,
+				"y":	-19.802244186401367,
+				"z":	167.14013671875
 			},
 			"rotation":	{
-				"x":	7.5,
-				"y":	125.5,
-				"z":	128.19999694824219
+				"x":	107.59999847412109,
+				"y":	-11.40000057220459,
+				"z":	46.800003051757812
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
@@ -68,6 +150,50 @@
 			"model":	"../assets/models//planets/planet_ring.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
+		}, {
+			"name":	"Light",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-20.025306701660156,
+				"y":	-9.9565963745117188,
+				"z":	112.10122680664062
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"MoveUpDownObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.05000000074505806
+						}]
+				}],
+			"shaders":	[],
+			"ambient":	{
+				"x":	0.05000000074505806,
+				"y":	0.05000000074505806,
+				"z":	0.05000000074505806
+			},
+			"diffuse":	{
+				"x":	0.95081967115402222,
+				"y":	0.08010806143283844,
+				"z":	0.0350712314248085
+			},
+			"specular":	{
+				"x":	0.62295079231262207,
+				"y":	0.21445843577384949,
+				"z":	0
+			},
+			"constant":	0.20999999344348907,
+			"linear":	-0.15000000596046448,
+			"quadratic":	0.032000001519918442,
+			"type":	"LightPoint3D"
 		}],
 	"shaders":	[],
 	"scripts":	[],

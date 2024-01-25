@@ -1,9 +1,9 @@
 {
 	"ads":	{
-		"direction": {
-			"x":	0.0,
-			"y":	0.0,
-			"z":	1.0
+		"direction":	{
+			"x":	-0.3840869665145874,
+			"y":	-0.42742693424224854,
+			"z":	1
 		},
 		"diffuse":	{
 			"x":	0.4754098653793335,
@@ -21,14 +21,92 @@
 			"z":	0.48770493268966675
 		}
 	},
-	"objects":	[],
+	"objects":	[{
+			"name":	"Station",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	0.8984646201133728,
+				"y":	0.96294838190078735,
+				"z":	110.53387451171875
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0,
+				"y":	0.029999999329447746,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//stations/station05.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Planet",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-48.301551818847656,
+				"y":	0.96294838190078735,
+				"z":	165.33387756347656
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//planets/planet_d.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Planet2",
+			"scale":	1.7999999523162842,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	71.699264526367188,
+				"y":	-7.8015518188476562,
+				"z":	177.93386840820312
+			},
+			"rotation":	{
+				"x":	37.400001525878906,
+				"y":	50,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//planets/planet_c.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
 			"x":	0.09473785012960434,
 			"y":	0.070486597716808319,
-			"z":	0.03387116193771362
+			"z":	0.033871162682771683
 		},
 		"rotation":	{
 			"x":	0,

@@ -1,8 +1,8 @@
 {
 	"ads":	{
 		"direction":	{
-			"x":	0.18633903563022614,
-			"y":	0.89206862449646,
+			"x":	-1.7658473253250122,
+			"y":	-0.7187199592590332,
 			"z":	1
 		},
 		"diffuse":	{
@@ -22,45 +22,47 @@
 		}
 	},
 	"objects":	[{
-			"name":	"added_item_2",
-			"scale":	4.96999979019165,
+			"name":	"Station",
+			"scale":	2.440000057220459,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-1.6959697008132935,
-				"y":	-33.522556304931641,
-				"z":	299.59796142578125
+				"x":	1.6246030330657959,
+				"y":	-37.118316650390625,
+				"z":	131.52566528320312
 			},
 			"rotation":	{
-				"x":	0,
-				"y":	0,
+				"x":	51.400001525878906,
+				"y":	180,
 				"z":	0
 			},
-			"rotationFrameEnabled":	true,
-			"rotationFrame":	{
-				"x":	0.0099999997764825821,
-				"y":	0.0099999997764825821,
-				"z":	0
-			},
-			"scripts":	[],
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"MoveUpDownObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.0099999997764825821
+						}]
+				}],
 			"shaders":	[],
-			"model":	"../assets/models//planets/planet_d.fbx",
+			"model":	"../assets/models//stations/station03.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"added_item_42",
-			"scale":	1.7899999618530273,
+			"name":	"Planet",
+			"scale":	5.9800000190734863,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-56.295970916748047,
-				"y":	9.8774089813232422,
-				"z":	183.49794006347656
+				"x":	-1.961331844329834,
+				"y":	198.02362060546875,
+				"z":	480.10000610351562
 			},
 			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
+				"x":	29.100000381469727,
+				"y":	106.40000152587891,
+				"z":	265.80001831054688
 			},
 			"rotationFrameEnabled":	true,
 			"rotationFrame":	{
@@ -70,33 +72,7 @@
 			},
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models//planets/planet_c.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"added_item_79",
-			"scale":	2.130000114440918,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-1.6959697008132935,
-				"y":	31.37738037109375,
-				"z":	119.89794158935547
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	true,
-			"rotationFrame":	{
-				"x":	0.0099999997764825821,
-				"y":	0.0099999997764825821,
-				"z":	0
-			},
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//planets/planet_b.fbx",
+			"model":	"../assets/models//planets/planet_a.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],
@@ -104,9 +80,9 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	0.019999999552965164,
-			"y":	-0.059999994933605194,
-			"z":	0.19793875515460968
+			"x":	0.19473788142204285,
+			"y":	0.24048663675785065,
+			"z":	0.033871162682771683
 		},
 		"rotation":	{
 			"x":	0,

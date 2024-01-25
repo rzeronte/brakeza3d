@@ -2,7 +2,7 @@
   "name": "01",
   "scene": "scene01.json",
   "music": "musicLevels01",
-  "backgroundImage": "levels/07.png",
+  "backgroundImage": "levels/bg_01.png",
   "foregroundImage": "foregrounds/01.png",
   "allowEnergyShield": false,
   "histories": ["histories/lore_01_1.png", "histories/lore_01_2.png", "histories/lore_01_3.png", "histories/lore_01_4.png", "histories/lore_01_5.png", "histories/lore_01_6.png"],
@@ -13,13 +13,13 @@
     "text": "Welcome Commander! We know you've been\ninactive for a while. Let's practice\nshooting down the target in front of you.",
     "sound": "radioLevel01",
     "stamina": 100,
-    "avatarHud": "avatars/shuttle_hud.png"
+    "avatarHud": "avatars/message_friend.png"
   },
   "enemies": [
     {
-      "name": "spaceShuttle",
-      "avatar": "avatars/14.png",
-      "avatarHud": "avatars/14.png",
+      "name": "Enemy simulation",
+      "avatar": "avatars/friend.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 50, "y": 20 },
       "model": "spaceShuttle.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },

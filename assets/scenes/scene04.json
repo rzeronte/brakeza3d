@@ -1,14 +1,14 @@
 {
 	"ads":	{
-		"direction": {
-			"x":	0.0,
-			"y":	0.0,
-			"z":	1.0
+		"direction":	{
+			"x":	-0.31871476769447327,
+			"y":	-0.20829811692237854,
+			"z":	1
 		},
 		"diffuse":	{
-			"x":	0.59836065769195557,
-			"y":	0.59836065769195557,
-			"z":	0.59836065769195557
+			"x":	0.4754098653793335,
+			"y":	0.4754098653793335,
+			"z":	0.4754098653793335
 		},
 		"specular":	{
 			"x":	0.31147539615631104,
@@ -16,24 +16,52 @@
 			"z":	0.31147539615631104
 		},
 		"ambient":	{
-			"x":	0.76229506731033325,
-			"y":	0.76229506731033325,
-			"z":	0.76229506731033325
+			"x":	0.48770493268966675,
+			"y":	0.48770493268966675,
+			"z":	0.48770493268966675
 		}
 	},
 	"objects":	[{
-			"name":	"Purple",
-			"scale":	1.2899999618530273,
+			"name":	"Station",
+			"scale":	1,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-3.513416051864624,
-				"y":	-17.573837280273438,
-				"z":	162.94012451171875
+				"x":	12.854487419128418,
+				"y":	8.7674922943115234,
+				"z":	40.802459716796875
+			},
+			"rotation":	{
+				"x":	129.4000244140625,
+				"y":	352.60000610351562,
+				"z":	-1.0999979972839355
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"MoveUpDownObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.0099999997764825821
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models/stations/station01.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Planet",
+			"scale":	2.0299999713897705,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-33.940647125244141,
+				"y":	-0.223818838596344,
+				"z":	95.70245361328125
 			},
 			"rotation":	{
 				"x":	0,
-				"y":	51.100002288818359,
+				"y":	0,
 				"z":	0
 			},
 			"rotationFrameEnabled":	true,
@@ -48,128 +76,24 @@
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"Green",
-			"scale":	1,
+			"name":	"Planet02",
+			"scale":	1.7799999713897705,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-25.313394546508789,
-				"y":	-5.0739283561706543,
-				"z":	258.44012451171875
+				"x":	-1.2456190586090088,
+				"y":	-45.595970153808594,
+				"z":	157.80245971679688
 			},
 			"rotation":	{
-				"x":	0,
+				"x":	-5.6999998092651367,
 				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	true,
-			"rotationFrame":	{
-				"x":	0.0099999997764825821,
-				"y":	0.0099999997764825821,
-				"z":	0
-			},
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//planets/planet_b.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"Station",
-			"scale":	0.41999998688697815,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-10.311127662658691,
-				"y":	-11.473905563354492,
-				"z":	127.04012298583984
-			},
-			"rotation":	{
-				"x":	65,
-				"y":	140.5,
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models/stations/station01.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"asteroid01",
-			"scale":	2.940000057220459,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	18.23570442199707,
-				"y":	0.24369241297245026,
-				"z":	59.740119934082031
-			},
-			"rotation":	{
-				"x":	0.0099999997764825821,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	true,
-			"rotationFrame":	{
-				"x":	0.0099999997764825821,
-				"y":	0.0099999997764825821,
-				"z":	0
-			},
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//asteroid_01.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"asteroid02",
-			"scale":	3.880000114440918,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-19.750154495239258,
-				"y":	13.87979793548584,
-				"z":	45.540119171142578
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	true,
-			"rotationFrame":	{
-				"x":	0.10000000149011612,
-				"y":	0.10000000149011612,
-				"z":	0
-			},
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//asteroid_02.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"AsteroidsField",
-			"scale":	1.9199999570846558,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-2.7427897453308105,
-				"y":	-14.022441864013672,
-				"z":	155.04013061523438
-			},
-			"rotation":	{
-				"x":	5.8000001907348633,
-				"y":	-8.5000009536743164,
-				"z":	25.899999618530273
-			},
-			"rotationFrameEnabled":	true,
-			"rotationFrame":	{
-				"x":	0.0099999997764825821,
-				"y":	0,
-				"z":	0
-			},
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//asteroids_field.fbx",
+			"model":	"../assets/models//planets/planet_b.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],
@@ -177,9 +101,9 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-0.5699998140335083,
-			"y":	1.0999993085861206,
-			"z":	0.24011898040771484
+			"x":	-0.039999999105930328,
+			"y":	0.039999999105930328,
+			"z":	0.10560677200555801
 		},
 		"rotation":	{
 			"x":	0,

@@ -1,8 +1,8 @@
 {
 	"ads":	{
 		"direction":	{
-			"x":	-0.35826703906059265,
-			"y":	0.27023911476135254,
+			"x":	-1.4647936820983887,
+			"y":	0.02581450343132019,
 			"z":	1
 		},
 		"diffuse":	{
@@ -22,18 +22,46 @@
 		}
 	},
 	"objects":	[{
-			"name":	"Planet",
-			"scale":	1.9099999666213989,
+			"name":	"Station",
+			"scale":	2.5499999523162842,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	4.7908916473388672,
-				"y":	4.0699472427368164,
-				"z":	160.83387756347656
+				"x":	55.449390411376953,
+				"y":	-7.7024927139282227,
+				"z":	131.52566528320312
 			},
 			"rotation":	{
-				"x":	19.80000114440918,
-				"y":	71.5,
+				"x":	132.30000305175781,
+				"y":	-22.600002288818359,
+				"z":	40.099998474121094
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"MoveUpDownObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.0099999997764825821
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//stations/station03.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Planet",
+			"scale":	3.8199999332427979,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-114.93653869628906,
+				"y":	30.776182174682617,
+				"z":	314.22564697265625
+			},
+			"rotation":	{
+				"x":	32.700000762939453,
+				"y":	110.30000305175781,
 				"z":	0
 			},
 			"rotationFrameEnabled":	true,
@@ -45,27 +73,6 @@
 			"scripts":	[],
 			"shaders":	[],
 			"model":	"../assets/models//planets/planet_a.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"Asteroids",
-			"scale":	2.119999885559082,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	4.7066030502319336,
-				"y":	3.9921956062316895,
-				"z":	159.53387451171875
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	90,
-				"z":	94.700004577636719
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//asteroids_field.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],

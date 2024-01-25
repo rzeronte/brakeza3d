@@ -14,7 +14,7 @@
 #include "Bosses/BossEnemy.h"
 #include "Behaviors/EnemyBehaviorRandom.h"
 #include "Bosses/BossLevel10.h"
-#include "Bosses/BossLevel20.h"
+#include "Bosses/BossLevel15.h"
 #include "Behaviors/EnemyBehaviorPath.h"
 #include "Bosses/BossLevel30.h"
 #include "LevelStats.h"
@@ -25,6 +25,8 @@
 #include "Weapons/WeaponBomb.h"
 #include "Weapons/WeaponReflection.h"
 #include "Weapons/WeaponShield.h"
+#include "Bosses/BossLevel25.h"
+#include "Bosses/BossLevel20.h"
 
 #include <utility>
 
@@ -66,9 +68,14 @@ void LevelLoader::loadPrevious()
     load(currentLevelIndex);
 }
 
+void LevelLoader::reload()
+{
+    load(currentLevelIndex);
+    updateConfig(currentLevelIndex);
+}
+
 bool LevelLoader::loadNext()
 {
-
     if ((int) currentLevelIndex >= (int) levels.size() - 1) {
         return false;
     }
@@ -786,8 +793,16 @@ void LevelLoader::parseBossJSON(cJSON *bossJSON)
             boss = new BossLevel10();
             break;
         }
+        case BossesTypes::BOSS_LEVEL_15: {
+            boss = new BossLevel15();
+            break;
+        }
         case BossesTypes::BOSS_LEVEL_20: {
             boss = new BossLevel20();
+            break;
+        }
+        case BossesTypes::BOSS_LEVEL_25: {
+            boss = new BossLevel25();
             break;
         }
         case BossesTypes::BOSS_LEVEL_30: {

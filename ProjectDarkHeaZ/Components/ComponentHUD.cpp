@@ -290,6 +290,10 @@ int ComponentHUD::getButtonsOffsetY()
 
 void ComponentHUD::drawEnemyIconAndName()
 {
+    auto state = ComponentsManager::get()->getComponentGame()->getGameState();
+
+    if (state == EngineSetup::STORE || state == EngineSetup::PRESS_KEY_BY_WIN) return;
+
     auto objectSelected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
     auto textWriter = ComponentsManager::get()->getComponentGame()->getTextWriter();
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
@@ -304,8 +308,8 @@ void ComponentHUD::drawEnemyIconAndName()
         );
 
         textWriter->writeTextTTFAutoSize(
-            globalOffset.x + avatarEnemyOffset.x,
-            globalOffset.y + avatarEnemyOffset.y + enemy->getAvatar()->height() + 5,
+            globalOffset.x + avatarEnemyOffset.x + enemy->getAvatar()->width() + 10,
+            globalOffset.y + avatarEnemyOffset.y + 50,
             enemy->getName().c_str(),
             PaletteColors::getMenuOptions(),
             0.75f

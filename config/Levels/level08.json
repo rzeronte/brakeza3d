@@ -1,16 +1,16 @@
 {
   "name": "08",
   "scene": "scene08.json",
-  "backgroundImage": "levels/08.png",
+  "backgroundImage": "levels/bg_02.png",
   "foregroundImage": "foregrounds/06.png",
   "allowEnergyShield": true,
-  "histories": ["default_history.png"],
+  "histories": [],
   "color": { "r": 0, "g": 255, "b": 0 },
   "enemies": [
     {
-      "name": "Patrol",
-      "avatar": "avatars/bob.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor pilot 01",
+      "avatar": "avatars/enemy_09.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -48,9 +48,9 @@
       }
     },
     {
-      "name": "Patrol",
-      "avatar": "avatars/bob.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor pilot 02",
+      "avatar": "avatars/enemy_10.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -88,9 +88,9 @@
       }
     },
     {
-      "name": "Colossus",
-      "avatar": "avatars/pancake.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor Flat Station",
+      "avatar": "avatars/enemy_07.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 50, "y": 20 },
       "model": "spaceships/Pancake.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },

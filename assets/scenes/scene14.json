@@ -1,9 +1,9 @@
 {
 	"ads":	{
-		"direction": {
-			"x":	0.0,
-			"y":	0.0,
-			"z":	1.0
+		"direction":	{
+			"x":	1.3327689170837402,
+			"y":	0.13289201259613037,
+			"z":	1
 		},
 		"diffuse":	{
 			"x":	0.4754098653793335,
@@ -21,14 +21,73 @@
 			"z":	0.48770493268966675
 		}
 	},
-	"objects":	[],
+	"objects":	[{
+			"name":	"Station",
+			"scale":	2.440000057220459,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-1.1523071527481079,
+				"y":	-12.437790870666504,
+				"z":	131.52566528320312
+			},
+			"rotation":	{
+				"x":	90,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0,
+				"y":	0.05000000074505806,
+				"z":	0
+			},
+			"scripts":	[{
+					"name":	"MoveUpDownObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.0099999997764825821
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//stations/station03.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Planet",
+			"scale":	5.9800000190734863,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-45.338237762451172,
+				"y":	173.34947204589844,
+				"z":	480.10000610351562
+			},
+			"rotation":	{
+				"x":	29.100000381469727,
+				"y":	106.40000152587891,
+				"z":	265.80001831054688
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//planets/planet_a.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
 			"x":	0.09473785012960434,
 			"y":	0.070486597716808319,
-			"z":	0.03387116193771362
+			"z":	0.033871162682771683
 		},
 		"rotation":	{
 			"x":	0,

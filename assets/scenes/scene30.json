@@ -21,59 +21,30 @@
 			"z":	0.0778016671538353
 		}
 	},
-	"objects":	[{
-			"name":	"added_item_92",
-			"scale":	1,
+	"objects":	[
+		{
+			"name":	"city",
+			"scale":	1.3700000047683716,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	0.93752187490463257,
-				"y":	0.61763906478881836,
-				"z":	100
+				"x":	-4.4525699615478516,
+				"y":	1.7422741651535034,
+				"z":	37.533870697021484
 			},
 			"rotation":	{
-				"x":	100,
-				"y":	20,
-				"z":	0
-			},
-			"rotationFrameEnabled":	true,
-			"rotationFrame":	{
-				"x":	0.10000000149011612,
+				"x":	180,
 				"y":	0,
 				"z":	0
 			},
+			"rotationFrameEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models/stations/station04.fbx",
+			"model":	"../assets/models//city.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
-		}, {
-			"name":	"added_item_22",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	0.93752187490463257,
-				"y":	0.61763906478881836,
-				"z":	100
-			},
-			"rotation":	{
-				"x":	100,
-				"y":	31,
-				"z":	0
-			},
-			"rotationFrameEnabled":	true,
-			"rotationFrame":	{
-				"x":	0.10000000149011612,
-				"y":	0,
-				"z":	0
-			},
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models/stations/station04_asteroid.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}],
+		}
+	],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{

@@ -84,7 +84,7 @@ public:
     Point2D avatarEnemyOffset;
 
     float strokeBars = 9.0f;
-    float intensityBars = 0.001f;
+    float intensityBars = 0.0005f;
 };
 
 

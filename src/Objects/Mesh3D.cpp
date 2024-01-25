@@ -82,7 +82,6 @@ void Mesh3D::cloneParts(Mesh3D *source, bool isFlatTextureColor, bool isEnableLi
 
 void Mesh3D::clone(Mesh3D *source)
 {
-
     this->modelTextures = source->modelTextures;
     this->modelSpecularTextures = source->modelSpecularTextures;
     this->scale = source->scale;

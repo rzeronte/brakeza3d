@@ -9,8 +9,6 @@
 #include "../../include/Misc/Counter.h"
 #include "../../include/FXEffect/FXBlink.h"
 
-#define INITIAL_STAMINA 100
-
 class LivingObject {
 protected:
     float startStamina;

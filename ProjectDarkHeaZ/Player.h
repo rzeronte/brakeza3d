@@ -13,15 +13,11 @@
 #include "../include/Behaviors/RotatableToTarget.h"
 #include "../include/2D/Sprite2D.h"
 
-#define INITIAL_STAMINA 100
-#define INITIAL_ENERGY 100
 #define INITIAL_RECOVER_ENERGY 0.05f
-#define INITIAL_POWER 0.5
 #define INITIAL_POWER_DASH 1
 #define DASH_ENERGY_COST 15
 #define ENERGY_DELTATIME_COST 5.0f
 #define INITIAL_FRICTION 5
-#define INITIAL_MAX_VELOCITY 5
 
 typedef enum {
     EMPTY = -1,
@@ -43,8 +39,6 @@ private:
     float startEnergy;
     float recoverEnergySpeed;
     bool stuck;
-    bool warningDamage;
-    int warningSoundChannel;
     int rescuedHumans;
     int coins;
 
@@ -200,6 +194,12 @@ public:
     static void shiftCamera();
 
     Image *randomDamage();
+
+    void setMaxVelocity(float maxVelocity);
+
+    void setStartEnergy(float startEnergy);
+
+    void setPower(float power);
 };
 
 

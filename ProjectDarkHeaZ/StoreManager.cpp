@@ -6,7 +6,7 @@ StoreManager::StoreManager(Player *player, TextWriter *writer)
     player(player),
     writer(writer),
     offsetX(340),
-    offsetY(270),
+    offsetY(230),
     currentItemIndex(0),
     itemSelector(new Image(EngineSetup::get()->IMAGES_FOLDER + "store/item_selector.png")),
     itemBought(new Image(EngineSetup::get()->IMAGES_FOLDER + "store/item_bought.png"))
@@ -46,17 +46,11 @@ void StoreManager::update(float alpha)
     }
 
     auto game = ComponentsManager::get()->getComponentGame();
-    auto hud = ComponentsManager::get()->getComponentHUD();
 
-    auto const offsetYCoins = 160;
-    hud->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(
-        this->offsetX,
-        this->offsetY + offsetYCoins,
-        alpha,
-        fb
-    );
+    // PLAYER COINS
+    auto const offsetYCoins = 130;
     writer->writeTextTTFAutoSize(
-        this->offsetX + 40,
+        this->offsetX,
         this->offsetY + offsetYCoins,
         std::to_string(game->getPlayer()->getCoins()).c_str(),PaletteColors::getMenuOptions(),
         1.0f
@@ -99,19 +93,10 @@ void StoreManager::drawItemDetails(StoreItem *item, float alpha)
 
     item->getDescription()->drawFlatAlpha(0, 0, alpha, fb);
 
-    auto hud = ComponentsManager::get()->getComponentHUD();
-    const int offsetItemCost = -42;
-
-    hud->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(
-        offsetX + offsetItemCost + 40,
-        offsetY + offsetItemCost,
-        alpha,
-        fb
-    );
-
+    // ITEM COINS
     writer->writeTextTTFAutoSize(
-        offsetX + offsetItemCost + 82,
-        offsetY + offsetItemCost,
+        offsetX + 348,
+        offsetY + 200,
         std::to_string(item->getCost()).c_str(),
         PaletteColors::getStatisticsText(),
         1.0f
@@ -203,8 +188,8 @@ void StoreManager::loadDefaultItems()
 
 void StoreManager::drawBoughtItemsOnHUD(float alpha)
 {
-    const int x = 80;
-    const int y = 25;
+    const int x = 100;
+    const int y = 598;
     const int separation = 30;
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 

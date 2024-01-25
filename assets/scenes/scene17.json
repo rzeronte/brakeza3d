@@ -1,9 +1,9 @@
 {
 	"ads":	{
-		"direction": {
-			"x":	0.0,
-			"y":	0.0,
-			"z":	1.0
+		"direction":	{
+			"x":	0.2855745255947113,
+			"y":	-0.27247244119644165,
+			"z":	1
 		},
 		"diffuse":	{
 			"x":	0.4754098653793335,
@@ -21,14 +21,94 @@
 			"z":	0.48770493268966675
 		}
 	},
-	"objects":	[],
+	"objects":	[{
+			"name":	"Station",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-2.1995453834533691,
+				"y":	-19.078699111938477,
+				"z":	59.133865356445312
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	90,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"MoveUpDownObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.0099999997764825821
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//stations/station05.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Planet",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-48.8995475769043,
+				"y":	1.3635348081588745,
+				"z":	165.33387756347656
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//planets/planet_d.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Planet2",
+			"scale":	1.7999999523162842,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	71.1012954711914,
+				"y":	-7.4009590148925781,
+				"z":	177.93386840820312
+			},
+			"rotation":	{
+				"x":	37.400001525878906,
+				"y":	50,
+				"z":	0
+			},
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//planets/planet_c.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
 			"x":	0.09473785012960434,
 			"y":	0.070486597716808319,
-			"z":	0.03387116193771362
+			"z":	0.033871162682771683
 		},
 		"rotation":	{
 			"x":	0,

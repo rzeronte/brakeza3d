@@ -5,6 +5,7 @@
 
 ComponentGame::ComponentGame()
 :
+    currentIndexDeadImage(0),
     currentIndexIntro(0),
     cameraCountDownPosition(Vertex3D(0, 0, 5)),
     cameraInGamePosition(Vertex3D(0, 0, 0)),
@@ -15,11 +16,10 @@ ComponentGame::ComponentGame()
     shaderProjectiles(nullptr),
     glassEffect(Image(SETUP->IMAGES_FOLDER + "menuBackground.png")),
     backgroundSpaceshipSelection(Image(SETUP->IMAGES_FOLDER + "backgroundSpaceshipSelection.png")),
-    boxStore(Image(SETUP->IMAGES_FOLDER + "store_box.png")),
+    boxStore(Image(SETUP->IMAGES_FOLDER + "store.png")),
     imageBlack(Image(SETUP->IMAGES_FOLDER + "black.png")),
     boxTutorial(Image(SETUP->IMAGES_FOLDER + "tutorial_box.png")),
     imageEndGame(Image(SETUP->IMAGES_FOLDER + "end_game.png")),
-    imageDead(Image(SETUP->IMAGES_FOLDER + "game_over.png")),
     imageStatistics(Image(SETUP->IMAGES_FOLDER + "statistics_screen.png")),
     imageCredits(Image(SETUP->IMAGES_FOLDER + "credits.png")),
     imageSplash(Image(SETUP->IMAGES_FOLDER + SETUP->LOGO_BRAKEZA)),
@@ -73,6 +73,13 @@ void ComponentGame::onStart()
     imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/14.png"));
     imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/15.png"));
 
+    imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/01.png"));
+    imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/02.png"));
+    imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/03.png"));
+    imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/04.png"));
+    imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/05.png"));
+    imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/06.png"));
+
     helps.push_back(new Image(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_HELP_IMAGE));
     helps.push_back(new Image(SETUP->IMAGES_FOLDER + "keyboard.png"));
 
@@ -107,9 +114,9 @@ void ComponentGame::onStart()
 
     storeManager = new StoreManager(player, textWriter);
 
-    loadSpaceship("spaceships/player.fbx", "spaceships/spaceship_01.png");
-    loadSpaceship("spaceships/player02.fbx", "spaceships/spaceship_02.png");
-    loadSpaceship("spaceships/player03.fbx", "spaceships/spaceship_03.png");
+    loadSpaceship("spaceships/player.fbx", "spaceships/spaceship_01.png", {0.3, 100, 100});
+    loadSpaceship("spaceships/player02.fbx", "spaceships/spaceship_02.png", {0.5, 130, 70});
+    loadSpaceship("spaceships/player03.fbx", "spaceships/spaceship_03.png", {0.2, 130, 130});
 
     fadeInSpriteRed = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "flash01.png"), 96, 96, 37, 45));
     fadeInSpriteGreen = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "flash02.png"), 96, 96, 37, 45));
@@ -247,14 +254,18 @@ void ComponentGame::handleOnUpdateTutorialImages(float alpha)
         getLevelLoader()->drawCurrentTutorialImage(alpha);
         writeDialogTextToContinue("Press ENTER to start...");
         if (getLevelLoader()->getTutorials().size() > 1) {
-            textWriter->writeTTFCenterHorizontal(495, message.c_str(), PaletteColors::getCrt(), 0.5f);
+            textWriter->writeTTFCenterHorizontal(520, message.c_str(), PaletteColors::getMenuOptions(), 0.5f);
         }
         auto bb = window->getBackgroundFramebuffer();
         boxTutorial.drawFlatAlpha(0, 0, alpha, window->getForegroundFramebuffer());
         //glassEffect.drawFlatAlpha(0, 0, alpha, bb);
         textWriter->setAlpha(oldAlpha);
     } else {
+        float oldAlpha = textWriter->getAlpha();
+        textWriter->setAlpha(alpha);
         writeDialogTextToContinue("Press ENTER to start...");
+        textWriter->setAlpha(oldAlpha);
+
     }
 }
 
@@ -286,16 +297,16 @@ void ComponentGame::showLevelStatistics(float alpha)
     textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontAlternative());
     boxTutorial.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
-    int offsetX = 340;
+    int offsetX = 450;
     int offsetY = 100;
     const int space = 100;
 
     auto window = ComponentsManager::get()->getComponentWindow();
     auto stats = getLevelLoader()->getStats();
-    auto c = PaletteColors::getStatisticsText();
+    auto c = PaletteColors::getMenuOptions();
     auto fb = window->getForegroundFramebuffer();
 
-    glassEffect.drawFlatAlpha(0, 0, alpha, fb);
+    imageStatistics.drawFlatAlpha(0, 0, alpha, fb);
 
     player->getWeaponTypeByLabel("projectile")->getIcon()->drawFlatAlpha(offsetX, offsetY + 125, alpha, fb);
     textWriter->writeTextTTFAutoSize(offsetX, offsetY + 195, stats->stats(WEAPON_PROJECTILE).c_str(), c, 0.3);
@@ -322,19 +333,17 @@ void ComponentGame::showLevelStatistics(float alpha)
 
     textWriter->setFont(window->getFontAlternative());
 
-    imageStatistics.drawFlatAlpha(0, 0, alpha, fb);
-
     writeDialogTextToContinue("Press ENTER to continue...");
 
     ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(
         EngineSetup::get()->screenWidth/2-16 ,
-        offsetY + 300,
+        offsetY + 295,
         alpha,
         fb
     );
 
     textWriter->writeTTFCenterHorizontal(
-        offsetY + 340,
+        offsetY + 350,
         std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(),
         c,
         0.5
@@ -542,8 +551,17 @@ EngineSetup::GameState ComponentGame::getGameState() const {
 void ComponentGame::loadSelectedSpaceshipModel()
 {
     player->clone(spaceships[spaceshipSelectedIndex]);
+    player->setPower(spaceshipsAttributes[spaceshipSelectedIndex].power);
+
+    player->setStamina(spaceshipsAttributes[spaceshipSelectedIndex].stamina);
+    player->setStartStamina(spaceshipsAttributes[spaceshipSelectedIndex].stamina);
+
+    player->setEnergy(spaceshipsAttributes[spaceshipSelectedIndex].energy);
+    player->setStartEnergy(spaceshipsAttributes[spaceshipSelectedIndex].energy);
     player->setScale(1);
-    //player->updateBoundingBox();
+
+    Logging::Message("Player attributes: Power: %f, Stamina: %f, Energy: %f", player->power, player->getStamina(), player->getEnergy());
+
     player->makeSimpleGhostBody(
         Vertex3D(1, 1, 1),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
@@ -878,7 +896,7 @@ void ComponentGame::setVisibleInGameObjects(bool value)
 void ComponentGame::selectSpaceshipAndStartGame()
 {
     makeFadeToGameState(EngineSetup::GameState::PRESS_KEY_NEW_LEVEL, true);
-    EngineSetup::get()->SOUND_VOLUME_MUSIC += 40;
+    EngineSetup::get()->SOUND_VOLUME_MUSIC += 0;
     EngineSetup::get()->SOUND_CHANNEL_GLOBAL -= 0;
     Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) EngineSetup::get()->SOUND_CHANNEL_GLOBAL);
     Mix_VolumeMusic((int) EngineSetup::get()->SOUND_VOLUME_MUSIC);
@@ -1099,7 +1117,8 @@ void ComponentGame::handlePressKeyPreviousLevel()
 {
     getPlayer()->setEnabled(true);
     removeInGameObjects();
-    getLevelLoader()->loadPrevious();
+    getLevelLoader()->reload();
+    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
     getPlayer()->setEnergyShieldEnabled(false);
     getPlayer()->setPosition(playerStartPosition);
@@ -1110,16 +1129,12 @@ void ComponentGame::handlePressKeyPreviousLevel()
     ComponentsManager::get()->getComponentRender()->setEnabled(true);
     shaderColor->setEnabled(false);
     getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
-    ComponentSound::fadeInMusic(
-        ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(getLevelLoader()->getMusic()),
-        -1,
-        3000
-    );
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
 }
 
 void ComponentGame::handlePressKeyGameOver()
 {
+    currentIndexDeadImage = Tools::random(0, (int) imagesDead.size()-1);
     ComponentsManager::get()->getComponentHUD()->setEnabled(false);
     getPlayer()->setEnabled(true);
     ComponentSound::playMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("gameOverMusic"), -1);
@@ -1209,7 +1224,7 @@ StoreManager *ComponentGame::getStoreManager() const {
     return storeManager;
 }
 
-void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation)
+void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::string& fileNameInformation, SpaceshipAttributes attr)
 {
     auto model = new Mesh3D();
     model->setMultiScene(true);
@@ -1228,6 +1243,7 @@ void ComponentGame::loadSpaceship(const std::string& fileNameModel, const std::s
     spaceships.push_back(model);
 
     spaceshipsInformation.push_back(new Image(EngineSetup::get()->IMAGES_FOLDER + fileNameInformation));
+    spaceshipsAttributes.push_back(attr);
 }
 
 void ComponentGame::increaseSpaceshipSelected()
@@ -1260,7 +1276,7 @@ void ComponentGame::setCurrentEnemyDialog(EnemyDialog *currentEnemyDialog)
 
 void ComponentGame::handleSpaceShipSelector()
 {
-    getFadeToGameState()->setSpeed(FADE_SPEED_MENU_FIRST_TIME);
+    getFadeToGameState()->setSpeed(0.004);
     SceneLoader::clearScene();
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
     spaceships[spaceshipSelectedIndex]->setEnabled(true);
@@ -1352,7 +1368,7 @@ void ComponentGame::handleOnUpdateCountDown()
 
     textWriter->setAlpha(timeRatio);
 
-    textWriter->writeTTFCenterHorizontal(300, std::to_string(restTime).c_str(), PaletteColors::getEnergy(), 5);
+    textWriter->writeTTFCenterHorizontal(250, std::to_string(restTime).c_str(), PaletteColors::getMenuOptions(), 6);
 
     getLevelLoader()->getCountDown()->update();
 
@@ -1422,7 +1438,11 @@ void ComponentGame::handleOnUpdateCredits(const float alpha)
 
 void ComponentGame::handleOnUpdatePressKeyByDead(const float alpha)
 {
-    imageDead.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+
+    boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
+    auto deadImage = imagesDead[currentIndexDeadImage];
+    deadImage->drawFlatAlpha(0, 0, alpha, fb);
     shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50f);
 }
 

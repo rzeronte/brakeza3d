@@ -22,8 +22,6 @@ public:
     void onUpdate() override;
 
     void invertPhase();
-
-    Point2D getScreenPoint(int x, int y);
 };
 
 

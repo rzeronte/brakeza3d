@@ -1,17 +1,17 @@
 {
   "name": "19",
   "scene": "scene19.json",
-  "backgroundImage": "levels/19.png",
+  "backgroundImage": "levels/bg_04.png",
   "foregroundImage": "foregrounds/03.png",
   "music": "musicLevels01",
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
-  "histories": ["default_history.png"],
+  "histories": [],
   "enemies": [
     {
       "name": "Colossus",
-      "avatar": "avatars/pancake.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 5, "y": 40},
       "model": "spaceships/Pancake.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -60,8 +60,8 @@
     },
     {
       "name": "Colossus",
-      "avatar": "avatars/pancake.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 95, "y": 40 },
       "model": "spaceships/Pancake.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -110,8 +110,8 @@
     },
     {
       "name": "Shocker",
-      "avatar": "avatars/imperial.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 50,  "y": 15 },
       "model": "spaceships/Imperial.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -148,7 +148,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 50,  "y": 50 },
       "model": "energy_ball.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -194,7 +194,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 20,  "y": 70 },
       "model": "energy_ball.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -240,7 +240,7 @@
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 80,  "y": 70 },
       "model": "energy_ball.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },

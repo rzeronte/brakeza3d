@@ -1,8 +1,8 @@
 {
 	"ads":	{
 		"direction":	{
-			"x":	-0.081883110105991364,
-			"y":	0.21721607446670532,
+			"x":	0.12999999523162842,
+			"y":	0.23999999463558197,
 			"z":	1
 		},
 		"diffuse":	{
@@ -22,253 +22,91 @@
 		}
 	},
 	"objects":	[{
-			"name":	"Light",
+			"name":	"added_item_2",
 			"scale":	1,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-19.656867980957031,
-				"y":	4.6972322463989258,
-				"z":	66.422531127929688
+				"x":	-1.1756894115685215e-42,
+				"y":	-1.1756894115685215e-42,
+				"z":	20
 			},
 			"rotation":	{
-				"x":	0,
-				"y":	0,
+				"x":	0.10000000149011612,
+				"y":	0.10000000149011612,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.10000000149011612,
+				"y":	0.10000000149011612,
+				"z":	0
+			},
 			"scripts":	[],
 			"shaders":	[],
-			"ambient":	{
-				"x":	0,
-				"y":	0.21311473846435547,
-				"z":	1
-			},
-			"diffuse":	{
-				"x":	0,
-				"y":	0.073233023285865784,
-				"z":	0.44672131538391113
-			},
-			"specular":	{
-				"x":	0.43491414189338684,
-				"y":	0.52868854999542236,
-				"z":	0.0086669838055968285
-			},
-			"constant":	0.8399999737739563,
-			"linear":	0.059999998658895493,
-			"quadratic":	1.9999999494757503e-05,
-			"type":	"LightPoint3D"
+			"model":	"../assets/models//weapon_bomb_ammo.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
 		}, {
-			"name":	"sprite3D_6",
+			"name":	"added_item_10",
 			"scale":	1,
 			"stencilBufferEnabled":	false,
-			"transparent":	true,
+			"transparent":	false,
 			"position":	{
-				"x":	-0.83789998292922974,
-				"y":	0.062256991863250732,
-				"z":	10
+				"x":	1.8999999761581421,
+				"y":	0,
+				"z":	20
 			},
 			"rotation":	{
 				"x":	0,
 				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.5,
+				"y":	0.5,
+				"z":	0
+			},
 			"scripts":	[],
 			"shaders":	[],
-			"width":	0.5,
-			"height":	0.5,
-			"animations":	[{
-					"sprite":	"../assets/sprites//explosions/01.png",
-					"width":	256,
-					"height":	256,
-					"numberFrames":	16,
-					"fps":	30
-				}],
-			"currentIndexAnimation":	0,
-			"type":	"Sprite3D"
+			"model":	"../assets/models//weapon_reflection_ammo.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
 		}, {
-			"name":	"sprite3D_32",
+			"name":	"added_item_88",
 			"scale":	1,
 			"stencilBufferEnabled":	false,
-			"transparent":	true,
+			"transparent":	false,
 			"position":	{
-				"x":	1.2621004581451416,
-				"y":	0.062256991863250732,
-				"z":	10
+				"x":	-1.7999999523162842,
+				"y":	0,
+				"z":	20
 			},
 			"rotation":	{
 				"x":	0,
 				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"width":	0.5,
-			"height":	0.5,
-			"animations":	[{
-					"sprite":	"../assets/sprites//explosions/02.png",
-					"width":	256,
-					"height":	256,
-					"numberFrames":	16,
-					"fps":	45
-				}],
-			"currentIndexAnimation":	0,
-			"type":	"Sprite3D"
-		}, {
-			"name":	"sprite3D_100",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	true,
-			"position":	{
-				"x":	0.76210099458694458,
-				"y":	0.062256991863250732,
-				"z":	10
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
+			"rotationFrameEnabled":	true,
+			"rotationFrame":	{
+				"x":	0.10000000149011612,
+				"y":	0.10000000149011612,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
-			"width":	0.5,
-			"height":	0.5,
-			"animations":	[{
-					"sprite":	"../assets/sprites//explosions/03.png",
-					"width":	256,
-					"height":	256,
-					"numberFrames":	16,
-					"fps":	30
-				}],
-			"currentIndexAnimation":	0,
-			"type":	"Sprite3D"
-		}, {
-			"name":	"sprite3D_56",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	true,
-			"position":	{
-				"x":	0.362102210521698,
-				"y":	0.062256991863250732,
-				"z":	10
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"width":	0.5,
-			"height":	0.5,
-			"animations":	[{
-					"sprite":	"../assets/sprites//explosions/04.png",
-					"width":	256,
-					"height":	256,
-					"numberFrames":	16,
-					"fps":	30
-				}],
-			"currentIndexAnimation":	0,
-			"type":	"Sprite3D"
-		}, {
-			"name":	"sprite3D_53",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	true,
-			"position":	{
-				"x":	-0.037896160036325455,
-				"y":	0.062256991863250732,
-				"z":	10
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"width":	0.5,
-			"height":	0.5,
-			"animations":	[{
-					"sprite":	"../assets/sprites//explosions/05.png",
-					"width":	256,
-					"height":	256,
-					"numberFrames":	16,
-					"fps":	30
-				}],
-			"currentIndexAnimation":	0,
-			"type":	"Sprite3D"
-		}, {
-			"name":	"sprite3D_11",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	true,
-			"position":	{
-				"x":	-1.2378989458084106,
-				"y":	0.062256991863250732,
-				"z":	10
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"width":	1,
-			"height":	1,
-			"animations":	[{
-					"sprite":	"../assets/sprites//explosions/06.png",
-					"width":	256,
-					"height":	256,
-					"numberFrames":	16,
-					"fps":	30
-				}],
-			"currentIndexAnimation":	0,
-			"type":	"Sprite3D"
-		}, {
-			"name":	"sprite3D_56",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	true,
-			"position":	{
-				"x":	-0.53789800405502319,
-				"y":	0.062256991863250732,
-				"z":	10
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"width":	0.5,
-			"height":	0.5,
-			"animations":	[{
-					"sprite":	"../assets/sprites//explosions/07.png",
-					"width":	256,
-					"height":	256,
-					"numberFrames":	16,
-					"fps":	24
-				}],
-			"currentIndexAnimation":	0,
-			"type":	"Sprite3D"
+			"model":	"../assets/models//weapon_shield_ammo.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-0.019999999552965164,
-			"y":	-0.14999999105930328,
-			"z":	0.23184171319007874
+			"x":	0,
+			"y":	0,
+			"z":	0.09805075079202652
 		},
 		"rotation":	{
 			"x":	0,

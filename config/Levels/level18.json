@@ -1,17 +1,17 @@
 {
   "name": "18",
   "scene": "scene18.json",
-  "backgroundImage": "levels/18.png",
+  "backgroundImage": "levels/bg_04.png",
   "foregroundImage": "foregrounds/03.png",
   "music": "musicLevels01",
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
-  "histories": ["default_history.png"],
+  "histories": [],
   "enemies": [
     {
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 50,  "y": 40 },
       "model": "energy_ball.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -57,7 +57,7 @@
     {
       "name": "Colossus",
       "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 10, "y": 10 },
       "model": "spaceships/Challenger.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -93,8 +93,8 @@
     },
     {
       "name": "Colossus",
-      "avatar": "avatars/challenger.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 90, "y": 10 },
       "model": "spaceships/Challenger.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -130,8 +130,8 @@
     },
     {
       "name": "Colossus",
-      "avatar": "avatars/challenger.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 90, "y": 75 },
       "model": "spaceships/Challenger.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -167,8 +167,8 @@
     },
     {
       "name": "Colossus",
-      "avatar": "avatars/challenger.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 10, "y": 75 },
       "model": "spaceships/Challenger.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },

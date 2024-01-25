@@ -2,17 +2,17 @@
   "name": "05",
   "scene": "scene05.json",
   "music": "musicLevels02",
-  "backgroundImage": "levels/05.png",
+  "backgroundImage": "levels/bg_02.png",
   "foregroundImage": "foregrounds/06.png",
   "allowEnergyShield": true,
   "color": { "r": 255, "g": 0, "b": 255 },
-  "tutorials": ["tutorials/tutorial_humans.png"],
-  "histories": ["histories/lore_05_1.png", "histories/lore_05_2.png"],
+  "tutorials": [],
+  "histories": [],
   "enemies": [
     {
-      "name": "Patrol",
-      "avatar": "avatars/bob.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor pilot 01",
+      "avatar": "avatars/enemy_07.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 15, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -50,9 +50,9 @@
       }
     },
     {
-      "name": "Patrol",
-      "avatar": "avatars/bob.png",
-      "avatarHud": "avatars/shuttle.png",
+      "name": "Traitor pilot 02",
+      "avatar": "avatars/enemy_08.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 20, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -93,8 +93,7 @@
   "items": [
     {
       "type": 7,
-      "position": { "x": 50, "y": 5 },
-      "help": 0
+      "position": { "x": 50, "y": 5 }
     }
   ]
 }

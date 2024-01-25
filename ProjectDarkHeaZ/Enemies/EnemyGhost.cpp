@@ -134,7 +134,6 @@ void EnemyGhost::handleDie()
     makeReward();
 
     Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getRandomExplosionSprite()->getAnimation());
-
     ComponentsManager::get()->getComponentSound()->sound("enemyExplosion", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 
     unstuck();

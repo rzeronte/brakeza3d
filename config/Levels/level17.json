@@ -1,17 +1,17 @@
 {
   "name": "17",
   "scene": "scene17.json",
-  "backgroundImage": "levels/17.png",
+  "backgroundImage": "levels/bg_04.png",
   "foregroundImage": "foregrounds/02.png",
   "music": "musicLevels01",
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
-  "histories": ["default_history.png"],
+  "histories": [],
   "enemies": [
     {
       "name": "Colossus",
-      "avatar": "avatars/challenger.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": { "x": 50, "y": 15},
       "model": "spaceships/Challenger.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -59,8 +59,8 @@
     },
     {
       "name": "Blupincher",
-      "avatar": "avatars/pancake.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": {"x": 90, "y": 25},
       "model": "spaceships/Pancake.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -106,8 +106,8 @@
     },
     {
       "name": "Blupincher",
-      "avatar": "avatars/pancake.png",
-      "avatarHud": "avatars/shuttle.png",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
       "position": {"x": 10, "y": 25},
       "model": "spaceships/Pancake.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },

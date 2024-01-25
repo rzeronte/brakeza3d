@@ -36,8 +36,10 @@ typedef enum {
 
 typedef enum {
     BOSS_LEVEL_10 = 1,
-    BOSS_LEVEL_20 = 2,
-    BOSS_LEVEL_30 = 3,
+    BOSS_LEVEL_15 = 2,
+    BOSS_LEVEL_20 = 3,
+    BOSS_LEVEL_25 = 4,
+    BOSS_LEVEL_30 = 5,
 } BossesTypes;
 
 typedef enum {
@@ -200,6 +202,8 @@ public:
     [[nodiscard]] const std::vector<Weapon *> &getWeapons() const;
 
     virtual ~LevelLoader();
+
+    void reload();
 };
 
 
