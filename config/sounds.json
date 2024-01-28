@@ -4,6 +4,7 @@
     { "file": "music/01.mp3", "label": "musicLevels01", "type": "music" },
     { "file": "music/02.mp3", "label": "musicLevels02", "type": "music" },
     { "file": "music/03.mp3", "label": "musicLevels03", "type": "music" },
+    { "file": "music/04.mp3", "label": "musicLevels04", "type": "music" },
 
     { "file": "music/boss_01_music.mp3", "label": "bossMusic01", "type": "music" },
     { "file": "music/boss_02_music.mp3", "label": "bossMusic02", "type": "music" },
