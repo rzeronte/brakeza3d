@@ -25,9 +25,12 @@ class AmmoProjectileBodyEmitter: public Object3D {
     ProjectileBodyEmmitterType type;
     Color color;
 
+    Vertex3D offsetPosition;
+
 public:
     AmmoProjectileBodyEmitter(
         ProjectileBodyEmmitterType type,
+        Vertex3D offsetPosition,
         float step,
         bool stop,
         float stopDuration,
@@ -63,6 +66,8 @@ public:
     [[nodiscard]] const Color &getColor() const;
 
     void setColor(const Color &color);
+
+    const Vertex3D &getOffsetPosition() const;
 };
 
 

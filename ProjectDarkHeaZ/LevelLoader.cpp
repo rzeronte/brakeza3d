@@ -442,7 +442,6 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     int animated = cJSON_GetObjectItemCaseSensitive(enemyJSON, "animated")->valueint;
     cJSON *motion = cJSON_GetObjectItemCaseSensitive(enemyJSON, "motion");
     cJSON *weapon = cJSON_GetObjectItemCaseSensitive(enemyJSON, "weapon");
-    cJSON *emitter = cJSON_GetObjectItemCaseSensitive(enemyJSON, "emitter");
     cJSON *lasers = cJSON_GetObjectItemCaseSensitive(enemyJSON, "lasers");
 
     Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(enemyJSON, "position"), Z_COORDINATE_GAMEPLAY + 1);
@@ -461,7 +460,6 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     enemy->setEnableLights(enableLights);
     enemy->setPosition(worldPosition);
     enemy->setStencilBufferEnabled(true);
-    enemy->onStart();
     enemy->setScale(1);
     enemy->setStamina(stamina);
     enemy->setStartStamina(stamina);
@@ -509,8 +507,11 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
         enemy->setWeapon(weaponType);
     }
 
-    if (emitter != nullptr) {
-        LevelLoader::setProjectileEmitterForEnemy(emitter, enemy);
+    if (cJSON_GetObjectItemCaseSensitive(enemyJSON, "emitter") != nullptr) {
+        cJSON *currentEmitter;
+        cJSON_ArrayForEach(currentEmitter, cJSON_GetObjectItemCaseSensitive(enemyJSON, "emitter")) {
+            LevelLoader::addProjectileEmitterToEnemy(currentEmitter, enemy);
+        }
     }
 
     if (cJSON_GetObjectItemCaseSensitive(enemyJSON, "messages") != nullptr) {
@@ -519,6 +520,7 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
             parseMessageJSON(currentMessage, enemy);
         }
     }
+    enemy->onStart();
 }
 
 void LevelLoader::setBehaviorFromJSON(cJSON *motion, Object3D *enemy, float depth)
@@ -647,7 +649,7 @@ void LevelLoader::addLasersForEnemy(cJSON *laser, EnemyGhost *enemy)
     ));
 }
 
-void LevelLoader::setProjectileEmitterForEnemy(cJSON *emitter, EnemyGhost *enemy)
+void LevelLoader::addProjectileEmitterToEnemy(cJSON *emitter, EnemyGhost *enemy)
 {
     cJSON *rotation = cJSON_GetObjectItemCaseSensitive(emitter, "rotation");
     cJSON *rotationFrame = cJSON_GetObjectItemCaseSensitive(emitter, "rotationFrame");
@@ -655,6 +657,7 @@ void LevelLoader::setProjectileEmitterForEnemy(cJSON *emitter, EnemyGhost *enemy
 
     auto projectileEmitter = new AmmoProjectileBodyEmitter(
         (ProjectileBodyEmmitterType) type,
+        parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(emitter, "offset")),
         (float) cJSON_GetObjectItemCaseSensitive(emitter, "cadenceTime")->valuedouble,
         (bool) cJSON_GetObjectItemCaseSensitive(emitter, "stop")->valueint,
         (float) cJSON_GetObjectItemCaseSensitive(emitter, "stopDuration")->valuedouble,
@@ -680,7 +683,7 @@ void LevelLoader::setProjectileEmitterForEnemy(cJSON *emitter, EnemyGhost *enemy
 
     projectileEmitter->setLabel(Brakeza3D::uniqueObjectLabel("bossProjectileEmitter"));
 
-    enemy->setProjectileEmitter(projectileEmitter);
+    enemy->addProjectileEmitter(projectileEmitter);
 }
 
 Vertex3D LevelLoader::getVertex3DFromJSONPosition(cJSON *positionJSON, float depth)

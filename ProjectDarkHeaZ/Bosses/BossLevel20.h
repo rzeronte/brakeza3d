@@ -7,12 +7,29 @@
 
 
 #include "BossEnemy.h"
+#include "../Behaviors/EnemyBehaviorPath.h"
+#include "../Behaviors/EnemyBehaviorPatrol.h"
 
 class BossLevel20 : public BossEnemy {
-    Counter changePhase;
+    Bosses10Phase phase;
 
+    EnemyBehaviorPath *behaviorPhaseOne;
+    EnemyBehaviorPath *behaviorPhaseTwo;
+    float progress;
+
+    Counter counter;
+    M3 r1;
+    M3 r2;
+    M3 r3;
 public:
+    BossLevel20();
+
     void onUpdate() override;
+    void invertPhase();
+
+    void setEmitterIndexEnabled(int i, bool value);
+
+    void onStart() override;
 };
 
 

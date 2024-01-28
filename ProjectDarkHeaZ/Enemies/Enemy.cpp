@@ -93,7 +93,29 @@ void Enemy::setAvatarHud(Image *avatarHud) {
     Enemy::avatarHud = avatarHud;
 }
 
-
 LightPoint3D *Enemy::getLight() const {
     return light;
+}
+
+std::vector<AmmoProjectileBodyEmitter *> *Enemy::getProjectileEmitters() {
+    return &projectileEmitters;
+}
+
+void Enemy::addProjectileEmitter(AmmoProjectileBodyEmitter *emitter)
+{
+    projectileEmitters.push_back(emitter);
+}
+
+void Enemy::updateEmitters()
+{
+    for (auto e: projectileEmitters) {
+        e->onUpdate();
+    }
+}
+
+void Enemy::setEmittersEnabled(bool value) {
+    for (auto e: projectileEmitters) {
+        e->setEnabled(value);
+        e->setActive(value);
+    }
 }

@@ -73,6 +73,8 @@ public:
     float m[9];
 
     static M3 arbitraryAxis(Vertex3D A, float degrees);
+
+    static M3 interpolateLinear(const M3 &m1, const M3 &m2, float t);
 };
 
 

@@ -60,7 +60,8 @@
         "enableLights": false,
         "color": { "r": 255, "g": 255, "b": 0 }
       },
-      "emitter": {
+      "emitter": [{
+        "offset": { "x": 0, "y": 0, "z": 0 },
         "rotation": { "x": 90, "y": 0, "z": 0},
         "rotationFrame": {"x": 0, "y": -1, "z": 0},
         "cadenceTime": 0.30,
@@ -69,7 +70,7 @@
         "stopDuration": 2,
         "stopEvery": 4,
         "color": { "r": 255, "g": 0, "b": 0 }
-      }
+      }]
     },
     {
       "name": "RedBallLaser",
@@ -116,7 +117,8 @@
         "enableLights": false,
         "color": { "r": 255, "g": 255, "b": 0 }
       },
-      "emitter": {
+      "emitter": [{
+        "offset": { "x": 0, "y": 0, "z": 0 },
         "rotation": { "x": 90, "y": 0, "z": 0},
         "rotationFrame": {"x": 0, "y": 1, "z": 0},
         "cadenceTime": 0.30,
@@ -125,7 +127,7 @@
         "stopDuration": 2,
         "stopEvery": 4,
         "color": { "r": 144, "g": 0, "b": 0 }
-      }
+      }]
     }
   ],
   "items": [

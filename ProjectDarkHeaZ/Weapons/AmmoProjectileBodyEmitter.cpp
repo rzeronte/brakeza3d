@@ -4,6 +4,7 @@
 
 AmmoProjectileBodyEmitter::AmmoProjectileBodyEmitter(
     ProjectileBodyEmmitterType type,
+    Vertex3D offsetPosition,
     float step,
     bool stop,
     float stopDuration,
@@ -14,6 +15,7 @@ AmmoProjectileBodyEmitter::AmmoProjectileBodyEmitter(
 :
     counter(Counter(step)),
     active(false),
+    offsetPosition(offsetPosition),
     stop(stop),
     weaponType(weaponType),
     counterStopDuration(Counter(stopDuration)),
@@ -112,7 +114,7 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
         this,
         weaponType,
         M3::getMatrixIdentity(),
-        Vertex3D(0.5, 0.5, 0.5),
+        Vertex3D(0.25f, 0.25f, 0.25f),
         this->AxisForward().getNormalize(),
         weaponType->getDamage(),
         (float) weaponType->getSpeed(),
@@ -186,5 +188,9 @@ void AmmoProjectileBodyEmitter::launchCircleLaser()
         setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(0, 360.0f/(float) shoots, 0));
         launchUniqueLaser();
     }
+}
+
+const Vertex3D &AmmoProjectileBodyEmitter::getOffsetPosition() const {
+    return offsetPosition;
 }
 

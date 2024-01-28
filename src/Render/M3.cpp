@@ -246,3 +246,15 @@ void M3::setZ(float x, float y, float z) {
     m[7] = y;
     m[8] = z;
 }
+
+M3 M3::interpolateLinear(const M3& m1, const M3& m2, float t)
+{
+    t = std::fmax(0, std::fmin(1, t));  // Asegurar que t está en el rango [0, 1]
+
+    M3 result;
+    for (int i = 0; i < 9; ++i) {
+        result.m[i] = (1 - t) * m1.m[i] + t * m2.m[i];
+    }
+
+    return result;
+}

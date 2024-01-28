@@ -180,6 +180,7 @@
       "avatarHud": "avatars/14.png",
       "position": { "x": 85,  "y": 15 },
       "model": "energy_ball.fbx",
+      "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
       "animated": true,
       "stamina": 600,

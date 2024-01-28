@@ -18,7 +18,6 @@
 class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy, public LivingObject, public RotatableToTarget, public ExplotableObject {
 private:
     Counter counterStuck;
-    AmmoProjectileBodyEmitter *projectileEmitter;
 
     ParticleEmitter *particleEmitter;
     Vertex3D particlesEngineOffset;
@@ -58,11 +57,7 @@ public:
 
     void updateLasers();
 
-    void setProjectileEmitter(AmmoProjectileBodyEmitter *emitter);
-
     Object3D *getTarget();
-
-    [[nodiscard]] AmmoProjectileBodyEmitter *getProjectileEmitter() const;
 
     void handleDie();
 
@@ -79,6 +74,8 @@ public:
     std::vector<EnemyDialog *> &getDialogs();
 
     void drawImGuiProperties() override;
+
+    void updateEmitters();
 };
 
 

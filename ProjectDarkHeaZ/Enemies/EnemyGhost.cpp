@@ -8,7 +8,6 @@ EnemyGhost::EnemyGhost()
     LivingObject(this),
     RotatableToTarget(ComponentsManager::get()->getComponentGame()->getPlayer(), this, 1.0f),
     counterStuck(Counter(5)),
-    projectileEmitter(nullptr),
     particleEmitter (new ParticleEmitter(
         ParticleEmitterState::DEFAULT,
         nullptr,
@@ -70,12 +69,11 @@ void EnemyGhost::onUpdate()
         playerState == PlayerState::LIVE &&
         componentGame->getGameState() == EngineSetup::GAMING
     ) {
-        if (projectileEmitter != nullptr) {
-            projectileEmitter->setPosition(getPosition());
-            projectileEmitter->onUpdate();
-        }
         shoot(getTarget());
     }
+
+    updateEmitters();
+
     updateLasers();
 
     updateLight();
@@ -109,9 +107,9 @@ void EnemyGhost::postUpdate()
         counterLight.setEnabled(false);
     }
 
-    if (projectileEmitter != nullptr) {
+    /*if (projectileEmitter != nullptr) {
         projectileEmitter->postUpdate();
-    }
+    }*/
 
     if (isStuck()) {
         counterStuck.update();
@@ -344,16 +342,6 @@ Object3D *EnemyGhost::getTarget()
     return game->getPlayer();
 }
 
-void EnemyGhost::setProjectileEmitter(AmmoProjectileBodyEmitter *emitter)
-{
-    EnemyGhost::projectileEmitter = emitter;
-}
-
-AmmoProjectileBodyEmitter *EnemyGhost::getProjectileEmitter() const
-{
-    return projectileEmitter;
-}
-
 void EnemyGhost::addFixedLaser(ProjectileRay *ray)
 {
     fixedLasers.push_back(ray);
@@ -418,5 +406,14 @@ void EnemyGhost::drawImGuiProperties()
                 ImGui::TreePop();
             }
         }
+    }
+}
+
+void EnemyGhost::updateEmitters()
+{
+    Enemy::updateEmitters();
+
+    for (auto e: projectileEmitters) {
+        e->setPosition(getPosition() + e->getOffsetPosition());
     }
 }

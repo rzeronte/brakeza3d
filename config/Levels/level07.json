@@ -93,6 +93,7 @@
       "avatarHud": "avatars/empty.png",
       "position": { "x": 50, "y": 5 },
       "model": "spaceships/Executioner.fbx",
+      "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
       "animated": true,
       "stamina": 1000,

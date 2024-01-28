@@ -74,7 +74,7 @@ void ParticleEmitter::onUpdate()
 {
     Object3D::onUpdate();
 
-    if (isRemoved() || !isActive()) return;
+    if (isRemoved() || !isActive() || !isEnabled()) return;
 
     if (parent != nullptr && !parent->isRemoved()) {
         setPosition(parent->getPosition());

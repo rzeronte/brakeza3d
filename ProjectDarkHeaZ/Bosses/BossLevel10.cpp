@@ -6,9 +6,6 @@ BossLevel10::BossLevel10()
 :
     phase(BOSS10_PHASE_ONE)
 {
-    auto game = ComponentsManager::get()->getComponentGame();
-    auto levelLoader = game->getLevelLoader();
-
     behaviorPhaseTwo = new EnemyBehaviorPatrol(
         LevelLoader::getPositionFromScreenPoint(getScreenPoint(50, 10), Z_COORDINATE_GAMEPLAY),
         LevelLoader::getPositionFromScreenPoint(getScreenPoint(50, 50), Z_COORDINATE_GAMEPLAY),

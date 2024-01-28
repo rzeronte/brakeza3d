@@ -69,14 +69,14 @@ void BossLevel15::invertPhase()
 {
     if (phase == BOSS10_PHASE_ONE) {
         phase = BOSS10_PHASE_TWO;
-        getProjectileEmitter()->setEnabled(false);
+        setEmittersEnabled(false);
         setBehavior(nullptr);
         return;
     }
 
     if (phase == BOSS10_PHASE_TWO) {
         phase = BOSS10_PHASE_ONE;
-        getProjectileEmitter()->setEnabled(true);
+        setEmittersEnabled(true);
         setBehavior(behaviorPhaseOne);
 
         return;

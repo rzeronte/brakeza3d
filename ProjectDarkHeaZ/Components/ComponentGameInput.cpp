@@ -76,12 +76,13 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
 void ComponentGameInput::updateWeaponStatus(SDL_Event *event)
 {
     auto game = ComponentsManager::get()->getComponentGame();
+    auto input = ComponentsManager::get()->getComponentInput();
     auto player = game->getPlayer();
 
-    const bool releasedFireController = event->type == SDL_CONTROLLERBUTTONUP && event->cbutton.button == SDL_CONTROLLER_BUTTON_A;
+    const bool releasedFireController = input->getControllerAxisTriggerRight() < getControllerAxisThreshold();
     const bool releaseFireKeyboard = event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_SPACE;
 
-    const bool pressedFireController = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_A;
+    const bool pressedFireController = !releasedFireController;
     const bool pressedFireKeyboard = event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_SPACE;
 
     auto weapon = player->getWeapon();
@@ -217,6 +218,7 @@ void ComponentGameInput::handleFire() const
     auto player = componentGame->getPlayer();
 
     Uint8 *keyboard = componentInput->getKeyboard();
+    Logging::Message("%f ", componentInput->getControllerAxisTriggerRight());
     if (keyboard[SDL_SCANCODE_SPACE] || componentInput->getControllerAxisTriggerRight() > this->controllerAxisThreshold) {
         // controller intensity: componentInput->getControllerAxisTriggerRight()
         player->shoot(2.5f);

@@ -9,6 +9,7 @@
 #include "../../include/Render/M3.h"
 #include "../Weapons/Weapon.h"
 #include "../Items/LivingObject.h"
+#include "../Weapons/AmmoProjectileBodyEmitter.h"
 
 typedef enum {
     ENEMY_STATE_STOP, ENEMY_STATE_DIE
@@ -29,6 +30,7 @@ protected:
     int soundChannel;
     bool rewards;
     Vertex3D lightPositionOffset;
+    std::vector<AmmoProjectileBodyEmitter*> projectileEmitters;
 
 public:
 
@@ -70,7 +72,13 @@ public:
 
     [[nodiscard]] LightPoint3D *getLight() const;
 
+    std::vector<AmmoProjectileBodyEmitter *> *getProjectileEmitters();
 
+    void addProjectileEmitter(AmmoProjectileBodyEmitter *emitter);
+
+    virtual void updateEmitters();
+
+    void setEmittersEnabled(bool value);
 };
 
 

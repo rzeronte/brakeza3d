@@ -140,7 +140,7 @@ public:
     static Point2D parsePositionJSON(cJSON *positionJSON);
     static Vertex3D parseVertex3DJSON(cJSON *vertex3DJSON);
 
-    static void setProjectileEmitterForEnemy(cJSON *emitter, EnemyGhost *enemy);
+    static void addProjectileEmitterToEnemy(cJSON *emitter, EnemyGhost *enemy);
 
     static void setLasersForEnemy(cJSON *lasers, EnemyGhost *enemy);
     static void addLasersForEnemy(cJSON *laser, EnemyGhost *enemy);

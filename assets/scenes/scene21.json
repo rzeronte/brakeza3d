@@ -1,9 +1,9 @@
 {
 	"ads":	{
-		"direction": {
-			"x":	0.0,
-			"y":	0.0,
-			"z":	1.0
+		"direction":	{
+			"x":	0.045854397118091583,
+			"y":	-0.099651657044887543,
+			"z":	1
 		},
 		"diffuse":	{
 			"x":	0.4754098653793335,
@@ -22,34 +22,152 @@
 		}
 	},
 	"objects":	[{
-		"name":	"city",
-		"scale":	1.3700000047683716,
-		"stencilBufferEnabled":	false,
-		"transparent":	false,
-		"position":	{
-			"x":	-4.4525699615478516,
-			"y":	1.7422741651535034,
-			"z":	37.533870697021484
-		},
-		"rotation":	{
-			"x":	180,
-			"y":	0,
-			"z":	0
-		},
-		"rotationFrameEnabled":	false,
-		"scripts":	[],
-		"shaders":	[],
-		"model":	"../assets/models//city.fbx",
-		"enableLights":	false,
-		"type":	"Mesh3D"
-	}],
+			"name":	"city",
+			"scale":	1.8999999761581421,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-4.5464596748352051,
+				"y":	-4.8286070823669434,
+				"z":	69.233871459960938
+			},
+			"rotation":	{
+				"x":	108.00000762939453,
+				"y":	0.89999997615814209,
+				"z":	4.6999998092651367
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"MoveUpDownObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.0099999997764825821
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//city.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"new_object_45",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-0.87585932016372681,
+				"y":	0.80246782302856445,
+				"z":	32.611766815185547
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"ambient":	{
+				"x":	0.05000000074505806,
+				"y":	0.05000000074505806,
+				"z":	0.05000000074505806
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.019999999552965164,
+			"linear":	0.090000003576278687,
+			"quadratic":	0.032000001519918442,
+			"type":	"LightPoint3D"
+		}, {
+			"name":	"new_object_67",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	2.5941429138183594,
+				"y":	-9.907526969909668,
+				"z":	67.511764526367188
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"ambient":	{
+				"x":	0.05000000074505806,
+				"y":	0.05000000074505806,
+				"z":	0.05000000074505806
+			},
+			"diffuse":	{
+				"x":	0.91803288459777832,
+				"y":	1,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	-0.0099999997764825821,
+			"linear":	0.090000003576278687,
+			"quadratic":	0.032000001519918442,
+			"type":	"LightPoint3D"
+		}, {
+			"name":	"new_object_54",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-18.305875778198242,
+				"y":	6.5954937934875488,
+				"z":	48.411769866943359
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"ambient":	{
+				"x":	1,
+				"y":	0.004098355770111084,
+				"z":	0.68980121612548828
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0,
+				"z":	0.93442630767822266
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.039999999105930328,
+			"linear":	0.070000000298023224,
+			"quadratic":	0.032000001519918442,
+			"type":	"LightPoint3D"
+		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	0.09473785012960434,
-			"y":	0.070486597716808319,
-			"z":	0.03387116193771362
+			"x":	0.069999992847442627,
+			"y":	-0.10999998450279236,
+			"z":	0.21176727116107941
 		},
 		"rotation":	{
 			"x":	0,

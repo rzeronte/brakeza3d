@@ -55,7 +55,7 @@ public:
 
     [[nodiscard]] float getControllerAxisThreshold() const;
 
-    static void updateWeaponStatus(SDL_Event *event);
+    void updateWeaponStatus(SDL_Event *event);
 
     static void handleShield(SDL_Event *event);
 };

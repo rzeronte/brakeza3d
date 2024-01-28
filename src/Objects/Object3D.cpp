@@ -163,6 +163,10 @@ void Object3D::onUpdate()
         if (a->isEnabled()) a->onUpdate();
     }
 
+    if (isRotationFrameEnabled()) {
+        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));
+    }
+
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     distanceToCamera = camera->getPosition().distance(getPosition());
@@ -198,10 +202,6 @@ void Object3D::postUpdate()
 
     for (auto a: attached) {
         if (a->isEnabled())  a->postUpdate();
-    }
-
-    if (isRotationFrameEnabled()) {
-        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));
     }
 
     if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {

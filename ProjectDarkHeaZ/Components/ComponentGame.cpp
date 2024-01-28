@@ -2,6 +2,7 @@
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
 #include "../Items/ItemBombGhost.h"
+#include "../Bosses/BossEnemy.h"
 
 ComponentGame::ComponentGame()
 :
@@ -837,19 +838,21 @@ void ComponentGame::setEnemyWeaponsEnabled(bool value)
 {
     for (auto &object : Brakeza3D::get()->getSceneObjects()) {
         auto enemy = dynamic_cast<EnemyGhost *> (object);
+        auto boss = dynamic_cast<BossEnemy *> (object);
+
         auto projectileRay = dynamic_cast<ProjectileRay *> (object);
 
         if (projectileRay != nullptr) {
             projectileRay->setEnabled(true);
         }
 
+        if (boss != nullptr) continue;
+
         if (enemy != nullptr) {
             if (enemy->getWeapon() != nullptr) {
                 enemy->getWeapon()->getCounterCadence()->setEnabled(value);
             }
-            if (enemy->getProjectileEmitter() != nullptr) {
-                enemy->getProjectileEmitter()->setActive(value);
-            }
+            enemy->setEmittersEnabled(value);
         }
     }
 }

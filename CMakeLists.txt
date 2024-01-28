@@ -244,7 +244,7 @@ add_executable(Brakeza3D
 
         ProjectDarkHeaZ/Bosses/BossEnemy.h ProjectDarkHeaZ/Bosses/BossEnemy.cpp
         ProjectDarkHeaZ/Bosses/BossLevel10.h ProjectDarkHeaZ/Bosses/BossLevel10.cpp
-        ProjectDarkHeaZ/Bosses/BossLevel20.h ProjectDarkHeaZ/Bosses/BossLevel20.cpp
+        ProjectDarkHeaZ/Bosses/BossLevel15.h ProjectDarkHeaZ/Bosses/BossLevel15.cpp
         ProjectDarkHeaZ/Bosses/BossLevel30.h ProjectDarkHeaZ/Bosses/BossLevel30.cpp
         ProjectDarkHeaZ/Common/PaletteColors.h ProjectDarkHeaZ/Items/SalvageSpaceship.cpp
         ProjectDarkHeaZ/Items/SalvageSpaceship.h
@@ -286,6 +286,10 @@ add_executable(Brakeza3D
         ProjectDarkHeaZ/Weapons/WeaponShield.h
         ProjectDarkHeaZ/Weapons/WeaponBomb.cpp
         ProjectDarkHeaZ/Weapons/WeaponBomb.h
+        ProjectDarkHeaZ/Bosses/BossLevel25.cpp
+        ProjectDarkHeaZ/Bosses/BossLevel25.h
+        ProjectDarkHeaZ/Bosses/BossLevel20.cpp
+        ProjectDarkHeaZ/Bosses/BossLevel20.h
 )
 
 target_link_libraries(Brakeza3D

@@ -47,7 +47,8 @@
         "enableLights": false,
         "color": { "r": 255, "g": 255, "b": 0 }
       },
-      "emitter": {
+      "emitter": [{
+        "offset": { "x": 0, "y": 0, "z": 0 },
         "rotation": { "x": 90, "y": 0, "z": 0 },
         "rotationFrame": { "x": 0, "y": 316, "z": 0 },
         "cadenceTime": 1,
@@ -56,7 +57,7 @@
         "stopDuration": 0,
         "stopEvery": 9,
         "color": { "r": 255, "g": 255, "b": 0 }
-      }
+      }]
     },
     {
       "name": "Colossus",
@@ -97,7 +98,8 @@
         "enableLights": false,
         "color": { "r": 255, "g": 0, "b": 0 }
       },
-      "emitter": {
+      "emitter": [{
+        "offset": { "x": 0, "y": 0, "z": 0 },
         "rotation": { "x": 90, "y": 0, "z": 0 },
         "rotationFrame": { "x": 0, "y": 316, "z": 0 },
         "cadenceTime": 1,
@@ -106,44 +108,7 @@
         "stopDuration": 0,
         "stopEvery": 9,
         "color": { "r": 255, "g": 255, "b": 0 }
-      }
-    },
-    {
-      "name": "Shocker",
-      "avatar": "avatars/14.png",
-      "avatarHud": "avatars/14.png",
-      "position": { "x": 50,  "y": 15 },
-      "model": "spaceships/Imperial.fbx",
-      "size": { "x": 1, "y": 1,  "z": 1 },
-      "enableLights": true,
-      "animated": true,
-      "stamina": 1500,
-      "reward": true,
-      "motion": {
-        "type": "none"
-      },
-      "weapon": {
-        "index": 0,
-        "available": true,
-        "name": "Instant",
-        "damage": 20,
-        "amount": 1000,
-        "startAmount": 10000,
-        "speed": 1,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 0.50,
-        "stop": false,
-        "stopDuration": 1,
-        "stopEvery": 1,
-        "type": "projectile",
-        "icon": "icons/weapon_projectile.png",
-        "modelProjectile": "empty.fbx",
-        "model": "item_weapon_01.fbx",
-        "flatTexture": true,
-        "enableLights": false,
-        "color": { "r": 255, "g": 255, "b": 0 }
-      }
+      }]
     },
     {
       "name": "RedBallLaser",

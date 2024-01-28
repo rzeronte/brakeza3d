@@ -1,7 +1,6 @@
 {
   "name": "23",
   "scene": "scene23.json",
-  "music": "musicLevels01",
   "backgroundImage": "levels/bg_05.png",
   "foregroundImage": "foregrounds/03.png",
   "allowEnergyShield": true,
@@ -101,7 +100,10 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": "rotation"
+        "type": "patrol",
+        "from": { "x": 15, "y": 80 },
+        "to": { "x": 45, "y": 80 },
+        "speed": 1
       },
       "lasers": [
       ],
@@ -181,7 +183,10 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": "rotation"
+        "type": "patrol",
+        "from": { "x": 90, "y": 80 },
+        "to": { "x": 45, "y": 80 },
+        "speed": 1
       },
       "lasers": [
       ],
