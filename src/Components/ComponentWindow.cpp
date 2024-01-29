@@ -100,6 +100,8 @@ void ComponentWindow::initWindow()
         );
 
         context = SDL_GL_CreateContext(window);
+        SDL_GL_MakeCurrent(window, context);
+
 
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1 );
@@ -490,8 +492,6 @@ void ComponentWindow::ImGuiInitialize(const std::string& configFile) {
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-
-    ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForOpenGL(window, context);

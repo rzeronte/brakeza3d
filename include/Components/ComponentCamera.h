@@ -55,10 +55,6 @@ public:
 
     [[nodiscard]] bool isFreeLookEnabled() const;
 
-    const CameraData &getCameraData() const;
-
-    const FrustumData &getFrustumData() const;
-
     bool freeLook;
 };
 

@@ -80,11 +80,3 @@ bool &ComponentCamera::isAutoScroll(){
 void ComponentCamera::setAutoScroll(bool autoScroll) {
     ComponentCamera::autoScroll = autoScroll;
 }
-
-const CameraData &ComponentCamera::getCameraData() const {
-    return cameraData;
-}
-
-const FrustumData &ComponentCamera::getFrustumData() const {
-    return frustumData;
-}
