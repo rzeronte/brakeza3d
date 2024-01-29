@@ -107,12 +107,13 @@ void SceneLoader::loadScene(const std::string& filename)
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
         cJSON *currentScript;
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
-            std::string fileName = (const char*) currentScript->valuestring;
+            std::string fileName = (const char*) cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
             ComponentsManager::get()->getComponentRender()->addLUAScript(
                 new ScriptLUA(fileName, ScriptLUA::dataTypesFileFor(fileName))
             );
         }
-    }}
+    }
+}
 
 Vertex3D SceneLoader::parseVertex3DJSON(cJSON *vertex3DJSON)
 {

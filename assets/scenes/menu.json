@@ -137,13 +137,13 @@
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[{
-					"name":	"MoveForwardObject.lua",
-					"types":	[{
-							"name":	"speed",
-							"type":	"float",
-							"value":	0.0020000000949949026
-						}]
-				}],
+				"name":	"MoveForwardObject.lua",
+				"types":	[{
+					"name":	"speed",
+					"type":	"float",
+					"value":	0.0020000000949949026
+				}]
+			}],
 			"shaders":	[],
 			"model":	"../assets/models//spaceships/spaceship_gray_04.fbx",
 			"enableLights":	false,
@@ -169,7 +169,7 @@
 					"types":	[{
 							"name":	"speed",
 							"type":	"float",
-							"value":	0.0025
+							"value":	0.0019999997764825821
 						}]
 				}],
 			"shaders":	[],

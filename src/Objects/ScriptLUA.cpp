@@ -45,14 +45,13 @@ void ScriptLUA::runEnvironment(sol::environment &environment, const std::string&
 
     try {
         lua.script(content, environment);
-        if (!environment[func.c_str()]) {
-            return;
-        }
+
         sol::function f = environment[func];
         sol::function_result result = f();
+
         if (!result.valid()) {
             sol::error err = result;
-            Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), err.what());
+            Logging::Message("LUA fail func error on file %s: %s: %s", scriptFilename.c_str(), err.what(), func.c_str());
         }
     } catch (const sol::error& e) {
         Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), e.what());
@@ -66,9 +65,7 @@ void ScriptLUA::runGlobal(const std::string& func) const
 
     try {
         lua.script(content);
-        if (!lua[func]) {
-            return;
-        }
+
         sol::function f = lua[func];
         sol::function_result result = f();
 
@@ -156,8 +153,8 @@ void ScriptLUA::reloadGlobals()
 
     sol::state &lua = LUAManager::get()->getLua();
     for (const auto& type : dataTypes) {
-        std::cout << "Setting GLOBAL variable for script '(" << scriptFilename.c_str() << ", " << type.name.c_str() << std::endl;
-        Logging::Message("Setting GLOBAL variable for script '%s' ('%s' => '%s')", scriptFilename.c_str(), type.name.c_str());
+        std::cout << "Setting GLOBAL variable for script '(" << scriptFilename.c_str() << ", " << type.name.c_str() << ", " << type.type.c_str() << ")"<< std::endl;
+        Logging::Message("Setting GLOBAL variable for script '%s' ('%s' => '%s')", scriptFilename.c_str(), type.name.c_str(), type.type.c_str());
         lua[type.name] = type.value;
     }
 }

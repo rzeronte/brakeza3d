@@ -137,10 +137,10 @@ struct GUIWidgetProjectDarkHeaZ
                         ComponentsManager::get()->getComponentGame()->reloadLevel(n);
                     }
                 }
+                ImGui::TreePop();
             }
-
-            ImGui::End();
         }
+        ImGui::End();
     }
 };
 #endif //BRAKEZA3D_GUIWIDGETPROJECTDARKHEAZ_H

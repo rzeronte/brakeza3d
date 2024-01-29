@@ -50,8 +50,6 @@ public:
 
     void AssimpLoadMesh(aiMesh *mesh);
 
-    void sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles);
-
     void updateBoundingBox();
 
     void clone(Mesh3D *source);

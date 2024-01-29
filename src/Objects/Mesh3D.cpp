@@ -17,14 +17,8 @@ Mesh3D::Mesh3D()
     render(true)
 {
     decal = false;
-    luaEnvironment.set("this", this);
-}
+    luaEnvironment["this"] = this;
 
-void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles)
-{
-    for (auto & modelTriangle : this->modelTriangles) {
-        frameTriangles->push_back(modelTriangle);
-    }
 }
 
 void Mesh3D::updateBoundingBox()

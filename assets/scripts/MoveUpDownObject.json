@@ -1,5 +1,5 @@
 {
-	"name":	"MoveMenuStationUpDown.lua",
+	"name":	"MoveUpDownObject.lua",
 	"types":	[
 		{
 			"name":	"speed",

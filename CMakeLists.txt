@@ -303,7 +303,6 @@ target_link_libraries(Brakeza3D
     BulletCollision
     LinearMath
     assimp
-    OpenCL
     lua5.2
     ${OPENGL_LIBRARIES}
 )

@@ -32,11 +32,11 @@ Object3D::Object3D() :
     belongToScene(false),
     multiScene(false),
     luaEnvironment(sol::environment(
-            LUAManager::get()->getLua(),
-            sol::create, LUAManager::get()->getLua().globals())
+        LUAManager::get()->getLua(),
+        sol::create, LUAManager::get()->getLua().globals())
     )
 {
-    luaEnvironment.set("this", this);
+    luaEnvironment["this"] = this;
     timer.start();
 }
 
