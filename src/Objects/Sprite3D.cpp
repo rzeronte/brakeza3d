@@ -30,6 +30,7 @@ void Sprite3D::onUpdate()
         billboard->uvbuffer,
         billboard->normalbuffer,
         (int) billboard->vertices.size(),
+        1.0f,
         ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 

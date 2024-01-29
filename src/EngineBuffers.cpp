@@ -26,13 +26,14 @@ sol::state &LUAManager::getLua()
 
 void LUAManager::initLUATypes()
 {
-    lua.open_libraries(sol::lib::base);
+    Logging::Message("Init LUA Global types");
+
+    lua.open_libraries(sol::lib::base, sol::lib::math);
 
     LUAIntegration(lua);
 
     lua["brakeza"] = Brakeza3D::get();
     lua["componentsManager"] = ComponentsManager::get();
-    lua["context"] = sharedLuaContext;
     lua.set_function("print", &Logging::Message);
 }
 

@@ -40,10 +40,12 @@ class ShaderOpenGLRender: public ShaderOpenGL {
     GLint materialTextureDiffuseUniform;
     GLint materialTextureSpecularUniform;
     GLint materialShininessUniform;
+    GLint alphaUniform;
 
 public:
     ShaderOpenGLRender();
-    void render(Object3D *o, GLint textureID, GLint textureSpecularID, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size, GLuint framebuffer);
+
+    void render(Object3D *o, GLint textureID, GLint textureSpecularID, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size, float alpha, GLuint framebuffer);
 
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer) ;
 

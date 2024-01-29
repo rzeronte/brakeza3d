@@ -25,18 +25,18 @@ Object3D::Object3D() :
     rotYFrame(0),
     rotZFrame(0),
     alphaEnabled(false),
-    alpha(0),
+    alpha(1.0f),
     enableLights(false),
     scale(1),
     rotationFrameEnabled(false),
     belongToScene(false),
     multiScene(false),
     luaEnvironment(sol::environment(
-            LUAManager::get()->getLua(),
-            sol::create, LUAManager::get()->getLua().globals())
+        LUAManager::get()->getLua(),
+        sol::create, LUAManager::get()->getLua().globals())
     )
 {
-    luaEnvironment.set("this", this);
+    luaEnvironment["this"] = this;
     timer.start();
 }
 
@@ -163,6 +163,10 @@ void Object3D::onUpdate()
         if (a->isEnabled()) a->onUpdate();
     }
 
+    if (isRotationFrameEnabled()) {
+        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));
+    }
+
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     distanceToCamera = camera->getPosition().distance(getPosition());
@@ -198,10 +202,6 @@ void Object3D::postUpdate()
 
     for (auto a: attached) {
         if (a->isEnabled())  a->postUpdate();
-    }
-
-    if (isRotationFrameEnabled()) {
-        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));
     }
 
     if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
@@ -457,15 +457,11 @@ void Object3D::drawImGuiProperties()
     ImGui::Separator();
 
     if (ImGui::TreeNode("Alpha")) {
-        ImGui::Checkbox("Enable Alpha", &isAlphaEnabled());
+        const float range_alpha_min = 0;
+        const float range_alpha_max = 1;
+        const float range_alpha_sensibility = 0.01;
 
-        if (isAlphaEnabled()) {
-            const float range_alpha_min = 0;
-            const float range_alpha_max = 255;
-            const float range_alpha_sensibility = 1;
-
-            ImGui::DragScalar("Alpha", ImGuiDataType_Float, &getAlpha(), range_alpha_sensibility, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
-        }
+        ImGui::DragScalar("Alpha", ImGuiDataType_Float, &getAlpha(), range_alpha_sensibility, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
 
         ImGui::TreePop();
     }

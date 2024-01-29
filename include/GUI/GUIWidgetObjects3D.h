@@ -57,7 +57,6 @@ struct GUIWidgetObjects3D {
                 if (ImGui::BeginDragDropTarget()) {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
                         Logging::Message("Dropping script (%s) in %s", payload->Data, o->getLabel().c_str());
-                        IM_ASSERT(payload->DataSize == sizeof(int));
                         o->attachScript(new ScriptLUA(
                                 std::string((const char*) payload->Data),
                                 ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
@@ -65,7 +64,6 @@ struct GUIWidgetObjects3D {
                     }
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MESH3D_SHADER_ITEM")) {
                         Logging::Message("Dropping shader (%s) in %s", payload->Data, o->getLabel().c_str());
-                        IM_ASSERT(payload->DataSize == sizeof(int));
                         int selection = std::stoi((char*) payload->Data);
                         switch(selection) {
                             case 2: {

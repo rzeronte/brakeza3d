@@ -17,14 +17,8 @@ Mesh3D::Mesh3D()
     render(true)
 {
     decal = false;
-    luaEnvironment.set("this", this);
-}
+    luaEnvironment["this"] = this;
 
-void Mesh3D::sendTrianglesToFrame(std::vector<Triangle *> *frameTriangles)
-{
-    for (auto & modelTriangle : this->modelTriangles) {
-        frameTriangles->push_back(modelTriangle);
-    }
 }
 
 void Mesh3D::updateBoundingBox()
@@ -82,7 +76,6 @@ void Mesh3D::cloneParts(Mesh3D *source, bool isFlatTextureColor, bool isEnableLi
 
 void Mesh3D::clone(Mesh3D *source)
 {
-
     this->modelTextures = source->modelTextures;
     this->modelSpecularTextures = source->modelSpecularTextures;
     this->scale = source->scale;
@@ -458,7 +451,7 @@ Mesh3D *Mesh3D::create() {
 void Mesh3D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    std::string title = "Mesh3D (Triangles: " + std::to_string(getModelTriangles().size()) + ")";
+    std::string title = "Mesh3D (File: " + sourceFile + "Triangles: " + std::to_string(getModelTriangles().size()) + ")";
 
     if (ImGui::TreeNode(title.c_str())) {
         ImGui::Checkbox(std::string("Enable lights").c_str(), &enableLights);

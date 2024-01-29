@@ -75,6 +75,8 @@ struct OCParticlesContext {
         SMOKE_ANGLE_RANGE(smokeAngleRange),
         MIN_VELOCITY(minVelocity),
         MAX_VELOCITY(maxVelocity),
+        MIN_ALPHA(alphaMin),
+        MAX_ALPHA(alphaMax),
         POSITION_NOISE(positionNoise),
         VELOCITY_NOISE(velocityNoise),
         DECELERATION_FACTOR(decelerationFactor)
@@ -125,6 +127,8 @@ struct OCParticlesContext {
     int SMOKE_ANGLE_RANGE;
     int MIN_VELOCITY;
     int MAX_VELOCITY;
+    int MIN_ALPHA;
+    int MAX_ALPHA;
     int POSITION_NOISE;
     int VELOCITY_NOISE;
     float DECELERATION_FACTOR;

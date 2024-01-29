@@ -395,6 +395,7 @@ public:
                 ImGui::Text("Could not open directory");
             }
         }
+        ImGui::End();
     }
 
     void drawMesh3DShaders() {
@@ -517,15 +518,15 @@ public:
         }
         ImGui::End();
 
-
         if (ImGui::Begin("Scene Shaders")) {
             drawCustomShaders();
         }
+        ImGui::End();
 
         if (ImGui::Begin("Mesh3D Shaders")) {
             drawMesh3DShaders();
         }
-
+        ImGui::End();
 
         if (ImGui::Begin("Scenes")) {
             drawScenesFiles();
@@ -551,8 +552,6 @@ public:
                 }
                 ImGui::Text("%d x %d", a->texture->width(), a->texture->height());
                 ImGui::EndGroup();
-
-                ImGui::Separator();
             }
         }
         ImGui::End();

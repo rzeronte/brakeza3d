@@ -51,13 +51,13 @@ void Brakeza3D::mainLoop()
 
     engineTimer.start();
     managerGUI = new GUIManager(sceneObjects);
+    LUAManager::get()->initLUATypes();
     componentsManager->getComponentCollisions()->initBulletSystem();
     componentsManager->getComponentCamera()->setFreeLook(true);
     onStartComponents();
     //LoadDemo();
     componentsManager->getComponentWindow()->ImGuiInitialize(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
     welcomeMessage();
-    LUAManager::get()->initLUATypes();
 
     while (!finish) {
         controlFrameRate();

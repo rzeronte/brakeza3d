@@ -16,10 +16,11 @@
 enum class LUADataType {
     INT,
     FLOAT,
-    VERTEX3D
+    VERTEX3D,
+    STRING
 };
 
-typedef std::variant<int, float, Vertex3D> LUADataValue;
+typedef std::variant<int, float, Vertex3D, const char*> LUADataValue;
 
 struct ScriptLUATypeData {
     ScriptLUATypeData(const char *name, const char *type, LUADataValue value)
