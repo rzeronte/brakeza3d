@@ -49,8 +49,6 @@ void ComponentGameInput::onSDLPollEvent(SDL_Event *event, bool &finish)
 
 void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
 {
-    this->handleCheckPadConnection(event);
-
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
 
     if (state == EngineSetup::GameState::MENU) {
@@ -73,7 +71,7 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
 
     //this->handleZoom(event);
 }
-void ComponentGameInput::updateWeaponStatus(SDL_Event *event)
+void ComponentGameInput::updateWeaponStatus(SDL_Event *event) const
 {
     auto game = ComponentsManager::get()->getComponentGame();
     auto input = ComponentsManager::get()->getComponentInput();
@@ -84,14 +82,24 @@ void ComponentGameInput::updateWeaponStatus(SDL_Event *event)
 
     const bool pressedFireController = !releasedFireController;
     const bool pressedFireKeyboard = event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_SPACE;
-
     auto weapon = player->getWeapon();
-    if (releaseFireKeyboard || releasedFireController) {
-        weapon->setStatus(WeaponStatus::RELEASED);
-    }
 
-    if (pressedFireKeyboard || pressedFireController) {
-        weapon->setStatus(WeaponStatus::PRESSED);
+    if (input->getGameController() == nullptr) {
+        if (releaseFireKeyboard) {
+            weapon->setStatus(WeaponStatus::RELEASED);
+        }
+
+        if (pressedFireKeyboard) {
+            weapon->setStatus(WeaponStatus::PRESSED);
+        }
+    } else {
+        if (releasedFireController) {
+            weapon->setStatus(WeaponStatus::RELEASED);
+        }
+
+        if (pressedFireController) {
+            weapon->setStatus(WeaponStatus::PRESSED);
+        }
     }
 }
 
@@ -213,15 +221,20 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
 
 void ComponentGameInput::handleFire() const
 {
-    auto componentInput = ComponentsManager::get()->getComponentInput();
+    auto input = ComponentsManager::get()->getComponentInput();
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto player = componentGame->getPlayer();
 
-    Uint8 *keyboard = componentInput->getKeyboard();
-    Logging::Message("%f ", componentInput->getControllerAxisTriggerRight());
-    if (keyboard[SDL_SCANCODE_SPACE] || componentInput->getControllerAxisTriggerRight() > this->controllerAxisThreshold) {
-        // controller intensity: componentInput->getControllerAxisTriggerRight()
-        player->shoot(2.5f);
+    if (input->getGameController() == nullptr) {
+        Uint8 *keyboard = input->getKeyboard();
+        if (keyboard[SDL_SCANCODE_SPACE]) {
+            player->shoot(2.5f);
+        }
+    } else {
+        if (input->getControllerAxisTriggerRight() > this->controllerAxisThreshold) {
+            // controller intensity: input->getControllerAxisTriggerRight()
+            player->shoot(2.5f);
+        }
     }
 }
 
@@ -606,15 +619,6 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
 }
 
-void ComponentGameInput::handleCheckPadConnection(SDL_Event *pEvent)
-{
-    if (pEvent->type == SDL_CONTROLLERDEVICEADDED ) {
-        ComponentsManager::get()->getComponentInput()->initJoystick();
-    }
-
-    if (pEvent->type == SDL_CONTROLLERDEVICEREMOVED ) {
-    }
-}
 
 void ComponentGameInput::handleBomb(SDL_Event *event)
 {

@@ -29,7 +29,7 @@ public:
 
     void handleFire() const;
 
-    void handleWeaponSelector(SDL_Event *event);
+    static void handleWeaponSelector(SDL_Event *event);
 
     void handleZoom(SDL_Event *event);
 
@@ -49,13 +49,11 @@ public:
 
     void handlePressKeyGameStates(SDL_Event *event);
 
-    void handleCheckPadConnection(SDL_Event *pEvent);
-
-    void handleBomb(SDL_Event *pEvent);
+    static void handleBomb(SDL_Event *pEvent);
 
     [[nodiscard]] float getControllerAxisThreshold() const;
 
-    void updateWeaponStatus(SDL_Event *event);
+    void updateWeaponStatus(SDL_Event *event) const;
 
     static void handleShield(SDL_Event *event);
 };
