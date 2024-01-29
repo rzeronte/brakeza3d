@@ -1,7 +1,6 @@
 #ifndef BRAKEDA3D_COMPONENTINPUT_H
 #define BRAKEDA3D_COMPONENTINPUT_H
 
-
 #include <SDL2/SDL.h>
 #include "Component.h"
 
@@ -60,7 +59,7 @@ public:
 
     void handleKeyboardMovingCamera() const;
 
-    void handleMouse(SDL_Event *);
+    void handleMouse(SDL_Event *) const;
 
     void handleProjectileDemo(SDL_Event *pEvent);
 
@@ -68,7 +67,7 @@ public:
 
     void updateGamePadStates();
 
-    bool isAnyControllerButtonPressed();
+    [[nodiscard]] bool isAnyControllerButtonPressed() const;
 
     void initJoystick();
     
@@ -114,8 +113,13 @@ public:
 
     void updateKeyboardStates(SDL_Event *event);
 
-    bool isKeyEventDown() const;
-    bool isKeyEventUp() const;
+    [[nodiscard]] bool isKeyEventDown() const;
+
+    [[nodiscard]] bool isKeyEventUp() const;
+
+    [[nodiscard]] _SDL_GameController *getGameController() const;
+
+    void handleCheckPadConnection(SDL_Event *pEvent);
 };
 
 
