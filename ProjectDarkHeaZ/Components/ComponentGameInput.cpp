@@ -429,11 +429,10 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
     const bool isKeyboardAction = event->type == SDL_KEYUP || event->type == SDL_KEYDOWN;
     const float percentageReached =  player->getEnergy() * 100 / player->getStartEnergy();
 
+    const float percentMinToFire = 25;
     if (isKeyboardAction) {
-        if (actionKey && !player->isEnergyShieldEnabled() && percentageReached > 10) {
-            if (!player->isAllowEnergyShield()) {
-                return;
-            }
+        if (actionKey && !player->isEnergyShieldEnabled() && percentageReached > percentMinToFire) {
+            if (!player->isAllowEnergyShield()) return;
 
             player->setEnergyShieldEnabled(true);
             player->updateSpriteEnergyShield();
@@ -448,10 +447,8 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
 
         return;
     }
-    if (triggerLeftOn && !player->isEnergyShieldEnabled()) {
-        if (!player->isAllowEnergyShield()) {
-            return;
-        }
+    if (triggerLeftOn && !player->isEnergyShieldEnabled() && percentageReached > percentMinToFire) {
+        if (!player->isAllowEnergyShield()) return;
 
         player->setEnergyShieldEnabled(true);
         player->updateSpriteEnergyShield();

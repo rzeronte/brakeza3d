@@ -43,7 +43,7 @@ public:
 
     void handleDashMovement(SDL_Event *pEvent);
 
-    void handleEnergyShield(SDL_Event *event);
+    static void handleEnergyShield(SDL_Event *event);
 
     void handleMakeReflection(SDL_Event *event);
 
