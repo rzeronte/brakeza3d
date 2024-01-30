@@ -69,14 +69,12 @@ Currently, I do not compile for Mac, but the project was started on it, so that 
 
 # Brakeza3D - Videos
 
-[![BSP Loader](http://i3.ytimg.com/vi/g_AP3GaFYQs/hqdefault.jpg)](https://youtu.be/g_AP3GaFYQs "BSP Loader")
+![Screenshoot01](https://brakeza.com/wp-content/uploads/2024/01/screenshoot_2024_04.png)
 
-[![Rasterizer](http://i3.ytimg.com/vi/aju_-6ZP7Uo/hqdefault.jpg)](https://youtu.be/aju_-6ZP7Uo "Rasterizer")
+![Screenshoot02](https://brakeza.com/wp-content/uploads/2024/01/screenshoot_2024_03.png)
 
-[![Rasterizer](http://i3.ytimg.com/vi/llORYHJkOj0/hqdefault.jpg)](https://youtu.be/llORYHJkOj0 "Lightmaps")
+![Screenshoot03](https://brakeza.com/wp-content/uploads/2024/01/screenshoot_2024_02.png)
 
-[![Liquid volumes](http://i3.ytimg.com/vi/JdtLIGsecaQ/hqdefault.jpg)](https://youtu.be/JdtLIGsecaQ "Liquid volumes")
+![Screenshoot04](https://brakeza.com/wp-content/uploads/2024/01/screenshoot_2024_01.png)
 
-[![OBJ/Billboards](http://i3.ytimg.com/vi/Txr7tlYJNVQ/hqdefault.jpg)](https://youtu.be/Txr7tlYJNVQ "OBJ/Billboards")
-
-[![OBJ/Billboards](http://i3.ytimg.com/vi/dpvQxOO04F4/hqdefault.jpg)](https://youtu.be/dpvQxOO04F4 "FPS features")
+![Screenshoot05](https://brakeza.com/wp-content/uploads/2024/01/brakeza3d-2024-menu.png)
