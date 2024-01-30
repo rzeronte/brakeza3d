@@ -1,28 +1,26 @@
 # Brakeza3D - Free OpenSource 3D Engine
 
-Brakeza3D is an open source 3D engine written from scratch with SDL2.0
+Brakeza3D is an open source 3D engine written from scratch in C++
 
-Custom CPU/OpenCL render is made (No OpenCL / Direct3D. )
+![alt text](https://brakeza.com/wp-content/uploads/2024/01/brakeza3d-2024.png)
 
 Main features:
 
 - Cross Platform (Windows/Linux/OSX checked)
-- Easy architecture (Based in components easily maintainable)
+- Easy and simple architecture (Based in components easily maintainable)
+- SDL2 + OpenGL 4 render
 - Bullet Physics Integration
-- ImGui Integration
-- CPU/OpenCL render engine
-- Load models & animations with ASSIMP library
-- 2D Billboard
-- 3D Billboard (8 directions)
-- Decals  
-- UV Mapping
-- Light points / Specularity
-- Shadow real time
-- Game Menu Interface
-- Grid3D / Octrees
+- ImGui Docking Integration
+- Assimp library for loading
+- Scene management (JSON based files)
+- 2D Billboard / 3D Billboard (8 directions) 
+- ADS light system
+- Decals
+- Shadow mapping
+- LUA Scripting
+- Extensible GLSL Shaders
 - Basic component for add sounds
 - Interface for XBOX/Playstation controller
-- Extensible Shaders vía custom OpenCL kernels
 
 # Dependences
 
@@ -32,8 +30,9 @@ Main features:
 - SDL2_mixer
 - Bullet Physics
 - Assimp
-- OpenCL SDK
+- OpenGL
 - GLM
+- LUA5.2
 
 # Linux compilation
 
@@ -44,7 +43,8 @@ In Unix systems we will only have to make sure that we have installed the develo
 ``` 
 apt-get install libsdl2-2.0-0 libsdl2-dev libsdl2-image-dev libsdl2-image-2.0-0 libsdl2-ttf-dev \
 libsdl2-ttf-2.0-0 libsdl2-mixer-dev libsdl2-mixer-2.0-0 libbullet-dev libbullet3.06 libassimp-dev \
-libassimp5 assimp-utils intel-opencl-icd intel-opencl-icd ocl-icd-opencl-dev libglm-dev liblua5.2-dev
+libassimp5 assimp-utils libglm-dev liblua5.2-dev \
+liblua5.2-dev liblua5.2-0
 ```
 
 ``` 
