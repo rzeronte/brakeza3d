@@ -17,8 +17,8 @@
   "enemies": [
     {
       "name": "Rayer",
-      "avatar": "avatars/14.png",
-      "avatarHud": "avatars/14.png",
+      "avatar": "avatars/enemy_08.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 10, "y": 30 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -57,8 +57,8 @@
     },
     {
       "name": "Rayer",
-      "avatar": "avatars/14.png",
-      "avatarHud": "avatars/14.png",
+      "avatar": "avatars/enemy_08.png",
+      "avatarHud": "avatars/empty.png",
       "position": { "x": 90, "y": 30 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
