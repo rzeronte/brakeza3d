@@ -56,7 +56,7 @@ public:
 
     void stepSimulation(float deltaTime);
 
-    void demoProjectile(int type);
+    static void demoProjectile(int type);
 
     virtual ~ComponentCollisions();
 };
