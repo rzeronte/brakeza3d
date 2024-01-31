@@ -1,9 +1,11 @@
 {
 	"types":	[{
 			"name":	"edu",
-			"value":	"5"
+			"type": "int",
+			"value":	5
 		}, {
 			"name":	"andre",
+			"type": "string",
 			"value":	"hola"
 		}]
 }
