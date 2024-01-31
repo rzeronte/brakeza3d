@@ -76,10 +76,11 @@ void Mesh3D::cloneParts(Mesh3D *source, bool isFlatTextureColor, bool isEnableLi
 
 void Mesh3D::clone(Mesh3D *source)
 {
+    this->sharedTextures = true;
+
     this->modelTextures = source->modelTextures;
     this->modelSpecularTextures = source->modelSpecularTextures;
     this->scale = source->scale;
-    this->sharedTextures = true;
 
     this->uvbuffer = source->uvbuffer;
     this->normalbuffer = source->normalbuffer;
@@ -374,18 +375,16 @@ Mesh3D::~Mesh3D()
 {
     Logging::Log("Delete Mesh3D: %s", getLabel().c_str());
 
-    for (auto triangle : modelTriangles) {
-        delete triangle;
-    }
-
-    for (auto vertex : modelVertices) {
-        delete vertex;
-    }
+    for (auto triangle : modelTriangles) delete triangle;
+    for (auto vertex : modelVertices) delete vertex;
 
     if (!sharedTextures) {
-        for (auto texture : modelTextures) {
-            delete texture;
-        }
+        for (auto texture : modelTextures) delete texture;
+        for (auto texture : modelSpecularTextures) delete texture;
+
+        glDeleteBuffers(1, &vertexbuffer);
+        glDeleteBuffers(1, &uvbuffer);
+        glDeleteBuffers(1, &normalbuffer);
     }
 }
 

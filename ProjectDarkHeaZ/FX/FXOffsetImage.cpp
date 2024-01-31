@@ -82,8 +82,6 @@ void FXOffsetImage::drawImGuiProperties()
     ImGui::DragScalar("Intensity", ImGuiDataType_Float, &intensity, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
     ImGui::DragScalar("OffsetX", ImGuiDataType_Float, &offsetX, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
     ImGui::DragScalar("OffsetY", ImGuiDataType_Float, &offsetY, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-
-    ImGui::TreePop();
 }
 
 cJSON *FXOffsetImage::getJSON()

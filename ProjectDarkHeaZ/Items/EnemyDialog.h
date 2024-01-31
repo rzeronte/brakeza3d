@@ -23,11 +23,10 @@ class EnemyDialog {
     std::string sound;
     std::string from;
 
-    Image *background;
-
-    Image *degradateBottom;
-
     TextWriter *writer;
+
+    Image *background;
+    Image *degradateBottom;
     Image *avatar;
     Image *avatarSmall;
 

@@ -299,10 +299,12 @@ void EnemyGhost::shoot(Object3D *target)
 
 EnemyGhost::~EnemyGhost()
 {
-    delete blink;
-
     for (auto ray : fixedLasers) {
         ray->setRemoved(true);
+    }
+
+    for (auto d: dialogs) {
+        delete d;
     }
 }
 

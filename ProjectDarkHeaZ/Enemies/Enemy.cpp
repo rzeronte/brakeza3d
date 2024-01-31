@@ -47,8 +47,12 @@ Enemy::~Enemy()
 {
     delete weapon;
     delete avatar;
+    delete avatarHud;
 
     light->setRemoved(true);
+    for (auto p: projectileEmitters) {
+        delete p;
+    }
 }
 
 bool Enemy::isRewards() const {

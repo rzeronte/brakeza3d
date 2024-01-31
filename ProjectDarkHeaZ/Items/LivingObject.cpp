@@ -25,8 +25,12 @@ void LivingObject::setStartStamina(float startStamina) {
     LivingObject::startStamina = startStamina;
 }
 
-float LivingObject::currentStaminaPercentage()
+float LivingObject::currentStaminaPercentage() const
 {
     return getStamina() * 100 / getStartStamina();
+}
+
+LivingObject::~LivingObject() {
+    delete blink;
 }
 

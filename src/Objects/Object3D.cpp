@@ -273,6 +273,10 @@ Object3D::~Object3D()
     for (auto s: shaders) {
         delete s;
     }
+
+    for (auto a: attached) {
+        delete a;
+    }
 }
 
 float &Object3D::getRotX() {

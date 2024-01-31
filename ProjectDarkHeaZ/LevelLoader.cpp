@@ -181,9 +181,8 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     );
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "message") != nullptr) {
+        delete mainMessage;
         parseMainMessageJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "message"));
-    } else {
-        mainMessage = nullptr;
     }
 
     auto c = parseColorJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "color"));

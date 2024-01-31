@@ -94,11 +94,6 @@ bool AmmoProjectileBodyEmitter::isStop() const {
     return stop;
 }
 
-AmmoProjectileBodyEmitter::~AmmoProjectileBodyEmitter()
-{
-    delete weaponType;
-}
-
 ProjectileBodyEmmitterType AmmoProjectileBodyEmitter::getType() const {
     return type;
 }

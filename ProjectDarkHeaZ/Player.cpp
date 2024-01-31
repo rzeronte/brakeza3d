@@ -8,6 +8,7 @@
 #include "Items/PlayerReflection.h"
 #include "Items/LivingObject.h"
 #include "Common/ShockWave.h"
+#include "Weapons/WeaponRayLight.h"
 
 Player::Player()
 :
@@ -293,6 +294,11 @@ void Player::postUpdate()
     particleEngineLeft->postUpdate();
 
     if (weapon != nullptr) {
+        auto weaponRay = dynamic_cast<WeaponRayLight*>(weapon);
+        if (weaponRay != nullptr && weapon->getStatus() == PRESSED) {
+            ComponentsManager::get()->getComponentSound()->sound("projectileRaylight", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        }
+
         for ( auto w: weapons) {
             w->onUpdate();
         }
@@ -759,8 +765,8 @@ void Player::drawImGuiProperties()
             }
 
             ImGui::TreePop();
-
         }
+
         ImGui::Separator();
         if (ImGui::TreeNode("Light Offset##")) {
             const float range_color_sensibility = 0.01f;
@@ -772,6 +778,7 @@ void Player::drawImGuiProperties()
             ImGui::DragScalar("z", ImGuiDataType_Float, &lightPositionOffset.z, range_color_sensibility,&range_col_min, &range_col_max, "%f", 1.0f);
             ImGui::TreePop();
         }
+        ImGui::TreePop();
     }
 }
 

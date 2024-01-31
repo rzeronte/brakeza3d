@@ -75,7 +75,7 @@ public:
 
     void drawImGuiProperties() override;
 
-    void updateEmitters();
+    void updateEmitters() override;
 };
 
 

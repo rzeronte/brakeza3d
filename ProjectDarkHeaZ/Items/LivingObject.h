@@ -18,6 +18,8 @@ protected:
 public:
     explicit LivingObject(Mesh3D *parent);
 
+    virtual ~LivingObject();
+
     [[nodiscard]] float getStartStamina() const;
 
     [[nodiscard]] float getStamina() const;
@@ -26,7 +28,7 @@ public:
 
     void setStartStamina(float startStamina);
 
-    float currentStaminaPercentage();
+    [[nodiscard]] float currentStaminaPercentage() const;
 };
 
 

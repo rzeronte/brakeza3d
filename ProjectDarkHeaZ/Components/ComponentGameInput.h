@@ -8,6 +8,8 @@ class ComponentGameInput : public Component {
 private:
     float controllerAxisThreshold;
     bool lockRightStick;
+    bool wasSpacePressed = false;
+
 public:
     explicit ComponentGameInput();
 
@@ -53,7 +55,7 @@ public:
 
     [[nodiscard]] float getControllerAxisThreshold() const;
 
-    void updateWeaponStatus(SDL_Event *event) const;
+    void updateWeaponStatus(SDL_Event *event);
 
     static void handleShield(SDL_Event *event);
 };

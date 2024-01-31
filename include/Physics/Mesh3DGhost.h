@@ -34,7 +34,7 @@ public:
 
     const char *getTypeObject() override;
 
-    cJSON *getJSON();
+    cJSON *getJSON() override;
 
     static void createFromJSON(cJSON *object);
 

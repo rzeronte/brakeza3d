@@ -39,8 +39,6 @@ public:
         Color c
     );
 
-    ~AmmoProjectileBodyEmitter() override;
-
     [[nodiscard]] bool isActive() const;
 
     void setActive(bool active);

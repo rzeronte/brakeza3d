@@ -2,6 +2,7 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include "../Common/ShockWave.h"
+#include "../Weapons/WeaponRayLight.h"
 
 ComponentGameInput::ComponentGameInput()
 :
@@ -71,8 +72,7 @@ void ComponentGameInput::handleInGameInput(SDL_Event *event, bool &end)
 
     //this->handleZoom(event);
 }
-void ComponentGameInput::updateWeaponStatus(SDL_Event *event) const
-{
+void ComponentGameInput::updateWeaponStatus(SDL_Event *event) {
     auto game = ComponentsManager::get()->getComponentGame();
     auto input = ComponentsManager::get()->getComponentInput();
     auto player = game->getPlayer();
@@ -84,13 +84,16 @@ void ComponentGameInput::updateWeaponStatus(SDL_Event *event) const
     const bool pressedFireKeyboard = event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_SPACE;
     auto weapon = player->getWeapon();
 
-    if (input->getGameController() == nullptr) {
-        if (releaseFireKeyboard) {
-            weapon->setStatus(WeaponStatus::RELEASED);
-        }
+    const bool isSpacePressed = (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_SPACE);
 
-        if (pressedFireKeyboard) {
+
+    if (input->getGameController() == nullptr) {
+        if (isSpacePressed && !wasSpacePressed) {
             weapon->setStatus(WeaponStatus::PRESSED);
+            wasSpacePressed = true;
+        } else if (releaseFireKeyboard && wasSpacePressed) {
+            weapon->setStatus(WeaponStatus::RELEASED);
+            wasSpacePressed = false;
         }
     } else {
         if (releasedFireController) {

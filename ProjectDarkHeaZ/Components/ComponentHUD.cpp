@@ -312,7 +312,7 @@ void ComponentHUD::drawEnemyIconAndName()
             globalOffset.y + avatarEnemyOffset.y + 50,
             enemy->getName().c_str(),
             PaletteColors::getMenuOptions(),
-            0.75f
+            0.5f
         );
     } else {
         HUDTextures->getTextureByLabel("emptyEnemy")->drawFlatAlpha(
@@ -327,7 +327,7 @@ void ComponentHUD::drawEnemyIconAndName()
             globalOffset.y + avatarEnemyOffset.y + (int) HUDTextures->getTextureByLabel("emptyEnemy")->height() + 5,
             "No target",
             PaletteColors::getMenuOptions(),
-            0.75f
+            0.5f
         );
     }
 }

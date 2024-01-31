@@ -19,6 +19,8 @@ private:
 public:
     explicit BossLevel10();
 
+    ~BossLevel10() override;
+
     void onUpdate() override;
 
     void invertPhase();

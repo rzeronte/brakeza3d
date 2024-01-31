@@ -53,3 +53,8 @@ void BossLevel10::invertPhase()
         return;
     }
 }
+
+BossLevel10::~BossLevel10() {
+    delete behaviorPhaseOne;
+    delete behaviorPhaseTwo;
+}
