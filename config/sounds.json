@@ -42,7 +42,7 @@
 
     { "file": "projectile_standard.wav", "label": "projectileStandard", "type": "sound" },
     { "file": "projectile_bomb.wav", "label": "projectileBomb", "type": "sound" },
-    { "file": "projectile_raylight.wav", "label": "projectileRaylight", "type": "sound" },
+    { "file": "projectile_raylight.mp3", "label": "projectileRaylight", "type": "sound" },
     { "file": "laser_shoot.wav", "label": "projectileLaser", "type": "sound" },
     { "file": "projectile_shield.mp3", "label": "projectileShield", "type": "sound" },
 

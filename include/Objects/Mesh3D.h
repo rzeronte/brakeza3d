@@ -112,7 +112,7 @@ public:
 
     void fillBuffers();
 
-    const std::vector<Image *> &getModelSpecularTextures() const;
+    [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const;
 
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;

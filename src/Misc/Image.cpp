@@ -155,9 +155,12 @@ const std::string &Image::getFileName() const {
 
 Image::~Image()
 {
-    glDeleteTextures(1, &texturaID);
-    SDL_FreeSurface(surface);
-    SDL_DestroyTexture(texture);
+    if (loaded) {
+        SDL_FreeSurface(surface);
+        SDL_DestroyTexture(texture);
+        glDeleteTextures(1, &texturaID);
+
+    }
 }
 
 Color Image::getColor(int x, int y)
