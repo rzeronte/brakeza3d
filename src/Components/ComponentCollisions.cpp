@@ -1,6 +1,5 @@
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Physics/Projectile3DBody.h"
 
 ComponentCollisions::ComponentCollisions()
 :
@@ -82,14 +81,6 @@ void ComponentCollisions::initBulletSystem()
 
 btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const {
     return dynamicsWorld;
-}
-
-BSPMap *ComponentCollisions::getBspMap() const {
-    return bspMap;
-}
-
-void ComponentCollisions::setBSPMap(BSPMap *map) {
-    ComponentCollisions::bspMap = map;
 }
 
 void ComponentCollisions::checkCollisionsForAll()

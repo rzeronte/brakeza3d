@@ -48,17 +48,13 @@ public:
 
     [[nodiscard]] btDiscreteDynamicsWorld *getDynamicsWorld() const;
 
-    [[nodiscard]] BSPMap *getBspMap() const;
-
-    void setBSPMap(BSPMap *bspMap);
-
     void updatePhysicObjects();
 
     void stepSimulation(float deltaTime);
 
-    void demoProjectile(int type);
+    static void demoProjectile(int type);
 
-    virtual ~ComponentCollisions();
+    ~ComponentCollisions() override;
 };
 
 
