@@ -83,14 +83,6 @@ btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const {
     return dynamicsWorld;
 }
 
-BSPMap *ComponentCollisions::getBspMap() const {
-    return bspMap;
-}
-
-void ComponentCollisions::setBSPMap(BSPMap *map) {
-    ComponentCollisions::bspMap = map;
-}
-
 void ComponentCollisions::checkCollisionsForAll()
 {
     if (!SETUP->BULLET_CHECK_ALL_PAIRS) return;
