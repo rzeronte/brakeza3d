@@ -2,8 +2,9 @@
 #include "../../include/Brakeza3D.h"
 #include "../Common/ShockWave.h"
 
-ItemBombGhost::ItemBombGhost(float ttl, float damage)
+ItemBombGhost::ItemBombGhost(float ttl, float damage, Weapon* weapon)
 :
+    weapon(weapon),
     damage(damage),
     timeToLive(Counter(ttl)),
     blink(new FXBlink(false, this, 0.05, PaletteColors::getPlayerDamageBlink())),

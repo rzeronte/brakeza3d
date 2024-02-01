@@ -200,6 +200,8 @@ public:
     void setStartEnergy(float startEnergy);
 
     void setPower(float power);
+
+    bool god;
 };
 
 

@@ -3,7 +3,7 @@
   "scene": "scene02.json",
   "backgroundImage": "levels/bg_01.png",
   "foregroundImage": "foregrounds/02.png",
-  "allowEnergyShield": false,
+  "allowEnergyShield": true,
   "tutorials": [],
   "color": { "r": 0, "g": 0, "b": 0 },
   "message": {

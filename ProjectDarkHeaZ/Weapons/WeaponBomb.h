@@ -5,7 +5,6 @@
 #ifndef BRAKEZA3D_WEAPONBOMB_H
 #define BRAKEZA3D_WEAPONBOMB_H
 
-
 #include "Weapon.h"
 
 class WeaponBomb : public Weapon {

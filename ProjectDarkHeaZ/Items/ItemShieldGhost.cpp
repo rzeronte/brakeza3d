@@ -6,8 +6,9 @@
 #include "../../include/Brakeza3D.h"
 #include "../Common/ShockWave.h"
 
-ItemShieldGhost::ItemShieldGhost(float ttl, float damage)
+ItemShieldGhost::ItemShieldGhost(float ttl, float damage, Weapon *weapon)
 :
+    weapon(weapon),
     damage(damage),
     timeToLive(Counter(ttl)),
     blink(new FXBlink(false, this, 0.05, PaletteColors::getPlayerDamageBlink())),
@@ -39,6 +40,7 @@ void ItemShieldGhost::onUpdate()
         setEnabled(false);
         removeCollisionObject();
         Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1, ShockWaveParams::standard(), true), Brakeza3D::uniqueObjectLabel("shockWave"));
+        weapon->decreaseNumberProjectiles();
     }
 }
 
@@ -52,6 +54,7 @@ void ItemShieldGhost::resolveCollision(Collisionable *collisionable)
 
         setEnabled(false);
         setRemoved(true);
+        weapon->decreaseNumberProjectiles();
 
         ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_BOMB);
         enemy->takeDamage(getDamage());

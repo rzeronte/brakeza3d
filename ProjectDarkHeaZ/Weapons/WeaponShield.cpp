@@ -18,10 +18,13 @@ WeaponShield::WeaponShield(const WeaponAttributes &attributes) : Weapon(attribut
         return;
     }
 
+    if (numLiveProjectiles > MAX_SIMULTANEOUS_BOMBS) {
+        return;
+    }
     if (counterCadence->isFinished()) {
         counterCadence->setEnabled(true);
 
-        auto *projectile = new ItemShieldGhost(5, this->getDamage());
+        auto *projectile = new ItemShieldGhost(6, this->getDamage(), this);
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->clone(getModelProjectile());
@@ -49,6 +52,7 @@ WeaponShield::WeaponShield(const WeaponAttributes &attributes) : Weapon(attribut
         Brakeza3D::get()->addObject3D(new ShockWave(position, 0.50, 1, ShockWaveParams::standard(), true), Brakeza3D::uniqueObjectLabel("shockWave"));
 
         Tools::makeFadeInSprite(position, ComponentsManager::get()->getComponentGame()->getFadeInSpriteBlue()->getAnimation());
+        increaseNumberProjectiles();
     }
 }
 

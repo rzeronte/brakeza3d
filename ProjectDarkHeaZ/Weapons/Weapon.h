@@ -102,6 +102,7 @@ private:
     Image *icon;
     Mesh3D *model;
     Mesh3D *modelProjectile;
+
 protected:
     int status;
     RayLight *rayLight;
@@ -110,6 +111,7 @@ protected:
     float cadenceTime;
     float accuracy;
     int ammoAmount;
+    int numLiveProjectiles = 0;
 public:
     explicit Weapon(WeaponAttributes attributes);
 
@@ -196,11 +198,14 @@ public:
 
     void drawImGuiProperties();
 
-    bool isEnabled() const;
+    [[nodiscard]] bool isEnabled() const;
 
     virtual void setEnabled(bool enabled);
 
     Counter counterStopDuration;
+
+    void increaseNumberProjectiles();
+    void decreaseNumberProjectiles();
 };
 
 

@@ -12,6 +12,7 @@
 
 Player::Player()
 :
+    god(false),
     LivingObject(this),
     RotatableToTarget(nullptr, this, 1.5f),
     energy(0),
@@ -19,7 +20,7 @@ Player::Player()
     recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
     stuck(false),
     rescuedHumans(0),
-    coins(5000),
+    coins(0),
     projectileStartOffsetPosition(1.3),
     weapon(nullptr),
     counterStucked(Counter(5)),
@@ -99,7 +100,7 @@ bool Player::takeDamage(float dmg)
         return false;
     }
 
-    //this->stamina -= dmg;
+    if (!god) this->stamina -= dmg;
 
     if (stamina <= 0) {
         stamina = 0;

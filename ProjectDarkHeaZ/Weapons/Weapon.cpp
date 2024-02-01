@@ -246,6 +246,9 @@ bool Weapon::isSelectable() const {
 
 void Weapon::drawImGuiProperties()
 {
+    ImGui::Text("Living projectiles: %d", numLiveProjectiles);
+    ImGui::Separator();
+
     if (ImGui::TreeNode("Weapon Model")) {
         model->drawImGuiProperties();
         ImGui::TreePop();
@@ -295,4 +298,12 @@ bool Weapon::isEnabled() const {
 
 void Weapon::setEnabled(bool enabled) {
     Weapon::enabled = enabled;
+}
+
+void Weapon::increaseNumberProjectiles() {
+    numLiveProjectiles++;
+}
+
+void Weapon::decreaseNumberProjectiles() {
+    numLiveProjectiles--;
 }

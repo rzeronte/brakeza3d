@@ -56,7 +56,7 @@ private:
     const int sizeY;
     int **grid;
 
-    bool isValid(int row, int col) const;
+    [[nodiscard]] bool isValid(int row, int col) const;
 
     static bool isUnBlocked(int **grid, int row, int col);
 

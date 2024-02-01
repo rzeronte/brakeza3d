@@ -22,7 +22,7 @@ void WeaponBomb::shootBomb(Object3D *parent, Vertex3D position)
 
         Logging::Log("Weapon shootBomb from %s", parent->getLabel().c_str());
 
-        auto *projectile = new ItemBombGhost(5, this->getDamage());
+        auto *projectile = new ItemBombGhost(5, this->getDamage(), this);
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->clone(getModelProjectile());
@@ -48,6 +48,7 @@ void WeaponBomb::shootBomb(Object3D *parent, Vertex3D position)
         Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("projectile"));
 
         Tools::makeFadeInSprite(position, ComponentsManager::get()->getComponentGame()->getFadeInSpriteRed()->getAnimation());
+        increaseNumberProjectiles();
     }
 }
 

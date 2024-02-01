@@ -37,7 +37,7 @@ public:
 
     void handleMenuKeyboard(SDL_Event *event, bool &end);
 
-    void handleKeyboardMovingPlayer();
+    static void handleKeyboardMovingPlayer();
 
     void handleFindClosestObject3D(SDL_Event *event);
 
@@ -47,7 +47,7 @@ public:
 
     static void handleEnergyShield(SDL_Event *event);
 
-    void handleMakeReflection(SDL_Event *event);
+    static void handleMakeReflection(SDL_Event *event);
 
     void handlePressKeyGameStates(SDL_Event *event);
 

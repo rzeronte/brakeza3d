@@ -273,10 +273,10 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event)
             ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }*/
 
-        if (keyboard[SDL_SCANCODE_0] ) {
+        if (keyboard[SDL_SCANCODE_4] ) {
             player->nextWeapon();
         }
-        if (keyboard[SDL_SCANCODE_9] ) {
+        if (keyboard[SDL_SCANCODE_5] ) {
             player->previousWeapon();
         }
     }
@@ -471,7 +471,7 @@ void ComponentGameInput::handleMakeReflection(SDL_Event *event)
     auto player = componentGame->getPlayer();
 
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
-    const bool reflectionKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_P];
+    const bool reflectionKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_8];
     const bool controllerXButtonPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonA();
 
     if (controllerXButtonPressed || reflectionKeyPressed) {
@@ -619,7 +619,6 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
 }
 
-
 void ComponentGameInput::handleBomb(SDL_Event *event)
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
@@ -627,7 +626,7 @@ void ComponentGameInput::handleBomb(SDL_Event *event)
     auto player = componentGame->getPlayer();
 
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
-    const bool bombKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_O];
+    const bool bombKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_7];
     const bool controllerXButtonPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonX();
 
     if (controllerXButtonPressed || bombKeyPressed) {
@@ -644,7 +643,7 @@ void ComponentGameInput::handleShield(SDL_Event *event)
     auto player = componentGame->getPlayer();
 
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
-    const bool bombKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_L];
+    const bool bombKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_9];
     const bool controllerYButtonPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonY();
 
     if (controllerYButtonPressed || bombKeyPressed) {

@@ -8,6 +8,8 @@
 
 #include "Weapon.h"
 
+#define MAX_SIMULTANEOUS_BOMBS 2
+
 class WeaponShield : public Weapon {
 public:
     explicit WeaponShield(const WeaponAttributes &attributes);
