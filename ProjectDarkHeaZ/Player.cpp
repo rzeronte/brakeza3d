@@ -14,7 +14,7 @@ Player::Player()
 :
     god(false),
     LivingObject(this),
-    RotatableToTarget(nullptr, this, 1.5f),
+    RotatableToTarget(nullptr, this, 2.0f),
     energy(0),
     startEnergy(0),
     recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
@@ -93,6 +93,7 @@ void Player::loadSatellite()
 bool Player::takeDamage(float dmg)
 {
     auto componentGame = ComponentsManager::get()->getComponentGame();
+    dmg *= componentGame->getLevelLoader()->difficultyRatio;
 
     if (componentGame->getGameState() != EngineSetup::GAMING) return false;
 
@@ -543,6 +544,7 @@ void Player::nextWeapon()
 {
     auto currentWeapon = getWeapon();
     auto currentIterator = std::find(weapons.begin(), weapons.end(), currentWeapon);
+    weapon->setStatus(RELEASED);
 
     for (auto it = currentIterator; it != weapons.end(); it++) {
         if (*(it) == currentWeapon) {
@@ -560,6 +562,7 @@ void Player::previousWeapon()
 {
     auto currentWeapon = getWeapon();
     auto currentIterator = std::find(weapons.begin(), weapons.end(), currentWeapon);
+    weapon->setStatus(RELEASED);
 
     int index = (int) std::distance(weapons.begin(), currentIterator);
 

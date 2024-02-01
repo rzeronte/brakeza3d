@@ -7,8 +7,28 @@
 
 #include "../../include/ComponentsManager.h"
 
-EnemyDialog::EnemyDialog(Object3D *parent, Image *avatar, Image * avatarSmall, float staminaPercentage, const char *message, const char *sound, const char *from, TTF_Font *font)
+EnemyDialog::EnemyDialog()
 :
+    empty(true),
+    offsetX(0),
+    offsetY(0),
+    showed(false),
+    parent(nullptr),
+    staminaPercentage(0),
+    background(new Image(EngineSetup::get()->IMAGES_FOLDER + "radio_notification.png")),
+    degradateBottom(new Image(EngineSetup::get()->IMAGES_FOLDER + "degradate_bottom.png")),
+    avatar(nullptr),
+    counterTTL(Counter(1))
+{
+    writer = new TextWriter(
+        ComponentsManager::get()->getComponentWindow()->getRenderer(),
+        ComponentsManager::get()->getComponentWindow()->getFontDefault()
+    );
+}
+
+EnemyDialog::EnemyDialog(Object3D *parent, Image *avatar, float staminaPercentage, const char *message, const char *sound, const char *from)
+:
+    empty(false),
     offsetX(0),
     offsetY(0),
     showed(false),
@@ -19,11 +39,13 @@ EnemyDialog::EnemyDialog(Object3D *parent, Image *avatar, Image * avatarSmall, f
     background(new Image(EngineSetup::get()->IMAGES_FOLDER + "radio_notification.png")),
     degradateBottom(new Image(EngineSetup::get()->IMAGES_FOLDER + "degradate_bottom.png")),
     avatar(avatar),
-    avatarSmall(avatarSmall),
     counterTTL(Counter(ComponentsManager::get()->getComponentSound()->soundDuration(sound))),
     staminaPercentage(staminaPercentage)
 {
-    writer = new TextWriter(ComponentsManager::get()->getComponentWindow()->getRenderer(), font);
+    writer = new TextWriter(
+            ComponentsManager::get()->getComponentWindow()->getRenderer(),
+            ComponentsManager::get()->getComponentWindow()->getFontDefault()
+    );
 }
 
 EnemyDialog::~EnemyDialog()
@@ -105,4 +127,37 @@ void EnemyDialog::updateOffsets()
     } else {
         smoothEffect = sin(M_PI / 2.0 * (1.0 - (percentage - percentageFadeOut) / percentageFadeIn));
     }
+}
+
+void EnemyDialog::setMessage(const std::string &message) {
+    EnemyDialog::message = message;
+}
+
+void EnemyDialog::setFrom(const std::string &from) {
+    EnemyDialog::from = from;
+}
+
+void EnemyDialog::setAvatar(Image *avatar) {
+    EnemyDialog::avatar = avatar;
+}
+
+bool EnemyDialog::isEmpty() const {
+    return empty;
+}
+
+void EnemyDialog::setEmpty(bool empty) {
+    EnemyDialog::empty = empty;
+}
+
+void EnemyDialog::setStaminaPercentage(float staminaPercentage) {
+    EnemyDialog::staminaPercentage = staminaPercentage;
+}
+
+void EnemyDialog::setSound(const std::string &sound) {
+    EnemyDialog::sound = sound;
+}
+
+void EnemyDialog::setStep(float step) {
+    counterTTL.setStep(step);
+    counterTTL.setEnabled(true);
 }

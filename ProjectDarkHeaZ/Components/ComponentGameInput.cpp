@@ -2,7 +2,6 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include "../Common/ShockWave.h"
-#include "../Weapons/WeaponRayLight.h"
 
 ComponentGameInput::ComponentGameInput()
 :
@@ -31,7 +30,7 @@ void ComponentGameInput::onUpdate()
 void ComponentGameInput::postUpdate()
 {
     if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::GAMING) {
-        this->handleKeyboardMovingPlayer();
+        ComponentGameInput::handleKeyboardMovingPlayer();
         this->handleGamePadMovingPlayer();
         this->handleFire();
     }
@@ -96,12 +95,12 @@ void ComponentGameInput::updateWeaponStatus(SDL_Event *event) {
             wasSpacePressed = false;
         }
     } else {
-        if (releasedFireController) {
-            weapon->setStatus(WeaponStatus::RELEASED);
-        }
-
-        if (pressedFireController) {
+        if (pressedFireController && !wasSpacePressed) {
             weapon->setStatus(WeaponStatus::PRESSED);
+            wasSpacePressed = true;
+        } else if (releasedFireController && wasSpacePressed) {
+            weapon->setStatus(WeaponStatus::RELEASED);
+            wasSpacePressed = false;
         }
     }
 }
@@ -143,6 +142,10 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
             return;
         }
 
+        if (gameState == EngineSetup::GameState::DIFFICULT_SELECTOR)  {
+            return;
+        }
+
         if (gameState == EngineSetup::GameState::COUNTDOWN ||
             gameState == EngineSetup::GameState::PRESS_KEY_NEW_LEVEL ||
             gameState == EngineSetup::GameState::PRESS_KEY_BY_DEAD ||
@@ -164,6 +167,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
 void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
 {
     auto componentGame = ComponentsManager::get()->getComponentGame();
+    auto componentRender = ComponentsManager::get()->getComponentRender();
     auto componentMenu = ComponentsManager::get()->getComponentMenu();
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto sound = ComponentsManager::get()->getComponentSound();
@@ -196,7 +200,7 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
         }
 
         if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_NEW_GAME) {
-            if (!componentGame->getLevelLoader()->isLevelStartedToPlay()) {
+            if (componentGame->getLevelLoader()->getCurrentLevelIndex() < 0 ) {
                 EngineSetup::get()->SOUND_VOLUME_MUSIC -= 20;
                 EngineSetup::get()->SOUND_CHANNEL_GLOBAL += 20;
                 Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) EngineSetup::get()->SOUND_CHANNEL_GLOBAL);
@@ -206,8 +210,24 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
                 sound->sound("introHistory", EngineSetup::SoundChannels::SND_GLOBAL, 0);
                 componentGame->makeFadeToGameState(EngineSetup::GameState::INTRO, true);
             } else {
-                componentGame->pressedKeyForNewGameOrResumeGame();
+                if (componentGame->getLevelLoader()->isLoaded()) {
+                    componentGame->makeFadeToGameState(EngineSetup::GameState::GAMING, true);
+                } else {
+                    componentGame->pressedKeyByDead();
+                }
             }
+        }
+
+        if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_RESET) {
+            ComponentGame::removeInGameObjects();
+            componentGame->getLevelLoader()->setLevelStartedToPlay(false);
+            componentGame->getLevelLoader()->setCurrentLevelIndex(-1);
+            componentGame->getLevelLoader()->updateConfig(-1);
+            componentRender->getSceneLoader().clearScene();
+            componentMenu->LoadScene();
+
+            componentGame->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
+            componentGame->makeFadeToGameState(EngineSetup::GameState::MENU, true);
         }
 
         if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_HELP) {
@@ -493,10 +513,13 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
     bool controllerLeft = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT;
     bool controllerRight = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
+    bool controllerDownPad = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN;
     bool controllerUpPad = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP;
 
     const bool cursorLeft = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_LEFT];
     const bool cursorRight = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RIGHT];
+    const bool cursorUp = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_UP];
+    const bool cursorDown = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_DOWN];
     const bool keyStorePressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_UP];
     const bool enter = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RETURN];
 
@@ -519,7 +542,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
     if (state == EngineSetup::INTRO) {
         if ((enter || isButtonGuidedPressed)) {
-            game->pressedKeyForNewGameOrResumeGame();
+            game->launchSpaceshipSelector();
             return;
         }
 
@@ -549,6 +572,25 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
         if (enter || componentInput->getControllerButtonA()) {
             game->getStoreManager()->buyCurrentSelected();
+            return;
+        }
+    }
+
+    if (state == EngineSetup::GameState::DIFFICULT_SELECTOR) {
+        if (cursorUp || controllerUpPad) {
+            game->getLevelLoader()->decreaseDifficulty();
+            componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            return;
+        }
+
+        if (cursorDown || controllerDownPad) {
+            game->getLevelLoader()->increaseDifficulty();
+            componentSound->sound("tic", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+            return;
+        }
+
+        if (enter || componentInput->getControllerButtonA()) {
+            game->setGameState(EngineSetup::GameState::SPACESHIP_SELECTOR);
             return;
         }
     }

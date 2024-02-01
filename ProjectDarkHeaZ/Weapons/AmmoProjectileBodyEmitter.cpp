@@ -109,7 +109,7 @@ void AmmoProjectileBodyEmitter::launchUniqueProjectile()
         this,
         weaponType,
         M3::getMatrixIdentity(),
-        Vertex3D(0.25f, 0.25f, 0.25f),
+        Vertex3D(0.15f, 0.15f, 0.15f),
         this->AxisForward().getNormalize(),
         weaponType->getDamage(),
         (float) weaponType->getSpeed(),

@@ -104,7 +104,7 @@ void ComponentMenu::drawOptions()
     for (int i = 0; i < (int) options.size() ; i++) {
         std::string text = this->options[i].getLabel();
 
-        if (i == ComponentMenu::MNU_NEW_GAME && (levelInfo->getCurrentLevelIndex() > 0 || levelInfo->isLevelStartedToPlay())) {
+        if (i == ComponentMenu::MNU_NEW_GAME && levelInfo->getCurrentLevelIndex() >= 0) {
             text = this->options[ComponentMenu::MNU_NEW_GAME].getAlt();
         }
 

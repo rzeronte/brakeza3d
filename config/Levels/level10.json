@@ -107,7 +107,7 @@
       "size": { "x": 2, "y": 2,  "z": 2 },
       "enableLights": true,
       "animated": true,
-      "stamina": 3000,
+      "stamina": 4000,
       "reward": true,
       "messages": [
         { "text": "ha ha ha ha ha...\nHA HA HA HA", "sound": "boss10", "stamina": 55 }
@@ -116,7 +116,7 @@
         "index": 0,
         "available": true,
         "name": "Linear",
-        "damage": 10,
+        "damage": 12,
         "amount": 999,
         "startAmount": 1000,
         "speed": 0.75,

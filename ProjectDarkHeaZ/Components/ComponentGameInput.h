@@ -35,15 +35,15 @@ public:
 
     void handleZoom(SDL_Event *event);
 
-    void handleMenuKeyboard(SDL_Event *event, bool &end);
+    static void handleMenuKeyboard(SDL_Event *event, bool &end);
 
     static void handleKeyboardMovingPlayer();
 
     void handleFindClosestObject3D(SDL_Event *event);
 
-    void handleGamePadMovingPlayer();
+    static void handleGamePadMovingPlayer();
 
-    void handleDashMovement(SDL_Event *pEvent);
+    static void handleDashMovement(SDL_Event *pEvent);
 
     static void handleEnergyShield(SDL_Event *event);
 

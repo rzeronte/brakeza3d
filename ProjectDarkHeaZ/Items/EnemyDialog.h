@@ -28,11 +28,13 @@ class EnemyDialog {
     Image *background;
     Image *degradateBottom;
     Image *avatar;
-    Image *avatarSmall;
 
     Counter counterTTL;
+    bool empty;
 public:
-    EnemyDialog(Object3D *parent, Image *avatar, Image * avatarSmall, float staminaPercentage, const char *message, const char *sound,const char *from, TTF_Font *font);
+    EnemyDialog(Object3D *parent, Image *avatar, float staminaPercentage, const char *message, const char *sound,const char *from);
+
+    explicit EnemyDialog();
 
     void update();
 
@@ -48,7 +50,24 @@ public:
 
     void updateOffsets();
 
+
+    void setMessage(const std::string &message);
+
+    void setFrom(const std::string &from);
+
+    void setAvatar(Image *avatar);
+
     virtual ~EnemyDialog();
+
+    bool isEmpty() const;
+
+    void setEmpty(bool empty);
+
+    void setStaminaPercentage(float staminaPercentage);
+
+    void setSound(const std::string &sound);
+
+    void setStep(float step);
 };
 
 

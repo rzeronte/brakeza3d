@@ -86,7 +86,7 @@ struct OCParticlesContext {
     static OCParticlesContext forProjectile() {
         return OCParticlesContext(
             0.0f,
-            5,
+            2,
             1.0f,
             25.0f,
             1,

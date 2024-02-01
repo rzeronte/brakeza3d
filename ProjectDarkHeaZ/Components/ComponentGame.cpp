@@ -100,12 +100,21 @@ void ComponentGame::onStart()
     ComponentsManager::get()->getComponentInput()->setEnabled(FREE_LOOK_ENABLED);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
 
+    loadSpaceship("spaceships/player.fbx", "spaceships/spaceship_01.png", {0.3, 100, 100});
+    loadSpaceship("spaceships/player02.fbx", "spaceships/spaceship_02.png", {0.5, 130, 70});
+    loadSpaceship("spaceships/player03.fbx", "spaceships/spaceship_03.png", {0.2, 130, 130});
+
     initPlayer();
     LoadLevels();
     LoadFXAndShaders();
 
     getLevelLoader()->LoadJSONWeapons();
     getLevelLoader()->LoadConfig();
+
+    if (getLevelLoader()->getIndexSpaceshipSelected() >= 0) {
+        spaceshipSelectedIndex = getLevelLoader()->getIndexSpaceshipSelected();
+        loadSelectedSpaceshipModel();
+    }
 
     ComponentSound::fadeInMusic(
         ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
@@ -115,9 +124,10 @@ void ComponentGame::onStart()
 
     storeManager = new StoreManager(player, textWriter);
 
-    loadSpaceship("spaceships/player.fbx", "spaceships/spaceship_01.png", {0.3, 100, 100});
-    loadSpaceship("spaceships/player02.fbx", "spaceships/spaceship_02.png", {0.5, 130, 70});
-    loadSpaceship("spaceships/player03.fbx", "spaceships/spaceship_03.png", {0.2, 130, 130});
+    difficultyInformation.push_back(new Image(SETUP->IMAGES_FOLDER + "spaceships/difficulty_01.png"));
+    difficultyInformation.push_back(new Image(SETUP->IMAGES_FOLDER + "spaceships/difficulty_02.png"));
+    difficultyInformation.push_back(new Image(SETUP->IMAGES_FOLDER + "spaceships/difficulty_03.png"));
+    difficultyInformation.push_back(new Image(SETUP->IMAGES_FOLDER + "spaceships/difficulty_04.png"));
 
     fadeInSpriteRed = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "flash01.png"), 96, 96, 37, 45));
     fadeInSpriteGreen = new Sprite2D(0, 0, false, new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "flash02.png"), 96, 96, 37, 45));
@@ -232,6 +242,10 @@ void ComponentGame::onUpdate()
         }
         case EngineSetup::PRESS_KEY_GAMEOVER: {
             handleOnUpdatePressKeyGameOver(alpha);
+            break;
+        }
+        case EngineSetup::DIFFICULT_SELECTOR: {
+            handleOnUpdateDifficultySelector(alpha);
             break;
         }
     }
@@ -477,11 +491,17 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
         }
         case EngineSetup::SPACESHIP_SELECTOR: {
             handleSpaceShipSelector();
+            break;
         }
-        case EngineSetup::INTRO:
+        case EngineSetup::INTRO: {
             ComponentsManager::get()->getComponentMenu()->setEnabled(false);
             introCounter.setEnabled(true);
             break;
+        }
+        case EngineSetup::DIFFICULT_SELECTOR: {
+            handleDifficultySelector();
+            break;
+        }
     }
 
     this->gameState = state;
@@ -912,19 +932,15 @@ void ComponentGame::selectSpaceshipAndStartGame()
     player->respawn();
 }
 
-void ComponentGame::pressedKeyForNewGameOrResumeGame() const
+void ComponentGame::launchSpaceshipSelector() const
 {
-    if (!getLevelLoader()->isLevelStartedToPlay()) {
-        getFadeToGameState()->setSpeed(0.004);
-        ComponentsManager::get()->getComponentSound()->stopChannel(EngineSetup::SoundChannels::SND_GLOBAL);
-        ComponentsManager::get()->getComponentSound()->stopMusic();
+    getFadeToGameState()->setSpeed(0.004);
+    ComponentsManager::get()->getComponentSound()->stopChannel(EngineSetup::SoundChannels::SND_GLOBAL);
+    ComponentsManager::get()->getComponentSound()->stopMusic();
 
-        ComponentsManager::get()->getComponentSound()->sound("startIntro", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-        ComponentsManager::get()->getComponentMenu()->setMenuEnabled(false);
-        makeFadeToGameState(EngineSetup::GameState::SPACESHIP_SELECTOR, true);
-    } else {
-        makeFadeToGameState(EngineSetup::GameState::GAMING, true);
-    }
+    ComponentsManager::get()->getComponentSound()->sound("startIntro", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+    ComponentsManager::get()->getComponentMenu()->setMenuEnabled(false);
+    makeFadeToGameState(EngineSetup::GameState::DIFFICULT_SELECTOR, true);
 }
 
 void ComponentGame::pressedKeyForWin() const
@@ -1350,7 +1366,7 @@ void ComponentGame::writeDialogTextToContinue(const char *string)
 
 void ComponentGame::handleOnUpdateCountDown()
 {
-    handleOnUpdateMessageRadio();
+    //handleOnUpdateMessageRadio();
     zoomCameraCountDown();
 
     float oldAlpha = textWriter->getAlpha();
@@ -1376,7 +1392,7 @@ void ComponentGame::handleOnUpdateCountDown()
     getLevelLoader()->getCountDown()->update();
 
     if (getLevelLoader()->getCountDown()->isFinished()) {
-        if (getLevelLoader()->getMainMessage() != nullptr) {
+        if (!getLevelLoader()->getMainMessage()->isEmpty()) {
             setCurrentEnemyDialog(getLevelLoader()->getMainMessage());
         }
         setGameState(EngineSetup::GameState::GAMING);
@@ -1517,5 +1533,29 @@ void ComponentGame::increaseIntroImage() {
     if (currentIndexIntro + 1 < (unsigned int) imagesIntro.size()) {
         ComponentsManager::get()->getComponentSound()->sound("slideMachine", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         currentIndexIntro++;
+    }
+}
+
+void ComponentGame::handleDifficultySelector() {
+
+}
+
+void ComponentGame::handleOnUpdateDifficultySelector(const float alpha)
+{
+    const char* options[4] = {"Easy", "Normal", "Hard", "BFM" };
+    int indexRatio = (int) getLevelLoader()->difficultyRatio-1;
+
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+    int startYPosition = 150;
+
+    difficultyInformation[indexRatio]->drawFlatAlpha(0, 0, alpha, fb);
+    border.drawFlatAlpha(0, 0, alpha, fb);
+
+    for (int i = 0; i < 4; i++) {
+        if (indexRatio == i) {
+            textWriter->writeTextTTFAutoSize(800, startYPosition + i * 100, options[i], PaletteColors::getStamina(), 1.5);
+        } else {
+            textWriter->writeTextTTFAutoSize(800, startYPosition + i * 100, options[i], PaletteColors::getMenuOptions(), 1.5);
+        }
     }
 }

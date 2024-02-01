@@ -102,9 +102,7 @@ private:
     std::vector <Mesh3D*> spaceships;
     std::vector <SpaceshipAttributes> spaceshipsAttributes;
     std::vector <Image*> spaceshipsInformation;
-
-
-    unsigned int spaceshipSelectedIndex;
+    std::vector <Image*> difficultyInformation;
 
     EnemyDialog *currentEnemyDialog;
 
@@ -166,8 +164,6 @@ public:
     static void setEnemyWeaponsEnabled(bool value);
 
     static void removeInGameObjects() ;
-
-    void pressedKeyForNewGameOrResumeGame() const;
 
     void pressedKeyForBeginLevel();
 
@@ -317,6 +313,14 @@ public:
     void decreaseIntroImage();
 
     void increaseIntroImage();
+
+    void handleDifficultySelector();
+
+    void handleOnUpdateDifficultySelector(const float alpha);
+
+    void launchSpaceshipSelector() const;
+
+    unsigned int spaceshipSelectedIndex;
 };
 
 

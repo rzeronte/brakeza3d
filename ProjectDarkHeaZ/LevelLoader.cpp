@@ -33,7 +33,9 @@
 LevelLoader::LevelLoader(std::string filename)
 :
     waitingToWin(Counter(3)),
-    stats(new LevelStats())
+    stats(new LevelStats()),
+    difficultyRatio(1),
+    currentLevelIndex(-1)
 {
     addLevel(std::move(filename));
     setLevelStartedToPlay(false);
@@ -53,6 +55,7 @@ void LevelLoader::load(int levelIndex)
     setHasMusic(false);
 
     loadLevelFromJSON(levels[levelIndex]);
+    loaded = true;
 }
 
 void LevelLoader::addLevel(std::string filename)
@@ -181,8 +184,9 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     );
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "message") != nullptr) {
-        delete mainMessage;
         parseMainMessageJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "message"));
+    } else {
+        mainMessage.setEmpty(true);
     }
 
     auto c = parseColorJSON(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "color"));
@@ -884,12 +888,10 @@ void LevelLoader::parseMessageJSON(cJSON *message, EnemyGhost *enemy)
     auto dialog = new EnemyDialog(
         enemy,
         enemy->getAvatarHud(),
-        enemy->getAvatar(),
         stamina,
         text.c_str(),
         sound.c_str(),
-        enemy->getName().c_str(),
-        ComponentsManager::get()->getComponentWindow()->getFontDefault()
+        enemy->getName().c_str()
     );
 
     enemy->getDialogs().push_back(dialog);
@@ -903,16 +905,13 @@ void LevelLoader::parseMainMessageJSON(cJSON *message)
     std::string avatarHud = cJSON_GetObjectItemCaseSensitive(message, "avatarHud")->valuestring;
     auto stamina = (float) cJSON_GetObjectItemCaseSensitive(message, "stamina")->valuedouble;
 
-    mainMessage = new EnemyDialog(
-        nullptr,
-        new Image(EngineSetup::get()->ICONS_FOLDER + avatarHud),
-        new Image(EngineSetup::get()->ICONS_FOLDER + avatarHud),
-        stamina,
-        text.c_str(),
-        sound.c_str(),
-        from.c_str(),
-        ComponentsManager::get()->getComponentWindow()->getFontAlternative()
-    );
+    mainMessage.setAvatar(new Image(EngineSetup::get()->ICONS_FOLDER + avatarHud));
+    mainMessage.setStaminaPercentage(stamina);
+    mainMessage.setFrom(from);
+    mainMessage.setSound(sound);
+    mainMessage.setMessage(text);
+    mainMessage.setEmpty(false);
+    mainMessage.setStep(ComponentsManager::get()->getComponentSound()->soundDuration(sound));
 }
 
 std::vector<Image*> &LevelLoader::getTutorials() {
@@ -988,11 +987,17 @@ void LevelLoader::LoadConfig()
     int level = cJSON_GetObjectItemCaseSensitive(myDataJSON, "level")->valueint;
 
     if (level >= 0) {
-        currentLevelIndex = level - 1;
+        currentLevelIndex = level;
+    } else {
+        currentLevelIndex = -1;
     }
+
+    difficultyRatio = (float) cJSON_GetObjectItemCaseSensitive(myDataJSON, "difficultyRatio")->valuedouble;
+
+    indexSpaceshipSelected = (int) cJSON_GetObjectItemCaseSensitive(myDataJSON, "spaceship")->valueint;
 }
 
-void LevelLoader::updateConfig(int level) {
+void LevelLoader::updateConfig(int level) const {
 
     std::string filePathStr = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->DARKHEAZ_MAIN_CONFIG;
     const char* file_path = filePathStr.c_str();
@@ -1000,6 +1005,8 @@ void LevelLoader::updateConfig(int level) {
     cJSON *json = cJSON_CreateObject();
 
     cJSON_AddNumberToObject(json, "level", level);
+    cJSON_AddNumberToObject(json, "difficultyRatio", difficultyRatio);
+    cJSON_AddNumberToObject(json, "spaceship", ComponentsManager::get()->getComponentGame()->spaceshipSelectedIndex);
 
     char *output_string = cJSON_Print(json);
 
@@ -1019,9 +1026,9 @@ void LevelLoader::updateConfig(int level) {
     free(output_string);
 }
 
-EnemyDialog *LevelLoader::getMainMessage() const
+EnemyDialog *LevelLoader::getMainMessage()
 {
-    return mainMessage;
+    return &mainMessage;
 }
 
 void LevelLoader::setLevelScene(const std::string &levelScene) {
@@ -1075,4 +1082,24 @@ LevelLoader::~LevelLoader()
     for (auto weapon: weapons) {
         delete weapon;
     }
+}
+
+void LevelLoader::decreaseDifficulty() {
+    difficultyRatio--;
+    if (difficultyRatio <= 1) difficultyRatio = 1;
+    Logging::Message("Difficulty: %f", difficultyRatio);
+}
+
+void LevelLoader::increaseDifficulty() {
+    difficultyRatio++;
+    if (difficultyRatio >= 4) difficultyRatio = 4;
+    Logging::Message("Difficulty: %f", difficultyRatio);
+}
+
+int LevelLoader::getIndexSpaceshipSelected() const {
+    return indexSpaceshipSelected;
+}
+
+bool LevelLoader::isLoaded() const {
+    return loaded;
 }

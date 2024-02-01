@@ -6,7 +6,7 @@
   "foregroundImage": "foregrounds/01.png",
   "allowEnergyShield": true,
   "histories": ["histories/lore_01_1.png", "histories/lore_01_2.png", "histories/lore_01_3.png", "histories/lore_01_4.png", "histories/lore_01_5.png", "histories/lore_01_6.png"],
-  "tutorials": ["tutorials/tutorial_first.png"],
+  "tutorials": [],
   "color": { "r": 255, "g": 0, "b": 0 },
   "message": {
     "from": "HeadQuarters",

@@ -202,7 +202,8 @@ public:
         INTRO = 12,
         GAMING_TUTORIAL = 13,
         STORE = 14,
-        SPACESHIP_SELECTOR = 16
+        SPACESHIP_SELECTOR = 16,
+        DIFFICULT_SELECTOR = 17
     } GameState;
 
     typedef enum {

@@ -65,9 +65,10 @@ public:
 
     enum MenuActions {
         MNU_NEW_GAME = 0,
-        MNU_CREDITS = 1,
-        MNU_HELP = 2,
-        MNU_EXIT = 3,
+        MNU_RESET = 1,
+        MNU_CREDITS = 2,
+        MNU_HELP = 3,
+        MNU_EXIT = 4,
     };
 
     void LoadScene();

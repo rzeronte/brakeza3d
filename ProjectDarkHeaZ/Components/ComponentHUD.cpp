@@ -250,13 +250,13 @@ void ComponentHUD::drawIconWeaponsAndLevelName() const
     );
 
     // level number
-    textWriter->writeTextTTFAutoSize(
+    /*textWriter->writeTextTTFAutoSize(
         globalOffset.x + offsetIcons.x + levelNumberOffset.x,
         globalOffset.y + offsetIcons.y + levelNumberOffset.y,
         game->getLevelLoader()->getLevelName().c_str(),
         PaletteColors::getMenuOptions(),
         1.75f
-    );
+    );*/
 
     // icon player reflection
     auto weaponReflection = player->getWeaponTypeByLabel("reflection");

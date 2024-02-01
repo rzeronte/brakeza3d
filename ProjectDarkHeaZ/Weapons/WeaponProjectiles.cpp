@@ -54,7 +54,7 @@ bool WeaponProjectiles::shootProjectile(
             parent,
             this,
             rotation,
-            Vertex3D(0.5, 0.5, 0.5),
+            Vertex3D(0.15, 0.15, 0.15),
             direction,
             getDamage(),
             (float) getSpeed(),

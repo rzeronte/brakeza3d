@@ -77,7 +77,10 @@ public:
 
     bool endLevel;
     LevelStats *stats;
-    EnemyDialog *mainMessage;
+    EnemyDialog mainMessage;
+    float difficultyRatio;
+    int indexSpaceshipSelected;
+    bool loaded = false;
 private:
     std::vector<Weapon *> weapons;
 
@@ -189,11 +192,11 @@ public:
 
     void LoadConfig();
 
-    static void updateConfig(int level);
+    void updateConfig(int level) const;
 
     void parseMainMessageJSON(cJSON *message);
 
-    EnemyDialog *getMainMessage() const;
+    [[nodiscard]] EnemyDialog *getMainMessage();
 
     void setLevelScene(const std::string &levelScene);
 
@@ -204,6 +207,14 @@ public:
     virtual ~LevelLoader();
 
     void reload();
+
+    void increaseDifficulty();
+
+    void decreaseDifficulty();
+
+    int getIndexSpaceshipSelected() const;
+
+    bool isLoaded() const;
 };
 
 

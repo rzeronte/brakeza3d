@@ -3,7 +3,6 @@
   "scene": "scene13.json",
   "backgroundImage": "levels/bg_03.png",
   "foregroundImage": "foregrounds/03.png",
-  "music": "musicLevels03",
   "allowEnergyShield": true,
   "color": { "r": 0, "g": 255, "b": 0 },
   "histories": [],

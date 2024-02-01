@@ -13,7 +13,7 @@
 #include <vector>
 #include "../Objects/Vertex3D.h"
 
-#define FLT_MAX 10
+#define FLT_MAX_PATHFINDING 10
 typedef std::pair<int, int> PairData;
 
 
