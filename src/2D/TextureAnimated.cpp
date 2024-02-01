@@ -7,6 +7,8 @@
 #include "../../include/ComponentsManager.h"
 
 TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps) :
+    currentspriteHeight(0),
+    currentSpriteWidth(0),
     baseFilename(std::move(baseFile)),
     numberFramesToLoad(numFrames),
     currentFrame(0),
@@ -25,6 +27,8 @@ TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps) :
 
 TextureAnimated::TextureAnimated(TextureAnimated *textureAnimated)
 :
+    currentspriteHeight(0),
+    currentSpriteWidth(0),
     baseFilename(textureAnimated->baseFilename),
     numberFramesToLoad(textureAnimated->numberFramesToLoad),
     currentFrame(0),
