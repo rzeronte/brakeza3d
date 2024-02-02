@@ -40,7 +40,7 @@
         "stopEvery": 3,
         "type": "projectile",
         "icon": "icons/weapon_projectile.png",
-        "modelProjectile": "projectile_weapon_01.fbx",
+        "modelProjectile": "projectile_weapon_01_magenta.fbx",
         "model": "item_weapon_01.fbx",
         "flatTexture": true,
         "enableLights": false,

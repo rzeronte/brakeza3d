@@ -17,7 +17,7 @@
       "stopEvery": 5,
       "type": "projectile",
       "icon": "icons/weapon_projectile.png",
-      "modelProjectile": "projectile_weapon_01.fbx",
+      "modelProjectile": "projectile_weapon_01_green.fbx",
       "model": "item_weapon_01.fbx",
       "flatTexture": true,
       "enableLights": false,
