@@ -21,11 +21,11 @@ void StoreManager::addItem(StoreItem *item)
 
 void StoreManager::update(float alpha)
 {
-    int separation = 66;
-    int separationVertical = 66;
+    int separation = 70;
+    int separationVertical = 70;
 
     int numRows = 3;
-    int numColumns = 3;
+    int numColumns = 4;
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
     for (int row = 0; row < numRows; row++) {
@@ -130,7 +130,7 @@ void StoreManager::loadDefaultItems()
         new Image(folder + "item1_icon_small.png"),
         new Image(folder + "item1_icon_off.png"),
         new Image(folder + "item1_desc.png"),
-        500,
+        600,
         nullptr,
         true
     ));
@@ -140,7 +140,7 @@ void StoreManager::loadDefaultItems()
         new Image(folder + "item2_icon_small.png"),
         new Image(folder + "item2_icon_off.png"),
         new Image(folder + "item2_desc.png"),
-        500,
+        600,
         nullptr,
         true
     ));
@@ -150,7 +150,7 @@ void StoreManager::loadDefaultItems()
         new Image(folder + "item3_icon_small.png"),
         new Image(folder + "item3_icon_off.png"),
         new Image(folder + "item3_desc.png"),
-        1100,
+        600,
         nullptr,
         true
     ));
@@ -160,7 +160,7 @@ void StoreManager::loadDefaultItems()
         new Image(folder + "item4_icon_small.png"),
         new Image(folder + "item4_icon_off.png"),
         new Image(folder + "item4_desc.png"),
-        1100,
+        900,
         nullptr,
         true
     ));
@@ -170,7 +170,7 @@ void StoreManager::loadDefaultItems()
         new Image(folder + "item5_icon_small.png"),
         new Image(folder + "item5_icon_off.png"),
         new Image(folder + "item5_desc.png"),
-        1100,
+        900,
         nullptr,
         true
     ));
@@ -180,7 +180,27 @@ void StoreManager::loadDefaultItems()
         new Image(folder + "item6_icon_small.png"),
         new Image(folder + "item6_icon_off.png"),
         new Image(folder + "item6_desc.png"),
-        1100,
+        900,
+        nullptr,
+        true
+    ));
+
+    addItem(new StoreItem(
+        new Image(folder + "item7_icon.png"),
+        new Image(folder + "item7_icon_small.png"),
+        new Image(folder + "item7_icon_off.png"),
+        new Image(folder + "item7_desc.png"),
+        1000,
+        nullptr,
+        true
+    ));
+
+    addItem(new StoreItem(
+        new Image(folder + "item8_icon.png"),
+        new Image(folder + "item8_icon_small.png"),
+        new Image(folder + "item8_icon_off.png"),
+        new Image(folder + "item8_desc.png"),
+        1000,
         nullptr,
         true
     ));

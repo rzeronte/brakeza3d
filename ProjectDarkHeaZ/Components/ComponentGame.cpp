@@ -356,17 +356,17 @@ void ComponentGame::showLevelStatistics(float alpha)
     writeDialogTextToContinue("Press ENTER to continue...");
 
     ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(
-        EngineSetup::get()->screenWidth/2-16 ,
+        EngineSetup::get()->screenWidth/2-20 ,
         offsetY + 295,
         alpha,
         fb
     );
 
     textWriter->writeTTFCenterHorizontal(
-        offsetY + 350,
+        offsetY + 347,
         std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(),
-        c,
-        0.5
+        Color::green(),
+        0.75f
     );
 }
 

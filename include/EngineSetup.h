@@ -212,7 +212,9 @@ public:
         ITEM_SATELLITE = 2,
         ITEM_MIRROR_SHOOT = 3,
         ITEM_EXTRA_DASH = 4,
-        ITEM_FAST_SHOOT_CADENCE = 5
+        ITEM_FAST_SHOOT_CADENCE = 5,
+        ITEM_FAST_ROTATION_TO_ENEMY = 6,
+        ITEM_LONG_LIVE = 7,
     } StoreItems;
 };
 

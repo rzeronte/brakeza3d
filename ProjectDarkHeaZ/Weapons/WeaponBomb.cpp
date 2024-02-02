@@ -33,10 +33,10 @@ void WeaponBomb::shootBomb(Object3D *parent, Vertex3D position)
         projectile->setRotationFrameEnabled(true);
         projectile->setFlatTextureColor(false);
         projectile->makeSimpleGhostBody(
-                Vertex3D(1, 1, 1),
-                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                EngineSetup::collisionGroups::Player,
-                EngineSetup::collisionGroups::Enemy
+            Vertex3D(1, 1, 1),
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            EngineSetup::collisionGroups::Player,
+            EngineSetup::collisionGroups::Enemy
         );
 
         setAmmoAmount(ammoAmount - 1);

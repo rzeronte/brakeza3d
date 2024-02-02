@@ -45,3 +45,7 @@ void RotatableToTarget::setRotationTarget(Object3D *target)
 {
     RotatableToTarget::rotationTarget = target;
 }
+
+void RotatableToTarget::setRotationToTargetSpeed(float rotationToTargetSpeed) {
+    RotatableToTarget::rotationToTargetSpeed = rotationToTargetSpeed;
+}

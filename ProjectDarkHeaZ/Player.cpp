@@ -14,7 +14,7 @@ Player::Player()
 :
     god(false),
     LivingObject(this),
-    RotatableToTarget(nullptr, this, 2.0f),
+    RotatableToTarget(nullptr, this, 1.5f),
     energy(0),
     startEnergy(0),
     recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
@@ -229,10 +229,15 @@ void Player::updateTargetRotation()
 {
     setRotationTarget(ComponentsManager::get()->getComponentRender()->getSelectedObject());
 
+    if (ComponentsManager::get()->getComponentGame()->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_FAST_ROTATION_TO_ENEMY)) {
+        auto currentRotation = rotationToTargetSpeed;
+        setRotationToTargetSpeed(currentRotation * 1.75f);
+        makeRotationToTarget();
+        setRotationToTargetSpeed(currentRotation);
+        return;
+    }
+
     makeRotationToTarget();
-
-
-    //const float theta = newRot.X() * b;
 }
 
 void Player::updatePlayerEnergy()

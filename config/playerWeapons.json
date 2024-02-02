@@ -85,7 +85,7 @@
       "stopDuration": 0,
       "stopEvery": 0,
       "type": "bomb",
-      "icon": "icons/weapon_instant.png",
+      "icon": "icons/weapon_bomb.png",
       "modelProjectile": "weapon_projectile_bomb.fbx",
       "model": "weapon_bomb_ammo.fbx",
       "flatTexture": false,
