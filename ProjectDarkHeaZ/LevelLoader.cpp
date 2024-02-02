@@ -136,8 +136,11 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
     }
 
     if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "music") != nullptr) {
-        setMusic(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "music")->valuestring);
-        this->hasMusic = true;
+        auto levelMusic = cJSON_GetObjectItemCaseSensitive(jsonContentFile, "music")->valuestring;
+        if (music != levelMusic) {
+            setMusic(levelMusic);
+            this->hasMusic = true;
+        }
     }
 
     setLevelName(cJSON_GetObjectItemCaseSensitive(jsonContentFile, "name")->valuestring);

@@ -820,3 +820,11 @@ void Player::setStartEnergy(float startEnergy) {
 void Player::setPower(float power) {
     Player::power = power;
 }
+
+void Player::setAutoTargetOnNextFrame(bool autoTargetOnNextFrame) {
+    Player::autoTargetOnNextFrame = autoTargetOnNextFrame;
+}
+
+bool Player::isAutoTargetOnNextFrame() const {
+    return autoTargetOnNextFrame;
+}

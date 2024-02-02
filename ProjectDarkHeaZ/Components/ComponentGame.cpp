@@ -254,6 +254,11 @@ void ComponentGame::onUpdate()
 void ComponentGame::postUpdate()
 {
     addRayLightsToShaderLaserLine();
+
+    if (getPlayer()->isAutoTargetOnNextFrame()) {
+        ComponentsManager::get()->getComponentGame()->selectClosestObject3DFromPlayer();
+        getPlayer()->setAutoTargetOnNextFrame(false);
+    }
 }
 
 void ComponentGame::handleOnUpdateTutorialImages(float alpha)
@@ -698,6 +703,8 @@ Object3D *ComponentGame::getClosesObject3DFromPosition(Vertex3D to, bool skipPla
             continue;
         }
 
+        if (mesh->isRemoved()) continue;
+
         mesh->updateBoundingBox();
         for (auto & vertice : mesh->getAabb().vertices) {
             Vector3D v(to, vertice);
@@ -935,7 +942,7 @@ void ComponentGame::selectSpaceshipAndStartGame()
 void ComponentGame::launchSpaceshipSelector() const
 {
     getFadeToGameState()->setSpeed(0.004);
-    ComponentsManager::get()->getComponentSound()->stopChannel(EngineSetup::SoundChannels::SND_GLOBAL);
+    ComponentSound::stopChannel(EngineSetup::SoundChannels::SND_GLOBAL);
     ComponentsManager::get()->getComponentSound()->stopMusic();
 
     ComponentsManager::get()->getComponentSound()->sound("startIntro", EngineSetup::SoundChannels::SND_GLOBAL, 0);
@@ -1361,7 +1368,7 @@ void ComponentGame::decreaseHelpImage()
 void ComponentGame::writeDialogTextToContinue(const char *string)
 {
     textWriter->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());
-    textWriter->writeTTFCenterHorizontal(600, string, PaletteColors::getMenuOptions(), 0.75f);
+    textWriter->writeTTFCenterHorizontal(575, string, PaletteColors::getMenuOptions(), 0.75f);
 }
 
 void ComponentGame::handleOnUpdateCountDown()
@@ -1514,7 +1521,7 @@ void ComponentGame::handleOnUpdateIntro(float alpha)
 
         if ((int) imagesIntro.size() > 1) {
             std::string message = std::to_string(currentIndexIntro + 1) + " of " + std::to_string((int)imagesIntro.size());
-            textWriter->writeTTFCenterHorizontal(560, message.c_str(), PaletteColors::getMenuOptions(), 0.75f);
+            textWriter->writeTTFCenterHorizontal(530, message.c_str(), PaletteColors::getMenuOptions(), 0.75f);
         }
         writeDialogTextToContinue("Press ENTER to START...");
         boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
@@ -1546,16 +1553,40 @@ void ComponentGame::handleOnUpdateDifficultySelector(const float alpha)
     int indexRatio = (int) getLevelLoader()->difficultyRatio-1;
 
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
-    int startYPosition = 150;
+    int startYPosition = 200;
 
     difficultyInformation[indexRatio]->drawFlatAlpha(0, 0, alpha, fb);
     border.drawFlatAlpha(0, 0, alpha, fb);
+    boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
 
     for (int i = 0; i < 4; i++) {
         if (indexRatio == i) {
-            textWriter->writeTextTTFAutoSize(800, startYPosition + i * 100, options[i], PaletteColors::getStamina(), 1.5);
+            textWriter->writeTextTTFAutoSize(750, startYPosition + i * 50, options[i], PaletteColors::getStamina(), 1.0);
         } else {
-            textWriter->writeTextTTFAutoSize(800, startYPosition + i * 100, options[i], PaletteColors::getMenuOptions(), 1.5);
+            textWriter->writeTextTTFAutoSize(750, startYPosition + i * 50, options[i], PaletteColors::getMenuOptions(), 1.0);
         }
     }
+
+    writeDialogTextToContinue("Press ENTER to continue...");
+}
+
+void ComponentGame::resetGame() {
+    ComponentSound::stopChannel(EngineSetup::SoundChannels::SND_GLOBAL);
+    ComponentsManager::get()->getComponentSound()->stopMusic();
+    currentIndexIntro = 0;
+    ComponentGame::removeInGameObjects();
+    getLevelLoader()->setLevelStartedToPlay(false);
+    getLevelLoader()->setCurrentLevelIndex(-1);
+    getLevelLoader()->updateConfig(-1);
+    SceneLoader::clearScene();
+    ComponentsManager::get()->getComponentMenu()->LoadScene();
+
+    ComponentSound::fadeInMusic(
+        ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
+        -1,
+        SPLASH_TIME * 1000
+    );
+
+    getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
+    makeFadeToGameState(EngineSetup::GameState::MENU, true);
 }

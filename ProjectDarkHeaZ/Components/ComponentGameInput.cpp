@@ -219,15 +219,8 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
         }
 
         if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_RESET) {
-            ComponentGame::removeInGameObjects();
-            componentGame->getLevelLoader()->setLevelStartedToPlay(false);
-            componentGame->getLevelLoader()->setCurrentLevelIndex(-1);
-            componentGame->getLevelLoader()->updateConfig(-1);
-            componentRender->getSceneLoader().clearScene();
-            componentMenu->LoadScene();
-
-            componentGame->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
-            componentGame->makeFadeToGameState(EngineSetup::GameState::MENU, true);
+            componentGame->resetGame();
+            return;
         }
 
         if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_HELP) {
@@ -516,6 +509,8 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     bool controllerDownPad = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN;
     bool controllerUpPad = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP;
 
+    bool controllerButtonA = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_A;
+
     const bool cursorLeft = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_LEFT];
     const bool cursorRight = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RIGHT];
     const bool cursorUp = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_UP];
@@ -570,7 +565,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
             return;
         }
 
-        if (enter || componentInput->getControllerButtonA()) {
+        if (enter || controllerButtonA) {
             game->getStoreManager()->buyCurrentSelected();
             return;
         }
@@ -590,7 +585,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
         }
 
         if (enter || componentInput->getControllerButtonA()) {
-            game->setGameState(EngineSetup::GameState::SPACESHIP_SELECTOR);
+            game->makeFadeToGameState(EngineSetup::GameState::SPACESHIP_SELECTOR, true);
             return;
         }
     }

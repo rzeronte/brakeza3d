@@ -81,7 +81,7 @@ public:
 
     [[nodiscard]] int getFps() const;
 
-    void deleteRemovedObjects();
+    static void deleteRemovedObjects();
 
     EngineSetup::LuaStateScripts getStateLUAScripts();
 

@@ -5,7 +5,7 @@
   "backgroundImage": "levels/bg_06.png",
   "foregroundImage": "foregrounds/01.png",
   "allowEnergyShield": true,
-  "histories": ["default_history.png"],
+  "histories": ["tutorial_mask.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "endLevel": true,
   "enemies": [

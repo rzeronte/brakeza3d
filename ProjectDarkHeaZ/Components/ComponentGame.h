@@ -321,6 +321,8 @@ public:
     void launchSpaceshipSelector() const;
 
     unsigned int spaceshipSelectedIndex;
+
+    void resetGame();
 };
 
 

@@ -71,6 +71,8 @@ private:
     Sprite2D *spriteEnergyShield;
 
     float projectileStartOffsetPosition;
+
+    bool autoTargetOnNextFrame = false;
 public:
 
     Player();
@@ -202,6 +204,10 @@ public:
     void setPower(float power);
 
     bool god;
+
+    void setAutoTargetOnNextFrame(bool autoTargetOnNextFrame);
+
+    bool isAutoTargetOnNextFrame() const;
 };
 
 

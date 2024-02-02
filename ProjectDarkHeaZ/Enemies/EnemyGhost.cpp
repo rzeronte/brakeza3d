@@ -272,6 +272,7 @@ void EnemyGhost::remove()
 {
     if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
         ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
+        ComponentsManager::get()->getComponentGame()->getPlayer()->setAutoTargetOnNextFrame(true);
     }
 
     Mesh3DAnimatedGhost::remove();
@@ -334,14 +335,13 @@ void EnemyGhost::unstuck()
 
 Object3D *EnemyGhost::getTarget()
 {
-    auto game = ComponentsManager::get()->getComponentGame();
-    auto target = game->getClosestReflection(getPosition());
+    auto target = ComponentGame::getClosestReflection(getPosition());
 
     if (target != nullptr) {
         return target;
     }
 
-    return game->getPlayer();
+    return ComponentsManager::get()->getComponentGame()->getPlayer();
 }
 
 void EnemyGhost::addFixedLaser(ProjectileRay *ray)

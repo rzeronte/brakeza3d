@@ -56,7 +56,6 @@ void ComponentHUD::onUpdate()
     if (!isEnabled()) return;
 
     drawIconWeaponsAndLevelName();
-    drawEnemyIconAndName();
     drawGhateringResources();
 
     shaderLasers->update();
@@ -67,6 +66,7 @@ void ComponentHUD::postUpdate()
     if (!isEnabled()) return;
 
     drawHUD();
+    drawEnemyIconAndName();
     drawShaderLasers();
 }
 
@@ -250,13 +250,13 @@ void ComponentHUD::drawIconWeaponsAndLevelName() const
     );
 
     // level number
-    /*textWriter->writeTextTTFAutoSize(
+    textWriter->writeTextTTFAutoSize(
         globalOffset.x + offsetIcons.x + levelNumberOffset.x,
         globalOffset.y + offsetIcons.y + levelNumberOffset.y,
         game->getLevelLoader()->getLevelName().c_str(),
         PaletteColors::getMenuOptions(),
         1.75f
-    );*/
+    );
 
     // icon player reflection
     auto weaponReflection = player->getWeaponTypeByLabel("reflection");
@@ -298,22 +298,24 @@ void ComponentHUD::drawEnemyIconAndName()
     auto textWriter = ComponentsManager::get()->getComponentGame()->getTextWriter();
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
-    auto enemy = dynamic_cast<EnemyGhost*>(objectSelected);
-    if (enemy != nullptr) {
-        enemy->getAvatar()->drawFlatAlpha(
-            globalOffset.x + avatarEnemyOffset.x,
-            globalOffset.y + avatarEnemyOffset.y,
-            1,
-            fb
-        );
+    if (objectSelected != nullptr) {
+        auto enemy = dynamic_cast<EnemyGhost*>(objectSelected);
+        if (enemy != nullptr && !enemy->isRemoved()) {
+            enemy->getAvatar()->drawFlatAlpha(
+                globalOffset.x + avatarEnemyOffset.x,
+                globalOffset.y + avatarEnemyOffset.y,
+                1,
+                fb
+            );
 
-        textWriter->writeTextTTFAutoSize(
-            globalOffset.x + avatarEnemyOffset.x + enemy->getAvatar()->width() + 10,
-            globalOffset.y + avatarEnemyOffset.y + 50,
-            enemy->getName().c_str(),
-            PaletteColors::getMenuOptions(),
-            0.5f
-        );
+            textWriter->writeTextTTFAutoSize(
+                globalOffset.x + avatarEnemyOffset.x + enemy->getAvatar()->width() + 10,
+                globalOffset.y + avatarEnemyOffset.y + 50,
+                enemy->getName().c_str(),
+                PaletteColors::getMenuOptions(),
+                0.5f
+            );
+        }
     } else {
         HUDTextures->getTextureByLabel("emptyEnemy")->drawFlatAlpha(
             globalOffset.x + avatarEnemyOffset.x,
@@ -365,22 +367,24 @@ void ComponentHUD::drawShaderLasers()
 
     // Enemy stamina
     auto objectSelected = ComponentsManager::get()->getComponentRender()->getSelectedObject();
-    auto enemy = dynamic_cast<EnemyGhost*>(objectSelected);
-    if (enemy != nullptr) {
-        const float enemyHealth = (enemy->getStamina() * fixedWidth) / enemy->getStartStamina();
+    if (objectSelected != nullptr) {
+        auto enemy = dynamic_cast<EnemyGhost*>(objectSelected);
+        if (enemy != nullptr) {
+            const float enemyHealth = (enemy->getStamina() * fixedWidth) / enemy->getStartStamina();
 
-        const int positionLaserX = globalOffset.x + staminaEnemyOffset.x;
-        const int positionLaserY = globalOffset.y + staminaEnemyOffset.y;
-        const int width = 146;
+            const int positionLaserX = globalOffset.x + staminaEnemyOffset.x;
+            const int positionLaserY = globalOffset.y + staminaEnemyOffset.y;
+            const int width = 146;
 
-        shaderLasers->addLaser(
-            glm::vec2(positionLaserX, positionLaserY),
-            glm::vec2(positionLaserX + (int)(width * enemyHealth), positionLaserY),
-            PaletteColors::getStamina().toGLM(),
-            strokeBars,
-            intensityBars,
-            0.05f
-        );
+            shaderLasers->addLaser(
+                glm::vec2(positionLaserX, positionLaserY),
+                glm::vec2(positionLaserX + (int)(width * enemyHealth), positionLaserY),
+                PaletteColors::getStamina().toGLM(),
+                strokeBars,
+                intensityBars,
+                0.05f
+            );
+        }
     }
 }
 
