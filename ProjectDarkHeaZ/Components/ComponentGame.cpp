@@ -1125,6 +1125,8 @@ void ComponentGame::reloadLevel(int level) const
 
 void ComponentGame::handlePressKeyByDead()
 {
+    currentIndexDeadImage = Tools::random(0, (int) imagesDead.size()-1);
+
     ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
 
     shaderBackgroundImage->resetOffsets();
@@ -1160,7 +1162,6 @@ void ComponentGame::handlePressKeyPreviousLevel()
 
 void ComponentGame::handlePressKeyGameOver()
 {
-    currentIndexDeadImage = Tools::random(0, (int) imagesDead.size()-1);
     ComponentsManager::get()->getComponentHUD()->setEnabled(false);
     getPlayer()->setEnabled(true);
     ComponentSound::playMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("gameOverMusic"), -1);
@@ -1467,6 +1468,7 @@ void ComponentGame::handleOnUpdatePressKeyByDead(const float alpha)
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
     boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
+    //Logging::Message("handleOnUpdatePressKeyByDead: %d", currentIndexDeadImage);
     auto deadImage = imagesDead[currentIndexDeadImage];
     deadImage->drawFlatAlpha(0, 0, alpha, fb);
     shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50f);

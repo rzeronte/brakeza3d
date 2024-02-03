@@ -12,7 +12,7 @@
       "name": "Traitor Destroyer",
       "avatar": "avatars/enemy_06.png",
       "avatarHud": "avatars/empty.png",
-      "position": { "x": 50, "y": 15 },
+      "position": { "x": 50, "y": 20 },
       "model": "spaceships/Executioner.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
@@ -58,8 +58,8 @@
       "reward": true,
       "motion": {
         "type": "patrol",
-        "from": { "x": 20, "y": 10 },
-        "to": { "x": 80, "y": 60 },
+        "from": { "x": 5, "y": 20 },
+        "to": { "x": 30, "y": 20 },
         "speed": 0.5
       },
       "weapon": {
@@ -98,8 +98,8 @@
       "reward": true,
       "motion": {
         "type": "patrol",
-        "from": { "x": 80, "y": 10 },
-        "to": { "x": 20, "y": 60 },
+        "from": { "x": 95, "y": 20 },
+        "to": { "x": 70, "y": 20 },
         "speed": 0.5
       },
       "weapon": {
@@ -129,11 +129,11 @@
   "items": [
     {
       "type": 7,
-      "position": { "x": 10, "y": 10 }
+      "position": { "x": 5, "y": 45 }
     },
     {
       "type": 7,
-      "position": { "x": 90, "y": 10 }
+      "position": { "x": 95, "y": 45 }
     }
   ]
 }
