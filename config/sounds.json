@@ -5,9 +5,8 @@
     { "file": "music/02.mp3", "label": "musicLevels02", "type": "music" },
     { "file": "music/03.mp3", "label": "musicLevels03", "type": "music" },
     { "file": "music/04.mp3", "label": "musicLevels04", "type": "music" },
-
-    { "file": "music/boss_01_music.mp3", "label": "bossMusic01", "type": "music" },
-    { "file": "music/boss_02_music.mp3", "label": "bossMusic02", "type": "music" },
+    { "file": "music/05.mp3", "label": "musicLevels05", "type": "music" },
+    { "file": "music/06.mp3", "label": "musicLevels06", "type": "music" },
 
     { "file": "music/game_over.mp3", "label": "gameOverMusic", "type": "music" },
     { "file": "music/tutorial.mp3", "label": "tutorial", "type": "music" },
@@ -86,6 +85,9 @@
     { "file": "radio/level02.mp3", "label": "radioLevel02", "type": "sound" },
     { "file": "radio/level03.mp3", "label": "radioLevel03", "type": "sound" },
     { "file": "radio/boss10.mp3", "label": "boss10", "type": "sound" },
+    { "file": "radio/boss15.mp3", "label": "boss15", "type": "sound" },
+    { "file": "radio/boss15_02.mp3", "label": "boss15_02", "type": "sound" },
+    { "file": "radio/boss20.mp3", "label": "boss20", "type": "sound" },
     { "file": "radio/level11.mp3", "label": "radioLevel11", "type": "sound" },
     { "file": "start_intro.wav", "label": "startIntro", "type": "sound" },
     { "file": "slide_machine.wav", "label": "slideMachine", "type": "sound" },
