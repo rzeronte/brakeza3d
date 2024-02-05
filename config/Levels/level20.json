@@ -1,12 +1,19 @@
 {
   "name": "20",
   "scene": "scene20.json",
-  "music": "musicLevels04",
+  "music": "musicLevels05",
   "backgroundImage": "levels/bg_05.png",
   "foregroundImage": "foregrounds/02.png",
   "allowEnergyShield": true,
   "histories": ["histories/lore_20_1.png", "histories/lore_20_2.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
+  "message": {
+    "from": "Enemy Commander",
+    "text": "The battle is lost human, your race is\non the verge of extinction.\nIf you surrender, I will be merciful to you.",
+    "sound": "boss20",
+    "stamina": 100,
+    "avatarHud": "avatars/message_boss_20.png"
+  },
   "endLevel": false,
   "enemies": [
   ],
@@ -23,12 +30,12 @@
   "bosses": [
     {
       "type": 3,
-      "name": "Prolis2",
-      "avatar": "avatars/14.png",
-      "avatarHud": "avatars/14.png",
+      "name": "Enemy Commander",
+      "avatar": "avatars/boss20.png",
+      "avatarHud": "avatars/message_boss_20.png",
       "position": { "x": 50, "y": 10 },
       "model": "spaceships/boss_20.fbx",
-      "size": { "x": 4, "y": 2,  "z": 2 },
+      "size": { "x": 3, "y": 8,  "z": 2 },
       "enableLights": false,
       "animated": true,
       "stamina": 3000,

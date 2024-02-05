@@ -15,7 +15,6 @@ ComponentGame::ComponentGame()
     fadeToGameState(nullptr),
     player(nullptr),
     shaderProjectiles(nullptr),
-    glassEffect(Image(SETUP->IMAGES_FOLDER + "menuBackground.png")),
     backgroundSpaceshipSelection(Image(SETUP->IMAGES_FOLDER + "backgroundSpaceshipSelection.png")),
     boxStore(Image(SETUP->IMAGES_FOLDER + "store.png")),
     imageBlack(Image(SETUP->IMAGES_FOLDER + "black.png")),
@@ -27,7 +26,7 @@ ComponentGame::ComponentGame()
     imageCrossFire(Image(SETUP->IMAGES_FOLDER + "crossfire.png")),
     border(Image(SETUP->IMAGES_FOLDER + "hud_background.png")),
     currentHelpIndex(0),
-    levelLoader(nullptr),
+    levelLoader(new LevelLoader()),
     shaderBackgroundImage(nullptr),
     shaderForegroundImage(nullptr),
     shaderColor(nullptr),
@@ -270,15 +269,12 @@ void ComponentGame::handleOnUpdateTutorialImages(float alpha)
         textWriter->setFont(window->getFontAlternative());
         std::string message = std::to_string(getLevelLoader()->getCurrentTutorialIndex() + 1) + " of " + std::to_string((int)getLevelLoader()->getTutorials().size());
 
-        //glassEffect.drawFlatAlpha(0, 0, alpha, window->getForegroundFramebuffer());
         getLevelLoader()->drawCurrentTutorialImage(alpha);
         writeDialogTextToContinue("Press ENTER to start...");
         if (getLevelLoader()->getTutorials().size() > 1) {
             textWriter->writeTTFCenterHorizontal(520, message.c_str(), PaletteColors::getMenuOptions(), 0.5f);
         }
-        auto bb = window->getBackgroundFramebuffer();
         boxTutorial.drawFlatAlpha(0, 0, alpha, window->getForegroundFramebuffer());
-        //glassEffect.drawFlatAlpha(0, 0, alpha, bb);
         textWriter->setAlpha(oldAlpha);
     } else {
         float oldAlpha = textWriter->getAlpha();
@@ -293,7 +289,6 @@ void ComponentGame::handleOnUpdateGamingTutorial(float alpha)
 {
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
     boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
-    glassEffect.drawFlatAlpha(0, 0, alpha, fb);
     help.drawFlatAlpha(0, 0, alpha, fb);
     writeDialogTextToContinue("Press ENTER to continue...");
 
@@ -738,37 +733,10 @@ void ComponentGame::selectClosestObject3DFromPlayer()
 void ComponentGame::LoadLevels()
 {
     auto basePath = EngineSetup::get()->CONFIG_FOLDER + "Levels/";
-    
-    levelLoader = new LevelLoader(basePath + "level01.json");
-    levelLoader->addLevel(basePath + "level02.json");
-    levelLoader->addLevel(basePath + "level03.json");
-    levelLoader->addLevel(basePath + "level04.json");
-    levelLoader->addLevel(basePath + "level05.json");
-    levelLoader->addLevel(basePath + "level06.json");
-    levelLoader->addLevel(basePath + "level07.json");
-    levelLoader->addLevel(basePath + "level08.json");
-    levelLoader->addLevel(basePath + "level09.json");
-    levelLoader->addLevel(basePath + "level10.json");
-    levelLoader->addLevel(basePath + "level11.json");
-    levelLoader->addLevel(basePath + "level12.json");
-    levelLoader->addLevel(basePath + "level13.json");
-    levelLoader->addLevel(basePath + "level14.json");
-    levelLoader->addLevel(basePath + "level15.json");
-    levelLoader->addLevel(basePath + "level16.json");
-    levelLoader->addLevel(basePath + "level17.json");
-    levelLoader->addLevel(basePath + "level18.json");
-    levelLoader->addLevel(basePath + "level19.json");
-    levelLoader->addLevel(basePath + "level20.json");
-    levelLoader->addLevel(basePath + "level21.json");
-    levelLoader->addLevel(basePath + "level22.json");
-    levelLoader->addLevel(basePath + "level23.json");
-    levelLoader->addLevel(basePath + "level24.json");
-    levelLoader->addLevel(basePath + "level25.json");
-    levelLoader->addLevel(basePath + "level26.json");
-    levelLoader->addLevel(basePath + "level27.json");
-    levelLoader->addLevel(basePath + "level28.json");
-    levelLoader->addLevel(basePath + "level29.json");
-    levelLoader->addLevel(basePath + "level30.json");
+
+    for (int i = 1; i <= 30; i++) {
+        levelLoader->addLevel(basePath + "level" + (i < 10 ? "0" : "") + std::to_string(i) + ".json");
+    }
 }
 
 FaderToGameStates *ComponentGame::getFadeToGameState() const
@@ -970,13 +938,6 @@ void ComponentGame::pressedKeyForBeginLevel()
 
     getLevelLoader()->startCountDown();
     setGameState(EngineSetup::GameState::COUNTDOWN);
-}
-
-void ComponentGame::pressedKeyForFinishGameAndRestart() const
-{
-    ComponentSound::fadeInMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"), -1, 3000);
-    getLevelLoader()->setCurrentLevelIndex(-1);
-    makeFadeToGameState(EngineSetup::GameState::MENU, true);
 }
 
 void ComponentGame::pressedKeyByDead()
@@ -1591,4 +1552,18 @@ void ComponentGame::resetGame() {
 
     getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
     makeFadeToGameState(EngineSetup::GameState::MENU, true);
+}
+
+EnemyGhost* ComponentGame::getEnemyByName(const std::string& name)
+{
+    for (auto &object : Brakeza3D::get()->getSceneObjects()) {
+        auto enemy = dynamic_cast<EnemyGhost *> (object);
+
+        if (enemy != nullptr && !object->isRemoved()) {
+            if (enemy->getName() == name) {
+                return enemy;
+            }
+        }
+    }
+    return nullptr;
 }

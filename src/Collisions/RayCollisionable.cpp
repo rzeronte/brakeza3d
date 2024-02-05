@@ -85,3 +85,18 @@ const Vertex3D &RayCollisionable::getRay() const {
 void RayCollisionable::setRay(const Vertex3D &ray) {
     RayCollisionable::ray = ray;
 }
+
+void RayCollisionable::setTarget(Object3D *target) {
+    RayCollisionable::target = target;
+    if (target != nullptr) {
+        hadTarget = true;
+    }
+}
+
+Object3D *RayCollisionable::getTarget() const {
+    return target;
+}
+
+bool RayCollisionable::isHadTarget() const {
+    return hadTarget;
+}

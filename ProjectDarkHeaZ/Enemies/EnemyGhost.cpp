@@ -141,7 +141,16 @@ void EnemyGhost::handleDie()
 void EnemyGhost::updateLasers()
 {
     for (auto ray : fixedLasers) {
-        ray->setRay(getRotation() * ray->getDirection());
+        if (ray->getTarget() == nullptr) {
+            if (!ray->isHadTarget()) {
+                ray->setRay(getRotation() * ray->getDirection());
+            } else {
+                ray->setRay(Vertex3D());
+            }
+        } else {
+            ray->setRay(ray->getTarget()->getPosition() - getPosition());
+        }
+
         ray->setPosition(getPosition());
     }
 }
@@ -307,6 +316,10 @@ EnemyGhost::~EnemyGhost()
     for (auto d: dialogs) {
         delete d;
     }
+
+    for (auto ray: fixedLasersHandled) {
+        ray->setTarget(nullptr);
+    }
 }
 
 void EnemyGhost::stuck(float time)
@@ -408,6 +421,7 @@ void EnemyGhost::drawImGuiProperties()
                 ImGui::TreePop();
             }
         }
+        ImGui::TreePop();
     }
 }
 
@@ -418,4 +432,8 @@ void EnemyGhost::updateEmitters()
     for (auto e: projectileEmitters) {
         e->setPosition(getPosition() + e->getOffsetPosition());
     }
+}
+
+void EnemyGhost::addHandledFixedRay(ProjectileRay *p) {
+    fixedLasersHandled.push_back(p);
 }

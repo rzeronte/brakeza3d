@@ -30,14 +30,19 @@
 
 #include <utility>
 
-LevelLoader::LevelLoader(std::string filename)
+LevelLoader::LevelLoader()
 :
+    endLevel(false),
     waitingToWin(Counter(3)),
     stats(new LevelStats()),
     difficultyRatio(1),
-    currentLevelIndex(-1)
+    currentLevelIndex(-1),
+    hasMusic(false),
+    currentTutorialIndex(-1),
+    indexSpaceshipSelected(-1),
+    levelStartedToPlay(false),
+    levelFinished(false)
 {
-    addLevel(std::move(filename));
     setLevelStartedToPlay(false);
     setCurrentLevelIndex(-1);
     waitingToWin.setEnabled(false);
@@ -640,7 +645,7 @@ void LevelLoader::addLasersForEnemy(cJSON *laser, EnemyGhost *enemy)
     auto direction = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(laser, "direction"));
     auto length = cJSON_GetObjectItemCaseSensitive(laser, "length")->valueint;
 
-    enemy->addFixedLaser(new ProjectileRay(
+    auto l = new ProjectileRay(
         enemy,
         enemy->getPosition(),
         (float) cJSON_GetObjectItemCaseSensitive(laser, "damage")->valueint,
@@ -652,7 +657,16 @@ void LevelLoader::addLasersForEnemy(cJSON *laser, EnemyGhost *enemy)
         parseColorJSON(cJSON_GetObjectItemCaseSensitive(laser, "color")),
         0.001f,
         true
-    ));
+    );
+
+    if (cJSON_GetObjectItemCaseSensitive(laser, "handle") != nullptr) {
+        auto objectName = cJSON_GetObjectItemCaseSensitive(laser, "handle")->valuestring;
+        auto o = ComponentGame::getEnemyByName(objectName);
+        o->addHandledFixedRay(l);
+        l->setTarget(o);
+    }
+
+    enemy->addFixedLaser(l);
 }
 
 void LevelLoader::addProjectileEmitterToEnemy(cJSON *emitter, EnemyGhost *enemy)

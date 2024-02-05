@@ -12,7 +12,7 @@
       "name": "Rayer",
       "avatar": "avatars/14.png",
       "avatarHud": "avatars/14.png",
-      "position": { "x": 35, "y": 15 },
+      "position": { "x": 25, "y": 15 },
       "model": "spaceships/terminator.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
@@ -49,7 +49,7 @@
       "name": "Rayer",
       "avatar": "avatars/14.png",
       "avatarHud": "avatars/14.png",
-      "position": { "x": 65, "y": 15 },
+      "position": { "x": 75, "y": 15 },
       "model": "spaceships/terminator.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
@@ -83,10 +83,10 @@
       }
     },
     {
-      "name": "RedBallLaser",
+      "name": "RedBallLaser01",
       "avatar": "avatars/energy_ball.png",
       "avatarHud": "avatars/14.png",
-      "position": { "x": 15,  "y": 15 },
+      "position": { "x": 50,  "y": 10 },
       "model": "energy_ball.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
@@ -94,17 +94,12 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": "rotation",
+        "type": "patrol",
+        "from": { "x": 90, "y": 90 },
+        "to": { "x": 90, "y": 30 },
+        "speed": 1,
         "rotation": { "x": 0, "y": 0, "z": -1 }
       },
-      "lasers": [
-        {
-          "damage": 30,
-          "length": 3,
-          "direction": { "x": 1, "y": 0, "z": 0 },
-          "color": { "r": 255, "g": 0, "b": 0 }
-        }
-      ],
       "weapon": {
         "index": 0,
         "available": false,
@@ -112,7 +107,7 @@
         "damage": 20,
         "amount": 999,
         "startAmount": 100,
-        "speed": 500,
+        "speed": 1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 1.0,
@@ -129,10 +124,10 @@
       }
     },
     {
-      "name": "RedBallLaser",
+      "name": "RedBallLaser02",
       "avatar": "avatars/energy_ball.png",
       "avatarHud": "avatars/14.png",
-      "position": { "x": 50,  "y": 45 },
+      "position": { "x": 50,  "y": 10 },
       "model": "energy_ball.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
@@ -140,59 +135,17 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": "rotation",
-        "rotation": { "x": 0, "y": 0, "z": -1 }
-      },
-      "lasers": [
-        {
-          "damage": 30,
-          "length": 3,
-          "direction": { "x": 1, "y": 0, "z": 0 },
-          "color": { "r": 255, "g": 0, "b": 0 }
-        }
-      ],
-      "weapon": {
-        "index": 0,
-        "available": false,
-        "name": "Linear",
-        "damage": 20,
-        "amount": 999,
-        "startAmount": 100,
-        "speed": 500,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 1.0,
-        "stop": false,
-        "stopDuration": 2,
-        "stopEvery": 6,
-        "type": "laser",
-        "icon": "icons/weapon_projectile.png",
-        "modelProjectile": "projectile_weapon_01_magenta.fbx",
-        "model": "item_weapon_02.fbx",
-        "flatTexture": true,
-        "enableLights": false,
-        "color": { "r": 255, "g": 255, "b": 0 }
-      }
-    },
-    {
-      "name": "RedBallLaser",
-      "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/14.png",
-      "position": { "x": 85,  "y": 15 },
-      "model": "energy_ball.fbx",
-      "size": { "x": 1, "y": 1,  "z": 1 },
-      "enableLights": true,
-      "animated": true,
-      "stamina": 600,
-      "reward": true,
-      "motion": {
-        "type": "rotation",
+        "type": "patrol",
+        "from": { "x": 10, "y": 30 },
+        "to": { "x": 10, "y": 90 },
+        "speed": 1,
         "rotation": { "x": 0, "y": 0, "z": 1 }
       },
       "lasers": [
         {
+          "handle": "RedBallLaser01",
           "damage": 30,
-          "length": 3,
+          "length": 5,
           "direction": { "x": 1, "y": 0, "z": 0 },
           "color": { "r": 255, "g": 0, "b": 0 }
         }
@@ -204,7 +157,7 @@
         "damage": 20,
         "amount": 999,
         "startAmount": 100,
-        "speed": 500,
+        "speed": 1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 1.0,
@@ -224,7 +177,7 @@
   "items": [
     {
       "type": 7,
-      "position": { "x": 10, "y": 80 }
+      "position": { "x": 50, "y": 10 }
     }
   ]
 }

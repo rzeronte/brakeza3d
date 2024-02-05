@@ -24,6 +24,7 @@ private:
 
 protected:
     std::vector<ProjectileRay *> fixedLasers;
+    std::vector<ProjectileRay *> fixedLasersHandled;
     std::vector<EnemyDialog *> dialogs;
     float projectileStartOffsetPosition;
 public:
@@ -76,6 +77,8 @@ public:
     void drawImGuiProperties() override;
 
     void updateEmitters() override;
+
+    void addHandledFixedRay(ProjectileRay *p);
 };
 
 

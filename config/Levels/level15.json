@@ -3,17 +3,24 @@
   "scene": "scene15.json",
   "backgroundImage": "levels/bg_04.png",
   "foregroundImage": "foregrounds/06.png",
-  "music": "musicLevels01",
+  "music": "musicLevels04",
   "allowEnergyShield": true,
   "histories": ["histories/lore_15_1.png", "histories/lore_15_2.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
+  "message": {
+    "from": "Uprising Big Combat Unit",
+    "text": " hahahaha your death is the only\nthing you will find here human",
+    "sound": "boss15",
+    "stamina": 100,
+    "avatarHud": "avatars/message_boss_15.png"
+  },
   "enemies": [],
   "bosses": [
     {
       "type": 2,
       "name": "SpaceBirds",
-      "avatar": "avatars/14.png",
-      "avatarHud": "avatars/14.png",
+      "avatar": "avatars/boss15.png",
+      "avatarHud": "avatars/message_boss_15.png",
       "position": { "x": 50, "y": 45 },
       "model": "spaceships/spaceship_gray_01.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -21,6 +28,9 @@
       "animated": true,
       "stamina": 3000,
       "reward": true,
+      "messages": [
+        { "text": "ha ha ha ha ha...", "sound": "boss15_02", "stamina": 60 }
+      ],
       "motion": {
         "type": "none"
       },

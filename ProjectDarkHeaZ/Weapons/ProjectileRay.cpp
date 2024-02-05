@@ -84,4 +84,3 @@ void ProjectileRay::integrate()
 {
     RayCollisionable::integrate();
 }
-

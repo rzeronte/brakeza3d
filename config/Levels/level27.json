@@ -1,7 +1,7 @@
 {
   "name": "27",
   "scene": "scene27.json",
-  "music": "musicLevels01",
+  "music": "musicLevels06",
   "backgroundImage": "levels/bg_06.png",
   "foregroundImage": "foregrounds/03.png",
   "allowEnergyShield": true,
@@ -24,11 +24,11 @@
         "type": "path",
         "speed": 0.3,
         "points": [
-          { "x": 10, "y": 75 },
+          { "x": 10, "y": 85 },
           { "x": 10, "y": 10 },
           { "x": 90, "y": 10 },
-          { "x": 90, "y": 75 },
-          { "x": 10, "y": 75 }
+          { "x": 90, "y": 85 },
+          { "x": 10, "y": 85 }
         ]
       },
       "weapon": {
@@ -70,8 +70,8 @@
         "speed": 0.3,
         "points": [
           { "x": 90, "y": 10},
-          { "x": 90, "y": 75},
-          { "x": 10, "y": 75},
+          { "x": 90, "y": 85},
+          { "x": 10, "y": 85},
           { "x": 10, "y": 10},
           { "x": 90, "y": 10}
         ]

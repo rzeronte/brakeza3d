@@ -1,6 +1,7 @@
 {
   "name": "22",
   "scene": "scene22.json",
+  "music": "musicLevels05",
   "backgroundImage": "levels/bg_05.png",
   "foregroundImage": "foregrounds/03.png",
   "allowEnergyShield": true,
@@ -12,7 +13,46 @@
       "name": "Colossus",
       "avatar": "avatars/14.png",
       "avatarHud": "avatars/14.png",
-      "position": { "x": 50, "y": 40 },
+      "position": { "x": 70, "y": 30 },
+      "model": "spaceships/Challenger.fbx",
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "enableLights": true,
+      "animated": true,
+      "stamina": 1000,
+      "reward": true,
+      "motion": {
+        "type": "follow",
+        "speed": 10,
+        "separation": 5000
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Linear",
+        "damage": 20,
+        "amount": 5000,
+        "startAmount": 100,
+        "speed": 500,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": "raylight",
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01_magenta.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 0, "b": 0 }
+      }
+    },
+    {
+      "name": "Colossus",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
+      "position": { "x": 30, "y": 30 },
       "model": "spaceships/Challenger.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
@@ -60,13 +100,13 @@
       "reward": true,
       "motion": {
         "type": "path",
-        "speed": 0.25,
+        "speed": 0.1,
         "points": [
-          { "x": 15, "y": 75 },
-          { "x": 15, "y": 15 },
-          { "x": 90, "y": 15 },
+          { "x": 10, "y": 75 },
+          { "x": 10, "y": 10 },
+          { "x": 90, "y": 10 },
           { "x": 90, "y": 75 },
-          { "x": 15, "y": 75 }
+          { "x": 10, "y": 75 }
         ]
       },
       "lasers": [
@@ -107,13 +147,13 @@
       "reward": true,
       "motion": {
         "type": "path",
-        "speed": 0.25,
+        "speed": 0.1,
         "points": [
-          { "x": 90, "y": 15 },
+          { "x": 90, "y": 10 },
           { "x": 90, "y": 75 },
-          { "x": 15, "y": 75 },
-          { "x": 15, "y": 15 },
-          { "x": 90, "y": 15 }
+          { "x": 10, "y": 75 },
+          { "x": 10, "y": 10 },
+          { "x": 90, "y": 10 }
         ]
       },
       "lasers": [
@@ -146,11 +186,11 @@
   "items": [
     {
       "type": 4,
-      "position": { "x": 5, "y": 75 }
+      "position": { "x": 0, "y": 5 }
     },
     {
       "type": 5,
-      "position": { "x": 95, "y": 10 }
+      "position": { "x": 100, "y": 5 }
     }
   ]
 }

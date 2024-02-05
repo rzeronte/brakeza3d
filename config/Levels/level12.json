@@ -9,7 +9,7 @@
   "histories": [],
   "enemies": [
     {
-      "name": "RedBallLaser",
+      "name": "RedBallLaser01",
       "avatar": "avatars/energy_ball.png",
       "avatarHud": "avatars/14.png",
       "position": { "x": 50,  "y": 10 },
@@ -21,13 +21,55 @@
       "reward": true,
       "motion": {
         "type": "patrol",
-        "from": { "x": 50, "y": 20 },
-        "to": { "x": 50, "y": 50 },
+        "from": { "x": 70, "y": 10 },
+        "to": { "x": 70, "y": 50 },
         "speed": 1,
         "rotation": { "x": 0, "y": 0, "z": -1 }
       },
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 20,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 1,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": "laser",
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01_magenta.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      }
+    },
+    {
+      "name": "RedBallLaser02",
+      "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/14.png",
+      "position": { "x": 50,  "y": 10 },
+      "model": "energy_ball.fbx",
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "enableLights": true,
+      "animated": true,
+      "stamina": 600,
+      "reward": true,
+      "motion": {
+        "type": "patrol",
+        "from": { "x": 30, "y": 10 },
+        "to": { "x": 30, "y": 50 },
+        "speed": 1,
+        "rotation": { "x": 0, "y": 0, "z": 1 }
+      },
       "lasers": [
         {
+          "handle": "RedBallLaser01",
           "damage": 30,
           "length": 5,
           "direction": { "x": 1, "y": 0, "z": 0 },
@@ -55,18 +97,7 @@
         "flatTexture": true,
         "enableLights": false,
         "color": { "r": 255, "g": 255, "b": 0 }
-      },
-      "emitter": [{
-        "offset": { "x": 0, "y": 0, "z": 0 },
-        "rotation": { "x": 90, "y": 0, "z": 0 },
-        "rotationFrame": { "x": 0, "y": 16, "z": 0 },
-        "cadenceTime": 0.20,
-        "type": 0,
-        "stop": true,
-        "stopDuration": 2,
-        "stopEvery": 4,
-        "color": { "r": 255, "g": 255, "b": 0 }
-      }]
+      }
     },
     {
       "name": "Patrol",
@@ -81,8 +112,8 @@
       "reward": true,
       "motion": {
         "type": "patrol",
-        "from": { "x": 10, "y": 10 },
-        "to": { "x": 10, "y": 40 },
+        "from": { "x": 10, "y": 70 },
+        "to": { "x": 10, "y": 20 },
         "speed": 1
       },
       "weapon": {
@@ -121,8 +152,8 @@
       "reward": true,
       "motion": {
         "type": "patrol",
-        "from": { "x": 90, "y": 10 },
-        "to": { "x": 90, "y": 40 },
+        "from": { "x": 90, "y": 20 },
+        "to": { "x": 90, "y": 70 },
         "speed": 1
       },
       "weapon": {

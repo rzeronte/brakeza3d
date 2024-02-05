@@ -1,6 +1,7 @@
 {
   "name": "21",
   "scene": "scene21.json",
+  "music": "musicLevels05",
   "backgroundImage": "levels/bg_05.png",
   "foregroundImage": "foregrounds/02.png",
   "allowEnergyShield": true,
@@ -9,26 +10,130 @@
   "endLevel": false,
   "enemies": [
     {
-      "name": "RedBallLaser",
+      "name": "Colossus",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
+      "position": { "x": 50, "y": 25},
+      "model": "spaceships/Zenith.fbx",
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "enableLights": true,
+      "animated": true,
+      "stamina": 1000,
+      "reward": true,
+      "motion": {
+        "type": "path",
+        "speed": 0.4,
+        "points": [
+          { "x": 60, "y": 10 },
+          { "x": 90, "y": 10 },
+          { "x": 90, "y": 40 },
+          { "x": 90, "y": 10 },
+          { "x": 60, "y": 10 }
+        ]
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 0,
+        "startAmount": 1000,
+        "speed": 0.1,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.35,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": "laser",
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01_magenta.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 0, "b": 0 }
+      },
+      "emitter": [{
+        "offset": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 90, "y": 0, "z": 0 },
+        "rotationFrame": { "x": 0, "y": 0, "z": 0 },
+        "cadenceTime": 0.25,
+        "type": 3,
+        "stop": true,
+        "stopDuration": 4,
+        "stopEvery": 3,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      }]
+    },
+    {
+      "name": "Colossus",
+      "avatar": "avatars/14.png",
+      "avatarHud": "avatars/14.png",
+      "position": { "x": 50, "y": 25},
+      "model": "spaceships/Zenith.fbx",
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "enableLights": true,
+      "animated": true,
+      "stamina": 1000,
+      "reward": true,
+      "motion": {
+        "type": "path",
+        "speed": 0.4,
+        "points": [
+          { "x": 40, "y": 10 },
+          { "x": 10, "y": 10 },
+          { "x": 10, "y": 40 },
+          { "x": 10, "y": 10 },
+          { "x": 40, "y": 10 }
+        ]
+      },
+      "weapon": {
+        "index": 0,
+        "available": true,
+        "name": "Linear",
+        "damage": 10,
+        "amount": 0,
+        "startAmount": 1000,
+        "speed": 0.1,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 0.35,
+        "stop": true,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": "laser",
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01_magenta.fbx",
+        "model": "item_weapon_01.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 0, "b": 255 }
+      },
+      "emitter": [{
+        "offset": { "x": 0, "y": 0, "z": 0 },
+        "rotation": { "x": 90, "y": 0, "z": 0 },
+        "rotationFrame": { "x": 0, "y": 0, "z": 0 },
+        "cadenceTime": 0.25,
+        "type": 3,
+        "stop": true,
+        "stopDuration": 4,
+        "stopEvery": 3,
+        "color": { "r": 255, "g": 0, "b": 255 }
+      }]
+    },
+    {
+      "name": "Bomb",
       "avatar": "avatars/energy_ball.png",
       "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
-      "position": { "x": 75,  "y": 40 },
+      "position": { "x": 50,  "y": 40 },
       "model": "bomb02.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": "path",
-        "speed": 0.1,
-        "points": [
-          { "x": 15, "y": 75 },
-          { "x": 15, "y": 15 },
-          { "x": 90, "y": 15 },
-          { "x": 90, "y": 75 },
-          { "x": 15, "y": 75 }
-        ]
+        "type": "rotation"
       },
       "lasers": [
       ],
@@ -57,26 +162,21 @@
       }
     },
     {
-      "name": "RedBallLaser",
+      "name": "Bomb",
       "avatar": "avatars/energy_ball.png",
       "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "position": { "x": 75,  "y": 40 },
-      "model": "bomb03.fbx",
+      "model": "bomb02.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": "path",
-        "speed": 0.75,
-        "points": [
-          { "x": 35, "y": 50 },
-          { "x": 35, "y": 35 },
-          { "x": 65, "y": 35 },
-          { "x": 65, "y": 50 },
-          { "x": 35, "y": 50 }
-        ]
+        "type": "patrol",
+        "from": { "x": 30, "y": 30 },
+        "to": { "x": 30, "y": 80 },
+        "speed": 1
       },
       "lasers": [
       ],
@@ -103,8 +203,9 @@
         "enableLights": false,
         "color": { "r": 255, "g": 255, "b": 0 }
       }
-    }, {
-      "name": "RedBallLaser",
+    },
+    {
+      "name": "Bomb",
       "avatar": "avatars/energy_ball.png",
       "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -115,15 +216,96 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": "path",
-        "speed": 0.1,
-        "points": [
-          { "x": 90, "y": 15 },
-          { "x": 90, "y": 75 },
-          { "x": 15, "y": 75 },
-          { "x": 15, "y": 15 },
-          { "x": 90, "y": 15 }
-        ]
+        "type": "patrol",
+        "from": { "x": 10, "y": 50 },
+        "to": { "x": 10, "y": 90 },
+        "speed": 1
+      },
+      "lasers": [
+      ],
+      "explode": 100,
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 15,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 1,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": "laser",
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01_magenta.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      }
+    },
+    {
+      "name": "Bomb",
+      "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/14.png",
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "position": { "x": 75,  "y": 40 },
+      "model": "bomb02.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 600,
+      "reward": true,
+      "motion": {
+        "type": "patrol",
+        "from": { "x": 70, "y": 30 },
+        "to": { "x": 70, "y": 80 },
+        "speed": 1
+      },
+      "lasers": [
+      ],
+      "explode": 100,
+      "weapon": {
+        "index": 0,
+        "available": false,
+        "name": "Linear",
+        "damage": 15,
+        "amount": 999,
+        "startAmount": 100,
+        "speed": 1,
+        "dispersion": 10,
+        "accuracy": 100,
+        "cadenceTime": 1.0,
+        "stop": false,
+        "stopDuration": 2,
+        "stopEvery": 6,
+        "type": "laser",
+        "icon": "icons/weapon_projectile.png",
+        "modelProjectile": "projectile_weapon_01_magenta.fbx",
+        "model": "item_weapon_02.fbx",
+        "flatTexture": true,
+        "enableLights": false,
+        "color": { "r": 255, "g": 255, "b": 0 }
+      }
+    },
+    {
+      "name": "Bomb",
+      "avatar": "avatars/energy_ball.png",
+      "avatarHud": "avatars/14.png",
+      "size": { "x": 1, "y": 1,  "z": 1 },
+      "position": { "x": 75,  "y": 40 },
+      "model": "bomb02.fbx",
+      "enableLights": true,
+      "animated": true,
+      "stamina": 600,
+      "reward": true,
+      "motion": {
+        "type": "patrol",
+        "from": { "x": 90, "y": 50 },
+        "to": { "x": 90, "y": 90 },
+        "speed": 1
       },
       "lasers": [
       ],
@@ -155,11 +337,11 @@
   "items": [
     {
       "type": 4,
-      "position": { "x": 5, "y": 15 }
+      "position": { "x": 50, "y": 10 }
     },
     {
       "type": 5,
-      "position": { "x": 95, "y": 15 }
+      "position": { "x": 50, "y": 20 }
     }
   ]
 }

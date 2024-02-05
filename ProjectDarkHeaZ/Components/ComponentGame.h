@@ -78,7 +78,6 @@ private:
     Image imageBlack;
     Image help;
     Image backgroundSpaceshipSelection;
-    Image glassEffect;
     Image border;
 
     std::vector<Image*> helps;
@@ -166,8 +165,6 @@ public:
     static void removeInGameObjects() ;
 
     void pressedKeyForBeginLevel();
-
-    void pressedKeyForFinishGameAndRestart() const;
 
     void pressedKeyByDead();
 
@@ -323,6 +320,8 @@ public:
     unsigned int spaceshipSelectedIndex;
 
     void resetGame();
+
+    static EnemyGhost *getEnemyByName(const std::string& name);
 };
 
 

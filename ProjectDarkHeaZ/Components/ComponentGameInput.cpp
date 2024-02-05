@@ -31,8 +31,8 @@ void ComponentGameInput::postUpdate()
 {
     if (ComponentsManager::get()->getComponentGame()->getGameState() == EngineSetup::GameState::GAMING) {
         ComponentGameInput::handleKeyboardMovingPlayer();
-        this->handleGamePadMovingPlayer();
-        this->handleFire();
+        handleGamePadMovingPlayer();
+        handleFire();
     }
 }
 
@@ -643,7 +643,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     }
 
     if (state == EngineSetup::GameState::PRESS_KEY_GAMEOVER && (enter || isButtonGuidedPressed)) {
-        game->pressedKeyForFinishGameAndRestart();
+        game->resetGame();
         return;
     }
 

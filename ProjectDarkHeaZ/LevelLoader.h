@@ -64,7 +64,7 @@ static std::map<std::string, EnemyBehaviorTypes> behaviorTypes = {
 
 class LevelLoader {
 public:
-    explicit LevelLoader(std::string filename);
+    explicit LevelLoader();
     void load(int levelIndex);
     bool loadNext();
     void addLevel(std::string filename);
