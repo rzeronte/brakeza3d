@@ -88,6 +88,8 @@
     { "file": "radio/boss15.mp3", "label": "boss15", "type": "sound" },
     { "file": "radio/boss15_02.mp3", "label": "boss15_02", "type": "sound" },
     { "file": "radio/boss20.mp3", "label": "boss20", "type": "sound" },
+    { "file": "radio/boss25.mp3", "label": "boss25", "type": "sound" },
+
     { "file": "radio/level11.mp3", "label": "radioLevel11", "type": "sound" },
     { "file": "start_intro.wav", "label": "startIntro", "type": "sound" },
     { "file": "slide_machine.wav", "label": "slideMachine", "type": "sound" },

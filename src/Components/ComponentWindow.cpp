@@ -102,7 +102,11 @@ void ComponentWindow::initWindow()
         context = SDL_GL_CreateContext(window);
         SDL_GL_MakeCurrent(window, context);
 
+        for (int i = 0; i < SDL_GetNumVideoDrivers(); i++) {
+            Logging::Message("Driver: %s", SDL_GetVideoDriver(i));
+        }
 
+        Logging::Message("Current video driver: %s", SDL_GetCurrentVideoDriver());
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1 );
         SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8 );

@@ -290,6 +290,8 @@ add_executable(Brakeza3D
         ProjectDarkHeaZ/Bosses/BossLevel25.h
         ProjectDarkHeaZ/Bosses/BossLevel20.cpp
         ProjectDarkHeaZ/Bosses/BossLevel20.h
+        ProjectDarkHeaZ/Weapons/RayGhost.cpp
+        ProjectDarkHeaZ/Weapons/RayGhost.h
 )
 
 target_link_libraries(Brakeza3D
