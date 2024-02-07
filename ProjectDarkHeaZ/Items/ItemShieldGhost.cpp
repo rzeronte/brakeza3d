@@ -35,12 +35,8 @@ void ItemShieldGhost::onUpdate()
     }
 
     blink->update();
-    if (timeToLive.isFinished()) {
-        setRemoved(true);
-        setEnabled(false);
-        removeCollisionObject();
-        Brakeza3D::get()->addObject3D(new ShockWave(getPosition(), 0.50, 1, ShockWaveParams::standard(), true), Brakeza3D::uniqueObjectLabel("shockWave"));
-        weapon->decreaseNumberProjectiles();
+    if (timeToLive.isFinished() && !isRemoved()) {
+        die();
     }
 }
 
@@ -48,17 +44,23 @@ void ItemShieldGhost::resolveCollision(Collisionable *collisionable)
 {
     Mesh3DGhost::resolveCollision(collisionable);
 
+    if (isRemoved()) return;
+
     auto *enemy = dynamic_cast<EnemyGhost*> (collisionable);
     if (enemy != nullptr) {
-        removeCollisionObject();
-
-        setEnabled(false);
-        setRemoved(true);
-        weapon->decreaseNumberProjectiles();
-
-        ComponentsManager::get()->getComponentGame()->getLevelLoader()->getStats()->increaseHit(WEAPON_BOMB);
-        enemy->takeDamage(getDamage());
+        die();
+        Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getRandomExplosionSprite()->getAnimation());
     }
+}
+
+void ItemShieldGhost::die()
+{
+    removeCollisionObject();
+
+    setEnabled(false);
+    setRemoved(true);
+    weapon->decreaseNumberProjectiles();
+
 }
 
 float ItemShieldGhost::getDamage() const {

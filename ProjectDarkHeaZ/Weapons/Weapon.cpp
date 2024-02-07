@@ -306,4 +306,7 @@ void Weapon::increaseNumberProjectiles() {
 
 void Weapon::decreaseNumberProjectiles() {
     numLiveProjectiles--;
+    if (numLiveProjectiles < 0) {
+        numLiveProjectiles = 0;
+    }
 }

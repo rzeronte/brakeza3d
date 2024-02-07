@@ -66,9 +66,7 @@
         "stopDuration": 0,
         "stopEvery": 9,
         "color": { "r": 255, "g": 0, "b": 0 }
-      }],
-      "lasers": [
-      ]
+      }]
     }
   ],
   "items": [

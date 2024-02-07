@@ -31,8 +31,6 @@
           { "x": 15, "y": 85 }
         ]
       },
-      "lasers": [
-      ],
       "explode": 100,
       "weapon": {
         "index": 0,
@@ -78,8 +76,6 @@
           { "x": 90, "y": 15 }
         ]
       },
-      "lasers": [
-      ],
       "explode": 100,
       "weapon": {
         "index": 0,
@@ -153,9 +149,7 @@
         "stopDuration": 0,
         "stopEvery": 9,
         "color": { "r": 255, "g": 0, "b": 0 }
-      }],
-      "lasers": [
-      ]
+      }]
     }
   ],
   "items": [

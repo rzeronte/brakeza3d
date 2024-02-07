@@ -68,7 +68,7 @@ void AmmoProjectileBody::resolveCollision(Collisionable *collisionable)
 
     auto ray = dynamic_cast<ProjectileRay*> (collisionable);
     if (ray != nullptr) {
-        return;
+        //return;
     }
 
     auto human = dynamic_cast<ItemHumanGhost*> (collisionable);

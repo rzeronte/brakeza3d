@@ -1,12 +1,13 @@
 #include "ProjectileRay.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
 ProjectileRay::ProjectileRay(
     Object3D *parent,
     Vertex3D position,
     float damage,
     const Vertex3D &direction,
-    const Vertex3D &ray,
+    float size,
     int filterGroup,
     int filterMask,
     float speed,
@@ -14,21 +15,31 @@ ProjectileRay::ProjectileRay(
     float intensity,
     bool indestructible
 ) :
-    RayCollisionable(ray, filterGroup, filterMask),
-    Projectile(direction),
-    AmmoProjectile(this, color, damage, intensity),
+    Projectile3DBody(direction),
+    AmmoProjectile(parent, color, damage, intensity),
     speed(speed),
+    size(size),
     indestructible(indestructible)
 {
     setParent(parent);
     setPosition(position);
     setTransparent(true);
+
+    makeProjectileRigidBody(
+        0.1,
+        Vertex3D(0.5, 0.5, 0.5),
+        direction,
+        rotation,
+        speed,
+        90,
+        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        filterGroup,
+        filterMask
+    );
 }
 
 void ProjectileRay::onUpdate()
 {
-    RayCollisionable::onUpdate();
-
     if (!isEnabled()) return;
 
     if (!indestructible && !Frustum::isVertexInside(getPosition())) {
@@ -41,8 +52,6 @@ void ProjectileRay::onUpdate()
 
 void ProjectileRay::resolveCollision(Collisionable *objectWithCollision)
 {
-    RayCollisionable::resolveCollision(objectWithCollision);
-
     auto projectile = dynamic_cast<AmmoProjectileBody*> (objectWithCollision);
     if (projectile != nullptr) {
         return;
@@ -80,7 +89,22 @@ void ProjectileRay::setSpeed(float value) {
     ProjectileRay::speed = value;
 }
 
-void ProjectileRay::integrate()
+void ProjectileRay::setTarget(Object3D *target) {
+    ProjectileRay::target = target;
+    if (target != nullptr) {
+        hadTarget = true;
+    }
+}
+
+Object3D *ProjectileRay::getTarget() const {
+    return target;
+}
+
+bool ProjectileRay::isHadTarget() const {
+    return hadTarget;
+}
+
+Vertex3D ProjectileRay::getRay()
 {
-    RayCollisionable::integrate();
+    return getPosition() + getDirection().getNormalize().getScaled(size);
 }

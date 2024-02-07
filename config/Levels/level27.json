@@ -113,8 +113,6 @@
       "motion": {
         "type": "rotation"
       },
-      "lasers": [
-      ],
       "explode": 100,
       "weapon": {
         "index": 0,

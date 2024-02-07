@@ -11,19 +11,24 @@
 #include "../../include/Misc/Color.h"
 #include "../../include/Physics/Projectile.h"
 #include "AmmoProjectile.h"
+#include "../../include/Physics/Projectile3DBody.h"
 
-class ProjectileRay: public RayCollisionable, public Projectile, public AmmoProjectile {
+class ProjectileRay: public Projectile3DBody, public AmmoProjectile  {
 private:
     Color color;
     float speed;
+    float size;
     bool indestructible;
+    Object3D *target;
+    bool hadTarget = false;
+
 public:
     ProjectileRay(
         Object3D *parent,
         Vertex3D position,
         float damage,
         const Vertex3D &direction,
-        const Vertex3D &ray,
+        float size,
         int filterGroup,
         int filterMask,
         float speed,
@@ -40,7 +45,13 @@ public:
 
     void setSpeed(float value);
 
-    void integrate() override;
+    void setTarget(Object3D *target);
+
+    Object3D *getTarget() const;
+
+    bool isHadTarget() const;
+
+    Vertex3D getRay();
 };
 
 

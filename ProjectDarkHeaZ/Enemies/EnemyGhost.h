@@ -14,6 +14,7 @@
 #include "../../include/Behaviors/RotatableToTarget.h"
 #include "../../include/Objects/Swarm.h"
 #include "../Items/ExplotableObject.h"
+#include "../Weapons/RayGhost.h"
 
 class EnemyGhost : public Mesh3DAnimatedGhost, public Enemy, public LivingObject, public RotatableToTarget, public ExplotableObject {
 private:
@@ -23,8 +24,6 @@ private:
     Vertex3D particlesEngineOffset;
 
 protected:
-    std::vector<ProjectileRay *> fixedLasers;
-    std::vector<ProjectileRay *> fixedLasersHandled;
     std::vector<EnemyDialog *> dialogs;
     float projectileStartOffsetPosition;
 public:
@@ -54,7 +53,7 @@ public:
 
     void unstuck();
 
-    void addFixedLaser(ProjectileRay *ray);
+    void addFixedLaser(RayGhost *ray);
 
     void updateLasers();
 
@@ -78,7 +77,6 @@ public:
 
     void updateEmitters() override;
 
-    void addHandledFixedRay(ProjectileRay *p);
 };
 
 

@@ -67,15 +67,6 @@
         "speed": 1,
         "rotation": { "x": 0, "y": 0, "z": 1 }
       },
-      "lasers": [
-        {
-          "handle": "RedBallLaser01",
-          "damage": 30,
-          "length": 5,
-          "direction": { "x": 1, "y": 0, "z": 0 },
-          "color": { "r": 255, "g": 0, "b": 0 }
-        }
-      ],
       "weapon": {
         "index": 0,
         "available": false,
@@ -159,15 +150,6 @@
         "speed": 1,
         "rotation": { "x": 0, "y": 0, "z": 1 }
       },
-      "lasers": [
-        {
-          "handle": "RedBallLaser03",
-          "damage": 30,
-          "length": 5,
-          "direction": { "x": 1, "y": 0, "z": 0 },
-          "color": { "r": 255, "g": 0, "b": 0 }
-        }
-      ],
       "weapon": {
         "index": 0,
         "available": false,
@@ -284,6 +266,17 @@
         "stopEvery": 4,
         "color": { "r": 255, "g": 0, "b": 0 }
       }]
+    }
+  ],
+  "lasers": [{
+    "targetOne": "RedBallLaser01",
+    "targetTwo": "RedBallLaser02",
+    "color": { "r": 255, "g": 0, "b": 0 }
+  },
+    {
+      "targetOne": "RedBallLaser03",
+      "targetTwo": "RedBallLaser04",
+      "color": { "r": 255, "g": 0, "b": 0 }
     }
   ],
   "items": [

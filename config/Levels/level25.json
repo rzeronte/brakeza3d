@@ -5,124 +5,18 @@
   "backgroundImage": "levels/bg_06.png",
   "foregroundImage": "foregrounds/02.png",
   "allowEnergyShield": true,
-  "histories": ["tutorial_mask.png"],
+  "histories": ["histories/lore_25_1.png", "histories/lore_25_2.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
+  "message": {
+    "from": "Uprising Big Combat Unit",
+    "text": " ah my dear intruder, what an unexpected\npleasure to see you so far from home.\nAre you lost?",
+    "sound": "boss25",
+    "stamina": 100,
+    "avatarHud": "avatars/message_boss_25.png"
+  },
   "endLevel": false,
   "enemies": [
     {
-      "name": "RedBallLaser",
-      "avatar": "avatars/energy_ball.png",
-      "avatarHud": "avatars/14.png",
-      "size": { "x": 1, "y": 1,  "z": 1 },
-      "position": { "x": 50,  "y": 40 },
-      "model": "bomb03.fbx",
-      "enableLights": true,
-      "animated": true,
-      "stamina": 600,
-      "reward": true,
-      "motion": {
-        "type": "rotation"
-      },
-      "lasers": [
-      ],
-      "explode": 100,
-      "weapon": {
-        "index": 0,
-        "available": false,
-        "name": "Linear",
-        "damage": 15,
-        "amount": 999,
-        "startAmount": 100,
-        "speed": 1,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 1.0,
-        "stop": false,
-        "stopDuration": 2,
-        "stopEvery": 6,
-        "type": "laser",
-        "icon": "icons/weapon_projectile.png",
-        "modelProjectile": "projectile_weapon_01_magenta.fbx",
-        "model": "item_weapon_02.fbx",
-        "flatTexture": true,
-        "enableLights": false,
-        "color": { "r": 255, "g": 255, "b": 0 }
-      }
-    },
-    {
-      "name": "Rayer",
-      "avatar": "avatars/14.png",
-      "avatarHud": "avatars/14.png",
-      "position": { "x": 75, "y": 40 },
-      "model": "spaceships/Executioner.fbx",
-      "size": { "x": 1, "y": 1,  "z": 1 },
-      "enableLights": true,
-      "animated": true,
-      "stamina": 1000,
-      "reward": true,
-      "motion": {
-        "type": "none"
-      },
-      "weapon": {
-        "index": 0,
-        "available": true,
-        "name": "Instant",
-        "damage": 5,
-        "amount": 1000,
-        "startAmount": 10000,
-        "speed": 0.1,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 0.3,
-        "stop": true,
-        "stopDuration": 2,
-        "stopEvery": 2,
-        "type": "laser",
-        "icon": "icons/weapon_projectile.png",
-        "modelProjectile": "projectile_weapon_01_magenta.fbx",
-        "model": "item_weapon_01.fbx",
-        "flatTexture": true,
-        "enableLights": false,
-        "color": { "r": 255, "g": 0, "b": 255 }
-      }
-    },
-    {
-      "name": "Rayer",
-      "avatar": "avatars/14.png",
-      "avatarHud": "avatars/14.png",
-      "position": { "x": 25, "y": 40 },
-      "model": "spaceships/Executioner.fbx",
-      "size": { "x": 1, "y": 1,  "z": 1 },
-      "enableLights": true,
-      "animated": true,
-      "stamina": 1000,
-      "reward": true,
-      "motion": {
-        "type": "none"
-      },
-      "weapon": {
-        "index": 0,
-        "available": true,
-        "name": "Instant",
-        "damage": 5,
-        "amount": 1000,
-        "startAmount": 10000,
-        "speed": 0.1,
-        "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 0.3,
-        "stop": true,
-        "stopDuration": 2,
-        "stopEvery": 2,
-        "type": "laser",
-        "icon": "icons/weapon_projectile.png",
-        "modelProjectile": "projectile_weapon_01_magenta.fbx",
-        "model": "item_weapon_01.fbx",
-        "flatTexture": true,
-        "enableLights": false,
-        "color": { "r": 255, "g": 0, "b": 255 }
-      }
-    },{
       "name": "RedBallLaser",
       "avatar": "avatars/energy_ball.png",
       "avatarHud": "avatars/14.png",
@@ -134,18 +28,11 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": "path",
-        "speed": 0.2,
-        "points": [
-          { "x": 10, "y": 85 },
-          { "x": 10, "y": 15 },
-          { "x": 90, "y": 15 },
-          { "x": 90, "y": 85 },
-          { "x": 10, "y": 85 }
-        ]
+        "type": "patrol",
+        "from": { "x": 10, "y": 30 },
+        "to": { "x": 10, "y": 90 },
+        "speed": 0.5
       },
-      "lasers": [
-      ],
       "explode": 100,
       "weapon": {
         "index": 0,
@@ -181,18 +68,11 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": "path",
-        "speed": 0.2,
-        "points": [
-          { "x": 90, "y": 15 },
-          { "x": 90, "y": 85 },
-          { "x": 10, "y": 85 },
-          { "x": 10, "y": 15 },
-          { "x": 90, "y": 15 }
-        ]
+        "type": "patrol",
+        "from": { "x": 90, "y": 30 },
+        "to": { "x": 90, "y": 90 },
+        "speed": 0.5
       },
-      "lasers": [
-      ],
       "explode": 100,
       "weapon": {
         "index": 0,
@@ -221,37 +101,31 @@
   "bosses": [
     {
       "type": 4,
-      "name": "Prolis",
-      "avatar": "avatars/14.png",
-      "avatarHud": "avatars/14.png",
+      "name": "Drakela",
+      "avatar": "avatars/boss25.png",
+      "avatarHud": "avatars/boss25.png",
       "position": { "x": 50, "y": 10 },
-      "model": "spaceships/Dispatcher.fbx",
+      "model": "spaceships/spaceship_gray_03.fbx",
       "size": { "x": 2, "y": 2,  "z": 2 },
       "enableLights": false,
       "animated": true,
       "stamina": 3000,
       "reward": true,
-      "motion": {
-        "type": "patrol",
-        "from": { "x": 48, "y": 20 },
-        "to": { "x": 52, "y": 20 },
-        "speed": 0.5
-      },
       "weapon": {
         "index": 0,
-        "available": false,
+        "available": true,
         "name": "Linear",
         "damage": 10,
         "amount": 999,
         "startAmount": 1000,
-        "speed": 1,
+        "speed": 0.1,
         "dispersion": 10,
-        "accuracy": 100,
-        "cadenceTime": 0.40,
+        "accuracy": 50,
+        "cadenceTime": 0.1,
         "stop": true,
-        "stopDuration": 2,
-        "stopEvery": 6,
-        "type": "projectile",
+        "stopDuration": 3,
+        "stopEvery": 15,
+        "type": "laser",
         "icon": "icons/weapon_projectile.png",
         "modelProjectile": "projectile_weapon_01_magenta.fbx",
         "model": "item_weapon_01.fbx",
@@ -261,17 +135,15 @@
       },
       "emitter": [{
         "offset": { "x": 0, "y": 0, "z": 0 },
-        "rotation": { "x": 90, "y": 0, "z": 0 },
-        "rotationFrame": { "x": 0, "y": 4, "z": 0 },
-        "cadenceTime": 0.35,
-        "type": 1,
+        "rotation": { "x": 90, "y": 0, "z": 0},
+        "rotationFrame": {"x": 0, "y": -1, "z": 0},
+        "cadenceTime": 0.10,
+        "type": 0,
         "stop": false,
-        "stopDuration": 0,
-        "stopEvery": 9,
+        "stopDuration": 2,
+        "stopEvery": 4,
         "color": { "r": 255, "g": 0, "b": 0 }
-      }],
-      "lasers": [
-      ]
+      }]
     }
   ],
   "items": [

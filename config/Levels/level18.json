@@ -23,14 +23,6 @@
         "type": "rotation",
         "rotation": { "x": 0, "y": 0, "z": -1 }
       },
-      "lasers": [
-        {
-          "damage": 30,
-          "length": 4,
-          "direction": { "x": 1, "y": 0, "z": 0 },
-          "color": { "r": 255, "g": 0, "b": 0 }
-        }
-      ],
       "weapon": {
         "index": 0,
         "available": false,

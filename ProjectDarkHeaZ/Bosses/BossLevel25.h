@@ -7,11 +7,27 @@
 
 
 #include "BossEnemy.h"
+#include "../Behaviors/EnemyBehaviorPath.h"
+#include "../Behaviors/EnemyBehaviorPatrol.h"
+
+#define SPEED_TRANSPARENCY 0.3
 
 class BossLevel25 : public BossEnemy {
-    Counter changePhase;
+    Counter changeStopPhase;
+    Bosses10Phase phase;
+    float progress;
+
+    EnemyBehaviorPath *behaviorPhaseOne;
+    EnemyBehaviorPatrol *behaviorPhaseTwo;
+    EnemyBehaviorPath *behaviorPhaseFour;
 public:
+    BossLevel25();
+
     void onUpdate() override;
+
+    void invertPhase();
+
+    void postUpdate() override;
 };
 
 

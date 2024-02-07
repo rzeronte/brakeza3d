@@ -1,6 +1,7 @@
 #include "FXLaser.h"
 #include "../../include/LUAManager.h"
 #include "../../include/Brakeza3D.h"
+#include "../Weapons/RayGhost.h"
 
 FXLaser::FXLaser(Image *mask)
 :
@@ -38,6 +39,24 @@ void FXLaser::update()
 void FXLaser::addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float intensity, float weight, float maskSpeed)
 {
     this->lasers.emplace_back(OCLaser {from, to, color, intensity, weight, maskSpeed});
+
+}
+void FXLaser::addLaserFromRayGhost(RayGhost *ghost)
+{
+    auto color = ghost->getColor();
+
+    Point2D screenPoint = Transforms::WorldToPoint(ghost->getTargetOne());
+    Vertex3D end = ghost->getTargetTwo();
+    Point2D middlePoint = Transforms::WorldToPoint(end);
+
+    this->addLaser(
+        screenPoint.toGLM(),
+        middlePoint.toGLM(),
+        color.toGLM(),
+        2.5f,
+        0.0001f,
+        0.5f
+    );
 }
 
 void FXLaser::addLaserFromRay(ProjectileRay *ray)

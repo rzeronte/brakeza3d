@@ -149,7 +149,7 @@ void Player::shoot(float intensity)
         AxisUp().getInverse(),
         projectileStartOffsetPosition,
         EngineSetup::collisionGroups::Projectile,
-        EngineSetup::collisionGroups::Enemy,
+        EngineSetup::collisionGroups::Enemy|EngineSetup::collisionGroups::ProjectileEnemy,
         true
     });
 
@@ -372,6 +372,11 @@ void Player::resolveCollision(Collisionable *with)
         } else {
             takeDamage(dmg);
         }
+    }
+
+    auto ghost = dynamic_cast<RayGhost*> (with);
+    if (ghost != nullptr) {
+        takeDamage(ghost->getDamage());
     }
 
     auto weapon = dynamic_cast<ItemWeaponGhost*> (with);

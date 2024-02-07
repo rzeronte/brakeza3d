@@ -8,7 +8,7 @@
 #include "../../include/Brakeza3D.h"
 #include "../Common/ShockWave.h"
 
-WeaponShield::WeaponShield(const WeaponAttributes &attributes) : Weapon(attributes) {}
+WeaponShield::WeaponShield(const WeaponAttributes &attributes) : last(nullptr), Weapon(attributes) {}
 
 [[maybe_unused]] void WeaponShield::shootShield(Object3D *parent, Vertex3D position)
 {
@@ -21,6 +21,11 @@ WeaponShield::WeaponShield(const WeaponAttributes &attributes) : Weapon(attribut
     if (numLiveProjectiles > MAX_SIMULTANEOUS_BOMBS) {
         return;
     }
+
+    if (numLiveProjectiles == 0) {
+        last = nullptr;
+    }
+
     if (counterCadence->isFinished()) {
         counterCadence->setEnabled(true);
 
@@ -35,10 +40,10 @@ WeaponShield::WeaponShield(const WeaponAttributes &attributes) : Weapon(attribut
         projectile->setRotationFrameEnabled(true);
         projectile->setFlatTextureColor(false);
         projectile->makeSimpleGhostBody(
-                Vertex3D(1, 1, 1),
-                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                EngineSetup::collisionGroups::Player,
-                EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::ProjectileEnemy
+            Vertex3D(1, 1, 1),
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            EngineSetup::collisionGroups::Player,
+            EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::ProjectileEnemy
         );
 
         setAmmoAmount(ammoAmount - 1);
@@ -53,7 +58,30 @@ WeaponShield::WeaponShield(const WeaponAttributes &attributes) : Weapon(attribut
 
         Tools::makeFadeInSprite(position, ComponentsManager::get()->getComponentGame()->getFadeInSpriteBlue()->getAnimation());
         increaseNumberProjectiles();
+
+        if (last == nullptr) {
+            last = projectile;
+        } else {
+            if (numLiveProjectiles > 1) {
+                auto r = new RayGhost(
+                    10,
+                    Color::green(),
+                    last,
+                    projectile,
+                    EngineSetup::collisionGroups::Player,
+                    EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::ProjectileEnemy
+                );
+                last = projectile;
+                Brakeza3D::get()->addObject3D(r, "shieldGhost");
+            }
+        }
     }
+}
+
+void WeaponShield::onUpdate() {
+    Weapon::onUpdate();
+    Logging::Message("numLiveProjectiles: %d", numLiveProjectiles);
+
 }
 
 bool WeaponShield::shoot(WeaponShootAttributes attributes)

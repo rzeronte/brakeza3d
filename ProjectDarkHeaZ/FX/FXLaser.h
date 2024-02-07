@@ -8,6 +8,7 @@
 #include "../../include/Misc/Image.h"
 #include "../../include/OpenGL/FXEffectOpenGL.h"
 #include "../Weapons/ProjectileRay.h"
+#include "../Weapons/RayGhost.h"
 
 struct OCLaser
 {
@@ -30,6 +31,8 @@ public:
 
     void addLaser(glm::vec2 from, glm::vec2 to, glm::vec3 color, float intensity, float weight, float maskSpeed);
     void addLaserFromRay(ProjectileRay *pRay);
+
+    void addLaserFromRayGhost(RayGhost *ghost);
 };
 
 

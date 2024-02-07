@@ -51,7 +51,7 @@ bool WeaponLaser::shootLaserProjectile(
             position - offsetPosition,
             getDamage(),
             direction + test,
-            direction.getNormalize().getScaled(getSpeed()),
+            1,
             filterGroup,
             filterMask,
             getSpeed(),

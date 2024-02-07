@@ -15,6 +15,7 @@ RayCollisionable::RayCollisionable(const Vertex3D &ray, int filterGroup, int fil
 
     rayCallback->m_collisionFilterGroup = filterGroup;
     rayCallback->m_collisionFilterMask = filterMask;
+    rayCallback->m_closestHitFraction = 1.1;
 }
 
 void RayCollisionable::integrate()

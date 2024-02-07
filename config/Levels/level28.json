@@ -100,8 +100,6 @@
         "to": { "x": 30, "y": 85 },
         "speed": 1
       },
-      "lasers": [
-      ],
       "explode": 100,
       "weapon": {
         "index": 0,
@@ -142,8 +140,6 @@
         "to": { "x": 70, "y": 85 },
         "speed": 1
       },
-      "lasers": [
-      ],
       "explode": 100,
       "weapon": {
         "index": 0,
@@ -181,8 +177,6 @@
       "motion": {
         "type": "rotation"
       },
-      "lasers": [
-      ],
       "explode": 100,
       "weapon": {
         "index": 0,

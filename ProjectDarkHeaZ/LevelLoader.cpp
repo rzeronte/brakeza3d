@@ -218,6 +218,13 @@ void LevelLoader::loadLevelFromJSON(const std::string& filePath)
         LevelLoader::parseItemJSON(currentItem);
     }
 
+    if (cJSON_GetObjectItemCaseSensitive(jsonContentFile, "lasers") != nullptr) {
+        cJSON *currentLaserJSON;
+        cJSON_ArrayForEach(currentLaserJSON, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "lasers")) {
+            createHandledRayGhost(currentLaserJSON);
+        }
+    }
+
     cJSON *currentBoss;
     cJSON_ArrayForEach(currentBoss, cJSON_GetObjectItemCaseSensitive(jsonContentFile, "bosses")) {
         this->parseBossJSON(currentBoss);
@@ -453,7 +460,6 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     int animated = cJSON_GetObjectItemCaseSensitive(enemyJSON, "animated")->valueint;
     cJSON *motion = cJSON_GetObjectItemCaseSensitive(enemyJSON, "motion");
     cJSON *weapon = cJSON_GetObjectItemCaseSensitive(enemyJSON, "weapon");
-    cJSON *lasers = cJSON_GetObjectItemCaseSensitive(enemyJSON, "lasers");
 
     Vertex3D worldPosition = getVertex3DFromJSONPosition(cJSON_GetObjectItemCaseSensitive(enemyJSON, "position"), Z_COORDINATE_GAMEPLAY + 1);
     enemy->setMultiScene(true);
@@ -463,8 +469,6 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     if (motion != nullptr) {
         LevelLoader::setBehaviorFromJSON(motion, enemy, Z_COORDINATE_GAMEPLAY + 1);
     }
-
-    LevelLoader::setLasersForEnemy(lasers, enemy);
 
     enemy->setEnabled(true);
     enemy->setLabel(Brakeza3D::uniqueObjectLabel("NPC"));
@@ -626,47 +630,6 @@ Vertex3D LevelLoader::parseVertex3DJSON(cJSON *vertex3DJSON)
     const auto z = (float) cJSON_GetObjectItemCaseSensitive(vertex3DJSON, "z")->valuedouble;
 
     return {x, y, z};
-}
-
-void LevelLoader::setLasersForEnemy(cJSON *lasers, EnemyGhost *enemy)
-{
-    if (lasers == nullptr) {
-        return;
-    }
-
-    cJSON *currentLaserJSON;
-    cJSON_ArrayForEach(currentLaserJSON, lasers) {
-        addLasersForEnemy(currentLaserJSON, enemy);
-    }
-}
-
-void LevelLoader::addLasersForEnemy(cJSON *laser, EnemyGhost *enemy)
-{
-    auto direction = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(laser, "direction"));
-    auto length = cJSON_GetObjectItemCaseSensitive(laser, "length")->valueint;
-
-    auto l = new ProjectileRay(
-        enemy,
-        enemy->getPosition(),
-        (float) cJSON_GetObjectItemCaseSensitive(laser, "damage")->valueint,
-        direction.getScaled((float) length),
-        direction.getScaled((float) length),
-        EngineSetup::collisionGroups::ProjectileEnemy,
-        EngineSetup::collisionGroups::Player,
-        0,
-        parseColorJSON(cJSON_GetObjectItemCaseSensitive(laser, "color")),
-        0.001f,
-        true
-    );
-
-    if (cJSON_GetObjectItemCaseSensitive(laser, "handle") != nullptr) {
-        auto objectName = cJSON_GetObjectItemCaseSensitive(laser, "handle")->valuestring;
-        auto o = ComponentGame::getEnemyByName(objectName);
-        o->addHandledFixedRay(l);
-        l->setTarget(o);
-    }
-
-    enemy->addFixedLaser(l);
 }
 
 void LevelLoader::addProjectileEmitterToEnemy(cJSON *emitter, EnemyGhost *enemy)
@@ -1119,4 +1082,26 @@ int LevelLoader::getIndexSpaceshipSelected() const {
 
 bool LevelLoader::isLoaded() const {
     return loaded;
+}
+
+void LevelLoader::createHandledRayGhost(cJSON *laser)
+{
+    auto targetOne = cJSON_GetObjectItemCaseSensitive(laser, "targetOne")->valuestring;
+    auto targetTwo = cJSON_GetObjectItemCaseSensitive(laser, "targetTwo")->valuestring;
+
+    Logging::Message("Handling laser between objects (%s, %s)", targetOne, targetTwo);
+
+    auto o1 = ComponentGame::getEnemyByName(targetOne);
+    auto o2 = ComponentGame::getEnemyByName(targetTwo);
+
+    auto r = new RayGhost(
+        10,
+        parseColorJSON(cJSON_GetObjectItemCaseSensitive(laser, "color")),
+        o1,
+        o2,
+        EngineSetup::collisionGroups::ProjectileEnemy,
+        EngineSetup::collisionGroups::AllFilter|EngineSetup::collisionGroups::Projectile
+    );
+
+    Brakeza3D::get()->addObject3D(r, Brakeza3D::uniqueObjectLabel("rayGhost"));
 }

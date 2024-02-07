@@ -3,6 +3,7 @@
 #include "../../include/Brakeza3D.h"
 #include "../Items/ItemBombGhost.h"
 #include "../Bosses/BossEnemy.h"
+#include "../Weapons/RayGhost.h"
 
 ComponentGame::ComponentGame()
 :
@@ -563,6 +564,9 @@ void ComponentGame::blockPlayerPositionInCamera()
             player->setVelocity(newVelocity);
         }
     }
+
+    auto camPos = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
+    ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(camPos.getScaled(0.9f));
 }
 
 EngineSetup::GameState ComponentGame::getGameState() const {
@@ -791,6 +795,7 @@ void ComponentGame::removeInGameObjects()
         auto bomb = dynamic_cast<ItemBombGhost *> (object);
         auto projectileRay = dynamic_cast<ProjectileRay *> (object);
         auto rayLight = dynamic_cast<RayLight *> (object);
+        auto rayGhost = dynamic_cast<RayGhost *> (object);
 
         if (enemy != nullptr) {
             enemy->remove();
@@ -808,7 +813,8 @@ void ComponentGame::removeInGameObjects()
             particleEmitter != nullptr ||
             bomb != nullptr ||
             salvage != nullptr ||
-            rayLight != nullptr
+            rayLight != nullptr ||
+            rayGhost != nullptr
         ) {
             object->setRemoved(true);
             continue;
@@ -1166,9 +1172,13 @@ void ComponentGame::addRayLightsToShaderLaserLine()
 
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         const auto ray = dynamic_cast<ProjectileRay *> (object);
+        const auto rayghost = dynamic_cast<RayGhost *> (object);
 
         if (ray != nullptr && ray->isEnabled()) {
             shaderProjectiles->addLaserFromRay(ray);
+        }
+        if (rayghost != nullptr && rayghost->isEnabled()) {
+            shaderProjectiles->addLaserFromRayGhost(rayghost);
         }
     }
 }

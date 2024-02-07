@@ -26,6 +26,8 @@ class ItemShieldGhost: public Mesh3DGhost  {
 
 public:
     explicit ItemShieldGhost(float ttl, float damage, Weapon *weapon);
+
+    void die();
 };
 
 

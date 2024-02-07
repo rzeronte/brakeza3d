@@ -145,9 +145,6 @@ public:
 
     static void addProjectileEmitterToEnemy(cJSON *emitter, EnemyGhost *enemy);
 
-    static void setLasersForEnemy(cJSON *lasers, EnemyGhost *enemy);
-    static void addLasersForEnemy(cJSON *laser, EnemyGhost *enemy);
-
     static Vertex3D getVertex3DFromJSONPosition(cJSON *positionJSON, float depth);
 
     static Vertex3D getPositionFromScreenPoint(Point2D fixedPosition, float depth);
@@ -215,6 +212,8 @@ public:
     int getIndexSpaceshipSelected() const;
 
     bool isLoaded() const;
+
+    static void createHandledRayGhost(cJSON *laser);
 };
 
 

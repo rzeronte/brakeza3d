@@ -70,6 +70,7 @@ void RayLight::update(bool increase)
         auto *enemy = dynamic_cast<EnemyGhost*> (brkObjectA);
         auto *player = dynamic_cast<Player*> (brkObjectA);
         auto *bomb = dynamic_cast<ItemShieldGhost*> (brkObjectA);
+        auto *rayghost = dynamic_cast<RayGhost*> (brkObjectA);
 
         btVector3 rayHitPosition = rayCallback->m_hitPointWorld;
         auto hitPosition = Vertex3D(rayHitPosition.x(), rayHitPosition.y(), rayHitPosition.z());
@@ -94,6 +95,11 @@ void RayLight::update(bool increase)
             }
 
             if (bomb != nullptr) {
+                middlePoint = Transforms::WorldToPoint(hitPosition);
+                increase = false;
+            }
+
+            if (rayghost != nullptr) {
                 middlePoint = Transforms::WorldToPoint(hitPosition);
                 increase = false;
             }

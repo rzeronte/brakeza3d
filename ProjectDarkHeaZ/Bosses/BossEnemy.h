@@ -12,7 +12,8 @@
 typedef enum {
     BOSS10_PHASE_ONE = 1,
     BOSS10_PHASE_TWO = 2,
-    BOSS10_PHASE_THREE = 3
+    BOSS10_PHASE_THREE = 3,
+    BOSS10_PHASE_FOUR = 4,
 
 } Bosses10Phase;
 

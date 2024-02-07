@@ -64,7 +64,6 @@ void WeaponRayLight::onUpdate()
 
 bool WeaponRayLight::shootRayLight(float intensity, Color color)
 {
-    Logging::Message("shootRayLight");
     if (getAmmoAmount() <= 0) return false;
 
     if (isStop() && counterStopDuration.isEnabled()) {

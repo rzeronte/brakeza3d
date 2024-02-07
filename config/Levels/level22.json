@@ -109,8 +109,6 @@
           { "x": 10, "y": 75 }
         ]
       },
-      "lasers": [
-      ],
       "explode": 100,
       "weapon": {
         "index": 0,
@@ -156,8 +154,6 @@
           { "x": 90, "y": 10 }
         ]
       },
-      "lasers": [
-      ],
       "explode": 100,
       "weapon": {
         "index": 0,

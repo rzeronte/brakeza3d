@@ -1,40 +1,77 @@
 {
 	"ads":	{
 		"direction":	{
-			"x":	-0.31871476769447327,
-			"y":	-0.20829811692237854,
+			"x":	0.12999999523162842,
+			"y":	0.23999999463558197,
 			"z":	1
 		},
 		"diffuse":	{
-			"x":	0.4754098653793335,
-			"y":	0.4754098653793335,
-			"z":	0.4754098653793335
+			"x":	0.34836065769195557,
+			"y":	0.34836065769195557,
+			"z":	0.34836065769195557
 		},
 		"specular":	{
-			"x":	0.31147539615631104,
-			"y":	0.31147539615631104,
-			"z":	0.31147539615631104
+			"x":	0.88934427499771118,
+			"y":	0.38784828782081604,
+			"z":	0.094766184687614441
 		},
 		"ambient":	{
-			"x":	0.48770493268966675,
-			"y":	0.48770493268966675,
-			"z":	0.48770493268966675
+			"x":	0.79098361730575562,
+			"y":	0.55130767822265625,
+			"z":	0.0778016671538353
 		}
 	},
 	"objects":	[{
-			"name":	"Station",
+			"name":	"Light",
 			"scale":	1,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	12.854487419128418,
-				"y":	8.7674922943115234,
-				"z":	40.802459716796875
+				"x":	-20.119003295898438,
+				"y":	4.6349701881408691,
+				"z":	66.422531127929688
 			},
 			"rotation":	{
-				"x":	129.4000244140625,
-				"y":	352.60000610351562,
-				"z":	-1.0999979972839355
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"ambient":	{
+				"x":	0,
+				"y":	0.21311473846435547,
+				"z":	1
+			},
+			"diffuse":	{
+				"x":	0,
+				"y":	0.073233023285865784,
+				"z":	0.44672131538391113
+			},
+			"specular":	{
+				"x":	0.43491414189338684,
+				"y":	0.52868854999542236,
+				"z":	0.0086669838055968285
+			},
+			"constant":	0.8399999737739563,
+			"linear":	0.059999998658895493,
+			"quadratic":	1.9999999494757503e-05,
+			"type":	"LightPoint3D"
+		}, {
+			"name":	"added_item_1",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	0,
+				"y":	-1.6160449981689453,
+				"z":	45.807308197021484
+			},
+			"rotation":	{
+				"x":	180,
+				"y":	0,
+				"z":	0
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[{
@@ -49,53 +86,6 @@
 			"model":	"../assets/models/stations/station01.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
-		}, {
-			"name":	"Planet",
-			"scale":	2.0299999713897705,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-33.940647125244141,
-				"y":	-0.223818838596344,
-				"z":	95.70245361328125
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	true,
-			"rotationFrame":	{
-				"x":	0.0099999997764825821,
-				"y":	0.0099999997764825821,
-				"z":	0
-			},
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//planets/planet_c.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"Planet02",
-			"scale":	1.7799999713897705,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-1.2456190586090088,
-				"y":	-45.595970153808594,
-				"z":	157.80245971679688
-			},
-			"rotation":	{
-				"x":	-5.6999998092651367,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//planets/planet_b.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
 		}],
 	"shaders":	[],
 	"scripts":	[],
@@ -103,7 +93,7 @@
 		"position":	{
 			"x":	0,
 			"y":	0,
-			"z":	0
+			"z":	3.3632349967956543
 		},
 		"rotation":	{
 			"x":	0,

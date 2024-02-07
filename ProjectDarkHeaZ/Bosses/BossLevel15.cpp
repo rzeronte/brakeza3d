@@ -33,9 +33,9 @@ BossLevel15::BossLevel15()
 void BossLevel15::onStart()
 {
     EnemyGhost::onStart();
-    for (auto fixedLaser : fixedLasers) {
-        fixedLaser->setIntensity(0.0005f);
-    }
+    //for (auto fixedLaser : fixedLasers) {
+        //fixedLaser->setIntensity(0.0005f);
+    //}
 }
 
 void BossLevel15::onUpdate()

@@ -26,8 +26,6 @@
         "to": { "x": 50, "y": 50 },
         "speed": 0.5
       },
-      "lasers": [
-      ],
       "weapon": {
         "index": 0,
         "available": false,
@@ -69,15 +67,6 @@
         "to": { "x": 50, "y": 50 },
         "speed": 0.5
       },
-      "lasers": [
-        {
-          "handle": "RedBallLaser01",
-          "damage": 300,
-          "length": 5,
-          "direction": { "x": -1, "y": 0, "z": 0 },
-          "color": { "r": 255, "g": 0, "b": 0 }
-        }
-      ],
       "weapon": {
         "index": 0,
         "available": false,
@@ -118,8 +107,6 @@
         "to": { "x": 50, "y": 50 },
         "speed": 0.5
       },
-      "lasers": [
-      ],
       "weapon": {
         "index": 0,
         "available": false,
@@ -160,15 +147,6 @@
         "to": { "x": 50, "y": 50 },
         "speed": 0.5
       },
-      "lasers": [
-        {
-          "handle": "RedBallLaser03",
-          "damage": 300,
-          "length": 5,
-          "direction": { "x": -1, "y": 0, "z": 0 },
-          "color": { "r": 255, "g": 0, "b": 0 }
-        }
-      ],
       "weapon": {
         "index": 0,
         "available": false,

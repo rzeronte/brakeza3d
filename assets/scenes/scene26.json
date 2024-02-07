@@ -1,55 +1,76 @@
 {
 	"ads":	{
-		"direction": {
-			"x":	0.0,
-			"y":	0.0,
-			"z":	1.0
-		},
-		"diffuse":	{
-			"x":	1,
-			"y":	1,
+		"direction":	{
+			"x":	0.470190167427063,
+			"y":	0.14500053226947784,
 			"z":	1
 		},
+		"diffuse":	{
+			"x":	0.34836065769195557,
+			"y":	0.34836065769195557,
+			"z":	0.34836065769195557
+		},
 		"specular":	{
-			"x":	0,
-			"y":	0,
-			"z":	0
+			"x":	0.88934427499771118,
+			"y":	0.38784828782081604,
+			"z":	0.094766184687614441
 		},
 		"ambient":	{
-			"x":	0.84426230192184448,
-			"y":	0.84426230192184448,
-			"z":	0.84426230192184448
+			"x":	0.79098361730575562,
+			"y":	0.55130767822265625,
+			"z":	0.0778016671538353
 		}
 	},
 	"objects":	[{
-		"name":	"city",
-		"scale":	1.3700000047683716,
-		"stencilBufferEnabled":	false,
-		"transparent":	false,
-		"position":	{
-			"x":	-4.4525699615478516,
-			"y":	1.7422741651535034,
-			"z":	37.533870697021484
-		},
-		"rotation":	{
-			"x":	180,
-			"y":	0,
-			"z":	0
-		},
-		"rotationFrameEnabled":	false,
-		"scripts":	[],
-		"shaders":	[],
-		"model":	"../assets/models//city.fbx",
-		"enableLights":	false,
-		"type":	"Mesh3D"
-	}],
+			"name":	"added_item_67",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	22.288396835327148,
+				"y":	0.19918397068977356,
+				"z":	100
+			},
+			"rotation":	{
+				"x":	100,
+				"y":	-25,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//stations/station04.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"added_item_70",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	22.288396835327148,
+				"y":	0.19918397068977356,
+				"z":	100
+			},
+			"rotation":	{
+				"x":	100,
+				"y":	-25,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//stations/station04_asteroid.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
 			"x":	0,
 			"y":	0,
-			"z":	0
+			"z":	5.6051938572992683e-45
 		},
 		"rotation":	{
 			"x":	0,

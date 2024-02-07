@@ -140,19 +140,6 @@ void EnemyGhost::handleDie()
 
 void EnemyGhost::updateLasers()
 {
-    for (auto ray : fixedLasers) {
-        if (ray->getTarget() == nullptr) {
-            if (!ray->isHadTarget()) {
-                ray->setRay(getRotation() * ray->getDirection());
-            } else {
-                ray->setRay(Vertex3D());
-            }
-        } else {
-            ray->setRay(ray->getTarget()->getPosition() - getPosition());
-        }
-
-        ray->setPosition(getPosition());
-    }
 }
 
 void EnemyGhost::makeReward()
@@ -309,16 +296,9 @@ void EnemyGhost::shoot(Object3D *target)
 
 EnemyGhost::~EnemyGhost()
 {
-    for (auto ray : fixedLasers) {
-        ray->setRemoved(true);
-    }
 
     for (auto d: dialogs) {
         delete d;
-    }
-
-    for (auto ray: fixedLasersHandled) {
-        ray->setTarget(nullptr);
     }
 }
 
@@ -355,12 +335,6 @@ Object3D *EnemyGhost::getTarget()
     }
 
     return ComponentsManager::get()->getComponentGame()->getPlayer();
-}
-
-void EnemyGhost::addFixedLaser(ProjectileRay *ray)
-{
-    fixedLasers.push_back(ray);
-    Brakeza3D::get()->addObject3D(ray, Brakeza3D::uniqueObjectLabel("fixedRay"));
 }
 
 void EnemyGhost::takeDamage(float damageTaken)
@@ -432,8 +406,4 @@ void EnemyGhost::updateEmitters()
     for (auto e: projectileEmitters) {
         e->setPosition(getPosition() + e->getOffsetPosition());
     }
-}
-
-void EnemyGhost::addHandledFixedRay(ProjectileRay *p) {
-    fixedLasersHandled.push_back(p);
 }
