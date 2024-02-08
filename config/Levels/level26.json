@@ -13,7 +13,7 @@
       "name": "Colossus",
       "avatar": "avatars/14.png",
       "avatarHud": "avatars/14.png",
-      "position": { "x": 85, "y": 35 },
+      "position": { "x": 85, "y": 85 },
       "model": "spaceships/Zenith.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
@@ -50,7 +50,7 @@
       "name": "Colossus",
       "avatar": "avatars/14.png",
       "avatarHud": "avatars/14.png",
-      "position": { "x": 15, "y": 35 },
+      "position": { "x": 15, "y": 85 },
       "model": "spaceships/Zenith.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
@@ -96,10 +96,13 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": "circle",
-        "center": { "x": 50, "y": 30 },
-        "speed": -1,
-        "radius": 4
+        "type": "path",
+        "speed": 0.25,
+        "points": [
+          { "x": 10, "y": 10 },
+          { "x": 10, "y": 40 },
+          { "x": 10, "y": 10 }
+        ]
       },
       "explode": 100,
       "weapon": {
@@ -137,10 +140,13 @@
       "stamina": 600,
       "reward": true,
       "motion": {
-        "type": "circle",
-        "center": { "x": 50, "y": 30 },
-        "speed": 1,
-        "radius": 4
+        "type": "path",
+        "speed": 0.25,
+        "points": [
+          { "x": 90, "y": 10 },
+          { "x": 90, "y": 40 },
+          { "x": 90, "y": 10 }
+        ]
       },
       "explode": 100,
       "weapon": {
@@ -181,15 +187,15 @@
         "type": "path",
         "speed": 0.4,
         "points": [
-          { "x": 100, "y": 50 },
-          { "x": 100, "y": 100 },
-          { "x": 50, "y": 100 },
-          { "x": 0, "y": 100 },
-          { "x": 0, "y": 50 },
-          { "x": 0, "y": 0 },
-          { "x": 50, "y": 0 },
-          { "x": 100, "y": 0 },
-          { "x": 100, "y": 50 }
+          { "x": 70, "y": 40 },
+          { "x": 70, "y": 60 },
+          { "x": 50, "y": 60 },
+          { "x": 30, "y": 60 },
+          { "x": 30, "y": 40 },
+          { "x": 30, "y": 30 },
+          { "x": 50, "y": 30 },
+          { "x": 70, "y": 30 },
+          { "x": 70, "y": 40 }
         ]
       },
       "weapon": {
@@ -230,15 +236,15 @@
         "type": "path",
         "speed": 0.4,
         "points": [
-          { "x": 0, "y": 50 },
-          { "x": 0, "y": 0 },
-          { "x": 50, "y": 0 },
-          { "x": 100, "y": 0 },
-          { "x": 100, "y": 50 },
-          { "x": 100, "y": 100 },
-          { "x": 50, "y": 100 },
-          { "x": 0, "y": 100 },
-          { "x": 0, "y": 50 }
+          { "x": 30, "y": 40 },
+          { "x": 30, "y": 30 },
+          { "x": 50, "y": 30 },
+          { "x": 70, "y": 30 },
+          { "x": 70, "y": 40 },
+          { "x": 70, "y": 60 },
+          { "x": 50, "y": 60 },
+          { "x": 30, "y": 60 },
+          { "x": 30, "y": 40 }
         ]
       },
       "weapon": {

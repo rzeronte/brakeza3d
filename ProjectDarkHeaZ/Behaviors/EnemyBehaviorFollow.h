@@ -30,6 +30,8 @@ public:
     void setTarget(Object3D *target);
 
     Object3DBehavior *clone() override;
+
+    void setStartPosition(Vertex3D &position) override;
 };
 
 

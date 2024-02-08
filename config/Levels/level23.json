@@ -292,6 +292,15 @@
       }
     }
   ],
+  "lasers": [{
+    "targetOne": "RedBallLaser01",
+    "targetTwo": "RedBallLaser02",
+    "color": { "r": 255, "g": 0, "b": 0 }
+  },{
+    "targetOne": "RedBallLaser03",
+    "targetTwo": "RedBallLaser04",
+    "color": { "r": 255, "g": 0, "b": 0 }
+  }],
   "items": [
   ]
 }

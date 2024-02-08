@@ -67,3 +67,8 @@ int EnemyBehaviorPath::getReturnedCounter() const {
 void EnemyBehaviorPath::setReturnedCounter(int returnedCounter) {
     EnemyBehaviorPath::returnedCounter = returnedCounter;
 }
+
+void EnemyBehaviorPath::setStartPosition(Vertex3D &position) {
+    position = path[0];
+
+}

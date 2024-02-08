@@ -35,9 +35,13 @@ public:
 
     [[nodiscard]] bool isReturned() const;
 
-    int getReturnedCounter() const;
+    [[nodiscard]] int getReturnedCounter() const;
 
     void setReturnedCounter(int returnedCounter);
+
+    void setStartPosition(Vertex3D &position) override;
+
+    void calcPosition(Vertex3D &position);
 };
 
 

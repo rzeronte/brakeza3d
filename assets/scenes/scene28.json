@@ -1,56 +1,200 @@
 {
 	"ads":	{
-		"direction": {
-			"x":	0.0,
-			"y":	0.0,
-			"z":	1.0
-		},
-		"diffuse":	{
-			"x":	1,
-			"y":	1,
+		"direction":	{
+			"x":	-1.8459415435791016,
+			"y":	-1.9529192447662354,
 			"z":	1
 		},
+		"diffuse":	{
+			"x":	0.4754098653793335,
+			"y":	0.4754098653793335,
+			"z":	0.4754098653793335
+		},
 		"specular":	{
-			"x":	0,
-			"y":	0,
-			"z":	0
+			"x":	0.31147539615631104,
+			"y":	0.31147539615631104,
+			"z":	0.31147539615631104
 		},
 		"ambient":	{
-			"x":	0.84426230192184448,
-			"y":	0.84426230192184448,
-			"z":	0.84426230192184448
+			"x":	0.74590164422988892,
+			"y":	0.58693903684616089,
+			"z":	0.58693903684616089
 		}
 	},
-	"objects":	[
-		{
-			"name":	"city",
-			"scale":	1.3700000047683716,
+	"objects":	[{
+			"name":	"Station",
+			"scale":	1,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
 			"position":	{
-				"x":	-4.4525699615478516,
-				"y":	1.7422741651535034,
-				"z":	37.533870697021484
+				"x":	6.8731913566589355,
+				"y":	0.25301334261894226,
+				"z":	73.299995422363281
 			},
 			"rotation":	{
-				"x":	180,
+				"x":	90,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"MoveUpDownObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.0099999997764825821
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//stations/station04.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Asteroid",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	6.8731913566589355,
+				"y":	0.25301334261894226,
+				"z":	77.399993896484375
+			},
+			"rotation":	{
+				"x":	90,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[{
+					"name":	"MoveUpDownObject.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0.0099999997764825821
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//stations/station04_asteroid.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Light",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	3.8731899261474609,
+				"y":	8.7247829437255859,
+				"z":	31.400001525878906
+			},
+			"rotation":	{
+				"x":	0,
 				"y":	0,
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models//city.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}
-	],
+			"ambient":	{
+				"x":	0.05000000074505806,
+				"y":	0.05000000074505806,
+				"z":	0.05000000074505806
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	1,
+			"linear":	0.090000003576278687,
+			"quadratic":	0.032000001519918442,
+			"type":	"LightPoint3D"
+		}, {
+			"name":	"new_object_84",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	16.242971420288086,
+				"y":	17.923826217651367,
+				"z":	32.900001525878906
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"ambient":	{
+				"x":	0.05000000074505806,
+				"y":	0.05000000074505806,
+				"z":	0.05000000074505806
+			},
+			"diffuse":	{
+				"x":	0.94262266159057617,
+				"y":	0,
+				"z":	1
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.039999999105930328,
+			"linear":	0.090000003576278687,
+			"quadratic":	0.0031999999191612005,
+			"type":	"LightPoint3D"
+		}, {
+			"name":	"new_object_31",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	16.94297981262207,
+				"y":	10.524044036865234,
+				"z":	52.200000762939453
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"ambient":	{
+				"x":	0.05000000074505806,
+				"y":	0.05000000074505806,
+				"z":	0.05000000074505806
+			},
+			"diffuse":	{
+				"x":	0.524186909198761,
+				"y":	0,
+				"z":	0.6803278923034668
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.039999999105930328,
+			"linear":	0.090000003576278687,
+			"quadratic":	0.0031999999191612005,
+			"type":	"LightPoint3D"
+		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	0,
-			"y":	0,
+			"x":	-5.6051938572992683e-45,
+			"y":	5.6051938572992683e-45,
 			"z":	0
 		},
 		"rotation":	{

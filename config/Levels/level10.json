@@ -28,9 +28,9 @@
       "reward": true,
       "motion": {
         "type": "patrol",
-        "from": { "x": 5, "y": 30 },
-        "to": { "x": 5, "y": 60 },
-        "speed": 0.5
+        "from": { "x": 10, "y": 30 },
+        "to": { "x": 10, "y": 60 },
+        "speed": 1
       },
       "weapon": {
         "index": 0,
@@ -68,9 +68,9 @@
       "reward": true,
       "motion": {
         "type": "patrol",
-        "from": { "x": 95, "y": 30 },
-        "to": { "x": 95, "y": 60 },
-        "speed": 0.5
+        "from": { "x": 90, "y": 60 },
+        "to": { "x": 90, "y": 30 },
+        "speed": 1
       },
       "weapon": {
         "index": 0,

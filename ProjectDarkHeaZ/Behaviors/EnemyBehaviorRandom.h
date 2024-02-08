@@ -19,6 +19,8 @@ public:
     [[nodiscard]] float getSpeed() const;
 
     Object3DBehavior *clone() override;
+
+    void setStartPosition(Vertex3D &position) override;
 };
 
 

@@ -9,7 +9,6 @@
   "color": { "r": 0, "g": 255, "b": 0 },
   "endLevel": false,
   "enemies": [
-
     {
       "name": "Colossus",
       "avatar": "avatars/energy_ball.png",
@@ -84,7 +83,7 @@
         "color": { "r": 255, "g": 0, "b": 0 }
       }
     }, {
-      "name": "RedBallLaser",
+      "name": "RedBallLaser01",
       "avatar": "avatars/energy_ball.png",
       "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -124,7 +123,7 @@
         "color": { "r": 255, "g": 255, "b": 0 }
       }
     }, {
-      "name": "RedBallLaser",
+      "name": "RedBallLaser02",
       "avatar": "avatars/energy_ball.png",
       "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
@@ -163,13 +162,13 @@
         "enableLights": false,
         "color": { "r": 255, "g": 255, "b": 0 }
       }
-    }, {
-      "name": "RedBallLaser",
+    },{
+      "name": "RedBallLaser03",
       "avatar": "avatars/energy_ball.png",
       "avatarHud": "avatars/14.png",
       "size": { "x": 1, "y": 1,  "z": 1 },
-      "position": { "x": 50,  "y": 25 },
-      "model": "bomb03.fbx",
+      "position": { "x": 50,  "y": 40 },
+      "model": "bomb02.fbx",
       "enableLights": true,
       "animated": true,
       "stamina": 600,
@@ -202,6 +201,15 @@
       }
     }
   ],
+  "lasers": [{
+    "targetOne": "RedBallLaser01",
+    "targetTwo": "RedBallLaser03",
+    "color": { "r": 255, "g": 0, "b": 0 }
+  },{
+    "targetOne": "RedBallLaser02",
+    "targetTwo": "RedBallLaser03",
+    "color": { "r": 255, "g": 0, "b": 0 }
+  }],
   "items": [
   ]
 }

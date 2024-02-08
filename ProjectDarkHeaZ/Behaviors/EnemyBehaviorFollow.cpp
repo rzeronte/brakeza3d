@@ -54,3 +54,6 @@ Object3DBehavior *EnemyBehaviorFollow::clone() {
         this->separation
     );
 }
+
+void EnemyBehaviorFollow::setStartPosition(Vertex3D &position) {
+}

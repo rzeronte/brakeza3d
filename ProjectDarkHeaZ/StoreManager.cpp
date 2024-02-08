@@ -6,7 +6,7 @@ StoreManager::StoreManager(Player *player, TextWriter *writer)
     player(player),
     writer(writer),
     offsetX(340),
-    offsetY(230),
+    offsetY(225),
     currentItemIndex(0),
     itemSelector(new Image(EngineSetup::get()->IMAGES_FOLDER + "store/item_selector.png")),
     itemBought(new Image(EngineSetup::get()->IMAGES_FOLDER + "store/item_bought.png"))
@@ -50,8 +50,8 @@ void StoreManager::update(float alpha)
     // PLAYER COINS
     auto const offsetYCoins = 130;
     writer->writeTextTTFAutoSize(
-        this->offsetX,
-        this->offsetY + offsetYCoins,
+        offsetX + 348,
+        offsetY + 245,
         std::to_string(game->getPlayer()->getCoins()).c_str(),PaletteColors::getMenuOptions(),
         1.0f
     );
@@ -96,7 +96,7 @@ void StoreManager::drawItemDetails(StoreItem *item, float alpha)
     // ITEM COINS
     writer->writeTextTTFAutoSize(
         offsetX + 348,
-        offsetY + 200,
+        offsetY + 205,
         std::to_string(item->getCost()).c_str(),
         PaletteColors::getStatisticsText(),
         1.0f

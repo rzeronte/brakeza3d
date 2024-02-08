@@ -17,6 +17,8 @@ public:
     void onUpdate(Vertex3D &position) override;
 
     Object3DBehavior *clone() override;
+
+    void setStartPosition(Vertex3D &position) override;
 };
 
 

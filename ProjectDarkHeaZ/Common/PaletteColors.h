@@ -76,7 +76,7 @@ public:
 
     [[nodiscard]] static Color getPlayerLighting() { return {1.0f, 0.0f, 1.0f}; }
 
-    [[nodiscard]] static Color getEnemyMessage() { return {0.43f, 0.63f, 0.44f}; }
+    [[nodiscard]] static Color getEnemyMessage() { return {0.43f, 0.9f, 0.44f}; }
 
 };
 

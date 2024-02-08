@@ -3,6 +3,7 @@
 //
 
 #include "EnemyBehaviorCircle.h"
+#include "../../include/Render/Logging.h"
 
 EnemyBehaviorCircle::EnemyBehaviorCircle(const Vertex3D &center, float speed, float radius)
 :
@@ -29,4 +30,10 @@ Object3DBehavior *EnemyBehaviorCircle::clone() {
         this->speed,
         this->radius
     );
+}
+
+void EnemyBehaviorCircle::setStartPosition(Vertex3D &position) {
+    Logging::Message("entro");
+    offset = M3::getMatrixRotationForEulerAngles(0, 0, speed) * offset;
+    position = center + offset;
 }

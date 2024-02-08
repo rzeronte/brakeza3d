@@ -28,8 +28,13 @@ WeaponShield::WeaponShield(const WeaponAttributes &attributes) : last(nullptr), 
 
     if (counterCadence->isFinished()) {
         counterCadence->setEnabled(true);
+        auto componentGame = ComponentsManager::get()->getComponentGame();
+        float ttl = 6;
+        if (componentGame->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_LONG_LIVE)) {
+            ttl = 8;
+        }
 
-        auto *projectile = new ItemShieldGhost(6, this->getDamage(), this);
+        auto *projectile = new ItemShieldGhost(ttl, this->getDamage(), this);
         projectile->setStencilBufferEnabled(true);
         projectile->setParent(parent);
         projectile->clone(getModelProjectile());
@@ -80,8 +85,6 @@ WeaponShield::WeaponShield(const WeaponAttributes &attributes) : last(nullptr), 
 
 void WeaponShield::onUpdate() {
     Weapon::onUpdate();
-    Logging::Message("numLiveProjectiles: %d", numLiveProjectiles);
-
 }
 
 bool WeaponShield::shoot(WeaponShootAttributes attributes)

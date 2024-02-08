@@ -100,10 +100,15 @@
       "stamina": 1000,
       "reward": true,
       "motion": {
-        "type": "patrol",
-        "from": { "x": 30, "y": 10 },
-        "to": { "x": 70, "y": 10 },
-        "speed": 1
+        "type": "path",
+        "speed": 0.4,
+        "points": [
+          { "x": 50, "y": 15 },
+          { "x": 85, "y": 15 },
+          { "x": 55, "y": 15 },
+          { "x": 20, "y": 15 },
+          { "x": 50, "y": 15 }
+        ]
       },
       "weapon": {
         "index": 0,
@@ -112,7 +117,7 @@
         "damage": 5,
         "amount": 1000,
         "startAmount": 10000,
-        "speed": 0.5,
+        "speed": 1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.3,
@@ -149,7 +154,7 @@
         "damage": 5,
         "amount": 1000,
         "startAmount": 10000,
-        "speed": 0.5,
+        "speed": 1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.3,
@@ -186,7 +191,7 @@
         "damage": 5,
         "amount": 1000,
         "startAmount": 10000,
-        "speed": 0.1,
+        "speed": 1,
         "dispersion": 10,
         "accuracy": 100,
         "cadenceTime": 0.3,

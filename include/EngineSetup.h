@@ -161,8 +161,6 @@ public:
     std::string CFG_WEAPONS = "playerWeapons.json";
     std::string CFG_SOUNDS = "sounds.json";
 
-    std::string DEFAULT_HELP_IMAGE = "xbox_one_controller.png";
-
     std::string LOGO_BRAKEZA = "logo.png";
 
     std::string DARKHEAZ_MAIN_CONFIG = "project-darkheaz.json";

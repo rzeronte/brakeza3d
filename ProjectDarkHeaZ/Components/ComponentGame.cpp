@@ -11,7 +11,7 @@ ComponentGame::ComponentGame()
     currentIndexIntro(0),
     cameraCountDownPosition(Vertex3D(0, 0, 5)),
     cameraInGamePosition(Vertex3D(0, 0, 0)),
-    playerStartPosition(Vertex3D(0, 4, Z_COORDINATE_GAMEPLAY)),
+    playerStartPosition(Vertex3D(0, 3.5, Z_COORDINATE_GAMEPLAY)),
     textWriter(nullptr),
     fadeToGameState(nullptr),
     player(nullptr),
@@ -79,10 +79,9 @@ void ComponentGame::onStart()
     imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/03.png"));
     imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/04.png"));
     imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/05.png"));
-    imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/06.png"));
 
-    helps.push_back(new Image(SETUP->IMAGES_FOLDER + SETUP->DEFAULT_HELP_IMAGE));
-    helps.push_back(new Image(SETUP->IMAGES_FOLDER + "keyboard.png"));
+    helps.push_back(new Image(SETUP->IMAGES_FOLDER + "help_controller.png"));
+    helps.push_back(new Image(SETUP->IMAGES_FOLDER + "help_keyboard.png"));
 
     splashCounter.setStep(SPLASH_TIME);
     introCounter.setStep(5.0f);
@@ -272,10 +271,11 @@ void ComponentGame::handleOnUpdateTutorialImages(float alpha)
 
         getLevelLoader()->drawCurrentTutorialImage(alpha);
         writeDialogTextToContinue("Press ENTER to start...");
-        if (getLevelLoader()->getTutorials().size() > 1) {
-            textWriter->writeTTFCenterHorizontal(520, message.c_str(), PaletteColors::getMenuOptions(), 0.5f);
-        }
         boxTutorial.drawFlatAlpha(0, 0, alpha, window->getForegroundFramebuffer());
+        if (getLevelLoader()->getTutorials().size() > 1) {
+            textWriter->writeTTFCenterHorizontal(482, message.c_str(), PaletteColors::getMenuOptions(), 0.8f);
+        }
+
         textWriter->setAlpha(oldAlpha);
     } else {
         float oldAlpha = textWriter->getAlpha();
@@ -353,16 +353,25 @@ void ComponentGame::showLevelStatistics(float alpha)
 
     ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(
         EngineSetup::get()->screenWidth/2-20 ,
-        offsetY + 295,
+        offsetY + 320,
         alpha,
         fb
     );
 
-    textWriter->writeTTFCenterHorizontal(
-        offsetY + 347,
-        std::to_string(getLevelLoader()->getStats()->coinsGained).c_str(),
+    textWriter->writeTextTTFAutoSize(
+        680,
+        420,
+        (std::string("EARNINGS ") + std::to_string(getLevelLoader()->getStats()->coinsGained)).c_str(),
+        PaletteColors::getMenuOptions(),
+        0.50f
+    );
+
+    textWriter->writeTextTTFAutoSize(
+        680,
+        450,
+        (std::string("TOTAL ") + std::to_string(player->getCoins())).c_str(),
         Color::green(),
-        0.75f
+        0.50f
     );
 }
 
@@ -485,7 +494,6 @@ void ComponentGame::setGameState(EngineSetup::GameState state)
             handlePressKeyByWin();
             break;
         case EngineSetup::GAMING_TUTORIAL:
-            setEnemiesBehaviors(false);
             break;
         case EngineSetup::STORE: {
             break;
@@ -1042,6 +1050,8 @@ void ComponentGame::handleGamingGameState()
 void ComponentGame::handleCountDownGameState()
 {
     shaderProjectiles->setEnabled(true);
+    getPlayer()->setPosition(playerStartPosition);
+    getPlayer()->setVelocity(Vertex3D());
     ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
     ComponentsManager::get()->getComponentHUD()->setEnabled(true);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
@@ -1063,10 +1073,12 @@ void ComponentGame::handlePressNewLevelKeyGameState()
 
     ComponentsManager::get()->getComponentCollisions()->setEnabled(false);
     getLevelLoader()->loadNext();
+    setEnemiesBehaviors(false);
 
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
     getPlayer()->setEnergyShieldEnabled(false);
     getPlayer()->setPosition(playerStartPosition);
+    getPlayer()->setVelocity(Vertex3D());
     setVisibleInGameObjects(true);
     ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
     ComponentsManager::get()->getComponentHUD()->setEnabled(false);
@@ -1110,9 +1122,11 @@ void ComponentGame::handlePressKeyByDead()
 
 void ComponentGame::handlePressKeyPreviousLevel()
 {
+
     getPlayer()->setEnabled(true);
     removeInGameObjects();
     getLevelLoader()->reload();
+    setEnemiesBehaviors(false);
     ComponentsManager::get()->getComponentCamera()->getCamera()->setPosition(cameraCountDownPosition);
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
     getPlayer()->setEnergyShieldEnabled(false);
@@ -1168,7 +1182,13 @@ void ComponentGame::handleSplash()
 
 void ComponentGame::addRayLightsToShaderLaserLine()
 {
-    if (gameState != EngineSetup::GAMING && gameState != EngineSetup::COUNTDOWN && gameState != EngineSetup::PRESS_KEY_BY_WIN) return;
+    if (
+        gameState != EngineSetup::GAMING &&
+        gameState != EngineSetup::COUNTDOWN &&
+        gameState != EngineSetup::PRESS_KEY_BY_WIN &&
+        gameState != EngineSetup::PRESS_KEY_NEW_LEVEL &&
+        gameState != EngineSetup::PRESS_KEY_PREVIOUS_LEVEL
+    ) return;
 
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         const auto ray = dynamic_cast<ProjectileRay *> (object);
@@ -1200,12 +1220,17 @@ void ComponentGame::handlePressKeyByWin() const
 
 void ComponentGame::setEnemiesBehaviors(bool value)
 {
+    Logging::Message("Set Enemy behaviors: %d", (int) value);
+
     for (auto &object : Brakeza3D::get()->getSceneObjects()) {
         auto enemy = dynamic_cast<EnemyGhost *> (object);
 
         if (enemy != nullptr) {
             if (enemy->getBehavior() != nullptr) {
                 enemy->getBehavior()->setEnabled(value);
+                if (value) {
+                    enemy->getBehavior()->resetExecutionTime();
+                }
             }
         }
     }
@@ -1390,7 +1415,7 @@ void ComponentGame::handleOnUpdateHelp(const float alpha)
         std::string message = std::to_string(currentHelpIndex + 1) + " of " + std::to_string((int)helps.size());
         textWriter->writeTTFCenterHorizontal(495, message.c_str(), PaletteColors::getCrt(), 0.0f);
     }
-    writeDialogTextToContinue("Press ESC to continue...");
+    writeDialogTextToContinue("Press ESC to return...");
 }
 
 void ComponentGame::handleOnUpdateStore(const float alpha)
@@ -1398,7 +1423,7 @@ void ComponentGame::handleOnUpdateStore(const float alpha)
     boxTutorial.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     boxStore.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     storeManager->update(alpha);
-    writeDialogTextToContinue("Press ESC to continue...");
+    writeDialogTextToContinue("Press ESC to return...");
 }
 
 void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)
@@ -1431,15 +1456,14 @@ void ComponentGame::handleOnUpdateCredits(const float alpha)
     boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
     border.drawFlatAlpha(0, 0, alpha, fb);
     imageCredits.drawFlatAlpha(0, 0, alpha, fb);
-    writeDialogTextToContinue("Press ESC to continue...");
+    writeDialogTextToContinue("Press ESC to return...");
 }
 
 void ComponentGame::handleOnUpdatePressKeyByDead(const float alpha)
 {
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
-    boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
-    //Logging::Message("handleOnUpdatePressKeyByDead: %d", currentIndexDeadImage);
+    //boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
     auto deadImage = imagesDead[currentIndexDeadImage];
     deadImage->drawFlatAlpha(0, 0, alpha, fb);
     shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50f);
@@ -1497,7 +1521,7 @@ void ComponentGame::handleOnUpdateIntro(float alpha)
             textWriter->writeTTFCenterHorizontal(530, message.c_str(), PaletteColors::getMenuOptions(), 0.75f);
         }
         writeDialogTextToContinue("Press ENTER to START...");
-        boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
+        //boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
         textWriter->setAlpha(oldAlpha);
     }
 }
@@ -1526,17 +1550,16 @@ void ComponentGame::handleOnUpdateDifficultySelector(const float alpha)
     int indexRatio = (int) getLevelLoader()->difficultyRatio-1;
 
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
-    int startYPosition = 200;
+    int startYPosition = 400;
 
     difficultyInformation[indexRatio]->drawFlatAlpha(0, 0, alpha, fb);
     border.drawFlatAlpha(0, 0, alpha, fb);
-    boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
 
     for (int i = 0; i < 4; i++) {
         if (indexRatio == i) {
-            textWriter->writeTextTTFAutoSize(750, startYPosition + i * 50, options[i], PaletteColors::getStamina(), 1.0);
+            textWriter->writeTTFCenterHorizontal(startYPosition + i * 35, options[i], PaletteColors::getStamina(), 0.75);
         } else {
-            textWriter->writeTextTTFAutoSize(750, startYPosition + i * 50, options[i], PaletteColors::getMenuOptions(), 1.0);
+            textWriter->writeTTFCenterHorizontal(startYPosition + i * 35, options[i], PaletteColors::getMenuOptions(), 0.75);
         }
     }
 

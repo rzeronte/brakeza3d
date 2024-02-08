@@ -465,15 +465,16 @@ void LevelLoader::parseEnemyJSON(cJSON *enemyJSON, EnemyGhost *enemy)
     enemy->setMultiScene(true);
     enemy->setRewards(reward);
     enemy->setName(name);
+    enemy->setPosition(worldPosition);
 
     if (motion != nullptr) {
         LevelLoader::setBehaviorFromJSON(motion, enemy, Z_COORDINATE_GAMEPLAY + 1);
+        if (enemy->getBehavior() != nullptr) enemy->getBehavior()->setStartPosition(enemy->getPosition());
     }
 
     enemy->setEnabled(true);
     enemy->setLabel(Brakeza3D::uniqueObjectLabel("NPC"));
     enemy->setEnableLights(enableLights);
-    enemy->setPosition(worldPosition);
     enemy->setStencilBufferEnabled(true);
     enemy->setScale(1);
     enemy->setStamina(stamina);

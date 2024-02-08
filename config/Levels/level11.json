@@ -28,8 +28,8 @@
       "reward": true,
       "motion": {
         "type": "patrol",
-        "from": { "x": 30, "y": 10 },
-        "to": { "x": 60, "y": 10 },
+        "from": { "x": 30, "y": 20 },
+        "to": { "x": 60, "y": 20 },
         "speed": 0.5
       },
       "weapon": {

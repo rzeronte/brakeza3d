@@ -2,7 +2,7 @@
   "name": "30",
   "scene": "scene30.json",
   "music": "musicLevels06",
-  "backgroundImage": "levels/bg_06.png",
+  "backgroundImage": "levels/end.png",
   "foregroundImage": "foregrounds/01.png",
   "allowEnergyShield": true,
   "histories": ["tutorial_mask.png"],

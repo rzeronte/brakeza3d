@@ -33,6 +33,8 @@ public:
     [[nodiscard]] int getReturnedCounter() const;
 
     void setReturnedCounter(int returnedCounter);
+
+    void setStartPosition(Vertex3D &position) override;
 };
 
 

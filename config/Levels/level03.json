@@ -19,7 +19,7 @@
       "name": "Traitor Striker",
       "avatar": "avatars/enemy_01.png",
       "avatarHud": "avatars/empty.png",
-      "position": { "x": 20, "y": 50 },
+      "position": { "x": 10, "y": 20 },
       "model": "spaceships/Bob.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": true,
@@ -28,8 +28,8 @@
       "reward": true,
       "motion": {
         "type": "patrol",
-        "from": { "x": 10, "y": 25 },
-        "to": { "x": 90, "y": 25 },
+        "from": { "x": 10, "y": 20 },
+        "to": { "x": 90, "y": 20 },
         "speed": 0.5
       },
       "weapon": {

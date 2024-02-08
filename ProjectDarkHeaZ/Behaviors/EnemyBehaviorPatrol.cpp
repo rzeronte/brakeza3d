@@ -18,6 +18,11 @@ void EnemyBehaviorPatrol::onUpdate(Vertex3D &position)
 
     if (!isEnabled()) return;
 
+    calcPosition(position);
+}
+
+void EnemyBehaviorPatrol::calcPosition(Vertex3D &position)
+{
     auto v = direction.getComponent().getScaled(
         abs(Tools::interpolate((float) sin((getExecutionTime() * speed) + (M_PI / 2)), -1, 1))
     );
@@ -68,6 +73,11 @@ int EnemyBehaviorPatrol::getReturnedCounter() const {
 
 void EnemyBehaviorPatrol::setReturnedCounter(int returnedCounter) {
     EnemyBehaviorPatrol::returnedCounter = returnedCounter;
+}
+
+void EnemyBehaviorPatrol::setStartPosition(Vertex3D &position) {
+    Logging::Message("iep: %f", getExecutionTime());
+    calcPosition(position);
 }
 
 EnemyBehaviorPatrol::~EnemyBehaviorPatrol() = default;

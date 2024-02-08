@@ -20,7 +20,7 @@ Player::Player()
     recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
     stuck(false),
     rescuedHumans(0),
-    coins(0),
+    coins(100000),
     projectileStartOffsetPosition(1.3),
     weapon(nullptr),
     counterStucked(Counter(5)),
@@ -105,6 +105,7 @@ bool Player::takeDamage(float dmg)
 
     if (stamina <= 0) {
         stamina = 0;
+        setVelocity(Vertex3D());
         setState(PlayerState::DEAD);
 
         Tools::makeFadeInSprite(getPosition(), ComponentsManager::get()->getComponentGame()->getRandomExplosionSprite()->getAnimation());

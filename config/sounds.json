@@ -26,8 +26,6 @@
 
     { "file": "enemy_damage.wav", "label": "enemyDamage", "type": "sound" },
 
-    { "file": "player_damage.wav", "label": "playerDamage", "type": "sound" },
-
     { "file": "player_dead.wav", "label": "playerDead", "type": "sound" },
     { "file": "gravitational_shield.wav", "label": "gravitationalShield", "type": "sound" },
 
@@ -70,7 +68,6 @@
     { "file": "metals/metal_hit_05.wav", "label": "metalHit05", "type": "sound" },
     { "file": "metals/metal_hit_06.mp3", "label": "metalHit06", "type": "sound" },
 
-    { "file": "alarm-damage.wav", "label": "alarmDamage", "type": "sound" },
     { "file": "energy_impact.wav", "label": "energyDamage", "type": "sound" },
     { "file": "countdown_item.mp3", "label": "countdownItem", "type": "sound" },
 

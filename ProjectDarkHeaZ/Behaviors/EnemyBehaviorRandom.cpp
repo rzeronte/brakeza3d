@@ -5,7 +5,13 @@
 
 EnemyBehaviorRandom::EnemyBehaviorRandom(float speed): speed(speed)
 {
-    this->direction = Vertex3D(Tools::random(-25 ,25), Tools::random(-25, 25), 0).getNormalize().getScaled(speed);
+    this->direction = Vertex3D(
+        (float) Tools::random(-25 ,25),
+        (float) Tools::random(-25, 25), 0
+    )
+    .getNormalize()
+    .getScaled(speed)
+    ;
 }
 
 void EnemyBehaviorRandom::onUpdate(Vertex3D &position)
@@ -29,4 +35,8 @@ float EnemyBehaviorRandom::getSpeed() const {
 
 Object3DBehavior *EnemyBehaviorRandom::clone() {
     return new EnemyBehaviorRandom(this->speed);
+}
+
+void EnemyBehaviorRandom::setStartPosition(Vertex3D &position) {
+
 }
