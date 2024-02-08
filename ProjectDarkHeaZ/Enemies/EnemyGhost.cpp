@@ -156,10 +156,10 @@ void EnemyGhost::makeReward()
             healthItem->setEnableLights(true);
             healthItem->setPosition(getPosition());
             healthItem->setRotationFrameEnabled(true);
-            healthItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
+            healthItem->setRotationFrame(Vertex3D(0, 1, 0));
             healthItem->setStencilBufferEnabled(true);
             healthItem->setScale(1);
-            healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_pill.fbx"));
+            healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "item_stamina.fbx"));
             healthItem->makeGhostBody(
                 ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
                 healthItem,
@@ -175,9 +175,9 @@ void EnemyGhost::makeReward()
             healthItem->setEnableLights(true);
             healthItem->setPosition(getPosition());
             healthItem->setRotationFrameEnabled(true);
-            healthItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
+            healthItem->setRotationFrame(Vertex3D(0, 1, 0));
             healthItem->setStencilBufferEnabled(true);
-            healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "pill.fbx"));
+            healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "item_energy.fbx"));
             healthItem->makeGhostBody(
                 ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
                 healthItem,
@@ -194,7 +194,7 @@ void EnemyGhost::makeReward()
             weaponItem->setEnableLights(false);
             weaponItem->setPosition(getPosition());
             weaponItem->setRotation(0, 0, 180);
-            weaponItem->setRotationFrameEnabled(true);
+            weaponItem->setRotationFrame(Vertex3D(0, 1, 0));
             weaponItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
             weaponItem->setStencilBufferEnabled(true);
             weaponItem->clone(playerWeapons[randomWeapon]->getModel());

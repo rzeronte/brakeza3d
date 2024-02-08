@@ -45,7 +45,7 @@ WeaponShield::WeaponShield(const WeaponAttributes &attributes) : last(nullptr), 
         projectile->setRotationFrameEnabled(true);
         projectile->setFlatTextureColor(false);
         projectile->makeSimpleGhostBody(
-            Vertex3D(1, 1, 1),
+            Vertex3D(0.5, 0.5, 0.5),
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             EngineSetup::collisionGroups::Player,
             EngineSetup::collisionGroups::Enemy | EngineSetup::collisionGroups::ProjectileEnemy

@@ -350,10 +350,10 @@ ItemHealthGhost* LevelLoader::makeItemHealthGhost(Vertex3D position)
     healthItem->setEnableLights(true);
     healthItem->setPosition(position);
     healthItem->setRotationFrameEnabled(true);
-    healthItem->setRotationFrame(Tools::randomVertex());
+    healthItem->setRotationFrame(Vertex3D(0, 1, 0));
     healthItem->setStencilBufferEnabled(true);
     healthItem->setScale(1);
-    healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "red_pill.fbx"));
+    healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "item_stamina.fbx"));
     healthItem->makeSimpleGhostBody(
             Vertex3D(0.5, 0.5, 0.5),
             ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
@@ -399,10 +399,10 @@ ItemEnergyGhost* LevelLoader::makeItemEnergyGhost(Vertex3D position)
     energyItem->setEnableLights(true);
     energyItem->setPosition(position);
     energyItem->setRotationFrameEnabled(true);
-    energyItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
+    energyItem->setRotationFrame(Vertex3D(0, 1, 0));
     energyItem->setStencilBufferEnabled(true);
     energyItem->setScale(1);
-    energyItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "pill.fbx"));
+    energyItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "item_energy.fbx"));
     energyItem->makeSimpleGhostBody(
         Vertex3D(0.5, 0.5, 0.5),
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
@@ -433,7 +433,7 @@ ItemWeaponGhost* LevelLoader::makeItemWeapon(int indexWeapon, Vertex3D position)
     );
     weaponItem->setRotation(0, 0, 180);
     weaponItem->setRotationFrameEnabled(true);
-    weaponItem->setRotationFrame(Tools::randomVertex().getScaled(0.5));
+    weaponItem->setRotationFrame(Vertex3D(0, 1, 0));
     weaponItem->setStencilBufferEnabled(true);
     weaponItem->updateBulletFromMesh3D();
 
