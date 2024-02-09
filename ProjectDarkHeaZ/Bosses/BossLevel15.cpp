@@ -91,6 +91,6 @@ void BossLevel15::updateRays()
         rayLight->setDamage(1);
         rayLight->setIntensity(0.00001f);
         rayLight->setReach(progress * 10.0f);
-        rayLight->update(false);
+        rayLight->update(false, getPosition());
     }
 }

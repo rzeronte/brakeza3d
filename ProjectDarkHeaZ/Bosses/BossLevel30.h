@@ -3,27 +3,28 @@
 
 
 #include "BossEnemy.h"
+#include "../Behaviors/EnemyBehaviorPath.h"
 
-typedef enum {
-    ONE = 0,
-    TWO = 1,
-    THREE = 2,
-} BossLevel30State;
-
+#define SPEED_BOSS_LASERS 0.3
+#define BOSS_LASER_LENGTH 2.5
 
 class BossLevel30 : public BossEnemy {
+    std::vector<RayLight *> rays;
+    std::vector<RayLight *> horizontal;
+    float progress;
+    Counter changePhase;
+    Bosses10Phase phase;
+
+    EnemyBehaviorPath *behaviorPhaseOne;
 
 public:
-    BossLevel30State state;
     BossLevel30();
 
     void onUpdate() override;
 
-    [[nodiscard]] BossLevel30State getBossState() const;
+    void updateRays();
 
-    void setBossState(BossLevel30State state);
-
-    void setRandomBossState();
+    void invertPhase();
 };
 
 

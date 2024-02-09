@@ -36,20 +36,20 @@ void WeaponRayLight::onUpdate()
     if (isPlayer) {
         if (status == WeaponStatus::RELEASED) {
             rayLight->setReach(0);
-            rayLight->update(false);
+            rayLight->update(false, ComponentsManager::get()->getComponentGame()->getPlayer()->getPosition());
         }
 
         if (status == WeaponStatus::PRESSED || status == WeaponStatus::SUSTAINED) {
-            rayLight->update(true);
+            rayLight->update(true, ComponentsManager::get()->getComponentGame()->getPlayer()->getPosition());
         }
     } else {
         auto gameState = ComponentsManager::get()->getComponentGame()->getGameState();
 
         if (isStop() && counterStopDuration.isEnabled() || gameState != EngineSetup::GAMING) {
             rayLight->setReach(0);
-            rayLight->update(false);
+            rayLight->update(false, rayLight->getParent()->getPosition());
         } else {
-            rayLight->update(true);
+            rayLight->update(true, rayLight->getParent()->getPosition());
         }
     }
 

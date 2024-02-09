@@ -34,7 +34,7 @@ bool WeaponProjectiles::shootProjectile(
     if (counterCadence->isFinished()) {
         float t = cadenceTime;
 
-        if (storeManager->isItemEnabled(EngineSetup::StoreItems::ITEM_FAST_SHOOT_CADENCE)){
+        if (storeManager->isItemEnabled(EngineSetup::StoreItems::ITEM_FAST_SHOOT_CADENCE)) {
             t = t - (t * 0.5f);
         }
 
@@ -77,29 +77,29 @@ bool WeaponProjectiles::shootProjectile(
 
         if (storeManager->isItemEnabled(EngineSetup::StoreItems::ITEM_MIRROR_SHOOT) && allowMirror) {
             Brakeza3D::get()->addObject3D(new AmmoProjectileBody(
-                    position + offsetPosition,
-                    parent,
-                    this,
-                    rotation,
-                    Vertex3D(50, 50, 50),
-                    direction.getInverse(),
-                    getDamage(),
-                    (float) getSpeed(),
-                    getAccuracy(),
-                    color,
-                    intensity,
-                    filterGroup,
-                    filterMask,
-                    new ParticleEmitter(
-                        ParticleEmitterState::DEFAULT,
-                        nullptr,
-                        position,
-                        0,
-                        particlesFrom,
-                        particlesTo,
-                        OCParticlesContext::forProjectile(),
-                        ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle01")
-                    )
+                position + offsetPosition,
+                parent,
+                this,
+                rotation,
+                Vertex3D(0.2, 0.2, 0.2),
+                direction.getInverse(),
+                getDamage(),
+                (float) getSpeed(),
+                getAccuracy(),
+                color,
+                intensity,
+                filterGroup,
+                filterMask,
+                new ParticleEmitter(
+                    ParticleEmitterState::DEFAULT,
+                    nullptr,
+                    position,
+                    0,
+                    particlesFrom,
+                    particlesTo,
+                    OCParticlesContext::forProjectile(),
+                    ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle01")
+                )
             ), Brakeza3D::uniqueObjectLabel("weaponProjectile"));
         }
 

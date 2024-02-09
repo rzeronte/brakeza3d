@@ -37,7 +37,7 @@ private:
 public:
     explicit RayLight(bool enabled, Object3D *parent, Vertex3D direction, Vertex3D startOffset, float speed, float damage, Color c, Color hit, int filterGroup, int filterMask);
 
-    void update(bool increase);
+    void update(bool increase, Vertex3D start);
 
     void updateDirection(Vertex3D direction, Vertex3D startOffset);
 
@@ -64,6 +64,8 @@ public:
     void setCollisionMask(int filterGroup, int filterMask);
 
     ResultRay getResult();
+
+    Object3D *getParent() const;
 };
 
 

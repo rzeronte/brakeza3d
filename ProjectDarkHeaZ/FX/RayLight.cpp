@@ -39,14 +39,15 @@ RayLight::~RayLight()
 {
 }
 
-void RayLight::update(bool increase)
+void RayLight::update(bool increase, Vertex3D start)
 {
     auto game = ComponentsManager::get()->getComponentGame();
 
-    Vertex3D start = parent->getPosition() + startOffset;
+    start = start + startOffset;
+
     Point2D screenPoint = Transforms::WorldToPoint(start);
 
-    Vertex3D end = parent->getPosition() + startOffset + direction.getScaled(reach);
+    Vertex3D end = start + direction.getScaled(reach);
     Point2D middlePoint = Transforms::WorldToPoint(end);
 
     rayCallback->m_rayFromWorld = start.toBullet();
@@ -195,4 +196,8 @@ void RayLight::setCollisionMask(int filterGroup, int filterMask)
 
 ResultRay RayLight::getResult() {
     return result;
+}
+
+Object3D *RayLight::getParent() const {
+    return parent;
 }

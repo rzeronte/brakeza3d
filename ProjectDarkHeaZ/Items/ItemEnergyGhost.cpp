@@ -7,7 +7,6 @@
 
 ItemEnergyGhost::ItemEnergyGhost() : energy(25)
 {
-
 }
 
 void ItemEnergyGhost::setEnergy(float value) {

@@ -52,8 +52,8 @@ void StoreManager::update(float alpha)
     writer->writeTextTTFAutoSize(
         offsetX + 348,
         offsetY + 245,
-        std::to_string(game->getPlayer()->getCoins()).c_str(),PaletteColors::getMenuOptions(),
-        1.0f
+        (std::string("TOTAL - ")+ std::to_string(game->getPlayer()->getCoins())).c_str(),PaletteColors::getMenuOptions(),
+        0.75f
     );
 }
 
@@ -97,9 +97,9 @@ void StoreManager::drawItemDetails(StoreItem *item, float alpha)
     writer->writeTextTTFAutoSize(
         offsetX + 348,
         offsetY + 205,
-        std::to_string(item->getCost()).c_str(),
+        (std::string("Item cost - ") + std::to_string(item->getCost())).c_str(),
         PaletteColors::getStatisticsText(),
-        1.0f
+        0.75f
     );
 }
 
