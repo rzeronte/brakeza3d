@@ -28,4 +28,3 @@ void ItemEnergyGhost::onUpdate()
 void ItemEnergyGhost::resolveCollision(Collisionable *collisionable) {
     Mesh3DGhost::resolveCollision(collisionable);
 }
-

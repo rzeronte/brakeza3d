@@ -21,7 +21,7 @@ ComponentHUD::ComponentHUD()
     ammoBombOffset(Point2D(56, 55)),
     shieldIconOffset(Point2D(112, 0)),
     ammoShieldOffset(Point2D(112, 55)),
-    levelNumberOffset(Point2D(802, 22)),
+    levelNumberOffset(Point2D(802, 20)),
     reflectionIconOffset(Point2D(167, 0)),
     ammoReflectionOffset(Point2D(167, 55))
 {

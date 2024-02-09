@@ -42,10 +42,10 @@ bool Object3DBehavior::isEnabled() const {
 void Object3DBehavior::setEnabled(bool value) {
     Object3DBehavior::enabled = value;
     if (!value) {
-        resetExecutionTime();
-        timer.stop();
+        //resetExecutionTime();
+        timer.pause();
     } else {
-        timer.start();
+        timer.unpause();
     }
 }
 

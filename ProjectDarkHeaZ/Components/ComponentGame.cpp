@@ -3,7 +3,6 @@
 #include "../../include/Brakeza3D.h"
 #include "../Items/ItemBombGhost.h"
 #include "../Bosses/BossEnemy.h"
-#include "../Weapons/RayGhost.h"
 
 ComponentGame::ComponentGame()
 :
@@ -93,7 +92,7 @@ void ComponentGame::onStart()
     camera->getCamera()->setPosition(cameraInGamePosition);
 
     camera->setAutoScroll(false);
-    camera->setAutoScrollSpeed(Vertex3D(0, -0.0, 0));
+    camera->setAutoScrollSpeed(Vertex3D(0, 0, 0));
     camera->setFreeLook(FREE_LOOK_ENABLED);
 
     ComponentsManager::get()->getComponentInput()->setEnabled(FREE_LOOK_ENABLED);
@@ -1567,6 +1566,7 @@ void ComponentGame::handleOnUpdateDifficultySelector(const float alpha)
 }
 
 void ComponentGame::resetGame() {
+
     ComponentSound::stopChannel(EngineSetup::SoundChannels::SND_GLOBAL);
     ComponentsManager::get()->getComponentSound()->stopMusic();
     currentIndexIntro = 0;
@@ -1583,7 +1583,7 @@ void ComponentGame::resetGame() {
         SPLASH_TIME * 1000
     );
 
-    getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
+    getFadeToGameState()->setSpeed(SPLASH_TIME);
     makeFadeToGameState(EngineSetup::GameState::MENU, true);
 }
 

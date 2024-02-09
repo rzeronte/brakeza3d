@@ -10,7 +10,7 @@
       "startAmount": 250,
       "speed": 1.0,
       "dispersion": 10,
-      "accuracy": 95,
+      "accuracy": 90,
       "cadenceTime": 0.25,
       "stop": false,
       "stopDuration": 1,

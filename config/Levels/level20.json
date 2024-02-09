@@ -5,7 +5,7 @@
   "backgroundImage": "levels/bg_05.png",
   "foregroundImage": "foregrounds/02.png",
   "allowEnergyShield": true,
-  "histories": ["histories/lore_20_1.png", "histories/lore_20_2.png"],
+  "histories": ["histories/lore_20_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "message": {
     "from": "Enemy Commander",

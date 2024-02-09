@@ -5,7 +5,7 @@
   "backgroundImage": "levels/bg_06.png",
   "foregroundImage": "foregrounds/02.png",
   "allowEnergyShield": true,
-  "histories": ["histories/lore_25_1.png", "histories/lore_25_2.png"],
+  "histories": ["histories/lore_25_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "message": {
     "from": "Uprising Big Combat Unit",
@@ -118,7 +118,7 @@
         "damage": 10,
         "amount": 999,
         "startAmount": 1000,
-        "speed": 0.1,
+        "speed": 1.0,
         "dispersion": 10,
         "accuracy": 50,
         "cadenceTime": 0.1,

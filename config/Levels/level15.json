@@ -5,7 +5,7 @@
   "foregroundImage": "foregrounds/06.png",
   "music": "musicLevels04",
   "allowEnergyShield": true,
-  "histories": ["histories/lore_15_1.png", "histories/lore_15_2.png"],
+  "histories": ["histories/lore_15_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "message": {
     "from": "Uprising Big Combat Unit",

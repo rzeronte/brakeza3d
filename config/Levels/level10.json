@@ -5,7 +5,7 @@
   "backgroundImage": "levels/bg_03.png",
   "foregroundImage": "foregrounds/04.png",
   "allowEnergyShield": true,
-  "histories": ["histories/lore_10_1.png", "histories/lore_10_2.png"],
+  "histories": ["histories/lore_10_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "message": {
     "from": "Uprising Big Combat Unit",
@@ -101,7 +101,7 @@
       "type": 1,
       "name": "Leuman",
       "avatar": "avatars/boss10.png",
-      "avatarHud": "avatars/empty.png",
+      "avatarHud": "avatars/message_boss_10.png",
       "position": { "x": 50, "y": 15 },
       "model": "spaceships/Spitfire.fbx",
       "size": { "x": 2, "y": 2,  "z": 2 },

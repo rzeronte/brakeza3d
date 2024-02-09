@@ -358,6 +358,25 @@ void Player::resolveCollision(Collisionable *with)
         }
     }
 
+    auto projectileRay = dynamic_cast<ProjectileRay*> (with);
+    if (projectileRay != nullptr && projectileRay->getParent() != this) {
+        const float dmg = projectileRay->getDamage();
+        if (isEnergyShieldEnabled() ) {
+            if (getEnergy() > dmg) {
+                useEnergy(dmg);
+                ComponentsManager::get()->getComponentSound()->sound("energyDamage", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+                setState(PlayerState::GETTING_DAMAGE);
+                startPlayerBlink();
+            } else {
+                setEnergy(0);
+                setEnergyShieldEnabled(false);
+            }
+        } else {
+            makeRandomPlayerDamageSound();
+            takeDamage(dmg);
+        }
+    }
+
     auto laser = dynamic_cast<ProjectileRay*> (with);
     if (laser != nullptr) {
         const float dmg = laser->getDamage() * Brakeza3D::get()->getDeltaTime();
