@@ -73,7 +73,6 @@ private:
     Image imageSplash;
     Image imageCrossFire;
     Image imageStatistics;
-    Image imageEndGame;
     Image boxStore;
     Image imageBlack;
     Image help;
@@ -85,6 +84,7 @@ private:
 
     Counter splashCounter;
     Counter introCounter;
+    Counter endgameCounter;
 
     LevelLoader *levelLoader;
 
@@ -112,6 +112,9 @@ private:
     int currentIndexIntro;
 
     std::vector <Image*> imagesDead;
+    std::vector <Image*> imagesEndGame;
+    int currentIndexEndGameImage;
+
     int currentIndexDeadImage;
 
     //PathFinder *pathFinder;
@@ -322,6 +325,8 @@ public:
     void resetGame();
 
     static EnemyGhost *getEnemyByName(const std::string& name);
+
+    void increaseEndGameImage();
 };
 
 

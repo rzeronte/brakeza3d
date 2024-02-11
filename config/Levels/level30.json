@@ -28,7 +28,7 @@
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": false,
       "animated": true,
-      "stamina": 30000,
+      "stamina": 10000,
       "reward": true,
       "weapon": {
         "index": 0,

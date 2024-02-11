@@ -7,6 +7,7 @@
 ComponentGame::ComponentGame()
 :
     currentIndexDeadImage(0),
+    currentIndexEndGameImage(0),
     currentIndexIntro(0),
     cameraCountDownPosition(Vertex3D(0, 0, 5)),
     cameraInGamePosition(Vertex3D(0, 0, 0)),
@@ -19,7 +20,6 @@ ComponentGame::ComponentGame()
     boxStore(Image(SETUP->IMAGES_FOLDER + "store.png")),
     imageBlack(Image(SETUP->IMAGES_FOLDER + "black.png")),
     boxTutorial(Image(SETUP->IMAGES_FOLDER + "tutorial_box.png")),
-    imageEndGame(Image(SETUP->IMAGES_FOLDER + "end_game.png")),
     imageStatistics(Image(SETUP->IMAGES_FOLDER + "statistics_screen.png")),
     imageCredits(Image(SETUP->IMAGES_FOLDER + "credits.png")),
     imageSplash(Image(SETUP->IMAGES_FOLDER + SETUP->LOGO_BRAKEZA)),
@@ -79,11 +79,15 @@ void ComponentGame::onStart()
     imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/04.png"));
     imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/05.png"));
 
+    imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/01.png"));
+    imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/02.png"));
+
     helps.push_back(new Image(SETUP->IMAGES_FOLDER + "help_controller.png"));
     helps.push_back(new Image(SETUP->IMAGES_FOLDER + "help_keyboard.png"));
 
     splashCounter.setStep(SPLASH_TIME);
     introCounter.setStep(5.0f);
+    endgameCounter.setStep(8.0f);
     introCounter.setEnabled(false);
 
     ComponentsManager::get()->getComponentCollisions()->initBulletSystem();
@@ -1142,6 +1146,7 @@ void ComponentGame::handlePressKeyPreviousLevel()
 
 void ComponentGame::handlePressKeyGameOver()
 {
+    endgameCounter.setEnabled(true);
     ComponentsManager::get()->getComponentHUD()->setEnabled(false);
     getPlayer()->setEnabled(true);
     ComponentSound::playMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("gameOverMusic"), -1);
@@ -1442,10 +1447,30 @@ void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)
 
 void ComponentGame::handleOnUpdatePressKeyGameOver(const float alpha)
 {
-    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
-    border.drawFlatAlpha(0, 0, alpha, fb);
-    imageEndGame.drawFlatAlpha(0, 0, alpha, fb);
-    writeDialogTextToContinue("Press ENTER to restart game...");
+    endgameCounter.update();
+
+    if (!imagesEndGame.empty()) {
+
+        if (endgameCounter.isFinished()) {
+            increaseEndGameImage();
+            endgameCounter.setEnabled(true);
+        }
+        auto window = ComponentsManager::get()->getComponentWindow();
+        auto fb = window->getForegroundFramebuffer();
+
+        float oldAlpha = textWriter->getAlpha();
+        textWriter->setAlpha(alpha);
+
+        imagesEndGame[currentIndexEndGameImage]->drawFlatAlpha(0, 0, alpha, fb);
+
+        if ((int) imagesEndGame.size() > 1) {
+            std::string message = std::to_string(currentIndexEndGameImage + 1) + " of " + std::to_string((int)imagesEndGame.size());
+            textWriter->writeTTFCenterHorizontal(530, message.c_str(), PaletteColors::getMenuOptions(), 0.75f);
+        }
+        writeDialogTextToContinue("Press ENTER to restart game...");
+        textWriter->setAlpha(oldAlpha);
+    }
+
 }
 
 void ComponentGame::handleOnUpdateCredits(const float alpha)
@@ -1461,7 +1486,6 @@ void ComponentGame::handleOnUpdatePressKeyByDead(const float alpha)
 {
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
-    //boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
     auto deadImage = imagesDead[currentIndexDeadImage];
     deadImage->drawFlatAlpha(0, 0, alpha, fb);
     shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50f);
@@ -1511,7 +1535,6 @@ void ComponentGame::handleOnUpdateIntro(float alpha)
         float oldAlpha = textWriter->getAlpha();
         textWriter->setAlpha(alpha);
 
-        //glassEffect.drawFlatAlpha(0, 0, alpha, fb);
         imagesIntro[currentIndexIntro]->drawFlatAlpha(0, 0, alpha, fb);
 
         if ((int) imagesIntro.size() > 1) {
@@ -1519,7 +1542,6 @@ void ComponentGame::handleOnUpdateIntro(float alpha)
             textWriter->writeTTFCenterHorizontal(530, message.c_str(), PaletteColors::getMenuOptions(), 0.75f);
         }
         writeDialogTextToContinue("Press ENTER to START...");
-        //boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
         textWriter->setAlpha(oldAlpha);
     }
 }
@@ -1598,4 +1620,11 @@ EnemyGhost* ComponentGame::getEnemyByName(const std::string& name)
         }
     }
     return nullptr;
+}
+
+void ComponentGame::increaseEndGameImage() {
+    if (currentIndexEndGameImage + 1 < (unsigned int) imagesEndGame.size()) {
+        ComponentsManager::get()->getComponentSound()->sound("slideMachine", EngineSetup::SoundChannels::SND_GLOBAL, 0);
+        currentIndexEndGameImage++;
+    }
 }
