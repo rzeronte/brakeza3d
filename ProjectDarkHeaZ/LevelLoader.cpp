@@ -976,18 +976,39 @@ void LevelLoader::LoadConfig()
     difficultyRatio = (float) cJSON_GetObjectItemCaseSensitive(myDataJSON, "difficultyRatio")->valuedouble;
 
     indexSpaceshipSelected = (int) cJSON_GetObjectItemCaseSensitive(myDataJSON, "spaceship")->valueint;
+
+    auto ammoJSON = cJSON_GetObjectItemCaseSensitive(myDataJSON, "ammo");
+    auto weapons = ComponentsManager::get()->getComponentGame()->getPlayer()->getWeapons();
+
+    weapons[0]->setAmmoAmount(cJSON_GetObjectItemCaseSensitive(ammoJSON, "projectile")->valueint);
+    weapons[1]->setAmmoAmount(cJSON_GetObjectItemCaseSensitive(ammoJSON, "laser")->valueint);
+    weapons[2]->setAmmoAmount(cJSON_GetObjectItemCaseSensitive(ammoJSON, "raylight")->valueint);
+    weapons[3]->setAmmoAmount(cJSON_GetObjectItemCaseSensitive(ammoJSON, "bomb")->valueint);
+    weapons[4]->setAmmoAmount(cJSON_GetObjectItemCaseSensitive(ammoJSON, "reflection")->valueint);
+    weapons[5]->setAmmoAmount(cJSON_GetObjectItemCaseSensitive(ammoJSON, "shield")->valueint);
 }
 
 void LevelLoader::updateConfig(int level) const {
 
     std::string filePathStr = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->DARKHEAZ_MAIN_CONFIG;
     const char* file_path = filePathStr.c_str();
+    auto weapons = ComponentsManager::get()->getComponentGame()->getPlayer()->getWeapons();
 
     cJSON *json = cJSON_CreateObject();
 
     cJSON_AddNumberToObject(json, "level", level);
     cJSON_AddNumberToObject(json, "difficultyRatio", difficultyRatio);
     cJSON_AddNumberToObject(json, "spaceship", ComponentsManager::get()->getComponentGame()->spaceshipSelectedIndex);
+
+    cJSON *ammo = cJSON_CreateObject();
+    cJSON_AddNumberToObject(ammo, "projectile", weapons[0]->getAmmoAmount());
+    cJSON_AddNumberToObject(ammo, "laser", weapons[1]->getAmmoAmount());
+    cJSON_AddNumberToObject(ammo, "raylight", weapons[2]->getAmmoAmount());
+    cJSON_AddNumberToObject(ammo, "bomb", weapons[3]->getAmmoAmount());
+    cJSON_AddNumberToObject(ammo, "reflection", weapons[4]->getAmmoAmount());
+    cJSON_AddNumberToObject(ammo, "shield", weapons[5]->getAmmoAmount());
+
+    cJSON_AddItemToObject(json, "ammo", ammo);
 
     char *output_string = cJSON_Print(json);
 

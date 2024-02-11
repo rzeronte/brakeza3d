@@ -8,8 +8,8 @@
   "histories": ["histories/lore_15_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "message": {
-    "from": "Uprising Big Combat Unit",
-    "text": " hahahaha your death is the only\nthing you will find here human",
+    "from": "Nyxara the Venomous",
+    "text": "Ha ha ha your death is the only\nthing you will find here human",
     "sound": "boss15",
     "stamina": 100,
     "avatarHud": "avatars/message_boss_15.png"
@@ -18,7 +18,7 @@
   "bosses": [
     {
       "type": 2,
-      "name": "SpaceBirds",
+      "name": "Nyxara the Venomous",
       "avatar": "avatars/boss15.png",
       "avatarHud": "avatars/message_boss_15.png",
       "position": { "x": 50, "y": 45 },
@@ -26,7 +26,7 @@
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": false,
       "animated": true,
-      "stamina": 3000,
+      "stamina": 10000,
       "reward": true,
       "messages": [
         { "text": "ha ha ha ha ha...", "sound": "boss15_02", "stamina": 60 }

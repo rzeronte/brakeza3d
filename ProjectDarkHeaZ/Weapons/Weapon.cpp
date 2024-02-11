@@ -18,7 +18,8 @@ Weapon::Weapon(WeaponAttributes attr)
     modelProjectile(new Mesh3D()),
     counterCadence(new Counter(attr.cadenceTime)),
     soundChannel(EngineSetup::SoundChannels::SND_GLOBAL),
-    status(WeaponStatus::RELEASED)
+    status(WeaponStatus::RELEASED),
+    color(attr.projectileColor)
 {
     setLabel(attr.name);
 
@@ -309,4 +310,12 @@ void Weapon::decreaseNumberProjectiles() {
     if (numLiveProjectiles < 0) {
         numLiveProjectiles = 0;
     }
+}
+
+const Color &Weapon::getColor() const {
+    return color;
+}
+
+void Weapon::setColor(const Color &color) {
+    Weapon::color = color;
 }

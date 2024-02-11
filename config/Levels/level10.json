@@ -8,7 +8,7 @@
   "histories": ["histories/lore_10_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "message": {
-    "from": "Uprising Big Combat Unit",
+    "from": "Krallax the Corruptor",
     "text": "ha ha ha ha ha...\nHA HA HA HA",
     "sound": "boss10",
     "stamina": 100,
@@ -99,7 +99,7 @@
   "bosses": [
     {
       "type": 1,
-      "name": "Leuman",
+      "name": "Krallax the Corruptor",
       "avatar": "avatars/boss10.png",
       "avatarHud": "avatars/message_boss_10.png",
       "position": { "x": 50, "y": 15 },
@@ -107,7 +107,7 @@
       "size": { "x": 2, "y": 2,  "z": 2 },
       "enableLights": true,
       "animated": true,
-      "stamina": 4000,
+      "stamina": 8000,
       "reward": true,
       "messages": [
         { "text": "ha ha ha ha ha...\nHA HA HA HA", "sound": "boss10", "stamina": 55 }

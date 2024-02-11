@@ -9,6 +9,7 @@
 #include "../Weapons/Weapon.h"
 
 class StoreItem {
+    int id;
     Image *image;
     Image *imageOff;
     Image *imageSmall;
@@ -19,7 +20,7 @@ class StoreItem {
     bool bought;
 
 public:
-    StoreItem(Image *image, Image *imageSmall, Image *imageOff, Image *description, int cost, Weapon *weapon, bool available);
+    StoreItem(int id, Image *image, Image *imageSmall, Image *imageOff, Image *description, int cost, Weapon *weapon, bool available);
 
     [[nodiscard]] Image *getImage() const;
 
@@ -39,6 +40,7 @@ public:
 
     void setBought(bool bought);
 
+    int getId() const;
 };
 
 

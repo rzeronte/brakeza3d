@@ -6,7 +6,7 @@ StoreManager::StoreManager(Player *player, TextWriter *writer)
     player(player),
     writer(writer),
     offsetX(340),
-    offsetY(225),
+    offsetY(215),
     currentItemIndex(0),
     itemSelector(new Image(EngineSetup::get()->IMAGES_FOLDER + "store/item_selector.png")),
     itemBought(new Image(EngineSetup::get()->IMAGES_FOLDER + "store/item_bought.png"))
@@ -24,7 +24,7 @@ void StoreManager::update(float alpha)
     int separation = 70;
     int separationVertical = 70;
 
-    int numRows = 3;
+    int numRows = 4;
     int numColumns = 4;
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
 
@@ -96,7 +96,7 @@ void StoreManager::drawItemDetails(StoreItem *item, float alpha)
     // ITEM COINS
     writer->writeTextTTFAutoSize(
         offsetX + 348,
-        offsetY + 205,
+        offsetY + 215,
         (std::string("Item cost - ") + std::to_string(item->getCost())).c_str(),
         PaletteColors::getStatisticsText(),
         0.75f
@@ -105,27 +105,63 @@ void StoreManager::drawItemDetails(StoreItem *item, float alpha)
 
 void StoreManager::buyCurrentSelected()
 {
-    if (items[currentItemIndex]->isBought()) {
+    auto item = items[currentItemIndex];
+    if (item->isBought()) {
         return;
     }
 
-    const int cost = items[currentItemIndex]->getCost();
+    const int cost = item->getCost();
 
-    if ( cost > player->getCoins() || !items[currentItemIndex]->isAvailable()) {
+    if ( cost > player->getCoins() || !item->isAvailable()) {
         ComponentsManager::get()->getComponentSound()->sound("error", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         return;
     }
 
     ComponentsManager::get()->getComponentSound()->sound("selling", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     player->decreaseCoins(cost);
-    items[currentItemIndex]->setBought(true);
+    item->setBought(true);
+
+    switch(item->getId()) {
+        case EngineSetup::StoreItems::ITEM_AMMO_WEAPON_PROJECTILES: {
+            player->getWeapons()[WEAPON_PROJECTILE]->addAmount(300);
+            item->setBought(false);
+            break;
+        }
+        case EngineSetup::StoreItems::ITEM_AMMO_WEAPON_LASER: {
+            player->getWeapons()[WEAPON_LASER]->addAmount(500);
+            item->setBought(false);
+            break;
+        }
+        case EngineSetup::StoreItems::ITEM_AMMO_WEAPON_RAY: {
+            player->getWeapons()[WEAPON_RAYLIGHT]->addAmount(1000);
+            item->setBought(false);
+            break;
+        }
+        case EngineSetup::StoreItems::ITEM_AMMO_WEAPON_BOMBS: {
+            player->getWeapons()[WEAPON_BOMB]->addAmount(15);
+            item->setBought(false);
+            break;
+        }
+        case EngineSetup::StoreItems::ITEM_AMMO_WEAPON_REFLECTIONS: {
+            player->getWeapons()[WEAPON_REFLECTION]->addAmount(15);
+            item->setBought(false);
+            break;
+        }
+        case EngineSetup::StoreItems::ITEM_AMMO_WEAPON_SHIELDS: {
+            player->getWeapons()[WEAPON_SHIELD]->addAmount(25);
+            item->setBought(false);
+            break;
+        }
+    }
 }
 
 void StoreManager::loadDefaultItems()
 {
     const auto folder = EngineSetup::get()->IMAGES_FOLDER + "store/";
+    auto weapons = ComponentsManager::get()->getComponentGame()->getPlayer()->getWeapons();
 
     addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_EXTRA_POWER,
         new Image(folder + "item1_icon.png"),
         new Image(folder + "item1_icon_small.png"),
         new Image(folder + "item1_icon_off.png"),
@@ -136,6 +172,7 @@ void StoreManager::loadDefaultItems()
     ));
 
     addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_FAST_ENERGY_RELOAD,
         new Image(folder + "item2_icon.png"),
         new Image(folder + "item2_icon_small.png"),
         new Image(folder + "item2_icon_off.png"),
@@ -146,6 +183,7 @@ void StoreManager::loadDefaultItems()
     ));
 
     addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_SATELLITE,
         new Image(folder + "item3_icon.png"),
         new Image(folder + "item3_icon_small.png"),
         new Image(folder + "item3_icon_off.png"),
@@ -156,6 +194,7 @@ void StoreManager::loadDefaultItems()
     ));
 
     addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_MIRROR_SHOOT,
         new Image(folder + "item4_icon.png"),
         new Image(folder + "item4_icon_small.png"),
         new Image(folder + "item4_icon_off.png"),
@@ -166,6 +205,7 @@ void StoreManager::loadDefaultItems()
     ));
 
     addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_EXTRA_DASH,
         new Image(folder + "item5_icon.png"),
         new Image(folder + "item5_icon_small.png"),
         new Image(folder + "item5_icon_off.png"),
@@ -176,6 +216,7 @@ void StoreManager::loadDefaultItems()
     ));
 
     addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_FAST_SHOOT_CADENCE,
         new Image(folder + "item6_icon.png"),
         new Image(folder + "item6_icon_small.png"),
         new Image(folder + "item6_icon_off.png"),
@@ -186,6 +227,7 @@ void StoreManager::loadDefaultItems()
     ));
 
     addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_FAST_ROTATION_TO_ENEMY,
         new Image(folder + "item7_icon.png"),
         new Image(folder + "item7_icon_small.png"),
         new Image(folder + "item7_icon_off.png"),
@@ -196,12 +238,79 @@ void StoreManager::loadDefaultItems()
     ));
 
     addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_LONG_LIVE,
         new Image(folder + "item8_icon.png"),
         new Image(folder + "item8_icon_small.png"),
         new Image(folder + "item8_icon_off.png"),
         new Image(folder + "item8_desc.png"),
         1000,
         nullptr,
+        true
+    ));
+
+    addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_AMMO_WEAPON_PROJECTILES,
+        new Image(folder + "item9_icon.png"),
+        nullptr,
+        nullptr,
+        new Image(folder + "item9_desc.png"),
+        100,
+        weapons[WEAPON_PROJECTILE],
+        true
+    ));
+
+    addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_AMMO_WEAPON_LASER,
+        new Image(folder + "item10_icon.png"),
+        nullptr,
+        nullptr,
+        new Image(folder + "item10_desc.png"),
+        150,
+        weapons[WEAPON_LASER],
+        true
+    ));
+
+    addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_AMMO_WEAPON_RAY,
+        new Image(folder + "item11_icon.png"),
+        nullptr,
+        nullptr,
+        new Image(folder + "item11_desc.png"),
+        200,
+        weapons[WEAPON_RAYLIGHT],
+        true
+    ));
+
+    addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_AMMO_WEAPON_BOMBS,
+        new Image(folder + "item12_icon.png"),
+        nullptr,
+        nullptr,
+        new Image(folder + "item12_desc.png"),
+        250,
+        weapons[WEAPON_BOMB],
+        true
+    ));
+
+    addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_AMMO_WEAPON_REFLECTIONS,
+        new Image(folder + "item13_icon.png"),
+        nullptr,
+        nullptr,
+        new Image(folder + "item13_desc.png"),
+        300,
+        weapons[WEAPON_REFLECTION],
+        true
+    ));
+
+    addItem(new StoreItem(
+        EngineSetup::StoreItems::ITEM_AMMO_WEAPON_SHIELDS,
+        new Image(folder + "item14_icon.png"),
+        nullptr,
+        nullptr,
+        new Image(folder + "item14_desc.png"),
+        400,
+        weapons[WEAPON_SHIELD],
         true
     ));
 }

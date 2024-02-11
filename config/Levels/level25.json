@@ -8,7 +8,7 @@
   "histories": ["histories/lore_25_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "message": {
-    "from": "Uprising Big Combat Unit",
+    "from": "Heldara Drakela",
     "text": " ah my dear intruder, what an unexpected\npleasure to see you so far from home.\nAre you lost?",
     "sound": "boss25",
     "stamina": 100,
@@ -101,7 +101,7 @@
   "bosses": [
     {
       "type": 4,
-      "name": "Drakela",
+      "name": "Heldara Drakela",
       "avatar": "avatars/boss25.png",
       "avatarHud": "avatars/boss25.png",
       "position": { "x": 50, "y": 10 },
@@ -109,7 +109,7 @@
       "size": { "x": 2, "y": 2,  "z": 2 },
       "enableLights": false,
       "animated": true,
-      "stamina": 3000,
+      "stamina": 20000,
       "reward": true,
       "weapon": {
         "index": 0,

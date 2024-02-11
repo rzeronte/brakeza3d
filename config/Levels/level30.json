@@ -7,21 +7,28 @@
   "allowEnergyShield": true,
   "histories": ["histories/lore_30_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
+  "message": {
+    "from": "Zargol the Mindflyer",
+    "text": "Pray what you know to your human god, your\nend is now!",
+    "sound": "boss30",
+    "stamina": 100,
+    "avatarHud": "avatars/message_boss_30.png"
+  },
   "endLevel": true,
   "enemies": [
   ],
   "bosses": [
     {
       "type": 5,
-      "name": "SpaceBirds",
-      "avatar": "avatars/14.png",
+      "name": "Zargol the Mindflayer",
+      "avatar": "avatars/boss30.png",
       "avatarHud": "avatars/boss30.png",
       "position": { "x": 50, "y": 10 },
       "model": "spaceships/Insurgent.fbx",
       "size": { "x": 1, "y": 1,  "z": 1 },
       "enableLights": false,
       "animated": true,
-      "stamina": 3000,
+      "stamina": 30000,
       "reward": true,
       "weapon": {
         "index": 0,

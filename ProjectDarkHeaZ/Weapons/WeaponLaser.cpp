@@ -85,7 +85,7 @@ bool WeaponLaser::shoot(WeaponShootAttributes attributes)
         attributes.direction,
         0.00075f,
         attributes.sound,
-        PaletteColors::getPlayerLaser(),
+        getColor(),
         attributes.filterGroup,
         attributes.filterMask
     );

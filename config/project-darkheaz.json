@@ -1,5 +1,13 @@
 {
-	"level":	9,
+	"level":	23,
 	"difficultyRatio":	2,
-	"spaceship":	0
+	"spaceship":	0,
+	"ammo":	{
+		"projectile":	1462,
+		"laser":	1212,
+		"raylight":	3031,
+		"bomb":	29,
+		"reflection":	9,
+		"shield":	23
+	}
 }

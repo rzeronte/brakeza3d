@@ -20,7 +20,7 @@ Player::Player()
     recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
     stuck(false),
     rescuedHumans(0),
-    coins(100000),
+    coins(0),
     projectileStartOffsetPosition(1.3),
     weapon(nullptr),
     counterStucked(Counter(5)),

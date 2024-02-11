@@ -8,7 +8,7 @@
   "histories": ["histories/lore_20_1.png"],
   "color": { "r": 0, "g": 255, "b": 0 },
   "message": {
-    "from": "Enemy Commander",
+    "from": "Vortorax the Warbringer",
     "text": "The battle is lost human, your race is\non the verge of extinction.\nIf you surrender, I will be merciful to you.",
     "sound": "boss20",
     "stamina": 100,
@@ -30,7 +30,7 @@
   "bosses": [
     {
       "type": 3,
-      "name": "Enemy Commander",
+      "name": "Vortorax the Warbringer",
       "avatar": "avatars/boss20.png",
       "avatarHud": "avatars/message_boss_20.png",
       "position": { "x": 50, "y": 10 },
@@ -38,7 +38,7 @@
       "size": { "x": 3, "y": 8,  "z": 2 },
       "enableLights": false,
       "animated": true,
-      "stamina": 3000,
+      "stamina": 15000,
       "reward": true,
       "weapon": {
         "index": 0,

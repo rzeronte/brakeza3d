@@ -4,8 +4,9 @@
 
 #include "StoreItem.h"
 
-StoreItem::StoreItem(Image *image, Image *imageSmall, Image *imageOff, Image *description, int cost, Weapon *weapon, bool available)
+StoreItem::StoreItem(int id, Image *image, Image *imageSmall, Image *imageOff, Image *description, int cost, Weapon *weapon, bool available)
 :
+    id(id),
     image(image),
     imageSmall(imageSmall),
     imageOff(imageOff),
@@ -53,4 +54,8 @@ void StoreItem::setBought(bool bought) {
 
 Image *StoreItem::getImageSmall() const {
     return imageSmall;
+}
+
+int StoreItem::getId() const {
+    return id;
 }

@@ -10,7 +10,7 @@ ComponentGame::ComponentGame()
     currentIndexIntro(0),
     cameraCountDownPosition(Vertex3D(0, 0, 5)),
     cameraInGamePosition(Vertex3D(0, 0, 0)),
-    playerStartPosition(Vertex3D(0, 3.5, Z_COORDINATE_GAMEPLAY)),
+    playerStartPosition(Vertex3D(0, 5, Z_COORDINATE_GAMEPLAY)),
     textWriter(nullptr),
     fadeToGameState(nullptr),
     player(nullptr),
@@ -1443,10 +1443,9 @@ void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)
 void ComponentGame::handleOnUpdatePressKeyGameOver(const float alpha)
 {
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
-    boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
     border.drawFlatAlpha(0, 0, alpha, fb);
     imageEndGame.drawFlatAlpha(0, 0, alpha, fb);
-    writeDialogTextToContinue("Press ENTER to continue...");
+    writeDialogTextToContinue("Press ENTER to restart game...");
 }
 
 void ComponentGame::handleOnUpdateCredits(const float alpha)

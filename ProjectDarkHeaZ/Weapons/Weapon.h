@@ -112,6 +112,7 @@ protected:
     float accuracy;
     int ammoAmount;
     int numLiveProjectiles = 0;
+    Color color;
 public:
     explicit Weapon(WeaponAttributes attributes);
 
@@ -206,6 +207,10 @@ public:
 
     void increaseNumberProjectiles();
     void decreaseNumberProjectiles();
+
+    const Color &getColor() const;
+
+    void setColor(const Color &color);
 };
 
 
