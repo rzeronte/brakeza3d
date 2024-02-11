@@ -4,6 +4,14 @@
 
 #include "WeaponProjectiles.h"
 #include "../../include/Brakeza3D.h"
+
+WeaponProjectiles::WeaponProjectiles(const WeaponAttributes &attributes, Mesh3D *modelProjectile)
+:
+    Weapon(attributes, modelProjectile)
+{
+
+}
+
 WeaponProjectiles::WeaponProjectiles(const WeaponAttributes &attributes) : Weapon(attributes) {
 
 }

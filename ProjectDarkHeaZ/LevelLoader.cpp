@@ -1001,12 +1001,21 @@ void LevelLoader::updateConfig(int level) const {
     cJSON_AddNumberToObject(json, "spaceship", ComponentsManager::get()->getComponentGame()->spaceshipSelectedIndex);
 
     cJSON *ammo = cJSON_CreateObject();
-    cJSON_AddNumberToObject(ammo, "projectile", weapons[0]->getAmmoAmount());
-    cJSON_AddNumberToObject(ammo, "laser", weapons[1]->getAmmoAmount());
-    cJSON_AddNumberToObject(ammo, "raylight", weapons[2]->getAmmoAmount());
-    cJSON_AddNumberToObject(ammo, "bomb", weapons[3]->getAmmoAmount());
-    cJSON_AddNumberToObject(ammo, "reflection", weapons[4]->getAmmoAmount());
-    cJSON_AddNumberToObject(ammo, "shield", weapons[5]->getAmmoAmount());
+    if (level != -1) {
+        cJSON_AddNumberToObject(ammo, "projectile", weapons[0]->getAmmoAmount());
+        cJSON_AddNumberToObject(ammo, "laser", weapons[1]->getAmmoAmount());
+        cJSON_AddNumberToObject(ammo, "raylight", weapons[2]->getAmmoAmount());
+        cJSON_AddNumberToObject(ammo, "bomb", weapons[3]->getAmmoAmount());
+        cJSON_AddNumberToObject(ammo, "reflection", weapons[4]->getAmmoAmount());
+        cJSON_AddNumberToObject(ammo, "shield", weapons[5]->getAmmoAmount());
+    } else {
+        cJSON_AddNumberToObject(ammo, "projectile", 500);
+        cJSON_AddNumberToObject(ammo, "laser", 700);
+        cJSON_AddNumberToObject(ammo, "raylight", 1000);
+        cJSON_AddNumberToObject(ammo, "bomb", 15);
+        cJSON_AddNumberToObject(ammo, "reflection", 10);
+        cJSON_AddNumberToObject(ammo, "shield", 25);
+    }
 
     cJSON_AddItemToObject(json, "ammo", ammo);
 

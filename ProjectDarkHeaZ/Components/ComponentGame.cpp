@@ -81,6 +81,8 @@ void ComponentGame::onStart()
 
     imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/01.png"));
     imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/02.png"));
+    imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/03.png"));
+    imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/04.png"));
 
     helps.push_back(new Image(SETUP->IMAGES_FOLDER + "help_controller.png"));
     helps.push_back(new Image(SETUP->IMAGES_FOLDER + "help_keyboard.png"));
@@ -371,10 +373,10 @@ void ComponentGame::showLevelStatistics(float alpha)
 
     textWriter->writeTextTTFAutoSize(
         680,
-        450,
+        445,
         (std::string("TOTAL ") + std::to_string(player->getCoins())).c_str(),
         Color::green(),
-        0.50f
+        0.75f
     );
 }
 
@@ -1146,12 +1148,14 @@ void ComponentGame::handlePressKeyPreviousLevel()
 
 void ComponentGame::handlePressKeyGameOver()
 {
+
     endgameCounter.setEnabled(true);
     ComponentsManager::get()->getComponentHUD()->setEnabled(false);
     getPlayer()->setEnabled(true);
     ComponentSound::playMusic(ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("gameOverMusic"), -1);
     setVisibleInGameObjects(false);
     removeInGameObjects();
+    getPlayer()->setEnabled(false);
     getPlayer()->stopBlinkForPlayer();
     getPlayer()->setEnergyShieldEnabled(false);
     getPlayer()->getWeapon()->setStatus(WeaponStatus::RELEASED);
@@ -1595,6 +1599,7 @@ void ComponentGame::resetGame() {
     getLevelLoader()->setLevelStartedToPlay(false);
     getLevelLoader()->setCurrentLevelIndex(-1);
     getLevelLoader()->updateConfig(-1);
+    getLevelLoader()->LoadConfig();
     SceneLoader::clearScene();
     ComponentsManager::get()->getComponentMenu()->LoadScene();
 
@@ -1604,8 +1609,8 @@ void ComponentGame::resetGame() {
         SPLASH_TIME * 1000
     );
 
-    getFadeToGameState()->setSpeed(SPLASH_TIME);
-    makeFadeToGameState(EngineSetup::GameState::MENU, true);
+    getFadeToGameState()->setSpeed(FADE_SPEED_MENU_FIRST_TIME);
+    setGameState(EngineSetup::GameState::MENU);
 }
 
 EnemyGhost* ComponentGame::getEnemyByName(const std::string& name)

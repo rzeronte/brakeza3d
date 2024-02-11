@@ -8,6 +8,51 @@
 #include "../Common/ShockWave.h"
 
 Weapon::Weapon(WeaponAttributes attr)
+        :
+        enabled(false),
+        parent(attr.parent),
+        selectable(attr.selectable),
+        cadenceTime(attr.cadenceTime),
+        rayLight(attr.rayLight),
+        model(new Mesh3D()),
+        modelProjectile(new Mesh3D()),
+        counterCadence(new Counter(attr.cadenceTime)),
+        soundChannel(EngineSetup::SoundChannels::SND_GLOBAL),
+        status(WeaponStatus::RELEASED),
+        color(attr.projectileColor)
+{
+    setLabel(attr.name);
+
+    counterCadence->setEnabled(false);
+
+    getModel()->AssimpLoadGeometryFromFile(attr.weaponModel);
+
+    getModelProjectile()->setFlatTextureColor(attr.projectileFlatTexture);
+    getModelProjectile()->setEnableLights(attr.projectileEnableLights);
+    getModelProjectile()->AssimpLoadGeometryFromFile(attr.projectileModel);
+    getModelProjectile()->setLabel(Brakeza3D::uniqueObjectLabel("projectile_weapon_template"));
+    getModelProjectile()->setFlatColor(attr.projectileColor);
+
+    setIconImage(attr.icon);
+
+    setAmmoAmount(attr.ammoAmount);
+    setStartAmmoAmount(attr.startAmmoAmount);
+    setSpeed(attr.speed);
+    setDamage(attr.damage);
+    setDispersion(attr.dispersion);
+    setAccuracy(attr.accuracy);
+    setCadenceTime(attr.cadenceTime);
+
+    setStop(attr.stop);
+    setAvailable(attr.available);
+
+    if (attr.stop) {
+        setStopDuration(attr.stopDuration);
+        setStopEvery(attr.stopEver);
+    }
+}
+
+Weapon::Weapon(WeaponAttributes attr, Mesh3D *externalModelProjectile)
 :
     enabled(false),
     parent(attr.parent),
@@ -27,12 +72,10 @@ Weapon::Weapon(WeaponAttributes attr)
 
     getModel()->AssimpLoadGeometryFromFile(attr.weaponModel);
 
+    getModelProjectile()->clone(externalModelProjectile);
     getModelProjectile()->setFlatTextureColor(attr.projectileFlatTexture);
     getModelProjectile()->setEnableLights(attr.projectileEnableLights);
-    getModelProjectile()->AssimpLoadGeometryFromFile(attr.projectileModel);
-    getModelProjectile()->setLabel(Brakeza3D::uniqueObjectLabel("projectile_weapon_template"));
-    getModelProjectile()->setFlatColor(attr.projectileColor);
-    getModelProjectile()->setScale(1);
+
 
     setIconImage(attr.icon);
 

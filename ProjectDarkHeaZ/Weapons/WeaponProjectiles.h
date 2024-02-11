@@ -10,6 +10,7 @@
 class WeaponProjectiles: public Weapon {
 public:
     explicit WeaponProjectiles(const WeaponAttributes &attributes);
+    explicit WeaponProjectiles(const WeaponAttributes &attributes, Mesh3D *modelProjectile);
 
     bool shoot(WeaponShootAttributes attributes) override;
 

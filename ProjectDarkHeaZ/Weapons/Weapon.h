@@ -116,6 +116,8 @@ protected:
 public:
     explicit Weapon(WeaponAttributes attributes);
 
+    explicit Weapon(WeaponAttributes attributes, Mesh3D *externalModelProjectile);
+
     virtual void onUpdate();
 
     void setAvailable(bool available);
