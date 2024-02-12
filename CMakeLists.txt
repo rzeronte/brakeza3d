@@ -22,7 +22,6 @@ if (WIN32)
     set(ASSIMP_INCLUDE_DIRS C:\\Users\\Eduardo\\Desktop\\include\\assimp)
     set(GLM_INCLUDE_DIRS C:\\Users\\Eduardo\\Desktop\\include\\glm)
     set(BULLET_INCLUDE_DIRS C:\\Users\\eduardo\\Desktop\\include\\bullet)
-    set(OPENCL_LIBRARIES_DIR C:\\Users\\Eduardo\\Desktop\\include\\CL)
 endif (WIN32)
 
 include_directories(
@@ -32,7 +31,6 @@ include_directories(
     ${ASSIMP_INCLUDE_DIRS}
     ${GLM_INCLUDE_DIRS}
     ${DEARIMGUI_INCLUDE_DIRS}
-    ${OPENCL_LIBRARIES_DIR}
     ${OPENGL_INCLUDE_DIR}
     ${GLEW_INCLUDE_DIRS}
 )
