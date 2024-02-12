@@ -6,7 +6,6 @@
 #include <SDL2/SDL_system.h>
 #include <algorithm>
 #include <fstream>
-#include <SDL2/SDL_opengl.h>
 #include "../../include/Misc/Tools.h"
 #include "../../include/EngineSetup.h"
 #include "../../include/LUAManager.h"
@@ -439,4 +438,52 @@ bool Tools::saveTextureToFile(GLuint textureID, int width, int height, const cha
     SDL_FreeSurface(surface);
 
     return true;
+}
+
+std::vector<std::string> Tools::getFolderFiles(const std::string& path, const std::string& extension)
+{
+    std::vector<std::string> result;
+    DIR *dir;
+    struct dirent *ent;
+    if ((dir = opendir (path.c_str())) != nullptr) {
+        while ((ent = readdir (dir)) != nullptr) {
+            auto fileName = ent->d_name;
+
+            if (Tools::getExtensionFromFilename(ent->d_name) != extension) continue;
+            if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
+
+            result.emplace_back(ent->d_name);
+        }
+        std::sort( result.begin(), result.end() );
+        closedir (dir);
+    }
+
+    return result;
+}
+
+std::vector<std::string> Tools::getFolderFolders(const std::string& path)
+{
+    std::vector<std::string> result;
+    DIR *dir;
+    struct dirent *ent;
+    if ((dir = opendir (path.c_str())) != nullptr) {
+        while ((ent = readdir (dir)) != nullptr) {
+            auto fileName = ent->d_name;
+
+            if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
+            std::string fullPath = path + "/" + fileName;
+
+            struct stat fileStat;
+            if (stat(fullPath.c_str(), &fileStat) == 0) {
+                if (S_ISDIR(fileStat.st_mode)) {
+                    result.emplace_back(fileName);
+                }
+            }
+        }
+        std::sort( result.begin(), result.end() );
+
+        closedir (dir);
+    }
+
+    return result;
 }
