@@ -5,7 +5,6 @@
 
 
 #include <string>
-#include <SDL2/SDL_opengl.h>
 #include <vec2.hpp>
 #include <vec3.hpp>
 #include <vec4.hpp>

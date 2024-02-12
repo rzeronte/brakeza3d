@@ -14,6 +14,7 @@ set(GLM_INCLUDE_DIRS /usr/include/glm)
 set(DEARIMGUI_INCLUDE_DIRS imgui)
 
 find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
 
 if (WIN32)
     set(BASE_INCLUDE_DIRECTORY C:\\Users\\Eduardo\\Desktop\\include\\)
@@ -33,6 +34,7 @@ include_directories(
     ${DEARIMGUI_INCLUDE_DIRS}
     ${OPENCL_LIBRARIES_DIR}
     ${OPENGL_INCLUDE_DIR}
+    ${GLEW_INCLUDE_DIRS}
 )
 
 add_executable(Brakeza3D
@@ -307,5 +309,6 @@ target_link_libraries(Brakeza3D
     assimp
     lua5.2
     ${OPENGL_LIBRARIES}
+    ${GLEW_LIBRARIES}
 )
 

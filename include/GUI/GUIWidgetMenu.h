@@ -275,56 +275,10 @@ struct GUIWidgetMenu
         }
     }
 
-    static std::vector<std::string> getFolderFolders(const std::string& path)
-    {
-        DIR *dir;
-        struct dirent *ent;
-        std::vector<std::string> result;
-        if ((dir = opendir (path.c_str())) != nullptr) {
-            while ((ent = readdir (dir)) != nullptr) {
-                auto fileName = ent->d_name;
-
-                if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
-                std::string fullPath = path + "/" + fileName;
-
-                struct stat fileStat;
-                if (stat(fullPath.c_str(), &fileStat) == 0) {
-                    if (S_ISDIR(fileStat.st_mode)) {
-                        result.emplace_back(fileName);
-                    }
-                }
-            }
-            std::sort( result.begin(), result.end() );
-
-            closedir (dir);
-        }
-
-        return result;
-    }
-
-    static std::vector<std::string> getFolderFiles(const std::string& path, const std::string& extension) {
-        DIR *dir;
-        struct dirent *ent;
-        std::vector<std::string> result;
-        if ((dir = opendir (path.c_str())) != nullptr) {
-            while ((ent = readdir (dir)) != nullptr) {
-                auto fileName = ent->d_name;
-
-                if (Tools::getExtensionFromFilename(ent->d_name) != extension) continue;
-                if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
-
-                result.emplace_back(ent->d_name);
-            }
-            std::sort( result.begin(), result.end() );
-            closedir (dir);
-        }
-
-        return result;
-    }
     void drawSprite2DItemsToLoad(const std::string& folder) {
 
-        auto files = getFolderFiles(folder, "png");
-        auto folders = getFolderFolders(folder);
+        auto files= Tools::getFolderFiles(folder, "png");
+        auto folders = Tools::getFolderFolders(folder);
 
         for (const auto & i : folders) {
             auto fullPath = folder + "/" + i;
@@ -351,8 +305,8 @@ struct GUIWidgetMenu
 
     void drawSprite3DItemsToLoad(const std::string& folder) {
 
-        auto files = getFolderFiles(folder, "png");
-        auto folders = getFolderFolders(folder);
+        auto files = Tools::getFolderFiles(folder, "png");
+        auto folders = Tools::getFolderFolders(folder);
 
         for (const auto & i : folders) {
             auto fullPath = folder + "/" + i;
@@ -379,8 +333,8 @@ struct GUIWidgetMenu
 
     void drawMesh3DItemsToLoad(const std::string& folder)
     {
-        auto files = getFolderFiles(folder, "fbx");
-        auto folders = getFolderFolders(folder);
+        auto files= Tools::getFolderFiles(folder, "fbx");
+        auto folders = Tools::getFolderFolders(folder);
 
         for (const auto & i : folders) {
             auto fullPath = folder + "/" + i;
@@ -407,7 +361,7 @@ struct GUIWidgetMenu
 
     void drawRigidBodiesItemsToLoad() {
 
-        auto result = getFolderFiles(directory_path_models, "fbx");
+        auto result= Tools::getFolderFiles(directory_path_models, "fbx");
 
         for (int i = 0; i < result.size(); i++) {
             auto file = result[i];
@@ -424,7 +378,7 @@ struct GUIWidgetMenu
 
     void drawGhostItemsToLoad() {
 
-        auto result = getFolderFiles(directory_path_models, "fbx");
+        auto result= Tools::getFolderFiles(directory_path_models, "fbx");
 
         for (int i = 0; i < result.size(); i++) {
             auto file = result[i];

@@ -16,11 +16,11 @@ public:
 
     bool LOGGING = false;
 
-    bool IMGUI_ENABLED = true;
+    bool IMGUI_ENABLED = false;
 
     std::string ENGINE_VERSION = "v.1.0.0";
 
-    std::string ENGINE_TITLE = "Brakeza3D Demo (" + ENGINE_VERSION + ")";
+    std::string ENGINE_TITLE = "Project DarkHeaZ (11.2.24)";
 
     std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";

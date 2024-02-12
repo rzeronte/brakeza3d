@@ -7,9 +7,7 @@
 
 #include <vector>
 #include <SDL2/SDL_ttf.h>
-#include <SDL_opengl.h>
 #include "../Misc/Color.h"
-
 
 class TextWriter {
 private:

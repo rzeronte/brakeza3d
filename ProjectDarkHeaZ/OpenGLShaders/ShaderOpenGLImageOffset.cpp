@@ -8,8 +8,8 @@
 ShaderOpenGLImageOffset::ShaderOpenGLImageOffset()
 :
     ShaderOpenGL(
-        "../ProjectDarkHeaZ/OpenGLShaders/ImageOffset.vs",
-        "../ProjectDarkHeaZ/OpenGLShaders/ImageOffset.fs"
+        "../GLSL/ImageOffset.vs",
+        "../GLSL/ImageOffset.fs"
     )
 {
     setupQuadUniforms(programID);

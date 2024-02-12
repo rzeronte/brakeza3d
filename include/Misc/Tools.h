@@ -17,7 +17,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_opengl.h>
 #include <vec3.hpp>
 #include <vec2.hpp>
 
@@ -91,6 +90,10 @@ public:
     static bool saveTextureToFile(GLuint textureID, int width, int height, const char* fileName);
 
     static std::string getFilenameWithoutExtension(const std::string &filename);
+
+    static std::vector<std::string> getFolderFolders(const std::string &path);
+
+    static std::vector<std::string> getFolderFiles(const std::string &path, const std::string &extension);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

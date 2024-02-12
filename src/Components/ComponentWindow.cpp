@@ -1,7 +1,7 @@
 #define GL_GLEXT_PROTOTYPES
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_opengl.h>
+#include <GL/glew.h>
 #include "../../include/Components/ComponentWindow.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/OpenGL/ShaderOpenGLImage.h"
@@ -12,15 +12,15 @@
 
 
 ComponentWindow::ComponentWindow()
-:
-    window(nullptr),
-    renderer(nullptr),
-    screenSurface(nullptr),
-    screenTexture(nullptr),
-    applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str())),
-    fontDefault(nullptr),
-    ImGuiConfig(ImGUIConfigs::DEFAULT),
-    ImGuiConfigChanged(ImGUIConfigs::DEFAULT)
+        :
+        window(nullptr),
+        renderer(nullptr),
+        screenSurface(nullptr),
+        screenTexture(nullptr),
+        applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str())),
+        fontDefault(nullptr),
+        ImGuiConfig(ImGUIConfigs::DEFAULT),
+        ImGuiConfigChanged(ImGUIConfigs::DEFAULT)
 {
     this->initWindow();
     this->initFontsTTF();
@@ -91,12 +91,12 @@ void ComponentWindow::initWindow()
         exit(-1);
     } else {
         window = SDL_CreateWindow(
-            SETUP->ENGINE_TITLE.c_str(),
-            SDL_WINDOWPOS_UNDEFINED,
-            SDL_WINDOWPOS_UNDEFINED,
-            SETUP->screenWidth,
-            SETUP->screenHeight,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE
+                SETUP->ENGINE_TITLE.c_str(),
+                SDL_WINDOWPOS_UNDEFINED,
+                SDL_WINDOWPOS_UNDEFINED,
+                SETUP->screenWidth,
+                SETUP->screenHeight,
+                SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE
         );
 
         context = SDL_GL_CreateContext(window);
@@ -135,6 +135,7 @@ void ComponentWindow::initWindow()
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
         initOpenGL();
+        glewInit();
 
         SDL_SetWindowIcon(this->window, applicationIcon);
     }

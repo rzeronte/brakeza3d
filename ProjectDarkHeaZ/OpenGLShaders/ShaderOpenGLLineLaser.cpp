@@ -13,8 +13,8 @@
 ShaderOpenGLLineLaser::ShaderOpenGLLineLaser()
 :
     ShaderOpenGL(
-    "../ProjectDarkHeaZ/OpenGLShaders/LineLaser.vs",
-"../ProjectDarkHeaZ/OpenGLShaders/LineLaser.fs"
+        "../GLSL/LineLaser.vs",
+        "../GLSL/LineLaser.fs"
      )
 {
     setupQuadUniforms(programID);

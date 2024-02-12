@@ -7,7 +7,6 @@
 
 
 #include <vector>
-#include <SDL2/SDL_opengl.h>
 #include "Object3D.h"
 #include "../Misc/Timer.h"
 #include "../Misc/Counter.h"

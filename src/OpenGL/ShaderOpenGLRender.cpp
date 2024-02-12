@@ -1,6 +1,5 @@
 #define GL_GLEXT_PROTOTYPES
 
-#include <SDL2/SDL_opengl.h>
 #include <gtc/type_ptr.hpp>
 #include "../../include/OpenGL/ShaderOpenGLRender.h"
 #include "../../include/ComponentsManager.h"

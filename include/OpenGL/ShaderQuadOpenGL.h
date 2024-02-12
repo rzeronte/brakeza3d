@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_SHADERQUADOPENGL_H
 #define BRAKEZA3D_SHADERQUADOPENGL_H
 
-#include <SDL2/SDL_opengl.h>
+#include <GL/glew.h>
 
 class ShaderQuadOpenGL {
     GLuint VBO;

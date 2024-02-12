@@ -4,7 +4,6 @@
 #define BRAKEZA3D_SHADEROPENGLTEXT_H
 
 
-#include <SDL2/SDL_opengl.h>
 #include "ShaderOpenGL.h"
 #include "ShaderQuadOpenGL.h"
 
