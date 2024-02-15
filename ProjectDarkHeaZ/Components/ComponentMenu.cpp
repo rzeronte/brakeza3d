@@ -53,6 +53,18 @@ void ComponentMenu::onUpdate()
 
     drawOptions();
     drawVersion();
+
+    auto game = ComponentsManager::get()->getComponentGame();
+    float alpha = game->getTextWriter()->getAlpha();
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    auto fb = window->getForegroundFramebuffer();
+    if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+        game->getPressAContinue()->drawFlatAlpha(0, 0, alpha, fb);
+    } else {
+        game->getPressEnterContinue()->drawFlatAlpha(0, 0, alpha, fb);
+    }
+
 }
 
 void ComponentMenu::postUpdate(){
@@ -96,8 +108,8 @@ void ComponentMenu::drawOptions()
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto levelInfo = componentGame->getLevelLoader();
 
-    int offsetY = 150;
-    int stepY = 70;
+    int offsetY = 130;
+    int stepY = 60;
 
     auto color = PaletteColors::getMenuOptions();
 

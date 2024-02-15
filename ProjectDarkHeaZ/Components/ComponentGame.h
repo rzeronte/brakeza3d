@@ -75,11 +75,16 @@ private:
     Image imageSplash;
     Image imageCrossFire;
     Image imageStatistics;
-    Image boxStore;
+    Image backgroundStoreKeyboard;
+    Image backgroundStoreController;
     Image imageBlack;
     Image help;
     Image backgroundSpaceshipSelection;
     Image border;
+    Image pressAContinue;
+    Image pressAReturn;
+    Image pressEnterContinue;
+    Image pressESCReturn;
 
     std::vector<Image*> helps;
     int currentHelpIndex;
@@ -329,6 +334,10 @@ public:
     static EnemyGhost *getEnemyByName(const std::string& name);
 
     void increaseEndGameImage();
+
+    Image* getPressEnterContinue();
+
+    Image* getPressAContinue();
 };
 
 

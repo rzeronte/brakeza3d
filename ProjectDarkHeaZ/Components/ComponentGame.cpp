@@ -6,33 +6,38 @@
 
 ComponentGame::ComponentGame()
 :
-    currentIndexDeadImage(0),
-    currentIndexEndGameImage(0),
-    currentIndexIntro(0),
-    cameraCountDownPosition(Vertex3D(0, 0, 5)),
-    cameraInGamePosition(Vertex3D(0, 0, 0)),
-    playerStartPosition(Vertex3D(0, 5, Z_COORDINATE_GAMEPLAY)),
-    textWriter(nullptr),
-    fadeToGameState(nullptr),
-    player(nullptr),
-    shaderProjectiles(nullptr),
-    backgroundSpaceshipSelection(Image(SETUP->IMAGES_FOLDER + "backgroundSpaceshipSelection.png")),
-    boxStore(Image(SETUP->IMAGES_FOLDER + "store.png")),
-    imageBlack(Image(SETUP->IMAGES_FOLDER + "black.png")),
-    boxTutorial(Image(SETUP->IMAGES_FOLDER + "tutorial_box.png")),
-    imageStatistics(Image(SETUP->IMAGES_FOLDER + "statistics_screen.png")),
-    imageCredits(Image(SETUP->IMAGES_FOLDER + "credits.png")),
-    imageSplash(Image(SETUP->IMAGES_FOLDER + SETUP->LOGO_BRAKEZA)),
-    imageCrossFire(Image(SETUP->IMAGES_FOLDER + "crossfire.png")),
-    border(Image(SETUP->IMAGES_FOLDER + "hud_background.png")),
-    currentHelpIndex(0),
-    levelLoader(new LevelLoader()),
-    shaderBackgroundImage(nullptr),
-    shaderForegroundImage(nullptr),
-    shaderColor(nullptr),
-    spaceshipSelectedIndex(0),
-    currentEnemyDialog(nullptr),
-    gameState(EngineSetup::GameState::NONE)
+        currentIndexDeadImage(0),
+        currentIndexEndGameImage(0),
+        currentIndexIntro(0),
+        cameraCountDownPosition(Vertex3D(0, 0, 5)),
+        cameraInGamePosition(Vertex3D(0, 0, 0)),
+        playerStartPosition(Vertex3D(0, 5, Z_COORDINATE_GAMEPLAY)),
+        textWriter(nullptr),
+        fadeToGameState(nullptr),
+        player(nullptr),
+        shaderProjectiles(nullptr),
+        backgroundSpaceshipSelection(Image(SETUP->IMAGES_FOLDER + "backgroundSpaceshipSelection.png")),
+        backgroundStoreKeyboard(Image(SETUP->IMAGES_FOLDER + "store_keyboard.png")),
+        backgroundStoreController(Image(SETUP->IMAGES_FOLDER + "store_controller.png")),
+        imageBlack(Image(SETUP->IMAGES_FOLDER + "black.png")),
+        boxTutorial(Image(SETUP->IMAGES_FOLDER + "tutorial_box.png")),
+        imageStatistics(Image(SETUP->IMAGES_FOLDER + "statistics_screen.png")),
+        imageCredits(Image(SETUP->IMAGES_FOLDER + "credits.png")),
+        imageSplash(Image(SETUP->IMAGES_FOLDER + SETUP->LOGO_BRAKEZA)),
+        imageCrossFire(Image(SETUP->IMAGES_FOLDER + "crossfire.png")),
+        border(Image(SETUP->IMAGES_FOLDER + "hud_background.png")),
+        pressAContinue(Image(SETUP->IMAGES_FOLDER + "press_a_continue.png")),
+        pressAReturn(Image(SETUP->IMAGES_FOLDER + "press_a_return.png")),
+        pressEnterContinue(Image(SETUP->IMAGES_FOLDER + "press_enter_continue.png")),
+        pressESCReturn(Image(SETUP->IMAGES_FOLDER + "press_esc_return.png")),
+        currentHelpIndex(0),
+        levelLoader(new LevelLoader()),
+        shaderBackgroundImage(nullptr),
+        shaderForegroundImage(nullptr),
+        shaderColor(nullptr),
+        spaceshipSelectedIndex(0),
+        currentEnemyDialog(nullptr),
+        gameState(EngineSetup::GameState::NONE)
 {
 }
 
@@ -270,27 +275,39 @@ void ComponentGame::postUpdate()
 
 void ComponentGame::handleOnUpdateTutorialImages(float alpha)
 {
+    auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
+
     if (!getLevelLoader()->getTutorials().empty()) {
         auto window = ComponentsManager::get()->getComponentWindow();
         float oldAlpha = textWriter->getAlpha();
         textWriter->setAlpha(alpha);
-        textWriter->setFont(window->getFontAlternative());
         std::string message = std::to_string(getLevelLoader()->getCurrentTutorialIndex() + 1) + " of " + std::to_string((int)getLevelLoader()->getTutorials().size());
 
         getLevelLoader()->drawCurrentTutorialImage(alpha);
-        writeDialogTextToContinue("Press ENTER to start...");
+
+        if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+            pressAContinue.drawFlatAlpha(0, 0, alpha, fb);
+        } else {
+            pressEnterContinue.drawFlatAlpha(0, 0, alpha, fb);
+        }
+
         boxTutorial.drawFlatAlpha(0, 0, alpha, window->getForegroundFramebuffer());
         if (getLevelLoader()->getTutorials().size() > 1) {
-            textWriter->writeTTFCenterHorizontal(482, message.c_str(), PaletteColors::getMenuOptions(), 0.8f);
+            textWriter->writeTTFCenterHorizontal(472, message.c_str(), PaletteColors::getMenuOptions(), 0.8f);
         }
 
         textWriter->setAlpha(oldAlpha);
     } else {
         float oldAlpha = textWriter->getAlpha();
         textWriter->setAlpha(alpha);
-        writeDialogTextToContinue("Press ENTER to start...");
+
         textWriter->setAlpha(oldAlpha);
 
+        if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+            pressAContinue.drawFlatAlpha(0, 0, alpha, fb);
+        } else {
+            pressEnterContinue.drawFlatAlpha(0, 0, alpha, fb);
+        }
     }
 }
 
@@ -299,7 +316,12 @@ void ComponentGame::handleOnUpdateGamingTutorial(float alpha)
     auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
     boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
     help.drawFlatAlpha(0, 0, alpha, fb);
-    writeDialogTextToContinue("Press ENTER to continue...");
+
+    if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+        pressAContinue.drawFlatAlpha(0, 0, alpha, fb);
+    } else {
+        pressEnterContinue.drawFlatAlpha(0, 0, alpha, fb);
+    }
 
     /*keep show message radio so that it keep consuming his time*/
     handleOnUpdateMessageRadio();
@@ -357,7 +379,11 @@ void ComponentGame::showLevelStatistics(float alpha)
 
     textWriter->setFont(window->getFontAlternative());
 
-    writeDialogTextToContinue("Press ENTER to continue...");
+    if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+        pressAContinue.drawFlatAlpha(0, 0, alpha, fb);
+    } else {
+        pressEnterContinue.drawFlatAlpha(0, 0, alpha, fb);
+    }
 
     ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(
         EngineSetup::get()->screenWidth/2-20 ,
@@ -1135,7 +1161,6 @@ void ComponentGame::handlePressKeyByDead()
 
 void ComponentGame::handlePressKeyPreviousLevel()
 {
-
     getPlayer()->setEnabled(true);
     removeInGameObjects();
     getLevelLoader()->reload();
@@ -1156,7 +1181,6 @@ void ComponentGame::handlePressKeyPreviousLevel()
 
 void ComponentGame::handlePressKeyGameOver()
 {
-
     endgameCounter.setEnabled(true);
     ComponentsManager::get()->getComponentHUD()->setEnabled(false);
     getPlayer()->setEnabled(true);
@@ -1386,6 +1410,7 @@ void ComponentGame::writeDialogTextToContinue(const char *string)
 
 void ComponentGame::handleOnUpdateCountDown()
 {
+
     //handleOnUpdateMessageRadio();
     zoomCameraCountDown();
 
@@ -1431,15 +1456,31 @@ void ComponentGame::handleOnUpdateHelp(const float alpha)
         std::string message = std::to_string(currentHelpIndex + 1) + " of " + std::to_string((int)helps.size());
         textWriter->writeTTFCenterHorizontal(495, message.c_str(), PaletteColors::getCrt(), 0.0f);
     }
-    writeDialogTextToContinue("Press ESC to return...");
+
+    if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+        pressAReturn.drawFlatAlpha(0, 0, alpha, fb);
+    } else {
+        pressESCReturn.drawFlatAlpha(0, 0, alpha, fb);
+    }
 }
 
 void ComponentGame::handleOnUpdateStore(const float alpha)
 {
     boxTutorial.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-    boxStore.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+
+    if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+        backgroundStoreController.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    } else {
+        backgroundStoreKeyboard.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    }
+
     storeManager->update(alpha);
-    writeDialogTextToContinue("Press ESC to return...");
+
+    if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+        pressAContinue.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    } else {
+        pressESCReturn.drawFlatAlpha(0, 0, alpha, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    }
 }
 
 void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)
@@ -1454,7 +1495,12 @@ void ComponentGame::handleOnUpdateSpaceshipSelector(const float alpha)
     backgroundSpaceshipSelection.drawFlatAlpha(0, 0, alpha,  bb);
     spaceshipsInformation[spaceshipSelectedIndex]->drawFlatAlpha(0, 0, alpha, fb);
     border.drawFlatAlpha(0, 0, alpha,  fb);
-    writeDialogTextToContinue("Press ENTER to select...");
+
+    if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+        pressAContinue.drawFlatAlpha(0, 0, alpha, fb);
+    } else {
+        pressEnterContinue.drawFlatAlpha(0, 0, alpha, fb);
+    }
 }
 
 void ComponentGame::handleOnUpdatePressKeyGameOver(const float alpha)
@@ -1479,7 +1525,13 @@ void ComponentGame::handleOnUpdatePressKeyGameOver(const float alpha)
             std::string message = std::to_string(currentIndexEndGameImage + 1) + " of " + std::to_string((int)imagesEndGame.size());
             textWriter->writeTTFCenterHorizontal(530, message.c_str(), PaletteColors::getMenuOptions(), 0.75f);
         }
-        writeDialogTextToContinue("Press ENTER to restart game...");
+
+        if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+            pressAReturn.drawFlatAlpha(0, 0, alpha, fb);
+        } else {
+            pressEnterContinue.drawFlatAlpha(0, 0, alpha, fb);
+        }
+
         textWriter->setAlpha(oldAlpha);
     }
 
@@ -1491,7 +1543,12 @@ void ComponentGame::handleOnUpdateCredits(const float alpha)
     boxTutorial.drawFlatAlpha(0, 0, alpha, fb);
     border.drawFlatAlpha(0, 0, alpha, fb);
     imageCredits.drawFlatAlpha(0, 0, alpha, fb);
-    writeDialogTextToContinue("Press ESC to return...");
+
+    if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+        pressAReturn.drawFlatAlpha(0, 0, alpha, fb);
+    } else {
+        pressESCReturn.drawFlatAlpha(0, 0, alpha, fb);
+    }
 }
 
 void ComponentGame::handleOnUpdatePressKeyByDead(const float alpha)
@@ -1501,6 +1558,12 @@ void ComponentGame::handleOnUpdatePressKeyByDead(const float alpha)
     auto deadImage = imagesDead[currentIndexDeadImage];
     deadImage->drawFlatAlpha(0, 0, alpha, fb);
     shaderColor->setProgress((1 - getFadeToGameState()->getProgress()) * 0.50f);
+
+    if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+        pressAContinue.drawFlatAlpha(0, 0, alpha, fb);
+    } else {
+        pressEnterContinue.drawFlatAlpha(0, 0, alpha, fb);
+    }
 }
 
 void ComponentGame::handleOnUpdateSplash(const float alpha)
@@ -1551,9 +1614,14 @@ void ComponentGame::handleOnUpdateIntro(float alpha)
 
         if ((int) imagesIntro.size() > 1) {
             std::string message = std::to_string(currentIndexIntro + 1) + " of " + std::to_string((int)imagesIntro.size());
-            textWriter->writeTTFCenterHorizontal(530, message.c_str(), PaletteColors::getMenuOptions(), 0.75f);
+            textWriter->writeTTFCenterHorizontal(60, message.c_str(), PaletteColors::getMenuOptions(), 0.75f);
         }
-        writeDialogTextToContinue("Press ENTER to START...");
+
+        if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+            pressAContinue.drawFlatAlpha(0, 0, alpha, fb);
+        } else {
+            pressEnterContinue.drawFlatAlpha(0, 0, alpha, fb);
+        }
         textWriter->setAlpha(oldAlpha);
     }
 }
@@ -1595,7 +1663,11 @@ void ComponentGame::handleOnUpdateDifficultySelector(const float alpha)
         }
     }
 
-    writeDialogTextToContinue("Press ENTER to continue...");
+    if (ComponentsManager::get()->getComponentInput()->getGameController()) {
+        pressAContinue.drawFlatAlpha(0, 0, alpha, fb);
+    } else {
+        pressEnterContinue.drawFlatAlpha(0, 0, alpha, fb);
+    }
 }
 
 void ComponentGame::resetGame() {
@@ -1640,4 +1712,12 @@ void ComponentGame::increaseEndGameImage() {
         ComponentsManager::get()->getComponentSound()->sound("slideMachine", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         currentIndexEndGameImage++;
     }
+}
+
+Image* ComponentGame::getPressEnterContinue(){
+    return &pressEnterContinue;
+}
+
+Image* ComponentGame::getPressAContinue() {
+    return &pressAContinue;
 }

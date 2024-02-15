@@ -137,7 +137,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
 
     auto gameState = game->getGameState();
     auto escPressed = (keyboard[mapping.esc] && event->type == SDL_KEYDOWN);
-    auto buttonControllerPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE;
+    auto buttonControllerPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_BACK;
 
     if (escPressed || buttonControllerPressed) {
         componentSound->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
@@ -148,33 +148,21 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
             return;
         }
 
-        if (gameState == EngineSetup::GameState::STORE) {
-            game->gameState = EngineSetup::GameState::PRESS_KEY_BY_WIN;
-
-            return;
-        }
         if (gameState == EngineSetup::GameState::GAMING_TUTORIAL) {
             game->setGameState(EngineSetup::GameState::GAMING);
             return;
         }
 
-        if (gameState == EngineSetup::GameState::INTRO)  {
-            return;
-        }
-
-        if (gameState == EngineSetup::GameState::SPACESHIP_SELECTOR)  {
-            return;
-        }
-
-        if (gameState == EngineSetup::GameState::DIFFICULT_SELECTOR)  {
-            return;
-        }
-
-        if (gameState == EngineSetup::GameState::COUNTDOWN ||
+        if (gameState == EngineSetup::GameState::INTRO ||
+            gameState == EngineSetup::GameState::SPACESHIP_SELECTOR ||
+            gameState == EngineSetup::GameState::DIFFICULT_SELECTOR ||
+            gameState == EngineSetup::GameState::COUNTDOWN ||
+            gameState == EngineSetup::GameState::STORE ||
             gameState == EngineSetup::GameState::PRESS_KEY_NEW_LEVEL ||
+            gameState == EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL ||
             gameState == EngineSetup::GameState::PRESS_KEY_BY_DEAD ||
             gameState == EngineSetup::GameState::PRESS_KEY_BY_WIN
-                ) return;
+        ) return;
 
         game->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
         game->makeFadeToGameState(EngineSetup::GameState::MENU, true);
@@ -215,7 +203,7 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end) const
     }
 
     // Execute Menu option
-    if (keyboard[mapping.intro] || componentInput->getControllerButtonA()) {
+    if (keyboard[mapping.intro] || componentInput->getControllerButtonB()) {
         if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_EXIT) {
             end = true;
             return;
@@ -510,10 +498,11 @@ void ComponentGameInput::handleMakeReflection(SDL_Event *event) const
 void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 {
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
-    bool isButtonGuidedPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE;
+    bool isButtonGuidedPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_BACK;
     auto componentSound = ComponentsManager::get()->getComponentSound();
     auto game = ComponentsManager::get()->getComponentGame();
     auto componentInput = ComponentsManager::get()->getComponentInput();
+    bool isButtonB = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonB();
 
     Uint8 *keyboard = componentInput->getKeyboard();
 
@@ -522,16 +511,19 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     bool controllerDownPad = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN;
     bool controllerUpPad = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP;
 
-    bool controllerButtonA = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_A;
+    bool controllerButtonA = event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonA();
+    bool controllerButtonB = event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonB();
+    auto controllerButtonBack = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_BACK;
 
-    const bool cursorLeft = event->type == SDL_KEYDOWN && keyboard[mapping.left];
-    const bool cursorRight = event->type == SDL_KEYDOWN && keyboard[mapping.right];
+    const bool cursorLeft = event->type == SDL_KEYDOWN && keyboard[mapping.menuLeft];
+    const bool cursorRight = event->type == SDL_KEYDOWN && keyboard[mapping.menuRight];
     const bool cursorUp = event->type == SDL_KEYDOWN && keyboard[mapping.menuUp];
     const bool cursorDown = event->type == SDL_KEYDOWN && keyboard[mapping.menuDown];
     const bool keyStorePressed = event->type == SDL_KEYDOWN && keyboard[mapping.menuUp];
     const bool enter = event->type == SDL_KEYDOWN && keyboard[mapping.intro];
+    auto escPressed = keyboard[mapping.esc] && event->type == SDL_KEYDOWN;
 
-    if ((state == EngineSetup::GameState::PRESS_KEY_BY_WIN) && (enter || isButtonGuidedPressed)) {
+    if ((state == EngineSetup::GameState::PRESS_KEY_BY_WIN) && (enter || controllerButtonB)) {
         game->pressedKeyForWin();
         return;
     }
@@ -549,7 +541,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     }
 
     if (state == EngineSetup::INTRO) {
-        if ((enter || isButtonGuidedPressed)) {
+        if ((enter || controllerButtonB)) {
             game->launchSpaceshipSelector();
             return;
         }
@@ -582,6 +574,11 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
             game->getStoreManager()->buyCurrentSelected();
             return;
         }
+
+        if (escPressed || controllerButtonB) {
+            game->gameState = EngineSetup::GameState::PRESS_KEY_BY_WIN;
+            return;
+        }
     }
 
     if (state == EngineSetup::GameState::DIFFICULT_SELECTOR) {
@@ -597,7 +594,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
             return;
         }
 
-        if (enter || componentInput->getControllerButtonA()) {
+        if (enter || componentInput->getControllerButtonB()) {
             game->makeFadeToGameState(EngineSetup::GameState::SPACESHIP_SELECTOR, true);
             return;
         }
@@ -616,7 +613,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
             return;
         }
 
-        if (enter || componentInput->getControllerButtonA()) {
+        if (enter || componentInput->getControllerButtonB()) {
             ComponentsManager::get()->getComponentGame()->selectSpaceshipAndStartGame();
             return;
         }
@@ -637,7 +634,8 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
     }
 
     if ((state == EngineSetup::GameState::PRESS_KEY_NEW_LEVEL || state == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL)) {
-        if (isButtonGuidedPressed || enter) {
+        if (isButtonB || enter) {
+            Logging::Message("entro");
             game->pressedKeyForBeginLevel();
             return;
         }
@@ -655,12 +653,12 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
         }
     }
 
-    if (state == EngineSetup::GameState::PRESS_KEY_GAMEOVER && (enter || isButtonGuidedPressed)) {
+    if (state == EngineSetup::GameState::PRESS_KEY_GAMEOVER && (enter || controllerButtonBack)) {
         game->resetGame();
         return;
     }
 
-    if (state == EngineSetup::GameState::PRESS_KEY_BY_DEAD && (enter || isButtonGuidedPressed)) {
+    if (state == EngineSetup::GameState::PRESS_KEY_BY_DEAD && (enter || isButtonB)) {
         game->pressedKeyByDead();
         return;
     }
@@ -709,4 +707,22 @@ float ComponentGameInput::getControllerAxisThreshold() const {
 
 void ComponentGameInput::setMapping(const KeyboardMapping &mapping) {
     ComponentGameInput::mapping = mapping;
+}
+
+bool ComponentGameInput::isFiring() const
+{
+    auto input = ComponentsManager::get()->getComponentInput();
+
+    if (input->getGameController() == nullptr) {
+        Uint8 *keyboard = input->getKeyboard();
+        if (keyboard != nullptr && keyboard[mapping.fire]) {
+            return true;
+        }
+    } else {
+        if (input->getControllerAxisTriggerRight() > this->controllerAxisThreshold) {
+            return true;
+        }
+    }
+
+    return false;
 }

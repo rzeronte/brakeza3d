@@ -100,4 +100,7 @@ void WeaponRayLight::setIsForPlayer(bool avoidCheckWeaponStatus) {
 void WeaponRayLight::setEnabled(bool value) {
     Weapon::setEnabled(value);
     particles->setStopAdd(!value);
+    if (!value) {
+        rayLight->setReach(0);
+    }
 }

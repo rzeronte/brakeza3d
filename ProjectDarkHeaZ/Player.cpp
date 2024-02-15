@@ -489,12 +489,21 @@ Weapon *Player::getWeapon() const {
 
 void Player::setWeapon(Weapon *weaponType)
 {
-    Logging::Log("Set Player Weapon to %s", weaponType->getLabel().c_str());
+    Logging::Message("Set Player Weapon to %s", weaponType->getLabel().c_str());
     Player::weapon = weaponType;
     for (auto w: weapons) {
         w->setEnabled(false);
     }
     weapon->setEnabled(true);
+
+    auto input = ComponentsManager::get()->getComponentGameInput();
+
+    if (input->isFiring()) {
+        weapon->setStatus(PRESSED);
+    } else {
+        weapon->setStatus(RELEASED);
+    }
+
     ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
 }
 

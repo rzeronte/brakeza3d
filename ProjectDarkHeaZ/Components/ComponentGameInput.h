@@ -85,6 +85,8 @@ public:
     void handleShield(SDL_Event *event) const;
 
     void setMapping(const KeyboardMapping &mapping);
+
+    bool isFiring() const;
 };
 
 
