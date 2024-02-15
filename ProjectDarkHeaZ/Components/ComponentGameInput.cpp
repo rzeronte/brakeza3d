@@ -137,7 +137,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
 
     auto gameState = game->getGameState();
     auto escPressed = (keyboard[mapping.esc] && event->type == SDL_KEYDOWN);
-    auto buttonControllerPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_BACK;
+    auto buttonControllerPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_START;
 
     if (escPressed || buttonControllerPressed) {
         componentSound->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
@@ -498,7 +498,7 @@ void ComponentGameInput::handleMakeReflection(SDL_Event *event) const
 void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 {
     auto state = ComponentsManager::get()->getComponentGame()->getGameState();
-    bool isButtonGuidedPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_BACK;
+    bool isButtonGuidedPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_START;
     auto componentSound = ComponentsManager::get()->getComponentSound();
     auto game = ComponentsManager::get()->getComponentGame();
     auto componentInput = ComponentsManager::get()->getComponentInput();
@@ -513,7 +513,7 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
     bool controllerButtonA = event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonA();
     bool controllerButtonB = event->type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonB();
-    auto controllerButtonBack = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_BACK;
+    auto controllerButtonBack = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_START;
 
     const bool cursorLeft = event->type == SDL_KEYDOWN && keyboard[mapping.menuLeft];
     const bool cursorRight = event->type == SDL_KEYDOWN && keyboard[mapping.menuRight];
