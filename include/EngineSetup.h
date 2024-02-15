@@ -20,7 +20,10 @@ public:
 
     std::string ENGINE_VERSION = "v.1.0.0";
 
-    std::string ENGINE_TITLE = "Project DarkHeaZ (11.2.24)";
+    std::string ENGINE_TITLE = "Project DarkHeaZ (11.2.24 Demo)";
+#ifdef PROJECT_DARKHEAZ_DEMO
+    ENGINE_TITLE = "Project DarkHeaZ (Demo 15.2.24)";
+#endif
 
     std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";

@@ -270,7 +270,7 @@ void Weapon::setSoundChannel(int value) {
 
 Weapon::~Weapon()
 {
-    delete modelProjectile;
+    //delete modelProjectile;
     delete model;
     delete icon;
     delete counterCadence;

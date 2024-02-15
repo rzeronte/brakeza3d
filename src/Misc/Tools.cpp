@@ -99,6 +99,7 @@ char *Tools::readFile(const std::string &name, size_t &source_size)
 
     if (fread(file_str, 1, source_size, fp) != source_size) {
         Logging::Message("Error reading file %s!", name.c_str());
+        std::cout << "adios picolo" << std::endl;
         fclose(fp);
         free(file_str);
         return nullptr;
@@ -251,17 +252,17 @@ btMatrix3x3 Tools::M3ToBulletM3(M3 m)
 
 M3 Tools::BulletM3ToM3(const btMatrix3x3& m) {
     return M3(
-        m.getRow(0).getX(), m.getRow(0).getY(), m.getRow(0).getZ(),
-        m.getRow(1).getX(), m.getRow(1).getY(), m.getRow(1).getZ(),
-        m.getRow(2).getX(), m.getRow(2).getY(), m.getRow(2).getZ()
+            m.getRow(0).getX(), m.getRow(0).getY(), m.getRow(0).getZ(),
+            m.getRow(1).getX(), m.getRow(1).getY(), m.getRow(1).getZ(),
+            m.getRow(2).getX(), m.getRow(2).getY(), m.getRow(2).getZ()
     );
 }
 
 Vertex3D Tools::randomVertex() {
     return Vertex3D(
-        Tools::random(-2, 2),
-        Tools::random(-2, 2),
-        Tools::random(-2, 2)
+            Tools::random(-2, 2),
+            Tools::random(-2, 2),
+            Tools::random(-2, 2)
     );
 }
 
@@ -305,8 +306,8 @@ void Tools::makeFadeInSprite(Vertex3D position, TextureAnimated *animation)
     Point2D P1 = Transforms::WorldToPoint(position);
 
     Brakeza3D::get()->addObject3D(
-        new Sprite2D( P1.x, P1.y, true, new TextureAnimated(animation)),
-        Brakeza3D::uniqueObjectLabel("Sprite2DLive")
+            new Sprite2D( P1.x, P1.y, true, new TextureAnimated(animation)),
+            Brakeza3D::uniqueObjectLabel("Sprite2DLive")
     );
 }
 
@@ -315,8 +316,8 @@ void Tools::makeLoopSprite(Vertex3D position, TextureAnimated *animation, float 
     Point2D P1 = Transforms::WorldToPoint(position);
 
     Brakeza3D::get()->addObject3D(
-        new Sprite2D( P1.x, P1.y, ttl, new TextureAnimated(animation)),
-        Brakeza3D::uniqueObjectLabel("fadeInSpriteExplosion")
+            new Sprite2D( P1.x, P1.y, ttl, new TextureAnimated(animation)),
+            Brakeza3D::uniqueObjectLabel("fadeInSpriteExplosion")
     );
 }
 
@@ -344,14 +345,21 @@ void Tools::writeToFile(const std::string& fileName, const char *content)
 {
     Logging::Message("Writing to file %s!", fileName.c_str());
 
-    std::ofstream file(fileName, std::ios::trunc);
+    std::ofstream file(fileName, std::ios::trunc | std::ios::binary); // Abrir en modo binario
 
     if (!file.is_open()) {
         Logging::Message("File %s can't be loaded!", fileName.c_str());
         return;
     }
 
-    file << content;
+    // Utiliza '\n' como salto de línea, independientemente del sistema operativo
+    while (*content) {
+        if (*content == '\r\n') {
+            file.put('\r'); // Agrega un '\r' antes de cada '\n' para Windows
+        }
+        file.put(*content++);
+    }
+
     file.close();
 
     if (file.fail()) {

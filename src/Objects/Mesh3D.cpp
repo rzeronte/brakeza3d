@@ -9,12 +9,12 @@
 #include "../../include/Render/Transforms.h"
 
 Mesh3D::Mesh3D()
-:
-    octree(nullptr),
-    grid(nullptr),
-    sharedTextures(false),
-    flatTextureColor(false),
-    render(true)
+        :
+        octree(nullptr),
+        grid(nullptr),
+        sharedTextures(false),
+        flatTextureColor(false),
+        render(true)
 {
     decal = false;
     luaEnvironment["this"] = this;
@@ -103,11 +103,11 @@ void Mesh3D::onUpdate()
 
     if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
         ComponentsManager::get()->getComponentWindow()->getShaderOglShading()->render(
-            getModelMatrix(),
-            vertexbuffer,
-            uvbuffer,
-            normalbuffer,
-            (int) vertices.size()
+                getModelMatrix(),
+                vertexbuffer,
+                uvbuffer,
+                normalbuffer,
+                (int) vertices.size()
         );
     }
 
@@ -124,11 +124,11 @@ void Mesh3D::onUpdate()
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()){
         ComponentsManager::get()->getComponentWindow()->getShaderOglWireframe()->render(
-            getModelMatrix(),
-            vertexbuffer,
-            uvbuffer,
-            normalbuffer,
-            (int) vertices.size()
+                getModelMatrix(),
+                vertexbuffer,
+                uvbuffer,
+                normalbuffer,
+                (int) vertices.size()
         );
     }
 
@@ -160,8 +160,8 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 
     Assimp::Importer assimpImporter;
     const aiScene *scene = assimpImporter.ReadFile(
-        fileName,
-        aiProcess_Triangulate | aiProcess_SortByPType | aiProcess_FlipUVs | aiProcess_OptimizeMeshes
+            fileName,
+            aiProcess_Triangulate | aiProcess_SortByPType | aiProcess_FlipUVs | aiProcess_OptimizeMeshes
     );
 
     if (!scene) {
@@ -297,12 +297,12 @@ void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ
 
     this->updateBoundingBox();
     this->grid = new Grid3D(
-        &this->modelTriangles,
-        this->aabb,
-        sizeX,
-        sizeY,
-        sizeZ,
-        Grid3D::EmptyStrategies::CONTAIN_TRIANGLES
+            &this->modelTriangles,
+            this->aabb,
+            sizeX,
+            sizeY,
+            sizeZ,
+            Grid3D::EmptyStrategies::CONTAIN_TRIANGLES
     );
     this->grid->applyCheckCellEmptyStrategy();
 }
@@ -313,12 +313,12 @@ void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, in
 
     this->updateBoundingBox();
     this->grid = new Grid3D(
-        &this->modelTriangles,
-        this->aabb,
-        sizeX,
-        sizeY,
-        sizeZ,
-        Grid3D::EmptyStrategies::RAY_INTERSECTION
+            &this->modelTriangles,
+            this->aabb,
+            sizeX,
+            sizeY,
+            sizeZ,
+            Grid3D::EmptyStrategies::RAY_INTERSECTION
     );
     this->grid->setRayIntersectionDirection(direction);
     this->grid->applyCheckCellEmptyStrategy();
@@ -331,12 +331,12 @@ void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const st
     this->updateBoundingBox();
 
     this->grid = new Grid3D(
-        &this->modelTriangles,
-        this->aabb,
-        sizeX,
-        1,
-        sizeZ,
-        Grid3D::EmptyStrategies::IMAGE_FILE
+            &this->modelTriangles,
+            this->aabb,
+            sizeX,
+            1,
+            sizeZ,
+            Grid3D::EmptyStrategies::IMAGE_FILE
     );
 
     this->grid->setImageFilename(filename);
@@ -381,7 +381,9 @@ Mesh3D::~Mesh3D()
     if (!sharedTextures) {
         for (auto texture : modelTextures) delete texture;
         for (auto texture : modelSpecularTextures) delete texture;
+    }
 
+    if (loaded) {
         glDeleteBuffers(1, &vertexbuffer);
         glDeleteBuffers(1, &uvbuffer);
         glDeleteBuffers(1, &normalbuffer);
@@ -487,9 +489,9 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
                             true,
                             o,
                             Color(
-                                cJSON_GetObjectItemCaseSensitive(edgeColor, "r")->valueint,
-                                cJSON_GetObjectItemCaseSensitive(edgeColor, "g")->valueint,
-                                cJSON_GetObjectItemCaseSensitive(edgeColor, "b")->valueint
+                                    cJSON_GetObjectItemCaseSensitive(edgeColor, "r")->valueint,
+                                    cJSON_GetObjectItemCaseSensitive(edgeColor, "g")->valueint,
+                                    cJSON_GetObjectItemCaseSensitive(edgeColor, "b")->valueint
                             ),
                             (float)cJSON_GetObjectItemCaseSensitive(currentShader, "size")->valuedouble
                     );
@@ -520,6 +522,7 @@ void Mesh3D::createFromJSON(cJSON *object)
 
 void Mesh3D::fillBuffers()
 {
+    loaded = true;
     glGenBuffers(1, &vertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);

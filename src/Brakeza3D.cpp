@@ -51,7 +51,6 @@ void Brakeza3D::welcomeMessage() {
 void Brakeza3D::mainLoop()
 {
     SDL_Event e;
-
     engineTimer.start();
     managerGUI = new GUIManager(sceneObjects);
     LUAManager::get()->initLUATypes();

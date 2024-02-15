@@ -148,7 +148,7 @@ void ComponentMenu::drawVersion()
         Color::white(),
         0.35
     );
-    writer->writeTextTTFAutoSize(1160, 690, "v.1.21.7", PaletteColors::getMenuOptions(), 0.5);
+    writer->writeTextTTFAutoSize(920, 690, EngineSetup::get()->ENGINE_TITLE.c_str(), PaletteColors::getMenuOptions(), 0.5);
 
 }
 

@@ -37,6 +37,8 @@
 #define FADE_SPEED_MENU_FIRST_TIME 0.003
 #define COUNTDOWN_TO_START 3
 
+#define PROJECT_DARKHEAZ_DEMO
+
 struct SpaceshipAttributes {
     float power;
     float stamina;

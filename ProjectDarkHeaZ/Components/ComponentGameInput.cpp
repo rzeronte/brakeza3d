@@ -4,10 +4,34 @@
 #include "../Common/ShockWave.h"
 
 ComponentGameInput::ComponentGameInput()
-:
-    controllerAxisThreshold(0.1),
-    lockRightStick(false)
+        :
+        controllerAxisThreshold(0.01),
+        lockRightStick(false)
 {
+    mapping = {
+            SDL_GetScancodeFromName("A"),
+            SDL_GetScancodeFromName("W"),
+            SDL_GetScancodeFromName("S"),
+            SDL_GetScancodeFromName("D"),
+            SDL_GetScancodeFromName("Space"),
+            SDL_GetScancodeFromName("4"),
+            SDL_GetScancodeFromName("5"),
+            SDL_GetScancodeFromName("Return"),
+            SDL_GetScancodeFromName("Tab"),
+            SDL_GetScancodeFromName("Left Shift"),
+            SDL_GetScancodeFromName("7"),
+            SDL_GetScancodeFromName("8"),
+            SDL_GetScancodeFromName("9"),
+            SDL_GetScancodeFromName("I"),
+            SDL_GetScancodeFromName("1"),
+            SDL_GetScancodeFromName("2"),
+            SDL_GetScancodeFromName("3"),
+            SDL_GetScancodeFromName("Escape"),
+            SDL_GetScancodeFromName("Left"),
+            SDL_GetScancodeFromName("Up"),
+            SDL_GetScancodeFromName("Down"),
+            SDL_GetScancodeFromName("Right")
+    };
 }
 
 void ComponentGameInput::onStart()
@@ -112,7 +136,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
     auto componentSound = ComponentsManager::get()->getComponentSound();
 
     auto gameState = game->getGameState();
-    auto escPressed = (keyboard[SDL_SCANCODE_ESCAPE] && event->type == SDL_KEYDOWN);
+    auto escPressed = (keyboard[mapping.esc] && event->type == SDL_KEYDOWN);
     auto buttonControllerPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_GUIDE;
 
     if (escPressed || buttonControllerPressed) {
@@ -149,25 +173,24 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
         if (gameState == EngineSetup::GameState::COUNTDOWN ||
             gameState == EngineSetup::GameState::PRESS_KEY_NEW_LEVEL ||
             gameState == EngineSetup::GameState::PRESS_KEY_BY_DEAD ||
-                gameState == EngineSetup::GameState::PRESS_KEY_BY_WIN
-        ) return;
+            gameState == EngineSetup::GameState::PRESS_KEY_BY_WIN
+                ) return;
 
         game->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
         game->makeFadeToGameState(EngineSetup::GameState::MENU, true);
 
         SDL_WarpMouseInWindow(
-            ComponentsManager::get()->getComponentWindow()->getWindow(),
-            SETUP->screenWidth / 2,
-            SETUP->screenHeight / 2
+                ComponentsManager::get()->getComponentWindow()->getWindow(),
+                SETUP->screenWidth / 2,
+                SETUP->screenHeight / 2
         );
     }
 
 }
 
-void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
+void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end) const
 {
     auto componentGame = ComponentsManager::get()->getComponentGame();
-    auto componentRender = ComponentsManager::get()->getComponentRender();
     auto componentMenu = ComponentsManager::get()->getComponentMenu();
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto sound = ComponentsManager::get()->getComponentSound();
@@ -176,16 +199,15 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
     int currentOption = componentMenu->getCurrentOption();
     Uint8 *keyboard = componentInput->getKeyboard();
 
-
     // Up / Down menu options
-    if (keyboard[SDL_SCANCODE_DOWN] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
+    if (keyboard[mapping.menuDown] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
         if (currentOption + 1 < componentMenu->getNumOptions()) {
             componentMenu->increaseMenuOption();
             sound->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
     }
 
-    if (keyboard[SDL_SCANCODE_UP] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)) {
+    if (keyboard[mapping.menuUp] || (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP)) {
         if (currentOption > 0) {
             componentMenu->decreaseMenuOption();
             sound->sound("soundMenuClick", EngineSetup::SoundChannels::SND_GLOBAL, 0);
@@ -193,7 +215,7 @@ void ComponentGameInput::handleMenuKeyboard(SDL_Event *event, bool &end)
     }
 
     // Execute Menu option
-    if (keyboard[SDL_SCANCODE_RETURN] || componentInput->getControllerButtonA()) {
+    if (keyboard[mapping.intro] || componentInput->getControllerButtonA()) {
         if (menuOptions[currentOption].getAction() == ComponentMenu::MNU_EXIT) {
             end = true;
             return;
@@ -243,7 +265,7 @@ void ComponentGameInput::handleFire() const
 
     if (input->getGameController() == nullptr) {
         Uint8 *keyboard = input->getKeyboard();
-        if (keyboard[SDL_SCANCODE_SPACE]) {
+        if (keyboard[mapping.fire]) {
             player->shoot(2.5f);
         }
     } else {
@@ -263,33 +285,24 @@ void ComponentGameInput::handleWeaponSelector(SDL_Event *event)
     auto player = componentGame->getPlayer();
 
     if (event->type == SDL_KEYDOWN) {
-        if (keyboard[SDL_SCANCODE_1]) {
+        if (keyboard[mapping.weapon1]) {
             componentGame->getPlayer()->setWeaponTypeByIndex(0);
         }
 
-        if (keyboard[SDL_SCANCODE_2]) {
+        if (keyboard[mapping.weapon2]) {
             componentGame->getPlayer()->setWeaponTypeByIndex(1);
             ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
 
-        if (keyboard[SDL_SCANCODE_3] ) {
+        if (keyboard[mapping.weapon3] ) {
             componentGame->getPlayer()->setWeaponTypeByIndex(2);
             ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         }
 
-        /*if (keyboard[SDL_SCANCODE_4] ) {
-            componentGame->getPlayer()->setWeaponTypeByIndex(3);
-            ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-        }
-        if (keyboard[SDL_SCANCODE_5] ) {
-            componentGame->getPlayer()->setWeaponByIndex(4);
-            ComponentsManager::get()->getComponentSound()->sound("switchWeapon", EngineSetup::SoundChannels::SND_GLOBAL, 0);
-        }*/
-
-        if (keyboard[SDL_SCANCODE_4] ) {
+        if (keyboard[mapping.previousWeapon] ) {
             player->nextWeapon();
         }
-        if (keyboard[SDL_SCANCODE_5] ) {
+        if (keyboard[mapping.nextWeapon] ) {
             player->previousWeapon();
         }
     }
@@ -317,7 +330,7 @@ void ComponentGameInput::handleZoom(SDL_Event *event)
     }
 }
 
-void ComponentGameInput::handleKeyboardMovingPlayer()
+void ComponentGameInput::handleKeyboardMovingPlayer() const
 {
     auto player = ComponentsManager::get()->getComponentGame()->getPlayer();
 
@@ -331,22 +344,22 @@ void ComponentGameInput::handleKeyboardMovingPlayer()
 
     speed = std::clamp(speed, 0.f, player->maxVelocity);
 
-    if (keyboard[SDL_SCANCODE_A]) {
+    if (keyboard[mapping.left]) {
         Vertex3D velocity = player->getVelocity() - Vertex3D(speed, 0, 0);
         player->setVelocity(velocity);
     }
 
-    if (keyboard[SDL_SCANCODE_D]) {
+    if (keyboard[mapping.right]) {
         Vertex3D velocity = player->getVelocity() + Vertex3D(speed, 0, 0);
         player->setVelocity(velocity);
     }
 
-    if (keyboard[SDL_SCANCODE_S]) {
+    if (keyboard[mapping.down]) {
         Vertex3D velocity = player->getVelocity() + Vertex3D(0, speed, 0);
         player->setVelocity(velocity);
     }
 
-    if (keyboard[SDL_SCANCODE_W]) {
+    if (keyboard[mapping.up]) {
         Vertex3D velocity = player->getVelocity() - Vertex3D(0, speed, 0);
         player->setVelocity(velocity);
     }
@@ -361,9 +374,9 @@ void ComponentGameInput::handleFindClosestObject3D(SDL_Event *event)
     auto player = componentGame->getPlayer();
 
     if (
-        (keyboard[SDL_SCANCODE_TAB] && event->type == SDL_KEYDOWN) ||
-        (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSTICK)
-     ) {
+            (keyboard[mapping.selectTarget] && event->type == SDL_KEYDOWN) ||
+            (event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_RIGHTSTICK)
+            ) {
         componentGame->selectClosestObject3DFromPlayer();
     }
 
@@ -415,16 +428,16 @@ void ComponentGameInput::handleGamePadMovingPlayer()
     speed = std::clamp(speed, 0.f, player->maxVelocity);
 
     player->setVelocity(
-        player->getVelocity() +
-        Vertex3D(componentInput->getControllerAxisLeftX() * speed, componentInput->getControllerAxisLeftY() * speed, 0)
+            player->getVelocity() +
+            Vertex3D(componentInput->getControllerAxisLeftX() * speed, componentInput->getControllerAxisLeftY() * speed, 0)
     );
 }
 
-void ComponentGameInput::handleDashMovement(SDL_Event *event)
+void ComponentGameInput::handleDashMovement(SDL_Event *event) const
 {
     auto input = ComponentsManager::get()->getComponentInput();
     Uint8 *keyboard = input->getKeyboard();
-    auto leftShiftPressed = keyboard[SDL_SCANCODE_LSHIFT] && event->type == SDL_KEYDOWN;
+    auto leftShiftPressed = keyboard[mapping.dash] && event->type == SDL_KEYDOWN;
     auto controlButtonPressed = event->type == SDL_CONTROLLERBUTTONDOWN && input->getControllerButtonB();
 
     if ( leftShiftPressed || controlButtonPressed) {
@@ -432,15 +445,15 @@ void ComponentGameInput::handleDashMovement(SDL_Event *event)
     }
 }
 
-void ComponentGameInput::handleEnergyShield(SDL_Event *event)
+void ComponentGameInput::handleEnergyShield(SDL_Event *event) const
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto player = componentGame->getPlayer();
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
     const bool triggerLeftOn = componentInput->getControllerAxisTriggerLeft() >= 0.20;
-    const bool actionKey = keyboard[SDL_SCANCODE_I] && event->type == SDL_KEYDOWN;
-    const bool actionKeyReleased = !keyboard[SDL_SCANCODE_I] && event->type == SDL_KEYUP;
+    const bool actionKey = keyboard[mapping.energyShield] && event->type == SDL_KEYDOWN;
+    const bool actionKeyReleased = !keyboard[mapping.energyShield] && event->type == SDL_KEYUP;
     const bool leftAxisTriggerRelease = componentInput->getControllerAxisTriggerLeft() < 0.20;
     const bool isKeyboardAction = event->type == SDL_KEYUP || event->type == SDL_KEYDOWN;
     const float percentageReached =  player->getEnergy() * 100 / player->getStartEnergy();
@@ -472,19 +485,19 @@ void ComponentGameInput::handleEnergyShield(SDL_Event *event)
         ComponentsManager::get()->getComponentSound()->sound("energyShield", EngineSetup::SoundChannels::SND_GLOBAL, 0);
     }
 
-    if (leftAxisTriggerRelease && player->isEnergyShieldEnabled() && !keyboard[SDL_SCANCODE_I]) {
+    if (leftAxisTriggerRelease && player->isEnergyShieldEnabled() && !keyboard[mapping.energyShield]) {
         player->setEnergyShieldEnabled(false);
     }
 }
 
-void ComponentGameInput::handleMakeReflection(SDL_Event *event)
+void ComponentGameInput::handleMakeReflection(SDL_Event *event) const
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto player = componentGame->getPlayer();
 
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
-    const bool reflectionKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_8];
+    const bool reflectionKeyPressed = event->type == SDL_KEYDOWN && keyboard[mapping.reflection];
     const bool controllerXButtonPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonA();
 
     if (controllerXButtonPressed || reflectionKeyPressed) {
@@ -511,12 +524,12 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
     bool controllerButtonA = event->type == SDL_CONTROLLERBUTTONDOWN && event->cbutton.button == SDL_CONTROLLER_BUTTON_A;
 
-    const bool cursorLeft = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_LEFT];
-    const bool cursorRight = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RIGHT];
-    const bool cursorUp = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_UP];
-    const bool cursorDown = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_DOWN];
-    const bool keyStorePressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_UP];
-    const bool enter = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_RETURN];
+    const bool cursorLeft = event->type == SDL_KEYDOWN && keyboard[mapping.left];
+    const bool cursorRight = event->type == SDL_KEYDOWN && keyboard[mapping.right];
+    const bool cursorUp = event->type == SDL_KEYDOWN && keyboard[mapping.menuUp];
+    const bool cursorDown = event->type == SDL_KEYDOWN && keyboard[mapping.menuDown];
+    const bool keyStorePressed = event->type == SDL_KEYDOWN && keyboard[mapping.menuUp];
+    const bool enter = event->type == SDL_KEYDOWN && keyboard[mapping.intro];
 
     if ((state == EngineSetup::GameState::PRESS_KEY_BY_WIN) && (enter || isButtonGuidedPressed)) {
         game->pressedKeyForWin();
@@ -656,14 +669,14 @@ void ComponentGameInput::handlePressKeyGameStates(SDL_Event *event)
 
 }
 
-void ComponentGameInput::handleBomb(SDL_Event *event)
+void ComponentGameInput::handleBomb(SDL_Event *event) const
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto player = componentGame->getPlayer();
 
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
-    const bool bombKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_7];
+    const bool bombKeyPressed = event->type == SDL_KEYDOWN && keyboard[mapping.bomb];
     const bool controllerXButtonPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonX();
 
     if (controllerXButtonPressed || bombKeyPressed) {
@@ -673,14 +686,14 @@ void ComponentGameInput::handleBomb(SDL_Event *event)
     }
 }
 
-void ComponentGameInput::handleShield(SDL_Event *event)
+void ComponentGameInput::handleShield(SDL_Event *event) const
 {
     auto componentInput = ComponentsManager::get()->getComponentInput();
     auto componentGame = ComponentsManager::get()->getComponentGame();
     auto player = componentGame->getPlayer();
 
     Uint8 *keyboard = ComponentsManager::get()->getComponentInput()->getKeyboard();
-    const bool bombKeyPressed = event->type == SDL_KEYDOWN && keyboard[SDL_SCANCODE_9];
+    const bool bombKeyPressed = event->type == SDL_KEYDOWN && keyboard[mapping.shield];
     const bool controllerYButtonPressed = event->cbutton.type == SDL_CONTROLLERBUTTONDOWN && componentInput->getControllerButtonY();
 
     if (controllerYButtonPressed || bombKeyPressed) {
@@ -692,4 +705,8 @@ void ComponentGameInput::handleShield(SDL_Event *event)
 
 float ComponentGameInput::getControllerAxisThreshold() const {
     return controllerAxisThreshold;
+}
+
+void ComponentGameInput::setMapping(const KeyboardMapping &mapping) {
+    ComponentGameInput::mapping = mapping;
 }

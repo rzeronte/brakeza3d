@@ -79,11 +79,14 @@ void ComponentGame::onStart()
     imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/04.png"));
     imagesDead.push_back(new Image(SETUP->IMAGES_FOLDER + "gameover/05.png"));
 
+#ifdef PROJECT_DARKHEAZ_DEMO
+    imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/demo.png"));
+#elif
     imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/01.png"));
     imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/02.png"));
     imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/03.png"));
     imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/04.png"));
-
+#endif
     helps.push_back(new Image(SETUP->IMAGES_FOLDER + "help_controller.png"));
     helps.push_back(new Image(SETUP->IMAGES_FOLDER + "help_keyboard.png"));
 
@@ -751,9 +754,14 @@ void ComponentGame::LoadLevels()
 {
     auto basePath = EngineSetup::get()->CONFIG_FOLDER + "Levels/";
 
-    for (int i = 1; i <= 30; i++) {
+    int endLevel = 30;
+#ifdef PROJECT_DARKHEAZ_DEMO
+        endLevel = 10;
+#endif
+    for (int i = 1; i <= endLevel; i++) {
         levelLoader->addLevel(basePath + "level" + (i < 10 ? "0" : "") + std::to_string(i) + ".json");
     }
+
 }
 
 FaderToGameStates *ComponentGame::getFadeToGameState() const

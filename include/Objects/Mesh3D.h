@@ -29,6 +29,7 @@ private:
     bool sharedTextures;
     bool flatTextureColor;
     bool render;
+    bool loaded = false;
 protected:
     std::vector<Triangle *> modelTriangles;
     std::vector<Image *> modelTextures;
