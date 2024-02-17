@@ -57,7 +57,8 @@ bool WeaponLaser::shootLaserProjectile(
             getSpeed(),
             color,
             intensity,
-            false
+            false,
+            ComponentsManager::get()->getComponentGame()->getSpriteSparklesGreen()->getAnimation()
         );
 
         setAmmoAmount(getAmmoAmount() - 1);

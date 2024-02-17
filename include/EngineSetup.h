@@ -20,10 +20,7 @@ public:
 
     std::string ENGINE_VERSION = "v.1.0.0";
 
-    std::string ENGINE_TITLE = "Project DarkHeaZ (11.2.24 Demo)";
-#ifdef PROJECT_DARKHEAZ_DEMO
-    ENGINE_TITLE = "Project DarkHeaZ (Demo 15.2.24)";
-#endif
+    std::string ENGINE_TITLE = "Brakeza3D Application";
 
     std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";
@@ -45,6 +42,7 @@ public:
     const int screenHeight = 720;
 
     bool LIMIT_FRAMERATE = true;
+    bool V_SYNC = true;
     int FRAMERATE = 60;
 
     bool ENABLE_FOG = true;

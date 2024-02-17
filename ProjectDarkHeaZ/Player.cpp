@@ -11,33 +11,33 @@
 #include "Weapons/WeaponRayLight.h"
 
 Player::Player()
-:
-    god(false),
-    LivingObject(this),
-    RotatableToTarget(nullptr, this, 1.5f),
-    energy(0),
-    startEnergy(0),
-    recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
-    stuck(false),
-    rescuedHumans(0),
-    coins(0),
-    projectileStartOffsetPosition(1.3),
-    weapon(nullptr),
-    counterStucked(Counter(5)),
-    counterDashCadence(Counter(1)),
-    energyShieldEnabled(false),
-    allowEnergyShield(false),
-    counterLight(Counter(0.05)),
-    lightPositionOffset(Vertex3D(0, 0, -1)),
-    particlesEngineLeftOffset(Vertex3D(0, 0.2, 0)),
-    state(PlayerState::EMPTY),
-    satellite(PlayerSatellite(this)),
-    avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png")),
-    dashPower(INITIAL_POWER_DASH),
-    power(0),
-    friction(INITIAL_FRICTION),
-    maxVelocity(1),
-    velocity(Vertex3D(0, 0, 0))
+        :
+        god(false),
+        LivingObject(this),
+        RotatableToTarget(nullptr, this, 1.5f),
+        energy(0),
+        startEnergy(0),
+        recoverEnergySpeed(INITIAL_RECOVER_ENERGY),
+        stuck(false),
+        rescuedHumans(0),
+        coins(0),
+        projectileStartOffsetPosition(1.3),
+        weapon(nullptr),
+        counterStucked(Counter(5)),
+        counterDashCadence(Counter(1)),
+        energyShieldEnabled(false),
+        allowEnergyShield(false),
+        counterLight(Counter(0.05)),
+        lightPositionOffset(Vertex3D(0, 0, -1)),
+        particlesEngineLeftOffset(Vertex3D(0, 0.2, 0)),
+        state(PlayerState::EMPTY),
+        satellite(PlayerSatellite(this)),
+        avatar(new Image(EngineSetup::get()->ICONS_FOLDER + "avatars/default.png")),
+        dashPower(INITIAL_POWER_DASH),
+        power(0),
+        friction(INITIAL_FRICTION),
+        maxVelocity(1),
+        velocity(Vertex3D(0, 0, 0))
 {
     setTransparent(false);
     setMultiScene(true);
@@ -50,20 +50,20 @@ Player::Player()
     attachObject(light);
 
     particleEngineLeft = new ParticleEmitter(
-        ParticleEmitterState::DEFAULT,
-        nullptr,
-        position,
-        9999,
-        PaletteColors::getParticlesPlayerFrom(),
-        PaletteColors::getParticlesPlayerTo(),
-        OCParticlesContext::forPlayerEngine(),
-        ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle01")
+            ParticleEmitterState::DEFAULT,
+            nullptr,
+            position,
+            9999,
+            PaletteColors::getParticlesPlayerFrom(),
+            PaletteColors::getParticlesPlayerTo(),
+            OCParticlesContext::forPlayerEngine(),
+            ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle01")
     );
 
     spriteEnergyShield = new Sprite2D(
-        0, 0,
-        false,
-        new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "shield.png"), 180, 180, 20, 60)
+            0, 0,
+            false,
+            new TextureAnimated(std::string(EngineSetup::get()->SPRITES_FOLDER + "shield.png"), 180, 180, 20, 60)
     );
 
     spriteEnergyShield->setEnabled(false);
@@ -147,12 +147,12 @@ void Player::shoot(float intensity)
     }
 
     bool wasShoot = weapon->shoot({
-        AxisUp().getInverse(),
-        projectileStartOffsetPosition,
-        EngineSetup::collisionGroups::Projectile,
-        EngineSetup::collisionGroups::Enemy|EngineSetup::collisionGroups::ProjectileEnemy,
-        true
-    });
+                                          AxisUp().getInverse(),
+                                          projectileStartOffsetPosition,
+                                          EngineSetup::collisionGroups::Projectile,
+                                          EngineSetup::collisionGroups::Enemy|EngineSetup::collisionGroups::ProjectileEnemy,
+                                          true
+                                  });
 
     if (wasShoot) {
         getWeaponLight()->setColor(PaletteColors::getPlayerProjectileLight());
@@ -217,7 +217,7 @@ void Player::onUpdate()
         auto fb = ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer();
         float progress = counterDamageBlink.currentPercentage() / 100;
         randomDamage()->drawFlatAlpha(0, 0, 1 - progress, fb);
-        
+
         counterDamageBlink.update();
         blink->update();
         if (counterDamageBlink.isFinished()) {
@@ -407,8 +407,6 @@ void Player::resolveCollision(Collisionable *with)
 
         Logging::Log("Added Weapon to Player: %s", weapon->getWeaponType()->getLabel().c_str());
 
-        weapon->setRemoved(true);
-
         if (weapon->isHasTutorial()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
             if (weapon->getTutorialIndex() != -1) {
@@ -417,6 +415,7 @@ void Player::resolveCollision(Collisionable *with)
                 );
             }
         }
+        weapon->setRemoved(true);
     }
 
     auto health = dynamic_cast<ItemHealthGhost*> (with);
@@ -424,7 +423,6 @@ void Player::resolveCollision(Collisionable *with)
         Logging::Log("Health to Player!");
         ComponentsManager::get()->getComponentSound()->sound("itemHealth", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         receiveAid(health->getAid());
-        health->remove();
 
         if (health->isHasTutorial()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
@@ -434,6 +432,8 @@ void Player::resolveCollision(Collisionable *with)
                 );
             }
         }
+        health->removeCollisionObject();
+        health->remove();
     }
 
     auto human = dynamic_cast<ItemHumanGhost*> (with);
@@ -441,8 +441,6 @@ void Player::resolveCollision(Collisionable *with)
         Logging::Log("human rescued!");
         ComponentsManager::get()->getComponentSound()->sound("yes", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         increaseHumans();
-        human->removeCollisionObject();
-        human->remove();
 
         if (human->isHasTutorial()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
@@ -452,6 +450,9 @@ void Player::resolveCollision(Collisionable *with)
                 );
             }
         }
+
+        human->removeCollisionObject();
+        human->remove();
     }
 
     auto energy = dynamic_cast<ItemEnergyGhost*> (with);
@@ -459,7 +460,6 @@ void Player::resolveCollision(Collisionable *with)
         Logging::Log("Health to Player!");
         ComponentsManager::get()->getComponentSound()->sound("itemHealth", EngineSetup::SoundChannels::SND_GLOBAL, 0);
         receiveEnergy(energy->getEnergy());
-        energy->remove();
 
         if (energy->isHasTutorial()) {
             ComponentsManager::get()->getComponentGame()->setGameState(EngineSetup::GAMING_TUTORIAL);
@@ -469,6 +469,8 @@ void Player::resolveCollision(Collisionable *with)
                 );
             }
         }
+        energy->removeCollisionObject();
+        energy->remove();
     }
 
     auto enemy = dynamic_cast<EnemyGhost*> (with);
@@ -682,14 +684,13 @@ LightPoint3D *Player::getWeaponLight() const {
 
 Player::~Player()
 {
-    delete light;
-    delete blink;
     delete avatar;
     delete particleEngineLeft;
 
     for (auto w : weapons) {
         delete w;
     }
+    removeCollisionObject();
 }
 
 Image *Player::getAvatar() {
@@ -832,9 +833,9 @@ void Player::shiftCamera()
     float intensity = 0.01f;
 
     auto random = Vertex3D(
-        (float) Tools::random(-1, 1) * intensity,
-        (float) Tools::random(-1, 1) * intensity,
-        0
+            (float) Tools::random(-1, 1) * intensity,
+            (float) Tools::random(-1, 1) * intensity,
+            0
     );
 
     camera->setPosition(p + random);

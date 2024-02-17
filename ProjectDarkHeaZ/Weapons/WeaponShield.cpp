@@ -29,9 +29,9 @@ WeaponShield::WeaponShield(const WeaponAttributes &attributes) : last(nullptr), 
     if (counterCadence->isFinished()) {
         counterCadence->setEnabled(true);
         auto componentGame = ComponentsManager::get()->getComponentGame();
-        float ttl = 6;
+        float ttl = 8;
         if (componentGame->getStoreManager()->isItemEnabled(EngineSetup::StoreItems::ITEM_LONG_LIVE)) {
-            ttl = 8;
+            ttl = 12;
         }
 
         auto *projectile = new ItemShieldGhost(ttl, this->getDamage(), this);

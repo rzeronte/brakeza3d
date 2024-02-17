@@ -169,7 +169,8 @@ void AmmoProjectileBodyEmitter::launchUniqueLaser()
             weaponType->getSpeed(),
             color,
             0.0001f,
-            false
+            false,
+            ComponentsManager::get()->getComponentGame()->getSpriteSparklesGreen()->getAnimation()
         ),
         Brakeza3D::uniqueObjectLabel("laser")
     );

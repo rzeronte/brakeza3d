@@ -13,9 +13,11 @@ ProjectileRay::ProjectileRay(
     float speed,
     const Color &color,
     float intensity,
-    bool indestructible
+    bool indestructible,
+    TextureAnimated *animation
 ) :
     Projectile3DBody(direction),
+    animation(animation),
     AmmoProjectile(parent, color, damage, intensity),
     speed(speed),
     size(size),
@@ -78,7 +80,7 @@ void ProjectileRay::resolveCollision(Collisionable *objectWithCollision)
         this->setRemoved(true);
     }
 
-    Tools::makeFadeInSprite(getPosition() + Vertex3D(0, 0, -2), ComponentsManager::get()->getComponentGame()->getSpriteSparklesGreen()->getAnimation());
+    Tools::makeFadeInSprite(getPosition() + Vertex3D(0, 0, -2), animation);
 }
 
 float ProjectileRay::getSpeed() const {

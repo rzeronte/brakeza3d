@@ -7,19 +7,19 @@
 #include "../../include/ComponentsManager.h"
 
 WeaponRayLight::WeaponRayLight(const WeaponAttributes &attributes)
-:
+        :
         isPlayer(true),
         Weapon(attributes)
 {
     particles = new ParticleEmitter(
-        ParticleEmitterState::DEFAULT,
-        nullptr,
-        parent->getPosition(),
-        9999,
-        Color::red(),
-        Color::yellow(),
-        OCParticlesContext::forPlayerEngine(),
-        ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle02")
+            ParticleEmitterState::DEFAULT,
+            nullptr,
+            parent->getPosition(),
+            9999,
+            Color::red(),
+            Color::yellow(),
+            OCParticlesContext::forPlayerEngine(),
+            ComponentsManager::get()->getComponentGame()->getImages()->getTextureByLabel("particle02")
     );
 }
 

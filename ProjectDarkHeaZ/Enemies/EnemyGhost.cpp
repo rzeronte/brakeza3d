@@ -45,6 +45,7 @@ void EnemyGhost::onUpdate()
 
     if (getState() == EnemyState::ENEMY_STATE_DIE) {
         handleDie();
+        return;
     }
 
     if (counterDamageBlink.isEnabled()) {
@@ -122,7 +123,6 @@ void EnemyGhost::postUpdate()
 void EnemyGhost::onDrawHostBuffer()
 {
     Mesh3D::onDrawHostBuffer();
-
 }
 
 void EnemyGhost::handleDie()
@@ -148,42 +148,46 @@ void EnemyGhost::makeReward()
 
     auto playerWeapons = ComponentsManager::get()->getComponentGame()->getPlayer()->getWeapons();
 
-    int typePresent = Tools::random(0, 2);
+    int typePresent = Tools::random(0, 1);
+
     switch(typePresent) {
         case 0: {
+            auto templates = ComponentsManager::get()->getComponentGame()->getMeshTemplates();
             auto *healthItem = new ItemHealthGhost();
             healthItem->setLabel("itemHealth");
+            healthItem->clone(templates[TEMPLATE_HEALTH]);
             healthItem->setEnableLights(true);
             healthItem->setPosition(getPosition());
             healthItem->setRotationFrameEnabled(true);
             healthItem->setRotationFrame(Vertex3D(0, 1, 0));
             healthItem->setStencilBufferEnabled(true);
             healthItem->setScale(1);
-            healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "item_stamina.fbx"));
-            healthItem->makeGhostBody(
+            healthItem->makeSimpleGhostBody(
+                Vertex3D(0.5, 0.5, 0.5),
                 ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-                healthItem,
-                EngineSetup::Health,
-                EngineSetup::Player
+                EngineSetup::collisionGroups::Health,
+                EngineSetup::collisionGroups::Player
             );
             Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
             break;
         }
         case 1: {
+            auto templates = ComponentsManager::get()->getComponentGame()->getMeshTemplates();
             auto *healthItem = new ItemEnergyGhost();
             healthItem->setLabel("itemEnergy");
+            healthItem->clone(templates[TEMPLATE_ENERGY]);
             healthItem->setEnableLights(true);
             healthItem->setPosition(getPosition());
             healthItem->setRotationFrameEnabled(true);
             healthItem->setRotationFrame(Vertex3D(0, 1, 0));
             healthItem->setStencilBufferEnabled(true);
-            healthItem->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "item_energy.fbx"));
-            healthItem->makeGhostBody(
+            healthItem->makeSimpleGhostBody(
+                Vertex3D(0.5, 0.5, 0.5),
                 ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-                healthItem,
-                EngineSetup::Health,
-                EngineSetup::Player
+                EngineSetup::collisionGroups::Health,
+                EngineSetup::collisionGroups::Player
             );
+
             Brakeza3D::get()->addObject3D(healthItem, healthItem->getLabel());
             break;
         }

@@ -42,11 +42,6 @@ void Mesh3DGhost::remove()
     this->setRemoved(true);
 }
 
-Mesh3DGhost::~Mesh3DGhost()
-{
-    Logging::Log("Delete Mesh3DGhost");
-}
-
 void Mesh3DGhost::magnetizableTo(Object3D *object)
 {
     Vertex3D to = object->getPosition();
@@ -177,4 +172,8 @@ void Mesh3DGhost::createFromJSON(cJSON *object)
     Mesh3DGhost::setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
+}
+
+Mesh3DGhost::~Mesh3DGhost() {
+
 }

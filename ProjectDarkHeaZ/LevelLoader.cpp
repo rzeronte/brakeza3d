@@ -291,7 +291,12 @@ Weapon *LevelLoader::parseWeaponJSON(Object3D *parent, cJSON *weaponJson, bool i
 
     switch(WeaponTypesMapping[type]) {
         case WeaponTypes::WEAPON_PROJECTILE: {
-            return new WeaponProjectiles(attributes);
+            if (isPlayer) {
+                return new WeaponProjectiles(attributes);
+            } else {
+                auto weapons = ComponentsManager::get()->getComponentGame()->getPlayer()->getWeapons();
+                return new WeaponProjectiles(attributes, weapons[WeaponTypes::WEAPON_PROJECTILE]->getModelProjectile());
+            }
         }
         case WeaponTypes::WEAPON_LASER: {
             return new WeaponLaser(attributes);
@@ -1019,22 +1024,9 @@ void LevelLoader::updateConfig(int level) const {
 
     cJSON_AddItemToObject(json, "ammo", ammo);
 
-    char *output_string = cJSON_Print(json);
-
-    FILE *f = fopen(file_path, "w");
-    if (f == nullptr) {
-        Logging::Message("Error opening file for writing");
-        cJSON_Delete(json);
-        free(output_string);
-        fclose(f);
-        return;
-    }
-
-    fprintf(f, "%s", output_string);
-    fclose(f);
+    Tools::writeToFile(file_path, cJSON_Print(json));
 
     cJSON_Delete(json);
-    free(output_string);
 }
 
 EnemyDialog *LevelLoader::getMainMessage()

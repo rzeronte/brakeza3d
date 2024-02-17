@@ -18,7 +18,3 @@ void ItemHealthGhost::onUpdate()
 float ItemHealthGhost::getAid() const {
     return aid;
 }
-
-void ItemHealthGhost::resolveCollision(Collisionable *collisionable) {
-    Mesh3DGhost::resolveCollision(collisionable);
-}

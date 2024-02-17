@@ -162,7 +162,7 @@ void ComponentGameInput::handleEscape(SDL_Event *event)
             gameState == EngineSetup::GameState::PRESS_KEY_PREVIOUS_LEVEL ||
             gameState == EngineSetup::GameState::PRESS_KEY_BY_DEAD ||
             gameState == EngineSetup::GameState::PRESS_KEY_BY_WIN
-        ) return;
+                ) return;
 
         game->getFadeToGameState()->setSpeed(FADE_SPEED_FADEOUT_TIME);
         game->makeFadeToGameState(EngineSetup::GameState::MENU, true);

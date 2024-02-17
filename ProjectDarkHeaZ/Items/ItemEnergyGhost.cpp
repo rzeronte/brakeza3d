@@ -23,7 +23,3 @@ void ItemEnergyGhost::onUpdate()
 
     this->magnetizableTo(ComponentsManager::get()->getComponentGame()->getPlayer());
 }
-
-void ItemEnergyGhost::resolveCollision(Collisionable *collisionable) {
-    Mesh3DGhost::resolveCollision(collisionable);
-}

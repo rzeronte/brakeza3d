@@ -112,6 +112,18 @@ struct GUIWidgetMenu
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Render")) {
+                ImGui::Checkbox("v-Sync", &EngineSetup::get()->V_SYNC);
+                if (ImGui::IsItemEdited()) {
+                    if (EngineSetup::get()->V_SYNC) {
+                        Logging::Message("Set V-Sync enabled");
+                        SDL_GL_SetSwapInterval(1);
+                        SDL_RenderSetVSync(ComponentsManager::get()->getComponentWindow()->getRenderer(), 1);
+                    } else {
+                        Logging::Message("Set V-Sync disabled");
+                        SDL_GL_SetSwapInterval(0);
+                        SDL_RenderSetVSync(ComponentsManager::get()->getComponentWindow()->getRenderer(), 0);
+                    }
+                }
                 ImGui::Separator();
 
                 ImGui::Checkbox("Limit frame rate", &EngineSetup::get()->LIMIT_FRAMERATE);

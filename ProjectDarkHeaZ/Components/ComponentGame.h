@@ -37,12 +37,17 @@
 #define FADE_SPEED_MENU_FIRST_TIME 0.003
 #define COUNTDOWN_TO_START 3
 
-#define PROJECT_DARKHEAZ_DEMO
+#define PROJECT_DARKHEAZ_DEMO 1
 
 struct SpaceshipAttributes {
     float power;
     float stamina;
     float energy;
+};
+
+enum MeshTemplates {
+    TEMPLATE_HEALTH = 0,
+    TEMPLATE_ENERGY = 1
 };
 
 class ComponentGame : public Component {
@@ -54,6 +59,8 @@ private:
     Vertex3D cameraInGamePosition;
 
     TextWriter *textWriter;
+
+    std::vector<Mesh3D*> meshTemplates;
 
     FaderToGameStates *fadeToGameState;
     Player *player;
@@ -125,6 +132,7 @@ private:
     int currentIndexDeadImage;
 
     //PathFinder *pathFinder;
+    std::string version;
 public:
     ComponentGame();
 
@@ -338,6 +346,12 @@ public:
     Image* getPressEnterContinue();
 
     Image* getPressAContinue();
+
+    void LoadMeshTemplates();
+
+    [[nodiscard]] const std::vector<Mesh3D *> &getMeshTemplates() const;
+
+    [[nodiscard]] const std::string &getVersion() const;
 };
 
 

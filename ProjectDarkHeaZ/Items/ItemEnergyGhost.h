@@ -18,8 +18,6 @@ public:
 
     [[nodiscard]] float getEnergy() const;
 
-    void resolveCollision(Collisionable *collisionable) override;
-
     void onUpdate() override;
 };
 

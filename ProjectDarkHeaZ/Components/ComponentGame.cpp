@@ -5,7 +5,7 @@
 #include "../Bosses/BossEnemy.h"
 
 ComponentGame::ComponentGame()
-:
+        :
         currentIndexDeadImage(0),
         currentIndexEndGameImage(0),
         currentIndexIntro(0),
@@ -44,6 +44,13 @@ ComponentGame::ComponentGame()
 void ComponentGame::onStart()
 {
     Logging::Message("ComponentGame onStart");
+#ifdef PROJECT_DARKHEAZ_DEMO
+    version = "Project DarkHeaZ (11.2.24 Demo)";
+    SDL_SetWindowTitle(ComponentsManager::get()->getComponentWindow()->getWindow(), version.c_str());
+#else
+    version = "Project DarkHeaZ (11.2.24)";
+    SDL_SetWindowTitle(ComponentsManager::get()->getComponentWindow()->getWindow(), version.c_str());
+#endif
 
     images.addItem(EngineSetup::get()->IMAGES_FOLDER + "particle.png", "particle01");
     images.addItem(EngineSetup::get()->IMAGES_FOLDER + "particle02.png", "particle02");
@@ -56,10 +63,10 @@ void ComponentGame::onStart()
     textWriter = new TextWriter(window->getRenderer(), window->getFontDefault());
 
     fadeToGameState = new FaderToGameStates(
-        Color::black(),
-        0.01f,
-        EngineSetup::GameState::SPLASH,
-        false
+            Color::black(),
+            0.01f,
+            EngineSetup::GameState::SPLASH,
+            false
     );
 
     imagesIntro.push_back(new Image(SETUP->IMAGES_FOLDER + "intro/01.png"));
@@ -86,7 +93,7 @@ void ComponentGame::onStart()
 
 #ifdef PROJECT_DARKHEAZ_DEMO
     imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/demo.png"));
-#elif
+#else
     imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/01.png"));
     imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/02.png"));
     imagesEndGame.push_back(new Image(SETUP->IMAGES_FOLDER + "endgame/03.png"));
@@ -112,13 +119,14 @@ void ComponentGame::onStart()
     ComponentsManager::get()->getComponentInput()->setEnabled(FREE_LOOK_ENABLED);
     ComponentsManager::get()->getComponentMenu()->setEnabled(false);
 
-    loadSpaceship("spaceships/player.fbx", "spaceships/spaceship_01.png", {0.3, 100, 100});
-    loadSpaceship("spaceships/player02.fbx", "spaceships/spaceship_02.png", {0.5, 130, 70});
-    loadSpaceship("spaceships/player03.fbx", "spaceships/spaceship_03.png", {0.2, 130, 130});
+    loadSpaceship("spaceships/player.fbx", "spaceships/spaceship_01.png", {0.4, 100, 70});
+    loadSpaceship("spaceships/player02.fbx", "spaceships/spaceship_02.png", {0.5, 150, 50});
+    loadSpaceship("spaceships/player03.fbx", "spaceships/spaceship_03.png", {0.3, 150, 130});
 
     initPlayer();
     LoadLevels();
     LoadFXAndShaders();
+    LoadMeshTemplates();
 
     getLevelLoader()->LoadJSONWeapons();
     getLevelLoader()->LoadConfig();
@@ -129,9 +137,9 @@ void ComponentGame::onStart()
     }
 
     ComponentSound::fadeInMusic(
-        ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
-        -1,
-        SPLASH_TIME * 1000
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
+            -1,
+            SPLASH_TIME * 1000
     );
 
     storeManager = new StoreManager(player, textWriter);
@@ -184,6 +192,13 @@ ComponentGame::~ComponentGame()
 
     delete storeManager;
 
+    for (auto i: spaceships) {
+        delete i;
+    }
+
+    for (auto i: meshTemplates) {
+        delete i;
+    }
 }
 
 void ComponentGame::preUpdate()
@@ -386,26 +401,26 @@ void ComponentGame::showLevelStatistics(float alpha)
     }
 
     ComponentsManager::get()->getComponentHUD()->getHudTextures()->getTextureByLabel("coinIcon")->drawFlatAlpha(
-        EngineSetup::get()->screenWidth/2-20 ,
-        offsetY + 320,
-        alpha,
-        fb
+            EngineSetup::get()->screenWidth/2-20 ,
+            offsetY + 320,
+            alpha,
+            fb
     );
 
     textWriter->writeTextTTFAutoSize(
-        680,
-        420,
-        (std::string("EARNINGS ") + std::to_string(getLevelLoader()->getStats()->coinsGained)).c_str(),
-        PaletteColors::getMenuOptions(),
-        0.50f
+            680,
+            420,
+            (std::string("EARNINGS ") + std::to_string(getLevelLoader()->getStats()->coinsGained)).c_str(),
+            PaletteColors::getMenuOptions(),
+            0.50f
     );
 
     textWriter->writeTextTTFAutoSize(
-        680,
-        445,
-        (std::string("TOTAL ") + std::to_string(player->getCoins())).c_str(),
-        Color::green(),
-        0.75f
+            680,
+            445,
+            (std::string("TOTAL ") + std::to_string(player->getCoins())).c_str(),
+            Color::green(),
+            0.75f
     );
 }
 
@@ -441,10 +456,10 @@ void ComponentGame::updateEnemyTargetedCrossFire()
     imageCrossFireScreenPosition.y -= imageCrossFire.height() / 2;
 
     imageCrossFire.drawFlatAlpha(
-        imageCrossFireScreenPosition.x,
-        imageCrossFireScreenPosition.y,
-        1.0,
-        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+            imageCrossFireScreenPosition.x,
+            imageCrossFireScreenPosition.y,
+            1.0,
+            ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 }
 
@@ -630,10 +645,10 @@ void ComponentGame::loadSelectedSpaceshipModel()
     Logging::Message("Player attributes: Power: %f, Stamina: %f, Energy: %f", player->power, player->getStamina(), player->getEnergy());
 
     player->makeSimpleGhostBody(
-        Vertex3D(1, 1, 1),
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-        EngineSetup::collisionGroups::Player,
-        EngineSetup::collisionGroups::AllFilter
+            Vertex3D(1, 1, 1),
+            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+            EngineSetup::collisionGroups::Player,
+            EngineSetup::collisionGroups::AllFilter
     );
 }
 
@@ -782,7 +797,7 @@ void ComponentGame::LoadLevels()
 
     int endLevel = 30;
 #ifdef PROJECT_DARKHEAZ_DEMO
-        endLevel = 10;
+    endLevel = 10;
 #endif
     for (int i = 1; i <= endLevel; i++) {
         levelLoader->addLevel(basePath + "level" + (i < 10 ? "0" : "") + std::to_string(i) + ".json");
@@ -850,19 +865,19 @@ void ComponentGame::removeInGameObjects()
         }
 
         if (
-            energy != nullptr ||
-            health != nullptr ||
-            human != nullptr ||
-            weapon != nullptr ||
-            projectile != nullptr ||
-            projectileRay != nullptr ||
-            projectileEmitter != nullptr ||
-            particleEmitter != nullptr ||
-            bomb != nullptr ||
-            salvage != nullptr ||
-            rayLight != nullptr ||
-            rayGhost != nullptr
-        ) {
+                energy != nullptr ||
+                health != nullptr ||
+                human != nullptr ||
+                weapon != nullptr ||
+                projectile != nullptr ||
+                projectileRay != nullptr ||
+                projectileEmitter != nullptr ||
+                particleEmitter != nullptr ||
+                bomb != nullptr ||
+                salvage != nullptr ||
+                rayLight != nullptr ||
+                rayGhost != nullptr
+                ) {
             object->setRemoved(true);
             continue;
         }
@@ -928,7 +943,7 @@ void ComponentGame::setVisibleInGameObjects(bool value)
             bomb != nullptr ||
             enemiesEmitter != nullptr ||
             salvage != nullptr
-        ) {
+                ) {
             object->setEnabled(value);
         }
 
@@ -985,7 +1000,7 @@ void ComponentGame::pressedKeyForBeginLevel()
 
     if (getLevelLoader()->isHaveMusic()) {
         ComponentSound::fadeInMusic(
-            ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(getLevelLoader()->getMusic()), -1, 3000
+                ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel(getLevelLoader()->getMusic()), -1, 3000
         );
     }
 
@@ -1017,16 +1032,16 @@ void ComponentGame::updateShaders()
 void ComponentGame::shaderBackgroundUpdate()
 {
     if (
-        gameState == EngineSetup::GAMING ||
-        gameState == EngineSetup::PRESS_KEY_GAMEOVER ||
-        gameState == EngineSetup::COUNTDOWN ||
-        gameState == EngineSetup::PRESS_KEY_BY_DEAD ||
-        gameState == EngineSetup::PRESS_KEY_NEW_LEVEL ||
-        gameState == EngineSetup::PRESS_KEY_BY_WIN ||
-        gameState == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL ||
-        gameState == EngineSetup::GAMING_TUTORIAL ||
-        gameState == EngineSetup::STORE
-    ) {
+            gameState == EngineSetup::GAMING ||
+            gameState == EngineSetup::PRESS_KEY_GAMEOVER ||
+            gameState == EngineSetup::COUNTDOWN ||
+            gameState == EngineSetup::PRESS_KEY_BY_DEAD ||
+            gameState == EngineSetup::PRESS_KEY_NEW_LEVEL ||
+            gameState == EngineSetup::PRESS_KEY_BY_WIN ||
+            gameState == EngineSetup::PRESS_KEY_PREVIOUS_LEVEL ||
+            gameState == EngineSetup::GAMING_TUTORIAL ||
+            gameState == EngineSetup::STORE
+            ) {
         Vertex3D vel = ComponentsManager::get()->getComponentGame()->getPlayer()->getVelocity().getScaled(0.0075f);
 
         shaderBackgroundImage->update(vel.y, vel.x);
@@ -1223,12 +1238,12 @@ void ComponentGame::handleSplash()
 void ComponentGame::addRayLightsToShaderLaserLine()
 {
     if (
-        gameState != EngineSetup::GAMING &&
-        gameState != EngineSetup::COUNTDOWN &&
-        gameState != EngineSetup::PRESS_KEY_BY_WIN &&
-        gameState != EngineSetup::PRESS_KEY_NEW_LEVEL &&
-        gameState != EngineSetup::PRESS_KEY_PREVIOUS_LEVEL
-    ) return;
+            gameState != EngineSetup::GAMING &&
+            gameState != EngineSetup::COUNTDOWN &&
+            gameState != EngineSetup::PRESS_KEY_BY_WIN &&
+            gameState != EngineSetup::PRESS_KEY_NEW_LEVEL &&
+            gameState != EngineSetup::PRESS_KEY_PREVIOUS_LEVEL
+            ) return;
 
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         const auto ray = dynamic_cast<ProjectileRay *> (object);
@@ -1684,9 +1699,9 @@ void ComponentGame::resetGame() {
     ComponentsManager::get()->getComponentMenu()->LoadScene();
 
     ComponentSound::fadeInMusic(
-        ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
-        -1,
-        SPLASH_TIME * 1000
+            ComponentsManager::get()->getComponentSound()->getSoundPackage().getMusicByLabel("musicMainMenu"),
+            -1,
+            SPLASH_TIME * 1000
     );
 
     getFadeToGameState()->setSpeed(FADE_SPEED_MENU_FIRST_TIME);
@@ -1720,4 +1735,33 @@ Image* ComponentGame::getPressEnterContinue(){
 
 Image* ComponentGame::getPressAContinue() {
     return &pressAContinue;
+}
+
+void ComponentGame::LoadMeshTemplates()
+{
+    auto *energy = new ItemEnergyGhost();
+    energy->setEnableLights(true);
+    energy->setRotationFrameEnabled(true);
+    energy->setRotationFrame(Vertex3D(0, 1, 0));
+    energy->setStencilBufferEnabled(true);
+    energy->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "item_energy.fbx"));
+
+    auto *stamina = new ItemHealthGhost();
+    stamina->setEnableLights(true);
+    stamina->setRotationFrameEnabled(true);
+    stamina->setRotationFrame(Vertex3D(0, 1, 0));
+    stamina->setStencilBufferEnabled(true);
+    stamina->setScale(1);
+    stamina->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "item_stamina.fbx"));
+
+    meshTemplates.push_back(energy);
+    meshTemplates.push_back(stamina);
+}
+
+const std::vector<Mesh3D *> &ComponentGame::getMeshTemplates() const {
+    return meshTemplates;
+}
+
+const std::string &ComponentGame::getVersion() const {
+    return version;
 }

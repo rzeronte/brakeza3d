@@ -4,15 +4,15 @@
 #include "../../include/Brakeza3D.h"
 
 ComponentMenu::ComponentMenu()
-:
-    imageLogoBox(Image(SETUP->IMAGES_FOLDER + "logo_box.png")),
-    boxTutorial(Image(SETUP->IMAGES_FOLDER + "tutorial_box.png")),
-    background(Image(SETUP->IMAGES_FOLDER + "backgroundMenu.png")),
-    border(Image(SETUP->IMAGES_FOLDER + "hud_background.png")),
-    glassEffect(Image(SETUP->IMAGES_FOLDER + "menuBackground.png")),
-    sceneMenu("menu.json"),
-    currentOption(0),
-    menuEnabled(false)
+        :
+        imageLogoBox(Image(SETUP->IMAGES_FOLDER + "logo_box.png")),
+        boxTutorial(Image(SETUP->IMAGES_FOLDER + "tutorial_box.png")),
+        background(Image(SETUP->IMAGES_FOLDER + "backgroundMenu.png")),
+        border(Image(SETUP->IMAGES_FOLDER + "hud_background.png")),
+        glassEffect(Image(SETUP->IMAGES_FOLDER + "menuBackground.png")),
+        sceneMenu("menu.json"),
+        currentOption(0),
+        menuEnabled(false)
 {
     loadMenuOptions();
 }
@@ -128,10 +128,10 @@ void ComponentMenu::drawOptions()
         }
 
         componentGame->getTextWriter()->writeTTFCenterHorizontal(
-            stepY + offsetY,
-            text.c_str(),
-            color,
-            1.5
+                stepY + offsetY,
+                text.c_str(),
+                color,
+                1.5
         );
 
         if (i == currentOption) {
@@ -150,18 +150,19 @@ void ComponentMenu::setEnabled(bool value)
 
 void ComponentMenu::drawVersion()
 {
-    auto writer = ComponentsManager::get()->getComponentGame()->getTextWriter();
+    auto game = ComponentsManager::get()->getComponentGame();
+    auto writer = game->getTextWriter();
 
     writer->setFont(ComponentsManager::get()->getComponentWindow()->getFontDefault());
 
     writer->writeTTFCenterHorizontal(
-        756,
-        "www.brakeza.com",
-        Color::white(),
-        0.35
+            756,
+            "www.brakeza.com",
+            Color::white(),
+            0.35
     );
-    writer->writeTextTTFAutoSize(920, 690, EngineSetup::get()->ENGINE_TITLE.c_str(), PaletteColors::getMenuOptions(), 0.5);
 
+    writer->writeTextTTFAutoSize(920, 690, game->getVersion().c_str(), PaletteColors::getMenuOptions(), 0.5);
 }
 
 int ComponentMenu::getCurrentOption() const {

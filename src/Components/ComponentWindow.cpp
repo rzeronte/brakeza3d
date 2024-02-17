@@ -132,11 +132,11 @@ void ComponentWindow::initWindow()
 
         SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_MOD);
 
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 
         initOpenGL();
         glewInit();
-
+        SDL_GL_SetSwapInterval(1);
         SDL_SetWindowIcon(this->window, applicationIcon);
     }
 }
@@ -440,7 +440,6 @@ void ComponentWindow::RenderLayersToMain()
     shaderOGLImage->renderTexture(uiTexture, 0, 0, width, height, 1, true, 0);
 
     SDL_GL_SwapWindow(window);
-
     cleanFrameBuffers();
 }
 

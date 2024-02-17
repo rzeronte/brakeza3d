@@ -51,6 +51,7 @@ void Brakeza3D::welcomeMessage() {
 void Brakeza3D::mainLoop()
 {
     SDL_Event e;
+
     engineTimer.start();
     managerGUI = new GUIManager(sceneObjects);
     LUAManager::get()->initLUATypes();
@@ -164,6 +165,12 @@ void Brakeza3D::postUpdateComponents()
 
 void Brakeza3D::onEndComponents()
 {
+
+    for (auto o : sceneObjects) {
+        delete o;
+    }
+    SDL_Quit();
+    exit(0);
     for (Component*& component : componentsManager->components) {
         component->onEnd();
     }

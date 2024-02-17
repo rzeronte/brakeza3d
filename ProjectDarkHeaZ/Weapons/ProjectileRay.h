@@ -21,7 +21,7 @@ private:
     bool indestructible;
     Object3D *target;
     bool hadTarget = false;
-
+    TextureAnimated *animation;
 public:
     ProjectileRay(
         Object3D *parent,
@@ -34,7 +34,8 @@ public:
         float speed,
         const Color &color,
         float intensity,
-        bool indestructible
+        bool indestructible,
+        TextureAnimated *animation
     );
 
     void onUpdate() override;
