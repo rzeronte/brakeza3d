@@ -4,7 +4,6 @@
 #include "../../include/2D/TextWriter.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Brakeza3D.h"
-#include <SDL2/SDL_opengl.h>
 #include <glm/ext/matrix_float4x4.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
