@@ -176,7 +176,7 @@ void Object3D::onUpdate()
         this->setRotation(camera->getRotation().getTranspose());
     }
 
-    if (getBehavior() != nullptr) {
+    if (getBehavior() != nullptr && getBehavior()->isEnabled()) {
         motion->onUpdate(position);
     }
 

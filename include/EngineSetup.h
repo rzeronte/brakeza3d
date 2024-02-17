@@ -20,7 +20,7 @@ public:
 
     std::string ENGINE_VERSION = "v.1.0.0";
 
-    std::string ENGINE_TITLE = "Brakeza3D Demo (" + ENGINE_VERSION + ")";
+    std::string ENGINE_TITLE = "Brakeza3D Application";
 
     std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";
@@ -42,6 +42,7 @@ public:
     const int screenHeight = 720;
 
     bool LIMIT_FRAMERATE = true;
+    bool V_SYNC = true;
     int FRAMERATE = 60;
 
     bool ENABLE_FOG = true;
@@ -159,8 +160,6 @@ public:
     std::string CONFIG_FOLDER = "../config/";
     std::string CFG_SOUNDS = "sounds.json";
 
-    std::string DEFAULT_HELP_IMAGE = "xbox_one_controller.png";
-
     std::string LOGO_BRAKEZA = "logo.png";
 
 
@@ -199,7 +198,8 @@ public:
         INTRO = 12,
         GAMING_TUTORIAL = 13,
         STORE = 14,
-        SPACESHIP_SELECTOR = 16
+        SPACESHIP_SELECTOR = 16,
+        DIFFICULT_SELECTOR = 17
     } GameState;
 
     typedef enum {
@@ -208,7 +208,15 @@ public:
         ITEM_SATELLITE = 2,
         ITEM_MIRROR_SHOOT = 3,
         ITEM_EXTRA_DASH = 4,
-        ITEM_FAST_SHOOT_CADENCE = 5
+        ITEM_FAST_SHOOT_CADENCE = 5,
+        ITEM_FAST_ROTATION_TO_ENEMY = 6,
+        ITEM_LONG_LIVE = 7,
+        ITEM_AMMO_WEAPON_PROJECTILES = 8,
+        ITEM_AMMO_WEAPON_LASER = 9,
+        ITEM_AMMO_WEAPON_RAY = 10,
+        ITEM_AMMO_WEAPON_BOMBS = 11,
+        ITEM_AMMO_WEAPON_REFLECTIONS = 12,
+        ITEM_AMMO_WEAPON_SHIELDS = 13,
     } StoreItems;
 };
 

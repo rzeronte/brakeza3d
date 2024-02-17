@@ -10,7 +10,6 @@
 #include "../Objects/OpenGLShaderTypes.h"
 #include "../Objects/SpotLight3D.h"
 #include "../Objects/Mesh3D.h"
-#include <SDL2/SDL_opengl.h>
 #include <ext/matrix_float4x4.hpp>
 #include <vector>
 

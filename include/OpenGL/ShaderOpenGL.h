@@ -6,7 +6,7 @@
 #include <string>
 #include <vec2.hpp>
 #include <ext/matrix_float3x3.hpp>
-#include <SDL2/SDL_opengl.h>
+#include <GL/glew.h>
 
 class ShaderOpenGL {
 protected:

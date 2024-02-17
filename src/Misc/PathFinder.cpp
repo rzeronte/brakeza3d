@@ -127,9 +127,9 @@ bool PathFinder::AStarSearch(PairData src, PairData dest, std::stack<PairData> &
     int i, j;
     for (i = 0; i < this->sizeY; i++) {
         for (j = 0; j < this->sizeX; j++) {
-            cellDetails[i][j].f = FLT_MAX;
-            cellDetails[i][j].g = FLT_MAX;
-            cellDetails[i][j].h = FLT_MAX;
+            cellDetails[i][j].f = FLT_MAX_PATHFINDING;
+            cellDetails[i][j].g = FLT_MAX_PATHFINDING;
+            cellDetails[i][j].h = FLT_MAX_PATHFINDING;
             cellDetails[i][j].parent_i = -1;
             cellDetails[i][j].parent_j = -1;
         }
@@ -227,7 +227,7 @@ bool PathFinder::AStarSearch(PairData src, PairData dest, std::stack<PairData> &
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i - 1][j].f == FLT_MAX || cellDetails[i - 1][j].f > fNew) {
+                if (cellDetails[i - 1][j].f == FLT_MAX_PATHFINDING || cellDetails[i - 1][j].f > fNew) {
                     openList.insert(std::make_pair(fNew, std::make_pair(i - 1, j)));
 
                     // Update the details of this cell
@@ -271,7 +271,7 @@ bool PathFinder::AStarSearch(PairData src, PairData dest, std::stack<PairData> &
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i + 1][j].f == FLT_MAX || cellDetails[i + 1][j].f > fNew) {
+                if (cellDetails[i + 1][j].f == FLT_MAX_PATHFINDING || cellDetails[i + 1][j].f > fNew) {
                     openList.insert(std::make_pair(fNew, std::make_pair(i + 1, j)));
                     // Update the details of this cell
                     cellDetails[i + 1][j].f = fNew;
@@ -315,7 +315,7 @@ bool PathFinder::AStarSearch(PairData src, PairData dest, std::stack<PairData> &
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i][j + 1].f == FLT_MAX || cellDetails[i][j + 1].f > fNew) {
+                if (cellDetails[i][j + 1].f == FLT_MAX_PATHFINDING || cellDetails[i][j + 1].f > fNew) {
                     openList.insert(std::make_pair(fNew, std::make_pair(i, j + 1)));
 
                     // Update the details of this cell
@@ -360,7 +360,7 @@ bool PathFinder::AStarSearch(PairData src, PairData dest, std::stack<PairData> &
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i][j - 1].f == FLT_MAX
+                if (cellDetails[i][j - 1].f == FLT_MAX_PATHFINDING
                     || cellDetails[i][j - 1].f > fNew) {
                     openList.insert(std::make_pair(
                             fNew, std::make_pair(i, j - 1)));
@@ -408,7 +408,7 @@ bool PathFinder::AStarSearch(PairData src, PairData dest, std::stack<PairData> &
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i - 1][j + 1].f == FLT_MAX || cellDetails[i - 1][j + 1].f > fNew) {
+                if (cellDetails[i - 1][j + 1].f == FLT_MAX_PATHFINDING || cellDetails[i - 1][j + 1].f > fNew) {
                     openList.insert(std::make_pair(fNew, std::make_pair(i - 1, j + 1)));
 
                     // Update the details of this cell
@@ -454,7 +454,7 @@ bool PathFinder::AStarSearch(PairData src, PairData dest, std::stack<PairData> &
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i - 1][j - 1].f == FLT_MAX || cellDetails[i - 1][j - 1].f > fNew) {
+                if (cellDetails[i - 1][j - 1].f == FLT_MAX_PATHFINDING || cellDetails[i - 1][j - 1].f > fNew) {
                     openList.insert(std::make_pair(fNew, std::make_pair(i - 1, j - 1)));
                     // Update the details of this cell
                     cellDetails[i - 1][j - 1].f = fNew;
@@ -499,7 +499,7 @@ bool PathFinder::AStarSearch(PairData src, PairData dest, std::stack<PairData> &
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i + 1][j + 1].f == FLT_MAX || cellDetails[i + 1][j + 1].f > fNew) {
+                if (cellDetails[i + 1][j + 1].f == FLT_MAX_PATHFINDING || cellDetails[i + 1][j + 1].f > fNew) {
                     openList.insert(std::make_pair(fNew, std::make_pair(i + 1, j + 1)));
 
                     // Update the details of this cell
@@ -545,7 +545,7 @@ bool PathFinder::AStarSearch(PairData src, PairData dest, std::stack<PairData> &
                 // If it is on the open list already, check
                 // to see if this path to that square is
                 // better, using 'f' cost as the measure.
-                if (cellDetails[i + 1][j - 1].f == FLT_MAX
+                if (cellDetails[i + 1][j - 1].f == FLT_MAX_PATHFINDING
                     || cellDetails[i + 1][j - 1].f > fNew) {
                     openList.insert(std::make_pair(
                             fNew, std::make_pair(i + 1, j - 1)));

@@ -4,7 +4,6 @@
 #include "../imgui/backends/imgui_impl_opengl3.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
 #include "imgui_internal.h"
-#include <SDL2/SDL_opengl.h>
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 
@@ -162,6 +161,12 @@ void Brakeza3D::postUpdateComponents()
 
 void Brakeza3D::onEndComponents()
 {
+
+    for (auto o : sceneObjects) {
+        delete o;
+    }
+    SDL_Quit();
+    exit(0);
     for (Component*& component : componentsManager->components) {
         component->onEnd();
     }

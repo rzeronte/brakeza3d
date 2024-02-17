@@ -7,8 +7,6 @@
 #include "../Misc/Counter.h"
 #include "../Misc/Image.h"
 
-#define ANIMATION2D_MAX_FRAMES 25
-
 class TextureAnimated {
 public:
     std::string baseFilename;

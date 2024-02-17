@@ -42,18 +42,13 @@ void Mesh3DGhost::remove()
     this->setRemoved(true);
 }
 
-Mesh3DGhost::~Mesh3DGhost()
-{
-    Logging::Log("Delete Mesh3DGhost");
-}
-
 void Mesh3DGhost::magnetizableTo(Object3D *object)
 {
     Vertex3D to = object->getPosition();
     Vector3D direction(getPosition(), to);
 
     const float distance = getPosition().distance(to);
-    const float speed = powf(1 / distance, 3) * 0.5f;
+    const float speed = powf(1 / distance, 3) * 0.25f;
 
     if (distance < 0.01) {
         setPosition(to);
@@ -177,4 +172,8 @@ void Mesh3DGhost::createFromJSON(cJSON *object)
     Mesh3DGhost::setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
+}
+
+Mesh3DGhost::~Mesh3DGhost() {
+
 }

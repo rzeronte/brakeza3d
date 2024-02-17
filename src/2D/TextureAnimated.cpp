@@ -7,12 +7,14 @@
 #include "../../include/ComponentsManager.h"
 
 TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps) :
-    baseFilename(std::move(baseFile)),
-    numberFramesToLoad(numFrames),
-    currentFrame(0),
-    fps(fps),
-    endAnimation(false),
-    paused(false)
+        currentspriteHeight(0),
+        currentSpriteWidth(0),
+        baseFilename(std::move(baseFile)),
+        numberFramesToLoad(numFrames),
+        currentFrame(0),
+        fps(fps),
+        endAnimation(false),
+        paused(false)
 {
     Logging::Message("Loading 2D animation: %s", baseFilename.c_str());
 
@@ -24,30 +26,30 @@ TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps) :
 }
 
 TextureAnimated::TextureAnimated(TextureAnimated *textureAnimated)
-:
-    baseFilename(textureAnimated->baseFilename),
-    numberFramesToLoad(textureAnimated->numberFramesToLoad),
-    currentFrame(0),
-    fps(textureAnimated->fps),
-    endAnimation(textureAnimated->endAnimation),
-    paused(textureAnimated->paused)
+        :
+        currentspriteHeight(0),
+        currentSpriteWidth(0),
+        baseFilename(textureAnimated->baseFilename),
+        numberFramesToLoad(textureAnimated->numberFramesToLoad),
+        currentFrame(0),
+        fps(textureAnimated->fps),
+        endAnimation(textureAnimated->endAnimation),
+        paused(textureAnimated->paused)
 {
-    for (auto texture : textureAnimated->frames) {
-        frames.push_back(texture);
-    }
+    frames = textureAnimated->frames;
     updateStep();
 }
 
 TextureAnimated::TextureAnimated(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps)
-:
-    baseFilename(spriteSheetFile),
-    numberFramesToLoad(numFrames),
-    fps(fps),
-    paused(false),
-    currentFrame(0),
-    endAnimation(false),
-    currentSpriteWidth(spriteWidth),
-    currentspriteHeight(spriteHeight)
+        :
+        baseFilename(spriteSheetFile),
+        numberFramesToLoad(numFrames),
+        fps(fps),
+        paused(false),
+        currentFrame(0),
+        endAnimation(false),
+        currentSpriteWidth(spriteWidth),
+        currentspriteHeight(spriteHeight)
 {
     Logging::Message("Loading sheet: %s", spriteSheetFile.c_str());
 

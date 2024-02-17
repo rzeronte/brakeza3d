@@ -13,9 +13,10 @@ class Object3DBehavior {
     float deltaTime = 0;
     float last_ticks = 0;
     float current_ticks = 0;
-    float executionTime = 0;
     Timer timer;
     bool enabled;
+protected:
+    float executionTime = 0;
 public:
     Object3DBehavior();
 
@@ -27,10 +28,13 @@ public:
 
     void setEnabled(bool value);
 
+    virtual void setStartPosition(Vertex3D &position)  = 0;
+
     [[nodiscard]] float getExecutionTime() const;
 
     [[nodiscard]] bool isEnabled() const;
 
+    void resetExecutionTime();
 };
 
 

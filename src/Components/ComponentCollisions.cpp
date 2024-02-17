@@ -43,7 +43,6 @@ void ComponentCollisions::postUpdate()
 
 void ComponentCollisions::onEnd()
 {
-
 }
 
 void ComponentCollisions::onSDLPollEvent(SDL_Event *e, bool &finish) {

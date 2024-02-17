@@ -7,7 +7,6 @@
 
 
 #include <vec3.hpp>
-#include <SDL2/SDL_opengl.h>
 
 struct Material {
     GLint diffuse;

@@ -12,6 +12,8 @@
 class RayCollisionable: public Object3D, public Collisionable {
 private:
     Vertex3D ray;
+    Object3D *target = nullptr;
+    bool hadTarget = false;
     Vertex3D hitPosition;
 
 protected:
@@ -34,6 +36,12 @@ public:
     [[nodiscard]] const Vertex3D &getRay() const;
 
     void setRay(const Vertex3D &ray);
+
+    void setTarget(Object3D *target);
+
+    [[nodiscard]] Object3D *getTarget() const;
+
+    bool isHadTarget() const;
 };
 
 

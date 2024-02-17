@@ -3,7 +3,6 @@
 #define SDL2_3D_ENGINE_GUI_ENGINE_H
 
 #include <string>
-#include <dirent.h>
 #include <vector>
 #include "../Objects/Object3D.h"
 #include "imgui.h"
@@ -46,29 +45,23 @@ private:
 public:
 
     void loadImagesFolder() {
-        DIR *dir;
-        struct dirent *ent;
 
-        if ((dir = opendir (EngineSetup::get()->IMAGES_FOLDER.c_str())) != NULL) {
-            while ((ent = readdir (dir)) != NULL) {
-                if (Tools::getExtensionFromFilename(ent->d_name) == "png") {
-                    imagesFolder.addItem(EngineSetup::get()->IMAGES_FOLDER + ent->d_name, ent->d_name);
-                }
-            }
+        auto images = Tools::getFolderFiles(EngineSetup::get()->IMAGES_FOLDER.c_str(), "png");
 
-            closedir (dir);
+        for (auto f: images) {
+            imagesFolder.addItem(EngineSetup::get()->IMAGES_FOLDER + f, f);
         }
     }
 
     GUIManager(std::vector<Object3D *> &gameObjects)
-    :
-        gameObjects(gameObjects),
-        widgetConsole(new ImGuiConsoleApp(LUAManager::get()->getLua())),
-        widgetObjects3D(new GUIWidgetObjects3D(packageIcons, this->gameObjects)),
-        widgetObject3DProperties(new GUIWidgetObject3DProperties(packageIcons, this->gameObjects, scriptEditableManager)),
-        widgetProjectSettings(new GUIWidgetProjectSettings(packageIcons, scriptEditableManager)),
-        widgetMenu(new GUIWidgetMenu(packageIcons)),
-        widgetToolbar(new GUIWidgetToolbar(packageIcons))
+            :
+            gameObjects(gameObjects),
+            widgetConsole(new ImGuiConsoleApp(LUAManager::get()->getLua())),
+            widgetObjects3D(new GUIWidgetObjects3D(packageIcons, this->gameObjects)),
+            widgetObject3DProperties(new GUIWidgetObject3DProperties(packageIcons, this->gameObjects, scriptEditableManager)),
+            widgetProjectSettings(new GUIWidgetProjectSettings(packageIcons, scriptEditableManager)),
+            widgetMenu(new GUIWidgetMenu(packageIcons)),
+            widgetToolbar(new GUIWidgetToolbar(packageIcons))
     {
         LoadUIIcons();
         loadImagesFolder();
@@ -119,8 +112,8 @@ public:
                 delete scriptEditableManager.script;
                 scriptEditableManager.selectedScriptFilename = file;
                 scriptEditableManager.script = new ScriptLUA(
-                    scriptEditableManager.selectedScriptFilename,
-                    ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename)
+                        scriptEditableManager.selectedScriptFilename,
+                        ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename)
                 );
                 strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
             }
@@ -269,44 +262,32 @@ public:
     }
 
     void drawScenesFiles() {
-        DIR *dir;
-        struct dirent *ent;
-        std::vector<std::string> result;
-        if ((dir = opendir (EngineSetup::get()->SCENES_FOLDER.c_str())) != NULL) {
-            while ((ent = readdir (dir)) != NULL) {
-                if (Tools::getExtensionFromFilename(ent->d_name) == "json") {
-                    result.emplace_back(ent->d_name);
+
+        std::vector<std::string> result = Tools::getFolderFiles(EngineSetup::get()->SCENES_FOLDER, "json");
+
+        std::sort( result.begin(), result.end() );
+
+        for (int i = 0; i < result.size(); i++) {
+            auto file = result[i];
+            auto title = std::to_string(i+1) + ") " + file;
+            if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
+                ImGui::PushID(i);
+                if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("sceneIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    ComponentsManager::get()->getComponentRender()->getSceneLoader().clearScene();
+                    ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(file);
                 }
-            }
-            std::sort( result.begin(), result.end() );
 
-            closedir (dir);
+                ImGui::SameLine();
 
-            for (int i = 0; i < result.size(); i++) {
-                auto file = result[i];
-                auto title = std::to_string(i+1) + ") " + file;
-                if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                    ImGui::PushID(i);
-                    if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("sceneIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                        ComponentsManager::get()->getComponentRender()->getSceneLoader().clearScene();
-                        ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(file);
-                    }
-
-                    ImGui::SameLine();
-
-                    if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("saveIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                        ComponentsManager::get()->getComponentRender()->getSceneLoader().saveScene(file);
-                    }
-                    ImGui::SameLine();
-
-                    ImGui::Text("%s", title.c_str());
-                    ImGui::PopID();
+                if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("saveIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    ComponentsManager::get()->getComponentRender()->getSceneLoader().saveScene(file);
                 }
+                ImGui::SameLine();
+
+                ImGui::Text("%s", title.c_str());
+                ImGui::PopID();
             }
-        } else {
-            ImGui::Text("Could not open directory");
         }
-
     }
 
     void drawCustomShaders() {
@@ -321,7 +302,7 @@ public:
 
         if (ImGui::Button(std::string("Create custom shader").c_str())) {
             ComponentsManager::get()->getComponentRender()->addShaderToScene(
-                ShaderOpenGLCustom::createEmptyCustomShader(currentVariableToCreateCustomShader)
+                    ShaderOpenGLCustom::createEmptyCustomShader(currentVariableToCreateCustomShader)
             );
         }
 
@@ -362,37 +343,25 @@ public:
 
         ImGui::Separator();
         if (ImGui::Begin("Custom Shaders")) {
-            DIR *dir;
-            struct dirent *ent;
-            std::vector<std::string> result;
-            if ((dir = opendir (EngineSetup::get()->CUSTOM_SHADERS.c_str())) != nullptr) {
-                while ((ent = readdir (dir)) != nullptr) {
-                    if (Tools::getExtensionFromFilename(ent->d_name) == "fs") {
-                        result.emplace_back(ent->d_name);
-                    }
-                }
-                std::sort( result.begin(), result.end() );
+            std::vector<std::string> result = Tools::getFolderFiles(EngineSetup::get()->CUSTOM_SHADERS, "fs");
 
-                closedir (dir);
+            std::sort( result.begin(), result.end() );
 
-                for (int i = 0; i < result.size(); i++) {
-                    auto file = result[i];
-                    auto title = std::to_string(i+1) + ") " + file;
-                    if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                        ImGui::PushID(i);
-                        if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                            std::string name = Tools::getFilenameWithoutExtension(file.c_str());
-                            ComponentsManager::get()->getComponentRender()->addShaderToScene(
-                                    new ShaderOpenGLCustom(name, EngineSetup::get()->CUSTOM_SHADERS + file)
-                            );
-                        }
-                        ImGui::SameLine();
-                        ImGui::Text("%s", title.c_str());
-                        ImGui::PopID();
+            for (int i = 0; i < result.size(); i++) {
+                auto file = result[i];
+                auto title = std::to_string(i+1) + ") " + file;
+                if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
+                    ImGui::PushID(i);
+                    if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                        std::string name = Tools::getFilenameWithoutExtension(file.c_str());
+                        ComponentsManager::get()->getComponentRender()->addShaderToScene(
+                                new ShaderOpenGLCustom(name, EngineSetup::get()->CUSTOM_SHADERS + file)
+                        );
                     }
+                    ImGui::SameLine();
+                    ImGui::Text("%s", title.c_str());
+                    ImGui::PopID();
                 }
-            } else {
-                ImGui::Text("Could not open directory");
             }
         }
         ImGui::End();
@@ -452,26 +421,9 @@ public:
     void drawWidgets()
     {
         if (ImGui::Begin("Scripts")) {
-            DIR *dir;
-            struct dirent *ent;
-            std::vector<std::string> result;
-
-            if ((dir = opendir (EngineSetup::get()->SCRIPTS_FOLDER.c_str())) != NULL) {
-                while ((ent = readdir (dir)) != NULL) {
-                    if (Tools::getExtensionFromFilename(ent->d_name) == "lua") {
-                        result.emplace_back(ent->d_name);
-                    }
-                }
-
-                std::sort( result.begin(), result.end() );
-                closedir (dir);
-
-                drawScriptFiles(result);
-
-            } else {
-                ImGui::Text("Could not open directory");
-            }
-
+            std::vector<std::string> result = Tools::getFolderFiles(EngineSetup::get()->SCRIPTS_FOLDER, "lua");
+            std::sort( result.begin(), result.end() );
+            drawScriptFiles(result);
         }
         ImGui::End();
 

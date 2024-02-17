@@ -14,6 +14,7 @@ set(GLM_INCLUDE_DIRS /usr/include/glm)
 set(DEARIMGUI_INCLUDE_DIRS imgui)
 
 find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
 
 if (WIN32)
     set(BASE_INCLUDE_DIRECTORY C:\\Users\\Eduardo\\Desktop\\include\\)
@@ -21,7 +22,6 @@ if (WIN32)
     set(ASSIMP_INCLUDE_DIRS C:\\Users\\Eduardo\\Desktop\\include\\assimp)
     set(GLM_INCLUDE_DIRS C:\\Users\\Eduardo\\Desktop\\include\\glm)
     set(BULLET_INCLUDE_DIRS C:\\Users\\eduardo\\Desktop\\include\\bullet)
-    set(OPENCL_LIBRARIES_DIR C:\\Users\\Eduardo\\Desktop\\include\\CL)
 endif (WIN32)
 
 include_directories(
@@ -31,8 +31,8 @@ include_directories(
     ${ASSIMP_INCLUDE_DIRS}
     ${GLM_INCLUDE_DIRS}
     ${DEARIMGUI_INCLUDE_DIRS}
-    ${OPENCL_LIBRARIES_DIR}
     ${OPENGL_INCLUDE_DIR}
+    ${GLEW_INCLUDE_DIRS}
 )
 
 add_executable(Brakeza3D
@@ -227,5 +227,6 @@ target_link_libraries(Brakeza3D
     assimp
     lua5.2
     ${OPENGL_LIBRARIES}
+    ${GLEW_LIBRARIES}
 )
 
