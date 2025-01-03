@@ -57,11 +57,10 @@ make
 
 # Windows compilation
 
-Is not complex, but you will have to download the compiler and libraries to compile it by yourself.
+We have precompiled libraries for compiling with MinGW tested with CLion.
 
-Here for detailed instructions for installing with CLion + MinGW:
+https://github.com/rzeronte/brakeza-mingw-precompiled-libraries
 
-https://github.com/rzeronte/brakeza3d/blob/master/WINDOWS_BUILD.md
 
 # OSX compilation
 
