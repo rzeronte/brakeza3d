@@ -13,7 +13,7 @@
 
 #include <string>
 #include <vector>
-#include <detail/type_mat4x4.hpp>
+#include <glm/detail/type_mat4x4.hpp>
 #include "Vertex3D.h"
 #include "Vector3D.h"
 #include "../../include/Render/M3.h"

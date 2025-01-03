@@ -1,8 +1,8 @@
 
-#include "Grid3D.h"
-#include "../EngineSetup.h"
-#include "../Render/Maths.h"
-#include "Tools.h"
+#include "../../include/Misc/Grid3D.h"
+#include "../../include/EngineSetup.h"
+#include "../../include/Render/Maths.h"
+#include "../../include/Misc/Tools.h"
 #include <iostream>
 #include <fstream>
 #include <SDL2/SDL_image.h>

@@ -1,5 +1,5 @@
 
-#include <trigonometric.hpp>
+#include <glm/trigonometric.hpp>
 #include "../../include/Objects/SpotLight3D.h"
 #include "../../include/Brakeza3D.h"
 

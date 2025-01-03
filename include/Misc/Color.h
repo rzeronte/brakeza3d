@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <cstdint>
-#include <vec3.hpp>
+#include <glm/vec3.hpp>
 #include <SDL2/SDL.h>
 #include "imgui.h"
 

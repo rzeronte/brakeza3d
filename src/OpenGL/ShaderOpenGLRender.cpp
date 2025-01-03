@@ -1,6 +1,6 @@
 #define GL_GLEXT_PROTOTYPES
 
-#include <gtc/type_ptr.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "../../include/OpenGL/ShaderOpenGLRender.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"

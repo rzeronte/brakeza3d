@@ -1,6 +1,6 @@
 #define GL_GLEXT_PROTOTYPES
 
-#include <ext/matrix_transform.hpp>
+#include <glm/ext/matrix_transform.hpp>
 #include "../../include/Objects/ParticleEmitter.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/ComponentsManager.h"

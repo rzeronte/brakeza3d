@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <assimp/cimport.h>
-#include <ext/matrix_float4x4.hpp>
+#include <glm/ext/matrix_float4x4.hpp>
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"

@@ -1,5 +1,5 @@
 #include <iostream>
-#include <gtx/compatibility.hpp>
+#include <glm/gtx/compatibility.hpp>
 #include "../../include/Render/M3.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Render/Maths.h"

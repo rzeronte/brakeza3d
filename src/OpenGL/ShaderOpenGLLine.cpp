@@ -2,7 +2,7 @@
 // Created by edu on 10/12/23.
 //
 
-#include <gtc/type_ptr.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "../../include/OpenGL/ShaderOpenGLLine.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/EngineSetup.h"

@@ -2,8 +2,8 @@
 #define SDL2_3D_ENGINE_POINT2D_H
 
 #include <iostream>
-#include <detail/type_vec2.hpp>
-#include <vec2.hpp>
+#include <glm/detail/type_vec2.hpp>
+#include <glm/vec2.hpp>
 
 class Point2D {
 public:

@@ -10,7 +10,7 @@
 #include "../Objects/OpenGLShaderTypes.h"
 #include "../Objects/SpotLight3D.h"
 #include "../Objects/Mesh3D.h"
-#include <ext/matrix_float4x4.hpp>
+#include <glm/ext/matrix_float4x4.hpp>
 #include <vector>
 
 class ShaderOpenGLRender: public ShaderOpenGL {

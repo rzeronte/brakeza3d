@@ -4,7 +4,7 @@
 
 #include <bullet/BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <bullet/BulletDynamics/Character/btKinematicCharacterController.h>
-#include <ext/matrix_float4x4.hpp>
+#include <glm/ext/matrix_float4x4.hpp>
 #include "../Render/Frustum.h"
 #include "../Objects/Vector3D.h"
 

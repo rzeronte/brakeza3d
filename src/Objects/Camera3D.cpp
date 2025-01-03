@@ -1,6 +1,6 @@
 #include <BulletCollision/CollisionShapes/btCapsuleShape.h>
-#include <ext/matrix_transform.hpp>
-#include <gtx/euler_angles.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
 #include "../../include/Components/Camera3D.h"
 #include "../../include/Render/Maths.h"
 #include "../../include/Render/Logging.h"

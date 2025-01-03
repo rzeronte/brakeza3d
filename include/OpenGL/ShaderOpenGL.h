@@ -4,8 +4,8 @@
 #define BRAKEZA3D_SHADEROPENGL_H
 
 #include <string>
-#include <vec2.hpp>
-#include <ext/matrix_float3x3.hpp>
+#include <glm/vec2.hpp>
+#include <glm/ext/matrix_float3x3.hpp>
 #include <GL/glew.h>
 
 class ShaderOpenGL {

@@ -14,8 +14,8 @@
 #include <assimp/Importer.hpp>      // C++ assimpImporter interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
-#include <vec3.hpp>
-#include <vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 
 typedef float vec3_t[3];
 

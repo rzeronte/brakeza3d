@@ -5,10 +5,10 @@
 
 
 #include <string>
-#include <vec2.hpp>
-#include <vec3.hpp>
-#include <vec4.hpp>
-#include <ext/matrix_float2x2.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glm/ext/matrix_float2x2.hpp>
 #include <variant>
 #include <map>
 #include "ShaderOpenGL.h"

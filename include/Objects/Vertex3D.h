@@ -5,7 +5,7 @@
 #include <SDL2/SDL_surface.h>
 #include <string>
 #include <bullet/LinearMath/btVector3.h>
-#include <vec3.hpp>
+#include <glm/vec3.hpp>
 #include "Vertex4D.h"
 
 

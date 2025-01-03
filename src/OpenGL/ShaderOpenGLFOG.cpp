@@ -2,8 +2,8 @@
 // Created by edu on 26/12/23.
 //
 
-#include <ext/matrix_clip_space.hpp>
-#include <ext/matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
 #include "../../include/OpenGL/ShaderOpenGLFOG.h"
 #include "../../include/EngineSetup.h"
 #include "../../include/ComponentsManager.h"

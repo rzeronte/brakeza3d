@@ -99,7 +99,7 @@ char *Tools::readFile(const std::string &name, size_t &source_size)
 
     if (fread(file_str, 1, source_size, fp) != source_size) {
         Logging::Message("Error reading file %s!", name.c_str());
-        std::cout << "adios picolo" << std::endl;
+        std::cout << "Error reading file :" << name.c_str() << std::endl;
         fclose(fp);
         free(file_str);
         return nullptr;
