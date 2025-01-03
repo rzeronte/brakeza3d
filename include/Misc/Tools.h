@@ -17,8 +17,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
-#include <vec3.hpp>
-#include <vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 
 typedef float vec3_t[3];
 

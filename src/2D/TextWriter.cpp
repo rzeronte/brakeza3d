@@ -18,10 +18,13 @@ TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font)
 
 void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Color c)
 {
-    auto *surfaceTTF = TTF_RenderText_Blended(font, text, c.toSDL());
-    auto *textureTTF = SDL_CreateTextureFromSurface(renderer, surfaceTTF);
-
+    auto surfaceTTF = TTF_RenderText_Blended(font, text, c.toSDL());
+#ifdef _WIN32
+    auto surfaceTTFGoodFormat = SDL_ConvertSurfaceFormat(surfaceTTF, SDL_PIXELFORMAT_BGRA32, 0);
+    GLuint texID = Image::makeOGLImage(surfaceTTFGoodFormat);
+#else
     GLuint texID = Image::makeOGLImage(surfaceTTF);
+#endif
 
     auto renderer = ComponentsManager::get()->getComponentWindow();
 
@@ -35,17 +38,17 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
     dstRect.h = (h * windowHeight) / EngineSetup::get()->screenHeight;
 
     ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(
-        texID,
-        dstRect.x, dstRect.y,
-        dstRect.w, dstRect.h,
-        alpha,
-        false,
-        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+            texID,
+            dstRect.x, dstRect.y,
+            dstRect.w, dstRect.h,
+            alpha,
+            false,
+            ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 
     glDeleteTextures(1, &texID);
     SDL_FreeSurface(surfaceTTF);
-    SDL_DestroyTexture(textureTTF);
+    SDL_FreeSurface(surfaceTTFGoodFormat);
 }
 
 void TextWriter::writeTextTTFAutoSize(int x, int y, const char *text, Color c, float sizeRatio)
