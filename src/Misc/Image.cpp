@@ -211,9 +211,9 @@ GLuint Image::makeOGLImage(SDL_Surface *surfaceTTF)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    GLenum Mode = GL_BGR;
+    GLenum Mode = GL_RGB;
     if (surfaceTTF->format->BytesPerPixel == 4) {
-        Mode = GL_BGR;
+        Mode = GL_RGBA;
     }
 
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, surfaceTTF->w, surfaceTTF->h, 0, Mode, GL_UNSIGNED_BYTE, surfaceTTF->pixels);
