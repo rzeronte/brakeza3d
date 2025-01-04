@@ -48,7 +48,9 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
 
     glDeleteTextures(1, &texID);
     SDL_FreeSurface(surfaceTTF);
+#ifdef _WIN32
     SDL_FreeSurface(surfaceTTFGoodFormat);
+#endif
 }
 
 void TextWriter::writeTextTTFAutoSize(int x, int y, const char *text, Color c, float sizeRatio)
