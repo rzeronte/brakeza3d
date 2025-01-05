@@ -8,6 +8,7 @@
 
 #include <SDL2/SDL_events.h>
 #include "Component.h"
+#include "../include/Misc/SoundPackage.h"
 
 class ComponentSound : public Component {
 private:
