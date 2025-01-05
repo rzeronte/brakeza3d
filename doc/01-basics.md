@@ -55,7 +55,7 @@ Una escena se representa por un conjunto de objetos en un estado concreto. Su ve
 
 La escena almacena demás información global como iluminación, posición de cámara, scripts, etc.
 
-Dispondremos de un "SceneManager", que nos permitirá gestionar el manejo de carga y cambio de escenas.
+Dispondremos de un "SceneLoader", que nos permitirá gestionar el manejo de carga y cambio de escenas.
 
 ---
 

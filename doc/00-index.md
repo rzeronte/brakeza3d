@@ -33,7 +33,7 @@
 # Examples
 
 ### Global scripts
- - Load an object script https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/load_object_example.md
+ - Load an object https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/load_object_example.md
  - Load a scene https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/load_scene_example.md
  - Keyboard control https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/keyboard_control_example.md
  - Find an object https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/find_object_example.md
