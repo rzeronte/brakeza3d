@@ -78,13 +78,13 @@ public:
 
     static void LoadDemo();
 
-    GUIManager *getManagerGui();
+    GUIManager *getManagerGui() const;
 
     static void welcomeMessage() ;
 
-    Object3D &getSceneObjectByLabel(const std::string &label);
+    Object3D *getSceneObjectByLabel(const std::string &label) const;
 
-    Object3D *getSceneObjectById(int i);
+    Object3D *getSceneObjectById(int i) const;
 
     static void checkForResizeOpenGLWindow(SDL_Event &e);
 

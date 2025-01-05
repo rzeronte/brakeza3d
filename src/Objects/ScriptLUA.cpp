@@ -154,7 +154,7 @@ void ScriptLUA::reloadGlobals()
     sol::state &lua = LUAManager::get()->getLua();
     for (const auto& type : dataTypes) {
         std::cout << "Setting GLOBAL variable for script '(" << scriptFilename.c_str() << ", " << type.name.c_str() << ", " << type.type.c_str() << ")"<< std::endl;
-        Logging::Message("Setting GLOBAL variable for script '%s' ('%s' => '%s')", scriptFilename.c_str(), type.name.c_str(), type.type.c_str());
+        Logging::Message("Setting GLOBAL variable for script '%s' (Name: '%s', Type: '%s', Value: '%s')", scriptFilename.c_str(), type.name.c_str(), type.type.c_str(), ScriptLUATypeData::toString(type.value).c_str());
         lua[type.name] = type.value;
     }
 }
@@ -192,9 +192,9 @@ void ScriptLUA::setDataTypesFromJSON(cJSON *typesJSON)
 
         if (!existDataType(name, type)){
             addDataType(name,type,value);
-            Logging::Message("Loading script variable (%s, %s)", name, type);
+            Logging::Message("Loading script variable (%s, %s, %s)", name, type, value);
         } else {
-            Logging::Message("Keeping script variable (%s, %s)", name, type);
+            Logging::Message("Keeping script variable (%s, %s, %s)", name, type, value);
         }
     }
 }

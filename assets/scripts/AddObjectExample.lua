@@ -5,11 +5,11 @@ function onStart()
     eye:setBelongToScene(false)
     eye:setRotationFrameEnabled(true)
     eye:setRotationFrame(Vertex3D.new(1, 0, 0))
-    eye:setPosition(Vertex3D.new(0, 0, 6000))
-    eye:setScale(1)
+    eye:setPosition(Vertex3D.new(0, 0, 600))
+    eye:setScale(0.1)
     eye:AssimpLoadGeometryFromFile("../assets/models/eye.fbx")
 
-    brakeza:addObject3D(eye, object)
+    brakeza:addObject3D(eye, 'my_eye_model')
 end
 
 function onUpdate()

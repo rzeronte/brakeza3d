@@ -1,15 +1,8 @@
 #ifndef SDL2_3D_ENGINE_ZBUFFER_H
 #define SDL2_3D_ENGINE_ZBUFFER_H
 
-#include <iostream>
-#include <SDL2/SDL_surface.h>
-#include <SDL2/SDL_audio.h>
-#include <SDL2/SDL_mixer.h>
-#include "Misc/Timer.h"
-#include "Objects/Sprite3D.h"
-#include "Misc/SoundPackage.h"
 #include "Misc/SharedLUAContext.h"
-#include "Misc/TileManager.h"
+#include "../sol/sol.hpp"
 
 // Singleton
 class LUAManager {

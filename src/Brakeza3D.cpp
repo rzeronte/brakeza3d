@@ -3,7 +3,6 @@
 #include "../include/Brakeza3D.h"
 #include "../imgui/backends/imgui_impl_opengl3.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
-#include "imgui_internal.h"
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 
@@ -57,6 +56,7 @@ void Brakeza3D::mainLoop()
     //LoadDemo();
     componentsManager->getComponentWindow()->ImGuiInitialize(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
     welcomeMessage();
+    componentsManager->getComponentRender()->getSceneLoader().loadScene(EngineSetup::get()->CONFIG_FOLDER + "brakeza.json");
 
     while (!finish) {
         controlFrameRate();
@@ -218,26 +218,23 @@ void Brakeza3D::LoadDemo()
     newObject->setScale(0.5);
     newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "eye.fbx"));
 
-    Brakeza3D::get()->addObject3D(newObject, "DemoObject3D");
+    get()->addObject3D(newObject, "DemoObject3D");
 }
 
-GUIManager *Brakeza3D::getManagerGui()
-{
+GUIManager *Brakeza3D::getManagerGui() const {
     return managerGUI;
 }
 
-Object3D &Brakeza3D::getSceneObjectByLabel(const std::string &label)
-{
+Object3D *Brakeza3D::getSceneObjectByLabel(const std::string &label) const {
     for (unsigned int i = 0; i < this->sceneObjects.size(); i++) {
         if (sceneObjects[i]->getLabel() == label) {
-            return *sceneObjects[i];
+            return sceneObjects[i];
         }
     }
 
-    throw std::runtime_error("Object not found");
+    return nullptr;
 }
 
-Object3D *Brakeza3D::getSceneObjectById(int i)
-{
+Object3D *Brakeza3D::getSceneObjectById(const int i) const {
     return sceneObjects[i];
 }

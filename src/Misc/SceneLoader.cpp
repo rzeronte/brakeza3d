@@ -6,18 +6,18 @@
 #include "../../include/EngineSetup.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Render/Logging.h"
-#include "../../include/Objects/Object3D.h"
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Objects/ParticleEmitter.h"
 #include "../../include/2D/Sprite2D.h"
+#include "../../include/Objects/Sprite3D.h"
 
 SceneLoader::SceneLoader() = default;
 
 void SceneLoader::loadScene(const std::string& filename)
 {
     size_t file_size;
-    auto contentFile = Tools::readFile(EngineSetup::get()->SCENES_FOLDER + filename, file_size);
+    auto contentFile = Tools::readFile(filename, file_size);
     auto contentJSON = cJSON_Parse(contentFile);
 
     Logging::Message("Loading scene: %s", filename.c_str());

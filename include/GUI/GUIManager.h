@@ -274,7 +274,7 @@ public:
                 ImGui::PushID(i);
                 if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("sceneIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                     ComponentsManager::get()->getComponentRender()->getSceneLoader().clearScene();
-                    ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(file);
+                    ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(EngineSetup::get()->SCENES_FOLDER + file);
                 }
 
                 ImGui::SameLine();

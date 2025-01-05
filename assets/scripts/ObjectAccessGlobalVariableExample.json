@@ -1,0 +1,10 @@
+{
+	"name":	"ObjectAccessGlobalVariableExample.json",
+	"types":	[
+		{
+			"name":	"speed",
+			"type":	"float",
+			"value":	0
+		}
+	]
+}
