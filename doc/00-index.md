@@ -37,9 +37,10 @@
  - Load a scene https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/load_scene_example.md
  - Keyboard control https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/keyboard-control_example.md
  - Find an object https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/find_object_example.md
- - Global variable https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/global_variable_example.md 
+ - Global variables https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/global_variable_example.md 
 
 ### Object scripts
-  - Script to move/rotate/scale object in scene
-  - Script for collision detection
+  - The variable `this` https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/this_object_example.md
+  - Collision detection
+  - Object variables
 

@@ -1,5 +1,4 @@
 function onStart()
-	print("go")
 end
 
 function onUpdate()
