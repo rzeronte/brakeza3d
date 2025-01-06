@@ -1,4 +1,4 @@
-# Basics
+# Brakeza3D: Conceptos básicos
 
 Brakeza3D es un sencillo motor 2D/3D multiplataforma para desarrollo de videojuegos.
 
@@ -36,11 +36,11 @@ Como programador, generalmente podrás acceder a dichos componentes según tus n
 Un objeto es una figura abstracta que representa cualquier entidad existente en nuestro mundo 3D. Encontraremos
 multitud de tipos de objeto a lo largo de esta documentación. A continuación se enumeran algunos de ellos:
 
-- Cámara
-- Linea2D
-- Punto 2D
-- Malla
-- Emisor de partículas
+- Cámara (Camera3D)
+- Linea2D (Line2D)
+- Punto 2D (Point2D)
+- Malla (Mesh3D)
+- Emisor de partículas (ParticleEmissor)
 - ...
 
 En líneas generales, cualquier cosa susceptible de ser representada en pantalla será un objeto.
@@ -94,3 +94,14 @@ Podemos diferenciar dos grandes tipos de scripts:
 - **Scripts globales**: No se asocian a ningún elemento específico, son de caracter general.
 
 ---
+
+### GUI
+
+Brakeza3D incorpora una sencilla GUI que nos facilitará algunas de las operaciones más tediosas.
+
+Dispondrás de un sencillo editor de escena totalmente integrado con el sistema de scripting.
+
+Si bien puedes utilizar tu editor de código favorito para manipular los scripts, la GUI será de gran utilidad
+para integrar tus scripts, manipular tus objetos, configurar la iluminación, guardar y cargar escenas, etc.
+
+

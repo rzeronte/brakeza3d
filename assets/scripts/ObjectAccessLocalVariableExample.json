@@ -1,0 +1,15 @@
+{
+    "name":	"ObjectAccessLocalVariableExample.lua",
+    "types":	[
+        {
+            "name":	"count",
+            "type":	"int",
+            "value": 0
+        },
+        {
+            "name":	"state",
+            "type":	"int",
+            "value": 0
+        }
+    ]
+}
