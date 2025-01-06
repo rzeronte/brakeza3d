@@ -69,7 +69,7 @@ public:
     std::string scriptFilename;
     std::string fileTypes;
 
-    void runEnvironment(sol::environment&, const std::string& func) const;
+    void runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg = std::nullopt) const;
 
     void runGlobal(const std::string& func) const;
 

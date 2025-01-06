@@ -340,7 +340,7 @@ void SceneLoader::createParticleEmitterInScene() {
 }
 
 void SceneLoader::createGhostBody3DToScene(const std::string& filename, const char *name) {
-    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10000);
+    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
 
     auto *newObject = new Mesh3DGhost();
     newObject->setBelongToScene(true);

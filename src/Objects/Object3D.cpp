@@ -630,7 +630,11 @@ void Object3D::createFromJSON(cJSON *object)
 glm::mat4 Object3D::getModelMatrix()
 {
     glm::vec3 scaled(scale);
-    glm::vec3 rotated(glm::radians(getRotation().getPitchDegree()), glm::radians(getRotation().getYawDegree()), glm::radians(getRotation().getRollDegree()));
+    glm::vec3 rotated(
+        glm::radians(getRotation().getPitchDegree()),
+        glm::radians(getRotation().getYawDegree()),
+        glm::radians(getRotation().getRollDegree())
+    );
     glm::vec3 translated = position.toGLM();
 
     glm::mat4 modelMatrix =

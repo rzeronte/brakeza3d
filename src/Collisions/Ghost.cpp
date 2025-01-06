@@ -17,20 +17,17 @@ void Ghost::makeGhostBody(btDiscreteDynamicsWorld *world, Mesh3D *mesh, int coll
     mesh->updateBoundingBox();
     for (auto & modelTriangle : mesh->getModelTriangles()) {
         btVector3 a, b, c;
-        a = btVector3(modelTriangle->A.x, modelTriangle->A.y, modelTriangle->A.z);
-        b = btVector3(modelTriangle->B.x, modelTriangle->B.y, modelTriangle->B.z);
-        c = btVector3(modelTriangle->C.x, modelTriangle->C.y, modelTriangle->C.z);
+        a = btVector3(modelTriangle->A.x, -modelTriangle->A.y, modelTriangle->A.z);
+        b = btVector3(modelTriangle->B.x, -modelTriangle->B.y, modelTriangle->B.z);
+        c = btVector3(modelTriangle->C.x, -modelTriangle->C.y, modelTriangle->C.z);
         convexHullShape->addPoint(a);
         convexHullShape->addPoint(b);
         convexHullShape->addPoint(c);
     }
 
-    btTransform transformation;
-    transformation.setIdentity();
-    transformation.setOrigin(btVector3(0, 0, 0));
+    ghostObject->setWorldTransform(Tools::GLMMatrixToBulletTransform(mesh->getModelMatrix()));
 
     ghostObject->setCollisionShape(convexHullShape);
-    ghostObject->setWorldTransform(transformation);
     ghostObject->setUserPointer(dynamic_cast<Ghost *> (this));
 
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);

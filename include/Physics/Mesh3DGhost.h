@@ -12,8 +12,6 @@ class Mesh3DGhost : public Mesh3D, public Ghost {
 public:
     Mesh3DGhost();
 
-    void updateBulletFromMesh3D();
-
 protected:
     void integrate() override;
 

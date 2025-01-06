@@ -127,7 +127,6 @@ float Vertex3D::distance(Vertex3D to) {
     return tmpV.getComponent().getModule();
 }
 
-
 void Vertex3D::saveToBtVector3(btVector3 *v) const {
     v->setX(this->x);
     v->setY(this->y);

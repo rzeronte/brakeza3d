@@ -1,28 +1,18 @@
 #include "../../include/Physics/Mesh3DGhost.h"
+
+#include <glm/trigonometric.hpp>
+
 #include "../../include/Render/Logging.h"
 #include "../../include/Physics/Projectile3DBody.h"
 #include "../../include/Brakeza3D.h"
+#include <glm/gtx/euler_angles.hpp>
 
 Mesh3DGhost::Mesh3DGhost() {
 }
 
 void Mesh3DGhost::integrate()
 {
-    updateBulletFromMesh3D();
-}
-
-void Mesh3DGhost::updateBulletFromMesh3D()
-{
-    btTransform trans;
-    trans.setIdentity();
-    trans.setOrigin(btVector3(getPosition().x, getPosition().y, getPosition().z));
-
-    btMatrix3x3 matrixRotation = Tools::M3ToBulletM3(getRotation());
-    btQuaternion rotation;
-    matrixRotation.getRotation(rotation);
-
-    trans.setRotation(rotation);
-    getGhostObject()->setWorldTransform(trans);
+    getGhostObject()->setWorldTransform(Tools::GLMMatrixToBulletTransform(getModelMatrix()));
 }
 
 void Mesh3DGhost::resolveCollision(Collisionable *with)
@@ -79,8 +69,9 @@ void Mesh3DGhost::drawImGuiProperties()
                                 Logging::Message("Making object %s physics with: Box shape", getLabel().c_str());
                                 removeCollisionObject();
                                 updateBoundingBox();
+                                getAabb().setScale(getScale());
                                 this->makeSimpleGhostBody(
-                                        getAabb().size(),
+                                        getAabb().size().getScaled(0.5),
                                         Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
                                         btBroadphaseProxy::DefaultFilter,
                                         btBroadphaseProxy::DefaultFilter
@@ -113,8 +104,13 @@ void Mesh3DGhost::drawImGuiProperties()
 
 void Mesh3DGhost::runResolveCollisionScripts(Collisionable *with)
 {
+    auto *object = dynamic_cast<Object3D*> (with);
+    const sol::state &lua = LUAManager::get()->getLua();
+
+    sol::object luaValue = sol::make_object(lua, object);
+
     for (auto script : scripts) {
-        script->runEnvironment(luaEnvironment, "onCollision");
+        script->runEnvironment(luaEnvironment, "onCollision", luaValue);
     }
 }
 

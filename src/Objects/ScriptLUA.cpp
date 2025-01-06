@@ -38,7 +38,7 @@ void ScriptLUA::getCode(const std::string &script)
     content = Tools::readFile(EngineSetup::get()->SCRIPTS_FOLDER + script, file_size);
 }
 
-void ScriptLUA::runEnvironment(sol::environment &environment, const std::string& func) const
+void ScriptLUA::runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg) const
 {
     if (paused) return;
     sol::state &lua = LUAManager::get()->getLua();
@@ -46,8 +46,14 @@ void ScriptLUA::runEnvironment(sol::environment &environment, const std::string&
     try {
         lua.script(content, environment);
 
-        sol::function f = environment[func];
-        sol::function_result result = f();
+        const sol::function f = environment[func];
+
+        sol::function_result result;
+        if (arg) {
+            result = f(*arg);  // Llama con el argumento
+        } else {
+            result = f();         // Llama sin argumentos
+        }
 
         if (!result.valid()) {
             sol::error err = result;
@@ -57,6 +63,7 @@ void ScriptLUA::runEnvironment(sol::environment &environment, const std::string&
         Logging::Message("LUA script error on file %s: %s", scriptFilename.c_str(), e.what());
     }
 }
+
 
 void ScriptLUA::runGlobal(const std::string& func) const
 {

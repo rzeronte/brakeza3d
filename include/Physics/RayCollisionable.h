@@ -8,6 +8,7 @@
 
 #include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
 #include "../../src/Collisions/Collisionable.h"
+#include "../../include/Objects/Object3D.h"
 
 class RayCollisionable: public Object3D, public Collisionable {
 private:
