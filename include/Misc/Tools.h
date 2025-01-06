@@ -67,6 +67,8 @@ public:
 
     static btMatrix3x3 M3ToBulletM3(M3 m);
 
+    static btTransform GLMMatrixToBulletTransform(const glm::mat4& glmMatrix);
+
     static M3 BulletM3ToM3(const btMatrix3x3& m);
 
     static Vertex3D randomVertex();

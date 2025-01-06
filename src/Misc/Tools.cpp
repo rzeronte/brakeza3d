@@ -250,6 +250,19 @@ btMatrix3x3 Tools::M3ToBulletM3(M3 m)
     return btMatrix3x3(m.m[0],m.m[1],m.m[2],m.m[3],m.m[4],m.m[5],m.m[6],m.m[7],m.m[8]);
 }
 
+btTransform Tools::GLMMatrixToBulletTransform(const glm::mat4& glmMatrix)
+{
+    btTransform bulletTransform;
+    btMatrix3x3 bulletRotationMatrix(
+        glmMatrix[0][0], glmMatrix[1][0], glmMatrix[2][0],
+        glmMatrix[0][1], glmMatrix[1][1], glmMatrix[2][1],
+        glmMatrix[0][2], glmMatrix[1][2], glmMatrix[2][2]
+    );
+    bulletTransform.setBasis(bulletRotationMatrix);
+    bulletTransform.setOrigin(btVector3(glmMatrix[3][0], glmMatrix[3][1], glmMatrix[3][2]));
+    return bulletTransform;
+}
+
 M3 Tools::BulletM3ToM3(const btMatrix3x3& m) {
     return M3(
             m.getRow(0).getX(), m.getRow(0).getY(), m.getRow(0).getZ(),
