@@ -15,7 +15,7 @@ A continuación vemos el contenido de uno de estos ficheros (formato JSON):
 
 ```json
 {
-	"name":	"example_script.lua",
+	"name":	"global_script_example.lua",
 	"types": [
         {
           "name": "var1",

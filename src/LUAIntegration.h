@@ -54,6 +54,7 @@ void LUAIntegration(sol::state &lua)
             "setEnabled", &Object3D::setEnabled,
             "setRemoved", &Object3D::setRemoved,
             "setLabel", &Object3D::setLabel,
+            "getScale", &Object3D::getScale,
             "setScale", &Object3D::setScale,
             "AxisForward", &Object3D::AxisForward
     );

@@ -17,9 +17,7 @@ void Mesh3DBody::integrate()
 
     btTransform t;
     body->getMotionState()->getWorldTransform(t);
-    btVector3 pos = t.getOrigin();
-
-    Vertex3D::saveToBtVector3(&pos);
+    const btVector3 pos = t.getOrigin();
     setPosition(Vertex3D(pos.getX(), pos.getY(), pos.getZ()));
 
     auto rotation = t.getRotation();
