@@ -41,6 +41,6 @@
 
 ### Object scripts
   - The variable `this` https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/this_object_example.md
-  - Collision detection
+  - Collision detection https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/collision_detection_example.md
   - Object variables
 
