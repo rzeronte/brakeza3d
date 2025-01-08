@@ -1,11 +1,11 @@
 {
-  "ads":	{
-    "direction":	{
+  "ads": {
+    "direction": {
       "x":	0.0,
       "y":	0.0,
       "z":	1
     },
-    "diffuse":	{
+    "diffuse": {
       "x":	0.0,
       "y":	0.0,
       "z":	0.0
@@ -15,25 +15,25 @@
       "y":	0.0,
       "z":	0.0
     },
-    "ambient":	{
+    "ambient": {
       "x":	1.0,
       "y":	1.0,
       "z":	1.0
     }
   },
-  "objects":	[],
-  "shaders":	[],
-  "scripts":	[],
+  "objects": [],
+  "shaders": [],
+  "scripts": [],
   "camera":	{
     "position":	{
-      "x":	0,
-      "y":	0,
-      "z":	0
+      "x": 0,
+      "y": 0,
+      "z": 0
     },
     "rotation":	{
-      "x":	0,
-      "y":	0,
-      "z":	0
+      "x": 0,
+      "y": 0,
+      "z": 0
     }
   }
 }

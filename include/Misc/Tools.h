@@ -96,6 +96,8 @@ public:
     static std::vector<std::string> getFolderFolders(const std::string &path);
 
     static std::vector<std::string> getFolderFiles(const std::string &path, const std::string &extension);
+
+    static M3 GLMMatrixToM3(const glm::mat3& glmMatrix);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H
