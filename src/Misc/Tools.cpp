@@ -72,7 +72,7 @@ char *Tools::readFile(const std::string &name, size_t &source_size)
 {
     FILE *fp;
 
-    fp = fopen(name.c_str(), "r");
+    fp = fopen(name.c_str(), "rb");
 
     if (!fp) {
         perror(("Error opening file " + name).c_str());
@@ -261,6 +261,15 @@ btTransform Tools::GLMMatrixToBulletTransform(const glm::mat4& glmMatrix)
     bulletTransform.setBasis(bulletRotationMatrix);
     bulletTransform.setOrigin(btVector3(glmMatrix[3][0], glmMatrix[3][1], glmMatrix[3][2]));
     return bulletTransform;
+}
+
+M3 Tools::GLMMatrixToM3(const glm::mat3& glmMatrix)
+{
+    return {
+        glmMatrix[0][0], glmMatrix[1][0], glmMatrix[2][0],
+        glmMatrix[0][1], glmMatrix[1][1], glmMatrix[2][1],
+        glmMatrix[0][2], glmMatrix[1][2], glmMatrix[2][2]
+    };
 }
 
 M3 Tools::BulletM3ToM3(const btMatrix3x3& m) {

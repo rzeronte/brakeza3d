@@ -116,6 +116,7 @@ void ComponentRender::updateSelectedObject3D()
         if (selectedObject != nullptr){
             Logging::Message("Selected object: %s", selectedObject->getLabel().c_str());
             Brakeza3D::get()->getManagerGui()->setSelectedObjectIndex(index);
+            Brakeza3D::get()->getManagerGui()->setGuizmoOperation(ImGuizmo::OPERATION::TRANSLATE);
         }
     }
 

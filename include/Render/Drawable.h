@@ -12,6 +12,7 @@
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
 #include "../Misc/PathFinder.h"
+#include "ImGuizmo.h"
 
 class Drawable {
 public:
@@ -39,6 +40,7 @@ public:
 
     static void drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder);
 
+    static void drawObject3DGizmo(Object3D *o, ImGuizmo::OPERATION currentOperation, glm::mat4 objectMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 };
 
 

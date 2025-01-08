@@ -131,6 +131,7 @@ public:
 
     void RenderLayersToGlobalFramebuffer();
     void resetFramebuffer();
+    bool isWindowMaximized();
 
     [[nodiscard]] GLuint getBackgroundFramebuffer() const;
 

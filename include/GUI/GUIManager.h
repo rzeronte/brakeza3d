@@ -40,6 +40,7 @@ private:
     std::string selected_file;
     std::string currentVariableToAddName;
     std::string currentVariableToCreateCustomShader;
+    ImGuizmo::OPERATION guizmoOperation;
 
     const char *availableMesh3DShaders[4] = {"Edge", "Blink", "ShockWave", "Tint"};
 public:
@@ -61,7 +62,8 @@ public:
             widgetObject3DProperties(new GUIWidgetObject3DProperties(packageIcons, this->gameObjects, scriptEditableManager)),
             widgetProjectSettings(new GUIWidgetProjectSettings(packageIcons, scriptEditableManager)),
             widgetMenu(new GUIWidgetMenu(packageIcons)),
-            widgetToolbar(new GUIWidgetToolbar(packageIcons))
+            widgetToolbar(new GUIWidgetToolbar(packageIcons)),
+            guizmoOperation(ImGuizmo::TRANSLATE)
     {
         LoadUIIcons();
         loadImagesFolder();
@@ -566,7 +568,7 @@ public:
         bool p_open = true;
         widgetConsole->Draw("Logging/Console", &p_open);
         widgetObjects3D->draw(selectedObjectIndex);
-        widgetObject3DProperties->draw(selectedObjectIndex);
+        widgetObject3DProperties->draw(selectedObjectIndex, guizmoOperation);
         widgetMenu->draw(finish);
         widgetToolbar->draw();
 
@@ -585,6 +587,14 @@ public:
 
     void setSelectedObjectIndex(int selectedObjectIndex) {
         GUIManager::selectedObjectIndex = selectedObjectIndex;
+    }
+
+    ImGuizmo::OPERATION getGuizmoOperation() const {
+        return guizmoOperation;
+    }
+
+    void setGuizmoOperation(ImGuizmo::OPERATION guizmoOperation) {
+        GUIManager::guizmoOperation = guizmoOperation;
     }
 };
 

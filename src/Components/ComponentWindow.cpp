@@ -625,3 +625,11 @@ void ComponentWindow::ImGuiOnUpdate()
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
+
+bool ComponentWindow::isWindowMaximized()
+{
+    Uint32 flags = SDL_GetWindowFlags(window);
+
+    // Verifica si el flag SDL_WINDOW_MAXIMIZED está activo
+    return (flags & SDL_WINDOW_MAXIMIZED) != 0;
+}
