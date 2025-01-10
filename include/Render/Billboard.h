@@ -37,6 +37,8 @@ public:
     std::vector<glm::vec3> vertices;
 
     void updateSize(float d, float d1);
+
+    Image *getTexture() const;
 };
 
 

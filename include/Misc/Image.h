@@ -21,8 +21,8 @@ private:
     std::string fileName;
 
     bool loaded;
-    GLuint texturaID;
-    float alpha = 0;
+    GLuint texturaID = 0;
+    float alpha = 1;
 
 public:
     Image();
@@ -66,7 +66,7 @@ public:
 
     static GLuint makeOGLImage(SDL_Surface *surfaceTTF);
 
-    float getAlpha() const;
+    [[nodiscard]] float getAlpha() const;
 
     void setAlpha(float alpha);
 

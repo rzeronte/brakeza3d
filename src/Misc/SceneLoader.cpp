@@ -11,6 +11,7 @@
 #include "../../include/Objects/ParticleEmitter.h"
 #include "../../include/2D/Sprite2D.h"
 #include "../../include/Objects/Sprite3D.h"
+#include "../../include/Objects/Image2D.h"
 
 SceneLoader::SceneLoader() = default;
 
@@ -339,6 +340,16 @@ void SceneLoader::createParticleEmitterInScene() {
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_particleEmitter"));
 }
 
+void SceneLoader::createImage2DToScene(const std::string &filename, const char *name)
+{
+    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10);
+
+    auto *newObject = new Image2D(position, 10, 10, new Image(filename));
+    newObject->setBelongToScene(true);
+
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name));
+}
+
 void SceneLoader::createGhostBody3DToScene(const std::string& filename, const char *name) {
     Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
 
@@ -354,8 +365,8 @@ void SceneLoader::createGhostBody3DToScene(const std::string& filename, const ch
             btBroadphaseProxy::DefaultFilter,
             btBroadphaseProxy::DefaultFilter
     );
-    Logging::Message("Loading GhostBody from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
 
+    Logging::Message("Loading GhostBody from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name));
 }
 

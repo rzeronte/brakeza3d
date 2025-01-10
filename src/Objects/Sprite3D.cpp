@@ -210,7 +210,6 @@ void Sprite3D::setPropertiesFromJSON(cJSON *object, Sprite3D *o)
         int animationIndex = cJSON_GetObjectItemCaseSensitive(object, "currentIndexAnimation")->valueint;
         o->setAnimation(animationIndex);
         o->getCurrentTextureAnimation()->updateStep();
-
     }
 }
 

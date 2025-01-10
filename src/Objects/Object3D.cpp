@@ -9,6 +9,7 @@
 
 Object3D::Object3D() :
     position(Vertex3D(1, 1, 1)),
+    rotation(M3::getMatrixIdentity()),
     motion(nullptr),
     parent(nullptr),
     transparent(false),

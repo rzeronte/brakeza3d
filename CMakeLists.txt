@@ -204,6 +204,8 @@ add_executable(Brakeza3D
     imgui/backends/imgui_impl_sdl2.h                imgui/backends/imgui_impl_sdl2.cpp
     imgui/backends/imgui_impl_opengl3.h             imgui/backends/imgui_impl_opengl3.cpp
 
+    imgui/ImGuizmo.h                                imgui/ImGuizmo.cpp
+
     include/2D/ButtonsCallbacks.h
     include/Physics/Projectile.h
 
@@ -228,6 +230,7 @@ add_executable(Brakeza3D
 
     include/Render/ObjectShaderOpenCL.cpp
     include/Render/Fragment.cpp                         include/Render/Fragment.h
+    src/Objects/Image2D.cpp                             include/Objects/Image2D.h
 )
 
 target_link_libraries(Brakeza3D

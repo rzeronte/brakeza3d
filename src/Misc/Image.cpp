@@ -38,20 +38,20 @@ void Image::loadTGA(const std::string& filename)
     if (Tools::fileExists(filename.c_str())) {
         this->surface = IMG_Load(filename.c_str());
         this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
+
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+        texturaID = Image::makeOGLImage(surface);
 
         this->fileName = filename;
         this->loaded = true;
-
-        texturaID = Image::makeOGLImage(surface);
 
         Logging::Message("Loading Image file (%s) (%dx%d)", filename.c_str(), width(), height());
         return;
     }
 
     std::cout << "Error loading TGA texture '%s'" << filename.c_str() << std::endl;
-
     Logging::Log("Error loading TGA texture '%s'", filename.c_str());
+
     exit(-1);
 }
 
@@ -176,14 +176,18 @@ void Image::setImage(const std::string &filename)
 {
     if (Tools::fileExists(filename.c_str())) {
 
-        SDL_DestroyTexture(this->texture);
-        SDL_FreeSurface(this->surface);
+        if (this->texture != nullptr) {
+            SDL_DestroyTexture(this->texture);
+            SDL_FreeSurface(this->surface);
+            this->surface = IMG_Load(filename.c_str());
+            this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
+        }
 
-        this->surface = IMG_Load(filename.c_str());
-        this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
-        SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-        glDeleteTextures(1, &texturaID);
-        texturaID = Image::makeOGLImage(surface);
+        if (texturaID == 0 ) {
+            SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+            glDeleteTextures(1, &texturaID);
+            texturaID = Image::makeOGLImage(surface);
+        }
 
         this->fileName = filename;
         this->loaded = true;

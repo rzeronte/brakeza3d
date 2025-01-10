@@ -67,6 +67,7 @@ public:
     static void createMesh3DBodyToScene(const std::string &filename, const char *name);
 
     static void createGhostBody3DToScene(const std::string &filename, const char *name);
+    static void createImage2DToScene(const std::string &filename, const char *name);
 
     std::map<std::string, SceneObjectLoaderMapping> &getSceneTypes();
 

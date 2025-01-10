@@ -107,6 +107,10 @@ void Billboard::setTexture(Image *texture) {
     Billboard::texture = texture;
 }
 
+Image *Billboard::getTexture() const {
+    return texture;
+}
+
 void Billboard::updateSize(float w, float h)
 {
     width = w;

@@ -47,6 +47,7 @@ otros cargarán spriters animados, etc. A continuación enumero una lista de alg
 - Mesh3DAnimated: Similar a Mesh3D, pero para modelos animados.
 - Mesh3DGhost: Modelo 3D colisionable.
 - Mesh3DBody: Modelo 3D colisionable y reactivo a las físicas.
+- Image2D: Plano sobre el que se visualiza una imagen.
 - Sprite2D: Correlación de imágenes 2D
 - Sprite3D: Correlación de imágenes 2D en 360º.
 - ParticleEmitter: Emisor de partículas.

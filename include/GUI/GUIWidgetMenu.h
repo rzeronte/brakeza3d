@@ -97,6 +97,12 @@ struct GUIWidgetMenu
                     drawGhostItemsToLoad();
                     ImGui::EndMenu();
                 }
+                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("image2DIcon")->getOGLTextureID(), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::BeginMenu("Image2D")) {
+                    drawImageItemsToLoad(EngineSetup::get()->IMAGES_FOLDER);
+                    ImGui::EndMenu();
+                }
                 ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("sprite3DIcon")->getOGLTextureID(), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("Sprite3D")) {
@@ -310,6 +316,33 @@ struct GUIWidgetMenu
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
                 SceneLoader::createSprite2DInScene(fullPath, "sprite2D_" + file);
+            }
+        }
+    }
+
+    void drawImageItemsToLoad(const std::string& folder) {
+        auto files = Tools::getFolderFiles(folder, "png");
+        auto folders = Tools::getFolderFolders(folder);
+
+        for (const auto & i : folders) {
+            auto fullPath = folder + "/" + i;
+            ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("folderIcon")->getOGLTextureID(), ImVec2(16, 16));
+            ImGui::SameLine();
+            if (ImGui::BeginMenu(i.c_str())) {
+                drawImageItemsToLoad(fullPath);
+                ImGui::EndMenu();
+            }
+        }
+
+        for (int i = 0; i < files.size(); i++) {
+            auto file = files[i];
+            auto title = std::to_string(i-1) + ") " + file;
+
+            auto fullPath = folder + file;
+            ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("sprite3DIcon")->getOGLTextureID(), ImVec2(16, 16));
+            ImGui::SameLine();
+            if (ImGui::MenuItem(file.c_str())) {
+                SceneLoader::createImage2DToScene(fullPath, "image2D");
             }
         }
     }

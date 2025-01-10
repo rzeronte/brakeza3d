@@ -19,11 +19,11 @@ ParticleEmitter::ParticleEmitter(
     active(true),
     stopAdd(false),
     state(state),
+    context(particlesContext),
+    texture(image),
     lifeCounter(Counter(ttlEmitter)),
     colorTo(colorTo),
-    colorFrom(colorFrom),
-    context(particlesContext),
-    texture(image)
+    colorFrom(colorFrom)
 {
     setParent(parent);
     setTransparent(true);
@@ -74,7 +74,7 @@ void ParticleEmitter::onUpdate()
 {
     Object3D::onUpdate();
 
-    if (isRemoved() || !isActive() || !isEnabled()) return;
+    if (isRemoved() || !isActive() || !isEnabled() || texture == nullptr) return;
 
     if (parent != nullptr && !parent->isRemoved()) {
         setPosition(parent->getPosition());
@@ -91,7 +91,7 @@ void ParticleEmitter::onUpdate()
     glm::vec3 CameraPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition().toGLM());
 
     // Define la frecuencia deseada en partículas por segundo
-    int newparticles = (int)(delta * 100 * context.PARTICLES_BY_SECOND);
+    int newparticles = (int) (delta * 100 * context.PARTICLES_BY_SECOND);
 
     int ParticlesCount = 0;
 
@@ -211,14 +211,23 @@ void ParticleEmitter::drawImGuiProperties()
     if (ImGui::TreeNode("ParticleEmitter")) {
 
         if (ImGui::TreeNode("Image")) {
-            ImGui::Image((ImTextureID) texture->getOGLTextureID(),ImVec2(32, 32));
+            if (texture != nullptr) {
+                ImGui::Image((ImTextureID) texture->getOGLTextureID(),ImVec2(32, 32));
+            } else {
+                ImGui::Text("No image selected. Drag a texture here!");
+            }
+
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
                     Logging::Message("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
                     IM_ASSERT(payload->DataSize == sizeof(int));
                     auto selection = (char*) payload->Data;
                     auto fullPath = EngineSetup::get()->IMAGES_FOLDER + selection;
-                    texture->setImage(fullPath);
+                    if (texture == nullptr) {
+                        texture = new Image(fullPath);
+                    } else {
+                        texture->setImage(fullPath);
+                    }
                     Logging::Message("File %s", selection);
 
                 }
