@@ -491,6 +491,27 @@ ShaderOpenGLTint *ComponentWindow::getShaderOGLTint() const {
     return shaderOGLTint;
 }
 
+void ComponentWindow::saveImGuiCurrentLayout() const
+{
+    switch(ImGuiConfigChanged) {
+        case ImGUIConfigs::DEFAULT: {
+            ImGui::SaveIniSettingsToDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini").c_str());
+            Logging::Message("Saving to ImGUIDefault.ini");
+            break;
+        }
+        case ImGUIConfigs::CODING: {
+            ImGui::SaveIniSettingsToDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiCoding.ini").c_str());
+            Logging::Message("Saving to ImGuiCoding.ini");
+            break;
+        }
+        case ImGUIConfigs::DESIGN: {
+            ImGui::SaveIniSettingsToDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDesign.ini").c_str());
+            Logging::Message("Saving to ImGuiDesign.ini");
+            break;
+        }
+    }
+}
+
 void ComponentWindow::ImGuiInitialize(const std::string& configFile) {
     Logging::Message("ImGui initialization...");
 
@@ -505,6 +526,7 @@ void ComponentWindow::ImGuiInitialize(const std::string& configFile) {
     ImGuiIO &io = ImGui::GetIO();
     io.WantCaptureMouse = false;
     io.WantCaptureKeyboard = false;
+    io.WantSaveIniSettings = true;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;  // Enable docking
 
     ImGui::StyleColorsDark();

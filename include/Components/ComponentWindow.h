@@ -139,7 +139,7 @@ public:
 
     [[nodiscard]] GLuint getForegroundFramebuffer() const;
 
-    ShaderOpenGLDOF *getShaderOGLDOF() const;
+    [[nodiscard]] ShaderOpenGLDOF *getShaderOGLDOF() const;
 
     bool screenShoot = false;
 
@@ -167,12 +167,12 @@ public:
 
     [[nodiscard]] GLuint getPostProcessingFramebuffer() const;
 
-    ShaderOpenGLTint *getShaderOGLTint() const;
+    [[nodiscard]] ShaderOpenGLTint *getShaderOGLTint() const;
 
     void RenderLayersToMain();
 
     void ImGuiInitialize(const std::string &configFile);
-
+    void saveImGuiCurrentLayout() const;
     void ImGuiOnUpdate();
 
     ImGUIConfigs ImGuiConfigChanged;
