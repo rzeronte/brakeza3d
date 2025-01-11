@@ -61,7 +61,6 @@ end
 
 ```
 
-# Explicación del código
 
 El ejemplo muestra un contador de veces que el objeto ha tenido un factor de escala superior a uno.
 
@@ -71,3 +70,55 @@ las variables de `objeto locales`.
 Si vinculamos este script a dos objetos independientes, podremos ver como ejecutan su lógica con instancias de variables separadas, lo que hará
 que cada objeto lleve su propia cuenta por separado.
 
+# Acceso a variables locales de otros objetos
+
+Desde un `script de objeto` es posible acceder a las variables de otro objeto. El método `getLocalScriptVar` nos ofrece esta posibilidad.
+
+Supongamos que tenemos dos objetos en escena, a uno de ellos de nombre `MyObject`, le vinculamos un script con variables locales:
+
+- `count` de tipo `int` y con valor `0`
+- `state` de tipo `int` y con valor `0`.
+- `offset` de tipo `Vertex3D` y con valor `(1, 2, 3)`
+
+Usaremos la misma lógica del ejemplo anterior. La variable 'count' la incrementamos
+cada vez que la escala del objeto sea mayor que 1, añadiremos además un incremento sin parar en los valores del
+`offset`. Es un simple ejemplo.
+
+```
+function onUpdate()
+    scale = this:getScale()
+    if scale > 1 and state == 1 then
+        print("Increasing scale > 1 times: " .. count)
+        state = 0
+        count = count + 1
+    end
+    if scale <= 1 then
+        state = 1
+    end
+
+    offset.x = offset.x + 1
+    offset.y = offset.y + 1
+    offset.z = offset.z + 1
+end
+```
+
+Lo interesante es que si a otro objeto de la escena le vinculamos otro script, y desde dicho script
+necesitas averiguar el valor de `count`, `state` o `offset`, podrías hacer lo siguiente:
+
+```
+function onUpdate()
+	o = brakeza:getSceneObjectByLabel("MyObject")
+	if o ~= nil then
+	    position = o:getLocalScriptVar("offset")
+		print("Read variable 'offset' from object: ".. o:getLabel())
+        print("Value for 'offset': " .. position.x .. ", " .. position.y .. ", " .. position.z)
+
+		print("Read variable 'count' from object: ".. o:getLabel())
+        print("Value for 'count': " .. o:getLocalScriptVar("count"))
+    else
+        print("Object not found")
+	end
+end
+```
+
+Cabe destacar que no podrás setear dichas variables, solo consultar su valor.

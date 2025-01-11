@@ -689,3 +689,8 @@ void Object3D::attachObject(Object3D* o)
 {
     attached.push_back(o);
 }
+
+LUADataValue Object3D::getLocalScriptVar(const char *varName)
+{
+    return LUADataValue(luaEnvironment[varName]);
+}

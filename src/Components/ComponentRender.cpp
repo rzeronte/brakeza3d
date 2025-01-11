@@ -339,6 +339,21 @@ std::vector<ScriptLUA*> &ComponentRender::getLUAScripts()
     return scripts;
 }
 
+LUADataValue ComponentRender::getGlobalScriptVar(const char *scriptName, const char *varName)
+{
+    for (auto s : scripts) {
+        if (s->getScriptFilename().c_str() != scriptName) continue;
+
+        for (const auto& v : s->getDataTypes()) {
+            if (v.name == varName) {
+                return v.value;
+            }
+        }
+    }
+
+    return LUADataValue(0);
+}
+
 void ComponentRender::addLUAScript(ScriptLUA *script)
 {
     scripts.push_back(script);

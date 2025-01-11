@@ -214,6 +214,8 @@ public:
     [[nodiscard]] const std::vector<Object3D *> &getAttached() const;
 
     void attachObject(Object3D *o);
+
+    LUADataValue getLocalScriptVar(const char *varName);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

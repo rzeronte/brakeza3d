@@ -11,4 +11,8 @@ function onUpdate()
     if scale <= 1 then
         state = 1
     end
+
+    offset.x = offset.x + 1
+    offset.y = offset.y + 1
+    offset.z = offset.z + 1
 end
