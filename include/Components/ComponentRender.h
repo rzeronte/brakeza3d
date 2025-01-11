@@ -95,6 +95,8 @@ public:
 
     void addLUAScript(ScriptLUA *script);
 
+    LUADataValue getGlobalScriptVar(const char *scriptName, const char *varName);
+
     void reloadScriptGlobals();
 
     void removeScript(ScriptLUA *script);
