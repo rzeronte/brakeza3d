@@ -103,18 +103,18 @@ end
 ```
 
 Lo interesante es que si a otro objeto de la escena le vinculamos otro script, y desde dicho script
-necesitas averiguar el valor de `count`, `state` o `offset`, podrías hacer lo siguiente:
+necesitas averiguar el valor de `count`, `state` o `offset` del objeto `MyObject`, podrías hacer lo siguiente:
 
 ```
 function onUpdate()
 	o = brakeza:getSceneObjectByLabel("MyObject")
 	if o ~= nil then
 	    position = o:getLocalScriptVar("offset")
-		print("Read variable 'offset' from object: ".. o:getLabel())
-        print("Value for 'offset': " .. position.x .. ", " .. position.y .. ", " .. position.z)
-
-		print("Read variable 'count' from object: ".. o:getLabel())
-        print("Value for 'count': " .. o:getLocalScriptVar("count"))
+	    print("Read variable 'offset' from object: ".. o:getLabel())
+	    print("Value for 'offset': " .. position.x .. ", " .. position.y .. ", " .. position.z)
+	    
+	    print("Read variable 'count' from object: ".. o:getLabel())
+	    print("Value for 'count': " .. o:getLocalScriptVar("count"))
     else
         print("Object not found")
 	end

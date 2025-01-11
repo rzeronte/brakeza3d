@@ -9,9 +9,9 @@
 
 ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
 :
+    paused(false),
     scriptFilename(script),
-    fileTypes(std::move(properties)),
-    paused(false)
+    fileTypes(std::move(properties))
 {
     Logging::Message("Loading LUA Script (%s, %s)", script.c_str(), fileTypes.c_str());
 
@@ -21,9 +21,9 @@ ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
 
 ScriptLUA::ScriptLUA(const std::string &scriptFilename, cJSON *types)
 :
+    paused(false),
     scriptFilename(scriptFilename),
-    fileTypes(ScriptLUA::dataTypesFileFor(scriptFilename)),
-    paused(false)
+    fileTypes(ScriptLUA::dataTypesFileFor(scriptFilename))
 {
     Logging::Message("Loading LUA Script (%s, %s)", scriptFilename.c_str(), fileTypes.c_str());
 

@@ -234,6 +234,11 @@ struct GUIWidgetMenu
                 if (ImGui::MenuItem("Design", "CTRL+D")) {
                     ComponentsManager::get()->getComponentWindow()->ImGuiConfigChanged = ImGUIConfigs::DESIGN;
                 }
+                ImGui::Separator();
+                if (ImGui::MenuItem("Save current layout", "CTRL+D")) {
+                    ComponentsManager::get()->getComponentWindow()->saveImGuiCurrentLayout();
+                }
+
                 ImGui::EndMenu();
             }
 

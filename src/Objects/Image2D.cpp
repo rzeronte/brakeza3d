@@ -122,7 +122,7 @@ void Image2D::onUpdate()
         normalbuffer,
         (int) vertices.size(),
         1.0f,
-        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+        ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
     );
 }
 
