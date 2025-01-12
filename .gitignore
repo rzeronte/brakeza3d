@@ -2,4 +2,6 @@
 .idea/vcs.xml
 .idea/
 build/
-cmake-build-debug/
+/cmake-build-debug/
+/cmake-build-debug-coverage/
+/cmake-build-release/
