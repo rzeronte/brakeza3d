@@ -82,10 +82,11 @@ public:
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/mesh.png", "meshIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/folder.png", "folderIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/player.png", "playerIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite3ddirectional.png", "sprite3DDirectionalIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite2d.png", "image2DIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite2d.png", "sprite2DIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite3d.png", "sprite3DIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/BillboardAnimation8DirectionsIcon.png", "BillboardAnimation8DirectionsIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/Image2DAnimationIcon.png", "Image2DAnimationIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/Image2DIcon.png", "Image2DIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/Image3DIcon.png", "Image3DIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/BillboardAnimationIcon.png", "BillboardAnimationIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/remove.png", "removeIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/pause.png", "pauseIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/lock.png", "lockIcon");

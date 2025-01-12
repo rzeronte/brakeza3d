@@ -152,9 +152,9 @@ add_executable(Brakeza3D
 
     src/Collisions/Mesh3DBody.cpp                   include/Physics/Mesh3DBody.h
     src/Collisions/Mesh3DGhost.cpp                  include/Physics/Mesh3DGhost.h
-        src/Collisions/BillboardAnimation8DirectionsBody.cpp include/Physics/BillboardAnimation8DirectionsBody.h
+    src/Collisions/BillboardAnimation8DirectionsBody.cpp include/Physics/BillboardAnimation8DirectionsBody.h
     src/Collisions/Projectile3DBody.cpp             include/Physics/Projectile3DBody.h
-        src/Collisions/BillboardAnimationBody.cpp include/Physics/BillboardAnimationBody.h
+    src/Collisions/BillboardAnimationBody.cpp       include/Physics/BillboardAnimationBody.h
     src/Collisions/Body.cpp                         include/Physics/Body.h
     src/Collisions/BillboardBody.cpp                include/Physics/BillboardBody.h
     src/Collisions/BSPCollider.cpp                  src/Collisions/BSPCollider.h
