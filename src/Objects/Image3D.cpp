@@ -2,12 +2,12 @@
 // Created by Eduardo on 09/01/2025.
 //
 
-#include "../../include/Objects/Image2D.h"
+#include "../../include/Objects/Image3D.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Brakeza3D.h"
 
-Image2D::Image2D(Vertex3D position, float width, float height, Image* image)
+Image3D::Image3D(Vertex3D position, float width, float height, Image* image)
 :
     width(width),
     height(height),
@@ -26,7 +26,7 @@ Image2D::Image2D(Vertex3D position, float width, float height, Image* image)
     setSize(width, height, up, right);
 }
 
-void Image2D::setSize(float width, float height, Vertex3D U, Vertex3D  R)
+void Image3D::setSize(float width, float height, Vertex3D U, Vertex3D  R)
 {
     setWidth(width);
     setHeight(height);
@@ -100,7 +100,7 @@ void Image2D::setSize(float width, float height, Vertex3D U, Vertex3D  R)
     fillBuffers();
 }
 
-void Image2D::onUpdate()
+void Image3D::onUpdate()
 {
     Object3D::onUpdate();
 
@@ -126,23 +126,23 @@ void Image2D::onUpdate()
     );
 }
 
-Image2D::~Image2D()
+Image3D::~Image3D()
 {
 }
 
 
-const char *Image2D::getTypeObject() {
+const char *Image3D::getTypeObject() {
     return "Image2D";
 }
 
-const char *Image2D::getTypeIcon() {
+const char *Image3D::getTypeIcon() {
     return "image2DIcon";
 }
 
-void Image2D::drawImGuiProperties()
+void Image3D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    if (ImGui::TreeNode("Image2D")) {
+    if (ImGui::TreeNode("Image3D")) {
 
         const float range_min_int = 1.0;
         const float range_max_int = 1000;
@@ -182,7 +182,7 @@ void Image2D::drawImGuiProperties()
     }
 }
 
-cJSON *Image2D::getJSON()
+cJSON *Image3D::getJSON()
 {
     auto root= Object3D::getJSON();
 
@@ -193,43 +193,43 @@ cJSON *Image2D::getJSON()
     return root;
 }
 
-void Image2D::createFromJSON(cJSON *object)
+void Image3D::createFromJSON(cJSON *object)
 {
     auto name = cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring;
     auto width = (float) cJSON_GetObjectItemCaseSensitive(object, "width")->valueint;
     auto height = (float) cJSON_GetObjectItemCaseSensitive(object, "height")->valueint;
     auto image = cJSON_GetObjectItemCaseSensitive(object, "image")->valuestring;
 
-    auto o = new Image2D(
+    auto o = new Image3D(
         Vertex3D(),
         width,
         height,
         new Image(image)
     );
 
-    Image2D::setPropertiesFromJSON(object, o);
+    Image3D::setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, name);
 }
 
-void Image2D::setPropertiesFromJSON(cJSON *object, Image2D *o)
+void Image3D::setPropertiesFromJSON(cJSON *object, Image3D *o)
 {
     o->setBelongToScene(true);
 
     Object3D::setPropertiesFromJSON(object, o);
 }
 
-void Image2D::setWidth(float width)
+void Image3D::setWidth(float width)
 {
     this->width = width;
 }
 
-void Image2D::setHeight(float height)
+void Image3D::setHeight(float height)
 {
     this->height = height;
 }
 
-void Image2D::fillBuffers()
+void Image3D::fillBuffers()
 {
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);

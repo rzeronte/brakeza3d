@@ -1,7 +1,7 @@
 
-#include "../../include/Physics/Sprite3DBody.h"
+#include "../../include/Physics/BillboardAnimationBody.h"
 
-void Sprite3DBody::integrate() {
+void BillboardAnimationBody::integrate() {
     if (this->mass == 0) {
         //return;
     }
@@ -20,7 +20,7 @@ void Sprite3DBody::integrate() {
     //btVector3 axis = quat.getAxis();
 }
 
-btRigidBody *Sprite3DBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld *world) {
+btRigidBody *BillboardAnimationBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld *world) {
     this->mass = mass;
 
     btTransform trans;

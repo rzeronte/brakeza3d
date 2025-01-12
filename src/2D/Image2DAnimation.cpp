@@ -2,11 +2,11 @@
 // Created by eduardo on 13/08/23.
 //
 
-#include "../../include/2D/Sprite2D.h"
+#include "../../include/2D/Image2DAnimation.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
-Sprite2D::Sprite2D(int x, int y, bool removeWhenEnds, TextureAnimated *animation)
+Image2DAnimation::Image2DAnimation(int x, int y, bool removeWhenEnds, TextureAnimated *animation)
 :
     x(x),
     y(y),
@@ -17,7 +17,7 @@ Sprite2D::Sprite2D(int x, int y, bool removeWhenEnds, TextureAnimated *animation
     setTransparent(true);
 }
 
-Sprite2D::Sprite2D(int x, int y, float ttl, TextureAnimated *animation)
+Image2DAnimation::Image2DAnimation(int x, int y, float ttl, TextureAnimated *animation)
     :
     x(x),
     y(y),
@@ -29,7 +29,7 @@ Sprite2D::Sprite2D(int x, int y, float ttl, TextureAnimated *animation)
     setTransparent(true);
 }
 
-void Sprite2D::onUpdate()
+void Image2DAnimation::onUpdate()
 {
     animation->update();
 
@@ -67,29 +67,29 @@ void Sprite2D::onUpdate()
     }
 }
 
-TextureAnimated *Sprite2D::getAnimation() const
+TextureAnimated *Image2DAnimation::getAnimation() const
 {
     return animation;
 }
 
-void Sprite2D::updatePosition(int x, int y)
+void Image2DAnimation::updatePosition(int x, int y)
 {
     this->x = x;
     this->y = y;
 }
 
-const char *Sprite2D::getTypeObject() {
-    return "Sprite2D";
+const char *Image2DAnimation::getTypeObject() {
+    return "Image2DAnimation";
 }
 
-const char *Sprite2D::getTypeIcon() {
+const char *Image2DAnimation::getTypeIcon() {
     return "sprite2DIcon";
 }
 
-void Sprite2D::drawImGuiProperties()
+void Image2DAnimation::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    if (ImGui::TreeNode("Sprite2D")) {
+    if (ImGui::TreeNode("Image2DAnimation")) {
 
         const int range_min_int = 1;
         const int range_max_int = 1280;
@@ -107,7 +107,7 @@ void Sprite2D::drawImGuiProperties()
     }
 }
 
-cJSON *Sprite2D::getJSON()
+cJSON *Image2DAnimation::getJSON()
 {
     auto root =  Object3D::getJSON();
 
@@ -126,7 +126,7 @@ cJSON *Sprite2D::getJSON()
     return root;
 }
 
-void Sprite2D::createFromJSON(cJSON *object)
+void Image2DAnimation::createFromJSON(cJSON *object)
 {
     auto animationJSON = cJSON_GetObjectItemCaseSensitive(object, "animation");
 
@@ -139,18 +139,18 @@ void Sprite2D::createFromJSON(cJSON *object)
     auto x = cJSON_GetObjectItemCaseSensitive(object, "x")->valueint;
     auto y = cJSON_GetObjectItemCaseSensitive(object, "y")->valueint;
 
-    auto o = new Sprite2D(
+    auto o = new Image2DAnimation(
         x,
         y,
         false,
         new TextureAnimated(spriteFile,width,height,numberFrames,fps)
     );
-    Sprite2D::setPropertiesFromJSON(object, o);
+    Image2DAnimation::setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
 
-void Sprite2D::setPropertiesFromJSON(cJSON *object, Sprite2D *o)
+void Image2DAnimation::setPropertiesFromJSON(cJSON *object, Image2DAnimation *o)
 {
     o->setBelongToScene(true);
     Object3D::setPropertiesFromJSON(object, o);

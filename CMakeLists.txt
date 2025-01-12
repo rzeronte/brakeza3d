@@ -89,13 +89,13 @@ add_executable(Brakeza3D
     src/Objects/Line2D.cpp                          include/Objects/Line2D.h
     src/Objects/Object3D.cpp                        include/Objects/Object3D.h
     src/Objects/LightPoint3D.cpp                    include/Objects/LightPoint3D.h
-    src/Objects/SpriteDirectional3D.cpp             include/Objects/SpriteDirectional3D.h
-    src/Objects/Sprite3D.cpp                        include/Objects/Sprite3D.h
+    src/Objects/BillboardAnimation8Directions.cpp   include/Objects/BillboardAnimation8Directions.h
+    src/Objects/BillboardAnimation.cpp              include/Objects/BillboardAnimation.h
     src/Objects/Decal.cpp                           include/Objects/Decal.h
     src/Objects/Cube3D.cpp                          include/Objects/Cube3D.h
     src/Objects/Camera3D.cpp                        include/Components/Camera3D.h
-    src/Objects/Mesh3DAnimated.cpp                  include/Objects/Mesh3DAnimated.h
-    src/Objects/Mesh3DAnimatedCollection.cpp        include/Objects/Mesh3DAnimatedCollection.h
+    src/Objects/Mesh3DAnimation.cpp                 include/Objects/Mesh3DAnimation.h
+    src/Objects/Mesh3DAnimationCollection.cpp       include/Objects/Mesh3DAnimationCollection.h
     src/Objects/Vertex4D.cpp                        include/Objects/Vertex4D.h
     src/Objects/ParticleEmitter.cpp                 include/Objects/ParticleEmitter.h
     src/Objects/ParticleEmitterFireworks.cpp        include/Objects/ParticleEmitterFireworks.h
@@ -103,6 +103,7 @@ add_executable(Brakeza3D
     src/Objects/ScriptLUA.cpp                       include/Objects/ScriptLUA.h
     src/Objects/Swarm.cpp                           include/Objects/Swarm.h
     src/Objects/SpotLight3D.cpp                     include/Objects/SpotLight3D.h
+    src/Objects/Image3D.cpp                         include/Objects/Image3D.h
 
     src/Misc/TextureAtlas.cpp                       include/Misc/TextureAtlas.h
     src/Misc/Timer.cpp                              include/Misc/Timer.h
@@ -145,14 +146,15 @@ add_executable(Brakeza3D
     src/2D/TextureAnimated.cpp                      include/2D/TextureAnimated.h
     src/2D/TextWriter.cpp                           include/2D/TextWriter.h
     src/2D/Button.cpp                               include/2D/Button.h
-    src/2D/Sprite2D.cpp                             include/2D/Sprite2D.h
-    src/2D/Sprite2D.cpp                             include/2D/Sprite2D.h
+    src/2D/Image2DAnimation.cpp                     include/2D/Image2DAnimation.h
+    src/2D/Image2DAnimation.cpp                     include/2D/Image2DAnimation.h
+    src/2D/Image2D.cpp                              include/2D/Image2D.h
 
     src/Collisions/Mesh3DBody.cpp                   include/Physics/Mesh3DBody.h
     src/Collisions/Mesh3DGhost.cpp                  include/Physics/Mesh3DGhost.h
-    src/Collisions/SpriteDirectional3DBody.cpp      include/Physics/SpriteDirectional3DBody.h
+        src/Collisions/BillboardAnimation8DirectionsBody.cpp include/Physics/BillboardAnimation8DirectionsBody.h
     src/Collisions/Projectile3DBody.cpp             include/Physics/Projectile3DBody.h
-    src/Collisions/Sprite3DBody.cpp                 include/Physics/Sprite3DBody.h
+        src/Collisions/BillboardAnimationBody.cpp include/Physics/BillboardAnimationBody.h
     src/Collisions/Body.cpp                         include/Physics/Body.h
     src/Collisions/BillboardBody.cpp                include/Physics/BillboardBody.h
     src/Collisions/BSPCollider.cpp                  src/Collisions/BSPCollider.h
@@ -216,21 +218,20 @@ add_executable(Brakeza3D
     include/GUI/GUIWidgetObjects3D.h                include/GUI/GUIWidgetObject3DProperties.h
 
     include/Misc/SharedLUAContext.h
-    include/Misc/TileManager.cpp                        include/Misc/TileManager.h
+    include/Misc/TileManager.cpp                    include/Misc/TileManager.h
 
     include/OpenGL/FXEffectOpenGLObject.h
     include/OpenGL/FXEffectBase.h
     include/OpenGL/FXEffectOpenGL.h
-    include/OpenGL/ShaderOpenGLParticles.h              src/OpenGL/ShaderOpenGLParticles.cpp
-    include/OpenGL/ShaderOpenGLOutline.h                src/OpenGL/ShaderOpenGLOutline.cpp
+    include/OpenGL/ShaderOpenGLParticles.h          src/OpenGL/ShaderOpenGLParticles.cpp
+    include/OpenGL/ShaderOpenGLOutline.h            src/OpenGL/ShaderOpenGLOutline.cpp
 
     include/Objects/OpenGLShaderTypes.h
     include/Objects/OpenCLTypes.h
-    include/Objects/Vector2D.cpp                        include/Objects/Vector2D.h
+    include/Objects/Vector2D.cpp                    include/Objects/Vector2D.h
 
     include/Render/ObjectShaderOpenCL.cpp
-    include/Render/Fragment.cpp                         include/Render/Fragment.h
-    src/Objects/Image2D.cpp                             include/Objects/Image2D.h
+    include/Render/Fragment.cpp                     include/Render/Fragment.h
 )
 
 target_link_libraries(Brakeza3D

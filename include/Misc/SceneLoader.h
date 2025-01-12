@@ -19,8 +19,10 @@ enum class SceneObjectLoaderMapping {
     Mesh3DBody,
     SpotLight3D,
     ParticleEmitter,
-    Sprite3D,
-    Sprite2D
+    BillboardAnimation,
+    BillboardAnimation8Directions,
+    Image2DAnimation,
+    Image3D
 };
 
 enum class Mesh3DShaderLoaderMapping {
@@ -39,8 +41,10 @@ class SceneLoader {
             {"Mesh3DGhost", SceneObjectLoaderMapping::Mesh3DGhost},
             {"Mesh3DBody", SceneObjectLoaderMapping::Mesh3DBody},
             {"ParticleEmitter", SceneObjectLoaderMapping::ParticleEmitter},
-            {"Sprite3D", SceneObjectLoaderMapping::Sprite3D},
-            {"Sprite2D", SceneObjectLoaderMapping::Sprite2D}
+            {"BillboardAnimation", SceneObjectLoaderMapping::BillboardAnimation},
+            {"BillboardAnimation8Directions", SceneObjectLoaderMapping::BillboardAnimation8Directions},
+            {"Image2DAnimation", SceneObjectLoaderMapping::Image2DAnimation},
+            {"Image3D", SceneObjectLoaderMapping::Image3D}
     };
 
     std::map<std::string, Mesh3DShaderLoaderMapping> mesh3DShaderTypes = {
@@ -64,12 +68,11 @@ public:
 
     static void createPointLight3DInScene();
 
-    static void createMesh3DBodyToScene(const std::string &filename, const char *name);
+    static void createMesh3DBodyToScene(const std::string &filename);
 
-    static void createGhostBody3DToScene(const std::string &filename, const char *name);
-    static void createImage2DToScene(const std::string &filename, const char *name);
+    static void createGhostBody3DToScene(const std::string &filename);
 
-    std::map<std::string, SceneObjectLoaderMapping> &getSceneTypes();
+    static void createImage3DToScene(const std::string &filename);
 
     std::map<std::string, Mesh3DShaderLoaderMapping> &getMesh3DShaderTypes();
 
@@ -77,12 +80,15 @@ public:
 
     static void createParticleEmitterInScene();
 
-    static void createSprite3DInScene(const std::string& filename, const std::string& name);
+    static void createBillboardAnimationInScene(const std::string& filename);
 
-    static void createSprite2DInScene(const std::string& filename, const std::string& name);
+    static void createImage2DAnimatedInScene(const std::string& filename);
+
+    static void createImage2DInScene(const std::string& filename);
 
     static Color parseColorJSON(cJSON *color);
-};
 
+    static void createBillboardAnimation8Directions();
+};
 
 #endif //BRAKEZA3D_SCENELOADER_H

@@ -37,6 +37,8 @@ public:
     void nextFrame();
 
     void importTextures(TextureAnimatedDirectional *origin, int numFrames);
+
+    void drawImGuiProperties();
 };
 
 

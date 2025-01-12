@@ -2,10 +2,10 @@
 #define BRAKEZA3D_MESH3DANIMATEDGHOST_H
 
 
-#include "../Objects/Mesh3DAnimated.h"
+#include "../Objects/Mesh3DAnimation.h"
 #include "Ghost.h"
 
-class Mesh3DAnimatedGhost : public Mesh3DAnimated, public Ghost {
+class Mesh3DAnimatedGhost : public Mesh3DAnimation, public Ghost {
 public:
     Mesh3DAnimatedGhost();
 private:

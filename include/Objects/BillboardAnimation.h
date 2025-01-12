@@ -11,7 +11,7 @@
 #include "../Misc/Counter.h"
 #include <vector>
 
-class Sprite3D : public Object3D {
+class BillboardAnimation : public Object3D {
     Billboard *billboard;
 private:
     float width;
@@ -24,15 +24,15 @@ private:
     bool sharedTextures;
 
 public:
-    Sprite3D(float width, float height);
+    BillboardAnimation(float width, float height);
 
-    ~Sprite3D() override;
+    ~BillboardAnimation() override;
 
     void onUpdate() override;
 
     void setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation);
 
-    void linkTextureAnimation(Sprite3D *);
+    void linkTextureAnimation(BillboardAnimation *);
 
     TextureAnimated *getCurrentTextureAnimation();
 
@@ -56,7 +56,7 @@ public:
 
     static void createFromJSON(cJSON *object);
 
-    static void setPropertiesFromJSON(cJSON *object, Sprite3D *o);
+    static void setPropertiesFromJSON(cJSON *object, BillboardAnimation *o);
 
     void updateBillboardSize();
 };

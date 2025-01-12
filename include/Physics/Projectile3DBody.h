@@ -11,7 +11,17 @@ class Projectile3DBody : public Projectile, public Mesh3DBody {
 public:
     explicit Projectile3DBody(const Vertex3D &direction);
 
-    void makeProjectileRigidBody(float mass, Vertex3D size, Vertex3D direction, M3 rotation, float forceImpulse, float accuracy, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
+    void makeProjectileRigidBody(
+        float mass,
+        Vertex3D size,
+        Vertex3D direction,
+        M3 rotation,
+        float forceImpulse,
+        float accuracy,
+        btDiscreteDynamicsWorld *world,
+        int collisionGroup,
+        int collisionMask
+    );
 
     void onUpdate() override;
 

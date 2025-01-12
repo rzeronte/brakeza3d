@@ -1,11 +1,11 @@
 #include <utility>
 
-#include "../../include/Objects/Mesh3DAnimatedCollection.h"
+#include "../../include/Objects/Mesh3DAnimationCollection.h"
 #include "../../include/ComponentsManager.h"
 
 void
-Mesh3DAnimatedCollection::addAnimation(const std::string& label, const std::string& modelFilename, float scale, bool remove_at_end) {
-    auto *meshObject = new Mesh3DAnimated();
+Mesh3DAnimationCollection::addAnimation(const std::string& label, const std::string& modelFilename, float scale, bool remove_at_end) {
+    auto *meshObject = new Mesh3DAnimation();
     meshObject->setLabel(label);
     meshObject->setParent(this);
 
@@ -20,7 +20,7 @@ Mesh3DAnimatedCollection::addAnimation(const std::string& label, const std::stri
     mesh3Danimated.push_back(meshObject);
 }
 
-void Mesh3DAnimatedCollection::onUpdate() {
+void Mesh3DAnimationCollection::onUpdate() {
     Object3D::onUpdate();
 
     this->getCurrentMesh3DAnimated()->updateBoundingBox();
@@ -38,7 +38,7 @@ void Mesh3DAnimatedCollection::onUpdate() {
     );*/
 }
 
-void Mesh3DAnimatedCollection::onUpdateCurrentMesh3D() {
+void Mesh3DAnimationCollection::onUpdateCurrentMesh3D() {
     if (this->currentAnimation < 0) return;
 
     this->getCurrentMesh3DAnimated()->setPosition(this->getPosition());
@@ -46,18 +46,18 @@ void Mesh3DAnimatedCollection::onUpdateCurrentMesh3D() {
     this->getCurrentMesh3DAnimated()->updateFrameTransformations();
 }
 
-void Mesh3DAnimatedCollection::setAnimation(int index) {
+void Mesh3DAnimationCollection::setAnimation(int index) {
     this->currentAnimation = index;
 }
 
-Mesh3DAnimated *Mesh3DAnimatedCollection::getCurrentMesh3DAnimated() const {
+Mesh3DAnimation *Mesh3DAnimationCollection::getCurrentMesh3DAnimated() const {
     return this->mesh3Danimated[currentAnimation];
 }
 
-const M3 &Mesh3DAnimatedCollection::getRotationFixed() const {
+const M3 &Mesh3DAnimationCollection::getRotationFixed() const {
     return rotationFixed;
 }
 
-void Mesh3DAnimatedCollection::setRotationFixed(const M3 &rotationFixed) {
-    Mesh3DAnimatedCollection::rotationFixed = rotationFixed;
+void Mesh3DAnimationCollection::setRotationFixed(const M3 &rotationFixed) {
+    Mesh3DAnimationCollection::rotationFixed = rotationFixed;
 }

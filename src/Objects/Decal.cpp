@@ -1,11 +1,11 @@
 
 #include "../../include/Objects/Decal.h"
 #include "../../include/Render/Transforms.h"
-#include "../../include/Objects/SpriteDirectional3D.h"
+#include "../../include/Objects/BillboardAnimation8Directions.h"
 #include "../../include/ComponentsManager.h"
 
 Decal::Decal() :
-    sprite(new Sprite3D(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT))
+    sprite(new BillboardAnimation(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT))
 {
     setDecal(true);
 }
@@ -55,8 +55,8 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
             continue;
         }
 
-        auto *spriteDirectional = dynamic_cast<SpriteDirectional3D *> (triangle->parent);
-        auto *sprite = dynamic_cast<Sprite3D *> (triangle->parent);
+        auto *spriteDirectional = dynamic_cast<BillboardAnimation8Directions *> (triangle->parent);
+        auto *sprite = dynamic_cast<BillboardAnimation *> (triangle->parent);
 
         // Decals ignoran sprites
         if (spriteDirectional != nullptr || sprite != nullptr) {
@@ -95,11 +95,11 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
     }
 }
 
-Sprite3D *Decal::getSprite() const {
+BillboardAnimation *Decal::getSprite() const {
     return sprite;
 }
 
-void Decal::setSprite(Sprite3D *sprite) {
+void Decal::setSprite(BillboardAnimation *sprite) {
     Decal::sprite = sprite;
 }
 

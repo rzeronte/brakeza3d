@@ -1,14 +1,14 @@
 
-#include "../../include/Objects/Sprite3D.h"
+#include "../../include/Objects/BillboardAnimation.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
-Sprite3D::Sprite3D(float width, float height)
+BillboardAnimation::BillboardAnimation(float width, float height)
 :
+    billboard(new Billboard(width, height)),
     width(width),
     height(height),
-    billboard(new Billboard(width, height)),
     currentAnimationIndex(0),
     autoRemoveAfterAnimation(false),
     sharedTextures(false)
@@ -16,7 +16,7 @@ Sprite3D::Sprite3D(float width, float height)
     setTransparent(true);
 }
 
-void Sprite3D::onUpdate()
+void BillboardAnimation::onUpdate()
 {
     Object3D::onUpdate();
 
@@ -45,17 +45,17 @@ void Sprite3D::onUpdate()
     }
 }
 
-void Sprite3D::addAnimation(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps)
+void BillboardAnimation::addAnimation(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps)
 {
     this->animations.emplace_back(new TextureAnimated(spriteSheetFile, spriteWidth, spriteHeight, numFrames, fps));
 }
 
-void Sprite3D::setAnimation(int index_animation)
+void BillboardAnimation::setAnimation(int index_animation)
 {
     this->currentAnimationIndex = index_animation;
 }
 
-void Sprite3D::updateTexture()
+void BillboardAnimation::updateTexture()
 {
     if ((int) animations.size() == 0) return;
 
@@ -72,7 +72,7 @@ void Sprite3D::updateTexture()
     billboard->setTexture(this->animations[currentAnimationIndex]->getCurrentFrame());
 }
 
-void Sprite3D::updateTrianglesCoordinatesAndTexture()
+void BillboardAnimation::updateTrianglesCoordinatesAndTexture()
 {
     M3 rotationTranspose = ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose();
 
@@ -83,15 +83,15 @@ void Sprite3D::updateTrianglesCoordinatesAndTexture()
     updateTexture();
 }
 
-bool Sprite3D::isAutoRemoveAfterAnimation() const {
+bool BillboardAnimation::isAutoRemoveAfterAnimation() const {
     return autoRemoveAfterAnimation;
 }
 
-void Sprite3D::setAutoRemoveAfterAnimation(bool value) {
-    Sprite3D::autoRemoveAfterAnimation = value;
+void BillboardAnimation::setAutoRemoveAfterAnimation(bool value) {
+    BillboardAnimation::autoRemoveAfterAnimation = value;
 }
 
-void Sprite3D::linkTextureAnimation(Sprite3D *dst)
+void BillboardAnimation::linkTextureAnimation(BillboardAnimation *dst)
 {
     animations.clear();
 
@@ -102,12 +102,12 @@ void Sprite3D::linkTextureAnimation(Sprite3D *dst)
     sharedTextures = true;
 }
 
-TextureAnimated *Sprite3D::getCurrentTextureAnimation()
+TextureAnimated *BillboardAnimation::getCurrentTextureAnimation()
 {
     return this->animations[currentAnimationIndex];
 }
 
-Sprite3D::~Sprite3D()
+BillboardAnimation::~BillboardAnimation()
 {
     delete billboard;
 
@@ -118,24 +118,24 @@ Sprite3D::~Sprite3D()
     }
 }
 
-const char *Sprite3D::getTypeObject() {
-    return "Sprite3D";
+const char *BillboardAnimation::getTypeObject() {
+    return "BillboardAnimation";
 }
 
-const char *Sprite3D::getTypeIcon() {
+const char *BillboardAnimation::getTypeIcon() {
     return "sprite3DIcon";
 }
 
-void Sprite3D::updateBillboardSize()
+void BillboardAnimation::updateBillboardSize()
 {
     billboard->updateSize(width, height);
 }
 
-void Sprite3D::drawImGuiProperties()
+void BillboardAnimation::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
 
-    if (ImGui::TreeNode("Sprite3D")) {
+    if (ImGui::TreeNode("BillboardAnimation")) {
         if (ImGui::TreeNode("Size")) {
             const float range_min = 0;
             const float range_max = 1000;
@@ -151,18 +151,18 @@ void Sprite3D::drawImGuiProperties()
         }
 
         const char* items[(int) animations.size()];
-
         for (int i = 0; i < (int) animations.size(); i++) {
             items[i] = animations[i]->getBaseFilename().c_str();
         }
         ImGui::Combo("Type", &currentAnimationIndex, items, IM_ARRAYSIZE(items));
+
         getCurrentTextureAnimation()->drawImGuiProperties();
 
         ImGui::TreePop();
     }
 }
 
-cJSON *Sprite3D::getJSON()
+cJSON *BillboardAnimation::getJSON()
 {
     auto root =  Object3D::getJSON();
 
@@ -185,7 +185,7 @@ cJSON *Sprite3D::getJSON()
     return root;
 }
 
-void Sprite3D::setPropertiesFromJSON(cJSON *object, Sprite3D *o)
+void BillboardAnimation::setPropertiesFromJSON(cJSON *object, BillboardAnimation *o)
 {
     o->setBelongToScene(true);
     Object3D::setPropertiesFromJSON(object, o);
@@ -213,11 +213,11 @@ void Sprite3D::setPropertiesFromJSON(cJSON *object, Sprite3D *o)
     }
 }
 
-void Sprite3D::createFromJSON(cJSON *object)
+void BillboardAnimation::createFromJSON(cJSON *object)
 {
-    auto o = new Sprite3D(1, 1);
+    auto o = new BillboardAnimation(1, 1);
 
-    Sprite3D::setPropertiesFromJSON(object, o);
+    BillboardAnimation::setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }

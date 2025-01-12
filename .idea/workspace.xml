@@ -9,6 +9,9 @@
   <component name="CMakePresetLoader">{
   &quot;useNewFormat&quot;: true
 }</component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
   <component name="CMakeReloadState">
     <option name="reloaded" value="true" />
   </component>
@@ -19,26 +22,47 @@
   </component>
   <component name="CMakeSettings">
     <configurations>
-      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+      <configuration PROFILE_NAME="Release" ENABLED="true" CONFIG_NAME="Release" />
       <configuration PROFILE_NAME="Debug-Coverage" ENABLED="true" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_CXX_FLAGS=--coverage -DCMAKE_C_FLAGS=--coverage" />
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(video): video decodec feature">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_30_05_22_4_10__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_30_05_22_4_10__Default_Changelist_.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_30_05_22_4_12__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_30_05_22_4_12__Default_Changelist_.xml" afterDir="false" />
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): Saving current ImGui docking layout to .ini file">
+      <change afterPath="$PROJECT_DIR$/include/2D/Image2D.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/2D/Image2D.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Objects/BillboardAnimation8Directions.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/textures/SpaceShuttle.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/textures/SpaceShuttle.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/2D/TextWriter.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/TextWriter.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentGame.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentGame.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/Image.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Image.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/VideoPlayer.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGame.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentGameInput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Image.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Image.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/04-basic-objects-types.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/04-basic-objects-types.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/05-general-2d-objects-types.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/05-general-2d-objects-types.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/06-general-3d-objects-types.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/06-general-3d-objects-types.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/2D/Sprite2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/Image2DAnimation.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/2D/TextureAnimatedDirectional.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/TextureAnimatedDirectional.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUIWidgetMenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIWidgetMenu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/SceneLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/SceneLoader.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Decal.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Decal.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Image2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Image3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Mesh3DAnimated.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Mesh3DAnimation.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Mesh3DAnimatedCollection.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Mesh3DAnimationCollection.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/Sprite3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/BillboardAnimation.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Objects/SpriteDirectional3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/BillboardAnimation8Directions.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/Mesh3DAnimatedGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Mesh3DAnimatedGhost.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/Sprite3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Sprite3DBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Physics/SpriteDirectional3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/SpriteDirectional3DBody.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/2D/Sprite2D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/Image2DAnimation.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/2D/TextureAnimatedDirectional.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextureAnimatedDirectional.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Brakeza3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brakeza3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Collisions/Mesh3DAnimatedGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Mesh3DAnimatedGhost.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/SceneLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/SceneLoader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Decal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Decal.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Image2D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Image3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3DAnimation.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3DAnimatedCollection.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3DAnimationCollection.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/Sprite3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/BillboardAnimation.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Objects/SpriteDirectional3D.cpp" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +73,7 @@
     <option name="formatViaClangd" value="false" />
     <option name="clangWarnings" value="-Wno-unused-variable,-Wno-infinite-recursion,-Wno-array-bounds,-Werror=implicit-function-declaration,-Wno-shadow-field-in-constructor-modified,-Wno-shadow-ivar,-Wuninitialized,-Wunused-label,-Wunused-lambda-capture,-Wno-shadow" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -66,14 +90,12 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
-  <component name="GithubPullRequestsUISettings">
-    <option name="selectedUrlAndAccountId">
-      <UrlAndAccount>
-        <option name="accountId" value="9f2a99d7-ebb8-44f2-b6f6-b3ce803f3cd7" />
-        <option name="url" value="https://github.com/rzeronte/brakeza3d.git" />
-      </UrlAndAccount>
-    </option>
-  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/rzeronte/brakeza3d.git&quot;,
+    &quot;accountId&quot;: &quot;c4614d62-4983-4ef4-adc1-7ce46e3be558&quot;
+  }
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/include/GUI/GUI.h" root0="FORCE_HIGHLIGHTING" />
@@ -101,9 +123,13 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "CMake Application.Brakeza3D.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.west.config.association.type.startup.service": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
     "cf.advertisement.text.has.clang-format": "true",
@@ -111,31 +137,32 @@
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/Eduardo/Desktop/assimp-5.2.5",
+    "last_opened_file_path": "C:/Users/Eduardo/CLionProjects/BrakezaGitHub/config",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "CPPToolchains",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.uml",
     "structure.view.defaults.are.configured": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\config" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\imgui" />
       <recent name="$PROJECT_DIR$/darkheaz/src/shaders/kernels" />
       <recent name="$PROJECT_DIR$/config" />
-      <recent name="$PROJECT_DIR$/darkheaz/src/shaders" />
-      <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\2D" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\Objects" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\Misc" />
       <recent name="$PROJECT_DIR$/include/Physics" />
       <recent name="$PROJECT_DIR$/src/Collisions" />
-      <recent name="$PROJECT_DIR$/darkheaz/src/enemies/behaviors" />
-      <recent name="$PROJECT_DIR$/src/Misc" />
-      <recent name="$PROJECT_DIR$/include/Misc" />
     </key>
   </component>
   <component name="RunManager">
@@ -144,7 +171,7 @@
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
+    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -328,6 +355,19 @@
       <workItem from="1691008420131" duration="10600000" />
       <workItem from="1691056916618" duration="3504000" />
       <workItem from="1691061719659" duration="4767000" />
+      <workItem from="1735937928321" duration="2838000" />
+      <workItem from="1735943365986" duration="178000" />
+      <workItem from="1735945074100" duration="2005000" />
+      <workItem from="1736270382951" duration="2382000" />
+      <workItem from="1736282102165" duration="14396000" />
+      <workItem from="1736342527610" duration="2317000" />
+      <workItem from="1736352321664" duration="149000" />
+      <workItem from="1736370503731" duration="6093000" />
+      <workItem from="1736423447586" duration="1000" />
+      <workItem from="1736429212093" duration="6000" />
+      <workItem from="1736452933290" duration="19353000" />
+      <workItem from="1736541119364" duration="7813000" />
+      <workItem from="1736611412378" duration="27227000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -378,17 +418,72 @@
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="feat(refact): compilation standard for linux-windows">
+      <option name="closed" value="true" />
+      <created>1735945448250</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1735945448250</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat(cross): Fix format text surface format in Win32">
+      <option name="closed" value="true" />
+      <created>1735946251483</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1735946251483</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat(imgui): Integration ImGui Guizmo plugin">
+      <option name="closed" value="true" />
+      <created>1736376828981</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1736376828981</updated>
+    </task>
+    <task id="LOCAL-00011" summary="refact: Erase qmap, added more doc">
+      <option name="closed" value="true" />
+      <created>1736379444951</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1736379444951</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat(image2d): Added image2d object">
+      <option name="closed" value="true" />
+      <created>1736476007607</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1736476007607</updated>
+    </task>
+    <task id="LOCAL-00013" summary="feat(scripting): Added getLocalScriptVar for access other object's script variables.">
+      <option name="closed" value="true" />
+      <created>1736560431203</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1736560431203</updated>
+    </task>
+    <task id="LOCAL-00014" summary="feat(gui): Saving current ImGui docking layout to .ini file">
+      <option name="closed" value="true" />
+      <created>1736620198359</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1736620198359</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VCPKGProject">
-    <isAutomaticEditVcpkgJson value="false" />
     <isAutomaticCheckingOnLaunch value="false" />
     <isAutomaticFoundErrors value="true" />
-    <isAutomaticFoundErrors value="true" />
+    <isAutomaticReloadCMake value="true" />
   </component>
   <component name="Vcs.Log.History.Properties">
     <option name="COLUMN_ID_ORDER">
@@ -575,7 +670,14 @@
     <MESSAGE value="New Laptop" />
     <MESSAGE value="Fix broken on new laptop (remove major and minor opengl versions :?)" />
     <MESSAGE value="feat(video): video decodec feature" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(video): video decodec feature" />
+    <MESSAGE value="feat(refact): compilation standard for linux-windows" />
+    <MESSAGE value="feat(cross): Fix format text surface format in Win32" />
+    <MESSAGE value="feat(imgui): Integration ImGui Guizmo plugin" />
+    <MESSAGE value="refact: Erase qmap, added more doc" />
+    <MESSAGE value="feat(image2d): Added image2d object" />
+    <MESSAGE value="feat(scripting): Added getLocalScriptVar for access other object's script variables." />
+    <MESSAGE value="feat(gui): Saving current ImGui docking layout to .ini file" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(gui): Saving current ImGui docking layout to .ini file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -587,8 +689,78 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>12</line>
+          <line>13</line>
           <option name="timeStamp" value="40" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Misc/Grid3D.cpp</url>
+          <line>16</line>
+          <option name="timeStamp" value="41" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Misc/SceneLoader.cpp</url>
+          <line>368</line>
+          <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Misc/Image.cpp</url>
+          <line>75</line>
+          <option name="timeStamp" value="56" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Objects/Image3D.cpp</url>
+          <line>115</line>
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Objects/Object3D.cpp</url>
+          <line>694</line>
+          <option name="timeStamp" value="60" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Objects/BillboardAnimation8Directions.cpp</url>
+          <line>63</line>
+          <option name="timeStamp" value="63" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Objects/BillboardAnimation8Directions.cpp</url>
+          <line>77</line>
+          <option name="timeStamp" value="69" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/2D/TextureAnimatedDirectional.cpp</url>
+          <line>42</line>
+          <option name="timeStamp" value="70" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/2D/TextureAnimatedDirectional.cpp</url>
+          <line>43</line>
+          <option name="timeStamp" value="71" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Render/Billboard.cpp</url>
+          <line>110</line>
+          <option name="timeStamp" value="72" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Objects/BillboardAnimation8Directions.cpp</url>
+          <line>97</line>
+          <option name="timeStamp" value="74" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Objects/BillboardAnimation8Directions.cpp</url>
+          <line>98</line>
+          <option name="timeStamp" value="75" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Objects/BillboardAnimation8Directions.cpp</url>
+          <line>123</line>
+          <option name="timeStamp" value="76" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/2D/TextureAnimatedDirectional.cpp</url>
+          <line>24</line>
+          <option name="timeStamp" value="77" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

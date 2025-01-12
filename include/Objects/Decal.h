@@ -6,7 +6,7 @@
 #include "Object3D.h"
 #include "Mesh3D.h"
 #include "Cube3D.h"
-#include "Sprite3D.h"
+#include "BillboardAnimation.h"
 
 class Decal : public Mesh3D {
 public:
@@ -19,7 +19,7 @@ public:
     float h = 5;
 
     Cube3D *cube;
-    Sprite3D *sprite;
+    BillboardAnimation *sprite;
 
     bool drawWireframe = false;
 
@@ -37,9 +37,9 @@ public:
 
     [[nodiscard]] float getTCoord(Vertex3D v) const;
 
-    [[nodiscard]] Sprite3D *getSprite() const;
+    [[nodiscard]] BillboardAnimation *getSprite() const;
 
-    void setSprite(Sprite3D *sprite);
+    void setSprite(BillboardAnimation *sprite);
 
     void onUpdate() override;
 };

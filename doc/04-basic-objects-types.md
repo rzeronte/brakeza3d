@@ -44,12 +44,12 @@ Por ejemplo tenemos objetos que pueden cargar modelos 3D, otros nos permitirán 
 otros cargarán spriters animados, etc. A continuación enumero una lista de algunos de los más destacados:
 
 - Mesh3D: Modelo 3D con triángulos y texturas
-- Mesh3DAnimated: Similar a Mesh3D, pero para modelos animados.
+- Mesh3DAnimation: Similar a Mesh3D, pero para modelos animados.
 - Mesh3DGhost: Modelo 3D colisionable.
 - Mesh3DBody: Modelo 3D colisionable y reactivo a las físicas.
-- Image2D: Plano sobre el que se visualiza una imagen.
-- Sprite2D: Correlación de imágenes 2D
-- Sprite3D: Correlación de imágenes 2D en 360º.
+- Image2D: Dibuja una imagen en pantalla.
+- Image3D: Plano 3D sobre el que se visualiza una textura de imagen.
+- Image2DAnimation: Conjunto de `Image2D` que conforma una animación.
 - ParticleEmitter: Emisor de partículas.
 - LightPoint: Punto de luz.
 - ...

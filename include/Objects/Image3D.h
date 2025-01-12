@@ -2,12 +2,12 @@
 // Created by Eduardo on 09/01/2025.
 //
 
-#ifndef BRAKEZA3D_IMAGE2D_H
-#define BRAKEZA3D_IMAGE2D_H
+#ifndef BRAKEZA3D_IMAGE3D_H
+#define BRAKEZA3D_IMAGE3D_H
 
 #include "../Render/Billboard.h"
 
-class Image2D : public Object3D {
+class Image3D : public Object3D {
     float width;
     float height;
     Image *image;
@@ -25,7 +25,7 @@ class Image2D : public Object3D {
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> uvs;
 public:
-    Image2D(Vertex3D position, float width, float height, Image* image);
+    Image3D(Vertex3D position, float width, float height, Image* image);
 
     void onUpdate() override;
 
@@ -34,9 +34,9 @@ public:
     void drawImGuiProperties() override;
     cJSON *getJSON() override;
     static void createFromJSON(cJSON *object);
-    static void setPropertiesFromJSON(cJSON *object, Image2D *o);
+    static void setPropertiesFromJSON(cJSON *object, Image3D *o);
 
-    ~Image2D() override;
+    ~Image3D() override;
 
     void setSize(float width, float height, Vertex3D U, Vertex3D  R);
 
@@ -48,4 +48,4 @@ public:
 };
 
 
-#endif //BRAKEZA3D_IMAGE2D_H
+#endif //BRAKEZA3D_IMAGE3D_H

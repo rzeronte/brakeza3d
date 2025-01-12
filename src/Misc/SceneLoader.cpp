@@ -9,9 +9,10 @@
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Objects/ParticleEmitter.h"
-#include "../../include/2D/Sprite2D.h"
-#include "../../include/Objects/Sprite3D.h"
-#include "../../include/Objects/Image2D.h"
+#include "../../include/2D/Image2DAnimation.h"
+#include "../../include/Objects/BillboardAnimation.h"
+#include "../../include/Objects/Image3D.h"
+#include "../../include/2D/Image2D.h"
 
 SceneLoader::SceneLoader() = default;
 
@@ -87,12 +88,20 @@ void SceneLoader::loadScene(const std::string& filename)
                 ParticleEmitter::createFromJSON(currentObject);
                 break;
             }
-            case SceneObjectLoaderMapping::Sprite3D : {
-                Sprite3D::createFromJSON(currentObject);
+            case SceneObjectLoaderMapping::BillboardAnimation : {
+                BillboardAnimation::createFromJSON(currentObject);
                 break;
             }
-            case SceneObjectLoaderMapping::Sprite2D : {
-                Sprite2D::createFromJSON(currentObject);
+            case SceneObjectLoaderMapping::Image2DAnimation : {
+                Image2DAnimation::createFromJSON(currentObject);
+                break;
+            }
+            case SceneObjectLoaderMapping::Image3D : {
+                Image3D::createFromJSON(currentObject);
+                break;
+            }
+            case SceneObjectLoaderMapping::BillboardAnimation8Directions : {
+                BillboardAnimation8Directions::createFromJSON(currentObject);
                 break;
             }
         }
@@ -239,7 +248,8 @@ void SceneLoader::createPointLight3DInScene()
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
 }
 
-void SceneLoader::createSpotLight3DInScene() {
+void SceneLoader::createSpotLight3DInScene()
+{
     auto o = new SpotLight3D(
             glm::vec4(0.0f, 0.0f, 1.0f, 0),
             glm::vec4(0.05f, 0.05f, 0.05f, 0),
@@ -256,12 +266,11 @@ void SceneLoader::createSpotLight3DInScene() {
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_lightpoint"));
 }
 
-void SceneLoader::createMesh3DBodyToScene(const std::string& filename, const char *name) {
-    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10000);
-
+void SceneLoader::createMesh3DBodyToScene(const std::string& filename)
+{
     auto *newObject = new Mesh3DBody();
     newObject->setBelongToScene(true);
-    newObject->setPosition(position);
+    newObject->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10));
     newObject->setScale(1);
     newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + filename));
     newObject->makeRigidBody(
@@ -272,50 +281,57 @@ void SceneLoader::createMesh3DBodyToScene(const std::string& filename, const cha
      );
 
     Logging::Message("Loading Mesh3DBody from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
-
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name));
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Mesh3DBody"));
 }
 
-void SceneLoader::createSprite2DInScene(const std::string& filename, const std::string& name)
+void SceneLoader::createImage2DInScene(const std::string& filename)
 {
-    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2);
+    auto *newObject = new Image2D(
+        EngineSetup::get()->screenWidth/2,
+        EngineSetup::get()->screenHeight/2,
+        new Image(filename)
+    );
 
-    auto *newObject = new Sprite2D(
+    newObject->setBelongToScene(true);
+    Logging::Message("Loading Image2D");
+
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Image2D"));
+}
+
+void SceneLoader::createImage2DAnimatedInScene(const std::string& filename)
+{
+    auto *newObject = new Image2DAnimation(
         EngineSetup::get()->screenWidth/2,
         EngineSetup::get()->screenHeight/2,
         false,
         new TextureAnimated(filename,1,1,1,1)
     );
-    newObject->setPosition(position);
-
+    newObject->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2));
     newObject->setBelongToScene(true);
-    Logging::Message("Loading Sprite2D");
 
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_sprite3D"));
+    Logging::Message("Loading Image2DAnimation");
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Image2DAnimation"));
 }
 
-void SceneLoader::createSprite3DInScene(const std::string& filename, const std::string& name)
+void SceneLoader::createBillboardAnimationInScene(const std::string& filename)
 {
-    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2);
-
-    auto *newObject = new Sprite3D(1, 1);
-    newObject->setPosition(position);
+    auto *newObject = new BillboardAnimation(1, 1);
+    newObject->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2));
     newObject->addAnimation(filename,1,1,1,1);
     newObject->setAnimation(0);
 
     newObject->setBelongToScene(true);
-    Logging::Message("Loading Sprite3D");
+    Logging::Message("Loading BillboardAnimation");
 
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("sprite3D"));
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("BillboardAnimation"));
 }
 
-void SceneLoader::createParticleEmitterInScene() {
-    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2);
-
+void SceneLoader::createParticleEmitterInScene()
+{
     auto *newObject = new ParticleEmitter(
         ParticleEmitterState::DEFAULT,
         nullptr,
-        position,
+        ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2),
         9999,
         Color::red(),
         Color::green(),
@@ -335,45 +351,52 @@ void SceneLoader::createParticleEmitterInScene() {
         nullptr
     );
     newObject->setBelongToScene(true);
-    Logging::Message("Loading ParticleEmitter");
 
+    Logging::Message("Loading ParticleEmitter");
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_particleEmitter"));
 }
 
-void SceneLoader::createImage2DToScene(const std::string &filename, const char *name)
+void SceneLoader::createImage3DToScene(const std::string &filename)
 {
-    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10);
-
-    auto *newObject = new Image2D(position, 10, 10, new Image(filename));
+    auto *newObject = new Image3D(
+        ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10),
+        10,
+        10,
+        new Image(filename)
+    );
     newObject->setBelongToScene(true);
 
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name));
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Image3D"));
 }
 
-void SceneLoader::createGhostBody3DToScene(const std::string& filename, const char *name) {
-    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
-
+void SceneLoader::createGhostBody3DToScene(const std::string& filename)
+{
     auto *newObject = new Mesh3DGhost();
     newObject->setBelongToScene(true);
-    newObject->setPosition(position);
+    newObject->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
     newObject->setScale(1);
     newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + filename));
     newObject->updateBoundingBox();
     newObject->makeSimpleGhostBody(
-            newObject->getAabb().size(),
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            btBroadphaseProxy::DefaultFilter,
-            btBroadphaseProxy::DefaultFilter
+        newObject->getAabb().size(),
+        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        btBroadphaseProxy::DefaultFilter,
+        btBroadphaseProxy::DefaultFilter
     );
 
     Logging::Message("Loading GhostBody from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name));
-}
-
-std::map<std::string, SceneObjectLoaderMapping> &SceneLoader::getSceneTypes() {
-    return sceneTypes;
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Mesh3DGhost"));
 }
 
 std::map<std::string, Mesh3DShaderLoaderMapping> &SceneLoader::getMesh3DShaderTypes() {
     return mesh3DShaderTypes;
+}
+
+void SceneLoader::createBillboardAnimation8Directions()
+{
+    auto *newObject = new BillboardAnimation8Directions(10, 10);
+    newObject->setBelongToScene(true);
+    newObject->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
+
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Sprite3DDirectional"));
 }

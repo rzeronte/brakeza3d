@@ -1,7 +1,7 @@
-#include "../../include/Objects/Mesh3DAnimated.h"
+#include "../../include/Objects/Mesh3DAnimation.h"
 #include "../../include/Brakeza3D.h"
 
-void Mesh3DAnimated::onUpdate()
+void Mesh3DAnimation::onUpdate()
 {
     if (this->scene != nullptr) {
         this->updateFrameTransformations();
@@ -9,7 +9,7 @@ void Mesh3DAnimated::onUpdate()
     Mesh3D::onUpdate();
 }
 
-void Mesh3DAnimated::updateFrameTransformations() {
+void Mesh3DAnimation::updateFrameTransformations() {
     if (!this->scene->HasAnimations()) return;
 
     if (this->isFollowCamera()) {
@@ -73,7 +73,7 @@ void Mesh3DAnimated::updateFrameTransformations() {
     }
 }
 
-bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &filename) {
+bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename) {
     Logging::Log("AssimpLoadAnimation for %s", filename.c_str());
 
     this->scene = importer.ReadFile(
@@ -99,7 +99,7 @@ bool Mesh3DAnimated::AssimpLoadAnimation(const std::string &filename) {
     return true;
 }
 
-void Mesh3DAnimated::ReadNodes() {
+void Mesh3DAnimation::ReadNodes() {
     m_GlobalInverseTransform = scene->mRootNode->mTransformation;
     m_GlobalInverseTransform.Inverse();
 
@@ -110,7 +110,7 @@ void Mesh3DAnimated::ReadNodes() {
     this->updateBoundingBox();
 }
 
-void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh) {
+void Mesh3DAnimation::AssimpProcessMeshAnimation(int i, aiMesh *mesh) {
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
     std::vector<VertexBoneData> localMeshBones(mesh->mNumVertices);
@@ -163,7 +163,7 @@ void Mesh3DAnimated::AssimpProcessMeshAnimation(int i, aiMesh *mesh) {
     }
 }
 
-void Mesh3DAnimated::loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData)
+void Mesh3DAnimation::loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData)
 {
     for (int i = 0; i < (int) mesh->mNumBones; i++) {
         int BoneIndex;
@@ -195,7 +195,7 @@ void Mesh3DAnimated::loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &me
     }
 }
 
-void Mesh3DAnimated::BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4> &Transforms) {
+void Mesh3DAnimation::BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4> &Transforms) {
     aiMatrix4x4 Identity = aiMatrix4x4();
 
     float TicksPerSecond = scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond != 0
@@ -212,7 +212,7 @@ void Mesh3DAnimated::BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4>
     }
 }
 
-void Mesh3DAnimated::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform) {
+void Mesh3DAnimation::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform) {
     std::string NodeName(pNode->mName.data);
     const aiAnimation *pAnimation = scene->mAnimations[this->indexCurrentAnimation];
 
@@ -256,7 +256,7 @@ void Mesh3DAnimated::ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode,
     }
 }
 
-const aiNodeAnim *Mesh3DAnimated::FindNodeAnim(const aiAnimation *pAnimation, const std::string& NodeName) {
+const aiNodeAnim *Mesh3DAnimation::FindNodeAnim(const aiAnimation *pAnimation, const std::string& NodeName) {
     for (unsigned int i = 0; i < pAnimation->mNumChannels; i++) {
         const aiNodeAnim *pNodeAnim = pAnimation->mChannels[i];
 
@@ -268,7 +268,7 @@ const aiNodeAnim *Mesh3DAnimated::FindNodeAnim(const aiAnimation *pAnimation, co
     return nullptr;
 }
 
-unsigned int Mesh3DAnimated::FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim) {
+unsigned int Mesh3DAnimation::FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim) {
     assert(pNodeAnim->mNumRotationKeys > 0);
 
     for (unsigned int i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
@@ -281,7 +281,7 @@ unsigned int Mesh3DAnimated::FindRotation(float AnimationTime, const aiNodeAnim 
     return 0;
 }
 
-unsigned int Mesh3DAnimated::FindPosition(float AnimationTime, const aiNodeAnim *pNodeAnim) {
+unsigned int Mesh3DAnimation::FindPosition(float AnimationTime, const aiNodeAnim *pNodeAnim) {
     for (unsigned int i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
         if (AnimationTime < (float) pNodeAnim->mPositionKeys[i + 1].mTime) {
             return i;
@@ -293,7 +293,7 @@ unsigned int Mesh3DAnimated::FindPosition(float AnimationTime, const aiNodeAnim 
     return 0;
 }
 
-int Mesh3DAnimated::updateForBone(Vertex3D &V, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms) {
+int Mesh3DAnimation::updateForBone(Vertex3D &V, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms) {
     int numVertexBones = 0;
 
     if (this->m_NumBones == 0) return 0;
@@ -320,12 +320,12 @@ int Mesh3DAnimated::updateForBone(Vertex3D &V, int meshID, int vertexID, std::ve
         }
     }
 
-    Mesh3DAnimated::AIMatrixToVertex(V, BoneTransform);
+    Mesh3DAnimation::AIMatrixToVertex(V, BoneTransform);
 
     return numVertexBones;
 }
 
-unsigned int Mesh3DAnimated::FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim) {
+unsigned int Mesh3DAnimation::FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim) {
     assert(pNodeAnim->mNumScalingKeys > 0);
 
     for (unsigned int i = 0; i < pNodeAnim->mNumScalingKeys - 1; i++) {
@@ -337,7 +337,7 @@ unsigned int Mesh3DAnimated::FindScaling(float AnimationTime, const aiNodeAnim *
     return 0;
 }
 
-void Mesh3DAnimated::AssimpProcessNodeAnimation(aiNode *node) {
+void Mesh3DAnimation::AssimpProcessNodeAnimation(aiNode *node) {
     if (std::string(node->mName.C_Str()) == this->getFollowPointLabel()) {
         this->setFollowPointNode(node);
         this->follow_me_point_object = new Object3D();
@@ -355,7 +355,7 @@ void Mesh3DAnimated::AssimpProcessNodeAnimation(aiNode *node) {
     }
 }
 
-void Mesh3DAnimated::AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m) {
+void Mesh3DAnimation::AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m) {
     aiVector3D aiv(V.x, V.y, V.z);
     aiv = m * aiv;
 
@@ -364,7 +364,7 @@ void Mesh3DAnimated::AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m) {
     V.z = aiv.z;
 }
 
-void Mesh3DAnimated::CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim) {
+void Mesh3DAnimation::CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim) {
     // we need at least two values to interpolate...
     if (pNodeAnim->mNumRotationKeys == 1) {
         Out = pNodeAnim->mRotationKeys[0].mValue;
@@ -385,7 +385,7 @@ void Mesh3DAnimated::CalcInterpolatedRotation(aiQuaternion &Out, float Animation
     Out = Out.Normalize();
 }
 
-void Mesh3DAnimated::CalcInterpolatedPosition(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim) {
+void Mesh3DAnimation::CalcInterpolatedPosition(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim) {
     if (pNodeAnim->mNumPositionKeys == 1) {
         Out = pNodeAnim->mPositionKeys[0].mValue;
         return;
@@ -405,7 +405,7 @@ void Mesh3DAnimated::CalcInterpolatedPosition(aiVector3D &Out, float AnimationTi
 }
 
 
-void Mesh3DAnimated::CalcInterpolatedScaling(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim) {
+void Mesh3DAnimation::CalcInterpolatedScaling(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim) {
     if (pNodeAnim->mNumScalingKeys == 1) {
         Out = pNodeAnim->mScalingKeys[0].mValue;
         return;
@@ -424,7 +424,7 @@ void Mesh3DAnimated::CalcInterpolatedScaling(aiVector3D &Out, float AnimationTim
     Out = Start + Factor * Delta;
 }
 
-void Mesh3DAnimated::drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms)
+void Mesh3DAnimation::drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms)
 {
     Color colorPoints = Color::red();
 
@@ -450,19 +450,19 @@ void Mesh3DAnimated::drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transform
     }
 }
 
-bool Mesh3DAnimated::isRemoveAtEndAnimation() const {
+bool Mesh3DAnimation::isRemoveAtEndAnimation() const {
     return remove_at_end_animation;
 }
 
-void Mesh3DAnimated::setRemoveAtEndAnimation(bool removeAtEnds) {
+void Mesh3DAnimation::setRemoveAtEndAnimation(bool removeAtEnds) {
     remove_at_end_animation = removeAtEnds;
 }
 
-aiNode *Mesh3DAnimated::getFollowPointNode() const {
+aiNode *Mesh3DAnimation::getFollowPointNode() const {
     return follow_me_point_node;
 }
 
-void Mesh3DAnimated::setFollowPointNode(aiNode *followPointOrigin) {
+void Mesh3DAnimation::setFollowPointNode(aiNode *followPointOrigin) {
     follow_me_point_node = followPointOrigin;
 
     std::string BoneName = follow_me_point_node->mName.C_Str();
@@ -477,7 +477,7 @@ void Mesh3DAnimated::setFollowPointNode(aiNode *followPointOrigin) {
     }
 }
 
-void Mesh3DAnimated::updateFollowObjectPosition(std::vector<aiMatrix4x4> Transforms) {
+void Mesh3DAnimation::updateFollowObjectPosition(std::vector<aiMatrix4x4> Transforms) {
     if (boneMapping.find(this->follow_me_point_label) != boneMapping.end()) {
         int idCurrentNode = boneMapping[this->follow_me_point_node->mName.C_Str()];
 
@@ -510,26 +510,26 @@ void Mesh3DAnimated::updateFollowObjectPosition(std::vector<aiMatrix4x4> Transfo
     }
 }
 
-const std::string &Mesh3DAnimated::getFollowPointLabel() const {
+const std::string &Mesh3DAnimation::getFollowPointLabel() const {
     return follow_me_point_label;
 }
 
-void Mesh3DAnimated::setFollowPointLabel(const std::string &followPointLabel) {
+void Mesh3DAnimation::setFollowPointLabel(const std::string &followPointLabel) {
     follow_me_point_label = followPointLabel;
 }
 
-Object3D *Mesh3DAnimated::getFollowMePointObject() const {
+Object3D *Mesh3DAnimation::getFollowMePointObject() const {
     return follow_me_point_object;
 }
 
-const M3 &Mesh3DAnimated::getFixedRotation() const {
+const M3 &Mesh3DAnimation::getFixedRotation() const {
     return fixedRotation;
 }
 
-void Mesh3DAnimated::setFixedRotation(const M3 &fixedRotation) {
-    Mesh3DAnimated::fixedRotation = fixedRotation;
+void Mesh3DAnimation::setFixedRotation(const M3 &fixedRotation) {
+    Mesh3DAnimation::fixedRotation = fixedRotation;
 }
 
-bool Mesh3DAnimated::isAnimationEnds() const {
+bool Mesh3DAnimation::isAnimationEnds() const {
     return animation_ends;
 }

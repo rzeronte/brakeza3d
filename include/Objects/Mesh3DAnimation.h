@@ -35,7 +35,7 @@ struct BoneInfo {
     aiMatrix4x4 FinalTransformation;
 };
 
-class Mesh3DAnimated : public Mesh3D {
+class Mesh3DAnimation : public Mesh3D {
 public:
     Assimp::Importer importer;
     const aiScene *scene = nullptr;

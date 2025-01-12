@@ -6,10 +6,10 @@
 #include <btBulletDynamicsCommon.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include "../Misc/Timer.h"
-#include "../Objects/SpriteDirectional3D.h"
+#include "../Objects/BillboardAnimation8Directions.h"
 #include "Body.h"
 
-class SpriteDirectional3DBody : public SpriteDirectional3D, public Body {
+class BillboardAnimation8DirectionsBody : public BillboardAnimation8Directions, public Body {
 public:
     btRigidBody *makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld *);
 

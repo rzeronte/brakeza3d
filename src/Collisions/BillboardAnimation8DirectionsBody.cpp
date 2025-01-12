@@ -1,9 +1,9 @@
 
 #include <btBulletDynamicsCommon.h>
-#include "../../include/Physics/SpriteDirectional3DBody.h"
+#include "../../include/Physics/BillboardAnimation8DirectionsBody.h"
 #include "../../include/Misc/Tools.h"
 
-void SpriteDirectional3DBody::integrate() {
+void BillboardAnimation8DirectionsBody::integrate() {
     if (this->mass == 0) {
         //return;
     }
@@ -22,7 +22,7 @@ void SpriteDirectional3DBody::integrate() {
     //btVector3 axis = quat.getAxis();
 }
 
-btRigidBody *SpriteDirectional3DBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld *world) {
+btRigidBody *BillboardAnimation8DirectionsBody::makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld *world) {
     this->mass = mass;
 
     btTransform trans;
@@ -51,9 +51,9 @@ btRigidBody *SpriteDirectional3DBody::makeRigidBody(float mass, Vertex3D size, b
     return this->body;
 }
 
-btRigidBody *SpriteDirectional3DBody::makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *cam,
-                                                              btDiscreteDynamicsWorld *world, bool applyCameraImpulse,
-                                                              float forceImpulse, float accuracy) {
+btRigidBody *BillboardAnimation8DirectionsBody::makeProjectileRigidBody(float mass, Vertex3D size, Camera3D *cam,
+                                                                        btDiscreteDynamicsWorld *world, bool applyCameraImpulse,
+                                                                        float forceImpulse, float accuracy) {
     this->mass = mass;
 
     btTransform trans;
@@ -100,9 +100,9 @@ btRigidBody *SpriteDirectional3DBody::makeProjectileRigidBody(float mass, Vertex
     return this->body;
 }
 
-btRigidBody *SpriteDirectional3DBody::makeProjectileRigidBodyToPlayer(float mass, Vertex3D size, Vertex3D dir,
-                                                                      btDiscreteDynamicsWorld *world,
-                                                                      float forceImpulse) {
+btRigidBody *BillboardAnimation8DirectionsBody::makeProjectileRigidBodyToPlayer(float mass, Vertex3D size, Vertex3D dir,
+                                                                                btDiscreteDynamicsWorld *world,
+                                                                                float forceImpulse) {
     this->mass = mass;
 
     btTransform trans;

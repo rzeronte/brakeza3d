@@ -13,8 +13,8 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Transforms.h"
-#include "../../include/2D/Sprite2D.h"
-#include "../../include/Objects/Mesh3DAnimated.h"
+#include "../../include/2D/Image2DAnimation.h"
+#include "../../include/Objects/Mesh3DAnimation.h"
 #include "../../include/Objects/ParticleEmitter.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -313,7 +313,7 @@ void Tools::addSceneObject(const std::string& filename, const std::string& name)
 {
     Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
 
-    auto *newObject = new Mesh3DAnimated();
+    auto *newObject = new Mesh3DAnimation();
     newObject->setBelongToScene(true);
     newObject->setPosition(position);
     newObject->AssimpLoadAnimation(filename);
@@ -328,7 +328,7 @@ void Tools::makeFadeInSprite(Vertex3D position, TextureAnimated *animation)
     Point2D P1 = Transforms::WorldToPoint(position);
 
     Brakeza3D::get()->addObject3D(
-            new Sprite2D( P1.x, P1.y, true, new TextureAnimated(animation)),
+            new Image2DAnimation(P1.x, P1.y, true, new TextureAnimated(animation)),
             Brakeza3D::uniqueObjectLabel("Sprite2DLive")
     );
 }
@@ -338,7 +338,7 @@ void Tools::makeLoopSprite(Vertex3D position, TextureAnimated *animation, float 
     Point2D P1 = Transforms::WorldToPoint(position);
 
     Brakeza3D::get()->addObject3D(
-            new Sprite2D( P1.x, P1.y, ttl, new TextureAnimated(animation)),
+            new Image2DAnimation(P1.x, P1.y, ttl, new TextureAnimated(animation)),
             Brakeza3D::uniqueObjectLabel("fadeInSpriteExplosion")
     );
 }

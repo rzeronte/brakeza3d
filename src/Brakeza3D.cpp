@@ -53,7 +53,7 @@ void Brakeza3D::mainLoop()
     componentsManager->getComponentCollisions()->initBulletSystem();
     componentsManager->getComponentCamera()->setFreeLook(true);
     onStartComponents();
-    //LoadDemo();
+    LoadDemo();
     componentsManager->getComponentWindow()->ImGuiInitialize(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
     welcomeMessage();
     componentsManager->getComponentRender()->getSceneLoader().loadScene(EngineSetup::get()->CONFIG_FOLDER + "brakeza.json");
@@ -208,17 +208,6 @@ std::string Brakeza3D::uniqueObjectLabel(const char *prefix)
 
 void Brakeza3D::LoadDemo()
 {
-    auto *newObject = new Mesh3D();
-    newObject->setEnabled(true);
-    newObject->setBelongToScene(true);
-    newObject->setStencilBufferEnabled(true);
-    newObject->setRotationFrameEnabled(true);
-    newObject->setRotationFrame(Vertex3D(1, 0, 0));
-    newObject->setPosition(Vertex3D(0, 0, 6000));
-    newObject->setScale(0.5);
-    newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + "eye.fbx"));
-
-    get()->addObject3D(newObject, "DemoObject3D");
 }
 
 GUIManager *Brakeza3D::getManagerGui() const {

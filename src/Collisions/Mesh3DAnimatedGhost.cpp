@@ -14,7 +14,7 @@ void Mesh3DAnimatedGhost::integrate()
 
 void Mesh3DAnimatedGhost::onUpdate()
 {
-    Mesh3DAnimated::onUpdate();
+    Mesh3DAnimation::onUpdate();
 }
 
 void Mesh3DAnimatedGhost::resolveCollision(Collisionable *with)

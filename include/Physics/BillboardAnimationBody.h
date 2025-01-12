@@ -3,10 +3,10 @@
 #define BRAKEDA3D_SPRITE3DBODY_H
 
 #include <btBulletDynamicsCommon.h>
-#include "../Objects/Sprite3D.h"
+#include "../Objects/BillboardAnimation.h"
 #include "Body.h"
 
-class Sprite3DBody : public Sprite3D, public Body {
+class BillboardAnimationBody : public BillboardAnimation, public Body {
 public:
     btRigidBody *makeRigidBody(float mass, Vertex3D size, btDiscreteDynamicsWorld *);
 

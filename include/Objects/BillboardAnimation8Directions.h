@@ -2,7 +2,6 @@
 #ifndef BRAKEDA3D_SPRITE_H
 #define BRAKEDA3D_SPRITE_H
 
-
 #include "Object3D.h"
 #include "../Misc/Timer.h"
 #include "../2D/TextureAnimatedDirectional.h"
@@ -11,21 +10,12 @@
 #include "../Render/Billboard.h"
 #include "../Misc/Counter.h"
 
-#define DIR_C 0
-#define DIR_S 1
-#define DIR_SW 2
-#define DIR_W 3
-#define DIR_NW 4
-#define DIR_N 5
-#define DIR_NE 6
-#define DIR_E 7
-#define DIR_SE 8
-
 #define BILLBOARD3D_MAX_ANIMATIONS 5
 
-class SpriteDirectional3D : public Object3D {
+class BillboardAnimation8Directions : public Object3D {
     Billboard *billboard;
-
+    std::string currentSpriteFileVariableToCreateAnimation;
+    int currentFramesVariableToCreateAnimation = 0;
 public:
     float width;
     float height;
@@ -36,9 +26,9 @@ public:
     int numAnimations = 0;
     int currentAnimation = 0;
 
-    TextureAnimatedDirectional *animations[BILLBOARD3D_MAX_ANIMATIONS]{};
+    TextureAnimatedDirectional *animations[BILLBOARD3D_MAX_ANIMATIONS];
 
-    SpriteDirectional3D(float width, float height);
+    BillboardAnimation8Directions(float width, float height);
 
     [[nodiscard]] Billboard *getBillboard() const;
 
@@ -54,11 +44,17 @@ public:
 
     void updateTrianglesCoordinates(Camera3D *cam);
 
-    void linkTexturesTo(SpriteDirectional3D *clone);
+    void linkTexturesTo(BillboardAnimation8Directions *clone);
 
     TextureAnimatedDirectional *getCurrentTextureAnimationDirectional();
 
-    void onUpdate();
+    void onUpdate() override;
+
+    void drawImGuiProperties() override;
+
+    const char *getTypeObject() override;
+
+    const char *getTypeIcon() override;
 };
 
 

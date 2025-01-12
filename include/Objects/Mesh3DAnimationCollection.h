@@ -3,15 +3,15 @@
 
 
 #include <vector>
-#include "Mesh3DAnimated.h"
+#include "Mesh3DAnimation.h"
 
-class Mesh3DAnimatedCollection : public Object3D {
+class Mesh3DAnimationCollection : public Object3D {
 public:
     int currentAnimation = -1;
-    std::vector<Mesh3DAnimated *> mesh3Danimated;
+    std::vector<Mesh3DAnimation *> mesh3Danimated;
     M3 rotationFixed = M3::getMatrixRotationForEulerAngles(180, 0, 0);
 
-    Mesh3DAnimated *getCurrentMesh3DAnimated() const;
+    Mesh3DAnimation *getCurrentMesh3DAnimated() const;
 
     void setAnimation(int index);
 
