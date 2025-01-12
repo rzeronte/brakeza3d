@@ -66,6 +66,12 @@ https://github.com/rzeronte/brakeza-mingw-precompiled-libraries
 
 Currently, I do not compile for Mac, but the project was started on it, so that it shouldn't vary much compared to compiling with Linux, once the dependencies are satisfied.
 
+# Documentation
+
+Here you can find some documentation for starting:
+
+https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md
+
 # Brakeza3D - Videos
 
 ![Screenshoot01](https://brakeza.com/wp-content/uploads/2024/01/screenshoot_2024_04.png)
