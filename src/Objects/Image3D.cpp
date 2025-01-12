@@ -132,11 +132,11 @@ Image3D::~Image3D()
 
 
 const char *Image3D::getTypeObject() {
-    return "Image2D";
+    return "Image3D";
 }
 
 const char *Image3D::getTypeIcon() {
-    return "image2DIcon";
+    return "Image3DIcon";
 }
 
 void Image3D::drawImGuiProperties()

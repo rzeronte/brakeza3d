@@ -86,25 +86,25 @@ struct GUIWidgetMenu
 
                 ImGui::Separator();
 
-                ImGui::Image(icon("sprite2DIcon"), ImVec2(16, 16));
+                ImGui::Image(icon("Image2DIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("Image2D")) {
-                    drawImage2DItemsToLoad(EngineSetup::get()->SPRITES_FOLDER);
+                    drawImage2DItemsToLoad(EngineSetup::get()->IMAGES_FOLDER);
                     ImGui::EndMenu();
                 }
-                ImGui::Image(icon("sprite2DIcon"), ImVec2(16, 16));
+                ImGui::Image(icon("Image2DAnimationIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("Image2D Animation")) {
                     drawImage2DAnimationItemsToLoad(EngineSetup::get()->SPRITES_FOLDER);
                     ImGui::EndMenu();
                 }
-                ImGui::Image(icon("sprite3DIcon"), ImVec2(16, 16));
+                ImGui::Image(icon("BillboardAnimationIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("Billboard Animation")) {
                     drawBillboardAnimationItemsToLoad(EngineSetup::get()->SPRITES_FOLDER);
                     ImGui::EndMenu();
                 }
-                ImGui::Image(icon("sprite3DDirectionalIcon"), ImVec2(16, 16));
+                ImGui::Image(icon("BillboardAnimation8DirectionsIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("Billboard 8-Directions", "CTRL+L")) {
                     SceneLoader::createBillboardAnimation8Directions();
@@ -113,7 +113,7 @@ struct GUIWidgetMenu
 
                 ImGui::Separator();
 
-                ImGui::Image(icon("image2DIcon"), ImVec2(16, 16));
+                ImGui::Image(icon("Image3DIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("Image3D")) {
                     drawImage3DItemsToLoad(EngineSetup::get()->IMAGES_FOLDER);
@@ -340,7 +340,7 @@ struct GUIWidgetMenu
             auto title = std::to_string(i-1) + ") " + file;
 
             auto fullPath = folder + "/" + file;
-            ImGui::Image(icon("sprite3DIcon"), ImVec2(16, 16));
+            ImGui::Image(icon("Image2DIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
                 SceneLoader::createImage2DInScene(fullPath);
@@ -368,7 +368,7 @@ struct GUIWidgetMenu
             auto title = std::to_string(i-1) + ") " + file;
 
             auto fullPath = folder + "/" + file;
-            ImGui::Image(icon("sprite3DIcon"), ImVec2(16, 16));
+            ImGui::Image(icon("Image2DAnimationIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
                 SceneLoader::createImage2DAnimatedInScene(fullPath);
@@ -395,7 +395,7 @@ struct GUIWidgetMenu
             auto title = std::to_string(i-1) + ") " + file;
 
             auto fullPath = folder + file;
-            ImGui::Image(icon("sprite3DIcon"), ImVec2(16, 16));
+            ImGui::Image(icon("Image3DIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
                 SceneLoader::createImage3DToScene(fullPath);
@@ -428,7 +428,7 @@ struct GUIWidgetMenu
             auto title = std::to_string(i-1) + ") " + file;
 
             auto fullPath = folder + "/" + file;
-            ImGui::Image(icon("sprite3DIcon"), ImVec2(16, 16));
+            ImGui::Image(icon("BillboardAnimationIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
                 SceneLoader::createBillboardAnimationInScene(fullPath);

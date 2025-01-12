@@ -78,12 +78,14 @@ void Image2DAnimation::updatePosition(int x, int y)
     this->y = y;
 }
 
-const char *Image2DAnimation::getTypeObject() {
+const char *Image2DAnimation::getTypeObject()
+{
     return "Image2DAnimation";
 }
 
-const char *Image2DAnimation::getTypeIcon() {
-    return "sprite2DIcon";
+const char *Image2DAnimation::getTypeIcon()
+{
+    return "Image2DAnimationIcon";
 }
 
 void Image2DAnimation::drawImGuiProperties()

@@ -4,6 +4,8 @@
 
 #include "../../include/2D/Image2D.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/Brakeza3D.h"
 
 Image2D::Image2D(int x, int y, Image *image)
 :
@@ -25,7 +27,7 @@ void Image2D::onUpdate()
     image->drawFlatAlpha(
         x - w/2,
         y - h/2,
-        alpha/255,
+        alpha,
         ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 }
@@ -42,7 +44,7 @@ const char *Image2D::getTypeObject()
 }
 
 const char *Image2D::getTypeIcon() {
-    return "image2DIcon";
+    return "Image2DIcon";
 }
 
 void Image2D::drawImGuiProperties()
@@ -67,6 +69,31 @@ void Image2D::drawImGuiProperties()
             ImGui::TreePop();
         }
 
+        if (ImGui::TreeNode("Image")) {
+            if (image->isLoaded()) {
+                ImGui::Image((ImTextureID) image->getOGLTextureID(),ImVec2(32, 32));
+            } else {
+                ImGui::Text("No image selected. Drag a texture here!");
+            }
+
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
+                    Logging::Message("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
+                    IM_ASSERT(payload->DataSize == sizeof(int));
+                    auto selection = (char*) payload->Data;
+                    auto fullPath = EngineSetup::get()->IMAGES_FOLDER + selection;
+                    if (image == nullptr) {
+                        image = new Image(fullPath);
+                    } else {
+                        image->setImage(fullPath);
+                    }
+                    Logging::Message("File %s", selection);
+                }
+                ImGui::EndDragDropTarget();
+            }
+            ImGui::TreePop();
+        }
+
         ImGui::TreePop();
     }
 }
@@ -85,10 +112,21 @@ cJSON *Image2D::getJSON()
 
 void Image2D::createFromJSON(cJSON *object)
 {
+    auto name = cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring;
+    auto x = (float) cJSON_GetObjectItemCaseSensitive(object, "x")->valueint;
+    auto y = (float) cJSON_GetObjectItemCaseSensitive(object, "y")->valueint;
+    auto image = cJSON_GetObjectItemCaseSensitive(object, "image")->valuestring;
 
+    auto o = new Image2D(x, y,new Image(image));
+
+    Image2D::setPropertiesFromJSON(object, o);
+
+    Brakeza3D::get()->addObject3D(o, name);
 }
 
 void Image2D::setPropertiesFromJSON(cJSON *object, Image2D *o)
 {
+    o->setBelongToScene(true);
 
+    Object3D::setPropertiesFromJSON(object, o);
 }

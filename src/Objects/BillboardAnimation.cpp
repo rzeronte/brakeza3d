@@ -118,12 +118,14 @@ BillboardAnimation::~BillboardAnimation()
     }
 }
 
-const char *BillboardAnimation::getTypeObject() {
+const char *BillboardAnimation::getTypeObject()
+{
     return "BillboardAnimation";
 }
 
-const char *BillboardAnimation::getTypeIcon() {
-    return "sprite3DIcon";
+const char *BillboardAnimation::getTypeIcon()
+{
+    return "BillboardAnimationIcon";
 }
 
 void BillboardAnimation::updateBillboardSize()
@@ -221,4 +223,3 @@ void BillboardAnimation::createFromJSON(cJSON *object)
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
-

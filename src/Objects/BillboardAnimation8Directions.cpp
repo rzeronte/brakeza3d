@@ -213,5 +213,5 @@ const char *BillboardAnimation8Directions::getTypeObject()
 }
 
 const char *BillboardAnimation8Directions::getTypeIcon() {
-    return "sprite3DDirectionalIcon";
+    return "BillboardAnimation8DirectionsIcon";
 }
