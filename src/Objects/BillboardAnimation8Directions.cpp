@@ -76,6 +76,8 @@ void BillboardAnimation8Directions::addAnimationDirectional2D(
         animation->loadImagesForZeroDirection();
         animation->isZeroDirection = true;
     }
+
+    animations.push_back(animation);
 }
 
 void BillboardAnimation8Directions::updateTextureFromCameraAngle(Object3D *o, Camera3D *cam)
