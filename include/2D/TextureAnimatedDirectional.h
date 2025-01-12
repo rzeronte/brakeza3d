@@ -22,6 +22,8 @@ public:
     bool isZeroDirection = false;
     Image *frames[9][ANIMATION2D_MAX_FRAMES];
 
+    bool loaded = false;
+
     TextureAnimatedDirectional();
 
     void setup(std::string file, int newNumFrames, int newFps, int newMaxTimes);
@@ -39,6 +41,8 @@ public:
     void importTextures(TextureAnimatedDirectional *origin, int numFrames);
 
     void drawImGuiProperties();
+
+    bool isLoaded() const;
 };
 
 

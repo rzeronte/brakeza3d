@@ -23,6 +23,8 @@ void TextureAnimatedDirectional::loadImages()
             this->frames[d][i] = new Image(file);
         }
     }
+
+    loaded = true;
 }
 
 void TextureAnimatedDirectional::loadImagesForZeroDirection()
@@ -32,6 +34,8 @@ void TextureAnimatedDirectional::loadImagesForZeroDirection()
         std::string file = this->base_file + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
         this->frames[0][i] = new Image(file);
     }
+
+    loaded = true;
 }
 
 int TextureAnimatedDirectional::getNumFrames() const {
@@ -68,4 +72,8 @@ void TextureAnimatedDirectional::importTextures(TextureAnimatedDirectional *orig
 void TextureAnimatedDirectional::drawImGuiProperties()
 {
 
+}
+
+bool TextureAnimatedDirectional::isLoaded() const {
+    return loaded;
 }

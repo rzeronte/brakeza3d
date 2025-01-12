@@ -24,8 +24,8 @@ void BillboardAnimation::onUpdate()
 
     ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
         this,
-        this->getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
-        this->getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
+        (int) getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
+        (int) getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
         billboard->vertexbuffer,
         billboard->uvbuffer,
         billboard->normalbuffer,
@@ -152,11 +152,42 @@ void BillboardAnimation::drawImGuiProperties()
             ImGui::TreePop();
         }
 
+        ImGui::Separator();
+        if (ImGui::TreeNode("Add animation")) {
+            static char name[256];
+            strncpy(name, currentSpriteFileVariableToCreateAnimation.c_str(), sizeof(name));
+
+            if (ImGui::InputText("Sprite Folder##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+                currentSpriteFileVariableToCreateAnimation = name;
+            }
+            ImGui::InputInt("Width", &currentWidthVariableToCreateAnimation);
+            ImGui::InputInt("Height", &currentHeightVariableToCreateAnimation);
+            ImGui::InputInt("Nº Frames", &currentFramesVariableToCreateAnimation);
+
+            if (ImGui::Button(std::string("Load directional animation").c_str())) {
+                addAnimation(
+                    currentSpriteFileVariableToCreateAnimation,
+                    currentWidthVariableToCreateAnimation,
+                    currentHeightVariableToCreateAnimation,
+                    currentFramesVariableToCreateAnimation,
+                    24
+                );
+                setAnimation((int) animations.size()-1);
+                currentSpriteFileVariableToCreateAnimation = "";
+                currentFramesVariableToCreateAnimation = 0;
+                currentWidthVariableToCreateAnimation = 0;
+                currentHeightVariableToCreateAnimation = 0;
+            }
+
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
+
         const char* items[(int) animations.size()];
         for (int i = 0; i < (int) animations.size(); i++) {
             items[i] = animations[i]->getBaseFilename().c_str();
         }
-        ImGui::Combo("Type", &currentAnimationIndex, items, IM_ARRAYSIZE(items));
+        ImGui::Combo("Animation", &currentAnimationIndex, items, IM_ARRAYSIZE(items));
 
         getCurrentTextureAnimation()->drawImGuiProperties();
 

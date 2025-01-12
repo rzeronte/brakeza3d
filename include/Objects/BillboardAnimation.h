@@ -23,6 +23,10 @@ private:
     bool autoRemoveAfterAnimation;
     bool sharedTextures;
 
+    std::string currentSpriteFileVariableToCreateAnimation;
+    int currentFramesVariableToCreateAnimation = 0;
+    int currentWidthVariableToCreateAnimation = 0;
+    int currentHeightVariableToCreateAnimation = 0;
 public:
     BillboardAnimation(float width, float height);
 

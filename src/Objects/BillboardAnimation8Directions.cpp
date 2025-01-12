@@ -4,6 +4,7 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/Render/Maths.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
 BillboardAnimation8Directions::BillboardAnimation8Directions(float width, float height)
 :
@@ -13,14 +14,14 @@ BillboardAnimation8Directions::BillboardAnimation8Directions(float width, float 
     this->billboard = new Billboard(width, height);
     this->counterAnimations = new Counter();
 
-    for (auto & animation : this->animations) {
+    /*for (auto & animation : this->animations) {
         animation = new TextureAnimatedDirectional();
-    }
+    }*/
 }
 
 void BillboardAnimation8Directions::onUpdate()
 {
-    if (numAnimations <= 0) return;
+    if ((int) animations.size() <= 0) return;
 
     this->updateTrianglesCoordinates(ComponentsManager::get()->getComponentCamera()->getCamera());
 
@@ -60,8 +61,9 @@ void BillboardAnimation8Directions::addAnimationDirectional2D(
 )
 {
     Logging::Message("Adding TextureAnimatedDirectional to SpriteDirectional(%s)...", animation_folder.c_str(), getLabel().c_str());
+    auto animation = new TextureAnimatedDirectional();
 
-    this->animations[this->numAnimations]->setup(
+    animation->setup(
         animation_folder,
         numFrames,
         fps,
@@ -69,18 +71,16 @@ void BillboardAnimation8Directions::addAnimationDirectional2D(
     );
 
     if (!zeroDirection) {
-        this->animations[this->numAnimations]->loadImages();
+        animation->loadImages();
     } else {
-        this->animations[this->numAnimations]->loadImagesForZeroDirection();
-        this->animations[this->numAnimations]->isZeroDirection = true;
+        animation->loadImagesForZeroDirection();
+        animation->isZeroDirection = true;
     }
-
-    this->numAnimations++;
 }
 
 void BillboardAnimation8Directions::updateTextureFromCameraAngle(Object3D *o, Camera3D *cam)
 {
-    if (numAnimations == 0) return;
+    if ((int) animations.size() <= 0) return;
 
     float enemyAngle = Maths::getHorizontalAngleBetweenObject3DAndCamera(o, cam);
     int direction = getDirectionForAngle(enemyAngle);
@@ -105,18 +105,6 @@ void BillboardAnimation8Directions::setAnimation(int indexAnimation)
     this->currentAnimation = indexAnimation;
     this->updateStep();
     this->counterAnimations->setStep(step);
-}
-
-void BillboardAnimation8Directions::linkTexturesTo(BillboardAnimation8Directions *clone)
-{
-    this->numAnimations = clone->numAnimations;
-    for (int i = 0; i < clone->numAnimations; i++) {
-        this->animations[i]->importTextures(clone->animations[i], clone->animations[i]->numFrames);
-        this->animations[i]->isZeroDirection = clone->animations[i]->isZeroDirection;
-        this->animations[i]->numFrames = clone->animations[i]->numFrames;
-        this->animations[i]->base_file = clone->animations[i]->base_file;
-        this->animations[i]->maxTimes = clone->animations[i]->maxTimes;
-    }
 }
 
 TextureAnimatedDirectional *BillboardAnimation8Directions::getCurrentTextureAnimationDirectional()
@@ -170,38 +158,46 @@ void BillboardAnimation8Directions::drawImGuiProperties()
         }
 
         ImGui::Separator();
+        if (ImGui::TreeNode("Add animation")) {
+            static char name[256];
+            strncpy(name, currentSpriteFileVariableToCreateAnimation.c_str(), sizeof(name));
 
-        static char name[256];
-        strncpy(name, currentSpriteFileVariableToCreateAnimation.c_str(), sizeof(name));
+            if (ImGui::InputText("Sprite Folder##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+                currentSpriteFileVariableToCreateAnimation = name;
+            }
+            if (ImGui::InputInt("Num. Frames", &currentFramesVariableToCreateAnimation)) {
+            }
 
-        if (ImGui::InputText("Sprite Folder##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-            currentSpriteFileVariableToCreateAnimation = name;
-        }
-        if (ImGui::InputInt("Num. Frames", &currentFramesVariableToCreateAnimation)) {
-        }
+            if (ImGui::Button(std::string("Load directional animation").c_str())) {
+                addAnimationDirectional2D(
+                    currentSpriteFileVariableToCreateAnimation,
+                    currentFramesVariableToCreateAnimation,
+                    24,
+                    false,
+                    -1
+                );
+                setAnimation((int) animations.size()-1);
+                currentSpriteFileVariableToCreateAnimation = "";
+                currentFramesVariableToCreateAnimation = 0;
+            }
 
-        if (ImGui::Button(std::string("Load directional animation").c_str())) {
-            addAnimationDirectional2D(
-                currentSpriteFileVariableToCreateAnimation,
-                currentFramesVariableToCreateAnimation,
-                24,
-                false,
-                -1
-            );
-            setAnimation(this->numAnimations-1);
-            currentSpriteFileVariableToCreateAnimation = "";
-            currentFramesVariableToCreateAnimation = 0;
+            ImGui::TreePop();
         }
 
         ImGui::Separator();
 
-        const char* items[numAnimations];
-        for (int i = 0; i < numAnimations; i++) {
+        /*const char* items[(int) animations.size()];
+        for (int i = 0; i < (int) animations.size(); i++) {
             items[i] = animations[i]->base_file.c_str();
         }
-        ImGui::Combo("Animation", &currentAnimation, items, IM_ARRAYSIZE(items));
 
-        getCurrentTextureAnimationDirectional()->drawImGuiProperties();
+        if ((int) animations.size() > 0) {
+            ImGui::Combo("Animation", &currentAnimation, items, IM_ARRAYSIZE(items));
+        } else {
+            ImGui::Text("No animations found!");
+        }
+
+        getCurrentTextureAnimationDirectional()->drawImGuiProperties();*/
 
         ImGui::TreePop();
     }
@@ -214,4 +210,67 @@ const char *BillboardAnimation8Directions::getTypeObject()
 
 const char *BillboardAnimation8Directions::getTypeIcon() {
     return "BillboardAnimation8DirectionsIcon";
+}
+
+
+cJSON *BillboardAnimation8Directions::getJSON()
+{
+    auto root =  Object3D::getJSON();
+
+    cJSON_AddNumberToObject(root, "width", width);
+    cJSON_AddNumberToObject(root, "height", height);
+
+    cJSON *animationsArrayJSON = cJSON_CreateArray();
+    for (auto a : animations) {
+        if (!a->isLoaded()) continue;
+        cJSON *animationJSON = cJSON_CreateObject();
+        cJSON_AddStringToObject(animationJSON, "folder", a->base_file.c_str());
+        cJSON_AddNumberToObject(animationJSON, "frames", (int) a->numFrames);
+        cJSON_AddNumberToObject(animationJSON, "fps", (int) a->fps);
+        cJSON_AddItemToArray(animationsArrayJSON, animationJSON);
+    }
+    cJSON_AddItemToObject(root, "animations", animationsArrayJSON);
+    cJSON_AddNumberToObject(root, "currentIndexAnimation", currentAnimation);
+
+    return root;
+}
+
+void BillboardAnimation8Directions::createFromJSON(cJSON *object)
+{
+    auto o = new BillboardAnimation8Directions(1, 1);
+
+    BillboardAnimation8Directions::setPropertiesFromJSON(object, o);
+
+    Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
+}
+
+void BillboardAnimation8Directions::setPropertiesFromJSON(cJSON *object, BillboardAnimation8Directions *o)
+{
+    o->setBelongToScene(true);
+    Object3D::setPropertiesFromJSON(object, o);
+
+    o->width = (float) cJSON_GetObjectItemCaseSensitive(object, "width")->valueint;
+    o->height = (float) cJSON_GetObjectItemCaseSensitive(object, "height")->valueint;
+
+    if (cJSON_GetObjectItemCaseSensitive(object, "animations") != nullptr) {
+        cJSON *currentAnimation;
+        cJSON_ArrayForEach(currentAnimation, cJSON_GetObjectItemCaseSensitive(object, "animations")) {
+            auto folder = cJSON_GetObjectItemCaseSensitive(currentAnimation, "folder")->valuestring;
+            auto frames = cJSON_GetObjectItemCaseSensitive(currentAnimation, "frames")->valueint;
+            auto fps = cJSON_GetObjectItemCaseSensitive(currentAnimation, "fps")->valueint;
+
+            o->addAnimationDirectional2D(folder, frames, fps, false, -1);
+        }
+
+        o->updateBillboardSize();
+
+        int animationIndex = cJSON_GetObjectItemCaseSensitive(object, "currentIndexAnimation")->valueint;
+        o->setAnimation(animationIndex);
+        o->updateStep();
+    }
+}
+
+void BillboardAnimation8Directions::updateBillboardSize()
+{
+    billboard->updateSize(width, height);
 }

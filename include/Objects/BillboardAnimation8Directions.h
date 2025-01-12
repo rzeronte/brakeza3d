@@ -10,8 +10,6 @@
 #include "../Render/Billboard.h"
 #include "../Misc/Counter.h"
 
-#define BILLBOARD3D_MAX_ANIMATIONS 5
-
 class BillboardAnimation8Directions : public Object3D {
     Billboard *billboard;
     std::string currentSpriteFileVariableToCreateAnimation;
@@ -23,10 +21,9 @@ public:
     Counter *counterAnimations;
     float step = 0;
 
-    int numAnimations = 0;
     int currentAnimation = 0;
 
-    TextureAnimatedDirectional *animations[BILLBOARD3D_MAX_ANIMATIONS];
+    std::vector<TextureAnimatedDirectional *> animations;
 
     BillboardAnimation8Directions(float width, float height);
 
@@ -44,8 +41,6 @@ public:
 
     void updateTrianglesCoordinates(Camera3D *cam);
 
-    void linkTexturesTo(BillboardAnimation8Directions *clone);
-
     TextureAnimatedDirectional *getCurrentTextureAnimationDirectional();
 
     void onUpdate() override;
@@ -55,6 +50,14 @@ public:
     const char *getTypeObject() override;
 
     const char *getTypeIcon() override;
+
+    cJSON *getJSON() override;
+
+    static void createFromJSON(cJSON *object);
+
+    static void setPropertiesFromJSON(cJSON *object, BillboardAnimation8Directions *o);
+
+    void updateBillboardSize();
 };
 
 
