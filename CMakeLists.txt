@@ -185,7 +185,7 @@ add_executable(Brakeza3D
 
     src/Collisions/SimplePendulum.cpp               include/Physics/SimplePendulum.h
     src/Collisions/Collisionable.cpp                src/Collisions/Collisionable.h
-    src/Collisions/Mesh3DAnimatedGhost.cpp          include/Physics/Mesh3DAnimatedGhost.h
+    src/Collisions/Mesh3DAnimationGhost.cpp         include/Physics/Mesh3DAnimationGhost.h
     src/Collisions/RayCollisionable.cpp             include/Physics/RayCollisionable.h
 
     src/Behaviors/Object3DBehavior.cpp              include/Behaviors/Object3DBehavior.h

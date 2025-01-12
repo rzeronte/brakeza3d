@@ -1,23 +1,23 @@
-#include "../../include/Physics/Mesh3DAnimatedGhost.h"
+#include "../../include/Physics/Mesh3DAnimationGhost.h"
 
 
-Mesh3DAnimatedGhost::Mesh3DAnimatedGhost()
+Mesh3DAnimationGhost::Mesh3DAnimationGhost()
 {
 
 }
 
 
-void Mesh3DAnimatedGhost::integrate()
+void Mesh3DAnimationGhost::integrate()
 {
     updateBulletFromMesh3D();
 }
 
-void Mesh3DAnimatedGhost::onUpdate()
+void Mesh3DAnimationGhost::onUpdate()
 {
     Mesh3DAnimation::onUpdate();
 }
 
-void Mesh3DAnimatedGhost::resolveCollision(Collisionable *with)
+void Mesh3DAnimationGhost::resolveCollision(Collisionable *with)
 {
     if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
         auto *object = dynamic_cast<Object3D*> (with);
@@ -25,7 +25,7 @@ void Mesh3DAnimatedGhost::resolveCollision(Collisionable *with)
     }
 }
 
-void Mesh3DAnimatedGhost::updateBulletFromMesh3D()
+void Mesh3DAnimationGhost::updateBulletFromMesh3D()
 {
     btTransform trans;
     trans.setIdentity();
@@ -39,7 +39,7 @@ void Mesh3DAnimatedGhost::updateBulletFromMesh3D()
     getGhostObject()->setWorldTransform(trans);
 }
 
-void Mesh3DAnimatedGhost::remove()
+void Mesh3DAnimationGhost::remove()
 {
     this->setRemoved(true);
 }

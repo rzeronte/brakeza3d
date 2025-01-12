@@ -1,13 +1,13 @@
-#ifndef BRAKEZA3D_MESH3DANIMATEDGHOST_H
-#define BRAKEZA3D_MESH3DANIMATEDGHOST_H
+#ifndef BRAKEZA3D_MESH3DANIMATIONGHOST_H
+#define BRAKEZA3D_MESH3DANIMATIONGHOST_H
 
 
 #include "../Objects/Mesh3DAnimation.h"
 #include "Ghost.h"
 
-class Mesh3DAnimatedGhost : public Mesh3DAnimation, public Ghost {
+class Mesh3DAnimationGhost : public Mesh3DAnimation, public Ghost {
 public:
-    Mesh3DAnimatedGhost();
+    Mesh3DAnimationGhost();
 private:
 
     void updateBulletFromMesh3D();
@@ -24,4 +24,4 @@ public:
 };
 
 
-#endif //BRAKEZA3D_MESH3DANIMATEDGHOST_H
+#endif //BRAKEZA3D_MESH3DANIMATIONGHOST_H
