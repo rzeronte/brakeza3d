@@ -96,6 +96,10 @@ void SceneLoader::loadScene(const std::string& filename)
                 Image2DAnimation::createFromJSON(currentObject);
                 break;
             }
+            case SceneObjectLoaderMapping::Image2D : {
+                Image2D::createFromJSON(currentObject);
+                break;
+            }
             case SceneObjectLoaderMapping::Image3D : {
                 Image3D::createFromJSON(currentObject);
                 break;

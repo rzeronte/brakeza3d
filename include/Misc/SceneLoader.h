@@ -22,7 +22,8 @@ enum class SceneObjectLoaderMapping {
     BillboardAnimation,
     BillboardAnimation8Directions,
     Image2DAnimation,
-    Image3D
+    Image3D,
+    Image2D
 };
 
 enum class Mesh3DShaderLoaderMapping {
@@ -30,7 +31,6 @@ enum class Mesh3DShaderLoaderMapping {
     FXBlink,
     FXTint,
 };
-
 
 class SceneLoader {
     std::map<std::string, SceneObjectLoaderMapping> sceneTypes = {
@@ -44,7 +44,8 @@ class SceneLoader {
             {"BillboardAnimation", SceneObjectLoaderMapping::BillboardAnimation},
             {"BillboardAnimation8Directions", SceneObjectLoaderMapping::BillboardAnimation8Directions},
             {"Image2DAnimation", SceneObjectLoaderMapping::Image2DAnimation},
-            {"Image3D", SceneObjectLoaderMapping::Image3D}
+            {"Image3D", SceneObjectLoaderMapping::Image3D},
+            {"Image2D", SceneObjectLoaderMapping::Image2D}
     };
 
     std::map<std::string, Mesh3DShaderLoaderMapping> mesh3DShaderTypes = {

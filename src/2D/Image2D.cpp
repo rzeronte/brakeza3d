@@ -113,8 +113,8 @@ cJSON *Image2D::getJSON()
 void Image2D::createFromJSON(cJSON *object)
 {
     auto name = cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring;
-    auto x = (float) cJSON_GetObjectItemCaseSensitive(object, "x")->valueint;
-    auto y = (float) cJSON_GetObjectItemCaseSensitive(object, "y")->valueint;
+    auto x = cJSON_GetObjectItemCaseSensitive(object, "x")->valueint;
+    auto y =  cJSON_GetObjectItemCaseSensitive(object, "y")->valueint;
     auto image = cJSON_GetObjectItemCaseSensitive(object, "image")->valuestring;
 
     auto o = new Image2D(x, y,new Image(image));

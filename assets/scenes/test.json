@@ -47,6 +47,14 @@
 							"name":	"state",
 							"type":	"int",
 							"value":	0
+						}, {
+							"name":	"offset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	1,
+								"y":	2,
+								"z":	3
+							}
 						}]
 				}],
 			"shaders":	[],
@@ -54,7 +62,7 @@
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"added_item_82",
+			"name":	"Cube",
 			"scale":	1,
 			"stencilBufferEnabled":	false,
 			"transparent":	false,
@@ -77,18 +85,90 @@
 			"model":	"../assets/models//planet_cube_02.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
+		}, {
+			"name":	"Logo3D",
+			"scale":	2.6800000667572021,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-27.024620056152344,
+				"y":	-1.7526769638061523,
+				"z":	1.0493279695510864
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"width":	10,
+			"height":	10,
+			"image":	"../assets/images/logo.png",
+			"type":	"Image3D"
+		}, {
+			"name":	"Image2DAnimation",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	true,
+			"position":	{
+				"x":	0.53538256883621216,
+				"y":	-0.050535313785076141,
+				"z":	1.9298655986785889
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"x":	577,
+			"y":	272,
+			"animation":	{
+				"sprite":	"../assets/sprites//explosion_a.png",
+				"width":	128,
+				"height":	128,
+				"numberFrames":	15,
+				"fps":	24
+			},
+			"type":	"Image2DAnimation"
+		}, {
+			"name":	"2DSmallLogo",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"x":	1154,
+			"y":	610,
+			"image":	"../assets/images//logo_small.png",
+			"type":	"Image2D"
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	2.3825173377990723,
-			"y":	-0.012653601355850697,
-			"z":	-13.766557693481445
+			"x":	23.524698257446289,
+			"y":	1.1371811628341675,
+			"z":	-8.3160171508789063
 		},
 		"rotation":	{
-			"x":	1.5,
-			"y":	15.5,
+			"x":	-1.5,
+			"y":	79.150009155273438,
 			"z":	0
 		}
 	}
