@@ -6,7 +6,7 @@
 #include "../Render/PhysicsDebugDraw.h"
 #include "../Physics/Mesh3DBody.h"
 #include "../Physics/Mesh3DGhost.h"
-#include "../Physics/SpriteDirectional3DBody.h"
+#include "../Physics/BillboardAnimation8DirectionsBody.h"
 #include "Component.h"
 
 class ComponentCollisions : public Component {

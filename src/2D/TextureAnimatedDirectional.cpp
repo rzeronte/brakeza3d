@@ -7,14 +7,16 @@
 TextureAnimatedDirectional::TextureAnimatedDirectional() {
 }
 
-void TextureAnimatedDirectional::setup(std::string file, int newNumFrames, int newFps, int newMaxTimes) {
+void TextureAnimatedDirectional::setup(std::string file, int newNumFrames, int newFps, int newMaxTimes)
+{
     this->base_file = std::move(file);
     this->numFrames = newNumFrames;
     this->fps = newFps;
     this->maxTimes = newMaxTimes;
 }
 
-void TextureAnimatedDirectional::loadImages() {
+void TextureAnimatedDirectional::loadImages()
+{
     for (int d = 1; d <= 8; d++) {
         for (int i = 0; i < this->getNumFrames(); i++) {
             std::string file = this->base_file + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
@@ -23,7 +25,8 @@ void TextureAnimatedDirectional::loadImages() {
     }
 }
 
-void TextureAnimatedDirectional::loadImagesForZeroDirection() {
+void TextureAnimatedDirectional::loadImagesForZeroDirection()
+{
     int d = 0;
     for (int i = 0; i < this->getNumFrames(); i++) {
         std::string file = this->base_file + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
@@ -35,11 +38,13 @@ int TextureAnimatedDirectional::getNumFrames() const {
     return numFrames;
 }
 
-Image *TextureAnimatedDirectional::getCurrentFrame(int direction) {
+Image *TextureAnimatedDirectional::getCurrentFrame(int direction)
+{
     return this->frames[direction][current];
 }
 
-void TextureAnimatedDirectional::nextFrame() {
+void TextureAnimatedDirectional::nextFrame()
+{
     current++;
 
     if (current >= this->getNumFrames()) {
@@ -51,10 +56,16 @@ void TextureAnimatedDirectional::nextFrame() {
     }
 }
 
-void TextureAnimatedDirectional::importTextures(TextureAnimatedDirectional *origin, int numFrames) {
+void TextureAnimatedDirectional::importTextures(TextureAnimatedDirectional *origin, int numFrames)
+{
     for (int d = 0; d <= 8; d++) {
         for (int j = 0; j < numFrames; j++) {
             this->frames[d][j] = origin->frames[d][j];
         }
     }
+}
+
+void TextureAnimatedDirectional::drawImGuiProperties()
+{
+
 }

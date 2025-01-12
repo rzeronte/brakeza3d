@@ -82,6 +82,7 @@ public:
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/mesh.png", "meshIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/folder.png", "folderIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/player.png", "playerIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite3ddirectional.png", "sprite3DDirectionalIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite2d.png", "image2DIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite2d.png", "sprite2DIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/sprite3d.png", "sprite3DIcon");
