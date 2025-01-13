@@ -455,9 +455,17 @@ Mesh3D *Mesh3D::create(const std::string& imageFile)
 void Mesh3D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    std::string title = "Mesh3D (File: " + sourceFile + "Triangles: " + std::to_string(getModelTriangles().size()) + ")";
+    std::string title = "Mesh3D (File: " + sourceFile + " | Triangles: " + std::to_string(getModelTriangles().size()) + ")";
 
-    if (ImGui::TreeNode(title.c_str())) {
+    if (ImGui::TreeNode("Mesh3D")) {
+        if (ImGui::TreeNode("Mesh information")) {
+            auto fileModel = std::string("- File model: ") + sourceFile;
+            ImGui::Text(fileModel.c_str());
+
+            auto numTriangles = std::string("- Nº Triangles: ") + std::to_string((int) modelTriangles.size());
+            ImGui::Text(numTriangles.c_str());
+            ImGui::TreePop();
+        }
         ImGui::Checkbox(std::string("Enable lights").c_str(), &enableLights);
         ImGui::TreePop();
     }

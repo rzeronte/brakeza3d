@@ -119,13 +119,15 @@ struct GUIWidgetMenu
                     drawImage3DItemsToLoad(EngineSetup::get()->IMAGES_FOLDER);
                     ImGui::EndMenu();
                 }
-
                 ImGui::Image(icon("meshIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("Mesh3D")) {
                     drawMesh3DItemsToLoad(directory_path_models);
                     ImGui::EndMenu();
                 }
+
+                ImGui::Separator();
+
                 ImGui::Image(icon("gearIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("RigidBody")) {

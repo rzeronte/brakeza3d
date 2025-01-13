@@ -18,7 +18,7 @@ struct VertexBoneData {
         int end = ARRAY_SIZE_IN_ELEMENTS(IDs);
         for (unsigned int i = 0; i < end; i++) {
             if (Weights[i] == 0.0) {
-                IDs[i] = BoneID;
+                IDs[i] = (int) BoneID;
                 Weights[i] = Weight;
                 return;
             }
@@ -41,8 +41,6 @@ public:
     const aiScene *scene = nullptr;
     int m_NumBones = 0;
 
-    M3 fixedRotation = M3::getMatrixIdentity();
-
     std::vector<std::vector<VertexBoneData> > meshVerticesBoneData;
     std::vector<std::vector<Vertex3D> > meshVertices;
 
@@ -56,10 +54,6 @@ public:
     std::vector<BoneInfo> boneInfo;
 
     aiMatrix4x4 m_GlobalInverseTransform;
-
-    std::string follow_me_point_label;
-    aiNode *follow_me_point_node;
-    Object3D *follow_me_point_object;
 
     void onUpdate() override;
 
@@ -75,7 +69,7 @@ public:
 
     void BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4> &Transforms);
 
-    void ReadNodeHeirarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform);
+    void ReadNodeHierarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform);
 
     static const aiNodeAnim *FindNodeAnim(const aiAnimation *pAnimation, const std::string& NodeName);
 
@@ -101,25 +95,7 @@ public:
 
     void setRemoveAtEndAnimation(bool removeAtEnds);
 
-    void setFollowPointNode(aiNode *followPointOrigin);
-
-    void updateFollowObjectPosition(std::vector<aiMatrix4x4> Transforms);
-
-    void setFollowPointLabel(const std::string &followPointLabel);
-
-    void setFixedRotation(const M3 &fixedRotation);
-
-    [[nodiscard]] bool isAnimationEnds() const;
-
-    [[nodiscard]] const M3 &getFixedRotation() const;
-
-    [[nodiscard]] const std::string &getFollowPointLabel() const;
-
-    [[nodiscard]] aiNode *getFollowPointNode() const;
-
     [[nodiscard]] bool isRemoveAtEndAnimation() const;
-
-    [[nodiscard]] Object3D *getFollowMePointObject() const;
 
     static Mesh3DAnimation* create(const std::string& animationFile);
 
@@ -128,6 +104,8 @@ public:
     const char *getTypeIcon() override;
 
     void updateOGLBuffers();
+
+    void drawImGuiProperties();
 };
 
 
