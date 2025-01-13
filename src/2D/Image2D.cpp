@@ -130,3 +130,8 @@ void Image2D::setPropertiesFromJSON(cJSON *object, Image2D *o)
 
     Object3D::setPropertiesFromJSON(object, o);
 }
+
+Image2D *Image2D::create(int x, int y, const std::string& imageFile)
+{
+    return new Image2D(x, y, new Image(imageFile));
+}
