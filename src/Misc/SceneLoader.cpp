@@ -204,7 +204,9 @@ void SceneLoader::saveScene(const std::string &filename)
     //scripts
     cJSON *sceneScriptsArray = cJSON_CreateArray();
     for (auto script : ComponentsManager::get()->getComponentRender()->getLUAScripts()) {
-        cJSON_AddItemToArray(sceneScriptsArray, cJSON_CreateString(script->scriptFilename.c_str()));
+        cJSON *scriptSceneSON = cJSON_CreateObject();
+        cJSON_AddStringToObject(scriptSceneSON, "name", script->getScriptFilename().c_str());
+        cJSON_AddItemToArray(sceneScriptsArray, scriptSceneSON);
     }
     cJSON_AddItemToObject(root, "scripts", sceneScriptsArray);
 
