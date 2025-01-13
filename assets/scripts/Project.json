@@ -1,11 +1,3 @@
 {
-	"types":	[{
-			"name":	"edu",
-			"type": "int",
-			"value":	5
-		}, {
-			"name":	"andre",
-			"type": "string",
-			"value":	"hola"
-		}]
+	"types": []
 }

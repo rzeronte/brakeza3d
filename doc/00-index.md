@@ -15,13 +15,16 @@
 5 - Collision Objects types
      https://github.com/rzeronte/brakeza3d/blob/master/doc/07-collision-objects-types.md
 
-6 - Input system control
+6 - Camera Object
+    https://github.com/rzeronte/brakeza3d/blob/master/doc/02-camera.md
+
+7 - Input system control
      https://github.com/rzeronte/brakeza3d/blob/master/doc/08-input-system-control.md
 
-7 - Shaders
+8 - Shaders
      https://github.com/rzeronte/brakeza3d/blob/master/doc/09-shaders.md
 
-8 - Scripting
+9 - Scripting
       https://github.com/rzeronte/brakeza3d/blob/master/doc/10-scripting.md
 
 # Examples

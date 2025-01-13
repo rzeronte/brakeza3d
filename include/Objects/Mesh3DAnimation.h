@@ -121,6 +121,13 @@ public:
 
     [[nodiscard]] Object3D *getFollowMePointObject() const;
 
+    static Mesh3DAnimation* create(const std::string& animationFile);
+
+    const char *getTypeObject() override;
+
+    const char *getTypeIcon() override;
+
+    void updateOGLBuffers();
 };
 
 

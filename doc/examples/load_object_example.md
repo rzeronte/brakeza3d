@@ -13,12 +13,11 @@ El código para cargar una escena es el siguiente:
 ```
 function onStart()
     ...
-    eye = Mesh3D:create()
+    eye = Mesh3D.create("../assets/models/eye.fbx")
     eye:setEnabled(true)
     eye:setBelongToScene(false)
     eye:setPosition(Vertex3D.new(0, 0, 600))
     eye:setScale(0.5)
-    eye:AssimpLoadGeometryFromFile("../assets/models/eye.fbx")
 
     brakeza:addObject3D(eye, "my_eye_model")
     ...

@@ -172,7 +172,8 @@ glm::mat4 Camera3D::getViewMatrix()
     return ViewMatrix;
 }
 
-glm::mat4 Camera3D::getProjectionMatrix() {
+glm::mat4 Camera3D::getProjectionMatrix()
+{
     return glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE);
 }
 

@@ -5,6 +5,7 @@ void Mesh3DAnimation::onUpdate()
 {
     if (this->scene != nullptr) {
         this->updateFrameTransformations();
+        updateOGLBuffers();
     }
     Mesh3D::onUpdate();
 }
@@ -15,7 +16,6 @@ void Mesh3DAnimation::updateFrameTransformations() {
     if (this->isFollowCamera()) {
         this->setRotation(this->getRotation() * this->getFixedRotation());
     }
-
     // Update running time
     this->animation_ends = false;
     this->runningTime += Brakeza3D::get()->getDeltaTime() * this->animation_speed;
@@ -533,3 +533,39 @@ void Mesh3DAnimation::setFixedRotation(const M3 &fixedRotation) {
 bool Mesh3DAnimation::isAnimationEnds() const {
     return animation_ends;
 }
+
+Mesh3DAnimation* Mesh3DAnimation::create(const std::string& animationFile)
+{
+    auto o = new Mesh3DAnimation();
+
+    o->AssimpLoadAnimation(animationFile);
+
+    return o;
+}
+
+const char *Mesh3DAnimation::getTypeObject() {
+    return "Mesh3DAnimation";
+}
+
+const char *Mesh3DAnimation::getTypeIcon() {
+    return "meshIcon";
+}
+
+void Mesh3DAnimation::updateOGLBuffers()
+{
+    vertices.clear();
+    for (auto t: this->modelTriangles) {
+        vertices.emplace_back(t->A.x, t->A.y, t->A.z);
+        vertices.emplace_back(t->B.x, t->B.y, t->B.z);
+        vertices.emplace_back(t->C.x, t->C.y, t->C.z);
+    }
+
+    if (glIsBuffer(vertexbuffer)) {
+        glDeleteBuffers(1, &vertexbuffer);
+    }
+
+    glGenBuffers(1, &vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+}
+

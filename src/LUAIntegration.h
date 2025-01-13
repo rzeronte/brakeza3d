@@ -11,6 +11,8 @@
 #include "../include/Components/ComponentCamera.h"
 #include "../include/ComponentsManager.h"
 #include "../include/Brakeza3D.h"
+#include "../include/2D/Image2D.h"
+#include "../include/Objects/Mesh3DAnimation.h"
 
 void LUAIntegration(sol::state &lua)
 {
@@ -122,12 +124,19 @@ void LUAIntegration(sol::state &lua)
     );
 
     lua.new_usertype<Mesh3D>("Mesh3D",
-                               sol::constructors<Mesh3D(), Mesh3D()>(),
                                sol::base_classes, sol::bases<Object3D>(),
                              "AssimpLoadGeometryFromFile", &Mesh3D::AssimpLoadGeometryFromFile,
                              "addMesh3DShader", &Mesh3D::addMesh3DShader,
-                             "create", &Mesh3D::create
+                             "create", sol::factories([](const std::string& imageFile) {
+                                return Mesh3D::create(imageFile);
+                            })
+    );
 
+    lua.new_usertype<Mesh3DAnimation>("Mesh3DAnimation",
+                              sol::base_classes, sol::bases<Mesh3D, Object3D>(), // Agregar bases si aplica
+                             "create", sol::factories([](const std::string& imageFile) {
+                                return Mesh3DAnimation::create(imageFile);
+                            })
     );
 
     lua.new_usertype<ScriptLUATypeData>("ScriptLUATypeData",
@@ -162,6 +171,14 @@ void LUAIntegration(sol::state &lua)
                                  "create", &FXOutliner::create,
                                  "setSize", &FXOutliner::setSize,
                                  "getSize", &FXOutliner::getSize
+    );
+
+    lua.new_usertype<Image2D>("Image2D",
+                                  sol::base_classes, sol::bases<Object3D>(),
+                                  "create", sol::factories([](int x, int y, const std::string& imageFile) {
+                                        return Image2D::create(x, y, imageFile);
+                                  }),
+                                  "updatePosition", &Image2D::updatePosition
     );
 }
 

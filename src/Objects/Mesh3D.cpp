@@ -433,8 +433,6 @@ void Mesh3D::onDrawHostBuffer()
             Drawable::drawGrid3D(this->grid);
         }
     }
-
-
 }
 
 const char *Mesh3D::getTypeObject() {
@@ -445,8 +443,13 @@ const char *Mesh3D::getTypeIcon() {
     return "meshIcon";
 }
 
-Mesh3D *Mesh3D::create() {
-    return new Mesh3D();
+Mesh3D *Mesh3D::create(const std::string& imageFile)
+{
+    auto o = new Mesh3D();
+
+    o->AssimpLoadGeometryFromFile(imageFile);
+
+    return o;
 }
 
 void Mesh3D::drawImGuiProperties()

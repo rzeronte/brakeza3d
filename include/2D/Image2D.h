@@ -32,6 +32,8 @@ public:
 
     static void setPropertiesFromJSON(cJSON *object, Image2D *o);
 
+    static Image2D* create(int x, int y, const std::string& imageFile);
+
 };
 
 
