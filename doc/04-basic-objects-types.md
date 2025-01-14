@@ -41,7 +41,7 @@ Brakeza3D incluye multitud de objetos 3D listos para utilizarse. Todos extienden
 `Object3D`.
 
 Por ejemplo tenemos objetos que pueden cargar modelos 3D, otros nos permitirán cargar una imagen en pantalla,
-otros cargarán spriters animados, etc. A continuación enumero una lista de algunos de los más destacados:
+otros cargarán sprites animados, etc. A continuación enumero una lista de algunos de los más destacados:
 
 - `Mesh3D`: Modelo 3D con triángulos y texturas
 - `Mesh3DAnimation`: Similar a Mesh3D, pero para modelos animados.
