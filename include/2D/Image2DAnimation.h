@@ -37,6 +37,8 @@ public:
 
     static void setPropertiesFromJSON(cJSON *object, Image2DAnimation *o);
 
+    static Image2DAnimation* create(int x, int y, const std::string& imageFile, int w, int h, int frames, int fps);
+
 };
 
 
