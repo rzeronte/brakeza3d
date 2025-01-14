@@ -463,9 +463,10 @@ void Mesh3DAnimation::setRemoveAtEndAnimation(bool removeAtEnds)
     remove_at_end_animation = removeAtEnds;
 }
 
-Mesh3DAnimation* Mesh3DAnimation::create(const std::string& animationFile)
+Mesh3DAnimation* Mesh3DAnimation::create(Vertex3D position, const std::string& animationFile)
 {
     auto o = new Mesh3DAnimation();
+    o->setPosition(position);
 
     o->AssimpLoadAnimation(animationFile);
 

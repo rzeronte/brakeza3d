@@ -27,8 +27,6 @@ public:
 
     BillboardAnimation8Directions(float width, float height);
 
-    [[nodiscard]] Billboard *getBillboard() const;
-
     void addAnimationDirectional2D(const std::string&, int frames, int fps, bool zeroDirection, int maxTimes);
 
     void updateTextureFromCameraAngle(Object3D *, Camera3D *);
@@ -58,6 +56,15 @@ public:
     static void setPropertiesFromJSON(cJSON *object, BillboardAnimation8Directions *o);
 
     void updateBillboardSize();
+
+    static BillboardAnimation8Directions* create(
+        Vertex3D position,
+        float width,
+        float height,
+        const std::string &folderSprite,
+        int frames,
+        int fps
+    );
 };
 
 

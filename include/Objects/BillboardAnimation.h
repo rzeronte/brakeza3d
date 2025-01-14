@@ -63,6 +63,17 @@ public:
     static void setPropertiesFromJSON(cJSON *object, BillboardAnimation *o);
 
     void updateBillboardSize();
+
+    static BillboardAnimation* create(
+        Vertex3D position,
+        float width,
+        float height,
+        const std::string &imageFile,
+        int spriteWidth,
+        int spriteHeight,
+        int frames,
+        int fps
+    );
 };
 
 

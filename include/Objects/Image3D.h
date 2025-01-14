@@ -45,6 +45,8 @@ public:
     void setHeight(float height);
 
     void fillBuffers();
+
+    static Image3D* create(Vertex3D p, float w, float h, const std::string &file);
 };
 
 

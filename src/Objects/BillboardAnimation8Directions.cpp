@@ -38,11 +38,6 @@ void BillboardAnimation8Directions::onUpdate()
     );
 }
 
-Billboard *BillboardAnimation8Directions::getBillboard() const
-{
-    return billboard;
-}
-
 void BillboardAnimation8Directions::updateTrianglesCoordinates(Camera3D *cam)
 {
     Vertex3D up = cam->getRotation().getTranspose() * EngineSetup::get()->up;
@@ -188,7 +183,7 @@ void BillboardAnimation8Directions::drawImGuiProperties()
 
         ImGui::Separator();
 
-        /*const char* items[(int) animations.size()];
+        const char* items[(int) animations.size()];
         for (int i = 0; i < (int) animations.size(); i++) {
             items[i] = animations[i]->base_file.c_str();
         }
@@ -198,8 +193,6 @@ void BillboardAnimation8Directions::drawImGuiProperties()
         } else {
             ImGui::Text("No animations found!");
         }
-
-        getCurrentTextureAnimationDirectional()->drawImGuiProperties();*/
 
         ImGui::TreePop();
     }
@@ -275,4 +268,20 @@ void BillboardAnimation8Directions::setPropertiesFromJSON(cJSON *object, Billboa
 void BillboardAnimation8Directions::updateBillboardSize()
 {
     billboard->updateSize(width, height);
+}
+
+BillboardAnimation8Directions* BillboardAnimation8Directions::create(
+        Vertex3D position,
+        float width,
+        float height,
+        const std::string &folderSprite,
+        int frames,
+        int fps
+) {
+    auto o = new BillboardAnimation8Directions(width, height);
+    o->addAnimationDirectional2D(folderSprite, frames, fps, false, -1);
+    o->setAnimation(0);
+    o->setPosition(position);
+
+    return o;
 }

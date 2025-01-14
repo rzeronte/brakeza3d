@@ -254,3 +254,21 @@ void BillboardAnimation::createFromJSON(cJSON *object)
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
+
+BillboardAnimation* BillboardAnimation::create(
+    Vertex3D position,
+    float width,
+    float height,
+    const std::string &imageFile,
+    int spriteWidth,
+    int spriteHeight,
+    int frames,
+    int fps
+) {
+    auto o = new BillboardAnimation(width, height);
+    o->addAnimation(imageFile, spriteWidth, spriteHeight, frames, fps);
+    o->setAnimation(0);
+    o->setPosition(position);
+
+    return o;
+}

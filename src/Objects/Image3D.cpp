@@ -240,3 +240,8 @@ void Image3D::fillBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
     glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
 }
+
+Image3D *Image3D::create(Vertex3D p, float w, float h, const std::string &file)
+{
+    return new Image3D(p, w, h, new Image(file));
+}

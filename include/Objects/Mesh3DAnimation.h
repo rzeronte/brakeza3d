@@ -97,7 +97,7 @@ public:
 
     [[nodiscard]] bool isRemoveAtEndAnimation() const;
 
-    static Mesh3DAnimation* create(const std::string& animationFile);
+    static Mesh3DAnimation* create(Vertex3D position, const std::string& animationFile);
 
     const char *getTypeObject() override;
 

@@ -157,3 +157,17 @@ void Image2DAnimation::setPropertiesFromJSON(cJSON *object, Image2DAnimation *o)
     o->setBelongToScene(true);
     Object3D::setPropertiesFromJSON(object, o);
 }
+
+Image2DAnimation *Image2DAnimation::create(int x, int y, const std::string &imageFile, int w, int h, int frames, int fps)
+{
+    auto *o = new Image2DAnimation(
+        x,
+        y,
+        false,
+        new TextureAnimated(imageFile,w,h, frames,fps)
+    );
+
+    o->setBelongToScene(true);
+
+    return o;
+}

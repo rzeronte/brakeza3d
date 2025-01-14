@@ -12,7 +12,11 @@
 #include "../include/ComponentsManager.h"
 #include "../include/Brakeza3D.h"
 #include "../include/2D/Image2D.h"
+#include "../include/2D/Image2DAnimation.h"
 #include "../include/Objects/Mesh3DAnimation.h"
+#include "../include/Objects/Image3D.h"
+#include "../include/Objects/BillboardAnimation.h"
+#include "../include/Objects/BillboardAnimation8Directions.h"
 
 void LUAIntegration(sol::state &lua)
 {
@@ -127,16 +131,30 @@ void LUAIntegration(sol::state &lua)
                                sol::base_classes, sol::bases<Object3D>(),
                              "AssimpLoadGeometryFromFile", &Mesh3D::AssimpLoadGeometryFromFile,
                              "addMesh3DShader", &Mesh3D::addMesh3DShader,
-                             "create", sol::factories([](const std::string& imageFile) {
-                                return Mesh3D::create(imageFile);
+                             "create", sol::factories([](Vertex3D position, const std::string& imageFile) {
+                                return Mesh3D::create(position, imageFile);
                             })
     );
 
     lua.new_usertype<Mesh3DAnimation>("Mesh3DAnimation",
-                              sol::base_classes, sol::bases<Mesh3D, Object3D>(), // Agregar bases si aplica
-                             "create", sol::factories([](const std::string& imageFile) {
-                                return Mesh3DAnimation::create(imageFile);
-                            })
+          sol::base_classes, sol::bases<Mesh3D, Object3D>(),
+             "create", sol::factories([](Vertex3D position, const std::string& imageFile) {
+                return Mesh3DAnimation::create(position,imageFile);
+            })
+    );
+
+    lua.new_usertype<BillboardAnimation>("BillboardAnimation",
+                                      sol::base_classes, sol::bases<Object3D>(),
+                                      "create", sol::factories([](Vertex3D position, float w, float h, const std::string& imageFile, int spriteW, int spriteH, int numFrames, int fps) {
+                                          return BillboardAnimation::create(position, w, h, imageFile, spriteW, spriteH, numFrames, fps);
+                                      })
+    );
+
+    lua.new_usertype<BillboardAnimation8Directions>("BillboardAnimation8Directions",
+                                         sol::base_classes, sol::bases<Object3D>(),
+                                         "create", sol::factories([](Vertex3D position, float w, float h, const std::string& spriteFolder, int numFrames, int fps) {
+                                              return BillboardAnimation8Directions::create(position, w, h, spriteFolder, numFrames, fps);
+                                         })
     );
 
     lua.new_usertype<ScriptLUATypeData>("ScriptLUATypeData",
@@ -180,6 +198,22 @@ void LUAIntegration(sol::state &lua)
                                   }),
                                   "updatePosition", &Image2D::updatePosition
     );
+
+    lua.new_usertype<Image2DAnimation>("Image2DAnimation",
+                              sol::base_classes, sol::bases<Object3D>(),
+                              "create", sol::factories([](int x, int y, const std::string& imageFile, int w, int h, int frames, int fps) {
+                                    return Image2DAnimation::create(x, y, imageFile, w, h, frames, fps);
+                              }),
+                             "updatePosition", &Image2DAnimation::updatePosition
+    );
+
+    lua.new_usertype<Image3D>("Image3D",
+                                       sol::base_classes, sol::bases<Object3D>(),
+                                       "create", sol::factories([](Vertex3D p, float w, float h, const std::string& imageFile) {
+                                            return Image3D::create(p, w, h, imageFile);
+                                        })
+    );
+
 }
 
 #endif //BRAKEZA3D_LUAINTEGRATION_H

@@ -43,15 +43,15 @@ Brakeza3D incluye multitud de objetos 3D listos para utilizarse. Todos extienden
 Por ejemplo tenemos objetos que pueden cargar modelos 3D, otros nos permitirán cargar una imagen en pantalla,
 otros cargarán spriters animados, etc. A continuación enumero una lista de algunos de los más destacados:
 
-- Mesh3D: Modelo 3D con triángulos y texturas
-- Mesh3DAnimation: Similar a Mesh3D, pero para modelos animados.
-- Mesh3DGhost: Modelo 3D colisionable.
-- Mesh3DBody: Modelo 3D colisionable y reactivo a las físicas.
-- Image2D: Dibuja una imagen en pantalla.
-- Image3D: Plano 3D sobre el que se visualiza una textura de imagen.
-- Image2DAnimation: Conjunto de `Image2D` que conforma una animación.
-- ParticleEmitter: Emisor de partículas.
-- LightPoint: Punto de luz.
+- `Mesh3D`: Modelo 3D con triángulos y texturas
+- `Mesh3DAnimation`: Similar a Mesh3D, pero para modelos animados.
+- `Mesh3DGhost`: Modelo 3D colisionable.
+- `Mesh3DBody`: Modelo 3D colisionable y reactivo a las físicas.
+- `Image2D`: Dibuja una imagen en pantalla.
+- `Image3D`: Plano 3D sobre el que se visualiza una textura de imagen.
+- `Image2DAnimation`: Conjunto de `Image2D` que conforma una animación.
+- `ParticleEmitter`: Emisor de partículas.
+- `LightPoint`: Punto de luz.
 - ...
 
 A lo largo de la documentación nos detendremos en algunos de estos objetos para su mayor

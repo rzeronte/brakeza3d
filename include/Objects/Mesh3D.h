@@ -105,7 +105,7 @@ public:
 
     const char *getTypeIcon() override;
 
-    static Mesh3D* create(const std::string& imageFile);
+    static Mesh3D* create(Vertex3D position, const std::string& imageFile);
 
     static void createFromJSON(cJSON *object);
 

@@ -443,10 +443,10 @@ const char *Mesh3D::getTypeIcon() {
     return "meshIcon";
 }
 
-Mesh3D *Mesh3D::create(const std::string& imageFile)
+Mesh3D *Mesh3D::create(Vertex3D position, const std::string& imageFile)
 {
     auto o = new Mesh3D();
-
+    o->setPosition(position);
     o->AssimpLoadGeometryFromFile(imageFile);
 
     return o;
