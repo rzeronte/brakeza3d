@@ -13,6 +13,7 @@
 #include "../../include/Objects/BillboardAnimation.h"
 #include "../../include/Objects/Image3D.h"
 #include "../../include/2D/Image2D.h"
+#include "../../include/Objects/Mesh3DAnimation.h"
 
 SceneLoader::SceneLoader() = default;
 
@@ -405,4 +406,24 @@ void SceneLoader::createBillboardAnimation8Directions()
     newObject->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
 
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Sprite3DDirectional"));
+}
+
+void SceneLoader::createMesh3D(const std::string& animationFile)
+{
+    auto *o = new Mesh3D();
+    o->setBelongToScene(true);
+    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
+    o->AssimpLoadGeometryFromFile(animationFile);
+
+    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("Mesh3DAnimation"));
+}
+
+void SceneLoader::createMesh3DAnimationToScene(const std::string& animationFile)
+{
+    auto *o = new Mesh3DAnimation();
+    o->setBelongToScene(true);
+    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
+    o->AssimpLoadAnimation(animationFile);
+
+    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("Mesh3DAnimation"));
 }

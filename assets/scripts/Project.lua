@@ -15,7 +15,7 @@ function onStart()
     eye:setScale(10)
     brakeza:addObject3D(eye, 'modelo')
 
-    man = Mesh3DAnimation.create("../assets/models/walking.fbx")
+    man = Mesh3DAnimation.create("../assets/animations/walking.fbx")
     man:setEnabled(true)
     man:setStencilBufferEnabled(true)
     man:setBelongToScene(false)

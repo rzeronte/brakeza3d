@@ -90,6 +90,10 @@ public:
     static Color parseColorJSON(cJSON *color);
 
     static void createBillboardAnimation8Directions();
+
+    static void createMesh3D(const std::string& animationFile);
+
+    static void createMesh3DAnimationToScene(const std::string& animationFile);
 };
 
 #endif //BRAKEZA3D_SCENELOADER_H

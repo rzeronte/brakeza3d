@@ -500,7 +500,7 @@ ShaderOpenGLCustom *ShaderOpenGLCustom::createEmptyCustomShader(const std::strin
 
     cJSON *root = cJSON_CreateObject();
 
-    std::string shaderFile = EngineSetup::get()->CUSTOM_SHADERS + std::string(name + ".fs");
+    std::string shaderFile = EngineSetup::get()->CUSTOM_SHADERS_FOLDER + std::string(name + ".fs");
     cJSON_AddStringToObject(root, "name", name.c_str());
     cJSON_AddStringToObject(root, "file", shaderFile.c_str());
 
@@ -509,7 +509,7 @@ ShaderOpenGLCustom *ShaderOpenGLCustom::createEmptyCustomShader(const std::strin
     char *typesCode = cJSON_Print(root);
 
     Tools::writeToFile(shaderFile, shaderCode);
-    Tools::writeToFile(EngineSetup::get()->CUSTOM_SHADERS + ShaderOpenGLCustom::dataTypesFileFor(name), typesCode);
+    Tools::writeToFile(EngineSetup::get()->CUSTOM_SHADERS_FOLDER + ShaderOpenGLCustom::dataTypesFileFor(name), typesCode);
 
     return new ShaderOpenGLCustom(name, shaderFile);
 }

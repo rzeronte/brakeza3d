@@ -78,32 +78,30 @@ public:
     bool ENABLE_LIGHTS = true;
     bool DRAW_LIGHTS_DIRECTION = false;
     float LIGHTS_DIRECTION_SIZE = 2500;
-
     bool FULLSCREEN = false;
-
     bool DRAW_FPS = false;
 
     // CONFIG VALUES
     float FRUSTUM_CLIPPING_DISTANCE = 0.00075f;
 
-    // BSP ITEM BILLBOARDS
     std::string ROOT_FOLDER = "../";
-    std::string SPRITES_FOLDER = "../assets/sprites/";
-    std::string MAPS_FOLDER = "../assets/maps/";
-    std::string IMAGES_FOLDER = "../assets/images/";
     std::string ASSETS_FOLDER = "../assets/";
-    std::string VIDEOS_FOLDER = "../assets/videos/";
-    std::string SOUNDS_FOLDER = "../assets/sounds/";
-    std::string MODELS_FOLDER = "../assets/models/";
-    std::string HUD_FOLDER = ASSETS_FOLDER + "textures/HUD/";
+
+    std::string SPRITES_FOLDER = ASSETS_FOLDER + "sprites/";
+    std::string MAPS_FOLDER = ASSETS_FOLDER + "maps/";
+    std::string IMAGES_FOLDER = ASSETS_FOLDER + "images/";
+    std::string VIDEOS_FOLDER = ASSETS_FOLDER + "videos/";
+    std::string SOUNDS_FOLDER = ASSETS_FOLDER + "sounds/";
+    std::string MODELS_FOLDER = ASSETS_FOLDER + "models/";
+    std::string ANIMATIONS_FOLDER = ASSETS_FOLDER + "animations/";
+
     std::string FONTS_FOLDER = ASSETS_FOLDER + "fonts/";
-    std::string WEAPONS_FOLDER = ASSETS_FOLDER + "weapons/";
     std::string TEXTURES_FOLDER = ASSETS_FOLDER + "textures/";
     std::string GRIDS_FOLDER = ASSETS_FOLDER + "grids/";
     std::string ICONS_FOLDER = ASSETS_FOLDER + "icons/";
     std::string SCRIPTS_FOLDER = ASSETS_FOLDER + "scripts/";
     std::string SCENES_FOLDER = ASSETS_FOLDER + "scenes/";
-    std::string CUSTOM_SHADERS = ASSETS_FOLDER + "shaders/";
+    std::string CUSTOM_SHADERS_FOLDER = ASSETS_FOLDER + "shaders/";
 
     std::string SHADERS_FOLDER = "../GLSL/";
 
@@ -145,8 +143,6 @@ public:
 
     bool LOG_COLLISION_OBJECTS = false;
 
-    float ZOOM_FOV = 40;
-
     float PLAYER_CAPSULE_RADIUS = 16.00f;
     float PLAYER_CAPSULE_HEIGHT = 32.00f;
 
@@ -162,17 +158,6 @@ public:
 
     std::string LOGO_BRAKEZA = "logo.png";
 
-
-    enum collisionGroups {
-        Player = 1,
-        Enemy = 2,
-        Projectile = 4,
-        ProjectileEnemy = 8,
-        Health = 16,
-        Weapon = 32,
-        AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
-    };
-
     enum SoundChannels {
         SND_GLOBAL = -1,
     };
@@ -181,43 +166,6 @@ public:
         LUA_STOP = 0,
         LUA_PLAY = 1,
     } LuaStateScripts;
-
-    typedef enum {
-        NONE = 0,
-        SPLASH = 1,
-        MENU = 2,
-        PRESS_KEY_NEW_LEVEL = 3,
-        PRESS_KEY_PREVIOUS_LEVEL = 4,
-        PRESS_KEY_BY_DEAD = 5,
-        COUNTDOWN = 6,
-        GAMING = 7,
-        HELP = 8,
-        PRESS_KEY_GAMEOVER = 9,
-        CREDITS = 10,
-        PRESS_KEY_BY_WIN = 11,
-        INTRO = 12,
-        GAMING_TUTORIAL = 13,
-        STORE = 14,
-        SPACESHIP_SELECTOR = 16,
-        DIFFICULT_SELECTOR = 17
-    } GameState;
-
-    typedef enum {
-        ITEM_EXTRA_POWER = 0,
-        ITEM_FAST_ENERGY_RELOAD = 1,
-        ITEM_SATELLITE = 2,
-        ITEM_MIRROR_SHOOT = 3,
-        ITEM_EXTRA_DASH = 4,
-        ITEM_FAST_SHOOT_CADENCE = 5,
-        ITEM_FAST_ROTATION_TO_ENEMY = 6,
-        ITEM_LONG_LIVE = 7,
-        ITEM_AMMO_WEAPON_PROJECTILES = 8,
-        ITEM_AMMO_WEAPON_LASER = 9,
-        ITEM_AMMO_WEAPON_RAY = 10,
-        ITEM_AMMO_WEAPON_BOMBS = 11,
-        ITEM_AMMO_WEAPON_REFLECTIONS = 12,
-        ITEM_AMMO_WEAPON_SHIELDS = 13,
-    } StoreItems;
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

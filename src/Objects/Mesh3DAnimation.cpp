@@ -66,8 +66,14 @@ void Mesh3DAnimation::updateFrameTransformations()
     }
 }
 
-bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename) {
+bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
+{
     Logging::Log("AssimpLoadAnimation for %s", filename.c_str());
+
+    if (!Tools::fileExists(filename.c_str())) {
+        Logging::Message("[AssimpLoadAnimation] ERROR: File not found %s", filename.c_str());
+        return false;
+    }
 
     this->scene = importer.ReadFile(
         filename,
@@ -473,7 +479,7 @@ const char *Mesh3DAnimation::getTypeObject()
 
 const char *Mesh3DAnimation::getTypeIcon()
 {
-    return "meshIcon";
+    return "Mesh3DAnimationIcon";
 }
 
 void Mesh3DAnimation::updateOGLBuffers()
@@ -505,7 +511,7 @@ void Mesh3DAnimation::drawImGuiProperties()
     ImGui::Separator();
 
     if (ImGui::TreeNode("Mesh3DAnimation")) {
-        ImGui::DragScalar("X", ImGuiDataType_Float, &animation_speed, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+        ImGui::DragScalar("Speed", ImGuiDataType_Float, &animation_speed, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
         ImGui::TreePop();
     }
 }

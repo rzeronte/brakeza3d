@@ -14,16 +14,15 @@
 #include "../Misc/SceneLoader.h"
 #include "../ComponentsManager.h"
 #include "imgui_internal.h"
+#include "../Misc/TexturePackage.h"
 
 struct GUIWidgetMenu
 {
     TexturePackage &ImGuiTextures;
-    std::string directory_path_models;
 
     explicit GUIWidgetMenu(TexturePackage &imGuiTextures)
     :
-        ImGuiTextures(imGuiTextures),
-        directory_path_models(EngineSetup::get()->MODELS_FOLDER)
+        ImGuiTextures(imGuiTextures)
     {
     }
 
@@ -122,7 +121,7 @@ struct GUIWidgetMenu
                 ImGui::Image(icon("meshIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("Mesh3D")) {
-                    drawMesh3DItemsToLoad(directory_path_models);
+                    drawMesh3DItemsToLoad(EngineSetup::get()->MODELS_FOLDER);
                     ImGui::EndMenu();
                 }
 
@@ -138,6 +137,15 @@ struct GUIWidgetMenu
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("GhostBody")) {
                     drawGhostItemsToLoad();
+                    ImGui::EndMenu();
+                }
+
+                ImGui::Separator();
+
+                ImGui::Image(icon("Mesh3DAnimationIcon"), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::BeginMenu("Mesh3DAnimation")) {
+                    drawMesh3DAnimationItemsToLoad(EngineSetup::get()->ANIMATIONS_FOLDER);
                     ImGui::EndMenu();
                 }
                 ImGui::EndMenu();
@@ -461,14 +469,14 @@ struct GUIWidgetMenu
             ImGui::Image(icon("meshIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
-                Tools::addSceneObject(fullPath, "added_item");
+                SceneLoader::createMesh3D(fullPath);
             }
         }
     }
 
     void drawRigidBodiesItemsToLoad() {
 
-        auto result= Tools::getFolderFiles(directory_path_models, "fbx");
+        auto result= Tools::getFolderFiles(EngineSetup::get()->MODELS_FOLDER, "fbx");
 
         for (int i = 0; i < result.size(); i++) {
             auto file = result[i];
@@ -483,9 +491,37 @@ struct GUIWidgetMenu
         }
     }
 
-    void drawGhostItemsToLoad() {
+    void drawMesh3DAnimationItemsToLoad(const std::string& folder)
+    {
+        auto files= Tools::getFolderFiles(folder, "fbx");
+        auto folders = Tools::getFolderFolders(folder);
 
-        auto result= Tools::getFolderFiles(directory_path_models, "fbx");
+        for (const auto & i : folders) {
+            auto fullPath = folder + "/" + i;
+            ImGui::Image(icon("folderIcon"), ImVec2(16, 16));
+            ImGui::SameLine();
+            if (ImGui::BeginMenu(i.c_str())) {
+                drawMesh3DAnimationItemsToLoad(fullPath);
+                ImGui::EndMenu();
+            }
+        }
+
+        for (int i = 0; i < files.size(); i++) {
+            auto file = files[i];
+            auto title = std::to_string(i-1) + ") " + file;
+
+            auto fullPath = folder + "/" + file;
+            ImGui::Image(icon("Mesh3DAnimationIcon"), ImVec2(16, 16));
+            ImGui::SameLine();
+            if (ImGui::MenuItem(file.c_str())) {
+                SceneLoader::createMesh3DAnimationToScene(fullPath);
+            }
+        }
+    }
+
+    void drawGhostItemsToLoad()
+    {
+        auto result= Tools::getFolderFiles(EngineSetup::get()->MODELS_FOLDER, "fbx");
 
         for (int i = 0; i < result.size(); i++) {
             auto file = result[i];
@@ -494,7 +530,7 @@ struct GUIWidgetMenu
                 ImGui::Image(icon("ghostIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem(file.c_str())) {
-                    SceneLoader::createGhostBody3DToScene(file);
+                    SceneLoader::createGhostBody3DToScene(EngineSetup::get()->MODELS_FOLDER + file);
                 }
             }
         }
