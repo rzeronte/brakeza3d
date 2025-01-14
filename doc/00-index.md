@@ -1,30 +1,36 @@
 # Index
 
 1 - Basics
-  https://github.com/rzeronte/brakeza3d/blob/master/doc/01-basics.md
+     https://github.com/rzeronte/brakeza3d/blob/master/doc/01-basics.md
 
 2 - Basic Objects types
      https://github.com/rzeronte/brakeza3d/blob/master/doc/04-basic-objects-types.md
 
-3 - 2D Objects types
-     https://github.com/rzeronte/brakeza3d/blob/master/doc/05-general-2d-objects-types.md
-
-4 - 3D Objects types
-     https://github.com/rzeronte/brakeza3d/blob/master/doc/06-general-3d-objects-types.md
-
-5 - Collision Objects types
-     https://github.com/rzeronte/brakeza3d/blob/master/doc/07-collision-objects-types.md
-
-6 - Camera Object
+3 - Camera Object
     https://github.com/rzeronte/brakeza3d/blob/master/doc/02-camera.md
 
-7 - Input system control
+4 - 2D Objects types
+     https://github.com/rzeronte/brakeza3d/blob/master/doc/05-general-2d-objects-types.md
+
+5 - 3D Objects types
+     https://github.com/rzeronte/brakeza3d/blob/master/doc/06-general-3d-objects-types.md
+
+6 - Collision Objects types
+     https://github.com/rzeronte/brakeza3d/blob/master/doc/07-collision-objects-types.md
+
+7 - Particle Objects types
+    https://github.com/rzeronte/brakeza3d/blob/master/doc/11-particles-object-type.md
+
+8 - Input system control
      https://github.com/rzeronte/brakeza3d/blob/master/doc/08-input-system-control.md
 
-8 - Shaders
+9 - Global Illumination
+    https://github.com/rzeronte/brakeza3d/blob/master/doc/03-global-illumination.md
+
+9 - Shaders
      https://github.com/rzeronte/brakeza3d/blob/master/doc/09-shaders.md
 
-9 - Scripting
+10 - Scripting
       https://github.com/rzeronte/brakeza3d/blob/master/doc/10-scripting.md
 
 # Examples
