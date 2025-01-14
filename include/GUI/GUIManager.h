@@ -84,6 +84,7 @@ public:
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/player.png", "playerIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/BillboardAnimation8DirectionsIcon.png", "BillboardAnimation8DirectionsIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/Image2DAnimationIcon.png", "Image2DAnimationIcon");
+        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/Mesh3DAnimationIcon.png", "Mesh3DAnimationIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/Image2DIcon.png", "Image2DIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/Image3DIcon.png", "Image3DIcon");
         packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/BillboardAnimationIcon.png", "BillboardAnimationIcon");
@@ -348,7 +349,7 @@ public:
 
         ImGui::Separator();
         if (ImGui::Begin("Custom Shaders")) {
-            std::vector<std::string> result = Tools::getFolderFiles(EngineSetup::get()->CUSTOM_SHADERS, "fs");
+            std::vector<std::string> result = Tools::getFolderFiles(EngineSetup::get()->CUSTOM_SHADERS_FOLDER, "fs");
 
             std::sort( result.begin(), result.end() );
 
@@ -360,7 +361,7 @@ public:
                     if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(14, 14))) {
                         std::string name = Tools::getFilenameWithoutExtension(file.c_str());
                         ComponentsManager::get()->getComponentRender()->addShaderToScene(
-                                new ShaderOpenGLCustom(name, EngineSetup::get()->CUSTOM_SHADERS + file)
+                                new ShaderOpenGLCustom(name, EngineSetup::get()->CUSTOM_SHADERS_FOLDER + file)
                         );
                     }
                     ImGui::SameLine();

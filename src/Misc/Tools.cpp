@@ -308,21 +308,6 @@ float Tools::percentage(int value, int total)
     return (float) ((float) value * 100 / (float) total);
 }
 
-
-void Tools::addSceneObject(const std::string& filename, const std::string& name)
-{
-    Vertex3D position = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition();
-
-    auto *newObject = new Mesh3DAnimation();
-    newObject->setBelongToScene(true);
-    newObject->setPosition(position);
-    newObject->AssimpLoadAnimation(filename);
-
-    Logging::Message("Loading from file: %s", std::string(filename).c_str());
-
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel(name.c_str()));
-}
-
 void Tools::makeFadeInSprite(Vertex3D position, TextureAnimated *animation)
 {
     Point2D P1 = Transforms::WorldToPoint(position);

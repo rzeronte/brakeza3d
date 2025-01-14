@@ -77,8 +77,6 @@ public:
 
     static float percentage(int value, int total);
 
-    static void addSceneObject(const std::string& filename, const std::string& name);
-
     static void makeFadeInSprite(Vertex3D position, TextureAnimated *animation);
 
     static void makeLoopSprite(Vertex3D position, TextureAnimated *animation, float ttl);
