@@ -14,6 +14,7 @@ enum BodyTypeShape {
 class Body: public Collisionable {
 protected:
     BodyTypeShape typeShape;
+    Vertex3D simpleShapeSize;
 public:
     Body();
 

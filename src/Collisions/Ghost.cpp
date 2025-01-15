@@ -5,7 +5,8 @@ Ghost::Ghost()
 :
     typeShape(GhostTypeShape::GHOST_SIMPLE_SHAPE),
     ghostObject( new btPairCachingGhostObject()),
-    convexHullShape(nullptr)
+    convexHullShape(nullptr),
+    simpleShapeSize(Vertex3D(1, 1, 1))
 {
 }
 

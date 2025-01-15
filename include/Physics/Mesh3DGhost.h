@@ -37,6 +37,10 @@ public:
     static void createFromJSON(cJSON *object);
 
     static void setPropertiesFromJSON(cJSON *object, Mesh3DGhost *o);
+
+    static Mesh3DGhost *create(Vertex3D position, const std::string &modelFile);
+
+    void makeDefaultSimple();
 };
 
 #endif //BRAKEDA3D_MESH3DGHOST_H

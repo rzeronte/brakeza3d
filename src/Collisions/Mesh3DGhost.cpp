@@ -3,11 +3,10 @@
 #include <glm/trigonometric.hpp>
 
 #include "../../include/Render/Logging.h"
-#include "../../include/Physics/Projectile3DBody.h"
 #include "../../include/Brakeza3D.h"
-#include <glm/gtx/euler_angles.hpp>
 
-Mesh3DGhost::Mesh3DGhost() {
+Mesh3DGhost::Mesh3DGhost()
+{
 }
 
 void Mesh3DGhost::integrate()
@@ -52,7 +51,7 @@ void Mesh3DGhost::drawImGuiProperties()
     Mesh3D::drawImGuiProperties();
 
     ImGui::Separator();
-    if (ImGui::TreeNode("Ghost Body")) {
+    if (ImGui::TreeNode("Mesh3DGhost")) {
         auto flags = ImGuiComboFlags_None;
         const char* items[] = { "Simple ghost", "Triangle Mesh ghost" };
         int item_current_idx = getTypeShape();
@@ -68,25 +67,17 @@ void Mesh3DGhost::drawImGuiProperties()
                             case 0: {
                                 Logging::Message("Making object %s physics with: Box shape", getLabel().c_str());
                                 removeCollisionObject();
-                                updateBoundingBox();
-                                getAabb().setScale(getScale());
-                                this->makeSimpleGhostBody(
-                                        getAabb().size().getScaled(0.5),
-                                        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                                        btBroadphaseProxy::DefaultFilter,
-                                        btBroadphaseProxy::DefaultFilter
-                                );
-
+                                makeDefaultSimple();
                                 break;
                             }
                             case 1: {
                                 Logging::Message("Making object %s physics with: Mesh3D shape", getLabel().c_str());
                                 removeCollisionObject();
                                 this->makeGhostBody(
-                                        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                                        this,
-                                        btBroadphaseProxy::DefaultFilter,
-                                        btBroadphaseProxy::DefaultFilter
+                                    Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                                    this,
+                                    btBroadphaseProxy::DefaultFilter,
+                                    btBroadphaseProxy::DefaultFilter
                                 );
                                 break;
                             }
@@ -97,6 +88,23 @@ void Mesh3DGhost::drawImGuiProperties()
             ImGui::EndCombo();
         }
 
+        if (getTypeShape() == GHOST_SIMPLE_SHAPE) {
+            if (ImGui::TreeNode("Simple shape size")) {
+                const float range_min = -500000;
+                const float range_max = 500000;
+                const float range_sensibility = 0.1;
+
+                ImGui::DragScalar("X", ImGuiDataType_Float, &simpleShapeSize.x, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+                ImGui::DragScalar("Y", ImGuiDataType_Float, &simpleShapeSize.y, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+                ImGui::DragScalar("Z", ImGuiDataType_Float, &simpleShapeSize.z, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+
+                if (ImGui::Button(std::string("Update collision shape").c_str())) {
+                    removeCollisionObject();
+                    makeDefaultSimple();
+                }
+                ImGui::TreePop();
+            }
+        }
 
         ImGui::TreePop();
     }
@@ -139,13 +147,7 @@ void Mesh3DGhost::setPropertiesFromJSON(cJSON *object, Mesh3DGhost *o)
     switch (type) {
         case GhostTypeShape::GHOST_SIMPLE_SHAPE: {
             o->setTypeShape(GhostTypeShape::GHOST_SIMPLE_SHAPE);
-            o->updateBoundingBox();
-            o->makeSimpleGhostBody(
-                o->getAabb().size(),
-                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                btBroadphaseProxy::DefaultFilter,
-                btBroadphaseProxy::DefaultFilter
-            );
+            o->makeDefaultSimple();
             break;
         }
         case GhostTypeShape::GHOST_TRIANGLE3D_MESH_SHAPE: {
@@ -172,4 +174,25 @@ void Mesh3DGhost::createFromJSON(cJSON *object)
 
 Mesh3DGhost::~Mesh3DGhost() {
 
+}
+
+Mesh3DGhost *Mesh3DGhost::create(Vertex3D position, const std::string &modelFile)
+{
+    auto *o = new Mesh3DGhost();
+    o->setBelongToScene(true);
+    o->setPosition(position);
+    o->AssimpLoadGeometryFromFile(modelFile);
+    o->makeDefaultSimple();
+
+    return o;
+}
+
+void Mesh3DGhost::makeDefaultSimple()
+{
+    this->makeSimpleGhostBody(
+        simpleShapeSize,
+        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        btBroadphaseProxy::DefaultFilter,
+        btBroadphaseProxy::DefaultFilter
+    );
 }

@@ -49,105 +49,120 @@ struct GUIWidgetMenu
 
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("Brakeza3D")) {
-                if (ImGui::MenuItem("About Brakeza", "CTRL+I")) show_about_window = true;
+                if (ImGui::MenuItem("About Brakeza3D", "CTRL+I")) show_about_window = true;
                 ImGui::Separator();
                 if (ImGui::MenuItem("Exit", "CTRL+W")) finish = true;
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Add object")) {
+
                 ImGui::Image(icon("objectIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
-                if (ImGui::MenuItem("Object3D", "CTRL+O")) {
+                if (ImGui::MenuItem("Object3D (Empty)", "CTRL+O")) {
                     SceneLoader::createObjectInScene();
-                }
-
-                ImGui::Separator();
-
-                ImGui::Image(icon("lightIcon"), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::MenuItem("PointLight", "CTRL+O")) {
-                    SceneLoader::createPointLight3DInScene();
-                    Logging::Message("Add PointLight");
-                }
-                ImGui::Image(icon("spotLightIcon"), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::MenuItem("SpotLight", "CTRL+O")) {
-                    SceneLoader::createSpotLight3DInScene();
-                    Logging::Message("Add SpotLight");
-                }
-                ImGui::Separator();
-                ImGui::Image(icon("particlesIcon"), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::MenuItem("ParticleEmitter", "CTRL+x")) {
-                    SceneLoader::createParticleEmitterInScene();
-                    ImGui::EndMenu();
                 }
 
                 ImGui::Separator();
 
                 ImGui::Image(icon("Image2DIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
-                if (ImGui::BeginMenu("Image2D")) {
-                    drawImage2DItemsToLoad(EngineSetup::get()->IMAGES_FOLDER);
-                    ImGui::EndMenu();
-                }
-                ImGui::Image(icon("Image2DAnimationIcon"), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::BeginMenu("Image2D Animation")) {
-                    drawImage2DAnimationItemsToLoad(EngineSetup::get()->SPRITES_FOLDER);
-                    ImGui::EndMenu();
-                }
-                ImGui::Image(icon("BillboardAnimationIcon"), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::BeginMenu("Billboard Animation")) {
-                    drawBillboardAnimationItemsToLoad(EngineSetup::get()->SPRITES_FOLDER);
-                    ImGui::EndMenu();
-                }
-                ImGui::Image(icon("BillboardAnimation8DirectionsIcon"), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::MenuItem("Billboard 8-Directions", "CTRL+L")) {
-                    SceneLoader::createBillboardAnimation8Directions();
-                    ImGui::EndMenu();
-                }
+                if (ImGui::BeginMenu("2D Objects")) {
+                    ImGui::Image(icon("particlesIcon"), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::MenuItem("ParticleEmitter", "CTRL+x")) {
+                        SceneLoader::createParticleEmitterInScene();
+                        ImGui::EndMenu();
+                    }
 
-                ImGui::Separator();
+                    ImGui::Separator();
 
-                ImGui::Image(icon("Image3DIcon"), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::BeginMenu("Image3D")) {
-                    drawImage3DItemsToLoad(EngineSetup::get()->IMAGES_FOLDER);
+                    ImGui::Image(icon("Image2DIcon"), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::BeginMenu("Image2D")) {
+                        drawImage2DItemsToLoad(EngineSetup::get()->IMAGES_FOLDER);
+                        ImGui::EndMenu();
+                    }
+                    ImGui::Image(icon("Image2DAnimationIcon"), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::BeginMenu("Image2D Animation")) {
+                        drawImage2DAnimationItemsToLoad(EngineSetup::get()->SPRITES_FOLDER);
+                        ImGui::EndMenu();
+                    }
+                    ImGui::Separator();
+
+                    ImGui::Image(icon("BillboardAnimationIcon"), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::BeginMenu("Billboard Animation")) {
+                        drawBillboardAnimationItemsToLoad(EngineSetup::get()->SPRITES_FOLDER);
+                        ImGui::EndMenu();
+                    }
+                    ImGui::Image(icon("BillboardAnimation8DirectionsIcon"), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::MenuItem("Billboard 8-Directions", "CTRL+L")) {
+                        SceneLoader::createBillboardAnimation8Directions();
+                        ImGui::EndMenu();
+                    }
                     ImGui::EndMenu();
                 }
                 ImGui::Image(icon("meshIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
-                if (ImGui::BeginMenu("Mesh3D")) {
-                    drawMesh3DItemsToLoad(EngineSetup::get()->MODELS_FOLDER);
+                if (ImGui::BeginMenu("3D Objects")) {
+                    ImGui::Image(icon("Image3DIcon"), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::BeginMenu("Image3D")) {
+                        drawImage3DItemsToLoad(EngineSetup::get()->IMAGES_FOLDER);
+                        ImGui::EndMenu();
+                    }
+                    ImGui::Image(icon("meshIcon"), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::BeginMenu("Mesh3D")) {
+                        drawMesh3DItemsToLoad(EngineSetup::get()->MODELS_FOLDER);
+                        ImGui::EndMenu();
+                    }
+
+                    ImGui::Separator();
+
+                    ImGui::Image(icon("Mesh3DAnimationIcon"), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::BeginMenu("Mesh3DAnimation")) {
+                        drawMesh3DAnimationItemsToLoad(EngineSetup::get()->ANIMATIONS_FOLDER);
+                        ImGui::EndMenu();
+                    }
+
+                    ImGui::Separator();
+
+                    ImGui::Image(icon("gearIcon"), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::BeginMenu("Mesh3DBody")) {
+                        drawMesh3DBodyItemsToLoad();
+                        ImGui::EndMenu();
+                    }
+                    ImGui::Image(icon("ghostIcon"), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::BeginMenu("Mesh3DGhost")) {
+                        drawMesh3DGhostItemsToLoad();
+                        ImGui::EndMenu();
+                    }
                     ImGui::EndMenu();
                 }
-
-                ImGui::Separator();
-
-                ImGui::Image(icon("gearIcon"), ImVec2(16, 16));
+                ImGui::Image(icon("lightIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
-                if (ImGui::BeginMenu("RigidBody")) {
-                    drawRigidBodiesItemsToLoad();
-                    ImGui::EndMenu();
-                }
-                ImGui::Image(icon("ghostIcon"), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::BeginMenu("GhostBody")) {
-                    drawGhostItemsToLoad();
+                if (ImGui::BeginMenu("Light Objects")) {
+                    ImGui::Image(icon("lightIcon"), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::MenuItem("PointLight", "CTRL+O")) {
+                        SceneLoader::createPointLight3DInScene();
+                        Logging::Message("Add PointLight");
+                    }
+                    ImGui::Image(icon("spotLightIcon"), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::MenuItem("SpotLight", "CTRL+O")) {
+                        SceneLoader::createSpotLight3DInScene();
+                        Logging::Message("Add SpotLight");
+                    }
                     ImGui::EndMenu();
                 }
 
-                ImGui::Separator();
-
-                ImGui::Image(icon("Mesh3DAnimationIcon"), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::BeginMenu("Mesh3DAnimation")) {
-                    drawMesh3DAnimationItemsToLoad(EngineSetup::get()->ANIMATIONS_FOLDER);
-                    ImGui::EndMenu();
-                }
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Render")) {
@@ -474,7 +489,7 @@ struct GUIWidgetMenu
         }
     }
 
-    void drawRigidBodiesItemsToLoad() {
+    void drawMesh3DBodyItemsToLoad() {
 
         auto result= Tools::getFolderFiles(EngineSetup::get()->MODELS_FOLDER, "fbx");
 
@@ -519,7 +534,7 @@ struct GUIWidgetMenu
         }
     }
 
-    void drawGhostItemsToLoad()
+    void drawMesh3DGhostItemsToLoad()
     {
         auto result= Tools::getFolderFiles(EngineSetup::get()->MODELS_FOLDER, "fbx");
 
@@ -530,7 +545,7 @@ struct GUIWidgetMenu
                 ImGui::Image(icon("ghostIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem(file.c_str())) {
-                    SceneLoader::createGhostBody3DToScene(EngineSetup::get()->MODELS_FOLDER + file);
+                    SceneLoader::createMesh3DGhostToScene(EngineSetup::get()->MODELS_FOLDER + file);
                 }
             }
         }

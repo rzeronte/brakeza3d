@@ -71,35 +71,36 @@ public:
 
     void LoadUIIcons()
     {
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/stop.png", "stopIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/play.png", "playIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/reload.png", "reloadIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/rebuild.png", "rebuildIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/object.png", "objectIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/light.png", "lightIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/script.png", "scriptIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/swarm.png", "swarmIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/mesh.png", "meshIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/folder.png", "folderIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/player.png", "playerIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/BillboardAnimation8DirectionsIcon.png", "BillboardAnimation8DirectionsIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/Image2DAnimationIcon.png", "Image2DAnimationIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/Mesh3DAnimationIcon.png", "Mesh3DAnimationIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/Image2DIcon.png", "Image2DIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/Image3DIcon.png", "Image3DIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/BillboardAnimationIcon.png", "BillboardAnimationIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/remove.png", "removeIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/pause.png", "pauseIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/lock.png", "lockIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/unlock.png", "unlockIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/add.png", "addIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/scene.png", "sceneIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/save.png", "saveIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/gear.png", "gearIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/ghost.png", "ghostIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/shader.png", "shaderIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/spotlight.png", "spotLightIcon");
-        packageIcons.addItem(EngineSetup::get()->ICONS_FOLDER + "interface/particles.png", "particlesIcon");
+        auto iconsFolder = EngineSetup::get()->ICONS_FOLDER + "interface/"; 
+        packageIcons.addItem(iconsFolder + "stop.png", "stopIcon");
+        packageIcons.addItem(iconsFolder + "play.png", "playIcon");
+        packageIcons.addItem(iconsFolder + "reload.png", "reloadIcon");
+        packageIcons.addItem(iconsFolder + "rebuild.png", "rebuildIcon");
+        packageIcons.addItem(iconsFolder + "object.png", "objectIcon");
+        packageIcons.addItem(iconsFolder + "light.png", "lightIcon");
+        packageIcons.addItem(iconsFolder + "script.png", "scriptIcon");
+        packageIcons.addItem(iconsFolder + "swarm.png", "swarmIcon");
+        packageIcons.addItem(iconsFolder + "mesh.png", "meshIcon");
+        packageIcons.addItem(iconsFolder + "folder.png", "folderIcon");
+        packageIcons.addItem(iconsFolder + "player.png", "playerIcon");
+        packageIcons.addItem(iconsFolder + "BillboardAnimation8DirectionsIcon.png", "BillboardAnimation8DirectionsIcon");
+        packageIcons.addItem(iconsFolder + "Image2DAnimationIcon.png", "Image2DAnimationIcon");
+        packageIcons.addItem(iconsFolder + "Mesh3DAnimationIcon.png", "Mesh3DAnimationIcon");
+        packageIcons.addItem(iconsFolder + "Image2DIcon.png", "Image2DIcon");
+        packageIcons.addItem(iconsFolder + "Image3DIcon.png", "Image3DIcon");
+        packageIcons.addItem(iconsFolder + "BillboardAnimationIcon.png", "BillboardAnimationIcon");
+        packageIcons.addItem(iconsFolder + "remove.png", "removeIcon");
+        packageIcons.addItem(iconsFolder + "pause.png", "pauseIcon");
+        packageIcons.addItem(iconsFolder + "lock.png", "lockIcon");
+        packageIcons.addItem(iconsFolder + "unlock.png", "unlockIcon");
+        packageIcons.addItem(iconsFolder + "add.png", "addIcon");
+        packageIcons.addItem(iconsFolder + "scene.png", "sceneIcon");
+        packageIcons.addItem(iconsFolder + "save.png", "saveIcon");
+        packageIcons.addItem(iconsFolder + "gear.png", "gearIcon");
+        packageIcons.addItem(iconsFolder + "ghost.png", "ghostIcon");
+        packageIcons.addItem(iconsFolder + "shader.png", "shaderIcon");
+        packageIcons.addItem(iconsFolder + "spotlight.png", "spotLightIcon");
+        packageIcons.addItem(iconsFolder + "particles.png", "particlesIcon");
     }
 
     void drawScriptFiles(std::vector<std::string> result)

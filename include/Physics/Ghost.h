@@ -37,6 +37,8 @@ public:
     [[nodiscard]] GhostTypeShape getTypeShape() const;
 
     void setTypeShape(GhostTypeShape typeShape);
+
+    Vertex3D simpleShapeSize;
 };
 
 

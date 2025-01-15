@@ -183,7 +183,7 @@ void Mesh3DBody::drawImGuiProperties()
 {
     Mesh3D::drawImGuiProperties();
     ImGui::Separator();
-    if (ImGui::TreeNode("Rigid Body")) {
+    if (ImGui::TreeNode("Mesh3DBody")) {
         const float range_sensibility = 1;
         const float range_min = 10000;
         const float range_max = -10000;
@@ -212,25 +212,20 @@ void Mesh3DBody::drawImGuiProperties()
                                 removeCollisionObject();
                                 updateBoundingBox();
                                 this->makeSimpleRigidBody(
-                                        mass,
-                                        getPosition(),
-                                        getRotation(),
-                                        getAabb().size(),
-                                        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                                        btBroadphaseProxy::DefaultFilter,
-                                        btBroadphaseProxy::DefaultFilter
+                                    mass,
+                                    getPosition(),
+                                    getRotation(),
+                                    getAabb().size(),
+                                    Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                                    btBroadphaseProxy::DefaultFilter,
+                                    btBroadphaseProxy::DefaultFilter
                                 );
                                 Logging::Message("Making object %s physics with: Box shape %d", getLabel().c_str(), getTypeShape());
                                 break;
                             }
                             case 1: {
                                 removeCollisionObject();
-                                this->makeRigidBody(
-                                        mass,
-                                        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                                        btBroadphaseProxy::DefaultFilter,
-                                        btBroadphaseProxy::DefaultFilter
-                                );
+                                makeDefaultCollisionShape();
                                 Logging::Message("Making object %s physics with: Mesh3D shape %d", getLabel().c_str(), getTypeShape());
                                 break;
                             }
@@ -241,6 +236,31 @@ void Mesh3DBody::drawImGuiProperties()
             ImGui::EndCombo();
         }
 
+        if (getTypeShape() == GHOST_SIMPLE_SHAPE) {
+            if (ImGui::TreeNode("Simple shape size")) {
+                const float range_min = -500000;
+                const float range_max = 500000;
+                const float range_sensibility = 0.1;
+
+                ImGui::DragScalar("X", ImGuiDataType_Float, &simpleShapeSize.x, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+                ImGui::DragScalar("Y", ImGuiDataType_Float, &simpleShapeSize.y, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+                ImGui::DragScalar("Z", ImGuiDataType_Float, &simpleShapeSize.z, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+
+                if (ImGui::Button(std::string("Update collision shape").c_str())) {
+                    removeCollisionObject();
+                    this->makeSimpleRigidBody(
+                        mass,
+                        getPosition(),
+                        getRotation(),
+                        getAabb().size(),
+                        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                        btBroadphaseProxy::DefaultFilter,
+                        btBroadphaseProxy::DefaultFilter
+                    );
+                }
+                ImGui::TreePop();
+            }
+        }
         ImGui::TreePop();
     }
 }
@@ -284,12 +304,7 @@ void Mesh3DBody::setPropertiesFromJSON(cJSON *object, Mesh3DBody *o)
             break;
         }
         case BodyTypeShape::BODY_TRIANGLE3D_MESH_SHAPE: {
-            o->makeRigidBody(
-                o->mass,
-                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                btBroadphaseProxy::DefaultFilter,
-                btBroadphaseProxy::DefaultFilter
-            );
+            o->makeDefaultCollisionShape();
             break;
         }
     }
@@ -302,4 +317,26 @@ void Mesh3DBody::createFromJSON(cJSON *object)
     Mesh3DBody::setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
+}
+
+Mesh3DBody *Mesh3DBody::create(Vertex3D position, float mass, const std::string &modelFile)
+{
+    auto *o = new Mesh3DBody();
+    o->setBelongToScene(true);
+    o->setMass(mass);
+    o->setPosition(position);
+    o->AssimpLoadGeometryFromFile(modelFile);
+    o->makeDefaultCollisionShape();
+
+    return o;
+}
+
+void Mesh3DBody::makeDefaultCollisionShape()
+{
+    makeRigidBody(
+        mass,
+        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        btBroadphaseProxy::DefaultFilter,
+        btBroadphaseProxy::DefaultFilter
+    );
 }

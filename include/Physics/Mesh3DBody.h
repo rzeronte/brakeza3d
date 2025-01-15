@@ -7,7 +7,6 @@
 #include "Body.h"
 #include "Mesh3DGhost.h"
 
-
 class Mesh3DBody : public Mesh3D, public Body {
 public:
     Mesh3DBody();
@@ -23,6 +22,10 @@ public:
     void setGravity(Vertex3D g);
 
     static void createFromJSON(cJSON *object);
+
+    static Mesh3DBody *create(Vertex3D position, float mass, const std::string &modelFile);
+
+    void makeDefaultCollisionShape();
 
 private:
     btConvexHullShape *getConvexHullShapeFromMesh();
