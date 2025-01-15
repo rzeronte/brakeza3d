@@ -4,21 +4,21 @@
 #include "../../include/Brakeza3D.h"
 
 SpotLight3D::SpotLight3D(
-        const glm::vec4 &direction,
-        const glm::vec4 &ambient,
-        const glm::vec4 &diffuse,
-        const glm::vec4 &specular,
-        float constant,
-        float linear,
-        float quadratic,
-        float cutOff,
-        float outerCutOff
+    const glm::vec4 &direction,
+    const glm::vec4 &ambient,
+    const glm::vec4 &diffuse,
+    const glm::vec4 &specular,
+    float constant,
+    float linear,
+    float quadratic,
+    float cutOff,
+    float outerCutOff
 )
 :
     LightPoint3D(ambient, diffuse, specular, constant, linear, quadratic),
+    direction(direction),
     cutOff(cutOff),
-    outerCutOff(outerCutOff),
-    direction(direction)
+    outerCutOff(outerCutOff)
 {
 }
 
@@ -38,7 +38,8 @@ const char *SpotLight3D::getTypeIcon() {
     return "spotLightIcon";
 }
 
-void SpotLight3D::drawImGuiProperties() {
+void SpotLight3D::drawImGuiProperties()
+{
     LightPoint3D::drawImGuiProperties();
 
     ImGui::Separator();
@@ -91,5 +92,29 @@ void SpotLight3D::setPropertiesFromJSON(cJSON *object, SpotLight3D *o)
 
     o->setCutOff((float) cJSON_GetObjectItemCaseSensitive(object, "cutOff")->valuedouble);
     o->setOuterCutOff((float) cJSON_GetObjectItemCaseSensitive(object, "outerCutOff")->valuedouble);
+}
+
+SpotLight3D *SpotLight3D::create(Vertex3D position, Vertex3D direction)
+{
+    auto *o = new SpotLight3D(
+        glm::vec4(direction.x, direction.y, direction.z, 0),
+        glm::vec4(0.05f, 0.05f, 0.05f, 0),
+        glm::vec4(1.0f, 0.0f, 0.0f, 0),
+        glm::vec4(1.0f, 1.0f, 1.0f, 0),
+        1.0f,
+        0.09f,
+        0.032f,
+        1,
+        1
+    );
+
+    o->setPosition(position);
+
+    return o;
+}
+
+void SpotLight3D::setDirection(Vertex3D d)
+{
+    direction = glm::vec4(d.x, d.y, d.z, 0);
 }
 

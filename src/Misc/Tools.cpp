@@ -70,6 +70,8 @@ bool Tools::fileExists(const char *name)
 
 char *Tools::readFile(const std::string &name, size_t &source_size)
 {
+    printf("Reading file: %s\r\n", name.c_str());
+
     FILE *fp;
 
     fp = fopen(name.c_str(), "rb");

@@ -249,28 +249,19 @@ void SceneLoader::createObjectInScene() {
 
 void SceneLoader::createPointLight3DInScene()
 {
-    auto o = LightPoint3D::base();
-    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
+    auto o = LightPoint3D::create(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
     o->setBelongToScene(true);
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
 }
 
 void SceneLoader::createSpotLight3DInScene()
 {
-    auto o = new SpotLight3D(
-            glm::vec4(0.0f, 0.0f, 1.0f, 0),
-            glm::vec4(0.05f, 0.05f, 0.05f, 0),
-            glm::vec4(1.0f, 0.0f, 0.0f, 0),
-            glm::vec4(1.0f, 1.0f, 1.0f, 0),
-            1.0f,
-            0.09f,
-            0.032f,
-            1,
-            1
+    auto o = SpotLight3D::create(
+        ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
+        Vertex3D(0, 0, 1)
     );
-    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
     o->setBelongToScene(true);
-    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_lightpoint"));
+    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("SpotLight3D"));
 }
 
 void SceneLoader::createMesh3DBodyToScene(const std::string& filename)

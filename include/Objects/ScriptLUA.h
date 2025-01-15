@@ -101,17 +101,19 @@ public:
 
     void drawImGuiProperties();
 
-    const std::vector<ScriptLUATypeData> &getDataTypes() const;
+    [[nodiscard]] const std::vector<ScriptLUATypeData> &getDataTypes() const;
 
     cJSON *getTypesJSON();
 
-    const std::string &getScriptFilename() const;
+    [[nodiscard]] const std::string &getScriptFilename() const;
 
     void setDataTypesFromJSON(cJSON *typesJSON);
 
     void addDataTypeEmpty(const char *name, const char *type);
 
     bool existDataType(const char *name, const char *type);
+
+    static ScriptLUA* create(std::string scriptFile);
 };
 
 

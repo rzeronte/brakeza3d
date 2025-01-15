@@ -35,7 +35,7 @@ void ScriptLUA::getCode(const std::string &script)
 {
     size_t file_size;
     content.clear();
-    content = Tools::readFile(EngineSetup::get()->SCRIPTS_FOLDER + script, file_size);
+    content = Tools::readFile(script, file_size);
 }
 
 void ScriptLUA::runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg) const
@@ -183,7 +183,7 @@ void ScriptLUA::reloadEnvironment(sol::environment &environment)
 void ScriptLUA::parseTypesFromFileAttributes()
 {
     size_t file_size;
-    auto contentFile = Tools::readFile(EngineSetup::get()->SCRIPTS_FOLDER + fileTypes, file_size);
+    auto contentFile = Tools::readFile(fileTypes, file_size);
     Logging::Message("Parsing attributes from: '%s'", fileTypes.c_str());
 
     setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
@@ -237,7 +237,7 @@ void ScriptLUA::updateFileTypes()
     Logging::Message("Updating types file (%s)", this->fileTypes.c_str());
     char *output_string = cJSON_Print(getTypesJSON());
 
-    Tools::writeToFile(EngineSetup::get()->SCRIPTS_FOLDER + this->fileTypes, output_string);
+    Tools::writeToFile(this->fileTypes, output_string);
 
     delete output_string;
 }
@@ -246,7 +246,7 @@ bool ScriptLUA::updateScriptCodeWith(const std::string& content) const
 {
     Logging::Message("Writing content in file (%s)", scriptFilename.c_str());
 
-    std::ofstream file(EngineSetup::get()->SCRIPTS_FOLDER + this->scriptFilename, std::ios::trunc);
+    std::ofstream file(this->scriptFilename, std::ios::trunc);
 
     if (!file.is_open()) {
         std::cerr << "Error al abrir el archivo." << std::endl;
@@ -401,4 +401,24 @@ cJSON *ScriptLUA::getTypesJSON()
 
 const std::string &ScriptLUA::getScriptFilename() const {
     return scriptFilename;
+}
+
+ScriptLUA *ScriptLUA::create(std::string scriptFile)
+{
+    auto typesFile = dataTypesFileFor(scriptFile);
+
+    std::cout << typesFile.c_str() << std::endl;
+
+    if (!Tools::fileExists(typesFile.c_str())) {
+        Logging::Message("Failed loading TypesFile: %s", typesFile.c_str());
+
+        return nullptr;
+    }
+
+    auto s = new ScriptLUA(
+        scriptFile,
+    typesFile
+    );
+
+    return s;
 }

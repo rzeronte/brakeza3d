@@ -11,15 +11,15 @@
 class SpotLight3D : public LightPoint3D {
 public:
     SpotLight3D(
-            const glm::vec4 &direction,
-            const glm::vec4 &ambient,
-            const glm::vec4 &diffuse,
-            const glm::vec4 &specular,
-            float constant,
-            float linear,
-            float quadratic,
-            float cutOff,
-            float outerCutOff
+        const glm::vec4 &direction,
+        const glm::vec4 &ambient,
+        const glm::vec4 &diffuse,
+        const glm::vec4 &specular,
+        float constant,
+        float linear,
+        float quadratic,
+        float cutOff,
+        float outerCutOff
     );
 
     const char *getTypeIcon() override;
@@ -43,6 +43,10 @@ public:
     float outerCutOff;
 
     static void setPropertiesFromJSON(cJSON *object, SpotLight3D *o);
+
+    static SpotLight3D* create(Vertex3D position, Vertex3D direction);
+
+    void setDirection(Vertex3D d);
 };
 
 

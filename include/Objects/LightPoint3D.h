@@ -49,7 +49,7 @@ public:
 
     static void setPropertiesFromJSON(cJSON *object, LightPoint3D *o);
 
-    static LightPoint3D* base();
+    static LightPoint3D* create(Vertex3D position);
 
     void setAmbient(Color value);
 };

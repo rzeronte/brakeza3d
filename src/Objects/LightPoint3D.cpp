@@ -23,8 +23,9 @@ LightPoint3D::LightPoint3D(
 {
 }
 
-LightPoint3D *LightPoint3D::base() {
-    return new LightPoint3D(
+LightPoint3D *LightPoint3D::create(Vertex3D position)
+{
+    auto o = new LightPoint3D(
         glm::vec4(0.05f, 0.05f, 0.05f, 0),
         glm::vec4(1.0f, 0.0f, 0.0f, 0),
         glm::vec4(1.0f, 1.0f, 1.0f, 0),
@@ -32,6 +33,10 @@ LightPoint3D *LightPoint3D::base() {
         0.09f,
         0.032f
     );
+
+    o->setPosition(position);
+
+    return o;
 }
 
 void LightPoint3D::setColor(Color value) {

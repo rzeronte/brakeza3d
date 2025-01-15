@@ -115,18 +115,24 @@ public:
 
             ImGui::PushID(n);
             std::string optionText = std::to_string(n + 1) + ") " + file;
+            std::string fullPath = EngineSetup::get()->SCRIPTS_FOLDER + file;
             if (ImGui::Selectable(optionText.c_str())) {
                 delete scriptEditableManager.script;
-                scriptEditableManager.selectedScriptFilename = file;
+                scriptEditableManager.selectedScriptFilename = fullPath;
                 scriptEditableManager.script = new ScriptLUA(
-                        scriptEditableManager.selectedScriptFilename,
-                        ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename)
+                    scriptEditableManager.selectedScriptFilename,
+                    ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename)
                 );
                 strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
             }
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-                ImGui::SetDragDropPayload("SCRIPT_ITEM", file.c_str(), file.size() + 1);  // Asigna el nombre del elemento como carga útil
-                ImGui::Text("%s", file.c_str());  // Esto es lo que se muestra mientras se arrastra
+                ImGui::SetDragDropPayload(
+                    "SCRIPT_ITEM",
+                    fullPath.c_str(),
+                    fullPath.size() + 1
+                );
+                // Esto es lo que se muestra mientras se arrastra
+                ImGui::Text("%s", fullPath.c_str());
                 ImGui::EndDragDropSource();
             }
 

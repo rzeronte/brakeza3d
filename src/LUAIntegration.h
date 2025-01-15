@@ -8,6 +8,7 @@
 #include "../sol/sol.hpp"
 #include "../include/Objects/Vertex3D.h"
 #include "../include/Objects/Object3D.h"
+#include "../include/Objects/ScriptLUA.h"
 #include "../include/Components/ComponentCamera.h"
 #include "../include/ComponentsManager.h"
 #include "../include/Brakeza3D.h"
@@ -39,7 +40,16 @@ void LUAIntegration(sol::state &lua)
             "__mul", sol::overload(
                     sol::resolve<Vertex3D(Vertex3D const)>(&M3::operator*)
             ),
-    "getMatrixRotationForEulerAngles", &M3::getMatrixRotationForEulerAngles
+            "getMatrixRotationForEulerAngles", &M3::getMatrixRotationForEulerAngles
+    );
+
+    lua.new_usertype<Color>(
+            "Color",
+            sol::constructors<Color(),
+                    Color(float, float, float, float)>(),
+            "setRed", &Color::setRed,
+            "setGreen", &Color::setGreen,
+            "setBlue", &Color::setBlue
     );
 
     lua.new_usertype<Object3D>(
@@ -49,7 +59,7 @@ void LUAIntegration(sol::state &lua)
             "getPosition", &Object3D::getPosition,
             "setPosition", &Object3D::setPosition,
             "setRotation", sol::overload(
-                    static_cast<void (Object3D::*)(M3)>(&Object3D::setRotation)  // Ajusta el tipo de argumento
+                    static_cast<void (Object3D::*)(M3)>(&Object3D::setRotation)
             ),
             "getTypeObject", &Object3D::getTypeObject,
             "getLabel", &Object3D::getLabel,
@@ -63,7 +73,9 @@ void LUAIntegration(sol::state &lua)
             "getScale", &Object3D::getScale,
             "setScale", &Object3D::setScale,
             "AxisForward", &Object3D::AxisForward,
-            "getLocalScriptVar", &Object3D::getLocalScriptVar
+            "getLocalScriptVar", &Object3D::getLocalScriptVar,
+            "attachScript",  &Object3D::attachScript,
+            "reloadScriptsEnvironment", &Object3D::reloadScriptsEnvironment
     );
 
 
@@ -225,6 +237,50 @@ void LUAIntegration(sol::state &lua)
                                        "create", sol::factories([](Vertex3D p, float w, float h, const std::string& imageFile) {
                                             return Image3D::create(p, w, h, imageFile);
                                         })
+    );
+
+    lua.new_usertype<LightPoint3D>("LightPoint3D",
+                             sol::base_classes, sol::bases<Object3D>(),
+                             "setConstant", &LightPoint3D::setConstant,
+                             "setLinear", &LightPoint3D::setLinear,
+                             "setCuadratic", &LightPoint3D::setCuadratic,
+                             "setColor", &LightPoint3D::setColor,
+                             "setColorSpecular", &LightPoint3D::setColorSpecular,
+                             "setAmbient", &LightPoint3D::setAmbient,
+                             "create", sol::factories([](Vertex3D p) {
+                                 return LightPoint3D::create(p);
+                             })
+    );
+
+    lua.new_usertype<SpotLight3D>("SpotLight3D",
+                                   sol::base_classes, sol::bases<LightPoint3D, Object3D>(),
+                                  "setCutOff", &SpotLight3D::setCutOff,
+                                  "setOuterCutOff", &SpotLight3D::setOuterCutOff,
+                                  "setDirection", &SpotLight3D::setDirection,
+                                  "create", sol::factories([](Vertex3D position, Vertex3D direction) {
+                                        return SpotLight3D::create(position, direction);
+                                  })
+    );
+
+    lua.new_usertype<ScriptLUA>(
+            "ScriptLUA",
+            "content", sol::property(
+                    [](const ScriptLUA& script) { return script.content; },
+                    [](ScriptLUA& script, const std::string& newContent) { script.content = newContent; }
+            ),
+            "scriptFilename", sol::property(
+                    [](const ScriptLUA& script) { return script.getScriptFilename(); }
+            ),
+            "fileTypes", sol::property(
+                    [](const ScriptLUA& script) { return script.fileTypes; },
+                    [](ScriptLUA& script, const std::string& newFileTypes) { script.fileTypes = newFileTypes; }
+            ),
+            "updateFileTypes", &ScriptLUA::updateFileTypes,
+            "getCode", &ScriptLUA::getCode,
+            "dataTypesFileFor", &ScriptLUA::dataTypesFileFor,
+            "create", sol::factories([](const std::string& scriptFile) {
+                return ScriptLUA::create(scriptFile);
+            })
     );
 
 }

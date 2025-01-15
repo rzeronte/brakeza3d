@@ -3,6 +3,6 @@
 	"types":	[{
 			"name":	"speed",
 			"type":	"float",
-			"value":	0
+			"value": 1
 		}]
 }

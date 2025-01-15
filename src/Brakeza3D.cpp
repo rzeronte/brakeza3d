@@ -53,7 +53,7 @@ void Brakeza3D::mainLoop()
     componentsManager->getComponentCollisions()->initBulletSystem();
     componentsManager->getComponentCamera()->setFreeLook(true);
     onStartComponents();
-    LoadDemo();
+    //LoadDemo();
     componentsManager->getComponentWindow()->ImGuiInitialize(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
     welcomeMessage();
     componentsManager->getComponentRender()->getSceneLoader().loadScene(EngineSetup::get()->CONFIG_FOLDER + "brakeza.json");
@@ -79,7 +79,8 @@ void Brakeza3D::mainLoop()
     delete componentsManager;
 }
 
-void Brakeza3D::checkForResizeOpenGLWindow(SDL_Event &e) {
+void Brakeza3D::checkForResizeOpenGLWindow(SDL_Event &e)
+{
     if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
         auto window = ComponentsManager::get()->getComponentWindow();
         SDL_GetWindowSize(window->getWindow(), &window->width, &window->height);
@@ -99,7 +100,8 @@ void Brakeza3D::controlFrameRate() const
     }
 }
 
-std::vector<Object3D *> &Brakeza3D::getSceneObjects(){
+std::vector<Object3D *> &Brakeza3D::getSceneObjects()
+{
     return sceneObjects;
 }
 
@@ -123,11 +125,13 @@ void Brakeza3D::updateTimer()
     executionTime += deltaTime / 1000.f;
 }
 
-float Brakeza3D::getDeltaTime() const {
+float Brakeza3D::getDeltaTime() const
+{
     return this->deltaTime / 1000;
 }
 
-float Brakeza3D::getDeltaTimeMicro() const {
+float Brakeza3D::getDeltaTimeMicro() const
+{
     return this->deltaTime;
 }
 
@@ -161,17 +165,17 @@ void Brakeza3D::postUpdateComponents()
 
 void Brakeza3D::onEndComponents()
 {
-
     for (auto o : sceneObjects) {
         delete o;
     }
-    SDL_Quit();
-    exit(0);
-    for (Component*& component : componentsManager->components) {
-        component->onEnd();
-    }
 
+    /*for (Component*& component : componentsManager->components) {
+        component->onEnd();
+    }*/
+
+    SDL_Quit();
     Logging::head("Exiting... good bye! ;)");
+    exit(0);
 }
 
 void Brakeza3D::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish)
