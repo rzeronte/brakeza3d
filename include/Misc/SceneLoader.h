@@ -71,7 +71,7 @@ public:
 
     static void createMesh3DBodyToScene(const std::string &filename);
 
-    static void createGhostBody3DToScene(const std::string &filename);
+    static void createMesh3DGhostToScene(const std::string &filename);
 
     static void createImage3DToScene(const std::string &filename);
 

@@ -1,47 +1,54 @@
-# Ejemplo de carga de un objeto
+# Ejemplo de carga de objetos
 
-Principalmente un mundo en tres dimensiones alberga, precisamente, objetos en tres dimensiones, comunmente llamados modelos o mallas.
+A continuación el código LUA para cargar distintos tipos de objetos en Brakeza3D:
 
-El objeto principal que representa un objeto en tres dimensiones, con geometría visible, es decir, triángulos, es `Mesh3D`.
-
-Brakeza3D trabaja con la libreria Assimp para carga de modelos, por lo que en principio podremos cargar cualquier formato de modelo que permita esta, sin embargo, en estos ejemplos, vamos a enfocarnos exclusivamente al formato 'FBX'. 
-
-En la carpeta `assets/models/` encontrarás algunos ejemplos de prueba.
-
-El código para cargar una escena es el siguiente:
 
 ```
 function onStart()
-    ...
-    eye = Mesh3D.create("../assets/models/eye.fbx")
-    eye:setEnabled(true)
+    print("Load Image2D")
+    img = Image2D.create(10, 10, "../assets/images/logo_small.png")
+    img:updatePosition(300, 300)
+    brakeza:addObject3D(img, 'myImage2D')
+
+    print("Load Image2DAnimation")
+    animation2d = Image2DAnimation.create(100, 100, "../assets/sprites/explosion_a.png", 128, 128, 15, 24)
+    brakeza:addObject3D(animation2d, 'myAnimation')
+
+    print("Load Image3D")
+    image3d = Image3D.create(Vertex3D.new(10, 10, 10), 10, 10, "../assets/sprites/explosion_a.png")
+    brakeza:addObject3D(image3d, 'myImage3D')
+
+    print("Load Mesh3D")
+    eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+    eye:setStencilBufferEnabled(true)
     eye:setBelongToScene(false)
-    eye:setPosition(Vertex3D.new(0, 0, 600))
-    eye:setScale(0.5)
+    eye:setRotationFrameEnabled(true)
+    eye:setRotationFrame(Vertex3D.new(1, 0, 0))
+    eye:setScale(10)
+    brakeza:addObject3D(eye, 'myMesh')
 
-    brakeza:addObject3D(eye, "my_eye_model")
-    ...
+    print("Load Mesh3DAnimation")
+    man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
+    man:setStencilBufferEnabled(true)
+    man:setBelongToScene(false)
+    man:setScale(0.01)
+    brakeza:addObject3D(man, 'myMeshAnimated')
+
+    print("Load BillboardAnimation")
+    billboard = BillboardAnimation.create(Vertex3D.new(0, 10, 80), 100, 100, "../assets/sprites/explosion_a.png", 128, 128, 15, 24)
+    brakeza:addObject3D(billboard, 'myBillboard')
+
+    print("Load BillboardAnimation8Directions")
+    billboard8d = BillboardAnimation8Directions.create(Vertex3D.new(0, 10, 80), 100, 100, "../assets/sprites/Sprites3D/soldier/fire", 2, 24)
+    brakeza:addObject3D(billboard8d, 'myBillboard8D')
+
+    print("Load Mesh3DGhost")
+    meshghost = Mesh3DGhost.create(Vertex3D.new(10, 0, 10), "../assets/models/planet_cube_02.fbx")
+    brakeza:addObject3D(meshghost, 'myMeshGhost')
+
+    print("Load Mesh3DBody")
+    meshbody = Mesh3DBody.create(Vertex3D.new(10, 10, 20), 1, "../assets/models/planet_cube_02.fbx")
+    brakeza:addObject3D(meshbody, 'myMeshBody')
 end
-```
-
-Si el fichero `FBX` es correcto, se producirá la carga del modelo en el mundo. Encontrarás información sobre el proceso de carga en la pestaña de logs.
 
 ```
-Loading scene: %s"
-```
-
-
-# Explicación del código
-
-Lo primero, creamos el objeto de tipo `Mesh3D` con el código `Mesh3D:create()`.
-
-Un objeto tipo `Mesh3D` dispone de multitud de métodos que iremos conociendo, la mayoría se entienden fácilmente por su nombre.
-
-Nos encontramos el uso métodos comunes como `setEnabled`, `setPosition`, `setScale`.
-
-Además, en este caso, el método `setBelongToScene` es utilizado para indicar que este objeto no es original de la escena. Esto es importante, ya que los objetos no pertenecientes a la escena, son eliminados en cada inicio de ejecución de los scripts.
-
-El siguiente paso es usar el método `AssimpLoadGeometryFromFile`, proporcionándole la ruta al fichero `FBX`, para la carga del modelo.
-
-Finalmente añadimos el objeto creado al mundo mediante `brakeza:addObject3D(eye, "my_eye_model")`, donde `my_eye_model` será el nombre del modelo en el mundo.
-

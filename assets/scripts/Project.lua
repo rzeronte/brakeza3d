@@ -35,6 +35,14 @@ function onStart()
     print("Load BillboardAnimation8Directions")
     billboard8d = BillboardAnimation8Directions.create(Vertex3D.new(0, 10, 80), 100, 100, "../assets/sprites/Sprites3D/soldier/fire", 2, 24)
     brakeza:addObject3D(billboard8d, 'myBillboard8D')
+
+    print("Load Mesh3DGhost")
+    meshghost = Mesh3DGhost.create(Vertex3D.new(10, 0, 10), "../assets/models/planet_cube_02.fbx")
+    brakeza:addObject3D(meshghost, 'myMeshGhost')
+
+    print("Load Mesh3DBody")
+    meshbody = Mesh3DBody.create(Vertex3D.new(10, 10, 20), 1, "../assets/models/planet_cube_02.fbx")
+    brakeza:addObject3D(meshbody, 'myMeshBody')
 end
 
 function onUpdate()
