@@ -11,8 +11,8 @@ afectarán a como y qué veámos en pantalla.
 
 A través del objeto `Camera3D` obtendremose la matrices de `vista` y `proyección`:
 
-- `getViewMatrix`: mat4 con los datos de la matriz de vista.
-- `getProjectionMatrix`: mat4 con los datos de la matriz de proyección.
+- `getViewMatrix`: `mat4` con los datos de la matriz de vista.
+- `getProjectionMatrix`: `mat4` con los datos de la matriz de proyección.
 
 ## Movimiento de la cámara
 
@@ -43,7 +43,7 @@ Si activas la opcion ``Free Look`` en Brakeza3D ( Render > Free Look > On), podr
 
 ## Componente de Camara
 
-Internamente Brakeza3D gestiona las operaciones de cámara através de su propio ``component`` interno (`ComponentCamera`)
+Internamente Brakeza3D gestiona las operaciones de cámara a través de su propio ``component`` interno (`ComponentCamera`)
 
 Podrás obtener acceso a este componente desde tus scripts LUA y este te dará acceso a la cámara:
 

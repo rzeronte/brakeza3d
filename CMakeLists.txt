@@ -9,8 +9,6 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_CXX_FLAGS "-O3 -w")
 endif()
 
-set(CMAKE_CXX_FLAGS "-O0 -Wall -g ")
-
 # SDL
 set(SDL2_LIBRARY "SDL2")
 set(SDL2_IMAGE_LIBRARY "SDL2_image")

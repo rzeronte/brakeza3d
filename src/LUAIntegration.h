@@ -59,7 +59,7 @@ void LUAIntegration(sol::state &lua)
             "getPosition", &Object3D::getPosition,
             "setPosition", &Object3D::setPosition,
             "setRotation", sol::overload(
-                    static_cast<void (Object3D::*)(M3)>(&Object3D::setRotation)
+                static_cast<void (Object3D::*)(M3)>(&Object3D::setRotation)
             ),
             "getTypeObject", &Object3D::getTypeObject,
             "getLabel", &Object3D::getLabel,
@@ -72,6 +72,7 @@ void LUAIntegration(sol::state &lua)
             "setLabel", &Object3D::setLabel,
             "getScale", &Object3D::getScale,
             "setScale", &Object3D::setScale,
+            "getModelMatrix", &Object3D::getModelMatrix,
             "AxisForward", &Object3D::AxisForward,
             "getLocalScriptVar", &Object3D::getLocalScriptVar,
             "attachScript",  &Object3D::attachScript,
@@ -136,16 +137,18 @@ void LUAIntegration(sol::state &lua)
     );
 
     lua.new_usertype<Camera3D>("Camera3D",
-                               sol::base_classes, sol::bases<Object3D>()
+                               sol::base_classes, sol::bases<Object3D>(),
+                                "getViewMatrix",  &Camera3D::getViewMatrix,
+                                "getProjectionMatrix",  &Camera3D::getProjectionMatrix
     );
 
     lua.new_usertype<Mesh3D>("Mesh3D",
                                sol::base_classes, sol::bases<Object3D>(),
-                             "AssimpLoadGeometryFromFile", &Mesh3D::AssimpLoadGeometryFromFile,
-                             "addMesh3DShader", &Mesh3D::addMesh3DShader,
-                             "create", sol::factories([](Vertex3D position, const std::string& imageFile) {
-                                return Mesh3D::create(position, imageFile);
-                            })
+                                 "AssimpLoadGeometryFromFile", &Mesh3D::AssimpLoadGeometryFromFile,
+                                 "addMesh3DShader", &Mesh3D::addMesh3DShader,
+                                 "create", sol::factories([](Vertex3D position, const std::string& imageFile) {
+                                    return Mesh3D::create(position, imageFile);
+                                })
     );
 
     lua.new_usertype<Mesh3DGhost>("Mesh3DGhost",
@@ -203,6 +206,7 @@ void LUAIntegration(sol::state &lua)
                                      sol::base_classes, sol::bases<FXEffectBase>(),
                                      "getTypesJSON", &FXEffectOpenGL::getJSON
     );
+
     lua.new_usertype<FXEffectOpenGLObject>("ObjectShaderOpenCL",
                                            sol::base_classes, sol::bases<FXEffectOpenGL>(),
                                            "setObject", &FXEffectOpenGLObject::setObject,
@@ -283,6 +287,15 @@ void LUAIntegration(sol::state &lua)
             })
     );
 
+    lua.new_usertype<glm::mat4>("mat4",
+            sol::constructors<glm::mat4(), glm::mat4(float)>(), // Constructores
+            "identity", sol::property([]() { return glm::mat4(1.0f); }), // Propiedad estática para matriz identidad
+            "transpose", [](const glm::mat4& mat) { return glm::transpose(mat); }, // Método para transponer
+            "determinant", [](const glm::mat4& mat) { return glm::determinant(mat); }, // Determinante
+            "multiply", [](const glm::mat4& mat, const glm::mat4& other) { return mat * other; }, // Multiplicación
+            "get", [](const glm::mat4& mat, int row, int col) { return mat[row][col]; }, // Obtener un elemento
+            "set", [](glm::mat4& mat, int row, int col, float value) { mat[row][col] = value; } // Establecer un elemento
+    );
 }
 
 #endif //BRAKEZA3D_LUAINTEGRATION_H
