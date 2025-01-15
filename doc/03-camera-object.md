@@ -1,3 +1,5 @@
+>[Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
+
 # Camera
 
 Brakeza3D incluye un objeto específico para referirse a la cámara: `Camera3D`.

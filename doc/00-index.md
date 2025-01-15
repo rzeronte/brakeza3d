@@ -4,34 +4,37 @@
      https://github.com/rzeronte/brakeza3d/blob/master/doc/01-basics.md
 
 2 - Basic Objects types
-     https://github.com/rzeronte/brakeza3d/blob/master/doc/04-basic-objects-types.md
+     https://github.com/rzeronte/brakeza3d/blob/master/doc/02-basic-objects-types.md
 
 3 - Camera Object
-    https://github.com/rzeronte/brakeza3d/blob/master/doc/02-camera.md
+    https://github.com/rzeronte/brakeza3d/blob/master/doc/03-camera-object.md
 
 4 - 2D Objects types
-     https://github.com/rzeronte/brakeza3d/blob/master/doc/05-general-2d-objects-types.md
+     https://github.com/rzeronte/brakeza3d/blob/master/doc/04-general-2d-objects-types.md
 
 5 - 3D Objects types
-     https://github.com/rzeronte/brakeza3d/blob/master/doc/06-general-3d-objects-types.md
+     https://github.com/rzeronte/brakeza3d/blob/master/doc/05-general-3d-objects-types.md
 
 6 - Collision Objects types
-     https://github.com/rzeronte/brakeza3d/blob/master/doc/07-collision-objects-types.md
+     https://github.com/rzeronte/brakeza3d/blob/master/doc/06-collision-objects-types.md
 
-7 - Particle Objects types
-    https://github.com/rzeronte/brakeza3d/blob/master/doc/11-particles-object-type.md
+7 - Light Objects types
+    https://github.com/rzeronte/brakeza3d/blob/master/doc/07-light-objects-types.md
 
-8 - Input system control
-     https://github.com/rzeronte/brakeza3d/blob/master/doc/08-input-system-control.md
+8 - Particle Objects types
+    https://github.com/rzeronte/brakeza3d/blob/master/doc/08-particles-object-type.md
 
-9 - Global Illumination
-    https://github.com/rzeronte/brakeza3d/blob/master/doc/03-global-illumination.md
+9 - Input system control
+     https://github.com/rzeronte/brakeza3d/blob/master/doc/09-input-system-control.md
 
-9 - Shaders
-     https://github.com/rzeronte/brakeza3d/blob/master/doc/09-shaders.md
+10 - Global Illumination
+    https://github.com/rzeronte/brakeza3d/blob/master/doc/10-global-illumination.md
 
-10 - Scripting
-      https://github.com/rzeronte/brakeza3d/blob/master/doc/10-scripting.md
+11 - Shaders
+     https://github.com/rzeronte/brakeza3d/blob/master/doc/11-shaders.md
+
+12 - Scripting
+      https://github.com/rzeronte/brakeza3d/blob/master/doc/12-scripting.md
 
 # Examples
 
