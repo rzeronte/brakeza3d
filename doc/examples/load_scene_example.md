@@ -1,3 +1,5 @@
+> [Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
+
 # Ejemplo de carga de una escena
 
 Cargar una escena será una operación muy habitual cuando deseemos cargar niveles para nuestro juego.

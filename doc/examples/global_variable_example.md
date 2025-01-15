@@ -1,3 +1,5 @@
+> [Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
+
 # Ejemplo de uso de variables globales
 
 Para la implementación de tu lógica necesitarás crear variables que sean accesibles entre scripts. En Brakeza3D, los scripts permiten definir variables que estarán a disposición del programador

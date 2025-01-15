@@ -1,3 +1,5 @@
+> [Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
+
 # Ejemplo de uso de variables de objeto
 
 Igual que los `scripts globales` definen variables de acceso global entre scripts. Los `scripts de objeto`

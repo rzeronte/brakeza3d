@@ -1,3 +1,5 @@
+> [Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
+
 # Ejemplo de control del teclado
 
 El encargado de ofrecernos acceso al teclado es el `componentInput`. A través de este componente tendremos acceso a diversas funciones para implementar nuestra propia lógica.
