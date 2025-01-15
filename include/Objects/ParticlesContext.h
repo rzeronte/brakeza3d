@@ -2,8 +2,8 @@
 // Created by eduardo on 9/05/23.
 //
 
-#ifndef BRAKEZA3D_OCPARTICLESCONTEXT_H
-#define BRAKEZA3D_OCPARTICLESCONTEXT_H
+#ifndef BRAKEZA3D_PARTICLESCONTEXT_H
+#define BRAKEZA3D_PARTICLESCONTEXT_H
 
 
 #include <SDL_stdinc.h>
@@ -22,10 +22,10 @@ struct OCParticle {
     float active;
 };
 
-struct OCParticlesContext {
-    OCParticlesContext() = default;
+struct ParticlesContext {
+    ParticlesContext() = default;
 
-    OCParticlesContext(
+    ParticlesContext(
         float gravity,
         float particlesByFrame,
         float particleLifespan,
@@ -53,8 +53,8 @@ struct OCParticlesContext {
     {
     }
 
-    static OCParticlesContext forProjectile() {
-        return OCParticlesContext(
+    static ParticlesContext defaultParticlesContext() {
+        return ParticlesContext(
             0.0f,
             2,
             1.0f,
@@ -65,25 +65,6 @@ struct OCParticlesContext {
             255.0f,
             5,
             10,
-            0.99f
-        );
-    }
-
-    static OCParticlesContext forExplosion() {
-        return OCParticlesContext();
-    }
-    static OCParticlesContext forPlayerEngine() {
-        return OCParticlesContext(
-            0.0f,
-            5,
-            1.5f,
-            25.0f,
-            1,
-            10,
-            125.0f,
-            255.0f,
-            5,
-            29,
             0.99f
         );
     }
@@ -101,4 +82,4 @@ struct OCParticlesContext {
     float DECELERATION_FACTOR;
 };
 
-#endif //BRAKEZA3D_OCPARTICLESCONTEXT_H
+#endif //BRAKEZA3D_PARTICLESCONTEXT_H

@@ -7,14 +7,14 @@
 #include "../../include/Brakeza3D.h"
 
 ParticleEmitter::ParticleEmitter(
-    ParticleEmitterState state,
-    Object3D *parent,
-    Vertex3D position,
-    float ttlEmitter,
-    Color colorFrom,
-    Color colorTo,
-    OCParticlesContext particlesContext,
-    Image *image
+        ParticleEmitterState state,
+        Object3D *parent,
+        Vertex3D position,
+        float ttlEmitter,
+        Color colorFrom,
+        Color colorTo,
+        ParticlesContext particlesContext,
+        Image *image
 ) :
     active(true),
     stopAdd(false),
@@ -311,14 +311,14 @@ cJSON * ParticleEmitter::getJSON()
 void ParticleEmitter::createFromJSON(cJSON *object)
 {
     auto *o = new ParticleEmitter(
-        ParticleEmitterState::DEFAULT,
-        nullptr,
-        Vertex3D(0, 0, 0),
-        9999,
-        Color::red(),
-        Color::green(),
-        OCParticlesContext::forExplosion(),
-        nullptr
+            ParticleEmitterState::DEFAULT,
+            nullptr,
+            Vertex3D(0, 0, 0),
+            9999,
+            Color::red(),
+            Color::green(),
+            ParticlesContext::defaultParticlesContext(),
+            nullptr
     );
     ParticleEmitter::setPropertiesFromJSON(object, o);
 
@@ -330,7 +330,7 @@ void ParticleEmitter::setPropertiesFromJSON(cJSON *object, ParticleEmitter *o)
     o->setBelongToScene(true);
     Object3D::setPropertiesFromJSON(object, o);
 
-    OCParticlesContext context;
+    ParticlesContext context;
     auto contextJSON = cJSON_GetObjectItemCaseSensitive(object, "context");
     context.GRAVITY = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "GRAVITY")->valuedouble;
     context.PARTICLES_BY_SECOND = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "PARTICLES_BY_SECOND")->valuedouble;
@@ -358,7 +358,7 @@ void ParticleEmitter::setPropertiesFromJSON(cJSON *object, ParticleEmitter *o)
     o->setColorTo(colorTo);
 }
 
-void ParticleEmitter::setContext(const OCParticlesContext &context) {
+void ParticleEmitter::setContext(const ParticlesContext &context) {
     ParticleEmitter::context = context;
 }
 

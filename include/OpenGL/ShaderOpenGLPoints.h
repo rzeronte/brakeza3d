@@ -3,7 +3,7 @@
 #define BRAKEZA3D_SHADEROPENGLPOINTS_H
 
 #include "ShaderOpenGL.h"
-#include "../Objects/OCParticlesContext.h"
+#include "../Objects/ParticlesContext.h"
 
 class ShaderOpenGLPoints : public ShaderOpenGL {
     GLuint VertexArrayID;

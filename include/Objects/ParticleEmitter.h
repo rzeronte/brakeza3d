@@ -13,7 +13,7 @@
 #include "../Misc/Color.h"
 #include "../Misc/Image.h"
 #include "../OpenGL/ShaderOpenGLParticles.h"
-#include "OCParticlesContext.h"
+#include "ParticlesContext.h"
 
 typedef enum {
     DEFAULT = 0,
@@ -25,7 +25,7 @@ private:
     bool active;
     bool stopAdd;
     ParticleEmitterState state;
-    OCParticlesContext context;
+    ParticlesContext context;
     Image *texture;
 
     Particle ParticlesContainer[MaxParticles];
@@ -41,14 +41,14 @@ protected:
     Color colorFrom;
 public:
     ParticleEmitter(
-        ParticleEmitterState state,
-        Object3D *parent,
-        Vertex3D position,
-        float ttlEmitter,
-        Color colorFrom,
-        Color colorTo,
-        OCParticlesContext particlesContext,
-        Image *image
+            ParticleEmitterState state,
+            Object3D *parent,
+            Vertex3D position,
+            float ttlEmitter,
+            Color colorFrom,
+            Color colorTo,
+            ParticlesContext particlesContext,
+            Image *image
     );
 
     void onUpdate() override;
@@ -69,7 +69,7 @@ public:
 
     static void setPropertiesFromJSON(cJSON *object, ParticleEmitter *o);
 
-    void setContext(const OCParticlesContext &context);
+    void setContext(const ParticlesContext &context);
 
     void setColorTo(const Color &colorTo);
 

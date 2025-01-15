@@ -18,14 +18,14 @@ ParticleEmitterFireworks::ParticleEmitterFireworks(
     int particlesByFire
 ) :
     ParticleEmitter(
-        ParticleEmitterState::DEFAULT,
-        this,
-        position,
-        ttlEmitter,
-        colorFrom,
-        colorTo,
-        OCParticlesContext(),
-        nullptr
+            ParticleEmitterState::DEFAULT,
+            this,
+            position,
+            ttlEmitter,
+            colorFrom,
+            colorTo,
+            ParticlesContext(),
+            nullptr
     ),
     maxFires(maxFires),
     particlesByFire(particlesByFire),

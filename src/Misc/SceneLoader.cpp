@@ -323,13 +323,13 @@ void SceneLoader::createBillboardAnimationInScene(const std::string& filename)
 void SceneLoader::createParticleEmitterInScene()
 {
     auto *newObject = new ParticleEmitter(
-        ParticleEmitterState::DEFAULT,
-        nullptr,
-        ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
-        9999,
-        Color::red(),
-        Color::green(),
-        OCParticlesContext(
+            ParticleEmitterState::DEFAULT,
+            nullptr,
+            ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
+            9999,
+            Color::red(),
+            Color::green(),
+            ParticlesContext(
             0.0f,
             0.5f,
             1.5f,
@@ -342,7 +342,7 @@ void SceneLoader::createParticleEmitterInScene()
             1,
             0.99f
         ),
-        nullptr
+            nullptr
     );
     newObject->setBelongToScene(true);
 
