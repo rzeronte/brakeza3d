@@ -13,7 +13,7 @@
 #include "../Misc/Color.h"
 #include "../Misc/Image.h"
 #include "../OpenGL/ShaderOpenGLParticles.h"
-#include "OpenCLTypes.h"
+#include "OCParticlesContext.h"
 
 typedef enum {
     DEFAULT = 0,

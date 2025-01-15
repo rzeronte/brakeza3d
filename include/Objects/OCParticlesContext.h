@@ -2,8 +2,8 @@
 // Created by eduardo on 9/05/23.
 //
 
-#ifndef BRAKEZA3D_OPENCLTYPES_H
-#define BRAKEZA3D_OPENCLTYPES_H
+#ifndef BRAKEZA3D_OCPARTICLESCONTEXT_H
+#define BRAKEZA3D_OCPARTICLESCONTEXT_H
 
 
 #include <SDL_stdinc.h>
@@ -11,16 +11,6 @@
 #include "Vertex3D.h"
 #include "../EngineSetup.h"
 #include <glm/vec4.hpp>
-
-struct OCVertex3D {
-    OCVertex3D() {}
-
-    float x;
-    float y;
-    float z;
-    float u;
-    float v;
-};
 
 struct OCParticle {
     glm::vec4 position;
@@ -30,26 +20,6 @@ struct OCParticle {
     float timeLiving;
     float force;
     float active;
-};
-
-struct OCLPlane {
-    OCLPlane() {}
-
-    OCVertex3D A;
-    OCVertex3D B;
-    OCVertex3D C;
-    OCVertex3D normal;
-};
-
-struct CameraData {
-    CameraData() {}
-    OCVertex3D position;  // Posición de la cámara
-    OCVertex3D rotation;  // Rotación de la cámara
-};
-
-struct FrustumData {
-    FrustumData() {}
-    OCLPlane planes[6];  // Frustum planes (OCPlanes)
 };
 
 struct OCParticlesContext {
@@ -99,9 +69,6 @@ struct OCParticlesContext {
         );
     }
 
-    static OCParticlesContext forRayLight() {
-        return OCParticlesContext();
-    }
     static OCParticlesContext forExplosion() {
         return OCParticlesContext();
     }
@@ -134,4 +101,4 @@ struct OCParticlesContext {
     float DECELERATION_FACTOR;
 };
 
-#endif //BRAKEZA3D_OPENCLTYPES_H
+#endif //BRAKEZA3D_OCPARTICLESCONTEXT_H

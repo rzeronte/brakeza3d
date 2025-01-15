@@ -325,7 +325,7 @@ void SceneLoader::createParticleEmitterInScene()
     auto *newObject = new ParticleEmitter(
         ParticleEmitterState::DEFAULT,
         nullptr,
-        ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2),
+        ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
         9999,
         Color::red(),
         Color::green(),

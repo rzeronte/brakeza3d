@@ -12,7 +12,7 @@
 #include "Grid3D.h"
 #include "PathFinder.h"
 #include "../2D/TextureAnimated.h"
-#include "../Objects/OpenCLTypes.h"
+#include "../Objects/OCParticlesContext.h"
 #include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>

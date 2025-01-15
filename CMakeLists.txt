@@ -227,7 +227,7 @@ add_executable(Brakeza3D
     include/OpenGL/ShaderOpenGLOutline.h            src/OpenGL/ShaderOpenGLOutline.cpp
 
     include/Objects/OpenGLShaderTypes.h
-    include/Objects/OpenCLTypes.h
+    include/Objects/OCParticlesContext.h
     include/Objects/Vector2D.cpp                    include/Objects/Vector2D.h
 
     include/Render/ObjectShaderOpenCL.cpp

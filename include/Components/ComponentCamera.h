@@ -23,9 +23,6 @@ private:
     bool autoScroll;
     Vertex3D autoScrollSpeed;
 
-    //OpenCL Cache Context
-    CameraData cameraData;
-    FrustumData frustumData;
 public:
     ComponentCamera();
 
