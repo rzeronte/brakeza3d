@@ -1,90 +1,62 @@
->[Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
+> [Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
 
-# Objetos 2D principales
+# Emisores de partículas
 
-Brakeza3D permite incorporar a la pantalla elementos `2D` o `2.5D`
+Brakeza3D incorpora un objeto dedicado a emitir partículas, nos referimos a `ParticleEmitter`.
 
-- [Image2D](#image2d)
-- [Image2DAnimation](#image2danimation)
-- [BillboardAnimation](#billboardanimation)
-- [BillboardAnimation8Directions](#billboardanimation8directions)
+Es un emisor de partículas emite imagenes 2D según la configuración dada.
 
-## Image2D
+Para configurar un `ParticleEmitter` debes configurar una serie de parámetros:
 
-Es un objeto `2D`. Dibuja una imagen en pantalla.  
+- `Posición`: Posición 3D del emisor de partículas.
+- `Tiempo de vida`: TTL del emisor de partículas en segundos.
+- `Color inicio`: (Opcional). Color inicial de la partícula al nacer.
+- `Color final`: (Opcional). Color final de la partícula al morir.
+- `Contexto`: Contexto del emisor de partículas.
+- `Imagen`: Fichero de imagen.
 
-```
-    img = Image2D.create(10, 10, "../assets/images/logo_small.png")
-    img:setEnabled(true)
-    img:updatePosition(300, 300)
-    brakeza:addObject3D(img, 'imagen')
-```
+El argumento más destacable es el `contexto`. El `contexto` incluye multitud de parámetros
+que podremos manipular para alterar el comportamiento de nuestras partículas. Los contextos
+de emisores de partículas se implementan a través de un objeto: ``ParticlesContext``:
 
-## Image2DAnimation
+Las propiedades de un ``ParticlesContext`` son:
 
-Dibuja una animación en pantalla, es en esencia, una colección de `Image2D`.
+- `gravity (float)`: Factor gravitatorio de las partículas.
+- `particlesByFrame (float)`: Número de partículas creadas por segundo
+- `particleLifespan (float)`: Tiempo de vida de cada partícula.
+- `smokeAngleRange (int)`: Ángulo del cono de emisión de partículas.
+- `minVelocity (int)`: Velocidad mínima de la partícula al nacer.
+- `maxVelocity (int)`: Velocidad máxima de la particula al ser nacer.
+- `alphaMin (int)`: Canal alpha mínimo de la partícula al nacer.
+- `alphaMax (int)`: Canal alpha máximo de la partícula al nacer.
+- `positionNoise (int)`: Ruido en la posición de nacimiento de la partícula.
+- `velocityNoise (int)`: Ruido en el movimiento de la partícula.
+- `decelerationFactor (float)`: Factor de deceleración de la partícula.
 
-Está diseñado para cargar la animación desde formato **spritesheet**, es decir, una imagen con un grid, donde cada celda
-es una imagen de la animación. Es por este motivo que deberemos de indicar el **ancho** y **alto** de cada frame y el **nº de frames**
-en la imagen, para que la función ajuste adecuadamente el sprite.
+Podrás manipular las propiedades de los ``ParticlesContext`` desde la UI.
 
-Podrás configurar la velocidad (**fps**) a la que se muestra una animación.
-```
-    -- Image2DAnimation.create(x, y, spriteFile, width, height, numFrames, fps)
-    img = Image2DAnimation.create(0, 0, "../assets/sprites/explosion_a.png", 128, 128, 15, 24)
-    img:setEnabled(true)
-    brakeza:addObject3D(img, 'imagen')
-```
-
----
-
-## BillboardAnimation
-
-Es un objeto `2.5D`. El billboard es un plano 3D que siempre mira a cámara. 
-
-Podrás moverlo, escalarlo, rotarlo, etc.
-
-También está diseñado para cargar la animación desde formato **spritesheet**.  
-
-Fionalmente se dibujará la animación en el plano, según la configuración indicada.
+Ejempl de creación de un emisor de partículas desde código:
 
 ```
-    -- BillboardAnimation.create(position, width, height, spriteFile, spriteWidth, spriteHeight, numFrames, fps)
-    animation = BillboardAnimation.create(Vertex3D.new(10, 10, 10), 100, 100, "../assets/sprites/explosion_a.png", 128, 128, 15, 24)
-    animation:setEnabled(true)
-    brakeza:addObject3D(animation, 'my_animation')
+    print("Load ParticleEmitter")
+    particles = ParticleEmitter.create(
+        Vertex3D.new(10, 10, 10),       -- position
+        100,                            -- ttl
+        Color.new(255, 255, 0, 255),    -- color from
+        Color.new(255, 255, 255, 255),  -- color to
+        ParticlesContext.new(
+            0.0,            -- gravity
+            2,              -- particlesByFrame              
+            1.0,            -- particleLifespan
+            25.0,           -- smokeAngleRange
+            1,              -- minVelocity
+            10,             -- maxVelocity
+            125.0,          -- alphaMin
+            255.0,          -- alphaMax
+            5,              -- positionNoise
+            10,             -- velocityNoise
+            0.99            -- decelerationFactor
+        ),
+        "../assets/images/logo_small.png"       --image
+    )
 ```
----
-
-## BillboardAnimation8Directions
-
-Es un tipo de `Billboard animation` en el que se almacenan *ocho direcciones*.
-
-**Según el ángulo a cámara, el billbaord cambiará su animación automáticamente.**
-Su comportamiento es similar a lo que vemos en los enemigos de mítico 'Doom'.
-
-Está diseñado para cargar las imágenes de las animaciones desde una carpeta, en la 
-que cada fichero debe respetar un patrón: `[direccion]_[frame].png`.
-
-Supongamos que deseamos cargar una animación con dos frames. Estos serían los ficheros esperados:
-
-| Direccion | Frame 0 | Frame 1 | Frame 2 |
-|-----------|---------|---------|---------|
-| 01        | 1_0.png | 1_1.png | 1_2.png |
-| 02        | 2_0.png | 2_1.png | 2_2.png |
-| 03        | 3_0.png | 3_1.png | 3_2.png |
-| 04        | 4_0.png | 4_1.png | 4_2.png |
-| 05        | 5_0.png | 5_1.png | 5_2.png |
-| 06        | 6_0.png | 6_1.png | 6_2.png |
-| 07        | 7_0.png | 7_1.png | 7_2.png |
-| 08        | 8_0.png | 8_1.png | 8_2.png |
-
-Así sucesivamente, si nuestra animación tiene más frames.
-
-```
-    img = BillboardAnimation8Directions.create("../assets/sprites/explosion", 15, 24)
-    img:setEnabled(true)
-    brakeza:addObject3D(img, 'imagen')
-```
-
----

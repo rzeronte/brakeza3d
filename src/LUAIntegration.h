@@ -18,6 +18,7 @@
 #include "../include/Objects/Image3D.h"
 #include "../include/Objects/BillboardAnimation.h"
 #include "../include/Objects/BillboardAnimation8Directions.h"
+#include "../include/Objects/ParticleEmitter.h"
 
 void LUAIntegration(sol::state &lua)
 {
@@ -321,6 +322,20 @@ void LUAIntegration(sol::state &lua)
                "VELOCITY_NOISE", &ParticlesContext::VELOCITY_NOISE,
                "DECELERATION_FACTOR", &ParticlesContext::DECELERATION_FACTOR,
                "defaultParticlesContext", &ParticlesContext::defaultParticlesContext
+    );
+
+    lua.new_usertype<ParticleEmitter>("ParticleEmitter",
+                                      sol::base_classes, sol::bases<Object3D>(),
+                                      "create", sol::factories([](
+                                                  Vertex3D position,
+                                                  float ttl,
+                                                  Color cf,
+                                                  Color ct,
+                                                  ParticlesContext context,
+                                                  const std::string& imageFile
+                                          ) {
+                                          return ParticleEmitter::create(position, ttl, cf, ct, context, imageFile);
+                                      })
     );
 }
 

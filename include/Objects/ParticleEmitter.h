@@ -41,14 +41,14 @@ protected:
     Color colorFrom;
 public:
     ParticleEmitter(
-            ParticleEmitterState state,
-            Object3D *parent,
-            Vertex3D position,
-            float ttlEmitter,
-            Color colorFrom,
-            Color colorTo,
-            ParticlesContext particlesContext,
-            Image *image
+        ParticleEmitterState state,
+        Object3D *parent,
+        Vertex3D position,
+        float ttlEmitter,
+        Color colorFrom,
+        Color colorTo,
+        ParticlesContext particlesContext,
+        Image *image
     );
 
     void onUpdate() override;
@@ -82,7 +82,15 @@ public:
     glm::vec3 addNoiseToDirection(const glm::vec3 &direction, int noiseRange);
 
     void postUpdate() override;
-};
 
+    static ParticleEmitter* create(
+        Vertex3D position,
+        float ttl,
+        Color cf,
+        Color ct,
+        ParticlesContext context,
+        const std::string& imageFile
+    );
+};
 
 #endif //BRAKEDA3D_PARTICLEEMISSOR_H

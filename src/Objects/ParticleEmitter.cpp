@@ -411,3 +411,26 @@ glm::vec3 ParticleEmitter::addNoiseToDirection(const glm::vec3& direction, int n
 
     return glm::normalize(noisyDirection);  // Normalizar el vector resultante
 }
+
+ParticleEmitter *ParticleEmitter::create(
+    Vertex3D position,
+    float ttl,
+    Color cf,
+    Color ct,
+    ParticlesContext context,
+    const std::string& imageFile
+)
+{
+    auto *o = new ParticleEmitter(
+        ParticleEmitterState::DEFAULT,
+        nullptr,
+        position,
+        ttl,
+        cf,
+        ct,
+        context,
+        new Image(imageFile)
+    );
+
+    return o;
+}
