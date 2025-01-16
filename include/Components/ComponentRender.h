@@ -124,6 +124,14 @@ public:
     ShaderOpenGLCustom *getSceneShaderByIndex(int i);
 
     static bool compareDistances(Object3D *obj1, Object3D *obj2);
+
+    void setGlobalIlluminationDirection(Vertex3D d);
+
+    void setGlobalIlluminationAmbient(Vertex3D a);
+
+    void setGlobalIlluminationDiffuse(Vertex3D d);
+
+    void setGlobalIlluminationSpecular(Vertex3D s);
 };
 
 
