@@ -1,11 +1,11 @@
 >[Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
 
-# Objetos 3D principales
-
 - [Image3D](#image3d)
 - [Mesh3D](#mesh3d)
 - [Mesh3DAnimation](#mesh3danimation)
 - [Mesh3DAnimationCollection](#mesh3danimationcollection)
+
+---
 
 ## Image3D
 

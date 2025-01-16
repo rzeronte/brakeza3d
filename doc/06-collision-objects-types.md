@@ -1,15 +1,24 @@
 >[Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
 
+- [Objetos colisionables principales](#objetos-colisionables-principales)
+- [Modos de colisión](#modos-de-colisión)
+
+
+- [Mesh3DGhost](#mesh3dghost)
+- [Mesh3DBody](#mesh3dbody)
+- [Mesh3DAnimationGhost](#mesh3danimationghost)
+- [BillboardAnimationBody](#billboardanimationbody)
+- [BillboardAnimation8DirectionsBody](#billboardanimation8directionsbody)
+- [Projectile3DBody](#projectile3dbody)
+
+---
+
 # Objetos colisionables principales
 
 Los objetos colisionables permitirán al programador implementar lógica en función de las colisiones 
 producidas.
 
----
-
-## Objetos colisionables base
-
-Existen dos tipos de objetos base colisionables:
+Existen dos tipos de objetos **base** colisionables:
 
 - `Ghost`: Objeto colisionable pero no reactivo a físicas.
 - `Body`: Objeto colisionable, reactivo a físicas.
@@ -22,6 +31,9 @@ function onCollision(with)
 end
 ```
 
+---
+## Modos de colisión
+
 Ámbos tipos, disponen de dos modalidades de colisiones:
  
  - `SIMPLE_SHAPE`: **Es el modo por defecto**. La forma de colisión será un cubo de un tamaño dado por un `Vertex3D`. Su performance es muy buena.
@@ -33,17 +45,6 @@ Puedes manipular los modos de colisión tanto desde la GUI como desde tus script
 ---
 
 ## Tipos de objetos colisionables
-
-Brakeza3D incluye varios tipos de objeto para colisiones:
- 
-- [Mesh3DGhost](#mesh3dghost)
-- [Mesh3DBody](#mesh3dbody)
-- [Mesh3DAnimationGhost](#mesh3danimationghost)
-- [BillboardAnimationBody](#billboardanimationbody)
-- [BillboardAnimation8DirectionsBody](#billboardanimation8directionsbody)
-- [Projectile3DBody](#projectile3dbody)
-
----
 
 ### Mesh3DGhost
 

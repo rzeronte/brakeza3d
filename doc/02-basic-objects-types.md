@@ -1,5 +1,13 @@
 >[Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
 
+- [El objeto Object3D](#el-objeto-object3d)
+- [Manipulando un Object3D](#manipulando-un-object3d)
+- [Scripting sobre objetos](#scripting-sobre-objetos)
+- [Objetos derivados de Object3D](#objetos-derivados-de-object3d)
+- [Tipos básicos auxiliares](#tipos-básicos-auxiliares)
+
+---
+
 # Tipos básicos de objetos
 
 ## El objeto Object3D
@@ -15,12 +23,6 @@ Las propiedades principales de un `Object3D` son:
 - Escala (`float`): Factor de escala del modelo
 - Activado (`bool`): Determina si el objeto está activado o desactivado.
 
-Existen además varios tipos de dato a los que debemos acostumbrarnos. Los más habituales son:
-
-- `Vertex3D`: Para almacenar posiciones en el espacio. Sus propiedades son: `X`, `Y`, `Z`.
-- `M3`: Matriz 3x3 para almacenar rotaciones.
-- `Point2D`: Para almacenar posiciones en 2D. Sus propiedades son `X`, `Y`.
-
 ## Manipulando un Object3D
 
 Podemos manipular un Object3D.
@@ -32,10 +34,14 @@ Podemos manipular un Object3D.
 - `getScale()`: Obtenemos el factor de escala del modelo.
 - `setScale(float)`: Establecemos un nuevo factor de escala.
 
-## Scripting
+---
+
+## Scripting sobre objetos
 
 Cualquier `Object3D` puede vincularse a scripts LUA. Veremos esto en profundidad en el apartado dedicado
 al scripting.
+
+---
 
 ## Objetos derivados de Object3D
 
@@ -58,3 +64,17 @@ otros cargarán sprites animados, etc. A continuación enumero una lista de algu
 
 A lo largo de la documentación nos detendremos en algunos de estos objetos para su mayor
 comprensión y detalle.
+
+---
+
+## Tipos básicos auxiliares
+
+Existen además varios tipos de dato que facilitan la implementación de tareas en 3D y estarán
+disponibles a través de tus scripts LUA.
+
+- `Vertex3D`: Para almacenar posiciones en el espacio. Sus propiedades son: `X`, `Y`, `Z`.
+- `M3`: Matriz 3x3.
+- `Point2D`: Para almacenar posiciones en 2D. Sus propiedades son `X`, `Y`.
+- `Color`: Color RGBA (rango 0-255)
+- `mat4`: Matriz 4x4.
+- `ScriptLUA`: Objeto script con código LUA.

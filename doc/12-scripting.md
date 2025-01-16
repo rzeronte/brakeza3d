@@ -1,5 +1,15 @@
 > [Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
 
+- [Sistema de scripting y ciclo de vida de los objetos](#sistema-de-scripting-y-ciclo-de-vida-de-los-objetos)
+- [Ciclo de vida de un objeto](#ciclo-de-vida-de-un-objeto)
+- [Scripts LUA](#scripts-lua)
+- [Vinculación de scripts](#vinculación-de-scripts)
+- [Variables globales](#variables-globales)
+- [Variables locales](#variables-locales)
+- [Gestión de escenas](#gestión-de-escenas)
+- [Ejemplos en código](#ejemplos-en-codigo)
+---
+
 # Sistema de scripting
 
 Brakeza3D incorpora un sistema de scripting utilizando LUA como lenguaje.
@@ -7,7 +17,8 @@ Brakeza3D incorpora un sistema de scripting utilizando LUA como lenguaje.
 Ya sea desde la UI o desde código, podrás asociar ``scripts`` a la ``escena`` y/o
 ``objetos``.
 
-
+---
+ 
 ## Sistema de scripting y ciclo de vida de los objetos
 
 En el búcle principal de Brakeza3D, se ejecutan una serie de acciones constantemente. Una de ellas
@@ -56,7 +67,7 @@ Podemos diferenciar dos grandes tipos de scripts:
 
 ---
 
-### Vincular scripts
+### Vinculación de scripts
 
 Podrás realizar estas operaciones desde la UI con el ratón y drag/drop, sin embargo, 
 en ocasiones necesitarás poder hacerlo dinámicamente desde código.
@@ -86,3 +97,33 @@ un script a la escena:
         componentsManager:getComponentRender():addLUAScript(script)
     end
 ```
+
+### Variables globales
+
+---
+
+### Variables locales
+
+---
+
+### Gestión de escenas
+
+---
+
+
+# Ejemplos en codigo
+
+### Ejemplos de scripts globales
+ 
+- Cargar un modelo 3D https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/load_object_example.md
+- Cargar una escena https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/load_scene_example.md
+- Control de teclado y ratón https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/keyboard_control_example.md
+- Buscar un objeto https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/find_object_example.md
+- Variables globales https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/global_variable_example.md
+
+### Ejemplos de scripts de objeto
+ 
+- La variable `this` https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/this_object_example.md
+- Detección de colisiones https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/collision_detection_example.md
+- Variables de objeto https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/object_variable_example.md
+

@@ -1,6 +1,13 @@
 >[Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
 
-# Brakeza3D: Conceptos básicos
+- [Introducción](#brakeza3d-conceptos-básicos)
+- [Elementos principales](#elementos-principales)
+- [Sistema de scripting](#sistema-de-scripting)
+- [GUI](#gui)
+
+---
+
+# Introducción
 
 Brakeza3D es un sencillo motor 2D/3D multiplataforma para desarrollo de videojuegos.
 
@@ -15,9 +22,9 @@ proyectos usando LUA como lenguaje de scripting.
 
 En Brakeza3D existen tres elementos principales:
 
-- 1, Componentes
-- 2, Objetos
-- 3, Escenas
+- `Componentes`
+- `Objetos`
+- `Escenas`
 
 ### 1) Componentes
 
@@ -28,7 +35,6 @@ Existen varios componentes a tu disposición. A continuación se enumeran alguno
 - Componente Cámara
 - Componente Render
 - Componente Colisiones
-- Componente I/O
 - ...
 
 Como programador, generalmente podrás acceder a dichos componentes según tus necesidades. 
@@ -39,9 +45,7 @@ Un objeto es una figura abstracta que representa cualquier entidad existente en 
 multitud de tipos de objeto a lo largo de esta documentación. A continuación se enumeran algunos de ellos:
 
 - Cámara (Camera3D)
-- Linea2D (Line2D)
-- Punto 2D (Point2D)
-- Malla (Mesh3D)
+- Modelo 3D (Mesh3D)
 - Emisor de partículas (ParticleEmissor)
 - ...
 
@@ -57,7 +61,7 @@ Una escena se representa por un conjunto de objetos en un estado concreto. Su ve
 
 La escena almacena demás información global como iluminación, posición de cámara, scripts, etc.
 
-Dispondremos de un "SceneLoader", que nos permitirá gestionar el manejo de carga y cambio de escenas.
+Dispondremos de un `SceneLoader`, que nos permitirá gestionar el manejo de carga y cambio de escenas.
 
 ---
 

@@ -24,7 +24,7 @@ Las propiedades de un ``ParticlesContext`` son:
 - `gravity (float)`: Factor gravitatorio de las partículas.
 - `particlesByFrame (float)`: Número de partículas creadas por segundo
 - `particleLifespan (float)`: Tiempo de vida de cada partícula.
-- `smokeAngleRange (int)`: Ángulo del cono de emisión de partículas.
+- `angleRange (int)`: Ángulo del cono de emisión de partículas.
 - `minVelocity (int)`: Velocidad mínima de la partícula al nacer.
 - `maxVelocity (int)`: Velocidad máxima de la particula al ser nacer.
 - `alphaMin (int)`: Canal alpha mínimo de la partícula al nacer.
@@ -48,7 +48,7 @@ Ejempl de creación de un emisor de partículas desde código:
             0.0,            -- gravity
             2,              -- particlesByFrame              
             1.0,            -- particleLifespan
-            25.0,           -- smokeAngleRange
+            25.0,           -- angleRange
             1,              -- minVelocity
             10,             -- maxVelocity
             125.0,          -- alphaMin
