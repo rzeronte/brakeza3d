@@ -16,22 +16,22 @@ Un punto de luz dispone de algunos atributos que afectarán como la luz funciona
 
 ### Componentes ADS
 
-- `Componente ambiente`: Intensidad de color de la luz ambiente sobre el objeto.
-- `Componente difuso`: Intensidad de color de la luz sobre el color de la textura.
-- `Componente especular`: Intensidad de color de reflejos especulares.
+- `Componente ambiente (vec3)`: Intensidad de color de la luz ambiente sobre el objeto.
+- `Componente difuso (vec)`: Intensidad de color de la luz sobre la textura.
+- `Componente especular (dev)`: Intensidad de color de reflejos especulares.
 
 Podrás manipular estos atributos desde la GUI o desde tus scripts LUA. Para hacerlo desde tus scripts,
 podrás usar los métodos:
 
-- `setColor(Color)`
 - `setAmbient(Color)`
+- `setColor(Color)`
 - `setColorSpecular(Color)`
 
 ### Constantes
 
-- `Constant`
-- `Constante Linear`
-- `Constante Quadratic`
+- `Constant (float)`
+- `Constante Linear (float)`
+- `Constante Quadratic (float)`
 
 También podrás manipular estos atributos desde la GUI o desde tus scripts LUA. Para hacerlo desde tus scripts,
 podrás usar los métodos:

@@ -61,39 +61,10 @@ Dispondremos de un "SceneLoader", que nos permitirá gestionar el manejo de carg
 
 ---
 
-## Sistema de scripting y ciclo de vida de los objetos
+## Sistema de scripting
 
-En el búcle principal de Brakeza3D, se ejecutan una serie de acciones constantemente. Una de ellas
-es el sistema de scripting. Este sistema puede estar en ON/OFF/PAUSE. 
-
-Si está en ON, los objetos ejecutarán su ciclo de vida implementado en los scripts.
-
-El sistema de scripting puede ser ejecutado (PLAY), para iniciar la ejecución de los scripts.
-
-También puede ser rebobinado (REWIND) al inicio, para volver a ejecutar los scripts desde su inicio.
-
-Finalmente, podrá ser detenido (STOP) para evitar que el sistema de scripting continue. 
-
-## Ciclo de vida de un objeto
-
-Los objetos disponen de su propio ciclo de vida el cual debemos de entender para trabajar con nuestros objetos cargados, es el siguiente:
-
-- **onStart**: Instante en que se inicia la ejecución. Cuando activamos el sistema de scripting (PLAY)
-
-- **onUpdate**: Instante actual (siempre y cuando el sistema de scripting esté ON)
-
-- **onEnd**: Instante en el que se detiene la ejecución (STOP)
-
----
-
-### Scripts LUA
-
-Los scripts de LUA son elementos que podremos vincular a elementos del sistema. En ellos implementaremos la lógica y comportamiento de objetos en Brakeza3D. 
-
-Podemos diferenciar dos grandes tipos de scripts:
-
-- **Scripts de Objeto**: Se asocian a objetos. Un mismo script puede vincularse a multitud de objetos.
-- **Scripts globales**: No se asocian a ningún elemento específico, son de caracter general.
+Brakeza3D integra un sistema de scripting utilizando LUA como lenguaje. Tanto desde interfaz gráfica como
+desde código podrás trabajar con ``scripts`` que asociarás a tus objetos o escenas para proporcionarles lógica.
 
 ---
 

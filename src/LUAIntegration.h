@@ -100,7 +100,12 @@ void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<ComponentRender>("ComponentRender",
                                       sol::base_classes, sol::bases<Component>(),
-                                      "getSceneLoader", &ComponentRender::getSceneLoader
+                                      "getSceneLoader", &ComponentRender::getSceneLoader,
+                                      "addLUAScript", &ComponentRender::addLUAScript,
+                                      "setGlobalIlluminationDirection", &ComponentRender::setGlobalIlluminationDirection,
+                                      "setGlobalIlluminationAmbient", &ComponentRender::setGlobalIlluminationAmbient,
+                                      "setGlobalIlluminationDiffuse", &ComponentRender::setGlobalIlluminationDiffuse,
+                                      "setGlobalIlluminationSpecular", &ComponentRender::setGlobalIlluminationSpecular
     );
 
     lua.new_usertype<ComponentInput>("ComponentInput",
@@ -295,6 +300,27 @@ void LUAIntegration(sol::state &lua)
             "multiply", [](const glm::mat4& mat, const glm::mat4& other) { return mat * other; }, // Multiplicación
             "get", [](const glm::mat4& mat, int row, int col) { return mat[row][col]; }, // Obtener un elemento
             "set", [](glm::mat4& mat, int row, int col, float value) { mat[row][col] = value; } // Establecer un elemento
+    );
+
+    lua.new_usertype<ParticlesContext>("ParticlesContext",
+               sol::constructors<
+                       ParticlesContext(),
+                       ParticlesContext(
+                               float, float, float, int, int, int, int, int, int, int, float
+                       )
+               >(),
+               "GRAVITY", &ParticlesContext::GRAVITY,
+               "PARTICLES_BY_SECOND", &ParticlesContext::PARTICLES_BY_SECOND,
+               "PARTICLE_LIFESPAN", &ParticlesContext::PARTICLE_LIFESPAN,
+               "SMOKE_ANGLE_RANGE", &ParticlesContext::SMOKE_ANGLE_RANGE,
+               "MIN_VELOCITY", &ParticlesContext::MIN_VELOCITY,
+               "MAX_VELOCITY", &ParticlesContext::MAX_VELOCITY,
+               "MIN_ALPHA", &ParticlesContext::MIN_ALPHA,
+               "MAX_ALPHA", &ParticlesContext::MAX_ALPHA,
+               "POSITION_NOISE", &ParticlesContext::POSITION_NOISE,
+               "VELOCITY_NOISE", &ParticlesContext::VELOCITY_NOISE,
+               "DECELERATION_FACTOR", &ParticlesContext::DECELERATION_FACTOR,
+               "defaultParticlesContext", &ParticlesContext::defaultParticlesContext
     );
 }
 

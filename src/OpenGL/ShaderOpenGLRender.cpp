@@ -229,3 +229,24 @@ void ShaderOpenGLRender::destroy() {
 
 }
 
+void ShaderOpenGLRender::setGlobalIlluminationDirection(Vertex3D d)
+{
+    this->directionalLight.direction = d.toGLM();
+}
+
+void ShaderOpenGLRender::setGlobalIlluminationAmbient(Vertex3D a)
+{
+    this->directionalLight.ambient = a.toGLM();
+}
+
+void ShaderOpenGLRender::setGlobalIlluminationDiffuse(Vertex3D d)
+{
+    this->directionalLight.diffuse = d.toGLM();
+
+}
+
+void ShaderOpenGLRender::setGlobalIlluminationSpecular(Vertex3D s)
+{
+    this->directionalLight.specular = s.toGLM();
+}
+
