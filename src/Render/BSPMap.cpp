@@ -1015,10 +1015,9 @@ void BSPMap::createMesh3DAndGhostsFromHulls() {
     }
 }
 
-void BSPMap::makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_t *hull) {
-    // Buscamos entidades que figuren con el modelo
-
-    auto *ghost = new Mesh3DGhost();
+void BSPMap::makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_t *hull)
+{
+    /*auto *ghost = new Mesh3DGhost();
     ghost->setEnabled(enabled);
 
     ghost->setPosition(getPosition());
@@ -1029,10 +1028,12 @@ void BSPMap::makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_
     ghost->makeGhostBody(Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), ghost, 0, 0);
     ghost->getGhostObject()->setUserPointer(ghost);
     Brakeza3D::get()->addObject3D(ghost, "hull_" + std::to_string(indexModel) + " (DoorGhost)");
+    */
 }
 
-void BSPMap::makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, model_t *hull) {
-    auto *ghost = new Mesh3DGhost();
+void BSPMap::makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, model_t *hull)
+{
+    /*auto *ghost = new Mesh3DGhost();
 
     ghost->setEnabled(enabled);
     ghost->setPosition(getPosition());
@@ -1043,9 +1044,10 @@ void BSPMap::makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, mode
     ghost->makeGhostBody(Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), ghost, 0, 0);
     ghost->getGhostObject()->setUserPointer(ghost);
     Brakeza3D::get()->addObject3D(ghost, "hull_" + std::to_string(indexModel) + " (Mesh3DGhost)");
+    */
 }
 
-void BSPMap::getTrianglesHull(Mesh3DGhost *mesh, model_t *hull) {
+/*void BSPMap::getTrianglesHull(Mesh3DGhost *mesh, model_t *hull) {
 
     for (int surface = hull->firstsurf; surface < hull->firstsurf + hull->numsurf; surface++) {
 
@@ -1060,7 +1062,7 @@ void BSPMap::getTrianglesHull(Mesh3DGhost *mesh, model_t *hull) {
     }
 
     mesh->updateBoundingBox();
-}
+}*/
 
 
 void BSPMap::createObjects3DFromBSPEntities() {

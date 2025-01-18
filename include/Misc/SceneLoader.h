@@ -15,8 +15,6 @@ enum class SceneObjectLoaderMapping {
     Object3D,
     Mesh3D,
     LightPoint3D,
-    Mesh3DGhost,
-    Mesh3DBody,
     SpotLight3D,
     ParticleEmitter,
     BillboardAnimation,
@@ -38,8 +36,6 @@ class SceneLoader {
             {"Mesh3D", SceneObjectLoaderMapping::Mesh3D},
             {"LightPoint3D", SceneObjectLoaderMapping::LightPoint3D},
             {"SpotLight3D", SceneObjectLoaderMapping::SpotLight3D},
-            {"Mesh3DGhost", SceneObjectLoaderMapping::Mesh3DGhost},
-            {"Mesh3DBody", SceneObjectLoaderMapping::Mesh3DBody},
             {"ParticleEmitter", SceneObjectLoaderMapping::ParticleEmitter},
             {"BillboardAnimation", SceneObjectLoaderMapping::BillboardAnimation},
             {"BillboardAnimation8Directions", SceneObjectLoaderMapping::BillboardAnimation8Directions},
@@ -68,10 +64,6 @@ public:
     static void createObjectInScene();
 
     static void createPointLight3DInScene();
-
-    static void createMesh3DBodyToScene(const std::string &filename);
-
-    static void createMesh3DGhostToScene(const std::string &filename);
 
     static void createImage3DToScene(const std::string &filename);
 

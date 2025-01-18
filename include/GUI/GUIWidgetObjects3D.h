@@ -11,7 +11,6 @@
 #include "../FXEffect/FXOutliner.h"
 #include "../FXEffect/FXBlink.h"
 #include "../Misc/TexturePackage.h"
-#include "../Physics/Projectile3DBody.h"
 #include "../FXEffect/FXColorTint.h"
 
 #ifndef BRAKEZA3D_GUIOBJECTPROPERTIES_H
@@ -47,8 +46,8 @@ struct GUIWidgetObjects3D {
                     continue;
                 }
 
-                auto projectile = dynamic_cast<Projectile3DBody*> (o);
-                if (projectile != nullptr) continue;
+                //auto projectile = dynamic_cast<Projectile3DBody*> (o);
+                //if (projectile != nullptr) continue;
 
                 std::string optionText = std::to_string(i + 1) + ") " + o->getLabel();
                 if (ImGui::Selectable(optionText.c_str(), selectedObjectIndex == i)) {

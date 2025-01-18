@@ -24,7 +24,7 @@ public:
 
     static bool isVertexInside(Vertex3D &v);
 
-    bool isAABBInFrustum(AABB3D *aabb);
+    static bool isAABBInFrustum(AABB3D *aabb);
 };
 
 

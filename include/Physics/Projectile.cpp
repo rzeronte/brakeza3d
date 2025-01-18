@@ -1,24 +1,35 @@
 
-#include "../../include/Physics/Projectile3DBody.h"
+#include "Projectile.h"
 
-Projectile3DBody::Projectile3DBody(
-    const Vertex3D &direction
-) : Projectile(direction)
+
+Projectile::Projectile(const Vertex3D direction)
+:
+    direction(direction)
 {
+    setCollisionsEnabled(true);
 }
 
-void Projectile3DBody::makeProjectileRigidBody(
+const Vertex3D &Projectile::getDirection() const
+{
+    return direction;
+}
+
+void Projectile::setDirection(const Vertex3D &value)
+{
+    Projectile::direction = value;
+}
+
+void Projectile::makeProjectileRigidBody(
     float mass,
-    Vertex3D size,
     Vertex3D direction,
-    M3 rotation,
     float forceImpulse,
     float accuracy,
     btDiscreteDynamicsWorld *world,
     int collisionGroup,
     int collisionMask
-) {
-    Mesh3DBody::makeSimpleRigidBody(mass, getPosition(), rotation, size, world, collisionGroup, collisionMask);
+)
+{
+    Mesh3D::makeSimpleRigidBody(mass, world, collisionGroup, collisionMask);
 
     direction = direction.getScaled(forceImpulse);
     direction.x += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy)) / 100;
@@ -31,11 +42,12 @@ void Projectile3DBody::makeProjectileRigidBody(
     setDirection(direction);
 }
 
-void Projectile3DBody::onUpdate()
+void Projectile::onUpdate()
 {
     Mesh3D::onUpdate();
 }
 
-void Projectile3DBody::resolveCollision(Collisionable *objectWithCollision) {
-    Mesh3DBody::resolveCollision(objectWithCollision);
+void Projectile::resolveCollision(Collider *objectWithCollision)
+{
+    Collider::resolveCollision(objectWithCollision);
 }

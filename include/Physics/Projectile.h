@@ -6,23 +6,36 @@
 #define BRAKEZA3D_PROJECTILE_H
 
 
-class Projectile {
+#include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
+#include "../Objects/Vertex3D.h"
+#include "../Render/M3.h"
+#include "../../src/Collisions/Collider.h"
+#include "../Objects/Mesh3D.h"
+
+class Projectile: public Mesh3D {
 private:
     Vertex3D direction;
 public:
 
-    Projectile(const Vertex3D direction) : direction(direction)
-    {
-    }
+    explicit Projectile(Vertex3D direction);
 
-    [[nodiscard]] const Vertex3D &getDirection() const {
-        return direction;
-    }
+    [[nodiscard]] const Vertex3D &getDirection() const;
 
-    void setDirection(const Vertex3D &value) {
-        Projectile::direction = value;
-    }
+    void setDirection(const Vertex3D &value);
 
+    void makeProjectileRigidBody(
+        float mass,
+        Vertex3D direction,
+        float forceImpulse,
+        float accuracy,
+        btDiscreteDynamicsWorld *world,
+        int collisionGroup,
+        int collisionMask
+    );
+
+    void onUpdate() override;
+
+    void resolveCollision(Collider *objectWithCollision) override;
 };
 
 

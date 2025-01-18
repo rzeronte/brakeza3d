@@ -1,5 +1,6 @@
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Physics/Projectile.h"
 
 ComponentCollisions::ComponentCollisions()
 :
@@ -96,8 +97,8 @@ void ComponentCollisions::checkCollisionsForAll()
             const btCollisionObject *obA = contactManifold->getBody0();
             const btCollisionObject *obB = contactManifold->getBody1();
 
-            auto *brkObjectA = (Collisionable *) obA->getUserPointer();
-            auto *brkObjectB = (Collisionable *) obB->getUserPointer();
+            auto *brkObjectA = (Collider *) obA->getUserPointer();
+            auto *brkObjectB = (Collider *) obB->getUserPointer();
 
             brkObjectA->resolveCollision(brkObjectB);
             brkObjectB->resolveCollision(brkObjectA);
@@ -111,8 +112,8 @@ void ComponentCollisions::updatePhysicObjects()
 
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         if (object->isRemoved()) continue;
-        
-        auto *collisionable = dynamic_cast<Collisionable *> (object);
+
+        auto *collisionable = dynamic_cast<Collider *> (object);
         if (collisionable != nullptr) {
             if (!collisionable->isCollisionsEnabled()) continue;
             collisionable->integrate();
@@ -134,8 +135,8 @@ void ComponentCollisions::stepSimulation(float deltaTime)
     checkCollisionsForAll();
 }
 
-void ComponentCollisions::demoProjectile(int type) {
-
+void ComponentCollisions::demoProjectile(int type)
+{
     std::string fileName;
     Logging::Message("Launching %s", fileName.c_str());
 
@@ -166,7 +167,9 @@ void ComponentCollisions::demoProjectile(int type) {
 
     Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::get()->forward;
 
-    auto *projectile = new Projectile3DBody(direction);
+    auto *projectile = new Projectile(direction);
+    projectile->setCollisionMode(CollisionMode::BODY);
+    projectile->setCollisionShape(CollisionShape::TRIANGLE_MESH_SHAPE);
     projectile->setParent(camera);
     projectile->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + fileName));
     projectile->setRotation(
@@ -175,13 +178,11 @@ void ComponentCollisions::demoProjectile(int type) {
         (float) Tools::random(0, 180)
     );
     projectile->setFlatTextureColor(true);
-    projectile->setPosition( camera->getPosition() + direction.getScaled(1000));
+    projectile->setPosition( camera->getPosition() + direction.getScaled(1));
     projectile->setEnabled(true);
     projectile->makeProjectileRigidBody(
         EngineSetup::get()->PROJECTILE_DEMO_MASS,
-        Vertex3D(1, 1, 1),
         direction,
-        M3::getMatrixIdentity(),
         EngineSetup::get()->PROJECTILE_DEMO_IMPULSE,
         EngineSetup::get()->PROJECTILE_DEMO_ACCURACY,
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),

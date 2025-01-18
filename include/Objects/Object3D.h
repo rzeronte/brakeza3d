@@ -3,7 +3,6 @@
 
 #define SOL_SAFE_USERTYPE 1
 #define SOL_SAFE_REFERENCES  0
-#define SOL_SAFE_FUNCTION 1
 #define SOL_SAFE_NUMERICS 1
 #define SOL_SAFE_GETTER 0
 #define SOL_SAFE_FUNCTION_CALLS 0
@@ -23,8 +22,9 @@
 #include "ScriptLUA.h"
 #include "../../sol/sol.hpp"
 #include "../OpenGL/FXEffectOpenGL.h"
+#include "../src/Collisions/Collider.h"
 
-class Object3D {
+class Object3D: public Collider {
 
 protected:
     Vertex3D drawOffset;
@@ -44,7 +44,6 @@ protected:
 
     std::string label;
     float rotX, rotY, rotZ; // For easy management from UI
-    float rotXFrame, rotYFrame, rotZFrame; // For easy management from UI
     bool alphaEnabled;
     float alpha;
 
@@ -216,6 +215,12 @@ public:
     void attachObject(Object3D *o);
 
     LUADataValue getLocalScriptVar(const char *varName);
+
+    void makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) override;
+    void integrate() override;
+    void updateFromBullet();
+    void resolveCollision(Collider *with) override;
+    void runResolveCollisionScripts(Collider *with);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

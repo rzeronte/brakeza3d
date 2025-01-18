@@ -64,15 +64,17 @@ struct GUIWidgetMenu
 
                 ImGui::Separator();
 
+                ImGui::Image(icon("particlesIcon"), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem("ParticleEmitter", "CTRL+x")) {
+                    SceneLoader::createParticleEmitterInScene();
+                    ImGui::EndMenu();
+                }
+                ImGui::Separator();
+
                 ImGui::Image(icon("Image2DIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("2D Objects")) {
-                    ImGui::Image(icon("particlesIcon"), ImVec2(16, 16));
-                    ImGui::SameLine();
-                    if (ImGui::MenuItem("ParticleEmitter", "CTRL+x")) {
-                        SceneLoader::createParticleEmitterInScene();
-                        ImGui::EndMenu();
-                    }
 
                     ImGui::Separator();
 
@@ -88,6 +90,18 @@ struct GUIWidgetMenu
                         drawImage2DAnimationItemsToLoad(EngineSetup::get()->SPRITES_FOLDER);
                         ImGui::EndMenu();
                     }
+                    ImGui::EndMenu();
+                }
+                ImGui::Image(icon("meshIcon"), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::BeginMenu("3D Objects")) {
+                    ImGui::Image(icon("Image3DIcon"), ImVec2(16, 16));
+                    ImGui::SameLine();
+                    if (ImGui::BeginMenu("Image3D")) {
+                        drawImage3DItemsToLoad(EngineSetup::get()->IMAGES_FOLDER);
+                        ImGui::EndMenu();
+                    }
+
                     ImGui::Separator();
 
                     ImGui::Image(icon("BillboardAnimationIcon"), ImVec2(16, 16));
@@ -102,17 +116,9 @@ struct GUIWidgetMenu
                         SceneLoader::createBillboardAnimation8Directions();
                         ImGui::EndMenu();
                     }
-                    ImGui::EndMenu();
-                }
-                ImGui::Image(icon("meshIcon"), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::BeginMenu("3D Objects")) {
-                    ImGui::Image(icon("Image3DIcon"), ImVec2(16, 16));
-                    ImGui::SameLine();
-                    if (ImGui::BeginMenu("Image3D")) {
-                        drawImage3DItemsToLoad(EngineSetup::get()->IMAGES_FOLDER);
-                        ImGui::EndMenu();
-                    }
+
+                    ImGui::Separator();
+
                     ImGui::Image(icon("meshIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Mesh3D")) {
@@ -126,21 +132,6 @@ struct GUIWidgetMenu
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Mesh3DAnimation")) {
                         drawMesh3DAnimationItemsToLoad(EngineSetup::get()->ANIMATIONS_FOLDER);
-                        ImGui::EndMenu();
-                    }
-
-                    ImGui::Separator();
-
-                    ImGui::Image(icon("gearIcon"), ImVec2(16, 16));
-                    ImGui::SameLine();
-                    if (ImGui::BeginMenu("Mesh3DBody")) {
-                        drawMesh3DBodyItemsToLoad();
-                        ImGui::EndMenu();
-                    }
-                    ImGui::Image(icon("ghostIcon"), ImVec2(16, 16));
-                    ImGui::SameLine();
-                    if (ImGui::BeginMenu("Mesh3DGhost")) {
-                        drawMesh3DGhostItemsToLoad();
                         ImGui::EndMenu();
                     }
                     ImGui::EndMenu();
@@ -489,23 +480,6 @@ struct GUIWidgetMenu
         }
     }
 
-    void drawMesh3DBodyItemsToLoad() {
-
-        auto result= Tools::getFolderFiles(EngineSetup::get()->MODELS_FOLDER, "fbx");
-
-        for (int i = 0; i < result.size(); i++) {
-            auto file = result[i];
-            auto title = std::to_string(i-1) + ") " + file;
-            if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                ImGui::Image(icon("gearIcon"), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::MenuItem(file.c_str())) {
-                    SceneLoader::createMesh3DBodyToScene(file);
-                }
-            }
-        }
-    }
-
     void drawMesh3DAnimationItemsToLoad(const std::string& folder)
     {
         auto files= Tools::getFolderFiles(folder, "fbx");
@@ -534,22 +508,6 @@ struct GUIWidgetMenu
         }
     }
 
-    void drawMesh3DGhostItemsToLoad()
-    {
-        auto result= Tools::getFolderFiles(EngineSetup::get()->MODELS_FOLDER, "fbx");
-
-        for (int i = 0; i < result.size(); i++) {
-            auto file = result[i];
-            auto title = std::to_string(i-1) + ") " + file;
-            if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                ImGui::Image(icon("ghostIcon"), ImVec2(16, 16));
-                ImGui::SameLine();
-                if (ImGui::MenuItem(file.c_str())) {
-                    SceneLoader::createMesh3DGhostToScene(EngineSetup::get()->MODELS_FOLDER + file);
-                }
-            }
-        }
-    }
 };
 
 #endif //BRAKEZA3D_GUIWIDGETMENU_H

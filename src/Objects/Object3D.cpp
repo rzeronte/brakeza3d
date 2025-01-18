@@ -8,34 +8,31 @@
 #include <glm/gtx/euler_angles.hpp>
 
 Object3D::Object3D() :
-    position(Vertex3D(1, 1, 1)),
     rotation(M3::getMatrixIdentity()),
     motion(nullptr),
     parent(nullptr),
-    transparent(false),
     enabled(true),
     removed(false),
     decal(false),
     followCamera(false),
     stencilBufferEnabled(false),
-    distanceToCamera(0),
+    transparent(false),
+    belongToScene(false),
+    multiScene(false),
     rotX(0),
     rotY(0),
     rotZ(0),
-    rotXFrame(0),
-    rotYFrame(0),
-    rotZFrame(0),
     alphaEnabled(false),
     alpha(1.0f),
-    enableLights(false),
-    scale(1),
-    rotationFrameEnabled(false),
-    belongToScene(false),
-    multiScene(false),
     luaEnvironment(sol::environment(
         LUAManager::get()->getLua(),
         sol::create, LUAManager::get()->getLua().globals())
-    )
+    ),
+    distanceToCamera(0),
+    enableLights(false),
+    scale(1),
+    rotationFrameEnabled(false),
+    position(Vertex3D(1, 1, 1))
 {
     luaEnvironment["this"] = this;
     timer.start();
@@ -229,10 +226,8 @@ void Object3D::setRotationFrameEnabled(bool value) {
     this->rotationFrameEnabled = value;
 }
 
-void Object3D::setRotationFrame(Vertex3D r) {
-    this->rotXFrame = r.x;
-    this->rotYFrame = r.x;
-    this->rotZFrame = r.x;
+void Object3D::setRotationFrame(Vertex3D r)
+{
     this->rotationFrame = r;
 }
 
@@ -521,6 +516,39 @@ void Object3D::drawImGuiProperties()
     }
 
     ImGui::Separator();
+
+    if (ImGui::TreeNode("Collider")) {
+        if (ImGui::Checkbox("Enable collider", &collisionsEnabled)) {
+            if (!collisionsEnabled) {
+                removeCollisionObject();
+            } else {
+                setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
+            }
+        }
+
+        if (collisionsEnabled) {
+            drawImGuiCollisionModeSelector();
+            drawImGuiCollisionShapeSelector();
+
+            if (getCollisionMode() == CollisionMode::BODY) {
+                if (ImGui::TreeNode("Mass")) {
+                    const float range_min = 0;
+                    const float range_max = 1000;
+                    const float range_sensibility = 0.1;
+
+                    ImGui::DragScalar("Mass", ImGuiDataType_Float, &mass, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+
+                    if (ImGui::Button(std::string("Update collision shape").c_str())) {
+                        setupRigidBodyCollider(getCollisionShape());
+                    }
+                    ImGui::TreePop();
+                }
+            }
+        }
+
+        ImGui::TreePop();
+    }
+    ImGui::Separator();
 }
 
 cJSON *Object3D::getJSON()
@@ -693,4 +721,90 @@ void Object3D::attachObject(Object3D* o)
 LUADataValue Object3D::getLocalScriptVar(const char *varName)
 {
     return LUADataValue(luaEnvironment[varName]);
+}
+
+void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+{
+    setMass(mass);
+    btTransform transformation;
+    transformation.setIdentity();
+    transformation.setOrigin(btVector3(getPosition().x, getPosition().y, getPosition().z));
+
+    btMatrix3x3 brakezaRotation = Tools::M3ToBulletM3(rotation);
+    btQuaternion qRotation;
+    brakezaRotation.getRotation(qRotation);
+
+    transformation.setRotation(qRotation);
+
+    btCollisionShape *collisionShape = new btBoxShape(btVector3(simpleShapeSize.x, simpleShapeSize.y, simpleShapeSize.z));
+    btVector3 inertia(0, 0, 0);
+    collisionShape->calculateLocalInertia(mass, inertia);
+
+    btRigidBody::btRigidBodyConstructionInfo cInfo(
+        mass,
+        new btDefaultMotionState(transformation),
+        collisionShape,
+        inertia
+    );
+
+    this->body = new btRigidBody(cInfo);
+    this->body->activate(true);
+    this->body->setUserPointer(this);
+    this->body->setRestitution(0.5);
+
+    world->addRigidBody(this->body, collisionGroup, collisionMask);
+}
+
+void Object3D::integrate()
+{
+    if (getCollisionMode() == CollisionMode::GHOST) {
+        getGhostObject()->setWorldTransform(
+            Tools::GLMMatrixToBulletTransform(getModelMatrix())
+        );
+    }
+    if (getCollisionMode() == CollisionMode::BODY) {
+        updateFromBullet();
+    }
+}
+
+void Object3D::updateFromBullet()
+{
+    if (this->body == nullptr || this->mass == 0) {
+        return;
+    }
+
+    btTransform t;
+    body->getMotionState()->getWorldTransform(t);
+    const btVector3 pos = t.getOrigin();
+    setPosition(Vertex3D(pos.getX(), pos.getY(), pos.getZ()));
+
+    auto rotation = t.getRotation();
+    btMatrix3x3 matrixRotation;
+    matrixRotation.setRotation(rotation);
+
+    setRotation(Tools::BulletM3ToM3(matrixRotation));
+}
+
+void Object3D::resolveCollision(Collider *with)
+{
+    if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
+        auto *object = dynamic_cast<Object3D*> (with);
+        Logging::Log("Object3D: Collision %s with %s",  getLabel().c_str(), object->getLabel().c_str());
+    }
+
+    if (ComponentsManager::get()->getComponentRender()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
+        runResolveCollisionScripts(with);
+    }
+}
+
+void Object3D::runResolveCollisionScripts(Collider *with)
+{
+    auto *object = dynamic_cast<Object3D*> (with);
+    const sol::state &lua = LUAManager::get()->getLua();
+
+    sol::object luaValue = sol::make_object(lua, object);
+
+    for (auto script : scripts) {
+        script->runEnvironment(luaEnvironment, "onCollision", luaValue);
+    }
 }

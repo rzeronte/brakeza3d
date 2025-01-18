@@ -11,11 +11,13 @@
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
 #include "../OpenGL/FXEffectOpenGLObject.h"
+#include "../../src/Collisions/Collider.h"
 #include <assimp/Importer.hpp>      // C++ assimpImporter interface
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
+#include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
 
 typedef float vec3_t[3];
 
@@ -121,6 +123,15 @@ public:
     GLuint vertexbuffer;
     GLuint uvbuffer;
     GLuint normalbuffer;
+
+    void makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) override;
+    void makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
+
+    void setupGhostCollider(CollisionShape modeShape) override;
+    void setupRigidBodyCollider(CollisionShape modeShape) override;
+    void drawImGuiCollisionShapeSelector() override;
+
+    btBvhTriangleMeshShape *getTriangleMeshFromMesh3D();
 };
 
 

@@ -7,10 +7,10 @@
 
 
 #include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
-#include "../../src/Collisions/Collisionable.h"
+#include "../../src/Collisions/Collider.h"
 #include "../../include/Objects/Object3D.h"
 
-class RayCollisionable: public Object3D, public Collisionable {
+class RayCollisionable: public Object3D, public Collider {
 private:
     Vertex3D ray;
     Object3D *target = nullptr;
@@ -24,7 +24,7 @@ public:
 
     explicit RayCollisionable(const Vertex3D &ray, int filterGroup, int filterMask);
 
-    void resolveCollision(Collisionable *objectWithCollision) override;
+    void resolveCollision(Collider *objectWithCollision) override;
 
     void onUpdate() override;
 

@@ -6,19 +6,17 @@
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Render/Transforms.h"
 
 Mesh3D::Mesh3D()
-        :
-        octree(nullptr),
-        grid(nullptr),
-        sharedTextures(false),
-        flatTextureColor(false),
-        render(true)
+:
+    octree(nullptr),
+    grid(nullptr),
+    sharedTextures(false),
+    flatTextureColor(false),
+    render(true)
 {
     decal = false;
     luaEnvironment["this"] = this;
-
 }
 
 void Mesh3D::updateBoundingBox()
@@ -545,4 +543,190 @@ void Mesh3D::fillBuffers()
     glGenBuffers(1, &normalbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
     glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+}
+
+void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+{
+    auto *convexHullShape = new btConvexHullShape();
+
+    updateBoundingBox();
+    for (auto & modelTriangle : getModelTriangles()) {
+        btVector3 a, b, c;
+        a = btVector3(modelTriangle->A.x, -modelTriangle->A.y, modelTriangle->A.z);
+        b = btVector3(modelTriangle->B.x, -modelTriangle->B.y, modelTriangle->B.z);
+        c = btVector3(modelTriangle->C.x, -modelTriangle->C.y, modelTriangle->C.z);
+        convexHullShape->addPoint(a);
+        convexHullShape->addPoint(b);
+        convexHullShape->addPoint(c);
+    }
+
+    getGhostObject()->setWorldTransform(Tools::GLMMatrixToBulletTransform(getModelMatrix()));
+    getGhostObject()->setCollisionShape(convexHullShape);
+    getGhostObject()->setUserPointer(this);
+
+    world->addCollisionObject(getGhostObject(), collisionGroup, collisionMask);
+}
+
+void Mesh3D::setupGhostCollider(CollisionShape modeShape)
+{
+    Logging::Message("Mesh3D - setupGhostCollider");
+
+    removeCollisionObject();
+
+    setCollisionMode(CollisionMode::GHOST);
+    setCollisionShape(modeShape);
+
+    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+        makeSimpleGhostBody(
+            simpleShapeSize,
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            btBroadphaseProxy::DefaultFilter,
+            btBroadphaseProxy::DefaultFilter
+        );
+    }
+
+    if (getCollisionShape() == CollisionShape::TRIANGLE_MESH_SHAPE) {
+        makeGhostBody(
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            btBroadphaseProxy::DefaultFilter,
+            btBroadphaseProxy::DefaultFilter
+        );
+    }
+}
+
+void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
+{
+    Logging::Message("Mesh3D - setupRigidBodyCollider");
+    removeCollisionObject();
+
+    setCollisionShape(modeShape);
+    setCollisionMode(CollisionMode::BODY);
+
+    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+        makeSimpleRigidBody(
+            mass,
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            btBroadphaseProxy::DefaultFilter,
+            btBroadphaseProxy::DefaultFilter
+        );
+    }
+
+    if (getCollisionShape() == CollisionShape::TRIANGLE_MESH_SHAPE) {
+        makeRigidBodyFromTriangleMesh(
+            mass,
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            btBroadphaseProxy::DefaultFilter,
+            btBroadphaseProxy::DefaultFilter
+        );
+    }
+}
+
+void Mesh3D::drawImGuiCollisionShapeSelector()
+{
+    auto flags = ImGuiComboFlags_None;
+    const char* items[] = { "SIMPLE", "TRIANGLE" };
+    int item_current_idx = (int) collisionShape;
+    const char* combo_preview_value = items[item_current_idx];
+
+    if (ImGui::BeginCombo("Collision shape", combo_preview_value, flags)) {
+        for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
+            const bool is_selected = (item_current_idx == n);
+            if (ImGui::Selectable(items[n], is_selected)) {
+                if (!is_selected) {
+                    item_current_idx = n;
+                    switch (n) {
+                        case 0: {
+                            if (collisionMode == CollisionMode::GHOST) {
+                                setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
+                            }
+
+                            if (collisionMode == CollisionMode::GHOST) {
+                                setupRigidBodyCollider(CollisionShape::SIMPLE_SHAPE);
+                            }
+
+                            break;
+                        }
+                        case 1: {
+                            if (collisionMode == CollisionMode::GHOST) {
+                                setupGhostCollider(CollisionShape::TRIANGLE_MESH_SHAPE);
+                            }
+
+                            if (collisionMode == CollisionMode::BODY) {
+                                setupRigidBodyCollider(CollisionShape::TRIANGLE_MESH_SHAPE);
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        ImGui::EndCombo();
+    }
+
+    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+        if (ImGui::TreeNode("Simple shape size")) {
+            const float range_min = -500000;
+            const float range_max = 500000;
+            const float range_sensibility = 0.1;
+
+            ImGui::DragScalar("X", ImGuiDataType_Float, &simpleShapeSize.x, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Y", ImGuiDataType_Float, &simpleShapeSize.y, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Z", ImGuiDataType_Float, &simpleShapeSize.z, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+
+            if (ImGui::Button(std::string("Update collision shape").c_str())) {
+                setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
+            }
+            ImGui::TreePop();
+        }
+    }
+}
+
+void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+{
+    setMass(mass);
+
+    btTransform transformation;
+    transformation.setIdentity();
+
+    btBvhTriangleMeshShape *triangleMeshShape = this->getTriangleMeshFromMesh3D();
+
+    btVector3 position;
+    getPosition().saveToBtVector3(&position);
+    transformation.setOrigin(position);
+
+    btRigidBody::btRigidBodyConstructionInfo info(
+        mass,
+        new btDefaultMotionState(transformation),
+        triangleMeshShape,
+        btVector3(0, 0, 0)
+    );
+
+    this->body = new btRigidBody(info);
+    this->body->activate(true);
+    this->body->setContactProcessingThreshold(BT_LARGE_FLOAT);
+    this->body->setUserPointer(this);
+
+    world->addRigidBody(this->body, collisionGroup, collisionMask);
+}
+
+btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D()
+{
+    auto *triangleMesh = new btTriangleMesh();
+    updateBoundingBox();
+
+    for (auto & modelTriangle : this->modelTriangles) {
+        btVector3 a, b, c;
+        modelTriangle->A.saveToBtVector3(&a);
+        modelTriangle->B.saveToBtVector3(&b);
+        modelTriangle->C.saveToBtVector3(&c);
+
+        a.setY(-a.getY());
+        b.setY(-b.getY());
+        c.setY(-c.getY());
+
+        triangleMesh->addTriangle(a, b, c, false);
+    }
+
+    return new btBvhTriangleMeshShape(triangleMesh, true, true);
 }

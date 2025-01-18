@@ -14,6 +14,7 @@
 #include "../../include/Objects/Image3D.h"
 #include "../../include/2D/Image2D.h"
 #include "../../include/Objects/Mesh3DAnimation.h"
+#include "../../include/Objects/BillboardAnimation8Directions.h"
 
 SceneLoader::SceneLoader() = default;
 
@@ -75,14 +76,6 @@ void SceneLoader::loadScene(const std::string& filename)
             }
             case SceneObjectLoaderMapping::SpotLight3D : {
                 SpotLight3D::createFromJSON(currentObject);
-                break;
-            }
-            case SceneObjectLoaderMapping::Mesh3DGhost : {
-                Mesh3DGhost::createFromJSON(currentObject);
-                break;
-            }
-            case SceneObjectLoaderMapping::Mesh3DBody : {
-                Mesh3DBody::createFromJSON(currentObject);
                 break;
             }
             case SceneObjectLoaderMapping::ParticleEmitter : {
@@ -264,20 +257,6 @@ void SceneLoader::createSpotLight3DInScene()
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("SpotLight3D"));
 }
 
-void SceneLoader::createMesh3DBodyToScene(const std::string& filename)
-{
-    auto *newObject = new Mesh3DBody();
-    newObject->setBelongToScene(true);
-    newObject->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
-    newObject->setScale(1);
-    newObject->setMass(1);
-    newObject->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + filename));
-    newObject->makeDefaultCollisionShape();
-
-    Logging::Message("Loading Mesh3DBody from file: %s", std::string(EngineSetup::get()->MODELS_FOLDER + filename).c_str());
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Mesh3DBody"));
-}
-
 void SceneLoader::createImage2DInScene(const std::string& filename)
 {
     auto *newObject = new Image2D(
@@ -361,26 +340,6 @@ void SceneLoader::createImage3DToScene(const std::string &filename)
     newObject->setBelongToScene(true);
 
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Image3D"));
-}
-
-void SceneLoader::createMesh3DGhostToScene(const std::string& filename)
-{
-    auto *o = new Mesh3DGhost();
-    o->setBelongToScene(true);
-    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
-    o->setScale(1);
-    o->AssimpLoadGeometryFromFile(std::string(filename));
-    o->updateBoundingBox();
-    o->getAabb().setScale(o->getScale());
-    o->makeSimpleGhostBody(
-        o->simpleShapeSize,
-        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-        btBroadphaseProxy::DefaultFilter,
-        btBroadphaseProxy::DefaultFilter
-    );
-
-    Logging::Message("Loading GhostBody from file: %s", std::string(filename).c_str());
-    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("Mesh3DGhost"));
 }
 
 std::map<std::string, Mesh3DShaderLoaderMapping> &SceneLoader::getMesh3DShaderTypes() {
