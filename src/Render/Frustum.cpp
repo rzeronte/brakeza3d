@@ -1,13 +1,8 @@
 #include "../../include/Render/Frustum.h"
-#include "../../include/EngineSetup.h"
 #include "../../include/Render/Maths.h"
-#include "../../include/Render/Transforms.h"
-#include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
 
-Frustum::Frustum()
-{
-}
+Frustum::Frustum() = default;
 
 bool Frustum::isVertexInside(Vertex3D &v)
 {
@@ -24,9 +19,10 @@ bool Frustum::isVertexInside(Vertex3D &v)
     return true;
 }
 
-bool Frustum::isAABBInFrustum(AABB3D *aabb) {
+bool Frustum::isAABBInFrustum(AABB3D *aabb)
+{
     for(auto & vertice : aabb->vertices) {
-        if (!this->isVertexInside(vertice)) {
+        if (!Frustum::isVertexInside(vertice)) {
             return false;
         }
     }

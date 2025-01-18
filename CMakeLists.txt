@@ -9,6 +9,8 @@ elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_CXX_FLAGS "-O3 -w")
 endif()
 
+set(CMAKE_CXX_FLAGS "-O0 -Wall -g ")
+
 # SDL
 set(SDL2_LIBRARY "SDL2")
 set(SDL2_IMAGE_LIBRARY "SDL2_image")
@@ -150,15 +152,7 @@ add_executable(Brakeza3D
     src/2D/Image2DAnimation.cpp                     include/2D/Image2DAnimation.h
     src/2D/Image2D.cpp                              include/2D/Image2D.h
 
-    src/Collisions/Mesh3DBody.cpp                   include/Physics/Mesh3DBody.h
-    src/Collisions/Mesh3DGhost.cpp                  include/Physics/Mesh3DGhost.h
-    src/Collisions/BillboardAnimation8DirectionsBody.cpp include/Physics/BillboardAnimation8DirectionsBody.h
-    src/Collisions/Projectile3DBody.cpp             include/Physics/Projectile3DBody.h
-    src/Collisions/BillboardAnimationBody.cpp       include/Physics/BillboardAnimationBody.h
-    src/Collisions/Body.cpp                         include/Physics/Body.h
-    src/Collisions/BillboardBody.cpp                include/Physics/BillboardBody.h
     src/Collisions/BSPCollider.cpp                  src/Collisions/BSPCollider.h
-    src/Collisions/Ghost.cpp                        include/Physics/Ghost.h
 
     src/Components/ComponentCollisions.cpp          include/Components/ComponentCollisions.h
     src/Components/Component.cpp                    include/Components/Component.h
@@ -184,8 +178,7 @@ add_executable(Brakeza3D
     src/OpenGL/ShaderOpenGLTint.cpp                 src/OpenGL/ShaderOpenGLTint.h
 
     src/Collisions/SimplePendulum.cpp               include/Physics/SimplePendulum.h
-    src/Collisions/Collisionable.cpp                src/Collisions/Collisionable.h
-    src/Collisions/Mesh3DAnimationGhost.cpp         include/Physics/Mesh3DAnimationGhost.h
+    src/Collisions/Collider.cpp                     src/Collisions/Collider.h
     src/Collisions/RayCollisionable.cpp             include/Physics/RayCollisionable.h
 
     src/Behaviors/Object3DBehavior.cpp              include/Behaviors/Object3DBehavior.h
@@ -209,7 +202,7 @@ add_executable(Brakeza3D
     imgui/ImGuizmo.h                                imgui/ImGuizmo.cpp
 
     include/2D/ButtonsCallbacks.h
-    include/Physics/Projectile.h
+    include/Physics/Projectile.h                    include/Physics/Projectile.cpp
 
     include/GUI/GUIConsole.h
     include/GUI/GUIWidgetProjectSettings.h

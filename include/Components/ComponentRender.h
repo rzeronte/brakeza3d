@@ -12,7 +12,6 @@
 #include "../Render/Tile.h"
 #include "../LUAManager.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/Physics/BillboardBody.h"
 #include "../../include/Render/Maths.h"
 #include "../2D/TextWriter.h"
 #include "../Misc/SharedLUAContext.h"
