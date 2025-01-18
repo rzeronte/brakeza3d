@@ -151,6 +151,12 @@ void Image3D::drawImGuiProperties()
             ImGui::DragScalar("Width", ImGuiDataType_Float, &width,1.f, &range_min_int, &range_max_int, "%f", 1.0f);
             ImGui::DragScalar("Height", ImGuiDataType_Float, &height,1.f, &range_min_int, &range_max_int, "%f", 1.0f);
 
+            if (ImGui::Button(std::string("Update size").c_str())) {
+                M3 rotationTranspose = ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose();
+                Vertex3D up = rotationTranspose * EngineSetup::get()->up;
+                Vertex3D right = rotationTranspose * EngineSetup::get()->right;
+                setSize(width, height, up, right);
+            }
             ImGui::TreePop();
         }
 

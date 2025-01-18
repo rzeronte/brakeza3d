@@ -21,7 +21,30 @@
       "z":	1.0
     }
   },
-  "objects": [],
+  "objects": [
+    {
+      "name":	"welcome!!",
+      "scale":	1,
+      "position":	{
+        "x":	0,
+        "y":	0,
+        "z":	10
+      },
+      "rotation":	{
+        "x":	0,
+        "y":	0,
+        "z":	0
+      },
+      "rotationFrameEnabled":	false,
+      "isCollisionsEnabled":	false,
+      "scripts":	[],
+      "shaders":	[],
+      "width":	10,
+      "height":	7,
+      "image":	"../assets/images/splash.png",
+      "type":	"Image3D"
+    }
+  ],
   "shaders": [],
   "scripts": [],
   "camera":	{
