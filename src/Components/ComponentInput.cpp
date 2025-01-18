@@ -89,19 +89,20 @@ void ComponentInput::handleMouse(SDL_Event *event) const {
 
 void ComponentInput::handleKeyboardMovingCamera() const
 {
-    if (keyboard[SDL_SCANCODE_W]) {
+    if (keyboard[SDL_SCANCODE_UP]) {
         ComponentsManager::get()->getComponentCamera()->getCamera()->MoveForward();
     }
-    if (keyboard[SDL_SCANCODE_S]) {
+    if (keyboard[SDL_SCANCODE_DOWN]) {
         ComponentsManager::get()->getComponentCamera()->getCamera()->MoveBackward();
     }
-    if (keyboard[SDL_SCANCODE_A]) {
+    if (keyboard[SDL_SCANCODE_LEFT]) {
         ComponentsManager::get()->getComponentCamera()->getCamera()->StrafeLeft();
     }
-    if (keyboard[SDL_SCANCODE_D]) {
+    if (keyboard[SDL_SCANCODE_RIGHT]) {
         ComponentsManager::get()->getComponentCamera()->getCamera()->StrafeRight();
     }
-    if (keyboard[SDL_SCANCODE_RIGHT]) {
+
+/*  if (keyboard[SDL_SCANCODE_RIGHT]) {
         ComponentsManager::get()->getComponentCamera()->getCamera()->TurnRight();
     }
     if (keyboard[SDL_SCANCODE_LEFT]) {
@@ -113,6 +114,7 @@ void ComponentInput::handleKeyboardMovingCamera() const
     if (keyboard[SDL_SCANCODE_UP]) {
         ComponentsManager::get()->getComponentCamera()->getCamera()->PitchDown();
     }
+*/
 }
 
 void ComponentInput::handleWindowEvents(SDL_Event *e, bool &end) {

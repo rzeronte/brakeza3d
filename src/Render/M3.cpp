@@ -1,4 +1,3 @@
-#include <iostream>
 #include <glm/gtx/compatibility.hpp>
 #include "../../include/Render/M3.h"
 #include "../../include/Misc/Tools.h"
@@ -123,7 +122,6 @@ M3 M3::arbitraryAxis(Vertex3D A, float degrees) {
         (1-c) * A.x * A.z - s * A.y, (1-c) * A.y * A.z + s * A.x,         c + (1 - c) * (A.z * A.z)
     );
 }
-
 
 M3 M3::ScaleMatrix(float scale) {
     M3 M(
@@ -257,4 +255,26 @@ M3 M3::interpolateLinear(const M3& m1, const M3& m2, float t)
     }
 
     return result;
+}
+
+btMatrix3x3 M3::toBulletMat3()
+{
+    return btMatrix3x3(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
+}
+
+M3 M3::fromMat3GLM(const glm::mat3& glmMatrix)
+{
+    return {
+        glmMatrix[0][0], glmMatrix[1][0], glmMatrix[2][0],
+        glmMatrix[0][1], glmMatrix[1][1], glmMatrix[2][1],
+        glmMatrix[0][2], glmMatrix[1][2], glmMatrix[2][2]
+    };
+}
+
+M3 M3::fromMat3Bullet(const btMatrix3x3& m) {
+    return M3(
+        m.getRow(0).getX(), m.getRow(0).getY(), m.getRow(0).getZ(),
+        m.getRow(1).getX(), m.getRow(1).getY(), m.getRow(1).getZ(),
+        m.getRow(2).getX(), m.getRow(2).getY(), m.getRow(2).getZ()
+    );
 }
