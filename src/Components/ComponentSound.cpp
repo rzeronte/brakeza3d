@@ -11,7 +11,7 @@ ComponentSound::ComponentSound()
 void ComponentSound::onStart()
 {
     Logging::head("ComponentSound onStart");
-    loadSoundsJSON();
+    LoadSoundsConfigFile();
 }
 
 void ComponentSound::preUpdate()
@@ -48,7 +48,7 @@ void ComponentSound::initSoundSystem()
 }
 
 
-void ComponentSound::loadSoundsJSON()
+void ComponentSound::LoadSoundsConfigFile()
 {
     auto filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_SOUNDS;
     Logging::Message("Loading Sounds (%s)", filePath.c_str());
@@ -72,9 +72,9 @@ void ComponentSound::loadSoundsJSON()
         SoundPackageItemType selectedType = SoundPackageItemType::SOUND;
 
         if (strcmp(type->valuestring, "music") == 0) selectedType = SoundPackageItemType::MUSIC;
-        if (strcmp(type->valuestring, "sound") == 0) selectedType = SoundPackageItemType::SOUND;
+        if (strcmp(type->valuestring, "playSound") == 0) selectedType = SoundPackageItemType::SOUND;
 
-        Logging::Log("Loading file sound %s", file->valuestring);
+        Logging::Log("Loading file playSound %s", file->valuestring);
 
         soundPackage.addItem(EngineSetup::get()->SOUNDS_FOLDER + file->valuestring, label->valuestring, selectedType);
     }
@@ -83,32 +83,23 @@ void ComponentSound::loadSoundsJSON()
     free(contentFile);
 }
 
-int ComponentSound::playSound(Mix_Chunk *chunk, int channel, int times)
+int ComponentSound::playChunk(Mix_Chunk *chunk, int channel, int times)
 {
     if (chunk == nullptr) {
-        Logging::Log("Error loading chunk sound");
+        Logging::Log("Error loading chunk playSound");
         return -1;
     }
 
     const int resultPlaying = Mix_PlayChannel(channel, chunk, times);
 
     if (resultPlaying < 0) {
-        Logging::Log("No channel available for sound...");
+        Logging::Log("No channel available for playSound...");
     }
 
     return resultPlaying;
 }
 
-int ComponentSound::sound(const std::string& sound, int channel, int times)
-{
-    return ComponentSound::playSound(
-        soundPackage.getByLabel(sound),
-        channel,
-        times
-    );
-}
-
-void ComponentSound::playMusic(Mix_Music *music, int loops = -1)
+void ComponentSound::playMusicMix(Mix_Music *music, int loops = -1)
 {
     Mix_PlayMusic(music, loops);
 }
@@ -123,16 +114,9 @@ void ComponentSound::stopMusic()
     Mix_HaltMusic();
 }
 
-void ComponentSound::stopChannel(int channel) {
+void ComponentSound::stopChannel(int channel)
+{
     Mix_HaltChannel(channel);
-}
-
-SoundPackage &ComponentSound::getSoundPackage() {
-    return soundPackage;
-}
-
-Mix_Chunk *ComponentSound::soundByLabel(const std::string &label) {
-    return soundPackage.getByLabel(label);
 }
 
 float ComponentSound::soundDuration(const std::string& sound)
@@ -174,4 +158,41 @@ float ComponentSound::soundDuration(const std::string& sound)
     // Calcula la duración en segundos
     double totalSamples = chunk->alen / (bytesPerSample * channels);
     return totalSamples / frequency;
+}
+
+void ComponentSound::addSound(const std::string &soundFile, const std::string &label)
+{
+    soundPackage.addItem(soundFile, label, SoundPackageItemType::SOUND);
+}
+
+void ComponentSound::addMusic(const std::string &soundFile, const std::string &label)
+{
+    soundPackage.addItem(soundFile, label, SoundPackageItemType::MUSIC);
+}
+
+void ComponentSound::playMusic(const std::string& sound)
+{
+    ComponentSound::playMusicMix(
+        soundPackage.getMusicByLabel(sound),
+        -1
+    );
+}
+
+void ComponentSound::playSound(const std::string& sound, int channel, int times)
+{
+     ComponentSound::playChunk(
+        soundPackage.getByLabel(sound),
+        channel,
+        times
+    );
+}
+
+void ComponentSound::setMusicVolume(int v)
+{
+    Mix_VolumeMusic((int) EngineSetup::get()->SOUND_VOLUME_MUSIC);
+}
+
+void ComponentSound::setSoundsVolume(int v)
+{
+    Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) EngineSetup::get()->SOUND_CHANNEL_GLOBAL);
 }
