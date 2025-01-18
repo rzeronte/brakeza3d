@@ -60,7 +60,7 @@ struct GUIWidgetObject3DProperties {
                 ImGui::SameLine();
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", o->getLabel().c_str());
                 ImGui::SameLine();
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel(o->getTypeIcon())->getOGLTextureID(), ImVec2(16, 16));
+                ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, o->getTypeIcon()), ImVec2(16, 16));
 
                 ImGui::Separator();
                 if (ImGui::Button("Move")) {
@@ -91,7 +91,7 @@ struct GUIWidgetObject3DProperties {
 
                     std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
 
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getOGLTextureID(), ImVec2(24, 24));
+                    ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "scriptIcon"), ImVec2(24, 24));
                     ImGui::SameLine(48);
 
                     if (ImGui::Button(optionText.c_str())) {
@@ -107,16 +107,16 @@ struct GUIWidgetObject3DProperties {
                     ImGui::SameLine();
 
                     if (currentScript->isPaused()) {
-                        if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "unlockIcon"), ImVec2(14, 14))) {
                             currentScript->setPaused(false);
                         }
                     } else {
-                        if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "lockIcon"), ImVec2(14, 14))) {
                             currentScript->setPaused(true);
                         }
                     }
                     ImGui::SameLine();
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "removeIcon"), ImVec2(14, 14))) {
                         o->removeScript(currentScript);
                     }
 
@@ -127,13 +127,11 @@ struct GUIWidgetObject3DProperties {
 
                 ImGui::Separator();
 
-
                 ImGui::Button("Remove");
                 if (ImGui::IsItemClicked()) {
                     o->setRemoved(true);
                 }
                 ImGui::SameLine();
-
             } else {
                 ImGui::Text("Select an object...");
             }

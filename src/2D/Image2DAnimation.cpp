@@ -14,7 +14,6 @@ Image2DAnimation::Image2DAnimation(int x, int y, bool removeWhenEnds, TextureAni
     animation(animation),
     ttl(nullptr)
 {
-    setTransparent(true);
     featuresGUI.position = false;
     featuresGUI.rotation = false;
     featuresGUI.scale = false;
@@ -30,7 +29,6 @@ Image2DAnimation::Image2DAnimation(int x, int y, float ttl, TextureAnimated *ani
     ttl(new Counter(ttl))
 {
     this->ttl->setEnabled(true);
-    setTransparent(true);
 }
 
 void Image2DAnimation::onUpdate()

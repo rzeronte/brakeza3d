@@ -15,6 +15,7 @@
 #include "../../include/2D/Image2D.h"
 #include "../../include/Objects/Mesh3DAnimation.h"
 #include "../../include/Objects/BillboardAnimation8Directions.h"
+#include "../../include/Misc/ToolsJSON.h"
 
 SceneLoader::SceneLoader() = default;
 
@@ -32,10 +33,10 @@ void SceneLoader::loadScene(const std::string& filename)
     cJSON *adsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "ads");
 
     if (adsJSON != nullptr) {
-        auto direction = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "direction"));
-        auto ambient = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "ambient"));
-        auto diffuse = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "diffuse"));
-        auto specular = parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "specular"));
+        auto direction = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "direction"));
+        auto ambient = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "ambient"));
+        auto diffuse = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "diffuse"));
+        auto specular = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "specular"));
 
         shaderRender->getDirectionalLight()->direction = direction.toGLM();
         shaderRender->getDirectionalLight()->ambient = ambient.toGLM();
@@ -48,13 +49,20 @@ void SceneLoader::loadScene(const std::string& filename)
     auto cameraPositionJSON = cJSON_GetObjectItemCaseSensitive(cameraJSON, "position");
     auto cameraRotationJSON = cJSON_GetObjectItemCaseSensitive(cameraJSON, "rotation");
 
-    camera->setPosition(parseVertex3DJSON(cameraPositionJSON));
-    Logging::Message("Camera position (%f, %f, %f)", parseVertex3DJSON(cameraPositionJSON).x, parseVertex3DJSON(cameraPositionJSON).y, parseVertex3DJSON(cameraPositionJSON).z);
+    camera->setPosition(ToolsJSON::parseVertex3DJSON(cameraPositionJSON));
+
+    Logging::Message("Camera position (%f, %f, %f)",
+        ToolsJSON::parseVertex3DJSON(cameraPositionJSON).x,
+        ToolsJSON::parseVertex3DJSON(cameraPositionJSON).y,
+        ToolsJSON::parseVertex3DJSON(cameraPositionJSON).z
+    );
+
     camera->setRotationFromEulerAngles(
         (float) cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "x")->valuedouble,
         (float) cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "y")->valuedouble,
         (float) cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "z")->valuedouble
     );
+
     Logging::Message("Camera rotation (%f, %f, %f)", camera->pitch, camera->yaw, camera->roll);
 
     cJSON *currentObject;
@@ -123,24 +131,6 @@ void SceneLoader::loadScene(const std::string& filename)
             );
         }
     }
-}
-
-Vertex3D SceneLoader::parseVertex3DJSON(cJSON *vertex3DJSON)
-{
-    const auto x = (float) cJSON_GetObjectItemCaseSensitive(vertex3DJSON, "x")->valuedouble;
-    const auto y = (float) cJSON_GetObjectItemCaseSensitive(vertex3DJSON, "y")->valuedouble;
-    const auto z = (float) cJSON_GetObjectItemCaseSensitive(vertex3DJSON, "z")->valuedouble;
-
-    return {x, y, z};
-}
-
-Color SceneLoader::parseColorJSON(cJSON *color)
-{
-    return Color(
-        cJSON_GetObjectItemCaseSensitive(color, "r")->valueint,
-        cJSON_GetObjectItemCaseSensitive(color, "g")->valueint,
-        cJSON_GetObjectItemCaseSensitive(color, "b")->valueint
-    );
 }
 
 void SceneLoader::saveScene(const std::string &filename)

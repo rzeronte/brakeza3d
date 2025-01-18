@@ -26,7 +26,6 @@ ParticleEmitter::ParticleEmitter(
     colorFrom(colorFrom)
 {
     setParent(parent);
-    setTransparent(true);
     setPosition(position);
 
     lifeCounter.setEnabled(true);

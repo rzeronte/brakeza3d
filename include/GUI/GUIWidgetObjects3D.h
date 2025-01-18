@@ -13,10 +13,8 @@
 #include "../Misc/TexturePackage.h"
 #include "../FXEffect/FXColorTint.h"
 
-#ifndef BRAKEZA3D_GUIOBJECTPROPERTIES_H
-#define BRAKEZA3D_GUIOBJECTPROPERTIES_H
-
-#endif //BRAKEZA3D_GUIOBJECTPROPERTIES_H
+#ifndef BRAKEZA3D_GUIWIDGETOBJECTS3D_H
+#define BRAKEZA3D_GUIWIDGETOBJECTS3D_H
 
 
 struct GUIWidgetObjects3D {
@@ -89,7 +87,6 @@ struct GUIWidgetObjects3D {
                                     mesh->addMesh3DShader(shader);
                                     break;
                                 }
-
                             }
                         }
                     }
@@ -97,14 +94,23 @@ struct GUIWidgetObjects3D {
                 }
                 ImGui::SameLine();
                 if (o->isEnabled()) {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14));
+                    ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "lockIcon"), ImVec2(14, 14));
                 } else {
-                    ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14));
+                    ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "unlockIcon"), ImVec2(14, 14));
+                }
+                ImGui::SameLine();
+                if (o->isCollisionsEnabled()) {
+                    if (o->getCollisionMode() == CollisionMode::GHOST) {
+                        ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "ghostIcon"), ImVec2(14, 14));
+                    }
+                    if (o->getCollisionMode() == CollisionMode::BODY) {
+                        ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "gearIcon"), ImVec2(14, 14));
+                    }
                 }
                 ImGui::SameLine();
 
                 ImGui::SameLine(250);
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel(o->getTypeIcon())->getOGLTextureID(), ImVec2(16, 16));
+                ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, o->getTypeIcon()), ImVec2(16, 16));
                 ImGui::SameLine(270);
                 ImGui::Text("%s", o->getTypeObject());
             }
@@ -112,3 +118,5 @@ struct GUIWidgetObjects3D {
         ImGui::End();
     }
 };
+
+#endif //BRAKEZA3D_GUIWIDGETOBJECTS3D_H

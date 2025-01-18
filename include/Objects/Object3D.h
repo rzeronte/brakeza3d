@@ -49,8 +49,6 @@ protected:
     bool removed;
     bool decal; // Decals exclude UV Coordinates out of [0, 1]
     bool followCamera;
-    bool stencilBufferEnabled;
-    bool transparent;
     bool belongToScene;
     bool multiScene;
 
@@ -60,16 +58,17 @@ protected:
     float alpha;
 
     std::vector<ScriptLUA*> scripts;
-    std::vector<Object3D*> attached;
+    std::vector<Object3D*> attachedObjects;
     sol::environment luaEnvironment;
     std::vector<FXEffectOpenGL*> shaders;
 
     Timer timer;
     float distanceToCamera;
 public:
+    Vertex3D position;
+    Vertex3D rotationFrame;
     bool enableLights;
     float scale;
-    Vertex3D rotationFrame;
     bool rotationFrameEnabled;
 
     Object3D();
@@ -126,8 +125,6 @@ public:
 
     void setRotationFrame(Vertex3D v);
 
-    void setStencilBufferEnabled(bool stencilBufferEnabled);
-
     void setAlpha(float alpha);
 
     void setAlphaEnabled(bool alphaEnabled);
@@ -143,8 +140,6 @@ public:
     [[nodiscard]] Object3DBehavior *getBehavior() const;
 
     [[nodiscard]] bool &isAlphaEnabled();
-
-    [[nodiscard]] bool &isStencilBufferEnabled();
 
     [[nodiscard]] Vertex3D &getDrawOffset();
 
@@ -204,17 +199,11 @@ public:
 
     glm::mat4 getModelMatrix();
 
-    Vertex3D position;
-
     void addMesh3DShader(FXEffectOpenGL *shader);
 
     void removeShader(int i);
 
     [[nodiscard]] const Timer &getTimer() const;
-
-    [[nodiscard]] bool isTransparent() const;
-
-    void setTransparent(bool transparent);
 
     [[nodiscard]] float getDistanceToCamera() const;
 

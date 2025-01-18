@@ -13,7 +13,6 @@ BillboardAnimation::BillboardAnimation(float width, float height)
     autoRemoveAfterAnimation(false),
     sharedTextures(false)
 {
-    setTransparent(true);
 }
 
 void BillboardAnimation::onUpdate()
@@ -34,7 +33,7 @@ void BillboardAnimation::onUpdate()
         ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 
-    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME){
+    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME) {
         ComponentsManager::get()->getComponentWindow()->getShaderOglWireframe()->render(
             getModelMatrix(),
             billboard->vertexbuffer,

@@ -66,8 +66,6 @@ void LUAIntegration(sol::state &lua)
             "getLabel", &Object3D::getLabel,
             "setBelongToScene", &Object3D::setBelongToScene,
             "setRotationFrame", &Object3D::setRotationFrame,
-            "setStencilBufferEnabled", &Object3D::setStencilBufferEnabled,
-            "setRotationFrameEnabled", &Object3D::setRotationFrameEnabled,
             "setEnabled", &Object3D::setEnabled,
             "setRemoved", &Object3D::setRemoved,
             "setLabel", &Object3D::setLabel,

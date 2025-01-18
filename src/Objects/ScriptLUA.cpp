@@ -6,6 +6,7 @@
 #include "../../include/Objects/ScriptLUA.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Misc/ToolsJSON.h"
 
 ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
 :
@@ -132,7 +133,7 @@ void ScriptLUA::addDataType(const char *name, const char *type, cJSON *value)
             break;
         }
         case LUADataType::VERTEX3D: {
-            LUAValue = SceneLoader::parseVertex3DJSON(value);
+            LUAValue = ToolsJSON::parseVertex3DJSON(value);
             break;
         }
         default:

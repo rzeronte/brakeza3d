@@ -157,18 +157,74 @@
 			"y":	610,
 			"image":	"../assets/images//logo_small.png",
 			"type":	"Image2D"
+		}, {
+			"name":	"BillboardDemo",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	true,
+			"position":	{
+				"x":	19.130081176757813,
+				"y":	1.5098719596862793,
+				"z":	-6.8318700790405273
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"width":	1,
+			"height":	1,
+			"animations":	[{
+					"sprite":	"../assets/sprites//explosion_a.png",
+					"width":	128,
+					"height":	128,
+					"numberFrames":	15,
+					"fps":	24
+				}],
+			"currentIndexAnimation":	0,
+			"type":	"BillboardAnimation"
+		}, {
+			"name":	"Sprite3DDirectional_65",
+			"scale":	1,
+			"stencilBufferEnabled":	false,
+			"transparent":	false,
+			"position":	{
+				"x":	-10.749837875366211,
+				"y":	2.4914340972900391,
+				"z":	-6.5781583786010742
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"width":	10,
+			"height":	10,
+			"animations":	[{
+					"folder":	"../assets/sprites/Sprites3D/soldier/fire",
+					"frames":	2,
+					"fps":	24
+				}],
+			"currentIndexAnimation":	0,
+			"type":	"BillboardAnimation8Directions"
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	23.524698257446289,
-			"y":	1.1371811628341675,
-			"z":	-8.3160171508789063
+			"x":	40.753837585449219,
+			"y":	1.6624525785446167,
+			"z":	-6.3563733100891113
 		},
 		"rotation":	{
-			"x":	-1.5,
-			"y":	79.150009155273438,
+			"x":	-1.75,
+			"y":	89.199905395507813,
 			"z":	0
 		}
 	}

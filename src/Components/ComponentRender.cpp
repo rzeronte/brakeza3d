@@ -79,13 +79,13 @@ void ComponentRender::postUpdate()
     std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
 
     for (auto o: sceneObjects) {
-        if (o->isEnabled() && !o->isTransparent()) {
+        if (o->isEnabled()) {
             o->postUpdate();
         }
     }
 
     for (auto o: sceneObjects) {
-        if (o->isEnabled() && o->isTransparent()){
+        if (o->isEnabled()){
             o->postUpdate();
         }
     }
@@ -150,13 +150,13 @@ void ComponentRender::onUpdateSceneObjects()
     std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
 
     for (auto o: sceneObjects) {
-        if (o->isEnabled() && !o->isTransparent()) {
+        if (o->isEnabled()) {
             o->onUpdate();
         }
     }
 
     for (auto o: sceneObjects) {
-        if (o->isEnabled() && o->isTransparent()){
+        if (o->isEnabled()){
             o->onUpdate();
         }
     }

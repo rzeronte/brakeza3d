@@ -17,11 +17,12 @@ public:
     int size();
 
     Image *getTextureByLabel(const std::string &label);
-    Image *getTextureByIndex(int i);
 
     virtual ~TexturePackage();
 
     std::vector<TexturePackageItem *> &getItems();
+
+    static ImTextureID getOGLTextureID(TexturePackage &package, std::string label);
 
 private:
     std::vector<TexturePackageItem *> items;

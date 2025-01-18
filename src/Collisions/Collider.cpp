@@ -9,7 +9,7 @@ Collider::Collider()
     collisionsEnabled(false),
     mass(1),
     simpleShapeSize(Vertex3D(1, 1, 1)),
-    collisionMode(CollisionMode::GHOST),
+    collisionMode(CollisionMode::NONE),
     ghostObject( new btPairCachingGhostObject()),
     body(nullptr),
     collisionShape(CollisionShape::SIMPLE_SHAPE)
@@ -57,7 +57,9 @@ void Collider::removeCollisionObject() const
     }
 
     if (collisionMode == CollisionMode::BODY) {
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(body);
+        if (body != nullptr) {
+            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(body);
+        }
     }
 }
 

@@ -124,7 +124,7 @@ struct GUIWidgetProjectSettings {
             for (int i = 0; i < (int) scripts.size(); i++) {
                 auto currentScript = scripts[i];
                 ImGui::PushID(i);
-                ImGui::Image((ImTextureID)ImGuiTextures.getTextureByLabel("scriptIcon")->getOGLTextureID(), ImVec2(24, 24));
+                ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "scriptIcon"), ImVec2(24, 24));
                 ImGui::SameLine(48);
                 std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
                 if (ImGui::Button(optionText.c_str())) {
@@ -136,16 +136,16 @@ struct GUIWidgetProjectSettings {
                 ImGui::SameLine();
 
                 if (currentScript->isPaused()) {
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "unlockIcon"), ImVec2(14, 14))) {
                         currentScript->setPaused(false);
                     }
                 } else {
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "lockIcon"), ImVec2(14, 14))) {
                         currentScript->setPaused(true);
                     }
                 }
                 ImGui::SameLine();
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures.getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "removeIcon"), ImVec2(14, 14))) {
                     componentRender->removeScript(currentScript);
                 }
 

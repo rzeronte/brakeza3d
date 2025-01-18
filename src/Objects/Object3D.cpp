@@ -3,6 +3,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Misc/Tools.h"
+#include "../../include/Misc/ToolsJSON.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include <glm/gtx/euler_angles.hpp>
@@ -15,8 +16,6 @@ Object3D::Object3D() :
     removed(false),
     decal(false),
     followCamera(false),
-    stencilBufferEnabled(false),
-    transparent(false),
     belongToScene(false),
     multiScene(false),
     rotX(0),
@@ -180,7 +179,7 @@ void Object3D::onUpdate()
 {
     if (isRemoved() || !isEnabled()) return;
 
-    for (auto a: attached) {
+    for (auto a: attachedObjects) {
         if (a->isEnabled()) a->onUpdate();
     }
 
@@ -221,7 +220,7 @@ void Object3D::postUpdate()
         s->postUpdate();
     }
 
-    for (auto a: attached) {
+    for (auto a: attachedObjects) {
         if (a->isEnabled())  a->postUpdate();
     }
 
@@ -254,16 +253,6 @@ void Object3D::setRotationFrameEnabled(bool value)
 void Object3D::setRotationFrame(Vertex3D r)
 {
     this->rotationFrame = r;
-}
-
-bool &Object3D::isStencilBufferEnabled()
-{
-    return stencilBufferEnabled;
-}
-
-void Object3D::setStencilBufferEnabled(bool value)
-{
-    Object3D::stencilBufferEnabled = value;
 }
 
 Object3DBehavior *Object3D::getBehavior() const
@@ -300,8 +289,12 @@ Object3D::~Object3D()
         delete s;
     }
 
-    for (auto a: attached) {
+    for (auto a: attachedObjects) {
         delete a;
+    }
+
+    if (isCollisionsEnabled()) {
+        removeCollisionObject();
     }
 }
 
@@ -418,8 +411,6 @@ void Object3D::setBelongToScene(bool belongToScene)
 void Object3D::drawImGuiProperties()
 {
     ImGui::Checkbox("Enabled", &enabled);
-    ImGui::SameLine();
-    ImGui::Checkbox("Transparent", &transparent);
     ImGui::SameLine();
 
     static char name[256];
@@ -554,7 +545,7 @@ void Object3D::drawImGuiProperties()
 
     if (featuresGUI.attached) {
         if (ImGui::TreeNode("Attached")) {
-            for (auto a: attached) {
+            for (auto a: attachedObjects) {
                 if (ImGui::TreeNode(a->getLabel().c_str())) {
                     a->drawImGuiProperties();
                 }
@@ -605,8 +596,6 @@ cJSON *Object3D::getJSON()
 
     cJSON_AddStringToObject(root, "name", getLabel().c_str());
     cJSON_AddNumberToObject(root, "scale", getScale());
-    cJSON_AddBoolToObject(root, "stencilBufferEnabled", isStencilBufferEnabled());
-    cJSON_AddBoolToObject(root, "transparent", isTransparent());
 
     cJSON *position = cJSON_CreateObject();
     cJSON_AddNumberToObject(position, "x", (float) getPosition().x);
@@ -630,6 +619,22 @@ cJSON *Object3D::getJSON()
         cJSON_AddItemToObject(root, "rotationFrame", rFrame);
     }
 
+    cJSON_AddBoolToObject(root, "isCollisionsEnabled", isCollisionsEnabled());
+    if (isCollisionsEnabled()) {
+        cJSON *collider = cJSON_CreateObject();
+        cJSON_AddNumberToObject(collider, "mode", getCollisionMode());
+        cJSON_AddNumberToObject(collider, "shape", getCollisionShape());
+
+        cJSON_AddNumberToObject(collider, "mass", mass);
+
+        cJSON *simpleShapeSizeJSON = cJSON_CreateObject();
+        cJSON_AddNumberToObject(simpleShapeSizeJSON, "x", simpleShapeSize.x);
+        cJSON_AddNumberToObject(simpleShapeSizeJSON, "y", simpleShapeSize.y);
+        cJSON_AddNumberToObject(simpleShapeSizeJSON, "z", simpleShapeSize.z);
+        cJSON_AddItemToObject(collider, "simpleShapeSize", simpleShapeSizeJSON);
+        cJSON_AddItemToObject(root, "collider", collider);
+    }
+
     cJSON *scriptsArray = cJSON_CreateArray();
     for (auto script : scripts) {
         cJSON_AddItemToArray(scriptsArray, script->getTypesJSON());
@@ -649,7 +654,7 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
 {
     o->setBelongToScene(true);
 
-    o->setPosition(SceneLoader::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(object, "position")));
+    o->setPosition(ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(object, "position")));
     o->setScale((float)cJSON_GetObjectItemCaseSensitive(object, "scale")->valuedouble);
 
     if (cJSON_GetObjectItemCaseSensitive(object, "rotation") != nullptr) {
@@ -660,11 +665,42 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
             (float) cJSON_GetObjectItemCaseSensitive(rotation, "z")->valuedouble
         );
     }
-    o->setStencilBufferEnabled(cJSON_GetObjectItemCaseSensitive(object, "stencilBufferEnabled")->valueint);
+
+    if (cJSON_GetObjectItemCaseSensitive(object, "isCollisionsEnabled") != nullptr) {
+        bool collisionsEnabled = cJSON_GetObjectItemCaseSensitive(object, "isCollisionsEnabled")->valueint;
+        cJSON *colliderJSON = cJSON_GetObjectItemCaseSensitive(object, "collider");
+
+        if (collisionsEnabled) {
+            o->setCollisionsEnabled(true);
+            int mode = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
+            int shape = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
+
+            auto mass = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mass")->valuedouble;
+            o->simpleShapeSize = ToolsJSON::parseVertex3DJSON(
+                cJSON_GetObjectItemCaseSensitive(colliderJSON, "simpleShapeSize")
+            );
+            o->setMass(mass);
+
+            switch(mode) {
+                default:
+                case CollisionMode::GHOST:
+                    if (shape == CollisionShape::SIMPLE_SHAPE) {
+                        o->setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
+                    }
+                    break;
+                case CollisionMode::BODY:
+                    if (shape == CollisionShape::SIMPLE_SHAPE) {
+                        o->setupRigidBodyCollider(CollisionShape::SIMPLE_SHAPE);
+                    }
+                    break;
+            }
+        }
+    }
+
     o->setRotationFrameEnabled(cJSON_GetObjectItemCaseSensitive(object, "rotationFrameEnabled")->valueint);
 
     if (cJSON_GetObjectItemCaseSensitive(object, "rotationFrame") != nullptr) {
-        o->setRotationFrame(SceneLoader::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(object, "rotationFrame")));
+        o->setRotationFrame(ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(object, "rotationFrame")));
     }
 
     if (cJSON_GetObjectItemCaseSensitive(object, "scripts") != nullptr) {
@@ -686,7 +722,7 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
                     auto c = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
                     auto alpha = (float) cJSON_GetObjectItemCaseSensitive(currentShader, "alpha")->valuedouble;
                     auto enabled = (bool) cJSON_GetObjectItemCaseSensitive(currentShader, "enabled")->valueint;
-                    auto shader = new FXColorTint(enabled, SceneLoader::parseColorJSON(c), alpha);
+                    auto shader = new FXColorTint(enabled, ToolsJSON::parseColorJSON(c), alpha);
                     o->addMesh3DShader(shader);
                     break;
                 }
@@ -730,7 +766,7 @@ void Object3D::addMesh3DShader(FXEffectOpenGL *shader)
 
 void Object3D::removeShader(int index)
 {
-    if (index >= 0 && index < shaders.size()) {
+    if (index >= 0 && index < (int) shaders.size()) {
         shaders.erase(shaders.begin() + index);
     }
 }
@@ -738,16 +774,6 @@ void Object3D::removeShader(int index)
 const Timer &Object3D::getTimer() const
 {
     return timer;
-}
-
-bool Object3D::isTransparent() const
-{
-    return transparent;
-}
-
-void Object3D::setTransparent(bool transparent)
-{
-    Object3D::transparent = transparent;
 }
 
 float Object3D::getDistanceToCamera() const
@@ -767,12 +793,12 @@ void Object3D::setMultiScene(bool multiScene)
 
 const std::vector<Object3D *> &Object3D::getAttached() const
 {
-    return attached;
+    return attachedObjects;
 }
 
 void Object3D::attachObject(Object3D* o)
 {
-    attached.push_back(o);
+    attachedObjects.push_back(o);
 }
 
 LUADataValue Object3D::getLocalScriptVar(const char *varName)

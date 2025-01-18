@@ -57,8 +57,6 @@ public:
 
     static void saveScene(const std::string& filename);
 
-    static Vertex3D parseVertex3DJSON(cJSON *vertex3DJSON);
-
     static void clearScene();
 
     static void createObjectInScene();
@@ -78,8 +76,6 @@ public:
     static void createImage2DAnimatedInScene(const std::string& filename);
 
     static void createImage2DInScene(const std::string& filename);
-
-    static Color parseColorJSON(cJSON *color);
 
     static void createBillboardAnimation8Directions();
 

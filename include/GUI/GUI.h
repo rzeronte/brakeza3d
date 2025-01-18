@@ -10,7 +10,6 @@ public:
 
     GUI() {}
 
-
     virtual void draw() {}
 };
 

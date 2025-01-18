@@ -421,7 +421,7 @@ struct GUIWidgetMenu
 
     ImTextureID icon(const char* iconTag)
     {
-        return (ImTextureID) ImGuiTextures.getTextureByLabel(iconTag)->getOGLTextureID();
+        return TexturePackage::getOGLTextureID(ImGuiTextures, iconTag);
     }
     
     void drawBillboardAnimationItemsToLoad(const std::string& folder) {

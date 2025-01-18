@@ -11,6 +11,7 @@ enum CollisionShape {
 };
 
 enum CollisionMode {
+    NONE = -1,
     GHOST = 0,
     BODY = 1
 };

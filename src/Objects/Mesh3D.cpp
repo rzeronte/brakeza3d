@@ -6,6 +6,7 @@
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Misc/ToolsJSON.h"
 
 Mesh3D::Mesh3D()
 :
@@ -497,14 +498,14 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
                 case Mesh3DShaderLoaderMapping::FXOutliner: {
                     auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
                     auto shader = new FXOutliner(
-                            true,
-                            o,
-                            Color(
-                                    cJSON_GetObjectItemCaseSensitive(edgeColor, "r")->valueint,
-                                    cJSON_GetObjectItemCaseSensitive(edgeColor, "g")->valueint,
-                                    cJSON_GetObjectItemCaseSensitive(edgeColor, "b")->valueint
-                            ),
-                            (float)cJSON_GetObjectItemCaseSensitive(currentShader, "size")->valuedouble
+                        true,
+                        o,
+                        Color(
+                            cJSON_GetObjectItemCaseSensitive(edgeColor, "r")->valueint,
+                            cJSON_GetObjectItemCaseSensitive(edgeColor, "g")->valueint,
+                            cJSON_GetObjectItemCaseSensitive(edgeColor, "b")->valueint
+                        ),
+                        (float)cJSON_GetObjectItemCaseSensitive(currentShader, "size")->valuedouble
                     );
                     o->addMesh3DShader(shader);
                     break;
@@ -512,11 +513,41 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
                 case Mesh3DShaderLoaderMapping::FXBlink: {
                     auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
                     auto blinkStep = (float) cJSON_GetObjectItemCaseSensitive(currentShader, "step")->valuedouble;
-                    auto shader = new FXBlink( true,o,blinkStep,SceneLoader::parseColorJSON(edgeColor));
+                    auto shader = new FXBlink( true,o,blinkStep, ToolsJSON::parseColorJSON(edgeColor));
                     o->addMesh3DShader(shader);
                     break;
                 }
+            }
+        }
+    }
 
+    if (cJSON_GetObjectItemCaseSensitive(object, "isCollisionsEnabled") != nullptr) {
+        bool collisionsEnabled = cJSON_GetObjectItemCaseSensitive(object, "isCollisionsEnabled")->valueint;
+        cJSON *colliderJSON = cJSON_GetObjectItemCaseSensitive(object, "collider");
+
+        if (collisionsEnabled) {
+            o->setCollisionsEnabled(true);
+            int mode = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
+            int shape = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
+
+            switch(mode) {
+                default:
+                case CollisionMode::GHOST:
+                    if (shape == CollisionShape::SIMPLE_SHAPE) {
+                        o->setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
+                    }
+                    if (shape == CollisionShape::TRIANGLE_MESH_SHAPE) {
+                        o->setupGhostCollider(CollisionShape::TRIANGLE_MESH_SHAPE);
+                    }
+                    break;
+                case CollisionMode::BODY:
+                    if (shape == CollisionShape::SIMPLE_SHAPE) {
+                        o->setupRigidBodyCollider(CollisionShape::SIMPLE_SHAPE);
+                    }
+                    if (shape == CollisionShape::TRIANGLE_MESH_SHAPE) {
+                        o->setupRigidBodyCollider(CollisionShape::TRIANGLE_MESH_SHAPE);
+                    }
+                    break;
             }
         }
     }
@@ -630,7 +661,8 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
     int item_current_idx = (int) collisionShape;
     const char* combo_preview_value = items[item_current_idx];
 
-    if (ImGui::BeginCombo("Collision shape", combo_preview_value, flags)) {
+    auto comboTitle = "Collision shape##" + getLabel();
+    if (ImGui::BeginCombo(comboTitle.c_str(), combo_preview_value, flags)) {
         for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
             const bool is_selected = (item_current_idx == n);
             if (ImGui::Selectable(items[n], is_selected)) {
@@ -642,7 +674,7 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
                                 setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
                             }
 
-                            if (collisionMode == CollisionMode::GHOST) {
+                            if (collisionMode == CollisionMode::BODY) {
                                 setupRigidBodyCollider(CollisionShape::SIMPLE_SHAPE);
                             }
 
