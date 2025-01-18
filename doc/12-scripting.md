@@ -49,7 +49,7 @@ Los objetos disponen de su propio ciclo de vida el cual debemos de entender para
 
 Una template básica de script LUA para Brakeza3D sería:
 
-```
+```lua
 function onStart()
     -- código a ejecutar al inicio del sprint, una única vez.
 end
@@ -81,7 +81,7 @@ Disponemos de un objeto ``ScriptLUA`` que encapsula la lógica de carga de un sc
 
 Los `Object3D` disponen de un método `attachScript` que nos permitirá vincularlos:
 
-```
+```lua
     print("Load LightPoint3D")
     lightp = LightPoint3D.create(Vertex3D.new(5, -10, 5))
     brakeza:addObject3D(lightp, 'myLightPoint')
@@ -95,7 +95,7 @@ Los `Object3D` disponen de un método `attachScript` que nos permitirá vincular
 De igual forma el ``ComponentRender`` dispone de ``addLUAScript`` que te permitirá vincular
 un script a la escena:
 
-```
+```lua
     script = ScriptLUA.create("../../scripts/global_script.lua")
     if script ~= nil then
         componentsManager:getComponentRender():addLUAScript(script)

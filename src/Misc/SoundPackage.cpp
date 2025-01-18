@@ -2,7 +2,8 @@
 #include <cassert>
 #include "../../include/Misc/SoundPackage.h"
 
-void SoundPackage::addItem(const std::string &srcSound, std::string label, SoundPackageItemType type) {
+void SoundPackage::addItem(const std::string &srcSound, std::string label, SoundPackageItemType type)
+{
     auto *item = new SoundPackageItem();
     item->type = type;
     item->label = std::move(label);
