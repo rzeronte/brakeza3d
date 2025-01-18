@@ -1,29 +1,20 @@
 >[Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
 
-- [Objetos colisionables principales](#objetos-colisionables-principales)
+- [Objetos colisionables](#objetos-colisionables-principales)
 - [Modos de colisión](#modos-de-colisión)
-
-
-- [Mesh3DGhost](#mesh3dghost)
-- [Mesh3DBody](#mesh3dbody)
-- [Mesh3DAnimationGhost](#mesh3danimationghost)
-- [BillboardAnimationBody](#billboardanimationbody)
-- [BillboardAnimation8DirectionsBody](#billboardanimation8directionsbody)
-- [Projectile3DBody](#projectile3dbody)
+- [Forma del colisionador](#forma-del-colisionador)
+- [Desactivar colisiones](#desactivar-colisiones)
 
 ---
 
-# Objetos colisionables principales
+# Objetos colisionables
 
 Los objetos colisionables permitirán al programador implementar lógica en función de las colisiones 
 producidas.
 
-Existen dos tipos de objetos **base** colisionables:
+En Brakeza3D todos los `Object3D` puede trabajar con físicas y colisiones.
 
-- `Ghost`: Objeto colisionable pero no reactivo a físicas.
-- `Body`: Objeto colisionable, reactivo a físicas.
-
-Los objetos colisionables, lanzarán una llamada al método `onCollision` por cada colisión producida.
+Cualquier objeto colisionables lanzará una llamada al método `onCollision` de tus scripts LUA por cada colisión producida.
 
 ```
 function onCollision(with)
@@ -31,50 +22,51 @@ function onCollision(with)
 end
 ```
 
----
 ## Modos de colisión
 
-Ámbos tipos, disponen de dos modalidades de colisiones:
- 
- - `SIMPLE_SHAPE`: **Es el modo por defecto**. La forma de colisión será un cubo de un tamaño dado por un `Vertex3D`. Su performance es muy buena.
- - `TRIANGLE3D_MESH_SHAPE`: Se crea una malla de colisión exacta a la geometría del modelo. Es más precisa, pero conlleva un mayor costo
-computacional.
+Existen dos modos de funcionamiento para el sistema de colisiones:
+
+- `GHOST`: Objeto colisionable no reactivo a físicas.
+- `RIGIDBODY`: Objeto colisionable reactivo a físicas.
+
+Puedes configurar el modo de las colisiones de un objeto desde la GUI o desde tus scripts LUA.
+
+Para hacerlo mediante tus scripts puedes utilizar el método ``setupGhostCollider`` o
+``setupRigidBodyCollider``.
+
+```
+    eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+    eye:setCollisionsEnabled(true)
+    eye:setupGhostCollider(CollisionShape.SIMPLE_SHAPE); -- Ghost
+    brakeza:addObject3D(eye, 'myOneEye')
+
+    eye2 = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+    eye2:setCollisionsEnabled(true)
+    eye2:setupRigidBodyCollider(CollisionShape.SIMPLE_SHAPE); -- RigidBody
+    brakeza:addObject3D(eye2, 'myTwoEye')
+```
+
+## Forma del colisionador
+
+Cualquier ``Object3D`` puede trabajar con la forma de colisionador denominada `CollisionShape.SIMPLE_SHAPE`.
+**Es el modo por defecto**. La forma de colisión será un paralelogramo de un tamaño configurable.
+Su performance es muy buena.
+
+No obstante, todos aquellos objetos que dependen de `Mesh3D` podrán crearse con una forma de colisionador 
+denominada `CollisionShape.TRIANGLE3D_MESH_SHAPE` creando una una malla de colisión exacta a la geometría del modelo. Es más precisa, pero conlleva un mayor costo
+  computacional.
 
 Puedes manipular los modos de colisión tanto desde la GUI como desde tus scripts LUA.
 
+```
+    eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+    eye:setCollisionsEnabled(true)
+    eye:setupGhostCollider(CollisionShape.TRIANGLE3D_MESH_SHAPE); -- Ghost
+    brakeza:addObject3D(image3d, 'myOneEye')
+```
 ---
 
-## Tipos de objetos colisionables
+## Desactivar colisiones
 
-### Mesh3DGhost
-
-Modelo 3D con colisiones sin reacción a físicas.
-
-Si dos objetos colisionan, se **lanzará el evento `onCollision`**, pero **ambos objetos se traspasarán libremente**.
-
-```
-    -- Mesh3DGhost.create(position, modelFile)
-    ghost = Mesh3DGhost.create(Vertex3D.new(0, -10, 40), "../assets/models/planet_cube_02.fbx")
-```
-
-### Mesh3DBody
-
-Modelo 3D con colisiones y reacción a físicas. Incorpora un atributo importante, `mass`, es decir, el peso del objeto.
-
-```
-    -- Mesh3DBody.create(position, mass, modelFile)
-    meshbody = Mesh3DBody.create(Vertex3D.new(10, 0, 10), 1, "../assets/models/planet_cube_02.fbx")
-```
-
-### Mesh3DAnimationGhost
-Modelo 3D animado sin reacción a físicas.
-
-### BillboardAnimationBody
-Billboard animado con reacción a físicas.
-
-### BillboardAnimation8DirectionsBody
-Billboard 8 direcciones con reacción a físicas.
-
-### Projectile3DBody
-Modelo 3D reactivo a físicas. Diseñado específicamente para projectiles.
-
+Puedes desactivar las colisiones para un objeto con el método ``setCollisionsEnabled``. Esto eliminará cualquier forma
+de colisión configurada previamente.

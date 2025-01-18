@@ -75,6 +75,9 @@ void LUAIntegration(sol::state &lua)
             "setScale", &Object3D::setScale,
             "getModelMatrix", &Object3D::getModelMatrix,
             "AxisForward", &Object3D::AxisForward,
+            "setCollisionsEnabled", &Object3D::setCollisionsEnabled,
+            "setupGhostCollider", &Object3D::setupGhostCollider,
+            "setupRigidBodyCollider", &Object3D::setupRigidBodyCollider,
             "getLocalScriptVar", &Object3D::getLocalScriptVar,
             "attachScript",  &Object3D::attachScript,
             "reloadScriptsEnvironment", &Object3D::reloadScriptsEnvironment
@@ -323,6 +326,11 @@ void LUAIntegration(sol::state &lua)
                                           ) {
                                           return ParticleEmitter::create(position, ttl, cf, ct, context, imageFile);
                                       })
+    );
+
+    lua.new_enum("CollisionShape",
+                 "SIMPLE_SHAPE", SIMPLE_SHAPE,
+                 "TRIANGLE_MESH_SHAPE", TRIANGLE_MESH_SHAPE
     );
 }
 
