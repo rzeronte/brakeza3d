@@ -64,6 +64,7 @@ Puedes manipular los modos de colisión tanto desde la GUI como desde tus script
     eye:setupGhostCollider(CollisionShape.TRIANGLE3D_MESH_SHAPE); -- Ghost
     brakeza:addObject3D(image3d, 'myOneEye')
 ```
+
 ---
 
 ## Desactivar colisiones

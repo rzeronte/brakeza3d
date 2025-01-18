@@ -4,6 +4,7 @@
 - [Ciclo de vida de un objeto](#ciclo-de-vida-de-un-objeto)
 - [Scripts LUA](#scripts-lua)
 - [Vinculación de scripts](#vinculación-de-scripts)
+- [Variables](#variables)
 - [Variables globales](#variables-globales)
 - [Variables locales](#variables-locales)
 - [Gestión de escenas](#gestión-de-escenas)
@@ -97,33 +98,99 @@ un script a la escena:
         componentsManager:getComponentRender():addLUAScript(script)
     end
 ```
+### Variables
+
+Cualquier script LUA puede definir variables que te ayudarán a implementar tu lógica. Puedes utilizar la GUI
+para gestionar con facilidad las variables de un script.
+
+Físicamente se almacenan en un fichero ``JSON`` del mismo nombre que el script.
+
+```json
+{
+	"name":	"global_script_example.lua",
+	"types": [
+        {
+          "name": "var1",
+          "type": "string",
+          "value": "hello my friend!"
+        },
+        {
+          "name": "var2",
+          "type": "int",
+          "value": 10
+        },
+        {
+          "name": "var3",
+          "type": "float",
+          "value": 0.3
+        },
+        {
+          "name": "var4",
+          "type": "Vertex3D",
+          "value": {
+            "x": 0,
+            "y": 2,
+            "z": 0
+          }
+        }
+    ]
+}
+```
+Puedes utilizar los tipos `int`, `float`, `string` y `Vertex3D`.
 
 ### Variables globales
+
+Las variables definidas en scripts vinculadas a ``escenas`` serán globales.
+
+Podrás acceder directamente a las variables globales desde cualquier otro
+script.
+
+```
+function onUpdate()
+    var1 = var1 .. "!" -- ejemplo de variable global
+    print("Value of var1: " .. var1)
+end
+
+```
 
 ---
 
 ### Variables locales
 
+Las variables definidas en scripts vinculadas a ``Object3D`` serán locales, 
+es decir, se instancian individualmente por cada objeto.
+
+Puedes acceder a las variables locales de otro objeto mediante tus scripts LUA
+de la siguiente forma:
+
+```
+    o = brakeza:getSceneObjectByLabel("MyObject")
+    position = o:getLocalScriptVar("offset") -- obtenemos un vertex3D
+    print("Read variable 'offset' from object: ".. o:getLabel())
+    print("Value for 'offset': " .. position.x .. ", " .. position.y .. ", " .. position.z)
+    
+    print("Read variable 'count' from object: ".. o:getLabel())
+    print("Value for 'count': " .. o:getLocalScriptVar("count")) -- obtenemos int
+```
+
 ---
 
 ### Gestión de escenas
 
+Puedes cargar y salvar escenas tanto desde GUI como desde tus scripts LUA
+
+```
+function onStart()
+    ...
+    componentsManager:getComponentRender():getSceneLoader():loadScene("../scenes/scene_example.json")
+    ...
+    componentsManager:getComponentRender():getSceneLoader():saveScene("../scenes/scene_example.json")
+    ...
+end
+```
+
 ---
 
+### Ejemplos en codigo
 
-# Ejemplos en codigo
-
-### Ejemplos de scripts globales
- 
-- Cargar un modelo 3D https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/load_object_example.md
-- Cargar una escena https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/load_scene_example.md
-- Control de teclado y ratón https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/keyboard_control_example.md
-- Buscar un objeto https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/find_object_example.md
-- Variables globales https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/global_variable_example.md
-
-### Ejemplos de scripts de objeto
- 
-- La variable `this` https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/this_object_example.md
-- Detección de colisiones https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/collision_detection_example.md
-- Variables de objeto https://github.com/rzeronte/brakeza3d/blob/master/doc/examples/object_variable_example.md
-
+https://github.com/rzeronte/brakeza3d/blob/master/doc/13-examples-lua-code.md
