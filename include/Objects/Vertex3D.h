@@ -61,6 +61,8 @@ public:
     [[nodiscard]] btVector3 toBullet() const;
 
     [[nodiscard]] glm::vec3 toGLM() const;
+
+    static Vertex3D fromBullet(btVector3 &v);
 };
 
 #endif //SDL2_3D_ENGINE_VERTEX_H

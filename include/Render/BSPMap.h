@@ -4,7 +4,6 @@
 #include "../Components/Camera3D.h"
 #include "../Objects/Triangle3D.h"
 #include "btBulletDynamicsCommon.h"
-//#include "../Physics/Mesh3DGhost.h"
 
 #define BSP_VERSION        29
 #define MAXLIGHTMAPS    4

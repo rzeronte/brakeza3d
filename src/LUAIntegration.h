@@ -157,20 +157,6 @@ void LUAIntegration(sol::state &lua)
                                 })
     );
 
-    /*lua.new_usertype<Mesh3DGhost>("Mesh3DGhost",
-                              sol::base_classes, sol::bases<Mesh3D, Object3D>(),
-                             "create", sol::factories([](Vertex3D position, const std::string& imageFile) {
-                                 return Mesh3DGhost::create(position, imageFile);
-                             })
-    );*/
-
-    /*lua.new_usertype<Mesh3DBody>("Mesh3DBody",
-                                  sol::base_classes, sol::bases<Mesh3D, Object3D>(),
-                                  "create", sol::factories([](Vertex3D position, float mass, const std::string& imageFile) {
-                                        return Mesh3DBody::create(position, mass, imageFile);
-                                    })
-    );*/
-
     lua.new_usertype<Mesh3DAnimation>("Mesh3DAnimation",
           sol::base_classes, sol::bases<Mesh3D, Object3D>(),
              "create", sol::factories([](Vertex3D position, const std::string& imageFile) {

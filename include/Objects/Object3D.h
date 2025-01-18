@@ -24,6 +24,16 @@
 #include "../OpenGL/FXEffectOpenGL.h"
 #include "../src/Collisions/Collider.h"
 
+struct ObjectGUIFeatures {
+    bool position = true;
+    bool rotation = true;
+    bool scale = true;
+    bool alpha = true;
+    bool shaders = true;
+    bool attached = true;
+    bool collider = true;
+};
+
 class Object3D: public Collider {
 
 protected:
@@ -32,6 +42,8 @@ protected:
 
     Object3DBehavior *motion;
     Object3D *parent;
+
+    ObjectGUIFeatures featuresGUI;
 
     bool enabled;
     bool removed;

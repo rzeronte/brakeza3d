@@ -38,27 +38,33 @@ Object3D::Object3D() :
     timer.start();
 }
 
-Vertex3D &Object3D::getPosition() {
+Vertex3D &Object3D::getPosition()
+{
     return position;
 }
 
-M3 Object3D::getRotation() {
+M3 Object3D::getRotation()
+{
     return rotation;
 }
 
-void Object3D::setPosition(Vertex3D p) {
+void Object3D::setPosition(Vertex3D p)
+{
     position = p;
 }
 
-void Object3D::setRotation(M3 r) {
+void Object3D::setRotation(M3 r)
+{
     this->rotation = r;
 }
 
-std::string Object3D::getLabel() const {
+std::string Object3D::getLabel() const
+{
     return label;
 }
 
-void Object3D::setLabel(const std::string& label) {
+void Object3D::setLabel(const std::string& label)
+{
     Object3D::label = label;
 }
 
@@ -66,96 +72,113 @@ bool &Object3D::isEnabled() {
     return enabled;
 }
 
-void Object3D::setEnabled(bool enabled) {
+void Object3D::setEnabled(bool enabled)
+{
     Object3D::enabled = enabled;
 }
 
-Vertex3D Object3D::AxisUp() {
+Vertex3D Object3D::AxisUp()
+{
     Vertex3D v = getRotation() * EngineSetup::get()->up;
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisDown() {
+Vertex3D Object3D::AxisDown()
+{
     Vertex3D v = getRotation() * EngineSetup::get()->down;
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisForward() {
+Vertex3D Object3D::AxisForward()
+{
     Vertex3D v = getRotation() * EngineSetup::get()->forward;
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisBackwards() {
+Vertex3D Object3D::AxisBackwards()
+{
     Vertex3D v = getRotation() * EngineSetup::get()->backward;
 
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisRight() {
+Vertex3D Object3D::AxisRight()
+{
     Vertex3D v = getRotation() * EngineSetup::get()->right;
 
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisLeft() {
+Vertex3D Object3D::AxisLeft()
+{
     Vertex3D v = getRotation() * EngineSetup::get()->left;
 
     return v.getNormalize();
 }
 
-float Object3D::getScale() const {
+float Object3D::getScale() const
+{
     return scale;
 }
 
-void Object3D::setScale(float value) {
+void Object3D::setScale(float value)
+{
     Object3D::scale = value;
 }
 
-bool Object3D::isRemoved() const {
+bool Object3D::isRemoved() const
+{
     return removed;
 }
 
-void Object3D::setRemoved(bool value) {
+void Object3D::setRemoved(bool value)
+{
     Object3D::removed = value;
 }
 
-bool Object3D::isDecal() const {
+bool Object3D::isDecal() const
+{
     return decal;
 }
 
-void Object3D::setDecal(bool value) {
+void Object3D::setDecal(bool value)
+{
     Object3D::decal = value;
 }
 
-void Object3D::setDrawOffset(Vertex3D offset) {
+void Object3D::setDrawOffset(Vertex3D offset)
+{
     this->drawOffset = offset;
 }
 
-Vertex3D &Object3D::getDrawOffset() {
+Vertex3D &Object3D::getDrawOffset()
+{
     return this->drawOffset;
 }
 
-Object3D *Object3D::getParent() const {
+Object3D *Object3D::getParent() const
+{
     return parent;
 }
 
-void Object3D::setParent(Object3D *object) {
+void Object3D::setParent(Object3D *object)
+{
     Object3D::parent = object;
 }
 
-bool &Object3D::isFollowCamera() {
+bool &Object3D::isFollowCamera()
+{
     return this->followCamera;
 }
 
-void Object3D::setFollowCamera(bool value) {
+void Object3D::setFollowCamera(bool value)
+{
     Object3D::followCamera = value;
 }
 
 void Object3D::onUpdate()
 {
-    if (isRemoved()) return;
-
-    if (!isEnabled()) return;
+    if (isRemoved() || !isEnabled()) return;
 
     for (auto a: attached) {
         if (a->isEnabled()) a->onUpdate();
@@ -207,7 +230,8 @@ void Object3D::postUpdate()
     }
 }
 
-void Object3D::setRotation(float x, float y, float z) {
+void Object3D::setRotation(float x, float y, float z)
+{
     this->rotX = x;
     this->rotY = y;
     this->rotZ = z;
@@ -222,7 +246,8 @@ bool Object3D::isRotationFrameEnabled() const {
     return rotationFrameEnabled;
 }
 
-void Object3D::setRotationFrameEnabled(bool value) {
+void Object3D::setRotationFrameEnabled(bool value)
+{
     this->rotationFrameEnabled = value;
 }
 
@@ -231,19 +256,23 @@ void Object3D::setRotationFrame(Vertex3D r)
     this->rotationFrame = r;
 }
 
-bool &Object3D::isStencilBufferEnabled() {
+bool &Object3D::isStencilBufferEnabled()
+{
     return stencilBufferEnabled;
 }
 
-void Object3D::setStencilBufferEnabled(bool value) {
+void Object3D::setStencilBufferEnabled(bool value)
+{
     Object3D::stencilBufferEnabled = value;
 }
 
-Object3DBehavior *Object3D::getBehavior() const {
+Object3DBehavior *Object3D::getBehavior() const
+{
     return motion;
 }
 
-void Object3D::setBehavior(Object3DBehavior *motion) {
+void Object3D::setBehavior(Object3DBehavior *motion)
+{
     Object3D::motion = motion;
 }
 
@@ -251,7 +280,8 @@ float &Object3D::getAlpha() {
     return alpha;
 }
 
-void Object3D::setAlpha(float alpha) {
+void Object3D::setAlpha(float alpha)
+{
     Object3D::alpha = alpha;
 }
 
@@ -298,7 +328,8 @@ bool Object3D::isEnableLights() const {
     return enableLights;
 }
 
-void Object3D::setEnableLights(bool enableLights) {
+void Object3D::setEnableLights(bool enableLights)
+{
     Object3D::enableLights = enableLights;
 }
 
@@ -352,15 +383,18 @@ void Object3D::removeScript(ScriptLUA *script)
     }
 }
 
-const char *Object3D::getTypeObject() {
+const char *Object3D::getTypeObject()
+{
     return "Object3D";
 }
 
-const char *Object3D::getTypeIcon() {
+const char *Object3D::getTypeIcon()
+{
     return "objectIcon";
 }
 
-const std::vector<ScriptLUA *> &Object3D::getScripts() const {
+const std::vector<ScriptLUA *> &Object3D::getScripts() const
+{
     return scripts;
 }
 
@@ -371,11 +405,13 @@ void Object3D::runStartScripts()
     }
 }
 
-bool Object3D::isBelongToScene() const {
+bool Object3D::isBelongToScene() const
+{
     return belongToScene;
 }
 
-void Object3D::setBelongToScene(bool belongToScene) {
+void Object3D::setBelongToScene(bool belongToScene)
+{
     Object3D::belongToScene = belongToScene;
 }
 
@@ -394,161 +430,173 @@ void Object3D::drawImGuiProperties()
     }
     ImGui::Separator();
 
-    if (ImGui::TreeNode("Position")) {
-        const float range_min = -500000;
-        const float range_max = 500000;
-        const float range_sensibility = 0.1;
+    // position
+    if (featuresGUI.position) {
+        if (ImGui::TreeNode("Position")) {
+            const float range_min = -500000;
+            const float range_max = 500000;
+            const float range_sensibility = 0.1;
 
-        ImGui::DragScalar("X", ImGuiDataType_Float, &getPosition().x, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-        ImGui::DragScalar("Y", ImGuiDataType_Float, &getPosition().y, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-        ImGui::DragScalar("Z", ImGuiDataType_Float, &getPosition().z, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("X", ImGuiDataType_Float, &getPosition().x, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Y", ImGuiDataType_Float, &getPosition().y, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Z", ImGuiDataType_Float, &getPosition().z, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
 
-        ImGui::TreePop();
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
     }
-    ImGui::Separator();
 
     // rotation
-    if (ImGui::TreeNode("Rotation")) {
-        const float range_angle_min = -360;
-        const float range_angle_max = 360;
-        const float range_angle_sensibility = 0.1;
+    if (featuresGUI.rotation) {
+        if (ImGui::TreeNode("Rotation")) {
+            const float range_angle_min = -360;
+            const float range_angle_max = 360;
+            const float range_angle_sensibility = 0.1;
 
-        bool needUpdateRotation = false;
-        ImGui::DragScalar("X", ImGuiDataType_Float, &getRotX(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-        if (ImGui::IsItemEdited()) {
-            needUpdateRotation = true;
-        }
-        ImGui::DragScalar("Y", ImGuiDataType_Float, &getRotY(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-        if (ImGui::IsItemEdited()) {
-            needUpdateRotation = true;
-        }
-        ImGui::DragScalar("Z", ImGuiDataType_Float, &getRotZ(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-        if (ImGui::IsItemEdited()) {
-            needUpdateRotation = true;
-        }
-        if (needUpdateRotation) {
-            setRotation(M3::getMatrixRotationForEulerAngles(getRotX(), getRotY(), getRotZ()));
-        }
-
-        ImGui::Checkbox("Rotation Frame", &rotationFrameEnabled);
-
-        if (rotationFrameEnabled) {
-            if (ImGui::TreeNode("Rotation Each Frame")) {
-                ImGui::DragScalar("X", ImGuiDataType_Float, &rotationFrame.x, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-                ImGui::DragScalar("Y", ImGuiDataType_Float, &rotationFrame.y, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-                ImGui::DragScalar("Z", ImGuiDataType_Float, &rotationFrame.z, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-                ImGui::TreePop();
+            bool needUpdateRotation = false;
+            ImGui::DragScalar("X", ImGuiDataType_Float, &getRotX(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+            if (ImGui::IsItemEdited()) {
+                needUpdateRotation = true;
             }
-        }
-
-        ImGui::TreePop();
-    }
-    ImGui::Separator();
-
-    if (ImGui::TreeNode("Scale")) {
-        // scale
-        const float range_scale_min = -360;
-        const float range_scale_max = 360;
-        const float range_scale_sensibility = 0.01;
-        ImGui::DragScalar("Scale", ImGuiDataType_Float, &scale, range_scale_sensibility, &range_scale_min, &range_scale_max, "%f", 1.0f);
-
-        ImGui::TreePop();
-    }
-    ImGui::Separator();
-
-    if (ImGui::TreeNode("Alpha")) {
-        const float range_alpha_min = 0;
-        const float range_alpha_max = 1;
-        const float range_alpha_sensibility = 0.01;
-
-        ImGui::DragScalar("Alpha", ImGuiDataType_Float, &getAlpha(), range_alpha_sensibility, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
-
-        ImGui::TreePop();
-    }
-    ImGui::Separator();
-
-    if (ImGui::TreeNode("Shaders")) {
-        if ((int) shaders.size() <= 0) {
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No shaders attached");
-        }
-        auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
-
-        for (int i = 0; i < (int) shaders.size(); i++) {
-            ImGui::PushID(i);
-
-            auto s = shaders[i];
-            ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(24, 24));
-            ImGui::SameLine(100);
-
-            if (!s->isEnabled()) {
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                    s->setEnabled(true);
-                }
-            } else {
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                    s->setEnabled(false);
-                }
+            ImGui::DragScalar("Y", ImGuiDataType_Float, &getRotY(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+            if (ImGui::IsItemEdited()) {
+                needUpdateRotation = true;
             }
-            ImGui::SameLine();
-            if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
-                removeShader(i);
+            ImGui::DragScalar("Z", ImGuiDataType_Float, &getRotZ(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+            if (ImGui::IsItemEdited()) {
+                needUpdateRotation = true;
             }
-            ImGui::SameLine();
-            if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {
-                ImGui::PushID(i);
-                s->drawImGuiProperties();
-                ImGui::PopID();
+            if (needUpdateRotation) {
+                setRotation(M3::getMatrixRotationForEulerAngles(getRotX(), getRotY(), getRotZ()));
             }
-            ImGui::PopID();
-        }
-        ImGui::TreePop();
-    }
-    ImGui::Separator();
 
-    if (ImGui::TreeNode("Attached")) {
-        for (auto a: attached) {
-            if (ImGui::TreeNode(a->getLabel().c_str())) {
-                a->drawImGuiProperties();
-            }
-        }
+            ImGui::Checkbox("Rotation Frame", &rotationFrameEnabled);
 
-        ImGui::TreePop();
-    }
-
-    ImGui::Separator();
-
-    if (ImGui::TreeNode("Collider")) {
-        if (ImGui::Checkbox("Enable collider", &collisionsEnabled)) {
-            if (!collisionsEnabled) {
-                removeCollisionObject();
-            } else {
-                setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
-            }
-        }
-
-        if (collisionsEnabled) {
-            drawImGuiCollisionModeSelector();
-            drawImGuiCollisionShapeSelector();
-
-            if (getCollisionMode() == CollisionMode::BODY) {
-                if (ImGui::TreeNode("Mass")) {
-                    const float range_min = 0;
-                    const float range_max = 1000;
-                    const float range_sensibility = 0.1;
-
-                    ImGui::DragScalar("Mass", ImGuiDataType_Float, &mass, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-
-                    if (ImGui::Button(std::string("Update collision shape").c_str())) {
-                        setupRigidBodyCollider(getCollisionShape());
-                    }
+            if (rotationFrameEnabled) {
+                if (ImGui::TreeNode("Rotation Each Frame")) {
+                    ImGui::DragScalar("X", ImGuiDataType_Float, &rotationFrame.x, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                    ImGui::DragScalar("Y", ImGuiDataType_Float, &rotationFrame.y, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                    ImGui::DragScalar("Z", ImGuiDataType_Float, &rotationFrame.z, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
                     ImGui::TreePop();
                 }
             }
+            ImGui::TreePop();
         }
+        ImGui::Separator();
 
-        ImGui::TreePop();
     }
-    ImGui::Separator();
+
+    if (featuresGUI.scale) {
+        if (ImGui::TreeNode("Scale")) {
+            // scale
+            const float range_scale_min = -360;
+            const float range_scale_max = 360;
+            const float range_scale_sensibility = 0.01;
+            ImGui::DragScalar("Scale", ImGuiDataType_Float, &scale, range_scale_sensibility, &range_scale_min, &range_scale_max, "%f", 1.0f);
+
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
+    }
+
+    if (featuresGUI.alpha) {
+        if (ImGui::TreeNode("Alpha")) {
+            const float range_alpha_min = 0;
+            const float range_alpha_max = 1;
+            const float range_alpha_sensibility = 0.01;
+
+            ImGui::DragScalar("Alpha", ImGuiDataType_Float, &getAlpha(), range_alpha_sensibility, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
+
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
+    }
+
+    if (featuresGUI.shaders) {
+        if (ImGui::TreeNode("Shaders")) {
+            if ((int) shaders.size() <= 0) {
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No shaders attached");
+            }
+            auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
+
+            for (int i = 0; i < (int) shaders.size(); i++) {
+                ImGui::PushID(i);
+
+                auto s = shaders[i];
+                ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(24, 24));
+                ImGui::SameLine(100);
+
+                if (!s->isEnabled()) {
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                        s->setEnabled(true);
+                    }
+                } else {
+                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                        s->setEnabled(false);
+                    }
+                }
+                ImGui::SameLine();
+                if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    removeShader(i);
+                }
+                ImGui::SameLine();
+                if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {
+                    ImGui::PushID(i);
+                    s->drawImGuiProperties();
+                    ImGui::PopID();
+                }
+                ImGui::PopID();
+            }
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
+    }
+
+    if (featuresGUI.attached) {
+        if (ImGui::TreeNode("Attached")) {
+            for (auto a: attached) {
+                if (ImGui::TreeNode(a->getLabel().c_str())) {
+                    a->drawImGuiProperties();
+                }
+            }
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
+    }
+
+    if (featuresGUI.attached) {
+        if (ImGui::TreeNode("Collider")) {
+            if (ImGui::Checkbox("Enable collider", &collisionsEnabled)) {
+                if (!collisionsEnabled) {
+                    removeCollisionObject();
+                } else {
+                    setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
+                }
+            }
+
+            if (collisionsEnabled) {
+                drawImGuiCollisionModeSelector();
+                drawImGuiCollisionShapeSelector();
+
+                if (getCollisionMode() == CollisionMode::BODY) {
+                    if (ImGui::TreeNode("Mass")) {
+                        const float range_min = 0;
+                        const float range_max = 1000;
+                        const float range_sensibility = 0.1;
+
+                        ImGui::DragScalar("Mass", ImGuiDataType_Float, &mass, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+
+                        if (ImGui::Button(std::string("Update collision shape").c_str())) {
+                            setupRigidBodyCollider(getCollisionShape());
+                        }
+                        ImGui::TreePop();
+                    }
+                }
+            }
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
+    }
 }
 
 cJSON *Object3D::getJSON()
@@ -675,41 +723,50 @@ glm::mat4 Object3D::getModelMatrix()
     return modelMatrix;
 }
 
-void Object3D::addMesh3DShader(FXEffectOpenGL *shader) {
+void Object3D::addMesh3DShader(FXEffectOpenGL *shader)
+{
     shaders.push_back(shader);
 }
 
-void Object3D::removeShader(int index) {
+void Object3D::removeShader(int index)
+{
     if (index >= 0 && index < shaders.size()) {
         shaders.erase(shaders.begin() + index);
     }
 }
 
-const Timer &Object3D::getTimer() const {
+const Timer &Object3D::getTimer() const
+{
     return timer;
 }
 
-bool Object3D::isTransparent() const {
+bool Object3D::isTransparent() const
+{
     return transparent;
 }
 
-void Object3D::setTransparent(bool transparent) {
+void Object3D::setTransparent(bool transparent)
+{
     Object3D::transparent = transparent;
 }
 
-float Object3D::getDistanceToCamera() const {
+float Object3D::getDistanceToCamera() const
+{
     return distanceToCamera;
 }
 
-bool Object3D::isMultiScene() const {
+bool Object3D::isMultiScene() const
+{
     return multiScene;
 }
 
-void Object3D::setMultiScene(bool multiScene) {
+void Object3D::setMultiScene(bool multiScene)
+{
     Object3D::multiScene = multiScene;
 }
 
-const std::vector<Object3D *> &Object3D::getAttached() const {
+const std::vector<Object3D *> &Object3D::getAttached() const
+{
     return attached;
 }
 
@@ -728,7 +785,7 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     setMass(mass);
     btTransform transformation;
     transformation.setIdentity();
-    transformation.setOrigin(btVector3(getPosition().x, getPosition().y, getPosition().z));
+    transformation.setOrigin(getPosition().toBullet());
 
     btMatrix3x3 brakezaRotation = Tools::M3ToBulletM3(rotation);
     btQuaternion qRotation;
@@ -736,7 +793,7 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
 
     transformation.setRotation(qRotation);
 
-    btCollisionShape *collisionShape = new btBoxShape(btVector3(simpleShapeSize.x, simpleShapeSize.y, simpleShapeSize.z));
+    btCollisionShape *collisionShape = new btBoxShape(simpleShapeSize.toBullet());
     btVector3 inertia(0, 0, 0);
     collisionShape->calculateLocalInertia(mass, inertia);
 
@@ -769,14 +826,15 @@ void Object3D::integrate()
 
 void Object3D::updateFromBullet()
 {
-    if (this->body == nullptr || this->mass == 0) {
+    if (this->body == nullptr || this->mass <= 0) {
         return;
     }
 
     btTransform t;
     body->getMotionState()->getWorldTransform(t);
-    const btVector3 pos = t.getOrigin();
-    setPosition(Vertex3D(pos.getX(), pos.getY(), pos.getZ()));
+    btVector3 pos = t.getOrigin();
+
+    setPosition(Vertex3D::fromBullet(pos));
 
     auto rotation = t.getRotation();
     btMatrix3x3 matrixRotation;

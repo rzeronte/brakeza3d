@@ -15,6 +15,10 @@ Image2DAnimation::Image2DAnimation(int x, int y, bool removeWhenEnds, TextureAni
     ttl(nullptr)
 {
     setTransparent(true);
+    featuresGUI.position = false;
+    featuresGUI.rotation = false;
+    featuresGUI.scale = false;
+    featuresGUI.collider = false;
 }
 
 Image2DAnimation::Image2DAnimation(int x, int y, float ttl, TextureAnimated *animation)
