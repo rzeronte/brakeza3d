@@ -46,6 +46,7 @@ este motivo por el que se recomienda pre-cargar los sonidos que posteriormente v
 El ``ComponenteSonido`` nos ofrece la posibilidad de cargar un sonido a memoria, el cual podrá ser reproducido tantas veces 
 como sea necesario.
 
+---
 ### Reproducir música
 
 Precarga de un fichero destinado a reproducirse como `música`. La música se reproduce en búcle de forma
@@ -55,6 +56,7 @@ automática.
     systemSound = componentsManager:getComponentSound()
     systemSound:addMusic("../assets/sounds/music_demo.mp3", "music_demo")
 ```
+---
 
 Reproducir una música precargada:
 
@@ -62,7 +64,7 @@ Reproducir una música precargada:
     systemSound = componentsManager:getComponentSound()
     systemSound:playMusic("music_demo")
 ```
-
+---
 ### Reproducir sonidos
 
 Precarga de un fichero destinado a reproducirse como `sonido`:
@@ -72,12 +74,16 @@ Precarga de un fichero destinado a reproducirse como `sonido`:
     systemSound:addSound("../assets/sounds/music_demo.mp3", "sound_demo")
 ```
 
+---
+
 Reproducir una sonido precargado:
 
 ```lua
     systemSound = componentsManager:getComponentSound()
     systemSound:playSound("sound_demo")
 ```
+
+---
 
 ### Volumen
 
@@ -96,6 +102,8 @@ Manipular el volumen de los sonidos:
     systemSound = componentsManager:getComponentSound()
     systemSound:setSoundsVolume(100) -- Rango [0 - 128]
 ```
+
+---
 
 ### Carga automática
 
