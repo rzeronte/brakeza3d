@@ -13,7 +13,14 @@ class ShaderOpenGLShading : public ShaderOpenGL {
 public:
     ShaderOpenGLShading();
 
-    void render(glm::mat4 ModelMatrix, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size);
+    void render(
+        glm::mat4 ModelMatrix,
+        GLuint vertexbuffer,
+        GLuint uvbuffer,
+        GLuint normalbuffer,
+        int size,
+        GLuint framebuffer
+    );
 
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
 

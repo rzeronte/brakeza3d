@@ -9,6 +9,7 @@
 - [Variables locales](#variables-locales)
 - [Gestión de escenas](#gestión-de-escenas)
 - [Ejemplos en código](#ejemplos-en-codigo)
+
 ---
 
 # Sistema de scripting

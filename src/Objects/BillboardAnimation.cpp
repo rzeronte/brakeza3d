@@ -40,7 +40,8 @@ void BillboardAnimation::onUpdate()
             billboard->vertexbuffer,
             billboard->uvbuffer,
             billboard->normalbuffer,
-            (int) billboard->vertices.size()
+            (int) billboard->vertices.size(),
+            ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
         );
     }
 }

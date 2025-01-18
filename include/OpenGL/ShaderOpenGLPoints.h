@@ -10,7 +10,7 @@ class ShaderOpenGLPoints : public ShaderOpenGL {
 public:
     ShaderOpenGLPoints();
 
-    void render(GLint particlesBuffer, int numberPoints, Color cf, Color ct);
+    void render(GLint particlesBuffer, int numberPoints, Color cf, Color ct, GLuint framebuffer);
 
     static void setVAOAttributes(GLint particlesBuffer) ;
 

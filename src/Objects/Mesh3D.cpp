@@ -101,11 +101,12 @@ void Mesh3D::onUpdate()
 
     if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
         ComponentsManager::get()->getComponentWindow()->getShaderOglShading()->render(
-                getModelMatrix(),
-                vertexbuffer,
-                uvbuffer,
-                normalbuffer,
-                (int) vertices.size()
+            getModelMatrix(),
+            vertexbuffer,
+            uvbuffer,
+            normalbuffer,
+            (int) vertices.size(),
+            ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
         );
     }
 
@@ -122,11 +123,12 @@ void Mesh3D::onUpdate()
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()){
         ComponentsManager::get()->getComponentWindow()->getShaderOglWireframe()->render(
-                getModelMatrix(),
-                vertexbuffer,
-                uvbuffer,
-                normalbuffer,
-                (int) vertices.size()
+            getModelMatrix(),
+            vertexbuffer,
+            uvbuffer,
+            normalbuffer,
+            (int) vertices.size(),
+            ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
         );
     }
 

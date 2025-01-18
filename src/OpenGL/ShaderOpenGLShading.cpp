@@ -19,9 +19,12 @@ void ShaderOpenGLShading::render(
     GLuint vertexbuffer,
     GLuint uvbuffer,
     GLuint normalbuffer,
-    int size
+    int size,
+    GLuint framebuffer
 )
 {
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
     glUseProgram(programID);
     glBindVertexArray(VertexArrayID);
 

@@ -13,8 +13,10 @@ ShaderOpenGLPoints::ShaderOpenGLPoints()
     glBindVertexArray(VertexArrayID);
 }
 
-void ShaderOpenGLPoints::render(GLint particlesBuffer, int numberPoints, Color cf, Color ct)
+void ShaderOpenGLPoints::render(GLint particlesBuffer, int numberPoints, Color cf, Color ct, GLuint framebuffer)
 {
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
     glUseProgram(programID);
     glBindVertexArray(VertexArrayID);
 
