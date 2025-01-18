@@ -12,18 +12,15 @@
 #include "../Misc/Grid3D.h"
 #include "../OpenGL/FXEffectOpenGLObject.h"
 #include "../../src/Collisions/Collider.h"
-#include <assimp/Importer.hpp>      // C++ assimpImporter interface
-#include <assimp/scene.h>           // Output data structure
-#include <assimp/postprocess.h>     // Post processing flags
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
 
-typedef float vec3_t[3];
-
 class Mesh3D : public Object3D {
 private:
-
     Octree *octree;
     Grid3D *grid;
     AABB3D aabb;
@@ -99,8 +96,6 @@ public:
 
     cJSON * getJSON() override;
 
-    void onUpdateOpenCLRender();
-
     void drawImGuiProperties() override;
 
     const char *getTypeObject() override;
@@ -133,6 +128,5 @@ public:
 
     btBvhTriangleMeshShape *getTriangleMeshFromMesh3D();
 };
-
 
 #endif //SDL2_3D_ENGINE_MESH_H

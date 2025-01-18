@@ -813,7 +813,7 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     transformation.setIdentity();
     transformation.setOrigin(getPosition().toBullet());
 
-    btMatrix3x3 brakezaRotation = Tools::M3ToBulletM3(rotation);
+    btMatrix3x3 brakezaRotation = rotation.toBulletMat3();
     btQuaternion qRotation;
     brakezaRotation.getRotation(qRotation);
 
@@ -866,7 +866,7 @@ void Object3D::updateFromBullet()
     btMatrix3x3 matrixRotation;
     matrixRotation.setRotation(rotation);
 
-    setRotation(Tools::BulletM3ToM3(matrixRotation));
+    setRotation(M3::fromMat3Bullet(matrixRotation));
 }
 
 void Object3D::resolveCollision(Collider *with)

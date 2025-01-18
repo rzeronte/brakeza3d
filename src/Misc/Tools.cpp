@@ -21,7 +21,8 @@
 
 #define MAX_SOURCE_SIZE (0x100000)
 
-std::vector<std::string> Tools::split(const std::string &text, char sep) {
+std::vector<std::string> Tools::split(const std::string &text, char sep)
+{
     std::vector<std::string> tokens;
     std::size_t start = 0, end = 0;
     while ((end = text.find(sep, start)) != std::string::npos) {
@@ -33,7 +34,8 @@ std::vector<std::string> Tools::split(const std::string &text, char sep) {
     return tokens;
 }
 
-void Tools::SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel) {
+void Tools::SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
+{
     //Convert the pixels to 32 bit
     auto *pixels = (Uint32 *) surface->pixels;
 
@@ -41,18 +43,21 @@ void Tools::SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel) {
     pixels[(y * surface->w) + x] = pixel;
 }
 
-bool Tools::isPixelInWindow(int &x, int &y) {
+bool Tools::isPixelInWindow(int &x, int &y)
+{
     if (x <= 0 || x >= EngineSetup::get()->screenWidth) return false;
     if (y <= 0 || y >= EngineSetup::get()->screenHeight) return false;
 
     return true;
 }
 
-float Tools::getXTextureFromUV(SDL_Surface *surface, float u) {
+float Tools::getXTextureFromUV(SDL_Surface *surface, float u)
+{
     return surface->w * u;
 }
 
-float Tools::getYTextureFromUV(SDL_Surface *surface, float v) {
+float Tools::getYTextureFromUV(SDL_Surface *surface, float v)
+{
     return surface->h * v;
 }
 
@@ -114,7 +119,8 @@ char *Tools::readFile(const std::string &name, size_t &source_size)
     return file_str;
 }
 
-float Tools::interpolate(float val, float bound_left, float bound_right) {
+float Tools::interpolate(float val, float bound_left, float bound_right)
+{
     float Ax = val;                   // componente X de nuestro vértice en PANTALLA2D
     float vNLx = bound_left;          // Límite Izquierdo de PANTALLA2D
     float vNRx = bound_right;         // Límite Derecho de PANTALLA2D
@@ -134,7 +140,6 @@ float Tools::clamp(float n, float lower, float upper) {
     return std::max(lower, std::min(n, upper));
 }
 
-
 int Tools::random(int min, int max) //range : [min, max)
 {
     static bool first = true;
@@ -145,7 +150,8 @@ int Tools::random(int min, int max) //range : [min, max)
     return min + rand() % ((max + 1) - min);
 }
 
-bool Tools::isZeroVector(Vertex3D &v) {
+bool Tools::isZeroVector(Vertex3D &v)
+{
     if ((v.x == 0.0f) && (v.y == 0.0f) && (v.z == 0.0f)) {
         return true;
     }
@@ -153,7 +159,8 @@ bool Tools::isZeroVector(Vertex3D &v) {
     return false;
 }
 
-bool Tools::isValidVector(Vertex3D &v) {
+bool Tools::isValidVector(Vertex3D &v)
+{
     if (fpclassify(v.x) == FP_NAN || fpclassify(v.y) == FP_NAN || fpclassify(v.z) == FP_NAN) {
         return false;
     }
@@ -162,7 +169,8 @@ bool Tools::isValidVector(Vertex3D &v) {
 }
 
 // Returns true if two rectangles (l1, r1) and (l2, r2) overlap
-bool Tools::checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2D r2) {
+bool Tools::checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2D r2)
+{
     int Axmin = l1.x;
     int Axmax = r1.x;
     int Aymax = r1.y;
@@ -180,7 +188,8 @@ bool Tools::checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2
     return true;
 }
 
-Color Tools::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha) {
+Color Tools::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha)
+{
     Uint32 rb = color1 & 0xff00ff;
     Uint32 g = color1 & 0x00ff00;
     rb += ((color2 & 0xff00ff) - rb) * alpha >> 8;
@@ -189,15 +198,13 @@ Color Tools::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha) {
     return Color((rb & 0xff00ff) | (g & 0xff00));
 }
 
-Color Tools::mixColor(Color a, Color b, float f) {
+Color Tools::mixColor(Color a, Color b, float f)
+{
     return (a * (1.0f - f)) + (b * f);
 }
 
-void Tools::consoleVec3(vec3_t v, const std::string& name) {
-    printf("%s: %f %f %f\r\n", name.c_str(), v[0], v[1], v[2]);
-}
-
-Uint32 Tools::getSurfacePixel(SDL_Surface *surface, int x, int y) {
+Uint32 Tools::getSurfacePixel(SDL_Surface *surface, int x, int y)
+{
     int bpp = surface->format->BytesPerPixel;
     /* Here p is the address to the pixel we want to retrieve */
     Uint8 *p = (Uint8 *) surface->pixels + y * surface->pitch + x * bpp;
@@ -220,7 +227,8 @@ Uint32 Tools::getSurfacePixel(SDL_Surface *surface, int x, int y) {
     }
 }
 
-void Tools::LoadPathFinderWithGrid3D(Grid3D *grid, PathFinder *pathfinder) {
+void Tools::LoadPathFinderWithGrid3D(Grid3D *grid, PathFinder *pathfinder)
+{
     for (int x = 0; x < grid->numberCubesX; x++) {
         for (int y = 0; y < grid->numberCubesZ; y++) {
             CubeGrid3D *c = grid->getFromPosition(x, 0, y); // grid de altura 0
@@ -229,7 +237,8 @@ void Tools::LoadPathFinderWithGrid3D(Grid3D *grid, PathFinder *pathfinder) {
     }
 }
 
-std::vector<Vertex3D> Tools::getVerticesFromPathFinderPath(Grid3D *grid, std::stack<PairData> path) {
+std::vector<Vertex3D> Tools::getVerticesFromPathFinderPath(Grid3D *grid, std::stack<PairData> path)
+{
     std::vector<Vertex3D> result;
 
     while (!path.empty()) {
@@ -247,11 +256,6 @@ std::vector<Vertex3D> Tools::getVerticesFromPathFinderPath(Grid3D *grid, std::st
     return result;
 }
 
-btMatrix3x3 Tools::M3ToBulletM3(M3 m)
-{
-    return btMatrix3x3(m.m[0],m.m[1],m.m[2],m.m[3],m.m[4],m.m[5],m.m[6],m.m[7],m.m[8]);
-}
-
 btTransform Tools::GLMMatrixToBulletTransform(const glm::mat4& glmMatrix)
 {
     btTransform bulletTransform;
@@ -262,32 +266,8 @@ btTransform Tools::GLMMatrixToBulletTransform(const glm::mat4& glmMatrix)
     );
     bulletTransform.setBasis(bulletRotationMatrix);
     bulletTransform.setOrigin(btVector3(glmMatrix[3][0], glmMatrix[3][1], glmMatrix[3][2]));
+
     return bulletTransform;
-}
-
-M3 Tools::GLMMatrixToM3(const glm::mat3& glmMatrix)
-{
-    return {
-        glmMatrix[0][0], glmMatrix[1][0], glmMatrix[2][0],
-        glmMatrix[0][1], glmMatrix[1][1], glmMatrix[2][1],
-        glmMatrix[0][2], glmMatrix[1][2], glmMatrix[2][2]
-    };
-}
-
-M3 Tools::BulletM3ToM3(const btMatrix3x3& m) {
-    return M3(
-            m.getRow(0).getX(), m.getRow(0).getY(), m.getRow(0).getZ(),
-            m.getRow(1).getX(), m.getRow(1).getY(), m.getRow(1).getZ(),
-            m.getRow(2).getX(), m.getRow(2).getY(), m.getRow(2).getZ()
-    );
-}
-
-Vertex3D Tools::randomVertex() {
-    return Vertex3D(
-            Tools::random(-2, 2),
-            Tools::random(-2, 2),
-            Tools::random(-2, 2)
-    );
 }
 
 const char *Tools::sprintf(const char *format, ...)
@@ -308,26 +288,6 @@ float Tools::percentage(int value, int total)
     }
 
     return (float) ((float) value * 100 / (float) total);
-}
-
-void Tools::makeFadeInSprite(Vertex3D position, TextureAnimated *animation)
-{
-    Point2D P1 = Transforms::WorldToPoint(position);
-
-    Brakeza3D::get()->addObject3D(
-            new Image2DAnimation(P1.x, P1.y, true, new TextureAnimated(animation)),
-            Brakeza3D::uniqueObjectLabel("Sprite2DLive")
-    );
-}
-
-void Tools::makeLoopSprite(Vertex3D position, TextureAnimated *animation, float ttl)
-{
-    Point2D P1 = Transforms::WorldToPoint(position);
-
-    Brakeza3D::get()->addObject3D(
-            new Image2DAnimation(P1.x, P1.y, ttl, new TextureAnimated(animation)),
-            Brakeza3D::uniqueObjectLabel("fadeInSpriteExplosion")
-    );
 }
 
 std::string Tools::getExtensionFromFilename(const std::string& filename)
@@ -377,7 +337,14 @@ void Tools::writeToFile(const std::string& fileName, const char *content)
     }
 }
 
-Vertex3D Tools::screenToWorld(float x, float y, float screenWidth, float screenHeight, const glm::mat4& projectionMatrix, const glm::mat4& viewMatrix) {
+Vertex3D Tools::screenToWorld(
+        float x,
+        float y,
+        float screenWidth,
+        float screenHeight,
+        const glm::mat4& projectionMatrix,
+        const glm::mat4& viewMatrix)
+{
     // Escalar las coordenadas de pantalla a las dimensiones deseadas (de 0 a 1)
     float normalizedX = x / screenWidth;
     float normalizedY = 1.0f - y / screenHeight;
@@ -408,7 +375,8 @@ Vertex3D Tools::screenToWorld(float x, float y, float screenWidth, float screenH
 }
 
 // Función para guardar el contenido de una textura OpenGL en un archivo de imagen
-bool Tools::saveTextureToFile(GLuint textureID, int width, int height, const char* fileName) {
+bool Tools::saveTextureToFile(GLuint textureID, int width, int height, const char* fileName)
+{
     // Crear un surface para copiar el contenido de la textura
     SDL_Surface* surface = SDL_CreateRGBSurface(0, width, height, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 

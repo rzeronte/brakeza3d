@@ -300,7 +300,7 @@ void Drawable::drawObject3DGizmo(Object3D *o, ImGuizmo::OPERATION currentOperati
 
         if (currentOperation == ImGuizmo::OPERATION::ROTATE) {
             auto rotationMatrix = glm::mat3(objectMatrix);
-            o->setRotation(Tools::GLMMatrixToM3(rotationMatrix));
+            o->setRotation(M3::fromMat3GLM(rotationMatrix));
         }
 
         if (currentOperation == ImGuizmo::OPERATION::SCALE) {

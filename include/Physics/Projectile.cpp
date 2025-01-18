@@ -35,9 +35,7 @@ void Projectile::makeProjectileRigidBody(
     direction.x += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy)) / 100;
     direction.y += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy)) / 100;
 
-    btVector3 impulse;
-    direction.saveToBtVector3(&impulse);
-    getRigidBody()->applyCentralImpulse(impulse);
+    getRigidBody()->applyCentralImpulse(direction.toBullet());
 
     setDirection(direction);
 }

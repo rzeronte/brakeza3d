@@ -139,13 +139,6 @@ float Vertex3D::distance(Vertex3D to)
     return tmpV.getComponent().getModule();
 }
 
-void Vertex3D::saveToBtVector3(btVector3 *v) const
-{
-    v->setX(this->x);
-    v->setY(this->y);
-    v->setZ(this->z);
-}
-
 Vertex3D Vertex3D::divide(float value) const
 {
     Vertex3D v;
@@ -167,7 +160,16 @@ btVector3 Vertex3D::toBullet() const
     return {x, y, z};
 }
 
-Vertex3D Vertex3D::fromBullet(btVector3 &v)
+Vertex3D Vertex3D::fromBullet(const btVector3 &v)
 {
     return {v.x(), v.y(), v.z()};
+}
+
+Vertex3D Vertex3D::randomVertex()
+{
+    return {
+        (float) Tools::random(-2, 2),
+        (float) Tools::random(-2, 2),
+        (float) Tools::random(-2, 2)
+    };
 }

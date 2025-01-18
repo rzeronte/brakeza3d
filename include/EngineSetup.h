@@ -72,8 +72,6 @@ public:
     bool DRAW_MESH3D_GRID_EMPTY = true;
     bool DRAW_MESH3D_GRID_NO_EMPTY = true;
 
-    bool FREE_LOOK = false;
-
     // Z BUFFER
     bool ENABLE_LIGHTS = true;
     bool DRAW_LIGHTS_DIRECTION = false;

@@ -30,8 +30,8 @@ void ShaderOpenGLPoints::render(GLint particlesBuffer, int numberPoints, Color c
     setMat4("view", ViewMatrix);
     setMat4("model", glm::mat4(1.0f));
 
-    setVec3("colorTo", glm::vec3(cf.r, cf.g, cf.b));
-    setVec3("colorFrom", glm::vec3(ct.r, ct.g, ct.b));
+    setVec3("colorTo", cf.toGLM());
+    setVec3("colorFrom", ct.toGLM());
 
     setVAOAttributes(particlesBuffer);
 

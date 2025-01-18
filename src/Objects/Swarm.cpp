@@ -115,7 +115,7 @@ void Swarm::updateBoids()
 
 void Swarm::addPredator(SwarmObject *o)
 {
-    o->velocity = Tools::randomVertex().getNormalize();
+    o->velocity = Vertex3D::randomVertex().getNormalize();
     predators.emplace_back(o);
 }
 
@@ -125,7 +125,7 @@ SwarmObject* Swarm::createBoid(Object3D *mesh)
     auto o = new SwarmObject();
 
     o->object = mesh;
-    o->velocity = Tools::randomVertex().getNormalize();
+    o->velocity = Vertex3D::randomVertex().getNormalize();
     o->velocity.z = 0;
 
     objects.emplace_back(o);

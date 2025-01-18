@@ -88,11 +88,6 @@ void BSPCollider::LoadModelCollisionForEntities(BSPMap *bsp) {
             mod->absmax[1] += 2;
             mod->absmax[2] += 2;
         }
-
-        Tools::consoleVec3(mod->absmax, "max");
-        Tools::consoleVec3(mod->absmin, "min");
-        Tools::consoleVec3(mod->origin, "origin");
-
     }
 }
 
@@ -886,9 +881,6 @@ void BSPCollider::SV_CheckStuck(model_collision_t *ent) {
         return;
     }
 
-    Tools::consoleVec3(ent->origin, "origin");
-    Tools::consoleVec3(ent->oldorigin, "oldorigin");
-
     // is out of map
     vec3_t org;
     VectorCopy (ent->origin, org)                 // saving current bad position
@@ -1125,7 +1117,6 @@ bool BSPCollider::isPlayerOnGround() const {
 void BSPCollider::consoleTrace(trace_t *t) {
     printf("Trace: fraction: %f, allsolid: %d, inopen: %d, inwater: %d, startsolid: %d, ", t->fraction, t->allsolid,
            t->inopen, t->inwater, t->startsolid);
-    Tools::consoleVec3(t->endpos, "EndPos");
 }
 
 void BSPCollider::Vertex3DToVec3(Vertex3D v, vec3_t &dest) {

@@ -188,11 +188,6 @@ struct GUIWidgetMenu
                 ImGui::Checkbox("Draw Bones", &EngineSetup::get()->DRAW_ANIMATION_BONES);
                 ImGui::Separator();
                 ImGui::Checkbox("Internal click selection", &EngineSetup::get()->CLICK_SELECT_OBJECT3D);
-                ImGui::Separator();
-                if (ImGui::Checkbox("Free Look", &EngineSetup::get()->FREE_LOOK)) {
-                    ComponentsManager::get()->getComponentCamera()->setFreeLook(EngineSetup::get()->FREE_LOOK);
-                    ComponentsManager::get()->getComponentInput()->setEnabled(EngineSetup::get()->FREE_LOOK);
-                }
 
                 ImGui::EndMenu();
             }

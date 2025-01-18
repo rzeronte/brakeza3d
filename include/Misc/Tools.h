@@ -20,8 +20,6 @@
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 
-typedef float vec3_t[3];
-
 class Tools {
 
 public:
@@ -57,29 +55,17 @@ public:
 
     static Color mixColor(Color color1, Color color2, float color2Intensity);
 
-    static void consoleVec3(vec3_t v, const std::string&);
-
     static Uint32 getSurfacePixel(SDL_Surface *surface, int x, int y);
 
     static void LoadPathFinderWithGrid3D(Grid3D *, PathFinder *);
 
     static std::vector<Vertex3D> getVerticesFromPathFinderPath(Grid3D *, std::stack<PairData> path);
 
-    static btMatrix3x3 M3ToBulletM3(M3 m);
-
     static btTransform GLMMatrixToBulletTransform(const glm::mat4& glmMatrix);
-
-    static M3 BulletM3ToM3(const btMatrix3x3& m);
-
-    static Vertex3D randomVertex();
 
     static const char *sprintf(const char *, ...);
 
     static float percentage(int value, int total);
-
-    static void makeFadeInSprite(Vertex3D position, TextureAnimated *animation);
-
-    static void makeLoopSprite(Vertex3D position, TextureAnimated *animation, float ttl);
 
     static std::string getExtensionFromFilename(const std::string &filename);
 
@@ -94,8 +80,6 @@ public:
     static std::vector<std::string> getFolderFolders(const std::string &path);
 
     static std::vector<std::string> getFolderFiles(const std::string &path, const std::string &extension);
-
-    static M3 GLMMatrixToM3(const glm::mat3& glmMatrix);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

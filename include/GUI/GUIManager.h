@@ -47,15 +47,15 @@ public:
 
     void loadImagesFolder() {
 
-        auto images = Tools::getFolderFiles(EngineSetup::get()->IMAGES_FOLDER.c_str(), "png");
+        auto images = Tools::getFolderFiles(EngineSetup::get()->IMAGES_FOLDER, "png");
 
-        for (auto f: images) {
+        for (const auto& f: images) {
             imagesFolder.addItem(EngineSetup::get()->IMAGES_FOLDER + f, f);
         }
     }
 
-    GUIManager(std::vector<Object3D *> &gameObjects)
-            :
+    explicit GUIManager(std::vector<Object3D *> &gameObjects)
+        :
             gameObjects(gameObjects),
             widgetConsole(new ImGuiConsoleApp(LUAManager::get()->getLua())),
             widgetObjects3D(new GUIWidgetObjects3D(packageIcons, this->gameObjects)),
@@ -111,7 +111,7 @@ public:
         int items_count = (int) result.size();
 
         for (int n = 0; n < items_count; n++) {
-            auto file = result[n];
+            const auto& file = result[n];
 
             ImGui::PushID(n);
             std::string optionText = std::to_string(n + 1) + ") " + file;
@@ -215,6 +215,10 @@ public:
         std::string mouse_text = "Mouse##4";
         std::string autoscrollSpeed_text = "AutoScroll##5";
 
+        ImGui::Checkbox("Free Look", &ComponentsManager::get()->getComponentCamera()->freeLook);
+
+        ImGui::Separator();
+
         // position
         if (ImGui::TreeNode(position_text.c_str())) {
             ImGui::DragScalar("X", ImGuiDataType_Float, &camera->getPosition().x, range_sensibility, &range_min,&range_max, "%f", 1.0f);
@@ -269,7 +273,6 @@ public:
             ImGui::DragScalar("Speed Z", ImGuiDataType_Float, &ComponentsManager::get()->getComponentCamera()->getAutoScrollSpeed().z,range_autoscroll_sensibility, &range_autoscroll_min, &range_autoscroll_max, "%f", 1.0f);
             ImGui::TreePop();
         }
-        ImGui::Checkbox("Free Look", &ComponentsManager::get()->getComponentCamera()->freeLook);
 
         ImGui::Separator();
     }
@@ -281,19 +284,19 @@ public:
         std::sort( result.begin(), result.end() );
 
         for (int i = 0; i < result.size(); i++) {
-            auto file = result[i];
+            const auto& file = result[i];
             auto title = std::to_string(i+1) + ") " + file;
             if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                 ImGui::PushID(i);
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "sceneIcon"), ImVec2(14, 14))) {
-                    ComponentsManager::get()->getComponentRender()->getSceneLoader().clearScene();
+                    SceneLoader::clearScene();
                     ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(EngineSetup::get()->SCENES_FOLDER + file);
                 }
 
                 ImGui::SameLine();
 
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "saveIcon"), ImVec2(14, 14))) {
-                    ComponentsManager::get()->getComponentRender()->getSceneLoader().saveScene(file);
+                    SceneLoader::saveScene(file);
                 }
                 ImGui::SameLine();
 
@@ -361,12 +364,12 @@ public:
             std::sort( result.begin(), result.end() );
 
             for (int i = 0; i < result.size(); i++) {
-                auto file = result[i];
+                const auto& file = result[i];
                 auto title = std::to_string(i+1) + ") " + file;
                 if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                     ImGui::PushID(i);
                     if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "shaderIcon"), ImVec2(14, 14))) {
-                        std::string name = Tools::getFilenameWithoutExtension(file.c_str());
+                        std::string name = Tools::getFilenameWithoutExtension(file);
                         ComponentsManager::get()->getComponentRender()->addShaderToScene(
                                 new ShaderOpenGLCustom(name, EngineSetup::get()->CUSTOM_SHADERS_FOLDER + file)
                         );
@@ -497,13 +500,10 @@ public:
         ImGui::End();
 
         if (ImGui::Begin("Images")) {
-            auto tableName = "ImageProperties###";
             static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit;
 
             auto items = imagesFolder.getItems();
-            for (int i = 0; i < items.size(); i++) {
-                auto a = items[i];
-
+            for (auto a : items) {
                 ImGui::Image((ImTextureID)a->texture, ImVec2(96, 96));
                 ImGui::SameLine();
                 ImGui::BeginGroup();
@@ -570,7 +570,6 @@ public:
             ImGui::PopStyleVar(2);
 
         // DockSpace
-        ImGuiIO& io = ImGui::GetIO();
         ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
@@ -598,7 +597,7 @@ public:
         GUIManager::selectedObjectIndex = selectedObjectIndex;
     }
 
-    ImGuizmo::OPERATION getGuizmoOperation() const {
+    [[nodiscard]] ImGuizmo::OPERATION getGuizmoOperation() const {
         return guizmoOperation;
     }
 

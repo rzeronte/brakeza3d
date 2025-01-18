@@ -56,13 +56,14 @@ public:
 
     static Vertex3D zero();
 
-    void saveToBtVector3(btVector3 *v) const;
-
     [[nodiscard]] btVector3 toBullet() const;
 
     [[nodiscard]] glm::vec3 toGLM() const;
 
-    static Vertex3D fromBullet(btVector3 &v);
+    static Vertex3D fromBullet(const btVector3 &v);
+
+    static Vertex3D randomVertex();
+
 };
 
 #endif //SDL2_3D_ENGINE_VERTEX_H

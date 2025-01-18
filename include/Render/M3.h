@@ -2,6 +2,8 @@
 #ifndef SDL2_3D_ENGINE_MATRIX3D_H
 #define SDL2_3D_ENGINE_MATRIX3D_H
 
+#include <LinearMath/btMatrix3x3.h>
+#include <glm/mat3x3.hpp>
 #include "../Objects/Vertex3D.h"
 
 class M3 {
@@ -75,6 +77,13 @@ public:
     static M3 arbitraryAxis(Vertex3D A, float degrees);
 
     static M3 interpolateLinear(const M3 &m1, const M3 &m2, float t);
+
+    btMatrix3x3 toBulletMat3();
+
+    static M3 fromMat3GLM(const glm::mat3& glmMatrix);
+    static M3 fromMat3Bullet(const btMatrix3x3& m);
+
+
 };
 
 

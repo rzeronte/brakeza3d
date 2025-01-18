@@ -2,17 +2,24 @@
 #include "../../include/Objects/Point2D.h"
 #include "../../include/Render/Maths.h"
 
-Point2D::Point2D() {
-    x = 0;
-    y = 0;
-};
+Point2D::Point2D()
+:
+    x(0),
+    y(0)
+{
+}
 
-Point2D::Point2D(int x, int y) {
+Point2D::Point2D(int x, int y)
+:
+    x(x),
+    y(y)
+{
     this->x = x;
     this->y = y;
 }
 
-Point2D::Point2D(glm::vec2 v) {
+Point2D::Point2D(glm::vec2 v)
+{
     this->x = v.x;
     this->y = v.y;
 }
@@ -22,7 +29,8 @@ float Point2D::operator*(const Point2D &v) const
     return (float) ((this->x * v.x) + (this->y * v.y));
 }
 
-Point2D Point2D::operator/(const Point2D &pm) const {
+Point2D Point2D::operator/(const Point2D &pm) const
+{
     return Point2D(
         this->x / pm.x,
         this->y / pm.y
@@ -41,14 +49,16 @@ Point2D Point2D::getNormalize() const
     );
 }
 
-Point2D Point2D::operator-(const Point2D &v) const {
+Point2D Point2D::operator-(const Point2D &v) const
+{
     return Point2D(
         this->x - v.x,
         this->y - v.y
     );
 }
 
-Point2D Point2D::operator+(const Point2D &v) const {
+Point2D Point2D::operator+(const Point2D &v) const
+{
     return Point2D(
         this->x + v.x,
         this->y + v.y

@@ -139,10 +139,6 @@ void Mesh3D::onUpdate()
     }
 }
 
-void Mesh3D::onUpdateOpenCLRender()
-{
-}
-
 void Mesh3D::postUpdate()
 {
     Object3D::postUpdate();
@@ -364,7 +360,8 @@ void Mesh3D::setFlatTextureColor(bool isFlatTextureColor)
     this->flatTextureColor = isFlatTextureColor;
 }
 
-void Mesh3D::setFlatColor(const Color &flatColor) {
+void Mesh3D::setFlatColor(const Color &flatColor)
+{
     Mesh3D::flatColor = flatColor;
 }
 
@@ -391,27 +388,33 @@ Mesh3D::~Mesh3D()
     }
 }
 
-bool Mesh3D::isRender() const {
+bool Mesh3D::isRender() const
+{
     return render;
 }
 
-void Mesh3D::setRender(bool render) {
+void Mesh3D::setRender(bool render)
+{
     Mesh3D::render = render;
 }
 
-std::vector<Triangle *> &Mesh3D::getModelTriangles() {
+std::vector<Triangle *> &Mesh3D::getModelTriangles()
+{
     return modelTriangles;
 }
 
-std::vector<Image *> &Mesh3D::getModelTextures() {
+std::vector<Image *> &Mesh3D::getModelTextures()
+{
     return modelTextures;
 }
 
-const std::vector<Image *> &Mesh3D::getModelSpecularTextures() const {
+const std::vector<Image *> &Mesh3D::getModelSpecularTextures() const
+{
     return modelSpecularTextures;
 }
 
-std::vector<Vertex3D *> &Mesh3D::getModelVertices(){
+std::vector<Vertex3D *> &Mesh3D::getModelVertices()
+{
     return modelVertices;
 }
 
@@ -436,11 +439,13 @@ void Mesh3D::onDrawHostBuffer()
     }
 }
 
-const char *Mesh3D::getTypeObject() {
+const char *Mesh3D::getTypeObject()
+{
     return "Mesh3D";
 }
 
-const char *Mesh3D::getTypeIcon() {
+const char *Mesh3D::getTypeIcon()
+{
     return "meshIcon";
 }
 
@@ -725,9 +730,7 @@ void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *
 
     btBvhTriangleMeshShape *triangleMeshShape = this->getTriangleMeshFromMesh3D();
 
-    btVector3 position;
-    getPosition().saveToBtVector3(&position);
-    transformation.setOrigin(position);
+    transformation.setOrigin(getPosition().toBullet());
 
     btRigidBody::btRigidBodyConstructionInfo info(
         mass,
@@ -750,10 +753,10 @@ btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D()
     updateBoundingBox();
 
     for (auto & modelTriangle : this->modelTriangles) {
-        btVector3 a, b, c;
-        modelTriangle->A.saveToBtVector3(&a);
-        modelTriangle->B.saveToBtVector3(&b);
-        modelTriangle->C.saveToBtVector3(&c);
+
+        btVector3 a = modelTriangle->A.toBullet();
+        btVector3 b = modelTriangle->B.toBullet();
+        btVector3 c = modelTriangle->C.toBullet();
 
         a.setY(-a.getY());
         b.setY(-b.getY());
