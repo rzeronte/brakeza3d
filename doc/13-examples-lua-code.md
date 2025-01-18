@@ -8,7 +8,7 @@
 - [La varialbe this](#la-variable-this)
 - [Variables globales](#variables-globales)
 - [Variables de objeto](#variables-de-objeto)
-- [Teclado y ratón](#variables-de-objeto)
+- [Teclado y ratón](#teclado-y-ratón)
 - [Detección de colisiones](#detección-de-colisiones)
 
 ---
