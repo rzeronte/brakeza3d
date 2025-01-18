@@ -102,6 +102,16 @@ void LUAIntegration(sol::state &lua)
                                       "getCamera", &ComponentCamera::getCamera
     );
 
+    lua.new_usertype<ComponentSound>("ComponentSound",
+                                      sol::base_classes, sol::bases<Component>(),
+                                     "addSound", &ComponentSound::addSound,
+                                     "addMusic", &ComponentSound::addMusic,
+                                     "setMusicVolume", &ComponentSound::setMusicVolume,
+                                     "setSoundsVolume", &ComponentSound::setSoundsVolume,
+                                     "playSound", &ComponentSound::playMusic,
+                                     "stopMusic", &ComponentSound::stopMusic
+    );
+
     lua.new_usertype<ComponentRender>("ComponentRender",
                                       sol::base_classes, sol::bases<Component>(),
                                       "getSceneLoader", &ComponentRender::getSceneLoader,

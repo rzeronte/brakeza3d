@@ -13,7 +13,7 @@
 class ComponentSound : public Component {
 private:
     SoundPackage soundPackage;
-    int playSound(Mix_Chunk *chunk, int channel, int times);
+    static int playChunk(Mix_Chunk *chunk, int channel, int times);
 public:
     ComponentSound();
 
@@ -31,23 +31,27 @@ public:
 
     void initSoundSystem();
 
-    void loadSoundsJSON();
+    void LoadSoundsConfigFile();
 
-    int sound(const std::string& sound, int channel, int times);
+    void addSound(const std::string& soundFile, const std::string& label);
+    void addMusic(const std::string& soundFile, const std::string& label);
 
-    static void playMusic(Mix_Music *music, int loops);
+    void playSound(const std::string& sound, int channel, int times);
+    void playMusic(const std::string& sound);
+
+    static void playMusicMix(Mix_Music *music, int loops);
 
     static void fadeInMusic(Mix_Music *music, int loops, int ms);
 
-    void stopMusic();
+    static void stopMusic();
 
     static void stopChannel(int channel);
 
-    [[nodiscard]] SoundPackage &getSoundPackage();
-
-    Mix_Chunk *soundByLabel(const std::string &label);
-
     float soundDuration(const std::string &sound);
+
+    static void setMusicVolume(int v);
+    static void setSoundsVolume(int v);
+
 };
 
 

@@ -16,7 +16,7 @@ En Brakeza3D todos los `Object3D` puede trabajar con físicas y colisiones.
 
 Cualquier objeto colisionables lanzará una llamada al método `onCollision` de tus scripts LUA por cada colisión producida.
 
-```
+```lua
 function onCollision(with)
     print("Collision with " .. with:getLabel())
 end
@@ -34,7 +34,7 @@ Puedes configurar el modo de las colisiones de un objeto desde la GUI o desde tu
 Para hacerlo mediante tus scripts puedes utilizar el método ``setupGhostCollider`` o
 ``setupRigidBodyCollider``.
 
-```
+```lua
     eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
     eye:setCollisionsEnabled(true)
     eye:setupGhostCollider(CollisionShape.SIMPLE_SHAPE); -- Ghost
@@ -58,7 +58,7 @@ denominada `CollisionShape.TRIANGLE3D_MESH_SHAPE` creando una una malla de colis
 
 Puedes manipular los modos de colisión tanto desde la GUI como desde tus scripts LUA.
 
-```
+```lua
     eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
     eye:setCollisionsEnabled(true)
     eye:setupGhostCollider(CollisionShape.TRIANGLE3D_MESH_SHAPE); -- Ghost

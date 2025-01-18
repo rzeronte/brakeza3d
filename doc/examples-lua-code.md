@@ -10,6 +10,7 @@
 - [Variables de objeto](#variables-de-objeto)
 - [Teclado y ratón](#teclado-y-ratón)
 - [Detección de colisiones](#detección-de-colisiones)
+- [Carga y reproducción de sonidos](#carga-y-reproducción-de-sonidos)
 
 ---
 
@@ -18,26 +19,26 @@
 A continuación el código LUA para cargar distintos tipos de objetos en Brakeza3D:
 
 Image2D:
-```
+```lua
     img = Image2D.create(10, 10, "../assets/images/logo_small.png")
     img:updatePosition(300, 300)
     brakeza:addObject3D(img, 'myImage2D')
 ```
 
 Image2DAnimation:
-```
+```lua
     animation2d = Image2DAnimation.create(100, 100, "../assets/sprites/explosion_a.png", 128, 128, 15, 24)
     brakeza:addObject3D(animation2d, 'myAnimation')
 ```
 
 Image3D:
-```
+```lua
     image3d = Image3D.create(Vertex3D.new(10, 10, 10), 10, 10, "../assets/sprites/explosion_a.png")
     brakeza:addObject3D(image3d, 'myImage3D')
 ```
 
 Mesh3D:
-```
+```lua
     eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
     eye:setStencilBufferEnabled(true)
     eye:setBelongToScene(false)
@@ -47,7 +48,7 @@ Mesh3D:
     brakeza:addObject3D(eye, 'myMesh')
 ```
 Mesh3DAnimation:
-```
+```lua
     man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
     man:setStencilBufferEnabled(true)
     man:setBelongToScene(false)
@@ -56,14 +57,14 @@ Mesh3DAnimation:
 ```
 
 BillboardAnimation:
-```
+```lua
     print("Load BillboardAnimation")
     billboard = BillboardAnimation.create(Vertex3D.new(0, 10, 80), 100, 100, "../assets/sprites/explosion_a.png", 128, 128, 15, 24)
     brakeza:addObject3D(billboard, 'myBillboard')
 ```
 
 BillboardAnimation8Directions:
-```
+```lua
     print("Load BillboardAnimation8Directions")
     billboard8d = BillboardAnimation8Directions.create(Vertex3D.new(0, 10, 80), 100, 100, "../assets/sprites/Sprites3D/soldier/fire", 2, 24)
     brakeza:addObject3D(billboard8d, 'myBillboard8D')
@@ -73,7 +74,7 @@ BillboardAnimation8Directions:
 
 ### Carga de escenas
 
-```
+```lua
 function onStart()
     ...
     componentsManager:getComponentRender():getSceneLoader():loadScene("../scenes/scene_example.json")
@@ -85,7 +86,7 @@ end
 
 ### Buscar un objeto
 
-```
+```lua
 function onUpdate()
     ...
 	o = brakeza:getSceneObjectByLabel("MyObject")
@@ -105,7 +106,7 @@ end
 
 ### La variable ``this``
 
-```
+```lua
 function onUpdate()
     ...
     print("Hi I am " .. this:getLabel())
@@ -136,7 +137,7 @@ end
 
 ```
 
-```
+```lua
 function onUpdate()
     var1 = var1 .. "!"
     print("Value of var1: " .. var1)
@@ -170,7 +171,7 @@ end
 
 ```
 
-```
+```lua
 function onUpdate()
     scale = this:getScale()
     if scale > 1 and state == 1 then
@@ -185,7 +186,7 @@ end
 
 ```
 
-```
+```lua
 function onUpdate()
     o = brakeza:getSceneObjectByLabel("MyObject")
     if o ~= nil then
@@ -205,7 +206,7 @@ end
 
 ### Teclado y ratón
 
-```
+```lua
 function onUpdate()
     left = componentsManager:getComponentInput():isClickLeft()
     
@@ -232,7 +233,7 @@ end
 
 ### Detección de colisiones
 
-```
+```lua
 function onCollision(with)
     if with ~= nil then
         print("Collision with " .. with:getLabel())
@@ -240,3 +241,14 @@ function onCollision(with)
         print("Collision with unknow object")
     end
 end
+````
+---
+
+### Carga y reproducción de sonidos
+
+```lua
+    systemSound = componentsManager:getComponentSound()
+    systemSound:addSound("../assets/sounds/music_demo.mp3", "sound_demo")
+    ...
+    systemSound:playSound("sound_demo")
+````

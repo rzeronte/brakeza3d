@@ -14,7 +14,7 @@ de tus scripts LUA.
 
 Se configura mediante el `componente render`:
 
-```
+```lua
     render = componentsManager:getComponentRender()
 ```
 
@@ -28,7 +28,7 @@ simplemente por conveniencia, ya que se esperan valores de rango `0-1` y no `0-2
 
 Ejemplo para configurar la componente `ambiente`:
 
-```
+```lua
     render = componentsManager:getComponentRender()
     render:setGlobalIlluminationAmbient(Vertex3D.new(1, 0, 0)) -- rojo
 ```

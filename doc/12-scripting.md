@@ -153,7 +153,7 @@ Las variables definidas en scripts vinculadas a ``escenas`` serán globales.
 Podrás acceder directamente a las variables globales desde cualquier otro
 script.
 
-```
+```lua
 function onUpdate()
     var1 = var1 .. "!" -- ejemplo de variable global
     print("Value of var1: " .. var1)
@@ -171,7 +171,7 @@ es decir, se instancian individualmente por cada objeto.
 Puedes acceder a las variables locales de otro objeto mediante tus scripts LUA
 de la siguiente forma:
 
-```
+```lua
     o = brakeza:getSceneObjectByLabel("MyObject")
     position = o:getLocalScriptVar("offset") -- obtenemos un vertex3D
     print("Read variable 'offset' from object: ".. o:getLabel())
@@ -187,7 +187,7 @@ de la siguiente forma:
 
 Puedes cargar y salvar escenas tanto desde GUI como desde tus scripts LUA
 
-```
+```lua
 function onStart()
     ...
     componentsManager:getComponentRender():getSceneLoader():loadScene("../scenes/scene_example.json")
@@ -201,4 +201,4 @@ end
 
 ### Ejemplos en codigo
 
-https://github.com/rzeronte/brakeza3d/blob/master/doc/13-examples-lua-code.md
+https://github.com/rzeronte/brakeza3d/blob/master/doc/examples-lua-code.md

@@ -47,7 +47,7 @@ Internamente Brakeza3D gestiona las operaciones de cámara a través de su propi
 
 Podrás obtener acceso a este componente desde tus scripts LUA y este te dará acceso a la cámara:
 
-```
+```lua
     camera = componentsManager:getComponentCamera():getCamera()
 ```
 

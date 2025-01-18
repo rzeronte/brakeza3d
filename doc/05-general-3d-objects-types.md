@@ -11,7 +11,7 @@
 
 Un plano con la textura de una imagen.
 
-```
+```lua
     -- Image3D.create(position, width, height, imageFile)
     image3d = Image3D.create(Vertex3D.new(10, 10, 10), 10, 10, "../assets/sprites/explosion_a.png")
     image3d:setEnabled(true)
@@ -22,7 +22,7 @@ Un plano con la textura de una imagen.
 ## Mesh3D
 Modelo 3D, incorpora geometría y texturas.
 
-```
+```lua
     -- Mesh3D.create(position, modelFile)
     eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
     eye:setEnabled(true)
@@ -39,7 +39,7 @@ Modelo 3D, incorpora geometría y texturas.
 
 Modelo 3D animado.
 
-```
+```lua
     -- Mesh3DAnimation.create(position, animatedModelFile)
     man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
     man:setEnabled(true)

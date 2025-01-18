@@ -30,8 +30,12 @@
 10 - Global Illumination
     https://github.com/rzeronte/brakeza3d/blob/master/doc/10-global-illumination.md
 
-11 - Shaders
-     https://github.com/rzeronte/brakeza3d/blob/master/doc/11-shaders.md
+11 - Sound system
+    https://github.com/rzeronte/brakeza3d/blob/master/doc/11-sound-system.md
 
 12 - Scripting
-      https://github.com/rzeronte/brakeza3d/blob/master/doc/12-scripting.md
+    https://github.com/rzeronte/brakeza3d/blob/master/doc/12-scripting.md
+
+13 - Shaders
+     https://github.com/rzeronte/brakeza3d/blob/master/doc/13-shaders.md
+

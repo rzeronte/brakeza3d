@@ -37,7 +37,7 @@ Podrás manipular las propiedades de los ``ParticlesContext`` desde la UI.
 
 Ejempl de creación de un emisor de partículas desde código:
 
-```
+```lua
     print("Load ParticleEmitter")
     particles = ParticleEmitter.create(
         Vertex3D.new(10, 10, 10),       -- position

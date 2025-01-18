@@ -16,7 +16,7 @@ Brakeza3D permite incorporar a la pantalla elementos `2D` o `2.5D`
 
 Es un objeto `2D`. Dibuja una imagen en pantalla.  
 
-```
+```lua
     img = Image2D.create(10, 10, "../assets/images/logo_small.png")
     img:setEnabled(true)
     img:updatePosition(300, 300)
@@ -32,7 +32,7 @@ es una imagen de la animación. Es por este motivo que deberemos de indicar el *
 en la imagen, para que la función ajuste adecuadamente el sprite.
 
 Podrás configurar la velocidad (**fps**) a la que se muestra una animación.
-```
+```lua
     -- Image2DAnimation.create(x, y, spriteFile, width, height, numFrames, fps)
     img = Image2DAnimation.create(0, 0, "../assets/sprites/explosion_a.png", 128, 128, 15, 24)
     img:setEnabled(true)
@@ -51,7 +51,7 @@ También está diseñado para cargar la animación desde formato **spritesheet**
 
 Fionalmente se dibujará la animación en el plano, según la configuración indicada.
 
-```
+```lua
     -- BillboardAnimation.create(position, width, height, spriteFile, spriteWidth, spriteHeight, numFrames, fps)
     animation = BillboardAnimation.create(Vertex3D.new(10, 10, 10), 100, 100, "../assets/sprites/explosion_a.png", 128, 128, 15, 24)
     animation:setEnabled(true)
@@ -84,7 +84,7 @@ Supongamos que deseamos cargar una animación con dos frames. Estos serían los 
 
 Así sucesivamente, si nuestra animación tiene más frames.
 
-```
+```lua
     img = BillboardAnimation8Directions.create("../assets/sprites/explosion", 15, 24)
     img:setEnabled(true)
     brakeza:addObject3D(img, 'imagen')

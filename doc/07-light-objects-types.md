@@ -44,7 +44,7 @@ podrás usar los métodos:
 
 Ejemplo de instanciación desde script LUA:
 
-```
+```lua
     -- LightPoint3D.create(position)
     lightp = LightPoint3D.create(Vertex3D.new(5, 5, 5))
     brakeza:addObject3D(lightp, 'myLightPoint')
@@ -68,7 +68,7 @@ Podrás manipular dichos valores mediante los métodos:
 
 Ejemplo de instanciación desde script LUA:
 
-```
+```lua
     -- SpotLight3D.create(position, direction)
     lights = SpotLight3D.create(Vertex3D.new(5, -10, 5), Vertex3D.new(0, 0, 1))
     lights:setColor(Color.new(255, 255, 0, 255))
