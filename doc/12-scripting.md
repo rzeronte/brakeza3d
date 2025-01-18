@@ -35,6 +35,8 @@ Finalmente, podrá ser detenido (STOP) para evitar que el sistema de scripting c
 
 También podrás resetear (RELOAD) el estado para volver al inicio los scripts y para refrescarlos desde disco.
 
+---
+
 ### Ciclo de vida de un objeto
 
 Los objetos disponen de su propio ciclo de vida el cual debemos de entender para trabajar con nuestros objetos cargados, es el siguiente:
@@ -56,6 +58,7 @@ function onUpdate()
     -- código a ejecutar en cada frame.
 end
 ```
+---
 
 ### Scripts LUA
 
@@ -98,6 +101,9 @@ un script a la escena:
         componentsManager:getComponentRender():addLUAScript(script)
     end
 ```
+
+---
+
 ### Variables
 
 Cualquier script LUA puede definir variables que te ayudarán a implementar tu lógica. Puedes utilizar la GUI
@@ -137,6 +143,8 @@ Físicamente se almacenan en un fichero ``JSON`` del mismo nombre que el script.
 }
 ```
 Puedes utilizar los tipos `int`, `float`, `string` y `Vertex3D`.
+
+---
 
 ### Variables globales
 
