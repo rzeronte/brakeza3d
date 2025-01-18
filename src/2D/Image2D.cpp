@@ -13,6 +13,10 @@ Image2D::Image2D(int x, int y, Image *image)
     y(y),
     image(image)
 {
+    featuresGUI.position = false;
+    featuresGUI.rotation = false;
+    featuresGUI.scale = false;
+    featuresGUI.collider = false;
 }
 
 void Image2D::onUpdate()
