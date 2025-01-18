@@ -285,14 +285,14 @@ public:
             auto title = std::to_string(i+1) + ") " + file;
             if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                 ImGui::PushID(i);
-                if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("sceneIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "sceneIcon"), ImVec2(14, 14))) {
                     ComponentsManager::get()->getComponentRender()->getSceneLoader().clearScene();
                     ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(EngineSetup::get()->SCENES_FOLDER + file);
                 }
 
                 ImGui::SameLine();
 
-                if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("saveIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "saveIcon"), ImVec2(14, 14))) {
                     ComponentsManager::get()->getComponentRender()->getSceneLoader().saveScene(file);
                 }
                 ImGui::SameLine();
@@ -326,23 +326,23 @@ public:
         for (int i = 0; i < shaders.size(); i++) {
             auto s = shaders[i];
             ImGui::PushID(i);
-            ImGui::Image((ImTextureID)packageIcons.getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(26, 26));
+            ImGui::Image(TexturePackage::getOGLTextureID(packageIcons, "shaderIcon"), ImVec2(26, 26));
             ImGui::SameLine(46);
             if (!s->isEnabled()) {
-                if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "unlockIcon"), ImVec2(14, 14))) {
                     s->setEnabled(true);
                 }
             } else {
-                if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "lockIcon"), ImVec2(14, 14))) {
                     s->setEnabled(false);
                 }
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("rebuildIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "rebuildIcon"), ImVec2(14, 14))) {
                 s->compile();
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "removeIcon"), ImVec2(14, 14))) {
                 ComponentsManager::get()->getComponentRender()->removeShader(i);
             }
             ImGui::SameLine();
@@ -365,7 +365,7 @@ public:
                 auto title = std::to_string(i+1) + ") " + file;
                 if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                     ImGui::PushID(i);
-                    if (ImGui::ImageButton((ImTextureID)packageIcons.getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "shaderIcon"), ImVec2(14, 14))) {
                         std::string name = Tools::getFilenameWithoutExtension(file.c_str());
                         ComponentsManager::get()->getComponentRender()->addShaderToScene(
                                 new ShaderOpenGLCustom(name, EngineSetup::get()->CUSTOM_SHADERS_FOLDER + file)
@@ -453,7 +453,6 @@ public:
             if (ImGui::BeginTable("GlobalVariablesTable", 2, flags)) {
                 auto scripts = ComponentsManager::get()->getComponentRender()->getLUAScripts();
                 auto &lua = LUAManager::get()->getLua();
-                int count = 0;
 
                 for (auto currentScript : scripts) {
                     for (auto & dataType : currentScript->dataTypes) {
@@ -464,7 +463,6 @@ public:
 
                         ImGui::TableSetColumnIndex(1);
                         ImGui::Text("%s", std::string(lua[dataType.name]).c_str());
-                        count++;
                     }
                 }
                 if ((int) scripts.size() <= 0) {
@@ -506,7 +504,7 @@ public:
             for (int i = 0; i < items.size(); i++) {
                 auto a = items[i];
 
-                ImGui::Image((ImTextureID)a->texture->getOGLTextureID(), ImVec2(96, 96));
+                ImGui::Image((ImTextureID)a->texture, ImVec2(96, 96));
                 ImGui::SameLine();
                 ImGui::BeginGroup();
                 ImGui::Selectable(a->label.c_str());

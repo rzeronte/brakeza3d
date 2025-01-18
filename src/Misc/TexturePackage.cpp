@@ -26,15 +26,16 @@ int TexturePackage::size() {
     return (int) items.size();
 }
 
-Image *TexturePackage::getTextureByIndex(int i) {
-    return items[i]->texture;
-}
-
 TexturePackage::~TexturePackage()
 {
     for (auto &item : items) {
         delete item;
     }
+}
+
+ImTextureID TexturePackage::getOGLTextureID(TexturePackage &package, std::string label)
+{
+    return (ImTextureID) package.getTextureByLabel(label)->getOGLTextureID();
 }
 
 std::vector<TexturePackageItem *> &TexturePackage::getItems(){
