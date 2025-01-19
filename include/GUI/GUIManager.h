@@ -480,9 +480,9 @@ public:
                                 }
                                 case EngineSetup::LUADataType::VERTEX3D: {
                                     Vertex3D v = lua[dataType.name];
-                                    std::string vTextX = std::string("(x: " + std::to_string(v.x));
-                                    std::string vTextY = std::string("(y: " + std::to_string(v.y));
-                                    std::string vTextZ = std::string("(z: " + std::to_string(v.z));
+                                    std::string vTextX = std::string("x: " + std::to_string(v.x));
+                                    std::string vTextY = std::string("y: " + std::to_string(v.y));
+                                    std::string vTextZ = std::string("z: " + std::to_string(v.z));
                                     ImGui::Text("%s", vTextX.c_str());
                                     ImGui::Text("%s", vTextY.c_str());
                                     ImGui::Text("%s", vTextZ.c_str());
