@@ -478,7 +478,7 @@ struct GUIWidgetMenu
     void drawMesh3DAnimationItemsToLoad(const std::string& folder)
     {
         auto files= Tools::getFolderFiles(folder, "fbx");
-        auto folders = Tools::getFolderFolders(folder);
+        auto folders= Tools::getFolderFolders(folder);
 
         for (const auto & i : folders) {
             auto fullPath = folder + "/" + i;

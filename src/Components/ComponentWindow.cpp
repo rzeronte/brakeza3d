@@ -655,3 +655,8 @@ bool ComponentWindow::isWindowMaximized()
     // Verifica si el flag SDL_WINDOW_MAXIMIZED está activo
     return (flags & SDL_WINDOW_MAXIMIZED) != 0;
 }
+
+void ComponentWindow::setWindowTitle(const char *title)
+{
+    SDL_SetWindowTitle(window, title);
+}

@@ -41,6 +41,7 @@ private:
     std::string currentVariableToAddName;
     std::string currentVariableToCreateCustomShader;
     ImGuizmo::OPERATION guizmoOperation;
+    std::string currentScriptsFolderWidget;
 
     const char *availableMesh3DShaders[4] = {"Edge", "Blink", "ShockWave", "Tint"};
 public:
@@ -63,7 +64,8 @@ public:
             widgetProjectSettings(new GUIWidgetProjectSettings(packageIcons, scriptEditableManager)),
             widgetMenu(new GUIWidgetMenu(packageIcons)),
             widgetToolbar(new GUIWidgetToolbar(packageIcons)),
-            guizmoOperation(ImGuizmo::TRANSLATE)
+            guizmoOperation(ImGuizmo::TRANSLATE),
+            currentScriptsFolderWidget(EngineSetup::get()->SCRIPTS_FOLDER)
     {
         LoadUIIcons();
         loadImagesFolder();
@@ -103,19 +105,35 @@ public:
         packageIcons.addItem(iconsFolder + "particles.png", "particlesIcon");
     }
 
-    void drawScriptFiles(std::vector<std::string> result)
+    void drawScriptsLuaFolderFiles(const std::string& folder)
     {
-        static bool disable_mouse_wheel = false;
-        static bool disable_menu = false;
+        auto files= Tools::getFolderFiles(folder, "lua");
+        auto folders= Tools::getFolderFolders(folder);
 
-        int items_count = (int) result.size();
+        if (folder != EngineSetup::get()->SCRIPTS_FOLDER) {
+            ImGui::Image(TexturePackage::getOGLTextureID(packageIcons, "folderIcon"), ImVec2(16, 16));
+            ImGui::SameLine();
+            if (ImGui::Button("..")) {
+                currentScriptsFolderWidget = Tools::GoBackFromFolder(currentScriptsFolderWidget);
+            }
 
-        for (int n = 0; n < items_count; n++) {
-            const auto& file = result[n];
+        }
+        for (const auto & i : folders) {
+            auto fullPathFolder = folder + "/" + i;
+            ImGui::Image(TexturePackage::getOGLTextureID(packageIcons, "folderIcon"), ImVec2(16, 16));
+            ImGui::SameLine();
+            if (ImGui::Button(i.c_str())) {
+                currentScriptsFolderWidget = fullPathFolder;
+            }
+        }
 
-            ImGui::PushID(n);
-            std::string optionText = std::to_string(n + 1) + ") " + file;
-            std::string fullPath = EngineSetup::get()->SCRIPTS_FOLDER + file;
+        for (int i = 0; i < files.size(); i++) {
+            const auto& file = files[i];
+            auto fullPath = folder + "/" + file;
+            ImGui::PushID(i);
+            ImGui::Image(TexturePackage::getOGLTextureID(packageIcons, "scriptIcon"), ImVec2(16, 16));
+            ImGui::SameLine();
+            std::string optionText = std::to_string(i + 1) + ") " + file;
             if (ImGui::Selectable(optionText.c_str())) {
                 delete scriptEditableManager.script;
                 scriptEditableManager.selectedScriptFilename = fullPath;
@@ -125,14 +143,10 @@ public:
                 );
                 strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
             }
+
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-                ImGui::SetDragDropPayload(
-                    "SCRIPT_ITEM",
-                    fullPath.c_str(),
-                    fullPath.size() + 1
-                );
-                // Esto es lo que se muestra mientras se arrastra
-                ImGui::Text("%s", fullPath.c_str());
+                ImGui::SetDragDropPayload("SCRIPT_ITEM",fullPath.c_str(),fullPath.size() + 1);
+                ImGui::Text("%s", fullPath.c_str()); // Esto es lo que se muestra mientras se arrastra
                 ImGui::EndDragDropSource();
             }
 
@@ -439,9 +453,8 @@ public:
     void drawWidgets()
     {
         if (ImGui::Begin("Scripts")) {
-            std::vector<std::string> result = Tools::getFolderFiles(EngineSetup::get()->SCRIPTS_FOLDER, "lua");
-            std::sort( result.begin(), result.end() );
-            drawScriptFiles(result);
+            //drawScriptFiles(result);
+            drawScriptsLuaFolderFiles(currentScriptsFolderWidget);
         }
         ImGui::End();
 

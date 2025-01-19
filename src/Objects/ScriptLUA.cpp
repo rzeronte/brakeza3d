@@ -199,10 +199,10 @@ void ScriptLUA::setDataTypesFromJSON(cJSON *typesJSON)
         auto value = cJSON_GetObjectItemCaseSensitive(currentType, "value");
 
         if (!existDataType(name, type)){
-            addDataType(name,type,value);
-            Logging::Message("Loading script variable (%s, %s, %s)", name, type, value);
+            addDataType(name, type, value);
+            Logging::Message("Loading script variable (%s, %s)", name, type);
         } else {
-            Logging::Message("Keeping script variable (%s, %s, %s)", name, type, value);
+            Logging::Message("Keeping script variable (%s, %s)", name, type);
         }
     }
 }

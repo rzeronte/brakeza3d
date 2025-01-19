@@ -30,6 +30,12 @@ void SceneLoader::loadScene(const std::string& filename)
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     auto shaderRender = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender();
 
+    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "name") != nullptr) {
+        auto sceneName = cJSON_GetObjectItemCaseSensitive(contentJSON, "name")->valuestring;
+        ComponentsManager::get()->getComponentWindow()->setWindowTitle(sceneName);
+        EngineSetup::get()->ENGINE_TITLE = sceneName;
+    }
+
     cJSON *adsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "ads");
 
     if (adsJSON != nullptr) {
@@ -136,6 +142,8 @@ void SceneLoader::loadScene(const std::string& filename)
 void SceneLoader::saveScene(const std::string &filename)
 {
     cJSON *root = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(root, "name", EngineSetup::get()->ENGINE_TITLE.c_str());
 
     auto ads = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender();
     // illumination ADS

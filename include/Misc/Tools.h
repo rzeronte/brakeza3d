@@ -80,6 +80,8 @@ public:
     static std::vector<std::string> getFolderFolders(const std::string &path);
 
     static std::vector<std::string> getFolderFiles(const std::string &path, const std::string &extension);
+
+    static std::string GoBackFromFolder(const std::string& folder);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

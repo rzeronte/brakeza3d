@@ -1,1 +1,11 @@
-function onStart()    -- print("Load Mesh3D")    -- eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/planet_cube_02.fbx")    -- eye:setCollisionsEnabled(true)    -- eye:setupGhostCollider(CollisionShape.SIMPLE_SHAPE);    -- brakeza:addObject3D(eye, 'myImage3D')endfunction onUpdate()    ee = "Esto es un string actualizado " .. aa .. " veces";    aa = aa + 1end
+function onStart()
+    -- print("Load Mesh3D")
+    -- eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/planet_cube_02.fbx")    
+	-- eye:setCollisionsEnabled(true)
+    -- eye:setupGhostCollider(CollisionShape.SIMPLE_SHAPE);    
+	-- brakeza:addObject3D(eye, 'myImage3D')end
+
+function onUpdate()    
+	ee = "Esto es un string actualizado " .. aa .. " veces";
+    aa = aa + 1
+end

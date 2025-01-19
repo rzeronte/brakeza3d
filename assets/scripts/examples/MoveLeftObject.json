@@ -1,5 +1,5 @@
 {
-	"name":	"MoveLeftObject.lua",
+	"name":	"../assets/scripts/MoveLeftObject.lua",
 	"types":	[{
 			"name":	"speed",
 			"type":	"float",
