@@ -38,8 +38,8 @@ sumado al valor actual de la posición de la cámara.
 
 ## FreeLook
 
-Si activas la opcion ``Free Look`` en Brakeza3D ( Render > Free Look > On), podrás girar el ratón con libertad y moverte con las teclas
- `A`,`S`,`W`,`D` para modificar `velocity`, por tanto, para mover la cámara.
+Si activas la opcion ``Free Look`` en Brakeza3D ( Render > Free Look > On), podrás girar el ratón con libertad y moverte con los
+ `cursores` para modificar `velocity`, por tanto, para mover la cámara.
 
 ## Componente de Camara
 
@@ -50,6 +50,3 @@ Podrás obtener acceso a este componente desde tus scripts LUA y este te dará a
 ```lua
     camera = componentsManager:getComponentCamera():getCamera()
 ```
-
-
-
