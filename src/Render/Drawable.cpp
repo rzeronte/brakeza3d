@@ -261,8 +261,13 @@ void Drawable::drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder)
         Drawable::drawAABB(cubeDest->box, Color::red());
 }
 
-void Drawable::drawObject3DGizmo(Object3D *o, ImGuizmo::OPERATION currentOperation, glm::mat4 objectMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
-{
+void Drawable::drawObject3DGizmo(
+    Object3D *o,
+    ImGuizmo::OPERATION currentOperation,
+    glm::mat4 objectMatrix,
+    glm::mat4 viewMatrix,
+    glm::mat4 projectionMatrix
+) {
     ImGuiIO& io = ImGui::GetIO();
 
     if (!ComponentsManager::get()->getComponentWindow()->isWindowMaximized()) {
@@ -273,20 +278,21 @@ void Drawable::drawObject3DGizmo(Object3D *o, ImGuizmo::OPERATION currentOperati
 
         ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
     }
+
     ImGuizmo::BeginFrame();
     ImGuizmo::SetOrthographic(false);
     ImGuizmo::SetDrawlist(ImGui::GetCurrentWindow()->DrawList);
 
-    static ImGuizmo::MODE currentMode = ImGuizmo::LOCAL;
+    auto objectMatrixManipulated = objectMatrix;
 
     ImGuizmo::Manipulate(
         glm::value_ptr(viewMatrix),
         glm::value_ptr(projectionMatrix),
         currentOperation,
-        currentMode,
-        glm::value_ptr(objectMatrix),
-        NULL,
-        NULL
+        ImGuizmo::LOCAL,
+        glm::value_ptr(objectMatrixManipulated),
+        nullptr,
+        nullptr
     );
 
     if (ImGuizmo::IsOver()) {
@@ -294,17 +300,16 @@ void Drawable::drawObject3DGizmo(Object3D *o, ImGuizmo::OPERATION currentOperati
 
     if (ImGuizmo::IsUsing()) {
         if (currentOperation == ImGuizmo::OPERATION::TRANSLATE) {
-            auto position = glm::vec3(objectMatrix[3]);
+            auto position = glm::vec3(objectMatrixManipulated[3]);
             o->setPosition(Vertex3D(position[0], position[1], position[2]));
         }
 
         if (currentOperation == ImGuizmo::OPERATION::ROTATE) {
-            auto rotationMatrix = glm::mat3(objectMatrix);
-            o->setRotation(M3::fromMat3GLM(rotationMatrix));
+            o->setRotation(M3::fromMat3GLM(objectMatrixManipulated).getTranspose());
         }
 
         if (currentOperation == ImGuizmo::OPERATION::SCALE) {
-            o->setScale((float) glm::length(glm::vec3(objectMatrix[0])));
+            o->setScale((float) glm::length(glm::vec3(objectMatrixManipulated[0])));
         }
     }
 }

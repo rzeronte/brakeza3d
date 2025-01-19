@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
+#include <glm/gtc/type_ptr.hpp>
 #include "../../include/Components/ComponentWindow.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/OpenGL/ShaderOpenGLImage.h"
