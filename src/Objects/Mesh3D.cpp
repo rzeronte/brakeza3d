@@ -146,8 +146,8 @@ void Mesh3D::postUpdate()
 
 void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 {
-    Logging::Message("AssimpLoadGeometryFromFile for %s", fileName.c_str());
-    std::cout << "AssimpLoadGeometryFromFile:" << fileName.c_str() << std::endl;
+    Logging::Message("[Mesh3D] Loading geometry for %s...", fileName.c_str());
+    std::cout << "AssimpLoadGeometryFromFile: " << fileName.c_str() << std::endl;
 
     if (!Tools::fileExists(fileName.c_str())) {
         Logging::Message("Error import 3D file not exist");

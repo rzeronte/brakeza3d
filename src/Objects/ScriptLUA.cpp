@@ -90,20 +90,20 @@ void ScriptLUA::addDataTypeEmpty(const char *name, const char *type)
 {
     LUADataValue LUAValue;
 
-    switch (LUADataTypesMapping[type]) {
-        case LUADataType::INT: {
+    switch (EngineSetup::get()->LUADataTypesMapping[type]) {
+        case EngineSetup::LUADataType::INT: {
             LUAValue = 0;
             break;
         }
-        case LUADataType::FLOAT: {
+        case EngineSetup::LUADataType::FLOAT: {
             LUAValue = 0.0f;
             break;
         }
-        case LUADataType::STRING: {
+        case EngineSetup::LUADataType::STRING: {
             LUAValue = "";
             break;
         }
-        case LUADataType::VERTEX3D: {
+        case EngineSetup::LUADataType::VERTEX3D: {
             LUAValue = Vertex3D();
             break;
         }
@@ -119,20 +119,20 @@ void ScriptLUA::addDataType(const char *name, const char *type, cJSON *value)
 {
     LUADataValue LUAValue;
 
-    switch (LUADataTypesMapping[type]) {
-        case LUADataType::INT: {
+    switch (EngineSetup::get()->LUADataTypesMapping[type]) {
+        case EngineSetup::LUADataType::INT: {
             LUAValue = value->valueint;
             break;
         }
-        case LUADataType::FLOAT: {
+        case EngineSetup::LUADataType::FLOAT: {
             LUAValue = (float) value->valuedouble;
             break;
         }
-        case LUADataType::STRING: {
+        case EngineSetup::LUADataType::STRING: {
             LUAValue = value->valuestring;
             break;
         }
-        case LUADataType::VERTEX3D: {
+        case EngineSetup::LUADataType::VERTEX3D: {
             LUAValue = ToolsJSON::parseVertex3DJSON(value);
             break;
         }
@@ -284,8 +284,8 @@ void ScriptLUA::drawImGuiProperties()
 {
     if (ImGui::TreeNode("Script Settings")) {
         for (auto&  type: dataTypes) {
-            switch (LUADataTypesMapping[type.type]) {
-                case LUADataType::INT: {
+            switch (EngineSetup::get()->LUADataTypesMapping[type.type]) {
+                case EngineSetup::LUADataType::INT: {
                     const float rangeMin = -500000;
                     const float rangeMax = 500000;
 
@@ -295,7 +295,7 @@ void ScriptLUA::drawImGuiProperties()
                     }
                     break;
                 }
-                case LUADataType::STRING: {
+                case EngineSetup::LUADataType::STRING: {
                     std::string valueString = std::get<const char*>(type.value);
                     static char name[256];
                     strncpy(name, valueString.c_str(), sizeof(name));
@@ -306,7 +306,7 @@ void ScriptLUA::drawImGuiProperties()
 
                     break;
                 }
-                case LUADataType::FLOAT: {
+                case EngineSetup::LUADataType::FLOAT: {
                     const float rangeMin = -500000;
                     const float rangeMax = 500000;
                     const float rangeSensibility = 0.1;
@@ -317,7 +317,7 @@ void ScriptLUA::drawImGuiProperties()
                     }
                     break;
                 }
-                case LUADataType::VERTEX3D: {
+                case EngineSetup::LUADataType::VERTEX3D: {
                     if (ImGui::TreeNode(type.name.c_str())) {
                         const float range_min = -50000;
                         const float range_max = 50000;
@@ -348,11 +348,12 @@ void ScriptLUA::drawImGuiProperties()
     }
 }
 
-const std::vector<ScriptLUATypeData> &ScriptLUA::getDataTypes() const {
+const std::vector<ScriptLUATypeData> &ScriptLUA::getDataTypes() const
+{
     return dataTypes;
 }
 
-cJSON *ScriptLUA::getTypesJSON()
+cJSON *ScriptLUA::getTypesJSON() const
 {
     cJSON *scriptJSON = cJSON_CreateObject();
     cJSON_AddStringToObject(scriptJSON, "name", getScriptFilename().c_str());
@@ -364,23 +365,23 @@ cJSON *ScriptLUA::getTypesJSON()
         cJSON_AddStringToObject(typeJSON, "type", dataType.type.c_str());
 
         std::string name = dataType.name + "("+ dataType.type +")";
-        switch (LUADataTypesMapping[dataType.type]) {
-            case LUADataType::INT: {
+        switch (EngineSetup::get()->LUADataTypesMapping[dataType.type]) {
+            case EngineSetup::LUADataType::INT: {
                 int valueInt = std::get<int>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueInt);
                 break;
             }
-            case LUADataType::STRING: {
+            case EngineSetup::LUADataType::STRING: {
                 std::string valueString = std::get<const char *>(dataType.value);
                 cJSON_AddStringToObject(typeJSON, "value", valueString.c_str());
                 break;
             }
-            case LUADataType::FLOAT: {
+            case EngineSetup::LUADataType::FLOAT: {
                 float valueFloat = std::get<float>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueFloat);
                 break;
             }
-            case LUADataType::VERTEX3D: {
+            case EngineSetup::LUADataType::VERTEX3D: {
                 cJSON *vertexJSON = cJSON_CreateObject();
                 auto valueVertex = std::get<Vertex3D>(dataType.value);
                 cJSON_AddNumberToObject(vertexJSON, "x", valueVertex.x);
@@ -404,7 +405,7 @@ const std::string &ScriptLUA::getScriptFilename() const {
     return scriptFilename;
 }
 
-ScriptLUA *ScriptLUA::create(std::string scriptFile)
+ScriptLUA *ScriptLUA::create(const std::string& scriptFile)
 {
     auto typesFile = dataTypesFileFor(scriptFile);
 
@@ -416,10 +417,5 @@ ScriptLUA *ScriptLUA::create(std::string scriptFile)
         return nullptr;
     }
 
-    auto s = new ScriptLUA(
-        scriptFile,
-    typesFile
-    );
-
-    return s;
+    return new ScriptLUA(scriptFile,typesFile);
 }

@@ -892,3 +892,7 @@ void Object3D::runResolveCollisionScripts(Collider *with)
         script->runEnvironment(luaEnvironment, "onCollision", luaValue);
     }
 }
+
+const sol::environment &Object3D::getLuaEnvironment() const {
+    return luaEnvironment;
+}

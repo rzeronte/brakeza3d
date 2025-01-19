@@ -222,6 +222,8 @@ public:
     void updateFromBullet();
     void resolveCollision(Collider *with) override;
     void runResolveCollisionScripts(Collider *with);
+
+    const sol::environment &getLuaEnvironment() const;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

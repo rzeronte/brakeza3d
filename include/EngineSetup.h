@@ -5,6 +5,7 @@
 #include "Objects/Vertex3D.h"
 #include "Misc/Timer.h"
 #include "../imgui/imgui.h"
+#include "Objects/ScriptLUA.h"
 #include <map>
 
 class EngineSetup {
@@ -164,6 +165,20 @@ public:
         LUA_STOP = 0,
         LUA_PLAY = 1,
     } LuaStateScripts;
+
+    enum class LUADataType {
+        INT,
+        FLOAT,
+        VERTEX3D,
+        STRING
+    };
+
+    std::map<std::string, LUADataType> LUADataTypesMapping = {
+        {"int", LUADataType::INT},
+        {"float", LUADataType::FLOAT},
+        {"string", LUADataType::STRING},
+        {"Vertex3D", LUADataType::VERTEX3D},
+    };
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

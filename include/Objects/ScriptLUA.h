@@ -10,15 +10,6 @@
 #include "../../sol/sol.hpp"
 #include "../Misc/cJSON.h"
 
-#define MAX_SOURCE_SIZE (0x100000)
-
-enum class LUADataType {
-    INT,
-    FLOAT,
-    VERTEX3D,
-    STRING
-};
-
 typedef std::variant<int, float, Vertex3D, const char*> LUADataValue;
 
 struct ScriptLUATypeData {
@@ -40,7 +31,7 @@ struct ScriptLUATypeData {
             } else if constexpr (std::is_same_v<T, Vertex3D>) {
                 return std::string("(x: " + std::to_string(arg.x) + ", y: " + std::to_string(arg.x) + ", z: " + std::to_string(arg.z));
             } else if constexpr (std::is_same_v<T, const char*>) {
-                return std::string("Es un string");
+                return "Es un string";
             } else {
                 return "Unknown type";
             }
@@ -51,12 +42,7 @@ struct ScriptLUATypeData {
 class ScriptLUA {
 private:
     bool paused;
-    std::map<std::string, LUADataType> LUADataTypesMapping = {
-        {"int", LUADataType::INT},
-        {"float", LUADataType::FLOAT},
-        {"string", LUADataType::STRING},
-        {"Vertex3D", LUADataType::VERTEX3D},
-    };
+
 public:
     explicit ScriptLUA(const std::string& script, std::string properties);
 
@@ -103,7 +89,7 @@ public:
 
     [[nodiscard]] const std::vector<ScriptLUATypeData> &getDataTypes() const;
 
-    cJSON *getTypesJSON();
+    cJSON *getTypesJSON() const;
 
     [[nodiscard]] const std::string &getScriptFilename() const;
 
@@ -113,7 +99,7 @@ public:
 
     bool existDataType(const char *name, const char *type);
 
-    static ScriptLUA* create(std::string scriptFile);
+    static ScriptLUA* create(const std::string& scriptFile);
 };
 
 
