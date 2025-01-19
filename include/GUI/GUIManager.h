@@ -34,7 +34,7 @@ private:
     GUIWidgetMenu *widgetMenu;
     GUIWidgetToolbar *widgetToolbar;
 
-    TexturePackage packageIcons;
+    TexturePackage icons;
     TexturePackage imagesFolder;
 
     std::string selected_file;
@@ -59,11 +59,11 @@ public:
         :
             gameObjects(gameObjects),
             widgetConsole(new ImGuiConsoleApp(LUAManager::get()->getLua())),
-            widgetObjects3D(new GUIWidgetObjects3D(packageIcons, this->gameObjects)),
-            widgetObject3DProperties(new GUIWidgetObject3DProperties(packageIcons, this->gameObjects, scriptEditableManager)),
-            widgetProjectSettings(new GUIWidgetProjectSettings(packageIcons, scriptEditableManager)),
-            widgetMenu(new GUIWidgetMenu(packageIcons)),
-            widgetToolbar(new GUIWidgetToolbar(packageIcons)),
+            widgetObjects3D(new GUIWidgetObjects3D(icons, this->gameObjects)),
+            widgetObject3DProperties(new GUIWidgetObject3DProperties(icons, this->gameObjects, scriptEditableManager)),
+            widgetProjectSettings(new GUIWidgetProjectSettings(icons, scriptEditableManager)),
+            widgetMenu(new GUIWidgetMenu(icons)),
+            widgetToolbar(new GUIWidgetToolbar(icons)),
             guizmoOperation(ImGuizmo::TRANSLATE),
             currentScriptsFolderWidget(EngineSetup::get()->SCRIPTS_FOLDER)
     {
@@ -73,36 +73,39 @@ public:
 
     void LoadUIIcons()
     {
-        auto iconsFolder = EngineSetup::get()->ICONS_FOLDER + "interface/"; 
-        packageIcons.addItem(iconsFolder + "stop.png", "stopIcon");
-        packageIcons.addItem(iconsFolder + "play.png", "playIcon");
-        packageIcons.addItem(iconsFolder + "reload.png", "reloadIcon");
-        packageIcons.addItem(iconsFolder + "rebuild.png", "rebuildIcon");
-        packageIcons.addItem(iconsFolder + "object.png", "objectIcon");
-        packageIcons.addItem(iconsFolder + "light.png", "lightIcon");
-        packageIcons.addItem(iconsFolder + "script.png", "scriptIcon");
-        packageIcons.addItem(iconsFolder + "swarm.png", "swarmIcon");
-        packageIcons.addItem(iconsFolder + "mesh.png", "meshIcon");
-        packageIcons.addItem(iconsFolder + "folder.png", "folderIcon");
-        packageIcons.addItem(iconsFolder + "player.png", "playerIcon");
-        packageIcons.addItem(iconsFolder + "BillboardAnimation8DirectionsIcon.png", "BillboardAnimation8DirectionsIcon");
-        packageIcons.addItem(iconsFolder + "Image2DAnimationIcon.png", "Image2DAnimationIcon");
-        packageIcons.addItem(iconsFolder + "Mesh3DAnimationIcon.png", "Mesh3DAnimationIcon");
-        packageIcons.addItem(iconsFolder + "Image2DIcon.png", "Image2DIcon");
-        packageIcons.addItem(iconsFolder + "Image3DIcon.png", "Image3DIcon");
-        packageIcons.addItem(iconsFolder + "BillboardAnimationIcon.png", "BillboardAnimationIcon");
-        packageIcons.addItem(iconsFolder + "remove.png", "removeIcon");
-        packageIcons.addItem(iconsFolder + "pause.png", "pauseIcon");
-        packageIcons.addItem(iconsFolder + "lock.png", "lockIcon");
-        packageIcons.addItem(iconsFolder + "unlock.png", "unlockIcon");
-        packageIcons.addItem(iconsFolder + "add.png", "addIcon");
-        packageIcons.addItem(iconsFolder + "scene.png", "sceneIcon");
-        packageIcons.addItem(iconsFolder + "save.png", "saveIcon");
-        packageIcons.addItem(iconsFolder + "gear.png", "gearIcon");
-        packageIcons.addItem(iconsFolder + "ghost.png", "ghostIcon");
-        packageIcons.addItem(iconsFolder + "shader.png", "shaderIcon");
-        packageIcons.addItem(iconsFolder + "spotlight.png", "spotLightIcon");
-        packageIcons.addItem(iconsFolder + "particles.png", "particlesIcon");
+        auto iconsFolder = EngineSetup::get()->ICONS_FOLDER + "interface/";
+        icons.addItem(iconsFolder + "translate.png", "translateIcon");
+        icons.addItem(iconsFolder + "rotate.png", "rotateIcon");
+        icons.addItem(iconsFolder + "scale.png", "scaleIcon");
+        icons.addItem(iconsFolder + "stop.png", "stopIcon");
+        icons.addItem(iconsFolder + "play.png", "playIcon");
+        icons.addItem(iconsFolder + "reload.png", "reloadIcon");
+        icons.addItem(iconsFolder + "rebuild.png", "rebuildIcon");
+        icons.addItem(iconsFolder + "object.png", "objectIcon");
+        icons.addItem(iconsFolder + "light.png", "lightIcon");
+        icons.addItem(iconsFolder + "script.png", "scriptIcon");
+        icons.addItem(iconsFolder + "swarm.png", "swarmIcon");
+        icons.addItem(iconsFolder + "mesh.png", "meshIcon");
+        icons.addItem(iconsFolder + "folder.png", "folderIcon");
+        icons.addItem(iconsFolder + "player.png", "playerIcon");
+        icons.addItem(iconsFolder + "BillboardAnimation8DirectionsIcon.png", "BillboardAnimation8DirectionsIcon");
+        icons.addItem(iconsFolder + "Image2DAnimationIcon.png", "Image2DAnimationIcon");
+        icons.addItem(iconsFolder + "Mesh3DAnimationIcon.png", "Mesh3DAnimationIcon");
+        icons.addItem(iconsFolder + "Image2DIcon.png", "Image2DIcon");
+        icons.addItem(iconsFolder + "Image3DIcon.png", "Image3DIcon");
+        icons.addItem(iconsFolder + "BillboardAnimationIcon.png", "BillboardAnimationIcon");
+        icons.addItem(iconsFolder + "remove.png", "removeIcon");
+        icons.addItem(iconsFolder + "pause.png", "pauseIcon");
+        icons.addItem(iconsFolder + "lock.png", "lockIcon");
+        icons.addItem(iconsFolder + "unlock.png", "unlockIcon");
+        icons.addItem(iconsFolder + "add.png", "addIcon");
+        icons.addItem(iconsFolder + "scene.png", "sceneIcon");
+        icons.addItem(iconsFolder + "save.png", "saveIcon");
+        icons.addItem(iconsFolder + "gear.png", "gearIcon");
+        icons.addItem(iconsFolder + "ghost.png", "ghostIcon");
+        icons.addItem(iconsFolder + "shader.png", "shaderIcon");
+        icons.addItem(iconsFolder + "spotlight.png", "spotLightIcon");
+        icons.addItem(iconsFolder + "particles.png", "particlesIcon");
     }
 
     void drawScriptsLuaFolderFiles(const std::string& folder)
@@ -111,7 +114,7 @@ public:
         auto folders= Tools::getFolderFolders(folder);
 
         if (folder != EngineSetup::get()->SCRIPTS_FOLDER) {
-            ImGui::Image(TexturePackage::getOGLTextureID(packageIcons, "folderIcon"), ImVec2(16, 16));
+            ImGui::Image(TexturePackage::getOGLTextureID(icons, "folderIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::Button("..")) {
                 currentScriptsFolderWidget = Tools::GoBackFromFolder(currentScriptsFolderWidget);
@@ -120,7 +123,7 @@ public:
         }
         for (const auto & i : folders) {
             auto fullPathFolder = folder + "/" + i;
-            ImGui::Image(TexturePackage::getOGLTextureID(packageIcons, "folderIcon"), ImVec2(16, 16));
+            ImGui::Image(TexturePackage::getOGLTextureID(icons, "folderIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::Button(i.c_str())) {
                 currentScriptsFolderWidget = fullPathFolder;
@@ -131,7 +134,7 @@ public:
             const auto& file = files[i];
             auto fullPath = folder + "/" + file;
             ImGui::PushID(i);
-            ImGui::Image(TexturePackage::getOGLTextureID(packageIcons, "scriptIcon"), ImVec2(16, 16));
+            ImGui::Image(TexturePackage::getOGLTextureID(icons, "scriptIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             std::string optionText = std::to_string(i + 1) + ") " + file;
             if (ImGui::Selectable(optionText.c_str())) {
@@ -303,14 +306,14 @@ public:
             auto title = std::to_string(i+1) + ") " + file;
             if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                 ImGui::PushID(i);
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "sceneIcon"), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "sceneIcon"), ImVec2(14, 14))) {
                     SceneLoader::clearScene();
                     ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(EngineSetup::get()->SCENES_FOLDER + file);
                 }
 
                 ImGui::SameLine();
 
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "saveIcon"), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "saveIcon"), ImVec2(14, 14))) {
                     SceneLoader::saveScene(file);
                 }
                 ImGui::SameLine();
@@ -346,23 +349,23 @@ public:
         for (int i = 0; i < shaders.size(); i++) {
             auto s = shaders[i];
             ImGui::PushID(i);
-            ImGui::Image(TexturePackage::getOGLTextureID(packageIcons, "shaderIcon"), ImVec2(26, 26));
+            ImGui::Image(TexturePackage::getOGLTextureID(icons, "shaderIcon"), ImVec2(26, 26));
             ImGui::SameLine(46);
             if (!s->isEnabled()) {
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "unlockIcon"), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "unlockIcon"), ImVec2(14, 14))) {
                     s->setEnabled(true);
                 }
             } else {
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "lockIcon"), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "lockIcon"), ImVec2(14, 14))) {
                     s->setEnabled(false);
                 }
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "rebuildIcon"), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "rebuildIcon"), ImVec2(14, 14))) {
                 s->compile();
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "removeIcon"), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
                 ComponentsManager::get()->getComponentRender()->removeShader(i);
             }
             ImGui::SameLine();
@@ -384,7 +387,7 @@ public:
                 auto title = std::to_string(i+1) + ") " + file;
                 if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                     ImGui::PushID(i);
-                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(packageIcons, "shaderIcon"), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "shaderIcon"), ImVec2(14, 14))) {
                         std::string name = Tools::getFilenameWithoutExtension(file);
                         ComponentsManager::get()->getComponentRender()->addShaderToScene(
                                 new ShaderOpenGLCustom(name, EngineSetup::get()->CUSTOM_SHADERS_FOLDER + file)
@@ -657,7 +660,7 @@ public:
     }
 
     TexturePackage *getImGuiTextures() {
-        return &packageIcons;
+        return &icons;
     }
 
     void setSelectedObjectIndex(int selectedObjectIndex) {

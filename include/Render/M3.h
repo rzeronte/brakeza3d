@@ -84,6 +84,7 @@ public:
     static M3 fromMat3Bullet(const btMatrix3x3& m);
 
 
+    glm::mat3 toGLMMat3();
 };
 
 

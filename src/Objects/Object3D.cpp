@@ -744,20 +744,12 @@ void Object3D::createFromJSON(cJSON *object)
 glm::mat4 Object3D::getModelMatrix()
 {
     glm::vec3 scaled(scale);
-    glm::vec3 rotated(
-        glm::radians(getRotation().getPitchDegree()),
-        glm::radians(getRotation().getYawDegree()),
-        glm::radians(getRotation().getRollDegree())
-    );
     glm::vec3 translated = position.toGLM();
+    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), translated);
+    glm::mat4 rotationMatrix = glm::mat4(getRotation().toGLMMat3());
+    glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scaled);
 
-    glm::mat4 modelMatrix =
-        glm::translate(glm::mat4(1.0f), translated) *
-        (glm::eulerAngleX(rotated.x) * glm::eulerAngleY(rotated.y) * glm::eulerAngleZ(rotated.z)) *
-        glm::scale(glm::mat4(1.0f), scaled)
-    ;
-
-    return modelMatrix;
+    return translationMatrix * rotationMatrix * scaleMatrix;
 }
 
 void Object3D::addMesh3DShader(FXEffectOpenGL *shader)

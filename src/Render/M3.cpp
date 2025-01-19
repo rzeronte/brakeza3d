@@ -262,6 +262,11 @@ btMatrix3x3 M3::toBulletMat3()
     return btMatrix3x3(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
 }
 
+glm::mat3 M3::toGLMMat3()
+{
+    return glm::mat3(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
+}
+
 M3 M3::fromMat3GLM(const glm::mat3& glmMatrix)
 {
     return {

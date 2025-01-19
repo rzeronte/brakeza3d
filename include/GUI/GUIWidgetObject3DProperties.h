@@ -63,15 +63,15 @@ struct GUIWidgetObject3DProperties {
                 ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, o->getTypeIcon()), ImVec2(16, 16));
 
                 ImGui::Separator();
-                if (ImGui::Button("Move")) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "translateIcon"), ImVec2(32, 32))) {
                     operation = ImGuizmo::OPERATION::TRANSLATE;
                 }
                 ImGui::SameLine();
-                if (ImGui::Button("Rotate")) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "rotateIcon"), ImVec2(32, 32))) {
                     operation = ImGuizmo::OPERATION::ROTATE;
                 }
                 ImGui::SameLine();
-                if (ImGui::Button("Scale")) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "scaleIcon"), ImVec2(32, 32))) {
                     operation = ImGuizmo::OPERATION::SCALE;
                 }
                 ImGui::Separator();
