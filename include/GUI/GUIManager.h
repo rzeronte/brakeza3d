@@ -155,13 +155,15 @@ public:
             currentVariableToAddName = name;
         }
 
-        const char* items[] = { "int", "float", "Vertex3D" };
+        const char* items[] = { "int", "float", "string", "Vertex3D" };
         static int selectedItem = 0;
         ImGui::Combo("Type", &selectedItem, items, IM_ARRAYSIZE(items));
 
-        if (ImGui::Button(std::string("Create").c_str())) {
-            LUADataValue LUAValue;
-            scriptEditableManager.script->addDataTypeEmpty(currentVariableToAddName.c_str(), items[selectedItem]);
+        if (ImGui::Button(std::string("Create variable").c_str())) {
+            if (!currentVariableToAddName.empty()) {
+                LUADataValue LUAValue;
+                scriptEditableManager.script->addDataTypeEmpty(currentVariableToAddName.c_str(), items[selectedItem]);
+            }
         }
 
         ImGui::Separator();
@@ -207,7 +209,6 @@ public:
 
         const float range_min_mouse_sensitivity = 0;
         const float range_max_mouse_sensitivity = 3;
-
 
         std::string position_text = "Position##1";
         std::string rotation_text = "Orientation##2";
@@ -317,9 +318,11 @@ public:
         }
 
         if (ImGui::Button(std::string("Create custom shader").c_str())) {
-            ComponentsManager::get()->getComponentRender()->addShaderToScene(
+            if (!currentVariableToCreateCustomShader.empty()) {
+                ComponentsManager::get()->getComponentRender()->addShaderToScene(
                     ShaderOpenGLCustom::createEmptyCustomShader(currentVariableToCreateCustomShader)
-            );
+                );
+            }
         }
 
         ImGui::Separator();
@@ -357,7 +360,6 @@ public:
             ImGui::PopID();
         }
 
-        ImGui::Separator();
         if (ImGui::Begin("Custom Shaders")) {
             std::vector<std::string> result = Tools::getFolderFiles(EngineSetup::get()->CUSTOM_SHADERS_FOLDER, "fs");
 
@@ -451,7 +453,58 @@ public:
         }
         ImGui::End();
 
-        if (ImGui::Begin("Variables")) {
+        if (ImGui::Begin("Object variables")) {
+            bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
+
+            if (hasSelectedIndex) {
+                static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+                if (ImGui::BeginTable("ObjectVariablesTable", 2, flags)) {
+                    auto o = gameObjects[selectedObjectIndex];
+                    auto scripts = o->getScripts();
+                    auto &lua = o->getLuaEnvironment();
+
+                    for (auto currentScript : scripts) {
+                        for (auto & dataType : currentScript->dataTypes) {
+                            ImGui::TableNextRow();
+
+                            ImGui::TableSetColumnIndex(0);
+                            ImGui::Text("%s", std::string(dataType.name).c_str());
+
+                            ImGui::TableSetColumnIndex(1);
+                            switch (EngineSetup::get()->LUADataTypesMapping[dataType.type]) {
+                                case EngineSetup::LUADataType::INT:
+                                case EngineSetup::LUADataType::FLOAT:
+                                case EngineSetup::LUADataType::STRING: {
+                                    ImGui::Text("%s", std::string(lua[dataType.name]).c_str());
+                                    break;
+                                }
+                                case EngineSetup::LUADataType::VERTEX3D: {
+                                    Vertex3D v = lua[dataType.name];
+                                    std::string vTextX = std::string("(x: " + std::to_string(v.x));
+                                    std::string vTextY = std::string("(y: " + std::to_string(v.y));
+                                    std::string vTextZ = std::string("(z: " + std::to_string(v.z));
+                                    ImGui::Text("%s", vTextX.c_str());
+                                    ImGui::Text("%s", vTextY.c_str());
+                                    ImGui::Text("%s", vTextZ.c_str());
+                                    break;
+                                }
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+
+                    if ((int) scripts.size() <= 0) {
+                        ImGui::Text("%s", "There are not variables yet");
+                    }
+
+                    ImGui::EndTable();
+                }
+            }
+        }
+        ImGui::End();
+
+        if (ImGui::Begin("Global variables")) {
             static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
             if (ImGui::BeginTable("GlobalVariablesTable", 2, flags)) {
                 auto scripts = ComponentsManager::get()->getComponentRender()->getLUAScripts();
@@ -468,6 +521,7 @@ public:
                         ImGui::Text("%s", std::string(lua[dataType.name]).c_str());
                     }
                 }
+
                 if ((int) scripts.size() <= 0) {
                     ImGui::Text("%s", "There are not variables yet");
                 }
@@ -525,7 +579,7 @@ public:
         ImGui::Separator();
 
         static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-        ImGui::InputTextMultiline("##source", scriptEditableManager.editableSource, IM_ARRAYSIZE(scriptEditableManager.editableSource), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 40), flags);
+        ImGui::InputTextMultiline("##source", scriptEditableManager.editableSource, IM_ARRAYSIZE(scriptEditableManager.editableSource), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 25), flags);
         if (ImGui::Button(std::string("Save").c_str())) {
             scriptEditableManager.script->updateScriptCodeWith(scriptEditableManager.editableSource);
             scriptEditableManager.script->reloadScriptCode();
@@ -573,14 +627,14 @@ public:
         ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 
+        drawWidgets();
+
         bool p_open = true;
         widgetConsole->Draw("Logging/Console", &p_open);
         widgetObjects3D->draw(selectedObjectIndex);
         widgetObject3DProperties->draw(selectedObjectIndex, guizmoOperation);
         widgetMenu->draw(finish);
         widgetToolbar->draw();
-
-        drawWidgets();
 
         ImGui::End();
     }
