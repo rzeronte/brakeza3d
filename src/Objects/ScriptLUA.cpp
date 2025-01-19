@@ -173,10 +173,10 @@ void ScriptLUA::reloadEnvironment(sol::environment &environment)
 
     parseTypesFromFileAttributes();
 
-    dataTypes = dataTypesDefaultValues;
+    //dataTypes = dataTypesDefaultValues;
 
     for (const auto& type : dataTypes) {
-        Logging::Message("reloadEnvironment ('%s' => '%s')", type.name.c_str(), type.type.c_str());
+        Logging::Message("reloadEnvironment ('%s' => '%s' => '%s')", type.name.c_str(), type.type.c_str(), ScriptLUATypeData::toString(type.value).c_str());
         environment[type.name] = type.value;
     }
 }

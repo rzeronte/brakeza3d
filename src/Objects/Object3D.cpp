@@ -415,6 +415,7 @@ void Object3D::drawImGuiProperties()
 
     static char name[256];
     strncpy(name, label.c_str(), sizeof(name));
+    ImGui::SetNextItemWidth(125.0f);
     ImGui::InputText("Name##nameObject", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
     if (ImGui::IsItemEdited()) {
         setLabel(name);
