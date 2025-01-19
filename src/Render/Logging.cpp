@@ -88,7 +88,7 @@ void Logging::head(const char *message, ...)
     va_end(args);
 
     if ( Brakeza3D::get()->getManagerGui() != nullptr) {
-        Brakeza3D::get()->getManagerGui()->getConsole()->AddLog(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> %s", buffer);
+        Brakeza3D::get()->getManagerGui()->getConsole()->AddLog("#> %s", buffer);
     } else {
         std::cout << buffer << std::endl;
     }
