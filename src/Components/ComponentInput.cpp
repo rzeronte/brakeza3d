@@ -85,6 +85,14 @@ void ComponentInput::handleMouse(SDL_Event *event) const {
             ComponentsManager::get()->getComponentCamera()->getCamera()->Pitch((float) event->motion.yrel);
         }
     }
+
+    if (event->type == SDL_MOUSEWHEEL) {
+        if (event->wheel.y > 0) {
+            ComponentsManager::get()->getComponentCamera()->getCamera()->MoveForward();
+        } else if (event->wheel.y < 0) {
+            ComponentsManager::get()->getComponentCamera()->getCamera()->MoveBackward();
+        }
+    }
 }
 
 void ComponentInput::handleKeyboardMovingCamera() const

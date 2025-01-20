@@ -489,3 +489,24 @@ std::string Tools::GoBackFromFolder(const std::string& folder)
     // Convertir la ruta de nuevo a string
     return path.string() + "/";
 }
+
+void Tools::ImGuiVertex3D(
+    const char *label,
+    const char *labelX,
+    const char *labelY,
+    const char *labelZ,
+    void *data,
+    float sensibility,
+    float min,
+    float max
+)
+{
+    auto v = (Vertex3D *) data;
+
+    if (ImGui::TreeNode(label)) {
+        ImGui::DragScalar(labelX, ImGuiDataType_Float, &v->x, sensibility ,&min, &max, "%f", 1.0f);
+        ImGui::DragScalar(labelY, ImGuiDataType_Float, &v->y, sensibility ,&min, &max, "%f", 1.0f);
+        ImGui::DragScalar(labelZ, ImGuiDataType_Float, &v->z, sensibility ,&min, &max, "%f", 1.0f);
+        ImGui::TreePop();
+    }
+}
