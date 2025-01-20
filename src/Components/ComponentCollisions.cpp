@@ -177,7 +177,6 @@ void ComponentCollisions::demoProjectile(int type)
         (float) Tools::random(0, 180),
         (float) Tools::random(0, 180)
     );
-    projectile->setFlatTextureColor(true);
     projectile->setPosition( camera->getPosition() + direction.getScaled(1));
     projectile->setEnabled(true);
     projectile->makeProjectileRigidBody(
@@ -186,8 +185,8 @@ void ComponentCollisions::demoProjectile(int type)
         EngineSetup::get()->PROJECTILE_DEMO_IMPULSE,
         EngineSetup::get()->PROJECTILE_DEMO_ACCURACY,
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-        btBroadphaseProxy::DefaultFilter,
-        btBroadphaseProxy::DefaultFilter
+        EngineSetup::collisionGroups::AllFilter,
+        EngineSetup::collisionGroups::AllFilter
     );
 
     Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("demoProjectile"));
