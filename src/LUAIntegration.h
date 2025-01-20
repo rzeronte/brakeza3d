@@ -77,6 +77,9 @@ void LUAIntegration(sol::state &lua)
             "setCollisionsEnabled", &Object3D::setCollisionsEnabled,
             "setupGhostCollider", &Object3D::setupGhostCollider,
             "setupRigidBodyCollider", &Object3D::setupRigidBodyCollider,
+            "applyCentralForce", &Object3D::applyCentralForce,
+            "applyCentralImpulse", &Object3D::applyCentralImpulse,
+            "applyImpulse", &Object3D::applyImpulse,
             "getLocalScriptVar", &Object3D::getLocalScriptVar,
             "attachScript",  &Object3D::attachScript,
             "reloadScriptsEnvironment", &Object3D::reloadScriptsEnvironment

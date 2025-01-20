@@ -18,6 +18,8 @@
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
+#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
+#include <BulletCollision/CollisionShapes/btCompoundShape.h>
 
 class Mesh3D : public Object3D {
 private:
@@ -121,12 +123,15 @@ public:
 
     void makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) override;
     void makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
+    void makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
 
     void setupGhostCollider(CollisionShape modeShape) override;
     void setupRigidBodyCollider(CollisionShape modeShape) override;
     void drawImGuiCollisionShapeSelector() override;
 
-    btBvhTriangleMeshShape *getTriangleMeshFromMesh3D();
+    btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia);
+
+    btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia);
 };
 
 #endif //SDL2_3D_ENGINE_MESH_H

@@ -145,9 +145,10 @@ public:
     float PLAYER_CAPSULE_RADIUS = 16.00f;
     float PLAYER_CAPSULE_HEIGHT = 32.00f;
 
-    float PROJECTILE_DEMO_IMPULSE = 50;
+    float PROJECTILE_DEMO_IMPULSE = 500;
     float PROJECTILE_DEMO_ACCURACY = 100;
-    float PROJECTILE_DEMO_MASS = 1;
+    float PROJECTILE_DEMO_MASS = 100;
+    bool PROJECTILE_SIMPLE_MESH = true;
 
     bool CLICK_SELECT_OBJECT3D = false;
     bool GAMEPAD_CONTROLLER_ENABLED = true;
@@ -178,6 +179,16 @@ public:
         {"float", LUADataType::FLOAT},
         {"string", LUADataType::STRING},
         {"Vertex3D", LUADataType::VERTEX3D},
+    };
+
+    enum collisionGroups {
+        Player = 1,
+        Enemy = 2,
+        Projectile = 4,
+        ProjectileEnemy = 8,
+        Health = 16,
+        Weapon = 32,
+        AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
     };
 };
 

@@ -807,7 +807,7 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     this->body = new btRigidBody(cInfo);
     this->body->activate(true);
     this->body->setUserPointer(this);
-    this->body->setRestitution(0.5);
+    this->body->setRestitution(0.1);
 
     world->addRigidBody(this->body, collisionGroup, collisionMask);
 }
@@ -832,13 +832,11 @@ void Object3D::updateFromBullet()
 
     btTransform t;
     body->getMotionState()->getWorldTransform(t);
-    btVector3 pos = t.getOrigin();
 
-    setPosition(Vertex3D::fromBullet(pos));
+    setPosition(Vertex3D::fromBullet(t.getOrigin()));
 
-    auto rotation = t.getRotation();
     btMatrix3x3 matrixRotation;
-    matrixRotation.setRotation(rotation);
+    matrixRotation.setRotation(t.getRotation());
 
     setRotation(M3::fromMat3Bullet(matrixRotation));
 }

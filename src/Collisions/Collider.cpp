@@ -156,13 +156,12 @@ void Collider::setupGhostCollider(CollisionShape mode)
     setCollisionMode(CollisionMode::GHOST);
     setCollisionShape(mode);
 
-
     if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
         makeSimpleGhostBody(
             simpleShapeSize,
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            btBroadphaseProxy::DefaultFilter,
-            btBroadphaseProxy::DefaultFilter
+            EngineSetup::collisionGroups::AllFilter,
+            EngineSetup::collisionGroups::AllFilter
         );
     }
 }
@@ -180,8 +179,8 @@ void Collider::setupRigidBodyCollider(CollisionShape shapeMode)
         makeSimpleRigidBody(
             mass,
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            btBroadphaseProxy::DefaultFilter,
-            btBroadphaseProxy::DefaultFilter
+            EngineSetup::collisionGroups::AllFilter,
+            EngineSetup::collisionGroups::AllFilter
         );
     }
 }
@@ -200,4 +199,23 @@ float Collider::getMass() const {
 
 void Collider::setMass(float mass) {
     Collider::mass = mass;
+}
+
+void Collider::applyCentralForce(Vertex3D f)
+{
+    if (getCollisionMode() != CollisionMode::BODY) return;
+    body->applyCentralForce(f.toBullet());
+}
+
+void Collider::applyCentralImpulse(Vertex3D f)
+{
+    if (getCollisionMode() != CollisionMode::BODY) return;
+    body->applyCentralImpulse(f.toBullet());
+}
+
+void Collider::applyImpulse(Vertex3D f, Vertex3D rel)
+{
+    btVector3 impulse = f.toBullet();
+    btVector3 rel_pos = rel.toBullet();
+    body->applyImpulse(impulse, rel_pos);
 }

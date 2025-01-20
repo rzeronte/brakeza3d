@@ -653,8 +653,8 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
         makeRigidBodyFromTriangleMesh(
             mass,
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            btBroadphaseProxy::DefaultFilter,
-            btBroadphaseProxy::DefaultFilter
+            EngineSetup::collisionGroups::AllFilter,
+            EngineSetup::collisionGroups::AllFilter
         );
     }
 }
@@ -721,39 +721,73 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
     }
 }
 
+void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+{
+    setMass(mass);
+
+    btTransform transformation;
+    transformation.setIdentity();
+    transformation.setOrigin(getPosition().toBullet());
+
+    btVector3 inertia(0, 0, 0);
+
+    btRigidBody::btRigidBodyConstructionInfo info(
+        mass,
+        new btDefaultMotionState(transformation),
+        getConvexHullShapeFromMesh(inertia),
+        inertia
+    );
+
+    body = new btRigidBody(info);
+    body->activate(true);
+    body->setContactProcessingThreshold(BT_LARGE_FLOAT);
+    body->setUserPointer(this);
+    this->body->setRestitution(0.5);
+    body->setActivationState(DISABLE_DEACTIVATION);
+
+    if (mass <= 0) {
+        body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
+    }
+
+    world->addRigidBody(this->body, collisionGroup, collisionMask);
+}
+
 void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
     setMass(mass);
 
     btTransform transformation;
     transformation.setIdentity();
-
-    btBvhTriangleMeshShape *triangleMeshShape = this->getTriangleMeshFromMesh3D();
-
     transformation.setOrigin(getPosition().toBullet());
+
+    btVector3 inertia(0, 0, 0);
 
     btRigidBody::btRigidBodyConstructionInfo info(
         mass,
         new btDefaultMotionState(transformation),
-        triangleMeshShape,
-        btVector3(0, 0, 0)
+        getTriangleMeshFromMesh3D(inertia),
+        inertia
     );
 
-    this->body = new btRigidBody(info);
-    this->body->activate(true);
-    this->body->setContactProcessingThreshold(BT_LARGE_FLOAT);
-    this->body->setUserPointer(this);
+    body = new btRigidBody(info);
+    body->activate(true);
+    body->setContactProcessingThreshold(BT_LARGE_FLOAT);
+    body->setUserPointer(this);
+    body->setActivationState(DISABLE_DEACTIVATION);
+    body->setRestitution(0.1);
+
+    if (mass <= 0) {
+        body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
+    }
 
     world->addRigidBody(this->body, collisionGroup, collisionMask);
 }
 
-btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D()
+btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia)
 {
     auto *triangleMesh = new btTriangleMesh();
-    updateBoundingBox();
 
     for (auto & modelTriangle : this->modelTriangles) {
-
         btVector3 a = modelTriangle->A.toBullet();
         btVector3 b = modelTriangle->B.toBullet();
         btVector3 c = modelTriangle->C.toBullet();
@@ -765,5 +799,29 @@ btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D()
         triangleMesh->addTriangle(a, b, c, false);
     }
 
-    return new btBvhTriangleMeshShape(triangleMesh, true, true);
+    auto s = new btBvhTriangleMeshShape(triangleMesh, true, true);
+    s->calculateLocalInertia(mass, inertia);
+
+    return s;
+}
+
+btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia)
+{
+    auto *convexHull = new btConvexHullShape();
+    for (auto &modelTriangle: this->modelTriangles) {
+        btVector3 a = modelTriangle->A.toBullet();
+        btVector3 b = modelTriangle->B.toBullet();
+        btVector3 c = modelTriangle->C.toBullet();
+
+        a.setY(-a.getY());
+        b.setY(-b.getY());
+        c.setY(-c.getY());
+
+        convexHull->addPoint(a);
+        convexHull->addPoint(b);
+        convexHull->addPoint(c);
+    }
+    convexHull->calculateLocalInertia(mass, inertia);
+
+    return convexHull;
 }

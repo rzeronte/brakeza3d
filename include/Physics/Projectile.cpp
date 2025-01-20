@@ -29,7 +29,13 @@ void Projectile::makeProjectileRigidBody(
     int collisionMask
 )
 {
-    Mesh3D::makeSimpleRigidBody(mass, world, collisionGroup, collisionMask);
+    if (EngineSetup::get()->PROJECTILE_SIMPLE_MESH) {
+        Mesh3D::makeSimpleRigidBody(mass, world, collisionGroup, collisionMask);
+    } else {
+        Mesh3D::makeRigidBodyFromTriangleMesh(mass, world, collisionGroup, collisionMask);
+    }
+    //Mesh3D::makeSimpleRigidBody(mass, world, collisionGroup, collisionMask);
+    //Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(mass, world, collisionGroup, collisionMask);
 
     direction = direction.getScaled(forceImpulse);
     direction.x += (float) Tools::random((int)(-100 + accuracy), (int)(100 - accuracy)) / 100;

@@ -62,7 +62,6 @@ public:
     [[nodiscard]] btPairCachingGhostObject *getGhostObject() const;
     [[nodiscard]] btRigidBody *getRigidBody() const;
 
-
     void drawImGuiCollisionModeSelector();
 
     virtual void drawImGuiCollisionShapeSelector();
@@ -79,6 +78,10 @@ public:
     [[nodiscard]] float getMass() const;
 
     void setMass(float mass);
+
+    void applyImpulse(Vertex3D f, Vertex3D rel);
+    void applyCentralForce(Vertex3D f);
+    void applyCentralImpulse(Vertex3D f);
 };
 
 
