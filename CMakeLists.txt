@@ -203,6 +203,7 @@ add_executable(Brakeza3D
     include/Physics/Projectile.h                    include/Physics/Projectile.cpp
 
     include/GUI/GUIConsole.h
+    include/GUI/GUIWidgetProjectSettings.h
     include/GUI/GUIWidgetMenu.h
     include/GUI/GUIWidgetToolbar.h
     include/GUI/GUIWidgetObjects3D.h                include/GUI/GUIWidgetObject3DProperties.h

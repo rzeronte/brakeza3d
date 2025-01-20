@@ -269,7 +269,15 @@ void Drawable::drawObject3DGizmo(
     glm::mat4 projectionMatrix
 ) {
     ImGuiIO& io = ImGui::GetIO();
-    ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+    if (!ComponentsManager::get()->getComponentWindow()->isWindowMaximized()) {
+        ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+    } else {
+        auto windowWidth = (float) ImGui::GetWindowWidth();
+        auto windowHeight = (float) ImGui::GetWindowHeight();
+
+        ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+    }
 
     ImGuizmo::BeginFrame();
     ImGuizmo::SetOrthographic(false);
@@ -286,6 +294,9 @@ void Drawable::drawObject3DGizmo(
         nullptr,
         nullptr
     );
+
+    if (ImGuizmo::IsOver()) {
+    }
 
     if (ImGuizmo::IsUsing()) {
         if (currentOperation == ImGuizmo::OPERATION::TRANSLATE) {

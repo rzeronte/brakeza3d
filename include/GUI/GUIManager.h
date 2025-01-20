@@ -16,6 +16,7 @@
 #include "../FXEffect/FXShockWave.h"
 #include "GUIWidgetObjects3D.h"
 #include "GUIWidgetObject3DProperties.h"
+#include "GUIWidgetProjectSettings.h"
 #include "GUIWidgetMenu.h"
 #include "GUIWidgetToolbar.h"
 
@@ -29,6 +30,7 @@ private:
     ImGuiConsoleApp *widgetConsole;
     GUIWidgetObjects3D *widgetObjects3D;
     GUIWidgetObject3DProperties *widgetObject3DProperties;
+    GUIWidgetProjectSettings *widgetProjectSettings;
     GUIWidgetMenu *widgetMenu;
     GUIWidgetToolbar *widgetToolbar;
 
@@ -59,6 +61,7 @@ public:
             widgetConsole(new ImGuiConsoleApp(LUAManager::get()->getLua())),
             widgetObjects3D(new GUIWidgetObjects3D(icons, this->gameObjects)),
             widgetObject3DProperties(new GUIWidgetObject3DProperties(icons, this->gameObjects, scriptEditableManager)),
+            widgetProjectSettings(new GUIWidgetProjectSettings(icons, scriptEditableManager)),
             widgetMenu(new GUIWidgetMenu(icons)),
             widgetToolbar(new GUIWidgetToolbar(icons)),
             guizmoOperation(ImGuizmo::TRANSLATE),
@@ -119,17 +122,17 @@ public:
 
         }
         for (const auto & i : folders) {
-            auto fullPathFolder = folder + i;
+            auto fullPathFolder = folder + "/" + i;
             ImGui::Image(TexturePackage::getOGLTextureID(icons, "folderIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::Button(i.c_str())) {
-                currentScriptsFolderWidget = fullPathFolder + "/";
+                currentScriptsFolderWidget = fullPathFolder;
             }
         }
 
         for (int i = 0; i < files.size(); i++) {
             const auto& file = files[i];
-            auto fullPath = folder + file;
+            auto fullPath = folder + "/" + file;
             ImGui::PushID(i);
             ImGui::Image(TexturePackage::getOGLTextureID(icons, "scriptIcon"), ImVec2(16, 16));
             ImGui::SameLine();
@@ -447,95 +450,8 @@ public:
     void drawWidgets()
     {
         if (ImGui::Begin("Scripts")) {
-            ImGui::Text("Current folder: %s", currentScriptsFolderWidget.c_str());
-            ImGui::Separator();
+            //drawScriptFiles(result);
             drawScriptsLuaFolderFiles(currentScriptsFolderWidget);
-        }
-        ImGui::End();
-
-        if (ImGui::Begin("Script Preview")) {
-            if (!scriptEditableManager.selectedScriptFilename.empty()) {
-                drawWidgetScriptProperties();
-                drawImGuiScriptCode();
-            }
-        }
-        ImGui::End();
-
-        if (ImGui::Begin("Object variables")) {
-            bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
-
-            if (hasSelectedIndex) {
-                static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-                if (ImGui::BeginTable("ObjectVariablesTable", 2, flags)) {
-                    auto o = gameObjects[selectedObjectIndex];
-                    auto scripts = o->getScripts();
-                    auto &lua = o->getLuaEnvironment();
-
-                    for (auto currentScript : scripts) {
-                        for (auto & dataType : currentScript->dataTypes) {
-                            ImGui::TableNextRow();
-
-                            ImGui::TableSetColumnIndex(0);
-                            ImGui::Text("%s", std::string(dataType.name).c_str());
-
-                            ImGui::TableSetColumnIndex(1);
-                            switch (EngineSetup::get()->LUADataTypesMapping[dataType.type]) {
-                                case EngineSetup::LUADataType::INT:
-                                case EngineSetup::LUADataType::FLOAT:
-                                case EngineSetup::LUADataType::STRING: {
-                                    ImGui::Text("%s", std::string(lua[dataType.name]).c_str());
-                                    break;
-                                }
-                                case EngineSetup::LUADataType::VERTEX3D: {
-                                    Vertex3D v = lua[dataType.name];
-                                    std::string vTextX = std::string("x: " + std::to_string(v.x));
-                                    std::string vTextY = std::string("y: " + std::to_string(v.y));
-                                    std::string vTextZ = std::string("z: " + std::to_string(v.z));
-                                    ImGui::Text("%s", vTextX.c_str());
-                                    ImGui::Text("%s", vTextY.c_str());
-                                    ImGui::Text("%s", vTextZ.c_str());
-                                    break;
-                                }
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-
-                    if ((int) scripts.size() <= 0) {
-                        ImGui::Text("%s", "There are not variables yet");
-                    }
-
-                    ImGui::EndTable();
-                }
-            }
-        }
-        ImGui::End();
-
-        if (ImGui::Begin("Global variables")) {
-            static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-            if (ImGui::BeginTable("GlobalVariablesTable", 2, flags)) {
-                auto scripts = ComponentsManager::get()->getComponentRender()->getLUAScripts();
-                auto &lua = LUAManager::get()->getLua();
-
-                for (auto currentScript : scripts) {
-                    for (auto & dataType : currentScript->dataTypes) {
-                        ImGui::TableNextRow();
-
-                        ImGui::TableSetColumnIndex(0);
-                        ImGui::Text("%s", std::string(dataType.name).c_str());
-
-                        ImGui::TableSetColumnIndex(1);
-                        ImGui::Text("%s", std::string(lua[dataType.name]).c_str());
-                    }
-                }
-
-                if ((int) scripts.size() <= 0) {
-                    ImGui::Text("%s", "There are not variables yet");
-                }
-
-                ImGui::EndTable();
-            }
         }
         ImGui::End();
 
@@ -626,71 +542,95 @@ public:
             ImGui::Separator();
             ImGui::Checkbox("Show Depth Map", &EngineSetup::get()->SHOW_DEPTH_OF_FIELD);
         }
+        ImGui::End();
 
-        if (ImGui::Begin("Scene")) {
-            auto componentRender = ComponentsManager::get()->getComponentRender();
-            static char name[256];
-
-            strncpy(name, EngineSetup::get()->ENGINE_TITLE.c_str(), sizeof(name));
-
-            ImGui::InputText("Name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll);
-            if (ImGui::IsItemEdited()) {
-                EngineSetup::get()->ENGINE_TITLE = name;
+        if (ImGui::Begin("Script Preview")) {
+            if (!scriptEditableManager.selectedScriptFilename.empty()) {
+                drawWidgetScriptProperties();
+                drawImGuiScriptCode();
             }
-            ImGui::Separator();
-            auto scripts = componentRender->getLUAScripts();
-
-            if ((int) scripts.size() <= 0) {
-                ImGui::Text("%s", "There are not variables yet");
-            }
-
-            for (int i = 0; i < (int) scripts.size(); i++) {
-                auto currentScript = scripts[i];
-                ImGui::PushID(i);
-                ImGui::Image(TexturePackage::getOGLTextureID(icons, "scriptIcon"), ImVec2(24, 24));
-                ImGui::SameLine(48);
-                std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
-                if (ImGui::Button(optionText.c_str())) {
-                    scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
-                    delete scriptEditableManager.script;
-                    scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename));
-                    strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
-                }
-                ImGui::SameLine();
-
-                if (currentScript->isPaused()) {
-                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "unlockIcon"), ImVec2(14, 14))) {
-                        currentScript->setPaused(false);
-                    }
-                } else {
-                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "lockIcon"), ImVec2(14, 14))) {
-                        currentScript->setPaused(true);
-                    }
-                }
-                ImGui::SameLine();
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
-                    componentRender->removeScript(currentScript);
-                }
-
-                ImGui::PopID();
-            }
-
-            ImGui::Separator();
-
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Drop here LUA scripts...");
-            if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
-                    Logging::Message("Dropping script (%s) in global space", payload->Data);
-                    componentRender->addLUAScript(new ScriptLUA(
-                            std::string((char*) payload->Data),
-                            ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
-                    );
-                }
-                ImGui::EndDragDropTarget();
-            }
-            ImGui::Separator();
         }
         ImGui::End();
+
+        if (ImGui::Begin("Object variables")) {
+            bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
+
+            if (hasSelectedIndex) {
+                static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+                if (ImGui::BeginTable("ObjectVariablesTable", 2, flags)) {
+                    auto o = gameObjects[selectedObjectIndex];
+                    auto scripts = o->getScripts();
+                    auto &lua = o->getLuaEnvironment();
+
+                    for (auto currentScript : scripts) {
+                        for (auto & dataType : currentScript->dataTypes) {
+                            ImGui::TableNextRow();
+
+                            ImGui::TableSetColumnIndex(0);
+                            ImGui::Text("%s", std::string(dataType.name).c_str());
+
+                            ImGui::TableSetColumnIndex(1);
+                            switch (EngineSetup::get()->LUADataTypesMapping[dataType.type]) {
+                                case EngineSetup::LUADataType::INT:
+                                case EngineSetup::LUADataType::FLOAT:
+                                case EngineSetup::LUADataType::STRING: {
+                                    ImGui::Text("%s", std::string(lua[dataType.name]).c_str());
+                                    break;
+                                }
+                                case EngineSetup::LUADataType::VERTEX3D: {
+                                    Vertex3D v = lua[dataType.name];
+                                    std::string vTextX = std::string("x: " + std::to_string(v.x));
+                                    std::string vTextY = std::string("y: " + std::to_string(v.y));
+                                    std::string vTextZ = std::string("z: " + std::to_string(v.z));
+                                    ImGui::Text("%s", vTextX.c_str());
+                                    ImGui::Text("%s", vTextY.c_str());
+                                    ImGui::Text("%s", vTextZ.c_str());
+                                    break;
+                                }
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+
+                    if ((int) scripts.size() <= 0) {
+                        ImGui::Text("%s", "There are not variables yet");
+                    }
+
+                    ImGui::EndTable();
+                }
+            }
+        }
+        ImGui::End();
+
+        if (ImGui::Begin("Global variables")) {
+            static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+            if (ImGui::BeginTable("GlobalVariablesTable", 2, flags)) {
+                auto scripts = ComponentsManager::get()->getComponentRender()->getLUAScripts();
+                auto &lua = LUAManager::get()->getLua();
+
+                for (auto currentScript : scripts) {
+                    for (auto & dataType : currentScript->dataTypes) {
+                        ImGui::TableNextRow();
+
+                        ImGui::TableSetColumnIndex(0);
+                        ImGui::Text("%s", std::string(dataType.name).c_str());
+
+                        ImGui::TableSetColumnIndex(1);
+                        ImGui::Text("%s", std::string(lua[dataType.name]).c_str());
+                    }
+                }
+
+                if ((int) scripts.size() <= 0) {
+                    ImGui::Text("%s", "There are not variables yet");
+                }
+
+                ImGui::EndTable();
+            }
+        }
+        ImGui::End();
+
+        widgetProjectSettings->draw();
 
         if (ImGui::Begin("Camera settings")) {
             drawCameraSettings();
