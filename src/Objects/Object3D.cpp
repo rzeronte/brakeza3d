@@ -826,7 +826,7 @@ void Object3D::integrate()
 
 void Object3D::updateFromBullet()
 {
-    if (this->body == nullptr || this->mass <= 0) {
+    if (this->body == nullptr) {
         return;
     }
 

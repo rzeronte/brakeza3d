@@ -32,8 +32,8 @@ struct GUIWidgetMenu
 
         const float range_sensibility = 0.75f;
         const float range_test_sensibility = 0.1;
-        const float range_max_sensibility = 999;
-        const float range_min_sensibility = -999;
+        const float range_max_sensibility = 9999;
+        const float range_min_sensibility = -9999;
 
         const float range_sensibility_volume = 1;
         const float range_min_volume = 1;
@@ -238,9 +238,15 @@ struct GUIWidgetMenu
                 ImGui::Checkbox("Draw debug mode", &EngineSetup::get()->BULLET_DEBUG_MODE);
                 ImGui::Separator();
                 // gravity
-                ImGui::DragScalar("X Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.x, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("Y Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.y, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("Z Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.z, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                if (ImGui::DragScalar("X Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.x, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
+                    ComponentsManager::get()->getComponentCollisions()->setGravity(EngineSetup::get()->gravity);
+                }
+                if (ImGui::DragScalar("Y Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.y, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
+
+                }
+                if (ImGui::DragScalar("Z Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.z, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
+
+                }
                 ImGui::Separator();
                 ImGui::DragScalar("ProjectileDemo Impulse", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_IMPULSE, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
                 ImGui::DragScalar("ProjectileDemo Accuracy", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_ACCURACY, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);

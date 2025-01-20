@@ -70,7 +70,7 @@ void ComponentCollisions::initBulletSystem()
     debugDraw = new PhysicsDebugDraw();
 
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    dynamicsWorld->setGravity(btVector3(0, 0, 0));
+    dynamicsWorld->setGravity(EngineSetup::get()->gravity.toBullet());
 
     dynamicsWorld->setDebugDrawer(debugDraw);
     dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
@@ -202,4 +202,9 @@ ComponentCollisions::~ComponentCollisions()
     delete debugDraw;
     delete dynamicsWorld;
     delete ghostPairCallback;
+}
+
+void ComponentCollisions::setGravity(Vertex3D v)
+{
+    dynamicsWorld->setGravity(v.toBullet());
 }

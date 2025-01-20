@@ -52,6 +52,8 @@ public:
     static void demoProjectile(int type);
 
     ~ComponentCollisions() override;
+
+    void setGravity(Vertex3D vertex3D);
 };
 
 
