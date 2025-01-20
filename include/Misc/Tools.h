@@ -82,6 +82,17 @@ public:
     static std::vector<std::string> getFolderFiles(const std::string &path, const std::string &extension);
 
     static std::string GoBackFromFolder(const std::string& folder);
+
+    static void ImGuiVertex3D(
+        const char *label,
+        const char *labelX,
+        const char *labelY,
+        const char *labelZ,
+        void *data,
+        float sensibility,
+        float min,
+        float max
+    );
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

@@ -269,15 +269,7 @@ void Drawable::drawObject3DGizmo(
     glm::mat4 projectionMatrix
 ) {
     ImGuiIO& io = ImGui::GetIO();
-
-    if (!ComponentsManager::get()->getComponentWindow()->isWindowMaximized()) {
-        ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-    } else {
-        auto windowWidth = (float) ImGui::GetWindowWidth();
-        auto windowHeight = (float) ImGui::GetWindowHeight();
-
-        ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
-    }
+    ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 
     ImGuizmo::BeginFrame();
     ImGuizmo::SetOrthographic(false);
@@ -295,9 +287,6 @@ void Drawable::drawObject3DGizmo(
         nullptr
     );
 
-    if (ImGuizmo::IsOver()) {
-    }
-
     if (ImGuizmo::IsUsing()) {
         if (currentOperation == ImGuizmo::OPERATION::TRANSLATE) {
             auto position = glm::vec3(objectMatrixManipulated[3]);
@@ -308,8 +297,8 @@ void Drawable::drawObject3DGizmo(
             o->setRotation(M3::fromMat3GLM(objectMatrixManipulated).getTranspose());
         }
 
-        if (currentOperation == ImGuizmo::OPERATION::SCALE) {
-            o->setScale((float) glm::length(glm::vec3(objectMatrixManipulated[0])));
+        if (currentOperation == ImGuizmo::OPERATION::SCALE_X) {
+            o->setScale(glm::length(glm::vec3(objectMatrixManipulated[0])));
         }
     }
 }

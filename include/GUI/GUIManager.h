@@ -16,7 +16,6 @@
 #include "../FXEffect/FXShockWave.h"
 #include "GUIWidgetObjects3D.h"
 #include "GUIWidgetObject3DProperties.h"
-#include "GUIWidgetProjectSettings.h"
 #include "GUIWidgetMenu.h"
 #include "GUIWidgetToolbar.h"
 
@@ -30,7 +29,6 @@ private:
     ImGuiConsoleApp *widgetConsole;
     GUIWidgetObjects3D *widgetObjects3D;
     GUIWidgetObject3DProperties *widgetObject3DProperties;
-    GUIWidgetProjectSettings *widgetProjectSettings;
     GUIWidgetMenu *widgetMenu;
     GUIWidgetToolbar *widgetToolbar;
 
@@ -61,7 +59,6 @@ public:
             widgetConsole(new ImGuiConsoleApp(LUAManager::get()->getLua())),
             widgetObjects3D(new GUIWidgetObjects3D(icons, this->gameObjects)),
             widgetObject3DProperties(new GUIWidgetObject3DProperties(icons, this->gameObjects, scriptEditableManager)),
-            widgetProjectSettings(new GUIWidgetProjectSettings(icons, scriptEditableManager)),
             widgetMenu(new GUIWidgetMenu(icons)),
             widgetToolbar(new GUIWidgetToolbar(icons)),
             guizmoOperation(ImGuizmo::TRANSLATE),
@@ -122,17 +119,17 @@ public:
 
         }
         for (const auto & i : folders) {
-            auto fullPathFolder = folder + "/" + i;
+            auto fullPathFolder = folder + i;
             ImGui::Image(TexturePackage::getOGLTextureID(icons, "folderIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::Button(i.c_str())) {
-                currentScriptsFolderWidget = fullPathFolder;
+                currentScriptsFolderWidget = fullPathFolder + "/";
             }
         }
 
         for (int i = 0; i < files.size(); i++) {
             const auto& file = files[i];
-            auto fullPath = folder + "/" + file;
+            auto fullPath = folder + file;
             ImGui::PushID(i);
             ImGui::Image(TexturePackage::getOGLTextureID(icons, "scriptIcon"), ImVec2(16, 16));
             ImGui::SameLine();
@@ -227,7 +224,6 @@ public:
         const float range_min_mouse_sensitivity = 0;
         const float range_max_mouse_sensitivity = 3;
 
-        std::string position_text = "Position##1";
         std::string rotation_text = "Orientation##2";
         std::string movement_text = "Keyboard##3";
         std::string mouse_text = "Mouse##4";
@@ -238,12 +234,7 @@ public:
         ImGui::Separator();
 
         // position
-        if (ImGui::TreeNode(position_text.c_str())) {
-            ImGui::DragScalar("X", ImGuiDataType_Float, &camera->getPosition().x, range_sensibility, &range_min,&range_max, "%f", 1.0f);
-            ImGui::DragScalar("Y", ImGuiDataType_Float, &camera->getPosition().y, range_sensibility, &range_min,&range_max, "%f", 1.0f);
-            ImGui::DragScalar("Z", ImGuiDataType_Float, &camera->getPosition().z, range_sensibility, &range_min,&range_max, "%f", 1.0f);
-            ImGui::TreePop();
-        }
+        Tools::ImGuiVertex3D("Position##1", "X", "Y", "Z", &camera->getPosition(), range_sensibility, -range_min, range_max);
 
         ImGui::Separator();
 
@@ -456,7 +447,8 @@ public:
     void drawWidgets()
     {
         if (ImGui::Begin("Scripts")) {
-            //drawScriptFiles(result);
+            ImGui::Text("Current folder: %s", currentScriptsFolderWidget.c_str());
+            ImGui::Separator();
             drawScriptsLuaFolderFiles(currentScriptsFolderWidget);
         }
         ImGui::End();
@@ -547,7 +539,158 @@ public:
         }
         ImGui::End();
 
-        widgetProjectSettings->draw();
+        if (ImGui::Begin("Illumination/FX")) {
+            if (ImGui::TreeNode("Global illumination")) {
+                const float range_illumination_min_settings = -1.0f;
+                const float range_illumination_max_settings = 1.0f;
+                const float sens_illumination_settings = 0.01f;
+                auto dirLight = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->getDirectionalLight();
+
+                if (ImGui::TreeNode("Direction")) {
+                    ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->direction.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->direction.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->direction.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                    ImGui::TreePop();
+                }
+
+                ImVec4 color = {dirLight->ambient.x, dirLight->ambient.y, dirLight->ambient.z, 1};
+                bool changed_color = ImGui::ColorEdit4("Ambient##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+                if (changed_color) {
+                    dirLight->ambient = {color.x, color.y, color.z};
+                }
+                color = {dirLight->specular.x, dirLight->specular.y, dirLight->specular.z, 1};
+                changed_color = ImGui::ColorEdit4("Specular##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+                if (changed_color) {
+                    dirLight->specular = {color.x, color.y, color.z};
+                }
+
+                color = {dirLight->diffuse.x, dirLight->diffuse.y, dirLight->diffuse.z, 1};
+                changed_color = ImGui::ColorEdit4("Diffuse##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+                if (changed_color) {
+                    dirLight->diffuse = {color.x, color.y, color.z};
+                }
+
+                ImGui::TreePop();
+            }
+
+            ImGui::Separator();
+            if (ImGui::TreeNode("DOF Settings")) {
+                const float focalMinValues = 0;
+                const float focalMaxValues = 1;
+                const float focalValueSens = 0.001;
+
+                const float depthMinValues = 0;
+                const float depthMaxValues = 100;
+                const float depthValueSens = 0.1;
+
+                const int minBlurRadius = 0;
+                const int maxBlurRadius = 10;
+
+                ImGui::Checkbox("Enable DOF", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
+
+                if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
+                    ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                    ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                    ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
+                    ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                    ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
+                }
+                ImGui::TreePop();
+            }
+            ImGui::Separator();
+            if (ImGui::TreeNode("FOG Settings")) {
+                ImGui::Checkbox("Enable FOG", &EngineSetup::get()->ENABLE_FOG);
+
+                if (EngineSetup::get()->ENABLE_FOG) {
+                    const float rangeFogSens = 0.1;
+                    const float rangeFogMin = 0;
+                    const float rangeFogMax = 0;
+
+                    ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+                    ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+                    ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->intensity, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+
+                    if (ImGui::TreeNode("FOG Color")) {
+                        const float fogColorSend = 0.01;
+                        const float fogColorMin = 0;
+                        const float fogColorMax = 1;
+
+                        ImGui::DragScalar("x", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.r, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
+                        ImGui::DragScalar("y", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.g, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
+                        ImGui::DragScalar("z", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.b, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
+                        ImGui::TreePop();
+                    }
+                }
+                ImGui::TreePop();
+            }
+            ImGui::Separator();
+            ImGui::Checkbox("Show Depth Map", &EngineSetup::get()->SHOW_DEPTH_OF_FIELD);
+        }
+
+        if (ImGui::Begin("Scene")) {
+            auto componentRender = ComponentsManager::get()->getComponentRender();
+            static char name[256];
+
+            strncpy(name, EngineSetup::get()->ENGINE_TITLE.c_str(), sizeof(name));
+
+            ImGui::InputText("Name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll);
+            if (ImGui::IsItemEdited()) {
+                EngineSetup::get()->ENGINE_TITLE = name;
+            }
+            ImGui::Separator();
+            auto scripts = componentRender->getLUAScripts();
+
+            if ((int) scripts.size() <= 0) {
+                ImGui::Text("%s", "There are not variables yet");
+            }
+
+            for (int i = 0; i < (int) scripts.size(); i++) {
+                auto currentScript = scripts[i];
+                ImGui::PushID(i);
+                ImGui::Image(TexturePackage::getOGLTextureID(icons, "scriptIcon"), ImVec2(24, 24));
+                ImGui::SameLine(48);
+                std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
+                if (ImGui::Button(optionText.c_str())) {
+                    scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
+                    delete scriptEditableManager.script;
+                    scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename));
+                    strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
+                }
+                ImGui::SameLine();
+
+                if (currentScript->isPaused()) {
+                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "unlockIcon"), ImVec2(14, 14))) {
+                        currentScript->setPaused(false);
+                    }
+                } else {
+                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "lockIcon"), ImVec2(14, 14))) {
+                        currentScript->setPaused(true);
+                    }
+                }
+                ImGui::SameLine();
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
+                    componentRender->removeScript(currentScript);
+                }
+
+                ImGui::PopID();
+            }
+
+            ImGui::Separator();
+
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Drop here LUA scripts...");
+            if (ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
+                    Logging::Message("Dropping script (%s) in global space", payload->Data);
+                    componentRender->addLUAScript(new ScriptLUA(
+                            std::string((char*) payload->Data),
+                            ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
+                    );
+                }
+                ImGui::EndDragDropTarget();
+            }
+            ImGui::Separator();
+        }
+        ImGui::End();
 
         if (ImGui::Begin("Camera settings")) {
             drawCameraSettings();

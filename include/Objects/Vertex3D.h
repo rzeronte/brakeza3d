@@ -8,7 +8,6 @@
 #include <glm/vec3.hpp>
 #include "Vertex4D.h"
 
-
 class Vertex3D {
 public:
 
@@ -63,7 +62,6 @@ public:
     static Vertex3D fromBullet(const btVector3 &v);
 
     static Vertex3D randomVertex();
-
 };
 
 #endif //SDL2_3D_ENGINE_VERTEX_H

@@ -424,17 +424,7 @@ void Object3D::drawImGuiProperties()
 
     // position
     if (featuresGUI.position) {
-        if (ImGui::TreeNode("Position")) {
-            const float range_min = -500000;
-            const float range_max = 500000;
-            const float range_sensibility = 0.1;
-
-            ImGui::DragScalar("X", ImGuiDataType_Float, &getPosition().x, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Y", ImGuiDataType_Float, &getPosition().y, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Z", ImGuiDataType_Float, &getPosition().z, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-
-            ImGui::TreePop();
-        }
+        Tools::ImGuiVertex3D("Position", "X", "Y", "Z", &position, 0.1, -100000, 100000);
         ImGui::Separator();
     }
 
@@ -465,13 +455,8 @@ void Object3D::drawImGuiProperties()
             ImGui::Checkbox("Rotation Frame", &rotationFrameEnabled);
 
             if (rotationFrameEnabled) {
-                if (ImGui::TreeNode("Rotation Each Frame")) {
-                    ImGui::DragScalar("X", ImGuiDataType_Float, &rotationFrame.x, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-                    ImGui::DragScalar("Y", ImGuiDataType_Float, &rotationFrame.y, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-                    ImGui::DragScalar("Z", ImGuiDataType_Float, &rotationFrame.z, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-                    ImGui::TreePop();
-                }
-            }
+                Tools::ImGuiVertex3D("Rotation Each Frame", "X", "Y", "Z", &rotationFrame, range_angle_sensibility, range_angle_min, range_angle_max);
+           }
             ImGui::TreePop();
         }
         ImGui::Separator();
@@ -480,11 +465,9 @@ void Object3D::drawImGuiProperties()
 
     if (featuresGUI.scale) {
         if (ImGui::TreeNode("Scale")) {
-            // scale
             const float range_scale_min = -360;
             const float range_scale_max = 360;
-            const float range_scale_sensibility = 0.01;
-            ImGui::DragScalar("Scale", ImGuiDataType_Float, &scale, range_scale_sensibility, &range_scale_min, &range_scale_max, "%f", 1.0f);
+            ImGui::DragScalar("Scale", ImGuiDataType_Float, &scale, 0.01, &range_scale_min, &range_scale_max, "%f", 1.0f);
 
             ImGui::TreePop();
         }
@@ -495,9 +478,8 @@ void Object3D::drawImGuiProperties()
         if (ImGui::TreeNode("Alpha")) {
             const float range_alpha_min = 0;
             const float range_alpha_max = 1;
-            const float range_alpha_sensibility = 0.01;
 
-            ImGui::DragScalar("Alpha", ImGuiDataType_Float, &getAlpha(), range_alpha_sensibility, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
+            ImGui::DragScalar("Alpha", ImGuiDataType_Float, &getAlpha(), 0.01, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
 
             ImGui::TreePop();
         }
@@ -515,20 +497,20 @@ void Object3D::drawImGuiProperties()
                 ImGui::PushID(i);
 
                 auto s = shaders[i];
-                ImGui::Image((ImTextureID)ImGuiTextures->getTextureByLabel("shaderIcon")->getOGLTextureID(), ImVec2(24, 24));
+                ImGui::Image(TexturePackage::getOGLTextureID(*ImGuiTextures, "shaderIcon"), ImVec2(24, 24));
                 ImGui::SameLine(100);
 
                 if (!s->isEnabled()) {
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("unlockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(*ImGuiTextures, "unlockIcon"), ImVec2(14, 14))) {
                         s->setEnabled(true);
                     }
                 } else {
-                    if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("lockIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(*ImGuiTextures, "lockIcon"), ImVec2(14, 14))) {
                         s->setEnabled(false);
                     }
                 }
                 ImGui::SameLine();
-                if (ImGui::ImageButton((ImTextureID)ImGuiTextures->getTextureByLabel("removeIcon")->getOGLTextureID(), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(*ImGuiTextures, "removeIcon"), ImVec2(14, 14))) {
                     removeShader(i);
                 }
                 ImGui::SameLine();
@@ -574,9 +556,8 @@ void Object3D::drawImGuiProperties()
                     if (ImGui::TreeNode("Mass")) {
                         const float range_min = 0;
                         const float range_max = 1000;
-                        const float range_sensibility = 0.1;
 
-                        ImGui::DragScalar("Mass", ImGuiDataType_Float, &mass, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Mass", ImGuiDataType_Float, &mass, 0.1 ,&range_min, &range_max, "%f", 1.0f);
 
                         if (ImGui::Button(std::string("Update collision shape").c_str())) {
                             setupRigidBodyCollider(getCollisionShape());

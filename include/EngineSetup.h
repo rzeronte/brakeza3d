@@ -113,10 +113,10 @@ public:
     float BILLBOARD_HEIGHT_DEFAULT = 100.f;
 
     // KEYBOARD
-    float WALKING_SPEED = 0.1f;
-    float TURN_SPEED = 0.1f;
-    float PITCH_SPEED = 0.1f;
-    float STRAFE_SPEED = 0.1f;
+    float WALKING_SPEED = 1.0f;
+    float TURN_SPEED = 0.5f;
+    float PITCH_SPEED = 0.5f;
+    float STRAFE_SPEED = 1.0f;
 
     // MOUSE
     float MOUSE_SENSITIVITY = 0.250;

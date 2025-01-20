@@ -72,7 +72,7 @@ struct GUIWidgetObject3DProperties {
                 }
                 ImGui::SameLine();
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "scaleIcon"), ImVec2(32, 32))) {
-                    operation = ImGuizmo::OPERATION::SCALE;
+                    operation = ImGuizmo::OPERATION::SCALE_X;
                 }
                 ImGui::Separator();
                 o->drawImGuiProperties();
