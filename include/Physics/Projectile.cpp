@@ -32,7 +32,7 @@ void Projectile::makeProjectileRigidBody(
     if (EngineSetup::get()->PROJECTILE_SIMPLE_MESH) {
         Mesh3D::makeSimpleRigidBody(mass, world, collisionGroup, collisionMask);
     } else {
-        Mesh3D::makeRigidBodyFromTriangleMesh(mass, world, collisionGroup, collisionMask);
+        Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(mass, world, collisionGroup, collisionMask);
     }
     //Mesh3D::makeSimpleRigidBody(mass, world, collisionGroup, collisionMask);
     //Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(mass, world, collisionGroup, collisionMask);

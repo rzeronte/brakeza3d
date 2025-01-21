@@ -534,6 +534,9 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
             o->setCollisionsEnabled(true);
             int mode = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
             int shape = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
+            if ((cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic") != nullptr)) {
+                o->setColliderStatic(cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic")->valueint);
+            }
 
             switch(mode) {
                 default:
@@ -607,7 +610,7 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
 
 void Mesh3D::setupGhostCollider(CollisionShape modeShape)
 {
-    Logging::Message("Mesh3D - setupGhostCollider");
+    Logging::Message("setupGhostCollider for %s", getLabel().c_str());
 
     removeCollisionObject();
 
@@ -634,7 +637,7 @@ void Mesh3D::setupGhostCollider(CollisionShape modeShape)
 
 void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
 {
-    Logging::Message("Mesh3D - setupRigidBodyCollider");
+    Logging::Message("setupRigidBodyCollider for %s", getLabel().c_str());
     removeCollisionObject();
 
     setCollisionShape(modeShape);
@@ -650,12 +653,22 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
     }
 
     if (getCollisionShape() == CollisionShape::TRIANGLE_MESH_SHAPE) {
-        makeRigidBodyFromTriangleMesh(
-            mass,
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            EngineSetup::collisionGroups::AllFilter,
-            EngineSetup::collisionGroups::AllFilter
-        );
+        if (isColliderStatic()) {
+            makeRigidBodyFromTriangleMesh(
+                mass,
+                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                EngineSetup::collisionGroups::AllFilter,
+                EngineSetup::collisionGroups::AllFilter
+            );
+        } else {
+            makeRigidBodyFromTriangleMeshFromConvexHull(
+                mass,
+                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                EngineSetup::collisionGroups::AllFilter,
+                EngineSetup::collisionGroups::AllFilter
+            );
+
+        }
     }
 }
 
@@ -702,27 +715,12 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
         }
         ImGui::EndCombo();
     }
-
-    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
-        if (ImGui::TreeNode("Simple shape size")) {
-            const float range_min = -500000;
-            const float range_max = 500000;
-            const float range_sensibility = 0.1;
-
-            ImGui::DragScalar("X", ImGuiDataType_Float, &simpleShapeSize.x, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Y", ImGuiDataType_Float, &simpleShapeSize.y, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Z", ImGuiDataType_Float, &simpleShapeSize.z, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-
-            if (ImGui::Button(std::string("Update collision shape").c_str())) {
-                setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
-            }
-            ImGui::TreePop();
-        }
-    }
 }
 
 void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
+    Logging::Message("makeRigidBodyFromTriangleMeshFromConvexHull for %s", getLabel().c_str());
+
     setMass(mass);
 
     btTransform transformation;
@@ -730,11 +728,14 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
     transformation.setOrigin(getPosition().toBullet());
 
     btVector3 inertia(0, 0, 0);
+    btCollisionShape* shape = getConvexHullShapeFromMesh(inertia);
+
+    shape->calculateLocalInertia(mass, inertia); // Calcula el tensor de inercia
 
     btRigidBody::btRigidBodyConstructionInfo info(
         mass,
         new btDefaultMotionState(transformation),
-        getConvexHullShapeFromMesh(inertia),
+        shape,
         inertia
     );
 
@@ -742,18 +743,19 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
     body->activate(true);
     body->setContactProcessingThreshold(BT_LARGE_FLOAT);
     body->setUserPointer(this);
-    this->body->setRestitution(0.5);
-    body->setActivationState(DISABLE_DEACTIVATION);
+    body->setRestitution(0);
+    body->setActivationState(ACTIVE_TAG);
 
-    if (mass <= 0) {
-        body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
-    }
+    body->setLinearFactor(btVector3(1, 1, 1));
+    body->setAngularFactor(btVector3(1, 1, 1));
 
     world->addRigidBody(this->body, collisionGroup, collisionMask);
 }
 
 void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
+    Logging::Message("makeRigidBodyFromTriangleMesh for %s", getLabel().c_str());
+
     setMass(mass);
 
     btTransform transformation;
@@ -774,7 +776,6 @@ void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *
     body->setContactProcessingThreshold(BT_LARGE_FLOAT);
     body->setUserPointer(this);
     body->setActivationState(DISABLE_DEACTIVATION);
-    body->setRestitution(0.1);
 
     if (mass <= 0) {
         body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);

@@ -242,10 +242,10 @@ struct GUIWidgetMenu
                     ComponentsManager::get()->getComponentCollisions()->setGravity(EngineSetup::get()->gravity);
                 }
                 if (ImGui::DragScalar("Y Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.y, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
-
+                    ComponentsManager::get()->getComponentCollisions()->setGravity(EngineSetup::get()->gravity);
                 }
                 if (ImGui::DragScalar("Z Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.z, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
-
+                    ComponentsManager::get()->getComponentCollisions()->setGravity(EngineSetup::get()->gravity);
                 }
                 ImGui::Separator();
                 ImGui::DragScalar("ProjectileDemo Impulse", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_IMPULSE, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);

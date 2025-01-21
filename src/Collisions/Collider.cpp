@@ -6,13 +6,14 @@
 
 Collider::Collider()
 :
-    collisionsEnabled(false),
-    mass(1),
-    simpleShapeSize(Vertex3D(1, 1, 1)),
-    collisionMode(CollisionMode::NONE),
-    ghostObject( new btPairCachingGhostObject()),
-    body(nullptr),
-    collisionShape(CollisionShape::SIMPLE_SHAPE)
+        collisionsEnabled(false),
+        mass(1),
+        colliderStatic(false),
+        simpleShapeSize(Vertex3D(1, 1, 1)),
+        collisionMode(CollisionMode::NONE),
+        ghostObject( new btPairCachingGhostObject()),
+        body(nullptr),
+        collisionShape(CollisionShape::SIMPLE_SHAPE)
 {
 }
 
@@ -130,22 +131,7 @@ void Collider::drawImGuiCollisionModeSelector()
 
 void Collider::drawImGuiCollisionShapeSelector()
 {
-    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
-        if (ImGui::TreeNode("Simple shape size")) {
-            const float range_min = -500000;
-            const float range_max = 500000;
-            const float range_sensibility = 0.1;
 
-            ImGui::DragScalar("X", ImGuiDataType_Float, &simpleShapeSize.x, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Y", ImGuiDataType_Float, &simpleShapeSize.y, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Z", ImGuiDataType_Float, &simpleShapeSize.z, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-
-            if (ImGui::Button(std::string("Update collision shape").c_str())) {
-                setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
-            }
-            ImGui::TreePop();
-        }
-    }
 }
 
 void Collider::setupGhostCollider(CollisionShape mode)
@@ -218,4 +204,22 @@ void Collider::applyImpulse(Vertex3D f, Vertex3D rel)
     btVector3 impulse = f.toBullet();
     btVector3 rel_pos = rel.toBullet();
     body->applyImpulse(impulse, rel_pos);
+}
+
+bool Collider::isColliderStatic() const {
+    return colliderStatic;
+}
+
+void Collider::setColliderStatic(bool colliderStatic) {
+    Collider::colliderStatic = colliderStatic;
+}
+
+void Collider::UpdateShape()
+{
+    if (getCollisionMode() == GHOST) {
+        setupGhostCollider(getCollisionShape());
+    }
+    if (getCollisionMode() == BODY) {
+        setupRigidBodyCollider(getCollisionShape());
+    }
 }

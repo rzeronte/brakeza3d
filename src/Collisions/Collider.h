@@ -20,6 +20,7 @@ class Collider {
 
 protected:
     bool collisionsEnabled;
+    bool colliderStatic;
     float mass;
     Vertex3D simpleShapeSize;
     CollisionMode collisionMode;
@@ -82,6 +83,12 @@ public:
     void applyImpulse(Vertex3D f, Vertex3D rel);
     void applyCentralForce(Vertex3D f);
     void applyCentralImpulse(Vertex3D f);
+
+    [[nodiscard]] bool isColliderStatic() const;
+
+    void setColliderStatic(bool colliderStatic);
+
+    void UpdateShape();
 };
 
 

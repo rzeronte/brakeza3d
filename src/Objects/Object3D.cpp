@@ -552,18 +552,32 @@ void Object3D::drawImGuiProperties()
                 drawImGuiCollisionModeSelector();
                 drawImGuiCollisionShapeSelector();
 
+                ImGui::Separator();
+
                 if (getCollisionMode() == CollisionMode::BODY) {
-                    if (ImGui::TreeNode("Mass")) {
-                        const float range_min = 0;
-                        const float range_max = 1000;
+                    ImGui::Checkbox("Collider static", &colliderStatic);
 
-                        ImGui::DragScalar("Mass", ImGuiDataType_Float, &mass, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                    if (!colliderStatic) {
+                        if (ImGui::TreeNode("Mass")) {
+                            const float range_min = 0;
+                            const float range_max = 1000;
 
-                        if (ImGui::Button(std::string("Update collision shape").c_str())) {
-                            setupRigidBodyCollider(getCollisionShape());
+                            ImGui::DragScalar("Mass", ImGuiDataType_Float, &mass, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+
+                            ImGui::TreePop();
                         }
-                        ImGui::TreePop();
                     }
+                }
+
+                if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+                    const float range_min = -500000;
+                    const float range_max = 500000;
+
+                    Tools::ImGuiVertex3D("Simple shape size", "X", "Y", "Z", &simpleShapeSize, 0.1f ,range_min, range_max);
+                }
+
+                if (ImGui::Button(std::string("Update collision shape").c_str())) {
+                    UpdateShape();
                 }
             }
             ImGui::TreePop();
@@ -608,6 +622,7 @@ cJSON *Object3D::getJSON()
         cJSON_AddNumberToObject(collider, "shape", getCollisionShape());
 
         cJSON_AddNumberToObject(collider, "mass", mass);
+        cJSON_AddBoolToObject(collider, "colliderStatic", colliderStatic);
 
         cJSON *simpleShapeSizeJSON = cJSON_CreateObject();
         cJSON_AddNumberToObject(simpleShapeSizeJSON, "x", simpleShapeSize.x);
@@ -653,7 +668,12 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
         cJSON *colliderJSON = cJSON_GetObjectItemCaseSensitive(object, "collider");
 
         if (collisionsEnabled) {
+
             o->setCollisionsEnabled(true);
+            if ((cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic") != nullptr)) {
+                o->setColliderStatic(cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic")->valueint);
+            }
+
             int mode = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
             int shape = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
 
@@ -782,6 +802,8 @@ LUADataValue Object3D::getLocalScriptVar(const char *varName)
 
 void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
+    Logging::Message("makeSimpleRigidBody for %s", getLabel().c_str());
+
     setMass(mass);
     btTransform transformation;
     transformation.setIdentity();
@@ -807,7 +829,7 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     this->body = new btRigidBody(cInfo);
     this->body->activate(true);
     this->body->setUserPointer(this);
-    this->body->setRestitution(0.1);
+    this->body->setRestitution(0.5);
 
     world->addRigidBody(this->body, collisionGroup, collisionMask);
 }
@@ -826,7 +848,7 @@ void Object3D::integrate()
 
 void Object3D::updateFromBullet()
 {
-    if (this->body == nullptr) {
+    if (this->body == nullptr || this->mass <= 0) {
         return;
     }
 
