@@ -71,3 +71,13 @@ Puedes manipular los modos de colisión tanto desde la GUI como desde tus script
 
 Puedes desactivar las colisiones para un objeto con el método ``setCollisionsEnabled``. Esto eliminará cualquier forma
 de colisión configurada previamente.
+
+---
+
+## Aplicar fuerzas a objetos rigidos
+
+Podemos aplicar fuerzas a los objetos ``RIGIDBODY`` gracias a los siguientes métodos:
+
+- `applyCentralImpulse(Vertex3D f)`
+- `applyCentralForce(Vertex3D f)`
+- `applyImpulse(Vertex3D f, Vertex3D r)`
