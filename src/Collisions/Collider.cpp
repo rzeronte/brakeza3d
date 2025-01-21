@@ -206,6 +206,11 @@ void Collider::applyImpulse(Vertex3D f, Vertex3D rel)
     body->applyImpulse(impulse, rel_pos);
 }
 
+void Collider::setLinearVelocity(Vertex3D f)
+{
+    body->setLinearVelocity(f.toBullet());
+}
+
 bool Collider::isColliderStatic() const {
     return colliderStatic;
 }

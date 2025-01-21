@@ -74,6 +74,12 @@ de colisión configurada previamente.
 
 ---
 
+## Movimiento en objetos colisionadores
+
+Tanto los ``GHOST`` como los ``RIGIDBODY`` pueden ser movidos por la escena.
+
+- `setLinearVelocity(Vertex3D)`
+
 ## Aplicar fuerzas a objetos rigidos
 
 Podemos aplicar fuerzas a los objetos ``RIGIDBODY`` gracias a los siguientes métodos:

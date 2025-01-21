@@ -89,6 +89,8 @@ public:
     void setColliderStatic(bool colliderStatic);
 
     void UpdateShape();
+
+    void setLinearVelocity(Vertex3D f);
 };
 
 
