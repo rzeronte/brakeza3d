@@ -64,7 +64,7 @@ void TextureAnimated::setup(const std::string& spriteSheetFile, int spriteWidth,
 
     SDL_Surface* spriteSheetSurface = IMG_Load(spriteSheetFile.c_str());
     if (!spriteSheetSurface) {
-        Logging::Log("Failed to load sprite sheet: %s", SDL_GetError());
+        Logging::Message("Failed to load sprite sheet: %s", SDL_GetError());
         return;
     }
 
@@ -88,7 +88,7 @@ void TextureAnimated::setup(const std::string& spriteSheetFile, int spriteWidth,
 
             SDL_Texture* spriteTexture = SDL_CreateTextureFromSurface(renderer, destinySurface);
             if (!spriteTexture) {
-                Logging::Log("Failed to create texture: %s", SDL_GetError());
+                Logging::Message("Failed to create texture: %s", SDL_GetError());
                 SDL_FreeSurface(spriteSheetSurface);
                 return;
             }

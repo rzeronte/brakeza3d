@@ -144,30 +144,30 @@ void ComponentWindow::initWindow()
 
 void ComponentWindow::initFontsTTF()
 {
-    Logging::Log("Initializing TTF...");
+    Logging::Message("Initializing TTF...");
 
     if (TTF_Init() < 0) {
-        Logging::Log(TTF_GetError());
+        Logging::Message(TTF_GetError());
         exit(-1);
     }
 
     std::string pathFont = SETUP->FONTS_FOLDER + "TheLastCall-Regular.ttf";
-    Logging::Log("Loading FONT: %s", pathFont.c_str());
+    Logging::Message("Loading FONT: %s", pathFont.c_str());
 
     fontDefault = TTF_OpenFont(pathFont.c_str(), 35);
 
     if (!fontDefault)  {
-        Logging::Log(TTF_GetError());
+        Logging::Message(TTF_GetError());
         exit(-1);
     }
 
     std::string pathAlternativeFont = SETUP->FONTS_FOLDER + "DisposableDroidBB.ttf";
-    Logging::Log("Loading FONT: %s", pathAlternativeFont.c_str());
+    Logging::Message("Loading FONT: %s", pathAlternativeFont.c_str());
 
     fontAlternative = TTF_OpenFont(pathAlternativeFont.c_str(), 65);
 
     if (!fontAlternative)  {
-        Logging::Log(TTF_GetError());
+        Logging::Message(TTF_GetError());
         exit(-1);
     }
 }
