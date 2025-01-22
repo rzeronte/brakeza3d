@@ -476,17 +476,18 @@ std::vector<std::string> Tools::getFolderFolders(const std::string& path)
 
 std::string Tools::GoBackFromFolder(const std::string& folder)
 {
-    // Usando std::filesystem para obtener el padre
     std::filesystem::path path(folder);
 
-    // Verificar si tiene un padre válido
+    if (!folder.empty() && folder.back() == '/') {
+        path = path.parent_path(); // Esto asegura que la última "/" sea tratada correctamente
+    }
+
     if (path.has_parent_path()) {
         path = path.parent_path();
     } else {
-        path = ""; // Si no hay un padre, devolver una cadena vacía
+        path = "";
     }
 
-    // Convertir la ruta de nuevo a string
     return path.string() + "/";
 }
 
