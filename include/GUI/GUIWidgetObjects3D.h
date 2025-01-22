@@ -16,21 +16,72 @@
 #ifndef BRAKEZA3D_GUIWIDGETOBJECTS3D_H
 #define BRAKEZA3D_GUIWIDGETOBJECTS3D_H
 
+struct GUIWidgetAllowedObjectConfig {
+    std::string typeObject;
+    bool visible;
+    const char* icon;
+};
 
 struct GUIWidgetObjects3D {
     TexturePackage &ImGuiTextures;
     std::vector<Object3D *> &gameObjects;
-
+    std::vector<GUIWidgetAllowedObjectConfig> allowedObjectsToShow;
+    
     GUIWidgetObjects3D(TexturePackage &imGuiTextures, std::vector<Object3D *> &gameObjects)
     :
         ImGuiTextures(imGuiTextures),
         gameObjects(gameObjects)
     {
+        allowedObjectsToShow.push_back({"Object3D", true, "objectIcon"});
+        allowedObjectsToShow.push_back({"Image2D", true, "Image2DIcon"});
+        allowedObjectsToShow.push_back({"Image2DAnimation", true, "Image2DAnimationIcon"});
+        allowedObjectsToShow.push_back({"Mesh3D", true, "meshIcon"});
+        allowedObjectsToShow.push_back({"Mesh3DAnimation", true, "Mesh3DAnimationIcon"});
+        allowedObjectsToShow.push_back({"Image3D", true, "Image3DIcon"});
+        allowedObjectsToShow.push_back({"BillboardAnimation", true, "BillboardAnimationIcon"});
+        allowedObjectsToShow.push_back({"BillboardAnimation8Directions", true, "BillboardAnimation8DirectionsIcon"});
+        allowedObjectsToShow.push_back({"PointLight3D", true, "lightIcon"});
+        allowedObjectsToShow.push_back({"SpotLight3D", true, "spotLightIcon"});
+    }
+
+    void drawAllowedObjectsToShow()
+    {
+        for (auto& o : allowedObjectsToShow) {
+            bool wasVisible = o.visible;
+
+            if (!wasVisible) {
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 1.0f)); // Fondo rojo
+            }
+
+            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, o.icon), ImVec2(10, 10))) {
+                o.visible = !o.visible;
+            }
+
+            if (!wasVisible) {
+                ImGui::PopStyleColor();
+            }
+
+            ImGui::SameLine();
+        }
+        ImGui::NewLine();
+    }
+
+    bool isAllowedObjectInConfig(std::string typeObject)
+    {
+        for (const auto& o : allowedObjectsToShow) {
+            if (o.visible && o.typeObject == typeObject ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     void draw(int &selectedObjectIndex)
     {
         if (ImGui::Begin("Scene Objects")) {
+            drawAllowedObjectsToShow();
+            ImGui::Separator();
             auto title = std::string("Number objects: ") + std::to_string(gameObjects.size());
 
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", title.c_str());
@@ -40,9 +91,8 @@ struct GUIWidgetObjects3D {
             for (int i = 0; i < gameObjects.size(); i++) {
                 auto o = gameObjects[i];
 
-                if (o->isRemoved()) {
-                    continue;
-                }
+                if (o->isRemoved()) continue;
+                if (!isAllowedObjectInConfig(o->getTypeObject())) continue;
 
                 //auto projectile = dynamic_cast<Projectile3DBody*> (o);
                 //if (projectile != nullptr) continue;
