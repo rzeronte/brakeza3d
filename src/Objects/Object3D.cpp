@@ -534,7 +534,11 @@ void Object3D::drawImGuiProperties()
     }
 
     if (featuresGUI.attached) {
-        if (ImGui::TreeNode("Attached")) {
+        if (ImGui::TreeNode("Attached Objects")) {
+            if ((int) attachedObjects.size() <= 0) {
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Not objects found");
+            }
+
             for (auto a: attachedObjects) {
                 if (ImGui::TreeNode(a->getLabel().c_str())) {
                     a->drawImGuiProperties();

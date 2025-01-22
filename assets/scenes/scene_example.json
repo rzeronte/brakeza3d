@@ -23,12 +23,12 @@
 		}
 	},
 	"objects":	[{
-			"name":	"splash",
+			"name":	"Wer89",
 			"scale":	1,
 			"position":	{
-				"x":	-1,
-				"y":	-2,
-				"z":	25
+				"x":	0,
+				"y":	0,
+				"z":	0
 			},
 			"rotation":	{
 				"x":	0,
@@ -39,10 +39,29 @@
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
-			"width":	10,
-			"height":	8,
-			"image":	"../assets/images/splash.png",
-			"type":	"Image3D"
+			"model":	"../assets/models//eye.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Mesh3DAnimation_75",
+			"scale":	1,
+			"position":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//spaceShuttle.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
 		}],
 	"shaders":	[],
 	"scripts":	[],

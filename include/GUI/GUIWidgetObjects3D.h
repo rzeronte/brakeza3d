@@ -51,10 +51,10 @@ struct GUIWidgetObjects3D {
             bool wasVisible = o.visible;
 
             if (!wasVisible) {
-                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 1.0f)); // Fondo rojo
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 1.0f)); //  rojo
             }
-
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, o.icon), ImVec2(10, 10))) {
+            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 7.0f, ImGui::GetCursorPosY()));
+            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, o.icon), ImVec2(14, 14))) {
                 o.visible = !o.visible;
             }
 
@@ -98,15 +98,19 @@ struct GUIWidgetObjects3D {
                 //auto projectile = dynamic_cast<Projectile3DBody*> (o);
                 //if (projectile != nullptr) continue;
 
-                auto optionText = (std::to_string(i + 1) + ") " + o->getLabel() + "###" + std::to_string(i)).c_str();
                 ImGui::Checkbox(std::string("##"+ std::to_string(i)).c_str(), &o->enabled);
                 ImGui::SameLine();
-                ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 3.0f));
+                ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 5.0f, ImGui::GetCursorPosY() + 3.0f));
                 ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, o->getTypeIcon()), ImVec2(16, 16));
+
                 ImGui::SameLine();
-                if (ImGui::Selectable(optionText, selectedObjectIndex == i)) {
+                ImGui::SetNextItemWidth(150.0f);
+                if (ImGui::Selectable(std::string("##select"+ std::to_string(i)).c_str(), selectedObjectIndex == i)) {
                     selectedObjectIndex = i;
                 }
+                ImGui::SameLine();
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 15.0f);
+                ImGui::Text((std::to_string(i + 1) + ") " + o->getLabel()).c_str());
                 if (ImGui::BeginDragDropTarget()) {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
                         Logging::Message("Dropping script (%s) in %s", payload->Data, o->getLabel().c_str());
@@ -115,6 +119,7 @@ struct GUIWidgetObjects3D {
                                 ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
                         );
                     }
+
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MESH3D_SHADER_ITEM")) {
                         Logging::Message("Dropping shader (%s) in %s", payload->Data, o->getLabel().c_str());
                         int selection = std::stoi((char*) payload->Data);
@@ -150,7 +155,14 @@ struct GUIWidgetObjects3D {
                 }
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
+                ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "scriptIcon"), ImVec2(14, 14));
+                ImGui::SameLine();
+                ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 10.0f, ImGui::GetCursorPosY()));
+                ImGui::Text(std::to_string((int)o->getScripts().size()).c_str());
                 if (o->isCollisionsEnabled()) {
+                    ImGui::SameLine();
+                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
+
                     if (o->getCollisionMode() == CollisionMode::GHOST) {
                         ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "ghostIcon"), ImVec2(14, 14));
                     }
@@ -158,6 +170,7 @@ struct GUIWidgetObjects3D {
                         ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "gearIcon"), ImVec2(14, 14));
                     }
                 }
+
             }
         }
         ImGui::End();

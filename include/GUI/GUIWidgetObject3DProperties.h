@@ -77,7 +77,7 @@ struct GUIWidgetObject3DProperties {
                     auto objectScripts = o->getScripts();
 
                     if ((int) objectScripts.size() <= 0) {
-                        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No scripts attached");
+                        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Not Scripts LUA found");
                     }
 
                     for (int i = 0; i < (int) objectScripts.size(); i++) {

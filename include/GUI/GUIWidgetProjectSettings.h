@@ -34,47 +34,9 @@ struct GUIWidgetProjectSettings {
             }
             ImGui::Separator();
 
-
             auto scripts = componentRender->getLUAScripts();
 
-            if ((int) scripts.size() <= 0) {
-                ImGui::Text("Not scripts in scene");
-            }
-
-            for (int i = 0; i < (int) scripts.size(); i++) {
-                auto currentScript = scripts[i];
-                ImGui::PushID(i);
-                ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "scriptIcon"), ImVec2(24, 24));
-                ImGui::SameLine(48);
-                std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
-                if (ImGui::Button(optionText.c_str())) {
-                    scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
-                    delete scriptEditableManager.script;
-                    scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename));
-                    strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
-                }
-                ImGui::SameLine();
-
-                if (currentScript->isPaused()) {
-                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "unlockIcon"), ImVec2(14, 14))) {
-                        currentScript->setPaused(false);
-                    }
-                } else {
-                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "lockIcon"), ImVec2(14, 14))) {
-                        currentScript->setPaused(true);
-                    }
-                }
-                ImGui::SameLine();
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "removeIcon"), ImVec2(14, 14))) {
-                    componentRender->removeScript(currentScript);
-                }
-
-                ImGui::PopID();
-            }
-
-            ImGui::Separator();
-
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Drop here LUA scripts...");
+            ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "addIcon"), ImVec2(16, 16));
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
                     Logging::Message("Dropping script (%s) in global space", payload->Data);
@@ -85,6 +47,45 @@ struct GUIWidgetProjectSettings {
                 }
                 ImGui::EndDragDropTarget();
             }
+            ImGui::SameLine();
+            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
+            ImGui::Text("Scene LUA Scripts");
+            ImGui::Separator();
+            if ((int) scripts.size() <= 0) {
+                ImGui::Text("No scripts found");
+            }
+
+            for (int i = 0; i < (int) scripts.size(); i++) {
+                auto currentScript = scripts[i];
+                ImGui::PushID(i);
+                std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "removeIcon"), ImVec2(14, 14))) {
+                    componentRender->removeScript(currentScript);
+                }
+                ImGui::SameLine();
+                if (currentScript->isPaused()) {
+                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "unlockIcon"), ImVec2(14, 14))) {
+                        currentScript->setPaused(false);
+                    }
+                } else {
+                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "lockIcon"), ImVec2(14, 14))) {
+                        currentScript->setPaused(true);
+                    }
+                }
+                ImGui::SameLine();
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "scriptIcon"), ImVec2(14, 14))) {
+                    scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
+                    delete scriptEditableManager.script;
+                    scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename));
+                    strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
+                }
+                ImGui::SameLine();
+                ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
+                ImGui::Text((std::to_string(i + 1) + ") " + currentScript->scriptFilename).c_str());
+
+                ImGui::PopID();
+            }
+
             ImGui::Separator();
         }
         ImGui::End();

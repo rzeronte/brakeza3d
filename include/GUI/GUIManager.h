@@ -122,17 +122,17 @@ public:
 
         }
         for (const auto & i : folders) {
-            auto fullPathFolder = folder + "/" + i;
+            auto fullPathFolder = folder + i;
             ImGui::Image(TexturePackage::getOGLTextureID(icons, "folderIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::Button(i.c_str())) {
-                currentScriptsFolderWidget = fullPathFolder;
+                currentScriptsFolderWidget = fullPathFolder + "/";
             }
         }
 
         for (int i = 0; i < files.size(); i++) {
             const auto& file = files[i];
-            auto fullPath = folder + "/" + file;
+            auto fullPath = folder + file;
             ImGui::PushID(i);
             ImGui::Image(TexturePackage::getOGLTextureID(icons, "scriptIcon"), ImVec2(16, 16));
             ImGui::SameLine();
@@ -300,7 +300,7 @@ public:
             auto title = std::to_string(i+1) + ") " + file;
             if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                 ImGui::PushID(i);
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "sceneIcon"), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "playIcon"), ImVec2(14, 14))) {
                     SceneLoader::clearScene();
                     ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(EngineSetup::get()->SCENES_FOLDER + file);
                 }
@@ -451,6 +451,8 @@ public:
     {
         if (ImGui::Begin("Scripts")) {
             //drawScriptFiles(result);
+            ImGui::Text((std::string("Folder: ") + currentScriptsFolderWidget).c_str());
+            ImGui::Separator();
             drawScriptsLuaFolderFiles(currentScriptsFolderWidget);
         }
         ImGui::End();
