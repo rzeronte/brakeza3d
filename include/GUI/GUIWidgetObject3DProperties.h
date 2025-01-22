@@ -56,13 +56,7 @@ struct GUIWidgetObject3DProperties {
                     return;
                 }
 
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Selected object: ");
-                ImGui::SameLine();
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", o->getLabel().c_str());
-                ImGui::SameLine();
-                ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, o->getTypeIcon()), ImVec2(16, 16));
-
-                ImGui::Separator();
+                ImGui::Text("Tools:");
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "translateIcon"), ImVec2(32, 32))) {
                     operation = ImGuizmo::OPERATION::TRANSLATE;
                 }
@@ -79,7 +73,7 @@ struct GUIWidgetObject3DProperties {
 
                 ImGui::Separator();
 
-                if (ImGui::TreeNode("Scripts")) {
+                if (ImGui::TreeNode("Scripts LUA")) {
                     auto objectScripts = o->getScripts();
 
                     if ((int) objectScripts.size() <= 0) {
@@ -122,6 +116,8 @@ struct GUIWidgetObject3DProperties {
                         }
 
                         currentScript->drawImGuiProperties();
+
+                        ImGui::Separator();
 
                         ImGui::PopID();
                     }

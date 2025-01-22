@@ -410,11 +410,15 @@ void Object3D::setBelongToScene(bool belongToScene)
 
 void Object3D::drawImGuiProperties()
 {
+    auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
+
     ImGui::Checkbox("Enabled", &enabled);
-    ImGui::SameLine();
+    ImGui::Separator();
 
     static char name[256];
     strncpy(name, label.c_str(), sizeof(name));
+    ImGui::Image(TexturePackage::getOGLTextureID(*ImGuiTextures, getTypeIcon()), ImVec2(22, 24));
+    ImGui::SameLine();
     ImGui::SetNextItemWidth(125.0f);
     ImGui::InputText("Name##nameObject", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
     if (ImGui::IsItemEdited()) {
@@ -422,58 +426,62 @@ void Object3D::drawImGuiProperties()
     }
     ImGui::Separator();
 
-    // position
-    if (featuresGUI.position) {
-        Tools::ImGuiVertex3D("Position", "X", "Y", "Z", &position, 0.1, -100000, 100000);
-        ImGui::Separator();
-    }
-
-    // rotation
-    if (featuresGUI.rotation) {
-        if (ImGui::TreeNode("Rotation")) {
-            const float range_angle_min = -360;
-            const float range_angle_max = 360;
-            const float range_angle_sensibility = 0.1;
-
-            bool needUpdateRotation = false;
-            ImGui::DragScalar("X", ImGuiDataType_Float, &getRotX(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-            if (ImGui::IsItemEdited()) {
-                needUpdateRotation = true;
-            }
-            ImGui::DragScalar("Y", ImGuiDataType_Float, &getRotY(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-            if (ImGui::IsItemEdited()) {
-                needUpdateRotation = true;
-            }
-            ImGui::DragScalar("Z", ImGuiDataType_Float, &getRotZ(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-            if (ImGui::IsItemEdited()) {
-                needUpdateRotation = true;
-            }
-            if (needUpdateRotation) {
-                setRotation(M3::getMatrixRotationForEulerAngles(getRotX(), getRotY(), getRotZ()));
+    if (featuresGUI.position || featuresGUI.rotation || featuresGUI.scale) {
+        if (ImGui::TreeNode("Transformations")) {
+            // position
+            if (featuresGUI.position) {
+                Tools::ImGuiVertex3D("Position", "X", "Y", "Z", &position, 0.1, -100000, 100000);
+                ImGui::Separator();
             }
 
-            ImGui::Checkbox("Rotation Frame", &rotationFrameEnabled);
+            // rotation
+            if (featuresGUI.rotation) {
+                if (ImGui::TreeNode("Rotation")) {
+                    const float range_angle_min = -360;
+                    const float range_angle_max = 360;
+                    const float range_angle_sensibility = 0.1;
 
-            if (rotationFrameEnabled) {
-                Tools::ImGuiVertex3D("Rotation Each Frame", "X", "Y", "Z", &rotationFrame, range_angle_sensibility, range_angle_min, range_angle_max);
-           }
+                    bool needUpdateRotation = false;
+                    ImGui::DragScalar("X", ImGuiDataType_Float, &getRotX(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                    if (ImGui::IsItemEdited()) {
+                        needUpdateRotation = true;
+                    }
+                    ImGui::DragScalar("Y", ImGuiDataType_Float, &getRotY(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                    if (ImGui::IsItemEdited()) {
+                        needUpdateRotation = true;
+                    }
+                    ImGui::DragScalar("Z", ImGuiDataType_Float, &getRotZ(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
+                    if (ImGui::IsItemEdited()) {
+                        needUpdateRotation = true;
+                    }
+                    if (needUpdateRotation) {
+                        setRotation(M3::getMatrixRotationForEulerAngles(getRotX(), getRotY(), getRotZ()));
+                    }
+
+                    ImGui::Checkbox("Rotation Frame", &rotationFrameEnabled);
+
+                    if (rotationFrameEnabled) {
+                        Tools::ImGuiVertex3D("Rotation Each Frame", "X", "Y", "Z", &rotationFrame, range_angle_sensibility, range_angle_min, range_angle_max);
+                    }
+                    ImGui::TreePop();
+                }
+                ImGui::Separator();
+            }
+            // scale
+            if (featuresGUI.scale) {
+                if (ImGui::TreeNode("Scale")) {
+                    const float range_scale_min = -360;
+                    const float range_scale_max = 360;
+                    ImGui::DragScalar("Scale", ImGuiDataType_Float, &scale, 0.01, &range_scale_min, &range_scale_max, "%f", 1.0f);
+
+                    ImGui::TreePop();
+                }
+            }
             ImGui::TreePop();
         }
         ImGui::Separator();
-
     }
-
-    if (featuresGUI.scale) {
-        if (ImGui::TreeNode("Scale")) {
-            const float range_scale_min = -360;
-            const float range_scale_max = 360;
-            ImGui::DragScalar("Scale", ImGuiDataType_Float, &scale, 0.01, &range_scale_min, &range_scale_max, "%f", 1.0f);
-
-            ImGui::TreePop();
-        }
-        ImGui::Separator();
-    }
-
+    // alpha
     if (featuresGUI.alpha) {
         if (ImGui::TreeNode("Alpha")) {
             const float range_alpha_min = 0;
@@ -491,7 +499,6 @@ void Object3D::drawImGuiProperties()
             if ((int) shaders.size() <= 0) {
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No shaders attached");
             }
-            auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
 
             for (int i = 0; i < (int) shaders.size(); i++) {
                 ImGui::PushID(i);

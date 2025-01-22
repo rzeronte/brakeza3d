@@ -159,9 +159,9 @@ public:
 
     void drawWidgetScriptProperties()
     {
-        ImGui::TextColored(ImVec4(1.0f, 0.0f, 1.0f, 1.0f), "Script properties for: ");
+        ImGui::Text("Current script properties for: ");
         ImGui::SameLine();
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", scriptEditableManager.script->scriptFilename.c_str());
+        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", scriptEditableManager.script->scriptFilename.c_str());
 
         ImGui::Separator();
         static char name[256];

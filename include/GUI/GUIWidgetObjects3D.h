@@ -40,8 +40,9 @@ struct GUIWidgetObjects3D {
         allowedObjectsToShow.push_back({"Image3D", true, "Image3DIcon"});
         allowedObjectsToShow.push_back({"BillboardAnimation", true, "BillboardAnimationIcon"});
         allowedObjectsToShow.push_back({"BillboardAnimation8Directions", true, "BillboardAnimation8DirectionsIcon"});
-        allowedObjectsToShow.push_back({"PointLight3D", true, "lightIcon"});
+        allowedObjectsToShow.push_back({"LightPoint3D", true, "lightIcon"});
         allowedObjectsToShow.push_back({"SpotLight3D", true, "spotLightIcon"});
+        allowedObjectsToShow.push_back({"ParticleEmitter", true, "particlesIcon"});
     }
 
     void drawAllowedObjectsToShow()
@@ -97,8 +98,13 @@ struct GUIWidgetObjects3D {
                 //auto projectile = dynamic_cast<Projectile3DBody*> (o);
                 //if (projectile != nullptr) continue;
 
-                std::string optionText = std::to_string(i + 1) + ") " + o->getLabel();
-                if (ImGui::Selectable(optionText.c_str(), selectedObjectIndex == i)) {
+                auto optionText = (std::to_string(i + 1) + ") " + o->getLabel() + "###" + std::to_string(i)).c_str();
+                ImGui::Checkbox(std::string("##"+ std::to_string(i)).c_str(), &o->enabled);
+                ImGui::SameLine();
+                ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 3.0f));
+                ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, o->getTypeIcon()), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::Selectable(optionText, selectedObjectIndex == i)) {
                     selectedObjectIndex = i;
                 }
                 if (ImGui::BeginDragDropTarget()) {
@@ -143,12 +149,7 @@ struct GUIWidgetObjects3D {
                     ImGui::EndDragDropTarget();
                 }
                 ImGui::SameLine();
-                if (o->isEnabled()) {
-                    ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "lockIcon"), ImVec2(14, 14));
-                } else {
-                    ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "unlockIcon"), ImVec2(14, 14));
-                }
-                ImGui::SameLine();
+                ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
                 if (o->isCollisionsEnabled()) {
                     if (o->getCollisionMode() == CollisionMode::GHOST) {
                         ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "ghostIcon"), ImVec2(14, 14));
@@ -157,12 +158,6 @@ struct GUIWidgetObjects3D {
                         ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "gearIcon"), ImVec2(14, 14));
                     }
                 }
-                ImGui::SameLine();
-
-                ImGui::SameLine(250);
-                ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, o->getTypeIcon()), ImVec2(16, 16));
-                ImGui::SameLine(270);
-                ImGui::Text("%s", o->getTypeObject());
             }
         }
         ImGui::End();

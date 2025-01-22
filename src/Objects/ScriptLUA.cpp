@@ -282,7 +282,12 @@ void ScriptLUA::setPaused(bool paused) {
 
 void ScriptLUA::drawImGuiProperties()
 {
-    if (ImGui::TreeNode("Script Settings")) {
+    if ((int) dataTypes.size() <= 0) {
+        ImGui::Text("No variables found");
+        return;
+    }
+
+    if (ImGui::TreeNode("Script Variables")) {
         for (auto&  type: dataTypes) {
             switch (EngineSetup::get()->LUADataTypesMapping[type.type]) {
                 case EngineSetup::LUADataType::INT: {

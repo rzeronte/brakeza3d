@@ -45,7 +45,6 @@ protected:
 
     ObjectGUIFeatures featuresGUI;
 
-    bool enabled;
     bool removed;
     bool decal; // Decals exclude UV Coordinates out of [0, 1]
     bool followCamera;
@@ -224,6 +223,8 @@ public:
     void runResolveCollisionScripts(Collider *with);
 
     const sol::environment &getLuaEnvironment() const;
+
+    bool enabled;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H
