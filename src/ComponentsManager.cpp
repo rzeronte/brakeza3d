@@ -19,7 +19,7 @@ void ComponentsManager::registerComponent(Component *component, const std::strin
 
     components.push_back(component);
 
-    Logging::Log("Register component: %s", component->getLabel().c_str());
+    Logging::Message("Register component: %s", component->getLabel().c_str());
 }
 
 ComponentsManager::~ComponentsManager()

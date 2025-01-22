@@ -55,7 +55,7 @@ bool TextureAtlas::addTexture(Image *texture, bool lightmap, const std::string& 
         }
     }
 
-    Logging::Log("addTexture failed!");
+    Logging::Message("addTexture failed!");
 
     return false;
 }

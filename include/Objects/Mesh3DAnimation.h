@@ -21,7 +21,8 @@ struct VertexBoneData {
                 Weights[i] = Weight;
                 return;
             }
-        }Logging::Log("NUM_BONES_PER_VERTEX reached");
+        }
+        Logging::Message("NUM_BONES_PER_VERTEX reached");
         assert(0);
     }
 };

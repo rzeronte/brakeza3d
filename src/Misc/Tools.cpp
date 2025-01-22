@@ -69,7 +69,7 @@ bool Tools::fileExists(const char *name)
         return true;
     }
 
-    Logging::Log("File %s not found", name);
+    Logging::Message("File %s not found", name);
 
     return false;
 }

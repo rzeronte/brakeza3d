@@ -233,34 +233,34 @@ struct GUIWidgetMenu
 
             if (ImGui::BeginMenu("Bullet")) {
                 ImGui::Checkbox("Step Simulation", &EngineSetup::get()->BULLET_STEP_SIMULATION);
-                ImGui::Checkbox("Collisions between objects", &EngineSetup::get()->BULLET_CHECK_ALL_PAIRS);
-                ImGui::Separator();
-                ImGui::Checkbox("Draw debug mode", &EngineSetup::get()->BULLET_DEBUG_MODE);
-                ImGui::Separator();
-                // gravity
-                if (ImGui::DragScalar("X Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.x, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
-                    ComponentsManager::get()->getComponentCollisions()->setGravity(EngineSetup::get()->gravity);
+                if (EngineSetup::get()->BULLET_STEP_SIMULATION) {
+                    ImGui::Separator();
+                    ImGui::Checkbox("Handle object collisions", &EngineSetup::get()->BULLET_CHECK_ALL_PAIRS);
+                    ImGui::Separator();
+                    ImGui::Checkbox("Draw debug mode", &EngineSetup::get()->BULLET_DEBUG_MODE);
+                    ImGui::Separator();
+                    // gravity
+                    if (ImGui::DragScalar("X Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.x, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
+                        ComponentsManager::get()->getComponentCollisions()->setGravity(EngineSetup::get()->gravity);
+                    }
+                    if (ImGui::DragScalar("Y Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.y, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
+                        ComponentsManager::get()->getComponentCollisions()->setGravity(EngineSetup::get()->gravity);
+                    }
+                    if (ImGui::DragScalar("Z Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.z, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
+                        ComponentsManager::get()->getComponentCollisions()->setGravity(EngineSetup::get()->gravity);
+                    }
+                    ImGui::Separator();
+                    ImGui::DragScalar("ProjectileDemo Impulse", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_IMPULSE, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                    ImGui::DragScalar("ProjectileDemo Accuracy", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_ACCURACY, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                    ImGui::DragScalar("ProjectileDemo Mass", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_MASS, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                    ImGui::Separator();
+                    ImGui::Checkbox("ProjectileDemo SimpleMesh", &EngineSetup::get()->PROJECTILE_SIMPLE_MESH);
                 }
-                if (ImGui::DragScalar("Y Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.y, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
-                    ComponentsManager::get()->getComponentCollisions()->setGravity(EngineSetup::get()->gravity);
-                }
-                if (ImGui::DragScalar("Z Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.z, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
-                    ComponentsManager::get()->getComponentCollisions()->setGravity(EngineSetup::get()->gravity);
-                }
-                ImGui::Separator();
-                ImGui::DragScalar("ProjectileDemo Impulse", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_IMPULSE, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("ProjectileDemo Accuracy", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_ACCURACY, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::DragScalar("ProjectileDemo Mass", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_MASS, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                ImGui::Separator();
-                ImGui::Checkbox("ProjectileDemo SimpleMesh", &EngineSetup::get()->PROJECTILE_SIMPLE_MESH);
-
                 ImGui::EndMenu();
             }
 
             if (ImGui::BeginMenu("Logging")) {
                 ImGui::Checkbox("Output to Console", &EngineSetup::get()->LOGGING);
-                ImGui::Separator();
-                ImGui::Checkbox("Show debug data", &EngineSetup::get()->DEBUG_RENDER_INFO);
                 ImGui::Separator();
                 ImGui::Checkbox("Collision objects", &EngineSetup::get()->LOG_COLLISION_OBJECTS);
                 ImGui::EndMenu();

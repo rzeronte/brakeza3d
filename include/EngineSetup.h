@@ -55,8 +55,6 @@ public:
     bool RENDER_OBJECTS_AXIS = false;
     float OBJECT_AXIS_SIZE = 1;
 
-    bool DEBUG_RENDER_INFO = false;
-
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;
     bool TRIANGLE_MODE_WIREFRAME = false;

@@ -2,28 +2,28 @@
 	"name":	"Brakeza3D - By Eduardo Rodriguez <eduardo@brakeza.com>",
 	"ads":	{
 		"direction":	{
-			"x":	0,
-			"y":	0,
-			"z":	1
+			"x":	0.43999999761581421,
+			"y":	0.5,
+			"z":	-1
 		},
 		"diffuse":	{
-			"x":	0,
-			"y":	0,
-			"z":	0
+			"x":	0.7295081615447998,
+			"y":	0.59697723388671875,
+			"z":	0.22423405945301056
 		},
 		"specular":	{
+			"x":	1,
+			"y":	0.99462509155273438,
+			"z":	0.91803276538848877
+		},
+		"ambient":	{
 			"x":	0,
 			"y":	0,
 			"z":	0
-		},
-		"ambient":	{
-			"x":	1,
-			"y":	1,
-			"z":	1
 		}
 	},
 	"objects":	[{
-			"name":	"Wer89",
+			"name":	"axis",
 			"scale":	1,
 			"position":	{
 				"x":	0,
@@ -39,16 +39,16 @@
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models//eye.fbx",
+			"model":	"../assets/models//StudioCorner.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"Mesh3DAnimation_75",
+			"name":	"pointlight",
 			"scale":	1,
 			"position":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
+				"x":	1.9084835052490234,
+				"y":	-0.825358510017395,
+				"z":	1.1259727478027344
 			},
 			"rotation":	{
 				"x":	0,
@@ -59,21 +59,135 @@
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models//spaceShuttle.fbx",
+			"ambient":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"diffuse":	{
+				"x":	0.89754098653793335,
+				"y":	0.19863609969615936,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	8.3399991989135742,
+			"linear":	-4.0399999618530273,
+			"quadratic":	0.57999998331069946,
+			"type":	"LightPoint3D"
+		}, {
+			"name":	"cube",
+			"scale":	1.4600000381469727,
+			"position":	{
+				"x":	-10.812793731689453,
+				"y":	1.0789182186126709,
+				"z":	6.0140156745910645
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//RoundedRedCube.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
+		}, {
+			"name":	"spaceshuttle",
+			"scale":	1.6000000238418579,
+			"position":	{
+				"x":	4.44293212890625,
+				"y":	-0.31813177466392517,
+				"z":	3.9090619087219238
+			},
+			"rotation":	{
+				"x":	-92.0999984741211,
+				"y":	0.60000002384185791,
+				"z":	44.100002288818359
+			},
+			"rotationFrameEnabled":	false,
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//SpaceShuttle.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"eye",
+			"scale":	2.3499999046325684,
+			"position":	{
+				"x":	5.747215747833252,
+				"y":	-0.37687137722969055,
+				"z":	-1.6324726343154907
+			},
+			"rotation":	{
+				"x":	-56.200000762939453,
+				"y":	-30.700000762939453,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//Eye.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"spotlight",
+			"scale":	1,
+			"position":	{
+				"x":	-10.619564056396484,
+				"y":	3.1186609268188477,
+				"z":	0.952468991279602
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"ambient":	{
+				"x":	0.05000000074505806,
+				"y":	0.05000000074505806,
+				"z":	0.05000000074505806
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	1,
+			"linear":	0.090000003576278687,
+			"quadratic":	0.032000001519918442,
+			"cutOff":	0.99984771013259888,
+			"outerCutOff":	0.99984771013259888,
+			"type":	"SpotLight3D"
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	0,
-			"y":	0,
-			"z":	0
+			"x":	-18.6322078704834,
+			"y":	-32.6923828125,
+			"z":	-26.277002334594727
 		},
 		"rotation":	{
-			"x":	0,
-			"y":	0,
+			"x":	48.75,
+			"y":	-31.25,
 			"z":	0
 		}
 	}

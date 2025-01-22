@@ -878,7 +878,7 @@ void Object3D::resolveCollision(Collider *with)
 {
     if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
         auto *object = dynamic_cast<Object3D*> (with);
-        Logging::Log("Object3D: Collision %s with %s",  getLabel().c_str(), object->getLabel().c_str());
+        Logging::Message("Object3D: Collision %s with %s",  getLabel().c_str(), object->getLabel().c_str());
     }
 
     if (ComponentsManager::get()->getComponentRender()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {

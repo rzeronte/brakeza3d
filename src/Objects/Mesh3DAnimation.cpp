@@ -68,7 +68,7 @@ void Mesh3DAnimation::updateFrameTransformations()
 
 bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
 {
-    Logging::Log("AssimpLoadAnimation for %s", filename.c_str());
+    Logging::Message("AssimpLoadAnimation for %s", filename.c_str());
 
     if (!Tools::fileExists(filename.c_str())) {
         Logging::Message("[AssimpLoadAnimation] ERROR: File not found %s", filename.c_str());
@@ -84,7 +84,7 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     );
 
     if (!scene) {
-        Logging::Log("Error import 3D file for ASSIMP");
+        Logging::Message("Error import 3D file for ASSIMP");
         exit(-1);
     }
 
@@ -116,7 +116,7 @@ void Mesh3DAnimation::AssimpProcessMeshAnimation(int i, aiMesh *mesh) {
     std::vector<Vertex3D> localMeshVertices(mesh->mNumVertices);
 
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
-        Logging::Log("Skip mesh non triangle");
+        Logging::Message("Skip mesh non triangle");
         return;
     }
 
@@ -182,13 +182,13 @@ void Mesh3DAnimation::loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &m
             BoneIndex = (int) boneMapping[BoneName];
         }
 
-        //Logging::Log(std::string("Loading Bone info for BoneIndex: ") + std::to_string(BoneIndex) + ": " + mesh->mBones[i]->mName.C_Str());
+        //Logging::Message(std::string("Loading Bone info for BoneIndex: ") + std::to_string(BoneIndex) + ": " + mesh->mBones[i]->mName.C_Str());
 
         for (int j = 0; j < (int) mesh->mBones[i]->mNumWeights; j++) {
             unsigned int VertexID = mesh->mBones[i]->mWeights[j].mVertexId;
             float Weight = mesh->mBones[i]->mWeights[j].mWeight;
 
-            //Logging::Log(std::to_string(j) + " - AddBoneData for VertexID: " + std::to_string(VertexID) + " in idMesh: " + std::string(mesh->mName.C_Str()) + ", BoneIndex: " + std::to_string(BoneIndex) + ", Weight: " + std::to_string(Weight));
+            //Logging::Message(std::to_string(j) + " - AddBoneData for VertexID: " + std::to_string(VertexID) + " in idMesh: " + std::string(mesh->mName.C_Str()) + ", BoneIndex: " + std::to_string(BoneIndex) + ", Weight: " + std::to_string(Weight));
             meshVertexBoneData[VertexID].AddBoneData(BoneIndex, Weight);
         }
     }

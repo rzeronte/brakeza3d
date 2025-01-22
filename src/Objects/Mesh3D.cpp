@@ -162,7 +162,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     );
 
     if (!scene) {
-        Logging::Log("Error import 3D file for ASSIMP");
+        Logging::Message("Error import 3D file for ASSIMP");
         exit(-1);
     }
 
@@ -188,12 +188,12 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
         Dir = Filename.substr(0, SlashIndex);
     }
 
-    Logging::Log("ASSIMP: mNumMaterials: %d", pScene->mNumMaterials);
+    Logging::Message("[Mesh3D]: mNumMaterials: %d", pScene->mNumMaterials);
 
     for (unsigned int i = 0; i < pScene->mNumMaterials; i++) {
 
         aiMaterial *pMaterial = pScene->mMaterials[i];
-        Logging::Message("[ASSIMP] Loading material: %s", pMaterial->GetName().C_Str());
+        Logging::Message("[Mesh3D] Loading material: %s", pMaterial->GetName().C_Str());
 
         if (std::string(pMaterial->GetName().C_Str()) == AI_DEFAULT_MATERIAL_NAME) {
             continue;
@@ -211,12 +211,12 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
 
             std::string FullPath = EngineSetup::get()->TEXTURES_FOLDER + base_filename;
 
-            Logging::Message("[ASSIMP] Loading '%s' as texture for mesh: %s", FullPath.c_str(), Filename.c_str());
+            Logging::Message("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), Filename.c_str());
 
             this->modelTextures.push_back(new Image(FullPath));
             this->modelSpecularTextures.push_back(new Image(FullPath));
         } else {
-            Logging::Log("ERROR: mMaterial[%s]: Not valid color", i);
+            Logging::Message("[Mesh3D] ERROR: mMaterial[%s]: Not valid color", i);
         }
         //}
     }
@@ -237,7 +237,7 @@ void Mesh3D::AssimpProcessNodes(const aiScene *scene, aiNode *node)
 void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
 {
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
-        Logging::Log("Skip mesh non triangle: %s", mesh->mPrimitiveTypes);
+        Logging::Message("Skip mesh non triangle: %s", mesh->mPrimitiveTypes);
         return;
     }
 
@@ -290,7 +290,7 @@ Grid3D *Mesh3D::getGrid3D() const {
 
 void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ)
 {
-    Logging::Log("Building Grid3D for %s (TriangleContains)", getLabel().c_str());
+    Logging::Message("Building Grid3D for %s (TriangleContains)", getLabel().c_str());
 
     this->updateBoundingBox();
     this->grid = new Grid3D(
@@ -306,7 +306,7 @@ void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ
 
 void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction)
 {
-    Logging::Log("Building Grid3D for %s (RayIntersection)", getLabel().c_str());
+    Logging::Message("Building Grid3D for %s (RayIntersection)", getLabel().c_str());
 
     this->updateBoundingBox();
     this->grid = new Grid3D(
@@ -323,7 +323,7 @@ void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, in
 
 void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const std::string& filename, int fixedY)
 {
-    Logging::Log("Building Grid3D for %s (DataImage)", getLabel().c_str());
+    Logging::Message("Building Grid3D for %s (DataImage)", getLabel().c_str());
 
     this->updateBoundingBox();
 
@@ -343,7 +343,7 @@ void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const st
 
 void Mesh3D::buildOctree()
 {
-    Logging::Log("Building Octree for %s", getLabel().c_str());
+    Logging::Message("Building Octree for %s", getLabel().c_str());
 
     this->updateBoundingBox();
 
@@ -371,7 +371,7 @@ const Color &Mesh3D::getFlatColor() const {
 
 Mesh3D::~Mesh3D()
 {
-    Logging::Log("Delete Mesh3D: %s", getLabel().c_str());
+    Logging::Message("Delete Mesh3D: %s", getLabel().c_str());
 
     for (auto triangle : modelTriangles) delete triangle;
     for (auto vertex : modelVertices) delete vertex;

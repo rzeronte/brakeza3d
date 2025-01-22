@@ -232,17 +232,18 @@ void SceneLoader::clearScene()
     }
 }
 
-void SceneLoader::createObjectInScene() {
+void SceneLoader::createObjectInScene()
+{
     auto o = new Object3D();
     o->setBelongToScene(true);
-    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
+    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("Object3D"));
 }
 
 void SceneLoader::createPointLight3DInScene()
 {
     auto o = LightPoint3D::create(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
     o->setBelongToScene(true);
-    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("new_object"));
+    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("LightPoint3D"));
 }
 
 void SceneLoader::createSpotLight3DInScene()
@@ -324,7 +325,7 @@ void SceneLoader::createParticleEmitterInScene()
     newObject->setBelongToScene(true);
 
     Logging::Message("Loading ParticleEmitter");
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("new_particleEmitter"));
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("ParticleEmitter"));
 }
 
 void SceneLoader::createImage3DToScene(const std::string &filename)
@@ -340,7 +341,8 @@ void SceneLoader::createImage3DToScene(const std::string &filename)
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Image3D"));
 }
 
-std::map<std::string, Mesh3DShaderLoaderMapping> &SceneLoader::getMesh3DShaderTypes() {
+std::map<std::string, Mesh3DShaderLoaderMapping> &SceneLoader::getMesh3DShaderTypes()
+{
     return mesh3DShaderTypes;
 }
 
@@ -350,7 +352,7 @@ void SceneLoader::createBillboardAnimation8Directions()
     newObject->setBelongToScene(true);
     newObject->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
 
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Sprite3DDirectional"));
+    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Billboard8D"));
 }
 
 void SceneLoader::createMesh3D(const std::string& animationFile)
@@ -360,7 +362,7 @@ void SceneLoader::createMesh3D(const std::string& animationFile)
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
     o->AssimpLoadGeometryFromFile(animationFile);
 
-    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("Mesh3DAnimation"));
+    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("Mesh3D"));
 }
 
 void SceneLoader::createMesh3DAnimationToScene(const std::string& animationFile)

@@ -702,7 +702,7 @@ void PathFinder::loadGridFromPNG(const std::string& filename) {
 
 std::stack<PairData> PathFinder::readPathFromPNG(const std::string& filename)
 {
-    Logging::Log("PathFinder readPathFromPNG %s", filename.c_str());
+    Logging::Message("PathFinder readPathFromPNG %s", filename.c_str());
 
     SDL_Surface *surface = IMG_Load((filename).c_str());
 

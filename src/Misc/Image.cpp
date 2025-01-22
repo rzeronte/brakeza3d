@@ -50,7 +50,7 @@ void Image::loadTGA(const std::string& filename)
     }
 
     std::cout << "Error loading TGA texture '%s'" << filename.c_str() << std::endl;
-    Logging::Log("Error loading TGA texture '%s'", filename.c_str());
+    Logging::Message("Error loading TGA texture '%s'", filename.c_str());
 
     exit(-1);
 }
@@ -196,7 +196,7 @@ void Image::setImage(const std::string &filename)
         return;
     }
 
-    Logging::Log("Error loading TGA texture '%s'", filename.c_str());
+    Logging::Message("Error loading TGA texture '%s'", filename.c_str());
     exit(-1);
 }
 

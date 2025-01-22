@@ -36,7 +36,7 @@ void ComponentSound::onSDLPollEvent(SDL_Event *e, bool &finish) {
 
 void ComponentSound::initSoundSystem()
 {
-    Logging::Log("Init Sound System");
+    Logging::Message("Init Sound System");
 
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
@@ -59,7 +59,7 @@ void ComponentSound::LoadSoundsConfigFile()
     cJSON *myDataJSON = cJSON_Parse(contentFile);
 
     if (myDataJSON == nullptr) {
-        Logging::Log("Cannot load sounds JSON file!");
+        Logging::Message("Cannot load sounds JSON file!");
         return;
     }
 
@@ -74,7 +74,7 @@ void ComponentSound::LoadSoundsConfigFile()
         if (strcmp(type->valuestring, "music") == 0) selectedType = SoundPackageItemType::MUSIC;
         if (strcmp(type->valuestring, "playSound") == 0) selectedType = SoundPackageItemType::SOUND;
 
-        Logging::Log("Loading file playSound %s", file->valuestring);
+        Logging::Message("Loading sound file: %s", file->valuestring);
 
         soundPackage.addItem(EngineSetup::get()->SOUNDS_FOLDER + file->valuestring, label->valuestring, selectedType);
     }
@@ -86,14 +86,14 @@ void ComponentSound::LoadSoundsConfigFile()
 int ComponentSound::playChunk(Mix_Chunk *chunk, int channel, int times)
 {
     if (chunk == nullptr) {
-        Logging::Log("Error loading chunk playSound");
+        Logging::Message("Error loading chunk playSound");
         return -1;
     }
 
     const int resultPlaying = Mix_PlayChannel(channel, chunk, times);
 
     if (resultPlaying < 0) {
-        Logging::Log("No channel available for playSound...");
+        Logging::Message("No channel available for playSound...");
     }
 
     return resultPlaying;
