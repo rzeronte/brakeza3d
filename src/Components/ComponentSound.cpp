@@ -54,7 +54,7 @@ void ComponentSound::LoadSoundsConfigFile()
     Logging::Message("Loading Sounds (%s)", filePath.c_str());
 
     size_t file_size;
-    auto contentFile = Tools::readFile(filePath.c_str(), file_size);
+    auto contentFile = Tools::readFile(filePath, file_size);
 
     cJSON *myDataJSON = cJSON_Parse(contentFile);
 

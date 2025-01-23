@@ -4,7 +4,7 @@ project(Brakeza3D)
 set(CMAKE_CXX_STANDARD 17)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(CMAKE_CXX_FLAGS "-O0 -Wall -g ")
+    set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(CMAKE_CXX_FLAGS "-O3 -w")
 endif()
@@ -176,7 +176,7 @@ add_executable(Brakeza3D
     src/OpenGL/ShaderOpenGLTint.cpp                 src/OpenGL/ShaderOpenGLTint.h
 
     src/Collisions/SimplePendulum.cpp               include/Physics/SimplePendulum.h
-    src/Collisions/Collider.cpp                     src/Collisions/Collider.h
+    src/Collisions/Collider.cpp include/Collision/Collider.h
     src/Collisions/RayCollisionable.cpp             include/Physics/RayCollisionable.h
 
     src/Behaviors/Object3DBehavior.cpp              include/Behaviors/Object3DBehavior.h
