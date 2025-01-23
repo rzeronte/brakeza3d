@@ -14,26 +14,24 @@ Point2D::Point2D(int x, int y)
     x(x),
     y(y)
 {
-    this->x = x;
-    this->y = y;
 }
 
 Point2D::Point2D(glm::vec2 v)
 {
-    this->x = v.x;
-    this->y = v.y;
+    this->x = (int) v.x;
+    this->y = (int) v.y;
 }
 
 float Point2D::operator*(const Point2D &v) const
 {
-    return (float) ((this->x * v.x) + (this->y * v.y));
+    return (float) ((x * v.x) + (y * v.y));
 }
 
 Point2D Point2D::operator/(const Point2D &pm) const
 {
     return Point2D(
-        this->x / pm.x,
-        this->y / pm.y
+        x / pm.x,
+        y / pm.y
     );
 }
 
@@ -44,36 +42,36 @@ Point2D Point2D::getNormalize() const
     float inv_module = 1 / modulo;
 
     return Point2D(
-        this->x * inv_module,
-        this->y * inv_module
+        x * inv_module,
+        y * inv_module
     );
 }
 
 Point2D Point2D::operator-(const Point2D &v) const
 {
     return Point2D(
-        this->x - v.x,
-        this->y - v.y
+        x - v.x,
+        y - v.y
     );
 }
 
 Point2D Point2D::operator+(const Point2D &v) const
 {
     return Point2D(
-        this->x + v.x,
-        this->y + v.y
+        x + v.x,
+        y + v.y
     );
 }
 
 Point2D Point2D::getScaled(float v) const
 {
     return Point2D(
-        this->x * v,
-        this->y * v
+        x * v,
+        y * v
     );
 }
 
-glm::vec2 Point2D::toGLM()
+glm::vec2 Point2D::toGLM() const
 {
     return glm::vec2(x, y);
 }

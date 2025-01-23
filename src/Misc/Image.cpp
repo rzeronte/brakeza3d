@@ -1,6 +1,5 @@
 #include <SDL2/SDL_image.h>
 
-#include <utility>
 #include "../../include/Misc/Image.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Render/Logging.h"

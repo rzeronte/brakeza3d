@@ -1255,8 +1255,6 @@ float BSPCollider::V_CalcBob(float time, const vec3_t velocity) {
     return bob;
 }
 
-int nanmask = 255 << 23;
-
 void BSPCollider::SV_CheckVelocity(model_collision_t *ent) {
     float maxvelocity = MAX_VELOCITY_BSP;
     float wishspeed = VectorLength(ent->velocity);

@@ -17,7 +17,7 @@ public:
     Point2D operator-(const Point2D &pm) const;
     Point2D operator+(const Point2D &pm) const;
     Point2D operator/(const Point2D &pm) const;
-    glm::vec2 toGLM();
+    glm::vec2 toGLM() const;
     [[nodiscard]] Point2D getNormalize() const;
     [[nodiscard]] Point2D getScaled(float) const;
 

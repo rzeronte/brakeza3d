@@ -1,19 +1,24 @@
 
-#include "Collider.h"
+#include "../../include/Collision/Collider.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
 
 Collider::Collider()
 :
-        collisionsEnabled(false),
-        mass(1),
-        colliderStatic(false),
-        simpleShapeSize(Vertex3D(1, 1, 1)),
-        collisionMode(CollisionMode::NONE),
-        ghostObject( new btPairCachingGhostObject()),
-        body(nullptr),
-        collisionShape(CollisionShape::SIMPLE_SHAPE)
+    collisionsEnabled(false),
+    collisionMode(CollisionMode::NONE),
+    simpleShapeSize(Vertex3D(1, 1, 1)),
+    ghostObject(nullptr),
+    body(nullptr),
+    colliderStatic(false),
+    mass(1),
+    kinematicBody(nullptr),
+    kinematicCapsuleSize(
+        EngineSetup::get()->PLAYER_CAPSULE_RADIUS,
+        EngineSetup::get()->PLAYER_CAPSULE_HEIGHT
+    ),
+    collisionShape(CollisionShape::SIMPLE_SHAPE)
 {
 }
 
@@ -51,34 +56,48 @@ void Collider::setCollisionShape(CollisionShape collisionShape) {
     Collider::collisionShape = collisionShape;
 }
 
-void Collider::removeCollisionObject() const
+void Collider::removeCollisionObject()
 {
-    if (collisionMode == CollisionMode::GHOST) {
+    if (collisionMode == CollisionMode::GHOST && ghostObject != nullptr) {
+        Logging::Message("[Collider] Removing collider GHOST");
+        setCollisionMode(CollisionMode::NONE);
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(ghostObject);
+        ghostObject = nullptr;
+        return;
     }
 
-    if (collisionMode == CollisionMode::BODY) {
-        if (body != nullptr) {
-            ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(body);
-        }
+    if (collisionMode == CollisionMode::BODY && body != nullptr) {
+        Logging::Message("[Collider] Removing collider RIGIDBODY");
+        setCollisionMode(CollisionMode::NONE);
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(body);
+        body = nullptr;
+        return;
+    }
+
+    if (collisionMode == CollisionMode::KINEMATIC && kinematicBody != nullptr) {
+        Logging::Message("[Collider] Removing collider KINEMATICBODY");
+        setCollisionMode(CollisionMode::NONE);
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(kinematicBody);
+        kinematicBody = nullptr;
+        return;
     }
 }
 
 void Collider::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
-
 }
 
 void Collider::makeSimpleGhostBody(Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
+    Logging::Message("[Collider] makeSimpleGhostBody");
+
     btTransform transformation;
     transformation.setIdentity();
     transformation.setOrigin(btVector3(0, 0, 0));
 
-    btConvexHullShape *convexHullShape = reinterpret_cast<btConvexHullShape *>(new btBoxShape(
-        btVector3(dimensions.x, dimensions.y, dimensions.z)
-    ));
+    btConvexHullShape *convexHullShape = reinterpret_cast<btConvexHullShape *>(new btBoxShape(dimensions.toBullet()));
 
+    ghostObject = new btPairCachingGhostObject();
     ghostObject->setCollisionShape(convexHullShape);
     ghostObject->setWorldTransform(transformation);
     ghostObject->setUserPointer(this);
@@ -101,7 +120,7 @@ btRigidBody *Collider::getRigidBody() const
 void Collider::drawImGuiCollisionModeSelector()
 {
     auto flags = ImGuiComboFlags_None;
-    const char* items[] = { "GHOST", "RIGID BODY" };
+    const char* items[] = { "GHOST", "RIGID BODY", "KINEMATIC" };
     int item_current_idx = (int) collisionMode;
     const char* combo_preview_value = items[item_current_idx];
 
@@ -121,6 +140,10 @@ void Collider::drawImGuiCollisionModeSelector()
                             setupRigidBodyCollider(CollisionShape::SIMPLE_SHAPE);
                             break;
                         }
+                        case 2: {
+                            setupKinematicCollider();
+                            break;
+                        }
                     }
                 }
             }
@@ -136,7 +159,7 @@ void Collider::drawImGuiCollisionShapeSelector()
 
 void Collider::setupGhostCollider(CollisionShape mode)
 {
-    Logging::Message("[Collisionable] setupGhostCollider");
+    Logging::Message("[Collider] setupGhostCollider");
     removeCollisionObject();
 
     setCollisionMode(CollisionMode::GHOST);
@@ -152,9 +175,27 @@ void Collider::setupGhostCollider(CollisionShape mode)
     }
 }
 
+void Collider::setupKinematicCollider()
+{
+    Logging::Message("[Collider] setupKinematicCollider");
+
+    removeCollisionObject();
+
+    setCollisionMode(CollisionMode::KINEMATIC);
+    setCollisionShape(CollisionShape::SIMPLE_SHAPE);
+
+    makeKineticBody(
+        kinematicCapsuleSize.x,
+        kinematicCapsuleSize.y,
+        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        EngineSetup::collisionGroups::AllFilter,
+        EngineSetup::collisionGroups::AllFilter
+    );
+}
+
 void Collider::setupRigidBodyCollider(CollisionShape shapeMode)
 {
-    Logging::Message("[Collisionable] setupRigidBodyCollider");
+    Logging::Message("[Collider] setupRigidBodyCollider");
 
     removeCollisionObject();
 
@@ -177,6 +218,16 @@ void Collider::makeSimpleRigidBody(
         int collisionGroup,
         int collisionMask
 ) {
+}
+
+void Collider::makeKineticBody(
+    float x,
+    float y,
+    btDiscreteDynamicsWorld *world,
+    int collisionGroup,
+    int collisionMask
+) {
+
 }
 
 float Collider::getMass() const {
@@ -227,4 +278,13 @@ void Collider::UpdateShape()
     if (getCollisionMode() == BODY) {
         setupRigidBodyCollider(getCollisionShape());
     }
+    if (getCollisionMode() == KINEMATIC) {
+        setupKinematicCollider();
+    }
+}
+
+void Collider::setKinematicSize(float x, float y)
+{
+    kinematicCapsuleSize.x = x;
+    kinematicCapsuleSize.y = y;
 }

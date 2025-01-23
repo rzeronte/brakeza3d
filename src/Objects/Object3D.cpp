@@ -580,13 +580,26 @@ void Object3D::drawImGuiProperties()
                     }
                 }
 
-                if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+                if (getCollisionMode() == KINEMATIC) {
+                    if (ImGui::TreeNode("Kinematic capsule size")) {
+                        const float range_min = 0;
+                        const float range_max = 1000;
+
+                        ImGui::DragScalar("Radius", ImGuiDataType_Float, &kinematicCapsuleSize.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Height", ImGuiDataType_Float, &kinematicCapsuleSize.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+
+                        ImGui::TreePop();
+                    }
+                }
+
+                if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE && (getCollisionMode() == GHOST || getCollisionMode() == BODY)) {
                     const float range_min = -500000;
                     const float range_max = 500000;
 
                     Tools::ImGuiVertex3D("Simple shape size", "X", "Y", "Z", &simpleShapeSize, 0.1f ,range_min, range_max);
                 }
 
+                ImGui::Separator();
                 if (ImGui::Button(std::string("Update collision shape").c_str())) {
                     UpdateShape();
                 }
@@ -640,6 +653,12 @@ cJSON *Object3D::getJSON()
         cJSON_AddNumberToObject(simpleShapeSizeJSON, "y", simpleShapeSize.y);
         cJSON_AddNumberToObject(simpleShapeSizeJSON, "z", simpleShapeSize.z);
         cJSON_AddItemToObject(collider, "simpleShapeSize", simpleShapeSizeJSON);
+
+        cJSON *kinematicCapsuleSizeJSON = cJSON_CreateObject();
+        cJSON_AddNumberToObject(kinematicCapsuleSizeJSON, "x", kinematicCapsuleSize.x);
+        cJSON_AddNumberToObject(kinematicCapsuleSizeJSON, "y", kinematicCapsuleSize.y);
+        cJSON_AddItemToObject(collider, "kinematicCapsuleSize", kinematicCapsuleSizeJSON);
+
         cJSON_AddItemToObject(root, "collider", collider);
     }
 
@@ -694,6 +713,16 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
             );
             o->setMass(mass);
 
+
+            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "kinematicCapsuleSize") != nullptr) {
+                cJSON *kinematizSizeJSON = cJSON_GetObjectItemCaseSensitive(colliderJSON, "kinematicCapsuleSize");
+
+                o->setKinematicSize(
+                    (float) cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "x")->valuedouble,
+                    (float) cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "y")->valuedouble
+                );
+            }
+
             switch(mode) {
                 default:
                 case CollisionMode::GHOST:
@@ -705,6 +734,9 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
                     if (shape == CollisionShape::SIMPLE_SHAPE) {
                         o->setupRigidBodyCollider(CollisionShape::SIMPLE_SHAPE);
                     }
+                    break;
+                case CollisionMode::KINEMATIC:
+                    o->setupKinematicCollider();
                     break;
             }
         }
@@ -811,11 +843,36 @@ LUADataValue Object3D::getLocalScriptVar(const char *varName)
     return LUADataValue(luaEnvironment[varName]);
 }
 
+void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+{
+    Logging::Message("[Object3D] makeKineticBody for %s", getLabel().c_str());
+
+    btTransform t;
+    t.setIdentity();
+    t.setOrigin(getPosition().toBullet());
+
+    kinematicBody = new btPairCachingGhostObject();
+    kinematicBody->setWorldTransform(t);
+
+    kinematicBody->setCollisionShape(
+        new btCapsuleShapeZ(kinematicCapsuleSize.x, kinematicCapsuleSize.y)
+    );
+
+    kinematicBody->setUserPointer(this);
+
+    Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->addCollisionObject(
+            kinematicBody,
+        EngineSetup::collisionGroups::AllFilter,
+        EngineSetup::collisionGroups::AllFilter
+    );
+}
+
 void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
-    Logging::Message("makeSimpleRigidBody for %s", getLabel().c_str());
+    Logging::Message("[Object3D] makeSimpleRigidBody for %s", getLabel().c_str());
 
     setMass(mass);
+
     btTransform transformation;
     transformation.setIdentity();
     transformation.setOrigin(getPosition().toBullet());
@@ -837,12 +894,12 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
         inertia
     );
 
-    this->body = new btRigidBody(cInfo);
-    this->body->activate(true);
-    this->body->setUserPointer(this);
-    this->body->setRestitution(0.5);
+    body = new btRigidBody(cInfo);
+    body->activate(true);
+    body->setUserPointer(this);
+    body->setRestitution(0.5);
 
-    world->addRigidBody(this->body, collisionGroup, collisionMask);
+    world->addRigidBody(body, collisionGroup, collisionMask);
 }
 
 void Object3D::integrate()

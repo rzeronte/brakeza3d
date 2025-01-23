@@ -610,7 +610,7 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
 
 void Mesh3D::setupGhostCollider(CollisionShape modeShape)
 {
-    Logging::Message("setupGhostCollider for %s", getLabel().c_str());
+    Logging::Message("[Mesh3D] setupGhostCollider for %s", getLabel().c_str());
 
     removeCollisionObject();
 
@@ -637,7 +637,7 @@ void Mesh3D::setupGhostCollider(CollisionShape modeShape)
 
 void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
 {
-    Logging::Message("setupRigidBodyCollider for %s", getLabel().c_str());
+    Logging::Message("[Mesh3D] setupRigidBodyCollider for %s", getLabel().c_str());
     removeCollisionObject();
 
     setCollisionShape(modeShape);
@@ -719,7 +719,7 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
 
 void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
-    Logging::Message("makeRigidBodyFromTriangleMeshFromConvexHull for %s", getLabel().c_str());
+    Logging::Message("[Mesh3D] makeRigidBodyFromTriangleMeshFromConvexHull for %s", getLabel().c_str());
 
     setMass(mass);
 
@@ -754,7 +754,7 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
 
 void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
-    Logging::Message("makeRigidBodyFromTriangleMesh for %s", getLabel().c_str());
+    Logging::Message("[Mesh3D] makeRigidBodyFromTriangleMesh for %s", getLabel().c_str());
 
     setMass(mass);
 

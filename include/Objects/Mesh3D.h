@@ -11,7 +11,7 @@
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
 #include "../OpenGL/FXEffectOpenGLObject.h"
-#include "../../src/Collisions/Collider.h"
+#include "../Collision/Collider.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>

@@ -9,7 +9,7 @@
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include "../Objects/Vertex3D.h"
 #include "../Render/M3.h"
-#include "../../src/Collisions/Collider.h"
+#include "../Collision/Collider.h"
 #include "../Objects/Mesh3D.h"
 
 class Projectile: public Mesh3D {

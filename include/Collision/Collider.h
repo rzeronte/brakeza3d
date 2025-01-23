@@ -3,33 +3,41 @@
 
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
-#include "../../include/Objects/Vertex3D.h"
+#include "../Objects/Vertex3D.h"
+#include <glm/vec2.hpp>
 
 enum CollisionShape {
     SIMPLE_SHAPE = 0,
-    TRIANGLE_MESH_SHAPE = 1
+    TRIANGLE_MESH_SHAPE = 1,
+    KINEMATIC_CAPSULE = 2
 };
 
 enum CollisionMode {
     NONE = -1,
     GHOST = 0,
-    BODY = 1
+    BODY = 1,
+    KINEMATIC = 2
 };
 
 class Collider {
 
 protected:
     bool collisionsEnabled;
-    bool colliderStatic;
-    float mass;
-    Vertex3D simpleShapeSize;
+
     CollisionMode collisionMode;
+    Vertex3D simpleShapeSize;
 
     //ghost
     btPairCachingGhostObject *ghostObject;
 
     // Body
     btRigidBody *body;
+    bool colliderStatic;
+    float mass;
+
+    //kinematic
+    btPairCachingGhostObject *kinematicBody;
+    glm::vec2 kinematicCapsuleSize;
 public:
     Collider();
 
@@ -45,11 +53,13 @@ public:
     [[nodiscard]] CollisionShape getCollisionShape() const;
     void setCollisionShape(CollisionShape collisionShape);
 
-    void removeCollisionObject() const;
+    void removeCollisionObject();
 
     virtual void setupGhostCollider(CollisionShape mode);
 
     virtual void setupRigidBodyCollider(CollisionShape shapeMode);
+
+    virtual void setupKinematicCollider();
 
     virtual //ghost
     void makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
@@ -76,6 +86,14 @@ public:
         int collisionMask
     );
 
+    virtual void makeKineticBody(
+        float x,
+        float y,
+        btDiscreteDynamicsWorld *world,
+        int collisionGroup,
+        int collisionMask
+    );
+
     [[nodiscard]] float getMass() const;
 
     void setMass(float mass);
@@ -91,6 +109,8 @@ public:
     void UpdateShape();
 
     void setLinearVelocity(Vertex3D f);
+
+    void setKinematicSize(float x, float y);
 };
 
 
