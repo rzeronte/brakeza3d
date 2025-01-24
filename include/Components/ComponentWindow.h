@@ -25,6 +25,7 @@
 #include "../OpenGL/ShaderOpenGLShockWave.h"
 #include "../../src/OpenGL/ShaderOpenGLTint.h"
 #include "../OpenGL/ShaderOpenGLCustom.h"
+#include "../../src/OpenGL/ShaderOpenGLLine3D.h"
 
 enum class ImGUIConfigs {
     DEFAULT,
@@ -62,6 +63,7 @@ private:
     ShaderOpenGLImage *shaderOGLImage;
     ShaderOpenGLLine *shaderOGLLine;
     ShaderOpenGLWireframe *shaderOGLWireframe;
+    ShaderOpenGLLine3D *shaderOGLLine3D;
     ShaderOpenGLShading *shaderOGLShading;
     ShaderOpenGLPoints *shaderOGLPoints;
     ShaderOpenGLOutline *shaderOGLOutline;
@@ -108,6 +110,8 @@ public:
     static void initOpenGL();
 
     SDL_GLContext context;
+
+    [[nodiscard]] ShaderOpenGLLine3D *getShaderOGLLine3D() const;
 
     [[nodiscard]] ShaderOpenGLImage *getShaderOGLImage() const;
 

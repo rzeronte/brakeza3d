@@ -1,20 +1,18 @@
 #include "../../include/Render/PhysicsDebugDraw.h"
 #include "../../include/Render/Drawable.h"
+#include "../../include/ComponentsManager.h"
 
 PhysicsDebugDraw::PhysicsDebugDraw() = default;
 
 void PhysicsDebugDraw::drawLine(const btVector3 &from, const btVector3 &to, const btVector3 &color)
 {
-    Vertex3D a = Vertex3D::fromBullet(from);
-    Vertex3D b = Vertex3D::fromBullet(to);
+    auto window = ComponentsManager::get()->getComponentWindow();
 
-    Drawable::drawVector3D(Vector3D(a, b), Color::red());
-
-    glColor3f(color.x(), color.y(), color.z());
-    glBegin(GL_LINES);
-    glVertex3f(from.x(), from.y(), from.z());
-    glVertex3f(to.x(), to.y(), to.z());
-    glEnd();
+    window->getShaderOGLLine3D()->render(
+        Vertex3D::fromBullet(from),
+        Vertex3D::fromBullet(to),
+        window->getForegroundFramebuffer()
+    );
 }
 
 void PhysicsDebugDraw::drawContactPoint(
