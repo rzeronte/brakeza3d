@@ -231,13 +231,13 @@ struct GUIWidgetMenu
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu("Bullet")) {
-                ImGui::Checkbox("Step Simulation", &EngineSetup::get()->BULLET_STEP_SIMULATION);
+            if (ImGui::BeginMenu("Physics & Collisions")) {
+                ImGui::Checkbox("Enable physics", &EngineSetup::get()->BULLET_STEP_SIMULATION);
+                ImGui::Separator();
+                ImGui::Checkbox("Draw debug mode", &EngineSetup::get()->BULLET_DEBUG_MODE);
                 if (EngineSetup::get()->BULLET_STEP_SIMULATION) {
                     ImGui::Separator();
                     ImGui::Checkbox("Handle object collisions", &EngineSetup::get()->BULLET_CHECK_ALL_PAIRS);
-                    ImGui::Separator();
-                    ImGui::Checkbox("Draw debug mode", &EngineSetup::get()->BULLET_DEBUG_MODE);
                     ImGui::Separator();
                     // gravity
                     if (ImGui::DragScalar("X Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.x, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {

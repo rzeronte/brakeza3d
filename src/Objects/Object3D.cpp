@@ -706,13 +706,12 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
 
             int mode = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
             int shape = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
-
             auto mass = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mass")->valuedouble;
+
             o->simpleShapeSize = ToolsJSON::parseVertex3DJSON(
                 cJSON_GetObjectItemCaseSensitive(colliderJSON, "simpleShapeSize")
             );
             o->setMass(mass);
-
 
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "kinematicCapsuleSize") != nullptr) {
                 cJSON *kinematizSizeJSON = cJSON_GetObjectItemCaseSensitive(colliderJSON, "kinematicCapsuleSize");
@@ -724,7 +723,6 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
             }
 
             switch(mode) {
-                default:
                 case CollisionMode::GHOST:
                     if (shape == CollisionShape::SIMPLE_SHAPE) {
                         o->setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
@@ -877,8 +875,7 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
         EngineSetup::collisionGroups::AllFilter
     );
 
-    //world->addAction(characterController);
-
+    world->addAction(characterController);
 }
 
 void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
@@ -923,7 +920,12 @@ void Object3D::integrate()
             Tools::GLMMatrixToBulletTransform(getModelMatrix())
         );
     }
+
     if (getCollisionMode() == CollisionMode::BODY) {
+        updateFromBullet();
+    }
+
+    if (getCollisionMode() == CollisionMode::KINEMATIC) {
         updateFromBullet();
     }
 }

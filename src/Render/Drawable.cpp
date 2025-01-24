@@ -46,13 +46,13 @@ void Drawable::drawVector3D(Vector3D V, Color color)
 
 void Drawable::drawMainAxis()
 {
-    Point2D fixedPosition = Point2D(EngineSetup::get()->screenWidth - 50, 30);
+    Point2D fixedPosition = Point2D(EngineSetup::get()->screenWidth - 80, 50);
     Drawable::drawMainAxisOffset(Transforms::Point2DToWorld(fixedPosition));
 }
 
 void Drawable::drawMainAxisOffset(Vertex3D offset)
 {
-    float axis_length = EngineSetup::get()->OBJECT_AXIS_SIZE;
+    float axis_length = 0.075f;
     Vertex3D origin = offset;
 
     // Creamos unas coordenadas de eje sobre 0, 0, 0
@@ -73,7 +73,6 @@ void Drawable::drawMainAxisOffset(Vertex3D offset)
     Drawable::drawVector3D(axis_x, Color::red());
     Drawable::drawVector3D(axis_y, Color::green());
     Drawable::drawVector3D(axis_z, Color::blue());
-
 }
 
 void Drawable::drawObject3DAxis(Object3D *object, bool drawUp, bool drawRight, bool drawForward)

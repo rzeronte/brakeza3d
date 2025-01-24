@@ -12,7 +12,7 @@ Collider::Collider()
     ghostObject(nullptr),
     body(nullptr),
     colliderStatic(false),
-    mass(1),
+    mass(0),
     kinematicBody(nullptr),
     kinematicCapsuleSize(
         EngineSetup::get()->PLAYER_CAPSULE_RADIUS,

@@ -534,12 +534,12 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
             o->setCollisionsEnabled(true);
             int mode = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
             int shape = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
+
             if ((cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic") != nullptr)) {
                 o->setColliderStatic(cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic")->valueint);
             }
 
             switch(mode) {
-                default:
                 case CollisionMode::GHOST:
                     if (shape == CollisionShape::SIMPLE_SHAPE) {
                         o->setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
@@ -555,9 +555,6 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
                     if (shape == CollisionShape::TRIANGLE_MESH_SHAPE) {
                         o->setupRigidBodyCollider(CollisionShape::TRIANGLE_MESH_SHAPE);
                     }
-                    break;
-                case CollisionMode::KINEMATIC:
-                    o->setupKinematicCollider();
                     break;
             }
         }
