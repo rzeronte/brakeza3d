@@ -21,7 +21,7 @@ public:
 
     std::string ENGINE_VERSION = "v.1.0.0";
 
-    std::string ENGINE_TITLE = "Brakeza3D Application";
+    std::string ENGINE_TITLE = "Brakeza3D Loading...";
 
     std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";
@@ -129,7 +129,7 @@ public:
     float TESTING_INT3 = 1;
     float TESTING_INT4 = 0.1f;
 
-    bool ENABLE_DEPTH_OF_FIELD = true;
+    bool ENABLE_DEPTH_OF_FIELD = false;
     bool SHOW_DEPTH_OF_FIELD = false;
 
     //LIGHTNING EFFECT

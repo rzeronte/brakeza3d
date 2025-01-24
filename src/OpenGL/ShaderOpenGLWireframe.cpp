@@ -29,7 +29,7 @@ void ShaderOpenGLWireframe::render(
     glBindVertexArray(VertexArrayID);
 
     glDisable(GL_BLEND);
-    glLineWidth(5.0f);
+    glLineWidth(1.0f);
     glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix();
     glm::mat4 ProjectionMatrix = Camera3D::getProjectionMatrix();
 
@@ -39,7 +39,7 @@ void ShaderOpenGLWireframe::render(
 
     setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
 
-    glDrawArrays(GL_LINE_STRIP, 0, (GLint) size );
+    glDrawArrays(GL_LINES, 0, (GLint) size );
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

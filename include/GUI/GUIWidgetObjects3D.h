@@ -169,8 +169,10 @@ struct GUIWidgetObjects3D {
                     if (o->getCollisionMode() == CollisionMode::BODY) {
                         ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "gearIcon"), ImVec2(14, 14));
                     }
+                    if (o->getCollisionMode() == CollisionMode::KINEMATIC) {
+                        ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "playerIcon"), ImVec2(14, 14));
+                    }
                 }
-
             }
         }
         ImGui::End();

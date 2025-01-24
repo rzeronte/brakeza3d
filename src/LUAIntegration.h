@@ -81,6 +81,8 @@ void LUAIntegration(sol::state &lua)
             "applyCentralImpulse", &Object3D::applyCentralImpulse,
             "applyImpulse", &Object3D::applyImpulse,
             "setLinearVelocity", &Object3D::setLinearVelocity,
+            "setWalkingDirection", &Object3D::setWalkingDirection,
+            "jump", &Object3D::jump,
             "getLocalScriptVar", &Object3D::getLocalScriptVar,
             "attachScript",  &Object3D::attachScript,
             "reloadScriptsEnvironment", &Object3D::reloadScriptsEnvironment

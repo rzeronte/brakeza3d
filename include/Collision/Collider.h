@@ -5,6 +5,7 @@
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include "../Objects/Vertex3D.h"
 #include <glm/vec2.hpp>
+#include <BulletDynamics/Character/btKinematicCharacterController.h>
 
 enum CollisionShape {
     SIMPLE_SHAPE = 0,
@@ -38,6 +39,7 @@ protected:
     //kinematic
     btPairCachingGhostObject *kinematicBody;
     glm::vec2 kinematicCapsuleSize;
+    btKinematicCharacterController *characterController;
 public:
     Collider();
 
@@ -111,6 +113,10 @@ public:
     void setLinearVelocity(Vertex3D f);
 
     void setKinematicSize(float x, float y);
+
+    void setWalkingDirection(Vertex3D d);
+
+    void jump(Vertex3D d);
 };
 
 

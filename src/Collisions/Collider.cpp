@@ -77,8 +77,10 @@ void Collider::removeCollisionObject()
     if (collisionMode == CollisionMode::KINEMATIC && kinematicBody != nullptr) {
         Logging::Message("[Collider] Removing collider KINEMATICBODY");
         setCollisionMode(CollisionMode::NONE);
+        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeAction(characterController);
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(kinematicBody);
         kinematicBody = nullptr;
+        delete characterController;
         return;
     }
 }
@@ -287,4 +289,18 @@ void Collider::setKinematicSize(float x, float y)
 {
     kinematicCapsuleSize.x = x;
     kinematicCapsuleSize.y = y;
+}
+
+void Collider::setWalkingDirection(Vertex3D d)
+{
+    if (getCollisionMode() == KINEMATIC) {
+        characterController->setWalkDirection(d.toBullet());
+    }
+}
+
+void Collider::jump(Vertex3D d)
+{
+    if (getCollisionMode() == KINEMATIC) {
+        characterController->jump(d.toBullet());
+    }
 }

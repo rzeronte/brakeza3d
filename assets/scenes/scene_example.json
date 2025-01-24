@@ -36,7 +36,22 @@
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
-			"isCollisionsEnabled":	false,
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	1,
+				"mass":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	1,
+					"y":	3
+				}
+			},
 			"scripts":	[],
 			"shaders":	[],
 			"model":	"../assets/models//StudioCorner.fbx",
@@ -46,9 +61,9 @@
 			"name":	"pointlight",
 			"scale":	1,
 			"position":	{
-				"x":	1.9084835052490234,
-				"y":	-0.825358510017395,
-				"z":	1.1259727478027344
+				"x":	3.949927806854248,
+				"y":	2.9810390472412109,
+				"z":	5.3857860565185547
 			},
 			"rotation":	{
 				"x":	0,
@@ -74,8 +89,8 @@
 				"y":	1,
 				"z":	1
 			},
-			"constant":	8.3399991989135742,
-			"linear":	-4.0399999618530273,
+			"constant":	6.8299989700317383,
+			"linear":	-3.4100000858306885,
 			"quadratic":	0.57999998331069946,
 			"type":	"LightPoint3D"
 		}, {
@@ -123,7 +138,7 @@
 			"scale":	2.3499999046325684,
 			"position":	{
 				"x":	5.747215747833252,
-				"y":	-0.37687137722969055,
+				"y":	2.180593729019165,
 				"z":	-1.6324726343154907
 			},
 			"rotation":	{
@@ -132,10 +147,71 @@
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	2,
+				"shape":	0,
+				"mass":	0,
+				"colliderStatic":	false,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	1,
+					"y":	3
+				}
+			},
+			"scripts":	[{
+					"name":	"../assets/scripts/examples/KinematicControllerExample.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	0,
+								"z":	0
+							}
+						}]
+				}],
 			"shaders":	[],
 			"model":	"../assets/models//Eye.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"stairs",
+			"scale":	1,
+			"position":	{
+				"x":	-13.183494567871094,
+				"y":	2.58341121673584,
+				"z":	-1.8128528594970703
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	1,
+				"mass":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	1,
+					"y":	3
+				}
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//Stairs.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
@@ -173,21 +249,41 @@
 			"constant":	1,
 			"linear":	0.090000003576278687,
 			"quadratic":	0.032000001519918442,
-			"cutOff":	0.99984771013259888,
-			"outerCutOff":	0.99984771013259888,
+			"cutOff":	0.99984776973724365,
+			"outerCutOff":	0.99984776973724365,
 			"type":	"SpotLight3D"
+		}, {
+			"name":	"pawn",
+			"scale":	1,
+			"position":	{
+				"x":	-5.670924186706543,
+				"y":	1.6743474006652832,
+				"z":	1.83713698387146
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//ChessPawn.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-18.6322078704834,
-			"y":	-32.6923828125,
-			"z":	-26.277002334594727
+			"x":	-22.443347930908203,
+			"y":	-23.323917388916016,
+			"z":	-22.714517593383789
 		},
 		"rotation":	{
-			"x":	48.75,
-			"y":	-31.25,
+			"x":	41.5,
+			"y":	-399.75,
 			"z":	0
 		}
 	}

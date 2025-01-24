@@ -858,16 +858,15 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
 
     kinematicBody->setUserPointer(this);
 
-    float stepHeight = 5;
-
-    auto characterController = new btKinematicCharacterController(
+    characterController = new btKinematicCharacterController(
         kinematicBody,
         (btConvexShape*)kinematicBody->getCollisionShape(),
-        stepHeight
+        5
     );
 
-    characterController->setGravity(btVector3(0, 10, 0)); // Gravedad
+    characterController->setGravity(EngineSetup::get()->gravity.toBullet());
     characterController->setMaxSlope(btRadians(45));       // Pendiente máxima
+    kinematicBody->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 
     world->addCollisionObject(
             kinematicBody,
@@ -926,7 +925,8 @@ void Object3D::integrate()
     }
 
     if (getCollisionMode() == CollisionMode::KINEMATIC) {
-        updateFromBullet();
+        btTransform t = kinematicBody->getWorldTransform();
+        setPosition(Vertex3D::fromBullet(t.getOrigin()));
     }
 }
 
