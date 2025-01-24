@@ -860,11 +860,25 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
 
     kinematicBody->setUserPointer(this);
 
-    Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->addCollisionObject(
+    float stepHeight = 5;
+
+    auto characterController = new btKinematicCharacterController(
+        kinematicBody,
+        (btConvexShape*)kinematicBody->getCollisionShape(),
+        stepHeight
+    );
+
+    characterController->setGravity(btVector3(0, 10, 0)); // Gravedad
+    characterController->setMaxSlope(btRadians(45));       // Pendiente máxima
+
+    world->addCollisionObject(
             kinematicBody,
         EngineSetup::collisionGroups::AllFilter,
         EngineSetup::collisionGroups::AllFilter
     );
+
+    //world->addAction(characterController);
+
 }
 
 void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)

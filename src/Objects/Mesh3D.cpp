@@ -556,6 +556,9 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
                         o->setupRigidBodyCollider(CollisionShape::TRIANGLE_MESH_SHAPE);
                     }
                     break;
+                case CollisionMode::KINEMATIC:
+                    o->setupKinematicCollider();
+                    break;
             }
         }
     }

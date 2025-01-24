@@ -1,0 +1,35 @@
+//
+// Created by Eduardo on 24/01/2025.
+//
+
+#ifndef BRAKEZA3D_SHADEROPENGLLINE3D_H
+#define BRAKEZA3D_SHADEROPENGLLINE3D_H
+
+
+#include "../../include/OpenGL/ShaderOpenGL.h"
+#include "../../include/Objects/Vertex3D.h"
+#include <vector>
+
+class ShaderOpenGLLine3D : public ShaderOpenGL
+{
+    GLuint VertexArrayID;
+    GLuint vertexbuffer;
+    glm::vec3 vertices[2];
+
+    GLint matrixProjectionUniform;
+    GLint matrixViewUniform;
+
+    void destroy() override;
+
+public:
+    ShaderOpenGLLine3D();
+
+    void render(
+        Vertex3D from,
+        Vertex3D to,
+        GLuint framebuffer
+    );
+};
+
+
+#endif //BRAKEZA3D_SHADEROPENGLLINE3D_H

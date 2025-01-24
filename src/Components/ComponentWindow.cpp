@@ -13,15 +13,15 @@
 
 
 ComponentWindow::ComponentWindow()
-        :
-        window(nullptr),
-        renderer(nullptr),
-        screenSurface(nullptr),
-        screenTexture(nullptr),
-        applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str())),
-        fontDefault(nullptr),
-        ImGuiConfig(ImGUIConfigs::DEFAULT),
-        ImGuiConfigChanged(ImGUIConfigs::DEFAULT)
+:
+    window(nullptr),
+    renderer(nullptr),
+    screenSurface(nullptr),
+    screenTexture(nullptr),
+    applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str())),
+    fontDefault(nullptr),
+    ImGuiConfig(ImGUIConfigs::DEFAULT),
+    ImGuiConfigChanged(ImGUIConfigs::DEFAULT)
 {
     this->initWindow();
     this->initFontsTTF();
@@ -35,6 +35,7 @@ void ComponentWindow::onStart()
     shaderOGLImage = new ShaderOpenGLImage();
     shaderOGLLine = new ShaderOpenGLLine();
     shaderOGLWireframe = new ShaderOpenGLWireframe();
+    shaderOGLLine3D = new ShaderOpenGLLine3D();
     shaderOGLShading = new ShaderOpenGLShading();
     shaderOGLPoints = new ShaderOpenGLPoints();
     shaderOGLOutline = new ShaderOpenGLOutline();
@@ -190,6 +191,10 @@ TTF_Font *ComponentWindow::getFontAlternative() {
 
 ShaderOpenGLImage *ComponentWindow::getShaderOGLImage() const {
     return shaderOGLImage;
+}
+
+ShaderOpenGLLine3D *ComponentWindow::getShaderOGLLine3D() const {
+    return shaderOGLLine3D;
 }
 
 ShaderOpenGLRender *ComponentWindow::getShaderOGLRender() const {
