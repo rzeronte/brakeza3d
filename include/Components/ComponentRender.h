@@ -74,7 +74,7 @@ public:
 
     void setSelectedObject(Object3D *o);
 
-    static Object3D *getObject3DFromClickPoint(int xClick, int yClick, int &objectIndex);
+    static Object3D *getObject3DFromClickPoint(int xClick, int yClick);
 
     void updateSelectedObject3D();
 

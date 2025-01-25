@@ -106,16 +106,15 @@ void ComponentRender::updateSelectedObject3D()
     auto input = ComponentsManager::get()->getComponentInput();
 
     if (input->isClickLeft() && !input->isMouseMotion()) {
-        int index = -1;
         selectedObject = getObject3DFromClickPoint(
             input->getRelativeRendererMouseX(),
-            input->getRelativeRendererMouseY(),
-            index
+            input->getRelativeRendererMouseY()
         );
 
-        if (selectedObject != nullptr){
-            Logging::Message("Selected object: %s", selectedObject->getLabel().c_str());
-            Brakeza3D::get()->getManagerGui()->setSelectedObjectIndex(index);
+        if (selectedObject != nullptr) {
+            Logging::Message("Selected object by click: %s", selectedObject->getLabel().c_str());
+            //Brakeza3D::get()->getManagerGui()->setSelectedObjectIndex(index);
+            Brakeza3D::get()->getManagerGui()->setSelectedObject(selectedObject);
             Brakeza3D::get()->getManagerGui()->setGuizmoOperation(ImGuizmo::OPERATION::TRANSLATE);
         }
     }
@@ -240,7 +239,7 @@ void ComponentRender::updateFPS()
     }
 }
 
-Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick, int &objectIndex)
+Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
 {
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
@@ -249,27 +248,33 @@ Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick, int
     Vector3D ray(camera->getPosition(),nearPlaneVertex);
 
     int i = 0;
-    for (auto o: Brakeza3D::get()->getSceneObjects()){
+    Object3D *foundObject = nullptr;
+    float lastDepthFound = -1;
+    for (auto o: Brakeza3D::get()->getSceneObjects()) {
         auto mesh = dynamic_cast<Mesh3D*>(o);
 
         if (mesh == nullptr) continue;
 
         for (auto &triangle : mesh->getModelTriangles()) {
-            auto *p = new Plane(triangle->Ao, triangle->Bo, triangle->Co);
             triangle->updateObjectSpace();
+            auto p = new Plane(triangle->Ao, triangle->Bo, triangle->Co);
             float t;
             if (Maths::isVector3DClippingPlane(*p, ray)) {
                 Vertex3D intersectionPoint  = p->getPointIntersection(ray.origin(), ray.end(), t);
                 if (triangle->isPointInside(intersectionPoint)) {
-                    objectIndex = i;
-                    return triangle->parent;
+                    auto distance = intersectionPoint - camera->getPosition();
+                    auto m = distance.getModule();
+                    if ( m < lastDepthFound || lastDepthFound == -1) {
+                        foundObject = triangle->parent;
+                        lastDepthFound = m;
+                    }
                 }
             }
         }
         i++;
     }
 
-    return nullptr;
+    return foundObject;
 }
 
 Object3D *ComponentRender::getSelectedObject() const
