@@ -852,16 +852,17 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
     kinematicBody = new btPairCachingGhostObject();
     kinematicBody->setWorldTransform(t);
 
-    kinematicBody->setCollisionShape(
-        new btCapsuleShapeZ(kinematicCapsuleSize.x, kinematicCapsuleSize.y)
-    );
+    auto capsule = new btCapsuleShapeZ(kinematicCapsuleSize.x, kinematicCapsuleSize.y);
+    btVector3 inertia(0, 0, 0);
+    capsule->calculateLocalInertia(mass, inertia);
+    kinematicBody->setCollisionShape(capsule);
 
     kinematicBody->setUserPointer(this);
 
     characterController = new btKinematicCharacterController(
         kinematicBody,
         (btConvexShape*)kinematicBody->getCollisionShape(),
-        5
+        1
     );
 
     characterController->setGravity(EngineSetup::get()->gravity.toBullet());

@@ -3,7 +3,7 @@ function onStart()
 end
 
 function onUpdate()
-    local force = 0.25
+    local force = 0.15
 
     if (componentsManager:getComponentInput():isCharPressed("W")) then
         speed = speed + Vertex3D.new(0, 0, force)
@@ -22,7 +22,7 @@ function onUpdate()
     end
 
     if (componentsManager:getComponentInput():isCharPressed("SPACE")) then
-        this:jump(Vertex3D.new(0, -20, 0)) -- saltamos
+        this:jump(Vertex3D.new(0, -10, 0)) -- saltamos
     end
 
     this:setWalkingDirection(speed) -- movemos

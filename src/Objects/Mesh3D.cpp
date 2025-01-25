@@ -100,6 +100,11 @@ void Mesh3D::onUpdate()
         s->preUpdate();
     }
 
+    if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
+        auto window = ComponentsManager::get()->getComponentWindow();
+        window->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
+    }
+
     if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
         ComponentsManager::get()->getComponentWindow()->getShaderOglShading()->render(
             getModelMatrix(),
@@ -112,13 +117,7 @@ void Mesh3D::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-
         auto window = ComponentsManager::get()->getComponentWindow();
-
-        if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
-            window->getShaderOGLOutline()->drawOutline(this, Color::red(), 0.5f);
-        }
-
         window->getShaderOGLRender()->renderMesh(this,window->getSceneFramebuffer());
     }
 
@@ -248,7 +247,7 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
 
         aiVector3t vf = mesh->mVertices[j];
 
-        Vertex3D v(vf.x, -vf.y, vf.z);
+        Vertex3D v(vf.x, vf.y, vf.z);
 
         const aiVector3D *pTexCoord = mesh->HasTextureCoords(0) ? &(mesh->mTextureCoords[0][j]) : &Zero3D;
         v.u = pTexCoord->x;
@@ -593,9 +592,9 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
     updateBoundingBox();
     for (auto & modelTriangle : getModelTriangles()) {
         btVector3 a, b, c;
-        a = btVector3(modelTriangle->A.x, -modelTriangle->A.y, modelTriangle->A.z);
-        b = btVector3(modelTriangle->B.x, -modelTriangle->B.y, modelTriangle->B.z);
-        c = btVector3(modelTriangle->C.x, -modelTriangle->C.y, modelTriangle->C.z);
+        a = btVector3(modelTriangle->A.x, modelTriangle->A.y, modelTriangle->A.z);
+        b = btVector3(modelTriangle->B.x, modelTriangle->B.y, modelTriangle->B.z);
+        c = btVector3(modelTriangle->C.x, modelTriangle->C.y, modelTriangle->C.z);
         convexHullShape->addPoint(a);
         convexHullShape->addPoint(b);
         convexHullShape->addPoint(c);
@@ -792,11 +791,6 @@ btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia)
         btVector3 a = modelTriangle->A.toBullet();
         btVector3 b = modelTriangle->B.toBullet();
         btVector3 c = modelTriangle->C.toBullet();
-
-        a.setY(-a.getY());
-        b.setY(-b.getY());
-        c.setY(-c.getY());
-
         triangleMesh->addTriangle(a, b, c, false);
     }
 
@@ -813,11 +807,6 @@ btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia)
         btVector3 a = modelTriangle->A.toBullet();
         btVector3 b = modelTriangle->B.toBullet();
         btVector3 c = modelTriangle->C.toBullet();
-
-        a.setY(-a.getY());
-        b.setY(-b.getY());
-        c.setY(-c.getY());
-
         convexHull->addPoint(a);
         convexHull->addPoint(b);
         convexHull->addPoint(c);

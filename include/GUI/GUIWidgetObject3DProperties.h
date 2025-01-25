@@ -86,21 +86,6 @@ struct GUIWidgetObject3DProperties {
 
                         std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
 
-                        ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "scriptIcon"), ImVec2(24, 24));
-                        ImGui::SameLine();
-
-                        if (ImGui::Button(optionText.c_str())) {
-                            delete scriptEditableManager.script;
-                            scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
-                            scriptEditableManager.script = new ScriptLUA(
-                                    scriptEditableManager.selectedScriptFilename,
-                                    ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename)
-                            );
-                            strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
-                        }
-
-                        ImGui::SameLine();
-
                         if (currentScript->isPaused()) {
                             if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "unlockIcon"), ImVec2(14, 14))) {
                                 currentScript->setPaused(false);
@@ -113,6 +98,16 @@ struct GUIWidgetObject3DProperties {
                         ImGui::SameLine();
                         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "removeIcon"), ImVec2(14, 14))) {
                             o->removeScript(currentScript);
+                        }
+                        ImGui::SameLine();
+                        if (ImGui::Button(optionText.c_str())) {
+                            delete scriptEditableManager.script;
+                            scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
+                            scriptEditableManager.script = new ScriptLUA(
+                                    scriptEditableManager.selectedScriptFilename,
+                                    ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename)
+                            );
+                            strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
                         }
 
                         currentScript->drawImGuiProperties();

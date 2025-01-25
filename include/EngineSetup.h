@@ -117,7 +117,7 @@ public:
     float STRAFE_SPEED = 1.0f;
 
     // MOUSE
-    float MOUSE_SENSITIVITY = 0.250;
+    float MOUSE_SENSITIVITY = 0.20;
 
     // COLLISION SYSTEM
     bool BULLET_STEP_SIMULATION = true;
@@ -140,8 +140,8 @@ public:
 
     bool LOG_COLLISION_OBJECTS = false;
 
-    float PLAYER_CAPSULE_RADIUS = 1.00f;
-    float PLAYER_CAPSULE_HEIGHT = 3.0f;
+    float PLAYER_CAPSULE_RADIUS = 0.5f;
+    float PLAYER_CAPSULE_HEIGHT = 1.8f;
 
     float PROJECTILE_DEMO_IMPULSE = 500;
     float PROJECTILE_DEMO_ACCURACY = 100;

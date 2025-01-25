@@ -106,6 +106,9 @@ public:
         icons.addItem(iconsFolder + "shader.png", "shaderIcon");
         icons.addItem(iconsFolder + "spotlight.png", "spotLightIcon");
         icons.addItem(iconsFolder + "particles.png", "particlesIcon");
+        icons.addItem(iconsFolder + "gravity.png", "gravityIcon");
+        icons.addItem(iconsFolder + "click.png", "clickIcon");
+        icons.addItem(iconsFolder + "freelook.png", "freelookIcon");
     }
 
     void drawScriptsLuaFolderFiles(const std::string& folder)
@@ -750,6 +753,16 @@ public:
 
     void setSelectedObjectIndex(int selectedObjectIndex) {
         GUIManager::selectedObjectIndex = selectedObjectIndex;
+    }
+
+    void setSelectedObject(Object3D *s) {
+        int i = 0;
+        for (auto o: gameObjects) {
+            if (s == o) {
+                setSelectedObjectIndex(i);
+            }
+            i++;
+        }
     }
 
     [[nodiscard]] ImGuizmo::OPERATION getGuizmoOperation() const {
