@@ -122,6 +122,7 @@ public:
     // COLLISION SYSTEM
     bool BULLET_STEP_SIMULATION = true;
     bool BULLET_DEBUG_MODE = false;
+    bool BULLET_DEBUG_SELECTED_OBJECT = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 
     float TESTING_INT1 = 0.1f;

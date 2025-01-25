@@ -109,6 +109,8 @@ public:
         icons.addItem(iconsFolder + "gravity.png", "gravityIcon");
         icons.addItem(iconsFolder + "click.png", "clickIcon");
         icons.addItem(iconsFolder + "freelook.png", "freelookIcon");
+        icons.addItem(iconsFolder + "DrawColliders.png", "drawCollidersIcon");
+        icons.addItem(iconsFolder + "target.png", "targetIcon");
     }
 
     void drawScriptsLuaFolderFiles(const std::string& folder)
