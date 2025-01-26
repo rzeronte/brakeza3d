@@ -88,7 +88,7 @@
 				}
 			},
 			"scripts":	[{
-					"name":	"../assets/scripts/Controllers/KinematicCameraController.lua",
+					"name":	"../assets/scripts/Controllers/KinematicThirdPersonController.lua",
 					"types":	[{
 							"name":	"speed",
 							"type":	"float",
@@ -122,7 +122,7 @@
 							"type":	"Vertex3D",
 							"value":	{
 								"x":	0,
-								"y":	-5,
+								"y":	-2.5,
 								"z":	-5
 							}
 						}]

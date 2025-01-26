@@ -63,10 +63,8 @@ protected:
     float distanceToCamera;
 public:
     Vertex3D position;
-    Vertex3D rotationFrame;
     bool enableLights;
     float scale;
-    bool rotationFrameEnabled;
 
     Object3D();
 
@@ -108,17 +106,9 @@ public:
 
     void setDrawOffset(Vertex3D v);
 
-    void setFollowCamera(bool followCamera);
-
     virtual void onUpdate();
 
     virtual void postUpdate();
-
-    [[nodiscard]] bool isRotationFrameEnabled() const;
-
-    void setRotationFrameEnabled(bool value);
-
-    void setRotationFrame(Vertex3D v);
 
     void setAlpha(float alpha);
 

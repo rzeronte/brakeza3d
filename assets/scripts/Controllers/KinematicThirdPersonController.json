@@ -1,5 +1,5 @@
 {
-  "name":	"ObjectRotationFromCameraExample.lua",
+  "name":	"KinematicThirdPersonController.lua",
   "types":	[
     {
       "name":	"force",

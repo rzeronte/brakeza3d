@@ -35,6 +35,8 @@ public:
     static float sqrt1(const float &n);
 
     static Vertex3D getHalfwayVector(Vertex3D a, Vertex3D b);
+
+    static glm::mat3 RotateOnAxis(glm::mat3 originalRotation, float angle, glm::vec3 axis);
 };
 
 

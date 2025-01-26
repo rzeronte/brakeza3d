@@ -1,4 +1,5 @@
 
+#include <glm/ext/matrix_transform.hpp>
 #include "../../include/Render/Maths.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/Render/Transforms.h"
@@ -101,3 +102,16 @@ Vertex3D Maths::getHalfwayVector(Vertex3D a, Vertex3D b)
     return (a.getNormalize() + b.getNormalize()).getNormalize();
 }
 
+
+// Rotar el objeto sobre un eje local
+glm::mat3 Maths::RotateOnAxis(glm::mat3 originalRotation, float angle, glm::vec3 axis) {
+    // Crear una matriz de rotación 4x4
+    glm::mat4 rotation4x4 = glm::mat4(originalRotation); // Convertir 3x3 a 4x4
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, axis);
+
+    // Multiplicar (en espacio local, multiplicación derecha)
+    rotation4x4 = rotation4x4 * rotationMatrix;
+
+    // Convertir de vuelta a 3x3
+    return glm::mat3(rotation4x4);
+}

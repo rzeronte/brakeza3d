@@ -286,15 +286,8 @@ M3 M3::fromMat3Bullet(const btMatrix3x3& m) {
     );
 }
 
-Vertex3D M3::getEulerAnglesZYX()
+void M3::normalize(M3& matrix)
 {
-    float pitch, yaw, roll;
-    glm::extractEulerAngleXYZ(glm::mat4(this->toGLMMat3()), pitch, yaw, roll);
-
-    return {pitch, yaw, roll};
-}
-
-void M3::renormalize(M3& matrix) {
     Vertex3D xAxis = matrix.X().getNormalize(); // Normalizar eje X
     Vertex3D zAxis = matrix.Z().getNormalize(); // Normalizar eje Z
 

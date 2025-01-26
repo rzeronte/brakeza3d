@@ -294,9 +294,6 @@ void Drawable::drawObject3DGizmo(
         nullptr
     );
 
-    if (ImGuizmo::IsOver()) {
-    }
-
     if (ImGuizmo::IsUsing()) {
         if (currentOperation == ImGuizmo::OPERATION::TRANSLATE) {
             auto position = glm::vec3(objectMatrixManipulated[3]);

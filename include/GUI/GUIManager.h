@@ -242,29 +242,17 @@ public:
         // position
         Tools::ImGuiVertex3D("Position##1", "X", "Y", "Z", &camera->getPosition(), range_sensibility, -range_min, range_max);
 
-        ImGui::Separator();
-        ImGui::Text("Values from variables: ");
-        ImGui::Text(("Pitch: " + std::to_string(camera->getPitch())).c_str()); ImGui::SameLine();
-        ImGui::Text(("Yaw: " + std::to_string(camera->getYaw())).c_str()); ImGui::SameLine();
-        ImGui::Text(("Roll: " + std::to_string(camera->getRoll())).c_str());
-        ImGui::Separator();
-        ImGui::Text("Values from Rotation Matrix Getters: ");
-        ImGui::Text(("Pitch: " + std::to_string(camera->getRotation().getPitchDegree())).c_str()); ImGui::SameLine();
-        ImGui::Text(("Yaw: " + std::to_string(camera->getRotation().getYawDegree())).c_str()); ImGui::SameLine();
-        ImGui::Text(("Roll: " + std::to_string(camera->getRotation().getRollDegree())).c_str()); ImGui::SameLine();
-        ImGui::Separator();
-        auto v = camera->getRotation().getEulerAnglesZYX();
-        ImGui::Text("Values from extracted with getEulerAnglesZYX: ");
-        ImGui::Text(("Pitch: " + std::to_string(Maths::radiansToDegrees(v.x))).c_str()); ImGui::SameLine();
-        ImGui::Text(("Yaw: " + std::to_string(Maths::radiansToDegrees(v.y))).c_str()); ImGui::SameLine();
-        ImGui::Text(("Roll: " + std::to_string(Maths::radiansToDegrees(v.z))).c_str()); ImGui::SameLine();
-        ImGui::Separator();
-
         // rotation
         if (ImGui::TreeNode(rotation_text.c_str())) {
-            //ImGui::DragScalar("Yaw", ImGuiDataType_Float, &camera->getYaw(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
-            //ImGui::DragScalar("Pitch", ImGuiDataType_Float, &camera->getPitch(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
-            //ImGui::DragScalar("Roll", ImGuiDataType_Float, &camera->getRoll(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
+            ImGui::DragScalar("Yaw", ImGuiDataType_Float, &camera->getYaw(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
+            ImGui::DragScalar("Pitch", ImGuiDataType_Float, &camera->getPitch(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
+            ImGui::DragScalar("Roll", ImGuiDataType_Float, &camera->getRoll(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
+            ImGui::Separator();
+            ImGui::Text("Values from Rotation Matrix Getters: ");
+            ImGui::Text(("Pitch: " + std::to_string(camera->getRotation().getPitchDegree())).c_str()); ImGui::SameLine();
+            ImGui::Text(("Yaw: " + std::to_string(camera->getRotation().getYawDegree())).c_str()); ImGui::SameLine();
+            ImGui::Text(("Roll: " + std::to_string(camera->getRotation().getRollDegree())).c_str()); ImGui::SameLine();
+
             ImGui::TreePop();
         }
 

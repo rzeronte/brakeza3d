@@ -26,7 +26,6 @@ Object3D::Object3D() :
     distanceToCamera(0),
     enableLights(false),
     scale(1),
-    rotationFrameEnabled(false),
     position(Vertex3D(1, 1, 1))
 {
     luaEnvironment["this"] = this;
@@ -50,7 +49,6 @@ void Object3D::setPosition(Vertex3D p)
 
 void Object3D::setRotation(M3 r)
 {
-    M3::renormalize(r);
     this->rotation = r;
 }
 
@@ -170,10 +168,6 @@ void Object3D::onUpdate()
         if (a->isEnabled()) a->onUpdate();
     }
 
-    if (isRotationFrameEnabled()) {
-        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(rotationFrame.x, rotationFrame.y, rotationFrame.z));
-    }
-
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     distanceToCamera = camera->getPosition().distance(getPosition());
@@ -213,20 +207,6 @@ void Object3D::postUpdate()
 
 void Object3D::addToPosition(Vertex3D v) {
     this->position = this->position + v;
-}
-
-bool Object3D::isRotationFrameEnabled() const {
-    return rotationFrameEnabled;
-}
-
-void Object3D::setRotationFrameEnabled(bool value)
-{
-    this->rotationFrameEnabled = value;
-}
-
-void Object3D::setRotationFrame(Vertex3D r)
-{
-    this->rotationFrame = r;
 }
 
 Object3DBehavior *Object3D::getBehavior() const
@@ -394,33 +374,31 @@ void Object3D::drawImGuiProperties()
                 if (ImGui::TreeNode("Rotation")) {
                     const float range_angle_min = -360;
                     const float range_angle_max = 360;
-                    const float range_angle_sensibility = 0.1;
 
-                    float pitch = 0;
-                    float yaw = 0;
-                    float roll = 0;
-                    if (ImGui::DragScalar("X", ImGuiDataType_Float, &pitch, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
-                        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(pitch, -yaw, roll));
+                    float oldPitch = getRotation().getPitchDegree();
+                    float oldYaw = getRotation().getYawDegree();
+                    float oldRoll = getRotation().getRollDegree();
+                    float pitch = oldPitch;
+                    float yaw = oldYaw;
+                    float roll = oldRoll;
+
+                    const float factor = 0.0025f;
+                    if (ImGui::DragScalar("Pitch", ImGuiDataType_Float, &pitch, 0.1f, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
+                        auto partialRot = getRotation().arbitraryAxis(getRotation().X(), Maths::radiansToDegrees(pitch - oldPitch) * factor);
+                        setRotation(getRotation() * partialRot);
+                        M3::normalize(rotation);
                     }
-                    if (ImGui::DragScalar("Y", ImGuiDataType_Float, &yaw, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
-                        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(pitch, -yaw, roll));
+                    if (ImGui::DragScalar("Yaw", ImGuiDataType_Float, &yaw, 0.1f, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
+                        auto partialRot = getRotation().arbitraryAxis(getRotation().Y(), Maths::radiansToDegrees(yaw - oldYaw) * factor);
+                        setRotation(getRotation() * partialRot);
+                        M3::normalize(rotation);
                     }
-                    if (ImGui::DragScalar("Z", ImGuiDataType_Float, &roll, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
-                        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(pitch, -yaw, roll));
+                    if (ImGui::DragScalar("Roll", ImGuiDataType_Float, &roll, 0.1f, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
+                        auto partialRot = getRotation().arbitraryAxis(getRotation().Z(), Maths::radiansToDegrees(roll - oldRoll) * factor);
+                        setRotation(getRotation() * partialRot);
+                        M3::normalize(rotation);
                     }
 
-                    ImGui::Separator();
-                    ImGui::Text("Values from rotation: ");
-                    ImGui::Text(("Pitch: " + std::to_string(getRotation().getPitch())).c_str()); ImGui::SameLine();
-                    ImGui::Text(("Yaw: " + std::to_string(getRotation().getYaw())).c_str()); ImGui::SameLine();
-                    ImGui::Text(("Roll: " + std::to_string(getRotation().getRoll())).c_str());
-                    ImGui::Separator();
-
-                    ImGui::Checkbox("Rotation Frame", &rotationFrameEnabled);
-
-                    if (rotationFrameEnabled) {
-                        Tools::ImGuiVertex3D("Rotation Each Frame", "X", "Y", "Z", &rotationFrame, range_angle_sensibility, range_angle_min, range_angle_max);
-                    }
                     ImGui::TreePop();
                 }
                 ImGui::Separator();
@@ -587,16 +565,6 @@ cJSON *Object3D::getJSON()
     cJSON_AddNumberToObject(rotation, "z", (float) getRotation().getRollDegree());
     cJSON_AddItemToObject(root, "rotation", rotation);
 
-    cJSON_AddBoolToObject(root, "rotationFrameEnabled", isRotationFrameEnabled());
-
-    if (isRotationFrameEnabled()) {
-        cJSON *rFrame = cJSON_CreateObject();
-        cJSON_AddNumberToObject(rFrame, "x", (float) rotationFrame.x);
-        cJSON_AddNumberToObject(rFrame, "y", (float) rotationFrame.y);
-        cJSON_AddNumberToObject(rFrame, "z", (float) rotationFrame.z);
-        cJSON_AddItemToObject(root, "rotationFrame", rFrame);
-    }
-
     cJSON_AddBoolToObject(root, "isCollisionsEnabled", isCollisionsEnabled());
     if (isCollisionsEnabled()) {
         cJSON *collider = cJSON_CreateObject();
@@ -696,12 +664,6 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
                     break;
             }
         }
-    }
-
-    o->setRotationFrameEnabled(cJSON_GetObjectItemCaseSensitive(object, "rotationFrameEnabled")->valueint);
-
-    if (cJSON_GetObjectItemCaseSensitive(object, "rotationFrame") != nullptr) {
-        o->setRotationFrame(ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(object, "rotationFrame")));
     }
 
     if (cJSON_GetObjectItemCaseSensitive(object, "scripts") != nullptr) {
