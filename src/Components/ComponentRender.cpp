@@ -309,12 +309,16 @@ void ComponentRender::playLUAScripts()
 
     onStartScripts();
 
+    ComponentsManager::get()->getComponentInput()->setEnabled(false);
+
     stateScripts = EngineSetup::LuaStateScripts::LUA_PLAY;
 }
 
 void ComponentRender::stopLUAScripts()
 {
     Logging::Message("LUA Scripts state changed to STOP");
+
+    ComponentsManager::get()->getComponentInput()->setEnabled(true);
 
     stateScripts = EngineSetup::LuaStateScripts::LUA_STOP;
 }

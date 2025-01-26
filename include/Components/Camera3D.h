@@ -19,27 +19,16 @@ private:
 
     Vector3D velocity;
 
-    Object3D *follow_to = nullptr;
-    Vertex3D followToPositionOffset;
-
-    btPairCachingGhostObject *m_ghostObject;
-
     glm::mat4 ViewMatrix;
     glm::mat4 ProjectionMatrix;
 
 public:
-
-    [[nodiscard]] Object3D *getFollowTo() const;
-
-    void setFollowTo(Object3D *followTo);
 
     Camera3D();
 
     void UpdateVelocity();
 
     void UpdatePositionForVelocity();
-
-    void UpdateRotation();
 
     void Pitch(float newPitch);
 
@@ -63,10 +52,6 @@ public:
 
     void limitPitch();
 
-    void makeKineticCharacter(const btTransform& transform, btConvexShape *capsule);
-
-    [[nodiscard]] btPairCachingGhostObject *getGhostObject() const;
-
     void setRotationFromEulerAngles(float x, float y, float z);
 
     void setFollowToPositionOffset(Vertex3D v);
@@ -80,8 +65,6 @@ public:
     float &getRoll();
 
     Vector3D &getVelocity();
-
-    [[nodiscard]] const Vertex3D &getFollowToPositionOffset() const;
 
     float pitch = 0;
     float yaw = 0;
