@@ -7,6 +7,8 @@
 class ComponentInput : public Component {
 private:
     bool mouseMotion;
+    float mouseMotionXRel;
+    float mouseMotionYRel;
     bool mouseLeftButton;
     bool mouseRightButton;
 
@@ -120,6 +122,10 @@ public:
     [[nodiscard]] _SDL_GameController *getGameController() const;
 
     void handleCheckPadConnection(SDL_Event *pEvent);
+
+    float getMouseMotionXRel() const;
+
+    float getMouseMotionYRel() const;
 };
 
 
