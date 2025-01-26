@@ -47,12 +47,10 @@ protected:
 
     bool removed;
     bool decal; // Decals exclude UV Coordinates out of [0, 1]
-    bool followCamera;
     bool belongToScene;
     bool multiScene;
 
     std::string label;
-    float rotX, rotY, rotZ; // For easy management from UI
     bool alphaEnabled;
     float alpha;
 
@@ -87,8 +85,6 @@ public:
     void addToPosition(Vertex3D p);
 
     void setRotation(M3 r);
-
-    void setRotation(float, float, float);
 
     virtual void setEnabled(bool enabled);
 
@@ -130,12 +126,6 @@ public:
 
     void setBehavior(Object3DBehavior *motion);
 
-    float &getRotX();
-
-    float &getRotY();
-
-    float &getRotZ();
-
     [[nodiscard]] Object3DBehavior *getBehavior() const;
 
     [[nodiscard]] bool &isAlphaEnabled();
@@ -143,8 +133,6 @@ public:
     [[nodiscard]] Vertex3D &getDrawOffset();
 
     [[nodiscard]] float &getAlpha();
-
-    [[nodiscard]] bool &isFollowCamera();
 
     [[nodiscard]] bool isDecal() const;
 

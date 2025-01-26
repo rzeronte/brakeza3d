@@ -59,7 +59,8 @@ void Camera3D::UpdatePositionForVelocity() {
     this->addToPosition(this->velocity.getComponent());
 }
 
-void Camera3D::UpdateVelocity() {
+void Camera3D::UpdateVelocity()
+{
     if ((fabs(speed) > 0)) {
         this->velocity.vertex2.z = this->getPosition().z + speed * (float) cos(-yaw * M_PI / 180.0);
         this->velocity.vertex2.x = this->getPosition().x + speed * (float) sin(-yaw * M_PI / 180.0);

@@ -25,13 +25,6 @@ void Mesh3DAnimationCollection::onUpdate() {
 
     this->getCurrentMesh3DAnimated()->updateBoundingBox();
 
-    if (!this->isFollowCamera()) {
-        if (!ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum()->isAABBInFrustum(
-                &this->getCurrentMesh3DAnimated()->getAabb())) {
-            return;
-        }
-    }
-
     this->onUpdateCurrentMesh3D();
     /*this->getCurrentMesh3DAnimated()->sendTrianglesToFrame(
             &ComponentsManager::get()->getComponentRender()->getFrameTriangles()

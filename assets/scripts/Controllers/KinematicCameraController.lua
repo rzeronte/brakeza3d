@@ -5,7 +5,9 @@ end
 
 function onUpdate()
     camera = componentsManager:getComponentCamera():getCamera()
-    camera:setPosition(this:getPosition() + cameraOffset)
+    f = this:AxisForward()
+    p = this:getPosition()
+    camera:setPosition(p + (f:getScaled(cameraOffset.z) + Vertex3D.new(cameraOffset.x, cameraOffset.y, 0)))
     camera:lookAt(this)
 
     componentInput = componentsManager:getComponentInput();
@@ -19,12 +21,8 @@ function onUpdate()
     end
 
     local yaw = (mouseMotionXRel * 0.20);
-    local pitch =  (mouseMotionYRel * 0.20);
-    local pitch = math.max(-89, math.min(89, pitch))
 
-    r = M3:getMatrixRotationForEulerAngles(pitch, yaw, 0)
-
-    this:setRotation(this:getRotation() * M3:getMatrixRotationForEulerAngles(pitch, yaw, 0))
+    this:setRotation(this:getRotation() * M3:getMatrixRotationForEulerAngles(yaw, 0, 0))
 
     forward = this:AxisForward()
     right = this:AxisRight()

@@ -15,12 +15,8 @@ Object3D::Object3D() :
     enabled(true),
     removed(false),
     decal(false),
-    followCamera(false),
     belongToScene(false),
     multiScene(false),
-    rotX(0),
-    rotY(0),
-    rotZ(0),
     alphaEnabled(false),
     alpha(1.0f),
     luaEnvironment(sol::environment(
@@ -54,6 +50,7 @@ void Object3D::setPosition(Vertex3D p)
 
 void Object3D::setRotation(M3 r)
 {
+    M3::renormalize(r);
     this->rotation = r;
 }
 
@@ -165,16 +162,6 @@ void Object3D::setParent(Object3D *object)
     Object3D::parent = object;
 }
 
-bool &Object3D::isFollowCamera()
-{
-    return this->followCamera;
-}
-
-void Object3D::setFollowCamera(bool value)
-{
-    Object3D::followCamera = value;
-}
-
 void Object3D::onUpdate()
 {
     if (isRemoved() || !isEnabled()) return;
@@ -190,11 +177,6 @@ void Object3D::onUpdate()
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     distanceToCamera = camera->getPosition().distance(getPosition());
-
-    if (this->isFollowCamera()) {
-        this->setPosition(camera->getPosition());
-        this->setRotation(camera->getRotation().getTranspose());
-    }
 
     if (getBehavior() != nullptr && getBehavior()->isEnabled()) {
         motion->onUpdate(position);
@@ -227,14 +209,6 @@ void Object3D::postUpdate()
     if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
         Drawable::drawObject3DAxis(this,true,true,true);
     }
-}
-
-void Object3D::setRotation(float x, float y, float z)
-{
-    this->rotX = x;
-    this->rotY = y;
-    this->rotZ = z;
-    this->setRotation(M3::getMatrixRotationForEulerAngles(x, y, z));
 }
 
 void Object3D::addToPosition(Vertex3D v) {
@@ -296,18 +270,6 @@ Object3D::~Object3D()
     if (isCollisionsEnabled()) {
         removeCollisionObject();
     }
-}
-
-float &Object3D::getRotX() {
-    return rotX;
-}
-
-float &Object3D::getRotY() {
-    return rotY;
-}
-
-float &Object3D::getRotZ() {
-    return rotZ;
 }
 
 void Object3D::onDrawHostBuffer()
@@ -434,22 +396,25 @@ void Object3D::drawImGuiProperties()
                     const float range_angle_max = 360;
                     const float range_angle_sensibility = 0.1;
 
-                    bool needUpdateRotation = false;
-                    ImGui::DragScalar("X", ImGuiDataType_Float, &getRotX(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-                    if (ImGui::IsItemEdited()) {
-                        needUpdateRotation = true;
+                    float pitch = 0;
+                    float yaw = 0;
+                    float roll = 0;
+                    if (ImGui::DragScalar("X", ImGuiDataType_Float, &pitch, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
+                        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(pitch, -yaw, roll));
                     }
-                    ImGui::DragScalar("Y", ImGuiDataType_Float, &getRotY(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-                    if (ImGui::IsItemEdited()) {
-                        needUpdateRotation = true;
+                    if (ImGui::DragScalar("Y", ImGuiDataType_Float, &yaw, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
+                        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(pitch, -yaw, roll));
                     }
-                    ImGui::DragScalar("Z", ImGuiDataType_Float, &getRotZ(), range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f);
-                    if (ImGui::IsItemEdited()) {
-                        needUpdateRotation = true;
+                    if (ImGui::DragScalar("Z", ImGuiDataType_Float, &roll, range_angle_sensibility, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
+                        setRotation(getRotation() * M3::getMatrixRotationForEulerAngles(pitch, -yaw, roll));
                     }
-                    if (needUpdateRotation) {
-                        setRotation(M3::getMatrixRotationForEulerAngles(getRotX(), getRotY(), getRotZ()));
-                    }
+
+                    ImGui::Separator();
+                    ImGui::Text("Values from rotation: ");
+                    ImGui::Text(("Pitch: " + std::to_string(getRotation().getPitch())).c_str()); ImGui::SameLine();
+                    ImGui::Text(("Yaw: " + std::to_string(getRotation().getYaw())).c_str()); ImGui::SameLine();
+                    ImGui::Text(("Roll: " + std::to_string(getRotation().getRoll())).c_str());
+                    ImGui::Separator();
 
                     ImGui::Checkbox("Rotation Frame", &rotationFrameEnabled);
 
@@ -617,9 +582,9 @@ cJSON *Object3D::getJSON()
     cJSON_AddItemToObject(root, "position", position);
 
     cJSON *rotation = cJSON_CreateObject();
-    cJSON_AddNumberToObject(rotation, "x", (float) rotX);
-    cJSON_AddNumberToObject(rotation, "y", (float) rotY);
-    cJSON_AddNumberToObject(rotation, "z", (float) rotZ);
+    cJSON_AddNumberToObject(rotation, "x", (float) getRotation().getYawDegree());
+    cJSON_AddNumberToObject(rotation, "y", (float) getRotation().getPitchDegree());
+    cJSON_AddNumberToObject(rotation, "z", (float) getRotation().getRollDegree());
     cJSON_AddItemToObject(root, "rotation", rotation);
 
     cJSON_AddBoolToObject(root, "rotationFrameEnabled", isRotationFrameEnabled());
@@ -679,11 +644,11 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
 
     if (cJSON_GetObjectItemCaseSensitive(object, "rotation") != nullptr) {
         cJSON *rotation = cJSON_GetObjectItemCaseSensitive(object, "rotation");
-        o->setRotation(
+        o->setRotation(M3::getMatrixRotationForEulerAngles(
             (float) cJSON_GetObjectItemCaseSensitive(rotation, "x")->valuedouble,
             (float) cJSON_GetObjectItemCaseSensitive(rotation, "y")->valuedouble,
             (float) cJSON_GetObjectItemCaseSensitive(rotation, "z")->valuedouble
-        );
+        ));
     }
 
     if (cJSON_GetObjectItemCaseSensitive(object, "isCollisionsEnabled") != nullptr) {

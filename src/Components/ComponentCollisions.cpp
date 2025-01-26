@@ -172,11 +172,11 @@ void ComponentCollisions::demoProjectile(int type)
     projectile->setCollisionShape(CollisionShape::TRIANGLE_MESH_SHAPE);
     projectile->setParent(camera);
     projectile->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + fileName));
-    projectile->setRotation(
+    projectile->setRotation(M3::getMatrixRotationForEulerAngles(
         (float) Tools::random(0, 180),
         (float) Tools::random(0, 180),
         (float) Tools::random(0, 180)
-    );
+    ));
     projectile->setPosition( camera->getPosition() + direction.getScaled(1));
     projectile->setEnabled(true);
     projectile->makeProjectileRigidBody(

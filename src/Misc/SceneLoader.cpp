@@ -63,11 +63,14 @@ void SceneLoader::loadScene(const std::string& filename)
         ToolsJSON::parseVertex3DJSON(cameraPositionJSON).z
     );
 
-    camera->setRotationFromEulerAngles(
-        (float) cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "x")->valuedouble,
-        (float) cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "y")->valuedouble,
-        (float) cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "z")->valuedouble
-    );
+    auto pitch = (float) cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "x")->valuedouble;
+    auto yaw = (float) cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "y")->valuedouble;
+    auto roll = (float) cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "z")->valuedouble;
+
+    camera->pitch = pitch;
+    camera->yaw = yaw;
+    camera->roll = roll;
+    camera->setRotation(M3::getMatrixRotationForEulerAngles(pitch, yaw, roll));
 
     Logging::Message("Camera rotation (%f, %f, %f)", camera->pitch, camera->yaw, camera->roll);
 

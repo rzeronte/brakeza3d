@@ -26,7 +26,7 @@ void ComponentCamera::onUpdate()
     if (isAutoScroll()) {
         getCamera()->addToPosition(autoScrollSpeed);
     }
-    //getCamera()->UpdateVelocity();
+    getCamera()->UpdateVelocity();
 }
 
 void ComponentCamera::postUpdate()
