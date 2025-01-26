@@ -1,0 +1,149 @@
+{
+	"name":	"Brakeza3D - By Eduardo Rodriguez <eduardo@brakeza.com>",
+	"ads":	{
+		"direction":	{
+			"x":	-0.15999999642372131,
+			"y":	-0.60000002384185791,
+			"z":	1
+		},
+		"diffuse":	{
+			"x":	0.85655736923217773,
+			"y":	0.60029226541519165,
+			"z":	0.60029226541519165
+		},
+		"specular":	{
+			"x":	0.73770493268966675,
+			"y":	0.69864875078201294,
+			"z":	0.14209890365600586
+		},
+		"ambient":	{
+			"x":	0.6598360538482666,
+			"y":	0.17577598989009857,
+			"z":	0.17577598989009857
+		}
+	},
+	"objects":	[{
+			"name":	"level",
+			"scale":	1,
+			"position":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	1,
+				"mass":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				}
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//TestLevel.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"capsule",
+			"scale":	1,
+			"position":	{
+				"x":	-38.978286743164063,
+				"y":	-10.659574508666992,
+				"z":	-25.181781768798828
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	2,
+				"shape":	0,
+				"mass":	100,
+				"colliderStatic":	false,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				}
+			},
+			"scripts":	[{
+					"name":	"../assets/scripts/Controllers/KinematicCameraController.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0
+						}, {
+							"name":	"strafe",
+							"type":	"float",
+							"value":	0
+						}, {
+							"name":	"velocity",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	0,
+								"z":	0
+							}
+						}, {
+							"name":	"force",
+							"type":	"float",
+							"value":	0.15000000596046448
+						}, {
+							"name":	"deceleration",
+							"type":	"float",
+							"value":	0.10000000149011612
+						}, {
+							"name":	"jumpForce",
+							"type":	"float",
+							"value":	10
+						}, {
+							"name":	"cameraOffset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	-5,
+								"z":	-5
+							}
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//Capsule.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}],
+	"shaders":	[],
+	"scripts":	[],
+	"camera":	{
+		"position":	{
+			"x":	-49.912864685058594,
+			"y":	-22.361335754394531,
+			"z":	-33.219192504882813
+		},
+		"rotation":	{
+			"x":	50.200000762939453,
+			"y":	-52.000041961669922,
+			"z":	0
+		}
+	}
+}
