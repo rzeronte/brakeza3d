@@ -1,0 +1,48 @@
+{
+  "name":	"KinematicThirdPersonController.lua",
+  "types":	[
+    {
+      "name":	"force",
+      "type":	"float",
+      "value":	0.15
+    },
+    {
+      "name":	"deceleration",
+      "type":	"float",
+      "value":	0.1
+    },
+    {
+      "name":	"jumpForce",
+      "type":	"float",
+      "value":	10
+    },
+    {
+      "name":	"speed",
+      "type":	"float",
+      "value":	0
+    },
+    {
+      "name":	"strafe",
+      "type":	"float",
+      "value":	0
+    },
+    {
+      "name":	"velocity",
+      "type":	"Vertex3D",
+      "value":	{
+        "x":	0,
+        "y":	0,
+        "z":	0
+      }
+    },
+    {
+      "name":	"cameraOffset",
+      "type":	"Vertex3D",
+      "value":	{
+        "x":	0,
+        "y":	-5,
+        "z":	-5
+      }
+    }
+  ]
+}

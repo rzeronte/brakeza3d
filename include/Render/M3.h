@@ -86,9 +86,7 @@ public:
 
     glm::mat3 toGLMMat3();
 
-    Vertex3D getEulerAnglesZYX();
-
-    static void renormalize(M3 &matrix);
+    static void normalize(M3 &matrix);
 };
 
 
