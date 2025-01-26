@@ -662,6 +662,7 @@ public:
             ImGui::Separator();
             ImGui::Text(("Enabled: " + std::to_string(input->isEnabled())).c_str());
         }
+        ImGui::End();
 
         if (ImGui::Begin("Camera settings")) {
             drawCameraSettings();
