@@ -1,4 +1,5 @@
 {
+	"name":	"Brakeza3D - By Eduardo Rodriguez <eduardo@brakeza.com>",
 	"ads":	{
 		"direction":	{
 			"x":	0,
@@ -22,10 +23,8 @@
 		}
 	},
 	"objects":	[{
-			"name":	"MyObject",
+			"name":	"Mesh3D_36",
 			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
 			"position":	{
 				"x":	0,
 				"y":	0,
@@ -37,85 +36,115 @@
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	1,
+				"mass":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	1,
+					"y":	3
+				}
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//StudioCorner.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Mesh3D_90",
+			"scale":	1,
+			"position":	{
+				"x":	4.3032550811767578,
+				"y":	-20.878013610839844,
+				"z":	7.8802480697631836
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotationFrameEnabled":	false,
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	2,
+				"shape":	0,
+				"mass":	0,
+				"colliderStatic":	false,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	1.2999999523162842,
+					"y":	3
+				}
+			},
 			"scripts":	[{
-					"name":	"ObjectAccessLocalVariableExample.lua",
+					"name":	"../assets/scripts/examples/KinematicControllerExample.lua",
 					"types":	[{
-							"name":	"count",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"state",
-							"type":	"int",
-							"value":	0
-						}, {
-							"name":	"offset",
+							"name":	"speed",
 							"type":	"Vertex3D",
 							"value":	{
-								"x":	1,
-								"y":	2,
-								"z":	3
+								"x":	0,
+								"y":	0,
+								"z":	0
 							}
 						}]
 				}],
 			"shaders":	[],
-			"model":	"../assets/models//eye.fbx",
+			"model":	"../assets/models//Capsule.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"Cube",
+			"name":	"Mesh3D_23",
 			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
 			"position":	{
-				"x":	0,
-				"y":	0,
-				"z":	-7.799994945526123
+				"x":	1.0283792018890381,
+				"y":	-13.235060691833496,
+				"z":	2.1810789108276367
 			},
 			"rotation":	{
 				"x":	0,
-				"y":	0,
-				"z":	0
+				"y":	-1.7999999523162842,
+				"z":	66.5999984741211
 			},
 			"rotationFrameEnabled":	false,
-			"scripts":	[{
-					"name":	"ObjectAccessOtherObjectLocalVariableExample.lua",
-					"types":	[]
-				}],
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	0,
+				"mass":	300,
+				"colliderStatic":	false,
+				"simpleShapeSize":	{
+					"x":	2,
+					"y":	3.2999999523162842,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	1,
+					"y":	3
+				}
+			},
+			"scripts":	[],
 			"shaders":	[],
-			"model":	"../assets/models//planet_cube_02.fbx",
+			"model":	"../assets/models//ChessPawn.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"Logo3D",
-			"scale":	2.6800000667572021,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-27.024620056152344,
-				"y":	-1.7526769638061523,
-				"z":	1.0493279695510864
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"width":	10,
-			"height":	10,
-			"image":	"../assets/images/logo.png",
-			"type":	"Image3D"
-		}, {
-			"name":	"Image2DAnimation",
+			"name":	"Mesh3D_26",
 			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	true,
 			"position":	{
-				"x":	0.53538256883621216,
-				"y":	-0.050535313785076141,
-				"z":	1.9298655986785889
+				"x":	-11.719005584716797,
+				"y":	-1.4303357601165771,
+				"z":	4.64868688583374
 			},
 			"rotation":	{
 				"x":	0,
@@ -123,108 +152,24 @@
 				"z":	0
 			},
 			"rotationFrameEnabled":	false,
+			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
-			"x":	577,
-			"y":	272,
-			"animation":	{
-				"sprite":	"../assets/sprites//explosion_a.png",
-				"width":	128,
-				"height":	128,
-				"numberFrames":	15,
-				"fps":	24
-			},
-			"type":	"Image2DAnimation"
-		}, {
-			"name":	"2DSmallLogo",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	1,
-				"y":	1,
-				"z":	1
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"x":	1154,
-			"y":	610,
-			"image":	"../assets/images//logo_small.png",
-			"type":	"Image2D"
-		}, {
-			"name":	"BillboardDemo",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	true,
-			"position":	{
-				"x":	19.130081176757813,
-				"y":	1.5098719596862793,
-				"z":	-6.8318700790405273
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"width":	1,
-			"height":	1,
-			"animations":	[{
-					"sprite":	"../assets/sprites//explosion_a.png",
-					"width":	128,
-					"height":	128,
-					"numberFrames":	15,
-					"fps":	24
-				}],
-			"currentIndexAnimation":	0,
-			"type":	"BillboardAnimation"
-		}, {
-			"name":	"Sprite3DDirectional_65",
-			"scale":	1,
-			"stencilBufferEnabled":	false,
-			"transparent":	false,
-			"position":	{
-				"x":	-10.749837875366211,
-				"y":	2.4914340972900391,
-				"z":	-6.5781583786010742
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"width":	10,
-			"height":	10,
-			"animations":	[{
-					"folder":	"../assets/sprites/Sprites3D/soldier/fire",
-					"frames":	2,
-					"fps":	24
-				}],
-			"currentIndexAnimation":	0,
-			"type":	"BillboardAnimation8Directions"
+			"model":	"../assets/models//UnitCube.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	40.753837585449219,
-			"y":	1.6624525785446167,
-			"z":	-6.3563733100891113
+			"x":	-61.565223693847656,
+			"y":	-11.606936454772949,
+			"z":	-42.499629974365234
 		},
 		"rotation":	{
-			"x":	-1.75,
-			"y":	89.199905395507813,
+			"x":	7.75,
+			"y":	-53,
 			"z":	0
 		}
 	}

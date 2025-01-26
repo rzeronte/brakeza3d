@@ -2,6 +2,7 @@
 <project version="4">
   <component name="AnalysisUIOptions">
     <option name="ANALYZE_INJECTED_CODE" value="false" />
+    <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
@@ -27,42 +28,20 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): Saving current ImGui docking layout to .ini file">
-      <change afterPath="$PROJECT_DIR$/include/2D/Image2D.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/2D/Image2D.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Objects/BillboardAnimation8Directions.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(controllers): improved controllers">
+      <change afterPath="$PROJECT_DIR$/assets/scenes/fps.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scenes/kinematic.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/Controllers/KinematicCameraController.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/Controllers/KinematicCameraController.lua" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/Controllers/KinematicFPSController.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/scripts/Controllers/KinematicFPSController.lua" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/04-basic-objects-types.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/04-basic-objects-types.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/05-general-2d-objects-types.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/05-general-2d-objects-types.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/06-general-3d-objects-types.md" beforeDir="false" afterPath="$PROJECT_DIR$/doc/06-general-3d-objects-types.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/2D/Sprite2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/Image2DAnimation.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/2D/TextureAnimatedDirectional.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/TextureAnimatedDirectional.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUIWidgetMenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIWidgetMenu.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/SceneLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/SceneLoader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Decal.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Decal.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Image2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Image3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Mesh3DAnimated.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Mesh3DAnimation.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Mesh3DAnimatedCollection.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/Mesh3DAnimationCollection.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/Sprite3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/BillboardAnimation.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Objects/SpriteDirectional3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Objects/BillboardAnimation8Directions.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/Mesh3DAnimatedGhost.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Mesh3DAnimatedGhost.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/Sprite3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/Sprite3DBody.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Physics/SpriteDirectional3DBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Physics/SpriteDirectional3DBody.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/Sprite2D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/Image2DAnimation.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/TextureAnimatedDirectional.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextureAnimatedDirectional.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Brakeza3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brakeza3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Collisions/Mesh3DAnimatedGhost.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Collisions/Mesh3DAnimatedGhost.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/SceneLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/SceneLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Decal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Decal.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Image2D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Image3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3DAnimated.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3DAnimation.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Mesh3DAnimatedCollection.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/Mesh3DAnimationCollection.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/Sprite3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Objects/BillboardAnimation.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Objects/SpriteDirectional3D.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scenes/test.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scenes/test.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scenes/test2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/examples/KinematicControllerExample.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/examples/KinematicControllerExample.lua" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/Camera3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/Camera3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,54 +100,54 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "CMake Application.Brakeza3D.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "RunOnceActivity.west.config.association.type.startup.service": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "cf.advertisement.text.has.clang-format": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/Eduardo/CLionProjects/BrakezaGitHub/config",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.uml",
-    "structure.view.defaults.are.configured": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;CMake Application.Brakeza3D.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.west.config.association.type.startup.service&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;cf.advertisement.text.has.clang-format&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Eduardo/CLionProjects/BrakezaGitHub/assets/scenes&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.uml&quot;,
+    &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scenes" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Controllers" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\examples" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\doc" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\config" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\imgui" />
-      <recent name="$PROJECT_DIR$/darkheaz/src/shaders/kernels" />
-      <recent name="$PROJECT_DIR$/config" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\2D" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\Objects" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Controllers" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\Collision" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\examples" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\Misc" />
-      <recent name="$PROJECT_DIR$/include/Physics" />
-      <recent name="$PROJECT_DIR$/src/Collisions" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\animations" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
@@ -367,7 +346,57 @@
       <workItem from="1736429212093" duration="6000" />
       <workItem from="1736452933290" duration="19353000" />
       <workItem from="1736541119364" duration="7813000" />
-      <workItem from="1736611412378" duration="27227000" />
+      <workItem from="1736611412378" duration="37218000" />
+      <workItem from="1736688705113" duration="2853000" />
+      <workItem from="1736709625615" duration="8737000" />
+      <workItem from="1736755817614" duration="7091000" />
+      <workItem from="1736771245390" duration="6730000" />
+      <workItem from="1736781093360" duration="1056000" />
+      <workItem from="1736782608373" duration="755000" />
+      <workItem from="1736783546448" duration="209000" />
+      <workItem from="1736783993906" duration="607000" />
+      <workItem from="1736786793382" duration="431000" />
+      <workItem from="1736787313034" duration="1957000" />
+      <workItem from="1736789321166" duration="507000" />
+      <workItem from="1736792664563" duration="5858000" />
+      <workItem from="1736854614570" duration="796000" />
+      <workItem from="1736865263018" duration="13888000" />
+      <workItem from="1736892613038" duration="1673000" />
+      <workItem from="1736896629909" duration="8476000" />
+      <workItem from="1736931444185" duration="2669000" />
+      <workItem from="1736936105468" duration="654000" />
+      <workItem from="1736943197908" duration="908000" />
+      <workItem from="1736944262553" duration="9070000" />
+      <workItem from="1736964310745" duration="9943000" />
+      <workItem from="1736977233573" duration="2477000" />
+      <workItem from="1737026942407" duration="696000" />
+      <workItem from="1737028442208" duration="597000" />
+      <workItem from="1737031510082" duration="122000" />
+      <workItem from="1737035769410" duration="255000" />
+      <workItem from="1737037187564" duration="1078000" />
+      <workItem from="1737038899431" duration="569000" />
+      <workItem from="1737039667328" duration="10358000" />
+      <workItem from="1737072443335" duration="14873000" />
+      <workItem from="1737089394892" duration="602000" />
+      <workItem from="1737144880964" duration="74134000" />
+      <workItem from="1737264901957" duration="46000" />
+      <workItem from="1737296243415" duration="20203000" />
+      <workItem from="1737330984265" duration="10738000" />
+      <workItem from="1737361519934" duration="593000" />
+      <workItem from="1737376136258" duration="335000" />
+      <workItem from="1737376503420" duration="7415000" />
+      <workItem from="1737387304439" duration="6289000" />
+      <workItem from="1737397071494" duration="23665000" />
+      <workItem from="1737460681712" duration="21704000" />
+      <workItem from="1737542571885" duration="11198000" />
+      <workItem from="1737569360243" duration="20990000" />
+      <workItem from="1737634271888" duration="140000" />
+      <workItem from="1737665382864" duration="22692000" />
+      <workItem from="1737709430030" duration="3595000" />
+      <workItem from="1737713163035" duration="2214000" />
+      <workItem from="1737716502859" duration="6095000" />
+      <workItem from="1737727220893" duration="1752000" />
+      <workItem from="1737762031171" duration="60082000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -418,63 +447,343 @@
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
     </task>
-    <task id="LOCAL-00008" summary="feat(refact): compilation standard for linux-windows">
+    <task id="LOCAL-00039" summary="feat(physics): Ghost/Body removed">
       <option name="closed" value="true" />
-      <created>1735945448250</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
+      <created>1737164235642</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
       <option name="project" value="LOCAL" />
-      <updated>1735945448250</updated>
+      <updated>1737164235642</updated>
     </task>
-    <task id="LOCAL-00009" summary="feat(cross): Fix format text surface format in Win32">
+    <task id="LOCAL-00040" summary="feat(cmakelist): Fix">
       <option name="closed" value="true" />
-      <created>1735946251483</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
+      <created>1737164310914</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
       <option name="project" value="LOCAL" />
-      <updated>1735946251483</updated>
+      <updated>1737164310914</updated>
     </task>
-    <task id="LOCAL-00010" summary="feat(imgui): Integration ImGui Guizmo plugin">
+    <task id="LOCAL-00041" summary="feat(gui): Objects set features gui">
       <option name="closed" value="true" />
-      <created>1736376828981</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
+      <created>1737166692036</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
       <option name="project" value="LOCAL" />
-      <updated>1736376828981</updated>
+      <updated>1737166692036</updated>
     </task>
-    <task id="LOCAL-00011" summary="refact: Erase qmap, added more doc">
+    <task id="LOCAL-00042" summary="feat(gui): Objects set features gui">
       <option name="closed" value="true" />
-      <created>1736379444951</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
+      <created>1737169437827</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
       <option name="project" value="LOCAL" />
-      <updated>1736379444951</updated>
+      <updated>1737169437827</updated>
     </task>
-    <task id="LOCAL-00012" summary="feat(image2d): Added image2d object">
+    <task id="LOCAL-00043" summary="feat(doc): Update doc">
       <option name="closed" value="true" />
-      <created>1736476007607</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
+      <created>1737171528916</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
       <option name="project" value="LOCAL" />
-      <updated>1736476007607</updated>
+      <updated>1737171528916</updated>
     </task>
-    <task id="LOCAL-00013" summary="feat(scripting): Added getLocalScriptVar for access other object's script variables.">
+    <task id="LOCAL-00044" summary="feat(doc): Update doc">
       <option name="closed" value="true" />
-      <created>1736560431203</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
+      <created>1737171640555</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
       <option name="project" value="LOCAL" />
-      <updated>1736560431203</updated>
+      <updated>1737171640555</updated>
     </task>
-    <task id="LOCAL-00014" summary="feat(gui): Saving current ImGui docking layout to .ini file">
+    <task id="LOCAL-00045" summary="feat(doc): Update doc">
       <option name="closed" value="true" />
-      <created>1736620198359</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
+      <created>1737171706369</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
       <option name="project" value="LOCAL" />
-      <updated>1736620198359</updated>
+      <updated>1737171706369</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00046" summary="feat(doc): Update doc">
+      <option name="closed" value="true" />
+      <created>1737214034878</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1737214034878</updated>
+    </task>
+    <task id="LOCAL-00047" summary="feat(doc): Update doc">
+      <option name="closed" value="true" />
+      <created>1737214132452</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1737214132452</updated>
+    </task>
+    <task id="LOCAL-00048" summary="feat(doc): Update doc">
+      <option name="closed" value="true" />
+      <created>1737214268236</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1737214268236</updated>
+    </task>
+    <task id="LOCAL-00049" summary="feat(doc): Update doc">
+      <option name="closed" value="true" />
+      <created>1737218795393</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1737218795393</updated>
+    </task>
+    <task id="LOCAL-00050" summary="feat(refact): Cleaning">
+      <option name="closed" value="true" />
+      <created>1737236089691</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1737236089692</updated>
+    </task>
+    <task id="LOCAL-00051" summary="feat(refact): Cleaning repeated code">
+      <option name="closed" value="true" />
+      <created>1737241514171</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1737241514172</updated>
+    </task>
+    <task id="LOCAL-00052" summary="feat(image3d): Gui resize image3d">
+      <option name="closed" value="true" />
+      <created>1737243429634</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1737243429634</updated>
+    </task>
+    <task id="LOCAL-00053" summary="feat(input): Changes keys to launch demo projectile">
+      <option name="closed" value="true" />
+      <created>1737243904027</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1737243904027</updated>
+    </task>
+    <task id="LOCAL-00054" summary="feat(gui): Local variables widget">
+      <option name="closed" value="true" />
+      <created>1737260281384</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1737260281384</updated>
+    </task>
+    <task id="LOCAL-00055" summary="feat(doc): Update doc">
+      <option name="closed" value="true" />
+      <created>1737260321148</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1737260321148</updated>
+    </task>
+    <task id="LOCAL-00056" summary="feat(GUI): Change in reset script variables from GUI">
+      <option name="closed" value="true" />
+      <created>1737263224439</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1737263224441</updated>
+    </task>
+    <task id="LOCAL-00057" summary="feat(GUI): Change in reset script variables from GUI">
+      <option name="closed" value="true" />
+      <created>1737264844136</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1737264844136</updated>
+    </task>
+    <task id="LOCAL-00058" summary="feat(GUI): Update scripts viewer">
+      <option name="closed" value="true" />
+      <created>1737309366351</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1737309366351</updated>
+    </task>
+    <task id="LOCAL-00059" summary="fix(guizmo): Fix gizmo rotation">
+      <option name="closed" value="true" />
+      <created>1737328002767</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1737328002768</updated>
+    </task>
+    <task id="LOCAL-00060" summary="fix(guizmo): Fix gizmo rotation">
+      <option name="closed" value="true" />
+      <created>1737328013565</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1737328013565</updated>
+    </task>
+    <task id="LOCAL-00061" summary="fix(guizmo): Fix bad position when window is maximized">
+      <option name="closed" value="true" />
+      <created>1737339248538</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1737339248539</updated>
+    </task>
+    <task id="LOCAL-00062" summary="fix(guizmo): Fix bad position when window is maximized">
+      <option name="closed" value="true" />
+      <created>1737340852996</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1737340852997</updated>
+    </task>
+    <task id="LOCAL-00063" summary="feat(lua): apply impulses from lua mapping">
+      <option name="closed" value="true" />
+      <created>1737409058126</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1737409058127</updated>
+    </task>
+    <task id="LOCAL-00064" summary="feat(lua): apply impulses from lua mapping">
+      <option name="closed" value="true" />
+      <created>1737409851161</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1737409851161</updated>
+    </task>
+    <task id="LOCAL-00065" summary="feat(lua): apply impulses from lua mapping">
+      <option name="closed" value="true" />
+      <created>1737429999769</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1737429999769</updated>
+    </task>
+    <task id="LOCAL-00066" summary="feat(doc): updated doc">
+      <option name="closed" value="true" />
+      <created>1737496507253</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1737496507253</updated>
+    </task>
+    <task id="LOCAL-00067" summary="feat(doc): updated doc">
+      <option name="closed" value="true" />
+      <created>1737496836818</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1737496836818</updated>
+    </task>
+    <task id="LOCAL-00068" summary="feat(gui): Visible widget objects icons to setup">
+      <option name="closed" value="true" />
+      <created>1737506217131</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1737506217131</updated>
+    </task>
+    <task id="LOCAL-00069" summary="feat(gui): Update objects selector">
+      <option name="closed" value="true" />
+      <created>1737516269729</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1737516269730</updated>
+    </task>
+    <task id="LOCAL-00070" summary="feat(gui): Update objects selector">
+      <option name="closed" value="true" />
+      <created>1737569391262</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1737569391263</updated>
+    </task>
+    <task id="LOCAL-00071" summary="feat(assets): Update assets base">
+      <option name="closed" value="true" />
+      <created>1737585544418</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1737585544418</updated>
+    </task>
+    <task id="LOCAL-00072" summary="feat(assets): Update assets base">
+      <option name="closed" value="true" />
+      <created>1737585552542</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1737585552542</updated>
+    </task>
+    <task id="LOCAL-00073" summary="feat(kinematic): Added kinematic body to UI">
+      <option name="closed" value="true" />
+      <created>1737598792699</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1737598792699</updated>
+    </task>
+    <task id="LOCAL-00074" summary="feat(bullet): Improved performance PhysicsDebugDraw">
+      <option name="closed" value="true" />
+      <created>1737685045470</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1737685045470</updated>
+    </task>
+    <task id="LOCAL-00075" summary="feat(bullet): Improved performance PhysicsDebugDraw">
+      <option name="closed" value="true" />
+      <created>1737688075483</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1737688075485</updated>
+    </task>
+    <task id="LOCAL-00076" summary="feat(bullet): Kinematic character improved">
+      <option name="closed" value="true" />
+      <created>1737728432957</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1737728432959</updated>
+    </task>
+    <task id="LOCAL-00077" summary="feat(bullet): Kinematic character improved">
+      <option name="closed" value="true" />
+      <created>1737728448299</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1737728448299</updated>
+    </task>
+    <task id="LOCAL-00078" summary="feat(bullet): Kinematic character improved">
+      <option name="closed" value="true" />
+      <created>1737781642476</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1737781642476</updated>
+    </task>
+    <task id="LOCAL-00079" summary="feat(doc): added screenshots">
+      <option name="closed" value="true" />
+      <created>1737818426481</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1737818426482</updated>
+    </task>
+    <task id="LOCAL-00080" summary="feat(controllers): improved controllers">
+      <option name="closed" value="true" />
+      <created>1737863437499</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1737863437499</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -504,6 +813,7 @@
         <entry key="c5a68908-fc21-473f-847e-9b888e93e42a" value="TOOL_WINDOW" />
         <entry key="cab30992-3e14-44fb-b270-88496f51e6ed" value="TOOL_WINDOW" />
         <entry key="f3669d5c-6516-4e5f-bf5f-0ff3091bc986" value="TOOL_WINDOW" />
+        <entry key="f2630000-fac2-415f-87dd-e6547571661f" value="TOOL_WINDOW" />
       </map>
     </option>
     <option name="TAB_STATES">
@@ -627,6 +937,31 @@
             </State>
           </value>
         </entry>
+        <entry key="f2630000-fac2-415f-87dd-e6547571661f">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                  <entry key="roots">
+                    <value>
+                      <list>
+                        <option value="$PROJECT_DIR$" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+            </State>
+          </value>
+        </entry>
         <entry key="f3669d5c-6516-4e5f-bf5f-0ff3091bc986">
           <value>
             <State>
@@ -663,21 +998,32 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="CL Shaders" />
-    <MESSAGE value="OpenCL kernels" />
-    <MESSAGE value="Created ShaderOpenCL for share buffers and better encapsulation" />
-    <MESSAGE value="Lint / Warnings" />
-    <MESSAGE value="New Laptop" />
-    <MESSAGE value="Fix broken on new laptop (remove major and minor opengl versions :?)" />
-    <MESSAGE value="feat(video): video decodec feature" />
-    <MESSAGE value="feat(refact): compilation standard for linux-windows" />
-    <MESSAGE value="feat(cross): Fix format text surface format in Win32" />
-    <MESSAGE value="feat(imgui): Integration ImGui Guizmo plugin" />
-    <MESSAGE value="refact: Erase qmap, added more doc" />
-    <MESSAGE value="feat(image2d): Added image2d object" />
-    <MESSAGE value="feat(scripting): Added getLocalScriptVar for access other object's script variables." />
-    <MESSAGE value="feat(gui): Saving current ImGui docking layout to .ini file" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(gui): Saving current ImGui docking layout to .ini file" />
+    <MESSAGE value="feat(refact): Renamed header" />
+    <MESSAGE value="feat(doc): Updated doc" />
+    <MESSAGE value="feat(physics): Ghost/Body removed" />
+    <MESSAGE value="feat(cmakelist): Fix" />
+    <MESSAGE value="feat(gui): Objects set features gui" />
+    <MESSAGE value="feat(refact): Cleaning" />
+    <MESSAGE value="feat(refact): Cleaning repeated code" />
+    <MESSAGE value="feat(image3d): Gui resize image3d" />
+    <MESSAGE value="feat(input): Changes keys to launch demo projectile" />
+    <MESSAGE value="feat(gui): Local variables widget" />
+    <MESSAGE value="feat(doc): Update doc" />
+    <MESSAGE value="feat(GUI): Change in reset script variables from GUI" />
+    <MESSAGE value="feat(GUI): Update scripts viewer" />
+    <MESSAGE value="fix(guizmo): Fix gizmo rotation" />
+    <MESSAGE value="fix(guizmo): Fix bad position when window is maximized" />
+    <MESSAGE value="feat(lua): apply impulses from lua mapping" />
+    <MESSAGE value="feat(doc): updated doc" />
+    <MESSAGE value="feat(gui): Visible widget objects icons to setup" />
+    <MESSAGE value="feat(gui): Update objects selector" />
+    <MESSAGE value="feat(assets): Update assets base" />
+    <MESSAGE value="feat(kinematic): Added kinematic body to UI" />
+    <MESSAGE value="feat(bullet): Improved performance PhysicsDebugDraw" />
+    <MESSAGE value="feat(bullet): Kinematic character improved" />
+    <MESSAGE value="feat(doc): added screenshots" />
+    <MESSAGE value="feat(controllers): improved controllers" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(controllers): improved controllers" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -698,69 +1044,24 @@
           <option name="timeStamp" value="41" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Misc/SceneLoader.cpp</url>
-          <line>368</line>
-          <option name="timeStamp" value="55" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Misc/Image.cpp</url>
-          <line>75</line>
-          <option name="timeStamp" value="56" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Objects/Image3D.cpp</url>
-          <line>115</line>
-          <option name="timeStamp" value="57" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Objects/Object3D.cpp</url>
-          <line>694</line>
-          <option name="timeStamp" value="60" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Objects/BillboardAnimation8Directions.cpp</url>
-          <line>63</line>
-          <option name="timeStamp" value="63" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Objects/BillboardAnimation8Directions.cpp</url>
-          <line>77</line>
-          <option name="timeStamp" value="69" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/2D/TextureAnimatedDirectional.cpp</url>
-          <line>42</line>
-          <option name="timeStamp" value="70" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/2D/TextureAnimatedDirectional.cpp</url>
-          <line>43</line>
-          <option name="timeStamp" value="71" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Render/Billboard.cpp</url>
-          <line>110</line>
-          <option name="timeStamp" value="72" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Objects/BillboardAnimation8Directions.cpp</url>
-          <line>97</line>
-          <option name="timeStamp" value="74" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Objects/BillboardAnimation8Directions.cpp</url>
-          <line>98</line>
-          <option name="timeStamp" value="75" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Objects/BillboardAnimation8Directions.cpp</url>
-          <line>123</line>
+          <url>file://$PROJECT_DIR$/include/Render/Billboard.h</url>
+          <line>7</line>
           <option name="timeStamp" value="76" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/2D/TextureAnimatedDirectional.cpp</url>
-          <line>24</line>
-          <option name="timeStamp" value="77" />
+          <url>file://$PROJECT_DIR$/src/Collisions/Collider.cpp</url>
+          <line>85</line>
+          <option name="timeStamp" value="91" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Collisions/Collider.cpp</url>
+          <line>185</line>
+          <option name="timeStamp" value="93" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Collisions/Collider.cpp</url>
+          <line>186</line>
+          <option name="timeStamp" value="94" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
