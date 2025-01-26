@@ -87,7 +87,17 @@ void ComponentInput::handleMouse(SDL_Event *event) const
             auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
             camera->Yaw((float) event->motion.xrel);
             camera->Pitch((float) event->motion.yrel);
-            camera->setRotationFromEulerAngles(camera->getPitch(), camera->getYaw(), camera->getRoll());
+            const float sensibility = 0.2;
+            M3 r = M3::getMatrixRotationForEulerAngles(
+                (float) -event->motion.yrel * sensibility,
+                (float) event->motion.xrel * sensibility,
+                0
+            );
+            //camera->setRotation(camera->getRotation() * r);
+            camera->setRotation(M3::getMatrixRotationForEulerAngles(camera->getPitch(), camera->getYaw(), camera->getRoll()));
+            //auto cr = camera->getRotation();
+            //camera->setRotation(M3::getMatrixRotationForEulerAngles(cr.getYawDegree(), cr.getPitchDegree(), cr.getRollDegree()));
+            //camera->setRotationFromEulerAngles(camera->getPitch(), camera->getYaw(), camera->getRoll());
         }
     }
 

@@ -1,4 +1,5 @@
 #include <glm/gtx/compatibility.hpp>
+#include <glm/gtx/euler_angles.hpp>
 #include "../../include/Render/M3.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Render/Maths.h"
@@ -155,7 +156,8 @@ float M3::getRoll() {
     return atan2f(m[3], m[0]);
 }
 
-M3 M3::getMatrixRotationForEulerAngles(float x, float y, float z) {
+M3 M3::getMatrixRotationForEulerAngles(float x, float y, float z)
+{
     M3 MRX = M3::RX(x);
     M3 MRY = M3::RY(y);
     M3 MRZ = M3::RZ(z);
@@ -282,4 +284,25 @@ M3 M3::fromMat3Bullet(const btMatrix3x3& m) {
         m.getRow(1).getX(), m.getRow(1).getY(), m.getRow(1).getZ(),
         m.getRow(2).getX(), m.getRow(2).getY(), m.getRow(2).getZ()
     );
+}
+
+Vertex3D M3::getEulerAnglesZYX()
+{
+    float pitch, yaw, roll;
+    glm::extractEulerAngleXYZ(glm::mat4(this->toGLMMat3()), pitch, yaw, roll);
+
+    return {pitch, yaw, roll};
+}
+
+void M3::renormalize(M3& matrix) {
+    Vertex3D xAxis = matrix.X().getNormalize(); // Normalizar eje X
+    Vertex3D zAxis = matrix.Z().getNormalize(); // Normalizar eje Z
+
+    // Recalcular eje Y usando producto cruzado
+    Vertex3D yAxis = (zAxis % xAxis).getNormalize();
+
+    // Reajustar matriz
+    matrix.setX(xAxis.x, xAxis.y, xAxis.z);
+    matrix.setY(yAxis.x, yAxis.y, yAxis.z);
+    matrix.setZ(zAxis.x, zAxis.y, zAxis.z);
 }

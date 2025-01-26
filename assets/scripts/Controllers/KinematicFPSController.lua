@@ -9,6 +9,7 @@ function onUpdate()
     componentCamera = componentsManager:getComponentCamera();
     componentInput = componentsManager:getComponentInput();
     camera = componentCamera:getCamera()
+    camera:setPosition(this:getPosition())
 
     local mouseMotionXRel = 0
     local mouseMotionYRel = 0;
@@ -20,16 +21,13 @@ function onUpdate()
         mouseMotionYRel = componentInput:getMouseMotionYRel()
     end
 
-    local yaw = yaw + (mouseMotionXRel * 0.20);
-    local pitch = pitch + (mouseMotionYRel * 0.20);
+
+    yaw = yaw + (mouseMotionXRel * 0.20);
+    pitch = pitch + (mouseMotionYRel * 0.20);
 
     pitch = math.max(-89, math.min(89, pitch))
 
-    rp = M3:getMatrixRotationForEulerAngles(pitch, -yaw, 0)
-
-    -- camera:setRotation(rp)
-    camera:setRotation(rp)
-    camera:setPosition(this:getPosition())
+    camera:setRotationFromEulerAngles(pitch, -yaw, 0)
 
 
     this:setRotation(camera:getRotation():getTranspose())
@@ -69,4 +67,3 @@ end
 
 function onCollision(with)
 end
-
