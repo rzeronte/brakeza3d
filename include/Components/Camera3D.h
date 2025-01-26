@@ -54,8 +54,6 @@ public:
 
     void setRotationFromEulerAngles(float x, float y, float z);
 
-    void setFollowToPositionOffset(Vertex3D v);
-
     [[nodiscard]] Frustum *getFrustum() const;
 
     float &getYaw();
