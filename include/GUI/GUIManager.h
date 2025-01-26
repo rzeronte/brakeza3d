@@ -237,8 +237,6 @@ public:
         std::string mouse_text = "Mouse##4";
         std::string autoscrollSpeed_text = "AutoScroll##5";
 
-        ImGui::Checkbox("Free Look", &ComponentsManager::get()->getComponentCamera()->freeLook);
-
         ImGui::Separator();
 
         // position
@@ -248,9 +246,15 @@ public:
 
         // rotation
         if (ImGui::TreeNode(rotation_text.c_str())) {
-            ImGui::DragScalar("Yaw", ImGuiDataType_Float, &camera->getYaw(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
-            ImGui::DragScalar("Pitch", ImGuiDataType_Float, &camera->getPitch(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
-            ImGui::DragScalar("Roll", ImGuiDataType_Float, &camera->getRoll(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
+            if (ImGui::DragScalar("Yaw", ImGuiDataType_Float, &camera->getYaw(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f)) {
+                camera->setRotationFromEulerAngles(camera->getYaw(), camera->getPitch(), camera->getRoll());
+            }
+            if (ImGui::DragScalar("Pitch", ImGuiDataType_Float, &camera->getPitch(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f)) {
+                camera->setRotationFromEulerAngles(camera->getYaw(), camera->getPitch(), camera->getRoll());
+            }
+            if (ImGui::DragScalar("Roll", ImGuiDataType_Float, &camera->getRoll(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f)) {
+                camera->setRotationFromEulerAngles(camera->getYaw(), camera->getPitch(), camera->getRoll());
+            }
             ImGui::TreePop();
         }
 
@@ -638,6 +642,27 @@ public:
         ImGui::End();
 
         widgetProjectSettings->draw();
+
+        if (ImGui::Begin("Keyboard/Mouse")) {
+            auto input = ComponentsManager::get()->getComponentInput();
+
+            ImGui::Text(("Mouse motion: " + std::to_string(input->isMouseMotion())).c_str());
+            ImGui::Text(("Mouse motion RelX: " + std::to_string(input->getMouseMotionXRel())).c_str());
+            ImGui::Text(("Mouse motion RelY: " + std::to_string(input->getMouseMotionYRel())).c_str());
+            ImGui::Separator();
+
+            ImGui::Text(("Click Left: " + std::to_string(input->isClickLeft())).c_str());
+            ImGui::Text(("Click Right: " + std::to_string(input->isClickRight())).c_str());
+            ImGui::Text(("Click Left pressed: " + std::to_string(input->isLeftMouseButtonPressed())).c_str());
+            ImGui::Text(("Click Right pressed: " + std::to_string(input->isRightMouseButtonPressed())).c_str());
+
+            ImGui::Separator();
+            ImGui::Text(("Key event Down: " + std::to_string(input->isKeyEventDown())).c_str());
+            ImGui::Text(("Key event Up: " + std::to_string(input->isKeyEventUp())).c_str());
+            ImGui::Separator();
+            ImGui::Text(("Enabled: " + std::to_string(input->isEnabled())).c_str());
+        }
+        ImGui::End();
 
         if (ImGui::Begin("Camera settings")) {
             drawCameraSettings();

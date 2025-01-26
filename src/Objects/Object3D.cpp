@@ -330,17 +330,10 @@ void Object3D::lookAt(Object3D *o)
 {
     Vertex3D direction = (o->getPosition() - position).getNormalize();
 
-    // Calcular el eje de rotación
     Vertex3D rightVector = Vertex3D(0, 0, -1) % (direction).getNormalize();
     Vertex3D correctedUpVector = direction % (rightVector).getNormalize();
 
-    // Crear una matriz de rotación
-    M3 r;
-    r.setX(rightVector.x, correctedUpVector.x, -direction.x);
-    r.setY(rightVector.y, correctedUpVector.y, -direction.y);
-    r.setZ(rightVector.z, correctedUpVector.z, -direction.z);
-
-    setRotation(r);
+    setRotation(M3::getFromVectors(direction, correctedUpVector));
 }
 
 void Object3D::attachScript(ScriptLUA *script)
@@ -856,18 +849,18 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
     btVector3 inertia(0, 0, 0);
     capsule->calculateLocalInertia(mass, inertia);
     kinematicBody->setCollisionShape(capsule);
-
     kinematicBody->setUserPointer(this);
+    kinematicBody->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 
     characterController = new btKinematicCharacterController(
         kinematicBody,
         (btConvexShape*)kinematicBody->getCollisionShape(),
-        1
+        0.1f
     );
 
     characterController->setGravity(EngineSetup::get()->gravity.toBullet());
+    characterController->setUseGhostSweepTest(false);
     characterController->setMaxSlope(btRadians(45));       // Pendiente máxima
-    kinematicBody->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 
     world->addCollisionObject(
             kinematicBody,

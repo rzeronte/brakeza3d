@@ -42,17 +42,11 @@ public:
 
     void setAutoScroll(bool autoScroll);
 
-    void setFreeLook(bool isFlyMode);
-
     [[nodiscard]] Vertex3D &getAutoScrollSpeed();
 
     [[nodiscard]] bool &isAutoScroll();
 
     [[nodiscard]] Camera3D *getCamera() const;
-
-    [[nodiscard]] bool isFreeLookEnabled() const;
-
-    bool freeLook;
 };
 
 

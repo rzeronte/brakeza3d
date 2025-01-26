@@ -1,19 +1,18 @@
 
 #include "../../include/Components/ComponentCamera.h"
 #include "../../include/Render/Logging.h"
+#include "../../include/ComponentsManager.h"
 
 ComponentCamera::ComponentCamera()
 :
     camera(new Camera3D()),
-    autoScroll(false),
-    freeLook(false)
+    autoScroll(false)
 {
 }
 
 void ComponentCamera::onStart()
 {
     Logging::head("ComponentCamera onStart");
-    setFreeLook(true);
 }
 
 void ComponentCamera::preUpdate()
@@ -27,19 +26,14 @@ void ComponentCamera::onUpdate()
     if (isAutoScroll()) {
         getCamera()->addToPosition(autoScrollSpeed);
     }
-    getCamera()->UpdateVelocity();
+    //getCamera()->UpdateVelocity();
 }
 
 void ComponentCamera::postUpdate()
 {
-    if (this->freeLook) {
-        getCamera()->UpdateRotation();
+    if (ComponentsManager::get()->getComponentInput()->isEnabled()) {
         getCamera()->UpdatePositionForVelocity();
     }
-
-    /*if (getCamera()->getFollowTo() != nullptr) {
-        updatePositionForTrackingObject();
-    }*/
 }
 
 void ComponentCamera::onEnd() {
@@ -53,16 +47,6 @@ void ComponentCamera::onSDLPollEvent(SDL_Event *e, bool &finish)
 Camera3D *ComponentCamera::getCamera() const
 {
     return camera;
-}
-
-bool ComponentCamera::isFreeLookEnabled() const
-{
-    return freeLook;
-}
-
-void ComponentCamera::setFreeLook(bool value)
-{
-    freeLook = value;
 }
 
 Vertex3D &ComponentCamera::getAutoScrollSpeed() {

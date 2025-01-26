@@ -117,6 +117,8 @@ public:
     void setWalkingDirection(Vertex3D d);
 
     void jump(Vertex3D d);
+
+    bool onGround();
 };
 
 

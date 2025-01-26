@@ -39,9 +39,13 @@ void LUAIntegration(sol::state &lua)
             "M3",
             sol::constructors<M3()>(),
             "__mul", sol::overload(
-                    sol::resolve<Vertex3D(Vertex3D const)>(&M3::operator*)
+                    sol::resolve<Vertex3D(Vertex3D const)>(&M3::operator*),
+                    sol::resolve<M3(const M3&)>(&M3::operator*)            // Para multiplicación de matrices
             ),
-            "getMatrixRotationForEulerAngles", &M3::getMatrixRotationForEulerAngles
+            "getMatrixRotationForEulerAngles", &M3::getMatrixRotationForEulerAngles,
+            "getTranspose",  &M3::getTranspose,
+            "setMatrixRotationForEulerAngles", &M3::setMatrixRotationForEulerAngles,
+            "getMatrixIdentity", &M3::getMatrixIdentity
     );
 
     lua.new_usertype<Color>(
@@ -64,6 +68,7 @@ void LUAIntegration(sol::state &lua)
             ),
             "getTypeObject", &Object3D::getTypeObject,
             "getLabel", &Object3D::getLabel,
+            "getRotation", &Object3D::getRotation,
             "setBelongToScene", &Object3D::setBelongToScene,
             "setRotationFrame", &Object3D::setRotationFrame,
             "setRotationFrameEnabled", &Object3D::setRotationFrameEnabled,
@@ -74,6 +79,7 @@ void LUAIntegration(sol::state &lua)
             "setScale", &Object3D::setScale,
             "getModelMatrix", &Object3D::getModelMatrix,
             "AxisForward", &Object3D::AxisForward,
+            "AxisRight", &Object3D::AxisRight,
             "setCollisionsEnabled", &Object3D::setCollisionsEnabled,
             "setupGhostCollider", &Object3D::setupGhostCollider,
             "setupRigidBodyCollider", &Object3D::setupRigidBodyCollider,
@@ -83,8 +89,10 @@ void LUAIntegration(sol::state &lua)
             "setLinearVelocity", &Object3D::setLinearVelocity,
             "setWalkingDirection", &Object3D::setWalkingDirection,
             "jump", &Object3D::jump,
+            "onGround", &Object3D::onGround,
             "getLocalScriptVar", &Object3D::getLocalScriptVar,
-            "attachScript",  &Object3D::attachScript,
+            "attachScript", &Object3D::attachScript,
+            "lookAt", &Object3D::lookAt,
             "reloadScriptsEnvironment", &Object3D::reloadScriptsEnvironment
     );
 
@@ -132,10 +140,15 @@ void LUAIntegration(sol::state &lua)
                                      "isKeyEventDown", &ComponentInput::isKeyEventDown,
                                      "isKeyEventUp", &ComponentInput::isKeyEventUp,
                                      "isCharPressed", &ComponentInput::isCharPressed,
+                                     "isMouseMotion", &ComponentInput::isMouseMotion,
                                      "isClickLeft", &ComponentInput::isClickLeft,
                                      "isClickRight", &ComponentInput::isClickRight,
                                      "isEnabled", &ComponentInput::isEnabled,
                                      "isAnyControllerButtonPressed", &ComponentInput::isAnyControllerButtonPressed,
+                                     "getRelativeRendererMouseX", &ComponentInput::getRelativeRendererMouseX,
+                                     "getRelativeRendererMouseY", &ComponentInput::getRelativeRendererMouseY,
+                                     "getMouseMotionXRel", &ComponentInput::getMouseMotionXRel,
+                                     "getMouseMotionYRel", &ComponentInput::getMouseMotionYRel,
                                      "isLeftMouseButtonPressed", &ComponentInput::isLeftMouseButtonPressed,
                                      "isRightMouseButtonPressed", &ComponentInput::isRightMouseButtonPressed
 
@@ -163,7 +176,8 @@ void LUAIntegration(sol::state &lua)
     lua.new_usertype<Camera3D>("Camera3D",
                                sol::base_classes, sol::bases<Object3D>(),
                                 "getViewMatrix",  &Camera3D::getViewMatrix,
-                                "getProjectionMatrix",  &Camera3D::getProjectionMatrix
+                               "getProjectionMatrix",  &Camera3D::getProjectionMatrix,
+                               "setRotationFromEulerAngles", &Camera3D::setRotationFromEulerAngles
     );
 
     lua.new_usertype<Mesh3D>("Mesh3D",
