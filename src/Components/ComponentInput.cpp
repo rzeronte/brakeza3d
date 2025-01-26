@@ -6,6 +6,8 @@
 ComponentInput::ComponentInput()
 :
     mouseMotion(false),
+    mouseMotionXRel(0),
+    mouseMotionYRel(0),
     mouseLeftButton(false),
     mouseRightButton(false),
     keyboard(nullptr),
@@ -75,14 +77,17 @@ void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
     handleProjectileDemo(e);
 }
 
-void ComponentInput::handleMouse(SDL_Event *event) const {
+void ComponentInput::handleMouse(SDL_Event *event) const
+{
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
 
     if (mouseMotion && isLeftMouseButtonPressed()) {
         if (event->type == SDL_MOUSEMOTION) {
-            ComponentsManager::get()->getComponentCamera()->getCamera()->Yaw((float) event->motion.xrel);
-            ComponentsManager::get()->getComponentCamera()->getCamera()->Pitch((float) event->motion.yrel);
+            auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+            camera->Yaw((float) event->motion.xrel);
+            camera->Pitch((float) event->motion.yrel);
+            camera->setRotationFromEulerAngles(camera->getPitch(), camera->getYaw(), camera->getRoll());
         }
     }
 
@@ -140,8 +145,8 @@ void ComponentInput::updateMouseStates(SDL_Event *event)
 {
     if (event->type == SDL_MOUSEMOTION) {
         mouseMotion = true;
-    } else {
-        mouseMotion = false;
+        mouseMotionXRel = (float) event->motion.xrel;
+        mouseMotionYRel = (float) event->motion.yrel;
     }
 }
 
@@ -200,6 +205,10 @@ void ComponentInput::updateMouseMapping()
     SDL_GetRendererOutputSize(window->getRenderer(), &windowWidth, &windowHeight);
     relativeRendererMouseX = (EngineSetup::get()->screenWidth * mouseX ) / windowWidth;
     relativeRendererMouseY = (EngineSetup::get()->screenHeight * mouseY) / windowHeight;
+
+    mouseMotion = false;
+    mouseMotionXRel = 0;
+    mouseMotionYRel = 0;
 }
 
 bool ComponentInput::isClickLeft() const {
@@ -370,4 +379,12 @@ void ComponentInput::handleCheckPadConnection(SDL_Event *pEvent)
             gameController = nullptr;
         }
     }
+}
+
+float ComponentInput::getMouseMotionXRel() const {
+    return mouseMotionXRel;
+}
+
+float ComponentInput::getMouseMotionYRel() const {
+    return mouseMotionYRel;
 }

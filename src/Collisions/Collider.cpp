@@ -304,3 +304,12 @@ void Collider::jump(Vertex3D d)
         characterController->jump(d.toBullet());
     }
 }
+
+bool Collider::onGround()
+{
+    if (getCollisionMode() == KINEMATIC) {
+        return characterController->onGround();
+    }
+
+    return false;
+}

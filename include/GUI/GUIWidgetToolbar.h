@@ -92,19 +92,6 @@ struct GUIWidgetToolbar {
             ImGui::PopStyleColor();
         }
 
-        // FREE LOOKON/OFF
-        ImGui::SameLine();
-
-        bool wasFreeLookEnabled = ComponentsManager::get()->getComponentCamera()->freeLook;
-        if (!wasFreeLookEnabled) {
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-        }
-        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "freelookIcon"), ImVec2(24, 24))) {
-            ComponentsManager::get()->getComponentCamera()->freeLook = !ComponentsManager::get()->getComponentCamera()->freeLook;
-        }
-        if (!wasFreeLookEnabled) {
-            ImGui::PopStyleColor();
-        }
         ImGui::SameLine();
     }
 
