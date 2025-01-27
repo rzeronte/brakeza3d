@@ -43,6 +43,11 @@ void LUAIntegration(sol::state &lua)
                     sol::resolve<M3(const M3&)>(&M3::operator*)            // Para multiplicación de matrices
             ),
             "getMatrixRotationForEulerAngles", &M3::getMatrixRotationForEulerAngles,
+            "X", &M3::X,
+            "Y", &M3::Y,
+            "Z", &M3::Z,
+            "getTranspose",  &M3::getTranspose,
+            "getTranspose",  &M3::getTranspose,
             "getTranspose",  &M3::getTranspose,
             "setMatrixRotationForEulerAngles", &M3::setMatrixRotationForEulerAngles,
             "getMatrixIdentity", &M3::getMatrixIdentity

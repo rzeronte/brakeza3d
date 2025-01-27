@@ -149,7 +149,8 @@ public:
     float PROJECTILE_DEMO_MASS = 100;
     bool PROJECTILE_SIMPLE_MESH = true;
 
-    bool CLICK_SELECT_OBJECT3D = false;
+    bool CLICK_SELECT_OBJECT3D = true;
+    bool MOUSE_LOOK = true;
     bool GAMEPAD_CONTROLLER_ENABLED = true;
 
     std::string CONFIG_FOLDER = "../config/";

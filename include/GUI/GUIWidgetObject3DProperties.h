@@ -56,7 +56,6 @@ struct GUIWidgetObject3DProperties {
                     return;
                 }
 
-                ImGui::Text("Tools:");
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "translateIcon"), ImVec2(32, 32))) {
                     operation = ImGuizmo::OPERATION::TRANSLATE;
                 }

@@ -10,10 +10,13 @@
 
 struct GUIWidgetToolbar {
     TexturePackage &ImGuiTextures;
-
+    ImVec4 offColor;
+    ImVec4 onColor;
     explicit GUIWidgetToolbar(TexturePackage &imGuiTextures)
         :
-        ImGuiTextures(imGuiTextures)
+        ImGuiTextures(imGuiTextures),
+        offColor(ImVec4(0.8f, 0.4f, 0.4f, 1.0f)),
+        onColor(ImVec4(0.4f, 0.8f, 0.4f, 1.0f))
     {
     }
 
@@ -37,44 +40,32 @@ struct GUIWidgetToolbar {
         // BULLET ON/OF
         bool wasBulletStepSimulationEnabled = EngineSetup::get()->BULLET_STEP_SIMULATION;
         if (!wasBulletStepSimulationEnabled) {
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_Button, offColor);
+        } else {
+            ImGui::PushStyleColor(ImGuiCol_Button, onColor);
         }
         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "gravityIcon"), ImVec2(24, 24))) {
             EngineSetup::get()->BULLET_STEP_SIMULATION = !EngineSetup::get()->BULLET_STEP_SIMULATION;
         }
-        if (!wasBulletStepSimulationEnabled) {
-            ImGui::PopStyleColor();
-        }
+
+        ImGui::PopStyleColor();
 
         ImGui::SameLine();
 
         // DEBUG DRAW ON/OF
         bool wasDrawDebugEnabled = EngineSetup::get()->BULLET_DEBUG_MODE;
         if (!wasDrawDebugEnabled) {
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_Button, offColor);
+        } else {
+            ImGui::PushStyleColor(ImGuiCol_Button, onColor);
         }
+
         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "drawCollidersIcon"), ImVec2(24, 24))) {
             EngineSetup::get()->BULLET_DEBUG_MODE = !EngineSetup::get()->BULLET_DEBUG_MODE;
         }
-        if (!wasDrawDebugEnabled) {
-            ImGui::PopStyleColor();
-        }
+        ImGui::PopStyleColor();
 
         ImGui::SameLine();
-
-        /*if (EngineSetup::get()->BULLET_DEBUG_MODE) {
-            // DEBUG SELECTED ON/OF
-            bool wasDrawDebugSelectedObjectEnabled = EngineSetup::get()->BULLET_DEBUG_SELECTED_OBJECT;
-            if (!wasDrawDebugSelectedObjectEnabled) {
-                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-            }
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "targetIcon"), ImVec2(24, 24))) {
-                EngineSetup::get()->BULLET_DEBUG_SELECTED_OBJECT = !EngineSetup::get()->BULLET_DEBUG_SELECTED_OBJECT;
-            }
-            if (!wasDrawDebugSelectedObjectEnabled) {
-                ImGui::PopStyleColor();
-            }
-        }*/
     }
 
     void drawMouseOptionsIcons() const
@@ -83,16 +74,33 @@ struct GUIWidgetToolbar {
         ImGui::SameLine();
         bool wasClickSelectorEnabled = EngineSetup::get()->CLICK_SELECT_OBJECT3D;
         if (!wasClickSelectorEnabled) {
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_Button, offColor);
+        } else {
+            ImGui::PushStyleColor(ImGuiCol_Button, onColor);
         }
+
         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "clickIcon"), ImVec2(24, 24))) {
             EngineSetup::get()->CLICK_SELECT_OBJECT3D = !EngineSetup::get()->CLICK_SELECT_OBJECT3D;
         }
-        if (!wasClickSelectorEnabled) {
-            ImGui::PopStyleColor();
-        }
+
+        ImGui::PopStyleColor();
 
         ImGui::SameLine();
+
+        // MOUSE LOOK
+        ImGui::SameLine();
+        bool wasMouseLookEnabled = EngineSetup::get()->MOUSE_LOOK;
+        if (!wasMouseLookEnabled) {
+            ImGui::PushStyleColor(ImGuiCol_Button, offColor);
+        } else {
+            ImGui::PushStyleColor(ImGuiCol_Button, onColor);
+        }
+
+        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "mouseLookIcon"), ImVec2(24, 24))) {
+            EngineSetup::get()->MOUSE_LOOK = !EngineSetup::get()->MOUSE_LOOK;
+        }
+
+        ImGui::PopStyleColor();
     }
 
     void drawLUAStatusIcons(ComponentRender *render) const
@@ -108,9 +116,11 @@ struct GUIWidgetToolbar {
             }
             ImGui::SameLine();
         }
+
         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "reloadIcon"), ImVec2(24, 24))) {
             render->reloadLUAScripts();
         }
+
         ImGui::SameLine();
         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "removeIcon"), ImVec2(24, 24))) {
             SceneLoader::clearScene();

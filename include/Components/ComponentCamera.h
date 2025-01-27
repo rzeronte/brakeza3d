@@ -20,8 +20,6 @@ typedef float vec3_t[3];
 class ComponentCamera : public Component {
 private:
     Camera3D *camera;
-    bool autoScroll;
-    Vertex3D autoScrollSpeed;
 
 public:
     ComponentCamera();
@@ -37,14 +35,6 @@ public:
     void onEnd() override;
 
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
-
-    void setAutoScrollSpeed(const Vertex3D &autoScrollSpeed);
-
-    void setAutoScroll(bool autoScroll);
-
-    [[nodiscard]] Vertex3D &getAutoScrollSpeed();
-
-    [[nodiscard]] bool &isAutoScroll();
 
     [[nodiscard]] Camera3D *getCamera() const;
 };

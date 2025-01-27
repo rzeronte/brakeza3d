@@ -22,13 +22,12 @@ function onUpdate()
     end
 
 
-    yaw = yaw + (mouseMotionXRel * 0.20);
-    pitch = pitch + (mouseMotionYRel * 0.20);
+    yaw = yaw + (mouseMotionXRel * mouseSensibility);
+    pitch = pitch + (mouseMotionYRel * mouseSensibility);
 
     pitch = math.max(-89, math.min(89, pitch))
 
     camera:setRotationFromEulerAngles(pitch, -yaw, 0)
-
 
     this:setRotation(camera:getRotation():getTranspose())
 
@@ -55,11 +54,12 @@ function onUpdate()
         this:jump(Vertex3D.new(0, -jumpForce, 0)) -- saltamos
     end
 
+    velocity = forward:getScaled(speed) + right:getScaled(strafe)
     if (this:onGround()) then
-        velocity = forward:getScaled(speed) + right:getScaled(strafe)
         this:setWalkingDirection(velocity) -- movemos
+    else
+        this:setWalkingDirection(velocity:getScaled(0.25)) -- movemos
     end
-
     speed = speed * deceleration;
     strafe = strafe * deceleration;
 

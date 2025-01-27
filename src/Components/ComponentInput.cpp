@@ -82,6 +82,8 @@ void ComponentInput::handleMouse(SDL_Event *event) const
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
 
+    if (!EngineSetup::get()->MOUSE_LOOK) return;
+
     if (mouseMotion && isLeftMouseButtonPressed()) {
         if (event->type == SDL_MOUSEMOTION) {
             auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();

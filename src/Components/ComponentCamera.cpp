@@ -5,8 +5,7 @@
 
 ComponentCamera::ComponentCamera()
 :
-    camera(new Camera3D()),
-    autoScroll(false)
+    camera(new Camera3D())
 {
 }
 
@@ -23,9 +22,6 @@ void ComponentCamera::preUpdate()
 
 void ComponentCamera::onUpdate()
 {
-    if (isAutoScroll()) {
-        getCamera()->addToPosition(autoScrollSpeed);
-    }
     getCamera()->UpdateVelocity();
 }
 
@@ -47,20 +43,4 @@ void ComponentCamera::onSDLPollEvent(SDL_Event *e, bool &finish)
 Camera3D *ComponentCamera::getCamera() const
 {
     return camera;
-}
-
-Vertex3D &ComponentCamera::getAutoScrollSpeed() {
-    return autoScrollSpeed;
-}
-
-void ComponentCamera::setAutoScrollSpeed(const Vertex3D &autoScrollSpeed) {
-    ComponentCamera::autoScrollSpeed = autoScrollSpeed;
-}
-
-bool &ComponentCamera::isAutoScroll(){
-    return autoScroll;
-}
-
-void ComponentCamera::setAutoScroll(bool autoScroll) {
-    ComponentCamera::autoScroll = autoScroll;
 }

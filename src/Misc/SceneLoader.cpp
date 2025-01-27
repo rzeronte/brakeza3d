@@ -36,6 +36,12 @@ void SceneLoader::loadScene(const std::string& filename)
         EngineSetup::get()->ENGINE_TITLE = sceneName;
     }
 
+    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity") != nullptr) {
+        auto gravity = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity"));
+        EngineSetup::get()->gravity = gravity;
+        ComponentsManager::get()->getComponentCollisions()->setGravity(gravity);
+    }
+
     cJSON *adsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "ads");
 
     if (adsJSON != nullptr) {
@@ -149,6 +155,14 @@ void SceneLoader::saveScene(const std::string &filename)
     cJSON_AddStringToObject(root, "name", EngineSetup::get()->ENGINE_TITLE.c_str());
 
     auto ads = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender();
+
+    // gravity
+    cJSON *gravityJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(gravityJSON, "x", EngineSetup::get()->gravity.x);
+    cJSON_AddNumberToObject(gravityJSON, "y", EngineSetup::get()->gravity.y);
+    cJSON_AddNumberToObject(gravityJSON, "z", EngineSetup::get()->gravity.z);
+    cJSON_AddItemToObject(root, "gravity", gravityJSON);
+
     // illumination ADS
     cJSON *adsJSON = cJSON_CreateObject();
 

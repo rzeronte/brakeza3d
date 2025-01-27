@@ -314,7 +314,7 @@ void ScriptLUA::drawImGuiProperties()
                 case EngineSetup::LUADataType::FLOAT: {
                     const float rangeMin = -500000;
                     const float rangeMax = 500000;
-                    const float rangeSensibility = 0.1;
+                    const float rangeSensibility = 0.001;
 
                     float valueFloat = std::get<float>(type.value);
                     if (ImGui::DragScalar(type.name.c_str(), ImGuiDataType_Float, &valueFloat, rangeSensibility , &rangeMin, &rangeMax, "%f", 1.0f)) {
@@ -338,17 +338,14 @@ void ScriptLUA::drawImGuiProperties()
                         if (ImGui::DragScalar("Z", ImGuiDataType_Float, &valueVertex.z, range_sensibility ,&range_min, &range_max, "%f", 1.0f)) {
                             type.value = valueVertex;
                         }
-
                         ImGui::TreePop();
                     }
-
                     break;
                 }
                 default:
                     std::cerr << "Unknown data type." << std::endl;
             }
         }
-
         ImGui::TreePop();
     }
 }

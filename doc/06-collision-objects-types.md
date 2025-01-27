@@ -4,6 +4,7 @@
 - [Modos de colisión](#modos-de-colisión)
 - [Forma del colisionador](#forma-del-colisionador)
 - [Desactivar colisiones](#desactivar-colisiones)
+- [Modo de colisión KINEMATIC](#modo-de-colisión-kinematic)
 
 ---
 
@@ -46,6 +47,10 @@ Para hacerlo mediante tus scripts puedes utilizar el método ``setupGhostCollide
     brakeza:addObject3D(eye2, 'myTwoEye')
 ```
 
+En modo de colisión ``RIGIDBODY`` podemos indicarle si la geometría será **estática**. Esta será
+la única configuración posible para detectar colisiones en modelos con geometría no convexa.
+
+ 
 ## Forma del colisionador
 
 Cualquier ``Object3D`` puede trabajar con la forma de colisionador denominada `CollisionShape.SIMPLE_SHAPE`.
@@ -87,3 +92,5 @@ Podemos aplicar fuerzas a los objetos ``RIGIDBODY`` gracias a los siguientes mé
 - `applyCentralImpulse(Vertex3D f)`
 - `applyCentralForce(Vertex3D f)`
 - `applyImpulse(Vertex3D f, Vertex3D r)`
+
+## Modo de colisión KINEMATIC

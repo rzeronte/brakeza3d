@@ -107,6 +107,7 @@ struct GUIWidgetObjects3D {
                 ImGui::SetNextItemWidth(150.0f);
                 if (ImGui::Selectable(std::string("##select"+ std::to_string(i)).c_str(), selectedObjectIndex == i)) {
                     selectedObjectIndex = i;
+                    ComponentsManager::get()->getComponentRender()->setSelectedObject(gameObjects[selectedObjectIndex]);
                 }
                 ImGui::SameLine();
                 ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 15.0f);

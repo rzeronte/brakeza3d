@@ -31,11 +31,10 @@
 				"z":	0
 			},
 			"rotation":	{
-				"x":	0,
+				"x":	-0,
 				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
 			"isCollisionsEnabled":	true,
 			"collider":	{
 				"mode":	1,
@@ -66,11 +65,10 @@
 				"z":	5.3857860565185547
 			},
 			"rotation":	{
-				"x":	0,
+				"x":	-0,
 				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
@@ -102,11 +100,10 @@
 				"z":	6.0140156745910645
 			},
 			"rotation":	{
-				"x":	0,
+				"x":	-0,
 				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
@@ -122,11 +119,10 @@
 				"z":	3.9090619087219238
 			},
 			"rotation":	{
-				"x":	-92.0999984741211,
-				"y":	0.60000002384185791,
-				"z":	44.100002288818359
+				"x":	44.040756225585938,
+				"y":	-92.92181396484375,
+				"z":	-2.6324679851531982
 			},
-			"rotationFrameEnabled":	false,
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
@@ -142,11 +138,10 @@
 				"z":	-2.8381218910217285
 			},
 			"rotation":	{
-				"x":	-56.200000762939453,
-				"y":	-30.700000762939453,
-				"z":	0
+				"x":	-16.499849319458008,
+				"y":	-60.074367523193359,
+				"z":	26.2618465423584
 			},
-			"rotationFrameEnabled":	false,
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
@@ -162,11 +157,10 @@
 				"z":	-4.70191764831543
 			},
 			"rotation":	{
-				"x":	0,
-				"y":	-90,
-				"z":	0
+				"x":	-89.999992370605469,
+				"y":	180,
+				"z":	180
 			},
-			"rotationFrameEnabled":	false,
 			"isCollisionsEnabled":	true,
 			"collider":	{
 				"mode":	1,
@@ -197,11 +191,10 @@
 				"z":	1.0472557544708252
 			},
 			"rotation":	{
-				"x":	0,
+				"x":	-0,
 				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
@@ -235,50 +228,14 @@
 				"z":	1.83713698387146
 			},
 			"rotation":	{
-				"x":	0,
+				"x":	-0,
 				"y":	0,
 				"z":	0
 			},
-			"rotationFrameEnabled":	false,
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
 			"model":	"../assets/models//ChessPawn.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"capsule",
-			"scale":	1,
-			"position":	{
-				"x":	-0.11791098117828369,
-				"y":	2.181082010269165,
-				"z":	7.6849527359008789
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotationFrameEnabled":	false,
-			"isCollisionsEnabled":	true,
-			"collider":	{
-				"mode":	2,
-				"shape":	0,
-				"mass":	0,
-				"colliderStatic":	false,
-				"simpleShapeSize":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				},
-				"kinematicCapsuleSize":	{
-					"x": 0.5,
-					"y": 1.8
-				}
-			},
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//Capsule.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}],
