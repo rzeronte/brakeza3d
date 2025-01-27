@@ -2,6 +2,11 @@
   "name":	"KinematicFPSController.lua",
   "types":	[
     {
+      "name":	"mouseSensibility",
+      "type":	"float",
+      "value":	0.1
+    },
+    {
       "name":	"force",
       "type":	"float",
       "value":	0.15

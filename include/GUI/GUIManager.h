@@ -111,6 +111,7 @@ public:
         icons.addItem(iconsFolder + "freelook.png", "freelookIcon");
         icons.addItem(iconsFolder + "DrawColliders.png", "drawCollidersIcon");
         icons.addItem(iconsFolder + "target.png", "targetIcon");
+        icons.addItem(iconsFolder + "mouseIcon.png", "mouseLookIcon");
     }
 
     void drawScriptsLuaFolderFiles(const std::string& folder)
@@ -232,18 +233,22 @@ public:
         const float range_min_mouse_sensitivity = 0;
         const float range_max_mouse_sensitivity = 3;
 
-        std::string rotation_text = "Orientation##2";
-        std::string movement_text = "Keyboard##3";
-        std::string mouse_text = "Mouse##4";
-        std::string autoscrollSpeed_text = "AutoScroll##5";
 
+        if (ImGui::TreeNode("Mouse##4")) {
+            ImGui::Checkbox("Mouse Look", &EngineSetup::get()->MOUSE_LOOK);
+            if (EngineSetup::get()->MOUSE_LOOK) {
+                ImGui::DragScalar("Sens.", ImGuiDataType_Float, &EngineSetup::get()->MOUSE_SENSITIVITY,range_sensibility, &range_min_mouse_sensitivity, &range_max_mouse_sensitivity, "%f",1.0f);
+            }
+            ImGui::TreePop();
+        }
         ImGui::Separator();
 
         // position
-        Tools::ImGuiVertex3D("Position##1", "X", "Y", "Z", &camera->getPosition(), range_sensibility, -range_min, range_max);
+        Tools::ImGuiVertex3D("Position##1", "X", "Y", "Z", &camera->getPosition(), range_sensibility, -99999, 99999);
+        ImGui::Separator();
 
         // rotation
-        if (ImGui::TreeNode(rotation_text.c_str())) {
+        if (ImGui::TreeNode("Orientation##2")) {
             ImGui::DragScalar("Yaw", ImGuiDataType_Float, &camera->getYaw(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
             ImGui::DragScalar("Pitch", ImGuiDataType_Float, &camera->getPitch(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
             ImGui::DragScalar("Roll", ImGuiDataType_Float, &camera->getRoll(), range_sensibility, &range_min_yaw,&range_max_yaw, "%f", 1.0f);
@@ -252,13 +257,12 @@ public:
             ImGui::Text(("Pitch: " + std::to_string(camera->getRotation().getPitchDegree())).c_str()); ImGui::SameLine();
             ImGui::Text(("Yaw: " + std::to_string(camera->getRotation().getYawDegree())).c_str()); ImGui::SameLine();
             ImGui::Text(("Roll: " + std::to_string(camera->getRotation().getRollDegree())).c_str()); ImGui::SameLine();
-
             ImGui::TreePop();
         }
 
         ImGui::Separator();
 
-        if (ImGui::TreeNode(movement_text.c_str())) {
+        if (ImGui::TreeNode("Keyboard##3")) {
             ImGui::DragScalar("Walking", ImGuiDataType_Float, &EngineSetup::get()->WALKING_SPEED,range_sensibility, &range_min_movement, &range_max_movement, "%f", 1.0f);
             ImGui::DragScalar("Turn", ImGuiDataType_Float, &EngineSetup::get()->TURN_SPEED,range_sensibility, &range_min_movement, &range_max_movement, "%f", 1.0f);
             ImGui::DragScalar("Pitch", ImGuiDataType_Float, &EngineSetup::get()->PITCH_SPEED,range_sensibility, &range_min_movement, &range_max_movement, "%f", 1.0f);
@@ -275,31 +279,11 @@ public:
         }
         ImGui::Separator();
 
-        if (ImGui::TreeNode(mouse_text.c_str())) {
-            ImGui::DragScalar("Sens.", ImGuiDataType_Float, &EngineSetup::get()->MOUSE_SENSITIVITY,range_sensibility, &range_min_mouse_sensitivity, &range_max_mouse_sensitivity, "%f",1.0f);
-            ImGui::TreePop();
-        }
-
-        ImGui::Separator();
-
-        if (ImGui::TreeNode(autoscrollSpeed_text.c_str())) {
-            ImGui::Checkbox("AutoScroll Enabled", &ComponentsManager::get()->getComponentCamera()->isAutoScroll());
-            const float range_autoscroll_sensibility = 0.1;
-            const float range_autoscroll_min = 0;
-            const float range_autoscroll_max = 0;
-            ImGui::DragScalar("Speed X", ImGuiDataType_Float, &ComponentsManager::get()->getComponentCamera()->getAutoScrollSpeed().x,range_autoscroll_sensibility, &range_autoscroll_min, &range_autoscroll_max, "%f", 1.0f);
-            ImGui::DragScalar("Speed Y", ImGuiDataType_Float, &ComponentsManager::get()->getComponentCamera()->getAutoScrollSpeed().y,range_autoscroll_sensibility, &range_autoscroll_min, &range_autoscroll_max, "%f", 1.0f);
-            ImGui::DragScalar("Speed Z", ImGuiDataType_Float, &ComponentsManager::get()->getComponentCamera()->getAutoScrollSpeed().z,range_autoscroll_sensibility, &range_autoscroll_min, &range_autoscroll_max, "%f", 1.0f);
-            ImGui::TreePop();
-        }
-
-        ImGui::Separator();
     }
 
-    void drawScenesFiles() {
-
+    void drawScenesFiles()
+    {
         std::vector<std::string> result = Tools::getFolderFiles(EngineSetup::get()->SCENES_FOLDER, "json");
-
         std::sort( result.begin(), result.end() );
 
         for (int i = 0; i < result.size(); i++) {
@@ -776,7 +760,8 @@ public:
         return &icons;
     }
 
-    void setSelectedObjectIndex(int selectedObjectIndex) {
+    void setSelectedObjectIndex(int selectedObjectIndex)
+    {
         GUIManager::selectedObjectIndex = selectedObjectIndex;
     }
 
