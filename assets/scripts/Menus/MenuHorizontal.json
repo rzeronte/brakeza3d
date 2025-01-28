@@ -1,0 +1,22 @@
+{
+	"name":	"../assets/scripts/Menus/MenuHorizontal.lua",
+	"types":	[
+        {
+          "name":	"enabled",
+          "type":	"int",
+          "value":	0
+        },
+        {
+			"name":	"current",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"baseOffsetX",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"baseOffsetY",
+			"type":	"int",
+			"value":	0
+		}]
+}

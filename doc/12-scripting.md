@@ -94,13 +94,13 @@ Los `Object3D` disponen de un método `attachScript` que nos permitirá vincular
     end
 ```
 
-De igual forma el ``ComponentRender`` dispone de ``addLUAScript`` que te permitirá vincular
+De igual forma el ``ComponentRender`` dispone de ``addSceneLUAScript`` que te permitirá vincular
 un script a la escena:
 
 ```lua
     script = ScriptLUA.create("../../scripts/global_script.lua")
     if script ~= nil then
-        componentsManager:getComponentRender():addLUAScript(script)
+        componentsManager:getComponentRender():addSceneLUAScript(script)
     end
 ```
 

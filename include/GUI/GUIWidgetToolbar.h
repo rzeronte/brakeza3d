@@ -1,7 +1,3 @@
-//
-// Created by edu on 29/12/23.
-//
-
 #ifndef BRAKEZA3D_GUIWIDGETTOOLBAR_H
 #define BRAKEZA3D_GUIWIDGETTOOLBAR_H
 
@@ -12,13 +8,17 @@ struct GUIWidgetToolbar {
     TexturePackage &ImGuiTextures;
     ImVec4 offColor;
     ImVec4 onColor;
+    ImVec4 luaColor;
+
     explicit GUIWidgetToolbar(TexturePackage &imGuiTextures)
-        :
-        ImGuiTextures(imGuiTextures),
-        offColor(ImVec4(0.8f, 0.4f, 0.4f, 1.0f)),
-        onColor(ImVec4(0.4f, 0.8f, 0.4f, 1.0f))
-    {
-    }
+:
+    ImGuiTextures(imGuiTextures),
+    offColor(ImVec4(0.9f, 0.5f, 0.5f, 1.0f)), // Rojo suave
+    onColor(ImVec4(0.5f, 0.9f, 0.5f, 1.0f)), // Verde suave
+    luaColor(ImVec4(0.4f, 0.4f, 0.4f, 1.0f))  // LUA color: blueish tone
+{
+
+}
 
     void draw() const
     {
@@ -26,105 +26,88 @@ struct GUIWidgetToolbar {
             auto render = ComponentsManager::get()->getComponentRender();
 
             drawLUAStatusIcons(render);
-            GUIWidgetToolbar::VerticalSeparator();
+            VerticalSeparator();
+            drawLayoutIcons();
+            VerticalSeparator();
             drawMouseOptionsIcons();
-            GUIWidgetToolbar::VerticalSeparator();
+            VerticalSeparator();
             drawBulletOptionsIcons();
-
         }
         ImGui::End();
     }
 
+    void drawButton(const char* iconName, bool isActive, const ImVec4& color, std::function<void()> onClick) const
+    {
+        ImGui::PushStyleColor(ImGuiCol_Button, isActive ? color : offColor);
+        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, iconName), ImVec2(24, 24))) {
+            onClick();
+        }
+        ImGui::PopStyleColor();
+        ImGui::SameLine();
+    }
+
+    void drawFixedColorButton(const char* iconName, const ImVec4& color, std::function<void()> onClick) const
+    {
+        ImGui::PushStyleColor(ImGuiCol_Button, color);
+        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, iconName), ImVec2(24, 24))) {
+            onClick();
+        }
+        ImGui::PopStyleColor();
+        ImGui::SameLine();
+    }
+
+    void drawLayoutIcons() const
+    {
+        auto *window = ComponentsManager::get()->getComponentWindow();
+
+        drawButton("layoutDefaultIcon",
+                   window->ImGuiConfigChanged == ImGUIConfigs::DEFAULT,
+                   onColor,
+                   [&]() { window->ImGuiConfigChanged = ImGUIConfigs::DEFAULT; });
+
+        drawButton("layoutCodingIcon",
+                   window->ImGuiConfigChanged == ImGUIConfigs::CODING,
+                   onColor,
+                   [&]() { window->ImGuiConfigChanged = ImGUIConfigs::CODING; });
+
+        drawButton("layoutDesignIcon",
+                   window->ImGuiConfigChanged == ImGUIConfigs::DESIGN,
+                   onColor,
+                   [&]() { window->ImGuiConfigChanged = ImGUIConfigs::DESIGN; });
+    }
+
     void drawBulletOptionsIcons() const
     {
-        // BULLET ON/OF
-        bool wasBulletStepSimulationEnabled = EngineSetup::get()->BULLET_STEP_SIMULATION;
-        if (!wasBulletStepSimulationEnabled) {
-            ImGui::PushStyleColor(ImGuiCol_Button, offColor);
-        } else {
-            ImGui::PushStyleColor(ImGuiCol_Button, onColor);
-        }
-        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "gravityIcon"), ImVec2(24, 24))) {
-            EngineSetup::get()->BULLET_STEP_SIMULATION = !EngineSetup::get()->BULLET_STEP_SIMULATION;
-        }
+        drawButton("gravityIcon",
+                   EngineSetup::get()->BULLET_STEP_SIMULATION,
+                   onColor,
+                   [&]() { EngineSetup::get()->BULLET_STEP_SIMULATION = !EngineSetup::get()->BULLET_STEP_SIMULATION; });
 
-        ImGui::PopStyleColor();
-
-        ImGui::SameLine();
-
-        // DEBUG DRAW ON/OF
-        bool wasDrawDebugEnabled = EngineSetup::get()->BULLET_DEBUG_MODE;
-        if (!wasDrawDebugEnabled) {
-            ImGui::PushStyleColor(ImGuiCol_Button, offColor);
-        } else {
-            ImGui::PushStyleColor(ImGuiCol_Button, onColor);
-        }
-
-        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "drawCollidersIcon"), ImVec2(24, 24))) {
-            EngineSetup::get()->BULLET_DEBUG_MODE = !EngineSetup::get()->BULLET_DEBUG_MODE;
-        }
-        ImGui::PopStyleColor();
-
-        ImGui::SameLine();
+        drawButton("drawCollidersIcon",
+                   EngineSetup::get()->BULLET_DEBUG_MODE,
+                   onColor,
+                   [&]() { EngineSetup::get()->BULLET_DEBUG_MODE = !EngineSetup::get()->BULLET_DEBUG_MODE; });
     }
 
     void drawMouseOptionsIcons() const
     {
-        // CLICK OBJECTS TO SELECT ON/OFF
-        ImGui::SameLine();
-        bool wasClickSelectorEnabled = EngineSetup::get()->CLICK_SELECT_OBJECT3D;
-        if (!wasClickSelectorEnabled) {
-            ImGui::PushStyleColor(ImGuiCol_Button, offColor);
-        } else {
-            ImGui::PushStyleColor(ImGuiCol_Button, onColor);
-        }
+        drawButton("clickIcon",
+                   EngineSetup::get()->CLICK_SELECT_OBJECT3D,
+                   onColor,
+                   [&]() { EngineSetup::get()->CLICK_SELECT_OBJECT3D = !EngineSetup::get()->CLICK_SELECT_OBJECT3D; });
 
-        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "clickIcon"), ImVec2(24, 24))) {
-            EngineSetup::get()->CLICK_SELECT_OBJECT3D = !EngineSetup::get()->CLICK_SELECT_OBJECT3D;
-        }
-
-        ImGui::PopStyleColor();
-
-        ImGui::SameLine();
-
-        // MOUSE LOOK
-        ImGui::SameLine();
-        bool wasMouseLookEnabled = EngineSetup::get()->MOUSE_LOOK;
-        if (!wasMouseLookEnabled) {
-            ImGui::PushStyleColor(ImGuiCol_Button, offColor);
-        } else {
-            ImGui::PushStyleColor(ImGuiCol_Button, onColor);
-        }
-
-        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "mouseLookIcon"), ImVec2(24, 24))) {
-            EngineSetup::get()->MOUSE_LOOK = !EngineSetup::get()->MOUSE_LOOK;
-        }
-
-        ImGui::PopStyleColor();
+        drawButton("mouseLookIcon",
+                   EngineSetup::get()->MOUSE_LOOK,
+                   onColor,
+                   [&]() { EngineSetup::get()->MOUSE_LOOK = !EngineSetup::get()->MOUSE_LOOK; });
     }
 
     void drawLUAStatusIcons(ComponentRender *render) const
     {
-        if (render->getStateLUAScripts() == EngineSetup::LUA_STOP) {
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "playIcon"), ImVec2(24, 24))) {
-                render->playLUAScripts();
-            }
-            ImGui::SameLine();
-        } else {
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "stopIcon"), ImVec2(24, 24))) {
-                render->stopLUAScripts();
-            }
-            ImGui::SameLine();
-        }
-
-        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "reloadIcon"), ImVec2(24, 24))) {
-            render->reloadLUAScripts();
-        }
-
-        ImGui::SameLine();
-        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "removeIcon"), ImVec2(24, 24))) {
-            SceneLoader::clearScene();
-        }
+        drawFixedColorButton("playIcon", luaColor, [&]() { render->playLUAScripts(); });
+        drawFixedColorButton("stopIcon", luaColor, [&]() { render->stopLUAScripts(); });
+        drawFixedColorButton("reloadIcon", luaColor, [&]() { render->reloadLUAScripts(); });
+        drawFixedColorButton("removeIcon", luaColor, [&]() { SceneLoader::clearScene(); });
     }
 
     static void VerticalSeparator()
@@ -135,4 +118,5 @@ struct GUIWidgetToolbar {
         ImGui::SameLine();
     }
 };
+
 #endif //BRAKEZA3D_GUIWIDGETTOOLBAR_H
