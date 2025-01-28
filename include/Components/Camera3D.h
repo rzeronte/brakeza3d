@@ -34,19 +34,11 @@ public:
 
     void Yaw(float newYaw);
 
-    void PitchUp();
-
-    void PitchDown();
-
     void MoveVertical(float v);
 
     void MoveForward(float v);
 
     void MoveBackward(float v);
-
-    void TurnRight();
-
-    void TurnLeft();
 
     void StrafeRight();
 
@@ -70,9 +62,13 @@ public:
     float yaw = 0;
     float roll = 0;
 
-    [[nodiscard]] glm::mat4 getViewMatrix();
+    M3 getM3ViewMatrix();
 
-    [[nodiscard]] static glm::mat4 getProjectionMatrix() ;
+    static M3 getM3ProjectionMatrix();
+
+    [[nodiscard]] glm::mat4 getGLMMat4ViewMatrix();
+
+    [[nodiscard]] static glm::mat4 getGLMMat4ProjectionMatrix() ;
 };
 
 

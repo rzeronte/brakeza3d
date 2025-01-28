@@ -21,16 +21,6 @@ void Camera3D::Yaw(float newYaw) {
     this->yaw -= newYaw * EngineSetup::get()->MOUSE_SENSITIVITY;
 }
 
-void Camera3D::PitchUp() {
-    pitch += EngineSetup::get()->PITCH_SPEED;
-    limitPitch();
-}
-
-void Camera3D::PitchDown() {
-    pitch -= EngineSetup::get()->PITCH_SPEED;
-    limitPitch();
-}
-
 void Camera3D::MoveForward(float v) {
     speed += v;
 }
@@ -44,24 +34,19 @@ void Camera3D::MoveBackward(float v) {
     speed -= v;
 }
 
-void Camera3D::TurnRight() {
-    yaw -= EngineSetup::get()->TURN_SPEED;
-}
-
-void Camera3D::TurnLeft() {
-    yaw += EngineSetup::get()->TURN_SPEED;
-}
-
-void Camera3D::StrafeRight() {
+void Camera3D::StrafeRight()
+{
     strafe += EngineSetup::get()->STRAFE_SPEED;
 }
 
-void Camera3D::StrafeLeft() {
+void Camera3D::StrafeLeft()
+{
     strafe -= EngineSetup::get()->STRAFE_SPEED;
 }
 
-void Camera3D::UpdatePositionForVelocity() {
-    this->addToPosition(this->velocity.getComponent());
+void Camera3D::UpdatePositionForVelocity()
+{
+    this->addToPosition(velocity.getComponent());
 }
 
 void Camera3D::UpdateVelocity()
@@ -122,7 +107,7 @@ Vector3D &Camera3D::getVelocity() {
     return velocity;
 }
 
-glm::mat4 Camera3D::getViewMatrix()
+glm::mat4 Camera3D::getGLMMat4ViewMatrix()
 {
     Vertex3D forward = getRotation().getTranspose() * Vertex3D(0, 0, 1);
 
@@ -136,8 +121,22 @@ glm::mat4 Camera3D::getViewMatrix()
     return ViewMatrix;
 }
 
-glm::mat4 Camera3D::getProjectionMatrix()
+glm::mat4 Camera3D::getGLMMat4ProjectionMatrix()
 {
     return glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE);
+}
+
+M3 Camera3D::getM3ViewMatrix()
+{
+    auto m = glm::mat3(Camera3D::getGLMMat4ViewMatrix());
+
+    return M3::fromMat3GLM(m);
+}
+
+M3 Camera3D::getM3ProjectionMatrix()
+{
+    auto m = glm::mat3(Camera3D::getGLMMat4ProjectionMatrix());
+
+    return M3::fromMat3GLM(m);
 }
 

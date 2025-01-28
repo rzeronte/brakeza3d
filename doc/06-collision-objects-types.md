@@ -47,9 +47,15 @@ Para hacerlo mediante tus scripts puedes utilizar el método ``setupGhostCollide
     brakeza:addObject3D(eye2, 'myTwoEye')
 ```
 
-En modo de colisión ``RIGIDBODY`` podemos indicarle si la geometría será **estática**. Esta será
-la única configuración posible para detectar colisiones en modelos con geometría no convexa.
+En modo de colisión ``RIGIDBODY`` podemos indicarle si la geometría será **estática**. Los elementos estáticos no
+se moverán (su masa es automáticamente 0). Es el único modo de colisión permitido para geometrías no convexas.
 
+```lua
+    eye2 = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+    eye2:setColliderStatic(true) -- estático!
+    eye2:setupRigidBodyCollider(CollisionShape.SIMPLE_SHAPE); -- RigidBody
+    brakeza:addObject3D(eye2, 'myTwoEye')
+```
  
 ## Forma del colisionador
 

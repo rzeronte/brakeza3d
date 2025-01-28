@@ -80,8 +80,8 @@ void ShaderOpenGLRender::render(
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     auto cameraPosition = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition().toGLM();
 
-    setMat4Uniform(matrixProjectionUniform,  Camera3D::getProjectionMatrix());
-    setMat4Uniform(matrixViewUniform, camera->getViewMatrix());
+    setMat4Uniform(matrixProjectionUniform, Camera3D::getGLMMat4ProjectionMatrix());
+    setMat4Uniform(matrixViewUniform, camera->getGLMMat4ViewMatrix());
     setMat4Uniform(matrixModelUniform, o->getModelMatrix());
 
     setVec3Uniform(viewPositionUniform, cameraPosition);
@@ -129,7 +129,6 @@ void ShaderOpenGLRender::render(
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
-
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

@@ -8,6 +8,7 @@
 - [Variables globales](#variables-globales)
 - [Variables locales](#variables-locales)
 - [Gestión de escenas](#gestión-de-escenas)
+- [DeltaTime](#deltatime)
 - [Ejemplos en código](#ejemplos-en-codigo)
 
 ---
@@ -196,6 +197,21 @@ function onStart()
     componentsManager:getComponentRender():getSceneLoader():saveScene("../scenes/scene_example.json")
     ...
 end
+```
+
+---
+
+### Deltatime
+
+El `deltatime` es el tiempo transcurrido en renderizar cada frame. Este es variable y lo necesitarás para un montón
+de cosas.
+
+Puedes obtenerlo desde tus scripts LUAde la siguiente manera:
+
+```lua
+     print("DeltaTime: " .. brakeza:getDeltaTime()) -- delta en segundos
+     print("DeltaTimeInMicro: " .. brakeza:getDeltaTimeMicro()) -- delta en microsegundos
+     print("Execution Time: " .. brakeza:getExecutionTime()) -- tiempo total de ejecución
 ```
 
 ---

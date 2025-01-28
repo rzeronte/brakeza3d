@@ -43,8 +43,8 @@ void ShaderOpenGLLine3D::render(Vertex3D from, Vertex3D to, GLuint framebuffer)
 
     glUseProgram(programID);
 
-    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix();
-    glm::mat4 ProjectionMatrix = Camera3D::getProjectionMatrix();
+    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getGLMMat4ViewMatrix();
+    glm::mat4 ProjectionMatrix = Camera3D::getGLMMat4ProjectionMatrix();
 
     setMat4Uniform(matrixProjectionUniform, ProjectionMatrix);
     setMat4Uniform(matrixViewUniform, ViewMatrix);

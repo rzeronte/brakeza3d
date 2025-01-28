@@ -23,7 +23,8 @@ Mesh3D::Mesh3D()
 void Mesh3D::updateBoundingBox()
 {
     // Obtener la matriz de modelo-vista-proyección
-    glm::mat4 mvpMatrix = Camera3D::getProjectionMatrix() * ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix() * getModelMatrix();
+    glm::mat4 mvpMatrix = Camera3D::getGLMMat4ProjectionMatrix() *
+                          ComponentsManager::get()->getComponentCamera()->getCamera()->getGLMMat4ViewMatrix() * getModelMatrix();
 
     // Inicializar los valores extremos
     float maxX = -FLT_MAX, minX = FLT_MAX, maxY = -FLT_MAX, minY = FLT_MAX, maxZ = -FLT_MAX, minZ = FLT_MAX;

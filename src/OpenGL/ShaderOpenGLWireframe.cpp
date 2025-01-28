@@ -30,8 +30,8 @@ void ShaderOpenGLWireframe::render(
 
     glDisable(GL_BLEND);
     glLineWidth(1.0f);
-    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix();
-    glm::mat4 ProjectionMatrix = Camera3D::getProjectionMatrix();
+    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getGLMMat4ViewMatrix();
+    glm::mat4 ProjectionMatrix = Camera3D::getGLMMat4ProjectionMatrix();
 
     setMat4("projection", ProjectionMatrix);
     setMat4("view", ViewMatrix);

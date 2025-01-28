@@ -86,6 +86,7 @@ void LUAIntegration(sol::state &lua)
             "setCollisionsEnabled", &Object3D::setCollisionsEnabled,
             "setupGhostCollider", &Object3D::setupGhostCollider,
             "setupRigidBodyCollider", &Object3D::setupRigidBodyCollider,
+            "setColliderStatic", &Object3D::setColliderStatic,
             "applyCentralForce", &Object3D::applyCentralForce,
             "applyCentralImpulse", &Object3D::applyCentralImpulse,
             "applyImpulse", &Object3D::applyImpulse,
@@ -165,9 +166,9 @@ void LUAIntegration(sol::state &lua)
                                         "getComponentInput", &ComponentsManager::getComponentInput
     );
 
-
     lua.new_usertype<Brakeza3D>("Brakeza3D",
                                 "getDeltaTime", &Brakeza3D::getDeltaTime,
+                                "getDeltaTimeMicro",  &Brakeza3D::getDeltaTimeMicro,
                                 "getExecutionTime", &Brakeza3D::getExecutionTime,
                                 "uniqueObjectLabel", &Brakeza3D::uniqueObjectLabel,
                                 "LoadDemo", &Brakeza3D::LoadDemo,
@@ -178,8 +179,8 @@ void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<Camera3D>("Camera3D",
                                sol::base_classes, sol::bases<Object3D>(),
-                                "getViewMatrix",  &Camera3D::getViewMatrix,
-                               "getProjectionMatrix",  &Camera3D::getProjectionMatrix,
+                                "getM3ViewMatrix", &Camera3D::getM3ViewMatrix,
+                               "getM3ProjectionMatrix", &Camera3D::getM3ProjectionMatrix,
                                "setRotationFromEulerAngles", &Camera3D::setRotationFromEulerAngles
     );
 

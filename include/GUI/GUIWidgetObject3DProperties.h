@@ -44,8 +44,8 @@ struct GUIWidgetObject3DProperties {
                 o,
                 operation,
                 o->getModelMatrix(),
-                ComponentsManager::get()->getComponentCamera()->getCamera()->getViewMatrix(),
-                Camera3D::getProjectionMatrix()
+                ComponentsManager::get()->getComponentCamera()->getCamera()->getGLMMat4ViewMatrix(),
+                Camera3D::getGLMMat4ProjectionMatrix()
             );
         }
 
