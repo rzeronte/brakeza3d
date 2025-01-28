@@ -42,7 +42,6 @@ private:
     SDL_Texture *screenTexture;
 
     TTF_Font *fontDefault;
-    TTF_Font *fontAlternative;
 
     GLuint sceneFramebuffer;
     GLuint depthTexture;
@@ -102,8 +101,6 @@ public:
     [[nodiscard]] SDL_Renderer *getRenderer() const;
 
     [[nodiscard]] TTF_Font *getFontDefault();
-
-    TTF_Font *getFontAlternative();
 
     SDL_Surface *applicationIcon;
 

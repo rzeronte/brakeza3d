@@ -16,6 +16,21 @@ TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font)
 {
 }
 
+TextWriter* TextWriter::create(const std::string& fontFile)
+{
+    if (!Tools::fileExists(fontFile.c_str())) {
+        Logging::Message("[TextWriter] Cannot open font file: %s", fontFile.c_str());
+
+        return nullptr;
+    }
+
+    return new TextWriter(
+        ComponentsManager::get()->getComponentWindow()->getRenderer(),
+        TTF_OpenFont(fontFile.c_str(), 35)
+    );
+}
+
+
 void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Color c)
 {
     auto surfaceTTF = TTF_RenderText_Blended(font, text, c.toSDL());

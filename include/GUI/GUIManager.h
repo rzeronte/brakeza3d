@@ -198,7 +198,7 @@ public:
                 auto type = &scriptEditableManager.script->dataTypes[i];
 
                 ImGui::TableSetColumnIndex(0);
-                ImGui::Text("%s", type->name.c_str());
+                ImGui::Text("%d) %s", i + 1, type->name.c_str());
 
                 ImGui::TableSetColumnIndex(1);
                 ImGui::Text("%s", type->type.c_str());
