@@ -4,6 +4,7 @@
 - [Image2DAnimation](#image2danimation)
 - [BillboardAnimation](#billboardanimation)
 - [BillboardAnimation8Directions](#billboardanimation8directions)
+- [Textos en pantalla](#textos-en-pantalla)
 
 ---
 
@@ -91,3 +92,35 @@ Así sucesivamente, si nuestra animación tiene más frames.
 ```
 
 ---
+
+## Textos en pantalla
+
+Brakeza3D permite escribir textos en pantalla a través de tus scripts LUA mediante el 
+objeto `TextWriter`.
+
+Necesitarás disponer de una fuente, en formato `TTF`, crear el objeto y ya podrás utilizarlo.
+
+Sus métodos son:
+
+- `writeTextTTF(x, y, width, height, text, Color)`: Dibuja texto en la posición `x,y` de tamaño `widh*height`.
+- `writeTextTTFAutoSize(x, y, text, Color, sizeRatio)`: Dibuja texto en la posición `x,y`, calculando dimensiones automáticamente. 
+- `writeTextTTFMiddleScreen(text, Color, sizeRatio)`: Dibuja texto centrado en pantalla.
+- `writeTTFCenterHorizontal(y, text, Color, sizeRatio)`: Dibuja texto centrado horizontalmente.
+
+```lua
+function onStart()
+    textWriter = TextWriter.create("../assets/fonts/Courier.ttf")
+end
+
+function onUpdate()
+     textWriter:writeTTFCenterHorizontal(
+        15,
+        "Centrado horizontal!",
+        Color.new(0, 1, 0, 1),
+        1.5
+    )
+
+    textWriter:writeTextTTF(100, 100, 100, 100, "Hola!", Color.new(1, 0, 0, 1))
+end
+
+```

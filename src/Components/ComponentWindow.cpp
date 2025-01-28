@@ -2,7 +2,6 @@
 
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
-#include <glm/gtc/type_ptr.hpp>
 #include "../../include/Components/ComponentWindow.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/OpenGL/ShaderOpenGLImage.h"
@@ -152,22 +151,12 @@ void ComponentWindow::initFontsTTF()
         exit(-1);
     }
 
-    std::string pathFont = SETUP->FONTS_FOLDER + "TheLastCall-Regular.ttf";
-    Logging::Message("Loading FONT: %s", pathFont.c_str());
+    std::string pathFont = SETUP->FONTS_FOLDER + "TroubleFont.ttf";
+    Logging::Message("Loading default TTF: %s", pathFont.c_str());
 
     fontDefault = TTF_OpenFont(pathFont.c_str(), 35);
 
     if (!fontDefault)  {
-        Logging::Message(TTF_GetError());
-        exit(-1);
-    }
-
-    std::string pathAlternativeFont = SETUP->FONTS_FOLDER + "DisposableDroidBB.ttf";
-    Logging::Message("Loading FONT: %s", pathAlternativeFont.c_str());
-
-    fontAlternative = TTF_OpenFont(pathAlternativeFont.c_str(), 65);
-
-    if (!fontAlternative)  {
         Logging::Message(TTF_GetError());
         exit(-1);
     }
@@ -183,10 +172,6 @@ SDL_Renderer *ComponentWindow::getRenderer() const {
 
 TTF_Font *ComponentWindow::getFontDefault() {
     return fontDefault;
-}
-
-TTF_Font *ComponentWindow::getFontAlternative() {
-    return fontAlternative;
 }
 
 ShaderOpenGLImage *ComponentWindow::getShaderOGLImage() const {

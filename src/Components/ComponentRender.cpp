@@ -28,7 +28,10 @@ void ComponentRender::onStart()
 
     initTiles();
 
-    textWriter = new TextWriter(ComponentsManager::get()->getComponentWindow()->getRenderer(), ComponentsManager::get()->getComponentWindow()->getFontDefault());
+    textWriter = new TextWriter(
+        ComponentsManager::get()->getComponentWindow()->getRenderer(),
+        ComponentsManager::get()->getComponentWindow()->getFontDefault()
+    );
 }
 
 void ComponentRender::preUpdate()
@@ -63,11 +66,10 @@ void ComponentRender::onUpdate()
     }
 
     if (SETUP->DRAW_FPS) {
-        textWriter->writeTTFCenterHorizontal(
-            15,
+        textWriter->writeTextTTFMiddleScreen(
             std::to_string(getFps()).c_str(),
             Color::green(),
-            0.5
+            2.5
         );
     }
 }
@@ -104,6 +106,8 @@ void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish)
 void ComponentRender::updateSelectedObject3D()
 {
     auto input = ComponentsManager::get()->getComponentInput();
+
+    if (!input->isEnabled()) return;
 
     if (input->isClickLeft() && !input->isMouseMotion()) {
         selectedObject = getObject3DFromClickPoint(

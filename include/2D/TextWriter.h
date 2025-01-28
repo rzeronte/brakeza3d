@@ -7,16 +7,18 @@
 
 #include <vector>
 #include <SDL2/SDL_ttf.h>
+#include <string>
 #include "../Misc/Color.h"
 
 class TextWriter {
 private:
     SDL_Renderer *renderer;
-
     TTF_Font *font;
     float alpha;
 public:
     TextWriter(SDL_Renderer *renderer, TTF_Font *font);
+
+    static TextWriter* create(const std::string& fontFile);
 
     virtual ~TextWriter();
 
@@ -34,7 +36,7 @@ public:
 
     void setFont(TTF_Font *font);
 
-    TTF_Font *getFont() const;
+    [[nodiscard]] TTF_Font *getFont() const;
 };
 
 

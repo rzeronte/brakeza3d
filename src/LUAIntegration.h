@@ -365,6 +365,20 @@ void LUAIntegration(sol::state &lua)
                  "SIMPLE_SHAPE", SIMPLE_SHAPE,
                  "TRIANGLE_MESH_SHAPE", TRIANGLE_MESH_SHAPE
     );
+
+    lua.new_usertype<TextWriter>(
+            "TextWriter",
+            "writeTextTTFAutoSize", &TextWriter::writeTextTTFAutoSize,
+            "writeTextTTF", &TextWriter::writeTextTTF,
+            "writeTextTTFMiddleScreen", &TextWriter::writeTextTTFMiddleScreen,
+            "writeTTFCenterHorizontal", &TextWriter::writeTTFCenterHorizontal,
+            "getAlpha", &TextWriter::getAlpha,
+            "setAlpha", &TextWriter::setAlpha,
+            "setFont", &TextWriter::setFont,
+            "create", sol::factories([](const std::string& fontFile) {
+                return TextWriter::create(fontFile);
+            })
+    );
 }
 
 #endif //BRAKEZA3D_LUAINTEGRATION_H
