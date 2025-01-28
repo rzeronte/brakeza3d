@@ -17,6 +17,7 @@
 #include "../Misc/SharedLUAContext.h"
 #include "../Misc/SceneLoader.h"
 #include "../OpenGL/ShaderOpenGLCustom.h"
+#include "../Misc/ProjectLoader.h"
 
 class ComponentRender : public Component {
 private:
@@ -39,8 +40,10 @@ private:
 
     EngineSetup::LuaStateScripts stateScripts;
     std::vector<ScriptLUA*> scripts;
+    std::vector<ScriptLUA*> projectScripts;
     TextWriter *textWriter;
     SceneLoader sceneLoader;
+    ProjectLoader projectLoader;
 
     bool sceneShadersEnabled;
     std::vector<ShaderOpenGLCustom*> sceneShaders;
@@ -90,21 +93,29 @@ public:
 
     void reloadLUAScripts();
 
-    std::vector<ScriptLUA*> &getLUAScripts();
+    std::vector<ScriptLUA*> &getSceneLUAScripts();
 
-    void addLUAScript(ScriptLUA *script);
+    std::vector<ScriptLUA*> &getProjectLUAScripts();
+
+    void addSceneLUAScript(ScriptLUA *script);
+
+    void addProjectLUAScript(ScriptLUA *script);
 
     LUADataValue getGlobalScriptVar(const char *scriptName, const char *varName);
 
     void reloadScriptGlobals();
 
-    void removeScript(ScriptLUA *script);
+    void removeSceneScript(ScriptLUA *script);
+
+    void removeProjectScript(ScriptLUA *script);
 
     void onStartScripts();
 
     void runScripts();
 
     SceneLoader &getSceneLoader();
+
+    ProjectLoader &getProjectLoader();
 
     std::vector<ShaderOpenGLCustom *> &getSceneShaders();
 

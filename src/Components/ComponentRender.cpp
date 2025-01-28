@@ -85,15 +85,10 @@ void ComponentRender::postUpdate()
             o->postUpdate();
         }
     }
-
-    for (auto o: sceneObjects) {
-        if (o->isEnabled()){
-            o->postUpdate();
-        }
-    }
 }
 
-void ComponentRender::onEnd() {
+void ComponentRender::onEnd()
+{
 }
 
 void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish)
@@ -285,7 +280,8 @@ Object3D *ComponentRender::getSelectedObject() const
     return selectedObject;
 }
 
-void ComponentRender::setSelectedObject(Object3D *o) {
+void ComponentRender::setSelectedObject(Object3D *o)
+{
     this->selectedObject = o;
 }
 
@@ -302,7 +298,8 @@ ComponentRender::~ComponentRender()
     delete textWriter;
 }
 
-EngineSetup::LuaStateScripts ComponentRender::getStateLUAScripts() {
+EngineSetup::LuaStateScripts ComponentRender::getStateLUAScripts()
+{
     return stateScripts;
 }
 
@@ -333,8 +330,12 @@ void ComponentRender::reloadLUAScripts()
     auto &lua = LUAManager::get()->getLua();
     lua.collect_garbage();
 
-    for (auto script : scripts) {
-        script->reloadScriptCode();
+    for (auto s : projectScripts) {
+        s->reloadScriptCode();
+    }
+
+    for (auto s : scripts) {
+        s->reloadScriptCode();
     }
 
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
@@ -346,9 +347,14 @@ void ComponentRender::reloadLUAScripts()
     reloadScriptGlobals();
 }
 
-std::vector<ScriptLUA*> &ComponentRender::getLUAScripts()
+std::vector<ScriptLUA*> &ComponentRender::getSceneLUAScripts()
 {
     return scripts;
+}
+
+std::vector<ScriptLUA*> &ComponentRender::getProjectLUAScripts()
+{
+    return projectScripts;
 }
 
 LUADataValue ComponentRender::getGlobalScriptVar(const char *scriptName, const char *varName)
@@ -366,7 +372,13 @@ LUADataValue ComponentRender::getGlobalScriptVar(const char *scriptName, const c
     return LUADataValue(0);
 }
 
-void ComponentRender::addLUAScript(ScriptLUA *script)
+void ComponentRender::addProjectLUAScript(ScriptLUA *script)
+{
+    projectScripts.push_back(script);
+    reloadScriptGlobals();
+}
+
+void ComponentRender::addSceneLUAScript(ScriptLUA *script)
 {
     scripts.push_back(script);
     reloadScriptGlobals();
@@ -374,21 +386,29 @@ void ComponentRender::addLUAScript(ScriptLUA *script)
 
 void ComponentRender::runScripts()
 {
-    for(auto script : scripts) {
+    for (auto script : projectScripts) {
+        script->runGlobal("onUpdate");
+    }
+
+    for (auto script : scripts) {
         script->runGlobal("onUpdate");
     }
 }
 
 void ComponentRender::reloadScriptGlobals()
 {
+    for (auto script : projectScripts) {
+        script->reloadGlobals();
+    }
+
     for (auto script : scripts) {
         script->reloadGlobals();
     }
 }
 
-void ComponentRender::removeScript(ScriptLUA *script)
+void ComponentRender::removeSceneScript(ScriptLUA *script)
 {
-    Logging::Message("Removing game script %s", script->scriptFilename.c_str());
+    Logging::Message("Removing SCENE script %s", script->scriptFilename.c_str());
 
     for (auto it = scripts.begin(); it != scripts.end(); ++it) {
         if ((*it)->scriptFilename == script->scriptFilename) {
@@ -399,22 +419,46 @@ void ComponentRender::removeScript(ScriptLUA *script)
     }
 }
 
+void ComponentRender::removeProjectScript(ScriptLUA *script)
+{
+    Logging::Message("Removing PROJECT script %s", script->scriptFilename.c_str());
+
+    for (auto it = projectScripts.begin(); it != projectScripts.end(); ++it) {
+        if ((*it)->scriptFilename == script->scriptFilename) {
+            delete *it;
+            projectScripts.erase(it);
+            return;
+        }
+    }
+}
+
 void ComponentRender::onStartScripts()
 {
-    Logging::Message("Executing OnStart for project scripts...");
+    Logging::Message("Executing OnStart for PROJECT scripts...");
+    for (auto script : projectScripts) {
+        script->runGlobal("onStart");
+    }
 
+    Logging::Message("Executing OnStart for SCENE scripts...");
     for (auto script : scripts) {
         script->runGlobal("onStart");
     }
 
+    Logging::Message("Executing OnStart for OBJECT scripts...");
     auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
     for (auto object : sceneObjects) {
         object->runStartScripts();
     }
 }
 
-SceneLoader &ComponentRender::getSceneLoader() {
+SceneLoader &ComponentRender::getSceneLoader()
+{
     return sceneLoader;
+}
+
+ProjectLoader &ComponentRender::getProjectLoader()
+{
+    return projectLoader;
 }
 
 std::vector<ShaderOpenGLCustom *> &ComponentRender::getSceneShaders() {

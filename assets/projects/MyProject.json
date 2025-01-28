@@ -1,0 +1,6 @@
+{
+	"name":	"ese",
+	"scripts":	[{
+			"name":	"../assets/scripts/Project.lua"
+		}]
+}

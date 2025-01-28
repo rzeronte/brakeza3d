@@ -114,6 +114,9 @@ public:
         icons.addItem(iconsFolder + "DrawColliders.png", "drawCollidersIcon");
         icons.addItem(iconsFolder + "target.png", "targetIcon");
         icons.addItem(iconsFolder + "mouseIcon.png", "mouseLookIcon");
+        icons.addItem(iconsFolder + "layoutDefault.png", "layoutDefaultIcon");
+        icons.addItem(iconsFolder + "layoutCoding.png", "layoutCodingIcon");
+        icons.addItem(iconsFolder + "layoutDesign.png", "layoutDesignIcon");
     }
 
     void drawScriptsLuaFolderFiles(const std::string& folder)
@@ -280,7 +283,33 @@ public:
             ImGui::TreePop();
         }
         ImGui::Separator();
+    }
 
+    void drawProjectsFiles()
+    {
+        std::vector<std::string> result = Tools::getFolderFiles(EngineSetup::get()->PROJECTS_FOLDER, "json");
+        std::sort( result.begin(), result.end() );
+
+        for (int i = 0; i < result.size(); i++) {
+            const auto& file = result[i];
+            auto title = std::to_string(i + 1) + ") " + file;
+            if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
+                ImGui::PushID(i);
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "playIcon"), ImVec2(14, 14))) {
+                    ComponentsManager::get()->getComponentRender()->getProjectLoader().loadProject(EngineSetup::get()->PROJECTS_FOLDER + file);
+                }
+
+                ImGui::SameLine();
+
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "saveIcon"), ImVec2(14, 14))) {
+                    ProjectLoader::saveProject(file);
+                }
+                ImGui::SameLine();
+
+                ImGui::Text("%s", title.c_str());
+                ImGui::PopID();
+            }
+        }
     }
 
     void drawScenesFiles()
@@ -601,7 +630,7 @@ public:
         if (ImGui::Begin("Global variables")) {
             static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
             if (ImGui::BeginTable("GlobalVariablesTable", 2, flags)) {
-                auto scripts = ComponentsManager::get()->getComponentRender()->getLUAScripts();
+                auto scripts = ComponentsManager::get()->getComponentRender()->getSceneLUAScripts();
                 auto &lua = LUAManager::get()->getLua();
 
                 for (auto currentScript : scripts) {
@@ -660,6 +689,11 @@ public:
 
         if (ImGui::Begin("Mesh3D Shaders")) {
             drawMesh3DShaders();
+        }
+        ImGui::End();
+
+        if (ImGui::Begin("Projects")) {
+            drawProjectsFiles();
         }
         ImGui::End();
 
