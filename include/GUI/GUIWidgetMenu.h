@@ -26,9 +26,8 @@ struct GUIWidgetMenu
     {
     }
 
-    void draw(bool &finish)
+    void draw(bool &finish, bool &show_about_window)
     {
-        bool show_about_window = false;
 
         const float range_sensibility = 0.75f;
         const float range_test_sensibility = 0.1;
@@ -47,18 +46,37 @@ struct GUIWidgetMenu
         const int range_min_framerate_distance = 0;
         const int range_max_framerate_distance = 500;
 
+        if (show_about_window) {
+            ImGui::OpenPopup("About Brakeza3D");
+        }
+
+        if (ImGui::BeginPopupModal("About Brakeza3D", &show_about_window)) {
+            ImGui::Text("Welcome to Brakeza3D!");
+            ImGui::Text((EngineSetup::get()->ENGINE_VERSION).c_str());
+            ImGui::Text("By Eduardo Rodríguez Álvarez <eduardo@brakeza.com>");
+            ImGui::Text("Website: https://brakeza.com");
+            ImGui::Text("GitHub: https://github.com/rzeronte/brakeza3d");
+            if (ImGui::Button("Close")) {
+                ImGui::CloseCurrentPopup();
+                show_about_window = false;
+            }
+            ImGui::EndPopup();
+        }
+
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("Brakeza3D")) {
-                if (ImGui::MenuItem("About Brakeza3D", "CTRL+I")) show_about_window = true;
+                if (ImGui::MenuItem("About Brakeza3D")) {
+                    show_about_window = true;
+                }
                 ImGui::Separator();
-                if (ImGui::MenuItem("Exit", "CTRL+W")) finish = true;
+                if (ImGui::MenuItem("Exit")) finish = true;
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Add object")) {
 
                 ImGui::Image(icon("objectIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
-                if (ImGui::MenuItem("Object3D (Empty)", "CTRL+O")) {
+                if (ImGui::MenuItem("Object3D (Empty)")) {
                     SceneLoader::createObjectInScene();
                 }
 
@@ -66,7 +84,7 @@ struct GUIWidgetMenu
 
                 ImGui::Image(icon("particlesIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
-                if (ImGui::MenuItem("ParticleEmitter", "CTRL+x")) {
+                if (ImGui::MenuItem("ParticleEmitter")) {
                     SceneLoader::createParticleEmitterInScene();
                     ImGui::EndMenu();
                 }
@@ -112,7 +130,7 @@ struct GUIWidgetMenu
                     }
                     ImGui::Image(icon("BillboardAnimation8DirectionsIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
-                    if (ImGui::MenuItem("Billboard 8-Directions", "CTRL+L")) {
+                    if (ImGui::MenuItem("Billboard 8-Directions")) {
                         SceneLoader::createBillboardAnimation8Directions();
                         ImGui::EndMenu();
                     }
@@ -141,13 +159,13 @@ struct GUIWidgetMenu
                 if (ImGui::BeginMenu("Light Objects")) {
                     ImGui::Image(icon("lightIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
-                    if (ImGui::MenuItem("PointLight", "CTRL+O")) {
+                    if (ImGui::MenuItem("PointLight")) {
                         SceneLoader::createPointLight3DInScene();
                         Logging::Message("Add PointLight");
                     }
                     ImGui::Image(icon("spotLightIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
-                    if (ImGui::MenuItem("SpotLight", "CTRL+O")) {
+                    if (ImGui::MenuItem("SpotLight")) {
                         SceneLoader::createSpotLight3DInScene();
                         Logging::Message("Add SpotLight");
                     }
@@ -212,22 +230,6 @@ struct GUIWidgetMenu
                 if (ImGui::IsItemEdited()) {
                     Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) EngineSetup::get()->SOUND_CHANNEL_GLOBAL);
                 }
-
-                /*ImGui::DragScalar("Player vol.", ImGuiDataType_Float, &EngineSetup::get()->SOUND_VOLUME_PLAYER,range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) {
-                    Mix_Volume(EngineSetup::SoundChannels::SND_PLAYER, EngineSetup::get()->SOUND_VOLUME_PLAYER);
-                }
-
-                ImGui::DragScalar("Enemies vol.", ImGuiDataType_Float, &EngineSetup::get()->SOUND_VOLUME_ENEMIES,range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) {
-                    Mix_Volume(EngineSetup::SoundChannels::SND_ENEMIES, EngineSetup::get()->SOUND_VOLUME_ENEMIES);
-                }
-
-                ImGui::DragScalar("Environment vol.", ImGuiDataType_Float,&EngineSetup::get()->SOUND_VOLUME_ENVIRONMENT, range_sensibility_volume,&range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) {
-                    Mix_Volume(EngineSetup::SoundChannels::SND_ENVIRONMENT,EngineSetup::get()->SOUND_VOLUME_ENVIRONMENT);
-                }*/
-
                 ImGui::EndMenu();
             }
 
@@ -267,17 +269,17 @@ struct GUIWidgetMenu
             }
 
             if (ImGui::BeginMenu("Layout")) {
-                if (ImGui::MenuItem("Default", "CTRL+D")) {
+                if (ImGui::MenuItem("Default")) {
                     ComponentsManager::get()->getComponentWindow()->ImGuiConfigChanged = ImGUIConfigs::DEFAULT;
                 }
-                if (ImGui::MenuItem("Coding", "CTRL+C")) {
+                if (ImGui::MenuItem("Coding")) {
                     ComponentsManager::get()->getComponentWindow()->ImGuiConfigChanged = ImGUIConfigs::CODING;
                 }
-                if (ImGui::MenuItem("Design", "CTRL+D")) {
+                if (ImGui::MenuItem("Design")) {
                     ComponentsManager::get()->getComponentWindow()->ImGuiConfigChanged = ImGUIConfigs::DESIGN;
                 }
                 ImGui::Separator();
-                if (ImGui::MenuItem("Save current layout", "CTRL+D")) {
+                if (ImGui::MenuItem("Save current layout")) {
                     ComponentsManager::get()->getComponentWindow()->saveImGuiCurrentLayout();
                 }
 

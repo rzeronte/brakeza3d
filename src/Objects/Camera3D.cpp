@@ -31,12 +31,17 @@ void Camera3D::PitchDown() {
     limitPitch();
 }
 
-void Camera3D::MoveForward() {
-    speed += EngineSetup::get()->WALKING_SPEED;
+void Camera3D::MoveForward(float v) {
+    speed += v;
 }
 
-void Camera3D::MoveBackward() {
-    speed -= EngineSetup::get()->WALKING_SPEED;
+void Camera3D::MoveVertical(float v)
+{
+    setPosition(getPosition() + getRotation().Y().getScaled(v));
+}
+
+void Camera3D::MoveBackward(float v) {
+    speed -= v;
 }
 
 void Camera3D::TurnRight() {

@@ -111,10 +111,10 @@ public:
     float BILLBOARD_HEIGHT_DEFAULT = 100.f;
 
     // KEYBOARD
-    float WALKING_SPEED = 1.0f;
+    float WALKING_SPEED = 0.25f;
     float TURN_SPEED = 0.5f;
     float PITCH_SPEED = 0.5f;
-    float STRAFE_SPEED = 1.0f;
+    float STRAFE_SPEED = 0.25f;
 
     // MOUSE
     float MOUSE_SENSITIVITY = 0.20;
@@ -122,7 +122,6 @@ public:
     // COLLISION SYSTEM
     bool BULLET_STEP_SIMULATION = true;
     bool BULLET_DEBUG_MODE = false;
-    bool BULLET_DEBUG_SELECTED_OBJECT = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 
     float TESTING_INT1 = 0.1f;
