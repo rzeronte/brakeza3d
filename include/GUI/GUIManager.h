@@ -43,6 +43,8 @@ private:
     ImGuizmo::OPERATION guizmoOperation;
     std::string currentScriptsFolderWidget;
 
+    bool show_about_window = false;
+
     const char *availableMesh3DShaders[4] = {"Edge", "Blink", "ShockWave", "Tint"};
 public:
 
@@ -746,7 +748,7 @@ public:
         widgetConsole->Draw("Logging/Console", &p_open);
         widgetObjects3D->draw(selectedObjectIndex);
         widgetObject3DProperties->draw(selectedObjectIndex, guizmoOperation);
-        widgetMenu->draw(finish);
+        widgetMenu->draw(finish, show_about_window);
         widgetToolbar->draw();
 
         ImGui::End();

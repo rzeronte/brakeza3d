@@ -38,9 +38,11 @@ public:
 
     void PitchDown();
 
-    void MoveForward();
+    void MoveVertical(float v);
 
-    void MoveBackward();
+    void MoveForward(float v);
+
+    void MoveBackward(float v);
 
     void TurnRight();
 
