@@ -511,3 +511,12 @@ void Tools::ImGuiVertex3D(
         ImGui::TreePop();
     }
 }
+
+bool Tools::removeFile(const std::string& filePath)
+{
+    if (std::remove(filePath.c_str()) == 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
