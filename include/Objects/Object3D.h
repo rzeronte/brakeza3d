@@ -192,7 +192,7 @@ public:
 
     void attachObject(Object3D *o);
 
-    LUADataValue getLocalScriptVar(const char *varName);
+    sol::object getLocalScriptVar(const char *varName);
 
     void makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) override;
     void makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) override;

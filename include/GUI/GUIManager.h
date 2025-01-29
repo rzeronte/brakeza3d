@@ -646,43 +646,35 @@ public:
 
             if (hasSelectedIndex) {
                 static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-                if (ImGui::BeginTable("ObjectVariablesTable", 2, flags)) {
+                if (ImGui::BeginTable("ObjectVariablesTable", 3, flags)) {
                     auto o = gameObjects[selectedObjectIndex];
                     auto scripts = o->getScripts();
-                    auto &lua = o->getLuaEnvironment();
+                    auto &luaEnvironment = o->getLuaEnvironment();
+                    auto &lua = LUAManager::get()->getLua();
 
-                    for (auto currentScript : scripts) {
-                        for (auto & dataType : currentScript->dataTypes) {
+                    int numVarFound = 0;
+                    for (auto &pair : luaEnvironment) {
+                        std::string key = pair.first.as<std::string>(); // Nombre de la variable
+                        sol::type valueType = pair.second.get_type();   // Tipo de la variable
+
+                        auto type = std::string(sol::type_name(lua, valueType));
+
+                        if (type == "number" || type == "string" || type == "boolean") {
+                            numVarFound++;
                             ImGui::TableNextRow();
 
                             ImGui::TableSetColumnIndex(0);
-                            ImGui::Text("%s", std::string(dataType.name).c_str());
+                            ImGui::Text("%s", std::string(key).c_str());
 
                             ImGui::TableSetColumnIndex(1);
-                            switch (EngineSetup::get()->LUADataTypesMapping[dataType.type]) {
-                                case EngineSetup::LUADataType::INT:
-                                case EngineSetup::LUADataType::FLOAT:
-                                case EngineSetup::LUADataType::STRING: {
-                                    ImGui::Text("%s", std::string(lua[dataType.name]).c_str());
-                                    break;
-                                }
-                                case EngineSetup::LUADataType::VERTEX3D: {
-                                    Vertex3D v = lua[dataType.name];
-                                    std::string vTextX = std::string("x: " + std::to_string(v.x));
-                                    std::string vTextY = std::string("y: " + std::to_string(v.y));
-                                    std::string vTextZ = std::string("z: " + std::to_string(v.z));
-                                    ImGui::Text("%s", vTextX.c_str());
-                                    ImGui::Text("%s", vTextY.c_str());
-                                    ImGui::Text("%s", vTextZ.c_str());
-                                    break;
-                                }
-                                default:
-                                    break;
-                            }
+                            ImGui::Text("%s", std::string(sol::type_name(lua, valueType)).c_str());
+
+                            ImGui::TableSetColumnIndex(2);
+                            ImGui::Text("%s", std::string(luaEnvironment[key]).c_str());
                         }
                     }
 
-                    if ((int) scripts.size() <= 0) {
+                    if (numVarFound <= 0) {
                         ImGui::Text("%s", "There are not variables yet");
                     }
 
@@ -694,23 +686,35 @@ public:
 
         if (ImGui::Begin("Global variables")) {
             static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-            if (ImGui::BeginTable("GlobalVariablesTable", 2, flags)) {
-                auto scripts = ComponentsManager::get()->getComponentRender()->getSceneLUAScripts();
+            if (ImGui::BeginTable("GlobalVariablesTable", 3, flags)) {
                 auto &lua = LUAManager::get()->getLua();
 
-                for (auto currentScript : scripts) {
-                    for (auto & dataType : currentScript->dataTypes) {
+                sol::table globalTable = lua["_G"];  // Acceder a la tabla global
+
+                int numVarFound = 0;
+                for (auto &pair : globalTable) {
+                    std::string key = pair.first.as<std::string>(); // Nombre de la variable
+                    sol::type valueType = pair.second.get_type();   // Tipo de la variable
+                    //std::cout << "Variable: " << key << " | Tipo: " << sol::type_name(lua, valueType) << std::endl;
+
+                    auto type = std::string(sol::type_name(lua, valueType));
+
+                    if (type == "number" || type == "string" || type == "boolean") {
+                        numVarFound++;
                         ImGui::TableNextRow();
 
                         ImGui::TableSetColumnIndex(0);
-                        ImGui::Text("%s", std::string(dataType.name).c_str());
+                        ImGui::Text("%s", std::string(key).c_str());
 
                         ImGui::TableSetColumnIndex(1);
-                        ImGui::Text("%s", std::string(lua[dataType.name]).c_str());
+                        ImGui::Text("%s", std::string(sol::type_name(lua, valueType)).c_str());
+
+                        ImGui::TableSetColumnIndex(2);
+                        ImGui::Text("%s", std::string(lua[key]).c_str());
                     }
                 }
 
-                if ((int) scripts.size() <= 0) {
+                if (numVarFound <= 0) {
                     ImGui::Text("%s", "There are not variables yet");
                 }
 

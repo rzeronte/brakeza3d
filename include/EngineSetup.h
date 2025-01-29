@@ -21,7 +21,7 @@ public:
 
     std::string ENGINE_VERSION = "v.1.0.0";
 
-    std::string ENGINE_TITLE = "Brakeza3D Loading...";
+    std::string ENGINE_TITLE = "Brakeza3D - By Eduardo Rodriguez <eduardo@brakeza.com>";
 
     std::string cameraNameIdentifier = "Camera";
     std::string cameraTriggerNameIdentifier = "triggerCamera";

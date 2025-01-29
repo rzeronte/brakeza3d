@@ -104,8 +104,12 @@ struct GUIWidgetToolbar {
 
     void drawLUAStatusIcons(ComponentRender *render) const
     {
-        drawFixedColorButton("playIcon", luaColor, [&]() { render->playLUAScripts(); });
-        drawFixedColorButton("stopIcon", luaColor, [&]() { render->stopLUAScripts(); });
+        if (render->getStateLUAScripts() == EngineSetup::LuaStateScripts::LUA_STOP) {
+            drawFixedColorButton("playIcon", luaColor, [&]() { render->playLUAScripts(); });
+        } else {
+            drawFixedColorButton("stopIcon", luaColor, [&]() { render->stopLUAScripts(); });
+
+        }
         drawFixedColorButton("reloadIcon", luaColor, [&]() { render->reloadLUAScripts(); });
         drawFixedColorButton("removeIcon", luaColor, [&]() { SceneLoader::clearScene(); });
     }

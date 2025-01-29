@@ -136,7 +136,8 @@ void LUAIntegration(sol::state &lua)
                                       "setGlobalIlluminationDirection", &ComponentRender::setGlobalIlluminationDirection,
                                       "setGlobalIlluminationAmbient", &ComponentRender::setGlobalIlluminationAmbient,
                                       "setGlobalIlluminationDiffuse", &ComponentRender::setGlobalIlluminationDiffuse,
-                                      "setGlobalIlluminationSpecular", &ComponentRender::setGlobalIlluminationSpecular
+                                      "setGlobalIlluminationSpecular", &ComponentRender::setGlobalIlluminationSpecular,
+                                      "getGlobalScriptVar",  &ComponentRender::getGlobalScriptVar
     );
 
     lua.new_usertype<ComponentInput>("ComponentInput",

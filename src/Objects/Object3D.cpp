@@ -756,9 +756,9 @@ void Object3D::attachObject(Object3D* o)
     attachedObjects.push_back(o);
 }
 
-LUADataValue Object3D::getLocalScriptVar(const char *varName)
+sol::object Object3D::getLocalScriptVar(const char *varName)
 {
-    return LUADataValue(luaEnvironment[varName]);
+    return luaEnvironment[varName];
 }
 
 void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
