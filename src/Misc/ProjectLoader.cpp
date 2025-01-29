@@ -53,7 +53,7 @@ void ProjectLoader::saveProject(const std::string &filename)
     cJSON_AddItemToObject(root, "scripts", sceneScriptsArray);
 
     Logging::Message(cJSON_Print(root));
-    Tools::writeToFile(EngineSetup::get()->PROJECTS_FOLDER + filename, cJSON_Print(root));
+    Tools::writeToFile(filename, cJSON_Print(root));
 }
 
 void ProjectLoader::removeProjectScripts()
