@@ -1,0 +1,1 @@
+function onStart()endfunction onUpdate()    tiempo = brakeza:getExecutionTime()    local speed = 1.0    this:addToPosition(Vertex3D.new(0, math.sin(tiempo) * speed, 0))end

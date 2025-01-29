@@ -294,7 +294,7 @@ public:
 
         std::vector<std::string> files = Tools::getFolderFiles(folder, "json");
         std::sort(files.begin(), files.end() );
-        static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
+        static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
         if (ImGui::BeginTable("ProjectsFolderTable", 2, flags)) {
             for (int i = 0; i < files.size(); i++) {
                 ImGui::TableNextRow();
@@ -346,7 +346,7 @@ public:
 
         auto files = Tools::getFolderFiles(folder, "json");
         std::sort(files.begin(), files.end() );
-        static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
+        static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
         if (ImGui::BeginTable("ScenesFolderTable", 2, flags)) {
             for (int i = 0; i < files.size(); i++) {
                 ImGui::TableNextRow();

@@ -104,6 +104,8 @@ un script a la escena:
     end
 ```
 
+Es importante destacar, que *la única* forma de vincular scripts al ``proyecto`` es mediante la UI, no desde código.
+
 ---
 
 ### Variables

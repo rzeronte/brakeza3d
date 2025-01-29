@@ -224,10 +224,8 @@ add_executable(Brakeza3D
     include/Render/ObjectShaderOpenCL.cpp
     include/Render/Fragment.cpp                     include/Render/Fragment.h
     src/Misc/ToolsJSON.cpp                          include/Misc/ToolsJSON.h
-        src/OpenGL/ShaderOpenGLLine3D.cpp
-        src/OpenGL/ShaderOpenGLLine3D.h
-        src/Misc/ProjectLoader.cpp
-        include/Misc/ProjectLoader.h
+    src/OpenGL/ShaderOpenGLLine3D.cpp               src/OpenGL/ShaderOpenGLLine3D.h
+    src/Misc/ProjectLoader.cpp                      include/Misc/ProjectLoader.h
 )
 
 target_link_libraries(Brakeza3D
