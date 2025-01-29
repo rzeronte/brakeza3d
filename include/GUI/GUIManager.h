@@ -126,12 +126,27 @@ public:
 
     void drawScriptsLuaFolderFiles(const std::string& folder)
     {
+        static char name[256];
+        strncpy(name, currentVariableToAddName.c_str(), sizeof(name));
+        if (ImGui::InputText("Script name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+            currentVariableToAddName = name;
+        }
+        if (ImGui::Button(std::string("Create script").c_str())) {
+            if (!currentVariableToAddName.empty()) {
+                ComponentsManager::get()->getComponentRender()->createScriptLUAFile(
+                        EngineSetup::get()->SCRIPTS_FOLDER + currentVariableToAddName);
+            }
+        }
+
+        ImGui::Separator();
+
         drawBrowserFolders(folder, EngineSetup::get()->SCRIPTS_FOLDER, currentScriptsFolderWidget);
 
         auto files= Tools::getFolderFiles(folder, "lua");
-        static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
-        if (ImGui::BeginTable("ScriptsFolderTable", 1, flags)) {
+        static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
+        if (ImGui::BeginTable("ScriptsFolderTable", 2, flags)) {
             for (int i = 0; i < files.size(); i++) {
+                ImGui::PushID(i);
                 const auto& file = files[i];
                 auto fullPath = folder + file;
                 ImGui::TableNextRow();
@@ -154,6 +169,11 @@ public:
                     ImGui::Text("%s", fullPath.c_str()); // Esto es lo que se muestra mientras se arrastra
                     ImGui::EndDragDropSource();
                 }
+                ImGui::TableSetColumnIndex(1);
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
+                    ComponentsManager::get()->getComponentRender()->removeScriptLUAFile(folder + file);
+                }
+                ImGui::PopID();
             }
             ImGui::EndTable();
         }

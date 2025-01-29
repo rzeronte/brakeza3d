@@ -142,6 +142,10 @@ public:
     void setGlobalIlluminationDiffuse(Vertex3D d);
 
     void setGlobalIlluminationSpecular(Vertex3D s);
+
+    void createScriptLUAFile(std::string path);
+
+    void removeScriptLUAFile(std::string path);
 };
 
 

@@ -89,7 +89,7 @@ public:
 
     [[nodiscard]] const std::vector<ScriptLUATypeData> &getDataTypes() const;
 
-    cJSON *getTypesJSON() const;
+    [[nodiscard]] cJSON *getTypesJSON() const;
 
     [[nodiscard]] const std::string &getScriptFilename() const;
 
