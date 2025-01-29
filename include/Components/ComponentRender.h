@@ -101,7 +101,7 @@ public:
 
     void addProjectLUAScript(ScriptLUA *script);
 
-    LUADataValue getGlobalScriptVar(const char *scriptName, const char *varName);
+    sol::object getGlobalScriptVar(const std::string& scriptName, const char *varName);
 
     void reloadScriptGlobals();
 

@@ -357,19 +357,15 @@ std::vector<ScriptLUA*> &ComponentRender::getProjectLUAScripts()
     return projectScripts;
 }
 
-LUADataValue ComponentRender::getGlobalScriptVar(const char *scriptName, const char *varName)
+sol::object ComponentRender::getGlobalScriptVar(const std::string& scriptName, const char *varName)
 {
-    for (auto s : scripts) {
-        if (s->getScriptFilename().c_str() != scriptName) continue;
-
-        for (const auto& v : s->getDataTypes()) {
-            if (v.name == varName) {
-                return v.value;
-            }
-        }
+    for (auto s : projectScripts) {
+        if (s->getScriptFilename() == scriptName) continue;
+        sol::state &lua = LUAManager::get()->getLua();
+        return lua[varName];
     }
 
-    return LUADataValue(0);
+    return sol::nil;
 }
 
 void ComponentRender::addProjectLUAScript(ScriptLUA *script)
