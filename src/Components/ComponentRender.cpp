@@ -524,3 +524,27 @@ void ComponentRender::setGlobalIlluminationSpecular(Vertex3D v)
 {
     ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->setGlobalIlluminationSpecular(v);
 }
+
+void ComponentRender::createScriptLUAFile(std::string path)
+{
+    Logging::Message("Creating new Script LUA file: %s", path.c_str());
+
+    std::string projectJsonFile = std::string(path + ".lua");
+
+    std::string content = R"(
+        function onStart()
+        end
+        function onUpdate()
+        end
+        function onCollision(with)
+        end
+    )";
+
+    Tools::writeToFile(projectJsonFile, content.c_str());
+}
+
+void ComponentRender::removeScriptLUAFile(std::string path)
+{
+    Logging::Message("Deleting script file: %s", path.c_str());
+    Tools::removeFile(path);
+}

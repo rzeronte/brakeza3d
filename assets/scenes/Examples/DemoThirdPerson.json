@@ -1,0 +1,156 @@
+{
+	"name":	"Brakeza3D - By Eduardo Rodriguez <eduardo@brakeza.com>",
+	"gravity":	{
+		"x":	0,
+		"y":	18.799999237060547,
+		"z":	0
+	},
+	"ads":	{
+		"direction":	{
+			"x":	-0.15999999642372131,
+			"y":	-0.60000002384185791,
+			"z":	1
+		},
+		"diffuse":	{
+			"x":	0.85655736923217773,
+			"y":	0.60029226541519165,
+			"z":	0.60029226541519165
+		},
+		"specular":	{
+			"x":	0.73770493268966675,
+			"y":	0.69864875078201294,
+			"z":	0.14209890365600586
+		},
+		"ambient":	{
+			"x":	0.6598360538482666,
+			"y":	0.17577598989009857,
+			"z":	0.17577598989009857
+		}
+	},
+	"objects":	[{
+			"name":	"capsule",
+			"scale":	1,
+			"position":	{
+				"x":	-44.067607879638672,
+				"y":	-7.520592212677002,
+				"z":	-32.555183410644531
+			},
+			"rotation":	{
+				"x":	-0,
+				"y":	0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	2,
+				"shape":	0,
+				"mass":	100,
+				"colliderStatic":	false,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	0.9
+				}
+			},
+			"scripts":	[{
+					"name":	"../assets/scripts/Controllers/KinematicThirdPersonController.lua",
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	0
+						}, {
+							"name":	"strafe",
+							"type":	"float",
+							"value":	0
+						}, {
+							"name":	"velocity",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	0,
+								"z":	0
+							}
+						}, {
+							"name":	"force",
+							"type":	"float",
+							"value":	0.05
+						}, {
+							"name":	"deceleration",
+							"type":	"float",
+							"value":	0.30000001192092896
+						}, {
+							"name":	"jumpForce",
+							"type":	"float",
+							"value":	10
+						}, {
+							"name":	"cameraOffset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	-2.5,
+								"z":	-5
+							}
+						}, {
+							"name":	"mouseSensibility",
+							"type":	"float",
+							"value":	0.10000000149011612
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//Capsule.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"Mesh3D_97",
+			"scale":	1,
+			"position":	{
+				"x":	-43.280624389648438,
+				"y":	-11.2020263671875,
+				"z":	-30.593469619750977
+			},
+			"rotation":	{
+				"x":	-0,
+				"y":	0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	1,
+				"mass":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	0.9
+				}
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//DevLevel.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}],
+	"shaders":	[],
+	"scripts":	[],
+	"camera":	{
+		"position":	{
+			"x":	-44.067607879638672,
+			"y":	-10.020591735839844,
+			"z":	-37.555183410644531
+		},
+		"rotation":	{
+			"x":	49.799995422363281,
+			"y":	-38.600017547607422,
+			"z":	0
+		}
+	}
+}
