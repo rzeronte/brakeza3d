@@ -229,7 +229,7 @@ void SceneLoader::saveScene(const std::string &filename)
     cJSON_AddItemToObject(root, "camera", cameraJSON);
 
     Logging::Message(cJSON_Print(root));
-    Tools::writeToFile(EngineSetup::get()->SCENES_FOLDER + filename, cJSON_Print(root));
+    Tools::writeToFile(filename, cJSON_Print(root));
 }
 
 void SceneLoader::clearScene()
@@ -398,5 +398,7 @@ void SceneLoader::createScene(const std::string &filename)
 
 void SceneLoader::removeScene(const std::string &filename)
 {
+    Logging::Message("Deleting scene: %s", filename.c_str());
+
     Tools::removeFile(filename);
 }

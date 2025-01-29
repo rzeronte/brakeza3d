@@ -71,12 +71,14 @@ void ProjectLoader::createProject(const std::string &filename)
     cJSON *root = cJSON_CreateObject();
     cJSON_AddStringToObject(root, "name", filename.c_str());
 
-    std::string projectJsonFile = EngineSetup::get()->PROJECTS_FOLDER + std::string(filename + ".json");
+    std::string projectJsonFile = std::string(filename + ".json");
 
     Tools::writeToFile(projectJsonFile, cJSON_Print(root));
 }
 
 void ProjectLoader::removeProject(const std::string &filename)
 {
+    Logging::Message("Deleting project: %s", filename.c_str());
+
     Tools::removeFile(filename);
 }

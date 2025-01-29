@@ -1,6 +1,6 @@
 {
 	"name":	"ese",
 	"scripts":	[{
-			"name":	"../assets/scripts/Project.lua"
+			"name":	"../assets/scripts/Examples/HelloWorld.lua"
 		}]
 }
