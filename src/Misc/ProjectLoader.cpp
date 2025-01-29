@@ -63,3 +63,20 @@ void ProjectLoader::removeProjectScripts()
         render->removeProjectScript(o);
     }
 }
+
+void ProjectLoader::createProject(const std::string &filename)
+{
+    Logging::Message("Creating new project file: %s", filename.c_str());
+
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "name", filename.c_str());
+
+    std::string projectJsonFile = EngineSetup::get()->PROJECTS_FOLDER + std::string(filename + ".json");
+
+    Tools::writeToFile(projectJsonFile, cJSON_Print(root));
+}
+
+void ProjectLoader::removeProject(const std::string &filename)
+{
+    Tools::removeFile(filename);
+}

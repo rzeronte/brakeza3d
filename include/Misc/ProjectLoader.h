@@ -18,6 +18,10 @@ public:
     static void saveProject(const std::string& filename);
 
     static void removeProjectScripts();
+
+    static void createProject(const std::string &filename);
+
+    static void removeProject(const std::string &filename);
 };
 
 

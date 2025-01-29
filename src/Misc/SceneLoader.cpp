@@ -387,3 +387,16 @@ void SceneLoader::createMesh3DAnimationToScene(const std::string& animationFile)
 
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("Mesh3DAnimation"));
 }
+
+void SceneLoader::createScene(const std::string &filename)
+{
+    std::string sceneJsonFile = std::string(filename + ".json");
+
+    Logging::Message("Creating new scene file: %s", sceneJsonFile.c_str());
+    SceneLoader::saveScene(sceneJsonFile);
+}
+
+void SceneLoader::removeScene(const std::string &filename)
+{
+    Tools::removeFile(filename);
+}

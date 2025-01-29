@@ -82,6 +82,11 @@ public:
     static void createMesh3D(const std::string& animationFile);
 
     static void createMesh3DAnimationToScene(const std::string& animationFile);
+
+    static void createScene(const std::string &filename);
+
+    static void removeScene(const std::string &filename);
+
 };
 
 #endif //BRAKEZA3D_SCENELOADER_H

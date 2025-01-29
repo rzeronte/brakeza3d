@@ -93,6 +93,8 @@ public:
         float min,
         float max
     );
+
+    static bool removeFile(const std::string &filePath);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

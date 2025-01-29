@@ -20,26 +20,12 @@ proyectos usando LUA como lenguaje de scripting.
 
 ## Elementos principales
 
-En Brakeza3D existen tres elementos principales:
+En Brakeza3D existen dos elementos principales:
 
-- `Componentes`
 - `Objetos`
 - `Escenas`
 
-### 1) Componentes
-
-Son módulos internos de Brakeza3D. Cada uno se encarga de un aspecto fundamental del funcionamiento del motor.
-
-Existen varios componentes a tu disposición. A continuación se enumeran algunos de ellos:
-
-- Componente Cámara
-- Componente Render
-- Componente Colisiones
-- ...
-
-Como programador, generalmente podrás acceder a dichos componentes según tus necesidades. 
-
-### 2) Objetos
+### 1) Objetos
 
 Un objeto es una figura abstracta que representa cualquier entidad existente en nuestro mundo 3D. Encontraremos
 multitud de tipos de objeto a lo largo de esta documentación. A continuación se enumeran algunos de ellos:
@@ -55,9 +41,9 @@ Todos los objetos comparten las propiedades básicas de un elemento 3D ya sea no
 
 Desde código podremos activar, mover, rotar, eliminar, escalar y muchas otras acciones sobre los objetos.
 
-### 3) Escenas
+### 2) Escenas
 
-Una escena se representa por un conjunto de objetos en un estado concreto. Su ventaja principal es que se pueden almacenar en disco y recuperar en cualquier momento.
+Una escena se compone de un conjunto de objetos en un estado concreto. Su ventaja principal es que se pueden almacenar en disco y recuperar en cualquier momento.
 
 La escena almacena demás información global como iluminación, posición de cámara, scripts, etc.
 
@@ -69,6 +55,9 @@ Dispondremos de un `SceneLoader`, que nos permitirá gestionar el manejo de carg
 
 Brakeza3D integra un sistema de scripting utilizando LUA como lenguaje. Tanto desde interfaz gráfica como
 desde código podrás trabajar con ``scripts`` que asociarás a tus objetos o escenas para proporcionarles lógica.
+
+Brakeza3D trabaja con el concepto de ``Proyecto``. Un proyecto no es mas que un conjunto de scripts. Crearás un
+`proyecto` por cada juego o aplicación que crees con Brakeza3D.
 
 ---
 

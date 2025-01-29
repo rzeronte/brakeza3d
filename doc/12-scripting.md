@@ -69,7 +69,7 @@ Los scripts de LUA son elementos que podremos vincular a elementos del sistema. 
 Podemos diferenciar dos grandes tipos de scripts:
 
 - **Scripts de Objeto**: Se asocian a **objetos**. Un mismo script puede vincularse a multitud de objetos.
-- **Scripts globales**: Se asocian a la **escena**, no a ningún objeto específico, son de caracter general.
+- **Scripts globales**: Se asocian a la **escena** o al **proyecto**, no a ningún objeto específico, son de caracter general.
 
 ---
 
@@ -150,7 +150,7 @@ Puedes utilizar los tipos `int`, `float`, `string` y `Vertex3D`.
 
 ### Variables globales
 
-Las variables definidas en scripts vinculadas a ``escenas`` serán globales.
+Las variables definidas en scripts vinculadas a ``proyectos`` y/o `escenas` serán globales.
 
 Podrás acceder directamente a las variables globales desde cualquier otro
 script.
