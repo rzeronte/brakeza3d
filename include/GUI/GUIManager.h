@@ -284,12 +284,10 @@ public:
         }
         if (ImGui::Button(std::string("Create Project").c_str())) {
             if (!currentVariableToCreateCustomShader.empty()) {
-                ProjectLoader::createProject(currentVariableToCreateCustomShader);
+                ProjectLoader::createProject(folder + currentVariableToCreateCustomShader);
             }
         }
 
-        ImGui::Separator();
-        drawBrowserFolders(folder, EngineSetup::get()->PROJECTS_FOLDER, currentProjectsFolderWidget);
         ImGui::Separator();
 
         std::vector<std::string> files = Tools::getFolderFiles(folder, "json");
@@ -300,6 +298,7 @@ public:
                 ImGui::TableNextRow();
                 const auto& file = files[i];
                 auto title = std::to_string(i + 1) + ") " + file;
+                ImGui::PushID(i);
 
                 if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                     ImGui::TableSetColumnIndex(0);
@@ -311,17 +310,18 @@ public:
 
                     ImGui::TableSetColumnIndex(1);
                     if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "playIcon"), ImVec2(14, 14))) {
-                        ComponentsManager::get()->getComponentRender()->getProjectLoader().loadProject(EngineSetup::get()->PROJECTS_FOLDER + file);
+                        ComponentsManager::get()->getComponentRender()->getProjectLoader().loadProject(folder + file);
                     }
                     ImGui::SameLine();
                     if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "saveIcon"), ImVec2(14, 14))) {
-                        ProjectLoader::saveProject(file);
+                        ProjectLoader::saveProject(folder + file);
                     }
                     ImGui::SameLine();
                     if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
-                        ProjectLoader::removeProject(file);
+                        ProjectLoader::removeProject(folder + file);
                     }
                 }
+                ImGui::PopID();
             }
             ImGui::EndTable();
         }
@@ -336,7 +336,7 @@ public:
         }
         if (ImGui::Button(std::string("Create Scene").c_str())) {
             if (!currentVariableToCreateCustomShader.empty()) {
-                SceneLoader::createScene(currentVariableToCreateCustomShader);
+                SceneLoader::createScene(folder + currentVariableToCreateCustomShader);
             }
         }
 
@@ -366,15 +366,15 @@ public:
                     ImGui::TableSetColumnIndex(1);
                     if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "playIcon"), ImVec2(14, 14))) {
                         SceneLoader::clearScene();
-                        ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(EngineSetup::get()->SCENES_FOLDER + file);
+                        ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(folder + file);
                     }
                     ImGui::SameLine();
                     if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "saveIcon"), ImVec2(14, 14))) {
-                        SceneLoader::saveScene(file);
+                        SceneLoader::saveScene(folder + file);
                     }
                     ImGui::SameLine();
                     if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
-                        SceneLoader::removeScene(file);
+                        SceneLoader::removeScene(folder + file);
                     }
                 }
                 ImGui::PopID();
