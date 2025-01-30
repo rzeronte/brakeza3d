@@ -34,7 +34,7 @@ ComponentInput::ComponentInput()
 
 void ComponentInput::onStart()
 {
-    Logging::head("ComponentInput onStart");
+    Logging::Message("ComponentInput onStart");
     setEnabled(true);
     initJoystick();
 }

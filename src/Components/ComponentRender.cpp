@@ -22,7 +22,7 @@ ComponentRender::ComponentRender()
 
 void ComponentRender::onStart()
 {
-    Logging::head("ComponentRender onStart");
+    Logging::Message("ComponentRender onStart");
     setEnabled(true);
 
     initTiles();

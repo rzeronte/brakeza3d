@@ -17,7 +17,7 @@ ComponentCollisions::ComponentCollisions()
 
 void ComponentCollisions::onStart()
 {
-    Logging::head("ComponentCollisions onStart");
+    Logging::Message("ComponentCollisions onStart");
 
     setEnabled(true);
 }
