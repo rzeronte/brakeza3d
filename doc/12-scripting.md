@@ -17,8 +17,8 @@
 
 Brakeza3D incorpora un sistema de scripting utilizando LUA como lenguaje.
 
-Ya sea desde la UI o desde código, podrás asociar ``scripts`` a la ``escena`` y/o
-``objetos``.
+Ya sea desde la UI o desde código, podrás asociar ``scripts`` al ``proyecto``, 
+``escena`` y/o ``objetos``.
 
 ---
  
@@ -30,8 +30,6 @@ es el sistema de scripting. Este sistema puede estar en ON/OFF/PAUSE.
 Si está en ON, los objetos ejecutarán su ciclo de vida implementado en los scripts.
 
 El sistema de scripting puede ser ejecutado (PLAY), para iniciar la ejecución de los scripts.
-
-También puede ser rebobinado (REWIND) al inicio, para volver a ejecutar los scripts desde su inicio.
 
 Finalmente, podrá ser detenido (STOP) para evitar que el sistema de scripting continue.
 
@@ -45,7 +43,7 @@ Los objetos disponen de su propio ciclo de vida el cual debemos de entender para
 
 - **onStart**: Instante en que se inicia la ejecución. Cuando activamos el sistema de scripting (PLAY)
 
-- **onUpdate**: Instante actual (siempre y cuando el sistema de scripting esté ON)
+- **onUpdate**: Instante actual, es decir, cada frame.
 
 - **onEnd**: Instante en el que se detiene la ejecución (STOP)
 
@@ -71,6 +69,11 @@ Podemos diferenciar dos grandes tipos de scripts:
 - **Scripts de Objeto**: Se asocian a **objetos**. Un mismo script puede vincularse a multitud de objetos.
 - **Scripts globales**: Se asocian a la **escena** o al **proyecto**, no a ningún objeto específico, son de caracter general.
 
+Se diferencian principalmente por el **scope de sus variables**.
+
+Los scripts globales comparten variables libremente entre ellos, mientras que los scripts de objeto instancian sus variables por cada objeto al
+que han sido vinculados.
+
 ---
 
 ### Vinculación de scripts
@@ -94,13 +97,13 @@ Los `Object3D` disponen de un método `attachScript` que nos permitirá vincular
     end
 ```
 
-De igual forma el ``ComponentRender`` dispone de ``addSceneLUAScript`` que te permitirá vincular
+De igual forma el ``ComponentScripting`` dispone de ``addSceneLUAScript`` que te permitirá vincular
 un script a la escena:
 
 ```lua
     script = ScriptLUA.create("../../scripts/global_script.lua")
     if script ~= nil then
-        componentsManager:getComponentRender():addSceneLUAScript(script)
+        componentsManager:getComponentScripting():addSceneLUAScript(script)
     end
 ```
 

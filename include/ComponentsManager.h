@@ -9,18 +9,16 @@
 #include "Components/ComponentInput.h"
 #include "Components/ComponentSound.h"
 #include "Components/ComponentWindow.h"
+#include "Components/ComponentScripting.h"
 
 enum ComponentID {
     COMPONENT_WINDOW = 0,
-    COMPONENT_CAMERA = 1,
-    COMPONENT_COLLISIONS = 2,
-    COMPONENT_INPUT = 3,
-    COMPONENT_SOUND = 4,
-    COMPONENT_RENDER = 5,
-    COMPONENT_MENU = 6,
-    COMPONENT_GAME = 7,
-    COMPONENT_HUD = 8,
-    COMPONENT_GAME_INPUT = 9
+    COMPONENT_SCRIPTING = 1,
+    COMPONENT_CAMERA = 2,
+    COMPONENT_COLLISIONS = 3,
+    COMPONENT_INPUT = 4,
+    COMPONENT_SOUND = 5,
+    COMPONENT_RENDER = 6
 };
 
 class ComponentsManager {
@@ -57,6 +55,10 @@ public:
 
     ComponentSound *getComponentSound() {
         return dynamic_cast<ComponentSound *>(components[ComponentID::COMPONENT_SOUND]);
+    };
+
+    ComponentScripting *getComponentScripting() {
+        return dynamic_cast<ComponentScripting *>(components[ComponentID::COMPONENT_SCRIPTING]);
     };
 };
 

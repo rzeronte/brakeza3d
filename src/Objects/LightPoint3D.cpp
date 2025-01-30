@@ -1,7 +1,6 @@
 
 #include "../../include/Objects/LightPoint3D.h"
 #include "../../include/Render/Billboard.h"
-#include "../../include/LUAManager.h"
 #include "../../include/Render/Maths.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"

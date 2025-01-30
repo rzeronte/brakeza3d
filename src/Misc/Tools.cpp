@@ -7,15 +7,11 @@
 #include <algorithm>
 #include <fstream>
 #include "../../include/Misc/Tools.h"
-#include "../../include/EngineSetup.h"
-#include "../../include/LUAManager.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Render/Transforms.h"
 #include "../../include/2D/Image2DAnimation.h"
 #include "../../include/Objects/Mesh3DAnimation.h"
-#include "../../include/Objects/ParticleEmitter.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <filesystem>
@@ -269,17 +265,6 @@ btTransform Tools::GLMMatrixToBulletTransform(const glm::mat4& glmMatrix)
     bulletTransform.setOrigin(btVector3(glmMatrix[3][0], glmMatrix[3][1], glmMatrix[3][2]));
 
     return bulletTransform;
-}
-
-const char *Tools::sprintf(const char *format, ...)
-{
-    va_list args;
-    va_start (args, format);
-    vsnprintf (LUAManager::get()->text, 255, format, args);
-
-    va_end (args);
-
-    return LUAManager::get()->text;
 }
 
 float Tools::percentage(int value, int total)

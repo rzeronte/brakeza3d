@@ -42,16 +42,16 @@ struct GUIWidgetProjectSettings {
 
     void drawProjectScripts()
     {
-        auto componentRender = ComponentsManager::get()->getComponentRender();
+        auto scripting = ComponentsManager::get()->getComponentScripting();
 
-        auto scripts = componentRender->getProjectLUAScripts();
+        auto scripts = scripting->getProjectLUAScripts();
         ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "addIcon"), ImVec2(16, 16));
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
                 Logging::Message("Dropping script (%s) in global space", payload->Data);
-                componentRender->addProjectLUAScript(new ScriptLUA(
-                        std::string((char *) payload->Data),
-                        ScriptLUA::dataTypesFileFor(std::string((char *) payload->Data)))
+                scripting->addProjectLUAScript(new ScriptLUA(
+                    std::string((char *) payload->Data),
+                    ScriptLUA::dataTypesFileFor(std::string((char *) payload->Data)))
                 );
             }
             ImGui::EndDragDropTarget();
@@ -69,7 +69,7 @@ struct GUIWidgetProjectSettings {
             ImGui::PushID(i);
             std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
             if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "removeIcon"), ImVec2(14, 14))) {
-                componentRender->removeProjectScript(currentScript);
+                scripting->removeProjectScript(currentScript);
             }
             ImGui::SameLine();
             if (currentScript->isPaused()) {
@@ -95,21 +95,20 @@ struct GUIWidgetProjectSettings {
 
             ImGui::PopID();
         }
-
     }
 
     void drawSceneScripts()
     {
-        auto componentRender = ComponentsManager::get()->getComponentRender();
+        auto scripting = ComponentsManager::get()->getComponentScripting();
 
-        auto scripts = componentRender->getSceneLUAScripts();
+        auto scripts = scripting->getSceneLUAScripts();
         ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "addIcon"), ImVec2(16, 16));
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
                 Logging::Message("Dropping script (%s) in global space", payload->Data);
-                componentRender->addSceneLUAScript(new ScriptLUA(
-                        std::string((char *) payload->Data),
-                        ScriptLUA::dataTypesFileFor(std::string((char *) payload->Data)))
+                scripting->addSceneLUAScript(new ScriptLUA(
+                    std::string((char *) payload->Data),
+                    ScriptLUA::dataTypesFileFor(std::string((char *) payload->Data)))
                 );
             }
             ImGui::EndDragDropTarget();
@@ -127,7 +126,7 @@ struct GUIWidgetProjectSettings {
             ImGui::PushID(i);
             std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
             if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "removeIcon"), ImVec2(14, 14))) {
-                componentRender->removeSceneScript(currentScript);
+                scripting->removeSceneScript(currentScript);
             }
             ImGui::SameLine();
             if (currentScript->isPaused()) {

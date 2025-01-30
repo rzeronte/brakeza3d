@@ -3,7 +3,6 @@
 #define BRAKEDA3D_SHADERBLINK_H
 #include "../Misc/Color.h"
 #include "../Misc/Tools.h"
-#include "../LUAManager.h"
 #include "../Render/Transforms.h"
 #include "../Render/Drawable.h"
 #include "../Render/Logging.h"

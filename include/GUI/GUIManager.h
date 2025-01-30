@@ -62,7 +62,7 @@ public:
     explicit GUIManager(std::vector<Object3D *> &gameObjects)
         :
             gameObjects(gameObjects),
-            widgetConsole(new ImGuiConsoleApp(LUAManager::get()->getLua())),
+            widgetConsole(new ImGuiConsoleApp(ComponentsManager::get()->getComponentScripting()->getLua())),
             widgetObjects3D(new GUIWidgetObjects3D(icons, this->gameObjects)),
             widgetObject3DProperties(new GUIWidgetObject3DProperties(icons, this->gameObjects, scriptEditableManager)),
             widgetProjectSettings(new GUIWidgetProjectSettings(icons, scriptEditableManager)),
@@ -133,8 +133,7 @@ public:
         }
         if (ImGui::Button(std::string("Create script").c_str())) {
             if (!currentVariableToAddName.empty()) {
-                ComponentsManager::get()->getComponentRender()->createScriptLUAFile(
-                        EngineSetup::get()->SCRIPTS_FOLDER + currentVariableToAddName);
+                ComponentScripting::createScriptLUAFile(EngineSetup::get()->SCRIPTS_FOLDER + currentVariableToAddName);
             }
         }
 
@@ -171,7 +170,7 @@ public:
                 }
                 ImGui::TableSetColumnIndex(1);
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
-                    ComponentsManager::get()->getComponentRender()->removeScriptLUAFile(folder + file);
+                    ComponentScripting::removeScriptLUAFile(folder + file);
                 }
                 ImGui::PopID();
             }
@@ -670,7 +669,7 @@ public:
                     auto o = gameObjects[selectedObjectIndex];
                     auto scripts = o->getScripts();
                     auto &luaEnvironment = o->getLuaEnvironment();
-                    auto &lua = LUAManager::get()->getLua();
+                    auto &lua = ComponentsManager::get()->getComponentScripting()->getLua();
 
                     int numVarFound = 0;
                     for (auto &pair : luaEnvironment) {
@@ -707,7 +706,7 @@ public:
         if (ImGui::Begin("Global variables")) {
             static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
             if (ImGui::BeginTable("GlobalVariablesTable", 3, flags)) {
-                auto &lua = LUAManager::get()->getLua();
+                auto &lua = ComponentsManager::get()->getComponentScripting()->getLua();
 
                 sol::table globalTable = lua["_G"];  // Acceder a la tabla global
 

@@ -5,7 +5,6 @@
 #include <vector>
 #include "../Objects/Object3D.h"
 #include "../EngineSetup.h"
-#include "../LUAManager.h"
 
 class ComponentsManager;
 
@@ -37,7 +36,6 @@ public:
 
     virtual void onSDLPollEvent(SDL_Event *event, bool &finish) = 0;
 
-    LUAManager *BUFFERS;
     EngineSetup *SETUP;
 
     [[nodiscard]] bool isEnabled() const;

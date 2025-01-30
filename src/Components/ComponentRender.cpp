@@ -16,7 +16,6 @@ ComponentRender::ComponentRender()
     numberTiles(0),
     tilePixelsBufferSize(0),
     selectedObject(nullptr),
-    stateScripts(EngineSetup::LuaStateScripts::LUA_STOP),
     sceneShadersEnabled(true)
 {
 }
@@ -57,9 +56,6 @@ void ComponentRender::onUpdate()
         Drawable::drawMainAxis();
     }
 
-    if (stateScripts == EngineSetup::LUA_PLAY) {
-        runScripts();
-    }
 
     if (isSceneShadersEnabled()) {
         runShadersOpenCLPostUpdate();
@@ -161,8 +157,7 @@ void ComponentRender::onUpdateSceneObjects()
 
 void ComponentRender::hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle *> &triangles)
 {
-    auto frustum = ComponentsManager::get()->getComponentCamera()->getCamera()->getFrustum();
-    if (node->isLeaf() &&frustum->isAABBInFrustum(&node->bounds)) {
+    if (node->isLeaf() && Frustum::isAABBInFrustum(&node->bounds)) {
         for (auto & triangle : node->triangles) {
             triangles.push_back(triangle);
         }
@@ -298,154 +293,6 @@ ComponentRender::~ComponentRender()
     delete textWriter;
 }
 
-EngineSetup::LuaStateScripts ComponentRender::getStateLUAScripts()
-{
-    return stateScripts;
-}
-
-void ComponentRender::playLUAScripts()
-{
-    Logging::Message("LUA Scripts state changed to PLAY");
-
-    onStartScripts();
-
-    ComponentsManager::get()->getComponentInput()->setEnabled(false);
-
-    stateScripts = EngineSetup::LuaStateScripts::LUA_PLAY;
-}
-
-void ComponentRender::stopLUAScripts()
-{
-    Logging::Message("LUA Scripts state changed to STOP");
-
-    ComponentsManager::get()->getComponentInput()->setEnabled(true);
-
-    stateScripts = EngineSetup::LuaStateScripts::LUA_STOP;
-}
-
-void ComponentRender::reloadLUAScripts()
-{
-    Logging::Message("Reloading LUA Scripts...");
-
-    auto &lua = LUAManager::get()->getLua();
-    lua.collect_garbage();
-
-    for (auto s : projectScripts) {
-        s->reloadScriptCode();
-    }
-
-    for (auto s : scripts) {
-        s->reloadScriptCode();
-    }
-
-    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
-    for (auto object : sceneObjects) {
-        object->reloadScriptsCode();
-        object->reloadScriptsEnvironment();
-    }
-
-    reloadScriptGlobals();
-}
-
-std::vector<ScriptLUA*> &ComponentRender::getSceneLUAScripts()
-{
-    return scripts;
-}
-
-std::vector<ScriptLUA*> &ComponentRender::getProjectLUAScripts()
-{
-    return projectScripts;
-}
-
-sol::object ComponentRender::getGlobalScriptVar(const std::string& scriptName, const char *varName)
-{
-    for (auto s : projectScripts) {
-        if (s->getScriptFilename() == scriptName) continue;
-        sol::state &lua = LUAManager::get()->getLua();
-        return lua[varName];
-    }
-
-    return sol::nil;
-}
-
-void ComponentRender::addProjectLUAScript(ScriptLUA *script)
-{
-    projectScripts.push_back(script);
-    reloadScriptGlobals();
-}
-
-void ComponentRender::addSceneLUAScript(ScriptLUA *script)
-{
-    scripts.push_back(script);
-    reloadScriptGlobals();
-}
-
-void ComponentRender::runScripts()
-{
-    for (auto script : projectScripts) {
-        script->runGlobal("onUpdate");
-    }
-
-    for (auto script : scripts) {
-        script->runGlobal("onUpdate");
-    }
-}
-
-void ComponentRender::reloadScriptGlobals()
-{
-    for (auto script : projectScripts) {
-        script->reloadGlobals();
-    }
-
-    for (auto script : scripts) {
-        script->reloadGlobals();
-    }
-}
-
-void ComponentRender::removeSceneScript(ScriptLUA *script)
-{
-    Logging::Message("Removing SCENE script %s", script->scriptFilename.c_str());
-
-    for (auto it = scripts.begin(); it != scripts.end(); ++it) {
-        if ((*it)->scriptFilename == script->scriptFilename) {
-            delete *it;
-            scripts.erase(it);
-            return;
-        }
-    }
-}
-
-void ComponentRender::removeProjectScript(ScriptLUA *script)
-{
-    Logging::Message("Removing PROJECT script %s", script->scriptFilename.c_str());
-
-    for (auto it = projectScripts.begin(); it != projectScripts.end(); ++it) {
-        if ((*it)->scriptFilename == script->scriptFilename) {
-            delete *it;
-            projectScripts.erase(it);
-            return;
-        }
-    }
-}
-
-void ComponentRender::onStartScripts()
-{
-    Logging::Message("Executing OnStart for PROJECT scripts...");
-    for (auto script : projectScripts) {
-        script->runGlobal("onStart");
-    }
-
-    Logging::Message("Executing OnStart for SCENE scripts...");
-    for (auto script : scripts) {
-        script->runGlobal("onStart");
-    }
-
-    Logging::Message("Executing OnStart for OBJECT scripts...");
-    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
-    for (auto object : sceneObjects) {
-        object->runStartScripts();
-    }
-}
 
 SceneLoader &ComponentRender::getSceneLoader()
 {
@@ -523,28 +370,4 @@ void ComponentRender::setGlobalIlluminationDiffuse(Vertex3D v)
 void ComponentRender::setGlobalIlluminationSpecular(Vertex3D v)
 {
     ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->setGlobalIlluminationSpecular(v);
-}
-
-void ComponentRender::createScriptLUAFile(std::string path)
-{
-    Logging::Message("Creating new Script LUA file: %s", path.c_str());
-
-    std::string projectJsonFile = std::string(path + ".lua");
-
-    std::string content = R"(
-        function onStart()
-        end
-        function onUpdate()
-        end
-        function onCollision(with)
-        end
-    )";
-
-    Tools::writeToFile(projectJsonFile, content.c_str());
-}
-
-void ComponentRender::removeScriptLUAFile(std::string path)
-{
-    Logging::Message("Deleting script file: %s", path.c_str());
-    Tools::removeFile(path);
 }

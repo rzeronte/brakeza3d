@@ -20,8 +20,8 @@ Object3D::Object3D() :
     alphaEnabled(false),
     alpha(1.0f),
     luaEnvironment(sol::environment(
-        LUAManager::get()->getLua(),
-        sol::create, LUAManager::get()->getLua().globals())
+            ComponentsManager::get()->getComponentScripting()->getLua(),
+        sol::create, ComponentsManager::get()->getComponentScripting()->getLua().globals())
     ),
     distanceToCamera(0),
     enableLights(false),
@@ -176,7 +176,7 @@ void Object3D::onUpdate()
         motion->onUpdate(position);
     }
 
-    if (ComponentsManager::get()->getComponentRender()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
+    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
         runScripts();
     }
 }
@@ -875,7 +875,7 @@ void Object3D::resolveCollision(Collider *with)
         Logging::Message("Object3D: Collision %s with %s",  getLabel().c_str(), object->getLabel().c_str());
     }
 
-    if (ComponentsManager::get()->getComponentRender()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
+    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
         runResolveCollisionScripts(with);
     }
 }
@@ -883,7 +883,7 @@ void Object3D::resolveCollision(Collider *with)
 void Object3D::runResolveCollisionScripts(Collider *with)
 {
     auto *object = dynamic_cast<Object3D*> (with);
-    const sol::state &lua = LUAManager::get()->getLua();
+    const sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
 
     sol::object luaValue = sol::make_object(lua, object);
 

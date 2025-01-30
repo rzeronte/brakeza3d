@@ -135,8 +135,8 @@ void SceneLoader::loadScene(const std::string& filename)
         cJSON *currentScript;
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
             std::string fileName = (const char*) cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
-            ComponentsManager::get()->getComponentRender()->addSceneLUAScript(
-                    new ScriptLUA(fileName, ScriptLUA::dataTypesFileFor(fileName))
+            ComponentsManager::get()->getComponentScripting()->addSceneLUAScript(
+                new ScriptLUA(fileName, ScriptLUA::dataTypesFileFor(fileName))
             );
         }
     }
@@ -204,7 +204,7 @@ void SceneLoader::saveScene(const std::string &filename)
 
     //scripts
     cJSON *sceneScriptsArray = cJSON_CreateArray();
-    for (auto script : ComponentsManager::get()->getComponentRender()->getSceneLUAScripts()) {
+    for (auto script : ComponentsManager::get()->getComponentScripting()->getSceneLUAScripts()) {
         cJSON *scriptSceneSON = cJSON_CreateObject();
         cJSON_AddStringToObject(scriptSceneSON, "name", script->getScriptFilename().c_str());
         cJSON_AddItemToArray(sceneScriptsArray, scriptSceneSON);
@@ -234,8 +234,9 @@ void SceneLoader::saveScene(const std::string &filename)
 
 void SceneLoader::clearScene()
 {
-    for (auto o: ComponentsManager::get()->getComponentRender()->getSceneLUAScripts()) {
-        ComponentsManager::get()->getComponentRender()->removeSceneScript(o);
+    auto scripting = ComponentsManager::get()->getComponentScripting();
+    for (auto o: scripting->getSceneLUAScripts()) {
+        scripting->removeSceneScript(o);
     }
 
     for (auto object: Brakeza3D::get()->getSceneObjects()) {

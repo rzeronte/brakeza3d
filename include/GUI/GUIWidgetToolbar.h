@@ -23,9 +23,8 @@ struct GUIWidgetToolbar {
     void draw() const
     {
         if (ImGui::Begin("MainToolBar")) {
-            auto render = ComponentsManager::get()->getComponentRender();
 
-            drawLUAStatusIcons(render);
+            drawLUAStatusIcons();
             VerticalSeparator();
             drawLayoutIcons();
             VerticalSeparator();
@@ -36,7 +35,7 @@ struct GUIWidgetToolbar {
         ImGui::End();
     }
 
-    void drawButton(const char* iconName, bool isActive, const ImVec4& color, std::function<void()> onClick) const
+    void drawButton(const char* iconName, bool isActive, const ImVec4& color, const std::function<void()>& onClick) const
     {
         ImGui::PushStyleColor(ImGuiCol_Button, isActive ? color : offColor);
         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, iconName), ImVec2(24, 24))) {
@@ -46,7 +45,7 @@ struct GUIWidgetToolbar {
         ImGui::SameLine();
     }
 
-    void drawFixedColorButton(const char* iconName, const ImVec4& color, std::function<void()> onClick) const
+    void drawFixedColorButton(const char* iconName, const ImVec4& color, const std::function<void()>& onClick) const
     {
         ImGui::PushStyleColor(ImGuiCol_Button, color);
         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, iconName), ImVec2(24, 24))) {
@@ -102,15 +101,17 @@ struct GUIWidgetToolbar {
                    [&]() { EngineSetup::get()->MOUSE_LOOK = !EngineSetup::get()->MOUSE_LOOK; });
     }
 
-    void drawLUAStatusIcons(ComponentRender *render) const
+    void drawLUAStatusIcons() const
     {
-        if (render->getStateLUAScripts() == EngineSetup::LuaStateScripts::LUA_STOP) {
-            drawFixedColorButton("playIcon", luaColor, [&]() { render->playLUAScripts(); });
+        auto scripting = ComponentsManager::get()->getComponentScripting();
+
+        if (scripting->getStateLUAScripts() == EngineSetup::LuaStateScripts::LUA_STOP) {
+            drawFixedColorButton("playIcon", luaColor, [&]() { scripting->playLUAScripts(); });
         } else {
-            drawFixedColorButton("stopIcon", luaColor, [&]() { render->stopLUAScripts(); });
+            drawFixedColorButton("stopIcon", luaColor, [&]() { scripting->stopLUAScripts(); });
 
         }
-        drawFixedColorButton("reloadIcon", luaColor, [&]() { render->reloadLUAScripts(); });
+        drawFixedColorButton("reloadIcon", luaColor, [&]() { scripting->reloadLUAScripts(); });
         drawFixedColorButton("removeIcon", luaColor, [&]() { SceneLoader::clearScene(); });
     }
 

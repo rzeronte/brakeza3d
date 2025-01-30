@@ -31,7 +31,7 @@ void ProjectLoader::loadProject(const std::string &filename)
         cJSON *currentScript;
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
             std::string fileName = (const char*) cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
-            ComponentsManager::get()->getComponentRender()->addProjectLUAScript(
+            ComponentsManager::get()->getComponentScripting()->addProjectLUAScript(
                 new ScriptLUA(fileName, ScriptLUA::dataTypesFileFor(fileName))
             );
         }
@@ -45,7 +45,7 @@ void ProjectLoader::saveProject(const std::string &filename)
     cJSON_AddStringToObject(root, "name", EngineSetup::get()->ENGINE_TITLE.c_str());
 
     cJSON *sceneScriptsArray = cJSON_CreateArray();
-    for (auto script : ComponentsManager::get()->getComponentRender()->getProjectLUAScripts()) {
+    for (auto script : ComponentsManager::get()->getComponentScripting()->getProjectLUAScripts()) {
         cJSON *scriptSceneSON = cJSON_CreateObject();
         cJSON_AddStringToObject(scriptSceneSON, "name", script->getScriptFilename().c_str());
         cJSON_AddItemToArray(sceneScriptsArray, scriptSceneSON);
@@ -58,9 +58,9 @@ void ProjectLoader::saveProject(const std::string &filename)
 
 void ProjectLoader::removeProjectScripts()
 {
-    auto render = ComponentsManager::get()->getComponentRender();
-    for (auto o: render->getProjectLUAScripts()) {
-        render->removeProjectScript(o);
+    auto scripting = ComponentsManager::get()->getComponentScripting();
+    for (auto o: scripting->getProjectLUAScripts()) {
+        scripting->removeProjectScript(o);
     }
 }
 

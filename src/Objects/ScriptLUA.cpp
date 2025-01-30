@@ -42,7 +42,7 @@ void ScriptLUA::getCode(const std::string &script)
 void ScriptLUA::runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg) const
 {
     if (paused) return;
-    sol::state &lua = LUAManager::get()->getLua();
+    sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
 
     try {
         lua.script(content, environment);
@@ -69,7 +69,7 @@ void ScriptLUA::runEnvironment(sol::environment &environment, const std::string&
 void ScriptLUA::runGlobal(const std::string& func) const
 {
     if (paused) return;
-    sol::state &lua = LUAManager::get()->getLua();
+    sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
 
     try {
         lua.script(content);
@@ -159,7 +159,7 @@ void ScriptLUA::reloadGlobals()
 {
     Logging::Message("Reloading LUA Global Environment (%s)", this->fileTypes.c_str());
 
-    sol::state &lua = LUAManager::get()->getLua();
+    sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
     for (const auto& type : dataTypes) {
         std::cout << "Setting GLOBAL variable for script '(" << scriptFilename.c_str() << ", " << type.name.c_str() << ", " << type.type.c_str() << ")"<< std::endl;
         Logging::Message("Setting GLOBAL variable for script '%s' (Name: '%s', Type: '%s', Value: '%s')", scriptFilename.c_str(), type.name.c_str(), type.type.c_str(), ScriptLUATypeData::toString(type.value).c_str());

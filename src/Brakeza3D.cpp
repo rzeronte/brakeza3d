@@ -23,12 +23,12 @@ Brakeza3D *Brakeza3D::get()
 void Brakeza3D::start()
 {
     componentsManager->registerComponent(new ComponentWindow(), "ComponentWindow");
+    componentsManager->registerComponent(new ComponentScripting(), "ComponentScripting");
     componentsManager->registerComponent(new ComponentCamera(), "ComponentCamera");
     componentsManager->registerComponent(new ComponentCollisions(), "ComponentCollisions");
     componentsManager->registerComponent(new ComponentInput(), "ComponentInput");
     componentsManager->registerComponent(new ComponentSound(), "ComponentSound");
     componentsManager->registerComponent(new ComponentRender(), "ComponentRender");
-
     // Custom components here
 
     mainLoop();
@@ -49,7 +49,7 @@ void Brakeza3D::mainLoop()
 
     engineTimer.start();
     managerGUI = new GUIManager(sceneObjects);
-    LUAManager::get()->initLUATypes();
+    ComponentsManager::get()->getComponentScripting()->initLUATypes();
     componentsManager->getComponentCollisions()->initBulletSystem();
     onStartComponents();
     //LoadDemo();

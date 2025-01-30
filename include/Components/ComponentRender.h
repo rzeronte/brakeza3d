@@ -10,7 +10,6 @@
 #include "Component.h"
 #include "../Objects/Triangle3D.h"
 #include "../Render/Tile.h"
-#include "../LUAManager.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/Render/Maths.h"
 #include "../2D/TextWriter.h"
@@ -38,9 +37,6 @@ private:
 
     Object3D *selectedObject;
 
-    EngineSetup::LuaStateScripts stateScripts;
-    std::vector<ScriptLUA*> scripts;
-    std::vector<ScriptLUA*> projectScripts;
     TextWriter *textWriter;
     SceneLoader sceneLoader;
     ProjectLoader projectLoader;
@@ -85,33 +81,6 @@ public:
 
     static void deleteRemovedObjects();
 
-    EngineSetup::LuaStateScripts getStateLUAScripts();
-
-    void playLUAScripts();
-
-    void stopLUAScripts();
-
-    void reloadLUAScripts();
-
-    std::vector<ScriptLUA*> &getSceneLUAScripts();
-
-    std::vector<ScriptLUA*> &getProjectLUAScripts();
-
-    void addSceneLUAScript(ScriptLUA *script);
-
-    void addProjectLUAScript(ScriptLUA *script);
-
-    sol::object getGlobalScriptVar(const std::string& scriptName, const char *varName);
-
-    void reloadScriptGlobals();
-
-    void removeSceneScript(ScriptLUA *script);
-
-    void removeProjectScript(ScriptLUA *script);
-
-    void onStartScripts();
-
-    void runScripts();
 
     SceneLoader &getSceneLoader();
 
@@ -135,17 +104,13 @@ public:
 
     static bool compareDistances(Object3D *obj1, Object3D *obj2);
 
-    void setGlobalIlluminationDirection(Vertex3D d);
+    static void setGlobalIlluminationDirection(Vertex3D d);
 
-    void setGlobalIlluminationAmbient(Vertex3D a);
+    static void setGlobalIlluminationAmbient(Vertex3D a);
 
-    void setGlobalIlluminationDiffuse(Vertex3D d);
+    static void setGlobalIlluminationDiffuse(Vertex3D d);
 
-    void setGlobalIlluminationSpecular(Vertex3D s);
-
-    void createScriptLUAFile(std::string path);
-
-    void removeScriptLUAFile(std::string path);
+    static void setGlobalIlluminationSpecular(Vertex3D s);
 };
 
 

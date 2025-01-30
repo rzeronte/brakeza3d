@@ -7,7 +7,6 @@
 #include "Components/Component.h"
 #include "ComponentsManager.h"
 #include "Components/ComponentCollisions.h"
-#include "LUAManager.h"
 #include "Components/ComponentInput.h"
 #include "Components/ComponentWindow.h"
 #include "Components/ComponentSound.h"

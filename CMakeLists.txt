@@ -78,9 +78,6 @@ add_executable(Brakeza3D
 
     src/LUAIntegration.h
     src/Brakeza3D.cpp                               include/Brakeza3D.h
-    src/ComponentsManager.cpp                       include/ComponentsManager.h
-
-    src/Components/ComponentCamera.cpp              include/Components/ComponentCamera.h
     src/Objects/Mesh3D.cpp                          include/Objects/Mesh3D.h
     src/Objects/Triangle3D.cpp                      include/Objects/Triangle3D.h
     src/Objects/Vertex3D.cpp                        include/Objects/Vertex3D.h
@@ -117,7 +114,6 @@ add_executable(Brakeza3D
     src/Misc/SceneLoader.cpp                        include/Misc/SceneLoader.h
     src/Misc/Grid3D.cpp                             include/Misc/Grid3D.h
 
-    include/LUAManager.h                            src/EngineBuffers.cpp
     include/EngineSetup.h                           src/EngineSetup.cpp
 
     include/Misc/Color.h                            src/Misc/Color.cpp
@@ -152,6 +148,9 @@ add_executable(Brakeza3D
 
     src/Collisions/BSPCollider.cpp                  src/Collisions/BSPCollider.h
 
+    src/ComponentsManager.cpp                       include/ComponentsManager.h
+    src/Components/ComponentScripting.cpp           include/Components/ComponentScripting.h
+    src/Components/ComponentCamera.cpp              include/Components/ComponentCamera.h
     src/Components/ComponentCollisions.cpp          include/Components/ComponentCollisions.h
     src/Components/Component.cpp                    include/Components/Component.h
     src/Components/ComponentRender.cpp              include/Components/ComponentRender.h
