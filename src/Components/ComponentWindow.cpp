@@ -92,12 +92,12 @@ void ComponentWindow::initWindow()
         exit(-1);
     } else {
         window = SDL_CreateWindow(
-                SETUP->ENGINE_TITLE.c_str(),
-                SDL_WINDOWPOS_UNDEFINED,
-                SDL_WINDOWPOS_UNDEFINED,
-                SETUP->screenWidth,
-                SETUP->screenHeight,
-                SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE
+            SETUP->ENGINE_TITLE.c_str(),
+            SDL_WINDOWPOS_UNDEFINED,
+            SDL_WINDOWPOS_UNDEFINED,
+            SETUP->screenWidth,
+            SETUP->screenHeight,
+            SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE
         );
 
         context = SDL_GL_CreateContext(window);

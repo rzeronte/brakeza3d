@@ -63,8 +63,6 @@ public:
 
     static btTransform GLMMatrixToBulletTransform(const glm::mat4& glmMatrix);
 
-    static const char *sprintf(const char *, ...);
-
     static float percentage(int value, int total);
 
     static std::string getExtensionFromFilename(const std::string &filename);
