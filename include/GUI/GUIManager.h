@@ -114,7 +114,6 @@ public:
         icons.addItem(iconsFolder + "particles.png", "particlesIcon");
         icons.addItem(iconsFolder + "gravity.png", "gravityIcon");
         icons.addItem(iconsFolder + "click.png", "clickIcon");
-        icons.addItem(iconsFolder + "freelook.png", "freelookIcon");
         icons.addItem(iconsFolder + "DrawColliders.png", "drawCollidersIcon");
         icons.addItem(iconsFolder + "target.png", "targetIcon");
         icons.addItem(iconsFolder + "mouseIcon.png", "mouseLookIcon");
@@ -122,6 +121,7 @@ public:
         icons.addItem(iconsFolder + "layoutCoding.png", "layoutCodingIcon");
         icons.addItem(iconsFolder + "layoutDesign.png", "layoutDesignIcon");
         icons.addItem(iconsFolder + "project.png", "projectIcon");
+        icons.addItem(iconsFolder + "open.png", "openIcon");
     }
 
     void drawScriptsLuaFolderFiles(const std::string& folder)
@@ -329,7 +329,7 @@ public:
                     ImGui::Text("%s", title.c_str());
 
                     ImGui::TableSetColumnIndex(1);
-                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "playIcon"), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "openIcon"), ImVec2(14, 14))) {
                         ComponentsManager::get()->getComponentRender()->getProjectLoader().loadProject(folder + file);
                     }
                     ImGui::SameLine();
@@ -386,7 +386,7 @@ public:
                     ImGui::Text("%s", title.c_str());
 
                     ImGui::TableSetColumnIndex(1);
-                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "playIcon"), ImVec2(14, 14))) {
+                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "openIcon"), ImVec2(14, 14))) {
                         SceneLoader::clearScene();
                         ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(folder + file);
                     }
