@@ -124,6 +124,60 @@ public:
         icons.addItem(iconsFolder + "open.png", "openIcon");
     }
 
+    void drawSelectedObjectScripts()
+    {
+        bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
+
+        if (!hasSelectedIndex) {
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
+            return;
+        }
+
+        auto o = gameObjects[selectedObjectIndex];
+        auto objectScripts = o->getScripts();
+
+        if ((int) objectScripts.size() <= 0) {
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Not Scripts LUA found");
+        }
+
+        for (int i = 0; i < (int) objectScripts.size(); i++) {
+            auto currentScript = objectScripts[i];
+            ImGui::PushID(i);
+
+            std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
+
+            if (currentScript->isPaused()) {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "unlockIcon"), ImVec2(14, 14))) {
+                    currentScript->setPaused(false);
+                }
+            } else {
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "lockIcon"), ImVec2(14, 14))) {
+                    currentScript->setPaused(true);
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
+                o->removeScript(currentScript);
+            }
+            ImGui::SameLine();
+            if (ImGui::Button(optionText.c_str())) {
+                delete scriptEditableManager.script;
+                scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
+                scriptEditableManager.script = new ScriptLUA(
+                        scriptEditableManager.selectedScriptFilename,
+                        ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename)
+                );
+                strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
+            }
+
+            currentScript->drawImGuiProperties();
+
+            ImGui::Separator();
+
+            ImGui::PopID();
+        }
+    }
+
     void drawScriptsLuaFolderFiles(const std::string& folder)
     {
         static char name[256];
@@ -562,6 +616,11 @@ public:
 
     void drawWidgets()
     {
+        if (ImGui::Begin("Object Scripts")) {
+            drawSelectedObjectScripts();
+        }
+        ImGui::End();
+
         if (ImGui::Begin("Scripts")) {
             drawScriptsLuaFolderFiles(currentScriptsFolderWidget);
         }
