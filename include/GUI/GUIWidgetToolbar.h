@@ -13,9 +13,9 @@ struct GUIWidgetToolbar {
     explicit GUIWidgetToolbar(TexturePackage &imGuiTextures)
 :
     ImGuiTextures(imGuiTextures),
-    offColor(ImVec4(0.9f, 0.5f, 0.5f, 1.0f)), // Rojo suave
-    onColor(ImVec4(0.5f, 0.9f, 0.5f, 1.0f)), // Verde suave
-    luaColor(ImVec4(0.4f, 0.4f, 0.4f, 1.0f))  // LUA color: blueish tone
+    offColor(ImVec4(0.2f, 0.2f, 0.2f, 1.0f)), // Gris oscuro
+    onColor(ImVec4(0.7f, 0.7f, 0.7f, 1.0f)), // Gris claro
+    luaColor(ImVec4(0.5f, 0.5f, 0.5f, 1.0f))  // Gris intermedio
 {
 
 }

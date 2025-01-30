@@ -34,7 +34,7 @@ void ShaderOpenGLParticles::render(
     glBindVertexArray(VertexArrayID);
 
     glm::mat4 ProjectionMatrix = Camera3D::getGLMMat4ProjectionMatrix();
-    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getGLMMat4ViewMatrix();
+    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getGLMMat4ViewMatrix();
     glm::mat4 ViewProjectionMatrix = ProjectionMatrix * ViewMatrix;
 
     glEnable(GL_BLEND);

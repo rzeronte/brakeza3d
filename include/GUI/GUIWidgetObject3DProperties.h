@@ -44,12 +44,12 @@ struct GUIWidgetObject3DProperties {
                 o,
                 operation,
                 o->getModelMatrix(),
-                ComponentsManager::get()->getComponentCamera()->getCamera()->getGLMMat4ViewMatrix(),
+                ComponentsManager::get()->getComponentCamera()->getGLMMat4ViewMatrix(),
                 Camera3D::getGLMMat4ProjectionMatrix()
             );
         }
 
-        if (ImGui::Begin("Properties")) {
+        if (ImGui::Begin("Object Properties")) {
             if (hasSelectedIndex) {
                 auto o = gameObjects[selectedObjectIndex];
                 if (o->isRemoved()) {
@@ -69,54 +69,6 @@ struct GUIWidgetObject3DProperties {
                 }
                 ImGui::Separator();
                 o->drawImGuiProperties();
-
-                ImGui::Separator();
-
-                if (ImGui::TreeNode("Scripts LUA")) {
-                    auto objectScripts = o->getScripts();
-
-                    if ((int) objectScripts.size() <= 0) {
-                        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Not Scripts LUA found");
-                    }
-
-                    for (int i = 0; i < (int) objectScripts.size(); i++) {
-                        auto currentScript = objectScripts[i];
-                        ImGui::PushID(i);
-
-                        std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
-
-                        if (currentScript->isPaused()) {
-                            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "unlockIcon"), ImVec2(14, 14))) {
-                                currentScript->setPaused(false);
-                            }
-                        } else {
-                            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "lockIcon"), ImVec2(14, 14))) {
-                                currentScript->setPaused(true);
-                            }
-                        }
-                        ImGui::SameLine();
-                        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "removeIcon"), ImVec2(14, 14))) {
-                            o->removeScript(currentScript);
-                        }
-                        ImGui::SameLine();
-                        if (ImGui::Button(optionText.c_str())) {
-                            delete scriptEditableManager.script;
-                            scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
-                            scriptEditableManager.script = new ScriptLUA(
-                                    scriptEditableManager.selectedScriptFilename,
-                                    ScriptLUA::dataTypesFileFor(scriptEditableManager.selectedScriptFilename)
-                            );
-                            strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
-                        }
-
-                        currentScript->drawImGuiProperties();
-
-                        ImGui::Separator();
-
-                        ImGui::PopID();
-                    }
-                    ImGui::TreePop();
-                }
 
                 ImGui::Separator();
 

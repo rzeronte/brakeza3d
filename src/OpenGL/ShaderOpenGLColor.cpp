@@ -49,7 +49,7 @@ void ShaderOpenGLColor::render(
     glUseProgram(programID);
     glBindVertexArray(VertexArrayID);
 
-    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getGLMMat4ViewMatrix();
+    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getGLMMat4ViewMatrix();
     glm::mat4 ProjectionMatrix = Camera3D::getGLMMat4ProjectionMatrix();
 
     setMat4("projection", ProjectionMatrix);

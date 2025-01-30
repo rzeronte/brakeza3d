@@ -45,8 +45,7 @@ Vertex3D Transforms::Point2DToWorld(Point2D &p)
 
     // Obtener la matriz de proyección y la matriz de vista
     glm::mat4 projectionMatrix = Camera3D::getGLMMat4ProjectionMatrix();
-    auto cam = ComponentsManager::get()->getComponentCamera()->getCamera();
-    glm::mat4 viewMatrix = cam->getGLMMat4ViewMatrix();
+    glm::mat4 viewMatrix = ComponentsManager::get()->getComponentCamera()->getGLMMat4ViewMatrix();
 
     // Invertir la matriz de proyección y la matriz de vista
     glm::mat4 inverseProjectionMatrix = glm::inverse(projectionMatrix);
@@ -72,7 +71,7 @@ Vertex3D Transforms::Point2DToWorld(Point2D &p)
 
 Point2D Transforms::WorldToPoint(Vertex3D v)
 {
-    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getCamera()->getGLMMat4ViewMatrix();
+    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getGLMMat4ViewMatrix();
     glm::mat4 ProjectionMatrix = Camera3D::getGLMMat4ProjectionMatrix();
 
     glm::vec4 position1 = ProjectionMatrix * ViewMatrix * glm::vec4(v.x, v.y, v.z, 1.0);

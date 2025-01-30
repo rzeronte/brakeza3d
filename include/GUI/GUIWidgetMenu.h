@@ -46,6 +46,9 @@ struct GUIWidgetMenu
         const int range_min_framerate_distance = 0;
         const int range_max_framerate_distance = 500;
 
+        const float range_min_fov = 0;
+        const float range_max_fov = 160;
+
         if (show_about_window) {
             ImGui::OpenPopup("About Brakeza3D");
         }
@@ -188,7 +191,8 @@ struct GUIWidgetMenu
                     }
                 }
                 ImGui::Separator();
-
+                ImGui::DragScalar("FOV", ImGuiDataType_Float, &EngineSetup::get()->HORIZONTAL_FOV, 1, &range_min_fov,&range_max_fov, "%f", 1.0f);
+                ImGui::Separator();
                 ImGui::Checkbox("Limit frame rate", &EngineSetup::get()->LIMIT_FRAMERATE);
                 if (EngineSetup::get()->LIMIT_FRAMERATE) {
                     ImGui::DragScalar("Limite frames to:", ImGuiDataType_S32, &EngineSetup::get()->FRAMERATE, range_framerate_sensibility, &range_min_framerate_distance,&range_max_framerate_distance, "%d", 1.0f);
