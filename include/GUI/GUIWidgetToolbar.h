@@ -19,11 +19,9 @@ struct GUIWidgetToolbar {
 {
 
 }
-
     void draw() const
     {
         if (ImGui::Begin("MainToolBar")) {
-
             drawLUAStatusIcons();
             VerticalSeparator();
             drawLayoutIcons();

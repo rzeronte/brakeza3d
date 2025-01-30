@@ -173,7 +173,7 @@ void Brakeza3D::onEndComponents()
     }*/
 
     SDL_Quit();
-    Logging::head("Exiting... good bye! ;)");
+    Logging::Message("Exiting... good bye! ;)");
     exit(0);
 }
 

@@ -17,7 +17,7 @@ public:
 
     static void Message(const char *, ...);
 
-    static void head(const char *, ...);
+    static void Error(const std::string& error, ...);
 
     void Log(float value);
 

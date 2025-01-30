@@ -11,7 +11,7 @@ ComponentCamera::ComponentCamera()
 
 void ComponentCamera::onStart()
 {
-    Logging::head("ComponentCamera onStart");
+    Logging::Message("ComponentCamera onStart");
 }
 
 void ComponentCamera::preUpdate()

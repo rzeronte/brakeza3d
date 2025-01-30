@@ -170,8 +170,9 @@ public:
                 }
                 ImGui::TableSetColumnIndex(1);
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
-                    ComponentScripting::removeScriptLUAFile(folder + file);
+                    ImGui::OpenPopup("Delete Script?");
                 }
+                ShowDeletePopup("Delete Script?", [folder, file] () {ComponentScripting::removeScriptLUAFile(folder + file);});
                 ImGui::PopID();
             }
             ImGui::EndTable();
@@ -337,8 +338,10 @@ public:
                     }
                     ImGui::SameLine();
                     if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
-                        ProjectLoader::removeProject(folder + file);
+                        ImGui::OpenPopup("Delete Project?");
                     }
+                    ShowDeletePopup("Delete Project?", [folder, file] () { ProjectLoader::removeProject(folder + file); });
+
                 }
                 ImGui::PopID();
             }
@@ -393,9 +396,10 @@ public:
                     }
                     ImGui::SameLine();
                     if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
-                        SceneLoader::removeScene(folder + file);
+                        ImGui::OpenPopup("Delete Scene?");
                     }
-                }
+                    ShowDeletePopup("Delete Scene?", [folder, file] () { SceneLoader::removeScene(folder + file); });
+            }
                 ImGui::PopID();
             }
             ImGui::EndTable();
@@ -905,6 +909,30 @@ public:
 
     void setGuizmoOperation(ImGuizmo::OPERATION guizmoOperation) {
         GUIManager::guizmoOperation = guizmoOperation;
+    }
+
+    static void ShowDeletePopup(const char* title, const std::function<void()>& onConfirm)
+    {
+        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+        if (ImGui::BeginPopupModal(title, nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+            ImGui::Text("Are you sure to delete !?!?");
+            ImGui::Separator();
+
+            if (ImGui::Button("OK", ImVec2(120, 0))) {
+                onConfirm();
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SetItemDefaultFocus();
+            ImGui::SameLine();
+
+            if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
     }
 };
 

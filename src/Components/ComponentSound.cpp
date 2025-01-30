@@ -10,7 +10,7 @@ ComponentSound::ComponentSound()
 
 void ComponentSound::onStart()
 {
-    Logging::head("ComponentSound onStart");
+    Logging::Message("ComponentSound onStart");
     LoadSoundsConfigFile();
 }
 
