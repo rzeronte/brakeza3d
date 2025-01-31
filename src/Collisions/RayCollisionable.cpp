@@ -55,7 +55,7 @@ void RayCollisionable::hasHit()
 
 void RayCollisionable::resolveCollision(Collider *objectWithCollision)
 {
-    Logging::Log("Collision with ray!");
+    Logging::Message("Collision with ray!");
 }
 
 const Vertex3D &RayCollisionable::getHitPosition() const {

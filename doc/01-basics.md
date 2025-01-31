@@ -1,7 +1,7 @@
 >[Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
 
 - [Introducción](#brakeza3d-conceptos-básicos)
-- [Elementos principales](#elementos-principales)
+- [Conceptos principales](#conceptos-principales)
 - [Sistema de scripting](#sistema-de-scripting)
 - [GUI](#gui)
 
@@ -18,46 +18,50 @@ proyectos usando LUA como lenguaje de scripting.
 
 ---
 
-## Elementos principales
+## Conceptos principales
 
-En Brakeza3D existen dos elementos principales:
+En Brakeza3D existen cuatro conceptos principales:
+
+- `Proyectos`
+- `Scripts`
+- `Escenas`
+- `Objetos`
+
+### 1) Proyectos
+
+Un proyecto es un contenedor de `escenas` y `scripts`.
+
+Se pueden almacenar en disco y recuperar en cualquier momento.
+
+### 2) Scripts
+
+Ficheros de código fuente LUA para interactuar con Brakeza3D. Los scripts pueden 
+vincularse a `proyectos`, `escenas` u `objetos` para implementar la lógica deseada.
+
+Se pueden almacenar en disco y recuperar en cualquier momento.
+
+### 3) Escenas
+
+Una escena es un contenedor de `objetos` y `scripts`.
+
+En una escena podemos encontrar:
 
 - `Objetos`
-- `Escenas`
+- `Scripts`
+- `Posición de cámara`
+- `Configuración de iluminación ADS`
+- `Shaders`
 
-### 1) Objetos
+Se pueden almacenar en disco y recuperar en cualquier momento.
 
-Un objeto es una figura abstracta que representa cualquier entidad existente en nuestro mundo 3D. Encontraremos
-multitud de tipos de objeto a lo largo de esta documentación. A continuación se enumeran algunos de ellos:
+### 4) Objetos
 
-- Cámara (Camera3D)
-- Modelo 3D (Mesh3D)
-- Emisor de partículas (ParticleEmissor)
-- ...
-
-En líneas generales, cualquier cosa susceptible de ser representada en pantalla será un objeto.
+Entidades existente en nuestro mundo 3D. En líneas generales, cualquier cosa susceptible
+de ser representada en pantalla será un objeto: *un modelo 3D*, *una luz*, *emisor de partículas*...
 
 Todos los objetos comparten las propiedades básicas de un elemento 3D ya sea nombre, posición, rotación, tamaño, pero cada tipo de objeto específico ampliará estas segun su caso.
 
 Desde código podremos activar, mover, rotar, eliminar, escalar y muchas otras acciones sobre los objetos.
-
-### 2) Escenas
-
-Una escena se compone de un conjunto de objetos en un estado concreto. Su ventaja principal es que se pueden almacenar en disco y recuperar en cualquier momento.
-
-La escena almacena demás información global como iluminación, posición de cámara, scripts, etc.
-
-Dispondremos de un `SceneLoader`, que nos permitirá gestionar el manejo de carga y cambio de escenas.
-
----
-
-## Sistema de scripting
-
-Brakeza3D integra un sistema de scripting utilizando LUA como lenguaje. Tanto desde interfaz gráfica como
-desde código podrás trabajar con ``scripts`` que asociarás a tus objetos o escenas para proporcionarles lógica.
-
-Brakeza3D trabaja con el concepto de ``Proyecto``. Un proyecto no es mas que un conjunto de scripts. Crearás un
-`proyecto` por cada juego o aplicación que crees con Brakeza3D.
 
 ---
 

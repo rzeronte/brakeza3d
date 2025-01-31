@@ -505,3 +505,13 @@ bool Tools::removeFile(const std::string& filePath)
         return false;
     }
 }
+
+std::string Tools::removeSubstring(const std::string& str, const std::string& toRemove)
+{
+    std::string result = str;
+    size_t pos = 0;
+    while ((pos = result.find(toRemove, pos)) != std::string::npos) {
+        result.erase(pos, toRemove.length());
+    }
+    return result;
+}

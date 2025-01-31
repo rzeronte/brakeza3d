@@ -271,8 +271,8 @@ void BSPMap::InitializeTriangles() {
 
     }
 
-    Logging::Log("BSP Num Triangles: %s", this->model_triangles.size());
-    Logging::Log("BSP Num Surfaces: %s", this->getNumSurfaces());
+    Logging::Message("BSP Num Triangles: %s", this->model_triangles.size());
+    Logging::Message("BSP Num Surfaces: %s", this->getNumSurfaces());
 }
 
 void BSPMap::InitializeLightmaps() {
@@ -876,7 +876,7 @@ Vertex3D BSPMap::getStartMapPosition()
         //parsePositionFromEntityAttribute(value).consoleInfo("getStartMapPosition", false);
         return parsePositionFromEntityAttribute(value);
     } else {
-        Logging::Log("Not exist entity for 'info_player_start'");
+        Logging::Message("Not exist entity for 'info_player_start'");
     }
 
     return Vertex3D();
@@ -1068,7 +1068,7 @@ void BSPMap::makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, mode
 void BSPMap::createObjects3DFromBSPEntities() {
     EngineSetup *engineSetup = EngineSetup::get();
 
-    Logging::Log("BSP Num Entities: %s", this->n_entities);
+    Logging::Message("BSP Num Entities: %s", this->n_entities);
 
     Brakeza3D *brakeza3D = Brakeza3D::get();
 

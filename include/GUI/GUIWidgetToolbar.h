@@ -24,6 +24,8 @@ struct GUIWidgetToolbar {
         if (ImGui::Begin("MainToolBar")) {
             drawLUAStatusIcons();
             VerticalSeparator();
+            drawGUIIcon();
+            VerticalSeparator();
             drawLayoutIcons();
             VerticalSeparator();
             drawMouseOptionsIcons();
@@ -104,13 +106,20 @@ struct GUIWidgetToolbar {
         auto scripting = ComponentsManager::get()->getComponentScripting();
 
         if (scripting->getStateLUAScripts() == EngineSetup::LuaStateScripts::LUA_STOP) {
-            drawFixedColorButton("playIcon", luaColor, [&]() { scripting->playLUAScripts(); });
+            drawFixedColorButton("playIcon", onColor, [&]() { scripting->playLUAScripts(); });
         } else {
             drawFixedColorButton("stopIcon", luaColor, [&]() { scripting->stopLUAScripts(); });
-
         }
         drawFixedColorButton("reloadIcon", luaColor, [&]() { scripting->reloadLUAScripts(); });
         drawFixedColorButton("removeIcon", luaColor, [&]() { SceneLoader::clearScene(); });
+    }
+
+    void drawGUIIcon() const
+    {
+        drawButton("guiIcon",
+                   EngineSetup::get()->IMGUI_ENABLED,
+                   onColor,
+                   [&]() { EngineSetup::get()->IMGUI_ENABLED = !EngineSetup::get()->IMGUI_ENABLED; });
     }
 
     static void VerticalSeparator()

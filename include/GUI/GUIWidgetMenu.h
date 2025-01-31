@@ -268,7 +268,7 @@ struct GUIWidgetMenu
             if (ImGui::BeginMenu("Logging")) {
                 ImGui::Checkbox("Output to Console", &EngineSetup::get()->LOGGING);
                 ImGui::Separator();
-                ImGui::Checkbox("Collision objects", &EngineSetup::get()->LOG_COLLISION_OBJECTS);
+                ImGui::Checkbox("Log collisions", &EngineSetup::get()->LOG_COLLISION_OBJECTS);
                 ImGui::EndMenu();
             }
 

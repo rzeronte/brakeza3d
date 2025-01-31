@@ -93,6 +93,8 @@ public:
     );
 
     static bool removeFile(const std::string &filePath);
+
+    static std::string removeSubstring(const std::string &str, const std::string &toRemove);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

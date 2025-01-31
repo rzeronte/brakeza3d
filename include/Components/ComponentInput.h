@@ -109,7 +109,7 @@ public:
 
     [[nodiscard]] float getControllerAxisRightY() const;
 
-    void handleToggleImGui(SDL_Event *event);
+    void handleToggleKeys(SDL_Event *event);
 
     [[maybe_unused]] bool isCharPressed(const char *character);
 
