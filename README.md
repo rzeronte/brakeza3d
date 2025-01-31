@@ -22,7 +22,9 @@ Main features:
 - Basic component for add sounds
 - Interface for XBOX/Playstation controller
 
-# Dependences
+---
+
+## Dependences
 
 - SDL2
 - SDL2_image
@@ -34,7 +36,9 @@ Main features:
 - GLM
 - LUA5.2
 
-# Linux compilation
+---
+
+## Linux compilation
 
 This project has been checked on Ubuntu 20.10 from CLI
 
@@ -54,32 +58,39 @@ mkdir build && cd build
 cmake ..
 make
 ```
+---
 
-# Windows compilation
+## Windows compilation
 
 We have precompiled libraries for compiling with MinGW tested with CLion.
 
 https://github.com/rzeronte/brakeza-mingw-precompiled-libraries
 
+---
 
-# OSX compilation
+## OSX compilation
 
 Currently, I do not compile for Mac, but the project was started on it, so that it shouldn't vary much compared to compiling with Linux, once the dependencies are satisfied.
 
-# Documentation
+---
+## Documentation
 
 Here you can find some documentation for starting:
 
 https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md
 
-# Brakeza3D - Videos
+---
 
-![Screenshoot01](https://brakeza.com/wp-content/uploads/2024/01/screenshoot_2024_04.png)
+## Brakeza3D - Screenshots
 
-![Screenshoot02](https://brakeza.com/wp-content/uploads/2024/01/screenshoot_2024_03.png)
+![Screenshoot01](/doc/screenshots/01.png)
 
-![Screenshoot03](https://brakeza.com/wp-content/uploads/2024/01/screenshoot_2024_02.png)
+![Screenshoot02](/doc/screenshots/02.png)
 
-![Screenshoot04](https://brakeza.com/wp-content/uploads/2024/01/screenshoot_2024_01.png)
+![Screenshoot03](/doc/screenshots/03.png)
 
-![Screenshoot05](https://brakeza.com/wp-content/uploads/2024/01/brakeza3d-2024-menu.png)
+![Screenshoot04](/doc/screenshots/04.png)
+
+![Screenshoot05](/doc/screenshots/05.png)
+
+![Screenshoot06](/doc/screenshots/06.png)
