@@ -122,6 +122,7 @@ public:
         icons.addItem(iconsFolder + "layoutDesign.png", "layoutDesignIcon");
         icons.addItem(iconsFolder + "project.png", "projectIcon");
         icons.addItem(iconsFolder + "open.png", "openIcon");
+        icons.addItem(iconsFolder + "gui.png", "guiIcon");
     }
 
     void drawSelectedObjectScripts()
@@ -137,14 +138,14 @@ public:
         auto objectScripts = o->getScripts();
 
         if ((int) objectScripts.size() <= 0) {
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Not Scripts LUA found");
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "The selected object has no associated scripts");
         }
 
         for (int i = 0; i < (int) objectScripts.size(); i++) {
             auto currentScript = objectScripts[i];
             ImGui::PushID(i);
 
-            std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
+            std::string optionText = std::to_string(i + 1) + ") " + Tools::removeSubstring(currentScript->scriptFilename, EngineSetup::get()->SCRIPTS_FOLDER);
 
             if (currentScript->isPaused()) {
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "unlockIcon"), ImVec2(14, 14))) {
@@ -726,6 +727,10 @@ public:
         if (ImGui::Begin("Object variables")) {
             bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
 
+            if (!hasSelectedIndex) {
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
+            }
+
             if (hasSelectedIndex) {
                 static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
                 if (ImGui::BeginTable("ObjectVariablesTable", 3, flags)) {
@@ -755,12 +760,10 @@ public:
                             ImGui::Text("%s", std::string(luaEnvironment[key]).c_str());
                         }
                     }
-
-                    if (numVarFound <= 0) {
-                        ImGui::Text("%s", "There are not variables yet");
-                    }
-
                     ImGui::EndTable();
+                    if (numVarFound <= 0) {
+                        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "The selected object has defined variables");
+                    }
                 }
             }
         }

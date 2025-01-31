@@ -69,7 +69,7 @@ void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
     updateGamePadStates();
     updateKeyboardStates(e);
     handleWindowEvents(e, finish);
-    handleToggleImGui(e);
+    handleToggleKeys(e);
 
     if (!isEnabled()) return;
 
@@ -155,23 +155,9 @@ void ComponentInput::updateMouseStates(SDL_Event *event)
 void ComponentInput::handleProjectileDemo(SDL_Event *event)
 {
     if (event->type == SDL_KEYDOWN) {
-        if (keyboard[SDL_SCANCODE_F5]) {
-            ComponentCollisions::demoProjectile(0);
-        }
-        if (keyboard[SDL_SCANCODE_F6]) {
-            ComponentCollisions::demoProjectile(1);
-        }
-        if (keyboard[SDL_SCANCODE_F7]) {
-            ComponentCollisions::demoProjectile(2);
-        }
-        if (keyboard[SDL_SCANCODE_F8]) {
-            ComponentCollisions::demoProjectile(3);
-        }
         if (keyboard[SDL_SCANCODE_F9]) {
-            ComponentCollisions::demoProjectile(4);
-        }
-        if (keyboard[SDL_SCANCODE_F10]) {
-            ComponentCollisions::demoProjectile(5);
+            int type = Tools::random(0, 5);
+            ComponentCollisions::demoProjectile(type);
         }
     }
 }
@@ -320,11 +306,38 @@ float ComponentInput::getControllerAxisRightY() const {
     return controllerAxisRightY;
 }
 
-void ComponentInput::handleToggleImGui(SDL_Event *event)
+void ComponentInput::handleToggleKeys(SDL_Event *event)
 {
     if (event->type == SDL_KEYDOWN) {
+        auto scripting = ComponentsManager::get()->getComponentScripting();
+
         if (keyboard[SDL_SCANCODE_F1]) {
+            if (scripting->getStateLUAScripts() == EngineSetup::LuaStateScripts::LUA_STOP) {
+                scripting->playLUAScripts();
+            } else {
+                scripting->stopLUAScripts();
+            }
+        }
+        if (keyboard[SDL_SCANCODE_F2]) {
+            scripting->reloadLUAScripts();
+        }
+        if (keyboard[SDL_SCANCODE_F3]) {
+            SceneLoader::clearScene();
+        }
+        if (keyboard[SDL_SCANCODE_F4]) {
             EngineSetup::get()->IMGUI_ENABLED = !EngineSetup::get()->IMGUI_ENABLED;
+        }
+
+        auto *window = ComponentsManager::get()->getComponentWindow();
+
+        if (keyboard[SDL_SCANCODE_F5]) {
+            window->ImGuiConfigChanged = ImGUIConfigs::DEFAULT;
+        }
+        if (keyboard[SDL_SCANCODE_F6]) {
+            window->ImGuiConfigChanged = ImGUIConfigs::CODING;
+        }
+        if (keyboard[SDL_SCANCODE_F7]) {
+            window->ImGuiConfigChanged = ImGUIConfigs::DESIGN;
         }
     }
 }
