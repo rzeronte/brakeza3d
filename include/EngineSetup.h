@@ -15,7 +15,7 @@ public:
 
     static EngineSetup *instance;
 
-    bool LOGGING = false;
+    bool LOGGING = true;
 
     bool IMGUI_ENABLED = true;
 

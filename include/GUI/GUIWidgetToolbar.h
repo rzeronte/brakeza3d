@@ -9,13 +9,15 @@ struct GUIWidgetToolbar {
     ImVec4 offColor;
     ImVec4 onColor;
     ImVec4 luaColor;
+    ImVec4 playColor;
 
     explicit GUIWidgetToolbar(TexturePackage &imGuiTextures)
 :
     ImGuiTextures(imGuiTextures),
     offColor(ImVec4(0.2f, 0.2f, 0.2f, 1.0f)), // Gris oscuro
     onColor(ImVec4(0.7f, 0.7f, 0.7f, 1.0f)), // Gris claro
-    luaColor(ImVec4(0.5f, 0.5f, 0.5f, 1.0f))  // Gris intermedio
+    luaColor(ImVec4(0.5f, 0.5f, 0.5f, 1.0f)),  // Gris intermedio
+    playColor(ImVec4(0.3f, 0.9f, 0.3f, 1.0f))  // Gris intermedio
 {
 
 }
@@ -106,9 +108,9 @@ struct GUIWidgetToolbar {
         auto scripting = ComponentsManager::get()->getComponentScripting();
 
         if (scripting->getStateLUAScripts() == EngineSetup::LuaStateScripts::LUA_STOP) {
-            drawFixedColorButton("playIcon", onColor, [&]() { scripting->playLUAScripts(); });
+            drawFixedColorButton("playIcon", luaColor, [&]() { scripting->playLUAScripts(); });
         } else {
-            drawFixedColorButton("stopIcon", luaColor, [&]() { scripting->stopLUAScripts(); });
+            drawFixedColorButton("stopIcon", playColor, [&]() { scripting->stopLUAScripts(); });
         }
         drawFixedColorButton("reloadIcon", luaColor, [&]() { scripting->reloadLUAScripts(); });
         drawFixedColorButton("removeIcon", luaColor, [&]() { SceneLoader::clearScene(); });
