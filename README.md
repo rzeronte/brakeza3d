@@ -2,9 +2,6 @@
 
 Brakeza3D is an open source 3D engine written from scratch in C++
 
-![alt text](https://brakeza.com/wp-content/uploads/2024/01/brakeza3d-2024.png)
-
-Main features:
 
 - Cross Platform (Windows/Linux/OSX checked)
 - Easy and simple architecture (Based in components easily maintainable)
