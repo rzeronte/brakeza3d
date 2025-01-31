@@ -11,6 +11,7 @@
 - [Teclado y ratón](#teclado-y-ratón)
 - [Detección de colisiones](#detección-de-colisiones)
 - [Carga y reproducción de sonidos](#carga-y-reproducción-de-sonidos)
+- [Escribir texto en pantalla](#escribir-texto-en-pantalla)
 
 ---
 
@@ -252,3 +253,25 @@ end
     ...
     systemSound:playSound("sound_demo")
 ````
+
+---
+
+### Escribir texto en pantalla
+
+```lua
+function onStart()
+    textWriter = TextWriter.create("../assets/fonts/Courier.ttf")
+end
+
+function onUpdate()
+     textWriter:writeTTFCenterHorizontal(
+        15,
+        "Centrado horizontal!",
+        Color.new(0, 1, 0, 1),
+        1.5
+    )
+
+    textWriter:writeTextTTF(100, 100, 100, 100, "Hola!", Color.new(1, 0, 0, 1))
+end
+
+```

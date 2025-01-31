@@ -2,7 +2,6 @@
 
 - [Introducción](#brakeza3d-conceptos-básicos)
 - [Conceptos principales](#conceptos-principales)
-- [Sistema de scripting](#sistema-de-scripting)
 - [GUI](#gui)
 
 ---
