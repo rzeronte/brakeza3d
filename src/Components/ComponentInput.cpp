@@ -28,7 +28,8 @@ ComponentInput::ComponentInput()
     relativeRendererMouseY(0),
     gameController(nullptr),
     keyUpEvent(false),
-    keyDownEvent(false)
+    keyDownEvent(false),
+    drag(false)
 {
 }
 
@@ -77,14 +78,14 @@ void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
     handleProjectileDemo(e);
 }
 
-void ComponentInput::handleMouse(SDL_Event *event) const
+void ComponentInput::handleMouse(SDL_Event *event)
 {
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
 
     if (!EngineSetup::get()->MOUSE_LOOK) return;
 
-    if (mouseMotion && isLeftMouseButtonPressed()) {
+    if (mouseMotion && isRightMouseButtonPressed()) {
         if (event->type == SDL_MOUSEMOTION) {
             auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
             camera->Yaw((float) event->motion.xrel);
@@ -100,6 +101,15 @@ void ComponentInput::handleMouse(SDL_Event *event) const
             ComponentsManager::get()->getComponentCamera()->getCamera()->MoveBackward(EngineSetup::get()->WALKING_SPEED * 5);
         }
     }
+
+    if (event->type == SDL_MOUSEBUTTONDOWN) {
+        mouseButtonDown = true;
+    }
+    if (event->type == SDL_MOUSEBUTTONUP) {
+        mouseButtonUp = true;
+        drag = false;
+    }
+
 }
 
 void ComponentInput::handleKeyboardMovingCamera() const
@@ -149,6 +159,9 @@ void ComponentInput::updateMouseStates(SDL_Event *event)
         mouseMotion = true;
         mouseMotionXRel = (float) event->motion.xrel;
         mouseMotionYRel = (float) event->motion.yrel;
+        if (mouseLeftButton) {
+            drag = true;
+        }
     }
 }
 
@@ -178,6 +191,8 @@ void ComponentInput::updateMouseMapping()
 
     mouseLeftButton = false;
     mouseRightButton = false;
+    mouseButtonDown = false;
+    mouseButtonUp = false;
 
     this->mouseButtons = SDL_GetMouseState(&mouseX, &mouseY);
 
@@ -406,4 +421,16 @@ float ComponentInput::getMouseMotionXRel() const {
 
 float ComponentInput::getMouseMotionYRel() const {
     return mouseMotionYRel;
+}
+
+bool ComponentInput::isMouseButtonUp() const {
+    return mouseButtonUp;
+}
+
+bool ComponentInput::isMouseButtonDown() const {
+    return mouseButtonDown;
+}
+
+bool ComponentInput::isDrag() const {
+    return drag;
 }

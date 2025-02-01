@@ -11,6 +11,9 @@ private:
     float mouseMotionYRel;
     bool mouseLeftButton;
     bool mouseRightButton;
+    bool mouseButtonDown;
+    bool mouseButtonUp;
+    bool drag;
 
     Uint8 *keyboard;
 
@@ -61,7 +64,7 @@ public:
 
     void handleKeyboardMovingCamera() const;
 
-    void handleMouse(SDL_Event *) const;
+    void handleMouse(SDL_Event *);
 
     void handleProjectileDemo(SDL_Event *pEvent);
 
@@ -126,6 +129,12 @@ public:
     float getMouseMotionXRel() const;
 
     float getMouseMotionYRel() const;
+
+    bool isMouseButtonUp() const;
+
+    bool isMouseButtonDown() const;
+
+    bool isDrag() const;
 };
 
 

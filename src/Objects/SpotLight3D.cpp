@@ -73,7 +73,8 @@ cJSON *SpotLight3D::getJSON() {
     return root;
 }
 
-void SpotLight3D::onUpdate() {
+void SpotLight3D::onUpdate()
+{
     LightPoint3D::onUpdate();
 }
 

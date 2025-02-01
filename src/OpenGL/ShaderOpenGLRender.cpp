@@ -100,11 +100,11 @@ void ShaderOpenGLRender::render(
     setIntUniform(numSpotLightsUniform, (int) spotLights.size());
     setFloatUniform(alphaUniform, alpha);
 
-    Vertex3D forward = ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose() * Vertex3D(0, 0, 1);
+    Vertex3D forward = camera->getCamera()->getRotation().getTranspose() * Vertex3D(0, 0, 1);
 
     // spotLight
     setVec4("spotLight.position", glm::vec4(cameraPosition, 0));
-    setVec4("spotLight.direction", forward.x, forward.y, forward.z, 0);
+    setVec4("spotLight.direction", glm::vec4(forward.toGLM(), 0));
     setVec4("spotLight.ambient", 0.0f, 0.0f, 0.0f, 0);
     setVec4("spotLight.diffuse", 1.0f, 1.0f, 1.0f, 0);
     setVec4("spotLight.specular", 1.0f, 1.0f, 1.0f, 0);
@@ -137,17 +137,17 @@ void ShaderOpenGLRender::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, 
 {
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,0,nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
     // 3rd attribute buffer : normals
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,0,nullptr);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
     // 2nd attribute buffer : UVs
     glEnableVertexAttribArray(2);
     glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,0,nullptr);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 void ShaderOpenGLRender::createUBOFromLights()
@@ -155,8 +155,7 @@ void ShaderOpenGLRender::createUBOFromLights()
     pointsLights.resize(0);
     spotLights.resize(0);
 
-    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
-    for (auto o : sceneObjects) {
+    for (auto o : Brakeza3D::get()->getSceneObjects()) {
         if (!o->isEnabled()) continue;
         extractLights(o);
         for (auto a: o->getAttached()) {
@@ -170,15 +169,15 @@ void ShaderOpenGLRender::createUBOFromLights()
 
 void ShaderOpenGLRender::extractLights(Object3D *o)
 {
-    Vertex3D forward = o->getRotation().getTranspose() * Vertex3D(0, 0, 1);
+    Vertex3D forward = o->AxisForward();
 
-    auto p = o->getPosition();
+    auto position = o->getPosition();
 
     auto s = dynamic_cast<SpotLight3D*>(o);
     if (s != nullptr) {
         spotLights.push_back(SpotLightOpenGL{
-            glm::vec4(p.x, p.y, p.z, 0),
-            glm::vec4(forward.x, forward.y, forward.z, 0),
+            glm::vec4(position.toGLM(), 0),
+            glm::vec4(forward.toGLM(), 0),
             s->ambient,
             s->diffuse,
             s->specular,
@@ -188,18 +187,19 @@ void ShaderOpenGLRender::extractLights(Object3D *o)
             s->cutOff,
             s->outerCutOff
         });
+        return;
     }
 
     auto l = dynamic_cast<LightPoint3D*>(o);
     if (l != nullptr) {
         pointsLights.push_back({
-               glm::vec4(p.x, p.y, p.z, 0),
-               l->ambient,
-               l->diffuse,
-               l->specular,
-               l->constant,
-               l->linear,
-               l->quadratic
+            glm::vec4(position.toGLM(), 0),
+            l->ambient,
+            l->diffuse,
+            l->specular,
+            l->constant,
+            l->linear,
+            l->quadratic
        });
     }
 }
@@ -220,11 +220,13 @@ void ShaderOpenGLRender::fillUBOLights()
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, bufferUBOSpotLights);
 }
 
-DirLightOpenGL *ShaderOpenGLRender::getDirectionalLight() {
+DirLightOpenGL *ShaderOpenGLRender::getDirectionalLight()
+{
     return &directionalLight;
 }
 
-void ShaderOpenGLRender::destroy() {
+void ShaderOpenGLRender::destroy()
+{
 
 }
 
@@ -248,4 +250,3 @@ void ShaderOpenGLRender::setGlobalIlluminationSpecular(Vertex3D s)
 {
     this->directionalLight.specular = s.toGLM();
 }
-
