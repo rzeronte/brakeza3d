@@ -206,13 +206,14 @@ public:
         }
         if (ImGui::Button(std::string("Create script").c_str())) {
             if (!currentVariableToAddName.empty()) {
-                ComponentScripting::createScriptLUAFile(EngineSetup::get()->SCRIPTS_FOLDER + currentVariableToAddName);
+                ComponentScripting::createScriptLUAFile(currentScriptsFolderWidget + currentVariableToAddName);
+                currentScriptsFolderFiles = Tools::getFolderFiles(currentScriptsFolderWidget, "lua");
             }
         }
 
         ImGui::Separator();
 
-        drawBrowserFolders(folder, EngineSetup::get()->SCRIPTS_FOLDER, currentScriptsFolderWidget, currentScriptsFolders, currentScriptsFolderFiles, "json");
+        drawBrowserFolders(folder, EngineSetup::get()->SCRIPTS_FOLDER, currentScriptsFolderWidget, currentScriptsFolders, currentScriptsFolderFiles, "lua");
 
         auto files= currentScriptsFolderFiles;
         static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
@@ -245,11 +246,21 @@ public:
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
                     ImGui::OpenPopup("Delete Script?");
                 }
-                ShowDeletePopup("Delete Script?", [folder, file] () {ComponentScripting::removeScriptLUAFile(folder + file);});
+                ShowDeletePopup("Delete Script?", [folder, file, this] () {
+                    ComponentScripting::removeScriptLUAFile(folder + file);
+                    updateFolderFiles();
+                });
                 ImGui::PopID();
             }
             ImGui::EndTable();
         }
+    }
+
+    void updateFolderFiles()
+    {
+        currentScriptsFolderFiles = Tools::getFolderFiles(currentScriptsFolderWidget, "lua");
+        currentScenesFolderFiles = Tools::getFolderFiles(currentScenesFolderWidget, "json");
+        currentProjectsFolderFiles = Tools::getFolderFiles(currentProjectsFolderWidget, "json");
     }
 
     void drawWidgetScriptProperties()
@@ -378,6 +389,7 @@ public:
         if (ImGui::Button(std::string("Create Project").c_str())) {
             if (!currentVariableToCreateCustomShader.empty()) {
                 ProjectLoader::createProject(folder + currentVariableToCreateCustomShader);
+                currentProjectsFolderFiles = Tools::getFolderFiles(currentProjectsFolderWidget, "json");
             }
         }
 
@@ -413,7 +425,10 @@ public:
                     if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
                         ImGui::OpenPopup("Delete Project?");
                     }
-                    ShowDeletePopup("Delete Project?", [folder, file] () { ProjectLoader::removeProject(folder + file); });
+                    ShowDeletePopup("Delete Project?", [folder, file, this] () {
+                        ProjectLoader::removeProject(folder + file);
+                        updateFolderFiles();
+                    });
 
                 }
                 ImGui::PopID();
@@ -432,6 +447,7 @@ public:
         if (ImGui::Button(std::string("Create Scene").c_str())) {
             if (!currentVariableToCreateCustomShader.empty()) {
                 SceneLoader::createScene(folder + currentVariableToCreateCustomShader);
+                currentScenesFolderFiles = Tools::getFolderFiles(currentScenesFolderWidget, "json");
             }
         }
 
@@ -471,7 +487,10 @@ public:
                     if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
                         ImGui::OpenPopup("Delete Scene?");
                     }
-                    ShowDeletePopup("Delete Scene?", [folder, file] () { SceneLoader::removeScene(folder + file); });
+                    ShowDeletePopup("Delete Scene?", [folder, file, this] () {
+                        SceneLoader::removeScene(folder + file);
+                        updateFolderFiles();
+                    });
             }
                 ImGui::PopID();
             }
@@ -656,91 +675,7 @@ public:
         ImGui::End();
 
         if (ImGui::Begin("Illumination/FX")) {
-            if (ImGui::TreeNode("Global illumination")) {
-                const float range_illumination_min_settings = -1.0f;
-                const float range_illumination_max_settings = 1.0f;
-                const float sens_illumination_settings = 0.01f;
-                auto dirLight = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->getDirectionalLight();
-
-                if (ImGui::TreeNode("Direction")) {
-                    ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->direction.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->direction.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->direction.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                    ImGui::TreePop();
-                }
-
-                ImVec4 color = {dirLight->ambient.x, dirLight->ambient.y, dirLight->ambient.z, 1};
-                bool changed_color = ImGui::ColorEdit4("Ambient##", (float *) &color, ImGuiColorEditFlags_NoOptions);
-                if (changed_color) {
-                    dirLight->ambient = {color.x, color.y, color.z};
-                }
-                color = {dirLight->specular.x, dirLight->specular.y, dirLight->specular.z, 1};
-                changed_color = ImGui::ColorEdit4("Specular##", (float *) &color, ImGuiColorEditFlags_NoOptions);
-                if (changed_color) {
-                    dirLight->specular = {color.x, color.y, color.z};
-                }
-
-                color = {dirLight->diffuse.x, dirLight->diffuse.y, dirLight->diffuse.z, 1};
-                changed_color = ImGui::ColorEdit4("Diffuse##", (float *) &color, ImGuiColorEditFlags_NoOptions);
-                if (changed_color) {
-                    dirLight->diffuse = {color.x, color.y, color.z};
-                }
-
-                ImGui::TreePop();
-            }
-
-            ImGui::Separator();
-            if (ImGui::TreeNode("DOF Settings")) {
-                const float focalMinValues = 0;
-                const float focalMaxValues = 1;
-                const float focalValueSens = 0.001;
-
-                const float depthMinValues = 0;
-                const float depthMaxValues = 100;
-                const float depthValueSens = 0.1;
-
-                const int minBlurRadius = 0;
-                const int maxBlurRadius = 10;
-
-                ImGui::Checkbox("Enable DOF", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
-
-                if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
-                    ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-                    ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-                    ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
-                    ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-                    ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
-                }
-                ImGui::TreePop();
-            }
-            ImGui::Separator();
-            if (ImGui::TreeNode("FOG Settings")) {
-                ImGui::Checkbox("Enable FOG", &EngineSetup::get()->ENABLE_FOG);
-
-                if (EngineSetup::get()->ENABLE_FOG) {
-                    const float rangeFogSens = 0.1;
-                    const float rangeFogMin = 0;
-                    const float rangeFogMax = 0;
-
-                    ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-                    ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-                    ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->intensity, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-
-                    if (ImGui::TreeNode("FOG Color")) {
-                        const float fogColorSend = 0.01;
-                        const float fogColorMin = 0;
-                        const float fogColorMax = 1;
-
-                        ImGui::DragScalar("x", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.r, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
-                        ImGui::DragScalar("y", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.g, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
-                        ImGui::DragScalar("z", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.b, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
-                        ImGui::TreePop();
-                    }
-                }
-                ImGui::TreePop();
-            }
-            ImGui::Separator();
-            ImGui::Checkbox("Show Depth Map", &EngineSetup::get()->SHOW_DEPTH_OF_FIELD);
+            drawGlobalIllumination();
         }
         ImGui::End();
 
@@ -753,112 +688,19 @@ public:
         ImGui::End();
 
         if (ImGui::Begin("Object variables")) {
-            bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
-
-            if (!hasSelectedIndex) {
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
-            }
-
-            if (hasSelectedIndex) {
-                static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-                if (ImGui::BeginTable("ObjectVariablesTable", 3, flags)) {
-                    auto o = gameObjects[selectedObjectIndex];
-                    auto scripts = o->getScripts();
-                    auto &luaEnvironment = o->getLuaEnvironment();
-                    auto &lua = ComponentsManager::get()->getComponentScripting()->getLua();
-
-                    int numVarFound = 0;
-                    for (auto &pair : luaEnvironment) {
-                        std::string key = pair.first.as<std::string>(); // Nombre de la variable
-                        sol::type valueType = pair.second.get_type();   // Tipo de la variable
-
-                        auto type = std::string(sol::type_name(lua, valueType));
-
-                        if (type == "number" || type == "string" || type == "boolean") {
-                            numVarFound++;
-                            ImGui::TableNextRow();
-
-                            ImGui::TableSetColumnIndex(0);
-                            ImGui::Text("%s", std::string(key).c_str());
-
-                            ImGui::TableSetColumnIndex(1);
-                            ImGui::Text("%s", std::string(sol::type_name(lua, valueType)).c_str());
-
-                            ImGui::TableSetColumnIndex(2);
-                            ImGui::Text("%s", std::string(luaEnvironment[key]).c_str());
-                        }
-                    }
-                    ImGui::EndTable();
-                    if (numVarFound <= 0) {
-                        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "The selected object has defined variables");
-                    }
-                }
-            }
+            drawObjectVariables();
         }
         ImGui::End();
 
         if (ImGui::Begin("Global variables")) {
-            static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-            if (ImGui::BeginTable("GlobalVariablesTable", 3, flags)) {
-                auto &lua = ComponentsManager::get()->getComponentScripting()->getLua();
-
-                sol::table globalTable = lua["_G"];  // Acceder a la tabla global
-
-                int numVarFound = 0;
-                for (auto &pair : globalTable) {
-                    std::string key = pair.first.as<std::string>(); // Nombre de la variable
-                    sol::type valueType = pair.second.get_type();   // Tipo de la variable
-                    //std::cout << "Variable: " << key << " | Tipo: " << sol::type_name(lua, valueType) << std::endl;
-
-                    auto type = std::string(sol::type_name(lua, valueType));
-
-                    if (type == "number" || type == "string" || type == "boolean") {
-                        numVarFound++;
-                        ImGui::TableNextRow();
-
-                        ImGui::TableSetColumnIndex(0);
-                        ImGui::Text("%s", std::string(key).c_str());
-
-                        ImGui::TableSetColumnIndex(1);
-                        ImGui::Text("%s", std::string(sol::type_name(lua, valueType)).c_str());
-
-                        ImGui::TableSetColumnIndex(2);
-                        ImGui::Text("%s", std::string(lua[key]).c_str());
-                    }
-                }
-
-                if (numVarFound <= 0) {
-                    ImGui::Text("%s", "There are not variables yet");
-                }
-
-                ImGui::EndTable();
-            }
+            drawGlobalVariables();
         }
         ImGui::End();
 
         widgetProjectSettings->draw();
 
         if (ImGui::Begin("Keyboard/Mouse")) {
-            auto input = ComponentsManager::get()->getComponentInput();
-
-            ImGui::Text(("Mouse motion: " + std::to_string(input->isMouseMotion())).c_str());
-            ImGui::Text(("Mouse motion RelX: " + std::to_string(input->getMouseMotionXRel())).c_str());
-            ImGui::Text(("Mouse motion RelY: " + std::to_string(input->getMouseMotionYRel())).c_str());
-            ImGui::Separator();
-
-            ImGui::Text(("Click Left: " + std::to_string(input->isClickLeft())).c_str());
-            ImGui::Text(("Click Right: " + std::to_string(input->isClickRight())).c_str());
-            ImGui::Text(("Click Left pressed: " + std::to_string(input->isLeftMouseButtonPressed())).c_str());
-            ImGui::Text(("Click Right pressed: " + std::to_string(input->isRightMouseButtonPressed())).c_str());
-            ImGui::Text(("Mouse Up: " + std::to_string(input->isMouseButtonUp())).c_str());
-            ImGui::Text(("Mouse Down: " + std::to_string(input->isMouseButtonDown())).c_str());
-            ImGui::Text(("Mouse Drag: " + std::to_string(input->isDrag())).c_str());
-
-            ImGui::Separator();
-            ImGui::Text(("Key event Down: " + std::to_string(input->isKeyEventDown())).c_str());
-            ImGui::Text(("Key event Up: " + std::to_string(input->isKeyEventUp())).c_str());
-            ImGui::Separator();
-            ImGui::Text(("Enabled: " + std::to_string(input->isEnabled())).c_str());
+            drawKeyboardMouseSettings();
         }
         ImGui::End();
 
@@ -892,22 +734,7 @@ public:
         ImGui::End();
 
         if (ImGui::Begin("Images")) {
-            static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit;
-
-            auto items = imagesFolder.getItems();
-            for (auto a : items) {
-                ImGui::Image((ImTextureID)a->texture, ImVec2(96, 96));
-                ImGui::SameLine();
-                ImGui::BeginGroup();
-                ImGui::Selectable(a->label.c_str());
-                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-                    ImGui::SetDragDropPayload("IMAGE_ITEM", a->label.c_str(), a->label.size() + 1);
-                    ImGui::Text("%s", a->label.c_str());
-                    ImGui::EndDragDropSource();
-                }
-                ImGui::Text("%d x %d", a->texture->width(), a->texture->height());
-                ImGui::EndGroup();
-            }
+            drawImages();
         }
         ImGui::End();
     }
@@ -1025,6 +852,223 @@ public:
             }
 
             ImGui::EndPopup();
+        }
+    }
+
+    void drawGlobalIllumination()
+    {
+        if (ImGui::TreeNode("Global illumination")) {
+            const float range_illumination_min_settings = -1.0f;
+            const float range_illumination_max_settings = 1.0f;
+            const float sens_illumination_settings = 0.01f;
+            auto dirLight = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->getDirectionalLight();
+
+            if (ImGui::TreeNode("Direction")) {
+                ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->direction.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->direction.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->direction.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+                ImGui::TreePop();
+            }
+
+            ImVec4 color = {dirLight->ambient.x, dirLight->ambient.y, dirLight->ambient.z, 1};
+            bool changed_color = ImGui::ColorEdit4("Ambient##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+            if (changed_color) {
+                dirLight->ambient = {color.x, color.y, color.z};
+            }
+            color = {dirLight->specular.x, dirLight->specular.y, dirLight->specular.z, 1};
+            changed_color = ImGui::ColorEdit4("Specular##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+            if (changed_color) {
+                dirLight->specular = {color.x, color.y, color.z};
+            }
+
+            color = {dirLight->diffuse.x, dirLight->diffuse.y, dirLight->diffuse.z, 1};
+            changed_color = ImGui::ColorEdit4("Diffuse##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+            if (changed_color) {
+                dirLight->diffuse = {color.x, color.y, color.z};
+            }
+
+            ImGui::TreePop();
+        }
+
+        ImGui::Separator();
+        if (ImGui::TreeNode("DOF Settings")) {
+            const float focalMinValues = 0;
+            const float focalMaxValues = 1;
+            const float focalValueSens = 0.001;
+
+            const float depthMinValues = 0;
+            const float depthMaxValues = 100;
+            const float depthValueSens = 0.1;
+
+            const int minBlurRadius = 0;
+            const int maxBlurRadius = 10;
+
+            ImGui::Checkbox("Enable DOF", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
+
+            if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
+                ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
+                ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
+            }
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
+        if (ImGui::TreeNode("FOG Settings")) {
+            ImGui::Checkbox("Enable FOG", &EngineSetup::get()->ENABLE_FOG);
+
+            if (EngineSetup::get()->ENABLE_FOG) {
+                const float rangeFogSens = 0.1;
+                const float rangeFogMin = 0;
+                const float rangeFogMax = 0;
+
+                ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+                ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+                ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->intensity, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+
+                if (ImGui::TreeNode("FOG Color")) {
+                    const float fogColorSend = 0.01;
+                    const float fogColorMin = 0;
+                    const float fogColorMax = 1;
+
+                    ImGui::DragScalar("x", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.r, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
+                    ImGui::DragScalar("y", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.g, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
+                    ImGui::DragScalar("z", ImGuiDataType_Float, &ComponentsManager::get()->getComponentWindow()->getShaderOGLFOG()->fogColor.b, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
+                    ImGui::TreePop();
+                }
+            }
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
+        ImGui::Checkbox("Show Depth Map", &EngineSetup::get()->SHOW_DEPTH_OF_FIELD);
+    }
+
+    void drawObjectVariables()
+    {
+        bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
+
+        if (!hasSelectedIndex) {
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
+        }
+
+        if (hasSelectedIndex) {
+            static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+            if (ImGui::BeginTable("ObjectVariablesTable", 3, flags)) {
+                auto o = gameObjects[selectedObjectIndex];
+                auto scripts = o->getScripts();
+                auto &luaEnvironment = o->getLuaEnvironment();
+                auto &lua = ComponentsManager::get()->getComponentScripting()->getLua();
+
+                int numVarFound = 0;
+                for (auto &pair : luaEnvironment) {
+                    std::string key = pair.first.as<std::string>(); // Nombre de la variable
+                    sol::type valueType = pair.second.get_type();   // Tipo de la variable
+
+                    auto type = std::string(sol::type_name(lua, valueType));
+
+                    if (type == "number" || type == "string" || type == "boolean") {
+                        numVarFound++;
+                        ImGui::TableNextRow();
+
+                        ImGui::TableSetColumnIndex(0);
+                        ImGui::Text("%s", std::string(key).c_str());
+
+                        ImGui::TableSetColumnIndex(1);
+                        ImGui::Text("%s", std::string(sol::type_name(lua, valueType)).c_str());
+
+                        ImGui::TableSetColumnIndex(2);
+                        ImGui::Text("%s", std::string(luaEnvironment[key]).c_str());
+                    }
+                }
+                ImGui::EndTable();
+                if (numVarFound <= 0) {
+                    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "The selected object has defined variables");
+                }
+            }
+        }
+    }
+
+    void drawGlobalVariables()
+    {
+        static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+        if (ImGui::BeginTable("GlobalVariablesTable", 3, flags)) {
+            auto &lua = ComponentsManager::get()->getComponentScripting()->getLua();
+
+            sol::table globalTable = lua["_G"];  // Acceder a la tabla global
+
+            int numVarFound = 0;
+            for (auto &pair : globalTable) {
+                std::string key = pair.first.as<std::string>(); // Nombre de la variable
+                sol::type valueType = pair.second.get_type();   // Tipo de la variable
+                //std::cout << "Variable: " << key << " | Tipo: " << sol::type_name(lua, valueType) << std::endl;
+
+                auto type = std::string(sol::type_name(lua, valueType));
+
+                if (type == "number" || type == "string" || type == "boolean") {
+                    numVarFound++;
+                    ImGui::TableNextRow();
+
+                    ImGui::TableSetColumnIndex(0);
+                    ImGui::Text("%s", std::string(key).c_str());
+
+                    ImGui::TableSetColumnIndex(1);
+                    ImGui::Text("%s", std::string(sol::type_name(lua, valueType)).c_str());
+
+                    ImGui::TableSetColumnIndex(2);
+                    ImGui::Text("%s", std::string(lua[key]).c_str());
+                }
+            }
+
+            if (numVarFound <= 0) {
+                ImGui::Text("%s", "There are not variables yet");
+            }
+
+            ImGui::EndTable();
+        }
+    }
+
+    void drawKeyboardMouseSettings()
+    {
+        auto input = ComponentsManager::get()->getComponentInput();
+
+        ImGui::Text(("Mouse motion: " + std::to_string(input->isMouseMotion())).c_str());
+        ImGui::Text(("Mouse motion RelX: " + std::to_string(input->getMouseMotionXRel())).c_str());
+        ImGui::Text(("Mouse motion RelY: " + std::to_string(input->getMouseMotionYRel())).c_str());
+        ImGui::Separator();
+
+        ImGui::Text(("Click Left: " + std::to_string(input->isClickLeft())).c_str());
+        ImGui::Text(("Click Right: " + std::to_string(input->isClickRight())).c_str());
+        ImGui::Text(("Click Left pressed: " + std::to_string(input->isLeftMouseButtonPressed())).c_str());
+        ImGui::Text(("Click Right pressed: " + std::to_string(input->isRightMouseButtonPressed())).c_str());
+        ImGui::Text(("Mouse Up: " + std::to_string(input->isMouseButtonUp())).c_str());
+        ImGui::Text(("Mouse Down: " + std::to_string(input->isMouseButtonDown())).c_str());
+        ImGui::Text(("Mouse Drag: " + std::to_string(input->isDrag())).c_str());
+
+        ImGui::Separator();
+        ImGui::Text(("Key event Down: " + std::to_string(input->isKeyEventDown())).c_str());
+        ImGui::Text(("Key event Up: " + std::to_string(input->isKeyEventUp())).c_str());
+        ImGui::Separator();
+        ImGui::Text(("Enabled: " + std::to_string(input->isEnabled())).c_str());
+    }
+
+    void drawImages()
+    {
+        static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit;
+
+        auto items = imagesFolder.getItems();
+        for (auto a : items) {
+            ImGui::Image((ImTextureID)a->texture, ImVec2(96, 96));
+            ImGui::SameLine();
+            ImGui::BeginGroup();
+            ImGui::Selectable(a->label.c_str());
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+                ImGui::SetDragDropPayload("IMAGE_ITEM", a->label.c_str(), a->label.size() + 1);
+                ImGui::Text("%s", a->label.c_str());
+                ImGui::EndDragDropSource();
+            }
+            ImGui::Text("%d x %d", a->texture->width(), a->texture->height());
+            ImGui::EndGroup();
         }
     }
 };
