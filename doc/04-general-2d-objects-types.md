@@ -58,6 +58,32 @@ Fionalmente se dibujará la animación en el plano, según la configuración ind
     animation:setEnabled(true)
     brakeza:addObject3D(animation, 'my_animation')
 ```
+
+El objeto `BillboardAnimation` admite la incorporación de múltiples animaciones. Podrás
+seleccionar la animación deseada con el método `setAnimation`
+```lua
+    BillboardAnimation.create(position, width, height, spriteFile, spriteWidth, spriteHeight, numFrames, fps)
+    animation = BillboardAnimation.create(
+        Vertex3D.new(10, 10, 10),
+        100,
+        100,
+        "../assets/sprites/explosion_a.png",
+        128,
+        128,
+        15,
+        24
+    )
+    animation:addAnimation(
+        "../assets/sprites/explosion_b.png",
+        128,
+        128,
+        15,
+        24
+    )
+    animation:setAnimation(1) -- Seleccionamos la segunda animacion por su índice
+    brakeza:addObject3D(animation, 'my_animation')
+```
+
 ---
 
 ## BillboardAnimation8Directions
