@@ -355,7 +355,7 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
             window->ImGuiConfigChanged = ImGUIConfigs::DESIGN;
         }
 
-        if (keyboard[SDL_SCANCODE_F1]) {
+        if (keyboard[SDL_SCANCODE_F11]) {
             EngineSetup::get()->FULLSCREEN = !EngineSetup::get()->FULLSCREEN;
         }
     }
