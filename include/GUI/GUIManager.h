@@ -40,10 +40,20 @@ private:
     std::string selected_file;
     std::string currentVariableToAddName;
     std::string currentVariableToCreateCustomShader;
+
     ImGuizmo::OPERATION guizmoOperation;
+
     std::string currentScriptsFolderWidget;
+    std::vector<std::string> currentScriptsFolderFiles;
+    std::vector<std::string> currentScriptsFolders;
+
     std::string currentScenesFolderWidget;
+    std::vector<std::string> currentScenesFolderFiles;
+    std::vector<std::string> currentScenesFolders;
+
     std::string currentProjectsFolderWidget;
+    std::vector<std::string> currentProjectsFolderFiles;
+    std::vector<std::string> currentProjectsFolders;
 
     bool show_about_window = false;
 
@@ -75,6 +85,14 @@ public:
     {
         LoadUIIcons();
         loadImagesFolder();
+        currentScriptsFolders = Tools::getFolderFolders(currentScriptsFolderWidget);
+        currentScriptsFolderFiles = Tools::getFolderFiles(currentScriptsFolderWidget, "lua");
+
+        currentScenesFolders = Tools::getFolderFolders(currentScenesFolderWidget);
+        currentScenesFolderFiles = Tools::getFolderFiles(currentScenesFolderWidget, "json");
+
+        currentProjectsFolders = Tools::getFolderFolders(currentProjectsFolderWidget);
+        currentProjectsFolderFiles = Tools::getFolderFiles(currentProjectsFolderWidget, "json");
     }
 
     void LoadUIIcons()
@@ -194,9 +212,9 @@ public:
 
         ImGui::Separator();
 
-        drawBrowserFolders(folder, EngineSetup::get()->SCRIPTS_FOLDER, currentScriptsFolderWidget);
+        drawBrowserFolders(folder, EngineSetup::get()->SCRIPTS_FOLDER, currentScriptsFolderWidget, currentScriptsFolders, currentScriptsFolderFiles, "json");
 
-        auto files= Tools::getFolderFiles(folder, "lua");
+        auto files= currentScriptsFolderFiles;
         static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
         if (ImGui::BeginTable("ScriptsFolderTable", 2, flags)) {
             for (int i = 0; i < files.size(); i++) {
@@ -365,7 +383,7 @@ public:
 
         ImGui::Separator();
 
-        std::vector<std::string> files = Tools::getFolderFiles(folder, "json");
+        std::vector<std::string> files = currentProjectsFolderFiles;
         std::sort(files.begin(), files.end() );
         static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
         if (ImGui::BeginTable("ProjectsFolderTable", 2, flags)) {
@@ -418,10 +436,10 @@ public:
         }
 
         ImGui::Separator();
-        drawBrowserFolders(folder, EngineSetup::get()->SCENES_FOLDER, currentScenesFolderWidget);
+        drawBrowserFolders(folder, EngineSetup::get()->SCENES_FOLDER, currentScenesFolderWidget, currentScenesFolders, currentScenesFolderFiles, "json");
         ImGui::Separator();
 
-        auto files = Tools::getFolderFiles(folder, "json");
+        auto files = currentScenesFolderFiles;
         std::sort(files.begin(), files.end() );
         static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
         if (ImGui::BeginTable("ScenesFolderTable", 2, flags)) {
@@ -461,18 +479,26 @@ public:
         }
     }
 
-    void drawBrowserFolders(const std::string& folder, const std::string& baseFolder, std::string& destiny)
+    void drawBrowserFolders(
+        const std::string& folder,
+        const std::string& baseFolder,
+        std::string& destiny,
+        std::vector<std::string> &folders,
+        std::vector<std::string> &files,
+        std::string extension
+    )
     {
         ImGui::Text("Current: %s", folder.c_str());
 
         ImGui::Separator();
 
-        auto folders = Tools::getFolderFolders(folder);
         if (folder != baseFolder) {
             ImGui::Image(TexturePackage::getOGLTextureID(icons, "folderIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::Button("..")) {
                 destiny = Tools::GoBackFromFolder(destiny);
+                folders = Tools::getFolderFolders(destiny);
+                files = Tools::getFolderFiles(destiny, extension);
             }
         }
 
@@ -486,6 +512,8 @@ public:
             ImGui::SameLine();
             if (ImGui::Button(i.c_str())) {
                 destiny = fullPathFolder + "/";
+                folders = Tools::getFolderFolders(destiny);
+                files = Tools::getFolderFiles(destiny, extension);
             }
         }
     }
