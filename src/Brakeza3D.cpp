@@ -173,7 +173,7 @@ void Brakeza3D::onEndComponents()
     }*/
 
     SDL_Quit();
-    Logging::Message("Exiting... good bye! ;)");
+    std::cout << "Exiting... good bye! ;)" << std::endl;
     exit(0);
 }
 
@@ -229,4 +229,9 @@ Object3D *Brakeza3D::getSceneObjectByLabel(const std::string &label) const {
 
 Object3D *Brakeza3D::getSceneObjectById(const int i) const {
     return sceneObjects[i];
+}
+
+void Brakeza3D::shutdown()
+{
+    finish = true;
 }

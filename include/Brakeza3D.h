@@ -89,6 +89,8 @@ public:
 
     GUIManager *managerGUI;
     bool finish = false;
+
+    void shutdown();
 };
 
 

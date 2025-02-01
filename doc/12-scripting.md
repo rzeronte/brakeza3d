@@ -9,6 +9,7 @@
 - [Variables locales](#variables-locales)
 - [Gestión de escenas](#gestión-de-escenas)
 - [DeltaTime](#deltatime)
+- [Fin de ejecución]
 - [Ejemplos en código](#ejemplos-en-codigo)
 
 ---
@@ -217,6 +218,14 @@ Puedes obtenerlo desde tus scripts LUAde la siguiente manera:
      print("DeltaTime: " .. brakeza:getDeltaTime()) -- delta en segundos
      print("DeltaTimeInMicro: " .. brakeza:getDeltaTimeMicro()) -- delta en microsegundos
      print("Execution Time: " .. brakeza:getExecutionTime()) -- tiempo total de ejecución
+```
+
+### Terminar la ejecución
+
+Si deseas terminar la aplicación desde código, puedes hacerlo de la siguiente forma:
+
+```lua
+     brakeza:finish()
 ```
 
 ---

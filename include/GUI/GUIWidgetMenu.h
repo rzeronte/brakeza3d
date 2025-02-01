@@ -75,6 +75,34 @@ struct GUIWidgetMenu
                 if (ImGui::MenuItem("Exit")) finish = true;
                 ImGui::EndMenu();
             }
+            if (ImGui::BeginMenu("Control")) {
+                auto scripting = ComponentsManager::get()->getComponentScripting();
+                auto state = scripting->getStateLUAScripts();
+                ImGui::Image(icon("playIcon"), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem("Play scripts", "F1", false,  state != EngineSetup::LuaStateScripts::LUA_PLAY)) {
+                    scripting->playLUAScripts();
+                }
+                ImGui::Separator();
+                ImGui::Image(icon("stopIcon"), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem("Stop scripts", "F1", false, state != EngineSetup::LuaStateScripts::LUA_STOP)) {
+                    scripting->stopLUAScripts();
+                }
+                ImGui::Separator();
+                ImGui::Image(icon("reloadIcon"), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem("Reload scripts", "F2")) {
+                    scripting->reloadLUAScripts();
+                }
+                ImGui::Separator();
+                ImGui::Image(icon("removeIcon"), ImVec2(16, 16));
+                ImGui::SameLine();
+                if (ImGui::MenuItem("Clear scene objects", "F3")) {
+                    SceneLoader::clearScene();
+                }
+                ImGui::EndMenu();
+            }
             if (ImGui::BeginMenu("Add object")) {
 
                 ImGui::Image(icon("objectIcon"), ImVec2(16, 16));
@@ -273,13 +301,13 @@ struct GUIWidgetMenu
             }
 
             if (ImGui::BeginMenu("Layout")) {
-                if (ImGui::MenuItem("Default")) {
+                if (ImGui::MenuItem("Default", "F5")) {
                     ComponentsManager::get()->getComponentWindow()->ImGuiConfigChanged = ImGUIConfigs::DEFAULT;
                 }
-                if (ImGui::MenuItem("Coding")) {
+                if (ImGui::MenuItem("Coding", "F6")) {
                     ComponentsManager::get()->getComponentWindow()->ImGuiConfigChanged = ImGUIConfigs::CODING;
                 }
-                if (ImGui::MenuItem("Design")) {
+                if (ImGui::MenuItem("Design", "F7")) {
                     ComponentsManager::get()->getComponentWindow()->ImGuiConfigChanged = ImGUIConfigs::DESIGN;
                 }
                 ImGui::Separator();
@@ -291,7 +319,9 @@ struct GUIWidgetMenu
             }
 
             if (ImGui::BeginMenu("View")) {
-                ImGui::Checkbox("FullScreen", &EngineSetup::get()->FULLSCREEN);
+                ImGui::Checkbox("FullScreen (F11)", &EngineSetup::get()->FULLSCREEN);
+                ImGui::Separator();
+                ImGui::Checkbox("UI (F4)", &EngineSetup::get()->IMGUI_ENABLED);
 
                 if (ImGui::IsItemEdited()) {
                     if (EngineSetup::get()->FULLSCREEN) {
