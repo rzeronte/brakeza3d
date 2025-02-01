@@ -28,11 +28,12 @@ struct GUIWidgetMenu
 
     void draw(bool &finish, bool &show_about_window)
     {
-
         const float range_sensibility = 0.75f;
-        const float range_test_sensibility = 0.1;
         const float range_max_sensibility = 9999;
         const float range_min_sensibility = -9999;
+
+        const float range_max_light_direction_size = 10;
+        const float range_min_light_direction_size = 1;
 
         const float range_sensibility_volume = 1;
         const float range_min_volume = 1;
@@ -349,7 +350,7 @@ struct GUIWidgetMenu
                 }
                 if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
                     ImGui::DragScalar("Size Direction", ImGuiDataType_Float, &EngineSetup::get()->LIGHTS_DIRECTION_SIZE,
-                                      range_test_sensibility, &range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                                      0.1f, &range_min_light_direction_size, &range_max_light_direction_size, "%f", 1.0f);
                 }
 
                 ImGui::Separator();

@@ -55,8 +55,19 @@ void LightPoint3D::onDrawHostBuffer()
     Object3D::onDrawHostBuffer();
 }
 
-void LightPoint3D::onUpdate() {
+void LightPoint3D::onUpdate()
+{
     Object3D::onUpdate();
+
+    if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
+        auto window = ComponentsManager::get()->getComponentWindow();
+
+        window->getShaderOGLLine3D()->render(
+            getPosition(),
+            getPosition() + AxisForward().getInverse().getNormalize().getScaled(EngineSetup::get()->LIGHTS_DIRECTION_SIZE),
+            window->getForegroundFramebuffer()
+        );
+    }
 }
 
 void LightPoint3D::setConstant(float value) {

@@ -40,12 +40,13 @@ struct GUIWidgetObject3DProperties {
 
         if (hasSelectedIndex) {
             auto o = gameObjects[selectedObjectIndex];
+            auto camera = ComponentsManager::get()->getComponentCamera();
             Drawable::drawObject3DGizmo(
                 o,
                 operation,
                 o->getModelMatrix(),
-                ComponentsManager::get()->getComponentCamera()->getGLMMat4ViewMatrix(),
-                Camera3D::getGLMMat4ProjectionMatrix()
+                camera->getGLMMat4ViewMatrix(),
+                camera->getGLMMat4ProjectionMatrix()
             );
         }
 

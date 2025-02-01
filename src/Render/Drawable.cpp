@@ -19,8 +19,9 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color)
 
 void Drawable::drawVector3D(Vector3D V, Color color)
 {
-    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getGLMMat4ViewMatrix();
-    glm::mat4 ProjectionMatrix = Camera3D::getGLMMat4ProjectionMatrix();
+    auto camera = ComponentsManager::get()->getComponentCamera();
+    glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
+    glm::mat4 ProjectionMatrix = camera->getGLMMat4ProjectionMatrix();
 
     glm::vec4 position1 = ProjectionMatrix * ViewMatrix * glm::vec4(V.vertex1.x, V.vertex1.y, V.vertex1.z, 1.0);
     position1 /= position1.w;

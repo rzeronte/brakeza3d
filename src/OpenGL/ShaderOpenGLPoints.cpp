@@ -23,8 +23,9 @@ void ShaderOpenGLPoints::render(GLint particlesBuffer, int numberPoints, Color c
     glEnable(GL_POINT_SPRITE);
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
-    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getGLMMat4ViewMatrix();
-    glm::mat4 ProjectionMatrix = Camera3D::getGLMMat4ProjectionMatrix();
+    auto camera = ComponentsManager::get()->getComponentCamera();
+    glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
+    glm::mat4 ProjectionMatrix = camera->getGLMMat4ProjectionMatrix();
 
     setMat4("projection", ProjectionMatrix);
     setMat4("view", ViewMatrix);

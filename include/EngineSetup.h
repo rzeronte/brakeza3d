@@ -74,7 +74,7 @@ public:
     // Z BUFFER
     bool ENABLE_LIGHTS = true;
     bool DRAW_LIGHTS_DIRECTION = false;
-    float LIGHTS_DIRECTION_SIZE = 2500;
+    float LIGHTS_DIRECTION_SIZE = 4;
     bool FULLSCREEN = false;
     bool DRAW_FPS = false;
 

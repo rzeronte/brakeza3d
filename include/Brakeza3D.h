@@ -30,6 +30,7 @@ private:
 
     std::vector<Object3D *> sceneObjects;
 
+    GUIManager *managerGUI;
 public:
     Brakeza3D();
 
@@ -77,17 +78,16 @@ public:
 
     static void LoadDemo();
 
-    GUIManager *getManagerGui() const;
+    [[nodiscard]] GUIManager *getManagerGui() const;
 
     static void welcomeMessage() ;
 
-    Object3D *getSceneObjectByLabel(const std::string &label) const;
+    [[nodiscard]] Object3D *getSceneObjectByLabel(const std::string &label) const;
 
-    Object3D *getSceneObjectById(int i) const;
+    [[nodiscard]] Object3D *getSceneObjectById(int i) const;
 
     static void checkForResizeOpenGLWindow(SDL_Event &e);
 
-    GUIManager *managerGUI;
     bool finish = false;
 
     void shutdown();
