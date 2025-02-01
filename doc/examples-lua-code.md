@@ -12,6 +12,7 @@
 - [Detección de colisiones](#detección-de-colisiones)
 - [Carga y reproducción de sonidos](#carga-y-reproducción-de-sonidos)
 - [Escribir texto en pantalla](#escribir-texto-en-pantalla)
+- [Terminar la ejecución](#terminar-la-ejecución)
 
 ---
 
@@ -248,11 +249,11 @@ end
 ### Carga y reproducción de sonidos
 
 ```lua
-    systemSound = componentsManager:getComponentSound()
-    systemSound:addSound("../assets/sounds/music_demo.mp3", "sound_demo")
-    ...
-    systemSound:playSound("sound_demo")
-````
+systemSound = componentsManager:getComponentSound()
+systemSound:addSound("../assets/sounds/music_demo.mp3", "sound_demo")
+...
+systemSound:playSound("sound_demo")
+```
 
 ---
 
@@ -264,14 +265,22 @@ function onStart()
 end
 
 function onUpdate()
-     textWriter:writeTTFCenterHorizontal(
-        15,
-        "Centrado horizontal!",
-        Color.new(0, 1, 0, 1),
+    textWriter:writeTTFCenterHorizontal(
+       15,
+       "Centrado horizontal!",
+       Color.new(0, 1, 0, 1),
         1.5
     )
 
     textWriter:writeTextTTF(100, 100, 100, 100, "Hola!", Color.new(1, 0, 0, 1))
 end
 
+```
+
+---
+
+### Terminar la ejecución
+
+```lua
+brakeza:finish()
 ```
