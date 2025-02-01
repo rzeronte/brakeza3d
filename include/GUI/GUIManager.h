@@ -822,6 +822,9 @@ public:
             ImGui::Text(("Click Right: " + std::to_string(input->isClickRight())).c_str());
             ImGui::Text(("Click Left pressed: " + std::to_string(input->isLeftMouseButtonPressed())).c_str());
             ImGui::Text(("Click Right pressed: " + std::to_string(input->isRightMouseButtonPressed())).c_str());
+            ImGui::Text(("Mouse Up: " + std::to_string(input->isMouseButtonUp())).c_str());
+            ImGui::Text(("Mouse Down: " + std::to_string(input->isMouseButtonDown())).c_str());
+            ImGui::Text(("Mouse Drag: " + std::to_string(input->isDrag())).c_str());
 
             ImGui::Separator();
             ImGui::Text(("Key event Down: " + std::to_string(input->isKeyEventDown())).c_str());

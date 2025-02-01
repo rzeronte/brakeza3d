@@ -110,11 +110,9 @@ void ComponentRender::updateSelectedObject3D()
             Logging::Message("Selected object by click: %s", selectedObject->getLabel().c_str());
             Brakeza3D::get()->getManagerGui()->setSelectedObject(selectedObject);
             Brakeza3D::get()->getManagerGui()->setGuizmoOperation(ImGuizmo::OPERATION::TRANSLATE);
+        } else {
+            setSelectedObject(nullptr);
         }
-    }
-
-    if (input->isClickRight() && !input->isMouseMotion()) {
-        setSelectedObject(nullptr);
     }
 }
 
@@ -350,7 +348,6 @@ bool ComponentRender::compareDistances(Object3D* obj1, Object3D* obj2)
 {
     return obj1->getDistanceToCamera() > obj2->getDistanceToCamera();
 }
-
 
 void ComponentRender::setGlobalIlluminationDirection(Vertex3D v)
 {
