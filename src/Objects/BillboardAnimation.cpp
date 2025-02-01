@@ -13,6 +13,7 @@ BillboardAnimation::BillboardAnimation(float width, float height)
     autoRemoveAfterAnimation(false),
     sharedTextures(false)
 {
+    luaEnvironment["this"] = this;
 }
 
 void BillboardAnimation::onUpdate()
@@ -164,19 +165,21 @@ void BillboardAnimation::drawImGuiProperties()
             ImGui::InputInt("Height", &currentHeightVariableToCreateAnimation);
             ImGui::InputInt("Nº Frames", &currentFramesVariableToCreateAnimation);
 
-            if (ImGui::Button(std::string("Load directional animation").c_str())) {
-                addAnimation(
-                    currentSpriteFileVariableToCreateAnimation,
-                    currentWidthVariableToCreateAnimation,
-                    currentHeightVariableToCreateAnimation,
-                    currentFramesVariableToCreateAnimation,
-                    24
-                );
-                setAnimation((int) animations.size()-1);
-                currentSpriteFileVariableToCreateAnimation = "";
-                currentFramesVariableToCreateAnimation = 0;
-                currentWidthVariableToCreateAnimation = 0;
-                currentHeightVariableToCreateAnimation = 0;
+            if (ImGui::Button(std::string("Load animation").c_str())) {
+                if (!currentSpriteFileVariableToCreateAnimation.empty()) {
+                    addAnimation(
+                        currentSpriteFileVariableToCreateAnimation,
+                        currentWidthVariableToCreateAnimation,
+                        currentHeightVariableToCreateAnimation,
+                        currentFramesVariableToCreateAnimation,
+                        24
+                    );
+                    setAnimation((int) animations.size() - 1);
+                    currentSpriteFileVariableToCreateAnimation = "";
+                    currentFramesVariableToCreateAnimation = 0;
+                    currentWidthVariableToCreateAnimation = 0;
+                    currentHeightVariableToCreateAnimation = 0;
+                }
             }
 
             ImGui::TreePop();

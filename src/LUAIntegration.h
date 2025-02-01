@@ -210,7 +210,10 @@ void LUAIntegration(sol::state &lua)
                                       sol::base_classes, sol::bases<Object3D>(),
                                       "create", sol::factories([](Vertex3D position, float w, float h, const std::string& imageFile, int spriteW, int spriteH, int numFrames, int fps) {
                                           return BillboardAnimation::create(position, w, h, imageFile, spriteW, spriteH, numFrames, fps);
-                                      })
+                                      }),
+                                      "addAnimation", &BillboardAnimation::addAnimation,
+                                      "setAnimation", &BillboardAnimation::setAnimation,
+                                      "updateBillboardSize", &BillboardAnimation::updateBillboardSize
     );
 
     lua.new_usertype<BillboardAnimation8Directions>("BillboardAnimation8Directions",
