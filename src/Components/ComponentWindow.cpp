@@ -631,7 +631,7 @@ void ComponentWindow::ImGuiOnUpdate()
     ImGui_ImplSDL2_NewFrame();
 
     ImGui::NewFrame();
-    Brakeza3D::get()->managerGUI->draw(Brakeza3D::get()->getDeltaTime(),Brakeza3D::get()->finish);
+    Brakeza3D::get()->getManagerGui()->draw(Brakeza3D::get()->getDeltaTime(),Brakeza3D::get()->finish);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

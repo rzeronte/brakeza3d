@@ -6,8 +6,8 @@ Frustum::Frustum() = default;
 
 bool Frustum::isVertexInside(Vertex3D &v)
 {
-    glm::vec4 clipSpacePos =
-            Camera3D::getGLMMat4ProjectionMatrix() * ComponentsManager::get()->getComponentCamera()->getGLMMat4ViewMatrix() * glm::vec4(v.toGLM(), 1);
+    auto camera = ComponentsManager::get()->getComponentCamera();
+    glm::vec4 clipSpacePos = camera->getGLMMat4ProjectionMatrix() * camera->getGLMMat4ViewMatrix() * glm::vec4(v.toGLM(), 1);
 
     if (clipSpacePos.x < -clipSpacePos.w || clipSpacePos.x > clipSpacePos.w ||
         clipSpacePos.y < -clipSpacePos.w || clipSpacePos.y > clipSpacePos.w ||
