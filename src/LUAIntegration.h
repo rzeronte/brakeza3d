@@ -82,6 +82,7 @@ void LUAIntegration(sol::state &lua)
             "setScale", &Object3D::setScale,
             "getModelMatrix", &Object3D::getModelMatrix,
             "AxisForward", &Object3D::AxisForward,
+            "AxisUp", &Object3D::AxisUp,
             "AxisRight", &Object3D::AxisRight,
             "setCollisionsEnabled", &Object3D::setCollisionsEnabled,
             "setupGhostCollider", &Object3D::setupGhostCollider,
@@ -127,6 +128,11 @@ void LUAIntegration(sol::state &lua)
                                      "setSoundsVolume", &ComponentSound::setSoundsVolume,
                                      "playSound", &ComponentSound::playMusic,
                                      "stopMusic", &ComponentSound::stopMusic
+    );
+
+    lua.new_usertype<ComponentCollisions>("ComponentCollisions",
+                                      sol::base_classes, sol::bases<Component>(),
+                                      "isRayCollisionWith", &ComponentCollisions::isRayCollisionWith
     );
 
     lua.new_usertype<ComponentRender>("ComponentRender",

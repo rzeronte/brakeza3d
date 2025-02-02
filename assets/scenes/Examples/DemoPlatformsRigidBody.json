@@ -30,81 +30,51 @@
 			"name":	"capsule",
 			"scale":	1,
 			"position":	{
-				"x":	-43.188507080078125,
-				"y":	-13.913570404052734,
-				"z":	-43.219985961914063
+				"x":	-43.276573181152344,
+				"y":	-16.316535949707031,
+				"z":	-43.142631530761719
 			},
 			"rotation":	{
-				"x":	-0,
-				"y":	0,
-				"z":	0
+				"x":	-3.2910521030426025,
+				"y":	2.546018123626709,
+				"z":	-0.6171155571937561
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
-				"mode":	2,
+				"mode":	1,
 				"shape":	0,
-				"mass":	100,
+				"mass":	239.90000915527344,
 				"colliderStatic":	false,
 				"simpleShapeSize":	{
-					"x":	1,
+					"x":	0.5,
 					"y":	1,
 					"z":	1
 				},
 				"kinematicCapsuleSize":	{
 					"x":	0.5,
 					"y":	1
+				},
+				"angularFactor":	{
+					"x":	0,
+					"y":	0,
+					"z":	0
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	0
 				}
 			},
 			"scripts":	[{
-					"name":	"../assets/scripts/Controllers/KinematicPlatformsController.lua",
-					"types":	[{
-							"name":	"mouseSensibility",
-							"type":	"float",
-							"value":	0.10000000149011612
-						}, {
-							"name":	"force",
-							"type":	"float",
-							"value":	0.10000000149011612
-						}, {
-							"name":	"deceleration",
-							"type":	"float",
-							"value":	0.0099999997764825821
-						}, {
-							"name":	"jumpForce",
-							"type":	"float",
-							"value":	12
-						}, {
-							"name":	"speed",
-							"type":	"float",
-							"value":	0
-						}, {
-							"name":	"strafe",
-							"type":	"float",
-							"value":	0
-						}, {
-							"name":	"velocity",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	0,
-								"z":	0
-							}
-						}, {
-							"name":	"cameraOffset",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	-1,
-								"z":	-20
-							}
-						}]
+					"name":	"../assets/scripts/Controllers/RigidBodyPlatformsController.lua",
+					"types":	[]
 				}],
 			"shaders":	[],
 			"model":	"../assets/models//Capsule.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"Mesh3D_46",
+			"name":	"floor",
 			"scale":	1,
 			"position":	{
 				"x":	-38.931137084960938,
@@ -130,6 +100,16 @@
 				"kinematicCapsuleSize":	{
 					"x":	0.5,
 					"y":	1.5
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
 				}
 			},
 			"scripts":	[],
@@ -142,9 +122,9 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-41.06695556640625,
-			"y":	-15.470912933349609,
-			"z":	-68.203498840332031
+			"x":	-43.1946907043457,
+			"y":	-14.953164100646973,
+			"z":	-63.267910003662109
 		},
 		"rotation":	{
 			"x":	6.3999924659729,

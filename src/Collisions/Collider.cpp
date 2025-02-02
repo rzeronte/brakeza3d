@@ -9,6 +9,8 @@ Collider::Collider()
     collisionsEnabled(false),
     collisionMode(CollisionMode::NONE),
     simpleShapeSize(Vertex3D(1, 1, 1)),
+    angularFactor(Vertex3D(1, 1, 1)),
+    linearFactor(Vertex3D(1, 1, 1)),
     ghostObject(nullptr),
     body(nullptr),
     colliderStatic(false),
@@ -312,4 +314,9 @@ bool Collider::onGround()
     }
 
     return false;
+}
+
+void Collider::setAngularFactor(const Vertex3D &angularFactor)
+{
+    Collider::angularFactor = angularFactor;
 }

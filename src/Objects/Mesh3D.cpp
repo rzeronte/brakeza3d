@@ -776,6 +776,7 @@ void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *
     body->setContactProcessingThreshold(BT_LARGE_FLOAT);
     body->setUserPointer(this);
     body->setActivationState(DISABLE_DEACTIVATION);
+    body->setAngularFactor(angularFactor.toBullet());
 
     if (mass <= 0) {
         body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);

@@ -54,6 +54,8 @@ public:
     ~ComponentCollisions() override;
 
     void setGravity(Vertex3D vertex3D);
+
+    bool isRayCollisionWith(Vertex3D from, Vertex3D to, Object3D *o);
 };
 
 

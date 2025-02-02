@@ -35,6 +35,8 @@ protected:
     btRigidBody *body;
     bool colliderStatic;
     float mass;
+    Vertex3D angularFactor;
+    Vertex3D linearFactor;
 
     //kinematic
     btPairCachingGhostObject *kinematicBody;
@@ -119,6 +121,8 @@ public:
     void jump(Vertex3D d);
 
     bool onGround();
+
+    void setAngularFactor(const Vertex3D &angularFactor);
 };
 
 

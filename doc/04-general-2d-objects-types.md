@@ -60,7 +60,8 @@ Fionalmente se dibujará la animación en el plano, según la configuración ind
 ```
 
 El objeto `BillboardAnimation` admite la incorporación de múltiples animaciones. Podrás
-seleccionar la animación deseada con el método `setAnimation`
+seleccionar la animación deseada con el método `setAnimation`.
+
 ```lua
     BillboardAnimation.create(position, width, height, spriteFile, spriteWidth, spriteHeight, numFrames, fps)
     animation = BillboardAnimation.create(

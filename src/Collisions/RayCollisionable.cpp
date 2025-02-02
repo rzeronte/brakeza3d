@@ -37,8 +37,8 @@ void RayCollisionable::integrate()
 
 void RayCollisionable::hasHit()
 {
-    /*if (rayCallback->hasHit()) {
-        auto *objectWithCollision = (Collisionable *) rayCallback->m_collisionObject->getUserPointer();
+    if (rayCallback->hasHit()) {
+        auto *objectWithCollision = (Collider *) rayCallback->m_collisionObject->getUserPointer();
 
         btVector3 rayHitPosition = rayCallback->m_hitPointWorld;
 
@@ -50,7 +50,7 @@ void RayCollisionable::hasHit()
     }
 
     rayCallback->m_closestHitFraction = btScalar(1.),
-    rayCallback->m_collisionObject = nullptr;*/
+    rayCallback->m_collisionObject = nullptr;
 }
 
 void RayCollisionable::resolveCollision(Collider *objectWithCollision)

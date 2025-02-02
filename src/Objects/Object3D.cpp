@@ -533,6 +533,31 @@ void Object3D::drawImGuiProperties()
                     const float range_max = 500000;
 
                     Tools::ImGuiVertex3D("Simple shape size", "X", "Y", "Z", &simpleShapeSize, 0.1f ,range_min, range_max);
+                    ImGui::Separator();
+
+                    if (ImGui::TreeNode("Angular factor")) {
+                        const float range_min = 0;
+                        const float range_max = 1;
+
+                        ImGui::DragScalar("X", ImGuiDataType_Float, &angularFactor.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_Float, &angularFactor.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Z", ImGuiDataType_Float, &angularFactor.z, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+
+                        ImGui::TreePop();
+                    }
+                    ImGui::Separator();
+
+                    if (ImGui::TreeNode("Linear factor")) {
+                        const float range_min = 0;
+                        const float range_max = 1;
+
+                        ImGui::DragScalar("X", ImGuiDataType_Float, &linearFactor.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Y", ImGuiDataType_Float, &linearFactor.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragScalar("Z", ImGuiDataType_Float, &linearFactor.z, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+
+                        ImGui::TreePop();
+                    }
+
                 }
 
                 ImGui::Separator();
@@ -584,6 +609,18 @@ cJSON *Object3D::getJSON()
         cJSON_AddNumberToObject(kinematicCapsuleSizeJSON, "x", kinematicCapsuleSize.x);
         cJSON_AddNumberToObject(kinematicCapsuleSizeJSON, "y", kinematicCapsuleSize.y);
         cJSON_AddItemToObject(collider, "kinematicCapsuleSize", kinematicCapsuleSizeJSON);
+
+        cJSON *angularFactorJSON = cJSON_CreateObject();
+        cJSON_AddNumberToObject(angularFactorJSON, "x", angularFactor.x);
+        cJSON_AddNumberToObject(angularFactorJSON, "y", angularFactor.y);
+        cJSON_AddNumberToObject(angularFactorJSON, "z", angularFactor.z);
+        cJSON_AddItemToObject(collider, "angularFactor", angularFactorJSON);
+
+        cJSON *linearFactorJSON = cJSON_CreateObject();
+        cJSON_AddNumberToObject(linearFactorJSON, "x", linearFactor.x);
+        cJSON_AddNumberToObject(linearFactorJSON, "y", linearFactor.y);
+        cJSON_AddNumberToObject(linearFactorJSON, "z", linearFactor.z);
+        cJSON_AddItemToObject(collider, "linearFactor", linearFactorJSON);
 
         cJSON_AddItemToObject(root, "collider", collider);
     }
@@ -645,6 +682,18 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
                 o->setKinematicSize(
                     (float) cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "x")->valuedouble,
                     (float) cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "y")->valuedouble
+                );
+            }
+
+            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularFactor") != nullptr) {
+                o->angularFactor = ToolsJSON::parseVertex3DJSON(
+                    cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularFactor")
+                );
+            }
+
+            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "linearFactor") != nullptr) {
+                o->linearFactor = ToolsJSON::parseVertex3DJSON(
+                    cJSON_GetObjectItemCaseSensitive(colliderJSON, "linearFactor")
                 );
             }
 
@@ -829,6 +878,9 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     body->activate(true);
     body->setUserPointer(this);
     body->setRestitution(0.5);
+    body->setActivationState(DISABLE_DEACTIVATION);
+    body->setAngularFactor(angularFactor.toBullet());
+    body->setLinearFactor(linearFactor.toBullet());
 
     world->addRigidBody(body, collisionGroup, collisionMask);
 }
