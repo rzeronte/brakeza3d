@@ -1,0 +1,135 @@
+{
+	"gravity":	{
+		"x":	0,
+		"y":	18.799999237060547,
+		"z":	0
+	},
+	"ads":	{
+		"direction":	{
+			"x":	-0.15999999642372131,
+			"y":	-0.60000002384185791,
+			"z":	1
+		},
+		"diffuse":	{
+			"x":	0.85655736923217773,
+			"y":	0.60029226541519165,
+			"z":	0.60029226541519165
+		},
+		"specular":	{
+			"x":	0.73770493268966675,
+			"y":	0.69864875078201294,
+			"z":	0.14209890365600586
+		},
+		"ambient":	{
+			"x":	0.6598360538482666,
+			"y":	0.17577598989009857,
+			"z":	0.17577598989009857
+		}
+	},
+	"objects":	[{
+			"name":	"capsule",
+			"scale":	1,
+			"position":	{
+				"x":	-43.276573181152344,
+				"y":	-16.316535949707031,
+				"z":	-43.142631530761719
+			},
+			"rotation":	{
+				"x":	-3.2910521030426025,
+				"y":	2.546018123626709,
+				"z":	-0.6171155571937561
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	0,
+				"mass":	239.90000915527344,
+				"colliderStatic":	false,
+				"simpleShapeSize":	{
+					"x":	0.5,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1
+				},
+				"angularFactor":	{
+					"x":	0,
+					"y":	0,
+					"z":	0
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	0
+				}
+			},
+			"scripts":	[{
+					"name":	"../assets/scripts/Controllers/RigidBodyPlatformsController.lua",
+					"types":	[]
+				}],
+			"shaders":	[],
+			"model":	"../assets/models//Capsule.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"floor",
+			"scale":	1,
+			"position":	{
+				"x":	-38.931137084960938,
+				"y":	-12.569705963134766,
+				"z":	-43.248760223388672
+			},
+			"rotation":	{
+				"x":	-0,
+				"y":	0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	1,
+				"mass":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.5
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//DevLevelPlatforms.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}],
+	"shaders":	[],
+	"scripts":	[],
+	"camera":	{
+		"position":	{
+			"x":	-43.1946907043457,
+			"y":	-14.953164100646973,
+			"z":	-63.267910003662109
+		},
+		"rotation":	{
+			"x":	6.3999924659729,
+			"y":	1.4000877141952515,
+			"z":	0
+		}
+	}
+}

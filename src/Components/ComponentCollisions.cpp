@@ -208,3 +208,30 @@ void ComponentCollisions::setGravity(Vertex3D v)
 {
     dynamicsWorld->setGravity(v.toBullet());
 }
+
+bool ComponentCollisions::isRayCollisionWith(Vertex3D from, Vertex3D to, Object3D *o)
+{
+    btCollisionWorld::ClosestRayResultCallback rayCallback(
+        from.toBullet(),
+        to.toBullet()
+    );
+
+    rayCallback.m_collisionFilterGroup = EngineSetup::collisionGroups::AllFilter;
+    rayCallback.m_collisionFilterMask = EngineSetup::collisionGroups::AllFilter;
+    rayCallback.m_closestHitFraction = 1.0;
+
+    dynamicsWorld->rayTest(
+        from.toBullet(),
+        to.toBullet(),
+        rayCallback
+    );
+
+    if (rayCallback.hasHit()) {
+        auto *objectWithCollision = (Object3D *) rayCallback.m_collisionObject->getUserPointer();
+        if (o == objectWithCollision) {
+            return true;
+        }
+    }
+
+    return false;
+}
