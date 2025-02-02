@@ -79,7 +79,6 @@ public:
 
     static void deleteRemovedObjects();
 
-
     SceneLoader &getSceneLoader();
 
     ProjectLoader &getProjectLoader();
@@ -109,6 +108,8 @@ public:
     static void setGlobalIlluminationDiffuse(Vertex3D d);
 
     static void setGlobalIlluminationSpecular(Vertex3D s);
+
+    void drawLine(Vertex3D from, Vertex3D to, Color c);
 };
 
 

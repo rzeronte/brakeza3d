@@ -978,7 +978,13 @@ public:
                         ImGui::Text("%s", std::string(sol::type_name(lua, valueType)).c_str());
 
                         ImGui::TableSetColumnIndex(2);
-                        ImGui::Text("%s", std::string(luaEnvironment[key]).c_str());
+                        if (type == "number") {
+                            ImGui::Text("%f", (float) luaEnvironment[key]);
+                        } else if (type == "string") {
+                            ImGui::Text("%s", std::string(luaEnvironment[key]).c_str());
+                        } else if (type == "boolean") {
+                            ImGui::Text("%d", (bool) luaEnvironment[key]);
+                        }
                     }
                 }
                 ImGui::EndTable();

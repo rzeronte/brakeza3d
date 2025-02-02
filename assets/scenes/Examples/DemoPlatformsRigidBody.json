@@ -30,14 +30,14 @@
 			"name":	"capsule",
 			"scale":	1,
 			"position":	{
-				"x":	-43.276573181152344,
-				"y":	-16.316535949707031,
-				"z":	-43.142631530761719
+				"x":	-39.742038726806641,
+				"y":	-19.452238082885742,
+				"z":	-43.204925537109375
 			},
 			"rotation":	{
-				"x":	-3.2910521030426025,
-				"y":	2.546018123626709,
-				"z":	-0.6171155571937561
+				"x":	-3.2780547142028809,
+				"y":	2.5627391338348389,
+				"z":	-1.2005963325500488
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
@@ -67,7 +67,15 @@
 			},
 			"scripts":	[{
 					"name":	"../assets/scripts/Controllers/RigidBodyPlatformsController.lua",
-					"types":	[]
+					"types":	[{
+							"name":	"speed",
+							"type":	"float",
+							"value":	50
+						}, {
+							"name":	"jumpForce",
+							"type":	"float",
+							"value":	200
+						}]
 				}],
 			"shaders":	[],
 			"model":	"../assets/models//Capsule.fbx",
