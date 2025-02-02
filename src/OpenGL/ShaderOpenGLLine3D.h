@@ -8,6 +8,7 @@
 
 #include "../../include/OpenGL/ShaderOpenGL.h"
 #include "../../include/Objects/Vertex3D.h"
+#include "../../include/Misc/Color.h"
 #include <vector>
 
 class ShaderOpenGLLine3D : public ShaderOpenGL
@@ -18,6 +19,7 @@ class ShaderOpenGLLine3D : public ShaderOpenGL
 
     GLint matrixProjectionUniform;
     GLint matrixViewUniform;
+    GLint colorUniform;
 
     void destroy() override;
 
@@ -27,7 +29,8 @@ public:
     void render(
         Vertex3D from,
         Vertex3D to,
-        GLuint framebuffer
+        GLuint framebuffer,
+        Color c
     );
 };
 

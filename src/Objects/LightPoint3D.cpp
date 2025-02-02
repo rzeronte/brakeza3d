@@ -65,7 +65,8 @@ void LightPoint3D::onUpdate()
         window->getShaderOGLLine3D()->render(
             getPosition(),
             getPosition() + AxisForward().getInverse().getNormalize().getScaled(EngineSetup::get()->LIGHTS_DIRECTION_SIZE),
-            window->getForegroundFramebuffer()
+            window->getForegroundFramebuffer(),
+                    Color::yellow()
         );
     }
 }

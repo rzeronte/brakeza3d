@@ -651,3 +651,4 @@ void ComponentWindow::setWindowTitle(const char *title)
 {
     SDL_SetWindowTitle(window, title);
 }
+

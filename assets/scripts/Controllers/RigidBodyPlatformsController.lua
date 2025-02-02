@@ -1,25 +1,29 @@
 function onStart()
     floor = brakeza:getSceneObjectByLabel("floor")
+    isFloor = false
 end
 
 function onUpdate()
     local input = componentsManager:getComponentInput();
+    local render = componentsManager:getComponentRender();
+    local collisions = componentsManager:getComponentCollisions();
 
-    isFloor = componentsManager:getComponentCollisions():isRayCollisionWith(
-        this:getPosition(),
-        this:getPosition() + this:AxisUp():getScaled(2),
-        floor
-    )
+    from = this:getPosition()
+    to = this:getPosition() + this:AxisUp():getScaled(2)
+    render:drawLine(from, to, Color.new(0, 1, 0, 1))
 
-    local force = 25
-    if input:isCharPressed("A") then
-        this:applyCentralImpulse(Vertex3D.new(-force, 0, 0))
+    isFloor = collisions:isRayCollisionWith(from, to, floor)
+
+    if input:isCharPressed("A") and isFloor then
+        this:applyCentralImpulse(Vertex3D.new(-speed, 0, 0))
     end
-    if input:isCharPressed("D") then
-        this:applyCentralImpulse(Vertex3D.new(force, 0, 0))
+
+    if input:isCharPressed("D") and isFloor then
+        this:applyCentralImpulse(Vertex3D.new(speed, 0, 0))
     end
-    if input:isCharPressed("SPACE") and input:isKeyEventDown() and isFloor then
-        this:applyCentralImpulse(Vertex3D.new(0, -force * 50, 0))
+
+    if input:isCharPressed("SPACE") and isFloor then
+        this:applyCentralImpulse(Vertex3D.new(0, -speed * 10 , 0))
     end
 end
 

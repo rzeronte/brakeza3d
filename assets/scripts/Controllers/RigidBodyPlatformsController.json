@@ -1,4 +1,12 @@
 {
 	"name":	"../assets/scripts/Controllers/RigidBodyPlatformsController.lua",
-	"types":	[]
+	"types":	[{
+			"name":	"speed",
+			"type":	"float",
+			"value":	0
+		}, {
+			"name":	"jumpForce",
+			"type":	"float",
+			"value":	0
+		}]
 }

@@ -35,9 +35,10 @@ EngineSetup::get()->SHADERS_FOLDER + "Line3D.fs"
 
     matrixProjectionUniform = glGetUniformLocation(programID, "projection");
     matrixViewUniform = glGetUniformLocation(programID, "view");
+    colorUniform = glGetUniformLocation(programID, "color");
 }
 
-void ShaderOpenGLLine3D::render(Vertex3D from, Vertex3D to, GLuint framebuffer)
+void ShaderOpenGLLine3D::render(Vertex3D from, Vertex3D to, GLuint framebuffer, Color c)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
@@ -49,6 +50,7 @@ void ShaderOpenGLLine3D::render(Vertex3D from, Vertex3D to, GLuint framebuffer)
 
     setMat4Uniform(matrixProjectionUniform, ProjectionMatrix);
     setMat4Uniform(matrixViewUniform, ViewMatrix);
+    setVec3Uniform(colorUniform, c.toGLM());
 
     vertices[0] = from.toGLM();
     vertices[1] = to.toGLM();

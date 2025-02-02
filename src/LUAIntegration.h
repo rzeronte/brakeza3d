@@ -138,6 +138,7 @@ void LUAIntegration(sol::state &lua)
     lua.new_usertype<ComponentRender>("ComponentRender",
                                       sol::base_classes, sol::bases<Component>(),
                                       "getSceneLoader", &ComponentRender::getSceneLoader,
+                                      "drawLine",  &ComponentRender::drawLine,
                                       "setGlobalIlluminationDirection", &ComponentRender::setGlobalIlluminationDirection,
                                       "setGlobalIlluminationAmbient", &ComponentRender::setGlobalIlluminationAmbient,
                                       "setGlobalIlluminationDiffuse", &ComponentRender::setGlobalIlluminationDiffuse,

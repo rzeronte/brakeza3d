@@ -368,3 +368,15 @@ void ComponentRender::setGlobalIlluminationSpecular(Vertex3D v)
 {
     ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->setGlobalIlluminationSpecular(v);
 }
+
+void ComponentRender::drawLine(Vertex3D from, Vertex3D to, Color c)
+{
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    window->getShaderOGLLine3D()->render(
+        from,
+        to,
+        window->getForegroundFramebuffer(),
+        c
+    );
+}

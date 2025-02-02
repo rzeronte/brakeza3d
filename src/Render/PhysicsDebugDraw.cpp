@@ -11,7 +11,8 @@ void PhysicsDebugDraw::drawLine(const btVector3 &from, const btVector3 &to, cons
     window->getShaderOGLLine3D()->render(
         Vertex3D::fromBullet(from),
         Vertex3D::fromBullet(to),
-        window->getForegroundFramebuffer()
+        window->getForegroundFramebuffer(),
+        Color::fuchsia()
     );
 }
 

@@ -179,6 +179,7 @@ public:
     ImGUIConfigs ImGuiConfigChanged;
 
     void setWindowTitle(const char *title);
+
 };
 
 
