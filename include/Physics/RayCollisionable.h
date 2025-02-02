@@ -10,7 +10,7 @@
 #include "../Collision/Collider.h"
 #include "../../include/Objects/Object3D.h"
 
-class RayCollisionable: public Object3D, public Collider {
+class RayCollisionable: public Object3D {
 private:
     Vertex3D ray;
     Object3D *target = nullptr;
