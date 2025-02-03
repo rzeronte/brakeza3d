@@ -64,7 +64,8 @@ void SpotLight3D::drawImGuiProperties()
    }
 }
 
-cJSON *SpotLight3D::getJSON() {
+cJSON *SpotLight3D::getJSON()
+{
     cJSON *root = LightPoint3D::getJSON();
 
     cJSON_AddNumberToObject(root, "cutOff", cutOff);
@@ -105,8 +106,8 @@ SpotLight3D *SpotLight3D::create(Vertex3D position, Vertex3D direction)
         1.0f,
         0.09f,
         0.032f,
-        1,
-        1
+        0.9763,
+        0.9659
     );
 
     o->setPosition(position);

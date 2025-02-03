@@ -87,6 +87,10 @@ void SceneLoader::loadScene(const std::string& filename)
                 Mesh3D::createFromJSON(currentObject);
                 break;
             }
+            case SceneObjectLoaderMapping::Mesh3DAnimation : {
+                Mesh3DAnimation::createFromJSON(currentObject);
+                break;
+            }
             case SceneObjectLoaderMapping::LightPoint3D : {
                 LightPoint3D::createFromJSON(currentObject);
                 break;

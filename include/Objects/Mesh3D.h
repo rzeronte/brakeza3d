@@ -40,6 +40,13 @@ protected:
     Color flatColor;
     std::string sourceFile;
 public:
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> uvs;
+    GLuint vertexbuffer;
+    GLuint uvbuffer;
+    GLuint normalbuffer;
+
     Mesh3D();
 
     ~Mesh3D() override;
@@ -114,13 +121,6 @@ public:
 
     [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const;
 
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec3> normals;
-    std::vector<glm::vec2> uvs;
-    GLuint vertexbuffer;
-    GLuint uvbuffer;
-    GLuint normalbuffer;
-
     void makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) override;
     void makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     void makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
@@ -132,6 +132,8 @@ public:
     btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia);
 
     btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia);
+
+    void setSourceFile(const std::string &sourceFile);
 };
 
 #endif //SDL2_3D_ENGINE_MESH_H

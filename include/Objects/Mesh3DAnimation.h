@@ -36,24 +36,26 @@ struct BoneInfo {
 };
 
 class Mesh3DAnimation : public Mesh3D {
-public:
+private:
     Assimp::Importer importer;
-    const aiScene *scene = nullptr;
-    int m_NumBones = 0;
+    const aiScene *scene;
+    int numBones;
 
-    std::vector<std::vector<VertexBoneData> > meshVerticesBoneData;
-    std::vector<std::vector<Vertex3D> > meshVertices;
+    aiMatrix4x4 globalInverseTransform;
 
-    int indexCurrentAnimation = 0;
-    float runningTime = 0;
-    bool remove_at_end_animation = false;
-    float animation_speed = 1;
-    bool animation_ends = false;
+    std::vector<std::vector<VertexBoneData>> meshVerticesBoneData;
+    std::vector<std::vector<Vertex3D>> meshVertices;
+
+    int indexCurrentAnimation;
+    float runningTime;
+    bool remove_at_end_animation;
+    float animation_speed;
+    bool animation_ends;
 
     std::map<std::string, unsigned int> boneMapping; // maps a bone name to its index
     std::vector<BoneInfo> boneInfo;
-
-    aiMatrix4x4 m_GlobalInverseTransform;
+public:
+    Mesh3DAnimation();
 
     void onUpdate() override;
 
@@ -61,11 +63,11 @@ public:
 
     bool AssimpLoadAnimation(const std::string &filename);
 
-    void AssimpProcessNodeAnimation(aiNode *node);
+    void ProcessNodeAnimation(aiNode *node);
 
-    void AssimpProcessMeshAnimation(int i, aiMesh *mesh);
+    void ProcessMeshAnimation(int i, aiMesh *mesh);
 
-    void ReadNodes();
+    void ReadNodesFromRoot();
 
     void BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4> &Transforms);
 
@@ -81,7 +83,9 @@ public:
 
     int updateForBone(Vertex3D &dest, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms);
 
-    void loadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &);
+    void LoadMeshVertex(aiMesh *mesh, std::vector<Vertex3D> &meshVertex);
+
+    void LoadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData);
 
     static void CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
 
@@ -97,15 +101,23 @@ public:
 
     [[nodiscard]] bool isRemoveAtEndAnimation() const;
 
-    static Mesh3DAnimation* create(Vertex3D position, const std::string& animationFile);
-
     const char *getTypeObject() override;
 
     const char *getTypeIcon() override;
 
     void updateOGLBuffers();
 
-    void drawImGuiProperties();
+    void drawImGuiProperties() override;
+
+    cJSON *getJSON() override;
+
+    static void createFromJSON(cJSON *object);
+
+    static void setPropertiesFromJSON(cJSON *object, Mesh3DAnimation *o);
+
+    static Mesh3DAnimation* create(Vertex3D position, const std::string& animationFile);
+
+    void setAnimationSpeed(float animationSpeed);
 };
 
 

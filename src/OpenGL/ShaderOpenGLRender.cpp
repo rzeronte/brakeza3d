@@ -169,14 +169,12 @@ void ShaderOpenGLRender::createUBOFromLights()
 
 void ShaderOpenGLRender::extractLights(Object3D *o)
 {
-    Vertex3D forward = o->AxisForward();
-
-    auto position = o->getPosition();
+    Vertex3D forward = o->AxisForward().getNormalize();
 
     auto s = dynamic_cast<SpotLight3D*>(o);
     if (s != nullptr) {
         spotLights.push_back(SpotLightOpenGL{
-            glm::vec4(position.toGLM(), 0),
+            glm::vec4(o->getPosition().toGLM(), 0),
             glm::vec4(forward.toGLM(), 0),
             s->ambient,
             s->diffuse,
@@ -193,7 +191,7 @@ void ShaderOpenGLRender::extractLights(Object3D *o)
     auto l = dynamic_cast<LightPoint3D*>(o);
     if (l != nullptr) {
         pointsLights.push_back({
-            glm::vec4(position.toGLM(), 0),
+            glm::vec4(o->getPosition().toGLM(), 0),
             l->ambient,
             l->diffuse,
             l->specular,

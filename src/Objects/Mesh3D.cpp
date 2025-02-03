@@ -817,3 +817,8 @@ btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia)
 
     return convexHull;
 }
+
+void Mesh3D::setSourceFile(const std::string &sourceFile)
+{
+    Mesh3D::sourceFile = sourceFile;
+}

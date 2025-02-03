@@ -398,7 +398,6 @@ void Object3D::drawImGuiProperties()
                         setRotation(getRotation() * partialRot);
                         M3::normalize(rotation);
                     }
-
                     ImGui::TreePop();
                 }
                 ImGui::Separator();
@@ -585,8 +584,8 @@ cJSON *Object3D::getJSON()
     cJSON_AddItemToObject(root, "position", position);
 
     cJSON *rotation = cJSON_CreateObject();
-    cJSON_AddNumberToObject(rotation, "x", (float) getRotation().getYawDegree());
-    cJSON_AddNumberToObject(rotation, "y", (float) getRotation().getPitchDegree());
+    cJSON_AddNumberToObject(rotation, "x", (float) getRotation().getPitchDegree());
+    cJSON_AddNumberToObject(rotation, "y", (float) getRotation().getYawDegree());
     cJSON_AddNumberToObject(rotation, "z", (float) getRotation().getRollDegree());
     cJSON_AddItemToObject(root, "rotation", rotation);
 
@@ -649,11 +648,15 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
 
     if (cJSON_GetObjectItemCaseSensitive(object, "rotation") != nullptr) {
         cJSON *rotation = cJSON_GetObjectItemCaseSensitive(object, "rotation");
-        o->setRotation(M3::getMatrixRotationForEulerAngles(
-            (float) cJSON_GetObjectItemCaseSensitive(rotation, "x")->valuedouble,
-            (float) cJSON_GetObjectItemCaseSensitive(rotation, "y")->valuedouble,
-            (float) cJSON_GetObjectItemCaseSensitive(rotation, "z")->valuedouble
-        ));
+
+        auto dX = (float) cJSON_GetObjectItemCaseSensitive(rotation, "x")->valuedouble;
+        auto dY = (float) cJSON_GetObjectItemCaseSensitive(rotation, "y")->valuedouble;
+        auto dZ = (float) cJSON_GetObjectItemCaseSensitive(rotation, "z")->valuedouble;
+
+        auto rotEuler = M3::getMatrixRotationForEulerAngles(dX, dY, dZ);
+
+        M3::normalize(rotEuler);
+        o->setRotation(rotEuler);
     }
 
     if (cJSON_GetObjectItemCaseSensitive(object, "isCollisionsEnabled") != nullptr) {

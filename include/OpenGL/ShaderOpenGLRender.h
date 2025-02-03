@@ -44,7 +44,17 @@ class ShaderOpenGLRender: public ShaderOpenGL {
 public:
     ShaderOpenGLRender();
 
-    void render(Object3D *o, GLint textureID, GLint textureSpecularID, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size, float alpha, GLuint framebuffer);
+    void render(
+        Object3D *o,
+        GLint textureID,
+        GLint textureSpecularID, GLuint
+        vertexbuffer,
+        GLuint uvbuffer,
+        GLuint normalbuffer,
+        int size,
+        float alpha,
+        GLuint framebuffer
+    );
 
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer) ;
 
