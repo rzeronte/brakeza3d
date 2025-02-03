@@ -14,6 +14,7 @@
 enum class SceneObjectLoaderMapping {
     Object3D,
     Mesh3D,
+    Mesh3DAnimation,
     LightPoint3D,
     SpotLight3D,
     ParticleEmitter,
@@ -34,6 +35,7 @@ class SceneLoader {
     std::map<std::string, SceneObjectLoaderMapping> sceneTypes = {
             {"Object3D", SceneObjectLoaderMapping::Object3D},
             {"Mesh3D", SceneObjectLoaderMapping::Mesh3D},
+            {"Mesh3DAnimation", SceneObjectLoaderMapping::Mesh3DAnimation},
             {"LightPoint3D", SceneObjectLoaderMapping::LightPoint3D},
             {"SpotLight3D", SceneObjectLoaderMapping::SpotLight3D},
             {"ParticleEmitter", SceneObjectLoaderMapping::ParticleEmitter},

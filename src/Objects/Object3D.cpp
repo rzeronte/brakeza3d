@@ -653,10 +653,12 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
         auto dY = (float) cJSON_GetObjectItemCaseSensitive(rotation, "y")->valuedouble;
         auto dZ = (float) cJSON_GetObjectItemCaseSensitive(rotation, "z")->valuedouble;
 
-        auto rotEuler = M3::getMatrixRotationForEulerAngles(dX, dY, dZ);
-
-        M3::normalize(rotEuler);
-        o->setRotation(rotEuler);
+        M3 MRX = M3::RX(dX);
+        M3 MRY = M3::RY(dY);
+        M3 MRZ = M3::RZ(dZ);
+        auto r = MRZ * MRY * MRX;
+        M3::normalize(r);
+        o->setRotation(r);
     }
 
     if (cJSON_GetObjectItemCaseSensitive(object, "isCollisionsEnabled") != nullptr) {
