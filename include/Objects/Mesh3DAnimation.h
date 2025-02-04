@@ -119,11 +119,7 @@ public:
 
     void setAnimationSpeed(float animationSpeed);
 
-    void drawVertexWeights();
-
     void setIndexCurrentAnimation(int indexCurrentAnimation);
-
-    Uint32 processWeigthColor(int weight);
 };
 
 

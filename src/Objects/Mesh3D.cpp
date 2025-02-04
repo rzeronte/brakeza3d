@@ -35,7 +35,7 @@ void Mesh3D::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
-        for (auto m: meshes) {
+        for (auto &m: meshes) {
             ComponentsManager::get()->getComponentWindow()->getShaderOglShading()->render(
                 getModelMatrix(),
                 m.vertexbuffer,

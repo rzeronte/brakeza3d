@@ -50,7 +50,6 @@ void Mesh3DAnimation::updateFrameTransformations()
 
         if (meshVertices[i].empty()) continue;
 
-        // Apply bone transforms and create triangle
         for (unsigned int k = 0; k < scene->mMeshes[i]->mNumFaces; k++) {
 
             const aiFace &Face = scene->mMeshes[i]->mFaces[k];
@@ -525,7 +524,6 @@ void Mesh3DAnimation::drawImGuiProperties()
 {
     Mesh3D::drawImGuiProperties();
 
-    const float range_sensibility = 0.01f;
     const float range_min = 0.0f;
     const float range_max = 1.0f;
 
@@ -542,7 +540,7 @@ void Mesh3DAnimation::drawImGuiProperties()
         ImGui::Combo("Animation", &indexCurrentAnimation, items, IM_ARRAYSIZE(items));
 
         ImGui::Separator();
-        ImGui::DragScalar("Speed", ImGuiDataType_Float, &animation_speed, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
+        ImGui::DragScalar("Speed", ImGuiDataType_Float, &animation_speed, 0.01f ,&range_min, &range_max, "%f", 1.0f);
         ImGui::TreePop();
     }
 }
@@ -587,71 +585,6 @@ Mesh3DAnimation::~Mesh3DAnimation()
     meshVertices.clear();
     boneMapping.clear();
     boneInfo.clear();
-}
-
-void Mesh3DAnimation::drawVertexWeights()
-{
-    std::vector<aiMatrix4x4> Transforms;
-    this->BoneTransform(runningTime, Transforms);
-
-    for (int i = 0; i < this->scene->mNumMeshes; i++) {
-        // Apply bone transforms and create triangle
-        for (unsigned int k = 0 ; k < this->scene->mMeshes[i]->mNumFaces ; k++) {
-
-            if (this->meshVertices[i].size() == 0) continue;
-
-            const aiFace& Face = this->scene->mMeshes[i]->mFaces[k];
-
-            if (Face.mNumIndices < 3) continue;
-
-            Vertex3D V1 = this->meshVertices[i].at(Face.mIndices[0]);
-            Vertex3D V2 = this->meshVertices[i].at(Face.mIndices[1]);
-            Vertex3D V3 = this->meshVertices[i].at(Face.mIndices[2]);
-
-            int weight1 = this->updateForBone(V1, i, Face.mIndices[0], Transforms);
-            int weight2 = this->updateForBone(V2, i, Face.mIndices[1], Transforms);
-            int weight3 = this->updateForBone(V3, i, Face.mIndices[2], Transforms);
-
-            Uint32 c1 = this->processWeigthColor(weight1);
-            Uint32 c2 = this->processWeigthColor(weight2);
-            Uint32 c3 = this->processWeigthColor(weight3);
-
-            Transforms::objectSpace(V1, V1, this);
-            Transforms::objectSpace(V2, V2, this);
-            Transforms::objectSpace(V3, V3, this);
-
-            Drawable::drawVertex(V1, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), Color(c1));
-            Drawable::drawVertex(V2, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), Color(c2));
-            Drawable::drawVertex(V3, Brakeza3D::get()->getComponentsManager()->getComponentCamera()->getCamera(), Color(c3));
-        }
-    }
-}
-
-Uint32 Mesh3DAnimation::processWeigthColor(int weight)
-{
-    Uint32 c;
-    switch(weight) {
-        case 0:
-            c = Color::white().getColor();
-            break;
-        case 1:
-            c = Color::yellow().getColor();
-            break;
-        case 2:
-            c = Color::green().getColor();
-            break;
-        case 3:
-            c = Color::blue().getColor();
-            break;
-        case 4:
-            c = Color::red().getColor();
-            break;
-        case 5:
-            c = Color::FOGDefault().getColor();
-            break;
-    }
-
-    return c;
 }
 
 void Mesh3DAnimation::setIndexCurrentAnimation(int indexCurrentAnimation)
