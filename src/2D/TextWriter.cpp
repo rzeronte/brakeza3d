@@ -4,9 +4,6 @@
 #include "../../include/2D/TextWriter.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Brakeza3D.h"
-#include <glm/ext/matrix_float4x4.hpp>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
 
 TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font)
 :
@@ -87,8 +84,8 @@ void TextWriter::writeTextTTFMiddleScreen(const char *text, Color c, float sizeR
     textWidth *= sizeRatio;
     textHeight *= sizeRatio;
 
-    int totalW = ComponentsManager::get()->getComponentWindow()->width;
-    int totalH = ComponentsManager::get()->getComponentWindow()->height;
+    const int totalW = EngineSetup::get()->screenWidth;
+    const int totalH = EngineSetup::get()->screenHeight;
 
     int xPosition = (totalW / 2) - textWidth / 2;
     int yPosition = totalH / 2;
@@ -126,8 +123,3 @@ TextWriter::~TextWriter()
 void TextWriter::setFont(TTF_Font *font) {
     TextWriter::font = font;
 }
-
-TTF_Font *TextWriter::getFont() const {
-    return font;
-}
-
