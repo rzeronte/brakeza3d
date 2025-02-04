@@ -403,6 +403,7 @@ void Mesh3D::drawImGuiProperties()
             }
             ImGui::TreePop();
         }
+        ImGui::Separator();
         ImGui::Checkbox(std::string("Enable lights").c_str(), &enableLights);
         ImGui::TreePop();
     }
