@@ -17,7 +17,7 @@ void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color)
 
     if (Tools::isPixelInWindow(P1.x, P1.y)) {
         glBegin(GL_POINTS);
-            glVertex2i(P1.x, P1.y);
+            glVertex3i(V.x, V.y, V.z);
         glEnd();
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -453,12 +453,6 @@ void Mesh3DAnimation::drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transfor
         Vertex3D bonePosition = Vertex3D::fromAssimp(aBonePosition);
         Transforms::objectSpace(bonePosition, bonePosition, this);
 
-        Drawable::drawVertex(
-            bonePosition,
-            ComponentsManager::get()->getComponentCamera()->getCamera(),
-            Color::red()
-        );
-
         if (lastBonePosition) {
             auto window = ComponentsManager::get()->getComponentWindow();
             window->getShaderOGLLine3D()->render(
