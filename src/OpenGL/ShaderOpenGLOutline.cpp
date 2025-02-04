@@ -43,15 +43,17 @@ void ShaderOpenGLOutline::drawOutline(Mesh3D *m, Color c, float borderThickness)
     auto componentWindow = ComponentsManager::get()->getComponentWindow();
     auto shaderColor = componentWindow->getShaderOGLColor();
 
-    shaderColor->render(
-        m,
-        m->vertexbuffer,
-        m->uvbuffer,
-        m->normalbuffer,
-        (int) m->vertices.size(),
-        true,
-        Color::white()
-    );
+    for (const auto& mm : m->meshes) {
+        shaderColor->render(
+            m,
+            mm.vertexbuffer,
+            mm.uvbuffer,
+            mm.normalbuffer,
+            (int) mm.vertices.size(),
+            true,
+            Color::white()
+        );
+    }
 
     glBindFramebuffer(GL_FRAMEBUFFER, componentWindow->getSceneFramebuffer());
 

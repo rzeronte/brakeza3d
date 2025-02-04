@@ -21,6 +21,21 @@
 #include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 
+struct meshData {
+    std::vector<Triangle *> modelTriangles;
+    std::vector<Vertex3D *> modelVertices;
+
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> uvs;
+
+    GLuint vertexbuffer;
+    GLuint uvbuffer;
+    GLuint normalbuffer;
+
+    int materialIndex;
+};
+
 class Mesh3D : public Object3D {
 private:
     Octree *octree;
@@ -28,24 +43,15 @@ private:
     AABB3D aabb;
 
     bool sharedTextures;
-    bool flatTextureColor;
     bool render;
     bool loaded = false;
 protected:
-    std::vector<Triangle *> modelTriangles;
+    std::string sourceFile;
+
     std::vector<Image *> modelTextures;
     std::vector<Image *> modelSpecularTextures;
-    std::vector<Vertex3D *> modelVertices;
-
-    Color flatColor;
-    std::string sourceFile;
 public:
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec3> normals;
-    std::vector<glm::vec2> uvs;
-    GLuint vertexbuffer;
-    GLuint uvbuffer;
-    GLuint normalbuffer;
+    std::vector<meshData> meshes;
 
     Mesh3D();
 
@@ -55,15 +61,11 @@ public:
 
     void AssimpInitMaterials(const aiScene *pScene, const std::string &Filename);
 
-    void AssimpProcessNodes(const aiScene *, aiNode *node);
+    void ProcessNodes(const aiScene *scene, aiNode *node);
 
-    void AssimpLoadMesh(aiMesh *mesh);
+    void LoadMesh(int meshId, aiMesh *mesh);
 
     void updateBoundingBox();
-
-    void clone(Mesh3D *source);
-
-    void cloneParts(Mesh3D *source, bool isFlatTextureColor, bool isEnableLights, Color color);
 
     void onUpdate() override;
 
@@ -77,13 +79,8 @@ public:
 
     void buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const std::string& filename, int fixedY);
 
-    void setFlatTextureColor(bool isFlatTextureColor);
-
-    void setFlatColor(const Color &flatColor);
 
     void setRender(bool render);
-
-    [[nodiscard]] const Color &getFlatColor() const;
 
     [[nodiscard]] bool isRender() const;
 
@@ -91,13 +88,11 @@ public:
 
     [[nodiscard]] Octree *getOctree() const;
 
-    [[nodiscard]] bool isFlatTextureColor() const;
-
-    [[nodiscard]] std::vector<Triangle *> &getModelTriangles() ;
+    [[nodiscard]] std::vector<Triangle *> &getModelTriangles(int i) ;
 
     [[nodiscard]] std::vector<Image *> &getModelTextures() ;
 
-    [[nodiscard]] std::vector<Vertex3D *> &getModelVertices() ;
+    [[nodiscard]] std::vector<Vertex3D *> &getModelVertices(int i) ;
 
     AABB3D &getAabb();
 

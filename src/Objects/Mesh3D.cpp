@@ -13,82 +13,10 @@ Mesh3D::Mesh3D()
     octree(nullptr),
     grid(nullptr),
     sharedTextures(false),
-    flatTextureColor(false),
     render(true)
 {
     decal = false;
     luaEnvironment["this"] = this;
-}
-
-void Mesh3D::updateBoundingBox()
-{
-    // Obtener la matriz de modelo-vista-proyección
-    glm::mat4 mvpMatrix = ComponentsManager::get()->getComponentCamera()->getGLMMat4ProjectionMatrix() *
-                          ComponentsManager::get()->getComponentCamera()->getGLMMat4ViewMatrix() * getModelMatrix();
-
-    // Inicializar los valores extremos
-    float maxX = -FLT_MAX, minX = FLT_MAX, maxY = -FLT_MAX, minY = FLT_MAX, maxZ = -FLT_MAX, minZ = FLT_MAX;
-
-    for (auto &vertex : this->vertices) {
-        // Transformar el vértice por la matriz de modelo-vista-proyección
-        glm::vec4 transformedVertex = mvpMatrix * glm::vec4(vertex, 1.0f);
-
-        // Normalizar las coordenadas w para obtener coordenadas de clip
-        transformedVertex /= transformedVertex.w;
-
-        // Actualizar los valores máximos y mínimos
-        maxX = std::max(maxX, transformedVertex.x);
-        minX = std::min(minX, transformedVertex.x);
-        maxY = std::max(maxY, transformedVertex.y);
-        minY = std::min(minY, transformedVertex.y);
-        maxZ = std::max(maxZ, transformedVertex.z);
-        minZ = std::min(minZ, transformedVertex.z);
-    }
-
-    // Actualizar el bounding box
-    this->aabb.max.x = maxX;
-    this->aabb.max.y = maxY;
-    this->aabb.max.z = maxZ;
-
-    this->aabb.min.x = minX;
-    this->aabb.min.y = minY;
-    this->aabb.min.z = minZ;
-
-    // Actualizar los vértices del bounding box (si es necesario)
-    this->aabb.updateVertices();
-}
-
-void Mesh3D::cloneParts(Mesh3D *source, bool isFlatTextureColor, bool isEnableLights, Color color)
-{
-    for (auto &triangle : source->modelTriangles) {
-        auto *t = new Triangle(triangle->A, triangle->B, triangle->C, this);
-
-        t->setFlatColor(color);
-        t->setEnableLights(isEnableLights);
-
-        this->modelTriangles.push_back(t);
-    }
-
-    this->modelTextures = source->modelTextures;
-    this->scale = source->scale;
-    this->sharedTextures = true;
-}
-
-void Mesh3D::clone(Mesh3D *source)
-{
-    this->sharedTextures = true;
-
-    this->modelTextures = source->modelTextures;
-    this->modelSpecularTextures = source->modelSpecularTextures;
-    this->scale = source->scale;
-
-    this->uvbuffer = source->uvbuffer;
-    this->normalbuffer = source->normalbuffer;
-    this->vertexbuffer = source->vertexbuffer;
-
-    this->uvs = source->uvs;
-    this->normals = source->normals;
-    this->vertices = source->vertices;
 }
 
 void Mesh3D::onUpdate()
@@ -107,14 +35,16 @@ void Mesh3D::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
-        ComponentsManager::get()->getComponentWindow()->getShaderOglShading()->render(
-            getModelMatrix(),
-            vertexbuffer,
-            uvbuffer,
-            normalbuffer,
-            (int) vertices.size(),
-            ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
-        );
+        for (auto m: meshes) {
+            ComponentsManager::get()->getComponentWindow()->getShaderOglShading()->render(
+                getModelMatrix(),
+                m.vertexbuffer,
+                m.uvbuffer,
+                m.normalbuffer,
+                (int) m.vertices.size(),
+                ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+            );
+        }
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
@@ -122,15 +52,17 @@ void Mesh3D::onUpdate()
         window->getShaderOGLRender()->renderMesh(this,window->getSceneFramebuffer());
     }
 
-    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()){
-        ComponentsManager::get()->getComponentWindow()->getShaderOglWireframe()->render(
-            getModelMatrix(),
-            vertexbuffer,
-            uvbuffer,
-            normalbuffer,
-            (int) vertices.size(),
-            ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
-        );
+    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
+        for (auto &m: meshes) {
+            ComponentsManager::get()->getComponentWindow()->getShaderOglWireframe()->render(
+                getModelMatrix(),
+                m.vertexbuffer,
+                m.uvbuffer,
+                m.normalbuffer,
+                (int) m.vertices.size(),
+                ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+            );
+        }
     }
 
     if (EngineSetup::get()->DRAW_MESH3D_AABB && isRender()) {
@@ -157,8 +89,8 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 
     Assimp::Importer assimpImporter;
     const aiScene *scene = assimpImporter.ReadFile(
-            fileName,
-            aiProcess_Triangulate | aiProcess_SortByPType | aiProcess_FlipUVs | aiProcess_OptimizeMeshes
+        fileName,
+        aiProcess_Triangulate | aiProcess_SortByPType | aiProcess_FlipUVs | aiProcess_OptimizeMeshes
     );
 
     if (!scene) {
@@ -166,8 +98,11 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
         exit(-1);
     }
 
+    Logging::Message("Num meshes: %d", scene->mNumMeshes);
+    meshes.resize(scene->mNumMeshes);
+
     AssimpInitMaterials(scene, fileName);
-    AssimpProcessNodes(scene, scene->mRootNode);
+    ProcessNodes(scene, scene->mRootNode);
 
     sourceFile = fileName;
 
@@ -222,24 +157,30 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
     }
 }
 
-void Mesh3D::AssimpProcessNodes(const aiScene *scene, aiNode *node)
+void Mesh3D::ProcessNodes(const aiScene *scene, aiNode *node)
 {
-    for (unsigned int x = 0; x < node->mNumMeshes; x++) {
+    int numMeshes = (int) node->mNumMeshes;
+
+    for (unsigned int x = 0; x < numMeshes; x++) {
         int idMesh = (int) node->mMeshes[x];
-        this->AssimpLoadMesh(scene->mMeshes[idMesh]);
+        this->LoadMesh(idMesh, scene->mMeshes[idMesh]);
     }
 
     for (unsigned int j = 0; j < node->mNumChildren; j++) {
-        AssimpProcessNodes(scene, node->mChildren[j]);
+        ProcessNodes(scene, node->mChildren[j]);
     }
 }
 
-void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
+void Mesh3D::LoadMesh(int meshId, aiMesh *mesh)
 {
+    Logging::Message("LoadMesh: %d | Numº Vertices: %d", meshId, mesh->mNumVertices);
+
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
         Logging::Message("Skip mesh non triangle: %s", mesh->mPrimitiveTypes);
         return;
     }
+
+    meshes[meshId].materialIndex = mesh->mMaterialIndex;
 
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
@@ -255,13 +196,11 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
         v.v = pTexCoord->y;
 
         localMeshVertices[j] = v;
-        vertices.emplace_back(vf.x, vf.y, vf.z);
-        uvs.emplace_back(v.u, v.v);
-    }
+        meshes[meshId].vertices.emplace_back(v.toGLM());
+        meshes[meshId].uvs.emplace_back(v.u, v.v);
 
-    for (unsigned int j = 0; j < mesh->mNumVertices; j++) {
-        aiVector3t vf = mesh->mNormals[j];
-        normals.emplace_back(vf.x, vf.y, vf.z);
+        aiVector3t vn = mesh->mNormals[j];
+        meshes[meshId].normals.emplace_back(vn.x, vn.y, vn.z);
     }
 
     for (unsigned int k = 0; k < mesh->mNumFaces; k++) {
@@ -273,10 +212,7 @@ void Mesh3D::AssimpLoadMesh(aiMesh *mesh)
         Vertex3D V2 = localMeshVertices.at(Face.mIndices[1]);
         Vertex3D V3 = localMeshVertices.at(Face.mIndices[2]);
 
-        auto t = new Triangle(V3, V2, V1, this);
-        t->setEnableLights(this->isEnableLights());
-        t->setFlatColor(this->flatColor);
-        this->modelTriangles.push_back(t);
+        meshes[meshId].modelTriangles.push_back(new Triangle(V3, V2, V1, this));
     }
 }
 
@@ -292,7 +228,7 @@ void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ
 {
     Logging::Message("Building Grid3D for %s (TriangleContains)", getLabel().c_str());
 
-    this->updateBoundingBox();
+    /*this->updateBoundingBox();
     this->grid = new Grid3D(
             &this->modelTriangles,
             this->aabb,
@@ -301,12 +237,12 @@ void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ
             sizeZ,
             Grid3D::EmptyStrategies::CONTAIN_TRIANGLES
     );
-    this->grid->applyCheckCellEmptyStrategy();
+    this->grid->applyCheckCellEmptyStrategy();*/
 }
 
 void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction)
 {
-    Logging::Message("Building Grid3D for %s (RayIntersection)", getLabel().c_str());
+    /*Logging::Message("Building Grid3D for %s (RayIntersection)", getLabel().c_str());
 
     this->updateBoundingBox();
     this->grid = new Grid3D(
@@ -318,12 +254,12 @@ void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, in
             Grid3D::EmptyStrategies::RAY_INTERSECTION
     );
     this->grid->setRayIntersectionDirection(direction);
-    this->grid->applyCheckCellEmptyStrategy();
+    this->grid->applyCheckCellEmptyStrategy();*/
 }
 
 void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const std::string& filename, int fixedY)
 {
-    Logging::Message("Building Grid3D for %s (DataImage)", getLabel().c_str());
+    /*Logging::Message("Building Grid3D for %s (DataImage)", getLabel().c_str());
 
     this->updateBoundingBox();
 
@@ -338,53 +274,39 @@ void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const st
 
     this->grid->setImageFilename(filename);
     this->grid->setFixedYImageData(fixedY);
-    this->grid->applyCheckCellEmptyStrategy();
+    this->grid->applyCheckCellEmptyStrategy();*/
 }
 
 void Mesh3D::buildOctree()
 {
     Logging::Message("Building Octree for %s", getLabel().c_str());
 
-    this->updateBoundingBox();
+    /*this->updateBoundingBox();
 
-    this->octree = new Octree(this->modelTriangles, aabb);
-}
-
-bool Mesh3D::isFlatTextureColor() const
-{
-    return flatTextureColor;
-}
-
-void Mesh3D::setFlatTextureColor(bool isFlatTextureColor)
-{
-    this->flatTextureColor = isFlatTextureColor;
-}
-
-void Mesh3D::setFlatColor(const Color &flatColor)
-{
-    Mesh3D::flatColor = flatColor;
-}
-
-const Color &Mesh3D::getFlatColor() const {
-    return flatColor;
+    this->octree = new Octree(this->modelTriangles, aabb);*/
 }
 
 Mesh3D::~Mesh3D()
 {
     Logging::Message("Delete Mesh3D: %s", getLabel().c_str());
 
-    for (auto triangle : modelTriangles) delete triangle;
-    for (auto vertex : modelVertices) delete vertex;
+    for (auto &m : meshes) {
+        for (auto triangle : m.modelTriangles) delete triangle;
+        for (auto vertex : m.modelVertices) delete vertex;
+
+        if (glIsBuffer(m.vertexbuffer))
+            glDeleteBuffers(1, &m.vertexbuffer);
+
+        if (glIsBuffer(m.uvbuffer))
+            glDeleteBuffers(1, &m.uvbuffer);
+
+        if (glIsBuffer(m.normalbuffer))
+            glDeleteBuffers(1, &m.normalbuffer);
+    }
 
     if (!sharedTextures) {
         for (auto texture : modelTextures) delete texture;
         for (auto texture : modelSpecularTextures) delete texture;
-    }
-
-    if (loaded) {
-        glDeleteBuffers(1, &vertexbuffer);
-        glDeleteBuffers(1, &uvbuffer);
-        glDeleteBuffers(1, &normalbuffer);
     }
 }
 
@@ -398,9 +320,9 @@ void Mesh3D::setRender(bool render)
     Mesh3D::render = render;
 }
 
-std::vector<Triangle *> &Mesh3D::getModelTriangles()
+std::vector<Triangle *> &Mesh3D::getModelTriangles(int i)
 {
-    return modelTriangles;
+    return meshes[i].modelTriangles;
 }
 
 std::vector<Image *> &Mesh3D::getModelTextures()
@@ -413,9 +335,9 @@ const std::vector<Image *> &Mesh3D::getModelSpecularTextures() const
     return modelSpecularTextures;
 }
 
-std::vector<Vertex3D *> &Mesh3D::getModelVertices()
+std::vector<Vertex3D *> &Mesh3D::getModelVertices(int i)
 {
-    return modelVertices;
+    return meshes[i].modelVertices;
 }
 
 AABB3D &Mesh3D::getAabb(){
@@ -461,15 +383,24 @@ Mesh3D *Mesh3D::create(Vertex3D position, const std::string& imageFile)
 void Mesh3D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    std::string title = "Mesh3D (File: " + sourceFile + " | Triangles: " + std::to_string(getModelTriangles().size()) + ")";
+    std::string title = "Mesh3D (File: " + sourceFile + ")";
 
     if (ImGui::TreeNode("Mesh3D")) {
         if (ImGui::TreeNode("Mesh information")) {
             auto fileModel = std::string("- File model: ") + sourceFile;
             ImGui::Text(fileModel.c_str());
-
-            auto numTriangles = std::string("- Nº Triangles: ") + std::to_string((int) modelTriangles.size());
-            ImGui::Text(numTriangles.c_str());
+            ImGui::Text("- Num Meshes: %d", (int) meshes.size());
+            int cont = 1;
+            for (auto &m: meshes) {
+                auto meshTitle = "Mesh " + std::to_string(cont);
+                if (ImGui::TreeNode(meshTitle.c_str())) {
+                    ImGui::Text("Num Vertices: %d", (int) m.vertices.size());
+                    ImGui::Text("Num UVs: %d", (int) m.uvs.size());
+                    ImGui::Text("Num Normals: %d", (int) m.normals.size());
+                    ImGui::TreePop();
+                }
+                cont++;
+            }
             ImGui::TreePop();
         }
         ImGui::Checkbox(std::string("Enable lights").c_str(), &enableLights);
@@ -539,7 +470,7 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
                 o->setColliderStatic(cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic")->valueint);
             }
 
-            switch(mode) {
+            switch (mode) {
                 case CollisionMode::GHOST:
                     if (shape == CollisionShape::SIMPLE_SHAPE) {
                         o->setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
@@ -572,18 +503,21 @@ void Mesh3D::createFromJSON(cJSON *object)
 
 void Mesh3D::fillBuffers()
 {
+    for (auto &m: meshes) {
+        glGenBuffers(1, &m.vertexbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m.vertexbuffer);
+        glBufferData(GL_ARRAY_BUFFER, m.vertices.size() * sizeof(glm::vec3), &m.vertices[0], GL_STATIC_DRAW);
+
+        glGenBuffers(1, &m.uvbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m.uvbuffer);
+        glBufferData(GL_ARRAY_BUFFER, m.uvs.size() * sizeof(glm::vec2), &m.uvs[0], GL_STATIC_DRAW);
+
+        glGenBuffers(1, &m.normalbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m.normalbuffer);
+        glBufferData(GL_ARRAY_BUFFER, m.normals.size() * sizeof(glm::vec3), &m.normals[0], GL_STATIC_DRAW);
+    }
+
     loaded = true;
-    glGenBuffers(1, &vertexbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-
-    glGenBuffers(1, &uvbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-    glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
-
-    glGenBuffers(1, &normalbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-    glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
 }
 
 void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
@@ -591,14 +525,16 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
     auto *convexHullShape = new btConvexHullShape();
 
     updateBoundingBox();
-    for (auto & modelTriangle : getModelTriangles()) {
-        btVector3 a, b, c;
-        a = btVector3(modelTriangle->A.x, modelTriangle->A.y, modelTriangle->A.z);
-        b = btVector3(modelTriangle->B.x, modelTriangle->B.y, modelTriangle->B.z);
-        c = btVector3(modelTriangle->C.x, modelTriangle->C.y, modelTriangle->C.z);
-        convexHullShape->addPoint(a);
-        convexHullShape->addPoint(b);
-        convexHullShape->addPoint(c);
+    for (auto &m: meshes) {
+        for (auto & modelTriangle : m.modelTriangles) {
+            btVector3 a, b, c;
+            a = btVector3(modelTriangle->A.x, modelTriangle->A.y, modelTriangle->A.z);
+            b = btVector3(modelTriangle->B.x, modelTriangle->B.y, modelTriangle->B.z);
+            c = btVector3(modelTriangle->C.x, modelTriangle->C.y, modelTriangle->C.z);
+            convexHullShape->addPoint(a);
+            convexHullShape->addPoint(b);
+            convexHullShape->addPoint(c);
+        }
     }
 
     getGhostObject()->setWorldTransform(Tools::GLMMatrixToBulletTransform(getModelMatrix()));
@@ -789,11 +725,13 @@ btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia)
 {
     auto *triangleMesh = new btTriangleMesh();
 
-    for (auto & modelTriangle : this->modelTriangles) {
-        btVector3 a = modelTriangle->A.toBullet();
-        btVector3 b = modelTriangle->B.toBullet();
-        btVector3 c = modelTriangle->C.toBullet();
-        triangleMesh->addTriangle(a, b, c, false);
+    for (auto &m: meshes) {
+        for (auto & modelTriangle : m.modelTriangles) {
+            btVector3 a = modelTriangle->A.toBullet();
+            btVector3 b = modelTriangle->B.toBullet();
+            btVector3 c = modelTriangle->C.toBullet();
+            triangleMesh->addTriangle(a, b, c, false);
+        }
     }
 
     auto s = new btBvhTriangleMeshShape(triangleMesh, true, true);
@@ -805,14 +743,17 @@ btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia)
 btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia)
 {
     auto *convexHull = new btConvexHullShape();
-    for (auto &modelTriangle: this->modelTriangles) {
-        btVector3 a = modelTriangle->A.toBullet();
-        btVector3 b = modelTriangle->B.toBullet();
-        btVector3 c = modelTriangle->C.toBullet();
-        convexHull->addPoint(a);
-        convexHull->addPoint(b);
-        convexHull->addPoint(c);
+    for (auto &m: meshes) {
+        for (auto &modelTriangle: m.modelTriangles) {
+            btVector3 a = modelTriangle->A.toBullet();
+            btVector3 b = modelTriangle->B.toBullet();
+            btVector3 c = modelTriangle->C.toBullet();
+            convexHull->addPoint(a);
+            convexHull->addPoint(b);
+            convexHull->addPoint(c);
+        }
     }
+
     convexHull->calculateLocalInertia(mass, inertia);
 
     return convexHull;
@@ -821,4 +762,45 @@ btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia)
 void Mesh3D::setSourceFile(const std::string &sourceFile)
 {
     Mesh3D::sourceFile = sourceFile;
+}
+
+
+void Mesh3D::updateBoundingBox()
+{
+    // Obtener la matriz de modelo-vista-proyección
+    glm::mat4 mvpMatrix = ComponentsManager::get()->getComponentCamera()->getGLMMat4ProjectionMatrix() *
+                          ComponentsManager::get()->getComponentCamera()->getGLMMat4ViewMatrix() * getModelMatrix();
+
+    // Inicializar los valores extremos
+    float maxX = -FLT_MAX, minX = FLT_MAX, maxY = -FLT_MAX, minY = FLT_MAX, maxZ = -FLT_MAX, minZ = FLT_MAX;
+
+    for (auto &m: meshes) {
+        for (auto &vertex : m.vertices) {
+            // Transformar el vértice por la matriz de modelo-vista-proyección
+            glm::vec4 transformedVertex = mvpMatrix * glm::vec4(vertex, 1.0f);
+
+            // Normalizar las coordenadas w para obtener coordenadas de clip
+            transformedVertex /= transformedVertex.w;
+
+            // Actualizar los valores máximos y mínimos
+            maxX = std::max(maxX, transformedVertex.x);
+            minX = std::min(minX, transformedVertex.x);
+            maxY = std::max(maxY, transformedVertex.y);
+            minY = std::min(minY, transformedVertex.y);
+            maxZ = std::max(maxZ, transformedVertex.z);
+            minZ = std::min(minZ, transformedVertex.z);
+        }
+    }
+
+    // Actualizar el bounding box
+    this->aabb.max.x = maxX;
+    this->aabb.max.y = maxY;
+    this->aabb.max.z = maxZ;
+
+    this->aabb.min.x = minX;
+    this->aabb.min.y = minY;
+    this->aabb.min.z = minZ;
+
+    // Actualizar los vértices del bounding box (si es necesario)
+    this->aabb.updateVertices();
 }

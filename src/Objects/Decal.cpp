@@ -41,7 +41,8 @@ void Decal::setDimensions(float w, float h) {
 }
 
 void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
-    this->modelTriangles.clear();
+
+    /*this->modelTriangles.clear();
 
     setupFromAxis();
 
@@ -93,6 +94,7 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
         modelTriangle->B = modelTriangle->B - N.getScaled(OffsetSeparation);
         modelTriangle->C = modelTriangle->C - N.getScaled(OffsetSeparation);
     }
+     */
 }
 
 BillboardAnimation *Decal::getSprite() const {

@@ -3,27 +3,30 @@
 
 Mesh3DAnimation::Mesh3DAnimation()
 :
-        indexCurrentAnimation(0),
-        runningTime(0),
-        remove_at_end_animation(false),
-        animation_speed(1),
-        animation_ends(false),
-        scene(nullptr),
-        numBones(0)
+    scene(nullptr),
+    numBones(0),
+    indexCurrentAnimation(0),
+    runningTime(0),
+    remove_at_end_animation(false),
+    animation_speed(1),
+    animation_ends(false)
 {
 }
 
 void Mesh3DAnimation::onUpdate()
 {
-    if (this->scene != nullptr) {
-        updateFrameTransformations();
-        updateOGLBuffers();
-    }
+    if (isRemoved() || scene == nullptr) return;
+
+    updateFrameTransformations();
+    updateOGLBuffers();
+
     Mesh3D::onUpdate();
 }
 
 void Mesh3DAnimation::updateFrameTransformations()
 {
+    if (isRemoved() || scene == nullptr) return;
+
     if (!scene->HasAnimations()) return;
 
     animation_ends = false;
@@ -60,7 +63,7 @@ void Mesh3DAnimation::updateFrameTransformations()
             updateForBone(V2, i, Face.mIndices[1], Transforms);
             updateForBone(V3, i, Face.mIndices[2], Transforms);
 
-            auto *T = modelTriangles[numModelTriangles];
+            auto *T = meshes[i].modelTriangles[numModelTriangles];
 
             T->A = V1;
             T->B = V2;
@@ -111,6 +114,7 @@ void Mesh3DAnimation::ReadNodesFromRoot()
     // Transformación raíz
     globalInverseTransform = scene->mRootNode->mTransformation;
     globalInverseTransform.Inverse();
+    meshes.resize(scene->mNumMeshes);
 
     // Para cada malla preparamos sus array de "Vertices" y "VertexBoneData"
     meshVertices.resize(scene->mNumMeshes);
@@ -146,8 +150,8 @@ void Mesh3DAnimation::ProcessMeshAnimation(int i, aiMesh *mesh)
     std::vector<VertexBoneData> localMeshBones(mesh->mNumVertices);
     std::vector<Vertex3D> localMeshVertices(mesh->mNumVertices);
 
-    LoadMeshBones(mesh, localMeshBones);
-    LoadMeshVertex(mesh, localMeshVertices);
+    LoadMeshBones(i, mesh, localMeshBones);
+    LoadMeshVertex(i, mesh, localMeshVertices);
 
     meshVertices[i] = localMeshVertices;
     meshVerticesBoneData[i] = localMeshBones;
@@ -161,11 +165,11 @@ void Mesh3DAnimation::ProcessMeshAnimation(int i, aiMesh *mesh)
         Vertex3D V2 = localMeshVertices.at(Face.mIndices[1]);
         Vertex3D V3 = localMeshVertices.at(Face.mIndices[2]);
 
-        this->modelTriangles.push_back(new Triangle(V1, V2, V3, this));
+        meshes[i].modelTriangles.push_back(new Triangle(V1, V2, V3, this));
     }
 }
 
-void Mesh3DAnimation::LoadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData)
+void Mesh3DAnimation::LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData)
 {
     for (int i = 0; i < (int) mesh->mNumBones; i++) {
         int BoneIndex;
@@ -197,7 +201,7 @@ void Mesh3DAnimation::LoadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &m
     }
 }
 
-void Mesh3DAnimation::LoadMeshVertex(aiMesh *mesh, std::vector<Vertex3D> &meshVertex)
+void Mesh3DAnimation::LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Vertex3D> &meshVertex)
 {
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
@@ -212,11 +216,11 @@ void Mesh3DAnimation::LoadMeshVertex(aiMesh *mesh, std::vector<Vertex3D> &meshVe
         meshVertex[j] = v;
 
         // OpenGL
-        vertices.emplace_back(vf.x, vf.y, vf.z);
-        uvs.emplace_back(v.u, v.v);
+        meshes[meshId].vertices.emplace_back(vf.x, vf.y, vf.z);
+        meshes[meshId].uvs.emplace_back(v.u, v.v);
 
         aiVector3t n = mesh->mNormals[j];
-        normals.emplace_back(n.x, n.y, n.z);
+        meshes[meshId].normals.emplace_back(n.x, n.y, n.z);
     }
 }
 
@@ -502,20 +506,22 @@ const char *Mesh3DAnimation::getTypeIcon()
 
 void Mesh3DAnimation::updateOGLBuffers()
 {
-    vertices.clear();
-    for (auto t: this->modelTriangles) {
-        vertices.emplace_back(t->A.x, t->A.y, t->A.z);
-        vertices.emplace_back(t->B.x, t->B.y, t->B.z);
-        vertices.emplace_back(t->C.x, t->C.y, t->C.z);
-    }
+    for (auto &m: meshes) {
+        m.vertices.clear();
+        for (auto t: m.modelTriangles) {
+            m.vertices.emplace_back(t->A.x, t->A.y, t->A.z);
+            m.vertices.emplace_back(t->B.x, t->B.y, t->B.z);
+            m.vertices.emplace_back(t->C.x, t->C.y, t->C.z);
+        }
 
-    if (glIsBuffer(vertexbuffer)) {
-        glDeleteBuffers(1, &vertexbuffer);
-    }
+        if (glIsBuffer(m.vertexbuffer)) {
+            glDeleteBuffers(1, &m.vertexbuffer);
+        }
 
-    glGenBuffers(1, &vertexbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+        glGenBuffers(1, &m.vertexbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m.vertexbuffer);
+        glBufferData(GL_ARRAY_BUFFER, m.vertices.size() * sizeof(glm::vec3), &m.vertices[0], GL_STATIC_DRAW);
+    }
 }
 
 void Mesh3DAnimation::drawImGuiProperties()
@@ -566,4 +572,12 @@ void Mesh3DAnimation::setPropertiesFromJSON(cJSON *object, Mesh3DAnimation *o)
 
 void Mesh3DAnimation::setAnimationSpeed(float animationSpeed) {
     animation_speed = animationSpeed;
+}
+
+Mesh3DAnimation::~Mesh3DAnimation()
+{
+    meshVerticesBoneData.clear();
+    meshVertices.clear();
+    boneMapping.clear();
+    boneInfo.clear();
 }

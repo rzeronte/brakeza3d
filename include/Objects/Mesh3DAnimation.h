@@ -57,6 +57,8 @@ private:
 public:
     Mesh3DAnimation();
 
+    ~Mesh3DAnimation() override;
+
     void onUpdate() override;
 
     void updateFrameTransformations();
@@ -83,9 +85,9 @@ public:
 
     int updateForBone(Vertex3D &dest, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms);
 
-    void LoadMeshVertex(aiMesh *mesh, std::vector<Vertex3D> &meshVertex);
+    void LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Vertex3D> &meshVertex);
 
-    void LoadMeshBones(aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData);
+    void LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData);
 
     static void CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
 

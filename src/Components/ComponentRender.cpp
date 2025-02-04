@@ -5,7 +5,6 @@
 
 ComponentRender::ComponentRender()
 :
-    textWriter(nullptr),
     fps(0),
     fpsFrameCounter(0),
     frameTime(0),
@@ -16,6 +15,7 @@ ComponentRender::ComponentRender()
     numberTiles(0),
     tilePixelsBufferSize(0),
     selectedObject(nullptr),
+    textWriter(nullptr),
     sceneShadersEnabled(true)
 {
 }
@@ -36,13 +36,15 @@ void ComponentRender::onStart()
 void ComponentRender::preUpdate()
 {
     this->updateFPS();
+
+    if (!isEnabled()) return;
+
+    deleteRemovedObjects();
 }
 
 void ComponentRender::onUpdate()
 {
     if (!isEnabled()) return;
-
-    deleteRemovedObjects();
 
     ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->createUBOFromLights();
 
@@ -55,7 +57,6 @@ void ComponentRender::onUpdate()
     if (SETUP->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis();
     }
-
 
     if (isSceneShadersEnabled()) {
         runShadersOpenCLPostUpdate();
@@ -142,12 +143,6 @@ void ComponentRender::onUpdateSceneObjects()
 
     for (auto o: sceneObjects) {
         if (o->isEnabled()) {
-            o->onUpdate();
-        }
-    }
-
-    for (auto o: sceneObjects) {
-        if (o->isEnabled()){
             o->onUpdate();
         }
     }
@@ -245,24 +240,26 @@ Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
         auto mesh = dynamic_cast<Mesh3D*>(o);
 
         if (mesh == nullptr) continue;
-
-        for (auto &triangle : mesh->getModelTriangles()) {
-            triangle->updateObjectSpace();
-            auto p = new Plane(triangle->Ao, triangle->Bo, triangle->Co);
-            float t;
-            if (Maths::isVector3DClippingPlane(*p, ray)) {
-                Vertex3D intersectionPoint  = p->getPointIntersection(ray.origin(), ray.end(), t);
-                if (triangle->isPointInside(intersectionPoint)) {
-                    auto distance = intersectionPoint - camera->getPosition();
-                    auto m = distance.getModule();
-                    if ( m < lastDepthFound || lastDepthFound == -1) {
-                        foundObject = triangle->parent;
-                        lastDepthFound = m;
+        for (auto m: mesh->meshes) {
+            for (auto &triangle : m.modelTriangles) {
+                triangle->updateObjectSpace();
+                auto p = new Plane(triangle->Ao, triangle->Bo, triangle->Co);
+                float t;
+                if (Maths::isVector3DClippingPlane(*p, ray)) {
+                    Vertex3D intersectionPoint  = p->getPointIntersection(ray.origin(), ray.end(), t);
+                    if (triangle->isPointInside(intersectionPoint)) {
+                        auto distance = intersectionPoint - camera->getPosition();
+                        auto m = distance.getModule();
+                        if ( m < lastDepthFound || lastDepthFound == -1) {
+                            foundObject = triangle->parent;
+                            lastDepthFound = m;
+                        }
                     }
                 }
             }
+            i++;
+
         }
-        i++;
     }
 
     return foundObject;

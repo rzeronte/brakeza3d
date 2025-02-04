@@ -53,15 +53,17 @@ void FXBlink::update()
             glDisable(GL_BLEND);
 
             glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-            ComponentsManager::get()->getComponentWindow()->getShaderOGLColor()->render(
-                object,
-                object->vertexbuffer,
-                object->uvbuffer,
-                object->normalbuffer,
-                (int) object->vertices.size(),
-                false,
-                color
-            );
+            for (const auto& m : mesh->meshes) {
+                ComponentsManager::get()->getComponentWindow()->getShaderOGLColor()->render(
+                    object,
+                    m.vertexbuffer,
+                    m.uvbuffer,
+                    m.normalbuffer,
+                    (int) m.vertices.size(),
+                    false,
+                    color
+                );
+            }
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
             glEnable(GL_BLEND);

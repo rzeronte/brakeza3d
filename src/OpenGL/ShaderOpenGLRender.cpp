@@ -47,17 +47,19 @@ ShaderOpenGLRender::ShaderOpenGLRender()
 
 void ShaderOpenGLRender::renderMesh(Mesh3D *o, GLuint framebuffer)
 {
-    render(
-        o,
-        o->getModelTextures()[0]->getOGLTextureID(),
-        o->getModelTextures()[0]->getOGLTextureID(),
-        o->vertexbuffer,
-        o->uvbuffer,
-        o->normalbuffer,
-        o->vertices.size(),
-        o->getAlpha(),
-        framebuffer
-    );
+    for (const auto& m: o->meshes) {
+        render(
+            o,
+            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
+            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
+            m.vertexbuffer,
+            m.uvbuffer,
+            m.normalbuffer,
+            (int) m.vertices.size(),
+            o->getAlpha(),
+            framebuffer
+        );
+    }
 }
 
 void ShaderOpenGLRender::render(

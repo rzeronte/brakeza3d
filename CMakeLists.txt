@@ -175,7 +175,7 @@ add_executable(Brakeza3D
     src/OpenGL/ShaderOpenGLTint.cpp                 src/OpenGL/ShaderOpenGLTint.h
 
     src/Collisions/SimplePendulum.cpp               include/Physics/SimplePendulum.h
-    src/Collisions/Collider.cpp include/Collision/Collider.h
+    src/Collisions/Collider.cpp                     include/Collision/Collider.h
     src/Collisions/RayCollisionable.cpp             include/Physics/RayCollisionable.h
 
     src/Behaviors/Object3DBehavior.cpp              include/Behaviors/Object3DBehavior.h
