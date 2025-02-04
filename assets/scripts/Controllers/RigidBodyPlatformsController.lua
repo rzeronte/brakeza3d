@@ -9,10 +9,20 @@ function onUpdate()
     local collisions = componentsManager:getComponentCollisions();
 
     from = this:getPosition()
-    to = this:getPosition() + this:AxisUp():getScaled(2)
-    render:drawLine(from, to, Color.new(0, 1, 0, 1))
+    local lengthRay = 1.5;
+    toDown = this:getPosition() + this:AxisUp():getScaled(lengthRay)
+    toDownLeft = this:getPosition() + this:AxisUp():getScaled(lengthRay) + Vertex3D.new(0.5, 0, 0)
+    toDownRight = this:getPosition() + this:AxisUp():getScaled(lengthRay) + Vertex3D.new(-0.5, 0, 0)
 
-    isFloor = collisions:isRayCollisionWith(from, to, floor)
+    render:drawLine(from, toDown, Color.new(1, 0, 0, 1))
+    render:drawLine(from, toDownLeft, Color.new(0, 1, 0, 1))
+    render:drawLine(from, toDownRight, Color.new(0, 0, 1, 1))
+
+    isFloorDown = collisions:isRayCollisionWith(from, toDown, floor)
+    isFloorDownLeft = collisions:isRayCollisionWith(from, toDownLeft, floor)
+    isFloorDownRight = collisions:isRayCollisionWith(from, toDownRight, floor)
+
+    isFloor = isFloorDown or isFloorDownLeft or isFloorDownRight
 
     if input:isCharPressed("A") and isFloor then
         this:applyCentralImpulse(Vertex3D.new(-speed, 0, 0))
