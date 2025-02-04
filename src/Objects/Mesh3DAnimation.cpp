@@ -659,3 +659,8 @@ Uint32 Mesh3DAnimation::processWeigthColor(int weight)
 
     return c;
 }
+
+void Mesh3DAnimation::setIndexCurrentAnimation(int indexCurrentAnimation)
+{
+    Mesh3DAnimation::indexCurrentAnimation = indexCurrentAnimation;
+}

@@ -121,6 +121,8 @@ public:
 
     void drawVertexWeights();
 
+    void setIndexCurrentAnimation(int indexCurrentAnimation);
+
     Uint32 processWeigthColor(int weight);
 };
 

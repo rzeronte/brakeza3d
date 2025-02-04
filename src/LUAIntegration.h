@@ -210,7 +210,9 @@ void LUAIntegration(sol::state &lua)
           sol::base_classes, sol::bases<Mesh3D, Object3D>(),
              "create", sol::factories([](Vertex3D position, const std::string& imageFile) {
                 return Mesh3DAnimation::create(position,imageFile);
-            })
+            }),
+            "setIndexCurrentAnimation", &Mesh3DAnimation::setIndexCurrentAnimation,
+            "setAnimationSpeed", &Mesh3DAnimation::setAnimationSpeed
     );
 
     lua.new_usertype<BillboardAnimation>("BillboardAnimation",
