@@ -35,8 +35,6 @@ public:
     void setAlpha(float alpha);
 
     void setFont(TTF_Font *font);
-
-    [[nodiscard]] TTF_Font *getFont() const;
 };
 
 

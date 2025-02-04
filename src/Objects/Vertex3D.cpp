@@ -160,9 +160,19 @@ btVector3 Vertex3D::toBullet() const
     return {x, y, z};
 }
 
+aiVector3D Vertex3D::toAssimp() const
+{
+    return {x, y, z};
+}
+
 Vertex3D Vertex3D::fromBullet(const btVector3 &v)
 {
     return {v.x(), v.y(), v.z()};
+}
+
+Vertex3D Vertex3D::fromAssimp(const aiVector3D &v)
+{
+    return {v.x, v.y, v.z};
 }
 
 Vertex3D Vertex3D::randomVertex()

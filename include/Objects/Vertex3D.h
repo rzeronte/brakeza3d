@@ -6,6 +6,7 @@
 #include <string>
 #include <bullet/LinearMath/btVector3.h>
 #include <glm/vec3.hpp>
+#include <vector3.h>
 #include "Vertex4D.h"
 
 class Vertex3D {
@@ -59,7 +60,11 @@ public:
 
     [[nodiscard]] glm::vec3 toGLM() const;
 
+    [[nodiscard]] aiVector3D toAssimp() const;
+
     static Vertex3D fromBullet(const btVector3 &v);
+
+    static Vertex3D fromAssimp(const aiVector3D &v);
 
     static Vertex3D randomVertex();
 };

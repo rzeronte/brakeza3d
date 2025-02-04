@@ -95,9 +95,7 @@ public:
 
     static void CalcInterpolatedPosition(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
 
-    static void AIMatrixToVertex(Vertex3D &V, aiMatrix4x4 &m);
-
-    void drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms);
+    void drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms, Vertex3D *lastBonePosition = nullptr);
 
     void setRemoveAtEndAnimation(bool removeAtEnds);
 
@@ -120,6 +118,10 @@ public:
     static Mesh3DAnimation* create(Vertex3D position, const std::string& animationFile);
 
     void setAnimationSpeed(float animationSpeed);
+
+    void drawVertexWeights();
+
+    Uint32 processWeigthColor(int weight);
 };
 
 
