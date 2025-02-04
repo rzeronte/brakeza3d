@@ -3,7 +3,6 @@
 - [Image3D](#image3d)
 - [Mesh3D](#mesh3d)
 - [Mesh3DAnimation](#mesh3danimation)
-- [Mesh3DAnimationCollection](#mesh3danimationcollection)
 - [Dibujar líneas](#dibujar-lineas)
 
 ---
@@ -43,18 +42,29 @@ Modelo 3D animado.
 ```lua
 -- Mesh3DAnimation.create(position, animatedModelFile)
 man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
-man:setEnabled(true)
-man:setStencilBufferEnabled(true)
 man:setBelongToScene(false)
 man:setScale(0.01)
 brakeza:addObject3D(man, 'myMeshAnimated')
 ```
 
----
+Si el modelo tuviese más de una animación, la primera de ellas será la seleccionada por
+defecto. Desde la GUI podrás seleccionar cualquier otra animación como activa.
+Si deseas hacerlo desde tus scripts LUA:
 
-## Mesh3DAnimationCollection
+```lua
+man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
+man:setIndexCurrentAnimation(2) -- animacion nº3 seleccionada
+brakeza:addObject3D(man, 'myMeshAnimated')
+```
 
-Agrupa un conjunto de animaciones de un modelo 3D.
+Si deseas cambiar la velocidad de la animación, podrás hacerlo también desde la UI o desde tus
+scripts LUA:
+
+```lua
+man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
+man:setAnimationSpeed(0.5) -- rango 0.0 - 1.0
+brakeza:addObject3D(man, 'myMeshAnimated')
+```
 
 ---
 
