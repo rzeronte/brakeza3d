@@ -538,6 +538,16 @@ void Mesh3DAnimation::drawImGuiProperties()
     ImGui::Separator();
 
     if (ImGui::TreeNode("Mesh3DAnimation")) {
+        auto flags = ImGuiComboFlags_None;
+
+        const char* items[(int) scene->mNumAnimations];
+        for (int i = 0; i < (int) scene->mNumAnimations; i++) {
+            items[i] = scene->mAnimations[i]->mName.C_Str();
+        }
+        auto comboTitle = "Animations##" + getLabel();
+        ImGui::Combo("Animation", &indexCurrentAnimation, items, IM_ARRAYSIZE(items));
+
+        ImGui::Separator();
         ImGui::DragScalar("Speed", ImGuiDataType_Float, &animation_speed, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
         ImGui::TreePop();
     }
