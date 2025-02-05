@@ -9,7 +9,7 @@
 #include "ImGuizmo.h"
 #include <glm/gtc/type_ptr.hpp>
 
-void Drawable::drawVertex(Vertex3D V, Camera3D *cam, Color color)
+void Drawable::drawVertex(Vertex3D V, Color color)
 {
     Point2D P1 = Transforms::WorldToPoint(V);
     glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
@@ -184,8 +184,8 @@ void Drawable::drawAABB(AABB3D *aabb, Color color)
     Drawable::drawVector3D(v11, color);
     Drawable::drawVector3D(v12, color);
 
-    Drawable::drawVertex(aabb->max, camera, Color::red());
-    Drawable::drawVertex(aabb->min, camera, Color::green());
+    Drawable::drawVertex(aabb->max, Color::red());
+    Drawable::drawVertex(aabb->min,Color::green());
 }
 
 void Drawable::drawOctreeNode(OctreeNode *node, bool onlyWithTriangles)
@@ -218,7 +218,7 @@ void Drawable::drawGrid3D(Grid3D *grid) {
                 Drawable::drawAABB(boxe->box, c);
             }
             if (EngineSetup::get()->DRAW_MESH3D_GRID_POINTS) {
-                Drawable::drawVertex(boxe->box->getCenter(), camera, c);
+                Drawable::drawVertex(boxe->box->getCenter(), c);
             }
         }
 
@@ -229,7 +229,7 @@ void Drawable::drawGrid3D(Grid3D *grid) {
             }
             if (EngineSetup::get()->DRAW_MESH3D_GRID_POINTS) {
 
-                Drawable::drawVertex(boxe->box->getCenter(), camera, c);
+                Drawable::drawVertex(boxe->box->getCenter(), c);
             }
         }
     }
@@ -241,7 +241,7 @@ void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PairData> path) {
     std::vector<Vertex3D> pathVertices = Tools::getVerticesFromPathFinderPath(grid, std::move(path));
 
     for (auto & pathVertice : pathVertices) {
-        Drawable::drawVertex(pathVertice, camera, Color::cyan());
+        Drawable::drawVertex(pathVertice, Color::cyan());
     }
 }
 
