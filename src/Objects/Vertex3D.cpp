@@ -175,6 +175,11 @@ Vertex3D Vertex3D::fromAssimp(const aiVector3D &v)
     return {v.x, v.y, v.z};
 }
 
+Vertex3D Vertex3D::fromGLM(const glm::vec3 &v)
+{
+    return {v.x, v.y, v.z};
+}
+
 Vertex3D Vertex3D::randomVertex()
 {
     return {

@@ -66,6 +66,8 @@ public:
 
     static Vertex3D fromAssimp(const aiVector3D &v);
 
+    static Vertex3D fromGLM(const glm::vec3 &v);
+
     static Vertex3D randomVertex();
 };
 

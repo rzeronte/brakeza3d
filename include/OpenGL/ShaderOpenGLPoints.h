@@ -4,13 +4,14 @@
 
 #include "ShaderOpenGL.h"
 #include "../Objects/ParticlesContext.h"
+#include "../Objects/Mesh3D.h"
 
 class ShaderOpenGLPoints : public ShaderOpenGL {
     GLuint VertexArrayID;
 public:
     ShaderOpenGLPoints();
 
-    void render(GLint particlesBuffer, int numberPoints, Color cf, Color ct, GLuint framebuffer);
+    void render(Mesh3D* m, GLint particlesBuffer, int numberPoints, Color c, GLuint framebuffer);
 
     static void setVAOAttributes(GLint particlesBuffer) ;
 

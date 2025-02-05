@@ -61,7 +61,7 @@ void TentacleIK::IKForwardSolver()
 
 void TentacleIK::drawTargetPosition()
 {
-    Drawable::drawVertex(target, ComponentsManager::get()->getComponentCamera()->getCamera(), Color::green());
+    Drawable::drawVertex(target, Color::green());
 }
 
 void TentacleIK::addJoint(TentacleSegment *segment)

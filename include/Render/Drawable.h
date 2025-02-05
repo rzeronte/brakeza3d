@@ -16,7 +16,7 @@
 
 class Drawable {
 public:
-    static void drawVertex(Vertex3D v, Camera3D *cam, Color color);
+    static void drawVertex(Vertex3D v, Color color);
 
     static void drawVector3D(Vector3D V, Color color);
 

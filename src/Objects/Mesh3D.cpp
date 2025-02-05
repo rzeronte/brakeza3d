@@ -34,6 +34,18 @@ void Mesh3D::onUpdate()
         window->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
     }
 
+    if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
+        for (auto &m: meshes) {
+            ComponentsManager::get()->getComponentWindow()->getShaderOGLPoints()->render(
+                this,
+                m.vertexbuffer,
+                m.vertices.size(),
+                Color::green(),
+                ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+            );
+        }
+    }
+
     if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
         for (auto &m: meshes) {
             ComponentsManager::get()->getComponentWindow()->getShaderOglShading()->render(
@@ -53,14 +65,15 @@ void Mesh3D::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
+        auto window = ComponentsManager::get()->getComponentWindow();
         for (auto &m: meshes) {
-            ComponentsManager::get()->getComponentWindow()->getShaderOglWireframe()->render(
+            window->getShaderOglWireframe()->render(
                 getModelMatrix(),
                 m.vertexbuffer,
                 m.uvbuffer,
                 m.normalbuffer,
                 (int) m.vertices.size(),
-                ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+                window->getSceneFramebuffer()
             );
         }
     }
@@ -173,7 +186,7 @@ void Mesh3D::ProcessNodes(const aiScene *scene, aiNode *node)
 
 void Mesh3D::LoadMesh(int meshId, aiMesh *mesh)
 {
-    Logging::Message("LoadMesh: %d | Numº Vertices: %d", meshId, mesh->mNumVertices);
+    Logging::Message("[Mesh3D] Loading mesh: %d | Numº Vertices: %d", meshId, mesh->mNumVertices);
 
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
         Logging::Message("Skip mesh non triangle: %s", mesh->mPrimitiveTypes);

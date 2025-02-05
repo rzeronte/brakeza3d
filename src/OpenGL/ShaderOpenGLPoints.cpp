@@ -13,7 +13,7 @@ ShaderOpenGLPoints::ShaderOpenGLPoints()
     glBindVertexArray(VertexArrayID);
 }
 
-void ShaderOpenGLPoints::render(GLint particlesBuffer, int numberPoints, Color cf, Color ct, GLuint framebuffer)
+void ShaderOpenGLPoints::render(Mesh3D* m, GLint vertexbuffer, int numberPoints, Color c, GLuint framebuffer)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
@@ -29,36 +29,22 @@ void ShaderOpenGLPoints::render(GLint particlesBuffer, int numberPoints, Color c
 
     setMat4("projection", ProjectionMatrix);
     setMat4("view", ViewMatrix);
-    setMat4("model", glm::mat4(1.0f));
+    setMat4("model", m->getModelMatrix());
 
-    setVec3("colorTo", cf.toGLM());
-    setVec3("colorFrom", ct.toGLM());
+    setVec3("color", c.toGLM());
 
-    setVAOAttributes(particlesBuffer);
+    setVAOAttributes(vertexbuffer);
 
     glDrawArrays(GL_POINTS, 0, (GLint) numberPoints);
 
     glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
-    glDisableVertexAttribArray(3);
 }
 
-void ShaderOpenGLPoints::setVAOAttributes(GLint particlesBuffer)
+void ShaderOpenGLPoints::setVAOAttributes(GLint vertexbuffer)
 {
-    glBindBuffer(GL_ARRAY_BUFFER, particlesBuffer);
-
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(OCParticle), (GLvoid*)offsetof(OCParticle, position.x));
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(OCParticle), (GLvoid*)offsetof(OCParticle, active));
-
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(OCParticle), (GLvoid*)offsetof(OCParticle, timeToLive));
-
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(OCParticle), (GLvoid*)offsetof(OCParticle, timeLiving));
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 void ShaderOpenGLPoints::destroy() {
