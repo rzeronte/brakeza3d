@@ -2,6 +2,7 @@
 
 - [Introducción](#brakeza3d-conceptos-básicos)
 - [Conceptos principales](#conceptos-principales)
+- [Componentes](#componentes)
 - [GUI](#gui)
 
 ---
@@ -73,4 +74,21 @@ Dispondrás de un sencillo editor de escena totalmente integrado con el sistema 
 Si bien puedes utilizar tu editor de código favorito para manipular los scripts, la GUI será de gran utilidad
 para integrar tus scripts, manipular tus objetos, configurar la iluminación, guardar y cargar escenas, etc.
 
+---
+
+## Componentes
+
+Brakeza3D agrupa sus funcionalidades en `Componentes`. Cada componente representa un aspecto
+fundamental del núcleo de Brakeaz3D.
+
+- `ComponentWindow`: Gestiona la ventana del sistema operativo.
+- `ComponentScripting`: Gestiona el sistema de scripting.
+- `ComponentCamera`: Gestiona la cámara.
+- `ComponentCollisions`: Gestiona el motor de físicas y colisiones.
+- `ComponentInput`: Gestiona la entrada por teclado o gamepad.
+- `ComponentSound`: Gestiona la reproducción de sonidos.
+- `ComponentRender`: Gestiona el render con OpenGL
+
+Podrás acceder a todos ellos mediante el ``ComponentsManager`` desde tus scripts LUA. Trataremos
+cada uno en detalle en el futuro.
 

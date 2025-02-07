@@ -695,11 +695,11 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
     body->setUserPointer(this);
     body->setRestitution(0);
     body->setActivationState(ACTIVE_TAG);
+    body->setFriction(friction);
+    body->setLinearFactor(linearFactor.toBullet());
+    body->setAngularFactor(angularFactor.toBullet());
 
-    body->setLinearFactor(btVector3(1, 1, 1));
-    body->setAngularFactor(btVector3(1, 1, 1));
-
-    world->addRigidBody(this->body, collisionGroup, collisionMask);
+    world->addRigidBody(body, collisionGroup, collisionMask);
 }
 
 void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)

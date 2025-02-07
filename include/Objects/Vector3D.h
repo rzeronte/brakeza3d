@@ -14,17 +14,17 @@ public:
 
     Vector3D(Vertex3D &, Vertex3D &);
 
-    Vertex3D getComponent() const;
+    [[nodiscard]] Vertex3D getComponent() const;
 
-    Vertex3D normal() const;
+    [[nodiscard]] Vertex3D normal() const;
 
-    Vertex3D origin() const;
+    [[nodiscard]] Vertex3D origin() const;
 
-    Vertex3D end() const;
+    [[nodiscard]] Vertex3D end() const;
 
-    Vertex3D end(float) const;
+    [[nodiscard]] Vertex3D end(float) const;
 
-    Vertex3D middlePoint() const;
+    [[nodiscard]] Vertex3D middlePoint() const;
 
     void clear();
 

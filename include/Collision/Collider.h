@@ -37,6 +37,7 @@ protected:
     float mass;
     Vertex3D angularFactor;
     Vertex3D linearFactor;
+    float friction;
 
     //kinematic
     btPairCachingGhostObject *kinematicBody;
@@ -123,6 +124,10 @@ public:
     bool onGround();
 
     void setAngularFactor(const Vertex3D &angularFactor);
+
+    void setFriction(float friction);
+
+    Vertex3D getLinearVelocity() const;
 };
 
 

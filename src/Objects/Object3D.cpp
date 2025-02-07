@@ -515,6 +515,8 @@ void Object3D::drawImGuiProperties()
                     }
                 }
 
+                ImGui::Separator();
+
                 if (getCollisionMode() == KINEMATIC) {
                     if (ImGui::TreeNode("Kinematic capsule size")) {
                         const float range_min = 0;
@@ -553,6 +555,15 @@ void Object3D::drawImGuiProperties()
                         ImGui::DragScalar("X", ImGuiDataType_Float, &linearFactor.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
                         ImGui::DragScalar("Y", ImGuiDataType_Float, &linearFactor.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
                         ImGui::DragScalar("Z", ImGuiDataType_Float, &linearFactor.z, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+
+                        ImGui::TreePop();
+                    }
+                    ImGui::Separator();
+                    if (ImGui::TreeNode("Friction")) {
+                        const float range_min = 0;
+                        const float range_max = 1;
+
+                        ImGui::DragScalar("Value", ImGuiDataType_Float, &friction, 0.1 ,&range_min, &range_max, "%f", 1.0f);
 
                         ImGui::TreePop();
                     }
@@ -595,6 +606,7 @@ cJSON *Object3D::getJSON()
         cJSON_AddNumberToObject(collider, "mode", getCollisionMode());
         cJSON_AddNumberToObject(collider, "shape", getCollisionShape());
 
+        cJSON_AddNumberToObject(collider, "friction", friction);
         cJSON_AddNumberToObject(collider, "mass", mass);
         cJSON_AddBoolToObject(collider, "colliderStatic", colliderStatic);
 
@@ -675,6 +687,10 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
             int mode = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
             int shape = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
             auto mass = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mass")->valuedouble;
+            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "friction") != nullptr) {
+                auto friction = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "friction")->valuedouble;
+                o->setFriction(friction);
+            }
 
             o->simpleShapeSize = ToolsJSON::parseVertex3DJSON(
                 cJSON_GetObjectItemCaseSensitive(colliderJSON, "simpleShapeSize")
@@ -886,6 +902,7 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     body->setActivationState(DISABLE_DEACTIVATION);
     body->setAngularFactor(angularFactor.toBullet());
     body->setLinearFactor(linearFactor.toBullet());
+    body->setFriction(friction);
 
     world->addRigidBody(body, collisionGroup, collisionMask);
 }

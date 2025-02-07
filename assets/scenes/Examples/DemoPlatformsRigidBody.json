@@ -1,7 +1,7 @@
 {
 	"gravity":	{
 		"x":	0,
-		"y":	18.799999237060547,
+		"y":	19.549999237060547,
 		"z":	0
 	},
 	"ads":	{
@@ -30,20 +30,21 @@
 			"name":	"capsule",
 			"scale":	1,
 			"position":	{
-				"x":	-39.742038726806641,
-				"y":	-19.452238082885742,
+				"x":	-39.572483062744141,
+				"y":	-20.988462448120117,
 				"z":	-43.204925537109375
 			},
 			"rotation":	{
-				"x":	-3.2780547142028809,
-				"y":	2.5627391338348389,
-				"z":	-1.2005963325500488
+				"x":	-3.2807226181030273,
+				"y":	2.5650670528411865,
+				"z":	-1.2016123533248901
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
 				"mode":	1,
 				"shape":	0,
-				"mass":	239.90000915527344,
+				"friction":	1,
+				"mass":	300,
 				"colliderStatic":	false,
 				"simpleShapeSize":	{
 					"x":	0.5,
@@ -60,7 +61,7 @@
 					"z":	0
 				},
 				"linearFactor":	{
-					"x":	1,
+					"x":	0.40000000596046448,
 					"y":	1,
 					"z":	0
 				}
@@ -70,11 +71,19 @@
 					"types":	[{
 							"name":	"speed",
 							"type":	"float",
-							"value":	50
+							"value":	5000
 						}, {
 							"name":	"jumpForce",
 							"type":	"float",
-							"value":	200
+							"value":	250000
+						}, {
+							"name":	"maxSpeed",
+							"type":	"float",
+							"value":	3.2070000171661377
+						}, {
+							"name":	"lengthRay",
+							"type":	"float",
+							"value":	1.2000000476837158
 						}]
 				}],
 			"shaders":	[],
@@ -90,14 +99,15 @@
 				"z":	-43.248760223388672
 			},
 			"rotation":	{
-				"x":	-0,
-				"y":	0,
+				"x":	0,
+				"y":	-0,
 				"z":	0
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
 				"mode":	1,
 				"shape":	1,
+				"friction":	1,
 				"mass":	0,
 				"colliderStatic":	true,
 				"simpleShapeSize":	{

@@ -72,26 +72,61 @@ comprensión y detalle.
 Existen además varios tipos de dato que facilitan la implementación de tareas en 3D y estarán
 disponibles a través de tus scripts LUA.
 
-- `Vertex3D`: Posiciones en el espacio 3D (`X`, `Y`, `Z`).
-- `Point2D`: Posiciones en 2D. (`X`, `Y`).
-- `M3`: Matriz 3x3.
-- `Color`: Color RGBA (rango 0-1)
-- `ScriptLUA`: Objeto script con código LUA.
+- [Vertex3D](#vertex3d)
+- [M3](#m3)
+- [Point2D](#point2d)
+- [Color](#color)
+
+ 
+### Vertex3D
+Representa un vertice en el espacio o un vector de origen centro de coordenadas.
+
+Propiedades:
+  
+  - x (float)
+  - y (float)
+  - z (float)
+
+Métodos:
+
+- `Operador +`: add
+- `Operador -`: sub
+- `Operador *`: cross product
+- `Operador %`: dot product
+- `getNormalize()`: Normaliza el vector 
+- `getModule()`: Devuelve la longitud del vector
+- `getInverse()`: Invierte el vector
+- `getScaled(float)`: Escala las componentes del vector
+- `distance(Vertex3D)`: Devuelve la distancia a otro vértice
 
 ---
 
-## Componentes
+### M3
 
-Brakeza3D agrupa sus funcionalidades en `Componentes`. Cada componente representa un aspecto
-fundamental del núcleo de Brakeaz3D.
+Matriz 3x3. Usada generalmente para almacenar rotaciones en es espacio.
 
-- `ComponentWindow`: Gestiona la ventana del sistema operativo.
-- `ComponentScripting`: Gestiona el sistema de scripting.
-- `ComponentCamera`: Gestiona la cámara.
-- `ComponentCollisions`: Gestiona el motor de físicas y colisiones.
-- `ComponentInput`: Gestiona la entrada por teclado o pad.
-- `ComponentSound`: Gestiona la reproducción de sonidos.
-- `ComponentRender`: Gestiona el render con OpenGL
+Propiedades:
+ 
+- float[9]
 
-Podrás acceder a todos ellos mediante el ``ComponentsManager`` desde tus scripts LUA. 
+Métodos:
 
+- `Operador +`: add
+- `Operador -`: sub
+- `Operador *`: mul
+- `Operador * Vertex3D` => `Vertex3D`: (matrix * vector)
+- `getMatrixIdentity()`: Devuelve la matriz identidad
+- `getTranspose()`: Devuelve la matriz traspuesta
+- `X()`: Eje X
+- `Y()`: Eje Y
+- `Z()`: Eje Z
+
+### Point2D
+
+Posiciones en 2D. (`X`, `Y`).
+
+### Color
+
+Color RGBA (rango 0-1)
+
+---

@@ -29,10 +29,13 @@ void LUAIntegration(sol::state &lua)
         "y", sol::property(&Vertex3D::y, &Vertex3D::y),
         "z", sol::property(&Vertex3D::z, &Vertex3D::z),
         "__add", sol::overload(&Vertex3D::operator+),
+        "__sub", sol::overload(&Vertex3D::operator-),
         "getScaled", sol::overload(
                 static_cast<Vertex3D (Vertex3D::*)(float) const>(&Vertex3D::getScaled),
                 static_cast<Vertex3D (Vertex3D::*)(float, float, float) const>(&Vertex3D::getScaled)
-        )
+        ),
+        "getNormalize", &Vertex3D::getNormalize,
+        "getModule", &Vertex3D::getModule
     );
 
     lua.new_usertype<M3>(
@@ -98,7 +101,8 @@ void LUAIntegration(sol::state &lua)
             "getLocalScriptVar", &Object3D::getLocalScriptVar,
             "attachScript", &Object3D::attachScript,
             "lookAt", &Object3D::lookAt,
-            "reloadScriptsEnvironment", &Object3D::reloadScriptsEnvironment
+            "reloadScriptsEnvironment", &Object3D::reloadScriptsEnvironment,
+            "getLinearVelocity", &Object3D::getLinearVelocity
     );
 
 
@@ -156,6 +160,7 @@ void LUAIntegration(sol::state &lua)
                                      "isKeyEventDown", &ComponentInput::isKeyEventDown,
                                      "isKeyEventUp", &ComponentInput::isKeyEventUp,
                                      "isCharPressed", &ComponentInput::isCharPressed,
+                                     "isCharFirstEventDown", &ComponentInput::isCharFirstEventDown,
                                      "isMouseMotion", &ComponentInput::isMouseMotion,
                                      "isClickLeft", &ComponentInput::isClickLeft,
                                      "isClickRight", &ComponentInput::isClickRight,

@@ -16,6 +16,7 @@ Collider::Collider()
     colliderStatic(false),
     mass(0),
     kinematicBody(nullptr),
+    friction(1),
     kinematicCapsuleSize(
         EngineSetup::get()->PLAYER_CAPSULE_RADIUS,
         EngineSetup::get()->PLAYER_CAPSULE_HEIGHT
@@ -319,4 +320,18 @@ bool Collider::onGround()
 void Collider::setAngularFactor(const Vertex3D &angularFactor)
 {
     Collider::angularFactor = angularFactor;
+}
+
+void Collider::setFriction(float friction)
+{
+    Collider::friction = friction;
+}
+
+Vertex3D Collider::getLinearVelocity() const
+{
+    if (getCollisionMode() == BODY) {
+        return Vertex3D::fromBullet(body->getLinearVelocity());
+    }
+
+    return Vertex3D::zero();
 }

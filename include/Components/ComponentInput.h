@@ -16,6 +16,7 @@ private:
     bool drag;
 
     Uint8 *keyboard;
+    std::unordered_map<SDL_Keycode, bool> keyboardEvents;
 
     Uint8 controllerButtonA;
     Uint8 controllerButtonB;
@@ -115,6 +116,8 @@ public:
     void handleToggleKeys(SDL_Event *event);
 
     [[maybe_unused]] bool isCharPressed(const char *character);
+
+    [[maybe_unused]]  bool isCharFirstEventDown(const char *character);
 
     void updateKeyboardStates(SDL_Event *event);
 
