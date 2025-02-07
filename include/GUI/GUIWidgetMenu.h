@@ -267,7 +267,14 @@ struct GUIWidgetMenu
             }
 
             if (ImGui::BeginMenu("Physics & Collisions")) {
+                int minSubsteps = 0;
+                int maxSubsteps = 10;
+                int minFixedTime = 1;
+                int maxFixedTime = 60;
                 ImGui::Checkbox("Enable physics", &EngineSetup::get()->BULLET_STEP_SIMULATION);
+                ImGui::Separator();
+                ImGui::DragScalar("Max sub-steps", ImGuiDataType_S32, &EngineSetup::get()->BULLET_MAX_SUBSTEPS, 1,&minSubsteps, &maxSubsteps, "%d", 1.0f);
+                ImGui::DragScalar("Fixed time step (1/x)", ImGuiDataType_S32, &EngineSetup::get()->BULLET_FIXED_TIME_STEPS, 1, &minFixedTime, &maxFixedTime, "%d", 1.0f);
                 ImGui::Separator();
                 ImGui::Checkbox("Draw debug mode", &EngineSetup::get()->BULLET_DEBUG_MODE);
                 if (EngineSetup::get()->BULLET_STEP_SIMULATION) {

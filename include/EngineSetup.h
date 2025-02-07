@@ -122,6 +122,8 @@ public:
 
     // COLLISION SYSTEM
     bool BULLET_STEP_SIMULATION = true;
+    int BULLET_MAX_SUBSTEPS = 1;
+    int BULLET_FIXED_TIME_STEPS = 60;
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
 
