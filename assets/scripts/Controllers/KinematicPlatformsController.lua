@@ -5,8 +5,6 @@ end
 function onUpdate()
     componentInput = componentsManager:getComponentInput();
 
-    forward = this:AxisForward()
-
     if (componentInput:isCharPressed("A")) then speed = speed - force end
     if (componentInput:isCharPressed("D")) then speed = speed + force end
 
@@ -19,6 +17,8 @@ function onUpdate()
     if (componentInput:isCharPressed("SPACE") and this:onGround()) then
         this:jump(Vertex3D.new(0, -jumpForce, 0)) -- saltamos
     end
+
+    forward = this:AxisForward()
 
     camera = componentsManager:getComponentCamera():getCamera()
     camera:setPosition(this:getPosition() + forward:getScaled(cameraOffset.z) + Vertex3D.new(cameraOffset.x, cameraOffset.y, 0))

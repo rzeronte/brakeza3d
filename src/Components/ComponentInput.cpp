@@ -57,6 +57,7 @@ void ComponentInput::onUpdate()
 
 void ComponentInput::postUpdate()
 {
+    keyboardEvents.clear();
 }
 
 void ComponentInput::onEnd()
@@ -363,7 +364,6 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
 
 bool ComponentInput::isCharPressed(const char *character)
 {
-
     if (character == nullptr)
         return false;
 
@@ -373,6 +373,18 @@ bool ComponentInput::isCharPressed(const char *character)
         return true;
 
     return false;
+}
+
+bool ComponentInput::isCharFirstEventDown(const char *character)
+{
+    if (character == nullptr)
+        return false;
+
+    SDL_Keycode keyCode = SDL_GetKeyFromScancode(SDL_GetScancodeFromName(character));
+
+    auto it = keyboardEvents.find(keyCode);
+
+    return (it != keyboardEvents.end()) && it->second;
 }
 
 bool ComponentInput::isKeyEventDown() const
@@ -393,6 +405,10 @@ void ComponentInput::updateKeyboardStates(SDL_Event *event)
 
     if (event->type == SDL_KEYUP) {
         keyUpEvent = true;
+    }
+
+    if (event->type == SDL_KEYDOWN && event->key.repeat == 0) {
+        keyboardEvents[event->key.keysym.sym] = true;
     }
 }
 
