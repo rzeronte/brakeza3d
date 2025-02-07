@@ -3,30 +3,20 @@ function onStart()
     isFloor = false
 end
 
-function limitVelocity(max)
-    local velocity = this:getLinearVelocity()
-
-    print("Module velocity..."..velocity:getModule())
-
-    if velocity:getModule() > max then
-        this:setLinearVelocity(velocity:getNormalize():getScaled(max))
-    end
-end
-
 function onUpdate()
-    local input = componentsManager:getComponentInput();
     local render = componentsManager:getComponentRender();
+    local input = componentsManager:getComponentInput();
     local collisions = componentsManager:getComponentCollisions();
     local camera = componentsManager:getComponentCamera():getCamera()
 
-    local forward = this:AxisForward()
-    local newCamPos = this:getPosition() + forward:getScaled(cameraOffset.z) + Vertex3D.new(cameraOffset.x, cameraOffset.y, 0)
+    local newCamPos = this:getPosition() + this:AxisForward():getScaled(cameraOffset.z) + Vertex3D.new(cameraOffset.x, cameraOffset.y, 0)
     camera:setPosition(newCamPos)
     camera:lookAt(this)
 
     -- Collision points
     local from = this:getPosition()
     local toDown = this:getPosition() + this:AxisUp():getScaled(lengthRay)
+    local toUp = this:getPosition() - this:AxisUp():getScaled(lengthRay)
 
     local toDownLeft = this:getPosition() + this:AxisUp():getScaled(lengthRay) + Vertex3D.new(0.5, 0, 0)
     local toDownRight = this:getPosition() + this:AxisUp():getScaled(lengthRay) + Vertex3D.new(-0.5, 0, 0)
@@ -39,13 +29,17 @@ function onUpdate()
     local isFloorDownLeft = collisions:isRayCollisionWith(from, toDownLeft, floor)
     local isFloorDownRight = collisions:isRayCollisionWith(from, toDownRight, floor)
     local isFloor = isFloorDown or isFloorDownLeft or isFloorDownRight
-    local lineColorFloor = Color.new(1, 0, 0, 1)
-
+    local isUp = collisions:isRayCollisionWith(from, toUp, floor)
     local isHookedLeft = collisions:isRayCollisionWith(from, toUpLeft, floor)
     local isHookedRight = collisions:isRayCollisionWith(from, toUpRight, floor)
     local isHooked = isHookedLeft or isHookedRight
-    local lineColorHooked = Color.new(1, 0, 0, 1)
 
+    handleFloorMovement(input, isFloor)
+    handleHook(input, isFloor, isHooked, isHookedLeft, isHookedRight, isUp)
+    debug(input, render, isFloor, isHooked, isHookedLeft, isHookedRight, isUp, from, toDown, toDownLeft, toDownRight, toUp, toUpLeft, toUpRight)
+end
+
+function handleFloorMovement(input, isFloor)
     if isFloor then
         if input:isCharPressed("A") then
             this:applyCentralForce(Vertex3D.new(-speed, 0, 0))
@@ -59,9 +53,8 @@ function onUpdate()
             local velocity = this:getLinearVelocity()
             local jumpVector = Vertex3D.new(velocity.x, -jumpForce, velocity.z)
             this:applyCentralForce(jumpVector)
-            print("jump")
+            print("Jump!")
         end
-        lineColorFloor = Color.new(0, 1, 0, 1)
     else
         if input:isCharPressed("A") then
             this:applyCentralForce(Vertex3D.new(-speed * airControlFactor, 0, 0))
@@ -70,23 +63,75 @@ function onUpdate()
         if input:isCharPressed("D") then
             this:applyCentralForce(Vertex3D.new(speed * airControlFactor, 0, 0))
         end
+    end
+end
+
+function handleHook(input, isFloor, isHooked, isHookedLeft, isHookedRight, isUp)
+    if isHooked and not isFloor then
+        if not (isHookedRight and isHookedLeft) and not isUp then
+            if isHookedLeft and input:isCharPressed("D") then
+                this:setLinearVelocity(Vertex3D.new(0, 0, 0))
+            end
+            if isHookedRight and input:isCharPressed("A") then
+                this:setLinearVelocity(Vertex3D.new(0, 0, 0))
+            end
+
+            if input:isCharFirstEventDown("SPACE") then
+                if isHookedLeft then
+                    local jumpVector = Vertex3D.new(-speed * 10, -jumpForce, 0)
+                    this:applyCentralForce(jumpVector)
+                    print("Jump hook!")
+                end
+                if isHookedRight then
+                    local jumpVector = Vertex3D.new(speed * 10, -jumpForce, 0)
+                    this:applyCentralForce(jumpVector)
+                    print("Jump hook!")
+                end
+            end
+        end
+    end
+end
+
+function debug(input, render, isFloor, isHooked, isHookedLeft, isHookedRight, isUp, from, toDown, toDownLeft, toDownRight, toUp, toUpLeft, toUpRight)
+    local lineColorFloor = Color.new(1, 0, 0, 1)
+    local lineColorUp = Color.new(1, 0, 0, 1)
+    local lineColorHookedLeft = Color.new(1, 0, 0, 1)
+    local lineColorHookedRight = Color.new(1, 0, 0, 1)
+
+    if isFloor then
+        lineColorFloor = Color.new(0, 1, 0, 1)
+    else
         lineColorFloor = Color.new(1, 0, 0, 1)
     end
 
-    if isHooked then
-        lineColorHooked = Color.new(0, 1, 0, 1)
+    if isHooked and not isFloor then
+        if isHookedLeft and not isUp then
+            lineColorHookedLeft = Color.new(0, 1, 0, 1)
+        end
+        if isHookedRight and not isUp then
+            lineColorHookedRight = Color.new(0, 1, 0, 1)
+        end
+
+        if not (isHookedRight and isHookedLeft) and not isUp then
+            if isHookedLeft and input:isCharPressed("D") then
+                lineColorHookedLeft = Color.new(1, 1, 0, 1)
+            end
+            if isHookedRight and input:isCharPressed("A") then
+                lineColorHookedRight = Color.new(1, 1, 0, 1)
+            end
+        end
     end
 
-    -- debug
+    if isUp then
+        lineColorUp = Color.new(0, 1, 0, 1)
+    end
+
     render:drawLine(from, toDown, lineColorFloor)
     render:drawLine(from, toDownLeft, lineColorFloor)
     render:drawLine(from, toDownRight, lineColorFloor)
-
-    render:drawLine(from, toUpLeft, lineColorHooked)
-    render:drawLine(from, toUpRight, lineColorHooked)
-
-    local velocity = this:getLinearVelocity()
-    --print("Module velocity: x: " .. velocity.x .. ", y: " .. velocity.y .. ", z:" .. velocity.z)
+    render:drawLine(from, toUp, lineColorUp)
+    render:drawLine(from, toUpLeft, lineColorHookedLeft)
+    render:drawLine(from, toUpRight, lineColorHookedRight)
 end
 
 function onCollision(with)
