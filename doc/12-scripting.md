@@ -221,6 +221,8 @@ Puedes obtenerlo desde tus scripts LUAde la siguiente manera:
      print("Execution Time: " .. brakeza:getExecutionTime()) -- tiempo total de ejecución
 ```
 
+---
+
 ### Terminar la ejecución
 
 Si deseas terminar la aplicación desde código, puedes hacerlo de la siguiente forma:
@@ -228,6 +230,8 @@ Si deseas terminar la aplicación desde código, puedes hacerlo de la siguiente 
 ```lua
      brakeza:finish()
 ```
+
+---
 
 ### Autocargar proyectos o escenas
 
