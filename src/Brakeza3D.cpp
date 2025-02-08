@@ -3,6 +3,7 @@
 #include "../include/Brakeza3D.h"
 #include "../imgui/backends/imgui_impl_opengl3.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
+#include "../include/cxxxopts.h"
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 
@@ -20,8 +21,31 @@ Brakeza3D *Brakeza3D::get()
     return instance;
 }
 
-void Brakeza3D::start()
+void Brakeza3D::start(int argc, char *argv[])
 {
+    cxxopts::Options options("Brakeza3D", "Thanks for using Brakeza3D!. Here you can see argument's options:");
+
+    options.add_options()
+        ("p,project", "Project file", cxxopts::value<std::string>())
+        ("h,help", "Help")
+    ;
+
+    auto result = options.parse(argc, argv);
+
+    if (result.count("help")) {
+        std::cout << options.help() << std::endl;
+        return;
+    }
+
+    bool projectAutoload = false;
+    std::string project;
+
+    if (result.count("p")) {
+        projectAutoload = true;
+        project = result["p"].as<std::string>();
+        std::cout << "Autoload Project: " << result["p"].as<std::string>() << std::endl;
+    }
+
     componentsManager->registerComponent(new ComponentWindow(), "ComponentWindow");
     componentsManager->registerComponent(new ComponentScripting(), "ComponentScripting");
     componentsManager->registerComponent(new ComponentCamera(), "ComponentCamera");
@@ -29,12 +53,12 @@ void Brakeza3D::start()
     componentsManager->registerComponent(new ComponentInput(), "ComponentInput");
     componentsManager->registerComponent(new ComponentSound(), "ComponentSound");
     componentsManager->registerComponent(new ComponentRender(), "ComponentRender");
-    // Custom components here
 
-    mainLoop();
+    mainLoop(projectAutoload, project);
 }
 
-void Brakeza3D::welcomeMessage() {
+void Brakeza3D::welcomeMessage()
+{
     Logging::Message("Brakeza3D - Open source game toolkit for old school lovers");
     Logging::Message("By Eduardo Rodriguez (eduardo@brakeza.com)");
     Logging::Message("https://brakeza.com");
@@ -43,7 +67,7 @@ void Brakeza3D::welcomeMessage() {
     Logging::Message("Running %s", EngineSetup::get()->ENGINE_TITLE.c_str());
 }
 
-void Brakeza3D::mainLoop()
+void Brakeza3D::mainLoop(bool autostart, const std::string& project)
 {
     SDL_Event e;
 
@@ -52,10 +76,17 @@ void Brakeza3D::mainLoop()
     ComponentsManager::get()->getComponentScripting()->initLUATypes();
     componentsManager->getComponentCollisions()->initBulletSystem();
     onStartComponents();
-    //LoadDemo();
+
     componentsManager->getComponentWindow()->ImGuiInitialize(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
     welcomeMessage();
-    componentsManager->getComponentRender()->getSceneLoader().loadScene(EngineSetup::get()->CONFIG_FOLDER + "brakeza.json");
+
+    if (autostart) {
+        componentsManager->getComponentRender()->getProjectLoader().loadProject(EngineSetup::get()->PROJECTS_FOLDER + project);
+        EngineSetup::get()->IMGUI_ENABLED = false;
+        componentsManager->getComponentScripting()->playLUAScripts();
+    } else {
+        componentsManager->getComponentRender()->getSceneLoader().loadScene(EngineSetup::get()->CONFIG_FOLDER + "brakeza.json");
+    }
 
     while (!finish) {
         controlFrameRate();
@@ -207,10 +238,6 @@ float &Brakeza3D::getExecutionTime()
 std::string Brakeza3D::uniqueObjectLabel(const char *prefix)
 {
     return prefix + std::string("_") + std::to_string(Tools::random(0, 100));
-}
-
-void Brakeza3D::LoadDemo()
-{
 }
 
 GUIManager *Brakeza3D::getManagerGui() const {

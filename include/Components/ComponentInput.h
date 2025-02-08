@@ -117,7 +117,7 @@ public:
 
     [[maybe_unused]] bool isCharPressed(const char *character);
 
-    [[maybe_unused]]  bool isCharFirstEventDown(const char *character);
+    [[maybe_unused]] bool isCharFirstEventDown(const char *character);
 
     void updateKeyboardStates(SDL_Event *event);
 

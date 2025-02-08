@@ -9,7 +9,8 @@
 - [Variables locales](#variables-locales)
 - [Gestión de escenas](#gestión-de-escenas)
 - [DeltaTime](#deltatime)
-- [Fin de ejecución]
+- [Terminar la ejecución](#terminar-la-ejecución)
+- [Autocargar proyectos o escenas](#autocargar-proyectos-o-escenas)
 - [Ejemplos en código](#ejemplos-en-codigo)
 
 ---
@@ -227,6 +228,23 @@ Si deseas terminar la aplicación desde código, puedes hacerlo de la siguiente 
 ```lua
      brakeza:finish()
 ```
+
+### Autocargar proyectos o escenas
+
+Cuando desees empaquetar tu juego o aplicación, desearás que Brakeza3D carge y ejecute automáticamente los scripts
+de algún `proyecto` en particular. Podrás indicar esto a Brakeza3D desde la línea de comandos.
+
+```bash
+brakeza3d.exe -p MyProject.json
+```
+o
+```bash
+brakeza3d.exe --project MyProject.json
+```
+Con esto el proyecto será ejecutado automáticamente sin UI.
+
+`Nota`: La ruta en la que será buscado el fichero de proyecto es relativa al directorio base de 
+proyectos: `/assets/projects/`.
 
 ---
 

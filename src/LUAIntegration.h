@@ -188,7 +188,6 @@ void LUAIntegration(sol::state &lua)
                                 "getDeltaTimeMicro",  &Brakeza3D::getDeltaTimeMicro,
                                 "getExecutionTime", &Brakeza3D::getExecutionTime,
                                 "uniqueObjectLabel", &Brakeza3D::uniqueObjectLabel,
-                                "LoadDemo", &Brakeza3D::LoadDemo,
                                 "shutdown", &Brakeza3D::shutdown,
                                 "addObject3D",  &Brakeza3D::addObject3D,
                                 "getSceneObjectById",&Brakeza3D::getSceneObjectById,

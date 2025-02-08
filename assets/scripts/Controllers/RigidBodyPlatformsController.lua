@@ -42,10 +42,12 @@ end
 function handleFloorMovement(input, isFloor)
     if isFloor then
         if input:isCharPressed("A") then
+            this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
             this:applyCentralForce(Vertex3D.new(-speed, 0, 0))
         end
 
         if input:isCharPressed("D") then
+            this:setRotation(M3:getMatrixRotationForEulerAngles(-180, 0, 0))
             this:applyCentralForce(Vertex3D.new(speed, 0, 0))
         end
 
@@ -58,9 +60,11 @@ function handleFloorMovement(input, isFloor)
     else
         if input:isCharPressed("A") then
             this:applyCentralForce(Vertex3D.new(-speed * airControlFactor, 0, 0))
+            this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
         end
 
         if input:isCharPressed("D") then
+            this:setRotation(M3:getMatrixRotationForEulerAngles(-180, 0, 0))
             this:applyCentralForce(Vertex3D.new(speed * airControlFactor, 0, 0))
         end
     end

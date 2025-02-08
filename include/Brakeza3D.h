@@ -40,7 +40,7 @@ public:
 
     static Brakeza3D *instance;
 
-    void start();
+    void start(int argc, char *argv[]);
 
     void addObject3D(Object3D *obj, const std::string &label);
 
@@ -66,7 +66,7 @@ public:
 
     void onEndComponents();
 
-    void mainLoop();
+    void mainLoop(bool autostart, const std::string& project);
 
     [[nodiscard]] ComponentsManager *getComponentsManager() const;
 
@@ -75,8 +75,6 @@ public:
     float &getExecutionTime();
 
     static std::string uniqueObjectLabel(const char *prefix);
-
-    static void LoadDemo();
 
     [[nodiscard]] GUIManager *getManagerGui() const;
 
