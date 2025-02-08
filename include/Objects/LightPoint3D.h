@@ -5,7 +5,6 @@
 #include "../Render/Frustum.h"
 #include "../Components/Camera3D.h"
 #include "../../imgui/imgui.h"
-#include "../Render/Fragment.h"
 #include "../Misc/Color.h"
 
 class LightPoint3D : public Object3D {
@@ -27,12 +26,15 @@ public:
     );
 
     void setColor(Color c);
+
     void setColorSpecular(Color c);
 
     void onUpdate() override;
 
     void setConstant(float value);
+
     void setLinear(float value);
+
     void setCuadratic(float value);
 
     void onDrawHostBuffer() override;
@@ -53,6 +55,5 @@ public:
 
     void setAmbient(Color value);
 };
-
 
 #endif //SDL2_3D_ENGINE_LIGHTPOINT_H

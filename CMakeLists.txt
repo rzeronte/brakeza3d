@@ -93,8 +93,7 @@ add_executable(Brakeza3D
     src/Objects/Camera3D.cpp                        include/Components/Camera3D.h
     src/Objects/Mesh3DAnimation.cpp                 include/Objects/Mesh3DAnimation.h
     src/Objects/Mesh3DAnimationCollection.cpp       include/Objects/Mesh3DAnimationCollection.h
-    src/Objects/Vertex4D.cpp                        include/Objects/Vertex4D.h
-    src/Objects/ParticleEmitter.cpp                 include/Objects/ParticleEmitter.h
+        src/Objects/ParticleEmitter.cpp                 include/Objects/ParticleEmitter.h
     src/Objects/ParticleEmitterFireworks.cpp        include/Objects/ParticleEmitterFireworks.h
     src/Objects/TentacleIK.cpp                      include/Objects/TentacleIK.h
     src/Objects/ScriptLUA.cpp                       include/Objects/ScriptLUA.h
@@ -135,9 +134,8 @@ add_executable(Brakeza3D
     src/Render/Billboard.cpp                        include/Render/Billboard.h
     src/Render/M3.cpp                               include/Render/M3.h
     src/Render/Logging.cpp                          include/Render/Logging.h
-    src/Render/M4.cpp                               include/Render/M4.h
 
-    src/2D/MenuOption.cpp                           include/2D/MenuOption.h
+        src/2D/MenuOption.cpp                           include/2D/MenuOption.h
     src/2D/TextureAnimatedDirectional.cpp           include/2D/TextureAnimatedDirectional.h
     src/2D/TextureAnimated.cpp                      include/2D/TextureAnimated.h
     src/2D/TextWriter.cpp                           include/2D/TextWriter.h
@@ -221,8 +219,7 @@ add_executable(Brakeza3D
     include/Objects/Vector2D.cpp                    include/Objects/Vector2D.h
 
     include/Render/ObjectShaderOpenCL.cpp
-    include/Render/Fragment.cpp                     include/Render/Fragment.h
-    src/Misc/ToolsJSON.cpp                          include/Misc/ToolsJSON.h
+        src/Misc/ToolsJSON.cpp                          include/Misc/ToolsJSON.h
     src/OpenGL/ShaderOpenGLLine3D.cpp               src/OpenGL/ShaderOpenGLLine3D.h
     src/Misc/ProjectLoader.cpp                      include/Misc/ProjectLoader.h
         include/cxxxopts.h

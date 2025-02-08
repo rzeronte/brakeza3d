@@ -78,7 +78,7 @@ public:
 
     [[nodiscard]] GUIManager *getManagerGui() const;
 
-    static void welcomeMessage() ;
+    static void welcomeMessage();
 
     [[nodiscard]] Object3D *getSceneObjectByLabel(const std::string &label) const;
 

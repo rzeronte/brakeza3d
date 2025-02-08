@@ -7,7 +7,6 @@
 #include <bullet/LinearMath/btVector3.h>
 #include <glm/vec3.hpp>
 #include <vector3.h>
-#include "Vertex4D.h"
 
 class Vertex3D {
 public:
