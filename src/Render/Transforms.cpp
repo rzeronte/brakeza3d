@@ -1,7 +1,5 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/EngineSetup.h"
-#include "../../include/Render/M4.h"
 #include "../../include/ComponentsManager.h"
 
 void Transforms::objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o)
