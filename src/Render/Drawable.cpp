@@ -23,14 +23,7 @@ void Drawable::drawVertex(Vertex3D V, Color color)
 
 void Drawable::drawVector3D(Vector3D V, Color color)
 {
-    auto window = ComponentsManager::get()->getComponentWindow();
-
-    window->getShaderOGLLine3D()->render(
-        V.vertex1,
-        V.vertex2,
-        window->getForegroundFramebuffer(),
-        color
-    );
+    ComponentsManager::get()->getComponentRender()->drawLine(V.vertex1,V.vertex2,color);
 }
 
 void Drawable::drawMainAxis()
@@ -138,31 +131,22 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
 
 void Drawable::drawAABB(AABB3D *aabb, Color color)
 {
-    Vector3D v01(aabb->vertices[0], aabb->vertices[2]);
-    Vector3D v02(aabb->vertices[0], aabb->vertices[3]);
-    Vector3D v03(aabb->vertices[0], aabb->vertices[4]);
-    Vector3D v04(aabb->vertices[1], aabb->vertices[6]);
-    Vector3D v05(aabb->vertices[1], aabb->vertices[5]);
-    Vector3D v06(aabb->vertices[2], aabb->vertices[5]);
-    Vector3D v07(aabb->vertices[2], aabb->vertices[6]);
-    Vector3D v08(aabb->vertices[3], aabb->vertices[7]);
-    Vector3D v09(aabb->vertices[3], aabb->vertices[5]);
-    Vector3D v10(aabb->vertices[6], aabb->vertices[4]);
-    Vector3D v11(aabb->vertices[7], aabb->vertices[4]);
-    Vector3D v12(aabb->vertices[7], aabb->vertices[1]);
+    std::vector<Vector3D> vectors;
+    vectors.push_back(Vector3D(aabb->vertices[0], aabb->vertices[2]));
+    vectors.push_back(Vector3D(aabb->vertices[0], aabb->vertices[3]));
+    vectors.push_back(Vector3D(aabb->vertices[0], aabb->vertices[4]));
+    vectors.push_back(Vector3D(aabb->vertices[1], aabb->vertices[6]));
+    vectors.push_back(Vector3D(aabb->vertices[1], aabb->vertices[5]));
+    vectors.push_back(Vector3D(aabb->vertices[2], aabb->vertices[5]));
+    vectors.push_back(Vector3D(aabb->vertices[2], aabb->vertices[6]));
+    vectors.push_back(Vector3D(aabb->vertices[3], aabb->vertices[7]));
+    vectors.push_back(Vector3D(aabb->vertices[3], aabb->vertices[5]));
+    vectors.push_back(Vector3D(aabb->vertices[6], aabb->vertices[4]));
+    vectors.push_back(Vector3D(aabb->vertices[7], aabb->vertices[4]));
+    vectors.push_back(Vector3D(aabb->vertices[7], aabb->vertices[1]));
 
-    Drawable::drawVector3D(v01, color);
-    Drawable::drawVector3D(v02, color);
-    Drawable::drawVector3D(v03, color);
-    Drawable::drawVector3D(v04, color);
-    Drawable::drawVector3D(v05, color);
-    Drawable::drawVector3D(v06, color);
-    Drawable::drawVector3D(v07, color);
-    Drawable::drawVector3D(v08, color);
-    Drawable::drawVector3D(v09, color);
-    Drawable::drawVector3D(v10, color);
-    Drawable::drawVector3D(v11, color);
-    Drawable::drawVector3D(v12, color);
+    auto window = ComponentsManager::get()->getComponentWindow();
+    window->getShaderOGLLine3D()->renderLines(vectors, window->getForegroundFramebuffer(),color);
 }
 
 void Drawable::drawOctreeNode(OctreeNode &node)
