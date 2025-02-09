@@ -11,7 +11,7 @@
 
 
 struct CubeGrid3D {
-    AABB3D *box;
+    AABB3D box;
     int posX;
     int posY;
     int posZ;
@@ -29,8 +29,14 @@ public:
         IMAGE_FILE = 2,
     };
 
-    Grid3D(std::vector<Triangle *> *triangles, const AABB3D &bounds, int sizeX, int sizeY, int sizeZ,
-           EmptyStrategies strategy);
+    Grid3D(
+        std::vector<Triangle *> *triangles,
+        const AABB3D &bounds,
+        int sizeX,
+        int sizeY,
+        int sizeZ,
+        EmptyStrategies strategy
+    );
 
     AABB3D bounds;
     std::vector<CubeGrid3D *> boxes;
@@ -43,7 +49,7 @@ public:
 
     void fillEmptiesWithVector3DvsTriangles(Vertex3D ray, std::vector<Triangle *> &triangles);
 
-    void fillEmptiesWithImageData(std::string filename, int fixedY);
+    void fillEmptiesWithImageData(const std::string& filename, int fixedY);
 
     void setRayIntersectionDirection(Vertex3D rayIntersectionDirection);
 

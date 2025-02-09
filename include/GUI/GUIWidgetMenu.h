@@ -328,9 +328,6 @@ struct GUIWidgetMenu
 
             if (ImGui::BeginMenu("View")) {
                 ImGui::Checkbox("FullScreen (F11)", &EngineSetup::get()->FULLSCREEN);
-                ImGui::Separator();
-                ImGui::Checkbox("UI (F4)", &EngineSetup::get()->IMGUI_ENABLED);
-
                 if (ImGui::IsItemEdited()) {
                     if (EngineSetup::get()->FULLSCREEN) {
                         SDL_SetWindowFullscreen(ComponentsManager::get()->getComponentWindow()->getWindow(), SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -338,6 +335,9 @@ struct GUIWidgetMenu
                         SDL_SetWindowFullscreen(ComponentsManager::get()->getComponentWindow()->getWindow(), 0);
                     }
                 }
+                ImGui::Separator();
+                ImGui::Checkbox("UI (F4)", &EngineSetup::get()->IMGUI_ENABLED);
+
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Main Axis", &EngineSetup::get()->RENDER_MAIN_AXIS);
                 ImGui::Checkbox("Draw Object3D Axis", &EngineSetup::get()->RENDER_OBJECTS_AXIS);
@@ -383,7 +383,8 @@ struct GUIWidgetMenu
         }
     }
 
-    void drawImage2DItemsToLoad(const std::string& folder) {
+    void drawImage2DItemsToLoad(const std::string& folder)
+    {
 
         auto files= Tools::getFolderFiles(folder, "png");
         auto folders = Tools::getFolderFolders(folder);

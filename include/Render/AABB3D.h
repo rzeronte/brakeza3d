@@ -64,10 +64,17 @@ public:
         Vertex3D dimensions = (this->max - this->min).getScaled(0.5);
 
         return Vertex3D(
-                this->min.x + dimensions.x,
-                this->min.y + dimensions.y,
-                this->min.z + dimensions.z
+            this->min.x + dimensions.x,
+            this->min.y + dimensions.y,
+            this->min.z + dimensions.z
         );
+    }
+
+    [[nodiscard]] bool isPointInside(const Vertex3D& point) const
+    {
+        return (point.x >= min.x && point.x <= max.x &&
+                point.y >= min.y && point.y <= max.y &&
+                point.z >= min.z && point.z <= max.z);
     }
 };
 

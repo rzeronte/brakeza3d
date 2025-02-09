@@ -1,14 +1,19 @@
 
 #include "../../include/Misc/Grid3D.h"
-#include "../../include/EngineSetup.h"
 #include "../../include/Render/Maths.h"
 #include "../../include/Misc/Tools.h"
 #include <iostream>
-#include <fstream>
 #include <SDL2/SDL_image.h>
 
-Grid3D::Grid3D(std::vector<Triangle *> *triangles, const AABB3D &bounds, int sizeX, int sizeY, int sizeZ,
-               EmptyStrategies strategy) {
+Grid3D::Grid3D(
+    std::vector<Triangle *> *triangles,
+    const AABB3D &bounds,
+    int sizeX,
+    int sizeY,
+    int sizeZ,
+    EmptyStrategies strategy
+)
+{
     this->strategy = strategy;
 
     this->bounds = bounds;
@@ -33,14 +38,14 @@ Grid3D::Grid3D(std::vector<Triangle *> *triangles, const AABB3D &bounds, int siz
                 cubeGrid->posY = y;
                 cubeGrid->posZ = z;
 
-                cubeGrid->box = new AABB3D();
-                cubeGrid->box->min = offsetPosition + Vertex3D::zero();
-                cubeGrid->box->max = offsetPosition + Vertex3D(cubeSizeX, cubeSizeY, cubeSizeZ);
-                cubeGrid->box->updateVertices();
+                cubeGrid->box = AABB3D();
+                cubeGrid->box.min = offsetPosition + Vertex3D::zero();
+                cubeGrid->box.max = offsetPosition + Vertex3D(cubeSizeX, cubeSizeY, cubeSizeZ);
+                cubeGrid->box.updateVertices();
 
-                cubeGrid->box->min = cubeGrid->box->min + bounds.min;
-                cubeGrid->box->max = cubeGrid->box->max + bounds.min;
-                cubeGrid->box->updateVertices();
+                cubeGrid->box.min = cubeGrid->box.min + bounds.min;
+                cubeGrid->box.max = cubeGrid->box.max + bounds.min;
+                cubeGrid->box.updateVertices();
                 cubeGrid->is_empty = true;
 
                 this->boxes.push_back(cubeGrid);
@@ -54,7 +59,8 @@ Grid3D::Grid3D(std::vector<Triangle *> *triangles, const AABB3D &bounds, int siz
     }
 }
 
-void Grid3D::applyCheckCellEmptyStrategy() {
+void Grid3D::applyCheckCellEmptyStrategy()
+{
     switch (strategy) {
         case Grid3D::EmptyStrategies::RAY_INTERSECTION:
             this->fillEmptiesWithVector3DvsTriangles(this->rayIntersectionDirection, *this->triangles);
@@ -70,7 +76,8 @@ void Grid3D::applyCheckCellEmptyStrategy() {
     }
 }
 
-void Grid3D::fillEmptiesWithAABBvsTriangles(std::vector<Triangle *> &triangles) {
+void Grid3D::fillEmptiesWithAABBvsTriangles(std::vector<Triangle *> &triangles)
+{
     for (int i = 0; i < this->boxes.size(); i++) {
         if (this->isEmpty(*this->boxes[i], triangles)) {
             this->boxes[i]->is_empty = true;
@@ -80,15 +87,16 @@ void Grid3D::fillEmptiesWithAABBvsTriangles(std::vector<Triangle *> &triangles) 
     }
 }
 
-void Grid3D::fillEmptiesWithVector3DvsTriangles(Vertex3D dir, std::vector<Triangle *> &triangles) {
+void Grid3D::fillEmptiesWithVector3DvsTriangles(Vertex3D dir, std::vector<Triangle *> &triangles)
+{
     float rayLength = 50;
 
     for (int i = 0; i < this->boxes.size(); i++) {
 
         std::vector<Vertex3D> testVertices;
-        testVertices.push_back(this->boxes[i]->box->getCenter());
-        testVertices.push_back(this->boxes[i]->box->min);
-        testVertices.push_back(this->boxes[i]->box->max);
+        testVertices.push_back(this->boxes[i]->box.getCenter());
+        testVertices.push_back(this->boxes[i]->box.min);
+        testVertices.push_back(this->boxes[i]->box.max);
 
         for (int x = 0; x < triangles.size(); x++) {
             Plane trianglePlane = Plane(triangles[x]->A, triangles[x]->B, triangles[x]->C);
@@ -117,7 +125,8 @@ void Grid3D::fillEmptiesWithVector3DvsTriangles(Vertex3D dir, std::vector<Triang
     }
 }
 
-void Grid3D::fillEmptiesWithImageData(std::string filename, int fixedY) {
+void Grid3D::fillEmptiesWithImageData(const std::string& filename, int fixedY)
+{
     SDL_Surface *s = IMG_Load(filename.c_str());
 
     int sx = s->h;
@@ -143,10 +152,11 @@ void Grid3D::fillEmptiesWithImageData(std::string filename, int fixedY) {
     }
 }
 
-bool Grid3D::isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles) {
+bool Grid3D::isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles)
+{
     for (int i = 0; i < triangles.size(); i++) {
         triangles[i]->updateObjectSpace();
-        std::vector<Plane> planes = cube.box->getPlanes();
+        std::vector<Plane> planes = cube.box.getPlanes();
 
         bool r1 = Plane::isVertex3DClosedByPlanes(triangles[i]->Ao, planes);
         if (r1) return false;
@@ -161,13 +171,15 @@ bool Grid3D::isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles) {
     return true;
 }
 
-void Grid3D::setRayIntersectionDirection(Vertex3D rayIntersectionDirection) {
+void Grid3D::setRayIntersectionDirection(Vertex3D rayIntersectionDirection)
+{
     Grid3D::rayIntersectionDirection = rayIntersectionDirection;
 }
 
 CubeGrid3D *Grid3D::getFromPosition(int x, int y, int z) {
     for (int i = 0; i < this->boxes.size(); i++) {
-        if (this->boxes[i]->posX == x && this->boxes[i]->posY == y && this->boxes[i]->posZ == z) {
+        if (this->boxes[i]->posX == x && this->boxes[i]->posY == y && this->boxes[i]->posZ == z)
+        {
             return this->boxes[i];
         }
     }
@@ -175,16 +187,19 @@ CubeGrid3D *Grid3D::getFromPosition(int x, int y, int z) {
     return NULL;
 }
 
-void Grid3D::setImageFilename(const std::string &imageFilename) {
+void Grid3D::setImageFilename(const std::string &imageFilename)
+{
     Grid3D::imageFilename = imageFilename;
 }
 
-void Grid3D::setFixedYImageData(int fixedYImageData) {
+void Grid3D::setFixedYImageData(int fixedYImageData)
+{
     Grid3D::fixedYImageData = fixedYImageData;
 }
 
 
-Vertex3D Grid3D::getClosestPoint(Vertex3D v, std::vector<Vertex3D> path, int &indexVertex) {
+Vertex3D Grid3D::getClosestPoint(Vertex3D v, std::vector<Vertex3D> path, int &indexVertex)
+{
     float min_distance = 9999999999;
     int index = 0;
     for (int i = 0; i < path.size(); i++) {

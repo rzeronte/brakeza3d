@@ -26,15 +26,21 @@ struct OctreeNode {
 };
 
 class Octree {
+
+private:
+    OctreeNode* FindNodeContainingVertex(OctreeNode* node, const Vertex3D& vertex);
+    int maxDepth;
 public:
-    OctreeNode *root;
 
-    Octree(std::vector<Triangle *> &triangles, AABB3D bounds);
+    Octree(AABB3D bounds, int maxDepth);
 
-    OctreeNode *BuildOctree(std::vector<Triangle *> &triangles, AABB3D bounds, int recursiveDepth);
+    OctreeNode *BuildOctree(AABB3D bounds, int recursiveDepth);
 
     static bool isTriangleInsideAABB(Triangle *triangle, AABB3D childBounds);
 
+    OctreeNode* FindNode(Vertex3D vertex) ;
+
+    OctreeNode *root;
 };
 
 

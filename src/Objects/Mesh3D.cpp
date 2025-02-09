@@ -82,6 +82,12 @@ void Mesh3D::onUpdate()
         this->updateBoundingBox();
         Drawable::drawAABB(&this->aabb, Color::white());
     }
+
+    if (EngineSetup::get()->DRAW_MESH3D_OCTREE) {
+        if (this->octree != nullptr) {
+            Drawable::drawOctree(this->octree);
+        }
+    }
 }
 
 void Mesh3D::postUpdate()
@@ -290,13 +296,15 @@ void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const st
     this->grid->applyCheckCellEmptyStrategy();*/
 }
 
-void Mesh3D::buildOctree()
+void Mesh3D::buildOctree(int depth)
 {
     Logging::Message("Building Octree for %s", getLabel().c_str());
 
-    /*this->updateBoundingBox();
+    updateBoundingBox();
 
-    this->octree = new Octree(this->modelTriangles, aabb);*/
+    if (octree != nullptr) delete octree;
+
+    octree = new Octree(aabb, depth);
 }
 
 Mesh3D::~Mesh3D()
@@ -353,19 +361,14 @@ std::vector<Vertex3D *> &Mesh3D::getModelVertices(int i)
     return meshes[i].modelVertices;
 }
 
-AABB3D &Mesh3D::getAabb(){
+AABB3D &Mesh3D::getAabb()
+{
     return aabb;
 }
 
 void Mesh3D::onDrawHostBuffer()
 {
     Object3D::onDrawHostBuffer();
-
-    if (EngineSetup::get()->DRAW_MESH3D_OCTREE) {
-        if (this->octree != nullptr) {
-            Drawable::drawOctree(this->octree, true);
-        }
-    }
 
     if (EngineSetup::get()->DRAW_MESH3D_GRID) {
         if (this->grid != nullptr) {
@@ -413,6 +416,17 @@ void Mesh3D::drawImGuiProperties()
                     ImGui::TreePop();
                 }
                 cont++;
+            }
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
+
+        if (ImGui::TreeNode("Octree")) {
+            static int maxDepth = 1;
+            ImGui::SliderInt("Depth", &maxDepth, 1, 4);
+
+            if (ImGui::Button("Create octree")) {
+                buildOctree(maxDepth);
             }
             ImGui::TreePop();
         }
@@ -778,25 +792,17 @@ void Mesh3D::setSourceFile(const std::string &sourceFile)
     Mesh3D::sourceFile = sourceFile;
 }
 
-
 void Mesh3D::updateBoundingBox()
 {
-    // Obtener la matriz de modelo-vista-proyección
-    glm::mat4 mvpMatrix = ComponentsManager::get()->getComponentCamera()->getGLMMat4ProjectionMatrix() *
-                          ComponentsManager::get()->getComponentCamera()->getGLMMat4ViewMatrix() * getModelMatrix();
+    glm::mat4 mvpMatrix = getModelMatrix();
 
-    // Inicializar los valores extremos
     float maxX = -FLT_MAX, minX = FLT_MAX, maxY = -FLT_MAX, minY = FLT_MAX, maxZ = -FLT_MAX, minZ = FLT_MAX;
 
     for (auto &m: meshes) {
         for (auto &vertex : m.vertices) {
-            // Transformar el vértice por la matriz de modelo-vista-proyección
             glm::vec4 transformedVertex = mvpMatrix * glm::vec4(vertex, 1.0f);
-
-            // Normalizar las coordenadas w para obtener coordenadas de clip
             transformedVertex /= transformedVertex.w;
 
-            // Actualizar los valores máximos y mínimos
             maxX = std::max(maxX, transformedVertex.x);
             minX = std::min(minX, transformedVertex.x);
             maxY = std::max(maxY, transformedVertex.y);
@@ -806,7 +812,6 @@ void Mesh3D::updateBoundingBox()
         }
     }
 
-    // Actualizar el bounding box
     this->aabb.max.x = maxX;
     this->aabb.max.y = maxY;
     this->aabb.max.z = maxZ;
@@ -815,6 +820,5 @@ void Mesh3D::updateBoundingBox()
     this->aabb.min.y = minY;
     this->aabb.min.z = minZ;
 
-    // Actualizar los vértices del bounding box (si es necesario)
     this->aabb.updateVertices();
 }

@@ -1,25 +1,22 @@
 #include "../../include/Misc/Octree.h"
 #include "../../include/Render/Logging.h"
-#include "../../include/EngineSetup.h"
 
-#define MAX_RECURSIVE_DEPTH 1
+#define MAX_RECURSIVE_DEPTH 2
 
-Octree::Octree(std::vector<Triangle *> &triangles, AABB3D bounds) {
-    this->root = this->BuildOctree(triangles, bounds, 0);
+Octree::Octree(AABB3D bounds, int maxDepth)
+:
+    maxDepth(maxDepth)
+{
+    this->root = BuildOctree(bounds, 0);
 }
 
-OctreeNode *Octree::BuildOctree(std::vector<Triangle *> &triangles, AABB3D bounds, int recursiveDepth) {
+OctreeNode *Octree::BuildOctree(AABB3D bounds, int recursiveDepth)
+{
     auto *node = new OctreeNode();
     node->triangles.resize(0);
     node->bounds = bounds;
 
-    for (auto & triangle : triangles) {
-        if (isTriangleInsideAABB(triangle, bounds)) {
-            node->triangles.push_back(triangle);
-        }
-    }
-
-    if (recursiveDepth >= MAX_RECURSIVE_DEPTH) {
+    if (recursiveDepth >= maxDepth) {
         for (auto & i : node->children) {
             i = nullptr;
         }
@@ -28,7 +25,7 @@ OctreeNode *Octree::BuildOctree(std::vector<Triangle *> &triangles, AABB3D bound
 
     Vertex3D childSize = (bounds.max - bounds.min).getScaled(0.5);
 
-    Logging::Message("OctreeNode: (%d) = %d", recursiveDepth, node->triangles.size());
+    Logging::Message("OctreeNode: (%d)", recursiveDepth);
 
     for (int i = 0; i < 8; i++) {
         AABB3D childBounds;
@@ -68,16 +65,18 @@ OctreeNode *Octree::BuildOctree(std::vector<Triangle *> &triangles, AABB3D bound
         childBounds.updateVertices();
 
         node->children[i] = BuildOctree(
-                node->triangles,
-                childBounds,
-                recursiveDepth + 1
+            childBounds,
+            recursiveDepth + 1
         );
+        Logging::Message("ChildrenNode: (%d) - depth: %d", i, recursiveDepth + 1);
+
     }
 
     return node;
 }
 
-bool Octree::isTriangleInsideAABB(Triangle *triangle, AABB3D childBounds) {
+bool Octree::isTriangleInsideAABB(Triangle *triangle, AABB3D childBounds)
+{
     std::vector<Plane> planes = childBounds.getPlanes();
 
     triangle->updateObjectSpace();
@@ -91,4 +90,31 @@ bool Octree::isTriangleInsideAABB(Triangle *triangle, AABB3D childBounds) {
     }
 
     return false;
+}
+
+OctreeNode* Octree::FindNodeContainingVertex(OctreeNode* node, const Vertex3D& vertex)
+{
+    if (!node || !node->bounds.isPointInside(vertex)) {
+        return nullptr;
+    }
+
+    if (node->isLeaf()) {
+        return node;
+    }
+
+    for (int i = 0; i < 8; i++) {
+        if (node->children[i]) {
+            OctreeNode* foundNode = FindNodeContainingVertex(node->children[i], vertex);
+            if (foundNode) {
+                return foundNode;
+            }
+        }
+    }
+
+    return node;
+}
+
+OctreeNode* Octree::FindNode(Vertex3D vertex)
+{
+    return FindNodeContainingVertex(this->root, vertex);
 }

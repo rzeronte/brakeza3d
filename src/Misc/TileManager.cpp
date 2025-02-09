@@ -2,10 +2,10 @@
 // Created by eduardo on 20/10/23.
 //
 
-#include "TileManager.h"
-#include "../EngineSetup.h"
-#include "../Render/Logging.h"
-#include "../ComponentsManager.h"
+#include "../../include/Misc/TileManager.h"
+#include "../../include/EngineSetup.h"
+#include "../../include/Render/Logging.h"
+#include "../../include/ComponentsManager.h"
 
 TileManager::TileManager(int sizeTileWidth, int sizeTileHeight)
 :

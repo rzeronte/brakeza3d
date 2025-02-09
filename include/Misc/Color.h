@@ -36,6 +36,15 @@ public:
     static Color orange() { return {1, 0.5f, 0.2f}; }
     static Color olive() { return {0.5f, 0.5f, 0}; }
     static Color gray() { return {0.5f, 0.5f, 0.5f}; }
+    static Color pink() { return {1, 0.41f, 0.71f}; }  // Rosa
+    static Color lime() { return {0.75f, 1, 0}; }  // Verde lima
+    static Color turquoise() { return {0.25f, 0.88f, 0.82f}; }  // Turquesa
+    static Color violet() { return {0.93f, 0.51f, 0.93f}; }  // Violeta
+    static Color gold() { return {1, 0.84f, 0}; }  // Dorado
+    static Color indigo() { return {0.29f, 0, 0.51f}; }  // Índigo
+    static Color magenta() { return {1, 0, 0.56f}; }  // Magenta
+    static Color aquamarine() { return {0.5f, 1, 0.83f}; }  // Aguamarina
+    static Color crimson() { return {0.86f, 0.08f, 0.24f}; }  // Carmesí
     static Color FOGDefault() { return {0.5f, 0.5f, 0.5f}; }
     static Color mixColor(Color &c1, Color &c2, float c2Intensity);
 

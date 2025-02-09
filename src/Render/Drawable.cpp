@@ -26,28 +26,13 @@ void Drawable::drawVertex(Vertex3D V, Color color)
 
 void Drawable::drawVector3D(Vector3D V, Color color)
 {
-    auto camera = ComponentsManager::get()->getComponentCamera();
-    glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
-    glm::mat4 ProjectionMatrix = camera->getGLMMat4ProjectionMatrix();
+    auto window = ComponentsManager::get()->getComponentWindow();
 
-    glm::vec4 position1 = ProjectionMatrix * ViewMatrix * glm::vec4(V.vertex1.x, V.vertex1.y, V.vertex1.z, 1.0);
-    position1 /= position1.w;
-
-    glm::vec4 position2 = ProjectionMatrix * ViewMatrix * glm::vec4(V.vertex2.x, V.vertex2.y, V.vertex2.z, 1.0);
-    position2 /= position2.w;
-
-    const auto windowWidth = EngineSetup::get()->screenWidth;
-    const auto windowHeight = EngineSetup::get()->screenHeight;
-
-    Point2D P1((int)((position1.x + 1.0) * 0.5 * windowWidth), (int)((1.0 - position1.y) * 0.5 * windowHeight));
-    Point2D P2((int)((position2.x + 1.0) * 0.5 * windowWidth), (int)((1.0 - position2.y) * 0.5 * windowHeight));
-
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLLine()->render(
-        P1,
-        P2,
-        color,
-        0.0001f,
-        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+    window->getShaderOGLLine3D()->render(
+        V.vertex1,
+        V.vertex2,
+        window->getForegroundFramebuffer(),
+        color
     );
 }
 
@@ -188,23 +173,22 @@ void Drawable::drawAABB(AABB3D *aabb, Color color)
     Drawable::drawVertex(aabb->min,Color::green());
 }
 
-void Drawable::drawOctreeNode(OctreeNode *node, bool onlyWithTriangles)
+void Drawable::drawOctreeNode(OctreeNode *node)
 {
-    Color color = Color::white();
     if (node->isLeaf()) {
-        Drawable::drawAABB(&node->bounds, color);
+        Drawable::drawAABB(&node->bounds, Color::orange());
     }
 
     for (auto & i : node->children) {
         if (i != nullptr) {
-            Drawable::drawOctreeNode(i, onlyWithTriangles);
+            Drawable::drawOctreeNode(i);
         }
     }
 }
 
-void Drawable::drawOctree(Octree *octree, bool onlyWithTriangles) {
+void Drawable::drawOctree(Octree *octree) {
     Drawable::drawAABB(&octree->root->bounds, Color::yellow());
-    Drawable::drawOctreeNode(octree->root, onlyWithTriangles);
+    Drawable::drawOctreeNode(octree->root );
 }
 
 void Drawable::drawGrid3D(Grid3D *grid) {
@@ -215,21 +199,21 @@ void Drawable::drawGrid3D(Grid3D *grid) {
         if (boxe->is_empty && EngineSetup::get()->DRAW_MESH3D_GRID_EMPTY) {
             Color c = Color::yellow();
             if (EngineSetup::get()->DRAW_MESH3D_GRID_CUBES) {
-                Drawable::drawAABB(boxe->box, c);
+                Drawable::drawAABB(&boxe->box, c);
             }
             if (EngineSetup::get()->DRAW_MESH3D_GRID_POINTS) {
-                Drawable::drawVertex(boxe->box->getCenter(), c);
+                Drawable::drawVertex(boxe->box.getCenter(), c);
             }
         }
 
         if (!boxe->is_empty && EngineSetup::get()->DRAW_MESH3D_GRID_NO_EMPTY) {
             Color c = Color::red();
             if (EngineSetup::get()->DRAW_MESH3D_GRID_CUBES) {
-                Drawable::drawAABB(boxe->box, c);
+                Drawable::drawAABB(&boxe->box, c);
             }
             if (EngineSetup::get()->DRAW_MESH3D_GRID_POINTS) {
 
-                Drawable::drawVertex(boxe->box->getCenter(), c);
+                Drawable::drawVertex(boxe->box.getCenter(), c);
             }
         }
     }
@@ -261,10 +245,10 @@ void Drawable::drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder)
     }
 
     if (cubeStart != nullptr)
-        Drawable::drawAABB(cubeStart->box, Color::green());
+        Drawable::drawAABB(&cubeStart->box, Color::green());
 
     if (cubeDest != nullptr)
-        Drawable::drawAABB(cubeDest->box, Color::red());
+        Drawable::drawAABB(&cubeDest->box, Color::red());
 }
 
 void Drawable::drawObject3DGizmo(

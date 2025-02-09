@@ -71,7 +71,7 @@ public:
 
     void postUpdate() override;
 
-    void buildOctree();
+    void buildOctree(int depth);
 
     void buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ);
 
