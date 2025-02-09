@@ -67,3 +67,45 @@ void ShaderOpenGLLine3D::render(Vertex3D from, Vertex3D to, GLuint framebuffer, 
 void ShaderOpenGLLine3D::destroy()
 {
 }
+
+void ShaderOpenGLLine3D::renderLines(std::vector<Vector3D> lines, GLuint framebuffer, Color c)
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    glUseProgram(programID);
+
+    auto camera = ComponentsManager::get()->getComponentCamera();
+    glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
+    glm::mat4 ProjectionMatrix = camera->getGLMMat4ProjectionMatrix();
+
+    setMat4Uniform(matrixProjectionUniform, ProjectionMatrix);
+    setMat4Uniform(matrixViewUniform, ViewMatrix);
+    setVec3Uniform(colorUniform, c.toGLM());
+
+    std::vector<glm::vec3> vertices;
+
+    for (auto &v: lines) {
+        vertices.push_back(v.vertex1.toGLM());
+        vertices.push_back(v.vertex2.toGLM());
+    }
+
+    GLuint VBO;
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VertexArrayID);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), vertices.data(), GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+
+    glLineWidth(1.0f);
+    glDrawArrays(GL_LINES, 0, static_cast<GLint>(vertices.size()));
+
+    glDisableVertexAttribArray(0);
+    glBindVertexArray(0);
+
+    glDeleteBuffers(1, &VBO);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}

@@ -9,6 +9,7 @@
 #include "../../include/OpenGL/ShaderOpenGL.h"
 #include "../../include/Objects/Vertex3D.h"
 #include "../../include/Misc/Color.h"
+#include "../../include/Objects/Vector3D.h"
 #include <vector>
 
 class ShaderOpenGLLine3D : public ShaderOpenGL
@@ -29,6 +30,12 @@ public:
     void render(
         Vertex3D from,
         Vertex3D to,
+        GLuint framebuffer,
+        Color c
+    );
+
+    void renderLines(
+        std::vector<Vector3D>,
         GLuint framebuffer,
         Color c
     );
