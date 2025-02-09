@@ -57,10 +57,6 @@ public:
 
     static Uint32 getSurfacePixel(SDL_Surface *surface, int x, int y);
 
-    static void LoadPathFinderWithGrid3D(Grid3D *, PathFinder *);
-
-    static std::vector<Vertex3D> getVerticesFromPathFinderPath(Grid3D *, std::stack<PairData> path);
-
     static btTransform GLMMatrixToBulletTransform(const glm::mat4& glmMatrix);
 
     static float percentage(int value, int total);

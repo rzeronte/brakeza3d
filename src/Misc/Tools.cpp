@@ -224,35 +224,6 @@ Uint32 Tools::getSurfacePixel(SDL_Surface *surface, int x, int y)
     }
 }
 
-void Tools::LoadPathFinderWithGrid3D(Grid3D *grid, PathFinder *pathfinder)
-{
-    for (int x = 0; x < grid->numberCubesX; x++) {
-        for (int y = 0; y < grid->numberCubesZ; y++) {
-            CubeGrid3D *c = grid->getFromPosition(x, 0, y); // grid de altura 0
-            pathfinder->setValue(y, x, c->is_empty);
-        }
-    }
-}
-
-std::vector<Vertex3D> Tools::getVerticesFromPathFinderPath(Grid3D *grid, std::stack<PairData> path)
-{
-    std::vector<Vertex3D> result;
-
-    while (!path.empty()) {
-        std::pair<int, int> p = path.top();
-        path.pop();
-
-        int x = p.first;
-        int y = 0;
-        int z = p.second;
-
-        CubeGrid3D *cube = grid->getFromPosition(x, y, z);
-        result.push_back(cube->box.getCenter());
-    }
-
-    return result;
-}
-
 btTransform Tools::GLMMatrixToBulletTransform(const glm::mat4& glmMatrix)
 {
     btTransform bulletTransform;
