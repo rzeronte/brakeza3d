@@ -148,22 +148,8 @@ void ComponentRender::onUpdateSceneObjects()
     }
 }
 
-void ComponentRender::hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle *> &triangles)
+void ComponentRender::initTiles()
 {
-    if (node->isLeaf() && Frustum::isAABBInFrustum(&node->bounds)) {
-        for (auto & triangle : node->triangles) {
-            triangles.push_back(triangle);
-        }
-    }
-
-    for (auto & i : node->children) {
-        if (i != nullptr) {
-            this->hiddenOctreeRemovalNode(i, triangles);
-        }
-    }
-}
-
-void ComponentRender::initTiles() {
     if (SETUP->screenWidth % this->sizeTileWidth != 0) {
         printf("Bad sizeTileWidth\r\n");
         exit(-1);

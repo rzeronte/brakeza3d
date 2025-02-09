@@ -16,8 +16,6 @@
 #include <SDL2/SDL_image.h>
 #include <filesystem>
 
-#define MAX_SOURCE_SIZE (0x100000)
-
 std::vector<std::string> Tools::split(const std::string &text, char sep)
 {
     std::vector<std::string> tokens;
