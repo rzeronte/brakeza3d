@@ -2,7 +2,6 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Render/Logging.h"
 
-
 ComponentInput::ComponentInput()
 :
     mouseMotion(false),
@@ -358,6 +357,7 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
 
         if (keyboard[SDL_SCANCODE_F11]) {
             EngineSetup::get()->FULLSCREEN = !EngineSetup::get()->FULLSCREEN;
+            ComponentsManager::get()->getComponentWindow()->toggleFullScreen();
         }
     }
 }
