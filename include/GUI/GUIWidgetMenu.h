@@ -329,11 +329,7 @@ struct GUIWidgetMenu
             if (ImGui::BeginMenu("View")) {
                 ImGui::Checkbox("FullScreen (F11)", &EngineSetup::get()->FULLSCREEN);
                 if (ImGui::IsItemEdited()) {
-                    if (EngineSetup::get()->FULLSCREEN) {
-                        SDL_SetWindowFullscreen(ComponentsManager::get()->getComponentWindow()->getWindow(), SDL_WINDOW_FULLSCREEN_DESKTOP);
-                    } else {
-                        SDL_SetWindowFullscreen(ComponentsManager::get()->getComponentWindow()->getWindow(), 0);
-                    }
+                    ComponentsManager::get()->getComponentWindow()->toggleFullScreen();
                 }
                 ImGui::Separator();
                 ImGui::Checkbox("UI (F4)", &EngineSetup::get()->IMGUI_ENABLED);

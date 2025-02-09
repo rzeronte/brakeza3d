@@ -10,7 +10,6 @@
 #include "imgui_internal.h"
 #include "../../include/Brakeza3D.h"
 
-
 ComponentWindow::ComponentWindow()
 :
     window(nullptr),
@@ -22,8 +21,8 @@ ComponentWindow::ComponentWindow()
     ImGuiConfig(ImGUIConfigs::DEFAULT),
     ImGuiConfigChanged(ImGUIConfigs::DEFAULT)
 {
-    this->initWindow();
-    this->initFontsTTF();
+    initWindow();
+    initFontsTTF();
 }
 
 void ComponentWindow::onStart()
@@ -652,3 +651,11 @@ void ComponentWindow::setWindowTitle(const char *title)
     SDL_SetWindowTitle(window, title);
 }
 
+void ComponentWindow::toggleFullScreen()
+{
+    if (EngineSetup::get()->FULLSCREEN) {
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    } else {
+        SDL_SetWindowFullscreen(window, 0);
+    }
+}

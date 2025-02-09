@@ -180,6 +180,7 @@ public:
 
     void setWindowTitle(const char *title);
 
+    void toggleFullScreen();
 };
 
 
