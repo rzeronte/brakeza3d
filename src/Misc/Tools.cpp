@@ -247,7 +247,7 @@ std::vector<Vertex3D> Tools::getVerticesFromPathFinderPath(Grid3D *grid, std::st
         int z = p.second;
 
         CubeGrid3D *cube = grid->getFromPosition(x, y, z);
-        result.push_back(cube->box->getCenter());
+        result.push_back(cube->box.getCenter());
     }
 
     return result;

@@ -30,9 +30,9 @@ public:
 
     static void drawAABB(AABB3D *, Color);
 
-    static void drawOctree(Octree *, bool onlyWithTriangles);
+    static void drawOctree(Octree *);
 
-    static void drawOctreeNode(OctreeNode *, bool onlyWithTriangles);
+    static void drawOctreeNode(OctreeNode *);
 
     static void drawGrid3D(Grid3D *);
 

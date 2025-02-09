@@ -206,7 +206,7 @@ add_executable(Brakeza3D
     include/GUI/GUIWidgetObjects3D.h                include/GUI/GUIWidgetObject3DProperties.h
 
     include/Misc/SharedLUAContext.h
-    include/Misc/TileManager.cpp                    include/Misc/TileManager.h
+        src/Misc/TileManager.cpp include/Misc/TileManager.h
 
     include/OpenGL/FXEffectOpenGLObject.h
     include/OpenGL/FXEffectBase.h
