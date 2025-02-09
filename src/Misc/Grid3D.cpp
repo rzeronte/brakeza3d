@@ -133,17 +133,6 @@ const std::vector<CubeGrid3D> &Grid3D::getBoxes() const {
 
 void Grid3D::drawImGuiProperties()
 {
-    static int sizeX = getNumberCubesX();
-    static int sizeY = getNumberCubesY();
-    static int sizeZ = getNumberCubesZ();
-    ImGui::SliderInt("Size X", &sizeX, 1, 10);
-    ImGui::SliderInt("Size Y", &sizeY, 1, 10);
-    ImGui::SliderInt("Size Z", &sizeZ, 1, 10);
-
-    if (ImGui::Button("Update Grid3D")) {
-        reset(sizeX, sizeY, sizeZ);
-    }
-
     if (ImGui::TreeNode("A* setup cells")) {
         if (ImGui::TreeNode("From")) {
             ImGui::SliderInt("X", &pathFinding.from[0], 0, getNumberCubesX() - 1);
@@ -158,6 +147,19 @@ void Grid3D::drawImGuiProperties()
             ImGui::TreePop();
         }
         ImGui::TreePop();
+    }
+
+    ImGui::Separator();
+
+    static int sizeX = getNumberCubesX();
+    static int sizeY = getNumberCubesY();
+    static int sizeZ = getNumberCubesZ();
+    ImGui::SliderInt("Size X", &sizeX, 1, 10);
+    ImGui::SliderInt("Size Y", &sizeY, 1, 10);
+    ImGui::SliderInt("Size Z", &sizeZ, 1, 10);
+
+    if (ImGui::Button("Update Grid3D")) {
+        reset(sizeX, sizeY, sizeZ);
     }
 }
 

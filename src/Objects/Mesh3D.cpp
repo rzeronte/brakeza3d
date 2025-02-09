@@ -386,6 +386,11 @@ void Mesh3D::drawImGuiProperties()
                     }
                 }
                 grid->drawImGuiProperties();
+                ImGui::SameLine();
+                if (ImGui::Button("Delete Grid3D")) {
+                    delete grid;
+                    grid = nullptr;
+                }
             } else {
                 static int sizeX = 1;
                 static int sizeY = 1;
@@ -403,12 +408,27 @@ void Mesh3D::drawImGuiProperties()
         }
         ImGui::Separator();
         if (ImGui::TreeNode("Octree")) {
-            static int maxDepth = 1;
-            ImGui::SliderInt("Depth", &maxDepth, 1, 4);
-
-            if (ImGui::Button("Create octree")) {
-                buildOctree(maxDepth);
+            if (octree == nullptr) {
+                static int maxDepth = 1;
+                ImGui::SliderInt("Depth", &maxDepth, 1, 4);
+                if (ImGui::Button("Create octree")) {
+                    buildOctree(maxDepth);
+                }
             }
+
+            if (octree != nullptr) {
+                static int maxDepth = 1;
+                ImGui::SliderInt("Depth", &maxDepth, 1, 4);
+                if (ImGui::Button("Update octree")) {
+                    buildOctree(maxDepth);
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Delete Octree")) {
+                    delete octree;
+                    octree = nullptr;
+                }
+            }
+
             ImGui::TreePop();
         }
         ImGui::Separator();
