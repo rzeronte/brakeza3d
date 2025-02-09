@@ -365,6 +365,8 @@ struct GUIWidgetMenu
                     ImGui::Separator();
                     ImGui::Checkbox("Draw Test Passed Cells", &EngineSetup::get()->DRAW_MESH3D_TEST_PASSED);
                     ImGui::Checkbox("Draw Not Test Passed Cells", &EngineSetup::get()->DRAW_MESH3D_TEST_NOT_PASSED);
+                    ImGui::Separator();
+                    ImGui::Checkbox("Draw AStar Travel", &EngineSetup::get()->DRAW_MESH3D_GRID_ASTAR);
                 }
                 ImGui::Separator();
                 ImGui::Checkbox("Show FPS", &EngineSetup::get()->DRAW_FPS);
