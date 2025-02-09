@@ -379,14 +379,13 @@ void Mesh3D::drawImGuiProperties()
         ImGui::Separator();
         if (ImGui::TreeNode("Grid3D")) {
             if (grid != nullptr) {
-                grid->drawImGuiProperties();
-
                 if (ImGui::Button("Fill from mesh geometry")) {
                     grid->reset(grid->getNumberCubesX(), grid->getNumberCubesY(), grid->getNumberCubesZ());
                     for (auto &m: meshes) {
                         grid->doTestForNonEmptyGeometry(m.modelTriangles);
                     }
                 }
+                grid->drawImGuiProperties();
             } else {
                 static int sizeX = 1;
                 static int sizeY = 1;

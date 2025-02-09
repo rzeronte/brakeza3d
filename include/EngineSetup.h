@@ -66,7 +66,7 @@ public:
     bool DRAW_MESH3D_AABB = false;
     bool DRAW_MESH3D_OCTREE = false;
     bool DRAW_MESH3D_GRID = false;
-    bool DRAW_MESH3D_TEST_PASSED = false;
+    bool DRAW_MESH3D_TEST_PASSED = true;
     bool DRAW_MESH3D_TEST_NOT_PASSED = false;
     bool DRAW_MESH3D_GRID_ASTAR = false;
 

@@ -133,33 +133,30 @@ const std::vector<CubeGrid3D> &Grid3D::getBoxes() const {
 
 void Grid3D::drawImGuiProperties()
 {
-    if (ImGui::TreeNode("Grid3D setup")) {
-        static int sizeX = 1;
-        static int sizeY = 1;
-        static int sizeZ = 1;
-        ImGui::SliderInt("Size X", &sizeX, 1, 50);
-        ImGui::SliderInt("Size Y", &sizeY, 1, 50);
-        ImGui::SliderInt("Size Z", &sizeZ, 1, 50);
+    static int sizeX = getNumberCubesX();
+    static int sizeY = getNumberCubesY();
+    static int sizeZ = getNumberCubesZ();
+    ImGui::SliderInt("Size X", &sizeX, 1, 10);
+    ImGui::SliderInt("Size Y", &sizeY, 1, 10);
+    ImGui::SliderInt("Size Z", &sizeZ, 1, 10);
 
-        if (ImGui::Button("Update Grid3D")) {
-            reset(sizeX, sizeY, sizeZ);
-        }
-        ImGui::TreePop();
+    if (ImGui::Button("Update Grid3D")) {
+        reset(sizeX, sizeY, sizeZ);
     }
-    if (ImGui::TreeNode("A* setup")) {
-        if (ImGui::TreeNode("Cell from")) {
-            ImGui::SliderInt("Cell X", &pathFinding.from[0], 0, getNumberCubesX() - 1);
-            ImGui::SliderInt("Cell Y", &pathFinding.from[1], 0, getNumberCubesY() - 1);
-            ImGui::SliderInt("Cell Z", &pathFinding.from[2], 0, getNumberCubesZ() - 1);
-            ImGui::TreePop();
-        }
-        if (ImGui::TreeNode("Cell to")) {
-            ImGui::SliderInt("Cell X", &pathFinding.to[0], 0, getNumberCubesX()- 1);
-            ImGui::SliderInt("Cell Y", &pathFinding.to[1], 0, getNumberCubesY()- 1);
-            ImGui::SliderInt("Cell Z", &pathFinding.to[2], 0, getNumberCubesZ()- 1);
-            ImGui::TreePop();
-        }
 
+    if (ImGui::TreeNode("A* setup cells")) {
+        if (ImGui::TreeNode("From")) {
+            ImGui::SliderInt("X", &pathFinding.from[0], 0, getNumberCubesX() - 1);
+            ImGui::SliderInt("Y", &pathFinding.from[1], 0, getNumberCubesY() - 1);
+            ImGui::SliderInt("Z", &pathFinding.from[2], 0, getNumberCubesZ() - 1);
+            ImGui::TreePop();
+        }
+        if (ImGui::TreeNode("To")) {
+            ImGui::SliderInt("X", &pathFinding.to[0], 0, getNumberCubesX() - 1);
+            ImGui::SliderInt("Y", &pathFinding.to[1], 0, getNumberCubesY() - 1);
+            ImGui::SliderInt("Z", &pathFinding.to[2], 0, getNumberCubesZ() - 1);
+            ImGui::TreePop();
+        }
         ImGui::TreePop();
     }
 }
@@ -181,9 +178,9 @@ PathFinding Grid3D::getPathFinding()
 
 void Grid3D::LoadPathFindingBlocksFromGrid()
 {
-    for (int x = 0; x < getNumberCubesX(); x++) {
-        for (int y = 0; y < getNumberCubesY(); y++) {
-            for (int z = 0; z < getNumberCubesZ(); z++) {
+    for (int x = 0; x < getNumberCubesX() - 1; x++) {
+        for (int y = 0; y < getNumberCubesY() - 1; y++) {
+            for (int z = 0; z < getNumberCubesZ() - 1; z++) {
                 CubeGrid3D *c = getCubeFromPosition(x, y, z);
                 if (c->passed) {
                     pathFinding.setObstacle(x, y, z);

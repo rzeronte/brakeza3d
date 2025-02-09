@@ -65,6 +65,7 @@ void ComponentInput::onEnd()
 
 void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
 {
+
     updateMouseStates(e);
     handleCheckPadConnection(e);
     updateGamePadStates();
@@ -114,6 +115,10 @@ void ComponentInput::handleMouse(SDL_Event *event)
 
 void ComponentInput::handleKeyboardMovingCamera() const
 {
+    if (ImGui::GetIO().WantCaptureKeyboard) {
+        return;
+    }
+
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     bool isShiftPressed = keyboard[SDL_SCANCODE_LSHIFT] || keyboard[SDL_SCANCODE_RSHIFT];
 
@@ -193,6 +198,10 @@ void ComponentInput::updateMouseMapping()
     mouseRightButton = false;
     mouseButtonDown = false;
     mouseButtonUp = false;
+
+    if (ImGui::GetIO().WantCaptureMouse) {
+        return;
+    }
 
     this->mouseButtons = SDL_GetMouseState(&mouseX, &mouseY);
 
