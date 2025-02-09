@@ -1,8 +1,5 @@
 #define GL_GLEXT_PROTOTYPES
 
-
-#include <utility>
-
 #include "../../include/Render/Drawable.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Brakeza3D.h"
@@ -166,71 +163,68 @@ void Drawable::drawAABB(AABB3D *aabb, Color color)
     Drawable::drawVector3D(v10, color);
     Drawable::drawVector3D(v11, color);
     Drawable::drawVector3D(v12, color);
-
-    Drawable::drawVertex(aabb->max, Color::red());
-    Drawable::drawVertex(aabb->min,Color::green());
 }
 
-void Drawable::drawOctreeNode(OctreeNode *node)
+void Drawable::drawOctreeNode(OctreeNode &node)
 {
-    if (node->isLeaf()) {
-        Drawable::drawAABB(&node->bounds, Color::orange());
+    if (node.isLeaf()) {
+        Drawable::drawAABB(&node.bounds, Color::orange());
     }
 
-    for (auto & i : node->children) {
-        if (i != nullptr) {
-            Drawable::drawOctreeNode(i);
-        }
+    for (auto & i : node.children) {
+        Drawable::drawOctreeNode(i);
     }
 }
 
 void Drawable::drawOctree(Octree *octree) {
-    Drawable::drawAABB(&octree->root->bounds, Color::yellow());
+    Drawable::drawAABB(&octree->root.bounds, Color::yellow());
     Drawable::drawOctreeNode(octree->root);
 }
 
 void Drawable::drawGrid3D(Grid3D *grid) {
 
-    for (auto & box : grid->getBoxes()) {
-        Color c = Color::yellow();
-
-        if (!box->passed) {
-            Color c = Color::red();
+    for (auto & box: grid->getBoxes()) {
+        auto aabb = box.box;
+        if (EngineSetup::get()->DRAW_MESH3D_TEST_PASSED && box.passed) {
+            Drawable::drawAABB(&aabb, Color::blue());
         }
 
-        Drawable::drawAABB(&box->box, c);
+        if (EngineSetup::get()->DRAW_MESH3D_TEST_NOT_PASSED && !box.passed) {
+            Drawable::drawAABB(&aabb, Color::gray());
+        }
+    }
+
+    if (EngineSetup::get()->DRAW_MESH3D_GRID_ASTAR) {
+        Drawable::drawGrid3DMakeTravel(grid);
     }
 }
 
-void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PairData> path) {
+void Drawable::drawGrid3DMakeTravel(Grid3D *grid) {
 
-    std::vector<Vertex3D> pathVertices = PathFinder::getVerticesFromPathFinderPath(grid, std::move(path));
+    auto path = grid->getPathFinding().makeTravel();
 
-    for (auto & pathVertice : pathVertices) {
-        Drawable::drawVertex(pathVertice, Color::cyan());
-    }
-}
+    if ((int) path.size() <= 0) return;
 
-void Drawable::drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder) {
-    std::stack<PairData> path;
-    PairData src = std::make_pair(EngineSetup::get()->TESTING_INT1,
-                                  EngineSetup::get()->TESTING_INT2);
-    PairData dest = std::make_pair(EngineSetup::get()->TESTING_INT3,
-                                   EngineSetup::get()->TESTING_INT4);
+    for (const auto& step : path) {
+        int x = std::get<0>(step);
+        int y = std::get<1>(step);
+        int z = std::get<2>(step);
 
-    CubeGrid3D *cubeStart = grid->getCubeFromPosition(src.first, 0, src.second);
-    CubeGrid3D *cubeDest = grid->getCubeFromPosition(dest.first, 0, dest.second);
-
-    bool result = pathfinder->AStarSearch(src, dest, path);
-    if (result) {
-        Drawable::drawPathInGrid(grid, path);
+        CubeGrid3D *cube = grid->getCubeFromPosition(x, y, z);
+        Drawable::drawAABB(&cube->box, Color::magenta());
     }
 
-    if (cubeStart != nullptr)
+    auto pf = grid->getPathFinding();
+
+    CubeGrid3D *cubeStart = grid->getCubeFromPosition(pf.from[0],pf.from[1],pf.from[2]);
+    if (cubeStart != nullptr) {
         Drawable::drawAABB(&cubeStart->box, Color::green());
+    }
 
-    if (cubeDest != nullptr)
+    CubeGrid3D *cubeDest = grid->getCubeFromPosition(pf.to[0],pf.to[1],pf.to[2]);
+    if (cubeDest != nullptr) {
         Drawable::drawAABB(&cubeDest->box, Color::red());
+    }
 }
 
 void Drawable::drawObject3DGizmo(

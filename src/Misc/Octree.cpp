@@ -1,31 +1,27 @@
 #include "../../include/Misc/Octree.h"
 #include "../../include/Render/Logging.h"
 
-#define MAX_RECURSIVE_DEPTH 2
-
 Octree::Octree(AABB3D bounds, int maxDepth)
 :
     maxDepth(maxDepth)
 {
-    this->root = BuildOctree(bounds, 0);
+    root = BuildOctree(bounds, 0);
 }
 
-OctreeNode *Octree::BuildOctree(AABB3D bounds, int recursiveDepth)
+OctreeNode Octree::BuildOctree(AABB3D bounds, int recursiveDepth)
 {
-    auto *node = new OctreeNode();
-    node->triangles.resize(0);
-    node->bounds = bounds;
+    auto node = OctreeNode();
+    node.bounds = bounds;
 
     if (recursiveDepth >= maxDepth) {
-        for (auto & i : node->children) {
-            i = nullptr;
-        }
+        node.children.resize(0);
         return node;
     }
 
     Vertex3D childSize = (bounds.max - bounds.min).getScaled(0.5);
 
     Logging::Message("OctreeNode: (%d)", recursiveDepth);
+    node.children.resize(8);
 
     for (int i = 0; i < 8; i++) {
         AABB3D childBounds;
@@ -64,12 +60,9 @@ OctreeNode *Octree::BuildOctree(AABB3D bounds, int recursiveDepth)
         childBounds.max = bounds.min + childOffset + childSize;
         childBounds.updateVertices();
 
-        node->children[i] = BuildOctree(
-            childBounds,
-            recursiveDepth + 1
-        );
-        Logging::Message("ChildrenNode: (%d) - depth: %d", i, recursiveDepth + 1);
+        node.children[i] = BuildOctree(childBounds,recursiveDepth + 1);
 
+        Logging::Message("ChildrenNode: (%d) - depth: %d", i, recursiveDepth + 1);
     }
 
     return node;
@@ -103,11 +96,9 @@ OctreeNode* Octree::FindNodeContainingVertex(OctreeNode* node, const Vertex3D& v
     }
 
     for (int i = 0; i < 8; i++) {
-        if (node->children[i]) {
-            OctreeNode* foundNode = FindNodeContainingVertex(node->children[i], vertex);
-            if (foundNode) {
-                return foundNode;
-            }
+        OctreeNode* foundNode = FindNodeContainingVertex(&node->children[i], vertex);
+        if (foundNode) {
+            return foundNode;
         }
     }
 
@@ -116,5 +107,5 @@ OctreeNode* Octree::FindNodeContainingVertex(OctreeNode* node, const Vertex3D& v
 
 OctreeNode* Octree::FindNode(Vertex3D vertex)
 {
-    return FindNodeContainingVertex(this->root, vertex);
+    return FindNodeContainingVertex(&root, vertex);
 }

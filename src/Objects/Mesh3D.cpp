@@ -378,16 +378,28 @@ void Mesh3D::drawImGuiProperties()
         }
         ImGui::Separator();
         if (ImGui::TreeNode("Grid3D")) {
-            static int sizeX = 1;
-            static int sizeY = 1;
-            static int sizeZ = 1;
-            ImGui::SliderInt("Size X", &sizeX, 1, 50);
-            ImGui::SliderInt("Size Y", &sizeY, 1, 50);
-            ImGui::SliderInt("Size Z", &sizeZ, 1, 50);
+            if (grid != nullptr) {
+                grid->drawImGuiProperties();
 
-            if (ImGui::Button("Create Grid3D")) {
-                buildGrid3D(sizeX, sizeY, sizeZ);
+                if (ImGui::Button("Fill from mesh geometry")) {
+                    grid->reset(grid->getNumberCubesX(), grid->getNumberCubesY(), grid->getNumberCubesZ());
+                    for (auto &m: meshes) {
+                        grid->doTestForNonEmptyGeometry(m.modelTriangles);
+                    }
+                }
+            } else {
+                static int sizeX = 1;
+                static int sizeY = 1;
+                static int sizeZ = 1;
+                ImGui::SliderInt("Size X", &sizeX, 1, 10);
+                ImGui::SliderInt("Size Y", &sizeY, 1, 10);
+                ImGui::SliderInt("Size Z", &sizeZ, 1, 10);
+
+                if (ImGui::Button("Create Grid3D")) {
+                    buildGrid3D(sizeX, sizeY, sizeZ);
+                }
             }
+
             ImGui::TreePop();
         }
         ImGui::Separator();

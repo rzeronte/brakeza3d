@@ -11,7 +11,6 @@
 #include "Billboard.h"
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
-#include "../Misc/PathFinder.h"
 #include "ImGuizmo.h"
 
 class Drawable {
@@ -32,15 +31,13 @@ public:
 
     static void drawOctree(Octree *);
 
-    static void drawOctreeNode(OctreeNode *);
+    static void drawOctreeNode(OctreeNode &);
 
     static void drawGrid3D(Grid3D *);
 
-    static void drawPathInGrid(Grid3D *, std::stack<PairData>);
-
-    static void drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder);
-
     static void drawObject3DGizmo(Object3D *o, ImGuizmo::OPERATION currentOperation, glm::mat4 objectMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+
+    static void drawGrid3DMakeTravel(Grid3D *grid);
 };
 
 

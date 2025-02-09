@@ -61,8 +61,6 @@ public:
 
     static void onUpdateSceneObjects();
 
-    void hiddenOctreeRemovalNode(OctreeNode *node, std::vector<Triangle *> &triangles);
-
     void initTiles();
 
     void updateFPS();

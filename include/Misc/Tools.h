@@ -10,7 +10,6 @@
 #include "../Objects/LightPoint3D.h"
 #include "../Render/M3.h"
 #include "Grid3D.h"
-#include "PathFinder.h"
 #include "../2D/TextureAnimated.h"
 #include "../Objects/ParticlesContext.h"
 #include <vector>

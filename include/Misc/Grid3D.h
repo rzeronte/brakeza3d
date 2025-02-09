@@ -8,6 +8,7 @@
 
 #include "../Render/AABB3D.h"
 #include "../Objects/Triangle3D.h"
+#include "PathFinding.h"
 
 struct CubeGrid3D {
     AABB3D box;
@@ -15,13 +16,6 @@ struct CubeGrid3D {
     int posY;
     int posZ;
     bool passed = true;
-};
-
-enum TestsType {
-    EMPTY = -1,
-    RAY_INTERSECTION = 0,
-    CONTAIN_TRIANGLES = 1,
-    IMAGE_FILE = 2,
 };
 
 class Grid3D {
@@ -32,15 +26,11 @@ private:
     int numberCubesZ;
 
     AABB3D bounds;
-    std::vector<CubeGrid3D *> boxes;
+    std::vector<CubeGrid3D> boxes;
+    PathFinding pathFinding;
 public:
 
-    Grid3D(
-        const AABB3D &bounds,
-        int sizeX,
-        int sizeY,
-        int sizeZ
-    );
+    Grid3D(const AABB3D &bounds, int sizeX, int sizeY, int sizeZ);
 
     bool isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles);
 
@@ -48,19 +38,25 @@ public:
 
     Vertex3D getClosestPoint(Vertex3D v, std::vector<Vertex3D> path, int &indexVertex);
 
-    void fillTestWithImageData(const std::string& filename, int fixedY);
+    void doTestForNonEmptyGeometry(std::vector<Triangle *> &triangles);
 
-    void fillEmptiesWithAABBvsTriangles(std::vector<Triangle *> &triangles);
+    [[nodiscard]] int getNumberCubesX() const;
 
-    void fillEmptiesWithVector3DvsTriangles(Vertex3D dir, std::vector<Triangle *> &triangles);
+    [[nodiscard]] int getNumberCubesY() const;
 
-    int getNumberCubesX() const;
+    [[nodiscard]] int getNumberCubesZ() const;
 
-    int getNumberCubesY() const;
+    [[nodiscard]] const std::vector<CubeGrid3D> &getBoxes() const;
 
-    int getNumberCubesZ() const;
+    void drawImGuiProperties();
 
-    const std::vector<CubeGrid3D *> &getBoxes() const;
+    void reset(int x, int y, int z);
+
+    PathFinding getPathFinding();
+
+    void makeCells();
+
+    void LoadPathFindingBlocksFromGrid();
 };
 
 

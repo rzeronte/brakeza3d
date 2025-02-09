@@ -105,8 +105,7 @@ add_executable(Brakeza3D
     src/Misc/Timer.cpp                              include/Misc/Timer.h
     src/Misc/Tools.cpp                              include/Misc/Tools.h
     src/Misc/Octree.cpp                             include/Misc/Octree.h
-    src/Misc/PathFinder.cpp                         include/Misc/PathFinder.h
-    src/Misc/Counter.cpp                            include/Misc/Counter.h
+        src/Misc/Counter.cpp                            include/Misc/Counter.h
     src/Misc/TexturePackage.cpp                     include/Misc/TexturePackage.h
     src/Misc/SoundPackage.cpp                       include/Misc/SoundPackage.h
     src/Misc/Image.cpp                              include/Misc/Image.h
@@ -223,6 +222,7 @@ add_executable(Brakeza3D
     src/OpenGL/ShaderOpenGLLine3D.cpp               src/OpenGL/ShaderOpenGLLine3D.h
     src/Misc/ProjectLoader.cpp                      include/Misc/ProjectLoader.h
         include/cxxxopts.h
+        include/Misc/PathFinding.h
 )
 
 target_link_libraries(Brakeza3D

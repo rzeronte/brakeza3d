@@ -10,18 +10,17 @@
 #include "../Objects/Triangle3D.h"
 
 struct OctreeNode {
+    bool leaf = false;
     AABB3D bounds;
-    OctreeNode *children[8];
-    std::vector<Triangle *> triangles;
+    std::vector<OctreeNode> children;
 
-    bool isLeaf() {
-        for (int i = 0; i < 8; i++) {
-            if (this->children[i] != NULL) {
-                return false;
-            }
+    [[nodiscard]] bool isLeaf() const
+    {
+        if ((int) children.size() <= 0) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 };
 
@@ -34,13 +33,13 @@ public:
 
     Octree(AABB3D bounds, int maxDepth);
 
-    OctreeNode *BuildOctree(AABB3D bounds, int recursiveDepth);
+    OctreeNode BuildOctree(AABB3D bounds, int recursiveDepth);
 
     static bool isTriangleInsideAABB(Triangle *triangle, AABB3D childBounds);
 
     OctreeNode* FindNode(Vertex3D vertex) ;
 
-    OctreeNode *root;
+    OctreeNode root;
 };
 
 

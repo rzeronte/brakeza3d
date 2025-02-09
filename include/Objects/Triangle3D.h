@@ -12,7 +12,6 @@
 #include "../Misc/Color.h"
 #include "../Misc/Image.h"
 
-
 class Triangle {
 
 public:
@@ -23,7 +22,6 @@ public:
 
     bool enableLights;
 
-    Color flatColor;
     Object3D *parent;
     Vertex3D normal;
 
@@ -38,8 +36,6 @@ public:
     void updateNormal();
 
     void setEnableLights(bool enableLights);
-
-    void setFlatColor(const Color &flatColor);
 
     [[nodiscard]] bool isPointInside(Vertex3D) const;
 

@@ -363,12 +363,8 @@ struct GUIWidgetMenu
                 ImGui::Checkbox("Draw Mesh3D Grid", &EngineSetup::get()->DRAW_MESH3D_GRID);
                 if (EngineSetup::get()->DRAW_MESH3D_GRID) {
                     ImGui::Separator();
-                    ImGui::Checkbox("Grid3D: Empty", &EngineSetup::get()->DRAW_MESH3D_GRID_EMPTY);
-                    ImGui::Checkbox("Grid3D: No Empty", &EngineSetup::get()->DRAW_MESH3D_GRID_NO_EMPTY);
-                    ImGui::Separator();
-                    ImGui::Checkbox("Grid3D: Draw Center", &EngineSetup::get()->DRAW_MESH3D_GRID_POINTS);
-                    ImGui::Checkbox("Grid3D: Draw AABB", &EngineSetup::get()->DRAW_MESH3D_GRID_CUBES);
-                    ImGui::Separator();
+                    ImGui::Checkbox("Draw Test Passed Cells", &EngineSetup::get()->DRAW_MESH3D_TEST_PASSED);
+                    ImGui::Checkbox("Draw Not Test Passed Cells", &EngineSetup::get()->DRAW_MESH3D_TEST_NOT_PASSED);
                 }
                 ImGui::Separator();
                 ImGui::Checkbox("Show FPS", &EngineSetup::get()->DRAW_FPS);

@@ -37,6 +37,8 @@ public:
     static Vertex3D getHalfwayVector(Vertex3D a, Vertex3D b);
 
     static glm::mat3 RotateOnAxis(glm::mat3 originalRotation, float angle, glm::vec3 axis);
+
+    static bool isTriangleIntersectingAABB(Triangle &triangle, AABB3D &box);
 };
 
 

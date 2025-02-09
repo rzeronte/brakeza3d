@@ -53,7 +53,3 @@ bool Triangle::isEnableLights() const {
 void Triangle::setEnableLights(bool enableLights) {
     this->enableLights = enableLights;
 }
-
-void Triangle::setFlatColor(const Color &flatColor) {
-    Triangle::flatColor = flatColor;
-}

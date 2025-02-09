@@ -115,3 +115,49 @@ glm::mat3 Maths::RotateOnAxis(glm::mat3 originalRotation, float angle, glm::vec3
     // Convertir de vuelta a 3x3
     return glm::mat3(rotation4x4);
 }
+
+bool Maths::isTriangleIntersectingAABB(Triangle &triangle, AABB3D &box)
+{
+    Vertex3D boxCenter = box.getCenter();
+    Vertex3D boxHalfSize = (box.max - box.min).getScaled(0.5);
+
+    // Triángulo en espacio relativo al AABB
+    Vertex3D v0 = triangle.Ao - boxCenter;
+    Vertex3D v1 = triangle.Bo - boxCenter;
+    Vertex3D v2 = triangle.Co - boxCenter;
+
+    Vertex3D triEdges[3] = { v1 - v0, v2 - v1, v0 - v2 };
+    Vertex3D boxAxes[3] = { Vertex3D(1, 0, 0), Vertex3D(0, 1, 0), Vertex3D(0, 0, 1) };
+
+    // 1. Prueba de Separación en los ejes del AABB
+    float r[3] = {boxHalfSize.x, boxHalfSize.y, boxHalfSize.z};
+    for (int i = 0; i < 3; i++) {
+        if (std::max({ v0.x, v1.x, v2.x }) < -r[i] || std::min({ v0.x, v1.x, v2.x }) > r[i]) {
+            return false;
+        }
+    }
+
+    // 2. Prueba de Separación con la normal del triángulo
+    Vertex3D normal = triEdges[0] % triEdges[1];
+    float d = normal * v0;
+    float rNormal = boxHalfSize.x * fabs(normal.x) + boxHalfSize.y * fabs(normal.y) + boxHalfSize.z * fabs(normal.z);
+    if (d > rNormal || d < -rNormal) {
+        return false;
+    }
+
+    // 3. Prueba de Separación con los ejes cruzados (Triángulo vs. AABB)
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            Vertex3D axis = triEdges[i] % boxAxes[j];
+            float p0 = v0 * axis;
+            float p1 = v1 * axis;
+            float p2 = v2 * axis;
+            float rAxis = boxHalfSize.x * fabs(axis.x) + boxHalfSize.y * fabs(axis.y) + boxHalfSize.z * fabs(axis.z);
+            if (std::max({ p0, p1, p2 }) < -rAxis || std::min({ p0, p1, p2 }) > rAxis) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
