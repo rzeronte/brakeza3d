@@ -12,6 +12,7 @@
 #include <set>
 #include <vector>
 #include "../Objects/Vertex3D.h"
+#include "Grid3D.h"
 
 #define FLT_MAX_PATHFINDING 10
 typedef std::pair<int, int> PairData;
@@ -39,6 +40,8 @@ public:
 
     static std::stack<PairData> readPathFromPNG(const std::string& filename);
 
+    static std::vector<Vertex3D> getVerticesFromPathFinderPath(Grid3D *grid, std::stack<PairData> path);
+
 private:
     // Creating a shortcut for pair<int, pair<int, int>> type
     typedef std::pair<double, std::pair<int, int> > pPair;
@@ -65,6 +68,8 @@ private:
     static double calculateHValue(int row, int col, PairData dest);
 
     static std::stack<PairData> tracePath(cell **cellDetails, PairData dest);
+
+    PathFinder *createPathFinderFromGrid3D(Grid3D *grid);
 
 };
 

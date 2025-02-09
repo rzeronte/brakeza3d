@@ -1,12 +1,14 @@
 #include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_image.h>
 #include "../../include/Misc/PathFinder.h"
-#include "../../include/Misc/Color.h"
-#include "../../include/EngineSetup.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Render/Logging.h"
 
-PathFinder::PathFinder(int sizeX, int sizeY) : sizeX(sizeX), sizeY(sizeY) {
+PathFinder::PathFinder(int sizeX, int sizeY)
+:
+    sizeX(sizeX),
+    sizeY(sizeY)
+{
     grid = new int *[this->sizeY];
     for (int i = 0; i < this->sizeY; i++) {
         grid[i] = new int[this->sizeX];
@@ -656,7 +658,8 @@ void PathFinder::consoleDebugPath(std::stack<PairData> path) {
     }
 }
 
-void PathFinder::saveGridToPNG(const std::string& filename) {
+void PathFinder::saveGridToPNG(const std::string& filename)
+{
     SDL_Surface *s = SDL_CreateRGBSurface(0, this->sizeX, this->sizeY, 32, 0, 0, 0, 0);
 
     Color black = Color::black();
@@ -679,7 +682,8 @@ void PathFinder::saveGridToPNG(const std::string& filename) {
     SDL_FreeSurface(s);
 }
 
-void PathFinder::loadGridFromPNG(const std::string& filename) {
+void PathFinder::loadGridFromPNG(const std::string& filename)
+{
     SDL_Surface *s = IMG_Load((filename).c_str());
 
     int sx = s->w;
@@ -741,4 +745,37 @@ std::stack<PairData> PathFinder::readPathFromPNG(const std::string& filename)
     delete pathfinder;
 
     return path;
+}
+
+PathFinder* PathFinder::createPathFinderFromGrid3D(Grid3D *grid)
+{
+    auto pathFinder = new PathFinder(grid->getNumberCubesX(), grid->getNumberCubesZ());
+
+    for (int x = 0; x < grid->getNumberCubesX(); x++) {
+        for (int y = 0; y < grid->getNumberCubesZ(); y++) {
+            CubeGrid3D *c = grid->getCubeFromPosition(x, 0, y); // grid de altura 0
+            pathFinder->setValue(y, x, c->passed);
+        }
+    }
+
+    return pathFinder;
+}
+
+std::vector<Vertex3D> PathFinder::getVerticesFromPathFinderPath(Grid3D *grid, std::stack<PairData> path)
+{
+    std::vector<Vertex3D> result;
+
+    while (!path.empty()) {
+        std::pair<int, int> p = path.top();
+        path.pop();
+
+        int x = p.first;
+        int y = 0;
+        int z = p.second;
+
+        CubeGrid3D *cube = grid->getCubeFromPosition(x, y, z);
+        result.push_back(cube->box.getCenter());
+    }
+
+    return result;
 }

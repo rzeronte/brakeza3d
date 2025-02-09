@@ -6,22 +6,16 @@
 #include <SDL2/SDL_image.h>
 
 Grid3D::Grid3D(
-    std::vector<Triangle *> *triangles,
     const AABB3D &bounds,
     int sizeX,
     int sizeY,
-    int sizeZ,
-    EmptyStrategies strategy
-)
+    int sizeZ
+):
+    bounds(bounds),
+    numberCubesX(sizeX),
+    numberCubesY(sizeY),
+    numberCubesZ(sizeZ)
 {
-    this->strategy = strategy;
-
-    this->bounds = bounds;
-    this->numberCubesX = sizeX;
-    this->numberCubesY = sizeY;
-    this->numberCubesZ = sizeZ;
-
-    this->triangles = triangles;
 
     Vertex3D dimensions = this->bounds.max - this->bounds.min;
 
@@ -46,7 +40,7 @@ Grid3D::Grid3D(
                 cubeGrid->box.min = cubeGrid->box.min + bounds.min;
                 cubeGrid->box.max = cubeGrid->box.max + bounds.min;
                 cubeGrid->box.updateVertices();
-                cubeGrid->is_empty = true;
+                cubeGrid->passed = true;
 
                 this->boxes.push_back(cubeGrid);
                 offsetPosition.z += cubeSizeZ;
@@ -59,30 +53,13 @@ Grid3D::Grid3D(
     }
 }
 
-void Grid3D::applyCheckCellEmptyStrategy()
-{
-    switch (strategy) {
-        case Grid3D::EmptyStrategies::RAY_INTERSECTION:
-            this->fillEmptiesWithVector3DvsTriangles(this->rayIntersectionDirection, *this->triangles);
-            break;
-        case Grid3D::EmptyStrategies::CONTAIN_TRIANGLES:
-            this->fillEmptiesWithAABBvsTriangles(*this->triangles);
-            break;
-        case Grid3D::EmptyStrategies::IMAGE_FILE:
-            this->fillEmptiesWithImageData(this->imageFilename, this->fixedYImageData);
-            break;
-        default:
-            break;
-    }
-}
-
 void Grid3D::fillEmptiesWithAABBvsTriangles(std::vector<Triangle *> &triangles)
 {
     for (int i = 0; i < this->boxes.size(); i++) {
         if (this->isEmpty(*this->boxes[i], triangles)) {
-            this->boxes[i]->is_empty = true;
+            this->boxes[i]->passed = true;
         } else {
-            this->boxes[i]->is_empty = false;
+            this->boxes[i]->passed = false;
         }
     }
 }
@@ -112,7 +89,7 @@ void Grid3D::fillEmptiesWithVector3DvsTriangles(Vertex3D dir, std::vector<Triang
                     float t;
                     Vertex3D intersectionPoint = trianglePlane.getPointIntersection(v.vertex1, v.vertex2, t);
                     if (triangles[x]->isPointInside(intersectionPoint)) {
-                        this->boxes[i]->is_empty = false;
+                        this->boxes[i]->passed = false;
                         intersect = true;
                     }
                 }
@@ -125,7 +102,7 @@ void Grid3D::fillEmptiesWithVector3DvsTriangles(Vertex3D dir, std::vector<Triang
     }
 }
 
-void Grid3D::fillEmptiesWithImageData(const std::string& filename, int fixedY)
+void Grid3D::fillTestWithImageData(const std::string& filename, int fixedY)
 {
     SDL_Surface *s = IMG_Load(filename.c_str());
 
@@ -138,15 +115,15 @@ void Grid3D::fillEmptiesWithImageData(const std::string& filename, int fixedY)
 
     for (int x = 0; x < numberCubesX; x++) {
         for (int z = 0; z < numberCubesZ; z++) {
-            CubeGrid3D *c = getFromPosition(z, fixedY, x);
+            CubeGrid3D *c = getCubeFromPosition(z, fixedY, x);
 
             Uint32 color = Tools::getSurfacePixel(s, x, z);
             Uint8 pred, pgreen, pblue, palpha;
             SDL_GetRGBA(color, s->format, &pred, &pgreen, &pblue, &palpha);
             if (pred == 0 && pgreen == 0 && pblue == 0) {
-                c->is_empty = false;
+                c->passed = false;
             } else {
-                c->is_empty = true;
+                c->passed = true;
             }
         }
     }
@@ -154,9 +131,10 @@ void Grid3D::fillEmptiesWithImageData(const std::string& filename, int fixedY)
 
 bool Grid3D::isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles)
 {
+    std::vector<Plane> planes = cube.box.getPlanes();
+
     for (int i = 0; i < triangles.size(); i++) {
         triangles[i]->updateObjectSpace();
-        std::vector<Plane> planes = cube.box.getPlanes();
 
         bool r1 = Plane::isVertex3DClosedByPlanes(triangles[i]->Ao, planes);
         if (r1) return false;
@@ -171,12 +149,8 @@ bool Grid3D::isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles)
     return true;
 }
 
-void Grid3D::setRayIntersectionDirection(Vertex3D rayIntersectionDirection)
+CubeGrid3D *Grid3D::getCubeFromPosition(int x, int y, int z)
 {
-    Grid3D::rayIntersectionDirection = rayIntersectionDirection;
-}
-
-CubeGrid3D *Grid3D::getFromPosition(int x, int y, int z) {
     for (int i = 0; i < this->boxes.size(); i++) {
         if (this->boxes[i]->posX == x && this->boxes[i]->posY == y && this->boxes[i]->posZ == z)
         {
@@ -186,17 +160,6 @@ CubeGrid3D *Grid3D::getFromPosition(int x, int y, int z) {
 
     return NULL;
 }
-
-void Grid3D::setImageFilename(const std::string &imageFilename)
-{
-    Grid3D::imageFilename = imageFilename;
-}
-
-void Grid3D::setFixedYImageData(int fixedYImageData)
-{
-    Grid3D::fixedYImageData = fixedYImageData;
-}
-
 
 Vertex3D Grid3D::getClosestPoint(Vertex3D v, std::vector<Vertex3D> path, int &indexVertex)
 {
@@ -212,5 +175,21 @@ Vertex3D Grid3D::getClosestPoint(Vertex3D v, std::vector<Vertex3D> path, int &in
 
     indexVertex = index;
     return path[index];
+}
+
+int Grid3D::getNumberCubesX() const {
+    return numberCubesX;
+}
+
+int Grid3D::getNumberCubesY() const {
+    return numberCubesY;
+}
+
+int Grid3D::getNumberCubesZ() const {
+    return numberCubesZ;
+}
+
+const std::vector<CubeGrid3D *> &Grid3D::getBoxes() const {
+    return boxes;
 }
 

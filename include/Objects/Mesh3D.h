@@ -73,13 +73,6 @@ public:
 
     void buildOctree(int depth);
 
-    void buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ);
-
-    void buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction);
-
-    void buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const std::string& filename, int fixedY);
-
-
     void setRender(bool render);
 
     [[nodiscard]] bool isRender() const;
@@ -129,6 +122,8 @@ public:
     btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia);
 
     void setSourceFile(const std::string &sourceFile);
+
+    void buildGrid3D(int sizeX, int sizeY, int sizeZ);
 };
 
 #endif //SDL2_3D_ENGINE_MESH_H

@@ -154,8 +154,6 @@ void Drawable::drawAABB(AABB3D *aabb, Color color)
     Vector3D v11(aabb->vertices[7], aabb->vertices[4]);
     Vector3D v12(aabb->vertices[7], aabb->vertices[1]);
 
-    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-
     Drawable::drawVector3D(v01, color);
     Drawable::drawVector3D(v02, color);
     Drawable::drawVector3D(v03, color);
@@ -188,41 +186,25 @@ void Drawable::drawOctreeNode(OctreeNode *node)
 
 void Drawable::drawOctree(Octree *octree) {
     Drawable::drawAABB(&octree->root->bounds, Color::yellow());
-    Drawable::drawOctreeNode(octree->root );
+    Drawable::drawOctreeNode(octree->root);
 }
 
 void Drawable::drawGrid3D(Grid3D *grid) {
-    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
-    for (auto & boxe : grid->boxes) {
+    for (auto & box : grid->getBoxes()) {
+        Color c = Color::yellow();
 
-        if (boxe->is_empty && EngineSetup::get()->DRAW_MESH3D_GRID_EMPTY) {
-            Color c = Color::yellow();
-            if (EngineSetup::get()->DRAW_MESH3D_GRID_CUBES) {
-                Drawable::drawAABB(&boxe->box, c);
-            }
-            if (EngineSetup::get()->DRAW_MESH3D_GRID_POINTS) {
-                Drawable::drawVertex(boxe->box.getCenter(), c);
-            }
-        }
-
-        if (!boxe->is_empty && EngineSetup::get()->DRAW_MESH3D_GRID_NO_EMPTY) {
+        if (!box->passed) {
             Color c = Color::red();
-            if (EngineSetup::get()->DRAW_MESH3D_GRID_CUBES) {
-                Drawable::drawAABB(&boxe->box, c);
-            }
-            if (EngineSetup::get()->DRAW_MESH3D_GRID_POINTS) {
-
-                Drawable::drawVertex(boxe->box.getCenter(), c);
-            }
         }
+
+        Drawable::drawAABB(&box->box, c);
     }
 }
 
 void Drawable::drawPathInGrid(Grid3D *grid, std::stack<PairData> path) {
-    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
-    std::vector<Vertex3D> pathVertices = Tools::getVerticesFromPathFinderPath(grid, std::move(path));
+    std::vector<Vertex3D> pathVertices = PathFinder::getVerticesFromPathFinderPath(grid, std::move(path));
 
     for (auto & pathVertice : pathVertices) {
         Drawable::drawVertex(pathVertice, Color::cyan());
@@ -236,8 +218,8 @@ void Drawable::drawPathDebugForDevelopment(Grid3D *grid, PathFinder *pathfinder)
     PairData dest = std::make_pair(EngineSetup::get()->TESTING_INT3,
                                    EngineSetup::get()->TESTING_INT4);
 
-    CubeGrid3D *cubeStart = grid->getFromPosition(src.first, 0, src.second);
-    CubeGrid3D *cubeDest = grid->getFromPosition(dest.first, 0, dest.second);
+    CubeGrid3D *cubeStart = grid->getCubeFromPosition(src.first, 0, src.second);
+    CubeGrid3D *cubeDest = grid->getCubeFromPosition(dest.first, 0, dest.second);
 
     bool result = pathfinder->AStarSearch(src, dest, path);
     if (result) {

@@ -88,6 +88,12 @@ void Mesh3D::onUpdate()
             Drawable::drawOctree(this->octree);
         }
     }
+
+    if (EngineSetup::get()->DRAW_MESH3D_GRID) {
+        if (this->grid != nullptr) {
+            Drawable::drawGrid3D(this->grid);
+        }
+    }
 }
 
 void Mesh3D::postUpdate()
@@ -243,57 +249,13 @@ Grid3D *Mesh3D::getGrid3D() const {
     return grid;
 }
 
-void Mesh3D::buildGrid3DForEmptyContainsStrategy(int sizeX, int sizeY, int sizeZ)
+void Mesh3D::buildGrid3D(int sizeX, int sizeY, int sizeZ)
 {
-    Logging::Message("Building Grid3D for %s (TriangleContains)", getLabel().c_str());
+    updateBoundingBox();
 
-    /*this->updateBoundingBox();
-    this->grid = new Grid3D(
-            &this->modelTriangles,
-            this->aabb,
-            sizeX,
-            sizeY,
-            sizeZ,
-            Grid3D::EmptyStrategies::CONTAIN_TRIANGLES
-    );
-    this->grid->applyCheckCellEmptyStrategy();*/
-}
+    if (grid != nullptr) delete grid;
 
-void Mesh3D::buildGrid3DForEmptyRayIntersectionStrategy(int sizeX, int sizeY, int sizeZ, Vertex3D direction)
-{
-    /*Logging::Message("Building Grid3D for %s (RayIntersection)", getLabel().c_str());
-
-    this->updateBoundingBox();
-    this->grid = new Grid3D(
-            &this->modelTriangles,
-            this->aabb,
-            sizeX,
-            sizeY,
-            sizeZ,
-            Grid3D::EmptyStrategies::RAY_INTERSECTION
-    );
-    this->grid->setRayIntersectionDirection(direction);
-    this->grid->applyCheckCellEmptyStrategy();*/
-}
-
-void Mesh3D::buildGrid3DForEmptyDataImageStrategy(int sizeX, int sizeZ, const std::string& filename, int fixedY)
-{
-    /*Logging::Message("Building Grid3D for %s (DataImage)", getLabel().c_str());
-
-    this->updateBoundingBox();
-
-    this->grid = new Grid3D(
-            &this->modelTriangles,
-            this->aabb,
-            sizeX,
-            1,
-            sizeZ,
-            Grid3D::EmptyStrategies::IMAGE_FILE
-    );
-
-    this->grid->setImageFilename(filename);
-    this->grid->setFixedYImageData(fixedY);
-    this->grid->applyCheckCellEmptyStrategy();*/
+    grid = new Grid3D(aabb, sizeX, sizeY, sizeZ);
 }
 
 void Mesh3D::buildOctree(int depth)
@@ -370,11 +332,6 @@ void Mesh3D::onDrawHostBuffer()
 {
     Object3D::onDrawHostBuffer();
 
-    if (EngineSetup::get()->DRAW_MESH3D_GRID) {
-        if (this->grid != nullptr) {
-            Drawable::drawGrid3D(this->grid);
-        }
-    }
 }
 
 const char *Mesh3D::getTypeObject()
@@ -420,7 +377,20 @@ void Mesh3D::drawImGuiProperties()
             ImGui::TreePop();
         }
         ImGui::Separator();
+        if (ImGui::TreeNode("Grid3D")) {
+            static int sizeX = 1;
+            static int sizeY = 1;
+            static int sizeZ = 1;
+            ImGui::SliderInt("Size X", &sizeX, 1, 50);
+            ImGui::SliderInt("Size Y", &sizeY, 1, 50);
+            ImGui::SliderInt("Size Z", &sizeZ, 1, 50);
 
+            if (ImGui::Button("Create Grid3D")) {
+                buildGrid3D(sizeX, sizeY, sizeZ);
+            }
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
         if (ImGui::TreeNode("Octree")) {
             static int maxDepth = 1;
             ImGui::SliderInt("Depth", &maxDepth, 1, 4);
