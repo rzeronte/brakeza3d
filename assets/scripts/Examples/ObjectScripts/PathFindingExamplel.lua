@@ -4,7 +4,7 @@ function onStart()
     brakeza:addObject3D(eye, 'modelo')
 
     eye:fillGrid3DFromGeometry()
-    eye:getGrid3D():setTravel(0, 0, 0, 5, 5, 5) -- Configuramos un viaje inicial en el centro
+    eye:getGrid3D():setTravel(0, 0, 0, 5, 5, 5) -- Configuramos un viaje inicial hasta el centro
 end
 
 function onUpdate()
@@ -15,13 +15,13 @@ function onUpdate()
     local oscY = (math.cos(time * 1.2) + 1) * 5  -- Oscila entre [0, 10] en Y
     local oscZ = (math.cos(time * 1.5) + 1) * 5  -- Oscila entre [0, 10] en Z
 
-    -- Actualizamos el destino del viaje dinámicamente
+    -- Actualizamos el destino del viaje dinámicamente a modo de ejemplo
     eye:getGrid3D():setTravel(0, 0, 0, math.floor(oscX), math.floor(oscY), math.floor(oscZ))
 
-    -- Obtener el path calculado
+    -- Obtener el path calculado mediante A*
     path = eye:getGrid3D():makeTravelCubesGrid()
 
-    -- Iteramos sobre el array path y pintamos los índices de cada CubeGrid3D
+    -- Ejemplo: Iteramos sobre el array path y pintamos los índices de cada CubeGrid3D
     for i, cube in ipairs(path) do
         print("Cube " .. i .. ": X = " .. cube.posX .. ", Y = " .. cube.posY .. ", Z = " .. cube.posZ)
     end
