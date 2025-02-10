@@ -220,7 +220,7 @@ Un punto en espacio o un vector de origen centro de coordenadas.
 | `% Vertex3D => Vertex3D`       | Producto punto (`dot product`)       |
 | `getNormalize() => Vertex3D`   | Normaliza el vector                  |
 | `getModule() => float`         | Devuelve la longitud del vector      |
-| `getInverse() => Vertex3D`     | Invierte el vector                   |
+| `getInverse() => Vertex3D`     | Devuelve el vector invertido         |
 | `getScaled(float) => Vertex3D` | Devuelve el vertice escalado         |
 | `distance(Vertex3D) => float`  | Devuelve la distancia a otro vértice |
 
