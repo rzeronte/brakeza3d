@@ -17,6 +17,23 @@
 #include "../Misc/SceneLoader.h"
 #include "../OpenGL/ShaderOpenGLCustom.h"
 #include "../Misc/ProjectLoader.h"
+#include "../OpenGL/ShaderOpenGL.h"
+#include "../OpenGL/ShaderOpenGLImage.h"
+#include "../OpenGL/ShaderOpenGLRender.h"
+#include "../OpenGL/ShaderOpenGLLine.h"
+#include "../OpenGL/ShaderOpenGLWireframe.h"
+#include "../OpenGL/ShaderOpenGLShading.h"
+#include "../OpenGL/ShaderOpenGLPoints.h"
+#include "../OpenGL/ShaderOpenGLOutline.h"
+#include "../OpenGL/ShaderOpenGLColor.h"
+#include "../OpenGL/ShaderOpenGLParticles.h"
+#include "../OpenGL/ShaderOpenGLDOF.h"
+#include "../OpenGL/ShaderOpenGLDepthMap.h"
+#include "../OpenGL/ShaderOpenGLFOG.h"
+#include "../OpenGL/ShaderOpenGLShockWave.h"
+#include "../../src/OpenGL/ShaderOpenGLTint.h"
+#include "../../src/OpenGL/ShaderOpenGLLine3D.h"
+#include "../OpenGL/ShaderOpenGLCustom.h"
 
 class ComponentRender : public Component {
 private:
@@ -41,6 +58,22 @@ private:
 
     bool sceneShadersEnabled;
     std::vector<ShaderOpenGLCustom*> sceneShaders;
+
+    ShaderOpenGLRender *shaderOGLRender;
+    ShaderOpenGLImage *shaderOGLImage;
+    ShaderOpenGLLine *shaderOGLLine;
+    ShaderOpenGLWireframe *shaderOGLWireframe;
+    ShaderOpenGLLine3D *shaderOGLLine3D;
+    ShaderOpenGLShading *shaderOGLShading;
+    ShaderOpenGLPoints *shaderOGLPoints;
+    ShaderOpenGLOutline *shaderOGLOutline;
+    ShaderOpenGLColor *shaderOGLColor;
+    ShaderOpenGLParticles *shaderOGLParticles;
+    ShaderOpenGLDOF *shaderOGLDOF;
+    ShaderOpenGLDepthMap *shaderOGLDepthMap;
+    ShaderOpenGLFOG *shaderOGLFOG;
+    ShaderOpenGLShockWave *shaderOGLShockWave;
+    ShaderOpenGLTint *shaderOGLTint;
 
 public:
     ComponentRender();
@@ -99,15 +132,45 @@ public:
 
     static bool compareDistances(Object3D *obj1, Object3D *obj2);
 
-    static void setGlobalIlluminationDirection(Vertex3D d);
+    void setGlobalIlluminationDirection(Vertex3D d) const;
 
-    static void setGlobalIlluminationAmbient(Vertex3D a);
+    void setGlobalIlluminationAmbient(Vertex3D a) const;
 
-    static void setGlobalIlluminationDiffuse(Vertex3D d);
+    void setGlobalIlluminationDiffuse(Vertex3D d) const;
 
-    static void setGlobalIlluminationSpecular(Vertex3D s);
+    void setGlobalIlluminationSpecular(Vertex3D s) const;
 
-    void drawLine(Vertex3D from, Vertex3D to, Color c);
+    void drawLine(Vertex3D from, Vertex3D to, Color c) const;
+
+    [[nodiscard]] ShaderOpenGLLine3D *getShaderOGLLine3D() const;
+
+    [[nodiscard]] ShaderOpenGLImage *getShaderOGLImage() const;
+
+    [[nodiscard]] ShaderOpenGLRender *getShaderOGLRender() const;
+
+    [[nodiscard]] ShaderOpenGLLine *getShaderOGLLine() const;
+
+    [[nodiscard]] ShaderOpenGLWireframe *getShaderOGLWireframe() const;
+
+    [[nodiscard]] ShaderOpenGLShading *getShaderOGLShading() const;
+
+    [[nodiscard]] ShaderOpenGLPoints *getShaderOGLPoints() const;
+
+    [[nodiscard]] ShaderOpenGLOutline *getShaderOGLOutline() const;
+
+    [[nodiscard]] ShaderOpenGLColor *getShaderOGLColor() const;
+
+    [[nodiscard]] ShaderOpenGLParticles *getShaderOGLParticles() const;
+
+    [[nodiscard]] ShaderOpenGLDOF *getShaderOGLDOF() const;
+
+    [[nodiscard]] ShaderOpenGLFOG *getShaderOGLFOG() const;
+
+    [[nodiscard]] ShaderOpenGLShockWave *getShaderOGLShockWave() const;
+
+    [[nodiscard]] ShaderOpenGLTint *getShaderOGLTint() const;
+
+    ShaderOpenGLDepthMap *getShaderOGLDepthMap() const;
 };
 
 

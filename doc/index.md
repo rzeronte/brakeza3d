@@ -12,6 +12,7 @@
 - [11) Sound system](#11-sound-system)
 - [12) Scripting system](#12-scripting-system)
 - [13) Shaders system](#13-shaders-system)
+- [14) Assets folder](#14-assets-folder)
 
 ---
 
@@ -75,10 +76,10 @@ Se pueden almacenar en disco y recuperar en cualquier momento.
 
 ### 4) Objetos
 
-Entidades existente en nuestro mundo 3D. En líneas generales, cualquier cosa susceptible
+Entidades existentes en nuestro mundo 3D. En líneas generales, cualquier cosa susceptible
 de ser representada en pantalla será un objeto: *un modelo 3D*, *una luz*, *emisor de partículas*...
 
-Todos los objetos comparten las propiedades básicas de un elemento 3D ya sea nombre, posición, rotación, tamaño, pero cada tipo de objeto específico ampliará estas segun su caso.
+Todos los objetos comparten las propiedades básicas de un elemento 3D ya sea nombre, posición, rotación, tamaño, pero cada tipo de objeto específico ampliará estas según su caso.
 
 Desde código podremos activar, mover, rotar, eliminar, escalar y muchas otras acciones sobre los objetos.
 
@@ -108,7 +109,7 @@ fundamental del núcleo de Brakeaz3D.
 - `ComponentSound`: Gestiona la reproducción de sonidos.
 - `ComponentRender`: Gestiona el render con OpenGL
 
-Podrás acceder a todos ellos mediante el ``ComponentsManager`` desde tus scripts LUA. Trataremos
+Podrás acceder a todos ellos mediante él ``ComponentsManager`` desde tus scripts LUA. Trataremos
 cada uno en detalle en el futuro.
 
 ---
@@ -127,7 +128,7 @@ cada uno en detalle en el futuro.
 
 ### El objeto Object3D
 
-El objeto más básico en Brakeza3D es el `Object3D`. Cualquier elemento en la escena, será `Object3D`.
+El objeto más básico en Brakeza3D es él `Object3D`. Cualquier elemento en la escena, será `Object3D`.
 
 Las propiedades principales de un `Object3D` son:
 
@@ -296,7 +297,7 @@ Color formato `RGBA`
 
 Brakeza3D incluye un objeto específico para referirse a la cámara: `Camera3D`. Al fin y al cabo es
 un `Object3D`, por lo que podrás moverlo y rotarlo como tal. Incorpora algunas opciones de configuración como lo son 
-el `FOV` y tamaños del `Frustum`, que afectarán a como y qué veámos en pantalla.
+él `FOV` y tamaños del `Frustum`, que afectarán a como y qué veámos en pantalla.
 
 - [Matrices de vista y proyección](#matrices-de-vista-y-proyección)
 - [Movimiento y rotación de la cámara](#movimiento-y-rotación-de-la-cámara)
@@ -307,7 +308,7 @@ el `FOV` y tamaños del `Frustum`, que afectarán a como y qué veámos en panta
 
 ### Matrices de vista y proyección
 
-A través del objeto `Camera3D` obtendremose la matrices de `vista` y `proyección`:
+A través del objeto `Camera3D` obtendremos las matrices de `vista` y `proyección`:
 
 - `getM3ViewMatrix`: `M3` con los datos de la matriz de vista.
 - `getM3ProjectionMatrix`: `M3` con los datos de la matriz de proyección.
@@ -321,7 +322,7 @@ De igual forma podrás rotar la cámara con `setRotation(M3)`.
 
 ### ComponentCamera
 
-Internamente Brakeza3D gestiona las operaciones de cámara a través del componente `ComponentCamera`.
+Brakeza3D gestiona las operaciones de cámara a través del componente `ComponentCamera`.
 
 Podrás obtener acceso a este componente desde tus scripts LUA y este te dará acceso a la cámara:
 
@@ -371,7 +372,7 @@ Es un objeto `2D`. Dibuja una imagen en pantalla.
 Dibuja una animación en pantalla, es en esencia, una colección de `Image2D`.
 
 Está diseñado para cargar la animación desde formato **spritesheet**, es decir, una imagen con un grid, donde cada celda
-es una imagen de la animación. Es por este motivo que deberemos de indicar el **ancho** y **alto** de cada frame y el **nº de frames**
+es una imagen de la animación. Es por este motivo que deberemos de indicar el **ancho** y **alto** de cada frame y el **núm. de frames**
 en la imagen, para que la función ajuste adecuadamente el sprite.
 
 Podrás configurar la velocidad (**fps**) a la que se muestra una animación.
@@ -646,7 +647,7 @@ Cualquier ``Object3D`` puede trabajar con la forma de colisionador denominada `C
 Su performance es muy buena.
 
 No obstante, todos aquellos objetos que dependen de `Mesh3D` podrán crearse con una forma de colisionador
-denominada `CollisionShape.TRIANGLE3D_MESH_SHAPE` creando una una malla de colisión exacta a la geometría del modelo. Es más precisa, pero conlleva un mayor costo
+denominada `CollisionShape.TRIANGLE3D_MESH_SHAPE` creando una malla de colisión exacta a la geometría del modelo. Es más precisa, pero conlleva un mayor costo
 computacional.
 
 Puedes manipular los modos de colisión tanto desde la GUI como desde tus scripts LUA.
@@ -784,7 +785,7 @@ Para configurar un `ParticleEmitter` debes configurar una serie de parámetros:
 - `Contexto`: Contexto del emisor de partículas.
 - `Imagen`: Fichero de imagen.
 
-El argumento más destacable es el `contexto`. El `contexto` incluye multitud de parámetros
+El argumento más destacable es él `contexto`. Él `contexto` incluye multitud de parámetros
 que podremos manipular para alterar el comportamiento de nuestras partículas. Los contextos
 de emisores de partículas se implementan a través de un objeto: ``ParticlesContext``:
 
@@ -905,7 +906,7 @@ Podrás reproducir ficheros ``WAV`` y/o `MP3`.
 
 ### Canales
 
-Brakeza3D maneja el sonido através de la librería `SDL_mixer`, el cual soporta 16 canales de audio.
+Brakeza3D maneja el sonido a través de la librería `SDL_mixer`, el cual soporta 16 canales de audio.
 
 Si bien la gestión de estos canales es automática cuando trabajemos desde nuestros scripts, Brakeza3D asigna uno
 exclusivamente para la ``música``. El resto queda disponible para la emisión de `sonidos`.
@@ -918,7 +919,7 @@ Esta separación nos permitirá manejar los volumenes de la música y los sonido
 No es recomendable `cargar de disco`` un sonido en tiempo real justo en el momento que necesite ser reproducido, es por
 este motivo por el que se recomienda pre-cargar los sonidos que posteriormente vayamos a utilizar.
 
-El ``ComponenteSonido`` nos ofrece la posibilidad de cargar un sonido a memoria, el cual podrá ser reproducido tantas veces
+Él ``ComponenteSonido`` nos ofrece la posibilidad de cargar un sonido a memoria, el cual podrá ser reproducido tantas veces
 como sea necesario.
 
 ---
@@ -957,7 +958,7 @@ systemSound:addSound("../assets/sounds/music_demo.mp3", "sound_demo")
 
 ---
 
-Reproducir una sonido precargado:
+Reproducir un sonido precargado:
 
 ```lua
 ...
@@ -994,7 +995,7 @@ systemSound:setSoundsVolume(100) -- Rango [0 - 128]
 
 ### Carga automática
 
-Brakeza3D ofrece un sistema de pre-carga inicial de sonidos y música a través de
+Brakeza3D ofrece un sistema de precarga inicial de sonidos y música a través de
 un fichero de configuración JSON.
 
 Podrás encontrar este fichero en ``config/sounds.json`` .
@@ -1008,7 +1009,7 @@ Podrás encontrar este fichero en ``config/sounds.json`` .
 }
 ````
 
-Automáticamente podrás acceder a los sonidos y músicas definidos en este fichero.
+Automáticamente, podrás acceder a los sonidos y músicas definidos en este fichero.
 
 ---
 
@@ -1132,7 +1133,7 @@ Es importante destacar, que *la única* forma de vincular scripts al ``proyecto`
 Cualquier script LUA puede definir variables que te ayudarán a implementar tu lógica. Puedes utilizar la GUI
 para gestionar con facilidad las variables de un script.
 
-Físicamente se almacenan en un fichero ``JSON`` del mismo nombre que el script.
+Físicamente, se almacenan en un fichero ``JSON`` del mismo nombre que el script.
 
 ```json
 {
@@ -1224,7 +1225,7 @@ end
 
 ### Deltatime
 
-El `DeltaTime` es el tiempo que tarda en renderizarse un frame. Es una medida crucial en el desarrollo de juegos,
+Él `DeltaTime` es el tiempo que tarda en renderizarse un frame. Es una medida crucial en el desarrollo de juegos,
 ya que permite que los movimientos y animaciones sean consistentes independientemente de la velocidad de renderización.
 
 Puedes obtenerlo desde tus scripts LUAde la siguiente manera:
@@ -1335,15 +1336,15 @@ path = eye:getGrid3D():makeTravelCubesGrid() -- Obtenemos un array de CubeGrid3D
 Mediante el método `setTravel(x1, y1, z1, x2, y2, z2)`, podremos ajustar el viaje para el próximo camino
 solicitado mediante `makeTravelCubesGrid`.
 
-El método `makeTravelCubesGrid` devuelve ell camino solicitado si este fué posible mediante un array de `CubeGrid3D`,
+El método `makeTravelCubesGrid` devuelve ell camino solicitado si este fue posible mediante un array de `CubeGrid3D`,
 cuya estructura es la siguiente:
 
 ```C
 struct CubeGrid3D {
     AABB3D box;             // Caja contenedora 
-    int posX;               // Indice de la posición X en el grid
-    int posY;               // Indice de la posición Y en el grid
-    int posZ;               // Indice de la posición Z en el grid
+    int posX;               // Índice de la posición X en el grid
+    int posY;               // Índice de la posición Y en el grid
+    int posZ;               // Índice de la posición Z en el grid
     bool passed = true;     // Flag 
 };
 ```
@@ -1388,7 +1389,7 @@ Shaders 2D:
 - `Image` (*/GLSL/Image*): Dibuja una imagen en pantalla.
 - `Line` (*/GLSL/Line*): Dibuja una línea 2D en pantalla.
 
-Shaders de post-procesamiento:
+Shaders de postprocesamiento:
 
 - `DeepOfField` (*/GLSL/DeepOfField*): Efecto de profundidad de campo.
 - `FOG` (*/GLSL/FOG*): Efecto de niebla.
@@ -1401,14 +1402,40 @@ Puedes manipular los shaders libremente si lo consideras.
 
 ---
 
-### Plantilla para shaders de post-procesado (WIP)
+### Plantilla para shaders de postprocesado (WIP)
 
 Brakeza3D te permite incorporar tus propios shaders a los objetos o a la escena de igual forma
 que lo harías con un script LUA.
 
-Puedes generar estos shaders desde la UI o simplemente crearlos tu mismo y posteriormente vincularlos
+Puedes generar estos shaders desde la UI o simplemente crearlos tú mismo y posteriormente vincularlos
 desde la GUI.
 
 Dispones de una plantilla para shaders custom:
 
 - `Custom` (*/GLSL/Custom*)
+
+---
+
+>[Back to index](#index)
+
+# 14) Assets folder
+
+Brakeza3D esperará encontrar cada tipo de recurso en su carpeta raíz correspondiente. Dentro de la carpeta
+`assets` podrás encontrar:
+
+- `animations`: Ficheros `FBX` animados.
+- `fonts`: Ficheros de fuente `TTF`.
+- `icons`: Ficheros de iconos de la UI.
+- `images`: Ficheros de imagen de carácter general.
+- `maps`: Ficheros de mapas `BSP`.
+- `models`: Ficheros de modelos `FBX`.
+- `projects`: Ficheros de proyectos `JSON`.
+- `scenes`: Ficheros de escenas `JSON`.
+- `scripts`: Ficheros de scripts `LUA`.
+- `shaders`: Ficheros de CustomShaders (`.vs` y/o `.fs`)
+- `sounds`: Ficheros de sonido `WAV` o `MP3`.
+- `sprites`: Ficheros de imágenes en formato rejilla.
+- `textures`: Ficheros de texturas usados por modelos `FBX`.
+
+Brakeza3D permite trabajar con rutas relativas, pero siempre a la ruta principal de cada elemento, es decir,
+podrás almacenar tus scripts en subcarpetas, pero siempre estarán dentro de la carpeta raíz de scripts, etc.

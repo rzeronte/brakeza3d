@@ -29,21 +29,6 @@ void ComponentWindow::onStart()
 {
     createFramebuffer();
 
-    shaderOGLRender = new ShaderOpenGLRender();
-    shaderOGLImage = new ShaderOpenGLImage();
-    shaderOGLLine = new ShaderOpenGLLine();
-    shaderOGLWireframe = new ShaderOpenGLWireframe();
-    shaderOGLLine3D = new ShaderOpenGLLine3D();
-    shaderOGLShading = new ShaderOpenGLShading();
-    shaderOGLPoints = new ShaderOpenGLPoints();
-    shaderOGLOutline = new ShaderOpenGLOutline();
-    shaderOGLColor = new ShaderOpenGLColor();
-    shaderOGLParticles = new ShaderOpenGLParticles();
-    shaderOGLDOF = new ShaderOpenGLDOF();
-    shaderOGLDepthMap = new ShaderOpenGLDepthMap();
-    shaderOGLFOG = new ShaderOpenGLFOG();
-    shaderOGLShockWave = new ShaderOpenGLShockWave();
-    shaderOGLTint = new ShaderOpenGLTint();
 }
 
 void ComponentWindow::preUpdate()
@@ -173,50 +158,6 @@ TTF_Font *ComponentWindow::getFontDefault() {
     return fontDefault;
 }
 
-ShaderOpenGLImage *ComponentWindow::getShaderOGLImage() const {
-    return shaderOGLImage;
-}
-
-ShaderOpenGLLine3D *ComponentWindow::getShaderOGLLine3D() const {
-    return shaderOGLLine3D;
-}
-
-ShaderOpenGLRender *ComponentWindow::getShaderOGLRender() const {
-    return shaderOGLRender;
-}
-
-ShaderOpenGLLine *ComponentWindow::getShaderOGLLine() const {
-    return shaderOGLLine;
-}
-
-ShaderOpenGLWireframe *ComponentWindow::getShaderOglWireframe() const {
-    return shaderOGLWireframe;
-}
-
-ShaderOpenGLShading *ComponentWindow::getShaderOglShading() const {
-    return shaderOGLShading;
-}
-
-ShaderOpenGLPoints *ComponentWindow::getShaderOGLPoints() const {
-    return shaderOGLPoints;
-}
-
-ShaderOpenGLDOF *ComponentWindow::getShaderOGLDOF() const {
-    return shaderOGLDOF;
-}
-
-ShaderOpenGLOutline *ComponentWindow::getShaderOGLOutline() const {
-    return shaderOGLOutline;
-}
-
-ShaderOpenGLColor *ComponentWindow::getShaderOGLColor() const {
-    return shaderOGLColor;
-}
-
-ShaderOpenGLParticles *ComponentWindow::getShaderOGLParticles() const {
-    return shaderOGLParticles;
-}
-
 GLuint ComponentWindow::getSceneFramebuffer() const {
     return sceneFramebuffer;
 }
@@ -231,10 +172,6 @@ GLuint ComponentWindow::getUIFramebuffer() const {
 
 GLuint ComponentWindow::getForegroundFramebuffer() const {
     return foregroundFramebuffer;
-}
-
-ShaderOpenGLFOG *ComponentWindow::getShaderOGLFOG() const {
-    return shaderOGLFOG;
 }
 
 void ComponentWindow::initOpenGL()
@@ -384,47 +321,57 @@ void ComponentWindow::resetFramebuffer()
 
     createFramebuffer();
 
-    shaderOGLRender->destroy();
-    shaderOGLImage->destroy();
-    shaderOGLLine->destroy();
-    shaderOGLWireframe->destroy();
-    shaderOGLShading->destroy();
-    shaderOGLPoints->destroy();
-    shaderOGLOutline->destroy();
-    shaderOGLColor->destroy();
-    shaderOGLParticles->destroy();
-    shaderOGLDOF->destroy();
-    shaderOGLDepthMap->destroy();
-    shaderOGLFOG->destroy();
-    shaderOGLShockWave->destroy();
+    auto render = ComponentsManager::get()->getComponentRender();
+    render->getShaderOGLRender()->destroy();
+    render->getShaderOGLImage()->destroy();
+    render->getShaderOGLLine()->destroy();
+    render->getShaderOGLWireframe()->destroy();
+    render->getShaderOGLShading()->destroy();
+    render->getShaderOGLPoints()->destroy();
+    render->getShaderOGLOutline()->destroy();
+    render->getShaderOGLColor()->destroy();
+    render->getShaderOGLParticles()->destroy();
+    render->getShaderOGLDOF()->destroy();
+    render->getShaderOGLDepthMap()->destroy();
+    render->getShaderOGLFOG()->destroy();
+    render->getShaderOGLShockWave()->destroy();
 }
 
-void ComponentWindow::RenderLayersToGlobalFramebuffer()
+void ComponentWindow::RenderLayersToGlobalFramebuffer() const
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    auto render = ComponentsManager::get()->getComponentRender();
+
+    auto shaderOGLImage = render->getShaderOGLImage();
     shaderOGLImage->renderTexture(backgroundTexture, 0, 0, width, height, 1, true, globalFramebuffer);
     shaderOGLImage->renderTexture(sceneTexture, 0, 0, width, height, 1, true, globalFramebuffer);
     shaderOGLImage->renderTexture(postProcessingTexture, 0, 0, width, height, 1, true, globalFramebuffer);
 
     if (EngineSetup::get()->ENABLE_FOG) {
+        auto shaderOGLFOG = render->getShaderOGLFOG();
         shaderOGLFOG->render(globalTexture, depthTexture);
         shaderOGLImage->renderTexture(shaderOGLFOG->getTextureResult(), 0, 0, width, height, 1, false, globalFramebuffer);
     }
 
     if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
+        auto shaderOGLDOF = render->getShaderOGLDOF();
         shaderOGLDOF->render(globalTexture, depthTexture);
         shaderOGLImage->renderTexture(shaderOGLDOF->getTextureResult(), 0, 0, width, height, 1, false, globalFramebuffer);
     }
 
     if (EngineSetup::get()->SHOW_DEPTH_OF_FIELD) {
+        auto shaderOGLDepthMap = render->getShaderOGLDepthMap();
         shaderOGLDepthMap->render(depthTexture, globalFramebuffer);
     }
 }
 
 void ComponentWindow::RenderLayersToMain()
 {
+    auto render = ComponentsManager::get()->getComponentRender();
+    auto shaderOGLImage = render->getShaderOGLImage();
+
     shaderOGLImage->renderTexture(foregroundTexture, 0, 0, width, height, 1, true, globalFramebuffer);
     shaderOGLImage->renderTexture(globalTexture, 0, 0, width, height, 1, true, 0);
     shaderOGLImage->renderTexture(uiTexture, 0, 0, width, height, 1, true, 0);
@@ -465,20 +412,12 @@ int ComponentWindow::getHeight() const {
     return height;
 }
 
-ShaderOpenGLShockWave *ComponentWindow::getShaderOGLShockWave() const {
-    return shaderOGLShockWave;
-}
-
 GLuint ComponentWindow::getGlobalFramebuffer() const {
     return globalFramebuffer;
 }
 
 GLuint ComponentWindow::getPostProcessingFramebuffer() const {
     return postProcessingFramebuffer;
-}
-
-ShaderOpenGLTint *ComponentWindow::getShaderOGLTint() const {
-    return shaderOGLTint;
 }
 
 void ComponentWindow::saveImGuiCurrentLayout() const

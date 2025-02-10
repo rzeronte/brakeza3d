@@ -27,10 +27,24 @@ void ComponentRender::onStart()
 
     initTiles();
 
-    textWriter = new TextWriter(
-        ComponentsManager::get()->getComponentWindow()->getRenderer(),
-        ComponentsManager::get()->getComponentWindow()->getFontDefault()
-    );
+    auto window = ComponentsManager::get()->getComponentWindow();
+    textWriter = new TextWriter(window->getRenderer(),window->getFontDefault());
+
+    shaderOGLRender = new ShaderOpenGLRender();
+    shaderOGLImage = new ShaderOpenGLImage();
+    shaderOGLLine = new ShaderOpenGLLine();
+    shaderOGLWireframe = new ShaderOpenGLWireframe();
+    shaderOGLLine3D = new ShaderOpenGLLine3D();
+    shaderOGLShading = new ShaderOpenGLShading();
+    shaderOGLPoints = new ShaderOpenGLPoints();
+    shaderOGLOutline = new ShaderOpenGLOutline();
+    shaderOGLColor = new ShaderOpenGLColor();
+    shaderOGLParticles = new ShaderOpenGLParticles();
+    shaderOGLDOF = new ShaderOpenGLDOF();
+    shaderOGLDepthMap = new ShaderOpenGLDepthMap();
+    shaderOGLFOG = new ShaderOpenGLFOG();
+    shaderOGLShockWave = new ShaderOpenGLShockWave();
+    shaderOGLTint = new ShaderOpenGLTint();
 }
 
 void ComponentRender::preUpdate()
@@ -46,7 +60,7 @@ void ComponentRender::onUpdate()
 {
     if (!isEnabled()) return;
 
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->createUBOFromLights();
+    getShaderOGLRender()->createUBOFromLights();
 
     if (isSceneShadersEnabled()) {
         //runShadersOpenCLPreUpdate();
@@ -332,34 +346,91 @@ bool ComponentRender::compareDistances(Object3D* obj1, Object3D* obj2)
     return obj1->getDistanceToCamera() > obj2->getDistanceToCamera();
 }
 
-void ComponentRender::setGlobalIlluminationDirection(Vertex3D v)
+void ComponentRender::setGlobalIlluminationDirection(Vertex3D v) const
 {
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->setGlobalIlluminationDirection(v);
+    getShaderOGLRender()->setGlobalIlluminationDirection(v);
 }
 
-void ComponentRender::setGlobalIlluminationAmbient(Vertex3D v)
+void ComponentRender::setGlobalIlluminationAmbient(Vertex3D v) const
 {
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->setGlobalIlluminationAmbient(v);
+    getShaderOGLRender()->setGlobalIlluminationAmbient(v);
 }
 
-void ComponentRender::setGlobalIlluminationDiffuse(Vertex3D v)
+void ComponentRender::setGlobalIlluminationDiffuse(Vertex3D v) const
 {
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->setGlobalIlluminationDiffuse(v);
+    getShaderOGLRender()->setGlobalIlluminationDiffuse(v);
 }
 
-void ComponentRender::setGlobalIlluminationSpecular(Vertex3D v)
+void ComponentRender::setGlobalIlluminationSpecular(Vertex3D v) const
 {
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->setGlobalIlluminationSpecular(v);
+    getShaderOGLRender()->setGlobalIlluminationSpecular(v);
 }
 
-void ComponentRender::drawLine(Vertex3D from, Vertex3D to, Color c)
+void ComponentRender::drawLine(Vertex3D from, Vertex3D to, Color c) const
 {
-    auto window = ComponentsManager::get()->getComponentWindow();
-
-    window->getShaderOGLLine3D()->render(
+    getShaderOGLLine3D()->render(
         from,
         to,
-        window->getForegroundFramebuffer(),
+        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer(),
         c
     );
+}
+
+ShaderOpenGLImage *ComponentRender::getShaderOGLImage() const {
+    return shaderOGLImage;
+}
+
+ShaderOpenGLLine3D *ComponentRender::getShaderOGLLine3D() const {
+    return shaderOGLLine3D;
+}
+
+ShaderOpenGLRender *ComponentRender::getShaderOGLRender() const {
+    return shaderOGLRender;
+}
+
+ShaderOpenGLLine *ComponentRender::getShaderOGLLine() const {
+    return shaderOGLLine;
+}
+
+ShaderOpenGLWireframe *ComponentRender::getShaderOGLWireframe() const {
+    return shaderOGLWireframe;
+}
+
+ShaderOpenGLShading *ComponentRender::getShaderOGLShading() const {
+    return shaderOGLShading;
+}
+
+ShaderOpenGLPoints *ComponentRender::getShaderOGLPoints() const {
+    return shaderOGLPoints;
+}
+
+ShaderOpenGLDOF *ComponentRender::getShaderOGLDOF() const {
+    return shaderOGLDOF;
+}
+
+ShaderOpenGLOutline *ComponentRender::getShaderOGLOutline() const {
+    return shaderOGLOutline;
+}
+
+ShaderOpenGLColor *ComponentRender::getShaderOGLColor() const {
+    return shaderOGLColor;
+}
+
+ShaderOpenGLParticles *ComponentRender::getShaderOGLParticles() const {
+    return shaderOGLParticles;
+}
+
+ShaderOpenGLFOG *ComponentRender::getShaderOGLFOG() const {
+    return shaderOGLFOG;
+}
+
+ShaderOpenGLShockWave *ComponentRender::getShaderOGLShockWave() const {
+    return shaderOGLShockWave;
+}
+ShaderOpenGLTint *ComponentRender::getShaderOGLTint() const {
+    return shaderOGLTint;
+}
+
+ShaderOpenGLDepthMap *ComponentRender::getShaderOGLDepthMap() const {
+    return shaderOGLDepthMap;
 }

@@ -132,21 +132,21 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
 void Drawable::drawAABB(AABB3D *aabb, Color color)
 {
     std::vector<Vector3D> vectors;
-    vectors.push_back(Vector3D(aabb->vertices[0], aabb->vertices[2]));
-    vectors.push_back(Vector3D(aabb->vertices[0], aabb->vertices[3]));
-    vectors.push_back(Vector3D(aabb->vertices[0], aabb->vertices[4]));
-    vectors.push_back(Vector3D(aabb->vertices[1], aabb->vertices[6]));
-    vectors.push_back(Vector3D(aabb->vertices[1], aabb->vertices[5]));
-    vectors.push_back(Vector3D(aabb->vertices[2], aabb->vertices[5]));
-    vectors.push_back(Vector3D(aabb->vertices[2], aabb->vertices[6]));
-    vectors.push_back(Vector3D(aabb->vertices[3], aabb->vertices[7]));
-    vectors.push_back(Vector3D(aabb->vertices[3], aabb->vertices[5]));
-    vectors.push_back(Vector3D(aabb->vertices[6], aabb->vertices[4]));
-    vectors.push_back(Vector3D(aabb->vertices[7], aabb->vertices[4]));
-    vectors.push_back(Vector3D(aabb->vertices[7], aabb->vertices[1]));
+    vectors.emplace_back(aabb->vertices[0], aabb->vertices[2]);
+    vectors.emplace_back(aabb->vertices[0], aabb->vertices[3]);
+    vectors.emplace_back(aabb->vertices[0], aabb->vertices[4]);
+    vectors.emplace_back(aabb->vertices[1], aabb->vertices[6]);
+    vectors.emplace_back(aabb->vertices[1], aabb->vertices[5]);
+    vectors.emplace_back(aabb->vertices[2], aabb->vertices[5]);
+    vectors.emplace_back(aabb->vertices[2], aabb->vertices[6]);
+    vectors.emplace_back(aabb->vertices[3], aabb->vertices[7]);
+    vectors.emplace_back(aabb->vertices[3], aabb->vertices[5]);
+    vectors.emplace_back(aabb->vertices[6], aabb->vertices[4]);
+    vectors.emplace_back(aabb->vertices[7], aabb->vertices[4]);
+    vectors.emplace_back(aabb->vertices[7], aabb->vertices[1]);
 
     auto window = ComponentsManager::get()->getComponentWindow();
-    window->getShaderOGLLine3D()->renderLines(vectors, window->getForegroundFramebuffer(),color);
+    ComponentsManager::get()->getComponentRender()->getShaderOGLLine3D()->renderLines(vectors, window->getForegroundFramebuffer(),color);
 }
 
 void Drawable::drawOctreeNode(OctreeNode &node)
