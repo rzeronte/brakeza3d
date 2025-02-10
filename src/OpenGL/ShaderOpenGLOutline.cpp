@@ -1,6 +1,5 @@
 
 #include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/matrix_transform.hpp>
 #include "../../include/OpenGL/ShaderOpenGLOutline.h"
 #include "../../include/ComponentsManager.h"
 
@@ -40,8 +39,9 @@ void ShaderOpenGLOutline::destroy()
 
 void ShaderOpenGLOutline::drawOutline(Mesh3D *m, Color c, float borderThickness)
 {
+    auto componentRender = ComponentsManager::get()->getComponentRender();
     auto componentWindow = ComponentsManager::get()->getComponentWindow();
-    auto shaderColor = componentWindow->getShaderOGLColor();
+    auto shaderColor = componentRender->getShaderOGLColor();
 
     for (const auto& mm : m->meshes) {
         shaderColor->render(

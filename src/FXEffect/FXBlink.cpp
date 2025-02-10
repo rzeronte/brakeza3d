@@ -54,7 +54,7 @@ void FXBlink::update()
 
             glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
             for (const auto& m : mesh->meshes) {
-                ComponentsManager::get()->getComponentWindow()->getShaderOGLColor()->render(
+                ComponentsManager::get()->getComponentRender()->getShaderOGLColor()->render(
                     object,
                     m.vertexbuffer,
                     m.uvbuffer,

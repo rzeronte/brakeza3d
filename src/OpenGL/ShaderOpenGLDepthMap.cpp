@@ -28,8 +28,8 @@ void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint framebuffer)
 
     loadQuadMatrixUniforms();
 
-    glUniform1f(intensityUniform, ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->intensity);
-    glUniform1f(farPlaneUniform, ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->farPlane);
+    glUniform1f(intensityUniform, ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->intensity);
+    glUniform1f(farPlaneUniform, ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->farPlane);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureID);

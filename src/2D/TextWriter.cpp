@@ -49,13 +49,13 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
     dstRect.w = (w * windowWidth) / EngineSetup::get()->screenWidth;
     dstRect.h = (h * windowHeight) / EngineSetup::get()->screenHeight;
 
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(
-            texID,
-            dstRect.x, dstRect.y,
-            dstRect.w, dstRect.h,
-            alpha,
-            false,
-            ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+    ComponentsManager::get()->getComponentRender()->getShaderOGLImage()->renderTexture(
+        texID,
+        dstRect.x, dstRect.y,
+        dstRect.w, dstRect.h,
+        alpha,
+        false,
+        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 
     glDeleteTextures(1, &texID);

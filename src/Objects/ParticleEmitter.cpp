@@ -181,7 +181,7 @@ void ParticleEmitter::onUpdate()
     glBufferData(GL_ARRAY_BUFFER, MaxParticles * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
     glBufferSubData(GL_ARRAY_BUFFER, 0, ParticlesCount * sizeof(GLubyte) * 4, g_particule_color_data);
 
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLParticles()->render(
+    ComponentsManager::get()->getComponentRender()->getShaderOGLParticles()->render(
         billboard_vertex_buffer,
         particles_position_buffer,
         particles_color_buffer,

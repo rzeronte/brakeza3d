@@ -6,12 +6,10 @@ PhysicsDebugDraw::PhysicsDebugDraw() = default;
 
 void PhysicsDebugDraw::drawLine(const btVector3 &from, const btVector3 &to, const btVector3 &color)
 {
-    auto window = ComponentsManager::get()->getComponentWindow();
-
-    window->getShaderOGLLine3D()->render(
+    ComponentsManager::get()->getComponentRender()->getShaderOGLLine3D()->render(
         Vertex3D::fromBullet(from),
         Vertex3D::fromBullet(to),
-        window->getForegroundFramebuffer(),
+        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer(),
         Color::fuchsia()
     );
 }

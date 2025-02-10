@@ -9,23 +9,7 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
 #include "Component.h"
-#include "../OpenGL/ShaderOpenGL.h"
-#include "../OpenGL/ShaderOpenGLImage.h"
-#include "../OpenGL/ShaderOpenGLRender.h"
-#include "../OpenGL/ShaderOpenGLLine.h"
-#include "../OpenGL/ShaderOpenGLWireframe.h"
-#include "../OpenGL/ShaderOpenGLShading.h"
-#include "../OpenGL/ShaderOpenGLPoints.h"
-#include "../OpenGL/ShaderOpenGLOutline.h"
-#include "../OpenGL/ShaderOpenGLColor.h"
-#include "../OpenGL/ShaderOpenGLParticles.h"
-#include "../OpenGL/ShaderOpenGLDOF.h"
-#include "../OpenGL/ShaderOpenGLDepthMap.h"
-#include "../OpenGL/ShaderOpenGLFOG.h"
-#include "../OpenGL/ShaderOpenGLShockWave.h"
-#include "../../src/OpenGL/ShaderOpenGLTint.h"
-#include "../OpenGL/ShaderOpenGLCustom.h"
-#include "../../src/OpenGL/ShaderOpenGLLine3D.h"
+
 
 enum class ImGUIConfigs {
     DEFAULT,
@@ -58,21 +42,6 @@ private:
     GLuint globalFramebuffer;
     GLuint postProcessingFramebuffer;
 
-    ShaderOpenGLRender *shaderOGLRender;
-    ShaderOpenGLImage *shaderOGLImage;
-    ShaderOpenGLLine *shaderOGLLine;
-    ShaderOpenGLWireframe *shaderOGLWireframe;
-    ShaderOpenGLLine3D *shaderOGLLine3D;
-    ShaderOpenGLShading *shaderOGLShading;
-    ShaderOpenGLPoints *shaderOGLPoints;
-    ShaderOpenGLOutline *shaderOGLOutline;
-    ShaderOpenGLColor *shaderOGLColor;
-    ShaderOpenGLParticles *shaderOGLParticles;
-    ShaderOpenGLDOF *shaderOGLDOF;
-    ShaderOpenGLDepthMap *shaderOGLDepthMap;
-    ShaderOpenGLFOG *shaderOGLFOG;
-    ShaderOpenGLShockWave *shaderOGLShockWave;
-    ShaderOpenGLTint *shaderOGLTint;
 
     ImGUIConfigs ImGuiConfig;
 
@@ -108,29 +77,9 @@ public:
 
     SDL_GLContext context;
 
-    [[nodiscard]] ShaderOpenGLLine3D *getShaderOGLLine3D() const;
-
-    [[nodiscard]] ShaderOpenGLImage *getShaderOGLImage() const;
-
-    [[nodiscard]] ShaderOpenGLRender *getShaderOGLRender() const;
-
-    [[nodiscard]] ShaderOpenGLLine *getShaderOGLLine() const;
-
-    [[nodiscard]] ShaderOpenGLWireframe *getShaderOglWireframe() const;
-
-    [[nodiscard]] ShaderOpenGLShading *getShaderOglShading() const;
-
-    [[nodiscard]] ShaderOpenGLPoints *getShaderOGLPoints() const;
-
-    [[nodiscard]] ShaderOpenGLOutline *getShaderOGLOutline() const;
-
-    [[nodiscard]] ShaderOpenGLColor *getShaderOGLColor() const;
-
-    [[nodiscard]] ShaderOpenGLParticles *getShaderOGLParticles() const;
-
     [[nodiscard]] GLuint getSceneFramebuffer() const;
 
-    void RenderLayersToGlobalFramebuffer();
+    void RenderLayersToGlobalFramebuffer() const;
     void resetFramebuffer();
     bool isWindowMaximized();
 
@@ -140,13 +89,11 @@ public:
 
     [[nodiscard]] GLuint getForegroundFramebuffer() const;
 
-    [[nodiscard]] ShaderOpenGLDOF *getShaderOGLDOF() const;
 
     bool screenShoot = false;
 
     void cleanFrameBuffers() const;
 
-    [[nodiscard]] ShaderOpenGLFOG *getShaderOGLFOG() const;
 
     [[nodiscard]] int getWidth() const;
 
@@ -157,7 +104,6 @@ public:
 
     void createFramebuffer();
 
-    [[nodiscard]] ShaderOpenGLShockWave *getShaderOGLShockWave() const;
 
     GLuint sceneTexture;
 
@@ -167,8 +113,6 @@ public:
     GLuint postProcessingTexture;
 
     [[nodiscard]] GLuint getPostProcessingFramebuffer() const;
-
-    [[nodiscard]] ShaderOpenGLTint *getShaderOGLTint() const;
 
     void RenderLayersToMain();
 

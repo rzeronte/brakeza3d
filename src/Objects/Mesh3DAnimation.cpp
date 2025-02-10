@@ -453,8 +453,9 @@ void Mesh3DAnimation::drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transfor
         Transforms::objectSpace(bonePosition, bonePosition, this);
 
         if (lastBonePosition) {
+            auto render = ComponentsManager::get()->getComponentRender();
             auto window = ComponentsManager::get()->getComponentWindow();
-            window->getShaderOGLLine3D()->render(
+            render->getShaderOGLLine3D()->render(
                 *lastBonePosition,
                 bonePosition,
                 window->getForegroundFramebuffer(),

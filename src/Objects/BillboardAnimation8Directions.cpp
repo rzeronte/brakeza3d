@@ -25,7 +25,7 @@ void BillboardAnimation8Directions::onUpdate()
 
     this->updateTrianglesCoordinates(ComponentsManager::get()->getComponentCamera()->getCamera());
 
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
+    ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->render(
             this,
             billboard->getTexture()->getOGLTextureID(),
             billboard->getTexture()->getOGLTextureID(),

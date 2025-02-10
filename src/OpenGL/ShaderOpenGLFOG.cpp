@@ -3,7 +3,6 @@
 //
 
 #include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/matrix_transform.hpp>
 #include "../../include/OpenGL/ShaderOpenGLFOG.h"
 #include "../../include/EngineSetup.h"
 #include "../../include/ComponentsManager.h"
@@ -47,7 +46,7 @@ void ShaderOpenGLFOG::render(GLuint sceneTexture, GLuint depthTexture)
     glUniform1f(fogMaxDistUniform, fogMaxDist);
     glUniform1f(fogMinDistUniform, fogMinDist);
     glUniform1f(intensityUniform, intensity);
-    glUniform1f(farPlaneUniform, ComponentsManager::get()->getComponentWindow()->getShaderOGLDOF()->farPlane);
+    glUniform1f(farPlaneUniform, ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->farPlane);
     glUniform3fv(fogColourUniform, 1, &fogColor.toGLM()[0]);
 
     glActiveTexture(GL_TEXTURE0);

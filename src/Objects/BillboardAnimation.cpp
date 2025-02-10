@@ -22,7 +22,7 @@ void BillboardAnimation::onUpdate()
 
     this->updateTrianglesCoordinatesAndTexture();
 
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
+    ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->render(
         this,
         (int) getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
         (int) getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
@@ -35,7 +35,7 @@ void BillboardAnimation::onUpdate()
     );
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME) {
-        ComponentsManager::get()->getComponentWindow()->getShaderOglWireframe()->render(
+        ComponentsManager::get()->getComponentRender()->getShaderOGLWireframe()->render(
             getModelMatrix(),
             billboard->vertexbuffer,
             billboard->uvbuffer,

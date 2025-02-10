@@ -30,9 +30,10 @@ void FXShockWave::update()
         }
     }
 
+    auto render = ComponentsManager::get()->getComponentRender();
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    window->getShaderOGLShockWave()->render(
+    render->getShaderOGLShockWave()->render(
         Transforms::WorldToPoint(object->getPosition()),
         ttlWave.getAcumulatedTime(),
         speed,

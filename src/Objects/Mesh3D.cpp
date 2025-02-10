@@ -30,13 +30,12 @@ void Mesh3D::onUpdate()
     }
 
     if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
-        auto window = ComponentsManager::get()->getComponentWindow();
-        window->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
+        ComponentsManager::get()->getComponentRender()->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
         for (auto &m: meshes) {
-            ComponentsManager::get()->getComponentWindow()->getShaderOGLPoints()->render(
+            ComponentsManager::get()->getComponentRender()->getShaderOGLPoints()->render(
                 this,
                 m.vertexbuffer,
                 m.vertices.size(),
@@ -48,7 +47,7 @@ void Mesh3D::onUpdate()
 
     if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
         for (auto &m: meshes) {
-            ComponentsManager::get()->getComponentWindow()->getShaderOglShading()->render(
+            ComponentsManager::get()->getComponentRender()->getShaderOGLShading()->render(
                 getModelMatrix(),
                 m.vertexbuffer,
                 m.uvbuffer,
@@ -60,14 +59,17 @@ void Mesh3D::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        auto window = ComponentsManager::get()->getComponentWindow();
-        window->getShaderOGLRender()->renderMesh(this,window->getSceneFramebuffer());
+        ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->renderMesh(
+            this,
+            ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+        );
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
+        auto render = ComponentsManager::get()->getComponentRender();
         auto window = ComponentsManager::get()->getComponentWindow();
         for (auto &m: meshes) {
-            window->getShaderOglWireframe()->render(
+            render->getShaderOGLWireframe()->render(
                 getModelMatrix(),
                 m.vertexbuffer,
                 m.uvbuffer,

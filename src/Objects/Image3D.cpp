@@ -106,14 +106,7 @@ void Image3D::onUpdate()
 
     if (!image->isLoaded()) return;
 
-    /*image->drawFlatAlpha(
-            10,
-            10,
-            255,
-            ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
-    );*/
-
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLRender()->render(
+    ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->render(
         this,
         image->getOGLTextureID(),
         image->getOGLTextureID(),

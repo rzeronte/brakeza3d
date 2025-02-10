@@ -20,9 +20,10 @@ void FXColorTint::update()
 
     if (!isEnabled()) return;
 
+    auto render = ComponentsManager::get()->getComponentRender();
     auto windows = ComponentsManager::get()->getComponentWindow();
 
-    windows->getShaderOGLTint()->render(
+    render->getShaderOGLTint()->render(
         color,
         progress,
         windows->getGlobalFramebuffer()

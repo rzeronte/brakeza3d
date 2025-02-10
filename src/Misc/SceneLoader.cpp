@@ -28,7 +28,7 @@ void SceneLoader::loadScene(const std::string& filename)
     Logging::Message("Loading scene: %s", filename.c_str());
 
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-    auto shaderRender = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender();
+    auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRender();
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity") != nullptr) {
         auto gravity = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity"));
@@ -150,7 +150,7 @@ void SceneLoader::saveScene(const std::string &filename)
 {
     cJSON *root = cJSON_CreateObject();
 
-    auto ads = ComponentsManager::get()->getComponentWindow()->getShaderOGLRender();
+    auto render = ComponentsManager::get()->getComponentRender()->getShaderOGLRender();
 
     // gravity
     cJSON *gravityJSON = cJSON_CreateObject();
@@ -163,27 +163,27 @@ void SceneLoader::saveScene(const std::string &filename)
     cJSON *adsJSON = cJSON_CreateObject();
 
     cJSON *adsDirectionJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(adsDirectionJSON, "x", ads->getDirectionalLight()->direction.x);
-    cJSON_AddNumberToObject(adsDirectionJSON, "y", ads->getDirectionalLight()->direction.y);
-    cJSON_AddNumberToObject(adsDirectionJSON, "z", ads->getDirectionalLight()->direction.z);
+    cJSON_AddNumberToObject(adsDirectionJSON, "x", render->getDirectionalLight()->direction.x);
+    cJSON_AddNumberToObject(adsDirectionJSON, "y", render->getDirectionalLight()->direction.y);
+    cJSON_AddNumberToObject(adsDirectionJSON, "z", render->getDirectionalLight()->direction.z);
     cJSON_AddItemToObject(adsJSON, "direction", adsDirectionJSON);
 
     cJSON *adsDiffuseJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(adsDiffuseJSON, "x", ads->getDirectionalLight()->diffuse.x);
-    cJSON_AddNumberToObject(adsDiffuseJSON, "y", ads->getDirectionalLight()->diffuse.y);
-    cJSON_AddNumberToObject(adsDiffuseJSON, "z", ads->getDirectionalLight()->diffuse.z);
+    cJSON_AddNumberToObject(adsDiffuseJSON, "x", render->getDirectionalLight()->diffuse.x);
+    cJSON_AddNumberToObject(adsDiffuseJSON, "y", render->getDirectionalLight()->diffuse.y);
+    cJSON_AddNumberToObject(adsDiffuseJSON, "z", render->getDirectionalLight()->diffuse.z);
     cJSON_AddItemToObject(adsJSON, "diffuse", adsDiffuseJSON);
 
     cJSON *adsSpecularJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(adsSpecularJSON, "x", ads->getDirectionalLight()->specular.x);
-    cJSON_AddNumberToObject(adsSpecularJSON, "y", ads->getDirectionalLight()->specular.y);
-    cJSON_AddNumberToObject(adsSpecularJSON, "z", ads->getDirectionalLight()->specular.z);
+    cJSON_AddNumberToObject(adsSpecularJSON, "x", render->getDirectionalLight()->specular.x);
+    cJSON_AddNumberToObject(adsSpecularJSON, "y", render->getDirectionalLight()->specular.y);
+    cJSON_AddNumberToObject(adsSpecularJSON, "z", render->getDirectionalLight()->specular.z);
     cJSON_AddItemToObject(adsJSON, "specular", adsSpecularJSON);
 
     cJSON *adsAmbientJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(adsAmbientJSON, "x", ads->getDirectionalLight()->ambient.x);
-    cJSON_AddNumberToObject(adsAmbientJSON, "y", ads->getDirectionalLight()->ambient.y);
-    cJSON_AddNumberToObject(adsAmbientJSON, "z", ads->getDirectionalLight()->ambient.z);
+    cJSON_AddNumberToObject(adsAmbientJSON, "x", render->getDirectionalLight()->ambient.x);
+    cJSON_AddNumberToObject(adsAmbientJSON, "y", render->getDirectionalLight()->ambient.y);
+    cJSON_AddNumberToObject(adsAmbientJSON, "z", render->getDirectionalLight()->ambient.z);
     cJSON_AddItemToObject(adsJSON, "ambient", adsAmbientJSON);
 
     cJSON_AddItemToObject(root, "ads", adsJSON);

@@ -63,10 +63,10 @@ void Image::drawFlat(int pos_x, int pos_y, GLuint framebuffer) const
 {
     if (!loaded) return;
 
-    auto renderer = ComponentsManager::get()->getComponentWindow();
+    auto window = ComponentsManager::get()->getComponentWindow();
 
-    int windowWidth = renderer->width;
-    int windowHeight = renderer->height;
+    int windowWidth = window->width;
+    int windowHeight = window->height;
 
     SDL_Rect srcRect;
     srcRect.x = 0;
@@ -80,7 +80,7 @@ void Image::drawFlat(int pos_x, int pos_y, GLuint framebuffer) const
     dstRect.w = (surface->w * windowWidth) / EngineSetup::get()->screenWidth;
     dstRect.h = (surface->h * windowHeight) / EngineSetup::get()->screenHeight;
 
-    ComponentsManager::get()->getComponentWindow()->getShaderOGLImage()->renderTexture(
+    ComponentsManager::get()->getComponentRender()->getShaderOGLImage()->renderTexture(
         texturaID,
         dstRect.x,
         dstRect.y,
