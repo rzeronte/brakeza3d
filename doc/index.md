@@ -686,7 +686,7 @@ Podemos aplicar fuerzas a los objetos ``RIGIDBODY`` gracias a los siguientes mé
 
 ---
 
-> [Back to index](#index)
+>[Back to index](#index)
 
 # 7) Light objects types
 
@@ -767,7 +767,7 @@ brakeza:addObject3D(lights, 'mySpotLight')
 
 ---
 
-> [Back to index](#index)
+>[Back to index](#index)
 
 # 8) Particle emitter
 
@@ -832,7 +832,7 @@ particles = ParticleEmitter.create(
 
 ---
 
-> [Back to index](#index)
+>[Back to index](#index)
 
 # 9) Input system
 
@@ -875,7 +875,7 @@ render:setGlobalIlluminationAmbient(Vertex3D.new(1, 0, 0)) -- rojo
 
 ---
 
->[Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
+>[Back to index](#index)
 
 # 11) Sound system
 
@@ -1012,7 +1012,7 @@ Automáticamente podrás acceder a los sonidos y músicas definidos en este fich
 
 ---
 
-> [Back to index](https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md)
+>[Back to index](#index)
 
 # 12) Scripting system
 
