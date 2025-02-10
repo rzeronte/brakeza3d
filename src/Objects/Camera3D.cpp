@@ -144,3 +144,7 @@ M3 Camera3D::getM3ProjectionMatrix()
     return M3::fromMat3GLM(m);
 }
 
+void Camera3D::setFOV(float v)
+{
+    EngineSetup::get()->HORIZONTAL_FOV = v;
+}

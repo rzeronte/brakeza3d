@@ -50,8 +50,6 @@ void LUAIntegration(sol::state &lua)
         "Y", &M3::Y,
         "Z", &M3::Z,
         "getTranspose",  &M3::getTranspose,
-        "getTranspose",  &M3::getTranspose,
-        "getTranspose",  &M3::getTranspose,
         "setMatrixRotationForEulerAngles", &M3::setMatrixRotationForEulerAngles,
         "getMatrixIdentity", &M3::getMatrixIdentity
     );
@@ -83,6 +81,7 @@ void LUAIntegration(sol::state &lua)
         "getScale", &Object3D::getScale,
         "setScale", &Object3D::setScale,
         "getModelMatrix", &Object3D::getModelMatrix,
+        "getM3ModelMatrix", &Object3D::getM3ModelMatrix,
         "AxisForward", &Object3D::AxisForward,
         "AxisUp", &Object3D::AxisUp,
         "AxisRight", &Object3D::AxisRight,
@@ -187,13 +186,13 @@ void LUAIntegration(sol::state &lua)
         "uniqueObjectLabel", &Brakeza3D::uniqueObjectLabel,
         "shutdown", &Brakeza3D::shutdown,
         "addObject3D",  &Brakeza3D::addObject3D,
-        "getSceneObjectById",&Brakeza3D::getSceneObjectById,
         "getSceneObjectByLabel",&Brakeza3D::getSceneObjectByLabel
     );
 
     lua.new_usertype<Camera3D>("Camera3D",
        sol::base_classes, sol::bases<Object3D>(),
         "getM3ViewMatrix", &Camera3D::getM3ViewMatrix,
+       "setFOV", &Camera3D::setFOV,
        "getM3ProjectionMatrix", &Camera3D::getM3ProjectionMatrix,
        "setRotationFromEulerAngles", &Camera3D::setRotationFromEulerAngles
     );

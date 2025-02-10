@@ -74,7 +74,7 @@ Currently, I do not compile for Mac, but the project was started on it, so that 
 
 Here you can find some documentation for starting:
 
-https://github.com/rzeronte/brakeza3d/blob/master/doc/00-index.md
+https://github.com/rzeronte/brakeza3d/blob/master/doc/index.md
 
 ---
 

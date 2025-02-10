@@ -176,6 +176,8 @@ public:
 
     glm::mat4 getModelMatrix();
 
+    M3 getM3ModelMatrix();
+
     void addMesh3DShader(FXEffectOpenGL *shader);
 
     void removeShader(int i);

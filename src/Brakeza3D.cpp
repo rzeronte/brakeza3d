@@ -254,10 +254,6 @@ Object3D *Brakeza3D::getSceneObjectByLabel(const std::string &label) const {
     return nullptr;
 }
 
-Object3D *Brakeza3D::getSceneObjectById(const int i) const {
-    return sceneObjects[i];
-}
-
 void Brakeza3D::shutdown()
 {
     finish = true;

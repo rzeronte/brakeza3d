@@ -69,6 +69,8 @@ public:
     [[nodiscard]] glm::mat4 getGLMMat4ViewMatrix();
 
     [[nodiscard]] static glm::mat4 getGLMMat4ProjectionMatrix() ;
+
+    static void setFOV(float v);
 };
 
 

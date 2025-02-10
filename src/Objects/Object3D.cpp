@@ -773,6 +773,11 @@ void Object3D::createFromJSON(cJSON *object)
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
 
+M3 Object3D::getM3ModelMatrix()
+{
+    return M3::fromMat3GLM(getModelMatrix());
+}
+
 glm::mat4 Object3D::getModelMatrix()
 {
     glm::vec3 scaled(scale);
