@@ -185,17 +185,9 @@ void Drawable::drawGrid3D(Grid3D *grid) {
 
 void Drawable::drawGrid3DMakeTravel(Grid3D *grid) {
 
-    auto path = grid->getPathFinding().makeTravel();
-
-    if ((int) path.size() <= 0) return;
-
-    for (const auto& step : path) {
-        int x = std::get<0>(step);
-        int y = std::get<1>(step);
-        int z = std::get<2>(step);
-
-        CubeGrid3D *cube = grid->getCubeFromPosition(x, y, z);
-        Drawable::drawAABB(&cube->box, Color::magenta());
+    auto boxes = grid->makeTravelCubesGrid();
+    for (auto &b: boxes) {
+        Drawable::drawAABB(&b.box, Color::magenta());
     }
 
     auto pf = grid->getPathFinding();
