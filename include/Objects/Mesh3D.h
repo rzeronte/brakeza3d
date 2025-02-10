@@ -124,6 +124,8 @@ public:
     void setSourceFile(const std::string &sourceFile);
 
     void buildGrid3D(int sizeX, int sizeY, int sizeZ);
+
+    void fillGrid3DFromGeometry();
 };
 
 #endif //SDL2_3D_ENGINE_MESH_H

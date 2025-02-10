@@ -2,7 +2,7 @@
 #include "../../include/Misc/Grid3D.h"
 #include "../../include/Render/Maths.h"
 
-Grid3D::Grid3D(const AABB3D &bounds, int sizeX, int sizeY, int sizeZ)
+Grid3D::Grid3D(AABB3D bounds, int sizeX, int sizeY, int sizeZ)
 :
     pathFinding(PathFinding(sizeX, sizeY, sizeZ)),
     bounds(bounds),
@@ -190,4 +190,40 @@ void Grid3D::LoadPathFindingBlocksFromGrid()
             }
         }
     }
+}
+
+cJSON *Grid3D::getJSON()
+{
+    cJSON *gridJSON = cJSON_CreateObject();
+
+    cJSON_AddNumberToObject(gridJSON, "x", (float) getNumberCubesX());
+    cJSON_AddNumberToObject(gridJSON, "y", (float) getNumberCubesY());
+    cJSON_AddNumberToObject(gridJSON, "z", (float) getNumberCubesZ());
+
+    return gridJSON;
+}
+
+std::vector<CubeGrid3D> Grid3D::makeTravelCubesGrid()
+{
+    auto path = getPathFinding().makeTravelIndexes();
+
+    if ((int) path.size() <= 0) return {};
+    std::vector<CubeGrid3D> output;
+    for (const auto& step : path) {
+        int x = std::get<0>(step);
+        int y = std::get<1>(step);
+        int z = std::get<2>(step);
+
+        auto cube = getCubeFromPosition(x, y, z);
+        if (cube!= nullptr) {
+            output.push_back(*cube);
+        }
+    }
+
+    return output;
+}
+
+void Grid3D::setTravel(int x1, int y1, int z1, int x2, int y2, int z2)
+{
+    pathFinding.setTravel(x1, y1, z1, x2, y2, z2);
 }

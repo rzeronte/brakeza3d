@@ -74,10 +74,13 @@ disponibles a través de tus scripts LUA.
 
 - [Vertex3D](#vertex3d)
 - [M3](#m3)
+- [AABB3D](#aabb3d)
 - [Point2D](#point2d)
 - [Color](#color)
 
- 
+
+---
+
 ### Vertex3D
 Representa un vertice en el espacio o un vector de origen centro de coordenadas.
 
@@ -121,9 +124,32 @@ Métodos:
 - `Y()`: Eje Y
 - `Z()`: Eje Z
 
+---
+
+### AABB3D
+
+Almacena la caja contenedora de un modelo, alineada con los ejes.
+
+
+Propiedades:
+
+- `Vertex3D min`
+- `Vertex3D max`
+
+Métodos:
+
+- `isColliding(AABB3D) => bool`: Determina si se superpone con otro `AABB3D`.
+- `size() => Vertex3D`: Devuelve el tamaño de la caja.
+- `getCenter() => Vertex3D`: Devuelve un `Vertex3D` con el centro de la caja.
+- `isPointInside(Vertex3D) => bool`: Determina si un `Vertex3D` está dentro de una caja.
+
+---
+
 ### Point2D
 
 Posiciones en 2D. (`X`, `Y`).
+
+---
 
 ### Color
 

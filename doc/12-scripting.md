@@ -252,6 +252,94 @@ proyectos: `/assets/projects/`.
 
 ---
 
+### Grid3D y Octree
+
+Brakeza3D incorpora las estructuras de datos `Grid3D` y `Octree` integradas en los objetos de tipo
+``Mesh3D``.
+
+- `Grid3D`: Crea una rejilla de `X`, `Y`, `Z` dimensiones sobre el AABB del objeto dado.
+- `Octree`: Crea un árbol octal, con la profundidad (`maxDepth`) indicada.
+
+Para cargar una rejilla en un objeto `Mesh3D` puedes utilizar el método `buildGrid3D(sizeX, sizeY, sizeZ)`
+
+```lua
+eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+eye:setScale(10)
+eye:buildGrid3D(5, 5, ) -- crea una rejilla de 5x5x5
+brakeza:addObject3D(eye, 'modelo')
+```
+
+Para cargar una *octree* en un objeto `Mesh3D` puedes utilizar el método `buildOctree(maxDepth)`.
+```lua
+eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+eye:setScale(10)
+eye:buildOctree(1) -- crea una árbol de octanos de un solo nivel de profundidad, solo 8 hijos
+brakeza:addObject3D(eye, 'modelo')
+```
+Para volver a ajustar las dimensiones tanto en las rejillas como en los árboles de octanos, simplemente
+vuelve a ejecutar ``buildGrid3D`` o ``buildOctree``.
+
+#### Llenado de geometría en Grid3D
+
+Los ``Grid3D`` almacenan un *flag boolean* por cada *celda* que podremos usar a nuestro antojo.
+No obstante, Brakeza3D incorpora un mecanismo de relleno de este *flag* llamado `fillGrid3DFromGeometry`, 
+el cual activará este flag en cada celda, si ningún triángulo atraviesa o está contenido por dicha celda. 
+
+```lua
+eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+eye:setScale(10)
+eye:buildGrid3D(5, 5, 5)
+eye:fillGrid3DFromGeometry() -- activa los flags para celdas sin geometría
+brakeza:addObject3D(eye, 'modelo')
+```
+
+Será especialmente útil para aplicar técnicas de ``pathfinding`` disponer de esta información precargada
+en un `Grid3D`.
+
+#### Pathfinding en Grid3D
+
+Las rejillas incorporan un algoritmo ``A*`` que permite iterar sobre sus celdas. En combinación con `fillGrid3DFromGeometry`,
+podrás conseguir que los caminos esquiven nodos con geometría.
+
+```lua
+eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+eye:buildGrid3D(5, 5, 5)                    -- construimos un grid de 5x5x5
+eye:fillGrid3DFromGeometry()                -- Flags basados en si hay o no geometría en cada celda
+brakeza:addObject3D(eye, 'modelo')
+
+eye:getGrid3D():setTravel(0, 0, 0, 5, 5, 5) -- Configuramos un viaje desde (0, 0, 0) hasta (5, 5, 5)
+path = eye:getGrid3D():makeTravelCubesGrid() -- Obtenemos un array de CubeGrid3D
+```
+
+Mediante el método `setTravel(x1, y1, z1, x2, y2, z2)`, podremos ajustar el viaje para el próximo camino
+solicitado mediante `makeTravelCubesGrid`.
+
+El método `makeTravelCubesGrid` devuelve ell camino solicitado si este fué posible mediante un array de `CubeGrid3D`,
+cuya estructura es la siguiente:
+
+```C
+struct CubeGrid3D {
+    AABB3D box;             // Caja contenedora 
+    int posX;               // Indice de la posición X en el grid
+    int posY;               // Indice de la posición Y en el grid
+    int posZ;               // Indice de la posición Z en el grid
+    bool passed = true;     // Flag 
+};
+```
+Podemos iterar sobre dicho array para obtener el camino deseado.
+
+```lua
+...
+path = eye:getGrid3D():makeTravelCubesGrid() -- Obtenemos un array de CubeGrid3D
+-- Iteramos sobre el array path y pintamos los índices de cada CubeGrid3D
+for i, cube in ipairs(path) do
+    -- Imprimimos las coordenadas de cada CubeGrid3D
+    print("Cube " .. i .. ": X = " .. cube.posX .. ", Y = " .. cube.posY .. ", Z = " .. cube.posZ)
+end
+...
+```
+---
+
 ### Ejemplos en codigo
 
 https://github.com/rzeronte/brakeza3d/blob/master/doc/examples-lua-code.md

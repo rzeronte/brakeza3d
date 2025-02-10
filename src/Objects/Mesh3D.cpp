@@ -380,10 +380,7 @@ void Mesh3D::drawImGuiProperties()
         if (ImGui::TreeNode("Grid3D")) {
             if (grid != nullptr) {
                 if (ImGui::Button("Fill from mesh geometry")) {
-                    grid->reset(grid->getNumberCubesX(), grid->getNumberCubesY(), grid->getNumberCubesZ());
-                    for (auto &m: meshes) {
-                        grid->doTestForNonEmptyGeometry(m.modelTriangles);
-                    }
+                    fillGrid3DFromGeometry();
                 }
                 grid->drawImGuiProperties();
                 ImGui::SameLine();
@@ -444,11 +441,18 @@ cJSON * Mesh3D::getJSON()
     cJSON_AddStringToObject(root, "model", sourceFile.c_str());
     cJSON_AddBoolToObject(root, "enableLights", isEnableLights());
 
+    if (grid != nullptr) {
+        cJSON_AddItemToObject(root, "grid", grid->getJSON());
+    }
+
+    if (octree != nullptr) {
+        cJSON_AddItemToObject(root, "octree", octree->getJSON());
+    }
+
     return root;
 }
 
-void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
-{
+void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o) {
     o->setBelongToScene(true);
     Object3D::setPropertiesFromJSON(object, o);
     o->setEnableLights(cJSON_GetObjectItemCaseSensitive(object, "enableLights")->valueint);
@@ -459,18 +463,18 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
         cJSON *currentShader;
         cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
             auto type = cJSON_GetObjectItemCaseSensitive(currentShader, "type")->valuestring;
-            switch(mesh3DShaderTypes[type]) {
+            switch (mesh3DShaderTypes[type]) {
                 case Mesh3DShaderLoaderMapping::FXOutliner: {
                     auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
                     auto shader = new FXOutliner(
-                        true,
-                        o,
-                        Color(
-                            cJSON_GetObjectItemCaseSensitive(edgeColor, "r")->valueint,
-                            cJSON_GetObjectItemCaseSensitive(edgeColor, "g")->valueint,
-                            cJSON_GetObjectItemCaseSensitive(edgeColor, "b")->valueint
-                        ),
-                        (float)cJSON_GetObjectItemCaseSensitive(currentShader, "size")->valuedouble
+                            true,
+                            o,
+                            Color(
+                                    cJSON_GetObjectItemCaseSensitive(edgeColor, "r")->valueint,
+                                    cJSON_GetObjectItemCaseSensitive(edgeColor, "g")->valueint,
+                                    cJSON_GetObjectItemCaseSensitive(edgeColor, "b")->valueint
+                            ),
+                            (float) cJSON_GetObjectItemCaseSensitive(currentShader, "size")->valuedouble
                     );
                     o->addMesh3DShader(shader);
                     break;
@@ -478,7 +482,7 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
                 case Mesh3DShaderLoaderMapping::FXBlink: {
                     auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
                     auto blinkStep = (float) cJSON_GetObjectItemCaseSensitive(currentShader, "step")->valuedouble;
-                    auto shader = new FXBlink( true,o,blinkStep, ToolsJSON::parseColorJSON(edgeColor));
+                    auto shader = new FXBlink(true, o, blinkStep, ToolsJSON::parseColorJSON(edgeColor));
                     o->addMesh3DShader(shader);
                     break;
                 }
@@ -518,6 +522,20 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
                     break;
             }
         }
+    }
+
+    if (cJSON_GetObjectItemCaseSensitive(object, "grid") != nullptr) {
+        auto gridJSON = cJSON_GetObjectItemCaseSensitive(object, "grid");
+        o->buildGrid3D(
+            (int) cJSON_GetObjectItemCaseSensitive(gridJSON, "x")->valueint,
+            (int) cJSON_GetObjectItemCaseSensitive(gridJSON, "y")->valueint,
+            (int) cJSON_GetObjectItemCaseSensitive(gridJSON, "z")->valueint
+        );
+    }
+    if (cJSON_GetObjectItemCaseSensitive(object, "octree") != nullptr) {
+        auto octreeJSON = cJSON_GetObjectItemCaseSensitive(object, "octree");
+        auto maxDepth = (int) cJSON_GetObjectItemCaseSensitive(octreeJSON, "maxDepth")->valueint;
+        o->buildOctree(maxDepth);
     }
 }
 
@@ -822,4 +840,12 @@ void Mesh3D::updateBoundingBox()
     this->aabb.min.z = minZ;
 
     this->aabb.updateVertices();
+}
+
+void Mesh3D::fillGrid3DFromGeometry()
+{
+    grid->reset(grid->getNumberCubesX(), grid->getNumberCubesY(), grid->getNumberCubesZ());
+    for (auto &m: meshes) {
+        grid->doTestForNonEmptyGeometry(m.modelTriangles);
+    }
 }

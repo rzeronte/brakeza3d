@@ -29,6 +29,7 @@ class Octree {
 private:
     OctreeNode* FindNodeContainingVertex(OctreeNode* node, const Vertex3D& vertex);
     int maxDepth;
+    AABB3D bounds;
 public:
 
     Octree(AABB3D bounds, int maxDepth);
@@ -40,6 +41,8 @@ public:
     OctreeNode* FindNode(Vertex3D vertex) ;
 
     OctreeNode root;
+
+    cJSON *getJSON();
 };
 
 

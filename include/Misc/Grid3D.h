@@ -30,7 +30,7 @@ private:
     PathFinding pathFinding;
 public:
 
-    Grid3D(const AABB3D &bounds, int sizeX, int sizeY, int sizeZ);
+    Grid3D(AABB3D bounds, int sizeX, int sizeY, int sizeZ);
 
     bool isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles);
 
@@ -57,6 +57,12 @@ public:
     void makeCells();
 
     void LoadPathFindingBlocksFromGrid();
+
+    cJSON *getJSON();
+
+    std::vector<CubeGrid3D> makeTravelCubesGrid();
+
+    void setTravel(int x1, int y1, int z1, int x2, int y2, int z2);
 };
 
 

@@ -3,7 +3,8 @@
 
 Octree::Octree(AABB3D bounds, int maxDepth)
 :
-    maxDepth(maxDepth)
+    maxDepth(maxDepth),
+    bounds(bounds)
 {
     root = BuildOctree(bounds, 0);
 }
@@ -108,4 +109,13 @@ OctreeNode* Octree::FindNodeContainingVertex(OctreeNode* node, const Vertex3D& v
 OctreeNode* Octree::FindNode(Vertex3D vertex)
 {
     return FindNodeContainingVertex(&root, vertex);
+}
+
+cJSON *Octree::getJSON()
+{
+    cJSON *octreeJSON = cJSON_CreateObject();
+
+    cJSON_AddNumberToObject(octreeJSON, "maxDepth", (int) maxDepth);
+
+    return octreeJSON;
 }

@@ -5,6 +5,7 @@
 #include <vector>
 #include "../Objects/Vertex3D.h"
 #include "../Render/Plane.h"
+#include "../include/Misc/cJSON.h"
 
 class AABB3D {
 public:
@@ -77,6 +78,25 @@ public:
                 point.z >= min.z && point.z <= max.z);
     }
 
+    cJSON *getJSON()
+    {
+        cJSON *aabbJSON = cJSON_CreateObject();
+
+        cJSON *minJSON = cJSON_CreateObject();
+        cJSON_AddNumberToObject(minJSON, "x", (float) min.x);
+        cJSON_AddNumberToObject(minJSON, "y", (float) min.y);
+        cJSON_AddNumberToObject(minJSON, "z", (float) min.z);
+
+        cJSON *maxJSON = cJSON_CreateObject();
+        cJSON_AddNumberToObject(maxJSON, "x", (float) max.x);
+        cJSON_AddNumberToObject(maxJSON, "y", (float) max.y);
+        cJSON_AddNumberToObject(maxJSON, "z", (float) max.z);
+
+        cJSON_AddItemToObject(aabbJSON, "min", minJSON);
+        cJSON_AddItemToObject(aabbJSON, "max", maxJSON);
+
+        return aabbJSON;
+    }
 };
 
 

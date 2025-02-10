@@ -5,18 +5,19 @@
 Brakeza3D utiliza GLSL como lenguaje de shading. En la carpeta ``GLSL`` podrás encontrar todos 
 los shaders existentes.
 
-Shaders de objetos con geometría 3D:
+Shaders 3D:
 
 - `Render` (*/GLSL/Render*): Dibuja un objeto en pantalla con texturas e iluminación.
 - `Outliner` (*/GLSL/Outliner*): Outliner para un objeto.
 - `Color` (*/GLSL/Color*): Dibuja un objeto en pantalla de un color.
 - `Wireframe` (*/GLSL/Wireframe*): Dibuja los triangulos de un objeto en pantalla.
 - `Points` (*/GLSL/Points*): Dibuja los vertices de un objeto en pantalla.
+- `Line3D` (*/GLSL/Line3D*): Dibuja una o varias líneas 3D en pantalla.
 
-Shaders de objetos 2D:
+Shaders 2D:
 
 - `Image` (*/GLSL/Image*): Dibuja una imagen en pantalla.
-- `Line` (*/GLSL/Line*): Dibuja una línea en pantalla.
+- `Line` (*/GLSL/Line*): Dibuja una línea 2D en pantalla.
 
 Shaders de post-procesamiento:
 

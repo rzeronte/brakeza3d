@@ -227,6 +227,26 @@ void LUAIntegration(sol::state &lua)
         "root", &Octree::root
     );
 
+    lua.new_usertype<CubeGrid3D>("CubeGrid3D",
+        sol::constructors<CubeGrid3D()>(),
+        "box", &CubeGrid3D::box,
+        "posX", &CubeGrid3D::posX,
+        "posY", &CubeGrid3D::posY,
+        "posZ", &CubeGrid3D::posZ,
+        "passed", &CubeGrid3D::passed
+    );
+
+    lua.new_usertype<Grid3D>("Grid3D",
+        sol::constructors<Grid3D(AABB3D, int, int, int)>(),
+        "isEmpty", &Grid3D::isEmpty,
+        "getCubeFromPosition", &Grid3D::getCubeFromPosition,
+        "getNumberCubesX", &Grid3D::getNumberCubesX,
+        "getNumberCubesY", &Grid3D::getNumberCubesY,
+        "getNumberCubesZ", &Grid3D::getNumberCubesZ,
+        "getBoxes", &Grid3D::getBoxes,
+        "setTravel", &Grid3D::setTravel,
+        "makeTravelCubesGrid", &Grid3D::makeTravelCubesGrid
+    );
 
     lua.new_usertype<Mesh3D>("Mesh3D",
     sol::base_classes, sol::bases<Object3D>(),
@@ -234,6 +254,7 @@ void LUAIntegration(sol::state &lua)
         "addMesh3DShader", &Mesh3D::addMesh3DShader,
         "buildGrid3D", &Mesh3D::buildGrid3D,
         "buildOctree", &Mesh3D::buildOctree,
+        "fillGrid3DFromGeometry", &Mesh3D::fillGrid3DFromGeometry,
         "getOctree", &Mesh3D::getOctree,
         "getGrid3D", &Mesh3D::getGrid3D,
         "create", sol::factories([](Vertex3D position, const std::string& imageFile) {
