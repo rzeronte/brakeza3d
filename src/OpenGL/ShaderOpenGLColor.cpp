@@ -19,6 +19,7 @@ ShaderOpenGLColor::ShaderOpenGLColor()
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
     glGenFramebuffers(1, &framebuffer);
+    glGenTextures(1, &textureColorbuffer);
 }
 
 void ShaderOpenGLColor::render(
@@ -36,13 +37,11 @@ void ShaderOpenGLColor::render(
         int h = ComponentsManager::get()->getComponentWindow()->getHeight();
 
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glGenTextures(1, &textureColorbuffer);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
@@ -56,7 +55,6 @@ void ShaderOpenGLColor::render(
     setMat4("projection", ProjectionMatrix);
     setMat4("view", ViewMatrix);
     setMat4("model", o->getModelMatrix());
-
     setVec3("color", color.toGLM());
 
     setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
