@@ -13,6 +13,7 @@
 - [Carga y reproducción de sonidos](#carga-y-reproducción-de-sonidos)
 - [Escribir texto en pantalla](#escribir-texto-en-pantalla)
 - [Terminar la ejecución](#terminar-la-ejecución)
+- [Pathfinding](#pathfinding)
 
 ---
 
@@ -283,4 +284,31 @@ end
 
 ```lua
 brakeza:finish()
+```
+
+---
+
+### Pathfinding
+
+```lua
+function onStart()
+    eye = Mesh3D.create(Vertex3D.new(0, 0, 1), "../assets/models/eye.fbx")
+    eye:buildGrid3D(10, 10, 10)
+    brakeza:addObject3D(eye, 'modelo')
+
+    eye:fillGrid3DFromGeometry()
+end
+
+function onUpdate()
+    -- camino entre (0, 0, 0) y (3, 3, 3)
+    eye:getGrid3D():setTravel(0, 0, 0, 3, 3, 3)
+
+    -- Obtener el path calculado mediante A*
+    path = eye:getGrid3D():makeTravelCubesGrid()
+
+    -- Ejemplo: Iteramos sobre el array path y pintamos los índices de cada CubeGrid3D
+    for i, cube in ipairs(path) do
+        print("Cube " .. i .. ": X = " .. cube.posX .. ", Y = " .. cube.posY .. ", Z = " .. cube.posZ)
+    end
+end
 ```
