@@ -8,24 +8,31 @@ ComponentRender::ComponentRender()
     fps(0),
     fpsFrameCounter(0),
     frameTime(0),
-    sizeTileWidth((EngineSetup::get()->screenWidth / 2)),
-    sizeTileHeight((EngineSetup::get()->screenHeight / 2)),
-    numberTilesHorizontal(0),
-    numberTilesVertical(0),
-    numberTiles(0),
-    tilePixelsBufferSize(0),
     selectedObject(nullptr),
     textWriter(nullptr),
-    sceneShadersEnabled(true)
+    sceneShadersEnabled(true),
+    shaderOGLRender(nullptr),
+    shaderOGLImage(nullptr),
+    shaderOGLLine(nullptr),
+    shaderOGLWireframe(nullptr),
+    shaderOGLLine3D(nullptr),
+    shaderOGLShading(nullptr),
+    shaderOGLPoints(nullptr),
+    shaderOGLOutline(nullptr),
+    shaderOGLColor(nullptr),
+    shaderOGLParticles(nullptr),
+    shaderOGLDOF(nullptr),
+    shaderOGLDepthMap(nullptr),
+    shaderOGLFOG(nullptr),
+    shaderOGLTint(nullptr)
 {
 }
 
 void ComponentRender::onStart()
 {
     Logging::Message("ComponentRender onStart");
-    setEnabled(true);
 
-    initTiles();
+    setEnabled(true);
 
     auto window = ComponentsManager::get()->getComponentWindow();
     textWriter = new TextWriter(window->getRenderer(),window->getFontDefault());
@@ -43,7 +50,6 @@ void ComponentRender::onStart()
     shaderOGLDOF = new ShaderOpenGLDOF();
     shaderOGLDepthMap = new ShaderOpenGLDepthMap();
     shaderOGLFOG = new ShaderOpenGLFOG();
-    shaderOGLShockWave = new ShaderOpenGLShockWave();
     shaderOGLTint = new ShaderOpenGLTint();
 }
 
@@ -158,55 +164,6 @@ void ComponentRender::onUpdateSceneObjects()
     for (auto o: sceneObjects) {
         if (o->isEnabled()) {
             o->onUpdate();
-        }
-    }
-}
-
-void ComponentRender::initTiles()
-{
-    if (SETUP->screenWidth % this->sizeTileWidth != 0) {
-        printf("Bad sizeTileWidth\r\n");
-        exit(-1);
-    }
-    if (SETUP->screenHeight % this->sizeTileHeight != 0) {
-        printf("Bad sizeTileHeight\r\n");
-        exit(-1);
-    }
-
-    // Tiles Raster setup
-    this->numberTilesHorizontal = SETUP->screenWidth / this->sizeTileWidth;
-    this->numberTilesVertical = SETUP->screenHeight / this->sizeTileHeight;
-    this->numberTiles = numberTilesHorizontal * numberTilesVertical;
-    this->tilePixelsBufferSize = this->sizeTileWidth * this->sizeTileHeight;
-
-    for (int y = 0; y < SETUP->screenHeight; y += this->sizeTileHeight) {
-        for (int x = 0; x < SETUP->screenWidth; x += this->sizeTileWidth) {
-
-            Tile t;
-
-            t.draw = true;
-            t.id_x = (x / this->sizeTileWidth);
-            t.id_y = (y / this->sizeTileHeight);
-            t.id = t.id_y * this->numberTilesHorizontal + t.id_x;
-            t.start_x = x;
-            t.start_y = y;
-
-            this->tiles.emplace_back(t);
-            // Load up the vector with MyClass objects
-        }
-    }
-
-    // Create local buffers and openCL buffer pointers
-    for (int i = 0; i < numberTiles; i++) {
-
-        this->tiles[i].buffer = new unsigned int[tilePixelsBufferSize];
-        for (int j = 0; j < tilePixelsBufferSize; j++) {
-            this->tiles[i].buffer[j] = 0;
-        }
-
-        this->tiles[i].bufferDepth = new float[tilePixelsBufferSize];
-        for (int j = 0; j < tilePixelsBufferSize; j++) {
-            this->tiles[i].bufferDepth[j] = 0;
         }
     }
 }
@@ -424,9 +381,6 @@ ShaderOpenGLFOG *ComponentRender::getShaderOGLFOG() const {
     return shaderOGLFOG;
 }
 
-ShaderOpenGLShockWave *ComponentRender::getShaderOGLShockWave() const {
-    return shaderOGLShockWave;
-}
 ShaderOpenGLTint *ComponentRender::getShaderOGLTint() const {
     return shaderOGLTint;
 }

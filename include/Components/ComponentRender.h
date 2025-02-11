@@ -9,7 +9,6 @@
 #include <mutex>
 #include "Component.h"
 #include "../Objects/Triangle3D.h"
-#include "../Render/Tile.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/Render/Maths.h"
 #include "../2D/TextWriter.h"
@@ -42,14 +41,6 @@ private:
     int fpsFrameCounter;
     float frameTime;
 
-    std::vector<Tile> tiles;
-    int sizeTileWidth;
-    int sizeTileHeight;
-    int numberTilesHorizontal;
-    int numberTilesVertical;
-    int numberTiles;
-    int tilePixelsBufferSize;
-
     Object3D *selectedObject;
 
     TextWriter *textWriter;
@@ -72,7 +63,6 @@ private:
     ShaderOpenGLDOF *shaderOGLDOF;
     ShaderOpenGLDepthMap *shaderOGLDepthMap;
     ShaderOpenGLFOG *shaderOGLFOG;
-    ShaderOpenGLShockWave *shaderOGLShockWave;
     ShaderOpenGLTint *shaderOGLTint;
 
 public:
@@ -93,8 +83,6 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
 
     static void onUpdateSceneObjects();
-
-    void initTiles();
 
     void updateFPS();
 
@@ -166,11 +154,9 @@ public:
 
     [[nodiscard]] ShaderOpenGLFOG *getShaderOGLFOG() const;
 
-    [[nodiscard]] ShaderOpenGLShockWave *getShaderOGLShockWave() const;
-
     [[nodiscard]] ShaderOpenGLTint *getShaderOGLTint() const;
 
-    ShaderOpenGLDepthMap *getShaderOGLDepthMap() const;
+    [[nodiscard]] ShaderOpenGLDepthMap *getShaderOGLDepthMap() const;
 };
 
 

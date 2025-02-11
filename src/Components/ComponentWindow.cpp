@@ -334,7 +334,6 @@ void ComponentWindow::resetFramebuffer()
     render->getShaderOGLDOF()->destroy();
     render->getShaderOGLDepthMap()->destroy();
     render->getShaderOGLFOG()->destroy();
-    render->getShaderOGLShockWave()->destroy();
 }
 
 void ComponentWindow::RenderLayersToGlobalFramebuffer() const

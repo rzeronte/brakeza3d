@@ -13,7 +13,6 @@
 #include "../Render/Logging.h"
 #include "../FXEffect/FXOutliner.h"
 #include "../FXEffect/FXBlink.h"
-#include "../FXEffect/FXShockWave.h"
 #include "GUIWidgetObjects3D.h"
 #include "GUIWidgetObject3DProperties.h"
 #include "GUIWidgetProjectSettings.h"
@@ -537,7 +536,7 @@ public:
         }
     }
 
-    void drawSceneShaders()
+    void drawSceneCustomShaders()
     {
         static char name[256];
         strncpy(name, currentVariableToCreateCustomShader.c_str(), sizeof(name));
@@ -555,6 +554,9 @@ public:
         ImGui::Separator();
 
         auto shaders = ComponentsManager::get()->getComponentRender()->getSceneShaders();
+        if ((int) shaders.size() <= 0) {
+            ImGui::Text("No shaders attached to Scene");
+        }
         for (int i = 0; i < shaders.size(); i++) {
             auto s = shaders[i];
             ImGui::PushID(i);
@@ -587,7 +589,7 @@ public:
         }
     }
 
-    void drawMesh3DShaders() {
+    void drawFX() {
 
         int i = 0;
         ImGui::PushID(i);
@@ -595,7 +597,7 @@ public:
         if (ImGui::Selectable(optionText.c_str())) {
         }
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-            ImGui::SetDragDropPayload("MESH3D_SHADER_ITEM", std::to_string(i).c_str(), sizeof(int));
+            ImGui::SetDragDropPayload("MESH3D_FX_ITEM", std::to_string(i).c_str(), sizeof(int));
             ImGui::Text("%s", availableMesh3DShaders[i]);
             ImGui::EndDragDropSource();
         }
@@ -607,7 +609,7 @@ public:
         if (ImGui::Selectable(optionText.c_str())) {
         }
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-            ImGui::SetDragDropPayload("MESH3D_SHADER_ITEM", std::to_string(i).c_str(), sizeof(int));
+            ImGui::SetDragDropPayload("MESH3D_FX_ITEM", std::to_string(i).c_str(), sizeof(int));
             ImGui::Text("%s", availableMesh3DShaders[i]);
             ImGui::EndDragDropSource();
         }
@@ -619,7 +621,7 @@ public:
         if (ImGui::Selectable(optionText.c_str())) {
         }
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-            ImGui::SetDragDropPayload("MESH3D_SHADER_ITEM", std::to_string(i).c_str(), sizeof(int));
+            ImGui::SetDragDropPayload("MESH3D_FX_ITEM", std::to_string(i).c_str(), sizeof(int));
             ImGui::Text("%s", availableMesh3DShaders[i]);
             ImGui::EndDragDropSource();
         }
@@ -631,14 +633,14 @@ public:
         if (ImGui::Selectable(optionText.c_str())) {
         }
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-            ImGui::SetDragDropPayload("MESH3D_SHADER_ITEM", std::to_string(i).c_str(), sizeof(int));
+            ImGui::SetDragDropPayload("MESH3D_FX_ITEM", std::to_string(i).c_str(), sizeof(int));
             ImGui::Text("%s", availableMesh3DShaders[i]);
             ImGui::EndDragDropSource();
         }
         ImGui::PopID();
     }
 
-    void drawCustomShaders()
+    void drawCustomShadersFolder()
     {
         std::vector<std::string> result = Tools::getFolderFiles(EngineSetup::get()->CUSTOM_SHADERS_FOLDER, "fs");
 
@@ -709,17 +711,15 @@ public:
         }
         ImGui::End();
 
-        if (ImGui::Begin("Scene Shaders")) {
-            drawSceneShaders();
-        }
-        ImGui::End();
         if (ImGui::Begin("Custom Shaders")) {
-            drawCustomShaders();
+            drawSceneCustomShaders();
+            ImGui::Separator();
+            drawCustomShadersFolder();
         }
         ImGui::End();
 
-        if (ImGui::Begin("Mesh3D Shaders")) {
-            drawMesh3DShaders();
+        if (ImGui::Begin("FX")) {
+            drawFX();
         }
         ImGui::End();
 
@@ -855,7 +855,7 @@ public:
         }
     }
 
-    void drawGlobalIllumination()
+    static void drawGlobalIllumination()
     {
         if (ImGui::TreeNode("Global illumination")) {
             const float range_illumination_min_settings = -1.0f;
