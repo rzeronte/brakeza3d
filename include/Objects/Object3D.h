@@ -21,7 +21,7 @@
 #include "../Misc/cJSON.h"
 #include "ScriptLUA.h"
 #include "../../sol/sol.hpp"
-#include "../OpenGL/FXEffectOpenGL.h"
+#include "../OpenGL/FXOpenGL.h"
 #include "../Collision/Collider.h"
 
 struct ObjectGUIFeatures {
@@ -57,7 +57,7 @@ protected:
     std::vector<ScriptLUA*> scripts;
     std::vector<Object3D*> attachedObjects;
     sol::environment luaEnvironment;
-    std::vector<FXEffectOpenGL*> shaders;
+    std::vector<FXOpenGL*> effects;
 
     Timer timer;
     float distanceToCamera;
@@ -178,9 +178,9 @@ public:
 
     M3 getM3ModelMatrix();
 
-    void addMesh3DShader(FXEffectOpenGL *shader);
+    void addFXOpenGL(FXOpenGL *fx);
 
-    void removeShader(int i);
+    void removeFXOpenGLByIndex(int i);
 
     [[nodiscard]] const Timer &getTimer() const;
 

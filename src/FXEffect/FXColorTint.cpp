@@ -7,16 +7,16 @@
 
 FXColorTint::FXColorTint(bool active, Color color, float progress)
 :
-    FXEffectOpenGL(active),
-    color(color),
-    progress(progress)
+        FXOpenGL(active),
+        color(color),
+        progress(progress)
 {
     setLabel("FXColorTint");
 }
 
 void FXColorTint::update()
 {
-    FXEffectBase::update();
+    FXBase::update();
 
     if (!isEnabled()) return;
 
@@ -58,11 +58,11 @@ void FXColorTint::setColor(const Color &color) {
 
 void FXColorTint::preUpdate()
 {
-    FXEffectOpenGL::preUpdate();
+    FXOpenGL::preUpdate();
 }
 
 void FXColorTint::postUpdate() {
-    FXEffectOpenGL::postUpdate();
+    FXOpenGL::postUpdate();
     update();
 }
 

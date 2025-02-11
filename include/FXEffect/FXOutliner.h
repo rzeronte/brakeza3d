@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_FXOUTLINER_H
 #define BRAKEZA3D_FXOUTLINER_H
 
-#include "../OpenGL/FXEffectOpenGL.h"
+#include "../OpenGL/FXOpenGL.h"
 #include "../Misc/Image.h"
 #include "../Objects/Mesh3D.h"
 #include "../OpenGL/FXEffectOpenGLObject.h"

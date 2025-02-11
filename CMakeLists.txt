@@ -117,8 +117,7 @@ add_executable(Brakeza3D
     include/Misc/Color.h                            src/Misc/Color.cpp
     include/Misc/cJSON.h                            src/Misc/cJSON.c
 
-    include/Render/Tile.h
-    include/Render/AABB3D.h
+        include/Render/AABB3D.h
     include/Render/Transforms.h                     src/Render/Transforms.cpp
 
     include/GUI/GUI.h
@@ -181,9 +180,8 @@ add_executable(Brakeza3D
     src/FXEffect/FXOutliner.cpp                     include/FXEffect/FXOutliner.h
     src/FXEffect/FXColorTint.cpp                    include/FXEffect/FXColorTint.h
     src/FXEffect/FXBlink.cpp                        include/FXEffect/FXBlink.h
-    src/FXEffect/FXShockWave.cpp                    include/FXEffect/FXShockWave.h
 
-    imgui/imconfig.h
+        imgui/imconfig.h
     imgui/imgui.h                                   imgui/imgui.cpp
     imgui/imgui_demo.cpp                            imgui/imgui_draw.cpp
     imgui/imgui_internal.h                          imgui/imgui_widgets.cpp
@@ -208,8 +206,8 @@ add_executable(Brakeza3D
         src/Misc/TileManager.cpp include/Misc/TileManager.h
 
     include/OpenGL/FXEffectOpenGLObject.h
-    include/OpenGL/FXEffectBase.h
-    include/OpenGL/FXEffectOpenGL.h
+        include/OpenGL/FXBase.h
+        include/OpenGL/FXOpenGL.h
     include/OpenGL/ShaderOpenGLParticles.h          src/OpenGL/ShaderOpenGLParticles.cpp
     include/OpenGL/ShaderOpenGLOutline.h            src/OpenGL/ShaderOpenGLOutline.cpp
 

@@ -6,10 +6,10 @@
 #define BRAKEZA3D_FXCOLORTINT_H
 
 
-#include "../OpenGL/FXEffectOpenGL.h"
+#include "../OpenGL/FXOpenGL.h"
 #include "../Misc/Image.h"
 
-class FXColorTint: public FXEffectOpenGL {
+class FXColorTint: public FXOpenGL {
 private:
     Color color;
     float progress;

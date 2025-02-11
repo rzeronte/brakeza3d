@@ -25,7 +25,7 @@ enum class SceneObjectLoaderMapping {
     Image2D
 };
 
-enum class Mesh3DShaderLoaderMapping {
+enum class FXOpenGLLoaderMapping {
     FXOutliner,
     FXBlink,
     FXTint,
@@ -33,23 +33,23 @@ enum class Mesh3DShaderLoaderMapping {
 
 class SceneLoader {
     std::map<std::string, SceneObjectLoaderMapping> sceneTypes = {
-            {"Object3D", SceneObjectLoaderMapping::Object3D},
-            {"Mesh3D", SceneObjectLoaderMapping::Mesh3D},
-            {"Mesh3DAnimation", SceneObjectLoaderMapping::Mesh3DAnimation},
-            {"LightPoint3D", SceneObjectLoaderMapping::LightPoint3D},
-            {"SpotLight3D", SceneObjectLoaderMapping::SpotLight3D},
-            {"ParticleEmitter", SceneObjectLoaderMapping::ParticleEmitter},
-            {"BillboardAnimation", SceneObjectLoaderMapping::BillboardAnimation},
-            {"BillboardAnimation8Directions", SceneObjectLoaderMapping::BillboardAnimation8Directions},
-            {"Image2DAnimation", SceneObjectLoaderMapping::Image2DAnimation},
-            {"Image3D", SceneObjectLoaderMapping::Image3D},
-            {"Image2D", SceneObjectLoaderMapping::Image2D}
+        {"Object3D", SceneObjectLoaderMapping::Object3D},
+        {"Mesh3D", SceneObjectLoaderMapping::Mesh3D},
+        {"Mesh3DAnimation", SceneObjectLoaderMapping::Mesh3DAnimation},
+        {"LightPoint3D", SceneObjectLoaderMapping::LightPoint3D},
+        {"SpotLight3D", SceneObjectLoaderMapping::SpotLight3D},
+        {"ParticleEmitter", SceneObjectLoaderMapping::ParticleEmitter},
+        {"BillboardAnimation", SceneObjectLoaderMapping::BillboardAnimation},
+        {"BillboardAnimation8Directions", SceneObjectLoaderMapping::BillboardAnimation8Directions},
+        {"Image2DAnimation", SceneObjectLoaderMapping::Image2DAnimation},
+        {"Image3D", SceneObjectLoaderMapping::Image3D},
+        {"Image2D", SceneObjectLoaderMapping::Image2D}
     };
 
-    std::map<std::string, Mesh3DShaderLoaderMapping> mesh3DShaderTypes = {
-            {"FXOutliner", Mesh3DShaderLoaderMapping::FXOutliner},
-            {"FXBlink", Mesh3DShaderLoaderMapping::FXBlink},
-            {"FXColorTint", Mesh3DShaderLoaderMapping::FXTint},
+    std::map<std::string, FXOpenGLLoaderMapping> mesh3DShaderTypes = {
+        {"FXOutliner",  FXOpenGLLoaderMapping::FXOutliner},
+        {"FXBlink",     FXOpenGLLoaderMapping::FXBlink},
+        {"FXColorTint", FXOpenGLLoaderMapping::FXTint},
     };
 
 public:
@@ -67,7 +67,7 @@ public:
 
     static void createImage3DToScene(const std::string &filename);
 
-    std::map<std::string, Mesh3DShaderLoaderMapping> &getMesh3DShaderTypes();
+    std::map<std::string, FXOpenGLLoaderMapping> &getFXOpenGLTypes();
 
     static void createSpotLight3DInScene();
 

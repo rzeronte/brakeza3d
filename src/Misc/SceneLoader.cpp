@@ -361,7 +361,7 @@ void SceneLoader::createImage3DToScene(const std::string &filename)
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Image3D"));
 }
 
-std::map<std::string, Mesh3DShaderLoaderMapping> &SceneLoader::getMesh3DShaderTypes()
+std::map<std::string, FXOpenGLLoaderMapping> &SceneLoader::getFXOpenGLTypes()
 {
     return mesh3DShaderTypes;
 }

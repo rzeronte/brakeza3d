@@ -2,16 +2,16 @@
 // Created by eduardo on 30/05/22.
 //
 
-#ifndef BRAKEZA3D_FXEFFECTOPENGL_H
-#define BRAKEZA3D_FXEFFECTOPENGL_H
+#ifndef BRAKEZA3D_FXOPENGL_H
+#define BRAKEZA3D_FXOPENGL_H
 
-#include "FXEffectBase.h"
+#include "FXBase.h"
 #include "../Misc/cJSON.h"
 
-class FXEffectOpenGL: public FXEffectBase {
+class FXOpenGL: public FXBase {
 protected:
 public:
-    explicit FXEffectOpenGL(bool active) : FXEffectBase(active)
+    explicit FXOpenGL(bool active) : FXBase(active)
     {
     }
 
@@ -29,4 +29,4 @@ public:
 };
 
 
-#endif //BRAKEZA3D_FXEFFECTOPENGL_H
+#endif //BRAKEZA3D_FXOPENGL_H

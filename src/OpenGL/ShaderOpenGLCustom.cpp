@@ -148,8 +148,6 @@ void ShaderOpenGLCustom::addDataTypeEmpty(const char *name, const char *type)
             typeValue = glm::vec4(0);
             break;
         }
-        default:
-            break;
     }
 
     dataTypes.emplace_back(name, type, typeValue);

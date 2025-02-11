@@ -250,7 +250,7 @@ void LUAIntegration(sol::state &lua)
     lua.new_usertype<Mesh3D>("Mesh3D",
     sol::base_classes, sol::bases<Object3D>(),
         "AssimpLoadGeometryFromFile", &Mesh3D::AssimpLoadGeometryFromFile,
-        "addMesh3DShader", &Mesh3D::addMesh3DShader,
+        "addFXOpenGL", &Mesh3D::addFXOpenGL,
         "buildGrid3D", &Mesh3D::buildGrid3D,
         "buildOctree", &Mesh3D::buildOctree,
         "fillGrid3DFromGeometry", &Mesh3D::fillGrid3DFromGeometry,
@@ -298,26 +298,26 @@ void LUAIntegration(sol::state &lua)
         "loadScene", &SceneLoader::loadScene
     );
 
-    lua.new_usertype<FXEffectBase>("FXEffectBase",
-    "getLabel", &FXEffectBase::getLabel,
-        "setLabel", &FXEffectBase::setLabel,
-        "isEnabled", &FXEffectBase::isEnabled,
-        "setEnabled", &FXEffectBase::setEnabled
+    lua.new_usertype<FXBase>("FXEffectBase",
+                             "getLabel", &FXBase::getLabel,
+                             "setLabel", &FXBase::setLabel,
+                             "isEnabled", &FXBase::isEnabled,
+                             "setEnabled", &FXBase::setEnabled
     );
 
-    lua.new_usertype<FXEffectOpenGL>("ShaderOpenCL",
-     sol::base_classes, sol::bases<FXEffectBase>(),
-         "getTypesJSON", &FXEffectOpenGL::getJSON
+    lua.new_usertype<FXOpenGL>("ShaderOpenCL",
+                               sol::base_classes, sol::bases<FXBase>(),
+                               "getTypesJSON", &FXOpenGL::getJSON
     );
 
     lua.new_usertype<FXEffectOpenGLObject>("ObjectShaderOpenCL",
-    sol::base_classes, sol::bases<FXEffectOpenGL>(),
+    sol::base_classes, sol::bases<FXOpenGL>(),
         "setObject", &FXEffectOpenGLObject::setObject,
         "getObject", &FXEffectOpenGLObject::getObject
     );
 
     lua.new_usertype<FXOutliner>("FXOutliner",
-        sol::base_classes, sol::bases<FXEffectOpenGL>(),
+        sol::base_classes, sol::bases<FXOpenGL>(),
         "create", &FXOutliner::create,
         "setSize", &FXOutliner::setSize,
         "getSize", &FXOutliner::getSize

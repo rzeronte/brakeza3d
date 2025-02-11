@@ -6,7 +6,7 @@
 
 FXEffectOpenGLObject::FXEffectOpenGLObject(bool active, Object3D *object)
 :
-        FXEffectOpenGL(active),
+        FXOpenGL(active),
         object(object)
 {
 }

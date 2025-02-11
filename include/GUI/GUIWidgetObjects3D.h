@@ -6,7 +6,6 @@
 #include "imgui.h"
 #include "../Objects/Object3D.h"
 #include "../Render/Logging.h"
-#include "../FXEffect/FXShockWave.h"
 #include "../Objects/Mesh3D.h"
 #include "../FXEffect/FXOutliner.h"
 #include "../FXEffect/FXBlink.h"
@@ -67,7 +66,7 @@ struct GUIWidgetObjects3D {
         ImGui::NewLine();
     }
 
-    bool isAllowedObjectInConfig(std::string typeObject)
+    bool isAllowedObjectInConfig(const std::string& typeObject)
     {
         for (const auto& o : allowedObjectsToShow) {
             if (o.visible && o.typeObject == typeObject ) {
@@ -121,18 +120,13 @@ struct GUIWidgetObjects3D {
                         );
                     }
 
-                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MESH3D_SHADER_ITEM")) {
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MESH3D_FX_ITEM")) {
                         Logging::Message("Dropping shader (%s) in %s", payload->Data, o->getLabel().c_str());
                         int selection = std::stoi((char*) payload->Data);
                         switch(selection) {
-                            case 2: {
-                                auto shader = new FXShockWave(true, o, 1.5f, ShockWaveParams::standard());
-                                o->addMesh3DShader(shader);
-                                break;
-                            }
                             case 3: {
                                 auto shader = new FXColorTint(true, Color::red(), 0.0f);
-                                o->addMesh3DShader(shader);
+                                o->addFXOpenGL(shader);
                                 break;
                             }
                         }
@@ -141,12 +135,12 @@ struct GUIWidgetObjects3D {
                             switch(selection) {
                                 case 0: {
                                     auto shader = new FXOutliner(true, mesh, Color::green(), 1);
-                                    mesh->addMesh3DShader(shader);
+                                    mesh->addFXOpenGL(shader);
                                     break;
                                 }
                                 case 1: {
                                     auto shader = new FXBlink(true, mesh, 0.1f , Color::green());
-                                    mesh->addMesh3DShader(shader);
+                                    mesh->addFXOpenGL(shader);
                                     break;
                                 }
                             }

@@ -14,18 +14,18 @@ FXOutliner::FXOutliner(bool active, Object3D *object, const Color &color, float 
 
 void FXOutliner::preUpdate()
 {
-    FXEffectOpenGL::preUpdate();
+    FXOpenGL::preUpdate();
     update();
 }
 
 void FXOutliner::postUpdate()
 {
-    FXEffectOpenGL::postUpdate();
+    FXOpenGL::postUpdate();
 }
 
 void FXOutliner::update()
 {
-    FXEffectBase::update();
+    FXBase::update();
 
     if (!isEnabled()) return;
 

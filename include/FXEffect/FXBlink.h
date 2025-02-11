@@ -6,7 +6,7 @@
 #include "../Render/Transforms.h"
 #include "../Render/Drawable.h"
 #include "../Render/Logging.h"
-#include "../OpenGL/FXEffectOpenGL.h"
+#include "../OpenGL/FXOpenGL.h"
 
 class FXBlink : public FXEffectOpenGLObject {
     bool isBlinking;

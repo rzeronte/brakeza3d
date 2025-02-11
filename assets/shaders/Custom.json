@@ -1,12 +1,18 @@
 {
 	"name":	"../GLSL/Custom.fs",
 	"types":	[{
-			"name":	"test1",
-			"type":	"int",
-			"value":	-3
-		}, {
-			"name":	"test2",
+			"name":	"r_factor",
 			"type":	"float",
-			"value":	0.40000000596046448
-		}]
+			"value":	0
+		}, {
+			"name":	"g_factor",
+			"type":	"float",
+			"value":	1
+		},
+        {
+           "name":	"b_factor",
+           "type":	"float",
+           "value":	0
+        }
+    ]
 }

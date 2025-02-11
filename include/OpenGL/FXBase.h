@@ -7,7 +7,7 @@
 #include "../Objects/Vertex3D.h"
 #include "../Misc/Color.h"
 
-class FXEffectBase {
+class FXBase {
 protected:
     bool enabled;
 
@@ -20,7 +20,7 @@ protected:
 
     std::string label;
 public:
-    explicit FXEffectBase(bool enabled)
+    explicit FXBase(bool enabled)
     :
         enabled(enabled),
         deltaTime(0),
@@ -44,7 +44,7 @@ public:
     }
 
     void setEnabled(bool enabled) {
-        FXEffectBase::enabled = enabled;
+        FXBase::enabled = enabled;
     }
 
     [[nodiscard]] const std::string &getLabel() const {
@@ -52,7 +52,7 @@ public:
     }
 
     void setLabel(const std::string &label) {
-        FXEffectBase::label = label;
+        FXBase::label = label;
     }
 
     [[nodiscard]] float getExecutionTime() const {

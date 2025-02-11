@@ -25,7 +25,7 @@ void Mesh3D::onUpdate()
 
     if (isRemoved()) return;
 
-    for (auto s: shaders) {
+    for (auto s: effects) {
         s->preUpdate();
     }
 
@@ -454,38 +454,24 @@ cJSON * Mesh3D::getJSON()
     return root;
 }
 
-void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o) {
+void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
+{
     o->setBelongToScene(true);
     Object3D::setPropertiesFromJSON(object, o);
     o->setEnableLights(cJSON_GetObjectItemCaseSensitive(object, "enableLights")->valueint);
     o->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring);
 
     if (cJSON_GetObjectItemCaseSensitive(object, "shaders") != nullptr) {
-        auto mesh3DShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getMesh3DShaderTypes();
+        auto mesh3DShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getFXOpenGLTypes();
         cJSON *currentShader;
         cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
             auto type = cJSON_GetObjectItemCaseSensitive(currentShader, "type")->valuestring;
             switch (mesh3DShaderTypes[type]) {
-                case Mesh3DShaderLoaderMapping::FXOutliner: {
-                    auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
-                    auto shader = new FXOutliner(
-                            true,
-                            o,
-                            Color(
-                                    cJSON_GetObjectItemCaseSensitive(edgeColor, "r")->valueint,
-                                    cJSON_GetObjectItemCaseSensitive(edgeColor, "g")->valueint,
-                                    cJSON_GetObjectItemCaseSensitive(edgeColor, "b")->valueint
-                            ),
-                            (float) cJSON_GetObjectItemCaseSensitive(currentShader, "size")->valuedouble
-                    );
-                    o->addMesh3DShader(shader);
-                    break;
-                }
-                case Mesh3DShaderLoaderMapping::FXBlink: {
+                case FXOpenGLLoaderMapping::FXBlink: {
                     auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
                     auto blinkStep = (float) cJSON_GetObjectItemCaseSensitive(currentShader, "step")->valuedouble;
                     auto shader = new FXBlink(true, o, blinkStep, ToolsJSON::parseColorJSON(edgeColor));
-                    o->addMesh3DShader(shader);
+                    o->addFXOpenGL(shader);
                     break;
                 }
             }

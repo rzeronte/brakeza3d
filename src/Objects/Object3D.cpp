@@ -192,7 +192,7 @@ void Object3D::postUpdate()
 {
     if (!isEnabled()) return;
 
-    for (auto s: shaders) {
+    for (auto s: effects) {
         s->postUpdate();
     }
 
@@ -239,7 +239,7 @@ void Object3D::setAlphaEnabled(bool alphaEnabled)
 
 Object3D::~Object3D()
 {
-    for (auto s: shaders) {
+    for (auto s: effects) {
         delete s;
     }
 
@@ -384,17 +384,17 @@ void Object3D::drawImGuiProperties()
 
                     const float factor = 0.0025f;
                     if (ImGui::DragScalar("Pitch", ImGuiDataType_Float, &pitch, 0.1f, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
-                        auto partialRot = getRotation().arbitraryAxis(getRotation().X(), Maths::radiansToDegrees(pitch - oldPitch) * factor);
+                        auto partialRot = M3::arbitraryAxis(getRotation().X(), Maths::radiansToDegrees(pitch - oldPitch) * factor);
                         setRotation(getRotation() * partialRot);
                         M3::normalize(rotation);
                     }
                     if (ImGui::DragScalar("Yaw", ImGuiDataType_Float, &yaw, 0.1f, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
-                        auto partialRot = getRotation().arbitraryAxis(getRotation().Y(), Maths::radiansToDegrees(yaw - oldYaw) * factor);
+                        auto partialRot = M3::arbitraryAxis(getRotation().Y(), Maths::radiansToDegrees(yaw - oldYaw) * factor);
                         setRotation(getRotation() * partialRot);
                         M3::normalize(rotation);
                     }
                     if (ImGui::DragScalar("Roll", ImGuiDataType_Float, &roll, 0.1f, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
-                        auto partialRot = getRotation().arbitraryAxis(getRotation().Z(), Maths::radiansToDegrees(roll - oldRoll) * factor);
+                        auto partialRot = M3::arbitraryAxis(getRotation().Z(), Maths::radiansToDegrees(roll - oldRoll) * factor);
                         setRotation(getRotation() * partialRot);
                         M3::normalize(rotation);
                     }
@@ -430,15 +430,15 @@ void Object3D::drawImGuiProperties()
     }
 
     if (featuresGUI.shaders) {
-        if (ImGui::TreeNode("Shaders")) {
-            if ((int) shaders.size() <= 0) {
+        if (ImGui::TreeNode("Effects")) {
+            if ((int) effects.size() <= 0) {
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No shaders attached");
             }
 
-            for (int i = 0; i < (int) shaders.size(); i++) {
+            for (int i = 0; i < (int) effects.size(); i++) {
                 ImGui::PushID(i);
 
-                auto s = shaders[i];
+                auto s = effects[i];
                 ImGui::Image(TexturePackage::getOGLTextureID(*ImGuiTextures, "shaderIcon"), ImVec2(24, 24));
                 ImGui::SameLine(100);
 
@@ -453,7 +453,7 @@ void Object3D::drawImGuiProperties()
                 }
                 ImGui::SameLine();
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(*ImGuiTextures, "removeIcon"), ImVec2(14, 14))) {
-                    removeShader(i);
+                    removeFXOpenGLByIndex(i);
                 }
                 ImGui::SameLine();
                 if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {
@@ -642,11 +642,11 @@ cJSON *Object3D::getJSON()
     }
     cJSON_AddItemToObject(root, "scripts", scriptsArray);
 
-    cJSON *shadersArrayJSON = cJSON_CreateArray();
-    for ( auto s : shaders) {
-        cJSON_AddItemToArray(shadersArrayJSON, s->getJSON());
+    cJSON *effectsArrayJSON = cJSON_CreateArray();
+    for ( auto s : effects) {
+        cJSON_AddItemToArray(effectsArrayJSON, s->getJSON());
     }
-    cJSON_AddItemToObject(root, "shaders", shadersArrayJSON);
+    cJSON_AddItemToObject(root, "effects", effectsArrayJSON);
 
     return root;
 }
@@ -745,18 +745,27 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
         }
     }
 
-    if (cJSON_GetObjectItemCaseSensitive(object, "shaders") != nullptr) {
-        auto mesh3DShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getMesh3DShaderTypes();
+    if (cJSON_GetObjectItemCaseSensitive(object, "effects") != nullptr) {
+        auto mesh3DShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getFXOpenGLTypes();
         cJSON *currentShader;
         cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
             auto type = cJSON_GetObjectItemCaseSensitive(currentShader, "type")->valuestring;
             switch(mesh3DShaderTypes[type]) {
-                case Mesh3DShaderLoaderMapping::FXTint: {
+                case FXOpenGLLoaderMapping::FXTint: {
                     auto c = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
                     auto alpha = (float) cJSON_GetObjectItemCaseSensitive(currentShader, "alpha")->valuedouble;
                     auto enabled = (bool) cJSON_GetObjectItemCaseSensitive(currentShader, "enabled")->valueint;
                     auto shader = new FXColorTint(enabled, ToolsJSON::parseColorJSON(c), alpha);
-                    o->addMesh3DShader(shader);
+                    o->addFXOpenGL(shader);
+                    break;
+                }
+                case FXOpenGLLoaderMapping::FXOutliner: {
+                    auto c = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
+                    auto size = (float) cJSON_GetObjectItemCaseSensitive(currentShader, "size")->valuedouble;
+                    auto enabled = (bool) cJSON_GetObjectItemCaseSensitive(currentShader, "enabled")->valueint;
+                    auto color = ToolsJSON::parseColorJSON(c);
+                    auto shader = new FXOutliner(enabled, o, color, size);
+                    o->addFXOpenGL(shader);
                     break;
                 }
             }
@@ -789,15 +798,15 @@ glm::mat4 Object3D::getModelMatrix()
     return translationMatrix * rotationMatrix * scaleMatrix;
 }
 
-void Object3D::addMesh3DShader(FXEffectOpenGL *shader)
+void Object3D::addFXOpenGL(FXOpenGL *fx)
 {
-    shaders.push_back(shader);
+    effects.push_back(fx);
 }
 
-void Object3D::removeShader(int index)
+void Object3D::removeFXOpenGLByIndex(int index)
 {
-    if (index >= 0 && index < (int) shaders.size()) {
-        shaders.erase(shaders.begin() + index);
+    if (index >= 0 && index < (int) effects.size()) {
+        effects.erase(effects.begin() + index);
     }
 }
 

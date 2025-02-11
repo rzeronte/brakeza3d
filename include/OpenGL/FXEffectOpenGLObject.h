@@ -2,10 +2,10 @@
 #ifndef BRAKEZA3D_FXEFFECTOPENGLOBJECT_H
 #define BRAKEZA3D_FXEFFECTOPENGLOBJECT_H
 
-#include "FXEffectOpenGL.h"
+#include "FXOpenGL.h"
 #include "../Objects/Object3D.h"
 
-class FXEffectOpenGLObject : public FXEffectOpenGL {
+class FXEffectOpenGLObject : public FXOpenGL {
 protected:
     Object3D *object;
 public:

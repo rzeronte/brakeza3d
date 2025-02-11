@@ -20,12 +20,12 @@ FXBlink::FXBlink(bool active, Mesh3D *o, float step, Color c) :
 
 void FXBlink::preUpdate()
 {
-    FXEffectOpenGL::preUpdate();
+    FXOpenGL::preUpdate();
 }
 
 void FXBlink::postUpdate()
 {
-    FXEffectOpenGL::postUpdate();
+    FXOpenGL::postUpdate();
     update();
 }
 

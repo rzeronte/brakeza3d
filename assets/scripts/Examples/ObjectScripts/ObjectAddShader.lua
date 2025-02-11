@@ -1,6 +1,6 @@
 function onStart()
 	shader = FXOutliner:create()
-	this:addMesh3DShader(shader)
+	this:addFXOpenGL(shader)
 end
 
 function onUpdate()
