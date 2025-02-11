@@ -13,6 +13,11 @@
            "name":	"b_factor",
            "type":	"float",
            "value":	0
-        }
+        },
+       {
+          "name":	"a_factor",
+          "type":	"float",
+          "value":	0
+       }
     ]
 }

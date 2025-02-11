@@ -38,7 +38,7 @@ struct ShaderOpenGLCustomType {
 
 class ShaderOpenGLCustom: ShaderOpenGL, ShaderQuadOpenGL
 {
-    std::map<std::string, ShaderOpenGLCustomDataType> LUADataTypesMapping = {
+    std::map<std::string, ShaderOpenGLCustomDataType> GLSLTypeMapping = {
         {"int", ShaderOpenGLCustomDataType::INT},
         {"float", ShaderOpenGLCustomDataType::FLOAT},
         {"vec2", ShaderOpenGLCustomDataType::VEC2},
@@ -107,6 +107,18 @@ public:
     void removeDataType(const ShaderOpenGLCustomType &data);
 
     static ShaderOpenGLCustom *createEmptyCustomShader(const std::string& name);
+
+    void setDataTypeValue(const std::string &name, ShaderOpenGLCustomDataValue newValue);
+
+    void setDataTypeValue(const std::string &name, int newValue);
+
+    void setDataTypeValue(const std::string &name, float newValue);
+
+    void setDataTypeValue(const std::string &name, glm::vec2 newValue);
+
+    void setDataTypeValue(const std::string &name, glm::vec3 newValue);
+
+    void setDataTypeValue(const std::string &name, glm::vec4 newValue);
 };
 
 

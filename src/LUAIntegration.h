@@ -143,7 +143,8 @@ void LUAIntegration(sol::state &lua)
         "setGlobalIlluminationDirection", &ComponentRender::setGlobalIlluminationDirection,
         "setGlobalIlluminationAmbient", &ComponentRender::setGlobalIlluminationAmbient,
         "setGlobalIlluminationDiffuse", &ComponentRender::setGlobalIlluminationDiffuse,
-        "setGlobalIlluminationSpecular", &ComponentRender::setGlobalIlluminationSpecular
+        "setGlobalIlluminationSpecular", &ComponentRender::setGlobalIlluminationSpecular,
+        "getSceneShaderByLabel", &ComponentRender::getSceneShaderByLabel
     );
 
     lua.new_usertype<ComponentScripting>("ComponentRender",
@@ -390,16 +391,6 @@ void LUAIntegration(sol::state &lua)
         })
     );
 
-    lua.new_usertype<glm::mat4>("mat4",
-        sol::constructors<glm::mat4(), glm::mat4(float)>(),
-        "identity", sol::property([]() { return glm::mat4(1.0f); }),
-        "transpose", [](const glm::mat4& mat) { return glm::transpose(mat); },
-        "determinant", [](const glm::mat4& mat) { return glm::determinant(mat); },
-        "multiply", [](const glm::mat4& mat, const glm::mat4& other) { return mat * other; },
-        "get", [](const glm::mat4& mat, int row, int col) { return mat[row][col]; },
-        "set", [](glm::mat4& mat, int row, int col, float value) { mat[row][col] = value; }
-    );
-
     lua.new_usertype<ParticlesContext>("ParticlesContext",
     sol::constructors<
             ParticlesContext(),
@@ -452,6 +443,55 @@ void LUAIntegration(sol::state &lua)
         "create", sol::factories([](const std::string& fontFile) {
             return TextWriter::create(fontFile);
         })
+    );
+
+    lua.new_usertype<ShaderOpenGLCustom>("ShaderOpenGLCustom",
+        sol::constructors<ShaderOpenGLCustom(std::string, const std::string&)>(),
+            "setDataTypeValue", sol::overload(
+                [](ShaderOpenGLCustom& shader, const std::string& name, const sol::object& value) {
+                    if (value.is<int>()) {
+                        shader.setDataTypeValue(name, static_cast<float>(value.as<int>()));  // Convierte int a float
+                    } else if (value.is<double>()) {
+                        shader.setDataTypeValue(name, static_cast<float>(value.as<double>()));  // Convierte double a float
+                    } else if (value.is<float>()) {
+                        shader.setDataTypeValue(name, value.as<float>());
+                    } else if (value.is<glm::vec2>()) {
+                        shader.setDataTypeValue(name, value.as<glm::vec2>());
+                    } else if (value.is<glm::vec3>()) {
+                        shader.setDataTypeValue(name, value.as<glm::vec3>());
+                    } else if (value.is<glm::vec4>()) {
+                        shader.setDataTypeValue(name, value.as<glm::vec4>());
+                    } else {
+                        std::cerr << "Error: Tipo no soportado en setDataTypeValue para '" << name << "'\n";
+                    }
+                },
+                static_cast<void (ShaderOpenGLCustom::*)(const std::string&, int)>(&ShaderOpenGLCustom::setDataTypeValue),
+                static_cast<void (ShaderOpenGLCustom::*)(const std::string&, float)>(&ShaderOpenGLCustom::setDataTypeValue),
+                static_cast<void (ShaderOpenGLCustom::*)(const std::string&, glm::vec2)>(&ShaderOpenGLCustom::setDataTypeValue),
+                static_cast<void (ShaderOpenGLCustom::*)(const std::string&, glm::vec3)>(&ShaderOpenGLCustom::setDataTypeValue),
+                static_cast<void (ShaderOpenGLCustom::*)(const std::string&, glm::vec4)>(&ShaderOpenGLCustom::setDataTypeValue)
+            )
+    );
+
+    lua.new_usertype<glm::vec2>("vec2",
+        sol::constructors<glm::vec2(float, float)>(),
+        "x", &glm::vec2::x,
+        "y", &glm::vec2::y
+    );
+
+    lua.new_usertype<glm::vec3>("vec3",
+        sol::constructors<glm::vec3(float, float, float)>(),
+        "x", &glm::vec3::x,
+        "y", &glm::vec3::y,
+        "z", &glm::vec3::z
+    );
+
+    lua.new_usertype<glm::vec4>("vec4",
+        sol::constructors<glm::vec4(float, float, float, float)>(),
+        "x", &glm::vec4::x,
+        "y", &glm::vec4::y,
+        "z", &glm::vec4::z,
+        "w", &glm::vec4::w
     );
 }
 

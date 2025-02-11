@@ -85,7 +85,7 @@ void ShaderOpenGLCustom::addDataType(const char *name, const char *type, cJSON *
 {
     ShaderOpenGLCustomDataValue LUAValue;
 
-    switch (LUADataTypesMapping[type]) {
+    switch (GLSLTypeMapping[type]) {
         case ShaderOpenGLCustomDataType::INT: {
             LUAValue = value->valueint;
             break;
@@ -127,7 +127,7 @@ void ShaderOpenGLCustom::addDataTypeEmpty(const char *name, const char *type)
 {
     ShaderOpenGLCustomDataValue typeValue;
 
-    switch (LUADataTypesMapping[type]) {
+    switch (GLSLTypeMapping[type]) {
         case ShaderOpenGLCustomDataType::INT: {
             typeValue = 0;
             break;
@@ -209,7 +209,7 @@ void ShaderOpenGLCustom::drawImGuiProperties()
     ImGui::Separator();
 
     for (auto&  type: dataTypes) {
-        switch (LUADataTypesMapping[type.type]) {
+        switch (GLSLTypeMapping[type.type]) {
             case ShaderOpenGLCustomDataType::INT: {
                 const float rangeMin = -500000;
                 const float rangeMax = 500000;
@@ -379,7 +379,7 @@ cJSON *ShaderOpenGLCustom::getTypesJSON()
         cJSON_AddStringToObject(typeJSON, "type", dataType.type.c_str());
 
         std::string name = dataType.name + "("+ dataType.type +")";
-        switch (LUADataTypesMapping[dataType.type]) {
+        switch (GLSLTypeMapping[dataType.type]) {
             case ShaderOpenGLCustomDataType::INT: {
                 auto valueInt = std::get<int>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueInt);
@@ -431,7 +431,7 @@ cJSON *ShaderOpenGLCustom::getTypesJSON()
 void ShaderOpenGLCustom::setDataTypesUniforms()
 {
     for (auto type: dataTypes) {
-        switch (LUADataTypesMapping[type.type]) {
+        switch (GLSLTypeMapping[type.type]) {
             case ShaderOpenGLCustomDataType::INT: {
                 const int value = std::get<int>(type.value);
                 setInt(type.name, value);
@@ -512,3 +512,34 @@ ShaderOpenGLCustom *ShaderOpenGLCustom::createEmptyCustomShader(const std::strin
     return new ShaderOpenGLCustom(name, shaderFile);
 }
 
+void ShaderOpenGLCustom::setDataTypeValue(const std::string& name, ShaderOpenGLCustomDataValue newValue)
+{
+    for (auto& dataType : dataTypes) {
+        if (dataType.name == name) {
+            dataType.value = newValue;
+            return;
+        }
+    }
+
+    std::cerr << "Error: '" << name << "' no encontrado en dataTypes\n";
+}
+
+void ShaderOpenGLCustom::setDataTypeValue(const std::string& name, int newValue) {
+    setDataTypeValue(name, ShaderOpenGLCustomDataValue(newValue));
+}
+
+void ShaderOpenGLCustom::setDataTypeValue(const std::string& name, float newValue) {
+    setDataTypeValue(name, ShaderOpenGLCustomDataValue(newValue));
+}
+
+void ShaderOpenGLCustom::setDataTypeValue(const std::string& name, glm::vec2 newValue) {
+    setDataTypeValue(name, ShaderOpenGLCustomDataValue(newValue));
+}
+
+void ShaderOpenGLCustom::setDataTypeValue(const std::string& name, glm::vec3 newValue) {
+    setDataTypeValue(name, ShaderOpenGLCustomDataValue(newValue));
+}
+
+void ShaderOpenGLCustom::setDataTypeValue(const std::string& name, glm::vec4 newValue) {
+    setDataTypeValue(name, ShaderOpenGLCustomDataValue(newValue));
+}
