@@ -118,6 +118,8 @@ public:
 
     ShaderOpenGLCustom *getSceneShaderByIndex(int i);
 
+    ShaderOpenGLCustom *getSceneShaderByLabel(const std::string& name);
+
     static bool compareDistances(Object3D *obj1, Object3D *obj2);
 
     void setGlobalIlluminationDirection(Vertex3D d) const;

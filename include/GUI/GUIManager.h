@@ -654,7 +654,7 @@ public:
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "shaderIcon"), ImVec2(14, 14))) {
                     std::string name = Tools::getFilenameWithoutExtension(file);
                     ComponentsManager::get()->getComponentRender()->addShaderToScene(
-                            new ShaderOpenGLCustom(name, EngineSetup::get()->CUSTOM_SHADERS_FOLDER + file)
+                        new ShaderOpenGLCustom(name, EngineSetup::get()->CUSTOM_SHADERS_FOLDER + file)
                     );
                 }
                 ImGui::SameLine();

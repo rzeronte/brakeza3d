@@ -264,6 +264,17 @@ ShaderOpenGLCustom *ComponentRender::getSceneShaderByIndex(int i) {
     return sceneShaders[i];
 }
 
+ShaderOpenGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name)
+{
+    for (auto &s: sceneShaders) {
+        if (s->getLabel() == name) {
+            return s;
+        }
+    }
+
+    return nullptr;
+}
+
 void ComponentRender::addShaderToScene(ShaderOpenGLCustom *shader)
 {
     sceneShaders.push_back(shader);
