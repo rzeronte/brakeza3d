@@ -24,7 +24,9 @@ ComponentRender::ComponentRender()
     shaderOGLDOF(nullptr),
     shaderOGLDepthMap(nullptr),
     shaderOGLFOG(nullptr),
-    shaderOGLTint(nullptr)
+    shaderOGLTint(nullptr),
+    lastFrameBufferUsed(0),
+    lastProgramUsed(0)
 {
 }
 
@@ -398,4 +400,36 @@ ShaderOpenGLTint *ComponentRender::getShaderOGLTint() const {
 
 ShaderOpenGLDepthMap *ComponentRender::getShaderOGLDepthMap() const {
     return shaderOGLDepthMap;
+}
+
+GLuint ComponentRender::getLastFrameBufferUsed() {
+    return lastFrameBufferUsed;
+}
+
+void ComponentRender::setLastFrameBufferUsed(GLuint lastFrameBufferUsed) {
+    ComponentRender::lastFrameBufferUsed = lastFrameBufferUsed;
+}
+
+GLuint ComponentRender::getLastProgramUsed() const {
+    return lastProgramUsed;
+}
+
+void ComponentRender::setLastProgramUsed(GLuint lastProgramUsed) {
+    ComponentRender::lastProgramUsed = lastProgramUsed;
+}
+
+void ComponentRender::changeOpenGLFramebuffer(GLuint framebuffer)
+{
+    if (getLastFrameBufferUsed() != framebuffer || framebuffer == 0) {
+        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        setLastFrameBufferUsed(framebuffer);
+    }
+}
+
+void ComponentRender::changeOpenGLProgram(GLuint programID)
+{
+    if (getLastProgramUsed() != programID) {
+        glUseProgram(programID);
+        setLastProgramUsed(programID);
+    }
 }

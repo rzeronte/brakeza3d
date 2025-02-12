@@ -29,9 +29,8 @@
 #include "../OpenGL/ShaderOpenGLDOF.h"
 #include "../OpenGL/ShaderOpenGLDepthMap.h"
 #include "../OpenGL/ShaderOpenGLFOG.h"
-#include "../OpenGL/ShaderOpenGLShockWave.h"
-#include "../../src/OpenGL/ShaderOpenGLTint.h"
-#include "../../src/OpenGL/ShaderOpenGLLine3D.h"
+#include "../OpenGL/ShaderOpenGLTint.h"
+#include "../OpenGL/ShaderOpenGLLine3D.h"
 #include "../OpenGL/ShaderOpenGLCustom.h"
 
 class ComponentRender : public Component {
@@ -65,6 +64,8 @@ private:
     ShaderOpenGLFOG *shaderOGLFOG;
     ShaderOpenGLTint *shaderOGLTint;
 
+    GLuint lastFrameBufferUsed;
+    GLuint lastProgramUsed;
 public:
     ComponentRender();
 
@@ -159,6 +160,18 @@ public:
     [[nodiscard]] ShaderOpenGLTint *getShaderOGLTint() const;
 
     [[nodiscard]] ShaderOpenGLDepthMap *getShaderOGLDepthMap() const;
+
+    GLuint getLastFrameBufferUsed();
+
+    void setLastFrameBufferUsed(GLuint lastFrameBufferUsed);
+
+    GLuint getLastProgramUsed() const;
+
+    void setLastProgramUsed(GLuint lastProgramUsed);
+
+    void changeOpenGLFramebuffer(GLuint);
+
+    void changeOpenGLProgram(GLuint);
 };
 
 
