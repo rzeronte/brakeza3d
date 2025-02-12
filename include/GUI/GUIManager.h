@@ -40,8 +40,6 @@ private:
     std::string currentVariableToAddName;
     std::string currentVariableToCreateCustomShader;
 
-    ImGuizmo::OPERATION guizmoOperation;
-
     std::string currentScriptsFolderWidget;
     std::vector<std::string> currentScriptsFolderFiles;
     std::vector<std::string> currentScriptsFolders;
@@ -77,7 +75,6 @@ public:
             widgetProjectSettings(new GUIWidgetProjectSettings(icons, scriptEditableManager)),
             widgetMenu(new GUIWidgetMenu(icons)),
             widgetToolbar(new GUIWidgetToolbar(icons)),
-            guizmoOperation(ImGuizmo::TRANSLATE),
             currentScriptsFolderWidget(EngineSetup::get()->SCRIPTS_FOLDER),
             currentScenesFolderWidget(EngineSetup::get()->SCENES_FOLDER),
             currentProjectsFolderWidget(EngineSetup::get()->PROJECTS_FOLDER)
@@ -536,59 +533,6 @@ public:
         }
     }
 
-    void drawSceneCustomShaders()
-    {
-        static char name[256];
-        strncpy(name, currentVariableToCreateCustomShader.c_str(), sizeof(name));
-        if (ImGui::InputText("Shader name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-            currentVariableToCreateCustomShader = name;
-        }
-        if (ImGui::Button(std::string("Create custom shader").c_str())) {
-            if (!currentVariableToCreateCustomShader.empty()) {
-                ComponentsManager::get()->getComponentRender()->addShaderToScene(
-                    ShaderOpenGLCustom::createEmptyCustomShader(currentVariableToCreateCustomShader)
-                );
-            }
-        }
-
-        ImGui::Separator();
-
-        auto shaders = ComponentsManager::get()->getComponentRender()->getSceneShaders();
-        if ((int) shaders.size() <= 0) {
-            ImGui::Text("No shaders attached to Scene");
-        }
-        for (int i = 0; i < shaders.size(); i++) {
-            auto s = shaders[i];
-            ImGui::PushID(i);
-            ImGui::Image(TexturePackage::getOGLTextureID(icons, "shaderIcon"), ImVec2(26, 26));
-            ImGui::SameLine(46);
-            if (!s->isEnabled()) {
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "unlockIcon"), ImVec2(14, 14))) {
-                    s->setEnabled(true);
-                }
-            } else {
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "lockIcon"), ImVec2(14, 14))) {
-                    s->setEnabled(false);
-                }
-            }
-            ImGui::SameLine();
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "rebuildIcon"), ImVec2(14, 14))) {
-                s->compile();
-            }
-            ImGui::SameLine();
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
-                ComponentsManager::get()->getComponentRender()->removeShader(i);
-            }
-            ImGui::SameLine();
-            if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {
-                ImGui::PushID(i);
-                s->drawImGuiProperties();
-                ImGui::PopID();
-            }
-            ImGui::PopID();
-        }
-    }
-
     void drawFX() {
 
         int i = 0;
@@ -642,6 +586,21 @@ public:
 
     void drawCustomShadersFolder()
     {
+        static char name[256];
+        strncpy(name, currentVariableToCreateCustomShader.c_str(), sizeof(name));
+        if (ImGui::InputText("Shader name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+            currentVariableToCreateCustomShader = name;
+        }
+        if (ImGui::Button(std::string("Create custom shader").c_str())) {
+            if (!currentVariableToCreateCustomShader.empty()) {
+                ComponentsManager::get()->getComponentRender()->addShaderToScene(
+                        ShaderOpenGLCustom::createEmptyCustomShader(currentVariableToCreateCustomShader)
+                );
+            }
+        }
+
+        ImGui::Separator();
+
         std::vector<std::string> result = Tools::getFolderFiles(EngineSetup::get()->CUSTOM_SHADERS_FOLDER, "fs");
 
         std::sort( result.begin(), result.end() );
@@ -676,11 +635,6 @@ public:
         }
         ImGui::End();
 
-        if (ImGui::Begin("Illumination/FX")) {
-            drawGlobalIllumination();
-        }
-        ImGui::End();
-
         if (ImGui::Begin("Script Preview")) {
             if (!scriptEditableManager.selectedScriptFilename.empty()) {
                 drawWidgetScriptProperties();
@@ -711,9 +665,7 @@ public:
         }
         ImGui::End();
 
-        if (ImGui::Begin("Custom Shaders")) {
-            drawSceneCustomShaders();
-            ImGui::Separator();
+        if (ImGui::Begin("Shaders")) {
             drawCustomShadersFolder();
         }
         ImGui::End();
@@ -797,10 +749,22 @@ public:
         bool p_open = true;
         widgetConsole->Draw("Logging/Console", &p_open);
         widgetObjects3D->draw(selectedObjectIndex);
-        widgetObject3DProperties->draw(selectedObjectIndex, guizmoOperation);
+        widgetObject3DProperties->draw(selectedObjectIndex);
         widgetMenu->draw(finish, show_about_window);
         widgetToolbar->draw();
+        auto render = ComponentsManager::get()->getComponentRender();
 
+        if (render->getSelectedObject() != nullptr) {
+            auto o = render->getSelectedObject();
+
+            auto camera = ComponentsManager::get()->getComponentCamera();
+            Drawable::drawObject3DGizmo(
+                o,
+                o->getModelMatrix(),
+                camera->getGLMMat4ViewMatrix(),
+                camera->getGLMMat4ProjectionMatrix()
+            );
+        }
         ImGui::End();
     }
 
@@ -827,10 +791,6 @@ public:
         }
     }
 
-    void setGuizmoOperation(ImGuizmo::OPERATION guizmoOperation) {
-        GUIManager::guizmoOperation = guizmoOperation;
-    }
-
     static void ShowDeletePopup(const char* title, const std::function<void()>& onConfirm)
     {
         ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -853,95 +813,6 @@ public:
 
             ImGui::EndPopup();
         }
-    }
-
-    static void drawGlobalIllumination()
-    {
-        if (ImGui::TreeNode("Global illumination")) {
-            const float range_illumination_min_settings = -1.0f;
-            const float range_illumination_max_settings = 1.0f;
-            const float sens_illumination_settings = 0.01f;
-            auto dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->getDirectionalLight();
-
-            if (ImGui::TreeNode("Direction")) {
-                ImGui::DragScalar("x", ImGuiDataType_Float, &dirLight->direction.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                ImGui::DragScalar("y", ImGuiDataType_Float, &dirLight->direction.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                ImGui::DragScalar("z", ImGuiDataType_Float, &dirLight->direction.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-                ImGui::TreePop();
-            }
-
-            ImVec4 color = {dirLight->ambient.x, dirLight->ambient.y, dirLight->ambient.z, 1};
-            bool changed_color = ImGui::ColorEdit4("Ambient##", (float *) &color, ImGuiColorEditFlags_NoOptions);
-            if (changed_color) {
-                dirLight->ambient = {color.x, color.y, color.z};
-            }
-            color = {dirLight->specular.x, dirLight->specular.y, dirLight->specular.z, 1};
-            changed_color = ImGui::ColorEdit4("Specular##", (float *) &color, ImGuiColorEditFlags_NoOptions);
-            if (changed_color) {
-                dirLight->specular = {color.x, color.y, color.z};
-            }
-
-            color = {dirLight->diffuse.x, dirLight->diffuse.y, dirLight->diffuse.z, 1};
-            changed_color = ImGui::ColorEdit4("Diffuse##", (float *) &color, ImGuiColorEditFlags_NoOptions);
-            if (changed_color) {
-                dirLight->diffuse = {color.x, color.y, color.z};
-            }
-
-            ImGui::TreePop();
-        }
-
-        ImGui::Separator();
-        if (ImGui::TreeNode("DOF Settings")) {
-            const float focalMinValues = 0;
-            const float focalMaxValues = 1;
-            const float focalValueSens = 0.001;
-
-            const float depthMinValues = 0;
-            const float depthMaxValues = 100;
-            const float depthValueSens = 0.1;
-
-            const int minBlurRadius = 0;
-            const int maxBlurRadius = 10;
-
-            ImGui::Checkbox("Enable DOF", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
-
-            if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
-                ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-                ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-                ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
-                ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-                ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
-            }
-            ImGui::TreePop();
-        }
-        ImGui::Separator();
-        if (ImGui::TreeNode("FOG Settings")) {
-            ImGui::Checkbox("Enable FOG", &EngineSetup::get()->ENABLE_FOG);
-
-            if (EngineSetup::get()->ENABLE_FOG) {
-                const float rangeFogSens = 0.1;
-                const float rangeFogMin = 0;
-                const float rangeFogMax = 0;
-
-                ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-                ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-                ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->intensity, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-
-                if (ImGui::TreeNode("FOG Color")) {
-                    const float fogColorSend = 0.01;
-                    const float fogColorMin = 0;
-                    const float fogColorMax = 1;
-
-                    ImGui::DragScalar("x", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor.r, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
-                    ImGui::DragScalar("y", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor.g, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
-                    ImGui::DragScalar("z", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor.b, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
-                    ImGui::TreePop();
-                }
-            }
-            ImGui::TreePop();
-        }
-        ImGui::Separator();
-        ImGui::Checkbox("Show Depth Map", &EngineSetup::get()->SHOW_DEPTH_OF_FIELD);
     }
 
     void drawObjectVariables()

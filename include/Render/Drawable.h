@@ -35,7 +35,7 @@ public:
 
     static void drawGrid3D(Grid3D *);
 
-    static void drawObject3DGizmo(Object3D *o, ImGuizmo::OPERATION currentOperation, glm::mat4 objectMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
+    static void drawObject3DGizmo(Object3D *o, glm::mat4 objectMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 
     static void drawGrid3DMakeTravel(Grid3D *grid);
 };
