@@ -93,7 +93,7 @@ add_executable(Brakeza3D
     src/Objects/Camera3D.cpp                        include/Components/Camera3D.h
     src/Objects/Mesh3DAnimation.cpp                 include/Objects/Mesh3DAnimation.h
     src/Objects/Mesh3DAnimationCollection.cpp       include/Objects/Mesh3DAnimationCollection.h
-        src/Objects/ParticleEmitter.cpp                 include/Objects/ParticleEmitter.h
+    src/Objects/ParticleEmitter.cpp                 include/Objects/ParticleEmitter.h
     src/Objects/ParticleEmitterFireworks.cpp        include/Objects/ParticleEmitterFireworks.h
     src/Objects/TentacleIK.cpp                      include/Objects/TentacleIK.h
     src/Objects/ScriptLUA.cpp                       include/Objects/ScriptLUA.h
@@ -105,7 +105,7 @@ add_executable(Brakeza3D
     src/Misc/Timer.cpp                              include/Misc/Timer.h
     src/Misc/Tools.cpp                              include/Misc/Tools.h
     src/Misc/Octree.cpp                             include/Misc/Octree.h
-        src/Misc/Counter.cpp                            include/Misc/Counter.h
+    src/Misc/Counter.cpp                            include/Misc/Counter.h
     src/Misc/TexturePackage.cpp                     include/Misc/TexturePackage.h
     src/Misc/SoundPackage.cpp                       include/Misc/SoundPackage.h
     src/Misc/Image.cpp                              include/Misc/Image.h
@@ -117,7 +117,7 @@ add_executable(Brakeza3D
     include/Misc/Color.h                            src/Misc/Color.cpp
     include/Misc/cJSON.h                            src/Misc/cJSON.c
 
-        include/Render/AABB3D.h
+    include/Render/AABB3D.h
     include/Render/Transforms.h                     src/Render/Transforms.cpp
 
     include/GUI/GUI.h
@@ -133,7 +133,7 @@ add_executable(Brakeza3D
     src/Render/M3.cpp                               include/Render/M3.h
     src/Render/Logging.cpp                          include/Render/Logging.h
 
-        src/2D/MenuOption.cpp                           include/2D/MenuOption.h
+    src/2D/MenuOption.cpp                           include/2D/MenuOption.h
     src/2D/TextureAnimatedDirectional.cpp           include/2D/TextureAnimatedDirectional.h
     src/2D/TextureAnimated.cpp                      include/2D/TextureAnimated.h
     src/2D/TextWriter.cpp                           include/2D/TextWriter.h
@@ -158,7 +158,6 @@ add_executable(Brakeza3D
     src/OpenGL/ShaderOpenGLDepthMap.cpp             include/OpenGL/ShaderOpenGLDepthMap.h
     src/OpenGL/ShaderOpenGLFOG.cpp                  include/OpenGL/ShaderOpenGLFOG.h
     src/OpenGL/ShaderQuadOpenGL.cpp                 include/OpenGL/ShaderQuadOpenGL.h
-    src/OpenGL/ShaderOpenGLShockWave.cpp            include/OpenGL/ShaderOpenGLShockWave.h
     src/OpenGL/ShaderOpenGLColor.cpp                include/OpenGL/ShaderOpenGLColor.h
     src/OpenGL/ShaderOpenGL.cpp                     include/OpenGL/ShaderOpenGL.h
     src/OpenGL/ShaderOpenGLImage.cpp                include/OpenGL/ShaderOpenGLImage.h
@@ -168,7 +167,7 @@ add_executable(Brakeza3D
     src/OpenGL/ShaderOpenGLShading.cpp              include/OpenGL/ShaderOpenGLShading.h
     src/OpenGL/ShaderOpenGLPoints.cpp               include/OpenGL/ShaderOpenGLPoints.h
     src/OpenGL/ShaderOpenGLCustom.cpp               include/OpenGL/ShaderOpenGLCustom.h
-    src/OpenGL/ShaderOpenGLTint.cpp                 src/OpenGL/ShaderOpenGLTint.h
+    src/OpenGL/ShaderOpenGLTint.cpp                 include/OpenGL/ShaderOpenGLTint.h
 
     src/Collisions/SimplePendulum.cpp               include/Physics/SimplePendulum.h
     src/Collisions/Collider.cpp                     include/Collision/Collider.h
@@ -181,7 +180,7 @@ add_executable(Brakeza3D
     src/FXEffect/FXColorTint.cpp                    include/FXEffect/FXColorTint.h
     src/FXEffect/FXBlink.cpp                        include/FXEffect/FXBlink.h
 
-        imgui/imconfig.h
+    imgui/imconfig.h
     imgui/imgui.h                                   imgui/imgui.cpp
     imgui/imgui_demo.cpp                            imgui/imgui_draw.cpp
     imgui/imgui_internal.h                          imgui/imgui_widgets.cpp
@@ -203,11 +202,11 @@ add_executable(Brakeza3D
     include/GUI/GUIWidgetObjects3D.h                include/GUI/GUIWidgetObject3DProperties.h
 
     include/Misc/SharedLUAContext.h
-        src/Misc/TileManager.cpp include/Misc/TileManager.h
+    src/Misc/TileManager.cpp                        include/Misc/TileManager.h
 
     include/OpenGL/FXEffectOpenGLObject.h
-        include/OpenGL/FXBase.h
-        include/OpenGL/FXOpenGL.h
+    include/OpenGL/FXBase.h
+    include/OpenGL/FXOpenGL.h
     include/OpenGL/ShaderOpenGLParticles.h          src/OpenGL/ShaderOpenGLParticles.cpp
     include/OpenGL/ShaderOpenGLOutline.h            src/OpenGL/ShaderOpenGLOutline.cpp
 
@@ -216,11 +215,11 @@ add_executable(Brakeza3D
     include/Objects/Vector2D.cpp                    include/Objects/Vector2D.h
 
     include/Render/ObjectShaderOpenCL.cpp
-        src/Misc/ToolsJSON.cpp                          include/Misc/ToolsJSON.h
-    src/OpenGL/ShaderOpenGLLine3D.cpp               src/OpenGL/ShaderOpenGLLine3D.h
+    src/Misc/ToolsJSON.cpp                          include/Misc/ToolsJSON.h
+    src/OpenGL/ShaderOpenGLLine3D.cpp               include/OpenGL/ShaderOpenGLLine3D.h
     src/Misc/ProjectLoader.cpp                      include/Misc/ProjectLoader.h
-        include/cxxxopts.h
-        include/Misc/PathFinding.h
+    include/cxxxopts.h
+    include/Misc/PathFinding.h
 )
 
 target_link_libraries(Brakeza3D

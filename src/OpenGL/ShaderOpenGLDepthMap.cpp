@@ -20,9 +20,9 @@ ShaderOpenGLDepthMap::ShaderOpenGLDepthMap()
 
 void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint framebuffer)
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
 
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     glDisable(GL_DEPTH_TEST);
 
@@ -39,7 +39,7 @@ void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint framebuffer)
 
     glEnable(GL_DEPTH_TEST);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
 }
 
 void ShaderOpenGLDepthMap::destroy()

@@ -74,9 +74,9 @@ void ShaderOpenGLRender::render(
     GLuint framebuffer
 )
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
 
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
     auto camera = ComponentsManager::get()->getComponentCamera();
@@ -132,7 +132,7 @@ void ShaderOpenGLRender::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
 }
 
 void ShaderOpenGLRender::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)

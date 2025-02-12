@@ -167,9 +167,9 @@ GLuint ShaderOpenGLCustom::compile()
 
 void ShaderOpenGLCustom::render(GLuint textureID, GLuint framebuffer)
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
 
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
     setDataTypesUniforms();

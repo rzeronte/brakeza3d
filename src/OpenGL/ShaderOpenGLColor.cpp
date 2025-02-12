@@ -19,7 +19,6 @@ ShaderOpenGLColor::ShaderOpenGLColor()
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
     glGenFramebuffers(1, &framebuffer);
-    glGenTextures(1, &textureColorbuffer);
 }
 
 void ShaderOpenGLColor::render(
@@ -36,7 +35,8 @@ void ShaderOpenGLColor::render(
         int w = ComponentsManager::get()->getComponentWindow()->getWidth();
         int h = ComponentsManager::get()->getComponentWindow()->getHeight();
 
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+        glGenTextures(1, &textureColorbuffer);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -45,7 +45,7 @@ void ShaderOpenGLColor::render(
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
     auto camera = ComponentsManager::get()->getComponentCamera();
@@ -65,7 +65,7 @@ void ShaderOpenGLColor::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
 }
 
 void ShaderOpenGLColor::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
@@ -107,4 +107,9 @@ void ShaderOpenGLColor::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, G
 
 void ShaderOpenGLColor::destroy() {
 
+}
+
+void ShaderOpenGLColor::deleteTexture()
+{
+    glDeleteTextures(1, &textureColorbuffer);
 }

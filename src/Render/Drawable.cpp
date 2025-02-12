@@ -9,7 +9,6 @@
 void Drawable::drawVertex(Vertex3D V, Color color)
 {
     Point2D P1 = Transforms::WorldToPoint(V);
-    glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     glDisable(GL_BLEND);
 
     if (Tools::isPixelInWindow(P1.x, P1.y)) {
@@ -17,7 +16,6 @@ void Drawable::drawVertex(Vertex3D V, Color color)
             glVertex3i(V.x, V.y, V.z);
         glEnd();
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glEnable(GL_BLEND);
 }
 

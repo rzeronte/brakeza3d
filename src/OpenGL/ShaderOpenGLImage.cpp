@@ -46,11 +46,11 @@ ShaderOpenGLImage::ShaderOpenGLImage()
 
 void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha, bool inverse, GLuint framebuffer) const
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
 
     glDisable(GL_DEPTH_TEST);
 
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     auto window = ComponentsManager::get()->getComponentWindow();
     glm::mat4 projection = glm::ortho(0.0f, (float) window->width, (float) window->height, 0.0f, -1.0f, 1.0f);
@@ -80,7 +80,7 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
 
     glEnable(GL_DEPTH_TEST);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
 }
 
 void ShaderOpenGLImage::destroy() {

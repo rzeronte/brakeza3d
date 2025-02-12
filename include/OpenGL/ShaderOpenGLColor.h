@@ -22,6 +22,8 @@ public:
 
     void destroy() override;
 
+    void deleteTexture();
+
     GLuint textureColorbuffer;
 };
 

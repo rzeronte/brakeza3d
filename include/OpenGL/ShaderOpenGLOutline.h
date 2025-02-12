@@ -17,6 +17,7 @@ public:
     void render(GLint textureID, Color c, float borderThickness);
     void drawOutline(Mesh3D *m, Color c, float borderThickness);
 
+
     void destroy() override;
 };
 

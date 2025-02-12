@@ -2,8 +2,9 @@
 // Created by edu on 29/12/23.
 //
 
-#include "ShaderOpenGLTint.h"
+#include "../include/OpenGL/ShaderOpenGLTint.h"
 #include "../../include/EngineSetup.h"
+#include "../../include/ComponentsManager.h"
 
 ShaderOpenGLTint::ShaderOpenGLTint()
 :
@@ -20,9 +21,9 @@ ShaderOpenGLTint::ShaderOpenGLTint()
 
 void ShaderOpenGLTint::render(Color c, float alpha, GLuint framebuffer)
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
 
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 

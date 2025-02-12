@@ -36,10 +36,10 @@ ShaderOpenGLFOG::ShaderOpenGLFOG()
 
 void ShaderOpenGLFOG::render(GLuint sceneTexture, GLuint depthTexture)
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, resultFramebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(resultFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 
@@ -76,7 +76,7 @@ void ShaderOpenGLFOG::destroy()
 void ShaderOpenGLFOG::createFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, resultFramebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(resultFramebuffer);
 
     int w, h;
     SDL_GetWindowSize(ComponentsManager::get()->getComponentWindow()->getWindow(), &w, &h);

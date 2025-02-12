@@ -28,9 +28,9 @@ void ShaderOpenGLParticles::render(
     int particlesCount
 )
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
 
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
     glm::mat4 ProjectionMatrix = ComponentsManager::get()->getComponentCamera()->getGLMMat4ProjectionMatrix();
@@ -40,7 +40,7 @@ void ShaderOpenGLParticles::render(
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureID);
@@ -95,7 +95,7 @@ void ShaderOpenGLParticles::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
 }
 
 void ShaderOpenGLParticles::destroy() {

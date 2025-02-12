@@ -6,6 +6,7 @@
 #include "../../include/OpenGL/ShaderOpenGLLine.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/EngineSetup.h"
+#include "../../include/ComponentsManager.h"
 
 ShaderOpenGLLine::ShaderOpenGLLine()
 :
@@ -24,9 +25,9 @@ ShaderOpenGLLine::ShaderOpenGLLine()
 
 void ShaderOpenGLLine::render(Point2D a, Point2D b, Color c, float weight, GLuint framebuffer)
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
 
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 

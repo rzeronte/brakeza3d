@@ -19,7 +19,7 @@ ShaderOpenGLOutline::ShaderOpenGLOutline()
 
 void ShaderOpenGLOutline::render(GLint textureID, Color c, float borderThickness)
 {
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 
@@ -55,11 +55,11 @@ void ShaderOpenGLOutline::drawOutline(Mesh3D *m, Color c, float borderThickness)
         );
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, componentWindow->getSceneFramebuffer());
+    componentRender->changeOpenGLFramebuffer(componentWindow->getSceneFramebuffer());
 
     render(shaderColor->textureColorbuffer, c, borderThickness);
 
-    glDeleteTextures(1, &shaderColor->textureColorbuffer);
+    shaderColor->deleteTexture();
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    componentRender->changeOpenGLFramebuffer(0);
 }

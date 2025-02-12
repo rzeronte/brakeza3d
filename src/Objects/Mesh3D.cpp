@@ -29,45 +29,43 @@ void Mesh3D::onUpdate()
         s->preUpdate();
     }
 
-    if (ComponentsManager::get()->getComponentRender()->getSelectedObject() == this) {
-        ComponentsManager::get()->getComponentRender()->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
+    auto render = ComponentsManager::get()->getComponentRender();
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    if (render->getSelectedObject() == this) {
+        render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
         for (auto &m: meshes) {
-            ComponentsManager::get()->getComponentRender()->getShaderOGLPoints()->render(
+            render->getShaderOGLPoints()->render(
                 this,
                 m.vertexbuffer,
                 m.vertices.size(),
                 Color::green(),
-                ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+                window->getSceneFramebuffer()
             );
         }
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
         for (auto &m: meshes) {
-            ComponentsManager::get()->getComponentRender()->getShaderOGLShading()->render(
+            render->getShaderOGLShading()->render(
                 getModelMatrix(),
                 m.vertexbuffer,
                 m.uvbuffer,
                 m.normalbuffer,
                 (int) m.vertices.size(),
-                ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+                window->getSceneFramebuffer()
             );
         }
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->renderMesh(
-            this,
-            ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
-        );
+        render->getShaderOGLRender()->renderMesh(this,window->getSceneFramebuffer());
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        auto render = ComponentsManager::get()->getComponentRender();
-        auto window = ComponentsManager::get()->getComponentWindow();
         for (auto &m: meshes) {
             render->getShaderOGLWireframe()->render(
                 getModelMatrix(),
@@ -85,16 +83,12 @@ void Mesh3D::onUpdate()
         Drawable::drawAABB(&this->aabb, Color::white());
     }
 
-    if (EngineSetup::get()->DRAW_MESH3D_OCTREE) {
-        if (this->octree != nullptr) {
-            Drawable::drawOctree(this->octree);
-        }
+    if (EngineSetup::get()->DRAW_MESH3D_OCTREE && this->octree != nullptr) {
+        Drawable::drawOctree(this->octree);
     }
 
-    if (EngineSetup::get()->DRAW_MESH3D_GRID) {
-        if (this->grid != nullptr) {
-            Drawable::drawGrid3D(this->grid);
-        }
+    if (EngineSetup::get()->DRAW_MESH3D_GRID && this->grid != nullptr) {
+        Drawable::drawGrid3D(this->grid);
     }
 }
 

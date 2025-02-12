@@ -2,7 +2,7 @@
 // Created by Eduardo on 24/01/2025.
 //
 
-#include "ShaderOpenGLLine3D.h"
+#include "../include/OpenGL/ShaderOpenGLLine3D.h"
 #include "../../include/EngineSetup.h"
 #include "../../include/ComponentsManager.h"
 
@@ -40,9 +40,9 @@ EngineSetup::get()->SHADERS_FOLDER + "Line3D.fs"
 
 void ShaderOpenGLLine3D::render(Vertex3D from, Vertex3D to, GLuint framebuffer, Color c)
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
 
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     auto camera = ComponentsManager::get()->getComponentCamera();
     glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
@@ -70,9 +70,9 @@ void ShaderOpenGLLine3D::destroy()
 
 void ShaderOpenGLLine3D::renderLines(std::vector<Vector3D> lines, GLuint framebuffer, Color c)
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
 
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     auto camera = ComponentsManager::get()->getComponentCamera();
     glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
@@ -107,5 +107,5 @@ void ShaderOpenGLLine3D::renderLines(std::vector<Vector3D> lines, GLuint framebu
 
     glDeleteBuffers(1, &VBO);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
 }

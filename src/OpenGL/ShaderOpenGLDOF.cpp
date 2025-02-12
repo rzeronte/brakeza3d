@@ -36,10 +36,10 @@ ShaderOpenGLDOF::ShaderOpenGLDOF()
 
 void ShaderOpenGLDOF::render(GLuint sceneTexture, GLuint depthTexture)
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, resultFramebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(resultFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glUseProgram(programID);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, sceneTexture);
@@ -71,7 +71,7 @@ GLuint ShaderOpenGLDOF::getTextureResult() const {
 void ShaderOpenGLDOF::createFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, resultFramebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(resultFramebuffer);
 
     int w, h;
     SDL_GetWindowSize(ComponentsManager::get()->getComponentWindow()->getWindow(), &w, &h);
