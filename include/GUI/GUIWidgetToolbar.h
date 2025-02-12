@@ -33,6 +33,8 @@ struct GUIWidgetToolbar {
             drawMouseOptionsIcons();
             VerticalSeparator();
             drawBulletOptionsIcons();
+            VerticalSeparator();
+            drawTransformationsToolsIcons();
         }
         ImGui::End();
     }
@@ -77,6 +79,37 @@ struct GUIWidgetToolbar {
                    [&]() { window->ImGuiConfigChanged = ImGUIConfigs::DESIGN; });
     }
 
+    void drawTransformationsToolsIcons() const
+    {
+        auto window = ComponentsManager::get()->getComponentWindow();
+        auto operation = window->getGuizmoOperation();
+
+        ImVec4 translateColor = (operation == ImGuizmo::OPERATION::TRANSLATE) ? onColor : offColor;
+        ImVec4 rotateColor = (operation == ImGuizmo::OPERATION::ROTATE) ? onColor : offColor;
+        ImVec4 scaleColor = (operation == ImGuizmo::OPERATION::SCALE_X) ? onColor : offColor;
+
+        ImGui::PushStyleColor(ImGuiCol_Button, translateColor);
+        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "translateIcon"), ImVec2(24, 24))) {
+            window->setGuizmoOperation(ImGuizmo::OPERATION::TRANSLATE);
+        }
+        ImGui::PopStyleColor();
+        ImGui::SameLine();
+
+        ImGui::PushStyleColor(ImGuiCol_Button, rotateColor);
+        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "rotateIcon"), ImVec2(24, 24))) {
+            window->setGuizmoOperation(ImGuizmo::OPERATION::ROTATE);
+        }
+        ImGui::PopStyleColor();
+        ImGui::SameLine();
+
+        ImGui::PushStyleColor(ImGuiCol_Button, scaleColor);
+        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "scaleIcon"), ImVec2(24, 24))) {
+            window->setGuizmoOperation(ImGuizmo::OPERATION::SCALE_X);
+        }
+        ImGui::PopStyleColor();
+
+        ImGui::Separator();
+    }
     void drawBulletOptionsIcons() const
     {
         drawButton("gravityIcon",

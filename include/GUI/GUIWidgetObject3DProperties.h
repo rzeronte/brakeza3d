@@ -34,21 +34,9 @@ struct GUIWidgetObject3DProperties {
     {
     }
 
-    void draw(int &selectedObjectIndex, ImGuizmo::OPERATION &operation)
+    void draw(int &selectedObjectIndex)
     {
         bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
-
-        if (hasSelectedIndex) {
-            auto o = gameObjects[selectedObjectIndex];
-            auto camera = ComponentsManager::get()->getComponentCamera();
-            Drawable::drawObject3DGizmo(
-                o,
-                operation,
-                o->getModelMatrix(),
-                camera->getGLMMat4ViewMatrix(),
-                camera->getGLMMat4ProjectionMatrix()
-            );
-        }
 
         if (ImGui::Begin("Object Properties")) {
             if (hasSelectedIndex) {
@@ -57,18 +45,6 @@ struct GUIWidgetObject3DProperties {
                     return;
                 }
 
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "translateIcon"), ImVec2(32, 32))) {
-                    operation = ImGuizmo::OPERATION::TRANSLATE;
-                }
-                ImGui::SameLine();
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "rotateIcon"), ImVec2(32, 32))) {
-                    operation = ImGuizmo::OPERATION::ROTATE;
-                }
-                ImGui::SameLine();
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "scaleIcon"), ImVec2(32, 32))) {
-                    operation = ImGuizmo::OPERATION::SCALE_X;
-                }
-                ImGui::Separator();
                 o->drawImGuiProperties();
 
                 ImGui::Separator();

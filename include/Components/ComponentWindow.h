@@ -9,6 +9,7 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
 #include "Component.h"
+#include "ImGuizmo.h"
 
 
 enum class ImGUIConfigs {
@@ -42,6 +43,7 @@ private:
     GLuint globalFramebuffer;
     GLuint postProcessingFramebuffer;
 
+    ImGuizmo::OPERATION guizmoOperation;
 
     ImGUIConfigs ImGuiConfig;
 
@@ -125,6 +127,10 @@ public:
     void setWindowTitle(const char *title);
 
     void toggleFullScreen();
+
+    ImGuizmo::OPERATION getGuizmoOperation() const;
+
+    void setGuizmoOperation(ImGuizmo::OPERATION guizmoOperation);
 };
 
 

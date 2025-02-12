@@ -20,16 +20,19 @@ ShaderOpenGLDepthMap::ShaderOpenGLDepthMap()
 
 void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint framebuffer)
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    auto render = ComponentsManager::get()->getComponentRender();
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    render->changeOpenGLFramebuffer(framebuffer);
+
+    render->changeOpenGLProgram(programID);
 
     glDisable(GL_DEPTH_TEST);
 
     loadQuadMatrixUniforms();
 
-    glUniform1f(intensityUniform, ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->intensity);
-    glUniform1f(farPlaneUniform, ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->farPlane);
+    auto shaderOGLDOF = render->getShaderOGLDOF();
+    glUniform1f(intensityUniform, shaderOGLDOF->intensity);
+    glUniform1f(farPlaneUniform, shaderOGLDOF->farPlane);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureID);
@@ -39,7 +42,7 @@ void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint framebuffer)
 
     glEnable(GL_DEPTH_TEST);
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
+    render->changeOpenGLFramebuffer(0);
 }
 
 void ShaderOpenGLDepthMap::destroy()

@@ -28,6 +28,8 @@ struct GUIWidgetMenu
 
     void draw(bool &finish, bool &show_about_window)
     {
+        auto setup = EngineSetup::get();
+        
         const float range_sensibility = 0.75f;
         const float range_max_sensibility = 9999;
         const float range_min_sensibility = -9999;
@@ -56,7 +58,7 @@ struct GUIWidgetMenu
 
         if (ImGui::BeginPopupModal("About Brakeza3D", &show_about_window)) {
             ImGui::Text("Welcome to Brakeza3D!");
-            ImGui::Text((EngineSetup::get()->ENGINE_VERSION).c_str());
+            ImGui::Text((setup->ENGINE_VERSION).c_str());
             ImGui::Text("By Eduardo Rodríguez Álvarez <eduardo@brakeza.com>");
             ImGui::Text("Website: https://brakeza.com");
             ImGui::Text("GitHub: https://github.com/rzeronte/brakeza3d");
@@ -131,13 +133,13 @@ struct GUIWidgetMenu
                     ImGui::Image(icon("Image2DIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Image2D")) {
-                        drawImage2DItemsToLoad(EngineSetup::get()->IMAGES_FOLDER);
+                        drawImage2DItemsToLoad(setup->IMAGES_FOLDER);
                         ImGui::EndMenu();
                     }
                     ImGui::Image(icon("Image2DAnimationIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Image2D Animation")) {
-                        drawImage2DAnimationItemsToLoad(EngineSetup::get()->SPRITES_FOLDER);
+                        drawImage2DAnimationItemsToLoad(setup->SPRITES_FOLDER);
                         ImGui::EndMenu();
                     }
                     ImGui::EndMenu();
@@ -148,7 +150,7 @@ struct GUIWidgetMenu
                     ImGui::Image(icon("Image3DIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Image3D")) {
-                        drawImage3DItemsToLoad(EngineSetup::get()->IMAGES_FOLDER);
+                        drawImage3DItemsToLoad(setup->IMAGES_FOLDER);
                         ImGui::EndMenu();
                     }
 
@@ -157,7 +159,7 @@ struct GUIWidgetMenu
                     ImGui::Image(icon("BillboardAnimationIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Billboard Animation")) {
-                        drawBillboardAnimationItemsToLoad(EngineSetup::get()->SPRITES_FOLDER);
+                        drawBillboardAnimationItemsToLoad(setup->SPRITES_FOLDER);
                         ImGui::EndMenu();
                     }
                     ImGui::Image(icon("BillboardAnimation8DirectionsIcon"), ImVec2(16, 16));
@@ -172,7 +174,7 @@ struct GUIWidgetMenu
                     ImGui::Image(icon("meshIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Mesh3D")) {
-                        drawMesh3DItemsToLoad(EngineSetup::get()->MODELS_FOLDER);
+                        drawMesh3DItemsToLoad(setup->MODELS_FOLDER);
                         ImGui::EndMenu();
                     }
 
@@ -181,7 +183,7 @@ struct GUIWidgetMenu
                     ImGui::Image(icon("Mesh3DAnimationIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Mesh3DAnimation")) {
-                        drawMesh3DAnimationItemsToLoad(EngineSetup::get()->ANIMATIONS_FOLDER);
+                        drawMesh3DAnimationItemsToLoad(setup->ANIMATIONS_FOLDER);
                         ImGui::EndMenu();
                     }
                     ImGui::EndMenu();
@@ -207,9 +209,9 @@ struct GUIWidgetMenu
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Render")) {
-                ImGui::Checkbox("v-Sync", &EngineSetup::get()->V_SYNC);
+                ImGui::Checkbox("v-Sync", &setup->V_SYNC);
                 if (ImGui::IsItemEdited()) {
-                    if (EngineSetup::get()->V_SYNC) {
+                    if (setup->V_SYNC) {
                         Logging::Message("Set V-Sync enabled");
                         SDL_GL_SetSwapInterval(1);
                         SDL_RenderSetVSync(ComponentsManager::get()->getComponentWindow()->getRenderer(), 1);
@@ -220,49 +222,29 @@ struct GUIWidgetMenu
                     }
                 }
                 ImGui::Separator();
-                ImGui::DragScalar("FOV", ImGuiDataType_Float, &EngineSetup::get()->HORIZONTAL_FOV, 1, &range_min_fov,&range_max_fov, "%f", 1.0f);
+                ImGui::DragScalar("FOV", ImGuiDataType_Float, &setup->HORIZONTAL_FOV, 1, &range_min_fov,&range_max_fov, "%f", 1.0f);
                 ImGui::Separator();
-                ImGui::Checkbox("Limit frame rate", &EngineSetup::get()->LIMIT_FRAMERATE);
-                if (EngineSetup::get()->LIMIT_FRAMERATE) {
-                    ImGui::DragScalar("Limite frames to:", ImGuiDataType_S32, &EngineSetup::get()->FRAMERATE, range_framerate_sensibility, &range_min_framerate_distance,&range_max_framerate_distance, "%d", 1.0f);
+                ImGui::Checkbox("Limit frame rate", &setup->LIMIT_FRAMERATE);
+                if (setup->LIMIT_FRAMERATE) {
+                    ImGui::DragScalar("Limite frames to:", ImGuiDataType_S32, &setup->FRAMERATE, range_framerate_sensibility, &range_min_framerate_distance,&range_max_framerate_distance, "%d", 1.0f);
 
                 }
                 ImGui::Separator();
-                ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
+                ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
                 ImGui::Separator();
-                ImGui::Checkbox("Vertex", &EngineSetup::get()->TRIANGLE_MODE_PIXELS);
-                ImGui::Checkbox("WireFrame", &EngineSetup::get()->TRIANGLE_MODE_WIREFRAME);
-                ImGui::Checkbox("Solid", &EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID);
+                ImGui::Checkbox("1 Map", &setup->SHOW_DEPTH_OF_FIELD);
                 ImGui::Separator();
-                ImGui::Checkbox("Textures", &EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED);
-                ImGui::Separator();
-                ImGui::Checkbox("Draw Bones", &EngineSetup::get()->DRAW_ANIMATION_BONES);
-                ImGui::Separator();
-                ImGui::Checkbox("Internal click selection", &EngineSetup::get()->CLICK_SELECT_OBJECT3D);
-
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Sound")) {
-                ImGui::Checkbox("Global enable", &EngineSetup::get()->SOUND_ENABLED);
-                if (ImGui::IsItemDeactivatedAfterEdit()) {
-                    if (!EngineSetup::get()->SOUND_ENABLED) {
-                        Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, 0);
-                        Mix_VolumeMusic((int) EngineSetup::get()->SOUND_VOLUME_MUSIC);
-                        Mix_VolumeMusic(0);
-                    } else {
-                        Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) EngineSetup::get()->SOUND_CHANNEL_GLOBAL);
-                        Mix_VolumeMusic((int) EngineSetup::get()->SOUND_VOLUME_MUSIC);
-                    }
+                if (!setup->SHOW_DEPTH_OF_FIELD) {
+                    ImGui::Checkbox("Vertex", &setup->TRIANGLE_MODE_PIXELS);
+                    ImGui::Checkbox("WireFrame", &setup->TRIANGLE_MODE_WIREFRAME);
+                    ImGui::Checkbox("Solid", &setup->TRIANGLE_MODE_COLOR_SOLID);
+                    ImGui::Checkbox("Textures", &setup->TRIANGLE_MODE_TEXTURIZED);
                 }
+                ImGui::Separator();
+                ImGui::Checkbox("Draw Bones", &setup->DRAW_ANIMATION_BONES);
+                ImGui::Separator();
+                ImGui::Checkbox("Internal click selection", &setup->CLICK_SELECT_OBJECT3D);
 
-                ImGui::DragScalar("Music volume", ImGuiDataType_Float, &EngineSetup::get()->SOUND_VOLUME_MUSIC, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) { Mix_VolumeMusic((int )EngineSetup::get()->SOUND_VOLUME_MUSIC); }
-
-                ImGui::DragScalar("Global Channel volume", ImGuiDataType_Float, &EngineSetup::get()->SOUND_CHANNEL_GLOBAL, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) {
-                    Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) EngineSetup::get()->SOUND_CHANNEL_GLOBAL);
-                }
                 ImGui::EndMenu();
             }
 
@@ -271,40 +253,68 @@ struct GUIWidgetMenu
                 int maxSubsteps = 10;
                 int minFixedTime = 1;
                 int maxFixedTime = 60;
-                ImGui::Checkbox("Enable physics", &EngineSetup::get()->BULLET_STEP_SIMULATION);
+                ImGui::Checkbox("Enable physics", &setup->BULLET_STEP_SIMULATION);
                 ImGui::Separator();
-                ImGui::DragScalar("Max sub-steps", ImGuiDataType_S32, &EngineSetup::get()->BULLET_MAX_SUBSTEPS, 1,&minSubsteps, &maxSubsteps, "%d", 1.0f);
-                ImGui::DragScalar("Fixed time step (1/x)", ImGuiDataType_S32, &EngineSetup::get()->BULLET_FIXED_TIME_STEPS, 1, &minFixedTime, &maxFixedTime, "%d", 1.0f);
+                ImGui::DragScalar("Max sub-steps", ImGuiDataType_S32, &setup->BULLET_MAX_SUBSTEPS, 1,&minSubsteps, &maxSubsteps, "%d", 1.0f);
+                ImGui::DragScalar("Fixed time step (1/x)", ImGuiDataType_S32, &setup->BULLET_FIXED_TIME_STEPS, 1, &minFixedTime, &maxFixedTime, "%d", 1.0f);
                 ImGui::Separator();
-                ImGui::Checkbox("Draw debug mode", &EngineSetup::get()->BULLET_DEBUG_MODE);
-                if (EngineSetup::get()->BULLET_STEP_SIMULATION) {
+                ImGui::Checkbox("Draw debug mode", &setup->BULLET_DEBUG_MODE);
+                if (setup->BULLET_STEP_SIMULATION) {
                     ImGui::Separator();
-                    ImGui::Checkbox("Handle object collisions", &EngineSetup::get()->BULLET_CHECK_ALL_PAIRS);
+                    ImGui::Checkbox("Handle object collisions", &setup->BULLET_CHECK_ALL_PAIRS);
                     ImGui::Separator();
                     // gravity
-                    if (ImGui::DragScalar("X Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.x, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
-                        ComponentsManager::get()->getComponentCollisions()->setGravity(EngineSetup::get()->gravity);
+                    if (ImGui::DragScalar("X Gravity", ImGuiDataType_Float, &setup->gravity.x, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
+                        ComponentsManager::get()->getComponentCollisions()->setGravity(setup->gravity);
                     }
-                    if (ImGui::DragScalar("Y Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.y, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
-                        ComponentsManager::get()->getComponentCollisions()->setGravity(EngineSetup::get()->gravity);
+                    if (ImGui::DragScalar("Y Gravity", ImGuiDataType_Float, &setup->gravity.y, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
+                        ComponentsManager::get()->getComponentCollisions()->setGravity(setup->gravity);
                     }
-                    if (ImGui::DragScalar("Z Gravity", ImGuiDataType_Float, &EngineSetup::get()->gravity.z, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
-                        ComponentsManager::get()->getComponentCollisions()->setGravity(EngineSetup::get()->gravity);
+                    if (ImGui::DragScalar("Z Gravity", ImGuiDataType_Float, &setup->gravity.z, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
+                        ComponentsManager::get()->getComponentCollisions()->setGravity(setup->gravity);
                     }
                     ImGui::Separator();
-                    ImGui::DragScalar("ProjectileDemo Impulse", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_IMPULSE, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                    ImGui::DragScalar("ProjectileDemo Accuracy", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_ACCURACY, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
-                    ImGui::DragScalar("ProjectileDemo Mass", ImGuiDataType_Float, &EngineSetup::get()->PROJECTILE_DEMO_MASS, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                    ImGui::DragScalar("ProjectileDemo Impulse", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_IMPULSE, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                    ImGui::DragScalar("ProjectileDemo Accuracy", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_ACCURACY, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
+                    ImGui::DragScalar("ProjectileDemo Mass", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_MASS, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f);
                     ImGui::Separator();
-                    ImGui::Checkbox("ProjectileDemo SimpleMesh", &EngineSetup::get()->PROJECTILE_SIMPLE_MESH);
+                    ImGui::Checkbox("ProjectileDemo SimpleMesh", &setup->PROJECTILE_SIMPLE_MESH);
+                }
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Global illumination")) {
+                drawGlobalIllumination();
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Sound")) {
+                ImGui::Checkbox("Global enable", &setup->SOUND_ENABLED);
+                if (ImGui::IsItemDeactivatedAfterEdit()) {
+                    if (!setup->SOUND_ENABLED) {
+                        Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, 0);
+                        Mix_VolumeMusic((int) setup->SOUND_VOLUME_MUSIC);
+                        Mix_VolumeMusic(0);
+                    } else {
+                        Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) setup->SOUND_CHANNEL_GLOBAL);
+                        Mix_VolumeMusic((int) setup->SOUND_VOLUME_MUSIC);
+                    }
+                }
+
+                ImGui::DragScalar("Music volume", ImGuiDataType_Float, &setup->SOUND_VOLUME_MUSIC, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
+                if (ImGui::IsItemEdited()) { Mix_VolumeMusic((int )setup->SOUND_VOLUME_MUSIC); }
+
+                ImGui::DragScalar("Global Channel volume", ImGuiDataType_Float, &setup->SOUND_CHANNEL_GLOBAL, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
+                if (ImGui::IsItemEdited()) {
+                    Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) setup->SOUND_CHANNEL_GLOBAL);
                 }
                 ImGui::EndMenu();
             }
 
             if (ImGui::BeginMenu("Logging")) {
-                ImGui::Checkbox("Output to Console", &EngineSetup::get()->LOGGING);
+                ImGui::Checkbox("Output to Console", &setup->LOGGING);
                 ImGui::Separator();
-                ImGui::Checkbox("Log collisions", &EngineSetup::get()->LOG_COLLISION_OBJECTS);
+                ImGui::Checkbox("Log collisions", &setup->LOG_COLLISION_OBJECTS);
                 ImGui::EndMenu();
             }
 
@@ -327,49 +337,49 @@ struct GUIWidgetMenu
             }
 
             if (ImGui::BeginMenu("View")) {
-                ImGui::Checkbox("FullScreen (F11)", &EngineSetup::get()->FULLSCREEN);
+                ImGui::Checkbox("FullScreen (F11)", &setup->FULLSCREEN);
                 if (ImGui::IsItemEdited()) {
                     ComponentsManager::get()->getComponentWindow()->toggleFullScreen();
                 }
                 ImGui::Separator();
-                ImGui::Checkbox("UI (F4)", &EngineSetup::get()->IMGUI_ENABLED);
+                ImGui::Checkbox("UI (F4)", &setup->IMGUI_ENABLED);
 
                 ImGui::Separator();
-                ImGui::Checkbox("Draw Main Axis", &EngineSetup::get()->RENDER_MAIN_AXIS);
-                ImGui::Checkbox("Draw Object3D Axis", &EngineSetup::get()->RENDER_OBJECTS_AXIS);
-                if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
+                ImGui::Checkbox("Draw Main Axis", &setup->RENDER_MAIN_AXIS);
+                ImGui::Checkbox("Draw Object3D Axis", &setup->RENDER_OBJECTS_AXIS);
+                if (setup->RENDER_OBJECTS_AXIS) {
                     const float sizeAxisMin = 0;
                     const float sizeAxisMax = 1;
                     const float sizeAxisSens = 0.01;
 
-                    ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &EngineSetup::get()->OBJECT_AXIS_SIZE,
+                    ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &setup->OBJECT_AXIS_SIZE,
                                       sizeAxisSens, &sizeAxisMin, &sizeAxisMax, "%f", 1.0f);
 
                 }
                 ImGui::Separator();
-                ImGui::Checkbox("Light System", &EngineSetup::get()->ENABLE_LIGHTS);
-                if (EngineSetup::get()->ENABLE_LIGHTS) {
-                    ImGui::Checkbox("Draw light direction", &EngineSetup::get()->DRAW_LIGHTS_DIRECTION);
+                ImGui::Checkbox("Light System", &setup->ENABLE_LIGHTS);
+                if (setup->ENABLE_LIGHTS) {
+                    ImGui::Checkbox("Draw light direction", &setup->DRAW_LIGHTS_DIRECTION);
                 }
-                if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
-                    ImGui::DragScalar("Size Direction", ImGuiDataType_Float, &EngineSetup::get()->LIGHTS_DIRECTION_SIZE,
+                if (setup->DRAW_LIGHTS_DIRECTION) {
+                    ImGui::DragScalar("Size Direction", ImGuiDataType_Float, &setup->LIGHTS_DIRECTION_SIZE,
                                       0.1f, &range_min_light_direction_size, &range_max_light_direction_size, "%f", 1.0f);
                 }
 
                 ImGui::Separator();
 
-                ImGui::Checkbox("Draw Mesh3D AABB", &EngineSetup::get()->DRAW_MESH3D_AABB);
-                ImGui::Checkbox("Draw Mesh3D Octree", &EngineSetup::get()->DRAW_MESH3D_OCTREE);
-                ImGui::Checkbox("Draw Mesh3D Grid", &EngineSetup::get()->DRAW_MESH3D_GRID);
-                if (EngineSetup::get()->DRAW_MESH3D_GRID) {
+                ImGui::Checkbox("Draw Mesh3D AABB", &setup->DRAW_MESH3D_AABB);
+                ImGui::Checkbox("Draw Mesh3D Octree", &setup->DRAW_MESH3D_OCTREE);
+                ImGui::Checkbox("Draw Mesh3D Grid", &setup->DRAW_MESH3D_GRID);
+                if (setup->DRAW_MESH3D_GRID) {
                     ImGui::Separator();
-                    ImGui::Checkbox("Draw Test Passed Cells", &EngineSetup::get()->DRAW_MESH3D_TEST_PASSED);
-                    ImGui::Checkbox("Draw Not Test Passed Cells", &EngineSetup::get()->DRAW_MESH3D_TEST_NOT_PASSED);
+                    ImGui::Checkbox("Draw Test Passed Cells", &setup->DRAW_MESH3D_TEST_PASSED);
+                    ImGui::Checkbox("Draw Not Test Passed Cells", &setup->DRAW_MESH3D_TEST_NOT_PASSED);
                     ImGui::Separator();
-                    ImGui::Checkbox("Draw AStar Travel", &EngineSetup::get()->DRAW_MESH3D_GRID_ASTAR);
+                    ImGui::Checkbox("Draw AStar Travel", &setup->DRAW_MESH3D_GRID_ASTAR);
                 }
                 ImGui::Separator();
-                ImGui::Checkbox("Show FPS", &EngineSetup::get()->DRAW_FPS);
+                ImGui::Checkbox("Show FPS", &setup->DRAW_FPS);
                 ImGui::EndMenu();
             }
 
@@ -550,6 +560,82 @@ struct GUIWidgetMenu
         }
     }
 
+    void drawGlobalIllumination()
+    {
+        const float range_illumination_min_settings = -1.0f;
+        const float range_illumination_max_settings = 1.0f;
+        const float sens_illumination_settings = 0.01f;
+        auto dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->getDirectionalLight();
+
+        ImGui::DragScalar("Direction X", ImGuiDataType_Float, &dirLight->direction.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+        ImGui::DragScalar("Direction Y", ImGuiDataType_Float, &dirLight->direction.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+        ImGui::DragScalar("Direction Z", ImGuiDataType_Float, &dirLight->direction.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+
+        ImVec4 color = {dirLight->ambient.x, dirLight->ambient.y, dirLight->ambient.z, 1};
+        bool changed_color = ImGui::ColorEdit4("Ambient##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+        if (changed_color) {
+            dirLight->ambient = {color.x, color.y, color.z};
+        }
+        color = {dirLight->specular.x, dirLight->specular.y, dirLight->specular.z, 1};
+        changed_color = ImGui::ColorEdit4("Specular##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+        if (changed_color) {
+            dirLight->specular = {color.x, color.y, color.z};
+        }
+
+        color = {dirLight->diffuse.x, dirLight->diffuse.y, dirLight->diffuse.z, 1};
+        changed_color = ImGui::ColorEdit4("Diffuse##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+        if (changed_color) {
+            dirLight->diffuse = {color.x, color.y, color.z};
+        }
+
+        ImGui::Separator();
+
+        const float focalMinValues = 0;
+        const float focalMaxValues = 1;
+        const float focalValueSens = 0.001;
+
+        const float depthMinValues = 0;
+        const float depthMaxValues = 100;
+        const float depthValueSens = 0.1;
+
+        const int minBlurRadius = 0;
+        const int maxBlurRadius = 10;
+
+        ImGui::Checkbox("Enable DOF", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
+
+        if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
+            ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+            ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+            ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
+            ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+            ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
+        }
+
+        ImGui::Separator();
+
+        ImGui::Checkbox("Enable FOG", &EngineSetup::get()->ENABLE_FOG);
+
+        if (EngineSetup::get()->ENABLE_FOG) {
+            const float rangeFogSens = 0.1;
+            const float rangeFogMin = 0;
+            const float rangeFogMax = 0;
+
+            ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+            ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+            ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->intensity, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+
+            if (ImGui::TreeNode("FOG Color")) {
+                const float fogColorSend = 0.01;
+                const float fogColorMin = 0;
+                const float fogColorMax = 1;
+
+                ImGui::DragScalar("x", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor.r, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
+                ImGui::DragScalar("y", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor.g, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
+                ImGui::DragScalar("z", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor.b, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
+                ImGui::TreePop();
+            }
+        }
+    }
 };
 
 #endif //BRAKEZA3D_GUIWIDGETMENU_H

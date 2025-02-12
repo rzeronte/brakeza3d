@@ -132,7 +132,6 @@ void ComponentRender::updateSelectedObject3D()
         if (selectedObject != nullptr) {
             Logging::Message("Selected object by click: %s", selectedObject->getLabel().c_str());
             Brakeza3D::get()->getManagerGui()->setSelectedObject(selectedObject);
-            Brakeza3D::get()->getManagerGui()->setGuizmoOperation(ImGuizmo::OPERATION::TRANSLATE);
         } else {
             setSelectedObject(nullptr);
         }

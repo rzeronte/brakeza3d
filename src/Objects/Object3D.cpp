@@ -347,9 +347,6 @@ void Object3D::drawImGuiProperties()
 {
     auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
 
-    ImGui::Checkbox("Enabled", &enabled);
-    ImGui::Separator();
-
     static char name[256];
     strncpy(name, label.c_str(), sizeof(name));
     ImGui::Image(TexturePackage::getOGLTextureID(*ImGuiTextures, getTypeIcon()), ImVec2(22, 24));

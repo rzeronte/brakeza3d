@@ -203,12 +203,12 @@ void Drawable::drawGrid3DMakeTravel(Grid3D *grid) {
 
 void Drawable::drawObject3DGizmo(
     Object3D *o,
-    ImGuizmo::OPERATION currentOperation,
     glm::mat4 objectMatrix,
     glm::mat4 viewMatrix,
     glm::mat4 projectionMatrix
 ) {
     ImGuiIO& io = ImGui::GetIO();
+    auto currentOperation  = ComponentsManager::get()->getComponentWindow()->getGuizmoOperation();
 
     if (!ComponentsManager::get()->getComponentWindow()->isWindowMaximized()) {
         ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
@@ -242,7 +242,9 @@ void Drawable::drawObject3DGizmo(
         }
 
         if (currentOperation == ImGuizmo::OPERATION::ROTATE) {
-            o->setRotation(M3::fromMat3GLM(objectMatrixManipulated).getTranspose());
+            auto m = M3::fromMat3GLM(objectMatrixManipulated).getTranspose();
+            M3::normalize(m);
+            o->setRotation(m);
         }
 
         if (currentOperation == ImGuizmo::OPERATION::SCALE_X) {

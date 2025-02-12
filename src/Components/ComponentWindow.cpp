@@ -19,7 +19,8 @@ ComponentWindow::ComponentWindow()
     applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str())),
     fontDefault(nullptr),
     ImGuiConfig(ImGUIConfigs::DEFAULT),
-    ImGuiConfigChanged(ImGUIConfigs::DEFAULT)
+    ImGuiConfigChanged(ImGUIConfigs::DEFAULT),
+    guizmoOperation(ImGuizmo::TRANSLATE)
 {
     initWindow();
     initFontsTTF();
@@ -596,4 +597,14 @@ void ComponentWindow::toggleFullScreen()
     } else {
         SDL_SetWindowFullscreen(window, 0);
     }
+}
+
+ImGuizmo::OPERATION ComponentWindow::getGuizmoOperation() const
+{
+    return guizmoOperation;
+}
+
+void ComponentWindow::setGuizmoOperation(ImGuizmo::OPERATION guizmoOperation)
+{
+    ComponentWindow::guizmoOperation = guizmoOperation;
 }
