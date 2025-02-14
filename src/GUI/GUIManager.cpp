@@ -76,6 +76,7 @@ void GUIManager::LoadUIIcons()
     icons.addItem(iconsFolder + "project.png", "projectIcon");
     icons.addItem(iconsFolder + "open.png", "openIcon");
     icons.addItem(iconsFolder + "gui.png", "guiIcon");
+    icons.addItem(iconsFolder + "texture.png", "textureIcon");
 }
 
 void GUIManager::loadImagesFolder()
@@ -287,6 +288,7 @@ void GUIManager::drawScriptsLuaFolderFiles(const std::string& folder)
             ImGui::TableNextRow();
 
             ImGui::TableSetColumnIndex(0);
+            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
             ImGui::Image(TexturePackage::getOGLTextureID(icons, "scriptIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             std::string optionText = std::to_string(i + 1) + ") " + file;
@@ -296,7 +298,7 @@ void GUIManager::drawScriptsLuaFolderFiles(const std::string& folder)
 
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
                 ImGui::SetDragDropPayload("SCRIPT_ITEM",fullPath.c_str(),fullPath.size() + 1);
-                ImGui::Text("%s", fullPath.c_str()); // Esto es lo que se muestra mientras se arrastra
+                ImGui::Text("%s", fullPath.c_str());
                 ImGui::EndDragDropSource();
             }
             ImGui::TableSetColumnIndex(1);
@@ -705,6 +707,7 @@ void GUIManager::drawCustomShadersFolder(std::string folder)
             ImGui::TableNextRow();
 
             ImGui::TableSetColumnIndex(0);
+            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
             ImGui::Image(TexturePackage::getOGLTextureID(icons, "shaderIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             std::string optionText = std::to_string(i + 1) + ") " + file;
