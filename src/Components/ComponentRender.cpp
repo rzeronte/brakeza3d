@@ -2,6 +2,8 @@
 #include "../../include/Components/ComponentRender.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/OpenGL/ShaderOpenGLCustomPostprocessing.h"
+#include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
 
 ComponentRender::ComponentRender()
 :
@@ -276,6 +278,53 @@ ShaderOpenGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& na
     return nullptr;
 }
 
+ShaderOpenGLCustom* ComponentRender::getLoadedShader(std::string folder, std::string jsonFilename)
+{
+    auto name = Tools::getFilenameWithoutExtension(jsonFilename);
+
+    std::string shaderFragmentFile = folder + std::string(name + ".fs");
+    std::string shaderVertexFile = folder + std::string(name + ".vs");
+
+    auto type = ShaderOpenGLCustom::extractTypeFromShaderName(folder, name);
+
+    Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
+
+    switch(type) {
+        case ShaderCustomTypes::SHADER_POSTPROCESSING : {
+            return new ShaderOpenGLCustomPostprocessing(name, shaderVertexFile, shaderFragmentFile);
+        }
+        case ShaderCustomTypes::SHADER_OBJECT : {
+            return new ShaderOpenGLCustomMesh3D(nullptr, name, shaderVertexFile, shaderFragmentFile);
+            break;
+        }
+    }
+}
+
+void ComponentRender::loadShaderIntoScene(std::string folder, std::string jsonFilename)
+{
+    auto name = Tools::getFilenameWithoutExtension(jsonFilename);
+
+    std::string shaderFragmentFile = folder + std::string(name + ".fs");
+    std::string shaderVertexFile = folder + std::string(name + ".vs");
+
+    auto type = ShaderOpenGLCustom::extractTypeFromShaderName(folder, name);
+
+    Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
+
+    switch(type) {
+        case ShaderCustomTypes::SHADER_POSTPROCESSING : {
+            this->addShaderToScene(
+                new ShaderOpenGLCustomPostprocessing(name, shaderVertexFile, shaderFragmentFile)
+            );
+            break;
+        }
+        case ShaderCustomTypes::SHADER_OBJECT : {
+            Logging::Message("[error] You can't add a ShaderObject type into scene");
+            break;
+        }
+    }
+}
+
 void ComponentRender::addShaderToScene(ShaderOpenGLCustom *shader)
 {
     sceneShaders.push_back(shader);
@@ -431,4 +480,9 @@ void ComponentRender::changeOpenGLProgram(GLuint programID)
         glUseProgram(programID);
         setLastProgramUsed(programID);
     }
+}
+
+const std::map<std::string, ShaderCustomTypes> &ComponentRender::getShaderTypesMapping() const
+{
+    return ShaderTypesMapping;
 }

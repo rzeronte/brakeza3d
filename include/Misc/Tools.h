@@ -90,6 +90,8 @@ public:
     static bool removeFile(const std::string &filePath);
 
     static std::string removeSubstring(const std::string &str, const std::string &toRemove);
+
+    static bool copyFile(const std::string &origen, const std::string &destino);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H
