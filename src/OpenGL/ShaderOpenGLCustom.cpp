@@ -246,6 +246,8 @@ void ShaderOpenGLCustom::drawImGuiProperties()
 
     ImGui::SeparatorText("OpenGL textures");
 
+    auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
+
     if (ImGui::BeginTable("ShaderOpenGLCustomTexture", 4, flags)) {
         int i = 0;
         for (auto&  type : dataTypes) {
@@ -258,36 +260,38 @@ void ShaderOpenGLCustom::drawImGuiProperties()
 
                     if (texture != nullptr) {
                         ImGui::TableSetColumnIndex(0);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
                         ImGui::Image((ImTextureID) texture->getOGLTextureID(),ImVec2(36, 36));
                         captureDragDropUpdateImage(type, texture);
 
                         ImGui::TableSetColumnIndex(1);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 15.0f));
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
                         ImGui::Text("GL_TEXTURE%d", i);
 
                         ImGui::TableSetColumnIndex(2);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 15.0f));
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 153.0f));
                         ImGui::Text("%s", texture->getFileName().c_str());
 
                         ImGui::TableSetColumnIndex(3);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 15.0f));
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
                         ImGui::Text("%dx%d", texture->width(), texture->height());
                     } else {
                         ImGui::TableSetColumnIndex(0);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 15.0f));
-                        ImGui::Text("Drag a texture here!");
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
+                        ImGui::Image(TexturePackage::getOGLTextureID(*ImGuiTextures, "textureIcon"),ImVec2(36, 36));
                         captureDragDropUpdateImage(type, texture);
 
                         ImGui::TableSetColumnIndex(1);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 15.0f));
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
                         ImGui::Text("GL_TEXTURE%d", i);
 
                         ImGui::TableSetColumnIndex(2);
-                        ImGui::Text("-");
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
+                        ImGui::Text("Empty texture");
 
                         ImGui::TableSetColumnIndex(3);
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
                         ImGui::Text("-");
                     }
                     i++;
