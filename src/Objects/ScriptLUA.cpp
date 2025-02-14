@@ -291,71 +291,59 @@ void ScriptLUA::setPaused(bool paused) {
 
 void ScriptLUA::drawImGuiProperties()
 {
+    ImGui::SeparatorText("LUA variables");
+
     if ((int) dataTypes.size() <= 0) {
         ImGui::Text("No variables found");
         return;
     }
 
-    if (ImGui::TreeNode("Script Variables")) {
-        for (auto&  type: dataTypes) {
-            switch (EngineSetup::get()->LUADataTypesMapping[type.type]) {
-                case EngineSetup::LUADataType::INT: {
-                    const float rangeMin = -500000;
-                    const float rangeMax = 500000;
-
-                    int valueInt = std::get<int>(type.value);
-                    if (ImGui::DragScalar(type.name.c_str(), ImGuiDataType_S32, &valueInt, 1.0 , &rangeMin, &rangeMax, "%d", 1.0f)) {
-                        type.value = valueInt;
-                    }
-                    break;
+    int i = 0;
+    for (auto&  type: dataTypes) {
+        ImGui::PushID(i);
+        switch (EngineSetup::get()->LUADataTypesMapping[type.type]) {
+            case EngineSetup::LUADataType::INT: {
+                int valueInt = std::get<int>(type.value);
+                if (ImGui::InputInt(type.name.c_str(), &valueInt)) {
+                    type.value = valueInt;
                 }
-                case EngineSetup::LUADataType::STRING: {
-                    std::string valueString = std::get<const char*>(type.value);
-                    static char name[256];
-                    strncpy(name, valueString.c_str(), sizeof(name));
-                    ImGui::InputText(type.name.c_str(), name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
-                    if (ImGui::IsItemEdited()) {
-                        type.value = name;
-                    }
-
-                    break;
-                }
-                case EngineSetup::LUADataType::FLOAT: {
-                    const float rangeMin = -500000;
-                    const float rangeMax = 500000;
-                    const float rangeSensibility = 0.001;
-
-                    float valueFloat = std::get<float>(type.value);
-                    if (ImGui::DragScalar(type.name.c_str(), ImGuiDataType_Float, &valueFloat, rangeSensibility , &rangeMin, &rangeMax, "%f", 1.0f)) {
-                        type.value = valueFloat;
-                    }
-                    break;
-                }
-                case EngineSetup::LUADataType::VERTEX3D: {
-                    if (ImGui::TreeNode(type.name.c_str())) {
-                        const float range_min = -50000;
-                        const float range_max = 50000;
-                        const float range_sensibility = 0.1;
-                        Vertex3D valueVertex = std::get<Vertex3D>(type.value);
-
-                        if (ImGui::DragScalar("X", ImGuiDataType_Float, &valueVertex.x, range_sensibility ,&range_min, &range_max, "%f", 1.0f)) {
-                            type.value = valueVertex;
-                        }
-                        if (ImGui::DragScalar("Y", ImGuiDataType_Float, &valueVertex.y, range_sensibility ,&range_min, &range_max, "%f", 1.0f)) {
-                            type.value = valueVertex;
-                        }
-                        if (ImGui::DragScalar("Z", ImGuiDataType_Float, &valueVertex.z, range_sensibility ,&range_min, &range_max, "%f", 1.0f)) {
-                            type.value = valueVertex;
-                        }
-                        ImGui::TreePop();
-                    }
-                    break;
-                }
-                default:
-                    std::cerr << "Unknown data type." << std::endl;
+                break;
             }
+            case EngineSetup::LUADataType::STRING: {
+                std::string valueString = std::get<const char*>(type.value);
+                static char name[256];
+                strncpy(name, valueString.c_str(), sizeof(name));
+                ImGui::InputText(type.name.c_str(), name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
+                if (ImGui::IsItemEdited()) {
+                    type.value = name;
+                }
+
+                break;
+            }
+            case EngineSetup::LUADataType::FLOAT: {
+                float valueFloat = std::get<float>(type.value);
+                if (ImGui::InputFloat(type.name.c_str(), &valueFloat, 0.01f, 1.0f, "%.3f")) {
+                    type.value = valueFloat;
+                }
+                break;
+            }
+            case EngineSetup::LUADataType::VERTEX3D: {
+                Vertex3D valueVertex = std::get<Vertex3D>(type.value);
+                float vec4f[4];
+                valueVertex.toFloat(vec4f);
+                if (ImGui::DragFloat3(type.name.c_str(), vec4f, 0.01f, 0.0f, 1.0f)) {
+                    valueVertex.x = vec4f[0];
+                    valueVertex.y = vec4f[1];
+                    valueVertex.z = vec4f[2];
+                    type.value = valueVertex;
+                }
+                break;
+            }
+            default:
+                std::cerr << "Unknown data type." << std::endl;
         }
-        ImGui::TreePop();
+        i++;
+        ImGui::PopID();
     }
 }
 

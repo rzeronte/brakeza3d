@@ -9,23 +9,33 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/ext/matrix_float2x2.hpp>
+#include <utility>
 #include <variant>
 #include <map>
 #include "ShaderOpenGL.h"
 #include "ShaderQuadOpenGL.h"
 #include "../Misc/cJSON.h"
+#include "../Misc/Image.h"
 #include <sstream>
 #include <vector>
+#include <optional>
+
+enum ShaderCustomTypes {
+    SHADER_NONE = -1,
+    SHADER_POSTPROCESSING = 0,
+    SHADER_OBJECT = 1,
+};
 
 enum class ShaderOpenGLCustomDataType {
     INT,
     FLOAT,
     VEC2,
     VEC3,
-    VEC4
+    VEC4,
+    TEXTURE2D
 };
 
-typedef std::variant<int, float, glm::vec2, glm::vec3, glm::vec4> ShaderOpenGLCustomDataValue;
+typedef std::variant<int, float, glm::vec2, glm::vec3, glm::vec4, Image*> ShaderOpenGLCustomDataValue;
 
 struct ShaderOpenGLCustomType {
     ShaderOpenGLCustomType(const char *name, const char *type, ShaderOpenGLCustomDataValue value)
@@ -36,7 +46,7 @@ struct ShaderOpenGLCustomType {
     ShaderOpenGLCustomDataValue value;
 };
 
-class ShaderOpenGLCustom: ShaderOpenGL, ShaderQuadOpenGL
+class ShaderOpenGLCustom: public ShaderOpenGL
 {
     std::map<std::string, ShaderOpenGLCustomDataType> GLSLTypeMapping = {
         {"int", ShaderOpenGLCustomDataType::INT},
@@ -44,32 +54,42 @@ class ShaderOpenGLCustom: ShaderOpenGL, ShaderQuadOpenGL
         {"vec2", ShaderOpenGLCustomDataType::VEC2},
         {"vec3", ShaderOpenGLCustomDataType::VEC3},
         {"vec4", ShaderOpenGLCustomDataType::VEC4},
+        {"texture", ShaderOpenGLCustomDataType::TEXTURE2D}
     };
 
     std::string label;
-    std::string sourceFS;
 
     bool enabled;
+    ShaderCustomTypes type;
     std::string fileTypes;
 
     std::vector<ShaderOpenGLCustomType> dataTypes;
     std::vector<ShaderOpenGLCustomType> dataTypesDefaultValues;
 
-    GLint textureUniform;
-
     // imgui
     std::string currentVariableToAddName;
     char editableSource[1024 * 16];
+
+    int numTextures = 0;
 protected:
 public:
-    explicit ShaderOpenGLCustom(std::string label, const std::string &fragmentFilename);
+    explicit ShaderOpenGLCustom(
+        std::string label,
+        const std::string &vertexFilename,
+        const std::string &fragmentFilename,
+        ShaderCustomTypes type
+    );
 
-    void render(GLuint textureID, GLuint framebuffer);
+    virtual void render(GLuint framebuffer) = 0;
+
+    cJSON * getJSON();
 
     void drawImGuiProperties();
 
-    GLuint compile();
+    virtual GLuint compile();
 
+    std::string sourceVS;
+    std::string sourceFS;
 protected:
 
     bool existDataType(const char *name, const char *type);
@@ -106,8 +126,6 @@ public:
 
     void removeDataType(const ShaderOpenGLCustomType &data);
 
-    static ShaderOpenGLCustom *createEmptyCustomShader(const std::string& name);
-
     void setDataTypeValue(const std::string &name, ShaderOpenGLCustomDataValue newValue);
 
     void setDataTypeValue(const std::string &name, int newValue);
@@ -119,6 +137,36 @@ public:
     void setDataTypeValue(const std::string &name, glm::vec3 newValue);
 
     void setDataTypeValue(const std::string &name, glm::vec4 newValue);
+
+    void resetNumberTextures();
+
+    void increaseNumberTextures();
+
+    [[nodiscard]] ShaderCustomTypes getType() const;
+
+    void setType(ShaderCustomTypes type);
+
+    static ShaderCustomTypes getShaderTypeFromString(const std::string &shaderName);
+
+    static std::string getShaderTypeString(ShaderCustomTypes type);
+
+    static void createEmptyCustomShader(
+        const std::string& name,
+        const std::string& folder,
+        ShaderCustomTypes type
+    );
+
+    static void removeCustomShaderFiles(const std::string& folder, std::string name);
+
+    static ShaderCustomTypes extractTypeFromShaderName(const std::string& folder, std::string name);
+
+    std::string getFolder();
+
+    [[nodiscard]] const std::vector<ShaderOpenGLCustomType> &getDataTypes() const;
+
+    void reload();
+
+    void captureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const;
 };
 
 

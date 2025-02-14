@@ -7,6 +7,7 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Misc/ToolsJSON.h"
+#include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
 
 Mesh3D::Mesh3D()
 :
@@ -89,6 +90,10 @@ void Mesh3D::onUpdate()
 
     if (EngineSetup::get()->DRAW_MESH3D_GRID && this->grid != nullptr) {
         Drawable::drawGrid3D(this->grid);
+    }
+
+    for (auto &s: customShaders) {
+        s->render(window->getSceneFramebuffer());
     }
 }
 
@@ -354,7 +359,7 @@ void Mesh3D::drawImGuiProperties()
     Object3D::drawImGuiProperties();
     std::string title = "Mesh3D (File: " + sourceFile + ")";
 
-    if (ImGui::TreeNode("Mesh3D")) {
+    if (ImGui::CollapsingHeader("Mesh3D")) {
         if (ImGui::TreeNode("Mesh information")) {
             auto fileModel = std::string("- File model: ") + sourceFile;
             ImGui::Text(fileModel.c_str());
@@ -426,13 +431,19 @@ void Mesh3D::drawImGuiProperties()
         }
         ImGui::Separator();
         ImGui::Checkbox(std::string("Enable lights").c_str(), &enableLights);
-        ImGui::TreePop();
     }
 }
 
 cJSON * Mesh3D::getJSON()
 {
     cJSON *root = Object3D::getJSON();
+
+    cJSON *effectsArrayJSON = cJSON_CreateArray();
+    for ( auto s : customShaders) {
+        cJSON_AddItemToArray(effectsArrayJSON, s->getJSON());
+    }
+    cJSON_AddItemToObject(root, "shaders", effectsArrayJSON);
+
 
     cJSON_AddStringToObject(root, "model", sourceFile.c_str());
     cJSON_AddBoolToObject(root, "enableLights", isEnableLights());
@@ -456,14 +467,32 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
     o->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring);
 
     if (cJSON_GetObjectItemCaseSensitive(object, "shaders") != nullptr) {
-        auto mesh3DShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getFXOpenGLTypes();
-        cJSON *currentShader;
-        cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
-            auto type = cJSON_GetObjectItemCaseSensitive(currentShader, "type")->valuestring;
-            switch (mesh3DShaderTypes[type]) {
+        auto shaderTypesMapping = ComponentsManager::get()->getComponentRender()->getShaderTypesMapping();
+        cJSON *currentShaderJSON;
+        cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
+            auto typeString = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
+            auto type = ShaderOpenGLCustom::getShaderTypeFromString(typeString);
+            switch (type) {
+                case ShaderCustomTypes::SHADER_OBJECT: {
+                    auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
+                    auto vertex = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vertexshader")->valuestring;
+                    auto fragment = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;
+                    o->addCustomShader(new ShaderOpenGLCustomMesh3D(o, name, vertex, fragment));
+                    break;
+                }
+            }
+        }
+    }
+
+    if (cJSON_GetObjectItemCaseSensitive(object, "effects") != nullptr) {
+        auto FXOpenGLTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getFXOpenGLTypes();
+        cJSON *currentFXJSON;
+        cJSON_ArrayForEach(currentFXJSON, cJSON_GetObjectItemCaseSensitive(object, "effects")) {
+            auto type = cJSON_GetObjectItemCaseSensitive(currentFXJSON, "type")->valuestring;
+            switch (FXOpenGLTypes[type]) {
                 case FXOpenGLLoaderMapping::FXBlink: {
-                    auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
-                    auto blinkStep = (float) cJSON_GetObjectItemCaseSensitive(currentShader, "step")->valuedouble;
+                    auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentFXJSON, "color");
+                    auto blinkStep = (float) cJSON_GetObjectItemCaseSensitive(currentFXJSON, "step")->valuedouble;
                     auto shader = new FXBlink(true, o, blinkStep, ToolsJSON::parseColorJSON(edgeColor));
                     o->addFXOpenGL(shader);
                     break;
@@ -514,6 +543,7 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
             (int) cJSON_GetObjectItemCaseSensitive(gridJSON, "z")->valueint
         );
     }
+
     if (cJSON_GetObjectItemCaseSensitive(object, "octree") != nullptr) {
         auto octreeJSON = cJSON_GetObjectItemCaseSensitive(object, "octree");
         auto maxDepth = (int) cJSON_GetObjectItemCaseSensitive(octreeJSON, "maxDepth")->valueint;
@@ -831,3 +861,43 @@ void Mesh3D::fillGrid3DFromGeometry()
         grid->doTestForNonEmptyGeometry(m.modelTriangles);
     }
 }
+
+void Mesh3D::addCustomShader(ShaderOpenGLCustom *s)
+{
+    customShaders.emplace_back(s);
+}
+
+void Mesh3D::loadShader(std::string folder, std::string jsonFilename)
+{
+    auto name = Tools::getFilenameWithoutExtension(jsonFilename);
+
+    std::string shaderFragmentFile = folder + std::string(name + ".fs");
+    std::string shaderVertexFile = folder + std::string(name + ".vs");
+
+    auto type = ShaderOpenGLCustom::extractTypeFromShaderName(folder, name);
+
+    Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
+
+    switch(type) {
+        case ShaderCustomTypes::SHADER_POSTPROCESSING : {
+            Logging::Message("[error] You can't add a 'Postprocessing shader' type into Mesh3D");
+            break;
+        }
+        case ShaderCustomTypes::SHADER_OBJECT : {
+            addCustomShader(new ShaderOpenGLCustomMesh3D(this, name, shaderVertexFile, shaderFragmentFile));
+            break;
+        }
+    }
+}
+
+void Mesh3D::removeShader(int index)
+{
+    if (index >= 0 && index < customShaders.size()) {
+        customShaders.erase(customShaders.begin() + index);
+    }
+}
+
+const std::vector<ShaderOpenGLCustom *> &Mesh3D::getCustomShaders() const {
+    return customShaders;
+}
+

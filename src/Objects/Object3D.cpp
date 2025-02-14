@@ -359,7 +359,7 @@ void Object3D::drawImGuiProperties()
     ImGui::Separator();
 
     if (featuresGUI.position || featuresGUI.rotation || featuresGUI.scale) {
-        if (ImGui::TreeNode("Transformations")) {
+        if (ImGui::CollapsingHeader("Transformations")) {
             // position
             if (featuresGUI.position) {
                 Tools::ImGuiVertex3D("Position", "X", "Y", "Z", &position, 0.1, -100000, 100000);
@@ -409,27 +409,22 @@ void Object3D::drawImGuiProperties()
                     ImGui::TreePop();
                 }
             }
-            ImGui::TreePop();
         }
-        ImGui::Separator();
     }
     // alpha
     if (featuresGUI.alpha) {
-        if (ImGui::TreeNode("Alpha")) {
+        if (ImGui::CollapsingHeader("Alpha")) {
             const float range_alpha_min = 0;
             const float range_alpha_max = 1;
 
             ImGui::DragScalar("Alpha", ImGuiDataType_Float, &getAlpha(), 0.01, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
-
-            ImGui::TreePop();
         }
-        ImGui::Separator();
     }
 
     if (featuresGUI.shaders) {
-        if (ImGui::TreeNode("Effects")) {
+        if (ImGui::CollapsingHeader("Effects")) {
             if ((int) effects.size() <= 0) {
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No shaders attached");
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No effects attached");
             }
 
             for (int i = 0; i < (int) effects.size(); i++) {
@@ -460,13 +455,11 @@ void Object3D::drawImGuiProperties()
                 }
                 ImGui::PopID();
             }
-            ImGui::TreePop();
         }
-        ImGui::Separator();
     }
 
     if (featuresGUI.attached) {
-        if (ImGui::TreeNode("Attached Objects")) {
+        if (ImGui::CollapsingHeader("Attached Objects")) {
             if ((int) attachedObjects.size() <= 0) {
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Not objects found");
             }
@@ -476,13 +469,11 @@ void Object3D::drawImGuiProperties()
                     a->drawImGuiProperties();
                 }
             }
-            ImGui::TreePop();
         }
-        ImGui::Separator();
     }
 
     if (featuresGUI.attached) {
-        if (ImGui::TreeNode("Collider")) {
+        if (ImGui::CollapsingHeader("Collider")) {
             if (ImGui::Checkbox("Enable collider", &collisionsEnabled)) {
                 if (!collisionsEnabled) {
                     removeCollisionObject();
@@ -572,9 +563,7 @@ void Object3D::drawImGuiProperties()
                     UpdateShape();
                 }
             }
-            ImGui::TreePop();
         }
-        ImGui::Separator();
     }
 }
 
@@ -745,7 +734,7 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
     if (cJSON_GetObjectItemCaseSensitive(object, "effects") != nullptr) {
         auto mesh3DShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getFXOpenGLTypes();
         cJSON *currentShader;
-        cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
+        cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(object, "effects")) {
             auto type = cJSON_GetObjectItemCaseSensitive(currentShader, "type")->valuestring;
             switch(mesh3DShaderTypes[type]) {
                 case FXOpenGLLoaderMapping::FXTint: {

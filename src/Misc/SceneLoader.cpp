@@ -78,7 +78,7 @@ void SceneLoader::loadScene(const std::string& filename)
     cJSON_ArrayForEach(currentObject, cJSON_GetObjectItemCaseSensitive(contentJSON, "objects")) {
         std::string typeObject = cJSON_GetObjectItemCaseSensitive(currentObject, "type")->valuestring;
 
-        switch(sceneTypes[typeObject.c_str()]) {
+        switch(SceneObjectTypesMapping[typeObject.c_str()]) {
             case SceneObjectLoaderMapping::Object3D : {
                 Object3D::createFromJSON(currentObject);
                 break;
@@ -130,9 +130,9 @@ void SceneLoader::loadScene(const std::string& filename)
     cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(contentJSON, "shaders")) {
         std::string nameFragmentCodeFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "file")->valuestring;
         std::string shaderCustomName = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
-        ComponentsManager::get()->getComponentRender()->addShaderToScene(
+        /*ComponentsManager::get()->getComponentRender()->addShaderToScene(
             new ShaderOpenGLCustom(shaderCustomName, nameFragmentCodeFile)
-        );
+        );*/
     }
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
@@ -363,7 +363,7 @@ void SceneLoader::createImage3DToScene(const std::string &filename)
 
 std::map<std::string, FXOpenGLLoaderMapping> &SceneLoader::getFXOpenGLTypes()
 {
-    return mesh3DShaderTypes;
+    return FXOpenGLTypesMapping;
 }
 
 void SceneLoader::createBillboardAnimation8Directions()

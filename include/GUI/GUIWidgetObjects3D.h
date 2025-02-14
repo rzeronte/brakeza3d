@@ -112,6 +112,8 @@ struct GUIWidgetObjects3D {
                 ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 15.0f);
                 ImGui::Text((std::to_string(i + 1) + ") " + o->getLabel()).c_str());
                 if (ImGui::BeginDragDropTarget()) {
+                    auto mesh = dynamic_cast<Mesh3D*> (o);
+
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
                         Logging::Message("Dropping script (%s) in %s", payload->Data, o->getLabel().c_str());
                         o->attachScript(new ScriptLUA(
@@ -130,7 +132,6 @@ struct GUIWidgetObjects3D {
                                 break;
                             }
                         }
-                        auto mesh = dynamic_cast<Mesh3D*> (o);
                         if (mesh) {
                             switch(selection) {
                                 case 0: {
@@ -144,6 +145,14 @@ struct GUIWidgetObjects3D {
                                     break;
                                 }
                             }
+                        }
+                    }
+
+                    if (mesh != nullptr) {
+                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CUSTOMSHADER_ITEM")) {
+                            EngineSetup::DragDropCustomShaderData* receivedData = (EngineSetup::DragDropCustomShaderData*)payload->Data;
+                            Logging::Message("Dropping shader into Mesh3D (Folder: %s, File: %s)", receivedData->folder, receivedData->file);
+                            mesh->loadShader(receivedData->folder, receivedData->file);
                         }
                     }
                     ImGui::EndDragDropTarget();

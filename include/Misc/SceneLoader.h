@@ -32,7 +32,7 @@ enum class FXOpenGLLoaderMapping {
 };
 
 class SceneLoader {
-    std::map<std::string, SceneObjectLoaderMapping> sceneTypes = {
+    std::map<std::string, SceneObjectLoaderMapping> SceneObjectTypesMapping = {
         {"Object3D", SceneObjectLoaderMapping::Object3D},
         {"Mesh3D", SceneObjectLoaderMapping::Mesh3D},
         {"Mesh3DAnimation", SceneObjectLoaderMapping::Mesh3DAnimation},
@@ -46,7 +46,7 @@ class SceneLoader {
         {"Image2D", SceneObjectLoaderMapping::Image2D}
     };
 
-    std::map<std::string, FXOpenGLLoaderMapping> mesh3DShaderTypes = {
+    std::map<std::string, FXOpenGLLoaderMapping> FXOpenGLTypesMapping = {
         {"FXOutliner",  FXOpenGLLoaderMapping::FXOutliner},
         {"FXBlink",     FXOpenGLLoaderMapping::FXBlink},
         {"FXColorTint", FXOpenGLLoaderMapping::FXTint},

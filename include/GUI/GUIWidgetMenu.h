@@ -232,15 +232,15 @@ struct GUIWidgetMenu
                 ImGui::Separator();
                 ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
                 ImGui::Separator();
-                ImGui::Checkbox("1 Map", &setup->SHOW_DEPTH_OF_FIELD);
+                ImGui::Checkbox("Depth Map", &setup->SHOW_DEPTH_OF_FIELD);
                 ImGui::Separator();
                 if (!setup->SHOW_DEPTH_OF_FIELD) {
                     ImGui::Checkbox("Vertex", &setup->TRIANGLE_MODE_PIXELS);
                     ImGui::Checkbox("WireFrame", &setup->TRIANGLE_MODE_WIREFRAME);
                     ImGui::Checkbox("Solid", &setup->TRIANGLE_MODE_COLOR_SOLID);
                     ImGui::Checkbox("Textures", &setup->TRIANGLE_MODE_TEXTURIZED);
+                    ImGui::Separator();
                 }
-                ImGui::Separator();
                 ImGui::Checkbox("Draw Bones", &setup->DRAW_ANIMATION_BONES);
                 ImGui::Separator();
                 ImGui::Checkbox("Internal click selection", &setup->CLICK_SELECT_OBJECT3D);
@@ -285,6 +285,11 @@ struct GUIWidgetMenu
 
             if (ImGui::BeginMenu("Global illumination")) {
                 drawGlobalIllumination();
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Camera")) {
+                drawCameraSettings();
                 ImGui::EndMenu();
             }
 
@@ -635,6 +640,33 @@ struct GUIWidgetMenu
                 ImGui::TreePop();
             }
         }
+    }
+
+    void drawCameraSettings()
+    {
+        auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+        const float range_sensibility = 0.1;
+
+        const float range_min_movement = 0;
+        const float range_max_movement = 500;
+
+        const float range_min_mouse_sensitivity = 0;
+        const float range_max_mouse_sensitivity = 3;
+
+        ImGui::Checkbox("Mouse Look", &EngineSetup::get()->MOUSE_LOOK);
+        if (EngineSetup::get()->MOUSE_LOOK) {
+            ImGui::DragScalar("Sens.", ImGuiDataType_Float, &EngineSetup::get()->MOUSE_SENSITIVITY,range_sensibility, &range_min_mouse_sensitivity, &range_max_mouse_sensitivity, "%f",1.0f);
+        }
+        ImGui::Separator();
+
+        // position
+        Tools::ImGuiVertex3D("Position##1", "X", "Y", "Z", &camera->getPosition(), range_sensibility, -99999, 99999);
+        ImGui::Separator();
+
+        ImGui::DragScalar("Cursors Walking", ImGuiDataType_Float, &EngineSetup::get()->WALKING_SPEED,range_sensibility, &range_min_movement, &range_max_movement, "%f", 1.0f);
+        ImGui::DragScalar("Cursors Strafe", ImGuiDataType_Float, &EngineSetup::get()->STRAFE_SPEED,range_sensibility, &range_min_movement, &range_max_movement, "%f", 1.0f);
+
     }
 };
 

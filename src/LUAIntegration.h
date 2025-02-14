@@ -446,7 +446,6 @@ void LUAIntegration(sol::state &lua)
     );
 
     lua.new_usertype<ShaderOpenGLCustom>("ShaderOpenGLCustom",
-        sol::constructors<ShaderOpenGLCustom(std::string, const std::string&)>(),
             "setDataTypeValue", sol::overload(
                 [](ShaderOpenGLCustom& shader, const std::string& name, const sol::object& value) {
                     if (value.is<int>()) {

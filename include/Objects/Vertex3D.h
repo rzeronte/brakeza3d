@@ -68,6 +68,8 @@ public:
     static Vertex3D fromGLM(const glm::vec3 &v);
 
     static Vertex3D randomVertex();
+
+    void toFloat(float *v) const;
 };
 
 #endif //SDL2_3D_ENGINE_VERTEX_H

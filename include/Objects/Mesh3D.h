@@ -12,6 +12,7 @@
 #include "../Misc/Grid3D.h"
 #include "../OpenGL/FXEffectOpenGLObject.h"
 #include "../Collision/Collider.h"
+#include "../OpenGL/ShaderOpenGLCustom.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -45,6 +46,8 @@ private:
     bool sharedTextures;
     bool render;
     bool loaded = false;
+
+    std::vector<ShaderOpenGLCustom*> customShaders;
 protected:
     std::string sourceFile;
 
@@ -126,6 +129,14 @@ public:
     void buildGrid3D(int sizeX, int sizeY, int sizeZ);
 
     void fillGrid3DFromGeometry();
+
+    void addCustomShader(ShaderOpenGLCustom *);
+
+    void loadShader(std::string folder, std::string jsonFilename);
+
+    void removeShader(int i);
+
+    const std::vector<ShaderOpenGLCustom *> &getCustomShaders() const;
 };
 
 #endif //SDL2_3D_ENGINE_MESH_H

@@ -8,24 +8,32 @@
 #include "../../include/Misc/Tools.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
-
-ShaderOpenGLCustom::ShaderOpenGLCustom(std::string label, const std::string &fragmentFilename)
+ShaderOpenGLCustom::ShaderOpenGLCustom(
+    std::string label,
+    const std::string &vertexFilename,
+    const std::string &fragmentFilename,
+    ShaderCustomTypes type
+)
 :
     label(std::move(label)),
     enabled(true),
-    ShaderOpenGL(EngineSetup::get()->SHADERS_FOLDER + "Custom.vs", fragmentFilename),
-    fileTypes(ShaderOpenGLCustom::dataTypesFileFor(fragmentFilename))
+    ShaderOpenGL(vertexFilename, fragmentFilename),
+    fileTypes(ShaderOpenGLCustom::dataTypesFileFor(fragmentFilename)),
+    type(type)
 {
-    size_t file_size;
-    sourceFS = Tools::readFile(fragmentFilename, file_size);
+    if (!Tools::fileExists(vertexFilename.c_str()) || !Tools::fileExists(fragmentFilename.c_str())) {
+        Logging::Message("[error] Cannot open custom shader files (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
+    }
+    size_t file_size_fs;
+    sourceFS = Tools::readFile(fragmentFilename, file_size_fs);
     strcpy(editableSource, sourceFS.c_str());
 
+    size_t file_size_vs;
+    sourceVS = Tools::readFile(vertexFilename, file_size_vs);
+
     parseTypesFromFileAttributes();
-
-    setupQuadUniforms(programID);
-
-    textureUniform = glGetUniformLocation(programID, "sceneTexture");
 }
 
 bool ShaderOpenGLCustom::existDataType(const char *name, const char *type)
@@ -99,6 +107,7 @@ void ShaderOpenGLCustom::addDataType(const char *name, const char *type, cJSON *
                 (float) cJSON_GetObjectItemCaseSensitive(value, "x")->valuedouble,
                 (float) cJSON_GetObjectItemCaseSensitive(value, "y")->valuedouble
            );
+           break;
         }
         case ShaderOpenGLCustomDataType::VEC3: {
             LUAValue = glm::vec3(
@@ -106,6 +115,7 @@ void ShaderOpenGLCustom::addDataType(const char *name, const char *type, cJSON *
                 (float) cJSON_GetObjectItemCaseSensitive(value, "y")->valuedouble,
                 (float) cJSON_GetObjectItemCaseSensitive(value, "z")->valuedouble
             );
+            break;
         }
         case ShaderOpenGLCustomDataType::VEC4: {
             LUAValue = glm::vec4(
@@ -114,6 +124,14 @@ void ShaderOpenGLCustom::addDataType(const char *name, const char *type, cJSON *
                 (float) cJSON_GetObjectItemCaseSensitive(value, "z")->valuedouble,
                 (float) cJSON_GetObjectItemCaseSensitive(value, "w")->valuedouble
             );
+            break;
+        }
+        case ShaderOpenGLCustomDataType::TEXTURE2D: {
+            LUAValue = nullptr;
+            if (value != nullptr) {
+                LUAValue = new Image(cJSON_GetObjectItemCaseSensitive(value, "path")->valuestring);
+            }
+            break;
         }
         default:
             break;
@@ -148,6 +166,10 @@ void ShaderOpenGLCustom::addDataTypeEmpty(const char *name, const char *type)
             typeValue = glm::vec4(0);
             break;
         }
+        case ShaderOpenGLCustomDataType::TEXTURE2D: {
+            typeValue = nullptr;
+            break;
+        }
     }
 
     dataTypes.emplace_back(name, type, typeValue);
@@ -160,185 +182,143 @@ GLuint ShaderOpenGLCustom::compile()
 
     programID = LoadShaders(vertexFilename.c_str(), fragmentFilename.c_str());
 
-    setupQuadUniforms(programID);
-
     return programID;
-}
-
-void ShaderOpenGLCustom::render(GLuint textureID, GLuint framebuffer)
-{
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
-
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
-
-    loadQuadMatrixUniforms();
-    setDataTypesUniforms();
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glUniform1i(textureUniform, 0);
-
-    drawQuad();
 }
 
 void ShaderOpenGLCustom::destroy()
 {
-    resetQuadMatrix();
 }
 
 void ShaderOpenGLCustom::drawImGuiProperties()
 {
-    ImGui::Separator();
-    static char name[256];
-
-    strncpy(name, currentVariableToAddName.c_str(), sizeof(name));
-
-    if (ImGui::InputText("Variable name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-        currentVariableToAddName = name;
+    if ((int) dataTypes.size() <= 0) {
+        ImGui::Text("%s", "No types defined");
     }
 
-    const char* items[] = { "int", "float", "vec2", "vec3", "vec4" };
-    static int selectedItem = 0;
-    ImGui::Combo("Type", &selectedItem, items, IM_ARRAYSIZE(items));
+    ImGui::SeparatorText("OpenGL uniforms");
 
-    if (ImGui::Button(std::string("Create").c_str())) {
-        LUADataValue LUAValue;
-        addDataTypeEmpty(currentVariableToAddName.c_str(), items[selectedItem]);
-    }
-
-    ImGui::Separator();
-
-    for (auto&  type: dataTypes) {
+    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
+    int i  = 0;
+    for (auto&  type : dataTypes) {
+        ImGui::PushID(i);
         switch (GLSLTypeMapping[type.type]) {
             case ShaderOpenGLCustomDataType::INT: {
-                const float rangeMin = -500000;
-                const float rangeMax = 500000;
-
                 int valueInt = std::get<int>(type.value);
-                if (ImGui::DragScalar(type.name.c_str(), ImGuiDataType_S32, &valueInt, 1.0 , &rangeMin, &rangeMax, "%d", 1.0f)) {
+                if (ImGui::InputInt(type.name.c_str(), &valueInt)) {
                     type.value = valueInt;
-                }
-                ImGui::SameLine();
-                if (ImGui::Button(std::string("Remove").c_str())) {
-                    removeDataType(type);
-                    updateFileTypes();
                 }
                 break;
             }
             case ShaderOpenGLCustomDataType::FLOAT: {
-                const float rangeMin = -500000;
-                const float rangeMax = 500000;
-                const float rangeSensibility = 0.1;
-
                 float valueFloat = std::get<float>(type.value);
-                if (ImGui::DragScalar(type.name.c_str(), ImGuiDataType_Float, &valueFloat, rangeSensibility , &rangeMin, &rangeMax, "%f", 1.0f)) {
+                if (ImGui::InputFloat(type.name.c_str(), &valueFloat, 0.01f, 1.0f, "%.3f")) {
                     type.value = valueFloat;
                 }
-                ImGui::SameLine();
-                if (ImGui::Button(std::string("Remove").c_str())) {
-                    removeDataType(type);
-                    updateFileTypes();
-                }
-
                 break;
             }
             case ShaderOpenGLCustomDataType::VEC2: {
-                if (ImGui::TreeNode(type.name.c_str())) {
-                    const float rangeMin = -500000;
-                    const float rangeMax = 500000;
-                    const float rangeSensibility = 0.1;
-
-                    auto valueFloat = std::get<glm::vec2>(type.value);
-                    if (ImGui::DragScalar("x", ImGuiDataType_Float, &valueFloat.x, rangeSensibility , &rangeMin, &rangeMax, "%f", 1.0f)) {
-                        type.value = valueFloat;
-                    }
-                    if (ImGui::DragScalar("y", ImGuiDataType_Float, &valueFloat.y, rangeSensibility , &rangeMin, &rangeMax, "%f", 1.0f)) {
-                        type.value = valueFloat;
-                    }
-                    if (ImGui::Button(std::string("Remove").c_str())) {
-                        removeDataType(type);
-                        updateFileTypes();
-                    }
-                    ImGui::TreePop();
+                auto valueFloat = std::get<glm::vec2>(type.value);
+                if (ImGui::DragFloat2(type.name.c_str(), &valueFloat[0], 0.01f, 0.0f, 1.0f)) {
+                    type.value = valueFloat;
                 }
-            break;
+                break;
             }
             case ShaderOpenGLCustomDataType::VEC3: {
-                if (ImGui::TreeNode(type.name.c_str())) {
-                    const float rangeMin = -500000;
-                    const float rangeMax = 500000;
-                    const float rangeSensibility = 0.1;
-
-                    auto valueFloat = std::get<glm::vec3>(type.value);
-                    if (ImGui::DragScalar("x", ImGuiDataType_Float, &valueFloat.x, rangeSensibility , &rangeMin, &rangeMax, "%f", 1.0f)) {
-                        type.value = valueFloat;
-                    }
-                    if (ImGui::DragScalar("y", ImGuiDataType_Float, &valueFloat.y, rangeSensibility , &rangeMin, &rangeMax, "%f", 1.0f)) {
-                        type.value = valueFloat;
-                    }
-                    if (ImGui::DragScalar("z", ImGuiDataType_Float, &valueFloat.z, rangeSensibility , &rangeMin, &rangeMax, "%f", 1.0f)) {
-                        type.value = valueFloat;
-                    }
-                    if (ImGui::Button(std::string("Remove").c_str())) {
-                        removeDataType(type);
-                        updateFileTypes();
-                    }
-
-                    ImGui::TreePop();
+                auto valueFloat = std::get<glm::vec3>(type.value);
+                if (ImGui::DragFloat3(type.name.c_str(), &valueFloat[0], 0.01f, 0.0f, 1.0f)) {
+                    type.value = valueFloat;
                 }
-            break;
+                break;
             }
             case ShaderOpenGLCustomDataType::VEC4: {
-                if (ImGui::TreeNode(type.name.c_str())) {
-                    const float rangeMin = -500000;
-                    const float rangeMax = 500000;
-                    const float rangeSensibility = 0.1;
-
-                    auto valueFloat = std::get<glm::vec3>(type.value);
-                    if (ImGui::DragScalar("x", ImGuiDataType_Float, &valueFloat.x, rangeSensibility , &rangeMin, &rangeMax, "%f", 1.0f)) {
-                        type.value = valueFloat;
-                    }
-                    if (ImGui::DragScalar("y", ImGuiDataType_Float, &valueFloat.y, rangeSensibility , &rangeMin, &rangeMax, "%f", 1.0f)) {
-                        type.value = valueFloat;
-                    }
-                    if (ImGui::DragScalar("z", ImGuiDataType_Float, &valueFloat.z, rangeSensibility , &rangeMin, &rangeMax, "%f", 1.0f)) {
-                        type.value = valueFloat;
-                    }
-                    if (ImGui::DragScalar("w", ImGuiDataType_Float, &valueFloat.z, rangeSensibility , &rangeMin, &rangeMax, "%f", 1.0f)) {
-                        type.value = valueFloat;
-                    }
-                    if (ImGui::Button(std::string("Remove").c_str())) {
-                        removeDataType(type);
-                        updateFileTypes();
-                    }
-
-                    ImGui::TreePop();
+                auto valueFloat = std::get<glm::vec4>(type.value);
+                if (ImGui::DragFloat4(type.name.c_str(), &valueFloat[0], 0.01f, 0.0f, 1.0f)) {
+                    type.value = valueFloat;
                 }
                 break;
             }
             default:
                 break;
         }
+        i++;
+        ImGui::PopID();
     }
 
-    if ((int) dataTypes.size() > 0) {
-        ImGui::Text("%s", "No types defined");
+    ImGui::SeparatorText("OpenGL textures");
+
+    if (ImGui::BeginTable("ShaderOpenGLCustomTexture", 4, flags)) {
+        int i = 0;
+        for (auto&  type : dataTypes) {
+            switch (GLSLTypeMapping[type.type]) {
+                case ShaderOpenGLCustomDataType::TEXTURE2D: {
+                    ImGui::TableNextRow();
+                    ImGui::PushID(i);
+
+                    auto texture = std::get<Image *>(type.value);
+
+                    if (texture != nullptr) {
+                        ImGui::TableSetColumnIndex(0);
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
+
+                        ImGui::Image((ImTextureID) texture->getOGLTextureID(),ImVec2(36, 36));
+                        captureDragDropUpdateImage(type, texture);
+
+                        ImGui::TableSetColumnIndex(1);
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 15.0f));
+                        ImGui::Text("GL_TEXTURE%d", i);
+
+                        ImGui::TableSetColumnIndex(2);
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 15.0f));
+                        ImGui::Text("%s", texture->getFileName().c_str());
+
+                        ImGui::TableSetColumnIndex(3);
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 15.0f));
+                        ImGui::Text("%dx%d", texture->width(), texture->height());
+                    } else {
+                        ImGui::TableSetColumnIndex(0);
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 15.0f));
+                        ImGui::Text("Drag a texture here!");
+                        captureDragDropUpdateImage(type, texture);
+
+                        ImGui::TableSetColumnIndex(1);
+                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 15.0f));
+                        ImGui::Text("GL_TEXTURE%d", i);
+
+                        ImGui::TableSetColumnIndex(2);
+                        ImGui::Text("-");
+
+                        ImGui::TableSetColumnIndex(3);
+                        ImGui::Text("-");
+                    }
+                    i++;
+                    ImGui::PopID();
+                }
+                default:
+                    break;
+            }
+
+        }
+        ImGui::EndTable();
     }
+}
 
-    if (ImGui::Button(std::string("Save shader types").c_str())) {
-        updateFileTypes();
+void ShaderOpenGLCustom::captureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const {
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
+            Logging::Message("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
+            IM_ASSERT(payload->DataSize == sizeof(int));
+            auto selection = (char*) payload->Data;
+            auto fullPath = EngineSetup::get()->IMAGES_FOLDER + selection;
+            if (texture == nullptr) {
+                type.value = new Image(fullPath);
+            } else {
+                delete texture;
+                type.value = new Image(fullPath);
+            }
+            Logging::Message("File %s", selection);
+        }
+        ImGui::EndDragDropTarget();
     }
-
-    ImGui::Separator();
-
-    static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-    ImGui::InputTextMultiline("##source", editableSource, IM_ARRAYSIZE(editableSource), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 10), flags);
-    if (ImGui::Button(std::string("Save").c_str())) {
-        sourceFS = editableSource;
-        Tools::writeToFile(fragmentFilename, sourceFS.c_str());
-    }
-
-    ImGui::TreePop();
 }
 
 bool ShaderOpenGLCustom::isEnabled() const {
@@ -358,8 +338,7 @@ void ShaderOpenGLCustom::postUpdate()
 {
     if (!isEnabled()) return;
 
-    auto window = ComponentsManager::get()->getComponentWindow();
-    render(window->globalTexture,window->getGlobalFramebuffer());
+    render(ComponentsManager::get()->getComponentWindow()->getGlobalFramebuffer());
 }
 
 const std::string &ShaderOpenGLCustom::getLabel() const {
@@ -371,6 +350,7 @@ cJSON *ShaderOpenGLCustom::getTypesJSON()
     cJSON *scriptJSON = cJSON_CreateObject();
     cJSON_AddStringToObject(scriptJSON, "name", getLabel().c_str());
     cJSON_AddStringToObject(scriptJSON, "file", fragmentFilename.c_str());
+    cJSON_AddStringToObject(scriptJSON, "type", getShaderTypeString(type).c_str());
 
     cJSON *typesArray = cJSON_CreateArray();
     for (auto dataType : dataTypes) {
@@ -417,6 +397,15 @@ cJSON *ShaderOpenGLCustom::getTypesJSON()
                 cJSON_AddItemToObject(typeJSON, "value", vertexJSON);
                 break;
             }
+            case ShaderOpenGLCustomDataType::TEXTURE2D: {
+                auto value = std::get<Image *>(dataType.value);
+                if (value != nullptr) {
+                    cJSON *textureJSON = cJSON_CreateObject();
+                    cJSON_AddStringToObject(textureJSON, "path", value->getFileName().c_str());
+                    cJSON_AddItemToObject(typeJSON, "value", textureJSON);
+                }
+                break;
+            }
             default:
                 std::cerr << "Unknown data typeJSON." << std::endl;
         }
@@ -457,6 +446,14 @@ void ShaderOpenGLCustom::setDataTypesUniforms()
                 setVec4(type.name, value);
                 break;
             }
+            case ShaderOpenGLCustomDataType::TEXTURE2D: {
+                auto image = std::get<Image *>(type.value);
+                if (image != nullptr) {
+                    setTexture(type.name, image->getOGLTextureID(), numTextures);
+                    increaseNumberTextures();
+                }
+                break;
+            }
             default:
                 break;
         }
@@ -483,33 +480,44 @@ void ShaderOpenGLCustom::removeDataType(const ShaderOpenGLCustomType& data)
     }
 }
 
-ShaderOpenGLCustom *ShaderOpenGLCustom::createEmptyCustomShader(const std::string& name)
+void ShaderOpenGLCustom::createEmptyCustomShader(
+    const std::string& name,
+    const std::string& folder,
+    ShaderCustomTypes type
+)
 {
-    Logging::Message("Creating new custom shader: %s", name.c_str());
+    Logging::Message("Creating new custom shader: %s de tipo %d", name.c_str(), type);
 
-    char *shaderCode = "#version 330 core\n"
-                       "in vec2 TexCoords;\n"
-                       "uniform sampler2D sceneTexture;\n"
-                       "out vec4 FragColor;\n"
-                       "void main()\n"
-                       "{\n"
-                       "    FragColor = texture(sceneTexture, TexCoords);\n"
-                       "}";
+    std::string shaderFragmentFile = folder + std::string(name + ".fs");
+    std::string shaderVertexFile = folder + std::string(name + ".vs");
 
     cJSON *root = cJSON_CreateObject();
-
-    std::string shaderFile = EngineSetup::get()->CUSTOM_SHADERS_FOLDER + std::string(name + ".fs");
     cJSON_AddStringToObject(root, "name", name.c_str());
-    cJSON_AddStringToObject(root, "file", shaderFile.c_str());
+    cJSON_AddStringToObject(root, "file", shaderFragmentFile.c_str());
+    cJSON_AddStringToObject(root, "type", ShaderOpenGLCustom::getShaderTypeString(type).c_str());
 
     cJSON *typesArray = cJSON_CreateArray();
     cJSON_AddItemToObject(root, "types", typesArray);
     char *typesCode = cJSON_Print(root);
 
-    Tools::writeToFile(shaderFile, shaderCode);
-    Tools::writeToFile(EngineSetup::get()->CUSTOM_SHADERS_FOLDER + ShaderOpenGLCustom::dataTypesFileFor(name), typesCode);
 
-    return new ShaderOpenGLCustom(name, shaderFile);
+    // json
+    Tools::writeToFile(folder + ShaderOpenGLCustom::dataTypesFileFor(name), typesCode);
+
+    switch(type) {
+        case ShaderCustomTypes::SHADER_POSTPROCESSING : {
+            // vs y fs
+            Tools::copyFile(EngineSetup::get()->TEMPLATE_SHADER_POSTPROCESSING_VS, shaderVertexFile);
+            Tools::copyFile(EngineSetup::get()->TEMPLATE_SHADER_POSTPROCESSING_FS, shaderFragmentFile);
+            break;
+        }
+        case ShaderCustomTypes::SHADER_OBJECT : {
+            // vs y fs
+            Tools::copyFile(EngineSetup::get()->TEMPLATE_SHADER_OBJECT_VS, shaderVertexFile);
+            Tools::copyFile(EngineSetup::get()->TEMPLATE_SHADER_OBJECT_FS, shaderFragmentFile);
+            break;
+        }
+    }
 }
 
 void ShaderOpenGLCustom::setDataTypeValue(const std::string& name, ShaderOpenGLCustomDataValue newValue)
@@ -543,3 +551,108 @@ void ShaderOpenGLCustom::setDataTypeValue(const std::string& name, glm::vec3 new
 void ShaderOpenGLCustom::setDataTypeValue(const std::string& name, glm::vec4 newValue) {
     setDataTypeValue(name, ShaderOpenGLCustomDataValue(newValue));
 }
+
+void ShaderOpenGLCustom::resetNumberTextures()
+{
+    numTextures = 0;
+}
+
+void ShaderOpenGLCustom::increaseNumberTextures()
+{
+    numTextures++;
+}
+
+ShaderCustomTypes ShaderOpenGLCustom::getType() const {
+    return type;
+}
+
+void ShaderOpenGLCustom::setType(ShaderCustomTypes type) {
+    ShaderOpenGLCustom::type = type;
+}
+
+ShaderCustomTypes ShaderOpenGLCustom::getShaderTypeFromString(const std::string& shaderName)
+{
+    auto render = ComponentsManager::get()->getComponentRender();
+    auto types = render->getShaderTypesMapping();
+
+    auto it = types.find(shaderName);
+    if (it != types.end()) {
+        return it->second;
+    }
+
+    return ShaderCustomTypes::SHADER_NONE;
+}
+
+std::string ShaderOpenGLCustom::getShaderTypeString(ShaderCustomTypes type)
+{
+    auto render = ComponentsManager::get()->getComponentRender();
+    auto types = render->getShaderTypesMapping();
+
+    for (const auto& a: types) {
+        if (a.second == type) {
+            return a.first;
+        }
+    }
+
+    return "";
+}
+
+void ShaderOpenGLCustom::removeCustomShaderFiles(const std::string& folder, std::string name)
+{
+    Logging::Message("Deleting custom shader: %s", name.c_str());
+
+    Tools::removeFile(folder + name + ".json");
+    Tools::removeFile(folder + name + ".vs");
+    Tools::removeFile(folder + name + ".fs");
+}
+
+ShaderCustomTypes ShaderOpenGLCustom::extractTypeFromShaderName(const std::string& folder, std::string name)
+{
+    std::string jsonFile = name + ".json";
+
+    size_t file_size;
+    auto contentFile = Tools::readFile(folder + jsonFile, file_size);
+    Logging::Message("Extracting type from: '%s'", name.c_str());
+
+    auto oJSON = cJSON_Parse(contentFile);
+    std::string nameType = cJSON_GetObjectItemCaseSensitive(oJSON, "type")->valuestring;
+
+    return ShaderOpenGLCustom::getShaderTypeFromString(nameType);
+}
+
+cJSON *ShaderOpenGLCustom::getJSON()
+{
+    cJSON *root = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(root, "name", label.c_str());
+    cJSON_AddStringToObject(root, "vertexshader", vertexFilename.c_str());
+    cJSON_AddStringToObject(root, "fragmentshader", fragmentFilename.c_str());
+    cJSON_AddStringToObject(root, "type", ShaderOpenGLCustom::getShaderTypeString(type).c_str());
+
+    return root;
+}
+
+std::string ShaderOpenGLCustom::getFolder()
+{
+    return Tools::removeSubstring(vertexFilename, label + ".vs");
+}
+
+const std::vector<ShaderOpenGLCustomType> &ShaderOpenGLCustom::getDataTypes() const {
+    return dataTypes;
+}
+
+void ShaderOpenGLCustom::reload()
+{
+    size_t file_size_fs;
+    sourceFS = Tools::readFile(fragmentFilename, file_size_fs);
+    strcpy(editableSource, sourceFS.c_str());
+
+    size_t file_size_vs;
+    sourceVS = Tools::readFile(vertexFilename, file_size_vs);
+
+    dataTypes.clear();
+    dataTypesDefaultValues.clear();
+
+    parseTypesFromFileAttributes();
+}
+

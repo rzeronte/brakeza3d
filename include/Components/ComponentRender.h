@@ -66,6 +66,13 @@ private:
 
     GLuint lastFrameBufferUsed;
     GLuint lastProgramUsed;
+
+
+    std::map<std::string, ShaderCustomTypes> ShaderTypesMapping = {
+        {"Postprocessing", ShaderCustomTypes::SHADER_POSTPROCESSING},
+        {"Mesh3D", ShaderCustomTypes::SHADER_OBJECT},
+    };
+
 public:
     ComponentRender();
 
@@ -104,6 +111,10 @@ public:
     ProjectLoader &getProjectLoader();
 
     std::vector<ShaderOpenGLCustom *> &getSceneShaders();
+
+    void loadShaderIntoScene(std::string folder, std::string name);
+
+    ShaderOpenGLCustom* getLoadedShader(std::string folder, std::string jsonFilename);
 
     void addShaderToScene(ShaderOpenGLCustom *shader);
 
@@ -172,6 +183,8 @@ public:
     void changeOpenGLFramebuffer(GLuint);
 
     void changeOpenGLProgram(GLuint);
+
+    const std::map<std::string, ShaderCustomTypes> &getShaderTypesMapping() const;
 };
 
 

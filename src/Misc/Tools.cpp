@@ -484,3 +484,25 @@ std::string Tools::removeSubstring(const std::string& str, const std::string& to
     }
     return result;
 }
+
+bool Tools::copyFile(const std::string& origen, const std::string& destino)
+{
+    std::ifstream archivoOrigen(origen, std::ios::binary);
+    std::ofstream archivoDestino(destino, std::ios::binary);
+
+    if (!archivoOrigen) {
+        std::cerr << "Error: Cannot open original file: " << origen << std::endl;
+        return false;
+    }
+
+    if (!archivoDestino) {
+        std::cerr << "Error: Cannot copy file!: " << destino << std::endl;
+        return false;
+    }
+
+    // Copiar contenido del archivo origen al destino
+    archivoDestino << archivoOrigen.rdbuf();
+
+    std::cout << "File copied from " << origen << " to " << destino << std::endl;
+    return true;
+}

@@ -159,6 +159,11 @@ public:
 
     std::string LOGO_BRAKEZA = "logo.png";
 
+    std::string TEMPLATE_SHADER_POSTPROCESSING_VS = SHADERS_FOLDER + "templates/ShaderPostprocessing.vs";
+    std::string TEMPLATE_SHADER_POSTPROCESSING_FS = SHADERS_FOLDER + "templates/ShaderPostprocessing.fs";
+    std::string TEMPLATE_SHADER_OBJECT_VS = SHADERS_FOLDER + "templates/ShaderObject.vs";
+    std::string TEMPLATE_SHADER_OBJECT_FS = SHADERS_FOLDER + "templates/ShaderObject.fs";
+
     enum SoundChannels {
         SND_GLOBAL = -1,
     };
@@ -191,6 +196,12 @@ public:
         Weapon = 32,
         AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
     };
+
+    struct DragDropCustomShaderData {
+        const char* folder;
+        const char* file;
+    };
+
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

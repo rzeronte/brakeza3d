@@ -188,3 +188,11 @@ Vertex3D Vertex3D::randomVertex()
         (float) Tools::random(-2, 2)
     };
 }
+
+void Vertex3D::toFloat(float v[4]) const
+{
+    v[0] = x;
+    v[1] = y;
+    v[2] = z;
+    v[3] = 1.0f;
+}

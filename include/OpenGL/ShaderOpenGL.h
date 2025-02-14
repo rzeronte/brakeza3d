@@ -11,8 +11,6 @@
 class ShaderOpenGL {
 protected:
     GLuint programID;
-    std::string vertexFilename;
-    std::string fragmentFilename;
 public:
     ShaderOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename);
     static GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path);
@@ -56,6 +54,11 @@ public:
 
     void setMat4(const std::string &name, const glm::mat4 &mat) const;
     static void setMat4Uniform(GLint uniform, const glm::mat4 &mat);
+
+    void setTexture(const std::string &name, GLuint textureID, int index) const;
+
+    std::string vertexFilename;
+    std::string fragmentFilename;
 };
 
 

@@ -121,7 +121,7 @@ add_executable(Brakeza3D
     include/Render/Transforms.h                     src/Render/Transforms.cpp
 
     include/GUI/GUI.h
-    include/GUI/GUIManager.h
+    include/GUI/GUIManager.h                        src/GUI/GUIManager.cpp
 
     src/Render/Frustum.cpp                          include/Render/Frustum.h
     src/Render/Plane.cpp                            include/Render/Plane.h
@@ -220,6 +220,10 @@ add_executable(Brakeza3D
     src/Misc/ProjectLoader.cpp                      include/Misc/ProjectLoader.h
     include/cxxxopts.h
     include/Misc/PathFinding.h
+        src/OpenGL/ShaderOpenGLCustomPostprocessing.cpp
+        include/OpenGL/ShaderOpenGLCustomPostprocessing.h
+        src/OpenGL/ShaderOpenGLCustomMesh3D.cpp
+        include/OpenGL/ShaderOpenGLCustomMesh3D.h
 )
 
 target_link_libraries(Brakeza3D

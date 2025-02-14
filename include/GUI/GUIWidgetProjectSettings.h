@@ -102,7 +102,6 @@ struct GUIWidgetProjectSettings {
     {
         auto scripting = ComponentsManager::get()->getComponentScripting();
 
-        auto scripts = scripting->getSceneLUAScripts();
         ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "addIcon"), ImVec2(16, 16));
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
@@ -118,6 +117,7 @@ struct GUIWidgetProjectSettings {
         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
         ImGui::Text("Scene LUA Scripts");
         ImGui::Separator();
+        auto scripts = scripting->getSceneLUAScripts();
         if ((int) scripts.size() <= 0) {
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Scene scripts not found");
         }
@@ -157,7 +157,21 @@ struct GUIWidgetProjectSettings {
 
     void drawSceneCustomShaders()
     {
-        auto shaders = ComponentsManager::get()->getComponentRender()->getSceneShaders();
+        ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "addIcon"), ImVec2(16, 16));
+        auto render = ComponentsManager::get()->getComponentRender();
+        if (ImGui::BeginDragDropTarget()) {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CUSTOMSHADER_ITEM")) {
+                EngineSetup::DragDropCustomShaderData* receivedData = (EngineSetup::DragDropCustomShaderData*)payload->Data;
+                Logging::Message("Dropping shader (Folder: %s, File: %s) in global space", receivedData->folder, receivedData->file);
+                render->loadShaderIntoScene(receivedData->folder, receivedData->file);
+            }
+            ImGui::EndDragDropTarget();
+        }
+        ImGui::SameLine();
+        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
+        ImGui::Text("Scene Shaders");
+        ImGui::Separator();
+        auto shaders = render->getSceneShaders();
         if ((int) shaders.size() <= 0) {
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Scene shaders not found");
         }
@@ -181,7 +195,7 @@ struct GUIWidgetProjectSettings {
             }
             ImGui::SameLine();
             if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
-                ComponentsManager::get()->getComponentRender()->removeShader(i);
+                render->removeShader(i);
             }
             ImGui::SameLine();
             if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {

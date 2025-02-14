@@ -67,16 +67,19 @@ struct GUIWidgetToolbar {
                    window->ImGuiConfigChanged == ImGUIConfigs::DEFAULT,
                    onColor,
                    [&]() { window->ImGuiConfigChanged = ImGUIConfigs::DEFAULT; });
+        ImGui::SetItemTooltip("Default layout");
 
         drawButton("layoutCodingIcon",
                    window->ImGuiConfigChanged == ImGUIConfigs::CODING,
                    onColor,
                    [&]() { window->ImGuiConfigChanged = ImGUIConfigs::CODING; });
+        ImGui::SetItemTooltip("Developer layout");
 
         drawButton("layoutDesignIcon",
                    window->ImGuiConfigChanged == ImGUIConfigs::DESIGN,
                    onColor,
                    [&]() { window->ImGuiConfigChanged = ImGUIConfigs::DESIGN; });
+        ImGui::SetItemTooltip("Designer layout");
     }
 
     void drawTransformationsToolsIcons() const
@@ -92,6 +95,7 @@ struct GUIWidgetToolbar {
         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "translateIcon"), ImVec2(24, 24))) {
             window->setGuizmoOperation(ImGuizmo::OPERATION::TRANSLATE);
         }
+        ImGui::SetItemTooltip("Translate selected item");
         ImGui::PopStyleColor();
         ImGui::SameLine();
 
@@ -99,6 +103,7 @@ struct GUIWidgetToolbar {
         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "rotateIcon"), ImVec2(24, 24))) {
             window->setGuizmoOperation(ImGuizmo::OPERATION::ROTATE);
         }
+        ImGui::SetItemTooltip("Rotate selected item");
         ImGui::PopStyleColor();
         ImGui::SameLine();
 
@@ -106,21 +111,23 @@ struct GUIWidgetToolbar {
         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "scaleIcon"), ImVec2(24, 24))) {
             window->setGuizmoOperation(ImGuizmo::OPERATION::SCALE_X);
         }
+        ImGui::SetItemTooltip("Scale selected item");
         ImGui::PopStyleColor();
-
-        ImGui::Separator();
     }
+
     void drawBulletOptionsIcons() const
     {
         drawButton("gravityIcon",
                    EngineSetup::get()->BULLET_STEP_SIMULATION,
                    onColor,
                    [&]() { EngineSetup::get()->BULLET_STEP_SIMULATION = !EngineSetup::get()->BULLET_STEP_SIMULATION; });
+        ImGui::SetItemTooltip("Enable/Disable physic world");
 
         drawButton("drawCollidersIcon",
                    EngineSetup::get()->BULLET_DEBUG_MODE,
                    onColor,
                    [&]() { EngineSetup::get()->BULLET_DEBUG_MODE = !EngineSetup::get()->BULLET_DEBUG_MODE; });
+        ImGui::SetItemTooltip("Draw collider AABB");
     }
 
     void drawMouseOptionsIcons() const
@@ -129,11 +136,13 @@ struct GUIWidgetToolbar {
                    EngineSetup::get()->CLICK_SELECT_OBJECT3D,
                    onColor,
                    [&]() { EngineSetup::get()->CLICK_SELECT_OBJECT3D = !EngineSetup::get()->CLICK_SELECT_OBJECT3D; });
+        ImGui::SetItemTooltip("Enable/Disable item click selection");
 
         drawButton("mouseLookIcon",
                    EngineSetup::get()->MOUSE_LOOK,
                    onColor,
                    [&]() { EngineSetup::get()->MOUSE_LOOK = !EngineSetup::get()->MOUSE_LOOK; });
+        ImGui::SetItemTooltip("Enable/Disable mouse look");
     }
 
     void drawLUAStatusIcons() const
@@ -142,11 +151,16 @@ struct GUIWidgetToolbar {
 
         if (scripting->getStateLUAScripts() == EngineSetup::LuaStateScripts::LUA_STOP) {
             drawFixedColorButton("playIcon", luaColor, [&]() { scripting->playLUAScripts(); });
+            ImGui::SetItemTooltip("Run scripts");
         } else {
             drawFixedColorButton("stopIcon", playColor, [&]() { scripting->stopLUAScripts(); });
+            ImGui::SetItemTooltip("Stop scripts");
         }
         drawFixedColorButton("reloadIcon", luaColor, [&]() { scripting->reloadLUAScripts(); });
+        ImGui::SetItemTooltip("Reload scripts");
+
         drawFixedColorButton("removeIcon", luaColor, [&]() { SceneLoader::clearScene(); });
+        ImGui::SetItemTooltip("Clear scene");
     }
 
     void drawGUIIcon() const
@@ -155,6 +169,7 @@ struct GUIWidgetToolbar {
                    EngineSetup::get()->IMGUI_ENABLED,
                    onColor,
                    [&]() { EngineSetup::get()->IMGUI_ENABLED = !EngineSetup::get()->IMGUI_ENABLED; });
+        ImGui::SetItemTooltip("Enable/Disable UI");
     }
 
     static void VerticalSeparator()

@@ -17,6 +17,15 @@ struct ScriptEditableManager {
     char editableSource[1024 * 16];
 };
 
+struct ShaderEditableManager {
+    bool loaded = false;
+    std::string folder;
+    std::string name;
+    ShaderOpenGLCustom *shader = nullptr;
+    char editableSourceVS[1024 * 16];
+    char editableSourceFS[1024 * 16];
+};
+
 struct GUIWidgetObject3DProperties {
     TexturePackage &ImGuiTextures;
     std::vector<Object3D *> &gameObjects;

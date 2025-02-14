@@ -218,3 +218,22 @@ void ShaderOpenGL::setMat4Uniform(GLint uniform, const glm::mat4 &mat)
 {
     glUniformMatrix4fv(uniform, 1, GL_FALSE, &mat[0][0]);
 }
+
+void ShaderOpenGL::setTexture(const std::string &name, GLuint textureID, int index) const
+{
+    if (index == 0) {
+        glActiveTexture(GL_TEXTURE0);
+    } else if (index == 1) {
+        glActiveTexture(GL_TEXTURE1);
+    } else if (index == 2) {
+        glActiveTexture(GL_TEXTURE2);
+    } else if (index == 3) {
+        glActiveTexture(GL_TEXTURE3);
+    } else if (index == 4) {
+        glActiveTexture(GL_TEXTURE4);
+    } else if (index == 5) {
+        glActiveTexture(GL_TEXTURE5);
+    }
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glUniform1i(glGetUniformLocation(programID, name.c_str()), index);
+}

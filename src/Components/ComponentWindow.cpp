@@ -534,6 +534,7 @@ void ComponentWindow::ImGuiInitialize(const std::string& configFile) {
 
     ImGui::ClearIniSettings();
     ImGui::LoadIniSettingsFromDisk(std::string(configFile).c_str());
+    ImGui::GetStyle().Alpha = 1.0f;
     ImGuiConfig = ImGUIConfigs::DEFAULT;
 }
 
