@@ -1372,21 +1372,147 @@ https://github.com/rzeronte/brakeza3d/blob/master/doc/examples-lua-code.md
 
 # 13) Shaders system
 
-Brakeza3D utiliza GLSL como lenguaje de shading. En la carpeta ``GLSL`` podrás encontrar todos
-los shaders existentes.
+Brakeza3D ofrece la posibilidad de que incorpores tus propios shaders GLSL.
 
-Shaders 3D:
+De igual forma que sucede con los ``Scripts``, podrás vincular `Shaders` a tus ``escenas`` 
+y/o ``Object3D``.
 
-- `Render` (*/GLSL/Render*): Dibuja un objeto en pantalla con texturas e iluminación.
-- `Outliner` (*/GLSL/Outliner*): Outliner para un objeto.
-- `Color` (*/GLSL/Color*): Dibuja un objeto en pantalla de un color.
-- `Wireframe` (*/GLSL/Wireframe*): Dibuja los triangulos de un objeto en pantalla.
-- `Points` (*/GLSL/Points*): Dibuja los vertices de un objeto en pantalla.
-- `Line3D` (*/GLSL/Line3D*): Dibuja una o varias líneas 3D en pantalla.
 
-Shaders 2D:
+- [Tipos de Shaders](#tipos-de-shaders)
+- [Variables de Shaders](#variables-de-shaders-uniforms)
+- [Template Shader de postprocesado](#template-shader-de-postprocesado)
+- [Shaders internos](#shaders-internos)
 
-- `Image` (*/GLSL/Image*): Dibuja una imagen en pantalla.
+---
+
+### Tipos de Shaders
+
+Existen dos tipos de shaders:
+
+- `Postprocesado`: Un shader de postprocesado se aplica después de que la escena ha sido renderizada, modificando 
+la imagen final antes de enviarla a la pantalla. Solo pueden ser aplicados a una `scene`.
+- `Geometría`: Un shader de geometría procesa vértices y puede modificar la forma de los objetos antes de rasterizarlos. Solo puede ser aplicados a un `Mesh3D`
+
+Podrás crear los shaders desde la UI, Brakeza3D creará automáticamente un fichero `.vs` y `.fs`, vertexshader y fragmenteshader respectivamente, los que podrás
+modificar a tu antojo. También se generará un fichero ``json`` con metadatos.
+
+---
+
+### Variables de Shaders (uniforms)
+
+También podrás configurar las variables (*uniforms*) que recibirá cada shader desde la UI.
+
+Podrás configurar tus propias variables: ``int``, ``float``, ``vec2``, ``vec3``, ``vec4``, ``texture``
+
+O podrás seleccionar variables pertenecientes al sistema: ``delta_time``, ``execution_time``
+
+Además, los shaders de geometría (aplican a `Mesh3D`) te permiten enviar tipos específicos como: ``diffuse`` o ``specular``, con 
+texturas pertenecientes al modelo en particular.
+
+---
+
+### Template Shader de postprocesado
+
+A continuación las templates vacías para el shader de postprocesado.
+
+VertexShader:
+````glsl
+#version 330 core
+
+layout (location = 0) in vec4 vertex; // <vec2 position, vec2 texCoords>
+
+out vec2 TexCoords;
+
+uniform mat4 model;
+uniform mat4 projection;
+
+void main()
+{
+    TexCoords = vec2(vertex.z, -vertex.w);
+    gl_Position = projection * model * vec4(vertex.xy, 0.0, 1.0);
+}
+````
+
+FragmentShader:
+
+````glsl
+#version 330 core
+
+in vec2 TexCoords;
+
+//out vec4 FragColor;
+
+void main()
+{
+   //FragColor = texture(sceneTexture, TexCoords);
+}
+````
+### Template Shader de geometría
+
+A continuación las templates vacías para el shader de geometría.
+
+VertexShader:
+````glsl
+#version 330 core
+
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aNormal;
+layout (location = 2) in vec2 aTexCoords;
+
+out vec3 FragPos;
+out vec3 Normal;
+out vec2 TexCoords;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main()
+{
+    FragPos = vec3(model * vec4(aPos, 1.0));
+    Normal = mat3(transpose(inverse(model))) * aNormal;
+    TexCoords = aTexCoords;
+
+    gl_Position = projection * view * vec4(FragPos, 1.0);
+}
+````
+
+FragmentShader:
+
+````glsl
+#version 330 core
+
+//uniform sampler2D diffuse;
+
+out vec4 FragColor;
+
+in vec3 FragPos;
+in vec3 Normal;
+in vec2 TexCoords;
+
+void main()
+{
+    vec3 norm = normalize(Normal);
+    vec3 viewDir = normalize(viewPos - FragPos);
+
+    //FragColor = texture(diffuse, TexCoords);
+}
+
+````
+
+---
+
+### Shaders internos
+
+Puedes encontra los shaders que son utilizados internamente por Brakeza3D en la carpeta `/GLSL`.
+
+- `Render` (*/GLSL/Render*): Render de Mesh3D.
+- `Outliner` (*/GLSL/Outliner*): Outliner para un objeto seleccionado.
+- `Color` (*/GLSL/Color*): Render de Mesh3D de un color dado.
+- `Wireframe` (*/GLSL/Wireframe*): Render de vertices de un Mesh3D.
+- `Points` (*/GLSL/Points*): Render de vertices de Mesh3D.
+- `Line3D` (*/GLSL/Line3D*): Render de líneas 3D.
+- `Image` (*/GLSL/Image*): Render una imagen en pantalla.
 - `Line` (*/GLSL/Line*): Dibuja una línea 2D en pantalla.
 
 Shaders de postprocesamiento:
@@ -1398,21 +1524,7 @@ Shaders de postprocesamiento:
 - `Shading` (*/GLSL/Shading*): Renderiza un objeto a un buffer, para ser usado como máscara.
 - `Particle` (*/GLSL/Particle*): Dibuja una partícula en pantalla. Usado por el objeto **ParticleEmitter**.
 
-Puedes manipular los shaders libremente si lo consideras.
-
----
-
-### Plantilla para shaders de postprocesado (WIP)
-
-Brakeza3D te permite incorporar tus propios shaders a los objetos o a la escena de igual forma
-que lo harías con un script LUA.
-
-Puedes generar estos shaders desde la UI o simplemente crearlos tú mismo y posteriormente vincularlos
-desde la GUI.
-
-Dispones de una plantilla para shaders custom:
-
-- `Custom` (*/GLSL/Custom*)
+¡Si sabes lo que haces, puedes manipular los shaders libremente si lo consideras!.
 
 ---
 

@@ -23,6 +23,8 @@ public:
     void render(GLuint framebuffer);
 
     void destroy() override;
+
+    void setShaderSystemUniforms();
 };
 
 
