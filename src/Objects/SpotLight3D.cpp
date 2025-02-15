@@ -42,9 +42,7 @@ void SpotLight3D::drawImGuiProperties()
 {
     LightPoint3D::drawImGuiProperties();
 
-    ImGui::Separator();
-
-    if (ImGui::TreeNode("SpotLight")) {
+    if (ImGui::CollapsingHeader("SpotLight")) {
         if (ImGui::TreeNode("Direction##")) {
             const float range_sensibility = 0.01f;
             const float range_min = 0.0f;

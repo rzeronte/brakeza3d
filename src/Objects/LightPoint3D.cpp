@@ -96,7 +96,7 @@ void LightPoint3D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
 
-    if (ImGui::TreeNode("LightPoint")) {
+    if (ImGui::CollapsingHeader("LightPoint")) {
 
         const float range_potence_sensibility = 0.01f;
         const float range_min = -90000;
@@ -122,7 +122,6 @@ void LightPoint3D::drawImGuiProperties()
         ImGui::DragScalar("Constant", ImGuiDataType_Float, &constant, range_potence_sensibility,&range_min, &range_max, "%f", 1.0f);
         ImGui::DragScalar("Linear", ImGuiDataType_Float, &linear, range_potence_sensibility,&range_min, &range_max, "%f", 1.0f);
         ImGui::DragScalar("Quadratic", ImGuiDataType_Float, &quadratic, range_potence_sensibility,&range_min, &range_max, "%f", 1.0f);
-        ImGui::TreePop();
     }
 }
 

@@ -7,14 +7,14 @@
 #include "../../include/Brakeza3D.h"
 
 ParticleEmitter::ParticleEmitter(
-        ParticleEmitterState state,
-        Object3D *parent,
-        Vertex3D position,
-        float ttlEmitter,
-        Color colorFrom,
-        Color colorTo,
-        ParticlesContext particlesContext,
-        Image *image
+    ParticleEmitterState state,
+    Object3D *parent,
+    Vertex3D position,
+    float ttlEmitter,
+    Color colorFrom,
+    Color colorTo,
+    ParticlesContext particlesContext,
+    Image *image
 ) :
     active(true),
     stopAdd(false),
@@ -207,7 +207,7 @@ void ParticleEmitter::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
 
-    if (ImGui::TreeNode("ParticleEmitter")) {
+    if (ImGui::CollapsingHeader("ParticleEmitter")) {
 
         if (ImGui::TreeNode("Image")) {
             if (texture != nullptr) {
@@ -272,7 +272,6 @@ void ParticleEmitter::drawImGuiProperties()
 
             ImGui::TreePop();
         }
-        ImGui::TreePop();
     }
 }
 
