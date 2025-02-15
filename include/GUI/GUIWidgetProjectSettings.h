@@ -200,7 +200,7 @@ struct GUIWidgetProjectSettings {
             ImGui::SameLine();
             if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {
                 ImGui::PushID(i);
-                s->drawImGuiProperties();
+                s->drawImGuiProperties(nullptr, nullptr);
                 ImGui::PopID();
             }
             ImGui::PopID();

@@ -263,14 +263,13 @@ struct GUIWidgetMenu
                     ImGui::Separator();
                     ImGui::Checkbox("Handle object collisions", &setup->BULLET_CHECK_ALL_PAIRS);
                     ImGui::Separator();
-                    // gravity
-                    if (ImGui::DragScalar("X Gravity", ImGuiDataType_Float, &setup->gravity.x, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
-                        ComponentsManager::get()->getComponentCollisions()->setGravity(setup->gravity);
-                    }
-                    if (ImGui::DragScalar("Y Gravity", ImGuiDataType_Float, &setup->gravity.y, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
-                        ComponentsManager::get()->getComponentCollisions()->setGravity(setup->gravity);
-                    }
-                    if (ImGui::DragScalar("Z Gravity", ImGuiDataType_Float, &setup->gravity.z, range_sensibility,&range_min_sensibility, &range_max_sensibility, "%f", 1.0f)) {
+
+                    float vec3f[3];
+                    setup->gravity.toFloat(vec3f);
+                    if (ImGui::DragFloat3("Gravity", vec3f, 0.01f, -1000.0f, 1000.0f)) {
+                        setup->gravity.x = vec3f[0];
+                        setup->gravity.y = vec3f[1];
+                        setup->gravity.z = vec3f[2];
                         ComponentsManager::get()->getComponentCollisions()->setGravity(setup->gravity);
                     }
                     ImGui::Separator();
@@ -567,14 +566,11 @@ struct GUIWidgetMenu
 
     void drawGlobalIllumination()
     {
-        const float range_illumination_min_settings = -1.0f;
-        const float range_illumination_max_settings = 1.0f;
-        const float sens_illumination_settings = 0.01f;
         auto dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->getDirectionalLight();
 
-        ImGui::DragScalar("Direction X", ImGuiDataType_Float, &dirLight->direction.x, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-        ImGui::DragScalar("Direction Y", ImGuiDataType_Float, &dirLight->direction.y, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
-        ImGui::DragScalar("Direction Z", ImGuiDataType_Float, &dirLight->direction.z, sens_illumination_settings,&range_illumination_min_settings, &range_illumination_max_settings, "%f", 1.0f);
+        ImGui::DragFloat3("Direction", &dirLight->direction[0], 0.01f, -1.0f, 1.0f);
+
+        ImGui::Separator();
 
         ImVec4 color = {dirLight->ambient.x, dirLight->ambient.y, dirLight->ambient.z, 1};
         bool changed_color = ImGui::ColorEdit4("Ambient##", (float *) &color, ImGuiColorEditFlags_NoOptions);

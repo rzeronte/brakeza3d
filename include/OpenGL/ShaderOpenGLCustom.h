@@ -32,7 +32,11 @@ enum class ShaderOpenGLCustomDataType {
     VEC2,
     VEC3,
     VEC4,
-    TEXTURE2D
+    TEXTURE2D,
+    DIFFUSE,
+    SPECULAR,
+    DELTA_TIME,
+    EXECUTION_TIME
 };
 
 typedef std::variant<int, float, glm::vec2, glm::vec3, glm::vec4, Image*> ShaderOpenGLCustomDataValue;
@@ -54,7 +58,11 @@ class ShaderOpenGLCustom: public ShaderOpenGL
         {"vec2", ShaderOpenGLCustomDataType::VEC2},
         {"vec3", ShaderOpenGLCustomDataType::VEC3},
         {"vec4", ShaderOpenGLCustomDataType::VEC4},
-        {"texture", ShaderOpenGLCustomDataType::TEXTURE2D}
+        {"texture", ShaderOpenGLCustomDataType::TEXTURE2D},
+        {"diffuse", ShaderOpenGLCustomDataType::DIFFUSE},
+        {"specular", ShaderOpenGLCustomDataType::SPECULAR},
+        {"delta_time", ShaderOpenGLCustomDataType::DELTA_TIME},
+        {"execution_time", ShaderOpenGLCustomDataType::EXECUTION_TIME}
     };
 
     std::string label;
@@ -84,7 +92,7 @@ public:
 
     cJSON * getJSON();
 
-    void drawImGuiProperties();
+    void drawImGuiProperties(Image *diffuse, Image *specular);
 
     virtual GLuint compile();
 

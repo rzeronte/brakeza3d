@@ -143,7 +143,7 @@ void GUIManager::drawSelectedObjectShaders()
         ImGui::SameLine();
 
         if (ImGui::CollapsingHeader(s->getLabel().c_str())) {
-            s->drawImGuiProperties();
+            s->drawImGuiProperties(mesh->getModelTextures()[0], mesh->getModelTextures()[0]);
         }
         ImGui::PopID();
     }
@@ -213,7 +213,7 @@ void GUIManager::drawEditShaderWindow()
     if (!showEditShaderWindow) return;
 
     setNextWindowSize(600, 600);
-    ImGui::SetNextWindowBgAlpha(0.75f);
+    ImGui::SetNextWindowBgAlpha(0.9f);
 
     if (ImGui::Begin("Shader edition", &showEditShaderWindow, ImGuiWindowFlags_NoDocking)) {
         drawShaderVariables();
@@ -246,7 +246,7 @@ void GUIManager::drawEditScriptWindow()
     if (!showEditScriptWindow) return;
 
     setNextWindowSize(600, 600);
-    ImGui::SetNextWindowBgAlpha(0.75f);
+    ImGui::SetNextWindowBgAlpha(0.9f);
 
     if (ImGui::Begin("Script edition", &showEditScriptWindow, ImGuiWindowFlags_NoDocking)) {
         drawScriptVariables();
@@ -341,7 +341,7 @@ void GUIManager::drawShaderVariables()
         currentVariableToAddName = name;
     }
 
-    const char* items[] = { "int", "float", "vec2", "vec3", "vec4", "texture"};
+    const char* items[] = { "int", "float", "vec2", "vec3", "vec4", "texture", "delta_time", "execution_time", "diffuse", "specular" };
     static int selectedItem = 0;
     ImGui::Combo("Type##1", &selectedItem, items, IM_ARRAYSIZE(items));
     ImGui::SameLine();
@@ -350,14 +350,6 @@ void GUIManager::drawShaderVariables()
             LUADataValue LUAValue;
             shaderEditableManager.shader->addDataTypeEmpty(currentVariableToAddName.c_str(), items[selectedItem]);
         }
-    }
-    ImGui::Separator();
-
-    const char *systemVariables[] = { "deltaTime (float)", "executionTime (float)", "diffuse (texture)", "specular (texture)" };
-    static int selectedSystemVariablesItem = 0;
-    ImGui::Combo("Type##2", &selectedSystemVariablesItem, systemVariables, IM_ARRAYSIZE(systemVariables));
-    ImGui::SameLine();
-    if (ImGui::Button(std::string("Add variable").c_str())) {
     }
 
     ImGui::SeparatorText("Variables");

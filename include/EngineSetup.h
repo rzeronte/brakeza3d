@@ -202,6 +202,12 @@ public:
         const char* file;
     };
 
+    enum ShaderSystemVariables{
+        deltaTime = 0,
+        executionTime = 1,
+        diffuse = 2,
+        specular = 3
+    };
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H
