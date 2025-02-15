@@ -568,7 +568,7 @@ struct GUIWidgetMenu
     {
         auto dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->getDirectionalLight();
 
-        ImGui::DragFloat3("Direction", &dirLight->direction[0], 0.01f, -1.0f, 1.0f);
+        ImGui::DragFloat3("Light dir.", &dirLight->direction[0], 0.01f, -1.0f, 1.0f);
 
         ImGui::Separator();
 
@@ -650,18 +650,26 @@ struct GUIWidgetMenu
         const float range_min_mouse_sensitivity = 0;
         const float range_max_mouse_sensitivity = 3;
 
-        ImGui::Checkbox("Mouse Look", &EngineSetup::get()->MOUSE_LOOK);
-        if (EngineSetup::get()->MOUSE_LOOK) {
-            ImGui::DragScalar("Sens.", ImGuiDataType_Float, &EngineSetup::get()->MOUSE_SENSITIVITY,range_sensibility, &range_min_mouse_sensitivity, &range_max_mouse_sensitivity, "%f",1.0f);
-        }
-        ImGui::Separator();
 
         // position
-        Tools::ImGuiVertex3D("Position##1", "X", "Y", "Z", &camera->getPosition(), range_sensibility, -99999, 99999);
+        float vec3f[3];
+        camera->getPosition().toFloat(vec3f);
+        if (ImGui::DragFloat3("Position", vec3f, 0.1f, -10000.0f, 10000.0f)) {
+            camera->position.x = vec3f[0];
+            camera->position.y = vec3f[1];
+            camera->position.z = vec3f[2];
+        }
         ImGui::Separator();
 
         ImGui::DragScalar("Cursors Walking", ImGuiDataType_Float, &EngineSetup::get()->WALKING_SPEED,range_sensibility, &range_min_movement, &range_max_movement, "%f", 1.0f);
         ImGui::DragScalar("Cursors Strafe", ImGuiDataType_Float, &EngineSetup::get()->STRAFE_SPEED,range_sensibility, &range_min_movement, &range_max_movement, "%f", 1.0f);
+
+        ImGui::Separator();
+
+        ImGui::Checkbox("Mouse Look", &EngineSetup::get()->MOUSE_LOOK);
+        if (EngineSetup::get()->MOUSE_LOOK) {
+            ImGui::DragScalar("Sens.", ImGuiDataType_Float, &EngineSetup::get()->MOUSE_SENSITIVITY,range_sensibility, &range_min_mouse_sensitivity, &range_max_mouse_sensitivity, "%f",1.0f);
+        }
 
     }
 };
