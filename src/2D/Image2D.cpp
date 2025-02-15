@@ -55,7 +55,7 @@ void Image2D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
 
-    if (ImGui::TreeNode("Image2D")) {
+    if (ImGui::CollapsingHeader("Image2D")) {
 
         const int range_min_int = 1;
         const int range_max_int = 1280;
@@ -97,8 +97,6 @@ void Image2D::drawImGuiProperties()
             }
             ImGui::TreePop();
         }
-
-        ImGui::TreePop();
     }
 }
 

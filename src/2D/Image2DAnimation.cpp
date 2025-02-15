@@ -93,7 +93,7 @@ const char *Image2DAnimation::getTypeIcon()
 void Image2DAnimation::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    if (ImGui::TreeNode("Image2DAnimation")) {
+    if (ImGui::CollapsingHeader("Image2DAnimation")) {
 
         const int range_min_int = 1;
         const int range_max_int = 1280;
@@ -106,8 +106,6 @@ void Image2DAnimation::drawImGuiProperties()
         }
 
         animation->drawImGuiProperties();
-
-        ImGui::TreePop();
     }
 }
 
