@@ -192,10 +192,6 @@ void Object3D::postUpdate()
 {
     if (!isEnabled()) return;
 
-    for (auto s: effects) {
-        s->postUpdate();
-    }
-
     for (auto a: attachedObjects) {
         if (a->isEnabled())  a->postUpdate();
     }
@@ -239,10 +235,6 @@ void Object3D::setAlphaEnabled(bool alphaEnabled)
 
 Object3D::~Object3D()
 {
-    for (auto s: effects) {
-        delete s;
-    }
-
     for (auto a: attachedObjects) {
         delete a;
     }
@@ -421,43 +413,6 @@ void Object3D::drawImGuiProperties()
         }
     }
 
-    if (featuresGUI.shaders) {
-        if (ImGui::CollapsingHeader("Effects")) {
-            if ((int) effects.size() <= 0) {
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No effects attached");
-            }
-
-            for (int i = 0; i < (int) effects.size(); i++) {
-                ImGui::PushID(i);
-
-                auto s = effects[i];
-                ImGui::Image(TexturePackage::getOGLTextureID(*ImGuiTextures, "shaderIcon"), ImVec2(24, 24));
-                ImGui::SameLine(100);
-
-                if (!s->isEnabled()) {
-                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(*ImGuiTextures, "unlockIcon"), ImVec2(14, 14))) {
-                        s->setEnabled(true);
-                    }
-                } else {
-                    if (ImGui::ImageButton(TexturePackage::getOGLTextureID(*ImGuiTextures, "lockIcon"), ImVec2(14, 14))) {
-                        s->setEnabled(false);
-                    }
-                }
-                ImGui::SameLine();
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(*ImGuiTextures, "removeIcon"), ImVec2(14, 14))) {
-                    removeFXOpenGLByIndex(i);
-                }
-                ImGui::SameLine();
-                if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {
-                    ImGui::PushID(i);
-                    s->drawImGuiProperties();
-                    ImGui::PopID();
-                }
-                ImGui::PopID();
-            }
-        }
-    }
-
     if (featuresGUI.attached) {
         if (ImGui::CollapsingHeader("Attached Objects")) {
             if ((int) attachedObjects.size() <= 0) {
@@ -628,12 +583,6 @@ cJSON *Object3D::getJSON()
     }
     cJSON_AddItemToObject(root, "scripts", scriptsArray);
 
-    cJSON *effectsArrayJSON = cJSON_CreateArray();
-    for ( auto s : effects) {
-        cJSON_AddItemToArray(effectsArrayJSON, s->getJSON());
-    }
-    cJSON_AddItemToObject(root, "effects", effectsArrayJSON);
-
     return root;
 }
 
@@ -730,33 +679,6 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
             o->attachScript(new ScriptLUA(filename, typesJSON));
         }
     }
-
-    if (cJSON_GetObjectItemCaseSensitive(object, "effects") != nullptr) {
-        auto mesh3DShaderTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getFXOpenGLTypes();
-        cJSON *currentShader;
-        cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(object, "effects")) {
-            auto type = cJSON_GetObjectItemCaseSensitive(currentShader, "type")->valuestring;
-            switch(mesh3DShaderTypes[type]) {
-                case FXOpenGLLoaderMapping::FXTint: {
-                    auto c = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
-                    auto alpha = (float) cJSON_GetObjectItemCaseSensitive(currentShader, "alpha")->valuedouble;
-                    auto enabled = (bool) cJSON_GetObjectItemCaseSensitive(currentShader, "enabled")->valueint;
-                    auto shader = new FXColorTint(enabled, ToolsJSON::parseColorJSON(c), alpha);
-                    o->addFXOpenGL(shader);
-                    break;
-                }
-                case FXOpenGLLoaderMapping::FXOutliner: {
-                    auto c = cJSON_GetObjectItemCaseSensitive(currentShader, "color");
-                    auto size = (float) cJSON_GetObjectItemCaseSensitive(currentShader, "size")->valuedouble;
-                    auto enabled = (bool) cJSON_GetObjectItemCaseSensitive(currentShader, "enabled")->valueint;
-                    auto color = ToolsJSON::parseColorJSON(c);
-                    auto shader = new FXOutliner(enabled, o, color, size);
-                    o->addFXOpenGL(shader);
-                    break;
-                }
-            }
-        }
-    }
 }
 
 void Object3D::createFromJSON(cJSON *object)
@@ -782,18 +704,6 @@ glm::mat4 Object3D::getModelMatrix()
     glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scaled);
 
     return translationMatrix * rotationMatrix * scaleMatrix;
-}
-
-void Object3D::addFXOpenGL(FXOpenGL *fx)
-{
-    effects.push_back(fx);
-}
-
-void Object3D::removeFXOpenGLByIndex(int index)
-{
-    if (index >= 0 && index < (int) effects.size()) {
-        effects.erase(effects.begin() + index);
-    }
 }
 
 const Timer &Object3D::getTimer() const

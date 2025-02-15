@@ -2925,4 +2925,4 @@ CXXOPTS_IGNORE_WARNING("-Wnull-dereference")
 
 } // namespace cxxopts
 
-#endif CXXOPTS_HPP_INCLUDED
+#endif

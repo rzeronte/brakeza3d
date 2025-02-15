@@ -96,7 +96,14 @@ void GUIManager::drawSelectedObjectShaders()
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
         return;
     }
+
     auto mesh = dynamic_cast<Mesh3D*>(gameObjects[selectedObjectIndex]);
+
+    if (mesh == nullptr) {
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No Mesh3D object");
+        return;
+    }
+
     auto customShaders = mesh->getCustomShaders();
     if ((int) customShaders.size() <= 0) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No shaders in selected object.");
@@ -601,57 +608,6 @@ void GUIManager::drawBrowserFolders(
     }
 }
 
-void GUIManager::drawFX() {
-
-    int i = 0;
-    ImGui::PushID(i);
-    std::string optionText = std::to_string(i + 1) + ") " + availableFX[i];
-    if (ImGui::Selectable(optionText.c_str())) {
-    }
-    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-        ImGui::SetDragDropPayload("MESH3D_FX_ITEM", std::to_string(i).c_str(), sizeof(int));
-        ImGui::Text("%s", availableFX[i]);
-        ImGui::EndDragDropSource();
-    }
-    ImGui::PopID();
-
-    i = 1;
-    ImGui::PushID(i);
-    optionText = std::to_string(i + 1) + ") " + availableFX[i];
-    if (ImGui::Selectable(optionText.c_str())) {
-    }
-    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-        ImGui::SetDragDropPayload("MESH3D_FX_ITEM", std::to_string(i).c_str(), sizeof(int));
-        ImGui::Text("%s", availableFX[i]);
-        ImGui::EndDragDropSource();
-    }
-    ImGui::PopID();
-
-    i = 2;
-    ImGui::PushID(i);
-    optionText = std::to_string(i + 1) + ") " + availableFX[i];
-    if (ImGui::Selectable(optionText.c_str())) {
-    }
-    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-        ImGui::SetDragDropPayload("MESH3D_FX_ITEM", std::to_string(i).c_str(), sizeof(int));
-        ImGui::Text("%s", availableFX[i]);
-        ImGui::EndDragDropSource();
-    }
-    ImGui::PopID();
-
-    i = 3;
-    ImGui::PushID(i);
-    optionText = std::to_string(i + 1) + ") " + availableFX[i];
-    if (ImGui::Selectable(optionText.c_str())) {
-    }
-    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-        ImGui::SetDragDropPayload("MESH3D_FX_ITEM", std::to_string(i).c_str(), sizeof(int));
-        ImGui::Text("%s", availableFX[i]);
-        ImGui::EndDragDropSource();
-    }
-    ImGui::PopID();
-}
-
 void GUIManager::LoadShaderDialog(std::string &folder, std::string &file)
 {
     auto shader = ComponentsManager::get()->getComponentRender()->getLoadedShader(folder, file);
@@ -779,11 +735,6 @@ void GUIManager::drawWidgets()
 
     if (ImGui::Begin("Shaders")) {
         drawCustomShadersFolder(currentShadersFolderWidget);
-    }
-    ImGui::End();
-
-    if (ImGui::Begin("FX")) {
-        drawFX();
     }
     ImGui::End();
 
@@ -1037,21 +988,59 @@ void GUIManager::drawKeyboardMouseSettings()
 
 void GUIManager::drawImages()
 {
-    static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit;
+    static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame;
 
-    auto items = imagesFolder.getItems();
-    for (auto a : items) {
-        ImGui::Image((ImTextureID)a->texture, ImVec2(96, 96));
-        ImGui::SameLine();
-        ImGui::BeginGroup();
-        ImGui::Selectable(a->label.c_str());
-        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-            ImGui::SetDragDropPayload("IMAGE_ITEM", a->label.c_str(), a->label.size() + 1);
-            ImGui::Text("%s", a->label.c_str());
-            ImGui::EndDragDropSource();
+    auto imageFiles = imagesFolder.getItems();
+    int columns = 6; // Máximo de 6 imágenes por fila
+    int count = 0;
+
+    if (ImGui::BeginTable("ImagesTable", columns, flags)) {
+        for (auto image : imageFiles) {
+            if (count % columns == 0) {
+                ImGui::TableNextRow();
+            }
+            ImGui::TableNextColumn();
+
+            float columnWidth = ImGui::GetColumnWidth();
+            float cursorX = ImGui::GetCursorPosX() + (columnWidth - 96) * 0.5f;
+            ImGui::SetCursorPosX(cursorX);
+
+            ImGui::BeginGroup();
+
+            ImGui::PushID(image->label.c_str());
+            ImGui::ImageButton((ImTextureID)image->texture->getOGLTextureID(), ImVec2(96, 96));
+
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+                ImGui::SetDragDropPayload("IMAGE_ITEM", image->label.c_str(), image->label.size() + 1);
+                ImGui::Text("%s", image->label.c_str());
+                ImGui::EndDragDropSource();
+            }
+            ImGui::PopID();
+
+            ImVec2 textSize = ImGui::CalcTextSize(image->label.c_str());
+            ImGui::SetCursorPosX(cursorX + (96 - textSize.x) * 0.5f);
+            ImGui::Text("%s", image->label.c_str());
+
+            char sizeText[32];
+            snprintf(sizeText, sizeof(sizeText), "%d x %d", image->texture->width(), image->texture->height());
+            ImVec2 sizeTextSize = ImGui::CalcTextSize(sizeText);
+            ImGui::SetCursorPosX(cursorX + (96 - sizeTextSize.x) * 0.5f);
+            ImGui::Text("%s", sizeText);
+
+            ImGui::EndGroup();
+            ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
+            count++;
         }
-        ImGui::Text("%d x %d", a->texture->width(), a->texture->height());
-        ImGui::EndGroup();
+
+        int remaining = columns - (count % columns);
+        if (remaining != columns) {
+            for (int i = 0; i < remaining; i++) {
+                ImGui::TableNextColumn();
+            }
+        }
+
+        ImGui::EndTable();
     }
 }
 

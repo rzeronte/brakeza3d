@@ -26,10 +26,6 @@ void Mesh3D::onUpdate()
 
     if (isRemoved()) return;
 
-    for (auto s: effects) {
-        s->preUpdate();
-    }
-
     auto render = ComponentsManager::get()->getComponentRender();
     auto window = ComponentsManager::get()->getComponentWindow();
 
@@ -478,23 +474,6 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
                     auto vertex = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vertexshader")->valuestring;
                     auto fragment = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;
                     o->addCustomShader(new ShaderOpenGLCustomMesh3D(o, name, vertex, fragment));
-                    break;
-                }
-            }
-        }
-    }
-
-    if (cJSON_GetObjectItemCaseSensitive(object, "effects") != nullptr) {
-        auto FXOpenGLTypes = ComponentsManager::get()->getComponentRender()->getSceneLoader().getFXOpenGLTypes();
-        cJSON *currentFXJSON;
-        cJSON_ArrayForEach(currentFXJSON, cJSON_GetObjectItemCaseSensitive(object, "effects")) {
-            auto type = cJSON_GetObjectItemCaseSensitive(currentFXJSON, "type")->valuestring;
-            switch (FXOpenGLTypes[type]) {
-                case FXOpenGLLoaderMapping::FXBlink: {
-                    auto edgeColor = cJSON_GetObjectItemCaseSensitive(currentFXJSON, "color");
-                    auto blinkStep = (float) cJSON_GetObjectItemCaseSensitive(currentFXJSON, "step")->valuedouble;
-                    auto shader = new FXBlink(true, o, blinkStep, ToolsJSON::parseColorJSON(edgeColor));
-                    o->addFXOpenGL(shader);
                     break;
                 }
             }

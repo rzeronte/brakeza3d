@@ -122,32 +122,6 @@ struct GUIWidgetObjects3D {
                         );
                     }
 
-                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MESH3D_FX_ITEM")) {
-                        Logging::Message("Dropping shader (%s) in %s", payload->Data, o->getLabel().c_str());
-                        int selection = std::stoi((char*) payload->Data);
-                        switch(selection) {
-                            case 3: {
-                                auto shader = new FXColorTint(true, Color::red(), 0.0f);
-                                o->addFXOpenGL(shader);
-                                break;
-                            }
-                        }
-                        if (mesh) {
-                            switch(selection) {
-                                case 0: {
-                                    auto shader = new FXOutliner(true, mesh, Color::green(), 1);
-                                    mesh->addFXOpenGL(shader);
-                                    break;
-                                }
-                                case 1: {
-                                    auto shader = new FXBlink(true, mesh, 0.1f , Color::green());
-                                    mesh->addFXOpenGL(shader);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
                     if (mesh != nullptr) {
                         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CUSTOMSHADER_ITEM")) {
                             EngineSetup::DragDropCustomShaderData* receivedData = (EngineSetup::DragDropCustomShaderData*)payload->Data;

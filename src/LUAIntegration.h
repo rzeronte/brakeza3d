@@ -251,7 +251,6 @@ void LUAIntegration(sol::state &lua)
     lua.new_usertype<Mesh3D>("Mesh3D",
     sol::base_classes, sol::bases<Object3D>(),
         "AssimpLoadGeometryFromFile", &Mesh3D::AssimpLoadGeometryFromFile,
-        "addFXOpenGL", &Mesh3D::addFXOpenGL,
         "buildGrid3D", &Mesh3D::buildGrid3D,
         "buildOctree", &Mesh3D::buildOctree,
         "fillGrid3DFromGeometry", &Mesh3D::fillGrid3DFromGeometry,

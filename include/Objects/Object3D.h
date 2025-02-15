@@ -57,7 +57,6 @@ protected:
     std::vector<ScriptLUA*> scripts;
     std::vector<Object3D*> attachedObjects;
     sol::environment luaEnvironment;
-    std::vector<FXOpenGL*> effects;
 
     Timer timer;
     float distanceToCamera;
@@ -177,10 +176,6 @@ public:
     glm::mat4 getModelMatrix();
 
     M3 getM3ModelMatrix();
-
-    void addFXOpenGL(FXOpenGL *fx);
-
-    void removeFXOpenGLByIndex(int i);
 
     [[nodiscard]] const Timer &getTimer() const;
 

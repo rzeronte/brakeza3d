@@ -528,10 +528,7 @@ void Mesh3DAnimation::drawImGuiProperties()
     const float range_min = 0.0f;
     const float range_max = 1.0f;
 
-    ImGui::Separator();
-
-    if (ImGui::TreeNode("Mesh3DAnimation")) {
-        auto flags = ImGuiComboFlags_None;
+    if (ImGui::CollapsingHeader("Mesh3DAnimation")) {
 
         const char* items[(int) scene->mNumAnimations];
         for (int i = 0; i < (int) scene->mNumAnimations; i++) {
@@ -542,7 +539,6 @@ void Mesh3DAnimation::drawImGuiProperties()
 
         ImGui::Separator();
         ImGui::DragScalar("Speed", ImGuiDataType_Float, &animation_speed, 0.01f ,&range_min, &range_max, "%f", 1.0f);
-        ImGui::TreePop();
     }
 }
 
