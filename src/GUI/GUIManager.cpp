@@ -341,14 +341,24 @@ void GUIManager::drawShaderVariables()
         currentVariableToAddName = name;
     }
 
-    const char* items[] = { "int", "float", "vec2", "vec3", "vec4", "texture", "delta_time", "execution_time", "diffuse", "specular" };
+    std::vector<std::string> items = { "int", "float", "vec2", "vec3", "vec4", "texture", "delta_time", "execution_time", "diffuse", "specular" };
+
+    if (shaderEditableManager.shader->getType() == ShaderCustomTypes::SHADER_POSTPROCESSING) {
+        items.erase(std::remove_if(items.begin(), items.end(), [](const std::string& item) {
+            return item == "diffuse" || item == "specular";
+        }), items.end());
+    }
+
+    std::vector<const char*> itemsCStr;
+    for (auto& item : items) itemsCStr.push_back(item.c_str());
+
     static int selectedItem = 0;
-    ImGui::Combo("Type##1", &selectedItem, items, IM_ARRAYSIZE(items));
+    ImGui::Combo("Type##1", &selectedItem, itemsCStr.data(), itemsCStr.size());
     ImGui::SameLine();
     if (ImGui::Button(std::string("Create variable").c_str())) {
         if (!currentVariableToAddName.empty()) {
             LUADataValue LUAValue;
-            shaderEditableManager.shader->addDataTypeEmpty(currentVariableToAddName.c_str(), items[selectedItem]);
+            shaderEditableManager.shader->addDataTypeEmpty(currentVariableToAddName.c_str(), itemsCStr[selectedItem]);
         }
     }
 
@@ -363,9 +373,11 @@ void GUIManager::drawShaderVariables()
             auto type = &types[i];
 
             ImGui::TableSetColumnIndex(0);
+            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
             ImGui::Text("%d) %s", i + 1, type->name.c_str());
 
             ImGui::TableSetColumnIndex(1);
+            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
             ImGui::Text("%s", type->type.c_str());
 
             ImGui::TableSetColumnIndex(2);
@@ -418,9 +430,11 @@ void GUIManager::drawScriptVariables()
             auto type = &scriptEditableManager.script->dataTypes[i];
 
             ImGui::TableSetColumnIndex(0);
+            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
             ImGui::Text("%d) %s", i + 1, type->name.c_str());
 
             ImGui::TableSetColumnIndex(1);
+            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
             ImGui::Text("%s", type->type.c_str());
 
             ImGui::TableSetColumnIndex(2);
