@@ -84,8 +84,6 @@ public:
         const std::string& extension
     );
 
-    void drawFX();
-
     void LoadShaderDialog(std::string &folder, std::string &file);
 
     void drawSelectedObjectShaders();
