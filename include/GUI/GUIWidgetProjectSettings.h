@@ -191,7 +191,7 @@ struct GUIWidgetProjectSettings {
             }
             ImGui::SameLine();
             if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "rebuildIcon"), ImVec2(14, 14))) {
-                s->compile();
+                s->reload();
             }
             ImGui::SameLine();
             if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {

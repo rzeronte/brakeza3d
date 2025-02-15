@@ -41,6 +41,8 @@ public:
     );
 
     void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
+
+    void setShaderSystemUniforms(GLuint diffuse, GLuint specular);
 };
 
 

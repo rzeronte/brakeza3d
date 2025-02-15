@@ -167,7 +167,7 @@ void ShaderOpenGLCustom::addDataTypeEmpty(const char *name, const char *type)
             break;
         }
         case ShaderOpenGLCustomDataType::FLOAT: {
-            typeValue = 0;
+            typeValue = 0.0f;
             break;
         }
         case ShaderOpenGLCustomDataType::VEC2: {
@@ -561,6 +561,14 @@ void ShaderOpenGLCustom::setDataTypesUniforms()
                 }
                 break;
             }
+            case ShaderOpenGLCustomDataType::DIFFUSE: {
+                auto image = std::get<Image *>(type.value);
+                if (image != nullptr) {
+                    setTexture(type.name, image->getOGLTextureID(), numTextures);
+                    increaseNumberTextures();
+                }
+                break;
+            }
             default:
                 break;
         }
@@ -761,5 +769,7 @@ void ShaderOpenGLCustom::reload()
     dataTypesDefaultValues.clear();
 
     parseTypesFromFileAttributes();
+
+    compile();
 }
 

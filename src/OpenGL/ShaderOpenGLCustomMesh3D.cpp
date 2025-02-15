@@ -4,6 +4,7 @@
 
 #include "../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
 ShaderOpenGLCustomMesh3D::ShaderOpenGLCustomMesh3D(
     Mesh3D* mesh,
@@ -69,15 +70,8 @@ void ShaderOpenGLCustomMesh3D::renderMesh(
 
     resetNumberTextures();
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    increaseNumberTextures();
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, textureSpecularID);
-    increaseNumberTextures();
-
     setDataTypesUniforms();
+    setShaderSystemUniforms(textureID, textureSpecularID);
 
     setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
 
@@ -90,6 +84,33 @@ void ShaderOpenGLCustomMesh3D::renderMesh(
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
 }
 
+void ShaderOpenGLCustomMesh3D::setShaderSystemUniforms(GLuint diffuse, GLuint specular)
+{
+    for (auto type: dataTypes) {
+        switch (GLSLTypeMapping[type.type]) {
+            case ShaderOpenGLCustomDataType::DIFFUSE: {
+                setTexture(type.name, diffuse, numTextures);
+                increaseNumberTextures();
+                break;
+            }
+            case ShaderOpenGLCustomDataType::SPECULAR: {
+                setTexture(type.name, specular, numTextures);
+                increaseNumberTextures();
+                break;
+            }
+            case ShaderOpenGLCustomDataType::DELTA_TIME: {
+                setFloat(type.name, Brakeza3D::get()->getDeltaTime());
+                break;
+            }
+            case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
+                setFloat(type.name, Brakeza3D::get()->getExecutionTime());
+                break;
+            }
+            default:
+                break;
+        }
+    }
+}
 
 void ShaderOpenGLCustomMesh3D::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
 {

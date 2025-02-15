@@ -52,6 +52,21 @@ struct ShaderOpenGLCustomType {
 
 class ShaderOpenGLCustom: public ShaderOpenGL
 {
+
+    std::string label;
+
+    bool enabled;
+    ShaderCustomTypes type;
+    std::string fileTypes;
+
+    std::vector<ShaderOpenGLCustomType> dataTypesDefaultValues;
+
+    // imgui
+    std::string currentVariableToAddName;
+    char editableSource[1024 * 16];
+
+protected:
+    std::vector<ShaderOpenGLCustomType> dataTypes;
     std::map<std::string, ShaderOpenGLCustomDataType> GLSLTypeMapping = {
         {"int", ShaderOpenGLCustomDataType::INT},
         {"float", ShaderOpenGLCustomDataType::FLOAT},
@@ -64,22 +79,7 @@ class ShaderOpenGLCustom: public ShaderOpenGL
         {"delta_time", ShaderOpenGLCustomDataType::DELTA_TIME},
         {"execution_time", ShaderOpenGLCustomDataType::EXECUTION_TIME}
     };
-
-    std::string label;
-
-    bool enabled;
-    ShaderCustomTypes type;
-    std::string fileTypes;
-
-    std::vector<ShaderOpenGLCustomType> dataTypes;
-    std::vector<ShaderOpenGLCustomType> dataTypesDefaultValues;
-
-    // imgui
-    std::string currentVariableToAddName;
-    char editableSource[1024 * 16];
-
     int numTextures = 0;
-protected:
 public:
     explicit ShaderOpenGLCustom(
         std::string label,

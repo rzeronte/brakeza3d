@@ -4,6 +4,7 @@
 
 #include "../include/OpenGL/ShaderOpenGLCustomPostprocessing.h"
 #include "../../include/ComponentsManager.h"
+#include "../../include/Brakeza3D.h"
 
 ShaderOpenGLCustomPostprocessing::ShaderOpenGLCustomPostprocessing(
     const std::string &label,
@@ -47,11 +48,29 @@ void ShaderOpenGLCustomPostprocessing::render(GLuint framebuffer)
     increaseNumberTextures();
 
     setDataTypesUniforms();
-
+    setShaderSystemUniforms();
     drawQuad();
 }
 
 void ShaderOpenGLCustomPostprocessing::destroy()
 {
     resetQuadMatrix();
+}
+
+void ShaderOpenGLCustomPostprocessing::setShaderSystemUniforms()
+{
+    for (auto type: dataTypes) {
+        switch (GLSLTypeMapping[type.type]) {
+            case ShaderOpenGLCustomDataType::DELTA_TIME: {
+                setFloat(type.name, Brakeza3D::get()->getDeltaTime());
+                break;
+            }
+            case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
+                setFloat(type.name, Brakeza3D::get()->getExecutionTime());
+                break;
+            }
+            default:
+                break;
+        }
+    }
 }
