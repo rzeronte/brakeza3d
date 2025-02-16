@@ -14,6 +14,7 @@
 - [Escribir texto en pantalla](#escribir-texto-en-pantalla)
 - [Terminar la ejecución](#terminar-la-ejecución)
 - [Pathfinding](#pathfinding)
+- [Actualizar variable en shader](#actualizar-variable-en-shader)
 
 ---
 
@@ -312,3 +313,21 @@ function onUpdate()
     end
 end
 ```
+
+### Actualizar variable en shader
+
+---
+
+````lua
+function onUpdate()
+    render = componentsManager:getComponentRender()
+    customShader = render:getSceneShaderByLabel("Custom")
+
+    if customShader ~= nil then
+        customShader:setDataTypeValue("r_factor", math.sin(brakeza:getExecutionTime()))
+        customShader:setDataTypeValue("a_factor", math.cos(brakeza:getExecutionTime()))
+        customShader:setDataTypeValue("g_factor", math.cos(brakeza:getExecutionTime()))
+    else
+        print("Error: Not custom shader called: 'Custom'")
+    end
+````
