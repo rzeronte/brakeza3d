@@ -59,8 +59,6 @@ private:
     bool showAboutWindow = false;
     bool showEditShaderWindow = false;
     bool showEditScriptWindow = false;
-
-    const char *availableFX[4] = {"Edge", "Blink", "ShockWave", "Tint"};
 public:
 
     void loadImagesFolder();
