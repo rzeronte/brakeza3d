@@ -51,9 +51,22 @@ struct ShaderOpenGLCustomType {
     ShaderOpenGLCustomDataValue value;
 };
 
+static std::map<std::string, ShaderOpenGLCustomDataType> GLSLTypeMapping = {
+    {"int", ShaderOpenGLCustomDataType::INT},
+    {"float", ShaderOpenGLCustomDataType::FLOAT},
+    {"vec2", ShaderOpenGLCustomDataType::VEC2},
+    {"vec3", ShaderOpenGLCustomDataType::VEC3},
+    {"vec4", ShaderOpenGLCustomDataType::VEC4},
+    {"texture", ShaderOpenGLCustomDataType::TEXTURE2D},
+    {"diffuse", ShaderOpenGLCustomDataType::DIFFUSE},
+    {"specular", ShaderOpenGLCustomDataType::SPECULAR},
+    {"delta_time", ShaderOpenGLCustomDataType::DELTA_TIME},
+    {"execution_time", ShaderOpenGLCustomDataType::EXECUTION_TIME},
+    {"scene", ShaderOpenGLCustomDataType::SCENE}
+};
+
 class ShaderOpenGLCustom: public ShaderOpenGL
 {
-
     std::string label;
 
     bool enabled;
@@ -62,29 +75,18 @@ class ShaderOpenGLCustom: public ShaderOpenGL
 
     std::vector<ShaderOpenGLCustomType> dataTypesDefaultValues;
 
-    // imgui
-    std::string currentVariableToAddName;
-    char editableSource[1024 * 16];
-
 protected:
     std::vector<ShaderOpenGLCustomType> dataTypes;
-    std::map<std::string, ShaderOpenGLCustomDataType> GLSLTypeMapping = {
-        {"int", ShaderOpenGLCustomDataType::INT},
-        {"float", ShaderOpenGLCustomDataType::FLOAT},
-        {"vec2", ShaderOpenGLCustomDataType::VEC2},
-        {"vec3", ShaderOpenGLCustomDataType::VEC3},
-        {"vec4", ShaderOpenGLCustomDataType::VEC4},
-        {"texture", ShaderOpenGLCustomDataType::TEXTURE2D},
-        {"diffuse", ShaderOpenGLCustomDataType::DIFFUSE},
-        {"specular", ShaderOpenGLCustomDataType::SPECULAR},
-        {"delta_time", ShaderOpenGLCustomDataType::DELTA_TIME},
-        {"execution_time", ShaderOpenGLCustomDataType::EXECUTION_TIME},
-        {"scene", ShaderOpenGLCustomDataType::SCENE}
-    };
+
     int numTextures = 0;
 
-    ShaderOpenGLCustom(std::string label, const std::string &vertexFilename, const std::string &fragmentFilename,
-                       ShaderCustomTypes type, cJSON *types);
+    ShaderOpenGLCustom(
+        std::string label,
+        const std::string &vertexFilename,
+        const std::string &fragmentFilename,
+        ShaderCustomTypes type,
+        cJSON *types
+    );
 
 public:
     explicit ShaderOpenGLCustom(
@@ -156,8 +158,6 @@ public:
 
     [[nodiscard]] ShaderCustomTypes getType() const;
 
-    void setType(ShaderCustomTypes type);
-
     static ShaderCustomTypes getShaderTypeFromString(const std::string &shaderName);
 
     static std::string getShaderTypeString(ShaderCustomTypes type);
@@ -179,6 +179,8 @@ public:
     void reload();
 
     void captureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const;
+
+    void readShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename);
 };
 
 

@@ -15,7 +15,10 @@ typedef std::variant<int, float, Vertex3D, const char*> LUADataValue;
 struct ScriptLUATypeData {
     ScriptLUATypeData(const char *name, const char *type, LUADataValue value)
     : name(name), type(type), value(value)
-    {}
+    {
+
+    }
+
     std::string name;
     std::string type;
     LUADataValue value;

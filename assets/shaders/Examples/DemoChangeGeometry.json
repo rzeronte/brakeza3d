@@ -1,0 +1,13 @@
+{
+	"name":	"DemoChangeGeometry",
+	"vertexshader":	"../assets/shaders/Examples/DemoChangeGeometry.vs",
+	"fragmentshader":	"../assets/shaders/Examples/DemoChangeGeometry.fs",
+	"type":	"Mesh3D",
+	"types":	[{
+			"name":	"executionTime",
+			"type":	"execution_time"
+		}, {
+			"name":	"diffuse",
+			"type":	"diffuse"
+		}]
+}

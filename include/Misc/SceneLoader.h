@@ -25,32 +25,21 @@ enum class SceneObjectLoaderMapping {
     Image2D
 };
 
-enum class FXOpenGLLoaderMapping {
-    FXOutliner,
-    FXBlink,
-    FXTint,
+static std::map<std::string, SceneObjectLoaderMapping> SceneObjectTypesMapping = {
+    {"Object3D", SceneObjectLoaderMapping::Object3D},
+    {"Mesh3D", SceneObjectLoaderMapping::Mesh3D},
+    {"Mesh3DAnimation", SceneObjectLoaderMapping::Mesh3DAnimation},
+    {"LightPoint3D", SceneObjectLoaderMapping::LightPoint3D},
+    {"SpotLight3D", SceneObjectLoaderMapping::SpotLight3D},
+    {"ParticleEmitter", SceneObjectLoaderMapping::ParticleEmitter},
+    {"BillboardAnimation", SceneObjectLoaderMapping::BillboardAnimation},
+    {"BillboardAnimation8Directions", SceneObjectLoaderMapping::BillboardAnimation8Directions},
+    {"Image2DAnimation", SceneObjectLoaderMapping::Image2DAnimation},
+    {"Image3D", SceneObjectLoaderMapping::Image3D},
+    {"Image2D", SceneObjectLoaderMapping::Image2D}
 };
 
 class SceneLoader {
-    std::map<std::string, SceneObjectLoaderMapping> SceneObjectTypesMapping = {
-        {"Object3D", SceneObjectLoaderMapping::Object3D},
-        {"Mesh3D", SceneObjectLoaderMapping::Mesh3D},
-        {"Mesh3DAnimation", SceneObjectLoaderMapping::Mesh3DAnimation},
-        {"LightPoint3D", SceneObjectLoaderMapping::LightPoint3D},
-        {"SpotLight3D", SceneObjectLoaderMapping::SpotLight3D},
-        {"ParticleEmitter", SceneObjectLoaderMapping::ParticleEmitter},
-        {"BillboardAnimation", SceneObjectLoaderMapping::BillboardAnimation},
-        {"BillboardAnimation8Directions", SceneObjectLoaderMapping::BillboardAnimation8Directions},
-        {"Image2DAnimation", SceneObjectLoaderMapping::Image2DAnimation},
-        {"Image3D", SceneObjectLoaderMapping::Image3D},
-        {"Image2D", SceneObjectLoaderMapping::Image2D}
-    };
-
-    std::map<std::string, FXOpenGLLoaderMapping> FXOpenGLTypesMapping = {
-        {"FXOutliner",  FXOpenGLLoaderMapping::FXOutliner},
-        {"FXBlink",     FXOpenGLLoaderMapping::FXBlink},
-        {"FXColorTint", FXOpenGLLoaderMapping::FXTint},
-    };
 
 public:
     explicit SceneLoader();
@@ -66,8 +55,6 @@ public:
     static void createPointLight3DInScene();
 
     static void createImage3DToScene(const std::string &filename);
-
-    std::map<std::string, FXOpenGLLoaderMapping> &getFXOpenGLTypes();
 
     static void createSpotLight3DInScene();
 

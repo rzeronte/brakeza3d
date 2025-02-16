@@ -344,11 +344,15 @@ void GUIManager::drawShaderVariables()
         currentVariableToAddName = name;
     }
 
-    std::vector<std::string> items = { "int", "float", "vec2", "vec3", "vec4", "texture", "delta_time", "execution_time", "diffuse", "specular", "scene" };
+    std::vector<std::string> items;
+    for (auto t: GLSLTypeMapping) {
+        items.push_back(t.first);
+    }
 
     if (shaderEditableManager.shader->getType() == ShaderCustomTypes::SHADER_POSTPROCESSING) {
         items.erase(std::remove_if(items.begin(), items.end(), [](const std::string& item) {
-            return item == "diffuse" || item == "specular";
+            auto typeEnum = GLSLTypeMapping[item];
+            return typeEnum == ShaderOpenGLCustomDataType::DIFFUSE || typeEnum == ShaderOpenGLCustomDataType::SPECULAR;
         }), items.end());
     }
 

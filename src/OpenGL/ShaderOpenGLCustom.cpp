@@ -23,16 +23,7 @@ ShaderOpenGLCustom::ShaderOpenGLCustom(
     fileTypes(ShaderOpenGLCustom::dataTypesFileFor(fragmentFilename)),
     type(type)
 {
-    if (!Tools::fileExists(vertexFilename.c_str()) || !Tools::fileExists(fragmentFilename.c_str())) {
-        Logging::Message("[error] Cannot open custom shader files (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
-    }
-    size_t file_size_fs;
-    sourceFS = Tools::readFile(fragmentFilename, file_size_fs);
-    strcpy(editableSource, sourceFS.c_str());
-
-    size_t file_size_vs;
-    sourceVS = Tools::readFile(vertexFilename, file_size_vs);
-
+    readShaderFiles(vertexFilename, fragmentFilename);
     parseTypesFromFileAttributes();
 }
 
@@ -50,17 +41,20 @@ ShaderOpenGLCustom::ShaderOpenGLCustom(
     fileTypes(ShaderOpenGLCustom::dataTypesFileFor(fragmentFilename)),
     type(type)
 {
+    readShaderFiles(vertexFilename, fragmentFilename);
+    setDataTypesFromJSON(types);
+}
+
+void ShaderOpenGLCustom::readShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename)
+{
     if (!Tools::fileExists(vertexFilename.c_str()) || !Tools::fileExists(fragmentFilename.c_str())) {
         Logging::Message("[error] Cannot open custom shader files (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
     }
     size_t file_size_fs;
     sourceFS = Tools::readFile(fragmentFilename, file_size_fs);
-    strcpy(editableSource, sourceFS.c_str());
 
     size_t file_size_vs;
     sourceVS = Tools::readFile(vertexFilename, file_size_vs);
-
-    setDataTypesFromJSON(types);
 }
 
 bool ShaderOpenGLCustom::existDataType(const char *name, const char *type)
@@ -122,7 +116,7 @@ void ShaderOpenGLCustom::addDataType(const char *name, const char *type, cJSON *
 
     switch (GLSLTypeMapping[type]) {
         case ShaderOpenGLCustomDataType::INT: {
-            LUAValue = value->valueint;
+            LUAValue = (int) value->valueint;
             break;
         }
         case ShaderOpenGLCustomDataType::FLOAT: {
@@ -256,13 +250,12 @@ void ShaderOpenGLCustom::destroy()
 {
 }
 
-void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
-{
+void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
     ImGui::SeparatorText("OpenGL custom uniforms");
 
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
     int i = 0;
-    for (auto&  type : dataTypes) {
+    for (auto &type: dataTypes) {
         switch (GLSLTypeMapping[type.type]) {
             case ShaderOpenGLCustomDataType::INT: {
                 ImGui::PushID(i);
@@ -326,7 +319,7 @@ void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
     ImGui::SeparatorText("OpenGL system uniforms");
 
     i = 0;
-    for (auto&  type : dataTypes) {
+    for (auto &type: dataTypes) {
         switch (GLSLTypeMapping[type.type]) {
             case ShaderOpenGLCustomDataType::DELTA_TIME: {
                 ImGui::PushID(i);
@@ -357,7 +350,7 @@ void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
 
     if (ImGui::BeginTable("ShaderOpenGLCustomTexture", 4, flags)) {
         int i = 0;
-        for (auto&  type : dataTypes) {
+        for (auto &type: dataTypes) {
             switch (GLSLTypeMapping[type.type]) {
                 case ShaderOpenGLCustomDataType::SCENE: {
                     ImGui::TableNextRow();
@@ -367,12 +360,12 @@ void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
                     auto globalTexture = ComponentsManager::get()->getComponentWindow()->globalTexture;
-                    ImGui::Image((ImTextureID) globalTexture,ImVec2(36, 36));
+                    ImGui::Image((ImTextureID) globalTexture, ImVec2(36, 36));
                     ImGui::SetItemTooltip("Render scene");
 
                     ImGui::TableSetColumnIndex(1);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                    ImGui::Text("Scene texture");
+                    ImGui::Text("%s", type.name.c_str());
 
                     ImGui::TableSetColumnIndex(2);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
@@ -393,7 +386,7 @@ void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
                         ImGui::TableSetColumnIndex(0);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
-                        ImGui::Image((ImTextureID) diffuse->getOGLTextureID(),ImVec2(36, 36));
+                        ImGui::Image((ImTextureID) diffuse->getOGLTextureID(), ImVec2(36, 36));
                         ImGui::SetItemTooltip(diffuse->getFileName().c_str());
 
                         ImGui::TableSetColumnIndex(1);
@@ -421,7 +414,7 @@ void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
                         ImGui::TableSetColumnIndex(0);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
-                        ImGui::Image((ImTextureID) texture->getOGLTextureID(),ImVec2(36, 36));
+                        ImGui::Image((ImTextureID) texture->getOGLTextureID(), ImVec2(36, 36));
                         ImGui::SetItemTooltip(texture->getFileName().c_str());
                         captureDragDropUpdateImage(type, texture);
 
@@ -439,7 +432,7 @@ void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
                     } else {
                         ImGui::TableSetColumnIndex(0);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
-                        ImGui::Image(TexturePackage::getOGLTextureID(*ImGuiTextures, "textureIcon"),ImVec2(36, 36));
+                        ImGui::Image(TexturePackage::getOGLTextureID(*ImGuiTextures, "textureIcon"), ImVec2(36, 36));
                         captureDragDropUpdateImage(type, texture);
 
                         ImGui::TableSetColumnIndex(1);
@@ -470,7 +463,8 @@ void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
     }
 }
 
-void ShaderOpenGLCustom::captureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const {
+void ShaderOpenGLCustom::captureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const
+{
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
             Logging::Message("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
@@ -749,10 +743,6 @@ ShaderCustomTypes ShaderOpenGLCustom::getType() const {
     return type;
 }
 
-void ShaderOpenGLCustom::setType(ShaderCustomTypes type) {
-    ShaderOpenGLCustom::type = type;
-}
-
 ShaderCustomTypes ShaderOpenGLCustom::getShaderTypeFromString(const std::string& shaderName)
 {
     auto render = ComponentsManager::get()->getComponentRender();
@@ -816,7 +806,6 @@ void ShaderOpenGLCustom::reload()
 {
     size_t file_size_fs;
     sourceFS = Tools::readFile(fragmentFilename, file_size_fs);
-    strcpy(editableSource, sourceFS.c_str());
 
     size_t file_size_vs;
     sourceVS = Tools::readFile(vertexFilename, file_size_vs);

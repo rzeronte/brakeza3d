@@ -29,7 +29,6 @@ private:
     TTF_Font *fontDefault;
 
     GLuint sceneFramebuffer;
-    GLuint depthTexture;
 
     GLuint backgroundFramebuffer;
     GLuint backgroundTexture;
@@ -131,6 +130,8 @@ public:
     ImGuizmo::OPERATION getGuizmoOperation() const;
 
     void setGuizmoOperation(ImGuizmo::OPERATION guizmoOperation);
+
+    GLuint depthTexture;
 };
 
 

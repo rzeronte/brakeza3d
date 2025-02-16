@@ -368,11 +368,6 @@ void SceneLoader::createImage3DToScene(const std::string &filename)
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Image3D"));
 }
 
-std::map<std::string, FXOpenGLLoaderMapping> &SceneLoader::getFXOpenGLTypes()
-{
-    return FXOpenGLTypesMapping;
-}
-
 void SceneLoader::createBillboardAnimation8Directions()
 {
     auto *newObject = new BillboardAnimation8Directions(10, 10);
