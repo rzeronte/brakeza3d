@@ -1,5 +1,5 @@
 function onStart()
-    print("Hello world!)
+    print("Hello world!")
 end
 
 function onUpdate()
