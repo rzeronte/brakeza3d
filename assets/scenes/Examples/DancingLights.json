@@ -1,0 +1,279 @@
+{
+	"gravity":	{
+		"x":	0,
+		"y":	9.8000001907348633,
+		"z":	0
+	},
+	"ads":	{
+		"direction":	{
+			"x":	0.43999999761581421,
+			"y":	0.5,
+			"z":	-1
+		},
+		"diffuse":	{
+			"x":	0.7295081615447998,
+			"y":	0.59697723388671875,
+			"z":	0.22423405945301056
+		},
+		"specular":	{
+			"x":	1,
+			"y":	0.99462509155273438,
+			"z":	0.91803276538848877
+		},
+		"ambient":	{
+			"x":	0,
+			"y":	0,
+			"z":	0
+		}
+	},
+	"objects":	[{
+			"name":	"axis",
+			"scale":	1,
+			"position":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	1,
+				"friction":	1,
+				"mass":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	1,
+					"y":	3
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//StudioCorner.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"p1",
+			"scale":	1,
+			"position":	{
+				"x":	-5.6191267967224121,
+				"y":	5.8653125762939453,
+				"z":	1.83713698387146
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[{
+					"name":	"../assets/scripts/Examples/RotateFromObject.lua",
+					"types":	[{
+							"name":	"objectName",
+							"type":	"string",
+							"value":	"pawn"
+						}, {
+							"name":	"radius",
+							"type":	"float",
+							"value":	5
+						}, {
+							"name":	"speed",
+							"type":	"float",
+							"value":	1
+						}, {
+							"name":	"offset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	2,
+								"y":	4,
+								"z":	0
+							}
+						}]
+				}],
+			"ambient":	{
+				"x":	0.16803276538848877,
+				"y":	0.16803276538848877,
+				"z":	0.16803276538848877
+			},
+			"diffuse":	{
+				"x":	0.89754098653793335,
+				"y":	0.19863609969615936,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.19999900460243225,
+			"linear":	0.090000003576278687,
+			"quadratic":	0.0099999997764825821,
+			"type":	"LightPoint3D"
+		}, {
+			"name":	"pawn",
+			"scale":	1,
+			"position":	{
+				"x":	-4.0576009750366211,
+				"y":	1.6743474006652832,
+				"z":	1.83713698387146
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//ChessPawn.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"p2",
+			"scale":	1,
+			"position":	{
+				"x":	-9.7135105133056641,
+				"y":	3.6771938800811768,
+				"z":	3.83713698387146
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[{
+					"name":	"../assets/scripts/Examples/RotateFromObject.lua",
+					"types":	[{
+							"name":	"objectName",
+							"type":	"string",
+							"value":	"pawn"
+						}, {
+							"name":	"radius",
+							"type":	"float",
+							"value":	10
+						}, {
+							"name":	"speed",
+							"type":	"float",
+							"value":	1.5
+						}, {
+							"name":	"offset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	6,
+								"z":	2
+							}
+						}]
+				}],
+			"ambient":	{
+				"x":	0.05000000074505806,
+				"y":	0.05000000074505806,
+				"z":	0.05000000074505806
+			},
+			"diffuse":	{
+				"x":	0,
+				"y":	0.43442630767822266,
+				"z":	1
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.23999999463558197,
+			"linear":	0.090000003576278687,
+			"quadratic":	0.032000001519918442,
+			"type":	"LightPoint3D"
+		}, {
+			"name":	"p3",
+			"scale":	1,
+			"position":	{
+				"x":	-12.038514137268066,
+				"y":	1.1163132190704346,
+				"z":	1.83713698387146
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[{
+					"name":	"../assets/scripts/Examples/RotateFromObject.lua",
+					"types":	[{
+							"name":	"objectName",
+							"type":	"string",
+							"value":	"pawn"
+						}, {
+							"name":	"radius",
+							"type":	"float",
+							"value":	15
+						}, {
+							"name":	"speed",
+							"type":	"float",
+							"value":	2
+						}, {
+							"name":	"offset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	8,
+								"z":	0
+							}
+						}]
+				}],
+			"ambient":	{
+				"x":	0.05000000074505806,
+				"y":	0.05000000074505806,
+				"z":	0.05000000074505806
+			},
+			"diffuse":	{
+				"x":	0.35245907306671143,
+				"y":	1,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.25999999046325684,
+			"linear":	0.090000003576278687,
+			"quadratic":	0.032000001519918442,
+			"type":	"LightPoint3D"
+		}],
+	"shaders":	[],
+	"scripts":	[],
+	"camera":	{
+		"position":	{
+			"x":	-22.858940124511719,
+			"y":	-8.72719955444336,
+			"z":	-13.449481010437012
+		},
+		"rotation":	{
+			"x":	35.400005340576172,
+			"y":	-53.449951171875,
+			"z":	0
+		}
+	}
+}
