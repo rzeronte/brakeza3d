@@ -73,6 +73,7 @@ void Brakeza3D::mainLoop(bool autostart, const std::string& project)
 
     engineTimer.start();
     managerGUI = new GUIManager(sceneObjects);
+
     ComponentsManager::get()->getComponentScripting()->initLUATypes();
     componentsManager->getComponentCollisions()->initBulletSystem();
     onStartComponents();

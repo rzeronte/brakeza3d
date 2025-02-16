@@ -77,6 +77,7 @@ void GUIManager::LoadUIIcons()
     icons.addItem(iconsFolder + "open.png", "openIcon");
     icons.addItem(iconsFolder + "gui.png", "guiIcon");
     icons.addItem(iconsFolder + "texture.png", "textureIcon");
+    icons.addItem(EngineSetup::get()->IMAGES_FOLDER + "splash.png", "splash");
 }
 
 void GUIManager::loadImagesFolder()
@@ -833,6 +834,23 @@ void GUIManager::draw(float timedelta, bool &finish)
 
     drawEditShaderWindow();
     drawEditScriptWindow();
+
+    if (showSplash) {
+        ImGui::OpenPopup("brakeza_splash");
+        showSplash = false;
+
+        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Centrar
+    }
+
+    if (ImGui::BeginPopup("brakeza_splash")) {
+        ImGui::SeparatorText(std::string("Welcome to Brakeza3D!").c_str());
+        ImGui::Image(TexturePackage::getOGLTextureID(icons, "splash"), ImVec2(640, 350));
+        ImGui::SeparatorText(
+            std::string("Brakeza3D (" + EngineSetup::get()->ENGINE_VERSION + ") | https://brakeza.com | By Eduardo Rodríguez Álvarez").c_str()
+        );
+        ImGui::EndPopup();
+    }
 
     ImGui::End();
 }

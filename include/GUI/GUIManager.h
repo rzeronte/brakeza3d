@@ -18,6 +18,8 @@
 #include "GUIWidgetMenu.h"
 #include "GUIWidgetToolbar.h"
 
+static bool showSplash = true;
+
 class GUIManager {
 private:
     std::vector<Object3D *> &gameObjects;
