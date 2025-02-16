@@ -1005,7 +1005,7 @@ void GUIManager::drawImages()
     static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame;
 
     auto imageFiles = imagesFolder.getItems();
-    int columns = 6; // Máximo de 6 imágenes por fila
+    int columns = 8; // Máximo de 6 imágenes por fila
     int count = 0;
 
     if (ImGui::BeginTable("ImagesTable", columns, flags)) {
