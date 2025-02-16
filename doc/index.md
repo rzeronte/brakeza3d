@@ -1402,11 +1402,11 @@ modificar a tu antojo. También se generará un fichero ``json`` con metadatos.
 
 También podrás configurar las variables (*uniforms*) que recibirá cada shader desde la UI.
 
-Podrás configurar tus propias variables: ``int``, ``float``, ``vec2``, ``vec3``, ``vec4``, ``texture``
+Podrás configurar tus propias variables: ``int``, ``float``, ``vec2``, ``vec3``, ``vec4``, ``texture`` 
+o bien podrás seleccionar variables pertenecientes al sistema: ``delta_time (float)``, ``execution_time (float)`` 
+o `scene (texture)`.
 
-O podrás seleccionar variables pertenecientes al sistema: ``delta_time``, ``execution_time``
-
-Además, los shaders de geometría (aplican a `Mesh3D`) te permiten enviar tipos específicos como: ``diffuse`` o ``specular``, con 
+Además, los shaders de geometría (que solo aplican a `Mesh3D`) te permiten usar tipos del sistema como: ``diffuse`` o ``specular``, con 
 texturas pertenecientes al modelo en particular.
 
 ---

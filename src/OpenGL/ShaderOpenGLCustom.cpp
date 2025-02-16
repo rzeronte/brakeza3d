@@ -36,6 +36,33 @@ ShaderOpenGLCustom::ShaderOpenGLCustom(
     parseTypesFromFileAttributes();
 }
 
+ShaderOpenGLCustom::ShaderOpenGLCustom(
+    std::string label,
+    const std::string &vertexFilename,
+    const std::string &fragmentFilename,
+    ShaderCustomTypes type,
+    cJSON *types
+)
+:
+    label(std::move(label)),
+    enabled(true),
+    ShaderOpenGL(vertexFilename, fragmentFilename),
+    fileTypes(ShaderOpenGLCustom::dataTypesFileFor(fragmentFilename)),
+    type(type)
+{
+    if (!Tools::fileExists(vertexFilename.c_str()) || !Tools::fileExists(fragmentFilename.c_str())) {
+        Logging::Message("[error] Cannot open custom shader files (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
+    }
+    size_t file_size_fs;
+    sourceFS = Tools::readFile(fragmentFilename, file_size_fs);
+    strcpy(editableSource, sourceFS.c_str());
+
+    size_t file_size_vs;
+    sourceVS = Tools::readFile(vertexFilename, file_size_vs);
+
+    setDataTypesFromJSON(types);
+}
+
 bool ShaderOpenGLCustom::existDataType(const char *name, const char *type)
 {
     for (const auto& t: dataTypes) {
@@ -82,9 +109,9 @@ void ShaderOpenGLCustom::setDataTypesFromJSON(cJSON *typesJSON)
 
         if (!existDataType(name, type)){
             addDataType(name, type, value);
-            Logging::Message("Loading script variable (%s, %s)", name, type);
+            Logging::Message("Loading shader variable (%s, %s)", name, type);
         } else {
-            Logging::Message("Keeping script variable (%s, %s)", name, type);
+            Logging::Message("Keeping shader variable (%s, %s)", name, type);
         }
     }
 }
@@ -149,6 +176,10 @@ void ShaderOpenGLCustom::addDataType(const char *name, const char *type, cJSON *
             LUAValue = 0.0f;
             break;
         }
+        case ShaderOpenGLCustomDataType::SCENE: {
+            LUAValue = nullptr;
+            break;
+        }
         default:
             break;
     }
@@ -200,6 +231,10 @@ void ShaderOpenGLCustom::addDataTypeEmpty(const char *name, const char *type)
         }
         case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
             typeValue = 0.f;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::SCENE: {
+            typeValue = nullptr;
             break;
         }
     }
@@ -324,6 +359,32 @@ void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
         int i = 0;
         for (auto&  type : dataTypes) {
             switch (GLSLTypeMapping[type.type]) {
+                case ShaderOpenGLCustomDataType::SCENE: {
+                    ImGui::TableNextRow();
+                    ImGui::PushID(i);
+
+                    ImGui::TableSetColumnIndex(0);
+                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
+
+                    auto globalTexture = ComponentsManager::get()->getComponentWindow()->globalTexture;
+                    ImGui::Image((ImTextureID) globalTexture,ImVec2(36, 36));
+                    ImGui::SetItemTooltip("Render scene");
+
+                    ImGui::TableSetColumnIndex(1);
+                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
+                    ImGui::Text("Scene texture");
+
+                    ImGui::TableSetColumnIndex(2);
+                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
+                    ImGui::Text("GL_TEXTURE%d", i);
+
+                    ImGui::TableSetColumnIndex(3);
+                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
+                    ImGui::Text("%dx%d", EngineSetup::get()->screenWidth, EngineSetup::get()->screenHeight);
+                    i++;
+                    ImGui::PopID();
+                    break;
+                }
                 case ShaderOpenGLCustomDataType::DIFFUSE: {
                     ImGui::TableNextRow();
                     ImGui::PushID(i);
@@ -456,7 +517,8 @@ cJSON *ShaderOpenGLCustom::getTypesJSON()
 {
     cJSON *scriptJSON = cJSON_CreateObject();
     cJSON_AddStringToObject(scriptJSON, "name", getLabel().c_str());
-    cJSON_AddStringToObject(scriptJSON, "file", fragmentFilename.c_str());
+    cJSON_AddStringToObject(scriptJSON, "vertexshader", vertexFilename.c_str());
+    cJSON_AddStringToObject(scriptJSON, "fragmentshader", fragmentFilename.c_str());
     cJSON_AddStringToObject(scriptJSON, "type", getShaderTypeString(type).c_str());
 
     cJSON *typesArray = cJSON_CreateArray();
@@ -561,12 +623,18 @@ void ShaderOpenGLCustom::setDataTypesUniforms()
                 }
                 break;
             }
-            case ShaderOpenGLCustomDataType::DIFFUSE: {
-                auto image = std::get<Image *>(type.value);
-                if (image != nullptr) {
-                    setTexture(type.name, image->getOGLTextureID(), numTextures);
-                    increaseNumberTextures();
-                }
+            case ShaderOpenGLCustomDataType::DELTA_TIME: {
+                setFloat(type.name, Brakeza3D::get()->getDeltaTime());
+                break;
+            }
+            case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
+                setFloat(type.name, Brakeza3D::get()->getExecutionTime());
+                break;
+            }
+            case ShaderOpenGLCustomDataType::SCENE: {
+                auto globalTexture = ComponentsManager::get()->getComponentWindow()->globalTexture;
+                setTexture(type.name, globalTexture, numTextures);
+                increaseNumberTextures();
                 break;
             }
             default:
@@ -735,18 +803,6 @@ ShaderCustomTypes ShaderOpenGLCustom::extractTypeFromShaderName(const std::strin
     return ShaderOpenGLCustom::getShaderTypeFromString(nameType);
 }
 
-cJSON *ShaderOpenGLCustom::getJSON()
-{
-    cJSON *root = cJSON_CreateObject();
-
-    cJSON_AddStringToObject(root, "name", label.c_str());
-    cJSON_AddStringToObject(root, "vertexshader", vertexFilename.c_str());
-    cJSON_AddStringToObject(root, "fragmentshader", fragmentFilename.c_str());
-    cJSON_AddStringToObject(root, "type", ShaderOpenGLCustom::getShaderTypeString(type).c_str());
-
-    return root;
-}
-
 std::string ShaderOpenGLCustom::getFolder()
 {
     return Tools::removeSubstring(vertexFilename, label + ".vs");
@@ -772,4 +828,3 @@ void ShaderOpenGLCustom::reload()
 
     compile();
 }
-

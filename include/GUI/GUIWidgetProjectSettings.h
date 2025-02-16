@@ -195,7 +195,7 @@ struct GUIWidgetProjectSettings {
             }
             ImGui::SameLine();
             if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
-                render->removeShader(i);
+                render->removeSceneShaderByIndex(i);
             }
             ImGui::SameLine();
             if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {

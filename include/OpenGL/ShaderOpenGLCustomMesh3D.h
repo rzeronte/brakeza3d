@@ -26,6 +26,14 @@ public:
         const std::string &fragmentFilename
     );
 
+    ShaderOpenGLCustomMesh3D(
+        Mesh3D* mesh,
+        const std::string &label,
+        const std::string &vertexFilename,
+        const std::string &fragmentFilename,
+        cJSON* types
+    );
+
     void render(GLuint framebuffer);
 
     void renderMesh(

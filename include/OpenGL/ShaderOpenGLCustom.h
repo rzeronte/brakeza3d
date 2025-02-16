@@ -36,7 +36,8 @@ enum class ShaderOpenGLCustomDataType {
     DIFFUSE,
     SPECULAR,
     DELTA_TIME,
-    EXECUTION_TIME
+    EXECUTION_TIME,
+    SCENE
 };
 
 typedef std::variant<int, float, glm::vec2, glm::vec3, glm::vec4, Image*> ShaderOpenGLCustomDataValue;
@@ -77,9 +78,14 @@ protected:
         {"diffuse", ShaderOpenGLCustomDataType::DIFFUSE},
         {"specular", ShaderOpenGLCustomDataType::SPECULAR},
         {"delta_time", ShaderOpenGLCustomDataType::DELTA_TIME},
-        {"execution_time", ShaderOpenGLCustomDataType::EXECUTION_TIME}
+        {"execution_time", ShaderOpenGLCustomDataType::EXECUTION_TIME},
+        {"scene", ShaderOpenGLCustomDataType::SCENE}
     };
     int numTextures = 0;
+
+    ShaderOpenGLCustom(std::string label, const std::string &vertexFilename, const std::string &fragmentFilename,
+                       ShaderCustomTypes type, cJSON *types);
+
 public:
     explicit ShaderOpenGLCustom(
         std::string label,
@@ -89,8 +95,6 @@ public:
     );
 
     virtual void render(GLuint framebuffer) = 0;
-
-    cJSON * getJSON();
 
     void drawImGuiProperties(Image *diffuse, Image *specular);
 

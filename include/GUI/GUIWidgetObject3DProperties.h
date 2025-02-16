@@ -64,7 +64,7 @@ struct GUIWidgetObject3DProperties {
                 }
                 ImGui::SameLine();
             } else {
-                ImGui::Text("Select an object...");
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
             }
         }
         ImGui::End();

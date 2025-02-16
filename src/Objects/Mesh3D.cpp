@@ -436,7 +436,7 @@ cJSON * Mesh3D::getJSON()
 
     cJSON *effectsArrayJSON = cJSON_CreateArray();
     for ( auto s : customShaders) {
-        cJSON_AddItemToArray(effectsArrayJSON, s->getJSON());
+        cJSON_AddItemToArray(effectsArrayJSON, s->getTypesJSON());
     }
     cJSON_AddItemToObject(root, "shaders", effectsArrayJSON);
 
@@ -473,7 +473,8 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
                     auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
                     auto vertex = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vertexshader")->valuestring;
                     auto fragment = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;
-                    o->addCustomShader(new ShaderOpenGLCustomMesh3D(o, name, vertex, fragment));
+                    auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
+                    o->addCustomShader(new ShaderOpenGLCustomMesh3D(o, name, vertex, fragment, types));
                     break;
                 }
             }

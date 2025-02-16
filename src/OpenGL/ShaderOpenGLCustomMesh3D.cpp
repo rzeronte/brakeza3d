@@ -25,9 +25,31 @@ ShaderOpenGLCustomMesh3D::ShaderOpenGLCustomMesh3D(
 
     alphaUniform = glGetUniformLocation(programID, "alpha");
 }
+ShaderOpenGLCustomMesh3D::ShaderOpenGLCustomMesh3D(
+    Mesh3D* mesh,
+    const std::string &label,
+    const std::string &vertexFilename,
+    const std::string &fragmentFilename,
+    cJSON* types
+)
+:
+    mesh(mesh),
+    ShaderOpenGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomTypes::SHADER_OBJECT, types)
+{
+    glGenVertexArrays(1, &VertexArrayID);
+    glBindVertexArray(VertexArrayID);
+
+    matrixProjectionUniform = glGetUniformLocation(programID, "projection");
+    matrixViewUniform = glGetUniformLocation(programID, "view");
+    matrixModelUniform = glGetUniformLocation(programID, "model");
+
+    alphaUniform = glGetUniformLocation(programID, "alpha");
+}
 
 void ShaderOpenGLCustomMesh3D::render(GLuint framebuffer)
 {
+    if (!isEnabled()) return;
+
     for (const auto& m: mesh->meshes) {
         renderMesh(
             mesh,
@@ -96,14 +118,6 @@ void ShaderOpenGLCustomMesh3D::setShaderSystemUniforms(GLuint diffuse, GLuint sp
             case ShaderOpenGLCustomDataType::SPECULAR: {
                 setTexture(type.name, specular, numTextures);
                 increaseNumberTextures();
-                break;
-            }
-            case ShaderOpenGLCustomDataType::DELTA_TIME: {
-                setFloat(type.name, Brakeza3D::get()->getDeltaTime());
-                break;
-            }
-            case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
-                setFloat(type.name, Brakeza3D::get()->getExecutionTime());
                 break;
             }
             default:

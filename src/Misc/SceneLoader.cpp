@@ -16,6 +16,7 @@
 #include "../../include/Objects/Mesh3DAnimation.h"
 #include "../../include/Objects/BillboardAnimation8Directions.h"
 #include "../../include/Misc/ToolsJSON.h"
+#include "../../include/OpenGL/ShaderOpenGLCustomPostprocessing.h"
 
 SceneLoader::SceneLoader() = default;
 
@@ -128,11 +129,13 @@ void SceneLoader::loadScene(const std::string& filename)
 
     cJSON *currentShaderJSON;
     cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(contentJSON, "shaders")) {
-        std::string nameFragmentCodeFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "file")->valuestring;
-        std::string shaderCustomName = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
-        /*ComponentsManager::get()->getComponentRender()->addShaderToScene(
-            new ShaderOpenGLCustom(shaderCustomName, nameFragmentCodeFile)
-        );*/
+        auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
+        auto vertex = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vertexshader")->valuestring;
+        auto fragment = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;
+        auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
+
+        auto shader = new ShaderOpenGLCustomPostprocessing(name, vertex, fragment, types);
+        ComponentsManager::get()->getComponentRender()->addShaderToScene(shader);
     }
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
@@ -249,6 +252,10 @@ void SceneLoader::clearScene()
         if (!object->isMultiScene()) {
             object->setRemoved(true);
         }
+    }
+    auto render = ComponentsManager::get()->getComponentRender();
+    for (auto &s: render->getSceneShaders()) {
+        render->removeSceneShader(s);
     }
 }
 

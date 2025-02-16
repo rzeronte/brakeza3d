@@ -4,7 +4,6 @@
 
 #include "../include/OpenGL/ShaderOpenGLCustomPostprocessing.h"
 #include "../../include/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
 
 ShaderOpenGLCustomPostprocessing::ShaderOpenGLCustomPostprocessing(
     const std::string &label,
@@ -14,9 +13,21 @@ ShaderOpenGLCustomPostprocessing::ShaderOpenGLCustomPostprocessing(
 :
     ShaderOpenGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomTypes::SHADER_POSTPROCESSING)
 {
-
     setupQuadUniforms(programID);
 
+    textureUniform = glGetUniformLocation(programID, "sceneTexture");
+}
+
+ShaderOpenGLCustomPostprocessing::ShaderOpenGLCustomPostprocessing(
+    const std::string &label,
+    const std::string &vertexFilename,
+    const std::string &fragmentFilename,
+    cJSON *types
+)
+:
+    ShaderOpenGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomTypes::SHADER_POSTPROCESSING, types)
+{
+    setupQuadUniforms(programID);
     textureUniform = glGetUniformLocation(programID, "sceneTexture");
 }
 
@@ -32,45 +43,22 @@ GLuint ShaderOpenGLCustomPostprocessing::compile()
 
 void ShaderOpenGLCustomPostprocessing::render(GLuint framebuffer)
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    if (!isEnabled()) return;
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    auto render = ComponentsManager::get()->getComponentRender();
+    render->changeOpenGLFramebuffer(framebuffer);
+    render->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 
     resetNumberTextures();
 
-    auto globalTexture = ComponentsManager::get()->getComponentWindow()->globalTexture;
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, globalTexture);
-    glUniform1i(textureUniform, 0);
-    increaseNumberTextures();
-
     setDataTypesUniforms();
-    setShaderSystemUniforms();
+
     drawQuad();
 }
 
 void ShaderOpenGLCustomPostprocessing::destroy()
 {
     resetQuadMatrix();
-}
-
-void ShaderOpenGLCustomPostprocessing::setShaderSystemUniforms()
-{
-    for (auto type: dataTypes) {
-        switch (GLSLTypeMapping[type.type]) {
-            case ShaderOpenGLCustomDataType::DELTA_TIME: {
-                setFloat(type.name, Brakeza3D::get()->getDeltaTime());
-                break;
-            }
-            case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
-                setFloat(type.name, Brakeza3D::get()->getExecutionTime());
-                break;
-            }
-            default:
-                break;
-        }
-    }
 }

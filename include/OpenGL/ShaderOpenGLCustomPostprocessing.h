@@ -18,13 +18,18 @@ public:
         const std::string &fragmentFilename
     );
 
+    ShaderOpenGLCustomPostprocessing(
+        const std::string &label,
+        const std::string &vertexFilename,
+        const std::string &fragmentFilename,
+        cJSON *types
+    );
+
     GLuint compile() override;
 
     void render(GLuint framebuffer);
 
     void destroy() override;
-
-    void setShaderSystemUniforms();
 };
 
 
