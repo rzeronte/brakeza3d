@@ -93,3 +93,7 @@ https://github.com/rzeronte/brakeza3d/blob/master/doc/index.md
 ![Screenshoot06](/doc/screenshots/06.png)
 
 ![Screenshoot07](/doc/screenshots/07.png)
+
+![Screenshoot07](/doc/screenshots/08.png)
+
+![Screenshoot07](/doc/screenshots/09.png)
