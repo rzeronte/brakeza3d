@@ -6,24 +6,24 @@
 	},
 	"ads":	{
 		"direction":	{
-			"x":	1,
-			"y":	0.23999999463558197,
+			"x":	0.43999999761581421,
+			"y":	0.5,
 			"z":	-1
 		},
 		"diffuse":	{
-			"x":	0.38860523700714111,
-			"y":	0.39272892475128174,
-			"z":	0.39344263076782227
+			"x":	0.7295081615447998,
+			"y":	0.59697723388671875,
+			"z":	0.22423405945301056
 		},
 		"specular":	{
-			"x":	0.75819671154022217,
-			"y":	0.059039928019046783,
-			"z":	0.71235042810440063
+			"x":	1,
+			"y":	0.99462509155273438,
+			"z":	0.91803276538848877
 		},
 		"ambient":	{
-			"x":	0.85245901346206665,
-			"y":	0.44696244597435,
-			"z":	0.2340768426656723
+			"x":	0,
+			"y":	0,
+			"z":	0
 		}
 	},
 	"objects":	[{
@@ -67,7 +67,7 @@
 				}
 			},
 			"scripts":	[],
-			"effects":	[],
+			"shaders":	[],
 			"model":	"../assets/models//StudioCorner.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
@@ -86,7 +86,6 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
-			"effects":	[],
 			"ambient":	{
 				"x":	1,
 				"y":	1,
@@ -121,7 +120,25 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
-			"effects":	[],
+			"shaders":	[{
+					"name":	"DemoMask",
+					"vertexshader":	"../assets/shaders/Examples/DemoMask.vs",
+					"fragmentshader":	"../assets/shaders/Examples/DemoMask.fs",
+					"type":	"Mesh3D",
+					"types":	[{
+							"name":	"diffuseTexture",
+							"type":	"diffuse"
+						}, {
+							"name":	"noiseTexture",
+							"type":	"texture",
+							"value":	{
+								"path":	"../assets/images/noiseCloud.png"
+							}
+						}, {
+							"name":	"t",
+							"type":	"execution_time"
+						}]
+				}],
 			"model":	"../assets/models//RoundedRedCube.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
@@ -140,7 +157,7 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
-			"effects":	[],
+			"shaders":	[],
 			"model":	"../assets/models//SpaceShuttle.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
@@ -159,7 +176,7 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
-			"effects":	[],
+			"shaders":	[],
 			"model":	"../assets/models//Eye.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
@@ -204,7 +221,7 @@
 				}
 			},
 			"scripts":	[],
-			"effects":	[],
+			"shaders":	[],
 			"model":	"../assets/models//Stairs.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
@@ -223,7 +240,6 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
-			"effects":	[],
 			"ambient":	{
 				"x":	0.05000000074505806,
 				"y":	0.05000000074505806,
@@ -260,7 +276,7 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
-			"effects":	[],
+			"shaders":	[],
 			"model":	"../assets/models//ChessPawn.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
@@ -269,13 +285,13 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-21.371847152709961,
-			"y":	-11.539801597595215,
-			"z":	-12.135481834411621
+			"x":	-36.335319519042969,
+			"y":	-19.417604446411133,
+			"z":	-17.437896728515625
 		},
 		"rotation":	{
-			"x":	39.700004577636719,
-			"y":	-50.649982452392578,
+			"x":	31.5,
+			"y":	-59.25,
 			"z":	0
 		}
 	}
