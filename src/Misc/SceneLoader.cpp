@@ -260,6 +260,9 @@ void SceneLoader::clearScene()
     for (auto &s: render->getSceneShaders()) {
         render->removeSceneShader(s);
     }
+
+    Brakeza3D::get()->getManagerGui()->setSelectedObject(nullptr);
+    ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
 }
 
 void SceneLoader::createObjectInScene()
