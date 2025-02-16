@@ -353,9 +353,22 @@ void ComponentRender::runShadersOpenCLPreUpdate() {
     }
 }
 
-void ComponentRender::removeShader(int index) {
+void ComponentRender::removeSceneShaderByIndex(int index) {
     if (index >= 0 && index < sceneShaders.size()) {
         sceneShaders.erase(sceneShaders.begin() + index);
+    }
+}
+
+void ComponentRender::removeSceneShader(ShaderOpenGLCustom *shader)
+{
+    Logging::Message("Removing SCENE script %s", shader->getLabel().c_str());
+
+    for (auto it = sceneShaders.begin(); it != sceneShaders.end(); ++it) {
+        if ((*it) == shader) {
+            delete *it;
+            sceneShaders.erase(it);
+            return;
+        }
     }
 }
 
