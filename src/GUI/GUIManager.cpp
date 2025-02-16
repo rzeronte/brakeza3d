@@ -332,7 +332,10 @@ void GUIManager::updateFolderFiles()
 
 void GUIManager::drawShaderVariables()
 {
-    ImGui::SeparatorText(shaderEditableManager.shader->getLabel().c_str());
+    auto type = shaderEditableManager.shader->getType();
+    auto typeName = shaderEditableManager.shader->getShaderTypeString(type);
+
+    ImGui::SeparatorText((shaderEditableManager.shader->getLabel() + ": " + typeName).c_str());
 
     static char name[256];
     strncpy(name, currentVariableToAddName.c_str(), sizeof(name));
@@ -341,7 +344,7 @@ void GUIManager::drawShaderVariables()
         currentVariableToAddName = name;
     }
 
-    std::vector<std::string> items = { "int", "float", "vec2", "vec3", "vec4", "texture", "delta_time", "execution_time", "diffuse", "specular" };
+    std::vector<std::string> items = { "int", "float", "vec2", "vec3", "vec4", "texture", "delta_time", "execution_time", "diffuse", "specular", "scene" };
 
     if (shaderEditableManager.shader->getType() == ShaderCustomTypes::SHADER_POSTPROCESSING) {
         items.erase(std::remove_if(items.begin(), items.end(), [](const std::string& item) {
@@ -401,7 +404,7 @@ void GUIManager::drawShaderVariables()
 
 void GUIManager::drawScriptVariables()
 {
-    ImGui::SeparatorText(scriptEditableManager.script->scriptFilename.c_str());
+    ImGui::SeparatorText(std::string("File: " + scriptEditableManager.script->scriptFilename).c_str());
 
     static char name[256];
 
@@ -414,7 +417,7 @@ void GUIManager::drawScriptVariables()
     const char* items[] = { "int", "float", "string", "Vertex3D" };
     static int selectedItem = 0;
     ImGui::Combo("Type", &selectedItem, items, IM_ARRAYSIZE(items));
-
+    ImGui::SameLine();
     if (ImGui::Button(std::string("Create variable").c_str())) {
         if (!currentVariableToAddName.empty()) {
             LUADataValue LUAValue;
@@ -422,7 +425,8 @@ void GUIManager::drawScriptVariables()
         }
     }
 
-    ImGui::Separator();
+    ImGui::SeparatorText("Variables");
+
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
     if (ImGui::BeginTable("ScriptProperties", 3, flags)) {
         for (int i = 0; i < scriptEditableManager.script->dataTypes.size(); i++) {
@@ -460,7 +464,7 @@ void GUIManager::drawProjectsFiles(const std::string& folder)
 {
     static char name[256];
     strncpy(name, currentVariableToCreateCustomShader.c_str(), sizeof(name));
-    if (ImGui::InputText("File name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+    if (ImGui::InputText("Project name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
         currentVariableToCreateCustomShader = name;
     }
     if (ImGui::Button(std::string("Create Project").c_str())) {
@@ -518,7 +522,7 @@ void GUIManager::drawScenesFolder(const std::string& folder)
 {
     static char name[256];
     strncpy(name, currentVariableToCreateCustomShader.c_str(), sizeof(name));
-    if (ImGui::InputText("File name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+    if (ImGui::InputText("Scene name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
         currentVariableToCreateCustomShader = name;
     }
     if (ImGui::Button(std::string("Create Scene").c_str())) {

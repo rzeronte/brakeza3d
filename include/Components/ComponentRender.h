@@ -124,7 +124,8 @@ public:
 
     void runShadersOpenCLPostUpdate();
 
-    void removeShader(int index);
+    void removeSceneShaderByIndex(int index);
+    void removeSceneShader(ShaderOpenGLCustom *);
 
     void runShadersOpenCLPreUpdate();
 
