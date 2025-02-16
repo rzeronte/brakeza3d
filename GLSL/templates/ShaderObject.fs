@@ -1,7 +1,6 @@
 #version 330 core
 
-uniform sampler2D diffuse;
-uniform float alpha;
+//uniform sampler2D diffuse;
 
 out vec4 FragColor;
 
@@ -11,8 +10,6 @@ in vec2 TexCoords;
 
 void main()
 {
-    vec3 norm = normalize(Normal);
-    vec3 viewDir = normalize(viewPos - FragPos);
-
-    FragColor = texture(diffuse, TexCoords);
+    //FragColor = texture(diffuse, TexCoords);
+    FragColor = vec4(0, 0, 0, 1);
 }
