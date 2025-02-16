@@ -123,6 +123,8 @@ void ComponentCollisions::updatePhysicObjects()
 
 void ComponentCollisions::stepSimulation(float deltaTime)
 {
+    clearDebugCache();
+
     if (!isEnabled() || SETUP->BULLET_STEP_SIMULATION) {
         getDynamicsWorld()->stepSimulation(
             deltaTime,
@@ -134,6 +136,7 @@ void ComponentCollisions::stepSimulation(float deltaTime)
 
     if (EngineSetup::get()->BULLET_DEBUG_MODE) {
         dynamicsWorld->debugDrawWorld();
+        drawDebugCache();
     }
 
     checkCollisionsForAll();
@@ -238,4 +241,23 @@ bool ComponentCollisions::isRayCollisionWith(Vertex3D from, Vertex3D to, Object3
     }
 
     return false;
+}
+
+void ComponentCollisions::clearDebugCache()
+{
+    debugDrawLinesCache.clear();
+}
+
+void ComponentCollisions::addVector3DIntoCache(Vector3D v)
+{
+    debugDrawLinesCache.push_back(v);
+}
+
+void ComponentCollisions::drawDebugCache()
+{
+    ComponentsManager::get()->getComponentRender()->getShaderOGLLine3D()->renderLines(
+        debugDrawLinesCache,
+        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer(),
+        Color::fuchsia()
+    );
 }

@@ -24,6 +24,7 @@ private:
     btDiscreteDynamicsWorld *dynamicsWorld;
     PhysicsDebugDraw *debugDraw;
 
+    std::vector<Vector3D> debugDrawLinesCache;
 public:
     ComponentCollisions();
 
@@ -56,6 +57,12 @@ public:
     void setGravity(Vertex3D vertex3D);
 
     bool isRayCollisionWith(Vertex3D from, Vertex3D to, Object3D *o);
+
+    void clearDebugCache();
+
+    void addVector3DIntoCache(Vector3D v);
+
+    void drawDebugCache();
 };
 
 

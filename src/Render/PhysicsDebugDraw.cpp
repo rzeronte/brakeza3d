@@ -6,12 +6,9 @@ PhysicsDebugDraw::PhysicsDebugDraw() = default;
 
 void PhysicsDebugDraw::drawLine(const btVector3 &from, const btVector3 &to, const btVector3 &color)
 {
-    ComponentsManager::get()->getComponentRender()->getShaderOGLLine3D()->render(
-        Vertex3D::fromBullet(from),
-        Vertex3D::fromBullet(to),
-        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer(),
-        Color::fuchsia()
-    );
+    auto vf = Vertex3D::fromBullet(from);
+    auto vt = Vertex3D::fromBullet(to);
+    ComponentsManager::get()->getComponentCollisions()->addVector3DIntoCache(Vector3D(vf, vt));
 }
 
 void PhysicsDebugDraw::drawContactPoint(
