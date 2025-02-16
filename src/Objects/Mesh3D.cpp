@@ -654,7 +654,7 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
     int item_current_idx = (int) collisionShape;
     const char* combo_preview_value = items[item_current_idx];
 
-    auto comboTitle = "Collision shape##" + getLabel();
+    auto comboTitle = "Shape##" + getLabel();
     if (ImGui::BeginCombo(comboTitle.c_str(), combo_preview_value, flags)) {
         for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
             const bool is_selected = (item_current_idx == n);

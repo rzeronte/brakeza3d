@@ -129,7 +129,7 @@ void Collider::drawImGuiCollisionModeSelector()
     int item_current_idx = (int) collisionMode;
     const char* combo_preview_value = items[item_current_idx];
 
-    if (ImGui::BeginCombo("Collision mode", combo_preview_value, flags)) {
+    if (ImGui::BeginCombo("Mode", combo_preview_value, flags)) {
         for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
             const bool is_selected = (item_current_idx == n);
             if (ImGui::Selectable(items[n], is_selected)) {

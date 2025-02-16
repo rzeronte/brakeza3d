@@ -27,7 +27,7 @@
 		}
 	},
 	"objects":	[{
-			"name":	"Mesh3DAnimation_85",
+			"name":	"dummy",
 			"scale":	0.079999998211860657,
 			"position":	{
 				"x":	-36.335319519042969,
@@ -37,7 +37,7 @@
 			"rotation":	{
 				"x":	178.36726379394531,
 				"y":	71.4738540649414,
-				"z":	-1.0043122529168613e-06
+				"z":	-1.0040801043942338e-06
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -46,18 +46,37 @@
 			"enableLights":	false,
 			"animationSpeed":	1,
 			"type":	"Mesh3DAnimation"
+		}, {
+			"name":	"beach",
+			"scale":	4.0900001525878906,
+			"position":	{
+				"x":	-8.9916477203369141,
+				"y":	-27.002490997314453,
+				"z":	-3.0704092979431152
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"width":	10,
+			"height":	10,
+			"image":	"../assets/images/beach.png",
+			"type":	"Image3D"
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-50.831089019775391,
-			"y":	-26.36815071105957,
-			"z":	-25.311515808105469
+			"x":	-71.254081726074219,
+			"y":	-31.174953460693359,
+			"z":	-43.190868377685547
 		},
 		"rotation":	{
-			"x":	1.4999959468841553,
-			"y":	-63.850009918212891,
+			"x":	14.099992752075195,
+			"y":	-51.049983978271484,
 			"z":	0
 		}
 	}

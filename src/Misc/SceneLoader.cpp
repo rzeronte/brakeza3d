@@ -244,6 +244,9 @@ void SceneLoader::clearScene()
     Logging::Message("[SceneLoader] ClearScene");
 
     auto scripting = ComponentsManager::get()->getComponentScripting();
+
+    scripting->stopLUAScripts();
+
     for (auto o: scripting->getSceneLUAScripts()) {
         scripting->removeSceneScript(o);
     }
