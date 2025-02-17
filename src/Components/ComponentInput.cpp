@@ -65,7 +65,6 @@ void ComponentInput::onEnd()
 
 void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
 {
-
     updateMouseStates(e);
     handleCheckPadConnection(e);
     updateGamePadStates();
@@ -75,6 +74,7 @@ void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
 
     if (!isEnabled()) return;
 
+    handleDeleteSelectedObject(e);
     handleMouse(e);
     handleProjectileDemo(e);
 }
@@ -458,4 +458,15 @@ bool ComponentInput::isMouseButtonDown() const {
 
 bool ComponentInput::isDrag() const {
     return drag;
+}
+
+void ComponentInput::handleDeleteSelectedObject(SDL_Event *e)
+{
+    if (e->type == SDL_KEYDOWN) {
+        if (keyboard[SDL_SCANCODE_DELETE]) {
+            auto o = ComponentsManager::get()->getComponentRender()->getSelectedObject();
+            o->setRemoved(true);
+            ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
+        }
+    }
 }
