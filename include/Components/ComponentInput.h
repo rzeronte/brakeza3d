@@ -138,6 +138,8 @@ public:
     bool isMouseButtonDown() const;
 
     bool isDrag() const;
+
+    void handleDeleteSelectedObject(SDL_Event *e);
 };
 
 
