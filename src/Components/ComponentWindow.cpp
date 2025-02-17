@@ -29,7 +29,6 @@ ComponentWindow::ComponentWindow()
 void ComponentWindow::onStart()
 {
     createFramebuffer();
-
 }
 
 void ComponentWindow::preUpdate()

@@ -83,7 +83,7 @@ void ComponentRender::onUpdate()
     }
 
     if (isSceneShadersEnabled()) {
-        runShadersOpenCLPostUpdate();
+        runShadersOpenGLPostUpdate();
     }
 
     if (SETUP->DRAW_FPS) {
@@ -338,7 +338,7 @@ void ComponentRender::setSceneShadersEnabled(bool sceneShadersEnabled) {
     ComponentRender::sceneShadersEnabled = sceneShadersEnabled;
 }
 
-void ComponentRender::runShadersOpenCLPostUpdate()
+void ComponentRender::runShadersOpenGLPostUpdate()
 {
     for( auto s: sceneShaders) {
         if (!s->isEnabled()) continue;

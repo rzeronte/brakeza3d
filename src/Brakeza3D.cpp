@@ -101,8 +101,8 @@ void Brakeza3D::mainLoop(bool autostart, const std::string& project)
         }
         onUpdateComponents();
         componentsManager->getComponentWindow()->RenderLayersToGlobalFramebuffer();
+        componentsManager->getComponentRender()->runShadersOpenGLPostUpdate();
         postUpdateComponents();
-        componentsManager->getComponentRender()->runShadersOpenCLPostUpdate();
         if (EngineSetup::get()->IMGUI_ENABLED) componentsManager->getComponentWindow()->ImGuiOnUpdate();
         componentsManager->getComponentWindow()->RenderLayersToMain();
     }

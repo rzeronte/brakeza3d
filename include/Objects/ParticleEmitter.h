@@ -91,6 +91,10 @@ public:
         ParticlesContext context,
         const std::string& imageFile
     );
+
+    void draw();
+
+    void setTexture(Image *texture);
 };
 
 #endif //BRAKEDA3D_PARTICLEEMISSOR_H

@@ -65,14 +65,20 @@ bool ParticleEmitter::isActive() const {
     return active;
 }
 
-void ParticleEmitter::postUpdate() {
+void ParticleEmitter::postUpdate()
+{
     Object3D::postUpdate();
+    draw();
 }
 
 void ParticleEmitter::onUpdate()
 {
     Object3D::onUpdate();
 
+}
+
+void ParticleEmitter::draw()
+{
     if (isRemoved() || !isActive() || !isEnabled() || texture == nullptr) return;
 
     if (parent != nullptr && !parent->isRemoved()) {
@@ -182,11 +188,11 @@ void ParticleEmitter::onUpdate()
     glBufferSubData(GL_ARRAY_BUFFER, 0, ParticlesCount * sizeof(GLubyte) * 4, g_particule_color_data);
 
     ComponentsManager::get()->getComponentRender()->getShaderOGLParticles()->render(
-        billboard_vertex_buffer,
-        particles_position_buffer,
-        particles_color_buffer,
-        (int) texture->getOGLTextureID(),
-        ParticlesCount
+            billboard_vertex_buffer,
+            particles_position_buffer,
+            particles_color_buffer,
+            (int) texture->getOGLTextureID(),
+            ParticlesCount
     );
 }
 
@@ -213,7 +219,7 @@ void ParticleEmitter::drawImGuiProperties()
             if (texture != nullptr) {
                 ImGui::Image((ImTextureID) texture->getOGLTextureID(),ImVec2(32, 32));
             } else {
-                ImGui::Text("No image selected. Drag a texture here!");
+                ImGui::Text("Empty texture. Drag one here!");
             }
 
             if (ImGui::BeginDragDropTarget()) {
@@ -225,32 +231,35 @@ void ParticleEmitter::drawImGuiProperties()
                     if (texture == nullptr) {
                         texture = new Image(fullPath);
                     } else {
-                        texture->setImage(fullPath);
+                        delete texture;
+                        texture = new Image(fullPath);
                     }
                     Logging::Message("File %s", selection);
-
                 }
                 ImGui::EndDragDropTarget();
             }
             ImGui::TreePop();
         }
-
-        ImGui::Checkbox(std::string("stopAdd").c_str(), &stopAdd);
-
         ImGui::Separator();
-        ImVec4 color = {colorFrom.r, colorFrom.g, colorFrom.b, 1};
-        bool changed_color = ImGui::ColorEdit4("Color From##", (float *) &color, ImGuiColorEditFlags_NoOptions);
-        if (changed_color) {
-            setColorFrom(Color(color.x,color.y,color.z));
-        }
-        color = {colorTo.r, colorTo.g, colorTo.b, 1};
-        changed_color = ImGui::ColorEdit4("Color To##", (float *) &color, ImGuiColorEditFlags_NoOptions);
-        if (changed_color) {
-            setColorTo(Color(color.x,color.y,color.z));
-        }
 
+        if (ImGui::TreeNode("Colors")) {
+            ImVec4 color = {colorFrom.r, colorFrom.g, colorFrom.b, 1};
+            bool changed_color = ImGui::ColorEdit4("Color From##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+            if (changed_color) {
+                setColorFrom(Color(color.x,color.y,color.z));
+            }
+            color = {colorTo.r, colorTo.g, colorTo.b, 1};
+            changed_color = ImGui::ColorEdit4("Color To##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+            if (changed_color) {
+                setColorTo(Color(color.x,color.y,color.z));
+            }
+            ImGui::TreePop();
+        }
         ImGui::Separator();
         if (ImGui::TreeNode("ParticlesContext")) {
+
+            ImGui::Checkbox(std::string("stopAdd").c_str(), &stopAdd);
+
             const float range_sensibility = 0.01f;
             const float range_min = -100;
             const float range_max = 100;
@@ -284,6 +293,8 @@ cJSON * ParticleEmitter::getJSON()
     cJSON_AddNumberToObject(contextParticles, "PARTICLES_BY_SECOND", context.PARTICLES_BY_SECOND);
     cJSON_AddNumberToObject(contextParticles, "PARTICLE_LIFESPAN", context.PARTICLE_LIFESPAN);
     cJSON_AddNumberToObject(contextParticles, "SMOKE_ANGLE_RANGE", context.SMOKE_ANGLE_RANGE);
+    cJSON_AddNumberToObject(contextParticles, "MIN_ALPHA", context.MIN_ALPHA);
+    cJSON_AddNumberToObject(contextParticles, "MAX_ALPHA", context.MAX_ALPHA);
     cJSON_AddNumberToObject(contextParticles, "MIN_VELOCITY", context.MIN_VELOCITY);
     cJSON_AddNumberToObject(contextParticles, "MAX_VELOCITY", context.MAX_VELOCITY);
     cJSON_AddNumberToObject(contextParticles, "POSITION_NOISE", context.POSITION_NOISE);
@@ -303,21 +314,26 @@ cJSON * ParticleEmitter::getJSON()
     cJSON_AddNumberToObject(colorToJSON, "b", colorTo.b);
     cJSON_AddItemToObject(root, "colorTo", colorToJSON);
 
+    if (texture != nullptr) {
+        cJSON_AddStringToObject(root, "texture", texture->getFileName().c_str());
+    }
+
     return root;
 }
 
 void ParticleEmitter::createFromJSON(cJSON *object)
 {
     auto *o = new ParticleEmitter(
-            ParticleEmitterState::DEFAULT,
-            nullptr,
-            Vertex3D(0, 0, 0),
-            9999,
-            Color::red(),
-            Color::green(),
-            ParticlesContext::defaultParticlesContext(),
-            nullptr
+        ParticleEmitterState::DEFAULT,
+        nullptr,
+        Vertex3D(0, 0, 0),
+        9999,
+        Color::red(),
+        Color::green(),
+        ParticlesContext::defaultParticlesContext(),
+        nullptr
     );
+
     ParticleEmitter::setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
@@ -328,17 +344,21 @@ void ParticleEmitter::setPropertiesFromJSON(cJSON *object, ParticleEmitter *o)
     o->setBelongToScene(true);
     Object3D::setPropertiesFromJSON(object, o);
 
-    ParticlesContext context;
     auto contextJSON = cJSON_GetObjectItemCaseSensitive(object, "context");
-    context.GRAVITY = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "GRAVITY")->valuedouble;
-    context.PARTICLES_BY_SECOND = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "PARTICLES_BY_SECOND")->valuedouble;
-    context.PARTICLE_LIFESPAN = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "PARTICLE_LIFESPAN")->valuedouble;
-    context.SMOKE_ANGLE_RANGE = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "SMOKE_ANGLE_RANGE")->valuedouble;
-    context.MIN_VELOCITY = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "MIN_VELOCITY")->valuedouble;
-    context.MAX_VELOCITY = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "MAX_VELOCITY")->valuedouble;
-    context.POSITION_NOISE = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "POSITION_NOISE")->valuedouble;
-    context.VELOCITY_NOISE = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "VELOCITY_NOISE")->valuedouble;
-    context.DECELERATION_FACTOR = (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "DECELERATION_FACTOR")->valuedouble;
+    ParticlesContext context(
+        (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "GRAVITY")->valuedouble,
+        (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "PARTICLES_BY_SECOND")->valuedouble,
+        (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "PARTICLE_LIFESPAN")->valuedouble,
+        (int) cJSON_GetObjectItemCaseSensitive(contextJSON, "SMOKE_ANGLE_RANGE")->valueint,
+        (int) cJSON_GetObjectItemCaseSensitive(contextJSON, "MIN_VELOCITY")->valueint,
+        (int) cJSON_GetObjectItemCaseSensitive(contextJSON, "MAX_VELOCITY")->valueint,
+        (int) cJSON_GetObjectItemCaseSensitive(contextJSON, "MIN_ALPHA")->valueint,
+        (int) cJSON_GetObjectItemCaseSensitive(contextJSON, "MAX_ALPHA")->valueint,
+        (int) cJSON_GetObjectItemCaseSensitive(contextJSON, "POSITION_NOISE")->valueint,
+        (int) cJSON_GetObjectItemCaseSensitive(contextJSON, "VELOCITY_NOISE")->valueint,
+        (float) cJSON_GetObjectItemCaseSensitive(contextJSON, "DECELERATION_FACTOR")->valuedouble
+    );
+
     o->setContext(context);
 
     Color colorFrom;
@@ -354,6 +374,10 @@ void ParticleEmitter::setPropertiesFromJSON(cJSON *object, ParticleEmitter *o)
     colorFrom.g = (float) cJSON_GetObjectItemCaseSensitive(colorToJSON, "g")->valuedouble;
     colorFrom.b = (float) cJSON_GetObjectItemCaseSensitive(colorToJSON, "b")->valuedouble;
     o->setColorTo(colorTo);
+
+    if (cJSON_GetObjectItemCaseSensitive(object, "texture")) {
+        o->setTexture(new Image(cJSON_GetObjectItemCaseSensitive(object, "texture")->valuestring));
+    }
 }
 
 void ParticleEmitter::setContext(const ParticlesContext &context) {
@@ -431,4 +455,8 @@ ParticleEmitter *ParticleEmitter::create(
     );
 
     return o;
+}
+
+void ParticleEmitter::setTexture(Image *texture) {
+    ParticleEmitter::texture = texture;
 }
