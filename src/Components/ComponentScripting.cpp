@@ -53,6 +53,7 @@ void ComponentScripting::playLUAScripts()
     onStartScripts();
 
     ComponentsManager::get()->getComponentInput()->setEnabled(false);
+    ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
 
     stateScripts = EngineSetup::LuaStateScripts::LUA_PLAY;
 }
