@@ -122,7 +122,7 @@ public:
 
     void setSceneShadersEnabled(bool sceneShadersEnabled);
 
-    void runShadersOpenCLPostUpdate();
+    void runShadersOpenGLPostUpdate();
 
     void removeSceneShaderByIndex(int index);
     void removeSceneShader(ShaderOpenGLCustom *);
