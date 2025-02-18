@@ -441,10 +441,12 @@ void Object3D::drawImGuiProperties()
                 drawImGuiCollisionModeSelector();
                 drawImGuiCollisionShapeSelector();
 
-                ImGui::Separator();
-
                 if (getCollisionMode() == CollisionMode::BODY) {
+                    ImGui::Separator();
+
                     ImGui::Checkbox("Collider static", &colliderStatic);
+
+                    ImGui::Separator();
 
                     if (!colliderStatic) {
                         if (ImGui::TreeNode("Mass")) {
@@ -455,12 +457,12 @@ void Object3D::drawImGuiProperties()
 
                             ImGui::TreePop();
                         }
+                        ImGui::Separator();
                     }
                 }
 
-                ImGui::Separator();
-
                 if (getCollisionMode() == KINEMATIC) {
+                    ImGui::Separator();
                     if (ImGui::TreeNode("Kinematic capsule size")) {
                         const float range_min = 0;
                         const float range_max = 1000;
@@ -473,11 +475,6 @@ void Object3D::drawImGuiProperties()
                 }
 
                 if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE && (getCollisionMode() == GHOST || getCollisionMode() == BODY)) {
-                    const float range_min = -500000;
-                    const float range_max = 500000;
-
-                    Tools::ImGuiVertex3D("Simple shape size", "X", "Y", "Z", &simpleShapeSize, 0.1f ,range_min, range_max);
-                    ImGui::Separator();
 
                     if (ImGui::TreeNode("Angular factor")) {
                         const float range_min = 0;
@@ -793,7 +790,6 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     brakezaRotation.getRotation(qRotation);
 
     transformation.setRotation(qRotation);
-
     btCollisionShape *collisionShape = new btBoxShape(simpleShapeSize.toBullet());
     btVector3 inertia(0, 0, 0);
     collisionShape->calculateLocalInertia(mass, inertia);

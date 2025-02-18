@@ -593,6 +593,8 @@ void Mesh3D::setupGhostCollider(CollisionShape modeShape)
     setCollisionShape(modeShape);
 
     if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+        updateBoundingBox();
+        simpleShapeSize = aabb.size().getScaled(0.5f);
         makeSimpleGhostBody(
             simpleShapeSize,
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
@@ -619,6 +621,8 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
     setCollisionMode(CollisionMode::BODY);
 
     if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+        updateBoundingBox();
+        simpleShapeSize = aabb.size().getScaled(0.5f);
         makeSimpleRigidBody(
             mass,
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
