@@ -44,7 +44,6 @@ Image3D:
 Mesh3D:
 ```lua
     eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
-    eye:setStencilBufferEnabled(true)
     eye:setBelongToScene(false)
     eye:setRotationFrameEnabled(true)
     eye:setRotationFrame(Vertex3D.new(1, 0, 0))
@@ -54,7 +53,6 @@ Mesh3D:
 Mesh3DAnimation:
 ```lua
     man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
-    man:setStencilBufferEnabled(true)
     man:setBelongToScene(false)
     man:setScale(0.01)
     brakeza:addObject3D(man, 'myMeshAnimated')
