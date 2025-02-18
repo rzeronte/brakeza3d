@@ -59,7 +59,5 @@ void ShaderOpenGLOutline::drawOutline(Mesh3D *m, Color c, float borderThickness)
 
     render(shaderColor->textureColorbuffer, c, borderThickness);
 
-    shaderColor->deleteTexture();
-
     componentRender->changeOpenGLFramebuffer(0);
 }

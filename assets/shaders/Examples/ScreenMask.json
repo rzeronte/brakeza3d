@@ -1,0 +1,16 @@
+{
+	"name":	"ScreenMask",
+	"vertexshader":	"../assets/shaders/Examples/ScreenMask.vs",
+	"fragmentshader":	"../assets/shaders/Examples/ScreenMask.fs",
+	"type":	"Postprocessing",
+	"types":	[{
+			"name":	"et",
+			"type":	"execution_time"
+		}, {
+			"name":	"noise",
+			"type":	"texture"
+		}, {
+			"name":	"sceneTexture",
+			"type":	"scene"
+		}]
+}

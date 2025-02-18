@@ -31,17 +31,22 @@ void ShaderOpenGLColor::render(
     Color color
 )
 {
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+
     if (toFramebuffer) {
         int w = ComponentsManager::get()->getComponentWindow()->getWidth();
         int h = ComponentsManager::get()->getComponentWindow()->getHeight();
-
-        ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
-        glGenTextures(1, &textureColorbuffer);
-        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+        if (textureColorbuffer == 0) { // Solo generar una vez
+            glGenTextures(1, &textureColorbuffer);
+            glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+        } else {
+            glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+        }
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
