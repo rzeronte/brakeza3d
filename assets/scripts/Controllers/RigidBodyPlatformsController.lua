@@ -40,15 +40,17 @@ function onUpdate()
 end
 
 function handleFloorMovement(input, isFloor)
+    local dt = brakeza:getDeltaTime() -- Obtiene el deltaTime
+
     if isFloor then
         if input:isCharPressed("A") then
             this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
-            this:applyCentralForce(Vertex3D.new(-speed, 0, 0))
+            this:applyCentralForce(Vertex3D.new(-speed * dt, 0, 0))
         end
 
         if input:isCharPressed("D") then
             this:setRotation(M3:getMatrixRotationForEulerAngles(-180, 0, 0))
-            this:applyCentralForce(Vertex3D.new(speed, 0, 0))
+            this:applyCentralForce(Vertex3D.new(speed * dt, 0, 0))
         end
 
         if input:isCharFirstEventDown("SPACE") then
@@ -59,18 +61,20 @@ function handleFloorMovement(input, isFloor)
         end
     else
         if input:isCharPressed("A") then
-            this:applyCentralForce(Vertex3D.new(-speed * airControlFactor, 0, 0))
+            this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt, 0, 0))
             this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
         end
 
         if input:isCharPressed("D") then
+            this:applyCentralForce(Vertex3D.new(speed * airControlFactor * dt, 0, 0))
             this:setRotation(M3:getMatrixRotationForEulerAngles(-180, 0, 0))
-            this:applyCentralForce(Vertex3D.new(speed * airControlFactor, 0, 0))
         end
     end
 end
 
 function handleHook(input, isFloor, isHooked, isHookedLeft, isHookedRight, isUp)
+    local dt = brakeza:getDeltaTime() -- Obtiene el deltaTime
+
     if isHooked and not isFloor then
         if not (isHookedRight and isHookedLeft) and not isUp then
             if isHookedLeft and input:isCharPressed("D") then
@@ -82,12 +86,12 @@ function handleHook(input, isFloor, isHooked, isHookedLeft, isHookedRight, isUp)
 
             if input:isCharFirstEventDown("SPACE") then
                 if isHookedLeft then
-                    local jumpVector = Vertex3D.new(-speed * 10, -jumpForce, 0)
+                    local jumpVector = Vertex3D.new(-speed * 10 * dt, -jumpForce, 0)
                     this:applyCentralForce(jumpVector)
                     print("Jump hook!")
                 end
                 if isHookedRight then
-                    local jumpVector = Vertex3D.new(speed * 10, -jumpForce, 0)
+                    local jumpVector = Vertex3D.new(speed * 10 * dt, -jumpForce, 0)
                     this:applyCentralForce(jumpVector)
                     print("Jump hook!")
                 end

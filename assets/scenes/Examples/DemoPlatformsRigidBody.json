@@ -71,7 +71,7 @@
 					"types":	[{
 							"name":	"speed",
 							"type":	"float",
-							"value":	5000
+							"value":	500000
 						}, {
 							"name":	"jumpForce",
 							"type":	"float",
