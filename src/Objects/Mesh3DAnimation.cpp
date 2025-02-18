@@ -25,9 +25,7 @@ void Mesh3DAnimation::onUpdate()
 
 void Mesh3DAnimation::updateFrameTransformations()
 {
-    if (isRemoved() || scene == nullptr) return;
-
-    if (!scene->HasAnimations()) return;
+    if (isRemoved() || scene == nullptr || !scene->HasAnimations()) return;
 
     animation_ends = false;
     runningTime += Brakeza3D::get()->getDeltaTime() * animation_speed;
@@ -54,9 +52,9 @@ void Mesh3DAnimation::updateFrameTransformations()
 
             const aiFace &Face = scene->mMeshes[i]->mFaces[k];
 
-            Vertex3D V1 = meshVertices[i].at(Face.mIndices[0]);
-            Vertex3D V2 = meshVertices[i].at(Face.mIndices[1]);
-            Vertex3D V3 = meshVertices[i].at(Face.mIndices[2]);
+            Vertex3D V1 = meshVertices[i][Face.mIndices[0]];
+            Vertex3D V2 = meshVertices[i][Face.mIndices[1]];
+            Vertex3D V3 = meshVertices[i][Face.mIndices[2]];
 
             updateForBone(V1, i, Face.mIndices[0], Transforms);
             updateForBone(V2, i, Face.mIndices[1], Transforms);
@@ -234,9 +232,9 @@ void Mesh3DAnimation::BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4
 
     ReadNodeHierarchy(AnimationTime, scene->mRootNode, Identity);
 
-    Transforms.resize(this->numBones);
+    Transforms.resize(numBones);
 
-    for (int i = 0; i < (int) this->numBones; i++) {
+    for (int i = 0; i < (int) numBones; i++) {
         Transforms[i] = boneInfo[i].FinalTransformation;
     }
 }
@@ -244,7 +242,7 @@ void Mesh3DAnimation::BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4
 void Mesh3DAnimation::ReadNodeHierarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform)
 {
     std::string NodeName(pNode->mName.data);
-    const aiAnimation *pAnimation = scene->mAnimations[this->indexCurrentAnimation];
+    const aiAnimation *pAnimation = scene->mAnimations[indexCurrentAnimation];
 
     aiMatrix4x4 NodeTransformation;
     NodeTransformation = pNode->mTransformation;
@@ -309,7 +307,6 @@ unsigned int Mesh3DAnimation::FindRotation(float AnimationTime, const aiNodeAnim
         }
     }
 
-//    assert(0);
     return 0;
 }
 
@@ -321,16 +318,12 @@ unsigned int Mesh3DAnimation::FindPosition(float AnimationTime, const aiNodeAnim
         }
     }
 
-    //assert(0);
-
     return 0;
 }
 
-int Mesh3DAnimation::updateForBone(Vertex3D &V, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms)
+void Mesh3DAnimation::updateForBone(Vertex3D &V, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms)
 {
-    int numVertexBones = 0;
-
-    if (this->numBones == 0) return 0;
+    if (this->numBones == 0) return;
 
     int BoneIDs[NUM_BONES_PER_VERTEX] = {-1};
     float Weights[NUM_BONES_PER_VERTEX] = {-1};
@@ -338,9 +331,6 @@ int Mesh3DAnimation::updateForBone(Vertex3D &V, int meshID, int vertexID, std::v
     for (int n = 0; n < NUM_BONES_PER_VERTEX; n++) {
         BoneIDs[n] = this->meshVerticesBoneData[meshID][vertexID].IDs[n];     // boneID
         Weights[n] = this->meshVerticesBoneData[meshID][vertexID].Weights[n]; // WeightID
-        if (BoneIDs[n] > 0) {
-            numVertexBones++;
-        }
     }
 
     aiMatrix4x4 BoneTransform;
@@ -355,8 +345,6 @@ int Mesh3DAnimation::updateForBone(Vertex3D &V, int meshID, int vertexID, std::v
     }
 
     V = Vertex3D::fromAssimp(BoneTransform * V.toAssimp());
-
-    return numVertexBones;
 }
 
 unsigned int Mesh3DAnimation::FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim)
@@ -403,7 +391,7 @@ void Mesh3DAnimation::CalcInterpolatedPosition(aiVector3D &Out, float AnimationT
 
     unsigned int PositionIndex = FindPosition(AnimationTime, pNodeAnim);
     unsigned int NextPositionIndex = (PositionIndex + 1);
-    //assert(NextPositionIndex < pNodeAnim->mNumPositionKeys);
+
     auto DeltaTime = (float) (pNodeAnim->mPositionKeys[NextPositionIndex].mTime -
                                pNodeAnim->mPositionKeys[PositionIndex].mTime);
     float Factor = (AnimationTime - (float) pNodeAnim->mPositionKeys[PositionIndex].mTime) / DeltaTime;
@@ -485,7 +473,6 @@ Mesh3DAnimation* Mesh3DAnimation::create(Vertex3D position, const std::string& a
 {
     auto o = new Mesh3DAnimation();
     o->setPosition(position);
-
     o->AssimpLoadAnimation(animationFile);
 
     return o;
@@ -511,13 +498,14 @@ void Mesh3DAnimation::updateOGLBuffers()
             m.vertices.emplace_back(t->C.x, t->C.y, t->C.z);
         }
 
-        if (glIsBuffer(m.vertexbuffer)) {
-            glDeleteBuffers(1, &m.vertexbuffer);
+        if (!glIsBuffer(m.vertexbuffer)) {
+            glGenBuffers(1, &m.vertexbuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, m.vertexbuffer);
+            glBufferData(GL_ARRAY_BUFFER, m.vertices.size() * sizeof(glm::vec3), &m.vertices[0], GL_STREAM_DRAW);
+        } else {
+            glBindBuffer(GL_ARRAY_BUFFER, m.vertexbuffer);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, m.vertices.size() * sizeof(glm::vec3), &m.vertices[0]);
         }
-
-        glGenBuffers(1, &m.vertexbuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, m.vertexbuffer);
-        glBufferData(GL_ARRAY_BUFFER, m.vertices.size() * sizeof(glm::vec3), &m.vertices[0], GL_STATIC_DRAW);
     }
 }
 
@@ -568,8 +556,6 @@ void Mesh3DAnimation::setPropertiesFromJSON(cJSON *object, Mesh3DAnimation *o)
 
     auto speed = cJSON_GetObjectItemCaseSensitive(object, "animationSpeed")->valuedouble;
     o->setAnimationSpeed(speed);
-    Logging::Message("Speed %f", speed);
-
 }
 
 void Mesh3DAnimation::setAnimationSpeed(float animationSpeed) {

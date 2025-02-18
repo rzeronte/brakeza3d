@@ -83,7 +83,7 @@ public:
 
     static unsigned int FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim);
 
-    int updateForBone(Vertex3D &dest, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms);
+    void updateForBone(Vertex3D &dest, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms);
 
     void LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Vertex3D> &meshVertex);
 
