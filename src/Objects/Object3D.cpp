@@ -179,6 +179,10 @@ void Object3D::onUpdate()
     if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
         runScripts();
     }
+
+    if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
+        Drawable::drawObject3DAxis(this,true,true,true);
+    }
 }
 
 void Object3D::runScripts()
@@ -194,10 +198,6 @@ void Object3D::postUpdate()
 
     for (auto a: attachedObjects) {
         if (a->isEnabled())  a->postUpdate();
-    }
-
-    if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
-        Drawable::drawObject3DAxis(this,true,true,true);
     }
 }
 
@@ -241,13 +241,6 @@ Object3D::~Object3D()
 
     if (isCollisionsEnabled()) {
         removeCollisionObject();
-    }
-}
-
-void Object3D::onDrawHostBuffer()
-{
-    if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
-        Drawable::drawObject3DAxis(this,true,true,true);
     }
 }
 

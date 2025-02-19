@@ -37,8 +37,6 @@ public:
 
     void setCuadratic(float value);
 
-    void onDrawHostBuffer() override;
-
     const char *getTypeObject() override;
 
     const char *getTypeIcon() override;

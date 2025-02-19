@@ -67,8 +67,6 @@ public:
     void onUpdate() override;
 
     void postUpdate() override;
-
-    void onDrawHostBuffer() override;
 };
 
 

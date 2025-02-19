@@ -26,11 +26,6 @@ void TentacleIK::onUpdate() {
 
 void TentacleIK::postUpdate() {
     Object3D::postUpdate();
-}
-
-void TentacleIK::onDrawHostBuffer()
-{
-    Object3D::onDrawHostBuffer();
 
     cadence.update();
 

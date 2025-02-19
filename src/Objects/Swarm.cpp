@@ -199,11 +199,6 @@ void Swarm::checkBoundsAndAdjustVelocity(SwarmObject* swarmObject) {
     }
 }
 
-void Swarm::onDrawHostBuffer()
-{
-    Object3D::onDrawHostBuffer();
-}
-
 void Swarm::reset()
 {
     for (auto o: objects) {

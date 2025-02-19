@@ -50,11 +50,6 @@ void LightPoint3D::setColorSpecular(Color c) {
     this->specular = glm::vec4(c.r, c.g, c.b, 1);
 }
 
-void LightPoint3D::onDrawHostBuffer()
-{
-    Object3D::onDrawHostBuffer();
-}
-
 void LightPoint3D::onUpdate()
 {
     Object3D::onUpdate();

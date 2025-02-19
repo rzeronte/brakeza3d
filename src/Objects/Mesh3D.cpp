@@ -325,12 +325,6 @@ AABB3D &Mesh3D::getAabb()
     return aabb;
 }
 
-void Mesh3D::onDrawHostBuffer()
-{
-    Object3D::onDrawHostBuffer();
-
-}
-
 const char *Mesh3D::getTypeObject()
 {
     return "Mesh3D";

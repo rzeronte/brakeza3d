@@ -111,6 +111,3 @@ void Cube3D::onUpdate() {
 
 void Cube3D::postUpdate() {
 }
-
-void Cube3D::onDrawHostBuffer() {
-}

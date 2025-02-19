@@ -73,8 +73,6 @@ public:
 
 private:
 
-    void onDrawHostBuffer() override;
-
     Vertex3D randomVertexInsideAABB();
 
 public:

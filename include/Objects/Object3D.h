@@ -135,8 +135,6 @@ public:
 
     [[nodiscard]] Object3D *getParent() const;
 
-    virtual void onDrawHostBuffer();
-
     [[nodiscard]] bool isEnableLights() const;
 
     void setEnableLights(bool enableLights);

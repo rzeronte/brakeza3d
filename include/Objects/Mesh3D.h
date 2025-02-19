@@ -92,8 +92,6 @@ public:
 
     AABB3D &getAabb();
 
-    void onDrawHostBuffer() override;
-
     cJSON * getJSON() override;
 
     void drawImGuiProperties() override;
