@@ -455,12 +455,14 @@ cJSON * Mesh3D::getJSON()
     return root;
 }
 
-void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o)
+void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o, bool loadGeometry)
 {
     o->setBelongToScene(true);
     Object3D::setPropertiesFromJSON(object, o);
     o->setEnableLights(cJSON_GetObjectItemCaseSensitive(object, "enableLights")->valueint);
-    o->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring);
+    if (loadGeometry) {
+        o->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring);
+    }
 
     if (cJSON_GetObjectItemCaseSensitive(object, "shaders") != nullptr) {
         auto shaderTypesMapping = ComponentsManager::get()->getComponentRender()->getShaderTypesMapping();
@@ -535,7 +537,7 @@ void Mesh3D::createFromJSON(cJSON *object)
 {
     auto o = new Mesh3D();
 
-    Mesh3D::setPropertiesFromJSON(object, o);
+    Mesh3D::setPropertiesFromJSON(object, o, true);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
@@ -593,9 +595,9 @@ void Mesh3D::setupGhostCollider(CollisionShape modeShape)
     setCollisionShape(modeShape);
 
     if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
-        updateBoundingBox();
-        simpleShapeSize = aabb.size().getScaled(0.5f);
         makeSimpleGhostBody(
+            getPosition(),
+            getModelMatrix(),
             simpleShapeSize,
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             btBroadphaseProxy::DefaultFilter,
@@ -622,7 +624,6 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
 
     if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
         updateBoundingBox();
-        simpleShapeSize = aabb.size().getScaled(0.5f);
         makeSimpleRigidBody(
             mass,
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
@@ -693,6 +694,14 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
             }
         }
         ImGui::EndCombo();
+    }
+
+    if (getCollisionShape() == SIMPLE_SHAPE) {
+        if (ImGui::Button("Capture from AABB")) {
+            updateBoundingBox();
+            simpleShapeSize = aabb.size().getScaled(0.5f);
+            UpdateShape();
+        }
     }
 }
 

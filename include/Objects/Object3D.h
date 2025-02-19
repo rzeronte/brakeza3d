@@ -201,6 +201,8 @@ public:
     const sol::environment &getLuaEnvironment() const;
 
     bool enabled;
+
+    void setupGhostCollider(CollisionShape mode);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

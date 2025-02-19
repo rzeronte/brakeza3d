@@ -106,7 +106,7 @@ public:
 
     static void createFromJSON(cJSON *object);
 
-    static void setPropertiesFromJSON(cJSON *object, Mesh3D *o);
+    static void setPropertiesFromJSON(cJSON *object, Mesh3D *o, bool loadGeometry);
 
     void fillBuffers();
 

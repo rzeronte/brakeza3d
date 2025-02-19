@@ -120,7 +120,7 @@ public:
     float MOUSE_SENSITIVITY = 0.20;
 
     // COLLISION SYSTEM
-    bool BULLET_STEP_SIMULATION = true;
+    bool BULLET_STEP_SIMULATION = false;
     int BULLET_MAX_SUBSTEPS = 1;
     int BULLET_FIXED_TIME_STEPS = 60;
     bool BULLET_DEBUG_MODE = false;

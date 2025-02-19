@@ -92,13 +92,19 @@ void Collider::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup,
 {
 }
 
-void Collider::makeSimpleGhostBody(Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
-{
+void Collider::makeSimpleGhostBody(
+    Vertex3D position,
+    glm::mat4 modelMatrix,
+    Vertex3D dimensions,
+    btDiscreteDynamicsWorld *world,
+    int collisionGroup,
+    int collisionMask
+) {
     Logging::Message("[Collider] makeSimpleGhostBody");
 
     btTransform transformation;
     transformation.setIdentity();
-    transformation.setOrigin(btVector3(0, 0, 0));
+    transformation.setOrigin(position.toBullet());
 
     btConvexHullShape *convexHullShape = reinterpret_cast<btConvexHullShape *>(new btBoxShape(dimensions.toBullet()));
 
@@ -106,10 +112,10 @@ void Collider::makeSimpleGhostBody(Vertex3D dimensions, btDiscreteDynamicsWorld 
     ghostObject->setCollisionShape(convexHullShape);
     ghostObject->setWorldTransform(transformation);
     ghostObject->setUserPointer(this);
-
     ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
+
+    ghostObject->setWorldTransform(Tools::GLMMatrixToBulletTransform(modelMatrix));
 }
 
 btPairCachingGhostObject *Collider::getGhostObject() const
@@ -162,24 +168,6 @@ void Collider::drawImGuiCollisionShapeSelector()
 
 }
 
-void Collider::setupGhostCollider(CollisionShape mode)
-{
-    Logging::Message("[Collider] setupGhostCollider");
-    removeCollisionObject();
-
-    setCollisionMode(CollisionMode::GHOST);
-    setCollisionShape(mode);
-
-    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
-        makeSimpleGhostBody(
-            simpleShapeSize,
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            EngineSetup::collisionGroups::AllFilter,
-            EngineSetup::collisionGroups::AllFilter
-        );
-    }
-}
-
 void Collider::setupKinematicCollider()
 {
     Logging::Message("[Collider] setupKinematicCollider");
@@ -218,10 +206,10 @@ void Collider::setupRigidBodyCollider(CollisionShape shapeMode)
 }
 
 void Collider::makeSimpleRigidBody(
-        float mass,
-        btDiscreteDynamicsWorld *world,
-        int collisionGroup,
-        int collisionMask
+    float mass,
+    btDiscreteDynamicsWorld *world,
+    int collisionGroup,
+    int collisionMask
 ) {
 }
 

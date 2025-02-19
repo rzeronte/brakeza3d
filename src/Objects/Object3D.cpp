@@ -409,7 +409,7 @@ void Object3D::drawImGuiProperties()
             const float range_alpha_min = 0;
             const float range_alpha_max = 1;
 
-            ImGui::DragScalar("Alpha", ImGuiDataType_Float, &getAlpha(), 0.01, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
+            ImGui::DragScalar("Alpha##001", ImGuiDataType_Float, &getAlpha(), 0.01, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
         }
     }
 
@@ -438,81 +438,101 @@ void Object3D::drawImGuiProperties()
             }
 
             if (collisionsEnabled) {
-                drawImGuiCollisionModeSelector();
-                drawImGuiCollisionShapeSelector();
+                if (ImGui::TreeNode("Shape")) {
+                    drawImGuiCollisionModeSelector();
+                    drawImGuiCollisionShapeSelector();
 
-                if (getCollisionMode() == CollisionMode::BODY) {
-                    ImGui::Separator();
+                    if (getCollisionMode() == CollisionMode::BODY) {
+                        ImGui::Separator();
 
-                    ImGui::Checkbox("Collider static", &colliderStatic);
+                        ImGui::Checkbox("Collider static", &colliderStatic);
+                    }
+                    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+                        ImGui::Separator();
+                        float vec3f[3];
+                        simpleShapeSize.toFloat(vec3f);
+                        if (ImGui::DragFloat3("Shape Size", vec3f, 0.01f, -1000.0f, 1000.0f)) {
+                            simpleShapeSize.x = vec3f[0];
+                            simpleShapeSize.y = vec3f[1];
+                            simpleShapeSize.z = vec3f[2];
+                        }
+                    }
 
-                    ImGui::Separator();
-
-                    if (!colliderStatic) {
-                        if (ImGui::TreeNode("Mass")) {
+                    if (getCollisionMode() == KINEMATIC) {
+                        ImGui::Separator();
+                        if (ImGui::TreeNode("Kinematic capsule size")) {
                             const float range_min = 0;
                             const float range_max = 1000;
 
-                            ImGui::DragScalar("Mass", ImGuiDataType_Float, &mass, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                            ImGui::DragScalar("Radius", ImGuiDataType_Float, &kinematicCapsuleSize.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                            ImGui::DragScalar("Height", ImGuiDataType_Float, &kinematicCapsuleSize.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
 
                             ImGui::TreePop();
                         }
-                        ImGui::Separator();
                     }
-                }
 
-                if (getCollisionMode() == KINEMATIC) {
-                    ImGui::Separator();
-                    if (ImGui::TreeNode("Kinematic capsule size")) {
-                        const float range_min = 0;
-                        const float range_max = 1000;
-
-                        ImGui::DragScalar("Radius", ImGuiDataType_Float, &kinematicCapsuleSize.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Height", ImGuiDataType_Float, &kinematicCapsuleSize.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-
-                        ImGui::TreePop();
-                    }
-                }
-
-                if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE && (getCollisionMode() == GHOST || getCollisionMode() == BODY)) {
-
-                    if (ImGui::TreeNode("Angular factor")) {
-                        const float range_min = 0;
-                        const float range_max = 1;
-
-                        ImGui::DragScalar("X", ImGuiDataType_Float, &angularFactor.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Y", ImGuiDataType_Float, &angularFactor.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Z", ImGuiDataType_Float, &angularFactor.z, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-
-                        ImGui::TreePop();
-                    }
                     ImGui::Separator();
 
-                    if (ImGui::TreeNode("Linear factor")) {
-                        const float range_min = 0;
-                        const float range_max = 1;
-
-                        ImGui::DragScalar("X", ImGuiDataType_Float, &linearFactor.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Y", ImGuiDataType_Float, &linearFactor.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Z", ImGuiDataType_Float, &linearFactor.z, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-
-                        ImGui::TreePop();
+                    if (ImGui::Button(std::string("Update collision shape").c_str())) {
+                        UpdateShape();
                     }
-                    ImGui::Separator();
-                    if (ImGui::TreeNode("Friction")) {
-                        const float range_min = 0;
-                        const float range_max = 1;
-
-                        ImGui::DragScalar("Value", ImGuiDataType_Float, &friction, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-
-                        ImGui::TreePop();
-                    }
-
+                    ImGui::TreePop();
                 }
 
                 ImGui::Separator();
-                if (ImGui::Button(std::string("Update collision shape").c_str())) {
-                    UpdateShape();
+
+                if (ImGui::TreeNode("Physics")) {
+                    if (getCollisionMode() == CollisionMode::BODY) {
+                        ImGui::Separator();
+
+                        if (!colliderStatic) {
+                            if (ImGui::TreeNode("Mass")) {
+                                const float range_min = 0;
+                                const float range_max = 1000;
+
+                                ImGui::DragScalar("Mass", ImGuiDataType_Float, &mass, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+
+                                ImGui::TreePop();
+                            }
+                            ImGui::Separator();
+                        }
+
+                        if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE && (getCollisionMode() == GHOST || getCollisionMode() == BODY)) {
+
+                            if (ImGui::TreeNode("Angular factor")) {
+                                const float range_min = 0;
+                                const float range_max = 1;
+
+                                ImGui::DragScalar("X", ImGuiDataType_Float, &angularFactor.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                                ImGui::DragScalar("Y", ImGuiDataType_Float, &angularFactor.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                                ImGui::DragScalar("Z", ImGuiDataType_Float, &angularFactor.z, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+
+                                ImGui::TreePop();
+                            }
+                            ImGui::Separator();
+
+                            if (ImGui::TreeNode("Linear factor")) {
+                                const float range_min = 0;
+                                const float range_max = 1;
+
+                                ImGui::DragScalar("X", ImGuiDataType_Float, &linearFactor.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                                ImGui::DragScalar("Y", ImGuiDataType_Float, &linearFactor.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                                ImGui::DragScalar("Z", ImGuiDataType_Float, &linearFactor.z, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+
+                                ImGui::TreePop();
+                            }
+                            ImGui::Separator();
+                            if (ImGui::TreeNode("Friction")) {
+                                const float range_min = 0;
+                                const float range_max = 1;
+
+                                ImGui::DragScalar("Value", ImGuiDataType_Float, &friction, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+
+                                ImGui::TreePop();
+                            }
+                        }
+                    }
+                    ImGui::TreePop();
                 }
             }
         }
@@ -874,4 +894,24 @@ void Object3D::runResolveCollisionScripts(Collider *with)
 
 const sol::environment &Object3D::getLuaEnvironment() const {
     return luaEnvironment;
+}
+
+void Object3D::setupGhostCollider(CollisionShape mode)
+{
+    Logging::Message("[Collider] setupGhostCollider");
+    removeCollisionObject();
+
+    setCollisionMode(CollisionMode::GHOST);
+    setCollisionShape(mode);
+
+    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+        makeSimpleGhostBody(
+            getPosition(),
+            getModelMatrix(),
+            simpleShapeSize,
+            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            EngineSetup::collisionGroups::AllFilter,
+            EngineSetup::collisionGroups::AllFilter
+        );
+    }
 }

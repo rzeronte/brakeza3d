@@ -547,12 +547,18 @@ void Mesh3DAnimation::createFromJSON(cJSON *object)
 
     o->AssimpLoadAnimation(cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring);
 
+    if (o->isCollisionsEnabled()) {
+        o->updateFrameTransformations();
+        o->updateBoundingBox();
+        o->UpdateShape();
+    }
+
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
 
 void Mesh3DAnimation::setPropertiesFromJSON(cJSON *object, Mesh3DAnimation *o)
 {
-    Object3D::setPropertiesFromJSON(object, o);
+    Mesh3D::setPropertiesFromJSON(object, o, false);
 
     auto speed = cJSON_GetObjectItemCaseSensitive(object, "animationSpeed")->valuedouble;
     o->setAnimationSpeed(speed);

@@ -4,6 +4,7 @@
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include "../Objects/Vertex3D.h"
+#include "../Render/M3.h"
 #include <glm/vec2.hpp>
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 
@@ -60,7 +61,7 @@ public:
 
     void removeCollisionObject();
 
-    virtual void setupGhostCollider(CollisionShape mode);
+    virtual void setupGhostCollider(CollisionShape mode) = 0;
 
     virtual void setupRigidBodyCollider(CollisionShape shapeMode);
 
@@ -69,6 +70,8 @@ public:
     virtual //ghost
     void makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     void makeSimpleGhostBody(
+        Vertex3D position,
+        glm::mat4 modelMatrix,
         Vertex3D dimensions,
         btDiscreteDynamicsWorld *world,
         int collisionGroup,

@@ -54,6 +54,7 @@ void ComponentScripting::playLUAScripts()
 
     ComponentsManager::get()->getComponentInput()->setEnabled(false);
     ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
+    ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
 
     stateScripts = EngineSetup::LuaStateScripts::LUA_PLAY;
 }
@@ -63,6 +64,7 @@ void ComponentScripting::stopLUAScripts()
     Logging::Message("LUA Scripts state changed to STOP");
 
     ComponentsManager::get()->getComponentInput()->setEnabled(true);
+    ComponentsManager::get()->getComponentCollisions()->setEnabled(false);
 
     stateScripts = EngineSetup::LuaStateScripts::LUA_STOP;
 }
