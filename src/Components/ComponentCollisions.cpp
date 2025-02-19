@@ -261,3 +261,9 @@ void ComponentCollisions::drawDebugCache()
         Color::fuchsia()
     );
 }
+
+void ComponentCollisions::setEnabled(bool enabled)
+{
+    Component::setEnabled(enabled);
+    EngineSetup::get()->BULLET_STEP_SIMULATION = enabled;
+}

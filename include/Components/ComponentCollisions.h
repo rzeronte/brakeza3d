@@ -63,6 +63,8 @@ public:
     void addVector3DIntoCache(Vector3D v);
 
     void drawDebugCache();
+
+    void setEnabled(bool enabled);
 };
 
 
