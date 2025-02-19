@@ -6,7 +6,6 @@
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Misc/ToolsJSON.h"
 #include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
 
 Mesh3D::Mesh3D()
@@ -112,7 +111,10 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     Assimp::Importer assimpImporter;
     const aiScene *scene = assimpImporter.ReadFile(
         fileName,
-        aiProcess_Triangulate | aiProcess_SortByPType | aiProcess_FlipUVs | aiProcess_OptimizeMeshes
+        aiProcess_Triangulate |
+        aiProcess_SortByPType |
+        aiProcess_FlipUVs |
+        aiProcess_OptimizeMeshes
     );
 
     if (!scene) {

@@ -87,7 +87,7 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     scene = importer.ReadFile(
         filename,
         aiProcess_Triangulate |
-        aiProcess_FlipUVs|
+        aiProcess_SortByPType |
         aiProcess_GenNormals |
         aiProcess_OptimizeMeshes
     );

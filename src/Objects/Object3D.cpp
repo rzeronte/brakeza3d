@@ -180,9 +180,6 @@ void Object3D::onUpdate()
         runScripts();
     }
 
-    if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
-        Drawable::drawObject3DAxis(this,true,true,true);
-    }
 }
 
 void Object3D::runScripts()
@@ -198,6 +195,10 @@ void Object3D::postUpdate()
 
     for (auto a: attachedObjects) {
         if (a->isEnabled())  a->postUpdate();
+    }
+
+    if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
+        Drawable::drawObject3DAxis(this,true,true,true);
     }
 }
 
@@ -347,52 +348,59 @@ void Object3D::drawImGuiProperties()
         if (ImGui::CollapsingHeader("Transformations")) {
             // position
             if (featuresGUI.position) {
-                Tools::ImGuiVertex3D("Position", "X", "Y", "Z", &position, 0.1, -100000, 100000);
+                float vec3f[3];
+                getPosition().toFloat(vec3f);
+                if (ImGui::DragFloat3("Position", vec3f, 0.01f, -999999.0f, 999999.0f)) {
+                    position.x = vec3f[0];
+                    position.y = vec3f[1];
+                    position.z = vec3f[2];
+                }
                 ImGui::Separator();
             }
 
             // rotation
             if (featuresGUI.rotation) {
-                if (ImGui::TreeNode("Rotation")) {
-                    const float range_angle_min = -360;
-                    const float range_angle_max = 360;
+                float oldPitch = getRotation().getPitchDegree();
+                float oldYaw = getRotation().getYawDegree();
+                float oldRoll = getRotation().getRollDegree();
+                float pitch = oldPitch;
+                float yaw = oldYaw;
+                float roll = oldRoll;
+                const float factor = 0.0025f;
 
-                    float oldPitch = getRotation().getPitchDegree();
-                    float oldYaw = getRotation().getYawDegree();
-                    float oldRoll = getRotation().getRollDegree();
-                    float pitch = oldPitch;
-                    float yaw = oldYaw;
-                    float roll = oldRoll;
+                float vec3f[3];
+                vec3f[0] = pitch;
+                vec3f[1] = yaw;
+                vec3f[2] = roll;
+                if (ImGui::DragFloat3("Rotation", vec3f, 0.01f, -999999.0f, 999999.0f)) {
+                    pitch = vec3f[0];
+                    yaw = vec3f[1];
+                    roll = vec3f[2];
+                    if (abs(pitch - oldPitch) > 0) {
+                        auto partialRotX = M3::arbitraryAxis(getRotation().X(), Maths::radiansToDegrees(pitch - oldPitch) * factor);
+                        setRotation(getRotation() * partialRotX);
+                        M3::normalize(rotation);
+                    }
 
-                    const float factor = 0.0025f;
-                    if (ImGui::DragScalar("Pitch", ImGuiDataType_Float, &pitch, 0.1f, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
-                        auto partialRot = M3::arbitraryAxis(getRotation().X(), Maths::radiansToDegrees(pitch - oldPitch) * factor);
-                        setRotation(getRotation() * partialRot);
+                    if (abs(yaw - oldYaw) > 0) {
+                        auto partialRotY = M3::arbitraryAxis(getRotation().Y(), Maths::radiansToDegrees(yaw - oldYaw) * factor);
+                        setRotation(getRotation() * partialRotY);
                         M3::normalize(rotation);
                     }
-                    if (ImGui::DragScalar("Yaw", ImGuiDataType_Float, &yaw, 0.1f, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
-                        auto partialRot = M3::arbitraryAxis(getRotation().Y(), Maths::radiansToDegrees(yaw - oldYaw) * factor);
-                        setRotation(getRotation() * partialRot);
+
+                    if (abs(roll - oldRoll) > 0) {
+                        auto partialRotZ = M3::arbitraryAxis(getRotation().Z(), Maths::radiansToDegrees(roll - oldRoll) * factor);
+                        setRotation(getRotation() * partialRotZ);
                         M3::normalize(rotation);
                     }
-                    if (ImGui::DragScalar("Roll", ImGuiDataType_Float, &roll, 0.1f, &range_angle_min,&range_angle_max, "%f", 1.0f)) {
-                        auto partialRot = M3::arbitraryAxis(getRotation().Z(), Maths::radiansToDegrees(roll - oldRoll) * factor);
-                        setRotation(getRotation() * partialRot);
-                        M3::normalize(rotation);
-                    }
-                    ImGui::TreePop();
                 }
                 ImGui::Separator();
             }
             // scale
             if (featuresGUI.scale) {
-                if (ImGui::TreeNode("Scale")) {
-                    const float range_scale_min = -360;
-                    const float range_scale_max = 360;
-                    ImGui::DragScalar("Scale", ImGuiDataType_Float, &scale, 0.01, &range_scale_min, &range_scale_max, "%f", 1.0f);
-
-                    ImGui::TreePop();
-                }
+                const float range_scale_min = -360;
+                const float range_scale_max = 360;
+                ImGui::DragScalar("Scale", ImGuiDataType_Float, &scale, 0.01, &range_scale_min, &range_scale_max, "%f", 1.0f);
             }
         }
     }
