@@ -89,7 +89,7 @@ void ComponentInput::handleMouse(SDL_Event *event)
     if (mouseMotion && isRightMouseButtonPressed()) {
         if (event->type == SDL_MOUSEMOTION) {
             auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-            camera->Yaw((float) event->motion.xrel);
+            camera->Yaw((float) -event->motion.xrel);
             camera->Pitch((float) event->motion.yrel);
             camera->setRotation(M3::getMatrixRotationForEulerAngles(camera->getPitch(), camera->getYaw(), camera->getRoll()));
         }
@@ -124,17 +124,17 @@ void ComponentInput::handleKeyboardMovingCamera() const
 
     if (keyboard[SDL_SCANCODE_UP]) {
         if (isShiftPressed) {
-            camera->MoveVertical(-EngineSetup::get()->WALKING_SPEED);
+            camera->MoveVertical(EngineSetup::get()->WALKING_SPEED);
         } else {
-            camera->MoveForward(EngineSetup::get()->WALKING_SPEED);
+            camera->MoveForward(-EngineSetup::get()->WALKING_SPEED);
         }
     }
 
     if (keyboard[SDL_SCANCODE_DOWN]) {
         if (isShiftPressed) {
-            camera->MoveVertical(EngineSetup::get()->WALKING_SPEED);
+            camera->MoveVertical(-EngineSetup::get()->WALKING_SPEED);
         } else {
-            camera->MoveBackward(EngineSetup::get()->WALKING_SPEED);
+            camera->MoveBackward(-EngineSetup::get()->WALKING_SPEED);
         }
     }
 
