@@ -109,13 +109,13 @@ Vector3D &Camera3D::getVelocity() {
 
 glm::mat4 Camera3D::getGLMMat4ViewMatrix()
 {
-    Vertex3D forward = getRotation().getTranspose() * Vertex3D(0, 0, 1);
+    Vertex3D forward = getRotation().getTranspose() * Vertex3D(0, 0, -1);
 
     const auto p = position.toGLM();
     ViewMatrix = glm::lookAt(
         p,
         p + forward.toGLM(),
-        glm::vec3(0,-1,0)
+        glm::vec3(0,1,0)
     );
 
     return ViewMatrix;

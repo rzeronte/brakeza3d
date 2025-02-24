@@ -36,7 +36,7 @@ public:
     Vertex3D down = up.getInverse();
     Vertex3D backward = forward.getInverse();
 
-    Vertex3D gravity = Vertex3D(0, 9.8f, 0);
+    Vertex3D gravity = Vertex3D(0, -9.8f, 0);
 
     // Screen dimension constants
     const int screenWidth = 1280;

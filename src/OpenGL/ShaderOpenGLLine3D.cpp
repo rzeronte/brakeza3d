@@ -40,27 +40,9 @@ EngineSetup::get()->SHADERS_FOLDER + "Line3D.fs"
 
 void ShaderOpenGLLine3D::render(Vertex3D from, Vertex3D to, GLuint framebuffer, Color c)
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    const std::vector<Vector3D> vertices = {Vector3D(from, to)};
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
-
-    auto camera = ComponentsManager::get()->getComponentCamera();
-    glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
-    glm::mat4 ProjectionMatrix = camera->getGLMMat4ProjectionMatrix();
-
-    setMat4Uniform(matrixProjectionUniform, ProjectionMatrix);
-    setMat4Uniform(matrixViewUniform, ViewMatrix);
-    setVec3Uniform(colorUniform, c.toGLM());
-
-    vertices[0] = from.toGLM();
-    vertices[1] = to.toGLM();
-
-    glBindVertexArray(VertexArrayID);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, 2 * sizeof(glm::vec3), &vertices[0]);
-
-    glLineWidth(1.0f);
-    glDrawArrays(GL_LINES, 0, (GLint) 2);
+    renderLines(vertices, framebuffer, c);
 }
 
 
@@ -68,7 +50,7 @@ void ShaderOpenGLLine3D::destroy()
 {
 }
 
-void ShaderOpenGLLine3D::renderLines(std::vector<Vector3D> lines, GLuint framebuffer, Color c)
+void ShaderOpenGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint framebuffer, Color c)
 {
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
 

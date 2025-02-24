@@ -35,7 +35,7 @@ public:
     );
 
     void renderLines(
-        std::vector<Vector3D>,
+        const std::vector<Vector3D>&,
         GLuint framebuffer,
         Color c
     );

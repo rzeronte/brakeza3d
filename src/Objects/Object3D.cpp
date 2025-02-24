@@ -256,9 +256,9 @@ void Object3D::setEnableLights(bool enableLights)
 
 void Object3D::lookAt(Object3D *o)
 {
-    Vertex3D direction = (o->getPosition() - position).getNormalize();
+    Vertex3D direction = (o->getPosition() - position).getInverse().getNormalize();
 
-    Vertex3D rightVector = Vertex3D(0, 0, -1) % (direction).getNormalize();
+    Vertex3D rightVector = Vertex3D(0, 0, 1) % (direction).getNormalize();
     Vertex3D correctedUpVector = direction % (rightVector).getNormalize();
 
     setRotation(M3::getFromVectors(direction, correctedUpVector));

@@ -102,7 +102,7 @@ void ShaderOpenGLRender::render(
     setIntUniform(numSpotLightsUniform, (int) spotLights.size());
     setFloatUniform(alphaUniform, alpha);
 
-    Vertex3D forward = camera->getCamera()->getRotation().getTranspose() * Vertex3D(0, 0, 1);
+    Vertex3D forward = camera->getCamera()->getRotation().getTranspose() * Vertex3D(0, 0, -1);
 
     // spotLight
     setVec4("spotLight.position", glm::vec4(cameraPosition, 0));
