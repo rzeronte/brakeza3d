@@ -9,20 +9,20 @@ function onUpdate()
     local collisions = componentsManager:getComponentCollisions();
     local camera = componentsManager:getComponentCamera():getCamera()
 
-    local newCamPos = this:getPosition() + this:AxisForward():getScaled(cameraOffset.z) + Vertex3D.new(cameraOffset.x, cameraOffset.y, 0)
+    local newCamPos = this:getPosition() - this:AxisForward():getScaled(cameraOffset.z) + Vertex3D.new(cameraOffset.x, cameraOffset.y, 0)
     camera:setPosition(newCamPos)
     camera:lookAt(this)
 
     -- Collision points
     local from = this:getPosition()
-    local toDown = this:getPosition() + this:AxisUp():getScaled(lengthRay)
-    local toUp = this:getPosition() - this:AxisUp():getScaled(lengthRay)
+    local toDown = this:getPosition() - this:AxisUp():getScaled(lengthRay)
+    local toUp = this:getPosition() + this:AxisUp():getScaled(lengthRay)
 
-    local toDownLeft = this:getPosition() + this:AxisUp():getScaled(lengthRay) + Vertex3D.new(0.5, 0, 0)
-    local toDownRight = this:getPosition() + this:AxisUp():getScaled(lengthRay) + Vertex3D.new(-0.5, 0, 0)
+    local toDownLeft = this:getPosition() - this:AxisUp():getScaled(lengthRay) + Vertex3D.new(0.5, 0, 0)
+    local toDownRight = this:getPosition() - this:AxisUp():getScaled(lengthRay) + Vertex3D.new(-0.5, 0, 0)
 
-    local toUpLeft = this:getPosition() - this:AxisUp():getScaled(lengthRay) + Vertex3D.new(0.6, 0, 0);
-    local toUpRight = this:getPosition() - this:AxisUp():getScaled(lengthRay) + Vertex3D.new(-0.6, 0, 0);
+    local toUpLeft = this:getPosition() + this:AxisUp():getScaled(lengthRay) + Vertex3D.new(0.6, 0, 0);
+    local toUpRight = this:getPosition() + this:AxisUp():getScaled(lengthRay) + Vertex3D.new(-0.6, 0, 0);
 
     -- Collision flags
     local isFloorDown = collisions:isRayCollisionWith(from, toDown, floor)
@@ -44,30 +44,30 @@ function handleFloorMovement(input, isFloor)
 
     if isFloor then
         if input:isCharPressed("A") then
-            this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
+            --this:setRotation(M3:getMatrixRotationForEulerAngles(0, 0, 0))
             this:applyCentralForce(Vertex3D.new(-speed * dt, 0, 0))
         end
 
         if input:isCharPressed("D") then
-            this:setRotation(M3:getMatrixRotationForEulerAngles(-180, 0, 0))
+            --this:setRotation(M3:getMatrixRotationForEulerAngles(0, 0, 0))
             this:applyCentralForce(Vertex3D.new(speed * dt, 0, 0))
         end
 
         if input:isCharFirstEventDown("SPACE") then
             local velocity = this:getLinearVelocity()
-            local jumpVector = Vertex3D.new(velocity.x, -jumpForce, velocity.z)
+            local jumpVector = Vertex3D.new(velocity.x, jumpForce, velocity.z)
             this:applyCentralForce(jumpVector)
             print("Jump!")
         end
     else
         if input:isCharPressed("A") then
             this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt, 0, 0))
-            this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
+            --this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
         end
 
         if input:isCharPressed("D") then
             this:applyCentralForce(Vertex3D.new(speed * airControlFactor * dt, 0, 0))
-            this:setRotation(M3:getMatrixRotationForEulerAngles(-180, 0, 0))
+            --this:setRotation(M3:getMatrixRotationForEulerAngles(-180, 0, 0))
         end
     end
 end
@@ -137,7 +137,7 @@ function debug(input, render, isFloor, isHooked, isHookedLeft, isHookedRight, is
     render:drawLine(from, toDown, lineColorFloor)
     render:drawLine(from, toDownLeft, lineColorFloor)
     render:drawLine(from, toDownRight, lineColorFloor)
-    render:drawLine(from, toUp, lineColorUp)
+    render:drawLine(from, toUp, Color.new(1, 1, 1, 1))
     render:drawLine(from, toUpLeft, lineColorHookedLeft)
     render:drawLine(from, toUpRight, lineColorHookedRight)
 end
