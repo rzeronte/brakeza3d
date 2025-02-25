@@ -97,9 +97,9 @@ void ComponentInput::handleMouse(SDL_Event *event)
 
     if (event->type == SDL_MOUSEWHEEL) {
         if (event->wheel.y > 0) {
-            ComponentsManager::get()->getComponentCamera()->getCamera()->MoveForward(EngineSetup::get()->WALKING_SPEED * 5);
+            ComponentsManager::get()->getComponentCamera()->getCamera()->MoveForward(-EngineSetup::get()->WALKING_SPEED * 5);
         } else if (event->wheel.y < 0) {
-            ComponentsManager::get()->getComponentCamera()->getCamera()->MoveBackward(EngineSetup::get()->WALKING_SPEED * 5);
+            ComponentsManager::get()->getComponentCamera()->getCamera()->MoveBackward(-EngineSetup::get()->WALKING_SPEED * 5);
         }
     }
 

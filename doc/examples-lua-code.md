@@ -15,6 +15,7 @@
 - [Terminar la ejecución](#terminar-la-ejecución)
 - [Pathfinding](#pathfinding)
 - [Actualizar variable en shader](#actualizar-variable-en-shader)
+- [Test de Colisión entre rayo y objeto](#test-de-colisión-entre-rayo-y-objeto)
 
 ---
 
@@ -328,4 +329,25 @@ function onUpdate()
     else
         print("Error: Not custom shader called: 'Custom'")
     end
+````
+
+---
+
+### Test de Colisión entre rayo y objeto
+
+````lua
+...
+local collisions = componentsManager:getComponentCollisions();
+
+floor = brakeza:getSceneObjectByLabel("floor")
+
+local rayStart = this:getPosition()
+local rayEnd = this:getPosition() + Vertex3D.new(0, 5, 0)
+
+local isFloorDown = collisions:isRayCollisionWith(rayStart, rayEnd, floor)
+
+if (isFlorDown) then
+    print("Ray test success!")
+end
+...
 ````
