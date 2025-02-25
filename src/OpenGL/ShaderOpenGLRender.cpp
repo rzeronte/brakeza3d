@@ -157,12 +157,14 @@ void ShaderOpenGLRender::createUBOFromLights()
     pointsLights.resize(0);
     spotLights.resize(0);
 
-    for (auto o : Brakeza3D::get()->getSceneObjects()) {
-        if (!o->isEnabled()) continue;
-        extractLights(o);
-        for (auto a: o->getAttached()) {
-            if (!a->isEnabled()) continue;
-            extractLights(a);
+    if (EngineSetup::get()->ENABLE_LIGHTS) {
+        for (auto o : Brakeza3D::get()->getSceneObjects()) {
+            if (!o->isEnabled()) continue;
+            extractLights(o);
+            for (auto a: o->getAttached()) {
+                if (!a->isEnabled()) continue;
+                extractLights(a);
+            }
         }
     }
 

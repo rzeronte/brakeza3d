@@ -53,18 +53,6 @@ void LightPoint3D::setColorSpecular(Color c) {
 void LightPoint3D::onUpdate()
 {
     Object3D::onUpdate();
-
-    if (EngineSetup::get()->DRAW_LIGHTS_DIRECTION) {
-        auto render = ComponentsManager::get()->getComponentRender();
-        auto window = ComponentsManager::get()->getComponentWindow();
-
-        render->getShaderOGLLine3D()->render(
-            getPosition(),
-            getPosition() + AxisForward().getInverse().getNormalize().getScaled(EngineSetup::get()->LIGHTS_DIRECTION_SIZE),
-            window->getForegroundFramebuffer(),
-            Color::yellow()
-        );
-    }
 }
 
 void LightPoint3D::setConstant(float value) {

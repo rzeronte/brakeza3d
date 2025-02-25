@@ -66,8 +66,8 @@ cJSON *SpotLight3D::getJSON()
 {
     cJSON *root = LightPoint3D::getJSON();
 
-    cJSON_AddNumberToObject(root, "cutOff", cutOff);
-    cJSON_AddNumberToObject(root, "outerCutOff", outerCutOff);
+    cJSON_AddNumberToObject(root, "cutOff", glm::degrees(glm::acos(cutOff)));
+    cJSON_AddNumberToObject(root, "outerCutOff", glm::degrees(glm::acos(outerCutOff)));
 
     return root;
 }

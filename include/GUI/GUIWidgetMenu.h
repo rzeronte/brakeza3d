@@ -362,13 +362,6 @@ struct GUIWidgetMenu
                 }
                 ImGui::Separator();
                 ImGui::Checkbox("Light System", &setup->ENABLE_LIGHTS);
-                if (setup->ENABLE_LIGHTS) {
-                    ImGui::Checkbox("Draw light direction", &setup->DRAW_LIGHTS_DIRECTION);
-                }
-                if (setup->DRAW_LIGHTS_DIRECTION) {
-                    ImGui::DragScalar("Size Direction", ImGuiDataType_Float, &setup->LIGHTS_DIRECTION_SIZE,
-                                      0.1f, &range_min_light_direction_size, &range_max_light_direction_size, "%f", 1.0f);
-                }
 
                 ImGui::Separator();
 
