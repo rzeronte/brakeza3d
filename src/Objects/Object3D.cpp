@@ -439,101 +439,77 @@ void Object3D::drawImGuiProperties()
             }
 
             if (collisionsEnabled) {
-                if (ImGui::TreeNode("Shape")) {
-                    drawImGuiCollisionModeSelector();
-                    drawImGuiCollisionShapeSelector();
+                if (ImGui::Button(std::string("Update Collider").c_str())) {
+                    UpdateShape();
+                }
+                ImGui::Separator();
 
-                    if (getCollisionMode() == CollisionMode::BODY) {
-                        ImGui::Separator();
+                drawImGuiCollisionModeSelector();
+                drawImGuiCollisionShapeSelector();
 
-                        ImGui::Checkbox("Collider static", &colliderStatic);
-                    }
-                    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
-                        ImGui::Separator();
-                        float vec3f[3];
-                        simpleShapeSize.toFloat(vec3f);
-                        if (ImGui::DragFloat3("Shape Size", vec3f, 0.01f, -1000.0f, 1000.0f)) {
-                            simpleShapeSize.x = vec3f[0];
-                            simpleShapeSize.y = vec3f[1];
-                            simpleShapeSize.z = vec3f[2];
-                        }
-                    }
-
-                    if (getCollisionMode() == KINEMATIC) {
-                        ImGui::Separator();
-                        if (ImGui::TreeNode("Kinematic capsule size")) {
-                            const float range_min = 0;
-                            const float range_max = 1000;
-
-                            ImGui::DragScalar("Radius", ImGuiDataType_Float, &kinematicCapsuleSize.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                            ImGui::DragScalar("Height", ImGuiDataType_Float, &kinematicCapsuleSize.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-
-                            ImGui::TreePop();
-                        }
-                    }
-
+                if (getCollisionMode() == CollisionMode::BODY) {
                     ImGui::Separator();
 
-                    if (ImGui::Button(std::string("Update collision shape").c_str())) {
-                        UpdateShape();
+                    ImGui::Checkbox("Collider static", &colliderStatic);
+                }
+                if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+                    ImGui::Separator();
+                    float vec3f[3];
+                    simpleShapeSize.toFloat(vec3f);
+                    if (ImGui::DragFloat3("Shape Size", vec3f, 0.01f, -1000.0f, 1000.0f)) {
+                        simpleShapeSize.x = vec3f[0];
+                        simpleShapeSize.y = vec3f[1];
+                        simpleShapeSize.z = vec3f[2];
                     }
-                    ImGui::TreePop();
+                }
+
+                if (getCollisionMode() == KINEMATIC) {
+                    ImGui::Separator();
+                    const float range_min = 0;
+                    const float range_max = 1000;
+
+                    ImGui::DragScalar("Capsule radius", ImGuiDataType_Float, &kinematicCapsuleSize.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                    ImGui::DragScalar("Capsule height", ImGuiDataType_Float, &kinematicCapsuleSize.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
                 }
 
                 ImGui::Separator();
 
-                if (ImGui::TreeNode("Physics")) {
-                    if (getCollisionMode() == CollisionMode::BODY) {
+                if (getCollisionMode() == CollisionMode::BODY && !colliderStatic) {
+
+                    ImGui::DragFloat("Mass", &mass, 0.1f, 0.0f, 5000.0f);
+                    ImGui::Separator();
+
+                    if ((getCollisionMode() == GHOST || getCollisionMode() == BODY)) {
+                        float vec3f[3];
+                        angularFactor.toFloat(vec3f);
+                        if (ImGui::DragFloat3("Angular factor", vec3f, 0.01f, 0.0f, 1.0f)) {
+                            angularFactor.x = vec3f[0];
+                            angularFactor.y = vec3f[1];
+                            angularFactor.z = vec3f[2];
+                        }
+
                         ImGui::Separator();
 
-                        if (!colliderStatic) {
-                            if (ImGui::TreeNode("Mass")) {
-                                const float range_min = 0;
-                                const float range_max = 1000;
-
-                                ImGui::DragScalar("Mass", ImGuiDataType_Float, &mass, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-
-                                ImGui::TreePop();
-                            }
-                            ImGui::Separator();
+                        linearFactor.toFloat(vec3f);
+                        if (ImGui::DragFloat3("Linear Factor", vec3f, 0.01f, 0.0f, 1.0f)) {
+                            linearFactor.x = vec3f[0];
+                            linearFactor.y = vec3f[1];
+                            linearFactor.z = vec3f[2];
                         }
+                        ImGui::Separator();
 
-                        if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE && (getCollisionMode() == GHOST || getCollisionMode() == BODY)) {
+                        ImGui::DragFloat("Friction", &friction, 0.01f, 0.0f, 1.0f);
 
-                            if (ImGui::TreeNode("Angular factor")) {
-                                const float range_min = 0;
-                                const float range_max = 1;
+                        ImGui::Separator();
 
-                                ImGui::DragScalar("X", ImGuiDataType_Float, &angularFactor.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                                ImGui::DragScalar("Y", ImGuiDataType_Float, &angularFactor.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                                ImGui::DragScalar("Z", ImGuiDataType_Float, &angularFactor.z, 0.1 ,&range_min, &range_max, "%f", 1.0f);
+                        ImGui::DragFloat("Linear Damping", &linearDamping, 0.01f, 0.0f, 1.0f);
+                        ImGui::DragFloat("Angular Damping", &angularDamping, 0.01f, 0.0f, 1.0f);
 
-                                ImGui::TreePop();
-                            }
-                            ImGui::Separator();
+                        ImGui::Separator();
 
-                            if (ImGui::TreeNode("Linear factor")) {
-                                const float range_min = 0;
-                                const float range_max = 1;
-
-                                ImGui::DragScalar("X", ImGuiDataType_Float, &linearFactor.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                                ImGui::DragScalar("Y", ImGuiDataType_Float, &linearFactor.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                                ImGui::DragScalar("Z", ImGuiDataType_Float, &linearFactor.z, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-
-                                ImGui::TreePop();
-                            }
-                            ImGui::Separator();
-                            if (ImGui::TreeNode("Friction")) {
-                                const float range_min = 0;
-                                const float range_max = 1;
-
-                                ImGui::DragScalar("Value", ImGuiDataType_Float, &friction, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-
-                                ImGui::TreePop();
-                            }
-                        }
+                        ImGui::DragFloat("Restitution", &restitution, 0.01f, 0.0f, 1.0f);
                     }
-                    ImGui::TreePop();
+
                 }
             }
         }
@@ -567,6 +543,9 @@ cJSON *Object3D::getJSON()
 
         cJSON_AddNumberToObject(collider, "friction", friction);
         cJSON_AddNumberToObject(collider, "mass", mass);
+        cJSON_AddNumberToObject(collider, "linearDamping", linearDamping);
+        cJSON_AddNumberToObject(collider, "angularDamping", angularDamping);
+        cJSON_AddNumberToObject(collider, "restitution", restitution);
         cJSON_AddBoolToObject(collider, "colliderStatic", colliderStatic);
 
         cJSON *simpleShapeSizeJSON = cJSON_CreateObject();
@@ -643,6 +622,21 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "friction") != nullptr) {
                 auto friction = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "friction")->valuedouble;
                 o->setFriction(friction);
+            }
+
+            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "restitution") != nullptr) {
+                auto restitution = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "restitution")->valuedouble;
+                o->setRestitution(restitution);
+            }
+
+            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "linearDamping") != nullptr) {
+                auto linearDamping = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "linearDamping")->valuedouble;
+                o->setLinearDamping(linearDamping);
+            }
+
+            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularDamping") != nullptr) {
+                auto angularDamping = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularDamping")->valuedouble;
+                o->setAngularDamping(angularDamping);
             }
 
             o->simpleShapeSize = ToolsJSON::parseVertex3DJSON(
@@ -825,11 +819,12 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     body = new btRigidBody(cInfo);
     body->activate(true);
     body->setUserPointer(this);
-    body->setRestitution(0.5);
+    body->setRestitution(restitution);
     body->setActivationState(DISABLE_DEACTIVATION);
     body->setAngularFactor(angularFactor.toBullet());
     body->setLinearFactor(linearFactor.toBullet());
     body->setFriction(friction);
+    body->setDamping(linearDamping, angularDamping);
 
     world->addRigidBody(body, collisionGroup, collisionMask);
 }

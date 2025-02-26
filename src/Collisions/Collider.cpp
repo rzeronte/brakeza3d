@@ -17,6 +17,9 @@ Collider::Collider()
     mass(0),
     kinematicBody(nullptr),
     friction(1),
+    linearDamping(1),
+    angularDamping(1),
+    restitution(0),
     kinematicCapsuleSize(
         EngineSetup::get()->PLAYER_CAPSULE_RADIUS,
         EngineSetup::get()->PLAYER_CAPSULE_HEIGHT
@@ -322,4 +325,16 @@ Vertex3D Collider::getLinearVelocity() const
     }
 
     return Vertex3D::zero();
+}
+
+void Collider::setLinearDamping(float linearDamping) {
+    Collider::linearDamping = linearDamping;
+}
+
+void Collider::setAngularDamping(float angularDamping) {
+    Collider::angularDamping = angularDamping;
+}
+
+void Collider::setRestitution(float restitution) {
+    Collider::restitution = restitution;
 }

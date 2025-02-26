@@ -727,11 +727,12 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
     body->activate(true);
     body->setContactProcessingThreshold(BT_LARGE_FLOAT);
     body->setUserPointer(this);
-    body->setRestitution(0);
+    body->setRestitution(restitution);
     body->setActivationState(ACTIVE_TAG);
-    body->setFriction(friction);
     body->setLinearFactor(linearFactor.toBullet());
     body->setAngularFactor(angularFactor.toBullet());
+    body->setFriction(friction);
+    body->setDamping(linearDamping, angularDamping);
 
     world->addRigidBody(body, collisionGroup, collisionMask);
 }

@@ -39,6 +39,9 @@ protected:
     Vertex3D angularFactor;
     Vertex3D linearFactor;
     float friction;
+    float linearDamping;
+    float angularDamping;
+    float restitution;
 
     //kinematic
     btPairCachingGhostObject *kinematicBody;
@@ -130,7 +133,13 @@ public:
 
     void setFriction(float friction);
 
-    Vertex3D getLinearVelocity() const;
+    [[nodiscard]] Vertex3D getLinearVelocity() const;
+
+    void setLinearDamping(float linearDamping);
+
+    void setAngularDamping(float angularDamping);
+
+    void setRestitution(float restitution);
 };
 
 
