@@ -45,15 +45,22 @@ void ScriptLUA::runEnvironment(sol::environment &environment, const std::string&
     sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
 
     try {
+        // Ejecuta el cript en el environment
         lua.script(content, environment);
 
-        const sol::function f = environment[func];
+        sol::object obj = environment[func];
+        if (!obj.is<sol::function>()) {
+            Logging::Message("[error] Function %s not exists in script '%s'", func.c_str(), scriptFilename.c_str());
+            return;
+        }
 
-        sol::function_result result;
+        sol::protected_function f = obj.as<sol::protected_function>();
+
+        sol::protected_function_result result;
         if (arg) {
-            result = f(*arg);  // Llama con el argumento
+            result = f(*arg);
         } else {
-            result = f();         // Llama sin argumentos
+            result = f();
         }
 
         if (!result.valid()) {
@@ -64,12 +71,11 @@ void ScriptLUA::runEnvironment(sol::environment &environment, const std::string&
             ComponentsManager::get()->getComponentScripting()->stopLUAScripts();
         }
     } catch (const sol::error& e) {
-        Logging::Message("[error] Error in LUA Script %s", scriptFilename.c_str());
+        Logging::Message("[error] Exception in LUA Script %s", scriptFilename.c_str());
         Logging::Message("[error] %s", e.what());
         ComponentsManager::get()->getComponentScripting()->stopLUAScripts();
     }
 }
-
 
 void ScriptLUA::runGlobal(const std::string& func) const
 {
