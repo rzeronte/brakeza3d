@@ -40,34 +40,39 @@ function onUpdate()
 end
 
 function handleFloorMovement(input, isFloor)
-    local dt = brakeza:getDeltaTime() -- Obtiene el deltaTime
+    local dt = brakeza:getDeltaTime() -- Obtiene deltaTime
+    local velocity = this:getLinearVelocity() -- Obtiene la velocidad actual
 
     if isFloor then
         if input:isCharPressed("A") then
-            --this:setRotation(M3:getMatrixRotationForEulerAngles(0, 0, 0))
             this:applyCentralForce(Vertex3D.new(-speed * dt, 0, 0))
+            -- this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
         end
 
         if input:isCharPressed("D") then
-            --this:setRotation(M3:getMatrixRotationForEulerAngles(0, 0, 0))
             this:applyCentralForce(Vertex3D.new(speed * dt, 0, 0))
+            -- this:setRotation(M3:getMatrixRotationForEulerAngles(0, 0, 0))
         end
 
-        if input:isCharFirstEventDown("SPACE") then
-            local velocity = this:getLinearVelocity()
+        if input:isCharFirstEventDown("SPACE") and velocity.y <= 0.01 then
             local jumpVector = Vertex3D.new(velocity.x, jumpForce, velocity.z)
-            this:applyCentralForce(jumpVector)
+            this:applyCentralImpulse(jumpVector)
             print("Jump!")
         end
     else
         if input:isCharPressed("A") then
             this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt, 0, 0))
-            --this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
         end
 
         if input:isCharPressed("D") then
             this:applyCentralForce(Vertex3D.new(speed * airControlFactor * dt, 0, 0))
-            --this:setRotation(M3:getMatrixRotationForEulerAngles(-180, 0, 0))
+        end
+
+        -- Reducir la velocidad en el aire si es muy alta
+        local maxAirSpeed = 3.0
+        if math.abs(velocity.x) > maxAirSpeed then
+            velocity.x = maxAirSpeed * (velocity.x > 0 and 1 or -1)
+            this:setLinearVelocity(velocity)
         end
     end
 end

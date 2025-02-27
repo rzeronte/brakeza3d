@@ -81,7 +81,7 @@ void ComponentWindow::initWindow()
             SDL_WINDOWPOS_UNDEFINED,
             SETUP->screenWidth,
             SETUP->screenHeight,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
+            SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE
         );
 
         context = SDL_GL_CreateContext(window);
