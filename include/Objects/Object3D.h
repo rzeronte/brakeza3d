@@ -38,7 +38,6 @@ class Object3D: public Collider {
 
 protected:
     Vertex3D drawOffset;
-    M3 rotation;
 
     Object3DBehavior *motion;
     Object3D *parent;
@@ -201,6 +200,8 @@ public:
     bool enabled;
 
     void setupGhostCollider(CollisionShape mode);
+
+    M3 rotation;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

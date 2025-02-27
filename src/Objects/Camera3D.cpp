@@ -5,7 +5,13 @@
 #include "../../include/Render/Maths.h"
 #include "../../include/Render/Logging.h"
 
-Camera3D::Camera3D(): speed(0), strafe(0), jump(0)
+Camera3D::Camera3D()
+:
+    speed(0),
+    strafe(0),
+    jump(0),
+    ViewMatrix(glm::mat4(1)),
+    ProjectionMatrix(glm::mat4(1))
 {
     frustum = new Frustum();
 

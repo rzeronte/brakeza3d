@@ -635,15 +635,6 @@ struct GUIWidgetMenu
     {
         auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
-        const float range_sensibility = 0.1;
-
-        const float range_min_movement = 0;
-        const float range_max_movement = 500;
-
-        const float range_min_mouse_sensitivity = 0;
-        const float range_max_mouse_sensitivity = 3;
-
-
         // position
         float vec3f[3];
         camera->getPosition().toFloat(vec3f);
@@ -654,14 +645,49 @@ struct GUIWidgetMenu
         }
         ImGui::Separator();
 
-        ImGui::DragScalar("Cursors Walking", ImGuiDataType_Float, &EngineSetup::get()->WALKING_SPEED,range_sensibility, &range_min_movement, &range_max_movement, "%f", 1.0f);
-        ImGui::DragScalar("Cursors Strafe", ImGuiDataType_Float, &EngineSetup::get()->STRAFE_SPEED,range_sensibility, &range_min_movement, &range_max_movement, "%f", 1.0f);
+        float oldPitch = camera->getRotation().getPitchDegree();
+        float oldYaw = camera->getRotation().getYawDegree();
+        float oldRoll = camera->getRotation().getRollDegree();
+        float pitch = oldPitch;
+        float yaw = oldYaw;
+        float roll = oldRoll;
+        const float factor = 0.0025f;
+
+        vec3f[0] = pitch;
+        vec3f[1] = yaw;
+        vec3f[2] = roll;
+        if (ImGui::DragFloat3("Rotation", vec3f, 0.01f, -999999.0f, 999999.0f)) {
+            pitch = vec3f[0];
+            yaw = vec3f[1];
+            roll = vec3f[2];
+            if (abs(pitch - oldPitch) > 0) {
+                auto partialRotX = M3::arbitraryAxis(camera->getRotation().X(), Maths::radiansToDegrees(pitch - oldPitch) * factor);
+                camera->setRotation(camera->getRotation() * partialRotX);
+                M3::normalize(camera->rotation);
+            }
+
+            if (abs(yaw - oldYaw) > 0) {
+                auto partialRotY = M3::arbitraryAxis(camera->getRotation().Y(), Maths::radiansToDegrees(yaw - oldYaw) * factor);
+                camera->setRotation(camera->getRotation() * partialRotY);
+                M3::normalize(camera->rotation);
+            }
+
+            if (abs(roll - oldRoll) > 0) {
+                auto partialRotZ = M3::arbitraryAxis(camera->getRotation().Z(), Maths::radiansToDegrees(roll - oldRoll) * factor);
+                camera->setRotation(camera->getRotation() * partialRotZ);
+                M3::normalize(camera->rotation);
+            }
+        }
+        ImGui::Separator();
+
+        ImGui::DragFloat("Cursors Walking", &EngineSetup::get()->WALKING_SPEED, 0.01f, 0.0f, 500.0f);
+        ImGui::DragFloat("Cursors Strafe", &EngineSetup::get()->STRAFE_SPEED, 0.01f, 0.0f, 500.0f);
 
         ImGui::Separator();
 
         ImGui::Checkbox("Mouse Look", &EngineSetup::get()->MOUSE_LOOK);
         if (EngineSetup::get()->MOUSE_LOOK) {
-            ImGui::DragScalar("Sens.", ImGuiDataType_Float, &EngineSetup::get()->MOUSE_SENSITIVITY,range_sensibility, &range_min_mouse_sensitivity, &range_max_mouse_sensitivity, "%f",1.0f);
+            ImGui::DragFloat("Sensibility", &EngineSetup::get()->MOUSE_SENSITIVITY, 0.001f, 0.0f, 1.0f);
         }
 
     }
