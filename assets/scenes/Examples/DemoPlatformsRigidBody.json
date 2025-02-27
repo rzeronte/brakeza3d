@@ -30,21 +30,24 @@
 			"name":	"capsule",
 			"scale":	1,
 			"position":	{
-				"x":	-35.721538543701172,
-				"y":	1.0902941226959229,
+				"x":	-35.645988464355469,
+				"y":	1.9023163318634033,
 				"z":	-43.368919372558594
 			},
 			"rotation":	{
-				"x":	-0.10563074797391891,
-				"y":	0.1660255640745163,
-				"z":	0.03965301439166069
+				"x":	-0.10567138344049454,
+				"y":	0.16610217094421387,
+				"z":	0.039656024426221848
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
 				"mode":	1,
 				"shape":	0,
-				"friction":	1,
-				"mass":	300,
+				"friction":	0.800000011920929,
+				"mass":	1,
+				"linearDamping":	0.10000000149011612,
+				"angularDamping":	1,
+				"restitution":	0,
 				"colliderStatic":	false,
 				"simpleShapeSize":	{
 					"x":	0.5010833740234375,
@@ -61,7 +64,7 @@
 					"z":	0
 				},
 				"linearFactor":	{
-					"x":	0.40000000596046448,
+					"x":	1,
 					"y":	1,
 					"z":	0
 				}
@@ -71,11 +74,11 @@
 					"types":	[{
 							"name":	"speed",
 							"type":	"float",
-							"value":	500000
+							"value":	400
 						}, {
 							"name":	"jumpForce",
 							"type":	"float",
-							"value":	225000
+							"value":	12
 						}, {
 							"name":	"maxSpeed",
 							"type":	"float",
@@ -121,6 +124,9 @@
 				"shape":	1,
 				"friction":	1,
 				"mass":	0,
+				"linearDamping":	1,
+				"angularDamping":	1,
+				"restitution":	0,
 				"colliderStatic":	true,
 				"simpleShapeSize":	{
 					"x":	1,
@@ -152,9 +158,9 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-37.605636596679688,
-			"y":	-15.16849422454834,
-			"z":	-60.976688385009766
+			"x":	-35.587936401367188,
+			"y":	1.9268697500228882,
+			"z":	-23.335142135620117
 		},
 		"rotation":	{
 			"x":	-10.800030708312988,

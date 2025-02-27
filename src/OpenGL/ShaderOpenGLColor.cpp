@@ -36,7 +36,7 @@ void ShaderOpenGLColor::render(
     if (toFramebuffer) {
         int w = ComponentsManager::get()->getComponentWindow()->getWidth();
         int h = ComponentsManager::get()->getComponentWindow()->getHeight();
-        if (textureColorbuffer == 0) { // Solo generar una vez
+        if (textureColorbuffer == 0) {
             glGenTextures(1, &textureColorbuffer);
             glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
@@ -111,7 +111,15 @@ void ShaderOpenGLColor::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, G
 }
 
 void ShaderOpenGLColor::destroy() {
-
+    if (textureColorbuffer != 0) {
+        glDeleteTextures(1, &textureColorbuffer);
+        textureColorbuffer = 0;
+    }
+    if (framebuffer != 0) {
+        glDeleteFramebuffers(1, &framebuffer);
+        framebuffer = 0;
+        glGenFramebuffers(1, &framebuffer);
+    }
 }
 
 void ShaderOpenGLColor::deleteTexture()

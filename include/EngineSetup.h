@@ -112,8 +112,7 @@ public:
 
     // KEYBOARD
     float WALKING_SPEED = 0.25f;
-    float TURN_SPEED = 0.5f;
-    float PITCH_SPEED = 0.5f;
+
     float STRAFE_SPEED = 0.25f;
 
     // MOUSE
@@ -121,7 +120,7 @@ public:
 
     // COLLISION SYSTEM
     bool BULLET_STEP_SIMULATION = false;
-    int BULLET_MAX_SUBSTEPS = 1;
+    int BULLET_MAX_SUBSTEPS = 4;
     int BULLET_FIXED_TIME_STEPS = 60;
     bool BULLET_DEBUG_MODE = false;
     bool BULLET_CHECK_ALL_PAIRS = true;
@@ -129,7 +128,6 @@ public:
     float TESTING_INT1 = 0.1f;
     float TESTING_INT2 = 0.03f;
     float TESTING_INT3 = 1;
-    float TESTING_INT4 = 0.1f;
 
     bool ENABLE_DEPTH_OF_FIELD = false;
     bool SHOW_DEPTH_OF_FIELD = false;
