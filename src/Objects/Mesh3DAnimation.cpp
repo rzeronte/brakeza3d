@@ -89,7 +89,8 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
         aiProcess_Triangulate |
         aiProcess_SortByPType |
         aiProcess_GenNormals |
-        aiProcess_OptimizeMeshes
+        aiProcess_OptimizeMeshes |
+        aiProcess_FlipUVs
     );
 
     if (!scene) {

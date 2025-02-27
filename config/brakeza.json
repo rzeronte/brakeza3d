@@ -45,6 +45,9 @@
       "shape":	1,
       "friction":	1,
       "mass":	0,
+      "linearDamping":	1,
+      "angularDamping":	1,
+      "restitution":	0,
       "colliderStatic":	true,
       "simpleShapeSize":	{
         "x":	1,
@@ -72,7 +75,7 @@
     "enableLights":	false,
     "type":	"Mesh3D"
   }, {
-    "name":	"pointlight",
+    "name":	"lp1",
     "scale":	1,
     "position":	{
       "x":	-11.419338226318359,
@@ -135,7 +138,7 @@
     "rotation":	{
       "x":	41.436470031738281,
       "y":	10.452261924743652,
-      "z":	-141.08811950683594
+      "z":	-141.09242248535156
     },
     "isCollisionsEnabled":	false,
     "scripts":	[],
@@ -154,7 +157,7 @@
     "rotation":	{
       "x":	-166.75724792480469,
       "y":	-26.889076232910156,
-      "z":	165.67208862304688
+      "z":	165.6741943359375
     },
     "isCollisionsEnabled":	false,
     "scripts":	[],
@@ -173,7 +176,7 @@
     "rotation":	{
       "x":	90,
       "y":	-5.0089556680177338e-06,
-      "z":	5.002045782021014e-06
+      "z":	5.0012786232400686e-06
     },
     "isCollisionsEnabled":	true,
     "collider":	{
@@ -181,6 +184,9 @@
       "shape":	1,
       "friction":	1,
       "mass":	0,
+      "linearDamping":	1,
+      "angularDamping":	1,
+      "restitution":	0,
       "colliderStatic":	true,
       "simpleShapeSize":	{
         "x":	1,
@@ -208,7 +214,7 @@
     "enableLights":	false,
     "type":	"Mesh3D"
   }, {
-    "name":	"spotlight",
+    "name":	"sp1",
     "scale":	1,
     "position":	{
       "x":	-3.4497666358947754,
@@ -218,7 +224,7 @@
     "rotation":	{
       "x":	144.20564270019531,
       "y":	-51.395317077636719,
-      "z":	-173.15779113769531
+      "z":	-173.15882873535156
     },
     "isCollisionsEnabled":	false,
     "scripts":	[],
@@ -263,7 +269,7 @@
     "enableLights":	false,
     "type":	"Mesh3D"
   }, {
-    "name":	"LightPoint3D_93",
+    "name":	"lp2",
     "scale":	1,
     "position":	{
       "x":	-11.569978713989258,
@@ -306,8 +312,8 @@
       "z":	25.563266754150391
     },
     "rotation":	{
-      "x":	32.600013732910156,
-      "y":	23.9999942779541,
+      "x":	38.60003662109375,
+      "y":	20.599987030029297,
       "z":	0
     }
   }

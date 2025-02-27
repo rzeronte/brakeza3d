@@ -364,7 +364,7 @@ void SceneLoader::createParticleEmitterInScene()
 void SceneLoader::createImage3DToScene(const std::string &filename)
 {
     auto *newObject = new Image3D(
-        ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(10),
+        ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
         10,
         10,
         new Image(filename)

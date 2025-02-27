@@ -19,9 +19,8 @@ Image3D::Image3D(Vertex3D position, float width, float height, Image* image)
 
     setPosition(position);
 
-    M3 rotationTranspose = ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose();
-    Vertex3D up = rotationTranspose * EngineSetup::get()->up;
-    Vertex3D right = rotationTranspose * EngineSetup::get()->right;
+    Vertex3D up = EngineSetup::get()->up;
+    Vertex3D right = EngineSetup::get()->right.getInverse();
 
     setSize(width, height, up, right);
 }
@@ -63,13 +62,13 @@ void Image3D::setSize(float width, float height, Vertex3D U, Vertex3D  R)
     Q4 = Transforms::objectToLocal(Q4, this);
 
     Q1.u = 1.0f;
-    Q1.v = 1.0f;
+    Q1.v = 0.0001f;  // <-- Cambiado
     Q2.u = 0.0001f;
-    Q2.v = 1.0f;
+    Q2.v = 0.0001f;  // <-- Cambiado
     Q3.u = 0.0001f;
-    Q3.v = 0.0001f;
+    Q3.v = 1.0f;     // <-- Cambiado
     Q4.u = 1.0f;
-    Q4.v = 0.0001f;
+    Q4.v = 1.0f;     // <-- Cambiado
 
     auto normal = U % R;
     vertices.clear();
@@ -135,7 +134,7 @@ const char *Image3D::getTypeIcon() {
 void Image3D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    if (ImGui::TreeNode("Image3D")) {
+    if (ImGui::CollapsingHeader("Image3D")) {
 
         const float range_min_int = 1.0;
         const float range_max_int = 1000;
@@ -155,7 +154,7 @@ void Image3D::drawImGuiProperties()
 
         if (ImGui::TreeNode("Image")) {
             if (image->isLoaded()) {
-                ImGui::Image((ImTextureID) image->getOGLTextureID(),ImVec2(32, 32));
+                ImGui::Image((ImTextureID) image->getOGLTextureID(),ImVec2(64, 64));
             } else {
                 ImGui::Text("No image selected. Drag a texture here!");
             }
@@ -177,7 +176,6 @@ void Image3D::drawImGuiProperties()
             }
             ImGui::TreePop();
         }
-        ImGui::TreePop();
     }
 }
 

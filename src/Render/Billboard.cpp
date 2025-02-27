@@ -49,13 +49,13 @@ void Billboard::updateUnconstrainedQuad(Object3D *o, Vertex3D &U, Vertex3D &R)
     Q4 = Transforms::objectToLocal(Q4, o);
 
     Q1.u = 1.0f;
-    Q1.v = 1.0f;
-    Q2.u = 0.0001;
-    Q2.v = 1.0f;
-    Q3.u = 0.0001;
-    Q3.v = 0.0001;
+    Q1.v = 0.0001f;  // <-- Cambiado
+    Q2.u = 0.0001f;
+    Q2.v = 0.0001f;  // <-- Cambiado
+    Q3.u = 0.0001f;
+    Q3.v = 1.0f;     // <-- Cambiado
     Q4.u = 1.0f;
-    Q4.v = 0.0001;
+    Q4.v = 1.0f;     // <-- Cambiado
 
     auto normal = U % R;
     vertices.clear();

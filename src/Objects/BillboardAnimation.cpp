@@ -78,7 +78,7 @@ void BillboardAnimation::updateTrianglesCoordinatesAndTexture()
     M3 rotationTranspose = ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose();
 
     Vertex3D up = rotationTranspose * EngineSetup::get()->up;
-    Vertex3D right = rotationTranspose * EngineSetup::get()->right;
+    Vertex3D right = rotationTranspose * EngineSetup::get()->right.getInverse();
 
     billboard->updateUnconstrainedQuad(this, up, right);
     updateTexture();

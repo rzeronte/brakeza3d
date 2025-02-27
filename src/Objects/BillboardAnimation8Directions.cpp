@@ -41,7 +41,7 @@ void BillboardAnimation8Directions::onUpdate()
 void BillboardAnimation8Directions::updateTrianglesCoordinates(Camera3D *cam)
 {
     Vertex3D up = cam->getRotation().getTranspose() * EngineSetup::get()->up;
-    Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::get()->right;
+    Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::get()->right.getInverse();
 
     billboard->updateUnconstrainedQuad(this, up, right);
     updateTextureFromCameraAngle(this, cam);
