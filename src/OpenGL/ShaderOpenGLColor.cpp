@@ -22,7 +22,7 @@ ShaderOpenGLColor::ShaderOpenGLColor()
 }
 
 void ShaderOpenGLColor::render(
-    Object3D *o,
+    glm::mat4 modelViewMatrix,
     GLuint vertexbuffer,
     GLuint uvbuffer,
     GLuint normalbuffer,
@@ -59,7 +59,7 @@ void ShaderOpenGLColor::render(
 
     setMat4("projection", ProjectionMatrix);
     setMat4("view", ViewMatrix);
-    setMat4("model", o->getModelMatrix());
+    setMat4("model", modelViewMatrix);
     setVec3("color", color.toGLM());
 
     setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);

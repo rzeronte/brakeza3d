@@ -105,7 +105,13 @@ void Image3D::onUpdate()
 
     if (!image->isLoaded()) return;
 
-    ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->render(
+    auto render = ComponentsManager::get()->getComponentRender();
+
+    if (render->getSelectedObject() == this) {
+        render->getShaderOGLOutline()->drawOutlineImage3D(this, Color::green(), 0.1f);
+    }
+
+    render->getShaderOGLRender()->render(
         this,
         image->getOGLTextureID(),
         image->getOGLTextureID(),
@@ -121,7 +127,6 @@ void Image3D::onUpdate()
 Image3D::~Image3D()
 {
 }
-
 
 const char *Image3D::getTypeObject() {
     return "Image3D";
@@ -241,4 +246,31 @@ void Image3D::fillBuffers()
 Image3D *Image3D::create(Vertex3D p, float w, float h, const std::string &file)
 {
     return new Image3D(p, w, h, new Image(file));
+}
+
+void Image3D::checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastDepthFound)
+{
+    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    std::vector<Triangle> modelTriangles;
+    modelTriangles.emplace_back(Q3, Q2, Q1, this);  // Cambiado el orden
+    modelTriangles.emplace_back(Q4, Q3, Q1, this);  // Cambiado el orden
+
+    for (auto &triangle : modelTriangles) {
+        triangle.updateObjectSpace();
+        auto p = Plane(triangle.Ao, triangle.Bo, triangle.Co);
+        float t;
+        if (Maths::isVector3DClippingPlane(p, ray)) {
+            Vertex3D intersectionPoint  = p.getPointIntersection(ray.origin(), ray.end(), t);
+            if (triangle.isPointInside(intersectionPoint)) {
+                auto distance = intersectionPoint - camera->getPosition();
+                auto m = distance.getModule();
+                if ( m < lastDepthFound || lastDepthFound == -1) {
+                    foundObject = triangle.parent;
+                    Logging::Message("esa imagen");
+                    lastDepthFound = m;
+                }
+            }
+        }
+    }
 }

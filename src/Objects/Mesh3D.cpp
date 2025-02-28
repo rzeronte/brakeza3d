@@ -891,3 +891,26 @@ const std::vector<ShaderOpenGLCustom *> &Mesh3D::getCustomShaders() const {
     return customShaders;
 }
 
+void Mesh3D::checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastDepthFound)
+{
+    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    for (auto m: meshes) {
+        for (auto &triangle : m.modelTriangles) {
+            triangle->updateObjectSpace();
+            auto p = Plane(triangle->Ao, triangle->Bo, triangle->Co);
+            float t;
+            if (Maths::isVector3DClippingPlane(p, ray)) {
+                Vertex3D intersectionPoint  = p.getPointIntersection(ray.origin(), ray.end(), t);
+                if (triangle->isPointInside(intersectionPoint)) {
+                    auto distance = intersectionPoint - camera->getPosition();
+                    auto m = distance.getModule();
+                    if ( m < lastDepthFound || lastDepthFound == -1) {
+                        foundObject = triangle->parent;
+                        lastDepthFound = m;
+                    }
+                }
+            }
+        }
+    }
+}

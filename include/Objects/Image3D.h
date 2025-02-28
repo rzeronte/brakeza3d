@@ -17,11 +17,6 @@ class Image3D : public Object3D {
     Vertex3D Q3;
     Vertex3D Q4;
 
-    GLuint vertexbuffer;
-    GLuint uvbuffer;
-    GLuint normalbuffer;
-    std::vector<glm::vec3> vertices;
-
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> uvs;
 public:
@@ -47,6 +42,13 @@ public:
     void fillBuffers();
 
     static Image3D* create(Vertex3D p, float w, float h, const std::string &file);
+
+    void checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastDepthFound);
+
+    GLuint vertexbuffer;
+    GLuint normalbuffer;
+    GLuint uvbuffer;
+    std::vector<glm::vec3> vertices;
 };
 
 

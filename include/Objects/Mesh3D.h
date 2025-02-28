@@ -134,7 +134,9 @@ public:
 
     void removeShader(int i);
 
-    const std::vector<ShaderOpenGLCustom *> &getCustomShaders() const;
+    [[nodiscard]] const std::vector<ShaderOpenGLCustom *> &getCustomShaders() const;
+
+    void checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastDepthFound) override;
 };
 
 #endif //SDL2_3D_ENGINE_MESH_H

@@ -193,33 +193,10 @@ Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
     Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition);
     Vector3D ray(camera->getPosition(),nearPlaneVertex);
 
-    int i = 0;
     Object3D *foundObject = nullptr;
     float lastDepthFound = -1;
     for (auto o: Brakeza3D::get()->getSceneObjects()) {
-        auto mesh = dynamic_cast<Mesh3D*>(o);
-
-        if (mesh == nullptr) continue;
-        for (auto m: mesh->meshes) {
-            for (auto &triangle : m.modelTriangles) {
-                triangle->updateObjectSpace();
-                auto p = new Plane(triangle->Ao, triangle->Bo, triangle->Co);
-                float t;
-                if (Maths::isVector3DClippingPlane(*p, ray)) {
-                    Vertex3D intersectionPoint  = p->getPointIntersection(ray.origin(), ray.end(), t);
-                    if (triangle->isPointInside(intersectionPoint)) {
-                        auto distance = intersectionPoint - camera->getPosition();
-                        auto m = distance.getModule();
-                        if ( m < lastDepthFound || lastDepthFound == -1) {
-                            foundObject = triangle->parent;
-                            lastDepthFound = m;
-                        }
-                    }
-                }
-            }
-            i++;
-
-        }
+        o->checkClickObject(ray, foundObject, lastDepthFound);
     }
 
     return foundObject;

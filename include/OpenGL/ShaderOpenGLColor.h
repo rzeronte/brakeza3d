@@ -18,7 +18,7 @@ public:
 
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
 
-    void render(Object3D *o, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size, bool toFramebuffer, Color color);
+    void render(glm::mat4 modelViewMatrix, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size, bool toFramebuffer, Color color);
 
     void destroy() override;
 

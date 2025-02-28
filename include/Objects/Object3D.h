@@ -202,6 +202,8 @@ public:
     void setupGhostCollider(CollisionShape mode);
 
     M3 rotation;
+
+    virtual void checkClickObject(Vector3D ray, Object3D*& foundObject, float &lastDepthFound);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

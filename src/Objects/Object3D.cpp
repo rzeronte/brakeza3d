@@ -911,3 +911,7 @@ void Object3D::setupGhostCollider(CollisionShape mode)
         );
     }
 }
+
+void Object3D::checkClickObject(Vector3D ray, Object3D*& foundObject, float &lastDepthFound)
+{
+}
