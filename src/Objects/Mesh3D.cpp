@@ -103,9 +103,9 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     std::cout << "AssimpLoadGeometryFromFile: " << fileName.c_str() << std::endl;
 
     if (!Tools::fileExists(fileName.c_str())) {
-        Logging::Message("Error import 3D file not exist");
+        Logging::Message("[error] Error import 3D file not exist");
         std::cout << "Error import 3D file not exist" << std::endl;
-        exit(-1);
+        return;
     }
 
     Assimp::Importer assimpImporter;

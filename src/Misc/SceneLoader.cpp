@@ -291,6 +291,11 @@ void SceneLoader::createSpotLight3DInScene()
 
 void SceneLoader::createImage2DInScene(const std::string& filename)
 {
+    if (!Tools::fileExists(filename.c_str())) {
+        Logging::Message("File %s not found", filename.c_str());
+        return;
+    }
+
     auto *newObject = new Image2D(
         EngineSetup::get()->screenWidth/2,
         EngineSetup::get()->screenHeight/2,
@@ -305,6 +310,11 @@ void SceneLoader::createImage2DInScene(const std::string& filename)
 
 void SceneLoader::createImage2DAnimatedInScene(const std::string& filename)
 {
+    if (!Tools::fileExists(filename.c_str())) {
+        Logging::Message("File %s not found", filename.c_str());
+        return;
+    }
+
     auto *newObject = new Image2DAnimation(
         EngineSetup::get()->screenWidth/2,
         EngineSetup::get()->screenHeight/2,
@@ -320,6 +330,11 @@ void SceneLoader::createImage2DAnimatedInScene(const std::string& filename)
 
 void SceneLoader::createBillboardAnimationInScene(const std::string& filename)
 {
+    if (!Tools::fileExists(filename.c_str())) {
+        Logging::Message("File %s not found", filename.c_str());
+        return;
+    }
+
     auto *newObject = new BillboardAnimation(1, 1);
     newObject->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2));
     newObject->addAnimation(filename,1,1,1,1);
@@ -363,6 +378,11 @@ void SceneLoader::createParticleEmitterInScene()
 
 void SceneLoader::createImage3DToScene(const std::string &filename)
 {
+    if (!Tools::fileExists(filename.c_str())) {
+        Logging::Message("File %s not found", filename.c_str());
+        return;
+    }
+
     auto *newObject = new Image3D(
         ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
         10,
@@ -385,6 +405,11 @@ void SceneLoader::createBillboardAnimation8Directions()
 
 void SceneLoader::createMesh3D(const std::string& animationFile)
 {
+    if (!Tools::fileExists(animationFile.c_str())) {
+        Logging::Message("File %s not found", animationFile.c_str());
+        return;
+    }
+
     auto *o = new Mesh3D();
     o->setBelongToScene(true);
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
@@ -395,6 +420,11 @@ void SceneLoader::createMesh3D(const std::string& animationFile)
 
 void SceneLoader::createMesh3DAnimationToScene(const std::string& animationFile)
 {
+    if (!Tools::fileExists(animationFile.c_str())) {
+        Logging::Message("File %s not found", animationFile.c_str());
+        return;
+    }
+
     auto *o = new Mesh3DAnimation();
     o->setBelongToScene(true);
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
@@ -413,6 +443,11 @@ void SceneLoader::createScene(const std::string &filename)
 
 void SceneLoader::removeScene(const std::string &filename)
 {
+    if (!Tools::fileExists(filename.c_str())) {
+        Logging::Message("File %s not found", filename.c_str());
+        return;
+    }
+
     Logging::Message("Deleting scene: %s", filename.c_str());
 
     Tools::removeFile(filename);
