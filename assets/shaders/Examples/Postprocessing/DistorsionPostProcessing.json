@@ -1,0 +1,16 @@
+{
+	"name":	"HeatDistorsionPostProcessing",
+	"file":	"../assets/shaders/Examples/Postprocessing/DistorsionPostProcessing.fs",
+	"type":	"Postprocessing",
+	"types":	[{
+      "name":	"intensity",
+      "type":	"float",
+      "value":	0
+    }, {
+      "name":	"sceneTexture",
+      "type":	"scene"
+    }, {
+      "name":	"et",
+      "type":	"execution_time"
+    }]
+}

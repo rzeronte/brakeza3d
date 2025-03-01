@@ -1,0 +1,22 @@
+{
+	"name":	"FadeToColorPostprocessing",
+	"vertexshader":	"../assets/shaders/Examples/Postprocessing/FadeToColorPostprocessing.vs",
+	"fragmentshader":	"../assets/shaders/Examples/Postprocessing/FadeToColorPostprocessing.fs",
+	"type":	"Postprocessing",
+	"types":	[{
+			"name":	"progress",
+			"type":	"float",
+			"value":	0
+		}, {
+			"name":	"color",
+			"type":	"vec3",
+			"value":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			}
+		}, {
+			"name":	"sceneTexture",
+			"type":	"scene"
+		}]
+}

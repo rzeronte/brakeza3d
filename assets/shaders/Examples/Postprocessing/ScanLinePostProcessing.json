@@ -1,0 +1,25 @@
+{
+	"name":	"ScanLinePostProcessing",
+	"vertexshader":	"../assets/shaders/Examples/Postprocessing/ScanLinePostProcessing.vs",
+	"fragmentshader":	"../assets/shaders/Examples/Postprocessing/ScanLinePostProcessing.fs",
+	"type":	"Postprocessing",
+	"types":	[{
+			"name":	"intensity",
+			"type":	"float",
+			"value":	0
+		}, {
+			"name":	"sceneTexture",
+			"type":	"scene"
+		}, {
+			"name":	"et",
+			"type":	"execution_time"
+		}, {
+			"name":	"speed",
+			"type":	"float",
+			"value":	0
+		}, {
+			"name":	"heightLine",
+			"type":	"float",
+			"value":	0
+		}]
+}

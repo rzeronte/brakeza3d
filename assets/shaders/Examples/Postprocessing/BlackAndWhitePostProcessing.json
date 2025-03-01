@@ -1,0 +1,14 @@
+{
+	"name":	"BlackAndWhitePostProcessing",
+	"vertexshader":	"../assets/shaders/Examples/Postprocessing/BlackAndWhitePostProcessing.vs",
+	"fragmentshader":	"../assets/shaders/Examples/Postprocessing/BlackAndWhitePostProcessing.fs",
+	"type":	"Postprocessing",
+	"types":	[{
+			"name":	"intensity",
+			"type":	"float",
+			"value":	0
+		}, {
+			"name":	"sceneTexture",
+			"type":	"scene"
+		}]
+}

@@ -1,0 +1,15 @@
+{
+	"name":	"DemoMask",
+	"file":	"../assets/shaders/Examples/Mesh3D/DemoMask.fs",
+	"type":	"Mesh3D",
+	"types":	[{
+			"name":	"diffuseTexture",
+			"type":	"diffuse"
+		}, {
+			"name":	"noiseTexture",
+			"type":	"texture"
+		}, {
+			"name":	"t",
+			"type":	"execution_time"
+		}]
+}
