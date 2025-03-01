@@ -10,12 +10,15 @@ out vec4 FragColor;
 
 void main()
 {
-    // Obtener el color base de la escena
+    // Obtener el color base de la escena (RGB)
     vec3 sceneColor = texture(sceneTexture, TexCoords).rgb;
+
+    // Obtener el alpha original de la textura
+    float alpha = texture(sceneTexture, TexCoords).a;
 
     // Interpolar entre la textura y el color deseado en función de progress
     vec3 finalColor = mix(sceneColor, color, progress);
 
-    // Salida final
-    FragColor = vec4(finalColor, 1.0);
+    // Salida final (mantener alpha original)
+    FragColor = vec4(finalColor, alpha);
 }

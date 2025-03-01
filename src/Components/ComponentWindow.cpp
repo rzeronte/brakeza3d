@@ -314,19 +314,7 @@ void ComponentWindow::resetFramebuffer()
 
     createFramebuffer();
 
-    auto render = ComponentsManager::get()->getComponentRender();
-    render->getShaderOGLRender()->destroy();
-    render->getShaderOGLImage()->destroy();
-    render->getShaderOGLLine()->destroy();
-    render->getShaderOGLWireframe()->destroy();
-    render->getShaderOGLShading()->destroy();
-    render->getShaderOGLPoints()->destroy();
-    render->getShaderOGLOutline()->destroy();
-    render->getShaderOGLColor()->destroy();
-    render->getShaderOGLParticles()->destroy();
-    render->getShaderOGLDOF()->destroy();
-    render->getShaderOGLDepthMap()->destroy();
-    render->getShaderOGLFOG()->destroy();
+    ComponentsManager::get()->getComponentRender()->resizeFramebuffers();
 }
 
 void ComponentWindow::RenderLayersToGlobalFramebuffer() const

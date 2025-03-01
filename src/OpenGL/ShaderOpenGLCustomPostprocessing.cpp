@@ -60,5 +60,6 @@ void ShaderOpenGLCustomPostprocessing::render(GLuint framebuffer)
 
 void ShaderOpenGLCustomPostprocessing::destroy()
 {
+    ShaderOpenGLCustom::destroy();
     resetQuadMatrix();
 }

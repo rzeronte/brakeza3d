@@ -17,6 +17,8 @@ ShaderOpenGLCustom::ShaderOpenGLCustom(
     ShaderCustomTypes type
 )
 :
+    resultFramebuffer(0),
+    textureResult(0),
     label(std::move(label)),
     enabled(true),
     ShaderOpenGL(vertexFilename, fragmentFilename),
@@ -25,6 +27,7 @@ ShaderOpenGLCustom::ShaderOpenGLCustom(
 {
     readShaderFiles(vertexFilename, fragmentFilename);
     parseTypesFromFileAttributes();
+    createFramebuffer();
 }
 
 ShaderOpenGLCustom::ShaderOpenGLCustom(
@@ -43,6 +46,7 @@ ShaderOpenGLCustom::ShaderOpenGLCustom(
 {
     readShaderFiles(vertexFilename, fragmentFilename);
     setDataTypesFromJSON(types);
+    createFramebuffer();
 }
 
 void ShaderOpenGLCustom::readShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename)
@@ -248,6 +252,9 @@ GLuint ShaderOpenGLCustom::compile()
 
 void ShaderOpenGLCustom::destroy()
 {
+    glDeleteFramebuffers(1, &resultFramebuffer);
+    glDeleteTextures(1, &textureResult);
+    createFramebuffer();
 }
 
 void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
@@ -500,7 +507,13 @@ void ShaderOpenGLCustom::postUpdate()
 {
     if (!isEnabled()) return;
 
-    render(ComponentsManager::get()->getComponentWindow()->getGlobalFramebuffer());
+    //render(ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    render(resultFramebuffer);
+
+    auto render = ComponentsManager::get()->getComponentRender();
+    auto window = ComponentsManager::get()->getComponentWindow();
+    auto shaderOGLImage = render->getShaderOGLImage();
+    shaderOGLImage->renderTexture(textureResult, 0, 0, window->width, window->height, 1, true, window->getGlobalFramebuffer());
 }
 
 const std::string &ShaderOpenGLCustom::getLabel() const {
@@ -816,4 +829,20 @@ void ShaderOpenGLCustom::reload()
     parseTypesFromFileAttributes();
 
     compile();
+}
+
+void ShaderOpenGLCustom::createFramebuffer()
+{
+    glGenFramebuffers(1, &resultFramebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(resultFramebuffer);
+
+    int w, h;
+    SDL_GetWindowSize(ComponentsManager::get()->getComponentWindow()->getWindow(), &w, &h);
+
+    glGenTextures(1, &textureResult);
+    glBindTexture(GL_TEXTURE_2D, textureResult);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureResult, 0);
 }

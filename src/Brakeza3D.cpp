@@ -93,7 +93,7 @@ void Brakeza3D::mainLoop(bool autostart, const std::string& project)
         controlFrameRate();
         updateTimer();
         preUpdateComponents();
-        componentsManager->getComponentRender()->runShadersOpenCLPreUpdate();
+        componentsManager->getComponentRender()->runShadersOpenGLPreUpdate();
         while (SDL_PollEvent(&e)) {
             checkForResizeOpenGLWindow(e);
             onUpdateSDLPollEventComponents(&e, finish);

@@ -67,6 +67,9 @@ static std::map<std::string, ShaderOpenGLCustomDataType> GLSLTypeMapping = {
 
 class ShaderOpenGLCustom: public ShaderOpenGL
 {
+    GLuint resultFramebuffer;
+    GLuint textureResult;
+
     std::string label;
 
     bool enabled;
@@ -104,6 +107,9 @@ public:
 
     std::string sourceVS;
     std::string sourceFS;
+
+    void destroy() override;
+
 protected:
 
     bool existDataType(const char *name, const char *type);
@@ -117,9 +123,6 @@ protected:
     void setDataTypesFromJSON(cJSON *typesJSON);
 
     void addDataType(const char *name, const char *type, cJSON *value);
-
-private:
-    void destroy() override;
 
 public:
     [[nodiscard]] bool isEnabled() const;
@@ -181,6 +184,8 @@ public:
     void captureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const;
 
     void readShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename);
+
+    void createFramebuffer();
 };
 
 
