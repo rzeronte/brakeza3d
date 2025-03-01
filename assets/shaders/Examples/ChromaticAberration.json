@@ -1,0 +1,14 @@
+{
+	"name":	"ChromaticAberration",
+	"vertexshader":	"../assets/shaders/Examples/ChromaticAberration.vs",
+	"fragmentshader":	"../assets/shaders/Examples/ChromaticAberration.fs",
+	"type":	"Postprocessing",
+	"types":	[{
+			"name":	"intensity",
+			"type":	"float",
+			"value":	0
+		}, {
+			"name":	"sceneTexture",
+			"type":	"scene"
+		}]
+}

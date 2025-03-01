@@ -1,0 +1,14 @@
+{
+	"name":	"BlurPostprocessing",
+	"vertexshader":	"../assets/shaders/Examples/BlurPostprocessing.vs",
+	"fragmentshader":	"../assets/shaders/Examples/BlurPostprocessing.fs",
+	"type":	"Postprocessing",
+	"types":	[{
+			"name":	"sceneTexture",
+			"type":	"scene"
+		}, {
+			"name":	"intensity",
+			"type":	"float",
+			"value":	0
+		}]
+}
