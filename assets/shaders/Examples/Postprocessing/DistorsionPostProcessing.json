@@ -1,6 +1,6 @@
 {
 	"name":	"HeatDistorsionPostProcessing",
-	"file":	"../assets/shaders/Examples/DistorsionPostProcessing.fs",
+	"file":	"../assets/shaders/Examples/Postprocessing/DistorsionPostProcessing.fs",
 	"type":	"Postprocessing",
 	"types":	[{
       "name":	"intensity",
