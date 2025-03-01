@@ -127,7 +127,7 @@ public:
     void removeSceneShaderByIndex(int index);
     void removeSceneShader(ShaderOpenGLCustom *);
 
-    void runShadersOpenCLPreUpdate();
+    void runShadersOpenGLPreUpdate();
 
     ShaderOpenGLCustom *getSceneShaderByIndex(int i);
 
@@ -186,6 +186,8 @@ public:
     void changeOpenGLProgram(GLuint);
 
     const std::map<std::string, ShaderCustomTypes> &getShaderTypesMapping() const;
+
+    void resizeFramebuffers();
 };
 
 

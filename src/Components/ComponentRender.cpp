@@ -323,7 +323,7 @@ void ComponentRender::runShadersOpenGLPostUpdate()
     }
 }
 
-void ComponentRender::runShadersOpenCLPreUpdate() {
+void ComponentRender::runShadersOpenGLPreUpdate() {
     for( auto s: sceneShaders) {
         if (!s->isEnabled()) continue;
         s->onUpdate();
@@ -475,4 +475,27 @@ void ComponentRender::changeOpenGLProgram(GLuint programID)
 const std::map<std::string, ShaderCustomTypes> &ComponentRender::getShaderTypesMapping() const
 {
     return ShaderTypesMapping;
+}
+
+
+void ComponentRender::resizeFramebuffers()
+{
+    Logging::Message("Resizing framebuffers...");
+
+    getShaderOGLRender()->destroy();
+    getShaderOGLImage()->destroy();
+    getShaderOGLLine()->destroy();
+    getShaderOGLWireframe()->destroy();
+    getShaderOGLShading()->destroy();
+    getShaderOGLPoints()->destroy();
+    getShaderOGLOutline()->destroy();
+    getShaderOGLColor()->destroy();
+    getShaderOGLParticles()->destroy();
+    getShaderOGLDOF()->destroy();
+    getShaderOGLDepthMap()->destroy();
+    getShaderOGLFOG()->destroy();
+
+    for (auto s: sceneShaders) {
+        s->destroy();
+    }
 }
