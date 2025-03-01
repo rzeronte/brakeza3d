@@ -1,0 +1,17 @@
+{
+	"name":	"NoisePostprocessing",
+	"vertexshader":	"../assets/shaders/Examples/Postprocessing/NoisePostprocessing.vs",
+	"fragmentshader":	"../assets/shaders/Examples/Postprocessing/NoisePostprocessing.fs",
+	"type":	"Postprocessing",
+	"types":	[{
+			"name":	"sceneTexture",
+			"type":	"scene"
+		}, {
+			"name":	"intensity",
+			"type":	"float",
+			"value":	0
+		}, {
+			"name":	"et",
+			"type":	"execution_time"
+		}]
+}
