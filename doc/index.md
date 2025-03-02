@@ -682,6 +682,17 @@ Podemos aplicar fuerzas a los objetos ``RIGIDBODY`` gracias a los siguientes mé
 - `applyCentralForce(Vertex3D f)`
 - `applyImpulse(Vertex3D f, Vertex3D r)`
 
+### Propiedades del colisionador
+
+Puedes utilizar los siguientes métodos para configurar el comportamiento físico del objeto:
+
+- `setMass(float)`:
+- `setFriction(float)`:
+- `setRestitution(float)`:
+- `setAngularDamping(float)`:
+- `setLinearDamping(float)`:
+- `setAngularFactor(Vertex3D)`:
+
 ### Modo de colisión KINEMATIC
 
 
