@@ -9,7 +9,8 @@ ShaderOpenGLShading::ShaderOpenGLShading()
 :
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Shading.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Shading.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Shading.fs",
+        false
     )
 {
 }
@@ -55,7 +56,7 @@ void ShaderOpenGLShading::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer,
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glVertexAttribPointer(
             0,                  // attribute
-            3,                  // size
+            4,                  // size
             GL_FLOAT,           // type
             GL_FALSE,           // normalized?
             0,                  // stride
