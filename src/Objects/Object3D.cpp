@@ -766,7 +766,7 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
     kinematicBody = new btPairCachingGhostObject();
     kinematicBody->setWorldTransform(t);
 
-    auto capsule = new btCapsuleShapeX(kinematicCapsuleSize.x, kinematicCapsuleSize.y);
+    auto capsule = new btCapsuleShapeZ(kinematicCapsuleSize.x, kinematicCapsuleSize.y);
     btVector3 inertia(0, 0, 0);
     capsule->calculateLocalInertia(mass, inertia);
     kinematicBody->setCollisionShape(capsule);

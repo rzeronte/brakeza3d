@@ -39,36 +39,7 @@
 				"y":	-0,
 				"z":	0
 			},
-			"isCollisionsEnabled":	true,
-			"collider":	{
-				"mode":	1,
-				"shape":	1,
-				"friction":	1,
-				"mass":	0,
-				"linearDamping":	1,
-				"angularDamping":	1,
-				"restitution":	0,
-				"colliderStatic":	true,
-				"simpleShapeSize":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				},
-				"kinematicCapsuleSize":	{
-					"x":	1,
-					"y":	3
-				},
-				"angularFactor":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				},
-				"linearFactor":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				}
-			},
+			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
 			"model":	"../assets/models//StudioCorner.fbx",
@@ -138,7 +109,7 @@
 			"rotation":	{
 				"x":	41.436470031738281,
 				"y":	10.452261924743652,
-				"z":	-141.09242248535156
+				"z":	-141.09672546386719
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -157,7 +128,7 @@
 			"rotation":	{
 				"x":	-166.75724792480469,
 				"y":	-26.889076232910156,
-				"z":	165.6741943359375
+				"z":	165.67628479003906
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -176,38 +147,9 @@
 			"rotation":	{
 				"x":	90,
 				"y":	-5.0089556680177338e-06,
-				"z":	5.0012786232400686e-06
+				"z":	5.0005114644591231e-06
 			},
-			"isCollisionsEnabled":	true,
-			"collider":	{
-				"mode":	1,
-				"shape":	1,
-				"friction":	1,
-				"mass":	0,
-				"linearDamping":	1,
-				"angularDamping":	1,
-				"restitution":	0,
-				"colliderStatic":	true,
-				"simpleShapeSize":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				},
-				"kinematicCapsuleSize":	{
-					"x":	1,
-					"y":	3
-				},
-				"angularFactor":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				},
-				"linearFactor":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				}
-			},
+			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"shaders":	[],
 			"model":	"../assets/models//Stairs.fbx",
@@ -224,7 +166,7 @@
 			"rotation":	{
 				"x":	144.20564270019531,
 				"y":	-51.395317077636719,
-				"z":	-173.15882873535156
+				"z":	-173.15986633300781
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -327,13 +269,13 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-9.7794713973999023,
-			"y":	15.370067596435547,
-			"z":	24.729696273803711
+			"x":	-9.9123706817626953,
+			"y":	15.823295593261719,
+			"z":	25.212148666381836
 		},
 		"rotation":	{
-			"x":	41.400047302246094,
-			"y":	18.199935913085938,
+			"x":	41.200065612792969,
+			"y":	19.999927520751953,
 			"z":	0
 		}
 	}

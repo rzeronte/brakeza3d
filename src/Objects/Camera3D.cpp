@@ -1,4 +1,3 @@
-#include <BulletCollision/CollisionShapes/btCapsuleShape.h>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include "../../include/Components/Camera3D.h"
