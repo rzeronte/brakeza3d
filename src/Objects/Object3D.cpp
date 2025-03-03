@@ -445,7 +445,9 @@ void Object3D::drawImGuiProperties()
                 ImGui::Separator();
 
                 drawImGuiCollisionModeSelector();
-                drawImGuiCollisionShapeSelector();
+                if (getCollisionMode() != CollisionMode::KINEMATIC) {
+                    drawImGuiCollisionShapeSelector();
+                }
 
                 if (getCollisionMode() == CollisionMode::BODY) {
                     ImGui::Separator();
@@ -463,7 +465,7 @@ void Object3D::drawImGuiProperties()
                     }
                 }
 
-                if (getCollisionMode() == KINEMATIC) {
+                if (getCollisionMode() == KINEMATIC || getCollisionShape() == CAPSULE) {
                     ImGui::Separator();
                     const float range_min = 0;
                     const float range_max = 1000;
@@ -764,7 +766,7 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
     kinematicBody = new btPairCachingGhostObject();
     kinematicBody->setWorldTransform(t);
 
-    auto capsule = new btCapsuleShapeZ(kinematicCapsuleSize.x, kinematicCapsuleSize.y);
+    auto capsule = new btCapsuleShapeX(kinematicCapsuleSize.x, kinematicCapsuleSize.y);
     btVector3 inertia(0, 0, 0);
     capsule->calculateLocalInertia(mass, inertia);
     kinematicBody->setCollisionShape(capsule);
@@ -805,7 +807,16 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     brakezaRotation.getRotation(qRotation);
 
     transformation.setRotation(qRotation);
-    btCollisionShape *collisionShape = new btBoxShape(simpleShapeSize.toBullet());
+    btCollisionShape *collisionShape;
+
+    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+        collisionShape = new btBoxShape(simpleShapeSize.toBullet());
+    }
+
+    if (getCollisionShape() == CollisionShape::CAPSULE) {
+        collisionShape = new btCapsuleShape(kinematicCapsuleSize.x, kinematicCapsuleSize.y);
+    }
+
     btVector3 inertia(0, 0, 0);
     collisionShape->calculateLocalInertia(mass, inertia);
 
@@ -900,7 +911,7 @@ void Object3D::setupGhostCollider(CollisionShape mode)
     setCollisionMode(CollisionMode::GHOST);
     setCollisionShape(mode);
 
-    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE || getCollisionShape() == CollisionShape::CAPSULE) {
         makeSimpleGhostBody(
             getPosition(),
             getModelMatrix(),

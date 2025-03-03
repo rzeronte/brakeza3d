@@ -10,8 +10,8 @@
 
 enum CollisionShape {
     SIMPLE_SHAPE = 0,
-    TRIANGLE_MESH_SHAPE = 1,
-    KINEMATIC_CAPSULE = 2
+    CAPSULE = 1,
+    TRIANGLE_MESH_SHAPE = 2,
 };
 
 enum CollisionMode {

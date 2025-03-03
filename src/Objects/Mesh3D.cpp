@@ -497,6 +497,10 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o, bool loadGeometry)
                     if (shape == CollisionShape::SIMPLE_SHAPE) {
                         o->setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
                     }
+                    if (shape == CollisionShape::CAPSULE) {
+                        o->setupGhostCollider(CollisionShape::CAPSULE);
+                    }
+
                     if (shape == CollisionShape::TRIANGLE_MESH_SHAPE) {
                         o->setupGhostCollider(CollisionShape::TRIANGLE_MESH_SHAPE);
                     }
@@ -504,6 +508,9 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o, bool loadGeometry)
                 case CollisionMode::BODY:
                     if (shape == CollisionShape::SIMPLE_SHAPE) {
                         o->setupRigidBodyCollider(CollisionShape::SIMPLE_SHAPE);
+                    }
+                    if (shape == CollisionShape::CAPSULE) {
+                        o->setupRigidBodyCollider(CollisionShape::CAPSULE);
                     }
                     if (shape == CollisionShape::TRIANGLE_MESH_SHAPE) {
                         o->setupRigidBodyCollider(CollisionShape::TRIANGLE_MESH_SHAPE);
@@ -578,16 +585,15 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
             convexHullShape->addPoint(c);
         }
     }
+    ghostObject = new btPairCachingGhostObject();
+    ghostObject->setWorldTransform(Tools::GLMMatrixToBulletTransform(getModelMatrix()));
+    ghostObject->setCollisionShape(convexHullShape);
+    ghostObject->setUserPointer(this);
 
-    getGhostObject()->setWorldTransform(Tools::GLMMatrixToBulletTransform(getModelMatrix()));
-    getGhostObject()->setCollisionShape(convexHullShape);
-    getGhostObject()->setUserPointer(this);
-
-    world->addCollisionObject(getGhostObject(), collisionGroup, collisionMask);
+    world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 }
 
-void Mesh3D::setupGhostCollider(CollisionShape modeShape)
-{
+void Mesh3D::setupGhostCollider(CollisionShape modeShape) {
     Logging::Message("[Mesh3D] setupGhostCollider for %s", getLabel().c_str());
 
     removeCollisionObject();
@@ -595,7 +601,7 @@ void Mesh3D::setupGhostCollider(CollisionShape modeShape)
     setCollisionMode(CollisionMode::GHOST);
     setCollisionShape(modeShape);
 
-    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE || getCollisionShape() == CollisionShape::CAPSULE) {
         makeSimpleGhostBody(
             getPosition(),
             getModelMatrix(),
@@ -622,8 +628,7 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
 
     setCollisionShape(modeShape);
     setCollisionMode(CollisionMode::BODY);
-
-    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE || getCollisionShape() == CollisionShape::CAPSULE) {
         updateBoundingBox();
         makeSimpleRigidBody(
             mass,
@@ -656,7 +661,7 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
 void Mesh3D::drawImGuiCollisionShapeSelector()
 {
     auto flags = ImGuiComboFlags_None;
-    const char* items[] = { "SIMPLE", "TRIANGLE" };
+    const char* items[] = { "SIMPLE", "CAPSULE", "TRIANGLE",  };
     int item_current_idx = (int) collisionShape;
     const char* combo_preview_value = items[item_current_idx];
 
@@ -680,6 +685,16 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
                             break;
                         }
                         case 1: {
+                            if (collisionMode == CollisionMode::GHOST) {
+                                setupGhostCollider(CollisionShape::CAPSULE);
+                            }
+
+                            if (collisionMode == CollisionMode::BODY) {
+                                setupRigidBodyCollider(CollisionShape::CAPSULE);
+                            }
+                            break;
+                        }
+                        case 2: {
                             if (collisionMode == CollisionMode::GHOST) {
                                 setupGhostCollider(CollisionShape::TRIANGLE_MESH_SHAPE);
                             }

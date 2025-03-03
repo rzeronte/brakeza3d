@@ -109,7 +109,15 @@ void Collider::makeSimpleGhostBody(
     transformation.setIdentity();
     transformation.setOrigin(position.toBullet());
 
-    btConvexHullShape *convexHullShape = reinterpret_cast<btConvexHullShape *>(new btBoxShape(dimensions.toBullet()));
+    btConvexHullShape *convexHullShape;
+
+    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+        convexHullShape = reinterpret_cast<btConvexHullShape *>(new btBoxShape(dimensions.toBullet()));;
+    }
+
+    if (getCollisionShape() == CollisionShape::CAPSULE) {
+        convexHullShape = reinterpret_cast<btConvexHullShape *>(new btCapsuleShape(kinematicCapsuleSize.x, kinematicCapsuleSize.y));;
+    }
 
     ghostObject = new btPairCachingGhostObject();
     ghostObject->setCollisionShape(convexHullShape);
@@ -168,7 +176,47 @@ void Collider::drawImGuiCollisionModeSelector()
 
 void Collider::drawImGuiCollisionShapeSelector()
 {
+    auto flags = ImGuiComboFlags_None;
+    const char* items[] = { "SIMPLE", "CAPSULE" };
+    int item_current_idx = (int) collisionShape;
+    const char* combo_preview_value = items[item_current_idx];
 
+    auto comboTitle = "Shape###";
+    if (ImGui::BeginCombo(comboTitle, combo_preview_value, flags)) {
+        for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
+            const bool is_selected = (item_current_idx == n);
+            if (ImGui::Selectable(items[n], is_selected)) {
+                if (!is_selected) {
+                    item_current_idx = n;
+                    switch (n) {
+                        case 0: {
+                            if (collisionMode == CollisionMode::GHOST) {
+                                setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
+                            }
+
+                            if (collisionMode == CollisionMode::BODY) {
+                                setupRigidBodyCollider(CollisionShape::SIMPLE_SHAPE);
+                            }
+
+                            break;
+                        }
+                        case 1: {
+                            if (collisionMode == CollisionMode::GHOST) {
+                                setupGhostCollider(CollisionShape::CAPSULE);
+                            }
+
+                            if (collisionMode == CollisionMode::BODY) {
+                                setupRigidBodyCollider(CollisionShape::CAPSULE);
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        ImGui::EndCombo();
+    }
 }
 
 void Collider::setupKinematicCollider()
@@ -198,14 +246,12 @@ void Collider::setupRigidBodyCollider(CollisionShape shapeMode)
     setCollisionMode(CollisionMode::BODY);
     setCollisionShape(shapeMode);
 
-    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
-        makeSimpleRigidBody(
-            mass,
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            EngineSetup::collisionGroups::AllFilter,
-            EngineSetup::collisionGroups::AllFilter
-        );
-    }
+    makeSimpleRigidBody(
+        mass,
+        Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+        EngineSetup::collisionGroups::AllFilter,
+        EngineSetup::collisionGroups::AllFilter
+    );
 }
 
 void Collider::makeSimpleRigidBody(
