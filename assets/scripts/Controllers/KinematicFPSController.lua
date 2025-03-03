@@ -27,7 +27,7 @@ function onUpdate()
 
     pitch = math.max(-89, math.min(89, pitch))
 
-    camera:setRotationFromEulerAngles(pitch, -yaw, 0)
+    camera:setRotationFromEulerAngles(pitch, yaw, 0)
 
     this:setRotation(camera:getRotation():getTranspose())
 
@@ -35,11 +35,11 @@ function onUpdate()
     right = this:AxisRight()
 
     if (componentsManager:getComponentInput():isCharPressed("W")) then
-        speed = speed + force
+        speed = speed - force
     end
 
     if (componentsManager:getComponentInput():isCharPressed("S")) then
-        speed = speed - force
+        speed = speed + force
     end
 
     if (componentsManager:getComponentInput():isCharPressed("A")) then
@@ -51,7 +51,7 @@ function onUpdate()
     end
 
     if (componentsManager:getComponentInput():isCharPressed("SPACE") and this:onGround()) then
-        this:jump(Vertex3D.new(0, -jumpForce, 0)) -- saltamos
+        this:jump(Vertex3D.new(0, jumpForce, 0)) -- saltamos
     end
 
     velocity = forward:getScaled(speed) + right:getScaled(strafe)

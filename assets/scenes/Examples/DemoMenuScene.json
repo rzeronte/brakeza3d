@@ -2,7 +2,7 @@
 	"name":	"Brakeza3D - Demo Menú Person <eduardo@brakeza.com>",
 	"gravity":	{
 		"x":	0,
-		"y":	18.799999237060547,
+		"y":	-18.799999237060547,
 		"z":	0
 	},
 	"ads":	{
