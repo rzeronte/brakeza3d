@@ -11,7 +11,8 @@ ShaderOpenGLImage::ShaderOpenGLImage()
     VBO(0),
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Image.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Image.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Image.fs",
+        false
     )
 {
     float vertices[] = {

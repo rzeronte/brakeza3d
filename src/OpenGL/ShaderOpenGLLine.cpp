@@ -12,7 +12,8 @@ ShaderOpenGLLine::ShaderOpenGLLine()
 :
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Line.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Line.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Line.fs",
+        false
     )
 {
     setupQuadUniforms(programID);

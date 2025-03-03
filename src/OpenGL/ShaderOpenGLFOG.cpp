@@ -16,7 +16,8 @@ ShaderOpenGLFOG::ShaderOpenGLFOG()
     intensity(1.0f),
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "FOG.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "FOG.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "FOG.fs",
+        false
     )
 {
     createFramebuffer();

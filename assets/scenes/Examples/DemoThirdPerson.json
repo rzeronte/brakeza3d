@@ -2,7 +2,7 @@
 	"name":	"Brakeza3D - By Eduardo Rodriguez <eduardo@brakeza.com>",
 	"gravity":	{
 		"x":	0,
-		"y":	18.799999237060547,
+		"y":	-18.799999237060547,
 		"z":	0
 	},
 	"ads":	{
@@ -91,8 +91,8 @@
 							"type":	"Vertex3D",
 							"value":	{
 								"x":	0,
-								"y":	-2.5,
-								"z":	-5
+								"y":	2.5,
+								"z":	5
 							}
 						}, {
 							"name":	"mouseSensibility",

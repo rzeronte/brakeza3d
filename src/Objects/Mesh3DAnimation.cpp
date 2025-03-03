@@ -214,7 +214,7 @@ void Mesh3DAnimation::LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Verte
         meshVertex[j] = v;
 
         // OpenGL
-        meshes[meshId].vertices.emplace_back(vf.x, vf.y, vf.z);
+        meshes[meshId].vertices.emplace_back(vf.x, vf.y, vf.z, 1.0f);
         meshes[meshId].uvs.emplace_back(v.u, v.v);
 
         aiVector3t n = mesh->mNormals[j];
@@ -494,18 +494,18 @@ void Mesh3DAnimation::updateOGLBuffers()
     for (auto &m: meshes) {
         m.vertices.clear();
         for (auto t: m.modelTriangles) {
-            m.vertices.emplace_back(t->A.x, t->A.y, t->A.z);
-            m.vertices.emplace_back(t->B.x, t->B.y, t->B.z);
-            m.vertices.emplace_back(t->C.x, t->C.y, t->C.z);
+            m.vertices.emplace_back(t->A.x, t->A.y, t->A.z, 1.0f);
+            m.vertices.emplace_back(t->B.x, t->B.y, t->B.z, 1.0f);
+            m.vertices.emplace_back(t->C.x, t->C.y, t->C.z, 1.0f);
         }
 
         if (!glIsBuffer(m.vertexbuffer)) {
             glGenBuffers(1, &m.vertexbuffer);
             glBindBuffer(GL_ARRAY_BUFFER, m.vertexbuffer);
-            glBufferData(GL_ARRAY_BUFFER, m.vertices.size() * sizeof(glm::vec3), &m.vertices[0], GL_STREAM_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, m.vertices.size() * sizeof(glm::vec4), &m.vertices[0], GL_STREAM_DRAW);
         } else {
             glBindBuffer(GL_ARRAY_BUFFER, m.vertexbuffer);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, m.vertices.size() * sizeof(glm::vec3), &m.vertices[0]);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, m.vertices.size() * sizeof(glm::vec4), &m.vertices[0]);
         }
     }
 }

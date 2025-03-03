@@ -8,7 +8,8 @@ ShaderOpenGLOutline::ShaderOpenGLOutline()
 :
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Outliner.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Outliner.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Outliner.fs",
+        false
     )
 {
     setupQuadUniforms(programID);

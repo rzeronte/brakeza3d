@@ -195,11 +195,11 @@ public:
     void resolveCollision(Collider *with) override;
     void runResolveCollisionScripts(Collider *with);
 
-    const sol::environment &getLuaEnvironment() const;
+    [[nodiscard]] const sol::environment &getLuaEnvironment() const;
 
     bool enabled;
 
-    void setupGhostCollider(CollisionShape mode);
+    void setupGhostCollider(CollisionShape mode) override;
 
     M3 rotation;
 

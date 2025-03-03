@@ -7,6 +7,7 @@
 #include <bullet/LinearMath/btVector3.h>
 #include <glm/vec3.hpp>
 #include <vector3.h>
+#include <glm/vec4.hpp>
 
 class Vertex3D {
 public:
@@ -58,6 +59,8 @@ public:
     [[nodiscard]] btVector3 toBullet() const;
 
     [[nodiscard]] glm::vec3 toGLM() const;
+
+    [[nodiscard]] glm::vec4 toGLM4() const;
 
     [[nodiscard]] aiVector3D toAssimp() const;
 

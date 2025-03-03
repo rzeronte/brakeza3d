@@ -10,8 +10,9 @@ ShaderOpenGLLine3D::ShaderOpenGLLine3D()
 :
     VertexArrayID(0),
     ShaderOpenGL(
-EngineSetup::get()->SHADERS_FOLDER + "Line3D.vs",
-EngineSetup::get()->SHADERS_FOLDER + "Line3D.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Line3D.vs",
+        EngineSetup::get()->SHADERS_FOLDER + "Line3D.fs",
+        false
     )
 {
     glGenVertexArrays(1, &VertexArrayID);
@@ -25,7 +26,7 @@ EngineSetup::get()->SHADERS_FOLDER + "Line3D.fs"
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glVertexAttribPointer(
         0,                  // attribute
-        3,                  // size
+        4,                  // size
         GL_FLOAT,           // type
         GL_FALSE,           // normalized?
         0,                  // stride

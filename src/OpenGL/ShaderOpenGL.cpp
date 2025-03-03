@@ -4,18 +4,19 @@
 #include <vector>
 #include "../../include/OpenGL/ShaderOpenGL.h"
 
-ShaderOpenGL::ShaderOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename)
+ShaderOpenGL::ShaderOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool custom)
 :
     vertexFilename(vertexFilename),
     fragmentFilename(fragmentFilename)
 {
     programID = LoadShaders(
         vertexFilename.c_str(),
-        fragmentFilename.c_str()
+        fragmentFilename.c_str(),
+        custom
     );
 }
 
-GLuint ShaderOpenGL::LoadShaders(const char * vertex_file_path, const char * fragment_file_path)
+GLuint ShaderOpenGL::LoadShaders(const char * vertex_file_path, const char * fragment_file_path, bool enableFeedback)
 {
     // Create the shaders
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -78,11 +79,18 @@ GLuint ShaderOpenGL::LoadShaders(const char * vertex_file_path, const char * fra
         printf("%s\n", &FragmentShaderErrorMessage[0]);
     }
 
+
     // Link the program
     printf("Linking program\n");
     GLuint ProgramID = glCreateProgram();
     glAttachShader(ProgramID, VertexShaderID);
     glAttachShader(ProgramID, FragmentShaderID);
+
+    if (enableFeedback) {
+        const char* feedbackVaryings[] = {"tf_Position"};  // Usamos un arreglo de cadenas (const char*)
+        glTransformFeedbackVaryings(ProgramID, 1, feedbackVaryings, GL_INTERLEAVED_ATTRIBS);
+    }
+
     glLinkProgram(ProgramID);
 
     // Check the program

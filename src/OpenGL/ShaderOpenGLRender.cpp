@@ -18,7 +18,8 @@ ShaderOpenGLRender::ShaderOpenGLRender()
     VertexArrayID(0),
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Render.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Render.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Render.fs",
+        false
     )
 {
     glGenVertexArrays(1, &VertexArrayID);
@@ -55,6 +56,7 @@ void ShaderOpenGLRender::renderMesh(Mesh3D *o, GLuint framebuffer)
             m.vertexbuffer,
             m.uvbuffer,
             m.normalbuffer,
+            m.feedbackBuffer,
             (int) m.vertices.size(),
             o->getAlpha(),
             framebuffer
@@ -69,6 +71,7 @@ void ShaderOpenGLRender::render(
     GLuint vertexbuffer,
     GLuint uvbuffer,
     GLuint normalbuffer,
+    GLuint feedbackBuffer,
     int size,
     float alpha,
     GLuint framebuffer
@@ -126,20 +129,32 @@ void ShaderOpenGLRender::render(
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
 
+    //glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, feedbackBuffer);  // Vinculamos el buffer de feedback
+    //glBeginTransformFeedback(GL_TRIANGLES);  // Especificamos el tipo de primitivas que estamos procesando
+
     glDrawArrays(GL_TRIANGLES, 0, size );
+
+    //glEndTransformFeedback();
+
+    // Copiar los datos modificados desde feedbackBuffer al buffer original
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
+
+    // Copia los datos del feedbackBuffer al vertexbuffer
+    //glBindBuffer(GL_COPY_READ_BUFFER, feedbackBuffer);  // Vincula el buffer de feedback como buffer de lectura
+    //glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);      // Vincula el buffer de vértices como buffer de escritura
+    //glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, sizeof(glm::vec3) * size);
 }
 
 void ShaderOpenGLRender::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
 {
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
     // 3rd attribute buffer : normals
     glEnableVertexAttribArray(1);

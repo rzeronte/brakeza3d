@@ -9,7 +9,8 @@ ShaderOpenGLWireframe::ShaderOpenGLWireframe()
 :
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Wireframe.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Wireframe.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Wireframe.fs",
+        false
     )
 {
 }
@@ -54,7 +55,7 @@ void ShaderOpenGLWireframe::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffe
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glVertexAttribPointer(
             0,                  // attribute
-            3,                  // size
+            4,                  // size
             GL_FLOAT,           // type
             GL_FALSE,           // normalized?
             0,                  // stride

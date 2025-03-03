@@ -155,6 +155,11 @@ glm::vec3 Vertex3D::toGLM() const
     return {x, y, z};
 }
 
+glm::vec4 Vertex3D::toGLM4() const
+{
+    return {x, y, z, 1.0f};
+}
+
 btVector3 Vertex3D::toBullet() const
 {
     return {x, y, z};

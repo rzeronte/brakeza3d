@@ -13,7 +13,8 @@ ShaderOpenGLColor::ShaderOpenGLColor()
     textureColorbuffer(0),
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Color.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Color.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Color.fs",
+        false
     )
 {
     glGenVertexArrays(1, &VertexArrayID);
@@ -79,7 +80,7 @@ void ShaderOpenGLColor::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, G
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glVertexAttribPointer(
             0,                  // attribute
-            3,                  // size
+            4,                  // size
             GL_FLOAT,           // type
             GL_FALSE,           // normalized?
             0,                  // stride

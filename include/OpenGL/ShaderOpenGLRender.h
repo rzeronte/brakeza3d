@@ -51,6 +51,7 @@ public:
         vertexbuffer,
         GLuint uvbuffer,
         GLuint normalbuffer,
+        GLuint feedbackBuffer,
         int size,
         float alpha,
         GLuint framebuffer

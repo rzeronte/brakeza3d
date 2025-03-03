@@ -26,11 +26,12 @@ struct meshData {
     std::vector<Triangle *> modelTriangles;
     std::vector<Vertex3D *> modelVertices;
 
-    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec4> vertices;
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> uvs;
 
     GLuint vertexbuffer;
+    GLuint feedbackBuffer;
     GLuint uvbuffer;
     GLuint normalbuffer;
 

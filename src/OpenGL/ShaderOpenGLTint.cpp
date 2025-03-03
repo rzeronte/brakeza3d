@@ -10,7 +10,8 @@ ShaderOpenGLTint::ShaderOpenGLTint()
 :
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Tint.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Tint.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "Tint.fs",
+        false
     )
 {
     setupQuadUniforms(programID);

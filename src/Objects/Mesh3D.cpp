@@ -220,7 +220,7 @@ void Mesh3D::LoadMesh(int meshId, aiMesh *mesh)
         v.v = pTexCoord->y;
 
         localMeshVertices[j] = v;
-        meshes[meshId].vertices.emplace_back(v.toGLM());
+        meshes[meshId].vertices.emplace_back(v.toGLM4());
         meshes[meshId].uvs.emplace_back(v.u, v.v);
 
         aiVector3t vn = mesh->mNormals[j];
@@ -543,7 +543,7 @@ void Mesh3D::fillBuffers()
     for (auto &m: meshes) {
         glGenBuffers(1, &m.vertexbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, m.vertexbuffer);
-        glBufferData(GL_ARRAY_BUFFER, m.vertices.size() * sizeof(glm::vec3), &m.vertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, m.vertices.size() * sizeof(glm::vec4), &m.vertices[0], GL_STATIC_DRAW);
 
         glGenBuffers(1, &m.uvbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, m.uvbuffer);
@@ -552,6 +552,11 @@ void Mesh3D::fillBuffers()
         glGenBuffers(1, &m.normalbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, m.normalbuffer);
         glBufferData(GL_ARRAY_BUFFER, m.normals.size() * sizeof(glm::vec3), &m.normals[0], GL_STATIC_DRAW);
+
+        glGenBuffers(1, &m.feedbackBuffer);  // Creamos el buffer para Transform Feedback
+        glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m.feedbackBuffer);  // Vinculamos el buffer de feedback
+        glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, m.vertices.size() * sizeof(glm::vec4), &m.vertices[0], GL_DYNAMIC_COPY);  // Inicializamos el buffer vacío
+        glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);  // Desvinculamos el buffer
     }
 
     loaded = true;
@@ -821,7 +826,7 @@ void Mesh3D::updateBoundingBox()
 
     for (auto &m: meshes) {
         for (auto &vertex : m.vertices) {
-            glm::vec4 transformedVertex = mvpMatrix * glm::vec4(vertex, 1.0f);
+            glm::vec4 transformedVertex = mvpMatrix * vertex;
             transformedVertex /= transformedVertex.w;
 
             maxX = std::max(maxX, transformedVertex.x);

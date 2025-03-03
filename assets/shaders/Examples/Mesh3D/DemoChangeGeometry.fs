@@ -10,5 +10,5 @@ in vec2 TexCoords;
 
 void main()
 {
-    FragColor = texture(diffuse, TexCoords);
+    //FragColor = vec4(texture(diffuse, TexCoords).rgb, 1);
 }

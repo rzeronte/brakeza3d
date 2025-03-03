@@ -8,7 +8,8 @@ ShaderOpenGLDepthMap::ShaderOpenGLDepthMap()
 :
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "DepthMap.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "DepthMap.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "DepthMap.fs",
+        false
     )
 {
     setupQuadUniforms(programID);

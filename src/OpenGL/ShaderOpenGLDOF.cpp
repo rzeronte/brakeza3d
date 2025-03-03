@@ -15,7 +15,8 @@ ShaderOpenGLDOF::ShaderOpenGLDOF()
     textureResult(0),
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.fs"
+        EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.fs",
+        false
     )
 {
     setupQuadUniforms(programID);
