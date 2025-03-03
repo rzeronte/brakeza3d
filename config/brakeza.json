@@ -39,36 +39,7 @@
       "y":	-0,
       "z":	0
     },
-    "isCollisionsEnabled":	true,
-    "collider":	{
-      "mode":	1,
-      "shape":	1,
-      "friction":	1,
-      "mass":	0,
-      "linearDamping":	1,
-      "angularDamping":	1,
-      "restitution":	0,
-      "colliderStatic":	true,
-      "simpleShapeSize":	{
-        "x":	1,
-        "y":	1,
-        "z":	1
-      },
-      "kinematicCapsuleSize":	{
-        "x":	1,
-        "y":	3
-      },
-      "angularFactor":	{
-        "x":	1,
-        "y":	1,
-        "z":	1
-      },
-      "linearFactor":	{
-        "x":	1,
-        "y":	1,
-        "z":	1
-      }
-    },
+    "isCollisionsEnabled":	false,
     "scripts":	[],
     "shaders":	[],
     "model":	"../assets/models//StudioCorner.fbx",
@@ -178,36 +149,7 @@
       "y":	-5.0089556680177338e-06,
       "z":	5.0012786232400686e-06
     },
-    "isCollisionsEnabled":	true,
-    "collider":	{
-      "mode":	1,
-      "shape":	1,
-      "friction":	1,
-      "mass":	0,
-      "linearDamping":	1,
-      "angularDamping":	1,
-      "restitution":	0,
-      "colliderStatic":	true,
-      "simpleShapeSize":	{
-        "x":	1,
-        "y":	1,
-        "z":	1
-      },
-      "kinematicCapsuleSize":	{
-        "x":	1,
-        "y":	3
-      },
-      "angularFactor":	{
-        "x":	1,
-        "y":	1,
-        "z":	1
-      },
-      "linearFactor":	{
-        "x":	1,
-        "y":	1,
-        "z":	1
-      }
-    },
+    "isCollisionsEnabled":	false,
     "scripts":	[],
     "shaders":	[],
     "model":	"../assets/models//Stairs.fbx",

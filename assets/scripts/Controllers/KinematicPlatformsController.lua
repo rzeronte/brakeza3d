@@ -5,8 +5,8 @@ end
 function onUpdate()
     componentInput = componentsManager:getComponentInput();
 
-    if (componentInput:isCharPressed("A")) then speed = speed - force end
-    if (componentInput:isCharPressed("D")) then speed = speed + force end
+    if (componentInput:isCharPressed("A")) then speed = speed + force end
+    if (componentInput:isCharPressed("D")) then speed = speed - force end
 
     if (this:onGround()) then
         this:setWalkingDirection(Vertex3D.new(speed, 0, 0)) -- movemos
@@ -15,7 +15,7 @@ function onUpdate()
     end
 
     if (componentInput:isCharPressed("SPACE") and this:onGround()) then
-        this:jump(Vertex3D.new(0, -jumpForce, 0)) -- saltamos
+        this:jump(Vertex3D.new(0, jumpForce, 0)) -- saltamos
     end
 
     forward = this:AxisForward()
