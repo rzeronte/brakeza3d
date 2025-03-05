@@ -82,10 +82,6 @@ void ComponentRender::onUpdate()
         Drawable::drawMainAxis();
     }
 
-    if (isSceneShadersEnabled()) {
-        runShadersOpenGLPostUpdate();
-    }
-
     if (SETUP->DRAW_FPS) {
         textWriter->writeTextTTFMiddleScreen(
             std::to_string(getFps()).c_str(),
