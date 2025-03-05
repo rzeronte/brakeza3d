@@ -72,10 +72,6 @@ void ComponentRender::onUpdate()
 
     getShaderOGLRender()->createUBOFromLights();
 
-    if (isSceneShadersEnabled()) {
-        //runShadersOpenCLPreUpdate();
-    }
-
     onUpdateSceneObjects();
 
     if (SETUP->RENDER_MAIN_AXIS) {
