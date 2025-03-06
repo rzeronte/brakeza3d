@@ -37,7 +37,8 @@ enum class ShaderOpenGLCustomDataType {
     SPECULAR,
     DELTA_TIME,
     EXECUTION_TIME,
-    SCENE
+    SCENE,
+    DEPTH
 };
 
 typedef std::variant<int, float, glm::vec2, glm::vec3, glm::vec4, Image*> ShaderOpenGLCustomDataValue;
@@ -62,7 +63,8 @@ static std::map<std::string, ShaderOpenGLCustomDataType> GLSLTypeMapping = {
     {"specular", ShaderOpenGLCustomDataType::SPECULAR},
     {"delta_time", ShaderOpenGLCustomDataType::DELTA_TIME},
     {"execution_time", ShaderOpenGLCustomDataType::EXECUTION_TIME},
-    {"scene", ShaderOpenGLCustomDataType::SCENE}
+    {"scene", ShaderOpenGLCustomDataType::SCENE},
+    {"depth", ShaderOpenGLCustomDataType::DEPTH}
 };
 
 class ShaderOpenGLCustom: public ShaderOpenGL

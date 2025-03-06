@@ -10,15 +10,21 @@
 #include "ShaderQuadOpenGL.h"
 
 class ShaderOpenGLDepthMap : public ShaderOpenGL, public ShaderQuadOpenGL {
+
     GLint textureUniform;
 
     GLint intensityUniform;
     GLint farPlaneUniform;
+    GLint nearPlaneUniform;
 public:
     ShaderOpenGLDepthMap();
     void render(GLuint textureID, GLuint framebuffer);
 
     void destroy() override;
+
+    float intensity;
+    float farPlane;
+    float nearPlane;
 };
 
 

@@ -40,7 +40,7 @@ ShaderOpenGLCustom::ShaderOpenGLCustom(
 :
     label(std::move(label)),
     enabled(true),
-    ShaderOpenGL(vertexFilename, fragmentFilename, true),
+    ShaderOpenGL(vertexFilename, fragmentFilename, type == ShaderCustomTypes::SHADER_OBJECT),
     fileTypes(ShaderOpenGLCustom::dataTypesFileFor(fragmentFilename)),
     type(type)
 {
@@ -178,6 +178,10 @@ void ShaderOpenGLCustom::addDataType(const char *name, const char *type, cJSON *
             LUAValue = nullptr;
             break;
         }
+        case ShaderOpenGLCustomDataType::DEPTH: {
+            LUAValue = nullptr;
+            break;
+        }
         default:
             break;
     }
@@ -235,6 +239,10 @@ void ShaderOpenGLCustom::addDataTypeEmpty(const char *name, const char *type)
             typeValue = nullptr;
             break;
         }
+        case ShaderOpenGLCustomDataType::DEPTH: {
+            typeValue = nullptr;
+            break;
+        }
     }
 
     dataTypes.emplace_back(name, type, typeValue);
@@ -245,7 +253,7 @@ GLuint ShaderOpenGLCustom::compile()
 {
     Logging::Message("Compiling custom shader (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
 
-    programID = LoadShaders(vertexFilename.c_str(), fragmentFilename.c_str(), true);
+    programID = LoadShaders(vertexFilename.c_str(), fragmentFilename.c_str(), type == ShaderCustomTypes::SHADER_OBJECT);
 
     return programID;
 }
@@ -359,6 +367,32 @@ void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
         int i = 0;
         for (auto &type: dataTypes) {
             switch (GLSLTypeMapping[type.type]) {
+                case ShaderOpenGLCustomDataType::DEPTH: {
+                    ImGui::TableNextRow();
+                    ImGui::PushID(i);
+
+                    ImGui::TableSetColumnIndex(0);
+                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
+
+                    auto globalTexture = ComponentsManager::get()->getComponentWindow()->depthTexture;
+                    ImGui::Image((ImTextureID) globalTexture, ImVec2(36, 36));
+                    ImGui::SetItemTooltip("Depth Texture");
+
+                    ImGui::TableSetColumnIndex(1);
+                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
+                    ImGui::Text("%s", type.name.c_str());
+
+                    ImGui::TableSetColumnIndex(2);
+                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
+                    ImGui::Text("GL_TEXTURE%d", i);
+
+                    ImGui::TableSetColumnIndex(3);
+                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
+                    ImGui::Text("%dx%d", EngineSetup::get()->screenWidth, EngineSetup::get()->screenHeight);
+                    i++;
+                    ImGui::PopID();
+                    break;
+                }
                 case ShaderOpenGLCustomDataType::SCENE: {
                     ImGui::TableNextRow();
                     ImGui::PushID(i);
@@ -507,7 +541,6 @@ void ShaderOpenGLCustom::postUpdate()
 {
     if (!isEnabled()) return;
 
-    //render(ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
     render(resultFramebuffer);
 
     auto render = ComponentsManager::get()->getComponentRender();
@@ -639,7 +672,13 @@ void ShaderOpenGLCustom::setDataTypesUniforms()
                 break;
             }
             case ShaderOpenGLCustomDataType::SCENE: {
-                auto globalTexture = ComponentsManager::get()->getComponentWindow()->globalTexture;
+                auto globalTexture = ComponentsManager::get()->getComponentWindow()->sceneTexture;
+                setTexture(type.name, globalTexture, numTextures);
+                increaseNumberTextures();
+                break;
+            }
+            case ShaderOpenGLCustomDataType::DEPTH: {
+                auto globalTexture = ComponentsManager::get()->getComponentWindow()->depthTexture;
                 setTexture(type.name, globalTexture, numTextures);
                 increaseNumberTextures();
                 break;

@@ -14,8 +14,6 @@ ShaderOpenGLCustomPostprocessing::ShaderOpenGLCustomPostprocessing(
     ShaderOpenGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomTypes::SHADER_POSTPROCESSING)
 {
     setupQuadUniforms(programID);
-
-    textureUniform = glGetUniformLocation(programID, "sceneTexture");
 }
 
 ShaderOpenGLCustomPostprocessing::ShaderOpenGLCustomPostprocessing(
@@ -28,7 +26,6 @@ ShaderOpenGLCustomPostprocessing::ShaderOpenGLCustomPostprocessing(
     ShaderOpenGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomTypes::SHADER_POSTPROCESSING, types)
 {
     setupQuadUniforms(programID);
-    textureUniform = glGetUniformLocation(programID, "sceneTexture");
 }
 
 GLuint ShaderOpenGLCustomPostprocessing::compile()
@@ -40,7 +37,6 @@ GLuint ShaderOpenGLCustomPostprocessing::compile()
     return programID;
 }
 
-
 void ShaderOpenGLCustomPostprocessing::render(GLuint framebuffer)
 {
     if (!isEnabled()) return;
@@ -49,13 +45,16 @@ void ShaderOpenGLCustomPostprocessing::render(GLuint framebuffer)
     render->changeOpenGLFramebuffer(framebuffer);
     render->changeOpenGLProgram(programID);
 
+    glDisable(GL_DEPTH_TEST);
+
     loadQuadMatrixUniforms();
 
     resetNumberTextures();
-
     setDataTypesUniforms();
 
     drawQuad();
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void ShaderOpenGLCustomPostprocessing::destroy()

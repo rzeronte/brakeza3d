@@ -1,11 +1,13 @@
 #include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/matrix_transform.hpp>
 #include "../../include/OpenGL/ShaderOpenGLDepthMap.h"
 #include "../../include/EngineSetup.h"
 #include "../../include/ComponentsManager.h"
 
 ShaderOpenGLDepthMap::ShaderOpenGLDepthMap()
 :
+    intensity(1.0f),
+    nearPlane(0.1f),
+    farPlane(100.0f),
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "DepthMap.vs",
         EngineSetup::get()->SHADERS_FOLDER + "DepthMap.fs",
@@ -16,7 +18,8 @@ ShaderOpenGLDepthMap::ShaderOpenGLDepthMap()
 
     textureUniform = glGetUniformLocation(programID, "depthTexture");
     intensityUniform = glGetUniformLocation(programID, "intensity");
-    farPlaneUniform = glGetUniformLocation(programID, "far_plane");
+    farPlaneUniform = glGetUniformLocation(programID, "farPlane");
+    nearPlaneUniform = glGetUniformLocation(programID, "nearPlane");
 }
 
 void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint framebuffer)
@@ -31,9 +34,9 @@ void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint framebuffer)
 
     loadQuadMatrixUniforms();
 
-    auto shaderOGLDOF = render->getShaderOGLDOF();
-    glUniform1f(intensityUniform, shaderOGLDOF->intensity);
-    glUniform1f(farPlaneUniform, shaderOGLDOF->farPlane);
+    glUniform1f(intensityUniform, intensity);
+    glUniform1f(farPlaneUniform, farPlane);
+    glUniform1f(nearPlaneUniform, nearPlane);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureID);

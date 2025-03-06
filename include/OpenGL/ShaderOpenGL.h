@@ -12,7 +12,7 @@ class ShaderOpenGL {
 protected:
     GLuint programID;
 public:
-    ShaderOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool custom);
+    ShaderOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback);
     static GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path, bool enableFeedback);
 
     virtual void destroy() = 0;

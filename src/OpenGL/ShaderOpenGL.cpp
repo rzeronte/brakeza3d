@@ -3,16 +3,17 @@
 #include <sstream>
 #include <vector>
 #include "../../include/OpenGL/ShaderOpenGL.h"
+#include "../../include/Render/Logging.h"
 
-ShaderOpenGL::ShaderOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool custom)
+ShaderOpenGL::ShaderOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback)
 :
     vertexFilename(vertexFilename),
     fragmentFilename(fragmentFilename)
 {
     programID = LoadShaders(
-        vertexFilename.c_str(),
-        fragmentFilename.c_str(),
-        custom
+            vertexFilename.c_str(),
+            fragmentFilename.c_str(),
+            enableFeedback
     );
 }
 

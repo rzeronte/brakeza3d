@@ -9,8 +9,6 @@
 #include "ShaderOpenGLCustom.h"
 
 class ShaderOpenGLCustomPostprocessing : public ShaderOpenGLCustom, ShaderQuadOpenGL {
-    GLint textureUniform;
-
 public:
     ShaderOpenGLCustomPostprocessing(
         const std::string &label,

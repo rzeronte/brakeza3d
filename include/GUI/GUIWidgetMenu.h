@@ -240,11 +240,16 @@ struct GUIWidgetMenu
                     ImGui::Checkbox("Solid", &setup->TRIANGLE_MODE_COLOR_SOLID);
                     ImGui::Checkbox("Textures", &setup->TRIANGLE_MODE_TEXTURIZED);
                     ImGui::Separator();
+                } else {
+                    auto s = ComponentsManager::get()->getComponentRender()->getShaderOGLDepthMap();
+                    ImGui::DragFloat("Intensity", &s->intensity, 0.01f, 0.0f, 1.0f);
+                    ImGui::DragFloat("Far Plane", &s->farPlane, 0.01f, 0.0f, 100.0f);
+                    ImGui::DragFloat("Near Plabe", &s->nearPlane, 0.01f, 0.0f, 100.0f);
+
                 }
                 ImGui::Checkbox("Draw Bones", &setup->DRAW_ANIMATION_BONES);
                 ImGui::Separator();
                 ImGui::Checkbox("Internal click selection", &setup->CLICK_SELECT_OBJECT3D);
-
                 ImGui::EndMenu();
             }
 
