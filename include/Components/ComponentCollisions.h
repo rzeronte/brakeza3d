@@ -65,6 +65,8 @@ public:
     void drawDebugCache();
 
     void setEnabled(bool enabled);
+
+    void setEnableDebugMode(bool value);
 };
 
 

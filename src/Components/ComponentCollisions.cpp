@@ -73,7 +73,7 @@ void ComponentCollisions::initBulletSystem()
     dynamicsWorld->setGravity(EngineSetup::get()->gravity.toBullet());
 
     dynamicsWorld->setDebugDrawer(debugDraw);
-    dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
+    setEnableDebugMode(false);
 
     ghostPairCallback = new btGhostPairCallback();
     overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCallback);
@@ -266,4 +266,15 @@ void ComponentCollisions::setEnabled(bool enabled)
 {
     Component::setEnabled(enabled);
     EngineSetup::get()->BULLET_STEP_SIMULATION = enabled;
+}
+
+void ComponentCollisions::setEnableDebugMode(bool value)
+{
+    if (value) {
+        dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
+        Logging::Message("Physics Debug mode ON");
+    } else {
+        Logging::Message("Physics Debug mode OFF");
+        dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_NoDebug);
+    }
 }
