@@ -263,7 +263,9 @@ struct GUIWidgetMenu
                 ImGui::DragScalar("Max sub-steps", ImGuiDataType_S32, &setup->BULLET_MAX_SUBSTEPS, 1,&minSubsteps, &maxSubsteps, "%d", 1.0f);
                 ImGui::DragScalar("Fixed time step (1/x)", ImGuiDataType_S32, &setup->BULLET_FIXED_TIME_STEPS, 1, &minFixedTime, &maxFixedTime, "%d", 1.0f);
                 ImGui::Separator();
-                ImGui::Checkbox("Draw debug mode", &setup->BULLET_DEBUG_MODE);
+                if (ImGui::Checkbox("Draw debug mode", &setup->BULLET_DEBUG_MODE)) {
+                    ComponentsManager::get()->getComponentCollisions()->setEnableDebugMode(setup->BULLET_DEBUG_MODE);
+                }
                 if (setup->BULLET_STEP_SIMULATION) {
                     ImGui::Separator();
                     ImGui::Checkbox("Handle object collisions", &setup->BULLET_CHECK_ALL_PAIRS);

@@ -42,6 +42,7 @@ protected:
     float linearDamping;
     float angularDamping;
     float restitution;
+    float shapeMargin;
 
     //kinematic
     btPairCachingGhostObject *kinematicBody;
@@ -140,6 +141,8 @@ public:
     void setAngularDamping(float angularDamping);
 
     void setRestitution(float restitution);
+
+    void setShapeMargin(float shapeMargin);
 };
 
 

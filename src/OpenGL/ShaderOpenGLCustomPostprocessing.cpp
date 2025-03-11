@@ -45,16 +45,12 @@ void ShaderOpenGLCustomPostprocessing::render(GLuint framebuffer)
     render->changeOpenGLFramebuffer(framebuffer);
     render->changeOpenGLProgram(programID);
 
-    glDisable(GL_DEPTH_TEST);
-
     loadQuadMatrixUniforms();
 
     resetNumberTextures();
     setDataTypesUniforms();
 
     drawQuad();
-
-    glEnable(GL_DEPTH_TEST);
 }
 
 void ShaderOpenGLCustomPostprocessing::destroy()

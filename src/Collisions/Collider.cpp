@@ -20,6 +20,7 @@ Collider::Collider()
     linearDamping(1),
     angularDamping(1),
     restitution(0),
+    shapeMargin(0.004f),
     kinematicCapsuleSize(
         EngineSetup::get()->PLAYER_CAPSULE_RADIUS,
         EngineSetup::get()->PLAYER_CAPSULE_HEIGHT
@@ -119,6 +120,7 @@ void Collider::makeSimpleGhostBody(
         convexHullShape = reinterpret_cast<btConvexHullShape *>(new btCapsuleShape(kinematicCapsuleSize.x, kinematicCapsuleSize.y));;
     }
 
+    convexHullShape->setMargin(shapeMargin);
     ghostObject = new btPairCachingGhostObject();
     ghostObject->setCollisionShape(convexHullShape);
     ghostObject->setWorldTransform(transformation);
@@ -383,4 +385,8 @@ void Collider::setAngularDamping(float angularDamping) {
 
 void Collider::setRestitution(float restitution) {
     Collider::restitution = restitution;
+}
+
+void Collider::setShapeMargin(float shapeMargin) {
+    Collider::shapeMargin = shapeMargin;
 }

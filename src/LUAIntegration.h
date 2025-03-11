@@ -139,7 +139,8 @@ void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<ComponentCollisions>("ComponentCollisions",
     sol::base_classes, sol::bases<Component>(),
-        "isRayCollisionWith", &ComponentCollisions::isRayCollisionWith
+        "isRayCollisionWith", &ComponentCollisions::isRayCollisionWith,
+        "setEnableDebugMode", &ComponentCollisions::setEnableDebugMode
     );
 
     lua.new_usertype<ComponentRender>("ComponentRender",

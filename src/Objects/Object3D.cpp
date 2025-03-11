@@ -500,6 +500,10 @@ void Object3D::drawImGuiProperties()
                         }
                         ImGui::Separator();
 
+                        ImGui::DragFloat("Margin", &shapeMargin, 0.01f, 0.0f, 1.0f);
+
+                        ImGui::Separator();
+
                         ImGui::DragFloat("Friction", &friction, 0.01f, 0.0f, 1.0f);
 
                         ImGui::Separator();
@@ -545,6 +549,7 @@ cJSON *Object3D::getJSON()
 
         cJSON_AddNumberToObject(collider, "friction", friction);
         cJSON_AddNumberToObject(collider, "mass", mass);
+        cJSON_AddNumberToObject(collider, "margin", shapeMargin);
         cJSON_AddNumberToObject(collider, "linearDamping", linearDamping);
         cJSON_AddNumberToObject(collider, "angularDamping", angularDamping);
         cJSON_AddNumberToObject(collider, "restitution", restitution);
@@ -624,6 +629,11 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "friction") != nullptr) {
                 auto friction = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "friction")->valuedouble;
                 o->setFriction(friction);
+            }
+
+            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "margin") != nullptr) {
+                auto margin = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "margin")->valuedouble;
+                o->setShapeMargin(margin);
             }
 
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "restitution") != nullptr) {
@@ -767,6 +777,8 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
     kinematicBody->setWorldTransform(t);
 
     auto capsule = new btCapsuleShapeZ(kinematicCapsuleSize.x, kinematicCapsuleSize.y);
+    capsule->setMargin(shapeMargin);
+
     btVector3 inertia(0, 0, 0);
     capsule->calculateLocalInertia(mass, inertia);
     kinematicBody->setCollisionShape(capsule);
@@ -816,6 +828,8 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     if (getCollisionShape() == CollisionShape::CAPSULE) {
         collisionShape = new btCapsuleShape(kinematicCapsuleSize.x, kinematicCapsuleSize.y);
     }
+
+    collisionShape->setMargin(shapeMargin);
 
     btVector3 inertia(0, 0, 0);
     collisionShape->calculateLocalInertia(mass, inertia);

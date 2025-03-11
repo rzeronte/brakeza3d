@@ -126,7 +126,11 @@ struct GUIWidgetToolbar {
         drawButton("drawCollidersIcon",
                    EngineSetup::get()->BULLET_DEBUG_MODE,
                    onColor,
-                   [&]() { EngineSetup::get()->BULLET_DEBUG_MODE = !EngineSetup::get()->BULLET_DEBUG_MODE; });
+                   [&]() {
+                        EngineSetup::get()->BULLET_DEBUG_MODE = !EngineSetup::get()->BULLET_DEBUG_MODE;
+                        ComponentsManager::get()->getComponentCollisions()->setEnableDebugMode(EngineSetup::get()->BULLET_DEBUG_MODE);
+                   }
+        );
         ImGui::SetItemTooltip("Draw collider AABB");
     }
 
