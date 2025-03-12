@@ -37,7 +37,7 @@
 			"rotation":	{
 				"x":	-0.10567139089107513,
 				"y":	0.16610217094421387,
-				"z":	0.039649948477745056
+				"z":	0.039631716907024384
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
@@ -45,6 +45,9 @@
 				"shape":	1,
 				"friction":	0.800000011920929,
 				"mass":	1,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
 				"linearDamping":	0.10000000149011612,
 				"angularDamping":	1,
 				"restitution":	0,
@@ -124,6 +127,9 @@
 				"shape":	2,
 				"friction":	1,
 				"mass":	0,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
 				"linearDamping":	1,
 				"angularDamping":	1,
 				"restitution":	0,
@@ -138,14 +144,14 @@
 					"y":	1.5
 				},
 				"angularFactor":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
+					"x":	0,
+					"y":	0,
+					"z":	0
 				},
 				"linearFactor":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
+					"x":	0,
+					"y":	0,
+					"z":	0
 				}
 			},
 			"scripts":	[],
