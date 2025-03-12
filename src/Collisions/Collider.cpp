@@ -21,6 +21,8 @@ Collider::Collider()
     angularDamping(1),
     restitution(0),
     shapeMargin(0.004f),
+    ccdMotionThreshold(0.0),
+    ccdSweptSphereRadius(0.0),
     kinematicCapsuleSize(
         EngineSetup::get()->PLAYER_CAPSULE_RADIUS,
         EngineSetup::get()->PLAYER_CAPSULE_HEIGHT
@@ -389,4 +391,92 @@ void Collider::setRestitution(float restitution) {
 
 void Collider::setShapeMargin(float shapeMargin) {
     Collider::shapeMargin = shapeMargin;
+}
+
+void Collider::setCcdMotionThreshold(float ccdMotionThreshold) {
+    Collider::ccdMotionThreshold = ccdMotionThreshold;
+}
+
+void Collider::setCcdSweptSphereRadius(float ccdSweptSphereRadius) {
+    Collider::ccdSweptSphereRadius = ccdSweptSphereRadius;
+}
+
+void Collider::drawImGuiVariables()
+{
+    if (ImGui::TreeNode("World variables")) {
+        if (getCollisionMode() == CollisionMode::BODY) {
+            ImGui::Text("Mass: %f", body->getMass());
+            ImGui::Text("Friction: %f", body->getFriction());
+            ImGui::Text("Hit Fraction: %f", body->getHitFraction());
+            ImGui::Text("Restitution: %f", body->getRestitution());
+            ImGui::Text("Spinning Friction: %f", body->getSpinningFriction());
+            ImGui::Text("Rolling Friction: %f", body->getRollingFriction());
+
+            ImGui::Separator();
+
+            ImGui::Text("Collision Shape Margin: %f", body->getCollisionShape()->getMargin());
+
+            ImGui::Separator();
+
+            auto g = body->getGravity();
+            ImGui::Text("Gravity: %f, %f, %f", g.x(), g.y(), g.z());
+
+            ImGui::Separator();
+            auto lv = body->getLinearVelocity();
+            ImGui::Text("Linear Velocity: %f, %f, %f", lv.x(), lv.y(), lv.z());
+
+            auto av = body->getAngularVelocity();
+            ImGui::Text("Angular Velocity: %f, %f, %f", av.x(), av.y(), av.z());
+
+            ImGui::Separator();
+
+            ImGui::Text("Linear Damping: %f", body->getLinearDamping());
+            ImGui::Text("Angular Damping: %f", body->getAngularDamping());
+
+            ImGui::Separator();
+
+            auto af = body->getAngularFactor();
+            ImGui::Text("Angular Factor: %f, %f, %f", af.x(), af.y(), af.z());
+
+            auto lf = body->getLinearFactor();
+            ImGui::Text("Linear Factor: %f, %f, %f", lf.x(), lf.y(), lf.z());
+
+            ImGui::Separator();
+
+            ImGui::Text("Linear Sleeping Threshold: %f", body->getLinearSleepingThreshold());
+            ImGui::Text("Angular Sleeping Threshold: %f", body->getAngularSleepingThreshold());
+
+            ImGui::Separator();
+
+            ImGui::Text("Ccd Motion Threshold: %f", body->getCcdMotionThreshold());
+            ImGui::Text("Ccd Swept Sphere Radius: %f", body->getCcdSweptSphereRadius());
+
+            ImGui::Separator();
+            auto li = body->getLocalInertia();
+            ImGui::Text("Local Inertia: %f, %f, %f", li.x(), li.y(), li.z());
+
+            auto pv = body->getPushVelocity();
+            ImGui::Text("Push Velocity: %f, %f, %f", pv.x(), pv.y(), pv.z());
+            ImGui::Separator();
+            ImGui::Text("Deactivation time: %f", body->getDeactivationTime());
+        }
+        if (getCollisionMode() == CollisionMode::GHOST) {
+            ImGui::Text("Friction: %f", ghostObject->getFriction());
+            ImGui::Text("Hit Fraction: %f", ghostObject->getHitFraction());
+            ImGui::Text("Restitution: %f", ghostObject->getRestitution());
+            ImGui::Text("Spinning Friction: %f", ghostObject->getSpinningFriction());
+            ImGui::Text("Rolling Friction: %f", ghostObject->getRollingFriction());
+
+            ImGui::Separator();
+
+            ImGui::Text("Collision Shape Margin: %f", ghostObject->getCollisionShape()->getMargin());
+            ImGui::Separator();
+
+            ImGui::Text("Ccd Motion Threshold: %f", ghostObject->getCcdMotionThreshold());
+            ImGui::Text("Ccd Swept Sphere Radius: %f", ghostObject->getCcdSweptSphereRadius());
+
+            ImGui::Separator();
+            ImGui::Text("Deactivation time: %f", ghostObject->getDeactivationTime());
+        }
+    }
 }

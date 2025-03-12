@@ -43,6 +43,8 @@ protected:
     float angularDamping;
     float restitution;
     float shapeMargin;
+    float ccdMotionThreshold;
+    float ccdSweptSphereRadius;
 
     //kinematic
     btPairCachingGhostObject *kinematicBody;
@@ -88,6 +90,8 @@ public:
     void drawImGuiCollisionModeSelector();
 
     virtual void drawImGuiCollisionShapeSelector();
+
+    void drawImGuiVariables();
 
     CollisionShape collisionShape;
 
@@ -143,6 +147,10 @@ public:
     void setRestitution(float restitution);
 
     void setShapeMargin(float shapeMargin);
+
+    void setCcdMotionThreshold(float ccdMotionThreshold);
+
+    void setCcdSweptSphereRadius(float ccdSweptSphereRadius);
 };
 
 

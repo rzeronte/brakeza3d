@@ -733,8 +733,9 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
 
     btVector3 inertia(0, 0, 0);
     btCollisionShape* shape = getConvexHullShapeFromMesh(inertia);
-
-    shape->calculateLocalInertia(mass, inertia); // Calcula el tensor de inercia
+    if (mass > 0) {
+        shape->calculateLocalInertia(mass, inertia); // Calcula el tensor de inercia
+    }
 
     btRigidBody::btRigidBodyConstructionInfo info(
         mass,
@@ -753,6 +754,8 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
     body->setAngularFactor(angularFactor.toBullet());
     body->setFriction(friction);
     body->setDamping(linearDamping, angularDamping);
+    body->setCcdMotionThreshold(ccdMotionThreshold);
+    body->setCcdSweptSphereRadius(ccdSweptSphereRadius);
 
     world->addRigidBody(body, collisionGroup, collisionMask);
 }
@@ -804,7 +807,9 @@ btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia)
     }
 
     auto s = new btBvhTriangleMeshShape(triangleMesh, true, true);
-    s->calculateLocalInertia(mass, inertia);
+    if (mass > 0) {
+        s->calculateLocalInertia(mass, inertia);
+    }
 
     return s;
 }
@@ -823,7 +828,9 @@ btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia)
         }
     }
 
-    convexHull->calculateLocalInertia(mass, inertia);
+    if (mass > 0) {
+        convexHull->calculateLocalInertia(mass, inertia);
+    }
 
     return convexHull;
 }
