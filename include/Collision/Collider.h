@@ -151,6 +151,20 @@ public:
     void setCcdMotionThreshold(float ccdMotionThreshold);
 
     void setCcdSweptSphereRadius(float ccdSweptSphereRadius);
+
+    void sleepCollider();
+
+    void disableSimulationCollider();
+
+    void enableSimulationCollider();
+
+    void disableDeactivationCollider();
+
+    void setAngularVelocity(Vertex3D f);
+
+    void setGravityCollider(Vertex3D g);
+
+    void setLinearFactor(Vertex3D linearFactor);
 };
 
 

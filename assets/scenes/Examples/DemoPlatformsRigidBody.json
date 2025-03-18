@@ -30,27 +30,27 @@
 			"name":	"capsule",
 			"scale":	1,
 			"position":	{
-				"x":	-35.645988464355469,
-				"y":	1.9023163318634033,
-				"z":	-43.368919372558594
+				"x":	-36.313961029052734,
+				"y":	1.5776674747467041,
+				"z":	-43.342765808105469
 			},
 			"rotation":	{
-				"x":	-0.10567139089107513,
-				"y":	0.16610217094421387,
-				"z":	0.039631716907024384
+				"x":	-0.10587466508150101,
+				"y":	0.16648580133914948,
+				"z":	0.039683356881141663
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
 				"mode":	1,
 				"shape":	1,
-				"friction":	0.800000011920929,
-				"mass":	1,
+				"friction":	0.5,
+				"mass":	75,
 				"margin":	0.0040000001899898052,
-				"ccdMotionThreshold":	0,
-				"ccdSweptSphereRadius":	0,
-				"linearDamping":	0.10000000149011612,
-				"angularDamping":	1,
-				"restitution":	0,
+				"ccdMotionThreshold":	0.0099999997764825821,
+				"ccdSweptSphereRadius":	0.039999999105930328,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0.5,
 				"colliderStatic":	false,
 				"simpleShapeSize":	{
 					"x":	0.5010833740234375,
@@ -72,38 +72,7 @@
 					"z":	0
 				}
 			},
-			"scripts":	[{
-					"name":	"../assets/scripts/Controllers/RigidBodyPlatformsController.lua",
-					"types":	[{
-							"name":	"speed",
-							"type":	"float",
-							"value":	400
-						}, {
-							"name":	"jumpForce",
-							"type":	"float",
-							"value":	12
-						}, {
-							"name":	"maxSpeed",
-							"type":	"float",
-							"value":	3.2070000171661377
-						}, {
-							"name":	"lengthRay",
-							"type":	"float",
-							"value":	1.2000000476837158
-						}, {
-							"name":	"airControlFactor",
-							"type":	"float",
-							"value":	0.20000000298023224
-						}, {
-							"name":	"cameraOffset",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	0,
-								"z":	-20
-							}
-						}]
-				}],
+			"scripts":	[],
 			"shaders":	[],
 			"model":	"../assets/models//Capsule.fbx",
 			"enableLights":	false,
@@ -159,18 +128,101 @@
 			"model":	"../assets/models//DevLevelPlatforms.fbx",
 			"enableLights":	false,
 			"type":	"Mesh3D"
+		}, {
+			"name":	"character",
+			"scale":	1,
+			"position":	{
+				"x":	-39.153533935546875,
+				"y":	-0.40146929025650024,
+				"z":	-43.084999084472656
+			},
+			"rotation":	{
+				"x":	0.01,
+				"y":	0.01,
+				"z":	0.01
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	1,
+				"friction":	0.5,
+				"mass":	75,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0.5,
+				"colliderStatic":	false,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.2999999523162842
+				},
+				"angularFactor":	{
+					"x":	0,
+					"y":	0,
+					"z":	0
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	0
+				}
+			},
+			"scripts":	[{
+					"name":	"../assets/scripts/Controllers/RigidBodyPlatformsController.lua",
+					"types":	[{
+							"name":	"maxSpeed",
+							"type":	"float",
+							"value":	3.5
+						}, {
+							"name":	"speed",
+							"type":	"float",
+							"value":	200
+						}, {
+							"name":	"jumpForce",
+							"type":	"float",
+							"value":	750
+						}, {
+							"name":	"lengthRay",
+							"type":	"float",
+							"value":	1.2999999523162842
+						}, {
+							"name":	"airControlFactor",
+							"type":	"float",
+							"value":	0.20000000298023224
+						}, {
+							"name":	"cameraOffset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	0,
+								"z":	20
+							}
+						}]
+				}],
+			"shaders":	[],
+			"model":	"../assets/animations//dummy.fbx",
+			"enableLights":	false,
+			"animationSpeed":	1,
+			"type":	"Mesh3DAnimation"
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-35.627201080322266,
-			"y":	4.0884890556335449,
-			"z":	-19.585348129272461
+			"x":	-39.147972106933594,
+			"y":	-7.6088466644287109,
+			"z":	-63.118892669677734
 		},
 		"rotation":	{
-			"x":	35.1999626159668,
-			"y":	0.59996247291564941,
+			"x":	1.1999599933624268,
+			"y":	-179.800048828125,
 			"z":	0
 		}
 	}

@@ -308,6 +308,11 @@ void Collider::setLinearVelocity(Vertex3D f)
     body->setLinearVelocity(f.toBullet());
 }
 
+void Collider::setAngularVelocity(Vertex3D f)
+{
+    body->setAngularVelocity(f.toBullet());
+}
+
 bool Collider::isColliderStatic() const {
     return colliderStatic;
 }
@@ -405,6 +410,7 @@ void Collider::drawImGuiVariables()
 {
     if (ImGui::TreeNode("World variables")) {
         if (getCollisionMode() == CollisionMode::BODY) {
+            ImGui::Text("Activation State: %d", body->getActivationState());
             ImGui::Text("Mass: %f", body->getMass());
             ImGui::Text("Friction: %f", body->getFriction());
             ImGui::Text("Hit Fraction: %f", body->getHitFraction());
@@ -461,6 +467,7 @@ void Collider::drawImGuiVariables()
             ImGui::Text("Deactivation time: %f", body->getDeactivationTime());
         }
         if (getCollisionMode() == CollisionMode::GHOST) {
+            ImGui::Text("Activation State: %d", ghostObject->getActivationState());
             ImGui::Text("Friction: %f", ghostObject->getFriction());
             ImGui::Text("Hit Fraction: %f", ghostObject->getHitFraction());
             ImGui::Text("Restitution: %f", ghostObject->getRestitution());
@@ -480,3 +487,83 @@ void Collider::drawImGuiVariables()
         }
     }
 }
+
+void Collider::sleepCollider()
+{
+    if (getCollisionMode() == CollisionMode::GHOST) {
+        ghostObject->setActivationState(ISLAND_SLEEPING);
+    }
+
+    if (getCollisionMode() == CollisionMode::BODY) {
+        body->clearForces(); // Elimina cualquier fuerza aplicada
+        body->setLinearVelocity(btVector3(0, 0, 0)); // Detiene el movimiento
+        body->setAngularVelocity(btVector3(0, 0, 0)); // Detiene la rotación
+        body->setActivationState(ISLAND_SLEEPING);
+    }
+
+    if (getCollisionMode() == CollisionMode::KINEMATIC) {
+        kinematicBody->setActivationState(ISLAND_SLEEPING);
+    }
+}
+
+void Collider::disableSimulationCollider()
+{
+    if (getCollisionMode() == CollisionMode::GHOST) {
+        ghostObject->forceActivationState(DISABLE_SIMULATION);
+    }
+
+    if (getCollisionMode() == CollisionMode::BODY) {
+        body->forceActivationState(DISABLE_SIMULATION);
+    }
+
+    if (getCollisionMode() == CollisionMode::KINEMATIC) {
+        kinematicBody->forceActivationState(DISABLE_SIMULATION);
+    }
+}
+
+void Collider::enableSimulationCollider()
+{
+    if (getCollisionMode() == CollisionMode::GHOST) {
+        ghostObject->forceActivationState(ACTIVE_TAG);
+        ghostObject->activate(true);
+    }
+
+    if (getCollisionMode() == CollisionMode::BODY) {
+        body->forceActivationState(ACTIVE_TAG);
+        body->activate(true);
+    }
+
+    if (getCollisionMode() == CollisionMode::KINEMATIC) {
+        kinematicBody->forceActivationState(ACTIVE_TAG);
+        kinematicBody->activate(true);
+    }
+}
+
+void Collider::disableDeactivationCollider()
+{
+    if (getCollisionMode() == CollisionMode::GHOST) {
+        ghostObject->setActivationState(DISABLE_DEACTIVATION);
+    }
+
+    if (getCollisionMode() == CollisionMode::BODY) {
+        body->setActivationState(DISABLE_DEACTIVATION);
+    }
+
+    if (getCollisionMode() == CollisionMode::KINEMATIC) {
+        kinematicBody->setActivationState(DISABLE_DEACTIVATION);
+    }
+}
+
+void Collider::setGravityCollider(Vertex3D g)
+{
+    if (getCollisionMode() == CollisionMode::BODY) {
+        body->setGravity(g.toBullet());
+    }
+}
+
+void Collider::setLinearFactor(Vertex3D linearFactor)
+{
+    Collider::linearFactor = linearFactor;
+}
+
+

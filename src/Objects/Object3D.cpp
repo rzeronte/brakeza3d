@@ -879,7 +879,6 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     body->activate(true);
     body->setUserPointer(this);
     body->setRestitution(restitution);
-    body->setActivationState(DISABLE_DEACTIVATION);
     body->setAngularFactor(angularFactor.toBullet());
     body->setLinearFactor(linearFactor.toBullet());
     body->setFriction(friction);
@@ -892,6 +891,8 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
 
 void Object3D::integrate()
 {
+    if (!isCollisionsEnabled()) return;
+
     if (getCollisionMode() == CollisionMode::GHOST) {
         getGhostObject()->setWorldTransform(
             Tools::GLMMatrixToBulletTransform(getModelMatrix())
