@@ -15,6 +15,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <filesystem>
+#include <glm/gtc/type_ptr.hpp>
 
 std::vector<std::string> Tools::split(const std::string &text, char sep)
 {
@@ -505,4 +506,9 @@ bool Tools::copyFile(const std::string& origen, const std::string& destino)
 
     std::cout << "File copied from " << origen << " to " << destino << std::endl;
     return true;
+}
+
+glm::mat4 Tools::aiMat4toGLMMat4(const aiMatrix4x4& from)
+{
+    return glm::transpose(glm::make_mat4(&from.a1));
 }

@@ -222,6 +222,8 @@ add_executable(Brakeza3D
     include/Misc/PathFinding.h
     src/OpenGL/ShaderOpenGLCustomPostprocessing.cpp    include/OpenGL/ShaderOpenGLCustomPostprocessing.h
     src/OpenGL/ShaderOpenGLCustomMesh3D.cpp            include/OpenGL/ShaderOpenGLCustomMesh3D.h
+        src/OpenGL/ShaderOpenGLBonesTransforms.cpp
+        include/OpenGL/ShaderOpenGLBonesTransforms.h
 )
 
 target_link_libraries(Brakeza3D

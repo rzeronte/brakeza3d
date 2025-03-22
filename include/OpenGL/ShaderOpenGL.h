@@ -7,12 +7,15 @@
 #include <glm/vec2.hpp>
 #include <glm/ext/matrix_float3x3.hpp>
 #include <GL/glew.h>
+#include <vector>
 
 class ShaderOpenGL {
 protected:
     GLuint programID;
 public:
     ShaderOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback);
+    ShaderOpenGL(const std::string &vertexFilename, bool enableFeedback);
+
     static GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path, bool enableFeedback);
 
     virtual void destroy() = 0;
@@ -59,6 +62,8 @@ public:
 
     std::string vertexFilename;
     std::string fragmentFilename;
+
+    void setMat4Array(const std::string &name, std::vector<glm::mat4> &Transforms) const;
 };
 
 

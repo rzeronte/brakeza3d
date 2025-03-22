@@ -32,6 +32,7 @@
 #include "../OpenGL/ShaderOpenGLTint.h"
 #include "../OpenGL/ShaderOpenGLLine3D.h"
 #include "../OpenGL/ShaderOpenGLCustom.h"
+#include "../OpenGL/ShaderOpenGLBonesTransforms.h"
 
 class ComponentRender : public Component {
 private:
@@ -63,6 +64,7 @@ private:
     ShaderOpenGLDepthMap *shaderOGLDepthMap;
     ShaderOpenGLFOG *shaderOGLFOG;
     ShaderOpenGLTint *shaderOGLTint;
+    ShaderOpenGLBonesTransforms *shaderOGLBonesTransforms;
 
     GLuint lastFrameBufferUsed;
     GLuint lastProgramUsed;
@@ -170,6 +172,8 @@ public:
     [[nodiscard]] ShaderOpenGLFOG *getShaderOGLFOG() const;
 
     [[nodiscard]] ShaderOpenGLTint *getShaderOGLTint() const;
+
+    ShaderOpenGLBonesTransforms *getShaderOGLBonesTransforms() const;
 
     [[nodiscard]] ShaderOpenGLDepthMap *getShaderOGLDepthMap() const;
 

@@ -92,6 +92,8 @@ public:
     static std::string removeSubstring(const std::string &str, const std::string &toRemove);
 
     static bool copyFile(const std::string &origen, const std::string &destino);
+
+    static glm::mat4 aiMat4toGLMMat4(const aiMatrix4x4t<ai_real> &from);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

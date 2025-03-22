@@ -36,7 +36,7 @@ void Mesh3DAnimationCollection::onUpdateCurrentMesh3D() {
 
     this->getCurrentMesh3DAnimated()->setPosition(this->getPosition());
     this->getCurrentMesh3DAnimated()->setRotation(this->getRotation() * rotationFixed);
-    this->getCurrentMesh3DAnimated()->updateFrameTransformations();
+    this->getCurrentMesh3DAnimated()->UpdateFrameTransformations();
 }
 
 void Mesh3DAnimationCollection::setAnimation(int index) {

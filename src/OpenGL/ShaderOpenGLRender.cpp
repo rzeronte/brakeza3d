@@ -129,25 +129,13 @@ void ShaderOpenGLRender::render(
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
 
-    //glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, feedbackBuffer);  // Vinculamos el buffer de feedback
-    //glBeginTransformFeedback(GL_TRIANGLES);  // Especificamos el tipo de primitivas que estamos procesando
-
-    glDrawArrays(GL_TRIANGLES, 0, size );
-
-    //glEndTransformFeedback();
-
-    // Copiar los datos modificados desde feedbackBuffer al buffer original
+    glDrawArrays(GL_TRIANGLES, 0, size);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
-
-    // Copia los datos del feedbackBuffer al vertexbuffer
-    //glBindBuffer(GL_COPY_READ_BUFFER, feedbackBuffer);  // Vincula el buffer de feedback como buffer de lectura
-    //glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);      // Vincula el buffer de vértices como buffer de escritura
-    //glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, sizeof(glm::vec3) * size);
 }
 
 void ShaderOpenGLRender::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)

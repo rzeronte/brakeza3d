@@ -44,7 +44,7 @@
 			"shaders":	[],
 			"model":	"../assets/animations//dummy.fbx",
 			"enableLights":	false,
-			"animationSpeed":	1,
+			"animationSpeed":	0.5,
 			"type":	"Mesh3DAnimation"
 		}],
 	"shaders":	[],

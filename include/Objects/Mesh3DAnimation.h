@@ -6,11 +6,12 @@
 #include <cstring>
 #include <cassert>
 
-#define NUM_BONES_PER_VERTEX 12
+#define NUM_BONES_PER_VERTEX 4
 #define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
+#define MAX_BONES 100
 
 struct VertexBoneData {
-    int IDs[NUM_BONES_PER_VERTEX] = {0};
+    unsigned int IDs[NUM_BONES_PER_VERTEX];
     float Weights[NUM_BONES_PER_VERTEX] = {0};
 
     void AddBoneData(unsigned int BoneID, float Weight) {
@@ -43,17 +44,18 @@ private:
 
     aiMatrix4x4 globalInverseTransform;
 
-    std::vector<std::vector<VertexBoneData>> meshVerticesBoneData;
-    std::vector<std::vector<Vertex3D>> meshVertices;
+    std::vector<std::vector<VertexBoneData>> meshVerticesBoneData;  // mesh[] > vertex[] > VertexBoneData
+    std::vector<std::vector<VertexBoneData>> meshVerticesBoneDataOrdered;  // mesh[] > vertex[] > VertexBoneData
+    std::vector<std::vector<Vertex3D>> meshVertices;                // mesh[] > vertices
+
+    std::map<std::string, unsigned int> boneMapping;                // maps a bone's name to its index
+    std::vector<BoneInfo> boneInfo;                                 // Bone info and final transformation
 
     int indexCurrentAnimation;
     float runningTime;
     bool remove_at_end_animation;
     float animation_speed;
     bool animation_ends;
-
-    std::map<std::string, unsigned int> boneMapping; // maps a bone name to its index
-    std::vector<BoneInfo> boneInfo;
 public:
     Mesh3DAnimation();
 
@@ -61,7 +63,7 @@ public:
 
     void onUpdate() override;
 
-    void updateFrameTransformations();
+    void UpdateFrameTransformations();
 
     bool AssimpLoadAnimation(const std::string &filename);
 
@@ -71,7 +73,7 @@ public:
 
     void ReadNodesFromRoot();
 
-    void BoneTransform(float TimeInSeconds, std::vector<aiMatrix4x4> &Transforms);
+    void UpdateBonesFinalTransformations(float TimeInSeconds);
 
     void ReadNodeHierarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform);
 
@@ -83,9 +85,9 @@ public:
 
     static unsigned int FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim);
 
-    void updateForBone(Vertex3D &dest, int meshID, int vertexID, std::vector<aiMatrix4x4> &Transforms);
+    void updateForBone(Vertex3D &dest, int meshID, int vertexID);
 
-    void LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Vertex3D> &meshVertex);
+    void LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Vertex3D> &meshVertex, std::vector<Vertex3D> &meshNormals);
 
     void LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData);
 
@@ -95,7 +97,7 @@ public:
 
     static void CalcInterpolatedPosition(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
 
-    void drawBones(aiNode *node, std::vector<aiMatrix4x4> &Transforms, Vertex3D *lastBonePosition = nullptr);
+    void drawBones(aiNode *node, Vertex3D *lastBonePosition = nullptr);
 
     void setRemoveAtEndAnimation(bool removeAtEnds);
 
@@ -104,8 +106,6 @@ public:
     const char *getTypeObject() override;
 
     const char *getTypeIcon() override;
-
-    void updateOGLBuffers();
 
     void drawImGuiProperties() override;
 
@@ -120,6 +120,17 @@ public:
     void setAnimationSpeed(float animationSpeed);
 
     void setIndexCurrentAnimation(int indexCurrentAnimation);
+
+    bool isAnimationEnds() const;
+
+
+    float getCurrentAnimationMaxTime() const;
+
+    void checkIfEndAnimation();
+
+    void fillAnimationBuffers();
+
+    void UpdateOpenGLBones();
 };
 
 
