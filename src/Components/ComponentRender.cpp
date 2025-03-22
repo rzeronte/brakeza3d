@@ -27,6 +27,7 @@ ComponentRender::ComponentRender()
     shaderOGLDepthMap(nullptr),
     shaderOGLFOG(nullptr),
     shaderOGLTint(nullptr),
+    shaderOGLBonesTransforms(nullptr),
     lastFrameBufferUsed(0),
     lastProgramUsed(0)
 {
@@ -55,6 +56,7 @@ void ComponentRender::onStart()
     shaderOGLDepthMap = new ShaderOpenGLDepthMap();
     shaderOGLFOG = new ShaderOpenGLFOG();
     shaderOGLTint = new ShaderOpenGLTint();
+    shaderOGLBonesTransforms = new ShaderOpenGLBonesTransforms();
 }
 
 void ComponentRender::preUpdate()
@@ -426,6 +428,10 @@ ShaderOpenGLFOG *ComponentRender::getShaderOGLFOG() const {
 
 ShaderOpenGLTint *ComponentRender::getShaderOGLTint() const {
     return shaderOGLTint;
+}
+
+ShaderOpenGLBonesTransforms *ComponentRender::getShaderOGLBonesTransforms() const {
+    return shaderOGLBonesTransforms;
 }
 
 ShaderOpenGLDepthMap *ComponentRender::getShaderOGLDepthMap() const {
