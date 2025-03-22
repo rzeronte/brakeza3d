@@ -102,6 +102,7 @@ void Mesh3DAnimation::UpdateOpenGLBones()
     }
 
     for (auto &m: meshes) {
+        if (m.vertices.size() <= 0) continue;
         ComponentsManager::get()->getComponentRender()->getShaderOGLBonesTransforms()->render(
             m,
             transformations,
