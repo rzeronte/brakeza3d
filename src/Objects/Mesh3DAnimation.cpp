@@ -169,7 +169,7 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     ReadNodesFromRoot();
 
     fillBuffers();
-    FillAnimationVerticesOGLBuffers();
+    //FillAnimationVerticesOGLBuffers();
 
     setSourceFile(filename);
 
@@ -650,22 +650,6 @@ void Mesh3DAnimation::FillAnimationBoneDataOGLBuffers()
         } else {
             glBindBuffer(GL_ARRAY_BUFFER, meshes[i].vertexBoneDataBuffer);
             glBufferSubData(GL_ARRAY_BUFFER, 0, meshVerticesBoneData[i].size() * sizeof(VertexBoneData), meshVerticesBoneData[i].data());
-        }
-    }
-}
-
-void Mesh3DAnimation::FillAnimationVerticesOGLBuffers()
-{
-    for (int i = 0; i < meshes.size(); i++) {
-        if (meshes[i].vertices.size() <= 0) continue;
-
-        if (!glIsBuffer(meshes[i].vertexbuffer)) {
-            glGenBuffers(1, &meshes[i].vertexbuffer);
-            glBindBuffer(GL_ARRAY_BUFFER, meshes[i].vertexbuffer);
-            glBufferData(GL_ARRAY_BUFFER, meshes[i].vertices.size() * sizeof(glm::vec4), meshes[i].vertices.data(), GL_DYNAMIC_DRAW);
-        } else {
-            glBindBuffer(GL_ARRAY_BUFFER, meshes[i].vertexbuffer);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, meshes[i].vertices.size() * sizeof(glm::vec4), meshes[i].vertices.data());
         }
     }
 }

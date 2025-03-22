@@ -71,7 +71,7 @@ public:
 
     void LoadMesh(int meshId, aiMesh *mesh);
 
-    void updateBoundingBox();
+    virtual void updateBoundingBox();
 
     void onUpdate() override;
 
