@@ -131,6 +131,8 @@ public:
     void UpdateOpenGLBones();
 
     void FillAnimationVerticesOGLBuffers();
+
+    void updateBoundingBox();
 };
 
 

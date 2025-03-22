@@ -669,3 +669,62 @@ void Mesh3DAnimation::FillAnimationVerticesOGLBuffers()
         }
     }
 }
+
+void Mesh3DAnimation::updateBoundingBox()
+{
+    glm::mat4 mvpMatrix = getModelMatrix();
+
+    float maxX = -FLT_MAX, minX = FLT_MAX, maxY = -FLT_MAX, minY = FLT_MAX, maxZ = -FLT_MAX, minZ = FLT_MAX;
+
+    std::vector<Vertex3D> vertices;
+
+    for (int i = 0; i < (int) scene->mNumMeshes; i++) {
+
+        if (meshVertices[i].empty()) continue;
+
+        for (unsigned int k = 0; k < scene->mMeshes[i]->mNumFaces; k++) {
+
+            const aiFace &Face = scene->mMeshes[i]->mFaces[k];
+
+            auto v1Index= Face.mIndices[0];
+            auto v2Index= Face.mIndices[1];
+            auto v3Index= Face.mIndices[2];
+
+            Vertex3D V1 = meshVertices[i][v1Index];
+            Vertex3D V2 = meshVertices[i][v2Index];
+            Vertex3D V3 = meshVertices[i][v3Index];
+
+            updateForBone(V1, i, (int) v1Index);
+            updateForBone(V2, i, (int) v2Index);
+            updateForBone(V3, i, (int) v3Index);
+
+            vertices.emplace_back(V1);
+            vertices.emplace_back(V2);
+            vertices.emplace_back(V3);
+        }
+    }
+
+    for (auto &vertex : vertices) {
+        glm::vec4 transformedVertex = mvpMatrix * vertex.toGLM4();
+        transformedVertex /= transformedVertex.w;
+
+        Vertex3D V(transformedVertex.x, transformedVertex.y, transformedVertex.z);
+
+        maxX = std::max(maxX, V.x);
+        minX = std::min(minX, V.x);
+        maxY = std::max(maxY, V.y);
+        minY = std::min(minY, V.y);
+        maxZ = std::max(maxZ, V.z);
+        minZ = std::min(minZ, V.z);
+    }
+
+    this->aabb.max.x = maxX;
+    this->aabb.max.y = maxY;
+    this->aabb.max.z = maxZ;
+
+    this->aabb.min.x = minX;
+    this->aabb.min.y = minY;
+    this->aabb.min.z = minZ;
+
+    this->aabb.updateVertices();
+}
