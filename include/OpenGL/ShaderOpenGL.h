@@ -64,6 +64,8 @@ public:
     std::string fragmentFilename;
 
     void setMat4Array(const std::string &name, std::vector<glm::mat4> &Transforms) const;
+
+    void setMat4ArrayUniform(GLint uniform, std::vector<glm::mat4> &Transforms) const;
 };
 
 

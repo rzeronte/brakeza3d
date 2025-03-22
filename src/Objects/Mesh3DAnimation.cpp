@@ -18,6 +18,11 @@ void Mesh3DAnimation::onUpdate()
 
     UpdateFrameTransformations();
 
+    // -- CPU Skinning
+    //ApplyBoneTransformsToMesh();
+    //UpdateOGLBuffers();
+
+    // OpenGL Skinning
     UpdateOpenGLBones();
 
     Mesh3D::onUpdate();
@@ -29,7 +34,7 @@ void Mesh3DAnimation::onUpdate()
 
 void Mesh3DAnimation::UpdateOpenGLBones()
 {
-    fillAnimationBuffers();
+    FillAnimationOGLBuffers();
 
     std::vector<glm::mat4> transformations(MAX_BONES, glm::mat4(0));
 
@@ -48,13 +53,13 @@ void Mesh3DAnimation::UpdateOpenGLBones()
 
 void Mesh3DAnimation::UpdateFrameTransformations()
 {
-    if (isRemoved() || scene == nullptr || !scene->HasAnimations()) return;
+    if (!scene->HasAnimations()) return;
 
     runningTime += Brakeza3D::get()->getDeltaTime() * animation_speed;
 
-    checkIfEndAnimation();
+    CheckIfEndAnimation();
 
-    if (isAnimationEnds() && isRemoveAtEndAnimation()) {
+    if (isRemoveAtEndAnimation() && isAnimationEnds()) {
         getParent()->setRemoved(true);
         return;
     }
@@ -62,7 +67,7 @@ void Mesh3DAnimation::UpdateFrameTransformations()
     UpdateBonesFinalTransformations(runningTime);
 }
 
-void Mesh3DAnimation::checkIfEndAnimation()
+void Mesh3DAnimation::CheckIfEndAnimation()
 {
     animation_ends = false;
     if (runningTime >= getCurrentAnimationMaxTime()) {
@@ -120,11 +125,9 @@ void Mesh3DAnimation::ReadNodesFromRoot()
     // Para cada malla preparamos sus array de "Vertices" y "VertexBoneData"
     meshVertices.resize(scene->mNumMeshes);
     meshVerticesBoneData.resize(scene->mNumMeshes);
-    meshVerticesBoneDataOrdered.resize(scene->mNumMeshes);
 
     // Procesamos los nodos desde el nodo raíz
     ProcessNodeAnimation(scene->mRootNode);
-
 }
 
 void Mesh3DAnimation::ProcessNodeAnimation(aiNode *node)
@@ -163,7 +166,7 @@ void Mesh3DAnimation::ProcessMeshAnimation(int i, aiMesh *mesh)
     for (unsigned int k = 0; k < mesh->mNumFaces; k++) {
         const aiFace &Face = mesh->mFaces[k];
 
-        //if (Face.mNumIndices < 3) continue;
+        if (Face.mNumIndices < 3) continue;
 
         auto index1 = Face.mIndices[0];
         auto index2 = Face.mIndices[1];
@@ -574,25 +577,25 @@ bool Mesh3DAnimation::isAnimationEnds() const
     return animation_ends;
 }
 
-void Mesh3DAnimation::fillAnimationBuffers()
+void Mesh3DAnimation::FillAnimationOGLBuffers()
 {
-    for (int m = 0; m < meshes.size(); m++) {
-        if (glIsBuffer(meshes[m].vertexBoneDataBuffer)) {
-            glDeleteBuffers(1, &meshes[m].vertexBoneDataBuffer);
+    for (int i = 0; i < meshes.size(); i++) {
+        if (!glIsBuffer(meshes[i].vertexBoneDataBuffer)) {
+            glGenBuffers(1, &meshes[i].vertexBoneDataBuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, meshes[i].vertexBoneDataBuffer);
+            glBufferData(GL_ARRAY_BUFFER, meshVerticesBoneData[i].size() * sizeof(VertexBoneData), meshVerticesBoneData[i].data(), GL_STATIC_DRAW);
+        } else {
+            glBindBuffer(GL_ARRAY_BUFFER, meshes[i].vertexBoneDataBuffer);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, meshVerticesBoneData[i].size() * sizeof(VertexBoneData), meshVerticesBoneData[i].data());
         }
 
-        glGenBuffers(1, &meshes[m].vertexBoneDataBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, meshes[m].vertexBoneDataBuffer);
-        glBufferData(GL_ARRAY_BUFFER, meshVerticesBoneData[m].size() * sizeof(VertexBoneData), meshVerticesBoneData[m].data(), GL_STATIC_DRAW);
-
-
-        if (!glIsBuffer(meshes[m].vertexbuffer)) {
-            glGenBuffers(1, &meshes[m].vertexbuffer);
-            glBindBuffer(GL_ARRAY_BUFFER, meshes[m].vertexbuffer);
-            glBufferData(GL_ARRAY_BUFFER, meshes[m].vertices.size() * sizeof(glm::vec4), meshes[m].vertices.data(), GL_STREAM_DRAW);
+        if (!glIsBuffer(meshes[i].vertexbuffer)) {
+            glGenBuffers(1, &meshes[i].vertexbuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, meshes[i].vertexbuffer);
+            glBufferData(GL_ARRAY_BUFFER, meshes[i].vertices.size() * sizeof(glm::vec4), meshes[i].vertices.data(), GL_STATIC_DRAW);
         } else {
-            glBindBuffer(GL_ARRAY_BUFFER, meshes[m].vertexbuffer);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, meshes[m].vertices.size() * sizeof(glm::vec4), meshes[m].vertices.data());
+            glBindBuffer(GL_ARRAY_BUFFER, meshes[i].vertexbuffer);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, meshes[i].vertices.size() * sizeof(glm::vec4), meshes[i].vertices.data());
         }
     }
 }

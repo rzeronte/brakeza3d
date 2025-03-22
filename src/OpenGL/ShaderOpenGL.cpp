@@ -291,6 +291,11 @@ void ShaderOpenGL::setMat4Array(const std::string &name, std::vector<glm::mat4> 
     glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), (GLsizei)Transforms.size(), GL_FALSE, glm::value_ptr(Transforms[0]));
 }
 
+void ShaderOpenGL::setMat4ArrayUniform(GLint uniform, std::vector<glm::mat4> &Transforms) const
+{
+    glUniformMatrix4fv(uniform, (GLsizei)Transforms.size(), GL_FALSE, glm::value_ptr(Transforms[0]));
+}
+
 void ShaderOpenGL::setMat4Uniform(GLint uniform, const glm::mat4 &mat)
 {
     glUniformMatrix4fv(uniform, 1, GL_FALSE, &mat[0][0]);

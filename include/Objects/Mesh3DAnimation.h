@@ -45,7 +45,6 @@ private:
     aiMatrix4x4 globalInverseTransform;
 
     std::vector<std::vector<VertexBoneData>> meshVerticesBoneData;  // mesh[] > vertex[] > VertexBoneData
-    std::vector<std::vector<VertexBoneData>> meshVerticesBoneDataOrdered;  // mesh[] > vertex[] > VertexBoneData
     std::vector<std::vector<Vertex3D>> meshVertices;                // mesh[] > vertices
 
     std::map<std::string, unsigned int> boneMapping;                // maps a bone's name to its index
@@ -123,12 +122,11 @@ public:
 
     bool isAnimationEnds() const;
 
-
     float getCurrentAnimationMaxTime() const;
 
-    void checkIfEndAnimation();
+    void CheckIfEndAnimation();
 
-    void fillAnimationBuffers();
+    void FillAnimationOGLBuffers();
 
     void UpdateOpenGLBones();
 };

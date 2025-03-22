@@ -12,6 +12,8 @@ ShaderOpenGLBonesTransforms::ShaderOpenGLBonesTransforms()
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
+
+    gBonesUniform = glGetUniformLocation(programID, "gBones");
 }
 
 void ShaderOpenGLBonesTransforms::render(
@@ -23,7 +25,7 @@ void ShaderOpenGLBonesTransforms::render(
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
-    setMat4Array("gBones", transformations);
+    setMat4ArrayUniform(gBonesUniform, transformations);
 
     setVAOAttributes(meshData.vertexbuffer, meshData.vertexBoneDataBuffer);
 

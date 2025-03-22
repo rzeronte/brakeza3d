@@ -35,6 +35,8 @@ struct meshData {
     GLuint uvbuffer;
     GLuint normalbuffer;
 
+    GLuint vertexBoneDataBuffer;
+
     int materialIndex;
 };
 
