@@ -14,18 +14,77 @@ Mesh3DAnimation::Mesh3DAnimation()
 
 void Mesh3DAnimation::onUpdate()
 {
+    Object3D::onUpdate();
+
     if (isRemoved() || scene == nullptr) return;
 
     UpdateFrameTransformations();
 
-    // -- CPU Skinning
-    //ApplyBoneTransformsToMesh();
-    //UpdateOGLBuffers();
-
-    // OpenGL Skinning
     UpdateOpenGLBones();
 
-    Mesh3D::onUpdate();
+    auto render = ComponentsManager::get()->getComponentRender();
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    render->getShaderOGLRender()->renderAnimatedMesh(this,window->getSceneFramebuffer());
+
+    if (render->getSelectedObject() == this) {
+        render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
+    }
+
+    if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
+        for (auto &m: meshes) {
+            render->getShaderOGLPoints()->render(
+                this,
+                m.feedbackBuffer,
+                m.vertices.size(),
+                Color::green(),
+                window->getSceneFramebuffer()
+            );
+        }
+    }
+
+    if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
+        for (auto &m: meshes) {
+            render->getShaderOGLShading()->render(
+                getModelMatrix(),
+                m.feedbackBuffer,
+                m.uvbuffer,
+                m.normalbuffer,
+                (int) m.vertices.size(),
+                window->getSceneFramebuffer()
+            );
+        }
+    }
+
+    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
+        for (auto &m: meshes) {
+            render->getShaderOGLWireframe()->render(
+                getModelMatrix(),
+                m.feedbackBuffer,
+                m.uvbuffer,
+                m.normalbuffer,
+                (int) m.vertices.size(),
+                window->getSceneFramebuffer()
+            );
+        }
+    }
+
+    if (EngineSetup::get()->DRAW_MESH3D_AABB && isRender()) {
+        updateBoundingBox();
+        Drawable::drawAABB(&aabb, Color::white());
+    }
+
+    if (EngineSetup::get()->DRAW_MESH3D_OCTREE && octree != nullptr) {
+        Drawable::drawOctree(octree);
+    }
+
+    if (EngineSetup::get()->DRAW_MESH3D_GRID && grid != nullptr) {
+        Drawable::drawGrid3D(grid);
+    }
+
+    for (auto &s: customShaders) {
+        s->render(window->getSceneFramebuffer());
+    }
 
     if (EngineSetup::get()->DRAW_ANIMATION_BONES) {
         drawBones(scene->mRootNode, nullptr);
@@ -34,7 +93,7 @@ void Mesh3DAnimation::onUpdate()
 
 void Mesh3DAnimation::UpdateOpenGLBones()
 {
-    FillAnimationOGLBuffers();
+    FillAnimationBoneDataOGLBuffers();
 
     std::vector<glm::mat4> transformations(MAX_BONES, glm::mat4(0));
 
@@ -110,6 +169,8 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     ReadNodesFromRoot();
 
     fillBuffers();
+    FillAnimationVerticesOGLBuffers();
+
     setSourceFile(filename);
 
     return true;
@@ -577,22 +638,31 @@ bool Mesh3DAnimation::isAnimationEnds() const
     return animation_ends;
 }
 
-void Mesh3DAnimation::FillAnimationOGLBuffers()
+void Mesh3DAnimation::FillAnimationBoneDataOGLBuffers()
 {
     for (int i = 0; i < meshes.size(); i++) {
+        if (meshes[i].vertices.size() <= 0) continue;
+
         if (!glIsBuffer(meshes[i].vertexBoneDataBuffer)) {
             glGenBuffers(1, &meshes[i].vertexBoneDataBuffer);
             glBindBuffer(GL_ARRAY_BUFFER, meshes[i].vertexBoneDataBuffer);
-            glBufferData(GL_ARRAY_BUFFER, meshVerticesBoneData[i].size() * sizeof(VertexBoneData), meshVerticesBoneData[i].data(), GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, meshVerticesBoneData[i].size() * sizeof(VertexBoneData), meshVerticesBoneData[i].data(), GL_DYNAMIC_DRAW);
         } else {
             glBindBuffer(GL_ARRAY_BUFFER, meshes[i].vertexBoneDataBuffer);
             glBufferSubData(GL_ARRAY_BUFFER, 0, meshVerticesBoneData[i].size() * sizeof(VertexBoneData), meshVerticesBoneData[i].data());
         }
+    }
+}
+
+void Mesh3DAnimation::FillAnimationVerticesOGLBuffers()
+{
+    for (int i = 0; i < meshes.size(); i++) {
+        if (meshes[i].vertices.size() <= 0) continue;
 
         if (!glIsBuffer(meshes[i].vertexbuffer)) {
             glGenBuffers(1, &meshes[i].vertexbuffer);
             glBindBuffer(GL_ARRAY_BUFFER, meshes[i].vertexbuffer);
-            glBufferData(GL_ARRAY_BUFFER, meshes[i].vertices.size() * sizeof(glm::vec4), meshes[i].vertices.data(), GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, meshes[i].vertices.size() * sizeof(glm::vec4), meshes[i].vertices.data(), GL_DYNAMIC_DRAW);
         } else {
             glBindBuffer(GL_ARRAY_BUFFER, meshes[i].vertexbuffer);
             glBufferSubData(GL_ARRAY_BUFFER, 0, meshes[i].vertices.size() * sizeof(glm::vec4), meshes[i].vertices.data());

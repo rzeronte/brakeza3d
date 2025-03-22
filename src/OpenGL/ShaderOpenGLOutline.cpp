@@ -64,6 +64,31 @@ void ShaderOpenGLOutline::drawOutline(Mesh3D *m, Color c, float borderThickness)
     componentRender->changeOpenGLFramebuffer(0);
 }
 
+void ShaderOpenGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderThickness)
+{
+    auto componentRender = ComponentsManager::get()->getComponentRender();
+    auto componentWindow = ComponentsManager::get()->getComponentWindow();
+    auto shaderColor = componentRender->getShaderOGLColor();
+
+    for (const auto& mm : m->meshes) {
+        shaderColor->render(
+            m->getModelMatrix(),
+            mm.feedbackBuffer,
+            mm.uvbuffer,
+            mm.normalbuffer,
+            (int) mm.vertices.size(),
+            true,
+            Color::white()
+        );
+    }
+
+    componentRender->changeOpenGLFramebuffer(componentWindow->getSceneFramebuffer());
+
+    render(shaderColor->textureColorbuffer, c, borderThickness);
+
+    componentRender->changeOpenGLFramebuffer(0);
+}
+
 void ShaderOpenGLOutline::drawOutlineImage3D(Image3D *i, Color c, float borderThickness)
 {
     auto componentRender = ComponentsManager::get()->getComponentRender();

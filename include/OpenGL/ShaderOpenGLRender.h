@@ -51,7 +51,6 @@ public:
         vertexbuffer,
         GLuint uvbuffer,
         GLuint normalbuffer,
-        GLuint feedbackBuffer,
         int size,
         float alpha,
         GLuint framebuffer
@@ -78,6 +77,8 @@ public:
     void setGlobalIlluminationDiffuse(Vertex3D d);
 
     void setGlobalIlluminationSpecular(Vertex3D s);
+
+    void renderAnimatedMesh(Mesh3D *o, GLuint framebuffer);
 };
 
 

@@ -12,6 +12,9 @@
 class ShaderOpenGLBonesTransforms : public ShaderOpenGL
 {
     GLuint VertexArrayID;
+
+    GLint gBonesUniform;
+
 public:
     ShaderOpenGLBonesTransforms();
 

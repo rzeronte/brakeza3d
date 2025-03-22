@@ -126,9 +126,11 @@ public:
 
     void CheckIfEndAnimation();
 
-    void FillAnimationOGLBuffers();
+    void FillAnimationBoneDataOGLBuffers();
 
     void UpdateOpenGLBones();
+
+    void FillAnimationVerticesOGLBuffers();
 };
 
 

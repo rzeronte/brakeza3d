@@ -118,7 +118,6 @@ void Image3D::onUpdate()
         vertexbuffer,
         uvbuffer,
         normalbuffer,
-        vertexbuffer,
         (int) vertices.size(),
         1.0f,
         ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()

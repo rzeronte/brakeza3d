@@ -41,11 +41,6 @@ void ShaderOpenGLBonesTransforms::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    // Copia los datos del feedbackBuffer al vertexbuffer
-    glBindBuffer(GL_COPY_READ_BUFFER, meshData.feedbackBuffer);  // Vincula el buffer de feedback como buffer de lectura
-    glBindBuffer(GL_ARRAY_BUFFER, meshData.vertexbuffer);      // Vincula el buffer de vértices como buffer de escritura
-    glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, sizeof(glm::vec4) * size);
-
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
 }
 

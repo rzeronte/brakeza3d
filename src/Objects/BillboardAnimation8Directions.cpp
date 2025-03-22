@@ -32,7 +32,6 @@ void BillboardAnimation8Directions::onUpdate()
             billboard->vertexbuffer,
             billboard->uvbuffer,
             billboard->normalbuffer,
-            billboard->vertexbuffer,
             (int) billboard->vertices.size(),
             1.0f,
             ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()

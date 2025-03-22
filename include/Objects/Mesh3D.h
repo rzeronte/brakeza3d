@@ -42,20 +42,20 @@ struct meshData {
 
 class Mesh3D : public Object3D {
 private:
-    Octree *octree;
-    Grid3D *grid;
-    AABB3D aabb;
 
     bool sharedTextures;
     bool render;
     bool loaded = false;
 
-    std::vector<ShaderOpenGLCustom*> customShaders;
 protected:
     std::string sourceFile;
 
     std::vector<Image *> modelTextures;
     std::vector<Image *> modelSpecularTextures;
+    AABB3D aabb;
+    Octree *octree;
+    Grid3D *grid;
+    std::vector<ShaderOpenGLCustom*> customShaders;
 public:
     std::vector<meshData> meshes;
 

@@ -56,7 +56,23 @@ void ShaderOpenGLRender::renderMesh(Mesh3D *o, GLuint framebuffer)
             m.vertexbuffer,
             m.uvbuffer,
             m.normalbuffer,
+            (int) m.vertices.size(),
+            o->getAlpha(),
+            framebuffer
+        );
+    }
+}
+
+void ShaderOpenGLRender::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
+{
+    for (const auto& m: o->meshes) {
+        render(
+            o,
+            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
+            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
             m.feedbackBuffer,
+            m.uvbuffer,
+            m.normalbuffer,
             (int) m.vertices.size(),
             o->getAlpha(),
             framebuffer
@@ -71,7 +87,6 @@ void ShaderOpenGLRender::render(
     GLuint vertexbuffer,
     GLuint uvbuffer,
     GLuint normalbuffer,
-    GLuint feedbackBuffer,
     int size,
     float alpha,
     GLuint framebuffer
