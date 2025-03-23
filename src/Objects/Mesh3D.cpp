@@ -629,7 +629,6 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
     setCollisionShape(modeShape);
     setCollisionMode(CollisionMode::BODY);
     if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE || getCollisionShape() == CollisionShape::CAPSULE) {
-        updateBoundingBox();
         makeSimpleRigidBody(
             mass,
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
