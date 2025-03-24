@@ -691,11 +691,16 @@ Puedes utilizar los siguientes métodos para configurar el comportamiento físic
 - `setRestitution(float)`:
 - `setAngularDamping(float)`:
 - `setLinearDamping(float)`:
+- `setAngularDamping(float)`:
 - `setAngularFactor(Vertex3D)`:
+- `setLinearFactor(Vertex3D)`
+- `setGravityCollider(Vertex3D)`
 
 ### Modo de colisión KINEMATIC
 
-
+- `setWalkingDirection(Vertex3D)`
+- `jump()`
+- `onGround(): boolean`
 ---
 
 >[Back to index](#index)
