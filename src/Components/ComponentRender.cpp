@@ -80,13 +80,13 @@ void ComponentRender::onUpdate()
         Drawable::drawMainAxis();
     }
 
-    if (SETUP->DRAW_FPS) {
+    /*if (SETUP->DRAW_FPS) {
         textWriter->writeTextTTFMiddleScreen(
             std::to_string(getFps()).c_str(),
             Color::green(),
             2.5
         );
-    }
+    }*/
 }
 
 void ComponentRender::postUpdate()

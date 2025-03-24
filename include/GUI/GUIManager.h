@@ -114,6 +114,8 @@ public:
     static void ShowDeletePopup(const char* title, const std::function<void()>& onConfirm);
 
     static void setNextWindowSize(int w, int h);
+
+    void RenderFPS();
 };
 
 #endif //SDL2_3D_ENGINE_GUI_ENGINE_H

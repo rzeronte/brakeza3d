@@ -109,7 +109,7 @@ public:
 
     static void setPropertiesFromJSON(cJSON *object, Mesh3D *o, bool loadGeometry);
 
-    void fillBuffers();
+    void FillOGLBuffers();
 
     [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const;
 

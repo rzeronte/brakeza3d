@@ -130,7 +130,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 
     sourceFile = fileName;
 
-    fillBuffers();
+    FillOGLBuffers();
 }
 
 void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filename)
@@ -545,7 +545,7 @@ void Mesh3D::createFromJSON(cJSON *object)
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
 
-void Mesh3D::fillBuffers()
+void Mesh3D::FillOGLBuffers()
 {
     for (auto &m: meshes) {
         glGenBuffers(1, &m.vertexbuffer);

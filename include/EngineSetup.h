@@ -46,7 +46,7 @@ public:
     bool V_SYNC = true;
     int FRAMERATE = 60;
 
-    bool ENABLE_FOG = true;
+    bool ENABLE_FOG = false;
     float FRUSTUM_FARPLANE_DISTANCE = 1000;
     float HORIZONTAL_FOV = 90;
 

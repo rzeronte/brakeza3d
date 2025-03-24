@@ -8,7 +8,8 @@ Mesh3DAnimation::Mesh3DAnimation()
     indexCurrentAnimation(0),
     runningTime(0),
     remove_at_end_animation(false),
-    animation_speed(1)
+    animation_speed(1),
+    animation_ends(false)
 {
 }
 
@@ -25,10 +26,12 @@ void Mesh3DAnimation::onUpdate()
     auto render = ComponentsManager::get()->getComponentRender();
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    render->getShaderOGLRender()->renderAnimatedMesh(this,window->getSceneFramebuffer());
-
     if (render->getSelectedObject() == this) {
         render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
+    }
+
+    if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
+        render->getShaderOGLRender()->renderAnimatedMesh(this,window->getSceneFramebuffer());
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
@@ -93,8 +96,6 @@ void Mesh3DAnimation::onUpdate()
 
 void Mesh3DAnimation::UpdateOpenGLBones()
 {
-    FillAnimationBoneDataOGLBuffers();
-
     std::vector<glm::mat4> transformations(MAX_BONES, glm::mat4(0));
 
     for (int i = 0; i < (int) boneInfo.size(); i++) {
@@ -102,7 +103,7 @@ void Mesh3DAnimation::UpdateOpenGLBones()
     }
 
     for (auto &m: meshes) {
-        if (m.vertices.size() <= 0) continue;
+        if ((int) m.vertices.size() <= 0) continue;
         ComponentsManager::get()->getComponentRender()->getShaderOGLBonesTransforms()->render(
             m,
             transformations,
@@ -169,8 +170,8 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     AssimpInitMaterials(scene, filename);
     ReadNodesFromRoot();
 
-    fillBuffers();
-    //FillAnimationVerticesOGLBuffers();
+    FillOGLBuffers();
+    FillAnimationBoneDataOGLBuffers();
 
     setSourceFile(filename);
 
@@ -282,7 +283,6 @@ void Mesh3DAnimation::LoadMeshBones(int meshId, aiMesh *mesh, std::vector<Vertex
             unsigned int VertexID = mesh->mBones[i]->mWeights[j].mVertexId;
             float Weight = mesh->mBones[i]->mWeights[j].mWeight;
 
-            //Logging::Message(std::to_string(j) + " - AddBoneData for VertexID: " + std::to_string(VertexID) + " in idMesh: " + std::string(mesh->mName.C_Str()) + ", BoneIndex: " + std::to_string(BoneIndex) + ", Weight: " + std::to_string(Weight));
             meshVertexBoneData[VertexID].AddBoneData(BoneIndex, Weight);
         }
     }
