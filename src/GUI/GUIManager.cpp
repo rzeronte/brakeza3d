@@ -852,7 +852,37 @@ void GUIManager::draw(float timedelta, bool &finish)
         ImGui::EndPopup();
     }
 
+    RenderFPS();
+
     ImGui::End();
+}
+
+void GUIManager::RenderFPS()
+{
+    if (EngineSetup::get()->DRAW_FPS)
+    {
+        auto fps = ComponentsManager::get()->getComponentRender()->getFps();
+
+        // Obtener el tamaño de la pantalla
+        ImVec2 screenSize = ImGui::GetIO().DisplaySize;
+
+        // Formatear el texto
+        char fpsText[32];
+        snprintf(fpsText, sizeof(fpsText), "FPS: %d", fps);
+
+        // Obtener el tamaño del texto
+        ImVec2 textSize = ImGui::CalcTextSize(fpsText);
+
+        // Calcular la posición centrada
+        ImVec2 textPos = ImVec2((screenSize.x - textSize.x) * 0.5f, (screenSize.y - textSize.y) * 0.5f);
+
+        // Renderizar el texto
+        ImGui::SetNextWindowBgAlpha(0.5f); // Hacerlo semi-transparente
+        ImGui::SetNextWindowPos(textPos, ImGuiCond_Always);
+        ImGui::Begin("FPS Overlay", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoNav);
+        ImGui::TextUnformatted(fpsText);
+        ImGui::End();
+    }
 }
 
 ImGuiConsoleApp *GUIManager::getConsole()
