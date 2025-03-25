@@ -131,6 +131,9 @@ public:
     void UpdateOpenGLBones();
 
     void updateBoundingBox();
+
+    void setAnimationByName(const std::string& name);
+
 };
 
 

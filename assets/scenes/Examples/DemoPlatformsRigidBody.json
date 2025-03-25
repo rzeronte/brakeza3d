@@ -36,8 +36,8 @@
 			},
 			"rotation":	{
 				"x":	-0.10587466508150101,
-				"y":	0.16648580133914948,
-				"z":	0.039683356881141663
+				"y":	0.16648571193218231,
+				"z":	0.03964078426361084
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
@@ -52,6 +52,11 @@
 				"angularDamping":	0,
 				"restitution":	0.5,
 				"colliderStatic":	false,
+				"colliderOffset":	{
+					"y":	0,
+					"x":	0,
+					"z":	0
+				},
 				"simpleShapeSize":	{
 					"x":	0.5010833740234375,
 					"y":	0.90139126777648926,
@@ -103,6 +108,11 @@
 				"angularDamping":	1,
 				"restitution":	0,
 				"colliderStatic":	true,
+				"colliderOffset":	{
+					"y":	0,
+					"x":	0,
+					"z":	0
+				},
 				"simpleShapeSize":	{
 					"x":	1,
 					"y":	1,
@@ -137,9 +147,9 @@
 				"z":	-43.084999084472656
 			},
 			"rotation":	{
-				"x":	0.01,
-				"y":	0.01,
-				"z":	0.01
+				"x":	0.0099999997764825821,
+				"y":	0.0099999997764825821,
+				"z":	0.0099892709404230118
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
@@ -154,6 +164,11 @@
 				"angularDamping":	0,
 				"restitution":	0.5,
 				"colliderStatic":	false,
+				"colliderOffset":	{
+					"y":	1.2000000476837158,
+					"x":	0,
+					"z":	0
+				},
 				"simpleShapeSize":	{
 					"x":	1,
 					"y":	1,
@@ -204,10 +219,18 @@
 								"y":	0,
 								"z":	20
 							}
+						}, {
+							"name":	"colliderOffset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	1.2,
+								"z":	0
+							}
 						}]
 				}],
 			"shaders":	[],
-			"model":	"../assets/animations//dummy.fbx",
+			"model":	"../assets/animations//character.fbx",
 			"enableLights":	false,
 			"animationSpeed":	1,
 			"type":	"Mesh3DAnimation"
@@ -216,13 +239,13 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-39.147972106933594,
-			"y":	-7.6088466644287109,
-			"z":	-63.118892669677734
+			"x":	-40.668354034423828,
+			"y":	-4.87210750579834,
+			"z":	-63.234405517578125
 		},
 		"rotation":	{
-			"x":	1.1999599933624268,
-			"y":	-179.800048828125,
+			"x":	6.399958610534668,
+			"y":	-176.40013122558594,
 			"z":	0
 		}
 	}

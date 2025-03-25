@@ -728,7 +728,7 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
 
     btTransform transformation;
     transformation.setIdentity();
-    transformation.setOrigin(getPosition().toBullet());
+    transformation.setOrigin(getPosition().toBullet() + colliderOffset.toBullet());
 
     btVector3 inertia(0, 0, 0);
     btCollisionShape* shape = getConvexHullShapeFromMesh(inertia);
@@ -767,7 +767,7 @@ void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *
 
     btTransform transformation;
     transformation.setIdentity();
-    transformation.setOrigin(getPosition().toBullet());
+    transformation.setOrigin(getPosition().toBullet() + colliderOffset.toBullet());
 
     btVector3 inertia(0, 0, 0);
 

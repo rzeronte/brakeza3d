@@ -28,6 +28,7 @@ protected:
 
     CollisionMode collisionMode;
     Vertex3D simpleShapeSize;
+    Vertex3D colliderOffset;
 
     //ghost
     btPairCachingGhostObject *ghostObject;

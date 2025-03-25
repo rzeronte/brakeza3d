@@ -281,6 +281,7 @@ void LUAIntegration(sol::state &lua)
             return Mesh3DAnimation::create(position,imageFile);
         }),
         "setIndexCurrentAnimation", &Mesh3DAnimation::setIndexCurrentAnimation,
+        "setAnimationByName", &Mesh3DAnimation::setAnimationByName,
         "setAnimationSpeed", &Mesh3DAnimation::setAnimationSpeed
     );
 

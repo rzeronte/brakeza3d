@@ -23,6 +23,7 @@ Collider::Collider()
     shapeMargin(0.004f),
     ccdMotionThreshold(0.0),
     ccdSweptSphereRadius(0.0),
+    colliderOffset(Vertex3D(0, 0, 0)),
     kinematicCapsuleSize(
         EngineSetup::get()->PLAYER_CAPSULE_RADIUS,
         EngineSetup::get()->PLAYER_CAPSULE_HEIGHT

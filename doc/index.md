@@ -552,7 +552,7 @@ brakeza:addObject3D(man, 'myMeshAnimated')
 
 Si el modelo tuviese más de una animación, la primera de ellas será la seleccionada por
 defecto. Desde la GUI podrás seleccionar cualquier otra animación como activa.
-Si deseas hacerlo desde tus scripts LUA:
+Si deseas hacerlo desde tus scripts LUA puedes utilizar `setIndexCurrentAnimation` o `setAnimationByName`:
 
 ```lua
 man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
@@ -1303,7 +1303,7 @@ Para cargar una rejilla en un objeto `Mesh3D` puedes utilizar el método `buildG
 ```lua
 eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
 eye:setScale(10)
-eye:buildGrid3D(5, 5, ) -- crea una rejilla de 5x5x5
+eye:buildGrid3D(5, 5, 5) -- crea una rejilla de 5x5x5
 brakeza:addObject3D(eye, 'modelo')
 ```
 

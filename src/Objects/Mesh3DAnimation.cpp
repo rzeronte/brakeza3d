@@ -11,6 +11,7 @@ Mesh3DAnimation::Mesh3DAnimation()
     animation_speed(1),
     animation_ends(false)
 {
+    luaEnvironment["this"] = this;
 }
 
 void Mesh3DAnimation::onUpdate()
@@ -712,4 +713,15 @@ void Mesh3DAnimation::updateBoundingBox()
     this->aabb.min.z = minZ;
 
     this->aabb.updateVertices();
+}
+
+void Mesh3DAnimation::setAnimationByName(const std::string& name)
+{
+    const char* items[(int) scene->mNumAnimations];
+
+    for (int i = 0; i < (int) scene->mNumAnimations; i++) {
+        if (name == scene->mAnimations[i]->mName.C_Str()) {
+            setIndexCurrentAnimation(i);
+        }
+    }
 }
