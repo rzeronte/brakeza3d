@@ -166,6 +166,10 @@ public:
     void setGravityCollider(Vertex3D g);
 
     void setLinearFactor(Vertex3D linearFactor);
+
+    [[nodiscard]] const Vertex3D &getColliderOffset() const;
+
+    void setColliderOffset(Vertex3D colliderOffset);
 };
 
 

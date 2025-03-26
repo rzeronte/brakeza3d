@@ -567,4 +567,12 @@ void Collider::setLinearFactor(Vertex3D linearFactor)
     Collider::linearFactor = linearFactor;
 }
 
+const Vertex3D &Collider::getColliderOffset() const {
+    return colliderOffset;
+}
+
+void Collider::setColliderOffset(Vertex3D colliderOffset) {
+    Collider::colliderOffset = colliderOffset;
+}
+
 

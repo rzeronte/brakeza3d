@@ -85,6 +85,8 @@ void LUAIntegration(sol::state &lua)
         "AxisForward", &Object3D::AxisForward,
         "AxisUp", &Object3D::AxisUp,
         "AxisRight", &Object3D::AxisRight,
+        "getColliderOffset", &Object3D::getColliderOffset,
+        "setColliderOffset", &Object3D::setColliderOffset,
         "sleepCollider", &Object3D::sleepCollider,
         "setCollisionsEnabled", &Object3D::setCollisionsEnabled,
         "disableSimulationCollider", &Object3D::disableSimulationCollider,
