@@ -35,9 +35,9 @@
 				"z":	-43.342765808105469
 			},
 			"rotation":	{
-				"x":	-0.10599686205387115,
-				"y":	0.1667163223028183,
-				"z":	0.03968028724193573
+				"x":	-0.10607839375734329,
+				"y":	0.16687020659446716,
+				"z":	0.039704617112874985
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
@@ -50,13 +50,8 @@
 				"ccdSweptSphereRadius":	0.039999999105930328,
 				"linearDamping":	0,
 				"angularDamping":	0,
-				"restitution":	0.5,
+				"restitution":	0,
 				"colliderStatic":	false,
-				"colliderOffset":	{
-					"y":	0,
-					"x":	0,
-					"z":	0
-				},
 				"simpleShapeSize":	{
 					"x":	0.5010833740234375,
 					"y":	0.90139126777648926,
@@ -108,11 +103,6 @@
 				"angularDamping":	1,
 				"restitution":	0,
 				"colliderStatic":	true,
-				"colliderOffset":	{
-					"y":	0,
-					"x":	0,
-					"z":	0
-				},
 				"simpleShapeSize":	{
 					"x":	1,
 					"y":	1,
@@ -142,14 +132,14 @@
 			"name":	"character",
 			"scale":	1,
 			"position":	{
-				"x":	-44.371345520019531,
-				"y":	-5.6710906028747559,
+				"x":	-42.863319396972656,
+				"y":	-6.74620246887207,
 				"z":	-43.087764739990234
 			},
 			"rotation":	{
-				"x":	0.01001318171620369,
-				"y":	0.01001548208296299,
-				"z":	0.010000910609960556
+				"x":	0.010021318681538105,
+				"y":	0.010025156661868095,
+				"z":	0.010007506236433983
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
@@ -162,13 +152,8 @@
 				"ccdSweptSphereRadius":	0,
 				"linearDamping":	0,
 				"angularDamping":	0,
-				"restitution":	0.5,
+				"restitution":	0,
 				"colliderStatic":	false,
-				"colliderOffset":	{
-					"y":	0.800000011920929,
-					"x":	-0.11999999731779099,
-					"z":	0
-				},
 				"simpleShapeSize":	{
 					"x":	1,
 					"y":	1,
@@ -198,7 +183,7 @@
 						}, {
 							"name":	"speed",
 							"type":	"float",
-							"value":	200
+							"value":	50
 						}, {
 							"name":	"jumpForce",
 							"type":	"float",
@@ -239,9 +224,9 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-44.368717193603516,
-			"y":	-5.6737160682678223,
-			"z":	-28.062343597412109
+			"x":	-42.860691070556641,
+			"y":	-6.7437381744384766,
+			"z":	-28.063510894775391
 		},
 		"rotation":	{
 			"x":	8.19996166229248,

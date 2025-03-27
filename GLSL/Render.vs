@@ -11,11 +11,13 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform vec3 drawOffset;
+
 void main()
 {
-    FragPos = vec3(model * aPos);
+    FragPos = vec3(model * aPos) + drawOffset;
     Normal = mat3(transpose(inverse(model))) * aNormal;
     TexCoords = aTexCoords;
 
-    gl_Position = projection * view * vec4(FragPos, 1.0);
+    gl_Position = (projection * view * vec4(FragPos, 1.0));
 }

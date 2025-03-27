@@ -5,26 +5,18 @@ local State = {
     FALLING = "falling",
     HOOKED = "hooked",
     HANGLING = "hanging",
+    HANGLING_TO_UP = "hanging_to_up",
     CROUCHED = "crouched",
     CROUCHING = "crouching",
-}
-
-local OffsetCollideres = {
-    IDLE = Vertex3D.new(0, 0, 0),
-    WALKING = Vertex3D.new(0, 0, 0),
-    JUMPING = Vertex3D.new(0, 0, 0),
-    RUNNING = Vertex3D.new(0, 0, 0),
-    FALLING = Vertex3D.new(0, 0, 0),
-    HOOKED = Vertex3D.new(0, 0, 0),
-    HANGLING = Vertex3D.new(0, 0, 0),
-    CROUCHING = Vertex3D.new(0, 0, 0),
-    CROUCHED = Vertex3D.new(0, 0, 0),
 }
 
 local function createRayPositions(pos, this, lengthRay)
     local rays = {
         toDown = pos - this:AxisUp():getScaled(lengthRay),
         toUp = pos + this:AxisUp():getScaled(lengthRay),
+
+        toLeft = pos + Vertex3D.new(0.4, 0, 0),
+        toRight = pos + Vertex3D.new(-0.4, 0, 0),
 
         toDownLeft = pos - this:AxisUp():getScaled(lengthRay) + Vertex3D.new(0.4, 0, 0),
         toDownRight = pos - this:AxisUp():getScaled(lengthRay) + Vertex3D.new(-0.4, 0, 0),
@@ -110,6 +102,9 @@ function UpdateCollisionFlags(input, from, rays, cross)
     isFloor = isFloorDown and (isFloorDownLeft or isFloorDownRight) and velocity.y <= 1
 
     isUp = collisions:isRayCollisionWith(from, rays.toUp, floor)
+    isLeft = collisions:isRayCollisionWith(from, rays.toLeft, floor)
+    isRight = collisions:isRayCollisionWith(from, rays.toRight, floor)
+
     isHookedLeft = collisions:isRayCollisionWith(from, rays.toUpLeft, floor)
     isHookedRight = collisions:isRayCollisionWith(from, rays.toUpRight, floor)
     isHooked = (isHookedLeft or isHookedRight) and not isFloorDown
@@ -140,40 +135,45 @@ function UpdateCollisionFlags(input, from, rays, cross)
 end
 
 function UpdateAnimationFromState()
-
     if (currentState == State.JUMPING) then
         this:setAnimationByName("Armature|POSE_JUMPING")
-        --this:setScalingCollider(Vertex3D.new(1, 1, 1))
+        this:setDrawOffset(Vertex3D.new(0, 0, 0))
     elseif (currentState == State.RUNNING) then
         this:setAnimationByName("Armature|RUNNING")
-        --this:setScalingCollider(Vertex3D.new(1, 1, 1))
+        this:setDrawOffset(Vertex3D.new(0, 0.3, 0))
     elseif (currentState == State.FALLING) then
-        this:setAnimationByName("Armature|POSE_FALLING")
-        --this:setScalingCollider(Vertex3D.new(1, 1, 1))
+        this:setAnimationByName("Armature|FALLING_IDLE")
+        this:setDrawOffset(Vertex3D.new(0, 0, 0))
     elseif (currentState == State.IDLE) then
         this:setAnimationByName("Armature|IDLE")
-        --this:setScalingCollider(Vertex3D.new(1, 1, 1))
+        this:setDrawOffset(Vertex3D.new(0, 0.3, 0))
     elseif (currentState == State.HANGLING) then
         this:setAnimationByName("Armature|HANGLING_IDLE")
-        --this:setScalingCollider(Vertex3D.new(1, 1, 1))
+        this:setDrawOffset(Vertex3D.new(0, 0, 0))
     elseif (currentState == State.WALKING) then
         this:setAnimationByName("Armature|WALKING")
-        --this:setScalingCollider(Vertex3D.new(1, 1, 1))
+        this:setDrawOffset(Vertex3D.new(0, 0.3, 0))
     elseif (currentState == State.CROUCHING) then
-        --this:setScalingCollider(Vertex3D.new(1, 0.5, 1))
         this:setAnimationByName("Armature|CROUCH_WALKING")
+        this:setDrawOffset(Vertex3D.new(0, 0.7, 0))
     elseif (currentState == State.CROUCHED) then
-        --this:setScalingCollider(Vertex3D.new(1, 0.5, 1))
         this:setAnimationByName("Armature|CROUCH_POSE")
+        this:setDrawOffset(Vertex3D.new(0, 0.7, 0))
+    elseif (currentState == State.HOOKED) then
+        this:setAnimationByName("Armature|WALL_FALLING")
+        this:setDrawOffset(Vertex3D.new(0, 0, 0))
+    elseif (currentState == State.HANGLING_TO_UP) then
+        this:setAnimationByName("Armature|HANGLING_TO_UP")
+        this:setDrawOffset(Vertex3D.new(0, 0.08, 0))
     end
 end
 
 function setState(state)
-    if  (currentState ~= State.CROUCHED or currentState ~= State.CROUCHING) and (state == State.CROUCHED or state == State.CROUCHING)    then
-        --print("setup capsule short")
+    if  (currentState ~= State.CROUCHED and currentState ~= State.CROUCHING) and (state == State.CROUCHED or state == State.CROUCHING)    then
+        print("setup capsule short")
         this:setCapsuleColliderSize(0.25, 0.5)
         this:UpdateShapeCollider();
-        --this:applyCentralImpulse(Vertex3D.new(0, -1000, 0))
+        this:applyCentralImpulse(Vertex3D.new(0, -500, 0))
     elseif (currentState == State.CROUCHED or currentState == State.CROUCHING) and (state ~= State.CROUCHED and (state ~= State.CROUCHING)) then
         --print("setup capsule long")
         this:setCapsuleColliderSize(0.25, 1)
@@ -217,6 +217,9 @@ function onStart()
     isFullFreeCornerBottomRight = false
 
     isBlockedByHook = false
+
+    isHanglingToUp = false
+
     countUnblockableFrames = 0
 
     rotationLeft = M3:getMatrixRotationForEulerAngles(180, 0, 0);
@@ -224,23 +227,33 @@ function onStart()
     sideRotation = rotationLeft;
 
     cameraOffsetPosition = this:AxisForward():getScaled(cameraOffset.z) + Vertex3D.new(cameraOffset.x, cameraOffset.y, 0)
+
+    local camera = componentsManager:getComponentCamera():getCamera()
+    camera:setPosition(this:getPosition() + cameraOffsetPosition)
+
+    offsetHanglingToUp = Vertex3D.new(-0.6397, 1.8052, 0);
+    originHanglingToUp = Vertex3D.new(0, 0, 0)
 end
 
 function onUpdate()
     local input = componentsManager:getComponentInput();
     local camera = componentsManager:getComponentCamera():getCamera()
 
-    camera:setPosition(this:getPosition() + cameraOffsetPosition)
-    camera:lookAt(this)
-
+    local camPosition = camera:getPosition();
     local pos = this:getPosition()
-    currentState = currentState
+
+    if isCrouched then
+        camera:setPosition(pos + cameraOffsetPosition + Vertex3D.new(0, 0.4, 0))
+    else
+        camera:setPosition(pos + cameraOffsetPosition)
+    end
+
+    camera:lookAt(this)
 
     -- Collision points
     local rays = createRayPositions(pos, this, lengthRay)
     local cross = createBorderCross(rays.cornerUpLeftCenter, rays.cornerUpRightCenter, rays.cornerBottomLeftCenter, rays.cornerBottomRightCenter)
 
-    UpdateAnimationFromState()
     UpdateCollisionFlags(input, pos, rays, cross)
 
     -- decrease frame block counter
@@ -253,12 +266,32 @@ function onUpdate()
     local dt = brakeza:getDeltaTime()
 
     handleFloorMovement(input, dt)
+    handleHanglingToToUp()
     handleHook(input, dt)
+
+    UpdateAnimationFromState()
 
     debug(pos, rays, cross)
 end
 
+function handleHanglingToToUp()
+    if isHanglingToUp and this:isAnimationEnds() then
+        print("fin!")
+        isHanglingToUp = false
+        isBlockedByHook = false
+        this:setLoop(true)
+        setState(State.IDLE)
+        this:setPosition(originHanglingToUp)
+        this:UpdateShapeCollider();
+        this:enableSimulationCollider()
+    end
+end
+
 function handleFloorMovement(input, dt)
+    if isHanglingToUp then
+        return
+    end
+
     if isBlockedByHook then
         return
     end
@@ -271,6 +304,32 @@ function handleFloorMovement(input, dt)
 
     if isFloor then
         if not isCrouched then
+
+
+            if input:isCharFirstEventDown("SPACE") then
+                local jumpVector = Vertex3D.new(0, jumpForce, 0)
+                this:applyCentralImpulse(jumpVector)
+                setState(State.JUMPING)
+                print("Jump!")
+                return
+            end
+
+            if input:isCharPressed("A") then
+                print("moving left")
+                setState(State.WALKING)
+                this:enableSimulationCollider()
+                this:applyCentralForce(Vertex3D.new(-speed * dt * 1000, 0, 0))
+                sideRotation = rotationLeft
+            end
+
+            if input:isCharPressed("D") then
+                print("moving right")
+                setState(State.WALKING)
+                this:enableSimulationCollider()
+                this:applyCentralForce(Vertex3D.new(speed * dt * 1000, 0, 0))
+                sideRotation = rotationRight
+            end
+
             if math.abs(velocity.x) > maxSpeed then
                 velocity.x = maxSpeed * (velocity.x > 0 and 1 or -1)
                 this:setLinearVelocity(velocity)
@@ -284,35 +343,12 @@ function handleFloorMovement(input, dt)
             else
                 setState(State.RUNNING)
             end
-
-            if input:isCharFirstEventDown("SPACE") then
-                local jumpVector = Vertex3D.new(0, jumpForce, 0)
-                this:applyCentralImpulse(jumpVector)
-                setState(State.JUMPING)
-                print("Jump!")
-                return
-            end
-
-            if input:isCharPressed("A") then
-                print("moving left")
-                setState(State.RUNNING)
-                this:enableSimulationCollider()
-                this:applyCentralForce(Vertex3D.new(-speed * dt * 1000, 0, 0))
-                sideRotation = rotationLeft
-            end
-
-            if input:isCharPressed("D") then
-                print("moving right")
-                setState(State.RUNNING)
-                this:enableSimulationCollider()
-                this:applyCentralForce(Vertex3D.new(speed * dt * 1000, 0, 0))
-                sideRotation = rotationRight
-            end
         else
-            if input:isCharFirstEventDown("S") then
+            if input:isCharPressed("S") then
                 print("crouch when crouched")
                 setState(State.CROUCHED)
             end
+
             if math.abs(velocity.x) > maxSpeed/4 then
                 velocity.x = maxSpeed/4 * (velocity.x > 0 and 1 or -1)
                 this:setLinearVelocity(velocity)
@@ -322,7 +358,7 @@ function handleFloorMovement(input, dt)
                 print("moving crouch left")
                 setState(State.CROUCHING)
                 this:enableSimulationCollider()
-                this:applyCentralForce(Vertex3D.new(-speed * dt * 1000, 0, 0))
+                this:applyCentralForce(Vertex3D.new(-speed * 3 * dt * 1000, 0, 0))
                 sideRotation = rotationLeft
             end
 
@@ -330,7 +366,7 @@ function handleFloorMovement(input, dt)
                 print("moving crouch right")
                 setState(State.CROUCHING)
                 this:enableSimulationCollider()
-                this:applyCentralForce(Vertex3D.new(speed * dt * 1000, 0, 0))
+                this:applyCentralForce(Vertex3D.new(speed * 3 * dt * 1000, 0, 0))
                 sideRotation = rotationRight
             end
         end
@@ -359,16 +395,33 @@ function handleFloorMovement(input, dt)
 end
 
 function handleHook(input, dt)
+    if isHanglingToUp then
+        return
+    end
+
     local v = this:getLinearVelocity()
 
     if isBlockedByHook then
         if input:isCharFirstEventDown("SPACE") then
-            print("Freedom!")
+            print("Freedom border!")
             this:setLinearVelocity(Vertex3D.new(0, -1, 0))
             this:enableSimulationCollider()
             countUnblockableFrames = 50
             isBlockedByHook = false
-        return
+            return
+        end
+        if input:isCharFirstEventDown("W") then
+            setState(State.HANGLING_TO_UP)
+            if (sideRotation == rotationLeft) then
+                originHanglingToUp = this:getPosition() + offsetHanglingToUp
+            else
+                originHanglingToUp = this:getPosition() + Vertex3D.new(-offsetHanglingToUp.x, offsetHanglingToUp.y, offsetHanglingToUp.z)
+            end
+            print("Climb to top!")
+            isHanglingToUp = true
+            this:disableSimulationCollider();
+            this:setLoop(false)
+            return
         end
     else
         if isCornerUpRight and isFullFreeCornerBottomRight and  countUnblockableFrames == 0 and not isFloor and isFullFreeCornerUpLeft and v.y < 0 then
@@ -388,42 +441,64 @@ function handleHook(input, dt)
             sideRotation = rotationRight
             return
         end
+
+        local fallingFriction = 0.85;
+        if isHookedLeft and isFloorDownLeft and not isFloorDown and input:isCharPressed("D") then
+                print("stop r")
+                sideRotation = rotationLeft
+                setState(State.HOOKED)
+                local v = this:getLinearVelocity();
+                v.x = 0;
+                v.y = v.y * fallingFriction;
+                v.z = 0;
+                this:setLinearVelocity(v);
+            end
+            if isHookedLeft and not isFloorDown and input:isCharPressed("A") then
+                print("release stop r")
+                this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt * 1000, 0, 0))
+                setState(State.FALLING)
+            end
+
+            if isHookedRight and isFloorDownRight and not isFloorDown and input:isCharPressed("A") then
+                setState(State.HOOKED)
+                sideRotation = rotationRight
+                print("stop l")
+                local v = this:getLinearVelocity();
+                v.x = 0;
+                v.y = v.y * fallingFriction;
+                v.z = 0;
+                this:setLinearVelocity(v);
+            end
+
+            if isHookedRight and not isFloorDown and input:isCharPressed("F") then
+                setState(State.FALLING)
+                print("release stop l")
+            end
+
+            if isHookedLeft and not isFloorDown then
+                if input:isCharFirstEventDown("SPACE") and not input:isCharPressed("D") and not isFloor then
+                    setState(State.JUMPING)
+                    this:enableSimulationCollider()
+                    local jumpVector = Vertex3D.new(-100, jumpForce, 0)
+                    this:applyCentralImpulse(jumpVector)
+                    print("Jump hook l!")
+                end
+            end
+            if isHookedRight and not isFloorDown then
+                if input:isCharFirstEventDown("SPACE") and not input:isCharPressed("A") and not isFloor then
+                    this:sleepCollider()
+                    local jumpVector = Vertex3D.new(100, jumpForce, 0)
+                    this:applyCentralImpulse(jumpVector)
+                    print("Jump hook r!")
+                end
+            end
     end
 
     if (isHookedRight and isHookedLeft and isUp) then
         return
     end
 
-    if isHookedLeft and not isFloorDown and input:isCharPressed("D") then
-        print("stop r")
-        local v = this:getLinearVelocity();
-        v.y = v.y * 0.95;
-        this:setLinearVelocity(v);
-        return
-    end
-    if isHookedRight and not isFloorDown and input:isCharPressed("A") then
-        print("stop l")
-        local v = this:getLinearVelocity();
-        v.y = v.y * 0.95;
-        this:setLinearVelocity(v);
-        return
-    end
-    if isHookedLeft and not isFloorDown then
-        if input:isCharFirstEventDown("SPACE") and not isFloor then
-            this:enableSimulationCollider()
-            local jumpVector = Vertex3D.new(-100, jumpForce, 0)
-            this:applyCentralImpulse(jumpVector)
-            print("Jump hook l!")
-        end
-    end
-    if isHookedRight and not isFloorDown then
-        if input:isCharFirstEventDown("SPACE") and not isFloor then
-            this:sleepCollider()
-            local jumpVector = Vertex3D.new(100, jumpForce, 0)
-            this:applyCentralImpulse(jumpVector)
-            print("Jump hook r!")
-        end
-    end
+
 end
 
 function debug(from, rays, cross)
@@ -434,6 +509,8 @@ function debug(from, rays, cross)
         floorRight = Color.new(1, 0, 0, 1),
         floorDown = Color.new(1, 0, 0, 1),
         up = Color.new(1, 0, 0, 1),
+        left = Color.new(1, 0, 0, 1),
+        right = Color.new(1, 0, 0, 1),
         hookedLeft = Color.new(1, 0, 0, 1),
         hookedRight = Color.new(1, 0, 0, 1),
         borderUpLeftVertical = Color.new(1, 0, 0, 1),
@@ -460,6 +537,8 @@ function debug(from, rays, cross)
     updateColorIf(isHookedLeft, "hookedLeft", Color.new(0, 1, 0, 1))
     updateColorIf(isHookedRight, "hookedRight", Color.new(0, 1, 0, 1))
     updateColorIf(isUp, "up", Color.new(0, 1, 0, 1))
+    updateColorIf(isLeft, "left", Color.new(0, 1, 0, 1))
+    updateColorIf(isRight, "right", Color.new(0, 1, 0, 1))
 
     -- Actualización para bordes
     updateColorIf(isBorderUpLeftVertical, "borderUpLeftVertical", Color.new(0, 1, 0, 1))
@@ -480,6 +559,8 @@ function debug(from, rays, cross)
     drawLine(from, rays.toDownLeft, colors.floorLeft)
     drawLine(from, rays.toDownRight, colors.floorRight)
     drawLine(from, rays.toUp, colors.up)
+    drawLine(from, rays.toLeft, colors.left)
+    drawLine(from, rays.toRight, colors.right)
     drawLine(from, rays.toUpLeft, colors.hookedLeft)
     drawLine(from, rays.toUpRight, colors.hookedRight)
 
