@@ -41,6 +41,7 @@ private:
     Assimp::Importer importer;
     const aiScene *scene;
     int numBones;
+    bool loop;
 
     aiMatrix4x4 globalInverseTransform;
 
@@ -133,6 +134,10 @@ public:
     void updateBoundingBox();
 
     void setAnimationByName(const std::string& name);
+
+    bool isLoop() const;
+
+    void setLoop(bool loop);
 
 };
 

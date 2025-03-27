@@ -9,7 +9,8 @@ Mesh3DAnimation::Mesh3DAnimation()
     runningTime(0),
     remove_at_end_animation(false),
     animation_speed(1),
-    animation_ends(false)
+    animation_ends(false),
+    loop(true)
 {
     luaEnvironment["this"] = this;
 }
@@ -91,8 +92,6 @@ void Mesh3DAnimation::UpdateFrameTransformations()
 {
     if (!scene->HasAnimations()) return;
 
-    runningTime += Brakeza3D::get()->getDeltaTime() * animation_speed;
-
     CheckIfEndAnimation();
 
     if (isRemoveAtEndAnimation() && isAnimationEnds()) {
@@ -105,11 +104,22 @@ void Mesh3DAnimation::UpdateFrameTransformations()
 
 void Mesh3DAnimation::CheckIfEndAnimation()
 {
+    auto timeIncrement = Brakeza3D::get()->getDeltaTime() * animation_speed;
     animation_ends = false;
-    if (runningTime >= getCurrentAnimationMaxTime()) {
+    auto maxAnimationTime = getCurrentAnimationMaxTime();
+
+    if (runningTime + timeIncrement >= maxAnimationTime) {
         animation_ends = true;
-        runningTime = 0.000;
+        if (loop) {
+            runningTime = 0.000;
+        } else {
+            runningTime = maxAnimationTime - 0.01f;
+        }
+
+        return;
     }
+
+    runningTime += timeIncrement;
 }
 
 float Mesh3DAnimation::getCurrentAnimationMaxTime() const
@@ -555,6 +565,9 @@ void Mesh3DAnimation::drawImGuiProperties()
 
         ImGui::Separator();
         ImGui::DragScalar("Speed", ImGuiDataType_Float, &animation_speed, 0.01f ,&range_min, &range_max, "%f", 1.0f);
+
+        ImGui::Separator();
+        ImGui::Checkbox("Loop", &loop);
     }
 }
 
@@ -698,4 +711,12 @@ void Mesh3DAnimation::setAnimationByName(const std::string& name)
             setIndexCurrentAnimation(i);
         }
     }
+}
+
+bool Mesh3DAnimation::isLoop() const {
+    return loop;
+}
+
+void Mesh3DAnimation::setLoop(bool loop) {
+    Mesh3DAnimation::loop = loop;
 }

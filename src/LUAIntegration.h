@@ -85,6 +85,7 @@ void LUAIntegration(sol::state &lua)
         "AxisForward", &Object3D::AxisForward,
         "AxisUp", &Object3D::AxisUp,
         "AxisRight", &Object3D::AxisRight,
+        "removeCollisionObject", &Object3D::removeCollisionObject,
         "sleepCollider", &Object3D::sleepCollider,
         "setCollisionsEnabled", &Object3D::setCollisionsEnabled,
         "disableSimulationCollider", &Object3D::disableSimulationCollider,
@@ -93,7 +94,8 @@ void LUAIntegration(sol::state &lua)
         "UpdateShapeCollider", &Object3D::UpdateShapeCollider,
         "setScalingCollider", &Object3D::setScalingCollider,
         "setCapsuleColliderSize", &Object3D::setCapsuleColliderSize,
-        "moveCollider",  &Object3D::moveCollider,
+        "moveCollider", &Object3D::moveCollider,
+        "setDrawOffset", &Object3D::setDrawOffset,
         "setupGhostCollider", &Object3D::setupGhostCollider,
         "setupRigidBodyCollider", &Object3D::setupRigidBodyCollider,
         "setColliderStatic", &Object3D::setColliderStatic,
@@ -286,7 +288,10 @@ void LUAIntegration(sol::state &lua)
         }),
         "setIndexCurrentAnimation", &Mesh3DAnimation::setIndexCurrentAnimation,
         "setAnimationByName", &Mesh3DAnimation::setAnimationByName,
-        "setAnimationSpeed", &Mesh3DAnimation::setAnimationSpeed
+        "setAnimationSpeed", &Mesh3DAnimation::setAnimationSpeed,
+        "isAnimationEnds", &Mesh3DAnimation::isAnimationEnds,
+        "setLoop", &Mesh3DAnimation::setLoop,
+        "isLoop", &Mesh3DAnimation::isLoop
     );
 
     lua.new_usertype<BillboardAnimation>("BillboardAnimation",

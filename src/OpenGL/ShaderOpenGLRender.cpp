@@ -134,6 +134,8 @@ void ShaderOpenGLRender::render(
     setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
     setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
+    setVec3("drawOffset", o->getDrawOffset().toGLM());
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureID);
 

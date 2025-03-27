@@ -33,12 +33,12 @@ void ShaderOpenGLWireframe::renderMeshAnimation(Mesh3DAnimation *mesh, GLuint fr
 {
     for (auto &m: mesh->meshes) {
         render(
-                mesh->getModelMatrix(),
-                m.vertexbuffer,
-                m.uvbuffer,
-                m.normalbuffer,
-                (int) m.vertices.size(),
-                framebuffer
+            mesh->getModelMatrix(),
+            m.feedbackBuffer,
+            m.uvbuffer,
+            m.normalbuffer,
+            (int) m.vertices.size(),
+            framebuffer
         );
     }
 }

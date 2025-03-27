@@ -395,6 +395,14 @@ void Object3D::drawImGuiProperties()
                     }
                 }
                 ImGui::Separator();
+
+                drawOffset.toFloat(vec3f);
+                if (ImGui::DragFloat3("DrawOffset", vec3f, 0.01f, -999999.0f, 999999.0f)) {
+                    drawOffset.x = vec3f[0];
+                    drawOffset.y = vec3f[1];
+                    drawOffset.z = vec3f[2];
+                }
+                ImGui::Separator();
             }
             // scale
             if (featuresGUI.scale) {
