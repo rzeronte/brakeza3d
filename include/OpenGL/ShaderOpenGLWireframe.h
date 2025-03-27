@@ -7,11 +7,16 @@
 
 
 #include "ShaderOpenGL.h"
+#include "../Objects/Mesh3D.h"
+#include "../Objects/Mesh3DAnimation.h"
 
 class ShaderOpenGLWireframe : public ShaderOpenGL {
     GLuint VertexArrayID;
 public:
     ShaderOpenGLWireframe();
+
+    void renderMesh(Mesh3D *mesh, GLuint framebuffer);
+    void renderMeshAnimation(Mesh3DAnimation *mesh, GLuint framebuffer);
 
     void render(
         glm::mat4 ModelMatrix,

@@ -14,6 +14,32 @@ ShaderOpenGLPoints::ShaderOpenGLPoints()
     glBindVertexArray(VertexArrayID);
 }
 
+void ShaderOpenGLPoints::renderMeshAnimation(Mesh3DAnimation *mesh, GLuint framebuffer)
+{
+    for (auto &m: mesh->meshes) {
+        render(
+            mesh,
+            m.feedbackBuffer,
+            m.vertices.size(),
+            Color::green(),
+            framebuffer
+        );
+    }
+}
+
+void ShaderOpenGLPoints::renderMesh(Mesh3D *mesh, GLuint framebuffer)
+{
+    for (auto &m: mesh->meshes) {
+        render(
+            mesh,
+            m.vertexbuffer,
+            m.vertices.size(),
+            Color::green(),
+            framebuffer
+        );
+    }
+}
+
 void ShaderOpenGLPoints::render(Mesh3D* m, GLint vertexbuffer, int numberPoints, Color c, GLuint framebuffer)
 {
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);

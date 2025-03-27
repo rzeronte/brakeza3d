@@ -23,7 +23,6 @@ Collider::Collider()
     shapeMargin(0.004f),
     ccdMotionThreshold(0.0),
     ccdSweptSphereRadius(0.0),
-    colliderOffset(Vertex3D(0, 0, 0)),
     kinematicCapsuleSize(
         EngineSetup::get()->PLAYER_CAPSULE_RADIUS,
         EngineSetup::get()->PLAYER_CAPSULE_HEIGHT
@@ -322,7 +321,7 @@ void Collider::setColliderStatic(bool colliderStatic) {
     Collider::colliderStatic = colliderStatic;
 }
 
-void Collider::UpdateShape()
+void Collider::UpdateShapeCollider()
 {
     if (getCollisionMode() == GHOST) {
         setupGhostCollider(getCollisionShape());
@@ -335,7 +334,7 @@ void Collider::UpdateShape()
     }
 }
 
-void Collider::setKinematicSize(float x, float y)
+void Collider::setCapsuleColliderSize(float x, float y)
 {
     kinematicCapsuleSize.x = x;
     kinematicCapsuleSize.y = y;
@@ -567,12 +566,28 @@ void Collider::setLinearFactor(Vertex3D linearFactor)
     Collider::linearFactor = linearFactor;
 }
 
-const Vertex3D &Collider::getColliderOffset() const {
-    return colliderOffset;
+void Collider::setScalingCollider(Vertex3D v)
+{
+    if (getCollisionMode() == CollisionMode::BODY) {
+        body->getCollisionShape()->setLocalScaling(v.toBullet());
+    }
 }
 
-void Collider::setColliderOffset(Vertex3D colliderOffset) {
-    Collider::colliderOffset = colliderOffset;
+void Collider::moveCollider(Vertex3D v)
+{
+    if (getCollisionMode() == CollisionMode::BODY) {
+        btTransform transform;
+        body->getMotionState()->getWorldTransform(transform);  // Obtener la transformación actual
+
+        btVector3 origin = transform.getOrigin() + v.toBullet();  // Obtener la posición actual
+
+        transform.setOrigin(origin);  // Aplicar la nueva posición
+        body->setWorldTransform(transform);  // Actualizar el cuerpo en Bullet
+        body->getMotionState()->setWorldTransform(transform);  // Asegurar que el motor lo reconozca
+        body->activate(true);  // Mantener el cuerpo activo
+        btVector3 localInertia(0, 0, 0);
+        body->getCollisionShape()->calculateLocalInertia(body->getMass(), localInertia); // Recalcular inercia con nueva masa
+        body->setMassProps(body->getMass(), localInertia);
+        body->updateInertiaTensor();
+    }
 }
-
-

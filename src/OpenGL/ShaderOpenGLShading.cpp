@@ -15,6 +15,36 @@ ShaderOpenGLShading::ShaderOpenGLShading()
 {
 }
 
+void ShaderOpenGLShading::renderMesh(Mesh3D *mesh, GLuint framebuffer)
+{
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    for (auto &m: mesh->meshes) {
+        render(
+            mesh->getModelMatrix(),
+            m.vertexbuffer,
+            m.uvbuffer,
+            m.normalbuffer,
+            (int) m.vertices.size(),
+            window->getSceneFramebuffer()
+        );
+    }
+}
+
+void ShaderOpenGLShading::renderMeshAnimation(Mesh3D *mesh, GLuint framebuffer)
+{
+    for (auto &m: mesh->meshes) {
+        render(
+            mesh->getModelMatrix(),
+            m.feedbackBuffer,
+            m.uvbuffer,
+            m.normalbuffer,
+            (int) m.vertices.size(),
+            framebuffer
+        );
+    }
+}
+
 void ShaderOpenGLShading::render(
     glm::mat4 ModelMatrix,
     GLuint vertexbuffer,

@@ -441,7 +441,7 @@ void Object3D::drawImGuiProperties()
 
             if (collisionsEnabled) {
                 if (ImGui::Button(std::string("Update Collider").c_str())) {
-                    UpdateShape();
+                    UpdateShapeCollider();
                 }
                 ImGui::Separator();
 
@@ -463,15 +463,6 @@ void Object3D::drawImGuiProperties()
                         ImGui::Separator();
 
                         ImGui::DragFloat("CCD Swept Sphere Radius", &ccdSweptSphereRadius, 0.001f, 0.0f, 5.0f);
-                    }
-
-                    ImGui::Separator();
-                    float vec3f[3];
-                    colliderOffset.toFloat(vec3f);
-                    if (ImGui::DragFloat3("Collider Offset", vec3f, 0.01f, -1000.0f, 1000.0f)) {
-                        colliderOffset.x = vec3f[0];
-                        colliderOffset.y = vec3f[1];
-                        colliderOffset.z = vec3f[2];
                     }
 
                     if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
@@ -583,12 +574,6 @@ cJSON *Object3D::getJSON()
         cJSON_AddNumberToObject(collider, "angularDamping", angularDamping);
         cJSON_AddNumberToObject(collider, "restitution", restitution);
         cJSON_AddBoolToObject(collider, "colliderStatic", colliderStatic);
-
-        cJSON *colliderOffsetJSON = cJSON_CreateObject();
-        cJSON_AddNumberToObject(colliderOffsetJSON, "y", colliderOffset.y);
-        cJSON_AddNumberToObject(colliderOffsetJSON, "x", colliderOffset.x);
-        cJSON_AddNumberToObject(colliderOffsetJSON, "z", colliderOffset.z);
-        cJSON_AddItemToObject(collider, "colliderOffset", colliderOffsetJSON);
 
         cJSON *simpleShapeSizeJSON = cJSON_CreateObject();
         cJSON_AddNumberToObject(simpleShapeSizeJSON, "x", simpleShapeSize.x);
@@ -704,21 +689,15 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "kinematicCapsuleSize") != nullptr) {
                 cJSON *kinematizSizeJSON = cJSON_GetObjectItemCaseSensitive(colliderJSON, "kinematicCapsuleSize");
 
-                o->setKinematicSize(
-                    (float) cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "x")->valuedouble,
-                    (float) cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "y")->valuedouble
+                o->setCapsuleColliderSize(
+                        (float) cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "x")->valuedouble,
+                        (float) cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "y")->valuedouble
                 );
             }
 
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularFactor") != nullptr) {
                 o->angularFactor = ToolsJSON::parseVertex3DJSON(
                     cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularFactor")
-                );
-            }
-
-            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderOffset") != nullptr) {
-                o->colliderOffset = ToolsJSON::parseVertex3DJSON(
-                    cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderOffset")
                 );
             }
 
@@ -822,7 +801,7 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
 
     btTransform t;
     t.setIdentity();
-    t.setOrigin(getPosition().toBullet() + colliderOffset.toBullet());
+    t.setOrigin(getPosition().toBullet());
 
     kinematicBody = new btPairCachingGhostObject();
     kinematicBody->setWorldTransform(t);
@@ -865,7 +844,7 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
 
     btTransform transformation;
     transformation.setIdentity();
-    transformation.setOrigin(getPosition().toBullet() + colliderOffset.toBullet());
+    transformation.setOrigin(getPosition().toBullet());
 
     btMatrix3x3 brakezaRotation = rotation.toBulletMat3();
     btQuaternion qRotation;
@@ -939,7 +918,7 @@ void Object3D::updateFromBullet()
     btTransform t;
     body->getMotionState()->getWorldTransform(t);
 
-    setPosition(Vertex3D::fromBullet(t.getOrigin()) - colliderOffset);
+    setPosition(Vertex3D::fromBullet(t.getOrigin()));
 
     btMatrix3x3 matrixRotation;
     matrixRotation.setRotation(t.getRotation());

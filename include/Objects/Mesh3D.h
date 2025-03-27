@@ -50,6 +50,8 @@ private:
 protected:
     std::string sourceFile;
 
+    Vertex3D drawOffset;
+
     std::vector<Image *> modelTextures;
     std::vector<Image *> modelSpecularTextures;
     AABB3D aabb;

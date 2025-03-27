@@ -28,7 +28,6 @@ protected:
 
     CollisionMode collisionMode;
     Vertex3D simpleShapeSize;
-    Vertex3D colliderOffset;
 
     //ghost
     btPairCachingGhostObject *ghostObject;
@@ -123,11 +122,11 @@ public:
 
     void setColliderStatic(bool colliderStatic);
 
-    void UpdateShape();
+    void UpdateShapeCollider();
 
     void setLinearVelocity(Vertex3D f);
 
-    void setKinematicSize(float x, float y);
+    void setCapsuleColliderSize(float x, float y);
 
     void setWalkingDirection(Vertex3D d);
 
@@ -167,9 +166,9 @@ public:
 
     void setLinearFactor(Vertex3D linearFactor);
 
-    [[nodiscard]] const Vertex3D &getColliderOffset() const;
+    void setScalingCollider(Vertex3D v);
 
-    void setColliderOffset(Vertex3D colliderOffset);
+    void moveCollider(Vertex3D v);
 };
 
 

@@ -15,6 +15,34 @@ ShaderOpenGLWireframe::ShaderOpenGLWireframe()
 {
 }
 
+void ShaderOpenGLWireframe::renderMesh(Mesh3D *mesh, GLuint framebuffer)
+{
+    for (auto &m: mesh->meshes) {
+        render(
+            mesh->getModelMatrix(),
+            m.feedbackBuffer,
+            m.uvbuffer,
+            m.normalbuffer,
+            (int) m.vertices.size(),
+            framebuffer
+        );
+    }
+}
+
+void ShaderOpenGLWireframe::renderMeshAnimation(Mesh3DAnimation *mesh, GLuint framebuffer)
+{
+    for (auto &m: mesh->meshes) {
+        render(
+                mesh->getModelMatrix(),
+                m.vertexbuffer,
+                m.uvbuffer,
+                m.normalbuffer,
+                (int) m.vertices.size(),
+                framebuffer
+        );
+    }
+}
+
 void ShaderOpenGLWireframe::render(
     glm::mat4 ModelMatrix,
     GLuint vertexbuffer,

@@ -13,7 +13,8 @@ Mesh3D::Mesh3D()
     octree(nullptr),
     grid(nullptr),
     sharedTextures(false),
-    render(true)
+    render(true),
+    drawOffset(Vertex3D(0, 0, 0))
 {
     decal = false;
     luaEnvironment["this"] = this;
@@ -32,46 +33,20 @@ void Mesh3D::onUpdate()
         render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
     }
 
-    if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
-        for (auto &m: meshes) {
-            render->getShaderOGLPoints()->render(
-                this,
-                m.vertexbuffer,
-                m.vertices.size(),
-                Color::green(),
-                window->getSceneFramebuffer()
-            );
-        }
-    }
-
-    if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
-        for (auto &m: meshes) {
-            render->getShaderOGLShading()->render(
-                getModelMatrix(),
-                m.vertexbuffer,
-                m.uvbuffer,
-                m.normalbuffer,
-                (int) m.vertices.size(),
-                window->getSceneFramebuffer()
-            );
-        }
-    }
-
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
         render->getShaderOGLRender()->renderMesh(this,window->getSceneFramebuffer());
     }
 
+    if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
+        render->getShaderOGLPoints()->renderMesh(this, window->getSceneFramebuffer());
+    }
+
+    if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
+        render->getShaderOGLShading()->renderMesh(this, window->getSceneFramebuffer());
+    }
+
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        for (auto &m: meshes) {
-            render->getShaderOGLWireframe()->render(
-                getModelMatrix(),
-                m.vertexbuffer,
-                m.uvbuffer,
-                m.normalbuffer,
-                (int) m.vertices.size(),
-                window->getSceneFramebuffer()
-            );
-        }
+        render->getShaderOGLWireframe()->renderMesh(this, window->getSceneFramebuffer());
     }
 
     if (EngineSetup::get()->DRAW_MESH3D_AABB && isRender()) {
@@ -715,7 +690,7 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
         if (ImGui::Button("Capture from AABB")) {
             updateBoundingBox();
             simpleShapeSize = aabb.size().getScaled(0.5f);
-            UpdateShape();
+            UpdateShapeCollider();
         }
     }
 }
@@ -728,7 +703,7 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
 
     btTransform transformation;
     transformation.setIdentity();
-    transformation.setOrigin(getPosition().toBullet() + colliderOffset.toBullet());
+    transformation.setOrigin(getPosition().toBullet());
 
     btVector3 inertia(0, 0, 0);
     btCollisionShape* shape = getConvexHullShapeFromMesh(inertia);
@@ -767,7 +742,7 @@ void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *
 
     btTransform transformation;
     transformation.setIdentity();
-    transformation.setOrigin(getPosition().toBullet() + colliderOffset.toBullet());
+    transformation.setOrigin(getPosition().toBullet());
 
     btVector3 inertia(0, 0, 0);
 

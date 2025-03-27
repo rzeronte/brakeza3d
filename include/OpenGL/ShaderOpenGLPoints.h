@@ -5,6 +5,7 @@
 #include "ShaderOpenGL.h"
 #include "../Objects/ParticlesContext.h"
 #include "../Objects/Mesh3D.h"
+#include "../Objects/Mesh3DAnimation.h"
 
 class ShaderOpenGLPoints : public ShaderOpenGL {
     GLuint VertexArrayID;
@@ -16,6 +17,10 @@ public:
     static void setVAOAttributes(GLint particlesBuffer) ;
 
     void destroy() override;
+
+    void renderMesh(Mesh3D *mesh, GLuint framebuffer);
+
+    void renderMeshAnimation(Mesh3DAnimation *mesh, GLuint framebuffer);
 };
 
 

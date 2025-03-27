@@ -36,41 +36,15 @@ void Mesh3DAnimation::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
-        for (auto &m: meshes) {
-            render->getShaderOGLPoints()->render(
-                this,
-                m.feedbackBuffer,
-                m.vertices.size(),
-                Color::green(),
-                window->getSceneFramebuffer()
-            );
-        }
+        render->getShaderOGLPoints()->renderMeshAnimation(this, window->getSceneFramebuffer());
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
-        for (auto &m: meshes) {
-            render->getShaderOGLShading()->render(
-                getModelMatrix(),
-                m.feedbackBuffer,
-                m.uvbuffer,
-                m.normalbuffer,
-                (int) m.vertices.size(),
-                window->getSceneFramebuffer()
-            );
-        }
+        render->getShaderOGLShading()->renderMeshAnimation(this, window->getSceneFramebuffer());
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        for (auto &m: meshes) {
-            render->getShaderOGLWireframe()->render(
-                getModelMatrix(),
-                m.feedbackBuffer,
-                m.uvbuffer,
-                m.normalbuffer,
-                (int) m.vertices.size(),
-                window->getSceneFramebuffer()
-            );
-        }
+        render->getShaderOGLWireframe()->renderMeshAnimation(this, window->getSceneFramebuffer());
     }
 
     if (EngineSetup::get()->DRAW_MESH3D_AABB && isRender()) {
@@ -604,7 +578,7 @@ void Mesh3DAnimation::createFromJSON(cJSON *object)
     if (o->isCollisionsEnabled()) {
         o->UpdateFrameTransformations();
         o->updateBoundingBox();
-        o->UpdateShape();
+        o->UpdateShapeCollider();
     }
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
