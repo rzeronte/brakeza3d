@@ -1,3 +1,11 @@
+local Keys = {
+    LEFT = "A",
+    RIGHT = "D",
+    UP = "W",
+    DOWN = "S",
+    JUMP = "SPACE"
+}
+
 local State = {
     IDLE = "idle",
     WALKING = "walking",
@@ -116,7 +124,12 @@ function UpdateCollisionFlags(input, from, rays, cross)
     is.isFloorDown = collisions:isRayCollisionWith(from, rays.toDown, floor)
     is.isFloorDownLeft = collisions:isRayCollisionWith(from, rays.toDownLeft, floor)
     is.isFloorDownRight = collisions:isRayCollisionWith(from, rays.toDownRight, floor)
-    is.isFloor = is.isFloorDown and (is.isFloorDownLeft or is.isFloorDownRight) and velocity.y <= 1
+    is.isFloor =
+        (
+            ((is.isFloorDown and (is.isFloorDownLeft or is.isFloorDownRight)) and velocity.y <= 1)
+        or
+            ((is.isFloorDownLeft and is.isFloorDownRight) and velocity.y <= 1)
+        )
 
     is.isUp = collisions:isRayCollisionWith(from, rays.toUp, floor)
     is.isLeft = collisions:isRayCollisionWith(from, rays.toLeft, floor)
@@ -152,7 +165,7 @@ function UpdateCollisionFlags(input, from, rays, cross)
     is.isCornerBottomRight = is.isCrossBottomRightHorizontal and is.isCrossBottomRightDiagonal1 and is.isCrossBottomRightDiagonal2
     is.isFullFreeCornerBottomRight = not (is.isCrossBottomRightHorizontal or is.isCrossBottomRightDiagonal1 or is.isCrossBottomRightDiagonal2)
 
-    is.isCrouched = is.isFloor and input:isCharPressed("S")
+    is.isCrouched = is.isFloor and input:isCharPressed(Keys.DOWN)
 end
 
 function UpdateAnimationFromState()
@@ -286,7 +299,7 @@ function onUpdate()
 
     UpdateAnimationFromState()
 
-    --debug(position, rays, cross)
+    debug(position, rays, cross)
 end
 
 function handleHanglingToToUp()
@@ -319,7 +332,7 @@ function handleFloorMovement(input, dt)
 
     if is.isFloor then
         if not is.isCrouched then
-            if input:isCharFirstEventDown("SPACE") then
+            if input:isCharFirstEventDown(Keys.JUMP) then
                 local jumpVector = Vertex3D.new(0, jumpForce, 0)
                 this:applyCentralImpulse(jumpVector)
                 setState(State.JUMPING)
@@ -327,7 +340,7 @@ function handleFloorMovement(input, dt)
                 return
             end
 
-            if input:isCharPressed("A") then
+            if input:isCharPressed(Keys.LEFT) then
                 print("moving left")
                 setState(State.WALKING)
                 this:enableSimulationCollider()
@@ -335,7 +348,7 @@ function handleFloorMovement(input, dt)
                 sideRotation = rotationLeft
             end
 
-            if input:isCharPressed("D") then
+            if input:isCharPressed(Keys.RIGHT) then
                 print("moving right")
                 setState(State.WALKING)
                 this:enableSimulationCollider()
@@ -357,7 +370,7 @@ function handleFloorMovement(input, dt)
                 setState(State.RUNNING)
             end
         else
-            if input:isCharPressed("S") then
+            if input:isCharPressed(Keys.DOWN) then
                 print("crouch when crouched")
                 setState(State.CROUCHED)
             end
@@ -367,7 +380,7 @@ function handleFloorMovement(input, dt)
                 this:setLinearVelocity(velocity)
             end
 
-            if input:isCharPressed("A") then
+            if input:isCharPressed(Keys.LEFT) then
                 print("moving crouch left")
                 setState(State.CROUCHING)
                 this:enableSimulationCollider()
@@ -375,7 +388,7 @@ function handleFloorMovement(input, dt)
                 sideRotation = rotationLeft
             end
 
-            if input:isCharPressed("D") then
+            if input:isCharPressed(Keys.RIGHT) then
                 print("moving crouch right")
                 setState(State.CROUCHING)
                 this:enableSimulationCollider()
@@ -384,12 +397,12 @@ function handleFloorMovement(input, dt)
             end
         end
     else
-        if input:isCharPressed("A") then
+        if input:isCharPressed(Keys.LEFT) then
             sideRotation = rotationLeft
             this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt * 1000, 0, 0))
         end
 
-        if input:isCharPressed("D") then
+        if input:isCharPressed(Keys.RIGHT) then
             sideRotation = rotationRight
             this:applyCentralForce(Vertex3D.new(speed * airControlFactor * dt * 1000, 0, 0))
         end
@@ -415,7 +428,7 @@ function handleHook(input, dt)
     local v = this:getLinearVelocity()
 
     if is.isBlockedByHook then
-        if input:isCharFirstEventDown("SPACE") then
+        if input:isCharFirstEventDown(Keys.JUMP) then
             print("Freedom border!")
             this:setLinearVelocity(Vertex3D.new(0, -1, 0))
             this:enableSimulationCollider()
@@ -423,7 +436,7 @@ function handleHook(input, dt)
             is.isBlockedByHook = false
             return
         end
-        if input:isCharFirstEventDown("W") then
+        if input:isCharFirstEventDown(Keys.UP) then
             setState(State.HANGLING_TO_UP)
             if (sideRotation == rotationLeft) then
                 originHanglingToUp = this:getPosition() + offsetHanglingToUp
@@ -456,7 +469,7 @@ function handleHook(input, dt)
         end
 
         local fallingFriction = 0.85;
-        if is.isHookedLeft and is.isFloorDownLeft and not is.isFloorDown and input:isCharPressed("D") then
+        if is.isHookedLeft and is.isFloorDownLeft and not is.isFloorDown and not is.isFloorDownRight and input:isCharPressed(Keys.RIGHT) then
                 print("stop r")
                 sideRotation = rotationLeft
                 setState(State.HOOKED)
@@ -466,13 +479,13 @@ function handleHook(input, dt)
                 v.z = 0;
                 this:setLinearVelocity(v);
             end
-            if is.isHookedLeft and not is.isFloorDown and input:isCharPressed("A") then
+            if is.isHookedLeft and not is.isFloorDown and input:isCharPressed(Keys.LEFT) then
                 print("release stop r")
                 this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt * 1000, 0, 0))
                 setState(State.FALLING)
             end
 
-            if is.isHookedRight and is.isFloorDownRight and not is.isFloorDown and input:isCharPressed("A") then
+            if is.isHookedRight and is.isFloorDownRight and not is.isFloorDown and not is.isFloorDownLeft and input:isCharPressed(Keys.LEFT) then
                 setState(State.HOOKED)
                 sideRotation = rotationRight
                 print("stop l")
@@ -489,7 +502,7 @@ function handleHook(input, dt)
             end
 
             if is.isHookedLeft and not is.isFloorDown then
-                if input:isCharFirstEventDown("SPACE") and not input:isCharPressed("D") and not is.isFloor then
+                if input:isCharFirstEventDown(Keys.JUMP) and not input:isCharPressed(Keys.RIGHT) and not is.isFloor then
                     setState(State.JUMPING)
                     this:enableSimulationCollider()
                     local jumpVector = Vertex3D.new(-100, jumpForce, 0)
@@ -498,7 +511,7 @@ function handleHook(input, dt)
                 end
             end
             if is.isHookedRight and not is.isFloorDown then
-                if input:isCharFirstEventDown("SPACE") and not input:isCharPressed("A") and not is.isFloor then
+                if input:isCharFirstEventDown(Keys.JUMP) and not input:isCharPressed(Keys.LEFT) and not is.isFloor then
                     this:sleepCollider()
                     local jumpVector = Vertex3D.new(100, jumpForce, 0)
                     this:applyCentralImpulse(jumpVector)
