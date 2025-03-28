@@ -30,61 +30,78 @@ local function createRayPositions(pos, this, lengthRay)
         cornerUpLeftCenter = pos + this:AxisUp():getScaled(1) + Vertex3D.new(0.3, 0, 0),
         cornerUpRightCenter = pos + this:AxisUp():getScaled(1) + Vertex3D.new(-0.3, 0, 0),
 
-        cornerBottomLeftCenter = pos + this:AxisUp():getScaled(1 + 0.5) + Vertex3D.new(0.3, 0, 0),
-        cornerBottomRightCenter = pos + this:AxisUp():getScaled(1 + 0.5) + Vertex3D.new(-0.3, 0, 0),
+        cornerBottomLeftCenter = pos + this:AxisUp():getScaled(1 + 0.7) + Vertex3D.new(0.3, 0, 0),
+        cornerBottomRightCenter = pos + this:AxisUp():getScaled(1 + 0.7) + Vertex3D.new(-0.3, 0, 0),
     }
 
     return rays
 end
 
 function getCrossBorders(center)
-    local size = 0.4
-
+    local size = 0.6
     local halfSize = size * 0.4
-
-    local fromBorderVertical = center - this:AxisUp():getScaled(halfSize)
-    local toBorderVertical = center + this:AxisUp():getScaled(halfSize)
 
     local fromBorderHorizontal = center - this:AxisRight():getScaled(halfSize)
     local toBorderHorizontal = center + this:AxisRight():getScaled(halfSize)
 
-    return fromBorderVertical, toBorderVertical, fromBorderHorizontal, toBorderHorizontal
+    local fromBorderDiagonal1 = center - (this:AxisUp() + this:AxisRight()):getScaled(halfSize)
+    local toBorderDiagonal1 = center + (this:AxisUp() + this:AxisRight()):getScaled(halfSize)
+
+    local fromBorderDiagonal2 = center - (this:AxisUp() - this:AxisRight()):getScaled(halfSize)
+    local toBorderDiagonal2 = center + (this:AxisUp() - this:AxisRight()):getScaled(halfSize)
+
+    return fromBorderHorizontal, toBorderHorizontal,
+           fromBorderDiagonal1, toBorderDiagonal1, fromBorderDiagonal2, toBorderDiagonal2
 end
 
 function createBorderCross(cornerUpLeftCenter, cornerUpRightCenter, cornerBottomLeftCenter, cornerBottomRightCenter)
-    -- border up
-    local fromBorderUpLeftVertical, toBorderUpLeftVertical, fromBorderUpLeftHorizontal, toBorderUpLeftHorizontal = getCrossBorders(cornerUpLeftCenter)
-    local fromBorderUpRightHorizontal, toBorderUpRightHorizontal, fromBorderUpRightVertical, toBorderUpRightVertical = getCrossBorders(cornerUpRightCenter)
+    -- Definimos las fronteras de los bordes superiores
+    local fromBorderUpLeftHorizontal, toBorderUpLeftHorizontal,
+          fromBorderUpLeftDiagonal1, toBorderUpLeftDiagonal1, fromBorderUpLeftDiagonal2, toBorderUpLeftDiagonal2 = getCrossBorders(cornerUpLeftCenter)
 
-    -- border bottom
-    local fromBorderBottomLeftVertical, toBorderBottomLeftVertical, fromBorderBottomLeftHorizontal, toBorderBottomLeftHorizontal = getCrossBorders(cornerBottomLeftCenter)
-    local fromBorderBottomRightHorizontal, toBorderBottomRightHorizontal, fromBorderBottomRightVertical, toBorderBottomRightVertical = getCrossBorders(cornerBottomRightCenter)
+    local fromBorderUpRightHorizontal, toBorderUpRightHorizontal,
+          fromBorderUpRightDiagonal1, toBorderUpRightDiagonal1, fromBorderUpRightDiagonal2, toBorderUpRightDiagonal2 = getCrossBorders(cornerUpRightCenter)
+
+    -- Definimos las fronteras de los bordes inferiores
+    local fromBorderBottomLeftHorizontal, toBorderBottomLeftHorizontal,
+          fromBorderBottomLeftDiagonal1, toBorderBottomLeftDiagonal1, fromBorderBottomLeftDiagonal2, toBorderBottomLeftDiagonal2 = getCrossBorders(cornerBottomLeftCenter)
+
+    local fromBorderBottomRightHorizontal, toBorderBottomRightHorizontal,
+          fromBorderBottomRightDiagonal1, toBorderBottomRightDiagonal1, fromBorderBottomRightDiagonal2, toBorderBottomRightDiagonal2 = getCrossBorders(cornerBottomRightCenter)
 
     -- Bordes
     local borders = {
         upLeft = {
-            fromBorderVertical = fromBorderUpLeftVertical,
-            toBorderVertical = toBorderUpLeftVertical,
             fromBorderHorizontal = fromBorderUpLeftHorizontal,
-            toBorderHorizontal = toBorderUpLeftHorizontal
+            toBorderHorizontal = toBorderUpLeftHorizontal,
+            fromBorderDiagonal1 = fromBorderUpLeftDiagonal1,
+            toBorderDiagonal1 = toBorderUpLeftDiagonal1,
+            fromBorderDiagonal2 = fromBorderUpLeftDiagonal2,
+            toBorderDiagonal2 = toBorderUpLeftDiagonal2
         },
         upRight = {
-            fromBorderVertical = fromBorderUpRightVertical,
-            toBorderVertical = toBorderUpRightVertical,
             fromBorderHorizontal = fromBorderUpRightHorizontal,
-            toBorderHorizontal = toBorderUpRightHorizontal
+            toBorderHorizontal = toBorderUpRightHorizontal,
+            fromBorderDiagonal1 = fromBorderUpRightDiagonal1,
+            toBorderDiagonal1 = toBorderUpRightDiagonal1,
+            fromBorderDiagonal2 = fromBorderUpRightDiagonal2,
+            toBorderDiagonal2 = toBorderUpRightDiagonal2
         },
         bottomLeft = {
-            fromBorderVertical = fromBorderBottomLeftVertical,
-            toBorderVertical = toBorderBottomLeftVertical,
             fromBorderHorizontal = fromBorderBottomLeftHorizontal,
-            toBorderHorizontal = toBorderBottomLeftHorizontal
+            toBorderHorizontal = toBorderBottomLeftHorizontal,
+            fromBorderDiagonal1 = fromBorderBottomLeftDiagonal1,
+            toBorderDiagonal1 = toBorderBottomLeftDiagonal1,
+            fromBorderDiagonal2 = fromBorderBottomLeftDiagonal2,
+            toBorderDiagonal2 = toBorderBottomLeftDiagonal2
         },
         bottomRight = {
-            fromBorderVertical = fromBorderBottomRightVertical,
-            toBorderVertical = toBorderBottomRightVertical,
             fromBorderHorizontal = fromBorderBottomRightHorizontal,
-            toBorderHorizontal = toBorderBottomRightHorizontal
+            toBorderHorizontal = toBorderBottomRightHorizontal,
+            fromBorderDiagonal1 = fromBorderBottomRightDiagonal1,
+            toBorderDiagonal1 = toBorderBottomRightDiagonal1,
+            fromBorderDiagonal2 = fromBorderBottomRightDiagonal2,
+            toBorderDiagonal2 = toBorderBottomRightDiagonal2
         }
     }
 
@@ -96,42 +113,46 @@ function UpdateCollisionFlags(input, from, rays, cross)
     local velocity = this:getLinearVelocity()
 
     -- Collision flags
-    isFloorDown = collisions:isRayCollisionWith(from, rays.toDown, floor)
-    isFloorDownLeft = collisions:isRayCollisionWith(from, rays.toDownLeft, floor)
-    isFloorDownRight = collisions:isRayCollisionWith(from, rays.toDownRight, floor)
-    isFloor = isFloorDown and (isFloorDownLeft or isFloorDownRight) and velocity.y <= 1
+    is.isFloorDown = collisions:isRayCollisionWith(from, rays.toDown, floor)
+    is.isFloorDownLeft = collisions:isRayCollisionWith(from, rays.toDownLeft, floor)
+    is.isFloorDownRight = collisions:isRayCollisionWith(from, rays.toDownRight, floor)
+    is.isFloor = is.isFloorDown and (is.isFloorDownLeft or is.isFloorDownRight) and velocity.y <= 1
 
-    isUp = collisions:isRayCollisionWith(from, rays.toUp, floor)
-    isLeft = collisions:isRayCollisionWith(from, rays.toLeft, floor)
-    isRight = collisions:isRayCollisionWith(from, rays.toRight, floor)
+    is.isUp = collisions:isRayCollisionWith(from, rays.toUp, floor)
+    is.isLeft = collisions:isRayCollisionWith(from, rays.toLeft, floor)
+    is.isRight = collisions:isRayCollisionWith(from, rays.toRight, floor)
 
-    isHookedLeft = collisions:isRayCollisionWith(from, rays.toUpLeft, floor)
-    isHookedRight = collisions:isRayCollisionWith(from, rays.toUpRight, floor)
-    isHooked = (isHookedLeft or isHookedRight) and not isFloorDown
+    is.isHookedLeft = collisions:isRayCollisionWith(from, rays.toUpLeft, floor)
+    is.isHookedRight = collisions:isRayCollisionWith(from, rays.toUpRight, floor)
+    is.isHooked = (is.isHookedLeft or is.isHookedRight) and not is.isFloorDown
 
     -- corners up
-    isBorderUpLeftVertical = collisions:isRayCollisionWith(cross.upLeft.fromBorderVertical, cross.upLeft.toBorderVertical, floor)
-    isBorderUpLeftHorizontal = collisions:isRayCollisionWith(cross.upLeft.fromBorderHorizontal, cross.upLeft.toBorderHorizontal, floor)
-    isCornerUpLeft = isBorderUpLeftVertical and isBorderUpLeftHorizontal
-    isFullFreeCornerUpLeft = not isBorderUpLeftVertical and not isBorderUpLeftHorizontal
+    is.isCrossUpLeftHorizontal = collisions:isRayCollisionWith(cross.upLeft.fromBorderHorizontal, cross.upLeft.toBorderHorizontal, floor)
+    is.isCrossUpLeftDiagonal1 = collisions:isRayCollisionWith(cross.upLeft.fromBorderDiagonal1, cross.upLeft.toBorderDiagonal1, floor)
+    is.isCrossUpLeftDiagonal2 = collisions:isRayCollisionWith(cross.upLeft.fromBorderDiagonal2, cross.upLeft.toBorderDiagonal2, floor)
+    is.isCornerUpLeft = is.isCrossUpLeftHorizontal and is.isCrossUpLeftDiagonal1 and is.isCrossUpLeftDiagonal2
+    is.isFullFreeCornerUpLeft = not (is.isCrossUpLeftHorizontal or is.isCrossUpLeftDiagonal1 or is.isCrossUpLeftDiagonal2)
 
-    isBorderUpRightVertical = collisions:isRayCollisionWith(cross.upRight.fromBorderVertical, cross.upRight.toBorderVertical, floor)
-    isBorderUpRightHorizontal = collisions:isRayCollisionWith(cross.upRight.fromBorderHorizontal, cross.upRight.toBorderHorizontal, floor)
-    isCornerUpRight = isBorderUpRightVertical and isBorderUpRightHorizontal
-    isFullFreeCornerUpRight = not isBorderUpRightVertical and not isBorderUpRightHorizontal
+    is.isCrossUpRightHorizontal = collisions:isRayCollisionWith(cross.upRight.fromBorderHorizontal, cross.upRight.toBorderHorizontal, floor)
+    is.isCrossUpRightDiagonal1 = collisions:isRayCollisionWith(cross.upRight.fromBorderDiagonal1, cross.upRight.toBorderDiagonal1, floor)
+    is.isCrossUpRightDiagonal2 = collisions:isRayCollisionWith(cross.upRight.fromBorderDiagonal2, cross.upRight.toBorderDiagonal2, floor)
+    is.isCornerUpRight = is.isCrossUpRightHorizontal and is.isCrossUpRightDiagonal1 and is.isCrossUpRightDiagonal2
+    is.isFullFreeCornerUpRight = not (is.isCrossUpRightHorizontal or is.isCrossUpRightDiagonal1 or is.isCrossUpRightDiagonal1)
 
     -- corners bottom
-    isBorderBottomLeftVertical = collisions:isRayCollisionWith(cross.bottomLeft.fromBorderVertical, cross.bottomLeft.toBorderVertical, floor)
-    isBorderBottomLeftHorizontal = collisions:isRayCollisionWith(cross.bottomLeft.fromBorderHorizontal, cross.bottomLeft.toBorderHorizontal, floor)
-    isCornerBottomLeft = isBorderBottomLeftVertical and isBorderBottomLeftHorizontal
-    isFullFreeCornerBottomLeft = not isBorderBottomLeftVertical and not isBorderBottomLeftHorizontal
+    is.isCrossBottomLeftHorizontal = collisions:isRayCollisionWith(cross.bottomLeft.fromBorderHorizontal, cross.bottomLeft.toBorderHorizontal, floor)
+    is.isCrossBottomLeftDiagonal1 = collisions:isRayCollisionWith(cross.bottomLeft.fromBorderDiagonal1, cross.bottomLeft.toBorderDiagonal1, floor)
+    is.isCrossBottomLeftDiagonal2 = collisions:isRayCollisionWith(cross.bottomLeft.fromBorderDiagonal2, cross.bottomLeft.toBorderDiagonal2, floor)
+    is.isCornerBottomLeft = is.isCrossBottomLeftHorizontal and is.isCrossBottomLeftDiagonal1 and is.isCrossBottomLeftDiagonal2
+    is.isFullFreeCornerBottomLeft = not (is.isCrossBottomLeftHorizontal or is.isCrossBottomLeftDiagonal1 or is.isCrossBottomLeftDiagonal2)
 
-    isBorderBottomRightVertical = collisions:isRayCollisionWith(cross.bottomRight.fromBorderVertical, cross.bottomRight.toBorderVertical, floor)
-    isBorderBottomRightHorizontal = collisions:isRayCollisionWith(cross.bottomRight.fromBorderHorizontal, cross.bottomRight.toBorderHorizontal, floor)
-    isCornerBottomRight = isBorderBottomRightVertical and isBorderBottomRightHorizontal
-    isFullFreeCornerBottomRight = not isBorderBottomRightVertical and not isBorderBottomRightHorizontal
+    is.isCrossBottomRightHorizontal = collisions:isRayCollisionWith(cross.bottomRight.fromBorderHorizontal, cross.bottomRight.toBorderHorizontal, floor)
+    is.isCrossBottomRightDiagonal1 = collisions:isRayCollisionWith(cross.bottomRight.fromBorderDiagonal1, cross.bottomRight.toBorderDiagonal1, floor)
+    is.isCrossBottomRightDiagonal2 = collisions:isRayCollisionWith(cross.bottomRight.fromBorderDiagonal2, cross.bottomRight.toBorderDiagonal2, floor)
+    is.isCornerBottomRight = is.isCrossBottomRightHorizontal and is.isCrossBottomRightDiagonal1 and is.isCrossBottomRightDiagonal2
+    is.isFullFreeCornerBottomRight = not (is.isCrossBottomRightHorizontal or is.isCrossBottomRightDiagonal1 or is.isCrossBottomRightDiagonal2)
 
-    isCrouched = isFloor and input:isCharPressed("S")
+    is.isCrouched = is.isFloor and input:isCharPressed("S")
 end
 
 function UpdateAnimationFromState()
@@ -170,14 +191,19 @@ end
 
 function setState(state)
     if  (currentState ~= State.CROUCHED and currentState ~= State.CROUCHING) and (state == State.CROUCHED or state == State.CROUCHING)    then
-        print("setup capsule short")
+        print("Crouching!")
+        this:disableSimulationCollider()
         this:setCapsuleColliderSize(0.25, 0.5)
+        this:setPosition(this:getPosition() + Vertex3D.new(0, -0.3, 0))
         this:UpdateShapeCollider();
-        this:applyCentralImpulse(Vertex3D.new(0, -500, 0))
+        this:enableSimulationCollider()
     elseif (currentState == State.CROUCHED or currentState == State.CROUCHING) and (state ~= State.CROUCHED and (state ~= State.CROUCHING)) then
-        --print("setup capsule long")
+        print("Standup!")
+        this:disableSimulationCollider()
         this:setCapsuleColliderSize(0.25, 1)
+        this:setPosition(this:getPosition() + Vertex3D.new(0, 0.25, 0))
         this:UpdateShapeCollider();
+        this:enableSimulationCollider()
     end
 
     currentState = state
@@ -187,38 +213,6 @@ function onStart()
     currentState = State.IDLE
 
     floor = brakeza:getSceneObjectByLabel("floor")
-    --this:disableDeactivationCollider()
-
-    isFloor = false
-    isHooked = false
-
-    isUp = false
-    isHookedLeft = false
-    isHookedRight = false
-    isFloorDown = false
-    isFloorDownLeft = false
-    isFloorDownRight = false
-
-    isBorderUpLeftVertical = false
-    isBorderUpRightVertical = false
-
-    isBorderUpLeftHorizontal = false
-    isBorderUpRightHorizontal = false
-
-    isBorderBottomLeftVertical = false
-    isBorderBottomRightVertical = false
-
-    isCornerUpLeft = false
-    isCornerUpRight = false
-
-    isFullFreeCornerUpLeft = false
-    isFullFreeCornerUpRight = false;
-    isFullFreeCornerBottomLeft = false
-    isFullFreeCornerBottomRight = false
-
-    isBlockedByHook = false
-
-    isHanglingToUp = false
 
     countUnblockableFrames = 0
 
@@ -228,39 +222,60 @@ function onStart()
 
     cameraOffsetPosition = this:AxisForward():getScaled(cameraOffset.z) + Vertex3D.new(cameraOffset.x, cameraOffset.y, 0)
 
-    local camera = componentsManager:getComponentCamera():getCamera()
-    camera:setPosition(this:getPosition() + cameraOffsetPosition)
-
     offsetHanglingToUp = Vertex3D.new(-0.6397, 1.8052, 0);
     originHanglingToUp = Vertex3D.new(0, 0, 0)
+
+    is = {
+        isFloor = false,
+        isHooked = false,
+
+        isUp = false,
+        isHookedLeft = false,
+        isHookedRight = false,
+        isFloorDown = false,
+        isFloorDownLeft = false,
+        isFloorDownRight = false,
+
+        isCrossUpLeftHorizontal = false,
+        isCrossUpRightHorizontal = false,
+
+        isCrossUpLeftDiagonal1 = false,
+        isCrossUpLeftDiagonal2 = false,
+        isCrossUpRightDiagonal1 = false,
+        isCrossUpRightDiagonal2 = false,
+
+        isCrossBottomLeftDiagonal1 = false,
+        isCrossBottomRightDiagonal2 = false,
+
+        isCornerUpLeft = false,
+        isCornerUpRight = false,
+
+        isFullFreeCornerUpLeft = false,
+        isFullFreeCornerUpRight = false,
+        isFullFreeCornerBottomLeft = false,
+        isFullFreeCornerBottomRight = false,
+
+        isBlockedByHook = false,
+
+        isHanglingToUp = false
+    }
 end
 
-function onUpdate()
-    local input = componentsManager:getComponentInput();
-    local camera = componentsManager:getComponentCamera():getCamera()
-
-    local camPosition = camera:getPosition();
-    local pos = this:getPosition()
-
-    if isCrouched then
-        camera:setPosition(pos + cameraOffsetPosition + Vertex3D.new(0, 0.4, 0))
-    else
-        camera:setPosition(pos + cameraOffsetPosition)
-    end
-
-    camera:lookAt(this)
-
-    -- Collision points
-    local rays = createRayPositions(pos, this, lengthRay)
-    local cross = createBorderCross(rays.cornerUpLeftCenter, rays.cornerUpRightCenter, rays.cornerBottomLeftCenter, rays.cornerBottomRightCenter)
-
-    UpdateCollisionFlags(input, pos, rays, cross)
-
-    -- decrease frame block counter
+function decreaseCounterBlock()
     countUnblockableFrames = countUnblockableFrames - 1
     if countUnblockableFrames < 0 then
         countUnblockableFrames = 0
     end
+end
+function onUpdate()
+    local position = this:getPosition()
+    local rays = createRayPositions(position, this, lengthRay)
+    local cross = createBorderCross(rays.cornerUpLeftCenter, rays.cornerUpRightCenter, rays.cornerBottomLeftCenter, rays.cornerBottomRightCenter)
+
+    local input = componentsManager:getComponentInput();
+    UpdateCollisionFlags(input, position, rays, cross)
+
+    decreaseCounterBlock()
 
     this:setRotation(sideRotation)
     local dt = brakeza:getDeltaTime()
@@ -271,14 +286,14 @@ function onUpdate()
 
     UpdateAnimationFromState()
 
-    debug(pos, rays, cross)
+    --debug(position, rays, cross)
 end
 
 function handleHanglingToToUp()
-    if isHanglingToUp and this:isAnimationEnds() then
+    if is.isHanglingToUp and this:isAnimationEnds() then
         print("fin!")
-        isHanglingToUp = false
-        isBlockedByHook = false
+        is.isHanglingToUp = false
+        is.isBlockedByHook = false
         this:setLoop(true)
         setState(State.IDLE)
         this:setPosition(originHanglingToUp)
@@ -288,24 +303,22 @@ function handleHanglingToToUp()
 end
 
 function handleFloorMovement(input, dt)
-    if isHanglingToUp then
+    if is.isHanglingToUp then
         return
     end
 
-    if isBlockedByHook then
+    if is.isBlockedByHook then
         return
     end
 
-    if isHooked and not isFloor then
+    if is.isHooked and not is.isFloor then
         return
     end
 
     local velocity = this:getLinearVelocity() -- Obtiene la velocidad actual
 
-    if isFloor then
-        if not isCrouched then
-
-
+    if is.isFloor then
+        if not is.isCrouched then
             if input:isCharFirstEventDown("SPACE") then
                 local jumpVector = Vertex3D.new(0, jumpForce, 0)
                 this:applyCentralImpulse(jumpVector)
@@ -395,19 +408,19 @@ function handleFloorMovement(input, dt)
 end
 
 function handleHook(input, dt)
-    if isHanglingToUp then
+    if is.isHanglingToUp then
         return
     end
 
     local v = this:getLinearVelocity()
 
-    if isBlockedByHook then
+    if is.isBlockedByHook then
         if input:isCharFirstEventDown("SPACE") then
             print("Freedom border!")
             this:setLinearVelocity(Vertex3D.new(0, -1, 0))
             this:enableSimulationCollider()
             countUnblockableFrames = 50
-            isBlockedByHook = false
+            is.isBlockedByHook = false
             return
         end
         if input:isCharFirstEventDown("W") then
@@ -418,32 +431,32 @@ function handleHook(input, dt)
                 originHanglingToUp = this:getPosition() + Vertex3D.new(-offsetHanglingToUp.x, offsetHanglingToUp.y, offsetHanglingToUp.z)
             end
             print("Climb to top!")
-            isHanglingToUp = true
+            is.isHanglingToUp = true
             this:disableSimulationCollider();
             this:setLoop(false)
             return
         end
     else
-        if isCornerUpRight and isFullFreeCornerBottomRight and  countUnblockableFrames == 0 and not isFloor and isFullFreeCornerUpLeft and v.y < 0 then
+        if is.isCornerUpRight and is.isFullFreeCornerBottomRight and countUnblockableFrames == 0 and not is.isFloor and is.isFullFreeCornerUpLeft and v.y < 0 and sideRotation == rotationLeft then
             print("Cross Up Right!")
             setState(State.HANGLING)
             this:disableSimulationCollider()
-            isBlockedByHook = true
+            is.isBlockedByHook = true
             sideRotation = rotationLeft
             return
         end
 
-        if isCornerUpLeft and isFullFreeCornerBottomLeft and countUnblockableFrames == 0 and not isFloor and isFullFreeCornerUpRight and v.y < 0 then
+        if is.isCornerUpLeft and is.isFullFreeCornerBottomLeft and countUnblockableFrames == 0 and not is.isFloor and is.isFullFreeCornerUpRight and v.y < 0  and sideRotation == rotationRight then
             print("Cross Up Left!")
             setState(State.HANGLING)
             this:disableSimulationCollider()
-            isBlockedByHook = true
+            is.isBlockedByHook = true
             sideRotation = rotationRight
             return
         end
 
         local fallingFriction = 0.85;
-        if isHookedLeft and isFloorDownLeft and not isFloorDown and input:isCharPressed("D") then
+        if is.isHookedLeft and is.isFloorDownLeft and not is.isFloorDown and input:isCharPressed("D") then
                 print("stop r")
                 sideRotation = rotationLeft
                 setState(State.HOOKED)
@@ -453,13 +466,13 @@ function handleHook(input, dt)
                 v.z = 0;
                 this:setLinearVelocity(v);
             end
-            if isHookedLeft and not isFloorDown and input:isCharPressed("A") then
+            if is.isHookedLeft and not is.isFloorDown and input:isCharPressed("A") then
                 print("release stop r")
                 this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt * 1000, 0, 0))
                 setState(State.FALLING)
             end
 
-            if isHookedRight and isFloorDownRight and not isFloorDown and input:isCharPressed("A") then
+            if is.isHookedRight and is.isFloorDownRight and not is.isFloorDown and input:isCharPressed("A") then
                 setState(State.HOOKED)
                 sideRotation = rotationRight
                 print("stop l")
@@ -470,13 +483,13 @@ function handleHook(input, dt)
                 this:setLinearVelocity(v);
             end
 
-            if isHookedRight and not isFloorDown and input:isCharPressed("F") then
+            if is.isHookedRight and not is.isFloorDown and input:isCharPressed("F") then
                 setState(State.FALLING)
                 print("release stop l")
             end
 
-            if isHookedLeft and not isFloorDown then
-                if input:isCharFirstEventDown("SPACE") and not input:isCharPressed("D") and not isFloor then
+            if is.isHookedLeft and not is.isFloorDown then
+                if input:isCharFirstEventDown("SPACE") and not input:isCharPressed("D") and not is.isFloor then
                     setState(State.JUMPING)
                     this:enableSimulationCollider()
                     local jumpVector = Vertex3D.new(-100, jumpForce, 0)
@@ -484,8 +497,8 @@ function handleHook(input, dt)
                     print("Jump hook l!")
                 end
             end
-            if isHookedRight and not isFloorDown then
-                if input:isCharFirstEventDown("SPACE") and not input:isCharPressed("A") and not isFloor then
+            if is.isHookedRight and not is.isFloorDown then
+                if input:isCharFirstEventDown("SPACE") and not input:isCharPressed("A") and not is.isFloor then
                     this:sleepCollider()
                     local jumpVector = Vertex3D.new(100, jumpForce, 0)
                     this:applyCentralImpulse(jumpVector)
@@ -494,11 +507,9 @@ function handleHook(input, dt)
             end
     end
 
-    if (isHookedRight and isHookedLeft and isUp) then
+    if (is.isHookedRight and is.isHookedLeft and is.isUp) then
         return
     end
-
-
 end
 
 function debug(from, rays, cross)
@@ -513,14 +524,18 @@ function debug(from, rays, cross)
         right = Color.new(1, 0, 0, 1),
         hookedLeft = Color.new(1, 0, 0, 1),
         hookedRight = Color.new(1, 0, 0, 1),
-        borderUpLeftVertical = Color.new(1, 0, 0, 1),
         borderUpLeftHorizontal = Color.new(1, 0, 0, 1),
-        borderUpRightVertical = Color.new(1, 0, 0, 1),
+        borderUpLeftDiagonal1 =  Color.new(1, 0, 0, 1),
+        borderUpLeftDiagonal2 =  Color.new(1, 0, 0, 1),
         borderUpRightHorizontal = Color.new(1, 0, 0, 1),
-        borderBottomLeftVertical = Color.new(1, 0, 0, 1),
+        borderUpRightDiagonal1 =  Color.new(1, 0, 0, 1),
+        borderUpRightDiagonal2 =  Color.new(1, 0, 0, 1),
         borderBottomLeftHorizontal = Color.new(1, 0, 0, 1),
-        borderBottomRightVertical = Color.new(1, 0, 0, 1),
+        borderBottomLeftDiagonal1 =  Color.new(1, 0, 0, 1),
+        borderBottomLeftDiagonal2 =  Color.new(1, 0, 0, 1),
         borderBottomRightHorizontal = Color.new(1, 0, 0, 1),
+        borderBottomRightDiagonal1 =  Color.new(1, 0, 0, 1),
+        borderBottomRightDiagonal2 =  Color.new(1, 0, 0, 1),
     }
 
     -- Función para actualizar los colores con base en las condiciones
@@ -531,24 +546,28 @@ function debug(from, rays, cross)
     end
 
     -- Asignación de colores basada en las condiciones
-    updateColorIf(isFloorDown, "floorDown", Color.new(0, 1, 0, 1))
-    updateColorIf(isFloorDownLeft, "floorLeft", Color.new(0, 1, 0, 1))
-    updateColorIf(isFloorDownRight, "floorRight", Color.new(0, 1, 0, 1))
-    updateColorIf(isHookedLeft, "hookedLeft", Color.new(0, 1, 0, 1))
-    updateColorIf(isHookedRight, "hookedRight", Color.new(0, 1, 0, 1))
-    updateColorIf(isUp, "up", Color.new(0, 1, 0, 1))
-    updateColorIf(isLeft, "left", Color.new(0, 1, 0, 1))
-    updateColorIf(isRight, "right", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isFloorDown, "floorDown", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isFloorDownLeft, "floorLeft", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isFloorDownRight, "floorRight", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isHookedLeft, "hookedLeft", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isHookedRight, "hookedRight", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isUp, "up", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isLeft, "left", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isRight, "right", Color.new(0, 1, 0, 1))
 
     -- Actualización para bordes
-    updateColorIf(isBorderUpLeftVertical, "borderUpLeftVertical", Color.new(0, 1, 0, 1))
-    updateColorIf(isBorderUpRightVertical, "borderUpRightVertical", Color.new(0, 1, 0, 1))
-    updateColorIf(isBorderUpLeftHorizontal, "borderUpLeftHorizontal", Color.new(0, 1, 0, 1))
-    updateColorIf(isBorderUpRightHorizontal, "borderUpRightHorizontal", Color.new(0, 1, 0, 1))
-    updateColorIf(isBorderBottomLeftVertical, "borderBottomLeftVertical", Color.new(0, 1, 0, 1))
-    updateColorIf(isBorderBottomRightVertical, "borderBottomRightVertical", Color.new(0, 1, 0, 1))
-    updateColorIf(isBorderBottomLeftHorizontal, "borderBottomLeftHorizontal", Color.new(0, 1, 0, 1))
-    updateColorIf(isBorderBottomRightHorizontal, "borderBottomRightHorizontal", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isCrossUpLeftHorizontal, "borderUpLeftHorizontal", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isCrossUpRightHorizontal, "borderUpRightHorizontal", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isCrossBottomLeftHorizontal, "borderBottomLeftHorizontal", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isCrossBottomRightHorizontal, "borderBottomRightHorizontal", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isCrossUpLeftDiagonal1, "borderUpLeftDiagonal1", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isCrossUpLeftDiagonal2, "borderUpLeftDiagonal2", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isCrossUpRightDiagonal1, "borderUpRightDiagonal1", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isCrossUpRightDiagonal2, "borderUpRightDiagonal2", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isCrossBottomLeftDiagonal1, "borderBottomLeftDiagonal1", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isCrossBottomLeftDiagonal2, "borderBottomLeftDiagonal2", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isCrossBottomRightDiagonal1, "borderBottomRightDiagonal1", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isCrossBottomRightDiagonal2, "borderBottomRightDiagonal2", Color.new(0, 1, 0, 1))
 
     -- Dibujo de líneas
     local function drawLine(from, to, color)
@@ -564,15 +583,21 @@ function debug(from, rays, cross)
     drawLine(from, rays.toUpLeft, colors.hookedLeft)
     drawLine(from, rays.toUpRight, colors.hookedRight)
 
-    drawLine(cross.upLeft.fromBorderVertical, cross.upLeft.toBorderVertical, colors.borderUpLeftVertical)
     drawLine(cross.upLeft.fromBorderHorizontal, cross.upLeft.toBorderHorizontal, colors.borderUpLeftHorizontal)
-    drawLine(cross.upRight.fromBorderVertical, cross.upRight.toBorderVertical, colors.borderUpRightVertical)
-    drawLine(cross.upRight.fromBorderHorizontal, cross.upRight.toBorderHorizontal, colors.borderUpRightHorizontal)
+    drawLine(cross.upLeft.fromBorderDiagonal1, cross.upLeft.toBorderDiagonal1, colors.borderUpLeftDiagonal1)
+    drawLine(cross.upLeft.fromBorderDiagonal2, cross.upLeft.toBorderDiagonal2, colors.borderUpLeftDiagonal2)
 
-    drawLine(cross.bottomLeft.fromBorderVertical, cross.bottomLeft.toBorderVertical, colors.borderBottomLeftVertical)
+    drawLine(cross.upRight.fromBorderHorizontal, cross.upRight.toBorderHorizontal, colors.borderUpRightHorizontal)
+    drawLine(cross.upRight.fromBorderDiagonal1, cross.upRight.toBorderDiagonal1, colors.borderUpRightDiagonal1)
+    drawLine(cross.upRight.fromBorderDiagonal2, cross.upRight.toBorderDiagonal2, colors.borderUpRightDiagonal2)
+
     drawLine(cross.bottomLeft.fromBorderHorizontal, cross.bottomLeft.toBorderHorizontal, colors.borderBottomLeftHorizontal)
-    drawLine(cross.bottomRight.fromBorderVertical, cross.bottomRight.toBorderVertical, colors.borderBottomRightVertical)
+    drawLine(cross.bottomLeft.fromBorderDiagonal1, cross.bottomLeft.toBorderDiagonal1, colors.borderBottomLeftDiagonal1)
+    drawLine(cross.bottomLeft.fromBorderDiagonal2, cross.bottomLeft.toBorderDiagonal2, colors.borderBottomLeftDiagonal2)
+
     drawLine(cross.bottomRight.fromBorderHorizontal, cross.bottomRight.toBorderHorizontal, colors.borderBottomRightHorizontal)
+    drawLine(cross.bottomRight.fromBorderDiagonal1, cross.bottomRight.toBorderDiagonal1, colors.borderBottomRightDiagonal1)
+    drawLine(cross.bottomRight.fromBorderDiagonal2, cross.bottomRight.toBorderDiagonal2, colors.borderBottomRightDiagonal2)
 end
 
 function onCollision(with)
