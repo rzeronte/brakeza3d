@@ -3,7 +3,8 @@ local Keys = {
     RIGHT = "D",
     UP = "W",
     DOWN = "S",
-    JUMP = "SPACE"
+    JUMP = "SPACE",
+    DASH = "Left Shift"
 }
 
 local State = {
@@ -124,13 +125,8 @@ function UpdateCollisionFlags(input, from, rays, cross)
     is.isFloorDown = collisions:isRayCollisionWith(from, rays.toDown, floor)
     is.isFloorDownLeft = collisions:isRayCollisionWith(from, rays.toDownLeft, floor)
     is.isFloorDownRight = collisions:isRayCollisionWith(from, rays.toDownRight, floor)
-    is.isFloor =
-        (
-            ((is.isFloorDown and (is.isFloorDownLeft or is.isFloorDownRight)) and velocity.y <= 1)
-        or
-            ((is.isFloorDownLeft and is.isFloorDownRight) and velocity.y <= 1)
-        )
-
+    is.isFloor = (((is.isFloorDown and (is.isFloorDownLeft or is.isFloorDownRight)) and velocity.y <= 1) or
+                 ((is.isFloorDownLeft and is.isFloorDownRight) and velocity.y <= 1))
     is.isUp = collisions:isRayCollisionWith(from, rays.toUp, floor)
     is.isLeft = collisions:isRayCollisionWith(from, rays.toLeft, floor)
     is.isRight = collisions:isRayCollisionWith(from, rays.toRight, floor)
@@ -238,6 +234,9 @@ function onStart()
     offsetHanglingToUp = Vertex3D.new(-0.6397, 1.8052, 0);
     originHanglingToUp = Vertex3D.new(0, 0, 0)
 
+    doubleJumpUsed = false
+    dashUsed = false
+
     is = {
         isFloor = false,
         isHooked = false,
@@ -299,7 +298,7 @@ function onUpdate()
 
     UpdateAnimationFromState()
 
-    debug(position, rays, cross)
+    --debug(position, rays, cross)
 end
 
 function handleHanglingToToUp()
@@ -316,21 +315,17 @@ function handleHanglingToToUp()
 end
 
 function handleFloorMovement(input, dt)
-    if is.isHanglingToUp then
+    if is.isHanglingToUp or is.isBlockedByHook or (is.isHooked and not is.isFloor) then
         return
     end
 
-    if is.isBlockedByHook then
-        return
-    end
-
-    if is.isHooked and not is.isFloor then
-        return
-    end
-
-    local velocity = this:getLinearVelocity() -- Obtiene la velocidad actual
+    local velocity = this:getLinearVelocity()
+    local avoidMaxLimit = false
 
     if is.isFloor then
+        doubleJumpUsed = false
+        dashUsed = false
+
         if not is.isCrouched then
             if input:isCharFirstEventDown(Keys.JUMP) then
                 local jumpVector = Vertex3D.new(0, jumpForce, 0)
@@ -346,6 +341,12 @@ function handleFloorMovement(input, dt)
                 this:enableSimulationCollider()
                 this:applyCentralForce(Vertex3D.new(-speed * dt * 1000, 0, 0))
                 sideRotation = rotationLeft
+                if input:isCharFirstEventDown(Keys.DASH) then
+                    this:applyCentralImpulse(Vertex3D.new(-speed * 5 * dt * 1000, 0, 0))
+                    print("moving left DASH")
+                    dashUsed = true
+                    avoidMaxLimit = true
+                end
             end
 
             if input:isCharPressed(Keys.RIGHT) then
@@ -354,9 +355,15 @@ function handleFloorMovement(input, dt)
                 this:enableSimulationCollider()
                 this:applyCentralForce(Vertex3D.new(speed * dt * 1000, 0, 0))
                 sideRotation = rotationRight
+                if input:isCharFirstEventDown(Keys.DASH) then
+                    this:applyCentralImpulse(Vertex3D.new(speed * 5 * dt * 1000, 0, 0))
+                    print("moving left DASH")
+                    dashUsed = true
+                    avoidMaxLimit = true
+                end
             end
 
-            if math.abs(velocity.x) > maxSpeed then
+            if math.abs(velocity.x) > maxSpeed and not avoidMaxLimit then
                 velocity.x = maxSpeed * (velocity.x > 0 and 1 or -1)
                 this:setLinearVelocity(velocity)
             end
@@ -400,16 +407,38 @@ function handleFloorMovement(input, dt)
         if input:isCharPressed(Keys.LEFT) then
             sideRotation = rotationLeft
             this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt * 1000, 0, 0))
+            if input:isCharFirstEventDown(Keys.DASH) and not dashUsed then
+                this:applyCentralImpulse(Vertex3D.new(-speed * 5 * dt * 1000, 0, 0))
+                print("left air DASH")
+                dashUsed = true
+                avoidMaxLimit = true
+            end
         end
 
         if input:isCharPressed(Keys.RIGHT) then
             sideRotation = rotationRight
             this:applyCentralForce(Vertex3D.new(speed * airControlFactor * dt * 1000, 0, 0))
+            if input:isCharFirstEventDown(Keys.DASH) and not dashUsed then
+                this:applyCentralImpulse(Vertex3D.new(speed * 5 * dt * 1000, 0, 0))
+                print("right air DASH")
+                dashUsed = true
+                avoidMaxLimit = true
+            end
+        end
+
+        if input:isCharFirstEventDown(Keys.JUMP) and not doubleJumpUsed then
+            this:setLinearVelocity(Vertex3D.new(velocity.x, 0, velocity.z))
+            doubleJumpUsed = true;
+            local jumpVector = Vertex3D.new(0, jumpForce, 0)
+            this:applyCentralImpulse(jumpVector)
+            setState(State.JUMPING)
+            print("Jump!")
+            return
         end
 
         -- Reducir la velocidad en el aire si es muy alta
         local maxAirSpeed = 3.0
-        if math.abs(velocity.x) > maxAirSpeed then
+        if math.abs(velocity.x) > maxAirSpeed and not avoidMaxLimit then
             velocity.x = maxAirSpeed * (velocity.x > 0 and 1 or -1)
             this:setLinearVelocity(velocity)
         end
@@ -456,6 +485,7 @@ function handleHook(input, dt)
             this:disableSimulationCollider()
             is.isBlockedByHook = true
             sideRotation = rotationLeft
+            doubleJumpUsed = true
             return
         end
 
@@ -465,6 +495,7 @@ function handleHook(input, dt)
             this:disableSimulationCollider()
             is.isBlockedByHook = true
             sideRotation = rotationRight
+            doubleJumpUsed = true
             return
         end
 
