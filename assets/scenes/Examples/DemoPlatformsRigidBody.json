@@ -30,14 +30,14 @@
 			"name":	"capsule",
 			"scale":	1,
 			"position":	{
-				"x":	-36.385871887207031,
-				"y":	-4.64385986328125,
-				"z":	-43.342765808105469
+				"x":	-45.03961181640625,
+				"y":	7.5103979110717773,
+				"z":	-43.206348419189453
 			},
 			"rotation":	{
-				"x":	-0.10611919313669205,
-				"y":	0.16694723069667816,
-				"z":	0.039707653224468231
+				"x":	-0.10648710280656815,
+				"y":	0.16764199733734131,
+				"z":	0.039820410311222076
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
@@ -78,68 +78,17 @@
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"floor",
-			"scale":	1,
-			"position":	{
-				"x":	-38.931137084960938,
-				"y":	-12.569705963134766,
-				"z":	-43.248760223388672
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	-0,
-				"z":	0
-			},
-			"isCollisionsEnabled":	true,
-			"collider":	{
-				"mode":	1,
-				"shape":	2,
-				"friction":	1,
-				"mass":	0,
-				"margin":	0.0040000001899898052,
-				"ccdMotionThreshold":	0,
-				"ccdSweptSphereRadius":	0,
-				"linearDamping":	1,
-				"angularDamping":	1,
-				"restitution":	0,
-				"colliderStatic":	true,
-				"simpleShapeSize":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				},
-				"kinematicCapsuleSize":	{
-					"x":	0.5,
-					"y":	1.5
-				},
-				"angularFactor":	{
-					"x":	0,
-					"y":	0,
-					"z":	0
-				},
-				"linearFactor":	{
-					"x":	0,
-					"y":	0,
-					"z":	0
-				}
-			},
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//DevLevelPlatforms.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
 			"name":	"character",
 			"scale":	1,
 			"position":	{
-				"x":	-44.210884094238281,
-				"y":	-1.8196374177932739,
-				"z":	-43.089145660400391
+				"x":	6.727996826171875,
+				"y":	2.5080680847167969,
+				"z":	-43.0359992980957
 			},
 			"rotation":	{
-				"x":	0.010025229305028915,
-				"y":	0.010029837489128113,
-				"z":	0.010008342564105988
+				"x":	-179.99998474121094,
+				"y":	-5.0089556680177338e-06,
+				"z":	-179.99998474121094
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
@@ -160,8 +109,8 @@
 					"z":	1
 				},
 				"kinematicCapsuleSize":	{
-					"x":	0.25,
-					"y":	1.2000000476837158
+					"x":	0.20000000298023224,
+					"y":	1
 				},
 				"angularFactor":	{
 					"x":	0,
@@ -219,6 +168,88 @@
 			"enableLights":	false,
 			"animationSpeed":	1,
 			"type":	"Mesh3DAnimation"
+		}, {
+			"name":	"floor",
+			"scale":	1,
+			"position":	{
+				"x":	-41.310626983642578,
+				"y":	-7.5259437561035156,
+				"z":	-44
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	2,
+				"friction":	1,
+				"mass":	0,
+				"margin":	0,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	1,
+				"angularDamping":	1,
+				"restitution":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	0,
+					"y":	0,
+					"z":	0
+				},
+				"linearFactor":	{
+					"x":	0,
+					"y":	0,
+					"z":	0
+				}
+			},
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//PlatformLevels/level01.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"StartPosition",
+			"scale":	1,
+			"position":	{
+				"x":	1,
+				"y":	1,
+				"z":	-43.0359992980957
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[{
+					"name":	"../assets/scripts/Examples/Commons/StartPositionObject.lua",
+					"types":	[{
+							"name":	"objectToMove",
+							"type":	"string",
+							"value":	"character"
+						}, {
+							"name":	"positionOffset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	0,
+								"z":	5
+							}
+						}]
+				}],
+			"type":	"Object3D"
 		}],
 	"shaders":	[],
 	"scripts":	[{
@@ -226,13 +257,13 @@
 		}],
 	"camera":	{
 		"position":	{
-			"x":	-42.860691070556641,
-			"y":	-6.7437381744384766,
-			"z":	-28.063510894775391
+			"x":	1.5768542289733887,
+			"y":	-0.29923778772354126,
+			"z":	-15.54900074005127
 		},
 		"rotation":	{
-			"x":	8.19996166229248,
-			"y":	-363.80010986328125,
+			"x":	6.7999887466430664,
+			"y":	-362.60150146484375,
 			"z":	0
 		}
 	}

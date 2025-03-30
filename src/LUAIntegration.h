@@ -95,6 +95,7 @@ void LUAIntegration(sol::state &lua)
         "setScalingCollider", &Object3D::setScalingCollider,
         "setCapsuleColliderSize", &Object3D::setCapsuleColliderSize,
         "moveCollider", &Object3D::moveCollider,
+        "isCollisionsEnabled", &Object3D::isCollisionsEnabled,
         "setDrawOffset", &Object3D::setDrawOffset,
         "setupGhostCollider", &Object3D::setupGhostCollider,
         "setupRigidBodyCollider", &Object3D::setupRigidBodyCollider,

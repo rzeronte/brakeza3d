@@ -20,7 +20,35 @@ local State = {
 }
 
 local function createRayPositions(pos, this, lengthRay)
+
+    local dashLengthChecker = 0
+
+    if (sideRotation == rotationLeft) then
+        fromHanglingToUp = pos + Vertex3D.new(offsetHanglingToUp.x, offsetHanglingToUp.y, offsetHanglingToUp.z) + Vertex3D.new(0.0, -0.6, 0)
+        toHanglingToUp = fromHanglingToUp + this:AxisUp():getScaled(1)
+        fromDash = pos + this:AxisRight():getScaled(dashLengthChecker)
+        toDash =  fromDash + this:AxisUp():getScaled(1) + this:AxisRight():getScaled(2)
+
+        fromDash2 = pos + this:AxisRight():getScaled(dashLengthChecker) - this:AxisUp():getScaled(0.5)
+        toDash2 =  fromDash2 + this:AxisRight():getScaled(2)
+
+        fromDash3 = fromDash
+        toDash3 =  fromDash3 + this:AxisRight():getScaled(2)
+    else
+        fromHanglingToUp = pos + Vertex3D.new(-offsetHanglingToUp.x, offsetHanglingToUp.y, offsetHanglingToUp.z) + Vertex3D.new(0.0, -0.6, 0)
+        toHanglingToUp = fromHanglingToUp + this:AxisUp():getScaled(1)
+        fromDash = pos - this:AxisRight():getScaled(dashLengthChecker)
+        toDash =  fromDash + this:AxisUp():getScaled(1) - this:AxisRight():getScaled(2)
+
+        fromDash2 = pos - this:AxisRight():getScaled(dashLengthChecker) - this:AxisUp():getScaled(0.5)
+        toDash2 =  fromDash2 - this:AxisRight():getScaled(2)
+
+        fromDash3 = fromDash
+        toDash3 =  fromDash3 - this:AxisRight():getScaled(2)
+    end
+
     local rays = {
+        fromUp = pos,
         toDown = pos - this:AxisUp():getScaled(lengthRay),
         toUp = pos + this:AxisUp():getScaled(lengthRay),
 
@@ -41,6 +69,16 @@ local function createRayPositions(pos, this, lengthRay)
 
         cornerBottomLeftCenter = pos + this:AxisUp():getScaled(1 + 0.7) + Vertex3D.new(0.3, 0, 0),
         cornerBottomRightCenter = pos + this:AxisUp():getScaled(1 + 0.7) + Vertex3D.new(-0.3, 0, 0),
+
+        fromHanglingToUp = fromHanglingToUp,
+        toHanglingToUp = toHanglingToUp,
+
+        fromDash = fromDash,
+        toDash = toDash,
+        fromDash2 = fromDash2,
+        toDash2 = toDash2,
+        fromDash3 = fromDash3,
+        toDash3 = toDash3
     }
 
     return rays
@@ -127,12 +165,12 @@ function UpdateCollisionFlags(input, from, rays, cross)
     is.isFloorDownRight = collisions:isRayCollisionWith(from, rays.toDownRight, floor)
     is.isFloor = (((is.isFloorDown and (is.isFloorDownLeft or is.isFloorDownRight)) and velocity.y <= 1) or
                  ((is.isFloorDownLeft and is.isFloorDownRight) and velocity.y <= 1))
-    is.isUp = collisions:isRayCollisionWith(from, rays.toUp, floor)
-    is.isLeft = collisions:isRayCollisionWith(from, rays.toLeft, floor)
-    is.isRight = collisions:isRayCollisionWith(from, rays.toRight, floor)
+    is.isUp = collisions:isRayCollisionWith(rays.fromUp, rays.toUp, floor)
+    is.isLeft = collisions:isRayCollisionWith(rays.fromUp, rays.toLeft, floor)
+    is.isRight = collisions:isRayCollisionWith(rays.fromUp, rays.toRight, floor)
 
-    is.isHookedLeft = collisions:isRayCollisionWith(from, rays.toUpLeft, floor)
-    is.isHookedRight = collisions:isRayCollisionWith(from, rays.toUpRight, floor)
+    is.isHookedLeft = collisions:isRayCollisionWith(rays.fromUp, rays.toUpLeft, floor)
+    is.isHookedRight = collisions:isRayCollisionWith(rays.fromUp, rays.toUpRight, floor)
     is.isHooked = (is.isHookedLeft or is.isHookedRight) and not is.isFloorDown
 
     -- corners up
@@ -161,7 +199,14 @@ function UpdateCollisionFlags(input, from, rays, cross)
     is.isCornerBottomRight = is.isCrossBottomRightHorizontal and is.isCrossBottomRightDiagonal1 and is.isCrossBottomRightDiagonal2
     is.isFullFreeCornerBottomRight = not (is.isCrossBottomRightHorizontal or is.isCrossBottomRightDiagonal1 or is.isCrossBottomRightDiagonal2)
 
-    is.isCrouched = is.isFloor and input:isCharPressed(Keys.DOWN)
+    is.isHanglingToUpCanceled = collisions:isRayCollisionWith(rays.fromHanglingToUp, rays.toHanglingToUp, floor)
+
+    is.isDashCanceled = (collisions:isRayCollisionWith(rays.fromDash, rays.toDash, floor) or
+                        collisions:isRayCollisionWith(rays.fromDash2, rays.toDash2, floor) or
+                        collisions:isRayCollisionWith(rays.fromDash3, rays.toDash3, floor))
+
+    is.isCrouched = (is.isFloor and input:isCharPressed(Keys.DOWN)) or
+                    (is.isFloor and is.isUp )
 end
 
 function UpdateAnimationFromState()
@@ -202,15 +247,15 @@ function setState(state)
     if  (currentState ~= State.CROUCHED and currentState ~= State.CROUCHING) and (state == State.CROUCHED or state == State.CROUCHING)    then
         print("Crouching!")
         this:disableSimulationCollider()
-        this:setCapsuleColliderSize(0.25, 0.5)
+        this:setCapsuleColliderSize(0.2, 0.5)
         this:setPosition(this:getPosition() + Vertex3D.new(0, -0.3, 0))
         this:UpdateShapeCollider();
         this:enableSimulationCollider()
     elseif (currentState == State.CROUCHED or currentState == State.CROUCHING) and (state ~= State.CROUCHED and (state ~= State.CROUCHING)) then
         print("Standup!")
         this:disableSimulationCollider()
-        this:setCapsuleColliderSize(0.25, 1)
-        this:setPosition(this:getPosition() + Vertex3D.new(0, 0.25, 0))
+        this:setCapsuleColliderSize(0.2, 1)
+        this:setPosition(this:getPosition() + Vertex3D.new(0, 0.2, 0))
         this:UpdateShapeCollider();
         this:enableSimulationCollider()
     end
@@ -232,7 +277,7 @@ function onStart()
     cameraOffsetPosition = this:AxisForward():getScaled(cameraOffset.z) + Vertex3D.new(cameraOffset.x, cameraOffset.y, 0)
 
     offsetHanglingToUp = Vertex3D.new(-0.6397, 1.8052, 0);
-    originHanglingToUp = Vertex3D.new(0, 0, 0)
+    destinyHanglingToUp = Vertex3D.new(0, 0, 0)
 
     doubleJumpUsed = false
     dashUsed = false
@@ -279,6 +324,7 @@ function decreaseCounterBlock()
         countUnblockableFrames = 0
     end
 end
+
 function onUpdate()
     local position = this:getPosition()
     local rays = createRayPositions(position, this, lengthRay)
@@ -292,13 +338,19 @@ function onUpdate()
     this:setRotation(sideRotation)
     local dt = brakeza:getDeltaTime()
 
+    isFloor = is.isFloor
+    isCornerUpLeft = is.isCornerUpLeft
+    isCornerUpRight = is.isCornerUpRight
+    isFullFreeCornerBottomLeft = is.isFullFreeCornerBottomLeft
+    isFullFreeCornerBottomRight = is.isFullFreeCornerBottomRight
+
     handleFloorMovement(input, dt)
     handleHanglingToToUp()
     handleHook(input, dt)
 
     UpdateAnimationFromState()
 
-    --debug(position, rays, cross)
+    debug(position, rays, cross)
 end
 
 function handleHanglingToToUp()
@@ -308,7 +360,7 @@ function handleHanglingToToUp()
         is.isBlockedByHook = false
         this:setLoop(true)
         setState(State.IDLE)
-        this:setPosition(originHanglingToUp)
+        this:setPosition(destinyHanglingToUp)
         this:UpdateShapeCollider();
         this:enableSimulationCollider()
     end
@@ -341,7 +393,7 @@ function handleFloorMovement(input, dt)
                 this:enableSimulationCollider()
                 this:applyCentralForce(Vertex3D.new(-speed * dt * 1000, 0, 0))
                 sideRotation = rotationLeft
-                if input:isCharFirstEventDown(Keys.DASH) then
+                if input:isCharFirstEventDown(Keys.DASH) and not is.isDashCanceled then
                     this:applyCentralImpulse(Vertex3D.new(-speed * 5 * dt * 1000, 0, 0))
                     print("moving left DASH")
                     dashUsed = true
@@ -355,7 +407,7 @@ function handleFloorMovement(input, dt)
                 this:enableSimulationCollider()
                 this:applyCentralForce(Vertex3D.new(speed * dt * 1000, 0, 0))
                 sideRotation = rotationRight
-                if input:isCharFirstEventDown(Keys.DASH) then
+                if input:isCharFirstEventDown(Keys.DASH) and not is.isDashCanceled then
                     this:applyCentralImpulse(Vertex3D.new(speed * 5 * dt * 1000, 0, 0))
                     print("moving left DASH")
                     dashUsed = true
@@ -407,7 +459,7 @@ function handleFloorMovement(input, dt)
         if input:isCharPressed(Keys.LEFT) then
             sideRotation = rotationLeft
             this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt * 1000, 0, 0))
-            if input:isCharFirstEventDown(Keys.DASH) and not dashUsed then
+            if input:isCharFirstEventDown(Keys.DASH) and not dashUsed and not is.isDashCanceled then
                 this:applyCentralImpulse(Vertex3D.new(-speed * 5 * dt * 1000, 0, 0))
                 print("left air DASH")
                 dashUsed = true
@@ -418,7 +470,7 @@ function handleFloorMovement(input, dt)
         if input:isCharPressed(Keys.RIGHT) then
             sideRotation = rotationRight
             this:applyCentralForce(Vertex3D.new(speed * airControlFactor * dt * 1000, 0, 0))
-            if input:isCharFirstEventDown(Keys.DASH) and not dashUsed then
+            if input:isCharFirstEventDown(Keys.DASH) and not dashUsed and not is.isDashCanceled then
                 this:applyCentralImpulse(Vertex3D.new(speed * 5 * dt * 1000, 0, 0))
                 print("right air DASH")
                 dashUsed = true
@@ -465,12 +517,12 @@ function handleHook(input, dt)
             is.isBlockedByHook = false
             return
         end
-        if input:isCharFirstEventDown(Keys.UP) then
+        if input:isCharFirstEventDown(Keys.UP) and not is.isHanglingToUpCanceled then
             setState(State.HANGLING_TO_UP)
             if (sideRotation == rotationLeft) then
-                originHanglingToUp = this:getPosition() + offsetHanglingToUp
+                destinyHanglingToUp = this:getPosition() + offsetHanglingToUp
             else
-                originHanglingToUp = this:getPosition() + Vertex3D.new(-offsetHanglingToUp.x, offsetHanglingToUp.y, offsetHanglingToUp.z)
+                destinyHanglingToUp = this:getPosition() + Vertex3D.new(-offsetHanglingToUp.x, offsetHanglingToUp.y, offsetHanglingToUp.z)
             end
             print("Climb to top!")
             is.isHanglingToUp = true
@@ -479,7 +531,7 @@ function handleHook(input, dt)
             return
         end
     else
-        if is.isCornerUpRight and is.isFullFreeCornerBottomRight and countUnblockableFrames == 0 and not is.isFloor and is.isFullFreeCornerUpLeft and v.y < 0 and sideRotation == rotationLeft then
+        if is.isCornerUpRight and is.isFullFreeCornerBottomRight and countUnblockableFrames == 0 and not is.isFloor and is.isFullFreeCornerUpLeft and v.y < 0 and not is.isHanglingToUpCanceled then
             print("Cross Up Right!")
             setState(State.HANGLING)
             this:disableSimulationCollider()
@@ -489,7 +541,7 @@ function handleHook(input, dt)
             return
         end
 
-        if is.isCornerUpLeft and is.isFullFreeCornerBottomLeft and countUnblockableFrames == 0 and not is.isFloor and is.isFullFreeCornerUpRight and v.y < 0  and sideRotation == rotationRight then
+        if is.isCornerUpLeft and is.isFullFreeCornerBottomLeft and countUnblockableFrames == 0 and not is.isFloor and is.isFullFreeCornerUpRight and v.y < 0 and not is.isHanglingToUpCanceled then
             print("Cross Up Left!")
             setState(State.HANGLING)
             this:disableSimulationCollider()
@@ -500,7 +552,7 @@ function handleHook(input, dt)
         end
 
         local fallingFriction = 0.85;
-        if is.isHookedLeft and is.isFloorDownLeft and not is.isFloorDown and not is.isFloorDownRight and input:isCharPressed(Keys.RIGHT) then
+        if is.isHookedLeft and is.isFloorDownLeft and not is.isFloorDown and not is.isFloorDownRight and input:isCharPressed(Keys.RIGHT) and v.y <= 0  then
                 print("stop r")
                 sideRotation = rotationLeft
                 setState(State.HOOKED)
@@ -516,7 +568,7 @@ function handleHook(input, dt)
                 setState(State.FALLING)
             end
 
-            if is.isHookedRight and is.isFloorDownRight and not is.isFloorDown and not is.isFloorDownLeft and input:isCharPressed(Keys.LEFT) then
+            if is.isHookedRight and is.isFloorDownRight and not is.isFloorDown and not is.isFloorDownLeft and input:isCharPressed(Keys.LEFT) and v.y <= 0 then
                 setState(State.HOOKED)
                 sideRotation = rotationRight
                 print("stop l")
@@ -527,7 +579,7 @@ function handleHook(input, dt)
                 this:setLinearVelocity(v);
             end
 
-            if is.isHookedRight and not is.isFloorDown and input:isCharPressed("F") then
+            if is.isHookedRight and not is.isFloorDown and input:isCharPressed(Keys.RIGHT) then
                 setState(State.FALLING)
                 print("release stop l")
             end
@@ -566,20 +618,22 @@ function debug(from, rays, cross)
         up = Color.new(1, 0, 0, 1),
         left = Color.new(1, 0, 0, 1),
         right = Color.new(1, 0, 0, 1),
-        hookedLeft = Color.new(1, 0, 0, 1),
-        hookedRight = Color.new(1, 0, 0, 1),
+        hookedLeft = Color.new(1, 1, 0, 1),
+        hookedRight = Color.new(1, 1, 0, 1),
         borderUpLeftHorizontal = Color.new(1, 0, 0, 1),
-        borderUpLeftDiagonal1 =  Color.new(1, 0, 0, 1),
-        borderUpLeftDiagonal2 =  Color.new(1, 0, 0, 1),
+        borderUpLeftDiagonal1 = Color.new(1, 0, 0, 1),
+        borderUpLeftDiagonal2 = Color.new(1, 0, 0, 1),
         borderUpRightHorizontal = Color.new(1, 0, 0, 1),
-        borderUpRightDiagonal1 =  Color.new(1, 0, 0, 1),
-        borderUpRightDiagonal2 =  Color.new(1, 0, 0, 1),
+        borderUpRightDiagonal1 = Color.new(1, 0, 0, 1),
+        borderUpRightDiagonal2 = Color.new(1, 0, 0, 1),
         borderBottomLeftHorizontal = Color.new(1, 0, 0, 1),
-        borderBottomLeftDiagonal1 =  Color.new(1, 0, 0, 1),
-        borderBottomLeftDiagonal2 =  Color.new(1, 0, 0, 1),
+        borderBottomLeftDiagonal1 = Color.new(1, 0, 0, 1),
+        borderBottomLeftDiagonal2 = Color.new(1, 0, 0, 1),
         borderBottomRightHorizontal = Color.new(1, 0, 0, 1),
-        borderBottomRightDiagonal1 =  Color.new(1, 0, 0, 1),
-        borderBottomRightDiagonal2 =  Color.new(1, 0, 0, 1),
+        borderBottomRightDiagonal1 = Color.new(1, 0, 0, 1),
+        borderBottomRightDiagonal2 = Color.new(1, 0, 0, 1),
+        hanglingToUpCanceled = Color.new(1, 0, 0, 1),
+        dashCanceled = Color.new(1, 0, 0, 1)
     }
 
     -- Función para actualizar los colores con base en las condiciones
@@ -598,6 +652,8 @@ function debug(from, rays, cross)
     updateColorIf(is.isUp, "up", Color.new(0, 1, 0, 1))
     updateColorIf(is.isLeft, "left", Color.new(0, 1, 0, 1))
     updateColorIf(is.isRight, "right", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isHanglingToUpCanceled, "hanglingToUpCanceled", Color.new(0, 1, 0, 1))
+    updateColorIf(is.isDashCanceled, "dashCanceled", Color.new(0, 1, 0, 1))
 
     -- Actualización para bordes
     updateColorIf(is.isCrossUpLeftHorizontal, "borderUpLeftHorizontal", Color.new(0, 1, 0, 1))
@@ -621,11 +677,9 @@ function debug(from, rays, cross)
     drawLine(from, rays.toDown, colors.floorDown)
     drawLine(from, rays.toDownLeft, colors.floorLeft)
     drawLine(from, rays.toDownRight, colors.floorRight)
-    drawLine(from, rays.toUp, colors.up)
+    drawLine(rays.fromUp, rays.toUp, colors.up)
     drawLine(from, rays.toLeft, colors.left)
     drawLine(from, rays.toRight, colors.right)
-    drawLine(from, rays.toUpLeft, colors.hookedLeft)
-    drawLine(from, rays.toUpRight, colors.hookedRight)
 
     drawLine(cross.upLeft.fromBorderHorizontal, cross.upLeft.toBorderHorizontal, colors.borderUpLeftHorizontal)
     drawLine(cross.upLeft.fromBorderDiagonal1, cross.upLeft.toBorderDiagonal1, colors.borderUpLeftDiagonal1)
@@ -642,6 +696,15 @@ function debug(from, rays, cross)
     drawLine(cross.bottomRight.fromBorderHorizontal, cross.bottomRight.toBorderHorizontal, colors.borderBottomRightHorizontal)
     drawLine(cross.bottomRight.fromBorderDiagonal1, cross.bottomRight.toBorderDiagonal1, colors.borderBottomRightDiagonal1)
     drawLine(cross.bottomRight.fromBorderDiagonal2, cross.bottomRight.toBorderDiagonal2, colors.borderBottomRightDiagonal2)
+
+    drawLine(rays.fromUp, rays.toUpLeft, colors.hookedLeft)
+    drawLine(rays.fromUp, rays.toUpRight, colors.hookedRight)
+
+    drawLine(rays.fromHanglingToUp, rays.toHanglingToUp, colors.hanglingToUpCanceled)
+
+    drawLine(rays.fromDash, rays.toDash, colors.dashCanceled)
+    drawLine(rays.fromDash2, rays.toDash2, colors.dashCanceled)
+    drawLine(rays.fromDash3, rays.toDash3, colors.dashCanceled)
 end
 
 function onCollision(with)
