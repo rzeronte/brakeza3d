@@ -10,7 +10,9 @@ Mesh3DAnimation::Mesh3DAnimation()
     remove_at_end_animation(false),
     animation_speed(1),
     animation_ends(false),
-    loop(true)
+    loop(true),
+    boneColliderEnabled(false),
+    boneColliderIndex(-1)
 {
     luaEnvironment["this"] = this;
 }
@@ -24,6 +26,10 @@ void Mesh3DAnimation::onUpdate()
     UpdateFrameTransformations();
 
     UpdateOpenGLBones();
+
+    if (boneColliderEnabled) {
+        UpdateBoneColliders()
+    }
 
     auto render = ComponentsManager::get()->getComponentRender();
     auto window = ComponentsManager::get()->getComponentWindow();
@@ -735,10 +741,18 @@ void Mesh3DAnimation::setLoop(bool loop) {
     Mesh3DAnimation::loop = loop;
 }
 
-void Mesh3DAnimation::AddBoneCollider(
-    const std::string& mappingName,
+void Mesh3DAnimation::createBonesMappingColliders(std::string name)
+{
+    BonesMappingColliders bmc;
+    bmc.nameMapping = name;
+    bmc.boneColliderInfo.resize(this->numBones);
+    boneMappingColliders.push_back(bmc);
+}
+
+void Mesh3DAnimation::SetBoneColliderInfoIntoBonesMapping(
+    BonesMappingColliders &mapping,
     unsigned int boneId,
-    BoneCollisionShape shape = BoneCollisionShape::BONE_SPHERE,
+    BoneCollisionShape shape = BONE_SPHERE,
     btConvexHullShape* convexHullShape = nullptr,
     bool enabled = false
 ) {
@@ -748,12 +762,12 @@ void Mesh3DAnimation::AddBoneCollider(
     colliderInfo.convexHullShape = convexHullShape;
     colliderInfo.enabled = enabled;
 
-    bonesCollidersMapping[mappingName].push_back(colliderInfo);
+    mapping.boneColliderInfo[boneId] = colliderInfo;
 }
 
-void Mesh3DAnimation::createBoneColliders(const std::string& mappingName)
+void Mesh3DAnimation::createGhostsBodiesFromBonesMappingCollider(BonesMappingColliders &bonesMaping)
 {
-    for (auto &b : bonesCollidersMapping[mappingName]){
+    for (auto &b : bonesMaping.boneColliderInfo){
         btConvexHullShape *convexHullShape;
         switch (b.shape) {
             case BoneCollisionShape::BONE_SPHERE: {
@@ -790,5 +804,16 @@ void Mesh3DAnimation::createBoneColliders(const std::string& mappingName)
 
         b.ghostObject = ghostObject;
         b.convexHullShape = convexHullShape;
+    }
+}
+
+void Mesh3DAnimation::UpdateBoneColliders()
+{
+    auto bonesColliderInfo = boneMappingColliders[boneColliderIndex].boneColliderInfo;
+
+    for (auto b : bonesColliderInfo) {
+        auto boneId = b.boneId;
+        auto ghost = b.ghostObject;
+        // Rotar boneInfo[boneId].FinalTransformation;
     }
 }

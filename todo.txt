@@ -1,0 +1,4 @@
+Crear un bonesmapping
+cargarle un par de boneInfoCollider
+Asegurarse de que se ejecuta el Update en cda frame
+Observar el debug a ver si se mueven

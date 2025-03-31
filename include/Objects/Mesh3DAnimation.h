@@ -52,6 +52,11 @@ struct BoneColliderInfo {
     Vertex3D position;
 };
 
+struct BonesMappingColliders {
+    std::string nameMapping;
+    std::vector<BoneColliderInfo> boneColliderInfo;
+};
+
 class Mesh3DAnimation : public Mesh3D {
 private:
     Assimp::Importer importer;
@@ -67,7 +72,10 @@ private:
     std::map<std::string, unsigned int> boneMapping;                // maps a bone's name to its index
     std::vector<BoneInfo> boneInfo;                                 // Bone info and final transformation
 
-    std::map<std::string, std::vector<BoneColliderInfo>> bonesCollidersMapping;
+    bool boneColliderEnabled;
+    int boneColliderIndex;
+
+    std::vector<BonesMappingColliders> boneMappingColliders;
 
     int indexCurrentAnimation;
     float runningTime;
@@ -157,14 +165,20 @@ public:
 
     void setLoop(bool loop);
 
-    void AddBoneCollider(
-        const std::string &mappingName,
+    void createBonesMappingColliders(std::string name);
+
+    void SetBoneColliderInfoIntoBonesMapping(
+        BonesMappingColliders &mapping,
         unsigned int boneId,
         BoneCollisionShape shape,
         btConvexHullShape *convexHullShape, bool enabled
      );
 
+    void createGhostsBodiesFromBonesMappingCollider(BonesMappingColliders &bonesMaping);
+
     void createBoneColliders(const std::string &mappingName);
+
+    void UpdateBoneColliders();
 };
 
 
