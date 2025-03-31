@@ -45,7 +45,6 @@ private:
 
     bool sharedTextures;
     bool render;
-    bool loaded = false;
 
 protected:
     std::string sourceFile;
@@ -110,8 +109,6 @@ public:
     static void createFromJSON(cJSON *object);
 
     static void setPropertiesFromJSON(cJSON *object, Mesh3D *o, bool loadGeometry);
-
-    void FillOGLBuffers();
 
     [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const;
 

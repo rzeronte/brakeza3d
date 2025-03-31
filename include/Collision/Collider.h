@@ -7,6 +7,7 @@
 #include "../Render/M3.h"
 #include <glm/vec2.hpp>
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
+#include <vector>
 
 enum CollisionShape {
     SIMPLE_SHAPE = 0,

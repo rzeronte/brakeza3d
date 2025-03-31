@@ -192,6 +192,8 @@ public:
     const std::map<std::string, ShaderCustomTypes> &getShaderTypesMapping() const;
 
     void resizeFramebuffers();
+
+    void FillOGLBuffers(std::vector<meshData> &meshes);
 };
 
 

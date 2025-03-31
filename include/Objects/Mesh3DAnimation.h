@@ -36,6 +36,22 @@ struct BoneInfo {
     aiMatrix4x4 FinalTransformation;
 };
 
+enum BoneCollisionShape {
+    BONE_SPHERE = 0,
+    BONE_CUBE = 1,
+    BONE_CAPSULE = 2
+};
+
+struct BoneColliderInfo {
+    unsigned int boneId;
+    bool enabled = false;
+    BoneCollisionShape shape = BoneCollisionShape::BONE_SPHERE;
+    btPairCachingGhostObject *ghostObject = nullptr;
+    btConvexHullShape *convexHullShape = nullptr;
+    Vertex3D size;
+    Vertex3D position;
+};
+
 class Mesh3DAnimation : public Mesh3D {
 private:
     Assimp::Importer importer;
@@ -50,6 +66,8 @@ private:
 
     std::map<std::string, unsigned int> boneMapping;                // maps a bone's name to its index
     std::vector<BoneInfo> boneInfo;                                 // Bone info and final transformation
+
+    std::map<std::string, std::vector<BoneColliderInfo>> bonesCollidersMapping;
 
     int indexCurrentAnimation;
     float runningTime;
@@ -139,7 +157,16 @@ public:
 
     void setLoop(bool loop);
 
+    void AddBoneCollider(
+        const std::string &mappingName,
+        unsigned int boneId,
+        BoneCollisionShape shape,
+        btConvexHullShape *convexHullShape, bool enabled
+     );
+
+    void createBoneColliders(const std::string &mappingName);
 };
 
 
 #endif //BRAKEDA3D_MESH3DANIMATED_H
+

@@ -190,7 +190,11 @@ void LUAIntegration(sol::state &lua)
         "getMouseMotionXRel", &ComponentInput::getMouseMotionXRel,
         "getMouseMotionYRel", &ComponentInput::getMouseMotionYRel,
         "isLeftMouseButtonPressed", &ComponentInput::isLeftMouseButtonPressed,
-        "isRightMouseButtonPressed", &ComponentInput::isRightMouseButtonPressed
+        "isRightMouseButtonPressed", &ComponentInput::isRightMouseButtonPressed,
+        "getControllerButtonA",  &ComponentInput::getControllerButtonA,
+        "getControllerButtonB",  &ComponentInput::getControllerButtonB,
+        "getControllerButtonX",  &ComponentInput::getControllerButtonX,
+        "getControllerButtonY",  &ComponentInput::getControllerButtonY
     );
 
     lua.new_usertype<ComponentsManager>("ComponentsManager",

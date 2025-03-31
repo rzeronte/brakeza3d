@@ -1,7 +1,12 @@
-#include "../../include/Objects/Mesh3DAnimation.h"
+//
+// Created by Eduardo on 30/03/2025.
+//
+
+#include "../../include/Collision/AssimpAnimationService.h"
+#include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
-Mesh3DAnimation::Mesh3DAnimation()
+AssimpAnimationService::AssimpAnimationService()
 :
     scene(nullptr),
     numBones(0),
@@ -12,65 +17,10 @@ Mesh3DAnimation::Mesh3DAnimation()
     animation_ends(false),
     loop(true)
 {
-    luaEnvironment["this"] = this;
+
 }
 
-void Mesh3DAnimation::onUpdate()
-{
-    Object3D::onUpdate();
-
-    if (isRemoved() || scene == nullptr) return;
-
-    UpdateFrameTransformations();
-
-    UpdateOpenGLBones();
-
-    auto render = ComponentsManager::get()->getComponentRender();
-    auto window = ComponentsManager::get()->getComponentWindow();
-
-    if (render->getSelectedObject() == this) {
-        render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
-    }
-
-    if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        render->getShaderOGLRender()->renderAnimatedMesh(this,window->getSceneFramebuffer());
-    }
-
-    if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
-        render->getShaderOGLPoints()->renderMeshAnimation(this, window->getSceneFramebuffer());
-    }
-
-    if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
-        render->getShaderOGLShading()->renderMeshAnimation(this, window->getSceneFramebuffer());
-    }
-
-    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        render->getShaderOGLWireframe()->renderMeshAnimation(this, window->getSceneFramebuffer());
-    }
-
-    if (EngineSetup::get()->DRAW_MESH3D_AABB && isRender()) {
-        updateBoundingBox();
-        Drawable::drawAABB(&aabb, Color::white());
-    }
-
-    if (EngineSetup::get()->DRAW_MESH3D_OCTREE && octree != nullptr) {
-        Drawable::drawOctree(octree);
-    }
-
-    if (EngineSetup::get()->DRAW_MESH3D_GRID && grid != nullptr) {
-        Drawable::drawGrid3D(grid);
-    }
-
-    for (auto &s: customShaders) {
-        s->render(window->getSceneFramebuffer());
-    }
-
-    if (EngineSetup::get()->DRAW_ANIMATION_BONES) {
-        drawBones(scene->mRootNode, nullptr);
-    }
-}
-
-void Mesh3DAnimation::UpdateOpenGLBones()
+void AssimpAnimationService::UpdateOpenGLBones(std::vector<meshData> &meshes)
 {
     std::vector<glm::mat4> transformations(MAX_BONES, glm::mat4(0));
 
@@ -88,21 +38,21 @@ void Mesh3DAnimation::UpdateOpenGLBones()
     }
 }
 
-void Mesh3DAnimation::UpdateFrameTransformations()
+void AssimpAnimationService::UpdateFrameTransformations()
 {
     if (!scene->HasAnimations()) return;
 
     CheckIfEndAnimation();
 
     if (isRemoveAtEndAnimation() && isAnimationEnds()) {
-        getParent()->setRemoved(true);
+        //getParent()->setRemoved(true);
         return;
     }
 
     UpdateBonesFinalTransformations(runningTime);
 }
 
-void Mesh3DAnimation::CheckIfEndAnimation()
+void AssimpAnimationService::CheckIfEndAnimation()
 {
     auto timeIncrement = Brakeza3D::get()->getDeltaTime() * animation_speed;
     animation_ends = false;
@@ -122,14 +72,14 @@ void Mesh3DAnimation::CheckIfEndAnimation()
     runningTime += timeIncrement;
 }
 
-float Mesh3DAnimation::getCurrentAnimationMaxTime() const
+float AssimpAnimationService::getCurrentAnimationMaxTime() const
 {
     return (float) (
-        scene->mAnimations[indexCurrentAnimation]->mDuration / scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond
+            scene->mAnimations[indexCurrentAnimation]->mDuration / scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond
     );
 }
 
-bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
+bool AssimpAnimationService::AssimpLoadAnimation(const std::string &filename, std::vector<meshData> &meshes)
 {
     Logging::Message("AssimpLoadAnimation for %s", filename.c_str());
 
@@ -152,19 +102,16 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
         exit(-1);
     }
 
-    AssimpInitMaterials(scene, filename);
-    ReadNodesFromRoot();
+    ReadNodesFromRoot(meshes);
 
     ComponentsManager::get()->getComponentRender()->FillOGLBuffers(meshes);
 
-    FillAnimationBoneDataOGLBuffers();
-
-    setSourceFile(filename);
+    FillAnimationBoneDataOGLBuffers(meshes);
 
     return true;
 }
 
-void Mesh3DAnimation::ReadNodesFromRoot()
+void AssimpAnimationService::ReadNodesFromRoot(std::vector<meshData> &meshes)
 {
     // Transformación raíz
     globalInverseTransform = scene->mRootNode->mTransformation;
@@ -176,24 +123,24 @@ void Mesh3DAnimation::ReadNodesFromRoot()
     meshVerticesBoneData.resize(scene->mNumMeshes);
 
     // Procesamos los nodos desde el nodo raíz
-    ProcessNodeAnimation(scene->mRootNode);
+    ProcessNodeAnimation(scene->mRootNode, meshes);
 }
 
-void Mesh3DAnimation::ProcessNodeAnimation(aiNode *node)
+void AssimpAnimationService::ProcessNodeAnimation(aiNode *node, std::vector<meshData> &meshes)
 {
     // Procesamos las mallas del nodo dado
     for (unsigned int x = 0; x < node->mNumMeshes; x++) {
         int idMesh = (int) node->mMeshes[x];
-        this->ProcessMeshAnimation(idMesh, scene->mMeshes[idMesh]);
+        this->ProcessMeshAnimation(idMesh, scene->mMeshes[idMesh], meshes);
     }
 
     // Continuamos recursivamente por los hijos del nodo dado
     for (unsigned int j = 0; j < node->mNumChildren; j++) {
-        ProcessNodeAnimation(node->mChildren[j]);
+        ProcessNodeAnimation(node->mChildren[j], meshes);
     }
 }
 
-void Mesh3DAnimation::ProcessMeshAnimation(int i, aiMesh *mesh)
+void AssimpAnimationService::ProcessMeshAnimation(int i, aiMesh *mesh, std::vector<meshData> &meshes)
 {
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
         Logging::Message("Skip mesh non triangle");
@@ -225,7 +172,7 @@ void Mesh3DAnimation::ProcessMeshAnimation(int i, aiMesh *mesh)
         Vertex3D V2 = meshVertices[i][index2];
         Vertex3D V3 = meshVertices[i][index3];
 
-        meshes[i].modelTriangles.push_back(new Triangle(V1, V2, V3, this));
+        //meshes[i].modelTriangles.push_back(new Triangle(V1, V2, V3, this));
 
         Vertex3D normalV1 = localMeshNormals[index1];
         Vertex3D normalV2 = localMeshNormals[index2];
@@ -245,7 +192,7 @@ void Mesh3DAnimation::ProcessMeshAnimation(int i, aiMesh *mesh)
     }
 }
 
-void Mesh3DAnimation::LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData)
+void AssimpAnimationService::LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData)
 {
     for (int i = 0; i < (int) mesh->mNumBones; i++) {
         int BoneIndex;
@@ -274,7 +221,7 @@ void Mesh3DAnimation::LoadMeshBones(int meshId, aiMesh *mesh, std::vector<Vertex
     }
 }
 
-void Mesh3DAnimation::LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Vertex3D> &meshVertex,  std::vector<Vertex3D> &meshNormal)
+void AssimpAnimationService::LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Vertex3D> &meshVertex, std::vector<Vertex3D> &meshNormal)
 {
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
@@ -292,7 +239,7 @@ void Mesh3DAnimation::LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Verte
     }
 }
 
-void Mesh3DAnimation::UpdateBonesFinalTransformations(float TimeInSeconds)
+void AssimpAnimationService::UpdateBonesFinalTransformations(float TimeInSeconds)
 {
     aiMatrix4x4 Identity = aiMatrix4x4();
 
@@ -304,7 +251,7 @@ void Mesh3DAnimation::UpdateBonesFinalTransformations(float TimeInSeconds)
     ReadNodeHierarchy(AnimationTime, scene->mRootNode, Identity);
 }
 
-void Mesh3DAnimation::ReadNodeHierarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform)
+void AssimpAnimationService::ReadNodeHierarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform)
 {
     std::string NodeName(pNode->mName.data);
     const aiAnimation *pAnimation = scene->mAnimations[indexCurrentAnimation];
@@ -348,7 +295,7 @@ void Mesh3DAnimation::ReadNodeHierarchy(float AnimationTime, const aiNode *pNode
     }
 }
 
-const aiNodeAnim *Mesh3DAnimation::FindNodeAnim(const aiAnimation *pAnimation, const std::string& NodeName)
+const aiNodeAnim *AssimpAnimationService::FindNodeAnim(const aiAnimation *pAnimation, const std::string& NodeName)
 {
     for (unsigned int i = 0; i < pAnimation->mNumChannels; i++) {
         const aiNodeAnim *pNodeAnim = pAnimation->mChannels[i];
@@ -361,7 +308,7 @@ const aiNodeAnim *Mesh3DAnimation::FindNodeAnim(const aiAnimation *pAnimation, c
     return nullptr;
 }
 
-unsigned int Mesh3DAnimation::FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim)
+unsigned int AssimpAnimationService::FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim)
 {
     assert(pNodeAnim->mNumRotationKeys > 0);
 
@@ -374,7 +321,7 @@ unsigned int Mesh3DAnimation::FindRotation(float AnimationTime, const aiNodeAnim
     return 0;
 }
 
-unsigned int Mesh3DAnimation::FindPosition(float AnimationTime, const aiNodeAnim *pNodeAnim)
+unsigned int AssimpAnimationService::FindPosition(float AnimationTime, const aiNodeAnim *pNodeAnim)
 {
     for (unsigned int i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
         if (AnimationTime < (float) pNodeAnim->mPositionKeys[i + 1].mTime) {
@@ -385,7 +332,7 @@ unsigned int Mesh3DAnimation::FindPosition(float AnimationTime, const aiNodeAnim
     return 0;
 }
 
-void Mesh3DAnimation::updateForBone(Vertex3D &V, int meshID, int vertexID)
+void AssimpAnimationService::updateForBone(Vertex3D &V, int meshID, int vertexID)
 {
     if (numBones == 0) return;
 
@@ -401,7 +348,7 @@ void Mesh3DAnimation::updateForBone(Vertex3D &V, int meshID, int vertexID)
     V = Vertex3D::fromGLM(BoneTransform * V.toGLM4());
 }
 
-unsigned int Mesh3DAnimation::FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim)
+unsigned int AssimpAnimationService::FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim)
 {
     assert(pNodeAnim->mNumScalingKeys > 0);
 
@@ -414,7 +361,7 @@ unsigned int Mesh3DAnimation::FindScaling(float AnimationTime, const aiNodeAnim 
     return 0;
 }
 
-void Mesh3DAnimation::CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim)
+void AssimpAnimationService::CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim)
 {
     // we need at least two values to interpolate...
     if (pNodeAnim->mNumRotationKeys == 1) {
@@ -436,7 +383,7 @@ void Mesh3DAnimation::CalcInterpolatedRotation(aiQuaternion &Out, float Animatio
     Out = Out.Normalize();
 }
 
-void Mesh3DAnimation::CalcInterpolatedPosition(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim)
+void AssimpAnimationService::CalcInterpolatedPosition(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim)
 {
     if (pNodeAnim->mNumPositionKeys == 1) {
         Out = pNodeAnim->mPositionKeys[0].mValue;
@@ -447,7 +394,7 @@ void Mesh3DAnimation::CalcInterpolatedPosition(aiVector3D &Out, float AnimationT
     unsigned int NextPositionIndex = (PositionIndex + 1);
 
     auto DeltaTime = (float) (pNodeAnim->mPositionKeys[NextPositionIndex].mTime -
-                               pNodeAnim->mPositionKeys[PositionIndex].mTime);
+                              pNodeAnim->mPositionKeys[PositionIndex].mTime);
     float Factor = (AnimationTime - (float) pNodeAnim->mPositionKeys[PositionIndex].mTime) / DeltaTime;
     //assert(Factor >= 0.0f && Factor <= 1.0f);
     const aiVector3D &Start = pNodeAnim->mPositionKeys[PositionIndex].mValue;
@@ -457,7 +404,7 @@ void Mesh3DAnimation::CalcInterpolatedPosition(aiVector3D &Out, float AnimationT
 }
 
 
-void Mesh3DAnimation::CalcInterpolatedScaling(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim)
+void AssimpAnimationService::CalcInterpolatedScaling(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim)
 {
     if (pNodeAnim->mNumScalingKeys == 1) {
         Out = pNodeAnim->mScalingKeys[0].mValue;
@@ -468,7 +415,7 @@ void Mesh3DAnimation::CalcInterpolatedScaling(aiVector3D &Out, float AnimationTi
     unsigned int NextScalingIndex = (ScalingIndex + 1);
     //assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
     auto DeltaTime = (float) (pNodeAnim->mScalingKeys[NextScalingIndex].mTime -
-                               pNodeAnim->mScalingKeys[ScalingIndex].mTime);
+                              pNodeAnim->mScalingKeys[ScalingIndex].mTime);
     float Factor = (AnimationTime - (float) pNodeAnim->mScalingKeys[ScalingIndex].mTime) / DeltaTime;
     //assert(Factor >= 0.0f && Factor <= 1.0f);
     const aiVector3D &Start = pNodeAnim->mScalingKeys[ScalingIndex].mValue;
@@ -477,7 +424,7 @@ void Mesh3DAnimation::CalcInterpolatedScaling(aiVector3D &Out, float AnimationTi
     Out = Start + Factor * Delta;
 }
 
-void Mesh3DAnimation::drawBones(aiNode *node, Vertex3D *lastBonePosition)
+void AssimpAnimationService::drawBones(Object3D *o, aiNode *node, Vertex3D *lastBonePosition)
 {
     std::vector<aiMatrix4x4> Transforms;
     Transforms.resize(numBones);
@@ -498,7 +445,7 @@ void Mesh3DAnimation::drawBones(aiNode *node, Vertex3D *lastBonePosition)
         aBonePosition = mT * aBonePosition;
 
         Vertex3D bonePosition = Vertex3D::fromAssimp(aBonePosition);
-        Transforms::objectSpace(bonePosition, bonePosition, this);
+        Transforms::objectSpace(bonePosition, bonePosition, o);
 
         if (lastBonePosition) {
             auto render = ComponentsManager::get()->getComponentRender();
@@ -515,133 +462,43 @@ void Mesh3DAnimation::drawBones(aiNode *node, Vertex3D *lastBonePosition)
     }
 
     for (int j = 0; j < (int) node->mNumChildren; j++) {
-        drawBones(node->mChildren[j], lastBonePosition);
+        drawBones(o, node->mChildren[j], lastBonePosition);
     }
 }
 
-bool Mesh3DAnimation::isRemoveAtEndAnimation() const
+bool AssimpAnimationService::isRemoveAtEndAnimation() const
 {
     return remove_at_end_animation;
 }
 
-void Mesh3DAnimation::setRemoveAtEndAnimation(bool removeAtEnds)
+void AssimpAnimationService::setRemoveAtEndAnimation(bool removeAtEnds)
 {
     remove_at_end_animation = removeAtEnds;
 }
 
-Mesh3DAnimation* Mesh3DAnimation::create(Vertex3D position, const std::string& animationFile)
-{
-    auto o = new Mesh3DAnimation();
-    o->setPosition(position);
-    o->AssimpLoadAnimation(animationFile);
-
-    return o;
-}
-
-const char *Mesh3DAnimation::getTypeObject()
-{
-    return "Mesh3DAnimation";
-}
-
-const char *Mesh3DAnimation::getTypeIcon()
-{
-    return "Mesh3DAnimationIcon";
-}
-
-void Mesh3DAnimation::drawImGuiProperties()
-{
-    Mesh3D::drawImGuiProperties();
-
-    const float range_min = 0.0f;
-    const float range_max = 1.0f;
-
-    if (ImGui::CollapsingHeader("Mesh3DAnimation")) {
-
-        const char* items[(int) scene->mNumAnimations];
-        for (int i = 0; i < (int) scene->mNumAnimations; i++) {
-            items[i] = scene->mAnimations[i]->mName.C_Str();
-        }
-        auto comboTitle = "Animations##" + getLabel();
-        ImGui::Combo("Animation", &indexCurrentAnimation, items, IM_ARRAYSIZE(items));
-
-        ImGui::Separator();
-        ImGui::DragScalar("Speed", ImGuiDataType_Float, &animation_speed, 0.01f ,&range_min, &range_max, "%f", 1.0f);
-
-        ImGui::Separator();
-        ImGui::Checkbox("Loop", &loop);
-    }
-}
-
-cJSON *Mesh3DAnimation::getJSON()
-{
-    cJSON *root = Mesh3D::getJSON();
-
-    cJSON_AddNumberToObject(root, "animationSpeed", animation_speed);
-
-    return root;
-}
-
-void Mesh3DAnimation::createFromJSON(cJSON *object)
-{
-    auto o = new Mesh3DAnimation();
-
-    Mesh3DAnimation::setPropertiesFromJSON(object, o);
-
-    o->AssimpLoadAnimation(cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring);
-
-    if (o->isCollisionsEnabled()) {
-        o->UpdateFrameTransformations();
-        o->updateBoundingBox();
-        o->UpdateShapeCollider();
-    }
-
-    Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
-}
-
-void Mesh3DAnimation::setPropertiesFromJSON(cJSON *object, Mesh3DAnimation *o)
-{
-    Mesh3D::setPropertiesFromJSON(object, o, false);
-
-    auto speed = cJSON_GetObjectItemCaseSensitive(object, "animationSpeed")->valuedouble;
-    o->setAnimationSpeed(speed);
-}
-
-void Mesh3DAnimation::setAnimationSpeed(float animationSpeed) {
+void AssimpAnimationService::setAnimationSpeed(float animationSpeed) {
     animation_speed = animationSpeed;
 }
 
-Mesh3DAnimation::~Mesh3DAnimation()
+AssimpAnimationService::~AssimpAnimationService()
 {
     meshVerticesBoneData.clear();
     meshVertices.clear();
     boneMapping.clear();
     boneInfo.clear();
-
-    for (auto &mappings: bonesCollidersMapping) {
-        auto name = mappings.first;
-        for (auto &bone : bonesCollidersMapping[name]) {
-            if (bone.ghostObject != nullptr) {
-                ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(bone.ghostObject);
-                delete bone.ghostObject;
-            }
-            if (bone.convexHullShape != nullptr) {
-                delete bone.convexHullShape;
-            }
-        }
-    }
 }
 
-void Mesh3DAnimation::setIndexCurrentAnimation(int indexCurrentAnimation)
+void AssimpAnimationService::setIndexCurrentAnimation(int indexCurrentAnimation)
 {
-    Mesh3DAnimation::indexCurrentAnimation = indexCurrentAnimation;
+    AssimpAnimationService::indexCurrentAnimation = indexCurrentAnimation;
 }
 
-bool Mesh3DAnimation::isAnimationEnds() const
+bool AssimpAnimationService::isAnimationEnds() const
 {
     return animation_ends;
 }
 
-void Mesh3DAnimation::FillAnimationBoneDataOGLBuffers()
+void AssimpAnimationService::FillAnimationBoneDataOGLBuffers(std::vector<meshData> &meshes)
 {
     for (int i = 0; i < meshes.size(); i++) {
         if (meshes[i].vertices.size() <= 0) continue;
@@ -657,66 +514,7 @@ void Mesh3DAnimation::FillAnimationBoneDataOGLBuffers()
     }
 }
 
-void Mesh3DAnimation::updateBoundingBox()
-{
-    glm::mat4 mvpMatrix = getModelMatrix();
-
-    float maxX = -FLT_MAX, minX = FLT_MAX, maxY = -FLT_MAX, minY = FLT_MAX, maxZ = -FLT_MAX, minZ = FLT_MAX;
-
-    std::vector<Vertex3D> vertices;
-
-    for (int i = 0; i < (int) scene->mNumMeshes; i++) {
-
-        if (meshVertices[i].empty()) continue;
-
-        for (unsigned int k = 0; k < scene->mMeshes[i]->mNumFaces; k++) {
-
-            const aiFace &Face = scene->mMeshes[i]->mFaces[k];
-
-            auto v1Index= Face.mIndices[0];
-            auto v2Index= Face.mIndices[1];
-            auto v3Index= Face.mIndices[2];
-
-            Vertex3D V1 = meshVertices[i][v1Index];
-            Vertex3D V2 = meshVertices[i][v2Index];
-            Vertex3D V3 = meshVertices[i][v3Index];
-
-            updateForBone(V1, i, (int) v1Index);
-            updateForBone(V2, i, (int) v2Index);
-            updateForBone(V3, i, (int) v3Index);
-
-            vertices.emplace_back(V1);
-            vertices.emplace_back(V2);
-            vertices.emplace_back(V3);
-        }
-    }
-
-    for (auto &vertex : vertices) {
-        glm::vec4 transformedVertex = mvpMatrix * vertex.toGLM4();
-        transformedVertex /= transformedVertex.w;
-
-        Vertex3D V(transformedVertex.x, transformedVertex.y, transformedVertex.z);
-
-        maxX = std::max(maxX, V.x);
-        minX = std::min(minX, V.x);
-        maxY = std::max(maxY, V.y);
-        minY = std::min(minY, V.y);
-        maxZ = std::max(maxZ, V.z);
-        minZ = std::min(minZ, V.z);
-    }
-
-    this->aabb.max.x = maxX;
-    this->aabb.max.y = maxY;
-    this->aabb.max.z = maxZ;
-
-    this->aabb.min.x = minX;
-    this->aabb.min.y = minY;
-    this->aabb.min.z = minZ;
-
-    this->aabb.updateVertices();
-}
-
-void Mesh3DAnimation::setAnimationByName(const std::string& name)
+void AssimpAnimationService::setAnimationByName(const std::string& name)
 {
     const char* items[(int) scene->mNumAnimations];
 
@@ -727,68 +525,10 @@ void Mesh3DAnimation::setAnimationByName(const std::string& name)
     }
 }
 
-bool Mesh3DAnimation::isLoop() const {
+bool AssimpAnimationService::isLoop() const {
     return loop;
 }
 
-void Mesh3DAnimation::setLoop(bool loop) {
-    Mesh3DAnimation::loop = loop;
-}
-
-void Mesh3DAnimation::AddBoneCollider(
-    const std::string& mappingName,
-    unsigned int boneId,
-    BoneCollisionShape shape = BoneCollisionShape::BONE_SPHERE,
-    btConvexHullShape* convexHullShape = nullptr,
-    bool enabled = false
-) {
-    BoneColliderInfo colliderInfo;
-    colliderInfo.boneId = boneId;
-    colliderInfo.shape = shape;
-    colliderInfo.convexHullShape = convexHullShape;
-    colliderInfo.enabled = enabled;
-
-    bonesCollidersMapping[mappingName].push_back(colliderInfo);
-}
-
-void Mesh3DAnimation::createBoneColliders(const std::string& mappingName)
-{
-    for (auto &b : bonesCollidersMapping[mappingName]){
-        btConvexHullShape *convexHullShape;
-        switch (b.shape) {
-            case BoneCollisionShape::BONE_SPHERE: {
-                convexHullShape = reinterpret_cast<btConvexHullShape *>(new btSphereShape(b.size.x));;
-                break;
-            }
-            case BoneCollisionShape::BONE_CAPSULE: {
-                convexHullShape = reinterpret_cast<btConvexHullShape *>(new btCapsuleShape(b.size.x, b.size.y));;
-                break;
-            }
-            case BoneCollisionShape::BONE_CUBE: {
-                convexHullShape = reinterpret_cast<btConvexHullShape *>(new btBoxShape(b.size.toBullet()));;
-                break;
-            }
-        }
-        btTransform transformation;
-        transformation.setIdentity();
-        transformation.setOrigin(b.position.toBullet());
-
-        ghostObject = new btPairCachingGhostObject();
-        ghostObject->setCollisionShape(convexHullShape);
-        ghostObject->setWorldTransform(transformation);
-        ghostObject->setUserPointer(this);
-        ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-        ComponentsManager::get()
-        ->getComponentCollisions()
-        ->getDynamicsWorld()
-        ->addCollisionObject(
-            ghostObject,
-            btBroadphaseProxy::DefaultFilter,
-            btBroadphaseProxy::DefaultFilter
-        );
-
-        b.ghostObject = ghostObject;
-        b.convexHullShape = convexHullShape;
-    }
+void AssimpAnimationService::setLoop(bool loop) {
+    AssimpAnimationService::loop = loop;
 }
