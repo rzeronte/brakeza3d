@@ -20,68 +20,53 @@ local State = {
 }
 
 local function createRayPositions(pos, this, lengthRay)
+    local sign = (sideRotation == rotationLeft) and 1 or -1
+    local upAway, dashLengthChecker = 1.2, 0
+    local axisUp = this:AxisUp()
+    local axisRight = this:AxisRight()
+    local axisUpScaled = axisUp:getScaled(1)
+    local axisUpScaledRay = axisUp:getScaled(lengthRay)
 
-    local dashLengthChecker = 0
+    -- Posiciones base
+    local fromHanglingToUp = pos + Vertex3D.new(sign * offsetHanglingToUp.x, offsetHanglingToUp.y - 0.6, offsetHanglingToUp.z)
+    local toHanglingToUp = fromHanglingToUp + axisUpScaled
+    local fromDash = pos + axisRight:getScaled(sign * dashLengthChecker)
+    local toDash = fromDash + axisUpScaled + axisRight:getScaled(sign * 2)
+    local fromDash2 = fromDash - axisUp:getScaled(0.5)
+    local toDash2 = fromDash2 + axisRight:getScaled(sign * 2)
+    local toDash3 = fromDash + axisRight:getScaled(sign * 2)
 
-    if (sideRotation == rotationLeft) then
-        fromHanglingToUp = pos + Vertex3D.new(offsetHanglingToUp.x, offsetHanglingToUp.y, offsetHanglingToUp.z) + Vertex3D.new(0.0, -0.6, 0)
-        toHanglingToUp = fromHanglingToUp + this:AxisUp():getScaled(1)
-        fromDash = pos + this:AxisRight():getScaled(dashLengthChecker)
-        toDash =  fromDash + this:AxisUp():getScaled(1) + this:AxisRight():getScaled(2)
-
-        fromDash2 = pos + this:AxisRight():getScaled(dashLengthChecker) - this:AxisUp():getScaled(0.5)
-        toDash2 =  fromDash2 + this:AxisRight():getScaled(2)
-
-        fromDash3 = fromDash
-        toDash3 =  fromDash3 + this:AxisRight():getScaled(2)
-    else
-        fromHanglingToUp = pos + Vertex3D.new(-offsetHanglingToUp.x, offsetHanglingToUp.y, offsetHanglingToUp.z) + Vertex3D.new(0.0, -0.6, 0)
-        toHanglingToUp = fromHanglingToUp + this:AxisUp():getScaled(1)
-        fromDash = pos - this:AxisRight():getScaled(dashLengthChecker)
-        toDash =  fromDash + this:AxisUp():getScaled(1) - this:AxisRight():getScaled(2)
-
-        fromDash2 = pos - this:AxisRight():getScaled(dashLengthChecker) - this:AxisUp():getScaled(0.5)
-        toDash2 =  fromDash2 - this:AxisRight():getScaled(2)
-
-        fromDash3 = fromDash
-        toDash3 =  fromDash3 - this:AxisRight():getScaled(2)
-    end
-
-    local rays = {
+    -- Definir las posiciones de los rayos
+    return {
         fromUp = pos,
-        toDown = pos - this:AxisUp():getScaled(lengthRay),
-        toUp = pos + this:AxisUp():getScaled(lengthRay),
+        toDown = pos - axisUpScaledRay,
+        toUp = pos + axisUpScaledRay,
 
-        toLeft = pos + Vertex3D.new(0.4, 0, 0),
-        toRight = pos + Vertex3D.new(-0.4, 0, 0),
+        toLeft = pos + axisUp:getScaled(0.9) + Vertex3D.new(0.4, 0, 0),
+        toRight = pos + axisUp:getScaled(0.9) + Vertex3D.new(-0.4, 0, 0),
 
-        toDownLeft = pos - this:AxisUp():getScaled(lengthRay) + Vertex3D.new(0.4, 0, 0),
-        toDownRight = pos - this:AxisUp():getScaled(lengthRay) + Vertex3D.new(-0.4, 0, 0),
+        toDownLeft = pos - axisUpScaledRay + Vertex3D.new(0.4, 0, 0),
+        toDownRight = pos - axisUpScaledRay + Vertex3D.new(-0.4, 0, 0),
 
-        toUpLeft = pos + this:AxisUp():getScaled(lengthRay) + Vertex3D.new(0.4, 0, 0),
-        toUpRight = pos + this:AxisUp():getScaled(lengthRay) + Vertex3D.new(-0.4, 0, 0),
+        fromUpLeft = pos + axisUp:getScaled(upAway),
+        fromUpRight = pos + axisUp:getScaled(upAway),
+        toUpLeft = pos + axisUp:getScaled(upAway) + Vertex3D.new(0.4, 0, 0),
+        toUpRight = pos + axisUp:getScaled(upAway) + Vertex3D.new(-0.4, 0, 0),
 
-        toBottomLeft = pos + this:AxisUp():getScaled(lengthRay + 1.5) + Vertex3D.new(0.4, 0, 0),
-        toBottomRight = pos + this:AxisUp():getScaled(lengthRay + 1.5) + Vertex3D.new(-0.4, 0, 0),
+        toBottomLeft = pos + axisUp:getScaled(lengthRay + 1.5) + Vertex3D.new(0.4, 0, 0),
+        toBottomRight = pos + axisUp:getScaled(lengthRay + 1.5) + Vertex3D.new(-0.4, 0, 0),
 
-        cornerUpLeftCenter = pos + this:AxisUp():getScaled(1) + Vertex3D.new(0.3, 0, 0),
-        cornerUpRightCenter = pos + this:AxisUp():getScaled(1) + Vertex3D.new(-0.3, 0, 0),
+        cornerUpLeftCenter = pos + axisUpScaled + Vertex3D.new(0.3, 0, 0),
+        cornerUpRightCenter = pos + axisUpScaled + Vertex3D.new(-0.3, 0, 0),
 
-        cornerBottomLeftCenter = pos + this:AxisUp():getScaled(1 + 0.7) + Vertex3D.new(0.3, 0, 0),
-        cornerBottomRightCenter = pos + this:AxisUp():getScaled(1 + 0.7) + Vertex3D.new(-0.3, 0, 0),
+        cornerBottomLeftCenter = pos + axisUp:getScaled(1.7) + Vertex3D.new(0.3, 0, 0),
+        cornerBottomRightCenter = pos + axisUp:getScaled(1.7) + Vertex3D.new(-0.3, 0, 0),
 
-        fromHanglingToUp = fromHanglingToUp,
-        toHanglingToUp = toHanglingToUp,
-
-        fromDash = fromDash,
-        toDash = toDash,
-        fromDash2 = fromDash2,
-        toDash2 = toDash2,
-        fromDash3 = fromDash3,
-        toDash3 = toDash3
+        fromHanglingToUp = fromHanglingToUp, toHanglingToUp = toHanglingToUp,
+        fromDash = fromDash, toDash = toDash,
+        fromDash2 = fromDash2, toDash2 = toDash2,
+        fromDash3 = fromDash, toDash3 = toDash3
     }
-
-    return rays
 end
 
 function getCrossBorders(center)
@@ -97,62 +82,25 @@ function getCrossBorders(center)
     local fromBorderDiagonal2 = center - (this:AxisUp() - this:AxisRight()):getScaled(halfSize)
     local toBorderDiagonal2 = center + (this:AxisUp() - this:AxisRight()):getScaled(halfSize)
 
-    return fromBorderHorizontal, toBorderHorizontal,
-           fromBorderDiagonal1, toBorderDiagonal1, fromBorderDiagonal2, toBorderDiagonal2
+    return fromBorderHorizontal, toBorderHorizontal, fromBorderDiagonal1, toBorderDiagonal1, fromBorderDiagonal2, toBorderDiagonal2
 end
 
-function createBorderCross(cornerUpLeftCenter, cornerUpRightCenter, cornerBottomLeftCenter, cornerBottomRightCenter)
-    -- Definimos las fronteras de los bordes superiores
-    local fromBorderUpLeftHorizontal, toBorderUpLeftHorizontal,
-          fromBorderUpLeftDiagonal1, toBorderUpLeftDiagonal1, fromBorderUpLeftDiagonal2, toBorderUpLeftDiagonal2 = getCrossBorders(cornerUpLeftCenter)
-
-    local fromBorderUpRightHorizontal, toBorderUpRightHorizontal,
-          fromBorderUpRightDiagonal1, toBorderUpRightDiagonal1, fromBorderUpRightDiagonal2, toBorderUpRightDiagonal2 = getCrossBorders(cornerUpRightCenter)
-
-    -- Definimos las fronteras de los bordes inferiores
-    local fromBorderBottomLeftHorizontal, toBorderBottomLeftHorizontal,
-          fromBorderBottomLeftDiagonal1, toBorderBottomLeftDiagonal1, fromBorderBottomLeftDiagonal2, toBorderBottomLeftDiagonal2 = getCrossBorders(cornerBottomLeftCenter)
-
-    local fromBorderBottomRightHorizontal, toBorderBottomRightHorizontal,
-          fromBorderBottomRightDiagonal1, toBorderBottomRightDiagonal1, fromBorderBottomRightDiagonal2, toBorderBottomRightDiagonal2 = getCrossBorders(cornerBottomRightCenter)
-
-    -- Bordes
-    local borders = {
-        upLeft = {
-            fromBorderHorizontal = fromBorderUpLeftHorizontal,
-            toBorderHorizontal = toBorderUpLeftHorizontal,
-            fromBorderDiagonal1 = fromBorderUpLeftDiagonal1,
-            toBorderDiagonal1 = toBorderUpLeftDiagonal1,
-            fromBorderDiagonal2 = fromBorderUpLeftDiagonal2,
-            toBorderDiagonal2 = toBorderUpLeftDiagonal2
-        },
-        upRight = {
-            fromBorderHorizontal = fromBorderUpRightHorizontal,
-            toBorderHorizontal = toBorderUpRightHorizontal,
-            fromBorderDiagonal1 = fromBorderUpRightDiagonal1,
-            toBorderDiagonal1 = toBorderUpRightDiagonal1,
-            fromBorderDiagonal2 = fromBorderUpRightDiagonal2,
-            toBorderDiagonal2 = toBorderUpRightDiagonal2
-        },
-        bottomLeft = {
-            fromBorderHorizontal = fromBorderBottomLeftHorizontal,
-            toBorderHorizontal = toBorderBottomLeftHorizontal,
-            fromBorderDiagonal1 = fromBorderBottomLeftDiagonal1,
-            toBorderDiagonal1 = toBorderBottomLeftDiagonal1,
-            fromBorderDiagonal2 = fromBorderBottomLeftDiagonal2,
-            toBorderDiagonal2 = toBorderBottomLeftDiagonal2
-        },
-        bottomRight = {
-            fromBorderHorizontal = fromBorderBottomRightHorizontal,
-            toBorderHorizontal = toBorderBottomRightHorizontal,
-            fromBorderDiagonal1 = fromBorderBottomRightDiagonal1,
-            toBorderDiagonal1 = toBorderBottomRightDiagonal1,
-            fromBorderDiagonal2 = fromBorderBottomRightDiagonal2,
-            toBorderDiagonal2 = toBorderBottomRightDiagonal2
+local function createBorderCross(cornerUpLeftCenter, cornerUpRightCenter, cornerBottomLeftCenter, cornerBottomRightCenter)
+    local function getBorders(corner)
+        local fromH, toH, fromD1, toD1, fromD2, toD2 = getCrossBorders(corner)
+        return {
+            fromBorderHorizontal = fromH, toBorderHorizontal = toH,
+            fromBorderDiagonal1 = fromD1, toBorderDiagonal1 = toD1,
+            fromBorderDiagonal2 = fromD2, toBorderDiagonal2 = toD2
         }
-    }
+    end
 
-    return borders
+    return {
+        upLeft = getBorders(cornerUpLeftCenter),
+        upRight = getBorders(cornerUpRightCenter),
+        bottomLeft = getBorders(cornerBottomLeftCenter),
+        bottomRight = getBorders(cornerBottomRightCenter)
+    }
 end
 
 function UpdateCollisionFlags(input, from, rays, cross)
@@ -169,9 +117,13 @@ function UpdateCollisionFlags(input, from, rays, cross)
     is.isLeft = collisions:isRayCollisionWith(rays.fromUp, rays.toLeft, floor)
     is.isRight = collisions:isRayCollisionWith(rays.fromUp, rays.toRight, floor)
 
-    is.isHookedLeft = collisions:isRayCollisionWith(rays.fromUp, rays.toUpLeft, floor)
-    is.isHookedRight = collisions:isRayCollisionWith(rays.fromUp, rays.toUpRight, floor)
-    is.isHooked = (is.isHookedLeft or is.isHookedRight) and not is.isFloorDown
+    is.isHookedLeft = collisions:isRayCollisionWith(rays.fromUpLeft, rays.toUpLeft, floor)
+    is.isHookedRight = collisions:isRayCollisionWith(rays.fromUpRight, rays.toUpRight, floor)
+    if (sideRotation == rotationLeft) then
+        is.isHooked = (is.isHookedLeft and not is.isHookedRight) and not is.isFloorDown and input:isCharPressed(Keys.LEFT)
+    else
+        is.isHooked = (not is.isHookedLeft and is.isHookedRight) and not is.isFloorDown and input:isCharPressed(Keys.RIGHT)
+    end
 
     -- corners up
     is.isCrossUpLeftHorizontal = collisions:isRayCollisionWith(cross.upLeft.fromBorderHorizontal, cross.upLeft.toBorderHorizontal, floor)
@@ -248,6 +200,7 @@ function setState(state)
         print("Crouching!")
         this:disableSimulationCollider()
         this:setCapsuleColliderSize(0.2, 0.5)
+        this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
         this:setPosition(this:getPosition() + Vertex3D.new(0, -0.3, 0))
         this:UpdateShapeCollider();
         this:enableSimulationCollider()
@@ -255,12 +208,14 @@ function setState(state)
         print("Standup!")
         this:disableSimulationCollider()
         this:setCapsuleColliderSize(0.2, 1)
+        this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
         this:setPosition(this:getPosition() + Vertex3D.new(0, 0.2, 0))
         this:UpdateShapeCollider();
         this:enableSimulationCollider()
     end
 
     currentState = state
+
 end
 ------------------------------------------------------------------------------------------------------------------------
 function onStart()
@@ -273,6 +228,7 @@ function onStart()
     rotationLeft = M3:getMatrixRotationForEulerAngles(180, 0, 0);
     rotationRight = M3:getMatrixRotationForEulerAngles(0, 0, 0);
     sideRotation = rotationLeft;
+    this:setRotation(sideRotation)
 
     cameraOffsetPosition = this:AxisForward():getScaled(cameraOffset.z) + Vertex3D.new(cameraOffset.x, cameraOffset.y, 0)
 
@@ -338,12 +294,6 @@ function onUpdate()
     this:setRotation(sideRotation)
     local dt = brakeza:getDeltaTime()
 
-    isFloor = is.isFloor
-    isCornerUpLeft = is.isCornerUpLeft
-    isCornerUpRight = is.isCornerUpRight
-    isFullFreeCornerBottomLeft = is.isFullFreeCornerBottomLeft
-    isFullFreeCornerBottomRight = is.isFullFreeCornerBottomRight
-
     handleFloorMovement(input, dt)
     handleHanglingToToUp()
     handleHook(input, dt)
@@ -360,6 +310,7 @@ function handleHanglingToToUp()
         is.isBlockedByHook = false
         this:setLoop(true)
         setState(State.IDLE)
+        this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
         this:setPosition(destinyHanglingToUp)
         this:UpdateShapeCollider();
         this:enableSimulationCollider()
@@ -428,7 +379,9 @@ function handleFloorMovement(input, dt)
             else
                 setState(State.RUNNING)
             end
-        else
+        end
+
+        if is.isCrouched then
             if input:isCharPressed(Keys.DOWN) then
                 print("crouch when crouched")
                 setState(State.CROUCHED)
@@ -455,7 +408,9 @@ function handleFloorMovement(input, dt)
                 sideRotation = rotationRight
             end
         end
-    else
+    end
+    if not is.isFloor then
+
         if input:isCharPressed(Keys.LEFT) then
             sideRotation = rotationLeft
             this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt * 1000, 0, 0))
@@ -531,7 +486,7 @@ function handleHook(input, dt)
             return
         end
     else
-        if is.isCornerUpRight and is.isFullFreeCornerBottomRight and countUnblockableFrames == 0 and not is.isFloor and is.isFullFreeCornerUpLeft and v.y < 0 and not is.isHanglingToUpCanceled then
+        if is.isCornerUpRight and is.isFullFreeCornerBottomRight and countUnblockableFrames == 0 and not is.isFloor and is.isFullFreeCornerUpLeft and v.y < 0 and not is.isHanglingToUpCanceled and sideRotation ==  rotationLeft then
             print("Cross Up Right!")
             setState(State.HANGLING)
             this:disableSimulationCollider()
@@ -541,7 +496,7 @@ function handleHook(input, dt)
             return
         end
 
-        if is.isCornerUpLeft and is.isFullFreeCornerBottomLeft and countUnblockableFrames == 0 and not is.isFloor and is.isFullFreeCornerUpRight and v.y < 0 and not is.isHanglingToUpCanceled then
+        if is.isCornerUpLeft and is.isFullFreeCornerBottomLeft and countUnblockableFrames == 0 and not is.isFloor and is.isFullFreeCornerUpRight and v.y < 0 and not is.isHanglingToUpCanceled and sideRotation == rotationRight then
             print("Cross Up Left!")
             setState(State.HANGLING)
             this:disableSimulationCollider()
@@ -561,51 +516,48 @@ function handleHook(input, dt)
                 v.y = v.y * fallingFriction;
                 v.z = 0;
                 this:setLinearVelocity(v);
-            end
-            if is.isHookedLeft and not is.isFloorDown and input:isCharPressed(Keys.LEFT) then
-                print("release stop r")
-                this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt * 1000, 0, 0))
-                setState(State.FALLING)
-            end
+        end
+        if is.isHookedLeft and not is.isFloorDown and input:isCharPressed(Keys.LEFT) then
+            print("release stop r")
+            this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt * 1000, 0, 0))
+            setState(State.FALLING)
+        end
 
-            if is.isHookedRight and is.isFloorDownRight and not is.isFloorDown and not is.isFloorDownLeft and input:isCharPressed(Keys.LEFT) and v.y <= 0 then
-                setState(State.HOOKED)
-                sideRotation = rotationRight
-                print("stop l")
-                local v = this:getLinearVelocity();
-                v.x = 0;
-                v.y = v.y * fallingFriction;
-                v.z = 0;
-                this:setLinearVelocity(v);
-            end
+        if is.isHookedRight and is.isFloorDownRight and not is.isFloorDown and not is.isFloorDownLeft and input:isCharPressed(Keys.LEFT) and v.y <= 0 then
+            setState(State.HOOKED)
+            sideRotation = rotationRight
+            print("stop l")
+            local v = this:getLinearVelocity();
+            v.x = 0;
+            v.y = v.y * fallingFriction;
+            v.z = 0;
+            this:setLinearVelocity(v);
+        end
 
-            if is.isHookedRight and not is.isFloorDown and input:isCharPressed(Keys.RIGHT) then
-                setState(State.FALLING)
-                print("release stop l")
-            end
+        if is.isHookedRight and not is.isFloorDown and input:isCharPressed(Keys.RIGHT) then
+            setState(State.FALLING)
+            print("release stop l")
+        end
 
-            if is.isHookedLeft and not is.isFloorDown then
-                if input:isCharFirstEventDown(Keys.JUMP) and not input:isCharPressed(Keys.RIGHT) and not is.isFloor then
-                    setState(State.JUMPING)
-                    this:enableSimulationCollider()
-                    local jumpVector = Vertex3D.new(-100, jumpForce, 0)
-                    this:applyCentralImpulse(jumpVector)
-                    print("Jump hook l!")
-                end
+        if is.isHookedLeft and not is.isFloorDown then
+            if input:isCharFirstEventDown(Keys.JUMP) and not input:isCharPressed(Keys.RIGHT) and not is.isFloor then
+                setState(State.JUMPING)
+                this:enableSimulationCollider()
+                local jumpVector = Vertex3D.new(-100, jumpForce, 0)
+                this:applyCentralImpulse(jumpVector)
+                print("Jump hook l!")
             end
-            if is.isHookedRight and not is.isFloorDown then
-                if input:isCharFirstEventDown(Keys.JUMP) and not input:isCharPressed(Keys.LEFT) and not is.isFloor then
-                    this:sleepCollider()
-                    local jumpVector = Vertex3D.new(100, jumpForce, 0)
-                    this:applyCentralImpulse(jumpVector)
-                    print("Jump hook r!")
-                end
+        end
+        if is.isHookedRight and not is.isFloorDown then
+            if input:isCharFirstEventDown(Keys.JUMP) and not input:isCharPressed(Keys.LEFT) and not is.isFloor then
+                this:sleepCollider()
+                local jumpVector = Vertex3D.new(100, jumpForce, 0)
+                this:applyCentralImpulse(jumpVector)
+                print("Jump hook r!")
             end
+        end
     end
 
-    if (is.isHookedRight and is.isHookedLeft and is.isUp) then
-        return
-    end
 end
 
 function debug(from, rays, cross)
@@ -618,8 +570,8 @@ function debug(from, rays, cross)
         up = Color.new(1, 0, 0, 1),
         left = Color.new(1, 0, 0, 1),
         right = Color.new(1, 0, 0, 1),
-        hookedLeft = Color.new(1, 1, 0, 1),
-        hookedRight = Color.new(1, 1, 0, 1),
+        hookedLeft = Color.new(1, 0, 0, 1),
+        hookedRight = Color.new(1, 0, 0, 1),
         borderUpLeftHorizontal = Color.new(1, 0, 0, 1),
         borderUpLeftDiagonal1 = Color.new(1, 0, 0, 1),
         borderUpLeftDiagonal2 = Color.new(1, 0, 0, 1),
@@ -681,10 +633,6 @@ function debug(from, rays, cross)
     drawLine(from, rays.toLeft, colors.left)
     drawLine(from, rays.toRight, colors.right)
 
-    drawLine(cross.upLeft.fromBorderHorizontal, cross.upLeft.toBorderHorizontal, colors.borderUpLeftHorizontal)
-    drawLine(cross.upLeft.fromBorderDiagonal1, cross.upLeft.toBorderDiagonal1, colors.borderUpLeftDiagonal1)
-    drawLine(cross.upLeft.fromBorderDiagonal2, cross.upLeft.toBorderDiagonal2, colors.borderUpLeftDiagonal2)
-
     drawLine(cross.upRight.fromBorderHorizontal, cross.upRight.toBorderHorizontal, colors.borderUpRightHorizontal)
     drawLine(cross.upRight.fromBorderDiagonal1, cross.upRight.toBorderDiagonal1, colors.borderUpRightDiagonal1)
     drawLine(cross.upRight.fromBorderDiagonal2, cross.upRight.toBorderDiagonal2, colors.borderUpRightDiagonal2)
@@ -697,8 +645,8 @@ function debug(from, rays, cross)
     drawLine(cross.bottomRight.fromBorderDiagonal1, cross.bottomRight.toBorderDiagonal1, colors.borderBottomRightDiagonal1)
     drawLine(cross.bottomRight.fromBorderDiagonal2, cross.bottomRight.toBorderDiagonal2, colors.borderBottomRightDiagonal2)
 
-    drawLine(rays.fromUp, rays.toUpLeft, colors.hookedLeft)
-    drawLine(rays.fromUp, rays.toUpRight, colors.hookedRight)
+    drawLine(rays.fromUpLeft, rays.toUpLeft, colors.hookedLeft)
+    drawLine(rays.fromUpRight, rays.toUpRight, colors.hookedRight)
 
     drawLine(rays.fromHanglingToUp, rays.toHanglingToUp, colors.hanglingToUpCanceled)
 

@@ -92,8 +92,7 @@ add_executable(Brakeza3D
     src/Objects/Cube3D.cpp                          include/Objects/Cube3D.h
     src/Objects/Camera3D.cpp                        include/Components/Camera3D.h
     src/Objects/Mesh3DAnimation.cpp                 include/Objects/Mesh3DAnimation.h
-    src/Objects/Mesh3DAnimationCollection.cpp       include/Objects/Mesh3DAnimationCollection.h
-    src/Objects/ParticleEmitter.cpp                 include/Objects/ParticleEmitter.h
+        src/Objects/ParticleEmitter.cpp                 include/Objects/ParticleEmitter.h
     src/Objects/ParticleEmitterFireworks.cpp        include/Objects/ParticleEmitterFireworks.h
     src/Objects/TentacleIK.cpp                      include/Objects/TentacleIK.h
     src/Objects/ScriptLUA.cpp                       include/Objects/ScriptLUA.h
@@ -142,9 +141,7 @@ add_executable(Brakeza3D
     src/2D/Image2DAnimation.cpp                     include/2D/Image2DAnimation.h
     src/2D/Image2D.cpp                              include/2D/Image2D.h
 
-    src/Collisions/BSPCollider.cpp                  src/Collisions/BSPCollider.h
-
-    src/ComponentsManager.cpp                       include/ComponentsManager.h
+        src/ComponentsManager.cpp                       include/ComponentsManager.h
     src/Components/ComponentScripting.cpp           include/Components/ComponentScripting.h
     src/Components/ComponentCamera.cpp              include/Components/ComponentCamera.h
     src/Components/ComponentCollisions.cpp          include/Components/ComponentCollisions.h
@@ -224,6 +221,8 @@ add_executable(Brakeza3D
     src/OpenGL/ShaderOpenGLCustomMesh3D.cpp            include/OpenGL/ShaderOpenGLCustomMesh3D.h
         src/OpenGL/ShaderOpenGLBonesTransforms.cpp
         include/OpenGL/ShaderOpenGLBonesTransforms.h
+        src/Collisions/ColliderMesh3DAnimation.cpp
+        include/Collision/AssimpAnimationService.h
 )
 
 target_link_libraries(Brakeza3D

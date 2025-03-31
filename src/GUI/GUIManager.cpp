@@ -1046,6 +1046,15 @@ void GUIManager::drawKeyboardMouseSettings()
     ImGui::Text(("Key event Up: " + std::to_string(input->isKeyEventUp())).c_str());
     ImGui::Separator();
     ImGui::Text(("Enabled: " + std::to_string(input->isEnabled())).c_str());
+    ImGui::Separator();
+    ImGui::Text(("Controller Button A: " + std::to_string(input->getControllerButtonA())).c_str());
+    ImGui::Text(("Controller Button B: " + std::to_string(input->getControllerButtonB())).c_str());
+    ImGui::Text(("Controller Button X: " + std::to_string(input->getControllerButtonX())).c_str());
+    ImGui::Text(("Controller Button Y: " + std::to_string(input->getControllerButtonY())).c_str());
+    ImGui::Text(("Controller AxisLeft X: " + std::to_string(input->getControllerAxisLeftX())).c_str());
+    ImGui::Text(("Controller AxisLeft Y: " + std::to_string(input->getControllerAxisLeftY())).c_str());
+    ImGui::Text(("Controller AxisRight X: " + std::to_string(input->getControllerAxisRightX())).c_str());
+    ImGui::Text(("Controller AxisRight Y: " + std::to_string(input->getControllerAxisRightY())).c_str());
 }
 
 void GUIManager::drawImages()
