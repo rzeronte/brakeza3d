@@ -171,12 +171,10 @@ public:
         BonesMappingColliders &mapping,
         unsigned int boneId,
         BoneCollisionShape shape,
-        btConvexHullShape *convexHullShape, bool enabled
+        bool enabled
      );
 
-    void createGhostsBodiesFromBonesMappingCollider(BonesMappingColliders &bonesMaping);
-
-    void createBoneColliders(const std::string &mappingName);
+    void createGhostsBodiesFromBonesMappingCollider();
 
     void UpdateBoneColliders();
 };

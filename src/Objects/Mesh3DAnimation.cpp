@@ -28,7 +28,7 @@ void Mesh3DAnimation::onUpdate()
     UpdateOpenGLBones();
 
     if (boneColliderEnabled) {
-        UpdateBoneColliders()
+        UpdateBoneColliders();
     }
 
     auto render = ComponentsManager::get()->getComponentRender();
@@ -165,6 +165,26 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
 
     FillAnimationBoneDataOGLBuffers();
 
+    createBonesMappingColliders("demo");
+    boneColliderIndex = 0;
+    boneColliderEnabled = true;
+
+    UpdateBonesFinalTransformations(0);
+
+    SetBoneColliderInfoIntoBonesMapping(
+        boneMappingColliders[0],
+        0,
+        BoneCollisionShape::BONE_SPHERE,
+        true
+    );
+    SetBoneColliderInfoIntoBonesMapping(
+        boneMappingColliders[0],
+        30,
+        BoneCollisionShape::BONE_CUBE,
+        true
+    );
+    //createGhostsBodiesFromBonesMappingCollider();
+
     setSourceFile(filename);
 
     return true;
@@ -267,6 +287,7 @@ void Mesh3DAnimation::LoadMeshBones(int meshId, aiMesh *mesh, std::vector<Vertex
 
             boneInfo[BoneIndex].BoneOffset = mesh->mBones[i]->mOffsetMatrix;
             boneInfo[BoneIndex].name = mesh->mBones[i]->mName.C_Str();
+            Logging::Message("Loading BoneInfo %s", boneInfo[BoneIndex].name.c_str());
         } else {
             BoneIndex = (int) boneMapping[BoneName];
         }
@@ -623,9 +644,8 @@ Mesh3DAnimation::~Mesh3DAnimation()
     boneMapping.clear();
     boneInfo.clear();
 
-    for (auto &mappings: bonesCollidersMapping) {
-        auto name = mappings.first;
-        for (auto &bone : bonesCollidersMapping[name]) {
+    for (auto &c : boneMappingColliders) {
+        for (auto &bone : c.boneColliderInfo) {
             if (bone.ghostObject != nullptr) {
                 ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(bone.ghostObject);
                 delete bone.ghostObject;
@@ -753,21 +773,62 @@ void Mesh3DAnimation::SetBoneColliderInfoIntoBonesMapping(
     BonesMappingColliders &mapping,
     unsigned int boneId,
     BoneCollisionShape shape = BONE_SPHERE,
-    btConvexHullShape* convexHullShape = nullptr,
     bool enabled = false
 ) {
     BoneColliderInfo colliderInfo;
     colliderInfo.boneId = boneId;
     colliderInfo.shape = shape;
-    colliderInfo.convexHullShape = convexHullShape;
-    colliderInfo.enabled = enabled;
+    colliderInfo.convexHullShape = nullptr;
+    colliderInfo.ghostObject = nullptr;
+    colliderInfo.enabled = true;
 
+    aiVector3t<float> scaling, rotationAxis, position;
+    float rotationAngle;
+
+    aiMatrix4x4t<float> FinalTransformation = boneInfo[boneId].FinalTransformation; // Esta matriz debe estar previamente inicializada.
+    FinalTransformation.Decompose(scaling, rotationAxis, rotationAngle, position);
+
+    colliderInfo.position = Vertex3D(position.x, position.y, position.z);
+    colliderInfo.size = Vertex3D(0.1, 0.1, 0.1);
+
+    auto trans = Tools::aiMat4toGLMMat4(boneInfo[boneId].FinalTransformation);
+
+    btTransform transformation;
+    transformation.setOrigin((getPosition() + colliderInfo.position).toBullet());
+
+    btMatrix3x3 brakezaRotation;
+    brakezaRotation.setIdentity();
+
+    btQuaternion qRotation;
+    brakezaRotation.getRotation(qRotation);
+    transformation.setRotation(qRotation);
+
+    btConvexHullShape *convexHullShape;
+    convexHullShape = reinterpret_cast<btConvexHullShape *>(new btSphereShape(colliderInfo.size.x));;
+
+    colliderInfo.ghostObject = new btPairCachingGhostObject();
+    colliderInfo.ghostObject->setCollisionShape(convexHullShape);
+    colliderInfo.ghostObject->setWorldTransform(transformation);
+    colliderInfo.ghostObject->setUserPointer(this);
+    colliderInfo.ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
+    ComponentsManager::get()
+            ->getComponentCollisions()
+            ->getDynamicsWorld()
+            ->addCollisionObject(
+                    colliderInfo.ghostObject,
+                    btBroadphaseProxy::DefaultFilter,
+                    btBroadphaseProxy::DefaultFilter
+            );
     mapping.boneColliderInfo[boneId] = colliderInfo;
 }
 
-void Mesh3DAnimation::createGhostsBodiesFromBonesMappingCollider(BonesMappingColliders &bonesMaping)
+void Mesh3DAnimation::createGhostsBodiesFromBonesMappingCollider()
 {
-    for (auto &b : bonesMaping.boneColliderInfo){
+    auto bonesColliderMapping = boneMappingColliders[0];
+
+    for (auto &b : bonesColliderMapping.boneColliderInfo) {
+        if (!b.enabled) continue;
+        Logging::Message("Creating GhostCollider for Bone! %d", b.boneId);
         btConvexHullShape *convexHullShape;
         switch (b.shape) {
             case BoneCollisionShape::BONE_SPHERE: {
@@ -783,37 +844,79 @@ void Mesh3DAnimation::createGhostsBodiesFromBonesMappingCollider(BonesMappingCol
                 break;
             }
         }
-        btTransform transformation;
-        transformation.setIdentity();
-        transformation.setOrigin(b.position.toBullet());
 
-        ghostObject = new btPairCachingGhostObject();
-        ghostObject->setCollisionShape(convexHullShape);
-        ghostObject->setWorldTransform(transformation);
-        ghostObject->setUserPointer(this);
-        ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
+        auto trans = Tools::aiMat4toGLMMat4(boneInfo[b.boneId].FinalTransformation);
+
+        btTransform transformation;
+        transformation.setOrigin((getPosition() + b.position).toBullet());
+
+        btMatrix3x3 brakezaRotation;
+        brakezaRotation.setIdentity();
+
+        btQuaternion qRotation;
+        brakezaRotation.getRotation(qRotation);
+        transformation.setRotation(qRotation);
+
+        b.ghostObject = new btPairCachingGhostObject();
+        b.ghostObject->setCollisionShape(convexHullShape);
+        b.ghostObject->setWorldTransform(transformation);
+        b.ghostObject->setUserPointer(this);
+        b.ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
         ComponentsManager::get()
         ->getComponentCollisions()
         ->getDynamicsWorld()
         ->addCollisionObject(
-            ghostObject,
+                b.ghostObject,
             btBroadphaseProxy::DefaultFilter,
             btBroadphaseProxy::DefaultFilter
         );
 
-        b.ghostObject = ghostObject;
         b.convexHullShape = convexHullShape;
+
+        if (b.ghostObject == nullptr) {
+            Logging::Message("Error: ghostObject is nullptr for bone %d", b.boneId);
+        } else {
+            Logging::Message("Successfully created ghostObject for bone %d", b.boneId);
+        }
     }
 }
 
 void Mesh3DAnimation::UpdateBoneColliders()
 {
-    auto bonesColliderInfo = boneMappingColliders[boneColliderIndex].boneColliderInfo;
+    auto bonesColliderMapping = boneMappingColliders[0];
 
-    for (auto b : bonesColliderInfo) {
-        auto boneId = b.boneId;
-        auto ghost = b.ghostObject;
-        // Rotar boneInfo[boneId].FinalTransformation;
+    for (auto &b : bonesColliderMapping.boneColliderInfo) {
+        if (b.enabled) {
+            Logging::Message("Enabled bone %d", b.boneId); // Agregar un log
+
+            if (b.ghostObject == nullptr) {
+                Logging::Message("Ghost object is nullptr for bone %d", b.boneId); // Agregar un log
+                continue;
+            }
+
+            Logging::Message("Updating Ghost object for bone %d", b.boneId); // Agregar un log
+
+            aiMatrix4x4 mOffset = boneInfo[b.boneId].BoneOffset;
+            aiMatrix4x4 mT = boneInfo[b.boneId].FinalTransformation;
+            aiVector3D aBonePosition;
+
+            aBonePosition = mOffset.Inverse() * aBonePosition;
+            aBonePosition = mT * aBonePosition;
+
+            Vertex3D bonePosition = Vertex3D::fromAssimp(aBonePosition);
+            Transforms::objectSpace(bonePosition, bonePosition, this);
+
+            btTransform transformation;
+            transformation.setOrigin(bonePosition.toBullet());
+
+            btMatrix3x3 brakezaRotation; //rotation.toBulletMat3();
+            brakezaRotation.setIdentity();
+
+            btQuaternion qRotation;
+            brakezaRotation.getRotation(qRotation);
+            transformation.setRotation(qRotation);
+            b.ghostObject->setWorldTransform(transformation);
+        }
     }
 }
