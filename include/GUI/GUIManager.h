@@ -61,6 +61,7 @@ private:
     bool showAboutWindow = false;
     bool showEditShaderWindow = false;
     bool showEditScriptWindow = false;
+    bool showBoneMappingsEditorWindow = false;
 public:
 
     void loadImagesFolder();
@@ -116,6 +117,10 @@ public:
     static void setNextWindowSize(int w, int h);
 
     void RenderFPS();
+
+    void drawEditBonesMappingWindow();
+
+    void openBoneInfoDialog();
 };
 
 #endif //SDL2_3D_ENGINE_GUI_ENGINE_H

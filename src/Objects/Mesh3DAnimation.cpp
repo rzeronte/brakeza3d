@@ -165,24 +165,15 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
 
     FillAnimationBoneDataOGLBuffers();
 
-    createBonesMappingColliders("demo");
     boneColliderIndex = 0;
     boneColliderEnabled = true;
 
     UpdateBonesFinalTransformations(0);
 
-    SetBoneColliderInfoIntoBonesMapping(
-        boneMappingColliders[0],
-        0,
-        BoneCollisionShape::BONE_SPHERE,
-        true
-    );
-    SetBoneColliderInfoIntoBonesMapping(
-        boneMappingColliders[0],
-        30,
-        BoneCollisionShape::BONE_CUBE,
-        true
-    );
+    createBonesMappingColliders("demo");
+    SetMappingBoneColliderInfo("demo", 0, true, BoneCollisionShape::BONE_SPHERE);
+    SetMappingBoneColliderInfo("demo", 30, true, BoneCollisionShape::BONE_CUBE);
+
     //createGhostsBodiesFromBonesMappingCollider();
 
     setSourceFile(filename);
@@ -596,6 +587,24 @@ void Mesh3DAnimation::drawImGuiProperties()
 
         ImGui::Separator();
         ImGui::Checkbox("Loop", &loop);
+        ImGui::Separator();
+        ImGui::Checkbox("Bones Colliders", &loop);
+
+        if (boneColliderEnabled) {
+            if (ImGui::TreeNode("Bones Mappings")) {
+                auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
+                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(*ImGuiTextures, "shaderIcon"), ImVec2(14, 14))) {
+                    Brakeza3D::get()->getManagerGui()->openBoneInfoDialog();
+                }
+                for (auto &b: boneMappingColliders) {
+                    ImGui::Text(b.nameMapping.c_str());
+                    ImGui::SameLine();
+                    ImGui::Text(" | Items: %d", b.boneColliderInfo.size());
+                    ImGui::SameLine();
+                }
+                ImGui::TreePop();
+            }
+        }
     }
 }
 
@@ -766,35 +775,71 @@ void Mesh3DAnimation::createBonesMappingColliders(std::string name)
     BonesMappingColliders bmc;
     bmc.nameMapping = name;
     bmc.boneColliderInfo.resize(this->numBones);
+
+    for (int i = 0; i < (int) boneInfo.size(); i++) {
+        auto ci = bmc.boneColliderInfo[i];
+        bmc.boneColliderInfo[i].ghostObject = nullptr;
+        bmc.boneColliderInfo[i].shape = BoneCollisionShape::BONE_SPHERE;
+        bmc.boneColliderInfo[i].enabled = false;
+        bmc.boneColliderInfo[i].name = boneInfo[i].name;
+        bmc.boneColliderInfo[i].boneId = i;
+    }
+
     boneMappingColliders.push_back(bmc);
 }
 
-void Mesh3DAnimation::SetBoneColliderInfoIntoBonesMapping(
-    BonesMappingColliders &mapping,
+void Mesh3DAnimation::SetMappingBoneColliderInfo(
+    const std::string& mappingName,
     unsigned int boneId,
-    BoneCollisionShape shape = BONE_SPHERE,
-    bool enabled = false
+    bool enabled,
+    BoneCollisionShape shape = BONE_SPHERE
 ) {
-    BoneColliderInfo colliderInfo;
-    colliderInfo.boneId = boneId;
-    colliderInfo.shape = shape;
-    colliderInfo.convexHullShape = nullptr;
-    colliderInfo.ghostObject = nullptr;
-    colliderInfo.enabled = true;
+    Logging::Message("Setting Bone %d for %s to %d", boneId, mappingName.c_str(), enabled);
 
+    auto mapping = getBonesMappingByName(mappingName);
+    auto &ci = mapping->boneColliderInfo[boneId];
+
+    ci.boneId = boneId;
+    ci.shape = shape;
+    ci.enabled = enabled;
+    ci.name = boneInfo[boneId].name;
+
+    if (enabled) {
+        if (ci.ghostObject == nullptr ) {
+            createBoneGhostBody(boneId, shape, ci);
+        } else {
+            ComponentsManager::get()
+                ->getComponentCollisions()
+                ->getDynamicsWorld()
+                ->removeCollisionObject(ci.ghostObject)
+            ;
+            ci.ghostObject = nullptr;
+        }
+    } else {
+        if (ci.ghostObject != nullptr ) {
+            ComponentsManager::get()
+                ->getComponentCollisions()
+                ->getDynamicsWorld()
+                ->removeCollisionObject(ci.ghostObject)
+            ;
+            ci.ghostObject = nullptr;
+        }
+    }
+}
+
+void Mesh3DAnimation::createBoneGhostBody(unsigned int boneId, const BoneCollisionShape &shape, BoneColliderInfo &ci)
+{
     aiVector3t<float> scaling, rotationAxis, position;
     float rotationAngle;
 
     aiMatrix4x4t<float> FinalTransformation = boneInfo[boneId].FinalTransformation; // Esta matriz debe estar previamente inicializada.
     FinalTransformation.Decompose(scaling, rotationAxis, rotationAngle, position);
 
-    colliderInfo.position = Vertex3D(position.x, position.y, position.z);
-    colliderInfo.size = Vertex3D(0.1, 0.1, 0.1);
-
-    auto trans = Tools::aiMat4toGLMMat4(boneInfo[boneId].FinalTransformation);
+    ci.position = Vertex3D(position.x, position.y, position.z);
+    ci.size = Vertex3D(0.1, 0.1, 0.1);
 
     btTransform transformation;
-    transformation.setOrigin((getPosition() + colliderInfo.position).toBullet());
+    transformation.setOrigin((getPosition() + ci.position).toBullet());
 
     btMatrix3x3 brakezaRotation;
     brakezaRotation.setIdentity();
@@ -804,22 +849,36 @@ void Mesh3DAnimation::SetBoneColliderInfoIntoBonesMapping(
     transformation.setRotation(qRotation);
 
     btConvexHullShape *convexHullShape;
-    convexHullShape = reinterpret_cast<btConvexHullShape *>(new btSphereShape(colliderInfo.size.x));;
+    switch (shape) {
+        case BONE_SPHERE: {
+            convexHullShape = reinterpret_cast<btConvexHullShape *>(new btSphereShape(ci.size.x));;
+            break;
+        }
+        case BONE_CAPSULE: {
+            convexHullShape = reinterpret_cast<btConvexHullShape *>(new btCapsuleShape(ci.size.x, ci.size.y));;
+            break;
+        }
+        case BONE_CUBE: {
+            convexHullShape = reinterpret_cast<btConvexHullShape *>(new btBoxShape(ci.size.toBullet()));;
+            break;
+        }
+    }
 
-    colliderInfo.ghostObject = new btPairCachingGhostObject();
-    colliderInfo.ghostObject->setCollisionShape(convexHullShape);
-    colliderInfo.ghostObject->setWorldTransform(transformation);
-    colliderInfo.ghostObject->setUserPointer(this);
-    colliderInfo.ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
+    ci.ghostObject = new btPairCachingGhostObject();
+    ci.ghostObject->setCollisionShape(convexHullShape);
+    ci.ghostObject->setWorldTransform(transformation);
+    ci.ghostObject->setUserPointer(this);
+    ci.ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
     ComponentsManager::get()
-            ->getComponentCollisions()
-            ->getDynamicsWorld()
-            ->addCollisionObject(
-                    colliderInfo.ghostObject,
-                    btBroadphaseProxy::DefaultFilter,
-                    btBroadphaseProxy::DefaultFilter
-            );
-    mapping.boneColliderInfo[boneId] = colliderInfo;
+        ->getComponentCollisions()
+        ->getDynamicsWorld()
+        ->addCollisionObject(
+            ci.ghostObject,
+            btBroadphaseProxy::DefaultFilter,
+            btBroadphaseProxy::DefaultFilter
+        )
+    ;
 }
 
 void Mesh3DAnimation::createGhostsBodiesFromBonesMappingCollider()
@@ -888,14 +947,9 @@ void Mesh3DAnimation::UpdateBoneColliders()
 
     for (auto &b : bonesColliderMapping.boneColliderInfo) {
         if (b.enabled) {
-            Logging::Message("Enabled bone %d", b.boneId); // Agregar un log
-
             if (b.ghostObject == nullptr) {
-                Logging::Message("Ghost object is nullptr for bone %d", b.boneId); // Agregar un log
                 continue;
             }
-
-            Logging::Message("Updating Ghost object for bone %d", b.boneId); // Agregar un log
 
             aiMatrix4x4 mOffset = boneInfo[b.boneId].BoneOffset;
             aiMatrix4x4 mT = boneInfo[b.boneId].FinalTransformation;
@@ -919,4 +973,19 @@ void Mesh3DAnimation::UpdateBoneColliders()
             b.ghostObject->setWorldTransform(transformation);
         }
     }
+}
+
+BonesMappingColliders *Mesh3DAnimation::getBonesMappingByName(const std::string& name)
+{
+    for (auto &b : boneMappingColliders) {
+        if (b.nameMapping == name) {
+            return &b;
+        }
+    }
+
+    return nullptr;
+}
+
+const std::vector<BonesMappingColliders> &Mesh3DAnimation::getBoneMappingColliders() const {
+    return boneMappingColliders;
 }

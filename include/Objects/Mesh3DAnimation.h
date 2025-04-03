@@ -50,6 +50,7 @@ struct BoneColliderInfo {
     btConvexHullShape *convexHullShape = nullptr;
     Vertex3D size;
     Vertex3D position;
+    std::string name;
 };
 
 struct BonesMappingColliders {
@@ -73,7 +74,6 @@ private:
     std::vector<BoneInfo> boneInfo;                                 // Bone info and final transformation
 
     bool boneColliderEnabled;
-    int boneColliderIndex;
 
     std::vector<BonesMappingColliders> boneMappingColliders;
 
@@ -167,16 +167,24 @@ public:
 
     void createBonesMappingColliders(std::string name);
 
-    void SetBoneColliderInfoIntoBonesMapping(
-        BonesMappingColliders &mapping,
+    void SetMappingBoneColliderInfo(
+        const std::string& mappingName,
         unsigned int boneId,
-        BoneCollisionShape shape,
-        bool enabled
+        bool enabled,
+        BoneCollisionShape shape
      );
 
     void createGhostsBodiesFromBonesMappingCollider();
 
     void UpdateBoneColliders();
+
+    BonesMappingColliders *getBonesMappingByName(const std::string& name);
+
+    const std::vector<BonesMappingColliders> &getBoneMappingColliders() const;
+
+    int boneColliderIndex;
+
+    void createBoneGhostBody(unsigned int boneId, const BoneCollisionShape &shape, BoneColliderInfo &ci);
 };
 
 
