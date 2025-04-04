@@ -5,14 +5,14 @@ Mesh3DAnimation::Mesh3DAnimation()
 :
     scene(nullptr),
     numBones(0),
+    loop(true),
+    boneColliderEnabled(false),
     indexCurrentAnimation(0),
     runningTime(0),
     remove_at_end_animation(false),
     animation_speed(1),
     animation_ends(false),
-    loop(true),
-    boneColliderEnabled(false),
-    boneColliderIndex(-1)
+    boneColliderIndex(0)
 {
     luaEnvironment["this"] = this;
 }
@@ -171,8 +171,8 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     UpdateBonesFinalTransformations(0);
 
     createBonesMappingColliders("demo");
-    SetMappingBoneColliderInfo("demo", 0, true, BoneCollisionShape::BONE_SPHERE);
-    SetMappingBoneColliderInfo("demo", 30, true, BoneCollisionShape::BONE_CUBE);
+    //SetMappingBoneColliderInfo("demo", 0, true, BoneCollisionShape::BONE_SPHERE);
+    //SetMappingBoneColliderInfo("demo", 30, true, BoneCollisionShape::BONE_CUBE);
 
     //createGhostsBodiesFromBonesMappingCollider();
 
@@ -588,21 +588,11 @@ void Mesh3DAnimation::drawImGuiProperties()
         ImGui::Separator();
         ImGui::Checkbox("Loop", &loop);
         ImGui::Separator();
-        ImGui::Checkbox("Bones Colliders", &loop);
+        ImGui::Checkbox("Bones Colliders", &boneColliderEnabled);
 
         if (boneColliderEnabled) {
-            if (ImGui::TreeNode("Bones Mappings")) {
-                auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(*ImGuiTextures, "shaderIcon"), ImVec2(14, 14))) {
-                    Brakeza3D::get()->getManagerGui()->openBoneInfoDialog();
-                }
-                for (auto &b: boneMappingColliders) {
-                    ImGui::Text(b.nameMapping.c_str());
-                    ImGui::SameLine();
-                    ImGui::Text(" | Items: %d", b.boneColliderInfo.size());
-                    ImGui::SameLine();
-                }
-                ImGui::TreePop();
+            if (ImGui::Button("Manage Bone Mappings")) {
+                Brakeza3D::get()->getManagerGui()->openBoneInfoDialog();
             }
         }
     }
@@ -804,24 +794,18 @@ void Mesh3DAnimation::SetMappingBoneColliderInfo(
     ci.enabled = enabled;
     ci.name = boneInfo[boneId].name;
 
+    auto world = ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld();
+
     if (enabled) {
         if (ci.ghostObject == nullptr ) {
             createBoneGhostBody(boneId, shape, ci);
         } else {
-            ComponentsManager::get()
-                ->getComponentCollisions()
-                ->getDynamicsWorld()
-                ->removeCollisionObject(ci.ghostObject)
-            ;
+            world->removeCollisionObject(ci.ghostObject);
             ci.ghostObject = nullptr;
         }
     } else {
         if (ci.ghostObject != nullptr ) {
-            ComponentsManager::get()
-                ->getComponentCollisions()
-                ->getDynamicsWorld()
-                ->removeCollisionObject(ci.ghostObject)
-            ;
+            world->removeCollisionObject(ci.ghostObject);
             ci.ghostObject = nullptr;
         }
     }
@@ -881,69 +865,11 @@ void Mesh3DAnimation::createBoneGhostBody(unsigned int boneId, const BoneCollisi
     ;
 }
 
-void Mesh3DAnimation::createGhostsBodiesFromBonesMappingCollider()
-{
-    auto bonesColliderMapping = boneMappingColliders[0];
-
-    for (auto &b : bonesColliderMapping.boneColliderInfo) {
-        if (!b.enabled) continue;
-        Logging::Message("Creating GhostCollider for Bone! %d", b.boneId);
-        btConvexHullShape *convexHullShape;
-        switch (b.shape) {
-            case BoneCollisionShape::BONE_SPHERE: {
-                convexHullShape = reinterpret_cast<btConvexHullShape *>(new btSphereShape(b.size.x));;
-                break;
-            }
-            case BoneCollisionShape::BONE_CAPSULE: {
-                convexHullShape = reinterpret_cast<btConvexHullShape *>(new btCapsuleShape(b.size.x, b.size.y));;
-                break;
-            }
-            case BoneCollisionShape::BONE_CUBE: {
-                convexHullShape = reinterpret_cast<btConvexHullShape *>(new btBoxShape(b.size.toBullet()));;
-                break;
-            }
-        }
-
-        auto trans = Tools::aiMat4toGLMMat4(boneInfo[b.boneId].FinalTransformation);
-
-        btTransform transformation;
-        transformation.setOrigin((getPosition() + b.position).toBullet());
-
-        btMatrix3x3 brakezaRotation;
-        brakezaRotation.setIdentity();
-
-        btQuaternion qRotation;
-        brakezaRotation.getRotation(qRotation);
-        transformation.setRotation(qRotation);
-
-        b.ghostObject = new btPairCachingGhostObject();
-        b.ghostObject->setCollisionShape(convexHullShape);
-        b.ghostObject->setWorldTransform(transformation);
-        b.ghostObject->setUserPointer(this);
-        b.ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
-        ComponentsManager::get()
-        ->getComponentCollisions()
-        ->getDynamicsWorld()
-        ->addCollisionObject(
-                b.ghostObject,
-            btBroadphaseProxy::DefaultFilter,
-            btBroadphaseProxy::DefaultFilter
-        );
-
-        b.convexHullShape = convexHullShape;
-
-        if (b.ghostObject == nullptr) {
-            Logging::Message("Error: ghostObject is nullptr for bone %d", b.boneId);
-        } else {
-            Logging::Message("Successfully created ghostObject for bone %d", b.boneId);
-        }
-    }
-}
-
 void Mesh3DAnimation::UpdateBoneColliders()
 {
-    auto bonesColliderMapping = boneMappingColliders[0];
+    if (boneColliderIndex <= 0) return;
+
+    auto bonesColliderMapping = boneMappingColliders[boneColliderIndex];
 
     for (auto &b : bonesColliderMapping.boneColliderInfo) {
         if (b.enabled) {
@@ -986,6 +912,37 @@ BonesMappingColliders *Mesh3DAnimation::getBonesMappingByName(const std::string&
     return nullptr;
 }
 
-const std::vector<BonesMappingColliders> &Mesh3DAnimation::getBoneMappingColliders() const {
-    return boneMappingColliders;
+const std::vector<BonesMappingColliders> *Mesh3DAnimation::getBoneMappingColliders() const {
+    return &boneMappingColliders;
+}
+
+void Mesh3DAnimation::removeBonesColliderMapping(const std::string& name)
+{
+    auto bm = getBonesMappingByName(name);
+    Logging::Message("Deleting bone collider mapping: %s, new boneColliderIndex: %d", name.c_str(), boneColliderIndex);
+
+    if (bm == nullptr) return;
+
+    auto world = ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld();
+
+    for (auto &b : bm->boneColliderInfo) {
+        if (b.ghostObject == nullptr) continue;
+        world->removeCollisionObject(b.ghostObject);
+        b.ghostObject = nullptr;
+        b.enabled = false;
+    }
+
+    for (auto it = boneMappingColliders.begin(); it != boneMappingColliders.end();) {
+        if (it->nameMapping == name) {
+            it = boneMappingColliders.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
+    if (boneMappingColliders.empty()) {
+        boneColliderIndex = -1;
+    } else if (boneColliderIndex >= boneMappingColliders.size()) {
+        boneColliderIndex = (int)boneMappingColliders.size() - 1; // Ajustar al último elemento válido
+    }
 }

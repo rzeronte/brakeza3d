@@ -277,61 +277,80 @@ void GUIManager::drawEditBonesMappingWindow()
     if (a == nullptr) return;
 
     auto bc = a->getBoneMappingColliders();
+    int numMappings = (int)bc->size();
 
-    setNextWindowSize(600, 600);
+    setNextWindowSize(700, 700);
     ImGui::SetNextWindowBgAlpha(0.9f);
-    if (ImGui::Begin("Bones Mapping Editor", &showBoneMappingsEditorWindow, ImGuiWindowFlags_NoDocking)) {
-        const char* items[(int)bc.size()];
-        for (int i = 0; i < (int) bc.size(); i++) {
-            items[i] = bc[i].nameMapping.c_str();
-        }
-        auto comboTitle = "BoneMappings##" + a->getLabel();
-        ImGui::Combo("Bone Mappings", &a->boneColliderIndex, items, IM_ARRAYSIZE(items));
-
-        ImGui::Separator();
+    auto dialogTitle = std::string("Bones Mapping Editor: " + a->getLabel());
+    if (ImGui::Begin(dialogTitle.c_str(), &showBoneMappingsEditorWindow, ImGuiWindowFlags_NoDocking)) {
+        ImGui::SeparatorText("Create new bones mapping:");
 
         static char name[256];
         strncpy(name, currentVariableToAddName.c_str(), sizeof(name));
         if (ImGui::InputText("Mapping name", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
             currentVariableToAddName = name;
         }
-        if (ImGui::Button(std::string("Add Bones Mapping").c_str())) {
+        ImGui::SameLine();
+        if (ImGui::Button(std::string("Add mapping").c_str())) {
             if (!currentVariableToAddName.empty()) {
                 a->createBonesMappingColliders(currentVariableToAddName);
                 currentVariableToAddName.clear();
             }
         }
-        ImGui::Separator();
+        if (numMappings <= 0) return;
 
-        auto nameMapping = bc[a->boneColliderIndex].nameMapping;
-        if (ImGui::BeginTable("BoneMappingTable", 4, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_RowBg)) {
-            ImGui::TableSetupColumn("Index");
-            ImGui::TableSetupColumn("Bone Name");
-            ImGui::TableSetupColumn("Bone ID");
-            ImGui::TableSetupColumn("Enabled");
-            ImGui::TableHeadersRow();
+        ImGui::SeparatorText("Bone mappings created");
 
-            for (int i = 0; i < bc[a->boneColliderIndex].boneColliderInfo.size(); i++) {
-                auto& b = bc[a->boneColliderIndex].boneColliderInfo[i];
+        if (numMappings > 0) {
+            const char* items[numMappings];
+            for (int i = 0; i < (int) bc->size(); i++) {
+                items[i] = bc->at(i).nameMapping.c_str();
+            }
 
-                ImGui::TableNextRow();
-                ImGui::TableSetColumnIndex(0);
-                ImGui::Text("%d", i + 1);
+            auto comboTitle = "BoneMappings##" + a->getLabel();
+            ImGui::Combo("Bone Mappings", &a->boneColliderIndex, items, IM_ARRAYSIZE(items));
 
-                ImGui::TableSetColumnIndex(1);
-                ImGui::Text("%s", b.name.c_str());
-
-                ImGui::TableSetColumnIndex(2);
-                ImGui::Text("%d", b.boneId);
-
-                ImGui::TableSetColumnIndex(3);
-                if (ImGui::ImageButton((std::string((b.enabled ? "lock##" : "unlock##")) + std::to_string(i)).c_str(),
-                                       TexturePackage::getOGLTextureID(icons, b.enabled ? "lockIcon" : "unlockIcon"),
-                                       ImVec2(14, 14))) {
-                    a->SetMappingBoneColliderInfo(nameMapping, b.boneId, !b.enabled, b.shape);
+            if (a->boneColliderIndex >= 0) {
+                if (ImGui::Button(std::string("Delete mapping").c_str())) {
+                    a->removeBonesColliderMapping(bc->at(a->boneColliderIndex).nameMapping);
+                    return;
                 }
             }
-            ImGui::EndTable();
+        }
+
+        if (a->boneColliderIndex != -1) {
+            ImGui::SeparatorText(std::string("List bones for mapping: " + bc->at(a->boneColliderIndex).nameMapping).c_str());
+
+            auto nameMapping = bc->at(a->boneColliderIndex).nameMapping;
+            if (ImGui::BeginTable("BoneMappingTable", 4, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_RowBg)) {
+                ImGui::TableSetupColumn("Index");
+                ImGui::TableSetupColumn("Bone Name");
+                ImGui::TableSetupColumn("Bone ID");
+                ImGui::TableSetupColumn("Enabled");
+                ImGui::TableHeadersRow();
+
+                for (int i = 0; i < bc->at(a->boneColliderIndex).boneColliderInfo.size(); i++) {
+                    auto& b = bc->at(a->boneColliderIndex).boneColliderInfo[i];
+
+                    ImGui::TableNextRow();
+                    ImGui::TableSetColumnIndex(0);
+                    ImGui::Text("%d", i + 1);
+
+                    ImGui::TableSetColumnIndex(1);
+                    ImGui::Text("%s", b.name.c_str());
+
+                    ImGui::TableSetColumnIndex(2);
+                    ImGui::Text("%d", b.boneId);
+
+                    ImGui::TableSetColumnIndex(3);
+                    if (ImGui::ImageButton((std::string((b.enabled ? "lock##" : "unlock##")) + std::to_string(i)).c_str(),
+                                           TexturePackage::getOGLTextureID(icons, b.enabled ? "lockIcon" : "unlockIcon"),
+                                           ImVec2(14, 14))) {
+                        a->SetMappingBoneColliderInfo(nameMapping, b.boneId, !b.enabled, b.shape);
+                    }
+                }
+                ImGui::EndTable();
+            }
         }
     }
 

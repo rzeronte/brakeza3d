@@ -55,6 +55,7 @@ struct BoneColliderInfo {
 
 struct BonesMappingColliders {
     std::string nameMapping;
+    bool enabled;
     std::vector<BoneColliderInfo> boneColliderInfo;
 };
 
@@ -174,17 +175,17 @@ public:
         BoneCollisionShape shape
      );
 
-    void createGhostsBodiesFromBonesMappingCollider();
-
     void UpdateBoneColliders();
 
     BonesMappingColliders *getBonesMappingByName(const std::string& name);
 
-    const std::vector<BonesMappingColliders> &getBoneMappingColliders() const;
+    const std::vector<BonesMappingColliders> *getBoneMappingColliders() const;
 
     int boneColliderIndex;
 
     void createBoneGhostBody(unsigned int boneId, const BoneCollisionShape &shape, BoneColliderInfo &ci);
+
+    void removeBonesColliderMapping(const std::string &name);
 };
 
 
