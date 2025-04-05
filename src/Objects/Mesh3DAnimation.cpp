@@ -171,12 +171,6 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
 
     UpdateBonesFinalTransformations(0);
 
-    createBonesMappingColliders("demo");
-    //SetMappingBoneColliderInfo("demo", 0, true, BoneCollisionShape::BONE_SPHERE);
-    //SetMappingBoneColliderInfo("demo", 30, true, BoneCollisionShape::BONE_CUBE);
-
-    //createGhostsBodiesFromBonesMappingCollider();
-
     setSourceFile(filename);
 
     return true;
@@ -651,7 +645,7 @@ void Mesh3DAnimation::createFromJSON(cJSON *object)
 {
     auto o = new Mesh3DAnimation();
 
-    Mesh3DAnimation::setPropertiesFromJSON(object, o);
+    Mesh3D::setPropertiesFromJSON(object, o, false);
 
     o->AssimpLoadAnimation(cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring);
 
@@ -661,30 +655,33 @@ void Mesh3DAnimation::createFromJSON(cJSON *object)
         o->UpdateShapeCollider();
     }
 
+    Mesh3DAnimation::setPropertiesFromJSON(object, o);
+
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
 
 void Mesh3DAnimation::setPropertiesFromJSON(cJSON *object, Mesh3DAnimation *o)
 {
-    Mesh3D::setPropertiesFromJSON(object, o, false);
 
     auto speed = cJSON_GetObjectItemCaseSensitive(object, "animationSpeed")->valuedouble;
     o->setAnimationSpeed((float) speed);
 
-    auto mapColliders = cJSON_GetObjectItemCaseSensitive(object, "bonesColliders");
     cJSON *currentMapCollider;
-    cJSON_ArrayForEach(currentMapCollider, cJSON_GetObjectItemCaseSensitive(mapColliders, "bonesColliders")) {
+    cJSON_ArrayForEach(currentMapCollider, cJSON_GetObjectItemCaseSensitive(object, "bonesColliders")) {
         std::string nameMapping = cJSON_GetObjectItemCaseSensitive(currentMapCollider, "nameMapping")->valuestring;
+        o->createBonesMappingColliders(nameMapping);
 
         cJSON *currentBoneInfoCollider;
         cJSON_ArrayForEach(currentBoneInfoCollider, cJSON_GetObjectItemCaseSensitive(currentMapCollider, "bonesInfoColliders")) {
             std::string boneName = cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "name")->valuestring;
             unsigned int boneId = cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "boneId")->valueint;
             unsigned int shape = cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "shape")->valueint;
-            unsigned int enabled = cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "enabled")->valueint;
+            bool enabled = (bool) cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "enabled")->valueint;
 
-            auto position = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "position"));
-            auto size = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "size"));
+            //auto position = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "position"));
+            //auto size = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "size"));
+
+            o->SetMappingBoneColliderInfo(nameMapping, boneId, enabled, BoneCollisionShape::BONE_CAPSULE);
         }
     }
 
@@ -835,6 +832,10 @@ void Mesh3DAnimation::createBonesMappingColliders(std::string name)
     }
 
     boneMappingColliders.push_back(bmc);
+
+    if (boneColliderIndex <= 0) {
+        boneColliderIndex = 0;
+    }
 }
 
 void Mesh3DAnimation::SetMappingBoneColliderInfo(
@@ -926,36 +927,36 @@ void Mesh3DAnimation::createBoneGhostBody(unsigned int boneId, const BoneCollisi
 
 void Mesh3DAnimation::UpdateBoneColliders()
 {
-    if (boneColliderIndex <= 0) return;
+    if (boneColliderIndex < 0) return;
 
-    auto bonesColliderMapping = boneMappingColliders[boneColliderIndex];
+    for (auto &bc : boneMappingColliders) {
+        for (auto &b : bc.boneColliderInfo) {
+            if (b.enabled) {
+                if (b.ghostObject == nullptr) {
+                    continue;
+                }
 
-    for (auto &b : bonesColliderMapping.boneColliderInfo) {
-        if (b.enabled) {
-            if (b.ghostObject == nullptr) {
-                continue;
+                aiMatrix4x4 mOffset = boneInfo[b.boneId].BoneOffset;
+                aiMatrix4x4 mT = boneInfo[b.boneId].FinalTransformation;
+                aiVector3D aBonePosition;
+
+                aBonePosition = mOffset.Inverse() * aBonePosition;
+                aBonePosition = mT * aBonePosition;
+
+                Vertex3D bonePosition = Vertex3D::fromAssimp(aBonePosition);
+                Transforms::objectSpace(bonePosition, bonePosition, this);
+
+                btTransform transformation;
+                transformation.setOrigin(bonePosition.toBullet());
+
+                btMatrix3x3 brakezaRotation; //rotation.toBulletMat3();
+                brakezaRotation.setIdentity();
+
+                btQuaternion qRotation;
+                brakezaRotation.getRotation(qRotation);
+                transformation.setRotation(qRotation);
+                b.ghostObject->setWorldTransform(transformation);
             }
-
-            aiMatrix4x4 mOffset = boneInfo[b.boneId].BoneOffset;
-            aiMatrix4x4 mT = boneInfo[b.boneId].FinalTransformation;
-            aiVector3D aBonePosition;
-
-            aBonePosition = mOffset.Inverse() * aBonePosition;
-            aBonePosition = mT * aBonePosition;
-
-            Vertex3D bonePosition = Vertex3D::fromAssimp(aBonePosition);
-            Transforms::objectSpace(bonePosition, bonePosition, this);
-
-            btTransform transformation;
-            transformation.setOrigin(bonePosition.toBullet());
-
-            btMatrix3x3 brakezaRotation; //rotation.toBulletMat3();
-            brakezaRotation.setIdentity();
-
-            btQuaternion qRotation;
-            brakezaRotation.getRotation(qRotation);
-            transformation.setRotation(qRotation);
-            b.ghostObject->setWorldTransform(transformation);
         }
     }
 }
