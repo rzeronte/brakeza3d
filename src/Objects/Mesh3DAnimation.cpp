@@ -1,5 +1,6 @@
 #include "../../include/Objects/Mesh3DAnimation.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Misc/ToolsJSON.h"
 
 Mesh3DAnimation::Mesh3DAnimation()
 :
@@ -591,7 +592,7 @@ void Mesh3DAnimation::drawImGuiProperties()
         ImGui::Checkbox("Bones Colliders", &boneColliderEnabled);
 
         if (boneColliderEnabled) {
-            if (ImGui::Button("Manage Bone Mappings")) {
+            if (ImGui::Button(std::string("Manage Bone Mappings##" + getLabel()).c_str())) {
                 Brakeza3D::get()->getManagerGui()->openBoneInfoDialog();
             }
         }
@@ -603,6 +604,45 @@ cJSON *Mesh3DAnimation::getJSON()
     cJSON *root = Mesh3D::getJSON();
 
     cJSON_AddNumberToObject(root, "animationSpeed", animation_speed);
+    cJSON_AddBoolToObject(root, "boneColliderEnabled", boneColliderEnabled);
+
+    cJSON *bonesCollidersJSON = cJSON_CreateArray();
+    for (const auto& b : boneMappingColliders) {
+        cJSON *bonesColliderJSON = cJSON_CreateObject();
+
+        cJSON_AddStringToObject(bonesColliderJSON, "nameMapping", b.nameMapping.c_str());
+
+        cJSON *bonesInfoJSON = cJSON_CreateArray();
+        for (const auto& boneInfoCollider : b.boneColliderInfo) {
+            if (!boneInfoCollider.enabled) continue;
+
+            cJSON *boneInfoColliderJSON = cJSON_CreateObject();
+
+            cJSON_AddStringToObject(boneInfoColliderJSON, "name", boneInfoCollider.name.c_str());
+            cJSON_AddNumberToObject(boneInfoColliderJSON, "boneId", boneInfoCollider.boneId);
+            cJSON_AddBoolToObject(boneInfoColliderJSON, "enabled", boneInfoCollider.enabled);
+            cJSON_AddNumberToObject(boneInfoColliderJSON, "shape", boneInfoCollider.shape);
+
+            cJSON *position = cJSON_CreateObject();
+            cJSON_AddNumberToObject(position, "x", (float) boneInfoCollider.position.x);
+            cJSON_AddNumberToObject(position, "y", (float) boneInfoCollider.position.y);
+            cJSON_AddNumberToObject(position, "z", (float) boneInfoCollider.position.z);
+            cJSON_AddItemToObject(boneInfoColliderJSON, "position", position);
+
+            cJSON *size = cJSON_CreateObject();
+            cJSON_AddNumberToObject(size, "x", (float) boneInfoCollider.size.x);
+            cJSON_AddNumberToObject(size, "y", (float) boneInfoCollider.size.y);
+            cJSON_AddNumberToObject(size, "z", (float) boneInfoCollider.size.z);
+            cJSON_AddItemToObject(boneInfoColliderJSON, "size", size);
+
+            cJSON_AddItemToArray(bonesInfoJSON, boneInfoColliderJSON);
+        }
+
+        cJSON_AddItemToObject(bonesColliderJSON, "bonesInfoColliders", bonesInfoJSON);
+
+        cJSON_AddItemToArray(bonesCollidersJSON, bonesColliderJSON);
+    }
+    cJSON_AddItemToObject(root, "bonesColliders", bonesCollidersJSON);
 
     return root;
 }
@@ -629,10 +669,29 @@ void Mesh3DAnimation::setPropertiesFromJSON(cJSON *object, Mesh3DAnimation *o)
     Mesh3D::setPropertiesFromJSON(object, o, false);
 
     auto speed = cJSON_GetObjectItemCaseSensitive(object, "animationSpeed")->valuedouble;
-    o->setAnimationSpeed(speed);
+    o->setAnimationSpeed((float) speed);
+
+    auto mapColliders = cJSON_GetObjectItemCaseSensitive(object, "bonesColliders");
+    cJSON *currentMapCollider;
+    cJSON_ArrayForEach(currentMapCollider, cJSON_GetObjectItemCaseSensitive(mapColliders, "bonesColliders")) {
+        std::string nameMapping = cJSON_GetObjectItemCaseSensitive(currentMapCollider, "nameMapping")->valuestring;
+
+        cJSON *currentBoneInfoCollider;
+        cJSON_ArrayForEach(currentBoneInfoCollider, cJSON_GetObjectItemCaseSensitive(currentMapCollider, "bonesInfoColliders")) {
+            std::string boneName = cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "name")->valuestring;
+            unsigned int boneId = cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "boneId")->valueint;
+            unsigned int shape = cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "shape")->valueint;
+            unsigned int enabled = cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "enabled")->valueint;
+
+            auto position = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "position"));
+            auto size = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "size"));
+        }
+    }
+
 }
 
-void Mesh3DAnimation::setAnimationSpeed(float animationSpeed) {
+void Mesh3DAnimation::setAnimationSpeed(float animationSpeed)
+{
     animation_speed = animationSpeed;
 }
 

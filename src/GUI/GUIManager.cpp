@@ -268,8 +268,7 @@ void GUIManager::drawEditScriptWindow()
 
 void GUIManager::drawEditBonesMappingWindow()
 {
-    if (selectedObjectIndex <= 0) return;
-
+    if (selectedObjectIndex < 0) return;
     if (!showBoneMappingsEditorWindow) return;
 
     auto a = dynamic_cast<Mesh3DAnimation*>(gameObjects[selectedObjectIndex]);
