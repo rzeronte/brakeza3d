@@ -846,7 +846,8 @@ void Mesh3DAnimation::SetMappingBoneColliderInfo(
 ) {
     Logging::Message("Setting Bone %d for %s to %d", boneId, mappingName.c_str(), enabled);
 
-    auto mapping = getBonesMappingByName(mappingName);
+    int im;
+    auto mapping = getBonesMappingByName(mappingName, im);
     auto &ci = mapping->boneColliderInfo[boneId];
 
     ci.boneId = boneId;
@@ -858,7 +859,7 @@ void Mesh3DAnimation::SetMappingBoneColliderInfo(
 
     if (enabled) {
         if (ci.ghostObject == nullptr ) {
-            createBoneGhostBody(boneId, shape, ci);
+            createBoneGhostBody(im, boneId, shape, ci);
         } else {
             world->removeCollisionObject(ci.ghostObject);
             ci.ghostObject = nullptr;
@@ -871,12 +872,12 @@ void Mesh3DAnimation::SetMappingBoneColliderInfo(
     }
 }
 
-void Mesh3DAnimation::createBoneGhostBody(unsigned int boneId, const BoneCollisionShape &shape, BoneColliderInfo &ci)
+void Mesh3DAnimation::createBoneGhostBody(int bmIndex, unsigned int boneId, const BoneCollisionShape &shape, BoneColliderInfo &ci)
 {
     aiVector3t<float> scaling, rotationAxis, position;
     float rotationAngle;
 
-    aiMatrix4x4t<float> FinalTransformation = boneInfo[boneId].FinalTransformation; // Esta matriz debe estar previamente inicializada.
+    aiMatrix4x4t<float> FinalTransformation = boneInfo[boneId].FinalTransformation;
     FinalTransformation.Decompose(scaling, rotationAxis, rotationAngle, position);
 
     ci.position = Vertex3D(position.x, position.y, position.z);
@@ -913,16 +914,14 @@ void Mesh3DAnimation::createBoneGhostBody(unsigned int boneId, const BoneCollisi
     ci.ghostObject->setWorldTransform(transformation);
     ci.ghostObject->setUserPointer(this);
     ci.ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
+    ci.ghostObject->setUserIndex(EngineSetup::CollisionSource::BONE_COLLIDER);
+    ci.ghostObject->setUserIndex2(bmIndex);
 
-    ComponentsManager::get()
-        ->getComponentCollisions()
-        ->getDynamicsWorld()
-        ->addCollisionObject(
-            ci.ghostObject,
-            btBroadphaseProxy::DefaultFilter,
-            btBroadphaseProxy::DefaultFilter
-        )
-    ;
+    ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->addCollisionObject(
+        ci.ghostObject,
+        btBroadphaseProxy::DefaultFilter,
+        btBroadphaseProxy::DefaultFilter
+    );
 }
 
 void Mesh3DAnimation::UpdateBoneColliders()
@@ -961,11 +960,12 @@ void Mesh3DAnimation::UpdateBoneColliders()
     }
 }
 
-BonesMappingColliders *Mesh3DAnimation::getBonesMappingByName(const std::string& name)
+BonesMappingColliders *Mesh3DAnimation::getBonesMappingByName(const std::string& name, int &index)
 {
-    for (auto &b : boneMappingColliders) {
-        if (b.nameMapping == name) {
-            return &b;
+    for (int i = 0; i < boneMappingColliders.size(); i++) {
+        if (boneMappingColliders[i].nameMapping == name) {
+            index = i;
+            return &boneMappingColliders[i];
         }
     }
 
@@ -978,7 +978,8 @@ const std::vector<BonesMappingColliders> *Mesh3DAnimation::getBoneMappingCollide
 
 void Mesh3DAnimation::removeBonesColliderMapping(const std::string& name)
 {
-    auto bm = getBonesMappingByName(name);
+    int im;
+    auto bm= getBonesMappingByName(name, im);
     Logging::Message("Deleting bone collider mapping: %s, new boneColliderIndex: %d", name.c_str(), boneColliderIndex);
 
     if (bm == nullptr) return;
@@ -1004,5 +1005,25 @@ void Mesh3DAnimation::removeBonesColliderMapping(const std::string& name)
         boneColliderIndex = -1;
     } else if (boneColliderIndex >= boneMappingColliders.size()) {
         boneColliderIndex = (int)boneMappingColliders.size() - 1; // Ajustar al último elemento válido
+    }
+}
+
+void Mesh3DAnimation::resolveCollision(CollisionInfo with)
+{
+    if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
+        auto *object = (Object3D*) (with.with);
+
+        if (with.source == EngineSetup::CollisionSource::OBJECT_COLLIDER) {
+            Logging::Message("Mesh3DAnimation: Collision %s with object: %s",  getLabel().c_str(), object->getLabel().c_str());
+        }
+
+        if (with.source == EngineSetup::CollisionSource::BONE_COLLIDER) {
+            Logging::Message("Mesh3DAnimation: Collision %s Bone Collider: %s, with object: %s",  getLabel().c_str(), boneMappingColliders[with.boneIndexMapping].nameMapping.c_str(), object->getLabel().c_str());
+        }
+    }
+
+    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
+        auto *object = (Object3D*) (with.with);
+        runResolveCollisionScripts(object);
     }
 }

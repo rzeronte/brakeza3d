@@ -177,15 +177,18 @@ public:
 
     void UpdateBoneColliders();
 
-    BonesMappingColliders *getBonesMappingByName(const std::string& name);
+    BonesMappingColliders *getBonesMappingByName(const std::string& name, int &index);
 
     const std::vector<BonesMappingColliders> *getBoneMappingColliders() const;
 
     int boneColliderIndex;
 
-    void createBoneGhostBody(unsigned int boneId, const BoneCollisionShape &shape, BoneColliderInfo &ci);
+    void createBoneGhostBody(int bmIndex, unsigned int boneId, const BoneCollisionShape &shape, BoneColliderInfo &ci);
 
     void removeBonesColliderMapping(const std::string &name);
+
+    void resolveCollision(CollisionInfo with);
+
 };
 
 

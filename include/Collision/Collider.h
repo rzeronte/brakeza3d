@@ -5,6 +5,7 @@
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include "../Objects/Vertex3D.h"
 #include "../Render/M3.h"
+#include "CollisionInfo.h"
 #include <glm/vec2.hpp>
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 #include <vector>
@@ -54,7 +55,7 @@ protected:
 public:
     Collider();
 
-    virtual void resolveCollision(Collider *o);
+    virtual void resolveCollision(CollisionInfo o);
     virtual void integrate();
 
     [[nodiscard]] bool isCollisionsEnabled() const;

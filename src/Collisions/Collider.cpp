@@ -45,7 +45,7 @@ void Collider::setCollisionsEnabled(bool value)
     this->collisionsEnabled = value;
 }
 
-void Collider::resolveCollision(Collider *o)
+void Collider::resolveCollision(CollisionInfo o)
 {
 }
 
@@ -127,6 +127,7 @@ void Collider::makeSimpleGhostBody(
     ghostObject->setCollisionShape(convexHullShape);
     ghostObject->setWorldTransform(transformation);
     ghostObject->setUserPointer(this);
+    ghostObject->setUserIndex(EngineSetup::CollisionSource::OBJECT_COLLIDER);
     ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 

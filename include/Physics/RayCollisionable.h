@@ -24,7 +24,7 @@ public:
 
     explicit RayCollisionable(const Vertex3D &ray, int filterGroup, int filterMask);
 
-    void resolveCollision(Collider *objectWithCollision) override;
+    void resolveCollision(CollisionInfo objectWithCollision) override;
 
     void onUpdate() override;
 

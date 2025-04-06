@@ -540,6 +540,7 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
     ghostObject->setWorldTransform(Tools::GLMMatrixToBulletTransform(getModelMatrix()));
     ghostObject->setCollisionShape(convexHullShape);
     ghostObject->setUserPointer(this);
+    ghostObject->setUserIndex(EngineSetup::CollisionSource::OBJECT_COLLIDER);
 
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 }
@@ -698,6 +699,7 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
     body->activate(true);
     body->setContactProcessingThreshold(BT_LARGE_FLOAT);
     body->setUserPointer(this);
+    body->setUserIndex(EngineSetup::CollisionSource::OBJECT_COLLIDER);
     body->setRestitution(restitution);
     body->setActivationState(ACTIVE_TAG);
     body->setLinearFactor(linearFactor.toBullet());
@@ -733,13 +735,14 @@ void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *
     body->activate(true);
     body->setContactProcessingThreshold(BT_LARGE_FLOAT);
     body->setUserPointer(this);
+    body->setUserIndex(EngineSetup::CollisionSource::OBJECT_COLLIDER);
     body->setAngularFactor(angularFactor.toBullet());
 
     if (mass <= 0) {
         body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
     }
 
-    world->addRigidBody(this->body, collisionGroup, collisionMask);
+    world->addRigidBody(body, collisionGroup, collisionMask);
 }
 
 btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia)

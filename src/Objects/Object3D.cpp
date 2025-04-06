@@ -823,6 +823,7 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
     }
     kinematicBody->setCollisionShape(capsule);
     kinematicBody->setUserPointer(this);
+    kinematicBody->setUserIndex(EngineSetup::CollisionSource::OBJECT_COLLIDER);
     kinematicBody->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 
     characterController = new btKinematicCharacterController(
@@ -886,6 +887,7 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     body = new btRigidBody(cInfo);
     body->activate(true);
     body->setUserPointer(this);
+    body->setUserIndex(EngineSetup::CollisionSource::OBJECT_COLLIDER);
     body->setRestitution(restitution);
     body->setAngularFactor(angularFactor.toBullet());
     body->setLinearFactor(linearFactor.toBullet());
@@ -934,15 +936,16 @@ void Object3D::updateFromBullet()
     setRotation(M3::fromMat3Bullet(matrixRotation));
 }
 
-void Object3D::resolveCollision(Collider *with)
+void Object3D::resolveCollision(CollisionInfo with)
 {
     if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
-        auto *object = dynamic_cast<Object3D*> (with);
+        auto *object = (Object3D*) (with.with);
         Logging::Message("Object3D: Collision %s with %s",  getLabel().c_str(), object->getLabel().c_str());
     }
 
     if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
-        runResolveCollisionScripts(with);
+        auto *object = (Object3D*) (with.with);
+        runResolveCollisionScripts(object);
     }
 }
 

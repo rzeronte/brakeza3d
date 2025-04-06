@@ -51,7 +51,7 @@ void Projectile::onUpdate()
     Mesh3D::onUpdate();
 }
 
-void Projectile::resolveCollision(Collider *objectWithCollision)
+void Projectile::resolveCollision(CollisionInfo objectWithCollision)
 {
     Collider::resolveCollision(objectWithCollision);
 }

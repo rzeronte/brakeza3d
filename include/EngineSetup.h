@@ -206,6 +206,11 @@ public:
         diffuse = 2,
         specular = 3
     };
+
+    enum CollisionSource {
+        OBJECT_COLLIDER = 1,
+        BONE_COLLIDER = 2
+    };
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

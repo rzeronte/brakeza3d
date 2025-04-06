@@ -192,7 +192,7 @@ public:
     void makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) override;
     void integrate() override;
     void updateFromBullet();
-    void resolveCollision(Collider *with) override;
+    void resolveCollision(CollisionInfo with) override;
     void runResolveCollisionScripts(Collider *with);
 
     [[nodiscard]] const sol::environment &getLuaEnvironment() const;
