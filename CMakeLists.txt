@@ -223,6 +223,8 @@ add_executable(Brakeza3D
         include/OpenGL/ShaderOpenGLBonesTransforms.h
         src/Collisions/ColliderMesh3DAnimation.cpp
         include/Collision/AssimpAnimationService.h
+        include/Collision/CollisionInfo.cpp
+        include/Collision/CollisionInfo.h
 )
 
 target_link_libraries(Brakeza3D
