@@ -1,6 +1,7 @@
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Physics/Projectile.h"
+#include "../../include/Collision/CollisionInfo.h"
 
 ComponentCollisions::ComponentCollisions()
 :
@@ -100,8 +101,11 @@ void ComponentCollisions::checkCollisionsForAll()
             auto *brkObjectA = (Collider *) obA->getUserPointer();
             auto *brkObjectB = (Collider *) obB->getUserPointer();
 
-            brkObjectA->resolveCollision(brkObjectB);
-            brkObjectB->resolveCollision(brkObjectA);
+            auto cIA = CollisionInfo(brkObjectB, obA->getUserIndex(), obA->getUserIndex2());
+            auto cIB = CollisionInfo(brkObjectA, obB->getUserIndex(), obB->getUserIndex2());
+
+            brkObjectA->resolveCollision(cIA);
+            brkObjectB->resolveCollision(cIB);
         }
     }
 }
@@ -227,11 +231,7 @@ bool ComponentCollisions::isRayCollisionWith(Vertex3D from, Vertex3D to, Object3
     rayCallback.m_collisionFilterMask = EngineSetup::collisionGroups::AllFilter;
     rayCallback.m_closestHitFraction = 1.0;
 
-    dynamicsWorld->rayTest(
-        from.toBullet(),
-        to.toBullet(),
-        rayCallback
-    );
+    dynamicsWorld->rayTest(from.toBullet(),to.toBullet(),rayCallback);
 
     if (rayCallback.hasHit()) {
         auto *objectWithCollision = (Object3D *) rayCallback.m_collisionObject->getUserPointer();
