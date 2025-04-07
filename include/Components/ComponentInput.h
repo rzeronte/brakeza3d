@@ -32,6 +32,18 @@ private:
     float controllerAxisTriggerLeft;
     float controllerAxisTriggerRight;
 
+    Uint8 controllerPadUp;
+    Uint8 controllerPadDown;
+    Uint8 controllerPadLeft;
+    Uint8 controllerPadRight;
+
+    Uint8 controllerShoulderLeft;
+    Uint8 controllerShoulderRight;
+
+    Uint8 controllerButtonBack;
+    Uint8 controllerButtonGuide;
+    Uint8 controllerButtonStart;
+
     Uint32 mouseButtons;
     int mouseX;
     int mouseY;
@@ -140,6 +152,26 @@ public:
     bool isDrag() const;
 
     void handleDeleteSelectedObject(SDL_Event *e);
+
+    bool isGameControllerEnabled();
+
+    Uint8 getControllerPadUp() const;
+
+    Uint8 getControllerPadDown() const;
+
+    Uint8 getControllerPadLeft() const;
+
+    Uint8 getControllerPadRight() const;
+
+    Uint8 getControllerShoulderLeft() const;
+
+    Uint8 getControllerShoulderRight() const;
+
+    Uint8 getControllerButtonBack() const;
+
+    Uint8 getControllerButtonGuide() const;
+
+    Uint8 getControllerButtonStart() const;
 };
 
 
