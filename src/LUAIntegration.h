@@ -191,10 +191,29 @@ void LUAIntegration(sol::state &lua)
         "getMouseMotionYRel", &ComponentInput::getMouseMotionYRel,
         "isLeftMouseButtonPressed", &ComponentInput::isLeftMouseButtonPressed,
         "isRightMouseButtonPressed", &ComponentInput::isRightMouseButtonPressed,
+        "isGameControllerEnabled", &ComponentInput::isGameControllerEnabled,
         "getControllerButtonA",  &ComponentInput::getControllerButtonA,
         "getControllerButtonB",  &ComponentInput::getControllerButtonB,
         "getControllerButtonX",  &ComponentInput::getControllerButtonX,
-        "getControllerButtonY",  &ComponentInput::getControllerButtonY
+        "getControllerButtonY",  &ComponentInput::getControllerButtonY,
+        "getControllerAxisTriggerLeft", &ComponentInput::getControllerAxisTriggerLeft,
+        "getControllerAxisTriggerRight", &ComponentInput::getControllerAxisTriggerRight,
+
+        "getControllerAxisLeftX", &ComponentInput::getControllerAxisLeftX,
+        "getControllerAxisLeftY", &ComponentInput::getControllerAxisLeftY,
+        "getControllerAxisRightX", &ComponentInput::getControllerAxisRightX,
+        "getControllerAxisRightY", &ComponentInput::getControllerAxisRightY,
+        "getControllerPadUp", &ComponentInput::getControllerPadUp,
+        "getControllerPadDown", &ComponentInput::getControllerPadDown,
+        "getControllerPadLeft", &ComponentInput::getControllerPadLeft,
+        "getControllerPadRight", &ComponentInput::getControllerPadRight,
+
+         "getControllerShoulderLeft", &ComponentInput::getControllerShoulderLeft,
+         "getControllerShoulderRight", &ComponentInput::getControllerShoulderRight,
+
+         "getControllerButtonBack", &ComponentInput::getControllerButtonBack,
+         "getControllerButtonGuide", &ComponentInput::getControllerButtonGuide,
+         "getControllerButtonStart", &ComponentInput::getControllerButtonStart
     );
 
     lua.new_usertype<ComponentsManager>("ComponentsManager",

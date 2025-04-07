@@ -252,6 +252,18 @@ void ComponentInput::updateGamePadStates()
     controllerButtonX = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_X);
     controllerButtonY = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_Y);
 
+    controllerPadUp = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_DPAD_UP);
+    controllerPadDown = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+    controllerPadLeft = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+    controllerPadRight = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+
+    controllerShoulderLeft = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+    controllerShoulderRight = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
+
+    controllerButtonBack = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_BACK);
+    controllerButtonGuide = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_GUIDE);
+    controllerButtonStart = SDL_GameControllerGetButton(gameController, SDL_CONTROLLER_BUTTON_START);
+
     controllerAxisLeftX = (float) SDL_GameControllerGetAxis(gameController, (SDL_GameControllerAxis)0)/32768.0f;
     controllerAxisLeftY = (float) SDL_GameControllerGetAxis(gameController, (SDL_GameControllerAxis)1)/32768.0f;
 
@@ -469,4 +481,47 @@ void ComponentInput::handleDeleteSelectedObject(SDL_Event *e)
             ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
         }
     }
+}
+
+bool ComponentInput::isGameControllerEnabled()
+{
+    if (gameController != nullptr) return true;
+
+    return false;
+}
+
+Uint8 ComponentInput::getControllerPadUp() const {
+    return controllerPadUp;
+}
+
+Uint8 ComponentInput::getControllerPadDown() const {
+    return controllerPadDown;
+}
+
+Uint8 ComponentInput::getControllerPadLeft() const {
+    return controllerPadLeft;
+}
+
+Uint8 ComponentInput::getControllerPadRight() const {
+    return controllerPadRight;
+}
+
+Uint8 ComponentInput::getControllerShoulderLeft() const {
+    return controllerShoulderLeft;
+}
+
+Uint8 ComponentInput::getControllerShoulderRight() const {
+    return controllerShoulderRight;
+}
+
+Uint8 ComponentInput::getControllerButtonBack() const {
+    return controllerButtonBack;
+}
+
+Uint8 ComponentInput::getControllerButtonGuide() const {
+    return controllerButtonGuide;
+}
+
+Uint8 ComponentInput::getControllerButtonStart() const {
+    return controllerButtonStart;
 }

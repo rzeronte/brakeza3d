@@ -1138,6 +1138,7 @@ void GUIManager::drawKeyboardMouseSettings()
     ImGui::Separator();
     ImGui::Text(("Enabled: " + std::to_string(input->isEnabled())).c_str());
     ImGui::Separator();
+    ImGui::Text(("Game Controller Enabled: " + std::to_string(input->isGameControllerEnabled())).c_str());
     ImGui::Text(("Controller Button A: " + std::to_string(input->getControllerButtonA())).c_str());
     ImGui::Text(("Controller Button B: " + std::to_string(input->getControllerButtonB())).c_str());
     ImGui::Text(("Controller Button X: " + std::to_string(input->getControllerButtonX())).c_str());
@@ -1146,6 +1147,17 @@ void GUIManager::drawKeyboardMouseSettings()
     ImGui::Text(("Controller AxisLeft Y: " + std::to_string(input->getControllerAxisLeftY())).c_str());
     ImGui::Text(("Controller AxisRight X: " + std::to_string(input->getControllerAxisRightX())).c_str());
     ImGui::Text(("Controller AxisRight Y: " + std::to_string(input->getControllerAxisRightY())).c_str());
+    ImGui::Text(("Controller TriggerLeft: " + std::to_string(input->getControllerAxisTriggerLeft())).c_str());
+    ImGui::Text(("Controller TriggerRight: " + std::to_string(input->getControllerAxisTriggerRight())).c_str());
+    ImGui::Text(("Controller Pad Up: " + std::to_string(input->getControllerPadUp())).c_str());
+    ImGui::Text(("Controller Pad Down: " + std::to_string(input->getControllerPadDown())).c_str());
+    ImGui::Text(("Controller Pad Left: " + std::to_string(input->getControllerPadLeft())).c_str());
+    ImGui::Text(("Controller Pad Right: " + std::to_string(input->getControllerPadRight())).c_str());
+    ImGui::Text(("Controller Shoulder Left: " + std::to_string(input->getControllerShoulderLeft())).c_str());
+    ImGui::Text(("Controller Shoulder Right: " + std::to_string(input->getControllerShoulderRight())).c_str());
+    ImGui::Text(("Controller Button Back: " + std::to_string(input->getControllerButtonBack())).c_str());
+    ImGui::Text(("Controller Button Guide: " + std::to_string(input->getControllerButtonGuide())).c_str());
+    ImGui::Text(("Controller Button Start: " + std::to_string(input->getControllerButtonStart())).c_str());
 }
 
 void GUIManager::drawImages()
