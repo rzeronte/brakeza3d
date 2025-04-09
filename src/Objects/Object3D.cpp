@@ -944,17 +944,16 @@ void Object3D::resolveCollision(CollisionInfo with)
     }
 
     if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
-        auto *object = (Object3D*) (with.with);
-        runResolveCollisionScripts(object);
+        runResolveCollisionScripts(with);
     }
 }
 
-void Object3D::runResolveCollisionScripts(Collider *with)
+void Object3D::runResolveCollisionScripts(CollisionInfo with)
 {
-    auto *object = dynamic_cast<Object3D*> (with);
+    auto *object = (Object3D*) (with.with);
     const sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
 
-    sol::object luaValue = sol::make_object(lua, object);
+    sol::object luaValue = sol::make_object(lua, with);
 
     for (auto script : scripts) {
         script->runEnvironment(luaEnvironment, "onCollision", luaValue);

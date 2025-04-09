@@ -6,8 +6,10 @@ end
 
 function onCollision(with)
     if with ~= nil then
-        print("Collision with " .. with:getLabel())
+        print("Script: Collision With: " .. with:getObject():getLabel())
+        print("Script: Collision Source: " .. with:getSource())
+        print("Script: Collision BoneIndexMapping: " .. with:getBoneIndexMapping())
     else
-        print("Collision with unknow object")
+        print("Script: Collision with unknow object")
     end
 end

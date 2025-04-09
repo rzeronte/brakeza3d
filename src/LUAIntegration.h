@@ -539,6 +539,14 @@ void LUAIntegration(sol::state &lua)
         "z", &glm::vec4::z,
         "w", &glm::vec4::w
     );
+
+    lua.new_usertype<CollisionInfo>("CollisionInfo",
+        sol::constructors<CollisionInfo(void*, int, int)>(),
+        "with", &CollisionInfo::with,
+        "getSource", &CollisionInfo::getSource,
+        "getBoneIndexMapping", &CollisionInfo::getBoneIndexMapping,
+        "getObject", &CollisionInfo::getObject
+    );
 }
 
 #endif //BRAKEZA3D_LUAINTEGRATION_H

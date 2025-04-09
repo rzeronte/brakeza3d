@@ -7,6 +7,7 @@
 
 
 #include "../EngineSetup.h"
+class Object3D;
 
 class CollisionInfo {
 
@@ -16,6 +17,13 @@ public:
     void *with;
     int source;
     int boneIndexMapping;
+
+    int getSource() const;
+
+    int getBoneIndexMapping() const;
+
+    Object3D* getObject() const; // solo forward declaration es suficiente
+
 };
 
 

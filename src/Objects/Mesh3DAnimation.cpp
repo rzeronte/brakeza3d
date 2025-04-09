@@ -1023,7 +1023,6 @@ void Mesh3DAnimation::resolveCollision(CollisionInfo with)
     }
 
     if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
-        auto *object = (Object3D*) (with.with);
-        runResolveCollisionScripts(object);
+        runResolveCollisionScripts(with);
     }
 }

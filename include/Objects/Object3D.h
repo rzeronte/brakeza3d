@@ -193,7 +193,7 @@ public:
     void integrate() override;
     void updateFromBullet();
     void resolveCollision(CollisionInfo with) override;
-    void runResolveCollisionScripts(Collider *with);
+    void runResolveCollisionScripts(CollisionInfo with);
 
     [[nodiscard]] const sol::environment &getLuaEnvironment() const;
 

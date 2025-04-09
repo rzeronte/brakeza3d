@@ -16,3 +16,15 @@ CollisionInfo::CollisionInfo(
 {
 
 }
+
+int CollisionInfo::getSource() const {
+    return source;
+}
+
+int CollisionInfo::getBoneIndexMapping() const {
+    return boneIndexMapping;
+}
+
+Object3D *CollisionInfo::getObject() const {
+    return (Object3D*) with;
+}
