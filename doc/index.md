@@ -603,6 +603,7 @@ end
 - [Forma del colisionador](#forma-del-colisionador)
 - [Desactivar colisiones](#desactivar-colisiones)
 - [Modo de colisión KINEMATIC](#modo-de-colisión-kinematic)
+- [Mapeado de colisionadores y huesos](#mapeado-de-colisionadores-y-huesos)
 
 ---
 
@@ -642,8 +643,13 @@ brakeza:addObject3D(eye2, 'myTwoEye')
 
 ### Forma del colisionador
 
-Cualquier ``Object3D`` puede trabajar con la forma de colisionador denominada `CollisionShape.SIMPLE_SHAPE`.
-**Es el modo por defecto**. La forma de colisión será un paralelogramo de un tamaño configurable.
+Existen las siguientes opciones:
+
+- `CollisionShape.SIMPLE_SHAPE`
+- `CollisionShape.CAPSULE`
+- `CollisionShape.TRIANGLE3D_MESH_SHAPE`
+
+Cualquier ``Object3D`` puede trabajar con la forma de colisionador denominada `SIMPLE_SHAPE` o `CAPSULE`.
 Su performance es muy buena.
 
 No obstante, todos aquellos objetos que dependen de `Mesh3D` podrán crearse con una forma de colisionador
@@ -702,6 +708,28 @@ Puedes utilizar los siguientes métodos para configurar el comportamiento físic
 - `jump()`
 - `onGround(): boolean`
 ---
+
+### Mapeado de colisionadores y huesos
+
+Los objetos de tipo `Mesh3DAnimation` tienen la posibilidad de definir colisionadores para los huesos
+creados para animar la geometría del modelo.
+
+En tus scripts LUA puedes consultar si la colisión procede del colisionador propio del objeto, o si procede
+de un colisionador de hueso y el índice del mapa de huesos al que pertenece. Un ejemplo útil, sería la definición de
+colisionadores para huesos de tipo "arma" en las animaciones, para poder diferencias colisiones con ese hueso 
+específico.
+
+```lua 
+function onCollision(with)
+    if with ~= nil then
+        print("Script: Collision With: " .. with:getObject():getLabel())
+        print("Script: Collision Source: " .. with:getSource())
+        print("Script: Collision BoneIndexMapping: " .. with:getBoneIndexMapping())
+    else
+        print("Script: Collision with unknow object")
+    end
+end
+```
 
 >[Back to index](#index)
 
