@@ -57,6 +57,8 @@ void ComponentRender::onStart()
     shaderOGLFOG = new ShaderOpenGLFOG();
     shaderOGLTint = new ShaderOpenGLTint();
     shaderOGLBonesTransforms = new ShaderOpenGLBonesTransforms();
+
+    createGBuffer();
 }
 
 void ComponentRender::preUpdate()
@@ -518,4 +520,74 @@ void ComponentRender::FillOGLBuffers(std::vector<meshData> &meshes)
         glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, m.vertices.size() * sizeof(glm::vec4), &m.vertices[0], GL_DYNAMIC_COPY);  // Inicializamos el buffer vacío
         glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);  // Desvinculamos el buffer
     }
+}
+
+GBuffer ComponentRender::createGBuffer()
+{
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    int width = window->getWidth();
+    int height = window->getHeight();
+
+    SDL_GetRendererOutputSize(window->getRenderer(), &width, &height);
+    GBuffer gbuffer;
+
+    // Crear el framebuffer
+    glGenFramebuffers(1, &gbuffer.FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, gbuffer.FBO);
+
+    // Crear texturas del G-Buffer
+    // --- Posición ---
+    glGenTextures(1, &gbuffer.gPosition);
+    glBindTexture(GL_TEXTURE_2D, gbuffer.gPosition);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gbuffer.gPosition, 0);
+
+    // --- Normal ---
+    glGenTextures(1, &gbuffer.gNormal);
+    glBindTexture(GL_TEXTURE_2D, gbuffer.gNormal);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gbuffer.gNormal, 0);
+
+    // --- Albedo + Specular ---
+    glGenTextures(1, &gbuffer.gAlbedoSpec);
+    glBindTexture(GL_TEXTURE_2D, gbuffer.gAlbedoSpec);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gbuffer.gAlbedoSpec, 0);
+
+    // Indicar qué buffers se van a escribir
+    GLuint attachments[3] = {
+        GL_COLOR_ATTACHMENT0,
+        GL_COLOR_ATTACHMENT1,
+        GL_COLOR_ATTACHMENT2
+    };
+    glDrawBuffers(3, attachments);
+
+    // Buffer de profundidad (Renderbuffer)
+    glGenRenderbuffers(1, &gbuffer.rboDepth);
+    glBindRenderbuffer(GL_RENDERBUFFER, gbuffer.rboDepth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gbuffer.rboDepth);
+
+    // Comprobar si está completo
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cerr << "[ERROR] G-Buffer: Framebuffer no está completo!" << std::endl;
+    } else {
+        std::cout << "G-Buffer creado correctamente (" << width << "x" << height << ")" << std::endl;
+    }
+
+    // Desvincular
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    return gbuffer;
+}
+
+GBuffer& ComponentRender::getGBuffer()
+{
+    return this->gBuffer;
 }

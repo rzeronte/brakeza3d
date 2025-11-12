@@ -31,11 +31,30 @@
 #include "../OpenGL/ShaderOpenGLFOG.h"
 #include "../OpenGL/ShaderOpenGLTint.h"
 #include "../OpenGL/ShaderOpenGLLine3D.h"
-#include "../OpenGL/ShaderOpenGLCustom.h"
 #include "../OpenGL/ShaderOpenGLBonesTransforms.h"
 
+struct GBuffer {
+    GLuint FBO;
+    GLuint gPosition;
+    GLuint gNormal;
+    GLuint gAlbedoSpec;
+    GLuint rboDepth;
+
+    [[nodiscard]] GLuint getFBO() const {
+        return FBO;
+    }
+    [[nodiscard]] GLuint getPositions() const {
+        return gPosition;
+    }
+    [[nodiscard]] GLuint getAlbedo() const {
+        return gAlbedoSpec;
+    }
+    [[nodiscard]] GLuint getDepth() const {
+        return rboDepth;
+    }
+};
+
 class ComponentRender : public Component {
-private:
 
     int fps;
     int fpsFrameCounter;
@@ -69,6 +88,7 @@ private:
     GLuint lastFrameBufferUsed;
     GLuint lastProgramUsed;
 
+    GBuffer gBuffer;
 
     std::map<std::string, ShaderCustomTypes> ShaderTypesMapping = {
         {"Postprocessing", ShaderCustomTypes::SHADER_POSTPROCESSING},
@@ -173,7 +193,7 @@ public:
 
     [[nodiscard]] ShaderOpenGLTint *getShaderOGLTint() const;
 
-    ShaderOpenGLBonesTransforms *getShaderOGLBonesTransforms() const;
+    [[nodiscard]] ShaderOpenGLBonesTransforms *getShaderOGLBonesTransforms() const;
 
     [[nodiscard]] ShaderOpenGLDepthMap *getShaderOGLDepthMap() const;
 
@@ -181,7 +201,7 @@ public:
 
     void setLastFrameBufferUsed(GLuint lastFrameBufferUsed);
 
-    GLuint getLastProgramUsed() const;
+    [[nodiscard]] GLuint getLastProgramUsed() const;
 
     void setLastProgramUsed(GLuint lastProgramUsed);
 
@@ -189,11 +209,15 @@ public:
 
     void changeOpenGLProgram(GLuint);
 
-    const std::map<std::string, ShaderCustomTypes> &getShaderTypesMapping() const;
+    [[nodiscard]] const std::map<std::string, ShaderCustomTypes> &getShaderTypesMapping() const;
 
     void resizeFramebuffers();
 
     void FillOGLBuffers(std::vector<meshData> &meshes);
+
+    GBuffer createGBuffer();
+
+    GBuffer& getGBuffer();
 };
 
 

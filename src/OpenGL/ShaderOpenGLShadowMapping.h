@@ -1,0 +1,13 @@
+//
+// Created by Eduardo on 12/11/2025.
+//
+
+#ifndef BRAKEZA3D_SHADEROPENGLSHADOWMAPPING_H
+#define BRAKEZA3D_SHADEROPENGLSHADOWMAPPING_H
+
+
+class ShaderOpenGLShadowMapping {
+};
+
+
+#endif //BRAKEZA3D_SHADEROPENGLSHADOWMAPPING_H

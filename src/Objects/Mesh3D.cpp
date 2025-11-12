@@ -34,7 +34,7 @@ void Mesh3D::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        render->getShaderOGLRender()->renderMesh(this,window->getSceneFramebuffer());
+        render->getShaderOGLRender()->renderMesh(this, window->getSceneFramebuffer());
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {

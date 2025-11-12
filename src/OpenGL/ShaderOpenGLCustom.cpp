@@ -374,7 +374,7 @@ void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
                     ImGui::TableSetColumnIndex(0);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
-                    auto globalTexture = ComponentsManager::get()->getComponentWindow()->depthTexture;
+                    auto globalTexture = ComponentsManager::get()->getComponentWindow()->getDepthTexture();
                     ImGui::Image((ImTextureID) globalTexture, ImVec2(36, 36));
                     ImGui::SetItemTooltip("Depth Texture");
 
@@ -400,7 +400,7 @@ void ShaderOpenGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
                     ImGui::TableSetColumnIndex(0);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
-                    auto globalTexture = ComponentsManager::get()->getComponentWindow()->globalTexture;
+                    auto globalTexture = ComponentsManager::get()->getComponentWindow()->getGlobalTexture();
                     ImGui::Image((ImTextureID) globalTexture, ImVec2(36, 36));
                     ImGui::SetItemTooltip("Render scene");
 
@@ -672,13 +672,13 @@ void ShaderOpenGLCustom::setDataTypesUniforms()
                 break;
             }
             case ShaderOpenGLCustomDataType::SCENE: {
-                auto globalTexture = ComponentsManager::get()->getComponentWindow()->sceneTexture;
+                auto globalTexture = ComponentsManager::get()->getComponentWindow()->getSceneTexture();
                 setTexture(type.name, globalTexture, numTextures);
                 increaseNumberTextures();
                 break;
             }
             case ShaderOpenGLCustomDataType::DEPTH: {
-                auto globalTexture = ComponentsManager::get()->getComponentWindow()->depthTexture;
+                auto globalTexture = ComponentsManager::get()->getComponentWindow()->getDepthTexture();
                 setTexture(type.name, globalTexture, numTextures);
                 increaseNumberTextures();
                 break;
