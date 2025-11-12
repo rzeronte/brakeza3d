@@ -18,8 +18,11 @@ enum class ImGUIConfigs {
     CODING
 };
 
+struct OGLBuffer {
+
+};
+
 class ComponentWindow : public Component {
-private:
     SDL_Window *window;
 
     SDL_Renderer *renderer;
@@ -28,19 +31,20 @@ private:
 
     TTF_Font *fontDefault;
 
-    GLuint sceneFramebuffer;
-
-    GLuint backgroundFramebuffer;
-    GLuint backgroundTexture;
-
-    GLuint foregroundFramebuffer;
-    GLuint foregroundTexture;
-
-    GLuint uiFramebuffer;
-    GLuint uiTexture;
-
     GLuint globalFramebuffer;
+    GLuint sceneFramebuffer;
+    GLuint backgroundFramebuffer;
+    GLuint foregroundFramebuffer;
+    GLuint uiFramebuffer;
     GLuint postProcessingFramebuffer;
+
+    GLuint globalTexture;
+    GLuint sceneTexture;
+    GLuint backgroundTexture;
+    GLuint foregroundTexture;
+    GLuint uiTexture;
+    GLuint postProcessingTexture;
+    GLuint depthTexture;
 
     ImGuizmo::OPERATION guizmoOperation;
 
@@ -105,17 +109,11 @@ public:
 
     void createFramebuffer();
 
-
-    GLuint sceneTexture;
-
     [[nodiscard]] GLuint getGlobalFramebuffer() const;
-
-    GLuint globalTexture;
-    GLuint postProcessingTexture;
 
     [[nodiscard]] GLuint getPostProcessingFramebuffer() const;
 
-    void RenderLayersToMain();
+    void RenderLayersToMain() const;
 
     void ImGuiInitialize(const std::string &configFile);
     void saveImGuiCurrentLayout() const;
@@ -131,7 +129,11 @@ public:
 
     void setGuizmoOperation(ImGuizmo::OPERATION guizmoOperation);
 
-    GLuint depthTexture;
+    GLuint getDepthTexture() const;
+
+    GLuint getSceneTexture() const;
+
+    GLuint getGlobalTexture() const;
 };
 
 

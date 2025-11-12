@@ -347,7 +347,7 @@ void ComponentWindow::RenderLayersToGlobalFramebuffer() const
     }
 }
 
-void ComponentWindow::RenderLayersToMain()
+void ComponentWindow::RenderLayersToMain() const
 {
     auto render = ComponentsManager::get()->getComponentRender();
     auto shaderOGLImage = render->getShaderOGLImage();
@@ -588,4 +588,19 @@ ImGuizmo::OPERATION ComponentWindow::getGuizmoOperation() const
 void ComponentWindow::setGuizmoOperation(ImGuizmo::OPERATION guizmoOperation)
 {
     ComponentWindow::guizmoOperation = guizmoOperation;
+}
+
+GLuint ComponentWindow::getDepthTexture() const
+{
+    return depthTexture;
+}
+
+GLuint ComponentWindow::getSceneTexture() const
+{
+    return sceneTexture;
+}
+
+GLuint ComponentWindow::getGlobalTexture() const
+{
+    return globalTexture;
 }
