@@ -32,6 +32,8 @@
 #include "../OpenGL/ShaderOpenGLTint.h"
 #include "../OpenGL/ShaderOpenGLLine3D.h"
 #include "../OpenGL/ShaderOpenGLBonesTransforms.h"
+#include "../OpenGL/ShaderOpenGLGBuffer.h"
+#include "../OpenGL/ShaderOpenGLDeferredLighting.h"
 
 struct GBuffer {
     GLuint FBO;
@@ -48,6 +50,9 @@ struct GBuffer {
     }
     [[nodiscard]] GLuint getAlbedo() const {
         return gAlbedoSpec;
+    }
+    [[nodiscard]] GLuint getNormal() const {
+        return gNormal;
     }
     [[nodiscard]] GLuint getDepth() const {
         return rboDepth;
@@ -84,11 +89,15 @@ class ComponentRender : public Component {
     ShaderOpenGLFOG *shaderOGLFOG;
     ShaderOpenGLTint *shaderOGLTint;
     ShaderOpenGLBonesTransforms *shaderOGLBonesTransforms;
+    ShaderOpenGLGBuffer *shaderOGLGBuffer;
+    ShaderOpenGLDeferredLighting *shaderOGLDeferredLighting;
 
     GLuint lastFrameBufferUsed;
     GLuint lastProgramUsed;
 
     GBuffer gBuffer;
+
+    bool useDeferredRendering;
 
     std::map<std::string, ShaderCustomTypes> ShaderTypesMapping = {
         {"Postprocessing", ShaderCustomTypes::SHADER_POSTPROCESSING},
@@ -96,7 +105,7 @@ class ComponentRender : public Component {
     };
 
 public:
-    ComponentRender();
+ComponentRender();
 
     ~ComponentRender() override;
 
@@ -197,6 +206,14 @@ public:
 
     [[nodiscard]] ShaderOpenGLDepthMap *getShaderOGLDepthMap() const;
 
+    [[nodiscard]] ShaderOpenGLGBuffer *getShaderOGLGBuffer() const;
+
+    [[nodiscard]] ShaderOpenGLDeferredLighting *getShaderOGLDeferredLighting() const;
+
+    [[nodiscard]] bool isUseDeferredRendering() const;
+
+    void setUseDeferredRendering(bool use);
+
     GLuint getLastFrameBufferUsed();
 
     void setLastFrameBufferUsed(GLuint lastFrameBufferUsed);
@@ -211,11 +228,13 @@ public:
 
     [[nodiscard]] const std::map<std::string, ShaderCustomTypes> &getShaderTypesMapping() const;
 
+    void resizeGBuffer();
+
     void resizeFramebuffers();
 
     void FillOGLBuffers(std::vector<meshData> &meshes);
 
-    GBuffer createGBuffer();
+    void createGBuffer();
 
     GBuffer& getGBuffer();
 };

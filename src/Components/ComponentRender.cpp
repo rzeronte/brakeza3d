@@ -1,4 +1,3 @@
-
 #include "../../include/Components/ComponentRender.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
@@ -28,8 +27,11 @@ ComponentRender::ComponentRender()
     shaderOGLFOG(nullptr),
     shaderOGLTint(nullptr),
     shaderOGLBonesTransforms(nullptr),
+    shaderOGLGBuffer(nullptr),
+    shaderOGLDeferredLighting(nullptr),
     lastFrameBufferUsed(0),
-    lastProgramUsed(0)
+    lastProgramUsed(0),
+    useDeferredRendering(false)
 {
 }
 
@@ -57,6 +59,8 @@ void ComponentRender::onStart()
     shaderOGLFOG = new ShaderOpenGLFOG();
     shaderOGLTint = new ShaderOpenGLTint();
     shaderOGLBonesTransforms = new ShaderOpenGLBonesTransforms();
+    shaderOGLGBuffer = new ShaderOpenGLGBuffer();
+    shaderOGLDeferredLighting = new ShaderOpenGLDeferredLighting();
 
     createGBuffer();
 }
@@ -440,6 +444,23 @@ ShaderOpenGLDepthMap *ComponentRender::getShaderOGLDepthMap() const {
     return shaderOGLDepthMap;
 }
 
+ShaderOpenGLGBuffer *ComponentRender::getShaderOGLGBuffer() const {
+    return shaderOGLGBuffer;
+}
+
+ShaderOpenGLDeferredLighting *ComponentRender::getShaderOGLDeferredLighting() const {
+    return shaderOGLDeferredLighting;
+}
+
+bool ComponentRender::isUseDeferredRendering() const {
+    return useDeferredRendering;
+}
+
+void ComponentRender::setUseDeferredRendering(bool use) {
+    useDeferredRendering = use;
+    Logging::Message("Deferred Rendering: %s", use ? "ENABLED" : "DISABLED");
+}
+
 GLuint ComponentRender::getLastFrameBufferUsed() {
     return lastFrameBufferUsed;
 }
@@ -477,6 +498,16 @@ const std::map<std::string, ShaderCustomTypes> &ComponentRender::getShaderTypesM
     return ShaderTypesMapping;
 }
 
+void ComponentRender::resizeGBuffer()
+{
+    glDeleteFramebuffers(1, &gBuffer.FBO);
+    glDeleteTextures(1, &gBuffer.gAlbedoSpec);
+    glDeleteTextures(1, &gBuffer.gNormal);
+    glDeleteTextures(1, &gBuffer.gPosition);
+    glDeleteTextures(1, &gBuffer.rboDepth);
+
+    createGBuffer();
+}
 
 void ComponentRender::resizeFramebuffers()
 {
@@ -494,6 +525,10 @@ void ComponentRender::resizeFramebuffers()
     getShaderOGLDOF()->destroy();
     getShaderOGLDepthMap()->destroy();
     getShaderOGLFOG()->destroy();
+    getShaderOGLGBuffer()->destroy();
+    getShaderOGLDeferredLighting()->destroy();
+
+    resizeGBuffer();
 
     for (auto s: sceneShaders) {
         s->destroy();
@@ -522,7 +557,7 @@ void ComponentRender::FillOGLBuffers(std::vector<meshData> &meshes)
     }
 }
 
-GBuffer ComponentRender::createGBuffer()
+void ComponentRender::createGBuffer()
 {
     auto window = ComponentsManager::get()->getComponentWindow();
 
@@ -530,36 +565,36 @@ GBuffer ComponentRender::createGBuffer()
     int height = window->getHeight();
 
     SDL_GetRendererOutputSize(window->getRenderer(), &width, &height);
-    GBuffer gbuffer;
 
     // Crear el framebuffer
-    glGenFramebuffers(1, &gbuffer.FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, gbuffer.FBO);
+    glGenFramebuffers(1, &gBuffer.FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer.FBO);
+
 
     // Crear texturas del G-Buffer
     // --- Posición ---
-    glGenTextures(1, &gbuffer.gPosition);
-    glBindTexture(GL_TEXTURE_2D, gbuffer.gPosition);
+    glGenTextures(1, &gBuffer.gPosition);
+    glBindTexture(GL_TEXTURE_2D, gBuffer.gPosition);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gbuffer.gPosition, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gBuffer.gPosition, 0);
 
     // --- Normal ---
-    glGenTextures(1, &gbuffer.gNormal);
-    glBindTexture(GL_TEXTURE_2D, gbuffer.gNormal);
+    glGenTextures(1, &gBuffer.gNormal);
+    glBindTexture(GL_TEXTURE_2D, gBuffer.gNormal);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gbuffer.gNormal, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gBuffer.gNormal, 0);
 
     // --- Albedo + Specular ---
-    glGenTextures(1, &gbuffer.gAlbedoSpec);
-    glBindTexture(GL_TEXTURE_2D, gbuffer.gAlbedoSpec);
+    glGenTextures(1, &gBuffer.gAlbedoSpec);
+    glBindTexture(GL_TEXTURE_2D, gBuffer.gAlbedoSpec);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gbuffer.gAlbedoSpec, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gBuffer.gAlbedoSpec, 0);
 
     // Indicar qué buffers se van a escribir
     GLuint attachments[3] = {
@@ -570,10 +605,10 @@ GBuffer ComponentRender::createGBuffer()
     glDrawBuffers(3, attachments);
 
     // Buffer de profundidad (Renderbuffer)
-    glGenRenderbuffers(1, &gbuffer.rboDepth);
-    glBindRenderbuffer(GL_RENDERBUFFER, gbuffer.rboDepth);
+    glGenRenderbuffers(1, &gBuffer.rboDepth);
+    glBindRenderbuffer(GL_RENDERBUFFER, gBuffer.rboDepth);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gbuffer.rboDepth);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gBuffer.rboDepth);
 
     // Comprobar si está completo
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -584,7 +619,6 @@ GBuffer ComponentRender::createGBuffer()
 
     // Desvincular
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    return gbuffer;
 }
 
 GBuffer& ComponentRender::getGBuffer()

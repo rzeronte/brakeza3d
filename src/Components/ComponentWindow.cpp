@@ -16,11 +16,11 @@ ComponentWindow::ComponentWindow()
     renderer(nullptr),
     screenSurface(nullptr),
     screenTexture(nullptr),
-    applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str())),
     fontDefault(nullptr),
+    guizmoOperation(ImGuizmo::TRANSLATE),
     ImGuiConfig(ImGUIConfigs::DEFAULT),
-    ImGuiConfigChanged(ImGUIConfigs::DEFAULT),
-    guizmoOperation(ImGuizmo::TRANSLATE)
+    applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str())),
+    ImGuiConfigChanged(ImGUIConfigs::DEFAULT)
 {
     initWindow();
     initFontsTTF();
@@ -325,9 +325,30 @@ void ComponentWindow::RenderLayersToGlobalFramebuffer() const
     auto render = ComponentsManager::get()->getComponentRender();
 
     auto shaderOGLImage = render->getShaderOGLImage();
+
+    // Si usamos deferred rendering, hacer lighting pass
+    auto gbuffer = render->getGBuffer();
+    if (render->isUseDeferredRendering()) {
+
+        //shaderOGLImage->renderTexture(gbuffer.getAlbedo(), 0, 0, width, height, 1, true, globalFramebuffer);
+
+        auto shaderRender = render->getShaderOGLRender();
+        // Lighting Pass: Leer del G-Buffer y escribir al sceneFramebuffer
+        render->getShaderOGLDeferredLighting()->render(
+            gbuffer.getPositions(),
+            gbuffer.getNormal(),
+            gbuffer.getAlbedo(),
+            shaderRender->getDirectionalLight(),
+            shaderRender->getNumLightPoints(),
+            shaderRender->getNumSpotLights(),
+            sceneFramebuffer
+        );
+    }
+
     shaderOGLImage->renderTexture(backgroundTexture, 0, 0, width, height, 1, true, globalFramebuffer);
     shaderOGLImage->renderTexture(sceneTexture, 0, 0, width, height, 1, true, globalFramebuffer);
     shaderOGLImage->renderTexture(postProcessingTexture, 0, 0, width, height, 1, true, globalFramebuffer);
+
 
     if (EngineSetup::get()->ENABLE_FOG) {
         auto shaderOGLFOG = render->getShaderOGLFOG();
@@ -378,6 +399,9 @@ void ComponentWindow::cleanFrameBuffers() const
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glBindFramebuffer(GL_FRAMEBUFFER, sceneFramebuffer);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentRender()->getGBuffer().FBO);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
