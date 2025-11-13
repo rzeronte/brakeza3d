@@ -30,8 +30,7 @@ ComponentRender::ComponentRender()
     shaderOGLGBuffer(nullptr),
     shaderOGLDeferredLighting(nullptr),
     lastFrameBufferUsed(0),
-    lastProgramUsed(0),
-    useDeferredRendering(false)
+    lastProgramUsed(0)
 {
 }
 
@@ -61,8 +60,6 @@ void ComponentRender::onStart()
     shaderOGLBonesTransforms = new ShaderOpenGLBonesTransforms();
     shaderOGLGBuffer = new ShaderOpenGLGBuffer();
     shaderOGLDeferredLighting = new ShaderOpenGLDeferredLighting();
-
-    createGBuffer();
 }
 
 void ComponentRender::preUpdate()
@@ -164,7 +161,7 @@ void ComponentRender::onUpdateSceneObjects()
 
     std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
 
-    for (auto o: sceneObjects) {
+    for (const auto o: sceneObjects) {
         if (o->isEnabled()) {
             o->onUpdate();
         }
@@ -452,15 +449,6 @@ ShaderOpenGLDeferredLighting *ComponentRender::getShaderOGLDeferredLighting() co
     return shaderOGLDeferredLighting;
 }
 
-bool ComponentRender::isUseDeferredRendering() const {
-    return useDeferredRendering;
-}
-
-void ComponentRender::setUseDeferredRendering(bool use) {
-    useDeferredRendering = use;
-    Logging::Message("Deferred Rendering: %s", use ? "ENABLED" : "DISABLED");
-}
-
 GLuint ComponentRender::getLastFrameBufferUsed() {
     return lastFrameBufferUsed;
 }
@@ -498,17 +486,6 @@ const std::map<std::string, ShaderCustomTypes> &ComponentRender::getShaderTypesM
     return ShaderTypesMapping;
 }
 
-void ComponentRender::resizeGBuffer()
-{
-    glDeleteFramebuffers(1, &gBuffer.FBO);
-    glDeleteTextures(1, &gBuffer.gAlbedoSpec);
-    glDeleteTextures(1, &gBuffer.gNormal);
-    glDeleteTextures(1, &gBuffer.gPosition);
-    glDeleteTextures(1, &gBuffer.rboDepth);
-
-    createGBuffer();
-}
-
 void ComponentRender::resizeFramebuffers()
 {
     Logging::Message("Resizing framebuffers...");
@@ -528,7 +505,6 @@ void ComponentRender::resizeFramebuffers()
     getShaderOGLGBuffer()->destroy();
     getShaderOGLDeferredLighting()->destroy();
 
-    resizeGBuffer();
 
     for (auto s: sceneShaders) {
         s->destroy();
@@ -557,71 +533,3 @@ void ComponentRender::FillOGLBuffers(std::vector<meshData> &meshes)
     }
 }
 
-void ComponentRender::createGBuffer()
-{
-    auto window = ComponentsManager::get()->getComponentWindow();
-
-    int width = window->getWidth();
-    int height = window->getHeight();
-
-    SDL_GetRendererOutputSize(window->getRenderer(), &width, &height);
-
-    // Crear el framebuffer
-    glGenFramebuffers(1, &gBuffer.FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer.FBO);
-
-
-    // Crear texturas del G-Buffer
-    // --- Posición ---
-    glGenTextures(1, &gBuffer.gPosition);
-    glBindTexture(GL_TEXTURE_2D, gBuffer.gPosition);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gBuffer.gPosition, 0);
-
-    // --- Normal ---
-    glGenTextures(1, &gBuffer.gNormal);
-    glBindTexture(GL_TEXTURE_2D, gBuffer.gNormal);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gBuffer.gNormal, 0);
-
-    // --- Albedo + Specular ---
-    glGenTextures(1, &gBuffer.gAlbedoSpec);
-    glBindTexture(GL_TEXTURE_2D, gBuffer.gAlbedoSpec);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gBuffer.gAlbedoSpec, 0);
-
-    // Indicar qué buffers se van a escribir
-    GLuint attachments[3] = {
-        GL_COLOR_ATTACHMENT0,
-        GL_COLOR_ATTACHMENT1,
-        GL_COLOR_ATTACHMENT2
-    };
-    glDrawBuffers(3, attachments);
-
-    // Buffer de profundidad (Renderbuffer)
-    glGenRenderbuffers(1, &gBuffer.rboDepth);
-    glBindRenderbuffer(GL_RENDERBUFFER, gBuffer.rboDepth);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gBuffer.rboDepth);
-
-    // Comprobar si está completo
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        std::cerr << "[ERROR] G-Buffer: Framebuffer no está completo!" << std::endl;
-    } else {
-        std::cout << "G-Buffer creado correctamente (" << width << "x" << height << ")" << std::endl;
-    }
-
-    // Desvincular
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-GBuffer& ComponentRender::getGBuffer()
-{
-    return this->gBuffer;
-}

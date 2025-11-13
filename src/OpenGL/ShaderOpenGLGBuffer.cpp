@@ -68,8 +68,11 @@ void ShaderOpenGLGBuffer::render(
 {
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    glDisable(GL_BLEND);
+
     glBindVertexArray(VertexArrayID);
 
     auto camera = ComponentsManager::get()->getComponentCamera();
@@ -96,7 +99,12 @@ void ShaderOpenGLGBuffer::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glBindVertexArray(0);
 }
 
 void ShaderOpenGLGBuffer::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
@@ -116,6 +124,8 @@ void ShaderOpenGLGBuffer::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer,
 
 void ShaderOpenGLGBuffer::destroy()
 {
-
-    // Cleanup if needed
+    if (VertexArrayID != 0) {
+        glDeleteVertexArrays(1, &VertexArrayID);
+        VertexArrayID = 0;
+    }
 }

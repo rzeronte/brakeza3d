@@ -48,7 +48,6 @@ in vec2 TexCoords;
 
 uniform vec3 viewPos;
 uniform DirLight dirLight;
-uniform SpotLight spotLight;
 uniform Material material;
 uniform int numLights;
 uniform int numSpotLights;
@@ -75,8 +74,6 @@ void main()
     for (int i = 0; i < numSpotLights; i++) {
         result += CalcSpotLight(spotLights[i], norm, FragPos, viewDir);
     }
-
-    result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
 
     FragColor = vec4(result, texture(material.diffuse, TexCoords).a * alpha);
 }

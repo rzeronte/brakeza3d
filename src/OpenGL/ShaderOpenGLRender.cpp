@@ -86,20 +86,6 @@ void ShaderOpenGLRender::render(
     setIntUniform(numSpotLightsUniform, (int) spotLights.size());
     setFloatUniform(alphaUniform, alpha);
 
-    Vertex3D forward = camera->getCamera()->getRotation().getTranspose() * Vertex3D(0, 0, -1);
-
-    // spotLight
-    setVec4("spotLight.position", glm::vec4(cameraPosition, 0));
-    setVec4("spotLight.direction", glm::vec4(forward.toGLM(), 0));
-    setVec4("spotLight.ambient", 0.0f, 0.0f, 0.0f, 0);
-    setVec4("spotLight.diffuse", 1.0f, 1.0f, 1.0f, 0);
-    setVec4("spotLight.specular", 1.0f, 1.0f, 1.0f, 0);
-    setFloat("spotLight.constant", 1.0f);
-    setFloat("spotLight.linear", 0.09f);
-    setFloat("spotLight.quadratic", 0.032f);
-    setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-    setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
-
     setVec3("drawOffset", o->getDrawOffset().toGLM());
 
     glActiveTexture(GL_TEXTURE0);

@@ -22,5 +22,5 @@ void main()
     gAlbedoSpec.rgb = texture(texture_diffuse, TexCoords).rgb;
 
     // Usar el mapa especular si está disponible; tomar el canal rojo como intensidad
-    gAlbedoSpec.a = texture(texture_specular, TexCoords).r;
+    gAlbedoSpec.a = 1.0; //texture(texture_specular, TexCoords).r;
 }

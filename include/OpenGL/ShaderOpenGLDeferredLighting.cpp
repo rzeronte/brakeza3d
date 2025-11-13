@@ -32,7 +32,6 @@ ShaderOpenGLDeferredLighting::ShaderOpenGLDeferredLighting()
     materialShininessUniform = glGetUniformLocation(programID, "material.shininess");
 }
 
-
 void ShaderOpenGLDeferredLighting::render(
     GLuint gPosition,
     GLuint gNormal,
@@ -41,8 +40,9 @@ void ShaderOpenGLDeferredLighting::render(
     int numLights,
     int numSpotLights,
     GLuint outputFramebuffer
-)
-{
+) {
+    //Logging::Message("Lighting pass: pos=%d, norm=%d, albedo=%d, lights=%d, spotLights=%d", gPosition, gNormal, gAlbedoSpec, numLights, numSpotLights);
+
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(outputFramebuffer);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
@@ -61,10 +61,6 @@ void ShaderOpenGLDeferredLighting::render(
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, gNormal);
     glUniform1i(gNormalUniform, 1);
-
-    //glActiveTexture(GL_TEXTURE2);
-    //glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
-    //glUniform1i(gAlbedoSpecUniform, 2);
 
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
@@ -102,11 +98,7 @@ void ShaderOpenGLDeferredLighting::render(
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
 
-    glDisable(GL_DEPTH_TEST);
-
     drawQuad();
-
-    glEnable(GL_DEPTH_TEST);
 
     glBindVertexArray(0);
 }

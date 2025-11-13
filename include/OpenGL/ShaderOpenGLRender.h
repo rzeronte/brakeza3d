@@ -82,7 +82,7 @@ public:
     void renderAnimatedMesh(Mesh3D *o, GLuint framebuffer);
 
     int getNumLightPoints();
-    int getNumSpotLights() const;
+    [[nodiscard]] int getNumSpotLights() const;
 };
 
 

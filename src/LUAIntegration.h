@@ -16,6 +16,7 @@
 #include "../include/2D/Image2DAnimation.h"
 #include "../include/Objects/Mesh3DAnimation.h"
 #include "../include/Objects/Image3D.h"
+#include "../include/Objects/LightPoint3D.h"
 #include "../include/Objects/BillboardAnimation.h"
 #include "../include/Objects/BillboardAnimation8Directions.h"
 #include "../include/Objects/ParticleEmitter.h"

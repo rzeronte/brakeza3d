@@ -227,7 +227,7 @@ add_executable(Brakeza3D
         include/Collision/CollisionInfo.h
         src/OpenGL/ShaderOpenGLShadowMapping.cpp
         src/OpenGL/ShaderOpenGLShadowMapping.h
-        include/OpenGL/ShaderOpenGLGBuffer.cpp
+        src/OpenGL/ShaderOpenGLGBuffer.cpp
         include/OpenGL/ShaderOpenGLGBuffer.h
         include/OpenGL/ShaderOpenGLDeferredLighting.cpp
         include/OpenGL/ShaderOpenGLDeferredLighting.h

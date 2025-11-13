@@ -33,11 +33,15 @@ void Mesh3D::onUpdate()
         render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
     }
 
+    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
+        render->getShaderOGLWireframe()->renderMesh(this, window->getSceneFramebuffer());
+    }
+
     // Decidir entre forward y deferred rendering
     // DEFERRED RENDERING: Escribir al G-Buffer
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (render->isUseDeferredRendering()) {
-            render->getShaderOGLGBuffer()->renderMesh(this, render->getGBuffer().getFBO());
+        if (window->isUseDeferredRendering()) {
+            render->getShaderOGLGBuffer()->renderMesh(this, window->getGBuffer().getFBO());
         } else {
            render->getShaderOGLRender()->renderMesh(this, window->getSceneFramebuffer());
         }
@@ -51,9 +55,6 @@ void Mesh3D::onUpdate()
         render->getShaderOGLShading()->renderMesh(this, window->getSceneFramebuffer());
     }
 
-    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        render->getShaderOGLWireframe()->renderMesh(this, window->getSceneFramebuffer());
-    }
 
     if (EngineSetup::get()->DRAW_MESH3D_AABB && isRender()) {
         this->updateBoundingBox();

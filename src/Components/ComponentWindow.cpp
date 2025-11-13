@@ -19,8 +19,10 @@ ComponentWindow::ComponentWindow()
     fontDefault(nullptr),
     guizmoOperation(ImGuizmo::TRANSLATE),
     ImGuiConfig(ImGUIConfigs::DEFAULT),
+    useDeferredRendering(false),
     applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str())),
     ImGuiConfigChanged(ImGUIConfigs::DEFAULT)
+
 {
     initWindow();
     initFontsTTF();
@@ -29,6 +31,7 @@ ComponentWindow::ComponentWindow()
 void ComponentWindow::onStart()
 {
     createFramebuffer();
+    createGBuffer();
 }
 
 void ComponentWindow::preUpdate()
@@ -185,8 +188,6 @@ void ComponentWindow::createFramebuffer()
     int w, h;
     SDL_GetRendererOutputSize(renderer, &w, &h);
 
-    GLenum framebufferStatus;
-
     glGenFramebuffers(1, &globalFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, globalFramebuffer);
 
@@ -197,7 +198,7 @@ void ComponentWindow::createFramebuffer()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, globalTexture, 0);
 
-    framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    GLenum framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
         std::cerr << "Error al configurar el framebuffer" << std::endl;
     }
@@ -315,40 +316,55 @@ void ComponentWindow::resetFramebuffer()
     createFramebuffer();
 
     ComponentsManager::get()->getComponentRender()->resizeFramebuffers();
+    resizeGBuffer();
 }
 
 void ComponentWindow::RenderLayersToGlobalFramebuffer() const
 {
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     auto render = ComponentsManager::get()->getComponentRender();
 
-    auto shaderOGLImage = render->getShaderOGLImage();
-
     // Si usamos deferred rendering, hacer lighting pass
-    auto gbuffer = render->getGBuffer();
-    if (render->isUseDeferredRendering()) {
-
-        //shaderOGLImage->renderTexture(gbuffer.getAlbedo(), 0, 0, width, height, 1, true, globalFramebuffer);
+    if (isUseDeferredRendering()) {
 
         auto shaderRender = render->getShaderOGLRender();
         // Lighting Pass: Leer del G-Buffer y escribir al sceneFramebuffer
         render->getShaderOGLDeferredLighting()->render(
-            gbuffer.getPositions(),
-            gbuffer.getNormal(),
-            gbuffer.getAlbedo(),
+            gBuffer.getPositions(),
+            gBuffer.getNormal(),
+            gBuffer.getAlbedo(),
             shaderRender->getDirectionalLight(),
             shaderRender->getNumLightPoints(),
             shaderRender->getNumSpotLights(),
-            sceneFramebuffer
+            globalFramebuffer
         );
+
+        // ✅ AÑADIR: Copiar depth buffer
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer.getFBO());
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glBlitFramebuffer(
+            0, 0, width, height,
+            0, 0, width, height,
+            GL_DEPTH_BUFFER_BIT,
+            GL_NEAREST
+        );
+
+        // ✅ AÑADIR: Forzar ejecución de comandos OpenGL
+        glFlush();
+
+        // ✅ AÑADIR: Desvincular framebuffers
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDisable(GL_BLEND);
+
     }
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    auto shaderOGLImage = render->getShaderOGLImage();
 
     shaderOGLImage->renderTexture(backgroundTexture, 0, 0, width, height, 1, true, globalFramebuffer);
     shaderOGLImage->renderTexture(sceneTexture, 0, 0, width, height, 1, true, globalFramebuffer);
     shaderOGLImage->renderTexture(postProcessingTexture, 0, 0, width, height, 1, true, globalFramebuffer);
-
 
     if (EngineSetup::get()->ENABLE_FOG) {
         auto shaderOGLFOG = render->getShaderOGLFOG();
@@ -401,7 +417,7 @@ void ComponentWindow::cleanFrameBuffers() const
     glBindFramebuffer(GL_FRAMEBUFFER, sceneFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentRender()->getGBuffer().FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer.FBO);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -627,4 +643,92 @@ GLuint ComponentWindow::getSceneTexture() const
 GLuint ComponentWindow::getGlobalTexture() const
 {
     return globalTexture;
+}
+
+GBuffer& ComponentWindow::getGBuffer()
+{
+    return this->gBuffer;
+}
+
+void ComponentWindow::createGBuffer()
+{
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    int width = window->getWidth();
+    int height = window->getHeight();
+
+    SDL_GetRendererOutputSize(window->getRenderer(), &width, &height);
+
+    // Crear el framebuffer
+    glGenFramebuffers(1, &gBuffer.FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer.FBO);
+
+    // Crear texturas del G-Buffer
+    // --- Posición ---
+    glGenTextures(1, &gBuffer.gPosition);
+    glBindTexture(GL_TEXTURE_2D, gBuffer.gPosition);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gBuffer.gPosition, 0);
+
+    // --- Normal ---
+    glGenTextures(1, &gBuffer.gNormal);
+    glBindTexture(GL_TEXTURE_2D, gBuffer.gNormal);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gBuffer.gNormal, 0);
+
+    // --- Albedo + Specular ---
+    glGenTextures(1, &gBuffer.gAlbedoSpec);
+    glBindTexture(GL_TEXTURE_2D, gBuffer.gAlbedoSpec);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gBuffer.gAlbedoSpec, 0);
+
+    // Indicar qué buffers se van a escribir
+    GLuint attachments[3] = {
+        GL_COLOR_ATTACHMENT0,
+        GL_COLOR_ATTACHMENT1,
+        GL_COLOR_ATTACHMENT2
+    };
+    glDrawBuffers(3, attachments);
+
+    // Buffer de profundidad (Renderbuffer)
+    glGenRenderbuffers(1, &gBuffer.rboDepth);
+    glBindRenderbuffer(GL_RENDERBUFFER, gBuffer.rboDepth);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gBuffer.rboDepth);
+
+    // Comprobar si está completo
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cerr << "[ERROR] G-Buffer: Framebuffer no está completo!" << std::endl;
+    } else {
+        std::cout << "G-Buffer creado correctamente (" << width << "x" << height << ")" << std::endl;
+    }
+
+    // Desvincular
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ComponentWindow::resizeGBuffer()
+{
+    glDeleteFramebuffers(1, &gBuffer.FBO);
+    glDeleteTextures(1, &gBuffer.gAlbedoSpec);
+    glDeleteTextures(1, &gBuffer.gNormal);
+    glDeleteTextures(1, &gBuffer.gPosition);
+    glDeleteRenderbuffers(1, &gBuffer.rboDepth);
+
+    createGBuffer();
+}
+
+bool ComponentWindow::isUseDeferredRendering() const {
+    return useDeferredRendering;
+}
+
+void ComponentWindow::setUseDeferredRendering(bool use) {
+    useDeferredRendering = use;
+    Logging::Message("Deferred Rendering: %s", use ? "ENABLED" : "DISABLED");
 }

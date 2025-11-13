@@ -53,8 +53,8 @@ void ShaderOpenGLWireframe::render(
 )
 {
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
-
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+
     glBindVertexArray(VertexArrayID);
 
     glDisable(GL_BLEND);
@@ -69,12 +69,11 @@ void ShaderOpenGLWireframe::render(
 
     setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
 
-    glDrawArrays(GL_LINES, 0, (GLint) size );
+    glDrawArrays(GL_LINES, 0, size );
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
-
 }
 
 void ShaderOpenGLWireframe::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)

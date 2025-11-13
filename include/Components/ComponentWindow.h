@@ -18,8 +18,28 @@ enum class ImGUIConfigs {
     CODING
 };
 
-struct OGLBuffer {
+struct GBuffer {
+    GLuint FBO;
+    GLuint gPosition;
+    GLuint gNormal;
+    GLuint gAlbedoSpec;
+    GLuint rboDepth;
 
+    [[nodiscard]] GLuint getFBO() const {
+        return FBO;
+    }
+    [[nodiscard]] GLuint getPositions() const {
+        return gPosition;
+    }
+    [[nodiscard]] GLuint getAlbedo() const {
+        return gAlbedoSpec;
+    }
+    [[nodiscard]] GLuint getNormal() const {
+        return gNormal;
+    }
+    [[nodiscard]] GLuint getDepth() const {
+        return rboDepth;
+    }
 };
 
 class ComponentWindow : public Component {
@@ -50,6 +70,9 @@ class ComponentWindow : public Component {
 
     ImGUIConfigs ImGuiConfig;
 
+    GBuffer gBuffer;
+
+    bool useDeferredRendering;
 public:
 
     ComponentWindow();
@@ -134,6 +157,13 @@ public:
     GLuint getSceneTexture() const;
 
     GLuint getGlobalTexture() const;
+
+    GBuffer& getGBuffer();
+    void createGBuffer();
+
+    void resizeGBuffer();
+    bool isUseDeferredRendering() const;
+    void setUseDeferredRendering(bool use);
 };
 
 

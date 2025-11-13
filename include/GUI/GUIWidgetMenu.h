@@ -225,9 +225,9 @@ struct GUIWidgetMenu
                 ImGui::Checkbox("Forward rendering", &setup->FORWARD_RENDER);
                 if (ImGui::IsItemEdited()) {
                     if (setup->FORWARD_RENDER) {
-                        ComponentsManager::get()->getComponentRender()->setUseDeferredRendering(false);
+                        ComponentsManager::get()->getComponentWindow()->setUseDeferredRendering(false);
                     } else {
-                        ComponentsManager::get()->getComponentRender()->setUseDeferredRendering(true);
+                        ComponentsManager::get()->getComponentWindow()->setUseDeferredRendering(true);
                     }
                 }
                 ImGui::Separator();
