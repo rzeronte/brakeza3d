@@ -222,6 +222,15 @@ struct GUIWidgetMenu
                     }
                 }
                 ImGui::Separator();
+                ImGui::Checkbox("Forward rendering", &setup->FORWARD_RENDER);
+                if (ImGui::IsItemEdited()) {
+                    if (setup->FORWARD_RENDER) {
+                        ComponentsManager::get()->getComponentRender()->setUseDeferredRendering(false);
+                    } else {
+                        ComponentsManager::get()->getComponentRender()->setUseDeferredRendering(true);
+                    }
+                }
+                ImGui::Separator();
                 ImGui::DragScalar("FOV", ImGuiDataType_Float, &setup->HORIZONTAL_FOV, 1, &range_min_fov,&range_max_fov, "%f", 1.0f);
                 ImGui::Separator();
                 ImGui::Checkbox("Limit frame rate", &setup->LIMIT_FRAMERATE);
@@ -566,27 +575,28 @@ struct GUIWidgetMenu
 
     void drawGlobalIllumination()
     {
+        auto render = ComponentsManager::get()->getComponentRender();
         auto dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->getDirectionalLight();
 
-        ImGui::DragFloat3("Light dir.", &dirLight->direction[0], 0.01f, -1.0f, 1.0f);
+        ImGui::DragFloat3("Light dir.", &dirLight.direction[0], 0.01f, -1.0f, 1.0f);
 
         ImGui::Separator();
 
-        ImVec4 color = {dirLight->ambient.x, dirLight->ambient.y, dirLight->ambient.z, 1};
+        ImVec4 color = {dirLight.ambient.x, dirLight.ambient.y, dirLight.ambient.z, 1};
         bool changed_color = ImGui::ColorEdit4("Ambient##", (float *) &color, ImGuiColorEditFlags_NoOptions);
         if (changed_color) {
-            dirLight->ambient = {color.x, color.y, color.z};
+            dirLight.ambient = {color.x, color.y, color.z};
         }
-        color = {dirLight->specular.x, dirLight->specular.y, dirLight->specular.z, 1};
+        color = {dirLight.specular.x, dirLight.specular.y, dirLight.specular.z, 1};
         changed_color = ImGui::ColorEdit4("Specular##", (float *) &color, ImGuiColorEditFlags_NoOptions);
         if (changed_color) {
-            dirLight->specular = {color.x, color.y, color.z};
+            dirLight.specular = {color.x, color.y, color.z};
         }
 
-        color = {dirLight->diffuse.x, dirLight->diffuse.y, dirLight->diffuse.z, 1};
+        color = {dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z, 1};
         changed_color = ImGui::ColorEdit4("Diffuse##", (float *) &color, ImGuiColorEditFlags_NoOptions);
         if (changed_color) {
-            dirLight->diffuse = {color.x, color.y, color.z};
+            dirLight.diffuse = {color.x, color.y, color.z};
         }
 
         ImGui::Separator();

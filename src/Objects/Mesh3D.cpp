@@ -33,8 +33,14 @@ void Mesh3D::onUpdate()
         render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
     }
 
+    // Decidir entre forward y deferred rendering
+    // DEFERRED RENDERING: Escribir al G-Buffer
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        render->getShaderOGLRender()->renderMesh(this, window->getSceneFramebuffer());
+        if (render->isUseDeferredRendering()) {
+            render->getShaderOGLGBuffer()->renderMesh(this, render->getGBuffer().getFBO());
+        } else {
+           render->getShaderOGLRender()->renderMesh(this, window->getSceneFramebuffer());
+        }
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {

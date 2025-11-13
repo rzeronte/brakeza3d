@@ -20,6 +20,7 @@ class ShaderOpenGLRender: public ShaderOpenGL {
 
     std::vector<PointLightOpenGL> pointsLights;
     std::vector<SpotLightOpenGL> spotLights;
+
     GLuint bufferUBOLightPoints;
     GLuint bufferUBOSpotLights;
 
@@ -60,7 +61,7 @@ public:
 
     void createUBOFromLights();
 
-    DirLightOpenGL *getDirectionalLight();
+    DirLightOpenGL &getDirectionalLight();
 
     void destroy() override;
 
@@ -79,6 +80,9 @@ public:
     void setGlobalIlluminationSpecular(Vertex3D s);
 
     void renderAnimatedMesh(Mesh3D *o, GLuint framebuffer);
+
+    int getNumLightPoints();
+    int getNumSpotLights() const;
 };
 
 

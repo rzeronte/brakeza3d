@@ -2,22 +2,13 @@
 #define BRAKEDA3D_BRAKEZA3D_H
 
 #include <vector>
-#include "Objects/Object3D.h"
 #include "Objects/LightPoint3D.h"
 #include "Components/Component.h"
-#include "ComponentsManager.h"
-#include "Components/ComponentCollisions.h"
-#include "Components/ComponentInput.h"
-#include "Components/ComponentWindow.h"
 #include "Components/ComponentSound.h"
-#include "Components/ComponentRender.h"
-#include "ComponentsManager.h"
 #include "GUI/GUIManager.h"
-#include "../sol/sol.hpp"
 #include <thread>
 
 class Brakeza3D {
-private:
 
     ComponentsManager *componentsManager;
 
