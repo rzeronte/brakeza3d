@@ -3,6 +3,7 @@
 #include "../../include/Brakeza3D.h"
 #include "../../include/OpenGL/ShaderOpenGLCustomPostprocessing.h"
 #include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
+#include "../../include/OpenGL/ShaderOGLShadowPass.h"
 
 ComponentRender::ComponentRender()
 :
@@ -29,6 +30,8 @@ ComponentRender::ComponentRender()
     shaderOGLBonesTransforms(nullptr),
     shaderOGLGBuffer(nullptr),
     shaderOGLDeferredLighting(nullptr),
+    shaderShadowPass(nullptr),
+    shaderShadowPassDebugLight(nullptr),
     lastFrameBufferUsed(0),
     lastProgramUsed(0)
 {
@@ -58,8 +61,10 @@ void ComponentRender::onStart()
     shaderOGLFOG = new ShaderOpenGLFOG();
     shaderOGLTint = new ShaderOpenGLTint();
     shaderOGLBonesTransforms = new ShaderOpenGLBonesTransforms();
-    shaderOGLGBuffer = new ShaderOpenGLGBuffer();
-    shaderOGLDeferredLighting = new ShaderOpenGLDeferredLighting();
+    shaderOGLGBuffer = new ShaderOGLGBuffer();
+    shaderOGLDeferredLighting = new ShaderOGLDeferredLighting();
+    shaderShadowPass = new ShaderOGLShadowPass();
+    shaderShadowPassDebugLight = new ShaderOGLShadowPassDebugLight();
 }
 
 void ComponentRender::preUpdate()
@@ -77,19 +82,23 @@ void ComponentRender::onUpdate()
 
     getShaderOGLRender()->createUBOFromLights();
 
+    auto shaderRender = getShaderOGLRender();
+    auto numLights = (int) shaderRender->getShadowMappingLightPoints().size();
+
+    if (EngineSetup::get()->SHADOW_MAPPING) {
+        static int lastNumLights = -1;
+        if (numLights != lastNumLights) {
+            ComponentsManager::get()->getComponentWindow()->createShadowMapBuffers();
+            getShaderOGLShadowPass()->setupFBO();
+            lastNumLights = numLights;
+        }
+    }
+
     onUpdateSceneObjects();
 
     if (SETUP->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis();
     }
-
-    /*if (SETUP->DRAW_FPS) {
-        textWriter->writeTextTTFMiddleScreen(
-            std::to_string(getFps()).c_str(),
-            Color::green(),
-            2.5
-        );
-    }*/
 }
 
 void ComponentRender::postUpdate()
@@ -437,15 +446,21 @@ ShaderOpenGLBonesTransforms *ComponentRender::getShaderOGLBonesTransforms() cons
     return shaderOGLBonesTransforms;
 }
 
+ShaderOGLShadowPass *ComponentRender::getShaderOGLShadowPass() const {
+    return shaderShadowPass;
+}
+ShaderOGLShadowPassDebugLight *ComponentRender::getShaderOGLShadowPassDebugLight() const {
+    return shaderShadowPassDebugLight;
+}
 ShaderOpenGLDepthMap *ComponentRender::getShaderOGLDepthMap() const {
     return shaderOGLDepthMap;
 }
 
-ShaderOpenGLGBuffer *ComponentRender::getShaderOGLGBuffer() const {
+ShaderOGLGBuffer *ComponentRender::getShaderOGLGBuffer() const {
     return shaderOGLGBuffer;
 }
 
-ShaderOpenGLDeferredLighting *ComponentRender::getShaderOGLDeferredLighting() const {
+ShaderOGLDeferredLighting *ComponentRender::getShaderOGLDeferredLighting() const {
     return shaderOGLDeferredLighting;
 }
 
@@ -532,4 +547,3 @@ void ComponentRender::FillOGLBuffers(std::vector<meshData> &meshes)
         glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);  // Desvinculamos el buffer
     }
 }
-

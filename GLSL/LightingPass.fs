@@ -53,6 +53,9 @@ uniform int numLights;
 uniform int numSpotLights;
 uniform SpotLight spotLight;
 
+uniform sampler2DArray shadowMapArray;
+uniform int numShadowMaps;
+
 layout (std140) uniform PointLightsBlock { PointLight pointLights[NR_POINT_LIGHTS]; };
 layout (std140) uniform SpotLightsBlock { SpotLight spotLights[NR_POINT_LIGHTS]; };
 

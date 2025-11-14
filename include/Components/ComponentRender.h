@@ -32,8 +32,10 @@
 #include "../OpenGL/ShaderOpenGLTint.h"
 #include "../OpenGL/ShaderOpenGLLine3D.h"
 #include "../OpenGL/ShaderOpenGLBonesTransforms.h"
-#include "../OpenGL/ShaderOpenGLGBuffer.h"
-#include "../OpenGL/ShaderOpenGLDeferredLighting.h"
+#include "../OpenGL/ShaderOGLGBuffer.h"
+#include "../OpenGL/ShaderOGLDeferredLighting.h"
+#include "../OpenGL/ShaderOGLShadowPass.h"
+#include "../OpenGL/ShaderOGLShadowPassDebugLight.h"
 
 class ComponentRender : public Component {
 
@@ -65,12 +67,13 @@ class ComponentRender : public Component {
     ShaderOpenGLFOG *shaderOGLFOG;
     ShaderOpenGLTint *shaderOGLTint;
     ShaderOpenGLBonesTransforms *shaderOGLBonesTransforms;
-    ShaderOpenGLGBuffer *shaderOGLGBuffer;
-    ShaderOpenGLDeferredLighting *shaderOGLDeferredLighting;
+    ShaderOGLGBuffer *shaderOGLGBuffer;
+    ShaderOGLDeferredLighting *shaderOGLDeferredLighting;
+    ShaderOGLShadowPass *shaderShadowPass;
+    ShaderOGLShadowPassDebugLight *shaderShadowPassDebugLight;
 
     GLuint lastFrameBufferUsed;
     GLuint lastProgramUsed;
-
 
     std::map<std::string, ShaderCustomTypes> ShaderTypesMapping = {
         {"Postprocessing", ShaderCustomTypes::SHADER_POSTPROCESSING},
@@ -177,11 +180,15 @@ ComponentRender();
 
     [[nodiscard]] ShaderOpenGLBonesTransforms *getShaderOGLBonesTransforms() const;
 
+    [[nodiscard]] ShaderOGLShadowPass *getShaderOGLShadowPass() const;
+
+    ShaderOGLShadowPassDebugLight *getShaderOGLShadowPassDebugLight() const;
+
     [[nodiscard]] ShaderOpenGLDepthMap *getShaderOGLDepthMap() const;
 
-    [[nodiscard]] ShaderOpenGLGBuffer *getShaderOGLGBuffer() const;
+    [[nodiscard]] ShaderOGLGBuffer *getShaderOGLGBuffer() const;
 
-    [[nodiscard]] ShaderOpenGLDeferredLighting *getShaderOGLDeferredLighting() const;
+    [[nodiscard]] ShaderOGLDeferredLighting *getShaderOGLDeferredLighting() const;
 
     GLuint getLastFrameBufferUsed();
 
