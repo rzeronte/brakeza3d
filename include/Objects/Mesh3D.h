@@ -139,6 +139,9 @@ public:
     [[nodiscard]] const std::vector<ShaderOpenGLCustom *> &getCustomShaders() const;
 
     void checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastDepthFound) override;
+
+    void shadowMappingPass();
+
 };
 
 #endif //SDL2_3D_ENGINE_MESH_H

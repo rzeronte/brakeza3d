@@ -150,8 +150,12 @@ SDL_Renderer *ComponentWindow::getRenderer() const {
     return renderer;
 }
 
-TTF_Font *ComponentWindow::getFontDefault() {
+TTF_Font *ComponentWindow::getFontDefault() const {
     return fontDefault;
+}
+
+GLuint ComponentWindow::getShadowMapArrayTex() const {
+    return shadowMapArrayTex;
 }
 
 GLuint ComponentWindow::getSceneFramebuffer() const {
@@ -322,12 +326,12 @@ void ComponentWindow::resetFramebuffer()
 void ComponentWindow::RenderLayersToGlobalFramebuffer() const
 {
     auto render = ComponentsManager::get()->getComponentRender();
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // Si usamos deferred rendering, hacer lighting pass
     if (isUseDeferredRendering()) {
-
         auto shaderRender = render->getShaderOGLRender();
-        // Lighting Pass: Leer del G-Buffer y escribir al sceneFramebuffer
+
         render->getShaderOGLDeferredLighting()->render(
             gBuffer.getPositions(),
             gBuffer.getNormal(),
@@ -335,33 +339,16 @@ void ComponentWindow::RenderLayersToGlobalFramebuffer() const
             shaderRender->getDirectionalLight(),
             shaderRender->getNumLightPoints(),
             shaderRender->getNumSpotLights(),
-            globalFramebuffer
+            getShadowMapArrayTex(),
+            shaderRender->getShadowMappingLightPoints().size(),
+            sceneFramebuffer
         );
-
-        // ✅ AÑADIR: Copiar depth buffer
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer.getFBO());
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-        glBlitFramebuffer(
-            0, 0, width, height,
-            0, 0, width, height,
-            GL_DEPTH_BUFFER_BIT,
-            GL_NEAREST
-        );
-
-        // ✅ AÑADIR: Forzar ejecución de comandos OpenGL
-        glFlush();
-
-        // ✅ AÑADIR: Desvincular framebuffers
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_BLEND);
-
     }
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //auto shaderShadowPassDebugLight = render->getShaderOGLShadowPassDebugLight();
+    //shaderShadowPassDebugLight->render(getShadowMapArrayTex(), 0, getSceneFramebuffer());
 
     auto shaderOGLImage = render->getShaderOGLImage();
-
     shaderOGLImage->renderTexture(backgroundTexture, 0, 0, width, height, 1, true, globalFramebuffer);
     shaderOGLImage->renderTexture(sceneTexture, 0, 0, width, height, 1, true, globalFramebuffer);
     shaderOGLImage->renderTexture(postProcessingTexture, 0, 0, width, height, 1, true, globalFramebuffer);
@@ -598,21 +585,18 @@ void ComponentWindow::ImGuiOnUpdate()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-bool ComponentWindow::isWindowMaximized()
-{
+bool ComponentWindow::isWindowMaximized() const {
     Uint32 flags = SDL_GetWindowFlags(window);
 
     // Verifica si el flag SDL_WINDOW_MAXIMIZED está activo
     return (flags & SDL_WINDOW_MAXIMIZED) != 0;
 }
 
-void ComponentWindow::setWindowTitle(const char *title)
-{
+void ComponentWindow::setWindowTitle(const char *title) const {
     SDL_SetWindowTitle(window, title);
 }
 
-void ComponentWindow::toggleFullScreen()
-{
+void ComponentWindow::toggleFullScreen() const {
     if (EngineSetup::get()->FULLSCREEN) {
         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     } else {
@@ -711,6 +695,30 @@ void ComponentWindow::createGBuffer()
 
     // Desvincular
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ComponentWindow::createShadowMapBuffers()
+{
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    const int w = window->getWidth();
+    const int h = window->getHeight();
+
+    auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRender();
+    const int NUM_LIGHTS = static_cast<int>(shaderRender->getShadowMappingLightPoints().size());
+
+    glGenTextures(1, &shadowMapArrayTex);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, shadowMapArrayTex);
+    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32, w, h, NUM_LIGHTS,0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+    // Configuración
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    float borderColor[] = {1.0, 1.0, 1.0, 1.0};
+    glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, borderColor);
 }
 
 void ComponentWindow::resizeGBuffer()

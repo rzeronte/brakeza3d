@@ -128,6 +128,7 @@ void ShaderOpenGLRender::createUBOFromLights()
 {
     pointsLights.resize(0);
     spotLights.resize(0);
+    shadowMappingLights.resize(0);
 
     if (EngineSetup::get()->ENABLE_LIGHTS) {
         for (auto o : Brakeza3D::get()->getSceneObjects()) {
@@ -150,7 +151,6 @@ DirLightOpenGL &ShaderOpenGLRender::getDirectionalLight()
 
 void ShaderOpenGLRender::destroy()
 {
-
 }
 
 void ShaderOpenGLRender::renderMesh(Mesh3D *o, GLuint framebuffer)
@@ -209,6 +209,7 @@ void ShaderOpenGLRender::extractLights(Object3D *o)
 
     auto l = dynamic_cast<LightPoint3D*>(o);
     if (l != nullptr) {
+        shadowMappingLights.push_back(l);
         pointsLights.push_back({
             glm::vec4(o->getPosition().toGLM(), 1),
             l->ambient,
@@ -259,10 +260,14 @@ void ShaderOpenGLRender::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
     }
 }
 
-int ShaderOpenGLRender::getNumLightPoints() {
+int ShaderOpenGLRender::getNumLightPoints() const {
     return pointsLights.size();
 }
 
 int ShaderOpenGLRender::getNumSpotLights() const {
     return spotLights.size();
+}
+
+[[nodiscard]] std::vector<LightPoint3D *> &ShaderOpenGLRender::getShadowMappingLightPoints() {
+    return shadowMappingLights;
 }

@@ -1,12 +1,12 @@
 
-#include "../../include/OpenGL/ShaderOpenGLDeferredLighting.h"
+#include "../../include/OpenGL/ShaderOGLDeferredLighting.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include <glm/gtc/type_ptr.hpp>
 
 #define GL_GLEXT_PROTOTYPES
 
-ShaderOpenGLDeferredLighting::ShaderOpenGLDeferredLighting()
+ShaderOGLDeferredLighting::ShaderOGLDeferredLighting()
 :
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "LightingPass.vs",
@@ -32,17 +32,17 @@ ShaderOpenGLDeferredLighting::ShaderOpenGLDeferredLighting()
     materialShininessUniform = glGetUniformLocation(programID, "material.shininess");
 }
 
-void ShaderOpenGLDeferredLighting::render(
+void ShaderOGLDeferredLighting::render(
     GLuint gPosition,
     GLuint gNormal,
     GLuint gAlbedoSpec,
     const DirLightOpenGL &directionalLight,
     int numLights,
     int numSpotLights,
+    GLuint shadowMapArrayTex,
+    int numShadowMaps,
     GLuint outputFramebuffer
 ) {
-    //Logging::Message("Lighting pass: pos=%d, norm=%d, albedo=%d, lights=%d, spotLights=%d", gPosition, gNormal, gAlbedoSpec, numLights, numSpotLights);
-
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(outputFramebuffer);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
@@ -69,6 +69,11 @@ void ShaderOpenGLDeferredLighting::render(
     glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
     setIntUniform(materialTextureSpecularUniform, 3);
+
+    setInt("numShadowMaps", numShadowMaps);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, shadowMapArrayTex);
 
     setFloatUniform(materialShininessUniform, 32.0f);
 
@@ -103,7 +108,7 @@ void ShaderOpenGLDeferredLighting::render(
     glBindVertexArray(0);
 }
 
-void ShaderOpenGLDeferredLighting::destroy()
+void ShaderOGLDeferredLighting::destroy()
 {
     resetQuadMatrix();
 }

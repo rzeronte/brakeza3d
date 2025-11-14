@@ -4,7 +4,7 @@
 #include "ShaderOpenGL.h"
 #include "../Objects/Mesh3D.h"
 
-class ShaderOpenGLGBuffer : public ShaderOpenGL {
+class ShaderOGLGBuffer : public ShaderOpenGL {
     GLuint VertexArrayID;
 
     GLint matrixProjectionUniform;
@@ -17,7 +17,7 @@ class ShaderOpenGLGBuffer : public ShaderOpenGL {
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
 
 public:
-    ShaderOpenGLGBuffer();
+    ShaderOGLGBuffer();
 
     void renderMesh(Mesh3D *o, GLuint framebuffer);
     void renderAnimatedMesh(Mesh3D *o, GLuint framebuffer);

@@ -66,6 +66,8 @@ class ComponentWindow : public Component {
     GLuint postProcessingTexture;
     GLuint depthTexture;
 
+    GLuint shadowMapArrayTex;
+
     ImGuizmo::OPERATION guizmoOperation;
 
     ImGUIConfigs ImGuiConfig;
@@ -97,7 +99,9 @@ public:
 
     [[nodiscard]] SDL_Renderer *getRenderer() const;
 
-    [[nodiscard]] TTF_Font *getFontDefault();
+    [[nodiscard]] TTF_Font *getFontDefault() const;
+
+    GLuint getShadowMapArrayTex() const;
 
     SDL_Surface *applicationIcon;
 
@@ -109,7 +113,7 @@ public:
 
     void RenderLayersToGlobalFramebuffer() const;
     void resetFramebuffer();
-    bool isWindowMaximized();
+    bool isWindowMaximized() const;
 
     [[nodiscard]] GLuint getBackgroundFramebuffer() const;
 
@@ -144,9 +148,9 @@ public:
 
     ImGUIConfigs ImGuiConfigChanged;
 
-    void setWindowTitle(const char *title);
+    void setWindowTitle(const char *title) const;
 
-    void toggleFullScreen();
+    void toggleFullScreen() const;
 
     ImGuizmo::OPERATION getGuizmoOperation() const;
 
@@ -161,8 +165,10 @@ public:
     GBuffer& getGBuffer();
     void createGBuffer();
 
+    void createShadowMapBuffers();
+
     void resizeGBuffer();
-    bool isUseDeferredRendering() const;
+    [[nodiscard]] bool isUseDeferredRendering() const;
     void setUseDeferredRendering(bool use);
 };
 

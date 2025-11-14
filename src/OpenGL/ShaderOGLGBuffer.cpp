@@ -1,9 +1,9 @@
 #define GL_GLEXT_PROTOTYPES
 
-#include "../../include/OpenGL/ShaderOpenGLGBuffer.h"
+#include "../../include/OpenGL/ShaderOGLGBuffer.h"
 #include "../../include/ComponentsManager.h"
 
-ShaderOpenGLGBuffer::ShaderOpenGLGBuffer()
+ShaderOGLGBuffer::ShaderOGLGBuffer()
 :
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "GBuffer.vs",
@@ -23,7 +23,7 @@ ShaderOpenGLGBuffer::ShaderOpenGLGBuffer()
     textureSpecularUniform = glGetUniformLocation(programID, "texture_specular");
 }
 
-void ShaderOpenGLGBuffer::renderMesh(Mesh3D *o, GLuint framebuffer)
+void ShaderOGLGBuffer::renderMesh(Mesh3D *o, GLuint framebuffer)
 {
     for (const auto& m: o->meshes) {
         render(
@@ -39,7 +39,7 @@ void ShaderOpenGLGBuffer::renderMesh(Mesh3D *o, GLuint framebuffer)
     }
 }
 
-void ShaderOpenGLGBuffer::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
+void ShaderOGLGBuffer::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
 {
     for (const auto& m: o->meshes) {
         render(
@@ -55,7 +55,7 @@ void ShaderOpenGLGBuffer::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
     }
 }
 
-void ShaderOpenGLGBuffer::render(
+void ShaderOGLGBuffer::render(
     Object3D *o,
     GLint textureID,
     GLint textureSpecularID,
@@ -107,7 +107,7 @@ void ShaderOpenGLGBuffer::render(
     glBindVertexArray(0);
 }
 
-void ShaderOpenGLGBuffer::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
+void ShaderOGLGBuffer::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
 {
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -122,7 +122,7 @@ void ShaderOpenGLGBuffer::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer,
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
-void ShaderOpenGLGBuffer::destroy()
+void ShaderOGLGBuffer::destroy()
 {
     if (VertexArrayID != 0) {
         glDeleteVertexArrays(1, &VertexArrayID);

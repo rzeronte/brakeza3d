@@ -225,12 +225,14 @@ add_executable(Brakeza3D
         include/Collision/AssimpAnimationService.h
         include/Collision/CollisionInfo.cpp
         include/Collision/CollisionInfo.h
-        src/OpenGL/ShaderOpenGLShadowMapping.cpp
-        src/OpenGL/ShaderOpenGLShadowMapping.h
-        src/OpenGL/ShaderOpenGLGBuffer.cpp
-        include/OpenGL/ShaderOpenGLGBuffer.h
-        include/OpenGL/ShaderOpenGLDeferredLighting.cpp
-        include/OpenGL/ShaderOpenGLDeferredLighting.h
+        src/OpenGL/ShaderOGLGBuffer.cpp
+        include/OpenGL/ShaderOGLGBuffer.h
+        src/OpenGL/ShaderOGLDeferredLighting.cpp
+        include/OpenGL/ShaderOGLDeferredLighting.h
+        src/OpenGL/ShaderOGLShadowPass.cpp
+        include/OpenGL/ShaderOGLShadowPass.h
+        src/OpenGL/ShaderOGLShadowPassDebugLight.cpp
+        include/OpenGL/ShaderOGLShadowPassDebugLight.h
 )
 
 target_link_libraries(Brakeza3D

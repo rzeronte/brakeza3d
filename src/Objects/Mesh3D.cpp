@@ -7,6 +7,7 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
+#include "../../include/OpenGL/ShaderOGLShadowPass.h"
 
 Mesh3D::Mesh3D()
 :
@@ -37,14 +38,16 @@ void Mesh3D::onUpdate()
         render->getShaderOGLWireframe()->renderMesh(this, window->getSceneFramebuffer());
     }
 
-    // Decidir entre forward y deferred rendering
-    // DEFERRED RENDERING: Escribir al G-Buffer
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
         if (window->isUseDeferredRendering()) {
             render->getShaderOGLGBuffer()->renderMesh(this, window->getGBuffer().getFBO());
         } else {
            render->getShaderOGLRender()->renderMesh(this, window->getSceneFramebuffer());
         }
+    }
+
+    if (EngineSetup::get()->SHADOW_MAPPING && isRender()) {
+        shadowMappingPass();
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
@@ -898,5 +901,30 @@ void Mesh3D::checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastD
                 }
             }
         }
+    }
+}
+
+void Mesh3D::shadowMappingPass()
+{
+    auto render = ComponentsManager::get()->getComponentRender();
+    auto shaderShadowPass = render->getShaderOGLShadowPass();
+    auto shaderRender = render->getShaderOGLRender();
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    auto lightPoints = shaderRender->getShadowMappingLightPoints();
+    auto numLights = (int) lightPoints.size();
+
+    for (int i = 0; i < numLights; i++) {
+        auto l = lightPoints[i];
+
+        //Logging::Message("shadowPass: Light %d | numLights %d | %s", i, numLights, l->getLabel().c_str());
+
+        shaderShadowPass->renderMesh(
+            this,
+            l,
+            window->getShadowMapArrayTex(),
+            i,
+            shaderShadowPass->getShadowFBO()
+        );
     }
 }

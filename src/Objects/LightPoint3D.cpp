@@ -1,5 +1,9 @@
 
 #include "../../include/Objects/LightPoint3D.h"
+
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
+
 #include "../../include/Render/Billboard.h"
 #include "../../include/Render/Maths.h"
 #include "../../include/ComponentsManager.h"
@@ -135,6 +139,29 @@ cJSON *LightPoint3D::getJSON()
     cJSON_AddNumberToObject(root, "quadratic", quadratic);
 
     return root;
+}
+
+glm::mat4 LightPoint3D::getLightSpaceMatrix()
+{
+    float near = 1.0f;    // Cerca de la luz
+    float far  = 60.0f;  // Lejos de la luz
+    float size = 30.0f;   // Tamaño del frustum ortográfico
+
+    // Proyección ortográfica
+    glm::mat4 lightProjection = glm::ortho(-size, size, -size, size, near, far);
+
+    // Dirección forward de la luz
+    Vertex3D forward = getRotation() * Vertex3D(0, 0, 1);
+    const auto p = position.toGLM();
+
+    // View matrix de la luz
+    glm::mat4 lightView = glm::lookAt(
+        p,                      // Posición de la luz
+        p + forward.toGLM(),    // Target (hacia dónde apunta)
+        glm::vec3(0.0f, 1.0f, 0.0f)  // Up vector
+    );
+
+    return lightProjection * lightView;
 }
 
 void LightPoint3D::setPropertiesFromJSON(cJSON *object, LightPoint3D *o)

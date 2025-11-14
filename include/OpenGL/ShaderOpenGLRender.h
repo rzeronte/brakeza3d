@@ -20,6 +20,7 @@ class ShaderOpenGLRender: public ShaderOpenGL {
 
     std::vector<PointLightOpenGL> pointsLights;
     std::vector<SpotLightOpenGL> spotLights;
+    std::vector<LightPoint3D*> shadowMappingLights;
 
     GLuint bufferUBOLightPoints;
     GLuint bufferUBOSpotLights;
@@ -81,8 +82,10 @@ public:
 
     void renderAnimatedMesh(Mesh3D *o, GLuint framebuffer);
 
-    int getNumLightPoints();
+    int getNumLightPoints() const;
     [[nodiscard]] int getNumSpotLights() const;
+
+    [[nodiscard]] std::vector<LightPoint3D *> &getShadowMappingLightPoints();
 };
 
 

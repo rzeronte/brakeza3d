@@ -45,6 +45,8 @@ public:
 
     cJSON *getJSON() override;
 
+    glm::mat4 getLightSpaceMatrix();
+
     static void createFromJSON(cJSON *object);
 
     static void setPropertiesFromJSON(cJSON *object, LightPoint3D *o);

@@ -222,7 +222,14 @@ struct GUIWidgetMenu
                     }
                 }
                 ImGui::Separator();
+
+                ImGui::Checkbox("Light System", &setup->ENABLE_LIGHTS);
+                ImGui::Checkbox("ShadowMapping", &setup->SHADOW_MAPPING);
+
+                ImGui::Separator();
+
                 ImGui::Checkbox("Forward rendering", &setup->FORWARD_RENDER);
+
                 if (ImGui::IsItemEdited()) {
                     if (setup->FORWARD_RENDER) {
                         ComponentsManager::get()->getComponentWindow()->setUseDeferredRendering(false);
@@ -376,8 +383,6 @@ struct GUIWidgetMenu
                                       sizeAxisSens, &sizeAxisMin, &sizeAxisMax, "%f", 1.0f);
 
                 }
-                ImGui::Separator();
-                ImGui::Checkbox("Light System", &setup->ENABLE_LIGHTS);
 
                 ImGui::Separator();
 

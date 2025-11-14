@@ -4,7 +4,7 @@
 #include "ShaderOpenGL.h"
 #include "ShaderOpenGLRender.h"
 
-class ShaderOpenGLDeferredLighting : public ShaderOpenGL, public ShaderQuadOpenGL  {
+class ShaderOGLDeferredLighting : public ShaderOpenGL, public ShaderQuadOpenGL  {
 
     GLint gPositionUniform;
     GLint gNormalUniform;
@@ -22,7 +22,7 @@ class ShaderOpenGLDeferredLighting : public ShaderOpenGL, public ShaderQuadOpenG
     GLint materialShininessUniform;
 
 public:
-    ShaderOpenGLDeferredLighting();
+    ShaderOGLDeferredLighting();
 
     void render(
         GLuint gPosition,
@@ -31,8 +31,10 @@ public:
         const DirLightOpenGL &directionalLight,
         int numLights,
         int numSpotLights,
+        GLuint shadowMapArrayTex,
+        int numShadowMaps,
         GLuint outputFramebuffer
-        );
+    );
 
     void destroy() override;
 };

@@ -104,6 +104,8 @@ public:
 
     std::string SHADERS_FOLDER = "../GLSL/";
 
+    bool SHADOW_MAPPING = true;
+
     bool SOUND_ENABLED = true;
     float SOUND_VOLUME_MUSIC = 40;
     float SOUND_CHANNEL_GLOBAL = 50;

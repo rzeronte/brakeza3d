@@ -23,6 +23,7 @@ public:
     [[nodiscard]] GLuint getProgramID() const;
 
     void setBool(const std::string &name, bool value) const;
+
     static void setBoolUniform(GLint uniform, bool value);
 
     void setInt(const std::string &name, int value) const;
