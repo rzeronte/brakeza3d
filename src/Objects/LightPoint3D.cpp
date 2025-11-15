@@ -143,22 +143,19 @@ cJSON *LightPoint3D::getJSON()
 
 glm::mat4 LightPoint3D::getLightSpaceMatrix()
 {
-    float near = 1.0f;    // Cerca de la luz
-    float far  = 60.0f;  // Lejos de la luz
-    float size = 30.0f;   // Tamaño del frustum ortográfico
+    float near = EngineSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE;
+    float far  = EngineSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE;
+    float size = EngineSetup::get()->SHADOW_MAPPING_FRUSTUM_SIZE;
 
-    // Proyección ortográfica
     glm::mat4 lightProjection = glm::ortho(-size, size, -size, size, near, far);
 
-    // Dirección forward de la luz
     Vertex3D forward = getRotation() * Vertex3D(0, 0, 1);
     const auto p = position.toGLM();
 
-    // View matrix de la luz
     glm::mat4 lightView = glm::lookAt(
-        p,                      // Posición de la luz
-        p + forward.toGLM(),    // Target (hacia dónde apunta)
-        glm::vec3(0.0f, 1.0f, 0.0f)  // Up vector
+        p,
+        p + forward.toGLM(),
+        glm::vec3(0.0f, 1.0f, 0.0f)
     );
 
     return lightProjection * lightView;

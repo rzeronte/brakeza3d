@@ -62,6 +62,7 @@ private:
     bool showEditShaderWindow = false;
     bool showEditScriptWindow = false;
     bool showBoneMappingsEditorWindow = false;
+    bool showLightsDepthMapsViewerWindow = false;
 public:
 
     void loadImagesFolder();
@@ -73,6 +74,8 @@ public:
     void LoadScriptDialog(const std::string& filename);
 
     void drawEditScriptWindow();
+
+    void drawLightsDepthMapsViewerWindow();
 
     void updateFolderFiles();
 
@@ -121,6 +124,12 @@ public:
     void drawEditBonesMappingWindow();
 
     void openBoneInfoDialog();
+
+    void openLightsDepthMapsViewerDialog();
+
+    [[nodiscard]] bool isShowLightsDepthMapsViewerWindow() const {
+        return showLightsDepthMapsViewerWindow;
+    }
 };
 
 #endif //SDL2_3D_ENGINE_GUI_ENGINE_H

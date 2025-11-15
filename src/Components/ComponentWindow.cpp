@@ -19,7 +19,6 @@ ComponentWindow::ComponentWindow()
     fontDefault(nullptr),
     guizmoOperation(ImGuizmo::TRANSLATE),
     ImGuiConfig(ImGUIConfigs::DEFAULT),
-    useDeferredRendering(false),
     applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str())),
     ImGuiConfigChanged(ImGUIConfigs::DEFAULT)
 
@@ -38,6 +37,8 @@ void ComponentWindow::preUpdate()
 {
     SDL_GetWindowSize(window, &width, &height);
     glViewport(0,0, width, height);
+
+    clearShadowMaps();
 }
 
 void ComponentWindow::onUpdate()
@@ -320,12 +321,15 @@ void ComponentWindow::resetFramebuffer()
     createFramebuffer();
 
     ComponentsManager::get()->getComponentRender()->resizeFramebuffers();
+
     resizeGBuffer();
 }
 
-void ComponentWindow::RenderLayersToGlobalFramebuffer() const
+void ComponentWindow::RenderLayersToGlobalFramebuffer()
 {
     auto render = ComponentsManager::get()->getComponentRender();
+    auto window  = ComponentsManager::get()->getComponentWindow();
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -340,13 +344,14 @@ void ComponentWindow::RenderLayersToGlobalFramebuffer() const
             shaderRender->getNumLightPoints(),
             shaderRender->getNumSpotLights(),
             getShadowMapArrayTex(),
-            shaderRender->getShadowMappingLightPoints().size(),
+            static_cast<int>(shaderRender->getShadowMappingLightPoints().size()),
             sceneFramebuffer
         );
     }
 
     //auto shaderShadowPassDebugLight = render->getShaderOGLShadowPassDebugLight();
     //shaderShadowPassDebugLight->render(getShadowMapArrayTex(), 0, getSceneFramebuffer());
+    //shaderShadowPassDebugLight->renderInternal(getShadowMapArrayTex(), 0);
 
     auto shaderOGLImage = render->getShaderOGLImage();
     shaderOGLImage->renderTexture(backgroundTexture, 0, 0, width, height, 1, true, globalFramebuffer);
@@ -697,19 +702,16 @@ void ComponentWindow::createGBuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ComponentWindow::createShadowMapBuffers()
+void ComponentWindow::createShadowMapBuffers(int numLights)
 {
     auto window = ComponentsManager::get()->getComponentWindow();
 
     const int w = window->getWidth();
     const int h = window->getHeight();
 
-    auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRender();
-    const int NUM_LIGHTS = static_cast<int>(shaderRender->getShadowMappingLightPoints().size());
-
     glGenTextures(1, &shadowMapArrayTex);
     glBindTexture(GL_TEXTURE_2D_ARRAY, shadowMapArrayTex);
-    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32, w, h, NUM_LIGHTS,0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32, w, h, numLights,0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 
     // Configuración
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -733,10 +735,28 @@ void ComponentWindow::resizeGBuffer()
 }
 
 bool ComponentWindow::isUseDeferredRendering() const {
-    return useDeferredRendering;
+    return !EngineSetup::get()->FORWARD_RENDER;
 }
 
-void ComponentWindow::setUseDeferredRendering(bool use) {
-    useDeferredRendering = use;
+void ComponentWindow::setUseDeferredRendering(const bool use) {
+    EngineSetup::get()->FORWARD_RENDER = !use;
     Logging::Message("Deferred Rendering: %s", use ? "ENABLED" : "DISABLED");
+}
+
+void ComponentWindow::clearShadowMaps()
+{
+  auto render = ComponentsManager::get()->getComponentRender();
+   auto shaderRender = render->getShaderOGLRender();
+
+    auto numLights = (int) shaderRender->getShadowMappingLightPoints().size();
+    if (numLights > 0) {
+        glBindFramebuffer(GL_FRAMEBUFFER, render->getShaderOGLShadowPass()->getShadowFBO());
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        for (int i = 0; i < numLights; i++) {
+            glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, getShadowMapArrayTex(), 0, i);
+            glClear(GL_DEPTH_BUFFER_BIT);
+        }
+    }
+
 }

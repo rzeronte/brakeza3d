@@ -75,7 +75,6 @@ public:
     // Z BUFFER
     bool ENABLE_LIGHTS = true;
     bool DRAW_LIGHTS_DIRECTION = false;
-    float LIGHTS_DIRECTION_SIZE = 4;
     bool FULLSCREEN = false;
     bool DRAW_FPS = false;
 
@@ -105,6 +104,10 @@ public:
     std::string SHADERS_FOLDER = "../GLSL/";
 
     bool SHADOW_MAPPING = true;
+
+    float SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE = 1.0f;
+    float SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE = 200.0f;
+    float SHADOW_MAPPING_FRUSTUM_SIZE = 30.0f;
 
     bool SOUND_ENABLED = true;
     float SOUND_VOLUME_MUSIC = 40;

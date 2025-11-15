@@ -26,7 +26,7 @@ struct GUIWidgetMenu
     {
     }
 
-    void draw(bool &finish, bool &show_about_window)
+    void draw(bool &finish, bool &show_about_window, bool &showLightDepthMapsWindow)
     {
         auto setup = EngineSetup::get();
         
@@ -226,18 +226,19 @@ struct GUIWidgetMenu
                 ImGui::Checkbox("Light System", &setup->ENABLE_LIGHTS);
                 ImGui::Checkbox("ShadowMapping", &setup->SHADOW_MAPPING);
 
+                if (setup->SHADOW_MAPPING) {
+                    ImGui::Separator();
+                    ImGui::DragFloat("Depth Maps Frustum Near plane", &setup->SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
+                    ImGui::DragFloat("Depth Maps Frustum Far plane", &setup->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE, 0.1f, 1.0f, 500.0f);
+                    ImGui::DragFloat("Depth Maps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
+                }
+
                 ImGui::Separator();
 
                 ImGui::Checkbox("Forward rendering", &setup->FORWARD_RENDER);
 
-                if (ImGui::IsItemEdited()) {
-                    if (setup->FORWARD_RENDER) {
-                        ComponentsManager::get()->getComponentWindow()->setUseDeferredRendering(false);
-                    } else {
-                        ComponentsManager::get()->getComponentWindow()->setUseDeferredRendering(true);
-                    }
-                }
                 ImGui::Separator();
+
                 ImGui::DragScalar("FOV", ImGuiDataType_Float, &setup->HORIZONTAL_FOV, 1, &range_min_fov,&range_max_fov, "%f", 1.0f);
                 ImGui::Separator();
                 ImGui::Checkbox("Limit frame rate", &setup->LIMIT_FRAMERATE);
@@ -368,6 +369,9 @@ struct GUIWidgetMenu
                 if (ImGui::IsItemEdited()) {
                     ComponentsManager::get()->getComponentWindow()->toggleFullScreen();
                 }
+                ImGui::Separator();
+                ImGui::Checkbox("Show Light Depth Maps", &showLightDepthMapsWindow);
+
                 ImGui::Separator();
                 ImGui::Checkbox("UI (F4)", &setup->IMGUI_ENABLED);
 

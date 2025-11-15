@@ -74,7 +74,6 @@ class ComponentWindow : public Component {
 
     GBuffer gBuffer;
 
-    bool useDeferredRendering;
 public:
 
     ComponentWindow();
@@ -111,7 +110,7 @@ public:
 
     [[nodiscard]] GLuint getSceneFramebuffer() const;
 
-    void RenderLayersToGlobalFramebuffer() const;
+    void RenderLayersToGlobalFramebuffer();
     void resetFramebuffer();
     bool isWindowMaximized() const;
 
@@ -165,11 +164,13 @@ public:
     GBuffer& getGBuffer();
     void createGBuffer();
 
-    void createShadowMapBuffers();
+    void createShadowMapBuffers(int numLights);
 
     void resizeGBuffer();
     [[nodiscard]] bool isUseDeferredRendering() const;
     void setUseDeferredRendering(bool use);
+
+    void clearShadowMaps();
 };
 
 

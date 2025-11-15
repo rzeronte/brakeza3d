@@ -37,6 +37,7 @@ public:
     );
 
     void destroy() override;
+
 };
 
 #endif //BRAKEZA3D_SHADEROPENGLDEFERREDLIGHTING_H

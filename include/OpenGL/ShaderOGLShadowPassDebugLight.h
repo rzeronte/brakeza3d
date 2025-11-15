@@ -9,12 +9,31 @@
 #include "ShaderOpenGLRender.h"
 
 class ShaderOGLShadowPassDebugLight : public ShaderOpenGL, public ShaderQuadOpenGL  {
-public:
+    GLuint internalFramebuffer;
+    GLuint sceneTexture;
+    std::vector<GLuint> internalTextures;
+
+    public:
     ShaderOGLShadowPassDebugLight();
 
     void render(GLuint shadowMapArrayTex, int layer, GLuint framebuffer);
 
+    void renderInternal(GLuint shadowMapArrayTex, int layer);
+
     void destroy() override;
+
+    void createFramebuffer();
+
+    [[nodiscard]] GLuint getSceneFramebuffer() const;
+    [[nodiscard]] GLuint getTexture() const;
+
+    void createTextures(int numLayers);
+
+    [[nodiscard]] GLuint getInternalTexture(int layer) const;
+
+    void updateDebugTextures(int numLights);
+    void clearInternalTextures();
+
 };
 
 
