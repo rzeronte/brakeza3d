@@ -143,11 +143,16 @@ cJSON *LightPoint3D::getJSON()
 
 glm::mat4 LightPoint3D::getLightSpaceMatrix()
 {
-    float near = EngineSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE;
-    float far  = EngineSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE;
-    float size = EngineSetup::get()->SHADOW_MAPPING_FRUSTUM_SIZE;
+    const float size = EngineSetup::get()->SHADOW_MAPPING_FRUSTUM_SIZE;
 
-    glm::mat4 lightProjection = glm::ortho(-size, size, -size, size, near, far);
+    glm::mat4 lightProjection = glm::ortho(
+        -size,
+        size,
+        -size,
+        size,
+        EngineSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE,
+        EngineSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE
+    );
 
     Vertex3D forward = getRotation() * Vertex3D(0, 0, 1);
     const auto p = position.toGLM();

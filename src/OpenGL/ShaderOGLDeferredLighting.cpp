@@ -32,6 +32,8 @@ ShaderOGLDeferredLighting::ShaderOGLDeferredLighting()
     materialShininessUniform = glGetUniformLocation(programID, "material.shininess");
 
     numShadowMapsUniform = glGetUniformLocation(programID, "numShadowMaps");
+    debugShadowMappingUniform = glGetUniformLocation(programID, "debugShadowMapping");
+    shadowMappingIntensityUniform = glGetUniformLocation(programID, "shadowIntensity");
 }
 
 void ShaderOGLDeferredLighting::setSpotLightInCameraUniforms(glm::vec3 cameraPosition, Vertex3D forward) {
@@ -88,6 +90,8 @@ void ShaderOGLDeferredLighting::render(
     setIntUniform(materialTextureSpecularUniform, 3);
 
     setIntUniform(numShadowMapsUniform, numShadowMaps);
+    setBoolUniform(debugShadowMappingUniform, EngineSetup::get()->SHADOW_MAPPING_DEBUG);
+    setFloatUniform(shadowMappingIntensityUniform, EngineSetup::get()->SHADOW_MAPPING_INTENSITY);
 
     glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D_ARRAY, shadowMapArrayTex);
@@ -108,6 +112,9 @@ void ShaderOGLDeferredLighting::render(
 
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
+    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "ShadowMapLightsBlock"), 2);
+
+    glUniform1i(glGetUniformLocation(programID, "shadowMapArray"), 4);
 
     drawQuad();
 
@@ -117,4 +124,30 @@ void ShaderOGLDeferredLighting::render(
 void ShaderOGLDeferredLighting::destroy()
 {
     resetQuadMatrix();
+}
+
+void ShaderOGLDeferredLighting::fillUBOLightsMatrix()
+{
+    glDeleteBuffers(1, &bufferUBOLightsMatrix);
+
+    std::vector<glm::mat4> shadowMapLightMatrix;
+
+    auto render = ComponentsManager::get()->getComponentRender();
+    auto shaderRender = render->getShaderOGLRender();
+
+    auto lightPoints = shaderRender->getShadowMappingLightPoints();
+    auto numLights = (int) lightPoints.size();
+
+    for (int i = 0; i < numLights; i++) {
+        shadowMapLightMatrix.push_back(lightPoints[i]->getLightSpaceMatrix());
+    }
+
+    //Logging::Message("UBO Lights Matrix Number: %d", shadowMapLightMatrix.size());
+
+    glGenBuffers(1, &bufferUBOLightsMatrix);
+    glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOLightsMatrix);
+    glBufferData(GL_UNIFORM_BUFFER, static_cast<int>(shadowMapLightMatrix.size() * sizeof(glm::mat4)), shadowMapLightMatrix.data(), GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 2, bufferUBOLightsMatrix);
+
+    shadowMapLightMatrix.clear();
 }

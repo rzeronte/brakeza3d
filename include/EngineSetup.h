@@ -104,6 +104,8 @@ public:
     std::string SHADERS_FOLDER = "../GLSL/";
 
     bool SHADOW_MAPPING = true;
+    bool SHADOW_MAPPING_DEBUG = false;
+    float SHADOW_MAPPING_INTENSITY = 4.0f;
 
     float SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE = 1.0f;
     float SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE = 200.0f;

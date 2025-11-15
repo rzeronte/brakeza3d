@@ -22,6 +22,10 @@ class ShaderOGLDeferredLighting : public ShaderOpenGL, public ShaderQuadOpenGL  
     GLint materialShininessUniform;
 
     GLint numShadowMapsUniform;
+    GLint debugShadowMappingUniform;
+    GLint shadowMappingIntensityUniform;
+
+    GLuint bufferUBOLightsMatrix;
 
 public:
     ShaderOGLDeferredLighting();
@@ -39,6 +43,9 @@ public:
     );
 
     void destroy() override;
+
+    void fillUBOLightsMatrix();
+
     void setSpotLightInCameraUniforms(glm::vec3 cameraPosition, Vertex3D forward);
 
 };
