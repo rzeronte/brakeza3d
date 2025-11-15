@@ -99,7 +99,6 @@ void ComponentRender::onUpdate()
 
     if (Brakeza3D::get()->getManagerGui()->isShowLightsDepthMapsViewerWindow() ) {
         shaderShadowPassDebugLight->createTextures(numLights);
-        //shaderShadowPassDebugLight->clearInternalTextures();
         shaderShadowPassDebugLight->updateDebugTextures(numLights);
     }
 
@@ -527,6 +526,10 @@ void ComponentRender::resizeFramebuffers()
     getShaderOGLFOG()->destroy();
     getShaderOGLGBuffer()->destroy();
     getShaderOGLDeferredLighting()->destroy();
+
+
+    ComponentsManager::get()->getComponentWindow()->createShadowMapBuffers(static_cast<int>(getShaderOGLRender()->getShadowMappingLightPoints().size()));
+    getShaderOGLShadowPass()->setupFBO();
 
     for (auto s: sceneShaders) {
         s->destroy();

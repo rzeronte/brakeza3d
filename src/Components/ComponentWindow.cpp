@@ -328,13 +328,14 @@ void ComponentWindow::resetFramebuffer()
 void ComponentWindow::RenderLayersToGlobalFramebuffer()
 {
     auto render = ComponentsManager::get()->getComponentRender();
-    auto window  = ComponentsManager::get()->getComponentWindow();
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     if (isUseDeferredRendering()) {
         auto shaderRender = render->getShaderOGLRender();
+
+        render->getShaderOGLDeferredLighting()->fillUBOLightsMatrix();
 
         render->getShaderOGLDeferredLighting()->render(
             gBuffer.getPositions(),
@@ -348,10 +349,6 @@ void ComponentWindow::RenderLayersToGlobalFramebuffer()
             sceneFramebuffer
         );
     }
-
-    //auto shaderShadowPassDebugLight = render->getShaderOGLShadowPassDebugLight();
-    //shaderShadowPassDebugLight->render(getShadowMapArrayTex(), 0, getSceneFramebuffer());
-    //shaderShadowPassDebugLight->renderInternal(getShadowMapArrayTex(), 0);
 
     auto shaderOGLImage = render->getShaderOGLImage();
     shaderOGLImage->renderTexture(backgroundTexture, 0, 0, width, height, 1, true, globalFramebuffer);
@@ -643,9 +640,8 @@ void ComponentWindow::createGBuffer()
 {
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    int width = window->getWidth();
-    int height = window->getHeight();
-
+    int width; // = window->getWidth();
+    int height; // = window->getHeight();
     SDL_GetRendererOutputSize(window->getRenderer(), &width, &height);
 
     // Crear el framebuffer
@@ -706,8 +702,9 @@ void ComponentWindow::createShadowMapBuffers(int numLights)
 {
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    const int w = window->getWidth();
-    const int h = window->getHeight();
+    int w; // = window->getWidth();
+    int h; // = window->getHeight();
+    SDL_GetRendererOutputSize(window->getRenderer(), &w, &h);
 
     glGenTextures(1, &shadowMapArrayTex);
     glBindTexture(GL_TEXTURE_2D_ARRAY, shadowMapArrayTex);

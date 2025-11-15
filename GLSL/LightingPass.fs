@@ -56,12 +56,17 @@ uniform SpotLight spotLight;
 uniform sampler2DArray shadowMapArray;
 uniform int numShadowMaps;
 
+uniform bool debugShadowMapping;
+uniform float shadowIntensity;
+
 layout (std140) uniform PointLightsBlock { PointLight pointLights[NR_POINT_LIGHTS]; };
 layout (std140) uniform SpotLightsBlock { SpotLight spotLights[NR_POINT_LIGHTS]; };
+layout (std140) uniform ShadowMapLightsBlock { mat4 lightSpaceMatrices[NR_POINT_LIGHTS]; };
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, int lightIndex);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+float ShadowCalculation(vec3 fragPos, int lightIndex, vec3 normal, vec3 lightDir);
 
 void main()
 {
@@ -76,7 +81,7 @@ void main()
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
 
     for (int i = 0; i < numLights; i++) {
-        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
+        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir, i);
     }
 
     for (int i = 0; i < numSpotLights; i++) {
@@ -88,6 +93,53 @@ void main()
     FragColor = vec4(result, texture(material.diffuse, TexCoords).a * 1);
     //FragColor = vec4(FragPos * 0.1, 1.0);
     //FragColor = vec4(norm * 1.5 + 0.5, 1.0);
+}
+
+// Calcula las sombras usando PCF (Percentage Closer Filtering)
+float ShadowCalculation(vec3 fragPos, int lightIndex, vec3 normal, vec3 lightDir)
+{
+    // Si no hay shadow map para esta luz o el índice es inválido
+    if (lightIndex < 0 || lightIndex >= numShadowMaps) {
+        return 0.0; // Sin sombra
+    }
+
+    // Transformar fragmento al espacio de luz
+    vec4 fragPosLightSpace = lightSpaceMatrices[lightIndex] * vec4(fragPos, 1.0);
+
+    // Realizar perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+
+    // Transformar a rango [0,1]
+    projCoords = projCoords * 0.5 + 0.5;
+
+    // Si está fuera del frustum de la luz, no hay sombra
+    if (projCoords.z > 1.0 || projCoords.x < 0.0 || projCoords.x > 1.0 ||
+        projCoords.y < 0.0 || projCoords.y > 1.0) {
+        return 0.0;
+    }
+
+    // Profundidad actual del fragmento
+    float currentDepth = projCoords.z;
+
+    // Bias dinámico basado en el ángulo entre normal y luz
+    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.0005);
+
+    // PCF (Percentage Closer Filtering) para suavizar sombras
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / vec2(textureSize(shadowMapArray, 0).xy);
+
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            vec2 offset = vec2(x, y) * texelSize;
+            float pcfDepth = texture(shadowMapArray, vec3(projCoords.xy + offset, float(lightIndex))).r;
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+        }
+    }
+    shadow /= 9.0;
+
+    return shadow;
 }
 
 // calculates the color when using a directional light.
@@ -107,25 +159,38 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 }
 
 // calculates the color when using a point light.
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, int lightIndex)
 {
     vec3 lightDir = normalize(light.position.xyz - fragPos);
+
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
+
     // specular shading
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+
     // attenuation
     float distance = length(light.position.xyz - fragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+
     // combine results
     vec3 ambient = light.ambient.xyz * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse = light.diffuse.xyz * diff * vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular.xyz * spec * vec3(texture(material.specular, TexCoords));
+
     ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;
-    return (ambient + diffuse + specular);
+
+    // Shadow calculation
+    float shadow = ShadowCalculation(fragPos, lightIndex, normal, lightDir);
+
+    if (debugShadowMapping) {
+        return mix(vec3(1.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0), shadow * shadowIntensity);
+    }
+
+    return (ambient + (1.0 - shadow * shadowIntensity) * (diffuse + specular)); // Aplicar sombra solo a diffuse y specular, no a ambient
 }
 
 // calculates the color when using a spot light.
