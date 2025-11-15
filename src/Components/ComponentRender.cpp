@@ -86,15 +86,22 @@ void ComponentRender::onUpdate()
     auto numLights = (int) shaderRender->getShadowMappingLightPoints().size();
 
     if (EngineSetup::get()->SHADOW_MAPPING) {
+
         static int lastNumLights = -1;
         if (numLights != lastNumLights) {
-            ComponentsManager::get()->getComponentWindow()->createShadowMapBuffers();
+            ComponentsManager::get()->getComponentWindow()->createShadowMapBuffers(numLights);
             getShaderOGLShadowPass()->setupFBO();
             lastNumLights = numLights;
         }
     }
 
     onUpdateSceneObjects();
+
+    if (Brakeza3D::get()->getManagerGui()->isShowLightsDepthMapsViewerWindow() ) {
+        shaderShadowPassDebugLight->createTextures(numLights);
+        //shaderShadowPassDebugLight->clearInternalTextures();
+        shaderShadowPassDebugLight->updateDebugTextures(numLights);
+    }
 
     if (SETUP->RENDER_MAIN_AXIS) {
         Drawable::drawMainAxis();
@@ -452,6 +459,7 @@ ShaderOGLShadowPass *ComponentRender::getShaderOGLShadowPass() const {
 ShaderOGLShadowPassDebugLight *ComponentRender::getShaderOGLShadowPassDebugLight() const {
     return shaderShadowPassDebugLight;
 }
+
 ShaderOpenGLDepthMap *ComponentRender::getShaderOGLDepthMap() const {
     return shaderOGLDepthMap;
 }
@@ -519,7 +527,6 @@ void ComponentRender::resizeFramebuffers()
     getShaderOGLFOG()->destroy();
     getShaderOGLGBuffer()->destroy();
     getShaderOGLDeferredLighting()->destroy();
-
 
     for (auto s: sceneShaders) {
         s->destroy();

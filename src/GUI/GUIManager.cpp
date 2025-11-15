@@ -266,6 +266,55 @@ void GUIManager::drawEditScriptWindow()
     ImGui::End();
 }
 
+void GUIManager::drawLightsDepthMapsViewerWindow()
+{
+    if (!showLightsDepthMapsViewerWindow) return;
+
+    setNextWindowSize(500, 700);
+    ImGui::SetNextWindowBgAlpha(0.9f);
+
+    auto title = std::string("Lights Depth Maps Viewer: ");
+    if (ImGui::Begin(title.c_str(), &showLightsDepthMapsViewerWindow, ImGuiWindowFlags_NoDocking)) {
+
+        auto render = ComponentsManager::get()->getComponentRender();
+        auto shaderShadowPassDebugLight = render->getShaderOGLShadowPassDebugLight();
+        auto lights = render->getShaderOGLRender()->getShadowMappingLightPoints();
+
+        const int columns = 2;
+
+        // Añadir padding a las celdas
+        ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(10.0f, 10.0f));
+
+        if (ImGui::BeginTable("DepthMapsTable", columns, ImGuiTableFlags_Borders | ImGuiTableFlags_SizingStretchSame)) {
+
+            int i = 0;
+            for (const auto l: lights) {
+                ImGui::TableNextColumn();
+
+                // Centrar texto combinado
+                auto combinedText = l->getLabel() + " / Layer: " + std::to_string(i);
+                float availWidth = ImGui::GetContentRegionAvail().x;
+                float textWidth = ImGui::CalcTextSize(combinedText.c_str()).x;
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - textWidth) * 0.5f);
+                ImGui::Text("%s", combinedText.c_str());
+
+                // Centrar imagen
+                float imageSize = 200.0f;
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - imageSize) * 0.5f);
+                ImGui::Image((ImTextureID)shaderShadowPassDebugLight->getInternalTexture(i), ImVec2(imageSize, imageSize));
+
+                i++;
+            }
+
+            ImGui::EndTable();
+        }
+
+        ImGui::PopStyleVar();
+    }
+
+    ImGui::End();
+}
+
 void GUIManager::drawEditBonesMappingWindow()
 {
     if (selectedObjectIndex < 0) return;
@@ -906,7 +955,7 @@ void GUIManager::draw(float timedelta, bool &finish)
     widgetConsole->Draw("Logging/Console", &p_open);
     widgetObjects3D->draw(selectedObjectIndex);
     widgetObject3DProperties->draw(selectedObjectIndex);
-    widgetMenu->draw(finish, showAboutWindow);
+    widgetMenu->draw(finish, showAboutWindow, showLightsDepthMapsViewerWindow);
     widgetToolbar->draw();
     auto render = ComponentsManager::get()->getComponentRender();
 
@@ -925,6 +974,7 @@ void GUIManager::draw(float timedelta, bool &finish)
     drawEditShaderWindow();
     drawEditScriptWindow();
     drawEditBonesMappingWindow();
+    drawLightsDepthMapsViewerWindow();
 
     if (showSplash) {
         ImGui::OpenPopup("brakeza_splash");
@@ -1233,4 +1283,9 @@ void GUIManager::setNextWindowSize(int w, int h)
 void GUIManager::openBoneInfoDialog()
 {
     showBoneMappingsEditorWindow = true;
+}
+
+void GUIManager::openLightsDepthMapsViewerDialog()
+{
+    showLightsDepthMapsViewerWindow = true;
 }
