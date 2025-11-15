@@ -30,6 +30,23 @@ ShaderOGLDeferredLighting::ShaderOGLDeferredLighting()
     materialTextureDiffuseUniform = glGetUniformLocation(programID, "material.diffuse");
     materialTextureSpecularUniform = glGetUniformLocation(programID, "material.specular");
     materialShininessUniform = glGetUniformLocation(programID, "material.shininess");
+
+    numShadowMapsUniform = glGetUniformLocation(programID, "numShadowMaps");
+}
+
+void ShaderOGLDeferredLighting::setSpotLightInCameraUniforms(glm::vec3 cameraPosition, Vertex3D forward) {
+
+    // spotLight
+    setVec4("spotLight.position", glm::vec4(cameraPosition, 0));
+    setVec4("spotLight.direction", glm::vec4(forward.toGLM(), 0));
+    setVec4("spotLight.ambient", 0.0f, 0.0f, 0.0f, 0);
+    setVec4("spotLight.diffuse", 1.0f, 1.0f, 1.0f, 0);
+    setVec4("spotLight.specular", 1.0f, 1.0f, 1.0f, 0);
+    setFloat("spotLight.constant", 1.0f);
+    setFloat("spotLight.linear", 0.09f);
+    setFloat("spotLight.quadratic", 0.032f);
+    setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+    setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 }
 
 void ShaderOGLDeferredLighting::render(
@@ -70,14 +87,13 @@ void ShaderOGLDeferredLighting::render(
     glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
     setIntUniform(materialTextureSpecularUniform, 3);
 
-    setInt("numShadowMaps", numShadowMaps);
+    setIntUniform(numShadowMapsUniform, numShadowMaps);
 
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_2D_ARRAY, shadowMapArrayTex);
 
     setFloatUniform(materialShininessUniform, 32.0f);
 
-    // Set lighting uniforms
     setVec3Uniform(directionalLightDirectionUniform, directionalLight.direction);
     setVec3Uniform(directionalLightAmbientUniform, directionalLight.ambient);
     setVec3Uniform(directionalLightDiffuseUniform, directionalLight.diffuse);
@@ -88,17 +104,7 @@ void ShaderOGLDeferredLighting::render(
 
     Vertex3D forward = camera->getCamera()->getRotation().getTranspose() * Vertex3D(0, 0, -1);
 
-    // spotLight
-    setVec4("spotLight.position", glm::vec4(cameraPosition, 0));
-    setVec4("spotLight.direction", glm::vec4(forward.toGLM(), 0));
-    setVec4("spotLight.ambient", 0.0f, 0.0f, 0.0f, 0);
-    setVec4("spotLight.diffuse", 1.0f, 1.0f, 1.0f, 0);
-    setVec4("spotLight.specular", 1.0f, 1.0f, 1.0f, 0);
-    setFloat("spotLight.constant", 1.0f);
-    setFloat("spotLight.linear", 0.09f);
-    setFloat("spotLight.quadratic", 0.032f);
-    setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-    setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+    setSpotLightInCameraUniforms(cameraPosition, forward);
 
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);

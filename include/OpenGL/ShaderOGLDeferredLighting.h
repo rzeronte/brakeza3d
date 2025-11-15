@@ -21,6 +21,8 @@ class ShaderOGLDeferredLighting : public ShaderOpenGL, public ShaderQuadOpenGL  
     GLint materialTextureSpecularUniform;
     GLint materialShininessUniform;
 
+    GLint numShadowMapsUniform;
+
 public:
     ShaderOGLDeferredLighting();
 
@@ -37,6 +39,7 @@ public:
     );
 
     void destroy() override;
+    void setSpotLightInCameraUniforms(glm::vec3 cameraPosition, Vertex3D forward);
 
 };
 

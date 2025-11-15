@@ -12,10 +12,6 @@ struct Material {
     float shininess;
 };
 
-uniform sampler2D gPosition;
-uniform sampler2D gNormal;
-uniform Material material;
-
 struct DirLight {
     vec3 direction;
     vec3 ambient;
@@ -46,6 +42,10 @@ struct SpotLight {
     float cutOff;
     float outerCutOff;
 };
+
+uniform sampler2D gPosition;
+uniform sampler2D gNormal;
+uniform Material material;
 
 uniform vec3 viewPos;
 uniform DirLight dirLight;
