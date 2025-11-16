@@ -141,31 +141,6 @@ cJSON *LightPoint3D::getJSON()
     return root;
 }
 
-glm::mat4 LightPoint3D::getLightSpaceMatrix()
-{
-    const float size = EngineSetup::get()->SHADOW_MAPPING_FRUSTUM_SIZE;
-
-    glm::mat4 lightProjection = glm::ortho(
-        -size,
-        size,
-        -size,
-        size,
-        EngineSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE,
-        EngineSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE
-    );
-
-    Vertex3D forward = getRotation() * Vertex3D(0, 0, 1);
-    const auto p = position.toGLM();
-
-    glm::mat4 lightView = glm::lookAt(
-        p,
-        p + forward.toGLM(),
-        glm::vec3(0.0f, 1.0f, 0.0f)
-    );
-
-    return lightProjection * lightView;
-}
-
 void LightPoint3D::setPropertiesFromJSON(cJSON *object, LightPoint3D *o)
 {
     o->setBelongToScene(true);

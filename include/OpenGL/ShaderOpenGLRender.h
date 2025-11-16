@@ -20,7 +20,8 @@ class ShaderOpenGLRender: public ShaderOpenGL {
 
     std::vector<PointLightOpenGL> pointsLights;
     std::vector<SpotLightOpenGL> spotLights;
-    std::vector<LightPoint3D*> shadowMappingLights;
+
+    std::vector<SpotLight3D*> shadowMappingLights;
 
     GLuint bufferUBOLightPoints;
     GLuint bufferUBOSpotLights;
@@ -58,6 +59,8 @@ public:
         GLuint framebuffer
     );
 
+    glm::mat4 getDirectionalLightMatrix(const DirLightOpenGL& light);
+
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer) ;
 
     void createUBOFromLights();
@@ -82,10 +85,10 @@ public:
 
     void renderAnimatedMesh(Mesh3D *o, GLuint framebuffer);
 
-    int getNumLightPoints() const;
+    int getNumPointLights() const;
     [[nodiscard]] int getNumSpotLights() const;
 
-    [[nodiscard]] std::vector<LightPoint3D *> &getShadowMappingLightPoints();
+    [[nodiscard]] std::vector<SpotLight3D *> &getShadowMappingSpotLights();
 };
 
 

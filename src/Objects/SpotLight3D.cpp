@@ -1,6 +1,10 @@
 
 #include <glm/trigonometric.hpp>
 #include "../../include/Objects/SpotLight3D.h"
+
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
+
 #include "../../include/Brakeza3D.h"
 
 SpotLight3D::SpotLight3D(
@@ -118,3 +122,26 @@ void SpotLight3D::setDirection(Vertex3D d)
     direction = glm::vec4(d.x, d.y, d.z, 0);
 }
 
+glm::mat4 SpotLight3D::getLightSpaceMatrix()
+{
+    float aspect = 1.0f;                            // Aspect ratio cuadrado para el shadow map
+    float fov = cutOff; // Ángulo total del cono (cutOffAngle debería ser el semi-ángulo)
+
+    glm::mat4 lightProjection = glm::perspective(
+        fov,
+        aspect,
+        EngineSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE,
+        EngineSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE
+    );
+
+    Vertex3D forward = getRotation() * Vertex3D(0, 0, -1);
+    const auto p = position.toGLM();
+
+    glm::mat4 lightView = glm::lookAt(
+        p,
+        p + forward.toGLM(),
+        glm::vec3(0.0f, 1.0f, 0.0f)
+    );
+
+    return lightProjection * lightView;
+}

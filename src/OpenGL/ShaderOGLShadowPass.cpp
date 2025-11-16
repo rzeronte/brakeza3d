@@ -8,12 +8,15 @@
 
 ShaderOGLShadowPass::ShaderOGLShadowPass()
 :
-    VertexArrayID(0),
     ShaderOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "ShadowPass.vs",
         EngineSetup::get()->SHADERS_FOLDER + "ShadowPass.fs",
         false
-    )
+    ),
+    VertexArrayID(0),
+    spotLightsDepthMapsFBO(0),
+    directionalLightDepthMapFBO(0),
+    directionalLightDepthTexture(0)
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
@@ -21,12 +24,83 @@ ShaderOGLShadowPass::ShaderOGLShadowPass()
     matrixViewUniform = glGetUniformLocation(programID, "lightSpaceMatrix");
     matrixModelUniform = glGetUniformLocation(programID, "model");
 
-    setupFBO();
+    setupFBOSpotLights();
+    // Primero creamos la textura de profundidad de la luz direccional
+    // y luego configuramos su FBO para adjuntarla correctamente.
+    createDirectionalLightDepthTexture();
+    setupFBODirectionalLight();
 }
 
-void ShaderOGLShadowPass::render(
+void ShaderOGLShadowPass::renderMeshIntoArrayTextures(
+    Mesh3D *o,
+    SpotLight3D* light,
+    GLuint shadowMapArrayTex,
+    int lightIndex,
+    GLuint framebuffer
+) const {
+    for (const auto& m: o->meshes) {
+        renderIntoArrayDepthTextures(
+            o,
+            light,
+            m.vertexbuffer,
+            m.uvbuffer,
+            m.normalbuffer,
+            static_cast<int>(m.vertices.size()),
+            shadowMapArrayTex,
+            lightIndex,
+            framebuffer
+        );
+    }
+}
+
+void ShaderOGLShadowPass::renderMeshIntoDirectionalLightTexture(Mesh3D *o, DirLightOpenGL& light, GLuint framebuffer) const
+{
+    for (const auto& m: o->meshes) {
+        renderIntoDirectionalLightTexture(
+            o,
+            light,
+            m.vertexbuffer,
+            m.uvbuffer,
+            m.normalbuffer,
+            static_cast<int>(m.vertices.size()),
+            framebuffer
+        );
+    }
+}
+
+void ShaderOGLShadowPass::renderIntoDirectionalLightTexture(
     Object3D* o,
-    LightPoint3D* light,
+    DirLightOpenGL& light,
+    GLuint vertexbuffer,
+    GLuint uvbuffer,
+    GLuint normalbuffer,
+    int size,
+    GLuint framebuffer
+) const {
+
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+
+    glBindVertexArray(VertexArrayID);
+
+    setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
+
+    auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRender();
+    setMat4Uniform(matrixViewUniform, shaderRender->getDirectionalLightMatrix(light));
+    setMat4Uniform(matrixModelUniform, o->getModelMatrix());
+
+    glDrawArrays(GL_TRIANGLES, 0, size);
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
+}
+
+void ShaderOGLShadowPass::renderIntoArrayDepthTextures(
+    Object3D* o,
+    SpotLight3D* light,
     GLuint vertexbuffer,
     GLuint uvbuffer,
     GLuint normalbuffer,
@@ -62,24 +136,12 @@ void ShaderOGLShadowPass::render(
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
 }
 
-GLuint ShaderOGLShadowPass::getShadowFBO() const {
-    return shadowFBO;
+GLuint ShaderOGLShadowPass::getSpotLightsDepthMapsFBO() const {
+    return spotLightsDepthMapsFBO;
 }
 
-void ShaderOGLShadowPass::renderMesh(Mesh3D *o, LightPoint3D* light, GLuint shadowMapArrayTex, int lightIndex, GLuint framebuffer) {
-    for (const auto& m: o->meshes) {
-        render(
-            o,
-            light,
-            m.vertexbuffer,
-            m.uvbuffer,
-            m.normalbuffer,
-            static_cast<int>(m.vertices.size()),
-            shadowMapArrayTex,
-            lightIndex,
-            framebuffer
-        );
-    }
+GLuint ShaderOGLShadowPass::getDirectionalLightDepthMapFBO() const {
+    return directionalLightDepthMapFBO;
 }
 
 void ShaderOGLShadowPass::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
@@ -101,21 +163,91 @@ void ShaderOGLShadowPass::destroy()
 {
 }
 
-void ShaderOGLShadowPass::setupFBO()
+void ShaderOGLShadowPass::setupFBOSpotLights()
 {
-    if (shadowFBO != 0) {
-        glDeleteFramebuffers(1, &shadowFBO);
+    if (spotLightsDepthMapsFBO != 0) {
+        glDeleteFramebuffers(1, &spotLightsDepthMapsFBO);
     }
 
-    auto shadowMapArrayTex = ComponentsManager::get()->getComponentWindow()->getShadowMapArrayTex();
+    auto spotLightsDepthArrayTextures = ComponentsManager::get()->getComponentWindow()->getSpotLightsShadowMapArrayTextures();
 
-    glGenFramebuffers(1, &shadowFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
-    glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowMapArrayTex, 0, 0);
+    glGenFramebuffers(1, &spotLightsDepthMapsFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, spotLightsDepthMapsFBO);
+    // Para una textura tipo array, usamos glFramebufferTextureLayer en lugar de glFramebufferTexture2D
+    glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, spotLightsDepthArrayTextures, 0, 0);
 
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
 
     glClear(GL_DEPTH_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ShaderOGLShadowPass::setupFBODirectionalLight()
+{
+    if (directionalLightDepthMapFBO != 0) {
+        glDeleteFramebuffers(1, &directionalLightDepthMapFBO);
+    }
+
+    glGenFramebuffers(1, &directionalLightDepthMapFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, directionalLightDepthMapFBO);
+
+    // Para una textura normal, usamos glFramebufferTexture2D en lugar de glFramebufferTextureLayer
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, directionalLightDepthTexture, 0);
+
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+GLuint ShaderOGLShadowPass::getDirectionalLightDepthTexture() const {
+    return directionalLightDepthTexture;
+}
+
+void ShaderOGLShadowPass::createDirectionalLightDepthTexture()
+{
+    // Si ya existe, elimínala primero
+    if (directionalLightDepthTexture != 0) {
+        glDeleteTextures(1, &directionalLightDepthTexture);
+    }
+
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    int width, height;
+    SDL_GetRendererOutputSize(window->getRenderer(), &width, &height);
+
+    glGenTextures(1, &directionalLightDepthTexture);
+    glBindTexture(GL_TEXTURE_2D, directionalLightDepthTexture);
+
+    // Crear la textura de profundidad
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, width, height, 0,
+                 GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
+    // Parámetros de filtrado
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // Parámetros de wrapping (importante para evitar artefactos en los bordes)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    // Color del borde (blanco = profundidad máxima, para que fuera del shadow map no haya sombra)
+    float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    // Opcional: si vas a usar shadow sampling (PCF hardware)
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void ShaderOGLShadowPass::clearDirectionalLightDepthTexture() const {
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(directionalLightDepthMapFBO);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, directionalLightDepthMapFBO);
+    glClear(GL_DEPTH_BUFFER_BIT);
 }

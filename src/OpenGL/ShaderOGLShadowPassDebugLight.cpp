@@ -17,35 +17,36 @@ ShaderOGLShadowPassDebugLight::ShaderOGLShadowPassDebugLight()
     createFramebuffer();
 }
 
-void ShaderOGLShadowPassDebugLight::render(GLuint shadowMapArrayTex, int layer, GLuint framebuffer)
+void ShaderOGLShadowPassDebugLight::renderInternalToTexture()
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(internalFramebuffer);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
-    setInt("layer", layer);
 
+    glBindFramebuffer(GL_FRAMEBUFFER, internalFramebuffer);
+
+    auto shaderShadowPass = ComponentsManager::get()->getComponentRender()->getShaderOGLShadowPass();
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D_ARRAY, shadowMapArrayTex);
+    glBindTexture(GL_TEXTURE_2D, shaderShadowPass->getDirectionalLightDepthTexture());
 
     drawQuad();
 
     glBindVertexArray(0);
 }
 
-void ShaderOGLShadowPassDebugLight::renderInternal(GLuint shadowMapArrayTex, int layer)
+void ShaderOGLShadowPassDebugLight::renderInternalFromArrayTextures(GLuint depthTexture, int layer)
 {
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(internalFramebuffer);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
-    setInt("layer", layer);
 
     glBindFramebuffer(GL_FRAMEBUFFER, internalFramebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, internalTextures[layer], 0);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D_ARRAY, shadowMapArrayTex);
+    glBindTexture(GL_TEXTURE_2D, depthTexture);
 
     drawQuad();
 
@@ -59,6 +60,11 @@ void ShaderOGLShadowPassDebugLight::destroy()
 
 void ShaderOGLShadowPassDebugLight::createFramebuffer()
 {
+    if (internalFramebuffer != 0) {
+        glDeleteFramebuffers(1, &internalFramebuffer);
+        glDeleteTextures(1, &sceneTexture);
+    }
+
     glGenFramebuffers(1, &internalFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, internalFramebuffer);
     auto renderer = ComponentsManager::get()->getComponentWindow()->getRenderer();
@@ -78,18 +84,17 @@ void ShaderOGLShadowPassDebugLight::createFramebuffer()
     } else {
         Logging::Message("ShadowPassDebugLight: Framebuffer created successful!");
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0); // Restaurar framebuffer por defecto
 }
 
 GLuint ShaderOGLShadowPassDebugLight::getSceneFramebuffer() const {
     return internalFramebuffer;
 }
 
-GLuint ShaderOGLShadowPassDebugLight::getTexture() const {
+GLuint ShaderOGLShadowPassDebugLight::getSceneTexture() const {
     return sceneTexture;
 }
 
-void ShaderOGLShadowPassDebugLight::createTextures(int numLayers)
+void ShaderOGLShadowPassDebugLight::createArrayTextures(int numLayers)
 {
     if (!internalTextures.empty()) {
         glDeleteTextures(static_cast<int>(internalTextures.size()), internalTextures.data());
@@ -128,9 +133,14 @@ GLuint ShaderOGLShadowPassDebugLight::getInternalTexture(int layer) const
 void ShaderOGLShadowPassDebugLight::updateDebugTextures(int numLights)
 {
     auto window = ComponentsManager::get()->getComponentWindow();
+    auto arrayTextures = window->getSpotLightsShadowMapArrayTextures();
+
+    renderInternalToTexture();
 
     for (int i = 0; i < numLights; i++) {
-        renderInternal(window->getShadowMapArrayTex(), i);
+        auto depthTexture = this->extractLayerFromArray(arrayTextures, i);
+        renderInternalFromArrayTextures(depthTexture, i);
+        glDeleteTextures(1, &depthTexture);
     }
 }
 
@@ -145,4 +155,45 @@ void ShaderOGLShadowPassDebugLight::clearInternalTextures()
 
     // Limpiar el vector
     internalTextures.clear();
+}
+
+GLuint ShaderOGLShadowPassDebugLight::extractLayerFromArray(GLuint arrayTexture, int layer)
+{
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    int width, height;
+    SDL_GetRendererOutputSize(window->getRenderer(), &width, &height);
+
+    // Crear textura 2D destino
+    GLuint texture2D;
+    glGenTextures(1, &texture2D);
+    glBindTexture(GL_TEXTURE_2D, texture2D);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    // Crear dos framebuffers separados
+    GLuint fboRead, fboDraw;
+    glGenFramebuffers(1, &fboRead);
+    glGenFramebuffers(1, &fboDraw);
+
+    // Configurar READ framebuffer (fuente: capa del array)
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, fboRead);
+    glFramebufferTextureLayer(GL_READ_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, arrayTexture, 0, layer);
+
+    // Configurar DRAW framebuffer (destino: textura 2D)
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboDraw);
+    glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture2D, 0);
+
+    // Copiar usando glBlitFramebuffer
+    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+    // Limpiar
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(1, &fboRead);
+    glDeleteFramebuffers(1, &fboDraw);
+
+    return texture2D;
 }

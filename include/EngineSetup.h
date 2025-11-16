@@ -55,7 +55,7 @@ public:
     bool RENDER_OBJECTS_AXIS = false;
     float OBJECT_AXIS_SIZE = 1;
 
-    bool FORWARD_RENDER = true;
+    bool FORWARD_RENDER = false;
 
     // Fill Triangle modes
     bool TRIANGLE_MODE_PIXELS = false;
@@ -106,6 +106,7 @@ public:
     bool SHADOW_MAPPING = true;
     bool SHADOW_MAPPING_DEBUG = false;
     float SHADOW_MAPPING_INTENSITY = 4.0f;
+    bool SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT = true;
 
     float SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE = 1.0f;
     float SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE = 200.0f;

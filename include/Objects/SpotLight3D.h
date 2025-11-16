@@ -47,6 +47,8 @@ public:
     static SpotLight3D* create(Vertex3D position, Vertex3D direction);
 
     void setDirection(Vertex3D d);
+
+    glm::mat4 getLightSpaceMatrix();
 };
 
 

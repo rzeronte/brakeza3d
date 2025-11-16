@@ -34,9 +34,6 @@ struct GUIWidgetMenu
         const float range_max_sensibility = 9999;
         const float range_min_sensibility = -9999;
 
-        const float range_max_light_direction_size = 10;
-        const float range_min_light_direction_size = 1;
-
         const float range_sensibility_volume = 1;
         const float range_min_volume = 1;
         const float range_max_volume = 128;
@@ -224,15 +221,16 @@ struct GUIWidgetMenu
                 ImGui::Separator();
 
                 ImGui::Checkbox("Light System", &setup->ENABLE_LIGHTS);
-                ImGui::Checkbox("ShadowMapping", &setup->SHADOW_MAPPING);
+                ImGui::Checkbox("Enable Shadow Mapping", &setup->SHADOW_MAPPING);
 
                 if (setup->SHADOW_MAPPING) {
                     ImGui::Separator();
                     ImGui::Checkbox("ShadowMapping debug", &setup->SHADOW_MAPPING_DEBUG);
-                    ImGui::DragFloat("Depth Maps Frustum Near plane", &setup->SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
-                    ImGui::DragFloat("Depth Maps Frustum Far plane", &setup->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE, 0.1f, 1.0f, 500.0f);
-                    ImGui::DragFloat("Depth Maps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
-                    ImGui::DragFloat("Shadow Intensity", &setup->SHADOW_MAPPING_INTENSITY, 0.1f, -5.0f, 5.0f);
+                    ImGui::Checkbox("Enable ShadowMapping in DirectionalLight", &setup->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
+                    ImGui::DragFloat("DepthMaps Frustum Near plane", &setup->SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
+                    ImGui::DragFloat("DepthMaps Frustum Far plane", &setup->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE, 0.1f, 1.0f, 500.0f);
+                    ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
+                    ImGui::DragFloat("Shadows Intensity", &setup->SHADOW_MAPPING_INTENSITY, 0.1f, -5.0f, 5.0f);
                 }
 
                 ImGui::Separator();
@@ -323,20 +321,20 @@ struct GUIWidgetMenu
                 if (ImGui::IsItemDeactivatedAfterEdit()) {
                     if (!setup->SOUND_ENABLED) {
                         Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, 0);
-                        Mix_VolumeMusic((int) setup->SOUND_VOLUME_MUSIC);
+                        Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC));
                         Mix_VolumeMusic(0);
                     } else {
-                        Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) setup->SOUND_CHANNEL_GLOBAL);
-                        Mix_VolumeMusic((int) setup->SOUND_VOLUME_MUSIC);
+                        Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_CHANNEL_GLOBAL));
+                        Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC));
                     }
                 }
 
                 ImGui::DragScalar("Music volume", ImGuiDataType_Float, &setup->SOUND_VOLUME_MUSIC, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
-                if (ImGui::IsItemEdited()) { Mix_VolumeMusic((int )setup->SOUND_VOLUME_MUSIC); }
+                if (ImGui::IsItemEdited()) { Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC)); }
 
                 ImGui::DragScalar("Global Channel volume", ImGuiDataType_Float, &setup->SOUND_CHANNEL_GLOBAL, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
                 if (ImGui::IsItemEdited()) {
-                    Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) setup->SOUND_CHANNEL_GLOBAL);
+                    Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_CHANNEL_GLOBAL));
                 }
                 ImGui::EndMenu();
             }
@@ -495,8 +493,7 @@ struct GUIWidgetMenu
         }
     }
 
-    ImTextureID icon(const char* iconTag)
-    {
+    ImTextureID icon(const char* iconTag) const {
         return TexturePackage::getOGLTextureID(ImGuiTextures, iconTag);
     }
     
@@ -584,28 +581,27 @@ struct GUIWidgetMenu
         }
     }
 
-    void drawGlobalIllumination()
+    static void drawGlobalIllumination()
     {
-        auto render = ComponentsManager::get()->getComponentRender();
-        auto dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->getDirectionalLight();
+        auto& dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->getDirectionalLight();
 
         ImGui::DragFloat3("Light dir.", &dirLight.direction[0], 0.01f, -1.0f, 1.0f);
 
         ImGui::Separator();
 
         ImVec4 color = {dirLight.ambient.x, dirLight.ambient.y, dirLight.ambient.z, 1};
-        bool changed_color = ImGui::ColorEdit4("Ambient##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+        bool changed_color = ImGui::ColorEdit4("Ambient##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
         if (changed_color) {
             dirLight.ambient = {color.x, color.y, color.z};
         }
         color = {dirLight.specular.x, dirLight.specular.y, dirLight.specular.z, 1};
-        changed_color = ImGui::ColorEdit4("Specular##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+        changed_color = ImGui::ColorEdit4("Specular##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
         if (changed_color) {
             dirLight.specular = {color.x, color.y, color.z};
         }
 
         color = {dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z, 1};
-        changed_color = ImGui::ColorEdit4("Diffuse##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+        changed_color = ImGui::ColorEdit4("Diffuse##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
         if (changed_color) {
             dirLight.diffuse = {color.x, color.y, color.z};
         }
@@ -659,7 +655,7 @@ struct GUIWidgetMenu
         }
     }
 
-    void drawCameraSettings()
+    static void drawCameraSettings()
     {
         auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 

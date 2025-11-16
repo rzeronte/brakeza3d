@@ -9,23 +9,27 @@ class ShaderOGLDeferredLighting : public ShaderOpenGL, public ShaderQuadOpenGL  
     GLint gPositionUniform;
     GLint gNormalUniform;
     GLint viewPosUniform;
-    GLint numLightsUniform;
+    GLint numPointLightsUniform;
     GLint numSpotLightsUniform;
 
     GLint directionalLightDirectionUniform;
     GLint directionalLightAmbientUniform;
     GLint directionalLightDiffuseUniform;
     GLint directionalLightSpecularUniform;
+    GLint directionalLightMatrixUniform;
+
+    GLuint dirLightShadowMapTextureUniform;
 
     GLint materialTextureDiffuseUniform;
     GLint materialTextureSpecularUniform;
     GLint materialShininessUniform;
 
-    GLint numShadowMapsUniform;
+    GLint numSpotLightShadowMapsUniform;
     GLint debugShadowMappingUniform;
     GLint shadowMappingIntensityUniform;
+    GLint enableDirectionalLightShadowMapUniform;
 
-    GLuint bufferUBOLightsMatrix;
+    GLuint bufferSpotLightsMatricesUBO;
 
 public:
     ShaderOGLDeferredLighting();
@@ -35,19 +39,19 @@ public:
         GLuint gNormal,
         GLuint gAlbedoSpec,
         const DirLightOpenGL &directionalLight,
-        int numLights,
+        GLuint dirLightShadowMapTexture,
+        int numPointLights,
         int numSpotLights,
-        GLuint shadowMapArrayTex,
-        int numShadowMaps,
-        GLuint outputFramebuffer
+        GLuint spotLightsShadowMapTexturesArray,
+        int numSpotLightsShadowMaps,
+        GLuint framebuffer
     );
 
     void destroy() override;
 
-    void fillUBOLightsMatrix();
+    void fillSpotLightsMatricesUBO();
 
-    void setSpotLightInCameraUniforms(glm::vec3 cameraPosition, Vertex3D forward);
-
+    void setSpotLightInCameraUniforms(glm::vec3 cameraPosition, const Vertex3D &forward) const;
 };
 
 #endif //BRAKEZA3D_SHADEROPENGLDEFERREDLIGHTING_H

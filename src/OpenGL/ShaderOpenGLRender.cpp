@@ -6,7 +6,7 @@
 #include "../../include/Brakeza3D.h"
 
 ShaderOpenGLRender::ShaderOpenGLRender()
-    :
+:
     bufferUBOSpotLights(0),
     bufferUBOLightPoints(0),
     directionalLight(DirLightOpenGL{
@@ -107,6 +107,34 @@ void ShaderOpenGLRender::render(
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
 }
 
+glm::mat4 ShaderOpenGLRender::getDirectionalLightMatrix(const DirLightOpenGL& light)
+{
+    const float size = EngineSetup::get()->SHADOW_MAPPING_FRUSTUM_SIZE;
+
+    glm::mat4 lightProjection = glm::ortho(
+        -size,
+        size,
+        -size,
+        size,
+        EngineSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE,
+        EngineSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE
+    );
+
+    // Normalizar la dirección de la luz
+    glm::vec3 forward = glm::normalize(light.direction);
+
+    // Para una luz direccional, usamos una posición arbitraria en la dirección opuesta a donde apunta la luz
+    glm::vec3 p = -forward * EngineSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE * 0.5f;
+
+    glm::mat4 lightView = glm::lookAt(
+        p,
+        p + forward,
+        glm::vec3(0.0f, 1.0f, 0.0f)
+    );
+
+    return lightProjection * lightView;
+}
+
 void ShaderOpenGLRender::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
 {
     glEnableVertexAttribArray(0);
@@ -192,6 +220,7 @@ void ShaderOpenGLRender::extractLights(Object3D *o)
 
     auto s = dynamic_cast<SpotLight3D*>(o);
     if (s != nullptr) {
+        shadowMappingLights.push_back(s);
         spotLights.push_back(SpotLightOpenGL{
             glm::vec4(o->getPosition().toGLM(), 1),
             glm::vec4(forward.toGLM(), 0),
@@ -209,7 +238,6 @@ void ShaderOpenGLRender::extractLights(Object3D *o)
 
     auto l = dynamic_cast<LightPoint3D*>(o);
     if (l != nullptr) {
-        shadowMappingLights.push_back(l);
         pointsLights.push_back({
             glm::vec4(o->getPosition().toGLM(), 1),
             l->ambient,
@@ -260,14 +288,14 @@ void ShaderOpenGLRender::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
     }
 }
 
-int ShaderOpenGLRender::getNumLightPoints() const {
-    return pointsLights.size();
+int ShaderOpenGLRender::getNumPointLights() const {
+    return static_cast<int>(pointsLights.size());
 }
 
 int ShaderOpenGLRender::getNumSpotLights() const {
-    return spotLights.size();
+    return static_cast<int>(spotLights.size());
 }
 
-[[nodiscard]] std::vector<LightPoint3D *> &ShaderOpenGLRender::getShadowMappingLightPoints() {
+[[nodiscard]] std::vector<SpotLight3D *> &ShaderOpenGLRender::getShadowMappingSpotLights() {
     return shadowMappingLights;
 }

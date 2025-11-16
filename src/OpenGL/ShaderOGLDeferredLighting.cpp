@@ -19,24 +19,30 @@ ShaderOGLDeferredLighting::ShaderOGLDeferredLighting()
     gPositionUniform = glGetUniformLocation(programID, "gPosition");
     gNormalUniform = glGetUniformLocation(programID, "gNormal");
     viewPosUniform = glGetUniformLocation(programID, "viewPos");
-    numLightsUniform = glGetUniformLocation(programID, "numLights");
+
+    numPointLightsUniform = glGetUniformLocation(programID, "numPointLights");
     numSpotLightsUniform = glGetUniformLocation(programID, "numSpotLights");
     
     directionalLightDirectionUniform = glGetUniformLocation(programID, "dirLight.direction");
     directionalLightAmbientUniform = glGetUniformLocation(programID, "dirLight.ambient");
     directionalLightDiffuseUniform = glGetUniformLocation(programID, "dirLight.diffuse");
     directionalLightSpecularUniform = glGetUniformLocation(programID, "dirLight.specular");
+    directionalLightMatrixUniform = glGetUniformLocation(programID, "dirLightMatrix");
+
+    dirLightShadowMapTextureUniform = glGetUniformLocation(programID, "dirLightShadowMap");
 
     materialTextureDiffuseUniform = glGetUniformLocation(programID, "material.diffuse");
     materialTextureSpecularUniform = glGetUniformLocation(programID, "material.specular");
     materialShininessUniform = glGetUniformLocation(programID, "material.shininess");
 
-    numShadowMapsUniform = glGetUniformLocation(programID, "numShadowMaps");
+    numSpotLightShadowMapsUniform = glGetUniformLocation(programID, "numShadowMaps");
     debugShadowMappingUniform = glGetUniformLocation(programID, "debugShadowMapping");
     shadowMappingIntensityUniform = glGetUniformLocation(programID, "shadowIntensity");
+
+    enableDirectionalLightShadowMapUniform = glGetUniformLocation(programID, "enableDirectionalLightShadowMapping");
 }
 
-void ShaderOGLDeferredLighting::setSpotLightInCameraUniforms(glm::vec3 cameraPosition, Vertex3D forward) {
+void ShaderOGLDeferredLighting::setSpotLightInCameraUniforms(glm::vec3 cameraPosition, const Vertex3D &forward) const {
 
     // spotLight
     setVec4("spotLight.position", glm::vec4(cameraPosition, 0));
@@ -56,13 +62,14 @@ void ShaderOGLDeferredLighting::render(
     GLuint gNormal,
     GLuint gAlbedoSpec,
     const DirLightOpenGL &directionalLight,
-    int numLights,
+    GLuint dirLightShadowMapTexture,
+    int numPointLights,
     int numSpotLights,
-    GLuint shadowMapArrayTex,
-    int numShadowMaps,
-    GLuint outputFramebuffer
+    GLuint spotLightsShadowMapTexturesArray,
+    int numSpotLightsShadowMaps,
+    GLuint framebuffer
 ) {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(outputFramebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
@@ -89,12 +96,17 @@ void ShaderOGLDeferredLighting::render(
     glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
     setIntUniform(materialTextureSpecularUniform, 3);
 
-    setIntUniform(numShadowMapsUniform, numShadowMaps);
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, spotLightsShadowMapTexturesArray);
+    glUniform1i(glGetUniformLocation(programID, "shadowMapArray"), 4);
+
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_2D, dirLightShadowMapTexture);
+    setIntUniform(dirLightShadowMapTextureUniform, 5);
+
+    setIntUniform(numSpotLightShadowMapsUniform, numSpotLightsShadowMaps);
     setBoolUniform(debugShadowMappingUniform, EngineSetup::get()->SHADOW_MAPPING_DEBUG);
     setFloatUniform(shadowMappingIntensityUniform, EngineSetup::get()->SHADOW_MAPPING_INTENSITY);
-
-    glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D_ARRAY, shadowMapArrayTex);
 
     setFloatUniform(materialShininessUniform, 32.0f);
 
@@ -102,19 +114,21 @@ void ShaderOGLDeferredLighting::render(
     setVec3Uniform(directionalLightAmbientUniform, directionalLight.ambient);
     setVec3Uniform(directionalLightDiffuseUniform, directionalLight.diffuse);
     setVec3Uniform(directionalLightSpecularUniform, directionalLight.specular);
-    
-    setIntUniform(numLightsUniform, numLights);
+
+    auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRender();
+    setMat4Uniform(directionalLightMatrixUniform, shaderRender->getDirectionalLightMatrix(directionalLight));
+
+    setIntUniform(numPointLightsUniform, numPointLights);
     setIntUniform(numSpotLightsUniform, numSpotLights);
 
     Vertex3D forward = camera->getCamera()->getRotation().getTranspose() * Vertex3D(0, 0, -1);
-
     setSpotLightInCameraUniforms(cameraPosition, forward);
+
+    setBoolUniform(enableDirectionalLightShadowMapUniform, EngineSetup::get()->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
 
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
-    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "ShadowMapLightsBlock"), 2);
-
-    glUniform1i(glGetUniformLocation(programID, "shadowMapArray"), 4);
+    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsShadowMapDepthTexturesBlock"), 2);
 
     drawQuad();
 
@@ -126,28 +140,22 @@ void ShaderOGLDeferredLighting::destroy()
     resetQuadMatrix();
 }
 
-void ShaderOGLDeferredLighting::fillUBOLightsMatrix()
+void ShaderOGLDeferredLighting::fillSpotLightsMatricesUBO()
 {
-    glDeleteBuffers(1, &bufferUBOLightsMatrix);
+    glDeleteBuffers(1, &bufferSpotLightsMatricesUBO);
 
-    std::vector<glm::mat4> shadowMapLightMatrix;
+    std::vector<glm::mat4> spotLightsShadowMapLightMatrices;
 
-    auto render = ComponentsManager::get()->getComponentRender();
-    auto shaderRender = render->getShaderOGLRender();
+    auto spotLights = ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->getShadowMappingSpotLights();
 
-    auto lightPoints = shaderRender->getShadowMappingLightPoints();
-    auto numLights = (int) lightPoints.size();
-
-    for (int i = 0; i < numLights; i++) {
-        shadowMapLightMatrix.push_back(lightPoints[i]->getLightSpaceMatrix());
+    for (int i = 0; i < spotLights.size(); i++) {
+        spotLightsShadowMapLightMatrices.push_back(spotLights[i]->getLightSpaceMatrix());
     }
 
-    //Logging::Message("UBO Lights Matrix Number: %d", shadowMapLightMatrix.size());
+    glGenBuffers(1, &bufferSpotLightsMatricesUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, bufferSpotLightsMatricesUBO);
+    glBufferData(GL_UNIFORM_BUFFER, static_cast<int>(spotLightsShadowMapLightMatrices.size() * sizeof(glm::mat4)), spotLightsShadowMapLightMatrices.data(), GL_STATIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 2, bufferSpotLightsMatricesUBO);
 
-    glGenBuffers(1, &bufferUBOLightsMatrix);
-    glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOLightsMatrix);
-    glBufferData(GL_UNIFORM_BUFFER, static_cast<int>(shadowMapLightMatrix.size() * sizeof(glm::mat4)), shadowMapLightMatrix.data(), GL_STATIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 2, bufferUBOLightsMatrix);
-
-    shadowMapLightMatrix.clear();
+    spotLightsShadowMapLightMatrices.clear();
 }

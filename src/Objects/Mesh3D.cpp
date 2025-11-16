@@ -911,20 +911,25 @@ void Mesh3D::shadowMappingPass()
     auto shaderRender = render->getShaderOGLRender();
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    auto lightPoints = shaderRender->getShadowMappingLightPoints();
-    auto numLights = (int) lightPoints.size();
+    // Directional Light
+    shaderShadowPass->renderMeshIntoDirectionalLightTexture(
+        this,
+        shaderRender->getDirectionalLight(),
+        shaderShadowPass->getDirectionalLightDepthMapFBO()
+    );
 
-    for (int i = 0; i < numLights; i++) {
-        auto l = lightPoints[i];
+    // SpotLights
+    const auto shadowSpotLights = shaderRender->getShadowMappingSpotLights();
+    const auto numSpotLights = static_cast<int>(shadowSpotLights.size());
 
-        //Logging::Message("shadowPass: Light %d | numLights %d | %s", i, numLights, l->getLabel().c_str());
-
-        shaderShadowPass->renderMesh(
+    for (int i = 0; i < numSpotLights; i++) {
+        const auto l = shadowSpotLights[i];
+        shaderShadowPass->renderMeshIntoArrayTextures(
             this,
             l,
-            window->getShadowMapArrayTex(),
+            window->getSpotLightsShadowMapArrayTextures(),
             i,
-            shaderShadowPass->getShadowFBO()
+            shaderShadowPass->getSpotLightsDepthMapsFBO()
         );
     }
 }

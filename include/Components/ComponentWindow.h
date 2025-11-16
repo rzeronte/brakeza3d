@@ -100,7 +100,7 @@ public:
 
     [[nodiscard]] TTF_Font *getFontDefault() const;
 
-    GLuint getShadowMapArrayTex() const;
+    GLuint getSpotLightsShadowMapArrayTextures() const;
 
     SDL_Surface *applicationIcon;
 
@@ -164,7 +164,7 @@ public:
     GBuffer& getGBuffer();
     void createGBuffer();
 
-    void createShadowMapBuffers(int numLights);
+    void createSpotLightsDepthTextures(int numLights);
 
     void resizeGBuffer();
     [[nodiscard]] bool isUseDeferredRendering() const;
