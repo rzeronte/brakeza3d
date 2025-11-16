@@ -4,10 +4,10 @@
 #define BRAKEZA3D_SHADEROPENGLTEXT_H
 
 
-#include "ShaderOpenGL.h"
-#include "ShaderQuadOpenGL.h"
+#include "ShaderBaseOpenGL.h"
+#include "ShaderBaseOpenGLQuad.h"
 
-class ShaderOpenGLImage : public ShaderOpenGL {
+class ShaderOpenGLImage : public ShaderBaseOpenGL {
     GLuint quadVAO;
     GLuint VBO;
 

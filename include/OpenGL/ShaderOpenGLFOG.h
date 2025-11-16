@@ -6,11 +6,11 @@
 #define BRAKEZA3D_SHADEROPENGLFOG_H
 
 
-#include "ShaderOpenGL.h"
+#include "ShaderBaseOpenGL.h"
 #include "../Misc/Color.h"
-#include "ShaderQuadOpenGL.h"
+#include "ShaderBaseOpenGLQuad.h"
 
-class ShaderOpenGLFOG : public ShaderOpenGL, public ShaderQuadOpenGL {
+class ShaderOpenGLFOG : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {
     GLuint resultFramebuffer;
     GLuint textureResult;
 

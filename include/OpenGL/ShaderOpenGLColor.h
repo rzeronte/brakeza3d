@@ -6,13 +6,14 @@
 #define BRAKEZA3D_SHADEROPENGLCOLOR_H
 
 
-#include "ShaderOpenGL.h"
+#include "ShaderBaseOpenGL.h"
 #include "../Objects/Object3D.h"
 
-class ShaderOpenGLColor: public ShaderOpenGL {
+class ShaderOpenGLColor: public ShaderBaseOpenGL {
     GLuint VertexArrayID;
 
     GLuint framebuffer;
+    GLuint textureColorbuffer;
 public:
     ShaderOpenGLColor();
 
@@ -24,7 +25,7 @@ public:
 
     void deleteTexture();
 
-    GLuint textureColorbuffer;
+    GLuint getTextureColorBuffer() const;
 };
 
 

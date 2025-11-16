@@ -6,7 +6,7 @@
 
 ShaderOpenGLOutline::ShaderOpenGLOutline()
 :
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Outliner.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Outliner.fs",
         false
@@ -59,7 +59,7 @@ void ShaderOpenGLOutline::drawOutline(Mesh3D *m, Color c, float borderThickness)
 
     componentRender->changeOpenGLFramebuffer(componentWindow->getSceneFramebuffer());
 
-    render(shaderColor->textureColorbuffer, c, borderThickness);
+    render(shaderColor->getTextureColorBuffer(), c, borderThickness);
 
     componentRender->changeOpenGLFramebuffer(0);
 }
@@ -84,7 +84,7 @@ void ShaderOpenGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderT
 
     componentRender->changeOpenGLFramebuffer(componentWindow->getSceneFramebuffer());
 
-    render(shaderColor->textureColorbuffer, c, borderThickness);
+    render(shaderColor->getTextureColorBuffer(), c, borderThickness);
 
     componentRender->changeOpenGLFramebuffer(0);
 }
@@ -107,7 +107,7 @@ void ShaderOpenGLOutline::drawOutlineImage3D(Image3D *i, Color c, float borderTh
 
     componentRender->changeOpenGLFramebuffer(componentWindow->getSceneFramebuffer());
 
-    render(shaderColor->textureColorbuffer, c, borderThickness);
+    render(shaderColor->getTextureColorBuffer(), c, borderThickness);
 
     componentRender->changeOpenGLFramebuffer(0);
 }

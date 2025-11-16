@@ -55,7 +55,6 @@ uniform sampler2D dirLightShadowMap;
 
 uniform int numPointLights;
 uniform int numSpotLights;
-uniform SpotLight spotLight;
 
 uniform sampler2DArray shadowMapArray;
 uniform int numShadowMaps;

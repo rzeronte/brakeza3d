@@ -6,7 +6,7 @@
 #define BRAKEZA3D_SHADEROPENGLPARTICLES_H
 
 
-#include "ShaderOpenGL.h"
+#include "ShaderBaseOpenGL.h"
 
 struct Particle{
     glm::vec3 pos, speed;
@@ -23,7 +23,7 @@ struct Particle{
 
 #define MaxParticles 512
 
-class ShaderOpenGLParticles : ShaderOpenGL {
+class ShaderOpenGLParticles : ShaderBaseOpenGL {
     GLuint VertexArrayID;
 
     GLuint CameraRight_worldspace_ID;

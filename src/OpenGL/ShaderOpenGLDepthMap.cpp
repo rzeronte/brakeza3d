@@ -8,7 +8,7 @@ ShaderOpenGLDepthMap::ShaderOpenGLDepthMap()
     intensity(1.0f),
     nearPlane(0.1f),
     farPlane(100.0f),
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "DepthMap.vs",
         EngineSetup::get()->SHADERS_FOLDER + "DepthMap.fs",
         false

@@ -7,7 +7,7 @@
 
 ShaderOpenGLShading::ShaderOpenGLShading()
 :
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Shading.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Shading.fs",
         false

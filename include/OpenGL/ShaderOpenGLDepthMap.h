@@ -6,10 +6,10 @@
 #define BRAKEZA3D_SHADEROPENGLDEPTHMAP_H
 
 
-#include "ShaderOpenGL.h"
-#include "ShaderQuadOpenGL.h"
+#include "ShaderBaseOpenGL.h"
+#include "ShaderBaseOpenGLQuad.h"
 
-class ShaderOpenGLDepthMap : public ShaderOpenGL, public ShaderQuadOpenGL {
+class ShaderOpenGLDepthMap : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {
 
     GLint textureUniform;
 

@@ -2,12 +2,12 @@
 #ifndef BRAKEZA3D_SHADEROPENGLPOINTS_H
 #define BRAKEZA3D_SHADEROPENGLPOINTS_H
 
-#include "ShaderOpenGL.h"
+#include "ShaderBaseOpenGL.h"
 #include "../Objects/ParticlesContext.h"
 #include "../Objects/Mesh3D.h"
 #include "../Objects/Mesh3DAnimation.h"
 
-class ShaderOpenGLPoints : public ShaderOpenGL {
+class ShaderOpenGLPoints : public ShaderBaseOpenGL {
     GLuint VertexArrayID;
 public:
     ShaderOpenGLPoints();

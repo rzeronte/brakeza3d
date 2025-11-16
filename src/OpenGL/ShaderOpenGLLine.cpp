@@ -10,7 +10,7 @@
 
 ShaderOpenGLLine::ShaderOpenGLLine()
 :
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Line.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Line.fs",
         false

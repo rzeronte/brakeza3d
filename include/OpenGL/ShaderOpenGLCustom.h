@@ -12,8 +12,8 @@
 #include <utility>
 #include <variant>
 #include <map>
-#include "ShaderOpenGL.h"
-#include "ShaderQuadOpenGL.h"
+#include "ShaderBaseOpenGL.h"
+#include "ShaderBaseOpenGLQuad.h"
 #include "../Misc/cJSON.h"
 #include "../Misc/Image.h"
 #include <sstream>
@@ -67,7 +67,7 @@ static std::map<std::string, ShaderOpenGLCustomDataType> GLSLTypeMapping = {
     {"depth", ShaderOpenGLCustomDataType::DEPTH}
 };
 
-class ShaderOpenGLCustom: public ShaderOpenGL
+class ShaderOpenGLCustom: public ShaderBaseOpenGL
 {
     GLuint resultFramebuffer;
     GLuint textureResult;

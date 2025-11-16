@@ -8,7 +8,7 @@
 
 ShaderOpenGLTint::ShaderOpenGLTint()
 :
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Tint.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Tint.fs",
         false

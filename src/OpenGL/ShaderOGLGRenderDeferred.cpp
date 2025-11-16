@@ -1,11 +1,11 @@
 #define GL_GLEXT_PROTOTYPES
 
-#include "../../include/OpenGL/ShaderOGLGBuffer.h"
+#include "../../include/OpenGL/ShaderOGLGRenderDeferred.h"
 #include "../../include/ComponentsManager.h"
 
-ShaderOGLGBuffer::ShaderOGLGBuffer()
+ShaderOGLGRenderDeferred::ShaderOGLGRenderDeferred()
 :
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "GBuffer.vs",
         EngineSetup::get()->SHADERS_FOLDER + "GBuffer.fs",
         false
@@ -23,7 +23,7 @@ ShaderOGLGBuffer::ShaderOGLGBuffer()
     textureSpecularUniform = glGetUniformLocation(programID, "texture_specular");
 }
 
-void ShaderOGLGBuffer::renderMesh(Mesh3D *o, GLuint framebuffer)
+void ShaderOGLGRenderDeferred::renderMesh(Mesh3D *o, GLuint framebuffer)
 {
     for (const auto& m: o->meshes) {
         render(
@@ -39,7 +39,7 @@ void ShaderOGLGBuffer::renderMesh(Mesh3D *o, GLuint framebuffer)
     }
 }
 
-void ShaderOGLGBuffer::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
+void ShaderOGLGRenderDeferred::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
 {
     for (const auto& m: o->meshes) {
         render(
@@ -55,7 +55,7 @@ void ShaderOGLGBuffer::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
     }
 }
 
-void ShaderOGLGBuffer::render(
+void ShaderOGLGRenderDeferred::render(
     Object3D *o,
     GLint textureID,
     GLint textureSpecularID,
@@ -107,7 +107,7 @@ void ShaderOGLGBuffer::render(
     glBindVertexArray(0);
 }
 
-void ShaderOGLGBuffer::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
+void ShaderOGLGRenderDeferred::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
 {
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -122,7 +122,7 @@ void ShaderOGLGBuffer::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GL
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
-void ShaderOGLGBuffer::destroy()
+void ShaderOGLGRenderDeferred::destroy()
 {
     if (VertexArrayID != 0) {
         glDeleteVertexArrays(1, &VertexArrayID);

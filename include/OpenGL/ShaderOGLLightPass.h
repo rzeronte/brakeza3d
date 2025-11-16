@@ -1,10 +1,10 @@
 #ifndef BRAKEZA3D_SHADEROPENGLDEFERREDLIGHTING_H
 #define BRAKEZA3D_SHADEROPENGLDEFERREDLIGHTING_H
 
-#include "ShaderOpenGL.h"
-#include "ShaderOpenGLRender.h"
+#include "ShaderBaseOpenGL.h"
+#include "ShaderOGLRenderForward.h"
 
-class ShaderOGLDeferredLighting : public ShaderOpenGL, public ShaderQuadOpenGL  {
+class ShaderOGLLightPass : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {
 
     GLint gPositionUniform;
     GLint gNormalUniform;
@@ -32,7 +32,7 @@ class ShaderOGLDeferredLighting : public ShaderOpenGL, public ShaderQuadOpenGL  
     GLuint bufferSpotLightsMatricesUBO;
 
 public:
-    ShaderOGLDeferredLighting();
+    ShaderOGLLightPass();
 
     void render(
         GLuint gPosition,
@@ -50,8 +50,6 @@ public:
     void destroy() override;
 
     void fillSpotLightsMatricesUBO();
-
-    void setSpotLightInCameraUniforms(glm::vec3 cameraPosition, const Vertex3D &forward) const;
 };
 
 #endif //BRAKEZA3D_SHADEROPENGLDEFERREDLIGHTING_H

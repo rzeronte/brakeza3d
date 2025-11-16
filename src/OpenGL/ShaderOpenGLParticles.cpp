@@ -5,7 +5,7 @@
 ShaderOpenGLParticles::ShaderOpenGLParticles()
 :
     VertexArrayID(0),
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Particle.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Particle.fs",
         false

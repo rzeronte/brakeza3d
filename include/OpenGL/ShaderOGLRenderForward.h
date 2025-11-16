@@ -6,14 +6,14 @@
 #define BRAKEZA3D_SHADEROPENGLRENDER_H
 
 
-#include "ShaderOpenGL.h"
+#include "ShaderBaseOpenGL.h"
 #include "../Objects/OpenGLShaderTypes.h"
 #include "../Objects/SpotLight3D.h"
 #include "../Objects/Mesh3D.h"
 #include <glm/ext/matrix_float4x4.hpp>
 #include <vector>
 
-class ShaderOpenGLRender: public ShaderOpenGL {
+class ShaderOGLRenderForward: public ShaderBaseOpenGL {
     GLuint VertexArrayID;
 
     DirLightOpenGL directionalLight;
@@ -45,7 +45,7 @@ class ShaderOpenGLRender: public ShaderOpenGL {
     GLint alphaUniform;
 
 public:
-    ShaderOpenGLRender();
+    ShaderOGLRenderForward();
 
     void render(
         Object3D *o,

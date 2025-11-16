@@ -21,7 +21,7 @@ ShaderOpenGLCustom::ShaderOpenGLCustom(
     textureResult(0),
     label(std::move(label)),
     enabled(true),
-    ShaderOpenGL(vertexFilename, fragmentFilename, type == ShaderCustomTypes::SHADER_OBJECT),
+    ShaderBaseOpenGL(vertexFilename, fragmentFilename, type == ShaderCustomTypes::SHADER_OBJECT),
     fileTypes(ShaderOpenGLCustom::dataTypesFileFor(fragmentFilename)),
     type(type)
 {
@@ -40,7 +40,7 @@ ShaderOpenGLCustom::ShaderOpenGLCustom(
 :
     label(std::move(label)),
     enabled(true),
-    ShaderOpenGL(vertexFilename, fragmentFilename, type == ShaderCustomTypes::SHADER_OBJECT),
+    ShaderBaseOpenGL(vertexFilename, fragmentFilename, type == ShaderCustomTypes::SHADER_OBJECT),
     fileTypes(ShaderOpenGLCustom::dataTypesFileFor(fragmentFilename)),
     type(type)
 {

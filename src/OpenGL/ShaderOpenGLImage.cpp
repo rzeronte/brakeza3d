@@ -9,7 +9,7 @@ ShaderOpenGLImage::ShaderOpenGLImage()
 :
     quadVAO(0),
     VBO(0),
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Image.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Image.fs",
         false

@@ -4,7 +4,7 @@
 ShaderOpenGLPoints::ShaderOpenGLPoints()
 :
     VertexArrayID(0),
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Points.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Points.fs",
         false

@@ -14,7 +14,7 @@ ShaderOpenGLFOG::ShaderOpenGLFOG()
     fogMinDist(0.1f),
     fogMaxDist(250.0f),
     intensity(1.0f),
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "FOG.vs",
         EngineSetup::get()->SHADERS_FOLDER + "FOG.fs",
         false

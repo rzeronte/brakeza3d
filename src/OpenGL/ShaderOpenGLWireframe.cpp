@@ -7,7 +7,7 @@
 
 ShaderOpenGLWireframe::ShaderOpenGLWireframe()
 :
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Wireframe.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Wireframe.fs",
         false

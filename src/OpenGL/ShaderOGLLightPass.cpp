@@ -1,14 +1,14 @@
 
-#include "../../include/OpenGL/ShaderOGLDeferredLighting.h"
+#include "../../include/OpenGL/ShaderOGLLightPass.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include <glm/gtc/type_ptr.hpp>
 
 #define GL_GLEXT_PROTOTYPES
 
-ShaderOGLDeferredLighting::ShaderOGLDeferredLighting()
+ShaderOGLLightPass::ShaderOGLLightPass()
 :
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "LightingPass.vs",
         EngineSetup::get()->SHADERS_FOLDER + "LightingPass.fs",
         false
@@ -42,22 +42,7 @@ ShaderOGLDeferredLighting::ShaderOGLDeferredLighting()
     enableDirectionalLightShadowMapUniform = glGetUniformLocation(programID, "enableDirectionalLightShadowMapping");
 }
 
-void ShaderOGLDeferredLighting::setSpotLightInCameraUniforms(glm::vec3 cameraPosition, const Vertex3D &forward) const {
-
-    // spotLight
-    setVec4("spotLight.position", glm::vec4(cameraPosition, 0));
-    setVec4("spotLight.direction", glm::vec4(forward.toGLM(), 0));
-    setVec4("spotLight.ambient", 0.0f, 0.0f, 0.0f, 0);
-    setVec4("spotLight.diffuse", 1.0f, 1.0f, 1.0f, 0);
-    setVec4("spotLight.specular", 1.0f, 1.0f, 1.0f, 0);
-    setFloat("spotLight.constant", 1.0f);
-    setFloat("spotLight.linear", 0.09f);
-    setFloat("spotLight.quadratic", 0.032f);
-    setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-    setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
-}
-
-void ShaderOGLDeferredLighting::render(
+void ShaderOGLLightPass::render(
     GLuint gPosition,
     GLuint gNormal,
     GLuint gAlbedoSpec,
@@ -121,9 +106,6 @@ void ShaderOGLDeferredLighting::render(
     setIntUniform(numPointLightsUniform, numPointLights);
     setIntUniform(numSpotLightsUniform, numSpotLights);
 
-    Vertex3D forward = camera->getCamera()->getRotation().getTranspose() * Vertex3D(0, 0, -1);
-    setSpotLightInCameraUniforms(cameraPosition, forward);
-
     setBoolUniform(enableDirectionalLightShadowMapUniform, EngineSetup::get()->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
 
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
@@ -135,12 +117,12 @@ void ShaderOGLDeferredLighting::render(
     glBindVertexArray(0);
 }
 
-void ShaderOGLDeferredLighting::destroy()
+void ShaderOGLLightPass::destroy()
 {
     resetQuadMatrix();
 }
 
-void ShaderOGLDeferredLighting::fillSpotLightsMatricesUBO()
+void ShaderOGLLightPass::fillSpotLightsMatricesUBO()
 {
     glDeleteBuffers(1, &bufferSpotLightsMatricesUBO);
 

@@ -9,12 +9,12 @@
 #include <GL/glew.h>
 #include <vector>
 
-class ShaderOpenGL {
+class ShaderBaseOpenGL {
 protected:
     GLuint programID;
 public:
-    ShaderOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback);
-    ShaderOpenGL(const std::string &vertexFilename, bool enableFeedback);
+    ShaderBaseOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback);
+    ShaderBaseOpenGL(const std::string &vertexFilename, bool enableFeedback);
 
     static GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path, bool enableFeedback);
 

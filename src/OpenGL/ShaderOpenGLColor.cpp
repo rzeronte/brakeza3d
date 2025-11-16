@@ -11,7 +11,7 @@ ShaderOpenGLColor::ShaderOpenGLColor()
     VertexArrayID(0),
     framebuffer(0),
     textureColorbuffer(0),
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Color.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Color.fs",
         false
@@ -126,4 +126,8 @@ void ShaderOpenGLColor::destroy() {
 void ShaderOpenGLColor::deleteTexture()
 {
     glDeleteTextures(1, &textureColorbuffer);
+}
+
+GLuint ShaderOpenGLColor::getTextureColorBuffer() const {
+    return textureColorbuffer;
 }

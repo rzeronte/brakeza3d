@@ -2,14 +2,14 @@
 #ifndef BRAKEZA3D_SHADEROPENGLOUTLINE_H
 #define BRAKEZA3D_SHADEROPENGLOUTLINE_H
 
-#include "ShaderOpenGL.h"
+#include "ShaderBaseOpenGL.h"
 #include "../Objects/Object3D.h"
-#include "ShaderQuadOpenGL.h"
+#include "ShaderBaseOpenGLQuad.h"
 #include "../Objects/Mesh3D.h"
 #include "../Objects/Image3D.h"
 #include "../Objects/Mesh3DAnimation.h"
 
-class ShaderOpenGLOutline : public ShaderOpenGL, public ShaderQuadOpenGL  {
+class ShaderOpenGLOutline : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {
     GLint textureUniform;
     GLint lineColorUniform;
     GLint borderThicknessUniform;

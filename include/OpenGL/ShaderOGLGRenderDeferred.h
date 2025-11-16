@@ -1,10 +1,10 @@
 #ifndef BRAKEZA3D_SHADEROPENGLGBUFFER_H
 #define BRAKEZA3D_SHADEROPENGLGBUFFER_H
 
-#include "ShaderOpenGL.h"
+#include "ShaderBaseOpenGL.h"
 #include "../Objects/Mesh3D.h"
 
-class ShaderOGLGBuffer : public ShaderOpenGL {
+class ShaderOGLGRenderDeferred : public ShaderBaseOpenGL {
     GLuint VertexArrayID;
 
     GLint matrixProjectionUniform;
@@ -17,7 +17,7 @@ class ShaderOGLGBuffer : public ShaderOpenGL {
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
 
 public:
-    ShaderOGLGBuffer();
+    ShaderOGLGRenderDeferred();
 
     void renderMesh(Mesh3D *o, GLuint framebuffer);
     void renderAnimatedMesh(Mesh3D *o, GLuint framebuffer);

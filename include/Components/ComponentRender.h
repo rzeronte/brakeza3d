@@ -16,9 +16,9 @@
 #include "../Misc/SceneLoader.h"
 #include "../OpenGL/ShaderOpenGLCustom.h"
 #include "../Misc/ProjectLoader.h"
-#include "../OpenGL/ShaderOpenGL.h"
+#include "../OpenGL/ShaderBaseOpenGL.h"
 #include "../OpenGL/ShaderOpenGLImage.h"
-#include "../OpenGL/ShaderOpenGLRender.h"
+#include "../OpenGL/ShaderOGLRenderForward.h"
 #include "../OpenGL/ShaderOpenGLLine.h"
 #include "../OpenGL/ShaderOpenGLWireframe.h"
 #include "../OpenGL/ShaderOpenGLShading.h"
@@ -32,8 +32,8 @@
 #include "../OpenGL/ShaderOpenGLTint.h"
 #include "../OpenGL/ShaderOpenGLLine3D.h"
 #include "../OpenGL/ShaderOpenGLBonesTransforms.h"
-#include "../OpenGL/ShaderOGLGBuffer.h"
-#include "../OpenGL/ShaderOGLDeferredLighting.h"
+#include "../OpenGL/ShaderOGLGRenderDeferred.h"
+#include "../OpenGL/ShaderOGLLightPass.h"
 #include "../OpenGL/ShaderOGLShadowPass.h"
 #include "../OpenGL/ShaderOGLShadowPassDebugLight.h"
 
@@ -52,7 +52,7 @@ class ComponentRender : public Component {
     bool sceneShadersEnabled;
     std::vector<ShaderOpenGLCustom*> sceneShaders;
 
-    ShaderOpenGLRender *shaderOGLRender;
+    ShaderOGLRenderForward *shaderOGLRender;
     ShaderOpenGLImage *shaderOGLImage;
     ShaderOpenGLLine *shaderOGLLine;
     ShaderOpenGLWireframe *shaderOGLWireframe;
@@ -67,8 +67,8 @@ class ComponentRender : public Component {
     ShaderOpenGLFOG *shaderOGLFOG;
     ShaderOpenGLTint *shaderOGLTint;
     ShaderOpenGLBonesTransforms *shaderOGLBonesTransforms;
-    ShaderOGLGBuffer *shaderOGLGBuffer;
-    ShaderOGLDeferredLighting *shaderOGLDeferredLighting;
+    ShaderOGLGRenderDeferred *shaderOGLGBuffer;
+    ShaderOGLLightPass *shaderOGLDeferredLighting;
     ShaderOGLShadowPass *shaderShadowPass;
     ShaderOGLShadowPassDebugLight *shaderShadowPassDebugLight;
 
@@ -158,7 +158,7 @@ ComponentRender();
 
     [[nodiscard]] ShaderOpenGLImage *getShaderOGLImage() const;
 
-    [[nodiscard]] ShaderOpenGLRender *getShaderOGLRender() const;
+    [[nodiscard]] ShaderOGLRenderForward *getShaderOGLRender() const;
 
     [[nodiscard]] ShaderOpenGLLine *getShaderOGLLine() const;
 
@@ -188,9 +188,9 @@ ComponentRender();
 
     [[nodiscard]] ShaderOpenGLDepthMap *getShaderOGLDepthMap() const;
 
-    [[nodiscard]] ShaderOGLGBuffer *getShaderOGLGBuffer() const;
+    [[nodiscard]] ShaderOGLGRenderDeferred *getShaderOGLGBuffer() const;
 
-    [[nodiscard]] ShaderOGLDeferredLighting *getShaderOGLDeferredLighting() const;
+    [[nodiscard]] ShaderOGLLightPass *getShaderOGLDeferredLighting() const;
 
     GLuint getLastFrameBufferUsed() const;
 

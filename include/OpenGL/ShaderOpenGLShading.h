@@ -6,10 +6,10 @@
 #define BRAKEZA3D_SHADEROPENGLSHADING_H
 
 
-#include "ShaderOpenGL.h"
+#include "ShaderBaseOpenGL.h"
 #include "../Objects/Mesh3D.h"
 
-class ShaderOpenGLShading : public ShaderOpenGL {
+class ShaderOpenGLShading : public ShaderBaseOpenGL {
     GLuint VertexArrayID;
 public:
     ShaderOpenGLShading();

@@ -8,7 +8,7 @@
 
 ShaderOGLShadowPass::ShaderOGLShadowPass()
 :
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "ShadowPass.vs",
         EngineSetup::get()->SHADERS_FOLDER + "ShadowPass.fs",
         false

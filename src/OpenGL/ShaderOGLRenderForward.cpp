@@ -1,11 +1,11 @@
 #define GL_GLEXT_PROTOTYPES
 
 #include <glm/gtc/type_ptr.hpp>
-#include "../../include/OpenGL/ShaderOpenGLRender.h"
+#include "../../include/OpenGL/ShaderOGLRenderForward.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
-ShaderOpenGLRender::ShaderOpenGLRender()
+ShaderOGLRenderForward::ShaderOGLRenderForward()
 :
     bufferUBOSpotLights(0),
     bufferUBOLightPoints(0),
@@ -16,7 +16,7 @@ ShaderOpenGLRender::ShaderOpenGLRender()
         glm::vec3(0.5f, 0.5f, 0.5f)
     }),
     VertexArrayID(0),
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Render.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Render.fs",
         false
@@ -46,7 +46,7 @@ ShaderOpenGLRender::ShaderOpenGLRender()
     alphaUniform = glGetUniformLocation(programID, "alpha");
 }
 
-void ShaderOpenGLRender::render(
+void ShaderOGLRenderForward::render(
     Object3D *o,
     GLint textureID,
     GLint textureSpecularID,
@@ -107,7 +107,7 @@ void ShaderOpenGLRender::render(
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
 }
 
-glm::mat4 ShaderOpenGLRender::getDirectionalLightMatrix(const DirLightOpenGL& light)
+glm::mat4 ShaderOGLRenderForward::getDirectionalLightMatrix(const DirLightOpenGL& light)
 {
     const float size = EngineSetup::get()->SHADOW_MAPPING_FRUSTUM_SIZE;
 
@@ -135,7 +135,7 @@ glm::mat4 ShaderOpenGLRender::getDirectionalLightMatrix(const DirLightOpenGL& li
     return lightProjection * lightView;
 }
 
-void ShaderOpenGLRender::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
+void ShaderOGLRenderForward::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
 {
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -152,7 +152,7 @@ void ShaderOpenGLRender::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, 
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
-void ShaderOpenGLRender::createUBOFromLights()
+void ShaderOGLRenderForward::createUBOFromLights()
 {
     pointsLights.resize(0);
     spotLights.resize(0);
@@ -172,16 +172,16 @@ void ShaderOpenGLRender::createUBOFromLights()
     fillUBOLights();
 }
 
-DirLightOpenGL &ShaderOpenGLRender::getDirectionalLight()
+DirLightOpenGL &ShaderOGLRenderForward::getDirectionalLight()
 {
     return directionalLight;
 }
 
-void ShaderOpenGLRender::destroy()
+void ShaderOGLRenderForward::destroy()
 {
 }
 
-void ShaderOpenGLRender::renderMesh(Mesh3D *o, GLuint framebuffer)
+void ShaderOGLRenderForward::renderMesh(Mesh3D *o, GLuint framebuffer)
 {
     for (const auto& m: o->meshes) {
         render(
@@ -198,7 +198,7 @@ void ShaderOpenGLRender::renderMesh(Mesh3D *o, GLuint framebuffer)
     }
 }
 
-void ShaderOpenGLRender::fillUBOLights()
+void ShaderOGLRenderForward::fillUBOLights()
 {
     glDeleteBuffers(1, &bufferUBOLightPoints);
     glDeleteBuffers(1, &bufferUBOSpotLights);
@@ -214,7 +214,7 @@ void ShaderOpenGLRender::fillUBOLights()
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, bufferUBOSpotLights);
 }
 
-void ShaderOpenGLRender::extractLights(Object3D *o)
+void ShaderOGLRenderForward::extractLights(Object3D *o)
 {
     Vertex3D forward = o->getRotation().Z().getNormalize();
 
@@ -250,28 +250,28 @@ void ShaderOpenGLRender::extractLights(Object3D *o)
     }
 }
 
-void ShaderOpenGLRender::setGlobalIlluminationDirection(Vertex3D d)
+void ShaderOGLRenderForward::setGlobalIlluminationDirection(Vertex3D d)
 {
     this->directionalLight.direction = d.toGLM();
 }
 
-void ShaderOpenGLRender::setGlobalIlluminationAmbient(Vertex3D a)
+void ShaderOGLRenderForward::setGlobalIlluminationAmbient(Vertex3D a)
 {
     this->directionalLight.ambient = a.toGLM();
 }
 
-void ShaderOpenGLRender::setGlobalIlluminationDiffuse(Vertex3D d)
+void ShaderOGLRenderForward::setGlobalIlluminationDiffuse(Vertex3D d)
 {
     this->directionalLight.diffuse = d.toGLM();
 
 }
 
-void ShaderOpenGLRender::setGlobalIlluminationSpecular(Vertex3D s)
+void ShaderOGLRenderForward::setGlobalIlluminationSpecular(Vertex3D s)
 {
     this->directionalLight.specular = s.toGLM();
 }
 
-void ShaderOpenGLRender::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
+void ShaderOGLRenderForward::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
 {
     for (const auto& m: o->meshes) {
         render(
@@ -288,14 +288,14 @@ void ShaderOpenGLRender::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
     }
 }
 
-int ShaderOpenGLRender::getNumPointLights() const {
+int ShaderOGLRenderForward::getNumPointLights() const {
     return static_cast<int>(pointsLights.size());
 }
 
-int ShaderOpenGLRender::getNumSpotLights() const {
+int ShaderOGLRenderForward::getNumSpotLights() const {
     return static_cast<int>(spotLights.size());
 }
 
-[[nodiscard]] std::vector<SpotLight3D *> &ShaderOpenGLRender::getShadowMappingSpotLights() {
+[[nodiscard]] std::vector<SpotLight3D *> &ShaderOGLRenderForward::getShadowMappingSpotLights() {
     return shadowMappingLights;
 }

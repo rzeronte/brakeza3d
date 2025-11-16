@@ -6,11 +6,11 @@
 #define BRAKEZA3D_SHADEROPENGLTINT_H
 
 
-#include "../../include/OpenGL/ShaderOpenGL.h"
-#include "../../include/OpenGL/ShaderQuadOpenGL.h"
+#include "../../include/OpenGL/ShaderBaseOpenGL.h"
+#include "../../include/OpenGL/ShaderBaseOpenGLQuad.h"
 #include "../../include/Misc/Color.h"
 
-class ShaderOpenGLTint : public ShaderOpenGL, public ShaderQuadOpenGL {
+class ShaderOpenGLTint : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {
     GLint colorUniform;
     GLint alphaUniform;
 

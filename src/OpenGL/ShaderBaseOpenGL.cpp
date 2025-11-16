@@ -3,10 +3,10 @@
 #include <sstream>
 #include <vector>
 #include <glm/gtc/type_ptr.hpp>
-#include "../../include/OpenGL/ShaderOpenGL.h"
+#include "../../include/OpenGL/ShaderBaseOpenGL.h"
 #include "../../include/Render/Logging.h"
 
-ShaderOpenGL::ShaderOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback)
+ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback)
 :
     vertexFilename(vertexFilename),
     fragmentFilename(fragmentFilename)
@@ -18,7 +18,7 @@ ShaderOpenGL::ShaderOpenGL(const std::string &vertexFilename, const std::string 
     );
 }
 
-ShaderOpenGL::ShaderOpenGL(const std::string &vertexFilename, bool enableFeedback)
+ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, bool enableFeedback)
 :
     vertexFilename(vertexFilename)
 {
@@ -84,7 +84,7 @@ ShaderOpenGL::ShaderOpenGL(const std::string &vertexFilename, bool enableFeedbac
     programID = ProgramID;
 }
 
-GLuint ShaderOpenGL::LoadShaders(const char * vertex_file_path, const char * fragment_file_path, bool enableFeedback)
+GLuint ShaderBaseOpenGL::LoadShaders(const char * vertex_file_path, const char * fragment_file_path, bool enableFeedback)
 {
     // Create the shaders
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -175,133 +175,133 @@ GLuint ShaderOpenGL::LoadShaders(const char * vertex_file_path, const char * fra
     return ProgramID;
 }
 
-GLuint ShaderOpenGL::getProgramID() const {
+GLuint ShaderBaseOpenGL::getProgramID() const {
     return programID;
 }
 
 
-void ShaderOpenGL::setBool(const std::string &name, bool value) const
+void ShaderBaseOpenGL::setBool(const std::string &name, bool value) const
 {
     glUniform1i(glGetUniformLocation(programID, name.c_str()), (int)value);
 }
-void ShaderOpenGL::setBoolUniform(GLint uniform, bool value) {
+void ShaderBaseOpenGL::setBoolUniform(GLint uniform, bool value) {
     glUniform1i(uniform, (int)value);
 }
 // ------------------------------------------------------------------------
-void ShaderOpenGL::setInt(const std::string &name, int value) const
+void ShaderBaseOpenGL::setInt(const std::string &name, int value) const
 {
     glUniform1i(glGetUniformLocation(programID, name.c_str()), value);
 }
-void ShaderOpenGL::setIntUniform(GLint uniform, int value)
+void ShaderBaseOpenGL::setIntUniform(GLint uniform, int value)
 {
     glUniform1i(uniform, value);
 }
 // ------------------------------------------------------------------------
-void ShaderOpenGL::setFloat(const std::string &name, float value) const
+void ShaderBaseOpenGL::setFloat(const std::string &name, float value) const
 {
     glUniform1f(glGetUniformLocation(programID, name.c_str()), value);
 }
-void ShaderOpenGL::setFloatUniform(GLint uniform, float value)
+void ShaderBaseOpenGL::setFloatUniform(GLint uniform, float value)
 {
     glUniform1f(uniform, value);
 }
 // ------------------------------------------------------------------------
-void ShaderOpenGL::setVec2(const std::string &name, const glm::vec2 &value) const
+void ShaderBaseOpenGL::setVec2(const std::string &name, const glm::vec2 &value) const
 {
     glUniform2fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
 }
-void ShaderOpenGL::setVec2Uniform(GLint uniform, const glm::vec2 &value)
+void ShaderBaseOpenGL::setVec2Uniform(GLint uniform, const glm::vec2 &value)
 {
     glUniform2fv(uniform, 1, &value[0]);
 }
-void ShaderOpenGL::setVec2(const std::string &name, float x, float y) const
+void ShaderBaseOpenGL::setVec2(const std::string &name, float x, float y) const
 {
     glUniform2f(glGetUniformLocation(programID, name.c_str()), x, y);
 }
-void ShaderOpenGL::setVec2Uniform(GLint uniform, float x, float y)
+void ShaderBaseOpenGL::setVec2Uniform(GLint uniform, float x, float y)
 {
     glUniform2f(uniform, x, y);
 }
 
 // ------------------------------------------------------------------------
-void ShaderOpenGL::setVec3(const std::string &name, const glm::vec3 &value) const
+void ShaderBaseOpenGL::setVec3(const std::string &name, const glm::vec3 &value) const
 {
     glUniform3fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
 }
-void ShaderOpenGL::setVec3Uniform(GLint uniform, const glm::vec3 &value)
+void ShaderBaseOpenGL::setVec3Uniform(GLint uniform, const glm::vec3 &value)
 {
     glUniform3fv(uniform, 1, &value[0]);
 }
-void ShaderOpenGL::setVec3(const std::string &name, float x, float y, float z) const
+void ShaderBaseOpenGL::setVec3(const std::string &name, float x, float y, float z) const
 {
     glUniform3f(glGetUniformLocation(programID, name.c_str()), x, y, z);
 }
-void ShaderOpenGL::setVec3Uniform(GLint uniform, float x, float y, float z)
+void ShaderBaseOpenGL::setVec3Uniform(GLint uniform, float x, float y, float z)
 {
     glUniform3f(uniform, x, y, z);
 }
 
 // ------------------------------------------------------------------------
-void ShaderOpenGL::setVec4(const std::string &name, const glm::vec4 &value) const
+void ShaderBaseOpenGL::setVec4(const std::string &name, const glm::vec4 &value) const
 {
     glUniform4fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
 }
-void ShaderOpenGL::setVec4Uniform(GLint uniform, const glm::vec4 &value)
+void ShaderBaseOpenGL::setVec4Uniform(GLint uniform, const glm::vec4 &value)
 {
     glUniform4fv(uniform, 1, &value[0]);
 }
 
-void ShaderOpenGL::setVec4(const std::string &name, float x, float y, float z, float w) const
+void ShaderBaseOpenGL::setVec4(const std::string &name, float x, float y, float z, float w) const
 {
     glUniform4f(glGetUniformLocation(programID, name.c_str()), x, y, z, w);
 }
 
-void ShaderOpenGL::setVec4Uniform(GLint uniform, float x, float y, float z, float w)
+void ShaderBaseOpenGL::setVec4Uniform(GLint uniform, float x, float y, float z, float w)
 {
     glUniform4f(uniform, x, y, z, w);
 }
 // ------------------------------------------------------------------------
-void ShaderOpenGL::setMat2(const std::string &name, const glm::mat2 &mat) const
+void ShaderBaseOpenGL::setMat2(const std::string &name, const glm::mat2 &mat) const
 {
     glUniformMatrix2fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
-void ShaderOpenGL::setMat2Uniform(GLint uniform, const glm::mat2 &mat)
+void ShaderBaseOpenGL::setMat2Uniform(GLint uniform, const glm::mat2 &mat)
 {
     glUniformMatrix2fv(uniform, 1, GL_FALSE, &mat[0][0]);
 }
 // ------------------------------------------------------------------------
-void ShaderOpenGL::setMat3(const std::string &name, const glm::mat3 &mat) const
+void ShaderBaseOpenGL::setMat3(const std::string &name, const glm::mat3 &mat) const
 {
     glUniformMatrix3fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
-void ShaderOpenGL::setMat3Uniform(GLint uniform, const glm::mat3 &mat)
+void ShaderBaseOpenGL::setMat3Uniform(GLint uniform, const glm::mat3 &mat)
 {
     glUniformMatrix3fv(uniform, 1, GL_FALSE, &mat[0][0]);
 }
 // ------------------------------------------------------------------------
-void ShaderOpenGL::setMat4(const std::string &name, const glm::mat4 &mat) const
+void ShaderBaseOpenGL::setMat4(const std::string &name, const glm::mat4 &mat) const
 {
     glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
-void ShaderOpenGL::setMat4Array(const std::string &name, std::vector<glm::mat4> &Transforms) const
+void ShaderBaseOpenGL::setMat4Array(const std::string &name, std::vector<glm::mat4> &Transforms) const
 {
     glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), (GLsizei)Transforms.size(), GL_FALSE, glm::value_ptr(Transforms[0]));
 }
 
-void ShaderOpenGL::setMat4ArrayUniform(GLint uniform, std::vector<glm::mat4> &Transforms) const
+void ShaderBaseOpenGL::setMat4ArrayUniform(GLint uniform, std::vector<glm::mat4> &Transforms) const
 {
     glUniformMatrix4fv(uniform, (GLsizei)Transforms.size(), GL_FALSE, glm::value_ptr(Transforms[0]));
 }
 
-void ShaderOpenGL::setMat4Uniform(GLint uniform, const glm::mat4 &mat)
+void ShaderBaseOpenGL::setMat4Uniform(GLint uniform, const glm::mat4 &mat)
 {
     glUniformMatrix4fv(uniform, 1, GL_FALSE, &mat[0][0]);
 }
 
-void ShaderOpenGL::setTexture(const std::string &name, GLuint textureID, int index) const
+void ShaderBaseOpenGL::setTexture(const std::string &name, GLuint textureID, int index) const
 {
     if (index == 0) {
         glActiveTexture(GL_TEXTURE0);

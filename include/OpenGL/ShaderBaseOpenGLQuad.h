@@ -7,7 +7,7 @@
 
 #include <GL/glew.h>
 
-class ShaderQuadOpenGL {
+class ShaderBaseOpenGLQuad {
     GLuint VBO;
     GLint modelMatrixUniform;
     GLint projectionMatrixUniform;
@@ -18,7 +18,7 @@ class ShaderQuadOpenGL {
 protected:
     GLuint quadVAO;
 public:
-    ShaderQuadOpenGL();
+    ShaderBaseOpenGLQuad();
 
     void setupQuadUniforms(GLuint programId);
 

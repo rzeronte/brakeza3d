@@ -9,7 +9,7 @@
 ShaderOpenGLLine3D::ShaderOpenGLLine3D()
 :
     VertexArrayID(0),
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Line3D.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Line3D.fs",
         false

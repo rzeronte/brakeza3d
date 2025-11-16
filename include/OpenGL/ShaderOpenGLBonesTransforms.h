@@ -6,10 +6,10 @@
 #define BRAKEZA3D_SHADEROPENGLBONESTRANSFORMS_H
 
 
-#include "ShaderOpenGL.h"
+#include "ShaderBaseOpenGL.h"
 #include "../Objects/Mesh3DAnimation.h"
 
-class ShaderOpenGLBonesTransforms : public ShaderOpenGL
+class ShaderOpenGLBonesTransforms : public ShaderBaseOpenGL
 {
     GLuint VertexArrayID;
 

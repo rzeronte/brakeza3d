@@ -5,10 +5,10 @@
 #ifndef BRAKEZA3D_SHADERSHADOWPASSDEBUGLIGHT_H
 #define BRAKEZA3D_SHADERSHADOWPASSDEBUGLIGHT_H
 
-#include "ShaderOpenGL.h"
-#include "ShaderOpenGLRender.h"
+#include "ShaderBaseOpenGL.h"
+#include "ShaderOGLRenderForward.h"
 
-class ShaderOGLShadowPassDebugLight : public ShaderOpenGL, public ShaderQuadOpenGL  {
+class ShaderOGLShadowPassDebugLight : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {
     GLuint internalFramebuffer;
     GLuint sceneTexture;
     std::vector<GLuint> internalTextures;

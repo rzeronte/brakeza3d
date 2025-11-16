@@ -7,7 +7,7 @@
 
 ShaderOGLShadowPassDebugLight::ShaderOGLShadowPassDebugLight()
 :
-    ShaderOpenGL(
+    ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "ShadowPassDebugLight.vs",
         EngineSetup::get()->SHADERS_FOLDER + "ShadowPassDebugLight.fs",
         false

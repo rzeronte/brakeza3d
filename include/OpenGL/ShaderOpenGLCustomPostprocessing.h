@@ -8,7 +8,7 @@
 
 #include "ShaderOpenGLCustom.h"
 
-class ShaderOpenGLCustomPostprocessing : public ShaderOpenGLCustom, ShaderQuadOpenGL {
+class ShaderOpenGLCustomPostprocessing : public ShaderOpenGLCustom, ShaderBaseOpenGLQuad {
 public:
     ShaderOpenGLCustomPostprocessing(
         const std::string &label,

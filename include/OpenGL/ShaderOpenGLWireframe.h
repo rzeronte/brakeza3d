@@ -6,11 +6,11 @@
 #define BRAKEZA3D_SHADEROPENGLWIREFRAME_H
 
 
-#include "ShaderOpenGL.h"
+#include "ShaderBaseOpenGL.h"
 #include "../Objects/Mesh3D.h"
 #include "../Objects/Mesh3DAnimation.h"
 
-class ShaderOpenGLWireframe : public ShaderOpenGL {
+class ShaderOpenGLWireframe : public ShaderBaseOpenGL {
     GLuint VertexArrayID;
 public:
     ShaderOpenGLWireframe();

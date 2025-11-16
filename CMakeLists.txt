@@ -154,11 +154,11 @@ add_executable(Brakeza3D
     src/OpenGL/ShaderOpenGLDOF.cpp                  include/OpenGL/ShaderOpenGLDOF.h
     src/OpenGL/ShaderOpenGLDepthMap.cpp             include/OpenGL/ShaderOpenGLDepthMap.h
     src/OpenGL/ShaderOpenGLFOG.cpp                  include/OpenGL/ShaderOpenGLFOG.h
-    src/OpenGL/ShaderQuadOpenGL.cpp                 include/OpenGL/ShaderQuadOpenGL.h
+        src/OpenGL/ShaderBaseOpenGLQuad.cpp include/OpenGL/ShaderBaseOpenGLQuad.h
     src/OpenGL/ShaderOpenGLColor.cpp                include/OpenGL/ShaderOpenGLColor.h
-    src/OpenGL/ShaderOpenGL.cpp                     include/OpenGL/ShaderOpenGL.h
+        src/OpenGL/ShaderBaseOpenGL.cpp include/OpenGL/ShaderBaseOpenGL.h
     src/OpenGL/ShaderOpenGLImage.cpp                include/OpenGL/ShaderOpenGLImage.h
-    src/OpenGL/ShaderOpenGLRender.cpp               include/OpenGL/ShaderOpenGLRender.h
+        src/OpenGL/ShaderOGLRenderForward.cpp include/OpenGL/ShaderOGLRenderForward.h
     src/OpenGL/ShaderOpenGLLine.cpp                 include/OpenGL/ShaderOpenGLLine.h
     src/OpenGL/ShaderOpenGLWireframe.cpp            include/OpenGL/ShaderOpenGLWireframe.h
     src/OpenGL/ShaderOpenGLShading.cpp              include/OpenGL/ShaderOpenGLShading.h
@@ -225,10 +225,10 @@ add_executable(Brakeza3D
         include/Collision/AssimpAnimationService.h
         include/Collision/CollisionInfo.cpp
         include/Collision/CollisionInfo.h
-        src/OpenGL/ShaderOGLGBuffer.cpp
-        include/OpenGL/ShaderOGLGBuffer.h
-        src/OpenGL/ShaderOGLDeferredLighting.cpp
-        include/OpenGL/ShaderOGLDeferredLighting.h
+        src/OpenGL/ShaderOGLGRenderDeferred.cpp
+        include/OpenGL/ShaderOGLGRenderDeferred.h
+        src/OpenGL/ShaderOGLLightPass.cpp
+        include/OpenGL/ShaderOGLLightPass.h
         src/OpenGL/ShaderOGLShadowPass.cpp
         include/OpenGL/ShaderOGLShadowPass.h
         src/OpenGL/ShaderOGLShadowPassDebugLight.cpp

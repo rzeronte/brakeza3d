@@ -6,13 +6,13 @@
 #define BRAKEZA3D_SHADEROPENGLLINE3D_H
 
 
-#include "../../include/OpenGL/ShaderOpenGL.h"
+#include "../../include/OpenGL/ShaderBaseOpenGL.h"
 #include "../../include/Objects/Vertex3D.h"
 #include "../../include/Misc/Color.h"
 #include "../../include/Objects/Vector3D.h"
 #include <vector>
 
-class ShaderOpenGLLine3D : public ShaderOpenGL
+class ShaderOpenGLLine3D : public ShaderBaseOpenGL
 {
     GLuint VertexArrayID;
     GLuint vertexbuffer;

@@ -6,12 +6,12 @@
 #define BRAKEZA3D_SHADEROPENGLLINE_H
 
 
-#include "ShaderOpenGL.h"
+#include "ShaderBaseOpenGL.h"
 #include "../Objects/Point2D.h"
 #include "../Misc/Color.h"
-#include "ShaderQuadOpenGL.h"
+#include "ShaderBaseOpenGLQuad.h"
 
-class ShaderOpenGLLine : public ShaderOpenGL, public ShaderQuadOpenGL  {
+class ShaderOpenGLLine : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {
     GLint lineStartUniform;
     GLint lineEndUniform;
     GLint lineColorUniform;

@@ -5,10 +5,10 @@
 #ifndef BRAKEZA3D_SHADEROPENGLDOF_H
 #define BRAKEZA3D_SHADEROPENGLDOF_H
 
-#include "ShaderOpenGL.h"
-#include "ShaderQuadOpenGL.h"
+#include "ShaderBaseOpenGL.h"
+#include "ShaderBaseOpenGLQuad.h"
 
-class ShaderOpenGLDOF : ShaderOpenGL, public ShaderQuadOpenGL  {
+class ShaderOpenGLDOF : ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {
 
     GLint focalDistanceUniform;
     GLint focalRangeUniform;
