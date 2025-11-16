@@ -169,7 +169,7 @@ void ShaderOGLShadowPass::setupFBOSpotLights()
         glDeleteFramebuffers(1, &spotLightsDepthMapsFBO);
     }
 
-    auto spotLightsDepthArrayTextures = ComponentsManager::get()->getComponentWindow()->getSpotLightsShadowMapArrayTextures();
+    auto spotLightsDepthArrayTextures = ComponentsManager::get()->getComponentRender()->getSpotLightsShadowMapArrayTextures();
 
     glGenFramebuffers(1, &spotLightsDepthMapsFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, spotLightsDepthMapsFBO);

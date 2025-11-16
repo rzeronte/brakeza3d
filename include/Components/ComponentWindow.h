@@ -42,7 +42,8 @@ struct GBuffer {
     }
 };
 
-class ComponentWindow : public Component {
+class ComponentWindow : public Component
+{
     SDL_Window *window;
 
     SDL_Renderer *renderer;
@@ -65,8 +66,6 @@ class ComponentWindow : public Component {
     GLuint uiTexture;
     GLuint postProcessingTexture;
     GLuint depthTexture;
-
-    GLuint shadowMapArrayTex;
 
     ImGuizmo::OPERATION guizmoOperation;
 
@@ -100,8 +99,6 @@ public:
 
     [[nodiscard]] TTF_Font *getFontDefault() const;
 
-    GLuint getSpotLightsShadowMapArrayTextures() const;
-
     SDL_Surface *applicationIcon;
 
     static void initOpenGL();
@@ -110,7 +107,7 @@ public:
 
     [[nodiscard]] GLuint getSceneFramebuffer() const;
 
-    void RenderLayersToGlobalFramebuffer();
+    void RenderLayersToGlobalFramebuffer() const;
     void resetFramebuffer();
     bool isWindowMaximized() const;
 
@@ -162,15 +159,10 @@ public:
     GLuint getGlobalTexture() const;
 
     GBuffer& getGBuffer();
+
     void createGBuffer();
 
-    void createSpotLightsDepthTextures(int numLights);
-
     void resizeGBuffer();
-    [[nodiscard]] bool isUseDeferredRendering() const;
-    void setUseDeferredRendering(bool use);
-
-    void clearShadowMaps();
 };
 
 

@@ -33,7 +33,8 @@ ComponentRender::ComponentRender()
     shaderShadowPass(nullptr),
     shaderShadowPassDebugLight(nullptr),
     lastFrameBufferUsed(0),
-    lastProgramUsed(0)
+    lastProgramUsed(0),
+    shadowMapArrayTex(0)
 {
 }
 
@@ -69,6 +70,8 @@ void ComponentRender::onStart()
 
 void ComponentRender::preUpdate()
 {
+    clearShadowMaps();
+
     this->updateFPS();
 
     if (!isEnabled()) return;
@@ -83,15 +86,13 @@ void ComponentRender::onUpdate()
     getShaderOGLRender()->createUBOFromLights();
 
     auto shaderRender = getShaderOGLRender();
-    auto numSpotLights = (int) shaderRender->getShadowMappingSpotLights().size();
+    auto numSpotLights = static_cast<int>(shaderRender->getShadowMappingSpotLights().size());
 
     if (EngineSetup::get()->SHADOW_MAPPING) {
-
         static int lastNumLights = -1;
         if (numSpotLights != lastNumLights) {
-            ComponentsManager::get()->getComponentWindow()->createSpotLightsDepthTextures(numSpotLights);
+            createSpotLightsDepthTextures(numSpotLights);
             getShaderOGLShadowPass()->setupFBOSpotLights();
-
             lastNumLights = numSpotLights;
         }
     }
@@ -284,14 +285,14 @@ ShaderOpenGLCustom* ComponentRender::getLoadedShader(std::string folder, std::st
         case ShaderCustomTypes::SHADER_POSTPROCESSING : {
             return new ShaderOpenGLCustomPostprocessing(name, shaderVertexFile, shaderFragmentFile);
         }
+        default:
         case ShaderCustomTypes::SHADER_OBJECT : {
             return new ShaderOpenGLCustomMesh3D(nullptr, name, shaderVertexFile, shaderFragmentFile);
-            break;
         }
     }
 }
 
-void ComponentRender::loadShaderIntoScene(std::string folder, std::string jsonFilename)
+void ComponentRender::loadShaderIntoScene(const std::string &folder, const std::string &jsonFilename)
 {
     auto name = Tools::getFilenameWithoutExtension(jsonFilename);
 
@@ -309,6 +310,7 @@ void ComponentRender::loadShaderIntoScene(std::string folder, std::string jsonFi
             );
             break;
         }
+        default:
         case ShaderCustomTypes::SHADER_OBJECT : {
             Logging::Message("[error] You can't add a ShaderObject type into scene");
             break;
@@ -321,12 +323,14 @@ void ComponentRender::addShaderToScene(ShaderOpenGLCustom *shader)
     sceneShaders.push_back(shader);
 }
 
-bool ComponentRender::isSceneShadersEnabled() const {
+bool ComponentRender::isSceneShadersEnabled() const
+{
     return sceneShadersEnabled;
 }
 
-void ComponentRender::setSceneShadersEnabled(bool sceneShadersEnabled) {
-    ComponentRender::sceneShadersEnabled = sceneShadersEnabled;
+void ComponentRender::setSceneShadersEnabled(bool value)
+{
+    sceneShadersEnabled = value;
 }
 
 void ComponentRender::runShadersOpenGLPostUpdate()
@@ -337,7 +341,8 @@ void ComponentRender::runShadersOpenGLPostUpdate()
     }
 }
 
-void ComponentRender::runShadersOpenGLPreUpdate() {
+void ComponentRender::runShadersOpenGLPreUpdate()
+{
     for( auto s: sceneShaders) {
         if (!s->isEnabled()) continue;
         s->onUpdate();
@@ -355,7 +360,7 @@ void ComponentRender::removeSceneShader(ShaderOpenGLCustom *shader)
     Logging::Message("Removing SCENE script %s", shader->getLabel().c_str());
 
     for (auto it = sceneShaders.begin(); it != sceneShaders.end(); ++it) {
-        if ((*it) == shader) {
+        if (*it == shader) {
             delete *it;
             sceneShaders.erase(it);
             return;
@@ -363,7 +368,7 @@ void ComponentRender::removeSceneShader(ShaderOpenGLCustom *shader)
     }
 }
 
-bool ComponentRender::compareDistances(Object3D* obj1, Object3D* obj2)
+bool ComponentRender::compareDistances(const Object3D* obj1, const Object3D* obj2)
 {
     return obj1->getDistanceToCamera() > obj2->getDistanceToCamera();
 }
@@ -473,7 +478,7 @@ ShaderOGLDeferredLighting *ComponentRender::getShaderOGLDeferredLighting() const
     return shaderOGLDeferredLighting;
 }
 
-GLuint ComponentRender::getLastFrameBufferUsed() {
+GLuint ComponentRender::getLastFrameBufferUsed() const {
     return lastFrameBufferUsed;
 }
 
@@ -529,7 +534,7 @@ void ComponentRender::resizeFramebuffers()
     getShaderOGLGBuffer()->destroy();
     getShaderOGLDeferredLighting()->destroy();
 
-    ComponentsManager::get()->getComponentWindow()->createSpotLightsDepthTextures(static_cast<int>(getShaderOGLRender()->getShadowMappingSpotLights().size()));
+    createSpotLightsDepthTextures(static_cast<int>(getShaderOGLRender()->getShadowMappingSpotLights().size()));
     getShaderOGLShadowPass()->setupFBOSpotLights();
     getShaderOGLShadowPass()->createDirectionalLightDepthTexture();
     getShaderOGLShadowPass()->setupFBODirectionalLight();
@@ -554,9 +559,49 @@ void ComponentRender::FillOGLBuffers(std::vector<meshData> &meshes)
         glBindBuffer(GL_ARRAY_BUFFER, m.normalbuffer);
         glBufferData(GL_ARRAY_BUFFER, m.normals.size() * sizeof(glm::vec3), &m.normals[0], GL_STATIC_DRAW);
 
-        glGenBuffers(1, &m.feedbackBuffer);  // Creamos el buffer para Transform Feedback
+        // Creamos el buffer para Transform Feedback de vértices
+        glGenBuffers(1, &m.feedbackBuffer);
         glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m.feedbackBuffer);  // Vinculamos el buffer de feedback
-        glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, m.vertices.size() * sizeof(glm::vec4), &m.vertices[0], GL_DYNAMIC_COPY);  // Inicializamos el buffer vacío
+        glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, m.vertices.size() * sizeof(glm::vec4), &m.vertices[0], GL_DYNAMIC_COPY);
         glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);  // Desvinculamos el buffer
     }
+}
+
+void ComponentRender::clearShadowMaps()
+{
+    auto numLights = static_cast<int>(getShaderOGLRender()->getShadowMappingSpotLights().size());
+    if (numLights > 0) {
+        glBindFramebuffer(GL_FRAMEBUFFER, getShaderOGLShadowPass()->getSpotLightsDepthMapsFBO());
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        for (int i = 0; i < numLights; i++) {
+            glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, getSpotLightsShadowMapArrayTextures(), 0, i);
+            glClear(GL_DEPTH_BUFFER_BIT);
+        }
+    }
+}
+
+GLuint ComponentRender::getSpotLightsShadowMapArrayTextures() const {
+    return shadowMapArrayTex;
+}
+
+void ComponentRender::createSpotLightsDepthTextures(int numLights)
+{
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    int w, h;
+    SDL_GetRendererOutputSize(window->getRenderer(), &w, &h);
+
+    glGenTextures(1, &shadowMapArrayTex);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, shadowMapArrayTex);
+    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32, w, h, numLights,0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+    // Configuración
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    float borderColor[] = {1.0, 1.0, 1.0, 1.0};
+    glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, borderColor);
 }

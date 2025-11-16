@@ -75,6 +75,8 @@ class ComponentRender : public Component {
     GLuint lastFrameBufferUsed;
     GLuint lastProgramUsed;
 
+    GLuint shadowMapArrayTex;
+
     std::map<std::string, ShaderCustomTypes> ShaderTypesMapping = {
         {"Postprocessing", ShaderCustomTypes::SHADER_POSTPROCESSING},
         {"Mesh3D", ShaderCustomTypes::SHADER_OBJECT},
@@ -119,7 +121,7 @@ ComponentRender();
 
     std::vector<ShaderOpenGLCustom *> &getSceneShaders();
 
-    void loadShaderIntoScene(std::string folder, std::string name);
+    void loadShaderIntoScene(const std::string &folder, const std::string &name);
 
     ShaderOpenGLCustom* getLoadedShader(std::string folder, std::string jsonFilename);
 
@@ -127,7 +129,7 @@ ComponentRender();
 
     [[nodiscard]] bool isSceneShadersEnabled() const;
 
-    void setSceneShadersEnabled(bool sceneShadersEnabled);
+    void setSceneShadersEnabled(bool value);
 
     void runShadersOpenGLPostUpdate();
 
@@ -140,7 +142,7 @@ ComponentRender();
 
     ShaderOpenGLCustom *getSceneShaderByLabel(const std::string& name);
 
-    static bool compareDistances(Object3D *obj1, Object3D *obj2);
+    static bool compareDistances(const Object3D *obj1, const Object3D *obj2);
 
     void setGlobalIlluminationDirection(Vertex3D d) const;
 
@@ -190,7 +192,7 @@ ComponentRender();
 
     [[nodiscard]] ShaderOGLDeferredLighting *getShaderOGLDeferredLighting() const;
 
-    GLuint getLastFrameBufferUsed();
+    GLuint getLastFrameBufferUsed() const;
 
     void setLastFrameBufferUsed(GLuint lastFrameBufferUsed);
 
@@ -207,6 +209,12 @@ ComponentRender();
     void resizeFramebuffers();
 
     void FillOGLBuffers(std::vector<meshData> &meshes);
+
+    void clearShadowMaps();
+
+    GLuint getSpotLightsShadowMapArrayTextures() const;
+
+    void createSpotLightsDepthTextures(int numLights);
 };
 
 
