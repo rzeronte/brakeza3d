@@ -21,7 +21,7 @@ bool Frustum::isVertexInside(Vertex3D &v)
 bool Frustum::isAABBInFrustum(AABB3D *aabb)
 {
     for(auto & vertice : aabb->vertices) {
-        if (!Frustum::isVertexInside(vertice)) {
+        if (!isVertexInside(vertice)) {
             return false;
         }
     }

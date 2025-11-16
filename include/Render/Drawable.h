@@ -1,17 +1,12 @@
-
 #ifndef SDL2_3D_ENGINE_DRAWABLE_H
 #define SDL2_3D_ENGINE_DRAWABLE_H
 
-
-#include <SDL2/SDL_surface.h>
 #include "Frustum.h"
 #include "../Components/Camera3D.h"
-#include "../Objects/Line2D.h"
 #include "../Objects/Cube3D.h"
 #include "Billboard.h"
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
-#include "ImGuizmo.h"
 
 class Drawable {
 public:

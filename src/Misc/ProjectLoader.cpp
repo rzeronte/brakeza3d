@@ -13,7 +13,7 @@ ProjectLoader::ProjectLoader() {
 
 void ProjectLoader::loadProject(const std::string &filename)
 {
-    ProjectLoader::removeProjectScripts();
+    removeProjectScripts();
 
     size_t file_size;
     auto contentFile = Tools::readFile(filename, file_size);

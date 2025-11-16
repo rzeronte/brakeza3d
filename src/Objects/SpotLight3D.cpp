@@ -85,7 +85,7 @@ void SpotLight3D::createFromJSON(cJSON *object)
 {
     auto o = new SpotLight3D(glm::vec4(), glm::vec4(), glm::vec4(),glm::vec4(),0,0,0,0,0);
 
-    SpotLight3D::setPropertiesFromJSON(object, o);
+    setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
@@ -94,11 +94,11 @@ void SpotLight3D::setPropertiesFromJSON(cJSON *object, SpotLight3D *o)
 {
     LightPoint3D::setPropertiesFromJSON(object, o);
 
-    o->setCutOff((float) cJSON_GetObjectItemCaseSensitive(object, "cutOff")->valuedouble);
-    o->setOuterCutOff((float) cJSON_GetObjectItemCaseSensitive(object, "outerCutOff")->valuedouble);
+    o->setCutOff(static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "cutOff")->valuedouble));
+    o->setOuterCutOff(static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "outerCutOff")->valuedouble));
 }
 
-SpotLight3D *SpotLight3D::create(Vertex3D position, Vertex3D direction)
+SpotLight3D *SpotLight3D::create(const Vertex3D &position, const Vertex3D &direction)
 {
     auto *o = new SpotLight3D(
         glm::vec4(direction.x, direction.y, direction.z, 0),

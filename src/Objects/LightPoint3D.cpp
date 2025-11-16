@@ -4,9 +4,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-#include "../../include/Render/Billboard.h"
 #include "../../include/Render/Maths.h"
-#include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
 LightPoint3D::LightPoint3D(
@@ -177,7 +175,7 @@ void LightPoint3D::createFromJSON(cJSON *object)
         0
     );
 
-    LightPoint3D::setPropertiesFromJSON(object, o);
+    setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }

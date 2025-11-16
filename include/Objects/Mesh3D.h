@@ -6,16 +6,11 @@
 #include "Vertex3D.h"
 #include "Triangle3D.h"
 #include "../Misc/Tools.h"
-#include "../EngineSetup.h"
-#include "Object3D.h"
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
-#include "../OpenGL/FXEffectOpenGLObject.h"
 #include "../Collision/Collider.h"
 #include "../OpenGL/ShaderOpenGLCustom.h"
-#include <assimp/Importer.hpp>
 #include <assimp/scene.h>
-#include <assimp/postprocess.h>
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>

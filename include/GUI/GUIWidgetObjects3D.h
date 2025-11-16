@@ -1,19 +1,12 @@
-//
-// Created by edu on 29/12/23.
-//
+#ifndef BRAKEZA3D_GUIWIDGETOBJECTS3D_H
+#define BRAKEZA3D_GUIWIDGETOBJECTS3D_H
 
 #include <string>
 #include "imgui.h"
-#include "../Objects/Object3D.h"
 #include "../Render/Logging.h"
 #include "../Objects/Mesh3D.h"
-#include "../FXEffect/FXOutliner.h"
-#include "../FXEffect/FXBlink.h"
 #include "../Misc/TexturePackage.h"
-#include "../FXEffect/FXColorTint.h"
-
-#ifndef BRAKEZA3D_GUIWIDGETOBJECTS3D_H
-#define BRAKEZA3D_GUIWIDGETOBJECTS3D_H
+#include "../ComponentsManager.h"
 
 struct GUIWidgetAllowedObjectConfig {
     std::string typeObject;

@@ -7,7 +7,6 @@
 
 #include "../sol/sol.hpp"
 #include "../include/Objects/Vertex3D.h"
-#include "../include/Objects/Object3D.h"
 #include "../include/Objects/ScriptLUA.h"
 #include "../include/Components/ComponentCamera.h"
 #include "../include/ComponentsManager.h"
@@ -20,6 +19,9 @@
 #include "../include/Objects/BillboardAnimation.h"
 #include "../include/Objects/BillboardAnimation8Directions.h"
 #include "../include/Objects/ParticleEmitter.h"
+#include "../include/Misc/SharedLUAContext.h"
+#include "../include/OpenGL/FXEffectOpenGLObject.h"
+#include "../include/FXEffect/FXOutliner.h"
 
 void LUAIntegration(sol::state &lua)
 {
@@ -43,7 +45,7 @@ void LUAIntegration(sol::state &lua)
         "M3",
         sol::constructors<M3()>(),
         "__mul", sol::overload(
-            sol::resolve<Vertex3D(Vertex3D const)>(&M3::operator*),
+            sol::resolve<Vertex3D(Vertex3D)>(&M3::operator*),
             sol::resolve<M3(const M3&)>(&M3::operator*)
         ),
         "getMatrixRotationForEulerAngles", &M3::getMatrixRotationForEulerAngles,

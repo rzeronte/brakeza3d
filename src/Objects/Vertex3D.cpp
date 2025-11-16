@@ -188,9 +188,9 @@ Vertex3D Vertex3D::fromGLM(const glm::vec3 &v)
 Vertex3D Vertex3D::randomVertex()
 {
     return {
-        (float) Tools::random(-2, 2),
-        (float) Tools::random(-2, 2),
-        (float) Tools::random(-2, 2)
+        static_cast<float>(Tools::random(-2, 2)),
+        static_cast<float>(Tools::random(-2, 2)),
+        static_cast<float>(Tools::random(-2, 2))
     };
 }
 

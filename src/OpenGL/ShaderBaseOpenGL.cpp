@@ -4,7 +4,6 @@
 #include <vector>
 #include <glm/gtc/type_ptr.hpp>
 #include "../../include/OpenGL/ShaderBaseOpenGL.h"
-#include "../../include/Render/Logging.h"
 
 ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback)
 :

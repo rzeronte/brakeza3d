@@ -1,6 +1,8 @@
 #include "../../include/Objects/Mesh3DAnimation.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Misc/ToolsJSON.h"
+#include "../../include/Render/Transforms.h"
+#include <assimp/postprocess.h>
 
 Mesh3DAnimation::Mesh3DAnimation()
 :

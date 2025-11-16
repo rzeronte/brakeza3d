@@ -22,7 +22,7 @@ Vertex3D Vector3D::getComponent() const {
 Vertex3D Vector3D::normal() const {
     Vertex3D c = this->getComponent();
 
-    float modulo = sqrt((c.x * c.x) + (c.y * c.y) + (c.z * c.z));
+    float modulo = sqrt(c.x * c.x + c.y * c.y + c.z * c.z);
 
     return Vertex3D(
         c.x / modulo,

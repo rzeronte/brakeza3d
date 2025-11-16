@@ -134,7 +134,7 @@ bool TextureAnimated::isEndAnimation() const {
 }
 
 void TextureAnimated::setEndAnimation(bool value) {
-    TextureAnimated::endAnimation = value;
+    endAnimation = value;
 }
 
 bool TextureAnimated::isPaused() const {
@@ -142,7 +142,7 @@ bool TextureAnimated::isPaused() const {
 }
 
 void TextureAnimated::setPaused(bool value) {
-    TextureAnimated::paused = value;
+    paused = value;
 }
 
 int TextureAnimated::getFps() const {
@@ -150,7 +150,7 @@ int TextureAnimated::getFps() const {
 }
 
 void TextureAnimated::setFps(int value) {
-    TextureAnimated::fps = value;
+    fps = value;
 }
 
 void TextureAnimated::updateStep()

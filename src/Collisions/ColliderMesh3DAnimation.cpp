@@ -5,6 +5,8 @@
 #include "../../include/Collision/AssimpAnimationService.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Render/Transforms.h"
+#include <assimp/postprocess.h>
 
 AssimpAnimationService::AssimpAnimationService()
 :
@@ -22,14 +24,14 @@ AssimpAnimationService::AssimpAnimationService()
 
 void AssimpAnimationService::UpdateOpenGLBones(std::vector<meshData> &meshes)
 {
-    std::vector<glm::mat4> transformations(MAX_BONES, glm::mat4(0));
+    std::vector transformations(MAX_BONES, glm::mat4(0));
 
     for (int i = 0; i < (int) boneInfo.size(); i++) {
         transformations[i] = Tools::aiMat4toGLMMat4(boneInfo[i].FinalTransformation);
     }
 
     for (auto &m: meshes) {
-        if ((int) m.vertices.size() <= 0) continue;
+        if (m.vertices.size() <= 0) continue;
         ComponentsManager::get()->getComponentRender()->getShaderOGLBonesTransforms()->render(
             m,
             transformations,
@@ -428,7 +430,7 @@ void AssimpAnimationService::drawBones(Object3D *o, aiNode *node, Vertex3D *last
 {
     std::vector<aiMatrix4x4> Transforms;
     Transforms.resize(numBones);
-    for (int i = 0; i < (int) numBones; i++) {
+    for (int i = 0; i < numBones; i++) {
         Transforms[i] = boneInfo[i].FinalTransformation;
     }
 
@@ -516,8 +518,6 @@ void AssimpAnimationService::FillAnimationBoneDataOGLBuffers(std::vector<meshDat
 
 void AssimpAnimationService::setAnimationByName(const std::string& name)
 {
-    const char* items[(int) scene->mNumAnimations];
-
     for (int i = 0; i < (int) scene->mNumAnimations; i++) {
         if (name == scene->mAnimations[i]->mName.C_Str()) {
             setIndexCurrentAnimation(i);

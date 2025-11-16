@@ -69,10 +69,10 @@ void ComponentSound::LoadSoundsConfigFile()
         cJSON *label = cJSON_GetObjectItemCaseSensitive(currentSound, "label");
         cJSON *type = cJSON_GetObjectItemCaseSensitive(currentSound, "type");
 
-        SoundPackageItemType selectedType = SoundPackageItemType::SOUND;
+        SoundPackageItemType selectedType = SOUND;
 
-        if (strcmp(type->valuestring, "music") == 0) selectedType = SoundPackageItemType::MUSIC;
-        if (strcmp(type->valuestring, "playSound") == 0) selectedType = SoundPackageItemType::SOUND;
+        if (strcmp(type->valuestring, "music") == 0) selectedType = MUSIC;
+        if (strcmp(type->valuestring, "playSound") == 0) selectedType = SOUND;
 
         Logging::Message("Loading sound file: %s", file->valuestring);
 
@@ -162,17 +162,17 @@ float ComponentSound::soundDuration(const std::string& sound)
 
 void ComponentSound::addSound(const std::string &soundFile, const std::string &label)
 {
-    soundPackage.addItem(soundFile, label, SoundPackageItemType::SOUND);
+    soundPackage.addItem(soundFile, label, SOUND);
 }
 
 void ComponentSound::addMusic(const std::string &soundFile, const std::string &label)
 {
-    soundPackage.addItem(soundFile, label, SoundPackageItemType::MUSIC);
+    soundPackage.addItem(soundFile, label, MUSIC);
 }
 
 void ComponentSound::playMusic(const std::string& sound)
 {
-    ComponentSound::playMusicMix(
+    playMusicMix(
         soundPackage.getMusicByLabel(sound),
         -1
     );
@@ -180,7 +180,7 @@ void ComponentSound::playMusic(const std::string& sound)
 
 void ComponentSound::playSound(const std::string& sound, int channel, int times)
 {
-     ComponentSound::playChunk(
+     playChunk(
         soundPackage.getByLabel(sound),
         channel,
         times
@@ -189,10 +189,10 @@ void ComponentSound::playSound(const std::string& sound, int channel, int times)
 
 void ComponentSound::setMusicVolume(int v)
 {
-    Mix_VolumeMusic((int) EngineSetup::get()->SOUND_VOLUME_MUSIC);
+    Mix_VolumeMusic(static_cast<int>(EngineSetup::get()->SOUND_VOLUME_MUSIC));
 }
 
 void ComponentSound::setSoundsVolume(int v)
 {
-    Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, (int) EngineSetup::get()->SOUND_CHANNEL_GLOBAL);
+    Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, static_cast<int>(EngineSetup::get()->SOUND_CHANNEL_GLOBAL));
 }

@@ -44,7 +44,7 @@ public:
 
     static void setPropertiesFromJSON(cJSON *object, SpotLight3D *o);
 
-    static SpotLight3D* create(Vertex3D position, Vertex3D direction);
+    static SpotLight3D* create(const Vertex3D &position, const Vertex3D &direction);
 
     void setDirection(Vertex3D d);
 

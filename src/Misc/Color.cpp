@@ -1,5 +1,4 @@
 
-#include <SDL_rect.h>
 #include "../../include/Misc/Color.h"
 #include "imgui.h"
 
@@ -85,7 +84,7 @@ Color Color::operator/(float s) const
 
 Color Color::mixColor(Color &c1, Color &c2, float c2Intensity)
 {
-    return (c1 * (1.0f - c2Intensity)) + (c2 * c2Intensity);
+    return c1 * (1.0f - c2Intensity) + c2 * c2Intensity;
 }
 
 float Color::getA() const {
@@ -93,7 +92,7 @@ float Color::getA() const {
 }
 
 void Color::setAlpha(float value) {
-    Color::a = value;
+    a = value;
 }
 
 glm::vec3 Color::toGLM() const

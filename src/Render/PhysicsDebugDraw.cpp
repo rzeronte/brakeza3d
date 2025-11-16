@@ -34,5 +34,5 @@ void PhysicsDebugDraw::setDebugMode(int debugMode)
 
 int PhysicsDebugDraw::getDebugMode() const
 {
-    return btIDebugDraw::DBG_DrawWireframe;
+    return DBG_DrawWireframe;
 }

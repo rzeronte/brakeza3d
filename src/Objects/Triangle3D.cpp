@@ -2,8 +2,6 @@
 #include "../../include/Objects/Triangle3D.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Render/Maths.h"
-#include "../../include/ComponentsManager.h"
-#include "../../include/Objects/Decal.h"
 
 Triangle::Triangle()
 :

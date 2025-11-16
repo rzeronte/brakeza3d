@@ -8,6 +8,7 @@
 #include "../../include/Brakeza3D.h"
 #include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
+#include <assimp/postprocess.h>
 
 Mesh3D::Mesh3D()
 :
@@ -452,7 +453,7 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o, bool loadGeometry)
             auto typeString = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
             auto type = ShaderOpenGLCustom::getShaderTypeFromString(typeString);
             switch (type) {
-                case ShaderCustomTypes::SHADER_OBJECT: {
+                case SHADER_OBJECT: {
                     auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
                     auto vertex = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vertexshader")->valuestring;
                     auto fragment = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;

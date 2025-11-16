@@ -46,7 +46,7 @@ void Image2DAnimation::onUpdate()
         if (ttlPercentage <= 15.0f) {
             alpha = (ttlPercentage / 15.0f) * 255;
         } else if (ttlPercentage >= 80.0f) {
-            alpha = 255 - ((ttlPercentage - 80.0f) / 20.0f * 255);
+            alpha = 255 - (ttlPercentage - 80.0f) / 20.0f * 255;
         }
 
         if (ttl->isFinished()) {
@@ -147,7 +147,7 @@ void Image2DAnimation::createFromJSON(cJSON *object)
         false,
         new TextureAnimated(spriteFile,width,height,numberFrames,fps)
     );
-    Image2DAnimation::setPropertiesFromJSON(object, o);
+    setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }

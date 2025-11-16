@@ -1,7 +1,6 @@
 #ifndef BRAKEDA3D_COMPONENTSMANAGER_H
 #define BRAKEDA3D_COMPONENTSMANAGER_H
 
-#include <iostream>
 #include "Components/Component.h"
 #include "Components/ComponentCamera.h"
 #include "Components/ComponentCollisions.h"

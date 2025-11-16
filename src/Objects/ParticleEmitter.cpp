@@ -115,7 +115,7 @@ void ParticleEmitter::draw()
             glm::vec3 maindir = direction.toGLM();
             maindir = addNoiseToDirection(maindir, context.SMOKE_ANGLE_RANGE/2);
 
-            ParticlesContainer[particleIndex].speed = (maindir) * (Tools::random(context.MIN_VELOCITY, context.MAX_VELOCITY) * delta);
+            ParticlesContainer[particleIndex].speed = maindir * (Tools::random(context.MIN_VELOCITY, context.MAX_VELOCITY) * delta);
 
             // Very bad way to generate a random color
             ParticlesContainer[particleIndex].r = rand() % 256;
@@ -324,7 +324,7 @@ cJSON * ParticleEmitter::getJSON()
 void ParticleEmitter::createFromJSON(cJSON *object)
 {
     auto *o = new ParticleEmitter(
-        ParticleEmitterState::DEFAULT,
+        DEFAULT,
         nullptr,
         Vertex3D(0, 0, 0),
         9999,
@@ -334,7 +334,7 @@ void ParticleEmitter::createFromJSON(cJSON *object)
         nullptr
     );
 
-    ParticleEmitter::setPropertiesFromJSON(object, o);
+    setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
@@ -444,7 +444,7 @@ ParticleEmitter *ParticleEmitter::create(
 )
 {
     auto *o = new ParticleEmitter(
-        ParticleEmitterState::DEFAULT,
+        DEFAULT,
         nullptr,
         position,
         ttl,

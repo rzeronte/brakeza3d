@@ -112,14 +112,19 @@ void Collider::makeSimpleGhostBody(
     transformation.setIdentity();
     transformation.setOrigin(position.toBullet());
 
-    btConvexHullShape *convexHullShape;
+    btConvexHullShape *convexHullShape = nullptr;
 
-    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+    if (getCollisionShape() == SIMPLE_SHAPE) {
         convexHullShape = reinterpret_cast<btConvexHullShape *>(new btBoxShape(dimensions.toBullet()));;
     }
 
-    if (getCollisionShape() == CollisionShape::CAPSULE) {
+    if (getCollisionShape() == CAPSULE) {
         convexHullShape = reinterpret_cast<btConvexHullShape *>(new btCapsuleShape(kinematicCapsuleSize.x, kinematicCapsuleSize.y));;
+    }
+
+    if (convexHullShape == nullptr) {
+        printf("Collider Shape not valid!!. Exiting...");
+        exit(-1);
     }
 
     convexHullShape->setMargin(shapeMargin);

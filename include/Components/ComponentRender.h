@@ -6,17 +6,12 @@
 #define BRAKEDA3D_COMPONENTRENDER_H
 
 #include <vector>
-#include <mutex>
 #include "Component.h"
 #include "../Objects/Triangle3D.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/Render/Maths.h"
 #include "../2D/TextWriter.h"
-#include "../Misc/SharedLUAContext.h"
 #include "../Misc/SceneLoader.h"
-#include "../OpenGL/ShaderOpenGLCustom.h"
 #include "../Misc/ProjectLoader.h"
-#include "../OpenGL/ShaderBaseOpenGL.h"
 #include "../OpenGL/ShaderOpenGLImage.h"
 #include "../OpenGL/ShaderOGLRenderForward.h"
 #include "../OpenGL/ShaderOpenGLLine.h"
@@ -83,7 +78,7 @@ class ComponentRender : public Component {
     };
 
 public:
-ComponentRender();
+    ComponentRender();
 
     ~ComponentRender() override;
 
@@ -216,6 +211,5 @@ ComponentRender();
 
     void createSpotLightsDepthTextures(int numLights);
 };
-
 
 #endif //BRAKEDA3D_COMPONENTRENDER_H

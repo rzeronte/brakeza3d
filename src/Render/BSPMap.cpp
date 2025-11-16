@@ -875,8 +875,6 @@ Vertex3D BSPMap::getStartMapPosition()
         char *value = getEntityValue(entityID, "origin");
         //parsePositionFromEntityAttribute(value).consoleInfo("getStartMapPosition", false);
         return parsePositionFromEntityAttribute(value);
-    } else {
-        Logging::Message("Not exist entity for 'info_player_start'");
     }
 
     return Vertex3D();

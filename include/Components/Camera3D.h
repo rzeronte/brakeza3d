@@ -1,9 +1,6 @@
 #ifndef BRAKEDA3D_CAMERA3D_H
 #define BRAKEDA3D_CAMERA3D_H
 
-
-#include <bullet/BulletCollision/CollisionDispatch/btGhostObject.h>
-#include <bullet/BulletDynamics/Character/btKinematicCharacterController.h>
 #include <glm/ext/matrix_float4x4.hpp>
 #include "../Render/Frustum.h"
 #include "../Objects/Vector3D.h"

@@ -51,7 +51,7 @@ Vertex3D Plane::getNormalVector() const {
 Vertex3D Plane::getPointIntersection(Vertex3D vertex1, Vertex3D vertex2, float &transition) const {
 
     // Componentes del vector director
-    Vertex3D componente = Vertex3D(
+    auto componente = Vertex3D(
             vertex2.x - vertex1.x,
             vertex2.y - vertex1.y,
             vertex2.z - vertex1.z

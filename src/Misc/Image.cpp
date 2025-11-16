@@ -20,7 +20,7 @@ Image::Image(SDL_Surface *surface, SDL_Texture *texture)
 :
     surface(surface), texture(texture)
 {
-    texturaID = Image::makeOGLImage(surface);
+    texturaID = makeOGLImage(surface);
 
     this->loaded = true;
 }
@@ -38,7 +38,7 @@ void Image::loadTGA(const std::string& filename)
         this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
 
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-        texturaID = Image::makeOGLImage(surface);
+        texturaID = makeOGLImage(surface);
 
         this->fileName = filename;
         this->loaded = true;
@@ -163,7 +163,7 @@ Image::~Image()
 
 Color Image::getColor(int x, int y)
 {
-    uint32_t *pixels = (uint32_t*) this->pixels();
+    uint32_t *pixels = static_cast<uint32_t *>(this->pixels());
 
     const int index = y * this->surface->w + x;
 
@@ -184,7 +184,7 @@ void Image::setImage(const std::string &filename)
         if (texturaID == 0 ) {
             SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
             glDeleteTextures(1, &texturaID);
-            texturaID = Image::makeOGLImage(surface);
+            texturaID = makeOGLImage(surface);
         }
 
         this->fileName = filename;

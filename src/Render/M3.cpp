@@ -29,7 +29,7 @@ void M3::setup(float m0, float m1, float m2, float m3, float m4, float m5, float
 }
 
 M3 M3::operator*(const M3 &v) {
-    M3 M = M3();
+    auto M = M3();
     M.m[0] = m[0] * v.m[0] + m[1] * v.m[3] + m[2] * v.m[6];
     M.m[3] = m[3] * v.m[0] + m[4] * v.m[3] + m[5] * v.m[6];
     M.m[6] = m[6] * v.m[0] + m[7] * v.m[3] + m[8] * v.m[6];
@@ -55,9 +55,9 @@ M3 M3::operator*(const float scalar) {
 
 Vertex3D M3::operator*(Vertex3D A) {
     return Vertex3D(
-            (m[0] * A.x) + (m[1] * A.y) + (m[2] * A.z),
-            (m[3] * A.x) + (m[4] * A.y) + (m[5] * A.z),
-            (m[6] * A.x) + (m[7] * A.y) + (m[8] * A.z)
+            m[0] * A.x + m[1] * A.y + m[2] * A.z,
+            m[3] * A.x + m[4] * A.y + m[5] * A.z,
+            m[6] * A.x + m[7] * A.y + m[8] * A.z
     );
 }
 
@@ -158,9 +158,9 @@ float M3::getRoll() {
 
 M3 M3::getMatrixRotationForEulerAngles(float x, float y, float z)
 {
-    M3 MRX = M3::RX(x);
-    M3 MRY = M3::RY(y);
-    M3 MRZ = M3::RZ(z);
+    M3 MRX = RX(x);
+    M3 MRY = RY(y);
+    M3 MRZ = RZ(z);
 
     return MRX * MRY * MRZ;
 }
@@ -173,8 +173,9 @@ void M3::setMatrixIdentity() {
     );
 }
 
-void M3::setMatrixRotationForEulerAngles(float x, float y, float z) {
-    M3 m = M3::getMatrixRotationForEulerAngles(x, y, z);
+void M3::setMatrixRotationForEulerAngles(float x, float y, float z)
+{
+    M3 m = getMatrixRotationForEulerAngles(x, y, z);
     this->setup(
         m.m[0], m.m[1], m.m[2],
         m.m[3], m.m[4], m.m[5],

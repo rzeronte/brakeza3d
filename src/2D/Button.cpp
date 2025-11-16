@@ -2,7 +2,14 @@
 #include "../../include/2D/Button.h"
 #include "../../include/ComponentsManager.h"
 
-Button::Button(int x, int y, const std::string& imageFileName, void (*functionCallBack)()) : Image(imageFileName) {
+Button::Button(int x, int y, const std::string& imageFileName, void (*functionCallBack)())
+:
+    Image(imageFileName),
+    x(0),
+    y(0),
+    pressed(false),
+    callback(nullptr)
+{
     setX(x);
     setY(y);
     setCallBack(functionCallBack);

@@ -4,7 +4,6 @@
 
 #include "../../include/Objects/ParticleEmitterFireworks.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/ComponentsManager.h"
 
 ParticleEmitterFireworks::ParticleEmitterFireworks(
     Vertex3D position,

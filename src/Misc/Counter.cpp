@@ -71,7 +71,7 @@ bool Counter::isEnabled() const
 
 void Counter::setEnabled(bool e)
 {
-    Counter::enabled = e;
+    enabled = e;
 
     this->acumulatedTime = 0;
     this->finished = false;

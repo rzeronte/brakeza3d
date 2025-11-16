@@ -349,7 +349,7 @@ void SceneLoader::createBillboardAnimationInScene(const std::string& filename)
 void SceneLoader::createParticleEmitterInScene()
 {
     auto *newObject = new ParticleEmitter(
-            ParticleEmitterState::DEFAULT,
+            DEFAULT,
             nullptr,
             ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
             9999,
@@ -435,10 +435,10 @@ void SceneLoader::createMesh3DAnimationToScene(const std::string& animationFile)
 
 void SceneLoader::createScene(const std::string &filename)
 {
-    std::string sceneJsonFile = std::string(filename + ".json");
+    auto sceneJsonFile = std::string(filename + ".json");
 
     Logging::Message("Creating new scene file: %s", sceneJsonFile.c_str());
-    SceneLoader::saveScene(sceneJsonFile);
+    saveScene(sceneJsonFile);
 }
 
 void SceneLoader::removeScene(const std::string &filename)

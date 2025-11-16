@@ -113,19 +113,19 @@ int BillboardAnimation8Directions::getDirectionForAngle(float enemyAngle)
 {
     if (enemyAngle >= 292.5f && enemyAngle < 337.5f)
         return 8;
-    else if (enemyAngle >= 22.5f && enemyAngle < 67.5f)
+    if (enemyAngle >= 22.5f && enemyAngle < 67.5f)
         return 2;
-    else if (enemyAngle >= 67.5f && enemyAngle < 112.5f)
+    if (enemyAngle >= 67.5f && enemyAngle < 112.5f)
         return 3;
-    else if (enemyAngle >= 112.5f && enemyAngle < 157.5f)
+    if (enemyAngle >= 112.5f && enemyAngle < 157.5f)
         return 4;
-    else if (enemyAngle >= 157.5f && enemyAngle < 202.5f)
+    if (enemyAngle >= 157.5f && enemyAngle < 202.5f)
         return 5;
-    else if (enemyAngle >= 202.5f && enemyAngle < 247.5f)
+    if (enemyAngle >= 202.5f && enemyAngle < 247.5f)
         return 6;
-    else if (enemyAngle >= 247.5f && enemyAngle < 292.5f)
+    if (enemyAngle >= 247.5f && enemyAngle < 292.5f)
         return 7;
-    else if (enemyAngle >= 337.5f || enemyAngle < 22.5f)
+    if (enemyAngle >= 337.5f || enemyAngle < 22.5f)
         return 1;
 
     return 1;
@@ -234,7 +234,7 @@ void BillboardAnimation8Directions::createFromJSON(cJSON *object)
 {
     auto o = new BillboardAnimation8Directions(1, 1);
 
-    BillboardAnimation8Directions::setPropertiesFromJSON(object, o);
+    setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }

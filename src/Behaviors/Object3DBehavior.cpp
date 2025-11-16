@@ -3,7 +3,6 @@
 //
 
 #include "../../include/Behaviors/Object3DBehavior.h"
-#include "../../include/Render/Logging.h"
 
 Object3DBehavior::Object3DBehavior(): enabled(true)
 {
@@ -40,7 +39,7 @@ bool Object3DBehavior::isEnabled() const {
 }
 
 void Object3DBehavior::setEnabled(bool value) {
-    Object3DBehavior::enabled = value;
+    enabled = value;
     if (!value) {
         //resetExecutionTime();
         timer.pause();

@@ -15,6 +15,7 @@
 #include "../ComponentsManager.h"
 #include "imgui_internal.h"
 #include "../Misc/TexturePackage.h"
+#include "../Render/Maths.h"
 
 struct GUIWidgetMenu
 {

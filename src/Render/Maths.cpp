@@ -5,11 +5,11 @@
 #include "../../include/Render/Transforms.h"
 
 float Maths::degreesToRadians(float angleDegrees) {
-    return angleDegrees * (float) M_PI / (float) 180.0;
+    return angleDegrees * static_cast<float>(M_PI) / 180.0f;
 }
 
 float Maths::radiansToDegrees(float angleRadians) {
-    return angleRadians * (float) 180.0 / (float) M_PI;
+    return angleRadians * 180.0f / static_cast<float>(M_PI);
 }
 
 /**
@@ -50,7 +50,7 @@ float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *object, Camera
     a = a.getNormalize();
 
     float theta = acos(a * b);
-    theta = Maths::radiansToDegrees(theta);
+    theta = radiansToDegrees(theta);
 
     if (a.x * a.z < 0) {
         theta = 360.0f - theta;
@@ -63,7 +63,7 @@ bool Maths::sameSide(Vertex3D p1, Vertex3D p2, Vertex3D a, Vertex3D b) {
     Vertex3D cp1 = (b - a) % (p1 - a);
     Vertex3D cp2 = (b - a) % (p2 - a);
 
-    if ((cp1 * cp2) >= 0) {
+    if (cp1 * cp2 >= 0) {
         return true;
     }
 
@@ -81,7 +81,7 @@ float Maths::TriangleArea(float dX0, float dY0, float dX1, float dY1, float dX2,
 }
 
 float Maths::normalizeToRange(float value, float min, float max) {
-    if ((max - min) == 0) {
+    if (max - min == 0) {
         return 0;
     }
 
@@ -106,8 +106,8 @@ Vertex3D Maths::getHalfwayVector(Vertex3D a, Vertex3D b)
 // Rotar el objeto sobre un eje local
 glm::mat3 Maths::RotateOnAxis(glm::mat3 originalRotation, float angle, glm::vec3 axis) {
     // Crear una matriz de rotación 4x4
-    glm::mat4 rotation4x4 = glm::mat4(originalRotation); // Convertir 3x3 a 4x4
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, axis);
+    auto rotation4x4 = glm::mat4(originalRotation); // Convertir 3x3 a 4x4
+    auto rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, axis);
 
     // Multiplicar (en espacio local, multiplicación derecha)
     rotation4x4 = rotation4x4 * rotationMatrix;

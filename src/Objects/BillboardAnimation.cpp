@@ -1,6 +1,5 @@
 
 #include "../../include/Objects/BillboardAnimation.h"
-#include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
@@ -89,7 +88,7 @@ bool BillboardAnimation::isAutoRemoveAfterAnimation() const {
 }
 
 void BillboardAnimation::setAutoRemoveAfterAnimation(bool value) {
-    BillboardAnimation::autoRemoveAfterAnimation = value;
+    autoRemoveAfterAnimation = value;
 }
 
 void BillboardAnimation::linkTextureAnimation(BillboardAnimation *dst)
@@ -253,7 +252,7 @@ void BillboardAnimation::createFromJSON(cJSON *object)
 {
     auto o = new BillboardAnimation(1, 1);
 
-    BillboardAnimation::setPropertiesFromJSON(object, o);
+    setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }

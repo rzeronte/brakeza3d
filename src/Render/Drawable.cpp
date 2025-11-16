@@ -42,17 +42,17 @@ void Drawable::drawMainAxisOffset(Vertex3D offset)
     Vertex3D VZstart(origin.x, origin.y, origin.z);
 
     // end points
-    Vertex3D VXend(origin.x + (axis_length), origin.y, origin.z);
-    Vertex3D VYend(origin.x, origin.y + (axis_length), origin.z);
-    Vertex3D VZend(origin.x, origin.y, origin.z + (axis_length));
+    Vertex3D VXend(origin.x + axis_length, origin.y, origin.z);
+    Vertex3D VYend(origin.x, origin.y + axis_length, origin.z);
+    Vertex3D VZend(origin.x, origin.y, origin.z + axis_length);
 
     Vector3D axis_x = Vector3D(VXstart, VXend);
     Vector3D axis_y = Vector3D(VYstart, VYend);
     Vector3D axis_z = Vector3D(VZstart, VZend);
 
-    Drawable::drawVector3D(axis_x, Color::red());
-    Drawable::drawVector3D(axis_y, Color::green());
-    Drawable::drawVector3D(axis_z, Color::blue());
+    drawVector3D(axis_x, Color::red());
+    drawVector3D(axis_y, Color::green());
+    drawVector3D(axis_z, Color::blue());
 }
 
 void Drawable::drawObject3DAxis(Object3D *object, bool drawUp, bool drawRight, bool drawForward)
