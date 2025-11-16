@@ -63,7 +63,7 @@ class ComponentRender : public Component {
     ShaderOpenGLTint *shaderOGLTint;
     ShaderOpenGLBonesTransforms *shaderOGLBonesTransforms;
     ShaderOGLGRenderDeferred *shaderOGLGBuffer;
-    ShaderOGLLightPass *shaderOGLDeferredLighting;
+    ShaderOGLLightPass *shaderOGLLightPass;
     ShaderOGLShadowPass *shaderShadowPass;
     ShaderOGLShadowPassDebugLight *shaderShadowPassDebugLight;
 
@@ -153,7 +153,7 @@ public:
 
     [[nodiscard]] ShaderOpenGLImage *getShaderOGLImage() const;
 
-    [[nodiscard]] ShaderOGLRenderForward *getShaderOGLRender() const;
+    [[nodiscard]] ShaderOGLRenderForward *getShaderOGLRenderForward() const;
 
     [[nodiscard]] ShaderOpenGLLine *getShaderOGLLine() const;
 
@@ -183,9 +183,9 @@ public:
 
     [[nodiscard]] ShaderOpenGLDepthMap *getShaderOGLDepthMap() const;
 
-    [[nodiscard]] ShaderOGLGRenderDeferred *getShaderOGLGBuffer() const;
+    [[nodiscard]] ShaderOGLGRenderDeferred *getShaderOGLRenderDeferred() const;
 
-    [[nodiscard]] ShaderOGLLightPass *getShaderOGLDeferredLighting() const;
+    [[nodiscard]] ShaderOGLLightPass *getShaderOGLLightPass() const;
 
     GLuint getLastFrameBufferUsed() const;
 

@@ -584,7 +584,7 @@ struct GUIWidgetMenu
 
     static void drawGlobalIllumination()
     {
-        auto& dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->getDirectionalLight();
+        auto& dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->getDirectionalLight();
 
         ImGui::DragFloat3("Light dir.", &dirLight.direction[0], 0.01f, -1.0f, 1.0f);
 

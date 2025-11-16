@@ -111,7 +111,7 @@ void Image3D::onUpdate()
         render->getShaderOGLOutline()->drawOutlineImage3D(this, Color::green(), 0.1f);
     }
 
-    render->getShaderOGLRender()->render(
+    render->getShaderOGLRenderForward()->render(
         this,
         image->getOGLTextureID(),
         image->getOGLTextureID(),

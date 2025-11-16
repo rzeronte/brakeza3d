@@ -29,7 +29,7 @@ void SceneLoader::loadScene(const std::string& filename)
     Logging::Message("Loading scene: %s", filename.c_str());
 
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-    auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRender();
+    auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward();
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity") != nullptr) {
         auto gravity = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity"));
@@ -153,7 +153,7 @@ void SceneLoader::saveScene(const std::string &filename)
 {
     cJSON *root = cJSON_CreateObject();
 
-    auto render = ComponentsManager::get()->getComponentRender()->getShaderOGLRender();
+    auto render = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward();
 
     // gravity
     cJSON *gravityJSON = cJSON_CreateObject();

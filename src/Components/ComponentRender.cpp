@@ -30,7 +30,7 @@ ComponentRender::ComponentRender()
     shaderOGLTint(nullptr),
     shaderOGLBonesTransforms(nullptr),
     shaderOGLGBuffer(nullptr),
-    shaderOGLDeferredLighting(nullptr),
+    shaderOGLLightPass(nullptr),
     shaderShadowPass(nullptr),
     shaderShadowPassDebugLight(nullptr),
     lastFrameBufferUsed(0),
@@ -64,7 +64,7 @@ void ComponentRender::onStart()
     shaderOGLTint = new ShaderOpenGLTint();
     shaderOGLBonesTransforms = new ShaderOpenGLBonesTransforms();
     shaderOGLGBuffer = new ShaderOGLGRenderDeferred();
-    shaderOGLDeferredLighting = new ShaderOGLLightPass();
+    shaderOGLLightPass = new ShaderOGLLightPass();
     shaderShadowPass = new ShaderOGLShadowPass();
     shaderShadowPassDebugLight = new ShaderOGLShadowPassDebugLight();
 }
@@ -84,9 +84,9 @@ void ComponentRender::onUpdate()
 {
     if (!isEnabled()) return;
 
-    getShaderOGLRender()->createUBOFromLights();
+    getShaderOGLRenderForward()->createUBOFromLights();
 
-    auto shaderRender = getShaderOGLRender();
+    auto shaderRender = getShaderOGLRenderForward();
     auto numSpotLights = static_cast<int>(shaderRender->getShadowMappingSpotLights().size());
 
     if (EngineSetup::get()->SHADOW_MAPPING) {
@@ -376,22 +376,22 @@ bool ComponentRender::compareDistances(const Object3D* obj1, const Object3D* obj
 
 void ComponentRender::setGlobalIlluminationDirection(Vertex3D v) const
 {
-    getShaderOGLRender()->setGlobalIlluminationDirection(v);
+    getShaderOGLRenderForward()->setGlobalIlluminationDirection(v);
 }
 
 void ComponentRender::setGlobalIlluminationAmbient(Vertex3D v) const
 {
-    getShaderOGLRender()->setGlobalIlluminationAmbient(v);
+    getShaderOGLRenderForward()->setGlobalIlluminationAmbient(v);
 }
 
 void ComponentRender::setGlobalIlluminationDiffuse(Vertex3D v) const
 {
-    getShaderOGLRender()->setGlobalIlluminationDiffuse(v);
+    getShaderOGLRenderForward()->setGlobalIlluminationDiffuse(v);
 }
 
 void ComponentRender::setGlobalIlluminationSpecular(Vertex3D v) const
 {
-    getShaderOGLRender()->setGlobalIlluminationSpecular(v);
+    getShaderOGLRenderForward()->setGlobalIlluminationSpecular(v);
 }
 
 void ComponentRender::drawLine(Vertex3D from, Vertex3D to, Color c) const
@@ -412,7 +412,7 @@ ShaderOpenGLLine3D *ComponentRender::getShaderOGLLine3D() const {
     return shaderOGLLine3D;
 }
 
-ShaderOGLRenderForward *ComponentRender::getShaderOGLRender() const {
+ShaderOGLRenderForward *ComponentRender::getShaderOGLRenderForward() const {
     return shaderOGLRender;
 }
 
@@ -471,12 +471,12 @@ ShaderOpenGLDepthMap *ComponentRender::getShaderOGLDepthMap() const {
     return shaderOGLDepthMap;
 }
 
-ShaderOGLGRenderDeferred *ComponentRender::getShaderOGLGBuffer() const {
+ShaderOGLGRenderDeferred *ComponentRender::getShaderOGLRenderDeferred() const {
     return shaderOGLGBuffer;
 }
 
-ShaderOGLLightPass *ComponentRender::getShaderOGLDeferredLighting() const {
-    return shaderOGLDeferredLighting;
+ShaderOGLLightPass *ComponentRender::getShaderOGLLightPass() const {
+    return shaderOGLLightPass;
 }
 
 GLuint ComponentRender::getLastFrameBufferUsed() const {
@@ -520,7 +520,7 @@ void ComponentRender::resizeFramebuffers()
 {
     Logging::Message("Resizing framebuffers...");
 
-    getShaderOGLRender()->destroy();
+    getShaderOGLRenderForward()->destroy();
     getShaderOGLImage()->destroy();
     getShaderOGLLine()->destroy();
     getShaderOGLWireframe()->destroy();
@@ -532,10 +532,10 @@ void ComponentRender::resizeFramebuffers()
     getShaderOGLDOF()->destroy();
     getShaderOGLDepthMap()->destroy();
     getShaderOGLFOG()->destroy();
-    getShaderOGLGBuffer()->destroy();
-    getShaderOGLDeferredLighting()->destroy();
+    getShaderOGLRenderDeferred()->destroy();
+    getShaderOGLLightPass()->destroy();
 
-    createSpotLightsDepthTextures(static_cast<int>(getShaderOGLRender()->getShadowMappingSpotLights().size()));
+    createSpotLightsDepthTextures(static_cast<int>(getShaderOGLRenderForward()->getShadowMappingSpotLights().size()));
     getShaderOGLShadowPass()->setupFBOSpotLights();
     getShaderOGLShadowPass()->createDirectionalLightDepthTexture();
     getShaderOGLShadowPass()->setupFBODirectionalLight();
@@ -570,7 +570,7 @@ void ComponentRender::FillOGLBuffers(std::vector<meshData> &meshes)
 
 void ComponentRender::clearShadowMaps()
 {
-    auto numLights = static_cast<int>(getShaderOGLRender()->getShadowMappingSpotLights().size());
+    auto numLights = static_cast<int>(getShaderOGLRenderForward()->getShadowMappingSpotLights().size());
     if (numLights > 0) {
         glBindFramebuffer(GL_FRAMEBUFFER, getShaderOGLShadowPass()->getSpotLightsDepthMapsFBO());
         glClear(GL_DEPTH_BUFFER_BIT);

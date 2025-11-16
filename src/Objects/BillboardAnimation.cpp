@@ -21,7 +21,7 @@ void BillboardAnimation::onUpdate()
 
     this->updateTrianglesCoordinatesAndTexture();
 
-    ComponentsManager::get()->getComponentRender()->getShaderOGLRender()->render(
+    ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->render(
         this,
         (int) getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
         (int) getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),

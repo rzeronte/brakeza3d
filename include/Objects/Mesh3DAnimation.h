@@ -190,6 +190,7 @@ public:
 
     void resolveCollision(CollisionInfo with);
 
+    void shadowMappingPass();
 };
 
 

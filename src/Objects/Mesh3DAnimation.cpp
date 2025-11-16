@@ -42,7 +42,15 @@ void Mesh3DAnimation::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        render->getShaderOGLRender()->renderAnimatedMesh(this,window->getSceneFramebuffer());
+        if (!EngineSetup::get()->FORWARD_RENDER) {
+            render->getShaderOGLRenderDeferred()->renderAnimatedMesh(this, window->getGBuffer().getFBO());
+        } else {
+            render->getShaderOGLRenderForward()->renderAnimatedMesh(this, window->getSceneFramebuffer());
+        }
+    }
+
+    if (EngineSetup::get()->SHADOW_MAPPING && isRender()) {
+        shadowMappingPass();
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
@@ -81,7 +89,7 @@ void Mesh3DAnimation::onUpdate()
 
 void Mesh3DAnimation::UpdateOpenGLBones()
 {
-    std::vector<glm::mat4> transformations(MAX_BONES, glm::mat4(0));
+    std::vector transformations(MAX_BONES, glm::mat4(0));
 
     for (int i = 0; i < (int) boneInfo.size(); i++) {
         transformations[i] = Tools::aiMat4toGLMMat4(boneInfo[i].FinalTransformation);
@@ -1026,5 +1034,34 @@ void Mesh3DAnimation::resolveCollision(CollisionInfo with)
 
     if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
         runResolveCollisionScripts(with);
+    }
+}
+
+void Mesh3DAnimation::shadowMappingPass()
+{
+    auto render = ComponentsManager::get()->getComponentRender();
+    auto shaderShadowPass = render->getShaderOGLShadowPass();
+    auto shaderRender = render->getShaderOGLRenderForward();
+
+    // Directional Light
+    shaderShadowPass->renderMeshAnimatedIntoDirectionalLightTexture(
+        this,
+        shaderRender->getDirectionalLight(),
+        shaderShadowPass->getDirectionalLightDepthMapFBO()
+    );
+
+    // SpotLights
+    const auto shadowSpotLights = shaderRender->getShadowMappingSpotLights();
+    const auto numSpotLights = static_cast<int>(shadowSpotLights.size());
+
+    for (int i = 0; i < numSpotLights; i++) {
+        const auto l = shadowSpotLights[i];
+        shaderShadowPass->renderMeshAnimatedIntoArrayTextures(
+            this,
+            l,
+            render->getSpotLightsShadowMapArrayTextures(),
+            i,
+            shaderShadowPass->getSpotLightsDepthMapsFBO()
+        );
     }
 }
