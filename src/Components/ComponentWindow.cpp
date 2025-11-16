@@ -76,49 +76,48 @@ void ComponentWindow::initWindow()
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         exit(-1);
-    } else {
-        window = SDL_CreateWindow(
-            SETUP->ENGINE_TITLE.c_str(),
-            SDL_WINDOWPOS_UNDEFINED,
-            SDL_WINDOWPOS_UNDEFINED,
-            SETUP->screenWidth,
-            SETUP->screenHeight,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE
-        );
-
-        context = SDL_GL_CreateContext(window);
-        SDL_GL_MakeCurrent(window, context);
-
-        Logging::Message("Current video driver: %s", SDL_GetCurrentVideoDriver());
-        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
-        SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1 );
-        SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8 );
-        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8 );
-        SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8 );
-        SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8 );
-        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 8);
-
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
-
-        if (window == nullptr) {
-            printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-            exit(-1);
-        }
-
-        screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
-
-        SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_MOD);
-
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
-
-        initOpenGL();
-        glewInit();
-        SDL_GL_SetSwapInterval(1);
-        SDL_SetWindowIcon(this->window, applicationIcon);
     }
+    window = SDL_CreateWindow(
+        SETUP->ENGINE_TITLE.c_str(),
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        SETUP->screenWidth,
+        SETUP->screenHeight,
+        SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE
+    );
+
+    context = SDL_GL_CreateContext(window);
+    SDL_GL_MakeCurrent(window, context);
+
+    Logging::Message("Current video driver: %s", SDL_GetCurrentVideoDriver());
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1 );
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8 );
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8 );
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8 );
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8 );
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 8);
+
+    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
+    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
+    SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+
+    if (window == nullptr) {
+        printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        exit(-1);
+    }
+
+    screenSurface = SDL_CreateRGBSurface(0, SETUP->screenWidth, SETUP->screenHeight, 32, 0, 0, 0, 0);
+
+    SDL_SetSurfaceBlendMode(screenSurface, SDL_BLENDMODE_MOD);
+
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
+
+    initOpenGL();
+    glewInit();
+    SDL_GL_SetSwapInterval(1);
+    SDL_SetWindowIcon(this->window, applicationIcon);
 }
 
 void ComponentWindow::initFontsTTF()

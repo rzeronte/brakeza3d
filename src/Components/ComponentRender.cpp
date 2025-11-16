@@ -4,6 +4,7 @@
 #include "../../include/OpenGL/ShaderOpenGLCustomPostprocessing.h"
 #include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
+#include "../../include/Render/Transforms.h"
 
 ComponentRender::ComponentRender()
 :
@@ -282,11 +283,11 @@ ShaderOpenGLCustom* ComponentRender::getLoadedShader(std::string folder, std::st
     Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
 
     switch(type) {
-        case ShaderCustomTypes::SHADER_POSTPROCESSING : {
+        case SHADER_POSTPROCESSING : {
             return new ShaderOpenGLCustomPostprocessing(name, shaderVertexFile, shaderFragmentFile);
         }
         default:
-        case ShaderCustomTypes::SHADER_OBJECT : {
+        case SHADER_OBJECT : {
             return new ShaderOpenGLCustomMesh3D(nullptr, name, shaderVertexFile, shaderFragmentFile);
         }
     }
@@ -304,14 +305,14 @@ void ComponentRender::loadShaderIntoScene(const std::string &folder, const std::
     Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
 
     switch(type) {
-        case ShaderCustomTypes::SHADER_POSTPROCESSING : {
+        case SHADER_POSTPROCESSING : {
             this->addShaderToScene(
                 new ShaderOpenGLCustomPostprocessing(name, shaderVertexFile, shaderFragmentFile)
             );
             break;
         }
         default:
-        case ShaderCustomTypes::SHADER_OBJECT : {
+        case SHADER_OBJECT : {
             Logging::Message("[error] You can't add a ShaderObject type into scene");
             break;
         }

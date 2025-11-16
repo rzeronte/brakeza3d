@@ -1,6 +1,5 @@
 #define GL_GLEXT_PROTOTYPES
 
-#include <SDL2/SDL_image.h>
 #include "../../include/2D/TextWriter.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Brakeza3D.h"

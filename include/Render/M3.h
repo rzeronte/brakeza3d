@@ -14,7 +14,7 @@ public:
 
     M3(float, float, float);
 
-    M3 operator*(const M3 &pm);
+    M3 operator*(const M3 &v);
 
     M3 operator*(float scalar);
 

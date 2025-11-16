@@ -9,7 +9,7 @@ TextureAtlas::TextureAtlas(int totalWidth, int totalHeight) :
 
     mask = new bool[total_width * total_height];
 
-    for (int i = 0; i < (total_width * total_height); i++) {
+    for (int i = 0; i < total_width * total_height; i++) {
         mask[i] = false;
     }
 }
@@ -32,10 +32,10 @@ bool TextureAtlas::addTexture(Image *texture, bool lightmap, const std::string& 
 
                 TextureAtlasImageInfo textureAtlasInfo;
                 textureAtlasInfo.name = name;
-                textureAtlasInfo.x = (float) x;
-                textureAtlasInfo.y = (float) y;
-                textureAtlasInfo.width = (float) texw;
-                textureAtlasInfo.height = (float) texh;
+                textureAtlasInfo.x = static_cast<float>(x);
+                textureAtlasInfo.y = static_cast<float>(y);
+                textureAtlasInfo.width = static_cast<float>(texw);
+                textureAtlasInfo.height = static_cast<float>(texh);
 
                 textures_info.push_back(textureAtlasInfo);
                 textures.push_back(texture);
@@ -60,9 +60,10 @@ bool TextureAtlas::addTexture(Image *texture, bool lightmap, const std::string& 
     return false;
 }
 
-bool TextureAtlas::checkForAllocate(int xpos, int ypos, int width, int height) {
+bool TextureAtlas::checkForAllocate(int xpos, int ypos, int width, int height)
+{
     int baseOffset = ypos * total_width + xpos;
-    int max_global_x = (total_width * ypos) + total_width;
+    int max_global_x = total_width * ypos + total_width;
 
     if (baseOffset + width > max_global_x) {
         //std::string msg = "checkForAllocate hit final line!! w: " + std::to_string(width) + ", h: " + std::to_string(height) + ", baseOffset: " + std::to_string(baseOffset) + ", max_global_x:" + std::to_string(max_global_x);

@@ -4,7 +4,6 @@
 
 #include "../../include/Misc/TileManager.h"
 #include "../../include/EngineSetup.h"
-#include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
 
 TileManager::TileManager(int sizeTileWidth, int sizeTileHeight)
@@ -32,8 +31,8 @@ TileManager::TileManager(int sizeTileWidth, int sizeTileHeight)
     for (int y = 0; y < SETUP->screenHeight; y += this->sizeTileHeight) {
         for (int x = 0; x < SETUP->screenWidth; x += this->sizeTileWidth) {
 
-            const int idX = (x / this->sizeTileWidth);
-            const int idY = (y / this->sizeTileHeight);
+            const int idX = x / this->sizeTileWidth;
+            const int idY = y / this->sizeTileHeight;
 
             OCTileRender t(
                 true,

@@ -98,8 +98,8 @@ void ComponentCollisions::checkCollisionsForAll()
             const btCollisionObject *obA = contactManifold->getBody0();
             const btCollisionObject *obB = contactManifold->getBody1();
 
-            auto *brkObjectA = (Collider *) obA->getUserPointer();
-            auto *brkObjectB = (Collider *) obB->getUserPointer();
+            auto *brkObjectA = static_cast<Collider *>(obA->getUserPointer());
+            auto *brkObjectB = static_cast<Collider *>(obB->getUserPointer());
 
             auto cIA = CollisionInfo(brkObjectB, obA->getUserIndex(), obA->getUserIndex2());
             auto cIB = CollisionInfo(brkObjectA, obB->getUserIndex(), obB->getUserIndex2());
@@ -179,14 +179,14 @@ void ComponentCollisions::demoProjectile(int type)
     Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::get()->forward;
 
     auto *projectile = new Projectile(direction);
-    projectile->setCollisionMode(CollisionMode::BODY);
-    projectile->setCollisionShape(CollisionShape::TRIANGLE_MESH_SHAPE);
+    projectile->setCollisionMode(BODY);
+    projectile->setCollisionShape(TRIANGLE_MESH_SHAPE);
     projectile->setParent(camera);
     projectile->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + fileName));
     projectile->setRotation(M3::getMatrixRotationForEulerAngles(
-        (float) Tools::random(0, 180),
-        (float) Tools::random(0, 180),
-        (float) Tools::random(0, 180)
+        static_cast<float>(Tools::random(0, 180)),
+        static_cast<float>(Tools::random(0, 180)),
+        static_cast<float>(Tools::random(0, 180))
     ));
     projectile->setPosition( camera->getPosition() + direction.getScaled(1));
     projectile->setEnabled(true);
@@ -234,7 +234,7 @@ bool ComponentCollisions::isRayCollisionWith(Vertex3D from, Vertex3D to, Object3
     dynamicsWorld->rayTest(from.toBullet(),to.toBullet(),rayCallback);
 
     if (rayCallback.hasHit()) {
-        auto *objectWithCollision = (Object3D *) rayCallback.m_collisionObject->getUserPointer();
+        auto *objectWithCollision = static_cast<Object3D *>(rayCallback.m_collisionObject->getUserPointer());
         if (o == objectWithCollision) {
             return true;
         }

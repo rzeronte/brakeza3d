@@ -5,13 +5,8 @@
 #include <string>
 #include <vector>
 #include "../Objects/Object3D.h"
-#include "imgui.h"
-#include "../ComponentsManager.h"
 #include "GUIConsole.h"
 #include "../Misc/TexturePackage.h"
-#include "../Render/Logging.h"
-#include "../FXEffect/FXOutliner.h"
-#include "../FXEffect/FXBlink.h"
 #include "GUIWidgetObjects3D.h"
 #include "GUIWidgetObject3DProperties.h"
 #include "GUIWidgetProjectSettings.h"

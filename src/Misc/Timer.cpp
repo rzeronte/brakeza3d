@@ -94,9 +94,9 @@ float Timer::getTotalTime() const
 
     if (mStarted) {
         if (mPaused) {
-            totalTime = (float) mPausedTicks;
+            totalTime = static_cast<float>(mPausedTicks);
         } else {
-            totalTime = (float) SDL_GetTicks() - (float) mStartTicks;
+            totalTime = static_cast<float>(SDL_GetTicks()) - static_cast<float>(mStartTicks);
         }
     }
 
