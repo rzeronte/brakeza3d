@@ -5,13 +5,13 @@
 #ifndef BRAKEZA3D_SHADERSHADOWPASS_H
 #define BRAKEZA3D_SHADERSHADOWPASS_H
 
-#include "ShaderOpenGL.h"
+#include "ShaderBaseOpenGL.h"
 #include "../include/Objects/Mesh3D.h"
 #include "../include/Objects/LightPoint3D.h"
 #include "../include/Objects/SpotLight3D.h"
 #include "../include/Objects/OpenGLShaderTypes.h"
 
-class ShaderOGLShadowPass : public ShaderOpenGL
+class ShaderOGLShadowPass : public ShaderBaseOpenGL
 {
     GLuint VertexArrayID;
 

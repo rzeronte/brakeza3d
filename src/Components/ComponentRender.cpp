@@ -47,7 +47,7 @@ void ComponentRender::onStart()
     auto window = ComponentsManager::get()->getComponentWindow();
     textWriter = new TextWriter(window->getRenderer(),window->getFontDefault());
 
-    shaderOGLRender = new ShaderOpenGLRender();
+    shaderOGLRender = new ShaderOGLRenderForward();
     shaderOGLImage = new ShaderOpenGLImage();
     shaderOGLLine = new ShaderOpenGLLine();
     shaderOGLWireframe = new ShaderOpenGLWireframe();
@@ -62,8 +62,8 @@ void ComponentRender::onStart()
     shaderOGLFOG = new ShaderOpenGLFOG();
     shaderOGLTint = new ShaderOpenGLTint();
     shaderOGLBonesTransforms = new ShaderOpenGLBonesTransforms();
-    shaderOGLGBuffer = new ShaderOGLGBuffer();
-    shaderOGLDeferredLighting = new ShaderOGLDeferredLighting();
+    shaderOGLGBuffer = new ShaderOGLGRenderDeferred();
+    shaderOGLDeferredLighting = new ShaderOGLLightPass();
     shaderShadowPass = new ShaderOGLShadowPass();
     shaderShadowPassDebugLight = new ShaderOGLShadowPassDebugLight();
 }
@@ -411,7 +411,7 @@ ShaderOpenGLLine3D *ComponentRender::getShaderOGLLine3D() const {
     return shaderOGLLine3D;
 }
 
-ShaderOpenGLRender *ComponentRender::getShaderOGLRender() const {
+ShaderOGLRenderForward *ComponentRender::getShaderOGLRender() const {
     return shaderOGLRender;
 }
 
@@ -470,11 +470,11 @@ ShaderOpenGLDepthMap *ComponentRender::getShaderOGLDepthMap() const {
     return shaderOGLDepthMap;
 }
 
-ShaderOGLGBuffer *ComponentRender::getShaderOGLGBuffer() const {
+ShaderOGLGRenderDeferred *ComponentRender::getShaderOGLGBuffer() const {
     return shaderOGLGBuffer;
 }
 
-ShaderOGLDeferredLighting *ComponentRender::getShaderOGLDeferredLighting() const {
+ShaderOGLLightPass *ComponentRender::getShaderOGLDeferredLighting() const {
     return shaderOGLDeferredLighting;
 }
 
