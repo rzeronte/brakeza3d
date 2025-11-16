@@ -155,7 +155,7 @@ TTF_Font *ComponentWindow::getFontDefault() const {
     return fontDefault;
 }
 
-GLuint ComponentWindow::getShadowMapArrayTex() const {
+GLuint ComponentWindow::getSpotLightsShadowMapArrayTextures() const {
     return shadowMapArrayTex;
 }
 
@@ -334,18 +334,20 @@ void ComponentWindow::RenderLayersToGlobalFramebuffer()
 
     if (isUseDeferredRendering()) {
         auto shaderRender = render->getShaderOGLRender();
+        auto shadowPass = render->getShaderOGLShadowPass();
 
-        render->getShaderOGLDeferredLighting()->fillUBOLightsMatrix();
+        render->getShaderOGLDeferredLighting()->fillSpotLightsMatricesUBO();
 
         render->getShaderOGLDeferredLighting()->render(
             gBuffer.getPositions(),
             gBuffer.getNormal(),
             gBuffer.getAlbedo(),
             shaderRender->getDirectionalLight(),
-            shaderRender->getNumLightPoints(),
+            shadowPass->getDirectionalLightDepthTexture(),
+            shaderRender->getNumPointLights(),
             shaderRender->getNumSpotLights(),
-            getShadowMapArrayTex(),
-            static_cast<int>(shaderRender->getShadowMappingLightPoints().size()),
+            getSpotLightsShadowMapArrayTextures(),
+            static_cast<int>(shaderRender->getShadowMappingSpotLights().size()),
             sceneFramebuffer
         );
     }
@@ -408,6 +410,10 @@ void ComponentWindow::cleanFrameBuffers() const
 
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer.FBO);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if (EngineSetup::get()->SHADOW_MAPPING) {
+        ComponentsManager::get()->getComponentRender()->getShaderOGLShadowPass()->clearDirectionalLightDepthTexture();
+    }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -640,8 +646,7 @@ void ComponentWindow::createGBuffer()
 {
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    int width; // = window->getWidth();
-    int height; // = window->getHeight();
+    int width, height; // = window->getHeight();
     SDL_GetRendererOutputSize(window->getRenderer(), &width, &height);
 
     // Crear el framebuffer
@@ -698,12 +703,11 @@ void ComponentWindow::createGBuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ComponentWindow::createShadowMapBuffers(int numLights)
+void ComponentWindow::createSpotLightsDepthTextures(int numLights)
 {
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    int w; // = window->getWidth();
-    int h; // = window->getHeight();
+    int w, h;
     SDL_GetRendererOutputSize(window->getRenderer(), &w, &h);
 
     glGenTextures(1, &shadowMapArrayTex);
@@ -745,13 +749,13 @@ void ComponentWindow::clearShadowMaps()
   auto render = ComponentsManager::get()->getComponentRender();
    auto shaderRender = render->getShaderOGLRender();
 
-    auto numLights = (int) shaderRender->getShadowMappingLightPoints().size();
+    auto numLights = (int) shaderRender->getShadowMappingSpotLights().size();
     if (numLights > 0) {
-        glBindFramebuffer(GL_FRAMEBUFFER, render->getShaderOGLShadowPass()->getShadowFBO());
+        glBindFramebuffer(GL_FRAMEBUFFER, render->getShaderOGLShadowPass()->getSpotLightsDepthMapsFBO());
         glClear(GL_DEPTH_BUFFER_BIT);
 
         for (int i = 0; i < numLights; i++) {
-            glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, getShadowMapArrayTex(), 0, i);
+            glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, getSpotLightsShadowMapArrayTextures(), 0, i);
             glClear(GL_DEPTH_BUFFER_BIT);
         }
     }

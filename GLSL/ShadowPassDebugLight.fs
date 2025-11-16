@@ -3,17 +3,14 @@
 in vec2 TexCoords;
 out vec4 FragColor;
 
-uniform sampler2DArray shadowMapArray;
-uniform int layer;
+uniform sampler2D depthTexture;
 
-int nearPlane = 0;
-int farPlane = 20;
+float nearPlane = 0.0;
+float farPlane = 20.0;
 float intensity = 1.0;
-
 
 void main()
 {
-    float depth = texture(shadowMapArray, vec3(TexCoords, layer)).r;
+    float depth = texture(depthTexture, TexCoords).r;  // ← Solo vec2, sin la coordenada z
     FragColor = vec4(vec3(depth), 1.0);
-
 }

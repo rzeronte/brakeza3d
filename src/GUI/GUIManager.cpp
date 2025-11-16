@@ -278,15 +278,30 @@ void GUIManager::drawLightsDepthMapsViewerWindow()
 
         auto render = ComponentsManager::get()->getComponentRender();
         auto shaderShadowPassDebugLight = render->getShaderOGLShadowPassDebugLight();
-        auto lights = render->getShaderOGLRender()->getShadowMappingLightPoints();
+        auto lights = render->getShaderOGLRender()->getShadowMappingSpotLights();
+        float imageSize = 200.0f;
 
-        const int columns = 2;
+        const int columns = 1;
 
         // Añadir padding a las celdas
         ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(10.0f, 10.0f));
 
         if (ImGui::BeginTable("DepthMapsTable", columns, ImGuiTableFlags_Borders | ImGuiTableFlags_SizingStretchSame)) {
 
+            // Añadir DirectionalLight primero
+            ImGui::TableNextColumn();
+
+            auto combinedText = std::string("DirectionalLight");
+            float availWidth = ImGui::GetContentRegionAvail().x;
+            float textWidth = ImGui::CalcTextSize(combinedText.c_str()).x;
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - textWidth) * 0.5f);
+            ImGui::Text("%s", combinedText.c_str());
+
+            // Centrar imagen
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - imageSize) * 0.5f);
+            ImGui::Image((ImTextureID)shaderShadowPassDebugLight->getSceneTexture(), ImVec2(imageSize, imageSize));
+
+            // Luego añadir los SpotLights
             int i = 0;
             for (const auto l: lights) {
                 ImGui::TableNextColumn();
@@ -299,7 +314,6 @@ void GUIManager::drawLightsDepthMapsViewerWindow()
                 ImGui::Text("%s", combinedText.c_str());
 
                 // Centrar imagen
-                float imageSize = 200.0f;
                 ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - imageSize) * 0.5f);
                 ImGui::Image((ImTextureID)shaderShadowPassDebugLight->getInternalTexture(i), ImVec2(imageSize, imageSize));
 

@@ -8,12 +8,17 @@
 #include "ShaderOpenGL.h"
 #include "../include/Objects/Mesh3D.h"
 #include "../include/Objects/LightPoint3D.h"
+#include "../include/Objects/SpotLight3D.h"
+#include "../include/Objects/OpenGLShaderTypes.h"
 
 class ShaderOGLShadowPass : public ShaderOpenGL
 {
     GLuint VertexArrayID;
 
-    GLuint shadowFBO;
+    GLuint spotLightsDepthMapsFBO;
+    GLuint directionalLightDepthMapFBO;
+
+    GLuint directionalLightDepthTexture;
 
     GLint matrixViewUniform;
     GLint matrixModelUniform;
@@ -21,11 +26,19 @@ class ShaderOGLShadowPass : public ShaderOpenGL
 public:
     ShaderOGLShadowPass();
 
-    void renderMesh(Mesh3D *o, LightPoint3D* light, GLuint shadowMapArrayTex, int lightIndex, GLuint framebuffer);
+    void renderMeshIntoArrayTextures(
+        Mesh3D *o,
+        SpotLight3D* light,
+        GLuint shadowMapArrayTex,
+        int lightIndex,
+        GLuint framebuffer
+    ) const;
 
-    void render(
+    void renderMeshIntoDirectionalLightTexture(Mesh3D *o, DirLightOpenGL& light, GLuint framebuffer) const;
+
+    void renderIntoArrayDepthTextures(
         Object3D* o,
-        LightPoint3D* light,
+        SpotLight3D* light,
         GLuint vertexbuffer,
         GLuint uvbuffer,
         GLuint normalbuffer,
@@ -35,13 +48,32 @@ public:
         GLuint framebuffer
     ) const;
 
-    GLuint getShadowFBO() const;
+    void renderIntoDirectionalLightTexture(
+        Object3D* o,
+        DirLightOpenGL& light,
+        GLuint vertexbuffer,
+        GLuint uvbuffer,
+        GLuint normalbuffer,
+        int size,
+        GLuint framebuffer
+    ) const;
+
+    GLuint getSpotLightsDepthMapsFBO() const;
+
+    GLuint getDirectionalLightDepthMapFBO() const;
 
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
 
     void destroy() override;
 
-    void setupFBO();
+    void setupFBOSpotLights();
+
+    void setupFBODirectionalLight();
+
+    GLuint getDirectionalLightDepthTexture() const;  // Nuevo getter
+    void createDirectionalLightDepthTexture();
+
+    void clearDirectionalLightDepthTexture() const;
 };
 
 

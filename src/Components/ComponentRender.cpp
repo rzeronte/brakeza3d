@@ -83,23 +83,25 @@ void ComponentRender::onUpdate()
     getShaderOGLRender()->createUBOFromLights();
 
     auto shaderRender = getShaderOGLRender();
-    auto numLights = (int) shaderRender->getShadowMappingLightPoints().size();
+    auto numSpotLights = (int) shaderRender->getShadowMappingSpotLights().size();
 
     if (EngineSetup::get()->SHADOW_MAPPING) {
 
         static int lastNumLights = -1;
-        if (numLights != lastNumLights) {
-            ComponentsManager::get()->getComponentWindow()->createShadowMapBuffers(numLights);
-            getShaderOGLShadowPass()->setupFBO();
-            lastNumLights = numLights;
+        if (numSpotLights != lastNumLights) {
+            ComponentsManager::get()->getComponentWindow()->createSpotLightsDepthTextures(numSpotLights);
+            getShaderOGLShadowPass()->setupFBOSpotLights();
+
+            lastNumLights = numSpotLights;
         }
     }
 
     onUpdateSceneObjects();
 
     if (Brakeza3D::get()->getManagerGui()->isShowLightsDepthMapsViewerWindow() ) {
-        shaderShadowPassDebugLight->createTextures(numLights);
-        shaderShadowPassDebugLight->updateDebugTextures(numLights);
+        shaderShadowPassDebugLight->createFramebuffer();
+        shaderShadowPassDebugLight->createArrayTextures(numSpotLights);
+        shaderShadowPassDebugLight->updateDebugTextures(numSpotLights);
     }
 
     if (SETUP->RENDER_MAIN_AXIS) {
@@ -527,9 +529,10 @@ void ComponentRender::resizeFramebuffers()
     getShaderOGLGBuffer()->destroy();
     getShaderOGLDeferredLighting()->destroy();
 
-
-    ComponentsManager::get()->getComponentWindow()->createShadowMapBuffers(static_cast<int>(getShaderOGLRender()->getShadowMappingLightPoints().size()));
-    getShaderOGLShadowPass()->setupFBO();
+    ComponentsManager::get()->getComponentWindow()->createSpotLightsDepthTextures(static_cast<int>(getShaderOGLRender()->getShadowMappingSpotLights().size()));
+    getShaderOGLShadowPass()->setupFBOSpotLights();
+    getShaderOGLShadowPass()->createDirectionalLightDepthTexture();
+    getShaderOGLShadowPass()->setupFBODirectionalLight();
 
     for (auto s: sceneShaders) {
         s->destroy();
