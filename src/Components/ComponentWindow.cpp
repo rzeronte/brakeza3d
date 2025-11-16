@@ -37,8 +37,6 @@ void ComponentWindow::preUpdate()
 {
     SDL_GetWindowSize(window, &width, &height);
     glViewport(0,0, width, height);
-
-    clearShadowMaps();
 }
 
 void ComponentWindow::onUpdate()
@@ -155,9 +153,6 @@ TTF_Font *ComponentWindow::getFontDefault() const {
     return fontDefault;
 }
 
-GLuint ComponentWindow::getSpotLightsShadowMapArrayTextures() const {
-    return shadowMapArrayTex;
-}
 
 GLuint ComponentWindow::getSceneFramebuffer() const {
     return sceneFramebuffer;
@@ -325,14 +320,14 @@ void ComponentWindow::resetFramebuffer()
     resizeGBuffer();
 }
 
-void ComponentWindow::RenderLayersToGlobalFramebuffer()
+void ComponentWindow::RenderLayersToGlobalFramebuffer() const
 {
     auto render = ComponentsManager::get()->getComponentRender();
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    if (isUseDeferredRendering()) {
+    if (!EngineSetup::get()->FORWARD_RENDER) {
         auto shaderRender = render->getShaderOGLRender();
         auto shadowPass = render->getShaderOGLShadowPass();
 
@@ -346,7 +341,7 @@ void ComponentWindow::RenderLayersToGlobalFramebuffer()
             shadowPass->getDirectionalLightDepthTexture(),
             shaderRender->getNumPointLights(),
             shaderRender->getNumSpotLights(),
-            getSpotLightsShadowMapArrayTextures(),
+            render->getSpotLightsShadowMapArrayTextures(),
             static_cast<int>(shaderRender->getShadowMappingSpotLights().size()),
             sceneFramebuffer
         );
@@ -703,26 +698,6 @@ void ComponentWindow::createGBuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ComponentWindow::createSpotLightsDepthTextures(int numLights)
-{
-    auto window = ComponentsManager::get()->getComponentWindow();
-
-    int w, h;
-    SDL_GetRendererOutputSize(window->getRenderer(), &w, &h);
-
-    glGenTextures(1, &shadowMapArrayTex);
-    glBindTexture(GL_TEXTURE_2D_ARRAY, shadowMapArrayTex);
-    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32, w, h, numLights,0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-
-    // Configuración
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-
-    float borderColor[] = {1.0, 1.0, 1.0, 1.0};
-    glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, borderColor);
-}
 
 void ComponentWindow::resizeGBuffer()
 {
@@ -733,31 +708,4 @@ void ComponentWindow::resizeGBuffer()
     glDeleteRenderbuffers(1, &gBuffer.rboDepth);
 
     createGBuffer();
-}
-
-bool ComponentWindow::isUseDeferredRendering() const {
-    return !EngineSetup::get()->FORWARD_RENDER;
-}
-
-void ComponentWindow::setUseDeferredRendering(const bool use) {
-    EngineSetup::get()->FORWARD_RENDER = !use;
-    Logging::Message("Deferred Rendering: %s", use ? "ENABLED" : "DISABLED");
-}
-
-void ComponentWindow::clearShadowMaps()
-{
-  auto render = ComponentsManager::get()->getComponentRender();
-   auto shaderRender = render->getShaderOGLRender();
-
-    auto numLights = (int) shaderRender->getShadowMappingSpotLights().size();
-    if (numLights > 0) {
-        glBindFramebuffer(GL_FRAMEBUFFER, render->getShaderOGLShadowPass()->getSpotLightsDepthMapsFBO());
-        glClear(GL_DEPTH_BUFFER_BIT);
-
-        for (int i = 0; i < numLights; i++) {
-            glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, getSpotLightsShadowMapArrayTextures(), 0, i);
-            glClear(GL_DEPTH_BUFFER_BIT);
-        }
-    }
-
 }

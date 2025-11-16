@@ -72,7 +72,7 @@ public:
 
     void removeDataType(const ScriptLUATypeData& data);
 
-    void updateFileTypes();
+    void updateFileTypes() const;
 
     void reloadEnvironment(sol::environment &environment);
 
@@ -80,9 +80,9 @@ public:
 
     void getCode(const std::string &script);
 
-    [[nodiscard]] bool updateScriptCodeWith(const std::string &content) const;
+    bool updateScriptCodeWith(const std::string &content) const;
 
-    void reloadGlobals();
+    void reloadGlobals() const;
 
     [[nodiscard]] bool isPaused() const;
 
@@ -100,7 +100,7 @@ public:
 
     void addDataTypeEmpty(const char *name, const char *type);
 
-    bool existDataType(const char *name, const char *type);
+    bool existDataType(const char *name, const char *type) const;
 
     static ScriptLUA* create(const std::string& scriptFile);
 };

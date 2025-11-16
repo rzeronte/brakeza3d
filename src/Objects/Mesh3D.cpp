@@ -39,7 +39,7 @@ void Mesh3D::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (window->isUseDeferredRendering()) {
+        if (!EngineSetup::get()->FORWARD_RENDER) {
             render->getShaderOGLGBuffer()->renderMesh(this, window->getGBuffer().getFBO());
         } else {
            render->getShaderOGLRender()->renderMesh(this, window->getSceneFramebuffer());
@@ -909,7 +909,6 @@ void Mesh3D::shadowMappingPass()
     auto render = ComponentsManager::get()->getComponentRender();
     auto shaderShadowPass = render->getShaderOGLShadowPass();
     auto shaderRender = render->getShaderOGLRender();
-    auto window = ComponentsManager::get()->getComponentWindow();
 
     // Directional Light
     shaderShadowPass->renderMeshIntoDirectionalLightTexture(
@@ -927,7 +926,7 @@ void Mesh3D::shadowMappingPass()
         shaderShadowPass->renderMeshIntoArrayTextures(
             this,
             l,
-            window->getSpotLightsShadowMapArrayTextures(),
+            render->getSpotLightsShadowMapArrayTextures(),
             i,
             shaderShadowPass->getSpotLightsDepthMapsFBO()
         );

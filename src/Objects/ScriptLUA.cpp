@@ -140,7 +140,7 @@ void ScriptLUA::addDataType(const char *name, const char *type, cJSON *value)
             break;
         }
         case EngineSetup::LUADataType::FLOAT: {
-            LUAValue = (float) value->valuedouble;
+            LUAValue = static_cast<float>(value->valuedouble);
             break;
         }
         case EngineSetup::LUADataType::STRING: {
@@ -159,7 +159,7 @@ void ScriptLUA::addDataType(const char *name, const char *type, cJSON *value)
     dataTypesDefaultValues.emplace_back(name, type, LUAValue);
 }
 
-bool ScriptLUA::existDataType(const char *name, const char *type)
+bool ScriptLUA::existDataType(const char *name, const char *type) const
 {
     for (const auto& t: dataTypes) {
         if (t.name == name && t.type == type) {
@@ -170,7 +170,7 @@ bool ScriptLUA::existDataType(const char *name, const char *type)
     return false;
 }
 
-void ScriptLUA::reloadGlobals()
+void ScriptLUA::reloadGlobals() const
 {
     Logging::Message("Reloading LUA Global Environment (%s)", this->fileTypes.c_str());
 
@@ -246,8 +246,7 @@ void ScriptLUA::removeDataType(const ScriptLUATypeData& data)
     }
 }
 
-void ScriptLUA::updateFileTypes()
-{
+void ScriptLUA::updateFileTypes() const {
     Logging::Message("Updating types file (%s)", this->fileTypes.c_str());
     char *output_string = cJSON_Print(getTypesJSON());
 
@@ -297,7 +296,7 @@ void ScriptLUA::drawImGuiProperties()
 {
     ImGui::SeparatorText("LUA variables");
 
-    if ((int) dataTypes.size() <= 0) {
+    if (static_cast<int>(dataTypes.size()) <= 0) {
         ImGui::Text("No variables found");
         return;
     }

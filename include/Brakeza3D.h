@@ -73,7 +73,7 @@ public:
 
     [[nodiscard]] Object3D *getSceneObjectByLabel(const std::string &label) const;
 
-    static void checkForResizeOpenGLWindow(SDL_Event &e);
+    static void checkForResizeOpenGLWindow(const SDL_Event &e);
 
     bool finish = false;
 

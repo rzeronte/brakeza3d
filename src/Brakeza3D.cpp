@@ -74,44 +74,56 @@ void Brakeza3D::mainLoop(bool autostart, const std::string& project)
     engineTimer.start();
     managerGUI = new GUIManager(sceneObjects);
 
-    ComponentsManager::get()->getComponentScripting()->initLUATypes();
-    componentsManager->getComponentCollisions()->initBulletSystem();
+    auto window = componentsManager->getComponentWindow();
+    auto render = componentsManager->getComponentRender();
+    auto scripting = componentsManager->getComponentScripting();
+    auto collisions = componentsManager->getComponentCollisions();
+
+    scripting->initLUATypes();
+    collisions->initBulletSystem();
     onStartComponents();
 
-    componentsManager->getComponentWindow()->ImGuiInitialize(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
+    window->ImGuiInitialize(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
     welcomeMessage();
 
     if (autostart) {
-        componentsManager->getComponentRender()->getProjectLoader().loadProject(EngineSetup::get()->PROJECTS_FOLDER + project);
+        render->getProjectLoader().loadProject(EngineSetup::get()->PROJECTS_FOLDER + project);
         EngineSetup::get()->IMGUI_ENABLED = false;
-        componentsManager->getComponentScripting()->playLUAScripts();
+        scripting->playLUAScripts();
     } else {
-        componentsManager->getComponentRender()->getSceneLoader().loadScene(EngineSetup::get()->CONFIG_FOLDER + "brakeza.json");
+        render->getSceneLoader().loadScene(EngineSetup::get()->CONFIG_FOLDER + "brakeza.json");
     }
+
+    window->resetFramebuffer();
 
     while (!finish) {
         controlFrameRate();
         updateTimer();
         preUpdateComponents();
 
-        componentsManager->getComponentRender()->runShadersOpenGLPreUpdate();
+        render->runShadersOpenGLPreUpdate();
+
         while (SDL_PollEvent(&e)) {
             checkForResizeOpenGLWindow(e);
             onUpdateSDLPollEventComponents(&e, finish);
             ImGui_ImplSDL2_ProcessEvent(&e);
         }
+
         onUpdateComponents();
-        componentsManager->getComponentWindow()->RenderLayersToGlobalFramebuffer();
-        componentsManager->getComponentRender()->runShadersOpenGLPostUpdate();
+        window->RenderLayersToGlobalFramebuffer();
+        render->runShadersOpenGLPostUpdate();
         postUpdateComponents();
-        if (EngineSetup::get()->IMGUI_ENABLED) componentsManager->getComponentWindow()->ImGuiOnUpdate();
-        componentsManager->getComponentWindow()->RenderLayersToMain();
+
+        if (EngineSetup::get()->IMGUI_ENABLED) window->ImGuiOnUpdate();
+
+        window->RenderLayersToMain();
     }
+
     onEndComponents();
     delete componentsManager;
 }
 
-void Brakeza3D::checkForResizeOpenGLWindow(SDL_Event &e)
+void Brakeza3D::checkForResizeOpenGLWindow(const SDL_Event &e)
 {
     if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
         auto window = ComponentsManager::get()->getComponentWindow();
@@ -125,7 +137,7 @@ void Brakeza3D::controlFrameRate() const
 {
     if (!EngineSetup::get()->LIMIT_FRAMERATE) return;
 
-    const float frameDelay = 1000.0f / (float) EngineSetup::get()->FRAMERATE;
+    const float frameDelay = 1000.0f / static_cast<float>(EngineSetup::get()->FRAMERATE);
 
     if (deltaTime < frameDelay) {
         SDL_Delay(floor(frameDelay - deltaTime));
@@ -151,7 +163,7 @@ Timer *Brakeza3D::getTimer()
 
 void Brakeza3D::updateTimer()
 {
-    current_ticks = (float) engineTimer.getTicks();
+    current_ticks = static_cast<float>(engineTimer.getTicks());
     deltaTime = current_ticks - last_ticks;
     last_ticks = current_ticks;
     executionTime += deltaTime / 1000.f;

@@ -132,8 +132,7 @@ GLuint ShaderOGLShadowPassDebugLight::getInternalTexture(int layer) const
 
 void ShaderOGLShadowPassDebugLight::updateDebugTextures(int numLights)
 {
-    auto window = ComponentsManager::get()->getComponentWindow();
-    auto arrayTextures = window->getSpotLightsShadowMapArrayTextures();
+    auto arrayTextures = ComponentsManager::get()->getComponentRender()->getSpotLightsShadowMapArrayTextures();
 
     renderInternalToTexture();
 

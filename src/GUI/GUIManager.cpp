@@ -270,7 +270,7 @@ void GUIManager::drawLightsDepthMapsViewerWindow()
 {
     if (!showLightsDepthMapsViewerWindow) return;
 
-    setNextWindowSize(500, 500);
+    setNextWindowSize(350, 400);
     ImGui::SetNextWindowBgAlpha(0.9f);
 
     auto title = std::string("Lights Depth Maps Viewer: ");
