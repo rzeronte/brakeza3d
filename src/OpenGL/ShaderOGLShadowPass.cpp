@@ -34,9 +34,9 @@ ShaderOGLShadowPass::ShaderOGLShadowPass()
 void ShaderOGLShadowPass::renderMeshIntoArrayTextures(
     Mesh3D *o,
     SpotLight3D* light,
-    GLuint shadowMapArrayTex,
-    int lightIndex,
-    GLuint framebuffer
+    GLuint depthArrayTextures,
+    int indexLight,
+    GLuint fb
 ) const {
     for (const auto& m: o->meshes) {
         renderIntoArrayDepthTextures(
@@ -46,9 +46,9 @@ void ShaderOGLShadowPass::renderMeshIntoArrayTextures(
             m.uvbuffer,
             m.normalbuffer,
             static_cast<int>(m.vertices.size()),
-            shadowMapArrayTex,
-            lightIndex,
-            framebuffer
+            depthArrayTextures,
+            indexLight,
+            fb
         );
     }
 }
@@ -68,6 +68,47 @@ void ShaderOGLShadowPass::renderMeshIntoDirectionalLightTexture(Mesh3D *o, DirLi
     }
 }
 
+
+
+
+void ShaderOGLShadowPass::renderMeshAnimatedIntoArrayTextures(
+    Mesh3DAnimation *o,
+    SpotLight3D* light,
+    GLuint depthArrayTextures,
+    int indexLight,
+    GLuint fb
+) const {
+    for (const auto& m: o->meshes) {
+        renderIntoArrayDepthTextures(
+            o,
+            light,
+            m.feedbackBuffer,
+            m.uvbuffer,
+            m.normalbuffer,
+            static_cast<int>(m.vertices.size()),
+            depthArrayTextures,
+            indexLight,
+            fb
+        );
+    }
+}
+
+void ShaderOGLShadowPass::renderMeshAnimatedIntoDirectionalLightTexture(Mesh3DAnimation *o, DirLightOpenGL& light, GLuint framebuffer) const
+{
+    for (const auto& m: o->meshes) {
+        renderIntoDirectionalLightTexture(
+            o,
+            light,
+            m.feedbackBuffer,
+            m.uvbuffer,
+            m.normalbuffer,
+            static_cast<int>(m.vertices.size()),
+            framebuffer
+        );
+    }
+}
+
+
 void ShaderOGLShadowPass::renderIntoDirectionalLightTexture(
     Object3D* o,
     DirLightOpenGL& light,
@@ -85,7 +126,7 @@ void ShaderOGLShadowPass::renderIntoDirectionalLightTexture(
 
     setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
 
-    auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRender();
+    auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward();
     setMat4Uniform(matrixViewUniform, shaderRender->getDirectionalLightMatrix(light));
     setMat4Uniform(matrixModelUniform, o->getModelMatrix());
 

@@ -278,7 +278,7 @@ void GUIManager::drawLightsDepthMapsViewerWindow()
 
         auto render = ComponentsManager::get()->getComponentRender();
         auto shaderShadowPassDebugLight = render->getShaderOGLShadowPassDebugLight();
-        auto lights = render->getShaderOGLRender()->getShadowMappingSpotLights();
+        auto lights = render->getShaderOGLRenderForward()->getShadowMappingSpotLights();
         float imageSize = 200.0f;
 
         const int columns = 1;

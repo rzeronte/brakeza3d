@@ -198,6 +198,23 @@ void ShaderOGLRenderForward::renderMesh(Mesh3D *o, GLuint framebuffer)
     }
 }
 
+void ShaderOGLRenderForward::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
+{
+    for (const auto& m: o->meshes) {
+        render(
+            o,
+            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
+            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
+            m.feedbackBuffer,
+            m.uvbuffer,
+            m.normalbuffer,
+            static_cast<int>(m.vertices.size()),
+            o->getAlpha(),
+            framebuffer
+        );
+    }
+}
+
 void ShaderOGLRenderForward::fillUBOLights()
 {
     glDeleteBuffers(1, &bufferUBOLightPoints);
@@ -269,23 +286,6 @@ void ShaderOGLRenderForward::setGlobalIlluminationDiffuse(Vertex3D d)
 void ShaderOGLRenderForward::setGlobalIlluminationSpecular(Vertex3D s)
 {
     this->directionalLight.specular = s.toGLM();
-}
-
-void ShaderOGLRenderForward::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
-{
-    for (const auto& m: o->meshes) {
-        render(
-            o,
-            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
-            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
-            m.feedbackBuffer,
-            m.uvbuffer,
-            m.normalbuffer,
-            (int) m.vertices.size(),
-            o->getAlpha(),
-            framebuffer
-        );
-    }
 }
 
 int ShaderOGLRenderForward::getNumPointLights() const {

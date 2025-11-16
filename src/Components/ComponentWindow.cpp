@@ -327,12 +327,12 @@ void ComponentWindow::RenderLayersToGlobalFramebuffer() const
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     if (!EngineSetup::get()->FORWARD_RENDER) {
-        auto shaderRender = render->getShaderOGLRender();
+        auto shaderRender = render->getShaderOGLRenderForward();
         auto shadowPass = render->getShaderOGLShadowPass();
 
-        render->getShaderOGLDeferredLighting()->fillSpotLightsMatricesUBO();
+        render->getShaderOGLLightPass()->fillSpotLightsMatricesUBO();
 
-        render->getShaderOGLDeferredLighting()->render(
+        render->getShaderOGLLightPass()->render(
             gBuffer.getPositions(),
             gBuffer.getNormal(),
             gBuffer.getAlbedo(),

@@ -7,7 +7,7 @@
 
 #include "ShaderBaseOpenGL.h"
 #include "../include/Objects/Mesh3D.h"
-#include "../include/Objects/LightPoint3D.h"
+#include "../include/Objects/Mesh3DAnimation.h"
 #include "../include/Objects/SpotLight3D.h"
 #include "../include/Objects/OpenGLShaderTypes.h"
 
@@ -26,15 +26,13 @@ class ShaderOGLShadowPass : public ShaderBaseOpenGL
 public:
     ShaderOGLShadowPass();
 
-    void renderMeshIntoArrayTextures(
-        Mesh3D *o,
-        SpotLight3D* light,
-        GLuint shadowMapArrayTex,
-        int lightIndex,
-        GLuint framebuffer
-    ) const;
+    void renderMeshIntoArrayTextures(Mesh3D *o, SpotLight3D* light, GLuint depthArrayTextures, int indexLight, GLuint fb) const;
 
     void renderMeshIntoDirectionalLightTexture(Mesh3D *o, DirLightOpenGL& light, GLuint framebuffer) const;
+
+    void renderMeshAnimatedIntoArrayTextures(Mesh3DAnimation *o, SpotLight3D* light, GLuint depthArrayTextures, int indexLight, GLuint fb) const;
+
+    void renderMeshAnimatedIntoDirectionalLightTexture(Mesh3DAnimation *o, DirLightOpenGL& light, GLuint framebuffer) const;
 
     void renderIntoArrayDepthTextures(
         Object3D* o,
