@@ -129,7 +129,7 @@ void ComponentCollisions::stepSimulation(float deltaTime)
 {
     clearDebugCache();
 
-    if (!isEnabled() || SETUP->BULLET_STEP_SIMULATION) {
+    if (!isEnabled() || SETUP->ENABLE_BULLET_STEP_SIMULATION) {
         getDynamicsWorld()->stepSimulation(
             deltaTime,
             SETUP->BULLET_MAX_SUBSTEPS,
@@ -265,7 +265,7 @@ void ComponentCollisions::drawDebugCache()
 void ComponentCollisions::setEnabled(bool enabled)
 {
     Component::setEnabled(enabled);
-    EngineSetup::get()->BULLET_STEP_SIMULATION = enabled;
+    EngineSetup::get()->ENABLE_BULLET_STEP_SIMULATION = enabled;
 }
 
 void ComponentCollisions::setEnableDebugMode(bool value)
