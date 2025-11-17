@@ -6,7 +6,7 @@
 
 void Logging::Message(const char *message, ...)
 {
-    if (!EngineSetup::get()->LOGGING) return;
+    if (!EngineSetup::get()->ENABLE_LOGGING) return;
 
     va_list args;
     va_start(args, message);

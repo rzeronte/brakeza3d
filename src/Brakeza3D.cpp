@@ -88,10 +88,10 @@ void Brakeza3D::mainLoop(bool autostart, const std::string& project)
 
     if (autostart) {
         render->getProjectLoader().loadProject(EngineSetup::get()->PROJECTS_FOLDER + project);
-        EngineSetup::get()->IMGUI_ENABLED = false;
+        EngineSetup::get()->ENABLE_IMGUI = false;
         scripting->playLUAScripts();
     } else {
-        render->getSceneLoader().loadScene(EngineSetup::get()->CONFIG_FOLDER + "brakeza.json");
+        render->getSceneLoader().loadScene(EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->DEFAULT_SCENE);
     }
 
     window->resetFramebuffer();
@@ -114,7 +114,7 @@ void Brakeza3D::mainLoop(bool autostart, const std::string& project)
         render->runShadersOpenGLPostUpdate();
         postUpdateComponents();
 
-        if (EngineSetup::get()->IMGUI_ENABLED) window->ImGuiOnUpdate();
+        if (EngineSetup::get()->ENABLE_IMGUI) window->ImGuiOnUpdate();
 
         window->RenderLayersToMain();
     }

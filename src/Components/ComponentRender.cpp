@@ -89,7 +89,7 @@ void ComponentRender::onUpdate()
     auto shaderRender = getShaderOGLRenderForward();
     auto numSpotLights = static_cast<int>(shaderRender->getShadowMappingSpotLights().size());
 
-    if (EngineSetup::get()->SHADOW_MAPPING) {
+    if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
         static int lastNumLights = -1;
         if (numSpotLights != lastNumLights) {
             createSpotLightsDepthTextures(numSpotLights);
@@ -130,7 +130,7 @@ void ComponentRender::onEnd()
 
 void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish)
 {
-    if (SETUP->CLICK_SELECT_OBJECT3D) {
+    if (SETUP->MOUSE_CLICK_SELECT_OBJECT3D) {
         updateSelectedObject3D();
     }
 }

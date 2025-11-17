@@ -118,9 +118,9 @@ struct GUIWidgetToolbar {
     void drawBulletOptionsIcons() const
     {
         drawButton("gravityIcon",
-                   EngineSetup::get()->BULLET_STEP_SIMULATION,
+                   EngineSetup::get()->ENABLE_BULLET_STEP_SIMULATION,
                    onColor,
-                   [&]() { EngineSetup::get()->BULLET_STEP_SIMULATION = !EngineSetup::get()->BULLET_STEP_SIMULATION; });
+                   [&]() { EngineSetup::get()->ENABLE_BULLET_STEP_SIMULATION = !EngineSetup::get()->ENABLE_BULLET_STEP_SIMULATION; });
         ImGui::SetItemTooltip("Enable/Disable physic world");
 
         drawButton("drawCollidersIcon",
@@ -137,9 +137,9 @@ struct GUIWidgetToolbar {
     void drawMouseOptionsIcons() const
     {
         drawButton("clickIcon",
-                   EngineSetup::get()->CLICK_SELECT_OBJECT3D,
+                   EngineSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D,
                    onColor,
-                   [&]() { EngineSetup::get()->CLICK_SELECT_OBJECT3D = !EngineSetup::get()->CLICK_SELECT_OBJECT3D; });
+                   [&]() { EngineSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D = !EngineSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D; });
         ImGui::SetItemTooltip("Enable/Disable item click selection");
 
         drawButton("mouseLookIcon",
@@ -170,9 +170,9 @@ struct GUIWidgetToolbar {
     void drawGUIIcon() const
     {
         drawButton("guiIcon",
-                   EngineSetup::get()->IMGUI_ENABLED,
+                   EngineSetup::get()->ENABLE_IMGUI,
                    onColor,
-                   [&]() { EngineSetup::get()->IMGUI_ENABLED = !EngineSetup::get()->IMGUI_ENABLED; });
+                   [&]() { EngineSetup::get()->ENABLE_IMGUI = !EngineSetup::get()->ENABLE_IMGUI; });
         ImGui::SetItemTooltip("Enable/Disable UI");
     }
 

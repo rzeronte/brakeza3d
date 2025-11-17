@@ -14,7 +14,7 @@ Camera3D::Camera3D()
 {
     frustum = new Frustum();
 
-    this->setLabel(EngineSetup::get()->cameraNameIdentifier);
+    this->setLabel(EngineSetup::get()->CAMERA_OBJECT_NAME);
 }
 
 void Camera3D::Pitch(float newPitch) {

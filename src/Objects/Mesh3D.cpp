@@ -36,7 +36,7 @@ void Mesh3D::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (!EngineSetup::get()->FORWARD_RENDER) {
+        if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
             render->getShaderOGLRenderDeferred()->renderMesh(this, window->getGBuffer().getFBO());
         } else {
            render->getShaderOGLRenderForward()->renderMesh(this, window->getSceneFramebuffer());
@@ -47,7 +47,7 @@ void Mesh3D::onUpdate()
         render->getShaderOGLWireframe()->renderMesh(this, window->getSceneFramebuffer());
     }
 
-    if (EngineSetup::get()->SHADOW_MAPPING && isRender()) {
+    if (EngineSetup::get()->ENABLE_SHADOW_MAPPING && isRender()) {
         shadowMappingPass();
     }
 

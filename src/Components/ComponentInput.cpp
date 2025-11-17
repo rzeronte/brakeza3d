@@ -361,7 +361,7 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
             SceneLoader::clearScene();
         }
         if (keyboard[SDL_SCANCODE_F4]) {
-            EngineSetup::get()->IMGUI_ENABLED = !EngineSetup::get()->IMGUI_ENABLED;
+            EngineSetup::get()->ENABLE_IMGUI = !EngineSetup::get()->ENABLE_IMGUI;
         }
 
         auto *window = ComponentsManager::get()->getComponentWindow();

@@ -135,7 +135,7 @@ public:
 
     void checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastDepthFound) override;
 
-    void shadowMappingPass();
+    virtual void shadowMappingPass();
 
 };
 

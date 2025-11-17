@@ -8,19 +8,18 @@
 #include <assimp/Importer.hpp>
 
 #define NUM_BONES_PER_VERTEX 4
-#define ARRAY_SIZE_IN_ELEMENTS(a) (sizeof(a)/sizeof(a[0]))
 #define MAX_BONES 100
 
 struct VertexBoneData {
-    unsigned int IDs[NUM_BONES_PER_VERTEX];
+    int IDs[NUM_BONES_PER_VERTEX];
     float Weights[NUM_BONES_PER_VERTEX] = {0};
 
-    void AddBoneData(unsigned int BoneID, float Weight) {
-        int end = ARRAY_SIZE_IN_ELEMENTS(IDs);
+    void AddBoneData(int boneId, float weight) {
+        const int end = static_cast<int>(std::size(IDs));
         for (unsigned int i = 0; i < end; i++) {
             if (Weights[i] == 0.0) {
-                IDs[i] = (int) BoneID;
-                Weights[i] = Weight;
+                IDs[i] = boneId;
+                Weights[i] = weight;
                 return;
             }
         }
@@ -139,19 +138,19 @@ public:
 
     cJSON *getJSON() override;
 
-    static void createFromJSON(cJSON *object);
+    static void createFromJSON(cJSON *objectJson);
 
-    static void setPropertiesFromJSON(cJSON *object, Mesh3DAnimation *o);
+    static void setPropertiesFromJSON(cJSON *objectJson, Mesh3DAnimation *o);
 
-    static Mesh3DAnimation* create(Vertex3D position, const std::string& animationFile);
+    static Mesh3DAnimation* create(const Vertex3D &position, const std::string& animationFile);
 
-    void setAnimationSpeed(float animationSpeed);
+    void setAnimationSpeed(float value);
 
     void setIndexCurrentAnimation(int indexCurrentAnimation);
 
-    bool isAnimationEnds() const;
+    [[nodiscard]] bool isAnimationEnds() const;
 
-    float getCurrentAnimationMaxTime() const;
+    [[nodiscard]] float getCurrentAnimationMaxTime() const;
 
     void CheckIfEndAnimation();
 
@@ -159,15 +158,15 @@ public:
 
     void UpdateOpenGLBones();
 
-    void updateBoundingBox();
+    void updateBoundingBox() override;
 
     void setAnimationByName(const std::string& name);
 
-    bool isLoop() const;
+    [[nodiscard]] bool isLoop() const;
 
-    void setLoop(bool loop);
+    void setLoop(bool value);
 
-    void createBonesMappingColliders(std::string name);
+    void createBonesMappingColliders(const std::string &name);
 
     void SetMappingBoneColliderInfo(
         const std::string& mappingName,
@@ -180,7 +179,7 @@ public:
 
     BonesMappingColliders *getBonesMappingByName(const std::string& name, int &index);
 
-    const std::vector<BonesMappingColliders> *getBoneMappingColliders() const;
+    [[nodiscard]] const std::vector<BonesMappingColliders> *getBoneMappingColliders() const;
 
     int boneColliderIndex;
 
@@ -188,11 +187,10 @@ public:
 
     void removeBonesColliderMapping(const std::string &name);
 
-    void resolveCollision(CollisionInfo with);
+    void resolveCollision(CollisionInfo with) override;
 
-    void shadowMappingPass();
+    void shadowMappingPass() override;
 };
-
 
 #endif //BRAKEDA3D_MESH3DANIMATED_H
 

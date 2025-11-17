@@ -326,7 +326,7 @@ void ComponentWindow::RenderLayersToGlobalFramebuffer() const
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    if (!EngineSetup::get()->FORWARD_RENDER) {
+    if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
         auto shaderRender = render->getShaderOGLRenderForward();
         auto shadowPass = render->getShaderOGLShadowPass();
 
@@ -405,7 +405,7 @@ void ComponentWindow::cleanFrameBuffers() const
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer.FBO);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (EngineSetup::get()->SHADOW_MAPPING) {
+    if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
         ComponentsManager::get()->getComponentRender()->getShaderOGLShadowPass()->clearDirectionalLightDepthTexture();
     }
 

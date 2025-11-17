@@ -220,11 +220,17 @@ struct GUIWidgetMenu
                     }
                 }
                 ImGui::Separator();
+                ImGui::Checkbox("Limit frame rate", &setup->LIMIT_FRAMERATE);
+                if (setup->LIMIT_FRAMERATE) {
+                    ImGui::DragScalar("Limite frames to:", ImGuiDataType_S32, &setup->FRAMERATE, range_framerate_sensibility, &range_min_framerate_distance,&range_max_framerate_distance, "%d", 1.0f);
 
-                ImGui::Checkbox("Light System", &setup->ENABLE_LIGHTS);
-                ImGui::Checkbox("Enable Shadow Mapping", &setup->SHADOW_MAPPING);
+                }
+                ImGui::Separator();
 
-                if (setup->SHADOW_MAPPING) {
+                ImGui::Checkbox("Enable Lights System", &setup->ENABLE_LIGHTS);
+                ImGui::Checkbox("Enable Shadow Mapping", &setup->ENABLE_SHADOW_MAPPING);
+
+                if (setup->ENABLE_SHADOW_MAPPING) {
                     ImGui::Separator();
                     ImGui::Checkbox("ShadowMapping debug", &setup->SHADOW_MAPPING_DEBUG);
                     ImGui::Checkbox("Enable ShadowMapping in DirectionalLight", &setup->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
@@ -236,28 +242,19 @@ struct GUIWidgetMenu
 
                 ImGui::Separator();
 
-                ImGui::Checkbox("Forward rendering", &setup->FORWARD_RENDER);
+                ImGui::Checkbox("Forward rendering", &setup->ENABLE_FORWARD_RENDER);
 
                 ImGui::Separator();
 
                 ImGui::DragScalar("FOV", ImGuiDataType_Float, &setup->HORIZONTAL_FOV, 1, &range_min_fov,&range_max_fov, "%f", 1.0f);
                 ImGui::Separator();
-                ImGui::Checkbox("Limit frame rate", &setup->LIMIT_FRAMERATE);
-                if (setup->LIMIT_FRAMERATE) {
-                    ImGui::DragScalar("Limite frames to:", ImGuiDataType_S32, &setup->FRAMERATE, range_framerate_sensibility, &range_min_framerate_distance,&range_max_framerate_distance, "%d", 1.0f);
-
-                }
-                ImGui::Separator();
                 ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
-                ImGui::Separator();
-                ImGui::Checkbox("Depth Map", &setup->SHOW_DEPTH_OF_FIELD);
                 ImGui::Separator();
                 if (!setup->SHOW_DEPTH_OF_FIELD) {
                     ImGui::Checkbox("Vertex", &setup->TRIANGLE_MODE_PIXELS);
                     ImGui::Checkbox("WireFrame", &setup->TRIANGLE_MODE_WIREFRAME);
                     ImGui::Checkbox("Solid", &setup->TRIANGLE_MODE_COLOR_SOLID);
                     ImGui::Checkbox("Textures", &setup->TRIANGLE_MODE_TEXTURIZED);
-                    ImGui::Separator();
                 } else {
                     auto s = ComponentsManager::get()->getComponentRender()->getShaderOGLDepthMap();
                     ImGui::DragFloat("Intensity", &s->intensity, 0.01f, 0.0f, 1.0f);
@@ -265,9 +262,13 @@ struct GUIWidgetMenu
                     ImGui::DragFloat("Near Plabe", &s->nearPlane, 0.01f, 0.0f, 100.0f);
 
                 }
+                ImGui::Separator();
+                ImGui::Checkbox("Depth Map", &setup->SHOW_DEPTH_OF_FIELD);
+                ImGui::Separator();
+
                 ImGui::Checkbox("Draw Bones", &setup->DRAW_ANIMATION_BONES);
                 ImGui::Separator();
-                ImGui::Checkbox("Internal click selection", &setup->CLICK_SELECT_OBJECT3D);
+                ImGui::Checkbox("Internal click selection", &setup->MOUSE_CLICK_SELECT_OBJECT3D);
                 ImGui::EndMenu();
             }
 
@@ -276,15 +277,15 @@ struct GUIWidgetMenu
                 int maxSubsteps = 10;
                 int minFixedTime = 1;
                 int maxFixedTime = 60;
-                ImGui::Checkbox("Enable physics", &setup->BULLET_STEP_SIMULATION);
+                ImGui::Checkbox("Enable physics", &setup->ENABLE_BULLET_STEP_SIMULATION);
                 ImGui::Separator();
-                ImGui::DragScalar("Max sub-steps", ImGuiDataType_S32, &setup->BULLET_MAX_SUBSTEPS, 1,&minSubsteps, &maxSubsteps, "%d", 1.0f);
+                ImGui::DragScalar("Max sub-steps", ImGuiDataType_S32, &setup->BULLET_MAX_SUBSTEPS, 1, &minSubsteps, &maxSubsteps, "%d", 1.0f);
                 ImGui::DragScalar("Fixed time step (1/x)", ImGuiDataType_S32, &setup->BULLET_FIXED_TIME_STEPS, 1, &minFixedTime, &maxFixedTime, "%d", 1.0f);
                 ImGui::Separator();
                 if (ImGui::Checkbox("Draw debug mode", &setup->BULLET_DEBUG_MODE)) {
                     ComponentsManager::get()->getComponentCollisions()->setEnableDebugMode(setup->BULLET_DEBUG_MODE);
                 }
-                if (setup->BULLET_STEP_SIMULATION) {
+                if (setup->ENABLE_BULLET_STEP_SIMULATION) {
                     ImGui::Separator();
                     ImGui::Checkbox("Handle object collisions", &setup->BULLET_CHECK_ALL_PAIRS);
                     ImGui::Separator();
@@ -318,9 +319,9 @@ struct GUIWidgetMenu
             }
 
             if (ImGui::BeginMenu("Sound")) {
-                ImGui::Checkbox("Global enable", &setup->SOUND_ENABLED);
+                ImGui::Checkbox("Global enable", &setup->ENABLE_SOUND);
                 if (ImGui::IsItemDeactivatedAfterEdit()) {
-                    if (!setup->SOUND_ENABLED) {
+                    if (!setup->ENABLE_SOUND) {
                         Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, 0);
                         Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC));
                         Mix_VolumeMusic(0);
@@ -341,7 +342,7 @@ struct GUIWidgetMenu
             }
 
             if (ImGui::BeginMenu("Logging")) {
-                ImGui::Checkbox("Output to Console", &setup->LOGGING);
+                ImGui::Checkbox("Output to Console", &setup->ENABLE_LOGGING);
                 ImGui::Separator();
                 ImGui::Checkbox("Log collisions", &setup->LOG_COLLISION_OBJECTS);
                 ImGui::EndMenu();
@@ -374,7 +375,7 @@ struct GUIWidgetMenu
                 ImGui::Checkbox("Show Light Depth Maps", &showLightDepthMapsWindow);
 
                 ImGui::Separator();
-                ImGui::Checkbox("UI (F4)", &setup->IMGUI_ENABLED);
+                ImGui::Checkbox("UI (F4)", &setup->ENABLE_IMGUI);
 
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Main Axis", &setup->RENDER_MAIN_AXIS);

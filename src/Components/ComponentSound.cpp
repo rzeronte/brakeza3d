@@ -50,7 +50,7 @@ void ComponentSound::initSoundSystem()
 
 void ComponentSound::LoadSoundsConfigFile()
 {
-    auto filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->CFG_SOUNDS;
+    auto filePath = EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->DEFAULT_SOUNDS_FILE;
     Logging::Message("Loading Sounds (%s)", filePath.c_str());
 
     size_t file_size;

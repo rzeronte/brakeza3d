@@ -42,14 +42,14 @@ void Mesh3DAnimation::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (!EngineSetup::get()->FORWARD_RENDER) {
+        if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
             render->getShaderOGLRenderDeferred()->renderAnimatedMesh(this, window->getGBuffer().getFBO());
         } else {
             render->getShaderOGLRenderForward()->renderAnimatedMesh(this, window->getSceneFramebuffer());
         }
     }
 
-    if (EngineSetup::get()->SHADOW_MAPPING && isRender()) {
+    if (EngineSetup::get()->ENABLE_SHADOW_MAPPING && isRender()) {
         shadowMappingPass();
     }
 
@@ -91,12 +91,12 @@ void Mesh3DAnimation::UpdateOpenGLBones()
 {
     std::vector transformations(MAX_BONES, glm::mat4(0));
 
-    for (int i = 0; i < (int) boneInfo.size(); i++) {
+    for (int i = 0; i < static_cast<int>(boneInfo.size()); i++) {
         transformations[i] = Tools::aiMat4toGLMMat4(boneInfo[i].FinalTransformation);
     }
 
     for (auto &m: meshes) {
-        if ((int) m.vertices.size() <= 0) continue;
+        if (static_cast<int>(m.vertices.size()) <= 0) continue;
         ComponentsManager::get()->getComponentRender()->getShaderOGLBonesTransforms()->render(
             m,
             transformations,
@@ -141,7 +141,7 @@ void Mesh3DAnimation::CheckIfEndAnimation()
 
 float Mesh3DAnimation::getCurrentAnimationMaxTime() const
 {
-    return (float) (
+    return static_cast<float>(
         scene->mAnimations[indexCurrentAnimation]->mDuration / scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond
     );
 }
@@ -205,7 +205,7 @@ void Mesh3DAnimation::ProcessNodeAnimation(aiNode *node)
 {
     // Procesamos las mallas del nodo dado
     for (unsigned int x = 0; x < node->mNumMeshes; x++) {
-        int idMesh = (int) node->mMeshes[x];
+        int idMesh = static_cast<int>(node->mMeshes[x]);
         this->ProcessMeshAnimation(idMesh, scene->mMeshes[idMesh]);
     }
 
@@ -269,7 +269,7 @@ void Mesh3DAnimation::ProcessMeshAnimation(int i, aiMesh *mesh)
 
 void Mesh3DAnimation::LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData)
 {
-    for (int i = 0; i < (int) mesh->mNumBones; i++) {
+    for (int i = 0; i < static_cast<int>(mesh->mNumBones); i++) {
         int BoneIndex;
         std::string BoneName(mesh->mBones[i]->mName.data);
 
@@ -285,10 +285,10 @@ void Mesh3DAnimation::LoadMeshBones(int meshId, aiMesh *mesh, std::vector<Vertex
             boneInfo[BoneIndex].name = mesh->mBones[i]->mName.C_Str();
             Logging::Message("Loading BoneInfo %s", boneInfo[BoneIndex].name.c_str());
         } else {
-            BoneIndex = (int) boneMapping[BoneName];
+            BoneIndex = static_cast<int>(boneMapping[BoneName]);
         }
 
-        for (int j = 0; j < (int) mesh->mBones[i]->mNumWeights; j++) {
+        for (int j = 0; j < static_cast<int>(mesh->mBones[i]->mNumWeights); j++) {
             unsigned int VertexID = mesh->mBones[i]->mWeights[j].mVertexId;
             float Weight = mesh->mBones[i]->mWeights[j].mWeight;
 
@@ -319,10 +319,11 @@ void Mesh3DAnimation::UpdateBonesFinalTransformations(float TimeInSeconds)
 {
     aiMatrix4x4 Identity = aiMatrix4x4();
 
-    float TicksPerSecond = scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond != 0
-                           ? scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond : 0.25f;
+    auto TicksPerSecond = static_cast<float>(
+        scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond != 0 ? scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond : 0.25f
+    );
     float TimeInTicks = TimeInSeconds * TicksPerSecond;
-    auto AnimationTime = (float) fmod(TimeInTicks, scene->mAnimations[indexCurrentAnimation]->mDuration);
+    auto AnimationTime = static_cast<float>(fmod(TimeInTicks, scene->mAnimations[indexCurrentAnimation]->mDuration));
 
     ReadNodeHierarchy(AnimationTime, scene->mRootNode, Identity);
 }
@@ -337,7 +338,7 @@ void Mesh3DAnimation::ReadNodeHierarchy(float AnimationTime, const aiNode *pNode
 
     const aiNodeAnim *pNodeAnim = FindNodeAnim(pAnimation, NodeName);
 
-    if (pNodeAnim) {
+    if (pNodeAnim != nullptr) {
         // Interpolate scaling and generate scaling transformation matrix
         aiVector3D Scaling;
         CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);
@@ -389,7 +390,7 @@ unsigned int Mesh3DAnimation::FindRotation(float AnimationTime, const aiNodeAnim
     assert(pNodeAnim->mNumRotationKeys > 0);
 
     for (unsigned int i = 0; i < pNodeAnim->mNumRotationKeys - 1; i++) {
-        if (AnimationTime < (float) pNodeAnim->mRotationKeys[i + 1].mTime) {
+        if (AnimationTime < static_cast<float>(pNodeAnim->mRotationKeys[i + 1].mTime)) {
             return i;
         }
     }
@@ -400,7 +401,7 @@ unsigned int Mesh3DAnimation::FindRotation(float AnimationTime, const aiNodeAnim
 unsigned int Mesh3DAnimation::FindPosition(float AnimationTime, const aiNodeAnim *pNodeAnim)
 {
     for (unsigned int i = 0; i < pNodeAnim->mNumPositionKeys - 1; i++) {
-        if (AnimationTime < (float) pNodeAnim->mPositionKeys[i + 1].mTime) {
+        if (AnimationTime < static_cast<float>(pNodeAnim->mPositionKeys[i + 1].mTime)) {
             return i;
         }
     }
@@ -415,7 +416,7 @@ void Mesh3DAnimation::updateForBone(Vertex3D &V, int meshID, int vertexID)
     glm::mat4 BoneTransform(0);
     for (int n = 0; n < NUM_BONES_PER_VERTEX; n++) {
         auto boneData = meshVerticesBoneData[meshID][vertexID];
-        int boneId = boneData.IDs[n];
+        unsigned int boneId = boneData.IDs[n];
         float weight = boneData.Weights[n];
         //Logging::Message("ID: %d, Weight: %f, vertexID: %d", boneId, weight, vertexID);
         BoneTransform += Tools::aiMat4toGLMMat4(boneInfo[boneId].FinalTransformation) * weight;
@@ -429,7 +430,7 @@ unsigned int Mesh3DAnimation::FindScaling(float AnimationTime, const aiNodeAnim 
     assert(pNodeAnim->mNumScalingKeys > 0);
 
     for (unsigned int i = 0; i < pNodeAnim->mNumScalingKeys - 1; i++) {
-        if (AnimationTime < (float) pNodeAnim->mScalingKeys[i + 1].mTime) {
+        if (AnimationTime < static_cast<float>(pNodeAnim->mScalingKeys[i + 1].mTime)) {
             return i;
         }
     }
@@ -448,8 +449,8 @@ void Mesh3DAnimation::CalcInterpolatedRotation(aiQuaternion &Out, float Animatio
     unsigned int RotationIndex = FindRotation(AnimationTime, pNodeAnim);
     unsigned int NextRotationIndex = (RotationIndex + 1);
     //assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
-    float DeltaTime = pNodeAnim->mRotationKeys[NextRotationIndex].mTime - pNodeAnim->mRotationKeys[RotationIndex].mTime;
-    float Factor = (AnimationTime - (float) pNodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
+    auto DeltaTime = static_cast<float>(pNodeAnim->mRotationKeys[NextRotationIndex].mTime - pNodeAnim->mRotationKeys[RotationIndex].mTime);
+    auto Factor = (AnimationTime - static_cast<float>(pNodeAnim->mRotationKeys[RotationIndex].mTime)) / DeltaTime;
     //assert(Factor >= 0.0f && Factor <= 1.0f);
     const aiQuaternion &StartRotationQ = pNodeAnim->mRotationKeys[RotationIndex].mValue;
     const aiQuaternion &EndRotationQ = pNodeAnim->mRotationKeys[NextRotationIndex].mValue;
@@ -469,9 +470,9 @@ void Mesh3DAnimation::CalcInterpolatedPosition(aiVector3D &Out, float AnimationT
     unsigned int PositionIndex = FindPosition(AnimationTime, pNodeAnim);
     unsigned int NextPositionIndex = (PositionIndex + 1);
 
-    auto DeltaTime = (float) (pNodeAnim->mPositionKeys[NextPositionIndex].mTime -
-                               pNodeAnim->mPositionKeys[PositionIndex].mTime);
-    float Factor = (AnimationTime - (float) pNodeAnim->mPositionKeys[PositionIndex].mTime) / DeltaTime;
+    auto DeltaTime = static_cast<float>(pNodeAnim->mPositionKeys[NextPositionIndex].mTime -
+                                        pNodeAnim->mPositionKeys[PositionIndex].mTime);
+    float Factor = (AnimationTime - static_cast<float>(pNodeAnim->mPositionKeys[PositionIndex].mTime)) / DeltaTime;
     //assert(Factor >= 0.0f && Factor <= 1.0f);
     const aiVector3D &Start = pNodeAnim->mPositionKeys[PositionIndex].mValue;
     const aiVector3D &End = pNodeAnim->mPositionKeys[NextPositionIndex].mValue;
@@ -490,9 +491,9 @@ void Mesh3DAnimation::CalcInterpolatedScaling(aiVector3D &Out, float AnimationTi
     unsigned int ScalingIndex = FindScaling(AnimationTime, pNodeAnim);
     unsigned int NextScalingIndex = (ScalingIndex + 1);
     //assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
-    auto DeltaTime = (float) (pNodeAnim->mScalingKeys[NextScalingIndex].mTime -
-                               pNodeAnim->mScalingKeys[ScalingIndex].mTime);
-    float Factor = (AnimationTime - (float) pNodeAnim->mScalingKeys[ScalingIndex].mTime) / DeltaTime;
+    auto DeltaTime = static_cast<float>(pNodeAnim->mScalingKeys[NextScalingIndex].mTime -
+                                        pNodeAnim->mScalingKeys[ScalingIndex].mTime);
+    float Factor = (AnimationTime - static_cast<float>(pNodeAnim->mScalingKeys[ScalingIndex].mTime)) / DeltaTime;
     //assert(Factor >= 0.0f && Factor <= 1.0f);
     const aiVector3D &Start = pNodeAnim->mScalingKeys[ScalingIndex].mValue;
     const aiVector3D &End = pNodeAnim->mScalingKeys[NextScalingIndex].mValue;
@@ -508,10 +509,8 @@ void Mesh3DAnimation::drawBones(aiNode *node, Vertex3D *lastBonePosition)
         Transforms[i] = boneInfo[i].FinalTransformation;
     }
 
-    int idCurrentNode;
-
     if (boneMapping.find(node->mName.C_Str()) != boneMapping.end()) {
-        idCurrentNode = boneMapping[node->mName.C_Str()];
+        int idCurrentNode = static_cast<int>(boneMapping[node->mName.C_Str()]);
 
         aiMatrix4x4 mOffset = boneInfo[idCurrentNode].BoneOffset;
         aiMatrix4x4 mT = Transforms[idCurrentNode];
@@ -537,7 +536,7 @@ void Mesh3DAnimation::drawBones(aiNode *node, Vertex3D *lastBonePosition)
         lastBonePosition = &bonePosition;
     }
 
-    for (int j = 0; j < (int) node->mNumChildren; j++) {
+    for (int j = 0; j < static_cast<int>(node->mNumChildren); j++) {
         drawBones(node->mChildren[j], lastBonePosition);
     }
 }
@@ -552,7 +551,7 @@ void Mesh3DAnimation::setRemoveAtEndAnimation(bool removeAtEnds)
     remove_at_end_animation = removeAtEnds;
 }
 
-Mesh3DAnimation* Mesh3DAnimation::create(Vertex3D position, const std::string& animationFile)
+Mesh3DAnimation* Mesh3DAnimation::create(const Vertex3D &position, const std::string& animationFile)
 {
     auto o = new Mesh3DAnimation();
     o->setPosition(position);
@@ -580,8 +579,8 @@ void Mesh3DAnimation::drawImGuiProperties()
 
     if (ImGui::CollapsingHeader("Mesh3DAnimation")) {
 
-        const char* items[(int) scene->mNumAnimations];
-        for (int i = 0; i < (int) scene->mNumAnimations; i++) {
+        const char* items[static_cast<int>(scene->mNumAnimations)];
+        for (int i = 0; i < static_cast<int>(scene->mNumAnimations); i++) {
             items[i] = scene->mAnimations[i]->mName.C_Str();
         }
         auto comboTitle = "Animations##" + getLabel();
@@ -609,6 +608,7 @@ cJSON *Mesh3DAnimation::getJSON()
 
     cJSON_AddNumberToObject(root, "animationSpeed", animation_speed);
     cJSON_AddBoolToObject(root, "boneColliderEnabled", boneColliderEnabled);
+    cJSON_AddNumberToObject(root, "indexCurrentAnimation", indexCurrentAnimation);
 
     cJSON *bonesCollidersJSON = cJSON_CreateArray();
     for (const auto& b : boneMappingColliders) {
@@ -628,15 +628,15 @@ cJSON *Mesh3DAnimation::getJSON()
             cJSON_AddNumberToObject(boneInfoColliderJSON, "shape", boneInfoCollider.shape);
 
             cJSON *position = cJSON_CreateObject();
-            cJSON_AddNumberToObject(position, "x", (float) boneInfoCollider.position.x);
-            cJSON_AddNumberToObject(position, "y", (float) boneInfoCollider.position.y);
-            cJSON_AddNumberToObject(position, "z", (float) boneInfoCollider.position.z);
+            cJSON_AddNumberToObject(position, "x", boneInfoCollider.position.x);
+            cJSON_AddNumberToObject(position, "y", boneInfoCollider.position.y);
+            cJSON_AddNumberToObject(position, "z", boneInfoCollider.position.z);
             cJSON_AddItemToObject(boneInfoColliderJSON, "position", position);
 
             cJSON *size = cJSON_CreateObject();
-            cJSON_AddNumberToObject(size, "x", (float) boneInfoCollider.size.x);
-            cJSON_AddNumberToObject(size, "y", (float) boneInfoCollider.size.y);
-            cJSON_AddNumberToObject(size, "z", (float) boneInfoCollider.size.z);
+            cJSON_AddNumberToObject(size, "x", boneInfoCollider.size.x);
+            cJSON_AddNumberToObject(size, "y", boneInfoCollider.size.y);
+            cJSON_AddNumberToObject(size, "z", boneInfoCollider.size.z);
             cJSON_AddItemToObject(boneInfoColliderJSON, "size", size);
 
             cJSON_AddItemToArray(bonesInfoJSON, boneInfoColliderJSON);
@@ -651,13 +651,13 @@ cJSON *Mesh3DAnimation::getJSON()
     return root;
 }
 
-void Mesh3DAnimation::createFromJSON(cJSON *object)
+void Mesh3DAnimation::createFromJSON(cJSON *objectJson)
 {
     auto o = new Mesh3DAnimation();
 
-    Mesh3D::setPropertiesFromJSON(object, o, false);
+    Mesh3D::setPropertiesFromJSON(objectJson, o, false);
 
-    o->AssimpLoadAnimation(cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring);
+    o->AssimpLoadAnimation(cJSON_GetObjectItemCaseSensitive(objectJson, "model")->valuestring);
 
     if (o->isCollisionsEnabled()) {
         o->UpdateFrameTransformations();
@@ -665,19 +665,19 @@ void Mesh3DAnimation::createFromJSON(cJSON *object)
         o->UpdateShapeCollider();
     }
 
-    Mesh3DAnimation::setPropertiesFromJSON(object, o);
+    setPropertiesFromJSON(objectJson, o);
 
-    Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
+    Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(objectJson, "name")->valuestring);
 }
 
-void Mesh3DAnimation::setPropertiesFromJSON(cJSON *object, Mesh3DAnimation *o)
+void Mesh3DAnimation::setPropertiesFromJSON(cJSON *objectJson, Mesh3DAnimation *o)
 {
-
-    auto speed = cJSON_GetObjectItemCaseSensitive(object, "animationSpeed")->valuedouble;
-    o->setAnimationSpeed((float) speed);
+    auto speed = cJSON_GetObjectItemCaseSensitive(objectJson, "animationSpeed")->valuedouble;
+    o->setAnimationSpeed(static_cast<float>(speed));
+    o->setIndexCurrentAnimation(cJSON_GetObjectItemCaseSensitive(objectJson, "indexCurrentAnimation")->valueint);
 
     cJSON *currentMapCollider;
-    cJSON_ArrayForEach(currentMapCollider, cJSON_GetObjectItemCaseSensitive(object, "bonesColliders")) {
+    cJSON_ArrayForEach(currentMapCollider, cJSON_GetObjectItemCaseSensitive(objectJson, "bonesColliders")) {
         std::string nameMapping = cJSON_GetObjectItemCaseSensitive(currentMapCollider, "nameMapping")->valuestring;
         o->createBonesMappingColliders(nameMapping);
 
@@ -686,7 +686,7 @@ void Mesh3DAnimation::setPropertiesFromJSON(cJSON *object, Mesh3DAnimation *o)
             std::string boneName = cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "name")->valuestring;
             unsigned int boneId = cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "boneId")->valueint;
             unsigned int shape = cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "shape")->valueint;
-            bool enabled = (bool) cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "enabled")->valueint;
+            bool enabled = static_cast<bool>(cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "enabled")->valueint);
 
             //auto position = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "position"));
             //auto size = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "size"));
@@ -697,9 +697,9 @@ void Mesh3DAnimation::setPropertiesFromJSON(cJSON *object, Mesh3DAnimation *o)
 
 }
 
-void Mesh3DAnimation::setAnimationSpeed(float animationSpeed)
+void Mesh3DAnimation::setAnimationSpeed(float value)
 {
-    animation_speed = animationSpeed;
+    animation_speed = value;
 }
 
 Mesh3DAnimation::~Mesh3DAnimation()
@@ -735,15 +735,15 @@ bool Mesh3DAnimation::isAnimationEnds() const
 void Mesh3DAnimation::FillAnimationBoneDataOGLBuffers()
 {
     for (int i = 0; i < meshes.size(); i++) {
-        if (meshes[i].vertices.size() <= 0) continue;
+        if (meshes[i].vertices.empty()) continue;
 
         if (!glIsBuffer(meshes[i].vertexBoneDataBuffer)) {
             glGenBuffers(1, &meshes[i].vertexBoneDataBuffer);
             glBindBuffer(GL_ARRAY_BUFFER, meshes[i].vertexBoneDataBuffer);
-            glBufferData(GL_ARRAY_BUFFER, meshVerticesBoneData[i].size() * sizeof(VertexBoneData), meshVerticesBoneData[i].data(), GL_DYNAMIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(meshVerticesBoneData[i].size() * sizeof(VertexBoneData)), meshVerticesBoneData[i].data(), GL_DYNAMIC_DRAW);
         } else {
             glBindBuffer(GL_ARRAY_BUFFER, meshes[i].vertexBoneDataBuffer);
-            glBufferSubData(GL_ARRAY_BUFFER, 0, meshVerticesBoneData[i].size() * sizeof(VertexBoneData), meshVerticesBoneData[i].data());
+            glBufferSubData(GL_ARRAY_BUFFER, 0, static_cast<GLuint>(meshVerticesBoneData[i].size() * sizeof(VertexBoneData)), meshVerticesBoneData[i].data());
         }
     }
 }
@@ -756,7 +756,7 @@ void Mesh3DAnimation::updateBoundingBox()
 
     std::vector<Vertex3D> vertices;
 
-    for (int i = 0; i < (int) scene->mNumMeshes; i++) {
+    for (int i = 0; i < static_cast<int>(scene->mNumMeshes); i++) {
 
         if (meshVertices[i].empty()) continue;
 
@@ -772,9 +772,9 @@ void Mesh3DAnimation::updateBoundingBox()
             Vertex3D V2 = meshVertices[i][v2Index];
             Vertex3D V3 = meshVertices[i][v3Index];
 
-            updateForBone(V1, i, (int) v1Index);
-            updateForBone(V2, i, (int) v2Index);
-            updateForBone(V3, i, (int) v3Index);
+            updateForBone(V1, i, static_cast<int>(v1Index));
+            updateForBone(V2, i, static_cast<int>(v2Index));
+            updateForBone(V3, i, static_cast<int>(v3Index));
 
             vertices.emplace_back(V1);
             vertices.emplace_back(V2);
@@ -809,33 +809,33 @@ void Mesh3DAnimation::updateBoundingBox()
 
 void Mesh3DAnimation::setAnimationByName(const std::string& name)
 {
-    const char* items[(int) scene->mNumAnimations];
-
-    for (int i = 0; i < (int) scene->mNumAnimations; i++) {
+    for (int i = 0; i < static_cast<int>(scene->mNumAnimations); i++) {
         if (name == scene->mAnimations[i]->mName.C_Str()) {
             setIndexCurrentAnimation(i);
         }
     }
 }
 
-bool Mesh3DAnimation::isLoop() const {
+bool Mesh3DAnimation::isLoop() const
+{
     return loop;
 }
 
-void Mesh3DAnimation::setLoop(bool loop) {
-    Mesh3DAnimation::loop = loop;
+void Mesh3DAnimation::setLoop(bool value)
+{
+    loop = value;
 }
 
-void Mesh3DAnimation::createBonesMappingColliders(std::string name)
+void Mesh3DAnimation::createBonesMappingColliders(const std::string &name)
 {
     BonesMappingColliders bmc;
     bmc.nameMapping = name;
     bmc.boneColliderInfo.resize(this->numBones);
 
-    for (int i = 0; i < (int) boneInfo.size(); i++) {
+    for (int i = 0; i < boneInfo.size(); i++) {
         auto ci = bmc.boneColliderInfo[i];
         bmc.boneColliderInfo[i].ghostObject = nullptr;
-        bmc.boneColliderInfo[i].shape = BoneCollisionShape::BONE_SPHERE;
+        bmc.boneColliderInfo[i].shape = BONE_SPHERE;
         bmc.boneColliderInfo[i].enabled = false;
         bmc.boneColliderInfo[i].name = boneInfo[i].name;
         bmc.boneColliderInfo[i].boneId = i;
@@ -903,7 +903,7 @@ void Mesh3DAnimation::createBoneGhostBody(int bmIndex, unsigned int boneId, cons
     brakezaRotation.getRotation(qRotation);
     transformation.setRotation(qRotation);
 
-    btConvexHullShape *convexHullShape;
+    btConvexHullShape *convexHullShape = nullptr;
     switch (shape) {
         case BONE_SPHERE: {
             convexHullShape = reinterpret_cast<btConvexHullShape *>(new btSphereShape(ci.size.x));;
@@ -917,6 +917,11 @@ void Mesh3DAnimation::createBoneGhostBody(int bmIndex, unsigned int boneId, cons
             convexHullShape = reinterpret_cast<btConvexHullShape *>(new btBoxShape(ci.size.toBullet()));;
             break;
         }
+    }
+
+    if (convexHullShape == nullptr) {
+        printf("Collider Shape not valid!!. Exiting...");
+        exit(-1);
     }
 
     ci.ghostObject = new btPairCachingGhostObject();
@@ -1014,14 +1019,14 @@ void Mesh3DAnimation::removeBonesColliderMapping(const std::string& name)
     if (boneMappingColliders.empty()) {
         boneColliderIndex = -1;
     } else if (boneColliderIndex >= boneMappingColliders.size()) {
-        boneColliderIndex = (int)boneMappingColliders.size() - 1; // Ajustar al último elemento válido
+        boneColliderIndex = static_cast<int>(boneMappingColliders.size()) - 1; // Ajustar al último elemento válido
     }
 }
 
 void Mesh3DAnimation::resolveCollision(CollisionInfo with)
 {
     if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
-        auto *object = (Object3D*) (with.with);
+        auto *object = static_cast<Object3D *>(with.with);
 
         if (with.source == EngineSetup::CollisionSource::OBJECT_COLLIDER) {
             Logging::Message("Mesh3DAnimation: Collision %s with object: %s",  getLabel().c_str(), object->getLabel().c_str());
