@@ -58,6 +58,8 @@ private:
     bool showEditScriptWindow = false;
     bool showBoneMappingsEditorWindow = false;
     bool showLightsDepthMapsViewerWindow = false;
+
+    Color lineSelectorObjectColor = Color::green();
 public:
 
     void loadImagesFolder();

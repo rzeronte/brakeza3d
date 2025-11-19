@@ -59,6 +59,8 @@ public:
 
     void onStart() override;
 
+    void updateKeyboardMapping();
+
     void preUpdate() override;
 
     void onUpdate() override;
@@ -70,8 +72,6 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
 
     static void handleWindowEvents(SDL_Event *e, bool &);
-
-    void updateKeyboardMapping();
 
     void updateMouseStates(SDL_Event *e);
 
@@ -98,7 +98,11 @@ public:
     [[nodiscard]] bool isClickRight() const;
 
     [[nodiscard]] int getRelativeRendererMouseX() const;
-    
+
+    int getMouseX() const;
+
+    int getMouseY() const;
+
     [[nodiscard]] int getRelativeRendererMouseY() const;
 
     [[nodiscard]] bool isMouseMotion() const;

@@ -73,8 +73,8 @@ class ComponentRender : public Component {
     GLuint shadowMapArrayTex;
 
     std::map<std::string, ShaderCustomTypes> ShaderTypesMapping = {
-        {"Postprocessing", ShaderCustomTypes::SHADER_POSTPROCESSING},
-        {"Mesh3D", ShaderCustomTypes::SHADER_OBJECT},
+        {"Postprocessing", SHADER_POSTPROCESSING},
+        {"Mesh3D", SHADER_OBJECT},
     };
 
 public:
@@ -102,7 +102,7 @@ public:
 
     void setSelectedObject(Object3D *o);
 
-    static Object3D *getObject3DFromClickPoint(int xClick, int yClick);
+    static Object3D *getObject3DFromClickPoint(int x, int y);
 
     void updateSelectedObject3D();
 
@@ -118,7 +118,7 @@ public:
 
     void loadShaderIntoScene(const std::string &folder, const std::string &name);
 
-    ShaderOpenGLCustom* getLoadedShader(std::string folder, std::string jsonFilename);
+    ShaderOpenGLCustom* getLoadedShader(const std::string &folder, const std::string &jsonFilename);
 
     void addShaderToScene(ShaderOpenGLCustom *shader);
 
@@ -126,12 +126,12 @@ public:
 
     void setSceneShadersEnabled(bool value);
 
-    void runShadersOpenGLPostUpdate();
+    void RunShadersOpenGLPostUpdate();
 
     void removeSceneShaderByIndex(int index);
-    void removeSceneShader(ShaderOpenGLCustom *);
+    void removeSceneShader(const ShaderOpenGLCustom *);
 
-    void runShadersOpenGLPreUpdate();
+    void RunShadersOpenGLPreUpdate();
 
     ShaderOpenGLCustom *getSceneShaderByIndex(int i);
 
@@ -139,15 +139,15 @@ public:
 
     static bool compareDistances(const Object3D *obj1, const Object3D *obj2);
 
-    void setGlobalIlluminationDirection(Vertex3D d) const;
+    void setGlobalIlluminationDirection(const Vertex3D &d) const;
 
-    void setGlobalIlluminationAmbient(Vertex3D a) const;
+    void setGlobalIlluminationAmbient(const Vertex3D &a) const;
 
-    void setGlobalIlluminationDiffuse(Vertex3D d) const;
+    void setGlobalIlluminationDiffuse(const Vertex3D &d) const;
 
-    void setGlobalIlluminationSpecular(Vertex3D s) const;
+    void setGlobalIlluminationSpecular(const Vertex3D &s) const;
 
-    void drawLine(Vertex3D from, Vertex3D to, Color c) const;
+    void drawLine(const Vertex3D &from, const Vertex3D &to, const Color &c) const;
 
     [[nodiscard]] ShaderOpenGLLine3D *getShaderOGLLine3D() const;
 
@@ -201,15 +201,17 @@ public:
 
     [[nodiscard]] const std::map<std::string, ShaderCustomTypes> &getShaderTypesMapping() const;
 
-    void resizeFramebuffers();
+    void resizeShadersFramebuffers();
 
     void FillOGLBuffers(std::vector<meshData> &meshes);
 
-    void clearShadowMaps();
+    void clearShadowMaps() const;
 
     GLuint getSpotLightsShadowMapArrayTextures() const;
 
     void createSpotLightsDepthTextures(int numLights);
+
+    void RenderLayersToGlobalFramebuffer();
 };
 
 #endif //BRAKEDA3D_COMPONENTRENDER_H

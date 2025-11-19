@@ -72,6 +72,8 @@ public:
     void createDirectionalLightDepthTexture();
 
     void clearDirectionalLightDepthTexture() const;
+
+    void resetFramebuffers();
 };
 
 

@@ -39,8 +39,8 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
 
     auto renderer = ComponentsManager::get()->getComponentWindow();
 
-    int windowWidth = renderer->width;
-    int windowHeight = renderer->height;
+    int windowWidth = renderer->widthWindow;
+    int windowHeight = renderer->heightWindow;
 
     SDL_Rect dstRect;
     dstRect.x = (x * windowWidth) / EngineSetup::get()->screenWidth;
