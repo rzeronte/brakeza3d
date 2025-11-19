@@ -5,10 +5,9 @@
 #ifndef BRAKEZA3D_SHADEROPENGLPARTICLES_H
 #define BRAKEZA3D_SHADEROPENGLPARTICLES_H
 
-
 #include "ShaderBaseOpenGL.h"
 
-struct Particle{
+struct Particle {
     glm::vec3 pos, speed;
     unsigned char r,g,b,a; // Color
     float size, angle, weight;

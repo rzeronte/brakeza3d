@@ -3,7 +3,6 @@
 #define BRAKEZA3D_SHADEROPENGLPOINTS_H
 
 #include "ShaderBaseOpenGL.h"
-#include "../Objects/ParticlesContext.h"
 #include "../Objects/Mesh3D.h"
 #include "../Objects/Mesh3DAnimation.h"
 

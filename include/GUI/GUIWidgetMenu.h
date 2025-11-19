@@ -253,14 +253,14 @@ struct GUIWidgetMenu
                 if (!setup->SHOW_DEPTH_OF_FIELD) {
                     ImGui::Checkbox("Vertex", &setup->TRIANGLE_MODE_PIXELS);
                     ImGui::Checkbox("WireFrame", &setup->TRIANGLE_MODE_WIREFRAME);
-                    ImGui::Checkbox("Solid", &setup->TRIANGLE_MODE_COLOR_SOLID);
+                    ImGui::Checkbox("Solid", &setup->TRIANGLE_MODE_SHADING);
+                    ImGui::Checkbox("Picking Colors", &setup->TRIANGLE_MODE_PICKING_COLORS);
                     ImGui::Checkbox("Textures", &setup->TRIANGLE_MODE_TEXTURIZED);
                 } else {
                     auto s = ComponentsManager::get()->getComponentRender()->getShaderOGLDepthMap();
                     ImGui::DragFloat("Intensity", &s->intensity, 0.01f, 0.0f, 1.0f);
                     ImGui::DragFloat("Far Plane", &s->farPlane, 0.01f, 0.0f, 100.0f);
                     ImGui::DragFloat("Near Plabe", &s->nearPlane, 0.01f, 0.0f, 100.0f);
-
                 }
                 ImGui::Separator();
                 ImGui::Checkbox("Depth Map", &setup->SHOW_DEPTH_OF_FIELD);

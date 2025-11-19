@@ -8,11 +8,11 @@
 #include "../../include/Brakeza3D.h"
 #include <glm/gtx/euler_angles.hpp>
 
-Object3D::Object3D() :
-    rotation(M3::getMatrixIdentity()),
+Object3D::Object3D()
+:
+    id(Brakeza3D::get()->getNextObjectID()),
     motion(nullptr),
     parent(nullptr),
-    enabled(true),
     removed(false),
     decal(false),
     belongToScene(false),
@@ -21,12 +21,15 @@ Object3D::Object3D() :
     alpha(1.0f),
     luaEnvironment(sol::environment(
             ComponentsManager::get()->getComponentScripting()->getLua(),
-        sol::create, ComponentsManager::get()->getComponentScripting()->getLua().globals())
+            sol::create, ComponentsManager::get()->getComponentScripting()->getLua().globals())
     ),
     distanceToCamera(0),
+    pickingColor(Color::idToColor(id)),
+    position(Vertex3D(1, 1, 1)),
     enableLights(false),
     scale(1),
-    position(Vertex3D(1, 1, 1))
+    enabled(true),
+    rotation(M3::getMatrixIdentity())
 {
     luaEnvironment["this"] = this;
     timer.start();
@@ -127,7 +130,7 @@ bool Object3D::isRemoved() const
 
 void Object3D::setRemoved(bool value)
 {
-    Object3D::removed = value;
+    removed = value;
 }
 
 bool Object3D::isDecal() const
@@ -137,7 +140,7 @@ bool Object3D::isDecal() const
 
 void Object3D::setDecal(bool value)
 {
-    Object3D::decal = value;
+    decal = value;
 }
 
 void Object3D::setDrawOffset(Vertex3D offset)
@@ -157,7 +160,7 @@ Object3D *Object3D::getParent() const
 
 void Object3D::setParent(Object3D *object)
 {
-    Object3D::parent = object;
+    parent = object;
 }
 
 void Object3D::onUpdate()
@@ -229,9 +232,9 @@ bool &Object3D::isAlphaEnabled() {
     return alphaEnabled;
 }
 
-void Object3D::setAlphaEnabled(bool alphaEnabled)
+void Object3D::setAlphaEnabled(bool value)
 {
-    Object3D::alphaEnabled = alphaEnabled;
+    alphaEnabled = value;
 }
 
 Object3D::~Object3D()
@@ -249,9 +252,9 @@ bool Object3D::isEnableLights() const {
     return enableLights;
 }
 
-void Object3D::setEnableLights(bool enableLights)
+void Object3D::setEnableLights(bool value)
 {
-    Object3D::enableLights = enableLights;
+    enableLights = value;
 }
 
 void Object3D::lookAt(Object3D *o)
@@ -366,13 +369,13 @@ void Object3D::drawImGuiProperties()
                 float pitch = oldPitch;
                 float yaw = oldYaw;
                 float roll = oldRoll;
-                const float factor = 0.0025f;
 
                 float vec3f[3];
                 vec3f[0] = pitch;
                 vec3f[1] = yaw;
                 vec3f[2] = roll;
                 if (ImGui::DragFloat3("Rotation", vec3f, 0.01f, -999999.0f, 999999.0f)) {
+                    const float factor = 0.0025f;
                     pitch = vec3f[0];
                     yaw = vec3f[1];
                     roll = vec3f[2];
@@ -424,7 +427,7 @@ void Object3D::drawImGuiProperties()
 
     if (featuresGUI.attached) {
         if (ImGui::CollapsingHeader("Attached Objects")) {
-            if ((int) attachedObjects.size() <= 0) {
+            if (static_cast<int>(attachedObjects.size()) <= 0) {
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Not objects found");
             }
 
@@ -443,7 +446,7 @@ void Object3D::drawImGuiProperties()
                 if (!collisionsEnabled) {
                     removeCollisionObject();
                 } else {
-                    setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
+                    setupGhostCollider(SIMPLE_SHAPE);
                 }
             }
 
@@ -454,7 +457,7 @@ void Object3D::drawImGuiProperties()
                 ImGui::Separator();
 
                 drawImGuiCollisionModeSelector();
-                if (getCollisionMode() != CollisionMode::KINEMATIC) {
+                if (getCollisionMode() != KINEMATIC) {
                     drawImGuiCollisionShapeSelector();
                 }
 
@@ -473,7 +476,7 @@ void Object3D::drawImGuiProperties()
                         ImGui::DragFloat("CCD Swept Sphere Radius", &ccdSweptSphereRadius, 0.001f, 0.0f, 5.0f);
                     }
 
-                    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+                    if (getCollisionShape() == SIMPLE_SHAPE) {
                         ImGui::Separator();
                         float vec3f[3];
                         simpleShapeSize.toFloat(vec3f);
@@ -495,8 +498,7 @@ void Object3D::drawImGuiProperties()
 
                     ImGui::Separator();
 
-                    if (getCollisionMode() == CollisionMode::BODY) {
-
+                    if (getCollisionMode() == BODY) {
                         if (!colliderStatic) {
                             ImGui::DragFloat("Mass", &mass, 0.1f, 0.0f, 5000.0f);
                             ImGui::Separator();
@@ -537,12 +539,16 @@ void Object3D::drawImGuiProperties()
                             ImGui::DragFloat("Restitution", &restitution, 0.01f, 0.0f, 1.0f);
                         }
                     }
-
                     ImGui::TreePop();
                 }
 
                 drawImGuiVariables();
-
+            }
+        }
+        // alpha
+        if (featuresGUI.misc) {
+            if (ImGui::CollapsingHeader("Misc")) {
+                ImGui::Text( " %s: (%f, %f, %f)", "Color", pickingColor.r, pickingColor.g, pickingColor.b);
             }
         }
     }
@@ -623,14 +629,14 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
     o->setBelongToScene(true);
 
     o->setPosition(ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(object, "position")));
-    o->setScale((float)cJSON_GetObjectItemCaseSensitive(object, "scale")->valuedouble);
+    o->setScale(static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "scale")->valuedouble));
 
     if (cJSON_GetObjectItemCaseSensitive(object, "rotation") != nullptr) {
         cJSON *rotation = cJSON_GetObjectItemCaseSensitive(object, "rotation");
 
-        auto dX = (float) cJSON_GetObjectItemCaseSensitive(rotation, "x")->valuedouble;
-        auto dY = (float) cJSON_GetObjectItemCaseSensitive(rotation, "y")->valuedouble;
-        auto dZ = (float) cJSON_GetObjectItemCaseSensitive(rotation, "z")->valuedouble;
+        auto dX = static_cast<float>(cJSON_GetObjectItemCaseSensitive(rotation, "x")->valuedouble);
+        auto dY = static_cast<float>(cJSON_GetObjectItemCaseSensitive(rotation, "y")->valuedouble);
+        auto dZ = static_cast<float>(cJSON_GetObjectItemCaseSensitive(rotation, "z")->valuedouble);
 
         M3 MRX = M3::RX(dX);
         M3 MRY = M3::RY(dY);
@@ -651,41 +657,41 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
                 o->setColliderStatic(cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic")->valueint);
             }
 
-            int mode = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
-            int shape = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
-            auto mass = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mass")->valuedouble;
+            int mode = cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
+            int shape = cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
+            auto mass = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "mass")->valuedouble);
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "friction") != nullptr) {
-                auto friction = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "friction")->valuedouble;
+                auto friction = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "friction")->valuedouble);
                 o->setFriction(friction);
             }
 
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "ccdMotionThreshold") != nullptr) {
-                auto ccdMotionThreshold = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "ccdMotionThreshold")->valuedouble;
+                auto ccdMotionThreshold = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "ccdMotionThreshold")->valuedouble);
                 o->setCcdMotionThreshold(ccdMotionThreshold);
             }
 
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "ccdSweptSphereRadius") != nullptr) {
-                auto ccdSweptSphereRadius = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "ccdSweptSphereRadius")->valuedouble;
+                auto ccdSweptSphereRadius = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "ccdSweptSphereRadius")->valuedouble);
                 o->setCcdSweptSphereRadius(ccdSweptSphereRadius);
             }
 
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "margin") != nullptr) {
-                auto margin = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "margin")->valuedouble;
+                auto margin = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "margin")->valuedouble);
                 o->setShapeMargin(margin);
             }
 
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "restitution") != nullptr) {
-                auto restitution = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "restitution")->valuedouble;
+                auto restitution = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "restitution")->valuedouble);
                 o->setRestitution(restitution);
             }
 
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "linearDamping") != nullptr) {
-                auto linearDamping = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "linearDamping")->valuedouble;
+                auto linearDamping = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "linearDamping")->valuedouble);
                 o->setLinearDamping(linearDamping);
             }
 
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularDamping") != nullptr) {
-                auto angularDamping = (float) cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularDamping")->valuedouble;
+                auto angularDamping = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularDamping")->valuedouble);
                 o->setAngularDamping(angularDamping);
             }
 
@@ -698,8 +704,8 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
                 cJSON *kinematizSizeJSON = cJSON_GetObjectItemCaseSensitive(colliderJSON, "kinematicCapsuleSize");
 
                 o->setCapsuleColliderSize(
-                        (float) cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "x")->valuedouble,
-                        (float) cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "y")->valuedouble
+                    static_cast<float>(cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "x")->valuedouble),
+                    static_cast<float>(cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "y")->valuedouble)
                 );
             }
 
@@ -716,17 +722,17 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
             }
 
             switch(mode) {
-                case CollisionMode::GHOST:
-                    if (shape == CollisionShape::SIMPLE_SHAPE) {
-                        o->setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
+                case GHOST:
+                    if (shape == SIMPLE_SHAPE) {
+                        o->setupGhostCollider(SIMPLE_SHAPE);
                     }
                     break;
-                case CollisionMode::BODY:
-                    if (shape == CollisionShape::SIMPLE_SHAPE) {
-                        o->setupRigidBodyCollider(CollisionShape::SIMPLE_SHAPE);
+                case BODY:
+                    if (shape == SIMPLE_SHAPE) {
+                        o->setupRigidBodyCollider(SIMPLE_SHAPE);
                     }
                     break;
-                case CollisionMode::KINEMATIC:
+                case KINEMATIC:
                     o->setupKinematicCollider();
                     break;
             }
@@ -828,7 +834,7 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
 
     characterController = new btKinematicCharacterController(
         kinematicBody,
-        (btConvexShape*)kinematicBody->getCollisionShape(),
+        static_cast<btConvexShape *>(kinematicBody->getCollisionShape()),
         0.1f
     );
 
@@ -860,14 +866,19 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     brakezaRotation.getRotation(qRotation);
 
     transformation.setRotation(qRotation);
-    btCollisionShape *collisionShape;
+    btCollisionShape *collisionShape = nullptr;
 
-    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE) {
+    if (getCollisionShape() == SIMPLE_SHAPE) {
         collisionShape = new btBoxShape(simpleShapeSize.toBullet());
     }
 
-    if (getCollisionShape() == CollisionShape::CAPSULE) {
+    if (getCollisionShape() == CAPSULE) {
         collisionShape = new btCapsuleShape(kinematicCapsuleSize.x, kinematicCapsuleSize.y);
+    }
+
+    if (collisionShape == nullptr) {
+        printf("Collider Shape not valid!!. Exiting...");
+        exit(-1);
     }
 
     collisionShape->setMargin(shapeMargin);
@@ -939,7 +950,7 @@ void Object3D::updateFromBullet()
 void Object3D::resolveCollision(CollisionInfo with)
 {
     if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
-        auto *object = (Object3D*) (with.with);
+        auto *object = static_cast<Object3D *>(with.with);
         Logging::Message("Object3D: Collision %s with %s",  getLabel().c_str(), object->getLabel().c_str());
     }
 
@@ -950,7 +961,7 @@ void Object3D::resolveCollision(CollisionInfo with)
 
 void Object3D::runResolveCollisionScripts(CollisionInfo with)
 {
-    auto *object = (Object3D*) (with.with);
+    auto *object = static_cast<Object3D *>(with.with);
     const sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
 
     sol::object luaValue = sol::make_object(lua, with);
@@ -969,10 +980,10 @@ void Object3D::setupGhostCollider(CollisionShape mode)
     Logging::Message("[Collider] setupGhostCollider");
     removeCollisionObject();
 
-    setCollisionMode(CollisionMode::GHOST);
+    setCollisionMode(GHOST);
     setCollisionShape(mode);
 
-    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE || getCollisionShape() == CollisionShape::CAPSULE) {
+    if (getCollisionShape() == SIMPLE_SHAPE || getCollisionShape() == CAPSULE) {
         makeSimpleGhostBody(
             getPosition(),
             getModelMatrix(),
@@ -986,4 +997,15 @@ void Object3D::setupGhostCollider(CollisionShape mode)
 
 void Object3D::checkClickObject(Vector3D ray, Object3D*& foundObject, float &lastDepthFound)
 {
+}
+
+Color Object3D::getPickingColor() const
+{
+    return pickingColor;
+}
+
+int Object3D::getId() const
+{
+    return id;
+
 }

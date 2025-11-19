@@ -192,7 +192,7 @@ bool ComponentInput::isRightMouseButtonPressed() const
 
 void ComponentInput::updateMouseMapping()
 {
-    auto *window = ComponentsManager::get()->getComponentWindow();
+    auto window = ComponentsManager::get()->getComponentWindow();
 
     mouseLeftButton = false;
     mouseRightButton = false;
@@ -213,10 +213,8 @@ void ComponentInput::updateMouseMapping()
         mouseRightButton = true;
     }
 
-    int windowWidth, windowHeight;
-    SDL_GetRendererOutputSize(window->getRenderer(), &windowWidth, &windowHeight);
-    relativeRendererMouseX = (EngineSetup::get()->screenWidth * mouseX ) / windowWidth;
-    relativeRendererMouseY = (EngineSetup::get()->screenHeight * mouseY) / windowHeight;
+    relativeRendererMouseX = (EngineSetup::get()->screenWidth * mouseX ) / window->getWidthRender();
+    relativeRendererMouseY = (EngineSetup::get()->screenHeight * mouseY) / window->getHeightRender();
 
     mouseMotion = false;
     mouseMotionXRel = 0;
@@ -233,6 +231,14 @@ bool ComponentInput::isClickRight() const {
 
 int ComponentInput::getRelativeRendererMouseX() const {
     return relativeRendererMouseX;
+}
+
+int ComponentInput::getMouseX() const {
+    return mouseX;
+}
+
+int ComponentInput::getMouseY() const {
+    return mouseY;
 }
 
 int ComponentInput::getRelativeRendererMouseY() const {

@@ -6,9 +6,11 @@ Color::Color(): r(0), g(0), b(0), a(0), color(0)
 {
 }
 
-Color::Color(float r, float g, float b, float a): r(r), g(g), b(b), a(a), color(0)
+Color::Color(float r, float g, float b, float a)
+:
+    r(r), g(g), b(b), a(a), color(0)
 {
-    auto s = (unsigned char*) &this->color;
+    auto s = (unsigned char*) &color;
 
     s[0] = r;
     s[1] = g;
@@ -16,50 +18,51 @@ Color::Color(float r, float g, float b, float a): r(r), g(g), b(b), a(a), color(
     s[3] = 0;
 }
 
-Color::Color(uint32_t v): a(0)
+Color::Color(uint32_t v)
+:
+    a(0),
+    color(v)
 {
-    this->color = v;
+    auto colors = (uint8_t*)&v;
 
-    auto *colors = (uint8_t*)&v;
-
-    this->r = colors[0];
-    this->g = colors[1];
-    this->b = colors[2];
+    r = colors[0];
+    g = colors[1];
+    b = colors[2];
 }
 
-void Color::setRed(float v)
+void Color::setRed(float value)
 {
-    this->r = v;
+    r = value;
 }
 
-void Color::setGreen(float v)
+void Color::setGreen(float value)
 {
-    this->g = v;
+    g = value;
 }
 
-void Color::setBlue(float v)
+void Color::setBlue(float value)
 {
-    this->b = v;
+    b = value;
 }
 
 Color Color::operator+(const Color &pm) const
 {
-    return Color(this->r + pm.r, this->g + pm.g, this->b + pm.b);
+    return Color(r + pm.r, g + pm.g, b + pm.b);
 }
 
 Color Color::operator-(const Color &pm) const
 {
-    return Color(this->r - pm.r, this->g - pm.g, this->b - pm.b);
+    return Color(r - pm.r, g - pm.g, b - pm.b);
 }
 
 Color Color::operator*(const Color &pm) const
 {
-    return Color(this->r * pm.r, this->g * pm.g, this->b * pm.b);
+    return Color(r * pm.r, g * pm.g, b * pm.b);
 }
 
 bool Color::operator==(const Color &pm) const
 {
-    if (this->r == pm.r && this->g == pm.g && this->b == pm.b) {
+    if (r == pm.r && g == pm.g && b == pm.b) {
         return true;
     }
 
@@ -68,7 +71,7 @@ bool Color::operator==(const Color &pm) const
 
 uint32_t Color::getColor() const
 {
-    return this->color;
+    return color;
 }
 
 Color Color::operator*(float s) const
@@ -78,9 +81,8 @@ Color Color::operator*(float s) const
 
 Color Color::operator/(float s) const
 {
-    return Color(this->r / s, this->g / s, this->b / s);
+    return Color(r / s, g / s, b / s);
 }
-
 
 Color Color::mixColor(Color &c1, Color &c2, float c2Intensity)
 {
@@ -102,10 +104,40 @@ glm::vec3 Color::toGLM() const
 
 SDL_Color Color::toSDL() const
 {
-    return  {(Uint8) (b * 255), (Uint8) (g * 255), (Uint8) (r * 255)};
+    return {
+        static_cast<Uint8>(b * 255),
+        static_cast<Uint8>(g * 255),
+        static_cast<Uint8>(r * 255)
+    };
 }
 
 ImVec4 Color::toImVec4() const
 {
     return ImVec4 {r, g, b, a};
+}
+
+Color Color::idToColor(const unsigned int id)
+{
+    unsigned int u = static_cast<unsigned int>(id);
+
+    unsigned char R = (u >> 16) & 0xFF;
+    unsigned char G = (u >> 8) & 0xFF;
+    unsigned char B = u & 0xFF;
+
+    return Color(
+        R / 255.0f,
+        G / 255.0f,
+        B / 255.0f,
+        1.0f
+    );
+}
+
+int Color::colorToId(const Color &c)
+{
+    unsigned char R = (unsigned char)(c.r * 255.0f);
+    unsigned char G = (unsigned char)(c.g * 255.0f);
+    unsigned char B = (unsigned char)(c.b * 255.0f);
+
+    unsigned int id = (R << 16) | (G << 8) | B;
+    return static_cast<int>(id);
 }

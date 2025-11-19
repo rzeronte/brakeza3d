@@ -88,7 +88,8 @@ public:
     // Render geometry modes
     bool TRIANGLE_MODE_PIXELS = false;
     bool TRIANGLE_MODE_WIREFRAME = false;
-    bool TRIANGLE_MODE_COLOR_SOLID = false;
+    bool TRIANGLE_MODE_SHADING = false;
+    bool TRIANGLE_MODE_PICKING_COLORS = false;
     bool TRIANGLE_MODE_TEXTURIZED = true;
 
     // View options

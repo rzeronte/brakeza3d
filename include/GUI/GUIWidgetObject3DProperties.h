@@ -8,8 +8,6 @@
 #include "imgui.h"
 #include "../Misc/TexturePackage.h"
 #include "../Objects/Object3D.h"
-#include "../Render/Logging.h"
-#include "GUIWidgetObject3DProperties.h"
 
 struct ScriptEditableManager {
     std::string selectedScriptFilename;
@@ -43,7 +41,7 @@ struct GUIWidgetObject3DProperties {
     {
     }
 
-    void draw(int &selectedObjectIndex)
+    void draw(const int &selectedObjectIndex) const
     {
         bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
 

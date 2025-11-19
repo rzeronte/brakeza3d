@@ -49,4 +49,63 @@ struct SpotLightOpenGL {
     float padding2;
 };
 
+struct OpenGLPickingBuffer {
+    GLuint FBO = 0;
+    GLuint rbgTexture = 0;
+    GLuint depthTexture = 0;
+
+    [[nodiscard]] GLuint getFBO() const {
+        return FBO;
+    }
+    [[nodiscard]] GLuint getRGBTexture() const {
+        return rbgTexture;
+    }
+    [[nodiscard]] GLuint getDepthTexture() const {
+        return depthTexture;
+    }
+};
+
+struct OpenGLGBuffer {
+    GLuint FBO = 0;
+    GLuint gPosition = 0;
+    GLuint gNormal = 0;
+    GLuint gAlbedoSpec = 0;
+    GLuint rboDepth = 0;
+
+    [[nodiscard]] GLuint getFBO() const {
+        return FBO;
+    }
+    [[nodiscard]] GLuint getPositions() const {
+        return gPosition;
+    }
+    [[nodiscard]] GLuint getAlbedo() const {
+        return gAlbedoSpec;
+    }
+    [[nodiscard]] GLuint getNormal() const {
+        return gNormal;
+    }
+    [[nodiscard]] GLuint getDepth() const {
+        return rboDepth;
+    }
+};
+
+struct OpenGLGlobalFramebuffers
+{
+    GLuint globalFramebuffer;
+    GLuint sceneFramebuffer;
+    GLuint backgroundFramebuffer;
+    GLuint foregroundFramebuffer;
+    GLuint uiFramebuffer;
+    GLuint postProcessingFramebuffer;
+
+    GLuint globalTexture;
+    GLuint sceneTexture;
+    GLuint backgroundTexture;
+    GLuint foregroundTexture;
+    GLuint uiTexture;
+    GLuint postProcessingTexture;
+
+    GLuint depthTexture;
+};
+
 #endif //BRAKEZA3D_OPENGLSHADERTYPES_H

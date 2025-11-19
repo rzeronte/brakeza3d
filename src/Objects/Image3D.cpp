@@ -106,9 +106,10 @@ void Image3D::onUpdate()
     if (!image->isLoaded()) return;
 
     auto render = ComponentsManager::get()->getComponentRender();
+    auto window = ComponentsManager::get()->getComponentWindow();
 
     if (render->getSelectedObject() == this) {
-        render->getShaderOGLOutline()->drawOutlineImage3D(this, Color::green(), 0.1f);
+        render->getShaderOGLOutline()->drawOutlineImage3D(this, Color::green(), 0.1f, window->getSceneFramebuffer());
     }
 
     render->getShaderOGLRenderForward()->render(
@@ -118,7 +119,7 @@ void Image3D::onUpdate()
         vertexbuffer,
         uvbuffer,
         normalbuffer,
-        (int) vertices.size(),
+        static_cast<int>(vertices.size()),
         1.0f,
         ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
     );
@@ -198,8 +199,8 @@ cJSON *Image3D::getJSON()
 void Image3D::createFromJSON(cJSON *object)
 {
     auto name = cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring;
-    auto width = (float) cJSON_GetObjectItemCaseSensitive(object, "width")->valueint;
-    auto height = (float) cJSON_GetObjectItemCaseSensitive(object, "height")->valueint;
+    auto width = static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "width")->valueint);
+    auto height = static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "height")->valueint);
     auto image = cJSON_GetObjectItemCaseSensitive(object, "image")->valuestring;
 
     auto o = new Image3D(

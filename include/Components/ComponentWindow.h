@@ -10,36 +10,12 @@
 #include <SDL2/SDL_ttf.h>
 #include "Component.h"
 #include "ImGuizmo.h"
-
+#include "../Objects/OpenGLShaderTypes.h"
 
 enum class ImGUIConfigs {
     DEFAULT,
     DESIGN,
     CODING
-};
-
-struct GBuffer {
-    GLuint FBO;
-    GLuint gPosition;
-    GLuint gNormal;
-    GLuint gAlbedoSpec;
-    GLuint rboDepth;
-
-    [[nodiscard]] GLuint getFBO() const {
-        return FBO;
-    }
-    [[nodiscard]] GLuint getPositions() const {
-        return gPosition;
-    }
-    [[nodiscard]] GLuint getAlbedo() const {
-        return gAlbedoSpec;
-    }
-    [[nodiscard]] GLuint getNormal() const {
-        return gNormal;
-    }
-    [[nodiscard]] GLuint getDepth() const {
-        return rboDepth;
-    }
 };
 
 class ComponentWindow : public Component
@@ -52,26 +28,12 @@ class ComponentWindow : public Component
 
     TTF_Font *fontDefault;
 
-    GLuint globalFramebuffer;
-    GLuint sceneFramebuffer;
-    GLuint backgroundFramebuffer;
-    GLuint foregroundFramebuffer;
-    GLuint uiFramebuffer;
-    GLuint postProcessingFramebuffer;
-
-    GLuint globalTexture;
-    GLuint sceneTexture;
-    GLuint backgroundTexture;
-    GLuint foregroundTexture;
-    GLuint uiTexture;
-    GLuint postProcessingTexture;
-    GLuint depthTexture;
+    OpenGLGBuffer gBuffer;
+    OpenGLPickingBuffer pickingColorBuffer;
+    OpenGLGlobalFramebuffers globalBuffer;
 
     ImGuizmo::OPERATION guizmoOperation;
-
     ImGUIConfigs ImGuiConfig;
-
-    GBuffer gBuffer;
 
 public:
 
@@ -107,9 +69,10 @@ public:
 
     [[nodiscard]] GLuint getSceneFramebuffer() const;
 
-    void RenderLayersToGlobalFramebuffer() const;
+    OpenGLPickingBuffer &getPickingColorFramebuffer();
+
     void resetFramebuffer();
-    bool isWindowMaximized() const;
+    [[nodiscard]] bool isWindowMaximized() const;
 
     [[nodiscard]] GLuint getBackgroundFramebuffer() const;
 
@@ -117,18 +80,22 @@ public:
 
     [[nodiscard]] GLuint getForegroundFramebuffer() const;
 
-
     bool screenShoot = false;
 
     void cleanFrameBuffers() const;
-
 
     [[nodiscard]] int getWidth() const;
 
     [[nodiscard]] int getHeight() const;
 
-    int width;
-    int height;
+    [[nodiscard]] int getWidthRender() const;
+
+    [[nodiscard]] int getHeightRender() const;
+
+    int widthWindow;
+    int heightWindow;
+    int widthRender;
+    int heightRender;
 
     void createFramebuffer();
 
@@ -136,7 +103,7 @@ public:
 
     [[nodiscard]] GLuint getPostProcessingFramebuffer() const;
 
-    void RenderLayersToMain() const;
+    void RenderLayersToMain();
 
     void ImGuiInitialize(const std::string &configFile);
     void saveImGuiCurrentLayout() const;
@@ -148,7 +115,7 @@ public:
 
     void toggleFullScreen() const;
 
-    ImGuizmo::OPERATION getGuizmoOperation() const;
+    [[nodiscard]] ImGuizmo::OPERATION getGuizmoOperation() const;
 
     void setGuizmoOperation(ImGuizmo::OPERATION guizmoOperation);
 
@@ -158,11 +125,19 @@ public:
 
     GLuint getGlobalTexture() const;
 
-    GBuffer& getGBuffer();
+    OpenGLGBuffer& getGBuffer();
+
+    OpenGLGlobalFramebuffers &getGlobalBuffers();
+
+    void createPickingColorBuffer();
 
     void createGBuffer();
 
     void resizeGBuffer();
+
+    void updateWindowSize();
+
+    [[nodiscard]] int getObjectIDByPickingColorFramebuffer(int x, int y) const;
 };
 
 

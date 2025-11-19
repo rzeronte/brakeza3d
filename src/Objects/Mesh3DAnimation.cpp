@@ -38,7 +38,7 @@ void Mesh3DAnimation::onUpdate()
     auto window = ComponentsManager::get()->getComponentWindow();
 
     if (render->getSelectedObject() == this) {
-        render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
+        render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
@@ -57,7 +57,7 @@ void Mesh3DAnimation::onUpdate()
         render->getShaderOGLPoints()->renderMeshAnimation(this, window->getSceneFramebuffer());
     }
 
-    if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
+    if (EngineSetup::get()->TRIANGLE_MODE_SHADING && isRender()) {
         render->getShaderOGLShading()->renderMeshAnimation(this, window->getSceneFramebuffer());
     }
 
@@ -694,7 +694,6 @@ void Mesh3DAnimation::setPropertiesFromJSON(cJSON *objectJson, Mesh3DAnimation *
             o->SetMappingBoneColliderInfo(nameMapping, boneId, enabled, BoneCollisionShape::BONE_CAPSULE);
         }
     }
-
 }
 
 void Mesh3DAnimation::setAnimationSpeed(float value)

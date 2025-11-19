@@ -65,8 +65,8 @@ void Image::drawFlat(int pos_x, int pos_y, GLuint framebuffer) const
 
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    int windowWidth = window->width;
-    int windowHeight = window->height;
+    int windowWidth = window->widthWindow;
+    int windowHeight = window->heightWindow;
 
     SDL_Rect srcRect;
     srcRect.x = 0;

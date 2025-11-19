@@ -7,25 +7,42 @@
 
 
 #include "ShaderBaseOpenGL.h"
-#include "../Objects/Object3D.h"
+#include "../Objects/Mesh3D.h"
 
 class ShaderOpenGLColor: public ShaderBaseOpenGL {
     GLuint VertexArrayID;
 
     GLuint framebuffer;
     GLuint textureColorbuffer;
+    GLuint depthBuffer;
 public:
+    void createBuffer();
+
+    GLuint getFramebuffer() const;
+
     ShaderOpenGLColor();
 
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
 
-    void render(glm::mat4 modelView, GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer, int size, bool toFramebuffer, Color color);
+    void renderColor(
+        const glm::mat4 &modelView,
+        GLuint vertexbuffer,
+        GLuint uvbuffer,
+        GLuint normalbuffer,
+        int size,
+        const Color &color,
+        bool clearFramebufer,
+        GLuint framebuffer
+    ) const;
 
     void destroy() override;
 
     void deleteTexture();
 
     GLuint getTextureColorBuffer() const;
+
+    void renderMesh(Mesh3D* m, const Color &color, bool clearFramebuffer, GLuint framebuffer) const;
+
 };
 
 

@@ -31,20 +31,22 @@ void Mesh3D::onUpdate()
     auto render = ComponentsManager::get()->getComponentRender();
     auto window = ComponentsManager::get()->getComponentWindow();
 
+    auto sceneFramebuffer = window->getSceneFramebuffer();
+
     if (render->getSelectedObject() == this) {
-        render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f);
+        render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
         if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
             render->getShaderOGLRenderDeferred()->renderMesh(this, window->getGBuffer().getFBO());
         } else {
-           render->getShaderOGLRenderForward()->renderMesh(this, window->getSceneFramebuffer());
+           render->getShaderOGLRenderForward()->renderMesh(this, sceneFramebuffer);
         }
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        render->getShaderOGLWireframe()->renderMesh(this, window->getSceneFramebuffer());
+        render->getShaderOGLWireframe()->renderMesh(this, sceneFramebuffer);
     }
 
     if (EngineSetup::get()->ENABLE_SHADOW_MAPPING && isRender()) {
@@ -52,29 +54,37 @@ void Mesh3D::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
-        render->getShaderOGLPoints()->renderMesh(this, window->getSceneFramebuffer());
+        render->getShaderOGLPoints()->renderMesh(this, sceneFramebuffer);
     }
 
-    if (EngineSetup::get()->TRIANGLE_MODE_COLOR_SOLID && isRender()) {
-        render->getShaderOGLShading()->renderMesh(this, window->getSceneFramebuffer());
+    if (EngineSetup::get()->TRIANGLE_MODE_SHADING && isRender()) {
+        render->getShaderOGLShading()->renderMesh(this, sceneFramebuffer);
     }
-
 
     if (EngineSetup::get()->DRAW_MESH3D_AABB && isRender()) {
-        this->updateBoundingBox();
-        Drawable::drawAABB(&this->aabb, Color::white());
+        updateBoundingBox();
+        Drawable::drawAABB(&aabb, Color::white());
     }
 
     if (EngineSetup::get()->DRAW_MESH3D_OCTREE && this->octree != nullptr) {
-        Drawable::drawOctree(this->octree);
+        Drawable::drawOctree(octree);
     }
 
     if (EngineSetup::get()->DRAW_MESH3D_GRID && this->grid != nullptr) {
-        Drawable::drawGrid3D(this->grid);
+        Drawable::drawGrid3D(grid);
     }
 
-    for (auto &s: customShaders) {
-        s->render(window->getSceneFramebuffer());
+    if (EngineSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
+        render->getShaderOGLColor()->renderMesh(
+            this,
+            getPickingColor(),
+            false,
+            window->getPickingColorFramebuffer().getFBO()
+        );
+    }
+
+    for (const auto s: customShaders) {
+        s->render(sceneFramebuffer);
     }
 }
 
@@ -108,7 +118,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
         exit(-1);
     }
 
-    Logging::Message("Num meshes: %d", scene->mNumMeshes);
+    Logging::Message("Meshes number: %d", scene->mNumMeshes);
     meshes.resize(scene->mNumMeshes);
 
     AssimpInitMaterials(scene, fileName);

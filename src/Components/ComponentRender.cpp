@@ -7,7 +7,7 @@
 #include "../../include/Render/Transforms.h"
 
 ComponentRender::ComponentRender()
-:
+    :
     fps(0),
     fpsFrameCounter(0),
     frameTime(0),
@@ -37,6 +37,15 @@ ComponentRender::ComponentRender()
     lastProgramUsed(0),
     shadowMapArrayTex(0)
 {
+}
+
+ComponentRender::~ComponentRender()
+{
+    for (auto s: sceneShaders) {
+        delete s;
+    }
+
+    delete textWriter;
 }
 
 void ComponentRender::onStart()
@@ -84,16 +93,15 @@ void ComponentRender::onUpdate()
 {
     if (!isEnabled()) return;
 
-    getShaderOGLRenderForward()->createUBOFromLights();
+    shaderOGLRender->createUBOFromLights();
 
-    auto shaderRender = getShaderOGLRenderForward();
-    auto numSpotLights = static_cast<int>(shaderRender->getShadowMappingSpotLights().size());
+    auto numSpotLights = static_cast<int>(shaderOGLRender->getShadowMappingSpotLights().size());
 
     if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
         static int lastNumLights = -1;
         if (numSpotLights != lastNumLights) {
             createSpotLightsDepthTextures(numSpotLights);
-            getShaderOGLShadowPass()->setupFBOSpotLights();
+            shaderShadowPass->setupFBOSpotLights();
             lastNumLights = numSpotLights;
         }
     }
@@ -130,48 +138,6 @@ void ComponentRender::onEnd()
 
 void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish)
 {
-    if (SETUP->MOUSE_CLICK_SELECT_OBJECT3D) {
-        updateSelectedObject3D();
-    }
-}
-
-void ComponentRender::updateSelectedObject3D()
-{
-    auto input = ComponentsManager::get()->getComponentInput();
-
-    if (!input->isEnabled()) return;
-
-    if (input->isClickLeft() && !input->isMouseMotion()) {
-        selectedObject = getObject3DFromClickPoint(
-            input->getRelativeRendererMouseX(),
-            input->getRelativeRendererMouseY()
-        );
-
-        if (selectedObject != nullptr) {
-            Logging::Message("Selected object by click: %s", selectedObject->getLabel().c_str());
-            Brakeza3D::get()->getManagerGui()->setSelectedObject(selectedObject);
-        } else {
-            setSelectedObject(nullptr);
-        }
-    }
-}
-
-void ComponentRender::deleteRemovedObjects()
-{
-    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
-    sceneObjects.erase(
-        std::remove_if(
-            sceneObjects.begin(),
-            sceneObjects.end(), [](Object3D* object) {
-                if (object->isRemoved()) {
-                    delete object;
-                    return true;
-                }
-                return false;
-            }
-        ),
-        sceneObjects.end()
-    );
 }
 
 void ComponentRender::onUpdateSceneObjects()
@@ -201,23 +167,6 @@ void ComponentRender::updateFPS()
     }
 }
 
-Object3D* ComponentRender::getObject3DFromClickPoint(int xClick, int yClick)
-{
-    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-    Point2D  fixedPosition = Point2D(xClick,yClick);
-    Vertex3D nearPlaneVertex = Transforms::Point2DToWorld(fixedPosition);
-    Vector3D ray(camera->getPosition(),nearPlaneVertex);
-
-    Object3D *foundObject = nullptr;
-    float lastDepthFound = -1;
-    for (auto o: Brakeza3D::get()->getSceneObjects()) {
-        o->checkClickObject(ray, foundObject, lastDepthFound);
-    }
-
-    return foundObject;
-}
-
 Object3D *ComponentRender::getSelectedObject() const
 {
     return selectedObject;
@@ -228,17 +177,56 @@ void ComponentRender::setSelectedObject(Object3D *o)
     this->selectedObject = o;
 }
 
+Object3D* ComponentRender::getObject3DFromClickPoint(const int x, const int y)
+{
+    const auto id = ComponentsManager::get()->getComponentWindow()->getObjectIDByPickingColorFramebuffer(x, y);
+
+    Logging::Message("Click point: %d, %d | ObjectId: %d", x, y, id);
+    return Brakeza3D::get()->getSceneObjectById(id);
+}
+
+void ComponentRender::updateSelectedObject3D()
+{
+    auto input = ComponentsManager::get()->getComponentInput();
+
+    if (!input->isEnabled()) return;
+
+    if (input->isClickLeft() && !input->isMouseMotion()) {
+        selectedObject = getObject3DFromClickPoint(
+            input->getMouseX(),
+            input->getMouseY()
+        );
+
+        if (selectedObject != nullptr) {
+            Logging::Message("Selected object by click: %s", selectedObject->getLabel().c_str());
+            Brakeza3D::get()->getManagerGui()->setSelectedObject(selectedObject);
+        } else {
+            Logging::Message("Selected object: none");
+            setSelectedObject(nullptr);
+        }
+    }
+}
+
 int ComponentRender::getFps() const{
     return fps;
 }
 
-ComponentRender::~ComponentRender()
+void ComponentRender::deleteRemovedObjects()
 {
-    for (auto s: sceneShaders) {
-        delete s;
-    }
-
-    delete textWriter;
+    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    sceneObjects.erase(
+        std::remove_if(
+            sceneObjects.begin(),
+            sceneObjects.end(), [](Object3D* object) {
+                if (object->isRemoved()) {
+                    delete object;
+                    return true;
+                }
+                return false;
+            }
+        ),
+        sceneObjects.end()
+    );
 }
 
 
@@ -254,43 +242,6 @@ ProjectLoader &ComponentRender::getProjectLoader()
 
 std::vector<ShaderOpenGLCustom *> &ComponentRender::getSceneShaders() {
     return sceneShaders;
-}
-
-ShaderOpenGLCustom *ComponentRender::getSceneShaderByIndex(int i) {
-    return sceneShaders[i];
-}
-
-ShaderOpenGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name)
-{
-    for (auto &s: sceneShaders) {
-        if (s->getLabel() == name) {
-            return s;
-        }
-    }
-
-    return nullptr;
-}
-
-ShaderOpenGLCustom* ComponentRender::getLoadedShader(std::string folder, std::string jsonFilename)
-{
-    auto name = Tools::getFilenameWithoutExtension(jsonFilename);
-
-    std::string shaderFragmentFile = folder + std::string(name + ".fs");
-    std::string shaderVertexFile = folder + std::string(name + ".vs");
-
-    auto type = ShaderOpenGLCustom::extractTypeFromShaderName(folder, name);
-
-    Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
-
-    switch(type) {
-        case SHADER_POSTPROCESSING : {
-            return new ShaderOpenGLCustomPostprocessing(name, shaderVertexFile, shaderFragmentFile);
-        }
-        default:
-        case SHADER_OBJECT : {
-            return new ShaderOpenGLCustomMesh3D(nullptr, name, shaderVertexFile, shaderFragmentFile);
-        }
-    }
 }
 
 void ComponentRender::loadShaderIntoScene(const std::string &folder, const std::string &jsonFilename)
@@ -319,6 +270,28 @@ void ComponentRender::loadShaderIntoScene(const std::string &folder, const std::
     }
 }
 
+ShaderOpenGLCustom* ComponentRender::getLoadedShader(const std::string &folder, const std::string &jsonFilename)
+{
+    auto name = Tools::getFilenameWithoutExtension(jsonFilename);
+
+    std::string shaderFragmentFile = folder + std::string(name + ".fs");
+    std::string shaderVertexFile = folder + std::string(name + ".vs");
+
+    auto type = ShaderOpenGLCustom::extractTypeFromShaderName(folder, name);
+
+    Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
+
+    switch(type) {
+        case SHADER_POSTPROCESSING : {
+            return new ShaderOpenGLCustomPostprocessing(name, shaderVertexFile, shaderFragmentFile);
+        }
+        default:
+        case SHADER_OBJECT : {
+            return new ShaderOpenGLCustomMesh3D(nullptr, name, shaderVertexFile, shaderFragmentFile);
+        }
+    }
+}
+
 void ComponentRender::addShaderToScene(ShaderOpenGLCustom *shader)
 {
     sceneShaders.push_back(shader);
@@ -334,19 +307,11 @@ void ComponentRender::setSceneShadersEnabled(bool value)
     sceneShadersEnabled = value;
 }
 
-void ComponentRender::runShadersOpenGLPostUpdate()
+void ComponentRender::RunShadersOpenGLPostUpdate()
 {
     for( auto s: sceneShaders) {
         if (!s->isEnabled()) continue;
         s->postUpdate();
-    }
-}
-
-void ComponentRender::runShadersOpenGLPreUpdate()
-{
-    for( auto s: sceneShaders) {
-        if (!s->isEnabled()) continue;
-        s->onUpdate();
     }
 }
 
@@ -356,7 +321,7 @@ void ComponentRender::removeSceneShaderByIndex(int index) {
     }
 }
 
-void ComponentRender::removeSceneShader(ShaderOpenGLCustom *shader)
+void ComponentRender::removeSceneShader(const ShaderOpenGLCustom *shader)
 {
     Logging::Message("Removing SCENE script %s", shader->getLabel().c_str());
 
@@ -369,32 +334,55 @@ void ComponentRender::removeSceneShader(ShaderOpenGLCustom *shader)
     }
 }
 
+void ComponentRender::RunShadersOpenGLPreUpdate()
+{
+    for( auto s: sceneShaders) {
+        if (!s->isEnabled()) continue;
+        s->onUpdate();
+    }
+}
+
+ShaderOpenGLCustom *ComponentRender::getSceneShaderByIndex(int i) {
+    return sceneShaders[i];
+}
+
+ShaderOpenGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name)
+{
+    for (auto &s: sceneShaders) {
+        if (s->getLabel() == name) {
+            return s;
+        }
+    }
+
+    return nullptr;
+}
+
 bool ComponentRender::compareDistances(const Object3D* obj1, const Object3D* obj2)
 {
     return obj1->getDistanceToCamera() > obj2->getDistanceToCamera();
 }
 
-void ComponentRender::setGlobalIlluminationDirection(Vertex3D v) const
+void ComponentRender::setGlobalIlluminationDirection(const Vertex3D &v) const
 {
-    getShaderOGLRenderForward()->setGlobalIlluminationDirection(v);
+    shaderOGLRender->setGlobalIlluminationDirection(v);
 }
 
-void ComponentRender::setGlobalIlluminationAmbient(Vertex3D v) const
+void ComponentRender::setGlobalIlluminationAmbient(const Vertex3D &v) const
 {
-    getShaderOGLRenderForward()->setGlobalIlluminationAmbient(v);
+    shaderOGLRender->setGlobalIlluminationAmbient(v);
 }
 
-void ComponentRender::setGlobalIlluminationDiffuse(Vertex3D v) const
+void ComponentRender::setGlobalIlluminationDiffuse(const Vertex3D &v) const
 {
-    getShaderOGLRenderForward()->setGlobalIlluminationDiffuse(v);
+    shaderOGLRender->setGlobalIlluminationDiffuse(v);
 }
 
-void ComponentRender::setGlobalIlluminationSpecular(Vertex3D v) const
+void ComponentRender::setGlobalIlluminationSpecular(const Vertex3D &v) const
 {
     getShaderOGLRenderForward()->setGlobalIlluminationSpecular(v);
 }
 
-void ComponentRender::drawLine(Vertex3D from, Vertex3D to, Color c) const
+void ComponentRender::drawLine(const Vertex3D &from, const Vertex3D &to, const Color &c) const
 {
     getShaderOGLLine3D()->render(
         from,
@@ -404,12 +392,12 @@ void ComponentRender::drawLine(Vertex3D from, Vertex3D to, Color c) const
     );
 }
 
-ShaderOpenGLImage *ComponentRender::getShaderOGLImage() const {
-    return shaderOGLImage;
-}
-
 ShaderOpenGLLine3D *ComponentRender::getShaderOGLLine3D() const {
     return shaderOGLLine3D;
+}
+
+ShaderOpenGLImage *ComponentRender::getShaderOGLImage() const {
+    return shaderOGLImage;
 }
 
 ShaderOGLRenderForward *ComponentRender::getShaderOGLRenderForward() const {
@@ -432,10 +420,6 @@ ShaderOpenGLPoints *ComponentRender::getShaderOGLPoints() const {
     return shaderOGLPoints;
 }
 
-ShaderOpenGLDOF *ComponentRender::getShaderOGLDOF() const {
-    return shaderOGLDOF;
-}
-
 ShaderOpenGLOutline *ComponentRender::getShaderOGLOutline() const {
     return shaderOGLOutline;
 }
@@ -446,6 +430,10 @@ ShaderOpenGLColor *ComponentRender::getShaderOGLColor() const {
 
 ShaderOpenGLParticles *ComponentRender::getShaderOGLParticles() const {
     return shaderOGLParticles;
+}
+
+ShaderOpenGLDOF *ComponentRender::getShaderOGLDOF() const {
+    return shaderOGLDOF;
 }
 
 ShaderOpenGLFOG *ComponentRender::getShaderOGLFOG() const {
@@ -516,31 +504,31 @@ const std::map<std::string, ShaderCustomTypes> &ComponentRender::getShaderTypesM
     return ShaderTypesMapping;
 }
 
-void ComponentRender::resizeFramebuffers()
+void ComponentRender::resizeShadersFramebuffers()
 {
     Logging::Message("Resizing framebuffers...");
 
-    getShaderOGLRenderForward()->destroy();
-    getShaderOGLImage()->destroy();
-    getShaderOGLLine()->destroy();
-    getShaderOGLWireframe()->destroy();
-    getShaderOGLShading()->destroy();
-    getShaderOGLPoints()->destroy();
-    getShaderOGLOutline()->destroy();
-    getShaderOGLColor()->destroy();
-    getShaderOGLParticles()->destroy();
-    getShaderOGLDOF()->destroy();
-    getShaderOGLDepthMap()->destroy();
-    getShaderOGLFOG()->destroy();
-    getShaderOGLRenderDeferred()->destroy();
-    getShaderOGLLightPass()->destroy();
+    shaderOGLRender->destroy();
+    shaderOGLImage->destroy();
+    shaderOGLLine->destroy();
+    shaderOGLWireframe->destroy();
+    shaderOGLShading->destroy();
+    shaderOGLPoints->destroy();
+    shaderOGLOutline->destroy();
+    shaderOGLColor->destroy();
+    shaderOGLParticles->destroy();
+    shaderOGLDOF->destroy();
+    shaderOGLDepthMap->destroy();
+    shaderOGLFOG->destroy();
+    shaderOGLGBuffer->destroy();
+    shaderOGLLightPass->destroy();
 
-    createSpotLightsDepthTextures(static_cast<int>(getShaderOGLRenderForward()->getShadowMappingSpotLights().size()));
-    getShaderOGLShadowPass()->setupFBOSpotLights();
-    getShaderOGLShadowPass()->createDirectionalLightDepthTexture();
-    getShaderOGLShadowPass()->setupFBODirectionalLight();
+    if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
+        createSpotLightsDepthTextures(static_cast<int>(getShaderOGLRenderForward()->getShadowMappingSpotLights().size()));
+        getShaderOGLShadowPass()->resetFramebuffers();
+    }
 
-    for (auto s: sceneShaders) {
+    for (const auto s: sceneShaders) {
         s->destroy();
     }
 }
@@ -568,7 +556,7 @@ void ComponentRender::FillOGLBuffers(std::vector<meshData> &meshes)
     }
 }
 
-void ComponentRender::clearShadowMaps()
+void ComponentRender::clearShadowMaps() const
 {
     auto numLights = static_cast<int>(getShaderOGLRenderForward()->getShadowMappingSpotLights().size());
     if (numLights > 0) {
@@ -582,7 +570,8 @@ void ComponentRender::clearShadowMaps()
     }
 }
 
-GLuint ComponentRender::getSpotLightsShadowMapArrayTextures() const {
+GLuint ComponentRender::getSpotLightsShadowMapArrayTextures() const
+{
     return shadowMapArrayTex;
 }
 
@@ -590,14 +579,9 @@ void ComponentRender::createSpotLightsDepthTextures(int numLights)
 {
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    int w, h;
-    SDL_GetRendererOutputSize(window->getRenderer(), &w, &h);
-
     glGenTextures(1, &shadowMapArrayTex);
     glBindTexture(GL_TEXTURE_2D_ARRAY, shadowMapArrayTex);
-    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32, w, h, numLights,0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-
-    // Configuración
+    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32, window->getWidthRender(), window->getHeightRender(), numLights,0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -605,4 +589,64 @@ void ComponentRender::createSpotLightsDepthTextures(int numLights)
 
     float borderColor[] = {1.0, 1.0, 1.0, 1.0};
     glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, borderColor);
+}
+
+void ComponentRender::RenderLayersToGlobalFramebuffer()
+{
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    auto gBuffer = window->getGBuffer();
+    auto globalBuffer = window->getGlobalBuffers();
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
+
+        shaderOGLLightPass->fillSpotLightsMatricesUBO();
+
+        shaderOGLLightPass->render(
+            gBuffer.getPositions(),
+            gBuffer.getNormal(),
+            gBuffer.getAlbedo(),
+            shaderOGLRender->getDirectionalLight(),
+            shaderShadowPass->getDirectionalLightDepthTexture(),
+            shaderOGLRender->getNumPointLights(),
+            shaderOGLRender->getNumSpotLights(),
+            getSpotLightsShadowMapArrayTextures(),
+            static_cast<int>(shaderOGLRender->getShadowMappingSpotLights().size()),
+            globalBuffer.sceneFramebuffer
+        );
+    }
+
+    int widthWindow= window->getWidth();
+    int heightWindow= window->getHeight();
+
+    shaderOGLImage->renderTexture(globalBuffer.backgroundTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFramebuffer);
+    shaderOGLImage->renderTexture(globalBuffer.sceneTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFramebuffer);
+    shaderOGLImage->renderTexture(globalBuffer.postProcessingTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFramebuffer);
+
+    if (EngineSetup::get()->ENABLE_FOG) {
+        shaderOGLFOG->render(globalBuffer.globalTexture, globalBuffer.depthTexture);
+        shaderOGLImage->renderTexture(shaderOGLFOG->getTextureResult(), 0, 0, widthWindow, heightWindow, 1, false, globalBuffer.globalFramebuffer);
+    }
+
+    if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
+        shaderOGLDOF->render(globalBuffer.globalTexture, globalBuffer.depthTexture);
+        shaderOGLImage->renderTexture(shaderOGLDOF->getTextureResult(), 0, 0, widthWindow, heightWindow, 1, false, globalBuffer.globalFramebuffer);
+    }
+
+    if (EngineSetup::get()->SHOW_DEPTH_OF_FIELD) {
+        if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
+            shaderOGLDepthMap->render(gBuffer.getDepth(), globalBuffer.globalFramebuffer);
+        } else {
+            shaderOGLDepthMap->render(globalBuffer.depthTexture, globalBuffer.globalFramebuffer);
+        }
+    }
+
+    if (EngineSetup::get()->TRIANGLE_MODE_PICKING_COLORS) {
+        shaderOGLImage->renderTexture(
+            window->getPickingColorFramebuffer().getRGBTexture(), 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFramebuffer
+        );
+    }
 }

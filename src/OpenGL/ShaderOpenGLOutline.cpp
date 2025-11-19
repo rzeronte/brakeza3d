@@ -19,8 +19,9 @@ ShaderOpenGLOutline::ShaderOpenGLOutline()
     borderThicknessUniform = glGetUniformLocation(programID, "borderThickness");
 }
 
-void ShaderOpenGLOutline::render(GLint textureID, Color c, float borderThickness)
+void ShaderOpenGLOutline::renderOutline(GLint textureID, const Color &c, float borderThickness, GLuint framebuffer)
 {
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
@@ -39,75 +40,61 @@ void ShaderOpenGLOutline::destroy()
     resetQuadMatrix();
 }
 
-void ShaderOpenGLOutline::drawOutline(Mesh3D *m, Color c, float borderThickness)
+void ShaderOpenGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThickness, GLuint framebuffer)
 {
-    auto componentRender = ComponentsManager::get()->getComponentRender();
-    auto componentWindow = ComponentsManager::get()->getComponentWindow();
-    auto shaderColor = componentRender->getShaderOGLColor();
+    auto shaderColor = ComponentsManager::get()->getComponentRender()->getShaderOGLColor();
 
     for (const auto& mm : m->meshes) {
-        shaderColor->render(
+        shaderColor->renderColor(
             m->getModelMatrix(),
             mm.vertexbuffer,
             mm.uvbuffer,
             mm.normalbuffer,
-            (int) mm.vertices.size(),
+            static_cast<int>(mm.vertices.size()),
+            Color::white(),
             true,
-            Color::white()
+            shaderColor->getFramebuffer()
         );
     }
 
-    componentRender->changeOpenGLFramebuffer(componentWindow->getSceneFramebuffer());
-
-    render(shaderColor->getTextureColorBuffer(), c, borderThickness);
-
-    componentRender->changeOpenGLFramebuffer(0);
+    renderOutline(shaderColor->getTextureColorBuffer(), c, borderThickness, framebuffer);
 }
 
-void ShaderOpenGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderThickness)
+void ShaderOpenGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderThickness, GLuint framebuffer)
 {
     auto componentRender = ComponentsManager::get()->getComponentRender();
-    auto componentWindow = ComponentsManager::get()->getComponentWindow();
     auto shaderColor = componentRender->getShaderOGLColor();
 
     for (const auto& mm : m->meshes) {
-        shaderColor->render(
+        shaderColor->renderColor(
             m->getModelMatrix(),
             mm.feedbackBuffer,
             mm.uvbuffer,
             mm.normalbuffer,
-            (int) mm.vertices.size(),
+            static_cast<int>(mm.vertices.size()),
+            Color::white(),
             true,
-            Color::white()
+            shaderColor->getFramebuffer()
         );
     }
 
-    componentRender->changeOpenGLFramebuffer(componentWindow->getSceneFramebuffer());
-
-    render(shaderColor->getTextureColorBuffer(), c, borderThickness);
-
-    componentRender->changeOpenGLFramebuffer(0);
+    renderOutline(shaderColor->getTextureColorBuffer(), c, borderThickness, framebuffer);
 }
 
-void ShaderOpenGLOutline::drawOutlineImage3D(Image3D *i, Color c, float borderThickness)
+void ShaderOpenGLOutline::drawOutlineImage3D(Image3D *i, const Color &c, float borderThickness, GLuint framebuffer)
 {
-    auto componentRender = ComponentsManager::get()->getComponentRender();
-    auto componentWindow = ComponentsManager::get()->getComponentWindow();
-    auto shaderColor = componentRender->getShaderOGLColor();
+    auto shaderColor = ComponentsManager::get()->getComponentRender()->getShaderOGLColor();
 
-    shaderColor->render(
+    shaderColor->renderColor(
         i->getModelMatrix(),
         i->vertexbuffer,
         i->uvbuffer,
         i->normalbuffer,
-        (int) i->vertices.size(),
+        static_cast<int>(i->vertices.size()),
+        Color::white(),
         true,
-        Color::white()
+        shaderColor->getFramebuffer()
     );
 
-    componentRender->changeOpenGLFramebuffer(componentWindow->getSceneFramebuffer());
-
-    render(shaderColor->getTextureColorBuffer(), c, borderThickness);
-
-    componentRender->changeOpenGLFramebuffer(0);
+    renderOutline(shaderColor->getTextureColorBuffer(), c, borderThickness, framebuffer);
 }

@@ -90,7 +90,7 @@ struct GUIWidgetObjects3D {
                 //auto projectile = dynamic_cast<Projectile3DBody*> (o);
                 //if (projectile != nullptr) continue;
 
-                ImGui::Checkbox(std::string("##"+ std::to_string(i)).c_str(), &o->enabled);
+                ImGui::Checkbox(std::string("##"+ std::to_string(o->getId())).c_str(), &o->enabled);
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 5.0f, ImGui::GetCursorPosY() + 3.0f));
                 ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, o->getTypeIcon()), ImVec2(16, 16));

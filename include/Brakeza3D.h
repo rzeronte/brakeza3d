@@ -27,6 +27,8 @@ public:
 
     virtual ~Brakeza3D();
 
+    int getNextObjectID() const;
+
     static Brakeza3D *get();
 
     static Brakeza3D *instance;
@@ -39,7 +41,7 @@ public:
 
     Timer *getTimer();
 
-    void updateTimer();
+    void UpdateTimer();
 
     [[nodiscard]] float getDeltaTime() const;
 
@@ -47,7 +49,7 @@ public:
 
     void onStartComponents();
 
-    void preUpdateComponents();
+    void PreUpdateComponents();
 
     void onUpdateComponents();
 
@@ -61,7 +63,7 @@ public:
 
     [[nodiscard]] ComponentsManager *getComponentsManager() const;
 
-    void controlFrameRate() const;
+    void ControlFrameRate() const;
 
     float &getExecutionTime();
 
@@ -72,6 +74,8 @@ public:
     static void welcomeMessage();
 
     [[nodiscard]] Object3D *getSceneObjectByLabel(const std::string &label) const;
+
+    Object3D *getSceneObjectById(int id) const;
 
     static void checkForResizeOpenGLWindow(const SDL_Event &e);
 

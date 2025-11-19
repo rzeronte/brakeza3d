@@ -97,11 +97,11 @@ void Brakeza3D::mainLoop(bool autostart, const std::string& project)
     window->resetFramebuffer();
 
     while (!finish) {
-        controlFrameRate();
-        updateTimer();
-        preUpdateComponents();
+        ControlFrameRate();
+        UpdateTimer();
+        PreUpdateComponents();
 
-        render->runShadersOpenGLPreUpdate();
+        render->RunShadersOpenGLPreUpdate();
 
         while (SDL_PollEvent(&e)) {
             checkForResizeOpenGLWindow(e);
@@ -110,11 +110,10 @@ void Brakeza3D::mainLoop(bool autostart, const std::string& project)
         }
 
         onUpdateComponents();
-        window->RenderLayersToGlobalFramebuffer();
-        render->runShadersOpenGLPostUpdate();
-        postUpdateComponents();
 
-        if (EngineSetup::get()->ENABLE_IMGUI) window->ImGuiOnUpdate();
+        render->RenderLayersToGlobalFramebuffer();
+        render->RunShadersOpenGLPostUpdate();
+        postUpdateComponents();
 
         window->RenderLayersToMain();
     }
@@ -127,13 +126,13 @@ void Brakeza3D::checkForResizeOpenGLWindow(const SDL_Event &e)
 {
     if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
         auto window = ComponentsManager::get()->getComponentWindow();
-        SDL_GetWindowSize(window->getWindow(), &window->width, &window->height);
-        glViewport(0,0,(GLsizei)window->width,(GLsizei)window->height);
-        ComponentsManager::get()->getComponentWindow()->resetFramebuffer();
+        window->updateWindowSize();
+        glViewport(0,0, window->widthWindow, window->heightWindow);
+        window->resetFramebuffer();
     }
 }
 
-void Brakeza3D::controlFrameRate() const
+void Brakeza3D::ControlFrameRate() const
 {
     if (!EngineSetup::get()->LIMIT_FRAMERATE) return;
 
@@ -161,7 +160,7 @@ Timer *Brakeza3D::getTimer()
     return &this->engineTimer;
 }
 
-void Brakeza3D::updateTimer()
+void Brakeza3D::UpdateTimer()
 {
     current_ticks = static_cast<float>(engineTimer.getTicks());
     deltaTime = current_ticks - last_ticks;
@@ -186,7 +185,7 @@ void Brakeza3D::onStartComponents()
     }
 }
 
-void Brakeza3D::preUpdateComponents()
+void Brakeza3D::PreUpdateComponents()
 {
     for (Component*& component : componentsManager->components) {
         component->preUpdate();
@@ -234,14 +233,21 @@ ComponentsManager *Brakeza3D::getComponentsManager() const
     return componentsManager;
 }
 
-
 Brakeza3D::~Brakeza3D()
 {
     ImGui::DestroyContext();
 
-    for (auto o : sceneObjects) {
+    for (const auto o : sceneObjects) {
         delete o;
     }
+}
+
+int Brakeza3D::getNextObjectID() const
+{
+    const int id = (static_cast<int>(sceneObjects.size()) + 1) * 10;
+    Logging::Message("Next Object ID: %d", id);
+
+    return id;
 }
 
 float &Brakeza3D::getExecutionTime()
@@ -254,14 +260,27 @@ std::string Brakeza3D::uniqueObjectLabel(const char *prefix)
     return prefix + std::string("_") + std::to_string(Tools::random(0, 100));
 }
 
-GUIManager *Brakeza3D::getManagerGui() const {
+GUIManager *Brakeza3D::getManagerGui() const
+{
     return managerGUI;
 }
 
-Object3D *Brakeza3D::getSceneObjectByLabel(const std::string &label) const {
-    for (unsigned int i = 0; i < this->sceneObjects.size(); i++) {
-        if (sceneObjects[i]->getLabel() == label) {
-            return sceneObjects[i];
+Object3D *Brakeza3D::getSceneObjectByLabel(const std::string &label) const
+{
+    for (const auto sceneObject : sceneObjects) {
+        if (sceneObject->getLabel() == label) {
+            return sceneObject;
+        }
+    }
+
+    return nullptr;
+}
+
+Object3D *Brakeza3D::getSceneObjectById(int id) const
+{
+    for (const auto sceneObject : sceneObjects) {
+        if (sceneObject->getId() == id) {
+            return sceneObject;
         }
     }
 

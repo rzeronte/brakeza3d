@@ -1,14 +1,12 @@
+#ifndef SDL2_3D_ENGINE_OBJECT3D_H
+#define SDL2_3D_ENGINE_OBJECT3D_H
 
 //#define SOL_ALL_SAFETIES_ON 1
-
 #define SOL_SAFE_USERTYPE 1
 #define SOL_SAFE_REFERENCES  0
 #define SOL_SAFE_NUMERICS 1
 #define SOL_SAFE_GETTER 0
 #define SOL_SAFE_FUNCTION_CALLS 0
-
-#ifndef SDL2_3D_ENGINE_OBJECT3D_H
-#define SDL2_3D_ENGINE_OBJECT3D_H
 
 #include <string>
 #include <vector>
@@ -17,7 +15,6 @@
 #include "Vector3D.h"
 #include "../../include/Render/M3.h"
 #include "../Behaviors/Object3DBehavior.h"
-#include "Point2D.h"
 #include "../Misc/cJSON.h"
 #include "ScriptLUA.h"
 #include "../../sol/sol.hpp"
@@ -32,11 +29,13 @@ struct ObjectGUIFeatures {
     bool shaders = true;
     bool attached = true;
     bool collider = true;
+    bool misc = true;
 };
 
 class Object3D: public Collider {
 
 protected:
+    int id;
     Vertex3D drawOffset;
 
     Object3DBehavior *motion;
@@ -59,6 +58,8 @@ protected:
 
     Timer timer;
     float distanceToCamera;
+
+    Color pickingColor;
 public:
     Vertex3D position;
     bool enableLights;
@@ -110,7 +111,7 @@ public:
 
     void setAlpha(float alpha);
 
-    void setAlphaEnabled(bool alphaEnabled);
+    void setAlphaEnabled(bool value);
 
     void setBehavior(Object3DBehavior *motion);
 
@@ -136,7 +137,7 @@ public:
 
     [[nodiscard]] bool isEnableLights() const;
 
-    void setEnableLights(bool enableLights);
+    void setEnableLights(bool value);
 
     virtual cJSON *getJSON();
 
@@ -204,6 +205,10 @@ public:
     M3 rotation;
 
     virtual void checkClickObject(Vector3D ray, Object3D*& foundObject, float &lastDepthFound);
+
+    [[nodiscard]] Color getPickingColor() const;
+
+    int getId() const;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

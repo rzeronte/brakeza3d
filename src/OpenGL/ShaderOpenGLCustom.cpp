@@ -546,7 +546,7 @@ void ShaderOpenGLCustom::postUpdate()
     auto render = ComponentsManager::get()->getComponentRender();
     auto window = ComponentsManager::get()->getComponentWindow();
     auto shaderOGLImage = render->getShaderOGLImage();
-    shaderOGLImage->renderTexture(textureResult, 0, 0, window->width, window->height, 1, true, window->getGlobalFramebuffer());
+    shaderOGLImage->renderTexture(textureResult, 0, 0, window->widthWindow, window->heightWindow, 1, true, window->getGlobalFramebuffer());
 }
 
 const std::string &ShaderOpenGLCustom::getLabel() const {

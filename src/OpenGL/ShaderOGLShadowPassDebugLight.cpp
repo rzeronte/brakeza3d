@@ -149,10 +149,8 @@ void ShaderOGLShadowPassDebugLight::clearInternalTextures()
         return;
     }
 
-    // Eliminar las texturas de OpenGL
-    glDeleteTextures(internalTextures.size(), internalTextures.data());
+    glDeleteTextures(static_cast<int>(internalTextures.size()), internalTextures.data());
 
-    // Limpiar el vector
     internalTextures.clear();
 }
 
@@ -160,7 +158,9 @@ GLuint ShaderOGLShadowPassDebugLight::extractLayerFromArray(GLuint arrayTexture,
 {
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    int width, height;
+    int width = window->getWidthRender();
+    int height = window->getHeightRender();
+
     SDL_GetRendererOutputSize(window->getRenderer(), &width, &height);
 
     // Crear textura 2D destino

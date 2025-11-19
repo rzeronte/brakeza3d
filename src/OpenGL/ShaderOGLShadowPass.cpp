@@ -24,11 +24,7 @@ ShaderOGLShadowPass::ShaderOGLShadowPass()
     matrixViewUniform = glGetUniformLocation(programID, "lightSpaceMatrix");
     matrixModelUniform = glGetUniformLocation(programID, "model");
 
-    setupFBOSpotLights();
-    // Primero creamos la textura de profundidad de la luz direccional
-    // y luego configuramos su FBO para adjuntarla correctamente.
-    createDirectionalLightDepthTexture();
-    setupFBODirectionalLight();
+    resetFramebuffers();
 }
 
 void ShaderOGLShadowPass::renderMeshIntoArrayTextures(
@@ -177,11 +173,13 @@ void ShaderOGLShadowPass::renderIntoArrayDepthTextures(
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
 }
 
-GLuint ShaderOGLShadowPass::getSpotLightsDepthMapsFBO() const {
+GLuint ShaderOGLShadowPass::getSpotLightsDepthMapsFBO() const
+{
     return spotLightsDepthMapsFBO;
 }
 
-GLuint ShaderOGLShadowPass::getDirectionalLightDepthMapFBO() const {
+GLuint ShaderOGLShadowPass::getDirectionalLightDepthMapFBO() const
+{
     return directionalLightDepthMapFBO;
 }
 
@@ -202,6 +200,7 @@ void ShaderOGLShadowPass::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer,
 
 void ShaderOGLShadowPass::destroy()
 {
+    resetFramebuffers();
 }
 
 void ShaderOGLShadowPass::setupFBOSpotLights()
@@ -249,46 +248,42 @@ GLuint ShaderOGLShadowPass::getDirectionalLightDepthTexture() const {
 
 void ShaderOGLShadowPass::createDirectionalLightDepthTexture()
 {
-    // Si ya existe, elimínala primero
     if (directionalLightDepthTexture != 0) {
         glDeleteTextures(1, &directionalLightDepthTexture);
     }
 
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    int width, height;
-    SDL_GetRendererOutputSize(window->getRenderer(), &width, &height);
+    int width = window->getWidthRender();
+    int height = window->getHeightRender();
 
     glGenTextures(1, &directionalLightDepthTexture);
     glBindTexture(GL_TEXTURE_2D, directionalLightDepthTexture);
 
-    // Crear la textura de profundidad
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, width, height, 0,
-                 GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-
-    // Parámetros de filtrado
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, width, height, 0,GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    // Parámetros de wrapping (importante para evitar artefactos en los bordes)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
-    // Color del borde (blanco = profundidad máxima, para que fuera del shadow map no haya sombra)
     float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    // Opcional: si vas a usar shadow sampling (PCF hardware)
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void ShaderOGLShadowPass::clearDirectionalLightDepthTexture() const {
+void ShaderOGLShadowPass::clearDirectionalLightDepthTexture() const
+{
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(directionalLightDepthMapFBO);
 
     glBindFramebuffer(GL_FRAMEBUFFER, directionalLightDepthMapFBO);
     glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+void ShaderOGLShadowPass::resetFramebuffers()
+{
+    setupFBOSpotLights();
+    createDirectionalLightDepthTexture();
+    setupFBODirectionalLight();
 }

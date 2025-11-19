@@ -65,7 +65,8 @@ void ShaderOpenGLDOF::render(GLuint sceneTexture, GLuint depthTexture)
     drawQuad();
 }
 
-GLuint ShaderOpenGLDOF::getTextureResult() const {
+GLuint ShaderOpenGLDOF::getTextureResult() const
+{
     return textureResult;
 }
 

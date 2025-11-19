@@ -37,8 +37,12 @@ void FXOutliner::update()
     if (mesh == nullptr) {
         return;
     }
-
-    ComponentsManager::get()->getComponentRender()->getShaderOGLOutline()->drawOutline(mesh, color, size);
+    ComponentsManager::get()->getComponentRender()->getShaderOGLOutline()->drawOutline(
+        mesh,
+        color,
+        size,
+        ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+    );
 }
 
 void FXOutliner::setColor(Color c) {
