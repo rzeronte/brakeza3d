@@ -6,6 +6,8 @@
 #include "ImGuizmo.h"
 #include <glm/gtc/type_ptr.hpp>
 
+#include "imgui_internal.h"
+
 void Drawable::drawVertex(Vertex3D V, Color color)
 {
     Point2D P1 = Transforms::WorldToPoint(V);
@@ -88,7 +90,7 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
 
     segmentList.emplace_back(A, B);
 
-    for (int i = 0; i < (int) generations; i++) {
+    for (int i = 0; i < static_cast<int>(generations); i++) {
         tmpList = segmentList;
         int j = 0;
         for (auto ir = tmpList.begin(); ir != tmpList.end(); ++j) {

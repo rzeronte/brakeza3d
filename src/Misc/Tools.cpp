@@ -384,48 +384,28 @@ bool Tools::saveTextureToFile(GLuint textureID, int width, int height, const cha
 std::vector<std::string> Tools::getFolderFiles(const std::string& path, const std::string& extension)
 {
     std::vector<std::string> result;
-    DIR *dir;
-    struct dirent *ent;
-    if ((dir = opendir (path.c_str())) != nullptr) {
-        while ((ent = readdir (dir)) != nullptr) {
-            auto fileName = ent->d_name;
 
-            if (Tools::getExtensionFromFilename(ent->d_name) != extension) continue;
-            if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
+    for (auto& entry : std::filesystem::directory_iterator(path)) {
+        if (!entry.is_regular_file()) continue;
 
-            result.emplace_back(ent->d_name);
+        if (entry.path().extension() == extension) {
+            result.push_back(entry.path().filename().string());
         }
-        std::sort( result.begin(), result.end() );
-        closedir (dir);
     }
 
+    std::sort(result.begin(), result.end());
     return result;
 }
 
 std::vector<std::string> Tools::getFolderFolders(const std::string& path)
 {
     std::vector<std::string> result;
-    DIR *dir;
-    struct dirent *ent;
-    if ((dir = opendir (path.c_str())) != nullptr) {
-        while ((ent = readdir (dir)) != nullptr) {
-            auto fileName = ent->d_name;
-
-            if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
-            std::string fullPath = path + "/" + fileName;
-
-            struct stat fileStat;
-            if (stat(fullPath.c_str(), &fileStat) == 0) {
-                if (S_ISDIR(fileStat.st_mode)) {
-                    result.emplace_back(fileName);
-                }
-            }
+    for (auto& entry : std::filesystem::directory_iterator(path)) {
+        if (entry.is_directory()) {
+            result.push_back(entry.path().filename().string());
         }
-        std::sort( result.begin(), result.end() );
-
-        closedir (dir);
     }
-
+    std::sort(result.begin(), result.end());
     return result;
 }
 

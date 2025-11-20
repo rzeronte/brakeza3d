@@ -6,14 +6,12 @@
 #define BRAKEZA3D_GUIWIDGETMENU_H
 
 #include <SDL_mixer.h>
-#include <dirent.h>
 #include <sys/stat.h>
 #include "imgui.h"
 #include "../EngineSetup.h"
 #include "../Render/Logging.h"
 #include "../Misc/SceneLoader.h"
 #include "../ComponentsManager.h"
-#include "imgui_internal.h"
 #include "../Misc/TexturePackage.h"
 #include "../Render/Maths.h"
 
@@ -30,20 +28,16 @@ struct GUIWidgetMenu
     void draw(bool &finish, bool &show_about_window, bool &showLightDepthMapsWindow)
     {
         auto setup = EngineSetup::get();
-        
-        const float range_sensibility = 0.75f;
+
         const float range_max_sensibility = 9999;
         const float range_min_sensibility = -9999;
 
-        const float range_sensibility_volume = 1;
         const float range_min_volume = 1;
         const float range_max_volume = 128;
 
-        const float range_far_plane_distance_sensibility = 1.0f;
         const float range_far_plane_min = 0;
         const float range_max_plane_max = 1000000;
 
-        const int range_framerate_sensibility = 1;
         const int range_min_framerate_distance = 0;
         const int range_max_framerate_distance = 500;
 
@@ -207,6 +201,7 @@ struct GUIWidgetMenu
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Render")) {
+                const float range_far_plane_distance_sensibility = 1.0f;
                 ImGui::Checkbox("v-Sync", &setup->V_SYNC);
                 if (ImGui::IsItemEdited()) {
                     if (setup->V_SYNC) {
@@ -222,6 +217,7 @@ struct GUIWidgetMenu
                 ImGui::Separator();
                 ImGui::Checkbox("Limit frame rate", &setup->LIMIT_FRAMERATE);
                 if (setup->LIMIT_FRAMERATE) {
+                    const int range_framerate_sensibility = 1;
                     ImGui::DragScalar("Limit frames to:", ImGuiDataType_S32, &setup->FRAMERATE, range_framerate_sensibility, &range_min_framerate_distance,&range_max_framerate_distance, "%d", 1.0f);
 
                 }
@@ -280,6 +276,7 @@ struct GUIWidgetMenu
                     ComponentsManager::get()->getComponentCollisions()->setEnableDebugMode(setup->BULLET_DEBUG_MODE);
                 }
                 if (setup->ENABLE_BULLET_STEP_SIMULATION) {
+                    const float range_sensibility = 0.75f;
                     ImGui::Separator();
                     ImGui::Checkbox("Handle object collisions", &setup->BULLET_CHECK_ALL_PAIRS);
                     ImGui::Separator();
@@ -313,6 +310,7 @@ struct GUIWidgetMenu
             }
 
             if (ImGui::BeginMenu("Sound")) {
+                const float range_sensibility_volume = 1;
                 ImGui::Checkbox("Global enable", &setup->ENABLE_SOUND);
                 if (ImGui::IsItemDeactivatedAfterEdit()) {
                     if (!setup->ENABLE_SOUND) {
@@ -608,18 +606,17 @@ struct GUIWidgetMenu
         const float focalMaxValues = 1;
         const float focalValueSens = 0.001;
 
-        const float depthMinValues = 0;
-        const float depthMaxValues = 100;
-        const float depthValueSens = 0.1;
-
-        const int minBlurRadius = 0;
-        const int maxBlurRadius = 10;
-
         ImGui::Checkbox("Enable DOF", &EngineSetup::get()->ENABLE_DOF_BLUR);
 
         if (EngineSetup::get()->ENABLE_DOF_BLUR) {
+            const float depthValueSens = 0.1;
+            const float depthMinValues = 0;
+            const float depthMaxValues = 100;
             ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
             ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+
+            const int minBlurRadius = 0;
+            const int maxBlurRadius = 10;
             ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
             ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
             ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
@@ -631,21 +628,19 @@ struct GUIWidgetMenu
 
         if (EngineSetup::get()->ENABLE_FOG) {
             const float rangeFogSens = 0.1;
-            const float rangeFogMin = 0;
-            const float rangeFogMax = 0;
+            const float rangeFogMin = 0.1;
+            const float rangeFogMax = 1000;
 
             ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
             ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
             ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->intensity, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
 
             if (ImGui::TreeNode("FOG Color")) {
-                const float fogColorSend = 0.01;
-                const float fogColorMin = 0;
-                const float fogColorMax = 1;
-
-                ImGui::DragScalar("x", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor.r, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
-                ImGui::DragScalar("y", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor.g, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
-                ImGui::DragScalar("z", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor.b, fogColorSend,&fogColorMin, &fogColorMax, "%f", 1.0f);
+                auto p = ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor;
+                ImVec4 fogVecColor = {p.r, p.b, p.b, 1};
+                if (ImGui::ColorEdit4("Ambient##", reinterpret_cast<float *>(&fogVecColor), ImGuiColorEditFlags_NoOptions)) {
+                    ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor = {fogVecColor.x, fogVecColor.y, fogVecColor.z};
+                }
                 ImGui::TreePop();
             }
         }
@@ -671,12 +666,12 @@ struct GUIWidgetMenu
         float pitch = oldPitch;
         float yaw = oldYaw;
         float roll = oldRoll;
-        const float factor = 0.0025f;
 
         vec3f[0] = pitch;
         vec3f[1] = yaw;
         vec3f[2] = roll;
         if (ImGui::DragFloat3("Rotation", vec3f, 0.01f, -999999.0f, 999999.0f)) {
+            const float factor = 0.0025f;
             pitch = vec3f[0];
             yaw = vec3f[1];
             roll = vec3f[2];

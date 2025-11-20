@@ -9,16 +9,16 @@
 
 ShaderOpenGLFOG::ShaderOpenGLFOG()
 :
-    resultFramebuffer(0),
-    textureResult(0),
-    fogMinDist(0.1f),
-    fogMaxDist(250.0f),
-    intensity(1.0f),
     ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "FOG.vs",
         EngineSetup::get()->SHADERS_FOLDER + "FOG.fs",
         false
-    )
+    ),
+    resultFramebuffer(0),
+    textureResult(0),
+    fogMaxDist(50.0f),
+    fogMinDist(0.1f),
+    intensity(1.0f)
 {
     createFramebuffer();
 
