@@ -242,10 +242,6 @@ struct GUIWidgetMenu
 
                 ImGui::Separator();
 
-                ImGui::Checkbox("Forward rendering", &setup->ENABLE_FORWARD_RENDER);
-
-                ImGui::Separator();
-
                 ImGui::DragScalar("FOV", ImGuiDataType_Float, &setup->HORIZONTAL_FOV, 1, &range_min_fov,&range_max_fov, "%f", 1.0f);
                 ImGui::Separator();
                 ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
@@ -253,10 +249,10 @@ struct GUIWidgetMenu
                 ImGui::Checkbox("Depth Map", &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
                 if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
                     auto s = ComponentsManager::get()->getComponentRender()->getShaderOGLDepthMap();
-                    ImGui::DragFloat("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 1.0f);
+                    ImGui::DragFloat("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 10.0f);
                     ImGui::DragFloat("Far Plane", &s->farPlane, 0.01f, 0.0f, 100.0f);
                     ImGui::DragFloat("Near Plane", &s->nearPlane, 0.01f, 0.0f, 100.0f);
-                ImGui::Separator();
+                    ImGui::Separator();
                 }
                 ImGui::Checkbox("Vertex", &setup->TRIANGLE_MODE_PIXELS);
                 ImGui::Checkbox("WireFrame", &setup->TRIANGLE_MODE_WIREFRAME);

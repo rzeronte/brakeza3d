@@ -5,6 +5,7 @@
 #include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include "../../include/Render/Transforms.h"
+#include "../../include/Render/Drawable.h"
 
 ComponentRender::ComponentRender()
     :
@@ -24,7 +25,7 @@ ComponentRender::ComponentRender()
     shaderOGLOutline(nullptr),
     shaderOGLColor(nullptr),
     shaderOGLParticles(nullptr),
-    shaderOGLDOF(nullptr),
+    shaderOGLDOFBlur(nullptr),
     shaderOGLDepthMap(nullptr),
     shaderOGLFOG(nullptr),
     shaderOGLTint(nullptr),
@@ -67,7 +68,7 @@ void ComponentRender::onStart()
     shaderOGLOutline = new ShaderOpenGLOutline();
     shaderOGLColor = new ShaderOpenGLColor();
     shaderOGLParticles = new ShaderOpenGLParticles();
-    shaderOGLDOF = new ShaderOpenGLDOF();
+    shaderOGLDOFBlur = new ShaderOpenGLDOF();
     shaderOGLDepthMap = new ShaderOpenGLDepthMap();
     shaderOGLFOG = new ShaderOpenGLFOG();
     shaderOGLTint = new ShaderOpenGLTint();
@@ -217,7 +218,7 @@ void ComponentRender::deleteRemovedObjects()
     sceneObjects.erase(
         std::remove_if(
             sceneObjects.begin(),
-            sceneObjects.end(), [](Object3D* object) {
+            sceneObjects.end(), [](const Object3D* object) {
                 if (object->isRemoved()) {
                     delete object;
                     return true;
@@ -228,7 +229,6 @@ void ComponentRender::deleteRemovedObjects()
         sceneObjects.end()
     );
 }
-
 
 SceneLoader &ComponentRender::getSceneLoader()
 {
@@ -307,15 +307,16 @@ void ComponentRender::setSceneShadersEnabled(bool value)
     sceneShadersEnabled = value;
 }
 
-void ComponentRender::RunShadersOpenGLPostUpdate()
+void ComponentRender::RunShadersOpenGLPostUpdate() const
 {
-    for( auto s: sceneShaders) {
+    for (auto s: sceneShaders) {
         if (!s->isEnabled()) continue;
         s->postUpdate();
     }
 }
 
 void ComponentRender::removeSceneShaderByIndex(int index) {
+
     if (index >= 0 && index < sceneShaders.size()) {
         sceneShaders.erase(sceneShaders.begin() + index);
     }
@@ -334,7 +335,7 @@ void ComponentRender::removeSceneShader(const ShaderOpenGLCustom *shader)
     }
 }
 
-void ComponentRender::RunShadersOpenGLPreUpdate()
+void ComponentRender::RunShadersOpenGLPreUpdate() const
 {
     for( auto s: sceneShaders) {
         if (!s->isEnabled()) continue;
@@ -342,11 +343,12 @@ void ComponentRender::RunShadersOpenGLPreUpdate()
     }
 }
 
-ShaderOpenGLCustom *ComponentRender::getSceneShaderByIndex(int i) {
+ShaderOpenGLCustom *ComponentRender::getSceneShaderByIndex(int i) const
+{
     return sceneShaders[i];
 }
 
-ShaderOpenGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name)
+ShaderOpenGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name) const
 {
     for (auto &s: sceneShaders) {
         if (s->getLabel() == name) {
@@ -384,7 +386,7 @@ void ComponentRender::setGlobalIlluminationSpecular(const Vertex3D &v) const
 
 void ComponentRender::drawLine(const Vertex3D &from, const Vertex3D &to, const Color &c) const
 {
-    getShaderOGLLine3D()->render(
+    shaderOGLLine3D->render(
         from,
         to,
         ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer(),
@@ -392,95 +394,119 @@ void ComponentRender::drawLine(const Vertex3D &from, const Vertex3D &to, const C
     );
 }
 
-ShaderOpenGLLine3D *ComponentRender::getShaderOGLLine3D() const {
+ShaderOpenGLLine3D *ComponentRender::getShaderOGLLine3D() const
+{
     return shaderOGLLine3D;
 }
 
-ShaderOpenGLImage *ComponentRender::getShaderOGLImage() const {
+ShaderOpenGLImage *ComponentRender::getShaderOGLImage() const
+{
     return shaderOGLImage;
 }
 
-ShaderOGLRenderForward *ComponentRender::getShaderOGLRenderForward() const {
+ShaderOGLRenderForward *ComponentRender::getShaderOGLRenderForward() const
+{
     return shaderOGLRender;
 }
 
-ShaderOpenGLLine *ComponentRender::getShaderOGLLine() const {
+ShaderOpenGLLine *ComponentRender::getShaderOGLLine() const
+{
     return shaderOGLLine;
 }
 
-ShaderOpenGLWireframe *ComponentRender::getShaderOGLWireframe() const {
+ShaderOpenGLWireframe *ComponentRender::getShaderOGLWireframe() const
+{
     return shaderOGLWireframe;
 }
 
-ShaderOpenGLShading *ComponentRender::getShaderOGLShading() const {
+ShaderOpenGLShading *ComponentRender::getShaderOGLShading() const
+{
     return shaderOGLShading;
 }
 
-ShaderOpenGLPoints *ComponentRender::getShaderOGLPoints() const {
+ShaderOpenGLPoints *ComponentRender::getShaderOGLPoints() const
+{
     return shaderOGLPoints;
 }
 
-ShaderOpenGLOutline *ComponentRender::getShaderOGLOutline() const {
+ShaderOpenGLOutline *ComponentRender::getShaderOGLOutline() const
+{
     return shaderOGLOutline;
 }
 
-ShaderOpenGLColor *ComponentRender::getShaderOGLColor() const {
+ShaderOpenGLColor *ComponentRender::getShaderOGLColor() const
+{
     return shaderOGLColor;
 }
 
-ShaderOpenGLParticles *ComponentRender::getShaderOGLParticles() const {
+ShaderOpenGLParticles *ComponentRender::getShaderOGLParticles() const
+{
     return shaderOGLParticles;
 }
 
-ShaderOpenGLDOF *ComponentRender::getShaderOGLDOF() const {
-    return shaderOGLDOF;
+ShaderOpenGLDOF *ComponentRender::getShaderOGLDOF() const
+{
+    return shaderOGLDOFBlur;
 }
 
-ShaderOpenGLFOG *ComponentRender::getShaderOGLFOG() const {
+ShaderOpenGLFOG *ComponentRender::getShaderOGLFOG() const
+{
     return shaderOGLFOG;
 }
 
-ShaderOpenGLTint *ComponentRender::getShaderOGLTint() const {
+ShaderOpenGLTint *ComponentRender::getShaderOGLTint() const
+{
     return shaderOGLTint;
 }
 
-ShaderOpenGLBonesTransforms *ComponentRender::getShaderOGLBonesTransforms() const {
+ShaderOpenGLBonesTransforms *ComponentRender::getShaderOGLBonesTransforms() const
+{
     return shaderOGLBonesTransforms;
 }
 
-ShaderOGLShadowPass *ComponentRender::getShaderOGLShadowPass() const {
+ShaderOGLShadowPass *ComponentRender::getShaderOGLShadowPass() const
+{
     return shaderShadowPass;
 }
+
 ShaderOGLShadowPassDebugLight *ComponentRender::getShaderOGLShadowPassDebugLight() const {
+
     return shaderShadowPassDebugLight;
 }
 
-ShaderOpenGLDepthMap *ComponentRender::getShaderOGLDepthMap() const {
+ShaderOpenGLDepthMap *ComponentRender::getShaderOGLDepthMap() const
+{
     return shaderOGLDepthMap;
 }
 
-ShaderOGLGRenderDeferred *ComponentRender::getShaderOGLRenderDeferred() const {
+ShaderOGLGRenderDeferred *ComponentRender::getShaderOGLRenderDeferred() const
+{
     return shaderOGLGBuffer;
 }
 
-ShaderOGLLightPass *ComponentRender::getShaderOGLLightPass() const {
+ShaderOGLLightPass *ComponentRender::getShaderOGLLightPass() const
+{
     return shaderOGLLightPass;
 }
 
-GLuint ComponentRender::getLastFrameBufferUsed() const {
+GLuint ComponentRender::getLastFrameBufferUsed() const
+{
     return lastFrameBufferUsed;
 }
 
-void ComponentRender::setLastFrameBufferUsed(GLuint lastFrameBufferUsed) {
-    ComponentRender::lastFrameBufferUsed = lastFrameBufferUsed;
+void ComponentRender::setLastFrameBufferUsed(GLuint value)
+{
+    lastFrameBufferUsed = value;
 }
 
-GLuint ComponentRender::getLastProgramUsed() const {
+GLuint ComponentRender::getLastProgramUsed() const
+{
     return lastProgramUsed;
 }
 
-void ComponentRender::setLastProgramUsed(GLuint lastProgramUsed) {
-    ComponentRender::lastProgramUsed = lastProgramUsed;
+void ComponentRender::setLastProgramUsed(GLuint value)
+{
+    lastProgramUsed = value;
 }
 
 void ComponentRender::changeOpenGLFramebuffer(GLuint framebuffer)
@@ -517,7 +543,7 @@ void ComponentRender::resizeShadersFramebuffers()
     shaderOGLOutline->destroy();
     shaderOGLColor->destroy();
     shaderOGLParticles->destroy();
-    shaderOGLDOF->destroy();
+    shaderOGLDOFBlur->destroy();
     shaderOGLDepthMap->destroy();
     shaderOGLFOG->destroy();
     shaderOGLGBuffer->destroy();
@@ -538,35 +564,35 @@ void ComponentRender::FillOGLBuffers(std::vector<meshData> &meshes)
     for (auto &m: meshes) {
         glGenBuffers(1, &m.vertexbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, m.vertexbuffer);
-        glBufferData(GL_ARRAY_BUFFER, m.vertices.size() * sizeof(glm::vec4), &m.vertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(m.vertices.size() * sizeof(glm::vec4)), &m.vertices[0], GL_STATIC_DRAW);
 
         glGenBuffers(1, &m.uvbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, m.uvbuffer);
-        glBufferData(GL_ARRAY_BUFFER, m.uvs.size() * sizeof(glm::vec2), &m.uvs[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(m.uvs.size() * sizeof(glm::vec2)), &m.uvs[0], GL_STATIC_DRAW);
 
         glGenBuffers(1, &m.normalbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, m.normalbuffer);
-        glBufferData(GL_ARRAY_BUFFER, m.normals.size() * sizeof(glm::vec3), &m.normals[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(m.normals.size() * sizeof(glm::vec3)), &m.normals[0], GL_STATIC_DRAW);
 
-        // Creamos el buffer para Transform Feedback de vértices
-        glGenBuffers(1, &m.feedbackBuffer);
-        glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m.feedbackBuffer);  // Vinculamos el buffer de feedback
-        glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, m.vertices.size() * sizeof(glm::vec4), &m.vertices[0], GL_DYNAMIC_COPY);
-        glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);  // Desvinculamos el buffer
+        glGenBuffers(1, &m.feedbackBuffer); // Creamos el buffer para Transform Feedback de vértices
+        glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m.feedbackBuffer);
+        glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, static_cast<GLuint>(m.vertices.size() * sizeof(glm::vec4)), &m.vertices[0], GL_DYNAMIC_COPY);
+        glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
     }
 }
 
 void ComponentRender::clearShadowMaps() const
 {
-    auto numLights = static_cast<int>(getShaderOGLRenderForward()->getShadowMappingSpotLights().size());
-    if (numLights > 0) {
-        glBindFramebuffer(GL_FRAMEBUFFER, getShaderOGLShadowPass()->getSpotLightsDepthMapsFBO());
-        glClear(GL_DEPTH_BUFFER_BIT);
+    auto numLights = static_cast<int>(shaderOGLRender->getShadowMappingSpotLights().size());
 
-        for (int i = 0; i < numLights; i++) {
-            glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, getSpotLightsShadowMapArrayTextures(), 0, i);
-            glClear(GL_DEPTH_BUFFER_BIT);
-        }
+    if (numLights <= 0) return;
+
+    glBindFramebuffer(GL_FRAMEBUFFER, shaderShadowPass->getSpotLightsDepthMapsFBO());
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    for (int i = 0; i < numLights; i++) {
+        glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowMapArrayTex, 0, i);
+        glClear(GL_DEPTH_BUFFER_BIT);
     }
 }
 
@@ -591,62 +617,54 @@ void ComponentRender::createSpotLightsDepthTextures(int numLights)
     glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, borderColor);
 }
 
-void ComponentRender::RenderLayersToGlobalFramebuffer()
+void ComponentRender::RenderLayersToGlobalFramebuffer() const
 {
     auto window = ComponentsManager::get()->getComponentWindow();
-
     auto gBuffer = window->getGBuffer();
     auto globalBuffer = window->getGlobalBuffers();
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
+    shaderOGLLightPass->fillSpotLightsMatricesUBO();
 
-        shaderOGLLightPass->fillSpotLightsMatricesUBO();
+    shaderOGLLightPass->render(
+        gBuffer.positions,
+        gBuffer.normals,
+        gBuffer.albedo,
+        shaderOGLRender->getDirectionalLight(),
+        shaderShadowPass->getDirectionalLightDepthTexture(),
+        shaderOGLRender->getNumPointLights(),
+        shaderOGLRender->getNumSpotLights(),
+        getSpotLightsShadowMapArrayTextures(),
+        static_cast<int>(shaderOGLRender->getShadowMappingSpotLights().size()),
+        globalBuffer.sceneFBO
+    );
 
-        shaderOGLLightPass->render(
-            gBuffer.getPositions(),
-            gBuffer.getNormal(),
-            gBuffer.getAlbedo(),
-            shaderOGLRender->getDirectionalLight(),
-            shaderShadowPass->getDirectionalLightDepthTexture(),
-            shaderOGLRender->getNumPointLights(),
-            shaderOGLRender->getNumSpotLights(),
-            getSpotLightsShadowMapArrayTextures(),
-            static_cast<int>(shaderOGLRender->getShadowMappingSpotLights().size()),
-            globalBuffer.sceneFramebuffer
-        );
-    }
+    int widthWindow = window->getWidth();
+    int heightWindow = window->getHeight();
 
-    int widthWindow= window->getWidth();
-    int heightWindow= window->getHeight();
-
-    shaderOGLImage->renderTexture(globalBuffer.backgroundTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFramebuffer);
-    shaderOGLImage->renderTexture(globalBuffer.sceneTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFramebuffer);
-    shaderOGLImage->renderTexture(globalBuffer.postProcessingTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFramebuffer);
+    shaderOGLImage->renderTexture(globalBuffer.backgroundTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);
+    shaderOGLImage->renderTexture(globalBuffer.sceneTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);
+    shaderOGLImage->renderTexture(globalBuffer.postProcessingTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);
 
     if (EngineSetup::get()->ENABLE_FOG) {
-        shaderOGLFOG->render(globalBuffer.globalTexture, globalBuffer.depthTexture);
-        shaderOGLImage->renderTexture(shaderOGLFOG->getTextureResult(), 0, 0, widthWindow, heightWindow, 1, false, globalBuffer.globalFramebuffer);
+        shaderOGLFOG->render(globalBuffer.sceneTexture, gBuffer.depth);
+        shaderOGLImage->renderTexture(shaderOGLFOG->getTextureResult(), 0, 0, widthWindow, heightWindow, 1, false, globalBuffer.globalFBO);
     }
 
-    if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
-        shaderOGLDOF->render(globalBuffer.globalTexture, globalBuffer.depthTexture);
-        shaderOGLImage->renderTexture(shaderOGLDOF->getTextureResult(), 0, 0, widthWindow, heightWindow, 1, false, globalBuffer.globalFramebuffer);
+    if (EngineSetup::get()->ENABLE_DOF_BLUR) {
+        shaderOGLDOFBlur->render(globalBuffer.sceneTexture, gBuffer.depth);
+        shaderOGLImage->renderTexture(shaderOGLDOFBlur->getTextureResult(), 0, 0, widthWindow, heightWindow, 1, false, globalBuffer.globalFBO);
     }
 
-    if (EngineSetup::get()->SHOW_DEPTH_OF_FIELD) {
-        if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
-            shaderOGLDepthMap->render(gBuffer.getDepth(), globalBuffer.globalFramebuffer);
-        } else {
-            shaderOGLDepthMap->render(globalBuffer.depthTexture, globalBuffer.globalFramebuffer);
-        }
+    if (EngineSetup::get()->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
+        shaderOGLDepthMap->render(gBuffer.depth, globalBuffer.globalFBO);
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_PICKING_COLORS) {
         shaderOGLImage->renderTexture(
-            window->getPickingColorFramebuffer().getRGBTexture(), 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFramebuffer
+            window->getPickingColorFramebuffer().rbgTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO
         );
     }
 }

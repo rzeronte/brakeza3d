@@ -106,6 +106,8 @@ void ShaderOGLGRenderDeferred::render(
     glBindTexture(GL_TEXTURE_2D, 0);
 
     glBindVertexArray(0);
+
+    glEnable(GL_BLEND);
 }
 
 void ShaderOGLGRenderDeferred::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)

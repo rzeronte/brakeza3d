@@ -39,11 +39,13 @@ void Mesh3D::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
+        render->getShaderOGLRenderDeferred()->renderMesh(this, window->getGBuffer().FBO);
+
+        /*if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
             render->getShaderOGLRenderDeferred()->renderMesh(this, window->getGBuffer().FBO);
         } else {
            render->getShaderOGLRenderForward()->renderMesh(this, sceneFramebuffer);
-        }
+        }*/
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {

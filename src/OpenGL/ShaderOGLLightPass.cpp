@@ -12,7 +12,8 @@ ShaderOGLLightPass::ShaderOGLLightPass()
         EngineSetup::get()->SHADERS_FOLDER + "LightingPass.vs",
         EngineSetup::get()->SHADERS_FOLDER + "LightingPass.fs",
         false
-    )
+    ),
+    bufferSpotLightsMatricesUBO(0)
 {
     setupQuadUniforms(programID);
 
@@ -100,8 +101,7 @@ void ShaderOGLLightPass::render(
     setVec3Uniform(directionalLightDiffuseUniform, directionalLight.diffuse);
     setVec3Uniform(directionalLightSpecularUniform, directionalLight.specular);
 
-    auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward();
-    setMat4Uniform(directionalLightMatrixUniform, shaderRender->getDirectionalLightMatrix(directionalLight));
+    setMat4Uniform(directionalLightMatrixUniform, ShaderOGLRenderForward::getDirectionalLightMatrix(directionalLight));
 
     setIntUniform(numPointLightsUniform, numPointLights);
     setIntUniform(numSpotLightsUniform, numSpotLights);
@@ -130,8 +130,8 @@ void ShaderOGLLightPass::fillSpotLightsMatricesUBO()
 
     auto spotLights = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->getShadowMappingSpotLights();
 
-    for (int i = 0; i < spotLights.size(); i++) {
-        spotLightsShadowMapLightMatrices.push_back(spotLights[i]->getLightSpaceMatrix());
+    for (auto & spotLight : spotLights) {
+        spotLightsShadowMapLightMatrices.push_back(spotLight->getLightSpaceMatrix());
     }
 
     glGenBuffers(1, &bufferSpotLightsMatricesUBO);

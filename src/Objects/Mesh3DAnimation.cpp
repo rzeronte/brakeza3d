@@ -43,11 +43,13 @@ void Mesh3DAnimation::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
+        render->getShaderOGLRenderDeferred()->renderAnimatedMesh(this, window->getGBuffer().FBO);
+
+        /*if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
             render->getShaderOGLRenderDeferred()->renderAnimatedMesh(this, window->getGBuffer().FBO);
         } else {
             render->getShaderOGLRenderForward()->renderAnimatedMesh(this, window->getSceneFramebuffer());
-        }
+        }*/
     }
 
     if (EngineSetup::get()->ENABLE_SHADOW_MAPPING && isRender()) {

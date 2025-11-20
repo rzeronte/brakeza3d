@@ -18,7 +18,7 @@ class ShaderOGLLightPass : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad 
     GLint directionalLightSpecularUniform;
     GLint directionalLightMatrixUniform;
 
-    GLuint dirLightShadowMapTextureUniform;
+    GLint dirLightShadowMapTextureUniform;
 
     GLint materialTextureDiffuseUniform;
     GLint materialTextureSpecularUniform;
