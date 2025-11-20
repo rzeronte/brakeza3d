@@ -56,9 +56,9 @@ public:
         GLuint framebuffer
     ) const;
 
-    GLuint getSpotLightsDepthMapsFBO() const;
+    [[nodiscard]] GLuint getSpotLightsDepthMapsFBO() const;
 
-    GLuint getDirectionalLightDepthMapFBO() const;
+    [[nodiscard]] GLuint getDirectionalLightDepthMapFBO() const;
 
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
 
@@ -68,7 +68,8 @@ public:
 
     void setupFBODirectionalLight();
 
-    GLuint getDirectionalLightDepthTexture() const;  // Nuevo getter
+    [[nodiscard]] GLuint getDirectionalLightDepthTexture() const;
+
     void createDirectionalLightDepthTexture();
 
     void clearDirectionalLightDepthTexture() const;

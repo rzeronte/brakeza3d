@@ -7,20 +7,20 @@
 
 ShaderOGLRenderForward::ShaderOGLRenderForward()
 :
-    bufferUBOSpotLights(0),
-    bufferUBOLightPoints(0),
+    ShaderBaseOpenGL(
+        EngineSetup::get()->SHADERS_FOLDER + "Render.vs",
+        EngineSetup::get()->SHADERS_FOLDER + "Render.fs",
+        false
+    ),
+    VertexArrayID(0),
     directionalLight(DirLightOpenGL{
         glm::vec3(0, 0, 1),
         glm::vec3(0.3f, 0.3f, 0.3f),
         glm::vec3(0.4f, 0.4f, 0.4f),
         glm::vec3(0.5f, 0.5f, 0.5f)
     }),
-    VertexArrayID(0),
-    ShaderBaseOpenGL(
-        EngineSetup::get()->SHADERS_FOLDER + "Render.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Render.fs",
-        false
-    )
+    bufferUBOLightPoints(0),
+    bufferUBOSpotLights(0)
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
@@ -56,7 +56,7 @@ void ShaderOGLRenderForward::render(
     int size,
     float alpha,
     GLuint framebuffer
-)
+) const
 {
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
 
@@ -82,8 +82,8 @@ void ShaderOGLRenderForward::render(
     setVec3Uniform(directionalLightDiffuseUniform, directionalLight.diffuse);
     setVec3Uniform(directionalLightSpecularUniform, directionalLight.specular);
 
-    setIntUniform(numLightPointsUniform, (int) pointsLights.size());
-    setIntUniform(numSpotLightsUniform, (int) spotLights.size());
+    setIntUniform(numLightPointsUniform, static_cast<int>(pointsLights.size()));
+    setIntUniform(numSpotLightsUniform, static_cast<int>(spotLights.size()));
     setFloatUniform(alphaUniform, alpha);
 
     setVec3("drawOffset", o->getDrawOffset().toGLM());
@@ -141,12 +141,10 @@ void ShaderOGLRenderForward::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuff
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-    // 3rd attribute buffer : normals
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
-    // 2nd attribute buffer : UVs
     glEnableVertexAttribArray(2);
     glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
@@ -181,7 +179,7 @@ void ShaderOGLRenderForward::destroy()
 {
 }
 
-void ShaderOGLRenderForward::renderMesh(Mesh3D *o, GLuint framebuffer)
+void ShaderOGLRenderForward::renderMesh(Mesh3D *o, GLuint framebuffer) const
 {
     for (const auto& m: o->meshes) {
         render(
@@ -191,14 +189,14 @@ void ShaderOGLRenderForward::renderMesh(Mesh3D *o, GLuint framebuffer)
             m.vertexbuffer,
             m.uvbuffer,
             m.normalbuffer,
-            (int) m.vertices.size(),
+            static_cast<int>(m.vertices.size()),
             o->getAlpha(),
             framebuffer
         );
     }
 }
 
-void ShaderOGLRenderForward::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
+void ShaderOGLRenderForward::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer) const
 {
     for (const auto& m: o->meshes) {
         render(
@@ -222,12 +220,12 @@ void ShaderOGLRenderForward::fillUBOLights()
 
     glGenBuffers(1, &bufferUBOLightPoints);
     glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOLightPoints);
-    glBufferData(GL_UNIFORM_BUFFER, (int) (pointsLights.size() * sizeof(PointLightOpenGL)), pointsLights.data(), GL_STATIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, static_cast<int>(pointsLights.size() * sizeof(PointLightOpenGL)), pointsLights.data(), GL_STATIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferUBOLightPoints);
 
     glGenBuffers(1, &bufferUBOSpotLights);
     glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOSpotLights);
-    glBufferData(GL_UNIFORM_BUFFER, (int) (spotLights.size() * sizeof(SpotLightOpenGL)), spotLights.data(), GL_STATIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, static_cast<int>(spotLights.size() * sizeof(SpotLightOpenGL)), spotLights.data(), GL_STATIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, bufferUBOSpotLights);
 }
 

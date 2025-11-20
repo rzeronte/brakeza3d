@@ -20,6 +20,7 @@ ComponentWindow::ComponentWindow()
     guizmoOperation(ImGuizmo::TRANSLATE),
     ImGuiConfig(ImGUIConfigs::DEFAULT),
     applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str())),
+    context(nullptr),
     widthWindow(0),
     heightWindow(0),
     widthRender(0),
@@ -159,7 +160,7 @@ TTF_Font *ComponentWindow::getFontDefault() const {
 
 
 GLuint ComponentWindow::getSceneFramebuffer() const {
-    return globalBuffer.sceneFramebuffer;
+    return openGLBuffers.sceneFBO;
 }
 
 OpenGLPickingBuffer &ComponentWindow::getPickingColorFramebuffer()
@@ -168,15 +169,15 @@ OpenGLPickingBuffer &ComponentWindow::getPickingColorFramebuffer()
 }
 
 GLuint ComponentWindow::getBackgroundFramebuffer() const {
-    return globalBuffer.backgroundFramebuffer;
+    return openGLBuffers.backgroundFBO;
 }
 
 GLuint ComponentWindow::getUIFramebuffer() const {
-    return globalBuffer.uiFramebuffer;
+    return openGLBuffers.uiFBO;
 }
 
 GLuint ComponentWindow::getForegroundFramebuffer() const {
-    return globalBuffer.foregroundFramebuffer;
+    return openGLBuffers.foregroundFBO;
 }
 
 void ComponentWindow::initOpenGL()
@@ -196,15 +197,15 @@ void ComponentWindow::createFramebuffer()
 {
     updateWindowSize();
 
-    glGenFramebuffers(1, &globalBuffer.globalFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, globalBuffer.globalFramebuffer);
+    glGenFramebuffers(1, &openGLBuffers.globalFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.globalFBO);
 
-    glGenTextures(1, &globalBuffer.globalTexture);
-    glBindTexture(GL_TEXTURE_2D, globalBuffer.globalTexture);
+    glGenTextures(1, &openGLBuffers.globalTexture);
+    glBindTexture(GL_TEXTURE_2D, openGLBuffers.globalTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthRender, heightRender, 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, globalBuffer.globalTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openGLBuffers.globalTexture, 0);
 
     GLenum framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
@@ -213,36 +214,36 @@ void ComponentWindow::createFramebuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // --
-    glGenFramebuffers(1, &globalBuffer.postProcessingFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, globalBuffer.postProcessingFramebuffer);
+    glGenFramebuffers(1, &openGLBuffers.postProcessingFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.postProcessingFBO);
 
-    glGenTextures(1, &globalBuffer.postProcessingTexture);
-    glBindTexture(GL_TEXTURE_2D, globalBuffer.postProcessingTexture);
+    glGenTextures(1, &openGLBuffers.postProcessingTexture);
+    glBindTexture(GL_TEXTURE_2D, openGLBuffers.postProcessingTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthRender, heightRender, 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, globalBuffer.postProcessingTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openGLBuffers.postProcessingTexture, 0);
 
     // ----
 
-    glGenFramebuffers(1, &globalBuffer.sceneFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, globalBuffer.sceneFramebuffer);
+    glGenFramebuffers(1, &openGLBuffers.sceneFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.sceneFBO);
 
-    glGenTextures(1, &globalBuffer.sceneTexture);
-    glBindTexture(GL_TEXTURE_2D, globalBuffer.sceneTexture);
+    glGenTextures(1, &openGLBuffers.sceneTexture);
+    glBindTexture(GL_TEXTURE_2D, openGLBuffers.sceneTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthRender, heightRender, 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, globalBuffer.sceneTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openGLBuffers.sceneTexture, 0);
 
-    glGenTextures(1, &globalBuffer.depthTexture);
-    glBindTexture(GL_TEXTURE_2D, globalBuffer.depthTexture);
+    glGenTextures(1, &openGLBuffers.sceneDepthTexture);
+    glBindTexture(GL_TEXTURE_2D, openGLBuffers.sceneDepthTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, widthRender, heightRender, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, globalBuffer.depthTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, openGLBuffers.sceneDepthTexture, 0);
 
     framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
@@ -251,15 +252,15 @@ void ComponentWindow::createFramebuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     // ----
 
-    glGenFramebuffers(1, &globalBuffer.backgroundFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, globalBuffer.backgroundFramebuffer);
+    glGenFramebuffers(1, &openGLBuffers.backgroundFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.backgroundFBO);
 
-    glGenTextures(1, &globalBuffer.backgroundTexture);
-    glBindTexture(GL_TEXTURE_2D, globalBuffer.backgroundTexture);
+    glGenTextures(1, &openGLBuffers.backgroundTexture);
+    glBindTexture(GL_TEXTURE_2D, openGLBuffers.backgroundTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthRender, heightRender, 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, globalBuffer.backgroundTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openGLBuffers.backgroundTexture, 0);
 
     framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
@@ -268,15 +269,15 @@ void ComponentWindow::createFramebuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     // ----
 
-    glGenFramebuffers(1, &globalBuffer.foregroundFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, globalBuffer.foregroundFramebuffer);
+    glGenFramebuffers(1, &openGLBuffers.foregroundFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.foregroundFBO);
 
-    glGenTextures(1, &globalBuffer.foregroundTexture);
-    glBindTexture(GL_TEXTURE_2D, globalBuffer.foregroundTexture);
+    glGenTextures(1, &openGLBuffers.foregroundTexture);
+    glBindTexture(GL_TEXTURE_2D, openGLBuffers.foregroundTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthRender, heightRender, 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, globalBuffer.foregroundTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openGLBuffers.foregroundTexture, 0);
 
     framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
@@ -285,15 +286,15 @@ void ComponentWindow::createFramebuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // ----
-    glGenFramebuffers(1, &globalBuffer.uiFramebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, globalBuffer.uiFramebuffer);
+    glGenFramebuffers(1, &openGLBuffers.uiFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.uiFBO);
 
-    glGenTextures(1, &globalBuffer.uiTexture);
-    glBindTexture(GL_TEXTURE_2D, globalBuffer.uiTexture);
+    glGenTextures(1, &openGLBuffers.uiTexture);
+    glBindTexture(GL_TEXTURE_2D, openGLBuffers.uiTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthRender, heightRender, 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, globalBuffer.uiTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openGLBuffers.uiTexture, 0);
     framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
@@ -305,21 +306,21 @@ void ComponentWindow::createFramebuffer()
 
 void ComponentWindow::resetFramebuffer()
 {
-    glDeleteFramebuffers(1, &globalBuffer.globalFramebuffer);
-    glDeleteTextures(1, &globalBuffer.globalTexture);
+    glDeleteFramebuffers(1, &openGLBuffers.globalFBO);
+    glDeleteTextures(1, &openGLBuffers.globalTexture);
 
-    glDeleteFramebuffers(1, &globalBuffer.sceneFramebuffer);
-    glDeleteTextures(1, &globalBuffer.sceneTexture);
-    glDeleteTextures(1, &globalBuffer.depthTexture);
+    glDeleteFramebuffers(1, &openGLBuffers.sceneFBO);
+    glDeleteTextures(1, &openGLBuffers.sceneTexture);
+    glDeleteTextures(1, &openGLBuffers.sceneDepthTexture);
 
-    glDeleteFramebuffers(1, &globalBuffer.backgroundFramebuffer);
-    glDeleteTextures(1, &globalBuffer.backgroundTexture);
+    glDeleteFramebuffers(1, &openGLBuffers.backgroundFBO);
+    glDeleteTextures(1, &openGLBuffers.backgroundTexture);
 
-    glDeleteFramebuffers(1, &globalBuffer.foregroundFramebuffer);
-    glDeleteTextures(1, &globalBuffer.foregroundTexture);
+    glDeleteFramebuffers(1, &openGLBuffers.foregroundFBO);
+    glDeleteTextures(1, &openGLBuffers.foregroundTexture);
 
-    glDeleteFramebuffers(1, &globalBuffer.uiFramebuffer);
-    glDeleteTextures(1, &globalBuffer.uiTexture);
+    glDeleteFramebuffers(1, &openGLBuffers.uiFBO);
+    glDeleteTextures(1, &openGLBuffers.uiTexture);
 
     createFramebuffer();
 
@@ -339,23 +340,23 @@ void ComponentWindow::RenderLayersToMain()
 
     render->updateSelectedObject3D();
 
-    shaderOGLImage->renderTexture(globalBuffer.foregroundTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFramebuffer);
-    shaderOGLImage->renderTexture(globalBuffer.globalTexture, 0, 0, widthWindow, heightWindow, 1, true, 0);
-    shaderOGLImage->renderTexture(globalBuffer.uiTexture, 0, 0, widthWindow, heightWindow, 1, true, 0);
+    shaderOGLImage->renderTexture(openGLBuffers.foregroundTexture, 0, 0, widthWindow, heightWindow, 1, true, openGLBuffers.globalFBO);
+    shaderOGLImage->renderTexture(openGLBuffers.globalTexture, 0, 0, widthWindow, heightWindow, 1, true, 0);
+    shaderOGLImage->renderTexture(openGLBuffers.uiTexture, 0, 0, widthWindow, heightWindow, 1, true, 0);
 
     SDL_GL_SwapWindow(window);
-    cleanFrameBuffers();
+    ClearOGLFrameBuffers();
 }
 
-void ComponentWindow::cleanFrameBuffers() const
+void ComponentWindow::ClearOGLFrameBuffers() const
 {
     const GLuint framebuffers[] = {
-        globalBuffer.postProcessingFramebuffer,
-        globalBuffer.foregroundFramebuffer,
-        globalBuffer.uiFramebuffer,
-        globalBuffer.backgroundFramebuffer,
-        globalBuffer.globalFramebuffer,
-        globalBuffer.sceneFramebuffer,
+        openGLBuffers.postProcessingFBO,
+        openGLBuffers.foregroundFBO,
+        openGLBuffers.uiFBO,
+        openGLBuffers.backgroundFBO,
+        openGLBuffers.globalFBO,
+        openGLBuffers.sceneFBO,
         gBuffer.FBO,
         pickingColorBuffer.FBO
     };
@@ -394,11 +395,11 @@ int ComponentWindow::getHeightRender() const
 }
 
 GLuint ComponentWindow::getGlobalFramebuffer() const {
-    return globalBuffer.globalFramebuffer;
+    return openGLBuffers.globalFBO;
 }
 
 GLuint ComponentWindow::getPostProcessingFramebuffer() const {
-    return globalBuffer.postProcessingFramebuffer;
+    return openGLBuffers.postProcessingFBO;
 }
 
 void ComponentWindow::saveImGuiCurrentLayout() const
@@ -559,18 +560,21 @@ void ComponentWindow::ImGuiOnUpdate()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-bool ComponentWindow::isWindowMaximized() const {
+bool ComponentWindow::isWindowMaximized() const
+{
     Uint32 flags = SDL_GetWindowFlags(window);
 
     // Verifica si el flag SDL_WINDOW_MAXIMIZED está activo
     return (flags & SDL_WINDOW_MAXIMIZED) != 0;
 }
 
-void ComponentWindow::setWindowTitle(const char *title) const {
+void ComponentWindow::setWindowTitle(const char *title) const
+{
     SDL_SetWindowTitle(window, title);
 }
 
-void ComponentWindow::toggleFullScreen() const {
+void ComponentWindow::toggleFullScreen() const
+{
     if (EngineSetup::get()->FULLSCREEN) {
         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     } else {
@@ -590,17 +594,17 @@ void ComponentWindow::setGuizmoOperation(ImGuizmo::OPERATION guizmoOperation)
 
 GLuint ComponentWindow::getDepthTexture() const
 {
-    return globalBuffer.depthTexture;
+    return openGLBuffers.sceneDepthTexture;
 }
 
 GLuint ComponentWindow::getSceneTexture() const
 {
-    return globalBuffer.sceneTexture;
+    return openGLBuffers.sceneTexture;
 }
 
 GLuint ComponentWindow::getGlobalTexture() const
 {
-    return globalBuffer.globalTexture;
+    return openGLBuffers.globalTexture;
 }
 
 OpenGLGBuffer& ComponentWindow::getGBuffer()
@@ -610,7 +614,7 @@ OpenGLGBuffer& ComponentWindow::getGBuffer()
 
 OpenGLGlobalFramebuffers& ComponentWindow::getGlobalBuffers()
 {
-    return globalBuffer;
+    return openGLBuffers;
 }
 
 void ComponentWindow::createPickingColorBuffer()
@@ -642,9 +646,10 @@ void ComponentWindow::createPickingColorBuffer()
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cerr << "[ERROR] PickingColor: Framebuffer no está completo!" << std::endl;
-    } else {
-        std::cout << "PickingColor-Buffer creado correctamente (" << widthRender << "x" << heightRender << ")" << std::endl;
+        exit(-1);
     }
+
+    Logging::Message("PickingColor-Buffer created successful (%d, %d)", widthRender,  heightRender);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -653,38 +658,35 @@ void ComponentWindow::createGBuffer()
 {
     if (gBuffer.FBO != 0) {
         glDeleteFramebuffers(1, &gBuffer.FBO);
-        glDeleteTextures(1, &gBuffer.gAlbedoSpec);
-        glDeleteTextures(1, &gBuffer.gNormal);
-        glDeleteTextures(1, &gBuffer.gPosition);
-        glDeleteRenderbuffers(1, &gBuffer.rboDepth);
+        glDeleteTextures(1, &gBuffer.albedo);
+        glDeleteTextures(1, &gBuffer.normals);
+        glDeleteTextures(1, &gBuffer.positions);
+        glDeleteRenderbuffers(1, &gBuffer.depth);
     }
 
     glGenFramebuffers(1, &gBuffer.FBO);
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer.FBO);
 
-    // --- Posición ---
-    glGenTextures(1, &gBuffer.gPosition);
-    glBindTexture(GL_TEXTURE_2D, gBuffer.gPosition);
+    glGenTextures(1, &gBuffer.positions);
+    glBindTexture(GL_TEXTURE_2D, gBuffer.positions);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, widthRender, heightRender, 0, GL_RGB, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gBuffer.gPosition, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gBuffer.positions, 0);
 
-    // --- Normal ---
-    glGenTextures(1, &gBuffer.gNormal);
-    glBindTexture(GL_TEXTURE_2D, gBuffer.gNormal);
+    glGenTextures(1, &gBuffer.normals);
+    glBindTexture(GL_TEXTURE_2D, gBuffer.normals);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, widthRender, heightRender, 0, GL_RGB, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gBuffer.gNormal, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gBuffer.normals, 0);
 
-    // --- Albedo + Specular ---
-    glGenTextures(1, &gBuffer.gAlbedoSpec);
-    glBindTexture(GL_TEXTURE_2D, gBuffer.gAlbedoSpec);
+    glGenTextures(1, &gBuffer.albedo);
+    glBindTexture(GL_TEXTURE_2D, gBuffer.albedo);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthRender, heightRender, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gBuffer.gAlbedoSpec, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gBuffer.albedo, 0);
 
     GLuint attachments[3] = {
         GL_COLOR_ATTACHMENT0,
@@ -693,16 +695,17 @@ void ComponentWindow::createGBuffer()
     };
     glDrawBuffers(3, attachments);
 
-    glGenRenderbuffers(1, &gBuffer.rboDepth);
-    glBindRenderbuffer(GL_RENDERBUFFER, gBuffer.rboDepth);
+    glGenRenderbuffers(1, &gBuffer.depth);
+    glBindRenderbuffer(GL_RENDERBUFFER, gBuffer.depth);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, widthRender, heightRender);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gBuffer.rboDepth);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, gBuffer.depth);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cerr << "[ERROR] G-Buffer: Framebuffer no está completo!" << std::endl;
-    } else {
-        std::cout << "G-Buffer creado correctamente (" << widthRender << "x" << heightRender << ")" << std::endl;
+        exit(-1);
     }
+
+    Logging::Message("G-Buffer created successful (%d, %d)", widthRender, heightRender);
 
     // Desvincular
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -57,9 +57,9 @@ public:
         int size,
         float alpha,
         GLuint framebuffer
-    );
+    ) const;
 
-    glm::mat4 getDirectionalLightMatrix(const DirLightOpenGL& light);
+    static glm::mat4 getDirectionalLightMatrix(const DirLightOpenGL& light);
 
     static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer) ;
 
@@ -69,7 +69,7 @@ public:
 
     void destroy() override;
 
-    void renderMesh(Mesh3D *o, GLuint framebuffer);
+    void renderMesh(Mesh3D *o, GLuint framebuffer) const;
 
     void fillUBOLights();
 
@@ -83,7 +83,7 @@ public:
 
     void setGlobalIlluminationSpecular(Vertex3D s);
 
-    void renderAnimatedMesh(Mesh3D *o, GLuint framebuffer);
+    void renderAnimatedMesh(Mesh3D *o, GLuint framebuffer) const;
 
     int getNumPointLights() const;
     [[nodiscard]] int getNumSpotLights() const;
