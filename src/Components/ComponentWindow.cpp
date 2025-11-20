@@ -62,8 +62,9 @@ void ComponentWindow::onEnd()
     SDL_Quit();
 }
 
-void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish) {
-
+void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish)
+{
+    ComponentsManager::get()->getComponentRender()->updateSelectedObject3D();
 }
 
 void ComponentWindow::initWindow()
@@ -335,17 +336,12 @@ void ComponentWindow::RenderLayersToMain()
        ImGuiOnUpdate();
    }
 
-    auto render = ComponentsManager::get()->getComponentRender();
-    auto shaderOGLImage = render->getShaderOGLImage();
-
-    render->updateSelectedObject3D();
-
+    auto shaderOGLImage = ComponentsManager::get()->getComponentRender()->getShaderOGLImage();
     shaderOGLImage->renderTexture(openGLBuffers.foregroundTexture, 0, 0, widthWindow, heightWindow, 1, true, openGLBuffers.globalFBO);
     shaderOGLImage->renderTexture(openGLBuffers.globalTexture, 0, 0, widthWindow, heightWindow, 1, true, 0);
     shaderOGLImage->renderTexture(openGLBuffers.uiTexture, 0, 0, widthWindow, heightWindow, 1, true, 0);
 
     SDL_GL_SwapWindow(window);
-    ClearOGLFrameBuffers();
 }
 
 void ComponentWindow::ClearOGLFrameBuffers() const

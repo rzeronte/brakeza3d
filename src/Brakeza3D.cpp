@@ -67,9 +67,18 @@ void Brakeza3D::welcomeMessage()
     Logging::Message("Running %s", EngineSetup::get()->ENGINE_TITLE.c_str());
 }
 
+void Brakeza3D::CaptureInputEvents(SDL_Event *e)
+{
+    while (SDL_PollEvent(e)) {
+        checkForResizeOpenGLWindow(*e);
+        onUpdateSDLPollEventComponents(e, finish);
+        ImGui_ImplSDL2_ProcessEvent(e);
+    }
+}
+
 void Brakeza3D::mainLoop(bool autostart, const std::string& project)
 {
-    SDL_Event e;
+    auto event = new SDL_Event;
 
     engineTimer.start();
     managerGUI = new GUIManager(sceneObjects);
@@ -103,11 +112,9 @@ void Brakeza3D::mainLoop(bool autostart, const std::string& project)
 
         render->RunShadersOpenGLPreUpdate();
 
-        while (SDL_PollEvent(&e)) {
-            checkForResizeOpenGLWindow(e);
-            onUpdateSDLPollEventComponents(&e, finish);
-            ImGui_ImplSDL2_ProcessEvent(&e);
-        }
+        CaptureInputEvents(event);
+
+        window->ClearOGLFrameBuffers();
 
         onUpdateComponents();
 

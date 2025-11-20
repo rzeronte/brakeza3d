@@ -59,7 +59,7 @@ public:
 
     void onStart() override;
 
-    void updateKeyboardMapping();
+    void resetKeyboardMapping();
 
     void preUpdate() override;
 
@@ -81,7 +81,7 @@ public:
 
     void handleProjectileDemo(SDL_Event *pEvent);
 
-    void updateMouseMapping();
+    void resetMouseMapping();
 
     void updateGamePadStates();
 

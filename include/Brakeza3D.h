@@ -73,6 +73,8 @@ public:
 
     static void welcomeMessage();
 
+    void CaptureInputEvents(SDL_Event *e);
+
     [[nodiscard]] Object3D *getSceneObjectByLabel(const std::string &label) const;
 
     Object3D *getSceneObjectById(int id) const;

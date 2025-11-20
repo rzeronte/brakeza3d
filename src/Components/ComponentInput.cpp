@@ -9,6 +9,7 @@ ComponentInput::ComponentInput()
     mouseMotionYRel(0),
     mouseLeftButton(false),
     mouseRightButton(false),
+    drag(false),
     keyboard(nullptr),
     controllerButtonA(0),
     controllerButtonB(0),
@@ -27,8 +28,7 @@ ComponentInput::ComponentInput()
     relativeRendererMouseY(0),
     gameController(nullptr),
     keyUpEvent(false),
-    keyDownEvent(false),
-    drag(false)
+    keyDownEvent(false)
 {
 }
 
@@ -41,8 +41,8 @@ void ComponentInput::onStart()
 
 void ComponentInput::preUpdate()
 {
-    updateKeyboardMapping();
-    updateMouseMapping();
+    resetKeyboardMapping();
+    resetMouseMapping();
 
     keyDownEvent = false;
     keyUpEvent = false;
@@ -147,13 +147,14 @@ void ComponentInput::handleKeyboardMovingCamera() const
     }
 }
 
-void ComponentInput::handleWindowEvents(SDL_Event *e, bool &end) {
+void ComponentInput::handleWindowEvents(SDL_Event *e, bool &end)
+{
     if (e->type == SDL_WINDOWEVENT && e->window.event == SDL_WINDOWEVENT_CLOSE) {
         end = true;
     }
 }
 
-void ComponentInput::updateKeyboardMapping()
+void ComponentInput::resetKeyboardMapping()
 {
     this->keyboard = (unsigned char *) SDL_GetKeyboardState(nullptr);
 }
@@ -190,7 +191,7 @@ bool ComponentInput::isRightMouseButtonPressed() const
     return mouseRightButton;
 }
 
-void ComponentInput::updateMouseMapping()
+void ComponentInput::resetMouseMapping()
 {
     auto window = ComponentsManager::get()->getComponentWindow();
 

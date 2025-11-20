@@ -6,7 +6,6 @@
 #define BRAKEZA3D_GUIWIDGETMENU_H
 
 #include <SDL_mixer.h>
-#include <sys/stat.h>
 #include "imgui.h"
 #include "../EngineSetup.h"
 #include "../Render/Logging.h"
@@ -630,18 +629,16 @@ struct GUIWidgetMenu
             const float rangeFogSens = 0.1;
             const float rangeFogMin = 0.1;
             const float rangeFogMax = 1000;
+            const float rangeFogIntensityMax= 1.0;
 
             ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
             ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-            ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->intensity, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+            ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->intensity, rangeFogSens, &rangeFogMin, &rangeFogIntensityMax, "%f", 1.0f);
 
-            if (ImGui::TreeNode("FOG Color")) {
-                auto p = ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor;
-                ImVec4 fogVecColor = {p.r, p.b, p.b, 1};
-                if (ImGui::ColorEdit4("Ambient##", reinterpret_cast<float *>(&fogVecColor), ImGuiColorEditFlags_NoOptions)) {
-                    ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor = {fogVecColor.x, fogVecColor.y, fogVecColor.z};
-                }
-                ImGui::TreePop();
+            auto p = ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor;
+            ImVec4 fogVecColor = {p.r, p.b, p.b, 1};
+            if (ImGui::ColorEdit4("FOG Color##", reinterpret_cast<float *>(&fogVecColor), ImGuiColorEditFlags_NoOptions)) {
+                ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor = {fogVecColor.x, fogVecColor.y, fogVecColor.z};
             }
         }
     }
