@@ -6,17 +6,18 @@
 #include "../../include/Objects/Mesh3D.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Render/Drawable.h"
 #include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include <assimp/postprocess.h>
 
 Mesh3D::Mesh3D()
 :
-    octree(nullptr),
-    grid(nullptr),
     sharedTextures(false),
     render(true),
-    drawOffset(Vertex3D(0, 0, 0))
+    drawOffset(Vertex3D(0, 0, 0)),
+    octree(nullptr),
+    grid(nullptr)
 {
     decal = false;
     luaEnvironment["this"] = this;
@@ -39,7 +40,7 @@ void Mesh3D::onUpdate()
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
         if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
-            render->getShaderOGLRenderDeferred()->renderMesh(this, window->getGBuffer().getFBO());
+            render->getShaderOGLRenderDeferred()->renderMesh(this, window->getGBuffer().FBO);
         } else {
            render->getShaderOGLRenderForward()->renderMesh(this, sceneFramebuffer);
         }
@@ -79,7 +80,7 @@ void Mesh3D::onUpdate()
             this,
             getPickingColor(),
             false,
-            window->getPickingColorFramebuffer().getFBO()
+            window->getPickingColorFramebuffer().FBO
         );
     }
 

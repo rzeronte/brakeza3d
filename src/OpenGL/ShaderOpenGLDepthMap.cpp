@@ -5,21 +5,18 @@
 
 ShaderOpenGLDepthMap::ShaderOpenGLDepthMap()
 :
-    intensity(1.0f),
-    nearPlane(0.1f),
-    farPlane(100.0f),
     ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "DepthMap.vs",
         EngineSetup::get()->SHADERS_FOLDER + "DepthMap.fs",
         false
-    )
+    ),
+    intensity(1.0f),
+    farPlane(100.0f),
+    nearPlane(0.1f)
 {
     setupQuadUniforms(programID);
 
     textureUniform = glGetUniformLocation(programID, "depthTexture");
-    intensityUniform = glGetUniformLocation(programID, "intensity");
-    farPlaneUniform = glGetUniformLocation(programID, "farPlane");
-    nearPlaneUniform = glGetUniformLocation(programID, "nearPlane");
 }
 
 void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint framebuffer)
@@ -33,10 +30,6 @@ void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint framebuffer)
     glDisable(GL_DEPTH_TEST);
 
     loadQuadMatrixUniforms();
-
-    glUniform1f(intensityUniform, intensity);
-    glUniform1f(farPlaneUniform, farPlane);
-    glUniform1f(nearPlaneUniform, nearPlane);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureID);

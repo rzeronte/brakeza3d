@@ -8,7 +8,7 @@
 
 #include <glm/vec3.hpp>
 
-struct Material {
+struct MaterialOpenGL {
     GLint diffuse;
     GLint specular;
     float shininess;
@@ -53,59 +53,33 @@ struct OpenGLPickingBuffer {
     GLuint FBO = 0;
     GLuint rbgTexture = 0;
     GLuint depthTexture = 0;
-
-    [[nodiscard]] GLuint getFBO() const {
-        return FBO;
-    }
-    [[nodiscard]] GLuint getRGBTexture() const {
-        return rbgTexture;
-    }
-    [[nodiscard]] GLuint getDepthTexture() const {
-        return depthTexture;
-    }
 };
 
 struct OpenGLGBuffer {
     GLuint FBO = 0;
-    GLuint gPosition = 0;
-    GLuint gNormal = 0;
-    GLuint gAlbedoSpec = 0;
-    GLuint rboDepth = 0;
-
-    [[nodiscard]] GLuint getFBO() const {
-        return FBO;
-    }
-    [[nodiscard]] GLuint getPositions() const {
-        return gPosition;
-    }
-    [[nodiscard]] GLuint getAlbedo() const {
-        return gAlbedoSpec;
-    }
-    [[nodiscard]] GLuint getNormal() const {
-        return gNormal;
-    }
-    [[nodiscard]] GLuint getDepth() const {
-        return rboDepth;
-    }
+    GLuint positions = 0;
+    GLuint normals = 0;
+    GLuint albedo = 0;
+    GLuint depth = 0;
 };
 
 struct OpenGLGlobalFramebuffers
 {
-    GLuint globalFramebuffer;
-    GLuint sceneFramebuffer;
-    GLuint backgroundFramebuffer;
-    GLuint foregroundFramebuffer;
-    GLuint uiFramebuffer;
-    GLuint postProcessingFramebuffer;
+    GLuint globalFBO = 0;
+    GLuint sceneFBO = 0;
+    GLuint backgroundFBO = 0;
+    GLuint foregroundFBO = 0;
+    GLuint uiFBO = 0;
+    GLuint postProcessingFBO = 0;
 
-    GLuint globalTexture;
-    GLuint sceneTexture;
-    GLuint backgroundTexture;
-    GLuint foregroundTexture;
-    GLuint uiTexture;
-    GLuint postProcessingTexture;
+    GLuint globalTexture = 0;
+    GLuint sceneTexture = 0;
+    GLuint backgroundTexture = 0;
+    GLuint foregroundTexture = 0;
+    GLuint uiTexture = 0;
+    GLuint postProcessingTexture = 0;
 
-    GLuint depthTexture;
+    GLuint sceneDepthTexture = 0;
 };
 
 #endif //BRAKEZA3D_OPENGLSHADERTYPES_H

@@ -39,7 +39,7 @@ ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, bool enabl
     int InfoLogLength;
 
     // Compile Vertex Shader
-    printf("[OpenGL] Compiling shader : %s\n", vertexFilename.c_str());
+    printf("[OpenGL] Compiling vertex shader : %s\n", vertexFilename.c_str());
     char const * VertexSourcePointer = VertexShaderCode.c_str();
     glShaderSource(VertexShaderID, 1, &VertexSourcePointer , nullptr);
     glCompileShader(VertexShaderID);
@@ -113,7 +113,7 @@ GLuint ShaderBaseOpenGL::LoadShaders(const char * vertex_file_path, const char *
     int InfoLogLength;
 
     // Compile Vertex Shader
-    printf("[OpenGL] Compiling shader : %s\n", vertex_file_path);
+    printf("[OpenGL] Compiling vertex shader : %s\n", vertex_file_path);
     char const * VertexSourcePointer = VertexShaderCode.c_str();
     glShaderSource(VertexShaderID, 1, &VertexSourcePointer , nullptr);
     glCompileShader(VertexShaderID);
@@ -128,7 +128,7 @@ GLuint ShaderBaseOpenGL::LoadShaders(const char * vertex_file_path, const char *
     }
 
     // Compile Fragment Shader
-    printf("[OpenGL] Compiling shader : %s\n", fragment_file_path);
+    printf("[OpenGL] Compiling fragment shader : %s\n", fragment_file_path);
     char const * FragmentSourcePointer = FragmentShaderCode.c_str();
     glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , nullptr);
     glCompileShader(FragmentShaderID);
@@ -150,7 +150,7 @@ GLuint ShaderBaseOpenGL::LoadShaders(const char * vertex_file_path, const char *
     glAttachShader(ProgramID, FragmentShaderID);
 
     if (enableFeedback) {
-        const char* feedbackVaryings[] = {"tf_Position"};  // Usamos un arreglo de cadenas (const char*)
+        const char* feedbackVaryings[] = {"tf_Position"};
         glTransformFeedbackVaryings(ProgramID, 1, feedbackVaryings, GL_INTERLEAVED_ATTRIBS);
     }
 
@@ -174,17 +174,18 @@ GLuint ShaderBaseOpenGL::LoadShaders(const char * vertex_file_path, const char *
     return ProgramID;
 }
 
-GLuint ShaderBaseOpenGL::getProgramID() const {
+GLuint ShaderBaseOpenGL::getProgramID() const
+{
     return programID;
 }
 
-
 void ShaderBaseOpenGL::setBool(const std::string &name, bool value) const
 {
-    glUniform1i(glGetUniformLocation(programID, name.c_str()), (int)value);
+    glUniform1i(glGetUniformLocation(programID, name.c_str()), static_cast<int>(value));
 }
-void ShaderBaseOpenGL::setBoolUniform(GLint uniform, bool value) {
-    glUniform1i(uniform, (int)value);
+void ShaderBaseOpenGL::setBoolUniform(GLint uniform, bool value)
+{
+    glUniform1i(uniform, static_cast<int>(value));
 }
 // ------------------------------------------------------------------------
 void ShaderBaseOpenGL::setInt(const std::string &name, int value) const
@@ -287,12 +288,12 @@ void ShaderBaseOpenGL::setMat4(const std::string &name, const glm::mat4 &mat) co
 
 void ShaderBaseOpenGL::setMat4Array(const std::string &name, std::vector<glm::mat4> &Transforms) const
 {
-    glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), (GLsizei)Transforms.size(), GL_FALSE, glm::value_ptr(Transforms[0]));
+    glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), static_cast<GLsizei>(Transforms.size()), GL_FALSE, glm::value_ptr(Transforms[0]));
 }
 
-void ShaderBaseOpenGL::setMat4ArrayUniform(GLint uniform, std::vector<glm::mat4> &Transforms) const
+void ShaderBaseOpenGL::setMat4ArrayUniform(GLint uniform, std::vector<glm::mat4> &Transforms)
 {
-    glUniformMatrix4fv(uniform, (GLsizei)Transforms.size(), GL_FALSE, glm::value_ptr(Transforms[0]));
+    glUniformMatrix4fv(uniform, static_cast<GLsizei>(Transforms.size()), GL_FALSE, glm::value_ptr(Transforms[0]));
 }
 
 void ShaderBaseOpenGL::setMat4Uniform(GLint uniform, const glm::mat4 &mat)

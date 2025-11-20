@@ -6,18 +6,18 @@
 
 ShaderOpenGLDOF::ShaderOpenGLDOF()
 :
-    focalRange(0),
-    focalDistance(0),
-    blurRadius(4),
-    farPlane(100.0),
-    intensity(1.0f),
-    resultFramebuffer(0),
-    textureResult(0),
     ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.vs",
         EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.fs",
         false
-    )
+    ),
+    resultFramebuffer(0),
+    textureResult(0),
+    focalRange(0),
+    focalDistance(0),
+    blurRadius(4),
+    intensity(1.0f),
+    farPlane(100.0)
 {
     setupQuadUniforms(programID);
     createFramebuffer();
@@ -74,13 +74,11 @@ void ShaderOpenGLDOF::createFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(resultFramebuffer);
-
-    int w, h;
-    SDL_GetWindowSize(ComponentsManager::get()->getComponentWindow()->getWindow(), &w, &h);
+    auto window = ComponentsManager::get()->getComponentWindow();
 
     glGenTextures(1, &textureResult);
     glBindTexture(GL_TEXTURE_2D, textureResult);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, window->getWidth(), window->getHeight(), 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureResult, 0);

@@ -2,6 +2,7 @@
 #include "../../include/Brakeza3D.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Render/Transforms.h"
+#include "../../include/Render/Drawable.h"
 #include <assimp/postprocess.h>
 
 Mesh3DAnimation::Mesh3DAnimation()
@@ -43,7 +44,7 @@ void Mesh3DAnimation::onUpdate()
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
         if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
-            render->getShaderOGLRenderDeferred()->renderAnimatedMesh(this, window->getGBuffer().getFBO());
+            render->getShaderOGLRenderDeferred()->renderAnimatedMesh(this, window->getGBuffer().FBO);
         } else {
             render->getShaderOGLRenderForward()->renderAnimatedMesh(this, window->getSceneFramebuffer());
         }

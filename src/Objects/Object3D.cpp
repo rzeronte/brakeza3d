@@ -6,6 +6,7 @@
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/Render/Drawable.h"
 #include <glm/gtx/euler_angles.hpp>
 
 Object3D::Object3D()

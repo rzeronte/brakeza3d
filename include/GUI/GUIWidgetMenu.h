@@ -222,7 +222,7 @@ struct GUIWidgetMenu
                 ImGui::Separator();
                 ImGui::Checkbox("Limit frame rate", &setup->LIMIT_FRAMERATE);
                 if (setup->LIMIT_FRAMERATE) {
-                    ImGui::DragScalar("Limite frames to:", ImGuiDataType_S32, &setup->FRAMERATE, range_framerate_sensibility, &range_min_framerate_distance,&range_max_framerate_distance, "%d", 1.0f);
+                    ImGui::DragScalar("Limit frames to:", ImGuiDataType_S32, &setup->FRAMERATE, range_framerate_sensibility, &range_min_framerate_distance,&range_max_framerate_distance, "%d", 1.0f);
 
                 }
                 ImGui::Separator();
@@ -250,22 +250,20 @@ struct GUIWidgetMenu
                 ImGui::Separator();
                 ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
                 ImGui::Separator();
-                if (!setup->SHOW_DEPTH_OF_FIELD) {
-                    ImGui::Checkbox("Vertex", &setup->TRIANGLE_MODE_PIXELS);
-                    ImGui::Checkbox("WireFrame", &setup->TRIANGLE_MODE_WIREFRAME);
-                    ImGui::Checkbox("Solid", &setup->TRIANGLE_MODE_SHADING);
-                    ImGui::Checkbox("Picking Colors", &setup->TRIANGLE_MODE_PICKING_COLORS);
-                    ImGui::Checkbox("Textures", &setup->TRIANGLE_MODE_TEXTURIZED);
-                } else {
+                ImGui::Checkbox("Depth Map", &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
+                if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
                     auto s = ComponentsManager::get()->getComponentRender()->getShaderOGLDepthMap();
-                    ImGui::DragFloat("Intensity", &s->intensity, 0.01f, 0.0f, 1.0f);
+                    ImGui::DragFloat("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 1.0f);
                     ImGui::DragFloat("Far Plane", &s->farPlane, 0.01f, 0.0f, 100.0f);
-                    ImGui::DragFloat("Near Plabe", &s->nearPlane, 0.01f, 0.0f, 100.0f);
+                    ImGui::DragFloat("Near Plane", &s->nearPlane, 0.01f, 0.0f, 100.0f);
+                ImGui::Separator();
                 }
+                ImGui::Checkbox("Vertex", &setup->TRIANGLE_MODE_PIXELS);
+                ImGui::Checkbox("WireFrame", &setup->TRIANGLE_MODE_WIREFRAME);
+                ImGui::Checkbox("Solid", &setup->TRIANGLE_MODE_SHADING);
+                ImGui::Checkbox("Picking Colors", &setup->TRIANGLE_MODE_PICKING_COLORS);
+                ImGui::Checkbox("Textures", &setup->TRIANGLE_MODE_TEXTURIZED);
                 ImGui::Separator();
-                ImGui::Checkbox("Depth Map", &setup->SHOW_DEPTH_OF_FIELD);
-                ImGui::Separator();
-
                 ImGui::Checkbox("Draw Bones", &setup->DRAW_ANIMATION_BONES);
                 ImGui::Separator();
                 ImGui::Checkbox("Internal click selection", &setup->MOUSE_CLICK_SELECT_OBJECT3D);
@@ -621,9 +619,9 @@ struct GUIWidgetMenu
         const int minBlurRadius = 0;
         const int maxBlurRadius = 10;
 
-        ImGui::Checkbox("Enable DOF", &EngineSetup::get()->ENABLE_DEPTH_OF_FIELD);
+        ImGui::Checkbox("Enable DOF", &EngineSetup::get()->ENABLE_DOF_BLUR);
 
-        if (EngineSetup::get()->ENABLE_DEPTH_OF_FIELD) {
+        if (EngineSetup::get()->ENABLE_DOF_BLUR) {
             ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
             ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
             ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);

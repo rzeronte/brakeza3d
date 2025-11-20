@@ -27,7 +27,7 @@ class ShaderOGLShadowPassDebugLight : public ShaderBaseOpenGL, public ShaderBase
     [[nodiscard]] GLuint getSceneFramebuffer() const;
     [[nodiscard]] GLuint getSceneTexture() const;
 
-    void createArrayTextures(int numLayers);
+    void createArrayTextures(int nLayers);
 
     [[nodiscard]] GLuint getInternalTexture(int layer) const;
 

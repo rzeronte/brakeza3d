@@ -1,5 +1,6 @@
 
 #include "../include/GUI/GUIManager.h"
+#include "../../include/Render/Drawable.h"
 
 GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 :

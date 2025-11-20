@@ -25,6 +25,7 @@ ShaderOpenGLCustomMesh3D::ShaderOpenGLCustomMesh3D(
 
     alphaUniform = glGetUniformLocation(programID, "alpha");
 }
+
 ShaderOpenGLCustomMesh3D::ShaderOpenGLCustomMesh3D(
     Mesh3D* mesh,
     const std::string &label,
@@ -33,8 +34,9 @@ ShaderOpenGLCustomMesh3D::ShaderOpenGLCustomMesh3D(
     cJSON* types
 )
 :
-    mesh(mesh),
-    ShaderOpenGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomTypes::SHADER_OBJECT, types)
+    ShaderOpenGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomTypes::SHADER_OBJECT, types),
+    VertexArrayID(0),
+    mesh(mesh)
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);

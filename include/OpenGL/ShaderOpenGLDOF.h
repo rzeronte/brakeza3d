@@ -8,7 +8,7 @@
 #include "ShaderBaseOpenGL.h"
 #include "ShaderBaseOpenGLQuad.h"
 
-class ShaderOpenGLDOF : ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {
+class ShaderOpenGLDOF : ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {
 
     GLint focalDistanceUniform;
     GLint focalRangeUniform;
@@ -37,7 +37,7 @@ public:
     float intensity;
     float farPlane;
 
-    GLuint getTextureResult() const;
+    [[nodiscard]] GLuint getTextureResult() const;
     void destroy() override;
 };
 

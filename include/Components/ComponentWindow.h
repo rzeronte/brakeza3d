@@ -30,7 +30,7 @@ class ComponentWindow : public Component
 
     OpenGLGBuffer gBuffer;
     OpenGLPickingBuffer pickingColorBuffer;
-    OpenGLGlobalFramebuffers globalBuffer;
+    OpenGLGlobalFramebuffers openGLBuffers;
 
     ImGuizmo::OPERATION guizmoOperation;
     ImGUIConfigs ImGuiConfig;
@@ -82,7 +82,7 @@ public:
 
     bool screenShoot = false;
 
-    void cleanFrameBuffers() const;
+    void ClearOGLFrameBuffers() const;
 
     [[nodiscard]] int getWidth() const;
 

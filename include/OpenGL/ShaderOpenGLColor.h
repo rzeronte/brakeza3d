@@ -18,7 +18,7 @@ class ShaderOpenGLColor: public ShaderBaseOpenGL {
 public:
     void createBuffer();
 
-    GLuint getFramebuffer() const;
+    [[nodiscard]] GLuint getFramebuffer() const;
 
     ShaderOpenGLColor();
 
@@ -39,7 +39,7 @@ public:
 
     void deleteTexture();
 
-    GLuint getTextureColorBuffer() const;
+    [[nodiscard]] GLuint getTextureColorBuffer() const;
 
     void renderMesh(Mesh3D* m, const Color &color, bool clearFramebuffer, GLuint framebuffer) const;
 

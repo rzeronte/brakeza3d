@@ -1,7 +1,7 @@
-#define GL_GLEXT_PROTOTYPES
-
 #ifndef BRAKEZA3D_SHADEROPENGL_H
 #define BRAKEZA3D_SHADEROPENGL_H
+
+#define GL_GLEXT_PROTOTYPES
 
 #include <string>
 #include <glm/vec2.hpp>
@@ -15,6 +15,8 @@ protected:
 public:
     ShaderBaseOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback);
     ShaderBaseOpenGL(const std::string &vertexFilename, bool enableFeedback);
+
+    virtual ~ShaderBaseOpenGL() = default;
 
     static GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path, bool enableFeedback);
 
@@ -66,7 +68,7 @@ public:
 
     void setMat4Array(const std::string &name, std::vector<glm::mat4> &Transforms) const;
 
-    void setMat4ArrayUniform(GLint uniform, std::vector<glm::mat4> &Transforms) const;
+    static void setMat4ArrayUniform(GLint uniform, std::vector<glm::mat4> &Transforms);
 };
 
 

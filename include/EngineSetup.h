@@ -63,7 +63,8 @@ public:
     bool ENABLE_FORWARD_RENDER = false;
     bool ENABLE_LIGHTS = true;
     bool ENABLE_SHADOW_MAPPING = true;
-    bool ENABLE_DEPTH_OF_FIELD = false;
+    bool ENABLE_DOF_BLUR = false;
+    bool ENABLE_TRIANGLE_MODE_DEPTHMAP = false;
     bool ENABLE_GAMEPAD_CONTROLLER = true;
     bool ENABLE_FOG = false;
     bool ENABLE_BULLET_STEP_SIMULATION = false;
@@ -72,7 +73,6 @@ public:
     bool ENABLE_IMGUI = true;
 
     // Render options
-    bool SHOW_DEPTH_OF_FIELD = false;
     bool LIMIT_FRAMERATE = true;
     bool V_SYNC = true;
     int FRAMERATE = 60;

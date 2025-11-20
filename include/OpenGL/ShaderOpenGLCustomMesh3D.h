@@ -34,7 +34,7 @@ public:
         cJSON* types
     );
 
-    void render(GLuint framebuffer);
+    void render(GLuint framebuffer) override;
 
     void renderMesh(
         Object3D *o,

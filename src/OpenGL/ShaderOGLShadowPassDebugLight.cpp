@@ -11,7 +11,9 @@ ShaderOGLShadowPassDebugLight::ShaderOGLShadowPassDebugLight()
         EngineSetup::get()->SHADERS_FOLDER + "ShadowPassDebugLight.vs",
         EngineSetup::get()->SHADERS_FOLDER + "ShadowPassDebugLight.fs",
         false
-    )
+    ),
+    internalFramebuffer(0),
+    sceneTexture(0)
 {
     setupQuadUniforms(programID);
     createFramebuffer();
@@ -67,14 +69,12 @@ void ShaderOGLShadowPassDebugLight::createFramebuffer()
 
     glGenFramebuffers(1, &internalFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, internalFramebuffer);
-    auto renderer = ComponentsManager::get()->getComponentWindow()->getRenderer();
 
-    int w, h;
-    SDL_GetRendererOutputSize(renderer, &w, &h);
+    auto window = ComponentsManager::get()->getComponentWindow();
 
     glGenTextures(1, &sceneTexture);
     glBindTexture(GL_TEXTURE_2D, sceneTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, window->getWidthRender(), window->getHeightRender(), 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sceneTexture, 0);
@@ -94,30 +94,26 @@ GLuint ShaderOGLShadowPassDebugLight::getSceneTexture() const {
     return sceneTexture;
 }
 
-void ShaderOGLShadowPassDebugLight::createArrayTextures(int numLayers)
+void ShaderOGLShadowPassDebugLight::createArrayTextures(int nLayers)
 {
     if (!internalTextures.empty()) {
         glDeleteTextures(static_cast<int>(internalTextures.size()), internalTextures.data());
         internalTextures.clear();
     }
 
-    auto renderer = ComponentsManager::get()->getComponentWindow()->getRenderer();
-    int w, h;
-    SDL_GetRendererOutputSize(renderer, &w, &h);
+    auto window = ComponentsManager::get()->getComponentWindow();
 
-    internalTextures.resize(numLayers);
-    glGenTextures(numLayers, internalTextures.data());
+    internalTextures.resize(nLayers);
+    glGenTextures(nLayers, internalTextures.data());
 
-    for (int i = 0; i < numLayers; i++) {
+    for (int i = 0; i < nLayers; i++) {
         glBindTexture(GL_TEXTURE_2D, internalTextures[i]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, window->getWidthRender(), window->getHeightRender(), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
-
-    //Logging::Message("ShadowPassDebugLight: creating %d textures", numLayers);
 }
 
 GLuint ShaderOGLShadowPassDebugLight::getInternalTexture(int layer) const
@@ -137,7 +133,7 @@ void ShaderOGLShadowPassDebugLight::updateDebugTextures(int numLights)
     renderInternalToTexture();
 
     for (int i = 0; i < numLights; i++) {
-        auto depthTexture = this->extractLayerFromArray(arrayTextures, i);
+        auto depthTexture = extractLayerFromArray(arrayTextures, i);
         renderInternalFromArrayTextures(depthTexture, i);
         glDeleteTextures(1, &depthTexture);
     }

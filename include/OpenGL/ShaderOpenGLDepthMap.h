@@ -13,9 +13,6 @@ class ShaderOpenGLDepthMap : public ShaderBaseOpenGL, public ShaderBaseOpenGLQua
 
     GLint textureUniform;
 
-    GLint intensityUniform;
-    GLint farPlaneUniform;
-    GLint nearPlaneUniform;
 public:
     ShaderOpenGLDepthMap();
     void render(GLuint textureID, GLuint framebuffer);
