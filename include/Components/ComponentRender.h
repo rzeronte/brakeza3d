@@ -8,7 +8,6 @@
 #include <vector>
 #include "Component.h"
 #include "../Objects/Triangle3D.h"
-#include "../../include/Render/Drawable.h"
 #include "../2D/TextWriter.h"
 #include "../Misc/SceneLoader.h"
 #include "../Misc/ProjectLoader.h"
@@ -57,7 +56,7 @@ class ComponentRender : public Component {
     ShaderOpenGLOutline *shaderOGLOutline;
     ShaderOpenGLColor *shaderOGLColor;
     ShaderOpenGLParticles *shaderOGLParticles;
-    ShaderOpenGLDOF *shaderOGLDOF;
+    ShaderOpenGLDOF *shaderOGLDOFBlur;
     ShaderOpenGLDepthMap *shaderOGLDepthMap;
     ShaderOpenGLFOG *shaderOGLFOG;
     ShaderOpenGLTint *shaderOGLTint;
@@ -94,7 +93,7 @@ public:
 
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
 
-    void onUpdateSceneObjects();
+    static void onUpdateSceneObjects();
 
     void updateFPS();
 
@@ -118,7 +117,7 @@ public:
 
     void loadShaderIntoScene(const std::string &folder, const std::string &name);
 
-    ShaderOpenGLCustom* getLoadedShader(const std::string &folder, const std::string &jsonFilename);
+    static ShaderOpenGLCustom* getLoadedShader(const std::string &folder, const std::string &jsonFilename);
 
     void addShaderToScene(ShaderOpenGLCustom *shader);
 
@@ -126,16 +125,16 @@ public:
 
     void setSceneShadersEnabled(bool value);
 
-    void RunShadersOpenGLPostUpdate();
+    void RunShadersOpenGLPostUpdate() const;
 
     void removeSceneShaderByIndex(int index);
     void removeSceneShader(const ShaderOpenGLCustom *);
 
-    void RunShadersOpenGLPreUpdate();
+    void RunShadersOpenGLPreUpdate() const;
 
-    ShaderOpenGLCustom *getSceneShaderByIndex(int i);
+    ShaderOpenGLCustom *getSceneShaderByIndex(int i) const;
 
-    ShaderOpenGLCustom *getSceneShaderByLabel(const std::string& name);
+    ShaderOpenGLCustom *getSceneShaderByLabel(const std::string& name) const;
 
     static bool compareDistances(const Object3D *obj1, const Object3D *obj2);
 
@@ -179,7 +178,7 @@ public:
 
     [[nodiscard]] ShaderOGLShadowPass *getShaderOGLShadowPass() const;
 
-    ShaderOGLShadowPassDebugLight *getShaderOGLShadowPassDebugLight() const;
+    [[nodiscard]] ShaderOGLShadowPassDebugLight *getShaderOGLShadowPassDebugLight() const;
 
     [[nodiscard]] ShaderOpenGLDepthMap *getShaderOGLDepthMap() const;
 
@@ -187,13 +186,13 @@ public:
 
     [[nodiscard]] ShaderOGLLightPass *getShaderOGLLightPass() const;
 
-    GLuint getLastFrameBufferUsed() const;
+    [[nodiscard]] GLuint getLastFrameBufferUsed() const;
 
-    void setLastFrameBufferUsed(GLuint lastFrameBufferUsed);
+    void setLastFrameBufferUsed(GLuint value);
 
     [[nodiscard]] GLuint getLastProgramUsed() const;
 
-    void setLastProgramUsed(GLuint lastProgramUsed);
+    void setLastProgramUsed(GLuint value);
 
     void changeOpenGLFramebuffer(GLuint);
 
@@ -203,15 +202,15 @@ public:
 
     void resizeShadersFramebuffers();
 
-    void FillOGLBuffers(std::vector<meshData> &meshes);
+    static void FillOGLBuffers(std::vector<meshData> &meshes);
 
     void clearShadowMaps() const;
 
-    GLuint getSpotLightsShadowMapArrayTextures() const;
+    [[nodiscard]] GLuint getSpotLightsShadowMapArrayTextures() const;
 
     void createSpotLightsDepthTextures(int numLights);
 
-    void RenderLayersToGlobalFramebuffer();
+    void RenderLayersToGlobalFramebuffer() const;
 };
 
 #endif //BRAKEDA3D_COMPONENTRENDER_H
