@@ -215,10 +215,12 @@ void Drawable::drawObject3DGizmo(
     if (!ComponentsManager::get()->getComponentWindow()->isWindowMaximized()) {
         ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
     } else {
-        auto windowWidth = (float) ImGui::GetWindowWidth();
-        auto windowHeight = (float) ImGui::GetWindowHeight();
-
-        ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+        ImGuizmo::SetRect(
+            ImGui::GetWindowPos().x,
+            ImGui::GetWindowPos().y,
+            ImGui::GetWindowWidth(),
+            ImGui::GetWindowHeight()
+        );
     }
 
     ImGuizmo::BeginFrame();
