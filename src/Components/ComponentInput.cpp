@@ -348,13 +348,13 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
         auto *window = ComponentsManager::get()->getComponentWindow();
 
         if (keyboard[SDL_SCANCODE_F5]) {
-            window->getImGuiConfig() = ImGUIConfigs::DEFAULT;
+            window->setImGuiConfig(EngineSetup::ImGUIConfigs::DEFAULT);
         }
         if (keyboard[SDL_SCANCODE_F6]) {
-            window->getImGuiConfig() = ImGUIConfigs::CODING;
+            window->setImGuiConfig(EngineSetup::ImGUIConfigs::CODING);
         }
         if (keyboard[SDL_SCANCODE_F7]) {
-            window->getImGuiConfig() = ImGUIConfigs::DESIGN;
+            window->setImGuiConfig(EngineSetup::ImGUIConfigs::DESIGN);
         }
 
         if (keyboard[SDL_SCANCODE_F11]) {
