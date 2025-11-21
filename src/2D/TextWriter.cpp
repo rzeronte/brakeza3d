@@ -27,7 +27,7 @@ TextWriter* TextWriter::create(const std::string& fontFile)
 }
 
 
-void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Color c)
+void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, const Color &c) const
 {
     auto surfaceTTF = TTF_RenderText_Blended(font, text, c.toSDL());
 #ifdef _WIN32
@@ -39,8 +39,8 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
 
     auto renderer = ComponentsManager::get()->getComponentWindow();
 
-    int windowWidth = renderer->widthWindow;
-    int windowHeight = renderer->heightWindow;
+    int windowWidth = renderer->getWidth();
+    int windowHeight = renderer->getHeight();
 
     SDL_Rect dstRect;
     dstRect.x = (x * windowWidth) / EngineSetup::get()->screenWidth;
@@ -64,7 +64,7 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, Colo
 #endif
 }
 
-void TextWriter::writeTextTTFAutoSize(int x, int y, const char *text, Color c, float sizeRatio)
+void TextWriter::writeTextTTFAutoSize(int x, int y, const char *text, const Color &c, float sizeRatio) const
 {
     int w = 0, h = 0;
     TTF_SizeUTF8(font, text, &w, &h);
@@ -75,7 +75,7 @@ void TextWriter::writeTextTTFAutoSize(int x, int y, const char *text, Color c, f
     writeTextTTF(x, y, w, h, text, c);
 }
 
-void TextWriter::writeTextTTFMiddleScreen(const char *text, Color c, float sizeRatio)
+void TextWriter::writeTextTTFMiddleScreen(const char *text, const Color &c, float sizeRatio) const
 {
     int textWidth, textHeight;
     TTF_SizeUTF8(font, text, &textWidth, &textHeight);
@@ -92,7 +92,7 @@ void TextWriter::writeTextTTFMiddleScreen(const char *text, Color c, float sizeR
     writeTextTTFAutoSize(xPosition, yPosition, text, c, sizeRatio);
 }
 
-void TextWriter::writeTTFCenterHorizontal(int y, const char *text, Color c, float sizeRatio)
+void TextWriter::writeTTFCenterHorizontal(int y, const char *text, const Color &c, float sizeRatio) const
 {
     int w, h;
     TTF_SizeUTF8(font, text, &w, &h);

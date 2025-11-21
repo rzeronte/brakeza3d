@@ -6,7 +6,7 @@
 #include "../../include/Brakeza3D.h"
 
 ShaderOGLRenderForward::ShaderOGLRenderForward()
-:
+    :
     ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Render.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Render.fs",
@@ -196,23 +196,6 @@ void ShaderOGLRenderForward::renderMesh(Mesh3D *o, GLuint framebuffer) const
     }
 }
 
-void ShaderOGLRenderForward::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer) const
-{
-    for (const auto& m: o->meshes) {
-        render(
-            o,
-            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
-            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
-            m.feedbackBuffer,
-            m.uvbuffer,
-            m.normalbuffer,
-            static_cast<int>(m.vertices.size()),
-            o->getAlpha(),
-            framebuffer
-        );
-    }
-}
-
 void ShaderOGLRenderForward::fillUBOLights()
 {
     glDeleteBuffers(1, &bufferUBOLightPoints);
@@ -265,25 +248,42 @@ void ShaderOGLRenderForward::extractLights(Object3D *o)
     }
 }
 
-void ShaderOGLRenderForward::setGlobalIlluminationDirection(Vertex3D d)
+void ShaderOGLRenderForward::setGlobalIlluminationDirection(const Vertex3D &d)
 {
     this->directionalLight.direction = d.toGLM();
 }
 
-void ShaderOGLRenderForward::setGlobalIlluminationAmbient(Vertex3D a)
+void ShaderOGLRenderForward::setGlobalIlluminationAmbient(const Vertex3D &a)
 {
     this->directionalLight.ambient = a.toGLM();
 }
 
-void ShaderOGLRenderForward::setGlobalIlluminationDiffuse(Vertex3D d)
+void ShaderOGLRenderForward::setGlobalIlluminationDiffuse(const Vertex3D &d)
 {
     this->directionalLight.diffuse = d.toGLM();
 
 }
 
-void ShaderOGLRenderForward::setGlobalIlluminationSpecular(Vertex3D s)
+void ShaderOGLRenderForward::setGlobalIlluminationSpecular(const Vertex3D &s)
 {
     this->directionalLight.specular = s.toGLM();
+}
+
+void ShaderOGLRenderForward::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer) const
+{
+    for (const auto& m: o->meshes) {
+        render(
+            o,
+            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
+            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
+            m.feedbackBuffer,
+            m.uvbuffer,
+            m.normalbuffer,
+            static_cast<int>(m.vertices.size()),
+            o->getAlpha(),
+            framebuffer
+        );
+    }
 }
 
 int ShaderOGLRenderForward::getNumPointLights() const {

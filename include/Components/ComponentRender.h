@@ -33,43 +33,41 @@
 
 class ComponentRender : public Component {
 
-    int fps;
-    int fpsFrameCounter;
-    float frameTime;
+    int fps = 0;
+    int fpsFrameCounter = 0;
+    float frameTime = 0.f;
 
-    Object3D *selectedObject;
+    Object3D *selectedObject = nullptr;
 
-    TextWriter *textWriter;
+    TextWriter *textWriter = nullptr;
     SceneLoader sceneLoader;
     ProjectLoader projectLoader;
 
-    bool sceneShadersEnabled;
+    bool sceneShadersEnabled = false;
     std::vector<ShaderOpenGLCustom*> sceneShaders;
 
-    ShaderOGLRenderForward *shaderOGLRender;
-    ShaderOpenGLImage *shaderOGLImage;
-    ShaderOpenGLLine *shaderOGLLine;
-    ShaderOpenGLWireframe *shaderOGLWireframe;
-    ShaderOpenGLLine3D *shaderOGLLine3D;
-    ShaderOpenGLShading *shaderOGLShading;
-    ShaderOpenGLPoints *shaderOGLPoints;
-    ShaderOpenGLOutline *shaderOGLOutline;
-    ShaderOpenGLColor *shaderOGLColor;
-    ShaderOpenGLParticles *shaderOGLParticles;
-    ShaderOpenGLDOF *shaderOGLDOFBlur;
-    ShaderOpenGLDepthMap *shaderOGLDepthMap;
-    ShaderOpenGLFOG *shaderOGLFOG;
-    ShaderOpenGLTint *shaderOGLTint;
-    ShaderOpenGLBonesTransforms *shaderOGLBonesTransforms;
-    ShaderOGLGRenderDeferred *shaderOGLGBuffer;
-    ShaderOGLLightPass *shaderOGLLightPass;
-    ShaderOGLShadowPass *shaderShadowPass;
-    ShaderOGLShadowPassDebugLight *shaderShadowPassDebugLight;
+    ShaderOGLRenderForward *shaderOGLRender = nullptr;
+    ShaderOpenGLImage *shaderOGLImage = nullptr;
+    ShaderOpenGLLine *shaderOGLLine = nullptr;
+    ShaderOpenGLWireframe *shaderOGLWireframe = nullptr;
+    ShaderOpenGLLine3D *shaderOGLLine3D = nullptr;
+    ShaderOpenGLShading *shaderOGLShading = nullptr;
+    ShaderOpenGLPoints *shaderOGLPoints = nullptr;
+    ShaderOpenGLOutline *shaderOGLOutline = nullptr;
+    ShaderOpenGLColor *shaderOGLColor = nullptr;
+    ShaderOpenGLParticles *shaderOGLParticles = nullptr;
+    ShaderOpenGLDOF *shaderOGLDOFBlur = nullptr;
+    ShaderOpenGLDepthMap *shaderOGLDepthMap = nullptr;
+    ShaderOpenGLFOG *shaderOGLFOG = nullptr;
+    ShaderOpenGLTint *shaderOGLTint = nullptr;
+    ShaderOpenGLBonesTransforms *shaderOGLBonesTransforms = nullptr;
+    ShaderOGLGRenderDeferred *shaderOGLGBuffer = nullptr;
+    ShaderOGLLightPass *shaderOGLLightPass = nullptr;
+    ShaderOGLShadowPass *shaderShadowPass = nullptr;
+    ShaderOGLShadowPassDebugLight *shaderShadowPassDebugLight = nullptr;
 
-    GLuint lastFrameBufferUsed;
-    GLuint lastProgramUsed;
-
-    GLuint shadowMapArrayTex;
+    GLuint lastFrameBufferUsed = 0;
+    GLuint lastProgramUsed = 0;
 
     std::map<std::string, ShaderCustomTypes> ShaderTypesMapping = {
         {"Postprocessing", SHADER_POSTPROCESSING},
@@ -200,15 +198,11 @@ public:
 
     [[nodiscard]] const std::map<std::string, ShaderCustomTypes> &getShaderTypesMapping() const;
 
-    void resizeShadersFramebuffers();
+    void resizeShadersFramebuffers() const;
 
     static void FillOGLBuffers(std::vector<meshData> &meshes);
 
     void clearShadowMaps() const;
-
-    [[nodiscard]] GLuint getSpotLightsShadowMapArrayTextures() const;
-
-    void createSpotLightsDepthTextures(int numLights);
 
     void RenderLayersToGlobalFramebuffer() const;
 };

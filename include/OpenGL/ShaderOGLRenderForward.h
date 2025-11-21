@@ -75,13 +75,13 @@ public:
 
     void extractLights(Object3D *o);
 
-    void setGlobalIlluminationDirection(Vertex3D d);
+    void setGlobalIlluminationDirection(const Vertex3D &d);
 
-    void setGlobalIlluminationAmbient(Vertex3D a);
+    void setGlobalIlluminationAmbient(const Vertex3D &a);
 
-    void setGlobalIlluminationDiffuse(Vertex3D d);
+    void setGlobalIlluminationDiffuse(const Vertex3D &d);
 
-    void setGlobalIlluminationSpecular(Vertex3D s);
+    void setGlobalIlluminationSpecular(const Vertex3D &s);
 
     void renderAnimatedMesh(Mesh3D *o, GLuint framebuffer) const;
 

@@ -2,6 +2,9 @@
 #include <utility>
 
 #include "../../include/2D/TextureAnimated.h"
+
+#include <SDL_image.h>
+
 #include "../../include/EngineSetup.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"

@@ -3,32 +3,6 @@
 #include "../../include/Render/Logging.h"
 
 ComponentInput::ComponentInput()
-:
-    mouseMotion(false),
-    mouseMotionXRel(0),
-    mouseMotionYRel(0),
-    mouseLeftButton(false),
-    mouseRightButton(false),
-    drag(false),
-    keyboard(nullptr),
-    controllerButtonA(0),
-    controllerButtonB(0),
-    controllerButtonX(0),
-    controllerButtonY(0),
-    controllerAxisLeftX(0),
-    controllerAxisLeftY(0),
-    controllerAxisRightX(0),
-    controllerAxisRightY(0),
-    controllerAxisTriggerLeft(0),
-    controllerAxisTriggerRight(0),
-    mouseButtons(0),
-    mouseX(0),
-    mouseY(0),
-    relativeRendererMouseX(0),
-    relativeRendererMouseY(0),
-    gameController(nullptr),
-    keyUpEvent(false),
-    keyDownEvent(false)
 {
 }
 
@@ -374,13 +348,13 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
         auto *window = ComponentsManager::get()->getComponentWindow();
 
         if (keyboard[SDL_SCANCODE_F5]) {
-            window->ImGuiConfigChanged = ImGUIConfigs::DEFAULT;
+            window->getImGuiConfig() = ImGUIConfigs::DEFAULT;
         }
         if (keyboard[SDL_SCANCODE_F6]) {
-            window->ImGuiConfigChanged = ImGUIConfigs::CODING;
+            window->getImGuiConfig() = ImGUIConfigs::CODING;
         }
         if (keyboard[SDL_SCANCODE_F7]) {
-            window->ImGuiConfigChanged = ImGUIConfigs::DESIGN;
+            window->getImGuiConfig() = ImGUIConfigs::DESIGN;
         }
 
         if (keyboard[SDL_SCANCODE_F11]) {
