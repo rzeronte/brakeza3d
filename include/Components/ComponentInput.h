@@ -6,53 +6,55 @@
 
 class ComponentInput : public Component {
 private:
-    bool mouseMotion;
-    float mouseMotionXRel;
-    float mouseMotionYRel;
-    bool mouseLeftButton;
-    bool mouseRightButton;
-    bool mouseButtonDown;
-    bool mouseButtonUp;
-    bool drag;
+    bool mouseMotion = false;
+    float mouseMotionXRel = 0.f;
+    float mouseMotionYRel = 0.f;
+    bool mouseLeftButton = false;
+    bool mouseRightButton = false;
+    bool mouseButtonDown = false;
+    bool mouseButtonUp = false;
+    bool drag = false;
 
-    Uint8 *keyboard;
+    Uint8 *keyboard = nullptr;
     std::unordered_map<SDL_Keycode, bool> keyboardEvents;
 
-    Uint8 controllerButtonA;
-    Uint8 controllerButtonB;
-    Uint8 controllerButtonX;
-    Uint8 controllerButtonY;
+    Uint8 controllerButtonA = 0;
+    Uint8 controllerButtonB = 0;
+    Uint8 controllerButtonX = 0;
+    Uint8 controllerButtonY = 0;
 
-    float controllerAxisLeftX;
-    float controllerAxisLeftY;
+    float controllerAxisLeftX = 0.f;
+    float controllerAxisLeftY = 0.f;
 
-    float controllerAxisRightX;
-    float controllerAxisRightY;
+    float controllerAxisRightX = 0.f;
+    float controllerAxisRightY = 0.f;
 
-    float controllerAxisTriggerLeft;
-    float controllerAxisTriggerRight;
+    float controllerAxisTriggerLeft = 0.f;
+    float controllerAxisTriggerRight = 0.f;
 
-    Uint8 controllerPadUp;
-    Uint8 controllerPadDown;
-    Uint8 controllerPadLeft;
-    Uint8 controllerPadRight;
+    Uint8 controllerPadUp = 0;
+    Uint8 controllerPadDown = 0;
+    Uint8 controllerPadLeft = 0;
+    Uint8 controllerPadRight = 0;
 
-    Uint8 controllerShoulderLeft;
-    Uint8 controllerShoulderRight;
+    Uint8 controllerShoulderLeft = 0;
+    Uint8 controllerShoulderRight = 0;
 
-    Uint8 controllerButtonBack;
-    Uint8 controllerButtonGuide;
-    Uint8 controllerButtonStart;
+    Uint8 controllerButtonBack = 0;
+    Uint8 controllerButtonGuide = 0;
+    Uint8 controllerButtonStart = 0;
 
-    Uint32 mouseButtons;
-    int mouseX;
-    int mouseY;
-    int relativeRendererMouseX;
-    int relativeRendererMouseY;
+    Uint32 mouseButtons = 0;;
 
-    _SDL_GameController *gameController;
-    bool keyUpEvent;
-    bool keyDownEvent;
+    int mouseX = 0;
+    int mouseY = 0;
+    int relativeRendererMouseX = 0;
+    int relativeRendererMouseY = 0;
+
+    _SDL_GameController *gameController = nullptr;
+
+    bool keyUpEvent = false;
+    bool keyDownEvent = false;
 
 public:
     ComponentInput();

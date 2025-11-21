@@ -22,13 +22,13 @@ public:
 
     virtual ~TextWriter();
 
-    void writeTextTTFAutoSize(int x, int y, const char *text, Color c, float sizeRatio);
+    void writeTextTTFAutoSize(int x, int y, const char *text, const Color &c, float sizeRatio) const;
 
-    void writeTextTTF(int x, int y, int w, int h, const char *text, Color c);
+    void writeTextTTF(int x, int y, int w, int h, const char *text, const Color &c) const;
 
-    void writeTextTTFMiddleScreen(const char *text, Color c, float sizeRatio);
+    void writeTextTTFMiddleScreen(const char *text, const Color &c, float sizeRatio) const;
 
-    void writeTTFCenterHorizontal(int y, const char *text, Color c, float sizeRatio);
+    void writeTTFCenterHorizontal(int y, const char *text, const Color &c, float sizeRatio) const;
 
     [[nodiscard]] float getAlpha() const;
 

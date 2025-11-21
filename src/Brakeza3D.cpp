@@ -134,7 +134,7 @@ void Brakeza3D::checkForResizeOpenGLWindow(const SDL_Event &e)
     if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
         auto window = ComponentsManager::get()->getComponentWindow();
         window->updateWindowSize();
-        glViewport(0,0, window->widthWindow, window->heightWindow);
+        glViewport(0,0, window->getWidth(), window->getHeight());
         window->resetFramebuffer();
     }
 }
@@ -185,37 +185,37 @@ float Brakeza3D::getDeltaTimeMicro() const
     return this->deltaTime;
 }
 
-void Brakeza3D::onStartComponents()
+void Brakeza3D::onStartComponents() const
 {
     for (Component*& component : componentsManager->components) {
         component->onStart();
     }
 }
 
-void Brakeza3D::PreUpdateComponents()
+void Brakeza3D::PreUpdateComponents() const
 {
     for (Component*& component : componentsManager->components) {
         component->preUpdate();
     }
 }
 
-void Brakeza3D::onUpdateComponents()
+void Brakeza3D::onUpdateComponents() const
 {
     for (Component*& component : componentsManager->components) {
         component->onUpdate();
     }
 }
 
-void Brakeza3D::postUpdateComponents()
+void Brakeza3D::postUpdateComponents() const
 {
     for (Component*& component : componentsManager->components) {
         component->postUpdate();
     }
 }
 
-void Brakeza3D::onEndComponents()
+void Brakeza3D::onEndComponents() const
 {
-    for (auto o : sceneObjects) {
+    for (const auto o : sceneObjects) {
         delete o;
     }
 
@@ -228,7 +228,7 @@ void Brakeza3D::onEndComponents()
     exit(0);
 }
 
-void Brakeza3D::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish)
+void Brakeza3D::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish) const
 {
     for (Component* &component : this->componentsManager->components) {
         component->onSDLPollEvent(event, finish);
@@ -283,7 +283,7 @@ Object3D *Brakeza3D::getSceneObjectByLabel(const std::string &label) const
     return nullptr;
 }
 
-Object3D *Brakeza3D::getSceneObjectById(int id) const
+Object3D *Brakeza3D::getSceneObjectById(const int id) const
 {
     for (const auto sceneObject : sceneObjects) {
         if (sceneObject->getId() == id) {

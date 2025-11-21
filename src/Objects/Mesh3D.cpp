@@ -940,7 +940,7 @@ void Mesh3D::shadowMappingPass()
         shaderShadowPass->renderMeshIntoArrayTextures(
             this,
             l,
-            render->getSpotLightsShadowMapArrayTextures(),
+            shaderShadowPass->getSpotLightsShadowMapArrayTextures(),
             i,
             shaderShadowPass->getSpotLightsDepthMapsFBO()
         );

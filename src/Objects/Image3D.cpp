@@ -109,7 +109,12 @@ void Image3D::onUpdate()
     auto window = ComponentsManager::get()->getComponentWindow();
 
     if (render->getSelectedObject() == this) {
-        render->getShaderOGLOutline()->drawOutlineImage3D(this, Color::green(), 0.1f, window->getSceneFramebuffer());
+        render->getShaderOGLOutline()->drawOutlineImage3D(
+        this,
+         Color::green(),
+          0.1f,
+           window->getSceneFramebuffer()
+       );
     }
 
     render->getShaderOGLRenderForward()->render(
@@ -121,7 +126,7 @@ void Image3D::onUpdate()
         normalbuffer,
         static_cast<int>(vertices.size()),
         1.0f,
-        ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+        window->getSceneFramebuffer()
     );
 }
 
@@ -129,11 +134,13 @@ Image3D::~Image3D()
 {
 }
 
-const char *Image3D::getTypeObject() {
+const char *Image3D::getTypeObject()
+{
     return "Image3D";
 }
 
-const char *Image3D::getTypeIcon() {
+const char *Image3D::getTypeIcon()
+{
     return "Image3DIcon";
 }
 
@@ -268,7 +275,6 @@ void Image3D::checkClickObject(Vector3D ray, Object3D *&foundObject, float &last
                 auto m = distance.getModule();
                 if ( m < lastDepthFound || lastDepthFound == -1) {
                     foundObject = triangle.parent;
-                    Logging::Message("esa imagen");
                     lastDepthFound = m;
                 }
             }

@@ -3,6 +3,8 @@
 #include <string>
 #include <ctime>
 #include <vector>
+#include <filesystem>
+#include <sys/types.h>
 #include <SDL2/SDL_system.h>
 #include <algorithm>
 #include <fstream>
@@ -14,8 +16,9 @@
 #include "../../include/Objects/Mesh3DAnimation.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <filesystem>
 #include <glm/gtc/type_ptr.hpp>
+#include <dirent.h>
+#include <sys/stat.h>
 
 std::vector<std::string> Tools::split(const std::string &text, char sep)
 {
@@ -30,7 +33,7 @@ std::vector<std::string> Tools::split(const std::string &text, char sep)
     return tokens;
 }
 
-void Tools::SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
+void Tools::SurfacePutPixel(const SDL_Surface *surface, int x, int y, Uint32 pixel)
 {
     //Convert the pixels to 32 bit
     auto *pixels = (Uint32 *) surface->pixels;
@@ -208,16 +211,12 @@ Uint32 Tools::getSurfacePixel(SDL_Surface *surface, int x, int y)
     switch (bpp) {
         case 1:
             return *p;
-            break;
         case 2:
             return *(Uint16 *) p;
-            break;
         case 3:
             return p[0] | p[1] << 8 | p[2] << 16;
-            break;
         case 4:
             return *(Uint32 *) p;
-            break;
         default:
             return 0;       /* shouldn't happen, but avoids warnings */
     }
@@ -384,28 +383,48 @@ bool Tools::saveTextureToFile(GLuint textureID, int width, int height, const cha
 std::vector<std::string> Tools::getFolderFiles(const std::string& path, const std::string& extension)
 {
     std::vector<std::string> result;
+    DIR *dir;
+    struct dirent *ent;
+    if ((dir = opendir (path.c_str())) != nullptr) {
+        while ((ent = readdir (dir)) != nullptr) {
+            auto fileName = ent->d_name;
 
-    for (auto& entry : std::filesystem::directory_iterator(path)) {
-        if (!entry.is_regular_file()) continue;
+            if (Tools::getExtensionFromFilename(ent->d_name) != extension) continue;
+            if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
 
-        if (entry.path().extension() == extension) {
-            result.push_back(entry.path().filename().string());
+            result.emplace_back(ent->d_name);
         }
+        std::sort( result.begin(), result.end() );
+        closedir (dir);
     }
 
-    std::sort(result.begin(), result.end());
     return result;
 }
 
 std::vector<std::string> Tools::getFolderFolders(const std::string& path)
 {
     std::vector<std::string> result;
-    for (auto& entry : std::filesystem::directory_iterator(path)) {
-        if (entry.is_directory()) {
-            result.push_back(entry.path().filename().string());
+    DIR *dir;
+    struct dirent *ent;
+    if ((dir = opendir (path.c_str())) != nullptr) {
+        while ((ent = readdir (dir)) != nullptr) {
+            auto fileName = ent->d_name;
+
+            if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
+            std::string fullPath = path + "/" + fileName;
+
+            struct stat fileStat;
+            if (stat(fullPath.c_str(), &fileStat) == 0) {
+                if (S_ISDIR(fileStat.st_mode)) {
+                    result.emplace_back(fileName);
+                }
+            }
         }
+        std::sort( result.begin(), result.end() );
+
+        closedir (dir);
     }
-    std::sort(result.begin(), result.end());
+
     return result;
 }
 

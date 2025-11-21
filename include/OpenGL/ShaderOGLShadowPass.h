@@ -23,16 +23,18 @@ class ShaderOGLShadowPass : public ShaderBaseOpenGL
     GLint matrixViewUniform;
     GLint matrixModelUniform;
 
+    GLuint spotLightsDepthMapArray = 0;
+
 public:
     ShaderOGLShadowPass();
 
     void renderMeshIntoArrayTextures(Mesh3D *o, SpotLight3D* light, GLuint depthArrayTextures, int indexLight, GLuint fb) const;
 
-    void renderMeshIntoDirectionalLightTexture(Mesh3D *o, DirLightOpenGL& light, GLuint framebuffer) const;
+    void renderMeshIntoDirectionalLightTexture(Mesh3D *o, const DirLightOpenGL& light, GLuint framebuffer) const;
 
     void renderMeshAnimatedIntoArrayTextures(Mesh3DAnimation *o, SpotLight3D* light, GLuint depthArrayTextures, int indexLight, GLuint fb) const;
 
-    void renderMeshAnimatedIntoDirectionalLightTexture(Mesh3DAnimation *o, DirLightOpenGL& light, GLuint framebuffer) const;
+    void renderMeshAnimatedIntoDirectionalLightTexture(Mesh3DAnimation *o, const DirLightOpenGL& light, GLuint framebuffer) const;
 
     void renderIntoArrayDepthTextures(
         Object3D* o,
@@ -48,7 +50,7 @@ public:
 
     void renderIntoDirectionalLightTexture(
         Object3D* o,
-        DirLightOpenGL& light,
+        const DirLightOpenGL& light,
         GLuint vertexbuffer,
         GLuint uvbuffer,
         GLuint normalbuffer,
@@ -75,6 +77,10 @@ public:
     void clearDirectionalLightDepthTexture() const;
 
     void resetFramebuffers();
+
+    GLuint getSpotLightsShadowMapArrayTextures() const;
+
+    void createSpotLightsDepthTextures(int numLights);
 };
 
 

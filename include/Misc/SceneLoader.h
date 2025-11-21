@@ -7,9 +7,6 @@
 
 #include <string>
 #include <map>
-#include "../Objects/Vertex3D.h"
-#include "cJSON.h"
-#include "Color.h"
 
 enum class SceneObjectLoaderMapping {
     Object3D,
@@ -40,42 +37,24 @@ static std::map<std::string, SceneObjectLoaderMapping> SceneObjectTypesMapping =
 };
 
 class SceneLoader {
-
 public:
     explicit SceneLoader();
-
-    void loadScene(const std::string& filename);
-
+    static void loadScene(const std::string& filename);
     static void saveScene(const std::string& filename);
-
     static void clearScene();
-
     static void createObjectInScene();
-
     static void createPointLight3DInScene();
-
     static void createImage3DToScene(const std::string &filename);
-
     static void createSpotLight3DInScene();
-
     static void createParticleEmitterInScene();
-
     static void createBillboardAnimationInScene(const std::string& filename);
-
     static void createImage2DAnimatedInScene(const std::string& filename);
-
     static void createImage2DInScene(const std::string& filename);
-
     static void createBillboardAnimation8Directions();
-
     static void createMesh3D(const std::string& animationFile);
-
     static void createMesh3DAnimationToScene(const std::string& animationFile);
-
     static void createScene(const std::string &filename);
-
     static void removeScene(const std::string &filename);
-
 };
 
 #endif //BRAKEZA3D_SCENELOADER_H

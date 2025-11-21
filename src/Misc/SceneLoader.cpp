@@ -64,16 +64,16 @@ void SceneLoader::loadScene(const std::string& filename)
         ToolsJSON::parseVertex3DJSON(cameraPositionJSON).z
     );
 
-    auto pitch = (float) cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "x")->valuedouble;
-    auto yaw = (float) cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "y")->valuedouble;
-    auto roll = (float) cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "z")->valuedouble;
+    auto pitch = static_cast<float>(cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "x")->valuedouble);
+    auto yaw = static_cast<float>(cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "y")->valuedouble);
+    auto roll = static_cast<float>(cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "z")->valuedouble);
 
-    camera->pitch = pitch;
-    camera->yaw = yaw;
-    camera->roll = roll;
+    camera->getPitch() = pitch;
+    camera->getYaw() = yaw;
+    camera->getRoll() = roll;
     camera->setRotation(M3::getMatrixRotationForEulerAngles(pitch, yaw, roll));
 
-    Logging::Message("Camera rotation (%f, %f, %f)", camera->pitch, camera->yaw, camera->roll);
+    Logging::Message("Camera rotation (%f, %f, %f)", camera->getPitch(), camera->getYaw(), camera->getRoll());
 
     cJSON *currentObject;
     cJSON_ArrayForEach(currentObject, cJSON_GetObjectItemCaseSensitive(contentJSON, "objects")) {

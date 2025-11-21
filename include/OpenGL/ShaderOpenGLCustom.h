@@ -69,12 +69,13 @@ static std::map<std::string, ShaderOpenGLCustomDataType> GLSLTypeMapping = {
 
 class ShaderOpenGLCustom: public ShaderBaseOpenGL
 {
-    GLuint resultFramebuffer;
-    GLuint textureResult;
+    GLuint resultFramebuffer = 0;
+    GLuint textureResult = 0;
 
     std::string label;
 
-    bool enabled;
+    bool enabled = true;
+
     ShaderCustomTypes type;
     std::string fileTypes;
 
@@ -114,7 +115,7 @@ public:
 
 protected:
 
-    bool existDataType(const char *name, const char *type);
+    bool existDataType(const char *name, const char *type) const;
 
     void parseTypesFromFileAttributes();
 
@@ -129,9 +130,9 @@ protected:
 public:
     [[nodiscard]] bool isEnabled() const;
 
-    void setEnabled(bool enabled);
+    void setEnabled(bool value);
 
-    void onUpdate();
+    void onUpdate() const;
     void postUpdate();
 
     [[nodiscard]] const std::string &getLabel() const;
@@ -145,7 +146,7 @@ public:
 
     void removeDataType(const ShaderOpenGLCustomType &data);
 
-    void setDataTypeValue(const std::string &name, ShaderOpenGLCustomDataValue newValue);
+    void setDataTypeValue(const std::string &name, const ShaderOpenGLCustomDataValue &newValue);
 
     void setDataTypeValue(const std::string &name, int newValue);
 
@@ -173,9 +174,9 @@ public:
         ShaderCustomTypes type
     );
 
-    static void removeCustomShaderFiles(const std::string& folder, std::string name);
+    static void removeCustomShaderFiles(const std::string& folder, const std::string &name);
 
-    static ShaderCustomTypes extractTypeFromShaderName(const std::string& folder, std::string name);
+    static ShaderCustomTypes extractTypeFromShaderName(const std::string& folder, const std::string &name);
 
     std::string getFolder();
 

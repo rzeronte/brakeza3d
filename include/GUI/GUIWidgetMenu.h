@@ -341,13 +341,13 @@ struct GUIWidgetMenu
 
             if (ImGui::BeginMenu("Layout")) {
                 if (ImGui::MenuItem("Default", "F5")) {
-                    ComponentsManager::get()->getComponentWindow()->ImGuiConfigChanged = ImGUIConfigs::DEFAULT;
+                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(ImGUIConfigs::DEFAULT);
                 }
                 if (ImGui::MenuItem("Coding", "F6")) {
-                    ComponentsManager::get()->getComponentWindow()->ImGuiConfigChanged = ImGUIConfigs::CODING;
+                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(ImGUIConfigs::CODING);
                 }
                 if (ImGui::MenuItem("Design", "F7")) {
-                    ComponentsManager::get()->getComponentWindow()->ImGuiConfigChanged = ImGUIConfigs::DESIGN;
+                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(ImGUIConfigs::DESIGN);
                 }
                 ImGui::Separator();
                 if (ImGui::MenuItem("Save current layout")) {
@@ -701,7 +701,6 @@ struct GUIWidgetMenu
         if (EngineSetup::get()->MOUSE_LOOK) {
             ImGui::DragFloat("Sensibility", &EngineSetup::get()->MOUSE_SENSITIVITY, 0.001f, 0.0f, 1.0f);
         }
-
     }
 };
 

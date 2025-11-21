@@ -4,19 +4,13 @@
 #include "../Objects/Vertex3D.h"
 #include "../Objects/Point2D.h"
 #include "../Components/Camera3D.h"
-#include "../Render/Frustum.h"
 #include "../Objects/Object3D.h"
-#include "../Objects/Vector3D.h"
 #include "../Objects/LightPoint3D.h"
 #include "../Render/M3.h"
 #include "Grid3D.h"
 #include "../2D/TextureAnimated.h"
 #include "../Objects/ParticlesContext.h"
 #include <vector>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_mixer.h>
-#include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 
 class Tools {
@@ -24,7 +18,7 @@ class Tools {
 public:
     static std::vector<std::string> split(const std::string &, char);
 
-    static void SurfacePutPixel(SDL_Surface *surface, int x, int y, Uint32 pixel);
+    static void SurfacePutPixel(const SDL_Surface *surface, int x, int y, Uint32 pixel);
 
     static float getXTextureFromUV(SDL_Surface *surface, float u);
 
@@ -94,6 +88,7 @@ public:
     static bool copyFile(const std::string &origen, const std::string &destino);
 
     static glm::mat4 aiMat4toGLMMat4(const aiMatrix4x4t<ai_real> &from);
+
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

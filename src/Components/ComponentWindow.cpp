@@ -3,6 +3,9 @@
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
 #include "../../include/Components/ComponentWindow.h"
+
+#include <SDL_image.h>
+
 #include "../../include/Render/Logging.h"
 #include "../../include/OpenGL/ShaderOpenGLImage.h"
 #include "../imgui/backends/imgui_impl_opengl3.h"
@@ -12,20 +15,7 @@
 
 ComponentWindow::ComponentWindow()
 :
-    window(nullptr),
-    renderer(nullptr),
-    screenSurface(nullptr),
-    screenTexture(nullptr),
-    fontDefault(nullptr),
-    guizmoOperation(ImGuizmo::TRANSLATE),
-    ImGuiConfig(ImGUIConfigs::DEFAULT),
-    applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str())),
-    context(nullptr),
-    widthWindow(0),
-    heightWindow(0),
-    widthRender(0),
-    heightRender(0),
-    ImGuiConfigChanged(ImGUIConfigs::DEFAULT)
+    applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str()))
 {
     initWindow();
     initFontsTTF();
@@ -560,7 +550,6 @@ bool ComponentWindow::isWindowMaximized() const
 {
     Uint32 flags = SDL_GetWindowFlags(window);
 
-    // Verifica si el flag SDL_WINDOW_MAXIMIZED está activo
     return (flags & SDL_WINDOW_MAXIMIZED) != 0;
 }
 
@@ -580,12 +569,12 @@ void ComponentWindow::toggleFullScreen() const
 
 ImGuizmo::OPERATION ComponentWindow::getGuizmoOperation() const
 {
-    return guizmoOperation;
+    return ImGuiOperationGuizmo;
 }
 
-void ComponentWindow::setGuizmoOperation(ImGuizmo::OPERATION guizmoOperation)
+void ComponentWindow::setGuizmoOperation(ImGuizmo::OPERATION operation)
 {
-    ComponentWindow::guizmoOperation = guizmoOperation;
+    ImGuiOperationGuizmo = operation;
 }
 
 GLuint ComponentWindow::getDepthTexture() const
@@ -707,7 +696,6 @@ void ComponentWindow::createGBuffer()
 
     Logging::Message("G-Buffer created successful (%d, %d)", widthRender, heightRender);
 
-    // Desvincular
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -741,4 +729,14 @@ int ComponentWindow::getObjectIDByPickingColorFramebuffer(const int x, const int
     );
 
     return Color::colorToId(c);
+}
+
+ImGUIConfigs& ComponentWindow::getImGuiConfig()
+{
+    return ImGuiConfig;
+}
+
+void ComponentWindow::setImGuiConfig(ImGUIConfigs c)
+{
+    ImGuiConfig = c;
 }

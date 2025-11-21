@@ -7,8 +7,6 @@
 
 ShaderOpenGLImage::ShaderOpenGLImage()
 :
-    quadVAO(0),
-    VBO(0),
     ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Image.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Image.fs",
@@ -54,7 +52,7 @@ void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     auto window = ComponentsManager::get()->getComponentWindow();
-    glm::mat4 projection = glm::ortho(0.0f, (float) window->widthWindow, (float) window->heightWindow, 0.0f, -1.0f, 1.0f);
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(window->getWidth()), static_cast<float>(window->getHeight()), 0.0f, -1.0f, 1.0f);
 
     glm::vec2 position = glm::vec2(x, y);
     glm::vec2 size = glm::vec2(w, h);

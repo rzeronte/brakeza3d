@@ -8,35 +8,6 @@
 #include "../../include/Render/Drawable.h"
 
 ComponentRender::ComponentRender()
-    :
-    fps(0),
-    fpsFrameCounter(0),
-    frameTime(0),
-    selectedObject(nullptr),
-    textWriter(nullptr),
-    sceneShadersEnabled(true),
-    shaderOGLRender(nullptr),
-    shaderOGLImage(nullptr),
-    shaderOGLLine(nullptr),
-    shaderOGLWireframe(nullptr),
-    shaderOGLLine3D(nullptr),
-    shaderOGLShading(nullptr),
-    shaderOGLPoints(nullptr),
-    shaderOGLOutline(nullptr),
-    shaderOGLColor(nullptr),
-    shaderOGLParticles(nullptr),
-    shaderOGLDOFBlur(nullptr),
-    shaderOGLDepthMap(nullptr),
-    shaderOGLFOG(nullptr),
-    shaderOGLTint(nullptr),
-    shaderOGLBonesTransforms(nullptr),
-    shaderOGLGBuffer(nullptr),
-    shaderOGLLightPass(nullptr),
-    shaderShadowPass(nullptr),
-    shaderShadowPassDebugLight(nullptr),
-    lastFrameBufferUsed(0),
-    lastProgramUsed(0),
-    shadowMapArrayTex(0)
 {
 }
 
@@ -101,7 +72,7 @@ void ComponentRender::onUpdate()
     if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
         static int lastNumLights = -1;
         if (numSpotLights != lastNumLights) {
-            createSpotLightsDepthTextures(numSpotLights);
+            shaderShadowPass->createSpotLightsDepthTextures(numSpotLights);
             shaderShadowPass->setupFBOSpotLights();
             lastNumLights = numSpotLights;
         }
@@ -530,7 +501,7 @@ const std::map<std::string, ShaderCustomTypes> &ComponentRender::getShaderTypesM
     return ShaderTypesMapping;
 }
 
-void ComponentRender::resizeShadersFramebuffers()
+void ComponentRender::resizeShadersFramebuffers() const
 {
     Logging::Message("Resizing framebuffers...");
 
@@ -550,8 +521,8 @@ void ComponentRender::resizeShadersFramebuffers()
     shaderOGLLightPass->destroy();
 
     if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
-        createSpotLightsDepthTextures(static_cast<int>(getShaderOGLRenderForward()->getShadowMappingSpotLights().size()));
-        getShaderOGLShadowPass()->resetFramebuffers();
+        shaderShadowPass->createSpotLightsDepthTextures(static_cast<int>(shaderOGLRender->getShadowMappingSpotLights().size()));
+        shaderShadowPass->resetFramebuffers();
     }
 
     for (const auto s: sceneShaders) {
@@ -591,30 +562,9 @@ void ComponentRender::clearShadowMaps() const
     glClear(GL_DEPTH_BUFFER_BIT);
 
     for (int i = 0; i < numLights; i++) {
-        glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowMapArrayTex, 0, i);
+        glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shaderShadowPass->getSpotLightsShadowMapArrayTextures(), 0, i);
         glClear(GL_DEPTH_BUFFER_BIT);
     }
-}
-
-GLuint ComponentRender::getSpotLightsShadowMapArrayTextures() const
-{
-    return shadowMapArrayTex;
-}
-
-void ComponentRender::createSpotLightsDepthTextures(int numLights)
-{
-    auto window = ComponentsManager::get()->getComponentWindow();
-
-    glGenTextures(1, &shadowMapArrayTex);
-    glBindTexture(GL_TEXTURE_2D_ARRAY, shadowMapArrayTex);
-    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32, window->getWidthRender(), window->getHeightRender(), numLights,0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-
-    float borderColor[] = {1.0, 1.0, 1.0, 1.0};
-    glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, borderColor);
 }
 
 void ComponentRender::RenderLayersToGlobalFramebuffer() const
@@ -636,7 +586,7 @@ void ComponentRender::RenderLayersToGlobalFramebuffer() const
         shaderShadowPass->getDirectionalLightDepthTexture(),
         shaderOGLRender->getNumPointLights(),
         shaderOGLRender->getNumSpotLights(),
-        getSpotLightsShadowMapArrayTextures(),
+        shaderShadowPass->getSpotLightsShadowMapArrayTextures(),
         static_cast<int>(shaderOGLRender->getShadowMappingSpotLights().size()),
         globalBuffer.sceneFBO
     );

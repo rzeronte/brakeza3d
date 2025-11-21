@@ -2,7 +2,6 @@
 #define BRAKEDA3D_BRAKEZA3D_H
 
 #include <vector>
-#include "Objects/LightPoint3D.h"
 #include "Components/Component.h"
 #include "Components/ComponentSound.h"
 #include "GUI/GUIManager.h"
@@ -47,17 +46,17 @@ public:
 
     [[nodiscard]] float getDeltaTimeMicro() const;
 
-    void onStartComponents();
+    void onStartComponents() const;
 
-    void PreUpdateComponents();
+    void PreUpdateComponents() const;
 
-    void onUpdateComponents();
+    void onUpdateComponents() const;
 
-    void postUpdateComponents();
+    void postUpdateComponents() const;
 
-    void onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish);
+    void onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish) const;
 
-    void onEndComponents();
+    void onEndComponents() const;
 
     void mainLoop(bool autostart, const std::string& project);
 

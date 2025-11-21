@@ -9,26 +9,31 @@ Component::Component()
 {
 }
 
-void Component::setId(int newId) {
-    Component::id = newId;
+void Component::setId(int newId)
+{
+    id = newId;
 }
 
-const std::string &Component::getLabel() const {
+const std::string &Component::getLabel() const
+{
     return label;
 }
 
-void Component::setLabel(const std::string &newLabel) {
-    Component::label = newLabel;
+void Component::setLabel(const std::string &newLabel)
+{
+    label = newLabel;
 }
 
-bool Component::isEnabled() const {
+bool Component::isEnabled() const
+{
     return enabled;
 }
 
-void Component::setEnabled(bool enabled) {
-    Component::enabled = enabled;
+void Component::setEnabled(bool value)
+{
+    enabled = value;
 }
 
-Component::~Component() {
-
+Component::~Component()
+{
 }

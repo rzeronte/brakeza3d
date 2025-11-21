@@ -65,8 +65,8 @@ void Image::drawFlat(int pos_x, int pos_y, GLuint framebuffer) const
 
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    int windowWidth = window->widthWindow;
-    int windowHeight = window->heightWindow;
+    int windowWidth = window->getWidth();
+    int windowHeight = window->getHeight();
 
     SDL_Rect srcRect;
     srcRect.x = 0;
@@ -92,7 +92,7 @@ void Image::drawFlat(int pos_x, int pos_y, GLuint framebuffer) const
     );
 }
 
-void Image::loadFromRaw(unsigned int *texture, int w, int h)
+void Image::loadFromRaw(const unsigned int *texture, int w, int h)
 {
     this->surface = SDL_CreateRGBSurface(0, h, w, 32, 0, 0, 0, 0);
 
@@ -104,26 +104,27 @@ void Image::loadFromRaw(unsigned int *texture, int w, int h)
 
 }
 
-int Image::width() const {
+int Image::width() const
+{
     return surface->w;
 }
 
-int Image::height()
+int Image::height() const
 {
     return surface->h;
 }
 
-void * Image::pixels()
+void *Image::pixels() const
 {
     return surface->pixels;
 }
 
-bool Image::isLoaded()
+bool Image::isLoaded() const
 {
     return loaded;
 }
 
-float Image::getAreaForVertices(Vertex3D A, Vertex3D B, Vertex3D C, int lod)
+float Image::getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C, int lod) const
 {
     float tx0 = Tools::getXTextureFromUV(surface, A.u / surface->w);
     float ty0 = Tools::getYTextureFromUV(surface, A.v / surface->h);
@@ -139,11 +140,13 @@ float Image::getAreaForVertices(Vertex3D A, Vertex3D B, Vertex3D C, int lod)
     return area;
 }
 
-SDL_Surface *Image::getSurface() {
+SDL_Surface *Image::getSurface() const
+{
     return surface;
 }
 
-SDL_Texture *Image::getTexture()  {
+SDL_Texture *Image::getTexture() const
+{
     return texture;
 }
 
@@ -161,7 +164,7 @@ Image::~Image()
     }
 }
 
-Color Image::getColor(int x, int y)
+Color Image::getColor(const int x, const int y) const
 {
     uint32_t *pixels = static_cast<uint32_t *>(this->pixels());
 
@@ -202,7 +205,7 @@ GLuint Image::getOGLTextureID() const {
     return texturaID;
 }
 
-GLuint Image::makeOGLImage(SDL_Surface *surfaceTTF)
+GLuint Image::makeOGLImage(const SDL_Surface *surfaceTTF)
 {
     GLuint texID;
     glGenTextures(1, &texID);

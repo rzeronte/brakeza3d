@@ -8,13 +8,11 @@
 
 #include <string>
 #include <SDL2/SDL_surface.h>
-#include <SDL2/SDL_image.h>
 #include <GL/glew.h>
 #include "../Objects/Vertex3D.h"
 #include "Color.h"
 
 class Image {
-private:
 
     SDL_Surface *surface;
     SDL_Texture *texture;
@@ -31,7 +29,7 @@ public:
 
     explicit Image(const std::string& filename);
 
-    void loadFromRaw(unsigned int *texture, int w, int h);
+    void loadFromRaw(const unsigned int *texture, int w, int h);
 
     void drawFlat(int, int, GLuint framebuffer) const;
 
@@ -39,20 +37,21 @@ public:
 
     void loadTGA(const std::string& filename);
 
-    int height();
+    int height() const;
 
-    void* pixels();
-    bool isLoaded();
+    void* pixels() const;
+
+    bool isLoaded() const;
 
     void createEmpty(int w, int h);
 
-    float getAreaForVertices(Vertex3D A, Vertex3D B, Vertex3D C, int lod);
+    float getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C, int lod) const;
 
-    Color getColor(int x, int y);
+    Color getColor(int x, int y) const;
 
     [[nodiscard]] const std::string &getFileName() const;
 
-    [[nodiscard]] SDL_Surface *getSurface();
+    [[nodiscard]] SDL_Surface *getSurface() const;
 
     [[nodiscard]] int width() const;
 
@@ -60,11 +59,11 @@ public:
 
     Image(SDL_Surface *surface, SDL_Texture *texture);
 
-    SDL_Texture *getTexture();
+    SDL_Texture *getTexture() const;
 
     [[nodiscard]] GLuint getOGLTextureID() const;
 
-    static GLuint makeOGLImage(SDL_Surface *surfaceTTF);
+    static GLuint makeOGLImage(const SDL_Surface *surfaceTTF);
 
     [[nodiscard]] float getAlpha() const;
 

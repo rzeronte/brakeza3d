@@ -64,21 +64,21 @@ struct GUIWidgetToolbar {
         auto *window = ComponentsManager::get()->getComponentWindow();
 
         drawButton("layoutDefaultIcon",
-                   window->ImGuiConfigChanged == ImGUIConfigs::DEFAULT,
+                   window->getImGuiConfig() == ImGUIConfigs::DEFAULT,
                    onColor,
-                   [&]() { window->ImGuiConfigChanged = ImGUIConfigs::DEFAULT; });
+                   [&]() { window->getImGuiConfig() = ImGUIConfigs::DEFAULT; });
         ImGui::SetItemTooltip("Default layout");
 
         drawButton("layoutCodingIcon",
-                   window->ImGuiConfigChanged == ImGUIConfigs::CODING,
+                   window->getImGuiConfig() == ImGUIConfigs::CODING,
                    onColor,
-                   [&]() { window->ImGuiConfigChanged = ImGUIConfigs::CODING; });
+                   [&]() { window->getImGuiConfig() = ImGUIConfigs::CODING; });
         ImGui::SetItemTooltip("Developer layout");
 
         drawButton("layoutDesignIcon",
-                   window->ImGuiConfigChanged == ImGUIConfigs::DESIGN,
+                   window->getImGuiConfig() == ImGUIConfigs::DESIGN,
                    onColor,
-                   [&]() { window->ImGuiConfigChanged = ImGUIConfigs::DESIGN; });
+                   [&]() { window->getImGuiConfig() = ImGUIConfigs::DESIGN; });
         ImGui::SetItemTooltip("Designer layout");
     }
 

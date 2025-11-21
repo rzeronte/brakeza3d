@@ -9,17 +9,7 @@
 #include <assimp/postprocess.h>
 
 AssimpAnimationService::AssimpAnimationService()
-:
-    scene(nullptr),
-    numBones(0),
-    indexCurrentAnimation(0),
-    runningTime(0),
-    remove_at_end_animation(false),
-    animation_speed(1),
-    animation_ends(false),
-    loop(true)
 {
-
 }
 
 void AssimpAnimationService::UpdateOpenGLBones(std::vector<meshData> &meshes)
@@ -470,12 +460,12 @@ void AssimpAnimationService::drawBones(Object3D *o, aiNode *node, Vertex3D *last
 
 bool AssimpAnimationService::isRemoveAtEndAnimation() const
 {
-    return remove_at_end_animation;
+    return removeAtAnimationEnd;
 }
 
 void AssimpAnimationService::setRemoveAtEndAnimation(bool removeAtEnds)
 {
-    remove_at_end_animation = removeAtEnds;
+    removeAtAnimationEnd = removeAtEnds;
 }
 
 void AssimpAnimationService::setAnimationSpeed(float animationSpeed) {
