@@ -210,7 +210,7 @@ void Drawable::drawObject3DGizmo(
     glm::mat4 projectionMatrix
 ) {
     ImGuiIO& io = ImGui::GetIO();
-    auto currentOperation  = ComponentsManager::get()->getComponentWindow()->getGuizmoOperation();
+    auto currentOperation  = ComponentsManager::get()->getComponentWindow()->getGuiZmoOperation();
 
     if (!ComponentsManager::get()->getComponentWindow()->isWindowMaximized()) {
         ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);

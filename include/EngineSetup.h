@@ -211,6 +211,12 @@ public:
         BONE_COLLIDER = 2
     };
 
+    enum class ImGUIConfigs {
+        DEFAULT,
+        DESIGN,
+        CODING
+    };
+
     // DEV TESTING PURPOSE
     float TESTING_INT1 = 0.1f;
     float TESTING_INT2 = 0.03f;

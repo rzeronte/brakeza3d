@@ -187,28 +187,28 @@ float Brakeza3D::getDeltaTimeMicro() const
 
 void Brakeza3D::onStartComponents() const
 {
-    for (Component*& component : componentsManager->components) {
+    for (Component*& component : componentsManager->Components()) {
         component->onStart();
     }
 }
 
 void Brakeza3D::PreUpdateComponents() const
 {
-    for (Component*& component : componentsManager->components) {
+    for (Component*& component : componentsManager->Components()) {
         component->preUpdate();
     }
 }
 
 void Brakeza3D::onUpdateComponents() const
 {
-    for (Component*& component : componentsManager->components) {
+    for (Component*& component : componentsManager->Components()) {
         component->onUpdate();
     }
 }
 
 void Brakeza3D::postUpdateComponents() const
 {
-    for (Component*& component : componentsManager->components) {
+    for (Component*& component : componentsManager->Components()) {
         component->postUpdate();
     }
 }
@@ -219,9 +219,9 @@ void Brakeza3D::onEndComponents() const
         delete o;
     }
 
-    /*for (Component*& component : componentsManager->components) {
+    for (Component*& component : componentsManager->Components()) {
         component->onEnd();
-    }*/
+    }
 
     SDL_Quit();
     std::cout << "Exiting... good bye! ;)" << std::endl;
@@ -230,7 +230,7 @@ void Brakeza3D::onEndComponents() const
 
 void Brakeza3D::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish) const
 {
-    for (Component* &component : this->componentsManager->components) {
+    for (Component* &component : componentsManager->Components()) {
         component->onSDLPollEvent(event, finish);
     }
 }

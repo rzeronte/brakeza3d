@@ -391,17 +391,17 @@ GLuint ComponentWindow::getPostProcessingFramebuffer() const {
 void ComponentWindow::saveImGuiCurrentLayout() const
 {
     switch(ImGuiConfigChanged) {
-        case ImGUIConfigs::DEFAULT: {
+        case EngineSetup::ImGUIConfigs::DEFAULT: {
             ImGui::SaveIniSettingsToDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini").c_str());
             Logging::Message("Saving to ImGUIDefault.ini");
             break;
         }
-        case ImGUIConfigs::CODING: {
+        case EngineSetup::ImGUIConfigs::CODING: {
             ImGui::SaveIniSettingsToDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiCoding.ini").c_str());
             Logging::Message("Saving to ImGuiCoding.ini");
             break;
         }
-        case ImGUIConfigs::DESIGN: {
+        case EngineSetup::ImGUIConfigs::DESIGN: {
             ImGui::SaveIniSettingsToDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDesign.ini").c_str());
             Logging::Message("Saving to ImGuiDesign.ini");
             break;
@@ -503,26 +503,26 @@ void ComponentWindow::ImGuiInitialize(const std::string& configFile) {
     ImGui::ClearIniSettings();
     ImGui::LoadIniSettingsFromDisk(std::string(configFile).c_str());
     ImGui::GetStyle().Alpha = 1.0f;
-    ImGuiConfig = ImGUIConfigs::DEFAULT;
+    ImGuiConfig = EngineSetup::ImGUIConfigs::DEFAULT;
 }
 
 void ComponentWindow::ImGuiOnUpdate()
 {
     if (ImGuiConfig != ImGuiConfigChanged) {
         switch(ImGuiConfigChanged) {
-            case ImGUIConfigs::DEFAULT: {
+            case EngineSetup::ImGUIConfigs::DEFAULT: {
                 ImGui::ClearIniSettings();
                 Logging::Message("Loading layout ImGUIDefault.ini");
                 ImGui::LoadIniSettingsFromDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini").c_str());
                 break;
             }
-            case ImGUIConfigs::CODING: {
+            case EngineSetup::ImGUIConfigs::CODING: {
                 ImGui::ClearIniSettings();
                 Logging::Message("Loading layout ImGuiCoding.ini");
                 ImGui::LoadIniSettingsFromDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiCoding.ini").c_str());
                 break;
             }
-            case ImGUIConfigs::DESIGN: {
+            case EngineSetup::ImGUIConfigs::DESIGN: {
                 ImGui::ClearIniSettings();
                 Logging::Message("Loading layout ImGuiDesign.ini");
                 ImGui::LoadIniSettingsFromDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDesign.ini").c_str());
@@ -567,12 +567,12 @@ void ComponentWindow::toggleFullScreen() const
     }
 }
 
-ImGuizmo::OPERATION ComponentWindow::getGuizmoOperation() const
+ImGuizmo::OPERATION ComponentWindow::getGuiZmoOperation() const
 {
     return ImGuiOperationGuizmo;
 }
 
-void ComponentWindow::setGuizmoOperation(ImGuizmo::OPERATION operation)
+void ComponentWindow::setGuiZmoOperation(ImGuizmo::OPERATION operation)
 {
     ImGuiOperationGuizmo = operation;
 }
@@ -731,12 +731,12 @@ int ComponentWindow::getObjectIDByPickingColorFramebuffer(const int x, const int
     return Color::colorToId(c);
 }
 
-ImGUIConfigs& ComponentWindow::getImGuiConfig()
+EngineSetup::ImGUIConfigs ComponentWindow::getImGuiConfig() const
 {
     return ImGuiConfig;
 }
 
-void ComponentWindow::setImGuiConfig(ImGUIConfigs c)
+void ComponentWindow::setImGuiConfig(EngineSetup::ImGUIConfigs c)
 {
-    ImGuiConfig = c;
+    ImGuiConfigChanged = c;
 }

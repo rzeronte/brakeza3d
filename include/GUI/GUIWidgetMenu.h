@@ -341,19 +341,18 @@ struct GUIWidgetMenu
 
             if (ImGui::BeginMenu("Layout")) {
                 if (ImGui::MenuItem("Default", "F5")) {
-                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(ImGUIConfigs::DEFAULT);
+                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(EngineSetup::ImGUIConfigs::DEFAULT);
                 }
                 if (ImGui::MenuItem("Coding", "F6")) {
-                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(ImGUIConfigs::CODING);
+                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(EngineSetup::ImGUIConfigs::CODING);
                 }
                 if (ImGui::MenuItem("Design", "F7")) {
-                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(ImGUIConfigs::DESIGN);
+                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(EngineSetup::ImGUIConfigs::DESIGN);
                 }
                 ImGui::Separator();
                 if (ImGui::MenuItem("Save current layout")) {
                     ComponentsManager::get()->getComponentWindow()->saveImGuiCurrentLayout();
                 }
-
                 ImGui::EndMenu();
             }
 

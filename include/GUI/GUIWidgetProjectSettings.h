@@ -13,7 +13,7 @@ struct GUIWidgetProjectSettings {
     TexturePackage &icons;
     ScriptEditableManager &scriptEditableManager;
 
-    GUIWidgetProjectSettings(TexturePackage &imGuiTextures,ScriptEditableManager &scriptEditableManager)
+    GUIWidgetProjectSettings(TexturePackage &imGuiTextures, ScriptEditableManager &scriptEditableManager)
     :
             icons(imGuiTextures),
             scriptEditableManager(scriptEditableManager)
