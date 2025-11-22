@@ -9,15 +9,11 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
 
-TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps) :
-        currentspriteHeight(0),
-        currentSpriteWidth(0),
-        baseFilename(std::move(baseFile)),
-        numberFramesToLoad(numFrames),
-        currentFrame(0),
-        fps(fps),
-        endAnimation(false),
-        paused(false)
+TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps)
+:
+    baseFilename(std::move(baseFile)),
+    numberFramesToLoad(numFrames),
+    fps(fps)
 {
     Logging::Message("Loading 2D animation: %s", baseFilename.c_str());
 
@@ -81,7 +77,7 @@ void TextureAnimated::setup(const std::string& spriteSheetFile, int spriteWidth,
 
     for (int row = 0; row < numRows; ++row) {
         for (int column = 0; column < numColumns; ++column) {
-            if ((int)frames.size() >= numFrames) continue;
+            if (static_cast<int>(frames.size()) >= numFrames) continue;
 
             SDL_Rect spriteRect = { column * spriteWidth, row * spriteHeight, spriteWidth, spriteHeight };
 
@@ -108,11 +104,13 @@ void TextureAnimated::setup(const std::string& spriteSheetFile, int spriteWidth,
     updateStep();
 }
 
-int TextureAnimated::getNumFrames() const {
+int TextureAnimated::getNumFrames() const
+{
     return numberFramesToLoad;
 }
 
-Image *TextureAnimated::getCurrentFrame() {
+Image *TextureAnimated::getCurrentFrame()
+{
     return this->frames[currentFrame];
 }
 

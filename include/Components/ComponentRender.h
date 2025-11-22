@@ -138,7 +138,7 @@ public:
     void ClearShadowMaps() const;
     void RenderLayersToGlobalFramebuffer() const;
     static bool compareDistances(const Object3D *obj1, const Object3D *obj2);
-    static void FillOGLBuffers(std::vector<meshData> &meshes);
+    static void FillOGLBuffers(std::vector<Mesh3DData> &meshes);
     static ShaderOpenGLCustom* getLoadedShader(const std::string &folder, const std::string &jsonFilename);
     static void deleteRemovedObjects();
     static void onUpdateSceneObjects();

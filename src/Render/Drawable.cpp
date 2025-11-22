@@ -5,10 +5,9 @@
 #include "../../include/Brakeza3D.h"
 #include "ImGuizmo.h"
 #include <glm/gtc/type_ptr.hpp>
-
 #include "imgui_internal.h"
 
-void Drawable::drawVertex(Vertex3D V, Color color)
+void Drawable::drawVertex(const Vertex3D &V, Color color)
 {
     Point2D P1 = Transforms::WorldToPoint(V);
     glDisable(GL_BLEND);
@@ -21,18 +20,12 @@ void Drawable::drawVertex(Vertex3D V, Color color)
     glEnable(GL_BLEND);
 }
 
-void Drawable::drawVector3D(Vector3D V, Color color)
+void Drawable::drawVector3D(const Vector3D &V, const Color &color)
 {
-    ComponentsManager::get()->getComponentRender()->drawLine(V.vertex1,V.vertex2,color);
+    ComponentsManager::get()->getComponentRender()->drawLine(V.vertex1,V.vertex2, color);
 }
 
-void Drawable::drawMainAxis()
-{
-    Point2D fixedPosition = Point2D(EngineSetup::get()->screenWidth - 80, 50);
-    Drawable::drawMainAxisOffset(Transforms::Point2DToWorld(fixedPosition));
-}
-
-void Drawable::drawMainAxisOffset(Vertex3D offset)
+void Drawable::drawMainAxisOffset(const Vertex3D &offset)
 {
     float axis_length = 0.075f;
     Vertex3D origin = offset;
@@ -72,9 +65,9 @@ void Drawable::drawObject3DAxis(Object3D *object, bool drawUp, bool drawRight, b
     Vector3D vUp = Vector3D(object->getPosition(), endUp);
     Vector3D vForward = Vector3D(object->getPosition(), endForward);
 
-    if (drawRight) Drawable::drawVector3D(vRight, Color::green());
-    if (drawUp) Drawable::drawVector3D(vUp, Color::red());
-    if (drawForward) Drawable::drawVector3D(vForward, Color::blue());
+    if (drawRight) drawVector3D(vRight, Color::green());
+    if (drawUp) drawVector3D(vUp, Color::red());
+    if (drawForward) drawVector3D(vForward, Color::blue());
 }
 
 void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
@@ -96,11 +89,11 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
         for (auto ir = tmpList.begin(); ir != tmpList.end(); ++j) {
             Vertex3D midPoint = ir.base()->middlePoint();
 
-            midPoint.x += (float) Tools::random((int) -offsetAmount, (int) offsetAmount) * multiplier;
-            midPoint.y += (float) Tools::random((int) -offsetAmount, (int) offsetAmount) * multiplier;
-            midPoint.z += (float) Tools::random((int) -offsetAmount, (int) offsetAmount) * multiplier;
+            midPoint.x += static_cast<float>(Tools::random(-offsetAmount, offsetAmount)) * multiplier;
+            midPoint.y += static_cast<float>(Tools::random(-offsetAmount, offsetAmount)) * multiplier;
+            midPoint.z += static_cast<float>(Tools::random(-offsetAmount, offsetAmount)) * multiplier;
 
-            if ((float) Tools::random(1, 10) > 10 - probabilityBranch) {
+            if (Tools::random(1, 10) > 10 - probabilityBranch) {
 
                 Vertex3D splitEnd;
                 Vertex3D direction = ir.base()->getComponent().getNormalize().getScaled(offsetAmount * 2);
@@ -125,11 +118,11 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
         offsetAmount /= 2;
     }
     for ( auto ir = segmentList.begin(); ir != segmentList.end(); ++ir) {
-        Drawable::drawVector3D(*ir.base(), color);
+        drawVector3D(*ir.base(), color);
     }
 }
 
-void Drawable::drawAABB(AABB3D *aabb, Color color)
+void Drawable::drawAABB(AABB3D *aabb, const Color &color)
 {
     std::vector<Vector3D> vectors;
     vectors.emplace_back(aabb->vertices[0], aabb->vertices[2]);
@@ -152,34 +145,36 @@ void Drawable::drawAABB(AABB3D *aabb, Color color)
 void Drawable::drawOctreeNode(OctreeNode &node)
 {
     if (node.isLeaf()) {
-        Drawable::drawAABB(&node.bounds, Color::orange());
+        drawAABB(&node.bounds, Color::orange());
     }
 
     for (auto & i : node.children) {
-        Drawable::drawOctreeNode(i);
+        drawOctreeNode(i);
     }
 }
 
-void Drawable::drawOctree(Octree *octree) {
-    Drawable::drawAABB(&octree->root.bounds, Color::yellow());
-    Drawable::drawOctreeNode(octree->root);
+void Drawable::drawOctree(Octree *octree)
+{
+    drawAABB(&octree->root.bounds, Color::yellow());
+    drawOctreeNode(octree->root);
 }
 
-void Drawable::drawGrid3D(Grid3D *grid) {
+void Drawable::drawGrid3D(Grid3D *grid)
+{
 
     for (auto & box: grid->getBoxes()) {
         auto aabb = box.box;
         if (EngineSetup::get()->DRAW_MESH3D_TEST_PASSED && box.passed) {
-            Drawable::drawAABB(&aabb, Color::blue());
+            drawAABB(&aabb, Color::blue());
         }
 
         if (EngineSetup::get()->DRAW_MESH3D_TEST_NOT_PASSED && !box.passed) {
-            Drawable::drawAABB(&aabb, Color::gray());
+            drawAABB(&aabb, Color::gray());
         }
     }
 
     if (EngineSetup::get()->DRAW_MESH3D_GRID_ASTAR) {
-        Drawable::drawGrid3DMakeTravel(grid);
+        drawGrid3DMakeTravel(grid);
     }
 }
 
@@ -187,25 +182,25 @@ void Drawable::drawGrid3DMakeTravel(Grid3D *grid) {
 
     auto boxes = grid->makeTravelCubesGrid();
     for (auto &b: boxes) {
-        Drawable::drawAABB(&b.box, Color::magenta());
+        drawAABB(&b.box, Color::magenta());
     }
 
     auto pf = grid->getPathFinding();
 
     CubeGrid3D *cubeStart = grid->getCubeFromPosition(pf.from[0],pf.from[1],pf.from[2]);
     if (cubeStart != nullptr) {
-        Drawable::drawAABB(&cubeStart->box, Color::green());
+        drawAABB(&cubeStart->box, Color::green());
     }
 
     CubeGrid3D *cubeDest = grid->getCubeFromPosition(pf.to[0],pf.to[1],pf.to[2]);
     if (cubeDest != nullptr) {
-        Drawable::drawAABB(&cubeDest->box, Color::red());
+        drawAABB(&cubeDest->box, Color::red());
     }
 }
 
 void Drawable::drawObject3DGizmo(
     Object3D *o,
-    glm::mat4 objectMatrix,
+    const glm::mat4 &objectMatrix,
     glm::mat4 viewMatrix,
     glm::mat4 projectionMatrix
 ) {
