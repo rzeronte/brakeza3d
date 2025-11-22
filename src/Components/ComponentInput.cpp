@@ -63,9 +63,16 @@ void ComponentInput::handleMouse(SDL_Event *event)
     if (mouseMotion && isRightMouseButtonPressed()) {
         if (event->type == SDL_MOUSEMOTION) {
             auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-            camera->Yaw((float) -event->motion.xrel);
-            camera->Pitch((float) event->motion.yrel);
-            camera->setRotation(M3::getMatrixRotationForEulerAngles(camera->getPitch(), camera->getYaw(), camera->getRoll()));
+
+
+            camera->Yaw(-event->motion.xrel * EngineSetup::get()->MOUSE_SENSITIVITY);
+            camera->Pitch(event->motion.yrel * EngineSetup::get()->MOUSE_SENSITIVITY);
+
+            camera->setRotation(M3::getMatrixRotationForEulerAngles(
+                camera->getPitch(),
+                camera->getYaw(),
+                camera->getRoll()
+            ));
         }
     }
 
@@ -80,6 +87,7 @@ void ComponentInput::handleMouse(SDL_Event *event)
     if (event->type == SDL_MOUSEBUTTONDOWN) {
         mouseButtonDown = true;
     }
+
     if (event->type == SDL_MOUSEBUTTONUP) {
         mouseButtonUp = true;
         drag = false;

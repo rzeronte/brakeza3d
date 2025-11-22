@@ -128,7 +128,7 @@ public:
     float STRAFE_SPEED = 0.25f;
 
     // MOUSE
-    float MOUSE_SENSITIVITY = 0.20;
+    float MOUSE_SENSITIVITY = 0.075;
     bool MOUSE_LOOK = true;
     bool MOUSE_CLICK_SELECT_OBJECT3D = true;
 

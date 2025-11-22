@@ -9,15 +9,15 @@ Camera3D::Camera3D()
     setLabel(EngineSetup::get()->CAMERA_OBJECT_NAME);
 }
 
-void Camera3D::Pitch(float newPitch)
+void Camera3D::Pitch(float value)
 {
-    pitch += newPitch * EngineSetup::get()->MOUSE_SENSITIVITY;
+    pitch += value;
     limitPitch();
 }
 
 void Camera3D::Yaw(float value)
 {
-    yaw -= value * EngineSetup::get()->MOUSE_SENSITIVITY;
+    yaw -= value;
 }
 
 void Camera3D::MoveForward(float v)

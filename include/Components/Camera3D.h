@@ -25,7 +25,7 @@ public:
     Camera3D();
     void UpdateVelocity();
     void UpdatePositionForVelocity();
-    void Pitch(float newPitch);
+    void Pitch(float value);
     void Yaw(float value);
     void MoveVertical(float v);
     void MoveForward(float v);
