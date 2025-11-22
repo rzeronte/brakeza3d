@@ -135,7 +135,7 @@ void ComponentRender::onUpdateSceneObjects()
 
 void ComponentRender::updateFPS()
 {
-    if (!EngineSetup::get()->DRAW_FPS_IMGUI) return;
+    if (!(EngineSetup::get()->DRAW_FPS_IMGUI || EngineSetup::get()->DRAW_FPS_RENDER)) return;
 
     frameTime += Brakeza3D::get()->getDeltaTimeMicro();
     ++fpsFrameCounter;
