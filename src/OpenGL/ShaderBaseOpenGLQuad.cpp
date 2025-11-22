@@ -46,10 +46,11 @@ void ShaderBaseOpenGLQuad::setupQuadUniforms(GLuint programID)
 
 void ShaderBaseOpenGLQuad::resetQuadMatrix()
 {
-    int w, h;
-    SDL_GetWindowSize(ComponentsManager::get()->getComponentWindow()->getWindow(), &w, &h);
+    auto window = ComponentsManager::get()->getComponentWindow();
+    int w = window->getWidth();
+    int h = window->getHeight();
 
-    glm::mat4 projection = glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f);
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(w), static_cast<float>(h), 0.0f, -1.0f, 1.0f);
 
     glm::vec2 position = glm::vec2(0, 0);
     glm::vec2 size = glm::vec2(w, h);

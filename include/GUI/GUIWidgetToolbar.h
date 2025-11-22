@@ -64,28 +64,28 @@ struct GUIWidgetToolbar {
         auto *window = ComponentsManager::get()->getComponentWindow();
 
         drawButton("layoutDefaultIcon",
-                   window->getImGuiConfig() == ImGUIConfigs::DEFAULT,
+                   window->getImGuiConfig() == EngineSetup::ImGUIConfigs::DEFAULT,
                    onColor,
-                   [&]() { window->getImGuiConfig() = ImGUIConfigs::DEFAULT; });
+                   [&]() { window->setImGuiConfig(EngineSetup::ImGUIConfigs::DEFAULT); });
         ImGui::SetItemTooltip("Default layout");
 
         drawButton("layoutCodingIcon",
-                   window->getImGuiConfig() == ImGUIConfigs::CODING,
+                   window->getImGuiConfig() == EngineSetup::ImGUIConfigs::CODING,
                    onColor,
-                   [&]() { window->getImGuiConfig() = ImGUIConfigs::CODING; });
+                   [&]() { window->setImGuiConfig(EngineSetup::ImGUIConfigs::CODING); });
         ImGui::SetItemTooltip("Developer layout");
 
         drawButton("layoutDesignIcon",
-                   window->getImGuiConfig() == ImGUIConfigs::DESIGN,
+                   window->getImGuiConfig() == EngineSetup::ImGUIConfigs::DESIGN,
                    onColor,
-                   [&]() { window->getImGuiConfig() = ImGUIConfigs::DESIGN; });
+                   [&]() { window->setImGuiConfig(EngineSetup::ImGUIConfigs::DESIGN); });
         ImGui::SetItemTooltip("Designer layout");
     }
 
     void drawTransformationsToolsIcons() const
     {
         auto window = ComponentsManager::get()->getComponentWindow();
-        auto operation = window->getGuizmoOperation();
+        auto operation = window->getGuiZmoOperation();
 
         ImVec4 translateColor = (operation == ImGuizmo::OPERATION::TRANSLATE) ? onColor : offColor;
         ImVec4 rotateColor = (operation == ImGuizmo::OPERATION::ROTATE) ? onColor : offColor;
@@ -93,7 +93,7 @@ struct GUIWidgetToolbar {
 
         ImGui::PushStyleColor(ImGuiCol_Button, translateColor);
         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "translateIcon"), ImVec2(24, 24))) {
-            window->setGuizmoOperation(ImGuizmo::OPERATION::TRANSLATE);
+            window->setGuiZmoOperation(ImGuizmo::OPERATION::TRANSLATE);
         }
         ImGui::SetItemTooltip("Translate selected item");
         ImGui::PopStyleColor();
@@ -101,7 +101,7 @@ struct GUIWidgetToolbar {
 
         ImGui::PushStyleColor(ImGuiCol_Button, rotateColor);
         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "rotateIcon"), ImVec2(24, 24))) {
-            window->setGuizmoOperation(ImGuizmo::OPERATION::ROTATE);
+            window->setGuiZmoOperation(ImGuizmo::OPERATION::ROTATE);
         }
         ImGui::SetItemTooltip("Rotate selected item");
         ImGui::PopStyleColor();
@@ -109,7 +109,7 @@ struct GUIWidgetToolbar {
 
         ImGui::PushStyleColor(ImGuiCol_Button, scaleColor);
         if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, "scaleIcon"), ImVec2(24, 24))) {
-            window->setGuizmoOperation(ImGuizmo::OPERATION::SCALE_X);
+            window->setGuiZmoOperation(ImGuizmo::OPERATION::SCALE_X);
         }
         ImGui::SetItemTooltip("Scale selected item");
         ImGui::PopStyleColor();

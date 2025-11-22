@@ -52,7 +52,7 @@ void ComponentRender::onStart()
 
 void ComponentRender::preUpdate()
 {
-    clearShadowMaps();
+    ClearShadowMaps();
 
     this->updateFPS();
 
@@ -67,18 +67,26 @@ void ComponentRender::onUpdate()
 
     shaderOGLRender->createUBOFromLights();
 
-    auto numSpotLights = static_cast<int>(shaderOGLRender->getShadowMappingSpotLights().size());
+    auto numSpotLights = shaderOGLRender->getNumSpotLights();
 
     if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
-        static int lastNumLights = -1;
-        if (numSpotLights != lastNumLights) {
+        if (shaderOGLRender->hasSpotLightsChanged()) {
+            Logging::Message("Updating shadow maps for %d lights", numSpotLights);
             shaderShadowPass->createSpotLightsDepthTextures(numSpotLights);
             shaderShadowPass->setupFBOSpotLights();
-            lastNumLights = numSpotLights;
+            shaderOGLRender->setLastSpotLightsSize(numSpotLights);
         }
     }
 
     onUpdateSceneObjects();
+
+    if (SETUP->DRAW_FPS_RENDER) {
+        textWriter->writeTextTTFMiddleScreen(
+            std::to_string(getFps()).c_str(),
+            Color::green(),
+            1.5
+        );
+    }
 
     if (Brakeza3D::get()->getManagerGui()->isShowLightsDepthMapsViewerWindow() ) {
         shaderShadowPassDebugLight->createFramebuffer();
@@ -127,7 +135,7 @@ void ComponentRender::onUpdateSceneObjects()
 
 void ComponentRender::updateFPS()
 {
-    if (!EngineSetup::get()->DRAW_FPS) return;
+    if (!EngineSetup::get()->DRAW_FPS_IMGUI) return;
 
     frameTime += Brakeza3D::get()->getDeltaTimeMicro();
     ++fpsFrameCounter;
@@ -552,7 +560,7 @@ void ComponentRender::FillOGLBuffers(std::vector<meshData> &meshes)
     }
 }
 
-void ComponentRender::clearShadowMaps() const
+void ComponentRender::ClearShadowMaps() const
 {
     auto numLights = static_cast<int>(shaderOGLRender->getShadowMappingSpotLights().size());
 

@@ -296,6 +296,14 @@ void ShaderBaseOpenGL::setMat4ArrayUniform(GLint uniform, std::vector<glm::mat4>
     glUniformMatrix4fv(uniform, static_cast<GLsizei>(Transforms.size()), GL_FALSE, glm::value_ptr(Transforms[0]));
 }
 
+std::string ShaderBaseOpenGL::getVertexFilename() const {
+    return vertexFilename;
+}
+
+std::string ShaderBaseOpenGL::getFragmentFilename() const {
+    return fragmentFilename;
+}
+
 void ShaderBaseOpenGL::setMat4Uniform(GLint uniform, const glm::mat4 &mat)
 {
     glUniformMatrix4fv(uniform, 1, GL_FALSE, &mat[0][0]);

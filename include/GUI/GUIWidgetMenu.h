@@ -393,7 +393,8 @@ struct GUIWidgetMenu
                     ImGui::Checkbox("Draw AStar Travel", &setup->DRAW_MESH3D_GRID_ASTAR);
                 }
                 ImGui::Separator();
-                ImGui::Checkbox("Show FPS", &setup->DRAW_FPS);
+                ImGui::Checkbox("Show FPS", &setup->DRAW_FPS_IMGUI);
+                ImGui::Checkbox("Show render FPS", &setup->DRAW_FPS_RENDER);
                 ImGui::EndMenu();
             }
 

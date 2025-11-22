@@ -58,6 +58,8 @@ public:
 
     void onEndComponents() const;
 
+    void handleAutoStartProject(bool autostart, const std::string &project) const;
+
     void mainLoop(bool autostart, const std::string& project);
 
     [[nodiscard]] ComponentsManager *getComponentsManager() const;
@@ -72,7 +74,7 @@ public:
 
     static void welcomeMessage();
 
-    void CaptureInputEvents(SDL_Event *e);
+    void CaptureInputEvents(SDL_Event &e);
 
     [[nodiscard]] Object3D *getSceneObjectByLabel(const std::string &label) const;
 

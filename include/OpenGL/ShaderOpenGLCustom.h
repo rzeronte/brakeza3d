@@ -1,15 +1,13 @@
-#define GL_GLEXT_PROTOTYPES
-
 #ifndef BRAKEZA3D_SHADEROPENGLCUSTOM_H
 #define BRAKEZA3D_SHADEROPENGLCUSTOM_H
 
+#define GL_GLEXT_PROTOTYPES
 
 #include <string>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/ext/matrix_float2x2.hpp>
-#include <utility>
 #include <variant>
 #include <map>
 #include "ShaderBaseOpenGL.h"
@@ -18,7 +16,6 @@
 #include "../Misc/Image.h"
 #include <sstream>
 #include <vector>
-#include <optional>
 
 enum ShaderCustomTypes {
     SHADER_NONE = -1,

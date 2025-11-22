@@ -16,8 +16,8 @@ void ComponentCamera::onStart()
 
 void ComponentCamera::preUpdate()
 {
-    getCamera()->getVelocity().vertex1 = getCamera()->getPosition();
-    getCamera()->getVelocity().vertex2 = getCamera()->getPosition();
+    camera->getVelocity().vertex1 = camera->getPosition();
+    camera->getVelocity().vertex2 = camera->getPosition();
 
     setProjectionMatrix(Camera3D::getGLMMat4ProjectionMatrix());
     setViewMatrix(camera->getGLMMat4ViewMatrix());
@@ -25,18 +25,18 @@ void ComponentCamera::preUpdate()
 
 void ComponentCamera::onUpdate()
 {
-    getCamera()->UpdateVelocity();
+    camera->UpdateVelocity();
 }
 
 void ComponentCamera::postUpdate()
 {
     if (ComponentsManager::get()->getComponentInput()->isEnabled()) {
-        getCamera()->UpdatePositionForVelocity();
+        camera->UpdatePositionForVelocity();
     }
 }
 
-void ComponentCamera::onEnd() {
-
+void ComponentCamera::onEnd()
+{
 }
 
 void ComponentCamera::onSDLPollEvent(SDL_Event *e, bool &finish)

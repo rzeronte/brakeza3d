@@ -77,7 +77,7 @@ public:
 
     void updateMouseStates(SDL_Event *e);
 
-    void handleKeyboardMovingCamera() const;
+    void handleKeyboardMovingCamera();
 
     void handleMouse(SDL_Event *);
 

@@ -157,8 +157,6 @@ GLuint ShaderOGLShadowPassDebugLight::extractLayerFromArray(GLuint arrayTexture,
     int width = window->getWidthRender();
     int height = window->getHeightRender();
 
-    SDL_GetRendererOutputSize(window->getRenderer(), &width, &height);
-
     // Crear textura 2D destino
     GLuint texture2D;
     glGenTextures(1, &texture2D);
@@ -185,7 +183,6 @@ GLuint ShaderOGLShadowPassDebugLight::extractLayerFromArray(GLuint arrayTexture,
     // Copiar usando glBlitFramebuffer
     glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
-    // Limpiar
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDeleteFramebuffers(1, &fboRead);
     glDeleteFramebuffers(1, &fboDraw);

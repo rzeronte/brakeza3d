@@ -15,9 +15,9 @@ void Camera3D::Pitch(float newPitch)
     limitPitch();
 }
 
-void Camera3D::Yaw(float newYaw)
+void Camera3D::Yaw(float value)
 {
-    yaw -= newYaw * EngineSetup::get()->MOUSE_SENSITIVITY;
+    yaw -= value * EngineSetup::get()->MOUSE_SENSITIVITY;
 }
 
 void Camera3D::MoveForward(float v)
@@ -25,8 +25,7 @@ void Camera3D::MoveForward(float v)
     speed += v;
 }
 
-void Camera3D::MoveVertical(float v
-    )
+void Camera3D::MoveVertical(float v)
 {
     setPosition(getPosition() + getRotation().Y().getScaled(v));
 }

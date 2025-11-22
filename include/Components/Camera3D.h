@@ -11,9 +11,9 @@ class Camera3D : public Object3D {
     float strafe = 0.f;
     float jump = 0.f;
 
-    float pitch = 0;
-    float yaw = 0;
-    float roll = 0;
+    float pitch = 0.f;
+    float yaw = 0.f;
+    float roll = 0.f;
 
     Frustum *frustum = nullptr;
 
@@ -26,7 +26,7 @@ public:
     void UpdateVelocity();
     void UpdatePositionForVelocity();
     void Pitch(float newPitch);
-    void Yaw(float newYaw);
+    void Yaw(float value);
     void MoveVertical(float v);
     void MoveForward(float v);
     void MoveBackward(float v);
@@ -34,15 +34,15 @@ public:
     void StrafeLeft();
     void limitPitch();
     void setRotationFromEulerAngles(float x, float y, float z);
-    [[nodiscard]] Frustum *getFrustum() const;
     float &getYaw();
     float &getPitch();
     float &getRoll();
+    [[nodiscard]] Frustum *getFrustum() const;
+    [[nodiscard]] glm::mat4 getGLMMat4ViewMatrix();
+    [[nodiscard]] static glm::mat4 getGLMMat4ProjectionMatrix() ;
     Vector3D &getVelocity();
     M3 getM3ViewMatrix();
     static M3 getM3ProjectionMatrix();
-    [[nodiscard]] glm::mat4 getGLMMat4ViewMatrix();
-    [[nodiscard]] static glm::mat4 getGLMMat4ProjectionMatrix() ;
     static void setFOV(float v);
 };
 

@@ -6,21 +6,12 @@
 #include "../../include/Brakeza3D.h"
 
 ShaderOGLRenderForward::ShaderOGLRenderForward()
-    :
+:
     ShaderBaseOpenGL(
         EngineSetup::get()->SHADERS_FOLDER + "Render.vs",
         EngineSetup::get()->SHADERS_FOLDER + "Render.fs",
         false
-    ),
-    VertexArrayID(0),
-    directionalLight(DirLightOpenGL{
-        glm::vec3(0, 0, 1),
-        glm::vec3(0.3f, 0.3f, 0.3f),
-        glm::vec3(0.4f, 0.4f, 0.4f),
-        glm::vec3(0.5f, 0.5f, 0.5f)
-    }),
-    bufferUBOLightPoints(0),
-    bufferUBOSpotLights(0)
+    )
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
@@ -44,6 +35,8 @@ ShaderOGLRenderForward::ShaderOGLRenderForward()
     materialShininessUniform = glGetUniformLocation(programID, "material.shininess");
 
     alphaUniform = glGetUniformLocation(programID, "alpha");
+
+    initializeLightBuffers();
 }
 
 void ShaderOGLRenderForward::render(
@@ -198,18 +191,28 @@ void ShaderOGLRenderForward::renderMesh(Mesh3D *o, GLuint framebuffer) const
 
 void ShaderOGLRenderForward::fillUBOLights()
 {
-    glDeleteBuffers(1, &bufferUBOLightPoints);
-    glDeleteBuffers(1, &bufferUBOSpotLights);
+    if (!buffersInitialized) {
+        initializeLightBuffers();
+    }
 
-    glGenBuffers(1, &bufferUBOLightPoints);
-    glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOLightPoints);
-    glBufferData(GL_UNIFORM_BUFFER, static_cast<int>(pointsLights.size() * sizeof(PointLightOpenGL)), pointsLights.data(), GL_STATIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferUBOLightPoints);
+    size_t numPointLights = std::min(pointsLights.size(), MAX_POINT_LIGHTS);
+    if (numPointLights > 0) {
+        glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOLightPoints);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0,numPointLights * sizeof(PointLightOpenGL), pointsLights.data());
+    }
+    if (pointsLights.size() > MAX_POINT_LIGHTS) {
+        Logging::Message("Point lights exceed max: %zu > %zu", pointsLights.size(), MAX_POINT_LIGHTS);
+    }
 
-    glGenBuffers(1, &bufferUBOSpotLights);
-    glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOSpotLights);
-    glBufferData(GL_UNIFORM_BUFFER, static_cast<int>(spotLights.size() * sizeof(SpotLightOpenGL)), spotLights.data(), GL_STATIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 1, bufferUBOSpotLights);
+    size_t numSpotLights = std::min(spotLights.size(), MAX_SPOT_LIGHTS);
+    if (numSpotLights > 0) {
+        glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOSpotLights);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, numSpotLights * sizeof(SpotLightOpenGL),spotLights.data());
+    }
+
+    if (spotLights.size() > MAX_POINT_LIGHTS) {
+        Logging::Message("Spot lights exceed max: %zu > %zu", spotLights.size(), MAX_POINT_LIGHTS);
+    }
 }
 
 void ShaderOGLRenderForward::extractLights(Object3D *o)
@@ -296,4 +299,65 @@ int ShaderOGLRenderForward::getNumSpotLights() const {
 
 [[nodiscard]] std::vector<SpotLight3D *> &ShaderOGLRenderForward::getShadowMappingSpotLights() {
     return shadowMappingLights;
+}
+
+bool ShaderOGLRenderForward::hasSpotLightsChanged() const
+{
+    if (getNumSpotLights() != lastSpotLightsSize) {
+        return true;
+    }
+
+    return false;
+}
+
+bool ShaderOGLRenderForward::HasPointLightsChanged() const
+{
+    if (getNumPointLights() != lastPointLightsSize) {
+        return true;
+    }
+
+    return false;
+}
+
+void ShaderOGLRenderForward::setLastSpotLightsSize(int v)
+{
+    lastSpotLightsSize = v;
+}
+
+void ShaderOGLRenderForward::setLastPointLightsSize(int v)
+{
+    lastPointLightsSize = v;
+}
+
+
+void ShaderOGLRenderForward::initializeLightBuffers()
+{
+    if (buffersInitialized) {
+        return;
+    }
+
+    // Buffer de Point Lights
+    glGenBuffers(1, &bufferUBOLightPoints);
+    glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOLightPoints);
+    glBufferData(
+        GL_UNIFORM_BUFFER,
+        MAX_POINT_LIGHTS * sizeof(PointLightOpenGL),  // Tamaño MÁXIMO
+        nullptr,                                       // Sin datos iniciales
+        GL_DYNAMIC_DRAW                               // Datos que cambian frecuentemente
+    );
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferUBOLightPoints);  // Binding point 0
+
+    // Buffer de Spot Lights
+    glGenBuffers(1, &bufferUBOSpotLights);
+    glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOSpotLights);
+    glBufferData(
+        GL_UNIFORM_BUFFER,
+        MAX_SPOT_LIGHTS * sizeof(SpotLightOpenGL),    // Tamaño MÁXIMO
+        nullptr,                                       // Sin datos iniciales
+        GL_DYNAMIC_DRAW
+    );
+    glBindBufferBase(GL_UNIFORM_BUFFER, 1, bufferUBOSpotLights);   // Binding point 1
+
+    Logging::Message("Light buffers initialized!");
+    buffersInitialized = true;
 }
