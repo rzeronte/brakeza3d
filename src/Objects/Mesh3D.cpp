@@ -39,21 +39,18 @@ void Mesh3D::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        render->getShaderOGLRenderDeferred()->renderMesh(this, window->getGBuffer().FBO);
-
-        /*if (!EngineSetup::get()->ENABLE_FORWARD_RENDER) {
+        if (EngineSetup::get()->ENABLE_LIGHTS) {
             render->getShaderOGLRenderDeferred()->renderMesh(this, window->getGBuffer().FBO);
+            if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
+                shadowMappingPass();
+            }
         } else {
-           render->getShaderOGLRenderForward()->renderMesh(this, sceneFramebuffer);
-        }*/
+            render->getShaderOGLRenderForward()->renderMesh(this, sceneFramebuffer);
+        }
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
         render->getShaderOGLWireframe()->renderMesh(this, sceneFramebuffer);
-    }
-
-    if (EngineSetup::get()->ENABLE_SHADOW_MAPPING && isRender()) {
-        shadowMappingPass();
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {

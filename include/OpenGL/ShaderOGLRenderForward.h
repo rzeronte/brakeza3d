@@ -35,15 +35,6 @@ class ShaderOGLRenderForward: public ShaderBaseOpenGL
     GLint matrixViewUniform = 0;
     GLint matrixModelUniform = 0;
 
-    GLint viewPositionUniform = 0;
-    GLint numLightPointsUniform = 0;
-    GLint numSpotLightsUniform = 0;
-
-    GLint directionalLightDirectionUniform = 0;
-    GLint directionalLightAmbientUniform = 0;
-    GLint directionalLightDiffuseUniform = 0;
-    GLint directionalLightSpecularUniform = 0;
-
     GLint materialTextureDiffuseUniform = 0;
     GLint materialTextureSpecularUniform = 0;
     GLint materialShininessUniform = 0;

@@ -91,7 +91,7 @@ void ShaderOGLLightPass::render(
     setIntUniform(dirLightShadowMapTextureUniform, 5);
 
     setIntUniform(numSpotLightShadowMapsUniform, numSpotLightsShadowMaps);
-    setBoolUniform(debugShadowMappingUniform, EngineSetup::get()->SHADOW_MAPPING_DEBUG);
+    setBoolUniform(debugShadowMappingUniform, (EngineSetup::get()->SHADOW_MAPPING_DEBUG && EngineSetup::get()->ENABLE_SHADOW_MAPPING));
     setFloatUniform(shadowMappingIntensityUniform, EngineSetup::get()->SHADOW_MAPPING_INTENSITY);
 
     setFloatUniform(materialShininessUniform, 32.0f);

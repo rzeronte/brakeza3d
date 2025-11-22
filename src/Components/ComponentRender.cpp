@@ -69,12 +69,14 @@ void ComponentRender::onUpdate()
 
     auto numSpotLights = shaderOGLRender->getNumSpotLights();
 
-    if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
-        if (shaderOGLRender->hasSpotLightsChanged()) {
-            Logging::Message("Updating shadow maps for %d lights", numSpotLights);
-            shaderShadowPass->createSpotLightsDepthTextures(numSpotLights);
-            shaderShadowPass->setupFBOSpotLights();
-            shaderOGLRender->setLastSpotLightsSize(numSpotLights);
+    if (EngineSetup::get()->ENABLE_LIGHTS) {
+        if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
+            if (shaderOGLRender->hasSpotLightsChanged()) {
+                Logging::Message("Updating shadow maps for %d lights", numSpotLights);
+                shaderShadowPass->createSpotLightsDepthTextures(numSpotLights);
+                shaderShadowPass->setupFBOSpotLights();
+                shaderOGLRender->setLastSpotLightsSize(numSpotLights);
+            }
         }
     }
 
@@ -172,22 +174,19 @@ void ComponentRender::updateSelectedObject3D()
     if (!input->isEnabled()) return;
 
     if (input->isClickLeft() && !input->isMouseMotion()) {
-        selectedObject = getObject3DFromClickPoint(
-            input->getMouseX(),
-            input->getMouseY()
-        );
-
+        auto x = input->getMouseX();
+        auto y = input->getMouseY();
+        const auto id = ComponentsManager::get()->getComponentWindow()->getObjectIDByPickingColorFramebuffer(x, y);
+        selectedObject = Brakeza3D::get()->getSceneObjectById(id);
         if (selectedObject != nullptr) {
-            Logging::Message("Selected object by click: %s", selectedObject->getLabel().c_str());
+            Logging::Message("Selected object by click(%d, %d): %s", x, y, selectedObject->getLabel().c_str());
             Brakeza3D::get()->getManagerGui()->setSelectedObject(selectedObject);
-        } else {
-            Logging::Message("Selected object: none");
-            setSelectedObject(nullptr);
         }
     }
 }
 
-int ComponentRender::getFps() const{
+int ComponentRender::getFps() const
+{
     return fps;
 }
 
@@ -564,6 +563,9 @@ void ComponentRender::ClearShadowMaps() const
 {
     auto numLights = static_cast<int>(shaderOGLRender->getShadowMappingSpotLights().size());
 
+    glBindFramebuffer(GL_FRAMEBUFFER, shaderShadowPass->getDirectionalLightDepthMapFBO());
+    glClear(GL_DEPTH_BUFFER_BIT);
+
     if (numLights <= 0) return;
 
     glBindFramebuffer(GL_FRAMEBUFFER, shaderShadowPass->getSpotLightsDepthMapsFBO());
@@ -581,26 +583,28 @@ void ComponentRender::RenderLayersToGlobalFramebuffer() const
     auto gBuffer = window->getGBuffer();
     auto globalBuffer = window->getGlobalBuffers();
 
+    int widthWindow = window->getWidth();
+    int heightWindow = window->getHeight();
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     shaderOGLLightPass->fillSpotLightsMatricesUBO();
 
-    shaderOGLLightPass->render(
-        gBuffer.positions,
-        gBuffer.normals,
-        gBuffer.albedo,
-        shaderOGLRender->getDirectionalLight(),
-        shaderShadowPass->getDirectionalLightDepthTexture(),
-        shaderOGLRender->getNumPointLights(),
-        shaderOGLRender->getNumSpotLights(),
-        shaderShadowPass->getSpotLightsShadowMapArrayTextures(),
-        static_cast<int>(shaderOGLRender->getShadowMappingSpotLights().size()),
-        globalBuffer.sceneFBO
-    );
-
-    int widthWindow = window->getWidth();
-    int heightWindow = window->getHeight();
+    if (EngineSetup::get()->ENABLE_LIGHTS) {
+        shaderOGLLightPass->render(
+            gBuffer.positions,
+            gBuffer.normals,
+            gBuffer.albedo,
+            shaderOGLRender->getDirectionalLight(),
+            shaderShadowPass->getDirectionalLightDepthTexture(),
+            shaderOGLRender->getNumPointLights(),
+            shaderOGLRender->getNumSpotLights(),
+            shaderShadowPass->getSpotLightsShadowMapArrayTextures(),
+            static_cast<int>(shaderOGLRender->getShadowMappingSpotLights().size()),
+            globalBuffer.sceneFBO
+        );
+    }
 
     shaderOGLImage->renderTexture(globalBuffer.backgroundTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);
     shaderOGLImage->renderTexture(globalBuffer.sceneTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);

@@ -223,16 +223,18 @@ struct GUIWidgetMenu
                 ImGui::Separator();
 
                 ImGui::Checkbox("Enable Lights System", &setup->ENABLE_LIGHTS);
-                ImGui::Checkbox("Enable Shadow Mapping", &setup->ENABLE_SHADOW_MAPPING);
+                if (setup->ENABLE_LIGHTS) {
+                    ImGui::Checkbox("Enable Shadow Mapping", &setup->ENABLE_SHADOW_MAPPING);
 
-                if (setup->ENABLE_SHADOW_MAPPING) {
-                    ImGui::Separator();
-                    ImGui::Checkbox("ShadowMapping debug", &setup->SHADOW_MAPPING_DEBUG);
-                    ImGui::Checkbox("Enable ShadowMapping in DirectionalLight", &setup->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
-                    ImGui::DragFloat("DepthMaps Frustum Near plane", &setup->SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
-                    ImGui::DragFloat("DepthMaps Frustum Far plane", &setup->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE, 0.1f, 1.0f, 500.0f);
-                    ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
-                    ImGui::DragFloat("Shadows Intensity", &setup->SHADOW_MAPPING_INTENSITY, 0.1f, -5.0f, 5.0f);
+                    if (setup->ENABLE_SHADOW_MAPPING) {
+                        ImGui::Separator();
+                        ImGui::Checkbox("ShadowMapping debug", &setup->SHADOW_MAPPING_DEBUG);
+                        ImGui::Checkbox("Enable ShadowMapping in DirectionalLight", &setup->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
+                        ImGui::DragFloat("DepthMaps Frustum Near plane", &setup->SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
+                        ImGui::DragFloat("DepthMaps Frustum Far plane", &setup->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE, 0.1f, 1.0f, 500.0f);
+                        ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
+                        ImGui::DragFloat("Shadows Intensity", &setup->SHADOW_MAPPING_INTENSITY, 0.1f, -5.0f, 5.0f);
+                    }
                 }
 
                 ImGui::Separator();
