@@ -20,16 +20,6 @@ ShaderOGLRenderForward::ShaderOGLRenderForward()
     matrixViewUniform = glGetUniformLocation(programID, "view");
     matrixModelUniform = glGetUniformLocation(programID, "model");
 
-    viewPositionUniform = glGetUniformLocation(programID, "viewPos");
-
-    numLightPointsUniform = glGetUniformLocation(programID, "numLights");
-    numSpotLightsUniform = glGetUniformLocation(programID, "numSpotLights");
-
-    directionalLightDirectionUniform = glGetUniformLocation(programID, "dirLight.direction");
-    directionalLightAmbientUniform = glGetUniformLocation(programID, "dirLight.ambient");
-    directionalLightDiffuseUniform = glGetUniformLocation(programID, "dirLight.diffuse");
-    directionalLightSpecularUniform = glGetUniformLocation(programID, "dirLight.specular");
-
     materialTextureDiffuseUniform = glGetUniformLocation(programID, "material.diffuse");
     materialTextureSpecularUniform = glGetUniformLocation(programID, "material.specular");
     materialShininessUniform = glGetUniformLocation(programID, "material.shininess");
@@ -57,27 +47,17 @@ void ShaderOGLRenderForward::render(
     glBindVertexArray(VertexArrayID);
 
     auto camera = ComponentsManager::get()->getComponentCamera();
-    auto cameraPosition = camera->getCamera()->getPosition().toGLM();
+
+    setFloatUniform(alphaUniform, alpha);
 
     setMat4Uniform(matrixProjectionUniform, camera->getGLMMat4ProjectionMatrix());
     setMat4Uniform(matrixViewUniform, camera->getGLMMat4ViewMatrix());
     setMat4Uniform(matrixModelUniform, o->getModelMatrix());
 
-    setVec3Uniform(viewPositionUniform, cameraPosition);
-
     // textures
     setIntUniform(materialTextureDiffuseUniform, 0);
     setIntUniform(materialTextureSpecularUniform, 1);
     setFloatUniform(materialShininessUniform, 32.0f);
-
-    setVec3Uniform(directionalLightDirectionUniform, directionalLight.direction);
-    setVec3Uniform(directionalLightAmbientUniform, directionalLight.ambient);
-    setVec3Uniform(directionalLightDiffuseUniform, directionalLight.diffuse);
-    setVec3Uniform(directionalLightSpecularUniform, directionalLight.specular);
-
-    setIntUniform(numLightPointsUniform, static_cast<int>(pointsLights.size()));
-    setIntUniform(numSpotLightsUniform, static_cast<int>(spotLights.size()));
-    setFloatUniform(alphaUniform, alpha);
 
     setVec3("drawOffset", o->getDrawOffset().toGLM());
 
@@ -88,8 +68,6 @@ void ShaderOGLRenderForward::render(
     glBindTexture(GL_TEXTURE_2D, textureSpecularID);
 
     setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
-    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
-    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
 
     glDrawArrays(GL_TRIANGLES, 0, size);
 
