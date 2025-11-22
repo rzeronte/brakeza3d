@@ -5,7 +5,6 @@
 #include "Component.h"
 
 class ComponentInput : public Component {
-private:
     bool mouseMotion = false;
     float mouseMotionXRel = 0.f;
     float mouseMotionYRel = 0.f;
