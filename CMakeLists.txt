@@ -86,8 +86,8 @@ add_executable(Brakeza3D
     src/Objects/Line2D.cpp                          include/Objects/Line2D.h
     src/Objects/Object3D.cpp                        include/Objects/Object3D.h
     src/Objects/LightPoint3D.cpp                    include/Objects/LightPoint3D.h
-    src/Objects/BillboardAnimation8Directions.cpp   include/Objects/BillboardAnimation8Directions.h
-    src/Objects/BillboardAnimation.cpp              include/Objects/BillboardAnimation.h
+        src/Objects/Image3DAnimation8Directions.cpp include/Objects/Image3DAnimation8Directions.h
+        src/Objects/Image3DAnimation.cpp include/Objects/Image3DAnimation.h
     src/Objects/Decal.cpp                           include/Objects/Decal.h
     src/Objects/Cube3D.cpp                          include/Objects/Cube3D.h
     src/Objects/Camera3D.cpp                        include/Components/Camera3D.h
@@ -128,8 +128,7 @@ add_executable(Brakeza3D
     src/Render/Maths.cpp                            include/Render/Maths.h
     src/Render/BSPMap.cpp                           include/Render/BSPMap.h
     src/Render/PhysicsDebugDraw.cpp                 include/Render/PhysicsDebugDraw.h
-    src/Render/Billboard.cpp                        include/Render/Billboard.h
-    src/Render/M3.cpp                               include/Render/M3.h
+        src/Render/M3.cpp                               include/Render/M3.h
     src/Render/Logging.cpp                          include/Render/Logging.h
 
     src/2D/MenuOption.cpp                           include/2D/MenuOption.h
