@@ -24,7 +24,7 @@ void ComponentInput::preUpdate()
 
 void ComponentInput::onUpdate()
 {
-    if (!isEnabled()) return;
+    //if (!isEnabled()) return;
     handleKeyboardMovingCamera();
 }
 
@@ -84,16 +84,15 @@ void ComponentInput::handleMouse(SDL_Event *event)
         mouseButtonUp = true;
         drag = false;
     }
-
 }
 
-void ComponentInput::handleKeyboardMovingCamera() const
+void ComponentInput::handleKeyboardMovingCamera()
 {
     if (ImGui::GetIO().WantCaptureKeyboard) {
         return;
     }
 
-    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     bool isShiftPressed = keyboard[SDL_SCANCODE_LSHIFT] || keyboard[SDL_SCANCODE_RSHIFT];
 
     if (keyboard[SDL_SCANCODE_UP]) {
@@ -130,7 +129,7 @@ void ComponentInput::handleWindowEvents(SDL_Event *e, bool &end)
 
 void ComponentInput::resetKeyboardMapping()
 {
-    this->keyboard = (unsigned char *) SDL_GetKeyboardState(nullptr);
+    keyboard = (unsigned char *) SDL_GetKeyboardState(nullptr);
 }
 
 void ComponentInput::updateMouseStates(SDL_Event *event)

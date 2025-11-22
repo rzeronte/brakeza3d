@@ -699,7 +699,6 @@ void ComponentWindow::createGBuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-
 void ComponentWindow::resizeGBuffer()
 {
     createGBuffer();

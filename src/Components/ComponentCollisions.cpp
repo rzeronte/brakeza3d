@@ -25,12 +25,10 @@ void ComponentCollisions::onStart()
 
 void ComponentCollisions::preUpdate()
 {
-
 }
 
 void ComponentCollisions::onUpdate()
 {
-
 }
 
 void ComponentCollisions::postUpdate()

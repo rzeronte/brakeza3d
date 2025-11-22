@@ -10,7 +10,6 @@
 typedef float vec3_t[3];
 
 class ComponentCamera : public Component {
-private:
     Camera3D *camera;
     glm::mat4 ViewMatrix;
     glm::mat4 ProjectionMatrix;

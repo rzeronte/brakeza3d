@@ -228,7 +228,7 @@ void GUIManager::drawEditShaderWindow()
             ImGui::InputTextMultiline("##sourceVS", shaderEditableManager.editableSourceVS, IM_ARRAYSIZE(shaderEditableManager.editableSourceVS), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 10), flags);
             if (ImGui::Button(std::string("Save vertex shader").c_str())) {
                 shaderEditableManager.shader->sourceVS = shaderEditableManager.editableSourceVS;
-                Tools::writeToFile(shaderEditableManager.shader->vertexFilename, shaderEditableManager.shader->sourceVS.c_str());
+                Tools::writeToFile(shaderEditableManager.shader->getVertexFilename(), shaderEditableManager.shader->sourceVS.c_str());
             }
         }
 
@@ -236,7 +236,7 @@ void GUIManager::drawEditShaderWindow()
             ImGui::InputTextMultiline("##sourceFS", shaderEditableManager.editableSourceFS, IM_ARRAYSIZE(shaderEditableManager.editableSourceFS), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 10), flags);
             if (ImGui::Button(std::string("Save fragment shader").c_str())) {
                 shaderEditableManager.shader->sourceFS = shaderEditableManager.editableSourceFS;
-                Tools::writeToFile(shaderEditableManager.shader->fragmentFilename, shaderEditableManager.shader->sourceFS.c_str());
+                Tools::writeToFile(shaderEditableManager.shader->getFragmentFilename(), shaderEditableManager.shader->sourceFS.c_str());
             }
         }
     }
@@ -1015,7 +1015,7 @@ void GUIManager::draw(float timedelta, bool &finish)
 
 void GUIManager::RenderFPS()
 {
-    if (EngineSetup::get()->DRAW_FPS)
+    if (EngineSetup::get()->DRAW_FPS_IMGUI)
     {
         auto fps = ComponentsManager::get()->getComponentRender()->getFps();
 
