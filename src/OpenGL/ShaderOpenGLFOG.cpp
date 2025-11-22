@@ -79,8 +79,9 @@ void ShaderOpenGLFOG::createFramebuffer()
     glGenFramebuffers(1, &resultFramebuffer);
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(resultFramebuffer);
 
-    int w, h;
-    SDL_GetWindowSize(ComponentsManager::get()->getComponentWindow()->getWindow(), &w, &h);
+    auto window = ComponentsManager::get()->getComponentWindow();
+    int w = window->getWidth();
+    int h = window->getHeight();
 
     glGenTextures(1, &textureResult);
     glBindTexture(GL_TEXTURE_2D, textureResult);
