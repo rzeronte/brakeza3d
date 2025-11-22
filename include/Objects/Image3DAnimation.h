@@ -4,39 +4,34 @@
 
 #include "Object3D.h"
 #include "../Components/Camera3D.h"
-#include "../EngineSetup.h"
-#include "../Misc/Timer.h"
 #include "../2D/TextureAnimated.h"
-#include "../Render/Billboard.h"
-#include "../Misc/Counter.h"
+#include "Image3D.h"
 #include <vector>
 
-class BillboardAnimation : public Object3D {
-    Billboard *billboard;
-private:
+class Image3DAnimation : public Object3D
+{
     float width;
     float height;
     int currentAnimationIndex;
-
-    std::vector<TextureAnimated*> animations;
-
-    bool autoRemoveAfterAnimation;
-    bool sharedTextures;
-
-    std::string currentSpriteFileVariableToCreateAnimation;
     int currentFramesVariableToCreateAnimation = 0;
     int currentWidthVariableToCreateAnimation = 0;
     int currentHeightVariableToCreateAnimation = 0;
-public:
-    BillboardAnimation(float width, float height);
+    bool autoRemoveAfterAnimation;
+    bool sharedTextures;
 
-    ~BillboardAnimation() override;
+    std::vector<TextureAnimated*> animations;
+    std::string currentSpriteFileVariableToCreateAnimation;
+    Image3D *billboard;
+public:
+    Image3DAnimation(Vertex3D &position, float width, float height);
+
+    ~Image3DAnimation() override;
 
     void onUpdate() override;
 
     void setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation);
 
-    void linkTextureAnimation(BillboardAnimation *);
+    void linkTextureAnimation(Image3DAnimation *);
 
     TextureAnimated *getCurrentTextureAnimation();
 
@@ -60,11 +55,11 @@ public:
 
     static void createFromJSON(cJSON *object);
 
-    static void setPropertiesFromJSON(cJSON *object, BillboardAnimation *o);
+    static void setPropertiesFromJSON(cJSON *object, Image3DAnimation *o);
 
-    void updateBillboardSize();
+    void updateBillboardSize() const;
 
-    static BillboardAnimation* create(
+    static Image3DAnimation* create(
         Vertex3D position,
         float width,
         float height,

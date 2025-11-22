@@ -61,7 +61,7 @@ struct GUIWidgetProjectSettings {
         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
         ImGui::Text("Project LUA Scripts");
         ImGui::Separator();
-        if ((int) scripts.size() <= 0) {
+        if (scripts.empty()) {
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Project scripts not found");
         }
 
@@ -118,7 +118,7 @@ struct GUIWidgetProjectSettings {
         ImGui::Text("Scene LUA Scripts");
         ImGui::Separator();
         auto scripts = scripting->getSceneLUAScripts();
-        if ((int) scripts.size() <= 0) {
+        if (scripts.empty()) {
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Scene scripts not found");
         }
 
@@ -172,7 +172,7 @@ struct GUIWidgetProjectSettings {
         ImGui::Text("Scene Shaders");
         ImGui::Separator();
         auto shaders = render->getSceneShaders();
-        if ((int) shaders.size() <= 0) {
+        if (shaders.empty()) {
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Scene shaders not found");
         }
         for (int i = 0; i < shaders.size(); i++) {

@@ -21,8 +21,8 @@ void ShaderOpenGLWireframe::renderMesh(Mesh3D *mesh, GLuint framebuffer)
         render(
             mesh->getModelMatrix(),
             m.feedbackBuffer,
-            m.uvbuffer,
-            m.normalbuffer,
+            m.uvBuffer,
+            m.normalBuffer,
             (int) m.vertices.size(),
             framebuffer
         );
@@ -35,8 +35,8 @@ void ShaderOpenGLWireframe::renderMeshAnimation(Mesh3DAnimation *mesh, GLuint fr
         render(
             mesh->getModelMatrix(),
             m.feedbackBuffer,
-            m.uvbuffer,
-            m.normalbuffer,
+            m.uvBuffer,
+            m.normalBuffer,
             (int) m.vertices.size(),
             framebuffer
         );

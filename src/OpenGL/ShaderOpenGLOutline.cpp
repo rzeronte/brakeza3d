@@ -47,9 +47,9 @@ void ShaderOpenGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThi
     for (const auto& mm : m->meshes) {
         shaderColor->renderColor(
             m->getModelMatrix(),
-            mm.vertexbuffer,
-            mm.uvbuffer,
-            mm.normalbuffer,
+            mm.vertexBuffer,
+            mm.uvBuffer,
+            mm.normalBuffer,
             static_cast<int>(mm.vertices.size()),
             Color::white(),
             true,
@@ -69,8 +69,8 @@ void ShaderOpenGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderT
         shaderColor->renderColor(
             m->getModelMatrix(),
             mm.feedbackBuffer,
-            mm.uvbuffer,
-            mm.normalbuffer,
+            mm.uvBuffer,
+            mm.normalBuffer,
             static_cast<int>(mm.vertices.size()),
             Color::white(),
             true,
@@ -87,10 +87,10 @@ void ShaderOpenGLOutline::drawOutlineImage3D(Image3D *i, const Color &c, float b
 
     shaderColor->renderColor(
         i->getModelMatrix(),
-        i->vertexbuffer,
-        i->uvbuffer,
-        i->normalbuffer,
-        static_cast<int>(i->vertices.size()),
+        i->getVertexBuffer(),
+        i->getUVBuffer(),
+        i->getNormalBuffer(),
+        static_cast<int>(i->getVertices().size()),
         Color::white(),
         true,
         shaderColor->getFramebuffer()

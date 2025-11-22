@@ -207,7 +207,7 @@ std::vector<CubeGrid3D> Grid3D::makeTravelCubesGrid()
 {
     auto path = getPathFinding().makeTravelIndexes();
 
-    if ((int) path.size() <= 0) return {};
+    if (path.empty()) return {};
     std::vector<CubeGrid3D> output;
     for (const auto& step : path) {
         int x = std::get<0>(step);

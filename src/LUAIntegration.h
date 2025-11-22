@@ -16,8 +16,8 @@
 #include "../include/Objects/Mesh3DAnimation.h"
 #include "../include/Objects/Image3D.h"
 #include "../include/Objects/LightPoint3D.h"
-#include "../include/Objects/BillboardAnimation.h"
-#include "../include/Objects/BillboardAnimation8Directions.h"
+#include "../include/Objects/Image3DAnimation.h"
+#include "../include/Objects/Image3DAnimation8Directions.h"
 #include "../include/Objects/ParticleEmitter.h"
 #include "../include/Misc/SharedLUAContext.h"
 #include "../include/OpenGL/FXEffectOpenGLObject.h"
@@ -321,20 +321,20 @@ void LUAIntegration(sol::state &lua)
         "isLoop", &Mesh3DAnimation::isLoop
     );
 
-    lua.new_usertype<BillboardAnimation>("BillboardAnimation",
+    lua.new_usertype<Image3DAnimation>("BillboardAnimation",
     sol::base_classes, sol::bases<Object3D>(),
         "create", sol::factories([](Vertex3D position, float w, float h, const std::string& imageFile, int spriteW, int spriteH, int numFrames, int fps) {
-            return BillboardAnimation::create(position, w, h, imageFile, spriteW, spriteH, numFrames, fps);
+            return Image3DAnimation::create(position, w, h, imageFile, spriteW, spriteH, numFrames, fps);
         }),
-        "addAnimation", &BillboardAnimation::addAnimation,
-        "setAnimation", &BillboardAnimation::setAnimation,
-        "updateBillboardSize", &BillboardAnimation::updateBillboardSize
+        "addAnimation", &Image3DAnimation::addAnimation,
+        "setAnimation", &Image3DAnimation::setAnimation,
+        "updateBillboardSize", &Image3DAnimation::updateBillboardSize
     );
 
-    lua.new_usertype<BillboardAnimation8Directions>("BillboardAnimation8Directions",
+    lua.new_usertype<Image3DAnimation8Directions>("BillboardAnimation8Directions",
     sol::base_classes, sol::bases<Object3D>(),
         "create", sol::factories([](Vertex3D position, float w, float h, const std::string& spriteFolder, int numFrames, int fps) {
-          return BillboardAnimation8Directions::create(position, w, h, spriteFolder, numFrames, fps);
+          return Image3DAnimation8Directions::create(position, w, h, spriteFolder, numFrames, fps);
         })
     );
 

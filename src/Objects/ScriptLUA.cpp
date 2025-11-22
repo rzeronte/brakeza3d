@@ -296,7 +296,7 @@ void ScriptLUA::drawImGuiProperties()
 {
     ImGui::SeparatorText("LUA variables");
 
-    if (static_cast<int>(dataTypes.size()) <= 0) {
+    if (dataTypes.empty()) {
         ImGui::Text("No variables found");
         return;
     }

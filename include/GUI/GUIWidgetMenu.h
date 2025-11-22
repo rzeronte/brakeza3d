@@ -201,7 +201,7 @@ struct GUIWidgetMenu
             }
             if (ImGui::BeginMenu("Render")) {
                 const float range_far_plane_distance_sensibility = 1.0f;
-                ImGui::Checkbox("v-Sync", &setup->V_SYNC);
+                ImGui::Checkbox("V-Sync", &setup->V_SYNC);
                 if (ImGui::IsItemEdited()) {
                     if (setup->V_SYNC) {
                         Logging::Message("Set V-Sync enabled");
@@ -243,7 +243,9 @@ struct GUIWidgetMenu
                 ImGui::Separator();
                 ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
                 ImGui::Separator();
-                ImGui::Checkbox("Depth Map", &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
+                if (setup->ENABLE_SHADOW_MAPPING) {
+                    ImGui::Checkbox("Depth Map", &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
+                }
                 if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
                     auto s = ComponentsManager::get()->getComponentRender()->getShaderOGLDepthMap();
                     ImGui::DragFloat("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 10.0f);
@@ -370,7 +372,6 @@ struct GUIWidgetMenu
                 ImGui::Checkbox("UI (F4)", &setup->ENABLE_IMGUI);
 
                 ImGui::Separator();
-                ImGui::Checkbox("Draw Main Axis", &setup->RENDER_MAIN_AXIS);
                 ImGui::Checkbox("Draw Object3D Axis", &setup->RENDER_OBJECTS_AXIS);
                 if (setup->RENDER_OBJECTS_AXIS) {
                     const float sizeAxisMin = 0;

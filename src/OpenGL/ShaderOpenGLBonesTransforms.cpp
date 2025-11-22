@@ -17,7 +17,7 @@ ShaderOpenGLBonesTransforms::ShaderOpenGLBonesTransforms()
 }
 
 void ShaderOpenGLBonesTransforms::render(
-    meshData &meshData,
+    Mesh3DData &meshData,
     std::vector<glm::mat4> transformations,
     GLuint framebuffer
 ) {
@@ -27,7 +27,7 @@ void ShaderOpenGLBonesTransforms::render(
 
     setMat4ArrayUniform(gBonesUniform, transformations);
 
-    setVAOAttributes(meshData.vertexbuffer, meshData.vertexBoneDataBuffer);
+    setVAOAttributes(meshData.vertexBuffer, meshData.vertexBoneDataBuffer);
 
     glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, meshData.feedbackBuffer);  // Vinculamos el buffer de feedback
     glBeginTransformFeedback(GL_TRIANGLES);  // Especificamos el tipo de primitivas que estamos procesando

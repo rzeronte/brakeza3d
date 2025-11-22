@@ -157,9 +157,9 @@ void ShaderOGLRenderForward::renderMesh(Mesh3D *o, GLuint framebuffer) const
             o,
             o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
             o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
-            m.vertexbuffer,
-            m.uvbuffer,
-            m.normalbuffer,
+            m.vertexBuffer,
+            m.uvBuffer,
+            m.normalBuffer,
             static_cast<int>(m.vertices.size()),
             o->getAlpha(),
             framebuffer
@@ -258,8 +258,8 @@ void ShaderOGLRenderForward::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer) c
             o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
             o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
             m.feedbackBuffer,
-            m.uvbuffer,
-            m.normalbuffer,
+            m.uvBuffer,
+            m.normalBuffer,
             static_cast<int>(m.vertices.size()),
             o->getAlpha(),
             framebuffer

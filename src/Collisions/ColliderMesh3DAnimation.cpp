@@ -12,7 +12,7 @@ AssimpAnimationService::AssimpAnimationService()
 {
 }
 
-void AssimpAnimationService::UpdateOpenGLBones(std::vector<meshData> &meshes)
+void AssimpAnimationService::UpdateOpenGLBones(std::vector<Mesh3DData> &meshes)
 {
     std::vector transformations(MAX_BONES, glm::mat4(0));
 
@@ -21,7 +21,7 @@ void AssimpAnimationService::UpdateOpenGLBones(std::vector<meshData> &meshes)
     }
 
     for (auto &m: meshes) {
-        if (m.vertices.size() <= 0) continue;
+        if (m.vertices.empty()) continue;
         ComponentsManager::get()->getComponentRender()->getShaderOGLBonesTransforms()->render(
             m,
             transformations,
@@ -71,7 +71,7 @@ float AssimpAnimationService::getCurrentAnimationMaxTime() const
     );
 }
 
-bool AssimpAnimationService::AssimpLoadAnimation(const std::string &filename, std::vector<meshData> &meshes)
+bool AssimpAnimationService::AssimpLoadAnimation(const std::string &filename, std::vector<Mesh3DData> &meshes)
 {
     Logging::Message("AssimpLoadAnimation for %s", filename.c_str());
 
@@ -103,7 +103,7 @@ bool AssimpAnimationService::AssimpLoadAnimation(const std::string &filename, st
     return true;
 }
 
-void AssimpAnimationService::ReadNodesFromRoot(std::vector<meshData> &meshes)
+void AssimpAnimationService::ReadNodesFromRoot(std::vector<Mesh3DData> &meshes)
 {
     // Transformación raíz
     globalInverseTransform = scene->mRootNode->mTransformation;
@@ -118,7 +118,7 @@ void AssimpAnimationService::ReadNodesFromRoot(std::vector<meshData> &meshes)
     ProcessNodeAnimation(scene->mRootNode, meshes);
 }
 
-void AssimpAnimationService::ProcessNodeAnimation(aiNode *node, std::vector<meshData> &meshes)
+void AssimpAnimationService::ProcessNodeAnimation(aiNode *node, std::vector<Mesh3DData> &meshes)
 {
     // Procesamos las mallas del nodo dado
     for (unsigned int x = 0; x < node->mNumMeshes; x++) {
@@ -132,7 +132,7 @@ void AssimpAnimationService::ProcessNodeAnimation(aiNode *node, std::vector<mesh
     }
 }
 
-void AssimpAnimationService::ProcessMeshAnimation(int i, aiMesh *mesh, std::vector<meshData> &meshes)
+void AssimpAnimationService::ProcessMeshAnimation(int i, aiMesh *mesh, std::vector<Mesh3DData> &meshes)
 {
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
         Logging::Message("Skip mesh non triangle");
@@ -490,10 +490,10 @@ bool AssimpAnimationService::isAnimationEnds() const
     return animation_ends;
 }
 
-void AssimpAnimationService::FillAnimationBoneDataOGLBuffers(std::vector<meshData> &meshes)
+void AssimpAnimationService::FillAnimationBoneDataOGLBuffers(std::vector<Mesh3DData> &meshes)
 {
     for (int i = 0; i < meshes.size(); i++) {
-        if (meshes[i].vertices.size() <= 0) continue;
+        if (meshes[i].vertices.empty()) continue;
 
         if (!glIsBuffer(meshes[i].vertexBoneDataBuffer)) {
             glGenBuffers(1, &meshes[i].vertexBoneDataBuffer);

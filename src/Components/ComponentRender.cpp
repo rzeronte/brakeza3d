@@ -95,10 +95,6 @@ void ComponentRender::onUpdate()
         shaderShadowPassDebugLight->createArrayTextures(numSpotLights);
         shaderShadowPassDebugLight->updateDebugTextures(numSpotLights);
     }
-
-    if (SETUP->RENDER_MAIN_AXIS) {
-        Drawable::drawMainAxis();
-    }
 }
 
 void ComponentRender::postUpdate()
@@ -537,19 +533,19 @@ void ComponentRender::resizeShadersFramebuffers() const
     }
 }
 
-void ComponentRender::FillOGLBuffers(std::vector<meshData> &meshes)
+void ComponentRender::FillOGLBuffers(std::vector<Mesh3DData> &meshes)
 {
     for (auto &m: meshes) {
-        glGenBuffers(1, &m.vertexbuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, m.vertexbuffer);
+        glGenBuffers(1, &m.vertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m.vertexBuffer);
         glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(m.vertices.size() * sizeof(glm::vec4)), &m.vertices[0], GL_STATIC_DRAW);
 
-        glGenBuffers(1, &m.uvbuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, m.uvbuffer);
+        glGenBuffers(1, &m.uvBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m.uvBuffer);
         glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(m.uvs.size() * sizeof(glm::vec2)), &m.uvs[0], GL_STATIC_DRAW);
 
-        glGenBuffers(1, &m.normalbuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, m.normalbuffer);
+        glGenBuffers(1, &m.normalBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, m.normalBuffer);
         glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(m.normals.size() * sizeof(glm::vec3)), &m.normals[0], GL_STATIC_DRAW);
 
         glGenBuffers(1, &m.feedbackBuffer); // Creamos el buffer para Transform Feedback de vértices

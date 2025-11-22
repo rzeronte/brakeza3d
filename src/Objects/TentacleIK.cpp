@@ -20,11 +20,13 @@ TentacleIK::TentacleIK(Vertex3D position, Object3D *parent, Object3D * target, f
     setPosition(position);
 }
 
-void TentacleIK::onUpdate() {
+void TentacleIK::onUpdate()
+{
     Object3D::onUpdate();
 }
 
-void TentacleIK::postUpdate() {
+void TentacleIK::postUpdate()
+{
     Object3D::postUpdate();
 
     cadence.update();
@@ -34,7 +36,7 @@ void TentacleIK::postUpdate() {
 
 void TentacleIK::IKForwardSolver()
 {
-    if ((int) joints.size() <= 0) return;
+    if (joints.empty()) return;
 
     setRootPosition(parent->getPosition());
     moveFinalToTargetPosition();

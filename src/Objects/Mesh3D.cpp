@@ -272,14 +272,14 @@ Mesh3D::~Mesh3D()
         for (auto triangle : m.modelTriangles) delete triangle;
         for (auto vertex : m.modelVertices) delete vertex;
 
-        if (glIsBuffer(m.vertexbuffer))
-            glDeleteBuffers(1, &m.vertexbuffer);
+        if (glIsBuffer(m.vertexBuffer))
+            glDeleteBuffers(1, &m.vertexBuffer);
 
-        if (glIsBuffer(m.uvbuffer))
-            glDeleteBuffers(1, &m.uvbuffer);
+        if (glIsBuffer(m.uvBuffer))
+            glDeleteBuffers(1, &m.uvBuffer);
 
-        if (glIsBuffer(m.normalbuffer))
-            glDeleteBuffers(1, &m.normalbuffer);
+        if (glIsBuffer(m.normalBuffer))
+            glDeleteBuffers(1, &m.normalBuffer);
     }
 
     if (!sharedTextures) {

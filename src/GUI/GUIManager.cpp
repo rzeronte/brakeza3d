@@ -107,11 +107,11 @@ void GUIManager::drawSelectedObjectShaders()
     }
 
     auto customShaders = mesh->getCustomShaders();
-    if ((int) customShaders.size() <= 0) {
+    if (customShaders.empty()) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No shaders in selected object.");
     }
 
-    for (int i = 0; i < (int) customShaders.size(); i++) {
+    for (unsigned int i = 0; i < customShaders.size(); i++) {
         ImGui::PushID(i);
 
         auto s = customShaders[i];
@@ -172,7 +172,7 @@ void GUIManager::drawSelectedObjectScripts()
     auto o = gameObjects[selectedObjectIndex];
     auto objectScripts = o->getScripts();
 
-    if ((int) objectScripts.size() <= 0) {
+    if (objectScripts.empty()) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No scripts in selected object.");
     }
 
@@ -551,7 +551,7 @@ void GUIManager::drawShaderVariables()
         ImGui::EndTable();
     }
 
-    if ((int) types.size() <= 0) {
+    if (types.empty()) {
         ImGui::Text("No types defined");
         ImGui::Spacing();
     }
@@ -609,7 +609,7 @@ void GUIManager::drawScriptVariables()
         ImGui::EndTable();
     }
 
-    if ((int) scriptEditableManager.script->dataTypes.size() <= 0) {
+    if (scriptEditableManager.script->dataTypes.empty()) {
         ImGui::Text("No types defined");
         ImGui::Spacing();
     } else {

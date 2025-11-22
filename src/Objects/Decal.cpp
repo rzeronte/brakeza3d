@@ -1,11 +1,11 @@
 
 #include "../../include/Objects/Decal.h"
 #include "../../include/Render/Transforms.h"
-#include "../../include/Objects/BillboardAnimation8Directions.h"
+#include "../../include/Objects/Image3DAnimation8Directions.h"
 #include "../../include/ComponentsManager.h"
 
 Decal::Decal() :
-    sprite(new BillboardAnimation(EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT))
+    sprite(new Image3DAnimation(getPosition(), EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT))
 {
     setDecal(true);
 }
@@ -97,11 +97,11 @@ void Decal::getTriangles(std::vector<Triangle *> &triangles, Camera3D *camera) {
      */
 }
 
-BillboardAnimation *Decal::getSprite() const {
+Image3DAnimation *Decal::getSprite() const {
     return sprite;
 }
 
-void Decal::setSprite(BillboardAnimation *sprite) {
+void Decal::setSprite(Image3DAnimation *sprite) {
     Decal::sprite = sprite;
 }
 

@@ -1,17 +1,17 @@
 
-#include "../../include/Objects/BillboardAnimation8Directions.h"
+#include "../../include/Objects/Image3DAnimation8Directions.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Render/Maths.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
-BillboardAnimation8Directions::BillboardAnimation8Directions(float width, float height)
+Image3DAnimation8Directions::Image3DAnimation8Directions(Vertex3D position, float width, float height)
 :
+    billboard(new Image3D(position, width, height, nullptr)),
     width(width),
     height(height)
 {
-    this->billboard = new Billboard(width, height);
     this->counterAnimations = new Counter();
 
     /*for (auto & animation : this->animations) {
@@ -19,35 +19,31 @@ BillboardAnimation8Directions::BillboardAnimation8Directions(float width, float 
     }*/
 }
 
-void BillboardAnimation8Directions::onUpdate()
+void Image3DAnimation8Directions::onUpdate()
 {
-    if ((int) animations.size() <= 0) return;
+    if (static_cast<int>(animations.size()) <= 0) return;
 
     this->updateTrianglesCoordinates(ComponentsManager::get()->getComponentCamera()->getCamera());
 
     ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->render(
             this,
-            billboard->getTexture()->getOGLTextureID(),
-            billboard->getTexture()->getOGLTextureID(),
-            billboard->vertexbuffer,
-            billboard->uvbuffer,
-            billboard->normalbuffer,
-            (int) billboard->vertices.size(),
+            billboard->getImage()->getOGLTextureID(),
+            billboard->getImage()->getOGLTextureID(),
+            billboard->getVertexBuffer(),
+            billboard->getUVBuffer(),
+            billboard->getNormalBuffer(),
+            static_cast<int>(billboard->getVertices().size()),
             1.0f,
             ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 }
 
-void BillboardAnimation8Directions::updateTrianglesCoordinates(Camera3D *cam)
+void Image3DAnimation8Directions::updateTrianglesCoordinates(Camera3D *cam)
 {
-    Vertex3D up = cam->getRotation().getTranspose() * EngineSetup::get()->up;
-    Vertex3D right = cam->getRotation().getTranspose() * EngineSetup::get()->right.getInverse();
-
-    billboard->updateUnconstrainedQuad(this, up, right);
     updateTextureFromCameraAngle(this, cam);
 }
 
-void BillboardAnimation8Directions::addAnimationDirectional2D(
+void Image3DAnimation8Directions::addAnimationDirectional2D(
     const std::string& animation_folder,
     int numFrames,
     int fps,
@@ -75,9 +71,9 @@ void BillboardAnimation8Directions::addAnimationDirectional2D(
     animations.push_back(animation);
 }
 
-void BillboardAnimation8Directions::updateTextureFromCameraAngle(Object3D *o, Camera3D *cam)
+void Image3DAnimation8Directions::updateTextureFromCameraAngle(Object3D *o, Camera3D *cam)
 {
-    if ((int) animations.size() <= 0) return;
+    if (animations.empty()) return;
 
     float enemyAngle = Maths::getHorizontalAngleBetweenObject3DAndCamera(o, cam);
     int direction = getDirectionForAngle(enemyAngle);
@@ -90,26 +86,26 @@ void BillboardAnimation8Directions::updateTextureFromCameraAngle(Object3D *o, Ca
     }
 
     if (getCurrentTextureAnimationDirectional()->isZeroDirection) {
-        billboard->setTexture(getCurrentTextureAnimationDirectional()->getCurrentFrame(0));
+        billboard->setImage(getCurrentTextureAnimationDirectional()->getCurrentFrame(0));
     } else {
         auto t = getCurrentTextureAnimationDirectional()->getCurrentFrame(direction);
-        billboard->setTexture(t);
+        billboard->setImage(t);
     }
 }
 
-void BillboardAnimation8Directions::setAnimation(int indexAnimation)
+void Image3DAnimation8Directions::setAnimation(int indexAnimation)
 {
     this->currentAnimation = indexAnimation;
     this->updateStep();
     this->counterAnimations->setStep(step);
 }
 
-TextureAnimatedDirectional *BillboardAnimation8Directions::getCurrentTextureAnimationDirectional()
+TextureAnimatedDirectional *Image3DAnimation8Directions::getCurrentTextureAnimationDirectional()
 {
     return this->animations[currentAnimation];
 }
 
-int BillboardAnimation8Directions::getDirectionForAngle(float enemyAngle)
+int Image3DAnimation8Directions::getDirectionForAngle(float enemyAngle)
 {
     if (enemyAngle >= 292.5f && enemyAngle < 337.5f)
         return 8;
@@ -131,13 +127,13 @@ int BillboardAnimation8Directions::getDirectionForAngle(float enemyAngle)
     return 1;
 }
 
-void BillboardAnimation8Directions::updateStep()
+void Image3DAnimation8Directions::updateStep()
 {
     step = (float) 1 / (float) this->getCurrentTextureAnimationDirectional()->fps;
     this->counterAnimations->setStep(step);
 }
 
-void BillboardAnimation8Directions::drawImGuiProperties()
+void Image3DAnimation8Directions::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
 
@@ -198,17 +194,16 @@ void BillboardAnimation8Directions::drawImGuiProperties()
     }
 }
 
-const char *BillboardAnimation8Directions::getTypeObject()
+const char *Image3DAnimation8Directions::getTypeObject()
 {
     return "BillboardAnimation8Directions";
 }
 
-const char *BillboardAnimation8Directions::getTypeIcon() {
+const char *Image3DAnimation8Directions::getTypeIcon() {
     return "BillboardAnimation8DirectionsIcon";
 }
 
-
-cJSON *BillboardAnimation8Directions::getJSON()
+cJSON *Image3DAnimation8Directions::getJSON()
 {
     auto root =  Object3D::getJSON();
 
@@ -230,16 +225,16 @@ cJSON *BillboardAnimation8Directions::getJSON()
     return root;
 }
 
-void BillboardAnimation8Directions::createFromJSON(cJSON *object)
+void Image3DAnimation8Directions::createFromJSON(cJSON *object)
 {
-    auto o = new BillboardAnimation8Directions(1, 1);
+    auto o = new Image3DAnimation8Directions(Vertex3D(), 1, 1);
 
     setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
 
-void BillboardAnimation8Directions::setPropertiesFromJSON(cJSON *object, BillboardAnimation8Directions *o)
+void Image3DAnimation8Directions::setPropertiesFromJSON(cJSON *object, Image3DAnimation8Directions *o)
 {
     o->setBelongToScene(true);
     Object3D::setPropertiesFromJSON(object, o);
@@ -265,12 +260,13 @@ void BillboardAnimation8Directions::setPropertiesFromJSON(cJSON *object, Billboa
     }
 }
 
-void BillboardAnimation8Directions::updateBillboardSize()
+void Image3DAnimation8Directions::updateBillboardSize() const
 {
-    billboard->updateSize(width, height);
+    billboard->setWidth(width);
+    billboard->setHeight(height);
 }
 
-BillboardAnimation8Directions* BillboardAnimation8Directions::create(
+Image3DAnimation8Directions* Image3DAnimation8Directions::create(
         Vertex3D position,
         float width,
         float height,
@@ -278,7 +274,7 @@ BillboardAnimation8Directions* BillboardAnimation8Directions::create(
         int frames,
         int fps
 ) {
-    auto o = new BillboardAnimation8Directions(width, height);
+    auto o = new Image3DAnimation8Directions(position, width, height);
     o->addAnimationDirectional2D(folderSprite, frames, fps, false, -1);
     o->setAnimation(0);
     o->setPosition(position);

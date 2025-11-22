@@ -81,7 +81,6 @@ public:
     float HORIZONTAL_FOV = 90;
 
     // Draw axis
-    bool RENDER_MAIN_AXIS = false;
     bool RENDER_OBJECTS_AXIS = false;
     float OBJECT_AXIS_SIZE = 1.0f;
 

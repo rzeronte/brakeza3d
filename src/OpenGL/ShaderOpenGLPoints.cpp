@@ -32,7 +32,7 @@ void ShaderOpenGLPoints::renderMesh(Mesh3D *mesh, GLuint framebuffer)
     for (auto &m: mesh->meshes) {
         render(
             mesh,
-            m.vertexbuffer,
+            m.vertexBuffer,
             m.vertices.size(),
             Color::green(),
             framebuffer

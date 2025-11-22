@@ -12,17 +12,17 @@ public:
     std::string baseFilename;
 
     int numberFramesToLoad;
-    int currentFrame;
+    int currentFrame = 0;
     int fps;
     std::vector<Image*> frames;
 
-    bool endAnimation;
-    bool paused;
+    bool endAnimation = false;
+    bool paused = false;
 
     Counter counter;
 
-    int currentSpriteWidth;
-    int currentspriteHeight;
+    int currentSpriteWidth = 0;
+    int currentspriteHeight = 0;
 
     TextureAnimated(std::string baseFile, int numFrames, int fps);
 

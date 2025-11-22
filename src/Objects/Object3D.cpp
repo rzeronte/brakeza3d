@@ -428,7 +428,7 @@ void Object3D::drawImGuiProperties()
 
     if (featuresGUI.attached) {
         if (ImGui::CollapsingHeader("Attached Objects")) {
-            if (static_cast<int>(attachedObjects.size()) <= 0) {
+            if (attachedObjects.empty() <= 0) {
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Not objects found");
             }
 

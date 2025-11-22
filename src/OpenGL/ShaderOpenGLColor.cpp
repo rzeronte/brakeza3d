@@ -29,9 +29,9 @@ void ShaderOpenGLColor::renderMesh(Mesh3D* m, const Color &color, bool clearFram
     for (const auto& mm : m->meshes) {
         renderColor(
             m->getModelMatrix(),
-            mm.vertexbuffer,
-            mm.uvbuffer,
-            mm.normalbuffer,
+            mm.vertexBuffer,
+            mm.uvBuffer,
+            mm.normalBuffer,
             static_cast<int>(mm.vertices.size()),
             color,
             clearFramebuffer,

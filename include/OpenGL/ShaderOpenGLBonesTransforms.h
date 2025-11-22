@@ -19,7 +19,7 @@ public:
     ShaderOpenGLBonesTransforms();
 
     void render(
-        meshData &meshData,
+        Mesh3DData &meshData,
         std::vector<glm::mat4> transformations,
         GLuint framebuffer
     );

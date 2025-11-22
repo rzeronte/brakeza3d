@@ -16,7 +16,7 @@ struct OctreeNode {
 
     [[nodiscard]] bool isLeaf() const
     {
-        if ((int) children.size() <= 0) {
+        if (children.empty()) {
             return true;
         }
 

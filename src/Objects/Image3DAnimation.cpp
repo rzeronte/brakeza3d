@@ -1,21 +1,22 @@
 
-#include "../../include/Objects/BillboardAnimation.h"
+#include "../../include/Objects/Image3DAnimation.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
-BillboardAnimation::BillboardAnimation(float width, float height)
+Image3DAnimation::Image3DAnimation(Vertex3D &position, float width, float height)
 :
-    billboard(new Billboard(width, height)),
+    billboard(new Image3D(position, width, height, nullptr)),
     width(width),
     height(height),
     currentAnimationIndex(0),
     autoRemoveAfterAnimation(false),
     sharedTextures(false)
 {
+    setPosition(position);
     luaEnvironment["this"] = this;
 }
 
-void BillboardAnimation::onUpdate()
+void Image3DAnimation::onUpdate()
 {
     Object3D::onUpdate();
 
@@ -23,12 +24,12 @@ void BillboardAnimation::onUpdate()
 
     ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->render(
         this,
-        (int) getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
-        (int) getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
-        billboard->vertexbuffer,
-        billboard->uvbuffer,
-        billboard->normalbuffer,
-        (int) billboard->vertices.size(),
+        static_cast<int>(getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID()),
+        static_cast<int>(getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID()),
+        billboard->getVertexBuffer(),
+        billboard->getUVBuffer(),
+        billboard->getNormalBuffer(),
+        static_cast<int>(billboard->getVertices().size()),
         1.0f,
         ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
@@ -36,28 +37,28 @@ void BillboardAnimation::onUpdate()
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME) {
         ComponentsManager::get()->getComponentRender()->getShaderOGLWireframe()->render(
             getModelMatrix(),
-            billboard->vertexbuffer,
-            billboard->uvbuffer,
-            billboard->normalbuffer,
-            (int) billboard->vertices.size(),
+            billboard->getVertexBuffer(),
+            billboard->getUVBuffer(),
+            billboard->getNormalBuffer(),
+            static_cast<int>(billboard->getVertices().size()),
             ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
         );
     }
 }
 
-void BillboardAnimation::addAnimation(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps)
+void Image3DAnimation::addAnimation(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps)
 {
     this->animations.emplace_back(new TextureAnimated(spriteSheetFile, spriteWidth, spriteHeight, numFrames, fps));
 }
 
-void BillboardAnimation::setAnimation(int index_animation)
+void Image3DAnimation::setAnimation(int index_animation)
 {
     this->currentAnimationIndex = index_animation;
 }
 
-void BillboardAnimation::updateTexture()
+void Image3DAnimation::updateTexture()
 {
-    if ((int) animations.size() == 0) return;
+    if (static_cast<int>(animations.size()) == 0) return;
 
     getCurrentTextureAnimation()->counter.update();
 
@@ -69,29 +70,29 @@ void BillboardAnimation::updateTexture()
         }
     }
 
-    billboard->setTexture(this->animations[currentAnimationIndex]->getCurrentFrame());
+    billboard->setImage(this->animations[currentAnimationIndex]->getCurrentFrame());
 }
 
-void BillboardAnimation::updateTrianglesCoordinatesAndTexture()
+void Image3DAnimation::updateTrianglesCoordinatesAndTexture()
 {
     M3 rotationTranspose = ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose();
 
     Vertex3D up = rotationTranspose * EngineSetup::get()->up;
     Vertex3D right = rotationTranspose * EngineSetup::get()->right.getInverse();
 
-    billboard->updateUnconstrainedQuad(this, up, right);
+    billboard->setSize(width, height, up, right);
     updateTexture();
 }
 
-bool BillboardAnimation::isAutoRemoveAfterAnimation() const {
+bool Image3DAnimation::isAutoRemoveAfterAnimation() const {
     return autoRemoveAfterAnimation;
 }
 
-void BillboardAnimation::setAutoRemoveAfterAnimation(bool value) {
+void Image3DAnimation::setAutoRemoveAfterAnimation(bool value) {
     autoRemoveAfterAnimation = value;
 }
 
-void BillboardAnimation::linkTextureAnimation(BillboardAnimation *dst)
+void Image3DAnimation::linkTextureAnimation(Image3DAnimation *dst)
 {
     animations.clear();
 
@@ -102,12 +103,12 @@ void BillboardAnimation::linkTextureAnimation(BillboardAnimation *dst)
     sharedTextures = true;
 }
 
-TextureAnimated *BillboardAnimation::getCurrentTextureAnimation()
+TextureAnimated *Image3DAnimation::getCurrentTextureAnimation()
 {
     return this->animations[currentAnimationIndex];
 }
 
-BillboardAnimation::~BillboardAnimation()
+Image3DAnimation::~Image3DAnimation()
 {
     delete billboard;
 
@@ -118,22 +119,23 @@ BillboardAnimation::~BillboardAnimation()
     }
 }
 
-const char *BillboardAnimation::getTypeObject()
+const char *Image3DAnimation::getTypeObject()
 {
     return "BillboardAnimation";
 }
 
-const char *BillboardAnimation::getTypeIcon()
+const char *Image3DAnimation::getTypeIcon()
 {
     return "BillboardAnimationIcon";
 }
 
-void BillboardAnimation::updateBillboardSize()
+void Image3DAnimation::updateBillboardSize() const
 {
-    billboard->updateSize(width, height);
+    billboard->setWidth(width);
+    billboard->setHeight(height);
 }
 
-void BillboardAnimation::drawImGuiProperties()
+void Image3DAnimation::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
 
@@ -197,7 +199,7 @@ void BillboardAnimation::drawImGuiProperties()
     }
 }
 
-cJSON *BillboardAnimation::getJSON()
+cJSON *Image3DAnimation::getJSON()
 {
     auto root =  Object3D::getJSON();
 
@@ -220,7 +222,7 @@ cJSON *BillboardAnimation::getJSON()
     return root;
 }
 
-void BillboardAnimation::setPropertiesFromJSON(cJSON *object, BillboardAnimation *o)
+void Image3DAnimation::setPropertiesFromJSON(cJSON *object, Image3DAnimation *o)
 {
     o->setBelongToScene(true);
     Object3D::setPropertiesFromJSON(object, o);
@@ -248,16 +250,17 @@ void BillboardAnimation::setPropertiesFromJSON(cJSON *object, BillboardAnimation
     }
 }
 
-void BillboardAnimation::createFromJSON(cJSON *object)
+void Image3DAnimation::createFromJSON(cJSON *object)
 {
-    auto o = new BillboardAnimation(1, 1);
+    auto p = Vertex3D(0, 0, 0);
+    auto o = new Image3DAnimation(p, 1, 1);
 
     setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
 
-BillboardAnimation* BillboardAnimation::create(
+Image3DAnimation* Image3DAnimation::create(
     Vertex3D position,
     float width,
     float height,
@@ -267,7 +270,7 @@ BillboardAnimation* BillboardAnimation::create(
     int frames,
     int fps
 ) {
-    auto o = new BillboardAnimation(width, height);
+    auto o = new Image3DAnimation(position, width, height);
     o->addAnimation(imageFile, spriteWidth, spriteHeight, frames, fps);
     o->setAnimation(0);
     o->setPosition(position);

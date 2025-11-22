@@ -57,9 +57,9 @@ void FXBlink::update()
             for (const auto& m : mesh->meshes) {
                 shaderColor->renderColor(
                     object->getModelMatrix(),
-                    m.vertexbuffer,
-                    m.uvbuffer,
-                    m.normalbuffer,
+                    m.vertexBuffer,
+                    m.uvBuffer,
+                    m.normalBuffer,
                     static_cast<int>(m.vertices.size()),
                     color,
                     false,

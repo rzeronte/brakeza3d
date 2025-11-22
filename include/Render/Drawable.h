@@ -4,34 +4,21 @@
 #include "Frustum.h"
 #include "../Components/Camera3D.h"
 #include "../Objects/Cube3D.h"
-#include "Billboard.h"
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
 
 class Drawable {
 public:
-    static void drawVertex(Vertex3D v, Color color);
-
-    static void drawVector3D(Vector3D V, Color color);
-
+    static void drawVertex(const Vertex3D &v, Color color);
+    static void drawVector3D(const Vector3D &V, const Color &color);
     static void drawObject3DAxis(Object3D *object, bool drawUp, bool drawRight, bool drawForward);
-
-    static void drawMainAxis();
-
-    static void drawMainAxisOffset(Vertex3D offset);
-
+    static void drawMainAxisOffset(const Vertex3D &offset);
     static void drawLightning(Vertex3D, Vertex3D, Color color);
-
-    static void drawAABB(AABB3D *, Color);
-
+    static void drawAABB(AABB3D *, const Color &);
     static void drawOctree(Octree *);
-
     static void drawOctreeNode(OctreeNode &);
-
     static void drawGrid3D(Grid3D *);
-
-    static void drawObject3DGizmo(Object3D *o, glm::mat4 objectMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
-
+    static void drawObject3DGizmo(Object3D *o, const glm::mat4 &objectMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
     static void drawGrid3DMakeTravel(Grid3D *grid);
 };
 

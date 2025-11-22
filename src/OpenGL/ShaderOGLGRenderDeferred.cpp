@@ -30,9 +30,9 @@ void ShaderOGLGRenderDeferred::renderMesh(Mesh3D *o, GLuint framebuffer)
             o,
             o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
             o->getModelSpecularTextures()[m.materialIndex]->getOGLTextureID(),
-            m.vertexbuffer,
-            m.uvbuffer,
-            m.normalbuffer,
+            m.vertexBuffer,
+            m.uvBuffer,
+            m.normalBuffer,
             static_cast<int>(m.vertices.size()),
             framebuffer
         );
@@ -47,8 +47,8 @@ void ShaderOGLGRenderDeferred::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
             o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
             o->getModelSpecularTextures()[m.materialIndex]->getOGLTextureID(),
             m.feedbackBuffer,
-            m.uvbuffer,
-            m.normalbuffer,
+            m.uvBuffer,
+            m.normalBuffer,
             static_cast<int>(m.vertices.size()),
             framebuffer
         );

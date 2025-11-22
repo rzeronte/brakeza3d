@@ -7,94 +7,60 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/Brakeza3D.h"
 
-Image3D::Image3D(Vertex3D position, float width, float height, Image* image)
+Image3D::Image3D(const Vertex3D &position, float width, float height, Image* image)
 :
     width(width),
     height(height),
     image(image)
 {
-    glGenBuffers(1, &vertexbuffer);
-    glGenBuffers(1, &uvbuffer);
-    glGenBuffers(1, &normalbuffer);
-
     setPosition(position);
 
-    Vertex3D up = EngineSetup::get()->up;
-    Vertex3D right = EngineSetup::get()->right.getInverse();
+    Vertex3D up(0.0f, 1.0f, 0.0f);      // arriba en Y
+    Vertex3D right(1.0f, 0.0f, 0.0f);   // derecha en X
 
     setSize(width, height, up, right);
 }
 
-void Image3D::setSize(float width, float height, Vertex3D U, Vertex3D  R)
+void Image3D::setSize(float width, float height, const Vertex3D &U_in, const Vertex3D &R_in)
 {
     setWidth(width);
     setHeight(height);
 
-    Vertex3D X;
-    X.x = (width / 2) * R.x;
-    X.y = (width / 2) * R.y;
-    X.z = (width / 2) * R.z;
+    vertices.clear(); uvs.clear(); normals.clear();
 
-    Vertex3D Y;
-    Y.x = (height / 2) * U.x;
-    Y.y = (height / 2) * U.y;
-    Y.z = (height / 2) * U.z;
+    float hw = width / 2.0f;
+    float hh = height / 2.0f;
 
-    Q1.x = getPosition().x + X.x + Y.x;
-    Q1.y = getPosition().y + X.y + Y.y;
-    Q1.z = getPosition().z + X.z + Y.z;
+    Q1.x =  hw; Q1.y =  hh; Q1.z = 0.0f; // top-right
+    Q2.x = -hw; Q2.y =  hh; Q2.z = 0.0f; // top-left
+    Q3.x = -hw; Q3.y = -hh; Q3.z = 0.0f; // bottom-left
+    Q4.x =  hw; Q4.y = -hh; Q4.z = 0.0f; // bottom-right
 
-    Q2.x = getPosition().x - X.x + Y.x;
-    Q2.y = getPosition().y - X.y + Y.y;
-    Q2.z = getPosition().z - X.z + Y.z;
+    Q1.u = 1.0f; Q1.v = 1.0f;
+    Q2.u = 0.0f; Q2.v = 1.0f;
+    Q3.u = 0.0f; Q3.v = 0.0f;
+    Q4.u = 1.0f; Q4.v = 0.0f;
 
-    Q3.x = getPosition().x - X.x - Y.x;
-    Q3.y = getPosition().y - X.y - Y.y;
-    Q3.z = getPosition().z - X.z - Y.z;
+    // Triángulo 1: Q1 -> Q2 -> Q3
+    vertices.emplace_back(Q1.x, Q1.y, Q1.z, 1.0f);
+    vertices.emplace_back(Q2.x, Q2.y, Q2.z, 1.0f);
+    vertices.emplace_back(Q3.x, Q3.y, Q3.z, 1.0f);
 
-    Q4.x = getPosition().x + X.x - Y.x;
-    Q4.y = getPosition().y + X.y - Y.y;
-    Q4.z = getPosition().z + X.z - Y.z;
-
-    Q1 = Transforms::objectToLocal(Q1, this);
-    Q2 = Transforms::objectToLocal(Q2, this);
-    Q3 = Transforms::objectToLocal(Q3, this);
-    Q4 = Transforms::objectToLocal(Q4, this);
-
-    Q1.u = 1.0f;
-    Q1.v = 0.0001f;  // <-- Cambiado
-    Q2.u = 0.0001f;
-    Q2.v = 0.0001f;  // <-- Cambiado
-    Q3.u = 0.0001f;
-    Q3.v = 1.0f;     // <-- Cambiado
-    Q4.u = 1.0f;
-    Q4.v = 1.0f;     // <-- Cambiado
-
-    auto normal = U % R;
-    vertices.clear();
-    uvs.clear();
-    normals.clear();
-
-    vertices.emplace_back(Q3.x, Q3.y, Q3.z);
-    vertices.emplace_back(Q2.x, Q2.y, Q2.z);
-    vertices.emplace_back(Q1.x, Q1.y, Q1.z);
-    vertices.emplace_back(Q4.x, Q4.y, Q4.z);
-    vertices.emplace_back(Q3.x, Q3.y, Q3.z);
-    vertices.emplace_back(Q1.x, Q1.y, Q1.z);
-
-    uvs.emplace_back(Q3.u, Q3.v);
+    uvs.emplace_back(Q1.u, Q1.v);
     uvs.emplace_back(Q2.u, Q2.v);
-    uvs.emplace_back(Q1.u, Q1.v);
-    uvs.emplace_back(Q4.u, Q4.v);
     uvs.emplace_back(Q3.u, Q3.v);
-    uvs.emplace_back(Q1.u, Q1.v);
 
-    normals.emplace_back(normal.x, normal.y, normal.z);
-    normals.emplace_back(normal.x, normal.y, normal.z);
-    normals.emplace_back(normal.x, normal.y, normal.z);
-    normals.emplace_back(normal.x, normal.y, normal.z);
-    normals.emplace_back(normal.x, normal.y, normal.z);
-    normals.emplace_back(normal.x, normal.y, normal.z);
+    // Triángulo 2: Q1 -> Q3 -> Q4
+    vertices.emplace_back(Q1.x, Q1.y, Q1.z, 1.0f);
+    vertices.emplace_back(Q3.x, Q3.y, Q3.z, 1.0f);
+    vertices.emplace_back(Q4.x, Q4.y, Q4.z, 1.0f);
+
+    uvs.emplace_back(Q1.u, Q1.v);
+    uvs.emplace_back(Q3.u, Q3.v);
+    uvs.emplace_back(Q4.u, Q4.v);
+
+    for (int i = 0; i < 6; ++i)
+        normals.emplace_back(0.0f, 0.0f, 1.0f);
 
     fillBuffers();
 }
@@ -110,11 +76,11 @@ void Image3D::onUpdate()
 
     if (render->getSelectedObject() == this) {
         render->getShaderOGLOutline()->drawOutlineImage3D(
-        this,
-         Color::green(),
-          0.1f,
-           window->getSceneFramebuffer()
-       );
+            this,
+            Color::green(),
+            0.1f,
+            window->getSceneFramebuffer()
+        );
     }
 
     render->getShaderOGLRenderForward()->render(
@@ -217,7 +183,7 @@ void Image3D::createFromJSON(cJSON *object)
         new Image(image)
     );
 
-    Image3D::setPropertiesFromJSON(object, o);
+    setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, name);
 }
@@ -229,26 +195,29 @@ void Image3D::setPropertiesFromJSON(cJSON *object, Image3D *o)
     Object3D::setPropertiesFromJSON(object, o);
 }
 
-void Image3D::setWidth(float width)
+void Image3D::setWidth(float value)
 {
-    this->width = width;
+    width = value;
 }
 
-void Image3D::setHeight(float height)
+void Image3D::setHeight(float value)
 {
-    this->height = height;
+    height = value;
 }
 
 void Image3D::fillBuffers()
 {
+    glGenBuffers(1, &vertexbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(vertices.size() * sizeof(glm::vec4)), &vertices[0], GL_STATIC_DRAW);
 
+    glGenBuffers(1, &uvbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-    glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(uvs.size() * sizeof(glm::vec2)), &uvs[0], GL_STATIC_DRAW);
 
+    glGenBuffers(1, &normalbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-    glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(normals.size() * sizeof(glm::vec3)), &normals[0], GL_STATIC_DRAW);
 }
 
 Image3D *Image3D::create(Vertex3D p, float w, float h, const std::string &file)
@@ -281,3 +250,35 @@ void Image3D::checkClickObject(Vector3D ray, Object3D *&foundObject, float &last
         }
     }
 }
+
+GLuint Image3D::getVertexBuffer() const
+{
+    return vertexbuffer;
+}
+
+GLuint Image3D::getNormalBuffer() const
+{
+    return normalbuffer;
+}
+
+GLuint Image3D::getUVBuffer() const
+{
+    return uvbuffer;
+}
+
+std::vector<glm::vec4> Image3D::getVertices() const
+{
+    return vertices;
+}
+
+Image* Image3D::getImage() const
+{
+    return image;
+}
+
+void Image3D::setImage(Image* value)
+{
+    image = value;
+}
+
+

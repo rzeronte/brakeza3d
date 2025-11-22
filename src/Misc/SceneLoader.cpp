@@ -10,11 +10,11 @@
 #include "../../include/Brakeza3D.h"
 #include "../../include/Objects/ParticleEmitter.h"
 #include "../../include/2D/Image2DAnimation.h"
-#include "../../include/Objects/BillboardAnimation.h"
+#include "../../include/Objects/Image3DAnimation.h"
 #include "../../include/Objects/Image3D.h"
 #include "../../include/2D/Image2D.h"
 #include "../../include/Objects/Mesh3DAnimation.h"
-#include "../../include/Objects/BillboardAnimation8Directions.h"
+#include "../../include/Objects/Image3DAnimation8Directions.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/OpenGL/ShaderOpenGLCustomPostprocessing.h"
 
@@ -105,7 +105,7 @@ void SceneLoader::loadScene(const std::string& filename)
                 break;
             }
             case SceneObjectLoaderMapping::BillboardAnimation : {
-                BillboardAnimation::createFromJSON(currentObject);
+                Image3DAnimation::createFromJSON(currentObject);
                 break;
             }
             case SceneObjectLoaderMapping::Image2DAnimation : {
@@ -121,7 +121,7 @@ void SceneLoader::loadScene(const std::string& filename)
                 break;
             }
             case SceneObjectLoaderMapping::BillboardAnimation8Directions : {
-                BillboardAnimation8Directions::createFromJSON(currentObject);
+                Image3DAnimation8Directions::createFromJSON(currentObject);
                 break;
             }
         }
@@ -335,8 +335,10 @@ void SceneLoader::createBillboardAnimationInScene(const std::string& filename)
         return;
     }
 
-    auto *newObject = new BillboardAnimation(1, 1);
-    newObject->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2));
+    auto *newObject = new Image3DAnimation(
+        ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(), 1, 1
+    );
+
     newObject->addAnimation(filename,1,1,1,1);
     newObject->setAnimation(0);
 
@@ -385,8 +387,8 @@ void SceneLoader::createImage3DToScene(const std::string &filename)
 
     auto *newObject = new Image3D(
         ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
-        10,
-        10,
+        1.0f,
+        1.0f,
         new Image(filename)
     );
     newObject->setBelongToScene(true);
@@ -396,9 +398,13 @@ void SceneLoader::createImage3DToScene(const std::string &filename)
 
 void SceneLoader::createBillboardAnimation8Directions()
 {
-    auto *newObject = new BillboardAnimation8Directions(10, 10);
+    auto *newObject = new Image3DAnimation8Directions(
+        ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
+        10,
+        10
+    );
+
     newObject->setBelongToScene(true);
-    newObject->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
 
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Billboard8D"));
 }

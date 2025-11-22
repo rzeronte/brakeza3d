@@ -33,10 +33,10 @@ public:
     ~AssimpAnimationService();
 
     void UpdateFrameTransformations();
-    bool AssimpLoadAnimation(const std::string &filename, std::vector<meshData> &meshes);
-    void ProcessNodeAnimation(aiNode *node, std::vector<meshData> &meshes);
-    void ProcessMeshAnimation(int i, aiMesh *mesh, std::vector<meshData> &meshes);
-    void ReadNodesFromRoot(std::vector<meshData> &meshes);
+    bool AssimpLoadAnimation(const std::string &filename, std::vector<Mesh3DData> &meshes);
+    void ProcessNodeAnimation(aiNode *node, std::vector<Mesh3DData> &meshes);
+    void ProcessMeshAnimation(int i, aiMesh *mesh, std::vector<Mesh3DData> &meshes);
+    void ReadNodesFromRoot(std::vector<Mesh3DData> &meshes);
     void UpdateBonesFinalTransformations(float TimeInSeconds);
     void ReadNodeHierarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform);
     static const aiNodeAnim *FindNodeAnim(const aiAnimation *pAnimation, const std::string& NodeName);
@@ -57,8 +57,8 @@ public:
     bool isAnimationEnds() const;
     float getCurrentAnimationMaxTime() const;
     void CheckIfEndAnimation();
-    void FillAnimationBoneDataOGLBuffers(std::vector<meshData> &meshes);
-    void UpdateOpenGLBones(std::vector<meshData> &meshes);
+    void FillAnimationBoneDataOGLBuffers(std::vector<Mesh3DData> &meshes);
+    void UpdateOpenGLBones(std::vector<Mesh3DData> &meshes);
     void setAnimationByName(const std::string& name);
     bool isLoop() const;
     void setLoop(bool loop);

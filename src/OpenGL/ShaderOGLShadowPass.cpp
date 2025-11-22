@@ -38,9 +38,9 @@ void ShaderOGLShadowPass::renderMeshIntoArrayTextures(
         renderIntoArrayDepthTextures(
             o,
             light,
-            m.vertexbuffer,
-            m.uvbuffer,
-            m.normalbuffer,
+            m.vertexBuffer,
+            m.uvBuffer,
+            m.normalBuffer,
             static_cast<int>(m.vertices.size()),
             depthArrayTextures,
             indexLight,
@@ -55,9 +55,9 @@ void ShaderOGLShadowPass::renderMeshIntoDirectionalLightTexture(Mesh3D *o, const
         renderIntoDirectionalLightTexture(
             o,
             light,
-            m.vertexbuffer,
-            m.uvbuffer,
-            m.normalbuffer,
+            m.vertexBuffer,
+            m.uvBuffer,
+            m.normalBuffer,
             static_cast<int>(m.vertices.size()),
             framebuffer
         );
@@ -79,8 +79,8 @@ void ShaderOGLShadowPass::renderMeshAnimatedIntoArrayTextures(
             o,
             light,
             m.feedbackBuffer,
-            m.uvbuffer,
-            m.normalbuffer,
+            m.uvBuffer,
+            m.normalBuffer,
             static_cast<int>(m.vertices.size()),
             depthArrayTextures,
             indexLight,
@@ -96,8 +96,8 @@ void ShaderOGLShadowPass::renderMeshAnimatedIntoDirectionalLightTexture(Mesh3DAn
             o,
             light,
             m.feedbackBuffer,
-            m.uvbuffer,
-            m.normalbuffer,
+            m.uvBuffer,
+            m.normalBuffer,
             static_cast<int>(m.vertices.size()),
             framebuffer
         );

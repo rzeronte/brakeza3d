@@ -22,9 +22,9 @@ void ShaderOpenGLShading::renderMesh(Mesh3D *mesh, GLuint framebuffer)
     for (auto &m: mesh->meshes) {
         render(
             mesh->getModelMatrix(),
-            m.vertexbuffer,
-            m.uvbuffer,
-            m.normalbuffer,
+            m.vertexBuffer,
+            m.uvBuffer,
+            m.normalBuffer,
             (int) m.vertices.size(),
             window->getSceneFramebuffer()
         );
@@ -37,8 +37,8 @@ void ShaderOpenGLShading::renderMeshAnimation(Mesh3D *mesh, GLuint framebuffer)
         render(
             mesh->getModelMatrix(),
             m.feedbackBuffer,
-            m.uvbuffer,
-            m.normalbuffer,
+            m.uvBuffer,
+            m.normalBuffer,
             (int) m.vertices.size(),
             framebuffer
         );
