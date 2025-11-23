@@ -31,7 +31,7 @@ public:
 
     void drawImGuiProperties() override;
 
-    cJSON *getJSON() override;
+    cJSON *getJSON(Image2DAnimation* object);
 
     static void createFromJSON(cJSON *object);
 

@@ -109,9 +109,9 @@ void Image2DAnimation::drawImGuiProperties()
     }
 }
 
-cJSON *Image2DAnimation::getJSON()
+cJSON *Image2DAnimation::getJSON(Image2DAnimation* object)
 {
-    auto root =  Object3D::getJSON();
+    auto root = Object3D::ReadJSONFromObject(object);
 
     cJSON_AddNumberToObject(root, "x", x);
     cJSON_AddNumberToObject(root, "y", y);

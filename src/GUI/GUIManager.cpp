@@ -685,7 +685,7 @@ void GUIManager::drawScenesFolder(const std::string& folder)
     }
     if (ImGui::Button(std::string("Create Scene").c_str())) {
         if (!currentVariableToCreateCustomShader.empty()) {
-            SceneLoader::createScene(folder + currentVariableToCreateCustomShader);
+            SceneLoader::CreateScene(folder + currentVariableToCreateCustomShader);
             currentScenesFolderFiles = Tools::getFolderFiles(currentScenesFolderWidget, "json");
         }
     }
@@ -715,19 +715,19 @@ void GUIManager::drawScenesFolder(const std::string& folder)
 
                 ImGui::TableSetColumnIndex(1);
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "openIcon"), ImVec2(14, 14))) {
-                    SceneLoader::clearScene();
-                    ComponentsManager::get()->getComponentRender()->getSceneLoader().loadScene(folder + file);
+                    SceneLoader::ClearScene();
+                    ComponentsManager::get()->getComponentRender()->getSceneLoader().LoadScene(folder + file);
                 }
                 ImGui::SameLine();
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "saveIcon"), ImVec2(14, 14))) {
-                    SceneLoader::saveScene(folder + file);
+                    SceneLoader::SaveScene(folder + file);
                 }
                 ImGui::SameLine();
                 if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "removeIcon"), ImVec2(14, 14))) {
                     ImGui::OpenPopup("Delete Scene?");
                 }
                 ShowDeletePopup("Delete Scene?", [folder, file, this] () {
-                    SceneLoader::removeScene(folder + file);
+                    SceneLoader::RemoveScene(folder + file);
                     updateFolderFiles();
                 });
             }

@@ -100,9 +100,9 @@ void Image2D::drawImGuiProperties()
     }
 }
 
-cJSON *Image2D::getJSON()
+cJSON *Image2D::getJSON(Image2D *object)
 {
-    auto root =  Object3D::getJSON();
+    auto root =  Object3D::ReadJSONFromObject(object);
 
     cJSON_AddNumberToObject(root, "x", x);
     cJSON_AddNumberToObject(root, "y", y);

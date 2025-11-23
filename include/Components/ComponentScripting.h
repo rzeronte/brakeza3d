@@ -8,62 +8,39 @@
 
 #include "Component.h"
 
-class ComponentScripting : public Component {
-private:
-    EngineSetup::LuaStateScripts stateScripts;
+class ComponentScripting : public Component
+{
+    EngineSetup::LuaStateScripts stateScripts = EngineSetup::LuaStateScripts::LUA_STOP;
     std::vector<ScriptLUA*> scripts;
     std::vector<ScriptLUA*> projectScripts;
     sol::state lua;
 public:
     ComponentScripting();
 
-    sol::state &getLua();
-
     void onStart() override;
-
     void preUpdate() override;
-
     void onUpdate() override;
-
     void postUpdate() override;
-
     void onEnd() override;
-
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
-
-    EngineSetup::LuaStateScripts getStateLUAScripts();
-
     void playLUAScripts();
-
     void stopLUAScripts();
-
     void reloadLUAScripts();
-
-    std::vector<ScriptLUA*> &getSceneLUAScripts();
-
-    std::vector<ScriptLUA*> &getProjectLUAScripts();
-
     void addSceneLUAScript(ScriptLUA *script);
-
     void addProjectLUAScript(ScriptLUA *script);
-
-    sol::object getGlobalScriptVar(const std::string& scriptName, const char *varName);
-
     void reloadScriptGlobals();
-
     void removeSceneScript(ScriptLUA *script);
-
     void removeProjectScript(ScriptLUA *script);
-
     void onStartScripts();
-
     void runScripts();
-
-    static void createScriptLUAFile(const std::string& path);
-
-    static void removeScriptLUAFile(const std::string& path);
-
     void initLUATypes();
+    sol::state &getLua();
+    std::vector<ScriptLUA*> &getSceneLUAScripts();
+    std::vector<ScriptLUA*> &getProjectLUAScripts();
+    EngineSetup::LuaStateScripts getStateLUAScripts();
+    sol::object getGlobalScriptVar(const std::string& scriptName, const char *varName);
+    static void createScriptLUAFile(const std::string& path);
+    static void removeScriptLUAFile(const std::string& path);
 };
 
 
