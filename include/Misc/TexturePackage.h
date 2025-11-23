@@ -14,15 +14,15 @@ struct TexturePackageItem {
 class TexturePackage {
 public:
     void addItem(const std::string &srcTexture, const std::string& label);
-    int size();
+    int size() const;
 
-    Image *getTextureByLabel(const std::string &label);
+    Image *getTextureByLabel(const std::string &label) const;
 
     virtual ~TexturePackage();
 
     std::vector<TexturePackageItem *> &getItems();
 
-    static ImTextureID getOGLTextureID(TexturePackage &package, std::string label);
+    static ImTextureID getOGLTextureID(TexturePackage &package, const std::string &label);
 
 private:
     std::vector<TexturePackageItem *> items;

@@ -5,7 +5,7 @@
 #include "../Objects/Point2D.h"
 #include "../Components/Camera3D.h"
 #include "../Objects/Object3D.h"
-#include "../Objects/LightPoint3D.h"
+#include "../Objects/LightPoint.h"
 #include "../Render/M3.h"
 #include "Grid3D.h"
 #include "../2D/TextureAnimated.h"

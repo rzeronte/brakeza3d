@@ -8,7 +8,7 @@
 
 #include "ShaderBaseOpenGL.h"
 #include "../Objects/OpenGLShaderTypes.h"
-#include "../Objects/SpotLight3D.h"
+#include "../Objects/LightSpot.h"
 #include "../Objects/Mesh3D.h"
 #include <glm/ext/matrix_float4x4.hpp>
 #include <vector>
@@ -26,19 +26,19 @@ class ShaderOGLRenderForward: public ShaderBaseOpenGL
 
     std::vector<PointLightOpenGL> pointsLights;
     std::vector<SpotLightOpenGL> spotLights;
-    std::vector<SpotLight3D*> shadowMappingLights;
+    std::vector<LightSpot*> shadowMappingLights;
 
     GLuint bufferUBOLightPoints = 0;
     GLuint bufferUBOSpotLights = 0;
 
-    GLint matrixProjectionUniform = 0;
-    GLint matrixViewUniform = 0;
-    GLint matrixModelUniform = 0;
+    GLuint matrixProjectionUniform = 0;
+    GLuint matrixViewUniform = 0;
+    GLuint matrixModelUniform = 0;
 
-    GLint materialTextureDiffuseUniform = 0;
-    GLint materialTextureSpecularUniform = 0;
-    GLint materialShininessUniform = 0;
-    GLint alphaUniform = 0;
+    GLuint materialTextureDiffuseUniform = 0;
+    GLuint materialTextureSpecularUniform = 0;
+    GLuint materialShininessUniform = 0;
+    GLuint alphaUniform = 0;
 
     size_t lastPointLightsSize = 0;
     size_t lastSpotLightsSize = 0;
@@ -53,27 +53,26 @@ public:
 
     void render(
         Object3D *o,
-        GLint textureID,
-        GLint textureSpecularID,
+        GLuint textureID,
+        GLuint textureSpecularID,
         GLuint vertexbuffer,
         GLuint uvbuffer,
         GLuint normalbuffer,
         int size,
         float alpha,
-        GLuint framebuffer
+        GLuint fbo
     ) const;
 
     int getNumPointLights() const;
     void destroy() override;
     void createUBOFromLights();
-    void renderMesh(Mesh3D *o, GLuint framebuffer) const;
+    void renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo) const;
     void fillUBOLights();
     void extractLights(Object3D *o);
     void setGlobalIlluminationDirection(const Vertex3D &d);
     void setGlobalIlluminationAmbient(const Vertex3D &a);
     void setGlobalIlluminationDiffuse(const Vertex3D &d);
     void setGlobalIlluminationSpecular(const Vertex3D &s);
-    void renderAnimatedMesh(Mesh3D *o, GLuint framebuffer) const;
     bool hasSpotLightsChanged() const;
     bool HasPointLightsChanged() const;
     void setLastSpotLightsSize(int v);
@@ -81,9 +80,8 @@ public:
     void initializeLightBuffers();
     DirLightOpenGL &getDirectionalLight();
     [[nodiscard]] int getNumSpotLights() const;
-    [[nodiscard]] std::vector<SpotLight3D *> &getShadowMappingSpotLights();
+    [[nodiscard]] std::vector<LightSpot *> &getShadowMappingSpotLights();
     static glm::mat4 getDirectionalLightMatrix(const DirLightOpenGL& light);
-    static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer) ;
 };
 
 

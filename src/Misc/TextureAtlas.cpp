@@ -18,7 +18,7 @@ SDL_Surface *TextureAtlas::getAtlasSurface() const {
     return atlas_surface;
 }
 
-bool TextureAtlas::addTexture(Image *texture, bool lightmap, const std::string& name)
+bool TextureAtlas::addTexture(Image *texture, const std::string& name)
 {
     SDL_Surface *texture_surface = texture->getSurface();
 
@@ -60,14 +60,12 @@ bool TextureAtlas::addTexture(Image *texture, bool lightmap, const std::string& 
     return false;
 }
 
-bool TextureAtlas::checkForAllocate(int xpos, int ypos, int width, int height)
+bool TextureAtlas::checkForAllocate(int xpos, int ypos, int width, int height) const
 {
     int baseOffset = ypos * total_width + xpos;
     int max_global_x = total_width * ypos + total_width;
 
     if (baseOffset + width > max_global_x) {
-        //std::string msg = "checkForAllocate hit final line!! w: " + std::to_string(width) + ", h: " + std::to_string(height) + ", baseOffset: " + std::to_string(baseOffset) + ", max_global_x:" + std::to_string(max_global_x);
-        //Logging::Log(msg);
         return false;
     }
 

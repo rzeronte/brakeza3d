@@ -31,17 +31,17 @@ ShaderOGLRenderForward::ShaderOGLRenderForward()
 
 void ShaderOGLRenderForward::render(
     Object3D *o,
-    GLint textureID,
-    GLint textureSpecularID,
+    GLuint textureID,
+    GLuint textureSpecularID,
     GLuint vertexbuffer,
     GLuint uvbuffer,
     GLuint normalbuffer,
     int size,
     float alpha,
-    GLuint framebuffer
+    GLuint fbo
 ) const
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
 
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
@@ -106,21 +106,6 @@ glm::mat4 ShaderOGLRenderForward::getDirectionalLightMatrix(const DirLightOpenGL
     return lightProjection * lightView;
 }
 
-void ShaderOGLRenderForward::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
-{
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    glEnableVertexAttribArray(2);
-    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-}
-
 void ShaderOGLRenderForward::createUBOFromLights()
 {
     pointsLights.resize(0);
@@ -150,19 +135,19 @@ void ShaderOGLRenderForward::destroy()
 {
 }
 
-void ShaderOGLRenderForward::renderMesh(Mesh3D *o, GLuint framebuffer) const
+void ShaderOGLRenderForward::renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo) const
 {
     for (const auto& m: o->meshes) {
         render(
             o,
             o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
             o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
-            m.vertexBuffer,
+            useFeedbackBuffer ? m.feedbackBuffer : m.vertexBuffer,
             m.uvBuffer,
             m.normalBuffer,
             static_cast<int>(m.vertices.size()),
             o->getAlpha(),
-            framebuffer
+            fbo
         );
     }
 }
@@ -197,7 +182,7 @@ void ShaderOGLRenderForward::extractLights(Object3D *o)
 {
     Vertex3D forward = o->getRotation().Z().getNormalize();
 
-    auto s = dynamic_cast<SpotLight3D*>(o);
+    auto s = dynamic_cast<LightSpot*>(o);
     if (s != nullptr) {
         shadowMappingLights.push_back(s);
         spotLights.push_back(SpotLightOpenGL{
@@ -215,7 +200,7 @@ void ShaderOGLRenderForward::extractLights(Object3D *o)
         return;
     }
 
-    auto l = dynamic_cast<LightPoint3D*>(o);
+    auto l = dynamic_cast<LightPoint*>(o);
     if (l != nullptr) {
         pointsLights.push_back({
             glm::vec4(o->getPosition().toGLM(), 1),
@@ -250,32 +235,17 @@ void ShaderOGLRenderForward::setGlobalIlluminationSpecular(const Vertex3D &s)
     this->directionalLight.specular = s.toGLM();
 }
 
-void ShaderOGLRenderForward::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer) const
+int ShaderOGLRenderForward::getNumPointLights() const
 {
-    for (const auto& m: o->meshes) {
-        render(
-            o,
-            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
-            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
-            m.feedbackBuffer,
-            m.uvBuffer,
-            m.normalBuffer,
-            static_cast<int>(m.vertices.size()),
-            o->getAlpha(),
-            framebuffer
-        );
-    }
-}
-
-int ShaderOGLRenderForward::getNumPointLights() const {
     return static_cast<int>(pointsLights.size());
 }
 
-int ShaderOGLRenderForward::getNumSpotLights() const {
+int ShaderOGLRenderForward::getNumSpotLights() const
+{
     return static_cast<int>(spotLights.size());
 }
 
-[[nodiscard]] std::vector<SpotLight3D *> &ShaderOGLRenderForward::getShadowMappingSpotLights() {
+[[nodiscard]] std::vector<LightSpot *> &ShaderOGLRenderForward::getShadowMappingSpotLights() {
     return shadowMappingLights;
 }
 

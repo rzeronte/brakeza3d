@@ -24,7 +24,7 @@ void ComponentInput::preUpdate()
 
 void ComponentInput::onUpdate()
 {
-    //if (!isEnabled()) return;
+    if (!isEnabled()) return;
     handleKeyboardMovingCamera();
 }
 
@@ -203,31 +203,38 @@ void ComponentInput::resetMouseMapping()
     mouseMotionYRel = 0;
 }
 
-bool ComponentInput::isClickLeft() const {
+bool ComponentInput::isClickLeft() const
+{
     return mouseLeftButton;
 }
 
-bool ComponentInput::isClickRight() const {
+bool ComponentInput::isClickRight() const
+{
     return mouseRightButton;
 }
 
-int ComponentInput::getRelativeRendererMouseX() const {
+int ComponentInput::getRelativeRendererMouseX() const
+{
     return relativeRendererMouseX;
 }
 
-int ComponentInput::getMouseX() const {
+int ComponentInput::getMouseX() const
+{
     return mouseX;
 }
 
-int ComponentInput::getMouseY() const {
+int ComponentInput::getMouseY() const
+{
     return mouseY;
 }
 
-int ComponentInput::getRelativeRendererMouseY() const {
+int ComponentInput::getRelativeRendererMouseY() const
+{
     return relativeRendererMouseY;
 }
 
-bool ComponentInput::isMouseMotion() const {
+bool ComponentInput::isMouseMotion() const
+{
     return mouseMotion;
 }
 
@@ -286,39 +293,48 @@ void ComponentInput::initJoystick()
     }
 }
 
-float ComponentInput::getControllerAxisTriggerLeft() const {
+float ComponentInput::getControllerAxisTriggerLeft() const
+{
     return controllerAxisTriggerLeft;
 }
 
-float ComponentInput::getControllerAxisTriggerRight() const {
+float ComponentInput::getControllerAxisTriggerRight() const
+{
     return controllerAxisTriggerRight;
 }
 
-Uint8 *ComponentInput::getKeyboard() const {
+Uint8 *ComponentInput::getKeyboard() const
+{
     return keyboard;
 }
 
-Uint8 ComponentInput::getControllerButtonA() const {
+Uint8 ComponentInput::getControllerButtonA() const
+{
     return controllerButtonA;
 }
 
-Uint8 ComponentInput::getControllerButtonB() const {
+Uint8 ComponentInput::getControllerButtonB() const
+{
     return controllerButtonB;
 }
 
-Uint8 ComponentInput::getControllerButtonX() const {
+Uint8 ComponentInput::getControllerButtonX() const
+{
     return controllerButtonX;
 }
 
-Uint8 ComponentInput::getControllerButtonY() const {
+Uint8 ComponentInput::getControllerButtonY() const
+{
     return controllerButtonY;
 }
 
-float ComponentInput::getControllerAxisLeftX() const {
+float ComponentInput::getControllerAxisLeftX() const
+{
     return controllerAxisLeftX;
 }
 
-float ComponentInput::getControllerAxisLeftY() const {
+float ComponentInput::getControllerAxisLeftY() const
+{
     return controllerAxisLeftY;
 }
 
@@ -326,7 +342,8 @@ float ComponentInput::getControllerAxisRightX() const {
     return controllerAxisRightX;
 }
 
-float ComponentInput::getControllerAxisRightY() const {
+float ComponentInput::getControllerAxisRightY() const
+{
     return controllerAxisRightY;
 }
 
@@ -421,7 +438,8 @@ void ComponentInput::updateKeyboardStates(SDL_Event *event)
     }
 }
 
-_SDL_GameController *ComponentInput::getGameController() const {
+_SDL_GameController *ComponentInput::getGameController() const
+{
     return gameController;
 }
 
@@ -440,23 +458,28 @@ void ComponentInput::handleCheckPadConnection(SDL_Event *pEvent)
     }
 }
 
-float ComponentInput::getMouseMotionXRel() const {
+float ComponentInput::getMouseMotionXRel() const
+{
     return mouseMotionXRel;
 }
 
-float ComponentInput::getMouseMotionYRel() const {
+float ComponentInput::getMouseMotionYRel() const
+{
     return mouseMotionYRel;
 }
 
-bool ComponentInput::isMouseButtonUp() const {
+bool ComponentInput::isMouseButtonUp() const
+{
     return mouseButtonUp;
 }
 
-bool ComponentInput::isMouseButtonDown() const {
+bool ComponentInput::isMouseButtonDown() const
+{
     return mouseButtonDown;
 }
 
-bool ComponentInput::isDrag() const {
+bool ComponentInput::isDrag() const
+{
     return drag;
 }
 
@@ -478,38 +501,47 @@ bool ComponentInput::isGameControllerEnabled()
     return false;
 }
 
-Uint8 ComponentInput::getControllerPadUp() const {
+Uint8 ComponentInput::getControllerPadUp() const
+{
     return controllerPadUp;
 }
 
-Uint8 ComponentInput::getControllerPadDown() const {
+Uint8 ComponentInput::getControllerPadDown() const
+{
     return controllerPadDown;
 }
 
-Uint8 ComponentInput::getControllerPadLeft() const {
+Uint8 ComponentInput::getControllerPadLeft() const
+{
     return controllerPadLeft;
 }
 
-Uint8 ComponentInput::getControllerPadRight() const {
+Uint8 ComponentInput::getControllerPadRight() const
+{
     return controllerPadRight;
 }
 
-Uint8 ComponentInput::getControllerShoulderLeft() const {
+Uint8 ComponentInput::getControllerShoulderLeft() const
+{
     return controllerShoulderLeft;
 }
 
-Uint8 ComponentInput::getControllerShoulderRight() const {
+Uint8 ComponentInput::getControllerShoulderRight() const
+{
     return controllerShoulderRight;
 }
 
-Uint8 ComponentInput::getControllerButtonBack() const {
+Uint8 ComponentInput::getControllerButtonBack() const
+{
     return controllerButtonBack;
 }
 
-Uint8 ComponentInput::getControllerButtonGuide() const {
+Uint8 ComponentInput::getControllerButtonGuide() const
+{
     return controllerButtonGuide;
 }
 
-Uint8 ComponentInput::getControllerButtonStart() const {
+Uint8 ComponentInput::getControllerButtonStart() const
+{
     return controllerButtonStart;
 }

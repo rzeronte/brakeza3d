@@ -29,9 +29,8 @@ void TextureAnimatedDirectional::loadImages()
 
 void TextureAnimatedDirectional::loadImagesForZeroDirection()
 {
-    int d = 0;
     for (int i = 0; i < this->getNumFrames(); i++) {
-        std::string file = this->base_file + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
+        std::string file = this->base_file + "/" + std::to_string(0) + "_" + std::to_string(i) + ".png";
         this->frames[0][i] = new Image(file);
     }
 
@@ -54,13 +53,13 @@ void TextureAnimatedDirectional::nextFrame()
     if (current >= this->getNumFrames()) {
         current = 0;
         times++;
-        if ((maxTimes != -1 && times >= maxTimes)) {
+        if (maxTimes != -1 && times >= maxTimes) {
             current = getNumFrames() - 1;
         }
     }
 }
 
-void TextureAnimatedDirectional::importTextures(TextureAnimatedDirectional *origin, int numFrames)
+void TextureAnimatedDirectional::importTextures(const TextureAnimatedDirectional *origin, int numFrames)
 {
     for (int d = 0; d <= 8; d++) {
         for (int j = 0; j < numFrames; j++) {
@@ -71,9 +70,28 @@ void TextureAnimatedDirectional::importTextures(TextureAnimatedDirectional *orig
 
 void TextureAnimatedDirectional::drawImGuiProperties()
 {
-
 }
 
 bool TextureAnimatedDirectional::isLoaded() const {
     return loaded;
+}
+
+void TextureAnimatedDirectional::setIsZeroDirection(bool value)
+{
+    isZeroDirection = value;
+}
+
+int TextureAnimatedDirectional::getFps() const
+{
+    return fps;
+}
+
+std::string TextureAnimatedDirectional::getBaseFile() const
+{
+    return base_file;
+}
+
+bool TextureAnimatedDirectional::hasZeroDirection() const
+{
+    return isZeroDirection;
 }

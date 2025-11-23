@@ -24,7 +24,7 @@ class TextureAtlas {
 public:
     TextureAtlas(int totalWidth, int totalHeight);
 
-    bool addTexture(Image *texture, bool lightmap, const std::string& name);
+    bool addTexture(Image *texture, const std::string& name);
 
     std::vector<Image *> textures;
     std::vector<TextureAtlasImageInfo> textures_info;
@@ -39,7 +39,7 @@ public:
 
 private:
 
-    bool checkForAllocate(int xpos, int ypos, int width, int height);
+    bool checkForAllocate(int xpos, int ypos, int width, int height) const;
 
     void allocateMask(int xpos, int ypos, int width, int height);
 
