@@ -14,8 +14,8 @@ class Object3DSerializer : public JSONSerializer {
 public:
     cJSON* JsonByObject(Object3D *object) override;
     Object3D* ObjectByJson(cJSON* json) override;
-    void ApplyJsonToObject(cJSON* json, Object3D* obj) override;
 
+    static void ApplyJsonToObject(cJSON* json, Object3D* obj);
     static void LoadFileIntoScene(const std::string& file);
 };
 

@@ -567,9 +567,9 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
     exit(-1);
 
 
-    Logging::Message("[Object3D] Setting properties from JSON");
-    const char* type = cJSON_GetObjectItem(object, "type")->valuestring;
-    JSONSerializerRegistry::instance().getSerializer(type)->ApplyJsonToObject(object, o);
+    //Logging::Message("[Object3D] Setting properties from JSON");
+    //const char* type = cJSON_GetObjectItem(object, "type")->valuestring;
+    //JSONSerializerRegistry::instance().getSerializer(type)->ApplyJsonToObject(object, o);
 }
 
 bool& Object3D::enabledPointer()

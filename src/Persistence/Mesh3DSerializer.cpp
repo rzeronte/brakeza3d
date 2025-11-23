@@ -7,28 +7,34 @@
 #include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Persistence/Object3DSerializer.h"
 
 cJSON* Mesh3DSerializer::JsonByObject(Object3D *object)
 {
     Logging::Message("[Mesh3DSerializer json] Alive here...");
+    std::cout << "[Mesh3DSerializer json] " << object->getTypeObject() << std::endl;
 
     auto *mesh = dynamic_cast<Mesh3D*>(object);
 
     cJSON *root = JSONSerializerRegistry::GetJsonByObject(object);
 
+    cJSON_AddStringToObject(root, "model", mesh->sourceFile.c_str());
+    cJSON_AddBoolToObject(root, "enableLights", mesh->isEnableLights());
+
+    // Shaders
     cJSON *effectsArrayJSON = cJSON_CreateArray();
     for (auto s : mesh->customShaders) {
         cJSON_AddItemToArray(effectsArrayJSON, s->getTypesJSON());
     }
     cJSON_AddItemToObject(root, "shaders", effectsArrayJSON);
 
-    cJSON_AddStringToObject(root, "model", mesh->sourceFile.c_str());
-    cJSON_AddBoolToObject(root, "enableLights", mesh->isEnableLights());
 
+    // grid
     if (mesh->grid != nullptr) {
         cJSON_AddItemToObject(root, "grid", mesh->grid->getJSON());
     }
 
+    // octree
     if (mesh->octree != nullptr) {
         cJSON_AddItemToObject(root, "octree", mesh->octree->getJSON());
     }
@@ -36,19 +42,22 @@ cJSON* Mesh3DSerializer::JsonByObject(Object3D *object)
     return root;
 }
 
-void Mesh3DSerializer::ApplyJsonToObject(cJSON *object, Object3D *o)
+void Mesh3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
-    std::cout << "[Mesh3DSerializer setJSONPropertiesIntoObject3D] Alive " << std::endl;
+    std::cout << "[Mesh3DSerializer ApplyJsonToObject] " << o->getTypeObject() << std::endl;
+
     Mesh3D *mesh = dynamic_cast<Mesh3D*>(o);
 
-    o->setBelongToScene(true);
-    o->setEnableLights(cJSON_GetObjectItemCaseSensitive(object, "enableLights")->valueint);
-    mesh->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring);
+    Object3DSerializer::ApplyJsonToObject(json, o);
 
-    if (cJSON_GetObjectItemCaseSensitive(object, "shaders") != nullptr) {
+    mesh->setBelongToScene(true);
+    mesh->setEnableLights(cJSON_GetObjectItemCaseSensitive(json, "enableLights")->valueint);
+    mesh->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(json, "model")->valuestring);
+
+    if (cJSON_GetObjectItemCaseSensitive(json, "shaders") != nullptr) {
         auto shaderTypesMapping = ComponentsManager::get()->getComponentRender()->getShaderTypesMapping();
         cJSON *currentShaderJSON;
-        cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
+        cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {
             auto typeString = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
             switch (auto type = ShaderOpenGLCustom::getShaderTypeFromString(typeString)) {
                 case SHADER_OBJECT: {
@@ -66,41 +75,41 @@ void Mesh3DSerializer::ApplyJsonToObject(cJSON *object, Object3D *o)
         }
     }
 
-    if (cJSON_GetObjectItemCaseSensitive(object, "isCollisionsEnabled") != nullptr) {
-        bool collisionsEnabled = cJSON_GetObjectItemCaseSensitive(object, "isCollisionsEnabled")->valueint;
-        cJSON *colliderJSON = cJSON_GetObjectItemCaseSensitive(object, "collider");
+    if (cJSON_GetObjectItemCaseSensitive(json, "isCollisionsEnabled") != nullptr) {
+        bool collisionsEnabled = cJSON_GetObjectItemCaseSensitive(json, "isCollisionsEnabled")->valueint;
+        cJSON *colliderJSON = cJSON_GetObjectItemCaseSensitive(json, "collider");
 
         if (collisionsEnabled) {
-            o->setCollisionsEnabled(true);
+            mesh->setCollisionsEnabled(true);
             int mode = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
             int shape = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
 
             if ((cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic") != nullptr)) {
-                o->setColliderStatic(cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic")->valueint);
+                mesh->setColliderStatic(cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic")->valueint);
             }
 
             switch (mode) {
                 case GHOST:
                     if (shape == SIMPLE_SHAPE) {
-                        o->setupGhostCollider(SIMPLE_SHAPE);
+                        mesh->setupGhostCollider(SIMPLE_SHAPE);
                     }
                     if (shape == CAPSULE) {
-                        o->setupGhostCollider(CAPSULE);
+                        mesh->setupGhostCollider(CAPSULE);
                     }
 
                     if (shape == TRIANGLE_MESH_SHAPE) {
-                        o->setupGhostCollider(TRIANGLE_MESH_SHAPE);
+                        mesh->setupGhostCollider(TRIANGLE_MESH_SHAPE);
                     }
                     break;
                 case BODY:
                     if (shape == SIMPLE_SHAPE) {
-                        o->setupRigidBodyCollider(SIMPLE_SHAPE);
+                        mesh->setupRigidBodyCollider(SIMPLE_SHAPE);
                     }
                     if (shape == CAPSULE) {
-                        o->setupRigidBodyCollider(CAPSULE);
+                        mesh->setupRigidBodyCollider(CAPSULE);
                     }
                     if (shape == TRIANGLE_MESH_SHAPE) {
-                        o->setupRigidBodyCollider(TRIANGLE_MESH_SHAPE);
+                        mesh->setupRigidBodyCollider(TRIANGLE_MESH_SHAPE);
                     }
                     break;
                 default: {
@@ -109,12 +118,11 @@ void Mesh3DSerializer::ApplyJsonToObject(cJSON *object, Object3D *o)
             }
         }
     }
-
 }
 
 Object3D* Mesh3DSerializer::ObjectByJson(cJSON *json)
 {
-    std::cout << "[Mesh3DSerializer LoadJSONObject] alive" << std::endl;
+    std::cout << "[Mesh3DSerializer LoadJSONObject]"  << std::endl;
     auto o = new Mesh3D();
     ApplyJsonToObject(json, o);
     return o;

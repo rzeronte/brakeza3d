@@ -80,6 +80,8 @@ cJSON * Object3DSerializer::JsonByObject(Object3D* object)
 
 void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *obj)
 {
+    std::cout << "[Object3DSerializer ApplyJsonToObject] " << obj->getTypeObject() << std::endl;
+
     auto label = cJSON_GetObjectItem(json, "label");
     if (label) obj->setLabel(label->valuestring);
 

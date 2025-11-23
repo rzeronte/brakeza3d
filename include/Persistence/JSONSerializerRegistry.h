@@ -41,6 +41,7 @@ public:
 
     static cJSON * GetJsonByObject(Object3D *object)
     {
+        std::cout << "[JSONSerializerRegistry GetJsonByObject] " << object->getTypeObject() << std::endl;
         if (auto serializer = JSONSerializerRegistry::instance().getSerializer(object->getTypeObject())) {
             return serializer->JsonByObject(object);
         }
