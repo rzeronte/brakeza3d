@@ -978,7 +978,8 @@ void GUIManager::updateImGuiDocking() {
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 }
 
-void GUIManager::DrawGUIPlugins(bool &finish) {
+void GUIManager::DrawGUIPlugins(bool &finish)
+{
     bool p_open = true;
     widgetConsole->Draw("Logging/Console", &p_open);
     widgetObjects3D->Draw(selectedObjectIndex);
