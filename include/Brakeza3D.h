@@ -7,84 +7,55 @@
 #include "GUI/GUIManager.h"
 #include <thread>
 
-class Brakeza3D {
-
-    ComponentsManager *componentsManager;
-
-    Timer engineTimer;
-
+class Brakeza3D
+{
     float deltaTime = 0;
     float last_ticks = 0;
     float current_ticks = 0;
     float executionTime = 0;
 
+    ComponentsManager *componentsManager;
+
+    Timer engineTimer;
+
     std::vector<Object3D *> sceneObjects;
 
     GUIManager *managerGUI;
 public:
+    bool finish = false;
     Brakeza3D();
-
     virtual ~Brakeza3D();
 
     int getNextObjectID() const;
-
-    static Brakeza3D *get();
-
-    static Brakeza3D *instance;
-
-    void start(int argc, char *argv[]);
-
-    void addObject3D(Object3D *obj, const std::string &label);
-
-    [[nodiscard]] std::vector<Object3D *> &getSceneObjects();
-
-    Timer *getTimer();
-
-    void UpdateTimer();
-
-    [[nodiscard]] float getDeltaTime() const;
-
-    [[nodiscard]] float getDeltaTimeMicro() const;
-
-    void onStartComponents() const;
-
-    void PreUpdateComponents() const;
-
-    void onUpdateComponents() const;
-
-    void postUpdateComponents() const;
-
-    void onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish) const;
-
-    void onEndComponents() const;
-
-    void handleAutoStartProject(bool autostart, const std::string &project) const;
-
-    void mainLoop(bool autostart, const std::string& project);
-
-    [[nodiscard]] ComponentsManager *getComponentsManager() const;
-
-    void ControlFrameRate() const;
-
     float &getExecutionTime();
-
-    static std::string uniqueObjectLabel(const char *prefix);
-
-    [[nodiscard]] GUIManager *getManagerGui() const;
-
-    static void welcomeMessage();
-
+    float getEngineTotalTime() const;
+    void start(int argc, char *argv[]);
+    void addObject3D(Object3D *obj, const std::string &label);
+    void UpdateTimer();
+    void onStartComponents() const;
+    void PreUpdateComponents() const;
+    void onUpdateComponents() const;
+    void postUpdateComponents() const;
+    void onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish) const;
+    void onEndComponents() const;
+    void handleAutoStartProject(bool autostart, const std::string &project) const;
+    void mainLoop(bool autostart, const std::string& project);
+    void ControlFrameRate() const;
     void CaptureInputEvents(SDL_Event &e);
-
-    [[nodiscard]] Object3D *getSceneObjectByLabel(const std::string &label) const;
-
-    Object3D *getSceneObjectById(int id) const;
-
-    static void checkForResizeOpenGLWindow(const SDL_Event &e);
-
-    bool finish = false;
-
     void shutdown();
+    static void welcomeMessage();
+    static void checkForResizeOpenGLWindow(const SDL_Event &e);
+    static std::string uniqueObjectLabel(const char *prefix);
+    static Brakeza3D *get();
+    static Brakeza3D *instance;
+    Object3D *getSceneObjectById(int id) const;
+    Timer *getTimer();
+    [[nodiscard]] std::vector<Object3D *> &getSceneObjects();
+    [[nodiscard]] float getDeltaTime() const;
+    [[nodiscard]] float getDeltaTimeMicro() const;
+    [[nodiscard]] ComponentsManager *getComponentsManager() const;
+    [[nodiscard]] GUIManager *getManagerGui() const;
+    [[nodiscard]] Object3D *getSceneObjectByLabel(const std::string &label) const;
 };
 
 

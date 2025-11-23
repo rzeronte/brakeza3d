@@ -4,35 +4,31 @@
 #include "ShaderBaseOpenGL.h"
 #include "../Objects/Mesh3D.h"
 
-class ShaderOGLGRenderDeferred : public ShaderBaseOpenGL {
-    GLuint VertexArrayID;
+class ShaderOGLGRenderDeferred : public ShaderBaseOpenGL
+{
+    GLuint VertexArrayID = 0;
 
-    GLint matrixProjectionUniform;
-    GLint matrixViewUniform;
-    GLint matrixModelUniform;
-    GLint drawOffsetUniform;
-    GLint textureDiffuseUniform;
-    GLint textureSpecularUniform;
-
-    static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
-
-public:
-    ShaderOGLGRenderDeferred();
-
-    void renderMesh(Mesh3D *o, GLuint framebuffer);
-    void renderAnimatedMesh(Mesh3D *o, GLuint framebuffer);
+    GLuint matrixProjectionUniform = 0;
+    GLuint matrixViewUniform = 0;
+    GLuint matrixModelUniform = 0;
+    GLuint drawOffsetUniform = 0;
+    GLuint textureDiffuseUniform = 0;
+    GLuint textureSpecularUniform = 0;
 
     void render(
         Object3D *o,
-        GLint textureID,
-        GLint textureSpecularID,
-        GLuint vertexbuffer,
-        GLuint uvbuffer,
-        GLuint normalbuffer,
+        GLuint texId,
+        GLuint specTexId,
+        GLuint vertexBuffer,
+        GLuint uvBuffer,
+        GLuint normalBuffer,
         int size,
-        GLuint framebuffer
-    );
+        GLuint fbo
+    ) const;
 
+public:
+    ShaderOGLGRenderDeferred();
+    void renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo);
     void destroy() override;
 };
 

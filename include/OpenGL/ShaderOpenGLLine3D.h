@@ -18,9 +18,9 @@ class ShaderOpenGLLine3D : public ShaderBaseOpenGL
     GLuint vertexbuffer;
     glm::vec3 vertices[2];
 
-    GLint matrixProjectionUniform;
-    GLint matrixViewUniform;
-    GLint colorUniform;
+    GLuint matrixProjectionUniform;
+    GLuint matrixViewUniform;
+    GLuint colorUniform;
 
     void destroy() override;
 
@@ -30,13 +30,13 @@ public:
     void render(
         Vertex3D from,
         Vertex3D to,
-        GLuint framebuffer,
+        GLuint fbo,
         Color c
     );
 
     void renderLines(
         const std::vector<Vector3D>&,
-        GLuint framebuffer,
+        GLuint fbo,
         Color c
     );
 };

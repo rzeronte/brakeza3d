@@ -10,27 +10,20 @@
 #include "../Objects/Mesh3D.h"
 
 class ShaderOpenGLShading : public ShaderBaseOpenGL {
-    GLuint VertexArrayID;
+    GLuint VertexArrayID = 0;
 public:
     ShaderOpenGLShading();
 
-    void renderMesh(Mesh3D *mesh, GLuint framebuffer);
-
-    void renderMeshAnimation(Mesh3D *mesh, GLuint framebuffer);
-
+    void renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint fbo);
     void render(
-        glm::mat4 ModelMatrix,
-        GLuint vertexbuffer,
-        GLuint uvbuffer,
-        GLuint normalbuffer,
+        glm::mat4 modelMatrix,
+        GLuint vertexBuffer,
+        GLuint uvBuffer,
+        GLuint normalBuffer,
         int size,
-        GLuint framebuffer
+        GLuint fbo
     );
-
-    static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
-
     void destroy() override;
-
 };
 
 

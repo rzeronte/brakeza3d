@@ -1,11 +1,9 @@
-//
-// Created by Eduardo on 09/01/2025.
-//
-
 #include "../../include/Objects/Image3D.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/GUI/Image3DGUI.h"
+#include "../../include/Persistence/Image3DPersistence.h"
 
 Image3D::Image3D(const Vertex3D &position, float width, float height, Image* image)
 :
@@ -14,14 +12,10 @@ Image3D::Image3D(const Vertex3D &position, float width, float height, Image* ima
     image(image)
 {
     setPosition(position);
-
-    Vertex3D up(0.0f, 1.0f, 0.0f);      // arriba en Y
-    Vertex3D right(1.0f, 0.0f, 0.0f);   // derecha en X
-
-    setSize(width, height, up, right);
+    setSize(width, height);
 }
 
-void Image3D::setSize(float width, float height, const Vertex3D &U_in, const Vertex3D &R_in)
+void Image3D::setSize(float width, float height)
 {
     setWidth(width);
     setHeight(height);
@@ -41,7 +35,7 @@ void Image3D::setSize(float width, float height, const Vertex3D &U_in, const Ver
     Q3.u = 0.0f; Q3.v = 0.0f;
     Q4.u = 1.0f; Q4.v = 0.0f;
 
-    // Triángulo 1: Q1 -> Q2 -> Q3
+    // Triangle 1: Q1 -> Q2 -> Q3
     vertices.emplace_back(Q1.x, Q1.y, Q1.z, 1.0f);
     vertices.emplace_back(Q2.x, Q2.y, Q2.z, 1.0f);
     vertices.emplace_back(Q3.x, Q3.y, Q3.z, 1.0f);
@@ -50,7 +44,7 @@ void Image3D::setSize(float width, float height, const Vertex3D &U_in, const Ver
     uvs.emplace_back(Q2.u, Q2.v);
     uvs.emplace_back(Q3.u, Q3.v);
 
-    // Triángulo 2: Q1 -> Q3 -> Q4
+    // Triangle 2: Q1 -> Q3 -> Q4
     vertices.emplace_back(Q1.x, Q1.y, Q1.z, 1.0f);
     vertices.emplace_back(Q3.x, Q3.y, Q3.z, 1.0f);
     vertices.emplace_back(Q4.x, Q4.y, Q4.z, 1.0f);
@@ -87,9 +81,9 @@ void Image3D::onUpdate()
         this,
         image->getOGLTextureID(),
         image->getOGLTextureID(),
-        vertexbuffer,
-        uvbuffer,
-        normalbuffer,
+        vertexBuffer,
+        uvBuffer,
+        normalBuffer,
         static_cast<int>(vertices.size()),
         1.0f,
         window->getSceneFramebuffer()
@@ -110,91 +104,6 @@ const char *Image3D::getTypeIcon()
     return "Image3DIcon";
 }
 
-void Image3D::drawImGuiProperties()
-{
-    Object3D::drawImGuiProperties();
-    if (ImGui::CollapsingHeader("Image3D")) {
-
-        const float range_min_int = 1.0;
-        const float range_max_int = 1000;
-
-        if (ImGui::TreeNode("Size")) {
-            ImGui::DragScalar("Width", ImGuiDataType_Float, &width,1.f, &range_min_int, &range_max_int, "%f", 1.0f);
-            ImGui::DragScalar("Height", ImGuiDataType_Float, &height,1.f, &range_min_int, &range_max_int, "%f", 1.0f);
-
-            if (ImGui::Button(std::string("Update size").c_str())) {
-                M3 rotationTranspose = ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose();
-                Vertex3D up = rotationTranspose * EngineSetup::get()->up;
-                Vertex3D right = rotationTranspose * EngineSetup::get()->right;
-                setSize(width, height, up, right);
-            }
-            ImGui::TreePop();
-        }
-
-        if (ImGui::TreeNode("Image")) {
-            if (image->isLoaded()) {
-                ImGui::Image((ImTextureID) image->getOGLTextureID(),ImVec2(64, 64));
-            } else {
-                ImGui::Text("No image selected. Drag a texture here!");
-            }
-
-            if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
-                    Logging::Message("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
-                    IM_ASSERT(payload->DataSize == sizeof(int));
-                    auto selection = (char*) payload->Data;
-                    auto fullPath = EngineSetup::get()->IMAGES_FOLDER + selection;
-                    if (image == nullptr) {
-                        image = new Image(fullPath);
-                    } else {
-                        image->setImage(fullPath);
-                    }
-                    Logging::Message("File %s", selection);
-                }
-                ImGui::EndDragDropTarget();
-            }
-            ImGui::TreePop();
-        }
-    }
-}
-
-cJSON *Image3D::getJSON()
-{
-    auto root= Object3D::getJSON();
-
-    cJSON_AddNumberToObject(root, "width", width);
-    cJSON_AddNumberToObject(root, "height", height);
-    cJSON_AddStringToObject(root, "image", image->getFileName().c_str());
-
-    return root;
-}
-
-void Image3D::createFromJSON(cJSON *object)
-{
-    auto name = cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring;
-    auto width = static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "width")->valueint);
-    auto height = static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "height")->valueint);
-    auto image = cJSON_GetObjectItemCaseSensitive(object, "image")->valuestring;
-
-    auto o = new Image3D(
-        Vertex3D(),
-        width,
-        height,
-        new Image(image)
-    );
-
-    setPropertiesFromJSON(object, o);
-
-    Brakeza3D::get()->addObject3D(o, name);
-}
-
-void Image3D::setPropertiesFromJSON(cJSON *object, Image3D *o)
-{
-    o->setBelongToScene(true);
-
-    Object3D::setPropertiesFromJSON(object, o);
-}
-
 void Image3D::setWidth(float value)
 {
     width = value;
@@ -207,16 +116,16 @@ void Image3D::setHeight(float value)
 
 void Image3D::fillBuffers()
 {
-    glGenBuffers(1, &vertexbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(vertices.size() * sizeof(glm::vec4)), &vertices[0], GL_STATIC_DRAW);
 
-    glGenBuffers(1, &uvbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+    glGenBuffers(1, &uvBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
     glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(uvs.size() * sizeof(glm::vec2)), &uvs[0], GL_STATIC_DRAW);
 
-    glGenBuffers(1, &normalbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+    glGenBuffers(1, &normalBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
     glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(normals.size() * sizeof(glm::vec3)), &normals[0], GL_STATIC_DRAW);
 }
 
@@ -230,8 +139,8 @@ void Image3D::checkClickObject(Vector3D ray, Object3D *&foundObject, float &last
     auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     std::vector<Triangle> modelTriangles;
-    modelTriangles.emplace_back(Q3, Q2, Q1, this);  // Cambiado el orden
-    modelTriangles.emplace_back(Q4, Q3, Q1, this);  // Cambiado el orden
+    modelTriangles.emplace_back(Q3, Q2, Q1, this);
+    modelTriangles.emplace_back(Q4, Q3, Q1, this);
 
     for (auto &triangle : modelTriangles) {
         triangle.updateObjectSpace();
@@ -253,17 +162,17 @@ void Image3D::checkClickObject(Vector3D ray, Object3D *&foundObject, float &last
 
 GLuint Image3D::getVertexBuffer() const
 {
-    return vertexbuffer;
+    return vertexBuffer;
 }
 
 GLuint Image3D::getNormalBuffer() const
 {
-    return normalbuffer;
+    return normalBuffer;
 }
 
 GLuint Image3D::getUVBuffer() const
 {
-    return uvbuffer;
+    return uvBuffer;
 }
 
 std::vector<glm::vec4> Image3D::getVertices() const

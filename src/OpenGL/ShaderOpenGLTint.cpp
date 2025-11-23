@@ -20,9 +20,9 @@ ShaderOpenGLTint::ShaderOpenGLTint()
     alphaUniform = glGetUniformLocation(programID, "alpha");
 }
 
-void ShaderOpenGLTint::render(Color c, float alpha, GLuint framebuffer)
+void ShaderOpenGLTint::render(Color c, float alpha, GLuint fbo)
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
 
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 

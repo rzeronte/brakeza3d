@@ -9,8 +9,8 @@
 
 class ShaderBaseOpenGLQuad {
     GLuint VBO;
-    GLint modelMatrixUniform;
-    GLint projectionMatrixUniform;
+    GLuint modelMatrixUniform;
+    GLuint projectionMatrixUniform;
 
     glm::mat4 modelMatrix;
     glm::mat4 projectionMatrix;

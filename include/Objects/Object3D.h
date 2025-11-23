@@ -32,10 +32,21 @@ struct ObjectGUIFeatures {
     bool misc = true;
 };
 
-class Object3D: public Collider {
+class Object3D: public Collider
+{
 
 protected:
-    int id;
+    int id = 0;
+    float scale;
+    bool removed = false;
+    bool decal = false;
+    bool belongToScene = false;
+    bool multiScene = false;
+    bool alphaEnabled = false;
+    bool enableLights;
+    float alpha = 1.f;
+    float distanceToCamera = 0.f;
+
     Vertex3D drawOffset;
 
     Object3DBehavior *motion;
@@ -43,172 +54,95 @@ protected:
 
     ObjectGUIFeatures featuresGUI;
 
-    bool removed;
-    bool decal; // Decals exclude UV Coordinates out of [0, 1]
-    bool belongToScene;
-    bool multiScene;
-
     std::string label;
-    bool alphaEnabled;
-    float alpha;
 
     std::vector<ScriptLUA*> scripts;
     std::vector<Object3D*> attachedObjects;
     sol::environment luaEnvironment;
 
     Timer timer;
-    float distanceToCamera;
-
     Color pickingColor;
-public:
+    bool enabled;
     Vertex3D position;
-    bool enableLights;
-    float scale;
-
+    M3 rotation;
+public:
     Object3D();
-
     virtual ~Object3D();
 
+    int getId() const;
+    bool& enabledPointer();
     void setParent(Object3D *object);
-
     void setLabel(const std::string& label);
-
-    Vertex3D &getPosition();
-
-    M3 getRotation();
-
-    void setPosition(Vertex3D p);
-
+    void setPosition(const Vertex3D &p);
     void addToPosition(Vertex3D p);
-
     void setRotation(M3 r);
-
-    virtual void setEnabled(bool enabled);
-
-    Vertex3D AxisUp();
-
-    Vertex3D AxisDown();
-
-    Vertex3D AxisForward();
-
-    Vertex3D AxisBackwards();
-
-    Vertex3D AxisRight();
-
-    Vertex3D AxisLeft();
-
     void setScale(float value);
-
     void setRemoved(bool value);
-
     void setDecal(bool value);
-
     void setDrawOffset(Vertex3D v);
-
-    virtual void onUpdate();
-
-    virtual void postUpdate();
-
     void setAlpha(float alpha);
-
     void setAlphaEnabled(bool value);
-
     void setBehavior(Object3DBehavior *motion);
-
-    [[nodiscard]] Object3DBehavior *getBehavior() const;
-
-    [[nodiscard]] bool &isAlphaEnabled();
-
-    [[nodiscard]] Vertex3D &getDrawOffset();
-
-    [[nodiscard]] float &getAlpha();
-
-    [[nodiscard]] bool isDecal() const;
-
-    [[nodiscard]] float getScale() const;
-
-    [[nodiscard]] bool isRemoved() const;
-
-    [[nodiscard]] bool &isEnabled();
-
-    [[nodiscard]] std::string getLabel() const;
-
-    [[nodiscard]] Object3D *getParent() const;
-
-    [[nodiscard]] bool isEnableLights() const;
-
     void setEnableLights(bool value);
-
-    virtual cJSON *getJSON();
-
     void lookAt(Object3D *o);
-
-    virtual void drawImGuiProperties();
-
     void attachScript(ScriptLUA *script);
-
     void runScripts();
-
     void reloadScriptsEnvironment();
-
-    void reloadScriptsCode();
-
-    virtual const char *getTypeObject();
-
-    virtual const char *getTypeIcon();
-
+    void reloadScriptsCode() const;
     void removeScript(ScriptLUA *script);
-
-    [[nodiscard]] const std::vector<ScriptLUA *> &getScripts() const;
-
     void runStartScripts();
-
-    [[nodiscard]] bool isBelongToScene() const;
-
     void setBelongToScene(bool belongToScene);
-
-    static void createFromJSON(cJSON *currentType);
-
-    static void setPropertiesFromJSON(cJSON *object, Object3D *o);
-
-    glm::mat4 getModelMatrix();
-
-    M3 getM3ModelMatrix();
-
-    [[nodiscard]] const Timer &getTimer() const;
-
-    [[nodiscard]] float getDistanceToCamera() const;
-
-    [[nodiscard]] bool isMultiScene() const;
-
     void setMultiScene(bool multiScene);
-
-    [[nodiscard]] const std::vector<Object3D *> &getAttached() const;
-
     void attachObject(Object3D *o);
-
-    sol::object getLocalScriptVar(const char *varName);
-
     void makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) override;
     void makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) override;
     void integrate() override;
     void updateFromBullet();
     void resolveCollision(CollisionInfo with) override;
     void runResolveCollisionScripts(CollisionInfo with);
-
-    [[nodiscard]] const sol::environment &getLuaEnvironment() const;
-
-    bool enabled;
-
-    void setupGhostCollider(CollisionShape mode) override;
-
-    M3 rotation;
-
+    virtual cJSON *getJSON();
     virtual void checkClickObject(Vector3D ray, Object3D*& foundObject, float &lastDepthFound);
-
+    virtual const char *getTypeObject();
+    virtual const char *getTypeIcon();
+    virtual void setEnabled(bool enabled);
+    virtual void onUpdate();
+    virtual void postUpdate();
+    virtual void drawImGuiProperties();
+    void setupGhostCollider(CollisionShape mode) override;
+    glm::mat4 getModelMatrix();
+    M3& rotationPointer();
+    M3 getM3ModelMatrix();
+    M3 getRotation();
+    Vertex3D& positionPointer();
+    Vertex3D &getPosition();
+    Vertex3D AxisUp();
+    Vertex3D AxisDown();
+    Vertex3D AxisForward();
+    Vertex3D AxisBackwards();
+    Vertex3D AxisRight();
+    Vertex3D AxisLeft();
+    sol::object getLocalScriptVar(const char *varName);
+    [[nodiscard]] const std::vector<ScriptLUA *> &getScripts() const;
+    [[nodiscard]] Object3DBehavior *getBehavior() const;
+    [[nodiscard]] bool &isAlphaEnabled();
+    [[nodiscard]] Vertex3D &getDrawOffset();
+    [[nodiscard]] float &getAlpha();
+    [[nodiscard]] bool isDecal() const;
+    [[nodiscard]] float getScale() const;
+    [[nodiscard]] bool isRemoved() const;
+    [[nodiscard]] bool &isEnabled();
+    [[nodiscard]] std::string getLabel() const;
+    [[nodiscard]] Object3D *getParent() const;
+    [[nodiscard]] bool isEnableLights() const;
+    [[nodiscard]] bool isBelongToScene() const;
+    [[nodiscard]] const std::vector<Object3D *> &getAttached() const;
+    [[nodiscard]] const sol::environment &getLuaEnvironment() const;
+    [[nodiscard]] const Timer &getTimer() const;
+    [[nodiscard]] float getDistanceToCamera() const;
+    [[nodiscard]] bool isMultiScene() const;
     [[nodiscard]] Color getPickingColor() const;
-
-    int getId() const;
+    static void createFromJSON(cJSON *currentType);
+    static void setPropertiesFromJSON(cJSON *object, Object3D *o);
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

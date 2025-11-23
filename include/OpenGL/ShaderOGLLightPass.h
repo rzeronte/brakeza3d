@@ -6,28 +6,28 @@
 
 class ShaderOGLLightPass : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {
 
-    GLint gPositionUniform;
-    GLint gNormalUniform;
-    GLint viewPosUniform;
-    GLint numPointLightsUniform;
-    GLint numSpotLightsUniform;
+    GLuint gPositionUniform;
+    GLuint gNormalUniform;
+    GLuint viewPosUniform;
+    GLuint numPointLightsUniform;
+    GLuint numSpotLightsUniform;
 
-    GLint directionalLightDirectionUniform;
-    GLint directionalLightAmbientUniform;
-    GLint directionalLightDiffuseUniform;
-    GLint directionalLightSpecularUniform;
-    GLint directionalLightMatrixUniform;
+    GLuint directionalLightDirectionUniform;
+    GLuint directionalLightAmbientUniform;
+    GLuint directionalLightDiffuseUniform;
+    GLuint directionalLightSpecularUniform;
+    GLuint directionalLightMatrixUniform;
 
-    GLint dirLightShadowMapTextureUniform;
+    GLuint dirLightShadowMapTextureUniform;
 
-    GLint materialTextureDiffuseUniform;
-    GLint materialTextureSpecularUniform;
-    GLint materialShininessUniform;
+    GLuint materialTextureDiffuseUniform;
+    GLuint materialTextureSpecularUniform;
+    GLuint materialShininessUniform;
 
-    GLint numSpotLightShadowMapsUniform;
-    GLint debugShadowMappingUniform;
-    GLint shadowMappingIntensityUniform;
-    GLint enableDirectionalLightShadowMapUniform;
+    GLuint numSpotLightShadowMapsUniform;
+    GLuint debugShadowMappingUniform;
+    GLuint shadowMappingIntensityUniform;
+    GLuint enableDirectionalLightShadowMapUniform;
 
     GLuint bufferSpotLightsMatricesUBO;
 
@@ -44,7 +44,7 @@ public:
         int numSpotLights,
         GLuint spotLightsShadowMapTexturesArray,
         int numSpotLightsShadowMaps,
-        GLuint framebuffer
+        GLuint fbo
     );
 
     void destroy() override;

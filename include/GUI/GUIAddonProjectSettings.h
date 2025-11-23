@@ -7,13 +7,13 @@
 
 #include "imgui.h"
 #include "../ComponentsManager.h"
-#include "GUIWidgetObject3DProperties.h"
+#include "GUIAddonObject3DProperties.h"
 
-struct GUIWidgetProjectSettings {
+struct GUIAddonProjectSettings {
     TexturePackage &icons;
     ScriptEditableManager &scriptEditableManager;
 
-    GUIWidgetProjectSettings(TexturePackage &imGuiTextures, ScriptEditableManager &scriptEditableManager)
+    GUIAddonProjectSettings(TexturePackage &imGuiTextures, ScriptEditableManager &scriptEditableManager)
     :
             icons(imGuiTextures),
             scriptEditableManager(scriptEditableManager)

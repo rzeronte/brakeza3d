@@ -10,7 +10,6 @@
 
 ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
 :
-    paused(false),
     scriptFilename(script),
     fileTypes(std::move(properties))
 {
@@ -20,11 +19,10 @@ ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
     parseTypesFromFileAttributes();
 }
 
-ScriptLUA::ScriptLUA(const std::string &scriptFilename, cJSON *types)
+ScriptLUA::ScriptLUA(const std::string &scriptFilename, const cJSON *types)
 :
-    paused(false),
     scriptFilename(scriptFilename),
-    fileTypes(ScriptLUA::dataTypesFileFor(scriptFilename))
+    fileTypes(dataTypesFileFor(scriptFilename))
 {
     Logging::Message("Loading LUA Script (%s, %s)", scriptFilename.c_str(), fileTypes.c_str());
 
@@ -45,12 +43,11 @@ void ScriptLUA::runEnvironment(sol::environment &environment, const std::string&
     sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
 
     try {
-        // Ejecuta el cript en el environment
         lua.script(content, environment);
 
         sol::object obj = environment[func];
         if (!obj.is<sol::function>()) {
-            Logging::Message("[error] Function %s not exists in script '%s'", func.c_str(), scriptFilename.c_str());
+            Logging::Message("[ScriptLUA Error] Function %s not exists in script '%s'", func.c_str(), scriptFilename.c_str());
             return;
         }
 
@@ -203,7 +200,7 @@ void ScriptLUA::parseTypesFromFileAttributes()
     setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
 }
 
-void ScriptLUA::setDataTypesFromJSON(cJSON *typesJSON)
+void ScriptLUA::setDataTypesFromJSON(const cJSON *typesJSON)
 {
     cJSON *currentType;
     cJSON_ArrayForEach(currentType, typesJSON) {
@@ -222,7 +219,7 @@ void ScriptLUA::setDataTypesFromJSON(cJSON *typesJSON)
 
 std::string ScriptLUA::dataTypesFileFor(std::string basicString)
 {
-    return ScriptLUA::removeFilenameExtension(basicString) + ".json";
+    return removeFilenameExtension(basicString) + ".json";
 }
 
 std::string ScriptLUA::removeFilenameExtension(std::string& filename)
@@ -246,7 +243,8 @@ void ScriptLUA::removeDataType(const ScriptLUATypeData& data)
     }
 }
 
-void ScriptLUA::updateFileTypes() const {
+void ScriptLUA::updateFileTypes() const
+{
     Logging::Message("Updating types file (%s)", this->fileTypes.c_str());
     char *output_string = cJSON_Print(getTypesJSON());
 
@@ -255,27 +253,26 @@ void ScriptLUA::updateFileTypes() const {
     delete output_string;
 }
 
-bool ScriptLUA::updateScriptCodeWith(const std::string& content) const
+void ScriptLUA::updateScriptCodeWith(const std::string& content) const
 {
     Logging::Message("Writing content in file (%s)", scriptFilename.c_str());
 
     std::ofstream file(this->scriptFilename, std::ios::trunc);
 
     if (!file.is_open()) {
-        std::cerr << "Error al abrir el archivo." << std::endl;
-        return false;
+        std::cerr << "ScriptLUA: Error opening file " << scriptFilename << std::endl;
+        exit(-1);
     }
 
     file << content;
     file.close();
 
     if (file.fail()) {
-        Logging::Message("Error writing to file %s", fileTypes.c_str());
-        return false;
+        Logging::Message("ScriptLUA: Error writing to file %s", fileTypes.c_str());
+        exit(-1);
     }
-    Logging::Message("Done!");
 
-    return true;
+    Logging::Message("Done!");
 }
 
 void ScriptLUA::reloadScriptCode()
@@ -283,13 +280,15 @@ void ScriptLUA::reloadScriptCode()
     getCode(scriptFilename);
 }
 
-bool ScriptLUA::isPaused() const {
+bool ScriptLUA::isPaused() const
+{
     return paused;
 }
 
-void ScriptLUA::setPaused(bool paused) {
-    Logging::Message("Script %s has been paused to %d", scriptFilename.c_str(), paused);
-    ScriptLUA::paused = paused;
+void ScriptLUA::setPaused(bool value)
+{
+    Logging::Message("Script %s has been paused to %d", scriptFilename.c_str(), value);
+    paused = value;
 }
 
 void ScriptLUA::drawImGuiProperties()
@@ -403,7 +402,8 @@ cJSON *ScriptLUA::getTypesJSON() const
     return scriptJSON;
 }
 
-const std::string &ScriptLUA::getScriptFilename() const {
+const std::string &ScriptLUA::getScriptFilename() const
+{
     return scriptFilename;
 }
 

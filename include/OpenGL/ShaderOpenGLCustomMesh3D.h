@@ -12,10 +12,10 @@
 class ShaderOpenGLCustomMesh3D : public ShaderOpenGLCustom {
     GLuint VertexArrayID;
 
-    GLint matrixProjectionUniform;
-    GLint matrixViewUniform;
-    GLint matrixModelUniform;
-    GLint alphaUniform;
+    GLuint matrixProjectionUniform;
+    GLuint matrixViewUniform;
+    GLuint matrixModelUniform;
+    GLuint alphaUniform;
 
     Mesh3D* mesh;
 public:
@@ -34,23 +34,20 @@ public:
         cJSON* types
     );
 
-    void render(GLuint framebuffer) override;
+    void render(GLuint fbo) override;
 
     void renderMesh(
         Object3D *o,
-        GLint textureID,
-        GLint textureSpecularID,
+        GLuint textureID,
+        GLuint textureSpecularID,
         GLuint vertexbuffer,
         GLuint uvbuffer,
         GLuint normalbuffer,
         GLuint feedbackBuffer,
         int size,
         float alpha,
-        GLuint framebuffer
+        GLuint fbo
     );
-
-    void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
-
     void setShaderSystemUniforms(GLuint diffuse, GLuint specular);
 };
 

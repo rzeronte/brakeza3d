@@ -15,46 +15,31 @@ ShaderOpenGLShading::ShaderOpenGLShading()
 {
 }
 
-void ShaderOpenGLShading::renderMesh(Mesh3D *mesh, GLuint framebuffer)
-{
-    auto window = ComponentsManager::get()->getComponentWindow();
-
-    for (auto &m: mesh->meshes) {
-        render(
-            mesh->getModelMatrix(),
-            m.vertexBuffer,
-            m.uvBuffer,
-            m.normalBuffer,
-            (int) m.vertices.size(),
-            window->getSceneFramebuffer()
-        );
-    }
-}
-
-void ShaderOpenGLShading::renderMeshAnimation(Mesh3D *mesh, GLuint framebuffer)
+void ShaderOpenGLShading::renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint fbo)
 {
     for (auto &m: mesh->meshes) {
         render(
             mesh->getModelMatrix(),
-            m.feedbackBuffer,
+            useFeedbackBuffer ? m.feedbackBuffer : m.vertexBuffer,
             m.uvBuffer,
             m.normalBuffer,
-            (int) m.vertices.size(),
-            framebuffer
+            m.vertices.size(),
+            fbo
         );
     }
 }
+
 
 void ShaderOpenGLShading::render(
-    glm::mat4 ModelMatrix,
-    GLuint vertexbuffer,
-    GLuint uvbuffer,
-    GLuint normalbuffer,
+    glm::mat4 modelMatrix,
+    GLuint vertexBuffer,
+    GLuint uvBuffer,
+    GLuint normalBuffer,
     int size,
-    GLuint framebuffer
+    GLuint fbo
 )
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
 
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
@@ -67,9 +52,9 @@ void ShaderOpenGLShading::render(
 
     setMat4("projection", ProjectionMatrix);
     setMat4("view", ViewMatrix);
-    setMat4("model", ModelMatrix);
+    setMat4("model", modelMatrix);
 
-    setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
+    setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
     glDrawArrays(GL_TRIANGLES, 0, (GLint) size );
 
@@ -78,43 +63,6 @@ void ShaderOpenGLShading::render(
     glDisableVertexAttribArray(2);
 
     glEnable(GL_BLEND);
-}
-
-void ShaderOpenGLShading::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
-{
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(
-            0,                  // attribute
-            4,                  // size
-            GL_FLOAT,           // type
-            GL_FALSE,           // normalized?
-            0,                  // stride
-            nullptr
-    );
-    // 3rd attribute buffer : normals
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-    glVertexAttribPointer(
-            1,                                // attribute
-            3,                                // size
-            GL_FLOAT,                         // type
-            GL_FALSE,                         // normalized?
-            0,                                // stride
-            nullptr
-    );
-
-    // 2nd attribute buffer : UVs
-    glEnableVertexAttribArray(2);
-    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-    glVertexAttribPointer(
-            2,                                // attribute
-            2,                                // size
-            GL_FLOAT,                         // type
-            GL_FALSE,                         // normalized?
-            0,                                // stride
-            nullptr
-    );
 }
 
 void ShaderOpenGLShading::destroy() {

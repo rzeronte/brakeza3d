@@ -29,7 +29,7 @@ public:
 
     void setPressed(bool pressed);
 
-    void draw(GLuint framebuffer);
+    void draw(GLuint fbo);
 
     void onUpdate();
 

@@ -59,7 +59,7 @@ public:
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
     void AssimpLoadGeometryFromFile(const std::string &fileName);
-    void AssimpInitMaterials(const aiScene *pScene, const std::string &Filename);
+    void AssimpInitMaterials(const aiScene *pScene);
     void ProcessNodes(const aiScene *scene, aiNode *node);
     void LoadMesh(int meshId, aiMesh *mesh);
     virtual void updateBoundingBox();

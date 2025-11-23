@@ -3,11 +3,11 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
-Image3DAnimation::Image3DAnimation(Vertex3D &position, float width, float height)
+Image3DAnimation::Image3DAnimation(Vertex3D &position, float w, float h)
 :
-    billboard(new Image3D(position, width, height, nullptr)),
-    width(width),
-    height(height),
+    billboard(new Image3D(position, w, h, nullptr)),
+    width(w),
+    height(h),
     currentAnimationIndex(0),
     autoRemoveAfterAnimation(false),
     sharedTextures(false)
@@ -46,9 +46,9 @@ void Image3DAnimation::onUpdate()
     }
 }
 
-void Image3DAnimation::addAnimation(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps)
+void Image3DAnimation::addAnimation(const std::string& sprite, int w, int h, int numFrames, int fps)
 {
-    this->animations.emplace_back(new TextureAnimated(spriteSheetFile, spriteWidth, spriteHeight, numFrames, fps));
+    this->animations.emplace_back(new TextureAnimated(sprite, w, h, numFrames, fps));
 }
 
 void Image3DAnimation::setAnimation(int index_animation)
@@ -75,20 +75,17 @@ void Image3DAnimation::updateTexture()
 
 void Image3DAnimation::updateTrianglesCoordinatesAndTexture()
 {
-    M3 rotationTranspose = ComponentsManager::get()->getComponentCamera()->getCamera()->getRotation().getTranspose();
-
-    Vertex3D up = rotationTranspose * EngineSetup::get()->up;
-    Vertex3D right = rotationTranspose * EngineSetup::get()->right.getInverse();
-
-    billboard->setSize(width, height, up, right);
+    billboard->setSize(width, height);
     updateTexture();
 }
 
-bool Image3DAnimation::isAutoRemoveAfterAnimation() const {
+bool Image3DAnimation::isAutoRemoveAfterAnimation() const
+{
     return autoRemoveAfterAnimation;
 }
 
-void Image3DAnimation::setAutoRemoveAfterAnimation(bool value) {
+void Image3DAnimation::setAutoRemoveAfterAnimation(bool value)
+{
     autoRemoveAfterAnimation = value;
 }
 
@@ -103,7 +100,7 @@ void Image3DAnimation::linkTextureAnimation(Image3DAnimation *dst)
     sharedTextures = true;
 }
 
-TextureAnimated *Image3DAnimation::getCurrentTextureAnimation()
+TextureAnimated *Image3DAnimation::getCurrentTextureAnimation() const
 {
     return this->animations[currentAnimationIndex];
 }
@@ -139,7 +136,7 @@ void Image3DAnimation::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
 
-    if (ImGui::TreeNode("BillboardAnimation")) {
+    if (ImGui::CollapsingHeader("Billboard Animation")) {
         if (ImGui::TreeNode("Size")) {
             const float range_min = 0;
             const float range_max = 1000;
@@ -175,7 +172,7 @@ void Image3DAnimation::drawImGuiProperties()
                         currentFramesVariableToCreateAnimation,
                         24
                     );
-                    setAnimation((int) animations.size() - 1);
+                    setAnimation(animations.size() - 1);
                     currentSpriteFileVariableToCreateAnimation = "";
                     currentFramesVariableToCreateAnimation = 0;
                     currentWidthVariableToCreateAnimation = 0;
@@ -187,8 +184,8 @@ void Image3DAnimation::drawImGuiProperties()
         }
         ImGui::Separator();
 
-        const char* items[(int) animations.size()];
-        for (int i = 0; i < (int) animations.size(); i++) {
+        const char* items[animations.size()];
+        for (unsigned int i = 0; i < animations.size(); i++) {
             items[i] = animations[i]->getBaseFilename().c_str();
         }
         ImGui::Combo("Animation", &currentAnimationIndex, items, IM_ARRAYSIZE(items));
@@ -239,8 +236,8 @@ void Image3DAnimation::setPropertiesFromJSON(cJSON *object, Image3DAnimation *o)
             o->addAnimation(spriteFile, width, height, numberFrames, fps);
         }
 
-        o->width = (float) cJSON_GetObjectItemCaseSensitive(object, "width")->valuedouble;
-        o->height = (float) cJSON_GetObjectItemCaseSensitive(object, "height")->valuedouble;
+        o->width = static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "width")->valuedouble);
+        o->height = static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "height")->valuedouble);
 
         o->updateBillboardSize();
 

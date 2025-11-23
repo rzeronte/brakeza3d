@@ -25,7 +25,7 @@ void ShaderOpenGLParticles::render(
     GLuint billboard_vertex_buffer,
     GLuint particles_position_buffer,
     GLuint particles_color_buffer,
-    GLint textureID,
+    GLuint textureID,
     int particlesCount
 )
 {

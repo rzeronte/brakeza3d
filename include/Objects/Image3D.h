@@ -22,9 +22,9 @@ class Image3D : public Object3D
     std::vector<glm::vec2> uvs;
     std::vector<glm::vec4> vertices;
 
-    GLuint vertexbuffer = 0;
-    GLuint normalbuffer = 0;
-    GLuint uvbuffer = 0;
+    GLuint vertexBuffer = 0;
+    GLuint normalBuffer = 0;
+    GLuint uvBuffer = 0;
     Image *image;
 public:
     Image3D(const Vertex3D &position, float width, float height, Image* image);
@@ -34,11 +34,12 @@ public:
     void drawImGuiProperties() override;
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
-    void setSize(float width, float height, const Vertex3D& U, const Vertex3D& R);
+    void setSize(float width, float height);
     void setWidth(float value);
     void setHeight(float value);
     void fillBuffers();
     void checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastDepthFound) override;
+    void setImage(Image *value);
     cJSON *getJSON() override;
     static void createFromJSON(cJSON *object);
     static void setPropertiesFromJSON(cJSON *object, Image3D *o);
@@ -48,8 +49,6 @@ public:
     [[nodiscard]] GLuint getUVBuffer() const;
     [[nodiscard]] std::vector<glm::vec4> getVertices() const;
     [[nodiscard]] Image* getImage() const;
-
-    void setImage(Image *value);
 };
 
 

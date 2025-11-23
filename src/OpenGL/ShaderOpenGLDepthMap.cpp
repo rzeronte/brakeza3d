@@ -22,10 +22,10 @@ ShaderOpenGLDepthMap::ShaderOpenGLDepthMap()
     farUniform = glGetUniformLocation(programID, "far");
 }
 
-void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint framebuffer)
+void ShaderOpenGLDepthMap::render(GLuint textureID, GLuint fbo)
 {
     auto render = ComponentsManager::get()->getComponentRender();
-    render->changeOpenGLFramebuffer(framebuffer);
+    render->changeOpenGLFramebuffer(fbo);
     render->changeOpenGLProgram(programID);
 
     glDisable(GL_DEPTH_TEST);

@@ -19,9 +19,9 @@ ShaderOpenGLOutline::ShaderOpenGLOutline()
     borderThicknessUniform = glGetUniformLocation(programID, "borderThickness");
 }
 
-void ShaderOpenGLOutline::renderOutline(GLint textureID, const Color &c, float borderThickness, GLuint framebuffer)
+void ShaderOpenGLOutline::renderOutline(GLuint textureID, const Color &c, float borderThickness, GLuint fbo)
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
@@ -40,7 +40,7 @@ void ShaderOpenGLOutline::destroy()
     resetQuadMatrix();
 }
 
-void ShaderOpenGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThickness, GLuint framebuffer)
+void ShaderOpenGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThickness, GLuint fbo)
 {
     auto shaderColor = ComponentsManager::get()->getComponentRender()->getShaderOGLColor();
 
@@ -57,10 +57,10 @@ void ShaderOpenGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThi
         );
     }
 
-    renderOutline(shaderColor->getTextureColorBuffer(), c, borderThickness, framebuffer);
+    renderOutline(shaderColor->getTextureColorBuffer(), c, borderThickness, fbo);
 }
 
-void ShaderOpenGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderThickness, GLuint framebuffer)
+void ShaderOpenGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderThickness, GLuint fbo)
 {
     auto componentRender = ComponentsManager::get()->getComponentRender();
     auto shaderColor = componentRender->getShaderOGLColor();
@@ -78,7 +78,7 @@ void ShaderOpenGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderT
         );
     }
 
-    renderOutline(shaderColor->getTextureColorBuffer(), c, borderThickness, framebuffer);
+    renderOutline(shaderColor->getTextureColorBuffer(), c, borderThickness, fbo);
 }
 
 void ShaderOpenGLOutline::drawOutlineImage3D(Image3D *i, const Color &c, float borderThickness, GLuint framebuffer)

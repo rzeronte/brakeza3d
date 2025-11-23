@@ -11,12 +11,12 @@
 #include "../../include/Misc/Color.h"
 
 class ShaderOpenGLTint : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {
-    GLint colorUniform;
-    GLint alphaUniform;
+    GLuint colorUniform;
+    GLuint alphaUniform;
 
 public:
     ShaderOpenGLTint();
-    void render(Color c, float alpha, GLuint framebuffer);
+    void render(Color c, float alpha, GLuint fbo);
 
     void destroy() override;
 };

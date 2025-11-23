@@ -24,12 +24,12 @@ struct ShaderEditableManager {
     char editableSourceFS[1024 * 16];
 };
 
-struct GUIWidgetObject3DProperties {
+struct GUIAddonObject3DProperties {
     TexturePackage &ImGuiTextures;
     std::vector<Object3D *> &gameObjects;
     ScriptEditableManager &scriptEditableManager;
 
-    GUIWidgetObject3DProperties(
+    GUIAddonObject3DProperties(
         TexturePackage &imGuiTextures,
         std::vector<Object3D *> &gameObjects,
         ScriptEditableManager &scriptEditableManager
@@ -41,7 +41,7 @@ struct GUIWidgetObject3DProperties {
     {
     }
 
-    void draw(const int &selectedObjectIndex) const
+    void Draw(const int &selectedObjectIndex) const
     {
         bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
 

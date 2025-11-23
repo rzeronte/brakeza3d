@@ -1,10 +1,7 @@
 
 #include <utility>
-
 #include "../../include/2D/TextureAnimated.h"
-
 #include <SDL_image.h>
-
 #include "../../include/EngineSetup.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/ComponentsManager.h"
@@ -25,15 +22,12 @@ TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps)
 }
 
 TextureAnimated::TextureAnimated(TextureAnimated *textureAnimated)
-        :
-        currentspriteHeight(0),
-        currentSpriteWidth(0),
-        baseFilename(textureAnimated->baseFilename),
-        numberFramesToLoad(textureAnimated->numberFramesToLoad),
-        currentFrame(0),
-        fps(textureAnimated->fps),
-        endAnimation(textureAnimated->endAnimation),
-        paused(textureAnimated->paused)
+:
+    baseFilename(textureAnimated->baseFilename),
+    numberFramesToLoad(textureAnimated->numberFramesToLoad),
+    fps(textureAnimated->fps),
+    endAnimation(textureAnimated->endAnimation),
+    paused(textureAnimated->paused)
 {
     frames = textureAnimated->frames;
     updateStep();
@@ -44,14 +38,10 @@ TextureAnimated::TextureAnimated(const std::string& spriteSheetFile, int spriteW
         baseFilename(spriteSheetFile),
         numberFramesToLoad(numFrames),
         fps(fps),
-        paused(false),
-        currentFrame(0),
-        endAnimation(false),
         currentSpriteWidth(spriteWidth),
         currentspriteHeight(spriteHeight)
 {
     Logging::Message("Loading sheet: %s", spriteSheetFile.c_str());
-
     setup(spriteSheetFile, spriteWidth, spriteHeight, numFrames, fps);
 }
 
@@ -98,7 +88,7 @@ void TextureAnimated::setup(const std::string& spriteSheetFile, int spriteWidth,
 
     SDL_FreeSurface(spriteSheetSurface);
 
-    numberFramesToLoad = (int) frames.size();
+    numberFramesToLoad = frames.size();
     setFps(fps);
 
     updateStep();
@@ -114,7 +104,8 @@ Image *TextureAnimated::getCurrentFrame()
     return this->frames[currentFrame];
 }
 
-void TextureAnimated::nextFrame() {
+void TextureAnimated::nextFrame()
+{
     setEndAnimation(false);
 
     if (!isPaused()) {
@@ -130,11 +121,13 @@ void TextureAnimated::nextFrame() {
     }
 }
 
-bool TextureAnimated::isEndAnimation() const {
+bool TextureAnimated::isEndAnimation() const
+{
     return endAnimation;
 }
 
-void TextureAnimated::setEndAnimation(bool value) {
+void TextureAnimated::setEndAnimation(bool value)
+{
     endAnimation = value;
 }
 
@@ -142,22 +135,24 @@ bool TextureAnimated::isPaused() const {
     return paused;
 }
 
-void TextureAnimated::setPaused(bool value) {
+void TextureAnimated::setPaused(bool value)
+{
     paused = value;
 }
 
-int TextureAnimated::getFps() const {
+int TextureAnimated::getFps() const
+{
     return fps;
 }
 
-void TextureAnimated::setFps(int value) {
+void TextureAnimated::setFps(int value)
+{
     fps = value;
 }
 
 void TextureAnimated::updateStep()
 {
-    float step = (float) 1 / (float) getFps();
-    this->counter.setStep(step);
+    this->counter.setStep(1 / getFps());
     this->counter.setEnabled(true);
 }
 
@@ -179,7 +174,8 @@ void TextureAnimated::deleteFrames()
     frames.clear();
 }
 
-const std::string &TextureAnimated::getBaseFilename() const {
+const std::string &TextureAnimated::getBaseFilename() const
+{
     return baseFilename;
 }
 

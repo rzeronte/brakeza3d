@@ -9,8 +9,7 @@ ShaderOGLGRenderDeferred::ShaderOGLGRenderDeferred()
         EngineSetup::get()->SHADERS_FOLDER + "GBuffer.vs",
         EngineSetup::get()->SHADERS_FOLDER + "GBuffer.fs",
         false
-    ),
-    VertexArrayID(0)
+    )
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
@@ -23,50 +22,34 @@ ShaderOGLGRenderDeferred::ShaderOGLGRenderDeferred()
     textureSpecularUniform = glGetUniformLocation(programID, "texture_specular");
 }
 
-void ShaderOGLGRenderDeferred::renderMesh(Mesh3D *o, GLuint framebuffer)
+void ShaderOGLGRenderDeferred::renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo)
 {
     for (const auto& m: o->meshes) {
         render(
             o,
             o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
             o->getModelSpecularTextures()[m.materialIndex]->getOGLTextureID(),
-            m.vertexBuffer,
+            useFeedbackBuffer ? m.feedbackBuffer : m.vertexBuffer,
             m.uvBuffer,
             m.normalBuffer,
             static_cast<int>(m.vertices.size()),
-            framebuffer
-        );
-    }
-}
-
-void ShaderOGLGRenderDeferred::renderAnimatedMesh(Mesh3D *o, GLuint framebuffer)
-{
-    for (const auto& m: o->meshes) {
-        render(
-            o,
-            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
-            o->getModelSpecularTextures()[m.materialIndex]->getOGLTextureID(),
-            m.feedbackBuffer,
-            m.uvBuffer,
-            m.normalBuffer,
-            static_cast<int>(m.vertices.size()),
-            framebuffer
+            fbo
         );
     }
 }
 
 void ShaderOGLGRenderDeferred::render(
     Object3D *o,
-    GLint textureID,
-    GLint textureSpecularID,
-    GLuint vertexbuffer,
-    GLuint uvbuffer,
-    GLuint normalbuffer,
+    GLuint texId,
+    GLuint specTexId,
+    GLuint vertexBuffer,
+    GLuint uvBuffer,
+    GLuint normalBuffer,
     int size,
-    GLuint framebuffer
-)
+    GLuint fbo
+) const
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     glEnable(GL_DEPTH_TEST);
@@ -86,12 +69,12 @@ void ShaderOGLGRenderDeferred::render(
     setIntUniform(textureSpecularUniform, 1);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    glBindTexture(GL_TEXTURE_2D, texId);
 
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, textureSpecularID);
+    glBindTexture(GL_TEXTURE_2D, specTexId);
 
-    setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
+    setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
     glDrawArrays(GL_TRIANGLES, 0, size);
 
@@ -108,21 +91,6 @@ void ShaderOGLGRenderDeferred::render(
     glBindVertexArray(0);
 
     glEnable(GL_BLEND);
-}
-
-void ShaderOGLGRenderDeferred::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
-{
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    glEnableVertexAttribArray(2);
-    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 void ShaderOGLGRenderDeferred::destroy()

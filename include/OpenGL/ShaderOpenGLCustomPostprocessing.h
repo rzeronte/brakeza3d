@@ -25,7 +25,7 @@ public:
 
     GLuint compile() override;
 
-    void render(GLuint framebuffer);
+    void render(GLuint fbo);
 
     void destroy() override;
 };

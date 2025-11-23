@@ -90,7 +90,7 @@ bool Grid3D::isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles)
 
 CubeGrid3D *Grid3D::getCubeFromPosition(int x, int y, int z)
 {
-    for (int i = 0; (int) boxes.size(); i++) {
+    for (unsigned int i = 0; boxes.size(); i++) {
         if (boxes[i].posX == x && boxes[i].posY == y && boxes[i].posZ == z) {
             return &boxes[i];
         }
@@ -196,9 +196,9 @@ cJSON *Grid3D::getJSON()
 {
     cJSON *gridJSON = cJSON_CreateObject();
 
-    cJSON_AddNumberToObject(gridJSON, "x", (float) getNumberCubesX());
-    cJSON_AddNumberToObject(gridJSON, "y", (float) getNumberCubesY());
-    cJSON_AddNumberToObject(gridJSON, "z", (float) getNumberCubesZ());
+    cJSON_AddNumberToObject(gridJSON, "x", getNumberCubesX());
+    cJSON_AddNumberToObject(gridJSON, "y", getNumberCubesY());
+    cJSON_AddNumberToObject(gridJSON, "z", getNumberCubesZ());
 
     return gridJSON;
 }

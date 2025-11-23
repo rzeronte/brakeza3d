@@ -2,7 +2,6 @@
 #define BRAKEDA3D_CUBE3D_H
 
 #include "Vertex3D.h"
-#include "Triangle3D.h"
 #include "Mesh3D.h"
 
 static const float cubeVertexBuffer[] = {
@@ -45,27 +44,19 @@ static const float cubeVertexBuffer[] = {
 };
 
 class Cube3D : public Mesh3D {
-public:
     Vertex3D vertices[36];
     Plane planes[6];
     float scaleX, scaleY, scaleZ;
+public:
 
     Cube3D(float scale);
-
     Cube3D(float scaleX, float scaleY, float scaleZ);
-
     void updateGeometry();
-
     void makeVertices();
-
     void makeTriangles();
-
     void makePlanes();
-
-    bool isPointInside(Vertex3D v);
-
+    bool isPointInside(const Vertex3D &v) const;
     void onUpdate() override;
-
     void postUpdate() override;
 };
 

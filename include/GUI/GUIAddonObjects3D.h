@@ -14,12 +14,12 @@ struct GUIWidgetAllowedObjectConfig {
     const char* icon;
 };
 
-struct GUIWidgetObjects3D {
+struct GUIAddonObjects3D {
     TexturePackage &ImGuiTextures;
     std::vector<Object3D *> &gameObjects;
     std::vector<GUIWidgetAllowedObjectConfig> allowedObjectsToShow;
     
-    GUIWidgetObjects3D(TexturePackage &imGuiTextures, std::vector<Object3D *> &gameObjects)
+    GUIAddonObjects3D(TexturePackage &imGuiTextures, std::vector<Object3D *> &gameObjects)
     :
         ImGuiTextures(imGuiTextures),
         gameObjects(gameObjects)
@@ -70,7 +70,7 @@ struct GUIWidgetObjects3D {
         return false;
     }
 
-    void draw(int &selectedObjectIndex)
+    void Draw(int &selectedObjectIndex)
     {
         if (ImGui::Begin("Scene Objects")) {
             drawAllowedObjectsToShow();
@@ -90,7 +90,7 @@ struct GUIWidgetObjects3D {
                 //auto projectile = dynamic_cast<Projectile3DBody*> (o);
                 //if (projectile != nullptr) continue;
 
-                ImGui::Checkbox(std::string("##"+ std::to_string(o->getId())).c_str(), &o->enabled);
+                ImGui::Checkbox(std::string("##"+ std::to_string(o->getId())).c_str(), &o->isEnabled());
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 5.0f, ImGui::GetCursorPosY() + 3.0f));
                 ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, o->getTypeIcon()), ImVec2(16, 16));

@@ -9,14 +9,13 @@
 #include <glm/vec3.hpp>
 
 struct MaterialOpenGL {
-    GLint diffuse;
-    GLint specular;
+    GLuint diffuse;
+    GLuint specular;
     float shininess;
 };
 
 struct DirLightOpenGL {
     glm::vec3 direction;
-
     glm::vec3 ambient;
     glm::vec3 diffuse;
     glm::vec3 specular;

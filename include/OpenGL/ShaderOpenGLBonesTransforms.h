@@ -13,7 +13,7 @@ class ShaderOpenGLBonesTransforms : public ShaderBaseOpenGL
 {
     GLuint VertexArrayID;
 
-    GLint gBonesUniform;
+    GLuint gBonesUniform;
 
 public:
     ShaderOpenGLBonesTransforms();
@@ -21,7 +21,7 @@ public:
     void render(
         Mesh3DData &meshData,
         std::vector<glm::mat4> transformations,
-        GLuint framebuffer
+        GLuint fbo
     );
 
     void setVAOAttributes(GLuint vertexbuffer, GLuint vertexBoneDataBuffer);

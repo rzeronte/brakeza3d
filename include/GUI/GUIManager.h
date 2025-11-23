@@ -7,28 +7,32 @@
 #include "../Objects/Object3D.h"
 #include "GUIConsole.h"
 #include "../Misc/TexturePackage.h"
-#include "GUIWidgetObjects3D.h"
-#include "GUIWidgetObject3DProperties.h"
-#include "GUIWidgetProjectSettings.h"
-#include "GUIWidgetMenu.h"
-#include "GUIWidgetToolbar.h"
+#include "GUIAddonObjects3D.h"
+#include "GUIAddonObject3DProperties.h"
+#include "GUIAddonProjectSettings.h"
+#include "GUIAddonMenu.h"
+#include "GUIAddonToolbar.h"
 
-static bool showSplash = true;
+class GUIManager
+{
+    int selectedObjectIndex = -1;
+    bool showAboutWindow = false;
+    bool showEditShaderWindow = false;
+    bool showEditScriptWindow = false;
+    bool showBoneMappingsEditorWindow = false;
+    bool showLightsDepthMapsViewerWindow = false;
 
-class GUIManager {
-private:
     std::vector<Object3D *> &gameObjects;
 
-    int selectedObjectIndex = -1;
     ScriptEditableManager scriptEditableManager;
     ShaderEditableManager shaderEditableManager;
 
     ImGuiConsoleApp *widgetConsole;
-    GUIWidgetObjects3D *widgetObjects3D;
-    GUIWidgetObject3DProperties *widgetObject3DProperties;
-    GUIWidgetProjectSettings *widgetProjectSettings;
-    GUIWidgetMenu *widgetMenu;
-    GUIWidgetToolbar *widgetToolbar;
+    GUIAddonObjects3D *widgetObjects3D;
+    GUIAddonObject3DProperties *widgetObject3DProperties;
+    GUIAddonProjectSettings *widgetProjectSettings;
+    GUIAddonMenu *widgetMenu;
+    GUIAddonToolbar *widgetToolbar;
 
     TexturePackage icons;
     TexturePackage imagesFolder;
@@ -53,29 +57,17 @@ private:
     std::vector<std::string> currentShadersFolderFiles;
     std::vector<std::string> currentShadersFolders;
 
-    bool showAboutWindow = false;
-    bool showEditShaderWindow = false;
-    bool showEditScriptWindow = false;
-    bool showBoneMappingsEditorWindow = false;
-    bool showLightsDepthMapsViewerWindow = false;
-
     Color lineSelectorObjectColor = Color::green();
 public:
-
-    void loadImagesFolder();
-
+    virtual ~GUIManager() = default;
     explicit GUIManager(std::vector<Object3D *> &gameObjects);
 
+    void loadImagesFolder();
     void LoadUIIcons();
-
     void LoadScriptDialog(const std::string& filename);
-
-    void drawEditScriptWindow();
-
-    void drawLightsDepthMapsViewerWindow();
-
+    void DrawEditScriptWindow();
+    void DrawLightsDepthMapsViewerWindow();
     void updateFolderFiles();
-
     void drawBrowserFolders(
         const std::string& folder,
         const std::string& baseFolder,
@@ -84,49 +76,37 @@ public:
         std::vector<std::string> &files,
         const std::string& extension
     );
-
     void LoadShaderDialog(std::string &folder, std::string &file);
-
     void drawSelectedObjectShaders();
     void drawSelectedObjectScripts();
-    void drawEditShaderWindow();
+    void DrawEditShaderWindow();
     void drawScriptsLuaFolderFiles(const std::string& folder);
     void drawScriptVariables();
     void drawShaderVariables();
     void drawCustomShadersFolder(std::string folder);
-    void drawWidgets();
+    void DrawWidgets();
+    void DrawObjectSelectedGuizmoOperation();
+    void updateImGuiDocking();
+    void DrawGUIPlugins(bool &finish);
     void drawProjectsFiles(const std::string& folder);
     void drawScenesFolder(const std::string& folder);
-    void drawObjectVariables();
+    void DrawObjectVariables();
     void drawGlobalVariables();
     void drawKeyboardMouseSettings();
     void drawImages();
-
-    virtual void draw(float timedelta, bool &finish);
-
-    ImGuiConsoleApp *getConsole();
-
-    TexturePackage *getImGuiTextures();
-
     void setSelectedObjectIndex(int selectedObjectIndex);
-
     void setSelectedObject(Object3D *s);
-
-    static void ShowDeletePopup(const char* title, const std::function<void()>& onConfirm);
-
-    static void setNextWindowSize(int w, int h);
-
-    void RenderFPS();
-
-    void drawEditBonesMappingWindow();
-
+    void DrawEditBonesMappingWindow();
     void openBoneInfoDialog();
-
     void openLightsDepthMapsViewerDialog();
-
-    [[nodiscard]] bool isShowLightsDepthMapsViewerWindow() const {
-        return showLightsDepthMapsViewerWindow;
-    }
+    void DrawSplash();
+    virtual void draw(float timedelta, bool &finish);
+    ImGuiConsoleApp *getConsole();
+    TexturePackage *getImGuiTextures();
+    [[nodiscard]] bool isShowLightsDepthMapsViewerWindow() const;
+    static void ShowDeletePopup(const char* title, const std::function<void()>& onConfirm);
+    static void setNextWindowSize(int w, int h);
+    static void RenderFPS();
 };
 
 #endif //SDL2_3D_ENGINE_GUI_ENGINE_H

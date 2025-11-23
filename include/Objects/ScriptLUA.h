@@ -42,14 +42,14 @@ struct ScriptLUATypeData {
     }
 };
 
-class ScriptLUA {
-private:
-    bool paused;
+class ScriptLUA
+{
+    bool paused = false;
 
 public:
     explicit ScriptLUA(const std::string& script, std::string properties);
 
-    ScriptLUA(const std::string &scriptFilename, cJSON *types);
+    ScriptLUA(const std::string &scriptFilename, const cJSON *types);
 
     std::string content;
     std::vector<ScriptLUATypeData> dataTypes;
@@ -80,13 +80,13 @@ public:
 
     void getCode(const std::string &script);
 
-    bool updateScriptCodeWith(const std::string &content) const;
+    void updateScriptCodeWith(const std::string &content) const;
 
     void reloadGlobals() const;
 
     [[nodiscard]] bool isPaused() const;
 
-    void setPaused(bool paused);
+    void setPaused(bool value);
 
     void drawImGuiProperties();
 
@@ -96,7 +96,7 @@ public:
 
     [[nodiscard]] const std::string &getScriptFilename() const;
 
-    void setDataTypesFromJSON(cJSON *typesJSON);
+    void setDataTypesFromJSON(const cJSON *typesJSON);
 
     void addDataTypeEmpty(const char *name, const char *type);
 

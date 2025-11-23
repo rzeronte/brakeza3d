@@ -1,9 +1,9 @@
 
 #include "../../include/Objects/Cube3D.h"
-#include "../../include/Render/Logging.h"
 #include "../../include/Render/Transforms.h"
 
-Cube3D::Cube3D(float size) {
+Cube3D::Cube3D(float size)
+{
     this->scaleX = size;
     this->scaleY = size;
     this->scaleZ = size;
@@ -13,7 +13,8 @@ Cube3D::Cube3D(float size) {
     makePlanes();
 }
 
-Cube3D::Cube3D(float scaleX, float scaleY, float scaleZ) {
+Cube3D::Cube3D(float scaleX, float scaleY, float scaleZ)
+{
     this->scaleX = scaleX;
     this->scaleY = scaleY;
     this->scaleZ = scaleZ;
@@ -23,13 +24,15 @@ Cube3D::Cube3D(float scaleX, float scaleY, float scaleZ) {
     makePlanes();
 }
 
-void Cube3D::updateGeometry() {
+void Cube3D::updateGeometry()
+{
     makeVertices();
     makeTriangles();
     makePlanes();
 }
 
-void Cube3D::makeVertices() {
+void Cube3D::makeVertices()
+{
     for (int i = 0; i < 36; i++) {
         this->vertices[i] = Vertex3D(
             (cubeVertexBuffer[i * 3 + 0] * scaleX) / 2,
@@ -44,7 +47,7 @@ void Cube3D::makeTriangles()
     meshes.resize(1);
 
     for (int i = 0; i < 12; i++) {
-        Triangle *t = new Triangle(
+        auto t = new Triangle(
             vertices[i * 3 + 0],
             vertices[i * 3 + 1],
             vertices[i * 3 + 2],
@@ -54,7 +57,8 @@ void Cube3D::makeTriangles()
     }
 }
 
-void Cube3D::makePlanes() {
+void Cube3D::makePlanes()
+{
     Vertex3D p01, p02, p03;
     Transforms::objectSpace(p01, meshes[0].modelTriangles[1]->A, this);
     Transforms::objectSpace(p02, meshes[0].modelTriangles[1]->B, this);
@@ -92,7 +96,8 @@ void Cube3D::makePlanes() {
     planes[5] = Plane(p51, p52, p53);
 }
 
-bool Cube3D::isPointInside(Vertex3D v) {
+bool Cube3D::isPointInside(const Vertex3D &v) const
+{
     bool result = true;
     int plane_init = 0;
     int plane_end = 6;
@@ -106,8 +111,10 @@ bool Cube3D::isPointInside(Vertex3D v) {
     return result;
 }
 
-void Cube3D::onUpdate() {
+void Cube3D::onUpdate()
+{
 }
 
-void Cube3D::postUpdate() {
+void Cube3D::postUpdate()
+{
 }

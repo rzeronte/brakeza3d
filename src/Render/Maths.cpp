@@ -88,7 +88,8 @@ float Maths::normalizeToRange(float value, float min, float max) {
     return (value - min) / (max - min);
 }
 
-float Maths::sqrt1(const float &n) {
+float Maths::sqrt1(const float &n)
+{
     static union {
         int i;
         float f;

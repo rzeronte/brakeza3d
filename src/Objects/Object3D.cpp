@@ -12,24 +12,17 @@
 Object3D::Object3D()
 :
     id(Brakeza3D::get()->getNextObjectID()),
+    scale(1),
+    enableLights(false),
     motion(nullptr),
     parent(nullptr),
-    removed(false),
-    decal(false),
-    belongToScene(false),
-    multiScene(false),
-    alphaEnabled(false),
-    alpha(1.0f),
     luaEnvironment(sol::environment(
             ComponentsManager::get()->getComponentScripting()->getLua(),
             sol::create, ComponentsManager::get()->getComponentScripting()->getLua().globals())
     ),
-    distanceToCamera(0),
     pickingColor(Color::idToColor(id)),
-    position(Vertex3D(1, 1, 1)),
-    enableLights(false),
-    scale(1),
     enabled(true),
+    position(Vertex3D(1, 1, 1)),
     rotation(M3::getMatrixIdentity())
 {
     luaEnvironment["this"] = this;
@@ -46,7 +39,7 @@ M3 Object3D::getRotation()
     return rotation;
 }
 
-void Object3D::setPosition(Vertex3D p)
+void Object3D::setPosition(const Vertex3D &p)
 {
     position = p;
 }
@@ -281,7 +274,7 @@ void Object3D::reloadScriptsEnvironment()
     }
 }
 
-void Object3D::reloadScriptsCode()
+void Object3D::reloadScriptsCode() const
 {
     for (auto script : scripts) {
         script->reloadScriptCode();
@@ -549,7 +542,10 @@ void Object3D::drawImGuiProperties()
         // alpha
         if (featuresGUI.misc) {
             if (ImGui::CollapsingHeader("Misc")) {
-                ImGui::Text( " %s: (%f, %f, %f)", "Color", pickingColor.r, pickingColor.g, pickingColor.b);
+                ImGui::Text( " %s: (%f, %f, %f)", "Picking Color", pickingColor.r, pickingColor.g, pickingColor.b);
+                ImGui::Text( " %s: %d", "ID", id);
+                ImGui::Text( " %s: %d", "BelongToScene", belongToScene ? 1 : 0);
+                ImGui::Text( " %s: %f", "Distance to camera", distanceToCamera);
             }
         }
     }
@@ -736,6 +732,9 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
                 case KINEMATIC:
                     o->setupKinematicCollider();
                     break;
+                default:
+                    printf("Collider mode not supported\n");
+                    exit(-1);
             }
         }
     }
@@ -750,11 +749,21 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
     }
 }
 
+bool& Object3D::enabledPointer()
+{
+    return enabled;
+}
+
+Vertex3D & Object3D::positionPointer()
+{
+    return position;
+}
+
 void Object3D::createFromJSON(cJSON *object)
 {
     auto o = new Object3D();
 
-    Object3D::setPropertiesFromJSON(object, o);
+    setPropertiesFromJSON(object, o);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
@@ -773,6 +782,11 @@ glm::mat4 Object3D::getModelMatrix()
     glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scaled);
 
     return translationMatrix * rotationMatrix * scaleMatrix;
+}
+
+M3 & Object3D::rotationPointer()
+{
+    return rotation;
 }
 
 const Timer &Object3D::getTimer() const
@@ -841,7 +855,7 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
 
     characterController->setGravity(EngineSetup::get()->gravity.toBullet());
     characterController->setUseGhostSweepTest(false);
-    characterController->setMaxSlope(btRadians(45));       // Pendiente máxima
+    characterController->setMaxSlope(btRadians(45)); // Max slope
 
     world->addCollisionObject(
             kinematicBody,
@@ -915,7 +929,7 @@ void Object3D::integrate()
 {
     if (!isCollisionsEnabled()) return;
 
-    if (getCollisionMode() == CollisionMode::GHOST) {
+    if (getCollisionMode() == GHOST) {
         getGhostObject()->setWorldTransform(
             Tools::GLMMatrixToBulletTransform(getModelMatrix())
         );
@@ -925,7 +939,7 @@ void Object3D::integrate()
         updateFromBullet();
     }
 
-    if (getCollisionMode() == CollisionMode::KINEMATIC) {
+    if (getCollisionMode() == KINEMATIC) {
         btTransform t = kinematicBody->getWorldTransform();
         setPosition(Vertex3D::fromBullet(t.getOrigin()));
     }
@@ -962,7 +976,7 @@ void Object3D::resolveCollision(CollisionInfo with)
 
 void Object3D::runResolveCollisionScripts(CollisionInfo with)
 {
-    auto *object = static_cast<Object3D *>(with.with);
+    //auto *object = static_cast<Object3D *>(with.with);
     const sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
 
     sol::object luaValue = sol::make_object(lua, with);
@@ -1008,5 +1022,4 @@ Color Object3D::getPickingColor() const
 int Object3D::getId() const
 {
     return id;
-
 }

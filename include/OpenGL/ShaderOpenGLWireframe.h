@@ -8,27 +8,14 @@
 
 #include "ShaderBaseOpenGL.h"
 #include "../Objects/Mesh3D.h"
-#include "../Objects/Mesh3DAnimation.h"
 
 class ShaderOpenGLWireframe : public ShaderBaseOpenGL {
-    GLuint VertexArrayID;
+    GLuint VertexArrayID = 0;
 public:
     ShaderOpenGLWireframe();
 
-    void renderMesh(Mesh3D *mesh, GLuint framebuffer);
-    void renderMeshAnimation(Mesh3DAnimation *mesh, GLuint framebuffer);
-
-    void render(
-        glm::mat4 ModelMatrix,
-        GLuint vertexbuffer,
-        GLuint uvbuffer,
-        GLuint normalbuffer,
-        int size,
-        GLuint framebuffer
-    );
-
-    static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
-
+    void renderMesh(Mesh3D *mesh, bool useFeedbackFramebuffer, GLuint fbo);
+    void render(glm::mat4 modelMatrix, GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer, int size, GLuint fbo) const;
     void destroy() override;
 };
 

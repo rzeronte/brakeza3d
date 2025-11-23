@@ -60,6 +60,7 @@ public:
     Vertex3D gravity = Vertex3D(0, -9.8f, 0);
 
     // Global ON/OFF Render settings
+    bool ENABLE_SPLASH = true;
     bool ENABLE_FORWARD_RENDER = false;
     bool ENABLE_LIGHTS = true;
     bool ENABLE_SHADOW_MAPPING = true;
@@ -153,6 +154,7 @@ public:
     float PROJECTILE_DEMO_ACCURACY = 100;
     float PROJECTILE_DEMO_MASS = 100;
     bool PROJECTILE_SIMPLE_MESH = true;
+    float SPLASH_COUNTDOWN_TIME = 3.0f;
 
     // CUSTOM SHADER TEMPLATES
     std::string TEMPLATE_SHADER_POSTPROCESSING_VS = SHADERS_FOLDER + "templates/ShaderPostprocessing.vs";

@@ -9,21 +9,21 @@
 #include "../Objects/Mesh3DAnimation.h"
 
 class ShaderOpenGLOutline : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {
-    GLint textureUniform;
-    GLint lineColorUniform;
-    GLint borderThicknessUniform;
-    void renderOutline(GLint textureID, const Color &c, float borderThickness, GLuint framebuffer);
+    GLuint textureUniform;
+    GLuint lineColorUniform;
+    GLuint borderThicknessUniform;
+    void renderOutline(GLuint textureID, const Color &c, float borderThickness, GLuint fbo);
 
 public:
     ShaderOpenGLOutline();
 
-    void drawOutline(Mesh3D *m, const Color &c, float borderThickness, GLuint framebuffer);
+    void drawOutline(Mesh3D *m, const Color &c, float borderThickness, GLuint fbo);
 
     void destroy() override;
 
-    void drawOutlineImage3D(Image3D *i, const Color &c, float borderThickness, GLuint framebuffer);
+    void drawOutlineImage3D(Image3D *i, const Color &c, float borderThickness, GLuint fbo);
 
-    void drawOutline(Mesh3DAnimation *m, Color c, float borderThickness, GLuint framebuffer);
+    void drawOutline(Mesh3DAnimation *m, Color c, float borderThickness, GLuint fbo);
 };
 
 #endif //BRAKEZA3D_SHADEROPENGLOUTLINE_H

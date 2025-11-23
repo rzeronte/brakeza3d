@@ -10,17 +10,17 @@
 
 class ShaderOpenGLDOF : ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {
 
-    GLint focalDistanceUniform;
-    GLint focalRangeUniform;
-    GLint blurRadiusUniform;
-    GLint intensityUniform;
-    GLint farPlaneUniform;
+    GLuint focalDistanceUniform;
+    GLuint focalRangeUniform;
+    GLuint blurRadiusUniform;
+    GLuint intensityUniform;
+    GLuint farPlaneUniform;
 
-    GLint depthTextureUniform;
-    GLint sceneTextureUniform;
+    GLuint depthTextureUniform;
+    GLuint sceneTextureUniform;
 
-    GLint widthUniform;
-    GLint heightUniform;
+    GLuint widthUniform;
+    GLuint heightUniform;
 
 public:
     ShaderOpenGLDOF();

@@ -14,17 +14,17 @@
 #include "../Misc/TexturePackage.h"
 #include "../Render/Maths.h"
 
-struct GUIWidgetMenu
+struct GUIAddonMenu
 {
     TexturePackage &ImGuiTextures;
 
-    explicit GUIWidgetMenu(TexturePackage &imGuiTextures)
+    explicit GUIAddonMenu(TexturePackage &imGuiTextures)
     :
         ImGuiTextures(imGuiTextures)
     {
     }
 
-    void draw(bool &finish, bool &show_about_window, bool &showLightDepthMapsWindow)
+    void Draw(bool &finish, bool &show_about_window, bool &showLightDepthMapsWindow)
     {
         auto setup = EngineSetup::get();
 
@@ -243,7 +243,7 @@ struct GUIWidgetMenu
                 ImGui::Separator();
                 ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
                 ImGui::Separator();
-                if (setup->ENABLE_SHADOW_MAPPING) {
+                if (setup->ENABLE_LIGHTS && setup->TRIANGLE_MODE_TEXTURIZED) {
                     ImGui::Checkbox("Depth Map", &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
                 }
                 if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
@@ -370,21 +370,15 @@ struct GUIWidgetMenu
 
                 ImGui::Separator();
                 ImGui::Checkbox("UI (F4)", &setup->ENABLE_IMGUI);
-
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Object3D Axis", &setup->RENDER_OBJECTS_AXIS);
                 if (setup->RENDER_OBJECTS_AXIS) {
                     const float sizeAxisMin = 0;
                     const float sizeAxisMax = 1;
                     const float sizeAxisSens = 0.01;
-
-                    ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &setup->OBJECT_AXIS_SIZE,
-                                      sizeAxisSens, &sizeAxisMin, &sizeAxisMax, "%f", 1.0f);
-
+                    ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &setup->OBJECT_AXIS_SIZE, sizeAxisSens, &sizeAxisMin, &sizeAxisMax, "%f", 1.0f);
                 }
-
                 ImGui::Separator();
-
                 ImGui::Checkbox("Draw Mesh3D AABB", &setup->DRAW_MESH3D_AABB);
                 ImGui::Checkbox("Draw Mesh3D Octree", &setup->DRAW_MESH3D_OCTREE);
                 ImGui::Checkbox("Draw Mesh3D Grid", &setup->DRAW_MESH3D_GRID);
@@ -654,9 +648,9 @@ struct GUIWidgetMenu
         float vec3f[3];
         camera->getPosition().toFloat(vec3f);
         if (ImGui::DragFloat3("Position", vec3f, 0.1f, -10000.0f, 10000.0f)) {
-            camera->position.x = vec3f[0];
-            camera->position.y = vec3f[1];
-            camera->position.z = vec3f[2];
+            camera->positionPointer().x = vec3f[0];
+            camera->positionPointer().y = vec3f[1];
+            camera->positionPointer().z = vec3f[2];
         }
         ImGui::Separator();
 
@@ -678,28 +672,25 @@ struct GUIWidgetMenu
             if (abs(pitch - oldPitch) > 0) {
                 auto partialRotX = M3::arbitraryAxis(camera->getRotation().X(), Maths::radiansToDegrees(pitch - oldPitch) * factor);
                 camera->setRotation(camera->getRotation() * partialRotX);
-                M3::normalize(camera->rotation);
+                M3::normalize(camera->rotationPointer());
             }
 
             if (abs(yaw - oldYaw) > 0) {
                 auto partialRotY = M3::arbitraryAxis(camera->getRotation().Y(), Maths::radiansToDegrees(yaw - oldYaw) * factor);
                 camera->setRotation(camera->getRotation() * partialRotY);
-                M3::normalize(camera->rotation);
+                M3::normalize(camera->rotationPointer());
             }
 
             if (abs(roll - oldRoll) > 0) {
                 auto partialRotZ = M3::arbitraryAxis(camera->getRotation().Z(), Maths::radiansToDegrees(roll - oldRoll) * factor);
                 camera->setRotation(camera->getRotation() * partialRotZ);
-                M3::normalize(camera->rotation);
+                M3::normalize(camera->rotationPointer());
             }
         }
         ImGui::Separator();
-
         ImGui::DragFloat("Cursors Walking", &EngineSetup::get()->WALKING_SPEED, 0.01f, 0.0f, 500.0f);
         ImGui::DragFloat("Cursors Strafe", &EngineSetup::get()->STRAFE_SPEED, 0.01f, 0.0f, 500.0f);
-
         ImGui::Separator();
-
         ImGui::Checkbox("Mouse Look", &EngineSetup::get()->MOUSE_LOOK);
         if (EngineSetup::get()->MOUSE_LOOK) {
             ImGui::DragFloat("Sensibility", &EngineSetup::get()->MOUSE_SENSITIVITY, 0.001f, 0.0f, 1.0f);

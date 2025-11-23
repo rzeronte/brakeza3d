@@ -4,14 +4,14 @@
 #include "imgui.h"
 #include "../ComponentsManager.h"
 
-struct GUIWidgetToolbar {
+struct GUIAddonToolbar {
     TexturePackage &ImGuiTextures;
     ImVec4 offColor;
     ImVec4 onColor;
     ImVec4 luaColor;
     ImVec4 playColor;
 
-    explicit GUIWidgetToolbar(TexturePackage &imGuiTextures)
+    explicit GUIAddonToolbar(TexturePackage &imGuiTextures)
 :
     ImGuiTextures(imGuiTextures),
     offColor(ImVec4(0.2f, 0.2f, 0.2f, 1.0f)), // Gris oscuro
@@ -21,7 +21,7 @@ struct GUIWidgetToolbar {
 {
 
 }
-    void draw() const
+    void Draw() const
     {
         if (ImGui::Begin("MainToolBar")) {
             drawLUAStatusIcons();

@@ -23,7 +23,7 @@ public:
     int currentAnimation = 0;
     std::vector<TextureAnimatedDirectional *> animations;
 
-    Image3DAnimation8Directions(Vertex3D position, float width, float height);
+    Image3DAnimation8Directions(const Vertex3D &position, float width, float height);
     void addAnimationDirectional2D(const std::string&, int frames, int fps, bool zeroDirection, int maxTimes);
     void updateTextureFromCameraAngle(Object3D *, Camera3D *);
     void setAnimation(int);
@@ -32,7 +32,7 @@ public:
     void onUpdate() override;
     void drawImGuiProperties() override;
     void updateBillboardSize() const;
-    TextureAnimatedDirectional *getCurrentTextureAnimationDirectional();
+    TextureAnimatedDirectional *getCurrentTextureAnimationDirectional() const;
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
     cJSON *getJSON() override;

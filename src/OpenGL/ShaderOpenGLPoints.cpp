@@ -14,7 +14,7 @@ ShaderOpenGLPoints::ShaderOpenGLPoints()
     glBindVertexArray(VertexArrayID);
 }
 
-void ShaderOpenGLPoints::renderMeshAnimation(Mesh3DAnimation *mesh, GLuint framebuffer)
+void ShaderOpenGLPoints::renderMeshAnimation(Mesh3DAnimation *mesh, GLuint fbo)
 {
     for (auto &m: mesh->meshes) {
         render(
@@ -22,27 +22,27 @@ void ShaderOpenGLPoints::renderMeshAnimation(Mesh3DAnimation *mesh, GLuint frame
             m.feedbackBuffer,
             m.vertices.size(),
             Color::green(),
-            framebuffer
+            fbo
         );
     }
 }
 
-void ShaderOpenGLPoints::renderMesh(Mesh3D *mesh, GLuint framebuffer)
+void ShaderOpenGLPoints::renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint fbo)
 {
     for (auto &m: mesh->meshes) {
         render(
             mesh,
-            m.vertexBuffer,
+            useFeedbackBuffer ? m.feedbackBuffer : m.vertexBuffer,
             m.vertices.size(),
             Color::green(),
-            framebuffer
+            fbo
         );
     }
 }
 
-void ShaderOpenGLPoints::render(Mesh3D* m, GLint vertexbuffer, int numberPoints, Color c, GLuint framebuffer)
+void ShaderOpenGLPoints::render(Mesh3D* m, GLuint vertexBuffer, int numberPoints, Color c, GLuint fbo)
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
 
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
@@ -60,17 +60,17 @@ void ShaderOpenGLPoints::render(Mesh3D* m, GLint vertexbuffer, int numberPoints,
 
     setVec3("color", c.toGLM());
 
-    setVAOAttributes(vertexbuffer);
+    setVAOAttributes(vertexBuffer);
 
-    glDrawArrays(GL_POINTS, 0, (GLint) numberPoints);
+    glDrawArrays(GL_POINTS, 0, numberPoints);
 
     glDisableVertexAttribArray(0);
 }
 
-void ShaderOpenGLPoints::setVAOAttributes(GLint vertexbuffer)
+void ShaderOpenGLPoints::setVAOAttributes(GLuint vertexBuffer)
 {
     glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 

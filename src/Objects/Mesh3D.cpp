@@ -40,25 +40,25 @@ void Mesh3D::onUpdate()
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
         if (EngineSetup::get()->ENABLE_LIGHTS) {
-            render->getShaderOGLRenderDeferred()->renderMesh(this, window->getGBuffer().FBO);
+            render->getShaderOGLRenderDeferred()->renderMesh(this, false, window->getGBuffer().FBO);
             if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
                 shadowMappingPass();
             }
         } else {
-            render->getShaderOGLRenderForward()->renderMesh(this, sceneFramebuffer);
+            render->getShaderOGLRenderForward()->renderMesh(this, false, sceneFramebuffer);
         }
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        render->getShaderOGLWireframe()->renderMesh(this, sceneFramebuffer);
+        render->getShaderOGLWireframe()->renderMesh(this, false, sceneFramebuffer);
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
-        render->getShaderOGLPoints()->renderMesh(this, sceneFramebuffer);
+        render->getShaderOGLPoints()->renderMesh(this, false, sceneFramebuffer);
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_SHADING && isRender()) {
-        render->getShaderOGLShading()->renderMesh(this, sceneFramebuffer);
+        render->getShaderOGLShading()->renderMesh(this, false, sceneFramebuffer);
     }
 
     if (EngineSetup::get()->DRAW_MESH3D_AABB && isRender()) {
@@ -77,6 +77,7 @@ void Mesh3D::onUpdate()
     if (EngineSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
         render->getShaderOGLColor()->renderMesh(
             this,
+            false,
             getPickingColor(),
             false,
             window->getPickingColorFramebuffer().FBO
@@ -121,7 +122,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     Logging::Message("Meshes number: %d", scene->mNumMeshes);
     meshes.resize(scene->mNumMeshes);
 
-    AssimpInitMaterials(scene, fileName);
+    AssimpInitMaterials(scene);
     ProcessNodes(scene, scene->mRootNode);
 
     sourceFile = fileName;
@@ -129,20 +130,8 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     ComponentsManager::get()->getComponentRender()->FillOGLBuffers(meshes);
 }
 
-void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filename)
+void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
 {
-    // Extract the directory part from the file name
-    std::string::size_type SlashIndex = Filename.find_last_of('/');
-    std::string Dir;
-
-    if (SlashIndex == std::string::npos) {
-        Dir = ".";
-    } else if (SlashIndex == 0) {
-        Dir = "/";
-    } else {
-        Dir = Filename.substr(0, SlashIndex);
-    }
-
     Logging::Message("[Mesh3D]: mNumMaterials: %d", pScene->mNumMaterials);
 
     for (unsigned int i = 0; i < pScene->mNumMaterials; i++) {
@@ -166,7 +155,7 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
 
             std::string FullPath = EngineSetup::get()->TEXTURES_FOLDER + base_filename;
 
-            Logging::Message("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), Filename.c_str());
+            Logging::Message("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), getLabel().c_str());
 
             this->modelTextures.push_back(new Image(FullPath));
             this->modelSpecularTextures.push_back(new Image(FullPath));
@@ -179,10 +168,10 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, const std::string &Filen
 
 void Mesh3D::ProcessNodes(const aiScene *scene, aiNode *node)
 {
-    int numMeshes = (int) node->mNumMeshes;
+    unsigned int numMeshes = node->mNumMeshes;
 
     for (unsigned int x = 0; x < numMeshes; x++) {
-        int idMesh = (int) node->mMeshes[x];
+        int idMesh = node->mMeshes[x];
         this->LoadMesh(idMesh, scene->mMeshes[idMesh]);
     }
 
@@ -351,14 +340,14 @@ void Mesh3D::drawImGuiProperties()
         if (ImGui::TreeNode("Mesh information")) {
             auto fileModel = std::string("- File model: ") + sourceFile;
             ImGui::Text(fileModel.c_str());
-            ImGui::Text("- Num Meshes: %d", (int) meshes.size());
+            ImGui::Text("- Num Meshes: %d", meshes.size());
             int cont = 1;
             for (auto &m: meshes) {
                 auto meshTitle = "Mesh " + std::to_string(cont);
                 if (ImGui::TreeNode(meshTitle.c_str())) {
-                    ImGui::Text("Num Vertices: %d", (int) m.vertices.size());
-                    ImGui::Text("Num UVs: %d", (int) m.uvs.size());
-                    ImGui::Text("Num Normals: %d", (int) m.normals.size());
+                    ImGui::Text("Num Vertices: %d", m.vertices.size());
+                    ImGui::Text("Num UVs: %d", m.uvs.size());
+                    ImGui::Text("Num Normals: %d", m.normals.size());
                     ImGui::TreePop();
                 }
                 cont++;
@@ -489,27 +478,27 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o, bool loadGeometry)
             }
 
             switch (mode) {
-                case CollisionMode::GHOST:
-                    if (shape == CollisionShape::SIMPLE_SHAPE) {
-                        o->setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
+                case GHOST:
+                    if (shape == SIMPLE_SHAPE) {
+                        o->setupGhostCollider(SIMPLE_SHAPE);
                     }
-                    if (shape == CollisionShape::CAPSULE) {
-                        o->setupGhostCollider(CollisionShape::CAPSULE);
+                    if (shape == CAPSULE) {
+                        o->setupGhostCollider(CAPSULE);
                     }
 
-                    if (shape == CollisionShape::TRIANGLE_MESH_SHAPE) {
-                        o->setupGhostCollider(CollisionShape::TRIANGLE_MESH_SHAPE);
+                    if (shape == TRIANGLE_MESH_SHAPE) {
+                        o->setupGhostCollider(TRIANGLE_MESH_SHAPE);
                     }
                     break;
-                case CollisionMode::BODY:
-                    if (shape == CollisionShape::SIMPLE_SHAPE) {
-                        o->setupRigidBodyCollider(CollisionShape::SIMPLE_SHAPE);
+                case BODY:
+                    if (shape == SIMPLE_SHAPE) {
+                        o->setupRigidBodyCollider(SIMPLE_SHAPE);
                     }
-                    if (shape == CollisionShape::CAPSULE) {
-                        o->setupRigidBodyCollider(CollisionShape::CAPSULE);
+                    if (shape == CAPSULE) {
+                        o->setupRigidBodyCollider(CAPSULE);
                     }
-                    if (shape == CollisionShape::TRIANGLE_MESH_SHAPE) {
-                        o->setupRigidBodyCollider(CollisionShape::TRIANGLE_MESH_SHAPE);
+                    if (shape == TRIANGLE_MESH_SHAPE) {
+                        o->setupRigidBodyCollider(TRIANGLE_MESH_SHAPE);
                     }
                     break;
             }
@@ -519,15 +508,15 @@ void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o, bool loadGeometry)
     if (cJSON_GetObjectItemCaseSensitive(object, "grid") != nullptr) {
         auto gridJSON = cJSON_GetObjectItemCaseSensitive(object, "grid");
         o->buildGrid3D(
-            (int) cJSON_GetObjectItemCaseSensitive(gridJSON, "x")->valueint,
-            (int) cJSON_GetObjectItemCaseSensitive(gridJSON, "y")->valueint,
-            (int) cJSON_GetObjectItemCaseSensitive(gridJSON, "z")->valueint
+            cJSON_GetObjectItemCaseSensitive(gridJSON, "x")->valueint,
+            cJSON_GetObjectItemCaseSensitive(gridJSON, "y")->valueint,
+            cJSON_GetObjectItemCaseSensitive(gridJSON, "z")->valueint
         );
     }
 
     if (cJSON_GetObjectItemCaseSensitive(object, "octree") != nullptr) {
         auto octreeJSON = cJSON_GetObjectItemCaseSensitive(object, "octree");
-        auto maxDepth = (int) cJSON_GetObjectItemCaseSensitive(octreeJSON, "maxDepth")->valueint;
+        auto maxDepth = cJSON_GetObjectItemCaseSensitive(octreeJSON, "maxDepth")->valueint;
         o->buildOctree(maxDepth);
     }
 }
@@ -536,7 +525,7 @@ void Mesh3D::createFromJSON(cJSON *object)
 {
     auto o = new Mesh3D();
 
-    Mesh3D::setPropertiesFromJSON(object, o, true);
+    setPropertiesFromJSON(object, o, true);
 
     Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
@@ -571,10 +560,10 @@ void Mesh3D::setupGhostCollider(CollisionShape modeShape) {
 
     removeCollisionObject();
 
-    setCollisionMode(CollisionMode::GHOST);
+    setCollisionMode(GHOST);
     setCollisionShape(modeShape);
 
-    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE || getCollisionShape() == CollisionShape::CAPSULE) {
+    if (getCollisionShape() == SIMPLE_SHAPE || getCollisionShape() == CAPSULE) {
         makeSimpleGhostBody(
             getPosition(),
             getModelMatrix(),
@@ -585,7 +574,7 @@ void Mesh3D::setupGhostCollider(CollisionShape modeShape) {
         );
     }
 
-    if (getCollisionShape() == CollisionShape::TRIANGLE_MESH_SHAPE) {
+    if (getCollisionShape() == TRIANGLE_MESH_SHAPE) {
         makeGhostBody(
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             btBroadphaseProxy::DefaultFilter,
@@ -600,8 +589,8 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
     removeCollisionObject();
 
     setCollisionShape(modeShape);
-    setCollisionMode(CollisionMode::BODY);
-    if (getCollisionShape() == CollisionShape::SIMPLE_SHAPE || getCollisionShape() == CollisionShape::CAPSULE) {
+    setCollisionMode(BODY);
+    if (getCollisionShape() == SIMPLE_SHAPE || getCollisionShape() == CAPSULE) {
         makeSimpleRigidBody(
             mass,
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
@@ -610,7 +599,7 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
         );
     }
 
-    if (getCollisionShape() == CollisionShape::TRIANGLE_MESH_SHAPE) {
+    if (getCollisionShape() == TRIANGLE_MESH_SHAPE) {
         if (isColliderStatic()) {
             makeRigidBodyFromTriangleMesh(
                 mass,
@@ -625,7 +614,6 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
                 EngineSetup::collisionGroups::AllFilter,
                 EngineSetup::collisionGroups::AllFilter
             );
-
         }
     }
 }
@@ -634,7 +622,7 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
 {
     auto flags = ImGuiComboFlags_None;
     const char* items[] = { "SIMPLE", "CAPSULE", "TRIANGLE",  };
-    int item_current_idx = (int) collisionShape;
+    int item_current_idx = collisionShape;
     const char* combo_preview_value = items[item_current_idx];
 
     auto comboTitle = "Shape##" + getLabel();
@@ -646,33 +634,33 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
                     item_current_idx = n;
                     switch (n) {
                         case 0: {
-                            if (collisionMode == CollisionMode::GHOST) {
-                                setupGhostCollider(CollisionShape::SIMPLE_SHAPE);
+                            if (collisionMode == GHOST) {
+                                setupGhostCollider(SIMPLE_SHAPE);
                             }
 
-                            if (collisionMode == CollisionMode::BODY) {
-                                setupRigidBodyCollider(CollisionShape::SIMPLE_SHAPE);
+                            if (collisionMode == BODY) {
+                                setupRigidBodyCollider(SIMPLE_SHAPE);
                             }
 
                             break;
                         }
                         case 1: {
-                            if (collisionMode == CollisionMode::GHOST) {
-                                setupGhostCollider(CollisionShape::CAPSULE);
+                            if (collisionMode == GHOST) {
+                                setupGhostCollider(CAPSULE);
                             }
 
-                            if (collisionMode == CollisionMode::BODY) {
-                                setupRigidBodyCollider(CollisionShape::CAPSULE);
+                            if (collisionMode == BODY) {
+                                setupRigidBodyCollider(CAPSULE);
                             }
                             break;
                         }
                         case 2: {
-                            if (collisionMode == CollisionMode::GHOST) {
-                                setupGhostCollider(CollisionShape::TRIANGLE_MESH_SHAPE);
+                            if (collisionMode == GHOST) {
+                                setupGhostCollider(TRIANGLE_MESH_SHAPE);
                             }
 
-                            if (collisionMode == CollisionMode::BODY) {
-                                setupRigidBodyCollider(CollisionShape::TRIANGLE_MESH_SHAPE);
+                            if (collisionMode == BODY) {
+                                setupRigidBodyCollider(TRIANGLE_MESH_SHAPE);
                             }
 
                             break;
@@ -869,11 +857,11 @@ void Mesh3D::loadShader(std::string folder, std::string jsonFilename)
     Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
 
     switch(type) {
-        case ShaderCustomTypes::SHADER_POSTPROCESSING : {
+        case SHADER_POSTPROCESSING : {
             Logging::Message("[error] You can't add a 'Postprocessing shader' type into Mesh3D");
             break;
         }
-        case ShaderCustomTypes::SHADER_OBJECT : {
+        case SHADER_OBJECT : {
             addCustomShader(new ShaderOpenGLCustomMesh3D(this, name, shaderVertexFile, shaderFragmentFile));
             break;
         }

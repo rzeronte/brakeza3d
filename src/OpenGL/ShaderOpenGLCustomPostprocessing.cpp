@@ -37,12 +37,12 @@ GLuint ShaderOpenGLCustomPostprocessing::compile()
     return programID;
 }
 
-void ShaderOpenGLCustomPostprocessing::render(GLuint framebuffer)
+void ShaderOpenGLCustomPostprocessing::render(GLuint fbo)
 {
     if (!isEnabled()) return;
 
     auto render = ComponentsManager::get()->getComponentRender();
-    render->changeOpenGLFramebuffer(framebuffer);
+    render->changeOpenGLFramebuffer(fbo);
     render->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();

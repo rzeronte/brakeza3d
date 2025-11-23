@@ -85,7 +85,7 @@ add_executable(Brakeza3D
     src/Objects/Point2D.cpp                         include/Objects/Point2D.h
     src/Objects/Line2D.cpp                          include/Objects/Line2D.h
     src/Objects/Object3D.cpp                        include/Objects/Object3D.h
-    src/Objects/LightPoint3D.cpp                    include/Objects/LightPoint3D.h
+        src/Objects/LightPoint.cpp include/Objects/LightPoint.h
         src/Objects/Image3DAnimation8Directions.cpp include/Objects/Image3DAnimation8Directions.h
         src/Objects/Image3DAnimation.cpp include/Objects/Image3DAnimation.h
     src/Objects/Decal.cpp                           include/Objects/Decal.h
@@ -97,7 +97,7 @@ add_executable(Brakeza3D
     src/Objects/TentacleIK.cpp                      include/Objects/TentacleIK.h
     src/Objects/ScriptLUA.cpp                       include/Objects/ScriptLUA.h
     src/Objects/Swarm.cpp                           include/Objects/Swarm.h
-    src/Objects/SpotLight3D.cpp                     include/Objects/SpotLight3D.h
+        src/Objects/LightSpot.cpp include/Objects/LightSpot.h
     src/Objects/Image3D.cpp                         include/Objects/Image3D.h
 
     src/Misc/TextureAtlas.cpp                       include/Misc/TextureAtlas.h
@@ -192,10 +192,10 @@ add_executable(Brakeza3D
     include/Physics/Projectile.h                    include/Physics/Projectile.cpp
 
     include/GUI/GUIConsole.h
-    include/GUI/GUIWidgetProjectSettings.h
-    include/GUI/GUIWidgetMenu.h
-    include/GUI/GUIWidgetToolbar.h
-    include/GUI/GUIWidgetObjects3D.h                include/GUI/GUIWidgetObject3DProperties.h
+        include/GUI/GUIAddonProjectSettings.h
+        include/GUI/GUIAddonMenu.h
+        include/GUI/GUIAddonToolbar.h
+        include/GUI/GUIAddonObjects3D.h include/GUI/GUIAddonObject3DProperties.h
 
     include/Misc/SharedLUAContext.h
     src/Misc/TileManager.cpp                        include/Misc/TileManager.h
@@ -232,6 +232,8 @@ add_executable(Brakeza3D
         include/OpenGL/ShaderOGLShadowPass.h
         src/OpenGL/ShaderOGLShadowPassDebugLight.cpp
         include/OpenGL/ShaderOGLShadowPassDebugLight.h
+        include/GUI/Image3DGUI.h
+        include/Persistence/Image3DPersistence.h
 )
 
 target_link_libraries(Brakeza3D

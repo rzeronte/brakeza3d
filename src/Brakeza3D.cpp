@@ -289,6 +289,11 @@ Object3D *Brakeza3D::getSceneObjectByLabel(const std::string &label) const
     return nullptr;
 }
 
+float Brakeza3D::getEngineTotalTime() const
+{
+    return last_ticks / 1000.f;
+}
+
 Object3D *Brakeza3D::getSceneObjectById(const int id) const
 {
     for (const auto sceneObject : sceneObjects) {

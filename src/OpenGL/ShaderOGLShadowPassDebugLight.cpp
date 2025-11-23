@@ -86,11 +86,13 @@ void ShaderOGLShadowPassDebugLight::createFramebuffer()
     }
 }
 
-GLuint ShaderOGLShadowPassDebugLight::getSceneFramebuffer() const {
+GLuint ShaderOGLShadowPassDebugLight::getSceneFramebuffer() const
+{
     return internalFramebuffer;
 }
 
-GLuint ShaderOGLShadowPassDebugLight::getSceneTexture() const {
+GLuint ShaderOGLShadowPassDebugLight::getSceneTexture() const
+{
     return sceneTexture;
 }
 

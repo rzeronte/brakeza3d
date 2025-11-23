@@ -12,14 +12,14 @@
 #include "ShaderBaseOpenGLQuad.h"
 
 class ShaderOpenGLLine : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {
-    GLint lineStartUniform;
-    GLint lineEndUniform;
-    GLint lineColorUniform;
-    GLint weightUniform;
+    GLuint lineStartUniform;
+    GLuint lineEndUniform;
+    GLuint lineColorUniform;
+    GLuint weightUniform;
 public:
     ShaderOpenGLLine();
 
-    void render(Point2D a, Point2D b, Color c, float weight, GLuint framebuffer);
+    void render(Point2D a, Point2D b, Color c, float weight, GLuint fbo);
 
     void destroy() override;
 };

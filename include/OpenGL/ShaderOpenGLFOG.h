@@ -14,14 +14,14 @@ class ShaderOpenGLFOG : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {
     GLuint resultFramebuffer;
     GLuint textureResult;
 
-    GLint intensityUniform;
-    GLint fogMaxDistUniform;
-    GLint fogMinDistUniform;
-    GLint fogColourUniform;
-    GLint farPlaneUniform;
+    GLuint intensityUniform;
+    GLuint fogMaxDistUniform;
+    GLuint fogMinDistUniform;
+    GLuint fogColourUniform;
+    GLuint farPlaneUniform;
 
-    GLint depthTextureUniform;
-    GLint sceneTextureUniform;
+    GLuint depthTextureUniform;
+    GLuint sceneTextureUniform;
 
 public:
     ShaderOpenGLFOG();

@@ -13,8 +13,8 @@ ShaderOpenGLCustomMesh3D::ShaderOpenGLCustomMesh3D(
     const std::string &fragmentFilename
 )
 :
-    mesh(mesh),
-    ShaderOpenGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomTypes::SHADER_OBJECT)
+    ShaderOpenGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomTypes::SHADER_OBJECT),
+    mesh(mesh)
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
@@ -48,7 +48,7 @@ ShaderOpenGLCustomMesh3D::ShaderOpenGLCustomMesh3D(
     alphaUniform = glGetUniformLocation(programID, "alpha");
 }
 
-void ShaderOpenGLCustomMesh3D::render(GLuint framebuffer)
+void ShaderOpenGLCustomMesh3D::render(GLuint fbo)
 {
     if (!isEnabled()) return;
 
@@ -61,33 +61,32 @@ void ShaderOpenGLCustomMesh3D::render(GLuint framebuffer)
             m.uvBuffer,
             m.normalBuffer,
             m.feedbackBuffer,
-            (int) m.vertices.size(),
+            m.vertices.size(),
             mesh->getAlpha(),
-            framebuffer
+            fbo
         );
     }
 }
 
 void ShaderOpenGLCustomMesh3D::renderMesh(
     Object3D *o,
-    GLint textureID,
-    GLint textureSpecularID,
+    GLuint textureID,
+    GLuint textureSpecularID,
     GLuint vertexbuffer,
     GLuint uvbuffer,
     GLuint normalbuffer,
     GLuint feedbackBuffer,
     int size,
     float alpha,
-    GLuint framebuffer
+    GLuint fbo
 )
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
 
     auto camera = ComponentsManager::get()->getComponentCamera();
-    auto cameraPosition = camera->getCamera()->getPosition().toGLM();
 
     setMat4Uniform(matrixProjectionUniform, camera->getGLMMat4ProjectionMatrix());
     setMat4Uniform(matrixViewUniform, camera->getGLMMat4ViewMatrix());
@@ -138,21 +137,4 @@ void ShaderOpenGLCustomMesh3D::setShaderSystemUniforms(GLuint diffuse, GLuint sp
                 break;
         }
     }
-}
-
-void ShaderOpenGLCustomMesh3D::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
-{
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    // 3rd attribute buffer : normals
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    // 2nd attribute buffer : UVs
-    glEnableVertexAttribArray(2);
-    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 }

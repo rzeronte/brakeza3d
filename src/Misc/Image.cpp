@@ -53,13 +53,13 @@ void Image::loadTGA(const std::string& filename)
     exit(-1);
 }
 
-void Image::drawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint framebuffer)
+void Image::drawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint fbo)
 {
     setAlpha(alpha);
-    drawFlat(pos_x, pos_y, framebuffer);
+    drawFlat(pos_x, pos_y, fbo);
 }
 
-void Image::drawFlat(int pos_x, int pos_y, GLuint framebuffer) const
+void Image::drawFlat(int pos_x, int pos_y, GLuint fbo) const
 {
     if (!loaded) return;
 
@@ -88,7 +88,7 @@ void Image::drawFlat(int pos_x, int pos_y, GLuint framebuffer) const
         dstRect.h,
         alpha,
         false,
-        framebuffer
+        fbo
     );
 }
 
@@ -124,7 +124,7 @@ bool Image::isLoaded() const
     return loaded;
 }
 
-float Image::getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C, int lod) const
+float Image::getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C) const
 {
     float tx0 = Tools::getXTextureFromUV(surface, A.u / surface->w);
     float ty0 = Tools::getYTextureFromUV(surface, A.v / surface->h);
@@ -203,6 +203,11 @@ void Image::setImage(const std::string &filename)
 
 GLuint Image::getOGLTextureID() const {
     return texturaID;
+}
+
+ImTextureID Image::getOGLImTexture() const
+{
+    return reinterpret_cast<ImTextureID>(texturaID);
 }
 
 GLuint Image::makeOGLImage(const SDL_Surface *surfaceTTF)

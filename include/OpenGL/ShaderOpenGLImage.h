@@ -10,11 +10,11 @@ class ShaderOpenGLImage : public ShaderBaseOpenGL {
     GLuint quadVAO = 0;
     GLuint VBO = 0;
 
-    GLint modelMatrixUniform = 0;
-    GLint projectionMatrixUniform = 0;
-    GLint textureUniform = 0;
-    GLint alphaUniform = 0;
-    GLint inverseUniform = 0;
+    GLuint modelMatrixUniform = 0;
+    GLuint projectionMatrixUniform = 0;
+    GLuint textureUniform = 0;
+    GLuint alphaUniform = 0;
+    GLuint inverseUniform = 0;
 public:
     ShaderOpenGLImage();
 
@@ -26,7 +26,7 @@ public:
         int h,
         float alpha,
         bool inverse,
-        GLuint framebuffer
+        GLuint fbo
     ) const;
 
     void destroy() override;

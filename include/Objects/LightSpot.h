@@ -6,11 +6,11 @@
 #define BRAKEZA3D_SPOTLIGHT3D_H
 
 
-#include "LightPoint3D.h"
+#include "LightPoint.h"
 
-class SpotLight3D : public LightPoint3D {
+class LightSpot : public LightPoint {
 public:
-    SpotLight3D(
+    LightSpot(
         const glm::vec4 &direction,
         const glm::vec4 &ambient,
         const glm::vec4 &diffuse,
@@ -42,9 +42,9 @@ public:
     float cutOff;
     float outerCutOff;
 
-    static void setPropertiesFromJSON(cJSON *object, SpotLight3D *o);
+    static void setPropertiesFromJSON(cJSON *object, LightSpot *o);
 
-    static SpotLight3D* create(const Vertex3D &position, const Vertex3D &direction);
+    static LightSpot* create(const Vertex3D &position, const Vertex3D &direction);
 
     void setDirection(Vertex3D d);
 

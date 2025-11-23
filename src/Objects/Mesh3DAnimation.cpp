@@ -44,12 +44,12 @@ void Mesh3DAnimation::onUpdate()
 
     if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
         if (EngineSetup::get()->ENABLE_LIGHTS) {
-            render->getShaderOGLRenderDeferred()->renderAnimatedMesh(this, window->getGBuffer().FBO);
+            render->getShaderOGLRenderDeferred()->renderMesh(this, true, window->getGBuffer().FBO);
             if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
                 shadowMappingPass();
             }
         } else {
-            render->getShaderOGLRenderForward()->renderAnimatedMesh(this, window->getSceneFramebuffer());
+            render->getShaderOGLRenderForward()->renderMesh(this, true, window->getSceneFramebuffer());
         }
     }
 
@@ -58,11 +58,11 @@ void Mesh3DAnimation::onUpdate()
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_SHADING && isRender()) {
-        render->getShaderOGLShading()->renderMeshAnimation(this, window->getSceneFramebuffer());
+        render->getShaderOGLShading()->renderMesh(this, true, window->getSceneFramebuffer());
     }
 
     if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        render->getShaderOGLWireframe()->renderMeshAnimation(this, window->getSceneFramebuffer());
+        render->getShaderOGLWireframe()->renderMesh(this, true, window->getSceneFramebuffer());
     }
 
     if (EngineSetup::get()->DRAW_MESH3D_AABB && isRender()) {
@@ -78,12 +78,22 @@ void Mesh3DAnimation::onUpdate()
         Drawable::drawGrid3D(grid);
     }
 
-    for (auto &s: customShaders) {
+    for (auto s: customShaders) {
         s->render(window->getSceneFramebuffer());
     }
 
     if (EngineSetup::get()->DRAW_ANIMATION_BONES) {
         drawBones(scene->mRootNode, nullptr);
+    }
+
+    if (EngineSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
+        render->getShaderOGLColor()->renderMesh(
+            this,
+            true,
+            getPickingColor(),
+            false,
+            window->getPickingColorFramebuffer().FBO
+        );
     }
 }
 
@@ -170,7 +180,7 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
         exit(-1);
     }
 
-    AssimpInitMaterials(scene, filename);
+    AssimpInitMaterials(scene);
     ReadNodesFromRoot();
 
     ComponentsManager::get()->getComponentRender()->FillOGLBuffers(meshes);

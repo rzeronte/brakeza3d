@@ -6,7 +6,7 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
-Image3DAnimation8Directions::Image3DAnimation8Directions(Vertex3D position, float width, float height)
+Image3DAnimation8Directions::Image3DAnimation8Directions(const Vertex3D &position, float width, float height)
 :
     billboard(new Image3D(position, width, height, nullptr)),
     width(width),
@@ -65,7 +65,7 @@ void Image3DAnimation8Directions::addAnimationDirectional2D(
         animation->loadImages();
     } else {
         animation->loadImagesForZeroDirection();
-        animation->isZeroDirection = true;
+        animation->setIsZeroDirection(true);
     }
 
     animations.push_back(animation);
@@ -85,7 +85,7 @@ void Image3DAnimation8Directions::updateTextureFromCameraAngle(Object3D *o, Came
         getCurrentTextureAnimationDirectional()->nextFrame();
     }
 
-    if (getCurrentTextureAnimationDirectional()->isZeroDirection) {
+    if (getCurrentTextureAnimationDirectional()->hasZeroDirection()) {
         billboard->setImage(getCurrentTextureAnimationDirectional()->getCurrentFrame(0));
     } else {
         auto t = getCurrentTextureAnimationDirectional()->getCurrentFrame(direction);
@@ -100,7 +100,7 @@ void Image3DAnimation8Directions::setAnimation(int indexAnimation)
     this->counterAnimations->setStep(step);
 }
 
-TextureAnimatedDirectional *Image3DAnimation8Directions::getCurrentTextureAnimationDirectional()
+TextureAnimatedDirectional *Image3DAnimation8Directions::getCurrentTextureAnimationDirectional() const
 {
     return this->animations[currentAnimation];
 }
@@ -129,7 +129,7 @@ int Image3DAnimation8Directions::getDirectionForAngle(float enemyAngle)
 
 void Image3DAnimation8Directions::updateStep()
 {
-    step = (float) 1 / (float) this->getCurrentTextureAnimationDirectional()->fps;
+    step = 1 / this->getCurrentTextureAnimationDirectional()->getFps();
     this->counterAnimations->setStep(step);
 }
 
@@ -169,7 +169,7 @@ void Image3DAnimation8Directions::drawImGuiProperties()
                     false,
                     -1
                 );
-                setAnimation((int) animations.size()-1);
+                setAnimation(animations.size()-1);
                 currentSpriteFileVariableToCreateAnimation = "";
                 currentFramesVariableToCreateAnimation = 0;
             }
@@ -179,12 +179,12 @@ void Image3DAnimation8Directions::drawImGuiProperties()
 
         ImGui::Separator();
 
-        const char* items[(int) animations.size()];
-        for (int i = 0; i < (int) animations.size(); i++) {
-            items[i] = animations[i]->base_file.c_str();
+        const char* items[animations.size()];
+        for (unsigned int i = 0; i < animations.size(); i++) {
+            items[i] = animations[i]->getBaseFile().c_str();
         }
 
-        if ((int) animations.size() > 0) {
+        if (!animations.empty()) {
             ImGui::Combo("Animation", &currentAnimation, items, IM_ARRAYSIZE(items));
         } else {
             ImGui::Text("No animations found!");
@@ -214,9 +214,9 @@ cJSON *Image3DAnimation8Directions::getJSON()
     for (auto a : animations) {
         if (!a->isLoaded()) continue;
         cJSON *animationJSON = cJSON_CreateObject();
-        cJSON_AddStringToObject(animationJSON, "folder", a->base_file.c_str());
-        cJSON_AddNumberToObject(animationJSON, "frames", (int) a->numFrames);
-        cJSON_AddNumberToObject(animationJSON, "fps", (int) a->fps);
+        cJSON_AddStringToObject(animationJSON, "folder", a->getBaseFile().c_str());
+        cJSON_AddNumberToObject(animationJSON, "frames", a->getNumFrames());
+        cJSON_AddNumberToObject(animationJSON, "fps", a->getFps());
         cJSON_AddItemToArray(animationsArrayJSON, animationJSON);
     }
     cJSON_AddItemToObject(root, "animations", animationsArrayJSON);
@@ -239,8 +239,8 @@ void Image3DAnimation8Directions::setPropertiesFromJSON(cJSON *object, Image3DAn
     o->setBelongToScene(true);
     Object3D::setPropertiesFromJSON(object, o);
 
-    o->width = (float) cJSON_GetObjectItemCaseSensitive(object, "width")->valueint;
-    o->height = (float) cJSON_GetObjectItemCaseSensitive(object, "height")->valueint;
+    o->width = static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "width")->valueint);
+    o->height = static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "height")->valueint);
 
     if (cJSON_GetObjectItemCaseSensitive(object, "animations") != nullptr) {
         cJSON *currentAnimation;

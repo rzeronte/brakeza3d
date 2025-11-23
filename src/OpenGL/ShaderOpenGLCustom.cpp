@@ -790,7 +790,8 @@ void ShaderOpenGLCustom::increaseNumberTextures()
     numTextures++;
 }
 
-ShaderCustomTypes ShaderOpenGLCustom::getType() const {
+ShaderCustomTypes ShaderOpenGLCustom::getType() const
+{
     return type;
 }
 
@@ -849,7 +850,8 @@ std::string ShaderOpenGLCustom::getFolder()
     return Tools::removeSubstring(vertexFilename, label + ".vs");
 }
 
-const std::vector<ShaderOpenGLCustomType> &ShaderOpenGLCustom::getDataTypes() const {
+const std::vector<ShaderOpenGLCustomType> &ShaderOpenGLCustom::getDataTypes() const
+{
     return dataTypes;
 }
 

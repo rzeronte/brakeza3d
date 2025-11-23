@@ -11,15 +11,15 @@
 
 class ShaderOpenGLDepthMap : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {
 
-    GLint textureUniform;
+    GLuint textureUniform;
 
-    GLint intensityUniform;
-    GLint nearUniform;
-    GLint farUniform;
+    GLuint intensityUniform;
+    GLuint nearUniform;
+    GLuint farUniform;
 
 public:
     ShaderOpenGLDepthMap();
-    void render(GLuint textureID, GLuint framebuffer);
+    void render(GLuint textureID, GLuint fbo);
 
     void destroy() override;
 

@@ -5,44 +5,33 @@
 #ifndef BRAKEZA3D_SHADEROPENGLCOLOR_H
 #define BRAKEZA3D_SHADEROPENGLCOLOR_H
 
-
 #include "ShaderBaseOpenGL.h"
 #include "../Objects/Mesh3D.h"
 
-class ShaderOpenGLColor: public ShaderBaseOpenGL {
-    GLuint VertexArrayID;
-
-    GLuint framebuffer;
-    GLuint textureColorbuffer;
-    GLuint depthBuffer;
+class ShaderOpenGLColor: public ShaderBaseOpenGL
+{
+    GLuint VertexArrayID = 0;
+    GLuint framebuffer = 0;
+    GLuint textureColorBuffer= 0;
+    GLuint depthBuffer= 0;
 public:
     void createBuffer();
-
-    [[nodiscard]] GLuint getFramebuffer() const;
-
     ShaderOpenGLColor();
-
-    static void setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer);
-
     void renderColor(
         const glm::mat4 &modelView,
-        GLuint vertexbuffer,
-        GLuint uvbuffer,
-        GLuint normalbuffer,
+        GLuint vertexBuffer,
+        GLuint uvBuffer,
+        GLuint normalBuffer,
         int size,
         const Color &color,
-        bool clearFramebufer,
-        GLuint framebuffer
+        bool clearFramebuffer,
+        GLuint fbo
     ) const;
-
     void destroy() override;
-
-    void deleteTexture();
-
+    void deleteTexture() const;
+    void renderMesh(Mesh3D* m, bool useFeedbackBuffer, const Color &color, bool clearFramebuffer, GLuint fbo) const;
     [[nodiscard]] GLuint getTextureColorBuffer() const;
-
-    void renderMesh(Mesh3D* m, const Color &color, bool clearFramebuffer, GLuint framebuffer) const;
-
+    [[nodiscard]] GLuint getFramebuffer() const;
 };
 
 

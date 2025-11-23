@@ -19,38 +19,41 @@ public:
     ShaderBaseOpenGL(const std::string &vertexFilename, bool enableFeedback);
     virtual ~ShaderBaseOpenGL() = default;
 
-    [[nodiscard]] GLuint getProgramID() const;
-    [[nodiscard]] std::string getVertexFilename() const;
-    [[nodiscard]] std::string getFragmentFilename() const;
     static GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path, bool enableFeedback);
     virtual void destroy() = 0;
     void setBool(const std::string &name, bool value) const;
-    static void setBoolUniform(GLint uniform, bool value);
+    static void setBoolUniform(GLuint uniform, bool value);
     void setInt(const std::string &name, int value) const;
-    static void setIntUniform(GLint uniform, int value);
+    static void setIntUniform(GLuint uniform, int value);
     void setFloat(const std::string &name, float value) const;
-    static void setFloatUniform(GLint uniform, float value);
+    static void setFloatUniform(GLuint uniform, float value);
     void setVec2(const std::string &name, const glm::vec2 &value) const;
-    static void setVec2Uniform(GLint uniform, const glm::vec2 &value);
+    static void setVec2Uniform(GLuint uniform, const glm::vec2 &value);
     void setVec2(const std::string &name, float x, float y) const;
-    static void setVec2Uniform(GLint uniform, float x, float y);
+    static void setVec2Uniform(GLuint uniform, float x, float y);
     void setVec3(const std::string &name, const glm::vec3 &value) const;
-    static void setVec3Uniform(GLint uniform, const glm::vec3 &value);
+    static void setVec3Uniform(GLuint uniform, const glm::vec3 &value);
     void setVec3(const std::string &name, float x, float y, float z) const;
-    static void setVec3Uniform(GLint uniform, float x, float y, float z);
+    static void setVec3Uniform(GLuint uniform, float x, float y, float z);
     void setVec4(const std::string &name, const glm::vec4 &value) const;
-    static void setVec4Uniform(GLint uniform, const glm::vec4 &value);
+    static void setVec4Uniform(GLuint uniform, const glm::vec4 &value);
     void setVec4(const std::string &name, float x, float y, float z, float w) const;
-    static void setVec4Uniform(GLint uniform, float x, float y, float z, float w);
+    static void setVec4Uniform(GLuint uniform, float x, float y, float z, float w);
     void setMat2(const std::string &name, const glm::mat2 &mat) const;
-    static void setMat2Uniform(GLint uniform, const glm::mat2 &mat);
+    static void setMat2Uniform(GLuint uniform, const glm::mat2 &mat);
     void setMat3(const std::string &name, const glm::mat3 &mat) const;
-    static void setMat3Uniform(GLint uniform, const glm::mat3 &mat);
+    static void setMat3Uniform(GLuint uniform, const glm::mat3 &mat);
     void setMat4(const std::string &name, const glm::mat4 &mat) const;
-    static void setMat4Uniform(GLint uniform, const glm::mat4 &mat);
+    static void setMat4Uniform(GLuint uniform, const glm::mat4 &mat);
     void setTexture(const std::string &name, GLuint textureID, int index) const;
     void setMat4Array(const std::string &name, std::vector<glm::mat4> &Transforms) const;
-    static void setMat4ArrayUniform(GLint uniform, std::vector<glm::mat4> &Transforms);
+    static void setMat4ArrayUniform(GLuint uniform, std::vector<glm::mat4> &Transforms);
+
+    [[nodiscard]] GLuint getProgramID() const;
+    [[nodiscard]] std::string getVertexFilename() const;
+    [[nodiscard]] std::string getFragmentFilename() const;
+
+    static void setVAOAttributes(GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer);
 };
 
 

@@ -29,11 +29,12 @@ ShaderOGLShadowPass::ShaderOGLShadowPass()
 
 void ShaderOGLShadowPass::renderMeshIntoArrayTextures(
     Mesh3D *o,
-    SpotLight3D* light,
+    LightSpot* light,
     GLuint depthArrayTextures,
     int indexLight,
     GLuint fb
-) const {
+) const
+{
     for (const auto& m: o->meshes) {
         renderIntoArrayDepthTextures(
             o,
@@ -49,7 +50,7 @@ void ShaderOGLShadowPass::renderMeshIntoArrayTextures(
     }
 }
 
-void ShaderOGLShadowPass::renderMeshIntoDirectionalLightTexture(Mesh3D *o, const DirLightOpenGL& light, GLuint framebuffer) const
+void ShaderOGLShadowPass::renderMeshIntoDirectionalLightTexture(Mesh3D *o, const DirLightOpenGL& light, GLuint fbo) const
 {
     for (const auto& m: o->meshes) {
         renderIntoDirectionalLightTexture(
@@ -59,7 +60,7 @@ void ShaderOGLShadowPass::renderMeshIntoDirectionalLightTexture(Mesh3D *o, const
             m.uvBuffer,
             m.normalBuffer,
             static_cast<int>(m.vertices.size()),
-            framebuffer
+            fbo
         );
     }
 }
@@ -69,11 +70,12 @@ void ShaderOGLShadowPass::renderMeshIntoDirectionalLightTexture(Mesh3D *o, const
 
 void ShaderOGLShadowPass::renderMeshAnimatedIntoArrayTextures(
     Mesh3DAnimation *o,
-    SpotLight3D* light,
+    LightSpot* light,
     GLuint depthArrayTextures,
     int indexLight,
     GLuint fb
-) const {
+) const
+{
     for (const auto& m: o->meshes) {
         renderIntoArrayDepthTextures(
             o,
@@ -89,7 +91,7 @@ void ShaderOGLShadowPass::renderMeshAnimatedIntoArrayTextures(
     }
 }
 
-void ShaderOGLShadowPass::renderMeshAnimatedIntoDirectionalLightTexture(Mesh3DAnimation *o, const DirLightOpenGL& light, GLuint framebuffer) const
+void ShaderOGLShadowPass::renderMeshAnimatedIntoDirectionalLightTexture(Mesh3DAnimation *o, const DirLightOpenGL& light, GLuint fbo) const
 {
     for (const auto& m: o->meshes) {
         renderIntoDirectionalLightTexture(
@@ -99,7 +101,7 @@ void ShaderOGLShadowPass::renderMeshAnimatedIntoDirectionalLightTexture(Mesh3DAn
             m.uvBuffer,
             m.normalBuffer,
             static_cast<int>(m.vertices.size()),
-            framebuffer
+            fbo
         );
     }
 }
@@ -112,10 +114,11 @@ void ShaderOGLShadowPass::renderIntoDirectionalLightTexture(
     GLuint uvbuffer,
     GLuint normalbuffer,
     int size,
-    GLuint framebuffer
-) const {
+    GLuint fbo
+) const
+{
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
@@ -137,14 +140,14 @@ void ShaderOGLShadowPass::renderIntoDirectionalLightTexture(
 
 void ShaderOGLShadowPass::renderIntoArrayDepthTextures(
     Object3D* o,
-    SpotLight3D* light,
+    LightSpot* light,
     GLuint vertexbuffer,
     GLuint uvbuffer,
     GLuint normalbuffer,
     int size,
     GLuint shadowMapArrayTex,
     int layer,
-    GLuint framebuffer
+    GLuint fbo
 ) const
 {
     if (light == nullptr) {
@@ -152,7 +155,7 @@ void ShaderOGLShadowPass::renderIntoArrayDepthTextures(
         return;
     }
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
@@ -181,21 +184,6 @@ GLuint ShaderOGLShadowPass::getSpotLightsDepthMapsFBO() const
 GLuint ShaderOGLShadowPass::getDirectionalLightDepthMapFBO() const
 {
     return directionalLightDepthMapFBO;
-}
-
-void ShaderOGLShadowPass::setVAOAttributes(GLuint vertexbuffer, GLuint uvbuffer, GLuint normalbuffer)
-{
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    glEnableVertexAttribArray(1);
-    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-
-    glEnableVertexAttribArray(2);
-    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 void ShaderOGLShadowPass::destroy()
@@ -240,7 +228,8 @@ void ShaderOGLShadowPass::setupFBODirectionalLight()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-GLuint ShaderOGLShadowPass::getDirectionalLightDepthTexture() const {
+GLuint ShaderOGLShadowPass::getDirectionalLightDepthTexture() const
+{
     return directionalLightDepthTexture;
 }
 

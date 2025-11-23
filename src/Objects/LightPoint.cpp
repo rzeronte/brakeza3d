@@ -1,5 +1,5 @@
 
-#include "../../include/Objects/LightPoint3D.h"
+#include "../../include/Objects/LightPoint.h"
 
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
@@ -7,7 +7,7 @@
 #include "../../include/Render/Maths.h"
 #include "../../include/Brakeza3D.h"
 
-LightPoint3D::LightPoint3D(
+LightPoint::LightPoint(
     glm::vec4 ambient,
     glm::vec4 diffuse,
     glm::vec4 specular,
@@ -24,9 +24,9 @@ LightPoint3D::LightPoint3D(
 {
 }
 
-LightPoint3D *LightPoint3D::create(Vertex3D position)
+LightPoint *LightPoint::create(Vertex3D position)
 {
-    auto o = new LightPoint3D(
+    auto o = new LightPoint(
         glm::vec4(0.05f, 0.05f, 0.05f, 0),
         glm::vec4(1.0f, 0.0f, 0.0f, 0),
         glm::vec4(1.0f, 1.0f, 1.0f, 0),
@@ -40,44 +40,44 @@ LightPoint3D *LightPoint3D::create(Vertex3D position)
     return o;
 }
 
-void LightPoint3D::setColor(Color value) {
+void LightPoint::setColor(Color value) {
     this->diffuse = glm::vec4(value.r, value.g, value.b, 1);
 }
 
-void LightPoint3D::setAmbient(Color value) {
+void LightPoint::setAmbient(Color value) {
     this->ambient = glm::vec4(value.r, value.g, value.b, 1);
 }
 
-void LightPoint3D::setColorSpecular(Color c) {
+void LightPoint::setColorSpecular(Color c) {
     this->specular = glm::vec4(c.r, c.g, c.b, 1);
 }
 
-void LightPoint3D::onUpdate()
+void LightPoint::onUpdate()
 {
     Object3D::onUpdate();
 }
 
-void LightPoint3D::setConstant(float value) {
+void LightPoint::setConstant(float value) {
     constant = value;
 }
 
-void LightPoint3D::setLinear(float value) {
+void LightPoint::setLinear(float value) {
     linear = value;
 }
 
-void LightPoint3D::setCuadratic(float value) {
+void LightPoint::setCuadratic(float value) {
     quadratic = value;
 }
 
-const char *LightPoint3D::getTypeObject() {
+const char *LightPoint::getTypeObject() {
     return "LightPoint3D";
 }
 
-const char *LightPoint3D::getTypeIcon() {
+const char *LightPoint::getTypeIcon() {
     return "lightIcon";
 }
 
-void LightPoint3D::drawImGuiProperties()
+void LightPoint::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
 
@@ -110,7 +110,7 @@ void LightPoint3D::drawImGuiProperties()
     }
 }
 
-cJSON *LightPoint3D::getJSON()
+cJSON *LightPoint::getJSON()
 {
     cJSON *root = Object3D::getJSON();
 
@@ -139,7 +139,7 @@ cJSON *LightPoint3D::getJSON()
     return root;
 }
 
-void LightPoint3D::setPropertiesFromJSON(cJSON *object, LightPoint3D *o)
+void LightPoint::setPropertiesFromJSON(cJSON *object, LightPoint *o)
 {
     o->setBelongToScene(true);
     Object3D::setPropertiesFromJSON(object, o);
@@ -164,9 +164,9 @@ void LightPoint3D::setPropertiesFromJSON(cJSON *object, LightPoint3D *o)
     o->setCuadratic((float)cJSON_GetObjectItemCaseSensitive(object, "quadratic")->valuedouble);
 }
 
-void LightPoint3D::createFromJSON(cJSON *object)
+void LightPoint::createFromJSON(cJSON *object)
 {
-    auto o = new LightPoint3D(
+    auto o = new LightPoint(
         glm::vec4(),
         glm::vec4(),
         glm::vec4(),

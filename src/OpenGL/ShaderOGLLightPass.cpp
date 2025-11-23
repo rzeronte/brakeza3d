@@ -53,9 +53,9 @@ void ShaderOGLLightPass::render(
     int numSpotLights,
     GLuint spotLightsShadowMapTexturesArray,
     int numSpotLightsShadowMaps,
-    GLuint framebuffer
+    GLuint fbo
 ) {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();

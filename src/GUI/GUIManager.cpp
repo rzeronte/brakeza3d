@@ -1,16 +1,17 @@
 
 #include "../include/GUI/GUIManager.h"
 #include "../../include/Render/Drawable.h"
+#include "../include/Brakeza3D.h"
 
 GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 :
     gameObjects(gameObjects),
     widgetConsole(new ImGuiConsoleApp(ComponentsManager::get()->getComponentScripting()->getLua())),
-    widgetObjects3D(new GUIWidgetObjects3D(icons, this->gameObjects)),
-    widgetObject3DProperties(new GUIWidgetObject3DProperties(icons, this->gameObjects, scriptEditableManager)),
-    widgetProjectSettings(new GUIWidgetProjectSettings(icons, scriptEditableManager)),
-    widgetMenu(new GUIWidgetMenu(icons)),
-    widgetToolbar(new GUIWidgetToolbar(icons)),
+    widgetObjects3D(new GUIAddonObjects3D(icons, this->gameObjects)),
+    widgetObject3DProperties(new GUIAddonObject3DProperties(icons, this->gameObjects, scriptEditableManager)),
+    widgetProjectSettings(new GUIAddonProjectSettings(icons, scriptEditableManager)),
+    widgetMenu(new GUIAddonMenu(icons)),
+    widgetToolbar(new GUIAddonToolbar(icons)),
     currentScriptsFolderWidget(EngineSetup::get()->SCRIPTS_FOLDER),
     currentScenesFolderWidget(EngineSetup::get()->SCENES_FOLDER),
     currentProjectsFolderWidget(EngineSetup::get()->PROJECTS_FOLDER),
@@ -176,7 +177,7 @@ void GUIManager::drawSelectedObjectScripts()
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No scripts in selected object.");
     }
 
-    for (int i = 0; i < (int) objectScripts.size(); i++) {
+    for (unsigned int i = 0; i < objectScripts.size(); i++) {
         auto currentScript = objectScripts[i];
         ImGui::PushID(i);
 
@@ -210,7 +211,7 @@ void GUIManager::drawSelectedObjectScripts()
     }
 }
 
-void GUIManager::drawEditShaderWindow()
+void GUIManager::DrawEditShaderWindow()
 {
     if (!showEditShaderWindow) return;
 
@@ -243,7 +244,7 @@ void GUIManager::drawEditShaderWindow()
     ImGui::End();
 }
 
-void GUIManager::drawEditScriptWindow()
+void GUIManager::DrawEditScriptWindow()
 {
     if (!showEditScriptWindow) return;
 
@@ -267,7 +268,7 @@ void GUIManager::drawEditScriptWindow()
     ImGui::End();
 }
 
-void GUIManager::drawLightsDepthMapsViewerWindow()
+void GUIManager::DrawLightsDepthMapsViewerWindow()
 {
     if (!showLightsDepthMapsViewerWindow) return;
 
@@ -280,7 +281,6 @@ void GUIManager::drawLightsDepthMapsViewerWindow()
         auto render = ComponentsManager::get()->getComponentRender();
         auto shaderShadowPassDebugLight = render->getShaderOGLShadowPassDebugLight();
         auto lights = render->getShaderOGLRenderForward()->getShadowMappingSpotLights();
-        float imageSize = 200.0f;
 
         const int columns = 1;
 
@@ -288,6 +288,7 @@ void GUIManager::drawLightsDepthMapsViewerWindow()
         ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(10.0f, 10.0f));
 
         if (ImGui::BeginTable("DepthMapsTable", columns, ImGuiTableFlags_Borders | ImGuiTableFlags_SizingStretchSame)) {
+            float imageSize = 200.0f;
 
             // Añadir DirectionalLight primero
             ImGui::TableNextColumn();
@@ -300,7 +301,7 @@ void GUIManager::drawLightsDepthMapsViewerWindow()
 
             // Centrar imagen
             ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - imageSize) * 0.5f);
-            ImGui::Image((ImTextureID)shaderShadowPassDebugLight->getSceneTexture(), ImVec2(imageSize, imageSize));
+            ImGui::Image(reinterpret_cast<ImTextureID>(shaderShadowPassDebugLight->getSceneTexture()), ImVec2(imageSize, imageSize));
 
             // Luego añadir los SpotLights
             int i = 0;
@@ -316,7 +317,7 @@ void GUIManager::drawLightsDepthMapsViewerWindow()
 
                 // Centrar imagen
                 ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - imageSize) * 0.5f);
-                ImGui::Image((ImTextureID)shaderShadowPassDebugLight->getInternalTexture(i), ImVec2(imageSize, imageSize));
+                ImGui::Image(reinterpret_cast<ImTextureID>(shaderShadowPassDebugLight->getInternalTexture(i)), ImVec2(imageSize, imageSize));
 
                 i++;
             }
@@ -330,7 +331,7 @@ void GUIManager::drawLightsDepthMapsViewerWindow()
     ImGui::End();
 }
 
-void GUIManager::drawEditBonesMappingWindow()
+void GUIManager::DrawEditBonesMappingWindow()
 {
     if (selectedObjectIndex < 0) return;
     if (!showBoneMappingsEditorWindow) return;
@@ -340,7 +341,7 @@ void GUIManager::drawEditBonesMappingWindow()
     if (a == nullptr) return;
 
     auto bc = a->getBoneMappingColliders();
-    int numMappings = (int)bc->size();
+    int numMappings = bc->size();
 
     setNextWindowSize(700, 700);
     ImGui::SetNextWindowBgAlpha(0.9f);
@@ -366,7 +367,7 @@ void GUIManager::drawEditBonesMappingWindow()
 
         if (numMappings > 0) {
             const char* items[numMappings];
-            for (int i = 0; i < (int) bc->size(); i++) {
+            for (unsigned int i = 0; i < bc->size(); i++) {
                 items[i] = bc->at(i).nameMapping.c_str();
             }
 
@@ -519,7 +520,6 @@ void GUIManager::drawShaderVariables()
     ImGui::SameLine();
     if (ImGui::Button(std::string("Create variable").c_str())) {
         if (!currentVariableToAddName.empty()) {
-            LUADataValue LUAValue;
             shaderEditableManager.shader->addDataTypeEmpty(currentVariableToAddName.c_str(), itemsCStr[selectedItem]);
         }
     }
@@ -579,7 +579,6 @@ void GUIManager::drawScriptVariables()
     ImGui::SameLine();
     if (ImGui::Button(std::string("Create variable").c_str())) {
         if (!currentVariableToAddName.empty()) {
-            LUADataValue LUAValue;
             scriptEditableManager.script->addDataTypeEmpty(currentVariableToAddName.c_str(), items[selectedItem]);
         }
     }
@@ -802,9 +801,8 @@ void GUIManager::drawCustomShadersFolder(std::string folder)
     }
 
     static int item_current_idx = 0;
-    const char* combo_preview_value = items[item_current_idx];
 
-    if (ImGui::Combo("Type", &item_current_idx, items.data(), (int) items.size())) {
+    if (ImGui::Combo("Type", &item_current_idx, items.data(), items.size())) {
         std::cout << "Seleccionado: " << items[item_current_idx] << std::endl;
     }
 
@@ -868,7 +866,7 @@ void GUIManager::drawCustomShadersFolder(std::string folder)
     }
 }
 
-void GUIManager::drawWidgets()
+void GUIManager::DrawWidgets()
 {
     if (ImGui::Begin("Object shaders")) {
         drawSelectedObjectShaders();
@@ -886,7 +884,7 @@ void GUIManager::drawWidgets()
     ImGui::End();
 
     if (ImGui::Begin("Object variables")) {
-        drawObjectVariables();
+        DrawObjectVariables();
     }
     ImGui::End();
 
@@ -923,8 +921,23 @@ void GUIManager::drawWidgets()
     ImGui::End();
 }
 
-void GUIManager::draw(float timedelta, bool &finish)
-{
+void GUIManager::DrawObjectSelectedGuizmoOperation() {
+    auto render = ComponentsManager::get()->getComponentRender();
+
+    if (render->getSelectedObject() != nullptr) {
+        auto o = render->getSelectedObject();
+
+        auto camera = ComponentsManager::get()->getComponentCamera();
+        Drawable::drawObject3DGizmo(
+            o,
+            o->getModelMatrix(),
+            camera->getGLMMat4ViewMatrix(),
+            camera->getGLMMat4ProjectionMatrix()
+        );
+    }
+}
+
+void GUIManager::updateImGuiDocking() {
     //bool show_demo_window = true;
     //ImGui::ShowDemoWindow(&show_demo_window);
     static bool opt_fullscreen_persistant = true;
@@ -963,50 +976,29 @@ void GUIManager::draw(float timedelta, bool &finish)
     // DockSpace
     ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+}
 
-    drawWidgets();
-
+void GUIManager::DrawGUIPlugins(bool &finish) {
     bool p_open = true;
     widgetConsole->Draw("Logging/Console", &p_open);
-    widgetObjects3D->draw(selectedObjectIndex);
-    widgetObject3DProperties->draw(selectedObjectIndex);
-    widgetMenu->draw(finish, showAboutWindow, showLightsDepthMapsViewerWindow);
-    widgetToolbar->draw();
-    auto render = ComponentsManager::get()->getComponentRender();
+    widgetObjects3D->Draw(selectedObjectIndex);
+    widgetObject3DProperties->Draw(selectedObjectIndex);
+    widgetMenu->Draw(finish, showAboutWindow, showLightsDepthMapsViewerWindow);
+    widgetToolbar->Draw();
+}
 
-    if (render->getSelectedObject() != nullptr) {
-        auto o = render->getSelectedObject();
+void GUIManager::draw(float timedelta, bool &finish)
+{
+    updateImGuiDocking();
 
-        auto camera = ComponentsManager::get()->getComponentCamera();
-        Drawable::drawObject3DGizmo(
-            o,
-            o->getModelMatrix(),
-            camera->getGLMMat4ViewMatrix(),
-            camera->getGLMMat4ProjectionMatrix()
-        );
-    }
-
-    drawEditShaderWindow();
-    drawEditScriptWindow();
-    drawEditBonesMappingWindow();
-    drawLightsDepthMapsViewerWindow();
-
-    if (showSplash) {
-        ImGui::OpenPopup("brakeza_splash");
-        showSplash = false;
-
-        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f)); // Centrar
-    }
-
-    if (ImGui::BeginPopup("brakeza_splash")) {
-        ImGui::SeparatorText(std::string("Welcome to Brakeza3D!").c_str());
-        ImGui::Image(TexturePackage::getOGLTextureID(icons, "splash"), ImVec2(640, 350));
-        ImGui::SeparatorText(
-            std::string("Brakeza3D (" + EngineSetup::get()->ENGINE_VERSION + ") | https://brakeza.com | By Eduardo Rodríguez Álvarez").c_str()
-        );
-        ImGui::EndPopup();
-    }
+    DrawWidgets();
+    DrawGUIPlugins(finish);
+    DrawObjectSelectedGuizmoOperation();
+    DrawEditShaderWindow();
+    DrawEditScriptWindow();
+    DrawEditBonesMappingWindow();
+    DrawLightsDepthMapsViewerWindow();
+    DrawSplash();
 
     RenderFPS();
 
@@ -1015,25 +1007,15 @@ void GUIManager::draw(float timedelta, bool &finish)
 
 void GUIManager::RenderFPS()
 {
-    if (EngineSetup::get()->DRAW_FPS_IMGUI)
-    {
+    if (EngineSetup::get()->DRAW_FPS_IMGUI) {
         auto fps = ComponentsManager::get()->getComponentRender()->getFps();
-
-        // Obtener el tamaño de la pantalla
         ImVec2 screenSize = ImGui::GetIO().DisplaySize;
-
-        // Formatear el texto
         char fpsText[32];
-        snprintf(fpsText, sizeof(fpsText), "FPS: %d", fps);
-
-        // Obtener el tamaño del texto
+        snprintf(fpsText, sizeof(fpsText), "%d", fps);
         ImVec2 textSize = ImGui::CalcTextSize(fpsText);
-
-        // Calcular la posición centrada
         ImVec2 textPos = ImVec2((screenSize.x - textSize.x) * 0.5f, (screenSize.y - textSize.y) * 0.5f);
 
-        // Renderizar el texto
-        ImGui::SetNextWindowBgAlpha(0.5f); // Hacerlo semi-transparente
+        ImGui::SetNextWindowBgAlpha(0.5f); // transparent
         ImGui::SetNextWindowPos(textPos, ImGuiCond_Always);
         ImGui::Begin("FPS Overlay", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoNav);
         ImGui::TextUnformatted(fpsText);
@@ -1049,6 +1031,11 @@ ImGuiConsoleApp *GUIManager::getConsole()
 TexturePackage *GUIManager::getImGuiTextures()
 {
     return &icons;
+}
+
+bool GUIManager::isShowLightsDepthMapsViewerWindow() const
+{
+    return showLightsDepthMapsViewerWindow;
 }
 
 void GUIManager::setSelectedObjectIndex(int selectedObjectIndex)
@@ -1090,7 +1077,7 @@ void GUIManager::ShowDeletePopup(const char* title, const std::function<void()>&
     }
 }
 
-void GUIManager::drawObjectVariables()
+void GUIManager::DrawObjectVariables()
 {
     bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
 
@@ -1125,11 +1112,11 @@ void GUIManager::drawObjectVariables()
 
                     ImGui::TableSetColumnIndex(2);
                     if (type == "number") {
-                        ImGui::Text("%f", (float) luaEnvironment[key]);
+                        ImGui::Text("%f", static_cast<float>(luaEnvironment[key]));
                     } else if (type == "string") {
                         ImGui::Text("%s", std::string(luaEnvironment[key]).c_str());
                     } else if (type == "boolean") {
-                        ImGui::Text("%d", (bool) luaEnvironment[key]);
+                        ImGui::Text("%d", static_cast<bool>(luaEnvironment[key]));
                     }
                 }
             }
@@ -1231,9 +1218,9 @@ void GUIManager::drawImages()
 
     auto imageFiles = imagesFolder.getItems();
     int columns = 8; // Máximo de 6 imágenes por fila
-    int count = 0;
 
     if (ImGui::BeginTable("ImagesTable", columns, flags)) {
+        int count = 0;
         for (auto image : imageFiles) {
             if (count % columns == 0) {
                 ImGui::TableNextRow();
@@ -1247,7 +1234,7 @@ void GUIManager::drawImages()
             ImGui::BeginGroup();
 
             ImGui::PushID(image->label.c_str());
-            ImGui::ImageButton((ImTextureID)image->texture->getOGLTextureID(), ImVec2(96, 96));
+            ImGui::ImageButton(reinterpret_cast<ImTextureID>(image->texture->getOGLTextureID()), ImVec2(96, 96));
 
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
                 ImGui::SetDragDropPayload("IMAGE_ITEM", image->label.c_str(), image->label.size() + 1);
@@ -1303,4 +1290,28 @@ void GUIManager::openBoneInfoDialog()
 void GUIManager::openLightsDepthMapsViewerDialog()
 {
     showLightsDepthMapsViewerWindow = true;
+}
+
+void GUIManager::DrawSplash()
+{
+    if (EngineSetup::get()->ENABLE_SPLASH) {
+        ImGui::OpenPopup("brakeza_splash");
+        ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        EngineSetup::get()->ENABLE_SPLASH = false;
+    }
+
+    if (ImGui::BeginPopup("brakeza_splash")) {
+        ImGui::SeparatorText("Welcome to Brakeza3D!");
+        ImGui::Image(TexturePackage::getOGLTextureID(icons, "splash"), ImVec2(640, 350));
+        ImGui::SeparatorText(
+            std::string("Brakeza3D (" + EngineSetup::get()->ENGINE_VERSION + ") | https://brakeza.com | By Eduardo Rodríguez Álvarez").c_str()
+        );
+
+        if (Brakeza3D::get()->getEngineTotalTime() > EngineSetup::get()->SPLASH_COUNTDOWN_TIME) {
+            ImGui::CloseCurrentPopup();
+            ComponentsManager::get()->getComponentInput()->setEnabled(true);
+        }
+
+        ImGui::EndPopup();
+    }
 }

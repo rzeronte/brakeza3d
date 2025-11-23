@@ -43,9 +43,9 @@ ShaderOpenGLImage::ShaderOpenGLImage()
     inverseUniform = glGetUniformLocation(programID, "inverse");
 }
 
-void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha, bool inverse, GLuint framebuffer) const
+void ShaderOpenGLImage::renderTexture(GLuint TextureID, int x, int y, int w, int h, float alpha, bool inverse, GLuint fbo) const
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
 
     glDisable(GL_DEPTH_TEST);
 

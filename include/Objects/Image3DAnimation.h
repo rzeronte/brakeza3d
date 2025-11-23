@@ -23,7 +23,7 @@ class Image3DAnimation : public Object3D
     std::string currentSpriteFileVariableToCreateAnimation;
     Image3D *billboard;
 public:
-    Image3DAnimation(Vertex3D &position, float width, float height);
+    Image3DAnimation(Vertex3D &position, float w, float h);
 
     ~Image3DAnimation() override;
 
@@ -33,9 +33,9 @@ public:
 
     void linkTextureAnimation(Image3DAnimation *);
 
-    TextureAnimated *getCurrentTextureAnimation();
+    TextureAnimated *getCurrentTextureAnimation() const;
 
-    void addAnimation(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps);
+    void addAnimation(const std::string& sprite, int w, int h, int numFrames, int fps);
 
     void setAnimation(int);
 

@@ -17,6 +17,7 @@
 #include "../../include/Objects/Image3DAnimation8Directions.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/OpenGL/ShaderOpenGLCustomPostprocessing.h"
+#include "../../include/Persistence/Image3DPersistence.h"
 
 SceneLoader::SceneLoader() = default;
 
@@ -26,7 +27,7 @@ void SceneLoader::loadScene(const std::string& filename)
     auto contentFile = Tools::readFile(filename, file_size);
     auto contentJSON = cJSON_Parse(contentFile);
 
-    Logging::Message("Loading scene: %s", filename.c_str());
+    Logging::Message("Loading '%s' scene", filename.c_str());
 
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward();
@@ -93,11 +94,11 @@ void SceneLoader::loadScene(const std::string& filename)
                 break;
             }
             case SceneObjectLoaderMapping::LightPoint3D : {
-                LightPoint3D::createFromJSON(currentObject);
+                LightPoint::createFromJSON(currentObject);
                 break;
             }
             case SceneObjectLoaderMapping::SpotLight3D : {
-                SpotLight3D::createFromJSON(currentObject);
+                LightSpot::createFromJSON(currentObject);
                 break;
             }
             case SceneObjectLoaderMapping::ParticleEmitter : {
@@ -274,14 +275,14 @@ void SceneLoader::createObjectInScene()
 
 void SceneLoader::createPointLight3DInScene()
 {
-    auto o = LightPoint3D::create(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
+    auto o = LightPoint::create(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
     o->setBelongToScene(true);
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("LightPoint3D"));
 }
 
 void SceneLoader::createSpotLight3DInScene()
 {
-    auto o = SpotLight3D::create(
+    auto o = LightSpot::create(
         ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
         Vertex3D(0, 0, 1)
     );

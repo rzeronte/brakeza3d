@@ -99,7 +99,7 @@ public:
         ShaderCustomTypes type
     );
 
-    virtual void render(GLuint framebuffer) = 0;
+    virtual void render(GLuint fbo) = 0;
 
     void drawImGuiProperties(Image *diffuse, Image *specular);
 

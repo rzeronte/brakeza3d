@@ -24,9 +24,9 @@ ShaderOpenGLLine::ShaderOpenGLLine()
     weightUniform = glGetUniformLocation(programID, "weight");
 }
 
-void ShaderOpenGLLine::render(Point2D a, Point2D b, Color c, float weight, GLuint framebuffer)
+void ShaderOpenGLLine::render(Point2D a, Point2D b, Color c, float weight, GLuint fbo)
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
 
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 

@@ -39,11 +39,11 @@ ShaderOpenGLLine3D::ShaderOpenGLLine3D()
     colorUniform = glGetUniformLocation(programID, "color");
 }
 
-void ShaderOpenGLLine3D::render(Vertex3D from, Vertex3D to, GLuint framebuffer, Color c)
+void ShaderOpenGLLine3D::render(Vertex3D from, Vertex3D to, GLuint fbo, Color c)
 {
     const std::vector<Vector3D> vertices = {Vector3D(from, to)};
 
-    renderLines(vertices, framebuffer, c);
+    renderLines(vertices, fbo, c);
 }
 
 
@@ -51,9 +51,9 @@ void ShaderOpenGLLine3D::destroy()
 {
 }
 
-void ShaderOpenGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint framebuffer, Color c)
+void ShaderOpenGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo, Color c)
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(framebuffer);
+    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
 
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 

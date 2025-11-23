@@ -15,7 +15,7 @@
 #include "../include/2D/Image2DAnimation.h"
 #include "../include/Objects/Mesh3DAnimation.h"
 #include "../include/Objects/Image3D.h"
-#include "../include/Objects/LightPoint3D.h"
+#include "../include/Objects/LightPoint.h"
 #include "../include/Objects/Image3DAnimation.h"
 #include "../include/Objects/Image3DAnimation8Directions.h"
 #include "../include/Objects/ParticleEmitter.h"
@@ -397,26 +397,26 @@ void LUAIntegration(sol::state &lua)
         })
     );
 
-    lua.new_usertype<LightPoint3D>("LightPoint3D",
+    lua.new_usertype<LightPoint>("LightPoint3D",
     sol::base_classes, sol::bases<Object3D>(),
-        "setConstant", &LightPoint3D::setConstant,
-        "setLinear", &LightPoint3D::setLinear,
-        "setCuadratic", &LightPoint3D::setCuadratic,
-        "setColor", &LightPoint3D::setColor,
-        "setColorSpecular", &LightPoint3D::setColorSpecular,
-        "setAmbient", &LightPoint3D::setAmbient,
+        "setConstant", &LightPoint::setConstant,
+        "setLinear", &LightPoint::setLinear,
+        "setCuadratic", &LightPoint::setCuadratic,
+        "setColor", &LightPoint::setColor,
+        "setColorSpecular", &LightPoint::setColorSpecular,
+        "setAmbient", &LightPoint::setAmbient,
         "create", sol::factories([](Vertex3D p) {
-            return LightPoint3D::create(p);
+            return LightPoint::create(p);
         })
     );
 
-    lua.new_usertype<SpotLight3D>("SpotLight3D",
-    sol::base_classes, sol::bases<LightPoint3D, Object3D>(),
-        "setCutOff", &SpotLight3D::setCutOff,
-        "setOuterCutOff", &SpotLight3D::setOuterCutOff,
-        "setDirection", &SpotLight3D::setDirection,
+    lua.new_usertype<LightSpot>("SpotLight3D",
+    sol::base_classes, sol::bases<LightPoint, Object3D>(),
+        "setCutOff", &LightSpot::setCutOff,
+        "setOuterCutOff", &LightSpot::setOuterCutOff,
+        "setDirection", &LightSpot::setDirection,
         "create", sol::factories([](Vertex3D position, Vertex3D direction) {
-            return SpotLight3D::create(position, direction);
+            return LightSpot::create(position, direction);
         })
     );
 
