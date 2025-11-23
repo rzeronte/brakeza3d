@@ -11,8 +11,7 @@ cJSON* JSONSerializerRegistry::serialize(Object3D* obj)
 
     std::cout << "[JSONSerializerRegistry serialize] Serializing object of type " << obj->getTypeObject() << std::endl;
 
-    const char* typeName = obj->getTypeObject();
-    auto serializer = getSerializer(typeName);
+    auto serializer = getSerializer(obj->getTypeObject());
 
     if (!serializer) {
         std::cout << "[JSONSerializerRegistry serialize] No serialization for " << obj->getTypeObject() << std::endl;
@@ -30,8 +29,7 @@ Object3D* JSONSerializerRegistry::deserialize(cJSON* json)
 
     std::cout << "[JSONSerializerRegistry deserialize] Deserializing object of type " << typeItem->valuestring << std::endl;
 
-    const char* typeName = typeItem->valuestring;
-    auto serializer = getSerializer(typeName);
+    auto serializer = getSerializer(typeItem->valuestring);
 
     if (!serializer) {
         std::cout << "[JSONSerializerRegistry deserialize] No serialization for " << typeItem->valuestring << std::endl;

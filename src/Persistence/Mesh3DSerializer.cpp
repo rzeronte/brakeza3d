@@ -46,7 +46,7 @@ void Mesh3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
     std::cout << "[Mesh3DSerializer ApplyJsonToObject] " << o->getTypeObject() << std::endl;
 
-    Mesh3D *mesh = dynamic_cast<Mesh3D*>(o);
+    auto mesh = dynamic_cast<Mesh3D*>(o);
 
     Object3DSerializer::ApplyJsonToObject(json, o);
 

@@ -465,7 +465,8 @@ void SceneLoader::InitSerializers()
 
 void SceneLoader::SceneLoaderCreateObject(cJSON *object)
 {
-    std::cout << "[SceneLoader SceneLoaderCreateObject] Alive here..." << std::endl;
     auto o = JSONSerializerRegistry::instance().deserialize(object);
+    std::cout << "[SceneLoader SceneLoaderCreateObject] " << o->getLabel() << std::endl;
+
     Brakeza3D::get()->addObject3D(o, o->getLabel());
 }

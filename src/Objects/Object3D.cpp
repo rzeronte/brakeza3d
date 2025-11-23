@@ -564,8 +564,6 @@ void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
 {
     std::cout << "[Object3D setPropertiesFromJSON]!" << std::endl;
     std::cout << "Debes eliminar esto pimpim!";
-    exit(-1);
-
 
     //Logging::Message("[Object3D] Setting properties from JSON");
     //const char* type = cJSON_GetObjectItem(object, "type")->valuestring;
