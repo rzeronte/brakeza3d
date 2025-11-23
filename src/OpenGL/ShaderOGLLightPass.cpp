@@ -12,8 +12,7 @@ ShaderOGLLightPass::ShaderOGLLightPass()
         EngineSetup::get()->SHADERS_FOLDER + "LightingPass.vs",
         EngineSetup::get()->SHADERS_FOLDER + "LightingPass.fs",
         false
-    ),
-    bufferSpotLightsMatricesUBO(0)
+    )
 {
     setupQuadUniforms(programID);
 
@@ -40,6 +39,8 @@ ShaderOGLLightPass::ShaderOGLLightPass()
     debugShadowMappingUniform = glGetUniformLocation(programID, "debugShadowMapping");
     shadowMappingIntensityUniform = glGetUniformLocation(programID, "shadowIntensity");
 
+    shadowMapArrayUniform = glGetUniformLocation(programID, "shadowMapArray");
+
     enableDirectionalLightShadowMapUniform = glGetUniformLocation(programID, "enableDirectionalLightShadowMapping");
 }
 
@@ -64,31 +65,13 @@ void ShaderOGLLightPass::render(
     auto cameraPosition = camera->getCamera()->getPosition().toGLM();
 
     setVec3Uniform(viewPosUniform, cameraPosition);
-    
-    // Bind G-Buffer textures
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, gPosition);
-    glUniform1i(gPositionUniform, 0);
 
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, gNormal);
-    glUniform1i(gNormalUniform, 1);
-
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
-    setIntUniform(materialTextureDiffuseUniform, 2);
-
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
-    setIntUniform(materialTextureSpecularUniform, 3);
-
-    glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D_ARRAY, spotLightsShadowMapTexturesArray);
-    glUniform1i(glGetUniformLocation(programID, "shadowMapArray"), 4);
-
-    glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D, dirLightShadowMapTexture);
-    setIntUniform(dirLightShadowMapTextureUniform, 5);
+    setTextureUniform(gPositionUniform, gPosition, 0);
+    setTextureUniform(gNormalUniform, gNormal, 1);
+    setTextureUniform(materialTextureDiffuseUniform, gAlbedoSpec, 2);
+    setTextureUniform(materialTextureSpecularUniform, gAlbedoSpec, 3);
+    setTextureArrayUniform(shadowMapArrayUniform, spotLightsShadowMapTexturesArray, 4);
+    setTextureUniform(dirLightShadowMapTextureUniform, dirLightShadowMapTexture, 5);
 
     setIntUniform(numSpotLightShadowMapsUniform, numSpotLightsShadowMaps);
     setBoolUniform(debugShadowMappingUniform, (EngineSetup::get()->SHADOW_MAPPING_DEBUG && EngineSetup::get()->ENABLE_SHADOW_MAPPING));

@@ -808,8 +808,8 @@ void GUIManager::drawCustomShadersFolder(std::string folder)
 
     if (ImGui::Button(std::string("Create custom shader").c_str())) {
         if (!currentVariableToCreateCustomShader.empty()) {
-            auto type = ShaderOpenGLCustom::getShaderTypeFromString(items[item_current_idx]);
-            ShaderOpenGLCustom::createEmptyCustomShader(currentVariableToCreateCustomShader, folder, type);
+            auto type = ShaderOGLCustom::getShaderTypeFromString(items[item_current_idx]);
+            ShaderOGLCustom::createEmptyCustomShader(currentVariableToCreateCustomShader, folder, type);
             updateFolderFiles();
         }
     }
@@ -856,7 +856,7 @@ void GUIManager::drawCustomShadersFolder(std::string folder)
                 ImGui::OpenPopup("Delete shaders?");
             }
             ShowDeletePopup("Delete shaders?", [folder, file, this] () {
-                ShaderOpenGLCustom::removeCustomShaderFiles(folder,  Tools::getFilenameWithoutExtension(file));
+                ShaderOGLCustom::removeCustomShaderFiles(folder,  Tools::getFilenameWithoutExtension(file));
                 updateFolderFiles();
             });
 

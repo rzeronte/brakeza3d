@@ -17,9 +17,7 @@ Object3D::Object3D()
             ComponentsManager::get()->getComponentScripting()->getLua(),
             sol::create, ComponentsManager::get()->getComponentScripting()->getLua().globals())
     ),
-    pickingColor(Color::idToColor(id)),
-    position(Vertex3D(1, 1, 1)),
-    rotation(M3::getMatrixIdentity())
+    pickingColor(Color::idToColor(id))
 {
     luaEnvironment["this"] = this;
     timer.start();

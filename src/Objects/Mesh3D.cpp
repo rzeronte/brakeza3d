@@ -7,20 +7,13 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
+#include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include <assimp/postprocess.h>
 #include "../../include/Persistence/JSONSerializerRegistry.h"
 
 Mesh3D::Mesh3D()
-:
-    sharedTextures(false),
-    render(true),
-    drawOffset(Vertex3D(0, 0, 0)),
-    octree(nullptr),
-    grid(nullptr)
 {
-    decal = false;
     luaEnvironment["this"] = this;
 }
 
@@ -308,7 +301,12 @@ std::vector<Vertex3D *> &Mesh3D::getModelVertices(int i)
     return meshes[i].modelVertices;
 }
 
-AABB3D &Mesh3D::getAabb()
+std::vector<Mesh3DData> &Mesh3D::getMeshData()
+{
+    return meshes;
+}
+
+AABB3D &Mesh3D::getAABB()
 {
     return aabb;
 }
@@ -713,7 +711,7 @@ void Mesh3D::fillGrid3DFromGeometry()
     }
 }
 
-void Mesh3D::addCustomShader(ShaderOpenGLCustom *s)
+void Mesh3D::addCustomShader(ShaderOGLCustom *s)
 {
     customShaders.emplace_back(s);
 }
@@ -725,7 +723,7 @@ void Mesh3D::loadShader(std::string folder, std::string jsonFilename)
     std::string shaderFragmentFile = folder + std::string(name + ".fs");
     std::string shaderVertexFile = folder + std::string(name + ".vs");
 
-    auto type = ShaderOpenGLCustom::extractTypeFromShaderName(folder, name);
+    auto type = ShaderOGLCustom::extractTypeFromShaderName(folder, name);
 
     Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
 
@@ -735,7 +733,7 @@ void Mesh3D::loadShader(std::string folder, std::string jsonFilename)
             break;
         }
         case SHADER_OBJECT : {
-            addCustomShader(new ShaderOpenGLCustomMesh3D(this, name, shaderVertexFile, shaderFragmentFile));
+            addCustomShader(new ShaderOGLCustomMesh3D(this, name, shaderVertexFile, shaderFragmentFile));
             break;
         }
     }
@@ -748,7 +746,7 @@ void Mesh3D::removeShader(int index)
     }
 }
 
-const std::vector<ShaderOpenGLCustom *> &Mesh3D::getCustomShaders() const {
+const std::vector<ShaderOGLCustom *> &Mesh3D::getCustomShaders() const {
     return customShaders;
 }
 

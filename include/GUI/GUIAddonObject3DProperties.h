@@ -19,7 +19,7 @@ struct ShaderEditableManager {
     bool loaded = false;
     std::string folder;
     std::string name;
-    ShaderOpenGLCustom *shader = nullptr;
+    ShaderOGLCustom *shader = nullptr;
     char editableSourceVS[1024 * 16];
     char editableSourceFS[1024 * 16];
 };

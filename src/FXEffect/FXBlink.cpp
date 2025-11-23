@@ -54,7 +54,7 @@ void FXBlink::update()
 
             auto shaderColor = ComponentsManager::get()->getComponentRender()->getShaderOGLColor();
             glBindFramebuffer(GL_FRAMEBUFFER, ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
-            for (const auto& m : mesh->meshes) {
+            for (const auto& m : mesh->getMeshData()) {
                 shaderColor->renderColor(
                     object->getModelMatrix(),
                     m.vertexBuffer,

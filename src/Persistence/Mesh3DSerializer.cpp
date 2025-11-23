@@ -4,7 +4,7 @@
 
 #include "../../include/Persistence/Mesh3DSerializer.h"
 #include "../../include/ComponentsManager.h"
-#include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
+#include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Persistence/JSONSerializerRegistry.h"
 #include "../../include/Persistence/Object3DSerializer.h"
@@ -59,13 +59,13 @@ void Mesh3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
         cJSON *currentShaderJSON;
         cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {
             auto typeString = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
-            switch (auto type = ShaderOpenGLCustom::getShaderTypeFromString(typeString)) {
+            switch (auto type = ShaderOGLCustom::getShaderTypeFromString(typeString)) {
                 case SHADER_OBJECT: {
                     auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
                     auto vertex = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vertexshader")->valuestring;
                     auto fragment = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;
                     auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
-                    mesh->addCustomShader(new ShaderOpenGLCustomMesh3D(mesh, name, vertex, fragment, types));
+                    mesh->addCustomShader(new ShaderOGLCustomMesh3D(mesh, name, vertex, fragment, types));
                     break;
                 }
                 default: {

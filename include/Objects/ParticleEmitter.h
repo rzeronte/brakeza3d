@@ -12,7 +12,7 @@
 #include "../Misc/Counter.h"
 #include "../Misc/Color.h"
 #include "../Misc/Image.h"
-#include "../OpenGL/ShaderOpenGLParticles.h"
+#include "../OpenGL/ShaderOGLParticles.h"
 #include "ParticlesContext.h"
 
 typedef enum {

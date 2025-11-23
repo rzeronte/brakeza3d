@@ -495,9 +495,9 @@ void LUAIntegration(sol::state &lua)
         })
     );
 
-    lua.new_usertype<ShaderOpenGLCustom>("ShaderOpenGLCustom",
+    lua.new_usertype<ShaderOGLCustom>("ShaderOpenGLCustom",
             "setDataTypeValue", sol::overload(
-                [](ShaderOpenGLCustom& shader, const std::string& name, const sol::object& value) {
+                [](ShaderOGLCustom& shader, const std::string& name, const sol::object& value) {
                     if (value.is<int>()) {
                         shader.setDataTypeValue(name, static_cast<float>(value.as<int>()));  // Convierte int a float
                     } else if (value.is<double>()) {
@@ -514,11 +514,11 @@ void LUAIntegration(sol::state &lua)
                         std::cerr << "Error: Tipo no soportado en setDataTypeValue para '" << name << "'\n";
                     }
                 },
-                static_cast<void (ShaderOpenGLCustom::*)(const std::string&, int)>(&ShaderOpenGLCustom::setDataTypeValue),
-                static_cast<void (ShaderOpenGLCustom::*)(const std::string&, float)>(&ShaderOpenGLCustom::setDataTypeValue),
-                static_cast<void (ShaderOpenGLCustom::*)(const std::string&, glm::vec2)>(&ShaderOpenGLCustom::setDataTypeValue),
-                static_cast<void (ShaderOpenGLCustom::*)(const std::string&, glm::vec3)>(&ShaderOpenGLCustom::setDataTypeValue),
-                static_cast<void (ShaderOpenGLCustom::*)(const std::string&, glm::vec4)>(&ShaderOpenGLCustom::setDataTypeValue)
+                static_cast<void (ShaderOGLCustom::*)(const std::string&, int)>(&ShaderOGLCustom::setDataTypeValue),
+                static_cast<void (ShaderOGLCustom::*)(const std::string&, float)>(&ShaderOGLCustom::setDataTypeValue),
+                static_cast<void (ShaderOGLCustom::*)(const std::string&, glm::vec2)>(&ShaderOGLCustom::setDataTypeValue),
+                static_cast<void (ShaderOGLCustom::*)(const std::string&, glm::vec3)>(&ShaderOGLCustom::setDataTypeValue),
+                static_cast<void (ShaderOGLCustom::*)(const std::string&, glm::vec4)>(&ShaderOGLCustom::setDataTypeValue)
             )
     );
 

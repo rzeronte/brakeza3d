@@ -275,7 +275,6 @@ void ShaderBaseOpenGL::setMat3(const std::string &name, const glm::mat3 &mat) co
 {
     glUniformMatrix3fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
-
 void ShaderBaseOpenGL::setMat3Uniform(GLuint uniform, const glm::mat3 &mat)
 {
     glUniformMatrix3fv(uniform, 1, GL_FALSE, &mat[0][0]);
@@ -285,16 +284,15 @@ void ShaderBaseOpenGL::setMat4(const std::string &name, const glm::mat4 &mat) co
 {
     glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
-
 void ShaderBaseOpenGL::setMat4Array(const std::string &name, std::vector<glm::mat4> &Transforms) const
 {
     glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), static_cast<GLsizei>(Transforms.size()), GL_FALSE, glm::value_ptr(Transforms[0]));
 }
-
 void ShaderBaseOpenGL::setMat4ArrayUniform(GLuint uniform, std::vector<glm::mat4> &Transforms)
 {
     glUniformMatrix4fv(uniform, static_cast<GLsizei>(Transforms.size()), GL_FALSE, glm::value_ptr(Transforms[0]));
 }
+// ------------------------------------------------------------------------
 
 std::string ShaderBaseOpenGL::getVertexFilename() const
 {
@@ -324,6 +322,45 @@ void ShaderBaseOpenGL::setVAOAttributes(GLuint vertexBuffer, GLuint uvBuffer, GL
 void ShaderBaseOpenGL::setMat4Uniform(GLuint uniform, const glm::mat4 &mat)
 {
     glUniformMatrix4fv(uniform, 1, GL_FALSE, &mat[0][0]);
+}
+
+void ShaderBaseOpenGL::setTextureUniform(GLuint uniform, GLuint texture, int index)
+{
+    if (index == 0) {
+        glActiveTexture(GL_TEXTURE0);
+    } else if (index == 1) {
+        glActiveTexture(GL_TEXTURE1);
+    } else if (index == 2) {
+        glActiveTexture(GL_TEXTURE2);
+    } else if (index == 3) {
+        glActiveTexture(GL_TEXTURE3);
+    } else if (index == 4) {
+        glActiveTexture(GL_TEXTURE4);
+    } else if (index == 5) {
+        glActiveTexture(GL_TEXTURE5);
+    }
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glUniform1i(uniform, index);
+}
+
+void ShaderBaseOpenGL::setTextureArrayUniform(GLuint uniform, GLuint texture, int index)
+{
+    if (index == 0) {
+        glActiveTexture(GL_TEXTURE0);
+    } else if (index == 1) {
+        glActiveTexture(GL_TEXTURE1);
+    } else if (index == 2) {
+        glActiveTexture(GL_TEXTURE2);
+    } else if (index == 3) {
+        glActiveTexture(GL_TEXTURE3);
+    } else if (index == 4) {
+        glActiveTexture(GL_TEXTURE4);
+    } else if (index == 5) {
+        glActiveTexture(GL_TEXTURE5);
+    }
+
+    glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
+    glUniform1i(uniform, index);
 }
 
 void ShaderBaseOpenGL::setTexture(const std::string &name, GLuint textureID, int index) const

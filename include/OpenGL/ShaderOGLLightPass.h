@@ -6,30 +6,31 @@
 
 class ShaderOGLLightPass : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {
 
-    GLuint gPositionUniform;
-    GLuint gNormalUniform;
-    GLuint viewPosUniform;
-    GLuint numPointLightsUniform;
-    GLuint numSpotLightsUniform;
+    GLuint gPositionUniform = 0;
+    GLuint gNormalUniform = 0;
+    GLuint viewPosUniform = 0;
+    GLuint numPointLightsUniform = 0;
+    GLuint numSpotLightsUniform = 0;
+    GLuint shadowMapArrayUniform = 0;
 
-    GLuint directionalLightDirectionUniform;
-    GLuint directionalLightAmbientUniform;
-    GLuint directionalLightDiffuseUniform;
-    GLuint directionalLightSpecularUniform;
-    GLuint directionalLightMatrixUniform;
+    GLuint directionalLightDirectionUniform = 0;
+    GLuint directionalLightAmbientUniform = 0;
+    GLuint directionalLightDiffuseUniform = 0;
+    GLuint directionalLightSpecularUniform = 0;
+    GLuint directionalLightMatrixUniform = 0;
 
-    GLuint dirLightShadowMapTextureUniform;
+    GLuint dirLightShadowMapTextureUniform = 0;
 
-    GLuint materialTextureDiffuseUniform;
-    GLuint materialTextureSpecularUniform;
-    GLuint materialShininessUniform;
+    GLuint materialTextureDiffuseUniform = 0;
+    GLuint materialTextureSpecularUniform = 0;
+    GLuint materialShininessUniform = 0;
 
-    GLuint numSpotLightShadowMapsUniform;
-    GLuint debugShadowMappingUniform;
-    GLuint shadowMappingIntensityUniform;
-    GLuint enableDirectionalLightShadowMapUniform;
+    GLuint numSpotLightShadowMapsUniform = 0;
+    GLuint debugShadowMappingUniform = 0;
+    GLuint shadowMappingIntensityUniform = 0;
+    GLuint enableDirectionalLightShadowMapUniform = 0;
 
-    GLuint bufferSpotLightsMatricesUBO;
+    GLuint bufferSpotLightsMatricesUBO = 0;
 
 public:
     ShaderOGLLightPass();

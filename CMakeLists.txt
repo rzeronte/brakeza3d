@@ -150,20 +150,20 @@ add_executable(Brakeza3D
     src/Components/ComponentInput.cpp               include/Components/ComponentInput.h
     src/Components/ComponentSound.cpp               include/Components/ComponentSound.h
 
-    src/OpenGL/ShaderOpenGLDOF.cpp                  include/OpenGL/ShaderOpenGLDOF.h
-    src/OpenGL/ShaderOpenGLDepthMap.cpp             include/OpenGL/ShaderOpenGLDepthMap.h
-    src/OpenGL/ShaderOpenGLFOG.cpp                  include/OpenGL/ShaderOpenGLFOG.h
+        src/OpenGL/ShaderOGLDOF.cpp include/OpenGL/ShaderOGLDOF.h
+        src/OpenGL/ShaderOGLDepthMap.cpp include/OpenGL/ShaderOGLDepthMap.h
+        src/OpenGL/ShaderOGLFog.cpp include/OpenGL/ShaderOGLFog.h
         src/OpenGL/ShaderBaseOpenGLQuad.cpp include/OpenGL/ShaderBaseOpenGLQuad.h
-    src/OpenGL/ShaderOpenGLColor.cpp                include/OpenGL/ShaderOpenGLColor.h
+        src/OpenGL/ShaderOGLColor.cpp include/OpenGL/ShaderOGLColor.h
         src/OpenGL/ShaderBaseOpenGL.cpp include/OpenGL/ShaderBaseOpenGL.h
-    src/OpenGL/ShaderOpenGLImage.cpp                include/OpenGL/ShaderOpenGLImage.h
+        src/OpenGL/ShaderOGLImage.cpp include/OpenGL/ShaderOGLImage.h
         src/OpenGL/ShaderOGLRenderForward.cpp include/OpenGL/ShaderOGLRenderForward.h
-    src/OpenGL/ShaderOpenGLLine.cpp                 include/OpenGL/ShaderOpenGLLine.h
-    src/OpenGL/ShaderOpenGLWireframe.cpp            include/OpenGL/ShaderOpenGLWireframe.h
-    src/OpenGL/ShaderOpenGLShading.cpp              include/OpenGL/ShaderOpenGLShading.h
-    src/OpenGL/ShaderOpenGLPoints.cpp               include/OpenGL/ShaderOpenGLPoints.h
-    src/OpenGL/ShaderOpenGLCustom.cpp               include/OpenGL/ShaderOpenGLCustom.h
-    src/OpenGL/ShaderOpenGLTint.cpp                 include/OpenGL/ShaderOpenGLTint.h
+        src/OpenGL/ShaderOGLLine.cpp include/OpenGL/ShaderOGLLine.h
+        src/OpenGL/ShaderOGLWire.cpp include/OpenGL/ShaderOGLWire.h
+        src/OpenGL/ShaderOGLShading.cpp include/OpenGL/ShaderOGLShading.h
+        src/OpenGL/ShaderOGLPoints.cpp include/OpenGL/ShaderOGLPoints.h
+        src/OpenGL/ShaderOGLCustom.cpp include/OpenGL/ShaderOGLCustom.h
+        src/OpenGL/ShaderOGLTint.cpp include/OpenGL/ShaderOGLTint.h
 
     src/Collisions/SimplePendulum.cpp               include/Physics/SimplePendulum.h
     src/Collisions/Collider.cpp                     include/Collision/Collider.h
@@ -203,8 +203,8 @@ add_executable(Brakeza3D
     include/OpenGL/FXEffectOpenGLObject.h
     include/OpenGL/FXBase.h
     include/OpenGL/FXOpenGL.h
-    include/OpenGL/ShaderOpenGLParticles.h          src/OpenGL/ShaderOpenGLParticles.cpp
-    include/OpenGL/ShaderOpenGLOutline.h            src/OpenGL/ShaderOpenGLOutline.cpp
+        include/OpenGL/ShaderOGLParticles.h src/OpenGL/ShaderOGLParticles.cpp
+        include/OpenGL/ShaderOGLOutline.h src/OpenGL/ShaderOGLOutline.cpp
 
     include/Objects/OpenGLShaderTypes.h
     include/Objects/ParticlesContext.h
@@ -212,20 +212,20 @@ add_executable(Brakeza3D
 
     include/Render/ObjectShaderOpenCL.cpp
     src/Misc/ToolsJSON.cpp                          include/Misc/ToolsJSON.h
-    src/OpenGL/ShaderOpenGLLine3D.cpp               include/OpenGL/ShaderOpenGLLine3D.h
+        src/OpenGL/ShaderOGLLine3D.cpp include/OpenGL/ShaderOGLLine3D.h
     src/Misc/ProjectLoader.cpp                      include/Misc/ProjectLoader.h
     include/cxxxopts.h
     include/Misc/PathFinding.h
-    src/OpenGL/ShaderOpenGLCustomPostprocessing.cpp    include/OpenGL/ShaderOpenGLCustomPostprocessing.h
-    src/OpenGL/ShaderOpenGLCustomMesh3D.cpp            include/OpenGL/ShaderOpenGLCustomMesh3D.h
-        src/OpenGL/ShaderOpenGLBonesTransforms.cpp
-        include/OpenGL/ShaderOpenGLBonesTransforms.h
+        src/OpenGL/ShaderOGLCustomPostprocessing.cpp include/OpenGL/ShaderOGLCustomPostprocessing.h
+        src/OpenGL/ShaderOGLCustomMesh3D.cpp include/OpenGL/ShaderOGLCustomMesh3D.h
+        src/OpenGL/ShaderOGLBonesTransforms.cpp
+        include/OpenGL/ShaderOGLBonesTransforms.h
         src/Collisions/ColliderMesh3DAnimation.cpp
         include/Collision/AssimpAnimationService.h
         include/Collision/CollisionInfo.cpp
         include/Collision/CollisionInfo.h
-        src/OpenGL/ShaderOGLGRenderDeferred.cpp
-        include/OpenGL/ShaderOGLGRenderDeferred.h
+        src/OpenGL/ShaderOGLRenderDeferred.cpp
+        include/OpenGL/ShaderOGLRenderDeferred.h
         src/OpenGL/ShaderOGLLightPass.cpp
         include/OpenGL/ShaderOGLLightPass.h
         src/OpenGL/ShaderOGLShadowPass.cpp

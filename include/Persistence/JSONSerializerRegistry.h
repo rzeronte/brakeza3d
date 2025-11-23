@@ -14,9 +14,7 @@
 class JSONSerializerRegistry
 {
     std::unordered_map<std::string, std::shared_ptr<JSONSerializer>> serializers;
-
     JSONSerializerRegistry() = default;
-
 public:
     JSONSerializerRegistry(const JSONSerializerRegistry&) = delete;
     JSONSerializerRegistry& operator=(const JSONSerializerRegistry&) = delete;

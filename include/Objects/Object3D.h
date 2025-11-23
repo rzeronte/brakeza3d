@@ -32,12 +32,8 @@ struct ObjectGUIFeatures {
     bool misc = true;
 };
 
-class JSONSerializer;
-class JSONSerializerRegistry;
-
 class Object3D: public Collider
 {
-
 protected:
     int id = 0;
     float scale = 1.f;
@@ -66,8 +62,8 @@ protected:
     Timer timer;
     Color pickingColor;
     bool enabled = true;
-    Vertex3D position;
-    M3 rotation;
+    Vertex3D position = Vertex3D(1, 1, 1);
+    M3 rotation = M3::getMatrixIdentity();
 public:
     Object3D();
     virtual ~Object3D();

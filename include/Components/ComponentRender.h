@@ -11,22 +11,22 @@
 #include "../2D/TextWriter.h"
 #include "../Misc/SceneLoader.h"
 #include "../Misc/ProjectLoader.h"
-#include "../OpenGL/ShaderOpenGLImage.h"
+#include "../OpenGL/ShaderOGLImage.h"
 #include "../OpenGL/ShaderOGLRenderForward.h"
-#include "../OpenGL/ShaderOpenGLLine.h"
-#include "../OpenGL/ShaderOpenGLWireframe.h"
-#include "../OpenGL/ShaderOpenGLShading.h"
-#include "../OpenGL/ShaderOpenGLPoints.h"
-#include "../OpenGL/ShaderOpenGLOutline.h"
-#include "../OpenGL/ShaderOpenGLColor.h"
-#include "../OpenGL/ShaderOpenGLParticles.h"
-#include "../OpenGL/ShaderOpenGLDOF.h"
-#include "../OpenGL/ShaderOpenGLDepthMap.h"
-#include "../OpenGL/ShaderOpenGLFOG.h"
-#include "../OpenGL/ShaderOpenGLTint.h"
-#include "../OpenGL/ShaderOpenGLLine3D.h"
-#include "../OpenGL/ShaderOpenGLBonesTransforms.h"
-#include "../OpenGL/ShaderOGLGRenderDeferred.h"
+#include "../OpenGL/ShaderOGLLine.h"
+#include "../OpenGL/ShaderOGLWire.h"
+#include "../OpenGL/ShaderOGLShading.h"
+#include "../OpenGL/ShaderOGLPoints.h"
+#include "../OpenGL/ShaderOGLOutline.h"
+#include "../OpenGL/ShaderOGLColor.h"
+#include "../OpenGL/ShaderOGLParticles.h"
+#include "../OpenGL/ShaderOGLDOF.h"
+#include "../OpenGL/ShaderOGLDepthMap.h"
+#include "../OpenGL/ShaderOGLFog.h"
+#include "../OpenGL/ShaderOGLTint.h"
+#include "../OpenGL/ShaderOGLLine3D.h"
+#include "../OpenGL/ShaderOGLBonesTransforms.h"
+#include "../OpenGL/ShaderOGLRenderDeferred.h"
 #include "../OpenGL/ShaderOGLLightPass.h"
 #include "../OpenGL/ShaderOGLShadowPass.h"
 #include "../OpenGL/ShaderOGLShadowPassDebugLight.h"
@@ -44,24 +44,24 @@ class ComponentRender : public Component {
     ProjectLoader projectLoader;
 
     bool sceneShadersEnabled = false;
-    std::vector<ShaderOpenGLCustom*> sceneShaders;
+    std::vector<ShaderOGLCustom*> sceneShaders;
 
     ShaderOGLRenderForward *shaderOGLRender = nullptr;
-    ShaderOpenGLImage *shaderOGLImage = nullptr;
-    ShaderOpenGLLine *shaderOGLLine = nullptr;
-    ShaderOpenGLWireframe *shaderOGLWireframe = nullptr;
-    ShaderOpenGLLine3D *shaderOGLLine3D = nullptr;
-    ShaderOpenGLShading *shaderOGLShading = nullptr;
-    ShaderOpenGLPoints *shaderOGLPoints = nullptr;
-    ShaderOpenGLOutline *shaderOGLOutline = nullptr;
-    ShaderOpenGLColor *shaderOGLColor = nullptr;
-    ShaderOpenGLParticles *shaderOGLParticles = nullptr;
-    ShaderOpenGLDOF *shaderOGLDOFBlur = nullptr;
-    ShaderOpenGLDepthMap *shaderOGLDepthMap = nullptr;
-    ShaderOpenGLFOG *shaderOGLFOG = nullptr;
-    ShaderOpenGLTint *shaderOGLTint = nullptr;
-    ShaderOpenGLBonesTransforms *shaderOGLBonesTransforms = nullptr;
-    ShaderOGLGRenderDeferred *shaderOGLGBuffer = nullptr;
+    ShaderOGLImage *shaderOGLImage = nullptr;
+    ShaderOGLLine *shaderOGLLine = nullptr;
+    ShaderOGLWire *shaderOGLWireframe = nullptr;
+    ShaderOGLLine3D *shaderOGLLine3D = nullptr;
+    ShaderOGLShading *shaderOGLShading = nullptr;
+    ShaderOGLPoints *shaderOGLPoints = nullptr;
+    ShaderOGLOutline *shaderOGLOutline = nullptr;
+    ShaderOGLColor *shaderOGLColor = nullptr;
+    ShaderOGLParticles *shaderOGLParticles = nullptr;
+    ShaderOGLDOF *shaderOGLDOFBlur = nullptr;
+    ShaderOGLDepthMap *shaderOGLDepthMap = nullptr;
+    ShaderOGLFog *shaderOGLFOG = nullptr;
+    ShaderOGLTint *shaderOGLTint = nullptr;
+    ShaderOGLBonesTransforms *shaderOGLBonesTransforms = nullptr;
+    ShaderOGLRenderDeferred *shaderOGLGBuffer = nullptr;
     ShaderOGLLightPass *shaderOGLLightPass = nullptr;
     ShaderOGLShadowPass *shaderShadowPass = nullptr;
     ShaderOGLShadowPassDebugLight *shaderShadowPassDebugLight = nullptr;
@@ -85,24 +85,24 @@ public:
     void onEnd() override;
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
 
-    [[nodiscard]] ShaderOpenGLLine3D *getShaderOGLLine3D() const;
-    [[nodiscard]] ShaderOpenGLImage *getShaderOGLImage() const;
+    [[nodiscard]] ShaderOGLLine3D *getShaderOGLLine3D() const;
+    [[nodiscard]] ShaderOGLImage *getShaderOGLImage() const;
     [[nodiscard]] ShaderOGLRenderForward *getShaderOGLRenderForward() const;
-    [[nodiscard]] ShaderOpenGLLine *getShaderOGLLine() const;
-    [[nodiscard]] ShaderOpenGLWireframe *getShaderOGLWireframe() const;
-    [[nodiscard]] ShaderOpenGLShading *getShaderOGLShading() const;
-    [[nodiscard]] ShaderOpenGLPoints *getShaderOGLPoints() const;
-    [[nodiscard]] ShaderOpenGLOutline *getShaderOGLOutline() const;
-    [[nodiscard]] ShaderOpenGLColor *getShaderOGLColor() const;
-    [[nodiscard]] ShaderOpenGLParticles *getShaderOGLParticles() const;
-    [[nodiscard]] ShaderOpenGLDOF *getShaderOGLDOF() const;
-    [[nodiscard]] ShaderOpenGLFOG *getShaderOGLFOG() const;
-    [[nodiscard]] ShaderOpenGLTint *getShaderOGLTint() const;
-    [[nodiscard]] ShaderOpenGLBonesTransforms *getShaderOGLBonesTransforms() const;
+    [[nodiscard]] ShaderOGLLine *getShaderOGLLine() const;
+    [[nodiscard]] ShaderOGLWire *getShaderOGLWireframe() const;
+    [[nodiscard]] ShaderOGLShading *getShaderOGLShading() const;
+    [[nodiscard]] ShaderOGLPoints *getShaderOGLPoints() const;
+    [[nodiscard]] ShaderOGLOutline *getShaderOGLOutline() const;
+    [[nodiscard]] ShaderOGLColor *getShaderOGLColor() const;
+    [[nodiscard]] ShaderOGLParticles *getShaderOGLParticles() const;
+    [[nodiscard]] ShaderOGLDOF *getShaderOGLDOF() const;
+    [[nodiscard]] ShaderOGLFog *getShaderOGLFOG() const;
+    [[nodiscard]] ShaderOGLTint *getShaderOGLTint() const;
+    [[nodiscard]] ShaderOGLBonesTransforms *getShaderOGLBonesTransforms() const;
     [[nodiscard]] ShaderOGLShadowPass *getShaderOGLShadowPass() const;
     [[nodiscard]] ShaderOGLShadowPassDebugLight *getShaderOGLShadowPassDebugLight() const;
-    [[nodiscard]] ShaderOpenGLDepthMap *getShaderOGLDepthMap() const;
-    [[nodiscard]] ShaderOGLGRenderDeferred *getShaderOGLRenderDeferred() const;
+    [[nodiscard]] ShaderOGLDepthMap *getShaderOGLDepthMap() const;
+    [[nodiscard]] ShaderOGLRenderDeferred *getShaderOGLRenderDeferred() const;
     [[nodiscard]] ShaderOGLLightPass *getShaderOGLLightPass() const;
     [[nodiscard]] GLuint getLastFrameBufferUsed() const;
     [[nodiscard]] Object3D* getSelectedObject() const;
@@ -112,18 +112,18 @@ public:
     [[nodiscard]] const std::map<std::string, ShaderCustomTypes> &getShaderTypesMapping() const;
     SceneLoader &getSceneLoader();
     ProjectLoader &getProjectLoader();
-    std::vector<ShaderOpenGLCustom *> &getSceneShaders();
-    ShaderOpenGLCustom *getSceneShaderByIndex(int i) const;
-    ShaderOpenGLCustom *getSceneShaderByLabel(const std::string& name) const;
+    std::vector<ShaderOGLCustom *> &getSceneShaders();
+    ShaderOGLCustom *getSceneShaderByIndex(int i) const;
+    ShaderOGLCustom *getSceneShaderByLabel(const std::string& name) const;
     void setSelectedObject(Object3D *o);
     void updateFPS();
     void updateSelectedObject3D();
     void loadShaderIntoScene(const std::string &folder, const std::string &name);
-    void addShaderToScene(ShaderOpenGLCustom *shader);
+    void addShaderToScene(ShaderOGLCustom *shader);
     void setSceneShadersEnabled(bool value);
     void RunShadersOpenGLPostUpdate() const;
     void removeSceneShaderByIndex(int index);
-    void removeSceneShader(const ShaderOpenGLCustom *);
+    void removeSceneShader(const ShaderOGLCustom *);
     void RunShadersOpenGLPreUpdate() const;
     void setGlobalIlluminationDirection(const Vertex3D &d) const;
     void setGlobalIlluminationAmbient(const Vertex3D &a) const;
@@ -139,7 +139,7 @@ public:
     void RenderLayersToGlobalFramebuffer() const;
     static bool compareDistances(const Object3D *obj1, const Object3D *obj2);
     static void FillOGLBuffers(std::vector<Mesh3DData> &meshes);
-    static ShaderOpenGLCustom* getLoadedShader(const std::string &folder, const std::string &jsonFilename);
+    static ShaderOGLCustom* getLoadedShader(const std::string &folder, const std::string &jsonFilename);
     static void deleteRemovedObjects();
     static void onUpdateSceneObjects();
     static Object3D *getObject3DFromClickPoint(int x, int y);

@@ -16,7 +16,7 @@
 #include "../../include/Objects/Mesh3DAnimation.h"
 #include "../../include/Objects/Image3DAnimation8Directions.h"
 #include "../../include/Misc/ToolsJSON.h"
-#include "../../include/OpenGL/ShaderOpenGLCustomPostprocessing.h"
+#include "../../include/OpenGL/ShaderOGLCustomPostprocessing.h"
 #include "../../include/Persistence/JSONSerializerRegistry.h"
 #include "../../include/Persistence/Object3DSerializer.h"
 #include "../../include/Persistence/Mesh3DSerializer.h"
@@ -141,7 +141,7 @@ void SceneLoader::LoadScene(const std::string& filename)
         auto fragment = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;
         auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
 
-        auto shader = new ShaderOpenGLCustomPostprocessing(name, vertex, fragment, types);
+        auto shader = new ShaderOGLCustomPostprocessing(name, vertex, fragment, types);
         ComponentsManager::get()->getComponentRender()->addShaderToScene(shader);
     }
 
