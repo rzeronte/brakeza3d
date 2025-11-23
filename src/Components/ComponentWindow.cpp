@@ -7,7 +7,7 @@
 #include <SDL_image.h>
 
 #include "../../include/Render/Logging.h"
-#include "../../include/OpenGL/ShaderOpenGLImage.h"
+#include "../../include/OpenGL/ShaderOGLImage.h"
 #include "../imgui/backends/imgui_impl_opengl3.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
 #include "imgui_internal.h"

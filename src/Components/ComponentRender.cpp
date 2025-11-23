@@ -1,8 +1,8 @@
 #include "../../include/Components/ComponentRender.h"
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/OpenGL/ShaderOpenGLCustomPostprocessing.h"
-#include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
+#include "../../include/OpenGL/ShaderOGLCustomPostprocessing.h"
+#include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Render/Drawable.h"
@@ -30,21 +30,21 @@ void ComponentRender::onStart()
     textWriter = new TextWriter(window->getRenderer(),window->getFontDefault());
 
     shaderOGLRender = new ShaderOGLRenderForward();
-    shaderOGLImage = new ShaderOpenGLImage();
-    shaderOGLLine = new ShaderOpenGLLine();
-    shaderOGLWireframe = new ShaderOpenGLWireframe();
-    shaderOGLLine3D = new ShaderOpenGLLine3D();
-    shaderOGLShading = new ShaderOpenGLShading();
-    shaderOGLPoints = new ShaderOpenGLPoints();
-    shaderOGLOutline = new ShaderOpenGLOutline();
-    shaderOGLColor = new ShaderOpenGLColor();
-    shaderOGLParticles = new ShaderOpenGLParticles();
-    shaderOGLDOFBlur = new ShaderOpenGLDOF();
-    shaderOGLDepthMap = new ShaderOpenGLDepthMap();
-    shaderOGLFOG = new ShaderOpenGLFOG();
-    shaderOGLTint = new ShaderOpenGLTint();
-    shaderOGLBonesTransforms = new ShaderOpenGLBonesTransforms();
-    shaderOGLGBuffer = new ShaderOGLGRenderDeferred();
+    shaderOGLImage = new ShaderOGLImage();
+    shaderOGLLine = new ShaderOGLLine();
+    shaderOGLWireframe = new ShaderOGLWire();
+    shaderOGLLine3D = new ShaderOGLLine3D();
+    shaderOGLShading = new ShaderOGLShading();
+    shaderOGLPoints = new ShaderOGLPoints();
+    shaderOGLOutline = new ShaderOGLOutline();
+    shaderOGLColor = new ShaderOGLColor();
+    shaderOGLParticles = new ShaderOGLParticles();
+    shaderOGLDOFBlur = new ShaderOGLDOF();
+    shaderOGLDepthMap = new ShaderOGLDepthMap();
+    shaderOGLFOG = new ShaderOGLFog();
+    shaderOGLTint = new ShaderOGLTint();
+    shaderOGLBonesTransforms = new ShaderOGLBonesTransforms();
+    shaderOGLGBuffer = new ShaderOGLRenderDeferred();
     shaderOGLLightPass = new ShaderOGLLightPass();
     shaderShadowPass = new ShaderOGLShadowPass();
     shaderShadowPassDebugLight = new ShaderOGLShadowPassDebugLight();
@@ -214,7 +214,7 @@ ProjectLoader &ComponentRender::getProjectLoader()
     return projectLoader;
 }
 
-std::vector<ShaderOpenGLCustom *> &ComponentRender::getSceneShaders() {
+std::vector<ShaderOGLCustom *> &ComponentRender::getSceneShaders() {
     return sceneShaders;
 }
 
@@ -225,14 +225,14 @@ void ComponentRender::loadShaderIntoScene(const std::string &folder, const std::
     std::string shaderFragmentFile = folder + std::string(name + ".fs");
     std::string shaderVertexFile = folder + std::string(name + ".vs");
 
-    auto type = ShaderOpenGLCustom::extractTypeFromShaderName(folder, name);
+    auto type = ShaderOGLCustom::extractTypeFromShaderName(folder, name);
 
     Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
 
     switch(type) {
         case SHADER_POSTPROCESSING : {
             this->addShaderToScene(
-                new ShaderOpenGLCustomPostprocessing(name, shaderVertexFile, shaderFragmentFile)
+                new ShaderOGLCustomPostprocessing(name, shaderVertexFile, shaderFragmentFile)
             );
             break;
         }
@@ -244,29 +244,29 @@ void ComponentRender::loadShaderIntoScene(const std::string &folder, const std::
     }
 }
 
-ShaderOpenGLCustom* ComponentRender::getLoadedShader(const std::string &folder, const std::string &jsonFilename)
+ShaderOGLCustom* ComponentRender::getLoadedShader(const std::string &folder, const std::string &jsonFilename)
 {
     auto name = Tools::getFilenameWithoutExtension(jsonFilename);
 
     std::string shaderFragmentFile = folder + std::string(name + ".fs");
     std::string shaderVertexFile = folder + std::string(name + ".vs");
 
-    auto type = ShaderOpenGLCustom::extractTypeFromShaderName(folder, name);
+    auto type = ShaderOGLCustom::extractTypeFromShaderName(folder, name);
 
     Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
 
     switch(type) {
         case SHADER_POSTPROCESSING : {
-            return new ShaderOpenGLCustomPostprocessing(name, shaderVertexFile, shaderFragmentFile);
+            return new ShaderOGLCustomPostprocessing(name, shaderVertexFile, shaderFragmentFile);
         }
         default:
         case SHADER_OBJECT : {
-            return new ShaderOpenGLCustomMesh3D(nullptr, name, shaderVertexFile, shaderFragmentFile);
+            return new ShaderOGLCustomMesh3D(nullptr, name, shaderVertexFile, shaderFragmentFile);
         }
     }
 }
 
-void ComponentRender::addShaderToScene(ShaderOpenGLCustom *shader)
+void ComponentRender::addShaderToScene(ShaderOGLCustom *shader)
 {
     sceneShaders.push_back(shader);
 }
@@ -296,7 +296,7 @@ void ComponentRender::removeSceneShaderByIndex(int index) {
     }
 }
 
-void ComponentRender::removeSceneShader(const ShaderOpenGLCustom *shader)
+void ComponentRender::removeSceneShader(const ShaderOGLCustom *shader)
 {
     Logging::Message("Removing SCENE script %s", shader->getLabel().c_str());
 
@@ -317,12 +317,12 @@ void ComponentRender::RunShadersOpenGLPreUpdate() const
     }
 }
 
-ShaderOpenGLCustom *ComponentRender::getSceneShaderByIndex(int i) const
+ShaderOGLCustom *ComponentRender::getSceneShaderByIndex(int i) const
 {
     return sceneShaders[i];
 }
 
-ShaderOpenGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name) const
+ShaderOGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name) const
 {
     for (auto &s: sceneShaders) {
         if (s->getLabel() == name) {
@@ -368,12 +368,12 @@ void ComponentRender::drawLine(const Vertex3D &from, const Vertex3D &to, const C
     );
 }
 
-ShaderOpenGLLine3D *ComponentRender::getShaderOGLLine3D() const
+ShaderOGLLine3D *ComponentRender::getShaderOGLLine3D() const
 {
     return shaderOGLLine3D;
 }
 
-ShaderOpenGLImage *ComponentRender::getShaderOGLImage() const
+ShaderOGLImage *ComponentRender::getShaderOGLImage() const
 {
     return shaderOGLImage;
 }
@@ -383,57 +383,57 @@ ShaderOGLRenderForward *ComponentRender::getShaderOGLRenderForward() const
     return shaderOGLRender;
 }
 
-ShaderOpenGLLine *ComponentRender::getShaderOGLLine() const
+ShaderOGLLine *ComponentRender::getShaderOGLLine() const
 {
     return shaderOGLLine;
 }
 
-ShaderOpenGLWireframe *ComponentRender::getShaderOGLWireframe() const
+ShaderOGLWire *ComponentRender::getShaderOGLWireframe() const
 {
     return shaderOGLWireframe;
 }
 
-ShaderOpenGLShading *ComponentRender::getShaderOGLShading() const
+ShaderOGLShading *ComponentRender::getShaderOGLShading() const
 {
     return shaderOGLShading;
 }
 
-ShaderOpenGLPoints *ComponentRender::getShaderOGLPoints() const
+ShaderOGLPoints *ComponentRender::getShaderOGLPoints() const
 {
     return shaderOGLPoints;
 }
 
-ShaderOpenGLOutline *ComponentRender::getShaderOGLOutline() const
+ShaderOGLOutline *ComponentRender::getShaderOGLOutline() const
 {
     return shaderOGLOutline;
 }
 
-ShaderOpenGLColor *ComponentRender::getShaderOGLColor() const
+ShaderOGLColor *ComponentRender::getShaderOGLColor() const
 {
     return shaderOGLColor;
 }
 
-ShaderOpenGLParticles *ComponentRender::getShaderOGLParticles() const
+ShaderOGLParticles *ComponentRender::getShaderOGLParticles() const
 {
     return shaderOGLParticles;
 }
 
-ShaderOpenGLDOF *ComponentRender::getShaderOGLDOF() const
+ShaderOGLDOF *ComponentRender::getShaderOGLDOF() const
 {
     return shaderOGLDOFBlur;
 }
 
-ShaderOpenGLFOG *ComponentRender::getShaderOGLFOG() const
+ShaderOGLFog *ComponentRender::getShaderOGLFOG() const
 {
     return shaderOGLFOG;
 }
 
-ShaderOpenGLTint *ComponentRender::getShaderOGLTint() const
+ShaderOGLTint *ComponentRender::getShaderOGLTint() const
 {
     return shaderOGLTint;
 }
 
-ShaderOpenGLBonesTransforms *ComponentRender::getShaderOGLBonesTransforms() const
+ShaderOGLBonesTransforms *ComponentRender::getShaderOGLBonesTransforms() const
 {
     return shaderOGLBonesTransforms;
 }
@@ -448,12 +448,12 @@ ShaderOGLShadowPassDebugLight *ComponentRender::getShaderOGLShadowPassDebugLight
     return shaderShadowPassDebugLight;
 }
 
-ShaderOpenGLDepthMap *ComponentRender::getShaderOGLDepthMap() const
+ShaderOGLDepthMap *ComponentRender::getShaderOGLDepthMap() const
 {
     return shaderOGLDepthMap;
 }
 
-ShaderOGLGRenderDeferred *ComponentRender::getShaderOGLRenderDeferred() const
+ShaderOGLRenderDeferred *ComponentRender::getShaderOGLRenderDeferred() const
 {
     return shaderOGLGBuffer;
 }

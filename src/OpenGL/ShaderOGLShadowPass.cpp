@@ -35,7 +35,7 @@ void ShaderOGLShadowPass::renderMeshIntoArrayTextures(
     GLuint fb
 ) const
 {
-    for (const auto& m: o->meshes) {
+    for (const auto& m: o->getMeshData()) {
         renderIntoArrayDepthTextures(
             o,
             light,
@@ -52,7 +52,7 @@ void ShaderOGLShadowPass::renderMeshIntoArrayTextures(
 
 void ShaderOGLShadowPass::renderMeshIntoDirectionalLightTexture(Mesh3D *o, const DirLightOpenGL& light, GLuint fbo) const
 {
-    for (const auto& m: o->meshes) {
+    for (const auto& m: o->getMeshData()) {
         renderIntoDirectionalLightTexture(
             o,
             light,
@@ -65,9 +65,6 @@ void ShaderOGLShadowPass::renderMeshIntoDirectionalLightTexture(Mesh3D *o, const
     }
 }
 
-
-
-
 void ShaderOGLShadowPass::renderMeshAnimatedIntoArrayTextures(
     Mesh3DAnimation *o,
     LightSpot* light,
@@ -76,7 +73,7 @@ void ShaderOGLShadowPass::renderMeshAnimatedIntoArrayTextures(
     GLuint fb
 ) const
 {
-    for (const auto& m: o->meshes) {
+    for (const auto& m: o->getMeshData()) {
         renderIntoArrayDepthTextures(
             o,
             light,
@@ -93,7 +90,7 @@ void ShaderOGLShadowPass::renderMeshAnimatedIntoArrayTextures(
 
 void ShaderOGLShadowPass::renderMeshAnimatedIntoDirectionalLightTexture(Mesh3DAnimation *o, const DirLightOpenGL& light, GLuint fbo) const
 {
-    for (const auto& m: o->meshes) {
+    for (const auto& m: o->getMeshData()) {
         renderIntoDirectionalLightTexture(
             o,
             light,

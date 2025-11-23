@@ -137,7 +137,7 @@ void ShaderOGLRenderForward::destroy()
 
 void ShaderOGLRenderForward::renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo) const
 {
-    for (const auto& m: o->meshes) {
+    for (const auto& m: o->getMeshData()) {
         render(
             o,
             o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
