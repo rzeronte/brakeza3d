@@ -63,7 +63,7 @@ public:
 
     void drawImGuiProperties() override;
 
-    cJSON *getJSON() override;
+    cJSON *getJSON(ParticleEmitter *object);
 
     static void createFromJSON(cJSON *object);
 

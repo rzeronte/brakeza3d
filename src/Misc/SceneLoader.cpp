@@ -17,17 +17,23 @@
 #include "../../include/Objects/Image3DAnimation8Directions.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/OpenGL/ShaderOpenGLCustomPostprocessing.h"
-#include "../../include/Persistence/Image3DPersistence.h"
+#include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Persistence/Object3DSerializer.h"
+#include "../../include/Persistence/Mesh3DSerializer.h"
 
-SceneLoader::SceneLoader() = default;
-
-void SceneLoader::loadScene(const std::string& filename)
+SceneLoader::SceneLoader()
 {
+    InitSerializers();
+}
+
+void SceneLoader::LoadScene(const std::string& filename)
+{
+    std::cout <<"Loading '%s' scene" << filename.c_str() << std::endl;
+    Logging::Message("Loading '%s' scene", filename.c_str());
+
     size_t file_size;
     auto contentFile = Tools::readFile(filename, file_size);
     auto contentJSON = cJSON_Parse(contentFile);
-
-    Logging::Message("Loading '%s' scene", filename.c_str());
 
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
     auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward();
@@ -82,11 +88,11 @@ void SceneLoader::loadScene(const std::string& filename)
 
         switch(SceneObjectTypesMapping[typeObject.c_str()]) {
             case SceneObjectLoaderMapping::Object3D : {
-                Object3D::createFromJSON(currentObject);
+                SceneLoaderCreateObject(currentObject);
                 break;
             }
             case SceneObjectLoaderMapping::Mesh3D : {
-                Mesh3D::createFromJSON(currentObject);
+                SceneLoaderCreateObject(currentObject);
                 break;
             }
             case SceneObjectLoaderMapping::Mesh3DAnimation : {
@@ -150,7 +156,7 @@ void SceneLoader::loadScene(const std::string& filename)
     }
 }
 
-void SceneLoader::saveScene(const std::string &filename)
+void SceneLoader::SaveScene(const std::string &filename)
 {
     cJSON *root = cJSON_CreateObject();
 
@@ -196,7 +202,7 @@ void SceneLoader::saveScene(const std::string &filename)
     cJSON *scriptsArray = cJSON_CreateArray();
     for (auto object : Brakeza3D::get()->getSceneObjects()) {
         if (!object->isBelongToScene()) continue;
-        auto objectJson = object->getJSON();
+        auto objectJson = JSONSerializerRegistry::GetJsonByObject(object);
         cJSON_AddStringToObject(objectJson, "type", object->getTypeObject());
         cJSON_AddItemToArray(scriptsArray, objectJson);
     }
@@ -240,7 +246,7 @@ void SceneLoader::saveScene(const std::string &filename)
     Tools::writeToFile(filename, cJSON_Print(root));
 }
 
-void SceneLoader::clearScene()
+void SceneLoader::ClearScene()
 {
     Logging::Message("[SceneLoader] ClearScene");
 
@@ -410,21 +416,6 @@ void SceneLoader::createBillboardAnimation8Directions()
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Billboard8D"));
 }
 
-void SceneLoader::createMesh3D(const std::string& animationFile)
-{
-    if (!Tools::fileExists(animationFile.c_str())) {
-        Logging::Message("File %s not found", animationFile.c_str());
-        return;
-    }
-
-    auto *o = new Mesh3D();
-    o->setBelongToScene(true);
-    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
-    o->AssimpLoadGeometryFromFile(animationFile);
-
-    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("Mesh3D"));
-}
-
 void SceneLoader::createMesh3DAnimationToScene(const std::string& animationFile)
 {
     if (!Tools::fileExists(animationFile.c_str())) {
@@ -440,15 +431,15 @@ void SceneLoader::createMesh3DAnimationToScene(const std::string& animationFile)
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("Mesh3DAnimation"));
 }
 
-void SceneLoader::createScene(const std::string &filename)
+void SceneLoader::CreateScene(const std::string &filename)
 {
     auto sceneJsonFile = std::string(filename + ".json");
 
     Logging::Message("Creating new scene file: %s", sceneJsonFile.c_str());
-    saveScene(sceneJsonFile);
+    SaveScene(sceneJsonFile);
 }
 
-void SceneLoader::removeScene(const std::string &filename)
+void SceneLoader::RemoveScene(const std::string &filename)
 {
     if (!Tools::fileExists(filename.c_str())) {
         Logging::Message("File %s not found", filename.c_str());
@@ -458,4 +449,23 @@ void SceneLoader::removeScene(const std::string &filename)
     Logging::Message("Deleting scene: %s", filename.c_str());
 
     Tools::removeFile(filename);
+}
+
+void SceneLoader::InitSerializers()
+{
+    auto& registry = JSONSerializerRegistry::instance();
+
+    registry.registerSerializer("Object3D", std::make_shared<Object3DSerializer>());
+    registry.registerSerializer("Mesh3D", std::make_unique<Mesh3DSerializer>());
+
+    // Registrar más serializadores según necesites
+    // registry.registerSerializer("Camera3D", std::make_unique<Camera3DSerializer>());
+    // registry.registerSerializer("Light3D", std::make_unique<Light3DSerializer>());
+}
+
+void SceneLoader::SceneLoaderCreateObject(cJSON *object)
+{
+    std::cout << "[SceneLoader SceneLoaderCreateObject] Alive here..." << std::endl;
+    auto o = JSONSerializerRegistry::instance().deserialize(object);
+    Brakeza3D::get()->addObject3D(o, o->getLabel());
 }

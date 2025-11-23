@@ -196,9 +196,9 @@ void Image3DAnimation::drawImGuiProperties()
     }
 }
 
-cJSON *Image3DAnimation::getJSON()
+cJSON *Image3DAnimation::getJSON(Image3DAnimation *object)
 {
-    auto root =  Object3D::getJSON();
+    auto root =  Object3D::ReadJSONFromObject(object);
 
     cJSON_AddNumberToObject(root, "width", width);
     cJSON_AddNumberToObject(root, "height", height);

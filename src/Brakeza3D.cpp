@@ -95,7 +95,7 @@ void Brakeza3D::mainLoop(bool autostart, const std::string& project)
     window->ImGuiInitialize(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
     welcomeMessage();
 
-    handleAutoStartProject(autostart, project);
+    //handleAutoStartProject(autostart, project);
 
     while (!finish) {
         ControlFrameRate();
@@ -147,7 +147,9 @@ std::vector<Object3D *> &Brakeza3D::getSceneObjects()
 
 void Brakeza3D::addObject3D(Object3D *obj, const std::string &label)
 {
-    Logging::Message("Adding Object3D to scene: %s", label.c_str());
+    Logging::Message("[Brakeza3D addObject3D] Adding Object3D to scene: %s", label.c_str());
+    std::cout << "[Brakeza3D addObject3D] Adding Object3D to scene: %s" << label.c_str() << std::endl;
+
     obj->setLabel(label);
     sceneObjects.push_back(obj);
 }
@@ -231,7 +233,7 @@ void Brakeza3D::handleAutoStartProject(bool autostart, const std::string &projec
         return;
     }
 
-    render->getSceneLoader().loadScene(EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->DEFAULT_SCENE);
+    render->getSceneLoader().LoadScene(EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->DEFAULT_SCENE);
 }
 
 void Brakeza3D::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish) const

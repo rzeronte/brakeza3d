@@ -203,9 +203,9 @@ const char *Image3DAnimation8Directions::getTypeIcon() {
     return "BillboardAnimation8DirectionsIcon";
 }
 
-cJSON *Image3DAnimation8Directions::getJSON()
+cJSON *Image3DAnimation8Directions::getJSON(Image3DAnimation8Directions *o)
 {
-    auto root =  Object3D::getJSON();
+    auto root = Object3D::ReadJSONFromObject(o);
 
     cJSON_AddNumberToObject(root, "width", width);
     cJSON_AddNumberToObject(root, "height", height);

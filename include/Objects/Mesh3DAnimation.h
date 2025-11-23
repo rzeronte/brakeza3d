@@ -136,7 +136,7 @@ public:
 
     void drawImGuiProperties() override;
 
-    cJSON *getJSON() override;
+    cJSON *getJSON(Mesh3DAnimation *object);
 
     static void createFromJSON(cJSON *objectJson);
 

@@ -7,21 +7,17 @@
 #include "../../include/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Drawable.h"
+#include "../../include/Persistence/JSONSerializerRegistry.h"
 #include <glm/gtx/euler_angles.hpp>
 
 Object3D::Object3D()
 :
     id(Brakeza3D::get()->getNextObjectID()),
-    scale(1),
-    enableLights(false),
-    motion(nullptr),
-    parent(nullptr),
     luaEnvironment(sol::environment(
             ComponentsManager::get()->getComponentScripting()->getLua(),
             sol::create, ComponentsManager::get()->getComponentScripting()->getLua().globals())
     ),
     pickingColor(Color::idToColor(id)),
-    enabled(true),
     position(Vertex3D(1, 1, 1)),
     rotation(M3::getMatrixIdentity())
 {
@@ -551,202 +547,29 @@ void Object3D::drawImGuiProperties()
     }
 }
 
-cJSON *Object3D::getJSON()
+cJSON *Object3D::ReadJSONFromObject(Object3D *object)
 {
-    cJSON *root = cJSON_CreateObject();
+    std::cout << "[Object3D ExtractJSON] Getting JSON for Object3D" << std::endl;
+    std::cout << "Debes eliminar esto pimpim!";
+    exit(-1);
 
-    cJSON_AddStringToObject(root, "name", getLabel().c_str());
-    cJSON_AddNumberToObject(root, "scale", getScale());
+    /*if (auto serializer = JSONSerializerRegistry::instance().getSerializer(getTypeObject())) {
+        return serializer->JsonByObject(this);
+    }*/
 
-    cJSON *position = cJSON_CreateObject();
-    cJSON_AddNumberToObject(position, "x", (float) getPosition().x);
-    cJSON_AddNumberToObject(position, "y", (float) getPosition().y);
-    cJSON_AddNumberToObject(position, "z", (float) getPosition().z);
-    cJSON_AddItemToObject(root, "position", position);
-
-    cJSON *rotation = cJSON_CreateObject();
-    cJSON_AddNumberToObject(rotation, "x", (float) getRotation().getPitchDegree());
-    cJSON_AddNumberToObject(rotation, "y", (float) getRotation().getYawDegree());
-    cJSON_AddNumberToObject(rotation, "z", (float) getRotation().getRollDegree());
-    cJSON_AddItemToObject(root, "rotation", rotation);
-
-    cJSON_AddBoolToObject(root, "isCollisionsEnabled", isCollisionsEnabled());
-    if (isCollisionsEnabled()) {
-        cJSON *collider = cJSON_CreateObject();
-        cJSON_AddNumberToObject(collider, "mode", getCollisionMode());
-        cJSON_AddNumberToObject(collider, "shape", getCollisionShape());
-
-        cJSON_AddNumberToObject(collider, "friction", friction);
-        cJSON_AddNumberToObject(collider, "mass", mass);
-        cJSON_AddNumberToObject(collider, "margin", shapeMargin);
-        cJSON_AddNumberToObject(collider, "ccdMotionThreshold", ccdMotionThreshold);
-        cJSON_AddNumberToObject(collider, "ccdSweptSphereRadius", ccdSweptSphereRadius);
-        cJSON_AddNumberToObject(collider, "linearDamping", linearDamping);
-        cJSON_AddNumberToObject(collider, "angularDamping", angularDamping);
-        cJSON_AddNumberToObject(collider, "restitution", restitution);
-        cJSON_AddBoolToObject(collider, "colliderStatic", colliderStatic);
-
-        cJSON *simpleShapeSizeJSON = cJSON_CreateObject();
-        cJSON_AddNumberToObject(simpleShapeSizeJSON, "x", simpleShapeSize.x);
-        cJSON_AddNumberToObject(simpleShapeSizeJSON, "y", simpleShapeSize.y);
-        cJSON_AddNumberToObject(simpleShapeSizeJSON, "z", simpleShapeSize.z);
-        cJSON_AddItemToObject(collider, "simpleShapeSize", simpleShapeSizeJSON);
-
-        cJSON *kinematicCapsuleSizeJSON = cJSON_CreateObject();
-        cJSON_AddNumberToObject(kinematicCapsuleSizeJSON, "x", kinematicCapsuleSize.x);
-        cJSON_AddNumberToObject(kinematicCapsuleSizeJSON, "y", kinematicCapsuleSize.y);
-        cJSON_AddItemToObject(collider, "kinematicCapsuleSize", kinematicCapsuleSizeJSON);
-
-        cJSON *angularFactorJSON = cJSON_CreateObject();
-        cJSON_AddNumberToObject(angularFactorJSON, "x", angularFactor.x);
-        cJSON_AddNumberToObject(angularFactorJSON, "y", angularFactor.y);
-        cJSON_AddNumberToObject(angularFactorJSON, "z", angularFactor.z);
-        cJSON_AddItemToObject(collider, "angularFactor", angularFactorJSON);
-
-        cJSON *linearFactorJSON = cJSON_CreateObject();
-        cJSON_AddNumberToObject(linearFactorJSON, "x", linearFactor.x);
-        cJSON_AddNumberToObject(linearFactorJSON, "y", linearFactor.y);
-        cJSON_AddNumberToObject(linearFactorJSON, "z", linearFactor.z);
-        cJSON_AddItemToObject(collider, "linearFactor", linearFactorJSON);
-
-        cJSON_AddItemToObject(root, "collider", collider);
-    }
-
-    cJSON *scriptsArray = cJSON_CreateArray();
-    for (auto script : scripts) {
-        cJSON_AddItemToArray(scriptsArray, script->getTypesJSON());
-    }
-    cJSON_AddItemToObject(root, "scripts", scriptsArray);
-
-    return root;
+    return nullptr;
 }
 
 void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
 {
-    o->setBelongToScene(true);
+    std::cout << "[Object3D setPropertiesFromJSON]!" << std::endl;
+    std::cout << "Debes eliminar esto pimpim!";
+    exit(-1);
 
-    o->setPosition(ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(object, "position")));
-    o->setScale(static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "scale")->valuedouble));
 
-    if (cJSON_GetObjectItemCaseSensitive(object, "rotation") != nullptr) {
-        cJSON *rotation = cJSON_GetObjectItemCaseSensitive(object, "rotation");
-
-        auto dX = static_cast<float>(cJSON_GetObjectItemCaseSensitive(rotation, "x")->valuedouble);
-        auto dY = static_cast<float>(cJSON_GetObjectItemCaseSensitive(rotation, "y")->valuedouble);
-        auto dZ = static_cast<float>(cJSON_GetObjectItemCaseSensitive(rotation, "z")->valuedouble);
-
-        M3 MRX = M3::RX(dX);
-        M3 MRY = M3::RY(dY);
-        M3 MRZ = M3::RZ(dZ);
-        auto r = MRZ * MRY * MRX;
-        M3::normalize(r);
-        o->setRotation(r);
-    }
-
-    if (cJSON_GetObjectItemCaseSensitive(object, "isCollisionsEnabled") != nullptr) {
-        bool collisionsEnabled = cJSON_GetObjectItemCaseSensitive(object, "isCollisionsEnabled")->valueint;
-        cJSON *colliderJSON = cJSON_GetObjectItemCaseSensitive(object, "collider");
-
-        if (collisionsEnabled) {
-
-            o->setCollisionsEnabled(true);
-            if ((cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic") != nullptr)) {
-                o->setColliderStatic(cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic")->valueint);
-            }
-
-            int mode = cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
-            int shape = cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
-            auto mass = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "mass")->valuedouble);
-            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "friction") != nullptr) {
-                auto friction = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "friction")->valuedouble);
-                o->setFriction(friction);
-            }
-
-            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "ccdMotionThreshold") != nullptr) {
-                auto ccdMotionThreshold = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "ccdMotionThreshold")->valuedouble);
-                o->setCcdMotionThreshold(ccdMotionThreshold);
-            }
-
-            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "ccdSweptSphereRadius") != nullptr) {
-                auto ccdSweptSphereRadius = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "ccdSweptSphereRadius")->valuedouble);
-                o->setCcdSweptSphereRadius(ccdSweptSphereRadius);
-            }
-
-            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "margin") != nullptr) {
-                auto margin = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "margin")->valuedouble);
-                o->setShapeMargin(margin);
-            }
-
-            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "restitution") != nullptr) {
-                auto restitution = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "restitution")->valuedouble);
-                o->setRestitution(restitution);
-            }
-
-            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "linearDamping") != nullptr) {
-                auto linearDamping = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "linearDamping")->valuedouble);
-                o->setLinearDamping(linearDamping);
-            }
-
-            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularDamping") != nullptr) {
-                auto angularDamping = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularDamping")->valuedouble);
-                o->setAngularDamping(angularDamping);
-            }
-
-            o->simpleShapeSize = ToolsJSON::parseVertex3DJSON(
-                cJSON_GetObjectItemCaseSensitive(colliderJSON, "simpleShapeSize")
-            );
-            o->setMass(mass);
-
-            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "kinematicCapsuleSize") != nullptr) {
-                cJSON *kinematizSizeJSON = cJSON_GetObjectItemCaseSensitive(colliderJSON, "kinematicCapsuleSize");
-
-                o->setCapsuleColliderSize(
-                    static_cast<float>(cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "x")->valuedouble),
-                    static_cast<float>(cJSON_GetObjectItemCaseSensitive(kinematizSizeJSON, "y")->valuedouble)
-                );
-            }
-
-            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularFactor") != nullptr) {
-                o->angularFactor = ToolsJSON::parseVertex3DJSON(
-                    cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularFactor")
-                );
-            }
-
-            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "linearFactor") != nullptr) {
-                o->linearFactor = ToolsJSON::parseVertex3DJSON(
-                    cJSON_GetObjectItemCaseSensitive(colliderJSON, "linearFactor")
-                );
-            }
-
-            switch(mode) {
-                case GHOST:
-                    if (shape == SIMPLE_SHAPE) {
-                        o->setupGhostCollider(SIMPLE_SHAPE);
-                    }
-                    break;
-                case BODY:
-                    if (shape == SIMPLE_SHAPE) {
-                        o->setupRigidBodyCollider(SIMPLE_SHAPE);
-                    }
-                    break;
-                case KINEMATIC:
-                    o->setupKinematicCollider();
-                    break;
-                default:
-                    printf("Collider mode not supported\n");
-                    exit(-1);
-            }
-        }
-    }
-
-    if (cJSON_GetObjectItemCaseSensitive(object, "scripts") != nullptr) {
-        cJSON *currentScript;
-        cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(object, "scripts")) {
-            auto filename = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
-            auto typesJSON = cJSON_GetObjectItemCaseSensitive(currentScript, "types");
-            o->attachScript(new ScriptLUA(filename, typesJSON));
-        }
-    }
+    Logging::Message("[Object3D] Setting properties from JSON");
+    const char* type = cJSON_GetObjectItem(object, "type")->valuestring;
+    JSONSerializerRegistry::instance().getSerializer(type)->ApplyJsonToObject(object, o);
 }
 
 bool& Object3D::enabledPointer()
@@ -757,15 +580,6 @@ bool& Object3D::enabledPointer()
 Vertex3D & Object3D::positionPointer()
 {
     return position;
-}
-
-void Object3D::createFromJSON(cJSON *object)
-{
-    auto o = new Object3D();
-
-    setPropertiesFromJSON(object, o);
-
-    Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
 
 M3 Object3D::getM3ModelMatrix()
@@ -935,7 +749,7 @@ void Object3D::integrate()
         );
     }
 
-    if (getCollisionMode() == CollisionMode::BODY) {
+    if (getCollisionMode() == BODY) {
         updateFromBullet();
     }
 

@@ -40,7 +40,7 @@ public:
     void fillBuffers();
     void checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastDepthFound) override;
     void setImage(Image *value);
-    cJSON *getJSON() override;
+    cJSON *getJSON(Image3D *object);
     static void createFromJSON(cJSON *object);
     static void setPropertiesFromJSON(cJSON *object, Image3D *o);
     static Image3D* create(Vertex3D p, float w, float h, const std::string &file);

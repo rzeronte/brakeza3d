@@ -284,9 +284,9 @@ void ParticleEmitter::drawImGuiProperties()
     }
 }
 
-cJSON * ParticleEmitter::getJSON()
+cJSON * ParticleEmitter::getJSON(ParticleEmitter *object)
 {
-    cJSON *root = Object3D::getJSON();
+    cJSON *root = Object3D::ReadJSONFromObject(object);
 
     cJSON *contextParticles = cJSON_CreateObject();
     cJSON_AddNumberToObject(contextParticles, "GRAVITY", context.GRAVITY);

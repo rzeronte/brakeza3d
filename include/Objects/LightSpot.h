@@ -26,7 +26,7 @@ public:
 
     void drawImGuiProperties() override;
 
-    cJSON *getJSON() override;
+    cJSON *getJSON(LightSpot *object);
 
     const char *getTypeObject() override;
 

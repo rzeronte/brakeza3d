@@ -35,7 +35,7 @@ public:
     TextureAnimatedDirectional *getCurrentTextureAnimationDirectional() const;
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
-    cJSON *getJSON() override;
+    cJSON *getJSON(Image3DAnimation8Directions *o);
     static int getDirectionForAngle(float enemyAngle);
     static void createFromJSON(cJSON *object);
     static void setPropertiesFromJSON(cJSON *object, Image3DAnimation8Directions *o);

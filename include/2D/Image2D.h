@@ -26,7 +26,7 @@ public:
 
     void drawImGuiProperties() override;
 
-    cJSON *getJSON() override;
+    cJSON *getJSON(Image2D *object);
 
     static void createFromJSON(cJSON *object);
 

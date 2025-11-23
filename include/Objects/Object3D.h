@@ -32,25 +32,28 @@ struct ObjectGUIFeatures {
     bool misc = true;
 };
 
+class JSONSerializer;
+class JSONSerializerRegistry;
+
 class Object3D: public Collider
 {
 
 protected:
     int id = 0;
-    float scale;
+    float scale = 1.f;
     bool removed = false;
     bool decal = false;
     bool belongToScene = false;
     bool multiScene = false;
     bool alphaEnabled = false;
-    bool enableLights;
+    bool enableLights = false;
     float alpha = 1.f;
     float distanceToCamera = 0.f;
 
     Vertex3D drawOffset;
 
-    Object3DBehavior *motion;
-    Object3D *parent;
+    Object3DBehavior *motion = nullptr;
+    Object3D *parent = nullptr;
 
     ObjectGUIFeatures featuresGUI;
 
@@ -62,7 +65,7 @@ protected:
 
     Timer timer;
     Color pickingColor;
-    bool enabled;
+    bool enabled = true;
     Vertex3D position;
     M3 rotation;
 public:
@@ -100,7 +103,6 @@ public:
     void updateFromBullet();
     void resolveCollision(CollisionInfo with) override;
     void runResolveCollisionScripts(CollisionInfo with);
-    virtual cJSON *getJSON();
     virtual void checkClickObject(Vector3D ray, Object3D*& foundObject, float &lastDepthFound);
     virtual const char *getTypeObject();
     virtual const char *getTypeIcon();
@@ -141,8 +143,10 @@ public:
     [[nodiscard]] float getDistanceToCamera() const;
     [[nodiscard]] bool isMultiScene() const;
     [[nodiscard]] Color getPickingColor() const;
-    static void createFromJSON(cJSON *currentType);
     static void setPropertiesFromJSON(cJSON *object, Object3D *o);
+    virtual cJSON *ReadJSONFromObject(Object3D *object);
+
+    friend class Object3DSerializer;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

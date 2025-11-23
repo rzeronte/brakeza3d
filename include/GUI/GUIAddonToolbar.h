@@ -163,7 +163,7 @@ struct GUIAddonToolbar {
         drawFixedColorButton("reloadIcon", luaColor, [&]() { scripting->reloadLUAScripts(); });
         ImGui::SetItemTooltip("Reload scripts");
 
-        drawFixedColorButton("removeIcon", luaColor, [&]() { SceneLoader::clearScene(); });
+        drawFixedColorButton("removeIcon", luaColor, [&]() { SceneLoader::ClearScene(); });
         ImGui::SetItemTooltip("Clear scene");
     }
 

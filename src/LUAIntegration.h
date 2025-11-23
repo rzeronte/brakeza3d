@@ -344,9 +344,9 @@ void LUAIntegration(sol::state &lua)
     );
 
     lua.new_usertype<SceneLoader>("SceneLoader",
-    "clearScene", &SceneLoader::clearScene,
-        "saveScene", &SceneLoader::saveScene,
-        "loadScene", &SceneLoader::loadScene
+    "clearScene", &SceneLoader::ClearScene,
+        "saveScene", &SceneLoader::SaveScene,
+        "loadScene", &SceneLoader::LoadScene
     );
 
     lua.new_usertype<FXBase>("FXEffectBase",

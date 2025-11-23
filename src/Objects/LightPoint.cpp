@@ -112,7 +112,7 @@ void LightPoint::drawImGuiProperties()
 
 cJSON *LightPoint::getJSON()
 {
-    cJSON *root = Object3D::getJSON();
+    cJSON *root = Object3D::ReadJSONFromObject(this);
 
     cJSON *ambientJSON = cJSON_CreateObject();
     cJSON_AddNumberToObject(ambientJSON, "x", ambient.x);

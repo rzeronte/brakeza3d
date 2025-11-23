@@ -34,6 +34,9 @@ struct Mesh3DData {
     int materialIndex;
 };
 
+class JSONSerializer;
+class JSONSerializerRegistry;
+
 class Mesh3D : public Object3D {
 
     bool sharedTextures;
@@ -55,6 +58,9 @@ public:
 
     Mesh3D();
     ~Mesh3D() override;
+
+    // TODO: BOrrar o mover esto de quí (LUA)
+    static Mesh3D* create(Vertex3D position, const std::string& imageFile);
 
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
@@ -85,17 +91,16 @@ public:
     btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia);
     btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia);
     AABB3D &getAabb();
-    cJSON * getJSON() override;    [[nodiscard]] const std::vector<ShaderOpenGLCustom *> &getCustomShaders() const;
+    [[nodiscard]] const std::vector<ShaderOpenGLCustom *> &getCustomShaders() const;
     [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const;
     [[nodiscard]] bool isRender() const;
     [[nodiscard]] Grid3D *getGrid3D() const;
     [[nodiscard]] Octree *getOctree() const;
-    [[nodiscard]] std::vector<Triangle *> &getModelTriangles(int i) ;
-    [[nodiscard]] std::vector<Image *> &getModelTextures() ;
-    [[nodiscard]] std::vector<Vertex3D *> &getModelVertices(int i) ;
-    static Mesh3D* create(Vertex3D position, const std::string& imageFile);
-    static void createFromJSON(cJSON *object);
-    static void setPropertiesFromJSON(cJSON *object, Mesh3D *o, bool loadGeometry);
+    [[nodiscard]] std::vector<Triangle *> &getModelTriangles(int i);
+    [[nodiscard]] std::vector<Image *> &getModelTextures();
+    [[nodiscard]] std::vector<Vertex3D *> &getModelVertices(int i);
+
+    friend class Mesh3DSerializer;
 };
 
 #endif //SDL2_3D_ENGINE_MESH_H

@@ -24,12 +24,15 @@ enum CollisionMode {
 };
 
 class Collider {
+public:
+    Vertex3D simpleShapeSize;
+    Vertex3D angularFactor;
+    Vertex3D linearFactor;
 
 protected:
     bool collisionsEnabled;
 
     CollisionMode collisionMode;
-    Vertex3D simpleShapeSize;
 
     //ghost
     btPairCachingGhostObject *ghostObject;
@@ -38,8 +41,6 @@ protected:
     btRigidBody *body;
     bool colliderStatic;
     float mass;
-    Vertex3D angularFactor;
-    Vertex3D linearFactor;
     float friction;
     float linearDamping;
     float angularDamping;

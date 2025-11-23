@@ -13,6 +13,7 @@
 #include "../ComponentsManager.h"
 #include "../Misc/TexturePackage.h"
 #include "../Render/Maths.h"
+#include "../Persistence/JSONSerializer.h"
 
 struct GUIAddonMenu
 {
@@ -93,7 +94,7 @@ struct GUIAddonMenu
                 ImGui::Image(icon("removeIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("Clear scene objects", "F3")) {
-                    SceneLoader::clearScene();
+                    SceneLoader::ClearScene();
                 }
                 ImGui::EndMenu();
             }
@@ -538,7 +539,8 @@ struct GUIAddonMenu
             ImGui::Image(icon("meshIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
-                SceneLoader::createMesh3D(fullPath);
+                JSONSerializer::LoadFileIntoScene(fullPath);
+                //SceneLoader::LoadFileMesh3DIntoScene(fullPath);
             }
         }
     }

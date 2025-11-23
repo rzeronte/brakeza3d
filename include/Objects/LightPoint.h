@@ -24,7 +24,7 @@ public:
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
     void drawImGuiProperties() override;
-    cJSON *getJSON() override;
+    cJSON *getJSON();
     static void createFromJSON(cJSON *object);
     static void setPropertiesFromJSON(cJSON *object, LightPoint *o);
     static LightPoint* create(Vertex3D position);

@@ -27,38 +27,22 @@ public:
 
     ~Image3DAnimation() override;
 
-    void onUpdate() override;
-
-    void setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation);
-
-    void linkTextureAnimation(Image3DAnimation *);
-
-    TextureAnimated *getCurrentTextureAnimation() const;
-
-    void addAnimation(const std::string& sprite, int w, int h, int numFrames, int fps);
-
-    void setAnimation(int);
-
-    void updateTexture();
-
-    void updateTrianglesCoordinatesAndTexture();
-
-    [[nodiscard]] bool isAutoRemoveAfterAnimation() const;
-
     const char *getTypeObject() override;
-
     const char *getTypeIcon() override;
-
+    void onUpdate() override;
+    void setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation);
+    void linkTextureAnimation(Image3DAnimation *);
+    void addAnimation(const std::string& sprite, int w, int h, int numFrames, int fps);
+    void setAnimation(int);
+    void updateTexture();
+    void updateTrianglesCoordinatesAndTexture();
     void drawImGuiProperties() override;
-
-    cJSON *getJSON() override;
-
-    static void createFromJSON(cJSON *object);
-
-    static void setPropertiesFromJSON(cJSON *object, Image3DAnimation *o);
-
     void updateBillboardSize() const;
-
+    TextureAnimated *getCurrentTextureAnimation() const;
+    cJSON *getJSON(Image3DAnimation *object);
+    [[nodiscard]] bool isAutoRemoveAfterAnimation() const;
+    static void createFromJSON(cJSON *object);
+    static void setPropertiesFromJSON(cJSON *object, Image3DAnimation *o);
     static Image3DAnimation* create(
         Vertex3D position,
         float width,

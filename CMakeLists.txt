@@ -232,8 +232,13 @@ add_executable(Brakeza3D
         include/OpenGL/ShaderOGLShadowPass.h
         src/OpenGL/ShaderOGLShadowPassDebugLight.cpp
         include/OpenGL/ShaderOGLShadowPassDebugLight.h
-        include/GUI/Image3DGUI.h
-        include/Persistence/Image3DPersistence.h
+        include/Persistence/JSONSerializer.h
+        include/Persistence/JSONSerializerRegistry.h
+        include/Persistence/Object3DSerializer.h
+        src/Persistence/Object3DSerializer.cpp
+        src/Persistence/JSONSerializerRegistry.cpp
+        src/Persistence/Mesh3DSerializer.cpp
+        include/Persistence/Mesh3DSerializer.h
 )
 
 target_link_libraries(Brakeza3D

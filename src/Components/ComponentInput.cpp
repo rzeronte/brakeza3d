@@ -363,7 +363,7 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
             scripting->reloadLUAScripts();
         }
         if (keyboard[SDL_SCANCODE_F3]) {
-            SceneLoader::clearScene();
+            SceneLoader::ClearScene();
         }
         if (keyboard[SDL_SCANCODE_F4]) {
             EngineSetup::get()->ENABLE_IMGUI = !EngineSetup::get()->ENABLE_IMGUI;

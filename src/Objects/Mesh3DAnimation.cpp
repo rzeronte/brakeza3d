@@ -613,9 +613,9 @@ void Mesh3DAnimation::drawImGuiProperties()
     }
 }
 
-cJSON *Mesh3DAnimation::getJSON()
+cJSON *Mesh3DAnimation::getJSON(Mesh3DAnimation *object)
 {
-    cJSON *root = Mesh3D::getJSON();
+    cJSON *root = Mesh3D::ReadJSONFromObject(object);
 
     cJSON_AddNumberToObject(root, "animationSpeed", animation_speed);
     cJSON_AddBoolToObject(root, "boneColliderEnabled", boneColliderEnabled);
@@ -666,7 +666,7 @@ void Mesh3DAnimation::createFromJSON(cJSON *objectJson)
 {
     auto o = new Mesh3DAnimation();
 
-    Mesh3D::setPropertiesFromJSON(objectJson, o, false);
+    Mesh3D::setPropertiesFromJSON(objectJson, o);
 
     o->AssimpLoadAnimation(cJSON_GetObjectItemCaseSensitive(objectJson, "model")->valuestring);
 

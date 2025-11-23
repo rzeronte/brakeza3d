@@ -6,11 +6,9 @@
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
 #include "../LUAIntegration.h"
-
+#include "../../include/Persistence/JSONSerializerRegistry.h"
 
 ComponentScripting::ComponentScripting()
-:
-    stateScripts(EngineSetup::LuaStateScripts::LUA_STOP)
 {
 }
 

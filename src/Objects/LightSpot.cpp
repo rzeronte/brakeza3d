@@ -66,9 +66,9 @@ void LightSpot::drawImGuiProperties()
    }
 }
 
-cJSON *LightSpot::getJSON()
+cJSON *LightSpot::getJSON(LightSpot *object)
 {
-    cJSON *root = LightPoint::getJSON();
+    cJSON *root = Object3D::ReadJSONFromObject(object);
 
     cJSON_AddNumberToObject(root, "cutOff", glm::degrees(glm::acos(cutOff)));
     cJSON_AddNumberToObject(root, "outerCutOff", glm::degrees(glm::acos(outerCutOff)));

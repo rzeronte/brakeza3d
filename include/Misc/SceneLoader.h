@@ -8,6 +8,9 @@
 #include <string>
 #include <map>
 
+#include "cJSON.h"
+
+
 enum class SceneObjectLoaderMapping {
     Object3D,
     Mesh3D,
@@ -36,25 +39,32 @@ static std::map<std::string, SceneObjectLoaderMapping> SceneObjectTypesMapping =
     {"Image2D", SceneObjectLoaderMapping::Image2D}
 };
 
+class Object3D;
+
 class SceneLoader {
 public:
     explicit SceneLoader();
-    static void loadScene(const std::string& filename);
-    static void saveScene(const std::string& filename);
-    static void clearScene();
+
+    static void InitSerializers();
+    static void LoadScene(const std::string& filename);
+    static void SaveScene(const std::string& filename);
+    static void CreateScene(const std::string &filename);
+    static void RemoveScene(const std::string &filename);
+    static void ClearScene();
+
     static void createObjectInScene();
-    static void createPointLight3DInScene();
-    static void createImage3DToScene(const std::string &filename);
-    static void createSpotLight3DInScene();
-    static void createParticleEmitterInScene();
-    static void createBillboardAnimationInScene(const std::string& filename);
-    static void createImage2DAnimatedInScene(const std::string& filename);
-    static void createImage2DInScene(const std::string& filename);
-    static void createBillboardAnimation8Directions();
-    static void createMesh3D(const std::string& animationFile);
     static void createMesh3DAnimationToScene(const std::string& animationFile);
-    static void createScene(const std::string &filename);
-    static void removeScene(const std::string &filename);
+    static void createImage3DToScene(const std::string &filename);
+    static void createPointLight3DInScene();
+    static void createSpotLight3DInScene();
+    static void createImage2DInScene(const std::string& filename);
+    static void createParticleEmitterInScene();
+    static void createImage2DAnimatedInScene(const std::string& filename);
+    static void createBillboardAnimationInScene(const std::string& filename);
+    static void createBillboardAnimation8Directions();
+
+    static void SceneLoaderCreateObject(cJSON *object);
+
 };
 
 #endif //BRAKEZA3D_SCENELOADER_H

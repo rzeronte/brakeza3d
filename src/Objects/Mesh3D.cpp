@@ -10,6 +10,7 @@
 #include "../../include/OpenGL/ShaderOpenGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include <assimp/postprocess.h>
+#include "../../include/Persistence/JSONSerializerRegistry.h"
 
 Mesh3D::Mesh3D()
 :
@@ -322,15 +323,6 @@ const char *Mesh3D::getTypeIcon()
     return "meshIcon";
 }
 
-Mesh3D *Mesh3D::create(Vertex3D position, const std::string& imageFile)
-{
-    auto o = new Mesh3D();
-    o->setPosition(position);
-    o->AssimpLoadGeometryFromFile(imageFile);
-
-    return o;
-}
-
 void Mesh3D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
@@ -409,125 +401,6 @@ void Mesh3D::drawImGuiProperties()
         ImGui::Separator();
         ImGui::Checkbox(std::string("Enable lights").c_str(), &enableLights);
     }
-}
-
-cJSON * Mesh3D::getJSON()
-{
-    cJSON *root = Object3D::getJSON();
-
-    cJSON *effectsArrayJSON = cJSON_CreateArray();
-    for ( auto s : customShaders) {
-        cJSON_AddItemToArray(effectsArrayJSON, s->getTypesJSON());
-    }
-    cJSON_AddItemToObject(root, "shaders", effectsArrayJSON);
-
-
-    cJSON_AddStringToObject(root, "model", sourceFile.c_str());
-    cJSON_AddBoolToObject(root, "enableLights", isEnableLights());
-
-    if (grid != nullptr) {
-        cJSON_AddItemToObject(root, "grid", grid->getJSON());
-    }
-
-    if (octree != nullptr) {
-        cJSON_AddItemToObject(root, "octree", octree->getJSON());
-    }
-
-    return root;
-}
-
-void Mesh3D::setPropertiesFromJSON(cJSON *object, Mesh3D *o, bool loadGeometry)
-{
-    o->setBelongToScene(true);
-    Object3D::setPropertiesFromJSON(object, o);
-    o->setEnableLights(cJSON_GetObjectItemCaseSensitive(object, "enableLights")->valueint);
-    if (loadGeometry) {
-        o->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(object, "model")->valuestring);
-    }
-
-    if (cJSON_GetObjectItemCaseSensitive(object, "shaders") != nullptr) {
-        auto shaderTypesMapping = ComponentsManager::get()->getComponentRender()->getShaderTypesMapping();
-        cJSON *currentShaderJSON;
-        cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(object, "shaders")) {
-            auto typeString = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
-            auto type = ShaderOpenGLCustom::getShaderTypeFromString(typeString);
-            switch (type) {
-                case SHADER_OBJECT: {
-                    auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
-                    auto vertex = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vertexshader")->valuestring;
-                    auto fragment = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;
-                    auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
-                    o->addCustomShader(new ShaderOpenGLCustomMesh3D(o, name, vertex, fragment, types));
-                    break;
-                }
-            }
-        }
-    }
-
-    if (cJSON_GetObjectItemCaseSensitive(object, "isCollisionsEnabled") != nullptr) {
-        bool collisionsEnabled = cJSON_GetObjectItemCaseSensitive(object, "isCollisionsEnabled")->valueint;
-        cJSON *colliderJSON = cJSON_GetObjectItemCaseSensitive(object, "collider");
-
-        if (collisionsEnabled) {
-            o->setCollisionsEnabled(true);
-            int mode = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
-            int shape = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
-
-            if ((cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic") != nullptr)) {
-                o->setColliderStatic(cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic")->valueint);
-            }
-
-            switch (mode) {
-                case GHOST:
-                    if (shape == SIMPLE_SHAPE) {
-                        o->setupGhostCollider(SIMPLE_SHAPE);
-                    }
-                    if (shape == CAPSULE) {
-                        o->setupGhostCollider(CAPSULE);
-                    }
-
-                    if (shape == TRIANGLE_MESH_SHAPE) {
-                        o->setupGhostCollider(TRIANGLE_MESH_SHAPE);
-                    }
-                    break;
-                case BODY:
-                    if (shape == SIMPLE_SHAPE) {
-                        o->setupRigidBodyCollider(SIMPLE_SHAPE);
-                    }
-                    if (shape == CAPSULE) {
-                        o->setupRigidBodyCollider(CAPSULE);
-                    }
-                    if (shape == TRIANGLE_MESH_SHAPE) {
-                        o->setupRigidBodyCollider(TRIANGLE_MESH_SHAPE);
-                    }
-                    break;
-            }
-        }
-    }
-
-    if (cJSON_GetObjectItemCaseSensitive(object, "grid") != nullptr) {
-        auto gridJSON = cJSON_GetObjectItemCaseSensitive(object, "grid");
-        o->buildGrid3D(
-            cJSON_GetObjectItemCaseSensitive(gridJSON, "x")->valueint,
-            cJSON_GetObjectItemCaseSensitive(gridJSON, "y")->valueint,
-            cJSON_GetObjectItemCaseSensitive(gridJSON, "z")->valueint
-        );
-    }
-
-    if (cJSON_GetObjectItemCaseSensitive(object, "octree") != nullptr) {
-        auto octreeJSON = cJSON_GetObjectItemCaseSensitive(object, "octree");
-        auto maxDepth = cJSON_GetObjectItemCaseSensitive(octreeJSON, "maxDepth")->valueint;
-        o->buildOctree(maxDepth);
-    }
-}
-
-void Mesh3D::createFromJSON(cJSON *object)
-{
-    auto o = new Mesh3D();
-
-    setPropertiesFromJSON(object, o, true);
-
-    Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
 }
 
 void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
@@ -930,4 +803,14 @@ void Mesh3D::shadowMappingPass()
             shaderShadowPass->getSpotLightsDepthMapsFBO()
         );
     }
+}
+
+// TODO: Pendiente de eliminar esto de aquí, se usa SOLO en LUA ya
+Mesh3D *Mesh3D::create(Vertex3D position, const std::string& imageFile)
+{
+    auto o = new Mesh3D();
+    o->setPosition(position);
+    o->AssimpLoadGeometryFromFile(imageFile);
+
+    return o;
 }
