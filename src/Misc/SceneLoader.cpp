@@ -272,13 +272,6 @@ void SceneLoader::ClearScene()
     ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
 }
 
-void SceneLoader::createObjectInScene()
-{
-    auto o = new Object3D();
-    o->setBelongToScene(true);
-    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("Object3D"));
-}
-
 void SceneLoader::createPointLight3DInScene()
 {
     auto o = LightPoint::create(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());

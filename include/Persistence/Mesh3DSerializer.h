@@ -10,6 +10,7 @@
 
 class Mesh3DSerializer : public JSONSerializer
 {
+public:
     cJSON* JsonByObject(Object3D *o) override;
     Object3D* ObjectByJson(cJSON* json) override;
 

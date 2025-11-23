@@ -14,6 +14,8 @@
 #include "../Misc/TexturePackage.h"
 #include "../Render/Maths.h"
 #include "../Persistence/JSONSerializer.h"
+#include "../Persistence/Object3DSerializer.h"
+#include "../Persistence/Mesh3DSerializer.h"
 
 struct GUIAddonMenu
 {
@@ -103,7 +105,7 @@ struct GUIAddonMenu
                 ImGui::Image(icon("objectIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("Object3D (Empty)")) {
-                    SceneLoader::createObjectInScene();
+                    Object3DSerializer::LoadFileIntoScene("");
                 }
 
                 ImGui::Separator();
@@ -539,8 +541,7 @@ struct GUIAddonMenu
             ImGui::Image(icon("meshIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
-                JSONSerializer::LoadFileIntoScene(fullPath);
-                //SceneLoader::LoadFileMesh3DIntoScene(fullPath);
+                Mesh3DSerializer::LoadFileIntoScene(fullPath);
             }
         }
     }

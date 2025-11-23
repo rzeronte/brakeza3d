@@ -5,13 +5,12 @@
 #ifndef BRAKEDA3D_BUTTON_H
 #define BRAKEDA3D_BUTTON_H
 
-
 #include "../Misc/Image.h"
 
-class Button: public Image {
-private:
-    int x;
-    int y;
+class Button: public Image
+{
+    int x = 0;
+    int y = 0;
     bool pressed;
 public:
     void (*callback)();

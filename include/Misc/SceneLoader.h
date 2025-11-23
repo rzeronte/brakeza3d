@@ -52,7 +52,6 @@ public:
     static void RemoveScene(const std::string &filename);
     static void ClearScene();
 
-    static void createObjectInScene();
     static void createMesh3DAnimationToScene(const std::string& animationFile);
     static void createImage3DToScene(const std::string &filename);
     static void createPointLight3DInScene();

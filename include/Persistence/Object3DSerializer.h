@@ -10,12 +10,13 @@
 
 class Object3D;
 
-class Object3DSerializer : public JSONSerializer {
+class Object3DSerializer : public JSONSerializer
+{
 public:
     cJSON* JsonByObject(Object3D *object) override;
     Object3D* ObjectByJson(cJSON* json) override;
 
-    static void ApplyJsonToObject(cJSON* json, Object3D* obj);
+    static void ApplyJsonToObject(cJSON* json, Object3D* o);
     static void LoadFileIntoScene(const std::string& file);
 };
 

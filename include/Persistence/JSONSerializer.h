@@ -9,7 +9,6 @@
 #include <string>
 
 class Object3D;
-class Mesh3D;
 
 class JSONSerializer {
 public:

@@ -9,10 +9,11 @@
 #include "../Misc/Image.h"
 #include "../Objects/Object3D.h"
 
-class Image2D : public Object3D {
-    int x;
-    int y;
-    Image *image;
+class Image2D : public Object3D
+{
+    int x = 0;
+    int y = 0;
+    Image *image = nullptr;
 public:
     explicit Image2D(int x, int y, Image * image);
 

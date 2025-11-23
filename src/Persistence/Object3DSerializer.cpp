@@ -8,6 +8,7 @@
 #include "../../include/Persistence/Object3DSerializer.h"
 #include "../../include/Persistence/JSONSerializerRegistry.h"
 #include "../../include/Misc/ToolsJSON.h"
+#include "../../include/Brakeza3D.h"
 
 cJSON * Object3DSerializer::JsonByObject(Object3D* object)
 {
@@ -209,6 +210,10 @@ Object3D * Object3DSerializer::ObjectByJson(cJSON *json)
 
 void Object3DSerializer::LoadFileIntoScene(const std::string &file)
 {
+    auto o = new Object3D();
+    o->setBelongToScene(true);
+    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("Object3D"));
+
 }
 
 #endif //BRAKEZA3D_OBJECT3DSERIALIZER_CPP_H
