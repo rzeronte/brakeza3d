@@ -9,14 +9,14 @@
 #include "../../include/Persistence/JSONSerializerRegistry.h"
 #include "../../include/Persistence/Object3DSerializer.h"
 
-cJSON* Mesh3DSerializer::JsonByObject(Object3D *object)
+cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
 {
     Logging::Message("[Mesh3DSerializer json] Alive here...");
-    std::cout << "[Mesh3DSerializer json] " << object->getTypeObject() << std::endl;
+    std::cout << "[Mesh3DSerializer json] " << o->getTypeObject() << std::endl;
 
-    auto *mesh = dynamic_cast<Mesh3D*>(object);
+    auto *mesh = dynamic_cast<Mesh3D*>(o);
 
-    cJSON *root = JSONSerializerRegistry::GetJsonByObject(object);
+    cJSON *root = JSONSerializerRegistry::GetJsonByObject(o);
 
     cJSON_AddStringToObject(root, "model", mesh->sourceFile.c_str());
     cJSON_AddBoolToObject(root, "enableLights", mesh->isEnableLights());

@@ -9,6 +9,7 @@
 #include "../Objects/Vertex3D.h"
 #include "cJSON.h"
 #include "Color.h"
+#include "../include/Render/M3.h"
 
 class ToolsJSON {
 
@@ -16,6 +17,8 @@ public:
     static Color parseColorJSON(cJSON *color);
 
     static Vertex3D parseVertex3DJSON(cJSON *vertex3DJSON);
+
+    static M3 parseRotation3DJSON(cJSON *rotationJSON);
 };
 
 

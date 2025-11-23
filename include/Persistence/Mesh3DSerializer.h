@@ -8,10 +8,9 @@
 #include "JSONSerializer.h"
 #include "../Objects/Object3D.h"
 
-
 class Mesh3DSerializer : public JSONSerializer
 {
-    cJSON* JsonByObject(Object3D *object) override;
+    cJSON* JsonByObject(Object3D *o) override;
     Object3D* ObjectByJson(cJSON* json) override;
 
     static void ApplyJsonToObject(cJSON* json, Object3D* obj);

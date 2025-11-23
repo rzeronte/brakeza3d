@@ -597,3 +597,8 @@ void Collider::moveCollider(Vertex3D v)
         body->updateInertiaTensor();
     }
 }
+
+void Collider::setSimpleShapeSize(const Vertex3D &simple_shape_size)
+{
+    simpleShapeSize = simple_shape_size;
+}

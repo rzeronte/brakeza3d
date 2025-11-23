@@ -172,6 +172,8 @@ public:
     void setScalingCollider(Vertex3D v);
 
     void moveCollider(Vertex3D v);
+
+    void setSimpleShapeSize(const Vertex3D &simple_shape_size);
 };
 
 
