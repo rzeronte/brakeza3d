@@ -59,12 +59,20 @@ struct BonesMappingColliders {
     std::vector<BoneColliderInfo> boneColliderInfo;
 };
 
-class Mesh3DAnimation : public Mesh3D {
-private:
-    Assimp::Importer importer;
-    const aiScene *scene;
+class Mesh3DAnimation : public Mesh3D
+{
     int numBones;
+    int indexCurrentAnimation;
+    int boneColliderIndex;
+    float runningTime;
+    float animation_speed;
     bool loop;
+    bool boneColliderEnabled;
+    bool remove_at_end_animation;
+    bool animation_ends;
+
+    const aiScene *scene;
+    Assimp::Importer importer;
 
     aiMatrix4x4 globalInverseTransform;
 
@@ -73,123 +81,59 @@ private:
 
     std::map<std::string, unsigned int> boneMapping;                // maps a bone's name to its index
     std::vector<BoneInfo> boneInfo;                                 // Bone info and final transformation
-
-    bool boneColliderEnabled;
-
     std::vector<BonesMappingColliders> boneMappingColliders;
-
-    int indexCurrentAnimation;
-    float runningTime;
-    bool remove_at_end_animation;
-    float animation_speed;
-    bool animation_ends;
 public:
     Mesh3DAnimation();
-
     ~Mesh3DAnimation() override;
 
-    void onUpdate() override;
-
-    void UpdateFrameTransformations();
-
+    int &BoneColliderIndexPointer();
     bool AssimpLoadAnimation(const std::string &filename);
-
+    void onUpdate() override;
+    void UpdateFrameTransformations();
     void ProcessNodeAnimation(aiNode *node);
-
     void ProcessMeshAnimation(int i, aiMesh *mesh);
-
     void ReadNodesFromRoot();
-
     void UpdateBonesFinalTransformations(float TimeInSeconds);
-
     void ReadNodeHierarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform);
-
+    void updateForBone(Vertex3D &dest, int meshID, int vertexID);
+    void LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Vertex3D> &meshVertex, std::vector<Vertex3D> &meshNormals);
+    void LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData);
+    void drawBones(aiNode *node, Vertex3D *lastBonePosition = nullptr);
+    void setRemoveAtEndAnimation(bool removeAtEnds);
+    const char *getTypeObject() override;
+    const char *getTypeIcon() override;
+    void drawImGuiProperties() override;
+    void setAnimationSpeed(float value);
+    void setIndexCurrentAnimation(int indexCurrentAnimation);
+    void CheckIfEndAnimation();
+    void FillAnimationBoneDataOGLBuffers();
+    void UpdateOpenGLBones();
+    void updateBoundingBox() override;
+    void setAnimationByName(const std::string& name);
+    void setLoop(bool value);
+    void createBonesMappingColliders(const std::string &name);
+    void createBoneGhostBody(int bmIndex, unsigned int boneId, const BoneCollisionShape &shape, BoneColliderInfo &ci);
+    void removeBonesColliderMapping(const std::string &name);
+    void resolveCollision(CollisionInfo with) override;
+    void shadowMappingPass() override;
+    void SetMappingBoneColliderInfo(const std::string& mappingName, unsigned int boneId, bool enabled, BoneCollisionShape shape);
+    void UpdateBoneColliders();
+    BonesMappingColliders *getBonesMappingByName(const std::string& name, int &index);
+    [[nodiscard]] bool isRemoveAtEndAnimation() const;
+    [[nodiscard]] bool isLoop() const;
+    [[nodiscard]] bool isAnimationEnds() const;
+    [[nodiscard]] float getCurrentAnimationMaxTime() const;
+    [[nodiscard]] const std::vector<BonesMappingColliders> *getBoneMappingColliders() const;
+    static void CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
+    static void CalcInterpolatedScaling(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
+    static void CalcInterpolatedPosition(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
+    static Mesh3DAnimation* create(const Vertex3D &position, const std::string& animationFile);
     static const aiNodeAnim *FindNodeAnim(const aiAnimation *pAnimation, const std::string& NodeName);
-
     static unsigned int FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim);
-
     static unsigned int FindPosition(float AnimationTime, const aiNodeAnim *pNodeAnim);
-
     static unsigned int FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim);
 
-    void updateForBone(Vertex3D &dest, int meshID, int vertexID);
-
-    void LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Vertex3D> &meshVertex, std::vector<Vertex3D> &meshNormals);
-
-    void LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData);
-
-    static void CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
-
-    static void CalcInterpolatedScaling(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
-
-    static void CalcInterpolatedPosition(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
-
-    void drawBones(aiNode *node, Vertex3D *lastBonePosition = nullptr);
-
-    void setRemoveAtEndAnimation(bool removeAtEnds);
-
-    [[nodiscard]] bool isRemoveAtEndAnimation() const;
-
-    const char *getTypeObject() override;
-
-    const char *getTypeIcon() override;
-
-    void drawImGuiProperties() override;
-
-    cJSON *getJSON(Mesh3DAnimation *object);
-
-    static void createFromJSON(cJSON *objectJson);
-
-    static void setPropertiesFromJSON(cJSON *objectJson, Mesh3DAnimation *o);
-
-    static Mesh3DAnimation* create(const Vertex3D &position, const std::string& animationFile);
-
-    void setAnimationSpeed(float value);
-
-    void setIndexCurrentAnimation(int indexCurrentAnimation);
-
-    [[nodiscard]] bool isAnimationEnds() const;
-
-    [[nodiscard]] float getCurrentAnimationMaxTime() const;
-
-    void CheckIfEndAnimation();
-
-    void FillAnimationBoneDataOGLBuffers();
-
-    void UpdateOpenGLBones();
-
-    void updateBoundingBox() override;
-
-    void setAnimationByName(const std::string& name);
-
-    [[nodiscard]] bool isLoop() const;
-
-    void setLoop(bool value);
-
-    void createBonesMappingColliders(const std::string &name);
-
-    void SetMappingBoneColliderInfo(
-        const std::string& mappingName,
-        unsigned int boneId,
-        bool enabled,
-        BoneCollisionShape shape
-     );
-
-    void UpdateBoneColliders();
-
-    BonesMappingColliders *getBonesMappingByName(const std::string& name, int &index);
-
-    [[nodiscard]] const std::vector<BonesMappingColliders> *getBoneMappingColliders() const;
-
-    int boneColliderIndex;
-
-    void createBoneGhostBody(int bmIndex, unsigned int boneId, const BoneCollisionShape &shape, BoneColliderInfo &ci);
-
-    void removeBonesColliderMapping(const std::string &name);
-
-    void resolveCollision(CollisionInfo with) override;
-
-    void shadowMappingPass() override;
+    friend class Mesh3DAnimationSerializer;
 };
 
 #endif //BRAKEDA3D_MESH3DANIMATED_H

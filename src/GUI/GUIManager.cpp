@@ -372,20 +372,20 @@ void GUIManager::DrawEditBonesMappingWindow()
             }
 
             auto comboTitle = "BoneMappings##" + a->getLabel();
-            ImGui::Combo("Bone Mappings", &a->boneColliderIndex, items, IM_ARRAYSIZE(items));
+            ImGui::Combo("Bone Mappings", &a->BoneColliderIndexPointer(), items, IM_ARRAYSIZE(items));
 
-            if (a->boneColliderIndex >= 0) {
+            if (a->BoneColliderIndexPointer() >= 0) {
                 if (ImGui::Button(std::string("Delete mapping").c_str())) {
-                    a->removeBonesColliderMapping(bc->at(a->boneColliderIndex).nameMapping);
+                    a->removeBonesColliderMapping(bc->at(a->BoneColliderIndexPointer()).nameMapping);
                     return;
                 }
             }
         }
 
-        if (a->boneColliderIndex != -1) {
-            ImGui::SeparatorText(std::string("List bones for mapping: " + bc->at(a->boneColliderIndex).nameMapping).c_str());
+        if (a->BoneColliderIndexPointer() != -1) {
+            ImGui::SeparatorText(std::string("List bones for mapping: " + bc->at(a->BoneColliderIndexPointer()).nameMapping).c_str());
 
-            auto nameMapping = bc->at(a->boneColliderIndex).nameMapping;
+            auto nameMapping = bc->at(a->BoneColliderIndexPointer()).nameMapping;
             if (ImGui::BeginTable("BoneMappingTable", 4, ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_RowBg)) {
                 ImGui::TableSetupColumn("Index");
                 ImGui::TableSetupColumn("Bone Name");
@@ -393,8 +393,8 @@ void GUIManager::DrawEditBonesMappingWindow()
                 ImGui::TableSetupColumn("Enabled");
                 ImGui::TableHeadersRow();
 
-                for (int i = 0; i < bc->at(a->boneColliderIndex).boneColliderInfo.size(); i++) {
-                    auto& b = bc->at(a->boneColliderIndex).boneColliderInfo[i];
+                for (int i = 0; i < bc->at(a->BoneColliderIndexPointer()).boneColliderInfo.size(); i++) {
+                    auto& b = bc->at(a->BoneColliderIndexPointer()).boneColliderInfo[i];
 
                     ImGui::TableNextRow();
                     ImGui::TableSetColumnIndex(0);

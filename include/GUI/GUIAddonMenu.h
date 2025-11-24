@@ -14,8 +14,10 @@
 #include "../Misc/TexturePackage.h"
 #include "../Render/Maths.h"
 #include "../Persistence/JSONSerializer.h"
+#include "../Persistence/Mesh3DAnimationSerializer.h"
 #include "../Persistence/Object3DSerializer.h"
 #include "../Persistence/Mesh3DSerializer.h"
+#include "../Persistence/LightPointSerializer.h"
 
 struct GUIAddonMenu
 {
@@ -188,7 +190,7 @@ struct GUIAddonMenu
                     ImGui::Image(icon("lightIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::MenuItem("PointLight")) {
-                        SceneLoader::createPointLight3DInScene();
+                        LightPointSerializer::LoadFileIntoScene("");
                         Logging::Message("Add PointLight");
                     }
                     ImGui::Image(icon("spotLightIcon"), ImVec2(16, 16));
@@ -569,7 +571,7 @@ struct GUIAddonMenu
             ImGui::Image(icon("Mesh3DAnimationIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
-                SceneLoader::createMesh3DAnimationToScene(fullPath);
+                Mesh3DAnimationSerializer::LoadFileIntoScene(fullPath);
             }
         }
     }

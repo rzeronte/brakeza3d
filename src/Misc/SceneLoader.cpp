@@ -13,13 +13,15 @@
 #include "../../include/Objects/Image3DAnimation.h"
 #include "../../include/Objects/Image3D.h"
 #include "../../include/2D/Image2D.h"
-#include "../../include/Objects/Mesh3DAnimation.h"
 #include "../../include/Objects/Image3DAnimation8Directions.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/OpenGL/ShaderOGLCustomPostprocessing.h"
 #include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Persistence/LightPointSerializer.h"
 #include "../../include/Persistence/Object3DSerializer.h"
 #include "../../include/Persistence/Mesh3DSerializer.h"
+#include "../../include/Persistence/Mesh3DAnimationSerializer.h"
+#include "../../include/Persistence/LightPointSerializer.h"
 
 SceneLoader::SceneLoader()
 {
@@ -85,22 +87,12 @@ void SceneLoader::LoadScene(const std::string& filename)
     cJSON *currentObject;
     cJSON_ArrayForEach(currentObject, cJSON_GetObjectItemCaseSensitive(contentJSON, "objects")) {
         std::string typeObject = cJSON_GetObjectItemCaseSensitive(currentObject, "type")->valuestring;
-
         switch(SceneObjectTypesMapping[typeObject.c_str()]) {
-            case SceneObjectLoaderMapping::Object3D : {
-                SceneLoaderCreateObject(currentObject);
-                break;
-            }
-            case SceneObjectLoaderMapping::Mesh3D : {
-                SceneLoaderCreateObject(currentObject);
-                break;
-            }
-            case SceneObjectLoaderMapping::Mesh3DAnimation : {
-                Mesh3DAnimation::createFromJSON(currentObject);
-                break;
-            }
+            case SceneObjectLoaderMapping::Object3D :
+            case SceneObjectLoaderMapping::Mesh3D :
+            case SceneObjectLoaderMapping::Mesh3DAnimation :
             case SceneObjectLoaderMapping::LightPoint3D : {
-                LightPoint::createFromJSON(currentObject);
+                SceneLoaderCreateObject(currentObject);
                 break;
             }
             case SceneObjectLoaderMapping::SpotLight3D : {
@@ -272,13 +264,6 @@ void SceneLoader::ClearScene()
     ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
 }
 
-void SceneLoader::createPointLight3DInScene()
-{
-    auto o = LightPoint::create(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
-    o->setBelongToScene(true);
-    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("LightPoint3D"));
-}
-
 void SceneLoader::createSpotLight3DInScene()
 {
     auto o = LightSpot::create(
@@ -409,21 +394,6 @@ void SceneLoader::createBillboardAnimation8Directions()
     Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Billboard8D"));
 }
 
-void SceneLoader::createMesh3DAnimationToScene(const std::string& animationFile)
-{
-    if (!Tools::fileExists(animationFile.c_str())) {
-        Logging::Message("File %s not found", animationFile.c_str());
-        return;
-    }
-
-    auto *o = new Mesh3DAnimation();
-    o->setBelongToScene(true);
-    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
-    o->AssimpLoadAnimation(animationFile);
-
-    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("Mesh3DAnimation"));
-}
-
 void SceneLoader::CreateScene(const std::string &filename)
 {
     auto sceneJsonFile = std::string(filename + ".json");
@@ -450,10 +420,8 @@ void SceneLoader::InitSerializers()
 
     registry.registerSerializer("Object3D", std::make_shared<Object3DSerializer>());
     registry.registerSerializer("Mesh3D", std::make_unique<Mesh3DSerializer>());
-
-    // Registrar más serializadores según necesites
-    // registry.registerSerializer("Camera3D", std::make_unique<Camera3DSerializer>());
-    // registry.registerSerializer("Light3D", std::make_unique<Light3DSerializer>());
+    registry.registerSerializer("Mesh3DAnimation", std::make_unique<Mesh3DAnimationSerializer>());
+    registry.registerSerializer("LightPoint3D", std::make_unique<LightPointSerializer>());
 }
 
 void SceneLoader::SceneLoaderCreateObject(cJSON *object)
