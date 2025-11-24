@@ -1,14 +1,14 @@
 
 #include <glm/ext/matrix_clip_space.hpp>
 #include "../../include/OpenGL/ShaderOGLOutline.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Objects/Image3D.h"
 
 ShaderOGLOutline::ShaderOGLOutline()
 :
     ShaderBaseOpenGL(
-        EngineSetup::get()->SHADERS_FOLDER + "Outliner.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Outliner.fs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Outliner.vs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Outliner.fs",
         false
     )
 {

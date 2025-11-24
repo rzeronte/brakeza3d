@@ -14,7 +14,7 @@ public:
     cJSON* JsonByObject(Object3D *o) override;
     Object3D* ObjectByJson(cJSON* json) override;
 
-    static void ApplyJsonToObject(cJSON* json, Object3D* obj);
+    static void ApplyJsonToObject(const cJSON* json, Object3D* obj);
     static void LoadFileIntoScene(const std::string& model);
 };
 

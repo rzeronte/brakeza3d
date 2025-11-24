@@ -1,30 +1,22 @@
 #include <iostream>
-#include "../../include/Objects/Point2D.h"
+#include "../../include/2D/Point2D.h"
 #include "../../include/Render/Maths.h"
 
-Point2D::Point2D()
-:
-    x(0),
-    y(0)
+Point2D::Point2D(): x(0), y(0)
 {
 }
 
-Point2D::Point2D(int x, int y)
-:
-    x(x),
-    y(y)
+Point2D::Point2D(int x, int y) : x(x), y(y)
 {
 }
 
-Point2D::Point2D(glm::vec2 v)
+Point2D::Point2D(glm::vec2 v) : x(v.x), y(v.y)
 {
-    this->x = (int) v.x;
-    this->y = (int) v.y;
 }
 
 float Point2D::operator*(const Point2D &v) const
 {
-    return (float) ((x * v.x) + (y * v.y));
+    return x * v.x + y * v.y;
 }
 
 Point2D Point2D::operator/(const Point2D &pm) const

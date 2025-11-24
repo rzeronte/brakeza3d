@@ -9,7 +9,8 @@
 #include "TextureAnimated.h"
 #include "../Objects/Object3D.h"
 
-class Image2DAnimation : public Object3D {
+class Image2DAnimation : public Object3D
+{
     int x;
     int y;
     bool removeWhenEnds;
@@ -19,26 +20,18 @@ public:
     explicit Image2DAnimation(int x, int y, bool removeWhenEnds, TextureAnimated *animation);
     explicit Image2DAnimation(int x, int y, float ttl, TextureAnimated *animation);
 
-    void onUpdate() override;
-
-    [[nodiscard]] TextureAnimated *getAnimation() const;
-
-    void updatePosition(int x, int y);
-
     const char *getTypeObject() override;
-
     const char *getTypeIcon() override;
-
+    void onUpdate() override;
+    void updatePosition(int x, int y);
     void drawImGuiProperties() override;
-
-    cJSON *getJSON(Image2DAnimation* object);
-
-    static void createFromJSON(cJSON *object);
-
-    static void setPropertiesFromJSON(cJSON *object, Image2DAnimation *o);
-
+    [[nodiscard]] TextureAnimated *getAnimation() const;
+    [[nodiscard]] int getX() const;
+    [[nodiscard]] int getY() const;
     static Image2DAnimation* create(int x, int y, const std::string& imageFile, int w, int h, int frames, int fps);
 
+    friend class Image2DAnimationSerializer;
+    friend class Image2DAnimationGUI;
 };
 
 

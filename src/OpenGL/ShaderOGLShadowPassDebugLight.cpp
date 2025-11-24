@@ -3,13 +3,13 @@
 //
 
 #include "../../include/OpenGL/ShaderOGLShadowPassDebugLight.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLShadowPassDebugLight::ShaderOGLShadowPassDebugLight()
 :
     ShaderBaseOpenGL(
-        EngineSetup::get()->SHADERS_FOLDER + "ShadowPassDebugLight.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "ShadowPassDebugLight.fs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "ShadowPassDebugLight.vs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "ShadowPassDebugLight.fs",
         false
     ),
     internalFramebuffer(0),

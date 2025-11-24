@@ -7,17 +7,25 @@
 
 #include <SDL_mixer.h>
 #include "imgui.h"
-#include "../EngineSetup.h"
+#include "../BrakezaSetup.h"
 #include "../Render/Logging.h"
-#include "../Misc/SceneLoader.h"
-#include "../ComponentsManager.h"
+#include "../SceneLoader.h"
+#include "../Components/ComponentsManager.h"
 #include "../Misc/TexturePackage.h"
+#include "../Objects/ParticleEmitter.h"
 #include "../Render/Maths.h"
 #include "../Persistence/JSONSerializer.h"
 #include "../Persistence/Mesh3DAnimationSerializer.h"
 #include "../Persistence/Object3DSerializer.h"
 #include "../Persistence/Mesh3DSerializer.h"
 #include "../Persistence/LightPointSerializer.h"
+#include "../Persistence/LightSpotSerializer.h"
+#include "../Persistence/Image3DSerializer.h"
+#include "../Persistence/Image2DSerializer.h"
+#include "../Persistence/ParticleEmmitterSerializer.h"
+#include "../Persistence/Image2DAnimationSerializer.h"
+#include "../Persistence/Image3DAnimationSerializer.h"
+#include "../Persistence/Image3DAnimation8DirectionsSerializer.h"
 
 struct GUIAddonMenu
 {
@@ -31,7 +39,7 @@ struct GUIAddonMenu
 
     void Draw(bool &finish, bool &show_about_window, bool &showLightDepthMapsWindow)
     {
-        auto setup = EngineSetup::get();
+        auto setup = BrakezaSetup::get();
 
         const float range_max_sensibility = 9999;
         const float range_min_sensibility = -9999;
@@ -79,13 +87,13 @@ struct GUIAddonMenu
                 auto state = scripting->getStateLUAScripts();
                 ImGui::Image(icon("playIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
-                if (ImGui::MenuItem("Play scripts", "F1", false,  state != EngineSetup::LuaStateScripts::LUA_PLAY)) {
+                if (ImGui::MenuItem("Play scripts", "F1", false,  state != BrakezaSetup::LuaStateScripts::LUA_PLAY)) {
                     scripting->playLUAScripts();
                 }
                 ImGui::Separator();
                 ImGui::Image(icon("stopIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
-                if (ImGui::MenuItem("Stop scripts", "F1", false, state != EngineSetup::LuaStateScripts::LUA_STOP)) {
+                if (ImGui::MenuItem("Stop scripts", "F1", false, state != BrakezaSetup::LuaStateScripts::LUA_STOP)) {
                     scripting->stopLUAScripts();
                 }
                 ImGui::Separator();
@@ -115,7 +123,7 @@ struct GUIAddonMenu
                 ImGui::Image(icon("particlesIcon"), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("ParticleEmitter")) {
-                    SceneLoader::createParticleEmitterInScene();
+                    ParticleEmmitterSerializer::LoadFileIntoScene("");
                     ImGui::EndMenu();
                 }
                 ImGui::Separator();
@@ -161,12 +169,10 @@ struct GUIAddonMenu
                     ImGui::Image(icon("BillboardAnimation8DirectionsIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::MenuItem("Billboard 8-Directions")) {
-                        SceneLoader::createBillboardAnimation8Directions();
+                        Image3DAnimation8DirectionsSerializer::LoadFileIntoScene("");
                         ImGui::EndMenu();
                     }
-
                     ImGui::Separator();
-
                     ImGui::Image(icon("meshIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Mesh3D")) {
@@ -191,13 +197,11 @@ struct GUIAddonMenu
                     ImGui::SameLine();
                     if (ImGui::MenuItem("PointLight")) {
                         LightPointSerializer::LoadFileIntoScene("");
-                        Logging::Message("Add PointLight");
                     }
                     ImGui::Image(icon("spotLightIcon"), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::MenuItem("SpotLight")) {
-                        SceneLoader::createSpotLight3DInScene();
-                        Logging::Message("Add SpotLight");
+                        LightSpotSerializer::LoadFileIntoScene("");
                     }
                     ImGui::EndMenu();
                 }
@@ -322,11 +326,11 @@ struct GUIAddonMenu
                 ImGui::Checkbox("Global enable", &setup->ENABLE_SOUND);
                 if (ImGui::IsItemDeactivatedAfterEdit()) {
                     if (!setup->ENABLE_SOUND) {
-                        Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, 0);
+                        Mix_Volume(BrakezaSetup::SoundChannels::SND_GLOBAL, 0);
                         Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC));
                         Mix_VolumeMusic(0);
                     } else {
-                        Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_CHANNEL_GLOBAL));
+                        Mix_Volume(BrakezaSetup::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_CHANNEL_GLOBAL));
                         Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC));
                     }
                 }
@@ -336,7 +340,7 @@ struct GUIAddonMenu
 
                 ImGui::DragScalar("Global Channel volume", ImGuiDataType_Float, &setup->SOUND_CHANNEL_GLOBAL, range_sensibility_volume, &range_min_volume, &range_max_volume, "%f", 1.0f);
                 if (ImGui::IsItemEdited()) {
-                    Mix_Volume(EngineSetup::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_CHANNEL_GLOBAL));
+                    Mix_Volume(BrakezaSetup::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_CHANNEL_GLOBAL));
                 }
                 ImGui::EndMenu();
             }
@@ -350,13 +354,13 @@ struct GUIAddonMenu
 
             if (ImGui::BeginMenu("Layout")) {
                 if (ImGui::MenuItem("Default", "F5")) {
-                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(EngineSetup::ImGUIConfigs::DEFAULT);
+                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(BrakezaSetup::ImGUIConfigs::DEFAULT);
                 }
                 if (ImGui::MenuItem("Coding", "F6")) {
-                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(EngineSetup::ImGUIConfigs::CODING);
+                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(BrakezaSetup::ImGUIConfigs::CODING);
                 }
                 if (ImGui::MenuItem("Design", "F7")) {
-                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(EngineSetup::ImGUIConfigs::DESIGN);
+                    ComponentsManager::get()->getComponentWindow()->setImGuiConfig(BrakezaSetup::ImGUIConfigs::DESIGN);
                 }
                 ImGui::Separator();
                 if (ImGui::MenuItem("Save current layout")) {
@@ -428,7 +432,7 @@ struct GUIAddonMenu
             ImGui::Image(icon("Image2DIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
-                SceneLoader::createImage2DInScene(fullPath);
+                Image2DSerializer::LoadFileIntoScene(fullPath);
             }
         }
     }
@@ -456,7 +460,7 @@ struct GUIAddonMenu
             ImGui::Image(icon("Image2DAnimationIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
-                SceneLoader::createImage2DAnimatedInScene(fullPath);
+                Image2DAnimationSerializer::LoadFileIntoScene(fullPath);
             }
         }
     }
@@ -483,7 +487,7 @@ struct GUIAddonMenu
             ImGui::Image(icon("Image3DIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
-                SceneLoader::createImage3DToScene(fullPath);
+                Image3DSerializer::LoadFileIntoScene(fullPath);
             }
         }
     }
@@ -515,7 +519,7 @@ struct GUIAddonMenu
             ImGui::Image(icon("BillboardAnimationIcon"), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
-                SceneLoader::createBillboardAnimationInScene(fullPath);
+                Image3DAnimationSerializer::LoadFileIntoScene(fullPath);
             }
         }
     }
@@ -607,9 +611,9 @@ struct GUIAddonMenu
         const float focalMaxValues = 1;
         const float focalValueSens = 0.001;
 
-        ImGui::Checkbox("Enable DOF", &EngineSetup::get()->ENABLE_DOF_BLUR);
+        ImGui::Checkbox("Enable DOF", &BrakezaSetup::get()->ENABLE_DOF_BLUR);
 
-        if (EngineSetup::get()->ENABLE_DOF_BLUR) {
+        if (BrakezaSetup::get()->ENABLE_DOF_BLUR) {
             const float depthValueSens = 0.1;
             const float depthMinValues = 0;
             const float depthMaxValues = 100;
@@ -625,9 +629,9 @@ struct GUIAddonMenu
 
         ImGui::Separator();
 
-        ImGui::Checkbox("Enable FOG", &EngineSetup::get()->ENABLE_FOG);
+        ImGui::Checkbox("Enable FOG", &BrakezaSetup::get()->ENABLE_FOG);
 
-        if (EngineSetup::get()->ENABLE_FOG) {
+        if (BrakezaSetup::get()->ENABLE_FOG) {
             const float rangeFogSens = 0.1;
             const float rangeFogMin = 0.1;
             const float rangeFogMax = 1000;
@@ -693,12 +697,12 @@ struct GUIAddonMenu
             }
         }
         ImGui::Separator();
-        ImGui::DragFloat("Cursors Walking", &EngineSetup::get()->WALKING_SPEED, 0.01f, 0.0f, 500.0f);
-        ImGui::DragFloat("Cursors Strafe", &EngineSetup::get()->STRAFE_SPEED, 0.01f, 0.0f, 500.0f);
+        ImGui::DragFloat("Cursors Walking", &BrakezaSetup::get()->WALKING_SPEED, 0.01f, 0.0f, 500.0f);
+        ImGui::DragFloat("Cursors Strafe", &BrakezaSetup::get()->STRAFE_SPEED, 0.01f, 0.0f, 500.0f);
         ImGui::Separator();
-        ImGui::Checkbox("Mouse Look", &EngineSetup::get()->MOUSE_LOOK);
-        if (EngineSetup::get()->MOUSE_LOOK) {
-            ImGui::DragFloat("Sensibility", &EngineSetup::get()->MOUSE_SENSITIVITY, 0.001f, 0.0f, 1.0f);
+        ImGui::Checkbox("Mouse Look", &BrakezaSetup::get()->MOUSE_LOOK);
+        if (BrakezaSetup::get()->MOUSE_LOOK) {
+            ImGui::DragFloat("Sensibility", &BrakezaSetup::get()->MOUSE_SENSITIVITY, 0.001f, 0.0f, 1.0f);
         }
     }
 };

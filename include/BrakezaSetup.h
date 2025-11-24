@@ -5,12 +5,12 @@
 #include "Objects/ScriptLUA.h"
 #include <map>
 
-class EngineSetup {
+class BrakezaSetup {
 
 public:
-    static EngineSetup *get();
+    static BrakezaSetup *get();
 
-    static EngineSetup *instance;
+    static BrakezaSetup *instance;
 
     // TITLE/VERSION
     std::string ENGINE_TITLE = "Brakeza3D - By Eduardo Rodriguez <eduardo@brakeza.com>";

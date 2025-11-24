@@ -5,12 +5,12 @@
 #include "Vertex3D.h"
 #include "Vector3D.h"
 #include "../Components/Camera3D.h"
-#include "Point2D.h"
+#include "../2D/Point2D.h"
 #include "Object3D.h"
 #include <list>
 #include <vector>
 #include "../Misc/Color.h"
-#include "../Misc/Image.h"
+#include "../Render/Image.h"
 
 class Triangle {
 

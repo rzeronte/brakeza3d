@@ -3,13 +3,13 @@
 //
 
 #include "../../include/OpenGL/ShaderOGLWire.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLWire::ShaderOGLWire()
 :
     ShaderBaseOpenGL(
-        EngineSetup::get()->SHADERS_FOLDER + "Wireframe.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Wireframe.fs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Wireframe.vs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Wireframe.fs",
         false
     )
 {

@@ -1,6 +1,6 @@
 #include "../../include/Render/Frustum.h"
 #include "../../include/Render/Maths.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 Frustum::Frustum() = default;
 

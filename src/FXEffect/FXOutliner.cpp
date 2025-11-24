@@ -1,6 +1,6 @@
 #include "../../include/FXEffect/FXOutliner.h"
 #include "../../include/Render/Logging.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 FXOutliner::FXOutliner(bool active, Object3D *object, const Color &color, float size)
 :

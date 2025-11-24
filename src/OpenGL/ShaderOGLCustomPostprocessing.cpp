@@ -3,7 +3,7 @@
 //
 
 #include "../include/OpenGL/ShaderOGLCustomPostprocessing.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLCustomPostprocessing::ShaderOGLCustomPostprocessing(
     const std::string &label,

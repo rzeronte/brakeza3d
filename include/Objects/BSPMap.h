@@ -2,7 +2,7 @@
 #define _MAP_H_
 
 #include "../Components/Camera3D.h"
-#include "../Objects/Triangle3D.h"
+#include "Triangle3D.h"
 #include "btBulletDynamicsCommon.h"
 
 #define BSP_VERSION        29

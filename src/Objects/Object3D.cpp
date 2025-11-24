@@ -4,11 +4,12 @@
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/ToolsJSON.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/Persistence/JSONSerializerRegistry.h"
 #include <glm/gtx/euler_angles.hpp>
+
+#include "../../include/GUI/Objects/Object3DGUI.h"
 
 Object3D::Object3D()
 :
@@ -64,39 +65,39 @@ void Object3D::setEnabled(bool enabled)
 
 Vertex3D Object3D::AxisUp()
 {
-    Vertex3D v = getRotation() * EngineSetup::get()->up;
+    Vertex3D v = getRotation() * BrakezaSetup::get()->up;
     return v.getNormalize();
 }
 
 Vertex3D Object3D::AxisDown()
 {
-    Vertex3D v = getRotation() * EngineSetup::get()->down;
+    Vertex3D v = getRotation() * BrakezaSetup::get()->down;
     return v.getNormalize();
 }
 
 Vertex3D Object3D::AxisForward()
 {
-    Vertex3D v = getRotation() * EngineSetup::get()->forward;
+    Vertex3D v = getRotation() * BrakezaSetup::get()->forward;
     return v.getNormalize();
 }
 
 Vertex3D Object3D::AxisBackwards()
 {
-    Vertex3D v = getRotation() * EngineSetup::get()->backward;
+    Vertex3D v = getRotation() * BrakezaSetup::get()->backward;
 
     return v.getNormalize();
 }
 
 Vertex3D Object3D::AxisRight()
 {
-    Vertex3D v = getRotation() * EngineSetup::get()->right;
+    Vertex3D v = getRotation() * BrakezaSetup::get()->right;
 
     return v.getNormalize();
 }
 
 Vertex3D Object3D::AxisLeft()
 {
-    Vertex3D v = getRotation() * EngineSetup::get()->left;
+    Vertex3D v = getRotation() * BrakezaSetup::get()->left;
 
     return v.getNormalize();
 }
@@ -167,7 +168,7 @@ void Object3D::onUpdate()
         motion->onUpdate(position);
     }
 
-    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
+    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == BrakezaSetup::LUA_PLAY) {
         runScripts();
     }
 
@@ -188,9 +189,14 @@ void Object3D::postUpdate()
         if (a->isEnabled())  a->postUpdate();
     }
 
-    if (EngineSetup::get()->RENDER_OBJECTS_AXIS) {
+    if (BrakezaSetup::get()->RENDER_OBJECTS_AXIS) {
         Drawable::drawObject3DAxis(this,true,true,true);
     }
+}
+
+void Object3D::drawImGuiProperties()
+{
+    Object3DGUI::drawImGuiProperties(this);
 }
 
 void Object3D::addToPosition(Vertex3D v) {
@@ -290,7 +296,7 @@ void Object3D::removeScript(ScriptLUA *script)
 
 const char *Object3D::getTypeObject()
 {
-    return "Object3D";
+    return SceneObjectTypes::OBJECT_3D;
 }
 
 const char *Object3D::getTypeIcon()
@@ -320,230 +326,6 @@ void Object3D::setBelongToScene(bool belongToScene)
     Object3D::belongToScene = belongToScene;
 }
 
-void Object3D::drawImGuiProperties()
-{
-    auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
-
-    static char name[256];
-    strncpy(name, label.c_str(), sizeof(name));
-    ImGui::Image(TexturePackage::getOGLTextureID(*ImGuiTextures, getTypeIcon()), ImVec2(22, 24));
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(125.0f);
-    ImGui::InputText("Name##nameObject", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
-    if (ImGui::IsItemEdited()) {
-        setLabel(name);
-    }
-    ImGui::Separator();
-
-    if (featuresGUI.position || featuresGUI.rotation || featuresGUI.scale) {
-        if (ImGui::CollapsingHeader("Transformations")) {
-            // position
-            if (featuresGUI.position) {
-                float vec3f[3];
-                getPosition().toFloat(vec3f);
-                if (ImGui::DragFloat3("Position", vec3f, 0.01f, -999999.0f, 999999.0f)) {
-                    position.x = vec3f[0];
-                    position.y = vec3f[1];
-                    position.z = vec3f[2];
-                }
-                ImGui::Separator();
-            }
-
-            // rotation
-            if (featuresGUI.rotation) {
-                float oldPitch = getRotation().getPitchDegree();
-                float oldYaw = getRotation().getYawDegree();
-                float oldRoll = getRotation().getRollDegree();
-                float pitch = oldPitch;
-                float yaw = oldYaw;
-                float roll = oldRoll;
-
-                float vec3f[3];
-                vec3f[0] = pitch;
-                vec3f[1] = yaw;
-                vec3f[2] = roll;
-                if (ImGui::DragFloat3("Rotation", vec3f, 0.01f, -999999.0f, 999999.0f)) {
-                    const float factor = 0.0025f;
-                    pitch = vec3f[0];
-                    yaw = vec3f[1];
-                    roll = vec3f[2];
-                    if (abs(pitch - oldPitch) > 0) {
-                        auto partialRotX = M3::arbitraryAxis(getRotation().X(), Maths::radiansToDegrees(pitch - oldPitch) * factor);
-                        setRotation(getRotation() * partialRotX);
-                        M3::normalize(rotation);
-                    }
-
-                    if (abs(yaw - oldYaw) > 0) {
-                        auto partialRotY = M3::arbitraryAxis(getRotation().Y(), Maths::radiansToDegrees(yaw - oldYaw) * factor);
-                        setRotation(getRotation() * partialRotY);
-                        M3::normalize(rotation);
-                    }
-
-                    if (abs(roll - oldRoll) > 0) {
-                        auto partialRotZ = M3::arbitraryAxis(getRotation().Z(), Maths::radiansToDegrees(roll - oldRoll) * factor);
-                        setRotation(getRotation() * partialRotZ);
-                        M3::normalize(rotation);
-                    }
-                }
-                ImGui::Separator();
-
-                drawOffset.toFloat(vec3f);
-                if (ImGui::DragFloat3("DrawOffset", vec3f, 0.01f, -999999.0f, 999999.0f)) {
-                    drawOffset.x = vec3f[0];
-                    drawOffset.y = vec3f[1];
-                    drawOffset.z = vec3f[2];
-                }
-                ImGui::Separator();
-            }
-            // scale
-            if (featuresGUI.scale) {
-                const float range_scale_min = -360;
-                const float range_scale_max = 360;
-                ImGui::DragScalar("Scale", ImGuiDataType_Float, &scale, 0.01, &range_scale_min, &range_scale_max, "%f", 1.0f);
-            }
-        }
-    }
-    // alpha
-    if (featuresGUI.alpha) {
-        if (ImGui::CollapsingHeader("Alpha")) {
-            const float range_alpha_min = 0;
-            const float range_alpha_max = 1;
-
-            ImGui::DragScalar("Alpha##001", ImGuiDataType_Float, &getAlpha(), 0.01, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
-        }
-    }
-
-    if (featuresGUI.attached) {
-        if (ImGui::CollapsingHeader("Attached Objects")) {
-            if (attachedObjects.empty() <= 0) {
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Not objects found");
-            }
-
-            for (auto a: attachedObjects) {
-                if (ImGui::TreeNode(a->getLabel().c_str())) {
-                    a->drawImGuiProperties();
-                    ImGui::TreePop();
-                }
-            }
-        }
-    }
-
-    if (featuresGUI.attached) {
-        if (ImGui::CollapsingHeader("Collider")) {
-            if (ImGui::Checkbox("Enable collider", &collisionsEnabled)) {
-                if (!collisionsEnabled) {
-                    removeCollisionObject();
-                } else {
-                    setupGhostCollider(SIMPLE_SHAPE);
-                }
-            }
-
-            if (collisionsEnabled) {
-                if (ImGui::Button(std::string("Update Collider").c_str())) {
-                    UpdateShapeCollider();
-                }
-                ImGui::Separator();
-
-                drawImGuiCollisionModeSelector();
-                if (getCollisionMode() != KINEMATIC) {
-                    drawImGuiCollisionShapeSelector();
-                }
-
-                if (ImGui::TreeNode("Collider settings")) {
-                    if (getCollisionMode() == CollisionMode::BODY) {
-                        ImGui::Separator();
-
-                        ImGui::Checkbox("Collider static", &colliderStatic);
-
-                        ImGui::Separator();
-
-                        ImGui::DragFloat("CCD Motion Treshold", &ccdMotionThreshold, 0.001f, 0.0f, 5.0f);
-
-                        ImGui::Separator();
-
-                        ImGui::DragFloat("CCD Swept Sphere Radius", &ccdSweptSphereRadius, 0.001f, 0.0f, 5.0f);
-                    }
-
-                    if (getCollisionShape() == SIMPLE_SHAPE) {
-                        ImGui::Separator();
-                        float vec3f[3];
-                        simpleShapeSize.toFloat(vec3f);
-                        if (ImGui::DragFloat3("Shape Size", vec3f, 0.01f, -1000.0f, 1000.0f)) {
-                            simpleShapeSize.x = vec3f[0];
-                            simpleShapeSize.y = vec3f[1];
-                            simpleShapeSize.z = vec3f[2];
-                        }
-                    }
-
-                    if (getCollisionMode() == KINEMATIC || getCollisionShape() == CAPSULE) {
-                        ImGui::Separator();
-                        const float range_min = 0;
-                        const float range_max = 1000;
-
-                        ImGui::DragScalar("Capsule radius", ImGuiDataType_Float, &kinematicCapsuleSize.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Capsule height", ImGuiDataType_Float, &kinematicCapsuleSize.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                    }
-
-                    ImGui::Separator();
-
-                    if (getCollisionMode() == BODY) {
-                        if (!colliderStatic) {
-                            ImGui::DragFloat("Mass", &mass, 0.1f, 0.0f, 5000.0f);
-                            ImGui::Separator();
-                        }
-
-                        if ((getCollisionMode() == GHOST || getCollisionMode() == BODY)) {
-                            float vec3f[3];
-                            angularFactor.toFloat(vec3f);
-                            if (ImGui::DragFloat3("Angular factor", vec3f, 0.01f, 0.0f, 1.0f)) {
-                                angularFactor.x = vec3f[0];
-                                angularFactor.y = vec3f[1];
-                                angularFactor.z = vec3f[2];
-                            }
-
-                            ImGui::Separator();
-
-                            linearFactor.toFloat(vec3f);
-                            if (ImGui::DragFloat3("Linear Factor", vec3f, 0.01f, 0.0f, 1.0f)) {
-                                linearFactor.x = vec3f[0];
-                                linearFactor.y = vec3f[1];
-                                linearFactor.z = vec3f[2];
-                            }
-                            ImGui::Separator();
-
-                            ImGui::DragFloat("Margin", &shapeMargin, 0.01f, 0.0f, 1.0f);
-
-                            ImGui::Separator();
-
-                            ImGui::DragFloat("Friction", &friction, 0.01f, 0.0f, 1.0f);
-
-                            ImGui::Separator();
-
-                            ImGui::DragFloat("Linear Damping", &linearDamping, 0.01f, 0.0f, 1.0f);
-                            ImGui::DragFloat("Angular Damping", &angularDamping, 0.01f, 0.0f, 1.0f);
-
-                            ImGui::Separator();
-
-                            ImGui::DragFloat("Restitution", &restitution, 0.01f, 0.0f, 1.0f);
-                        }
-                    }
-                    ImGui::TreePop();
-                }
-
-                drawImGuiVariables();
-            }
-        }
-        // alpha
-        if (featuresGUI.misc) {
-            if (ImGui::CollapsingHeader("Misc")) {
-                ImGui::Text( " %s: (%f, %f, %f)", "Picking Color", pickingColor.r, pickingColor.g, pickingColor.b);
-                ImGui::Text( " %s: %d", "ID", id);
-                ImGui::Text( " %s: %d", "BelongToScene", belongToScene ? 1 : 0);
-                ImGui::Text( " %s: %f", "Distance to camera", distanceToCamera);
-            }
-        }
-    }
-}
 
 cJSON *Object3D::ReadJSONFromObject(Object3D *object)
 {
@@ -654,7 +436,7 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
     }
     kinematicBody->setCollisionShape(capsule);
     kinematicBody->setUserPointer(this);
-    kinematicBody->setUserIndex(EngineSetup::CollisionSource::OBJECT_COLLIDER);
+    kinematicBody->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
     kinematicBody->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 
     characterController = new btKinematicCharacterController(
@@ -663,14 +445,14 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
         0.1f
     );
 
-    characterController->setGravity(EngineSetup::get()->gravity.toBullet());
+    characterController->setGravity(BrakezaSetup::get()->gravity.toBullet());
     characterController->setUseGhostSweepTest(false);
     characterController->setMaxSlope(btRadians(45)); // Max slope
 
     world->addCollisionObject(
             kinematicBody,
-        EngineSetup::collisionGroups::AllFilter,
-        EngineSetup::collisionGroups::AllFilter
+        BrakezaSetup::collisionGroups::AllFilter,
+        BrakezaSetup::collisionGroups::AllFilter
     );
 
     world->addAction(characterController);
@@ -723,7 +505,7 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     body = new btRigidBody(cInfo);
     body->activate(true);
     body->setUserPointer(this);
-    body->setUserIndex(EngineSetup::CollisionSource::OBJECT_COLLIDER);
+    body->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
     body->setRestitution(restitution);
     body->setAngularFactor(angularFactor.toBullet());
     body->setLinearFactor(linearFactor.toBullet());
@@ -774,12 +556,12 @@ void Object3D::updateFromBullet()
 
 void Object3D::resolveCollision(CollisionInfo with)
 {
-    if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
+    if (BrakezaSetup::get()->LOG_COLLISION_OBJECTS) {
         auto *object = static_cast<Object3D *>(with.with);
         Logging::Message("Object3D: Collision %s with %s",  getLabel().c_str(), object->getLabel().c_str());
     }
 
-    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
+    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == BrakezaSetup::LUA_PLAY) {
         runResolveCollisionScripts(with);
     }
 }
@@ -814,8 +596,8 @@ void Object3D::setupGhostCollider(CollisionShape mode)
             getModelMatrix(),
             simpleShapeSize,
             Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            EngineSetup::collisionGroups::AllFilter,
-            EngineSetup::collisionGroups::AllFilter
+            BrakezaSetup::collisionGroups::AllFilter,
+            BrakezaSetup::collisionGroups::AllFilter
         );
     }
 }

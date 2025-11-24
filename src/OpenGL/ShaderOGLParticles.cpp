@@ -5,8 +5,8 @@
 ShaderOGLParticles::ShaderOGLParticles()
 :
     ShaderBaseOpenGL(
-        EngineSetup::get()->SHADERS_FOLDER + "Particle.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Particle.fs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Particle.vs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Particle.fs",
         false
     ),
     VertexArrayID(0)

@@ -24,7 +24,6 @@ class Image3DAnimation : public Object3D
     Image3D *billboard;
 public:
     Image3DAnimation(Vertex3D &position, float w, float h);
-
     ~Image3DAnimation() override;
 
     const char *getTypeObject() override;
@@ -38,11 +37,8 @@ public:
     void updateTrianglesCoordinatesAndTexture();
     void drawImGuiProperties() override;
     void updateBillboardSize() const;
-    TextureAnimated *getCurrentTextureAnimation() const;
-    cJSON *getJSON(Image3DAnimation *object);
+    [[nodiscard]] TextureAnimated *getCurrentTextureAnimation() const;
     [[nodiscard]] bool isAutoRemoveAfterAnimation() const;
-    static void createFromJSON(cJSON *object);
-    static void setPropertiesFromJSON(cJSON *object, Image3DAnimation *o);
     static Image3DAnimation* create(
         Vertex3D position,
         float width,
@@ -53,6 +49,9 @@ public:
         int frames,
         int fps
     );
+
+    friend class Image3DAnimationSerializer;
+    friend class Image3DAnimationGUI;
 };
 
 

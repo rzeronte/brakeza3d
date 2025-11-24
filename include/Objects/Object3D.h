@@ -32,6 +32,8 @@ struct ObjectGUIFeatures {
     bool misc = true;
 };
 
+class Object3DGUI;
+
 class Object3D: public Collider
 {
 protected:
@@ -143,6 +145,7 @@ public:
     virtual cJSON *ReadJSONFromObject(Object3D *object);
 
     friend class Object3DSerializer;
+    friend class Object3DGUI;
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

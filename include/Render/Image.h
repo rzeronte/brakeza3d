@@ -10,40 +10,37 @@
 #include <SDL2/SDL_surface.h>
 #include <GL/glew.h>
 #include "../Objects/Vertex3D.h"
-#include "Color.h"
+#include "../Misc/Color.h"
 
-class Image
-{
-    bool loaded;
+class Image {
+    bool loaded = false;
     float alpha = 1;
-
-    SDL_Surface *surface;
-    SDL_Texture *texture;
-    std::string fileName;
-
     GLuint texturaID = 0;
-
+    std::string fileName;
+    SDL_Surface *surface = nullptr;
+    SDL_Texture *texture = nullptr;
 public:
     Image();
-    Image(SDL_Surface *surface, SDL_Texture *texture);
     virtual ~Image();
+    Image(SDL_Surface *surface, SDL_Texture *texture);
     explicit Image(const std::string& filename);
-    float getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C) const;
+
     int height() const;
-    bool isLoaded() const;
+    float getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C) const;
     void loadFromRaw(const unsigned int *texture, int w, int h);
-    void drawFlat(int, int, GLuint fbo) const;
-    void drawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint fbo);
+    void drawFlat(int, int, GLuint framebuffer) const;
+    void drawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint framebuffer);
     void loadTGA(const std::string& filename);
     void* pixels() const;
+    bool isLoaded() const;
     void createEmpty(int w, int h);
-    void setImage(const std::string &basicString);
     void setAlpha(float alpha);
+    void setImage(const std::string &basicString);
+    Color getColor(int x, int y) const;
     SDL_Texture *getTexture() const;
     ImTextureID getOGLImTexture() const;
-    Color getColor(int x, int y) const;
-    [[nodiscard]] GLuint getOGLTextureID() const;
     [[nodiscard]] float getAlpha() const;
+    [[nodiscard]] GLuint getOGLTextureID() const;
     [[nodiscard]] const std::string &getFileName() const;
     [[nodiscard]] SDL_Surface *getSurface() const;
     [[nodiscard]] int width() const;

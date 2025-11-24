@@ -2,10 +2,10 @@
 #include "../../include/Objects/Decal.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Objects/Image3DAnimation8Directions.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 Decal::Decal() :
-    sprite(new Image3DAnimation(getPosition(), EngineSetup::get()->BILLBOARD_WIDTH_DEFAULT, EngineSetup::get()->BILLBOARD_HEIGHT_DEFAULT))
+    sprite(new Image3DAnimation(getPosition(), BrakezaSetup::get()->BILLBOARD_WIDTH_DEFAULT, BrakezaSetup::get()->BILLBOARD_HEIGHT_DEFAULT))
 {
     setDecal(true);
 }

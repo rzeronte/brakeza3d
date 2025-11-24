@@ -5,18 +5,20 @@
 #include "../../include/Render/Drawable.h"
 #include <assimp/postprocess.h>
 
+#include "../../include/GUI/Objects/Mesh3DAnimationGUI.h"
+
 Mesh3DAnimation::Mesh3DAnimation()
 :
-    scene(nullptr),
     numBones(0),
+    indexCurrentAnimation(0),
+    boneColliderIndex(0),
+    runningTime(0),
+    animation_speed(1),
     loop(true),
     boneColliderEnabled(false),
-    indexCurrentAnimation(0),
-    runningTime(0),
-    remove_at_end_animation(false),
-    animation_speed(1),
-    animation_ends(false),
-    boneColliderIndex(0)
+    removeOnAnimationEnd(false),
+    finished(false),
+    scene(nullptr)
 {
     luaEnvironment["this"] = this;
 }
@@ -42,10 +44,10 @@ void Mesh3DAnimation::onUpdate()
         render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
     }
 
-    if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (EngineSetup::get()->ENABLE_LIGHTS) {
+    if (BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
+        if (BrakezaSetup::get()->ENABLE_LIGHTS) {
             render->getShaderOGLRenderDeferred()->renderMesh(this, true, window->getGBuffer().FBO);
-            if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
+            if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
                 shadowMappingPass();
             }
         } else {
@@ -53,28 +55,28 @@ void Mesh3DAnimation::onUpdate()
         }
     }
 
-    if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
+    if (BrakezaSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
         render->getShaderOGLPoints()->renderMeshAnimation(this, window->getSceneFramebuffer());
     }
 
-    if (EngineSetup::get()->TRIANGLE_MODE_SHADING && isRender()) {
+    if (BrakezaSetup::get()->TRIANGLE_MODE_SHADING && isRender()) {
         render->getShaderOGLShading()->renderMesh(this, true, window->getSceneFramebuffer());
     }
 
-    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
+    if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
         render->getShaderOGLWireframe()->renderMesh(this, true, window->getSceneFramebuffer());
     }
 
-    if (EngineSetup::get()->DRAW_MESH3D_AABB && isRender()) {
+    if (BrakezaSetup::get()->DRAW_MESH3D_AABB && isRender()) {
         updateBoundingBox();
         Drawable::drawAABB(&aabb, Color::white());
     }
 
-    if (EngineSetup::get()->DRAW_MESH3D_OCTREE && octree != nullptr) {
+    if (BrakezaSetup::get()->DRAW_MESH3D_OCTREE && octree != nullptr) {
         Drawable::drawOctree(octree);
     }
 
-    if (EngineSetup::get()->DRAW_MESH3D_GRID && grid != nullptr) {
+    if (BrakezaSetup::get()->DRAW_MESH3D_GRID && grid != nullptr) {
         Drawable::drawGrid3D(grid);
     }
 
@@ -82,11 +84,11 @@ void Mesh3DAnimation::onUpdate()
         s->render(window->getSceneFramebuffer());
     }
 
-    if (EngineSetup::get()->DRAW_ANIMATION_BONES) {
+    if (BrakezaSetup::get()->DRAW_ANIMATION_BONES) {
         drawBones(scene->mRootNode, nullptr);
     }
 
-    if (EngineSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
+    if (BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
         render->getShaderOGLColor()->renderMesh(
             this,
             true,
@@ -133,11 +135,11 @@ void Mesh3DAnimation::UpdateFrameTransformations()
 void Mesh3DAnimation::CheckIfEndAnimation()
 {
     auto timeIncrement = Brakeza3D::get()->getDeltaTime() * animation_speed;
-    animation_ends = false;
+    finished = false;
     auto maxAnimationTime = getCurrentAnimationMaxTime();
 
     if (runningTime + timeIncrement >= maxAnimationTime) {
-        animation_ends = true;
+        finished = true;
         if (loop) {
             runningTime = 0.000;
         } else {
@@ -554,12 +556,12 @@ void Mesh3DAnimation::drawBones(aiNode *node, Vertex3D *lastBonePosition)
 
 bool Mesh3DAnimation::isRemoveAtEndAnimation() const
 {
-    return remove_at_end_animation;
+    return removeOnAnimationEnd;
 }
 
 void Mesh3DAnimation::setRemoveAtEndAnimation(bool removeAtEnds)
 {
-    remove_at_end_animation = removeAtEnds;
+    removeOnAnimationEnd = removeAtEnds;
 }
 
 Mesh3DAnimation* Mesh3DAnimation::create(const Vertex3D &position, const std::string& animationFile)
@@ -573,7 +575,7 @@ Mesh3DAnimation* Mesh3DAnimation::create(const Vertex3D &position, const std::st
 
 const char *Mesh3DAnimation::getTypeObject()
 {
-    return "Mesh3DAnimation";
+    return SceneObjectTypes::MESH_3D_ANIMATION;
 }
 
 const char *Mesh3DAnimation::getTypeIcon()
@@ -584,33 +586,7 @@ const char *Mesh3DAnimation::getTypeIcon()
 void Mesh3DAnimation::drawImGuiProperties()
 {
     Mesh3D::drawImGuiProperties();
-
-    const float range_min = 0.0f;
-    const float range_max = 1.0f;
-
-    if (ImGui::CollapsingHeader("Mesh3DAnimation")) {
-
-        const char* items[static_cast<int>(scene->mNumAnimations)];
-        for (int i = 0; i < static_cast<int>(scene->mNumAnimations); i++) {
-            items[i] = scene->mAnimations[i]->mName.C_Str();
-        }
-        auto comboTitle = "Animations##" + getLabel();
-        ImGui::Combo("Animation", &indexCurrentAnimation, items, IM_ARRAYSIZE(items));
-
-        ImGui::Separator();
-        ImGui::DragScalar("Speed", ImGuiDataType_Float, &animation_speed, 0.01f ,&range_min, &range_max, "%f", 1.0f);
-
-        ImGui::Separator();
-        ImGui::Checkbox("Loop", &loop);
-        ImGui::Separator();
-        ImGui::Checkbox("Bones Colliders", &boneColliderEnabled);
-
-        if (boneColliderEnabled) {
-            if (ImGui::Button(std::string("Manage Bone Mappings##" + getLabel()).c_str())) {
-                Brakeza3D::get()->getManagerGui()->openBoneInfoDialog();
-            }
-        }
-    }
+    Mesh3DAnimationDrawerGUI::drawImGuiProperties(this);
 }
 
 void Mesh3DAnimation::setAnimationSpeed(float value)
@@ -650,7 +626,7 @@ void Mesh3DAnimation::setIndexCurrentAnimation(int indexCurrentAnimation)
 
 bool Mesh3DAnimation::isAnimationEnds() const
 {
-    return animation_ends;
+    return finished;
 }
 
 void Mesh3DAnimation::FillAnimationBoneDataOGLBuffers()
@@ -850,7 +826,7 @@ void Mesh3DAnimation::createBoneGhostBody(int bmIndex, unsigned int boneId, cons
     ci.ghostObject->setWorldTransform(transformation);
     ci.ghostObject->setUserPointer(this);
     ci.ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
-    ci.ghostObject->setUserIndex(EngineSetup::CollisionSource::BONE_COLLIDER);
+    ci.ghostObject->setUserIndex(BrakezaSetup::CollisionSource::BONE_COLLIDER);
     ci.ghostObject->setUserIndex2(bmIndex);
 
     ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->addCollisionObject(
@@ -946,19 +922,19 @@ void Mesh3DAnimation::removeBonesColliderMapping(const std::string& name)
 
 void Mesh3DAnimation::resolveCollision(CollisionInfo with)
 {
-    if (EngineSetup::get()->LOG_COLLISION_OBJECTS) {
+    if (BrakezaSetup::get()->LOG_COLLISION_OBJECTS) {
         auto *object = static_cast<Object3D *>(with.with);
 
-        if (with.source == EngineSetup::CollisionSource::OBJECT_COLLIDER) {
+        if (with.source == BrakezaSetup::CollisionSource::OBJECT_COLLIDER) {
             Logging::Message("Mesh3DAnimation: Collision %s with object: %s",  getLabel().c_str(), object->getLabel().c_str());
         }
 
-        if (with.source == EngineSetup::CollisionSource::BONE_COLLIDER) {
+        if (with.source == BrakezaSetup::CollisionSource::BONE_COLLIDER) {
             Logging::Message("Mesh3DAnimation: Collision %s Bone Collider: %s, with object: %s",  getLabel().c_str(), boneMappingColliders[with.boneIndexMapping].nameMapping.c_str(), object->getLabel().c_str());
         }
     }
 
-    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == EngineSetup::LUA_PLAY) {
+    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == BrakezaSetup::LUA_PLAY) {
         runResolveCollisionScripts(with);
     }
 }

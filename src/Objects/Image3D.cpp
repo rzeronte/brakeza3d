@@ -1,7 +1,8 @@
 #include "../../include/Objects/Image3D.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/GUI/Objects/Image3DGUI.h"
 
 Image3D::Image3D(const Vertex3D &position, float width, float height, Image* image)
 :
@@ -88,13 +89,19 @@ void Image3D::onUpdate()
     );
 }
 
+void Image3D::drawImGuiProperties()
+{
+    Object3D::drawImGuiProperties();
+    Image3DGUI::drawImGuiProperties(this);
+}
+
 Image3D::~Image3D()
 {
 }
 
 const char *Image3D::getTypeObject()
 {
-    return "Image3D";
+    return SceneObjectTypes::IMAGE_3D;
 }
 
 const char *Image3D::getTypeIcon()
@@ -186,86 +193,4 @@ Image* Image3D::getImage() const
 void Image3D::setImage(Image* value)
 {
     image = value;
-}
-
-void Image3D::drawImGuiProperties() {
-    Object3D::drawImGuiProperties();
-
-    if (ImGui::CollapsingHeader("Image3D")) {
-
-        const float range_min_int = 1.0;
-        const float range_max_int = 1000;
-
-        if (ImGui::TreeNode("Size")) {
-            ImGui::DragScalar("Width", ImGuiDataType_Float, &width,1.f, &range_min_int, &range_max_int, "%f", 1.0f);
-            ImGui::DragScalar("Height", ImGuiDataType_Float, &height,1.f, &range_min_int, &range_max_int, "%f", 1.0f);
-
-            if (ImGui::Button(std::string("Update size").c_str())) {
-                setSize(width, height);
-            }
-            ImGui::TreePop();
-        }
-
-        if (ImGui::TreeNode("Image")) {
-            if (image->isLoaded()) {
-                ImGui::Image((ImTextureID) image->getOGLTextureID(),ImVec2(64, 64));
-            } else {
-                ImGui::Text("No image selected. Drag a texture here!");
-            }
-
-            if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
-                    Logging::Message("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
-                    IM_ASSERT(payload->DataSize == sizeof(int));
-                    auto selection = static_cast<char *>(payload->Data);
-                    auto fullPath = EngineSetup::get()->IMAGES_FOLDER + selection;
-                    if (image == nullptr) {
-                        image = new Image(fullPath);
-                    } else {
-                        image->setImage(fullPath);
-                    }
-                    Logging::Message("File %s", selection);
-                }
-                ImGui::EndDragDropTarget();
-            }
-            ImGui::TreePop();
-        }
-    }
-}
-
-cJSON *Image3D::getJSON(Image3D* object)
-{
-    auto root= Object3D::ReadJSONFromObject(object);
-
-    cJSON_AddNumberToObject(root, "width", width);
-    cJSON_AddNumberToObject(root, "height", height);
-    cJSON_AddStringToObject(root, "image", image->getFileName().c_str());
-
-    return root;
-}
-
-void Image3D::createFromJSON(cJSON *object)
-{
-    auto name = cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring;
-    auto width = static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "width")->valueint);
-    auto height = static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "height")->valueint);
-    auto image = cJSON_GetObjectItemCaseSensitive(object, "image")->valuestring;
-
-    auto o = new Image3D(
-        Vertex3D(),
-        width,
-        height,
-        new Image(image)
-    );
-
-    setPropertiesFromJSON(object, o);
-
-    Brakeza3D::get()->addObject3D(o, name);
-}
-
-void Image3D::setPropertiesFromJSON(cJSON *object, Image3D *o)
-{
-    o->setBelongToScene(true);
-
-    Object3D::setPropertiesFromJSON(object, o);
 }

@@ -3,7 +3,7 @@
 //
 
 #include "../../include/FXEffect/FXColorTint.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 FXColorTint::FXColorTint(bool active, Color color, float progress)
 :

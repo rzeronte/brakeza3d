@@ -1,8 +1,9 @@
 
 #include "../../include/Objects/Swarm.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/GUI/Objects/SwarmGUI.h"
 
 SwarmObject::SwarmObject()
 :
@@ -218,8 +219,9 @@ void Swarm::removeBoid(SwarmObject *o)
     objects.erase(std::remove(objects.begin(), objects.end(), o), objects.end());
 }
 
-const char *Swarm::getTypeObject() {
-    return "Swarm";
+const char *Swarm::getTypeObject()
+{
+    return SceneObjectTypes::SWARM;
 }
 
 const char *Swarm::getTypeIcon() {
@@ -229,49 +231,5 @@ const char *Swarm::getTypeIcon() {
 void Swarm::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-
-    if (ImGui::TreeNode("Swarm Settings")) {
-        const float range_min = -1000;
-        const float range_max = 100;
-        const float range_sensibility = 0.1;
-
-        ImGui::Checkbox("Debug", &debug);
-
-        if (ImGui::TreeNode("Size")) {
-            ImGui::DragScalar("X", ImGuiDataType_Float, &size.x, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Y", ImGuiDataType_Float, &size.y, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Z", ImGuiDataType_Float, &size.z, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::TreePop();
-        }
-        if (ImGui::TreeNode("Weights")) {
-            ImGui::DragScalar("separation", ImGuiDataType_Float, &separationWeight, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("alignment", ImGuiDataType_Float, &alignmentWeight, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("cohesion", ImGuiDataType_Float, &cohesionWeight, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::TreePop();
-        }
-
-        if (ImGui::TreeNode("Global Bias")) {
-            ImGui::DragScalar("Bias Separation", ImGuiDataType_Float, &globalBiasSeparation, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Bias Alignment", ImGuiDataType_Float, &globalBiasAlignment, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Bias Cohesion", ImGuiDataType_Float, &globalBiasCohesion, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::TreePop();
-        }
-        if (ImGui::TreeNode("Predator")) {
-            ImGui::DragScalar("Threshold", ImGuiDataType_Float, &predatorThreshold, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Avoidance Weight", ImGuiDataType_Float, &predatorAvoidanceWeight, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::TreePop();
-        }
-        if (ImGui::TreeNode("Center")) {
-            ImGui::DragScalar("Center threshold", ImGuiDataType_Float, &centerThreshold, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Center attraction", ImGuiDataType_Float, &centerAttractionWeight, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-            ImGui::TreePop();
-        }
-
-        ImGui::DragScalar("Max. Speed", ImGuiDataType_Float, &maxSpeed, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-        ImGui::DragScalar("Neighbor dist.", ImGuiDataType_Float, &neighborDist, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-        ImGui::DragScalar("Velocity Boids factor", ImGuiDataType_Float, &velocityBoidsFactor, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-        ImGui::DragScalar("Turn factor", ImGuiDataType_Float, &turnFactor, range_sensibility ,&range_min, &range_max, "%f", 1.0f);
-
-        ImGui::TreePop();
-    }
+    SwarmGUI::drawImGuiProperties(this);
 }

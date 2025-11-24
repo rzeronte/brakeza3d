@@ -97,6 +97,7 @@ public:
     [[nodiscard]] std::vector<Vertex3D *> &getModelVertices(int i);
 
     friend class Mesh3DSerializer;
+    friend class Mesh3DGUI;
 };
 
 #endif //SDL2_3D_ENGINE_MESH_H

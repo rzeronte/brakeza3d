@@ -5,10 +5,14 @@
 #ifndef BRAKEZA3D_SPOTLIGHT3D_H
 #define BRAKEZA3D_SPOTLIGHT3D_H
 
-
 #include "LightPoint.h"
 
-class LightSpot : public LightPoint {
+class LightSpot : public LightPoint
+{
+    glm::vec4 direction;
+    float cutOff;
+    float outerCutOff;
+
 public:
     LightSpot(
         const glm::vec4 &direction,
@@ -21,35 +25,20 @@ public:
         float cutOff,
         float outerCutOff
     );
-
     const char *getTypeIcon() override;
-
-    void drawImGuiProperties() override;
-
-    cJSON *getJSON(LightSpot *object);
-
     const char *getTypeObject() override;
-
-    void setCutOff(float cutOff);
-
-    void setOuterCutOff(float outerCutOff);
-
+    void drawImGuiProperties() override;
+    void setCutOff(float value);
+    void setOuterCutOff(float value);
     void onUpdate() override;
-
-    static void createFromJSON(cJSON *object);
-
-    glm::vec4 direction;
-    float cutOff;
-    float outerCutOff;
-
-    static void setPropertiesFromJSON(cJSON *object, LightSpot *o);
-
+    void setDirection(const Vertex3D &d);
+    glm::mat4 getLightSpaceMatrix();
+    [[nodiscard]] float getCutOff() const;
+    [[nodiscard]] float getOuterCutOff() const;
     static LightSpot* create(const Vertex3D &position, const Vertex3D &direction);
 
-    void setDirection(Vertex3D d);
-
-    glm::mat4 getLightSpaceMatrix();
+    friend class LightSpotSerializer;
+    friend class LightSpotGUI;
 };
-
 
 #endif //BRAKEZA3D_SPOTLIGHT3D_H

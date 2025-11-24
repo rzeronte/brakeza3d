@@ -80,7 +80,7 @@ cJSON * Object3DSerializer::JsonByObject(Object3D* object)
     return root;
 }
 
-void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
+void Object3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
     std::cout << "[Object3DSerializer ApplyJsonToObject] " << o->getTypeObject() << std::endl;
 
@@ -211,7 +211,6 @@ Object3D * Object3DSerializer::ObjectByJson(cJSON *json)
 void Object3DSerializer::LoadFileIntoScene(const std::string &file)
 {
     auto o = new Object3D();
-    o->setBelongToScene(true);
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("Object3D"));
 
 }

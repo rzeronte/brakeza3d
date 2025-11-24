@@ -3,7 +3,7 @@
 //
 
 #include "../../include/Collision/AssimpAnimationService.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Transforms.h"
 #include <assimp/postprocess.h>

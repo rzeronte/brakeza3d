@@ -2,7 +2,7 @@
 #define SDL2_3D_ENGINE_TOOLS_H
 
 #include "../Objects/Vertex3D.h"
-#include "../Objects/Point2D.h"
+#include "../2D/Point2D.h"
 #include "../Components/Camera3D.h"
 #include "../Objects/Object3D.h"
 #include "../Objects/LightPoint.h"

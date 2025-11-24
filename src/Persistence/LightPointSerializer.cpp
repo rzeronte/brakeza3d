@@ -54,7 +54,7 @@ Object3D * LightPointSerializer::ObjectByJson(cJSON *json)
     return o;
 }
 
-void LightPointSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
+void LightPointSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
     std::cout << "[Mesh3DSerializer ApplyJsonToObject] " << o->getTypeObject() << std::endl;
 
@@ -62,26 +62,24 @@ void LightPointSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 
     Object3DSerializer::ApplyJsonToObject(json, o);
 
-    light->setBelongToScene(true);
-
     auto ambient = cJSON_GetObjectItemCaseSensitive(json, "ambient");
-    light->ambient.x = (float) cJSON_GetObjectItemCaseSensitive(ambient, "x")->valuedouble;
-    light->ambient.y = (float) cJSON_GetObjectItemCaseSensitive(ambient, "y")->valuedouble;
-    light->ambient.z = (float) cJSON_GetObjectItemCaseSensitive(ambient, "z")->valuedouble;
+    light->ambient.x = static_cast<float>(cJSON_GetObjectItemCaseSensitive(ambient, "x")->valuedouble);
+    light->ambient.y = static_cast<float>(cJSON_GetObjectItemCaseSensitive(ambient, "y")->valuedouble);
+    light->ambient.z = static_cast<float>(cJSON_GetObjectItemCaseSensitive(ambient, "z")->valuedouble);
 
     auto diffuse = cJSON_GetObjectItemCaseSensitive(json, "diffuse");
-    light->diffuse.x = (float) cJSON_GetObjectItemCaseSensitive(diffuse, "x")->valuedouble;
-    light->diffuse.y = (float) cJSON_GetObjectItemCaseSensitive(diffuse, "y")->valuedouble;
-    light->diffuse.z = (float) cJSON_GetObjectItemCaseSensitive(diffuse, "z")->valuedouble;
+    light->diffuse.x = static_cast<float>(cJSON_GetObjectItemCaseSensitive(diffuse, "x")->valuedouble);
+    light->diffuse.y = static_cast<float>(cJSON_GetObjectItemCaseSensitive(diffuse, "y")->valuedouble);
+    light->diffuse.z = static_cast<float>(cJSON_GetObjectItemCaseSensitive(diffuse, "z")->valuedouble);
 
     auto specular = cJSON_GetObjectItemCaseSensitive(json, "specular");
-    light->specular.x = (float) cJSON_GetObjectItemCaseSensitive(specular, "x")->valuedouble;
-    light->specular.y = (float) cJSON_GetObjectItemCaseSensitive(specular, "y")->valuedouble;
-    light->specular.z = (float) cJSON_GetObjectItemCaseSensitive(specular, "z")->valuedouble;
+    light->specular.x = static_cast<float>(cJSON_GetObjectItemCaseSensitive(specular, "x")->valuedouble);
+    light->specular.y = static_cast<float>(cJSON_GetObjectItemCaseSensitive(specular, "y")->valuedouble);
+    light->specular.z = static_cast<float>(cJSON_GetObjectItemCaseSensitive(specular, "z")->valuedouble);
 
-    light->setConstant((float)cJSON_GetObjectItemCaseSensitive(json, "constant")->valuedouble);
-    light->setLinear((float)cJSON_GetObjectItemCaseSensitive(json, "linear")->valuedouble);
-    light->setCuadratic((float)cJSON_GetObjectItemCaseSensitive(json, "quadratic")->valuedouble);
+    light->setConstant(static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "constant")->valuedouble));
+    light->setLinear(static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "linear")->valuedouble));
+    light->setCuadratic(static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "quadratic")->valuedouble));
 }
 
 void LightPointSerializer::LoadFileIntoScene(const std::string &model)
@@ -96,7 +94,6 @@ void LightPointSerializer::LoadFileIntoScene(const std::string &model)
     );
 
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
-    o->setBelongToScene(true);
 
     Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("LightPoint3D"));
 }

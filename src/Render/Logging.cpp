@@ -1,12 +1,12 @@
 
 #include "../../include/Render/Logging.h"
-#include "../../include/EngineSetup.h"
+#include "../../include/BrakezaSetup.h"
 #include "../../include/Brakeza3D.h"
 
 
 void Logging::Message(const char *message, ...)
 {
-    if (!EngineSetup::get()->ENABLE_LOGGING) return;
+    if (!BrakezaSetup::get()->ENABLE_LOGGING) return;
 
     va_list args;
     va_start(args, message);
@@ -25,9 +25,9 @@ void Logging::Message(const char *message, ...)
 
     if ( Brakeza3D::get()->getManagerGui() != nullptr) {
         Brakeza3D::get()->getManagerGui()->getConsole()->AddLog("%s", buffer);
-    } else {
-        std::cout << buffer << std::endl;
     }
+
+    std::cout << buffer << std::endl;
 
     delete[] buffer;
 }

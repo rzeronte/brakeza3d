@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_CXX_FLAGS "-O3 -w")
+    #set(CMAKE_CXX_FLAGS "-O3 -w")
+    set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
 endif()
 
 # SDL
@@ -82,8 +83,8 @@ add_executable(Brakeza3D
     src/Objects/Triangle3D.cpp                      include/Objects/Triangle3D.h
     src/Objects/Vertex3D.cpp                        include/Objects/Vertex3D.h
     src/Objects/Vector3D.cpp                        include/Objects/Vector3D.h
-    src/Objects/Point2D.cpp                         include/Objects/Point2D.h
-    src/Objects/Line2D.cpp                          include/Objects/Line2D.h
+        src/2D/Point2D.cpp include/2D/Point2D.h
+        src/2D/Line2D.cpp include/2D/Line2D.h
     src/Objects/Object3D.cpp                        include/Objects/Object3D.h
         src/Objects/LightPoint.cpp include/Objects/LightPoint.h
         src/Objects/Image3DAnimation8Directions.cpp include/Objects/Image3DAnimation8Directions.h
@@ -107,11 +108,11 @@ add_executable(Brakeza3D
     src/Misc/Counter.cpp                            include/Misc/Counter.h
     src/Misc/TexturePackage.cpp                     include/Misc/TexturePackage.h
     src/Misc/SoundPackage.cpp                       include/Misc/SoundPackage.h
-    src/Misc/Image.cpp                              include/Misc/Image.h
-    src/Misc/SceneLoader.cpp                        include/Misc/SceneLoader.h
+        src/Render/Image.cpp include/Render/Image.h
+        src/SceneLoader.cpp include/SceneLoader.h
     src/Misc/Grid3D.cpp                             include/Misc/Grid3D.h
 
-    include/EngineSetup.h                           src/EngineSetup.cpp
+        include/BrakezaSetup.h src/BrakezaSetup.cpp
 
     include/Misc/Color.h                            src/Misc/Color.cpp
     include/Misc/cJSON.h                            src/Misc/cJSON.c
@@ -126,7 +127,7 @@ add_executable(Brakeza3D
     src/Render/Plane.cpp                            include/Render/Plane.h
     src/Render/Drawable.cpp                         include/Render/Drawable.h
     src/Render/Maths.cpp                            include/Render/Maths.h
-    src/Render/BSPMap.cpp                           include/Render/BSPMap.h
+        src/Objects/BSPMap.cpp include/Objects/BSPMap.h
     src/Render/PhysicsDebugDraw.cpp                 include/Render/PhysicsDebugDraw.h
         src/Render/M3.cpp                               include/Render/M3.h
     src/Render/Logging.cpp                          include/Render/Logging.h
@@ -140,7 +141,7 @@ add_executable(Brakeza3D
     src/2D/Image2DAnimation.cpp                     include/2D/Image2DAnimation.h
     src/2D/Image2D.cpp                              include/2D/Image2D.h
 
-        src/ComponentsManager.cpp                       include/ComponentsManager.h
+        src/Components/ComponentsManager.cpp include/Components/ComponentsManager.h
     src/Components/ComponentScripting.cpp           include/Components/ComponentScripting.h
     src/Components/ComponentCamera.cpp              include/Components/ComponentCamera.h
     src/Components/ComponentCollisions.cpp          include/Components/ComponentCollisions.h
@@ -197,8 +198,7 @@ add_executable(Brakeza3D
         include/GUI/GUIAddonToolbar.h
         include/GUI/GUIAddonObjects3D.h include/GUI/GUIAddonObject3DProperties.h
 
-    include/Misc/SharedLUAContext.h
-    src/Misc/TileManager.cpp                        include/Misc/TileManager.h
+        src/Misc/TileManager.cpp                        include/Misc/TileManager.h
 
     include/OpenGL/FXEffectOpenGLObject.h
     include/OpenGL/FXBase.h
@@ -206,14 +206,14 @@ add_executable(Brakeza3D
         include/OpenGL/ShaderOGLParticles.h src/OpenGL/ShaderOGLParticles.cpp
         include/OpenGL/ShaderOGLOutline.h src/OpenGL/ShaderOGLOutline.cpp
 
-    include/Objects/OpenGLShaderTypes.h
+        include/OpenGL/OGLShaderTypes.h
     include/Objects/ParticlesContext.h
     include/Objects/Vector2D.cpp                    include/Objects/Vector2D.h
 
     include/Render/ObjectShaderOpenCL.cpp
     src/Misc/ToolsJSON.cpp                          include/Misc/ToolsJSON.h
         src/OpenGL/ShaderOGLLine3D.cpp include/OpenGL/ShaderOGLLine3D.h
-    src/Misc/ProjectLoader.cpp                      include/Misc/ProjectLoader.h
+        src/ProjectLoader.cpp include/ProjectLoader.h
     include/cxxxopts.h
     include/Misc/PathFinding.h
         src/OpenGL/ShaderOGLCustomPostprocessing.cpp include/OpenGL/ShaderOGLCustomPostprocessing.h
@@ -243,6 +243,29 @@ add_executable(Brakeza3D
         include/Persistence/Mesh3DAnimationSerializer.h
         src/Persistence/LightPointSerializer.cpp
         include/Persistence/LightPointSerializer.h
+        src/Persistence/LightSpotSerializer.cpp
+        include/Persistence/LightSpotSerializer.h
+        src/Persistence/Image3DSerializer.cpp
+        include/Persistence/Image3DSerializer.h
+        src/Persistence/Image2DSerializer.cpp
+        include/Persistence/Image2DSerializer.h
+        src/Persistence/ParticleEmmitterSerializer.cpp
+        include/Persistence/ParticleEmmitterSerializer.h
+        src/Persistence/Image2DAnimationSerializer.cpp
+        include/Persistence/Image2DAnimationSerializer.h
+        src/Persistence/Image3DAnimationSerializer.cpp
+        include/Persistence/Image3DAnimationSerializer.h
+        src/Persistence/Image3DAnimation8DirectionsSerializer.cpp
+        include/Persistence/Image3DAnimation8DirectionsSerializer.h
+        include/GUI/Objects/Image3DGUI.h
+        include/GUI/Objects/Object3DGUI.h
+        include/GUI/Objects/SwarmGUI.h
+        include/GUI/Objects/Image2DAnimationGUI.h
+        include/GUI/Objects/Image3DAnimation8DirectionsGUI.h
+        include/GUI/Objects/LightSpotGUI.h
+        include/GUI/Objects/Mesh3DAnimationGUI.h
+        include/GUI/Objects/ScriptLuaGUI.h
+        include/GUI/Objects/Image3DAnimationGUI.h
 )
 
 target_link_libraries(Brakeza3D

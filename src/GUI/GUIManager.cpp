@@ -12,10 +12,10 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
     widgetProjectSettings(new GUIAddonProjectSettings(icons, scriptEditableManager)),
     widgetMenu(new GUIAddonMenu(icons)),
     widgetToolbar(new GUIAddonToolbar(icons)),
-    currentScriptsFolderWidget(EngineSetup::get()->SCRIPTS_FOLDER),
-    currentScenesFolderWidget(EngineSetup::get()->SCENES_FOLDER),
-    currentProjectsFolderWidget(EngineSetup::get()->PROJECTS_FOLDER),
-    currentShadersFolderWidget(EngineSetup::get()->CUSTOM_SHADERS_FOLDER)
+    currentScriptsFolderWidget(BrakezaSetup::get()->SCRIPTS_FOLDER),
+    currentScenesFolderWidget(BrakezaSetup::get()->SCENES_FOLDER),
+    currentProjectsFolderWidget(BrakezaSetup::get()->PROJECTS_FOLDER),
+    currentShadersFolderWidget(BrakezaSetup::get()->CUSTOM_SHADERS_FOLDER)
 {
     LoadUIIcons();
     loadImagesFolder();
@@ -34,7 +34,7 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 
 void GUIManager::LoadUIIcons()
 {
-    auto iconsFolder = EngineSetup::get()->ICONS_FOLDER + "interface/";
+    auto iconsFolder = BrakezaSetup::get()->ICONS_FOLDER + "interface/";
     icons.addItem(iconsFolder + "translate.png", "translateIcon");
     icons.addItem(iconsFolder + "rotate.png", "rotateIcon");
     icons.addItem(iconsFolder + "scale.png", "scaleIcon");
@@ -79,15 +79,15 @@ void GUIManager::LoadUIIcons()
     icons.addItem(iconsFolder + "open.png", "openIcon");
     icons.addItem(iconsFolder + "gui.png", "guiIcon");
     icons.addItem(iconsFolder + "texture.png", "textureIcon");
-    icons.addItem(EngineSetup::get()->IMAGES_FOLDER + "splash.png", "splash");
+    icons.addItem(BrakezaSetup::get()->IMAGES_FOLDER + "splash.png", "splash");
 }
 
 void GUIManager::loadImagesFolder()
 {
-    auto images = Tools::getFolderFiles(EngineSetup::get()->IMAGES_FOLDER, "png");
+    auto images = Tools::getFolderFiles(BrakezaSetup::get()->IMAGES_FOLDER, "png");
 
     for (const auto& f: images) {
-        imagesFolder.addItem(EngineSetup::get()->IMAGES_FOLDER + f, f);
+        imagesFolder.addItem(BrakezaSetup::get()->IMAGES_FOLDER + f, f);
     }
 }
 
@@ -187,7 +187,7 @@ void GUIManager::drawSelectedObjectScripts()
 
         ImGui::SameLine();
 
-        std::string optionText = std::to_string(i + 1) + ") " + Tools::removeSubstring(currentScript->scriptFilename, EngineSetup::get()->SCRIPTS_FOLDER);
+        std::string optionText = std::to_string(i + 1) + ") " + Tools::removeSubstring(currentScript->scriptFilename, BrakezaSetup::get()->SCRIPTS_FOLDER);
 
         if (currentScript->isPaused()) {
             if (ImGui::ImageButton(TexturePackage::getOGLTextureID(icons, "unlockIcon"), ImVec2(14, 14))) {
@@ -437,7 +437,7 @@ void GUIManager::drawScriptsLuaFolderFiles(const std::string& folder)
 
     ImGui::Separator();
 
-    drawBrowserFolders(folder, EngineSetup::get()->SCRIPTS_FOLDER, currentScriptsFolderWidget, currentScriptsFolders, currentScriptsFolderFiles, "lua");
+    drawBrowserFolders(folder, BrakezaSetup::get()->SCRIPTS_FOLDER, currentScriptsFolderWidget, currentScriptsFolders, currentScriptsFolderFiles, "lua");
 
     ImGui::Separator();
 
@@ -691,7 +691,7 @@ void GUIManager::drawScenesFolder(const std::string& folder)
     }
 
     ImGui::Separator();
-    drawBrowserFolders(folder, EngineSetup::get()->SCENES_FOLDER, currentScenesFolderWidget, currentScenesFolders, currentScenesFolderFiles, "json");
+    drawBrowserFolders(folder, BrakezaSetup::get()->SCENES_FOLDER, currentScenesFolderWidget, currentScenesFolders, currentScenesFolderFiles, "json");
     ImGui::Separator();
 
     auto files = currentScenesFolderFiles;
@@ -816,7 +816,7 @@ void GUIManager::drawCustomShadersFolder(std::string folder)
 
     ImGui::Separator();
 
-    drawBrowserFolders(folder, EngineSetup::get()->CUSTOM_SHADERS_FOLDER, currentShadersFolderWidget, currentShadersFolders, currentShadersFolderFiles, "json");
+    drawBrowserFolders(folder, BrakezaSetup::get()->CUSTOM_SHADERS_FOLDER, currentShadersFolderWidget, currentShadersFolders, currentShadersFolderFiles, "json");
 
     ImGui::Separator();
 
@@ -842,7 +842,7 @@ void GUIManager::drawCustomShadersFolder(std::string folder)
                 static std::string folderCopy, fileCopy;
                 folderCopy = folder;
                 fileCopy = file;
-                EngineSetup::DragDropCustomShaderData data = {folderCopy.c_str(), fileCopy.c_str()};
+                BrakezaSetup::DragDropCustomShaderData data = {folderCopy.c_str(), fileCopy.c_str()};
                 ImGui::SetDragDropPayload("CUSTOMSHADER_ITEM", &data,sizeof(data));
                 ImGui::Text("%s", fullPath.c_str());
                 ImGui::EndDragDropSource();
@@ -1008,7 +1008,7 @@ void GUIManager::draw(float timedelta, bool &finish)
 
 void GUIManager::RenderFPS()
 {
-    if (EngineSetup::get()->DRAW_FPS_IMGUI) {
+    if (BrakezaSetup::get()->DRAW_FPS_IMGUI) {
         auto fps = ComponentsManager::get()->getComponentRender()->getFps();
         ImVec2 screenSize = ImGui::GetIO().DisplaySize;
         char fpsText[32];
@@ -1295,20 +1295,20 @@ void GUIManager::openLightsDepthMapsViewerDialog()
 
 void GUIManager::DrawSplash()
 {
-    if (EngineSetup::get()->ENABLE_SPLASH) {
+    if (BrakezaSetup::get()->ENABLE_SPLASH) {
         ImGui::OpenPopup("brakeza_splash");
         ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-        EngineSetup::get()->ENABLE_SPLASH = false;
+        BrakezaSetup::get()->ENABLE_SPLASH = false;
     }
 
     if (ImGui::BeginPopup("brakeza_splash")) {
         ImGui::SeparatorText("Welcome to Brakeza3D!");
         ImGui::Image(TexturePackage::getOGLTextureID(icons, "splash"), ImVec2(640, 350));
         ImGui::SeparatorText(
-            std::string("Brakeza3D (" + EngineSetup::get()->ENGINE_VERSION + ") | https://brakeza.com | By Eduardo Rodríguez Álvarez").c_str()
+            std::string("Brakeza3D (" + BrakezaSetup::get()->ENGINE_VERSION + ") | https://brakeza.com | By Eduardo Rodríguez Álvarez").c_str()
         );
 
-        if (Brakeza3D::get()->getEngineTotalTime() > EngineSetup::get()->SPLASH_COUNTDOWN_TIME) {
+        if (Brakeza3D::get()->getEngineTotalTime() > BrakezaSetup::get()->SPLASH_COUNTDOWN_TIME) {
             ImGui::CloseCurrentPopup();
             ComponentsManager::get()->getComponentInput()->setEnabled(true);
         }

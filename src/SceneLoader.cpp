@@ -2,26 +2,23 @@
 // Created by eduardo on 10/10/23.
 //
 
-#include "../../include/Misc/SceneLoader.h"
-#include "../../include/EngineSetup.h"
-#include "../../include/Misc/Tools.h"
-#include "../../include/Render/Logging.h"
-#include "../../include/Objects/Mesh3D.h"
-#include "../../include/Brakeza3D.h"
-#include "../../include/Objects/ParticleEmitter.h"
-#include "../../include/2D/Image2DAnimation.h"
-#include "../../include/Objects/Image3DAnimation.h"
-#include "../../include/Objects/Image3D.h"
-#include "../../include/2D/Image2D.h"
-#include "../../include/Objects/Image3DAnimation8Directions.h"
-#include "../../include/Misc/ToolsJSON.h"
-#include "../../include/OpenGL/ShaderOGLCustomPostprocessing.h"
-#include "../../include/Persistence/JSONSerializerRegistry.h"
-#include "../../include/Persistence/LightPointSerializer.h"
-#include "../../include/Persistence/Object3DSerializer.h"
-#include "../../include/Persistence/Mesh3DSerializer.h"
-#include "../../include/Persistence/Mesh3DAnimationSerializer.h"
-#include "../../include/Persistence/LightPointSerializer.h"
+#include "../include/SceneLoader.h"
+#include "../include/BrakezaSetup.h"
+#include "../include/Misc/Tools.h"
+#include "../include/Render/Logging.h"
+#include "../include/Objects/Mesh3D.h"
+#include "../include/Brakeza3D.h"
+#include "../include/Objects/ParticleEmitter.h"
+#include "../include/Objects/Image3DAnimation.h"
+#include "../include/Misc/ToolsJSON.h"
+#include "../include/OpenGL/ShaderOGLCustomPostprocessing.h"
+#include "../include/Persistence/JSONSerializerRegistry.h"
+#include "../include/Persistence/LightPointSerializer.h"
+#include "../include/Persistence/Object3DSerializer.h"
+#include "../include/Persistence/Mesh3DSerializer.h"
+#include "../include/Persistence/Mesh3DAnimationSerializer.h"
+#include "../include/Persistence/LightSpotSerializer.h"
+#include "../include/Persistence/ParticleEmmitterSerializer.h"
 
 SceneLoader::SceneLoader()
 {
@@ -42,7 +39,7 @@ void SceneLoader::LoadScene(const std::string& filename)
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity") != nullptr) {
         auto gravity = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity"));
-        EngineSetup::get()->gravity = gravity;
+        BrakezaSetup::get()->gravity = gravity;
         ComponentsManager::get()->getComponentCollisions()->setGravity(gravity);
     }
 
@@ -86,44 +83,7 @@ void SceneLoader::LoadScene(const std::string& filename)
 
     cJSON *currentObject;
     cJSON_ArrayForEach(currentObject, cJSON_GetObjectItemCaseSensitive(contentJSON, "objects")) {
-        std::string typeObject = cJSON_GetObjectItemCaseSensitive(currentObject, "type")->valuestring;
-        switch(SceneObjectTypesMapping[typeObject.c_str()]) {
-            case SceneObjectLoaderMapping::Object3D :
-            case SceneObjectLoaderMapping::Mesh3D :
-            case SceneObjectLoaderMapping::Mesh3DAnimation :
-            case SceneObjectLoaderMapping::LightPoint3D : {
-                SceneLoaderCreateObject(currentObject);
-                break;
-            }
-            case SceneObjectLoaderMapping::SpotLight3D : {
-                LightSpot::createFromJSON(currentObject);
-                break;
-            }
-            case SceneObjectLoaderMapping::ParticleEmitter : {
-                ParticleEmitter::createFromJSON(currentObject);
-                break;
-            }
-            case SceneObjectLoaderMapping::BillboardAnimation : {
-                Image3DAnimation::createFromJSON(currentObject);
-                break;
-            }
-            case SceneObjectLoaderMapping::Image2DAnimation : {
-                Image2DAnimation::createFromJSON(currentObject);
-                break;
-            }
-            case SceneObjectLoaderMapping::Image2D : {
-                Image2D::createFromJSON(currentObject);
-                break;
-            }
-            case SceneObjectLoaderMapping::Image3D : {
-                Image3D::createFromJSON(currentObject);
-                break;
-            }
-            case SceneObjectLoaderMapping::BillboardAnimation8Directions : {
-                Image3DAnimation8Directions::createFromJSON(currentObject);
-                break;
-            }
-        }
+        SceneLoaderCreateObject(currentObject);
     }
 
     cJSON *currentShaderJSON;
@@ -156,9 +116,9 @@ void SceneLoader::SaveScene(const std::string &filename)
 
     // gravity
     cJSON *gravityJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(gravityJSON, "x", EngineSetup::get()->gravity.x);
-    cJSON_AddNumberToObject(gravityJSON, "y", EngineSetup::get()->gravity.y);
-    cJSON_AddNumberToObject(gravityJSON, "z", EngineSetup::get()->gravity.z);
+    cJSON_AddNumberToObject(gravityJSON, "x", BrakezaSetup::get()->gravity.x);
+    cJSON_AddNumberToObject(gravityJSON, "y", BrakezaSetup::get()->gravity.y);
+    cJSON_AddNumberToObject(gravityJSON, "z", BrakezaSetup::get()->gravity.z);
     cJSON_AddItemToObject(root, "gravity", gravityJSON);
 
     // illumination ADS
@@ -264,136 +224,6 @@ void SceneLoader::ClearScene()
     ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
 }
 
-void SceneLoader::createSpotLight3DInScene()
-{
-    auto o = LightSpot::create(
-        ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
-        Vertex3D(0, 0, 1)
-    );
-    o->setBelongToScene(true);
-    Brakeza3D::get()->addObject3D(o, Brakeza3D::uniqueObjectLabel("SpotLight3D"));
-}
-
-void SceneLoader::createImage2DInScene(const std::string& filename)
-{
-    if (!Tools::fileExists(filename.c_str())) {
-        Logging::Message("File %s not found", filename.c_str());
-        return;
-    }
-
-    auto *newObject = new Image2D(
-        EngineSetup::get()->screenWidth/2,
-        EngineSetup::get()->screenHeight/2,
-        new Image(filename)
-    );
-
-    newObject->setBelongToScene(true);
-    Logging::Message("Loading Image2D");
-
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Image2D"));
-}
-
-void SceneLoader::createImage2DAnimatedInScene(const std::string& filename)
-{
-    if (!Tools::fileExists(filename.c_str())) {
-        Logging::Message("File %s not found", filename.c_str());
-        return;
-    }
-
-    auto *newObject = new Image2DAnimation(
-        EngineSetup::get()->screenWidth/2,
-        EngineSetup::get()->screenHeight/2,
-        false,
-        new TextureAnimated(filename,1,1,1,1)
-    );
-    newObject->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->AxisForward().getScaled(2));
-    newObject->setBelongToScene(true);
-
-    Logging::Message("Loading Image2DAnimation");
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Image2DAnimation"));
-}
-
-void SceneLoader::createBillboardAnimationInScene(const std::string& filename)
-{
-    if (!Tools::fileExists(filename.c_str())) {
-        Logging::Message("File %s not found", filename.c_str());
-        return;
-    }
-
-    auto *newObject = new Image3DAnimation(
-        ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(), 1, 1
-    );
-
-    newObject->addAnimation(filename,1,1,1,1);
-    newObject->setAnimation(0);
-
-    newObject->setBelongToScene(true);
-    Logging::Message("Loading BillboardAnimation");
-
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("BillboardAnimation"));
-}
-
-void SceneLoader::createParticleEmitterInScene()
-{
-    auto *newObject = new ParticleEmitter(
-            DEFAULT,
-            nullptr,
-            ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
-            9999,
-            Color::red(),
-            Color::green(),
-            ParticlesContext(
-            0.0f,
-            0.5f,
-            1.5f,
-            25.0f,
-            1,
-            10,
-            125.0f,
-            255.0f,
-            1,
-            1,
-            0.99f
-        ),
-            nullptr
-    );
-    newObject->setBelongToScene(true);
-
-    Logging::Message("Loading ParticleEmitter");
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("ParticleEmitter"));
-}
-
-void SceneLoader::createImage3DToScene(const std::string &filename)
-{
-    if (!Tools::fileExists(filename.c_str())) {
-        Logging::Message("File %s not found", filename.c_str());
-        return;
-    }
-
-    auto *newObject = new Image3D(
-        ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
-        1.0f,
-        1.0f,
-        new Image(filename)
-    );
-    newObject->setBelongToScene(true);
-
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Image3D"));
-}
-
-void SceneLoader::createBillboardAnimation8Directions()
-{
-    auto *newObject = new Image3DAnimation8Directions(
-        ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
-        10,
-        10
-    );
-
-    newObject->setBelongToScene(true);
-
-    Brakeza3D::get()->addObject3D(newObject, Brakeza3D::uniqueObjectLabel("Billboard8D"));
-}
-
 void SceneLoader::CreateScene(const std::string &filename)
 {
     auto sceneJsonFile = std::string(filename + ".json");
@@ -418,10 +248,16 @@ void SceneLoader::InitSerializers()
 {
     auto& registry = JSONSerializerRegistry::instance();
 
-    registry.registerSerializer("Object3D", std::make_shared<Object3DSerializer>());
-    registry.registerSerializer("Mesh3D", std::make_unique<Mesh3DSerializer>());
-    registry.registerSerializer("Mesh3DAnimation", std::make_unique<Mesh3DAnimationSerializer>());
-    registry.registerSerializer("LightPoint3D", std::make_unique<LightPointSerializer>());
+    registry.registerSerializer(SceneObjectTypes::OBJECT_3D, std::make_shared<Object3DSerializer>());
+    registry.registerSerializer(SceneObjectTypes::MESH_3D, std::make_unique<Mesh3DSerializer>());
+    registry.registerSerializer(SceneObjectTypes::MESH_3D_ANIMATION, std::make_unique<Mesh3DAnimationSerializer>());
+    registry.registerSerializer(SceneObjectTypes::IMAGE_3D, std::make_unique<Image3DSerializer>());
+    registry.registerSerializer(SceneObjectTypes::BILLBOARD_ANIMATION, std::make_unique<Image3DAnimationSerializer>());
+    registry.registerSerializer(SceneObjectTypes::IMAGE_3D, std::make_unique<Image2DSerializer>());
+    registry.registerSerializer(SceneObjectTypes::BILLBOARD_ANIMATION_8DIR, std::make_unique<Image3DAnimation8DirectionsSerializer>());
+    registry.registerSerializer(SceneObjectTypes::PARTICLE_EMITTER, std::make_unique<ParticleEmmitterSerializer>());
+    registry.registerSerializer(SceneObjectTypes::SPOT_LIGHT_3D, std::make_unique<LightSpotSerializer>());
+    registry.registerSerializer(SceneObjectTypes::LIGHT_POINT_3D, std::make_unique<LightPointSerializer>());
 }
 
 void SceneLoader::SceneLoaderCreateObject(cJSON *object)

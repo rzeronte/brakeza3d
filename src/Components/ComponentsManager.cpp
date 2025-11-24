@@ -1,5 +1,5 @@
-#include "../include/ComponentsManager.h"
-#include "../include/Render/Logging.h"
+#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Render/Logging.h"
 
 ComponentsManager *ComponentsManager::instance = nullptr;
 
@@ -14,7 +14,7 @@ ComponentsManager *ComponentsManager::get()
 
 void ComponentsManager::registerComponent(Component *component, const std::string& label)
 {
-    component->setId((int) components.size());
+    component->setId(components.size());
     component->setLabel(label);
 
     components.push_back(component);

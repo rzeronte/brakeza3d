@@ -1,7 +1,8 @@
 
 #include "../../include/Objects/Image3DAnimation.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/GUI/Objects/Image3DAnimationGUI.h"
 
 Image3DAnimation::Image3DAnimation(Vertex3D &position, float w, float h)
 :
@@ -34,7 +35,7 @@ void Image3DAnimation::onUpdate()
         ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 
-    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME) {
+    if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME) {
         ComponentsManager::get()->getComponentRender()->getShaderOGLWireframe()->render(
             getModelMatrix(),
             billboard->getVertexBuffer(),
@@ -118,7 +119,7 @@ Image3DAnimation::~Image3DAnimation()
 
 const char *Image3DAnimation::getTypeObject()
 {
-    return "BillboardAnimation";
+    return SceneObjectTypes::BILLBOARD_ANIMATION;
 }
 
 const char *Image3DAnimation::getTypeIcon()
@@ -135,126 +136,7 @@ void Image3DAnimation::updateBillboardSize() const
 void Image3DAnimation::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-
-    if (ImGui::CollapsingHeader("Billboard Animation")) {
-        if (ImGui::TreeNode("Size")) {
-            const float range_min = 0;
-            const float range_max = 1000;
-            const float range_sensibility = 0.1;
-
-            if (ImGui::DragScalar("Width", ImGuiDataType_Float, &width, range_sensibility ,&range_min, &range_max, "%f", 1.0f)){
-                updateBillboardSize();
-            }
-            if (ImGui::DragScalar("Height", ImGuiDataType_Float, &height, range_sensibility ,&range_min, &range_max, "%f", 1.0f)) {
-                updateBillboardSize();
-            }
-            ImGui::TreePop();
-        }
-
-        ImGui::Separator();
-        if (ImGui::TreeNode("Add animation")) {
-            static char name[256];
-            strncpy(name, currentSpriteFileVariableToCreateAnimation.c_str(), sizeof(name));
-
-            if (ImGui::InputText("Sprite Folder##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-                currentSpriteFileVariableToCreateAnimation = name;
-            }
-            ImGui::InputInt("Width", &currentWidthVariableToCreateAnimation);
-            ImGui::InputInt("Height", &currentHeightVariableToCreateAnimation);
-            ImGui::InputInt("Nº Frames", &currentFramesVariableToCreateAnimation);
-
-            if (ImGui::Button(std::string("Load animation").c_str())) {
-                if (!currentSpriteFileVariableToCreateAnimation.empty()) {
-                    addAnimation(
-                        currentSpriteFileVariableToCreateAnimation,
-                        currentWidthVariableToCreateAnimation,
-                        currentHeightVariableToCreateAnimation,
-                        currentFramesVariableToCreateAnimation,
-                        24
-                    );
-                    setAnimation(animations.size() - 1);
-                    currentSpriteFileVariableToCreateAnimation = "";
-                    currentFramesVariableToCreateAnimation = 0;
-                    currentWidthVariableToCreateAnimation = 0;
-                    currentHeightVariableToCreateAnimation = 0;
-                }
-            }
-
-            ImGui::TreePop();
-        }
-        ImGui::Separator();
-
-        const char* items[animations.size()];
-        for (unsigned int i = 0; i < animations.size(); i++) {
-            items[i] = animations[i]->getBaseFilename().c_str();
-        }
-        ImGui::Combo("Animation", &currentAnimationIndex, items, IM_ARRAYSIZE(items));
-
-        getCurrentTextureAnimation()->drawImGuiProperties();
-
-        ImGui::TreePop();
-    }
-}
-
-cJSON *Image3DAnimation::getJSON(Image3DAnimation *object)
-{
-    auto root =  Object3D::ReadJSONFromObject(object);
-
-    cJSON_AddNumberToObject(root, "width", width);
-    cJSON_AddNumberToObject(root, "height", height);
-
-    cJSON *animationsArrayJSON = cJSON_CreateArray();
-    for (auto a : animations) {
-        cJSON *animationJSON = cJSON_CreateObject();
-        cJSON_AddStringToObject(animationJSON, "sprite", a->getBaseFilename().c_str());
-        cJSON_AddNumberToObject(animationJSON, "width", (int) a->currentSpriteWidth);
-        cJSON_AddNumberToObject(animationJSON, "height", (int) a->currentspriteHeight);
-        cJSON_AddNumberToObject(animationJSON, "numberFrames", (int) a->numberFramesToLoad);
-        cJSON_AddNumberToObject(animationJSON, "fps", (int) a->fps);
-        cJSON_AddItemToArray(animationsArrayJSON, animationJSON);
-    }
-    cJSON_AddItemToObject(root, "animations", animationsArrayJSON);
-    cJSON_AddNumberToObject(root, "currentIndexAnimation", currentAnimationIndex);
-
-    return root;
-}
-
-void Image3DAnimation::setPropertiesFromJSON(cJSON *object, Image3DAnimation *o)
-{
-    o->setBelongToScene(true);
-    Object3D::setPropertiesFromJSON(object, o);
-
-    if (cJSON_GetObjectItemCaseSensitive(object, "animations") != nullptr) {
-        cJSON *currentAnimation;
-        cJSON_ArrayForEach(currentAnimation, cJSON_GetObjectItemCaseSensitive(object, "animations")) {
-            auto spriteFile = cJSON_GetObjectItemCaseSensitive(currentAnimation, "sprite")->valuestring;
-            auto width = cJSON_GetObjectItemCaseSensitive(currentAnimation, "width")->valueint;
-            auto height = cJSON_GetObjectItemCaseSensitive(currentAnimation, "height")->valueint;
-            auto fps = cJSON_GetObjectItemCaseSensitive(currentAnimation, "fps")->valueint;
-            auto numberFrames = cJSON_GetObjectItemCaseSensitive(currentAnimation, "numberFrames")->valueint;
-
-            o->addAnimation(spriteFile, width, height, numberFrames, fps);
-        }
-
-        o->width = static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "width")->valuedouble);
-        o->height = static_cast<float>(cJSON_GetObjectItemCaseSensitive(object, "height")->valuedouble);
-
-        o->updateBillboardSize();
-
-        int animationIndex = cJSON_GetObjectItemCaseSensitive(object, "currentIndexAnimation")->valueint;
-        o->setAnimation(animationIndex);
-        o->getCurrentTextureAnimation()->updateStep();
-    }
-}
-
-void Image3DAnimation::createFromJSON(cJSON *object)
-{
-    auto p = Vertex3D(0, 0, 0);
-    auto o = new Image3DAnimation(p, 1, 1);
-
-    setPropertiesFromJSON(object, o);
-
-    Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
+    Image3DAnimationGUI::drawImGuiProperties(this);
 }
 
 Image3DAnimation* Image3DAnimation::create(

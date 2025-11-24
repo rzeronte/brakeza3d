@@ -6,7 +6,7 @@
 #define BRAKEZA3D_GUIWIDGETPROJECTSETTINGS_H
 
 #include "imgui.h"
-#include "../ComponentsManager.h"
+#include "../Components/ComponentsManager.h"
 #include "GUIAddonObject3DProperties.h"
 
 struct GUIAddonProjectSettings {
@@ -25,11 +25,11 @@ struct GUIAddonProjectSettings {
         if (ImGui::Begin("Project")) {
             static char name[256];
 
-            strncpy(name, EngineSetup::get()->ENGINE_TITLE.c_str(), sizeof(name));
+            strncpy(name, BrakezaSetup::get()->ENGINE_TITLE.c_str(), sizeof(name));
 
             ImGui::InputText("Project title##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll);
             if (ImGui::IsItemEdited()) {
-                EngineSetup::get()->ENGINE_TITLE = name;
+                BrakezaSetup::get()->ENGINE_TITLE = name;
             }
             ImGui::Separator();
             drawProjectScripts();
@@ -161,7 +161,7 @@ struct GUIAddonProjectSettings {
         auto render = ComponentsManager::get()->getComponentRender();
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CUSTOMSHADER_ITEM")) {
-                EngineSetup::DragDropCustomShaderData* receivedData = (EngineSetup::DragDropCustomShaderData*)payload->Data;
+                BrakezaSetup::DragDropCustomShaderData* receivedData = (BrakezaSetup::DragDropCustomShaderData*)payload->Data;
                 Logging::Message("Dropping shader (Folder: %s, File: %s) in global space", receivedData->folder, receivedData->file);
                 render->loadShaderIntoScene(receivedData->folder, receivedData->file);
             }

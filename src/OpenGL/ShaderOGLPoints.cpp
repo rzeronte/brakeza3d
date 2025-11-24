@@ -1,12 +1,12 @@
 #include "../../include/OpenGL/ShaderOGLPoints.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLPoints::ShaderOGLPoints()
 :
     VertexArrayID(0),
     ShaderBaseOpenGL(
-        EngineSetup::get()->SHADERS_FOLDER + "Points.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Points.fs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Points.vs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Points.fs",
         false
     )
 {

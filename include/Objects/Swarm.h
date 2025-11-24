@@ -56,45 +56,28 @@ public:
     Swarm(Vertex3D position, Vertex3D size);
 
     void updateBoids();
-
-    SwarmObject* createBoid(Object3D *object);
-
     void separation(SwarmObject *swarmObject, std::vector<SwarmObject*> &objects, float weight) const;
-
     void alignment(SwarmObject *object, std::vector<SwarmObject*> &objects, float weight) const;
-
     void cohesion(SwarmObject *swarmObject, std::vector<SwarmObject*> &objects, float weight) const;
-
     void limitVelocity(SwarmObject *object) const;
-
     void updateBounds();
-
     void onUpdate() override;
-
+    SwarmObject* createBoid(Object3D *object);
 private:
-
     Vertex3D randomVertexInsideAABB();
-
 public:
+    const char *getTypeObject() override;
+    const char *getTypeIcon() override;
     void attractTo(SwarmObject *swarmObject, Vertex3D center, bool ignoreThresold, float weight) const;
-
     void avoidPredators(SwarmObject *swarmObject);
-
+    void checkBoundsAndAdjustVelocity(SwarmObject* swarmObject);
+    void addPredator(SwarmObject *o);
+    void reset();
+    void removeBoid(SwarmObject *o);
+    void drawImGuiProperties() override;
     static void updatePosition(SwarmObject *o, float weight);
 
-    void checkBoundsAndAdjustVelocity(SwarmObject* swarmObject);
-
-    void addPredator(SwarmObject *o);
-
-    void reset();
-
-    void removeBoid(SwarmObject *o);
-
-    const char *getTypeObject() override;
-
-    const char *getTypeIcon() override;
-
-    void drawImGuiProperties() override;
+    friend class SwarmGUI;
 };
 
 

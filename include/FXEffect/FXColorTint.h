@@ -7,7 +7,7 @@
 
 
 #include "../OpenGL/FXOpenGL.h"
-#include "../Misc/Image.h"
+#include "../Render/Image.h"
 
 class FXColorTint: public FXOpenGL {
 private:

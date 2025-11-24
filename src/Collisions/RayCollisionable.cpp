@@ -1,6 +1,6 @@
 #include "../../include/Physics/RayCollisionable.h"
 #include "../../include/Render/Transforms.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Render/Drawable.h"
 
@@ -74,7 +74,7 @@ void RayCollisionable::onUpdate()
 
     if (!isEnabled()) return;
 
-    if (EngineSetup::get()->BULLET_DEBUG_MODE) {
+    if (BrakezaSetup::get()->BULLET_DEBUG_MODE) {
         auto end = getPosition() + ray;
         auto vector = Vector3D(getPosition(), end);
         Drawable::drawVector3D(vector, Color::yellow());

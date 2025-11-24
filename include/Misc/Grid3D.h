@@ -19,7 +19,6 @@ struct CubeGrid3D {
 };
 
 class Grid3D {
-private:
 
     int numberCubesX;
     int numberCubesY;

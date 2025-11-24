@@ -1,14 +1,14 @@
 #ifndef BRAKEDA3D_COMPONENTSMANAGER_H
 #define BRAKEDA3D_COMPONENTSMANAGER_H
 
-#include "Components/Component.h"
-#include "Components/ComponentCamera.h"
-#include "Components/ComponentCollisions.h"
-#include "Components/ComponentRender.h"
-#include "Components/ComponentInput.h"
-#include "Components/ComponentSound.h"
-#include "Components/ComponentWindow.h"
-#include "Components/ComponentScripting.h"
+#include "Component.h"
+#include "ComponentCamera.h"
+#include "ComponentCollisions.h"
+#include "ComponentRender.h"
+#include "ComponentInput.h"
+#include "ComponentSound.h"
+#include "ComponentWindow.h"
+#include "ComponentScripting.h"
 
 enum ComponentID {
     COMPONENT_WINDOW = 0,

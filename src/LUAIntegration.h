@@ -9,7 +9,7 @@
 #include "../include/Objects/Vertex3D.h"
 #include "../include/Objects/ScriptLUA.h"
 #include "../include/Components/ComponentCamera.h"
-#include "../include/ComponentsManager.h"
+#include "../include/Components/ComponentsManager.h"
 #include "../include/Brakeza3D.h"
 #include "../include/2D/Image2D.h"
 #include "../include/2D/Image2DAnimation.h"
@@ -19,7 +19,6 @@
 #include "../include/Objects/Image3DAnimation.h"
 #include "../include/Objects/Image3DAnimation8Directions.h"
 #include "../include/Objects/ParticleEmitter.h"
-#include "../include/Misc/SharedLUAContext.h"
 #include "../include/OpenGL/FXEffectOpenGLObject.h"
 #include "../include/FXEffect/FXOutliner.h"
 
@@ -124,14 +123,6 @@ void LUAIntegration(sol::state &lua)
         "lookAt", &Object3D::lookAt,
         "reloadScriptsEnvironment", &Object3D::reloadScriptsEnvironment,
         "getLinearVelocity", &Object3D::getLinearVelocity
-    );
-
-
-    lua.new_usertype<SharedLUAContext>("SharedLUAContext",
-    "addPair", &SharedLUAContext::addPair,
-        "get", &SharedLUAContext::get,
-        "set", &SharedLUAContext::set,
-        "remove", &SharedLUAContext::remove
     );
 
     lua.new_usertype<Component>("Component",

@@ -2,7 +2,7 @@
 #ifndef BRAKEDA3D_COMPONENTCOLLISIONS_H
 #define BRAKEDA3D_COMPONENTCOLLISIONS_H
 
-#include "../Render/BSPMap.h"
+#include "../Objects/BSPMap.h"
 #include "../Render/PhysicsDebugDraw.h"
 #include "Component.h"
 

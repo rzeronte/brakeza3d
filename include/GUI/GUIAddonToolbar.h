@@ -2,7 +2,7 @@
 #define BRAKEZA3D_GUIWIDGETTOOLBAR_H
 
 #include "imgui.h"
-#include "../ComponentsManager.h"
+#include "../Components/ComponentsManager.h"
 
 struct GUIAddonToolbar {
     TexturePackage &ImGuiTextures;
@@ -64,21 +64,21 @@ struct GUIAddonToolbar {
         auto *window = ComponentsManager::get()->getComponentWindow();
 
         drawButton("layoutDefaultIcon",
-                   window->getImGuiConfig() == EngineSetup::ImGUIConfigs::DEFAULT,
+                   window->getImGuiConfig() == BrakezaSetup::ImGUIConfigs::DEFAULT,
                    onColor,
-                   [&]() { window->setImGuiConfig(EngineSetup::ImGUIConfigs::DEFAULT); });
+                   [&]() { window->setImGuiConfig(BrakezaSetup::ImGUIConfigs::DEFAULT); });
         ImGui::SetItemTooltip("Default layout");
 
         drawButton("layoutCodingIcon",
-                   window->getImGuiConfig() == EngineSetup::ImGUIConfigs::CODING,
+                   window->getImGuiConfig() == BrakezaSetup::ImGUIConfigs::CODING,
                    onColor,
-                   [&]() { window->setImGuiConfig(EngineSetup::ImGUIConfigs::CODING); });
+                   [&]() { window->setImGuiConfig(BrakezaSetup::ImGUIConfigs::CODING); });
         ImGui::SetItemTooltip("Developer layout");
 
         drawButton("layoutDesignIcon",
-                   window->getImGuiConfig() == EngineSetup::ImGUIConfigs::DESIGN,
+                   window->getImGuiConfig() == BrakezaSetup::ImGUIConfigs::DESIGN,
                    onColor,
-                   [&]() { window->setImGuiConfig(EngineSetup::ImGUIConfigs::DESIGN); });
+                   [&]() { window->setImGuiConfig(BrakezaSetup::ImGUIConfigs::DESIGN); });
         ImGui::SetItemTooltip("Designer layout");
     }
 
@@ -118,17 +118,17 @@ struct GUIAddonToolbar {
     void drawBulletOptionsIcons() const
     {
         drawButton("gravityIcon",
-                   EngineSetup::get()->ENABLE_BULLET_STEP_SIMULATION,
+                   BrakezaSetup::get()->ENABLE_BULLET_STEP_SIMULATION,
                    onColor,
-                   [&]() { EngineSetup::get()->ENABLE_BULLET_STEP_SIMULATION = !EngineSetup::get()->ENABLE_BULLET_STEP_SIMULATION; });
+                   [&]() { BrakezaSetup::get()->ENABLE_BULLET_STEP_SIMULATION = !BrakezaSetup::get()->ENABLE_BULLET_STEP_SIMULATION; });
         ImGui::SetItemTooltip("Enable/Disable physic world");
 
         drawButton("drawCollidersIcon",
-                   EngineSetup::get()->BULLET_DEBUG_MODE,
+                   BrakezaSetup::get()->BULLET_DEBUG_MODE,
                    onColor,
                    [&]() {
-                        EngineSetup::get()->BULLET_DEBUG_MODE = !EngineSetup::get()->BULLET_DEBUG_MODE;
-                        ComponentsManager::get()->getComponentCollisions()->setEnableDebugMode(EngineSetup::get()->BULLET_DEBUG_MODE);
+                        BrakezaSetup::get()->BULLET_DEBUG_MODE = !BrakezaSetup::get()->BULLET_DEBUG_MODE;
+                        ComponentsManager::get()->getComponentCollisions()->setEnableDebugMode(BrakezaSetup::get()->BULLET_DEBUG_MODE);
                    }
         );
         ImGui::SetItemTooltip("Draw collider AABB");
@@ -137,15 +137,15 @@ struct GUIAddonToolbar {
     void drawMouseOptionsIcons() const
     {
         drawButton("clickIcon",
-                   EngineSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D,
+                   BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D,
                    onColor,
-                   [&]() { EngineSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D = !EngineSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D; });
+                   [&]() { BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D = !BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D; });
         ImGui::SetItemTooltip("Enable/Disable item click selection");
 
         drawButton("mouseLookIcon",
-                   EngineSetup::get()->MOUSE_LOOK,
+                   BrakezaSetup::get()->MOUSE_LOOK,
                    onColor,
-                   [&]() { EngineSetup::get()->MOUSE_LOOK = !EngineSetup::get()->MOUSE_LOOK; });
+                   [&]() { BrakezaSetup::get()->MOUSE_LOOK = !BrakezaSetup::get()->MOUSE_LOOK; });
         ImGui::SetItemTooltip("Enable/Disable mouse look");
     }
 
@@ -153,7 +153,7 @@ struct GUIAddonToolbar {
     {
         auto scripting = ComponentsManager::get()->getComponentScripting();
 
-        if (scripting->getStateLUAScripts() == EngineSetup::LuaStateScripts::LUA_STOP) {
+        if (scripting->getStateLUAScripts() == BrakezaSetup::LuaStateScripts::LUA_STOP) {
             drawFixedColorButton("playIcon", luaColor, [&]() { scripting->playLUAScripts(); });
             ImGui::SetItemTooltip("Run scripts");
         } else {
@@ -170,9 +170,9 @@ struct GUIAddonToolbar {
     void drawGUIIcon() const
     {
         drawButton("guiIcon",
-                   EngineSetup::get()->ENABLE_IMGUI,
+                   BrakezaSetup::get()->ENABLE_IMGUI,
                    onColor,
-                   [&]() { EngineSetup::get()->ENABLE_IMGUI = !EngineSetup::get()->ENABLE_IMGUI; });
+                   [&]() { BrakezaSetup::get()->ENABLE_IMGUI = !BrakezaSetup::get()->ENABLE_IMGUI; });
         ImGui::SetItemTooltip("Enable/Disable UI");
     }
 

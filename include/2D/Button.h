@@ -5,7 +5,7 @@
 #ifndef BRAKEDA3D_BUTTON_H
 #define BRAKEDA3D_BUTTON_H
 
-#include "../Misc/Image.h"
+#include "../Render/Image.h"
 
 class Button: public Image
 {

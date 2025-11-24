@@ -7,7 +7,7 @@
 #include "../../include/OpenGL/ShaderOGLCustom.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Render/Logging.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 
 ShaderOGLCustom::ShaderOGLCustom(
@@ -72,7 +72,7 @@ bool ShaderOGLCustom::existDataType(const char *name, const char *type) const
 void ShaderOGLCustom::parseTypesFromFileAttributes()
 {
     size_t file_size;
-    auto contentFile = Tools::readFile(EngineSetup::get()->SHADERS_FOLDER + fileTypes, file_size);
+    auto contentFile = Tools::readFile(BrakezaSetup::get()->SHADERS_FOLDER + fileTypes, file_size);
     Logging::Message("Parsing attributes from: '%s'", fileTypes.c_str());
 
     setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
@@ -385,7 +385,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
 
                     ImGui::TableSetColumnIndex(3);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                    ImGui::Text("%dx%d", EngineSetup::get()->screenWidth, EngineSetup::get()->screenHeight);
+                    ImGui::Text("%dx%d", BrakezaSetup::get()->screenWidth, BrakezaSetup::get()->screenHeight);
                     j++;
                     ImGui::PopID();
                     break;
@@ -411,7 +411,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
 
                     ImGui::TableSetColumnIndex(3);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                    ImGui::Text("%dx%d", EngineSetup::get()->screenWidth, EngineSetup::get()->screenHeight);
+                    ImGui::Text("%dx%d", BrakezaSetup::get()->screenWidth, BrakezaSetup::get()->screenHeight);
                     j++;
                     ImGui::PopID();
                     break;
@@ -508,7 +508,7 @@ void ShaderOGLCustom::captureDragDropUpdateImage(ShaderOpenGLCustomType &type, c
             Logging::Message("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
             IM_ASSERT(payload->DataSize == sizeof(int));
             auto selection = (char*) payload->Data;
-            auto fullPath = EngineSetup::get()->IMAGES_FOLDER + selection;
+            auto fullPath = BrakezaSetup::get()->IMAGES_FOLDER + selection;
             if (texture == nullptr) {
                 type.value = new Image(fullPath);
             } else {
@@ -735,14 +735,14 @@ void ShaderOGLCustom::createEmptyCustomShader(
     switch(type) {
         case ShaderCustomTypes::SHADER_POSTPROCESSING : {
             // vs y fs
-            Tools::copyFile(EngineSetup::get()->TEMPLATE_SHADER_POSTPROCESSING_VS, shaderVertexFile);
-            Tools::copyFile(EngineSetup::get()->TEMPLATE_SHADER_POSTPROCESSING_FS, shaderFragmentFile);
+            Tools::copyFile(BrakezaSetup::get()->TEMPLATE_SHADER_POSTPROCESSING_VS, shaderVertexFile);
+            Tools::copyFile(BrakezaSetup::get()->TEMPLATE_SHADER_POSTPROCESSING_FS, shaderFragmentFile);
             break;
         }
         case ShaderCustomTypes::SHADER_OBJECT : {
             // vs y fs
-            Tools::copyFile(EngineSetup::get()->TEMPLATE_SHADER_OBJECT_VS, shaderVertexFile);
-            Tools::copyFile(EngineSetup::get()->TEMPLATE_SHADER_OBJECT_FS, shaderFragmentFile);
+            Tools::copyFile(BrakezaSetup::get()->TEMPLATE_SHADER_OBJECT_VS, shaderVertexFile);
+            Tools::copyFile(BrakezaSetup::get()->TEMPLATE_SHADER_OBJECT_FS, shaderFragmentFile);
             break;
         }
     }

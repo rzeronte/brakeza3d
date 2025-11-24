@@ -2,10 +2,10 @@
 // Created by Eduardo on 28/01/2025.
 //
 
-#include "../../include/Misc/ProjectLoader.h"
-#include "../../include/Misc/Tools.h"
-#include "../../include/Render/Logging.h"
-#include "../../include/ComponentsManager.h"
+#include "../include/ProjectLoader.h"
+#include "../include/Misc/Tools.h"
+#include "../include/Render/Logging.h"
+#include "../include/Components/ComponentsManager.h"
 
 ProjectLoader::ProjectLoader() {
 
@@ -24,7 +24,7 @@ void ProjectLoader::loadProject(const std::string &filename)
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "name") != nullptr) {
         auto sceneName = cJSON_GetObjectItemCaseSensitive(contentJSON, "name")->valuestring;
         ComponentsManager::get()->getComponentWindow()->setWindowTitle(sceneName);
-        EngineSetup::get()->ENGINE_TITLE = sceneName;
+        BrakezaSetup::get()->ENGINE_TITLE = sceneName;
     }
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
@@ -42,7 +42,7 @@ void ProjectLoader::saveProject(const std::string &filename)
 {
     cJSON *root = cJSON_CreateObject();
 
-    cJSON_AddStringToObject(root, "name", EngineSetup::get()->ENGINE_TITLE.c_str());
+    cJSON_AddStringToObject(root, "name", BrakezaSetup::get()->ENGINE_TITLE.c_str());
 
     cJSON *sceneScriptsArray = cJSON_CreateArray();
     for (auto script : ComponentsManager::get()->getComponentScripting()->getProjectLUAScripts()) {

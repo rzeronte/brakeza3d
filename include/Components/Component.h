@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include "../Objects/Object3D.h"
-#include "../EngineSetup.h"
+#include "../BrakezaSetup.h"
 
 class ComponentsManager;
 
@@ -12,7 +12,7 @@ class Component {
     std::string label;
     bool enabled = false;
 protected:
-    EngineSetup *SETUP;
+    BrakezaSetup *SETUP;
 public:
     Component();
     void setId(int newId);

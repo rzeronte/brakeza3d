@@ -1,14 +1,14 @@
 
 #include <glm/ext/matrix_clip_space.hpp>
 #include "../../include/OpenGL/ShaderOGLDOF.h"
-#include "../../include/EngineSetup.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/BrakezaSetup.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLDOF::ShaderOGLDOF()
 :
     ShaderBaseOpenGL(
-        EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "DeepOfField.fs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "DeepOfField.vs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "DeepOfField.fs",
         false
     ),
     resultFramebuffer(0),

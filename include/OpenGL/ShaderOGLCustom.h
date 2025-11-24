@@ -13,7 +13,7 @@
 #include "ShaderBaseOpenGL.h"
 #include "ShaderBaseOpenGLQuad.h"
 #include "../Misc/cJSON.h"
-#include "../Misc/Image.h"
+#include "../Render/Image.h"
 #include <sstream>
 #include <vector>
 

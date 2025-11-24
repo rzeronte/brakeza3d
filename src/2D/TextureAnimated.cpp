@@ -2,9 +2,10 @@
 #include <utility>
 #include "../../include/2D/TextureAnimated.h"
 #include <SDL_image.h>
-#include "../../include/EngineSetup.h"
+#include "../../include/BrakezaSetup.h"
 #include "../../include/Render/Logging.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
+#include "../../include/GUI/Objects/TextureAnimatedAnimationGUI.h"
 
 TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps)
 :
@@ -181,25 +182,5 @@ const std::string &TextureAnimated::getBaseFilename() const
 
 void TextureAnimated::drawImGuiProperties()
 {
-    if (ImGui::TreeNode("Current Animation Setup")) {
-        static int width = currentSpriteWidth;
-        static int height = currentspriteHeight;
-        static int numFrames = numberFramesToLoad;
-        static int fps = this->fps;
-
-        const int range_min_int = 1;
-        const int range_max_int = 1280;
-
-        ImGui::DragScalar("Sprite Width", ImGuiDataType_S32, &width,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
-        ImGui::DragScalar("Sprite Height", ImGuiDataType_S32, &height,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
-        ImGui::DragScalar("Number frames", ImGuiDataType_S32, &numFrames,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
-        ImGui::DragScalar("FPS", ImGuiDataType_S32, &fps,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
-
-        if (ImGui::Button("Apply")) {
-            auto spriteFile = getBaseFilename();
-            setup(spriteFile, width, height, numFrames, fps);
-            updateStep();
-        }
-        ImGui::TreePop();
-    }
+    TextureAnimatedDrawerGUI::drawImGuiProperties(this);
 }

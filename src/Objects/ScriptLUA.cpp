@@ -6,6 +6,7 @@
 #include "../../include/Objects/ScriptLUA.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/GUI/Objects/ScriptLuaGUI.h"
 #include "../../include/Misc/ToolsJSON.h"
 
 ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
@@ -102,20 +103,20 @@ void ScriptLUA::addDataTypeEmpty(const char *name, const char *type)
 {
     LUADataValue LUAValue;
 
-    switch (EngineSetup::get()->LUADataTypesMapping[type]) {
-        case EngineSetup::LUADataType::INT: {
+    switch (BrakezaSetup::get()->LUADataTypesMapping[type]) {
+        case BrakezaSetup::LUADataType::INT: {
             LUAValue = 0;
             break;
         }
-        case EngineSetup::LUADataType::FLOAT: {
+        case BrakezaSetup::LUADataType::FLOAT: {
             LUAValue = 0.0f;
             break;
         }
-        case EngineSetup::LUADataType::STRING: {
+        case BrakezaSetup::LUADataType::STRING: {
             LUAValue = "";
             break;
         }
-        case EngineSetup::LUADataType::VERTEX3D: {
+        case BrakezaSetup::LUADataType::VERTEX3D: {
             LUAValue = Vertex3D();
             break;
         }
@@ -131,20 +132,20 @@ void ScriptLUA::addDataType(const char *name, const char *type, cJSON *value)
 {
     LUADataValue LUAValue;
 
-    switch (EngineSetup::get()->LUADataTypesMapping[type]) {
-        case EngineSetup::LUADataType::INT: {
+    switch (BrakezaSetup::get()->LUADataTypesMapping[type]) {
+        case BrakezaSetup::LUADataType::INT: {
             LUAValue = value->valueint;
             break;
         }
-        case EngineSetup::LUADataType::FLOAT: {
+        case BrakezaSetup::LUADataType::FLOAT: {
             LUAValue = static_cast<float>(value->valuedouble);
             break;
         }
-        case EngineSetup::LUADataType::STRING: {
+        case BrakezaSetup::LUADataType::STRING: {
             LUAValue = value->valuestring;
             break;
         }
-        case EngineSetup::LUADataType::VERTEX3D: {
+        case BrakezaSetup::LUADataType::VERTEX3D: {
             LUAValue = ToolsJSON::parseVertex3DJSON(value);
             break;
         }
@@ -293,60 +294,7 @@ void ScriptLUA::setPaused(bool value)
 
 void ScriptLUA::drawImGuiProperties()
 {
-    ImGui::SeparatorText("LUA variables");
-
-    if (dataTypes.empty()) {
-        ImGui::Text("No variables found");
-        return;
-    }
-
-    int i = 0;
-    for (auto&  type: dataTypes) {
-        ImGui::PushID(i);
-        switch (EngineSetup::get()->LUADataTypesMapping[type.type]) {
-            case EngineSetup::LUADataType::INT: {
-                int valueInt = std::get<int>(type.value);
-                if (ImGui::InputInt(type.name.c_str(), &valueInt)) {
-                    type.value = valueInt;
-                }
-                break;
-            }
-            case EngineSetup::LUADataType::STRING: {
-                std::string valueString = std::get<const char*>(type.value);
-                static char name[256];
-                strncpy(name, valueString.c_str(), sizeof(name));
-                ImGui::InputText(type.name.c_str(), name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
-                if (ImGui::IsItemEdited()) {
-                    type.value = name;
-                }
-
-                break;
-            }
-            case EngineSetup::LUADataType::FLOAT: {
-                float valueFloat = std::get<float>(type.value);
-                if (ImGui::InputFloat(type.name.c_str(), &valueFloat, 0.01f, 1.0f, "%.3f")) {
-                    type.value = valueFloat;
-                }
-                break;
-            }
-            case EngineSetup::LUADataType::VERTEX3D: {
-                Vertex3D valueVertex = std::get<Vertex3D>(type.value);
-                float vec4f[4];
-                valueVertex.toFloat(vec4f);
-                if (ImGui::DragFloat3(type.name.c_str(), vec4f, 0.01f, 0.0f, 1.0f)) {
-                    valueVertex.x = vec4f[0];
-                    valueVertex.y = vec4f[1];
-                    valueVertex.z = vec4f[2];
-                    type.value = valueVertex;
-                }
-                break;
-            }
-            default:
-                std::cerr << "Unknown data type." << std::endl;
-        }
-        i++;
-        ImGui::PopID();
-    }
+    ScriptLuaGUI::drawImGuiProperties(this);
 }
 
 const std::vector<ScriptLUATypeData> &ScriptLUA::getDataTypes() const
@@ -366,23 +314,23 @@ cJSON *ScriptLUA::getTypesJSON() const
         cJSON_AddStringToObject(typeJSON, "type", dataType.type.c_str());
 
         std::string name = dataType.name + "("+ dataType.type +")";
-        switch (EngineSetup::get()->LUADataTypesMapping[dataType.type]) {
-            case EngineSetup::LUADataType::INT: {
+        switch (BrakezaSetup::get()->LUADataTypesMapping[dataType.type]) {
+            case BrakezaSetup::LUADataType::INT: {
                 int valueInt = std::get<int>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueInt);
                 break;
             }
-            case EngineSetup::LUADataType::STRING: {
+            case BrakezaSetup::LUADataType::STRING: {
                 std::string valueString = std::get<const char *>(dataType.value);
                 cJSON_AddStringToObject(typeJSON, "value", valueString.c_str());
                 break;
             }
-            case EngineSetup::LUADataType::FLOAT: {
+            case BrakezaSetup::LUADataType::FLOAT: {
                 float valueFloat = std::get<float>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueFloat);
                 break;
             }
-            case EngineSetup::LUADataType::VERTEX3D: {
+            case BrakezaSetup::LUADataType::VERTEX3D: {
                 cJSON *vertexJSON = cJSON_CreateObject();
                 auto valueVertex = std::get<Vertex3D>(dataType.value);
                 cJSON_AddNumberToObject(vertexJSON, "x", valueVertex.x);

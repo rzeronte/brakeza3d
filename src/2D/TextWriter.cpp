@@ -43,10 +43,10 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, cons
     int windowHeight = renderer->getHeight();
 
     SDL_Rect dstRect;
-    dstRect.x = (x * windowWidth) / EngineSetup::get()->screenWidth;
-    dstRect.y = (y * windowHeight) / EngineSetup::get()->screenHeight;
-    dstRect.w = (w * windowWidth) / EngineSetup::get()->screenWidth;
-    dstRect.h = (h * windowHeight) / EngineSetup::get()->screenHeight;
+    dstRect.x = (x * windowWidth) / BrakezaSetup::get()->screenWidth;
+    dstRect.y = (y * windowHeight) / BrakezaSetup::get()->screenHeight;
+    dstRect.w = (w * windowWidth) / BrakezaSetup::get()->screenWidth;
+    dstRect.h = (h * windowHeight) / BrakezaSetup::get()->screenHeight;
 
     ComponentsManager::get()->getComponentRender()->getShaderOGLImage()->renderTexture(
         texID,
@@ -83,8 +83,8 @@ void TextWriter::writeTextTTFMiddleScreen(const char *text, const Color &c, floa
     textWidth *= sizeRatio;
     textHeight *= sizeRatio;
 
-    const int totalW = EngineSetup::get()->screenWidth;
-    const int totalH = EngineSetup::get()->screenHeight;
+    const int totalW = BrakezaSetup::get()->screenWidth;
+    const int totalH = BrakezaSetup::get()->screenHeight;
 
     int xPosition = (totalW / 2) - textWidth / 2;
     int yPosition = totalH / 2;
@@ -100,7 +100,7 @@ void TextWriter::writeTTFCenterHorizontal(int y, const char *text, const Color &
     w *= sizeRatio;
     h *= sizeRatio;
 
-    int totalW = EngineSetup::get()->screenWidth;
+    int totalW = BrakezaSetup::get()->screenWidth;
 
     int xPosition = (totalW / 2) - w / 2;
 

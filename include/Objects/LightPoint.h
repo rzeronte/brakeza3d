@@ -15,8 +15,8 @@ public:
     float quadratic;
 
     LightPoint(glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular, float constant, float linear,float quadratic);
-    void setColor(Color c);
-    void setColorSpecular(Color c);
+    void setColor(const Color &c);
+    void setColorSpecular(const Color &c);
     void onUpdate() override;
     void setConstant(float value);
     void setLinear(float value);
@@ -25,9 +25,10 @@ public:
     const char *getTypeIcon() override;
     void drawImGuiProperties() override;
     static LightPoint* create(Vertex3D position);
-    void setAmbient(Color value);
+    void setAmbient(const Color &c);
 
     friend class LightPointSerializer;
+    friend class LightPointGUI;
 };
 
 #endif //SDL2_3D_ENGINE_LIGHTPOINT_H

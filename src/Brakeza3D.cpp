@@ -64,7 +64,7 @@ void Brakeza3D::welcomeMessage()
     Logging::Message("https://brakeza.com");
     Logging::Message("Let's start!");
 
-    Logging::Message("Running %s", EngineSetup::get()->ENGINE_TITLE.c_str());
+    Logging::Message("Running %s", BrakezaSetup::get()->ENGINE_TITLE.c_str());
 }
 
 void Brakeza3D::CaptureInputEvents(SDL_Event &e)
@@ -92,7 +92,7 @@ void Brakeza3D::mainLoop(bool autostart, const std::string& project)
     collisions->initBulletSystem();
     onStartComponents();
 
-    window->ImGuiInitialize(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
+    window->ImGuiInitialize(BrakezaSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
     welcomeMessage();
 
     //handleAutoStartProject(autostart, project);
@@ -131,9 +131,9 @@ void Brakeza3D::checkForResizeOpenGLWindow(const SDL_Event &e)
 
 void Brakeza3D::ControlFrameRate() const
 {
-    if (!EngineSetup::get()->LIMIT_FRAMERATE) return;
+    if (!BrakezaSetup::get()->LIMIT_FRAMERATE) return;
 
-    const float frameDelay = 1000.0f / static_cast<float>(EngineSetup::get()->FRAMERATE);
+    const float frameDelay = 1000.0f / static_cast<float>(BrakezaSetup::get()->FRAMERATE);
 
     if (deltaTime < frameDelay) {
         SDL_Delay(floor(frameDelay - deltaTime));
@@ -148,7 +148,6 @@ std::vector<Object3D *> &Brakeza3D::getSceneObjects()
 void Brakeza3D::addObject3D(Object3D *obj, const std::string &label)
 {
     Logging::Message("[Brakeza3D addObject3D] Adding Object3D to scene: %s", label.c_str());
-    std::cout << "[Brakeza3D addObject3D] Adding Object3D to scene: %s" << label.c_str() << std::endl;
 
     obj->setLabel(label);
     sceneObjects.push_back(obj);
@@ -227,13 +226,13 @@ void Brakeza3D::handleAutoStartProject(bool autostart, const std::string &projec
     auto render = componentsManager->getComponentRender();
 
     if (autostart) {
-        render->getProjectLoader().loadProject(EngineSetup::get()->PROJECTS_FOLDER + project);
-        EngineSetup::get()->ENABLE_IMGUI = false;
+        render->getProjectLoader().loadProject(BrakezaSetup::get()->PROJECTS_FOLDER + project);
+        BrakezaSetup::get()->ENABLE_IMGUI = false;
         componentsManager->getComponentScripting()->playLUAScripts();
         return;
     }
 
-    render->getSceneLoader().LoadScene(EngineSetup::get()->CONFIG_FOLDER + EngineSetup::get()->DEFAULT_SCENE);
+    render->getSceneLoader().LoadScene(BrakezaSetup::get()->CONFIG_FOLDER + BrakezaSetup::get()->DEFAULT_SCENE);
 }
 
 void Brakeza3D::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish) const

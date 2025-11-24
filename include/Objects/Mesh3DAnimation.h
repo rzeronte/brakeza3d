@@ -61,15 +61,15 @@ struct BonesMappingColliders {
 
 class Mesh3DAnimation : public Mesh3D
 {
-    int numBones;
-    int indexCurrentAnimation;
-    int boneColliderIndex;
-    float runningTime;
-    float animation_speed;
-    bool loop;
-    bool boneColliderEnabled;
-    bool remove_at_end_animation;
-    bool animation_ends;
+    int numBones = 0;
+    int indexCurrentAnimation = 0;
+    int boneColliderIndex = 0;
+    float runningTime = 0;
+    float animation_speed = 0;
+    bool loop = false;
+    bool boneColliderEnabled = false;
+    bool removeOnAnimationEnd = false;
+    bool finished = false;
 
     const aiScene *scene;
     Assimp::Importer importer;
@@ -134,6 +134,7 @@ public:
     static unsigned int FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim);
 
     friend class Mesh3DAnimationSerializer;
+    friend class Mesh3DAnimationDrawerGUI;
 };
 
 #endif //BRAKEDA3D_MESH3DANIMATED_H

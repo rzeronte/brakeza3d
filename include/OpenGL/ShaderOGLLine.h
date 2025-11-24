@@ -7,7 +7,7 @@
 
 
 #include "ShaderBaseOpenGL.h"
-#include "../Objects/Point2D.h"
+#include "../2D/Point2D.h"
 #include "../Misc/Color.h"
 #include "ShaderBaseOpenGLQuad.h"
 

@@ -5,7 +5,6 @@
 #ifndef BRAKEZA3D_OPENGLSHADERTYPES_H
 #define BRAKEZA3D_OPENGLSHADERTYPES_H
 
-
 #include <glm/vec3.hpp>
 
 struct MaterialOpenGL {

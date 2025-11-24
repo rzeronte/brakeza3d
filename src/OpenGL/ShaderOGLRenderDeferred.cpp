@@ -1,13 +1,13 @@
 #define GL_GLEXT_PROTOTYPES
 
 #include "../../include/OpenGL/ShaderOGLRenderDeferred.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLRenderDeferred::ShaderOGLRenderDeferred()
 :
     ShaderBaseOpenGL(
-        EngineSetup::get()->SHADERS_FOLDER + "GBuffer.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "GBuffer.fs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "GBuffer.vs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "GBuffer.fs",
         false
     )
 {

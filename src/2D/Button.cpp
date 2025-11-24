@@ -1,6 +1,6 @@
 
 #include "../../include/2D/Button.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 Button::Button(int x, int y, const std::string& imageFileName, void (*functionCallBack)())
 :

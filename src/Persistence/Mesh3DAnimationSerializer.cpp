@@ -58,14 +58,13 @@ cJSON* Mesh3DAnimationSerializer::JsonByObject(Object3D *o)
     return root;
 }
 
-void Mesh3DAnimationSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
+void Mesh3DAnimationSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
     std::cout << "[Mesh3DSerializer ApplyJsonToObject] " << o->getTypeObject() << std::endl;
-
     auto mesh = dynamic_cast<Mesh3DAnimation*>(o);
-
     Mesh3DSerializer::ApplyJsonToObject(json, o);
 
+    // speed
     auto speed = cJSON_GetObjectItemCaseSensitive(json, "animationSpeed")->valuedouble;
     mesh->setAnimationSpeed(static_cast<float>(speed));
     mesh->setIndexCurrentAnimation(cJSON_GetObjectItemCaseSensitive(json, "indexCurrentAnimation")->valueint);
@@ -103,13 +102,7 @@ Object3D* Mesh3DAnimationSerializer::ObjectByJson(cJSON *json)
 
 void Mesh3DAnimationSerializer::LoadFileIntoScene(const std::string& model)
 {
-    if (!Tools::fileExists(model.c_str())) {
-        Logging::Message("[Mesh3DAnimationSerializer] File model '%s' not found!!", model.c_str());
-        return;
-    }
-
     auto *o = new Mesh3DAnimation();
-    o->setBelongToScene(true);
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
     o->AssimpLoadGeometryFromFile(model);
 

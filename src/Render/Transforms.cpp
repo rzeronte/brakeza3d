@@ -1,6 +1,6 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 void Transforms::objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o)
 {
@@ -36,8 +36,8 @@ Vertex3D Transforms::objectToLocal(Vertex3D &V, Object3D *o)
 Vertex3D Transforms::Point2DToWorld(Point2D &p)
 {
     // Mapear las coordenadas de (0, 0) a (100, 100) a la esquina superior izquierda e inferior derecha del plano cercano
-    float mappedX = 2.0f * p.x / EngineSetup::get()->screenWidth - 1;
-    float mappedY = 1.0f - 2.0f * p.y / EngineSetup::get()->screenHeight;
+    float mappedX = 2.0f * p.x / BrakezaSetup::get()->screenWidth - 1;
+    float mappedY = 1.0f - 2.0f * p.y / BrakezaSetup::get()->screenHeight;
 
     // Obtener la matriz de proyección y la matriz de vista
     auto camera = ComponentsManager::get()->getComponentCamera();
@@ -75,8 +75,8 @@ Point2D Transforms::WorldToPoint(Vertex3D v)
     glm::vec4 position1 = ProjectionMatrix * ViewMatrix * glm::vec4(v.x, v.y, v.z, 1.0);
     position1 /= position1.w;
 
-    const auto windowWidth = EngineSetup::get()->screenWidth;
-    const auto windowHeight = EngineSetup::get()->screenHeight;
+    const auto windowWidth = BrakezaSetup::get()->screenWidth;
+    const auto windowHeight = BrakezaSetup::get()->screenHeight;
 
     Point2D screenPoint((int)((position1.x + 1.0) * 0.5 * windowWidth), (int)((1.0 - position1.y) * 0.5 * windowHeight));
     return screenPoint;

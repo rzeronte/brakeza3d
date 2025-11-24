@@ -19,7 +19,7 @@ float Maths::radiansToDegrees(float angleRadians) {
  * 3 = vértice B dentro
  */
 int Maths::isVector3DClippingPlane(Plane &P, Vector3D &V) {
-    EngineSetup *SETUP = EngineSetup::get();
+    BrakezaSetup *SETUP = BrakezaSetup::get();
 
     float distanceV1 = P.distance(V.vertex1);
     float distanceV2 = P.distance(V.vertex2);
@@ -45,7 +45,7 @@ float Maths::distanceBetweenVertices(Vertex3D v1, Vertex3D v2) {
 
 float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *object, Camera3D *cam) {
     Vertex3D a = cam->getPosition() - object->getPosition();
-    Vertex3D b = object->getRotation() * EngineSetup::get()->forward;
+    Vertex3D b = object->getRotation() * BrakezaSetup::get()->forward;
 
     a = a.getNormalize();
 

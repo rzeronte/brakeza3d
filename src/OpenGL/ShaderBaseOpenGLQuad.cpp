@@ -7,7 +7,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include "../../include/OpenGL/ShaderBaseOpenGLQuad.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ShaderBaseOpenGLQuad::ShaderBaseOpenGLQuad()
 :

@@ -4,11 +4,11 @@
 
 Grid3D::Grid3D(AABB3D bounds, int sizeX, int sizeY, int sizeZ)
 :
-    pathFinding(PathFinding(sizeX, sizeY, sizeZ)),
-    bounds(bounds),
     numberCubesX(sizeX),
     numberCubesY(sizeY),
-    numberCubesZ(sizeZ)
+    numberCubesZ(sizeZ),
+    bounds(bounds),
+    pathFinding(PathFinding(sizeX, sizeY, sizeZ))
 {
     makeCells();
 }

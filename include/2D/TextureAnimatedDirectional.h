@@ -2,7 +2,7 @@
 #ifndef BRAKEDA3D_TEXTUREANIMATEDDIRECTIONAL_H
 #define BRAKEDA3D_TEXTUREANIMATEDDIRECTIONAL_H
 
-#include "../Misc/Image.h"
+#include "../Render/Image.h"
 
 #define ANIMATION2D_MAX_FRAMES 10
 

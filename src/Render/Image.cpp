@@ -1,49 +1,49 @@
 #include <SDL2/SDL_image.h>
 
-#include "../../include/Misc/Image.h"
+#include "../../include/Render/Image.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Render/Maths.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
-Image::Image(const std::string& filename): surface(nullptr), texture(nullptr), loaded(false)
+Image::Image()
 {
-    this->loadTGA(filename);
 }
 
-Image::Image(): surface(nullptr), texture(nullptr)
+Image::Image(const std::string& filename)
 {
-    this->loaded = false;
+    loadTGA(filename);
 }
 
 Image::Image(SDL_Surface *surface, SDL_Texture *texture)
 :
-    surface(surface), texture(texture)
+    loaded(true),
+    texturaID(makeOGLImage(surface)),
+    surface(surface),
+    texture(texture)
 {
-    texturaID = makeOGLImage(surface);
-
-    this->loaded = true;
 }
 
 void Image::createEmpty(int w, int h)
 {
-    this->surface = SDL_CreateRGBSurface(SDL_PIXELFORMAT_RGBA32, w, h, 32, 0, 0, 0, 0);
-    this->loaded = true;
+    SDL_CreateRGBSurface(SDL_PIXELFORMAT_RGBA32, w, h, 32, 0, 0, 0, 0);
+    loaded = true;
 }
 
 void Image::loadTGA(const std::string& filename)
 {
     if (Tools::fileExists(filename.c_str())) {
-        this->surface = IMG_Load(filename.c_str());
-        this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
+        surface = IMG_Load(filename.c_str());
+        texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
 
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
         texturaID = makeOGLImage(surface);
 
-        this->fileName = filename;
-        this->loaded = true;
+        fileName = filename;
+        loaded = true;
 
         Logging::Message("Loading Image file (%s) (%dx%d)", filename.c_str(), width(), height());
+
         return;
     }
 
@@ -75,10 +75,10 @@ void Image::drawFlat(int pos_x, int pos_y, GLuint fbo) const
     srcRect.h = surface->h;
 
     SDL_Rect dstRect;
-    dstRect.x = (pos_x * windowWidth) / EngineSetup::get()->screenWidth;
-    dstRect.y = (pos_y * windowHeight) / EngineSetup::get()->screenHeight;
-    dstRect.w = (surface->w * windowWidth) / EngineSetup::get()->screenWidth;
-    dstRect.h = (surface->h * windowHeight) / EngineSetup::get()->screenHeight;
+    dstRect.x = (pos_x * windowWidth) / BrakezaSetup::get()->screenWidth;
+    dstRect.y = (pos_y * windowHeight) / BrakezaSetup::get()->screenHeight;
+    dstRect.w = (surface->w * windowWidth) / BrakezaSetup::get()->screenWidth;
+    dstRect.h = (surface->h * windowHeight) / BrakezaSetup::get()->screenHeight;
 
     ComponentsManager::get()->getComponentRender()->getShaderOGLImage()->renderTexture(
         texturaID,

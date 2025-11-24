@@ -1,17 +1,17 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include "../../include/OpenGL/ShaderOGLDepthMap.h"
-#include "../../include/EngineSetup.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/BrakezaSetup.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLDepthMap::ShaderOGLDepthMap()
 :
     ShaderBaseOpenGL(
-        EngineSetup::get()->SHADERS_FOLDER + "DepthMap.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "DepthMap.fs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "DepthMap.vs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "DepthMap.fs",
         false
     ),
     intensity(10.0f),
-    farPlane(EngineSetup::get()->FRUSTUM_FARPLANE_DISTANCE),
+    farPlane(BrakezaSetup::get()->FRUSTUM_FARPLANE_DISTANCE),
     nearPlane(0.1f)
 {
     setupQuadUniforms(programID);

@@ -6,7 +6,9 @@
 #define BRAKEZA3D_IMAGE3D_H
 
 #include "Object3D.h"
-#include "../include/Misc/Image.h"
+#include "../Render/Image.h"
+
+class Image3DGUI;
 
 class Image3D : public Object3D
 {
@@ -30,25 +32,25 @@ public:
     Image3D(const Vertex3D &position, float width, float height, Image* image);
     ~Image3D() override;
 
-    void onUpdate() override;
-    void drawImGuiProperties() override;
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
+    void onUpdate() override;
+    void drawImGuiProperties() override;
     void setSize(float width, float height);
     void setWidth(float value);
     void setHeight(float value);
     void fillBuffers();
     void checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastDepthFound) override;
     void setImage(Image *value);
-    cJSON *getJSON(Image3D *object);
-    static void createFromJSON(cJSON *object);
-    static void setPropertiesFromJSON(cJSON *object, Image3D *o);
-    static Image3D* create(Vertex3D p, float w, float h, const std::string &file);
     [[nodiscard]] GLuint getVertexBuffer() const;
     [[nodiscard]] GLuint getNormalBuffer() const;
     [[nodiscard]] GLuint getUVBuffer() const;
     [[nodiscard]] std::vector<glm::vec4> getVertices() const;
     [[nodiscard]] Image* getImage() const;
+    static Image3D* create(Vertex3D p, float w, float h, const std::string &file);
+
+    friend class Image3DSerializer;
+    friend class Image3DGUI;
 };
 
 

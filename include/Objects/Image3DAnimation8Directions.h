@@ -35,10 +35,7 @@ public:
     TextureAnimatedDirectional *getCurrentTextureAnimationDirectional() const;
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
-    cJSON *getJSON(Image3DAnimation8Directions *o);
     static int getDirectionForAngle(float enemyAngle);
-    static void createFromJSON(cJSON *object);
-    static void setPropertiesFromJSON(cJSON *object, Image3DAnimation8Directions *o);
     static Image3DAnimation8Directions* create(
         Vertex3D position,
         float width,
@@ -47,6 +44,9 @@ public:
         int frames,
         int fps
     );
+
+    friend class Image3DAnimation8DirectionsSerializer;
+    friend class Image3DAnimation8DirectionsGUI;
 };
 
 #endif //BRAKEDA3D_SPRITE_H

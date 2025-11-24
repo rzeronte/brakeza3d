@@ -4,7 +4,7 @@
 
 #include "../../include/Objects/TentacleIK.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Transforms.h"
 #include <random>  // Para generación de números aleatorios
@@ -93,7 +93,7 @@ void TentacleIK::transformJoints()
 {
     for (int i = (int) joints.size() -1 ; i >= 0 ; i--) {
         transformJoint(i);
-        applySinusoidalMovement(EngineSetup::get()->TESTING_INT3, EngineSetup::get()->TESTING_INT2, Brakeza3D::get()->getExecutionTime());
+        applySinusoidalMovement(BrakezaSetup::get()->TESTING_INT3, BrakezaSetup::get()->TESTING_INT2, Brakeza3D::get()->getExecutionTime());
     }
 }
 
@@ -150,7 +150,7 @@ void TentacleIK::draw()
         Point2D startScreenPoint = Transforms::WorldToPoint(joint->startWorld);
         Point2D endScreenPoint = Transforms::WorldToPoint(joint->endWorld);
 
-        const float intensity = joint->intensity * EngineSetup::get()->TESTING_INT1;
+        const float intensity = joint->intensity * BrakezaSetup::get()->TESTING_INT1;
 
         /*shaderLasers->addLaser(
             startScreenPoint.x, startScreenPoint.y,

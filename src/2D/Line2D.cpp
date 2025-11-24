@@ -1,4 +1,4 @@
-#include "../../include/Objects/Line2D.h"
+#include "../../include/2D/Line2D.h"
 
 Line2D::Line2D() {
     this->x1 = 0;

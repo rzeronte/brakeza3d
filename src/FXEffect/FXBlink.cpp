@@ -5,7 +5,7 @@
 //
 
 #include "../../include/FXEffect/FXBlink.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 FXBlink::FXBlink(bool active, Mesh3D *o, float step, Color c) :
     FXEffectOpenGLObject(active, o),

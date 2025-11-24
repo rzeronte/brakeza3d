@@ -1,11 +1,10 @@
 
 #include "../../include/Objects/LightPoint.h"
-
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
-
 #include "../../include/Render/Maths.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/GUI/Objects/LightPointGUI.h"
 
 LightPoint::LightPoint(
     glm::vec4 ambient,
@@ -29,19 +28,19 @@ LightPoint *LightPoint::create(Vertex3D position)
     return nullptr;
 }
 
-void LightPoint::setColor(Color value)
+void LightPoint::setColor(const Color &c)
 {
-    this->diffuse = glm::vec4(value.r, value.g, value.b, 1);
+    diffuse = glm::vec4(c.r, c.g, c.b, 1);
 }
 
-void LightPoint::setAmbient(Color value)
+void LightPoint::setAmbient(const Color &c)
 {
-    this->ambient = glm::vec4(value.r, value.g, value.b, 1);
+    ambient = glm::vec4(c.r, c.g, c.b, 1);
 }
 
-void LightPoint::setColorSpecular(Color c)
+void LightPoint::setColorSpecular(const Color &c)
 {
-    this->specular = glm::vec4(c.r, c.g, c.b, 1);
+    specular = glm::vec4(c.r, c.g, c.b, 1);
 }
 
 void LightPoint::onUpdate()
@@ -66,7 +65,7 @@ void LightPoint::setCuadratic(float value)
 
 const char *LightPoint::getTypeObject()
 {
-    return "LightPoint3D";
+    return SceneObjectTypes::LIGHT_POINT_3D;
 }
 
 const char *LightPoint::getTypeIcon()
@@ -77,32 +76,5 @@ const char *LightPoint::getTypeIcon()
 void LightPoint::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-
-    if (ImGui::CollapsingHeader("LightPoint")) {
-
-        const float range_potence_sensibility = 0.01f;
-        const float range_min = -90000;
-        const float range_max = 90000;
-
-        ImVec4 color = {diffuse.x, diffuse.y, diffuse.z, 1};
-        bool changed_color = ImGui::ColorEdit4("Diffuse##", (float *) &color, ImGuiColorEditFlags_NoOptions);
-        if (changed_color) {
-            setColor(Color(color.x,color.y,color.z));
-        }
-        color = {specular.x, specular.y, specular.z, 1};
-        changed_color = ImGui::ColorEdit4("Specular##", (float *) &color, ImGuiColorEditFlags_NoOptions);
-        if (changed_color) {
-            setColorSpecular(Color(color.x, color.y, color.z));
-        }
-
-        color = {ambient.x, ambient.y, ambient.z, 1};
-        changed_color = ImGui::ColorEdit4("Ambient##", (float *) &color, ImGuiColorEditFlags_NoOptions);
-        if (changed_color) {
-            setAmbient(Color(color.x, color.y,color.z));
-        }
-
-        ImGui::DragScalar("Constant", ImGuiDataType_Float, &constant, range_potence_sensibility,&range_min, &range_max, "%f", 1.0f);
-        ImGui::DragScalar("Linear", ImGuiDataType_Float, &linear, range_potence_sensibility,&range_min, &range_max, "%f", 1.0f);
-        ImGui::DragScalar("Quadratic", ImGuiDataType_Float, &quadratic, range_potence_sensibility,&range_min, &range_max, "%f", 1.0f);
-    }
+    LightPointGUI::drawImGuiProperties(this);
 }

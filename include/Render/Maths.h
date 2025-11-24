@@ -6,11 +6,11 @@
 #include "Plane.h"
 #include "../Objects/Vector3D.h"
 #include "../Objects/Object3D.h"
-#include "../Objects/Point2D.h"
+#include "../2D/Point2D.h"
 #include "../Components/Camera3D.h"
 #include "../Objects/LightPoint.h"
 #include "../Objects/Triangle3D.h"
-#include "../Misc/Image.h"
+#include "Image.h"
 
 class Maths {
 public:

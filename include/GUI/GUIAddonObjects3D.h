@@ -6,7 +6,7 @@
 #include "../Render/Logging.h"
 #include "../Objects/Mesh3D.h"
 #include "../Misc/TexturePackage.h"
-#include "../ComponentsManager.h"
+#include "../Components/ComponentsManager.h"
 
 struct GUIWidgetAllowedObjectConfig {
     std::string typeObject;
@@ -117,7 +117,7 @@ struct GUIAddonObjects3D {
 
                     if (mesh != nullptr) {
                         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CUSTOMSHADER_ITEM")) {
-                            EngineSetup::DragDropCustomShaderData* receivedData = (EngineSetup::DragDropCustomShaderData*)payload->Data;
+                            BrakezaSetup::DragDropCustomShaderData* receivedData = (BrakezaSetup::DragDropCustomShaderData*)payload->Data;
                             Logging::Message("Dropping shader into Mesh3D (Folder: %s, File: %s)", receivedData->folder, receivedData->file);
                             mesh->loadShader(receivedData->folder, receivedData->file);
                         }

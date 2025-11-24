@@ -6,7 +6,7 @@
 
 #include <string>
 #include <utility>
-#include "../EngineSetup.h"
+#include "../BrakezaSetup.h"
 #include "../../sol/sol.hpp"
 #include "../Misc/cJSON.h"
 
@@ -47,10 +47,6 @@ class ScriptLUA
     bool paused = false;
 
 public:
-    explicit ScriptLUA(const std::string& script, std::string properties);
-
-    ScriptLUA(const std::string &scriptFilename, const cJSON *types);
-
     std::string content;
     std::vector<ScriptLUATypeData> dataTypes;
     std::vector<ScriptLUATypeData> dataTypesDefaultValues;
@@ -58,51 +54,34 @@ public:
     std::string scriptFilename;
     std::string fileTypes;
 
-    void runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg = std::nullopt) const;
-
-    void runGlobal(const std::string& func) const;
-
-    void addDataType(const char *name, const char *type, cJSON *value);
-
-    void parseTypesFromFileAttributes();
-
-    static std::string dataTypesFileFor(std::string basicString);
-
-    static std::string removeFilenameExtension(std::string& filename);
-
-    void removeDataType(const ScriptLUATypeData& data);
-
-    void updateFileTypes() const;
-
-    void reloadEnvironment(sol::environment &environment);
-
-    void reloadScriptCode();
-
-    void getCode(const std::string &script);
-
-    void updateScriptCodeWith(const std::string &content) const;
-
-    void reloadGlobals() const;
-
-    [[nodiscard]] bool isPaused() const;
-
-    void setPaused(bool value);
-
-    void drawImGuiProperties();
-
-    [[nodiscard]] const std::vector<ScriptLUATypeData> &getDataTypes() const;
-
-    [[nodiscard]] cJSON *getTypesJSON() const;
-
-    [[nodiscard]] const std::string &getScriptFilename() const;
-
-    void setDataTypesFromJSON(const cJSON *typesJSON);
-
-    void addDataTypeEmpty(const char *name, const char *type);
+    explicit ScriptLUA(const std::string& script, std::string properties);
+    ScriptLUA(const std::string &scriptFilename, const cJSON *types);
 
     bool existDataType(const char *name, const char *type) const;
-
+    void runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg = std::nullopt) const;
+    void runGlobal(const std::string& func) const;
+    void addDataType(const char *name, const char *type, cJSON *value);
+    void parseTypesFromFileAttributes();
+    void removeDataType(const ScriptLUATypeData& data);
+    void updateFileTypes() const;
+    void reloadEnvironment(sol::environment &environment);
+    void reloadScriptCode();
+    void getCode(const std::string &script);
+    void updateScriptCodeWith(const std::string &content) const;
+    void reloadGlobals() const;
+    void setPaused(bool value);
+    void drawImGuiProperties();
+    void setDataTypesFromJSON(const cJSON *typesJSON);
+    void addDataTypeEmpty(const char *name, const char *type);
+    [[nodiscard]] bool isPaused() const;
+    [[nodiscard]] const std::vector<ScriptLUATypeData> &getDataTypes() const;
+    [[nodiscard]] cJSON *getTypesJSON() const;
+    [[nodiscard]] const std::string &getScriptFilename() const;
     static ScriptLUA* create(const std::string& scriptFile);
+    static std::string dataTypesFileFor(std::string basicString);
+    static std::string removeFilenameExtension(std::string& filename);
+
+    friend class ScriptLuaGUI;
 };
 
 

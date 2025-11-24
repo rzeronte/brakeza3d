@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include "../Misc/Counter.h"
-#include "../Misc/Image.h"
+#include "../Render/Image.h"
 
 class TextureAnimated {
 public:

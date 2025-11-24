@@ -1,6 +1,6 @@
 
 #include "../../include/Collision/Collider.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Render/Logging.h"
 #include "../../include/Brakeza3D.h"
 
@@ -24,8 +24,8 @@ Collider::Collider()
     ccdMotionThreshold(0.0),
     ccdSweptSphereRadius(0.0),
     kinematicCapsuleSize(
-        EngineSetup::get()->PLAYER_CAPSULE_RADIUS,
-        EngineSetup::get()->PLAYER_CAPSULE_HEIGHT
+        BrakezaSetup::get()->PLAYER_CAPSULE_RADIUS,
+        BrakezaSetup::get()->PLAYER_CAPSULE_HEIGHT
     ),
     collisionShape(CollisionShape::SIMPLE_SHAPE)
 {
@@ -132,7 +132,7 @@ void Collider::makeSimpleGhostBody(
     ghostObject->setCollisionShape(convexHullShape);
     ghostObject->setWorldTransform(transformation);
     ghostObject->setUserPointer(this);
-    ghostObject->setUserIndex(EngineSetup::CollisionSource::OBJECT_COLLIDER);
+    ghostObject->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
     ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 
@@ -242,8 +242,8 @@ void Collider::setupKinematicCollider()
         kinematicCapsuleSize.x,
         kinematicCapsuleSize.y,
         Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-        EngineSetup::collisionGroups::AllFilter,
-        EngineSetup::collisionGroups::AllFilter
+        BrakezaSetup::collisionGroups::AllFilter,
+        BrakezaSetup::collisionGroups::AllFilter
     );
 }
 
@@ -259,8 +259,8 @@ void Collider::setupRigidBodyCollider(CollisionShape shapeMode)
     makeSimpleRigidBody(
         mass,
         Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-        EngineSetup::collisionGroups::AllFilter,
-        EngineSetup::collisionGroups::AllFilter
+        BrakezaSetup::collisionGroups::AllFilter,
+        BrakezaSetup::collisionGroups::AllFilter
     );
 }
 

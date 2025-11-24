@@ -10,6 +10,8 @@
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include <assimp/postprocess.h>
+
+#include "../../include/GUI/Objects/Mesh3DGUI.h"
 #include "../../include/Persistence/JSONSerializerRegistry.h"
 
 Mesh3D::Mesh3D()
@@ -32,10 +34,10 @@ void Mesh3D::onUpdate()
         render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
     }
 
-    if (EngineSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (EngineSetup::get()->ENABLE_LIGHTS) {
+    if (BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
+        if (BrakezaSetup::get()->ENABLE_LIGHTS) {
             render->getShaderOGLRenderDeferred()->renderMesh(this, false, window->getGBuffer().FBO);
-            if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
+            if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
                 shadowMappingPass();
             }
         } else {
@@ -43,32 +45,32 @@ void Mesh3D::onUpdate()
         }
     }
 
-    if (EngineSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
+    if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
         render->getShaderOGLWireframe()->renderMesh(this, false, sceneFramebuffer);
     }
 
-    if (EngineSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
+    if (BrakezaSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
         render->getShaderOGLPoints()->renderMesh(this, false, sceneFramebuffer);
     }
 
-    if (EngineSetup::get()->TRIANGLE_MODE_SHADING && isRender()) {
+    if (BrakezaSetup::get()->TRIANGLE_MODE_SHADING && isRender()) {
         render->getShaderOGLShading()->renderMesh(this, false, sceneFramebuffer);
     }
 
-    if (EngineSetup::get()->DRAW_MESH3D_AABB && isRender()) {
+    if (BrakezaSetup::get()->DRAW_MESH3D_AABB && isRender()) {
         updateBoundingBox();
         Drawable::drawAABB(&aabb, Color::white());
     }
 
-    if (EngineSetup::get()->DRAW_MESH3D_OCTREE && this->octree != nullptr) {
+    if (BrakezaSetup::get()->DRAW_MESH3D_OCTREE && this->octree != nullptr) {
         Drawable::drawOctree(octree);
     }
 
-    if (EngineSetup::get()->DRAW_MESH3D_GRID && this->grid != nullptr) {
+    if (BrakezaSetup::get()->DRAW_MESH3D_GRID && this->grid != nullptr) {
         Drawable::drawGrid3D(grid);
     }
 
-    if (EngineSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
+    if (BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
         render->getShaderOGLColor()->renderMesh(
             this,
             false,
@@ -147,7 +149,7 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
                 p = p.substr(2, p.size() - 2);
             }
 
-            std::string FullPath = EngineSetup::get()->TEXTURES_FOLDER + base_filename;
+            std::string FullPath = BrakezaSetup::get()->TEXTURES_FOLDER + base_filename;
 
             Logging::Message("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), getLabel().c_str());
 
@@ -313,7 +315,7 @@ AABB3D &Mesh3D::getAABB()
 
 const char *Mesh3D::getTypeObject()
 {
-    return "Mesh3D";
+    return SceneObjectTypes::MESH_3D;
 }
 
 const char *Mesh3D::getTypeIcon()
@@ -324,81 +326,7 @@ const char *Mesh3D::getTypeIcon()
 void Mesh3D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    std::string title = "Mesh3D (File: " + sourceFile + ")";
-
-    if (ImGui::CollapsingHeader("Mesh3D")) {
-        if (ImGui::TreeNode("Mesh information")) {
-            auto fileModel = std::string("- File model: ") + sourceFile;
-            ImGui::Text(fileModel.c_str());
-            ImGui::Text("- Num Meshes: %d", meshes.size());
-            int cont = 1;
-            for (auto &m: meshes) {
-                auto meshTitle = "Mesh " + std::to_string(cont);
-                if (ImGui::TreeNode(meshTitle.c_str())) {
-                    ImGui::Text("Num Vertices: %d", m.vertices.size());
-                    ImGui::Text("Num UVs: %d", m.uvs.size());
-                    ImGui::Text("Num Normals: %d", m.normals.size());
-                    ImGui::TreePop();
-                }
-                cont++;
-            }
-            ImGui::TreePop();
-        }
-        ImGui::Separator();
-        if (ImGui::TreeNode("Grid3D")) {
-            if (grid != nullptr) {
-                if (ImGui::Button("Fill from mesh geometry")) {
-                    fillGrid3DFromGeometry();
-                }
-                grid->drawImGuiProperties();
-                ImGui::SameLine();
-                if (ImGui::Button("Delete Grid3D")) {
-                    delete grid;
-                    grid = nullptr;
-                }
-            } else {
-                static int sizeX = 1;
-                static int sizeY = 1;
-                static int sizeZ = 1;
-                ImGui::SliderInt("Size X", &sizeX, 1, 10);
-                ImGui::SliderInt("Size Y", &sizeY, 1, 10);
-                ImGui::SliderInt("Size Z", &sizeZ, 1, 10);
-
-                if (ImGui::Button("Create Grid3D")) {
-                    buildGrid3D(sizeX, sizeY, sizeZ);
-                }
-            }
-
-            ImGui::TreePop();
-        }
-        ImGui::Separator();
-        if (ImGui::TreeNode("Octree")) {
-            if (octree == nullptr) {
-                static int maxDepth = 1;
-                ImGui::SliderInt("Depth", &maxDepth, 1, 4);
-                if (ImGui::Button("Create octree")) {
-                    buildOctree(maxDepth);
-                }
-            }
-
-            if (octree != nullptr) {
-                static int maxDepth = 1;
-                ImGui::SliderInt("Depth", &maxDepth, 1, 4);
-                if (ImGui::Button("Update octree")) {
-                    buildOctree(maxDepth);
-                }
-                ImGui::SameLine();
-                if (ImGui::Button("Delete Octree")) {
-                    delete octree;
-                    octree = nullptr;
-                }
-            }
-
-            ImGui::TreePop();
-        }
-        ImGui::Separator();
-        ImGui::Checkbox(std::string("Enable lights").c_str(), &enableLights);
-    }
+    Mesh3DGUI::drawImGuiProperties(this);
 }
 
 void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
@@ -421,7 +349,7 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
     ghostObject->setWorldTransform(Tools::GLMMatrixToBulletTransform(getModelMatrix()));
     ghostObject->setCollisionShape(convexHullShape);
     ghostObject->setUserPointer(this);
-    ghostObject->setUserIndex(EngineSetup::CollisionSource::OBJECT_COLLIDER);
+    ghostObject->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
 
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 }
@@ -475,15 +403,15 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
             makeRigidBodyFromTriangleMesh(
                 mass,
                 Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                EngineSetup::collisionGroups::AllFilter,
-                EngineSetup::collisionGroups::AllFilter
+                BrakezaSetup::collisionGroups::AllFilter,
+                BrakezaSetup::collisionGroups::AllFilter
             );
         } else {
             makeRigidBodyFromTriangleMeshFromConvexHull(
                 mass,
                 Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                EngineSetup::collisionGroups::AllFilter,
-                EngineSetup::collisionGroups::AllFilter
+                BrakezaSetup::collisionGroups::AllFilter,
+                BrakezaSetup::collisionGroups::AllFilter
             );
         }
     }
@@ -579,7 +507,7 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
     body->activate(true);
     body->setContactProcessingThreshold(BT_LARGE_FLOAT);
     body->setUserPointer(this);
-    body->setUserIndex(EngineSetup::CollisionSource::OBJECT_COLLIDER);
+    body->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
     body->setRestitution(restitution);
     body->setActivationState(ACTIVE_TAG);
     body->setLinearFactor(linearFactor.toBullet());
@@ -615,7 +543,7 @@ void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *
     body->activate(true);
     body->setContactProcessingThreshold(BT_LARGE_FLOAT);
     body->setUserPointer(this);
-    body->setUserIndex(EngineSetup::CollisionSource::OBJECT_COLLIDER);
+    body->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
     body->setAngularFactor(angularFactor.toBullet());
 
     if (mass <= 0) {

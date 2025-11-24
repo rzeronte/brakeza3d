@@ -9,7 +9,7 @@
 #include <SDL_stdinc.h>
 #include <vector>
 #include "Vertex3D.h"
-#include "../EngineSetup.h"
+#include "../BrakezaSetup.h"
 #include <glm/vec4.hpp>
 
 struct OCParticle {

@@ -1,6 +1,6 @@
 #include "../../include/Render/PhysicsDebugDraw.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 PhysicsDebugDraw::PhysicsDebugDraw() = default;
 

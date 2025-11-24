@@ -3,7 +3,7 @@
 //
 
 #include "../../include/Persistence/Mesh3DSerializer.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Persistence/JSONSerializerRegistry.h"
@@ -42,7 +42,7 @@ cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
     return root;
 }
 
-void Mesh3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
+void Mesh3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
     std::cout << "[Mesh3DSerializer ApplyJsonToObject] " << o->getTypeObject() << std::endl;
 
@@ -50,7 +50,6 @@ void Mesh3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 
     Object3DSerializer::ApplyJsonToObject(json, o);
 
-    mesh->setBelongToScene(true);
     mesh->setEnableLights(cJSON_GetObjectItemCaseSensitive(json, "enableLights")->valueint);
     mesh->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(json, "model")->valuestring);
 
@@ -130,13 +129,8 @@ Object3D* Mesh3DSerializer::ObjectByJson(cJSON *json)
 
 void Mesh3DSerializer::LoadFileIntoScene(const std::string& model)
 {
-    if (!Tools::fileExists(model.c_str())) {
-        Logging::Message("[SceneLoader] File model '%s' not found!!", model.c_str());
-        return;
-    }
-
     auto *o = new Mesh3D();
-    o->setBelongToScene(true);
+
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
     o->AssimpLoadGeometryFromFile(model);
 

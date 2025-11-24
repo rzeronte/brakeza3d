@@ -3,15 +3,15 @@
 //
 
 #include "../include/OpenGL/ShaderOGLLine3D.h"
-#include "../../include/EngineSetup.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/BrakezaSetup.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLLine3D::ShaderOGLLine3D()
 :
     VertexArrayID(0),
     ShaderBaseOpenGL(
-        EngineSetup::get()->SHADERS_FOLDER + "Line3D.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Line3D.fs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Line3D.vs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Line3D.fs",
         false
     )
 {
