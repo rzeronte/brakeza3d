@@ -6,8 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    #set(CMAKE_CXX_FLAGS "-O3 -w")
-    set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
+    set(CMAKE_CXX_FLAGS "-O3 -w")
 endif()
 
 # SDL
