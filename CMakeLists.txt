@@ -239,6 +239,10 @@ add_executable(Brakeza3D
         src/Persistence/JSONSerializerRegistry.cpp
         src/Persistence/Mesh3DSerializer.cpp
         include/Persistence/Mesh3DSerializer.h
+        src/Persistence/Mesh3DAnimationSerializer.cpp
+        include/Persistence/Mesh3DAnimationSerializer.h
+        src/Persistence/LightPointSerializer.cpp
+        include/Persistence/LightPointSerializer.h
 )
 
 target_link_libraries(Brakeza3D
