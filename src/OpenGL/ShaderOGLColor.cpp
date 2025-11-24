@@ -4,13 +4,13 @@
 //
 
 #include "../../include/OpenGL/ShaderOGLColor.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLColor::ShaderOGLColor()
 :
     ShaderBaseOpenGL(
-        EngineSetup::get()->SHADERS_FOLDER + "Color.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Color.fs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Color.vs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Color.fs",
         false
     )
 {

@@ -3,13 +3,13 @@
 //
 
 #include "../../include/OpenGL/ShaderOGLShading.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLShading::ShaderOGLShading()
 :
     ShaderBaseOpenGL(
-        EngineSetup::get()->SHADERS_FOLDER + "Shading.vs",
-        EngineSetup::get()->SHADERS_FOLDER + "Shading.fs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Shading.vs",
+        BrakezaSetup::get()->SHADERS_FOLDER + "Shading.fs",
         false
     )
 {

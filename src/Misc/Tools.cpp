@@ -10,7 +10,7 @@
 #include <fstream>
 #include "../../include/Misc/Tools.h"
 #include "../../include/Render/Logging.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/2D/Image2DAnimation.h"
 #include "../../include/Objects/Mesh3DAnimation.h"
@@ -44,8 +44,8 @@ void Tools::SurfacePutPixel(const SDL_Surface *surface, int x, int y, Uint32 pix
 
 bool Tools::isPixelInWindow(int &x, int &y)
 {
-    if (x <= 0 || x >= EngineSetup::get()->screenWidth) return false;
-    if (y <= 0 || y >= EngineSetup::get()->screenHeight) return false;
+    if (x <= 0 || x >= BrakezaSetup::get()->screenWidth) return false;
+    if (y <= 0 || y >= BrakezaSetup::get()->screenHeight) return false;
 
     return true;
 }

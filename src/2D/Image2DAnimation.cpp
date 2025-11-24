@@ -3,8 +3,9 @@
 //
 
 #include "../../include/2D/Image2DAnimation.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/GUI/Objects/Image2DAnimationGUI.h"
 
 Image2DAnimation::Image2DAnimation(int x, int y, bool removeWhenEnds, TextureAnimated *animation)
 :
@@ -82,7 +83,7 @@ void Image2DAnimation::updatePosition(int x, int y)
 
 const char *Image2DAnimation::getTypeObject()
 {
-    return "Image2DAnimation";
+    return SceneObjectTypes::IMAGE_2D_ANIMATION;
 }
 
 const char *Image2DAnimation::getTypeIcon()
@@ -93,69 +94,7 @@ const char *Image2DAnimation::getTypeIcon()
 void Image2DAnimation::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    if (ImGui::CollapsingHeader("Image2DAnimation")) {
-
-        const int range_min_int = 1;
-        const int range_max_int = 1280;
-
-        if (ImGui::TreeNode("Screen Position")) {
-            ImGui::DragScalar("Offset X", ImGuiDataType_S32, &x,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
-            ImGui::DragScalar("Offset Y", ImGuiDataType_S32, &y,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
-
-            ImGui::TreePop();
-        }
-
-        animation->drawImGuiProperties();
-    }
-}
-
-cJSON *Image2DAnimation::getJSON(Image2DAnimation* object)
-{
-    auto root = Object3D::ReadJSONFromObject(object);
-
-    cJSON_AddNumberToObject(root, "x", x);
-    cJSON_AddNumberToObject(root, "y", y);
-
-    cJSON *animationJSON = cJSON_CreateObject();
-    cJSON_AddStringToObject(animationJSON, "sprite", animation->getBaseFilename().c_str());
-    cJSON_AddNumberToObject(animationJSON, "width", (int) animation->currentSpriteWidth);
-    cJSON_AddNumberToObject(animationJSON, "height", (int) animation->currentspriteHeight);
-    cJSON_AddNumberToObject(animationJSON, "numberFrames", (int) animation->numberFramesToLoad);
-    cJSON_AddNumberToObject(animationJSON, "fps", (int) animation->fps);
-
-    cJSON_AddItemToObject(root, "animation", animationJSON);
-
-    return root;
-}
-
-void Image2DAnimation::createFromJSON(cJSON *object)
-{
-    auto animationJSON = cJSON_GetObjectItemCaseSensitive(object, "animation");
-
-    auto spriteFile = cJSON_GetObjectItemCaseSensitive(animationJSON, "sprite")->valuestring;
-    auto width = cJSON_GetObjectItemCaseSensitive(animationJSON, "width")->valueint;
-    auto height = cJSON_GetObjectItemCaseSensitive(animationJSON, "height")->valueint;
-    auto numberFrames = cJSON_GetObjectItemCaseSensitive(animationJSON, "numberFrames")->valueint;
-    auto fps = cJSON_GetObjectItemCaseSensitive(animationJSON, "fps")->valueint;
-
-    auto x = cJSON_GetObjectItemCaseSensitive(object, "x")->valueint;
-    auto y = cJSON_GetObjectItemCaseSensitive(object, "y")->valueint;
-
-    auto o = new Image2DAnimation(
-        x,
-        y,
-        false,
-        new TextureAnimated(spriteFile,width,height,numberFrames,fps)
-    );
-    setPropertiesFromJSON(object, o);
-
-    Brakeza3D::get()->addObject3D(o, cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring);
-}
-
-void Image2DAnimation::setPropertiesFromJSON(cJSON *object, Image2DAnimation *o)
-{
-    o->setBelongToScene(true);
-    Object3D::setPropertiesFromJSON(object, o);
+    Image2DAnimationGUI::drawImGuiProperties(this);
 }
 
 Image2DAnimation *Image2DAnimation::create(int x, int y, const std::string &imageFile, int w, int h, int frames, int fps)
@@ -170,4 +109,14 @@ Image2DAnimation *Image2DAnimation::create(int x, int y, const std::string &imag
     o->setBelongToScene(true);
 
     return o;
+}
+
+int Image2DAnimation::getX() const
+{
+    return x;
+}
+
+int Image2DAnimation::getY() const
+{
+    return y;
 }

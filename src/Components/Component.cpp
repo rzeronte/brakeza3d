@@ -4,7 +4,7 @@ Component::Component()
 :
     id(-1),
     enabled(false),
-    SETUP(EngineSetup::get()
+    SETUP(BrakezaSetup::get()
 )
 {
 }

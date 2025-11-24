@@ -15,7 +15,7 @@
 
 ComponentWindow::ComponentWindow()
 :
-    applicationIcon(IMG_Load(std::string(EngineSetup::get()->ICONS_FOLDER + EngineSetup::get()->iconApplication).c_str()))
+    applicationIcon(IMG_Load(std::string(BrakezaSetup::get()->ICONS_FOLDER + BrakezaSetup::get()->iconApplication).c_str()))
 {
     initWindow();
     initFontsTTF();
@@ -322,7 +322,7 @@ void ComponentWindow::resetFramebuffer()
 
 void ComponentWindow::RenderLayersToMain()
 {
-   if (EngineSetup::get()->ENABLE_IMGUI) {
+   if (BrakezaSetup::get()->ENABLE_IMGUI) {
        ImGuiOnUpdate();
    }
 
@@ -352,7 +352,7 @@ void ComponentWindow::ClearOGLFrameBuffers() const
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    if (EngineSetup::get()->ENABLE_SHADOW_MAPPING) {
+    if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
         ComponentsManager::get()->getComponentRender()->getShaderOGLShadowPass()->clearDirectionalLightDepthTexture();
     }
 
@@ -391,18 +391,18 @@ GLuint ComponentWindow::getPostProcessingFramebuffer() const {
 void ComponentWindow::saveImGuiCurrentLayout() const
 {
     switch(ImGuiConfigChanged) {
-        case EngineSetup::ImGUIConfigs::DEFAULT: {
-            ImGui::SaveIniSettingsToDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini").c_str());
+        case BrakezaSetup::ImGUIConfigs::DEFAULT: {
+            ImGui::SaveIniSettingsToDisk(std::string(BrakezaSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini").c_str());
             Logging::Message("Saving to ImGUIDefault.ini");
             break;
         }
-        case EngineSetup::ImGUIConfigs::CODING: {
-            ImGui::SaveIniSettingsToDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiCoding.ini").c_str());
+        case BrakezaSetup::ImGUIConfigs::CODING: {
+            ImGui::SaveIniSettingsToDisk(std::string(BrakezaSetup::get()->CONFIG_FOLDER + "ImGuiCoding.ini").c_str());
             Logging::Message("Saving to ImGuiCoding.ini");
             break;
         }
-        case EngineSetup::ImGUIConfigs::DESIGN: {
-            ImGui::SaveIniSettingsToDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDesign.ini").c_str());
+        case BrakezaSetup::ImGUIConfigs::DESIGN: {
+            ImGui::SaveIniSettingsToDisk(std::string(BrakezaSetup::get()->CONFIG_FOLDER + "ImGuiDesign.ini").c_str());
             Logging::Message("Saving to ImGuiDesign.ini");
             break;
         }
@@ -503,29 +503,29 @@ void ComponentWindow::ImGuiInitialize(const std::string& configFile) {
     ImGui::ClearIniSettings();
     ImGui::LoadIniSettingsFromDisk(std::string(configFile).c_str());
     ImGui::GetStyle().Alpha = 1.0f;
-    ImGuiConfig = EngineSetup::ImGUIConfigs::DEFAULT;
+    ImGuiConfig = BrakezaSetup::ImGUIConfigs::DEFAULT;
 }
 
 void ComponentWindow::ImGuiOnUpdate()
 {
     if (ImGuiConfig != ImGuiConfigChanged) {
         switch(ImGuiConfigChanged) {
-            case EngineSetup::ImGUIConfigs::DEFAULT: {
+            case BrakezaSetup::ImGUIConfigs::DEFAULT: {
                 ImGui::ClearIniSettings();
                 Logging::Message("Loading layout ImGUIDefault.ini");
-                ImGui::LoadIniSettingsFromDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini").c_str());
+                ImGui::LoadIniSettingsFromDisk(std::string(BrakezaSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini").c_str());
                 break;
             }
-            case EngineSetup::ImGUIConfigs::CODING: {
+            case BrakezaSetup::ImGUIConfigs::CODING: {
                 ImGui::ClearIniSettings();
                 Logging::Message("Loading layout ImGuiCoding.ini");
-                ImGui::LoadIniSettingsFromDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiCoding.ini").c_str());
+                ImGui::LoadIniSettingsFromDisk(std::string(BrakezaSetup::get()->CONFIG_FOLDER + "ImGuiCoding.ini").c_str());
                 break;
             }
-            case EngineSetup::ImGUIConfigs::DESIGN: {
+            case BrakezaSetup::ImGUIConfigs::DESIGN: {
                 ImGui::ClearIniSettings();
                 Logging::Message("Loading layout ImGuiDesign.ini");
-                ImGui::LoadIniSettingsFromDisk(std::string(EngineSetup::get()->CONFIG_FOLDER + "ImGuiDesign.ini").c_str());
+                ImGui::LoadIniSettingsFromDisk(std::string(BrakezaSetup::get()->CONFIG_FOLDER + "ImGuiDesign.ini").c_str());
                 break;
             }
         }
@@ -560,7 +560,7 @@ void ComponentWindow::setWindowTitle(const char *title) const
 
 void ComponentWindow::toggleFullScreen() const
 {
-    if (EngineSetup::get()->FULLSCREEN) {
+    if (BrakezaSetup::get()->FULLSCREEN) {
         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
     } else {
         SDL_SetWindowFullscreen(window, 0);
@@ -730,12 +730,12 @@ int ComponentWindow::getObjectIDByPickingColorFramebuffer(const int x, const int
     return Color::colorToId(c);
 }
 
-EngineSetup::ImGUIConfigs ComponentWindow::getImGuiConfig() const
+BrakezaSetup::ImGUIConfigs ComponentWindow::getImGuiConfig() const
 {
     return ImGuiConfig;
 }
 
-void ComponentWindow::setImGuiConfig(EngineSetup::ImGUIConfigs c)
+void ComponentWindow::setImGuiConfig(BrakezaSetup::ImGUIConfigs c)
 {
     ImGuiConfigChanged = c;
 }

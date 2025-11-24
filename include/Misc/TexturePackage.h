@@ -3,7 +3,7 @@
 
 
 #include <vector>
-#include "Image.h"
+#include "../Render/Image.h"
 
 struct TexturePackageItem {
     TexturePackageItem(Image *texture, std::string label);

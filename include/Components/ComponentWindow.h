@@ -10,7 +10,7 @@
 #include <SDL2/SDL_ttf.h>
 #include "Component.h"
 #include "ImGuizmo.h"
-#include "../Objects/OpenGLShaderTypes.h"
+#include "../OpenGL/OGLShaderTypes.h"
 
 
 class ComponentWindow : public Component
@@ -35,8 +35,8 @@ class ComponentWindow : public Component
 
     ImGuizmo::OPERATION ImGuiOperationGuizmo = ImGuizmo::TRANSLATE;
 
-    EngineSetup::ImGUIConfigs ImGuiConfig = EngineSetup::ImGUIConfigs::DEFAULT;
-    EngineSetup::ImGUIConfigs ImGuiConfigChanged = EngineSetup::ImGUIConfigs::DEFAULT;
+    BrakezaSetup::ImGUIConfigs ImGuiConfig = BrakezaSetup::ImGUIConfigs::DEFAULT;
+    BrakezaSetup::ImGUIConfigs ImGuiConfigChanged = BrakezaSetup::ImGUIConfigs::DEFAULT;
 
     SDL_GLContext context = nullptr;
     SDL_Surface *applicationIcon;
@@ -82,12 +82,12 @@ public:
     void setGuiZmoOperation(ImGuizmo::OPERATION operation);
     [[nodiscard]] ImGuizmo::OPERATION getGuiZmoOperation() const;
     [[nodiscard]] int getObjectIDByPickingColorFramebuffer(int x, int y) const;
-    [[nodiscard]] EngineSetup::ImGUIConfigs getImGuiConfig() const;
+    [[nodiscard]] BrakezaSetup::ImGUIConfigs getImGuiConfig() const;
     void createPickingColorBuffer();
     void createGBuffer();
     void resizeGBuffer();
     void updateWindowSize();
-    void setImGuiConfig(EngineSetup::ImGUIConfigs c);
+    void setImGuiConfig(BrakezaSetup::ImGUIConfigs c);
     static void initOpenGL();
 };
 

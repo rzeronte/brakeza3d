@@ -2,7 +2,7 @@
 #include "../../include/2D/TextureAnimatedDirectional.h"
 
 #include <utility>
-#include "../../include/EngineSetup.h"
+#include "../../include/BrakezaSetup.h"
 
 TextureAnimatedDirectional::TextureAnimatedDirectional() {
 }

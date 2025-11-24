@@ -3,12 +3,12 @@
 //
 
 #include "../../include/OpenGL/ShaderOGLBonesTransforms.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLBonesTransforms::ShaderOGLBonesTransforms()
 :
     VertexArrayID(0),
-    ShaderBaseOpenGL(EngineSetup::get()->SHADERS_FOLDER + "BonesTransforms.vs",true)
+    ShaderBaseOpenGL(BrakezaSetup::get()->SHADERS_FOLDER + "BonesTransforms.vs",true)
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);

@@ -3,9 +3,9 @@
 //
 
 #include "../../include/2D/Image2D.h"
-#include "../../include/ComponentsManager.h"
-#include "../../include/Render/Logging.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
+#include "../../include/GUI/Objects/Image2DGUI.h"
 
 Image2D::Image2D(int x, int y, Image *image)
 :
@@ -44,60 +44,18 @@ void Image2D::updatePosition(int x, int y)
 
 const char *Image2D::getTypeObject()
 {
-    return "Image2D";
+    return SceneObjectTypes::IMAGE_2D;
 }
 
-const char *Image2D::getTypeIcon() {
+const char *Image2D::getTypeIcon()
+{
     return "Image2DIcon";
 }
 
 void Image2D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-
-    if (ImGui::CollapsingHeader("Image2D")) {
-
-        const int range_min_int = 1;
-        const int range_max_int = 1280;
-
-        if (ImGui::TreeNode("Screen Position")) {
-
-            if (ImGui::DragScalar("Offset X", ImGuiDataType_S32, &x,1.f, &range_min_int, &range_max_int, "%d", 1.0f)) {
-                updatePosition(x, y);
-            }
-
-            if (ImGui::DragScalar("Offset Y", ImGuiDataType_S32, &y,1.f, &range_min_int, &range_max_int, "%d", 1.0f)) {
-                updatePosition(x, y);
-            }
-
-            ImGui::TreePop();
-        }
-
-        if (ImGui::TreeNode("Image")) {
-            if (image->isLoaded()) {
-                ImGui::Image((ImTextureID) image->getOGLTextureID(),ImVec2(32, 32));
-            } else {
-                ImGui::Text("No image selected. Drag a texture here!");
-            }
-
-            if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
-                    Logging::Message("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
-                    IM_ASSERT(payload->DataSize == sizeof(int));
-                    auto selection = (char*) payload->Data;
-                    auto fullPath = EngineSetup::get()->IMAGES_FOLDER + selection;
-                    if (image == nullptr) {
-                        image = new Image(fullPath);
-                    } else {
-                        image->setImage(fullPath);
-                    }
-                    Logging::Message("File %s", selection);
-                }
-                ImGui::EndDragDropTarget();
-            }
-            ImGui::TreePop();
-        }
-    }
+    Image2DGUI::drawImGuiProperties(this);
 }
 
 cJSON *Image2D::getJSON(Image2D *object)
@@ -110,27 +68,6 @@ cJSON *Image2D::getJSON(Image2D *object)
     cJSON_AddStringToObject(root, "image", image->getFileName().c_str());
 
     return root;
-}
-
-void Image2D::createFromJSON(cJSON *object)
-{
-    auto name = cJSON_GetObjectItemCaseSensitive(object, "name")->valuestring;
-    auto x = cJSON_GetObjectItemCaseSensitive(object, "x")->valueint;
-    auto y =  cJSON_GetObjectItemCaseSensitive(object, "y")->valueint;
-    auto image = cJSON_GetObjectItemCaseSensitive(object, "image")->valuestring;
-
-    auto o = new Image2D(x, y,new Image(image));
-
-    Image2D::setPropertiesFromJSON(object, o);
-
-    Brakeza3D::get()->addObject3D(o, name);
-}
-
-void Image2D::setPropertiesFromJSON(cJSON *object, Image2D *o)
-{
-    o->setBelongToScene(true);
-
-    Object3D::setPropertiesFromJSON(object, o);
 }
 
 Image2D *Image2D::create(int x, int y, const std::string& imageFile)

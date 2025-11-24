@@ -69,7 +69,7 @@ void ComponentCollisions::initBulletSystem()
     debugDraw = new PhysicsDebugDraw();
 
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-    dynamicsWorld->setGravity(EngineSetup::get()->gravity.toBullet());
+    dynamicsWorld->setGravity(BrakezaSetup::get()->gravity.toBullet());
 
     dynamicsWorld->setDebugDrawer(debugDraw);
     setEnableDebugMode(false);
@@ -136,7 +136,7 @@ void ComponentCollisions::stepSimulation(float deltaTime)
         updatePhysicObjects();
     }
 
-    if (EngineSetup::get()->BULLET_DEBUG_MODE) {
+    if (BrakezaSetup::get()->BULLET_DEBUG_MODE) {
         dynamicsWorld->debugDrawWorld();
         drawDebugCache();
     }
@@ -174,13 +174,13 @@ void ComponentCollisions::demoProjectile(int type)
     }
     Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
-    Vertex3D direction = camera->getRotation().getTranspose() * EngineSetup::get()->forward;
+    Vertex3D direction = camera->getRotation().getTranspose() * BrakezaSetup::get()->forward;
 
     auto *projectile = new Projectile(direction);
     projectile->setCollisionMode(BODY);
     projectile->setCollisionShape(TRIANGLE_MESH_SHAPE);
     projectile->setParent(camera);
-    projectile->AssimpLoadGeometryFromFile(std::string(EngineSetup::get()->MODELS_FOLDER + fileName));
+    projectile->AssimpLoadGeometryFromFile(std::string(BrakezaSetup::get()->MODELS_FOLDER + fileName));
     projectile->setRotation(M3::getMatrixRotationForEulerAngles(
         static_cast<float>(Tools::random(0, 180)),
         static_cast<float>(Tools::random(0, 180)),
@@ -189,13 +189,13 @@ void ComponentCollisions::demoProjectile(int type)
     projectile->setPosition( camera->getPosition() + direction.getScaled(1));
     projectile->setEnabled(true);
     projectile->makeProjectileRigidBody(
-        EngineSetup::get()->PROJECTILE_DEMO_MASS,
+        BrakezaSetup::get()->PROJECTILE_DEMO_MASS,
         direction,
-        EngineSetup::get()->PROJECTILE_DEMO_IMPULSE,
-        EngineSetup::get()->PROJECTILE_DEMO_ACCURACY,
+        BrakezaSetup::get()->PROJECTILE_DEMO_IMPULSE,
+        BrakezaSetup::get()->PROJECTILE_DEMO_ACCURACY,
         ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
-        EngineSetup::collisionGroups::AllFilter,
-        EngineSetup::collisionGroups::AllFilter
+        BrakezaSetup::collisionGroups::AllFilter,
+        BrakezaSetup::collisionGroups::AllFilter
     );
 
     Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("demoProjectile"));
@@ -225,8 +225,8 @@ bool ComponentCollisions::isRayCollisionWith(Vertex3D from, Vertex3D to, Object3
         to.toBullet()
     );
 
-    rayCallback.m_collisionFilterGroup = EngineSetup::collisionGroups::AllFilter;
-    rayCallback.m_collisionFilterMask = EngineSetup::collisionGroups::AllFilter;
+    rayCallback.m_collisionFilterGroup = BrakezaSetup::collisionGroups::AllFilter;
+    rayCallback.m_collisionFilterMask = BrakezaSetup::collisionGroups::AllFilter;
     rayCallback.m_closestHitFraction = 1.0;
 
     dynamicsWorld->rayTest(from.toBullet(),to.toBullet(),rayCallback);
@@ -263,7 +263,7 @@ void ComponentCollisions::drawDebugCache()
 void ComponentCollisions::setEnabled(bool enabled)
 {
     Component::setEnabled(enabled);
-    EngineSetup::get()->ENABLE_BULLET_STEP_SIMULATION = enabled;
+    BrakezaSetup::get()->ENABLE_BULLET_STEP_SIMULATION = enabled;
 }
 
 void ComponentCollisions::setEnableDebugMode(bool value)

@@ -1,7 +1,7 @@
 
 #include "../../include/Components/ComponentCamera.h"
 #include "../../include/Render/Logging.h"
-#include "../../include/ComponentsManager.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ComponentCamera::ComponentCamera()
 :

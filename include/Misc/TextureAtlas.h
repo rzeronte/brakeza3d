@@ -6,7 +6,7 @@
 #define BRAKEDA3D_TEXTUREATLAS_H
 
 #include <vector>
-#include "Image.h"
+#include "../Render/Image.h"
 
 struct TextureAtlasImageInfo {
     std::string name;
