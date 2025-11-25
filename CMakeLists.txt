@@ -6,8 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    #set(CMAKE_CXX_FLAGS "-O3 -w")
-    set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
+    set(CMAKE_CXX_FLAGS "-O3 -w")
 endif()
 
 # SDL
@@ -177,7 +176,7 @@ add_executable(Brakeza3D
         src/3D/Cube3D.cpp include/3D/Cube3D.h
         src/3D/Decal.cpp include/3D/Decal.h
         src/3D/Image3D.cpp include/3D/Image3D.h
-        src/GUI/Image3DAnimation.cpp include/3D/Image3DAnimation.h
+        src/3D/Image3DAnimation.cpp include/3D/Image3DAnimation.h
         src/3D/Image3DAnimation8Directions.cpp include/3D/Image3DAnimation8Directions.h
         src/3D/LightPoint.cpp include/3D/LightPoint.h
         src/3D/LightSpot.cpp include/3D/LightSpot.h

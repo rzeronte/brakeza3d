@@ -5,7 +5,6 @@
 #ifndef BRAKEZA3D_IMAGE3DDRAWERGUI_H
 #define BRAKEZA3D_IMAGE3DDRAWERGUI_H
 
-#include "../../3D/Image3D.h"
 #include "../../3D/Image3DAnimation.h"
 
 class Image3DAnimationGUI
@@ -13,7 +12,6 @@ class Image3DAnimationGUI
 public:
     static void drawImGuiProperties(Image3DAnimation *o)
     {
-
         if (ImGui::CollapsingHeader("Billboard Animation")) {
             if (ImGui::TreeNode("Size")) {
                 const float range_min = 0;
@@ -62,7 +60,7 @@ public:
             }
             ImGui::Separator();
 
-            const char* items[o->animations.size()];
+            const char* items[(int)o->animations.size()];
             for (unsigned int i = 0; i < o->animations.size(); i++) {
                 items[i] = o->animations[i]->getBaseFilename().c_str();
             }
