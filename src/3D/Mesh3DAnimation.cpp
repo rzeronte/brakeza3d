@@ -1,10 +1,9 @@
+#include <assimp/postprocess.h>
 #include "../../include/3D/Mesh3DAnimation.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Render/Drawable.h"
-#include <assimp/postprocess.h>
-
 #include "../../include/GUI/Objects/Mesh3DAnimationGUI.h"
 
 Mesh3DAnimation::Mesh3DAnimation()
@@ -16,7 +15,7 @@ void Mesh3DAnimation::onUpdate()
 {
     Object3D::onUpdate();
 
-    if (isRemoved() || scene == nullptr) return;
+    if (!isEnabled() || isRemoved()) return;
 
     UpdateFrameTransformations();
 
@@ -569,7 +568,7 @@ const char *Mesh3DAnimation::getTypeObject()
 
 const char *Mesh3DAnimation::getTypeIcon()
 {
-    return IncosByObject::MESH_3D_ANIMATION;
+    return IconsByObject::MESH_3D_ANIMATION;
 }
 
 void Mesh3DAnimation::drawImGuiProperties()

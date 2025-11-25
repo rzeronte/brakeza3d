@@ -52,7 +52,7 @@ float LightSpot::getOuterCutOff() const
 
 const char *LightSpot::getTypeIcon()
 {
-    return IncosByObject::LIGHT_SPOT;;
+    return IconsByObject::LIGHT_SPOT;
 }
 
 void LightSpot::drawImGuiProperties()

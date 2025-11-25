@@ -62,7 +62,8 @@ void Mesh3DAnimationSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o
 {
     std::cout << "[Mesh3DSerializer ApplyJsonToObject] " << o->getTypeObject() << std::endl;
     auto mesh = dynamic_cast<Mesh3DAnimation*>(o);
-    Mesh3DSerializer::ApplyJsonToObject(json, o);
+
+    Object3DSerializer::ApplyJsonToObject(json, o);
 
     // speed
     auto speed = cJSON_GetObjectItemCaseSensitive(json, "animationSpeed")->valuedouble;
@@ -100,11 +101,11 @@ Object3D* Mesh3DAnimationSerializer::ObjectByJson(cJSON *json)
     return o;
 }
 
-void Mesh3DAnimationSerializer::LoadFileIntoScene(const std::string& model)
+void Mesh3DAnimationSerializer::LoadFileIntoScene(const std::string& file)
 {
     auto *o = new Mesh3DAnimation();
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
-    o->AssimpLoadGeometryFromFile(model);
+    o->AssimpLoadAnimation(file);
 
     Brakeza::get()->addObject3D(o, Brakeza::uniqueObjectLabel("Mesh3D"));
 }

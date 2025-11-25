@@ -260,7 +260,7 @@ bool ShaderOGLRenderForward::hasSpotLightsChanged() const
 
 bool ShaderOGLRenderForward::HasPointLightsChanged() const
 {
-    if (getNumPointLights() != lastPointLightsSize) {
+    if (spotLights.size() != lastPointLightsSize) {
         return true;
     }
 
@@ -284,26 +284,16 @@ void ShaderOGLRenderForward::initializeLightBuffers()
         return;
     }
 
-    // Buffer de Point Lights
+    // Buffer de LightPoints
     glGenBuffers(1, &bufferUBOLightPoints);
     glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOLightPoints);
-    glBufferData(
-        GL_UNIFORM_BUFFER,
-        MAX_POINT_LIGHTS * sizeof(PointLightOpenGL),  // Tamaño MÁXIMO
-        nullptr,                                       // Sin datos iniciales
-        GL_DYNAMIC_DRAW                               // Datos que cambian frecuentemente
-    );
+    glBufferData(GL_UNIFORM_BUFFER, MAX_POINT_LIGHTS * sizeof(PointLightOpenGL), nullptr,GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferUBOLightPoints);  // Binding point 0
 
-    // Buffer de Spot Lights
+    // Buffer de LightSpots
     glGenBuffers(1, &bufferUBOSpotLights);
     glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOSpotLights);
-    glBufferData(
-        GL_UNIFORM_BUFFER,
-        MAX_SPOT_LIGHTS * sizeof(SpotLightOpenGL),    // Tamaño MÁXIMO
-        nullptr,                                       // Sin datos iniciales
-        GL_DYNAMIC_DRAW
-    );
+    glBufferData(GL_UNIFORM_BUFFER, MAX_SPOT_LIGHTS * sizeof(SpotLightOpenGL), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, bufferUBOSpotLights);   // Binding point 1
 
     Logging::Message("Light buffers initialized!");

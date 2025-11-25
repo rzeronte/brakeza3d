@@ -52,7 +52,7 @@ static constexpr const char* SceneObjectTypeNames[] = {
     SceneObjectTypes::SWARM
 };
 
-namespace IncosByObject {
+namespace IconsByObject {
     inline constexpr const char* OBJECT_3D = "objectIcon";
     inline constexpr const char* MESH_3D = "meshIcon";
     inline constexpr const char* MESH_3D_ANIMATION = "Mesh3DAnimationIcon";
