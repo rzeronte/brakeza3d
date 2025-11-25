@@ -17,7 +17,7 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
     currentProjectsFolderWidget(BrakezaSetup::get()->PROJECTS_FOLDER),
     currentShadersFolderWidget(BrakezaSetup::get()->CUSTOM_SHADERS_FOLDER)
 {
-    LoadUIIcons();
+    LoadIcons(icons);
     loadImagesFolder();
     currentScriptsFolders = Tools::getFolderFolders(currentScriptsFolderWidget);
     currentScriptsFolderFiles = Tools::getFolderFiles(currentScriptsFolderWidget, "lua");
@@ -30,56 +30,6 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 
     currentShadersFolders = Tools::getFolderFolders(currentShadersFolderWidget);
     currentShadersFolderFiles = Tools::getFolderFiles(currentShadersFolderWidget, "json");
-}
-
-void GUIManager::LoadUIIcons()
-{
-    auto iconsFolder = BrakezaSetup::get()->ICONS_FOLDER + "interface/";
-    icons.addItem(iconsFolder + "translate.png", "translateIcon");
-    icons.addItem(iconsFolder + "rotate.png", "rotateIcon");
-    icons.addItem(iconsFolder + "scale.png", "scaleIcon");
-    icons.addItem(iconsFolder + "stop.png", "stopIcon");
-    icons.addItem(iconsFolder + "play.png", "playIcon");
-    icons.addItem(iconsFolder + "reload.png", "reloadIcon");
-    icons.addItem(iconsFolder + "rebuild.png", "rebuildIcon");
-    icons.addItem(iconsFolder + "object.png", "objectIcon");
-    icons.addItem(iconsFolder + "light.png", "lightIcon");
-    icons.addItem(iconsFolder + "script.png", "scriptIcon");
-    icons.addItem(iconsFolder + "swarm.png", "swarmIcon");
-    icons.addItem(iconsFolder + "mesh.png", "meshIcon");
-    icons.addItem(iconsFolder + "folder.png", "folderIcon");
-    icons.addItem(iconsFolder + "player.png", "playerIcon");
-    icons.addItem(iconsFolder + "BillboardAnimation8DirectionsIcon.png", "BillboardAnimation8DirectionsIcon");
-    icons.addItem(iconsFolder + "Image2DAnimationIcon.png", "Image2DAnimationIcon");
-    icons.addItem(iconsFolder + "Mesh3DAnimationIcon.png", "Mesh3DAnimationIcon");
-    icons.addItem(iconsFolder + "Image2DIcon.png", "Image2DIcon");
-    icons.addItem(iconsFolder + "Image3DIcon.png", "Image3DIcon");
-    icons.addItem(iconsFolder + "BillboardAnimationIcon.png", "BillboardAnimationIcon");
-    icons.addItem(iconsFolder + "remove.png", "removeIcon");
-    icons.addItem(iconsFolder + "pause.png", "pauseIcon");
-    icons.addItem(iconsFolder + "lock.png", "lockIcon");
-    icons.addItem(iconsFolder + "unlock.png", "unlockIcon");
-    icons.addItem(iconsFolder + "add.png", "addIcon");
-    icons.addItem(iconsFolder + "scene.png", "sceneIcon");
-    icons.addItem(iconsFolder + "save.png", "saveIcon");
-    icons.addItem(iconsFolder + "gear.png", "gearIcon");
-    icons.addItem(iconsFolder + "ghost.png", "ghostIcon");
-    icons.addItem(iconsFolder + "shader.png", "shaderIcon");
-    icons.addItem(iconsFolder + "spotlight.png", "spotLightIcon");
-    icons.addItem(iconsFolder + "particles.png", "particlesIcon");
-    icons.addItem(iconsFolder + "gravity.png", "gravityIcon");
-    icons.addItem(iconsFolder + "click.png", "clickIcon");
-    icons.addItem(iconsFolder + "DrawColliders.png", "drawCollidersIcon");
-    icons.addItem(iconsFolder + "target.png", "targetIcon");
-    icons.addItem(iconsFolder + "mouseIcon.png", "mouseLookIcon");
-    icons.addItem(iconsFolder + "layoutDefault.png", "layoutDefaultIcon");
-    icons.addItem(iconsFolder + "layoutCoding.png", "layoutCodingIcon");
-    icons.addItem(iconsFolder + "layoutDesign.png", "layoutDesignIcon");
-    icons.addItem(iconsFolder + "project.png", "projectIcon");
-    icons.addItem(iconsFolder + "open.png", "openIcon");
-    icons.addItem(iconsFolder + "gui.png", "guiIcon");
-    icons.addItem(iconsFolder + "texture.png", "textureIcon");
-    icons.addItem(BrakezaSetup::get()->IMAGES_FOLDER + "splash.png", "splash");
 }
 
 void GUIManager::loadImagesFolder()
@@ -776,7 +726,7 @@ void GUIManager::drawBrowserFolders(
     }
 }
 
-void GUIManager::LoadShaderDialog(std::string &folder, std::string &file)
+void GUIManager::LoadShaderDialog(const std::string &folder, std::string &file)
 {
     auto shader = ComponentsManager::get()->getComponentRender()->getLoadedShader(folder, file);
     delete shaderEditableManager.shader;
@@ -1044,7 +994,8 @@ void GUIManager::setSelectedObjectIndex(int selectedObjectIndex)
     GUIManager::selectedObjectIndex = selectedObjectIndex;
 }
 
-void GUIManager::setSelectedObject(Object3D *s) {
+void GUIManager::setSelectedObject(Object3D *s)
+{
     int i = 0;
     for (auto o: gameObjects) {
         if (s == o) {
@@ -1078,7 +1029,7 @@ void GUIManager::ShowDeletePopup(const char* title, const std::function<void()>&
     }
 }
 
-void GUIManager::DrawObjectVariables()
+void GUIManager::DrawObjectVariables() const
 {
     bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
 
@@ -1315,4 +1266,19 @@ void GUIManager::DrawSplash()
 
         ImGui::EndPopup();
     }
+}
+
+void GUIManager::LoadIcons(TexturePackage &icon)
+{
+    const auto interfaceFolder = BrakezaSetup::get()->ICONS_FOLDER + "interface/";
+
+    for (const auto& iconMapping : IncosByObject::ICON_FILES) {
+        icon.addItem(interfaceFolder + iconMapping.filename, iconMapping.id);
+    }
+
+    for (const auto& iconMapping : IconsByGUI::ICON_FILES) {
+        icon.addItem(interfaceFolder + iconMapping.filename, iconMapping.id);
+    }
+
+    icon.addItem(BrakezaSetup::get()->IMAGES_FOLDER + "splash.png","splash");
 }

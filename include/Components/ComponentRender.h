@@ -31,11 +31,16 @@
 #include "../OpenGL/ShaderOGLShadowPass.h"
 #include "../OpenGL/ShaderOGLShadowPassDebugLight.h"
 
-class ComponentRender : public Component {
+class ComponentRender : public Component
+{
 
     int fps = 0;
     int fpsFrameCounter = 0;
     float frameTime = 0.f;
+
+    bool sceneShadersEnabled = false;
+    GLuint lastFrameBufferUsed = 0;
+    GLuint lastProgramUsed = 0;
 
     Object3D *selectedObject = nullptr;
 
@@ -43,7 +48,6 @@ class ComponentRender : public Component {
     SceneLoader sceneLoader;
     ProjectLoader projectLoader;
 
-    bool sceneShadersEnabled = false;
     std::vector<ShaderOGLCustom*> sceneShaders;
 
     ShaderOGLRenderForward *shaderOGLRender = nullptr;
@@ -65,9 +69,6 @@ class ComponentRender : public Component {
     ShaderOGLLightPass *shaderOGLLightPass = nullptr;
     ShaderOGLShadowPass *shaderShadowPass = nullptr;
     ShaderOGLShadowPassDebugLight *shaderShadowPassDebugLight = nullptr;
-
-    GLuint lastFrameBufferUsed = 0;
-    GLuint lastProgramUsed = 0;
 
     std::map<std::string, ShaderCustomTypes> ShaderTypesMapping = {
         {"Postprocessing", SHADER_POSTPROCESSING},

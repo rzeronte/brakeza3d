@@ -49,25 +49,13 @@ const char *Image2D::getTypeObject()
 
 const char *Image2D::getTypeIcon()
 {
-    return "Image2DIcon";
+    return IncosByObject::IMAGE_2D;;
 }
 
 void Image2D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
     Image2DGUI::drawImGuiProperties(this);
-}
-
-cJSON *Image2D::getJSON(Image2D *object)
-{
-    auto root =  Object3D::ReadJSONFromObject(object);
-
-    cJSON_AddNumberToObject(root, "x", x);
-    cJSON_AddNumberToObject(root, "y", y);
-
-    cJSON_AddStringToObject(root, "image", image->getFileName().c_str());
-
-    return root;
 }
 
 Image2D *Image2D::create(int x, int y, const std::string& imageFile)

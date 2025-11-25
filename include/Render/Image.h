@@ -15,7 +15,7 @@
 class Image {
     bool loaded = false;
     float alpha = 1;
-    GLuint texturaID = 0;
+    GLuint textureId = 0;
     std::string fileName;
     SDL_Surface *surface = nullptr;
     SDL_Texture *texture = nullptr;

@@ -17,7 +17,7 @@ public:
 
             if (ImGui::TreeNode("Image")) {
                 if (o->texture != nullptr) {
-                    ImGui::Image((ImTextureID) o->texture->getOGLTextureID(),ImVec2(32, 32));
+                    ImGui::Image(o->texture->getOGLImTexture(),ImVec2(32, 32));
                 } else {
                     ImGui::Text("Empty texture. Drag one here!");
                 }

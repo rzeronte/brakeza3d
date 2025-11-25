@@ -18,7 +18,7 @@ Image::Image(const std::string& filename)
 Image::Image(SDL_Surface *surface, SDL_Texture *texture)
 :
     loaded(true),
-    texturaID(makeOGLImage(surface)),
+    textureId(makeOGLImage(surface)),
     surface(surface),
     texture(texture)
 {
@@ -37,7 +37,7 @@ void Image::loadTGA(const std::string& filename)
         texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
 
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-        texturaID = makeOGLImage(surface);
+        textureId = makeOGLImage(surface);
 
         fileName = filename;
         loaded = true;
@@ -81,7 +81,7 @@ void Image::drawFlat(int pos_x, int pos_y, GLuint fbo) const
     dstRect.h = (surface->h * windowHeight) / BrakezaSetup::get()->screenHeight;
 
     ComponentsManager::get()->getComponentRender()->getShaderOGLImage()->renderTexture(
-        texturaID,
+        textureId,
         dstRect.x,
         dstRect.y,
         dstRect.w,
@@ -159,7 +159,7 @@ Image::~Image()
     if (loaded) {
         SDL_FreeSurface(surface);
         SDL_DestroyTexture(texture);
-        glDeleteTextures(1, &texturaID);
+        glDeleteTextures(1, &textureId);
 
     }
 }
@@ -184,10 +184,10 @@ void Image::setImage(const std::string &filename)
             this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
         }
 
-        if (texturaID == 0 ) {
+        if (textureId == 0 ) {
             SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-            glDeleteTextures(1, &texturaID);
-            texturaID = makeOGLImage(surface);
+            glDeleteTextures(1, &textureId);
+            textureId = makeOGLImage(surface);
         }
 
         this->fileName = filename;
@@ -201,13 +201,14 @@ void Image::setImage(const std::string &filename)
     exit(-1);
 }
 
-GLuint Image::getOGLTextureID() const {
-    return texturaID;
+GLuint Image::getOGLTextureID() const
+{
+    return textureId;
 }
 
 ImTextureID Image::getOGLImTexture() const
 {
-    return reinterpret_cast<ImTextureID>(texturaID);
+    return reinterpret_cast<ImTextureID>(textureId);
 }
 
 GLuint Image::makeOGLImage(const SDL_Surface *surfaceTTF)

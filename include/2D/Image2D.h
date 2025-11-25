@@ -21,7 +21,6 @@ public:
     void drawImGuiProperties() override;
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
-    cJSON *getJSON(Image2D *object);
     static Image2D* create(int x, int y, const std::string& imageFile);
 
     friend class Image2DSerializer;

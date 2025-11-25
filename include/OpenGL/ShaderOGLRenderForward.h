@@ -7,7 +7,7 @@
 
 
 #include "ShaderBaseOpenGL.h"
-#include "OGLShaderTypes.h"
+#include "CommonOGLShaderTypes.h"
 #include "../Objects/LightSpot.h"
 #include "../Objects/Mesh3D.h"
 #include <glm/ext/matrix_float4x4.hpp>
