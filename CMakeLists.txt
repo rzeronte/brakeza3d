@@ -221,19 +221,19 @@ add_executable(Brakeza3D
         include/OpenGL/CommonOGLShaderTypes.h
 
         # Persistence
-        src/Serializers/Image2DAnimationSerializer.cpp include/Persistence/Image2DAnimationSerializer.h
-        src/Serializers/Image2DSerializer.cpp include/Persistence/Image2DSerializer.h
-        src/Serializers/Image3DAnimation8DirectionsSerializer.cpp include/Persistence/Image3DAnimation8DirectionsSerializer.h
-        src/Serializers/Image3DAnimationSerializer.cpp include/Persistence/Image3DAnimationSerializer.h
-        src/Serializers/Image3DSerializer.cpp include/Persistence/Image3DSerializer.h
-        src/Serializers/JSONSerializerRegistry.cpp include/Persistence/JSONSerializerRegistry.h
-        src/Serializers/LightPointSerializer.cpp include/Persistence/LightPointSerializer.h
-        src/Serializers/LightSpotSerializer.cpp include/Persistence/LightSpotSerializer.h
-        src/Serializers/Mesh3DAnimationSerializer.cpp include/Persistence/Mesh3DAnimationSerializer.h
-        src/Serializers/Mesh3DSerializer.cpp include/Persistence/Mesh3DSerializer.h
-        src/Serializers/Object3DSerializer.cpp include/Persistence/Object3DSerializer.h
-        src/Serializers/ParticleEmmitterSerializer.cpp include/Persistence/ParticleEmmitterSerializer.h
-        include/Persistence/JSONSerializer.h
+        src/Serializers/Image2DAnimationSerializer.cpp include/Serializers/Image2DAnimationSerializer.h
+        src/Serializers/Image2DSerializer.cpp include/Serializers/Image2DSerializer.h
+        src/Serializers/Image3DAnimation8DirectionsSerializer.cpp include/Serializers/Image3DAnimation8DirectionsSerializer.h
+        src/Serializers/Image3DAnimationSerializer.cpp include/Serializers/Image3DAnimationSerializer.h
+        src/Serializers/Image3DSerializer.cpp include/Serializers/Image3DSerializer.h
+        src/Serializers/JSONSerializerRegistry.cpp include/Serializers/JSONSerializerRegistry.h
+        src/Serializers/LightPointSerializer.cpp include/Serializers/LightPointSerializer.h
+        src/Serializers/LightSpotSerializer.cpp include/Serializers/LightSpotSerializer.h
+        src/Serializers/Mesh3DAnimationSerializer.cpp include/Serializers/Mesh3DAnimationSerializer.h
+        src/Serializers/Mesh3DSerializer.cpp include/Serializers/Mesh3DSerializer.h
+        src/Serializers/Object3DSerializer.cpp include/Serializers/Object3DSerializer.h
+        src/Serializers/ParticleEmmitterSerializer.cpp include/Serializers/ParticleEmmitterSerializer.h
+        include/Serializers/JSONSerializer.h
 
         # Physics
         src/3D/RayCollisionable.cpp include/3D/RayCollisionable.h

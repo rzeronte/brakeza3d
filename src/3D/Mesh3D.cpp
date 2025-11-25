@@ -12,7 +12,7 @@
 #include <assimp/postprocess.h>
 
 #include "../../include/GUI/Objects/Mesh3DGUI.h"
-#include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Serializers/JSONSerializerRegistry.h"
 
 Mesh3D::Mesh3D()
 {

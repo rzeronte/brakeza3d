@@ -2,12 +2,12 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#include "../../include/Persistence/LightSpotSerializer.h"
+#include "../../include/Serializers/LightSpotSerializer.h"
 
 #include <glm/detail/func_trigonometric.inl>
 #include "../../include/3D/LightSpot.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Misc/ToolsJSON.h"
 
 cJSON * LightSpotSerializer::JsonByObject(Object3D *o)

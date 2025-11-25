@@ -6,7 +6,7 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
 #include "../BrakezaLuaBridge.h"
-#include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Serializers/JSONSerializerRegistry.h"
 
 ComponentScripting::ComponentScripting()
 {

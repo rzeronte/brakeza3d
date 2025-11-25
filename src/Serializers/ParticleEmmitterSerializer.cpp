@@ -2,9 +2,9 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#include "../../include/Persistence/ParticleEmmitterSerializer.h"
+#include "../../include/Serializers/ParticleEmmitterSerializer.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/3D/ParticleEmitter.h"
 
 cJSON * ParticleEmmitterSerializer::JsonByObject(Object3D *o)

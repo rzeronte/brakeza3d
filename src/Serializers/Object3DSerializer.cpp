@@ -5,8 +5,8 @@
 #ifndef BRAKEZA3D_OBJECT3DSERIALIZER_CPP_H
 #define BRAKEZA3D_OBJECT3DSERIALIZER_CPP_H
 
-#include "../../include/Persistence/Object3DSerializer.h"
-#include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Serializers/Object3DSerializer.h"
+#include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Brakeza.h"
 
