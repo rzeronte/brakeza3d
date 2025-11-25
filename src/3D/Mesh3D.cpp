@@ -10,7 +10,6 @@
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include <assimp/postprocess.h>
-
 #include "../../include/GUI/Objects/Mesh3DGUI.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 
@@ -150,7 +149,6 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
             }
 
             std::string FullPath = BrakezaSetup::get()->TEXTURES_FOLDER + base_filename;
-
             Logging::Message("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), getLabel().c_str());
 
             this->modelTextures.push_back(new Image(FullPath));
@@ -320,7 +318,7 @@ const char *Mesh3D::getTypeObject()
 
 const char *Mesh3D::getTypeIcon()
 {
-    return IncosByObject::MESH_3D;
+    return IconsByObject::MESH_3D;
 }
 
 void Mesh3D::drawImGuiProperties()

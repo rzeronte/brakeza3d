@@ -284,7 +284,7 @@ const char *Object3D::getTypeObject()
 
 const char *Object3D::getTypeIcon()
 {
-    return "objectIcon";
+    return IconsByObject::OBJECT_3D;
 }
 
 const std::vector<ScriptLUA *> &Object3D::getScripts() const

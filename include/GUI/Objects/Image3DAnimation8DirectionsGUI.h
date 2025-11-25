@@ -12,7 +12,7 @@ class Image3DAnimation8DirectionsGUI
 public:
     static void drawImGuiProperties(Image3DAnimation8Directions *o)
     {
-        if (ImGui::TreeNode("BillboardAnimation8Directions")) {
+        if (ImGui::CollapsingHeader("BillboardAnimation8Directions")) {
             if (ImGui::TreeNode("Size")) {
                 const float range_min = 0;
                 const float range_max = 1000;
@@ -64,8 +64,6 @@ public:
             } else {
                 ImGui::Text("No animations found!");
             }
-
-            ImGui::TreePop();
         }
     }
 };

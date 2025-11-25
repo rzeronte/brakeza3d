@@ -24,17 +24,17 @@ struct GUIAddonObjects3D {
         ImGuiTextures(imGuiTextures),
         gameObjects(gameObjects)
     {
-        allowedObjectsToShow.push_back({SceneObjectTypes::OBJECT_3D, true, IncosByObject::OBJECT_3D});
-        allowedObjectsToShow.push_back({SceneObjectTypes::IMAGE_2D, true, IncosByObject::IMAGE_2D});
-        allowedObjectsToShow.push_back({SceneObjectTypes::IMAGE_2D_ANIMATION, true, IncosByObject::IMAGE_2D_ANIMATION});
-        allowedObjectsToShow.push_back({SceneObjectTypes::MESH_3D, true, IncosByObject::MESH_3D});
-        allowedObjectsToShow.push_back({SceneObjectTypes::MESH_3D_ANIMATION, true, IncosByObject::MESH_3D_ANIMATION});
-        allowedObjectsToShow.push_back({SceneObjectTypes::IMAGE_3D, true, IncosByObject::IMAGE_3D});
-        allowedObjectsToShow.push_back({SceneObjectTypes::BILLBOARD_ANIMATION, true, IncosByObject::BILLBOARD_ANIMATION});
-        allowedObjectsToShow.push_back({SceneObjectTypes::BILLBOARD_ANIMATION_8DIR, true, IncosByObject::BILLBOARD_ANIMATION_8DIR});
-        allowedObjectsToShow.push_back({SceneObjectTypes::LIGHT_POINT, true, IncosByObject::LIGHT_POINT});
-        allowedObjectsToShow.push_back({SceneObjectTypes::LIGHT_SPOT, true, IncosByObject::LIGHT_SPOT});
-        allowedObjectsToShow.push_back({SceneObjectTypes::PARTICLE_EMITTER, true, IncosByObject::PARTICLE_EMITTER});
+        allowedObjectsToShow.push_back({SceneObjectTypes::OBJECT_3D, true, IconsByObject::OBJECT_3D});
+        allowedObjectsToShow.push_back({SceneObjectTypes::IMAGE_2D, true, IconsByObject::IMAGE_2D});
+        allowedObjectsToShow.push_back({SceneObjectTypes::IMAGE_2D_ANIMATION, true, IconsByObject::IMAGE_2D_ANIMATION});
+        allowedObjectsToShow.push_back({SceneObjectTypes::MESH_3D, true, IconsByObject::MESH_3D});
+        allowedObjectsToShow.push_back({SceneObjectTypes::MESH_3D_ANIMATION, true, IconsByObject::MESH_3D_ANIMATION});
+        allowedObjectsToShow.push_back({SceneObjectTypes::IMAGE_3D, true, IconsByObject::IMAGE_3D});
+        allowedObjectsToShow.push_back({SceneObjectTypes::BILLBOARD_ANIMATION, true, IconsByObject::BILLBOARD_ANIMATION});
+        allowedObjectsToShow.push_back({SceneObjectTypes::BILLBOARD_ANIMATION_8DIR, true, IconsByObject::BILLBOARD_ANIMATION_8DIR});
+        allowedObjectsToShow.push_back({SceneObjectTypes::LIGHT_POINT, true, IconsByObject::LIGHT_POINT});
+        allowedObjectsToShow.push_back({SceneObjectTypes::LIGHT_SPOT, true, IconsByObject::LIGHT_SPOT});
+        allowedObjectsToShow.push_back({SceneObjectTypes::PARTICLE_EMITTER, true, IconsByObject::PARTICLE_EMITTER});
     }
 
     void drawAllowedObjectsToShow()

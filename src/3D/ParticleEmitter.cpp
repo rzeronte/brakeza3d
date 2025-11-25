@@ -209,7 +209,7 @@ const char *ParticleEmitter::getTypeObject()
 
 const char *ParticleEmitter::getTypeIcon()
 {
-    return IncosByObject::PARTICLE_EMITTER;
+    return IconsByObject::PARTICLE_EMITTER;
 }
 
 void ParticleEmitter::drawImGuiProperties()

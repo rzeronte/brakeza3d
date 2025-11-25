@@ -106,7 +106,7 @@ const char *Image3D::getTypeObject()
 
 const char *Image3D::getTypeIcon()
 {
-    return "Image3DIcon";
+    return IconsByObject::IMAGE_3D;
 }
 
 void Image3D::setWidth(float value)

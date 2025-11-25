@@ -1272,7 +1272,7 @@ void GUIManager::LoadIcons(TexturePackage &icon)
 {
     const auto interfaceFolder = BrakezaSetup::get()->ICONS_FOLDER + "interface/";
 
-    for (const auto& iconMapping : IncosByObject::ICON_FILES) {
+    for (const auto& iconMapping : IconsByObject::ICON_FILES) {
         icon.addItem(interfaceFolder + iconMapping.filename, iconMapping.id);
     }
 

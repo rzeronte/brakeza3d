@@ -28,6 +28,7 @@
   },
   "objects":	[{
     "name":	"axis",
+    "enabled": true,
     "scale":	1,
     "position":	{
       "x":	-0.69031262397766113,
@@ -46,7 +47,108 @@
     "enableLights":	false,
     "type":	"Mesh3D"
   }, {
-    "name":	"lp1",
+    "name":	"cube",
+    "enabled": true,
+    "scale":	0.92356580495834351,
+    "position":	{
+      "x":	-5.6505308151245117,
+      "y":	-3.5657999515533447,
+      "z":	-1.8633010387420654
+    },
+    "rotation":	{
+      "x":	0,
+      "y":	-0,
+      "z":	0
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "shaders":	[],
+    "model":	"../assets/models//RoundedRedCube.fbx",
+    "enableLights":	false,
+    "type":	"Mesh3D"
+  }, {
+    "name":	"SpaceShuttle",
+    "enabled": true,
+    "scale":	1.3596829175949097,
+    "position":	{
+      "x":	-14.072765350341797,
+      "y":	-0.76845204830169678,
+      "z":	-22.181270599365234
+    },
+    "rotation":	{
+      "x":	41.436470031738281,
+      "y":	10.452261924743652,
+      "z":	-141.13107299804688
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "shaders":	[],
+    "model":	"../assets/models//SpaceShuttle.fbx",
+    "enableLights":	false,
+    "type":	"Mesh3D"
+  }, {
+    "name":	"Eye",
+    "enabled": true,
+    "scale":	0.87999999523162842,
+    "position":	{
+      "x":	4.78808069229126,
+      "y":	-1.0186058282852173,
+      "z":	-4.9228363037109375
+    },
+    "rotation":	{
+      "x":	-166.75724792480469,
+      "y":	-26.889076232910156,
+      "z":	165.69306945800781
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "shaders":	[],
+    "model":	"../assets/models//Eye.fbx",
+    "enableLights":	false,
+    "type":	"Mesh3D"
+  }, {
+    "name":	"Stairs",
+    "enabled": true,
+    "scale":	1,
+    "position":	{
+      "x":	7.9173827171325684,
+      "y":	-3.4146461486816406,
+      "z":	3.9494373798370361
+    },
+    "rotation":	{
+      "x":	90,
+      "y":	-5.0089556680177338e-06,
+      "z":	4.9943782869377173e-06
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "shaders":	[],
+    "model":	"../assets/models//Stairs.fbx",
+    "enableLights":	false,
+    "type":	"Mesh3D"
+  }, {
+    "name":	"Pawn",
+    "enabled": true,
+    "scale":	1,
+    "position":	{
+      "x":	-9.3948392868042,
+      "y":	-2.7207901477813721,
+      "z":	3.9950590133666992
+    },
+    "rotation":	{
+      "x":	0,
+      "y":	-0,
+      "z":	0
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "shaders":	[],
+    "model":	"../assets/models//ChessPawn.fbx",
+    "enableLights":	false,
+    "type":	"Mesh3D"
+  }, {
+    "name":	"LightPoint_1",
+    "enabled": true,
     "scale":	1,
     "position":	{
       "x":	0.29776796698570251,
@@ -80,83 +182,43 @@
     "quadratic":	0.039999999105930328,
     "type":	"LightPoint3D"
   }, {
-    "name":	"cube",
-    "scale":	0.92356580495834351,
-    "position":	{
-      "x":	-5.6505308151245117,
-      "y":	-3.5657999515533447,
-      "z":	-1.8633010387420654
-    },
-    "rotation":	{
-      "x":	0,
-      "y":	-0,
-      "z":	0
-    },
-    "isCollisionsEnabled":	false,
-    "scripts":	[],
-    "shaders":	[],
-    "model":	"../assets/models//RoundedRedCube.fbx",
-    "enableLights":	false,
-    "type":	"Mesh3D"
-  }, {
-    "name":	"spaceshuttle",
-    "scale":	1.3596829175949097,
-    "position":	{
-      "x":	-14.072765350341797,
-      "y":	-0.76845204830169678,
-      "z":	-22.181270599365234
-    },
-    "rotation":	{
-      "x":	41.436470031738281,
-      "y":	10.452261924743652,
-      "z":	-141.13107299804688
-    },
-    "isCollisionsEnabled":	false,
-    "scripts":	[],
-    "shaders":	[],
-    "model":	"../assets/models//SpaceShuttle.fbx",
-    "enableLights":	false,
-    "type":	"Mesh3D"
-  }, {
-    "name":	"eye",
-    "scale":	0.87999999523162842,
-    "position":	{
-      "x":	4.78808069229126,
-      "y":	-1.0186058282852173,
-      "z":	-4.9228363037109375
-    },
-    "rotation":	{
-      "x":	-166.75724792480469,
-      "y":	-26.889076232910156,
-      "z":	165.69306945800781
-    },
-    "isCollisionsEnabled":	false,
-    "scripts":	[],
-    "shaders":	[],
-    "model":	"../assets/models//Eye.fbx",
-    "enableLights":	false,
-    "type":	"Mesh3D"
-  }, {
-    "name":	"stairs",
+    "name":	"LightPoint_2",
+    "enabled": true,
     "scale":	1,
     "position":	{
-      "x":	7.9173827171325684,
-      "y":	-3.4146461486816406,
-      "z":	3.9494373798370361
+      "x":	-11.713139533996582,
+      "y":	0.11485719680786133,
+      "z":	10.896565437316895
     },
     "rotation":	{
-      "x":	90,
+      "x":	180,
       "y":	-5.0089556680177338e-06,
-      "z":	4.9943782869377173e-06
+      "z":	180
     },
     "isCollisionsEnabled":	false,
     "scripts":	[],
-    "shaders":	[],
-    "model":	"../assets/models//Stairs.fbx",
-    "enableLights":	false,
-    "type":	"Mesh3D"
+    "ambient":	{
+      "x":	1,
+      "y":	0,
+      "z":	0
+    },
+    "diffuse":	{
+      "x":	0.032114516943693161,
+      "y":	0,
+      "z":	0.97950822114944458
+    },
+    "specular":	{
+      "x":	0.025161270052194595,
+      "y":	0.87704920768737793,
+      "z":	0.41619172692298889
+    },
+    "constant":	1,
+    "linear":	-0.23000000417232513,
+    "quadratic":	0.032000001519918442,
+    "type":	"LightPoint3D"
   }, {
-    "name":	"sp1",
+    "name":	"LightSpot_1",
+    "enabled": true,
     "scale":	1,
     "position":	{
       "x":	-1.8519937992095947,
@@ -191,59 +253,6 @@
     "cutOff":	32.875930786132813,
     "outerCutOff":	45.576042175292969,
     "type":	"SpotLight3D"
-  }, {
-    "name":	"pawn",
-    "scale":	1,
-    "position":	{
-      "x":	-9.3948392868042,
-      "y":	-2.7207901477813721,
-      "z":	3.9950590133666992
-    },
-    "rotation":	{
-      "x":	0,
-      "y":	-0,
-      "z":	0
-    },
-    "isCollisionsEnabled":	false,
-    "scripts":	[],
-    "shaders":	[],
-    "model":	"../assets/models//ChessPawn.fbx",
-    "enableLights":	false,
-    "type":	"Mesh3D"
-  }, {
-    "name":	"lp2",
-    "scale":	1,
-    "position":	{
-      "x":	-11.713139533996582,
-      "y":	0.11485719680786133,
-      "z":	10.896565437316895
-    },
-    "rotation":	{
-      "x":	180,
-      "y":	-5.0089556680177338e-06,
-      "z":	180
-    },
-    "isCollisionsEnabled":	false,
-    "scripts":	[],
-    "ambient":	{
-      "x":	1,
-      "y":	0,
-      "z":	0
-    },
-    "diffuse":	{
-      "x":	0.032114516943693161,
-      "y":	0,
-      "z":	0.97950822114944458
-    },
-    "specular":	{
-      "x":	0.025161270052194595,
-      "y":	0.87704920768737793,
-      "z":	0.41619172692298889
-    },
-    "constant":	1,
-    "linear":	-0.23000000417232513,
-    "quadratic":	0.032000001519918442,
-    "type":	"LightPoint3D"
   }],
   "shaders":	[],
   "scripts":	[],

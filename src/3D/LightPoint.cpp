@@ -70,7 +70,7 @@ const char *LightPoint::getTypeObject()
 
 const char *LightPoint::getTypeIcon()
 {
-    return IncosByObject::LIGHT_POINT;
+    return IconsByObject::LIGHT_POINT;
 }
 
 void LightPoint::drawImGuiProperties()

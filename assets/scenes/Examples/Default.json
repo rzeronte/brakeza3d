@@ -28,6 +28,7 @@
 	},
 	"objects":	[{
 			"name":	"axis",
+			"enabled": true,
 			"scale":	1,
 			"position":	{
 				"x":	-0.69031262397766113,
@@ -46,41 +47,8 @@
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"lp1",
-			"scale":	1,
-			"position":	{
-				"x":	0.29776796698570251,
-				"y":	-0.19303202629089355,
-				"z":	-2.6355054378509521
-			},
-			"rotation":	{
-				"x":	-179.99998474121094,
-				"y":	89.731239318847656,
-				"z":	-179.99998474121094
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"ambient":	{
-				"x":	0.16319525241851807,
-				"y":	0.036885261535644531,
-				"z":	1
-			},
-			"diffuse":	{
-				"x":	1,
-				"y":	0.9303278923034668,
-				"z":	0.93889415264129639
-			},
-			"specular":	{
-				"x":	0.45790085196495056,
-				"y":	0.25184762477874756,
-				"z":	0.62704920768737793
-			},
-			"constant":	2.4599990844726563,
-			"linear":	-0.31000000238418579,
-			"quadratic":	0.039999999105930328,
-			"type":	"LightPoint3D"
-		}, {
 			"name":	"cube",
+			"enabled": true,
 			"scale":	0.92356580495834351,
 			"position":	{
 				"x":	-5.6505308151245117,
@@ -100,6 +68,7 @@
 			"type":	"Mesh3D"
 		}, {
 			"name":	"spaceshuttle",
+			"enabled": true,
 			"scale":	1.3596829175949097,
 			"position":	{
 				"x":	-14.072765350341797,
@@ -119,6 +88,7 @@
 			"type":	"Mesh3D"
 		}, {
 			"name":	"eye",
+			"enabled": true,
 			"scale":	0.87999999523162842,
 			"position":	{
 				"x":	4.78808069229126,
@@ -138,6 +108,7 @@
 			"type":	"Mesh3D"
 		}, {
 			"name":	"stairs",
+			"enabled": true,
 			"scale":	1,
 			"position":	{
 				"x":	7.9173827171325684,
@@ -156,7 +127,28 @@
 			"enableLights":	false,
 			"type":	"Mesh3D"
 		}, {
-			"name":	"sp1",
+			"name":	"pawn",
+			"enabled": true,
+			"scale":	1,
+			"position":	{
+				"x":	-9.3948392868042,
+				"y":	-2.7207901477813721,
+				"z":	3.9950590133666992
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/models//ChessPawn.fbx",
+			"enableLights":	false,
+			"type":	"Mesh3D"
+		}, {
+			"name":	"LightSpot_1",
+			"enabled": true,
 			"scale":	1,
 			"position":	{
 				"x":	-1.8519937992095947,
@@ -191,27 +183,44 @@
 			"cutOff":	32.875930786132813,
 			"outerCutOff":	45.576042175292969,
 			"type":	"SpotLight3D"
-		}, {
-			"name":	"pawn",
+		},{
+			"name":	"LightPoint_1",
+			"enabled": true,
 			"scale":	1,
 			"position":	{
-				"x":	-9.3948392868042,
-				"y":	-2.7207901477813721,
-				"z":	3.9950590133666992
+				"x":	0.29776796698570251,
+				"y":	-0.19303202629089355,
+				"z":	-2.6355054378509521
 			},
 			"rotation":	{
-				"x":	0,
-				"y":	-0,
-				"z":	0
+				"x":	-179.99998474121094,
+				"y":	89.731239318847656,
+				"z":	-179.99998474121094
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//ChessPawn.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
-		}, {
-			"name":	"lp2",
+			"ambient":	{
+				"x":	0.16319525241851807,
+				"y":	0.036885261535644531,
+				"z":	1
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0.9303278923034668,
+				"z":	0.93889415264129639
+			},
+			"specular":	{
+				"x":	0.45790085196495056,
+				"y":	0.25184762477874756,
+				"z":	0.62704920768737793
+			},
+			"constant":	2.4599990844726563,
+			"linear":	-0.31000000238418579,
+			"quadratic":	0.039999999105930328,
+			"type":	"LightPoint3D"
+		},
+		{
+			"name":	"LightPoint_2",
 			"scale":	1,
 			"position":	{
 				"x":	-11.713139533996582,

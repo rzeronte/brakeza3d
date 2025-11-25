@@ -44,7 +44,6 @@ void SceneLoader::LoadScene(const std::string& filename)
     }
 
     cJSON *adsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "ads");
-
     if (adsJSON != nullptr) {
         auto direction = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "direction"));
         auto ambient = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "ambient"));

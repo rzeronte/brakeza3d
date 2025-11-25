@@ -122,7 +122,7 @@ const char *Image3DAnimation::getTypeObject()
 
 const char *Image3DAnimation::getTypeIcon()
 {
-    return IncosByObject::BILLBOARD_ANIMATION;
+    return IconsByObject::BILLBOARD_ANIMATION;
 }
 
 void Image3DAnimation::updateBillboardSize() const

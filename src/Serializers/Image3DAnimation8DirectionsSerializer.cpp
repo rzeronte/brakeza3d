@@ -82,8 +82,10 @@ void Image3DAnimation8DirectionsSerializer::LoadFileIntoScene(const std::string 
         1
     );
 
-    o->addAnimationDirectional2D(file, 1, 1, false, -1);
-    o->setAnimation(0);
+    if (!file.empty()) {
+        o->addAnimationDirectional2D(file, 1, 1, false, -1);
+        o->setAnimation(0);
+    }
 
     Brakeza::get()->addObject3D(o, Brakeza::uniqueObjectLabel("Billboard8D"));
 }

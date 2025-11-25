@@ -15,7 +15,7 @@ public:
     Object3D* ObjectByJson(cJSON* json) override;
 
     static void ApplyJsonToObject(const cJSON* json, Object3D* obj);
-    static void LoadFileIntoScene(const std::string& model);
+    static void LoadFileIntoScene(const std::string& file);
 };
 
 #endif //BRAKEZA3D_MESH3DANIMATIONSERIALIZER_H

@@ -35,12 +35,12 @@ TextureAnimated::TextureAnimated(TextureAnimated *textureAnimated)
 }
 
 TextureAnimated::TextureAnimated(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps)
-        :
-        baseFilename(spriteSheetFile),
-        numberFramesToLoad(numFrames),
-        fps(fps),
-        currentSpriteWidth(spriteWidth),
-        currentspriteHeight(spriteHeight)
+:
+    baseFilename(spriteSheetFile),
+    numberFramesToLoad(numFrames),
+    fps(fps),
+    currentSpriteWidth(spriteWidth),
+    currentspriteHeight(spriteHeight)
 {
     Logging::Message("Loading sheet: %s", spriteSheetFile.c_str());
     setup(spriteSheetFile, spriteWidth, spriteHeight, numFrames, fps);

@@ -49,7 +49,7 @@ const char *Image2D::getTypeObject()
 
 const char *Image2D::getTypeIcon()
 {
-    return IncosByObject::IMAGE_2D;;
+    return IconsByObject::IMAGE_2D;;
 }
 
 void Image2D::drawImGuiProperties()

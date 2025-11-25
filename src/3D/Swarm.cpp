@@ -226,7 +226,7 @@ const char *Swarm::getTypeObject()
 
 const char *Swarm::getTypeIcon()
 {
-    return IncosByObject::SWARM;
+    return IconsByObject::SWARM;
 }
 
 void Swarm::drawImGuiProperties()
