@@ -7,7 +7,6 @@
 
 
 #include "../Objects/Object3D.h"
-#include "../Misc/Timer.h"
 
 class SimplePendulum: public Object3D {
 public:

@@ -7,27 +7,19 @@
 
 class Vector3D {
 public:
-    Vector3D();
-
     Vertex3D vertex1;
     Vertex3D vertex2;
 
+    Vector3D();
     Vector3D(Vertex3D &, Vertex3D &);
 
-    [[nodiscard]] Vertex3D getComponent() const;
-
-    [[nodiscard]] Vertex3D normal() const;
-
-    [[nodiscard]] Vertex3D origin() const;
-
-    [[nodiscard]] Vertex3D end() const;
-
-    [[nodiscard]] Vertex3D end(float) const;
-
-    [[nodiscard]] Vertex3D middlePoint() const;
-
     void clear();
-
+    [[nodiscard]] Vertex3D getComponent() const;
+    [[nodiscard]] Vertex3D normal() const;
+    [[nodiscard]] Vertex3D origin() const;
+    [[nodiscard]] Vertex3D end() const;
+    [[nodiscard]] Vertex3D end(float) const;
+    [[nodiscard]] Vertex3D middlePoint() const;
 };
 
 

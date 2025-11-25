@@ -7,16 +7,14 @@
 
 
 Vector2D::Vector2D() {
-    x = 0;
-    y = 0;
-};
-
-Vector2D::Vector2D(float x, float y) {
-    this->x = x;
-    this->y = y;
 }
 
-void Vector2D::consoleInfo(const std::string& label, bool jump) const {
+Vector2D::Vector2D(float x, float y): x(x), y(y)
+{
+}
+
+void Vector2D::consoleInfo(const std::string& label, bool jump) const
+{
 
     std::cout << "Vector2D " << label << ": " << x << ", " << y << " | ";
 
@@ -25,46 +23,47 @@ void Vector2D::consoleInfo(const std::string& label, bool jump) const {
     }
 }
 
-
 float Vector2D::operator*(const Vector2D &v) const
 {
-    return (float) ((this->x * v.x) + (this->y * v.y));
+    return (this->x * v.x) + (this->y * v.y);
 }
 
-Vector2D Vector2D::operator/(const Vector2D &pm) const {
+Vector2D Vector2D::operator/(const Vector2D &pm) const
+{
     return Vector2D(
-        this->x / pm.x,
-        this->y / pm.y
+        x / pm.x,
+        y / pm.y
     );
 }
 
 Vector2D Vector2D::getNormalize() const
 {
-    const float modulo = abs(Maths::sqrt1((this->x * this->x) + (this->y * this->y)));
+    const float modulo = abs(Maths::sqrt1((x * x) + (y * y)));
 
     float inv_module = 1 / modulo;
 
     return Vector2D(
-            this->x * inv_module,
-            this->y * inv_module
+        x * inv_module,
+        y * inv_module
     );
 }
 
-Vector2D Vector2D::operator-(const Vector2D &v) const {
+Vector2D Vector2D::operator-(const Vector2D &v) const
+{
     return Vector2D(
-            this->x - v.x,
-            this->y - v.y
+        x - v.x,
+        y - v.y
     );
 }
 
 Vector2D Vector2D::operator+(const Vector2D &v) const {
     return Vector2D(
-            this->x + v.x,
-            this->y + v.y
+        x + v.x,
+        y + v.y
     );
 }
 
-float Vector2D::getLength()
+float Vector2D::getLength() const
 {
     return Maths::sqrt1(x * x + y*y);
 }
@@ -72,7 +71,7 @@ float Vector2D::getLength()
 Vector2D Vector2D::getScaled(float v) const
 {
     return Vector2D(
-            this->x * v,
-            this->y * v
+        x * v,
+        y * v
     );
 }
