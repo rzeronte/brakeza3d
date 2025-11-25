@@ -7,7 +7,7 @@
 
 #include "imgui.h"
 #include "../Misc/TexturePackage.h"
-#include "../Objects/Object3D.h"
+#include "../3D/Object3D.h"
 
 struct ScriptEditableManager {
     std::string selectedScriptFilename;

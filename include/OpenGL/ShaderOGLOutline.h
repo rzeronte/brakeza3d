@@ -4,9 +4,9 @@
 
 #include "ShaderBaseOpenGL.h"
 #include "ShaderBaseOpenGLQuad.h"
-#include "../Objects/Mesh3D.h"
-#include "../Objects/Image3D.h"
-#include "../Objects/Mesh3DAnimation.h"
+#include "../3D/Mesh3D.h"
+#include "../3D/Image3D.h"
+#include "../3D/Mesh3DAnimation.h"
 
 class ShaderOGLOutline : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {
     GLuint textureUniform;

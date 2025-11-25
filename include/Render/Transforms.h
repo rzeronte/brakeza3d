@@ -3,10 +3,10 @@
 #define SDL2_3D_ENGINE_RENDER_H
 
 
-#include "../Objects/Vertex3D.h"
+#include "../3D/Vertex3D.h"
 #include "../Components/Camera3D.h"
-#include "../2D/Point2D.h"
-#include "../Objects/LightPoint.h"
+#include "Point2D.h"
+#include "../3D/LightPoint.h"
 
 class Transforms {
 public:

@@ -5,7 +5,7 @@
 #include "../../include/Persistence/ParticleEmmitterSerializer.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Persistence/JSONSerializerRegistry.h"
-#include "../../include/Objects/ParticleEmitter.h"
+#include "../../include/3D/ParticleEmitter.h"
 
 cJSON * ParticleEmmitterSerializer::JsonByObject(Object3D *o)
 {

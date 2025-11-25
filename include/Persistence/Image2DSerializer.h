@@ -6,7 +6,7 @@
 #define BRAKEZA3D_IMAGE2DSERIALIZER_H
 
 #include "JSONSerializer.h"
-#include "../Objects/Object3D.h"
+#include "../3D/Object3D.h"
 
 class Image2DSerializer : public JSONSerializer
 {

@@ -5,7 +5,7 @@
 #include "../../include/Persistence/LightSpotSerializer.h"
 
 #include <glm/detail/func_trigonometric.inl>
-#include "../../include/Objects/LightSpot.h"
+#include "../../include/3D/LightSpot.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Persistence/JSONSerializerRegistry.h"
 #include "../../include/Misc/ToolsJSON.h"

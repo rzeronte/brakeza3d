@@ -5,7 +5,7 @@
 #include "../../include/Persistence/Image3DAnimationSerializer.h"
 #include "../../include/Persistence/JSONSerializerRegistry.h"
 #include "../../include/Brakeza3D.h"
-#include "../../include/Objects/Image3DAnimation.h"
+#include "../../include/3D/Image3DAnimation.h"
 
 cJSON * Image3DAnimationSerializer::JsonByObject(Object3D *o)
 {

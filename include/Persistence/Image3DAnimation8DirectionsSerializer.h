@@ -6,7 +6,7 @@
 #define BRAKEZA3D_IMAGE3DANIMATION8DIRECTIONSSERIALIZER_H
 
 #include "JSONSerializer.h"
-#include "../Objects/Object3D.h"
+#include "../3D/Object3D.h"
 
 class Image3DAnimation8DirectionsSerializer : public JSONSerializer
 {

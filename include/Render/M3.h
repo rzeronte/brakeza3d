@@ -4,7 +4,7 @@
 
 #include <LinearMath/btMatrix3x3.h>
 #include <glm/mat3x3.hpp>
-#include "../Objects/Vertex3D.h"
+#include "../3D/Vertex3D.h"
 
 class M3 {
 public:

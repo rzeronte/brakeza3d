@@ -7,7 +7,7 @@
 
 
 #include "ShaderBaseOpenGL.h"
-#include "../Objects/Mesh3D.h"
+#include "../3D/Mesh3D.h"
 
 class ShaderOGLShading : public ShaderBaseOpenGL {
     GLuint VertexArrayID = 0;

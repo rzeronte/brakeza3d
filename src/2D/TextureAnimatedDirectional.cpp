@@ -1,5 +1,5 @@
 
-#include "../../include/2D/TextureAnimatedDirectional.h"
+#include "../../include/Render/TextureAnimatedDirectional.h"
 
 #include <utility>
 #include "../../include/BrakezaSetup.h"

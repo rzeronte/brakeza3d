@@ -3,7 +3,7 @@
 
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
-#include "../Objects/Vertex3D.h"
+#include "../3D/Vertex3D.h"
 #include "../Render/M3.h"
 #include "CollisionInfo.h"
 #include <glm/vec2.hpp>

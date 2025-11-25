@@ -7,7 +7,7 @@
 
 
 #include "ShaderOGLCustom.h"
-#include "../Objects/Mesh3D.h"
+#include "../3D/Mesh3D.h"
 
 class ShaderOGLCustomMesh3D : public ShaderOGLCustom {
     GLuint VertexArrayID;

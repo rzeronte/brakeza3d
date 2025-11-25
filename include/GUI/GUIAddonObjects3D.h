@@ -4,7 +4,7 @@
 #include <string>
 #include "imgui.h"
 #include "../Render/Logging.h"
-#include "../Objects/Mesh3D.h"
+#include "../3D/Mesh3D.h"
 #include "../Misc/TexturePackage.h"
 #include "../Components/ComponentsManager.h"
 

@@ -1,8 +1,8 @@
 #ifndef SDL2_3D_ENGINE_ENGINESETUP_H
 #define SDL2_3D_ENGINE_ENGINESETUP_H
 
-#include "Objects/Vertex3D.h"
-#include "Objects/ScriptLUA.h"
+#include "3D/Vertex3D.h"
+#include "Misc/ScriptLUA.h"
 #include <map>
 
 class BrakezaSetup {

@@ -3,7 +3,7 @@
 //
 
 #include "../../include/Persistence/JSONSerializerRegistry.h"
-#include "../../include/Objects/Object3D.h"
+#include "../../include/3D/Object3D.h"
 
 cJSON* JSONSerializerRegistry::serialize(Object3D* obj)
 {

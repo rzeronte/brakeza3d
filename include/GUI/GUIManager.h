@@ -4,7 +4,7 @@
 
 #include <string>
 #include <vector>
-#include "../Objects/Object3D.h"
+#include "../3D/Object3D.h"
 #include "GUIConsole.h"
 #include "../Misc/TexturePackage.h"
 #include "GUIAddonObjects3D.h"

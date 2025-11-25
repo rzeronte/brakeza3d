@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_IMAGE3DDRAWERGUI_H
 #define BRAKEZA3D_IMAGE3DDRAWERGUI_H
 
-#include "../../Objects/LightSpot.h"
+#include "../../3D/LightSpot.h"
 
 class LightSpotGUI
 {

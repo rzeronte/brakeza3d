@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_ASSIMPANIMATIONSERVICE_H
 #define BRAKEZA3D_ASSIMPANIMATIONSERVICE_H
 
-#include "../Objects/Mesh3DAnimation.h"
+#include "../3D/Mesh3DAnimation.h"
 
 class AssimpAnimationService
 {

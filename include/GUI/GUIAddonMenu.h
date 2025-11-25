@@ -13,7 +13,7 @@
 #include "../SceneLoader.h"
 #include "../Components/ComponentsManager.h"
 #include "../Misc/TexturePackage.h"
-#include "../Objects/ParticleEmitter.h"
+#include "../3D/ParticleEmitter.h"
 #include "../Render/Maths.h"
 #include "../Persistence/JSONSerializer.h"
 #include "../Persistence/Mesh3DAnimationSerializer.h"

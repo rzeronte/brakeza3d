@@ -2,7 +2,7 @@
 #define BRAKEDA3D_COMPONENT_H
 
 #include <SDL2/SDL.h>
-#include "../Objects/Object3D.h"
+#include "../3D/Object3D.h"
 #include "../BrakezaSetup.h"
 
 class ComponentsManager;

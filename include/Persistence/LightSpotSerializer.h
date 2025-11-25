@@ -6,7 +6,7 @@
 #define BRAKEZA3D_SPOTLIGHTSERIALIZER_H
 
 #include "JSONSerializer.h"
-#include "../Objects/Object3D.h"
+#include "../3D/Object3D.h"
 
 class LightSpotSerializer : public JSONSerializer
 {

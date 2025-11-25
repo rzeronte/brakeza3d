@@ -6,7 +6,7 @@
 #define BRAKEDA3D_SIMPLEPENDULUM_H
 
 
-#include "../Objects/Object3D.h"
+#include "../3D/Object3D.h"
 
 class SimplePendulum: public Object3D {
 public:

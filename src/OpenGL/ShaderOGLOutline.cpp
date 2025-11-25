@@ -2,7 +2,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include "../../include/OpenGL/ShaderOGLOutline.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Objects/Image3D.h"
+#include "../../include/3D/Image3D.h"
 
 ShaderOGLOutline::ShaderOGLOutline()
 :

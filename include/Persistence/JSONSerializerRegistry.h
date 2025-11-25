@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <memory>
 #include <string>
-#include "../Objects/Object3D.h"
+#include "../3D/Object3D.h"
 
 class JSONSerializerRegistry
 {

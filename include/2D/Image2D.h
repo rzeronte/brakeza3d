@@ -7,7 +7,7 @@
 
 
 #include "../Render/Image.h"
-#include "../Objects/Object3D.h"
+#include "../3D/Object3D.h"
 
 class Image2D : public Object3D
 {

@@ -6,7 +6,7 @@
 #define BRAKEZA3D_SHADEROPENGLCOLOR_H
 
 #include "ShaderBaseOpenGL.h"
-#include "../Objects/Mesh3D.h"
+#include "../3D/Mesh3D.h"
 
 class ShaderOGLColor: public ShaderBaseOpenGL
 {

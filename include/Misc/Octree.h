@@ -7,7 +7,7 @@
 
 
 #include "../Render/AABB3D.h"
-#include "../Objects/Triangle3D.h"
+#include "../Render/Triangle3D.h"
 
 struct OctreeNode {
     bool leaf = false;

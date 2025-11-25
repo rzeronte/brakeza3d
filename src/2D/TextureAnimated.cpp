@@ -1,6 +1,6 @@
 
 #include <utility>
-#include "../../include/2D/TextureAnimated.h"
+#include "../../include/Render/TextureAnimated.h"
 #include <SDL_image.h>
 #include "../../include/BrakezaSetup.h"
 #include "../../include/Render/Logging.h"

@@ -6,8 +6,8 @@
 #define BRAKEZA3D_IMAGE2DANIMATION_H
 
 
-#include "TextureAnimated.h"
-#include "../Objects/Object3D.h"
+#include "../Render/TextureAnimated.h"
+#include "../3D/Object3D.h"
 
 class Image2DAnimation : public Object3D
 {
