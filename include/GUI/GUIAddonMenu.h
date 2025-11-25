@@ -161,13 +161,13 @@ struct GUIAddonMenu
 
                     ImGui::Separator();
 
-                    ImGui::Image(icon(IconsByObject::BILLBOARD_ANIMATION), ImVec2(16, 16));
+                    ImGui::Image(icon(IconsByObject::IMAGE_3D_ANIMATION), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Billboard Animation")) {
                         drawBillboardAnimationItemsToLoad(setup->SPRITES_FOLDER);
                         ImGui::EndMenu();
                     }
-                    ImGui::Image(icon(IconsByObject::BILLBOARD_ANIMATION_8DIR), ImVec2(16, 16));
+                    ImGui::Image(icon(IconsByObject::IMAGE_3D_ANIMATION_8DIR), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::MenuItem("Billboard 8-Directions")) {
                         Image3DAnimation8DirectionsSerializer::LoadFileIntoScene("");
@@ -518,7 +518,7 @@ struct GUIAddonMenu
             auto title = std::to_string(i-1) + ") " + file;
 
             auto fullPath = folder + "/" + file;
-            ImGui::Image(icon(IconsByObject::BILLBOARD_ANIMATION), ImVec2(16, 16));
+            ImGui::Image(icon(IconsByObject::IMAGE_3D_ANIMATION), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
                 Image3DAnimationSerializer::LoadFileIntoScene(fullPath);

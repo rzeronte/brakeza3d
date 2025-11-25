@@ -30,8 +30,8 @@ struct GUIAddonObjects3D {
         allowedObjectsToShow.push_back({SceneObjectTypes::MESH_3D, true, IconsByObject::MESH_3D});
         allowedObjectsToShow.push_back({SceneObjectTypes::MESH_3D_ANIMATION, true, IconsByObject::MESH_3D_ANIMATION});
         allowedObjectsToShow.push_back({SceneObjectTypes::IMAGE_3D, true, IconsByObject::IMAGE_3D});
-        allowedObjectsToShow.push_back({SceneObjectTypes::BILLBOARD_ANIMATION, true, IconsByObject::BILLBOARD_ANIMATION});
-        allowedObjectsToShow.push_back({SceneObjectTypes::BILLBOARD_ANIMATION_8DIR, true, IconsByObject::BILLBOARD_ANIMATION_8DIR});
+        allowedObjectsToShow.push_back({SceneObjectTypes::IMAGE_3D_ANIMATION, true, IconsByObject::IMAGE_3D_ANIMATION});
+        allowedObjectsToShow.push_back({SceneObjectTypes::IMAGE_3D_ANIMATION_8DIR, true, IconsByObject::IMAGE_3D_ANIMATION_8DIR});
         allowedObjectsToShow.push_back({SceneObjectTypes::LIGHT_POINT, true, IconsByObject::LIGHT_POINT});
         allowedObjectsToShow.push_back({SceneObjectTypes::LIGHT_SPOT, true, IconsByObject::LIGHT_SPOT});
         allowedObjectsToShow.push_back({SceneObjectTypes::PARTICLE_EMITTER, true, IconsByObject::PARTICLE_EMITTER});

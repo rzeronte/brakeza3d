@@ -117,12 +117,12 @@ Image3DAnimation::~Image3DAnimation()
 
 const char *Image3DAnimation::getTypeObject()
 {
-    return SceneObjectTypes::BILLBOARD_ANIMATION;
+    return SceneObjectTypes::IMAGE_3D_ANIMATION;
 }
 
 const char *Image3DAnimation::getTypeIcon()
 {
-    return IconsByObject::BILLBOARD_ANIMATION;
+    return IconsByObject::IMAGE_3D_ANIMATION;
 }
 
 void Image3DAnimation::updateBillboardSize() const
