@@ -1,7 +1,7 @@
 
 #include "../include/GUI/GUIManager.h"
 #include "../../include/Render/Drawable.h"
-#include "../include/Brakeza3D.h"
+#include "../include/Brakeza.h"
 
 GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 :
@@ -1259,7 +1259,7 @@ void GUIManager::DrawSplash()
             std::string("Brakeza3D (" + BrakezaSetup::get()->ENGINE_VERSION + ") | https://brakeza.com | By Eduardo Rodríguez Álvarez").c_str()
         );
 
-        if (Brakeza3D::get()->getEngineTotalTime() > BrakezaSetup::get()->SPLASH_COUNTDOWN_TIME) {
+        if (Brakeza::get()->getEngineTotalTime() > BrakezaSetup::get()->SPLASH_COUNTDOWN_TIME) {
             ImGui::CloseCurrentPopup();
             ComponentsManager::get()->getComponentInput()->setEnabled(true);
         }

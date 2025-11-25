@@ -1,6 +1,6 @@
 #include "../../include/Components/ComponentInput.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Render/Logging.h"
+#include "../../include/Misc/Logging.h"
 
 ComponentInput::ComponentInput()
 {

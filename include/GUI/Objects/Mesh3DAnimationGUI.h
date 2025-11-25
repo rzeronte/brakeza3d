@@ -6,7 +6,7 @@
 #define BRAKEZA3D_IMAGE3DDRAWERGUI_H
 
 #include "../../3D/Mesh3DAnimation.h"
-#include "../../Brakeza3D.h"
+#include "../../Brakeza.h"
 
 class Mesh3DAnimationDrawerGUI
 {
@@ -34,7 +34,7 @@ public:
 
             if (o->boneColliderEnabled) {
                 if (ImGui::Button(std::string("Manage Bone Mappings##" + o->getLabel()).c_str())) {
-                   Brakeza3D::get()->getManagerGui()->openBoneInfoDialog();
+                   Brakeza::get()->getManagerGui()->openBoneInfoDialog();
                 }
             }
         }

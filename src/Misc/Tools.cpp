@@ -9,9 +9,9 @@
 #include <algorithm>
 #include <fstream>
 #include "../../include/Misc/Tools.h"
-#include "../../include/Render/Logging.h"
+#include "../../include/Misc/Logging.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 #include "../../include/2D/Image2DAnimation.h"
 #include "../../include/3D/Mesh3DAnimation.h"
 #include <SDL2/SDL.h>

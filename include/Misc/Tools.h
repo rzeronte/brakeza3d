@@ -8,7 +8,7 @@
 #include "../3D/LightPoint.h"
 #include "../Render/M3.h"
 #include "../Render/TextureAnimated.h"
-#include "ParticlesContext.h"
+#include "../Render/ParticlesContext.h"
 #include <vector>
 #include <glm/vec2.hpp>
 

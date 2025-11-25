@@ -2,7 +2,7 @@
 #define BRAKEDA3D_MESH3DANIMATED_H
 
 #include "Mesh3D.h"
-#include "../Render/Logging.h"
+#include "../Misc/Logging.h"
 #include <cstring>
 #include <cassert>
 #include <assimp/Importer.hpp>

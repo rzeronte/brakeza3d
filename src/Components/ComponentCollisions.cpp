@@ -1,7 +1,7 @@
 #include "../../include/Components/ComponentCollisions.h"
-#include "../../include/Brakeza3D.h"
-#include "../../include/Physics/Projectile.h"
-#include "../../include/Collision/CollisionInfo.h"
+#include "../../include/Brakeza.h"
+#include "../../include/3D/Projectile.h"
+#include "../../include/Render/CollisionInfo.h"
 
 ComponentCollisions::ComponentCollisions()
 :
@@ -38,7 +38,7 @@ void ComponentCollisions::postUpdate()
         return;
     }
 
-    stepSimulation(Brakeza3D::get()->getDeltaTime());
+    stepSimulation(Brakeza::get()->getDeltaTime());
 }
 
 void ComponentCollisions::onEnd()
@@ -112,7 +112,7 @@ void ComponentCollisions::updatePhysicObjects()
 {
     if (!isEnabled()) return;
 
-    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+    for (auto object : Brakeza::get()->getSceneObjects()) {
         if (object->isRemoved()) continue;
 
         auto *collisionable = dynamic_cast<Collider *> (object);
@@ -198,7 +198,7 @@ void ComponentCollisions::demoProjectile(int type)
         BrakezaSetup::collisionGroups::AllFilter
     );
 
-    Brakeza3D::get()->addObject3D(projectile, Brakeza3D::uniqueObjectLabel("demoProjectile"));
+    Brakeza::get()->addObject3D(projectile, Brakeza::uniqueObjectLabel("demoProjectile"));
 }
 
 ComponentCollisions::~ComponentCollisions()

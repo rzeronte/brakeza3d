@@ -3,7 +3,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "../../include/OpenGL/ShaderOGLRenderForward.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 
 ShaderOGLRenderForward::ShaderOGLRenderForward()
 :
@@ -113,7 +113,7 @@ void ShaderOGLRenderForward::createUBOFromLights()
     shadowMappingLights.resize(0);
 
     if (BrakezaSetup::get()->ENABLE_LIGHTS) {
-        for (auto o : Brakeza3D::get()->getSceneObjects()) {
+        for (auto o : Brakeza::get()->getSceneObjects()) {
             if (!o->isEnabled()) continue;
             extractLights(o);
             for (auto a: o->getAttached()) {

@@ -3,7 +3,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include "../../include/Render/Maths.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/LightPointGUI.h"
 
 LightPoint::LightPoint(

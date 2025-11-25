@@ -6,14 +6,14 @@
 #define BRAKEZA3D_IMAGE3DDRAWERGUI_H
 
 #include "../../3D/Object3D.h"
-#include "../../Brakeza3D.h"
+#include "../../Brakeza.h"
 
 class Object3DGUI
 {
 public:
     static void drawImGuiProperties(Object3D *o)
     {
-        auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
+        auto ImGuiTextures = Brakeza::get()->getManagerGui()->getImGuiTextures();
 
         static char name[256];
         strncpy(name, o->label.c_str(), sizeof(name));

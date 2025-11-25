@@ -4,8 +4,8 @@
 
 #include <fstream>
 #include "../../include/Misc/ScriptLUA.h"
-#include "../../include/Render/Logging.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Misc/Logging.h"
+#include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/ScriptLuaGUI.h"
 #include "../../include/Misc/ToolsJSON.h"
 

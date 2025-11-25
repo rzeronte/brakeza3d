@@ -4,8 +4,8 @@
 #include "Frustum.h"
 #include "../Components/Camera3D.h"
 #include "../3D/Cube3D.h"
-#include "../Misc/Octree.h"
-#include "../Misc/Grid3D.h"
+#include "Octree.h"
+#include "Grid3D.h"
 
 class Drawable {
 public:

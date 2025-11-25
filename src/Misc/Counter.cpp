@@ -1,12 +1,12 @@
 
 #include "../../include/Misc/Counter.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 
 Counter::Counter()
 :
     enabled(true),
     step(0),
-    timer(Brakeza3D::get()->getTimer()),
+    timer(Brakeza::get()->getTimer()),
     finished(false)
 {
 }
@@ -15,7 +15,7 @@ Counter::Counter(float step)
 :
     enabled(true),
     step(step),
-    timer(Brakeza3D::get()->getTimer()),
+    timer(Brakeza::get()->getTimer()),
     finished(false)
 {
 }

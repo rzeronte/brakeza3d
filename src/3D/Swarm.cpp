@@ -2,7 +2,7 @@
 #include "../../include/3D/Swarm.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/SwarmGUI.h"
 
 SwarmObject::SwarmObject()
@@ -184,7 +184,7 @@ void Swarm::avoidPredators(SwarmObject* swarmObject) {
 
 void Swarm::updatePosition(SwarmObject *o, float weight)
 {
-    o->object->setPosition(o->object->getPosition() + (o->velocity.getScaled(weight * Brakeza3D::get()->getDeltaTime())).getScaled(1, 1, 1));
+    o->object->setPosition(o->object->getPosition() + (o->velocity.getScaled(weight * Brakeza::get()->getDeltaTime())).getScaled(1, 1, 1));
 }
 
 void Swarm::checkBoundsAndAdjustVelocity(SwarmObject* swarmObject) {

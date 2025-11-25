@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_IMAGE3DDRAWERGUI_H
 #define BRAKEZA3D_IMAGE3DDRAWERGUI_H
 
-#include "../../Brakeza3D.h"
+#include "../../Brakeza.h"
 #include "../../3D/Swarm.h"
 
 class SwarmGUI
@@ -13,7 +13,7 @@ class SwarmGUI
 public:
     static void drawImGuiProperties(Swarm *o)
     {
-        auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
+        auto ImGuiTextures = Brakeza::get()->getManagerGui()->getImGuiTextures();
 
         static char name[256];
         strncpy(name, o->label.c_str(), sizeof(name));

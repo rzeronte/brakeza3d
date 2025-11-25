@@ -78,11 +78,11 @@ add_executable(Brakeza3D
         main.cpp
 
         # Root
-        src/Brakeza3D.cpp                                   include/Brakeza3D.h
+        src/Brakeza.cpp include/Brakeza.h
         src/BrakezaSetup.cpp                                include/BrakezaSetup.h
         src/ProjectLoader.cpp                               include/ProjectLoader.h
         src/SceneLoader.cpp                                 include/SceneLoader.h
-        src/LUAIntegration.h
+        src/BrakezaLuaBridge.h
         include/SceneObjectTypes.h
 
         # 2D
@@ -98,9 +98,9 @@ add_executable(Brakeza3D
         include/Misc/ButtonsCallbacks.h
 
         # Collision
-        src/Collisions/Collider.cpp                         include/Collision/Collider.h
-        src/Collisions/ColliderMesh3DAnimation.cpp          include/Collision/AssimpAnimationService.h
-        include/Collision/CollisionInfo.cpp                 include/Collision/CollisionInfo.h
+        src/Render/Collider.cpp include/Render/Collider.h
+        src/Render/ColliderMesh3DAnimation.cpp include/Render/AssimpAnimationService.h
+        src/Render/CollisionInfo.cpp include/Render/CollisionInfo.h
 
         # Components
         src/Components/Component.cpp                        include/Components/Component.h
@@ -157,10 +157,10 @@ add_executable(Brakeza3D
 
         # Misc
         src/Misc/cJSON.c                                    include/Misc/cJSON.h
-        src/Misc/Color.cpp                                  include/Misc/Color.h
+        src/Render/Color.cpp include/Render/Color.h
         src/Misc/Counter.cpp                                include/Misc/Counter.h
-        src/Misc/Grid3D.cpp                                 include/Misc/Grid3D.h
-        src/Misc/Octree.cpp                                 include/Misc/Octree.h
+        src/Render/Grid3D.cpp include/Render/Grid3D.h
+        src/Render/Octree.cpp include/Render/Octree.h
         src/Misc/SoundPackage.cpp                           include/Misc/SoundPackage.h
         src/Misc/TextureAtlas.cpp                           include/Misc/TextureAtlas.h
         src/Misc/TexturePackage.cpp                         include/Misc/TexturePackage.h
@@ -175,7 +175,7 @@ add_executable(Brakeza3D
         src/3D/Camera3D.cpp include/Components/Camera3D.h
         src/3D/Cube3D.cpp include/3D/Cube3D.h
         src/3D/Decal.cpp include/3D/Decal.h
-        src/GUI/Image3D.cpp include/3D/Image3D.h
+        src/3D/Image3D.cpp include/3D/Image3D.h
         src/GUI/Image3DAnimation.cpp include/3D/Image3DAnimation.h
         src/3D/Image3DAnimation8Directions.cpp include/3D/Image3DAnimation8Directions.h
         src/3D/LightPoint.cpp include/3D/LightPoint.h
@@ -191,7 +191,7 @@ add_executable(Brakeza3D
         src/2D/Vector2D.cpp include/Render/Vector2D.h
         src/Render/Vector3D.cpp include/3D/Vector3D.h
         src/Render/Vertex3D.cpp include/3D/Vertex3D.h
-        include/Misc/ParticlesContext.h
+        include/Render/ParticlesContext.h
 
         # OpenGL
         src/OpenGL/ShaderBaseOpenGL.cpp                     include/OpenGL/ShaderBaseOpenGL.h
@@ -221,30 +221,30 @@ add_executable(Brakeza3D
         include/OpenGL/CommonOGLShaderTypes.h
 
         # Persistence
-        src/Persistence/Image2DAnimationSerializer.cpp      include/Persistence/Image2DAnimationSerializer.h
-        src/Persistence/Image2DSerializer.cpp               include/Persistence/Image2DSerializer.h
-        src/Persistence/Image3DAnimation8DirectionsSerializer.cpp include/Persistence/Image3DAnimation8DirectionsSerializer.h
-        src/Persistence/Image3DAnimationSerializer.cpp      include/Persistence/Image3DAnimationSerializer.h
-        src/Persistence/Image3DSerializer.cpp               include/Persistence/Image3DSerializer.h
-        src/Persistence/JSONSerializerRegistry.cpp          include/Persistence/JSONSerializerRegistry.h
-        src/Persistence/LightPointSerializer.cpp            include/Persistence/LightPointSerializer.h
-        src/Persistence/LightSpotSerializer.cpp             include/Persistence/LightSpotSerializer.h
-        src/Persistence/Mesh3DAnimationSerializer.cpp       include/Persistence/Mesh3DAnimationSerializer.h
-        src/Persistence/Mesh3DSerializer.cpp                include/Persistence/Mesh3DSerializer.h
-        src/Persistence/Object3DSerializer.cpp              include/Persistence/Object3DSerializer.h
-        src/Persistence/ParticleEmmitterSerializer.cpp      include/Persistence/ParticleEmmitterSerializer.h
+        src/Serializers/Image2DAnimationSerializer.cpp include/Persistence/Image2DAnimationSerializer.h
+        src/Serializers/Image2DSerializer.cpp include/Persistence/Image2DSerializer.h
+        src/Serializers/Image3DAnimation8DirectionsSerializer.cpp include/Persistence/Image3DAnimation8DirectionsSerializer.h
+        src/Serializers/Image3DAnimationSerializer.cpp include/Persistence/Image3DAnimationSerializer.h
+        src/Serializers/Image3DSerializer.cpp include/Persistence/Image3DSerializer.h
+        src/Serializers/JSONSerializerRegistry.cpp include/Persistence/JSONSerializerRegistry.h
+        src/Serializers/LightPointSerializer.cpp include/Persistence/LightPointSerializer.h
+        src/Serializers/LightSpotSerializer.cpp include/Persistence/LightSpotSerializer.h
+        src/Serializers/Mesh3DAnimationSerializer.cpp include/Persistence/Mesh3DAnimationSerializer.h
+        src/Serializers/Mesh3DSerializer.cpp include/Persistence/Mesh3DSerializer.h
+        src/Serializers/Object3DSerializer.cpp include/Persistence/Object3DSerializer.h
+        src/Serializers/ParticleEmmitterSerializer.cpp include/Persistence/ParticleEmmitterSerializer.h
         include/Persistence/JSONSerializer.h
 
         # Physics
-        src/Collisions/RayCollisionable.cpp                 include/Physics/RayCollisionable.h
-        src/Collisions/SimplePendulum.cpp                   include/Physics/SimplePendulum.h
-        include/Physics/Projectile.cpp                      include/Physics/Projectile.h
+        src/3D/RayCollisionable.cpp include/3D/RayCollisionable.h
+        src/3D/SimplePendulum.cpp include/3D/SimplePendulum.h
+        src/3D/Projectile.cpp include/3D/Projectile.h
 
         # Render
         src/Render/Drawable.cpp                             include/Render/Drawable.h
         src/Render/Frustum.cpp                              include/Render/Frustum.h
         src/Render/Image.cpp                                include/Render/Image.h
-        src/Render/Logging.cpp                              include/Render/Logging.h
+        src/Misc/Logging.cpp include/Misc/Logging.h
         src/Render/M3.cpp                                   include/Render/M3.h
         src/Render/Maths.cpp                                include/Render/Maths.h
         src/Render/PhysicsDebugDraw.cpp                     include/Render/PhysicsDebugDraw.h

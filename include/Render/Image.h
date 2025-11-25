@@ -10,7 +10,7 @@
 #include <SDL2/SDL_surface.h>
 #include <GL/glew.h>
 #include "../3D/Vertex3D.h"
-#include "../Misc/Color.h"
+#include "Color.h"
 
 class Image {
     bool loaded = false;

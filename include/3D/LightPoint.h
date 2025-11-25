@@ -3,7 +3,7 @@
 
 #include "Object3D.h"
 #include "../Render/Frustum.h"
-#include "../Misc/Color.h"
+#include "../Render/Color.h"
 
 class LightPoint : public Object3D {
 public:

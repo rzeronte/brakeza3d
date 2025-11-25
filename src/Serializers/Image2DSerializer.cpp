@@ -1,0 +1,56 @@
+//
+// Created by Eduardo on 24/11/2025.
+//
+
+#include "../../include/Persistence/Image2DSerializer.h"
+#include "../../include/2D/Image2D.h"
+#include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Brakeza.h"
+
+cJSON * Image2DSerializer::JsonByObject(Object3D *o)
+{
+    auto image = dynamic_cast<Image2D*>(o);
+
+    cJSON *root = JSONSerializerRegistry::GetJsonByObject(o);
+
+    cJSON_AddNumberToObject(root, "x", image->x);
+    cJSON_AddNumberToObject(root, "y", image->y);
+    cJSON_AddStringToObject(root, "image", image->image->getFileName().c_str());
+
+    return root;
+}
+
+Object3D * Image2DSerializer::ObjectByJson(cJSON *json)
+{
+    auto o = new Image2D(
+        cJSON_GetObjectItemCaseSensitive(json, "x")->valueint,
+        cJSON_GetObjectItemCaseSensitive(json, "y")->valueint,
+        new Image(cJSON_GetObjectItemCaseSensitive(json, "image")->valuestring)
+    );
+
+    ApplyJsonToObject(json, o);
+
+    return o;
+}
+
+void Image2DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
+{
+    std::cout << "[Image2DSerializer ApplyJsonToObject] " << o->getTypeObject() << std::endl;
+
+    auto image = dynamic_cast<Image2D*>(o);
+
+    Object3DSerializer::ApplyJsonToObject(json, o);
+}
+
+void Image2DSerializer::LoadFileIntoScene(const std::string &file)
+{
+    auto *o = new Image2D(
+        BrakezaSetup::get()->screenWidth/2,
+        BrakezaSetup::get()->screenHeight/2,
+        new Image(file)
+    );
+
+    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
+
+    Brakeza::get()->addObject3D(o, Brakeza::uniqueObjectLabel("Image2D"));
+}

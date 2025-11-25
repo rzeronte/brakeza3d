@@ -1,5 +1,5 @@
 #include "../../include/3D/Mesh3DAnimation.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Render/Drawable.h"
@@ -123,7 +123,7 @@ void Mesh3DAnimation::UpdateFrameTransformations()
 
 void Mesh3DAnimation::CheckIfEndAnimation()
 {
-    auto timeIncrement = Brakeza3D::get()->getDeltaTime() * animation_speed;
+    auto timeIncrement = Brakeza::get()->getDeltaTime() * animation_speed;
     finished = false;
     auto maxAnimationTime = getCurrentAnimationMaxTime();
 

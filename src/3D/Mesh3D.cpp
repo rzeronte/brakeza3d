@@ -4,8 +4,8 @@
 #include <assimp/cimport.h>
 #include <glm/ext/matrix_float4x4.hpp>
 #include "../../include/3D/Mesh3D.h"
-#include "../../include/Render/Logging.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Misc/Logging.h"
+#include "../../include/Brakeza.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
@@ -367,7 +367,7 @@ void Mesh3D::setupGhostCollider(CollisionShape modeShape) {
             getPosition(),
             getModelMatrix(),
             simpleShapeSize,
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             btBroadphaseProxy::DefaultFilter,
             btBroadphaseProxy::DefaultFilter
         );
@@ -375,7 +375,7 @@ void Mesh3D::setupGhostCollider(CollisionShape modeShape) {
 
     if (getCollisionShape() == TRIANGLE_MESH_SHAPE) {
         makeGhostBody(
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             btBroadphaseProxy::DefaultFilter,
             btBroadphaseProxy::DefaultFilter
         );
@@ -392,7 +392,7 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
     if (getCollisionShape() == SIMPLE_SHAPE || getCollisionShape() == CAPSULE) {
         makeSimpleRigidBody(
             mass,
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             btBroadphaseProxy::DefaultFilter,
             btBroadphaseProxy::DefaultFilter
         );
@@ -402,14 +402,14 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
         if (isColliderStatic()) {
             makeRigidBodyFromTriangleMesh(
                 mass,
-                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
                 BrakezaSetup::collisionGroups::AllFilter,
                 BrakezaSetup::collisionGroups::AllFilter
             );
         } else {
             makeRigidBodyFromTriangleMeshFromConvexHull(
                 mass,
-                Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+                Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
                 BrakezaSetup::collisionGroups::AllFilter,
                 BrakezaSetup::collisionGroups::AllFilter
             );

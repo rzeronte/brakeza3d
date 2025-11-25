@@ -5,7 +5,7 @@
 #include "../../include/3D/TentacleIK.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 #include "../../include/Render/Transforms.h"
 #include <random>  // Para generación de números aleatorios
 
@@ -93,7 +93,7 @@ void TentacleIK::transformJoints()
 {
     for (int i = (int) joints.size() -1 ; i >= 0 ; i--) {
         transformJoint(i);
-        applySinusoidalMovement(BrakezaSetup::get()->TESTING_INT3, BrakezaSetup::get()->TESTING_INT2, Brakeza3D::get()->getExecutionTime());
+        applySinusoidalMovement(BrakezaSetup::get()->TESTING_INT3, BrakezaSetup::get()->TESTING_INT2, Brakeza::get()->getExecutionTime());
     }
 }
 
