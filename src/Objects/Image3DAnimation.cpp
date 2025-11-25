@@ -4,14 +4,12 @@
 #include "../../include/Brakeza3D.h"
 #include "../../include/GUI/Objects/Image3DAnimationGUI.h"
 
-Image3DAnimation::Image3DAnimation(Vertex3D &position, float w, float h)
+Image3DAnimation::Image3DAnimation(const Vertex3D &position, float w, float h)
 :
-    billboard(new Image3D(position, w, h, nullptr)),
     width(w),
     height(h),
     currentAnimationIndex(0),
-    autoRemoveAfterAnimation(false),
-    sharedTextures(false)
+    billboard(new Image3D(position, w, h, nullptr))
 {
     setPosition(position);
     luaEnvironment["this"] = this;
@@ -52,9 +50,9 @@ void Image3DAnimation::addAnimation(const std::string& sprite, int w, int h, int
     this->animations.emplace_back(new TextureAnimated(sprite, w, h, numFrames, fps));
 }
 
-void Image3DAnimation::setAnimation(int index_animation)
+void Image3DAnimation::setAnimation(int value)
 {
-    this->currentAnimationIndex = index_animation;
+    this->currentAnimationIndex = value;
 }
 
 void Image3DAnimation::updateTexture()
@@ -90,11 +88,11 @@ void Image3DAnimation::setAutoRemoveAfterAnimation(bool value)
     autoRemoveAfterAnimation = value;
 }
 
-void Image3DAnimation::linkTextureAnimation(Image3DAnimation *dst)
+void Image3DAnimation::LinkTextureIntoAnotherImage3DAnimation(Image3DAnimation *to)
 {
     animations.clear();
 
-    for (auto animation : dst->animations) {
+    for (auto animation : to->animations) {
         animations.push_back(animation);
     }
 
@@ -124,7 +122,7 @@ const char *Image3DAnimation::getTypeObject()
 
 const char *Image3DAnimation::getTypeIcon()
 {
-    return "BillboardAnimationIcon";
+    return IncosByObject::BILLBOARD_ANIMATION;
 }
 
 void Image3DAnimation::updateBillboardSize() const
@@ -140,7 +138,7 @@ void Image3DAnimation::drawImGuiProperties()
 }
 
 Image3DAnimation* Image3DAnimation::create(
-    Vertex3D position,
+    const Vertex3D &position,
     float width,
     float height,
     const std::string &imageFile,

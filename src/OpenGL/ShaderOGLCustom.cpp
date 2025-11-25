@@ -372,7 +372,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
                     auto globalTexture = ComponentsManager::get()->getComponentWindow()->getDepthTexture();
-                    ImGui::Image((ImTextureID) globalTexture, ImVec2(36, 36));
+                    ImGui::Image(reinterpret_cast<ImTextureID>(globalTexture), ImVec2(36, 36));
                     ImGui::SetItemTooltip("Depth Texture");
 
                     ImGui::TableSetColumnIndex(1);
@@ -398,7 +398,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
                     auto globalTexture = ComponentsManager::get()->getComponentWindow()->getGlobalTexture();
-                    ImGui::Image((ImTextureID) globalTexture, ImVec2(36, 36));
+                    ImGui::Image(reinterpret_cast<ImTextureID>(globalTexture), ImVec2(36, 36));
                     ImGui::SetItemTooltip("Render scene");
 
                     ImGui::TableSetColumnIndex(1);
@@ -424,7 +424,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
                         ImGui::TableSetColumnIndex(0);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
-                        ImGui::Image((ImTextureID) diffuse->getOGLTextureID(), ImVec2(36, 36));
+                        ImGui::Image(diffuse->getOGLImTexture(), ImVec2(36, 36));
                         ImGui::SetItemTooltip(diffuse->getFileName().c_str());
 
                         ImGui::TableSetColumnIndex(1);
@@ -452,7 +452,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
                         ImGui::TableSetColumnIndex(0);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
-                        ImGui::Image((ImTextureID) texture->getOGLTextureID(), ImVec2(36, 36));
+                        ImGui::Image(texture->getOGLImTexture(), ImVec2(36, 36));
                         ImGui::SetItemTooltip(texture->getFileName().c_str());
                         captureDragDropUpdateImage(type, texture);
 

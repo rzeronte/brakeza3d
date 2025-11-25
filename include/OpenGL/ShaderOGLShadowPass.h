@@ -9,7 +9,7 @@
 #include "../include/Objects/Mesh3D.h"
 #include "../include/Objects/Mesh3DAnimation.h"
 #include "../include/Objects/LightSpot.h"
-#include "OGLShaderTypes.h"
+#include "CommonOGLShaderTypes.h"
 
 class ShaderOGLShadowPass : public ShaderBaseOpenGL
 {

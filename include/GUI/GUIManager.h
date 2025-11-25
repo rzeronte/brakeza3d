@@ -63,20 +63,11 @@ public:
     explicit GUIManager(std::vector<Object3D *> &gameObjects);
 
     void loadImagesFolder();
-    void LoadUIIcons();
     void LoadScriptDialog(const std::string& filename);
     void DrawEditScriptWindow();
     void DrawLightsDepthMapsViewerWindow();
     void updateFolderFiles();
-    void drawBrowserFolders(
-        const std::string& folder,
-        const std::string& baseFolder,
-        std::string& destiny,
-        std::vector<std::string> &folders,
-        std::vector<std::string> &files,
-        const std::string& extension
-    );
-    void LoadShaderDialog(std::string &folder, std::string &file);
+    void LoadShaderDialog(const std::string &folder, std::string &file);
     void drawSelectedObjectShaders();
     void drawSelectedObjectScripts();
     void DrawEditShaderWindow();
@@ -90,8 +81,8 @@ public:
     void DrawGUIPlugins(bool &finish);
     void drawProjectsFiles(const std::string& folder);
     void drawScenesFolder(const std::string& folder);
-    void DrawObjectVariables();
-    void drawGlobalVariables();
+    void DrawObjectVariables() const;
+
     void drawKeyboardMouseSettings();
     void drawImages();
     void setSelectedObjectIndex(int selectedObjectIndex);
@@ -100,11 +91,21 @@ public:
     void openBoneInfoDialog();
     void openLightsDepthMapsViewerDialog();
     void DrawSplash();
+    void drawBrowserFolders(
+        const std::string& folder,
+        const std::string& baseFolder,
+        std::string& destiny,
+        std::vector<std::string> &folders,
+        std::vector<std::string> &files,
+        const std::string& extension
+    );
     virtual void draw(float timedelta, bool &finish);
     ImGuiConsoleApp *getConsole();
     TexturePackage *getImGuiTextures();
     [[nodiscard]] bool isShowLightsDepthMapsViewerWindow() const;
+    static void drawGlobalVariables();
     static void ShowDeletePopup(const char* title, const std::function<void()>& onConfirm);
+    static void LoadIcons(TexturePackage &icon);
     static void setNextWindowSize(int w, int h);
     static void RenderFPS();
 };

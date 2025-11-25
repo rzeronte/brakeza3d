@@ -1,22 +1,21 @@
 
 #include <iostream>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
 #include "../../include/Objects/Object3D.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/Render/Drawable.h"
-#include <glm/gtx/euler_angles.hpp>
-
 #include "../../include/GUI/Objects/Object3DGUI.h"
 
 Object3D::Object3D()
 :
     id(Brakeza3D::get()->getNextObjectID()),
     luaEnvironment(sol::environment(
-            ComponentsManager::get()->getComponentScripting()->getLua(),
-            sol::create, ComponentsManager::get()->getComponentScripting()->getLua().globals())
+        ComponentsManager::get()->getComponentScripting()->getLua(),
+        sol::create, ComponentsManager::get()->getComponentScripting()->getLua().globals())
     ),
     pickingColor(Color::idToColor(id))
 {
@@ -29,7 +28,7 @@ Vertex3D &Object3D::getPosition()
     return position;
 }
 
-M3 Object3D::getRotation()
+M3 Object3D::getRotation() const
 {
     return rotation;
 }
@@ -39,7 +38,7 @@ void Object3D::setPosition(const Vertex3D &p)
     position = p;
 }
 
-void Object3D::setRotation(M3 r)
+void Object3D::setRotation(const M3 &r)
 {
     this->rotation = r;
 }
@@ -58,44 +57,44 @@ bool &Object3D::isEnabled() {
     return enabled;
 }
 
-void Object3D::setEnabled(bool enabled)
+void Object3D::setEnabled(bool value)
 {
-    Object3D::enabled = enabled;
+    Object3D::enabled = value;
 }
 
-Vertex3D Object3D::AxisUp()
+Vertex3D Object3D::AxisUp() const
 {
     Vertex3D v = getRotation() * BrakezaSetup::get()->up;
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisDown()
+Vertex3D Object3D::AxisDown() const
 {
     Vertex3D v = getRotation() * BrakezaSetup::get()->down;
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisForward()
+Vertex3D Object3D::AxisForward() const
 {
     Vertex3D v = getRotation() * BrakezaSetup::get()->forward;
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisBackwards()
+Vertex3D Object3D::AxisBackwards() const
 {
     Vertex3D v = getRotation() * BrakezaSetup::get()->backward;
 
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisRight()
+Vertex3D Object3D::AxisRight() const
 {
     Vertex3D v = getRotation() * BrakezaSetup::get()->right;
 
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisLeft()
+Vertex3D Object3D::AxisLeft() const
 {
     Vertex3D v = getRotation() * BrakezaSetup::get()->left;
 
@@ -109,7 +108,7 @@ float Object3D::getScale() const
 
 void Object3D::setScale(float value)
 {
-    Object3D::scale = value;
+    scale = value;
 }
 
 bool Object3D::isRemoved() const
@@ -132,7 +131,7 @@ void Object3D::setDecal(bool value)
     decal = value;
 }
 
-void Object3D::setDrawOffset(Vertex3D offset)
+void Object3D::setDrawOffset(const Vertex3D &offset)
 {
     this->drawOffset = offset;
 }
@@ -160,18 +159,11 @@ void Object3D::onUpdate()
         if (a->isEnabled()) a->onUpdate();
     }
 
-    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-    distanceToCamera = camera->getPosition().distance(getPosition());
-
-    if (getBehavior() != nullptr && getBehavior()->isEnabled()) {
-        motion->onUpdate(position);
-    }
+    distanceToCamera = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition().distance(getPosition());
 
     if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == BrakezaSetup::LUA_PLAY) {
         runScripts();
     }
-
 }
 
 void Object3D::runScripts()
@@ -199,18 +191,9 @@ void Object3D::drawImGuiProperties()
     Object3DGUI::drawImGuiProperties(this);
 }
 
-void Object3D::addToPosition(Vertex3D v) {
+void Object3D::addToPosition(const Vertex3D &v)
+{
     this->position = this->position + v;
-}
-
-Object3DBehavior *Object3D::getBehavior() const
-{
-    return motion;
-}
-
-void Object3D::setBehavior(Object3DBehavior *motion)
-{
-    Object3D::motion = motion;
 }
 
 float &Object3D::getAlpha() {
@@ -281,7 +264,7 @@ void Object3D::reloadScriptsCode() const
     }
 }
 
-void Object3D::removeScript(ScriptLUA *script)
+void Object3D::removeScript(const ScriptLUA *script)
 {
     Logging::Message("Removing object script %s", script->scriptFilename.c_str());
 
@@ -326,30 +309,6 @@ void Object3D::setBelongToScene(bool belongToScene)
     Object3D::belongToScene = belongToScene;
 }
 
-
-cJSON *Object3D::ReadJSONFromObject(Object3D *object)
-{
-    std::cout << "[Object3D ExtractJSON] Getting JSON for Object3D" << std::endl;
-    std::cout << "Debes eliminar esto pimpim!";
-    exit(-1);
-
-    /*if (auto serializer = JSONSerializerRegistry::instance().getSerializer(getTypeObject())) {
-        return serializer->JsonByObject(this);
-    }*/
-
-    return nullptr;
-}
-
-void Object3D::setPropertiesFromJSON(cJSON *object, Object3D *o)
-{
-    std::cout << "[Object3D setPropertiesFromJSON]!" << std::endl;
-    std::cout << "Debes eliminar esto pimpim!";
-
-    //Logging::Message("[Object3D] Setting properties from JSON");
-    //const char* type = cJSON_GetObjectItem(object, "type")->valuestring;
-    //JSONSerializerRegistry::instance().getSerializer(type)->ApplyJsonToObject(object, o);
-}
-
 bool& Object3D::enabledPointer()
 {
     return enabled;
@@ -360,12 +319,12 @@ Vertex3D & Object3D::positionPointer()
     return position;
 }
 
-M3 Object3D::getM3ModelMatrix()
+M3 Object3D::getM3ModelMatrix() const
 {
     return M3::fromMat3GLM(getModelMatrix());
 }
 
-glm::mat4 Object3D::getModelMatrix()
+glm::mat4 Object3D::getModelMatrix() const
 {
     glm::vec3 scaled(scale);
     glm::vec3 translated = position.toGLM();

@@ -19,10 +19,8 @@
 #include "../include/Objects/Image3DAnimation.h"
 #include "../include/Objects/Image3DAnimation8Directions.h"
 #include "../include/Objects/ParticleEmitter.h"
-#include "../include/OpenGL/FXEffectOpenGLObject.h"
-#include "../include/FXEffect/FXOutliner.h"
 
-void LUAIntegration(sol::state &lua)
+inline void LUAIntegration(sol::state &lua)
 {
     lua.new_usertype<Vertex3D>(
         "Vertex3D",
@@ -70,9 +68,7 @@ void LUAIntegration(sol::state &lua)
         "addToPosition", &Object3D::addToPosition,
         "getPosition", &Object3D::getPosition,
         "setPosition", &Object3D::setPosition,
-        "setRotation", sol::overload(
-            static_cast<void (Object3D::*)(M3)>(&Object3D::setRotation)
-        ),
+        "setRotation", &Object3D::setRotation,
         "getTypeObject", &Object3D::getTypeObject,
         "getLabel", &Object3D::getLabel,
         "getRotation", &Object3D::getRotation,
@@ -338,31 +334,6 @@ void LUAIntegration(sol::state &lua)
     "clearScene", &SceneLoader::ClearScene,
         "saveScene", &SceneLoader::SaveScene,
         "loadScene", &SceneLoader::LoadScene
-    );
-
-    lua.new_usertype<FXBase>("FXEffectBase",
-                             "getLabel", &FXBase::getLabel,
-                             "setLabel", &FXBase::setLabel,
-                             "isEnabled", &FXBase::isEnabled,
-                             "setEnabled", &FXBase::setEnabled
-    );
-
-    lua.new_usertype<FXOpenGL>("ShaderOpenCL",
-                               sol::base_classes, sol::bases<FXBase>(),
-                               "getTypesJSON", &FXOpenGL::getJSON
-    );
-
-    lua.new_usertype<FXEffectOpenGLObject>("ObjectShaderOpenCL",
-    sol::base_classes, sol::bases<FXOpenGL>(),
-        "setObject", &FXEffectOpenGLObject::setObject,
-        "getObject", &FXEffectOpenGLObject::getObject
-    );
-
-    lua.new_usertype<FXOutliner>("FXOutliner",
-        sol::base_classes, sol::bases<FXOpenGL>(),
-        "create", &FXOutliner::create,
-        "setSize", &FXOutliner::setSize,
-        "getSize", &FXOutliner::getSize
     );
 
     lua.new_usertype<Image2D>("Image2D",

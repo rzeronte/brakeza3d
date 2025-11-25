@@ -8,17 +8,6 @@
 #include "../../include/GUI/Objects/Mesh3DAnimationGUI.h"
 
 Mesh3DAnimation::Mesh3DAnimation()
-:
-    numBones(0),
-    indexCurrentAnimation(0),
-    boneColliderIndex(0),
-    runningTime(0),
-    animation_speed(1),
-    loop(true),
-    boneColliderEnabled(false),
-    removeOnAnimationEnd(false),
-    finished(false),
-    scene(nullptr)
 {
     luaEnvironment["this"] = this;
 }
@@ -580,7 +569,7 @@ const char *Mesh3DAnimation::getTypeObject()
 
 const char *Mesh3DAnimation::getTypeIcon()
 {
-    return "Mesh3DAnimationIcon";
+    return IncosByObject::MESH_3D_ANIMATION;
 }
 
 void Mesh3DAnimation::drawImGuiProperties()

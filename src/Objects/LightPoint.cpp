@@ -65,12 +65,12 @@ void LightPoint::setCuadratic(float value)
 
 const char *LightPoint::getTypeObject()
 {
-    return SceneObjectTypes::LIGHT_POINT_3D;
+    return SceneObjectTypes::LIGHT_POINT;
 }
 
 const char *LightPoint::getTypeIcon()
 {
-    return "lightIcon";
+    return IncosByObject::LIGHT_POINT;
 }
 
 void LightPoint::drawImGuiProperties()

@@ -4,7 +4,8 @@
 
 BrakezaSetup *BrakezaSetup::instance = nullptr;
 
-BrakezaSetup *BrakezaSetup::get() {
+BrakezaSetup *BrakezaSetup::get()
+{
     if (instance == nullptr) {
         instance = new BrakezaSetup();
     }

@@ -59,7 +59,8 @@ float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *object, Camera
     return theta;
 }
 
-bool Maths::sameSide(Vertex3D p1, Vertex3D p2, Vertex3D a, Vertex3D b) {
+bool Maths::sameSide(const Vertex3D &p1, const Vertex3D &p2, const Vertex3D &a, const Vertex3D &b)
+{
     Vertex3D cp1 = (b - a) % (p1 - a);
     Vertex3D cp2 = (b - a) % (p2 - a);
 
@@ -70,17 +71,20 @@ bool Maths::sameSide(Vertex3D p1, Vertex3D p2, Vertex3D a, Vertex3D b) {
     return false;
 }
 
-bool Maths::PointInTriangle(Vertex3D p, Vertex3D a, Vertex3D b, Vertex3D c) {
+bool Maths::PointInTriangle(Vertex3D p, Vertex3D a, Vertex3D b, Vertex3D c)
+{
     return sameSide(p, a, b, c) && sameSide(p, b, a, c) && sameSide(p, c, a, b);
 }
 
-float Maths::TriangleArea(float dX0, float dY0, float dX1, float dY1, float dX2, float dY2) {
+float Maths::TriangleArea(float dX0, float dY0, float dX1, float dY1, float dX2, float dY2)
+{
     float area = ((dX1 - dX0) * (dY2 - dY0) - (dX2 - dX0) * (dY1 - dY0)) / 2;
 
     return abs(area);
 }
 
-float Maths::normalizeToRange(float value, float min, float max) {
+float Maths::normalizeToRange(float value, float min, float max)
+{
     if (max - min == 0) {
         return 0;
     }
@@ -95,7 +99,7 @@ float Maths::sqrt1(const float &n)
         float f;
     } u;
     u.i = 0x5F375A86 - (*(int *) &n >> 1);
-    return (int(3) - n * u.f * u.f) * n * u.f * 0.5f;
+    return (3 - n * u.f * u.f) * n * u.f * 0.5f;
 }
 
 Vertex3D Maths::getHalfwayVector(Vertex3D a, Vertex3D b)
@@ -103,9 +107,9 @@ Vertex3D Maths::getHalfwayVector(Vertex3D a, Vertex3D b)
     return (a.getNormalize() + b.getNormalize()).getNormalize();
 }
 
-
 // Rotar el objeto sobre un eje local
-glm::mat3 Maths::RotateOnAxis(glm::mat3 originalRotation, float angle, glm::vec3 axis) {
+glm::mat3 Maths::RotateOnAxis(glm::mat3 originalRotation, float angle, glm::vec3 axis)
+{
     // Crear una matriz de rotación 4x4
     auto rotation4x4 = glm::mat4(originalRotation); // Convertir 3x3 a 4x4
     auto rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, axis);

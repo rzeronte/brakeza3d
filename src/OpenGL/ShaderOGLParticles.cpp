@@ -58,10 +58,10 @@ void ShaderOGLParticles::render(
             GL_FLOAT,           // type
             GL_FALSE,           // normalized?
             0,                  // stride
-            (void*)0            // array buffer offset
+            nullptr            // array buffer offset
     );
 
-    // 2nd attribute buffer : positions of particles' centers
+    // 2nd attribute buffer: positions of particles' centers
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, particles_position_buffer);
     glVertexAttribPointer(
@@ -70,7 +70,7 @@ void ShaderOGLParticles::render(
             GL_FLOAT,                         // type
             GL_FALSE,                         // normalized?
             0,                                // stride
-            (void*)0                          // array buffer offset
+            nullptr                          // array buffer offset
     );
 
     // 3rd attribute buffer : particles' colors
@@ -82,12 +82,12 @@ void ShaderOGLParticles::render(
             GL_UNSIGNED_BYTE,                 // type
             GL_TRUE,                          // normalized?    *** YES, this means that the unsigned char[4] will be accessible with a vec4 (floats) in the shader ***
             0,                                // stride
-            (void*)0                          // array buffer offset
+            nullptr                          // array buffer offset
     );
 
-    glVertexAttribDivisor(0, 0); // particles vertices : always reuse the same 4 vertices -> 0
-    glVertexAttribDivisor(1, 1); // positions : one per quad (its center)                 -> 1
-    glVertexAttribDivisor(2, 1); // color : one per quad                                  -> 1
+    glVertexAttribDivisor(0, 0); // particles vertices: always reuse the same 4 vertices -> 0
+    glVertexAttribDivisor(1, 1); // positions: one per quad (its center)                 -> 1
+    glVertexAttribDivisor(2, 1); // color: one per quad                                  -> 1
 
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particlesCount);
 

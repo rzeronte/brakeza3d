@@ -256,8 +256,8 @@ void SceneLoader::InitSerializers()
     registry.registerSerializer(SceneObjectTypes::IMAGE_3D, std::make_unique<Image2DSerializer>());
     registry.registerSerializer(SceneObjectTypes::BILLBOARD_ANIMATION_8DIR, std::make_unique<Image3DAnimation8DirectionsSerializer>());
     registry.registerSerializer(SceneObjectTypes::PARTICLE_EMITTER, std::make_unique<ParticleEmmitterSerializer>());
-    registry.registerSerializer(SceneObjectTypes::SPOT_LIGHT_3D, std::make_unique<LightSpotSerializer>());
-    registry.registerSerializer(SceneObjectTypes::LIGHT_POINT_3D, std::make_unique<LightPointSerializer>());
+    registry.registerSerializer(SceneObjectTypes::LIGHT_SPOT, std::make_unique<LightSpotSerializer>());
+    registry.registerSerializer(SceneObjectTypes::LIGHT_POINT, std::make_unique<LightPointSerializer>());
 }
 
 void SceneLoader::SceneLoaderCreateObject(cJSON *object)

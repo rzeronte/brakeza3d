@@ -320,7 +320,7 @@ const char *Mesh3D::getTypeObject()
 
 const char *Mesh3D::getTypeIcon()
 {
-    return "meshIcon";
+    return IncosByObject::MESH_3D;
 }
 
 void Mesh3D::drawImGuiProperties()

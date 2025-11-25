@@ -24,17 +24,17 @@ struct GUIAddonObjects3D {
         ImGuiTextures(imGuiTextures),
         gameObjects(gameObjects)
     {
-        allowedObjectsToShow.push_back({"Object3D", true, "objectIcon"});
-        allowedObjectsToShow.push_back({"Image2D", true, "Image2DIcon"});
-        allowedObjectsToShow.push_back({"Image2DAnimation", true, "Image2DAnimationIcon"});
-        allowedObjectsToShow.push_back({"Mesh3D", true, "meshIcon"});
-        allowedObjectsToShow.push_back({"Mesh3DAnimation", true, "Mesh3DAnimationIcon"});
-        allowedObjectsToShow.push_back({"Image3D", true, "Image3DIcon"});
-        allowedObjectsToShow.push_back({"BillboardAnimation", true, "BillboardAnimationIcon"});
-        allowedObjectsToShow.push_back({"BillboardAnimation8Directions", true, "BillboardAnimation8DirectionsIcon"});
-        allowedObjectsToShow.push_back({"LightPoint3D", true, "lightIcon"});
-        allowedObjectsToShow.push_back({"SpotLight3D", true, "spotLightIcon"});
-        allowedObjectsToShow.push_back({"ParticleEmitter", true, "particlesIcon"});
+        allowedObjectsToShow.push_back({SceneObjectTypes::OBJECT_3D, true, IncosByObject::OBJECT_3D});
+        allowedObjectsToShow.push_back({SceneObjectTypes::IMAGE_2D, true, IncosByObject::IMAGE_2D});
+        allowedObjectsToShow.push_back({SceneObjectTypes::IMAGE_2D_ANIMATION, true, IncosByObject::IMAGE_2D_ANIMATION});
+        allowedObjectsToShow.push_back({SceneObjectTypes::MESH_3D, true, IncosByObject::MESH_3D});
+        allowedObjectsToShow.push_back({SceneObjectTypes::MESH_3D_ANIMATION, true, IncosByObject::MESH_3D_ANIMATION});
+        allowedObjectsToShow.push_back({SceneObjectTypes::IMAGE_3D, true, IncosByObject::IMAGE_3D});
+        allowedObjectsToShow.push_back({SceneObjectTypes::BILLBOARD_ANIMATION, true, IncosByObject::BILLBOARD_ANIMATION});
+        allowedObjectsToShow.push_back({SceneObjectTypes::BILLBOARD_ANIMATION_8DIR, true, IncosByObject::BILLBOARD_ANIMATION_8DIR});
+        allowedObjectsToShow.push_back({SceneObjectTypes::LIGHT_POINT, true, IncosByObject::LIGHT_POINT});
+        allowedObjectsToShow.push_back({SceneObjectTypes::LIGHT_SPOT, true, IncosByObject::LIGHT_SPOT});
+        allowedObjectsToShow.push_back({SceneObjectTypes::PARTICLE_EMITTER, true, IncosByObject::PARTICLE_EMITTER});
     }
 
     void drawAllowedObjectsToShow()

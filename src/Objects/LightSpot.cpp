@@ -37,7 +37,7 @@ void LightSpot::setOuterCutOff(float value)
 
 const char *LightSpot::getTypeObject()
 {
-    return SceneObjectTypes::SPOT_LIGHT_3D;
+    return SceneObjectTypes::LIGHT_SPOT;
 }
 
 float LightSpot::getCutOff() const
@@ -52,7 +52,7 @@ float LightSpot::getOuterCutOff() const
 
 const char *LightSpot::getTypeIcon()
 {
-    return "spotLightIcon";
+    return IncosByObject::LIGHT_SPOT;;
 }
 
 void LightSpot::drawImGuiProperties()
@@ -68,6 +68,7 @@ void LightSpot::onUpdate()
 
 LightSpot *LightSpot::create(const Vertex3D &position, const Vertex3D &direction)
 {
+    return nullptr;
 }
 
 void LightSpot::setDirection(const Vertex3D &d)

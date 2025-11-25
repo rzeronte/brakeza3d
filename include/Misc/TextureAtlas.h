@@ -35,13 +35,13 @@ public:
 
     int total_width;
     int total_height;
-    SDL_Surface *atlas_surface;
+    SDL_Surface *atlasSurface;
 
 private:
 
     bool checkForAllocate(int xpos, int ypos, int width, int height) const;
 
-    void allocateMask(int xpos, int ypos, int width, int height);
+    void allocateMask(int xpos, int ypos, int width, int height) const;
 
 public:
     [[nodiscard]] SDL_Surface *getAtlasSurface() const;

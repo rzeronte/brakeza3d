@@ -147,7 +147,7 @@ const char *Image3DAnimation8Directions::getTypeObject()
 
 const char *Image3DAnimation8Directions::getTypeIcon()
 {
-    return "BillboardAnimation8DirectionsIcon";
+    return IncosByObject::BILLBOARD_ANIMATION_8DIR;
 }
 
 void Image3DAnimation8Directions::updateBillboardSize() const

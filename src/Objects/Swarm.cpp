@@ -224,8 +224,9 @@ const char *Swarm::getTypeObject()
     return SceneObjectTypes::SWARM;
 }
 
-const char *Swarm::getTypeIcon() {
-    return "swarmIcon";
+const char *Swarm::getTypeIcon()
+{
+    return IncosByObject::SWARM;
 }
 
 void Swarm::drawImGuiProperties()

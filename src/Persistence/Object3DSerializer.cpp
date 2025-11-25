@@ -16,6 +16,7 @@ cJSON * Object3DSerializer::JsonByObject(Object3D* object)
 
     cJSON_AddStringToObject(root, "name", object->getLabel().c_str());
     cJSON_AddNumberToObject(root, "scale", object->getScale());
+    cJSON_AddBoolToObject(root, "enabled", object->isEnabled());
 
     cJSON *position = cJSON_CreateObject();
     cJSON_AddNumberToObject(position, "x", object->getPosition().x);

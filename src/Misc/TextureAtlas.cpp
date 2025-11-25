@@ -2,10 +2,12 @@
 #include "../../include/Misc/TextureAtlas.h"
 #include "../../include/Render/Logging.h"
 
-
-TextureAtlas::TextureAtlas(int totalWidth, int totalHeight) :
-        total_width(totalWidth), total_height(totalHeight) {
-    atlas_surface = SDL_CreateRGBSurface(0, totalWidth, totalHeight, 32, 0, 0, 0, 0);
+TextureAtlas::TextureAtlas(int totalWidth, int totalHeight)
+:
+    total_width(totalWidth),
+    total_height(totalHeight)
+{
+    atlasSurface = SDL_CreateRGBSurface(0, totalWidth, totalHeight, 32, 0, 0, 0, 0);
 
     mask = new bool[total_width * total_height];
 
@@ -14,8 +16,9 @@ TextureAtlas::TextureAtlas(int totalWidth, int totalHeight) :
     }
 }
 
-SDL_Surface *TextureAtlas::getAtlasSurface() const {
-    return atlas_surface;
+SDL_Surface *TextureAtlas::getAtlasSurface() const
+{
+    return atlasSurface;
 }
 
 bool TextureAtlas::addTexture(Image *texture, const std::string& name)
@@ -48,7 +51,7 @@ bool TextureAtlas::addTexture(Image *texture, const std::string& name)
                 r.w = texw;
                 r.h = texh;
 
-                SDL_BlitSurface(texture_surface, nullptr, atlas_surface, &r);
+                SDL_BlitSurface(texture_surface, nullptr, atlasSurface, &r);
 
                 return true;
             }
@@ -85,7 +88,8 @@ bool TextureAtlas::checkForAllocate(int xpos, int ypos, int width, int height) c
     return true;
 }
 
-void TextureAtlas::allocateMask(int xpos, int ypos, int width, int height) {
+void TextureAtlas::allocateMask(int xpos, int ypos, int width, int height) const
+{
     int baseOffset = ypos * total_width + xpos;
 
     for (int y = 0; y < height; y++) {
@@ -99,7 +103,8 @@ void TextureAtlas::allocateMask(int xpos, int ypos, int width, int height) {
     }
 }
 
-TextureAtlasImageInfo TextureAtlas::getAtlasTextureInfoForName(const std::string& name) {
+TextureAtlasImageInfo TextureAtlas::getAtlasTextureInfoForName(const std::string& name)
+{
     for (int i = 0; i < this->textures_info.size(); i++) {
         if (textures_info[i].name == name) {
             return textures_info[i];
@@ -109,6 +114,7 @@ TextureAtlasImageInfo TextureAtlas::getAtlasTextureInfoForName(const std::string
     return TextureAtlasImageInfo();
 }
 
-void TextureAtlas::saveJPG(const std::string& name) const {
+void TextureAtlas::saveJPG(const std::string& name) const
+{
     IMG_SavePNG(getAtlasSurface(), name.c_str());
 }

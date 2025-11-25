@@ -3,7 +3,7 @@
 #include "../include/Brakeza3D.h"
 #include "../imgui/backends/imgui_impl_opengl3.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
-#include "../include/cxxxopts.h"
+#include "../cxxxopts/cxxxopts.h"
 
 Brakeza3D *Brakeza3D::instance = nullptr;
 
@@ -95,7 +95,7 @@ void Brakeza3D::mainLoop(bool autostart, const std::string& project)
     window->ImGuiInitialize(BrakezaSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
     welcomeMessage();
 
-    //handleAutoStartProject(autostart, project);
+    handleAutoStartProject(autostart, project);
 
     while (!finish) {
         ControlFrameRate();

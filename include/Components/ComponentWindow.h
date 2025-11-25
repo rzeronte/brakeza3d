@@ -10,7 +10,7 @@
 #include <SDL2/SDL_ttf.h>
 #include "Component.h"
 #include "ImGuizmo.h"
-#include "../OpenGL/OGLShaderTypes.h"
+#include "../OpenGL/CommonOGLShaderTypes.h"
 
 
 class ComponentWindow : public Component

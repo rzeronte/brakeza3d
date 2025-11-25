@@ -14,12 +14,11 @@
 #include "Vertex3D.h"
 #include "Vector3D.h"
 #include "../../include/Render/M3.h"
-#include "../Behaviors/Object3DBehavior.h"
-#include "../Misc/cJSON.h"
 #include "ScriptLUA.h"
 #include "../../sol/sol.hpp"
-#include "../OpenGL/FXOpenGL.h"
 #include "../Collision/Collider.h"
+#include "../Misc/Color.h"
+#include "../Misc/Timer.h"
 
 struct ObjectGUIFeatures {
     bool position = true;
@@ -39,18 +38,19 @@ class Object3D: public Collider
 protected:
     int id = 0;
     float scale = 1.f;
+    float alpha = 1.f;
+    float distanceToCamera = 0.f;
+    bool enabled = true;
     bool removed = false;
     bool decal = false;
     bool belongToScene = false;
     bool multiScene = false;
     bool alphaEnabled = false;
     bool enableLights = false;
-    float alpha = 1.f;
-    float distanceToCamera = 0.f;
 
+    Vertex3D position = Vertex3D(1, 1, 1);
     Vertex3D drawOffset;
 
-    Object3DBehavior *motion = nullptr;
     Object3D *parent = nullptr;
 
     ObjectGUIFeatures featuresGUI;
@@ -63,8 +63,6 @@ protected:
 
     Timer timer;
     Color pickingColor;
-    bool enabled = true;
-    Vertex3D position = Vertex3D(1, 1, 1);
     M3 rotation = M3::getMatrixIdentity();
 public:
     Object3D();
@@ -75,22 +73,21 @@ public:
     void setParent(Object3D *object);
     void setLabel(const std::string& label);
     void setPosition(const Vertex3D &p);
-    void addToPosition(Vertex3D p);
-    void setRotation(M3 r);
+    void addToPosition(const Vertex3D &p);
+    void setRotation(const M3 &r);
     void setScale(float value);
     void setRemoved(bool value);
     void setDecal(bool value);
-    void setDrawOffset(Vertex3D v);
+    void setDrawOffset(const Vertex3D &v);
     void setAlpha(float alpha);
     void setAlphaEnabled(bool value);
-    void setBehavior(Object3DBehavior *motion);
     void setEnableLights(bool value);
     void lookAt(Object3D *o);
     void attachScript(ScriptLUA *script);
     void runScripts();
     void reloadScriptsEnvironment();
     void reloadScriptsCode() const;
-    void removeScript(ScriptLUA *script);
+    void removeScript(const ScriptLUA *script);
     void runStartScripts();
     void setBelongToScene(bool belongToScene);
     void setMultiScene(bool multiScene);
@@ -104,26 +101,25 @@ public:
     virtual void checkClickObject(Vector3D ray, Object3D*& foundObject, float &lastDepthFound);
     virtual const char *getTypeObject();
     virtual const char *getTypeIcon();
-    virtual void setEnabled(bool enabled);
+    virtual void setEnabled(bool value);
     virtual void onUpdate();
     virtual void postUpdate();
     virtual void drawImGuiProperties();
     void setupGhostCollider(CollisionShape mode) override;
-    glm::mat4 getModelMatrix();
+    glm::mat4 getModelMatrix() const;
     M3& rotationPointer();
-    M3 getM3ModelMatrix();
-    M3 getRotation();
+    M3 getM3ModelMatrix() const;
+    M3 getRotation() const;
     Vertex3D& positionPointer();
     Vertex3D &getPosition();
-    Vertex3D AxisUp();
-    Vertex3D AxisDown();
-    Vertex3D AxisForward();
-    Vertex3D AxisBackwards();
-    Vertex3D AxisRight();
-    Vertex3D AxisLeft();
+    Vertex3D AxisUp() const;
+    Vertex3D AxisDown() const;
+    Vertex3D AxisForward() const;
+    Vertex3D AxisBackwards() const;
+    Vertex3D AxisRight() const;
+    Vertex3D AxisLeft() const;
     sol::object getLocalScriptVar(const char *varName);
     [[nodiscard]] const std::vector<ScriptLUA *> &getScripts() const;
-    [[nodiscard]] Object3DBehavior *getBehavior() const;
     [[nodiscard]] bool &isAlphaEnabled();
     [[nodiscard]] Vertex3D &getDrawOffset();
     [[nodiscard]] float &getAlpha();
@@ -141,8 +137,6 @@ public:
     [[nodiscard]] float getDistanceToCamera() const;
     [[nodiscard]] bool isMultiScene() const;
     [[nodiscard]] Color getPickingColor() const;
-    static void setPropertiesFromJSON(cJSON *object, Object3D *o);
-    virtual cJSON *ReadJSONFromObject(Object3D *object);
 
     friend class Object3DSerializer;
     friend class Object3DGUI;

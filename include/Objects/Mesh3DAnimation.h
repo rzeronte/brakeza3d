@@ -65,13 +65,13 @@ class Mesh3DAnimation : public Mesh3D
     int indexCurrentAnimation = 0;
     int boneColliderIndex = 0;
     float runningTime = 0;
-    float animation_speed = 0;
-    bool loop = false;
+    float animation_speed = 1;
+    bool loop = true;
     bool boneColliderEnabled = false;
     bool removeOnAnimationEnd = false;
     bool finished = false;
 
-    const aiScene *scene;
+    const aiScene *scene = nullptr;
     Assimp::Importer importer;
 
     aiMatrix4x4 globalInverseTransform;
