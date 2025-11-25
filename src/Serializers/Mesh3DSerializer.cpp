@@ -2,12 +2,12 @@
 // Created by Eduardo on 23/11/2025.
 //
 
-#include "../../include/Persistence/Mesh3DSerializer.h"
+#include "../../include/Serializers/Mesh3DSerializer.h"
 #include "../../include/Components/ComponentsManager.h"
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Persistence/JSONSerializerRegistry.h"
-#include "../../include/Persistence/Object3DSerializer.h"
+#include "../../include/Serializers/JSONSerializerRegistry.h"
+#include "../../include/Serializers/Object3DSerializer.h"
 
 cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
 {

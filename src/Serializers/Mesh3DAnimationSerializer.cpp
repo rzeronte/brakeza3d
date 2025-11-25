@@ -2,9 +2,9 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#include "../include/Persistence/Mesh3DAnimationSerializer.h"
+#include "../include/Serializers/Mesh3DAnimationSerializer.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Serializers/JSONSerializerRegistry.h"
 
 cJSON* Mesh3DAnimationSerializer::JsonByObject(Object3D *o)
 {

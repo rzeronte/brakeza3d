@@ -2,9 +2,9 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#include "../../include/Persistence/LightPointSerializer.h"
+#include "../../include/Serializers/LightPointSerializer.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Serializers/JSONSerializerRegistry.h"
 
 cJSON * LightPointSerializer::JsonByObject(Object3D *o)
 {

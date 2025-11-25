@@ -2,10 +2,10 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#include "../../include/Persistence/Image3DSerializer.h"
+#include "../../include/Serializers/Image3DSerializer.h"
 #include "../../include/3D/Image3D.h"
-#include "../../include/Persistence/JSONSerializerRegistry.h"
-#include "../../include/Persistence/Object3DSerializer.h"
+#include "../../include/Serializers/JSONSerializerRegistry.h"
+#include "../../include/Serializers/Object3DSerializer.h"
 #include "../../include/Brakeza.h"
 
 cJSON * Image3DSerializer::JsonByObject(Object3D *o)

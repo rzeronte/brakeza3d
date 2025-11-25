@@ -12,13 +12,13 @@
 #include "../include/3D/Image3DAnimation.h"
 #include "../include/Misc/ToolsJSON.h"
 #include "../include/OpenGL/ShaderOGLCustomPostprocessing.h"
-#include "../include/Persistence/JSONSerializerRegistry.h"
-#include "../include/Persistence/LightPointSerializer.h"
-#include "../include/Persistence/Object3DSerializer.h"
-#include "../include/Persistence/Mesh3DSerializer.h"
-#include "../include/Persistence/Mesh3DAnimationSerializer.h"
-#include "../include/Persistence/LightSpotSerializer.h"
-#include "../include/Persistence/ParticleEmmitterSerializer.h"
+#include "../include/Serializers/JSONSerializerRegistry.h"
+#include "../include/Serializers/LightPointSerializer.h"
+#include "../include/Serializers/Object3DSerializer.h"
+#include "../include/Serializers/Mesh3DSerializer.h"
+#include "../include/Serializers/Mesh3DAnimationSerializer.h"
+#include "../include/Serializers/LightSpotSerializer.h"
+#include "../include/Serializers/ParticleEmmitterSerializer.h"
 
 SceneLoader::SceneLoader()
 {

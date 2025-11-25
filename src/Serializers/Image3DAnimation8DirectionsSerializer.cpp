@@ -2,8 +2,8 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#include "../../include/Persistence/Image3DAnimation8DirectionsSerializer.h"
-#include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Serializers/Image3DAnimation8DirectionsSerializer.h"
+#include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/3D/Image3DAnimation8Directions.h"

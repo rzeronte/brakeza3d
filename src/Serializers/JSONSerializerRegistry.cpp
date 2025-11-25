@@ -2,7 +2,7 @@
 // Created by Eduardo on 23/11/2025.
 //
 
-#include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/3D/Object3D.h"
 
 cJSON* JSONSerializerRegistry::serialize(Object3D* obj)

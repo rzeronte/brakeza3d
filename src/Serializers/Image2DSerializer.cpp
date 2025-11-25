@@ -2,9 +2,9 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#include "../../include/Persistence/Image2DSerializer.h"
+#include "../../include/Serializers/Image2DSerializer.h"
 #include "../../include/2D/Image2D.h"
-#include "../../include/Persistence/JSONSerializerRegistry.h"
+#include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Brakeza.h"
 
 cJSON * Image2DSerializer::JsonByObject(Object3D *o)
