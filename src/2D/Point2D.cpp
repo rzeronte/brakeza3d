@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../../include/2D/Point2D.h"
+#include "../../include/Render/Point2D.h"
 #include "../../include/Render/Maths.h"
 
 Point2D::Point2D(): x(0), y(0)

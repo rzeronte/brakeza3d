@@ -7,8 +7,8 @@
 
 #include <vector>
 #include "Component.h"
-#include "../Objects/Triangle3D.h"
-#include "../2D/TextWriter.h"
+#include "../Render/Triangle3D.h"
+#include "../Render/TextWriter.h"
 #include "../SceneLoader.h"
 #include "../ProjectLoader.h"
 #include "../OpenGL/ShaderOGLImage.h"

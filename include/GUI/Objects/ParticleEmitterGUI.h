@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_IMAGE3DDRAWERGUI_H
 #define BRAKEZA3D_IMAGE3DDRAWERGUI_H
 
-#include "../../Objects/ParticleEmitter.h"
+#include "../../3D/ParticleEmitter.h"
 #include "../../Render/Logging.h"
 
 class ParticleEmitterGUI

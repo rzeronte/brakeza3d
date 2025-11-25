@@ -13,7 +13,7 @@
 #include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza3D.h"
 #include "../../include/2D/Image2DAnimation.h"
-#include "../../include/Objects/Mesh3DAnimation.h"
+#include "../../include/3D/Mesh3DAnimation.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glm/gtc/type_ptr.hpp>

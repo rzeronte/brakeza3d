@@ -2,9 +2,9 @@
 #ifndef SDL2_3D_ENGINE_FRUSTUM_H
 #define SDL2_3D_ENGINE_FRUSTUM_H
 
-#include "../Objects/Vertex3D.h"
-#include "../Objects/Object3D.h"
-#include "../Objects/Vector3D.h"
+#include "../3D/Vertex3D.h"
+#include "../3D/Object3D.h"
+#include "../3D/Vector3D.h"
 #include "Plane.h"
 #include "AABB3D.h"
 

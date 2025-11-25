@@ -3,7 +3,7 @@
 
 #include "Frustum.h"
 #include "../Components/Camera3D.h"
-#include "../Objects/Cube3D.h"
+#include "../3D/Cube3D.h"
 #include "../Misc/Octree.h"
 #include "../Misc/Grid3D.h"
 

@@ -3,7 +3,7 @@
 
 
 #include <vector>
-#include "../Objects/Vertex3D.h"
+#include "../3D/Vertex3D.h"
 #include "../Render/Plane.h"
 #include "../include/Misc/cJSON.h"
 

@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_IMAGE3DDRAWERGUI_H
 #define BRAKEZA3D_IMAGE3DDRAWERGUI_H
 
-#include "../../Objects/Mesh3DAnimation.h"
+#include "../../3D/Mesh3DAnimation.h"
 #include "../../Brakeza3D.h"
 
 class Mesh3DAnimationDrawerGUI

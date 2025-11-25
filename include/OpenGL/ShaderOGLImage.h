@@ -4,9 +4,9 @@
 #define GL_GLEXT_PROTOTYPES
 
 #include "ShaderBaseOpenGL.h"
-#include "ShaderBaseOpenGLQuad.h"
 
-class ShaderOGLImage : public ShaderBaseOpenGL {
+class ShaderOGLImage : public ShaderBaseOpenGL
+{
     GLuint quadVAO = 0;
     GLuint VBO = 0;
 

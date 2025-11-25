@@ -5,8 +5,8 @@
 #ifndef BRAKEZA3D_IMAGE3DDRAWERGUI_H
 #define BRAKEZA3D_IMAGE3DDRAWERGUI_H
 
-#include "../../Objects/Image3D.h"
-#include "../../Objects/Image3DAnimation.h"
+#include "../../3D/Image3D.h"
+#include "../../3D/Image3DAnimation.h"
 
 class Image3DAnimationGUI
 {

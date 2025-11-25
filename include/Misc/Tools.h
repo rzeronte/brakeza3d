@@ -1,14 +1,14 @@
 #ifndef SDL2_3D_ENGINE_TOOLS_H
 #define SDL2_3D_ENGINE_TOOLS_H
 
-#include "../Objects/Vertex3D.h"
-#include "../2D/Point2D.h"
+#include "../3D/Vertex3D.h"
+#include "../Render/Point2D.h"
 #include "../Components/Camera3D.h"
-#include "../Objects/Object3D.h"
-#include "../Objects/LightPoint.h"
+#include "../3D/Object3D.h"
+#include "../3D/LightPoint.h"
 #include "../Render/M3.h"
-#include "../2D/TextureAnimated.h"
-#include "../Objects/ParticlesContext.h"
+#include "../Render/TextureAnimated.h"
+#include "ParticlesContext.h"
 #include <vector>
 #include <glm/vec2.hpp>
 

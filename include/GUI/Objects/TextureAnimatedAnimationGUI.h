@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_IMAGE3DDRAWERGUI_H
 #define BRAKEZA3D_IMAGE3DDRAWERGUI_H
 
-#include "../../2D/TextureAnimated.h"
+#include "../../Render/TextureAnimated.h"
 
 class TextureAnimatedDrawerGUI
 {

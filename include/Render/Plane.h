@@ -4,8 +4,8 @@
 
 
 #include <vector>
-#include "../Objects/Vertex3D.h"
-#include "../Objects/Vector3D.h"
+#include "../3D/Vertex3D.h"
+#include "../3D/Vector3D.h"
 
 class Plane {
 public:

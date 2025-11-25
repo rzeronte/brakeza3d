@@ -2,7 +2,7 @@
 #define BRAKEZA3D_SHADEROPENGLGBUFFER_H
 
 #include "ShaderBaseOpenGL.h"
-#include "../Objects/Mesh3D.h"
+#include "../3D/Mesh3D.h"
 
 class ShaderOGLRenderDeferred : public ShaderBaseOpenGL
 {

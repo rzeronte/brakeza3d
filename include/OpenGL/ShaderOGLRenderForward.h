@@ -8,8 +8,8 @@
 
 #include "ShaderBaseOpenGL.h"
 #include "CommonOGLShaderTypes.h"
-#include "../Objects/LightSpot.h"
-#include "../Objects/Mesh3D.h"
+#include "../3D/LightSpot.h"
+#include "../3D/Mesh3D.h"
 #include <glm/ext/matrix_float4x4.hpp>
 #include <vector>
 

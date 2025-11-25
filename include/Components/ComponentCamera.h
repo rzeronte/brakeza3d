@@ -2,7 +2,7 @@
 #ifndef SDL2_3D_ENGINE_CAMERA_H
 #define SDL2_3D_ENGINE_CAMERA_H
 
-#include "../Objects/Object3D.h"
+#include "../3D/Object3D.h"
 #include "../Render/M3.h"
 #include "Component.h"
 #include "Camera3D.h"

@@ -4,9 +4,8 @@
 
 #ifndef BRAKEZA3D_SCENEOBJECTTYPES_H
 #define BRAKEZA3D_SCENEOBJECTTYPES_H
-#include <cstring>
 
-#include "BrakezaSetup.h"
+#include <cstring>
 
 enum class SceneObjectLoaderMapping {
     Object3D,

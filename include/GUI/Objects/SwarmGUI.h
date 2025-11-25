@@ -6,7 +6,7 @@
 #define BRAKEZA3D_IMAGE3DDRAWERGUI_H
 
 #include "../../Brakeza3D.h"
-#include "../../Objects/Swarm.h"
+#include "../../3D/Swarm.h"
 
 class SwarmGUI
 {

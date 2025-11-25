@@ -7,9 +7,9 @@
 
 
 #include "../../include/OpenGL/ShaderBaseOpenGL.h"
-#include "../../include/Objects/Vertex3D.h"
+#include "../3D/Vertex3D.h"
 #include "../../include/Misc/Color.h"
-#include "../../include/Objects/Vector3D.h"
+#include "../3D/Vector3D.h"
 #include <vector>
 
 class ShaderOGLLine3D : public ShaderBaseOpenGL

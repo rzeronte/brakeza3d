@@ -3,8 +3,8 @@
 #define BRAKEZA3D_SHADEROPENGLPOINTS_H
 
 #include "ShaderBaseOpenGL.h"
-#include "../Objects/Mesh3D.h"
-#include "../Objects/Mesh3DAnimation.h"
+#include "../3D/Mesh3D.h"
+#include "../3D/Mesh3DAnimation.h"
 
 class ShaderOGLPoints : public ShaderBaseOpenGL
 {

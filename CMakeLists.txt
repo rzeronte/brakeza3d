@@ -86,16 +86,16 @@ add_executable(Brakeza3D
         include/SceneObjectTypes.h
 
         # 2D
-        src/2D/Button.cpp                                   include/2D/Button.h
+        src/Misc/Button.cpp include/Misc/Button.h
         src/2D/Image2D.cpp                                  include/2D/Image2D.h
         src/2D/Image2DAnimation.cpp                         include/2D/Image2DAnimation.h
-        src/2D/Line2D.cpp                                   include/2D/Line2D.h
-        src/2D/MenuOption.cpp                               include/2D/MenuOption.h
-        src/2D/Point2D.cpp                                  include/2D/Point2D.h
-        src/2D/TextureAnimated.cpp                          include/2D/TextureAnimated.h
-        src/2D/TextureAnimatedDirectional.cpp               include/2D/TextureAnimatedDirectional.h
-        src/2D/TextWriter.cpp                               include/2D/TextWriter.h
-        include/2D/ButtonsCallbacks.h
+        src/2D/Line2D.cpp include/Render/Line2D.h
+        src/Misc/MenuOption.cpp include/Misc/MenuOption.h
+        src/2D/Point2D.cpp include/Render/Point2D.h
+        src/2D/TextureAnimated.cpp include/Render/TextureAnimated.h
+        src/2D/TextureAnimatedDirectional.cpp include/Render/TextureAnimatedDirectional.h
+        src/2D/TextWriter.cpp include/Render/TextWriter.h
+        include/Misc/ButtonsCallbacks.h
 
         # Collision
         src/Collisions/Collider.cpp                         include/Collision/Collider.h
@@ -171,28 +171,27 @@ add_executable(Brakeza3D
         include/Misc/PathFinding.h
 
         # Objects
-        src/Objects/BSPMap.cpp                              include/Objects/BSPMap.h
-        src/Objects/Camera3D.cpp                            include/Components/Camera3D.h
-        src/Objects/Cube3D.cpp                              include/Objects/Cube3D.h
-        src/Objects/Decal.cpp                               include/Objects/Decal.h
-        src/Objects/Image3D.cpp                             include/Objects/Image3D.h
-        src/Objects/Image3DAnimation.cpp                    include/Objects/Image3DAnimation.h
-        src/Objects/Image3DAnimation8Directions.cpp         include/Objects/Image3DAnimation8Directions.h
-        src/Objects/LightPoint.cpp                          include/Objects/LightPoint.h
-        src/Objects/LightSpot.cpp                           include/Objects/LightSpot.h
-        src/Objects/Mesh3D.cpp                              include/Objects/Mesh3D.h
-        src/Objects/Mesh3DAnimation.cpp                     include/Objects/Mesh3DAnimation.h
-        src/Objects/Object3D.cpp                            include/Objects/Object3D.h
-        src/Objects/ParticleEmitter.cpp                     include/Objects/ParticleEmitter.h
-        src/Objects/ParticleEmitterFireworks.cpp            include/Objects/ParticleEmitterFireworks.h
-        src/Objects/ScriptLUA.cpp                           include/Objects/ScriptLUA.h
-        src/Objects/Swarm.cpp                               include/Objects/Swarm.h
-        src/Objects/TentacleIK.cpp                          include/Objects/TentacleIK.h
-        src/Objects/Triangle3D.cpp                          include/Objects/Triangle3D.h
-        include/Objects/Vector2D.cpp                        include/Objects/Vector2D.h
-        src/Objects/Vector3D.cpp                            include/Objects/Vector3D.h
-        src/Objects/Vertex3D.cpp                            include/Objects/Vertex3D.h
-        include/Objects/ParticlesContext.h
+        src/3D/BSPMap.cpp include/3D/BSPMap.h
+        src/3D/Camera3D.cpp include/Components/Camera3D.h
+        src/3D/Cube3D.cpp include/3D/Cube3D.h
+        src/3D/Decal.cpp include/3D/Decal.h
+        src/GUI/Image3D.cpp include/3D/Image3D.h
+        src/GUI/Image3DAnimation.cpp include/3D/Image3DAnimation.h
+        src/3D/Image3DAnimation8Directions.cpp include/3D/Image3DAnimation8Directions.h
+        src/3D/LightPoint.cpp include/3D/LightPoint.h
+        src/3D/LightSpot.cpp include/3D/LightSpot.h
+        src/3D/Mesh3D.cpp include/3D/Mesh3D.h
+        src/3D/Mesh3DAnimation.cpp include/3D/Mesh3DAnimation.h
+        src/3D/Object3D.cpp include/3D/Object3D.h
+        src/3D/ParticleEmitter.cpp include/3D/ParticleEmitter.h
+        src/Misc/ScriptLUA.cpp include/Misc/ScriptLUA.h
+        src/3D/Swarm.cpp include/3D/Swarm.h
+        src/3D/TentacleIK.cpp include/3D/TentacleIK.h
+        src/Render/Triangle3D.cpp include/Render/Triangle3D.h
+        src/2D/Vector2D.cpp include/Render/Vector2D.h
+        src/Render/Vector3D.cpp include/3D/Vector3D.h
+        src/Render/Vertex3D.cpp include/3D/Vertex3D.h
+        include/Misc/ParticlesContext.h
 
         # OpenGL
         src/OpenGL/ShaderBaseOpenGL.cpp                     include/OpenGL/ShaderBaseOpenGL.h

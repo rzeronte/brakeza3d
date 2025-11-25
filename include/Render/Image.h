@@ -9,7 +9,7 @@
 #include <string>
 #include <SDL2/SDL_surface.h>
 #include <GL/glew.h>
-#include "../Objects/Vertex3D.h"
+#include "../3D/Vertex3D.h"
 #include "../Misc/Color.h"
 
 class Image {

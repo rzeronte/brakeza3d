@@ -6,7 +6,7 @@
 #define BRAKEZA3D_TOOLSJSON_H
 
 
-#include "../Objects/Vertex3D.h"
+#include "../3D/Vertex3D.h"
 #include "cJSON.h"
 #include "Color.h"
 #include "../include/Render/M3.h"
