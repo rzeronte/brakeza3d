@@ -29,8 +29,8 @@ namespace SceneObjectTypes {
     inline constexpr const char* LIGHT_POINT = "LightPoint3D";
     inline constexpr const char* LIGHT_SPOT = "SpotLight3D";
     inline constexpr const char* PARTICLE_EMITTER = "ParticleEmitter";
-    inline constexpr const char* BILLBOARD_ANIMATION = "BillboardAnimation";
-    inline constexpr const char* BILLBOARD_ANIMATION_8DIR = "BillboardAnimation8Directions";
+    inline constexpr const char* IMAGE_3D_ANIMATION = "BillboardAnimation";
+    inline constexpr const char* IMAGE_3D_ANIMATION_8DIR = "BillboardAnimation8Directions";
     inline constexpr const char* IMAGE_2D_ANIMATION = "Image2DAnimation";
     inline constexpr const char* IMAGE_3D = "Image3D";
     inline constexpr const char* IMAGE_2D = "Image2D";
@@ -44,8 +44,8 @@ static constexpr const char* SceneObjectTypeNames[] = {
     SceneObjectTypes::LIGHT_POINT,
     SceneObjectTypes::LIGHT_SPOT,
     SceneObjectTypes::PARTICLE_EMITTER,
-    SceneObjectTypes::BILLBOARD_ANIMATION,
-    SceneObjectTypes::BILLBOARD_ANIMATION_8DIR,
+    SceneObjectTypes::IMAGE_3D_ANIMATION,
+    SceneObjectTypes::IMAGE_3D_ANIMATION_8DIR,
     SceneObjectTypes::IMAGE_2D_ANIMATION,
     SceneObjectTypes::IMAGE_3D,
     SceneObjectTypes::IMAGE_2D,
@@ -59,8 +59,8 @@ namespace IconsByObject {
     inline constexpr const char* LIGHT_POINT = "lightIcon";
     inline constexpr const char* LIGHT_SPOT = "spotLightIcon";
     inline constexpr const char* PARTICLE_EMITTER = "particlesIcon";
-    inline constexpr const char* BILLBOARD_ANIMATION = "BillboardAnimationIcon";
-    inline constexpr const char* BILLBOARD_ANIMATION_8DIR = "BillboardAnimation8DirectionsIcon";
+    inline constexpr const char* IMAGE_3D_ANIMATION = "BillboardAnimationIcon";
+    inline constexpr const char* IMAGE_3D_ANIMATION_8DIR = "BillboardAnimation8DirectionsIcon";
     inline constexpr const char* IMAGE_2D_ANIMATION = "Image2DAnimation";
     inline constexpr const char* IMAGE_3D = "Image3D";
     inline constexpr const char* IMAGE_2D = "Image2DIcon";
@@ -78,8 +78,8 @@ namespace IconsByObject {
         {LIGHT_POINT, "light.png"},
         {LIGHT_SPOT, "spotlight.png"},
         {PARTICLE_EMITTER, "particles.png"},
-        {BILLBOARD_ANIMATION, "BillboardAnimationIcon.png"},
-        {BILLBOARD_ANIMATION_8DIR, "BillboardAnimation8DirectionsIcon.png"},
+        {IMAGE_3D_ANIMATION, "BillboardAnimationIcon.png"},
+        {IMAGE_3D_ANIMATION_8DIR, "BillboardAnimation8DirectionsIcon.png"},
         {IMAGE_2D_ANIMATION, "Image2DAnimationIcon.png"},
         {IMAGE_3D, "Image3DIcon.png"},
         {IMAGE_2D, "Image2DIcon.png"},
