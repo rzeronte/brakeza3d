@@ -18,75 +18,43 @@ Mesh3D::Mesh3D()
     luaEnvironment["this"] = this;
 }
 
-void Mesh3D::onUpdate()
+Mesh3D::~Mesh3D()
 {
-    Object3D::onUpdate();
+    Logging::Message("Delete Mesh3D: %s", getLabel().c_str());
 
-    if (isRemoved()) return;
+    for (auto &m : meshes) {
+        for (auto triangle : m.modelTriangles) delete triangle;
+        for (auto vertex : m.modelVertices) delete vertex;
 
-    auto render = ComponentsManager::get()->getComponentRender();
-    auto window = ComponentsManager::get()->getComponentWindow();
+        if (glIsBuffer(m.vertexBuffer))
+            glDeleteBuffers(1, &m.vertexBuffer);
 
-    auto sceneFramebuffer = window->getSceneFramebuffer();
+        if (glIsBuffer(m.uvBuffer))
+            glDeleteBuffers(1, &m.uvBuffer);
 
-    if (render->getSelectedObject() == this) {
-        render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
+        if (glIsBuffer(m.normalBuffer))
+            glDeleteBuffers(1, &m.normalBuffer);
     }
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (BrakezaSetup::get()->ENABLE_LIGHTS) {
-            render->getShaderOGLRenderDeferred()->renderMesh(this, false, window->getGBuffer().FBO);
-            if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
-                shadowMappingPass();
-            }
-        } else {
-            render->getShaderOGLRenderForward()->renderMesh(this, false, sceneFramebuffer);
-        }
-    }
-
-    if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        render->getShaderOGLWireframe()->renderMesh(this, false, sceneFramebuffer);
-    }
-
-    if (BrakezaSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
-        render->getShaderOGLPoints()->renderMesh(this, false, sceneFramebuffer);
-    }
-
-    if (BrakezaSetup::get()->TRIANGLE_MODE_SHADING && isRender()) {
-        render->getShaderOGLShading()->renderMesh(this, false, sceneFramebuffer);
-    }
-
-    if (BrakezaSetup::get()->DRAW_MESH3D_AABB && isRender()) {
-        updateBoundingBox();
-        Drawable::drawAABB(&aabb, Color::white());
-    }
-
-    if (BrakezaSetup::get()->DRAW_MESH3D_OCTREE && this->octree != nullptr) {
-        Drawable::drawOctree(octree);
-    }
-
-    if (BrakezaSetup::get()->DRAW_MESH3D_GRID && this->grid != nullptr) {
-        Drawable::drawGrid3D(grid);
-    }
-
-    if (BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
-        render->getShaderOGLColor()->renderMesh(
-            this,
-            false,
-            getPickingColor(),
-            false,
-            window->getPickingColorFramebuffer().FBO
-        );
-    }
-
-    for (const auto s: customShaders) {
-        s->render(sceneFramebuffer);
+    if (!sharedTextures) {
+        for (auto texture : modelTextures) delete texture;
+        for (auto texture : modelSpecularTextures) delete texture;
     }
 }
 
-void Mesh3D::postUpdate()
+Mesh3D *Mesh3D::create(Vertex3D position, const std::string& imageFile)
 {
-    Object3D::postUpdate();
+    return nullptr;
+}
+
+const char *Mesh3D::getTypeObject()
+{
+    return SceneObjectTypes::MESH_3D;
+}
+
+const char *Mesh3D::getTypeIcon()
+{
+    return IconsByObject::MESH_3D;
 }
 
 void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
@@ -176,7 +144,7 @@ void Mesh3D::ProcessNodes(const aiScene *scene, aiNode *node)
 
 void Mesh3D::LoadMesh(int meshId, aiMesh *mesh)
 {
-    Logging::Message("[Mesh3D] Loading mesh: %d | Numº Vertices: %d", meshId, mesh->mNumVertices);
+    Logging::Message("[Mesh3D] Loading mesh: %d |  Vertices: %d", meshId, mesh->mNumVertices);
 
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
         Logging::Message("Skip mesh non triangle: %s", mesh->mPrimitiveTypes);
@@ -219,21 +187,75 @@ void Mesh3D::LoadMesh(int meshId, aiMesh *mesh)
     }
 }
 
-Octree *Mesh3D::getOctree() const {
-    return octree;
-}
-
-Grid3D *Mesh3D::getGrid3D() const {
-    return grid;
-}
-
-void Mesh3D::buildGrid3D(int sizeX, int sizeY, int sizeZ)
+void Mesh3D::onUpdate()
 {
-    updateBoundingBox();
+    Object3D::onUpdate();
 
-    if (grid != nullptr) delete grid;
+    if (isRemoved()) return;
 
-    grid = new Grid3D(aabb, sizeX, sizeY, sizeZ);
+    auto render = ComponentsManager::get()->getComponentRender();
+    auto window = ComponentsManager::get()->getComponentWindow();
+
+    auto sceneFramebuffer = window->getSceneFramebuffer();
+
+    if (render->getSelectedObject() == this) {
+        render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
+    }
+
+    if (BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
+        if (BrakezaSetup::get()->ENABLE_LIGHTS) {
+            render->getShaderOGLRenderDeferred()->renderMesh(this, false, window->getGBuffer().FBO);
+            if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
+                shadowMappingPass();
+            }
+        } else {
+            render->getShaderOGLRenderForward()->renderMesh(this, false, sceneFramebuffer);
+        }
+    }
+
+    if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
+        render->getShaderOGLWireframe()->renderMesh(this, false, sceneFramebuffer);
+    }
+
+    if (BrakezaSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
+        render->getShaderOGLPoints()->renderMesh(this, false, sceneFramebuffer);
+    }
+
+    if (BrakezaSetup::get()->TRIANGLE_MODE_SHADING && isRender()) {
+        render->getShaderOGLShading()->renderMesh(this, false, sceneFramebuffer);
+    }
+
+    if (BrakezaSetup::get()->DRAW_MESH3D_AABB && isRender()) {
+        updateBoundingBox();
+        Drawable::drawAABB(&aabb, Color::white());
+    }
+
+    if (BrakezaSetup::get()->DRAW_MESH3D_OCTREE && this->octree != nullptr) {
+        Drawable::drawOctree(octree);
+    }
+
+    if (BrakezaSetup::get()->DRAW_MESH3D_GRID && this->grid != nullptr) {
+        Drawable::drawGrid3D(grid);
+    }
+
+    if (BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
+        render->getShaderOGLColor()->renderMesh(
+            this,
+            false,
+            getPickingColor(),
+            false,
+            window->getPickingColorFramebuffer().FBO
+        );
+    }
+
+    for (const auto s: customShaders) {
+        s->render(sceneFramebuffer);
+    }
+}
+
+void Mesh3D::postUpdate()
+{
+    Object3D::postUpdate();
 }
 
 void Mesh3D::buildOctree(int depth)
@@ -247,84 +269,88 @@ void Mesh3D::buildOctree(int depth)
     octree = new Octree(aabb, depth);
 }
 
-Mesh3D::~Mesh3D()
-{
-    Logging::Message("Delete Mesh3D: %s", getLabel().c_str());
-
-    for (auto &m : meshes) {
-        for (auto triangle : m.modelTriangles) delete triangle;
-        for (auto vertex : m.modelVertices) delete vertex;
-
-        if (glIsBuffer(m.vertexBuffer))
-            glDeleteBuffers(1, &m.vertexBuffer);
-
-        if (glIsBuffer(m.uvBuffer))
-            glDeleteBuffers(1, &m.uvBuffer);
-
-        if (glIsBuffer(m.normalBuffer))
-            glDeleteBuffers(1, &m.normalBuffer);
-    }
-
-    if (!sharedTextures) {
-        for (auto texture : modelTextures) delete texture;
-        for (auto texture : modelSpecularTextures) delete texture;
-    }
-}
-
-bool Mesh3D::isRender() const
-{
-    return render;
-}
-
 void Mesh3D::setRender(bool render)
 {
     Mesh3D::render = render;
-}
-
-std::vector<Triangle *> &Mesh3D::getModelTriangles(int i)
-{
-    return meshes[i].modelTriangles;
-}
-
-std::vector<Image *> &Mesh3D::getModelTextures()
-{
-    return modelTextures;
-}
-
-const std::vector<Image *> &Mesh3D::getModelSpecularTextures() const
-{
-    return modelSpecularTextures;
-}
-
-std::vector<Vertex3D *> &Mesh3D::getModelVertices(int i)
-{
-    return meshes[i].modelVertices;
-}
-
-std::vector<Mesh3DData> &Mesh3D::getMeshData()
-{
-    return meshes;
-}
-
-AABB3D &Mesh3D::getAABB()
-{
-    return aabb;
-}
-
-const char *Mesh3D::getTypeObject()
-{
-    return SceneObjectTypes::MESH_3D;
-}
-
-const char *Mesh3D::getTypeIcon()
-{
-    return IconsByObject::MESH_3D;
 }
 
 void Mesh3D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
     Mesh3DGUI::drawImGuiProperties(this);
+}
+
+void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+{
+    Logging::Message("[Mesh3D] makeRigidBodyFromTriangleMesh for %s", getLabel().c_str());
+
+    setMass(mass);
+
+    btTransform transformation;
+    transformation.setIdentity();
+    transformation.setOrigin(getPosition().toBullet());
+
+    btVector3 inertia(0, 0, 0);
+
+    btRigidBody::btRigidBodyConstructionInfo info(
+        mass,
+        new btDefaultMotionState(transformation),
+        getTriangleMeshFromMesh3D(inertia),
+        inertia
+    );
+
+    body = new btRigidBody(info);
+    body->activate(true);
+    body->setContactProcessingThreshold(BT_LARGE_FLOAT);
+    body->setUserPointer(this);
+    body->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
+    body->setAngularFactor(angularFactor.toBullet());
+
+    if (mass <= 0) {
+        body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
+    }
+
+    world->addRigidBody(body, collisionGroup, collisionMask);
+}
+
+void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+{
+    Logging::Message("[Mesh3D] makeRigidBodyFromTriangleMeshFromConvexHull for %s", getLabel().c_str());
+
+    setMass(mass);
+
+    btTransform transformation;
+    transformation.setIdentity();
+    transformation.setOrigin(getPosition().toBullet());
+
+    btVector3 inertia(0, 0, 0);
+    btCollisionShape* shape = getConvexHullShapeFromMesh(inertia);
+    if (mass > 0) {
+        shape->calculateLocalInertia(mass, inertia); // Calcula el tensor de inercia
+    }
+
+    btRigidBody::btRigidBodyConstructionInfo info(
+        mass,
+        new btDefaultMotionState(transformation),
+        shape,
+        inertia
+    );
+
+    body = new btRigidBody(info);
+    body->activate(true);
+    body->setContactProcessingThreshold(BT_LARGE_FLOAT);
+    body->setUserPointer(this);
+    body->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
+    body->setRestitution(restitution);
+    body->setActivationState(ACTIVE_TAG);
+    body->setLinearFactor(linearFactor.toBullet());
+    body->setAngularFactor(angularFactor.toBullet());
+    body->setFriction(friction);
+    body->setDamping(linearDamping, angularDamping);
+    body->setCcdMotionThreshold(ccdMotionThreshold);
+    body->setCcdSweptSphereRadius(ccdSweptSphereRadius);
+
+    world->addRigidBody(body, collisionGroup, collisionMask);
 }
 
 void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
@@ -462,6 +488,9 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
 
                             break;
                         }
+                        default: {
+                            Logging::Message("[Mesh3D] Error: Cannot process this shader type!");
+                        }
                     }
                 }
             }
@@ -478,77 +507,129 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
     }
 }
 
-void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+void Mesh3D::setSourceFile(const std::string &sourceFile)
 {
-    Logging::Message("[Mesh3D] makeRigidBodyFromTriangleMeshFromConvexHull for %s", getLabel().c_str());
-
-    setMass(mass);
-
-    btTransform transformation;
-    transformation.setIdentity();
-    transformation.setOrigin(getPosition().toBullet());
-
-    btVector3 inertia(0, 0, 0);
-    btCollisionShape* shape = getConvexHullShapeFromMesh(inertia);
-    if (mass > 0) {
-        shape->calculateLocalInertia(mass, inertia); // Calcula el tensor de inercia
-    }
-
-    btRigidBody::btRigidBodyConstructionInfo info(
-        mass,
-        new btDefaultMotionState(transformation),
-        shape,
-        inertia
-    );
-
-    body = new btRigidBody(info);
-    body->activate(true);
-    body->setContactProcessingThreshold(BT_LARGE_FLOAT);
-    body->setUserPointer(this);
-    body->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
-    body->setRestitution(restitution);
-    body->setActivationState(ACTIVE_TAG);
-    body->setLinearFactor(linearFactor.toBullet());
-    body->setAngularFactor(angularFactor.toBullet());
-    body->setFriction(friction);
-    body->setDamping(linearDamping, angularDamping);
-    body->setCcdMotionThreshold(ccdMotionThreshold);
-    body->setCcdSweptSphereRadius(ccdSweptSphereRadius);
-
-    world->addRigidBody(body, collisionGroup, collisionMask);
+    Mesh3D::sourceFile = sourceFile;
 }
 
-void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+void Mesh3D::buildGrid3D(int sizeX, int sizeY, int sizeZ)
 {
-    Logging::Message("[Mesh3D] makeRigidBodyFromTriangleMesh for %s", getLabel().c_str());
+    updateBoundingBox();
 
-    setMass(mass);
+    if (grid != nullptr) delete grid;
 
-    btTransform transformation;
-    transformation.setIdentity();
-    transformation.setOrigin(getPosition().toBullet());
+    grid = new Grid3D(aabb, sizeX, sizeY, sizeZ);
+}
 
-    btVector3 inertia(0, 0, 0);
+void Mesh3D::fillGrid3DFromGeometry()
+{
+    grid->reset(grid->getNumberCubesX(), grid->getNumberCubesY(), grid->getNumberCubesZ());
+    for (auto &m: meshes) {
+        grid->doTestForNonEmptyGeometry(m.modelTriangles);
+    }
+}
 
-    btRigidBody::btRigidBodyConstructionInfo info(
-        mass,
-        new btDefaultMotionState(transformation),
-        getTriangleMeshFromMesh3D(inertia),
-        inertia
+void Mesh3D::addCustomShader(ShaderOGLCustom *s)
+{
+    customShaders.emplace_back(s);
+}
+
+void Mesh3D::loadShader(const std::string &folder, const std::string &jsonFilename)
+{
+    auto name = Tools::getFilenameWithoutExtension(jsonFilename);
+
+    std::string shaderFragmentFile = folder + std::string(name + ".fs");
+    std::string shaderVertexFile = folder + std::string(name + ".vs");
+
+    auto type = ShaderOGLCustom::extractTypeFromShaderName(folder, name);
+
+    Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
+
+    switch(type) {
+        case SHADER_POSTPROCESSING : {
+            Logging::Message("[error] You can't add a 'Postprocessing shader' type into Mesh3D");
+            break;
+        }
+        case SHADER_OBJECT : {
+            addCustomShader(new ShaderOGLCustomMesh3D(this, name, shaderVertexFile, shaderFragmentFile));
+            break;
+        }
+        default: {
+            Logging::Message("[Mesh3D] Error: Cannot process this shader type!");
+        }
+    }
+}
+
+void Mesh3D::removeShader(int index)
+{
+    if (index >= 0 && index < customShaders.size()) {
+        customShaders.erase(customShaders.begin() + index);
+    }
+}
+
+void Mesh3D::shadowMappingPass()
+{
+    auto render = ComponentsManager::get()->getComponentRender();
+    auto shaderShadowPass = render->getShaderOGLShadowPass();
+    auto shaderRender = render->getShaderOGLRenderForward();
+
+    // Directional Light
+    shaderShadowPass->renderMeshIntoDirectionalLightTexture(
+        this,
+        shaderRender->getDirectionalLight(),
+        shaderShadowPass->getDirectionalLightDepthMapFBO()
     );
 
-    body = new btRigidBody(info);
-    body->activate(true);
-    body->setContactProcessingThreshold(BT_LARGE_FLOAT);
-    body->setUserPointer(this);
-    body->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
-    body->setAngularFactor(angularFactor.toBullet());
+    // SpotLights
+    const auto shadowSpotLights = shaderRender->getShadowMappingSpotLights();
+    const auto numSpotLights = static_cast<int>(shadowSpotLights.size());
 
-    if (mass <= 0) {
-        body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
+    for (int i = 0; i < numSpotLights; i++) {
+        const auto l = shadowSpotLights[i];
+        shaderShadowPass->renderMeshIntoArrayTextures(
+            this,
+            l,
+            shaderShadowPass->getSpotLightsShadowMapArrayTextures(),
+            i,
+            shaderShadowPass->getSpotLightsDepthMapsFBO()
+        );
+    }
+}
+
+void Mesh3D::updateBoundingBox()
+{
+    glm::mat4 mvpMatrix = getModelMatrix();
+
+    float maxX = -FLT_MAX, minX = FLT_MAX, maxY = -FLT_MAX, minY = FLT_MAX, maxZ = -FLT_MAX, minZ = FLT_MAX;
+
+    for (auto &m: meshes) {
+        for (auto &vertex : m.vertices) {
+            glm::vec4 transformedVertex = mvpMatrix * vertex;
+            transformedVertex /= transformedVertex.w;
+
+            maxX = std::max(maxX, transformedVertex.x);
+            minX = std::min(minX, transformedVertex.x);
+            maxY = std::max(maxY, transformedVertex.y);
+            minY = std::min(minY, transformedVertex.y);
+            maxZ = std::max(maxZ, transformedVertex.z);
+            minZ = std::min(minZ, transformedVertex.z);
+        }
     }
 
-    world->addRigidBody(body, collisionGroup, collisionMask);
+    this->aabb.max.x = maxX;
+    this->aabb.max.y = maxY;
+    this->aabb.max.z = maxZ;
+
+    this->aabb.min.x = minX;
+    this->aabb.min.y = minY;
+    this->aabb.min.z = minZ;
+
+    this->aabb.updateVertices();
+}
+
+std::vector<Mesh3DData> &Mesh3D::getMeshData()
+{
+    return meshes;
 }
 
 btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia)
@@ -593,148 +674,44 @@ btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia)
     return convexHull;
 }
 
-void Mesh3D::setSourceFile(const std::string &sourceFile)
+AABB3D &Mesh3D::getAABB()
 {
-    Mesh3D::sourceFile = sourceFile;
-}
-
-void Mesh3D::updateBoundingBox()
-{
-    glm::mat4 mvpMatrix = getModelMatrix();
-
-    float maxX = -FLT_MAX, minX = FLT_MAX, maxY = -FLT_MAX, minY = FLT_MAX, maxZ = -FLT_MAX, minZ = FLT_MAX;
-
-    for (auto &m: meshes) {
-        for (auto &vertex : m.vertices) {
-            glm::vec4 transformedVertex = mvpMatrix * vertex;
-            transformedVertex /= transformedVertex.w;
-
-            maxX = std::max(maxX, transformedVertex.x);
-            minX = std::min(minX, transformedVertex.x);
-            maxY = std::max(maxY, transformedVertex.y);
-            minY = std::min(minY, transformedVertex.y);
-            maxZ = std::max(maxZ, transformedVertex.z);
-            minZ = std::min(minZ, transformedVertex.z);
-        }
-    }
-
-    this->aabb.max.x = maxX;
-    this->aabb.max.y = maxY;
-    this->aabb.max.z = maxZ;
-
-    this->aabb.min.x = minX;
-    this->aabb.min.y = minY;
-    this->aabb.min.z = minZ;
-
-    this->aabb.updateVertices();
-}
-
-void Mesh3D::fillGrid3DFromGeometry()
-{
-    grid->reset(grid->getNumberCubesX(), grid->getNumberCubesY(), grid->getNumberCubesZ());
-    for (auto &m: meshes) {
-        grid->doTestForNonEmptyGeometry(m.modelTriangles);
-    }
-}
-
-void Mesh3D::addCustomShader(ShaderOGLCustom *s)
-{
-    customShaders.emplace_back(s);
-}
-
-void Mesh3D::loadShader(std::string folder, std::string jsonFilename)
-{
-    auto name = Tools::getFilenameWithoutExtension(jsonFilename);
-
-    std::string shaderFragmentFile = folder + std::string(name + ".fs");
-    std::string shaderVertexFile = folder + std::string(name + ".vs");
-
-    auto type = ShaderOGLCustom::extractTypeFromShaderName(folder, name);
-
-    Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
-
-    switch(type) {
-        case SHADER_POSTPROCESSING : {
-            Logging::Message("[error] You can't add a 'Postprocessing shader' type into Mesh3D");
-            break;
-        }
-        case SHADER_OBJECT : {
-            addCustomShader(new ShaderOGLCustomMesh3D(this, name, shaderVertexFile, shaderFragmentFile));
-            break;
-        }
-    }
-}
-
-void Mesh3D::removeShader(int index)
-{
-    if (index >= 0 && index < customShaders.size()) {
-        customShaders.erase(customShaders.begin() + index);
-    }
+    return aabb;
 }
 
 const std::vector<ShaderOGLCustom *> &Mesh3D::getCustomShaders() const {
     return customShaders;
 }
 
-void Mesh3D::checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastDepthFound)
+const std::vector<Image *> &Mesh3D::getModelSpecularTextures() const
 {
-    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-    for (auto m: meshes) {
-        for (auto &triangle : m.modelTriangles) {
-            triangle->updateObjectSpace();
-            auto p = Plane(triangle->Ao, triangle->Bo, triangle->Co);
-            float t;
-            if (Maths::isVector3DClippingPlane(p, ray)) {
-                Vertex3D intersectionPoint  = p.getPointIntersection(ray.origin(), ray.end(), t);
-                if (triangle->isPointInside(intersectionPoint)) {
-                    auto distance = intersectionPoint - camera->getPosition();
-                    auto m = distance.getModule();
-                    if ( m < lastDepthFound || lastDepthFound == -1) {
-                        foundObject = triangle->parent;
-                        lastDepthFound = m;
-                    }
-                }
-            }
-        }
-    }
+    return modelSpecularTextures;
 }
 
-void Mesh3D::shadowMappingPass()
+bool Mesh3D::isRender() const
 {
-    auto render = ComponentsManager::get()->getComponentRender();
-    auto shaderShadowPass = render->getShaderOGLShadowPass();
-    auto shaderRender = render->getShaderOGLRenderForward();
-
-    // Directional Light
-    shaderShadowPass->renderMeshIntoDirectionalLightTexture(
-        this,
-        shaderRender->getDirectionalLight(),
-        shaderShadowPass->getDirectionalLightDepthMapFBO()
-    );
-
-    // SpotLights
-    const auto shadowSpotLights = shaderRender->getShadowMappingSpotLights();
-    const auto numSpotLights = static_cast<int>(shadowSpotLights.size());
-
-    for (int i = 0; i < numSpotLights; i++) {
-        const auto l = shadowSpotLights[i];
-        shaderShadowPass->renderMeshIntoArrayTextures(
-            this,
-            l,
-            shaderShadowPass->getSpotLightsShadowMapArrayTextures(),
-            i,
-            shaderShadowPass->getSpotLightsDepthMapsFBO()
-        );
-    }
+    return render;
 }
 
-// TODO: Pendiente de eliminar esto de aquí, se usa SOLO en LUA ya
-Mesh3D *Mesh3D::create(Vertex3D position, const std::string& imageFile)
-{
-    auto o = new Mesh3D();
-    o->setPosition(position);
-    o->AssimpLoadGeometryFromFile(imageFile);
+Grid3D *Mesh3D::getGrid3D() const {
+    return grid;
+}
 
-    return o;
+Octree *Mesh3D::getOctree() const {
+    return octree;
+}
+
+std::vector<Triangle *> &Mesh3D::getModelTriangles(int i)
+{
+    return meshes[i].modelTriangles;
+}
+
+std::vector<Image *> &Mesh3D::getModelTextures()
+{
+    return modelTextures;
+}
+
+std::vector<Vertex3D *> &Mesh3D::getModelVertices(int i)
+{
+    return meshes[i].modelVertices;
 }

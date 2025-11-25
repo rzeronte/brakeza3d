@@ -180,9 +180,7 @@ struct GUIAddonMenu
                         drawMesh3DItemsToLoad(setup->MODELS_FOLDER);
                         ImGui::EndMenu();
                     }
-
                     ImGui::Separator();
-
                     ImGui::Image(icon(IconsByObject::MESH_3D_ANIMATION), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Mesh3DAnimation")) {

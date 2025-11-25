@@ -78,9 +78,8 @@ public:
     void buildGrid3D(int sizeX, int sizeY, int sizeZ);
     void fillGrid3DFromGeometry();
     void addCustomShader(ShaderOGLCustom *);
-    void loadShader(std::string folder, std::string jsonFilename);
+    void loadShader(const std::string &folder, const std::string &jsonFilename);
     void removeShader(int i);
-    void checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastDepthFound) override;
     virtual void shadowMappingPass();
     virtual void updateBoundingBox();
     std::vector<Mesh3DData> &getMeshData();

@@ -63,7 +63,7 @@ void Mesh3DAnimationSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o
     std::cout << "[Mesh3DSerializer ApplyJsonToObject] " << o->getTypeObject() << std::endl;
     auto mesh = dynamic_cast<Mesh3DAnimation*>(o);
 
-    Object3DSerializer::ApplyJsonToObject(json, o);
+    Mesh3DSerializer::ApplyJsonToObject(json, o);
 
     // speed
     auto speed = cJSON_GetObjectItemCaseSensitive(json, "animationSpeed")->valuedouble;
@@ -95,8 +95,8 @@ Object3D* Mesh3DAnimationSerializer::ObjectByJson(cJSON *json)
     std::cout << "[Mesh3DSerializer LoadJSONObject]"  << std::endl;
 
     auto o = new Mesh3DAnimation();
-
     ApplyJsonToObject(json, o);
+    o->AssimpLoadAnimation(cJSON_GetObjectItemCaseSensitive(json, "model")->valuestring);
 
     return o;
 }

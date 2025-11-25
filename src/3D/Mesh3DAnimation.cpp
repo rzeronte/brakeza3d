@@ -15,7 +15,15 @@ void Mesh3DAnimation::onUpdate()
 {
     Object3D::onUpdate();
 
-    if (!isEnabled() || isRemoved()) return;
+    if (!isEnabled() || isRemoved()) {
+        Logging::Message("Scene is disable or removed!");
+        return;
+    }
+
+    if (scene == nullptr) {
+        Logging::Message("Scene is null!");
+        return;
+    }
 
     UpdateFrameTransformations();
 

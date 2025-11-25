@@ -16,10 +16,10 @@ public:
         const float range_min = 0.0f;
         const float range_max = 1.0f;
 
-        if (ImGui::CollapsingHeader("Mesh3DAnimation")) {
+        if (ImGui::CollapsingHeader(SceneObjectTypes::MESH_3D_ANIMATION)) {
 
-            const char* items[static_cast<int>(o->scene->mNumAnimations)];
-            for (int i = 0; i < static_cast<int>(o->scene->mNumAnimations); i++) {
+            const char* items[o->scene->mNumAnimations];
+            for (unsigned int i = 0; i < o->scene->mNumAnimations; i++) {
                 items[i] = o->scene->mAnimations[i]->mName.C_Str();
             }
             auto comboTitle = "Animations##" + o->getLabel();
