@@ -8,7 +8,7 @@
 
 #include "../../include/OpenGL/ShaderBaseOpenGL.h"
 #include "../../include/OpenGL/ShaderBaseOpenGLQuad.h"
-#include "../../include/Misc/Color.h"
+#include "../Render/Color.h"
 
 class ShaderOGLTint : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {
     GLuint colorUniform;

@@ -9,8 +9,8 @@
 #include "../../include/Render/Drawable.h"
 #include "../../include/Render/Maths.h"
 #include "../../include/Render/Transforms.h"
-#include "../../include/Render/Logging.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Misc/Logging.h"
+#include "../../include/Brakeza.h"
 
 BSPMap::BSPMap() : frameTriangles(nullptr) {
     setDecal(false);
@@ -589,7 +589,7 @@ void BSPMap::createBulletPhysicsShape() {
     this->bspRigidBody->setCcdMotionThreshold(.5);
     this->bspRigidBody->setCcdSweptSphereRadius(.5);
     this->bspRigidBody->setUserPointer(this);
-    Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->addRigidBody(
+    Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->addRigidBody(
             this->bspRigidBody);
 }
 
@@ -1068,7 +1068,7 @@ void BSPMap::createObjects3DFromBSPEntities() {
 
     Logging::Message("BSP Num Entities: %s", this->n_entities);
 
-    Brakeza3D *brakeza3D = Brakeza3D::get();
+    Brakeza *brakeza3D = Brakeza::get();
 
     if (this->n_entities > MAX_BSP_ENTITIES) {
         printf("Error: Entities overflow");
@@ -1114,7 +1114,7 @@ void BSPMap::createObjects3DFromBSPEntities() {
                 if (s2.find("armor") != std::string::npos) {
                     auto *o = new Object3D();
                     o->setPosition(pos);
-                    Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (armor)");
+                    Brakeza::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (armor)");
                 }
 
                 // info_player_start
@@ -1124,14 +1124,14 @@ void BSPMap::createObjects3DFromBSPEntities() {
                         ) {
                     auto *o = new Object3D();
                     o->setPosition(pos);
-                    Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (player_spawn)");
+                    Brakeza::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (player_spawn)");
                 }
 
                 // info teleport destination
                 if (!strcmp(classname, "info_teleport_destination")) {
                     auto *o = new Object3D();
                     o->setPosition(pos);
-                    Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (teleport_destination)");
+                    Brakeza::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (teleport_destination)");
                 }
 
                 // light_flame_large_yellow
@@ -1139,14 +1139,14 @@ void BSPMap::createObjects3DFromBSPEntities() {
                     !strcmp(classname, "light_torch_small_walltorch")) {
                     auto *o = new Object3D();
                     o->setPosition(pos);
-                    Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (light)");
+                    Brakeza::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (light)");
                 }
 
                 // func_button
                 if (!strcmp(classname, "func_button")) {
                     auto *o = new Object3D();
                     o->setPosition(pos);
-                    Brakeza3D::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (func_button)");
+                    Brakeza::get()->addObject3D(o, "BSPEntity_" + std::to_string(i) + " (func_button)");
                 }
             }
         }

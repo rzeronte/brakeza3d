@@ -6,7 +6,7 @@
 #define BRAKEZA3D_IMAGE3DDRAWERGUI_H
 
 #include "../../2D/Image2D.h"
-#include "../../Render/Logging.h"
+#include "../../Misc/Logging.h"
 
 class Image2DGUI
 {

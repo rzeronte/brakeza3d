@@ -3,9 +3,9 @@
 //
 
 #include "../../include/Components/ComponentScripting.h"
-#include "../../include/Render/Logging.h"
-#include "../../include/Brakeza3D.h"
-#include "../LUAIntegration.h"
+#include "../../include/Misc/Logging.h"
+#include "../../include/Brakeza.h"
+#include "../BrakezaLuaBridge.h"
 #include "../../include/Persistence/JSONSerializerRegistry.h"
 
 ComponentScripting::ComponentScripting()
@@ -82,7 +82,7 @@ void ComponentScripting::reloadLUAScripts()
         s->reloadScriptCode();
     }
 
-    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    auto &sceneObjects = Brakeza::get()->getSceneObjects();
     for (auto object : sceneObjects) {
         object->reloadScriptsCode();
         object->reloadScriptsEnvironment();
@@ -185,7 +185,7 @@ void ComponentScripting::onStartScripts()
     }
 
     Logging::Message("Executing OnStart for OBJECT scripts...");
-    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    auto &sceneObjects = Brakeza::get()->getSceneObjects();
     for (auto object : sceneObjects) {
         object->runStartScripts();
     }
@@ -223,7 +223,7 @@ void ComponentScripting::initLUATypes()
 
     LUAIntegration(lua);
 
-    lua["brakeza"] = Brakeza3D::get();
+    lua["brakeza"] = Brakeza::get();
     lua["componentsManager"] = ComponentsManager::get();
     lua.set_function("print", &Logging::Message);
 }

@@ -3,7 +3,7 @@
 #include "../../include/3D/LightSpot.h"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/LightSpotGUI.h"
 
 LightSpot::LightSpot(

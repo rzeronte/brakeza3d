@@ -16,8 +16,8 @@
 #include "../Render/M3.h"
 #include "../Misc/ScriptLUA.h"
 #include "../../sol/sol.hpp"
-#include "../Collision/Collider.h"
-#include "../Misc/Color.h"
+#include "../Render/Collider.h"
+#include "../Render/Color.h"
 #include "../Misc/Timer.h"
 
 struct ObjectGUIFeatures {

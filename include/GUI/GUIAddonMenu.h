@@ -9,7 +9,7 @@
 
 #include "imgui.h"
 #include "../BrakezaSetup.h"
-#include "../Render/Logging.h"
+#include "../Misc/Logging.h"
 #include "../SceneLoader.h"
 #include "../Components/ComponentsManager.h"
 #include "../Misc/TexturePackage.h"

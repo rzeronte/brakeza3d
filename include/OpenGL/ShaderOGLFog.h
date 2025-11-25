@@ -7,7 +7,7 @@
 
 
 #include "ShaderBaseOpenGL.h"
-#include "../Misc/Color.h"
+#include "../Render/Color.h"
 #include "ShaderBaseOpenGLQuad.h"
 
 class ShaderOGLFog : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {

@@ -2,7 +2,7 @@
 #ifndef BRAKEDA3D_BUTTONSCALLBACKS_H
 #define BRAKEDA3D_BUTTONSCALLBACKS_H
 
-#include "../Render/Logging.h"
+#include "Logging.h"
 #include "../Components/ComponentsManager.h"
 
 void callbackPlayerShoot() {

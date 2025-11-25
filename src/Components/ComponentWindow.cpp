@@ -6,12 +6,12 @@
 
 #include <SDL_image.h>
 
-#include "../../include/Render/Logging.h"
+#include "../../include/Misc/Logging.h"
 #include "../../include/OpenGL/ShaderOGLImage.h"
 #include "../imgui/backends/imgui_impl_opengl3.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
 #include "imgui_internal.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 
 ComponentWindow::ComponentWindow()
 :
@@ -538,7 +538,7 @@ void ComponentWindow::ImGuiOnUpdate()
     ImGui_ImplSDL2_NewFrame();
 
     ImGui::NewFrame();
-    Brakeza3D::get()->getManagerGui()->draw(Brakeza3D::get()->getDeltaTime(),Brakeza3D::get()->finish);
+    Brakeza::get()->getManagerGui()->draw(Brakeza::get()->getDeltaTime(),Brakeza::get()->finish);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -6,13 +6,13 @@
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/GUI/Objects/Object3DGUI.h"
 
 Object3D::Object3D()
 :
-    id(Brakeza3D::get()->getNextObjectID()),
+    id(Brakeza::get()->getNextObjectID()),
     luaEnvironment(sol::environment(
         ComponentsManager::get()->getComponentScripting()->getLua(),
         sol::create, ComponentsManager::get()->getComponentScripting()->getLua().globals())
@@ -554,7 +554,7 @@ void Object3D::setupGhostCollider(CollisionShape mode)
             getPosition(),
             getModelMatrix(),
             simpleShapeSize,
-            Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             BrakezaSetup::collisionGroups::AllFilter,
             BrakezaSetup::collisionGroups::AllFilter
         );

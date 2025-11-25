@@ -6,9 +6,9 @@
 #include <utility>
 #include "../../include/OpenGL/ShaderOGLCustom.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/Render/Logging.h"
+#include "../../include/Misc/Logging.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 
 ShaderOGLCustom::ShaderOGLCustom(
     std::string label,
@@ -358,7 +358,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
 
     ImGui::SeparatorText("OpenGL textures");
 
-    auto ImGuiTextures = Brakeza3D::get()->getManagerGui()->getImGuiTextures();
+    auto ImGuiTextures = Brakeza::get()->getManagerGui()->getImGuiTextures();
 
     if (ImGui::BeginTable("ShaderOpenGLCustomTexture", 4, flags)) {
         int j = 0;
@@ -663,11 +663,11 @@ void ShaderOGLCustom::setDataTypesUniforms()
                 break;
             }
             case ShaderOpenGLCustomDataType::DELTA_TIME: {
-                setFloat(type.name, Brakeza3D::get()->getDeltaTime());
+                setFloat(type.name, Brakeza::get()->getDeltaTime());
                 break;
             }
             case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
-                setFloat(type.name, Brakeza3D::get()->getExecutionTime());
+                setFloat(type.name, Brakeza::get()->getExecutionTime());
                 break;
             }
             case ShaderOpenGLCustomDataType::SCENE: {

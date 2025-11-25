@@ -8,7 +8,7 @@
 
 #include "ShaderBaseOpenGL.h"
 #include "../Render/Point2D.h"
-#include "../Misc/Color.h"
+#include "../Render/Color.h"
 #include "ShaderBaseOpenGLQuad.h"
 
 class ShaderOGLLine : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {

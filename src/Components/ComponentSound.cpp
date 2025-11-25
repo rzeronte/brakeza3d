@@ -1,6 +1,6 @@
 #include <SDL2/SDL_mixer.h>
 #include "../../include/Components/ComponentSound.h"
-#include "../../include/Render/Logging.h"
+#include "../../include/Misc/Logging.h"
 #include "../../include/Misc/Tools.h"
 
 ComponentSound::ComponentSound()

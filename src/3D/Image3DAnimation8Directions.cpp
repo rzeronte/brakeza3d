@@ -1,10 +1,10 @@
 
 #include "../../include/3D/Image3DAnimation8Directions.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/Render/Logging.h"
+#include "../../include/Misc/Logging.h"
 #include "../../include/Render/Maths.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/Image3DAnimation8DirectionsGUI.h"
 
 Image3DAnimation8Directions::Image3DAnimation8Directions(const Vertex3D &position, float width, float height)

@@ -9,7 +9,7 @@
 #include "../3D/Object3D.h"
 #include <list>
 #include <vector>
-#include "../Misc/Color.h"
+#include "Color.h"
 #include "Image.h"
 
 class Triangle {

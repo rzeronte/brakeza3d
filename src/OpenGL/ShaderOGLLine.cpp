@@ -4,7 +4,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 #include "../../include/OpenGL/ShaderOGLLine.h"
-#include "../../include/Render/Logging.h"
+#include "../../include/Misc/Logging.h"
 #include "../../include/BrakezaSetup.h"
 #include "../../include/Components/ComponentsManager.h"
 

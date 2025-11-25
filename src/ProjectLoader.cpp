@@ -4,7 +4,7 @@
 
 #include "../include/ProjectLoader.h"
 #include "../include/Misc/Tools.h"
-#include "../include/Render/Logging.h"
+#include "../include/Misc/Logging.h"
 #include "../include/Components/ComponentsManager.h"
 
 ProjectLoader::ProjectLoader() {

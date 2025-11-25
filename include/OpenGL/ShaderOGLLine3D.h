@@ -8,7 +8,7 @@
 
 #include "../../include/OpenGL/ShaderBaseOpenGL.h"
 #include "../3D/Vertex3D.h"
-#include "../../include/Misc/Color.h"
+#include "../Render/Color.h"
 #include "../3D/Vector3D.h"
 #include <vector>
 

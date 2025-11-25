@@ -4,7 +4,7 @@
 #include "../../include/3D/ParticleEmitter.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/ParticleEmitterGUI.h"
 
 ParticleEmitter::ParticleEmitter(
@@ -93,7 +93,7 @@ void ParticleEmitter::draw()
 
     Vertex3D direction = getRotation() * Vertex3D(0, 1, 0);
 
-    float delta = Brakeza3D::get()->getDeltaTime();
+    float delta = Brakeza::get()->getDeltaTime();
     glm::vec3 CameraPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition().toGLM());
 
     // Define la frecuencia deseada en partículas por segundo

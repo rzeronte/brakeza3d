@@ -9,7 +9,7 @@
 #include <cctype>
 #include <cstdio>
 #include "imgui.h"
-#include "../Render/Logging.h"
+#include "../Misc/Logging.h"
 
 struct ImGuiConsoleApp
 {

@@ -6,9 +6,9 @@
 #include "Vertex3D.h"
 #include "../Render/Triangle3D.h"
 #include "../Misc/Tools.h"
-#include "../Misc/Octree.h"
-#include "../Misc/Grid3D.h"
-#include "../Collision/Collider.h"
+#include "../Render/Octree.h"
+#include "../Render/Grid3D.h"
+#include "../Render/Collider.h"
 #include "../OpenGL/ShaderOGLCustom.h"
 #include <assimp/scene.h>
 #include <glm/vec3.hpp>

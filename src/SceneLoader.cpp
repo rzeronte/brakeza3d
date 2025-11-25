@@ -5,9 +5,9 @@
 #include "../include/SceneLoader.h"
 #include "../include/BrakezaSetup.h"
 #include "../include/Misc/Tools.h"
-#include "../include/Render/Logging.h"
+#include "../include/Misc/Logging.h"
 #include "../include/3D/Mesh3D.h"
-#include "../include/Brakeza3D.h"
+#include "../include/Brakeza.h"
 #include "../include/3D/ParticleEmitter.h"
 #include "../include/3D/Image3DAnimation.h"
 #include "../include/Misc/ToolsJSON.h"
@@ -152,7 +152,7 @@ void SceneLoader::SaveScene(const std::string &filename)
 
     //scripts
     cJSON *scriptsArray = cJSON_CreateArray();
-    for (auto object : Brakeza3D::get()->getSceneObjects()) {
+    for (auto object : Brakeza::get()->getSceneObjects()) {
         if (!object->isBelongToScene()) continue;
         auto objectJson = JSONSerializerRegistry::GetJsonByObject(object);
         cJSON_AddStringToObject(objectJson, "type", object->getTypeObject());
@@ -210,7 +210,7 @@ void SceneLoader::ClearScene()
         scripting->removeSceneScript(o);
     }
 
-    for (auto object: Brakeza3D::get()->getSceneObjects()) {
+    for (auto object: Brakeza::get()->getSceneObjects()) {
         if (!object->isMultiScene()) {
             object->setRemoved(true);
         }
@@ -220,7 +220,7 @@ void SceneLoader::ClearScene()
         render->removeSceneShader(s);
     }
 
-    Brakeza3D::get()->getManagerGui()->setSelectedObject(nullptr);
+    Brakeza::get()->getManagerGui()->setSelectedObject(nullptr);
     ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
 }
 
@@ -265,5 +265,5 @@ void SceneLoader::SceneLoaderCreateObject(cJSON *object)
     auto o = JSONSerializerRegistry::instance().deserialize(object);
     std::cout << "[SceneLoader SceneLoaderCreateObject] " << o->getLabel() << std::endl;
 
-    Brakeza3D::get()->addObject3D(o, o->getLabel());
+    Brakeza::get()->addObject3D(o, o->getLabel());
 }

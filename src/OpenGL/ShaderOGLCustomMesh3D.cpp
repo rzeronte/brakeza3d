@@ -4,7 +4,7 @@
 
 #include "../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 
 ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(
     Mesh3D* mesh,

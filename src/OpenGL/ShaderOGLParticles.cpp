@@ -1,6 +1,6 @@
 
 #include "../../include/OpenGL/ShaderOGLParticles.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 
 ShaderOGLParticles::ShaderOGLParticles()
 :

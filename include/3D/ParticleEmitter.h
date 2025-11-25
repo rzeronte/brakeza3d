@@ -8,10 +8,10 @@
 #include <vector>
 #include "Object3D.h"
 #include "../Misc/Counter.h"
-#include "../Misc/Color.h"
+#include "../Render/Color.h"
 #include "../Render/Image.h"
 #include "../OpenGL/ShaderOGLParticles.h"
-#include "../Misc/ParticlesContext.h"
+#include "../Render/ParticlesContext.h"
 
 typedef enum {
     DEFAULT = 0,

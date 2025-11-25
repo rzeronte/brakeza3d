@@ -1,7 +1,7 @@
 
 #include "../../include/OpenGL/ShaderOGLLightPass.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 #include <glm/gtc/type_ptr.hpp>
 
 #define GL_GLEXT_PROTOTYPES

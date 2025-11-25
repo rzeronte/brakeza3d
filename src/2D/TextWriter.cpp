@@ -2,7 +2,7 @@
 
 #include "../../include/Render/TextWriter.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 
 TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font)
 :

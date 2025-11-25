@@ -1,6 +1,6 @@
 #include "../../include/Components/ComponentRender.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 #include "../../include/OpenGL/ShaderOGLCustomPostprocessing.h"
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
@@ -90,7 +90,7 @@ void ComponentRender::onUpdate()
         );
     }
 
-    if (Brakeza3D::get()->getManagerGui()->isShowLightsDepthMapsViewerWindow() ) {
+    if (Brakeza::get()->getManagerGui()->isShowLightsDepthMapsViewerWindow() ) {
         shaderShadowPassDebugLight->createFramebuffer();
         shaderShadowPassDebugLight->createArrayTextures(numSpotLights);
         shaderShadowPassDebugLight->updateDebugTextures(numSpotLights);
@@ -99,7 +99,7 @@ void ComponentRender::onUpdate()
 
 void ComponentRender::postUpdate()
 {
-    std::vector<Object3D *> sceneObjects = Brakeza3D::get()->getSceneObjects();
+    std::vector<Object3D *> sceneObjects = Brakeza::get()->getSceneObjects();
 
     std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
 
@@ -120,7 +120,7 @@ void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish)
 
 void ComponentRender::onUpdateSceneObjects()
 {
-    std::vector<Object3D *> sceneObjects = Brakeza3D::get()->getSceneObjects();
+    std::vector<Object3D *> sceneObjects = Brakeza::get()->getSceneObjects();
 
     std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
 
@@ -135,7 +135,7 @@ void ComponentRender::updateFPS()
 {
     if (!(BrakezaSetup::get()->DRAW_FPS_IMGUI || BrakezaSetup::get()->DRAW_FPS_RENDER)) return;
 
-    frameTime += Brakeza3D::get()->getDeltaTimeMicro();
+    frameTime += Brakeza::get()->getDeltaTimeMicro();
     ++fpsFrameCounter;
 
     if (frameTime >= 1000.0f) {
@@ -160,7 +160,7 @@ Object3D* ComponentRender::getObject3DFromClickPoint(const int x, const int y)
     const auto id = ComponentsManager::get()->getComponentWindow()->getObjectIDByPickingColorFramebuffer(x, y);
 
     Logging::Message("Click point: %d, %d | ObjectId: %d", x, y, id);
-    return Brakeza3D::get()->getSceneObjectById(id);
+    return Brakeza::get()->getSceneObjectById(id);
 }
 
 void ComponentRender::updateSelectedObject3D()
@@ -173,10 +173,10 @@ void ComponentRender::updateSelectedObject3D()
         auto x = input->getMouseX();
         auto y = input->getMouseY();
         const auto id = ComponentsManager::get()->getComponentWindow()->getObjectIDByPickingColorFramebuffer(x, y);
-        selectedObject = Brakeza3D::get()->getSceneObjectById(id);
+        selectedObject = Brakeza::get()->getSceneObjectById(id);
         if (selectedObject != nullptr) {
             Logging::Message("Selected object by click(%d, %d): %s", x, y, selectedObject->getLabel().c_str());
-            Brakeza3D::get()->getManagerGui()->setSelectedObject(selectedObject);
+            Brakeza::get()->getManagerGui()->setSelectedObject(selectedObject);
         }
     }
 }
@@ -188,7 +188,7 @@ int ComponentRender::getFps() const
 
 void ComponentRender::deleteRemovedObjects()
 {
-    auto &sceneObjects = Brakeza3D::get()->getSceneObjects();
+    auto &sceneObjects = Brakeza::get()->getSceneObjects();
     sceneObjects.erase(
         std::remove_if(
             sceneObjects.begin(),

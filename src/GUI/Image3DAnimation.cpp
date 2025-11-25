@@ -1,7 +1,7 @@
 
 #include "../../include/3D/Image3DAnimation.h"
 #include "../../include/Components/ComponentsManager.h"
-#include "../../include/Brakeza3D.h"
+#include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/Image3DAnimationGUI.h"
 
 Image3DAnimation::Image3DAnimation(const Vertex3D &position, float w, float h)
