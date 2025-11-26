@@ -4,7 +4,6 @@
 
 #include <string>
 #include <vector>
-#include "../3D/Object3D.h"
 #include "GUIConsole.h"
 #include "../Misc/TexturePackage.h"
 #include "GUIAddonObjects3D.h"
@@ -12,6 +11,21 @@
 #include "GUIAddonProjectSettings.h"
 #include "GUIAddonMenu.h"
 #include "GUIAddonToolbar.h"
+
+struct GUIConstants {
+    static constexpr ImVec2 ICON_SIZE_SMALL = ImVec2(14, 14);
+    static constexpr ImVec2 ICON_SIZE_MEDIUM = ImVec2(16, 16);
+    static constexpr ImVec2 ICON_SIZE_LARGE = ImVec2(96, 96);
+    static constexpr float WINDOW_ALPHA = 0.9f;
+    static constexpr int DEFAULT_WINDOW_WIDTH = 600;
+    static constexpr int DEFAULT_WINDOW_HEIGHT = 600;
+};
+
+class Object3DGUI;
+class ScriptLuaGUI;
+class Mesh3DGUI;
+class ShadersGUI;
+class FileSystemGUI;
 
 class GUIManager
 {
@@ -27,7 +41,7 @@ class GUIManager
     ScriptEditableManager scriptEditableManager;
     ShaderEditableManager shaderEditableManager;
 
-    ImGuiConsoleApp *widgetConsole;
+    GuiAddonConsole *widgetConsole;
     GUIAddonObjects3D *widgetObjects3D;
     GUIAddonObject3DProperties *widgetObject3DProperties;
     GUIAddonProjectSettings *widgetProjectSettings;
@@ -62,52 +76,30 @@ public:
     virtual ~GUIManager() = default;
     explicit GUIManager(std::vector<Object3D *> &gameObjects);
 
-    void loadImagesFolder();
-    void LoadScriptDialog(const std::string& filename);
-    void DrawEditScriptWindow();
     void DrawLightsDepthMapsViewerWindow();
-    void updateFolderFiles();
-    void LoadShaderDialog(const std::string &folder, std::string &file);
-    void drawSelectedObjectShaders();
-    void drawSelectedObjectScripts();
-    void DrawEditShaderWindow();
-    void drawScriptsLuaFolderFiles(const std::string& folder);
-    void drawScriptVariables();
-    void drawShaderVariables();
-    void drawCustomShadersFolder(std::string folder);
     void DrawWidgets();
-    void DrawObjectSelectedGuizmoOperation();
     void updateImGuiDocking();
     void DrawGUIPlugins(bool &finish);
-    void drawProjectsFiles(const std::string& folder);
-    void drawScenesFolder(const std::string& folder);
-    void DrawObjectVariables() const;
-
     void drawKeyboardMouseSettings();
     void drawImages();
     void setSelectedObjectIndex(int selectedObjectIndex);
-    void setSelectedObject(Object3D *s);
-    void DrawEditBonesMappingWindow();
+    void setSelectedObject(const Object3D *s);
     void openBoneInfoDialog();
     void openLightsDepthMapsViewerDialog();
     void DrawSplash();
-    void drawBrowserFolders(
-        const std::string& folder,
-        const std::string& baseFolder,
-        std::string& destiny,
-        std::vector<std::string> &folders,
-        std::vector<std::string> &files,
-        const std::string& extension
-    );
     virtual void draw(float timedelta, bool &finish);
-    ImGuiConsoleApp *getConsole();
     TexturePackage *getImGuiTextures();
+    [[nodiscard]] GuiAddonConsole *getConsole() const;
     [[nodiscard]] bool isShowLightsDepthMapsViewerWindow() const;
-    static void drawGlobalVariables();
     static void ShowDeletePopup(const char* title, const std::function<void()>& onConfirm);
-    static void LoadIcons(TexturePackage &icon);
     static void setNextWindowSize(int w, int h);
     static void RenderFPS();
+
+    friend class Object3DGUI;
+    friend class ScriptLuaGUI;
+    friend class Mesh3DGUI;
+    friend class ShadersGUI;
+    friend class FileSystemGUI;
 };
 
 #endif //SDL2_3D_ENGINE_GUI_ENGINE_H

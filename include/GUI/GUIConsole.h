@@ -10,8 +10,9 @@
 #include <cstdio>
 #include "imgui.h"
 #include "../Misc/Logging.h"
+#include "../../sol/sol.hpp"
 
-struct ImGuiConsoleApp
+struct GuiAddonConsole
 {
     char                  InputBuf[256];
     ImVector<char*>       Items;
@@ -22,7 +23,7 @@ struct ImGuiConsoleApp
     bool                  AutoScroll;
     bool                  ScrollToBottom;
     sol::state &lua;
-    ImGuiConsoleApp(sol::state &lua): lua(lua)
+    GuiAddonConsole(sol::state &lua): lua(lua)
     {
         ClearLog();
         memset(InputBuf, 0, sizeof(InputBuf));
@@ -37,7 +38,7 @@ struct ImGuiConsoleApp
         ScrollToBottom = false;
         AddLog("Welcome to Dear ImGui!");
     }
-    ~ImGuiConsoleApp()
+    ~GuiAddonConsole()
     {
         ClearLog();
         for (int i = 0; i < History.Size; i++)
@@ -195,7 +196,7 @@ struct ImGuiConsoleApp
     // In C++11 you'd be better off using lambdas for this sort of forwarding callbacks
     static int TextEditCallbackStub(ImGuiInputTextCallbackData* data)
     {
-        ImGuiConsoleApp* console = (ImGuiConsoleApp*)data->UserData;
+        GuiAddonConsole* console = (GuiAddonConsole*)data->UserData;
         return console->TextEditCallback(data);
     }
 

@@ -1,0 +1,70 @@
+{
+	"gravity":	{
+		"x":	0,
+		"y":	-9.8000001907348633,
+		"z":	0
+	},
+	"ads":	{
+		"direction":	{
+			"x":	0.039999999105930328,
+			"y":	-0.10999999940395355,
+			"z":	-0.9100000262260437
+		},
+		"diffuse":	{
+			"x":	1,
+			"y":	1,
+			"z":	1
+		},
+		"specular":	{
+			"x":	0,
+			"y":	0,
+			"z":	0
+		},
+		"ambient":	{
+			"x":	0,
+			"y":	0,
+			"z":	0
+		}
+	},
+	"objects":	[
+		{
+			"name":	"Mesh3DAnimation",
+			"enabled": false,
+			"scale":	3.7100000381469727,
+			"position":	{
+				"x":	-1.5267695188522339,
+				"y":	-1.2584731578826904,
+				"z":	0.85567784309387207
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"shaders":	[],
+			"model":	"../assets/animations/character.fbx",
+			"enableLights":	false,
+			"animationSpeed":	0.5,
+			"boneColliderEnabled":	true,
+			"indexCurrentAnimation":	1,
+			"bonesColliders":	[],
+			"type":	"Mesh3DAnimation"
+		}
+	],
+	"shaders":	[],
+	"scripts":	[],
+	"camera":	{
+		"position":	{
+			"x":	-2.5512218475341797,
+			"y":	13.088205337524414,
+			"z":	15.955082893371582
+		},
+		"rotation":	{
+			"x":	55.800052642822266,
+			"y":	10.599889755249023,
+			"z":	0
+		}
+	}
+}

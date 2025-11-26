@@ -2,7 +2,7 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#ifndef BRAKEZA3D_IMAGE3DDRAWERGUI_H
+#ifndef BRAKEZA3D_IMAGE2D_ANIMATIONGUI_H
 #define BRAKEZA3D_IMAGE3DDRAWERGUI_H
 
 #include "../../2D/Image2DAnimation.h"

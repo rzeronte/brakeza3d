@@ -2,8 +2,8 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#ifndef BRAKEZA3D_IMAGE3DDRAWERGUI_H
-#define BRAKEZA3D_IMAGE3DDRAWERGUI_H
+#ifndef BRAKEZA3D_LIGHTSPOTDGUI_H
+#define BRAKEZA3D_LIGHTSPOTDGUI_H
 
 #include "../../3D/LightSpot.h"
 
@@ -32,4 +32,4 @@ public:
     }
 };
 
-#endif //BRAKEZA3D_IMAGE3DDRAWERGUI_H
+#endif //BRAKEZA3D_LIGHTSPOTDGUI_H
