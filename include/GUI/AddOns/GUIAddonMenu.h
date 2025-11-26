@@ -31,11 +31,8 @@
 
 struct GUIAddonMenu
 {
-    TexturePackage &ImGuiTextures;
 
-    explicit GUIAddonMenu(TexturePackage &imGuiTextures)
-    :
-        ImGuiTextures(imGuiTextures)
+    explicit GUIAddonMenu()
     {
     }
 

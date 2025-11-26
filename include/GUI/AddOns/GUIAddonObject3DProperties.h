@@ -6,7 +6,6 @@
 #define BRAKEZA3D_GUIWIDGETOBJECT3DPROPERTIES_H
 
 #include "imgui.h"
-#include "../../Misc/TexturePackage.h"
 #include "../../3D/Object3D.h"
 
 struct ScriptEditableManager {
@@ -24,18 +23,13 @@ struct ShaderEditableManager {
     char editableSourceFS[1024 * 16];
 };
 
-struct GUIAddonObject3DProperties {
-    TexturePackage &ImGuiTextures;
+struct GUIAddonObject3DProperties
+{
     std::vector<Object3D *> &gameObjects;
     ScriptEditableManager &scriptEditableManager;
 
-    GUIAddonObject3DProperties(
-        TexturePackage &imGuiTextures,
-        std::vector<Object3D *> &gameObjects,
-        ScriptEditableManager &scriptEditableManager
-    )
+    GUIAddonObject3DProperties(std::vector<Object3D *> &gameObjects, ScriptEditableManager &scriptEditableManager)
     :
-        ImGuiTextures(imGuiTextures),
         gameObjects(gameObjects),
         scriptEditableManager(scriptEditableManager)
     {
@@ -53,9 +47,7 @@ struct GUIAddonObject3DProperties {
                 }
 
                 o->drawImGuiProperties();
-
                 ImGui::Separator();
-
                 ImGui::Button("Remove");
                 if (ImGui::IsItemClicked()) {
                     o->setRemoved(true);

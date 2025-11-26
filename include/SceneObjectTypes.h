@@ -135,6 +135,7 @@ namespace IconsByGUI {
     inline constexpr const char* SCRIPT = "scriptIcon";
     inline constexpr const char* PLAYER = "playerIcon";
     inline constexpr const char* REBUILD = "rebuildIcon";
+    inline constexpr const char* SPLASH = "splashImage";
 
     struct IconMapping {
         const char* id;
@@ -176,6 +177,8 @@ namespace IconsByGUI {
         {SCRIPT, "script.png"},
         {PLAYER, "player.png"},
         {REBUILD, "rebuild.png"},
+        {SPLASH, "splash.png"},
+
     };
 
     inline const char* Filename(const char* iconId) {

@@ -5,8 +5,8 @@
 #include "imgui.h"
 #include "../../Misc/Logging.h"
 #include "../../3D/Mesh3D.h"
-#include "../../Misc/TexturePackage.h"
 #include "../../Components/ComponentsManager.h"
+#include "../Objects/FileSystemGUI.h"
 
 struct GUIWidgetAllowedObjectConfig {
     std::string typeObject;
@@ -15,13 +15,11 @@ struct GUIWidgetAllowedObjectConfig {
 };
 
 struct GUIAddonObjects3D {
-    TexturePackage &ImGuiTextures;
     std::vector<Object3D *> &gameObjects;
     std::vector<GUIWidgetAllowedObjectConfig> allowedObjectsToShow;
     
-    GUIAddonObjects3D(TexturePackage &imGuiTextures, std::vector<Object3D *> &gameObjects)
+    GUIAddonObjects3D(std::vector<Object3D *> &gameObjects)
     :
-        ImGuiTextures(imGuiTextures),
         gameObjects(gameObjects)
     {
         allowedObjectsToShow.push_back({SceneObjectTypes::OBJECT_3D, true, IconsByObject::OBJECT_3D});
@@ -46,7 +44,7 @@ struct GUIAddonObjects3D {
                 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.0f, 0.0f, 0.0f, 1.0f)); //  rojo
             }
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 7.0f, ImGui::GetCursorPosY()));
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(ImGuiTextures, o.icon), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::IconTag( o.icon), ImVec2(14, 14))) {
                 o.visible = !o.visible;
             }
 
@@ -93,7 +91,7 @@ struct GUIAddonObjects3D {
                 ImGui::Checkbox(std::string("##"+ std::to_string(o->getId())).c_str(), &o->isEnabled());
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 5.0f, ImGui::GetCursorPosY() + 3.0f));
-                ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, o->getTypeIcon()), ImVec2(16, 16));
+                ImGui::Image(FileSystemGUI::IconTag(o->getTypeIcon()), ImVec2(16, 16));
 
                 ImGui::SameLine();
                 ImGui::SetNextItemWidth(150.0f);
@@ -110,8 +108,8 @@ struct GUIAddonObjects3D {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
                         Logging::Message("Dropping script (%s) in %s", payload->Data, o->getLabel().c_str());
                         o->attachScript(new ScriptLUA(
-                                std::string((const char*) payload->Data),
-                                ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
+                            std::string((const char*) payload->Data),
+                            ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
                         );
                     }
 
@@ -126,7 +124,7 @@ struct GUIAddonObjects3D {
                 }
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
-                ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "scriptIcon"), ImVec2(14, 14));
+                ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::SCRIPT), ImVec2(14, 14));
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 10.0f, ImGui::GetCursorPosY()));
                 ImGui::Text(std::to_string((int)o->getScripts().size()).c_str());
@@ -134,14 +132,14 @@ struct GUIAddonObjects3D {
                     ImGui::SameLine();
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
 
-                    if (o->getCollisionMode() == CollisionMode::GHOST) {
-                        ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "ghostIcon"), ImVec2(14, 14));
+                    if (o->getCollisionMode() == GHOST) {
+                        ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::GHOST), ImVec2(14, 14));
                     }
-                    if (o->getCollisionMode() == CollisionMode::BODY) {
-                        ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "gearIcon"), ImVec2(14, 14));
+                    if (o->getCollisionMode() == BODY) {
+                        ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::GEAR), ImVec2(14, 14));
                     }
-                    if (o->getCollisionMode() == CollisionMode::KINEMATIC) {
-                        ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "playerIcon"), ImVec2(14, 14));
+                    if (o->getCollisionMode() == KINEMATIC) {
+                        ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::PLAY), ImVec2(14, 14));
                     }
                 }
             }

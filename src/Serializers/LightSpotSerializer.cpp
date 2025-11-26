@@ -12,8 +12,7 @@
 
 cJSON * LightSpotSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[LightSpotSerializer json] Alive here...");
-    std::cout << "[LightSpotSerializer json] " << o->getTypeObject() << std::endl;
+    Logging::Message("[LightSpotSerializer] ApplyJsonToObject: %s", o->getTypeObject());
 
     auto *spot = dynamic_cast<LightSpot*>(o);
 

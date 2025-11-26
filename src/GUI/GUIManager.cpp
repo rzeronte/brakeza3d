@@ -12,11 +12,11 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 :
     gameObjects(gameObjects),
     widgetConsole(new GuiAddonConsole(ComponentsManager::get()->getComponentScripting()->getLua())),
-    widgetObjects3D(new GUIAddonObjects3D(icons, this->gameObjects)),
-    widgetObject3DProperties(new GUIAddonObject3DProperties(icons, this->gameObjects, scriptEditableManager)),
-    widgetProjectSettings(new GUIAddonProjectSettings(icons, scriptEditableManager)),
-    widgetMenu(new GUIAddonMenu(icons)),
-    widgetToolbar(new GUIAddonToolbar(icons)),
+    widgetObjects3D(new GUIAddonObjects3D(this->gameObjects)),
+    widgetObject3DProperties(new GUIAddonObject3DProperties(this->gameObjects, scriptEditableManager)),
+    widgetProjectSettings(new GUIAddonProjectSetup(scriptEditableManager)),
+    widgetMenu(new GUIAddonMenu()),
+    widgetToolbar(new GUIAddonToolbar()),
     currentScriptsFolderWidget(BrakezaSetup::get()->SCRIPTS_FOLDER),
     currentScenesFolderWidget(BrakezaSetup::get()->SCENES_FOLDER),
     currentProjectsFolderWidget(BrakezaSetup::get()->PROJECTS_FOLDER),
@@ -42,7 +42,7 @@ void GUIManager::DrawLightsDepthMapsViewerWindow()
 {
     if (!showLightsDepthMapsViewerWindow) return;
 
-    setNextWindowSize(350, 400);
+    SetNextWindowSize(350, 400);
     ImGui::SetNextWindowBgAlpha(GUIConstants::WINDOW_ALPHA);
 
     auto title = std::string("Lights Depth Maps Viewer: ");
@@ -98,7 +98,6 @@ void GUIManager::DrawLightsDepthMapsViewerWindow()
     ImGui::End();
 }
 
-
 void GUIManager::DrawWidgets()
 {
     if (ImGui::Begin("Object shaders")) {
@@ -126,10 +125,10 @@ void GUIManager::DrawWidgets()
     }
     ImGui::End();
 
-    widgetProjectSettings->draw();
+    widgetProjectSettings->DrawProjectSetupGUI();
 
     if (ImGui::Begin("Keyboard/Mouse")) {
-        drawKeyboardMouseSettings();
+        DrawKeyboardMouseSettings();
     }
     ImGui::End();
 
@@ -149,13 +148,13 @@ void GUIManager::DrawWidgets()
     ImGui::End();
 
     if (ImGui::Begin("Images")) {
-        drawImages();
+        DrawImages();
     }
     ImGui::End();
 }
 
 
-void GUIManager::updateImGuiDocking()
+void GUIManager::UpdateImGuiDocking()
 {
     //bool show_demo_window = true;
     //ImGui::ShowDemoWindow(&show_demo_window);
@@ -207,9 +206,9 @@ void GUIManager::DrawGUIPlugins(bool &finish)
     widgetToolbar->Draw();
 }
 
-void GUIManager::draw(float timedelta, bool &finish)
+void GUIManager::DrawGUI(float timedelta, bool &finish)
 {
-    updateImGuiDocking();
+    UpdateImGuiDocking();
 
     DrawWidgets();
     DrawGUIPlugins(finish);
@@ -296,9 +295,7 @@ void GUIManager::ShowDeletePopup(const char* title, const std::function<void()>&
     }
 }
 
-
-
-void GUIManager::drawKeyboardMouseSettings()
+void GUIManager::DrawKeyboardMouseSettings()
 {
     auto input = ComponentsManager::get()->getComponentInput();
 
@@ -343,7 +340,7 @@ void GUIManager::drawKeyboardMouseSettings()
     ImGui::Text(("Controller Button Start: " + std::to_string(input->getControllerButtonStart())).c_str());
 }
 
-void GUIManager::drawImages()
+void GUIManager::DrawImages()
 {
     static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame;
 
@@ -401,7 +398,7 @@ void GUIManager::drawImages()
     }
 }
 
-void GUIManager::setNextWindowSize(int w, int h)
+void GUIManager::SetNextWindowSize(int w, int h)
 {
     ImGuiViewport* viewport = ImGui::GetMainViewport();
     ImVec2 window_size = ImVec2(w, h);
@@ -418,11 +415,6 @@ void GUIManager::openBoneInfoDialog()
     showBoneMappingsEditorWindow = true;
 }
 
-void GUIManager::openLightsDepthMapsViewerDialog()
-{
-    showLightsDepthMapsViewerWindow = true;
-}
-
 void GUIManager::DrawSplash()
 {
     if (BrakezaSetup::get()->ENABLE_SPLASH) {
@@ -433,7 +425,7 @@ void GUIManager::DrawSplash()
 
     if (ImGui::BeginPopup("brakeza_splash")) {
         ImGui::SeparatorText("Welcome to Brakeza3D!");
-        ImGui::Image(TexturePackage::getOGLTextureID(icons, "splash"), ImVec2(640, 350));
+        ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::SPLASH), ImVec2(640, 350));
         ImGui::SeparatorText(
             std::string("Brakeza3D (" + BrakezaSetup::get()->ENGINE_VERSION + ") | https://brakeza.com | By Eduardo Rodríguez Álvarez").c_str()
         );
