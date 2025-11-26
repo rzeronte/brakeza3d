@@ -4,13 +4,13 @@
 
 #include <string>
 #include <vector>
-#include "GUIConsole.h"
+#include "AddOns/GUIConsole.h"
 #include "../Misc/TexturePackage.h"
-#include "GUIAddonObjects3D.h"
-#include "GUIAddonObject3DProperties.h"
-#include "GUIAddonProjectSettings.h"
-#include "GUIAddonMenu.h"
-#include "GUIAddonToolbar.h"
+#include "AddOns/GUIAddonObjects3D.h"
+#include "AddOns/GUIAddonObject3DProperties.h"
+#include "AddOns/GUIAddonProjectSettings.h"
+#include "AddOns/GUIAddonMenu.h"
+#include "AddOns/GUIAddonToolbar.h"
 
 struct GUIConstants {
     static constexpr ImVec2 ICON_SIZE_SMALL = ImVec2(14, 14);
@@ -88,7 +88,8 @@ public:
     void openLightsDepthMapsViewerDialog();
     void DrawSplash();
     virtual void draw(float timedelta, bool &finish);
-    TexturePackage *getImGuiTextures();
+
+    TexturePackage &getImGuiTextures();
     [[nodiscard]] GuiAddonConsole *getConsole() const;
     [[nodiscard]] bool isShowLightsDepthMapsViewerWindow() const;
     static void ShowDeletePopup(const char* title, const std::function<void()>& onConfirm);

@@ -76,5 +76,5 @@ const char *LightPoint::getTypeIcon()
 void LightPoint::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    LightPointGUI::drawImGuiProperties(this);
+    LightPointGUI::DrawPropertiesGUI(this);
 }

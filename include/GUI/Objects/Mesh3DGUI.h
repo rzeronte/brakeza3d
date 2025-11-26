@@ -12,7 +12,7 @@ class GUIManager;
 class Mesh3DGUI
 {
 public:
-    static void drawImGuiProperties(Mesh3D *o);
+    static void DrawPropertiesGUI(Mesh3D *o);
     static void DrawEditBonesMappingWindow(GUIManager *gui);
 };
 

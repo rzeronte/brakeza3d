@@ -182,5 +182,5 @@ const std::string &TextureAnimated::getBaseFilename() const
 
 void TextureAnimated::drawImGuiProperties()
 {
-    TextureAnimatedDrawerGUI::drawImGuiProperties(this);
+    TextureAnimatedDrawerGUI::DrawPropertiesGUI(this);
 }

@@ -134,7 +134,7 @@ void Image3DAnimation::updateBillboardSize() const
 void Image3DAnimation::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    Image3DAnimationGUI::drawImGuiProperties(this);
+    Image3DAnimationGUI::DrawPropertiesGUI(this);
 }
 
 Image3DAnimation* Image3DAnimation::create(

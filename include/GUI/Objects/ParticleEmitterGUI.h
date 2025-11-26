@@ -11,7 +11,7 @@
 class ParticleEmitterGUI
 {
 public:
-    static void drawImGuiProperties(ParticleEmitter *o)
+    static void DrawPropertiesGUI(ParticleEmitter *o)
     {
         if (ImGui::CollapsingHeader("ParticleEmitter")) {
 

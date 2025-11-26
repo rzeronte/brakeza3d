@@ -10,7 +10,7 @@
 class TextureAnimatedDrawerGUI
 {
 public:
-    static void drawImGuiProperties(TextureAnimated *o)
+    static void DrawPropertiesGUI(TextureAnimated *o)
     {
         if (ImGui::TreeNode("Current Animation Setup")) {
             static int width = o->currentSpriteWidth;

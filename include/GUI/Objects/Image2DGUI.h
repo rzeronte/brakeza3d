@@ -11,7 +11,7 @@
 class Image2DGUI
 {
 public:
-    static void drawImGuiProperties(Image2D *o)
+    static void DrawPropertiesGUI(Image2D *o)
     {
         if (ImGui::CollapsingHeader("Image2D")) {
 

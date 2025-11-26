@@ -5,7 +5,7 @@
 #include "../../include/GUI/Objects/ScriptLuaGUI.h"
 #include "../../include/GUI/Objects/Mesh3DGUI.h"
 #include "../../include/GUI/Objects/FileSystemGUI.h"
-#include "../../include/GUI/GUIConsole.h"
+#include "../../include/GUI/AddOns/GUIConsole.h"
 #include "../../include/Brakeza.h"
 
 GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
@@ -102,17 +102,17 @@ void GUIManager::DrawLightsDepthMapsViewerWindow()
 void GUIManager::DrawWidgets()
 {
     if (ImGui::Begin("Object shaders")) {
-        ShadersGUI::drawSelectedObjectShaders(this);
+        ShadersGUI::DrawShadersBySelectedObject(this);
     }
     ImGui::End();
 
     if (ImGui::Begin("Object Scripts")) {
-        ScriptLuaGUI::drawSelectedObjectScripts(this);
+        ScriptLuaGUI::DrawScriptsBySelectedObject(this);
     }
     ImGui::End();
 
     if (ImGui::Begin("Scripts")) {
-        ScriptLuaGUI::drawScriptsLuaFolderFiles(this, currentScriptsFolderWidget);
+        ScriptLuaGUI::DrawScriptsLuaFolderFiles(this, currentScriptsFolderWidget);
     }
     ImGui::End();
 
@@ -134,17 +134,17 @@ void GUIManager::DrawWidgets()
     ImGui::End();
 
     if (ImGui::Begin("Shaders")) {
-        ShadersGUI::drawCustomShadersFolder(this, currentShadersFolderWidget);
+        ShadersGUI::DrawCustomShadersFolder(this, currentShadersFolderWidget);
     }
     ImGui::End();
 
     if (ImGui::Begin("Projects")) {
-        FileSystemGUI::drawProjectsFiles(this, currentProjectsFolderWidget);
+        FileSystemGUI::DrawProjectFiles(this, currentProjectsFolderWidget);
     }
     ImGui::End();
 
     if (ImGui::Begin("Scenes")) {
-        FileSystemGUI::drawScenesFolder(this, currentScenesFolderWidget);
+        FileSystemGUI::DrawScenesFolder(this, currentScenesFolderWidget);
     }
     ImGui::End();
 
@@ -246,9 +246,9 @@ GuiAddonConsole *GUIManager::getConsole() const
     return widgetConsole;
 }
 
-TexturePackage *GUIManager::getImGuiTextures()
+TexturePackage &GUIManager::getImGuiTextures()
 {
-    return &icons;
+    return icons;
 }
 
 bool GUIManager::isShowLightsDepthMapsViewerWindow() const

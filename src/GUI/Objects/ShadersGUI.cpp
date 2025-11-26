@@ -18,7 +18,7 @@ void ShadersGUI::DrawEditShaderWindow(GUIManager *gui)
     ImGui::SetNextWindowBgAlpha(GUIConstants::WINDOW_ALPHA);
 
     if (ImGui::Begin("Shader edition", &gui->showEditShaderWindow, ImGuiWindowFlags_NoDocking)) {
-        drawShaderVariables(gui);
+        DrawShaderVariables(gui);
 
         ImGui::SeparatorText("GLSL code");
 
@@ -43,7 +43,7 @@ void ShadersGUI::DrawEditShaderWindow(GUIManager *gui)
     ImGui::End();
 }
 
-void ShadersGUI::drawShaderVariables(GUIManager *gui)
+void ShadersGUI::DrawShaderVariables(GUIManager *gui)
 {
     auto type = gui->shaderEditableManager.shader->getType();
     auto typeName = gui->shaderEditableManager.shader->getShaderTypeString(type);
@@ -118,7 +118,7 @@ void ShadersGUI::drawShaderVariables(GUIManager *gui)
     }
 }
 
-void ShadersGUI::drawCustomShadersFolder(GUIManager *gui, std::string folder)
+void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, std::string folder)
 {
     static char name[256];
     strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
@@ -141,13 +141,13 @@ void ShadersGUI::drawCustomShadersFolder(GUIManager *gui, std::string folder)
         if (!gui->currentVariableToCreateCustomShader.empty()) {
             auto type = ShaderOGLCustom::getShaderTypeFromString(items[item_current_idx]);
             ShaderOGLCustom::createEmptyCustomShader(gui->currentVariableToCreateCustomShader, folder, type);
-            FileSystemGUI::updateFolderFiles(gui);
+            FileSystemGUI::UpdateFolderFiles(gui);
         }
     }
 
     ImGui::Separator();
 
-    FileSystemGUI::drawBrowserFolders(
+    FileSystemGUI::DrawBrowserFolders(
         gui,
         folder,
         BrakezaSetup::get()->CUSTOM_SHADERS_FOLDER,
@@ -196,7 +196,7 @@ void ShadersGUI::drawCustomShadersFolder(GUIManager *gui, std::string folder)
             }
             GUIManager::ShowDeletePopup("Delete shaders?", [folder, file, gui] () {
                 ShaderOGLCustom::removeCustomShaderFiles(folder,  Tools::getFilenameWithoutExtension(file));
-                FileSystemGUI::updateFolderFiles(gui);
+                FileSystemGUI::UpdateFolderFiles(gui);
             });
 
             ImGui::PopID();
@@ -205,7 +205,7 @@ void ShadersGUI::drawCustomShadersFolder(GUIManager *gui, std::string folder)
     }
 }
 
-void ShadersGUI::drawSelectedObjectShaders(GUIManager *gui)
+void ShadersGUI::DrawShadersBySelectedObject(GUIManager *gui)
 {
     bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < gui->gameObjects.size();
 

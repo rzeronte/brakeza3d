@@ -55,7 +55,7 @@ const char *Image2D::getTypeIcon()
 void Image2D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    Image2DGUI::drawImGuiProperties(this);
+    Image2DGUI::DrawPropertiesGUI(this);
 }
 
 Image2D *Image2D::create(int x, int y, const std::string& imageFile)

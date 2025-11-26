@@ -12,10 +12,10 @@ class GUIManager;
 class ScriptLuaGUI
 {
 public:
-    static void drawImGuiProperties(ScriptLUA *o);
+    static void DrawPropertiesGUI(ScriptLUA *o);
     static void LoadScriptDialog(GUIManager *gui, const std::string& filename);
-    static void drawSelectedObjectScripts(GUIManager *gui);
-    static void drawScriptsLuaFolderFiles(GUIManager *gui, const std::string& folder);
+    static void DrawScriptsBySelectedObject(GUIManager *gui);
+    static void DrawScriptsLuaFolderFiles(GUIManager *gui, const std::string& folder);
     static void DrawEditScriptWindow(GUIManager *gui);
     static void DrawObjectVariables(const GUIManager *gui);
     static void drawGlobalVariables();

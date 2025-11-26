@@ -11,7 +11,7 @@
 class Image3DGUI
 {
 public:
-    static void drawImGuiProperties(Image3D *o)
+    static void DrawPropertiesGUI(Image3D *o)
     {
         if (ImGui::CollapsingHeader("Image3D")) {
 

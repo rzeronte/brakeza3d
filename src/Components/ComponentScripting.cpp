@@ -5,7 +5,7 @@
 #include "../../include/Components/ComponentScripting.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
-#include "../BrakezaLuaBridge.h"
+#include "../../include/BrakezaLuaBridge.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 
 ComponentScripting::ComponentScripting()

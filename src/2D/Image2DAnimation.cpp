@@ -95,7 +95,7 @@ const char *Image2DAnimation::getTypeIcon()
 void Image2DAnimation::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    Image2DAnimationGUI::drawImGuiProperties(this);
+    Image2DAnimationGUI::DrawPropertiesGUI(this);
 }
 
 Image2DAnimation *Image2DAnimation::create(int x, int y, const std::string &sheet, int w, int h, int frames, int fps)
