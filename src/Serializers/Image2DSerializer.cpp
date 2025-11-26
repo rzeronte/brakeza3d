@@ -35,7 +35,7 @@ Object3D * Image2DSerializer::ObjectByJson(cJSON *json)
 
 void Image2DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
-    std::cout << "[Image2DSerializer ApplyJsonToObject] " << o->getTypeObject() << std::endl;
+    Logging::Message("[Image2DSerializer] ApplyJsonToObject: %s", o->getTypeObject());
 
     auto image = dynamic_cast<Image2D*>(o);
 

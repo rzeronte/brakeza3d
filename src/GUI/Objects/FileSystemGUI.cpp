@@ -47,21 +47,21 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, const std::string& folder)
             if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                 ImGui::TableSetColumnIndex(0);
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 4, ImGui::GetCursorPosY() + 5.0f));
-                ImGui::Image(TexturePackage::getOGLTextureID(gui->icons, "projectIcon"), ImVec2(16, 16));
+                ImGui::Image(IconTag(IconsByGUI::PROJECT), ImVec2(16, 16));
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY()));
                 ImGui::Text("%s", title.c_str());
 
                 ImGui::TableSetColumnIndex(1);
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "openIcon"), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(IconTag(IconsByGUI::OPEN), ImVec2(14, 14))) {
                     ComponentsManager::get()->getComponentRender()->getProjectLoader().loadProject(folder + file);
                 }
                 ImGui::SameLine();
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "saveIcon"), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(IconTag(IconsByGUI::SAVE), ImVec2(14, 14))) {
                     ProjectLoader::saveProject(folder + file);
                 }
                 ImGui::SameLine();
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "removeIcon"), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
                     ImGui::OpenPopup("Delete Project?");
                 }
                 gui->ShowDeletePopup("Delete Project?", [folder, file, gui] () {
@@ -118,22 +118,22 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, const std::string& folder)
             if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                 ImGui::TableSetColumnIndex(0);
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 4, ImGui::GetCursorPosY() + 5.0f));
-                ImGui::Image(TexturePackage::getOGLTextureID(gui->icons, "sceneIcon"), ImVec2(16, 16));
+                ImGui::Image(IconTag(IconsByGUI::SCENE), ImVec2(16, 16));
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY()));
                 ImGui::Text("%s", title.c_str());
 
                 ImGui::TableSetColumnIndex(1);
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "openIcon"), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(IconTag(IconsByGUI::OPEN), ImVec2(14, 14))) {
                     SceneLoader::ClearScene();
                     ComponentsManager::get()->getComponentRender()->getSceneLoader().LoadScene(folder + file);
                 }
                 ImGui::SameLine();
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "saveIcon"), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(IconTag(IconsByGUI::SAVE), ImVec2(14, 14))) {
                     SceneLoader::SaveScene(folder + file);
                 }
                 ImGui::SameLine();
-                if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "removeIcon"), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
                     ImGui::OpenPopup("Delete Scene?");
                 }
                 gui->ShowDeletePopup("Delete Scene?", [folder, file, gui] () {
@@ -162,7 +162,7 @@ void FileSystemGUI::DrawBrowserFolders(
     ImGui::Separator();
 
     if (folder != folderBase) {
-        ImGui::Image(TexturePackage::getOGLTextureID(gui->icons, "folderIcon"), ImVec2(16, 16));
+        ImGui::Image(IconTag(IconsByGUI::FOLDER), ImVec2(16, 16));
         ImGui::SameLine();
         if (ImGui::Button("..")) {
             destiny = Tools::GoBackFromFolder(destiny);
@@ -171,13 +171,13 @@ void FileSystemGUI::DrawBrowserFolders(
         }
     }
 
-    ImGui::Image(TexturePackage::getOGLTextureID(gui->icons, "folderIcon"), ImVec2(16, 16));
+    ImGui::Image(IconTag(IconsByGUI::FOLDER), ImVec2(16, 16));
     ImGui::SameLine();
     ImGui::Text(".");
 
     for (const auto & i : folders) {
         auto fullPathFolder = folder + i;
-        ImGui::Image(TexturePackage::getOGLTextureID(gui->icons, "folderIcon"), ImVec2(16, 16));
+        ImGui::Image(IconTag(IconsByGUI::FOLDER), ImVec2(16, 16));
         ImGui::SameLine();
         if (ImGui::Button(i.c_str())) {
             destiny = fullPathFolder + "/";
@@ -206,12 +206,9 @@ void FileSystemGUI::LoadIcons(TexturePackage &icon)
 
     for (const auto& iconMapping : IconsByGUI::ICON_FILES)
         icon.addItem(interfaceFolder + iconMapping.filename, iconMapping.id);
-
-    icon.addItem(BrakezaSetup::get()->IMAGES_FOLDER + "splash.png","splash");
 }
 
 ImTextureID FileSystemGUI::IconTag(const char* iconTag)
 {
     return TexturePackage::getOGLTextureID(Brakeza::get()->getManagerGui()->getImGuiTextures(), iconTag);
 }
-

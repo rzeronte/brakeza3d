@@ -358,8 +358,6 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
 
     ImGui::SeparatorText("OpenGL textures");
 
-    auto ImGuiTextures = Brakeza::get()->getManagerGui()->getImGuiTextures();
-
     if (ImGui::BeginTable("ShaderOpenGLCustomTexture", 4, flags)) {
         int j = 0;
         for (auto &type: dataTypes) {
@@ -470,7 +468,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
                     } else {
                         ImGui::TableSetColumnIndex(0);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
-                        ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, "textureIcon"), ImVec2(36, 36));
+                        ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::TEXTURE), ImVec2(36, 36));
                         captureDragDropUpdateImage(type, texture);
 
                         ImGui::TableSetColumnIndex(1);

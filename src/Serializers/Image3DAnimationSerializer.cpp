@@ -46,7 +46,7 @@ Object3D * Image3DAnimationSerializer::ObjectByJson(cJSON *json)
 
 void Image3DAnimationSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
-    std::cout << "[Mesh3DSerializer ApplyJsonToObject] " << o->getTypeObject() << std::endl;
+    Logging::Message("[Image3DAnimationSerializer] ApplyJsonToObject: %s", o->getTypeObject());
 
     auto image = dynamic_cast<Image3DAnimation*>(o);
 

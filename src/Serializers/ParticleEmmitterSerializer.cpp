@@ -78,7 +78,7 @@ Object3D * ParticleEmmitterSerializer::ObjectByJson(cJSON *json)
 
 void ParticleEmmitterSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
-    std::cout << "[ParticleEmmitterSerializer LoadJSONObject]"  << std::endl;
+    Logging::Message("[ParticleEmmitterSerializer] ApplyJsonToObject: %s", o->getTypeObject());
 
     auto emitter = dynamic_cast<ParticleEmitter*>(o);
 

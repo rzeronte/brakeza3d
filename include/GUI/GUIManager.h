@@ -8,7 +8,7 @@
 #include "../Misc/TexturePackage.h"
 #include "AddOns/GUIAddonObjects3D.h"
 #include "AddOns/GUIAddonObject3DProperties.h"
-#include "AddOns/GUIAddonProjectSettings.h"
+#include "AddOns/GUIAddonProjectSetup.h"
 #include "AddOns/GUIAddonMenu.h"
 #include "AddOns/GUIAddonToolbar.h"
 
@@ -44,7 +44,7 @@ class GUIManager
     GuiAddonConsole *widgetConsole;
     GUIAddonObjects3D *widgetObjects3D;
     GUIAddonObject3DProperties *widgetObject3DProperties;
-    GUIAddonProjectSettings *widgetProjectSettings;
+    GUIAddonProjectSetup *widgetProjectSettings;
     GUIAddonMenu *widgetMenu;
     GUIAddonToolbar *widgetToolbar;
 
@@ -76,31 +76,31 @@ public:
     virtual ~GUIManager() = default;
     explicit GUIManager(std::vector<Object3D *> &gameObjects);
 
-    void DrawLightsDepthMapsViewerWindow();
-    void DrawWidgets();
-    void updateImGuiDocking();
-    void DrawGUIPlugins(bool &finish);
-    void drawKeyboardMouseSettings();
-    void drawImages();
     void setSelectedObjectIndex(int selectedObjectIndex);
     void setSelectedObject(const Object3D *s);
     void openBoneInfoDialog();
-    void openLightsDepthMapsViewerDialog();
-    void DrawSplash();
-    virtual void draw(float timedelta, bool &finish);
 
+    virtual void DrawGUI(float timedelta, bool &finish);
     TexturePackage &getImGuiTextures();
     [[nodiscard]] GuiAddonConsole *getConsole() const;
     [[nodiscard]] bool isShowLightsDepthMapsViewerWindow() const;
     static void ShowDeletePopup(const char* title, const std::function<void()>& onConfirm);
-    static void setNextWindowSize(int w, int h);
-    static void RenderFPS();
+    static void SetNextWindowSize(int w, int h);
+    static void UpdateImGuiDocking();
 
     friend class Object3DGUI;
     friend class ScriptLuaGUI;
     friend class Mesh3DGUI;
     friend class ShadersGUI;
     friend class FileSystemGUI;
+private:
+    void DrawWidgets();
+    void DrawGUIPlugins(bool &finish);
+    void DrawImages();
+    void DrawLightsDepthMapsViewerWindow();
+    static void DrawKeyboardMouseSettings();
+    static void RenderFPS();
+    static void DrawSplash();
 };
 
 #endif //SDL2_3D_ENGINE_GUI_ENGINE_H

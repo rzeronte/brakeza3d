@@ -47,7 +47,7 @@ Object3D * Image3DAnimation8DirectionsSerializer::ObjectByJson(cJSON *json)
 
 void Image3DAnimation8DirectionsSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
-    std::cout << "[Image3DAnimation8Directions ApplyJsonToObject] " << o->getTypeObject() << std::endl;
+    Logging::Message("[Image3DAnimation8DirectionsSerializer] ApplyJsonToObject: %s", o->getTypeObject());
 
     auto image = dynamic_cast<Image3DAnimation8Directions*>(o);
 

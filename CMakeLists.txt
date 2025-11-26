@@ -123,7 +123,7 @@ add_executable(Brakeza3D
         include/GUI/AddOns/GUIAddonMenu.h
         include/GUI/AddOns/GUIAddonObject3DProperties.h
         include/GUI/AddOns/GUIAddonObjects3D.h
-        include/GUI/AddOns/GUIAddonProjectSettings.h
+        include/GUI/AddOns/GUIAddonProjectSetup.h
         include/GUI/AddOns/GUIAddonToolbar.h
         include/GUI/AddOns/GUIConsole.h
 

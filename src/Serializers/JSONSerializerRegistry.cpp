@@ -4,17 +4,18 @@
 
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/3D/Object3D.h"
+#include "../../include/Misc/Logging.h"
 
 cJSON* JSONSerializerRegistry::serialize(Object3D* obj)
 {
     if (obj == nullptr) return nullptr;
 
-    std::cout << "[JSONSerializerRegistry serialize] Serializing object of type " << obj->getTypeObject() << std::endl;
+    Logging::Message("[JSONSerializerRegistry serialize] Serializing object of type", obj->getTypeObject());
 
     auto serializer = getSerializer(obj->getTypeObject());
 
     if (!serializer) {
-        std::cout << "[JSONSerializerRegistry serialize] No serialization for " << obj->getTypeObject() << std::endl;
+        Logging::Message("[JSONSerializerRegistry serialize] No serialization for object: ", obj->getTypeObject());
         exit(-1);
     }
 
@@ -27,12 +28,12 @@ Object3D* JSONSerializerRegistry::deserialize(cJSON* json)
 
     cJSON* typeItem = cJSON_GetObjectItem(json, "type");
 
-    std::cout << "[JSONSerializerRegistry deserialize] Deserializing object of type " << typeItem->valuestring << std::endl;
+    Logging::Message("[JSONSerializerRegistry serialize] Deserializing object of type: %s", typeItem->valuestring);
 
     auto serializer = getSerializer(typeItem->valuestring);
 
     if (!serializer) {
-        std::cout << "[JSONSerializerRegistry deserialize] No serialization for " << typeItem->valuestring << std::endl;
+        Logging::Message("[JSONSerializerRegistry serialize] No serialization for object: %s", typeItem->valuestring);
         exit(-1);
     }
 

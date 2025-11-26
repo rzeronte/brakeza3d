@@ -92,7 +92,7 @@ void Mesh3DGUI::DrawEditBonesMappingWindow(GUIManager *gui)
     auto bc = a->getBoneMappingColliders();
     int numMappings = bc->size();
 
-    gui->setNextWindowSize(700, 700);
+    gui->SetNextWindowSize(700, 700);
     ImGui::SetNextWindowBgAlpha(GUIConstants::WINDOW_ALPHA);
     auto dialogTitle = std::string("Bones Mapping Editor: " + a->getLabel());
     if (ImGui::Begin(dialogTitle.c_str(), &gui->showBoneMappingsEditorWindow, ImGuiWindowFlags_NoDocking)) {
