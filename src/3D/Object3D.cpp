@@ -188,7 +188,7 @@ void Object3D::postUpdate()
 
 void Object3D::drawImGuiProperties()
 {
-    Object3DGUI::drawImGuiProperties(this);
+    Object3DGUI::DrawPropertiesGUI(this);
 }
 
 void Object3D::addToPosition(const Vertex3D &v)

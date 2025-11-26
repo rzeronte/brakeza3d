@@ -2,8 +2,8 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#ifndef BRAKEZA3D_IMAGE3DDRAWERGUI_H
-#define BRAKEZA3D_IMAGE3DDRAWERGUI_H
+#ifndef BRAKEZA3D_TEXTUREANIMATIONGUI_H
+#define BRAKEZA3D_TEXTUREANIMATIONGUI_H
 
 #include "../../Render/TextureAnimated.h"
 
@@ -35,4 +35,4 @@ public:
     }
 };
 
-#endif //BRAKEZA3D_IMAGE3DDRAWERGUI_H
+#endif //BRAKEZA3D_TEXTUREANIMATIONGUI_H

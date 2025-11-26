@@ -2,8 +2,8 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#ifndef BRAKEZA3D_IMAGE3DDRAWERGUI_H
-#define BRAKEZA3D_IMAGE3DDRAWERGUI_H
+#ifndef BRAKEZA3D_PARTICLEEMITTERGUI_H
+#define BRAKEZA3D_PARTICLEEMITTERGUI_H
 
 #include "../../3D/ParticleEmitter.h"
 #include "../../Misc/Logging.h"
@@ -85,4 +85,4 @@ public:
     }
 };
 
-#endif //BRAKEZA3D_IMAGE3DDRAWERGUI_H
+#endif //BRAKEZA3D_PARTICLEEMITTERGUI_H

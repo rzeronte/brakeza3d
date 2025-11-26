@@ -251,6 +251,13 @@ add_executable(Brakeza3D
         src/Render/Plane.cpp                                include/Render/Plane.h
         src/Render/Transforms.cpp                           include/Render/Transforms.h
         include/Render/AABB3D.h
+        src/GUI/Objects/Mesh3DGUI.cpp
+        src/GUI/Objects/Object3DGUI.cpp
+        src/GUI/Objects/ScriptLuaGUI.cpp
+        src/GUI/Objects/ShadersGUI.cpp
+        include/GUI/Objects/ShadersGUI.h
+        src/GUI/Objects/FilesystemGUI.cpp
+        include/GUI/Objects/FilesystemGUI.h
 )
 
 target_link_libraries(Brakeza3D

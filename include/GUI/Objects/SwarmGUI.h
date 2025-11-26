@@ -2,8 +2,8 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#ifndef BRAKEZA3D_IMAGE3DDRAWERGUI_H
-#define BRAKEZA3D_IMAGE3DDRAWERGUI_H
+#ifndef BRAKEZA3D_SWARMGUI_H
+#define BRAKEZA3D_SWARMGUI_H
 
 #include "../../Brakeza.h"
 #include "../../3D/Swarm.h"
@@ -223,4 +223,4 @@ public:
 
 };
 
-#endif //BRAKEZA3D_IMAGE3DDRAWERGUI_H
+#endif //BRAKEZA3D_SWARMGUI_H
