@@ -11,11 +11,10 @@
 class LightPointSerializer : public JSONSerializer
 {
 public:
-    cJSON* JsonByObject(Object3D *o) override;
     Object3D* ObjectByJson(cJSON* json) override;
-
-    static void ApplyJsonToObject(const cJSON* json, Object3D* o);
-    static void LoadFileIntoScene(const std::string& model);
+    cJSON* JsonByObject(Object3D *o) override;
+    void ApplyJsonToObject(const cJSON* json, Object3D* o) override;
+    void LoadFileIntoScene(const std::string& model) override;
 };
 
 

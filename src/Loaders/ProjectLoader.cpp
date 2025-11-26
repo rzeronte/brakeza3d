@@ -52,7 +52,6 @@ void ProjectLoader::saveProject(const std::string &filename)
     }
     cJSON_AddItemToObject(root, "scripts", sceneScriptsArray);
 
-    Logging::Message(cJSON_Print(root));
     Tools::writeToFile(filename, cJSON_Print(root));
 }
 

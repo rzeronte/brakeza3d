@@ -99,7 +99,7 @@ void SceneLoader::LoadScene(const std::string& filename)
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
         cJSON *currentScript;
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
-            std::string fileName = (const char*) cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
+            std::string fileName = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
             ComponentsManager::get()->getComponentScripting()->addSceneLUAScript(
                 new ScriptLUA(fileName, ScriptLUA::dataTypesFileFor(fileName))
             );
@@ -149,15 +149,16 @@ void SceneLoader::SaveScene(const std::string &filename)
 
     cJSON_AddItemToObject(root, "ads", adsJSON);
 
-    //scripts
-    cJSON *scriptsArray = cJSON_CreateArray();
+    //Objects
+    cJSON *objectsArray = cJSON_CreateArray();
     for (auto object : Brakeza::get()->getSceneObjects()) {
-        if (!object->isBelongToScene()) continue;
-        auto objectJson = JSONSerializerRegistry::GetJsonByObject(object);
+        //auto objectJson = JSONSerializerRegistry::instance().serialize(object);
+        auto objectJson = JSONSerializerRegistry::instance().serialize(object);
+
         cJSON_AddStringToObject(objectJson, "type", object->getTypeObject());
-        cJSON_AddItemToArray(scriptsArray, objectJson);
+        cJSON_AddItemToArray(objectsArray, objectJson);
     }
-    cJSON_AddItemToObject(root, "objects", scriptsArray);
+    cJSON_AddItemToObject(root, "objects", objectsArray);
 
     //shaders
     cJSON *shadersArrayJSON = cJSON_CreateArray();
@@ -193,7 +194,6 @@ void SceneLoader::SaveScene(const std::string &filename)
 
     cJSON_AddItemToObject(root, "camera", cameraJSON);
 
-    Logging::Message(cJSON_Print(root));
     Tools::writeToFile(filename, cJSON_Print(root));
 }
 
@@ -262,6 +262,7 @@ void SceneLoader::InitSerializers()
 void SceneLoader::SceneLoaderCreateObject(cJSON *object)
 {
     auto o = JSONSerializerRegistry::instance().deserialize(object);
+    o->setBelongToScene(true);
     std::cout << "[SceneLoader SceneLoaderCreateObject] " << o->getLabel() << std::endl;
 
     Brakeza::get()->addObject3D(o, o->getLabel());

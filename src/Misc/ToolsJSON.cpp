@@ -33,3 +33,13 @@ Color ToolsJSON::parseColorJSON(cJSON *color)
         cJSON_GetObjectItemCaseSensitive(color, "b")->valueint
     );
 }
+
+cJSON * ToolsJSON::ColorToJSON(const Color &color)
+{
+    cJSON *colorFromJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(colorFromJSON, "r", color.r);
+    cJSON_AddNumberToObject(colorFromJSON, "g", color.g);
+    cJSON_AddNumberToObject(colorFromJSON, "b", color.b);
+
+    return colorFromJSON;
+}

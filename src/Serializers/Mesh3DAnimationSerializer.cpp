@@ -8,11 +8,11 @@
 
 cJSON* Mesh3DAnimationSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[Mesh3DAnimationSerializer] ApplyJsonToObject", o->getTypeObject());
+    Logging::Message("[Mesh3DAnimationSerializer] JsonByObject: %s", o->getTypeObject());
 
     auto *mesh = dynamic_cast<Mesh3DAnimation*>(o);
 
-    cJSON *root = JSONSerializerRegistry::GetJsonByObject(o);
+    auto root = Mesh3DSerializer().JsonByObject(o);
 
     cJSON_AddNumberToObject(root, "animationSpeed", mesh->animation_speed);
     cJSON_AddBoolToObject(root, "boneColliderEnabled", mesh->boneColliderEnabled);
@@ -63,7 +63,7 @@ void Mesh3DAnimationSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o
 
     auto mesh = dynamic_cast<Mesh3DAnimation*>(o);
 
-    Mesh3DSerializer::ApplyJsonToObject(json, o);
+    Mesh3DSerializer().ApplyJsonToObject(json, o);
 
     // speed
     auto speed = cJSON_GetObjectItemCaseSensitive(json, "animationSpeed")->valuedouble;

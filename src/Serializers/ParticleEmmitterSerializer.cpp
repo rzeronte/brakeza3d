@@ -6,12 +6,15 @@
 #include "../../include/Brakeza.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/3D/ParticleEmitter.h"
+#include "../../include/Misc/ToolsJSON.h"
 
 cJSON * ParticleEmmitterSerializer::JsonByObject(Object3D *o)
 {
+    Logging::Message("[ParticleEmitterSerializer] JsonByObject: %s", o->getTypeObject());
+
     auto light = dynamic_cast<ParticleEmitter*>(o);
 
-    cJSON *root = JSONSerializerRegistry::GetJsonByObject(o);
+    auto root = Object3DSerializer().JsonByObject(o);
 
     cJSON *contextParticles = cJSON_CreateObject();
     cJSON_AddNumberToObject(contextParticles, "GRAVITY", light->getContextPointer().GRAVITY);
@@ -27,17 +30,8 @@ cJSON * ParticleEmmitterSerializer::JsonByObject(Object3D *o)
     cJSON_AddNumberToObject(contextParticles, "DECELERATION_FACTOR", light->getContextPointer().DECELERATION_FACTOR);
     cJSON_AddItemToObject(root, "context", contextParticles);
 
-    cJSON *colorFromJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(colorFromJSON, "r", light->getColorFrom().r);
-    cJSON_AddNumberToObject(colorFromJSON, "g", light->getColorFrom().g);
-    cJSON_AddNumberToObject(colorFromJSON, "b", light->getColorFrom().b);
-    cJSON_AddItemToObject(root, "colorFrom", colorFromJSON);
-
-    cJSON *colorToJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(colorToJSON, "r", light->getColorTo().r);
-    cJSON_AddNumberToObject(colorToJSON, "g", light->getColorTo().g);
-    cJSON_AddNumberToObject(colorToJSON, "b", light->getColorTo().b);
-    cJSON_AddItemToObject(root, "colorTo", colorToJSON);
+    cJSON_AddItemToObject(root, "colorFrom", ToolsJSON::ColorToJSON(light->getColorFrom()));
+    cJSON_AddItemToObject(root, "colorTo", ToolsJSON::ColorToJSON(light->getColorTo()));
 
     if (light->getTexture() != nullptr) {
         cJSON_AddStringToObject(root, "texture", light->getTexture()->getFileName().c_str());
@@ -82,7 +76,7 @@ void ParticleEmmitterSerializer::ApplyJsonToObject(const cJSON *json, Object3D *
 
     auto emitter = dynamic_cast<ParticleEmitter*>(o);
 
-    Object3DSerializer::ApplyJsonToObject(json, o);
+    Object3DSerializer().ApplyJsonToObject(json, o);
 
     auto contextJSON = cJSON_GetObjectItemCaseSensitive(json, "context");
     ParticlesContext context(

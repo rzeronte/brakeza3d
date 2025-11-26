@@ -15,9 +15,8 @@ class ToolsJSON {
 
 public:
     static Color parseColorJSON(cJSON *color);
-
+    static cJSON* ColorToJSON(const Color &color);
     static Vertex3D parseVertex3DJSON(cJSON *vertex3DJSON);
-
     static M3 parseRotation3DJSON(cJSON *rotationJSON);
 };
 
