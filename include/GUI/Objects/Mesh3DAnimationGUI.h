@@ -11,7 +11,7 @@
 class Mesh3DAnimationDrawerGUI
 {
 public:
-    static void drawImGuiProperties(Mesh3DAnimation *o)
+    static void DrawPropertiesGUI(Mesh3DAnimation *o)
     {
         const float range_min = 0.0f;
         const float range_max = 1.0f;

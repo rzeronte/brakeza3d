@@ -7,8 +7,8 @@
 
 #include <string>
 #include <map>
-#include "SceneObjectTypes.h"
-#include "Misc/cJSON.h"
+#include "../SceneObjectTypes.h"
+#include "../Misc/cJSON.h"
 
 class Object3D;
 

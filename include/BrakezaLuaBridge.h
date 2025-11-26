@@ -6,19 +6,19 @@
 #define BRAKEZA3D_LUAINTEGRATION_H
 
 #include "../sol/sol.hpp"
-#include "../include/3D/Vertex3D.h"
-#include "../include/Misc/ScriptLUA.h"
-#include "../include/Components/ComponentCamera.h"
-#include "../include/Components/ComponentsManager.h"
-#include "../include/Brakeza.h"
-#include "../include/2D/Image2D.h"
-#include "../include/2D/Image2DAnimation.h"
-#include "../include/3D/Mesh3DAnimation.h"
-#include "../include/3D/Image3D.h"
-#include "../include/3D/LightPoint.h"
-#include "../include/3D/Image3DAnimation.h"
-#include "../include/3D/Image3DAnimation8Directions.h"
-#include "../include/3D/ParticleEmitter.h"
+#include "3D/Vertex3D.h"
+#include "Misc/ScriptLUA.h"
+#include "Components/ComponentCamera.h"
+#include "Components/ComponentsManager.h"
+#include "Brakeza.h"
+#include "2D/Image2D.h"
+#include "2D/Image2DAnimation.h"
+#include "3D/Mesh3DAnimation.h"
+#include "3D/Image3D.h"
+#include "3D/LightPoint.h"
+#include "3D/Image3DAnimation.h"
+#include "3D/Image3DAnimation8Directions.h"
+#include "3D/ParticleEmitter.h"
 
 inline void LUAIntegration(sol::state &lua)
 {

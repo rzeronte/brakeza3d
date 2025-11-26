@@ -5,7 +5,6 @@
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include "../../include/Render/Transforms.h"
-#include "../../include/Render/Drawable.h"
 
 ComponentRender::ComponentRender()
 {

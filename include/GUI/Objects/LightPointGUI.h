@@ -10,7 +10,7 @@
 class LightPointGUI
 {
 public:
-    static void drawImGuiProperties(LightPoint *o)
+    static void DrawPropertiesGUI(LightPoint *o)
     {
         if (ImGui::CollapsingHeader("LightPoint")) {
 

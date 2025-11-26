@@ -277,7 +277,7 @@ void Mesh3D::setRender(bool render)
 void Mesh3D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    Mesh3DGUI::drawImGuiProperties(this);
+    Mesh3DGUI::DrawPropertiesGUI(this);
 }
 
 void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)

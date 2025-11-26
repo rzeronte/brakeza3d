@@ -6,8 +6,8 @@
 #define BRAKEZA3D_GUIWIDGETOBJECT3DPROPERTIES_H
 
 #include "imgui.h"
-#include "../Misc/TexturePackage.h"
-#include "../3D/Object3D.h"
+#include "../../Misc/TexturePackage.h"
+#include "../../3D/Object3D.h"
 
 struct ScriptEditableManager {
     std::string selectedScriptFilename;

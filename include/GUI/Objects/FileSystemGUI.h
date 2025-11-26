@@ -12,13 +12,12 @@ class GUIManager;
 class FileSystemGUI
 {
 public:
-    static void updateFolderFiles(GUIManager *gui);
-    static void drawProjectsFiles(GUIManager *gui, const std::string &folder);
-    static void drawScenesFolder(GUIManager *gui, const std::string &folder);
+    static void UpdateFolderFiles(GUIManager *gui);
+    static void DrawProjectFiles(GUIManager *gui, const std::string &folder);
+    static void DrawScenesFolder(GUIManager *gui, const std::string &folder);
     static void LoadImagesFolder(GUIManager *gui);
     static void LoadIcons(TexturePackage &icon);
-
-    static void drawBrowserFolders(
+    static void DrawBrowserFolders(
         GUIManager *gui,
         const std::string &folder,
         const std::string &folderBase,
@@ -27,6 +26,7 @@ public:
         std::vector<std::string> &files,
         const std::string &ext
     );
+    static ImTextureID IconTag(const char *iconTag);
 };
 
 

@@ -294,7 +294,7 @@ void ScriptLUA::setPaused(bool value)
 
 void ScriptLUA::drawImGuiProperties()
 {
-    ScriptLuaGUI::drawImGuiProperties(this);
+    ScriptLuaGUI::DrawPropertiesGUI(this);
 }
 
 const std::vector<ScriptLUATypeData> &ScriptLUA::getDataTypes() const

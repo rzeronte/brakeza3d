@@ -8,25 +8,26 @@
 #include <SDL_mixer.h>
 
 #include "imgui.h"
-#include "../BrakezaSetup.h"
-#include "../Misc/Logging.h"
-#include "../SceneLoader.h"
-#include "../Components/ComponentsManager.h"
-#include "../Misc/TexturePackage.h"
-#include "../3D/ParticleEmitter.h"
-#include "../Render/Maths.h"
-#include "../Serializers/JSONSerializer.h"
-#include "../Serializers/Mesh3DAnimationSerializer.h"
-#include "../Serializers/Object3DSerializer.h"
-#include "../Serializers/Mesh3DSerializer.h"
-#include "../Serializers/LightPointSerializer.h"
-#include "../Serializers/LightSpotSerializer.h"
-#include "../Serializers/Image3DSerializer.h"
-#include "../Serializers/Image2DSerializer.h"
-#include "../Serializers/ParticleEmmitterSerializer.h"
-#include "../Serializers/Image2DAnimationSerializer.h"
-#include "../Serializers/Image3DAnimationSerializer.h"
-#include "../Serializers/Image3DAnimation8DirectionsSerializer.h"
+#include "../../BrakezaSetup.h"
+#include "../../Misc/Logging.h"
+#include "../../Loaders/SceneLoader.h"
+#include "../../Components/ComponentsManager.h"
+#include "../../Misc/TexturePackage.h"
+#include "../../3D/ParticleEmitter.h"
+#include "../../Render/Maths.h"
+#include "../../GUI/Objects/FileSystemGUI.h"
+#include "../../Serializers/JSONSerializer.h"
+#include "../../Serializers/Mesh3DAnimationSerializer.h"
+#include "../../Serializers/Object3DSerializer.h"
+#include "../../Serializers/Mesh3DSerializer.h"
+#include "../../Serializers/LightPointSerializer.h"
+#include "../../Serializers/LightSpotSerializer.h"
+#include "../../Serializers/Image3DSerializer.h"
+#include "../../Serializers/Image2DSerializer.h"
+#include "../../Serializers/ParticleEmmitterSerializer.h"
+#include "../../Serializers/Image2DAnimationSerializer.h"
+#include "../../Serializers/Image3DAnimationSerializer.h"
+#include "../../Serializers/Image3DAnimation8DirectionsSerializer.h"
 
 struct GUIAddonMenu
 {
@@ -86,25 +87,25 @@ struct GUIAddonMenu
             if (ImGui::BeginMenu("Control")) {
                 auto scripting = ComponentsManager::get()->getComponentScripting();
                 auto state = scripting->getStateLUAScripts();
-                ImGui::Image(icon(IconsByGUI::PLAY), ImVec2(16, 16));
+                ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::PLAY), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("Play scripts", "F1", false,  state != BrakezaSetup::LuaStateScripts::LUA_PLAY)) {
                     scripting->playLUAScripts();
                 }
                 ImGui::Separator();
-                ImGui::Image(icon(IconsByGUI::STOP), ImVec2(16, 16));
+                ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::STOP), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("Stop scripts", "F1", false, state != BrakezaSetup::LuaStateScripts::LUA_STOP)) {
                     scripting->stopLUAScripts();
                 }
                 ImGui::Separator();
-                ImGui::Image(icon(IconsByGUI::RELOAD), ImVec2(16, 16));
+                ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::RELOAD), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("Reload scripts", "F2")) {
                     scripting->reloadLUAScripts();
                 }
                 ImGui::Separator();
-                ImGui::Image(icon(IconsByGUI::REMOVE), ImVec2(16, 16));
+                ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("Clear scene objects", "F3")) {
                     SceneLoader::ClearScene();
@@ -113,7 +114,7 @@ struct GUIAddonMenu
             }
             if (ImGui::BeginMenu("Add object")) {
 
-                ImGui::Image(icon(IconsByObject::OBJECT_3D), ImVec2(16, 16));
+                ImGui::Image(FileSystemGUI::IconTag(IconsByObject::OBJECT_3D), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("Object3D (Empty)")) {
                     Object3DSerializer::LoadFileIntoScene("");
@@ -121,7 +122,8 @@ struct GUIAddonMenu
 
                 ImGui::Separator();
 
-                ImGui::Image(icon(IconsByObject::PARTICLE_EMITTER), ImVec2(16, 16));
+                ;
+                ImGui::Image(FileSystemGUI::IconTag(IconsByObject::PARTICLE_EMITTER), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("ParticleEmitter")) {
                     ParticleEmmitterSerializer::LoadFileIntoScene("");
@@ -129,19 +131,19 @@ struct GUIAddonMenu
                 }
                 ImGui::Separator();
 
-                ImGui::Image(icon(IconsByObject::IMAGE_2D), ImVec2(16, 16));
+                ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_2D), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("2D Objects")) {
 
                     ImGui::Separator();
 
-                    ImGui::Image(icon(IconsByObject::IMAGE_2D), ImVec2(16, 16));
+                    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_2D), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Image2D")) {
                         drawImage2DItemsToLoad(setup->IMAGES_FOLDER);
                         ImGui::EndMenu();
                     }
-                    ImGui::Image(icon(IconsByObject::IMAGE_2D_ANIMATION), ImVec2(16, 16));
+                    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_2D_ANIMATION), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Image2D Animation")) {
                         drawImage2DAnimationItemsToLoad(setup->SPRITES_FOLDER);
@@ -149,10 +151,10 @@ struct GUIAddonMenu
                     }
                     ImGui::EndMenu();
                 }
-                ImGui::Image(icon(IconsByObject::MESH_3D), ImVec2(16, 16));
+                ImGui::Image(FileSystemGUI::IconTag(IconsByObject::MESH_3D), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("3D Objects")) {
-                    ImGui::Image(icon(IconsByObject::IMAGE_3D), ImVec2(16, 16));
+                    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Image3D")) {
                         drawImage3DItemsToLoad(setup->IMAGES_FOLDER);
@@ -161,27 +163,27 @@ struct GUIAddonMenu
 
                     ImGui::Separator();
 
-                    ImGui::Image(icon(IconsByObject::IMAGE_3D_ANIMATION), ImVec2(16, 16));
+                    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D_ANIMATION), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Billboard Animation")) {
                         drawBillboardAnimationItemsToLoad(setup->SPRITES_FOLDER);
                         ImGui::EndMenu();
                     }
-                    ImGui::Image(icon(IconsByObject::IMAGE_3D_ANIMATION_8DIR), ImVec2(16, 16));
+                    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D_ANIMATION_8DIR), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::MenuItem("Billboard 8-Directions")) {
                         Image3DAnimation8DirectionsSerializer::LoadFileIntoScene("");
                         ImGui::EndMenu();
                     }
                     ImGui::Separator();
-                    ImGui::Image(icon(IconsByObject::MESH_3D), ImVec2(16, 16));
+                    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::MESH_3D), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Mesh3D")) {
                         drawMesh3DItemsToLoad(setup->MODELS_FOLDER);
                         ImGui::EndMenu();
                     }
                     ImGui::Separator();
-                    ImGui::Image(icon(IconsByObject::MESH_3D_ANIMATION), ImVec2(16, 16));
+                    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::MESH_3D_ANIMATION), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::BeginMenu("Mesh3DAnimation")) {
                         drawMesh3DAnimationItemsToLoad(setup->ANIMATIONS_FOLDER);
@@ -189,15 +191,15 @@ struct GUIAddonMenu
                     }
                     ImGui::EndMenu();
                 }
-                ImGui::Image(icon(IconsByObject::LIGHT_POINT), ImVec2(16, 16));
+                ImGui::Image(FileSystemGUI::IconTag(IconsByObject::LIGHT_POINT), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::BeginMenu("Light Objects")) {
-                    ImGui::Image(icon(IconsByObject::LIGHT_POINT), ImVec2(16, 16));
+                    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::LIGHT_POINT), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::MenuItem("PointLight")) {
                         LightPointSerializer::LoadFileIntoScene("");
                     }
-                    ImGui::Image(icon(IconsByObject::LIGHT_SPOT), ImVec2(16, 16));
+                    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::LIGHT_SPOT), ImVec2(16, 16));
                     ImGui::SameLine();
                     if (ImGui::MenuItem("SpotLight")) {
                         LightSpotSerializer::LoadFileIntoScene("");
@@ -415,7 +417,7 @@ struct GUIAddonMenu
 
         for (const auto & i : folders) {
             auto fullPath = folder + "/" + i;
-            ImGui::Image(icon(IconsByGUI::FOLDER), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::FOLDER), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::BeginMenu(i.c_str())) {
                 drawImage2DItemsToLoad(fullPath);
@@ -428,7 +430,7 @@ struct GUIAddonMenu
             auto title = std::to_string(i-1) + ") " + file;
 
             auto fullPath = folder + "/" + file;
-            ImGui::Image(icon(IconsByObject::IMAGE_2D), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_2D), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
                 Image2DSerializer::LoadFileIntoScene(fullPath);
@@ -443,7 +445,7 @@ struct GUIAddonMenu
 
         for (const auto & i : folders) {
             auto fullPath = folder + "/" + i;
-            ImGui::Image(icon(IconsByGUI::FOLDER), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::FOLDER), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::BeginMenu(i.c_str())) {
                 drawImage2DAnimationItemsToLoad(fullPath);
@@ -456,7 +458,7 @@ struct GUIAddonMenu
             auto title = std::to_string(i-1) + ") " + file;
 
             auto fullPath = folder + "/" + file;
-            ImGui::Image(icon(IconsByObject::IMAGE_2D_ANIMATION), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_2D_ANIMATION), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
                 Image2DAnimationSerializer::LoadFileIntoScene(fullPath);
@@ -470,7 +472,7 @@ struct GUIAddonMenu
 
         for (const auto & i : folders) {
             auto fullPath = folder + "/" + i;
-            ImGui::Image(icon(IconsByGUI::FOLDER), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::FOLDER), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::BeginMenu(i.c_str())) {
                 drawImage3DItemsToLoad(fullPath);
@@ -483,7 +485,7 @@ struct GUIAddonMenu
             auto title = std::to_string(i-1) + ") " + file;
 
             auto fullPath = folder + file;
-            ImGui::Image(icon(IconsByObject::IMAGE_3D), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
                 Image3DSerializer::LoadFileIntoScene(fullPath);
@@ -491,11 +493,6 @@ struct GUIAddonMenu
         }
     }
 
-    ImTextureID icon(const char* iconTag) const
-    {
-        return TexturePackage::getOGLTextureID(ImGuiTextures, iconTag);
-    }
-    
     void drawBillboardAnimationItemsToLoad(const std::string& folder) {
 
         auto files = Tools::getFolderFiles(folder, "png");
@@ -503,7 +500,7 @@ struct GUIAddonMenu
 
         for (const auto & i : folders) {
             auto fullPath = folder + "/" + i;
-            ImGui::Image(icon(IconsByGUI::FOLDER), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::FOLDER), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::BeginMenu(i.c_str())) {
                 drawBillboardAnimationItemsToLoad(fullPath);
@@ -516,7 +513,7 @@ struct GUIAddonMenu
             auto title = std::to_string(i-1) + ") " + file;
 
             auto fullPath = folder + "/" + file;
-            ImGui::Image(icon(IconsByObject::IMAGE_3D_ANIMATION), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D_ANIMATION), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
                 Image3DAnimationSerializer::LoadFileIntoScene(fullPath);
@@ -531,7 +528,7 @@ struct GUIAddonMenu
 
         for (const auto & i : folders) {
             auto fullPath = folder + "/" + i;
-            ImGui::Image(icon(IconsByGUI::FOLDER), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::FOLDER), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::BeginMenu(i.c_str())) {
                 drawMesh3DItemsToLoad(fullPath);
@@ -544,7 +541,7 @@ struct GUIAddonMenu
             auto title = std::to_string(i-1) + ") " + file;
 
             auto fullPath = folder + "/" + file;
-            ImGui::Image(icon(IconsByObject::MESH_3D), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByObject::MESH_3D), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
                 Mesh3DSerializer::LoadFileIntoScene(fullPath);
@@ -559,7 +556,7 @@ struct GUIAddonMenu
 
         for (const auto & i : folders) {
             auto fullPath = folder + "/" + i;
-            ImGui::Image(icon(IconsByGUI::FOLDER), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::FOLDER), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::BeginMenu(i.c_str())) {
                 drawMesh3DAnimationItemsToLoad(fullPath);
@@ -572,7 +569,7 @@ struct GUIAddonMenu
             auto title = std::to_string(i-1) + ") " + file;
 
             auto fullPath = folder + "/" + file;
-            ImGui::Image(icon(IconsByObject::MESH_3D_ANIMATION), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByObject::MESH_3D_ANIMATION), ImVec2(16, 16));
             ImGui::SameLine();
             if (ImGui::MenuItem(file.c_str())) {
                 Mesh3DAnimationSerializer::LoadFileIntoScene(fullPath);

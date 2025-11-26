@@ -10,7 +10,7 @@
 class Image2DAnimationGUI
 {
 public:
-    static void drawImGuiProperties(Image2DAnimation *o)
+    static void DrawPropertiesGUI(Image2DAnimation *o)
     {
         if (ImGui::CollapsingHeader("Image2DAnimation")) {
 

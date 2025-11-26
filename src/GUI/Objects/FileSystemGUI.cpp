@@ -4,12 +4,13 @@
 
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/GUIManager.h"
+#include "../../../include/Brakeza.h"
 
 #include <functional>
 #include <string>
 #include <vector>
 
-void FileSystemGUI::updateFolderFiles(GUIManager *gui)
+void FileSystemGUI::UpdateFolderFiles(GUIManager *gui)
 {
     gui->currentScriptsFolderFiles = Tools::getFolderFiles(gui->currentScriptsFolderWidget, "lua");
     gui->currentScenesFolderFiles = Tools::getFolderFiles(gui->currentScenesFolderWidget, "json");
@@ -17,7 +18,7 @@ void FileSystemGUI::updateFolderFiles(GUIManager *gui)
     gui->currentShadersFolderFiles = Tools::getFolderFiles(gui->currentShadersFolderWidget, "json");
 }
 
-void FileSystemGUI::drawProjectsFiles(GUIManager *gui, const std::string& folder)
+void FileSystemGUI::DrawProjectFiles(GUIManager *gui, const std::string& folder)
 {
     static char name[256];
     strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
@@ -65,7 +66,7 @@ void FileSystemGUI::drawProjectsFiles(GUIManager *gui, const std::string& folder
                 }
                 gui->ShowDeletePopup("Delete Project?", [folder, file, gui] () {
                     ProjectLoader::removeProject(folder + file);
-                    FileSystemGUI::updateFolderFiles(gui);
+                    FileSystemGUI::UpdateFolderFiles(gui);
                 });
 
             }
@@ -75,7 +76,7 @@ void FileSystemGUI::drawProjectsFiles(GUIManager *gui, const std::string& folder
     }
 }
 
-void FileSystemGUI::drawScenesFolder(GUIManager *gui, const std::string& folder)
+void FileSystemGUI::DrawScenesFolder(GUIManager *gui, const std::string& folder)
 {
     static char name[256];
     strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
@@ -91,7 +92,7 @@ void FileSystemGUI::drawScenesFolder(GUIManager *gui, const std::string& folder)
 
     ImGui::Separator();
 
-    drawBrowserFolders(
+    DrawBrowserFolders(
         gui,
         folder,
         BrakezaSetup::get()->SCENES_FOLDER,
@@ -137,7 +138,7 @@ void FileSystemGUI::drawScenesFolder(GUIManager *gui, const std::string& folder)
                 }
                 gui->ShowDeletePopup("Delete Scene?", [folder, file, gui] () {
                     SceneLoader::RemoveScene(folder + file);
-                    FileSystemGUI::updateFolderFiles(gui);
+                    FileSystemGUI::UpdateFolderFiles(gui);
                 });
             }
             ImGui::PopID();
@@ -146,7 +147,7 @@ void FileSystemGUI::drawScenesFolder(GUIManager *gui, const std::string& folder)
     }
 }
 
-void FileSystemGUI::drawBrowserFolders(
+void FileSystemGUI::DrawBrowserFolders(
     GUIManager *gui,
     const std::string& folder,
     const std::string& folderBase,
@@ -208,3 +209,9 @@ void FileSystemGUI::LoadIcons(TexturePackage &icon)
 
     icon.addItem(BrakezaSetup::get()->IMAGES_FOLDER + "splash.png","splash");
 }
+
+ImTextureID FileSystemGUI::IconTag(const char* iconTag)
+{
+    return TexturePackage::getOGLTextureID(Brakeza::get()->getManagerGui()->getImGuiTextures(), iconTag);
+}
+

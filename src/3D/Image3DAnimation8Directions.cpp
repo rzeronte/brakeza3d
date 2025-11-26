@@ -137,7 +137,7 @@ void Image3DAnimation8Directions::updateStep()
 void Image3DAnimation8Directions::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    Image3DAnimation8DirectionsGUI::drawImGuiProperties(this);
+    Image3DAnimation8DirectionsGUI::DrawPropertiesGUI(this);
 }
 
 const char *Image3DAnimation8Directions::getTypeObject()

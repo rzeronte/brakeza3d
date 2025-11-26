@@ -141,7 +141,6 @@ namespace IconsByGUI {
         const char* filename;
     };
 
-     // Array con todos los mapeos
     inline constexpr IconMapping ICON_FILES[] = {
         {FOLDER, "folder.png"},
         {PLAY, "play.png"},

@@ -2,7 +2,7 @@
 #include "../../../include/GUI/Objects/Mesh3DGUI.h"
 #include "../../../include/GUI/GUIManager.h"
 
-void Mesh3DGUI::drawImGuiProperties(Mesh3D *o)
+void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
 {
     std::string title = "Mesh3D (File: " + o->sourceFile + ")";
 

@@ -6,7 +6,7 @@
 #include "../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/GUIManager.h"
 
-void ScriptLuaGUI::drawImGuiProperties(ScriptLUA *o)
+void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
 {
     ImGui::SeparatorText("LUA variables");
 
@@ -73,7 +73,7 @@ void ScriptLuaGUI::LoadScriptDialog(GUIManager *gui, const std::string& filename
     gui->showEditScriptWindow = true;
 }
 
-void ScriptLuaGUI::drawSelectedObjectScripts(GUIManager *gui)
+void ScriptLuaGUI::DrawScriptsBySelectedObject(GUIManager *gui)
 {
     bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < gui->gameObjects.size();
 
@@ -120,7 +120,7 @@ void ScriptLuaGUI::drawSelectedObjectScripts(GUIManager *gui)
     }
 }
 
-void ScriptLuaGUI::drawScriptsLuaFolderFiles(GUIManager *gui, const std::string& folder)
+void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, const std::string& folder)
 {
     static char name[256];
     strncpy(name, gui->currentVariableToAddName.c_str(), sizeof(name));
@@ -136,7 +136,7 @@ void ScriptLuaGUI::drawScriptsLuaFolderFiles(GUIManager *gui, const std::string&
 
     ImGui::Separator();
 
-    FileSystemGUI::drawBrowserFolders(
+    FileSystemGUI::DrawBrowserFolders(
         gui,
         folder,
         BrakezaSetup::get()->SCRIPTS_FOLDER,
@@ -177,7 +177,7 @@ void ScriptLuaGUI::drawScriptsLuaFolderFiles(GUIManager *gui, const std::string&
             }
             GUIManager::ShowDeletePopup("Delete Script?", [folder, file, gui] () {
                 ComponentScripting::removeScriptLUAFile(folder + file);
-                FileSystemGUI::updateFolderFiles(gui);
+                FileSystemGUI::UpdateFolderFiles(gui);
             });
             ImGui::PopID();
         }

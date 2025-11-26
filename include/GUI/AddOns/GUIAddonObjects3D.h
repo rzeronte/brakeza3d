@@ -3,10 +3,10 @@
 
 #include <string>
 #include "imgui.h"
-#include "../Misc/Logging.h"
-#include "../3D/Mesh3D.h"
-#include "../Misc/TexturePackage.h"
-#include "../Components/ComponentsManager.h"
+#include "../../Misc/Logging.h"
+#include "../../3D/Mesh3D.h"
+#include "../../Misc/TexturePackage.h"
+#include "../../Components/ComponentsManager.h"
 
 struct GUIWidgetAllowedObjectConfig {
     std::string typeObject;

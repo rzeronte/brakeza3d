@@ -582,7 +582,7 @@ const char *Mesh3DAnimation::getTypeIcon()
 void Mesh3DAnimation::drawImGuiProperties()
 {
     Mesh3D::drawImGuiProperties();
-    Mesh3DAnimationDrawerGUI::drawImGuiProperties(this);
+    Mesh3DAnimationDrawerGUI::DrawPropertiesGUI(this);
 }
 
 void Mesh3DAnimation::setAnimationSpeed(float value)

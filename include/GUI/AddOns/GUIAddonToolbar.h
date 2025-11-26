@@ -2,7 +2,7 @@
 #define BRAKEZA3D_GUIWIDGETTOOLBAR_H
 
 #include "imgui.h"
-#include "../Components/ComponentsManager.h"
+#include "../../Components/ComponentsManager.h"
 
 struct GUIAddonToolbar {
     TexturePackage &ImGuiTextures;

@@ -10,7 +10,7 @@
 class LightSpotGUI
 {
 public:
-    static void drawImGuiProperties(LightSpot *o)
+    static void DrawPropertiesGUI(LightSpot *o)
     {
         if (ImGui::CollapsingHeader("SpotLight")) {
             if (ImGui::TreeNode("Direction##")) {

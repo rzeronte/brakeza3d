@@ -58,7 +58,7 @@ const char *LightSpot::getTypeIcon()
 void LightSpot::drawImGuiProperties()
 {
     LightPoint::drawImGuiProperties();
-    LightSpotGUI::drawImGuiProperties(this);
+    LightSpotGUI::DrawPropertiesGUI(this);
 }
 
 void LightSpot::onUpdate()

@@ -10,7 +10,7 @@
 class Image3DAnimation8DirectionsGUI
 {
 public:
-    static void drawImGuiProperties(Image3DAnimation8Directions *o)
+    static void DrawPropertiesGUI(Image3DAnimation8Directions *o)
     {
         if (ImGui::CollapsingHeader("BillboardAnimation8Directions")) {
             if (ImGui::TreeNode("Size")) {

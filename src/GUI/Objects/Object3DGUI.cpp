@@ -11,7 +11,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
     static char name[256];
     strncpy(name, o->label.c_str(), sizeof(name));
-    ImGui::Image(TexturePackage::getOGLTextureID(*ImGuiTextures, o->getTypeIcon()), ImVec2(22, 24));
+    ImGui::Image(TexturePackage::getOGLTextureID(ImGuiTextures, o->getTypeIcon()), ImVec2(22, 24));
     ImGui::SameLine();
     ImGui::SetNextItemWidth(125.0f);
     ImGui::InputText("Name##nameObject", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);

@@ -6,7 +6,7 @@
 #define BRAKEZA3D_GUIWIDGETPROJECTSETTINGS_H
 
 #include "imgui.h"
-#include "../Components/ComponentsManager.h"
+#include "../../Components/ComponentsManager.h"
 #include "GUIAddonObject3DProperties.h"
 
 struct GUIAddonProjectSettings {

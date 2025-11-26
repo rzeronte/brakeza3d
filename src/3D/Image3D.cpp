@@ -92,7 +92,7 @@ void Image3D::onUpdate()
 void Image3D::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    Image3DGUI::drawImGuiProperties(this);
+    Image3DGUI::DrawPropertiesGUI(this);
 }
 
 Image3D::~Image3D()

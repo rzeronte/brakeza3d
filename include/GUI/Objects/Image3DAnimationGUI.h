@@ -10,7 +10,7 @@
 class Image3DAnimationGUI
 {
 public:
-    static void drawImGuiProperties(Image3DAnimation *o)
+    static void DrawPropertiesGUI(Image3DAnimation *o)
     {
         if (ImGui::CollapsingHeader("Billboard Animation")) {
             if (ImGui::TreeNode("Size")) {

@@ -215,7 +215,7 @@ const char *ParticleEmitter::getTypeIcon()
 void ParticleEmitter::drawImGuiProperties()
 {
     Object3D::drawImGuiProperties();
-    ParticleEmitterGUI::drawImGuiProperties(this);
+    ParticleEmitterGUI::DrawPropertiesGUI(this);
 }
 
 void ParticleEmitter::setContext(const ParticlesContext &context) {

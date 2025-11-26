@@ -80,9 +80,9 @@ add_executable(Brakeza3D
         # Root
         src/Brakeza.cpp include/Brakeza.h
         src/BrakezaSetup.cpp                                include/BrakezaSetup.h
-        src/ProjectLoader.cpp                               include/ProjectLoader.h
-        src/SceneLoader.cpp                                 include/SceneLoader.h
-        src/BrakezaLuaBridge.h
+        src/Loaders/ProjectLoader.cpp include/Loaders/ProjectLoader.h
+        src/Loaders/SceneLoader.cpp include/Loaders/SceneLoader.h
+        include/BrakezaLuaBridge.h
         include/SceneObjectTypes.h
 
         # 2D
@@ -120,12 +120,12 @@ add_executable(Brakeza3D
         # GUI
         src/GUI/GUIManager.cpp                              include/GUI/GUIManager.h
         include/GUI/GUI.h
-        include/GUI/GUIAddonMenu.h
-        include/GUI/GUIAddonObject3DProperties.h
-        include/GUI/GUIAddonObjects3D.h
-        include/GUI/GUIAddonProjectSettings.h
-        include/GUI/GUIAddonToolbar.h
-        include/GUI/GUIConsole.h
+        include/GUI/AddOns/GUIAddonMenu.h
+        include/GUI/AddOns/GUIAddonObject3DProperties.h
+        include/GUI/AddOns/GUIAddonObjects3D.h
+        include/GUI/AddOns/GUIAddonProjectSettings.h
+        include/GUI/AddOns/GUIAddonToolbar.h
+        include/GUI/AddOns/GUIConsole.h
 
         # GUI/Objects
         include/GUI/Objects/Image2DAnimationGUI.h

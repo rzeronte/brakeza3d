@@ -9,8 +9,8 @@
 #include <cctype>
 #include <cstdio>
 #include "imgui.h"
-#include "../Misc/Logging.h"
-#include "../../sol/sol.hpp"
+#include "../../Misc/Logging.h"
+#include "../../../sol/sol.hpp"
 
 struct GuiAddonConsole
 {
