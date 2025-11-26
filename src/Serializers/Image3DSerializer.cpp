@@ -10,9 +10,11 @@
 
 cJSON * Image3DSerializer::JsonByObject(Object3D *o)
 {
+    Logging::Message("[Image3DSerializer] JsonByObject: %s", o->getTypeObject());
+
     auto image = dynamic_cast<Image3D*>(o);
 
-    cJSON *root = JSONSerializerRegistry::GetJsonByObject(o);
+    auto root = Object3DSerializer().JsonByObject(o);
 
     cJSON_AddNumberToObject(root, "width", image->width);
     cJSON_AddNumberToObject(root, "height", image->height);
@@ -42,7 +44,7 @@ void Image3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 
     auto image = dynamic_cast<Image3D*>(o);
 
-    Object3DSerializer::ApplyJsonToObject(json, o);
+    Object3DSerializer().ApplyJsonToObject(json, o);
 }
 
 void Image3DSerializer::LoadFileIntoScene(const std::string &filename)

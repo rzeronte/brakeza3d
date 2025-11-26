@@ -10,9 +10,11 @@
 
 cJSON * Image3DAnimation8DirectionsSerializer::JsonByObject(Object3D *o)
 {
+    Logging::Message("[Image3DAnimation8DirectionsSerializer] JsonByObject: %s", o->getTypeObject());
+
     auto image = dynamic_cast<Image3DAnimation8Directions*>(o);
 
-    cJSON *root = JSONSerializerRegistry::GetJsonByObject(o);
+    auto root = Image3DAnimationSerializer().JsonByObject(o);
 
     cJSON_AddNumberToObject(root, "width", image->width);
     cJSON_AddNumberToObject(root, "height", image->height);
@@ -71,7 +73,7 @@ void Image3DAnimation8DirectionsSerializer::ApplyJsonToObject(const cJSON *json,
         image->updateStep();
     }
 
-    Object3DSerializer::ApplyJsonToObject(json, o);
+    Object3DSerializer().ApplyJsonToObject(json, o);
 }
 
 void Image3DAnimation8DirectionsSerializer::LoadFileIntoScene(const std::string &file)

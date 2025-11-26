@@ -28,12 +28,17 @@ Object3D* JSONSerializerRegistry::deserialize(cJSON* json)
 
     cJSON* typeItem = cJSON_GetObjectItem(json, "type");
 
-    Logging::Message("[JSONSerializerRegistry serialize] Deserializing object of type: %s", typeItem->valuestring);
+    if (!typeItem || !typeItem->valuestring) {
+        Logging::Message("[JSONSerializerRegistry deserialize] Missing or invalid 'type' field");
+        return nullptr;
+    }
+
+    Logging::Message("[JSONSerializerRegistry deserialize] Deserializing object of type: ", typeItem->valuestring);
 
     auto serializer = getSerializer(typeItem->valuestring);
 
     if (!serializer) {
-        Logging::Message("[JSONSerializerRegistry serialize] No serialization for object: %s", typeItem->valuestring);
+        Logging::Message("[JSONSerializerRegistry deserialize] No serializer for object: ", typeItem->valuestring);
         exit(-1);
     }
 

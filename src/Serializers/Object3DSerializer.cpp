@@ -10,70 +10,72 @@
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Brakeza.h"
 
-cJSON * Object3DSerializer::JsonByObject(Object3D* object)
+cJSON * Object3DSerializer::JsonByObject(Object3D* o)
 {
+    Logging::Message("[Object3DSerializer] JsonByObject: %s", o->getTypeObject());
+
     cJSON *root = cJSON_CreateObject();
 
-    cJSON_AddStringToObject(root, "name", object->getLabel().c_str());
-    cJSON_AddNumberToObject(root, "scale", object->getScale());
-    cJSON_AddBoolToObject(root, "enabled", object->isEnabled());
+    cJSON_AddStringToObject(root, "name", o->getLabel().c_str());
+    cJSON_AddNumberToObject(root, "scale", o->getScale());
+    cJSON_AddBoolToObject(root, "enabled", o->isEnabled());
 
     cJSON *position = cJSON_CreateObject();
-    cJSON_AddNumberToObject(position, "x", object->getPosition().x);
-    cJSON_AddNumberToObject(position, "y", object->getPosition().y);
-    cJSON_AddNumberToObject(position, "z", object->getPosition().z);
+    cJSON_AddNumberToObject(position, "x", o->getPosition().x);
+    cJSON_AddNumberToObject(position, "y", o->getPosition().y);
+    cJSON_AddNumberToObject(position, "z", o->getPosition().z);
     cJSON_AddItemToObject(root, "position", position);
 
     cJSON *rotation = cJSON_CreateObject();
-    cJSON_AddNumberToObject(rotation, "x", object->getRotation().getPitchDegree());
-    cJSON_AddNumberToObject(rotation, "y", object->getRotation().getYawDegree());
-    cJSON_AddNumberToObject(rotation, "z", object->getRotation().getRollDegree());
+    cJSON_AddNumberToObject(rotation, "x", o->getRotation().getPitchDegree());
+    cJSON_AddNumberToObject(rotation, "y", o->getRotation().getYawDegree());
+    cJSON_AddNumberToObject(rotation, "z", o->getRotation().getRollDegree());
     cJSON_AddItemToObject(root, "rotation", rotation);
 
-    cJSON_AddBoolToObject(root, "isCollisionsEnabled", object->isCollisionsEnabled());
-    if (object->isCollisionsEnabled()) {
+    cJSON_AddBoolToObject(root, "isCollisionsEnabled", o->isCollisionsEnabled());
+    if (o->isCollisionsEnabled()) {
         cJSON *collider = cJSON_CreateObject();
-        cJSON_AddNumberToObject(collider, "mode", object->getCollisionMode());
-        cJSON_AddNumberToObject(collider, "shape", object->getCollisionShape());
+        cJSON_AddNumberToObject(collider, "mode", o->getCollisionMode());
+        cJSON_AddNumberToObject(collider, "shape", o->getCollisionShape());
 
-        cJSON_AddNumberToObject(collider, "friction", object->friction);
-        cJSON_AddNumberToObject(collider, "mass", object->mass);
-        cJSON_AddNumberToObject(collider, "margin", object->shapeMargin);
-        cJSON_AddNumberToObject(collider, "ccdMotionThreshold", object->ccdMotionThreshold);
-        cJSON_AddNumberToObject(collider, "ccdSweptSphereRadius", object->ccdSweptSphereRadius);
-        cJSON_AddNumberToObject(collider, "linearDamping", object->linearDamping);
-        cJSON_AddNumberToObject(collider, "angularDamping", object->angularDamping);
-        cJSON_AddNumberToObject(collider, "restitution", object->restitution);
-        cJSON_AddBoolToObject(collider, "colliderStatic", object->colliderStatic);
+        cJSON_AddNumberToObject(collider, "friction", o->friction);
+        cJSON_AddNumberToObject(collider, "mass", o->mass);
+        cJSON_AddNumberToObject(collider, "margin", o->shapeMargin);
+        cJSON_AddNumberToObject(collider, "ccdMotionThreshold", o->ccdMotionThreshold);
+        cJSON_AddNumberToObject(collider, "ccdSweptSphereRadius", o->ccdSweptSphereRadius);
+        cJSON_AddNumberToObject(collider, "linearDamping", o->linearDamping);
+        cJSON_AddNumberToObject(collider, "angularDamping", o->angularDamping);
+        cJSON_AddNumberToObject(collider, "restitution", o->restitution);
+        cJSON_AddBoolToObject(collider, "colliderStatic", o->colliderStatic);
 
         cJSON *simpleShapeSizeJSON = cJSON_CreateObject();
-        cJSON_AddNumberToObject(simpleShapeSizeJSON, "x", object->simpleShapeSize.x);
-        cJSON_AddNumberToObject(simpleShapeSizeJSON, "y", object->simpleShapeSize.y);
-        cJSON_AddNumberToObject(simpleShapeSizeJSON, "z", object->simpleShapeSize.z);
+        cJSON_AddNumberToObject(simpleShapeSizeJSON, "x", o->simpleShapeSize.x);
+        cJSON_AddNumberToObject(simpleShapeSizeJSON, "y", o->simpleShapeSize.y);
+        cJSON_AddNumberToObject(simpleShapeSizeJSON, "z", o->simpleShapeSize.z);
         cJSON_AddItemToObject(collider, "simpleShapeSize", simpleShapeSizeJSON);
 
         cJSON *kinematicCapsuleSizeJSON = cJSON_CreateObject();
-        cJSON_AddNumberToObject(kinematicCapsuleSizeJSON, "x", object->kinematicCapsuleSize.x);
-        cJSON_AddNumberToObject(kinematicCapsuleSizeJSON, "y", object->kinematicCapsuleSize.y);
+        cJSON_AddNumberToObject(kinematicCapsuleSizeJSON, "x", o->kinematicCapsuleSize.x);
+        cJSON_AddNumberToObject(kinematicCapsuleSizeJSON, "y", o->kinematicCapsuleSize.y);
         cJSON_AddItemToObject(collider, "kinematicCapsuleSize", kinematicCapsuleSizeJSON);
 
         cJSON *angularFactorJSON = cJSON_CreateObject();
-        cJSON_AddNumberToObject(angularFactorJSON, "x", object->angularFactor.x);
-        cJSON_AddNumberToObject(angularFactorJSON, "y", object->angularFactor.y);
-        cJSON_AddNumberToObject(angularFactorJSON, "z", object->angularFactor.z);
+        cJSON_AddNumberToObject(angularFactorJSON, "x", o->angularFactor.x);
+        cJSON_AddNumberToObject(angularFactorJSON, "y", o->angularFactor.y);
+        cJSON_AddNumberToObject(angularFactorJSON, "z", o->angularFactor.z);
         cJSON_AddItemToObject(collider, "angularFactor", angularFactorJSON);
 
         cJSON *linearFactorJSON = cJSON_CreateObject();
-        cJSON_AddNumberToObject(linearFactorJSON, "x", object->linearFactor.x);
-        cJSON_AddNumberToObject(linearFactorJSON, "y", object->linearFactor.y);
-        cJSON_AddNumberToObject(linearFactorJSON, "z", object->linearFactor.z);
+        cJSON_AddNumberToObject(linearFactorJSON, "x", o->linearFactor.x);
+        cJSON_AddNumberToObject(linearFactorJSON, "y", o->linearFactor.y);
+        cJSON_AddNumberToObject(linearFactorJSON, "z", o->linearFactor.z);
         cJSON_AddItemToObject(collider, "linearFactor", linearFactorJSON);
 
         cJSON_AddItemToObject(root, "collider", collider);
     }
 
     cJSON *scriptsArray = cJSON_CreateArray();
-    for (auto script : object->scripts) {
+    for (auto script : o->scripts) {
         cJSON_AddItemToArray(scriptsArray, script->getTypesJSON());
     }
     cJSON_AddItemToObject(root, "scripts", scriptsArray);

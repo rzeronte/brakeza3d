@@ -6,16 +6,17 @@
 #include "../../include/Components/ComponentsManager.h"
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/Brakeza.h"
+#include "../../include/GUI/Objects/Object3DGUI.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 
 cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[Mesh3DSerializer] JsonByObject", o->getTypeObject());
+    Logging::Message("[Mesh3DSerializer] JsonByObject: %s", o->getTypeObject());
 
     auto *mesh = dynamic_cast<Mesh3D*>(o);
 
-    cJSON *root = JSONSerializerRegistry::GetJsonByObject(o);
+    auto root = Object3DSerializer().JsonByObject(o);
 
     cJSON_AddStringToObject(root, "model", mesh->sourceFile.c_str());
     cJSON_AddBoolToObject(root, "enableLights", mesh->isEnableLights());
@@ -47,7 +48,7 @@ void Mesh3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 
     auto mesh = dynamic_cast<Mesh3D*>(o);
 
-    Object3DSerializer::ApplyJsonToObject(json, o);
+    Object3DSerializer().ApplyJsonToObject(json, o);
 
     mesh->setEnableLights(cJSON_GetObjectItemCaseSensitive(json, "enableLights")->valueint);
     mesh->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(json, "model")->valuestring);
@@ -79,8 +80,8 @@ void Mesh3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 
         if (collisionsEnabled) {
             mesh->setCollisionsEnabled(true);
-            int mode = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
-            int shape = (int) cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
+            int mode = cJSON_GetObjectItemCaseSensitive(colliderJSON, "mode")->valueint;
+            int shape = cJSON_GetObjectItemCaseSensitive(colliderJSON, "shape")->valueint;
 
             if ((cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic") != nullptr)) {
                 mesh->setColliderStatic(cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic")->valueint);

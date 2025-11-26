@@ -9,9 +9,11 @@
 
 cJSON * Image3DAnimationSerializer::JsonByObject(Object3D *o)
 {
+    Logging::Message("[Image3DAnimationSerializer] JsonByObject: %s", o->getTypeObject());
+
     auto image = dynamic_cast<Image3DAnimation*>(o);
 
-    cJSON *root = JSONSerializerRegistry::GetJsonByObject(o);
+    auto root = Object3DSerializer().JsonByObject(o);
 
     cJSON_AddNumberToObject(root, "width", image->width);
     cJSON_AddNumberToObject(root, "height", image->height);
@@ -50,7 +52,7 @@ void Image3DAnimationSerializer::ApplyJsonToObject(const cJSON *json, Object3D *
 
     auto image = dynamic_cast<Image3DAnimation*>(o);
 
-    Object3DSerializer::ApplyJsonToObject(json, o);
+    Object3DSerializer().ApplyJsonToObject(json, o);
 
     if (cJSON_GetObjectItemCaseSensitive(json, "animations") != nullptr) {
         cJSON *currentAnimation;

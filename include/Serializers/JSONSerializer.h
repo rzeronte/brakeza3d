@@ -13,12 +13,11 @@ class Object3D;
 class JSONSerializer {
 public:
     virtual ~JSONSerializer() = default;
-
-    virtual cJSON* JsonByObject(Object3D* obj) = 0;
     virtual Object3D* ObjectByJson(cJSON* json) = 0;
+    virtual cJSON* JsonByObject(Object3D* obj) = 0;
 
-    static void ApplyJsonToObject(cJSON* json, Object3D* obj) {};
-    static void LoadFileIntoScene(const std::string& model) {};
+    virtual void ApplyJsonToObject(const cJSON* json, Object3D* o) = 0;
+    virtual void LoadFileIntoScene(const std::string& model) = 0;
 };
 
 #endif //BRAKEZA3D_JSONSERIALIZER_H

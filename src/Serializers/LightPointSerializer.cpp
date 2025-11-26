@@ -8,9 +8,11 @@
 
 cJSON * LightPointSerializer::JsonByObject(Object3D *o)
 {
+    Logging::Message("[LightPointSerializer] JsonByObject: %s", o->getTypeObject());
+
     auto light = dynamic_cast<LightPoint*>(o);
 
-    cJSON *root = JSONSerializerRegistry::GetJsonByObject(o);
+    auto root = Object3DSerializer().JsonByObject(o);
 
     cJSON *ambientJSON = cJSON_CreateObject();
     cJSON_AddNumberToObject(ambientJSON, "x", light->ambient.x);
@@ -61,7 +63,7 @@ void LightPointSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 
     auto light = dynamic_cast<LightPoint*>(o);
 
-    Object3DSerializer::ApplyJsonToObject(json, o);
+    Object3DSerializer().ApplyJsonToObject(json, o);
 
     auto ambient = cJSON_GetObjectItemCaseSensitive(json, "ambient");
     light->ambient.x = static_cast<float>(cJSON_GetObjectItemCaseSensitive(ambient, "x")->valuedouble);

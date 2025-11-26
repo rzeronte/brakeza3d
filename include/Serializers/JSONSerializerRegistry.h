@@ -10,6 +10,7 @@
 #include <memory>
 #include <string>
 #include "../3D/Object3D.h"
+#include "../Misc/Logging.h"
 
 class JSONSerializerRegistry
 {
@@ -38,12 +39,28 @@ public:
 
     static cJSON * GetJsonByObject(Object3D *object)
     {
-        std::cout << "[JSONSerializerRegistry GetJsonByObject] " << object->getTypeObject() << std::endl;
-        if (auto serializer = instance().getSerializer(object->getTypeObject())) {
-            return serializer->JsonByObject(object);
+        if (!object) {
+            Logging::Message("[JSONSerializerRegistry GetJsonByObject] Error: objeto es null");
+            return nullptr;
         }
 
-        return nullptr;
+        const char* type = object->getTypeObject();
+        Logging::Message("[JSONSerializerRegistry GetJsonByObject] %s", type);
+
+        auto serializer = instance().getSerializer(type);
+
+        if (!serializer) {
+            Logging::Message("[JSONSerializerRegistry GetJsonByObject] No serializer para tipo %s", type);
+            return nullptr;
+        }
+
+        cJSON* json = serializer->JsonByObject(object);
+
+        if (!json) {
+            Logging::Message("[JSONSerializerRegistry GetJsonByObject] JsonByObject devolvió null para %s", type);
+        }
+
+        return json;
     }
 
     cJSON* serialize(Object3D* obj);

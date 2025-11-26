@@ -9,9 +9,11 @@
 
 cJSON * Image2DSerializer::JsonByObject(Object3D *o)
 {
+    Logging::Message("[Image2DSerializer] JsonByObject: %s", o->getTypeObject());
+
     auto image = dynamic_cast<Image2D*>(o);
 
-    cJSON *root = JSONSerializerRegistry::GetJsonByObject(o);
+    auto root = Object3DSerializer().JsonByObject(o);
 
     cJSON_AddNumberToObject(root, "x", image->x);
     cJSON_AddNumberToObject(root, "y", image->y);
@@ -39,7 +41,7 @@ void Image2DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 
     auto image = dynamic_cast<Image2D*>(o);
 
-    Object3DSerializer::ApplyJsonToObject(json, o);
+    Object3DSerializer().ApplyJsonToObject(json, o);
 }
 
 void Image2DSerializer::LoadFileIntoScene(const std::string &file)

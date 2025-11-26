@@ -12,11 +12,11 @@
 
 cJSON * LightSpotSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[LightSpotSerializer] ApplyJsonToObject: %s", o->getTypeObject());
+    Logging::Message("[LightSpotSerializer] JsonByObject: %s", o->getTypeObject());
 
     auto *spot = dynamic_cast<LightSpot*>(o);
 
-    cJSON *root = JSONSerializerRegistry::GetJsonByObject(o);
+    auto root = LightPointSerializer().JsonByObject(o);
 
     cJSON_AddNumberToObject(root, "cutOff", glm::degrees(glm::acos(spot->getCutOff())));
     cJSON_AddNumberToObject(root, "outerCutOff", glm::degrees(glm::acos(spot->getOuterCutOff())));
@@ -49,7 +49,7 @@ void LightSpotSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
     auto spot = dynamic_cast<LightSpot*>(o);
 
-    LightPointSerializer::ApplyJsonToObject(json, o);
+    LightPointSerializer().ApplyJsonToObject(json, o);
 
     spot->setCutOff(static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "cutOff")->valuedouble));
     spot->setOuterCutOff(static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "outerCutOff")->valuedouble));

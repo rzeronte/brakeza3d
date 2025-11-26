@@ -11,11 +11,10 @@
 class Mesh3DAnimationSerializer : public JSONSerializer
 {
 public:
-    cJSON* JsonByObject(Object3D *o) override;
     Object3D* ObjectByJson(cJSON* json) override;
-
-    static void ApplyJsonToObject(const cJSON* json, Object3D* obj);
-    static void LoadFileIntoScene(const std::string& file);
+    cJSON* JsonByObject(Object3D *o) override;
+    void ApplyJsonToObject(const cJSON* json, Object3D* o) override;
+    void LoadFileIntoScene(const std::string& file) override;
 };
 
 #endif //BRAKEZA3D_MESH3DANIMATIONSERIALIZER_H
