@@ -93,23 +93,23 @@ void ScriptLuaGUI::DrawScriptsBySelectedObject(GUIManager *gui)
         auto currentScript = objectScripts[i];
         ImGui::PushID(i);
 
-        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "scriptIcon"), ImVec2(14, 14))) {
+        if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::SCRIPT), ImVec2(14, 14))) {
             LoadScriptDialog(gui, currentScript->scriptFilename);
         }
 
         ImGui::SameLine();
         std::string optionText = std::to_string(i + 1) + ") " + Tools::removeSubstring(currentScript->scriptFilename, BrakezaSetup::get()->SCRIPTS_FOLDER);
         if (currentScript->isPaused()) {
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "unlockIcon"), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::UNLOCK), ImVec2(14, 14))) {
                 currentScript->setPaused(false);
             }
         } else {
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "lockIcon"), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::LOCK), ImVec2(14, 14))) {
                 currentScript->setPaused(true);
             }
         }
         ImGui::SameLine();
-        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "removeIcon"), ImVec2(14, 14))) {
+        if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
             o->removeScript(currentScript);
         }
         ImGui::SameLine();
@@ -159,7 +159,7 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, const std::string&
 
             ImGui::TableSetColumnIndex(0);
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            ImGui::Image(TexturePackage::getOGLTextureID(gui->icons, "scriptIcon"), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::SCRIPT), ImVec2(16, 16));
             ImGui::SameLine();
             std::string optionText = std::to_string(i + 1) + ") " + file;
             if (ImGui::Selectable(optionText.c_str())) {
@@ -172,7 +172,7 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, const std::string&
                 ImGui::EndDragDropSource();
             }
             ImGui::TableSetColumnIndex(1);
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "removeIcon"), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
                 ImGui::OpenPopup("Delete Script?");
             }
             GUIManager::ShowDeletePopup("Delete Script?", [folder, file, gui] () {
@@ -338,7 +338,7 @@ void ScriptLuaGUI::drawScriptVariables(GUIManager *gui)
             ImGui::Text("%s", type->type.c_str());
 
             ImGui::TableSetColumnIndex(2);
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "removeIcon"), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
                 gui->scriptEditableManager.script->removeDataType(*type);
                 gui->scriptEditableManager.script->updateFileTypes();
             }
