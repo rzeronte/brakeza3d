@@ -62,7 +62,11 @@ void Image3D::onUpdate()
 {
     Object3D::onUpdate();
 
-    if (!image->isLoaded()) return;
+    if (!image->isLoaded() || !isEnabled()) return;
+
+    if (towardsCamera) {
+        lookAt(ComponentsManager::get()->getComponentCamera()->getCamera());
+    }
 
     auto render = ComponentsManager::get()->getComponentRender();
     auto window = ComponentsManager::get()->getComponentWindow();

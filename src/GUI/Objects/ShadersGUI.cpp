@@ -100,7 +100,7 @@ void ShadersGUI::DrawShaderVariables(GUIManager *gui)
             ImGui::Text("%s", dataType->type.c_str());
 
             ImGui::TableSetColumnIndex(2);
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "removeIcon"), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
                 gui->shaderEditableManager.shader->removeDataType(*dataType);
             }
             ImGui::PopID();
@@ -170,7 +170,7 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, std::string folder)
 
             ImGui::TableSetColumnIndex(0);
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            ImGui::Image(TexturePackage::getOGLTextureID(gui->icons, "shaderIcon"), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::SHADER), ImVec2(16, 16));
             ImGui::SameLine();
             std::string optionText = std::to_string(i + 1) + ") " + file;
             if (ImGui::Selectable(optionText.c_str())) {
@@ -187,11 +187,11 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, std::string folder)
                 ImGui::EndDragDropSource();
             }
             ImGui::TableSetColumnIndex(1);
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "sceneIcon"), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::SCENE), ImVec2(14, 14))) {
                 ComponentsManager::get()->getComponentRender()->loadShaderIntoScene(folder, file);
             }
             ImGui::TableSetColumnIndex(2);
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "removeIcon"), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
                 ImGui::OpenPopup("Delete shaders?");
             }
             GUIManager::ShowDeletePopup("Delete shaders?", [folder, file, gui] () {
@@ -231,7 +231,7 @@ void ShadersGUI::DrawShadersBySelectedObject(GUIManager *gui)
 
         auto s = customShaders[i];
 
-        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "shaderIcon"), ImVec2(14, 14))) {
+        if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::SHADER), ImVec2(14, 14))) {
             auto folder = s->getFolder();
             auto jsonFilename = s->getLabel() + ".json";
             LoadShaderDialog(gui, folder, jsonFilename);
@@ -240,20 +240,20 @@ void ShadersGUI::DrawShadersBySelectedObject(GUIManager *gui)
         ImGui::SameLine();
 
         if (!s->isEnabled()) {
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "unlockIcon"), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::UNLOCK), ImVec2(14, 14))) {
                 s->setEnabled(true);
             }
         } else {
-            if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "lockIcon"), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::LOCK), ImVec2(14, 14))) {
                 s->setEnabled(false);
             }
         }
         ImGui::SameLine();
-        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "rebuildIcon"), ImVec2(14, 14))) {
+        if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REBUILD), ImVec2(14, 14))) {
             s->reload();
         }
         ImGui::SameLine();
-        if (ImGui::ImageButton(TexturePackage::getOGLTextureID(gui->icons, "removeIcon"), ImVec2(14, 14))) {
+        if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
             mesh->removeShader(i);
         }
 

@@ -14,6 +14,7 @@ class Image3D : public Object3D
 {
     float width = 0;
     float height = 0;
+    bool towardsCamera = false;
 
     Vertex3D Q1;
     Vertex3D Q2;

@@ -52,6 +52,8 @@ public:
                 }
                 ImGui::TreePop();
             }
+            ImGui::Separator();
+            ImGui::Checkbox("Towards camera", &o->towardsCamera);
         }
     }
 };

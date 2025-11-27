@@ -69,6 +69,10 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                         M3::normalize(o->rotation);
                     }
                 }
+                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::RELOAD), ImVec2(12, 12))) {
+                    o->setRotation(M3::getMatrixRotationForEulerAngles(0, 0, 0));
+                }
+
                 ImGui::Separator();
 
                 o->drawOffset.toFloat(vec3f);
