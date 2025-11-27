@@ -15,19 +15,9 @@ class ShaderOGLRenderDeferred : public ShaderBaseOpenGL
     GLuint textureDiffuseUniform = 0;
     GLuint textureSpecularUniform = 0;
 
-    void render(
-        Object3D *o,
-        GLuint texId,
-        GLuint specTexId,
-        GLuint vertexBuffer,
-        GLuint uvBuffer,
-        GLuint normalBuffer,
-        int size,
-        GLuint fbo
-    ) const;
-
 public:
     ShaderOGLRenderDeferred();
+    void render(Object3D *o, GLuint texId, GLuint specTexId, GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer, int size, GLuint fbo) const;
     void renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo);
     void destroy() override;
 };

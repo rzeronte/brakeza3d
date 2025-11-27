@@ -12,11 +12,7 @@ ShaderOGLShadowPass::ShaderOGLShadowPass()
         BrakezaSetup::get()->SHADERS_FOLDER + "ShadowPass.vs",
         BrakezaSetup::get()->SHADERS_FOLDER + "ShadowPass.fs",
         false
-    ),
-    VertexArrayID(0),
-    spotLightsDepthMapsFBO(0),
-    directionalLightDepthMapFBO(0),
-    directionalLightDepthTexture(0)
+    )
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
@@ -27,100 +23,54 @@ ShaderOGLShadowPass::ShaderOGLShadowPass()
     resetFramebuffers();
 }
 
-void ShaderOGLShadowPass::renderMeshIntoArrayTextures(
-    Mesh3D *o,
-    LightSpot* light,
-    GLuint depthArrayTextures,
-    int indexLight,
-    GLuint fb
-) const
+void ShaderOGLShadowPass::renderMeshIntoArrayTextures(Mesh3D *o, bool feedbackFBO, LightSpot* light, int indexLight ) const
 {
     for (const auto& m: o->getMeshData()) {
         renderIntoArrayDepthTextures(
             o,
             light,
-            m.vertexBuffer,
+            feedbackFBO ? m.feedbackBuffer : m.vertexBuffer,
             m.uvBuffer,
             m.normalBuffer,
             static_cast<int>(m.vertices.size()),
-            depthArrayTextures,
+            spotLightsDepthMapArray,
             indexLight,
-            fb
+            spotLightsDepthMapsFBO
         );
     }
 }
 
-void ShaderOGLShadowPass::renderMeshIntoDirectionalLightTexture(Mesh3D *o, const DirLightOpenGL& light, GLuint fbo) const
+void ShaderOGLShadowPass::renderMeshIntoDirectionalLightTexture(Mesh3D *o, bool useFeedbackFBO, const DirLightOpenGL& light) const
 {
     for (const auto& m: o->getMeshData()) {
         renderIntoDirectionalLightTexture(
             o,
             light,
-            m.vertexBuffer,
+            useFeedbackFBO ? m.feedbackBuffer : m.vertexBuffer,
             m.uvBuffer,
             m.normalBuffer,
             static_cast<int>(m.vertices.size()),
-            fbo
+            directionalLightDepthMapFBO
         );
     }
 }
-
-void ShaderOGLShadowPass::renderMeshAnimatedIntoArrayTextures(
-    Mesh3DAnimation *o,
-    LightSpot* light,
-    GLuint depthArrayTextures,
-    int indexLight,
-    GLuint fb
-) const
-{
-    for (const auto& m: o->getMeshData()) {
-        renderIntoArrayDepthTextures(
-            o,
-            light,
-            m.feedbackBuffer,
-            m.uvBuffer,
-            m.normalBuffer,
-            static_cast<int>(m.vertices.size()),
-            depthArrayTextures,
-            indexLight,
-            fb
-        );
-    }
-}
-
-void ShaderOGLShadowPass::renderMeshAnimatedIntoDirectionalLightTexture(Mesh3DAnimation *o, const DirLightOpenGL& light, GLuint fbo) const
-{
-    for (const auto& m: o->getMeshData()) {
-        renderIntoDirectionalLightTexture(
-            o,
-            light,
-            m.feedbackBuffer,
-            m.uvBuffer,
-            m.normalBuffer,
-            static_cast<int>(m.vertices.size()),
-            fbo
-        );
-    }
-}
-
 
 void ShaderOGLShadowPass::renderIntoDirectionalLightTexture(
     Object3D* o,
     const DirLightOpenGL& light,
-    GLuint vertexbuffer,
-    GLuint uvbuffer,
-    GLuint normalbuffer,
+    GLuint vertexBuffer,
+    GLuint uvBuffer,
+    GLuint normalBuffer,
     int size,
     GLuint fbo
 ) const
 {
-
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
 
-    setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
+    setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
     auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward();
     setMat4Uniform(matrixViewUniform, shaderRender->getDirectionalLightMatrix(light));
