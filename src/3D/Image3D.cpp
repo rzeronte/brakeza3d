@@ -72,21 +72,52 @@ void Image3D::onUpdate()
             this,
             Color::green(),
             0.1f,
-            window->getSceneFramebuffer()
+            window->getUIFramebuffer()
         );
     }
 
-    render->getShaderOGLRenderForward()->render(
-        this,
-        image->getOGLTextureID(),
-        image->getOGLTextureID(),
-        vertexBuffer,
-        uvBuffer,
-        normalBuffer,
-        static_cast<int>(vertices.size()),
-        1.0f,
-        window->getSceneFramebuffer()
-    );
+    if (BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED) {
+        if (BrakezaSetup::get()->ENABLE_LIGHTS) {
+            render->getShaderOGLRenderDeferred()->render(
+                this,
+                image->getOGLTextureID(),
+                image->getOGLTextureID(),
+                vertexBuffer,
+                uvBuffer,
+                normalBuffer,
+                static_cast<int>(vertices.size()),
+                window->getGBuffer().FBO
+            );
+            if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
+                shadowMappingPass();
+            }
+        } else {
+            render->getShaderOGLRenderForward()->render(
+                this,
+                image->getOGLTextureID(),
+                image->getOGLTextureID(),
+                vertexBuffer,
+                uvBuffer,
+                normalBuffer,
+                static_cast<int>(vertices.size()),
+                alpha,
+                window->getGBuffer().FBO
+            );
+        }
+    }
+
+    if (BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D)  {
+        render->getShaderOGLColor()->renderColor(
+            getModelMatrix(),
+            vertexBuffer,
+            uvBuffer,
+            normalBuffer,
+            static_cast<int>(vertices.size()),
+            getPickingColor(),
+            false,
+            window->getPickingColorFramebuffer().FBO
+        );
+    }
 }
 
 void Image3D::drawImGuiProperties()
@@ -139,32 +170,6 @@ Image3D *Image3D::create(Vertex3D p, float w, float h, const std::string &file)
     return new Image3D(p, w, h, new Image(file));
 }
 
-void Image3D::checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastDepthFound)
-{
-    auto *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-
-    std::vector<Triangle> modelTriangles;
-    modelTriangles.emplace_back(Q3, Q2, Q1, this);
-    modelTriangles.emplace_back(Q4, Q3, Q1, this);
-
-    for (auto &triangle : modelTriangles) {
-        triangle.updateObjectSpace();
-        auto p = Plane(triangle.Ao, triangle.Bo, triangle.Co);
-        float t;
-        if (Maths::isVector3DClippingPlane(p, ray)) {
-            Vertex3D intersectionPoint  = p.getPointIntersection(ray.origin(), ray.end(), t);
-            if (triangle.isPointInside(intersectionPoint)) {
-                auto distance = intersectionPoint - camera->getPosition();
-                auto m = distance.getModule();
-                if ( m < lastDepthFound || lastDepthFound == -1) {
-                    foundObject = triangle.parent;
-                    lastDepthFound = m;
-                }
-            }
-        }
-    }
-}
-
 GLuint Image3D::getVertexBuffer() const
 {
     return vertexBuffer;
@@ -193,4 +198,41 @@ Image* Image3D::getImage() const
 void Image3D::setImage(Image* value)
 {
     image = value;
+}
+
+void Image3D::shadowMappingPass()
+{
+    auto render = ComponentsManager::get()->getComponentRender();
+    auto shaderShadowPass = render->getShaderOGLShadowPass();
+    auto shaderRender = render->getShaderOGLRenderForward();
+
+    // Directional Light
+    shaderShadowPass->renderIntoDirectionalLightTexture(
+        this,
+        shaderRender->getDirectionalLight(),
+        vertexBuffer,
+        uvBuffer,
+        normalBuffer,
+        static_cast<int>(vertices.size()),
+        shaderShadowPass->getSpotLightsDepthMapsFBO()
+    );
+
+    // SpotLights
+    const auto shadowSpotLights = shaderRender->getShadowMappingSpotLights();
+    const auto numSpotLights = static_cast<int>(shadowSpotLights.size());
+
+    for (int i = 0; i < numSpotLights; i++) {
+        const auto l = shadowSpotLights[i];
+        shaderShadowPass->renderIntoArrayDepthTextures(
+            this,
+            l,
+            vertexBuffer,
+            uvBuffer,
+            normalBuffer,
+            static_cast<int>(vertices.size()),
+            shaderShadowPass->getSpotLightsDepthMapsFBO(),
+            i,
+            shaderShadowPass->getSpotLightsDepthMapsFBO()
+        );
+    }
 }

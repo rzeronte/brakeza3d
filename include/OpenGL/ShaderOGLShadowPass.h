@@ -7,31 +7,28 @@
 
 #include "ShaderBaseOpenGL.h"
 #include "../3D/Mesh3D.h"
-#include "../3D/Mesh3DAnimation.h"
 #include "../3D/LightSpot.h"
 #include "CommonOGLShaderTypes.h"
 
 class ShaderOGLShadowPass : public ShaderBaseOpenGL
 {
-    GLuint VertexArrayID;
+    GLuint VertexArrayID = 0;
 
-    GLuint spotLightsDepthMapsFBO;
-    GLuint directionalLightDepthMapFBO;
+    GLuint spotLightsDepthMapsFBO = 0;
+    GLuint directionalLightDepthMapFBO = 0;
 
-    GLuint directionalLightDepthTexture;
+    GLuint directionalLightDepthTexture = 0;
 
-    GLuint matrixViewUniform;
-    GLuint matrixModelUniform;
+    GLuint matrixViewUniform = 0;
+    GLuint matrixModelUniform = 0;
 
     GLuint spotLightsDepthMapArray = 0;
 
 public:
     ShaderOGLShadowPass();
 
-    void renderMeshIntoArrayTextures(Mesh3D *o, LightSpot* light, GLuint depthArrayTextures, int indexLight, GLuint fb) const;
-    void renderMeshIntoDirectionalLightTexture(Mesh3D *o, const DirLightOpenGL& light, GLuint fbo) const;
-    void renderMeshAnimatedIntoArrayTextures(Mesh3DAnimation *o, LightSpot* light, GLuint depthArrayTextures, int indexLight, GLuint fb) const;
-    void renderMeshAnimatedIntoDirectionalLightTexture(Mesh3DAnimation *o, const DirLightOpenGL& light, GLuint fbo) const;
+    void renderMeshIntoArrayTextures(Mesh3D *o, bool feedbackFBO, LightSpot* light, int indexLight) const;
+    void renderMeshIntoDirectionalLightTexture(Mesh3D *o, bool feedbackFBO, const DirLightOpenGL& light) const;
     void renderIntoArrayDepthTextures(
         Object3D* o,
         LightSpot* light,
@@ -43,12 +40,13 @@ public:
         int layer,
         GLuint fbo
     ) const;
+
     void renderIntoDirectionalLightTexture(
         Object3D* o,
         const DirLightOpenGL& light,
-        GLuint vertexbuffer,
-        GLuint uvbuffer,
-        GLuint normalbuffer,
+        GLuint vertexBuffer,
+        GLuint uvBuffer,
+        GLuint normalBuffer,
         int size,
         GLuint fbo
     ) const;

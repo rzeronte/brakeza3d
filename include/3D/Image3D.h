@@ -40,8 +40,10 @@ public:
     void setWidth(float value);
     void setHeight(float value);
     void fillBuffers();
-    void checkClickObject(Vector3D ray, Object3D *&foundObject, float &lastDepthFound) override;
     void setImage(Image *value);
+
+    void shadowMappingPass();
+
     [[nodiscard]] GLuint getVertexBuffer() const;
     [[nodiscard]] GLuint getNormalBuffer() const;
     [[nodiscard]] GLuint getUVBuffer() const;

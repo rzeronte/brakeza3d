@@ -574,25 +574,14 @@ void Mesh3D::shadowMappingPass()
     auto shaderRender = render->getShaderOGLRenderForward();
 
     // Directional Light
-    shaderShadowPass->renderMeshIntoDirectionalLightTexture(
-        this,
-        shaderRender->getDirectionalLight(),
-        shaderShadowPass->getDirectionalLightDepthMapFBO()
-    );
+    shaderShadowPass->renderMeshIntoDirectionalLightTexture(this, false, shaderRender->getDirectionalLight());
 
     // SpotLights
     const auto shadowSpotLights = shaderRender->getShadowMappingSpotLights();
     const auto numSpotLights = static_cast<int>(shadowSpotLights.size());
 
     for (int i = 0; i < numSpotLights; i++) {
-        const auto l = shadowSpotLights[i];
-        shaderShadowPass->renderMeshIntoArrayTextures(
-            this,
-            l,
-            shaderShadowPass->getSpotLightsShadowMapArrayTextures(),
-            i,
-            shaderShadowPass->getSpotLightsDepthMapsFBO()
-        );
+        shaderShadowPass->renderMeshIntoArrayTextures(this, false, shadowSpotLights[i], i);
     }
 }
 
