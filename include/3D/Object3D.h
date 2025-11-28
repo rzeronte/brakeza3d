@@ -12,7 +12,6 @@
 #include <vector>
 #include <glm/detail/type_mat4x4.hpp>
 #include "Vertex3D.h"
-#include "Vector3D.h"
 #include "../Render/M3.h"
 #include "../Misc/ScriptLUA.h"
 #include "../../sol/sol.hpp"
@@ -69,6 +68,9 @@ public:
     virtual ~Object3D();
 
     int getId() const;
+
+    bool isGUISelected() const;
+
     bool& enabledPointer();
     void setParent(Object3D *object);
     void setLabel(const std::string& label);
@@ -98,7 +100,6 @@ public:
     void updateFromBullet();
     void resolveCollision(CollisionInfo with) override;
     void runResolveCollisionScripts(CollisionInfo with);
-    virtual void checkClickObject(Vector3D ray, Object3D*& foundObject, float &lastDepthFound);
     virtual const char *getTypeObject();
     virtual const char *getTypeIcon();
     virtual void setEnabled(bool value);
@@ -137,7 +138,6 @@ public:
     [[nodiscard]] float getDistanceToCamera() const;
     [[nodiscard]] bool isMultiScene() const;
     [[nodiscard]] Color getPickingColor() const;
-
     friend class Object3DSerializer;
     friend class Object3DGUI;
 };

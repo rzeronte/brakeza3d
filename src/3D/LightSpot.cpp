@@ -21,8 +21,7 @@ LightSpot::LightSpot(
 :
     LightPoint(ambient, diffuse, specular, constant, linear, quadratic),
     cutOff(cutOff),
-    outerCutOff(outerCutOff),
-    texture(new Image(BrakezaSetup::get()->TEXTURES_FOLDER + "chessboard.png"))
+    outerCutOff(outerCutOff)
 {
 }
 
@@ -36,7 +35,6 @@ void LightSpot::onUpdate()
     assert(outerCutOff >= 0.0f && outerCutOff <= 1.0f);
 
     RenderDebugCone(std::acos(cutOff), Color::red());
-    RenderDebugCone(std::acos(outerCutOff), Color::green());
 }
 
 void LightSpot::RenderDebugCone(float radians, const Color &c)
@@ -45,36 +43,44 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
     float angulo_cono = angulo_outer_grados * 2.0f; // Ángulo total del cono
 
     auto render = ComponentsManager::get()->getComponentRender();
-    if (showDebugCone && render->getSelectedObject() == this) {
+
+    if (showDebugCone && isGUISelected()) {
         cone.UpdateVertices(
-            BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE,
+            BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE/10,
             angulo_cono,
-            16
+            32
         );
 
         crearBuffersCono();
 
-        /*render->getShaderOGLRenderDeferred()->render(
-            this,
-            texture->getOGLTextureID(),
-            0,
-            vertexBuffer,
-            uvBuffer,
-            normalBuffer,
-            static_cast<int>(cone.vertices.size()),
-            1.0f,
-            ComponentsManager::get()->getComponentWindow()->getGBuffer().FBO
-        );*/
+        if (BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED) {
+            glDisable(GL_CULL_FACE);
+            glEnable(GL_BLEND);
+            glBlendFunc(mode_src, mode_dst);
+            render->getShaderOGLColor()->renderColor(
+                getModelMatrix(),
+                vertexBuffer,
+                uvBuffer,
+                normalBuffer,
+                cone.vertices.size(),
+                c,
+                false,
+                ComponentsManager::get()->getComponentWindow()->getGBuffer().FBO
+            );
+            glEnable(GL_CULL_FACE);
+        }
 
-        render->getShaderOGLWireframe()->render(
-            getModelMatrix(),
-            vertexBuffer,
-            uvBuffer,
-            normalBuffer,
-            static_cast<int>(cone.vertices.size()),
-            c,
-            ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
-        );
+        if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME) {
+            render->getShaderOGLWireframe()->render(
+                getModelMatrix(),
+                vertexBuffer,
+                uvBuffer,
+                normalBuffer,
+                static_cast<int>(cone.vertices.size()),
+                c,
+                ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+            );
+        }
     }
 }
 
@@ -95,7 +101,7 @@ glm::mat4 LightSpot::getLightSpaceMatrix() const
         BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE
     );
 
-    Vertex3D forward = getRotation() * Vertex3D(0, 0, -1);
+    Vertex3D forward = Vertex3D::fromGLM(getDirection());
     const auto p = position.toGLM();
 
     glm::mat4 lightView = glm::lookAt(

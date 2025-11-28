@@ -70,7 +70,7 @@ void Image3D::onUpdate()
     auto render = ComponentsManager::get()->getComponentRender();
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    if (render->getSelectedObject() == this) {
+    if (isGUISelected()) {
         render->getShaderOGLOutline()->drawOutlineImage3D(
             this,
             Color::green(),

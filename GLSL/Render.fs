@@ -16,7 +16,6 @@ in vec2 TexCoords;
 uniform Material material;
 uniform float alpha;
 
-
 void main()
 {
     FragColor = vec4(vec3(texture(material.diffuse, TexCoords)), alpha);

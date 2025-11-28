@@ -4,6 +4,7 @@
 #include "3D/Vertex3D.h"
 #include "Misc/ScriptLUA.h"
 #include <map>
+#include <GL/glew.h>
 
 class BrakezaSetup {
 
@@ -223,6 +224,51 @@ public:
     float TESTING_INT1 = 0.1f;
     float TESTING_INT2 = 0.03f;
     float TESTING_INT3 = 1;
+
+    static int FindBlendModeIndex(GLenum mode) {
+        for (int i = 0; i < 15; i++) {
+            if (blend_values[i] == mode)
+                return i;
+        }
+        return 0;
+    }
+
+    static inline const char* blend_modes[] = {
+        "GL_ZERO",
+        "GL_ONE",
+        "GL_SRC_COLOR",
+        "GL_ONE_MINUS_SRC_COLOR",
+        "GL_DST_COLOR",
+        "GL_ONE_MINUS_DST_COLOR",
+        "GL_SRC_ALPHA",
+        "GL_ONE_MINUS_SRC_ALPHA",
+        "GL_DST_ALPHA",
+        "GL_ONE_MINUS_DST_ALPHA",
+        "GL_SRC_ALPHA_SATURATE",
+        "GL_CONSTANT_COLOR",
+        "GL_ONE_MINUS_CONSTANT_COLOR",
+        "GL_CONSTANT_ALPHA",
+        "GL_ONE_MINUS_CONSTANT_ALPHA"
+    };
+
+    static inline GLenum blend_values[] = {
+        GL_ZERO,
+        GL_ONE,
+        GL_SRC_COLOR,
+        GL_ONE_MINUS_SRC_COLOR,
+        GL_DST_COLOR,
+        GL_ONE_MINUS_DST_COLOR,
+        GL_SRC_ALPHA,
+        GL_ONE_MINUS_SRC_ALPHA,
+        GL_DST_ALPHA,
+        GL_ONE_MINUS_DST_ALPHA,
+        GL_SRC_ALPHA_SATURATE,
+        GL_CONSTANT_COLOR,
+        GL_ONE_MINUS_CONSTANT_COLOR,
+        GL_CONSTANT_ALPHA,
+        GL_ONE_MINUS_CONSTANT_ALPHA
+    };
+
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

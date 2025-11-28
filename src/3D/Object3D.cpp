@@ -561,10 +561,6 @@ void Object3D::setupGhostCollider(CollisionShape mode)
     }
 }
 
-void Object3D::checkClickObject(Vector3D ray, Object3D*& foundObject, float &lastDepthFound)
-{
-}
-
 Color Object3D::getPickingColor() const
 {
     return pickingColor;
@@ -573,4 +569,9 @@ Color Object3D::getPickingColor() const
 int Object3D::getId() const
 {
     return id;
+}
+
+bool Object3D::isGUISelected() const
+{
+    return ComponentsManager::get()->getComponentRender()->getSelectedObject() == this;
 }

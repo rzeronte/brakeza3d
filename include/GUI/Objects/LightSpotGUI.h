@@ -6,6 +6,7 @@
 #define BRAKEZA3D_LIGHTSPOTDGUI_H
 
 #include "../../3D/LightSpot.h"
+#include "../../GUI/Objects/Object3DGUI.h"
 
 class LightSpotGUI
 {
@@ -17,10 +18,16 @@ public:
             const float range_min = 0;
             const float range_max = 1;
 
-            ImGui::DragScalar("Cut Off", ImGuiDataType_Float, &o->cutOff, range_sensibility,&range_min, &range_max, "%f", 1.0f);
-            ImGui::DragScalar("Outer Cut Off", ImGuiDataType_Float, &o->outerCutOff, range_sensibility,&range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Cut Off", ImGuiDataType_Float, &o->cutOff, range_sensibility, &range_min, &range_max, "%f", 1.0f);
+            ImGui::DragScalar("Outer Cut Off", ImGuiDataType_Float, &o->outerCutOff, range_sensibility, &range_min, &range_max, "%f", 1.0f);
             ImGui::Separator();
             ImGui::Checkbox("Show Debug Cone", &o->showDebugCone);
+
+            if (o->showDebugCone) {
+                ImGui::Text("Blend Debug Mode Settings");
+
+                Object3DGUI::SelectorOGLBlendMode(o->mode_src, o->mode_dst);
+            }
         }
     }
 };

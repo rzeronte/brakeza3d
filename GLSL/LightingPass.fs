@@ -181,7 +181,7 @@ float ShadowCalculationSpot(vec3 fragPos, int lightIndex, vec3 normal, vec3 ligh
         }
     }
 
-    shadow /= 9.0;
+    //shadow /= 5.0;
 
     return shadow;
 }

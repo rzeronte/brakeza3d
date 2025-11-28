@@ -198,7 +198,7 @@ void Mesh3D::onUpdate()
 
     auto sceneFramebuffer = window->getSceneFramebuffer();
 
-    if (render->getSelectedObject() == this) {
+    if (isGUISelected()) {
         render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
     }
 
