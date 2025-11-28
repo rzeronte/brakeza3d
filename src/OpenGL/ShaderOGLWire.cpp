@@ -13,9 +13,10 @@ ShaderOGLWire::ShaderOGLWire()
         false
     )
 {
+    colorUniform = glGetUniformLocation(programID, "color");
 }
 
-void ShaderOGLWire::renderMesh(Mesh3D *mesh, bool useFeedbackFramebuffer, GLuint fbo) const
+void ShaderOGLWire::renderMesh(Mesh3D *mesh, bool useFeedbackFramebuffer, const Color &c, GLuint fbo) const
 {
     for (auto &m: mesh->getMeshData()) {
         render(
@@ -24,12 +25,21 @@ void ShaderOGLWire::renderMesh(Mesh3D *mesh, bool useFeedbackFramebuffer, GLuint
             m.uvBuffer,
             m.normalBuffer,
             m.vertices.size(),
+            c,
             fbo
         );
     }
 }
 
-void ShaderOGLWire::render(const glm::mat4 &modelMatrix, GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer, int size, GLuint fbo) const
+void ShaderOGLWire::render(
+    const glm::mat4 &modelMatrix,
+    GLuint vertexBuffer,
+    GLuint uvBuffer,
+    GLuint normalBuffer,
+    int size,
+    const Color &c,
+    GLuint fbo
+) const
 {
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
     ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
@@ -46,6 +56,7 @@ void ShaderOGLWire::render(const glm::mat4 &modelMatrix, GLuint vertexBuffer, GL
     setMat4("view", ViewMatrix);
     setMat4("model", modelMatrix);
 
+    setVec3("color", c.toGLM());
     setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
     glDrawArrays(GL_LINES, 0, size );

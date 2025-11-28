@@ -35,7 +35,7 @@ public:
     void setAnimation(int);
     void updateTexture();
     void updateTrianglesCoordinatesAndTexture();
-    void drawImGuiProperties() override;
+    void DrawPropertiesGUI() override;
     void updateBillboardSize() const;
     [[nodiscard]] TextureAnimated *getCurrentTextureAnimation() const;
     [[nodiscard]] bool isAutoRemoveAfterAnimation() const;

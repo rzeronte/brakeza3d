@@ -18,18 +18,15 @@ cJSON * LightSpotSerializer::JsonByObject(Object3D *o)
 
     auto root = LightPointSerializer().JsonByObject(o);
 
-    cJSON_AddNumberToObject(root, "cutOff", glm::degrees(glm::acos(spot->getCutOff())));
-    cJSON_AddNumberToObject(root, "outerCutOff", glm::degrees(glm::acos(spot->getOuterCutOff())));
+    cJSON_AddNumberToObject(root, "cutOff", spot->getCutOff());
+    cJSON_AddNumberToObject(root, "outerCutOff", spot->getOuterCutOff());
 
     return root;
 }
 
 Object3D * LightSpotSerializer::ObjectByJson(cJSON *json)
 {
-    auto direction = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(json, "ambient"));
-
     auto o = new LightSpot(
-        glm::vec4(direction.x, direction.y, direction.z, 0),
         glm::vec4(0.05f, 0.05f, 0.05f, 0),
         glm::vec4(1.0f, 0.0f, 0.0f, 0),
         glm::vec4(1.0f, 1.0f, 1.0f, 0),
@@ -58,7 +55,6 @@ void LightSpotSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 void LightSpotSerializer::LoadFileIntoScene(const std::string &file)
 {
     auto o = new LightSpot(
-        glm::vec4(0, 0, 1, 0),
         glm::vec4(0.05f, 0.05f, 0.05f, 0),
         glm::vec4(1.0f, 0.0f, 0.0f, 0),
         glm::vec4(1.0f, 1.0f, 1.0f, 0),

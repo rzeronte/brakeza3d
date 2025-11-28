@@ -55,7 +55,7 @@ public:
     const char *getTypeIcon() override;
     void onUpdate() override;
     void setStopAdd(bool stopAdd);
-    void drawImGuiProperties() override;
+    void DrawPropertiesGUI() override;
     void setContext(const ParticlesContext &context);
     void setColorTo(const Color &colorTo);
     void setColorFrom(const Color &colorFrom);

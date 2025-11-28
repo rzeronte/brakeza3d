@@ -134,9 +134,9 @@ void Image3DAnimation8Directions::updateStep()
     this->counterAnimations->setStep(step);
 }
 
-void Image3DAnimation8Directions::drawImGuiProperties()
+void Image3DAnimation8Directions::DrawPropertiesGUI()
 {
-    Object3D::drawImGuiProperties();
+    Object3D::DrawPropertiesGUI();
     Image3DAnimation8DirectionsGUI::DrawPropertiesGUI(this);
 }
 

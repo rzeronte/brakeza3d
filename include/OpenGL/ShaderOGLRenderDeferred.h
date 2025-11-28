@@ -14,11 +14,11 @@ class ShaderOGLRenderDeferred : public ShaderBaseOpenGL
     GLuint drawOffsetUniform = 0;
     GLuint textureDiffuseUniform = 0;
     GLuint textureSpecularUniform = 0;
-
+    GLuint alphaUniform = 1.0f;
 public:
     ShaderOGLRenderDeferred();
-    void render(Object3D *o, GLuint texId, GLuint specTexId, GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer, int size, GLuint fbo) const;
-    void renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo);
+    void render(Object3D *o, GLuint texId, GLuint specTexId, GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer, int size, float alpha, GLuint fbo) const;
+    void renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo) const;
     void destroy() override;
 };
 

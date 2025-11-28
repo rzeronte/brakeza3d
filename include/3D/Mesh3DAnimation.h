@@ -102,7 +102,7 @@ public:
     void setRemoveAtEndAnimation(bool removeAtEnds);
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
-    void drawImGuiProperties() override;
+    void DrawPropertiesGUI() override;
     void setAnimationSpeed(float value);
     void setIndexCurrentAnimation(int indexCurrentAnimation);
     void CheckIfEndAnimation();

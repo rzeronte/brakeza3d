@@ -23,6 +23,14 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
         if (ImGui::CollapsingHeader("Transformations")) {
             // position
             if (o->featuresGUI.position) {
+
+                ImGui::PushID("reset_position");  // ✅ ID único
+                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::RELOAD), ImVec2(12, 12))) {
+                    o->setPosition(Vertex3D(0, 0, 0));
+                }
+                ImGui::PopID();
+                ImGui::SameLine();  // ✅ Ahora el DragFloat va a la derecha
+
                 float vec3f[3];
                 o->getPosition().toFloat(vec3f);
                 if (ImGui::DragFloat3("Position", vec3f, 0.01f, -999999.0f, 999999.0f)) {
@@ -35,12 +43,21 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
             // rotation
             if (o->featuresGUI.rotation) {
+
                 float oldPitch = o->getRotation().getPitchDegree();
                 float oldYaw = o->getRotation().getYawDegree();
                 float oldRoll = o->getRotation().getRollDegree();
                 float pitch = oldPitch;
                 float yaw = oldYaw;
                 float roll = oldRoll;
+
+                ImGui::PushID("reset_rotation");  // ✅ ID único
+                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::RELOAD), ImVec2(12, 12))) {
+                    Logging::Message("Reset Rotation");
+                    o->setRotation(M3::getMatrixIdentity());
+                }
+                ImGui::PopID();
+                ImGui::SameLine();  // ✅ Ahora el DragFloat va a la derecha
 
                 float vec3f[3];
                 vec3f[0] = pitch;
@@ -69,11 +86,14 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                         M3::normalize(o->rotation);
                     }
                 }
-                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::RELOAD), ImVec2(12, 12))) {
-                    o->setRotation(M3::getMatrixRotationForEulerAngles(0, 0, 0));
-                }
-
                 ImGui::Separator();
+
+                ImGui::PushID("reset_drawoffset");  // ✅ ID único
+                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::RELOAD), ImVec2(12, 12))) {
+                    o->setDrawOffset(Vertex3D(0, 0, 0));
+                }
+                ImGui::PopID();
+                ImGui::SameLine();  // ✅ Ahora el DragFloat va a la derecha
 
                 o->drawOffset.toFloat(vec3f);
                 if (ImGui::DragFloat3("DrawOffset", vec3f, 0.01f, -999999.0f, 999999.0f)) {
@@ -83,8 +103,17 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                 }
                 ImGui::Separator();
             }
+
             // scale
             if (o->featuresGUI.scale) {
+                ImGui::PushID("reset_scale");  // ✅ ID único
+                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::RELOAD), ImVec2(12, 12))) {
+                    Logging::Message("Reset scale");
+                    o->setScale(1.f);
+                }
+                ImGui::PopID();
+                ImGui::SameLine();  // ✅ Ahora el DragScalar va a la derecha
+
                 const float range_scale_min = -360;
                 const float range_scale_max = 360;
                 ImGui::DragScalar("Scale", ImGuiDataType_Float, &o->scale, 0.01, &range_scale_min, &range_scale_max, "%f", 1.0f);
@@ -109,7 +138,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
             for (auto a: o->attachedObjects) {
                 if (ImGui::TreeNode(a->getLabel().c_str())) {
-                    a->drawImGuiProperties();
+                    a->DrawPropertiesGUI();
                     ImGui::TreePop();
                 }
             }

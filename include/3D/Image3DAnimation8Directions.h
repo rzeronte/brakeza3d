@@ -30,7 +30,7 @@ public:
     void updateStep();
     void updateTrianglesCoordinates(Camera3D *cam);
     void onUpdate() override;
-    void drawImGuiProperties() override;
+    void DrawPropertiesGUI() override;
     void updateBillboardSize() const;
     TextureAnimatedDirectional *getCurrentTextureAnimationDirectional() const;
     const char *getTypeObject() override;

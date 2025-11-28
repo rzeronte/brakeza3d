@@ -52,9 +52,9 @@ const char *Image2D::getTypeIcon()
     return IconsByObject::IMAGE_2D;;
 }
 
-void Image2D::drawImGuiProperties()
+void Image2D::DrawPropertiesGUI()
 {
-    Object3D::drawImGuiProperties();
+    Object3D::DrawPropertiesGUI();
     Image2DGUI::DrawPropertiesGUI(this);
 }
 

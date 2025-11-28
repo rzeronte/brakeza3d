@@ -376,7 +376,6 @@ inline void LUAIntegration(sol::state &lua)
     sol::base_classes, sol::bases<LightPoint, Object3D>(),
         "setCutOff", &LightSpot::setCutOff,
         "setOuterCutOff", &LightSpot::setOuterCutOff,
-        "setDirection", &LightSpot::setDirection,
         "create", sol::factories([](Vertex3D position, Vertex3D direction) {
             return LightSpot::create(position, direction);
         })

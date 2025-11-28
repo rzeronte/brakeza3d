@@ -4,7 +4,6 @@
 
 #ifndef BRAKEZA3D_SCENEOBJECTTYPES_H
 #define BRAKEZA3D_SCENEOBJECTTYPES_H
-
 #include <cstring>
 
 enum class SceneObjectLoaderMapping {
@@ -101,6 +100,10 @@ inline const char* getSceneObjectTypeName(SceneObjectLoaderMapping type) {
 }
 
 namespace IconsByGUI {
+
+    enum class Icons {
+
+    };
     inline constexpr const char* FOLDER = "folderIcon";
     inline constexpr const char* PLAY = "playIcon";
     inline constexpr const char* STOP = "stopIcon";
@@ -136,6 +139,11 @@ namespace IconsByGUI {
     inline constexpr const char* PLAYER = "playerIcon";
     inline constexpr const char* REBUILD = "rebuildIcon";
     inline constexpr const char* SPLASH = "splashImage";
+    inline constexpr const char* LIGHT_SYSTEM = "LightSystemIcon";
+    inline constexpr const char* RENDER_TEXTURE = "RenderTextureIcon";
+    inline constexpr const char* RENDER_PIXELS = "RenderPixelsIcon";
+    inline constexpr const char* RENDER_SHADING = "RenderShadingIcon";
+    inline constexpr const char* RENDER_WIRE = "RenderWireIcon";
 
     struct IconMapping {
         const char* id;
@@ -178,7 +186,11 @@ namespace IconsByGUI {
         {PLAYER, "player.png"},
         {REBUILD, "rebuild.png"},
         {SPLASH, "splash.png"},
-
+        {LIGHT_SYSTEM, "sun.png"},
+        {RENDER_TEXTURE, "render_texture.png"},
+        {RENDER_PIXELS, "render_pixels.png"},
+        {RENDER_SHADING, "render_shading.png"},
+        {RENDER_WIRE, "render_wire.png"},
     };
 
     inline const char* Filename(const char* iconId) {

@@ -24,7 +24,7 @@ public:
     const char *getTypeIcon() override;
     void onUpdate() override;
     void updatePosition(int x, int y);
-    void drawImGuiProperties() override;
+    void DrawPropertiesGUI() override;
     [[nodiscard]] TextureAnimated *getAnimation() const;
     [[nodiscard]] int getX() const;
     [[nodiscard]] int getY() const;
