@@ -20,7 +20,9 @@ class LightSpot : public LightPoint
     GLuint vertexBuffer = 0;
     GLuint normalBuffer = 0;
     GLuint uvBuffer = 0;
-    Image *texture;
+
+    GLenum mode_src = GL_SRC_COLOR;
+    GLenum mode_dst = GL_DST_COLOR;
 
     Cone3D cone;
 public:

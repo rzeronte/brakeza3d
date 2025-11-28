@@ -18,7 +18,6 @@ struct GUIAddonToolbar
         luaColor(ImVec4(0.5f, 0.5f, 0.5f, 1.0f)),  // Gris intermedio
         playColor(ImVec4(0.3f, 0.9f, 0.3f, 1.0f))  // Gris intermedio
     {
-
     }
 
     void Draw() const
@@ -67,22 +66,28 @@ struct GUIAddonToolbar
     {
         auto *window = ComponentsManager::get()->getComponentWindow();
 
-        drawButton(IconsByGUI::LAYOUT_DEFAULT,
-                   window->getImGuiConfig() == BrakezaSetup::ImGUIConfigs::DEFAULT,
-                   onColor,
-                   [&]() { window->setImGuiConfig(BrakezaSetup::ImGUIConfigs::DEFAULT); });
+        drawButton(
+IconsByGUI::LAYOUT_DEFAULT,
+window->getImGuiConfig() == BrakezaSetup::ImGUIConfigs::DEFAULT,
+onColor,
+[&]() { window->setImGuiConfig(BrakezaSetup::ImGUIConfigs::DEFAULT); }
+        );
         ImGui::SetItemTooltip("Default layout");
 
-        drawButton(IconsByGUI::LAYOUT_CODING,
-                   window->getImGuiConfig() == BrakezaSetup::ImGUIConfigs::CODING,
-                   onColor,
-                   [&]() { window->setImGuiConfig(BrakezaSetup::ImGUIConfigs::CODING); });
+        drawButton(
+IconsByGUI::LAYOUT_CODING,
+window->getImGuiConfig() == BrakezaSetup::ImGUIConfigs::CODING,
+onColor,
+[&]() { window->setImGuiConfig(BrakezaSetup::ImGUIConfigs::CODING); }
+        );
         ImGui::SetItemTooltip("Developer layout");
 
-        drawButton(IconsByGUI::LAYOUT_DESIGN,
-                   window->getImGuiConfig() == BrakezaSetup::ImGUIConfigs::DESIGN,
-                   onColor,
-                   [&]() { window->setImGuiConfig(BrakezaSetup::ImGUIConfigs::DESIGN); });
+        drawButton(
+IconsByGUI::LAYOUT_DESIGN,
+window->getImGuiConfig() == BrakezaSetup::ImGUIConfigs::DESIGN,
+onColor,
+[&]() { window->setImGuiConfig(BrakezaSetup::ImGUIConfigs::DESIGN); }
+        );
         ImGui::SetItemTooltip("Designer layout");
     }
 
@@ -121,44 +126,62 @@ struct GUIAddonToolbar
 
     void drawBulletOptionsIcons() const
     {
-        drawButton(IconsByGUI::GRAVITY,
-                   BrakezaSetup::get()->ENABLE_BULLET_STEP_SIMULATION,
-                   onColor,
-                   [&]() { BrakezaSetup::get()->ENABLE_BULLET_STEP_SIMULATION = !BrakezaSetup::get()->ENABLE_BULLET_STEP_SIMULATION; });
+        drawButton(
+            IconsByGUI::GRAVITY,
+            BrakezaSetup::get()->ENABLE_BULLET_STEP_SIMULATION,
+            onColor,
+            [&]() { BrakezaSetup::get()->ENABLE_BULLET_STEP_SIMULATION = !BrakezaSetup::get()->ENABLE_BULLET_STEP_SIMULATION; }
+        );
         ImGui::SetItemTooltip("Enable/Disable physic world");
 
-        drawButton(IconsByGUI::DRAW_COLLIDERS,
-                   BrakezaSetup::get()->BULLET_DEBUG_MODE,
-                   onColor,
-                   [&]() {
-                        BrakezaSetup::get()->BULLET_DEBUG_MODE = !BrakezaSetup::get()->BULLET_DEBUG_MODE;
-                        ComponentsManager::get()->getComponentCollisions()->setEnableDebugMode(BrakezaSetup::get()->BULLET_DEBUG_MODE);
-                   }
+        drawButton(
+            IconsByGUI::DRAW_COLLIDERS,
+            BrakezaSetup::get()->BULLET_DEBUG_MODE,
+            onColor,
+            [&]() {
+                BrakezaSetup::get()->BULLET_DEBUG_MODE = !BrakezaSetup::get()->BULLET_DEBUG_MODE;
+                ComponentsManager::get()->getComponentCollisions()->setEnableDebugMode(BrakezaSetup::get()->BULLET_DEBUG_MODE);
+            }
         );
         ImGui::SetItemTooltip("Draw collider AABB");
     }
 
     void drawMouseOptionsIcons() const
     {
-        drawButton(IconsByGUI::CLICK,
-                   BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D,
-                   onColor,
-                   [&]() { BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D = !BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D; });
+        drawButton(
+            IconsByGUI::CLICK,
+            BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D,
+            onColor,
+            [&]() { BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D = !BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D; }
+        );
         ImGui::SetItemTooltip("Enable/Disable item click selection");
 
-        drawButton(IconsByGUI::MOUSE_LOOK,
-                   BrakezaSetup::get()->MOUSE_LOOK,
-                   onColor,
-                   [&]() { BrakezaSetup::get()->MOUSE_LOOK = !BrakezaSetup::get()->MOUSE_LOOK; });
+        drawButton(
+            IconsByGUI::MOUSE_LOOK,
+            BrakezaSetup::get()->MOUSE_LOOK,
+            onColor,
+            [&]() { BrakezaSetup::get()->MOUSE_LOOK = !BrakezaSetup::get()->MOUSE_LOOK; }
+        );
         ImGui::SetItemTooltip("Enable/Disable mouse look");
     }
 
     void drawLightsOptions() const
     {
-        drawButton(IconsByGUI::LIGHT_SYSTEM,
-                   BrakezaSetup::get()->ENABLE_LIGHTS,
-                   onColor,
-                   [&]() { BrakezaSetup::get()->ENABLE_LIGHTS = !BrakezaSetup::get()->ENABLE_LIGHTS; });
+        drawButton(
+            IconsByGUI::LIGHT_SYSTEM,
+            BrakezaSetup::get()->ENABLE_LIGHTS,
+            onColor,
+           [&]() { BrakezaSetup::get()->ENABLE_LIGHTS = !BrakezaSetup::get()->ENABLE_LIGHTS; }
+        );
+
+        if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
+            drawButton(
+               IconsByGUI::SHADOW_MAPPING,
+               BrakezaSetup::get()->ENABLE_SHADOW_MAPPING,
+               onColor,
+               [&]() { BrakezaSetup::get()->ENABLE_SHADOW_MAPPING = !BrakezaSetup::get()->ENABLE_SHADOW_MAPPING; }
+            );
+        }
     }
 
     void drawLUAStatusIcons() const
@@ -181,37 +204,47 @@ struct GUIAddonToolbar
 
     void drawRenderTriangleModes() const
     {
-        drawButton(IconsByGUI::RENDER_PIXELS,
-                   BrakezaSetup::get()->TRIANGLE_MODE_PIXELS,
-                   onColor,
-                   [&]() { BrakezaSetup::get()->TRIANGLE_MODE_PIXELS = !BrakezaSetup::get()->TRIANGLE_MODE_PIXELS; });
+        drawButton(
+            IconsByGUI::RENDER_PIXELS,
+            BrakezaSetup::get()->TRIANGLE_MODE_PIXELS,
+            onColor,
+            [&]() { BrakezaSetup::get()->TRIANGLE_MODE_PIXELS = !BrakezaSetup::get()->TRIANGLE_MODE_PIXELS; }
+        );
         ImGui::SetItemTooltip("Pixels");
 
-        drawButton(IconsByGUI::RENDER_SHADING,
-                   BrakezaSetup::get()->TRIANGLE_MODE_SHADING,
-                   onColor,
-                   [&]() { BrakezaSetup::get()->TRIANGLE_MODE_SHADING = !BrakezaSetup::get()->TRIANGLE_MODE_SHADING; });
+        drawButton(
+            IconsByGUI::RENDER_SHADING,
+            BrakezaSetup::get()->TRIANGLE_MODE_SHADING,
+            onColor,
+            [&]() { BrakezaSetup::get()->TRIANGLE_MODE_SHADING = !BrakezaSetup::get()->TRIANGLE_MODE_SHADING; }
+        );
         ImGui::SetItemTooltip("Shading");
 
-        drawButton(IconsByGUI::RENDER_WIRE,
-                   BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME,
-                   onColor,
-                   [&]() { BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME = !BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME; });
+        drawButton(
+            IconsByGUI::RENDER_WIRE,
+            BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME,
+            onColor,
+            [&]() { BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME = !BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME; }
+        );
         ImGui::SetItemTooltip("Wireframe");
 
-        drawButton(IconsByGUI::RENDER_TEXTURE,
-                   BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED,
-                   onColor,
-                   [&]() { BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED = !BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED; });
+        drawButton(
+            IconsByGUI::RENDER_TEXTURE,
+            BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED,
+            onColor,
+            [&]() { BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED = !BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED; }
+        );
         ImGui::SetItemTooltip("Diffuse");
     }
 
     void drawGUIIcon() const
     {
-        drawButton(IconsByGUI::GUI,
-                   BrakezaSetup::get()->ENABLE_IMGUI,
-                   onColor,
-                   [&]() { BrakezaSetup::get()->ENABLE_IMGUI = !BrakezaSetup::get()->ENABLE_IMGUI; });
+        drawButton(
+            IconsByGUI::GUI,
+            BrakezaSetup::get()->ENABLE_IMGUI,
+            onColor,
+            [&]() { BrakezaSetup::get()->ENABLE_IMGUI = !BrakezaSetup::get()->ENABLE_IMGUI; }
+        );
         ImGui::SetItemTooltip("Enable/Disable UI");
     }
 

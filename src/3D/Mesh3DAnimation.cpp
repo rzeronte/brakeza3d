@@ -36,7 +36,7 @@ void Mesh3DAnimation::onUpdate()
     auto render = ComponentsManager::get()->getComponentRender();
     auto window = ComponentsManager::get()->getComponentWindow();
 
-    if (render->getSelectedObject() == this) {
+    if (isGUISelected()) {
         render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
     }
 

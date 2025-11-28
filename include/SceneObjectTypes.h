@@ -140,6 +140,7 @@ namespace IconsByGUI {
     inline constexpr const char* REBUILD = "rebuildIcon";
     inline constexpr const char* SPLASH = "splashImage";
     inline constexpr const char* LIGHT_SYSTEM = "LightSystemIcon";
+    inline constexpr const char* SHADOW_MAPPING = "ShadowMappingIcon";
     inline constexpr const char* RENDER_TEXTURE = "RenderTextureIcon";
     inline constexpr const char* RENDER_PIXELS = "RenderPixelsIcon";
     inline constexpr const char* RENDER_SHADING = "RenderShadingIcon";
@@ -188,6 +189,7 @@ namespace IconsByGUI {
         {SPLASH, "splash.png"},
         {LIGHT_SYSTEM, "sun.png"},
         {RENDER_TEXTURE, "render_texture.png"},
+        {SHADOW_MAPPING, "shadow_mapping.png"},
         {RENDER_PIXELS, "render_pixels.png"},
         {RENDER_SHADING, "render_shading.png"},
         {RENDER_WIRE, "render_wire.png"},

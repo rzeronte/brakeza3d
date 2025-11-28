@@ -264,3 +264,18 @@ void Object3DGUI::DrawObjectSelectedGuizmoOperation()
         );
     }
 }
+
+void Object3DGUI::SelectorOGLBlendMode(GLenum &mode_src, GLenum &mode_dst)
+{
+    // Selector para Source
+    static int current_src = BrakezaSetup::FindBlendModeIndex(mode_src);
+    if (ImGui::Combo("Source Blend Mode", &current_src, BrakezaSetup::blend_modes, IM_ARRAYSIZE(BrakezaSetup::blend_modes))) {
+        mode_src = BrakezaSetup::blend_values[current_src];
+    }
+
+    // Selector para Destination
+    static int current_dst = BrakezaSetup::FindBlendModeIndex(mode_dst);
+    if (ImGui::Combo("Destination Blend Mode", &current_dst, BrakezaSetup::blend_modes, IM_ARRAYSIZE(BrakezaSetup::blend_modes))) {
+        mode_dst = BrakezaSetup::blend_values[current_dst];
+    }
+}
