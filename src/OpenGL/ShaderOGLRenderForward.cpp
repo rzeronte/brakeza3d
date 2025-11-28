@@ -161,7 +161,7 @@ void ShaderOGLRenderForward::FillUBOLights()
     size_t numPointLights = std::min(pointsLights.size(), MAX_POINT_LIGHTS);
     if (numPointLights > 0) {
         glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOLightPoints);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, (int) numPointLights * sizeof(PointLightOpenGL), pointsLights.data());
+        glBufferSubData(GL_UNIFORM_BUFFER, 0,numPointLights * sizeof(PointLightOpenGL), pointsLights.data());
     }
     if (pointsLights.size() > MAX_POINT_LIGHTS) {
         Logging::Message("Point lights exceed max: %zu > %zu", pointsLights.size(), MAX_POINT_LIGHTS);
@@ -170,7 +170,7 @@ void ShaderOGLRenderForward::FillUBOLights()
     size_t numSpotLights = std::min(spotLights.size(), MAX_SPOT_LIGHTS);
     if (numSpotLights > 0) {
         glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOSpotLights);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, (GLuint) numSpotLights * sizeof(SpotLightOpenGL),spotLights.data());
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, numSpotLights * sizeof(SpotLightOpenGL),spotLights.data());
     }
 
     if (spotLights.size() > MAX_POINT_LIGHTS) {

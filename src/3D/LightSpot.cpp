@@ -54,7 +54,7 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
 
         crearBuffersCono();
 
-        render->getShaderOGLRenderDeferred()->render(
+        /*render->getShaderOGLRenderDeferred()->render(
             this,
             texture->getOGLTextureID(),
             0,
@@ -64,7 +64,7 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
             static_cast<int>(cone.vertices.size()),
             1.0f,
             ComponentsManager::get()->getComponentWindow()->getGBuffer().FBO
-        );
+        );*/
 
         render->getShaderOGLWireframe()->render(
             getModelMatrix(),
@@ -167,8 +167,7 @@ float LightSpot::getOuterCutOff() const
 
 glm::vec4 LightSpot::getDirection() const
 {
-    Vertex3D forward = getRotation().getTranspose() * Vertex3D(0, 0, -1);
-    return forward.toGLM4();
+    return ( getRotation().getTranspose() * Vertex3D(0, 0, 1)).toGLM4();
 }
 
 const char *LightSpot::getTypeIcon()
