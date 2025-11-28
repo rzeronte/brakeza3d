@@ -46,7 +46,7 @@ struct GUIAddonObject3DProperties
                     return;
                 }
 
-                o->drawImGuiProperties();
+                o->DrawPropertiesGUI();
                 ImGui::Separator();
                 ImGui::Button("Remove");
                 if (ImGui::IsItemClicked()) {

@@ -13,6 +13,7 @@ Cone3D::Cone3D(float altura, float angulo_grados, int segmentos)
 
 void Cone3D::UpdateVertices(float altura, float angulo_grados, int segmentos)
 {
+    // Limpiar vectores anteriores
     vertices.clear();
     normals.clear();
     uvs.clear();
@@ -23,12 +24,12 @@ void Cone3D::UpdateVertices(float altura, float angulo_grados, int segmentos)
     const float PI = std::acos(-1.0f);
     float sectorStep = 2.0f * PI / segmentos;
 
+    // ✅ INVERTIDO: Apex alejado, base en origen
     glm::vec4 apex(0.0f, 0.0f, 0.0f, 1.0f);
     float z_base = altura;
 
     // ========== SUPERFICIE LATERAL: TRIÁNGULOS DIRECTOS ==========
-    for(int i = 0; i < segmentos; ++i)
-    {
+    for(int i = 0; i < segmentos; ++i) {
         float angle1 = i * sectorStep;
         float angle2 = (i + 1) * sectorStep;
 
@@ -44,7 +45,7 @@ void Cone3D::UpdateVertices(float altura, float angulo_grados, int segmentos)
         // Triángulo lateral: apex -> base1 -> base2
         vertices.push_back(apex);
         normals.push_back(normal);
-        uvs.emplace_back(glm::vec2(0.5f, 0.0f));
+        uvs.push_back(glm::vec2(0.5f, 0.0f));
 
         vertices.push_back(base1);
         normals.push_back(normal);
@@ -80,13 +81,13 @@ void Cone3D::UpdateVertices(float altura, float angulo_grados, int segmentos)
         normals.push_back(baseNormal);
         uvs.push_back(baseUVCenter);
 
-        vertices.emplace_back(x2, y2, z_base, 1.0f);
+        vertices.push_back(glm::vec4(x2, y2, z_base, 1.0f));
         normals.push_back(baseNormal);
-        uvs.emplace_back(glm::vec2(u2, v2));
+        uvs.push_back(glm::vec2(u2, v2));
 
-        vertices.emplace_back(glm::vec4(x1, y1, z_base, 1.0f));
-        normals.emplace_back(baseNormal);
-        uvs.emplace_back(glm::vec2(u1, v1));
+        vertices.push_back(glm::vec4(x1, y1, z_base, 1.0f));
+        normals.push_back(baseNormal);
+        uvs.push_back(glm::vec2(u1, v1));
     }
 
     // ========== CÍRCULO PERIMETRAL DE LA BASE (PARA WIREFRAME) ==========
@@ -105,27 +106,27 @@ void Cone3D::UpdateVertices(float altura, float angulo_grados, int segmentos)
         // Primer triángulo del borde
         vertices.push_back(p1);
         normals.push_back(baseNormal);
-        uvs.emplace_back(glm::vec2(0, 0));
+        uvs.push_back(glm::vec2(0, 0));
 
         vertices.push_back(p2);
         normals.push_back(baseNormal);
-        uvs.emplace_back(glm::vec2(0, 0));
+        uvs.push_back(glm::vec2(0, 0));
 
         vertices.push_back(p1_inner);
         normals.push_back(baseNormal);
-        uvs.emplace_back(glm::vec2(0, 0));
+        uvs.push_back(glm::vec2(0, 0));
 
         // Segundo triángulo del borde
         vertices.push_back(p2);
         normals.push_back(baseNormal);
-        uvs.emplace_back(glm::vec2(0, 0));
+        uvs.push_back(glm::vec2(0, 0));
 
         vertices.push_back(p2_inner);
         normals.push_back(baseNormal);
-        uvs.emplace_back(glm::vec2(0, 0));
+        uvs.push_back(glm::vec2(0, 0));
 
         vertices.push_back(p1_inner);
         normals.push_back(baseNormal);
-        uvs.emplace_back(glm::vec2(0, 0));
+        uvs.push_back(glm::vec2(0, 0));
     }
 }

@@ -20,8 +20,8 @@ class LightSpot : public LightPoint
     GLuint vertexBuffer = 0;
     GLuint normalBuffer = 0;
     GLuint uvBuffer = 0;
-
     Image *texture;
+
     Cone3D cone;
 public:
     LightSpot(
