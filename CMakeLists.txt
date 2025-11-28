@@ -79,6 +79,7 @@ add_executable(Brakeza3D
 
         # Root
         src/Brakeza.cpp include/Brakeza.h
+        src/Brakeza.cpp include/Brakeza.h
         src/BrakezaSetup.cpp                                include/BrakezaSetup.h
         src/Loaders/ProjectLoader.cpp include/Loaders/ProjectLoader.h
         src/Loaders/SceneLoader.cpp include/Loaders/SceneLoader.h
@@ -258,6 +259,7 @@ add_executable(Brakeza3D
         include/GUI/Objects/ShadersGUI.h
         src/GUI/Objects/FilesystemGUI.cpp
         include/GUI/Objects/FilesystemGUI.h
+        src/3D/Cone3D.cpp                   include/3D/Cone3D.h
 )
 
 target_link_libraries(Brakeza3D

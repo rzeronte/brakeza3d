@@ -61,11 +61,10 @@ void Image3D::setSize(float width, float height)
 void Image3D::onUpdate()
 {
     Object3D::onUpdate();
-
     if (!image->isLoaded() || !isEnabled()) return;
 
     if (towardsCamera) {
-        lookAt(ComponentsManager::get()->getComponentCamera()->getCamera());
+        lookAtBillboard(ComponentsManager::get()->getComponentCamera()->getCamera());
     }
 
     auto render = ComponentsManager::get()->getComponentRender();
@@ -80,6 +79,10 @@ void Image3D::onUpdate()
         );
     }
 
+    if (!backFaceCulling)
+        glDisable(GL_CULL_FACE);
+
+
     if (BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED) {
         if (BrakezaSetup::get()->ENABLE_LIGHTS) {
             render->getShaderOGLRenderDeferred()->render(
@@ -90,6 +93,7 @@ void Image3D::onUpdate()
                 uvBuffer,
                 normalBuffer,
                 static_cast<int>(vertices.size()),
+                alpha,
                 window->getGBuffer().FBO
             );
             if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
@@ -110,6 +114,39 @@ void Image3D::onUpdate()
         }
     }
 
+    if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME) {
+        render->getShaderOGLWireframe()->render(
+            getModelMatrix(),
+            vertexBuffer,
+            uvBuffer,
+            normalBuffer,
+            static_cast<int>(vertices.size()),
+            Color::gray(),
+            window->getSceneFramebuffer()
+        );
+    }
+
+    if (BrakezaSetup::get()->TRIANGLE_MODE_PIXELS) {
+        render->getShaderOGLPoints()->render(
+            getModelMatrix(),
+            vertexBuffer,
+            vertices.size(),
+            Color::green(),
+            window->getSceneFramebuffer()
+        );
+    }
+
+    if (BrakezaSetup::get()->TRIANGLE_MODE_SHADING) {
+        render->getShaderOGLShading()->render(
+            getModelMatrix(),
+            vertexBuffer,
+            uvBuffer,
+            normalBuffer,
+            false,
+            window->getSceneFramebuffer()
+        );
+    }
+
     if (BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D)  {
         render->getShaderOGLColor()->renderColor(
             getModelMatrix(),
@@ -122,11 +159,13 @@ void Image3D::onUpdate()
             window->getPickingColorFramebuffer().FBO
         );
     }
+
+    glEnable(GL_CULL_FACE);
 }
 
-void Image3D::drawImGuiProperties()
+void Image3D::DrawPropertiesGUI()
 {
-    Object3D::drawImGuiProperties();
+    Object3D::DrawPropertiesGUI();
     Image3DGUI::DrawPropertiesGUI(this);
 }
 
@@ -156,6 +195,9 @@ void Image3D::setHeight(float value)
 
 void Image3D::fillBuffers()
 {
+    GLuint buffersToDelete[3] = {vertexBuffer, uvBuffer, normalBuffer};
+    glDeleteBuffers(3, buffersToDelete);
+
     glGenBuffers(1, &vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(vertices.size() * sizeof(glm::vec4)), &vertices[0], GL_STATIC_DRAW);
@@ -169,7 +211,7 @@ void Image3D::fillBuffers()
     glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(normals.size() * sizeof(glm::vec3)), &normals[0], GL_STATIC_DRAW);
 }
 
-Image3D *Image3D::create(Vertex3D p, float w, float h, const std::string &file)
+Image3D *Image3D::create(const Vertex3D &p, float w, float h, const std::string &file)
 {
     return new Image3D(p, w, h, new Image(file));
 }
@@ -218,7 +260,7 @@ void Image3D::shadowMappingPass()
         uvBuffer,
         normalBuffer,
         static_cast<int>(vertices.size()),
-        shaderShadowPass->getSpotLightsDepthMapsFBO()
+        shaderShadowPass->getDirectionalLightDepthMapFBO()
     );
 
     // SpotLights
@@ -239,4 +281,17 @@ void Image3D::shadowMappingPass()
             shaderShadowPass->getSpotLightsDepthMapsFBO()
         );
     }
+}
+
+void Image3D::lookAtBillboard(Object3D *o)
+{
+    Vertex3D direction = (o->getPosition() - position).getNormalize();
+
+    Vertex3D horizontalDirection = Vertex3D(direction.x, direction.y, 0).getNormalize();
+    Vertex3D upVector = Vertex3D(0, 0, 1);
+    Vertex3D rightVector = upVector % horizontalDirection;
+
+    Vertex3D correctedForward = rightVector % upVector;
+
+    setRotation(M3::getFromVectors(correctedForward, upVector));
 }

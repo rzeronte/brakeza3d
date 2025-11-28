@@ -60,7 +60,7 @@ void Mesh3DAnimation::onUpdate()
     }
 
     if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        render->getShaderOGLWireframe()->renderMesh(this, true, window->getSceneFramebuffer());
+        render->getShaderOGLWireframe()->renderMesh(this, true, Color::gray(), window->getSceneFramebuffer());
     }
 
     if (BrakezaSetup::get()->DRAW_MESH3D_AABB && isRender()) {
@@ -99,14 +99,14 @@ void Mesh3DAnimation::UpdateOpenGLBones()
 {
     std::vector transformations(MAX_BONES, glm::mat4(0));
 
-    for (int i = 0; i < static_cast<int>(boneInfo.size()); i++) {
+    for (unsigned int i = 0; i < boneInfo.size(); i++) {
         transformations[i] = Tools::aiMat4toGLMMat4(boneInfo[i].FinalTransformation);
     }
 
+    auto shaderBones = ComponentsManager::get()->getComponentRender()->getShaderOGLBonesTransforms();
     for (auto &m: meshes) {
         if (m.vertices.empty()) continue;
-
-        ComponentsManager::get()->getComponentRender()->getShaderOGLBonesTransforms()->render(
+        shaderBones->render(
             m,
             transformations,
             ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
@@ -579,9 +579,9 @@ const char *Mesh3DAnimation::getTypeIcon()
     return IconsByObject::MESH_3D_ANIMATION;
 }
 
-void Mesh3DAnimation::drawImGuiProperties()
+void Mesh3DAnimation::DrawPropertiesGUI()
 {
-    Mesh3D::drawImGuiProperties();
+    Mesh3D::DrawPropertiesGUI();
     Mesh3DAnimationDrawerGUI::DrawPropertiesGUI(this);
 }
 

@@ -229,8 +229,8 @@ const char *Swarm::getTypeIcon()
     return IconsByObject::SWARM;
 }
 
-void Swarm::drawImGuiProperties()
+void Swarm::DrawPropertiesGUI()
 {
-    Object3D::drawImGuiProperties();
+    Object3D::DrawPropertiesGUI();
     SwarmGUI::DrawPropertiesGUI(this);
 }

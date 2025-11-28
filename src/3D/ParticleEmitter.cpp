@@ -212,9 +212,9 @@ const char *ParticleEmitter::getTypeIcon()
     return IconsByObject::PARTICLE_EMITTER;
 }
 
-void ParticleEmitter::drawImGuiProperties()
+void ParticleEmitter::DrawPropertiesGUI()
 {
-    Object3D::drawImGuiProperties();
+    Object3D::DrawPropertiesGUI();
     ParticleEmitterGUI::DrawPropertiesGUI(this);
 }
 

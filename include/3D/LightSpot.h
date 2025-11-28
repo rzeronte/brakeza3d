@@ -5,17 +5,26 @@
 #ifndef BRAKEZA3D_SPOTLIGHT3D_H
 #define BRAKEZA3D_SPOTLIGHT3D_H
 
+#include <GL/glew.h>
+
+#include "Cone3D.h"
 #include "LightPoint.h"
+#include "../Render/Image.h"
 
 class LightSpot : public LightPoint
 {
-    glm::vec4 direction;
-    float cutOff;
-    float outerCutOff;
+    float cutOff = 0.f;
+    float outerCutOff = 0.f;
+    bool showDebugCone = true;
 
+    GLuint vertexBuffer = 0;
+    GLuint normalBuffer = 0;
+    GLuint uvBuffer = 0;
+
+    Image *texture;
+    Cone3D cone;
 public:
     LightSpot(
-        const glm::vec4 &direction,
         const glm::vec4 &ambient,
         const glm::vec4 &diffuse,
         const glm::vec4 &specular,
@@ -27,14 +36,19 @@ public:
     );
     const char *getTypeIcon() override;
     const char *getTypeObject() override;
-    void drawImGuiProperties() override;
+    void DrawPropertiesGUI() override;
+    void RenderDebugCone(float radians, const Color &c);
     void setCutOff(float value);
     void setOuterCutOff(float value);
     void onUpdate() override;
-    void setDirection(const Vertex3D &d);
-    glm::mat4 getLightSpaceMatrix();
+    void crearBuffersCono();
+    void clearConeBuffers();
+    [[nodiscard]] glm::mat4 getLightSpaceMatrix() const;
     [[nodiscard]] float getCutOff() const;
     [[nodiscard]] float getOuterCutOff() const;
+
+    glm::vec4 getDirection() const;
+
     static LightSpot* create(const Vertex3D &position, const Vertex3D &direction);
 
     friend class LightSpotSerializer;

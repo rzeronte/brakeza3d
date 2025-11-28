@@ -74,7 +74,7 @@ public:
     void addPredator(SwarmObject *o);
     void reset();
     void removeBoid(SwarmObject *o);
-    void drawImGuiProperties() override;
+    void DrawPropertiesGUI() override;
     static void updatePosition(SwarmObject *o, float weight);
 
     friend class SwarmGUI;

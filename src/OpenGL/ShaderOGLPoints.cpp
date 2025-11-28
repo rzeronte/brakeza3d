@@ -14,11 +14,11 @@ ShaderOGLPoints::ShaderOGLPoints()
     glBindVertexArray(VertexArrayID);
 }
 
-void ShaderOGLPoints::renderMeshAnimation(Mesh3DAnimation *mesh, GLuint fbo)
+void ShaderOGLPoints::renderMeshAnimation(Mesh3DAnimation *mesh, GLuint fbo) const
 {
     for (auto &m: mesh->getMeshData()) {
         render(
-            mesh,
+            mesh->getModelMatrix(),
             m.feedbackBuffer,
             m.vertices.size(),
             Color::green(),
@@ -31,7 +31,7 @@ void ShaderOGLPoints::renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint fb
 {
     for (auto &m: mesh->getMeshData()) {
         render(
-            mesh,
+            mesh->getModelMatrix(),
             useFeedbackBuffer ? m.feedbackBuffer : m.vertexBuffer,
             m.vertices.size(),
             Color::green(),
@@ -40,7 +40,7 @@ void ShaderOGLPoints::renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint fb
     }
 }
 
-void ShaderOGLPoints::render(Mesh3D* m, GLuint vertexBuffer, int numberPoints, Color c, GLuint fbo)
+void ShaderOGLPoints::render(glm::mat4 modelMatrix, GLuint vertexBuffer, int numberPoints, Color c, GLuint fbo) const
 {
     ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
 
@@ -56,7 +56,7 @@ void ShaderOGLPoints::render(Mesh3D* m, GLuint vertexBuffer, int numberPoints, C
 
     setMat4("projection", ProjectionMatrix);
     setMat4("view", ViewMatrix);
-    setMat4("model", m->getModelMatrix());
+    setMat4("model", modelMatrix);
 
     setVec3("color", c.toGLM());
 

@@ -12,10 +12,10 @@ class ShaderOGLPoints : public ShaderBaseOpenGL
 public:
     ShaderOGLPoints();
 
-    void render(Mesh3D* m, GLuint particlesBuffer, int numberPoints, Color c, GLuint fbo);
+    void render(glm::mat4 modelMatrix, GLuint particlesBuffer, int numberPoints, Color c, GLuint fbo) const;
     void destroy() override;
     void renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint fbo);
-    void renderMeshAnimation(Mesh3DAnimation *mesh, GLuint fbo);
+    void renderMeshAnimation(Mesh3DAnimation *mesh, GLuint fbo) const;
     static void setVAOAttributes(GLuint particlesBuffer) ;
 };
 

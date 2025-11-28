@@ -20,9 +20,10 @@ ShaderOGLRenderDeferred::ShaderOGLRenderDeferred()
     drawOffsetUniform = glGetUniformLocation(programID, "drawOffset");
     textureDiffuseUniform = glGetUniformLocation(programID, "texture_diffuse");
     textureSpecularUniform = glGetUniformLocation(programID, "texture_specular");
+    alphaUniform = glGetUniformLocation(programID, "alpha");
 }
 
-void ShaderOGLRenderDeferred::renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo)
+void ShaderOGLRenderDeferred::renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo) const
 {
     for (const auto& m: o->getMeshData()) {
         render(
@@ -33,6 +34,7 @@ void ShaderOGLRenderDeferred::renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLui
             m.uvBuffer,
             m.normalBuffer,
             static_cast<int>(m.vertices.size()),
+            o->getAlpha(),
             fbo
         );
     }
@@ -46,6 +48,7 @@ void ShaderOGLRenderDeferred::render(
     GLuint uvBuffer,
     GLuint normalBuffer,
     int size,
+    float alpha,
     GLuint fbo
 ) const
 {
@@ -65,6 +68,7 @@ void ShaderOGLRenderDeferred::render(
     setMat4Uniform(matrixModelUniform, o->getModelMatrix());
     setVec3Uniform(drawOffsetUniform, o->getDrawOffset().toGLM());
 
+    setFloatUniform(alphaUniform, alpha);
     setIntUniform(textureDiffuseUniform, 0);
     setIntUniform(textureSpecularUniform, 1);
 

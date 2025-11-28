@@ -35,6 +35,10 @@ struct GUIAddonToolbar
             drawBulletOptionsIcons();
             VerticalSeparator();
             drawTransformationsToolsIcons();
+            VerticalSeparator();
+            drawRenderTriangleModes();
+            VerticalSeparator();
+            drawLightsOptions();
         }
         ImGui::End();
     }
@@ -149,6 +153,14 @@ struct GUIAddonToolbar
         ImGui::SetItemTooltip("Enable/Disable mouse look");
     }
 
+    void drawLightsOptions() const
+    {
+        drawButton(IconsByGUI::LIGHT_SYSTEM,
+                   BrakezaSetup::get()->ENABLE_LIGHTS,
+                   onColor,
+                   [&]() { BrakezaSetup::get()->ENABLE_LIGHTS = !BrakezaSetup::get()->ENABLE_LIGHTS; });
+    }
+
     void drawLUAStatusIcons() const
     {
         auto scripting = ComponentsManager::get()->getComponentScripting();
@@ -165,6 +177,33 @@ struct GUIAddonToolbar
 
         drawFixedColorButton(IconsByGUI::REMOVE, luaColor, [&]() { SceneLoader::ClearScene(); });
         ImGui::SetItemTooltip("Clear scene");
+    }
+
+    void drawRenderTriangleModes() const
+    {
+        drawButton(IconsByGUI::RENDER_PIXELS,
+                   BrakezaSetup::get()->TRIANGLE_MODE_PIXELS,
+                   onColor,
+                   [&]() { BrakezaSetup::get()->TRIANGLE_MODE_PIXELS = !BrakezaSetup::get()->TRIANGLE_MODE_PIXELS; });
+        ImGui::SetItemTooltip("Pixels");
+
+        drawButton(IconsByGUI::RENDER_SHADING,
+                   BrakezaSetup::get()->TRIANGLE_MODE_SHADING,
+                   onColor,
+                   [&]() { BrakezaSetup::get()->TRIANGLE_MODE_SHADING = !BrakezaSetup::get()->TRIANGLE_MODE_SHADING; });
+        ImGui::SetItemTooltip("Shading");
+
+        drawButton(IconsByGUI::RENDER_WIRE,
+                   BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME,
+                   onColor,
+                   [&]() { BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME = !BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME; });
+        ImGui::SetItemTooltip("Wireframe");
+
+        drawButton(IconsByGUI::RENDER_TEXTURE,
+                   BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED,
+                   onColor,
+                   [&]() { BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED = !BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED; });
+        ImGui::SetItemTooltip("Diffuse");
     }
 
     void drawGUIIcon() const

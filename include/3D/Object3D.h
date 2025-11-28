@@ -104,7 +104,7 @@ public:
     virtual void setEnabled(bool value);
     virtual void onUpdate();
     virtual void postUpdate();
-    virtual void drawImGuiProperties();
+    virtual void DrawPropertiesGUI();
     void setupGhostCollider(CollisionShape mode) override;
     glm::mat4 getModelMatrix() const;
     M3& rotationPointer();

@@ -281,5 +281,5 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, int
         return mix(vec3(1.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0), shadow * shadowIntensity);
     }
 
-    return (ambient + (1.0 - shadow * shadowIntensity) * (diffuse + specular));
+    return (ambient + (1.0 - shadow * shadowIntensity) * (diffuse + specular));  // ✅ SUMA, no resta
 }

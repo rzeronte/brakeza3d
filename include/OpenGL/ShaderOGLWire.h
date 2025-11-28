@@ -12,11 +12,20 @@
 class ShaderOGLWire : public ShaderBaseOpenGL
 {
     GLuint VertexArrayID = 0;
+    GLuint colorUniform;
 public:
     ShaderOGLWire();
 
-    void renderMesh(Mesh3D *mesh, bool useFeedbackFramebuffer, GLuint fbo) const;
-    void render(const glm::mat4 &modelMatrix, GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer, int size, GLuint fbo) const;
+    void renderMesh(Mesh3D *mesh, bool useFeedbackFramebuffer, const Color &c, GLuint fbo) const;
+    void render(
+        const glm::mat4 &modelMatrix,
+        GLuint vertexBuffer,
+        GLuint uvBuffer,
+        GLuint normalBuffer,
+        int size,
+        const Color &c,
+        GLuint fbo
+    ) const;
     void destroy() override;
 };
 

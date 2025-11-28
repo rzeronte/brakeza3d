@@ -87,15 +87,15 @@ glm::mat4 ShaderOGLRenderForward::getDirectionalLightMatrix(const DirLightOpenGL
         size,
         -size,
         size,
-        BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_NEAR_PLANE,
-        BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE
+        BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_NEAR_PLANE,
+        BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE
     );
 
     // Normalizar la dirección de la luz
     glm::vec3 forward = glm::normalize(light.direction);
 
     // Para una luz direccional, usamos una posición arbitraria en la dirección opuesta a donde apunta la luz
-    glm::vec3 p = -forward * BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_FRUSTUM_FAR_PLANE * 0.5f;
+    glm::vec3 p = -forward * BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE * 0.5f;
 
     glm::mat4 lightView = glm::lookAt(
         p,
@@ -123,7 +123,7 @@ void ShaderOGLRenderForward::createUBOFromLights()
         }
     }
 
-    fillUBOLights();
+    FillUBOLights();
 }
 
 DirLightOpenGL &ShaderOGLRenderForward::getDirectionalLight()
@@ -152,7 +152,7 @@ void ShaderOGLRenderForward::renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuin
     }
 }
 
-void ShaderOGLRenderForward::fillUBOLights()
+void ShaderOGLRenderForward::FillUBOLights()
 {
     if (!buffersInitialized) {
         initializeLightBuffers();
@@ -161,7 +161,7 @@ void ShaderOGLRenderForward::fillUBOLights()
     size_t numPointLights = std::min(pointsLights.size(), MAX_POINT_LIGHTS);
     if (numPointLights > 0) {
         glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOLightPoints);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0,numPointLights * sizeof(PointLightOpenGL), pointsLights.data());
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, (int) numPointLights * sizeof(PointLightOpenGL), pointsLights.data());
     }
     if (pointsLights.size() > MAX_POINT_LIGHTS) {
         Logging::Message("Point lights exceed max: %zu > %zu", pointsLights.size(), MAX_POINT_LIGHTS);
@@ -170,7 +170,7 @@ void ShaderOGLRenderForward::fillUBOLights()
     size_t numSpotLights = std::min(spotLights.size(), MAX_SPOT_LIGHTS);
     if (numSpotLights > 0) {
         glBindBuffer(GL_UNIFORM_BUFFER, bufferUBOSpotLights);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, numSpotLights * sizeof(SpotLightOpenGL),spotLights.data());
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, (GLuint) numSpotLights * sizeof(SpotLightOpenGL),spotLights.data());
     }
 
     if (spotLights.size() > MAX_POINT_LIGHTS) {
@@ -180,14 +180,12 @@ void ShaderOGLRenderForward::fillUBOLights()
 
 void ShaderOGLRenderForward::extractLights(Object3D *o)
 {
-    Vertex3D forward = o->getRotation().Z().getNormalize();
-
     auto s = dynamic_cast<LightSpot*>(o);
     if (s != nullptr) {
         shadowMappingLights.push_back(s);
         spotLights.push_back(SpotLightOpenGL{
-            glm::vec4(o->getPosition().toGLM(), 1),
-            glm::vec4(forward.toGLM(), 0),
+            o->getPosition().toGLM4(),
+            s->getDirection(),
             s->ambient,
             s->diffuse,
             s->specular,

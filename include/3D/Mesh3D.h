@@ -67,7 +67,7 @@ public:
     void postUpdate() override;
     void buildOctree(int depth);
     void setRender(bool render);
-    void drawImGuiProperties() override;
+    void DrawPropertiesGUI() override;
     void makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     void makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     void makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) override;

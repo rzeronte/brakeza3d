@@ -214,7 +214,7 @@ void Mesh3D::onUpdate()
     }
 
     if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        render->getShaderOGLWireframe()->renderMesh(this, false, sceneFramebuffer);
+        render->getShaderOGLWireframe()->renderMesh(this, false, Color::gray(), sceneFramebuffer);
     }
 
     if (BrakezaSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
@@ -274,9 +274,9 @@ void Mesh3D::setRender(bool render)
     Mesh3D::render = render;
 }
 
-void Mesh3D::drawImGuiProperties()
+void Mesh3D::DrawPropertiesGUI()
 {
-    Object3D::drawImGuiProperties();
+    Object3D::DrawPropertiesGUI();
     Mesh3DGUI::DrawPropertiesGUI(this);
 }
 

@@ -54,6 +54,7 @@ public:
             }
             ImGui::Separator();
             ImGui::Checkbox("Towards camera", &o->towardsCamera);
+            ImGui::Checkbox("Face culling", &o->backFaceCulling);
         }
     }
 };

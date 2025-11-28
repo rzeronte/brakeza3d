@@ -14,7 +14,9 @@ class Image3D : public Object3D
 {
     float width = 0;
     float height = 0;
+
     bool towardsCamera = false;
+    bool backFaceCulling = true;
 
     Vertex3D Q1;
     Vertex3D Q2;
@@ -36,7 +38,7 @@ public:
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
     void onUpdate() override;
-    void drawImGuiProperties() override;
+    void DrawPropertiesGUI() override;
     void setSize(float width, float height);
     void setWidth(float value);
     void setHeight(float value);
@@ -45,12 +47,14 @@ public:
 
     void shadowMappingPass();
 
+    void lookAtBillboard(Object3D *o);
+
     [[nodiscard]] GLuint getVertexBuffer() const;
     [[nodiscard]] GLuint getNormalBuffer() const;
     [[nodiscard]] GLuint getUVBuffer() const;
     [[nodiscard]] std::vector<glm::vec4> getVertices() const;
     [[nodiscard]] Image* getImage() const;
-    static Image3D* create(Vertex3D p, float w, float h, const std::string &file);
+    static Image3D* create(const Vertex3D &p, float w, float h, const std::string &file);
 
     friend class Image3DSerializer;
     friend class Image3DGUI;

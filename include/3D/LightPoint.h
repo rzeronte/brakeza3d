@@ -23,7 +23,7 @@ public:
     void setCuadratic(float value);
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
-    void drawImGuiProperties() override;
+    void DrawPropertiesGUI() override;
     static LightPoint* create(Vertex3D position);
     void setAmbient(const Color &c);
 

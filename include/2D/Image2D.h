@@ -18,7 +18,7 @@ public:
     explicit Image2D(int x, int y, Image * image);
     void onUpdate() override;
     void updatePosition(int x, int y);
-    void drawImGuiProperties() override;
+    void DrawPropertiesGUI() override;
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
     static Image2D* create(int x, int y, const std::string& imageFile);

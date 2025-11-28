@@ -40,6 +40,7 @@ void Image3DAnimation::onUpdate()
             billboard->getUVBuffer(),
             billboard->getNormalBuffer(),
             static_cast<int>(billboard->getVertices().size()),
+            Color::gray(),
             ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
         );
     }
@@ -131,9 +132,9 @@ void Image3DAnimation::updateBillboardSize() const
     billboard->setHeight(height);
 }
 
-void Image3DAnimation::drawImGuiProperties()
+void Image3DAnimation::DrawPropertiesGUI()
 {
-    Object3D::drawImGuiProperties();
+    Object3D::DrawPropertiesGUI();
     Image3DAnimationGUI::DrawPropertiesGUI(this);
 }
 

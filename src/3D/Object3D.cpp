@@ -186,7 +186,7 @@ void Object3D::postUpdate()
     }
 }
 
-void Object3D::drawImGuiProperties()
+void Object3D::DrawPropertiesGUI()
 {
     Object3DGUI::DrawPropertiesGUI(this);
 }

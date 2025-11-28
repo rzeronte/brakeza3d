@@ -92,9 +92,9 @@ const char *Image2DAnimation::getTypeIcon()
     return IconsByObject::IMAGE_2D_ANIMATION;
 }
 
-void Image2DAnimation::drawImGuiProperties()
+void Image2DAnimation::DrawPropertiesGUI()
 {
-    Object3D::drawImGuiProperties();
+    Object3D::DrawPropertiesGUI();
     Image2DAnimationGUI::DrawPropertiesGUI(this);
 }
 

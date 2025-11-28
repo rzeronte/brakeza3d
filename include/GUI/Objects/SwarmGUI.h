@@ -111,7 +111,7 @@ public:
 
                 for (auto a: o->attachedObjects) {
                     if (ImGui::TreeNode(a->getLabel().c_str())) {
-                        a->drawImGuiProperties();
+                        a->DrawPropertiesGUI();
                         ImGui::TreePop();
                     }
                 }
