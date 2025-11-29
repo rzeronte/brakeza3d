@@ -3,7 +3,6 @@
 #include "../../include/BrakezaSetup.h"
 #include "../../include/Brakeza.h"
 
-
 void Logging::Message(const char *message, ...)
 {
     if (!BrakezaSetup::get()->ENABLE_LOGGING) return;
@@ -23,11 +22,13 @@ void Logging::Message(const char *message, ...)
 
     va_end(args);
 
-    if ( Brakeza::get()->getManagerGui() != nullptr) {
+    if (Brakeza::get()->getManagerGui() != nullptr) {
         Brakeza::get()->getManagerGui()->getConsole()->AddLog("%s", buffer);
     }
 
-    std::cout << buffer << std::endl;
+    if (BrakezaSetup::get()->ENABLE_LOGGING_STD) {
+        std::cout << buffer << std::endl;
+    }
 
     delete[] buffer;
 }

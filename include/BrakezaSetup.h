@@ -72,6 +72,7 @@ public:
     bool ENABLE_BULLET_STEP_SIMULATION = false;
     bool ENABLE_SOUND = true;
     bool ENABLE_LOGGING = true;
+    bool ENABLE_LOGGING_STD = false;
     bool ENABLE_IMGUI = true;
 
     // Render options
