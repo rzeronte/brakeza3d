@@ -75,7 +75,7 @@ public:
     bool ENABLE_IMGUI = true;
 
     // Render options
-    bool LIMIT_FRAMERATE = true;
+    bool LIMIT_FRAMERATE = false;
     bool V_SYNC = true;
     int FRAMERATE = 60;
 

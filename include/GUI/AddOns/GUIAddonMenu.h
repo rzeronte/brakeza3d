@@ -588,22 +588,38 @@ struct GUIAddonMenu
         auto setup = BrakezaSetup::get();
 
         ImGui::Separator();
-
         ImGui::Checkbox("Enable Lights System", &setup->ENABLE_LIGHTS);
         if (setup->ENABLE_LIGHTS) {
             ImGui::Checkbox("Enable Shadow Mapping", &setup->ENABLE_SHADOW_MAPPING);
-
             if (setup->ENABLE_SHADOW_MAPPING) {
                 ImGui::Separator();
-                ImGui::Checkbox("ShadowMapping debug", &setup->SHADOW_MAPPING_DEBUG);
-                ImGui::Checkbox("Enable ShadowMapping in DirectionalLight", &setup->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
-                ImGui::DragFloat("DepthMaps Frustum Near plane", &setup->SHADOW_MAPPING_DEPTH_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
-                ImGui::DragFloat("DepthMaps Frustum Far plane", &setup->SHADOW_MAPPING_DEPTH_FAR_PLANE, 0.1f, 1.0f, 500.0f);
-                ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
+                ImGui::Checkbox("Enable Sun shadows", &setup->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
                 ImGui::DragFloat("Shadows Intensity", &setup->SHADOW_MAPPING_INTENSITY, 0.1f, -5.0f, 5.0f);
+                ImGui::DragFloat("DepthMaps Near plane", &setup->SHADOW_MAPPING_DEPTH_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
+                ImGui::DragFloat("DepthMaps Far plane", &setup->SHADOW_MAPPING_DEPTH_FAR_PLANE, 0.1f, 1.0f, 500.0f);
+                ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
+                ImGui::Checkbox("Shadow Mapping debug mode", &setup->SHADOW_MAPPING_DEBUG);
             }
         }
-
+        ImGui::Separator();
+        auto& dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->getDirectionalLight();
+        ImGui::DragFloat3("Sun direction", &dirLight.direction[0], 0.01f, -1.0f, 1.0f);
+        ImGui::Separator();
+        ImVec4 color = {dirLight.ambient.x, dirLight.ambient.y, dirLight.ambient.z, 1};
+        bool changed_color = ImGui::ColorEdit4("Sun Ambient##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
+        if (changed_color) {
+            dirLight.ambient = {color.x, color.y, color.z};
+        }
+        color = {dirLight.specular.x, dirLight.specular.y, dirLight.specular.z, 1};
+        changed_color = ImGui::ColorEdit4("Sun Specular##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
+        if (changed_color) {
+            dirLight.specular = {color.x, color.y, color.z};
+        }
+        color = {dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z, 1};
+        changed_color = ImGui::ColorEdit4("Sun Diffuse##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
+        if (changed_color) {
+            dirLight.diffuse = {color.x, color.y, color.z};
+        }
         if (setup->ENABLE_LIGHTS && setup->TRIANGLE_MODE_TEXTURIZED) {
             ImGui::Checkbox("Depth Map", &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
         }
@@ -614,25 +630,8 @@ struct GUIAddonMenu
             ImGui::DragFloat("Near Plane", &s->nearPlane, 0.01f, 0.0f, 100.0f);
             ImGui::Separator();
         }
-
-        auto& dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->getDirectionalLight();
-        ImGui::DragFloat3("Light dir.", &dirLight.direction[0], 0.01f, -1.0f, 1.0f);
         ImGui::Separator();
-        ImVec4 color = {dirLight.ambient.x, dirLight.ambient.y, dirLight.ambient.z, 1};
-        bool changed_color = ImGui::ColorEdit4("Ambient##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
-        if (changed_color) {
-            dirLight.ambient = {color.x, color.y, color.z};
-        }
-        color = {dirLight.specular.x, dirLight.specular.y, dirLight.specular.z, 1};
-        changed_color = ImGui::ColorEdit4("Specular##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
-        if (changed_color) {
-            dirLight.specular = {color.x, color.y, color.z};
-        }
-        color = {dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z, 1};
-        changed_color = ImGui::ColorEdit4("Diffuse##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
-        if (changed_color) {
-            dirLight.diffuse = {color.x, color.y, color.z};
-        }
+
     }
 
     static void drawCameraSettings()
