@@ -60,6 +60,11 @@ void ComponentRender::preUpdate()
     deleteRemovedObjects();
 }
 
+void ComponentRender::DrawFPS() const
+{
+    textWriter->writeTextTTFAutoSize(10, 10, std::to_string(getFps()).c_str(), Color::white(), 1.0f);
+}
+
 void ComponentRender::onUpdate()
 {
     if (!isEnabled()) return;
@@ -82,11 +87,7 @@ void ComponentRender::onUpdate()
     onUpdateSceneObjects();
 
     if (SETUP->DRAW_FPS_RENDER) {
-        textWriter->writeTextTTFMiddleScreen(
-            std::to_string(getFps()).c_str(),
-            Color::green(),
-            1.5
-        );
+        DrawFPS();
     }
 
     if (Brakeza::get()->getManagerGui()->isShowLightsDepthMapsViewerWindow() ) {
@@ -132,7 +133,7 @@ void ComponentRender::onUpdateSceneObjects()
 
 void ComponentRender::updateFPS()
 {
-    if (!(BrakezaSetup::get()->DRAW_FPS_IMGUI || BrakezaSetup::get()->DRAW_FPS_RENDER)) return;
+    if (!BrakezaSetup::get()->DRAW_FPS_RENDER) return;
 
     frameTime += Brakeza::get()->getDeltaTimeMicro();
     ++fpsFrameCounter;

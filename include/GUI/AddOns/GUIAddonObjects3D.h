@@ -47,11 +47,9 @@ struct GUIAddonObjects3D {
             if (ImGui::ImageButton(FileSystemGUI::IconTag( o.icon), ImVec2(14, 14))) {
                 o.visible = !o.visible;
             }
-
             if (!wasVisible) {
                 ImGui::PopStyleColor();
             }
-
             ImGui::SameLine();
         }
         ImGui::NewLine();
@@ -72,11 +70,10 @@ struct GUIAddonObjects3D {
     {
         if (ImGui::Begin("Scene Objects")) {
             drawAllowedObjectsToShow();
+
             ImGui::Separator();
             auto title = std::string("Number objects: ") + std::to_string(gameObjects.size());
-
             ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", title.c_str());
-
             ImGui::Separator();
 
             for (int i = 0; i < gameObjects.size(); i++) {
