@@ -218,26 +218,7 @@ void GUIManager::DrawGUI(float timedelta, bool &finish)
     Mesh3DGUI::DrawEditBonesMappingWindow(this);
     DrawLightsDepthMapsViewerWindow();
     DrawSplash();
-    RenderFPS();
     ImGui::End();
-}
-
-void GUIManager::RenderFPS()
-{
-    if (BrakezaSetup::get()->DRAW_FPS_IMGUI) {
-        auto fps = ComponentsManager::get()->getComponentRender()->getFps();
-        ImVec2 screenSize = ImGui::GetIO().DisplaySize;
-        char fpsText[32];
-        snprintf(fpsText, sizeof(fpsText), "%d", fps);
-        ImVec2 textSize = ImGui::CalcTextSize(fpsText);
-        ImVec2 textPos = ImVec2((screenSize.x - textSize.x) * 0.5f, (screenSize.y - textSize.y) * 0.5f);
-
-        ImGui::SetNextWindowBgAlpha(0.5f); // transparent
-        ImGui::SetNextWindowPos(textPos, ImGuiCond_Always);
-        ImGui::Begin("FPS Overlay", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoNav);
-        ImGui::TextUnformatted(fpsText);
-        ImGui::End();
-    }
 }
 
 GuiAddonConsole *GUIManager::getConsole() const

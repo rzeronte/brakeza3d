@@ -81,6 +81,9 @@ public:
 
     void onStart() override;
     void preUpdate() override;
+
+    void DrawFPS() const;
+
     void onUpdate() override;
     void postUpdate() override;
     void onEnd() override;

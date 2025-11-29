@@ -80,7 +80,7 @@ struct GUIAddonMenu
                 if (ImGui::MenuItem("Exit")) finish = true;
                 ImGui::EndMenu();
             }
-            if (ImGui::BeginMenu("Control")) {
+            if (ImGui::BeginMenu("Script Controls")) {
                 auto scripting = ComponentsManager::get()->getComponentScripting();
                 auto state = scripting->getStateLUAScripts();
                 ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::PLAY), ImVec2(16, 16));
@@ -109,16 +109,12 @@ struct GUIAddonMenu
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Add object")) {
-
                 ImGui::Image(FileSystemGUI::IconTag(IconsByObject::OBJECT_3D), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("Object3D (Empty)")) {
                     Object3DSerializer().LoadFileIntoScene("");
                 }
-
                 ImGui::Separator();
-
-                ;
                 ImGui::Image(FileSystemGUI::IconTag(IconsByObject::PARTICLE_EMITTER), ImVec2(16, 16));
                 ImGui::SameLine();
                 if (ImGui::MenuItem("ParticleEmitter")) {
@@ -205,7 +201,7 @@ struct GUIAddonMenu
 
                 ImGui::EndMenu();
             }
-            if (ImGui::BeginMenu("Render")) {
+            if (ImGui::BeginMenu("Video")) {
                 const float range_far_plane_distance_sensibility = 1.0f;
                 ImGui::Checkbox("V-Sync", &setup->V_SYNC);
                 if (ImGui::IsItemEdited()) {
@@ -227,43 +223,79 @@ struct GUIAddonMenu
 
                 }
                 ImGui::Separator();
-
-                ImGui::Checkbox("Enable Lights System", &setup->ENABLE_LIGHTS);
-                if (setup->ENABLE_LIGHTS) {
-                    ImGui::Checkbox("Enable Shadow Mapping", &setup->ENABLE_SHADOW_MAPPING);
-
-                    if (setup->ENABLE_SHADOW_MAPPING) {
-                        ImGui::Separator();
-                        ImGui::Checkbox("ShadowMapping debug", &setup->SHADOW_MAPPING_DEBUG);
-                        ImGui::Checkbox("Enable ShadowMapping in DirectionalLight", &setup->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
-                        ImGui::DragFloat("DepthMaps Frustum Near plane", &setup->SHADOW_MAPPING_DEPTH_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
-                        ImGui::DragFloat("DepthMaps Frustum Far plane", &setup->SHADOW_MAPPING_DEPTH_FAR_PLANE, 0.1f, 1.0f, 500.0f);
-                        ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
-                        ImGui::DragFloat("Shadows Intensity", &setup->SHADOW_MAPPING_INTENSITY, 0.1f, -5.0f, 5.0f);
-                    }
-                }
-
-                ImGui::Separator();
-
                 ImGui::DragScalar("FOV", ImGuiDataType_Float, &setup->HORIZONTAL_FOV, 1, &range_min_fov,&range_max_fov, "%f", 1.0f);
                 ImGui::Separator();
                 ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &range_far_plane_min, &range_max_plane_max, "%f", 1.0f);
                 ImGui::Separator();
-                if (setup->ENABLE_LIGHTS && setup->TRIANGLE_MODE_TEXTURIZED) {
-                    ImGui::Checkbox("Depth Map", &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
-                }
-                if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
-                    auto s = ComponentsManager::get()->getComponentRender()->getShaderOGLDepthMap();
-                    ImGui::DragFloat("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 10.0f);
-                    ImGui::DragFloat("Far Plane", &s->farPlane, 0.01f, 0.0f, 100.0f);
-                    ImGui::DragFloat("Near Plane", &s->nearPlane, 0.01f, 0.0f, 100.0f);
-                    ImGui::Separator();
-                }
                 ImGui::Checkbox("Vertex", &setup->TRIANGLE_MODE_PIXELS);
                 ImGui::Checkbox("WireFrame", &setup->TRIANGLE_MODE_WIREFRAME);
                 ImGui::Checkbox("Solid", &setup->TRIANGLE_MODE_SHADING);
                 ImGui::Checkbox("Picking Colors", &setup->TRIANGLE_MODE_PICKING_COLORS);
                 ImGui::Checkbox("Textures", &setup->TRIANGLE_MODE_TEXTURIZED);
+                ImGui::Separator();
+
+                const float focalMinValues = 0;
+                const float focalMaxValues = 1;
+                const float focalValueSens = 0.001;
+
+                ImGui::Checkbox("Enable DOF", &BrakezaSetup::get()->ENABLE_DOF_BLUR);
+
+                if (BrakezaSetup::get()->ENABLE_DOF_BLUR) {
+                    const float depthValueSens = 0.1;
+                    const float depthMinValues = 0;
+                    const float depthMaxValues = 100;
+                    ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                    ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+
+                    const int minBlurRadius = 0;
+                    const int maxBlurRadius = 10;
+                    ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
+                    ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+                    ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
+                }
+
+                ImGui::Separator();
+
+                ImGui::Checkbox("Enable FOG", &BrakezaSetup::get()->ENABLE_FOG);
+
+                if (BrakezaSetup::get()->ENABLE_FOG) {
+                    const float rangeFogSens = 0.1;
+                    const float rangeFogMin = 0.1;
+                    const float rangeFogMax = 1000;
+                    const float rangeFogIntensityMax= 1.0;
+
+                    ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+                    ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+                    ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->intensity, rangeFogSens, &rangeFogMin, &rangeFogIntensityMax, "%f", 1.0f);
+
+                    auto p = ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor;
+                    ImVec4 fogVecColor = {p.r, p.b, p.b, 1};
+                    if (ImGui::ColorEdit4("FOG Color##", reinterpret_cast<float *>(&fogVecColor), ImGuiColorEditFlags_NoOptions)) {
+                        ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor = {fogVecColor.x, fogVecColor.y, fogVecColor.z};
+                    }
+                }
+                ImGui::Separator();
+                ImGui::Checkbox("Draw Object3D Axis", &setup->RENDER_OBJECTS_AXIS);
+                if (setup->RENDER_OBJECTS_AXIS) {
+                    const float sizeAxisMin = 0;
+                    const float sizeAxisMax = 1;
+                    const float sizeAxisSens = 0.01;
+                    ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &setup->OBJECT_AXIS_SIZE, sizeAxisSens, &sizeAxisMin, &sizeAxisMax, "%f", 1.0f);
+                }
+                ImGui::Separator();
+                ImGui::Checkbox("Draw Mesh3D AABB", &setup->DRAW_MESH3D_AABB);
+                ImGui::Checkbox("Draw Mesh3D Octree", &setup->DRAW_MESH3D_OCTREE);
+                ImGui::Checkbox("Draw Mesh3D Grid", &setup->DRAW_MESH3D_GRID);
+                if (setup->DRAW_MESH3D_GRID) {
+                    ImGui::Separator();
+                    ImGui::Checkbox("Draw Test Passed Cells", &setup->DRAW_MESH3D_TEST_PASSED);
+                    ImGui::Checkbox("Draw Not Test Passed Cells", &setup->DRAW_MESH3D_TEST_NOT_PASSED);
+                    ImGui::Separator();
+                    ImGui::Checkbox("Draw AStar Travel", &setup->DRAW_MESH3D_GRID_ASTAR);
+                }
+                ImGui::Separator();
+                ImGui::Checkbox("Show FPS", &setup->DRAW_FPS_RENDER);
+
                 ImGui::Separator();
                 ImGui::Checkbox("Draw Bones", &setup->DRAW_ANIMATION_BONES);
                 ImGui::Separator();
@@ -271,7 +303,7 @@ struct GUIAddonMenu
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu("Physics & Collisions")) {
+            if (ImGui::BeginMenu("Colliders")) {
                 int minSubsteps = 0;
                 int maxSubsteps = 10;
                 int minFixedTime = 1;
@@ -308,7 +340,7 @@ struct GUIAddonMenu
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu("Global illumination")) {
+            if (ImGui::BeginMenu("Illumination")) {
                 drawGlobalIllumination();
                 ImGui::EndMenu();
             }
@@ -366,38 +398,16 @@ struct GUIAddonMenu
                 ImGui::EndMenu();
             }
 
-            if (ImGui::BeginMenu("View")) {
+            if (ImGui::BeginMenu("Window")) {
                 ImGui::Checkbox("FullScreen (F11)", &setup->FULLSCREEN);
                 if (ImGui::IsItemEdited()) {
                     ComponentsManager::get()->getComponentWindow()->toggleFullScreen();
                 }
                 ImGui::Separator();
-                ImGui::Checkbox("Show Light Depth Maps", &showLightDepthMapsWindow);
+                ImGui::Checkbox("Light Depth Maps Window", &showLightDepthMapsWindow);
 
                 ImGui::Separator();
-                ImGui::Checkbox("UI (F4)", &setup->ENABLE_IMGUI);
-                ImGui::Separator();
-                ImGui::Checkbox("Draw Object3D Axis", &setup->RENDER_OBJECTS_AXIS);
-                if (setup->RENDER_OBJECTS_AXIS) {
-                    const float sizeAxisMin = 0;
-                    const float sizeAxisMax = 1;
-                    const float sizeAxisSens = 0.01;
-                    ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &setup->OBJECT_AXIS_SIZE, sizeAxisSens, &sizeAxisMin, &sizeAxisMax, "%f", 1.0f);
-                }
-                ImGui::Separator();
-                ImGui::Checkbox("Draw Mesh3D AABB", &setup->DRAW_MESH3D_AABB);
-                ImGui::Checkbox("Draw Mesh3D Octree", &setup->DRAW_MESH3D_OCTREE);
-                ImGui::Checkbox("Draw Mesh3D Grid", &setup->DRAW_MESH3D_GRID);
-                if (setup->DRAW_MESH3D_GRID) {
-                    ImGui::Separator();
-                    ImGui::Checkbox("Draw Test Passed Cells", &setup->DRAW_MESH3D_TEST_PASSED);
-                    ImGui::Checkbox("Draw Not Test Passed Cells", &setup->DRAW_MESH3D_TEST_NOT_PASSED);
-                    ImGui::Separator();
-                    ImGui::Checkbox("Draw AStar Travel", &setup->DRAW_MESH3D_GRID_ASTAR);
-                }
-                ImGui::Separator();
-                ImGui::Checkbox("Show FPS", &setup->DRAW_FPS_IMGUI);
-                ImGui::Checkbox("Show render FPS", &setup->DRAW_FPS_RENDER);
+                ImGui::Checkbox("Enable/disable UI (F4)", &setup->ENABLE_IMGUI);
                 ImGui::EndMenu();
             }
 
@@ -575,12 +585,39 @@ struct GUIAddonMenu
 
     static void drawGlobalIllumination()
     {
-        auto& dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->getDirectionalLight();
-
-        ImGui::DragFloat3("Light dir.", &dirLight.direction[0], 0.01f, -1.0f, 1.0f);
+        auto setup = BrakezaSetup::get();
 
         ImGui::Separator();
 
+        ImGui::Checkbox("Enable Lights System", &setup->ENABLE_LIGHTS);
+        if (setup->ENABLE_LIGHTS) {
+            ImGui::Checkbox("Enable Shadow Mapping", &setup->ENABLE_SHADOW_MAPPING);
+
+            if (setup->ENABLE_SHADOW_MAPPING) {
+                ImGui::Separator();
+                ImGui::Checkbox("ShadowMapping debug", &setup->SHADOW_MAPPING_DEBUG);
+                ImGui::Checkbox("Enable ShadowMapping in DirectionalLight", &setup->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
+                ImGui::DragFloat("DepthMaps Frustum Near plane", &setup->SHADOW_MAPPING_DEPTH_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
+                ImGui::DragFloat("DepthMaps Frustum Far plane", &setup->SHADOW_MAPPING_DEPTH_FAR_PLANE, 0.1f, 1.0f, 500.0f);
+                ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
+                ImGui::DragFloat("Shadows Intensity", &setup->SHADOW_MAPPING_INTENSITY, 0.1f, -5.0f, 5.0f);
+            }
+        }
+
+        if (setup->ENABLE_LIGHTS && setup->TRIANGLE_MODE_TEXTURIZED) {
+            ImGui::Checkbox("Depth Map", &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
+        }
+        if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
+            auto s = ComponentsManager::get()->getComponentRender()->getShaderOGLDepthMap();
+            ImGui::DragFloat("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 10.0f);
+            ImGui::DragFloat("Far Plane", &s->farPlane, 0.01f, 0.0f, 100.0f);
+            ImGui::DragFloat("Near Plane", &s->nearPlane, 0.01f, 0.0f, 100.0f);
+            ImGui::Separator();
+        }
+
+        auto& dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->getDirectionalLight();
+        ImGui::DragFloat3("Light dir.", &dirLight.direction[0], 0.01f, -1.0f, 1.0f);
+        ImGui::Separator();
         ImVec4 color = {dirLight.ambient.x, dirLight.ambient.y, dirLight.ambient.z, 1};
         bool changed_color = ImGui::ColorEdit4("Ambient##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
         if (changed_color) {
@@ -591,54 +628,10 @@ struct GUIAddonMenu
         if (changed_color) {
             dirLight.specular = {color.x, color.y, color.z};
         }
-
         color = {dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z, 1};
         changed_color = ImGui::ColorEdit4("Diffuse##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
         if (changed_color) {
             dirLight.diffuse = {color.x, color.y, color.z};
-        }
-
-        ImGui::Separator();
-
-        const float focalMinValues = 0;
-        const float focalMaxValues = 1;
-        const float focalValueSens = 0.001;
-
-        ImGui::Checkbox("Enable DOF", &BrakezaSetup::get()->ENABLE_DOF_BLUR);
-
-        if (BrakezaSetup::get()->ENABLE_DOF_BLUR) {
-            const float depthValueSens = 0.1;
-            const float depthMinValues = 0;
-            const float depthMaxValues = 100;
-            ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-            ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-
-            const int minBlurRadius = 0;
-            const int maxBlurRadius = 10;
-            ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
-            ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-            ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
-        }
-
-        ImGui::Separator();
-
-        ImGui::Checkbox("Enable FOG", &BrakezaSetup::get()->ENABLE_FOG);
-
-        if (BrakezaSetup::get()->ENABLE_FOG) {
-            const float rangeFogSens = 0.1;
-            const float rangeFogMin = 0.1;
-            const float rangeFogMax = 1000;
-            const float rangeFogIntensityMax= 1.0;
-
-            ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-            ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-            ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->intensity, rangeFogSens, &rangeFogMin, &rangeFogIntensityMax, "%f", 1.0f);
-
-            auto p = ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor;
-            ImVec4 fogVecColor = {p.r, p.b, p.b, 1};
-            if (ImGui::ColorEdit4("FOG Color##", reinterpret_cast<float *>(&fogVecColor), ImGuiColorEditFlags_NoOptions)) {
-                ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor = {fogVecColor.x, fogVecColor.y, fogVecColor.z};
-            }
         }
     }
 

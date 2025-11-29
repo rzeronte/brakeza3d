@@ -174,7 +174,7 @@ onColor,
            [&]() { BrakezaSetup::get()->ENABLE_LIGHTS = !BrakezaSetup::get()->ENABLE_LIGHTS; }
         );
 
-        if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
+        if (BrakezaSetup::get()->ENABLE_LIGHTS) {
             drawButton(
                IconsByGUI::SHADOW_MAPPING,
                BrakezaSetup::get()->ENABLE_SHADOW_MAPPING,

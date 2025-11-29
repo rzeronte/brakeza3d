@@ -99,7 +99,6 @@ private:
     void DrawImages();
     void DrawLightsDepthMapsViewerWindow();
     static void DrawKeyboardMouseSettings();
-    static void RenderFPS();
     static void DrawSplash();
 };
 
