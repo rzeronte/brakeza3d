@@ -19,18 +19,8 @@ cJSON * Object3DSerializer::JsonByObject(Object3D* o)
     cJSON_AddStringToObject(root, "name", o->getLabel().c_str());
     cJSON_AddNumberToObject(root, "scale", o->getScale());
     cJSON_AddBoolToObject(root, "enabled", o->isEnabled());
-
-    cJSON *position = cJSON_CreateObject();
-    cJSON_AddNumberToObject(position, "x", o->getPosition().x);
-    cJSON_AddNumberToObject(position, "y", o->getPosition().y);
-    cJSON_AddNumberToObject(position, "z", o->getPosition().z);
-    cJSON_AddItemToObject(root, "position", position);
-
-    cJSON *rotation = cJSON_CreateObject();
-    cJSON_AddNumberToObject(rotation, "x", o->getRotation().getPitchDegree());
-    cJSON_AddNumberToObject(rotation, "y", o->getRotation().getYawDegree());
-    cJSON_AddNumberToObject(rotation, "z", o->getRotation().getRollDegree());
-    cJSON_AddItemToObject(root, "rotation", rotation);
+    cJSON_AddItemToObject(root, "position", ToolsJSON::Vertex3DToJSON(o->getPosition()));
+    cJSON_AddItemToObject(root, "rotation", ToolsJSON::Vertex3DToJSON(o->getRotation().getVertex3DAngles()));
 
     cJSON_AddBoolToObject(root, "isCollisionsEnabled", o->isCollisionsEnabled());
     if (o->isCollisionsEnabled()) {
@@ -48,28 +38,15 @@ cJSON * Object3DSerializer::JsonByObject(Object3D* o)
         cJSON_AddNumberToObject(collider, "restitution", o->restitution);
         cJSON_AddBoolToObject(collider, "colliderStatic", o->colliderStatic);
 
-        cJSON *simpleShapeSizeJSON = cJSON_CreateObject();
-        cJSON_AddNumberToObject(simpleShapeSizeJSON, "x", o->simpleShapeSize.x);
-        cJSON_AddNumberToObject(simpleShapeSizeJSON, "y", o->simpleShapeSize.y);
-        cJSON_AddNumberToObject(simpleShapeSizeJSON, "z", o->simpleShapeSize.z);
-        cJSON_AddItemToObject(collider, "simpleShapeSize", simpleShapeSizeJSON);
+        cJSON_AddItemToObject(collider, "simpleShapeSize", ToolsJSON::Vertex3DToJSON(o->simpleShapeSize));
 
         cJSON *kinematicCapsuleSizeJSON = cJSON_CreateObject();
         cJSON_AddNumberToObject(kinematicCapsuleSizeJSON, "x", o->kinematicCapsuleSize.x);
         cJSON_AddNumberToObject(kinematicCapsuleSizeJSON, "y", o->kinematicCapsuleSize.y);
         cJSON_AddItemToObject(collider, "kinematicCapsuleSize", kinematicCapsuleSizeJSON);
 
-        cJSON *angularFactorJSON = cJSON_CreateObject();
-        cJSON_AddNumberToObject(angularFactorJSON, "x", o->angularFactor.x);
-        cJSON_AddNumberToObject(angularFactorJSON, "y", o->angularFactor.y);
-        cJSON_AddNumberToObject(angularFactorJSON, "z", o->angularFactor.z);
-        cJSON_AddItemToObject(collider, "angularFactor", angularFactorJSON);
-
-        cJSON *linearFactorJSON = cJSON_CreateObject();
-        cJSON_AddNumberToObject(linearFactorJSON, "x", o->linearFactor.x);
-        cJSON_AddNumberToObject(linearFactorJSON, "y", o->linearFactor.y);
-        cJSON_AddNumberToObject(linearFactorJSON, "z", o->linearFactor.z);
-        cJSON_AddItemToObject(collider, "linearFactor", linearFactorJSON);
+        cJSON_AddItemToObject(collider, "angularFactor", ToolsJSON::Vertex3DToJSON(o->angularFactor));
+        cJSON_AddItemToObject(collider, "linearFactor", ToolsJSON::Vertex3DToJSON(o->linearFactor));
 
         cJSON_AddItemToObject(root, "collider", collider);
     }
@@ -96,12 +73,12 @@ void Object3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
     }
 
     //Position
-    o->setPosition(ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(json, "position")));
+    o->setPosition(ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(json, "position")));
     o->setScale(static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "scale")->valuedouble));
 
     //Rotation
     if (cJSON_GetObjectItemCaseSensitive(json, "rotation") != nullptr) {
-        o->setRotation(ToolsJSON::parseRotation3DJSON(cJSON_GetObjectItemCaseSensitive(json, "rotation")));
+        o->setRotation(ToolsJSON::getRotationByJSON(cJSON_GetObjectItemCaseSensitive(json, "rotation")));
     }
 
     // Colliders
@@ -146,7 +123,7 @@ void Object3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
                 o->setAngularDamping(static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularDamping")->valuedouble));
             }
 
-            o->setSimpleShapeSize(ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(colliderJSON, "simpleShapeSize")));
+            o->setSimpleShapeSize(ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(colliderJSON, "simpleShapeSize")));
             o->setMass(static_cast<float>(cJSON_GetObjectItemCaseSensitive(colliderJSON, "mass")->valuedouble));
 
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "kinematicCapsuleSize") != nullptr) {
@@ -159,13 +136,13 @@ void Object3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
             }
 
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularFactor") != nullptr) {
-                o->angularFactor = ToolsJSON::parseVertex3DJSON(
+                o->angularFactor = ToolsJSON::getVertex3DByJSON(
                     cJSON_GetObjectItemCaseSensitive(colliderJSON, "angularFactor")
                 );
             }
 
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "linearFactor") != nullptr) {
-                o->linearFactor = ToolsJSON::parseVertex3DJSON(
+                o->linearFactor = ToolsJSON::getVertex3DByJSON(
                     cJSON_GetObjectItemCaseSensitive(colliderJSON, "linearFactor")
                 );
             }

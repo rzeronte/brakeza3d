@@ -192,9 +192,9 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, std::string folder)
             }
             ImGui::TableSetColumnIndex(2);
             if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
-                ImGui::OpenPopup("Delete shaders?");
+                ImGui::OpenPopup("Deleting shader");
             }
-            GUIManager::ShowDeletePopup("Delete shaders?", [folder, file, gui] () {
+            GUIManager::ShowDeletePopup("Deleting shader", "Are you sure to delete?", [folder, file, gui] () {
                 ShaderOGLCustom::removeCustomShaderFiles(folder,  Tools::getFilenameWithoutExtension(file));
                 FileSystemGUI::UpdateFolderFiles(gui);
             });

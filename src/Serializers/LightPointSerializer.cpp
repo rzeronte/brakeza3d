@@ -4,6 +4,7 @@
 
 #include "../../include/Serializers/LightPointSerializer.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 
 cJSON * LightPointSerializer::JsonByObject(Object3D *o)
@@ -14,23 +15,9 @@ cJSON * LightPointSerializer::JsonByObject(Object3D *o)
 
     auto root = Object3DSerializer().JsonByObject(o);
 
-    cJSON *ambientJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(ambientJSON, "x", light->ambient.x);
-    cJSON_AddNumberToObject(ambientJSON, "y", light->ambient.y);
-    cJSON_AddNumberToObject(ambientJSON, "z", light->ambient.z);
-    cJSON_AddItemToObject(root, "ambient", ambientJSON);
-
-    cJSON *diffuseJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(diffuseJSON, "x", light->diffuse.x);
-    cJSON_AddNumberToObject(diffuseJSON, "y", light->diffuse.y);
-    cJSON_AddNumberToObject(diffuseJSON, "z", light->diffuse.z);
-    cJSON_AddItemToObject(root, "diffuse", diffuseJSON);
-
-    cJSON *specularJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(specularJSON, "x", light->specular.x);
-    cJSON_AddNumberToObject(specularJSON, "y", light->specular.y);
-    cJSON_AddNumberToObject(specularJSON, "z", light->specular.z);
-    cJSON_AddItemToObject(root, "specular", specularJSON);
+    cJSON_AddItemToObject(root, "ambient", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(light->ambient)));
+    cJSON_AddItemToObject(root, "diffuse", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(light->diffuse)));
+    cJSON_AddItemToObject(root, "specular", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(light->specular)));
 
     cJSON_AddNumberToObject(root, "constant", light->constant);
     cJSON_AddNumberToObject(root, "linear", light->linear);
@@ -65,20 +52,9 @@ void LightPointSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 
     Object3DSerializer().ApplyJsonToObject(json, o);
 
-    auto ambient = cJSON_GetObjectItemCaseSensitive(json, "ambient");
-    light->ambient.x = static_cast<float>(cJSON_GetObjectItemCaseSensitive(ambient, "x")->valuedouble);
-    light->ambient.y = static_cast<float>(cJSON_GetObjectItemCaseSensitive(ambient, "y")->valuedouble);
-    light->ambient.z = static_cast<float>(cJSON_GetObjectItemCaseSensitive(ambient, "z")->valuedouble);
-
-    auto diffuse = cJSON_GetObjectItemCaseSensitive(json, "diffuse");
-    light->diffuse.x = static_cast<float>(cJSON_GetObjectItemCaseSensitive(diffuse, "x")->valuedouble);
-    light->diffuse.y = static_cast<float>(cJSON_GetObjectItemCaseSensitive(diffuse, "y")->valuedouble);
-    light->diffuse.z = static_cast<float>(cJSON_GetObjectItemCaseSensitive(diffuse, "z")->valuedouble);
-
-    auto specular = cJSON_GetObjectItemCaseSensitive(json, "specular");
-    light->specular.x = static_cast<float>(cJSON_GetObjectItemCaseSensitive(specular, "x")->valuedouble);
-    light->specular.y = static_cast<float>(cJSON_GetObjectItemCaseSensitive(specular, "y")->valuedouble);
-    light->specular.z = static_cast<float>(cJSON_GetObjectItemCaseSensitive(specular, "z")->valuedouble);
+    light->ambient = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(json, "ambient")).toGLM4();
+    light->diffuse = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(json, "diffuse")).toGLM4();
+    light->specular = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(json, "specular")).toGLM4();
 
     light->setConstant(static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "constant")->valuedouble));
     light->setLinear(static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "linear")->valuedouble));

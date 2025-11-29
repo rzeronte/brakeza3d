@@ -38,17 +38,17 @@ void SceneLoader::LoadScene(const std::string& filename)
     auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward();
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity") != nullptr) {
-        auto gravity = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity"));
+        auto gravity = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity"));
         BrakezaSetup::get()->gravity = gravity;
         ComponentsManager::get()->getComponentCollisions()->setGravity(gravity);
     }
 
     cJSON *adsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "ads");
     if (adsJSON != nullptr) {
-        auto direction = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "direction"));
-        auto ambient = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "ambient"));
-        auto diffuse = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "diffuse"));
-        auto specular = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "specular"));
+        auto direction = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "direction"));
+        auto ambient = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "ambient"));
+        auto diffuse = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "diffuse"));
+        auto specular = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "specular"));
 
         shaderRender->getDirectionalLight().direction = direction.toGLM();
         shaderRender->getDirectionalLight().ambient = ambient.toGLM();
@@ -61,12 +61,12 @@ void SceneLoader::LoadScene(const std::string& filename)
     auto cameraPositionJSON = cJSON_GetObjectItemCaseSensitive(cameraJSON, "position");
     auto cameraRotationJSON = cJSON_GetObjectItemCaseSensitive(cameraJSON, "rotation");
 
-    camera->setPosition(ToolsJSON::parseVertex3DJSON(cameraPositionJSON));
+    camera->setPosition(ToolsJSON::getVertex3DByJSON(cameraPositionJSON));
 
     Logging::Message("Camera position (%f, %f, %f)",
-        ToolsJSON::parseVertex3DJSON(cameraPositionJSON).x,
-        ToolsJSON::parseVertex3DJSON(cameraPositionJSON).y,
-        ToolsJSON::parseVertex3DJSON(cameraPositionJSON).z
+        ToolsJSON::getVertex3DByJSON(cameraPositionJSON).x,
+        ToolsJSON::getVertex3DByJSON(cameraPositionJSON).y,
+        ToolsJSON::getVertex3DByJSON(cameraPositionJSON).z
     );
 
     auto pitch = static_cast<float>(cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "x")->valuedouble);
@@ -113,40 +113,14 @@ void SceneLoader::SaveScene(const std::string &filename)
 
     auto render = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward();
 
-    // gravity
-    cJSON *gravityJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(gravityJSON, "x", BrakezaSetup::get()->gravity.x);
-    cJSON_AddNumberToObject(gravityJSON, "y", BrakezaSetup::get()->gravity.y);
-    cJSON_AddNumberToObject(gravityJSON, "z", BrakezaSetup::get()->gravity.z);
-    cJSON_AddItemToObject(root, "gravity", gravityJSON);
+    cJSON_AddItemToObject(root, "gravity", ToolsJSON::Vertex3DToJSON(BrakezaSetup::get()->gravity));
 
     // illumination ADS
     cJSON *adsJSON = cJSON_CreateObject();
-
-    cJSON *adsDirectionJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(adsDirectionJSON, "x", render->getDirectionalLight().direction.x);
-    cJSON_AddNumberToObject(adsDirectionJSON, "y", render->getDirectionalLight().direction.y);
-    cJSON_AddNumberToObject(adsDirectionJSON, "z", render->getDirectionalLight().direction.z);
-    cJSON_AddItemToObject(adsJSON, "direction", adsDirectionJSON);
-
-    cJSON *adsDiffuseJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(adsDiffuseJSON, "x", render->getDirectionalLight().diffuse.x);
-    cJSON_AddNumberToObject(adsDiffuseJSON, "y", render->getDirectionalLight().diffuse.y);
-    cJSON_AddNumberToObject(adsDiffuseJSON, "z", render->getDirectionalLight().diffuse.z);
-    cJSON_AddItemToObject(adsJSON, "diffuse", adsDiffuseJSON);
-
-    cJSON *adsSpecularJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(adsSpecularJSON, "x", render->getDirectionalLight().specular.x);
-    cJSON_AddNumberToObject(adsSpecularJSON, "y", render->getDirectionalLight().specular.y);
-    cJSON_AddNumberToObject(adsSpecularJSON, "z", render->getDirectionalLight().specular.z);
-    cJSON_AddItemToObject(adsJSON, "specular", adsSpecularJSON);
-
-    cJSON *adsAmbientJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(adsAmbientJSON, "x", render->getDirectionalLight().ambient.x);
-    cJSON_AddNumberToObject(adsAmbientJSON, "y", render->getDirectionalLight().ambient.y);
-    cJSON_AddNumberToObject(adsAmbientJSON, "z", render->getDirectionalLight().ambient.z);
-    cJSON_AddItemToObject(adsJSON, "ambient", adsAmbientJSON);
-
+    cJSON_AddItemToObject(adsJSON, "direction", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(render->getDirectionalLight().direction)));
+    cJSON_AddItemToObject(adsJSON, "diffuse", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(render->getDirectionalLight().diffuse)));
+    cJSON_AddItemToObject(adsJSON, "specular", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(render->getDirectionalLight().specular)));
+    cJSON_AddItemToObject(adsJSON, "ambient", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(render->getDirectionalLight().ambient)));
     cJSON_AddItemToObject(root, "ads", adsJSON);
 
     //Objects
@@ -180,18 +154,8 @@ void SceneLoader::SaveScene(const std::string &filename)
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     cJSON *cameraJSON = cJSON_CreateObject();
-    cJSON *positionJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(positionJSON, "x", camera->getPosition().x);
-    cJSON_AddNumberToObject(positionJSON, "y", camera->getPosition().y);
-    cJSON_AddNumberToObject(positionJSON, "z", camera->getPosition().z);
-    cJSON_AddItemToObject(cameraJSON, "position", positionJSON);
-
-    cJSON *rotationJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(rotationJSON, "x", camera->getPitch());
-    cJSON_AddNumberToObject(rotationJSON, "y", camera->getYaw());
-    cJSON_AddNumberToObject(rotationJSON, "z", camera->getRoll());
-    cJSON_AddItemToObject(cameraJSON, "rotation", rotationJSON);
-
+    cJSON_AddItemToObject(cameraJSON, "position", ToolsJSON::Vertex3DToJSON(camera->getPosition()));
+    cJSON_AddItemToObject(cameraJSON, "rotation", ToolsJSON::Vertex3DToJSON(Vertex3D(camera->getPitch(), camera->getYaw(), camera->getRoll())));
     cJSON_AddItemToObject(root, "camera", cameraJSON);
 
     Tools::writeToFile(filename, cJSON_Print(root));

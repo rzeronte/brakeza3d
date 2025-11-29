@@ -28,7 +28,6 @@ cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
     }
     cJSON_AddItemToObject(root, "shaders", effectsArrayJSON);
 
-
     // grid
     if (mesh->grid != nullptr) {
         cJSON_AddItemToObject(root, "grid", mesh->grid->getJSON());

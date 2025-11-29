@@ -84,7 +84,7 @@ public:
     TexturePackage &getImGuiTextures();
     [[nodiscard]] GuiAddonConsole *getConsole() const;
     [[nodiscard]] bool isShowLightsDepthMapsViewerWindow() const;
-    static void ShowDeletePopup(const char* title, const std::function<void()>& onConfirm);
+    static void ShowDeletePopup(const char* title, const char *message, const std::function<void()>& onConfirm);
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
 

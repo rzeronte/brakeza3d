@@ -6,9 +6,6 @@
 #include "../../include/Render/Maths.h"
 #include "../../include/Components/ComponentsManager.h"
 
-Image::Image()
-{
-}
 
 Image::Image(const std::string& filename)
 {

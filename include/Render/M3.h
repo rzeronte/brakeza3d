@@ -87,6 +87,8 @@ public:
     glm::mat3 toGLMMat3();
 
     static void normalize(M3 &matrix);
+
+    Vertex3D getVertex3DAngles();
 };
 
 

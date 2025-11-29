@@ -62,11 +62,11 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, const std::string& folder)
                 }
                 ImGui::SameLine();
                 if (ImGui::ImageButton(IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
-                    ImGui::OpenPopup("Delete Project?");
+                    ImGui::OpenPopup("Deleting project");
                 }
-                gui->ShowDeletePopup("Delete Project?", [folder, file, gui] () {
+                gui->ShowDeletePopup("Deleting project", "Are you sure to delete?", [folder, file, gui] () {
                     ProjectLoader::removeProject(folder + file);
-                    FileSystemGUI::UpdateFolderFiles(gui);
+                    UpdateFolderFiles(gui);
                 });
 
             }
@@ -130,15 +130,19 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, const std::string& folder)
                 }
                 ImGui::SameLine();
                 if (ImGui::ImageButton(IconTag(IconsByGUI::SAVE), ImVec2(14, 14))) {
-                    SceneLoader::SaveScene(folder + file);
+                    ImGui::OpenPopup("Overriding scene");
                 }
+                GUIManager::ShowDeletePopup("Overriding scene", "Are you sure to override?", [folder, file, gui] () {
+                    SceneLoader::SaveScene(folder + file);
+                });
+
                 ImGui::SameLine();
                 if (ImGui::ImageButton(IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
-                    ImGui::OpenPopup("Delete Scene?");
+                    ImGui::OpenPopup("Deleting scene");
                 }
-                gui->ShowDeletePopup("Delete Scene?", [folder, file, gui] () {
+                gui->ShowDeletePopup("Deleting scene", "Are you sure to delete?", [folder, file, gui] () {
                     SceneLoader::RemoveScene(folder + file);
-                    FileSystemGUI::UpdateFolderFiles(gui);
+                    UpdateFolderFiles(gui);
                 });
             }
             ImGui::PopID();

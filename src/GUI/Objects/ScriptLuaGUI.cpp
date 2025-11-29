@@ -173,9 +173,9 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, const std::string&
             }
             ImGui::TableSetColumnIndex(1);
             if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
-                ImGui::OpenPopup("Delete Script?");
+                ImGui::OpenPopup("Deleting script");
             }
-            GUIManager::ShowDeletePopup("Delete Script?", [folder, file, gui] () {
+            GUIManager::ShowDeletePopup("Deleting script", "Are you sure to delete?", [folder, file, gui] () {
                 ComponentScripting::removeScriptLUAFile(folder + file);
                 FileSystemGUI::UpdateFolderFiles(gui);
             });

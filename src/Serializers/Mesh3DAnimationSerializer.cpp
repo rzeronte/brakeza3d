@@ -4,6 +4,7 @@
 
 #include "../include/Serializers/Mesh3DAnimationSerializer.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 
 cJSON* Mesh3DAnimationSerializer::JsonByObject(Object3D *o)
@@ -35,17 +36,9 @@ cJSON* Mesh3DAnimationSerializer::JsonByObject(Object3D *o)
             cJSON_AddBoolToObject(boneInfoColliderJSON, "enabled", boneInfoCollider.enabled);
             cJSON_AddNumberToObject(boneInfoColliderJSON, "shape", boneInfoCollider.shape);
 
-            cJSON *position = cJSON_CreateObject();
-            cJSON_AddNumberToObject(position, "x", boneInfoCollider.position.x);
-            cJSON_AddNumberToObject(position, "y", boneInfoCollider.position.y);
-            cJSON_AddNumberToObject(position, "z", boneInfoCollider.position.z);
-            cJSON_AddItemToObject(boneInfoColliderJSON, "position", position);
 
-            cJSON *size = cJSON_CreateObject();
-            cJSON_AddNumberToObject(size, "x", boneInfoCollider.size.x);
-            cJSON_AddNumberToObject(size, "y", boneInfoCollider.size.y);
-            cJSON_AddNumberToObject(size, "z", boneInfoCollider.size.z);
-            cJSON_AddItemToObject(boneInfoColliderJSON, "size", size);
+            cJSON_AddItemToObject(boneInfoColliderJSON, "position", ToolsJSON::Vertex3DToJSON(boneInfoCollider.position));
+            cJSON_AddItemToObject(boneInfoColliderJSON, "size", ToolsJSON::Vertex3DToJSON(boneInfoCollider.size));
 
             cJSON_AddItemToArray(bonesInfoJSON, boneInfoColliderJSON);
         }
