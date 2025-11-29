@@ -376,8 +376,9 @@ struct GUIAddonMenu
 
             if (ImGui::BeginMenu("Logging")) {
                 ImGui::Checkbox("Output to Console", &setup->ENABLE_LOGGING);
+                ImGui::Checkbox("Output to STD", &setup->ENABLE_LOGGING_STD);
                 ImGui::Separator();
-                ImGui::Checkbox("Log collisions", &setup->LOG_COLLISION_OBJECTS);
+                ImGui::Checkbox("Log collider collisions", &setup->LOG_COLLISION_OBJECTS);
                 ImGui::EndMenu();
             }
 
@@ -620,8 +621,9 @@ struct GUIAddonMenu
         if (changed_color) {
             dirLight.diffuse = {color.x, color.y, color.z};
         }
+        ImGui::Separator();
         if (setup->ENABLE_LIGHTS && setup->TRIANGLE_MODE_TEXTURIZED) {
-            ImGui::Checkbox("Depth Map", &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
+            ImGui::Checkbox("Show Depth Map", &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
         }
         if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
             auto s = ComponentsManager::get()->getComponentRender()->getShaderOGLDepthMap();
@@ -630,8 +632,6 @@ struct GUIAddonMenu
             ImGui::DragFloat("Near Plane", &s->nearPlane, 0.01f, 0.0f, 100.0f);
             ImGui::Separator();
         }
-        ImGui::Separator();
-
     }
 
     static void drawCameraSettings()
