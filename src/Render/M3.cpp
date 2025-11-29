@@ -300,3 +300,8 @@ void M3::normalize(M3& matrix)
     matrix.setY(yAxis.x, yAxis.y, yAxis.z);
     matrix.setZ(zAxis.x, zAxis.y, zAxis.z);
 }
+
+Vertex3D M3::getVertex3DAngles()
+{
+    return Vertex3D(getPitchDegree(), getYawDegree(), getRollDegree());
+}

@@ -252,13 +252,13 @@ void GUIManager::setSelectedObject(const Object3D *s)
     }
 }
 
-void GUIManager::ShowDeletePopup(const char* title, const std::function<void()>& onConfirm)
+void GUIManager::ShowDeletePopup(const char* title, const char *message, const std::function<void()>& onConfirm)
 {
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
     if (ImGui::BeginPopupModal(title, nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("Are you sure to delete !?!?");
+        ImGui::Text(message);
         ImGui::Separator();
 
         if (ImGui::Button("OK", ImVec2(120, 0))) {

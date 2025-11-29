@@ -146,7 +146,7 @@ void ScriptLUA::addDataType(const char *name, const char *type, cJSON *value)
             break;
         }
         case BrakezaSetup::LUADataType::VERTEX3D: {
-            LUAValue = ToolsJSON::parseVertex3DJSON(value);
+            LUAValue = ToolsJSON::getVertex3DByJSON(value);
             break;
         }
         default:
@@ -331,12 +331,9 @@ cJSON *ScriptLUA::getTypesJSON() const
                 break;
             }
             case BrakezaSetup::LUADataType::VERTEX3D: {
-                cJSON *vertexJSON = cJSON_CreateObject();
                 auto valueVertex = std::get<Vertex3D>(dataType.value);
-                cJSON_AddNumberToObject(vertexJSON, "x", valueVertex.x);
-                cJSON_AddNumberToObject(vertexJSON, "y", valueVertex.y);
-                cJSON_AddNumberToObject(vertexJSON, "z", valueVertex.z);
-                cJSON_AddItemToObject(typeJSON, "value", vertexJSON);
+                cJSON_AddItemToObject(typeJSON, "value", ToolsJSON::Vertex3DToJSON(valueVertex));
+
                 break;
             }
             default:

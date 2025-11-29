@@ -5,7 +5,6 @@
 #ifndef BRAKEDA3D_IMAGE_H
 #define BRAKEDA3D_IMAGE_H
 
-
 #include <string>
 #include <SDL2/SDL_surface.h>
 #include <GL/glew.h>
@@ -20,7 +19,6 @@ class Image {
     SDL_Surface *surface = nullptr;
     SDL_Texture *texture = nullptr;
 public:
-    Image();
     virtual ~Image();
     Image(SDL_Surface *surface, SDL_Texture *texture);
     explicit Image(const std::string& filename);

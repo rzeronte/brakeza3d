@@ -4,6 +4,7 @@
 
 #ifndef BRAKEZA3D_SCENEOBJECTTYPES_H
 #define BRAKEZA3D_SCENEOBJECTTYPES_H
+
 #include <cstring>
 
 enum class SceneObjectLoaderMapping {
@@ -100,51 +101,47 @@ inline const char* getSceneObjectTypeName(SceneObjectLoaderMapping type) {
 }
 
 namespace IconsByGUI {
-
-    enum class Icons {
-
-    };
-    inline constexpr const char* FOLDER = "folderIcon";
-    inline constexpr const char* PLAY = "playIcon";
-    inline constexpr const char* STOP = "stopIcon";
-    inline constexpr const char* RELOAD = "reloadIcon";
-    inline constexpr const char* REMOVE = "removeIcon";
-    inline constexpr const char* PAUSE = "pauseIcon";
-    inline constexpr const char* LOCK = "lockIcon";
-    inline constexpr const char* UNLOCK = "unlockIcon";
-    inline constexpr const char* ADD = "addIcon";
-    inline constexpr const char* SCENE = "sceneIcon";
-    inline constexpr const char* SAVE = "saveIcon";
-    inline constexpr const char* GEAR = "gearIcon";
-    inline constexpr const char* GHOST = "ghostIcon";
-    inline constexpr const char* SHADER = "shaderIcon";
-    inline constexpr const char* SPOTLIGHT = "spotLightIcon";
-    inline constexpr const char* PARTICLES = "particlesIcon";
-    inline constexpr const char* GRAVITY = "gravityIcon";
-    inline constexpr const char* CLICK = "clickIcon";
-    inline constexpr const char* DRAW_COLLIDERS = "drawCollidersIcon";
-    inline constexpr const char* TARGET = "targetIcon";
-    inline constexpr const char* MOUSE_LOOK = "mouseLookIcon";
-    inline constexpr const char* LAYOUT_DEFAULT = "layoutDefaultIcon";
-    inline constexpr const char* LAYOUT_CODING = "layoutCodingIcon";
-    inline constexpr const char* LAYOUT_DESIGN = "layoutDesignIcon";
-    inline constexpr const char* PROJECT = "projectIcon";
-    inline constexpr const char* OPEN = "openIcon";
-    inline constexpr const char* GUI = "guiIcon";
-    inline constexpr const char* TEXTURE = "textureIcon";
-    inline constexpr const char* TRANSLATE = "translateIcon";
-    inline constexpr const char* ROTATE = "rotateIcon";
-    inline constexpr const char* SCALE = "scaleIcon";
-    inline constexpr const char* SCRIPT = "scriptIcon";
-    inline constexpr const char* PLAYER = "playerIcon";
-    inline constexpr const char* REBUILD = "rebuildIcon";
-    inline constexpr const char* SPLASH = "splashImage";
-    inline constexpr const char* LIGHT_SYSTEM = "LightSystemIcon";
-    inline constexpr const char* SHADOW_MAPPING = "ShadowMappingIcon";
-    inline constexpr const char* RENDER_TEXTURE = "RenderTextureIcon";
-    inline constexpr const char* RENDER_PIXELS = "RenderPixelsIcon";
-    inline constexpr const char* RENDER_SHADING = "RenderShadingIcon";
-    inline constexpr const char* RENDER_WIRE = "RenderWireIcon";
+    inline constexpr const char* FOLDER = "folder";
+    inline constexpr const char* PLAY = "play";
+    inline constexpr const char* STOP = "stop";
+    inline constexpr const char* RELOAD = "reload";
+    inline constexpr const char* REMOVE = "remove";
+    inline constexpr const char* PAUSE = "pause";
+    inline constexpr const char* LOCK = "lock";
+    inline constexpr const char* UNLOCK = "unlock";
+    inline constexpr const char* ADD = "add";
+    inline constexpr const char* SCENE = "scene";
+    inline constexpr const char* SAVE = "save";
+    inline constexpr const char* GEAR = "gear";
+    inline constexpr const char* GHOST = "ghost";
+    inline constexpr const char* SHADER = "shader";
+    inline constexpr const char* SPOTLIGHT = "spotlight";
+    inline constexpr const char* PARTICLES = "particles";
+    inline constexpr const char* GRAVITY = "gravity";
+    inline constexpr const char* CLICK = "click";
+    inline constexpr const char* DRAW_COLLIDERS = "drawColliders";
+    inline constexpr const char* TARGET = "target";
+    inline constexpr const char* MOUSE_LOOK = "mouseLook";
+    inline constexpr const char* LAYOUT_DEFAULT = "layoutDefault";
+    inline constexpr const char* LAYOUT_CODING = "layoutCoding";
+    inline constexpr const char* LAYOUT_DESIGN = "layoutDesign";
+    inline constexpr const char* PROJECT = "project";
+    inline constexpr const char* OPEN = "open";
+    inline constexpr const char* GUI = "gui";
+    inline constexpr const char* TEXTURE = "texture";
+    inline constexpr const char* TRANSLATE = "translate";
+    inline constexpr const char* ROTATE = "rotate";
+    inline constexpr const char* SCALE = "scale";
+    inline constexpr const char* SCRIPT = "script";
+    inline constexpr const char* PLAYER = "player";
+    inline constexpr const char* REBUILD = "rebuild";
+    inline constexpr const char* SPLASH = "splash";
+    inline constexpr const char* LIGHT_SYSTEM = "lightSystem";
+    inline constexpr const char* SHADOW_MAPPING = "shadowMapping";
+    inline constexpr const char* RENDER_TEXTURE = "renderTexture";
+    inline constexpr const char* RENDER_PIXELS = "renderPixels";
+    inline constexpr const char* RENDER_SHADING = "renderShading";
+    inline constexpr const char* RENDER_WIRE = "renderWire";
 
     struct IconMapping {
         const char* id;

@@ -95,19 +95,8 @@ void ParticleEmmitterSerializer::ApplyJsonToObject(const cJSON *json, Object3D *
 
     emitter->setContext(context);
 
-    Color colorFrom;
-    auto colorFromJSON = cJSON_GetObjectItemCaseSensitive(json, "colorFrom");
-    colorFrom.r = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colorFromJSON, "r")->valuedouble);
-    colorFrom.g = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colorFromJSON, "g")->valuedouble);
-    colorFrom.b = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colorFromJSON, "b")->valuedouble);
-    emitter->setColorFrom(colorFrom);
-
-    Color colorTo;
-    auto colorToJSON = cJSON_GetObjectItemCaseSensitive(json, "colorTo");
-    colorFrom.r = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colorToJSON, "r")->valuedouble);
-    colorFrom.g = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colorToJSON, "g")->valuedouble);
-    colorFrom.b = static_cast<float>(cJSON_GetObjectItemCaseSensitive(colorToJSON, "b")->valuedouble);
-    emitter->setColorTo(colorTo);
+    emitter->setColorFrom(ToolsJSON::getColorByJSON(cJSON_GetObjectItemCaseSensitive(json, "colorFrom")));
+    emitter->setColorTo(ToolsJSON::getColorByJSON(cJSON_GetObjectItemCaseSensitive(json, "colorTo")));
 
     if (cJSON_GetObjectItemCaseSensitive(json, "texture")) {
         emitter->setTexture(new Image(cJSON_GetObjectItemCaseSensitive(json, "texture")->valuestring));

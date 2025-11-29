@@ -14,10 +14,13 @@
 class ToolsJSON {
 
 public:
-    static Color parseColorJSON(cJSON *color);
+    static Color getColorByJSON(cJSON *color);
     static cJSON* ColorToJSON(const Color &color);
-    static Vertex3D parseVertex3DJSON(cJSON *vertex3DJSON);
-    static M3 parseRotation3DJSON(cJSON *rotationJSON);
+
+    static cJSON *Vertex3DToJSON(const Vertex3D &v);
+
+    static Vertex3D getVertex3DByJSON(cJSON *vertex3DJSON);
+    static M3 getRotationByJSON(cJSON *rotationJSON);
 };
 
 
