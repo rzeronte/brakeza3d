@@ -12,7 +12,6 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza.h"
-#include "../../include/2D/Image2DAnimation.h"
 #include "../../include/3D/Mesh3DAnimation.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -60,7 +59,7 @@ float Tools::getYTextureFromUV(SDL_Surface *surface, float v)
     return surface->h * v;
 }
 
-bool Tools::fileExists(const char *name)
+bool Tools::FileExists(const char *name)
 {
     if (FILE *file = fopen(name, "r")) {
         fclose(file);
@@ -72,9 +71,9 @@ bool Tools::fileExists(const char *name)
     return false;
 }
 
-char *Tools::readFile(const std::string &name, size_t &source_size)
+char *Tools::ReadFile(const std::string &name, size_t &source_size)
 {
-    printf("Reading file: %s\r\n", name.c_str());
+    Logging::Message("[Tools] Reading file: %s", name.c_str());
 
     FILE *fp;
 
@@ -104,8 +103,7 @@ char *Tools::readFile(const std::string &name, size_t &source_size)
     }
 
     if (fread(file_str, 1, source_size, fp) != source_size) {
-        Logging::Message("Error reading file %s!", name.c_str());
-        std::cout << "Error reading file :" << name.c_str() << std::endl;
+        Logging::Message("[Tools] Error reading file %s!", name.c_str());
         fclose(fp);
         free(file_str);
         return nullptr;
@@ -118,25 +116,9 @@ char *Tools::readFile(const std::string &name, size_t &source_size)
     return file_str;
 }
 
-float Tools::interpolate(float val, float bound_left, float bound_right)
-{
-    float Ax = val;                   // componente X de nuestro vértice en PANTALLA2D
-    float vNLx = bound_left;          // Límite Izquierdo de PANTALLA2D
-    float vNRx = bound_right;         // Límite Derecho de PANTALLA2D
-    float tx0 = (Ax - vNLx);          // Distancia entre el límite Izquierdo y nuestro vértice
-    float tx1 = 1 / (vNRx - vNLx);    // Multiplicador (para 2 unidades, rango [0,2])
-    float xt = (tx0 * tx1) - 1;       // Calculamos el valor entre el rango [0,2], finalmente resta uno, tenemos [-1, 1]
-
-    return xt;
-}
-
 bool Tools::getBit(unsigned char byte, int position) // position in range 0-7
 {
     return (byte >> position) & 0x1;
-}
-
-float Tools::clamp(float n, float lower, float upper) {
-    return std::max(lower, std::min(n, upper));
 }
 
 int Tools::random(int min, int max) //range : [min, max)
@@ -197,7 +179,7 @@ Color Tools::alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha)
     return Color((rb & 0xff00ff) | (g & 0xff00));
 }
 
-Color Tools::mixColor(Color a, Color b, float f)
+Color Tools::MixColor(Color a, Color b, float f)
 {
     return (a * (1.0f - f)) + (b * f);
 }
@@ -236,15 +218,6 @@ btTransform Tools::GLMMatrixToBulletTransform(const glm::mat4& glmMatrix)
     return bulletTransform;
 }
 
-float Tools::percentage(int value, int total)
-{
-    if (total == 0) {
-        return 0;
-    }
-
-    return (float) ((float) value * 100 / (float) total);
-}
-
 std::string Tools::getExtensionFromFilename(const std::string& filename)
 {
     size_t dotPosition = filename.find_last_of(".");
@@ -265,7 +238,7 @@ std::string Tools::getFilenameWithoutExtension(const std::string& filename)
     return filename;
 }
 
-void Tools::writeToFile(const std::string& fileName, const char *content)
+void Tools::WriteToFile(const std::string& fileName, const char *content)
 {
     Logging::Message("Writing to file %s!", fileName.c_str());
 
@@ -292,17 +265,11 @@ void Tools::writeToFile(const std::string& fileName, const char *content)
     }
 }
 
-Vertex3D Tools::screenToWorld(
-        float x,
-        float y,
-        float screenWidth,
-        float screenHeight,
-        const glm::mat4& projectionMatrix,
-        const glm::mat4& viewMatrix)
+Vertex3D Tools::screenToWorld(float x, float y, float width, float height, const glm::mat4& projection,const glm::mat4& view)
 {
     // Escalar las coordenadas de pantalla a las dimensiones deseadas (de 0 a 1)
-    float normalizedX = x / screenWidth;
-    float normalizedY = 1.0f - y / screenHeight;
+    float normalizedX = x / width;
+    float normalizedY = 1.0f - y / height;
 
     // Mapear las coordenadas normalizadas al espacio de la cámara
     float viewX = normalizedX * 2.0f - 1.0f;
@@ -312,7 +279,7 @@ Vertex3D Tools::screenToWorld(
     glm::vec4 clipCoords(viewX, viewY, -1.0f, 1.0f);
 
     // Obtener la matriz inversa de la matriz de proyección
-    glm::mat4 inverseProjection = glm::inverse(projectionMatrix);
+    glm::mat4 inverseProjection = glm::inverse(projection);
 
     // Obtener las coordenadas de vista
     glm::vec4 eyeCoords = inverseProjection * clipCoords;
@@ -320,7 +287,7 @@ Vertex3D Tools::screenToWorld(
     eyeCoords.w = 1.0f;
 
     // Obtener la matriz inversa de la matriz de vista
-    glm::mat4 inverseView = glm::inverse(viewMatrix);
+    glm::mat4 inverseView = glm::inverse(view);
 
     // Obtener las coordenadas del mundo
     glm::vec4 rayWorld = inverseView * eyeCoords;
@@ -445,28 +412,7 @@ std::string Tools::GoBackFromFolder(const std::string& folder)
     return path.string() + "/";
 }
 
-void Tools::ImGuiVertex3D(
-    const char *label,
-    const char *labelX,
-    const char *labelY,
-    const char *labelZ,
-    void *data,
-    float sensibility,
-    float min,
-    float max
-)
-{
-    auto v = (Vertex3D *) data;
-
-    if (ImGui::TreeNode(label)) {
-        ImGui::DragScalar(labelX, ImGuiDataType_Float, &v->x, sensibility ,&min, &max, "%f", 1.0f);
-        ImGui::DragScalar(labelY, ImGuiDataType_Float, &v->y, sensibility ,&min, &max, "%f", 1.0f);
-        ImGui::DragScalar(labelZ, ImGuiDataType_Float, &v->z, sensibility ,&min, &max, "%f", 1.0f);
-        ImGui::TreePop();
-    }
-}
-
-bool Tools::removeFile(const std::string& filePath)
+bool Tools::RemoveFile(const std::string& filePath)
 {
     if (std::remove(filePath.c_str()) == 0) {
         return true;
@@ -485,7 +431,7 @@ std::string Tools::removeSubstring(const std::string& str, const std::string& to
     return result;
 }
 
-bool Tools::copyFile(const std::string& origen, const std::string& destino)
+bool Tools::CopyFile(const std::string& origen, const std::string& destino)
 {
     std::ifstream archivoOrigen(origen, std::ios::binary);
     std::ofstream archivoDestino(destino, std::ios::binary);

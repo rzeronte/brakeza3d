@@ -1,14 +1,14 @@
 
 #include <glm/ext/matrix_transform.hpp>
-#include "../../include/Render/Maths.h"
+#include "../../include/Misc/ToolsMaths.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/Render/Transforms.h"
 
-float Maths::degreesToRadians(float angleDegrees) {
+float ToolsMaths::DegreesToRadians(float angleDegrees) {
     return angleDegrees * static_cast<float>(M_PI) / 180.0f;
 }
 
-float Maths::radiansToDegrees(float angleRadians) {
+float ToolsMaths::RadiansToDegrees(float angleRadians) {
     return angleRadians * 180.0f / static_cast<float>(M_PI);
 }
 
@@ -18,7 +18,8 @@ float Maths::radiansToDegrees(float angleRadians) {
  * 2 = vértice A dentro
  * 3 = vértice B dentro
  */
-int Maths::isVector3DClippingPlane(Plane &P, Vector3D &V) {
+int ToolsMaths::isVector3DClippingPlane(const Plane &P, const Vector3D &V)
+{
     BrakezaSetup *SETUP = BrakezaSetup::get();
 
     float distanceV1 = P.distance(V.vertex1);
@@ -39,18 +40,19 @@ int Maths::isVector3DClippingPlane(Plane &P, Vector3D &V) {
     return 0;
 }
 
-float Maths::distanceBetweenVertices(Vertex3D v1, Vertex3D v2) {
+float ToolsMaths::distanceBetweenVertices(const Vertex3D &v1, const Vertex3D &v2)
+{
     return sqrtf((v2.x - v1.x) * (v2.x - v1.x) + (v2.y - v1.y) * (v2.y - v1.y) + (v2.z - v1.z) * (v2.z - v1.z));
 }
 
-float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *object, Camera3D *cam) {
+float ToolsMaths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *object, Camera3D *cam) {
     Vertex3D a = cam->getPosition() - object->getPosition();
     Vertex3D b = object->getRotation() * BrakezaSetup::get()->forward;
 
     a = a.getNormalize();
 
     float theta = acos(a * b);
-    theta = radiansToDegrees(theta);
+    theta = RadiansToDegrees(theta);
 
     if (a.x * a.z < 0) {
         theta = 360.0f - theta;
@@ -59,7 +61,7 @@ float Maths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *object, Camera
     return theta;
 }
 
-bool Maths::sameSide(const Vertex3D &p1, const Vertex3D &p2, const Vertex3D &a, const Vertex3D &b)
+bool ToolsMaths::isSameSide(const Vertex3D &p1, const Vertex3D &p2, const Vertex3D &a, const Vertex3D &b)
 {
     Vertex3D cp1 = (b - a) % (p1 - a);
     Vertex3D cp2 = (b - a) % (p2 - a);
@@ -71,19 +73,19 @@ bool Maths::sameSide(const Vertex3D &p1, const Vertex3D &p2, const Vertex3D &a, 
     return false;
 }
 
-bool Maths::PointInTriangle(Vertex3D p, Vertex3D a, Vertex3D b, Vertex3D c)
+bool ToolsMaths::PointInTriangle(const Vertex3D &p, const Vertex3D &a, const Vertex3D &b, const Vertex3D &c)
 {
-    return sameSide(p, a, b, c) && sameSide(p, b, a, c) && sameSide(p, c, a, b);
+    return isSameSide(p, a, b, c) && isSameSide(p, b, a, c) && isSameSide(p, c, a, b);
 }
 
-float Maths::TriangleArea(float dX0, float dY0, float dX1, float dY1, float dX2, float dY2)
+float ToolsMaths::TriangleArea(float dX0, float dY0, float dX1, float dY1, float dX2, float dY2)
 {
     float area = ((dX1 - dX0) * (dY2 - dY0) - (dX2 - dX0) * (dY1 - dY0)) / 2;
 
     return abs(area);
 }
 
-float Maths::normalizeToRange(float value, float min, float max)
+float ToolsMaths::NormalizeToRange(float value, float min, float max)
 {
     if (max - min == 0) {
         return 0;
@@ -92,7 +94,7 @@ float Maths::normalizeToRange(float value, float min, float max)
     return (value - min) / (max - min);
 }
 
-float Maths::sqrt1(const float &n)
+float ToolsMaths::sqrt1(const float &n)
 {
     static union {
         int i;
@@ -102,13 +104,13 @@ float Maths::sqrt1(const float &n)
     return (3 - n * u.f * u.f) * n * u.f * 0.5f;
 }
 
-Vertex3D Maths::getHalfwayVector(Vertex3D a, Vertex3D b)
+Vertex3D ToolsMaths::getHalfwayVector(const Vertex3D &a, const Vertex3D &b)
 {
     return (a.getNormalize() + b.getNormalize()).getNormalize();
 }
 
 // Rotar el objeto sobre un eje local
-glm::mat3 Maths::RotateOnAxis(glm::mat3 originalRotation, float angle, glm::vec3 axis)
+glm::mat3 ToolsMaths::RotateOnAxis(const glm::mat3 &originalRotation, float angle, glm::vec3 axis)
 {
     // Crear una matriz de rotación 4x4
     auto rotation4x4 = glm::mat4(originalRotation); // Convertir 3x3 a 4x4
@@ -121,7 +123,7 @@ glm::mat3 Maths::RotateOnAxis(glm::mat3 originalRotation, float angle, glm::vec3
     return glm::mat3(rotation4x4);
 }
 
-bool Maths::isTriangleIntersectingAABB(Triangle &triangle, AABB3D &box)
+bool ToolsMaths::isTriangleIntersectingAABB(const Triangle &triangle, const AABB3D &box)
 {
     Vertex3D boxCenter = box.getCenter();
     Vertex3D boxHalfSize = (box.max - box.min).getScaled(0.5);
@@ -165,4 +167,30 @@ bool Maths::isTriangleIntersectingAABB(Triangle &triangle, AABB3D &box)
     }
 
     return true;
+}
+
+float ToolsMaths::Interpolate(float val, float bound_left, float bound_right)
+{
+    float Ax = val;                   // componente X de nuestro vértice en PANTALLA2D
+    float vNLx = bound_left;          // Límite Izquierdo de PANTALLA2D
+    float vNRx = bound_right;         // Límite Derecho de PANTALLA2D
+    float tx0 = (Ax - vNLx);          // Distancia entre el límite Izquierdo y nuestro vértice
+    float tx1 = 1 / (vNRx - vNLx);    // Multiplicador (para 2 unidades, rango [0,2])
+    float xt = (tx0 * tx1) - 1;       // Calculamos el valor entre el rango [0,2], finalmente resta uno, tenemos [-1, 1]
+
+    return xt;
+}
+
+float ToolsMaths::Clamp(float n, float lower, float upper)
+{
+    return std::max(lower, std::min(n, upper));
+}
+
+float ToolsMaths::Percentage(int value, int total)
+{
+    if (total == 0) {
+        return 0;
+    }
+
+    return (float) (value * 100 / total);
 }

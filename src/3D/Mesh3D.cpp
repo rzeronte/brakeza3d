@@ -62,7 +62,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     Logging::Message("[Mesh3D] Loading geometry for %s...", fileName.c_str());
     std::cout << "AssimpLoadGeometryFromFile: " << fileName.c_str() << std::endl;
 
-    if (!Tools::fileExists(fileName.c_str())) {
+    if (!Tools::FileExists(fileName.c_str())) {
         Logging::Message("[error] Error import 3D file not exist");
         std::cout << "Error import 3D file not exist" << std::endl;
         return;
@@ -90,7 +90,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 
     sourceFile = fileName;
 
-    ComponentsManager::get()->getComponentRender()->FillOGLBuffers(meshes);
+    ComponentRender::FillOGLBuffers(meshes);
 }
 
 void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
@@ -128,12 +128,12 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
     }
 }
 
-void Mesh3D::ProcessNodes(const aiScene *scene, aiNode *node)
+void Mesh3D::ProcessNodes(const aiScene *scene, const aiNode *node)
 {
     unsigned int numMeshes = node->mNumMeshes;
 
     for (unsigned int x = 0; x < numMeshes; x++) {
-        int idMesh = node->mMeshes[x];
+        int idMesh = (int) node->mMeshes[x];
         this->LoadMesh(idMesh, scene->mMeshes[idMesh]);
     }
 
@@ -142,7 +142,7 @@ void Mesh3D::ProcessNodes(const aiScene *scene, aiNode *node)
     }
 }
 
-void Mesh3D::LoadMesh(int meshId, aiMesh *mesh)
+void Mesh3D::LoadMesh(int meshId, const aiMesh *mesh)
 {
     Logging::Message("[Mesh3D] Loading mesh: %d |  Vertices: %d", meshId, mesh->mNumVertices);
 
@@ -151,7 +151,7 @@ void Mesh3D::LoadMesh(int meshId, aiMesh *mesh)
         return;
     }
 
-    meshes[meshId].materialIndex = mesh->mMaterialIndex;
+    meshes[meshId].materialIndex = (int) mesh->mMaterialIndex;
 
     const aiVector3D Zero3D(0.0f, 0.0f, 0.0f);
 
@@ -206,7 +206,7 @@ void Mesh3D::onUpdate()
         if (BrakezaSetup::get()->ENABLE_LIGHTS) {
             render->getShaderOGLRenderDeferred()->renderMesh(this, false, window->getGBuffer().FBO);
             if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
-                shadowMappingPass();
+                ShadowMappingPass();
             }
         } else {
             render->getShaderOGLRenderForward()->renderMesh(this, false, sceneFramebuffer);
@@ -226,7 +226,7 @@ void Mesh3D::onUpdate()
     }
 
     if (BrakezaSetup::get()->DRAW_MESH3D_AABB && isRender()) {
-        updateBoundingBox();
+        UpdateBoundingBox();
         Drawable::drawAABB(&aabb, Color::white());
     }
 
@@ -262,9 +262,9 @@ void Mesh3D::buildOctree(int depth)
 {
     Logging::Message("Building Octree for %s", getLabel().c_str());
 
-    updateBoundingBox();
+    UpdateBoundingBox();
 
-    if (octree != nullptr) delete octree;
+    delete octree;
 
     octree = new Octree(aabb, depth);
 }
@@ -357,7 +357,7 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
 {
     auto *convexHullShape = new btConvexHullShape();
 
-    updateBoundingBox();
+    UpdateBoundingBox();
     for (auto &m: meshes) {
         for (auto & modelTriangle : m.modelTriangles) {
             btVector3 a, b, c;
@@ -378,7 +378,7 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 }
 
-void Mesh3D::setupGhostCollider(CollisionShape modeShape) {
+void Mesh3D::SetupGhostCollider(CollisionShape modeShape) {
     Logging::Message("[Mesh3D] setupGhostCollider for %s", getLabel().c_str());
 
     removeCollisionObject();
@@ -414,7 +414,7 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
     setCollisionShape(modeShape);
     setCollisionMode(BODY);
     if (getCollisionShape() == SIMPLE_SHAPE || getCollisionShape() == CAPSULE) {
-        makeSimpleRigidBody(
+        MakeSimpleRigidBody(
             mass,
             Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
             btBroadphaseProxy::DefaultFilter,
@@ -458,7 +458,7 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
                     switch (n) {
                         case 0: {
                             if (collisionMode == GHOST) {
-                                setupGhostCollider(SIMPLE_SHAPE);
+                                SetupGhostCollider(SIMPLE_SHAPE);
                             }
 
                             if (collisionMode == BODY) {
@@ -469,7 +469,7 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
                         }
                         case 1: {
                             if (collisionMode == GHOST) {
-                                setupGhostCollider(CAPSULE);
+                                SetupGhostCollider(CAPSULE);
                             }
 
                             if (collisionMode == BODY) {
@@ -479,7 +479,7 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
                         }
                         case 2: {
                             if (collisionMode == GHOST) {
-                                setupGhostCollider(TRIANGLE_MESH_SHAPE);
+                                SetupGhostCollider(TRIANGLE_MESH_SHAPE);
                             }
 
                             if (collisionMode == BODY) {
@@ -500,7 +500,7 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
 
     if (getCollisionShape() == SIMPLE_SHAPE) {
         if (ImGui::Button("Capture from AABB")) {
-            updateBoundingBox();
+            UpdateBoundingBox();
             simpleShapeSize = aabb.size().getScaled(0.5f);
             UpdateShapeCollider();
         }
@@ -514,16 +514,16 @@ void Mesh3D::setSourceFile(const std::string &sourceFile)
 
 void Mesh3D::buildGrid3D(int sizeX, int sizeY, int sizeZ)
 {
-    updateBoundingBox();
+    UpdateBoundingBox();
 
-    if (grid != nullptr) delete grid;
+    delete grid;
 
     grid = new Grid3D(aabb, sizeX, sizeY, sizeZ);
 }
 
 void Mesh3D::fillGrid3DFromGeometry()
 {
-    grid->reset(grid->getNumberCubesX(), grid->getNumberCubesY(), grid->getNumberCubesZ());
+    grid->Reset(grid->getNumberCubesX(), grid->getNumberCubesY(), grid->getNumberCubesZ());
     for (auto &m: meshes) {
         grid->doTestForNonEmptyGeometry(m.modelTriangles);
     }
@@ -567,7 +567,7 @@ void Mesh3D::removeShader(int index)
     }
 }
 
-void Mesh3D::shadowMappingPass()
+void Mesh3D::ShadowMappingPass()
 {
     auto render = ComponentsManager::get()->getComponentRender();
     auto shaderShadowPass = render->getShaderOGLShadowPass();
@@ -585,7 +585,7 @@ void Mesh3D::shadowMappingPass()
     }
 }
 
-void Mesh3D::updateBoundingBox()
+void Mesh3D::UpdateBoundingBox()
 {
     glm::mat4 mvpMatrix = getModelMatrix();
 
@@ -621,7 +621,7 @@ std::vector<Mesh3DData> &Mesh3D::getMeshData()
     return meshes;
 }
 
-btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia)
+btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia) const
 {
     auto *triangleMesh = new btTriangleMesh();
 
@@ -642,7 +642,7 @@ btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia)
     return s;
 }
 
-btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia)
+btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia) const
 {
     auto *convexHull = new btConvexHullShape();
     for (auto &m: meshes) {

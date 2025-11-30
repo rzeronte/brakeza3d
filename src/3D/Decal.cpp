@@ -30,9 +30,9 @@ void Decal::setupFromAxis() {
     sprite->setPosition(getPosition());
 
     P = getPosition();
-    N = AxisForward();
-    T = AxisUp();
-    B = AxisRight();
+    N = forward();
+    T = up();
+    B = right();
 }
 
 void Decal::setDimensions(float w, float h) {

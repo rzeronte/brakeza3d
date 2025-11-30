@@ -1,24 +1,9 @@
-{
-	"name":	"../assets/scripts/Examples/RotateFromObject.lua",
-	"types":	[{
-			"name":	"objectName",
-			"type":	"string",
-			"value":	""
-		}, {
-			"name":	"radius",
-			"type":	"float",
-			"value":	0.0
-		}, {
-			"name":	"speed",
-			"type":	"float",
-			"value":	0
-		}, {
-			"name":	"offset",
-			"type":	"Vertex3D",
-			"value":	{
-				"x":	0,
-				"y":	2,
-				"z":	0
-			}
-		}]
-}
+function onStart()
+end
+
+function onUpdate()
+end
+
+function onCollision(with)
+end
+    

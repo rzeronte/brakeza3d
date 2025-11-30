@@ -3,7 +3,7 @@
 //
 
 #include "../../include/Render/Vector2D.h"
-#include "../../include/Render/Maths.h"
+#include "../../include/Misc/ToolsMaths.h"
 
 
 Vector2D::Vector2D() {
@@ -38,7 +38,7 @@ Vector2D Vector2D::operator/(const Vector2D &pm) const
 
 Vector2D Vector2D::getNormalize() const
 {
-    const float modulo = abs(Maths::sqrt1((x * x) + (y * y)));
+    const float modulo = abs(ToolsMaths::sqrt1((x * x) + (y * y)));
 
     float inv_module = 1 / modulo;
 
@@ -65,7 +65,7 @@ Vector2D Vector2D::operator+(const Vector2D &v) const {
 
 float Vector2D::getLength() const
 {
-    return Maths::sqrt1(x * x + y*y);
+    return ToolsMaths::sqrt1(x * x + y*y);
 }
 
 Vector2D Vector2D::getScaled(float v) const

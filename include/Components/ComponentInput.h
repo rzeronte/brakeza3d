@@ -116,7 +116,7 @@ public:
     [[nodiscard]] bool isClickLeft() const;
     [[nodiscard]] bool isClickRight() const;
     [[nodiscard]] int getRelativeRendererMouseX() const;
-    static void handleWindowEvents(SDL_Event *e, bool &);
+    static void handleWindowEvents(SDL_Event *event, bool &);
 
 };
 

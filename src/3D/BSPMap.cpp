@@ -7,7 +7,7 @@
 #include <cstring>
 #include "../../include/3D/BSPMap.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/Render/Maths.h"
+#include "../../include/Misc/ToolsMaths.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"

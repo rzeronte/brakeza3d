@@ -2,7 +2,7 @@
 #include <glm/gtx/euler_angles.hpp>
 #include "../../include/Render/M3.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/Render/Maths.h"
+#include "../../include/Misc/ToolsMaths.h"
 
 M3::M3() {
     setMatrixIdentity();
@@ -46,6 +46,7 @@ M3 M3::operator*(const M3 &v) {
 }
 
 M3 M3::operator*(const float scalar) {
+
     return M3(
             m[0] * scalar, m[1] * scalar, m[2] * scalar,
             m[3] * scalar, m[4] * scalar, m[5] * scalar,
@@ -61,7 +62,8 @@ Vertex3D M3::operator*(Vertex3D A) {
     );
 }
 
-M3 M3::operator+(const M3 &v) {
+M3 M3::operator+(const M3 &v)
+{
     return M3(
             m[0] + v.m[0], m[1] + v.m[1], m[2] + v.m[2],
             m[3] + v.m[3], m[4] + v.m[4], m[5] + v.m[5],
@@ -69,15 +71,17 @@ M3 M3::operator+(const M3 &v) {
     );
 }
 
-M3 M3::operator-(const M3 &v) {
+M3 M3::operator-(const M3 &v)
+{
     return M3(
-            m[0] - v.m[0], m[1] - v.m[1], m[2] - v.m[2],
-            m[3] - v.m[3], m[4] - v.m[4], m[5] - v.m[5],
-            m[6] - v.m[6], m[7] - v.m[7], m[8] - v.m[8]
+        m[0] - v.m[0], m[1] - v.m[1], m[2] - v.m[2],
+        m[3] - v.m[3], m[4] - v.m[4], m[5] - v.m[5],
+        m[6] - v.m[6], m[7] - v.m[7], m[8] - v.m[8]
     );
 }
 
-M3 M3::getMatrixIdentity() {
+M3 M3::getMatrixIdentity()
+{
     return M3(
         1, 0, 0,
         0, 1, 0,
@@ -85,8 +89,9 @@ M3 M3::getMatrixIdentity() {
     );
 }
 
-M3 M3::RX(float degrees) {
-    float rads = Maths::degreesToRadians(degrees);
+M3 M3::RX(float degrees)
+{
+    float rads = ToolsMaths::DegreesToRadians(degrees);
     return M3(
         1, 0, 0,
         0, cos(rads), -sin(rads),
@@ -94,8 +99,9 @@ M3 M3::RX(float degrees) {
     );
 }
 
-M3 M3::RY(float degrees) {
-    const float rads = Maths::degreesToRadians(degrees);
+M3 M3::RY(float degrees)
+{
+    const float rads = ToolsMaths::DegreesToRadians(degrees);
     return M3(
         cos(rads), 0, sin(rads),
         0, 1, 0,
@@ -103,8 +109,9 @@ M3 M3::RY(float degrees) {
     );
 }
 
-M3 M3::RZ(float degrees) {
-    float rads = Maths::degreesToRadians(degrees);
+M3 M3::RZ(float degrees)
+{
+    float rads = ToolsMaths::DegreesToRadians(degrees);
     return M3(
         cos(rads), -sin(rads), 0,
         sin(rads), cos(rads), 0,
@@ -112,7 +119,7 @@ M3 M3::RZ(float degrees) {
     );
 }
 
-M3 M3::arbitraryAxis(Vertex3D A, float degrees) {
+M3 M3::arbitraryAxis(const Vertex3D &A, float degrees) {
 
     auto c =  cos(degrees);
     auto s = sin(degrees);
@@ -124,7 +131,8 @@ M3 M3::arbitraryAxis(Vertex3D A, float degrees) {
     );
 }
 
-M3 M3::ScaleMatrix(float scale) {
+M3 M3::ScaleMatrix(float scale)
+{
     M3 M(
         scale, 0, 0,
         0, scale, 0,
@@ -144,15 +152,18 @@ M3 M3::ScaleMatrix(float xScale, float yScale, float zScale) {
     return M;
 }
 
-float M3::getPitch() {
+float M3::getPitch() const
+{
     return atan2f(m[7], m[8]);
 }
 
-float M3::getYaw() {
+float M3::getYaw() const
+{
     return atan2f(-m[6], sqrtf(m[7] * m[7] + m[8] * m[8]));
 }
 
-float M3::getRoll() {
+float M3::getRoll() const
+{
     return atan2f(m[3], m[0]);
 }
 
@@ -191,19 +202,22 @@ M3 M3::getTranspose() {
     );;
 }
 
-float M3::getYawDegree() {
-    return Maths::radiansToDegrees(this->getYaw());
+float M3::getYawDegree() const
+{
+    return ToolsMaths::RadiansToDegrees(this->getYaw());
 }
 
-float M3::getPitchDegree() {
-    return Maths::radiansToDegrees(this->getPitch());
+float M3::getPitchDegree() const
+{
+    return ToolsMaths::RadiansToDegrees(this->getPitch());
 }
 
-float M3::getRollDegree() {
-    return Maths::radiansToDegrees(this->getRoll());
+float M3::getRollDegree() const
+{
+    return ToolsMaths::RadiansToDegrees(this->getRoll());
 }
 
-M3 M3::getFromVectors(Vertex3D ZAxis, Vertex3D YAxis)
+M3 M3::getFromVectors(const Vertex3D &ZAxis, const Vertex3D &YAxis)
 {
     M3 m;
 
@@ -218,31 +232,37 @@ M3 M3::getFromVectors(Vertex3D ZAxis, Vertex3D YAxis)
 }
 
 
-Vertex3D M3::X() {
+Vertex3D M3::X() const
+{
     return Vertex3D(m[0], m[1], m[2]);
 }
 
-Vertex3D M3::Y() {
+Vertex3D M3::Y() const
+{
     return Vertex3D(m[3], m[4], m[5]);
 }
 
-Vertex3D M3::Z() {
+Vertex3D M3::Z() const
+{
     return Vertex3D(m[6], m[7], m[8]);
 }
 
-void M3::setX(float x, float y, float z) {
+void M3::setX(float x, float y, float z)
+{
     m[0] = x;
     m[1] = y;
     m[2] = z;
 }
 
-void M3::setY(float x, float y, float z) {
+void M3::setY(float x, float y, float z)
+{
     m[3] = x;
     m[4] = y;
     m[5] = z;
 }
 
-void M3::setZ(float x, float y, float z) {
+void M3::setZ(float x, float y, float z)
+{
     m[6] = x;
     m[7] = y;
     m[8] = z;
@@ -260,12 +280,12 @@ M3 M3::interpolateLinear(const M3& m1, const M3& m2, float t)
     return result;
 }
 
-btMatrix3x3 M3::toBulletMat3()
+btMatrix3x3 M3::toBulletMat3() const
 {
     return btMatrix3x3(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
 }
 
-glm::mat3 M3::toGLMMat3()
+glm::mat3 M3::toGLMMat3() const
 {
     return glm::mat3(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
 }
@@ -279,7 +299,8 @@ M3 M3::fromMat3GLM(const glm::mat3& glmMatrix)
     };
 }
 
-M3 M3::fromMat3Bullet(const btMatrix3x3& m) {
+M3 M3::fromMat3Bullet(const btMatrix3x3& m)
+{
     return M3(
         m.getRow(0).getX(), m.getRow(0).getY(), m.getRow(0).getZ(),
         m.getRow(1).getX(), m.getRow(1).getY(), m.getRow(1).getZ(),
@@ -301,7 +322,7 @@ void M3::normalize(M3& matrix)
     matrix.setZ(zAxis.x, zAxis.y, zAxis.z);
 }
 
-Vertex3D M3::getVertex3DAngles()
+Vertex3D M3::getVertex3DAngles() const
 {
     return Vertex3D(getPitchDegree(), getYawDegree(), getRollDegree());
 }

@@ -294,6 +294,6 @@ void ShaderOGLRenderForward::initializeLightBuffers()
     glBufferData(GL_UNIFORM_BUFFER, MAX_SPOT_LIGHTS * sizeof(SpotLightOpenGL), nullptr, GL_DYNAMIC_DRAW);
     glBindBufferBase(GL_UNIFORM_BUFFER, 1, bufferUBOSpotLights);   // Binding point 1
 
-    Logging::Message("Light buffers initialized!");
+    Logging::Message("[ShaderOGLRenderForward] Light Buffers created");
     buffersInitialized = true;
 }

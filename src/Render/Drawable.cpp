@@ -57,9 +57,9 @@ void Drawable::drawObject3DAxis(Object3D *object, bool drawUp, bool drawRight, b
     }
 
     const float size = BrakezaSetup::get()->OBJECT_AXIS_SIZE;
-    Vertex3D endRight = object->getPosition() + object->AxisRight().getScaled(size);
-    Vertex3D endUp = object->getPosition() + object->AxisUp().getScaled(size);
-    Vertex3D endForward = object->getPosition() + object->AxisForward().getScaled(size);
+    Vertex3D endRight = object->getPosition() + object->right().getScaled(size);
+    Vertex3D endUp = object->getPosition() + object->up().getScaled(size);
+    Vertex3D endForward = object->getPosition() + object->forward().getScaled(size);
 
     Vector3D vRight = Vector3D(object->getPosition(), endRight);
     Vector3D vUp = Vector3D(object->getPosition(), endUp);
@@ -180,7 +180,7 @@ void Drawable::drawGrid3D(Grid3D *grid)
 
 void Drawable::drawGrid3DMakeTravel(Grid3D *grid) {
 
-    auto boxes = grid->makeTravelCubesGrid();
+    auto boxes = grid->MakeTravelCubesGrid();
     for (auto &b: boxes) {
         drawAABB(&b.box, Color::magenta());
     }

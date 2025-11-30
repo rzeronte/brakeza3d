@@ -13,7 +13,7 @@
 #include "../../Loaders/SceneLoader.h"
 #include "../../Components/ComponentsManager.h"
 #include "../../3D/ParticleEmitter.h"
-#include "../../Render/Maths.h"
+#include "../../Misc/ToolsMaths.h"
 #include "../../GUI/Objects/FileSystemGUI.h"
 #include "../../Serializers/JSONSerializer.h"
 #include "../../Serializers/Mesh3DAnimationSerializer.h"
@@ -60,10 +60,10 @@ struct GUIAddonMenu
 
         if (ImGui::BeginPopupModal("About Brakeza3D", &show_about_window)) {
             ImGui::Text("Welcome to Brakeza3D!");
-            ImGui::Text((setup->ENGINE_VERSION).c_str());
-            ImGui::Text("By Eduardo Rodríguez Álvarez <eduardo@brakeza.com>");
-            ImGui::Text("Website: https://brakeza.com");
-            ImGui::Text("GitHub: https://github.com/rzeronte/brakeza3d");
+            ImGui::Text(setup->ENGINE_VERSION.c_str());
+            ImGui::Text(setup->ENGINE_TITLE.c_str());
+            ImGui::Text("Website: %s", setup->ENGINE_WEBSITE.c_str());
+            ImGui::Text("GitHub: %s", setup->ENGINE_SOURCE_WEBSITE.c_str());
             if (ImGui::Button("Close")) {
                 ImGui::CloseCurrentPopup();
                 show_about_window = false;
@@ -664,19 +664,19 @@ struct GUIAddonMenu
             yaw = vec3f[1];
             roll = vec3f[2];
             if (abs(pitch - oldPitch) > 0) {
-                auto partialRotX = M3::arbitraryAxis(camera->getRotation().X(), Maths::radiansToDegrees(pitch - oldPitch) * factor);
+                auto partialRotX = M3::arbitraryAxis(camera->getRotation().X(), ToolsMaths::RadiansToDegrees(pitch - oldPitch) * factor);
                 camera->setRotation(camera->getRotation() * partialRotX);
                 M3::normalize(camera->rotationPointer());
             }
 
             if (abs(yaw - oldYaw) > 0) {
-                auto partialRotY = M3::arbitraryAxis(camera->getRotation().Y(), Maths::radiansToDegrees(yaw - oldYaw) * factor);
+                auto partialRotY = M3::arbitraryAxis(camera->getRotation().Y(), ToolsMaths::RadiansToDegrees(yaw - oldYaw) * factor);
                 camera->setRotation(camera->getRotation() * partialRotY);
                 M3::normalize(camera->rotationPointer());
             }
 
             if (abs(roll - oldRoll) > 0) {
-                auto partialRotZ = M3::arbitraryAxis(camera->getRotation().Z(), Maths::radiansToDegrees(roll - oldRoll) * factor);
+                auto partialRotZ = M3::arbitraryAxis(camera->getRotation().Z(), ToolsMaths::RadiansToDegrees(roll - oldRoll) * factor);
                 camera->setRotation(camera->getRotation() * partialRotZ);
                 M3::normalize(camera->rotationPointer());
             }

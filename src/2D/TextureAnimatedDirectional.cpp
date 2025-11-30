@@ -4,10 +4,7 @@
 #include <utility>
 #include "../../include/BrakezaSetup.h"
 
-TextureAnimatedDirectional::TextureAnimatedDirectional() {
-}
-
-void TextureAnimatedDirectional::setup(std::string file, int newNumFrames, int newFps, int newMaxTimes)
+void TextureAnimatedDirectional::LoadAnimationFile(std::string file, int newNumFrames, int newFps, int newMaxTimes)
 {
     this->base_file = std::move(file);
     this->numFrames = newNumFrames;
@@ -15,7 +12,7 @@ void TextureAnimatedDirectional::setup(std::string file, int newNumFrames, int n
     this->maxTimes = newMaxTimes;
 }
 
-void TextureAnimatedDirectional::loadImages()
+void TextureAnimatedDirectional::LoadImages()
 {
     for (int d = 1; d <= 8; d++) {
         for (int i = 0; i < this->getNumFrames(); i++) {
@@ -27,7 +24,7 @@ void TextureAnimatedDirectional::loadImages()
     loaded = true;
 }
 
-void TextureAnimatedDirectional::loadImagesForZeroDirection()
+void TextureAnimatedDirectional::LoadImagesForZeroDirection()
 {
     for (int i = 0; i < this->getNumFrames(); i++) {
         std::string file = this->base_file + "/" + std::to_string(0) + "_" + std::to_string(i) + ".png";
@@ -46,7 +43,7 @@ Image *TextureAnimatedDirectional::getCurrentFrame(int direction)
     return this->frames[direction][current];
 }
 
-void TextureAnimatedDirectional::nextFrame()
+void TextureAnimatedDirectional::NextFrame()
 {
     current++;
 
@@ -59,7 +56,7 @@ void TextureAnimatedDirectional::nextFrame()
     }
 }
 
-void TextureAnimatedDirectional::importTextures(const TextureAnimatedDirectional *origin, int numFrames)
+void TextureAnimatedDirectional::ImportTextures(const TextureAnimatedDirectional *origin, int numFrames)
 {
     for (int d = 0; d <= 8; d++) {
         for (int j = 0; j < numFrames; j++) {
@@ -68,7 +65,7 @@ void TextureAnimatedDirectional::importTextures(const TextureAnimatedDirectional
     }
 }
 
-void TextureAnimatedDirectional::drawImGuiProperties()
+void TextureAnimatedDirectional::DrawImGuiProperties()
 {
 }
 

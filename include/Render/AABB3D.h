@@ -13,30 +13,35 @@ public:
     Vertex3D min;
     Vertex3D vertices[8];
 
-    void operator=(const AABB3D &bounds) {
+    void operator=(const AABB3D &bounds)
+    {
         this->min = bounds.min;
         this->max = bounds.max;
         this->updateVertices();
     }
 
-    Vertex3D size() {
+    Vertex3D size()
+    {
         return max - min;
     }
 
-    bool isColliding(AABB3D *other) const {
+    bool isColliding(const AABB3D *other) const
+    {
         return !(max.x < other->min.x || min.x > other->max.x ||
                  max.y < other->min.y || min.z > other->max.y ||
                  max.z < other->min.z || min.z > other->max.z
         );
     }
 
-    void setScale(float scale) {
+    void setScale(float scale)
+    {
         min = min - Vertex3D(1, 1, 1).getScaled(scale);
         max = max + Vertex3D(1, 1, 1).getScaled(scale);
         updateVertices();
     }
 
-    void updateVertices() {
+    void updateVertices()
+    {
         this->vertices[0] = this->max;
         this->vertices[1] = this->min;
         this->vertices[2] = Vertex3D(this->max.x, this->max.y, this->min.z);
@@ -47,7 +52,8 @@ public:
         this->vertices[7] = Vertex3D(this->min.x, this->min.y, this->max.z);
     }
 
-    std::vector<Plane> getPlanes() {
+    [[nodiscard]] std::vector<Plane> getPlanes() const
+    {
         std::vector<Plane> planes;
         planes.resize(6);
 
@@ -61,7 +67,8 @@ public:
         return planes;
     }
 
-    Vertex3D getCenter() {
+    [[nodiscard]] Vertex3D getCenter() const
+    {
         Vertex3D dimensions = (this->max - this->min).getScaled(0.5);
 
         return Vertex3D(
@@ -78,7 +85,7 @@ public:
                 point.z >= min.z && point.z <= max.z);
     }
 
-    cJSON *getJSON()
+    cJSON *getJSON() const
     {
         cJSON *aabbJSON = cJSON_CreateObject();
 

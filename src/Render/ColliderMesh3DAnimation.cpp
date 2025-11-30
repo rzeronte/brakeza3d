@@ -75,7 +75,7 @@ bool AssimpAnimationService::AssimpLoadAnimation(const std::string &filename, st
 {
     Logging::Message("AssimpLoadAnimation for %s", filename.c_str());
 
-    if (!Tools::fileExists(filename.c_str())) {
+    if (!Tools::FileExists(filename.c_str())) {
         Logging::Message("[AssimpLoadAnimation] ERROR: File not found %s", filename.c_str());
         return false;
     }

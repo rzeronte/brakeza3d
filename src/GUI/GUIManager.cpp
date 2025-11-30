@@ -24,6 +24,7 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 {
     FileSystemGUI::LoadIcons(icons);
     FileSystemGUI::LoadImagesFolder(this);
+    Profiler::get()->CaptureGUIMemoryUsage();
 
     currentScriptsFolders = Tools::getFolderFolders(currentScriptsFolderWidget);
     currentScriptsFolderFiles = Tools::getFolderFiles(currentScriptsFolderWidget, "lua");
@@ -149,6 +150,11 @@ void GUIManager::DrawWidgets()
 
     if (ImGui::Begin("Images")) {
         DrawImages();
+    }
+    ImGui::End();
+
+    if (ImGui::Begin("Profiler")) {
+        Profiler::get()->DrawPropertiesGUI();
     }
     ImGui::End();
 }
@@ -408,7 +414,7 @@ void GUIManager::DrawSplash()
         ImGui::SeparatorText("Welcome to Brakeza3D!");
         ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::SPLASH), ImVec2(640, 350));
         ImGui::SeparatorText(
-            std::string("Brakeza3D (" + BrakezaSetup::get()->ENGINE_VERSION + ") | https://brakeza.com | By Eduardo Rodríguez Álvarez").c_str()
+            std::string("Brakeza3D (" + BrakezaSetup::get()->ENGINE_VERSION + ") | " + BrakezaSetup::get()->ENGINE_TITLE).c_str()
         );
 
         if (Brakeza::get()->getEngineTotalTime() > BrakezaSetup::get()->SPLASH_COUNTDOWN_TIME) {

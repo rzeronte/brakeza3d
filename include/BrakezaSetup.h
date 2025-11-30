@@ -14,8 +14,11 @@ public:
     static BrakezaSetup *instance;
 
     // TITLE/VERSION
-    std::string ENGINE_TITLE = "Brakeza3D - By Eduardo Rodriguez <eduardo@brakeza.com>";
+    std::string ENGINE_TITLE = "Brakeza3D - By Eduardo Rodriguez Alvarez <eduardo@brakeza.com>";
     std::string ENGINE_VERSION = "v.1.0.0";
+
+    std::string ENGINE_WEBSITE = "https://www.brakeza.com";
+    std::string ENGINE_SOURCE_WEBSITE = "https://github.com/rzeronte/brakeza3d";
 
     // DEFAULT APP ICONS
     std::string iconApplication = "application.png";
@@ -72,7 +75,7 @@ public:
     bool ENABLE_BULLET_STEP_SIMULATION = false;
     bool ENABLE_SOUND = true;
     bool ENABLE_LOGGING = true;
-    bool ENABLE_LOGGING_STD = false;
+    bool ENABLE_LOGGING_STD = true;
     bool ENABLE_IMGUI = true;
 
     // Render options

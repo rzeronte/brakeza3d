@@ -33,7 +33,7 @@ public:
     void removeProjectScript(ScriptLUA *script);
     void onStartScripts();
     void runScripts();
-    void initLUATypes();
+    void InitLUATypes();
     sol::state &getLua();
     std::vector<ScriptLUA*> &getSceneLUAScripts();
     std::vector<ScriptLUA*> &getProjectLUAScripts();

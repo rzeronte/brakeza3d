@@ -48,14 +48,14 @@ ShaderOGLCustom::ShaderOGLCustom(
 
 void ShaderOGLCustom::readShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename)
 {
-    if (!Tools::fileExists(vertexFilename.c_str()) || !Tools::fileExists(fragmentFilename.c_str())) {
+    if (!Tools::FileExists(vertexFilename.c_str()) || !Tools::FileExists(fragmentFilename.c_str())) {
         Logging::Message("[error] Cannot open custom shader files (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
     }
     size_t file_size_fs;
-    sourceFS = Tools::readFile(fragmentFilename, file_size_fs);
+    sourceFS = Tools::ReadFile(fragmentFilename, file_size_fs);
 
     size_t file_size_vs;
-    sourceVS = Tools::readFile(vertexFilename, file_size_vs);
+    sourceVS = Tools::ReadFile(vertexFilename, file_size_vs);
 }
 
 bool ShaderOGLCustom::existDataType(const char *name, const char *type) const
@@ -72,7 +72,7 @@ bool ShaderOGLCustom::existDataType(const char *name, const char *type) const
 void ShaderOGLCustom::parseTypesFromFileAttributes()
 {
     size_t file_size;
-    auto contentFile = Tools::readFile(BrakezaSetup::get()->SHADERS_FOLDER + fileTypes, file_size);
+    auto contentFile = Tools::ReadFile(BrakezaSetup::get()->SHADERS_FOLDER + fileTypes, file_size);
     Logging::Message("Parsing attributes from: '%s'", fileTypes.c_str());
 
     setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
@@ -691,7 +691,7 @@ void ShaderOGLCustom::updateFileTypes()
     Logging::Message("Updating types file (%s)", this->fileTypes.c_str());
     char *output_string = cJSON_Print(getTypesJSON());
 
-    Tools::writeToFile(this->fileTypes, output_string);
+    Tools::WriteToFile(this->fileTypes, output_string);
 
     delete output_string;
 }
@@ -728,19 +728,19 @@ void ShaderOGLCustom::createEmptyCustomShader(
 
 
     // json
-    Tools::writeToFile(folder + dataTypesFileFor(name), typesCode);
+    Tools::WriteToFile(folder + dataTypesFileFor(name), typesCode);
 
     switch(type) {
         case ShaderCustomTypes::SHADER_POSTPROCESSING : {
             // vs y fs
-            Tools::copyFile(BrakezaSetup::get()->TEMPLATE_SHADER_POSTPROCESSING_VS, shaderVertexFile);
-            Tools::copyFile(BrakezaSetup::get()->TEMPLATE_SHADER_POSTPROCESSING_FS, shaderFragmentFile);
+            Tools::CopyFile(BrakezaSetup::get()->TEMPLATE_SHADER_POSTPROCESSING_VS, shaderVertexFile);
+            Tools::CopyFile(BrakezaSetup::get()->TEMPLATE_SHADER_POSTPROCESSING_FS, shaderFragmentFile);
             break;
         }
         case ShaderCustomTypes::SHADER_OBJECT : {
             // vs y fs
-            Tools::copyFile(BrakezaSetup::get()->TEMPLATE_SHADER_OBJECT_VS, shaderVertexFile);
-            Tools::copyFile(BrakezaSetup::get()->TEMPLATE_SHADER_OBJECT_FS, shaderFragmentFile);
+            Tools::CopyFile(BrakezaSetup::get()->TEMPLATE_SHADER_OBJECT_VS, shaderVertexFile);
+            Tools::CopyFile(BrakezaSetup::get()->TEMPLATE_SHADER_OBJECT_FS, shaderFragmentFile);
             break;
         }
     }
@@ -824,9 +824,9 @@ void ShaderOGLCustom::removeCustomShaderFiles(const std::string& folder, const s
 {
     Logging::Message("Deleting custom shader: %s", name.c_str());
 
-    Tools::removeFile(folder + name + ".json");
-    Tools::removeFile(folder + name + ".vs");
-    Tools::removeFile(folder + name + ".fs");
+    Tools::RemoveFile(folder + name + ".json");
+    Tools::RemoveFile(folder + name + ".vs");
+    Tools::RemoveFile(folder + name + ".fs");
 }
 
 ShaderCustomTypes ShaderOGLCustom::extractTypeFromShaderName(const std::string& folder, const std::string &name)
@@ -834,7 +834,7 @@ ShaderCustomTypes ShaderOGLCustom::extractTypeFromShaderName(const std::string& 
     std::string jsonFile = name + ".json";
 
     size_t file_size;
-    auto contentFile = Tools::readFile(folder + jsonFile, file_size);
+    auto contentFile = Tools::ReadFile(folder + jsonFile, file_size);
     Logging::Message("Extracting type from: '%s'", name.c_str());
 
     auto oJSON = cJSON_Parse(contentFile);
@@ -856,10 +856,10 @@ const std::vector<ShaderOpenGLCustomType> &ShaderOGLCustom::getDataTypes() const
 void ShaderOGLCustom::reload()
 {
     size_t file_size_fs;
-    sourceFS = Tools::readFile(fragmentFilename, file_size_fs);
+    sourceFS = Tools::ReadFile(fragmentFilename, file_size_fs);
 
     size_t file_size_vs;
-    sourceVS = Tools::readFile(vertexFilename, file_size_vs);
+    sourceVS = Tools::ReadFile(vertexFilename, file_size_vs);
 
     dataTypes.clear();
     dataTypesDefaultValues.clear();

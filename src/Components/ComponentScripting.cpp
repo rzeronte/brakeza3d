@@ -14,14 +14,18 @@ ComponentScripting::ComponentScripting()
 
 void ComponentScripting::onStart()
 {
+    Component::onStart();
 }
 
 void ComponentScripting::preUpdate()
 {
+    Component::preUpdate();
 }
 
 void ComponentScripting::onUpdate()
 {
+    Component::onUpdate();
+
     if (stateScripts == BrakezaSetup::LUA_PLAY) {
         runScripts();
     }
@@ -29,6 +33,7 @@ void ComponentScripting::onUpdate()
 
 void ComponentScripting::postUpdate()
 {
+    Component::postUpdate();
 }
 
 void ComponentScripting::onEnd()
@@ -84,8 +89,8 @@ void ComponentScripting::reloadLUAScripts()
 
     auto &sceneObjects = Brakeza::get()->getSceneObjects();
     for (auto object : sceneObjects) {
-        object->reloadScriptsCode();
-        object->reloadScriptsEnvironment();
+        object->ReloadScriptsCode();
+        object->ReloadScriptsEnvironment();
     }
 
     reloadScriptGlobals();
@@ -187,7 +192,7 @@ void ComponentScripting::onStartScripts()
     Logging::Message("Executing OnStart for OBJECT scripts...");
     auto &sceneObjects = Brakeza::get()->getSceneObjects();
     for (auto object : sceneObjects) {
-        object->runStartScripts();
+        object->RunStartScripts();
     }
 }
 
@@ -206,18 +211,18 @@ void ComponentScripting::createScriptLUAFile(const std::string& path)
         end
     )";
 
-    Tools::writeToFile(projectJsonFile, content.c_str());
+    Tools::WriteToFile(projectJsonFile, content.c_str());
 }
 
 void ComponentScripting::removeScriptLUAFile(const std::string& path)
 {
     Logging::Message("Deleting script file: %s", path.c_str());
-    Tools::removeFile(path);
+    Tools::RemoveFile(path);
 }
 
-void ComponentScripting::initLUATypes()
+void ComponentScripting::InitLUATypes()
 {
-    Logging::Message("Init LUA Global types");
+    Logging::Message("[ComponentScripting] Init LUA Global types");
 
     lua.open_libraries(sol::lib::base, sol::lib::math);
 

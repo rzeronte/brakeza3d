@@ -25,10 +25,10 @@ public:
 
     Image3DAnimation8Directions(const Vertex3D &position, float width, float height);
     void addAnimationDirectional2D(const std::string&, int frames, int fps, bool zeroDirection, int maxTimes);
-    void updateTextureFromCameraAngle(Object3D *, Camera3D *);
+    void updateTextureFromCameraAngle(Object3D *, Camera3D *) const;
     void setAnimation(int);
     void updateStep();
-    void updateTrianglesCoordinates(Camera3D *cam);
+    void UpdateTrianglesCoordinates(Camera3D *cam);
     void onUpdate() override;
     void DrawPropertiesGUI() override;
     void updateBillboardSize() const;
@@ -37,7 +37,7 @@ public:
     const char *getTypeIcon() override;
     static int getDirectionForAngle(float enemyAngle);
     static Image3DAnimation8Directions* create(
-        Vertex3D position,
+        const Vertex3D &position,
         float width,
         float height,
         const std::string &folderSprite,

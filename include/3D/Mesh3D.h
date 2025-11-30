@@ -54,15 +54,14 @@ public:
 
     Mesh3D();
     ~Mesh3D() override;
-    // TODO: Borrar o mover esto de quí (LUA)
-    static Mesh3D* create(Vertex3D position, const std::string& imageFile);
 
+    static Mesh3D* create(Vertex3D position, const std::string& imageFile);
     const char *getTypeObject() override;
     const char *getTypeIcon() override;
     void AssimpLoadGeometryFromFile(const std::string &fileName);
     void AssimpInitMaterials(const aiScene *pScene);
-    void ProcessNodes(const aiScene *scene, aiNode *node);
-    void LoadMesh(int meshId, aiMesh *mesh);
+    void ProcessNodes(const aiScene *scene, const aiNode *node);
+    void LoadMesh(int meshId, const aiMesh *mesh);
     void onUpdate() override;
     void postUpdate() override;
     void buildOctree(int depth);
@@ -71,7 +70,7 @@ public:
     void makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     void makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     void makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) override;
-    void setupGhostCollider(CollisionShape modeShape) override;
+    void SetupGhostCollider(CollisionShape modeShape) override;
     void setupRigidBodyCollider(CollisionShape modeShape) override;
     void drawImGuiCollisionShapeSelector() override;
     void setSourceFile(const std::string &sourceFile);
@@ -80,11 +79,11 @@ public:
     void addCustomShader(ShaderOGLCustom *);
     void loadShader(const std::string &folder, const std::string &jsonFilename);
     void removeShader(int i);
-    virtual void shadowMappingPass();
-    virtual void updateBoundingBox();
+    virtual void ShadowMappingPass();
+    virtual void UpdateBoundingBox();
     std::vector<Mesh3DData> &getMeshData();
-    btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia);
-    btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia);
+    btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia) const;
+    btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia) const;
     AABB3D &getAABB();
     [[nodiscard]] const std::vector<ShaderOGLCustom *> &getCustomShaders() const;
     [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const;

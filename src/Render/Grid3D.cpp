@@ -1,6 +1,6 @@
 
 #include "../../include/Render/Grid3D.h"
-#include "../../include/Render/Maths.h"
+#include "../../include/Misc/ToolsMaths.h"
 
 Grid3D::Grid3D(AABB3D bounds, int sizeX, int sizeY, int sizeZ)
 :
@@ -10,10 +10,10 @@ Grid3D::Grid3D(AABB3D bounds, int sizeX, int sizeY, int sizeZ)
     bounds(bounds),
     pathFinding(PathFinding(sizeX, sizeY, sizeZ))
 {
-    makeCells();
+    MakeCells();
 }
 
-void Grid3D::makeCells()
+void Grid3D::MakeCells()
 {
     Vertex3D dimensions = bounds.max - bounds.min;
 
@@ -80,7 +80,7 @@ bool Grid3D::isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles)
         bool r3 = Plane::isVertex3DClosedByPlanes(t->Co, planes);
         if (r3) return false;
 
-        if (Maths::isTriangleIntersectingAABB(*t, cube.box)) {
+        if (ToolsMaths::isTriangleIntersectingAABB(*t, cube.box)) {
             return false;
         }
     }
@@ -104,7 +104,7 @@ Vertex3D Grid3D::getClosestPoint(Vertex3D v, std::vector<Vertex3D> path, int &in
     float min_distance = 9999999999;
     int index = 0;
     for (int i = 0; i < path.size(); i++) {
-        float d = Maths::distanceBetweenVertices(v, path[i]);
+        float d = ToolsMaths::distanceBetweenVertices(v, path[i]);
         if (d < min_distance) {
             min_distance = d;
             index = i;
@@ -131,7 +131,7 @@ const std::vector<CubeGrid3D> &Grid3D::getBoxes() const {
     return boxes;
 }
 
-void Grid3D::drawImGuiProperties()
+void Grid3D::DrawImGuiProperties()
 {
     if (ImGui::TreeNode("A* setup cells")) {
         if (ImGui::TreeNode("From")) {
@@ -159,17 +159,17 @@ void Grid3D::drawImGuiProperties()
     ImGui::SliderInt("Size Z", &sizeZ, 1, 10);
 
     if (ImGui::Button("Update Grid3D")) {
-        reset(sizeX, sizeY, sizeZ);
+        Reset(sizeX, sizeY, sizeZ);
     }
 }
 
-void Grid3D::reset(int x, int y, int z)
+void Grid3D::Reset(int x, int y, int z)
 {
     numberCubesX = x;
     numberCubesY = y;
     numberCubesZ = z;
     boxes.clear();
-    makeCells();
+    MakeCells();
     pathFinding.reset(x, y, z);
 }
 
@@ -203,7 +203,7 @@ cJSON *Grid3D::getJSON()
     return gridJSON;
 }
 
-std::vector<CubeGrid3D> Grid3D::makeTravelCubesGrid()
+std::vector<CubeGrid3D> Grid3D::MakeTravelCubesGrid()
 {
     auto path = getPathFinding().makeTravelIndexes();
 

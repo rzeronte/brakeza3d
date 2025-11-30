@@ -12,16 +12,14 @@ class SimplePendulum: public Object3D {
 public:
     SimplePendulum(float angleX, float angleZ, float length, float friction);
 
+    bool activeFriction;
     float angleX;
     float angleZ;
-
-    M3 pendulumRotation;
-
     float friction;
-    bool activeFriction;
-
     float length;
     float t;
+
+    M3 pendulumRotation;
     void onUpdate() override;
 };
 

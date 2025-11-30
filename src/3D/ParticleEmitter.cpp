@@ -114,7 +114,7 @@ void ParticleEmitter::draw()
             ) * delta;
 
             glm::vec3 maindir = direction.toGLM();
-            maindir = addNoiseToDirection(maindir, context.SMOKE_ANGLE_RANGE/2);
+            maindir = AddNoiseToDirection(maindir, context.SMOKE_ANGLE_RANGE/2);
 
             ParticlesContainer[particleIndex].speed = maindir * (Tools::random(context.MIN_VELOCITY, context.MAX_VELOCITY) * delta);
 
@@ -146,7 +146,7 @@ void ParticleEmitter::draw()
                 p.speed += glm::vec3(0.0f,context.GRAVITY, 0.0f) * delta;
 
                 // Generar factores de ruido para cada componente de glm::vec3
-                p.speed = addNoiseToDirection(p.speed, context.VELOCITY_NOISE/2);
+                p.speed = AddNoiseToDirection(p.speed, context.VELOCITY_NOISE/2);
 
                 p.speed *= context.DECELERATION_FACTOR;
 
@@ -254,7 +254,7 @@ int ParticleEmitter::FindUnusedParticle()
 }
 
 // Función para agregar ruido a un glm::vec3 que representa una dirección
-glm::vec3 ParticleEmitter::addNoiseToDirection(const glm::vec3& direction, int noiseRange) {
+glm::vec3 ParticleEmitter::AddNoiseToDirection(const glm::vec3& direction, int noiseRange) {
     // Generar ángulos de ruido en los tres ejes
     float noiseX = glm::radians(static_cast<float>(Tools::random(-noiseRange, noiseRange)));
     float noiseY = glm::radians(static_cast<float>(Tools::random(-noiseRange, noiseRange)));
@@ -272,23 +272,23 @@ glm::vec3 ParticleEmitter::addNoiseToDirection(const glm::vec3& direction, int n
 }
 
 ParticleEmitter *ParticleEmitter::create(
-    const Vertex3D &position,
+    const Vertex3D &p,
     float ttl,
     const Color &cf,
     const Color &ct,
-    ParticlesContext context,
-    const std::string& imageFile
+    ParticlesContext c,
+    const std::string& file
 )
 {
     auto *o = new ParticleEmitter(
         DEFAULT,
         nullptr,
-        position,
+        p,
         ttl,
         cf,
         ct,
-        context,
-        new Image(imageFile)
+        c,
+        new Image(file)
     );
 
     return o;

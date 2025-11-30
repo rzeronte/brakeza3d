@@ -44,7 +44,7 @@ void Mesh3DAnimation::onUpdate()
         if (BrakezaSetup::get()->ENABLE_LIGHTS) {
             render->getShaderOGLRenderDeferred()->renderMesh(this, true, window->getGBuffer().FBO);
             if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
-                shadowMappingPass();
+                ShadowMappingPass();
             }
         } else {
             render->getShaderOGLRenderForward()->renderMesh(this, true, window->getSceneFramebuffer());
@@ -64,7 +64,7 @@ void Mesh3DAnimation::onUpdate()
     }
 
     if (BrakezaSetup::get()->DRAW_MESH3D_AABB && isRender()) {
-        updateBoundingBox();
+        UpdateBoundingBox();
         Drawable::drawAABB(&aabb, Color::white());
     }
 
@@ -81,7 +81,7 @@ void Mesh3DAnimation::onUpdate()
     }
 
     if (BrakezaSetup::get()->DRAW_ANIMATION_BONES) {
-        drawBones(scene->mRootNode, nullptr);
+        DrawBones(scene->mRootNode, nullptr);
     }
 
     if (BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
@@ -159,7 +159,7 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
 {
     Logging::Message("AssimpLoadAnimation for %s", filename.c_str());
 
-    if (!Tools::fileExists(filename.c_str())) {
+    if (!Tools::FileExists(filename.c_str())) {
         Logging::Message("[AssimpLoadAnimation] ERROR: File not found %s", filename.c_str());
         return false;
     }
@@ -418,7 +418,7 @@ unsigned int Mesh3DAnimation::FindPosition(float AnimationTime, const aiNodeAnim
     return 0;
 }
 
-void Mesh3DAnimation::updateForBone(Vertex3D &V, int meshID, int vertexID)
+void Mesh3DAnimation::UpdateForBone(Vertex3D &V, int meshID, int vertexID)
 {
     if (numBones == 0) return;
 
@@ -510,7 +510,7 @@ void Mesh3DAnimation::CalcInterpolatedScaling(aiVector3D &Out, float AnimationTi
     Out = Start + Factor * Delta;
 }
 
-void Mesh3DAnimation::drawBones(aiNode *node, Vertex3D *lastBonePosition)
+void Mesh3DAnimation::DrawBones(aiNode *node, Vertex3D *lastBonePosition)
 {
     std::vector<aiMatrix4x4> Transforms;
     Transforms.resize(numBones);
@@ -546,7 +546,7 @@ void Mesh3DAnimation::drawBones(aiNode *node, Vertex3D *lastBonePosition)
     }
 
     for (int j = 0; j < static_cast<int>(node->mNumChildren); j++) {
-        drawBones(node->mChildren[j], lastBonePosition);
+        DrawBones(node->mChildren[j], lastBonePosition);
     }
 }
 
@@ -641,7 +641,7 @@ void Mesh3DAnimation::FillAnimationBoneDataOGLBuffers()
     }
 }
 
-void Mesh3DAnimation::updateBoundingBox()
+void Mesh3DAnimation::UpdateBoundingBox()
 {
     glm::mat4 mvpMatrix = getModelMatrix();
 
@@ -665,9 +665,9 @@ void Mesh3DAnimation::updateBoundingBox()
             Vertex3D V2 = meshVertices[i][v2Index];
             Vertex3D V3 = meshVertices[i][v3Index];
 
-            updateForBone(V1, i, static_cast<int>(v1Index));
-            updateForBone(V2, i, static_cast<int>(v2Index));
-            updateForBone(V3, i, static_cast<int>(v3Index));
+            UpdateForBone(V1, i, static_cast<int>(v1Index));
+            UpdateForBone(V2, i, static_cast<int>(v2Index));
+            UpdateForBone(V3, i, static_cast<int>(v3Index));
 
             vertices.emplace_back(V1);
             vertices.emplace_back(V2);
@@ -916,7 +916,7 @@ void Mesh3DAnimation::removeBonesColliderMapping(const std::string& name)
     }
 }
 
-void Mesh3DAnimation::resolveCollision(CollisionInfo with)
+void Mesh3DAnimation::ResolveCollision(CollisionInfo with)
 {
     if (BrakezaSetup::get()->LOG_COLLISION_OBJECTS) {
         auto *object = static_cast<Object3D *>(with.with);
@@ -931,11 +931,11 @@ void Mesh3DAnimation::resolveCollision(CollisionInfo with)
     }
 
     if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == BrakezaSetup::LUA_PLAY) {
-        runResolveCollisionScripts(with);
+        RunResolveCollisionScripts(with);
     }
 }
 
-void Mesh3DAnimation::shadowMappingPass()
+void Mesh3DAnimation::ShadowMappingPass()
 {
     auto render = ComponentsManager::get()->getComponentRender();
     auto shaderShadowPass = render->getShaderOGLShadowPass();

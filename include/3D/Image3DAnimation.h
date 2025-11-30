@@ -30,7 +30,7 @@ public:
     const char *getTypeIcon() override;
     void onUpdate() override;
     void setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation);
-    void LinkTextureIntoAnotherImage3DAnimation(Image3DAnimation *);
+    void LinkTextureIntoAnotherImage3DAnimation(const Image3DAnimation *);
     void addAnimation(const std::string& sprite, int w, int h, int numFrames, int fps);
     void setAnimation(int);
     void updateTexture();

@@ -11,22 +11,23 @@ class Component {
     int id = -1;
     std::string label;
     bool enabled = false;
+    float deltaTime = 0;
 protected:
     BrakezaSetup *SETUP;
 public:
     Component();
+    virtual ~Component();
     void setId(int newId);
     [[nodiscard]] const std::string &getLabel() const;
     void setLabel(const std::string &newLabel);
-    virtual void onStart() = 0;
-    virtual void preUpdate() = 0;
-    virtual void onUpdate() = 0;
-    virtual void postUpdate() = 0;
+    virtual void onStart();
+    virtual void preUpdate();
+    virtual void onUpdate();
+    virtual void postUpdate();
     virtual void onEnd() = 0;
     virtual void onSDLPollEvent(SDL_Event *event, bool &finish) = 0;
     [[nodiscard]] bool isEnabled() const;
     virtual void setEnabled(bool value);
-    virtual ~Component();
 };
 
 

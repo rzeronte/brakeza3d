@@ -3,60 +3,60 @@
 #include "../../include/Render/Image.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/Logging.h"
-#include "../../include/Render/Maths.h"
+#include "../../include/Misc/ToolsMaths.h"
 #include "../../include/Components/ComponentsManager.h"
 
 
 Image::Image(const std::string& filename)
 {
-    loadTGA(filename);
+    setImage(filename);
 }
 
 Image::Image(SDL_Surface *surface, SDL_Texture *texture)
 :
     loaded(true),
-    textureId(makeOGLImage(surface)),
+    textureId(MakeOGLImage(surface)),
     surface(surface),
     texture(texture)
 {
 }
 
-void Image::createEmpty(int w, int h)
+void Image::setImage(const std::string &filename)
 {
-    SDL_CreateRGBSurface(SDL_PIXELFORMAT_RGBA32, w, h, 32, 0, 0, 0, 0);
-    loaded = true;
-}
-
-void Image::loadTGA(const std::string& filename)
-{
-    if (Tools::fileExists(filename.c_str())) {
-        surface = IMG_Load(filename.c_str());
-        texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
-
-        SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-        textureId = makeOGLImage(surface);
-
-        fileName = filename;
-        loaded = true;
-
-        Logging::Message("Loading Image file (%s) (%dx%d)", filename.c_str(), width(), height());
-
-        return;
+    if (!Tools::FileExists(filename.c_str())) {
+        Logging::Message("[Image] Error loading file '%s'", filename.c_str());
+        exit(-1);
     }
 
-    std::cout << "Error loading TGA texture '%s'" << filename.c_str() << std::endl;
-    Logging::Message("Error loading TGA texture '%s'", filename.c_str());
+    if (texture != nullptr) {
+        Profiler::get()->RemoveImage(this);
+        SDL_DestroyTexture(texture);
+        SDL_FreeSurface(surface);
+    }
 
-    exit(-1);
+    surface = IMG_Load(filename.c_str());
+    texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
+
+    if (textureId == 0 ) {
+        glDeleteTextures(1, &textureId);
+        SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+        textureId = MakeOGLImage(surface);
+    }
+
+    fileName = filename;
+    loaded = true;
+
+    Logging::Message("[Image] Loading '%s'", filename.c_str());
+    Profiler::get()->AddImage(this);
 }
 
-void Image::drawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint fbo)
+void Image::DrawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint fbo)
 {
     setAlpha(alpha);
-    drawFlat(pos_x, pos_y, fbo);
+    DrawFlat(pos_x, pos_y, fbo);
 }
 
-void Image::drawFlat(int pos_x, int pos_y, GLuint fbo) const
+void Image::DrawFlat(int pos_x, int pos_y, GLuint fbo) const
 {
     if (!loaded) return;
 
@@ -89,7 +89,7 @@ void Image::drawFlat(int pos_x, int pos_y, GLuint fbo) const
     );
 }
 
-void Image::loadFromRaw(const unsigned int *texture, int w, int h)
+void Image::LoadFromRaw(const unsigned int *texture, int w, int h)
 {
     this->surface = SDL_CreateRGBSurface(0, h, w, 32, 0, 0, 0, 0);
 
@@ -98,7 +98,6 @@ void Image::loadFromRaw(const unsigned int *texture, int w, int h)
             Tools::SurfacePutPixel(surface, x, y, texture[y + x * w]);
         }
     }
-
 }
 
 int Image::width() const
@@ -123,16 +122,16 @@ bool Image::isLoaded() const
 
 float Image::getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C) const
 {
-    float tx0 = Tools::getXTextureFromUV(surface, A.u / surface->w);
-    float ty0 = Tools::getYTextureFromUV(surface, A.v / surface->h);
+    float tx0 = Tools::getXTextureFromUV(surface, A.u / (float) surface->w);
+    float ty0 = Tools::getYTextureFromUV(surface, A.v / (float) surface->h);
 
-    float tx1 = Tools::getXTextureFromUV(surface, B.u / surface->w);
-    float ty1 = Tools::getYTextureFromUV(surface, B.v / surface->h);
+    float tx1 = Tools::getXTextureFromUV(surface, B.u / (float) surface->w);
+    float ty1 = Tools::getYTextureFromUV(surface, B.v / (float) surface->h);
 
-    float tx2 = Tools::getXTextureFromUV(surface, C.u / surface->w);
-    float ty2 = Tools::getYTextureFromUV(surface, C.v / surface->h);
+    float tx2 = Tools::getXTextureFromUV(surface, C.u / (float) surface->w);
+    float ty2 = Tools::getYTextureFromUV(surface, C.v / (float) surface->h);
 
-    float area = Maths::TriangleArea(tx0, ty0, tx1, ty1, tx2, ty2);
+    float area = ToolsMaths::TriangleArea(tx0, ty0, tx1, ty1, tx2, ty2);
 
     return area;
 }
@@ -147,55 +146,29 @@ SDL_Texture *Image::getTexture() const
     return texture;
 }
 
-const std::string &Image::getFileName() const {
+const std::string &Image::getFileName() const
+{
     return fileName;
 }
 
 Image::~Image()
 {
+    Profiler::get()->RemoveImage(this);
+
     if (loaded) {
         SDL_FreeSurface(surface);
         SDL_DestroyTexture(texture);
         glDeleteTextures(1, &textureId);
-
     }
 }
 
 Color Image::getColor(const int x, const int y) const
 {
-    uint32_t *pixels = static_cast<uint32_t *>(this->pixels());
+    auto pixels = static_cast<uint32_t *>(this->pixels());
 
     const int index = y * this->surface->w + x;
 
     return Color(pixels[index]);
-}
-
-void Image::setImage(const std::string &filename)
-{
-    if (Tools::fileExists(filename.c_str())) {
-
-        if (this->texture != nullptr) {
-            SDL_DestroyTexture(this->texture);
-            SDL_FreeSurface(this->surface);
-            this->surface = IMG_Load(filename.c_str());
-            this->texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
-        }
-
-        if (textureId == 0 ) {
-            SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-            glDeleteTextures(1, &textureId);
-            textureId = makeOGLImage(surface);
-        }
-
-        this->fileName = filename;
-        this->loaded = true;
-        Logging::Message("Loading TGA texture '%s'", filename.c_str());
-
-        return;
-    }
-
-    Logging::Message("Error loading TGA texture '%s'", filename.c_str());
-    exit(-1);
 }
 
 GLuint Image::getOGLTextureID() const
@@ -208,7 +181,7 @@ ImTextureID Image::getOGLImTexture() const
     return reinterpret_cast<ImTextureID>(textureId);
 }
 
-GLuint Image::makeOGLImage(const SDL_Surface *surfaceTTF)
+GLuint Image::MakeOGLImage(const SDL_Surface *surfaceTTF)
 {
     GLuint texID;
     glGenTextures(1, &texID);
@@ -219,7 +192,7 @@ GLuint Image::makeOGLImage(const SDL_Surface *surfaceTTF)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    GLenum Mode = GL_RGB;
+    GLint Mode = GL_RGB;
     if (surfaceTTF->format->BytesPerPixel == 4) {
         Mode = GL_RGBA;
     }

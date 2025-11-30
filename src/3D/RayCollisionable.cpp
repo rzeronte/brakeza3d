@@ -18,7 +18,7 @@ RayCollisionable::RayCollisionable(const Vertex3D &ray, int filterGroup, int fil
     rayCallback->m_closestHitFraction = 1.1;
 }
 
-void RayCollisionable::integrate()
+void RayCollisionable::Integrate()
 {
     Vertex3D start = getPosition();
     Vertex3D end = start + this->ray;
@@ -53,7 +53,7 @@ void RayCollisionable::hasHit()
     rayCallback->m_collisionObject = nullptr;
 }
 
-void RayCollisionable::resolveCollision(CollisionInfo objectWithCollision)
+void RayCollisionable::ResolveCollision(CollisionInfo objectWithCollision)
 {
     Logging::Message("Collision with ray!");
 }

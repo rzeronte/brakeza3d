@@ -5,7 +5,6 @@
 #ifndef BRAKEDA3D_PARTICLEEMISSOR_H
 #define BRAKEDA3D_PARTICLEEMISSOR_H
 
-#include <vector>
 #include "Object3D.h"
 #include "../Misc/Counter.h"
 #include "../Render/Color.h"
@@ -63,21 +62,13 @@ public:
     void draw();
     void setTexture(Image *texture);
     void postUpdate() override;
-    glm::vec3 addNoiseToDirection(const glm::vec3 &direction, int noiseRange);
+    glm::vec3 AddNoiseToDirection(const glm::vec3 &direction, int noiseRange);
     [[nodiscard]] bool isActive() const;
     [[nodiscard]] ParticlesContext& getContextPointer();
     [[nodiscard]] Color getColorTo() const;
     [[nodiscard]] Color getColorFrom() const;
     [[nodiscard]] Image * getTexture() const;
-    static ParticleEmitter* create(
-        const Vertex3D &position,
-        float ttl,
-        const Color &cf,
-        const Color &ct,
-        ParticlesContext context,
-        const std::string& imageFile
-    );
-
+    static ParticleEmitter* create(const Vertex3D &p, float ttl, const Color &cf, const Color &ct, ParticlesContext c, const std::string& file);
     friend class ParticleEmitterSerializer;
     friend class ParticleEmitterGUI;
 };

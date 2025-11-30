@@ -12,14 +12,17 @@ ComponentsManager *ComponentsManager::get()
     return instance;
 }
 
-void ComponentsManager::registerComponent(Component *component, const std::string& label)
+void ComponentsManager::RegisterComponent(Component *component, const std::string& label)
 {
-    component->setId(components.size());
+    Logging::Message("[ComponentsManager] Register Profile measure for: %s", component->getLabel().c_str());
+
+    component->setId((int) components.size());
     component->setLabel(label);
 
     components.push_back(component);
-
-    Logging::Message("Register component: %s", component->getLabel().c_str());
+    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), component->getLabel() + "_pre");
+    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(),component->getLabel() + "_update");
+    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), component->getLabel() + "_post");
 }
 
 ComponentsManager::~ComponentsManager()
@@ -28,5 +31,3 @@ ComponentsManager::~ComponentsManager()
         delete component;
     }
 }
-
-

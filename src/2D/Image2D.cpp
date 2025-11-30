@@ -28,7 +28,7 @@ void Image2D::onUpdate()
     const auto w = image->width();
     const auto h = image->height();
 
-    image->drawFlatAlpha(
+    image->DrawFlatAlpha(
         x - w/2,
         y - h/2,
         alpha,

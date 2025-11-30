@@ -5,21 +5,24 @@
 
 ComponentSound::ComponentSound()
 {
-    initSoundSystem();
+    InitSoundSystem();
 }
 
 void ComponentSound::onStart()
 {
-    Logging::Message("ComponentSound onStart");
+    Component::onStart();
+
     LoadSoundsConfigFile();
 }
 
 void ComponentSound::preUpdate()
 {
+    Component::preUpdate();
 }
 
-void ComponentSound::onUpdate() {
-
+void ComponentSound::onUpdate()
+{
+    Component::onUpdate();
 }
 
 void ComponentSound::onEnd()
@@ -27,16 +30,18 @@ void ComponentSound::onEnd()
     Mix_Quit();
 }
 
-void ComponentSound::postUpdate() {
-
-}
-
-void ComponentSound::onSDLPollEvent(SDL_Event *e, bool &finish) {
-}
-
-void ComponentSound::initSoundSystem()
+void ComponentSound::postUpdate()
 {
-    Logging::Message("Init Sound System");
+    Component::postUpdate();
+}
+
+void ComponentSound::onSDLPollEvent(SDL_Event *e, bool &finish)
+{
+}
+
+void ComponentSound::InitSoundSystem() const
+{
+    Logging::Message("[ComponentSound] Init Sound System...");
 
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
@@ -51,15 +56,15 @@ void ComponentSound::initSoundSystem()
 void ComponentSound::LoadSoundsConfigFile()
 {
     auto filePath = BrakezaSetup::get()->CONFIG_FOLDER + BrakezaSetup::get()->DEFAULT_SOUNDS_FILE;
-    Logging::Message("Loading Sounds (%s)", filePath.c_str());
+    Logging::Message("[ComponentSound] Loading Sounds file: (%s)", filePath.c_str());
 
     size_t file_size;
-    auto contentFile = Tools::readFile(filePath, file_size);
+    auto contentFile = Tools::ReadFile(filePath, file_size);
 
     cJSON *myDataJSON = cJSON_Parse(contentFile);
 
     if (myDataJSON == nullptr) {
-        Logging::Message("Cannot load sounds JSON file!");
+        Logging::Message("ComponentSound] ERROR: Cannot load sounds JSON file!");
         return;
     }
 
@@ -74,7 +79,7 @@ void ComponentSound::LoadSoundsConfigFile()
         if (strcmp(type->valuestring, "music") == 0) selectedType = MUSIC;
         if (strcmp(type->valuestring, "playSound") == 0) selectedType = SOUND;
 
-        Logging::Message("Loading sound file: %s", file->valuestring);
+        Logging::Message("[ComponentSound] Loading sound file: %s", file->valuestring);
 
         soundPackage.addItem(BrakezaSetup::get()->SOUNDS_FOLDER + file->valuestring, label->valuestring, selectedType);
     }

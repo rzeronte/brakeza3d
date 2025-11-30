@@ -21,7 +21,7 @@ ComponentRender::~ComponentRender()
 
 void ComponentRender::onStart()
 {
-    Logging::Message("ComponentRender onStart");
+    Component::onStart();
 
     setEnabled(true);
 
@@ -51,6 +51,8 @@ void ComponentRender::onStart()
 
 void ComponentRender::preUpdate()
 {
+    Component::preUpdate();
+
     ClearShadowMaps();
 
     this->updateFPS();
@@ -62,11 +64,13 @@ void ComponentRender::preUpdate()
 
 void ComponentRender::DrawFPS() const
 {
-    textWriter->writeTextTTFAutoSize(10, 10, std::to_string(getFps()).c_str(), Color::white(), 1.0f);
+    textWriter->WriteTextTTFAutoSize(10, 10, std::to_string(getFps()).c_str(), Color::white(), 1.0f);
 }
 
 void ComponentRender::onUpdate()
 {
+    Component::onUpdate();
+
     if (!isEnabled()) return;
 
     shaderOGLRender->createUBOFromLights();
@@ -99,6 +103,8 @@ void ComponentRender::onUpdate()
 
 void ComponentRender::postUpdate()
 {
+    Component::postUpdate();
+
     std::vector<Object3D *> sceneObjects = Brakeza::get()->getSceneObjects();
 
     std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
@@ -283,10 +289,12 @@ void ComponentRender::setSceneShadersEnabled(bool value)
 
 void ComponentRender::RunShadersOpenGLPostUpdate() const
 {
+    Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
     for (auto s: sceneShaders) {
         if (!s->isEnabled()) continue;
         s->postUpdate();
     }
+    Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
 }
 
 void ComponentRender::removeSceneShaderByIndex(int index) {
@@ -311,10 +319,14 @@ void ComponentRender::removeSceneShader(const ShaderOGLCustom *shader)
 
 void ComponentRender::RunShadersOpenGLPreUpdate() const
 {
+    Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
+
     for( auto s: sceneShaders) {
         if (!s->isEnabled()) continue;
         s->onUpdate();
     }
+    Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
+
 }
 
 ShaderOGLCustom *ComponentRender::getSceneShaderByIndex(int i) const
@@ -575,6 +587,8 @@ void ComponentRender::ClearShadowMaps() const
 
 void ComponentRender::RenderLayersToGlobalFramebuffer() const
 {
+    Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobalFramebuffer");
+
     auto window = ComponentsManager::get()->getComponentWindow();
     auto gBuffer = window->getGBuffer();
     auto globalBuffer = window->getGlobalBuffers();
@@ -625,4 +639,6 @@ void ComponentRender::RenderLayersToGlobalFramebuffer() const
             window->getPickingColorFramebuffer().rbgTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO
         );
     }
+
+    Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobalFramebuffer");
 }

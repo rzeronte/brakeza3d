@@ -89,14 +89,14 @@ void Mesh3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
             switch (mode) {
                 case GHOST:
                     if (shape == SIMPLE_SHAPE) {
-                        mesh->setupGhostCollider(SIMPLE_SHAPE);
+                        mesh->SetupGhostCollider(SIMPLE_SHAPE);
                     }
                     if (shape == CAPSULE) {
-                        mesh->setupGhostCollider(CAPSULE);
+                        mesh->SetupGhostCollider(CAPSULE);
                     }
 
                     if (shape == TRIANGLE_MESH_SHAPE) {
-                        mesh->setupGhostCollider(TRIANGLE_MESH_SHAPE);
+                        mesh->SetupGhostCollider(TRIANGLE_MESH_SHAPE);
                     }
                     break;
                 case BODY:

@@ -65,7 +65,7 @@ inline void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<Object3D>(
         "Object3D",
-        "addToPosition", &Object3D::addToPosition,
+        "addToPosition", &Object3D::AddToPosition,
         "getPosition", &Object3D::getPosition,
         "setPosition", &Object3D::setPosition,
         "setRotation", &Object3D::setRotation,
@@ -80,9 +80,9 @@ inline void LUAIntegration(sol::state &lua)
         "setScale", &Object3D::setScale,
         "getModelMatrix", &Object3D::getModelMatrix,
         "getM3ModelMatrix", &Object3D::getM3ModelMatrix,
-        "AxisForward", &Object3D::AxisForward,
-        "AxisUp", &Object3D::AxisUp,
-        "AxisRight", &Object3D::AxisRight,
+        "AxisForward", &Object3D::forward,
+        "AxisUp", &Object3D::up,
+        "AxisRight", &Object3D::right,
         "removeCollisionObject", &Object3D::removeCollisionObject,
         "sleepCollider", &Object3D::sleepCollider,
         "setCollisionsEnabled", &Object3D::setCollisionsEnabled,
@@ -95,7 +95,7 @@ inline void LUAIntegration(sol::state &lua)
         "moveCollider", &Object3D::moveCollider,
         "isCollisionsEnabled", &Object3D::isCollisionsEnabled,
         "setDrawOffset", &Object3D::setDrawOffset,
-        "setupGhostCollider", &Object3D::setupGhostCollider,
+        "setupGhostCollider", &Object3D::SetupGhostCollider,
         "setupRigidBodyCollider", &Object3D::setupRigidBodyCollider,
         "setColliderStatic", &Object3D::setColliderStatic,
         "applyCentralForce", &Object3D::applyCentralForce,
@@ -115,9 +115,9 @@ inline void LUAIntegration(sol::state &lua)
         "jump", &Object3D::jump,
         "onGround", &Object3D::onGround,
         "getLocalScriptVar", &Object3D::getLocalScriptVar,
-        "attachScript", &Object3D::attachScript,
-        "lookAt", &Object3D::lookAt,
-        "reloadScriptsEnvironment", &Object3D::reloadScriptsEnvironment,
+        "attachScript", &Object3D::AttachScript,
+        "lookAt", &Object3D::LookAt,
+        "reloadScriptsEnvironment", &Object3D::ReloadScriptsEnvironment,
         "getLinearVelocity", &Object3D::getLinearVelocity
     );
 
@@ -279,7 +279,7 @@ inline void LUAIntegration(sol::state &lua)
         "getNumberCubesZ", &Grid3D::getNumberCubesZ,
         "getBoxes", &Grid3D::getBoxes,
         "setTravel", &Grid3D::setTravel,
-        "makeTravelCubesGrid", &Grid3D::makeTravelCubesGrid
+        "makeTravelCubesGrid", &Grid3D::MakeTravelCubesGrid
     );
 
     lua.new_usertype<Mesh3D>("Mesh3D",
@@ -444,10 +444,10 @@ inline void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<TextWriter>(
         "TextWriter",
-        "writeTextTTFAutoSize", &TextWriter::writeTextTTFAutoSize,
-        "writeTextTTF", &TextWriter::writeTextTTF,
-        "writeTextTTFMiddleScreen", &TextWriter::writeTextTTFMiddleScreen,
-        "writeTTFCenterHorizontal", &TextWriter::writeTTFCenterHorizontal,
+        "writeTextTTFAutoSize", &TextWriter::WriteTextTTFAutoSize,
+        "writeTextTTF", &TextWriter::WriteTextTTF,
+        "writeTextTTFMiddleScreen", &TextWriter::WriteTextTTFMiddleScreen,
+        "writeTTFCenterHorizontal", &TextWriter::WriteTTFCenterHorizontal,
         "getAlpha", &TextWriter::getAlpha,
         "setAlpha", &TextWriter::setAlpha,
         "setFont", &TextWriter::setFont,

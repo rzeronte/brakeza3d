@@ -1,6 +1,6 @@
 
 #include "../../include/Render/Plane.h"
-#include "../../include/Render/Maths.h"
+#include "../../include/Misc/ToolsMaths.h"
 
 Plane::Plane() = default;
 
@@ -104,7 +104,7 @@ bool Plane::isFrontFacingTo(Vertex3D direction) const {
 }
 
 bool Plane::intersect(Vector3D ray, float &t) {
-    if (Maths::isVector3DClippingPlane(*this, ray)) {
+    if (ToolsMaths::isVector3DClippingPlane(*this, ray)) {
         this->getPointIntersection(ray.origin(), ray.end(), t);
 
         return true;

@@ -2,7 +2,7 @@
 #include "../../include/3D/Image3DAnimation8Directions.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/Misc/Logging.h"
-#include "../../include/Render/Maths.h"
+#include "../../include/Misc/ToolsMaths.h"
 #include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/Image3DAnimation8DirectionsGUI.h"
@@ -13,7 +13,7 @@ Image3DAnimation8Directions::Image3DAnimation8Directions(const Vertex3D &positio
     width(width),
     height(height)
 {
-    this->counterAnimations = new Counter();
+    counterAnimations = new Counter();
 
     /*for (auto & animation : this->animations) {
         animation = new TextureAnimatedDirectional();
@@ -24,22 +24,22 @@ void Image3DAnimation8Directions::onUpdate()
 {
     if (static_cast<int>(animations.size()) <= 0) return;
 
-    this->updateTrianglesCoordinates(ComponentsManager::get()->getComponentCamera()->getCamera());
+    UpdateTrianglesCoordinates(ComponentsManager::get()->getComponentCamera()->getCamera());
 
     ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->render(
-            this,
-            billboard->getImage()->getOGLTextureID(),
-            billboard->getImage()->getOGLTextureID(),
-            billboard->getVertexBuffer(),
-            billboard->getUVBuffer(),
-            billboard->getNormalBuffer(),
-            static_cast<int>(billboard->getVertices().size()),
-            1.0f,
-            ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+        this,
+        billboard->getImage()->getOGLTextureID(),
+        billboard->getImage()->getOGLTextureID(),
+        billboard->getVertexBuffer(),
+        billboard->getUVBuffer(),
+        billboard->getNormalBuffer(),
+        static_cast<int>(billboard->getVertices().size()),
+        1.0f,
+        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 }
 
-void Image3DAnimation8Directions::updateTrianglesCoordinates(Camera3D *cam)
+void Image3DAnimation8Directions::UpdateTrianglesCoordinates(Camera3D *cam)
 {
     updateTextureFromCameraAngle(this, cam);
 }
@@ -55,35 +55,30 @@ void Image3DAnimation8Directions::addAnimationDirectional2D(
     Logging::Message("Adding TextureAnimatedDirectional to SpriteDirectional(%s)...", animation_folder.c_str(), getLabel().c_str());
     auto animation = new TextureAnimatedDirectional();
 
-    animation->setup(
-        animation_folder,
-        numFrames,
-        fps,
-        maxTimes
-    );
+    animation->LoadAnimationFile(animation_folder, numFrames, fps, maxTimes);
 
     if (!zeroDirection) {
-        animation->loadImages();
+        animation->LoadImages();
     } else {
-        animation->loadImagesForZeroDirection();
+        animation->LoadImagesForZeroDirection();
         animation->setIsZeroDirection(true);
     }
 
     animations.push_back(animation);
 }
 
-void Image3DAnimation8Directions::updateTextureFromCameraAngle(Object3D *o, Camera3D *cam)
+void Image3DAnimation8Directions::updateTextureFromCameraAngle(Object3D *o, Camera3D *cam) const
 {
     if (animations.empty()) return;
 
-    float enemyAngle = Maths::getHorizontalAngleBetweenObject3DAndCamera(o, cam);
+    float enemyAngle = ToolsMaths::getHorizontalAngleBetweenObject3DAndCamera(o, cam);
     int direction = getDirectionForAngle(enemyAngle);
 
     counterAnimations->update();
 
     if (counterAnimations->isFinished()) {
         counterAnimations->setEnabled(true);
-        getCurrentTextureAnimationDirectional()->nextFrame();
+        getCurrentTextureAnimationDirectional()->NextFrame();
     }
 
     if (getCurrentTextureAnimationDirectional()->hasZeroDirection()) {
@@ -130,8 +125,8 @@ int Image3DAnimation8Directions::getDirectionForAngle(float enemyAngle)
 
 void Image3DAnimation8Directions::updateStep()
 {
-    step = 1 / this->getCurrentTextureAnimationDirectional()->getFps();
-    this->counterAnimations->setStep(step);
+    step = 1.0f / (float) this->getCurrentTextureAnimationDirectional()->getFps();
+    counterAnimations->setStep(step);
 }
 
 void Image3DAnimation8Directions::DrawPropertiesGUI()
@@ -157,7 +152,7 @@ void Image3DAnimation8Directions::updateBillboardSize() const
 }
 
 Image3DAnimation8Directions* Image3DAnimation8Directions::create(
-        Vertex3D position,
+        const Vertex3D &position,
         float width,
         float height,
         const std::string &folderSprite,

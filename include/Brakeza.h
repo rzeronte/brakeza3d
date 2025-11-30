@@ -34,8 +34,8 @@ public:
     void UpdateTimer();
     void onStartComponents() const;
     void PreUpdateComponents() const;
-    void onUpdateComponents() const;
-    void postUpdateComponents() const;
+    void OnUpdateComponents() const;
+    void PostUpdateComponents() const;
     void onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish) const;
     void onEndComponents() const;
     void handleAutoStartProject(bool autostart, const std::string &project) const;
@@ -43,7 +43,7 @@ public:
     void ControlFrameRate() const;
     void CaptureInputEvents(SDL_Event &e);
     void shutdown();
-    static void welcomeMessage();
+    static void WelcomeMessage();
     static void checkForResizeOpenGLWindow(const SDL_Event &e);
     static std::string uniqueObjectLabel(const char *prefix);
     static Brakeza *get();

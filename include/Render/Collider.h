@@ -8,7 +8,6 @@
 #include "CollisionInfo.h"
 #include <glm/vec2.hpp>
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
-#include <vector>
 
 enum CollisionShape {
     SIMPLE_SHAPE = 0,
@@ -30,6 +29,8 @@ public:
     Vertex3D linearFactor;
 
 protected:
+    ~Collider() = default;
+
     bool collisionsEnabled;
 
     CollisionMode collisionMode;
@@ -54,126 +55,63 @@ protected:
     glm::vec2 kinematicCapsuleSize;
     btKinematicCharacterController *characterController;
 public:
-    Collider();
-
-    virtual void resolveCollision(CollisionInfo o);
-    virtual void integrate();
-
-    [[nodiscard]] bool isCollisionsEnabled() const;
-    void setCollisionsEnabled(bool value);
-
-    [[nodiscard]] CollisionMode getCollisionMode() const;
-    void setCollisionMode(CollisionMode collisionMode);
-
-    [[nodiscard]] CollisionShape getCollisionShape() const;
-    void setCollisionShape(CollisionShape collisionShape);
-
-    void removeCollisionObject();
-
-    virtual void setupGhostCollider(CollisionShape mode) = 0;
-
-    virtual void setupRigidBodyCollider(CollisionShape shapeMode);
-
-    virtual void setupKinematicCollider();
-
-    virtual //ghost
-    void makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
-    void makeSimpleGhostBody(
-        Vertex3D position,
-        glm::mat4 modelMatrix,
-        Vertex3D dimensions,
-        btDiscreteDynamicsWorld *world,
-        int collisionGroup,
-        int collisionMask
-    );
-
-    [[nodiscard]] btPairCachingGhostObject *getGhostObject() const;
-    [[nodiscard]] btRigidBody *getRigidBody() const;
-
-    void drawImGuiCollisionModeSelector();
-
-    virtual void drawImGuiCollisionShapeSelector();
-
-    void drawImGuiVariables();
-
     CollisionShape collisionShape;
 
-    virtual void makeSimpleRigidBody(
-        float mass,
-        btDiscreteDynamicsWorld *world,
-        int collisionGroup,
-        int collisionMask
-    );
+    Collider();
 
-    virtual void makeKineticBody(
-        float x,
-        float y,
-        btDiscreteDynamicsWorld *world,
-        int collisionGroup,
-        int collisionMask
-    );
-
-    [[nodiscard]] float getMass() const;
-
+    void setCollisionsEnabled(bool value);
+    void setCollisionMode(CollisionMode collisionMode);
+    void setCollisionShape(CollisionShape collisionShape);
+    void removeCollisionObject();
+    void makeSimpleGhostBody(Vertex3D position, glm::mat4 modelMatrix, Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
+    void drawImGuiCollisionModeSelector();
+    void drawImGuiVariables();
     void setMass(float mass);
-
     void applyImpulse(Vertex3D f, Vertex3D rel);
     void applyCentralForce(Vertex3D f);
     void applyCentralImpulse(Vertex3D f);
-
-    [[nodiscard]] bool isColliderStatic() const;
-
     void setColliderStatic(bool colliderStatic);
-
     void UpdateShapeCollider();
-
     void setLinearVelocity(Vertex3D f);
-
     void setCapsuleColliderSize(float x, float y);
-
     void setWalkingDirection(Vertex3D d);
-
     void jump(Vertex3D d);
-
     bool onGround();
-
     void setAngularFactor(const Vertex3D &angularFactor);
-
     void setFriction(float friction);
-
-    [[nodiscard]] Vertex3D getLinearVelocity() const;
-
     void setLinearDamping(float linearDamping);
-
     void setAngularDamping(float angularDamping);
-
     void setRestitution(float restitution);
-
     void setShapeMargin(float shapeMargin);
-
     void setCcdMotionThreshold(float ccdMotionThreshold);
-
     void setCcdSweptSphereRadius(float ccdSweptSphereRadius);
-
     void sleepCollider();
-
     void disableSimulationCollider();
-
     void enableSimulationCollider();
-
     void disableDeactivationCollider();
-
     void setAngularVelocity(Vertex3D f);
-
     void setGravityCollider(Vertex3D g);
-
     void setLinearFactor(Vertex3D linearFactor);
-
     void setScalingCollider(Vertex3D v);
-
     void moveCollider(Vertex3D v);
-
     void setSimpleShapeSize(const Vertex3D &simple_shape_size);
+    virtual void ResolveCollision(CollisionInfo o);
+    virtual void Integrate();
+    virtual void SetupGhostCollider(CollisionShape mode) = 0;
+    virtual void setupRigidBodyCollider(CollisionShape shapeMode);
+    virtual void setupKinematicCollider();
+    virtual void makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
+    virtual void drawImGuiCollisionShapeSelector();
+    virtual void MakeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
+    virtual void MakeKineticBody(float x, float y, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
+    [[nodiscard]] Vertex3D getLinearVelocity() const;
+    [[nodiscard]] float getMass() const;
+    [[nodiscard]] bool isColliderStatic() const;
+    [[nodiscard]] btPairCachingGhostObject *getGhostObject() const;
+    [[nodiscard]] btRigidBody *getRigidBody() const;
+    [[nodiscard]] bool isCollisionsEnabled() const;
+    [[nodiscard]] CollisionMode getCollisionMode() const;
+    [[nodiscard]] CollisionShape getCollisionShape() const;
 };
 
 

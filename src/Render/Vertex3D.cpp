@@ -2,7 +2,7 @@
 #include <cmath>
 #include "../../include/3D/Vertex3D.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/Render/Maths.h"
+#include "../../include/Misc/ToolsMaths.h"
 
 Vertex3D::Vertex3D() : x(0), y(0), z(0), u(0), v(0)
 {
@@ -68,7 +68,7 @@ bool Vertex3D::operator!=(const Vertex3D &v) const
 
 Vertex3D Vertex3D::getNormalize() const
 {
-    const float modulo = abs(Maths::sqrt1((this->x * this->x) + (this->y * this->y) + (this->z * this->z)));
+    const float modulo = abs(ToolsMaths::sqrt1((this->x * this->x) + (this->y * this->y) + (this->z * this->z)));
     const float inv_module = 1 / modulo;
     Vertex3D C = Vertex3D(x, y, z).getScaled(inv_module);
     C.u = this->u;

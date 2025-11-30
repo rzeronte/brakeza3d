@@ -9,6 +9,7 @@
 #include "ComponentSound.h"
 #include "ComponentWindow.h"
 #include "ComponentScripting.h"
+#include "../Render/Profiler.h"
 
 enum ComponentID {
     COMPONENT_WINDOW = 0,
@@ -24,51 +25,22 @@ class ComponentsManager
 {
     std::vector<Component *> components;
     static ComponentsManager *instance;
-
 public:
 
     static ComponentsManager *get();
     virtual ~ComponentsManager();
 
-    void registerComponent(Component *component, const std::string& label);
-    ComponentCamera *getComponentCamera()
-    {
-        return dynamic_cast<ComponentCamera *>(components[COMPONENT_CAMERA]);
-    }
+    void RegisterComponent(Component *component, const std::string& label);
 
-    ComponentCollisions *getComponentCollisions()
-    {
-        return dynamic_cast<ComponentCollisions *>(components[COMPONENT_COLLISIONS]);
-    }
+    ComponentCamera *getComponentCamera()           { return dynamic_cast<ComponentCamera *>(components[COMPONENT_CAMERA]); }
+    ComponentCollisions *getComponentCollisions()   { return dynamic_cast<ComponentCollisions *>(components[COMPONENT_COLLISIONS]); }
+    ComponentWindow *getComponentWindow()           { return dynamic_cast<ComponentWindow *>(components[COMPONENT_WINDOW]); }
+    ComponentRender *getComponentRender()           { return dynamic_cast<ComponentRender *>(components[COMPONENT_RENDER]); }
+    ComponentInput *getComponentInput()             { return dynamic_cast<ComponentInput *>(components[COMPONENT_INPUT]); }
+    ComponentSound *getComponentSound()             { return dynamic_cast<ComponentSound *>(components[COMPONENT_SOUND]); }
+    ComponentScripting *getComponentScripting()     { return dynamic_cast<ComponentScripting *>(components[COMPONENT_SCRIPTING]); }
 
-    ComponentWindow *getComponentWindow()
-    {
-        return dynamic_cast<ComponentWindow *>(components[COMPONENT_WINDOW]);
-    }
-
-    ComponentRender *getComponentRender()
-    {
-        return dynamic_cast<ComponentRender *>(components[COMPONENT_RENDER]);
-    }
-
-    ComponentInput *getComponentInput()
-    {
-        return dynamic_cast<ComponentInput *>(components[COMPONENT_INPUT]);
-    }
-
-    ComponentSound *getComponentSound()
-    {
-        return dynamic_cast<ComponentSound *>(components[COMPONENT_SOUND]);
-    }
-
-    ComponentScripting *getComponentScripting()
-    {
-        return dynamic_cast<ComponentScripting *>(components[COMPONENT_SCRIPTING]);
-    }
-
-    [[nodiscard]] std::vector<Component *> Components() const {
-        return components;
-    }
+    [[nodiscard]] std::vector<Component *> Components() const {return components;}
 };
 
 #endif //BRAKEDA3D_COMPONENTSMANAGER_H

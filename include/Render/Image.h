@@ -23,26 +23,24 @@ public:
     Image(SDL_Surface *surface, SDL_Texture *texture);
     explicit Image(const std::string& filename);
 
-    int height() const;
-    float getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C) const;
-    void loadFromRaw(const unsigned int *texture, int w, int h);
-    void drawFlat(int, int, GLuint framebuffer) const;
-    void drawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint framebuffer);
-    void loadTGA(const std::string& filename);
-    void* pixels() const;
-    bool isLoaded() const;
-    void createEmpty(int w, int h);
+    void LoadFromRaw(const unsigned int *texture, int w, int h);
+    void DrawFlat(int, int, GLuint framebuffer) const;
+    void DrawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint framebuffer);
     void setAlpha(float alpha);
     void setImage(const std::string &basicString);
-    Color getColor(int x, int y) const;
-    SDL_Texture *getTexture() const;
-    ImTextureID getOGLImTexture() const;
+    [[nodiscard]] bool isLoaded() const;
     [[nodiscard]] float getAlpha() const;
+    [[nodiscard]] int height() const;
+    [[nodiscard]] int width() const;
+    [[nodiscard]] void* pixels() const;
+    [[nodiscard]] float getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C) const;
+    [[nodiscard]] Color getColor(int x, int y) const;
+    [[nodiscard]] SDL_Texture *getTexture() const;
+    [[nodiscard]] ImTextureID getOGLImTexture() const;
     [[nodiscard]] GLuint getOGLTextureID() const;
     [[nodiscard]] const std::string &getFileName() const;
     [[nodiscard]] SDL_Surface *getSurface() const;
-    [[nodiscard]] int width() const;
-    static GLuint makeOGLImage(const SDL_Surface *surfaceTTF);
+    static GLuint MakeOGLImage(const SDL_Surface *surfaceTTF);
 };
 
 #endif //BRAKEDA3D_IMAGE_H

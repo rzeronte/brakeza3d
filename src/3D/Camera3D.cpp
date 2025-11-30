@@ -1,7 +1,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include "../../include/Components/Camera3D.h"
-#include "../../include/Render/Maths.h"
+#include "../../include/Misc/ToolsMaths.h"
 
 Camera3D::Camera3D()
 {
@@ -47,7 +47,7 @@ void Camera3D::StrafeLeft()
 
 void Camera3D::UpdatePositionForVelocity()
 {
-    addToPosition(velocity.getComponent());
+    AddToPosition(velocity.getComponent());
 }
 
 void Camera3D::UpdateVelocity()

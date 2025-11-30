@@ -8,13 +8,16 @@ ComponentInput::ComponentInput()
 
 void ComponentInput::onStart()
 {
-    Logging::Message("ComponentInput onStart");
+    Component::onStart();
+
     setEnabled(true);
     initJoystick();
 }
 
 void ComponentInput::preUpdate()
 {
+    Component::preUpdate();
+
     resetKeyboardMapping();
     resetMouseMapping();
 
@@ -24,12 +27,16 @@ void ComponentInput::preUpdate()
 
 void ComponentInput::onUpdate()
 {
+    Component::onUpdate();
+
     if (!isEnabled()) return;
     handleKeyboardMovingCamera();
 }
 
 void ComponentInput::postUpdate()
 {
+    Component::postUpdate();
+
     keyboardEvents.clear();
 }
 
@@ -281,12 +288,13 @@ bool ComponentInput::isAnyControllerButtonPressed() const
 void ComponentInput::initJoystick()
 {
     if ( SDL_NumJoysticks() < 1 ) {
-        Logging::Message("[WARNING] No game pad controller connected!" );
+        Logging::Message("[ComponentInput] WARNING: No gamepad controller connected." );
     } else {
         gameController = SDL_GameControllerOpen( 0 );
 
         if (gameController == nullptr) {
-            printf( "Warning: Unable to open game pad controller! SDL Error: %s\n", SDL_GetError() );
+            Logging::Message("[ComponentInput] WARNING: Unable to open game pad controller: %s", SDL_GetError());
+            //printf( "Warning: Unable to open game pad controller! SDL Error: %s\n", SDL_GetError() );
             return;
         }
         Logging::Message("Game Pad Controller Name: %s\n", SDL_JoystickNameForIndex(0));
@@ -390,13 +398,11 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
 
 bool ComponentInput::isCharPressed(const char *character)
 {
-    if (character == nullptr)
-        return false;
+    if (character == nullptr) return false;
 
     SDL_Scancode keyCode = SDL_GetScancodeFromName(character);
 
-    if (keyCode != SDL_SCANCODE_UNKNOWN && keyboard[keyCode])
-        return true;
+    if (keyCode != SDL_SCANCODE_UNKNOWN && keyboard[keyCode]) return true;
 
     return false;
 }
