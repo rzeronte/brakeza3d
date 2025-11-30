@@ -247,7 +247,7 @@ add_executable(Brakeza3D
         src/Render/Image.cpp                                include/Render/Image.h
         src/Misc/Logging.cpp include/Misc/Logging.h
         src/Render/M3.cpp                                   include/Render/M3.h
-        src/Render/Maths.cpp                                include/Render/Maths.h
+        src/Misc/ToolsMaths.cpp include/Misc/ToolsMaths.h
         src/Render/PhysicsDebugDraw.cpp                     include/Render/PhysicsDebugDraw.h
         src/Render/Plane.cpp                                include/Render/Plane.h
         src/Render/Transforms.cpp                           include/Render/Transforms.h
@@ -260,6 +260,8 @@ add_executable(Brakeza3D
         src/GUI/Objects/FilesystemGUI.cpp
         include/GUI/Objects/FilesystemGUI.h
         src/3D/Cone3D.cpp                   include/3D/Cone3D.h
+        include/Render/Profiler.cpp
+        include/Render/Profiler.h
 )
 
 target_link_libraries(Brakeza3D

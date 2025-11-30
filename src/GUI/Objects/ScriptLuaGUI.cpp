@@ -110,7 +110,7 @@ void ScriptLuaGUI::DrawScriptsBySelectedObject(GUIManager *gui)
         }
         ImGui::SameLine();
         if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
-            o->removeScript(currentScript);
+            o->RemoveScript(currentScript);
         }
         ImGui::SameLine();
         if (ImGui::CollapsingHeader(optionText.c_str())) {

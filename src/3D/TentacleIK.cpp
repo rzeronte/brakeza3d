@@ -115,7 +115,7 @@ void TentacleIK::transformJoint(int i)
         rotationAxis = Vertex3D(0, 0, 0);
     }
 
-    angle = std::clamp(angle, Maths::degreesToRadians(0.1), Maths::degreesToRadians(1));
+    angle = std::clamp(angle, ToolsMaths::DegreesToRadians(0.1), ToolsMaths::DegreesToRadians(1));
 
     joints[i]->rotation = M3::arbitraryAxis(rotationAxis, angle) * joints[i]->rotation;
 

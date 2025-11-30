@@ -62,39 +62,39 @@ void Object3D::setEnabled(bool value)
     Object3D::enabled = value;
 }
 
-Vertex3D Object3D::AxisUp() const
+Vertex3D Object3D::up() const
 {
     Vertex3D v = getRotation() * BrakezaSetup::get()->up;
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisDown() const
+Vertex3D Object3D::down() const
 {
     Vertex3D v = getRotation() * BrakezaSetup::get()->down;
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisForward() const
+Vertex3D Object3D::forward() const
 {
     Vertex3D v = getRotation() * BrakezaSetup::get()->forward;
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisBackwards() const
+Vertex3D Object3D::backwards() const
 {
     Vertex3D v = getRotation() * BrakezaSetup::get()->backward;
 
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisRight() const
+Vertex3D Object3D::right() const
 {
     Vertex3D v = getRotation() * BrakezaSetup::get()->right;
 
     return v.getNormalize();
 }
 
-Vertex3D Object3D::AxisLeft() const
+Vertex3D Object3D::left() const
 {
     Vertex3D v = getRotation() * BrakezaSetup::get()->left;
 
@@ -162,11 +162,11 @@ void Object3D::onUpdate()
     distanceToCamera = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition().distance(getPosition());
 
     if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == BrakezaSetup::LUA_PLAY) {
-        runScripts();
+        RunScripts();
     }
 }
 
-void Object3D::runScripts()
+void Object3D::RunScripts()
 {
     for (auto script: scripts) {
         script->runEnvironment(luaEnvironment, "onUpdate");
@@ -191,7 +191,7 @@ void Object3D::DrawPropertiesGUI()
     Object3DGUI::DrawPropertiesGUI(this);
 }
 
-void Object3D::addToPosition(const Vertex3D &v)
+void Object3D::AddToPosition(const Vertex3D &v)
 {
     this->position = this->position + v;
 }
@@ -234,7 +234,7 @@ void Object3D::setEnableLights(bool value)
     enableLights = value;
 }
 
-void Object3D::lookAt(Object3D *o)
+void Object3D::LookAt(Object3D *o)
 {
     Vertex3D direction = (o->getPosition() - position).getInverse().getNormalize();
 
@@ -244,27 +244,27 @@ void Object3D::lookAt(Object3D *o)
     setRotation(M3::getFromVectors(direction, correctedUpVector));
 }
 
-void Object3D::attachScript(ScriptLUA *script)
+void Object3D::AttachScript(ScriptLUA *script)
 {
     scripts.push_back(script);
-    reloadScriptsEnvironment();
+    ReloadScriptsEnvironment();
 }
 
-void Object3D::reloadScriptsEnvironment()
+void Object3D::ReloadScriptsEnvironment()
 {
     for (auto script : scripts) {
         script->reloadEnvironment(luaEnvironment);
     }
 }
 
-void Object3D::reloadScriptsCode() const
+void Object3D::ReloadScriptsCode() const
 {
     for (auto script : scripts) {
         script->reloadScriptCode();
     }
 }
 
-void Object3D::removeScript(const ScriptLUA *script)
+void Object3D::RemoveScript(const ScriptLUA *script)
 {
     Logging::Message("Removing object script %s", script->scriptFilename.c_str());
 
@@ -292,7 +292,7 @@ const std::vector<ScriptLUA *> &Object3D::getScripts() const
     return scripts;
 }
 
-void Object3D::runStartScripts()
+void Object3D::RunStartScripts()
 {
     for (auto script : scripts) {
         script->runEnvironment(luaEnvironment, "onStart");
@@ -365,7 +365,7 @@ const std::vector<Object3D *> &Object3D::getAttached() const
     return attachedObjects;
 }
 
-void Object3D::attachObject(Object3D* o)
+void Object3D::AttachObject(Object3D* o)
 {
     attachedObjects.push_back(o);
 }
@@ -375,7 +375,7 @@ sol::object Object3D::getLocalScriptVar(const char *varName)
     return luaEnvironment[varName];
 }
 
-void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+void Object3D::MakeKineticBody(float x, float y, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
     Logging::Message("[Object3D] makeKineticBody for %s", getLabel().c_str());
 
@@ -417,7 +417,7 @@ void Object3D::makeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
     world->addAction(characterController);
 }
 
-void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
+void Object3D::MakeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
     Logging::Message("[Object3D] makeSimpleRigidBody for %s", getLabel().c_str());
 
@@ -476,7 +476,7 @@ void Object3D::makeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     world->addRigidBody(body, collisionGroup, collisionMask);
 }
 
-void Object3D::integrate()
+void Object3D::Integrate()
 {
     if (!isCollisionsEnabled()) return;
 
@@ -487,7 +487,7 @@ void Object3D::integrate()
     }
 
     if (getCollisionMode() == BODY) {
-        updateFromBullet();
+        UpdateFromBullet();
     }
 
     if (getCollisionMode() == KINEMATIC) {
@@ -496,7 +496,7 @@ void Object3D::integrate()
     }
 }
 
-void Object3D::updateFromBullet()
+void Object3D::UpdateFromBullet()
 {
     if (this->body == nullptr || this->mass <= 0) {
         return;
@@ -513,7 +513,7 @@ void Object3D::updateFromBullet()
     setRotation(M3::fromMat3Bullet(matrixRotation));
 }
 
-void Object3D::resolveCollision(CollisionInfo with)
+void Object3D::ResolveCollision(CollisionInfo with)
 {
     if (BrakezaSetup::get()->LOG_COLLISION_OBJECTS) {
         auto *object = static_cast<Object3D *>(with.with);
@@ -521,11 +521,11 @@ void Object3D::resolveCollision(CollisionInfo with)
     }
 
     if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == BrakezaSetup::LUA_PLAY) {
-        runResolveCollisionScripts(with);
+        RunResolveCollisionScripts(with);
     }
 }
 
-void Object3D::runResolveCollisionScripts(CollisionInfo with)
+void Object3D::RunResolveCollisionScripts(CollisionInfo with)
 {
     //auto *object = static_cast<Object3D *>(with.with);
     const sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
@@ -541,7 +541,7 @@ const sol::environment &Object3D::getLuaEnvironment() const {
     return luaEnvironment;
 }
 
-void Object3D::setupGhostCollider(CollisionShape mode)
+void Object3D::SetupGhostCollider(CollisionShape mode)
 {
     Logging::Message("[Collider] setupGhostCollider");
     removeCollisionObject();

@@ -30,15 +30,15 @@ public:
     void toFloat(float *v) const;
     void setScaled(float);
     float distance(Vertex3D);
-    [[nodiscard]] Vertex3D divide(float value) const;
+    [[nodiscard]] float getModule() const;
+    [[nodiscard]] float getSquaredLength() const;
     [[nodiscard]] btVector3 toBullet() const;
     [[nodiscard]] glm::vec3 toGLM() const;
     [[nodiscard]] glm::vec4 toGLM4() const;
     [[nodiscard]] aiVector3D toAssimp() const;
+    [[nodiscard]] Vertex3D divide(float value) const;
     [[nodiscard]] Vertex3D getNormalize() const;
     [[nodiscard]] Vertex3D getInverse() const;
-    [[nodiscard]] float getModule() const;
-    [[nodiscard]] float getSquaredLength() const;
     [[nodiscard]] Vertex3D getScaled(float) const;
     [[nodiscard]] Vertex3D getScaled(float xs, float ys, float zs) const;
     static Vertex3D zero();

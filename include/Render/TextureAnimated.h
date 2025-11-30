@@ -26,7 +26,7 @@ public:
 
     TextureAnimated(std::string baseFile, int numFrames, int fps);
 
-    explicit TextureAnimated(TextureAnimated *textureAnimated);
+    explicit TextureAnimated(const TextureAnimated *textureAnimated);
 
     TextureAnimated(const std::string &spriteSheetFile, int spriteWidth, int spriteHeight, int frames, int fps);
 
@@ -34,7 +34,7 @@ public:
 
     void nextFrame();
 
-    Image *getCurrentFrame();
+    Image *getCurrentFrame() const;
 
     [[nodiscard]] bool isEndAnimation() const;
 

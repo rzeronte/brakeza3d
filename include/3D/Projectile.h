@@ -35,7 +35,7 @@ public:
 
     void onUpdate() override;
 
-    void resolveCollision(CollisionInfo objectWithCollision) override;
+    void ResolveCollision(CollisionInfo objectWithCollision) override;
 };
 
 

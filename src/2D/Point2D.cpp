@@ -1,6 +1,6 @@
 #include <iostream>
 #include "../../include/Render/Point2D.h"
-#include "../../include/Render/Maths.h"
+#include "../../include/Misc/ToolsMaths.h"
 
 Point2D::Point2D(): x(0), y(0)
 {
@@ -29,7 +29,7 @@ Point2D Point2D::operator/(const Point2D &pm) const
 
 Point2D Point2D::getNormalize() const
 {
-    const float modulo = abs(Maths::sqrt1((this->x * this->x) + (this->y * this->y)));
+    const float modulo = abs(ToolsMaths::sqrt1((this->x * this->x) + (this->y * this->y)));
 
     float inv_module = 1 / modulo;
 

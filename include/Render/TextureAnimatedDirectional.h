@@ -17,20 +17,20 @@ class TextureAnimatedDirectional
     bool loaded = false;
 
     std::string base_file;
-    Image *frames[9][ANIMATION2D_MAX_FRAMES];
+    Image *frames[9][ANIMATION2D_MAX_FRAMES] = {};
 
 public:
-    TextureAnimatedDirectional();
-    bool isLoaded() const;
-    bool hasZeroDirection() const;
-    void setup(std::string file, int newNumFrames, int newFps, int newMaxTimes);
-    void loadImages();
-    void loadImagesForZeroDirection();
-    void nextFrame();
-    void importTextures(const TextureAnimatedDirectional *origin, int numFrames);
-    void drawImGuiProperties();
+    TextureAnimatedDirectional() = default;;
+    void LoadAnimationFile(std::string file, int newNumFrames, int newFps, int newMaxTimes);
+    void LoadImages();
+    void LoadImagesForZeroDirection();
+    void NextFrame();
+    void ImportTextures(const TextureAnimatedDirectional *origin, int numFrames);
+    void DrawImGuiProperties();
     void setIsZeroDirection(bool value);
     Image *getCurrentFrame(int direction);
+    [[nodiscard]] bool isLoaded() const;
+    [[nodiscard]] bool hasZeroDirection() const;
     [[nodiscard]] int getNumFrames() const;
     [[nodiscard]] int getFps() const;
     [[nodiscard]] std::string getBaseFile() const;

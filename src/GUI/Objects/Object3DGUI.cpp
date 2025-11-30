@@ -69,19 +69,19 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                     yaw = vec3f[1];
                     roll = vec3f[2];
                     if (abs(pitch - oldPitch) > 0) {
-                        auto partialRotX = M3::arbitraryAxis(o->getRotation().X(), Maths::radiansToDegrees(pitch - oldPitch) * factor);
+                        auto partialRotX = M3::arbitraryAxis(o->getRotation().X(), ToolsMaths::RadiansToDegrees(pitch - oldPitch) * factor);
                         o->setRotation(o->getRotation() * partialRotX);
                         M3::normalize(o->rotation);
                     }
 
                     if (abs(yaw - oldYaw) > 0) {
-                        auto partialRotY = M3::arbitraryAxis(o->getRotation().Y(), Maths::radiansToDegrees(yaw - oldYaw) * factor);
+                        auto partialRotY = M3::arbitraryAxis(o->getRotation().Y(), ToolsMaths::RadiansToDegrees(yaw - oldYaw) * factor);
                         o->setRotation(o->getRotation() * partialRotY);
                         M3::normalize(o->rotation);
                     }
 
                     if (abs(roll - oldRoll) > 0) {
-                        auto partialRotZ = M3::arbitraryAxis(o->getRotation().Z(), Maths::radiansToDegrees(roll - oldRoll) * factor);
+                        auto partialRotZ = M3::arbitraryAxis(o->getRotation().Z(), ToolsMaths::RadiansToDegrees(roll - oldRoll) * factor);
                         o->setRotation(o->getRotation() * partialRotZ);
                         M3::normalize(o->rotation);
                     }
@@ -151,7 +151,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                 if (!o->collisionsEnabled) {
                     o->removeCollisionObject();
                 } else {
-                    o->setupGhostCollider(SIMPLE_SHAPE);
+                    o->SetupGhostCollider(SIMPLE_SHAPE);
                 }
             }
 

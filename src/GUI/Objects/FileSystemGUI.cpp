@@ -27,7 +27,7 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, const std::string& folder)
     }
     if (ImGui::Button(std::string("Create Project").c_str())) {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
-            ProjectLoader::createProject(folder + gui->currentVariableToCreateCustomShader);
+            ProjectLoader::CreateProject(folder + gui->currentVariableToCreateCustomShader);
             gui->currentProjectsFolderFiles = Tools::getFolderFiles(gui->currentProjectsFolderWidget, "json");
         }
     }
@@ -54,18 +54,18 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, const std::string& folder)
 
                 ImGui::TableSetColumnIndex(1);
                 if (ImGui::ImageButton(IconTag(IconsByGUI::OPEN), ImVec2(14, 14))) {
-                    ComponentsManager::get()->getComponentRender()->getProjectLoader().loadProject(folder + file);
+                    ComponentsManager::get()->getComponentRender()->getProjectLoader().LoadProject(folder + file);
                 }
                 ImGui::SameLine();
                 if (ImGui::ImageButton(IconTag(IconsByGUI::SAVE), ImVec2(14, 14))) {
-                    ProjectLoader::saveProject(folder + file);
+                    ProjectLoader::SaveProject(folder + file);
                 }
                 ImGui::SameLine();
                 if (ImGui::ImageButton(IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
                     ImGui::OpenPopup("Deleting project");
                 }
                 gui->ShowDeletePopup("Deleting project", "Are you sure to delete?", [folder, file, gui] () {
-                    ProjectLoader::removeProject(folder + file);
+                    ProjectLoader::RemoveProject(folder + file);
                     UpdateFolderFiles(gui);
                 });
 

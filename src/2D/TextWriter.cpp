@@ -14,7 +14,7 @@ TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font)
 
 TextWriter* TextWriter::create(const std::string& fontFile)
 {
-    if (!Tools::fileExists(fontFile.c_str())) {
+    if (!Tools::FileExists(fontFile.c_str())) {
         Logging::Message("[TextWriter] Cannot open font file: %s", fontFile.c_str());
 
         return nullptr;
@@ -27,14 +27,14 @@ TextWriter* TextWriter::create(const std::string& fontFile)
 }
 
 
-void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, const Color &c) const
+void TextWriter::WriteTextTTF(int x, int y, int w, int h, const char *text, const Color &c) const
 {
     auto surfaceTTF = TTF_RenderText_Blended(font, text, c.toSDL());
 #ifdef _WIN32
     auto surfaceTTFGoodFormat = SDL_ConvertSurfaceFormat(surfaceTTF, SDL_PIXELFORMAT_BGRA32, 0);
-    GLuint texID = Image::makeOGLImage(surfaceTTFGoodFormat);
+    GLuint texID = Image::MakeOGLImage(surfaceTTFGoodFormat);
 #else
-    GLuint texID = Image::makeOGLImage(surfaceTTF);
+    GLuint texID = Image::MakeOGLImage(surfaceTTF);
 #endif
 
     auto renderer = ComponentsManager::get()->getComponentWindow();
@@ -64,24 +64,24 @@ void TextWriter::writeTextTTF(int x, int y, int w, int h, const char *text, cons
 #endif
 }
 
-void TextWriter::writeTextTTFAutoSize(int x, int y, const char *text, const Color &c, float sizeRatio) const
+void TextWriter::WriteTextTTFAutoSize(int x, int y, const char *text, const Color &c, float sizeRatio) const
 {
     int w = 0, h = 0;
     TTF_SizeUTF8(font, text, &w, &h);
 
-    w *= sizeRatio;
-    h *= sizeRatio;
+    w *= (int) sizeRatio;
+    h *= (int) sizeRatio;
 
-    writeTextTTF(x, y, w, h, text, c);
+    WriteTextTTF(x, y, w, h, text, c);
 }
 
-void TextWriter::writeTextTTFMiddleScreen(const char *text, const Color &c, float sizeRatio) const
+void TextWriter::WriteTextTTFMiddleScreen(const char *text, const Color &c, float sizeRatio) const
 {
     int textWidth, textHeight;
     TTF_SizeUTF8(font, text, &textWidth, &textHeight);
 
-    textWidth *= sizeRatio;
-    textHeight *= sizeRatio;
+    textWidth *= (int) sizeRatio;
+    textHeight *= (int) sizeRatio;
 
     const int totalW = BrakezaSetup::get()->screenWidth;
     const int totalH = BrakezaSetup::get()->screenHeight;
@@ -89,22 +89,22 @@ void TextWriter::writeTextTTFMiddleScreen(const char *text, const Color &c, floa
     int xPosition = (totalW / 2) - textWidth / 2;
     int yPosition = totalH / 2;
 
-    writeTextTTFAutoSize(xPosition, yPosition, text, c, sizeRatio);
+    WriteTextTTFAutoSize(xPosition, yPosition, text, c, sizeRatio);
 }
 
-void TextWriter::writeTTFCenterHorizontal(int y, const char *text, const Color &c, float sizeRatio) const
+void TextWriter::WriteTTFCenterHorizontal(int y, const char *text, const Color &c, float sizeRatio) const
 {
     int w, h;
     TTF_SizeUTF8(font, text, &w, &h);
 
-    w *= sizeRatio;
-    h *= sizeRatio;
+    w *= (int) sizeRatio;
+    h *= (int) sizeRatio;
 
     int totalW = BrakezaSetup::get()->screenWidth;
 
     int xPosition = (totalW / 2) - w / 2;
 
-    writeTextTTFAutoSize(xPosition, y, text, c, sizeRatio);
+    WriteTextTTFAutoSize(xPosition, y, text, c, sizeRatio);
 }
 
 float TextWriter::getAlpha() const {
@@ -113,10 +113,6 @@ float TextWriter::getAlpha() const {
 
 void TextWriter::setAlpha(float alpha) {
     TextWriter::alpha = alpha;
-}
-
-TextWriter::~TextWriter()
-{
 }
 
 void TextWriter::setFont(TTF_Font *font) {

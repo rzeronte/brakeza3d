@@ -46,25 +46,26 @@ void Brakeza::start(int argc, char *argv[])
         std::cout << "Autoload Project: " << result["p"].as<std::string>() << std::endl;
     }
 
-    componentsManager->registerComponent(new ComponentWindow(), "ComponentWindow");
-    componentsManager->registerComponent(new ComponentScripting(), "ComponentScripting");
-    componentsManager->registerComponent(new ComponentCamera(), "ComponentCamera");
-    componentsManager->registerComponent(new ComponentCollisions(), "ComponentCollisions");
-    componentsManager->registerComponent(new ComponentInput(), "ComponentInput");
-    componentsManager->registerComponent(new ComponentSound(), "ComponentSound");
-    componentsManager->registerComponent(new ComponentRender(), "ComponentRender");
+    componentsManager->RegisterComponent(new ComponentWindow(), "ComponentWindow");
+    componentsManager->RegisterComponent(new ComponentScripting(), "ComponentScripting");
+    componentsManager->RegisterComponent(new ComponentCamera(), "ComponentCamera");
+    componentsManager->RegisterComponent(new ComponentCollisions(), "ComponentCollisions");
+    componentsManager->RegisterComponent(new ComponentInput(), "ComponentInput");
+    componentsManager->RegisterComponent(new ComponentSound(), "ComponentSound");
+    componentsManager->RegisterComponent(new ComponentRender(), "ComponentRender");
 
     mainLoop(projectAutoload, project);
 }
 
-void Brakeza::welcomeMessage()
+void Brakeza::WelcomeMessage()
 {
+    Logging::Message("-----------------------------------------------------------");
     Logging::Message("Brakeza3D - Open source game toolkit for old school lovers");
-    Logging::Message("By Eduardo Rodriguez (eduardo@brakeza.com)");
-    Logging::Message("https://brakeza.com");
+    Logging::Message(BrakezaSetup::get()->ENGINE_WEBSITE.c_str());
+    Logging::Message(BrakezaSetup::get()->ENGINE_SOURCE_WEBSITE.c_str());
     Logging::Message("Let's start!");
 
-    Logging::Message("Running %s", BrakezaSetup::get()->ENGINE_TITLE.c_str());
+    Logging::Message("%s", BrakezaSetup::get()->ENGINE_TITLE.c_str());
 }
 
 void Brakeza::CaptureInputEvents(SDL_Event &e)
@@ -88,18 +89,26 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
     auto scripting = componentsManager->getComponentScripting();
     auto collisions = componentsManager->getComponentCollisions();
 
-    scripting->initLUATypes();
-    collisions->initBulletSystem();
+    scripting->InitLUATypes();
+    collisions->InitBulletSystem();
     onStartComponents();
 
-    window->ImGuiInitialize(BrakezaSetup::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
-    welcomeMessage();
-
+    WelcomeMessage();
+    BrakezaSetup::get()->ENABLE_LOGGING_STD = false;
     handleAutoStartProject(autostart, project);
 
+    // Profiler tags
+    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobal");
+    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
+    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
+    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobalFramebuffer");
+
     while (!finish) {
+        // Reset timers
+        Profiler::get()->ResetTotalFrameTime();
         ControlFrameRate();
         UpdateTimer();
+
         PreUpdateComponents();
 
         render->RunShadersOpenGLPreUpdate();
@@ -107,12 +116,13 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
         CaptureInputEvents(event);
         window->ClearOGLFrameBuffers();
 
-        onUpdateComponents();
+        OnUpdateComponents();
 
         render->RenderLayersToGlobalFramebuffer();
         render->RunShadersOpenGLPostUpdate();
-        postUpdateComponents();
+        PostUpdateComponents();
 
+        Profiler::get()->EndTotalFrameTime();
         window->RenderLayersToMain();
     }
 
@@ -123,7 +133,7 @@ void Brakeza::checkForResizeOpenGLWindow(const SDL_Event &e)
 {
     if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
         auto window = ComponentsManager::get()->getComponentWindow();
-        window->updateWindowSize();
+        window->UpdateWindowSize();
         glViewport(0,0, window->getWidth(), window->getHeight());
         window->resetFramebuffer();
     }
@@ -178,29 +188,35 @@ float Brakeza::getDeltaTimeMicro() const
 
 void Brakeza::onStartComponents() const
 {
-    for (Component*& component : componentsManager->Components()) {
-        component->onStart();
+    for (auto c : componentsManager->Components()) {
+        c->onStart();
     }
 }
 
 void Brakeza::PreUpdateComponents() const
 {
-    for (Component*& component : componentsManager->Components()) {
-        component->preUpdate();
+    for (auto c : componentsManager->Components()) {
+        Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_pre");
+        c->preUpdate();
+        Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_pre");
     }
 }
 
-void Brakeza::onUpdateComponents() const
+void Brakeza::OnUpdateComponents() const
 {
-    for (Component*& component : componentsManager->Components()) {
-        component->onUpdate();
+    for (auto c : componentsManager->Components()) {
+        Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_update");
+        c->onUpdate();
+        Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_update");
     }
 }
 
-void Brakeza::postUpdateComponents() const
+void Brakeza::PostUpdateComponents() const
 {
-    for (Component*& component : componentsManager->Components()) {
-        component->postUpdate();
+    for (auto c: componentsManager->Components()) {
+        Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_post");
+        c->postUpdate();
+        Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_post");
     }
 }
 
@@ -226,7 +242,7 @@ void Brakeza::handleAutoStartProject(bool autostart, const std::string &project)
     auto render = componentsManager->getComponentRender();
 
     if (autostart) {
-        render->getProjectLoader().loadProject(BrakezaSetup::get()->PROJECTS_FOLDER + project);
+        render->getProjectLoader().LoadProject(BrakezaSetup::get()->PROJECTS_FOLDER + project);
         BrakezaSetup::get()->ENABLE_IMGUI = false;
         componentsManager->getComponentScripting()->playLUAScripts();
         return;
@@ -259,8 +275,7 @@ Brakeza::~Brakeza()
 int Brakeza::getNextObjectID() const
 {
     const int id = (static_cast<int>(sceneObjects.size()) + 1) * 10;
-    Logging::Message("Next Object ID: %d", id);
-
+    Logging::Message("[Brakeza] Next Object ID: %d", id);
     return id;
 }
 

@@ -35,7 +35,7 @@ void ScriptLUA::getCode(const std::string &script)
 {
     size_t file_size;
     content.clear();
-    content = Tools::readFile(script, file_size);
+    content = Tools::ReadFile(script, file_size);
 }
 
 void ScriptLUA::runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg) const
@@ -195,7 +195,7 @@ void ScriptLUA::reloadEnvironment(sol::environment &environment)
 void ScriptLUA::parseTypesFromFileAttributes()
 {
     size_t file_size;
-    auto contentFile = Tools::readFile(fileTypes, file_size);
+    auto contentFile = Tools::ReadFile(fileTypes, file_size);
     Logging::Message("Parsing attributes from: '%s'", fileTypes.c_str());
 
     setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
@@ -249,7 +249,7 @@ void ScriptLUA::updateFileTypes() const
     Logging::Message("Updating types file (%s)", this->fileTypes.c_str());
     char *output_string = cJSON_Print(getTypesJSON());
 
-    Tools::writeToFile(this->fileTypes, output_string);
+    Tools::WriteToFile(this->fileTypes, output_string);
 
     delete output_string;
 }
@@ -358,7 +358,7 @@ ScriptLUA *ScriptLUA::create(const std::string& scriptFile)
 
     std::cout << typesFile.c_str() << std::endl;
 
-    if (!Tools::fileExists(typesFile.c_str())) {
+    if (!Tools::FileExists(typesFile.c_str())) {
         Logging::Message("Failed loading TypesFile: %s", typesFile.c_str());
 
         return nullptr;

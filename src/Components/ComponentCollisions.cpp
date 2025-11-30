@@ -4,7 +4,7 @@
 #include "../../include/Render/CollisionInfo.h"
 
 ComponentCollisions::ComponentCollisions()
-:
+    :
     bspMap(nullptr),
     collisionConfiguration(nullptr),
     dispatcher(nullptr),
@@ -18,27 +18,31 @@ ComponentCollisions::ComponentCollisions()
 
 void ComponentCollisions::onStart()
 {
-    Logging::Message("ComponentCollisions onStart");
+    Component::onStart();
 
     setEnabled(true);
 }
 
 void ComponentCollisions::preUpdate()
 {
+    Component::preUpdate();
 }
 
 void ComponentCollisions::onUpdate()
 {
+    Component::onUpdate();
 }
 
 void ComponentCollisions::postUpdate()
 {
+    Component::postUpdate();
+
     if (!isEnabled()) {
-        this->stepSimulation(0);
+        this->StepSimulation(0);
         return;
     }
 
-    stepSimulation(Brakeza::get()->getDeltaTime());
+    StepSimulation(Brakeza::get()->getDeltaTime());
 }
 
 void ComponentCollisions::onEnd()
@@ -48,7 +52,7 @@ void ComponentCollisions::onEnd()
 void ComponentCollisions::onSDLPollEvent(SDL_Event *e, bool &finish) {
 }
 
-void ComponentCollisions::initBulletSystem()
+void ComponentCollisions::InitBulletSystem()
 {
     ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
     collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -78,11 +82,7 @@ void ComponentCollisions::initBulletSystem()
     overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCallback);
 }
 
-btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const {
-    return dynamicsWorld;
-}
-
-void ComponentCollisions::checkCollisionsForAll()
+void ComponentCollisions::CheckCollisionsForAll() const
 {
     if (!SETUP->BULLET_CHECK_ALL_PAIRS) return;
 
@@ -102,13 +102,17 @@ void ComponentCollisions::checkCollisionsForAll()
             auto cIA = CollisionInfo(brkObjectB, obA->getUserIndex(), obA->getUserIndex2());
             auto cIB = CollisionInfo(brkObjectA, obB->getUserIndex(), obB->getUserIndex2());
 
-            brkObjectA->resolveCollision(cIA);
-            brkObjectB->resolveCollision(cIB);
+            brkObjectA->ResolveCollision(cIA);
+            brkObjectB->ResolveCollision(cIB);
         }
     }
 }
 
-void ComponentCollisions::updatePhysicObjects()
+btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const {
+    return dynamicsWorld;
+}
+
+void ComponentCollisions::UpdatePhysicObjects() const
 {
     if (!isEnabled()) return;
 
@@ -118,14 +122,14 @@ void ComponentCollisions::updatePhysicObjects()
         auto *collisionable = dynamic_cast<Collider *> (object);
         if (collisionable != nullptr) {
             if (!collisionable->isCollisionsEnabled()) continue;
-            collisionable->integrate();
+            collisionable->Integrate();
         }
     }
 }
 
-void ComponentCollisions::stepSimulation(float deltaTime)
+void ComponentCollisions::StepSimulation(float deltaTime)
 {
-    clearDebugCache();
+    ClearDebugCache();
 
     if (!isEnabled() || SETUP->ENABLE_BULLET_STEP_SIMULATION) {
         getDynamicsWorld()->stepSimulation(
@@ -133,15 +137,15 @@ void ComponentCollisions::stepSimulation(float deltaTime)
             SETUP->BULLET_MAX_SUBSTEPS,
             btScalar(1.) / btScalar(SETUP->BULLET_FIXED_TIME_STEPS)
         );
-        updatePhysicObjects();
+        UpdatePhysicObjects();
     }
 
     if (BrakezaSetup::get()->BULLET_DEBUG_MODE) {
         dynamicsWorld->debugDrawWorld();
-        drawDebugCache();
+        DrawDebugCache();
     }
 
-    checkCollisionsForAll();
+    CheckCollisionsForAll();
 }
 
 void ComponentCollisions::demoProjectile(int type)
@@ -213,12 +217,12 @@ ComponentCollisions::~ComponentCollisions()
     delete ghostPairCallback;
 }
 
-void ComponentCollisions::setGravity(Vertex3D v)
+void ComponentCollisions::setGravity(const Vertex3D &v) const
 {
     dynamicsWorld->setGravity(v.toBullet());
 }
 
-bool ComponentCollisions::isRayCollisionWith(Vertex3D from, Vertex3D to, Object3D *o)
+bool ComponentCollisions::isRayCollisionWith(const Vertex3D &from, const Vertex3D &to, const Object3D *o) const
 {
     btCollisionWorld::ClosestRayResultCallback rayCallback(
         from.toBullet(),
@@ -241,17 +245,17 @@ bool ComponentCollisions::isRayCollisionWith(Vertex3D from, Vertex3D to, Object3
     return false;
 }
 
-void ComponentCollisions::clearDebugCache()
+void ComponentCollisions::ClearDebugCache()
 {
     debugDrawLinesCache.clear();
 }
 
-void ComponentCollisions::addVector3DIntoCache(Vector3D v)
+void ComponentCollisions::AddVector3DIntoCache(const Vector3D &v)
 {
     debugDrawLinesCache.push_back(v);
 }
 
-void ComponentCollisions::drawDebugCache()
+void ComponentCollisions::DrawDebugCache() const
 {
     ComponentsManager::get()->getComponentRender()->getShaderOGLLine3D()->renderLines(
         debugDrawLinesCache,
@@ -266,13 +270,14 @@ void ComponentCollisions::setEnabled(bool enabled)
     BrakezaSetup::get()->ENABLE_BULLET_STEP_SIMULATION = enabled;
 }
 
-void ComponentCollisions::setEnableDebugMode(bool value)
+void ComponentCollisions::setEnableDebugMode(bool value) const
 {
     if (value) {
         dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
-        Logging::Message("Physics Debug mode ON");
-    } else {
-        Logging::Message("Physics Debug mode OFF");
-        dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_NoDebug);
+        Logging::Message("[ComponentCollisions] Physics Debug mode ON");
+        return;
     }
+
+    Logging::Message("[ComponentCollisions]Physics Debug mode OFF");
+    dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_NoDebug);
 }

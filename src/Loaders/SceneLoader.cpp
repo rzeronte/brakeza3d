@@ -27,11 +27,10 @@ SceneLoader::SceneLoader()
 
 void SceneLoader::LoadScene(const std::string& filename)
 {
-    std::cout <<"Loading '%s' scene" << filename.c_str() << std::endl;
     Logging::Message("Loading '%s' scene", filename.c_str());
 
     size_t file_size;
-    auto contentFile = Tools::readFile(filename, file_size);
+    auto contentFile = Tools::ReadFile(filename, file_size);
     auto contentJSON = cJSON_Parse(contentFile);
 
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
@@ -126,7 +125,6 @@ void SceneLoader::SaveScene(const std::string &filename)
     //Objects
     cJSON *objectsArray = cJSON_CreateArray();
     for (auto object : Brakeza::get()->getSceneObjects()) {
-        //auto objectJson = JSONSerializerRegistry::instance().serialize(object);
         auto objectJson = JSONSerializerRegistry::instance().serialize(object);
 
         cJSON_AddStringToObject(objectJson, "type", object->getTypeObject());
@@ -158,7 +156,7 @@ void SceneLoader::SaveScene(const std::string &filename)
     cJSON_AddItemToObject(cameraJSON, "rotation", ToolsJSON::Vertex3DToJSON(Vertex3D(camera->getPitch(), camera->getYaw(), camera->getRoll())));
     cJSON_AddItemToObject(root, "camera", cameraJSON);
 
-    Tools::writeToFile(filename, cJSON_Print(root));
+    Tools::WriteToFile(filename, cJSON_Print(root));
 }
 
 void SceneLoader::ClearScene()
@@ -197,14 +195,14 @@ void SceneLoader::CreateScene(const std::string &filename)
 
 void SceneLoader::RemoveScene(const std::string &filename)
 {
-    if (!Tools::fileExists(filename.c_str())) {
+    if (!Tools::FileExists(filename.c_str())) {
         Logging::Message("File %s not found", filename.c_str());
         return;
     }
 
     Logging::Message("Deleting scene: %s", filename.c_str());
 
-    Tools::removeFile(filename);
+    Tools::RemoveFile(filename);
 }
 
 void SceneLoader::InitSerializers()

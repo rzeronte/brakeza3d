@@ -30,7 +30,7 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
                 if (ImGui::Button("Fill from mesh geometry")) {
                     o->fillGrid3DFromGeometry();
                 }
-                o->grid->drawImGuiProperties();
+                o->grid->DrawImGuiProperties();
                 ImGui::SameLine();
                 if (ImGui::Button("Delete Grid3D")) {
                     delete o->grid;

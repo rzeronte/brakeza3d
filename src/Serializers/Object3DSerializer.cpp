@@ -150,7 +150,7 @@ void Object3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
             switch(mode) {
                 case GHOST:
                     if (shape == SIMPLE_SHAPE) {
-                        o->setupGhostCollider(SIMPLE_SHAPE);
+                        o->SetupGhostCollider(SIMPLE_SHAPE);
                     }
                     break;
                 case BODY:
@@ -175,7 +175,7 @@ void Object3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(json, "scripts")) {
             auto filename = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
             auto typesJSON = cJSON_GetObjectItemCaseSensitive(currentScript, "types");
-            o->attachScript(new ScriptLUA(filename, typesJSON));
+            o->AttachScript(new ScriptLUA(filename, typesJSON));
         }
     }
 }

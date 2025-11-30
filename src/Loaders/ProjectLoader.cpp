@@ -7,16 +7,13 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/ComponentsManager.h"
 
-ProjectLoader::ProjectLoader() {
 
-}
-
-void ProjectLoader::loadProject(const std::string &filename)
+void ProjectLoader::LoadProject(const std::string &filename)
 {
-    removeProjectScripts();
+    RemoveProjectScripts();
 
     size_t file_size;
-    auto contentFile = Tools::readFile(filename, file_size);
+    auto contentFile = Tools::ReadFile(filename, file_size);
     auto contentJSON = cJSON_Parse(contentFile);
 
     Logging::Message("Loading PROJECT: %s", filename.c_str());
@@ -38,7 +35,7 @@ void ProjectLoader::loadProject(const std::string &filename)
     }
 }
 
-void ProjectLoader::saveProject(const std::string &filename)
+void ProjectLoader::SaveProject(const std::string &filename)
 {
     cJSON *root = cJSON_CreateObject();
 
@@ -52,10 +49,10 @@ void ProjectLoader::saveProject(const std::string &filename)
     }
     cJSON_AddItemToObject(root, "scripts", sceneScriptsArray);
 
-    Tools::writeToFile(filename, cJSON_Print(root));
+    Tools::WriteToFile(filename, cJSON_Print(root));
 }
 
-void ProjectLoader::removeProjectScripts()
+void ProjectLoader::RemoveProjectScripts()
 {
     auto scripting = ComponentsManager::get()->getComponentScripting();
     for (auto o: scripting->getProjectLUAScripts()) {
@@ -63,7 +60,7 @@ void ProjectLoader::removeProjectScripts()
     }
 }
 
-void ProjectLoader::createProject(const std::string &filename)
+void ProjectLoader::CreateProject(const std::string &filename)
 {
     Logging::Message("Creating new project file: %s", filename.c_str());
 
@@ -72,12 +69,12 @@ void ProjectLoader::createProject(const std::string &filename)
 
     std::string projectJsonFile = std::string(filename + ".json");
 
-    Tools::writeToFile(projectJsonFile, cJSON_Print(root));
+    Tools::WriteToFile(projectJsonFile, cJSON_Print(root));
 }
 
-void ProjectLoader::removeProject(const std::string &filename)
+void ProjectLoader::RemoveProject(const std::string &filename)
 {
     Logging::Message("Deleting project: %s", filename.c_str());
 
-    Tools::removeFile(filename);
+    Tools::RemoveFile(filename);
 }

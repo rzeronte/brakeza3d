@@ -20,11 +20,11 @@ private:
 protected:
     btCollisionWorld::ClosestRayResultCallback *rayCallback;
 public:
-    void integrate() override;
+    void Integrate() override;
 
     explicit RayCollisionable(const Vertex3D &ray, int filterGroup, int filterMask);
 
-    void resolveCollision(CollisionInfo objectWithCollision) override;
+    void ResolveCollision(CollisionInfo objectWithCollision) override;
 
     void onUpdate() override;
 

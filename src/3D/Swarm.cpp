@@ -110,7 +110,7 @@ void Swarm::updateBoids()
         limitVelocity(o);
 
         updatePosition(o, velocityBoidsFactor);
-        o->object->lookAt(this);
+        o->object->LookAt(this);
     }
 }
 

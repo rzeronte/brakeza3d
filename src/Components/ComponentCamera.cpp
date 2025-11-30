@@ -11,11 +11,13 @@ ComponentCamera::ComponentCamera()
 
 void ComponentCamera::onStart()
 {
-    Logging::Message("ComponentCamera onStart");
+    Component::onStart();
 }
 
 void ComponentCamera::preUpdate()
 {
+    Component::preUpdate();
+
     camera->getVelocity().vertex1 = camera->getPosition();
     camera->getVelocity().vertex2 = camera->getPosition();
 
@@ -25,11 +27,15 @@ void ComponentCamera::preUpdate()
 
 void ComponentCamera::onUpdate()
 {
+    Component::onUpdate();
+
     camera->UpdateVelocity();
 }
 
 void ComponentCamera::postUpdate()
 {
+    Component::postUpdate();
+
     if (ComponentsManager::get()->getComponentInput()->isEnabled()) {
         camera->UpdatePositionForVelocity();
     }

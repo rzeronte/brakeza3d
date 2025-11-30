@@ -28,7 +28,7 @@ void ShadersGUI::DrawEditShaderWindow(GUIManager *gui)
             ImGui::InputTextMultiline("##sourceVS", gui->shaderEditableManager.editableSourceVS, IM_ARRAYSIZE(gui->shaderEditableManager.editableSourceVS), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 10), flags);
             if (ImGui::Button(std::string("Save vertex shader").c_str())) {
                 gui->shaderEditableManager.shader->sourceVS = gui->shaderEditableManager.editableSourceVS;
-                Tools::writeToFile(gui->shaderEditableManager.shader->getVertexFilename(), gui->shaderEditableManager.shader->sourceVS.c_str());
+                Tools::WriteToFile(gui->shaderEditableManager.shader->getVertexFilename(), gui->shaderEditableManager.shader->sourceVS.c_str());
             }
         }
 
@@ -36,7 +36,7 @@ void ShadersGUI::DrawEditShaderWindow(GUIManager *gui)
             ImGui::InputTextMultiline("##sourceFS", gui->shaderEditableManager.editableSourceFS, IM_ARRAYSIZE(gui->shaderEditableManager.editableSourceFS), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 10), flags);
             if (ImGui::Button(std::string("Save fragment shader").c_str())) {
                 gui->shaderEditableManager.shader->sourceFS = gui->shaderEditableManager.editableSourceFS;
-                Tools::writeToFile(gui->shaderEditableManager.shader->getFragmentFilename(), gui->shaderEditableManager.shader->sourceFS.c_str());
+                Tools::WriteToFile(gui->shaderEditableManager.shader->getFragmentFilename(), gui->shaderEditableManager.shader->sourceFS.c_str());
             }
         }
     }

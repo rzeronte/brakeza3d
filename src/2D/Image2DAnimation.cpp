@@ -59,7 +59,7 @@ void Image2DAnimation::onUpdate()
     const auto w = animation->getCurrentFrame()->width();
     const auto h = animation->getCurrentFrame()->height();
 
-    animation->getCurrentFrame()->drawFlatAlpha(
+    animation->getCurrentFrame()->DrawFlatAlpha(
         x - w/2,
         y - h/2,
         alpha/255,

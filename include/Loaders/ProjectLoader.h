@@ -11,17 +11,12 @@
 class ProjectLoader 
 {
 public:
-    ProjectLoader();
-
-    void loadProject(const std::string& filename);
-
-    static void saveProject(const std::string& filename);
-
-    static void removeProjectScripts();
-
-    static void createProject(const std::string &filename);
-
-    static void removeProject(const std::string &filename);
+    ProjectLoader() = default;
+    static void LoadProject(const std::string& filename);
+    static void SaveProject(const std::string& filename);
+    static void CreateProject(const std::string &filename);
+    static void RemoveProject(const std::string &filename);
+    static void RemoveProjectScripts();
 };
 
 

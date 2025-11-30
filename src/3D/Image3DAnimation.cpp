@@ -89,7 +89,7 @@ void Image3DAnimation::setAutoRemoveAfterAnimation(bool value)
     autoRemoveAfterAnimation = value;
 }
 
-void Image3DAnimation::LinkTextureIntoAnotherImage3DAnimation(Image3DAnimation *to)
+void Image3DAnimation::LinkTextureIntoAnotherImage3DAnimation(const Image3DAnimation *to)
 {
     animations.clear();
 

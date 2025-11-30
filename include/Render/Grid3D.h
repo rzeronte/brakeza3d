@@ -30,38 +30,22 @@ class Grid3D {
 public:
 
     Grid3D(AABB3D bounds, int sizeX, int sizeY, int sizeZ);
-
     bool isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles);
-
-    CubeGrid3D *getCubeFromPosition(int x, int y, int z);
-
-    Vertex3D getClosestPoint(Vertex3D v, std::vector<Vertex3D> path, int &indexVertex);
-
     void doTestForNonEmptyGeometry(std::vector<Triangle *> &triangles);
-
-    [[nodiscard]] int getNumberCubesX() const;
-
-    [[nodiscard]] int getNumberCubesY() const;
-
-    [[nodiscard]] int getNumberCubesZ() const;
-
-    [[nodiscard]] const std::vector<CubeGrid3D> &getBoxes() const;
-
-    void drawImGuiProperties();
-
-    void reset(int x, int y, int z);
-
-    PathFinding getPathFinding();
-
-    void makeCells();
-
+    void DrawImGuiProperties();
+    void Reset(int x, int y, int z);
+    void MakeCells();
     void LoadPathFindingBlocksFromGrid();
-
-    cJSON *getJSON();
-
-    std::vector<CubeGrid3D> makeTravelCubesGrid();
-
     void setTravel(int x1, int y1, int z1, int x2, int y2, int z2);
+    std::vector<CubeGrid3D> MakeTravelCubesGrid();
+    CubeGrid3D *getCubeFromPosition(int x, int y, int z);
+    Vertex3D getClosestPoint(Vertex3D v, std::vector<Vertex3D> path, int &indexVertex);
+    PathFinding getPathFinding();
+    cJSON *getJSON();
+    [[nodiscard]] int getNumberCubesX() const;
+    [[nodiscard]] int getNumberCubesY() const;
+    [[nodiscard]] int getNumberCubesZ() const;
+    [[nodiscard]] const std::vector<CubeGrid3D> &getBoxes() const;
 };
 
 

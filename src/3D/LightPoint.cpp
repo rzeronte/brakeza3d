@@ -2,7 +2,7 @@
 #include "../../include/3D/LightPoint.h"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
-#include "../../include/Render/Maths.h"
+#include "../../include/Misc/ToolsMaths.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/LightPointGUI.h"
 

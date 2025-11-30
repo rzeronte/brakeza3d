@@ -40,7 +40,7 @@ void Button::setPressed(bool pressed) {
 }
 
 void Button::draw(GLuint fbo) {
-    drawFlat(x, y, fbo);
+    DrawFlat(x, y, fbo);
 
     if (isClicked()) {
         drawSelectedEffect();

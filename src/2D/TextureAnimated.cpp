@@ -22,7 +22,7 @@ TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps)
     updateStep();
 }
 
-TextureAnimated::TextureAnimated(TextureAnimated *textureAnimated)
+TextureAnimated::TextureAnimated(const TextureAnimated *textureAnimated)
 :
     baseFilename(textureAnimated->baseFilename),
     numberFramesToLoad(textureAnimated->numberFramesToLoad),
@@ -89,7 +89,7 @@ void TextureAnimated::setup(const std::string& spriteSheetFile, int spriteWidth,
 
     SDL_FreeSurface(spriteSheetSurface);
 
-    numberFramesToLoad = frames.size();
+    numberFramesToLoad = (int) frames.size();
     setFps(fps);
 
     updateStep();
@@ -100,7 +100,7 @@ int TextureAnimated::getNumFrames() const
     return numberFramesToLoad;
 }
 
-Image *TextureAnimated::getCurrentFrame()
+Image *TextureAnimated::getCurrentFrame() const
 {
     return this->frames[currentFrame];
 }
@@ -153,7 +153,7 @@ void TextureAnimated::setFps(int value)
 
 void TextureAnimated::updateStep()
 {
-    this->counter.setStep(1 / getFps());
+    this->counter.setStep(1.0f / (float) getFps());
     this->counter.setEnabled(true);
 }
 

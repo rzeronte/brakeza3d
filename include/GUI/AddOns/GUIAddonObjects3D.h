@@ -104,7 +104,7 @@ struct GUIAddonObjects3D {
 
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
                         Logging::Message("Dropping script (%s) in %s", payload->Data, o->getLabel().c_str());
-                        o->attachScript(new ScriptLUA(
+                        o->AttachScript(new ScriptLUA(
                             std::string((const char*) payload->Data),
                             ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
                         );

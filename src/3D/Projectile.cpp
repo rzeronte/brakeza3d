@@ -30,7 +30,7 @@ void Projectile::makeProjectileRigidBody(
 )
 {
     if (BrakezaSetup::get()->PROJECTILE_SIMPLE_MESH) {
-        Mesh3D::makeSimpleRigidBody(mass, world, collisionGroup, collisionMask);
+        Mesh3D::MakeSimpleRigidBody(mass, world, collisionGroup, collisionMask);
     } else {
         Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(mass, world, collisionGroup, collisionMask);
     }
@@ -51,7 +51,7 @@ void Projectile::onUpdate()
     Mesh3D::onUpdate();
 }
 
-void Projectile::resolveCollision(CollisionInfo objectWithCollision)
+void Projectile::ResolveCollision(CollisionInfo objectWithCollision)
 {
-    Collider::resolveCollision(objectWithCollision);
+    Collider::ResolveCollision(objectWithCollision);
 }

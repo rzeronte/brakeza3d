@@ -1,7 +1,7 @@
 
 #include "../../include/Render/Triangle3D.h"
 #include "../../include/Render/Transforms.h"
-#include "../../include/Render/Maths.h"
+#include "../../include/Misc/ToolsMaths.h"
 
 Triangle::Triangle()
 :
@@ -41,7 +41,7 @@ Vertex3D Triangle::getNormal() const
 }
 
 bool Triangle::isPointInside(Vertex3D v) const {
-    return Maths::PointInTriangle(v, Ao, Bo, Co);
+    return ToolsMaths::PointInTriangle(v, Ao, Bo, Co);
 }
 
 bool Triangle::isEnableLights() const {
