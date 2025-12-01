@@ -5,7 +5,6 @@
 - [4) Basic 2D object types](#4-basic-2d-object-types)
 - [5) Basic 3D object types](#5-basic-3d-object-types)
 - [6) Collision between objects](#6-collision-between-objects)
-- [6.5) Advanced Physics System](#65-advanced-physics-system)
 - [7) Light objects types](#7-light-objects-types)
 - [8) Particle emitter](#8-particle-emitter)
 - [9) Input system](#9-input-system)
@@ -14,8 +13,6 @@
 - [12) Scripting system](#12-scripting-system)
 - [13) Shaders system](#13-shaders-system)
 - [14) Assets folder](#14-assets-folder)
-- [15) TextWriter system](#15-textwriter-system)
-- [16) Scene management](#16-scene-management)
 
 ---
 
@@ -30,7 +27,7 @@ Incluye el motor de render, un scene graph, físicas de colisiones, scripting y 
 Aunque el motor está escrito en C++, en esta documentación aprenderemos a crear nuestros propios
 proyectos usando LUA como lenguaje de scripting.
 
-
+ 
 - [Conceptos principales](#conceptos-principales)
 - [Componentes](#componentes)
 - [GUI](#gui)
@@ -108,8 +105,8 @@ fundamental del núcleo de Brakeaz3D.
 - `ComponentScripting`: Gestiona el sistema de scripting.
 - `ComponentCamera`: Gestiona la cámara.
 - `ComponentCollisions`: Gestiona el motor de físicas y colisiones.
-- `ComponentInput`: Gestiona la entrada por teclado, mouse o gamepad.
-- `ComponentSound`: Gestiona la reproducción de sonidos y música.
+- `ComponentInput`: Gestiona la entrada por teclado o gamepad.
+- `ComponentSound`: Gestiona la reproducción de sonidos.
 - `ComponentRender`: Gestiona el render con OpenGL
 
 Podrás acceder a todos ellos mediante él ``ComponentsManager`` desde tus scripts LUA. Trataremos
@@ -146,9 +143,8 @@ Las propiedades principales de un `Object3D` son:
 
 Podemos interactuar un Object3D.
 
-**Transformaciones básicas:**
 - `getLabel()`: Obtenemos el nombre del objeto.
-- `setLabel(string)`: Establecemos un nuevo nombre de objeto.
+- `setLabel()`: Establecemos un nuevo nombre de objeto.
 - `getPosition()`: Obtenemos la posición del objeto en formato `Vertex3D`.
 - `setPosition(Vertex3D)`: Establecemos una nueva posición para el objeto.
 - `addToPosition(Vertex3D)`: Suma un Vertex3D a la posición actual.
@@ -156,29 +152,14 @@ Podemos interactuar un Object3D.
 - `setRotation(M3)`: Establecemos una nueva rotación para el objeto.
 - `getScale()`: Obtenemos el factor de escala del modelo.
 - `setScale(float)`: Establecemos un nuevo factor de escala.
-- `setDrawOffset(Vertex3D)`: Establece un offset de dibujo.
-
-**Control de estado:**
-- `setEnabled(bool)`: Activa o desactiva el objeto en la escena.
+- `setEnable(bool)`: Activa o desactiva el objeto en la escena.
 - `setRemoved(bool)`: Elimina en el siguiente frame el objeto de la escena.
-- `setBelongToScene(bool)`: Indica si el objeto pertenece a la escena.
-
-**Orientación:**
 - `AxisForward()`: Devuelve el actual eje de rotación hacia el frente.
 - `AxisUp()`: Devuelve el actual eje de rotación hacia arriba.
 - `AxisRight()`: Devuelve el actual eje de rotación hacia la derecha.
-- `lookAt(Object3D)`: Rota el objeto hacia otro objeto dado.
-
-**Información:**
 - `getTypeObject()`: Devuelve un string con el tipo de objeto.
-- `getModelMatrix()`: Obtiene la matriz de modelo (glm::mat4).
-- `getM3ModelMatrix()`: Obtiene la matriz de modelo (M3).
-
-**Scripting:**
-- `attachScript(string)`: Vincula un script al objeto.
-- `getLocalScriptVar(string)`: Obtiene una variable local del script.
-- `reloadScriptsEnvironment()`: Recarga el entorno de scripts del objeto.
-
+- `lookAt(Object3D)`: Rota el objeto hacia otro objeto dado.
+- `getM3ModelMatrix()`: Obtiene la matrix de objeto.
 ---
 
 ### Scripting sobre objetos
@@ -201,11 +182,9 @@ otros cargarán sprites animados, etc. A continuación enumero una lista de algu
 - `Image2D`: Dibuja una imagen en pantalla.
 - `Image3D`: Plano 3D sobre el que se visualiza una textura de imagen.
 - `Image2DAnimation`: Conjunto de `Image2D` que conforma una animación.
-- `BillboardAnimation` (Image3DAnimation): Billboard animado con sprite sheet.
-- `BillboardAnimation8Directions` (Image3DAnimation8Directions): Billboard animado con 8 direcciones.
 - `ParticleEmitter`: Emisor de partículas.
-- `LightPoint3D` (LightPoint): Punto de luz.
-- `SpotLight3D` (LightSpot): Luz focal/cónica.
+- `LightPoint`: Punto de luz.
+- ...
 
 A lo largo de la documentación nos detendremos en algunos de estos objetos para su mayor
 comprensión y detalle.
@@ -222,12 +201,11 @@ disponibles a través de tus scripts LUA.
 - [AABB3D](#aabb3d-axis-aligned-bounding-box)
 - [Point2D](#point2d)
 - [Color](#color)
-- [vec2, vec3, vec4 (GLM)](#vectores-glm)
 
 ---
 ### Vertex3D
 
-Un punto en espacio o un vector de origen centro de coordenadas.
+Un punto en espacio o un vector de origen centro de coordenadas. 
 
 | Propiedad | Tipo  | Descripción  |
 |-----------|-------|--------------|
@@ -245,23 +223,7 @@ Un punto en espacio o un vector de origen centro de coordenadas.
 | `getModule() => float`         | Devuelve la longitud del vector      |
 | `getInverse() => Vertex3D`     | Devuelve el vector invertido         |
 | `getScaled(float) => Vertex3D` | Devuelve el vertice escalado         |
-| `getScaled(float, float, float) => Vertex3D` | Escala en cada eje |
 | `distance(Vertex3D) => float`  | Devuelve la distancia a otro vértice |
-
-**Ejemplo:**
-```lua
-v1 = Vertex3D.new(1.0, 2.0, 3.0)
-v2 = Vertex3D.new(4.0, 5.0, 6.0)
-
--- Suma de vectores
-v3 = v1 + v2  -- (5.0, 7.0, 9.0)
-
--- Normalizar
-normalized = v1:getNormalize()
-
--- Escalar
-scaled = v1:getScaled(2.0)  -- (2.0, 4.0, 6.0)
-```
 
 ---
 
@@ -271,126 +233,61 @@ Matrix 3x3 (floats) que representa una rotación.
 
 | Propiedad | Tipo        | Descripción                           |
 |-----------|-------------|---------------------------------------|
-| m         | float[3][3] | Array bidimensional de valores float  |
+| float[9]  | float array | Almacena los valores de la matriz 3x3 |
 
-| Método                                       | Descripción                                    |
-|----------------------------------------------|------------------------------------------------|
-| `* M3 => M3`                                 | Multiplicación de matrices                     |
-| `* Vertex3D => Vertex3D`                     | Multiplica matriz por vector                   |
-| `getMatrixRotationForEulerAngles(x,y,z)`     | Crea matriz desde ángulos de Euler            |
-| `setMatrixRotationForEulerAngles(x,y,z)`     | Establece rotación desde ángulos de Euler     |
-| `getMatrixIdentity() => M3`                  | Devuelve matriz identidad                      |
-| `getTranspose() => M3`                       | Devuelve la transpuesta de la matriz          |
-| `X() => Vertex3D`                            | Vector columna X de la matriz                  |
-| `Y() => Vertex3D`                            | Vector columna Y de la matriz                  |
-| `Z() => Vertex3D`                            | Vector columna Z de la matriz                  |
-
-**Ejemplo:**
-```lua
--- Crear una rotación desde ángulos de Euler (en radianes)
-rotation = M3.new()
-rotation:getMatrixRotationForEulerAngles(0, math.pi / 4, 0)  -- Rotar 45° en Y
-
--- Aplicar rotación a un objeto
-objeto:setRotation(rotation)
-```
+| Método                                    | Descripción                                       |
+|-------------------------------------------|---------------------------------------------------|
+| `+ M3 => M3`                              | Suma de matrices (`add`)                          |
+| `- M3 => M3`                              | Resta de matrices (`sub`)                         |
+| `* M3 => M3`                              | Multiplicación de matrices (`mul`)                |
+| `* Vertex3D => M3`                        | Multiplicación de matriz por vector (`Vertex3D`)  |
+| `getMatrixIdentity() => M3`               | Devuelve la matriz identidad                      |
+| `getTranspose() => M3`                    | Devuelve la matriz traspuesta                     |
+| `X() => Vertex3D`                         | Devuelve el eje X                                 |
+| `Y() => Vertex3D`                         | Devuelve el eje Y                                 |
+| `Z() => Vertex3D`                         | Devuelve el eje Z                                 |  
+| `getMatrixRotationForEulerAngle(p, y, r)` | Crea la matriz de rotación para los angulos dados |
 
 ---
 
 ### AABB3D (Axis-Aligned Bounding Box)
 
-Caja delimitadora alineada con los ejes. Útil para detección de colisiones y particionamiento espacial.
+Caja contendora de geometría, alineada a los ejes de coordenadas.
 
-| Propiedad | Tipo     | Descripción                  |
-|-----------|----------|------------------------------|
-| min       | Vertex3D | Vértice mínimo de la caja    |
-| max       | Vertex3D | Vértice máximo de la caja    |
-| vertices  | array    | Array de 8 vértices de la caja |
-| size      | Vertex3D | Tamaño de la caja (max - min) |
+| Propiedad | Tipo       | Descripción               |
+|-----------|------------|---------------------------|
+| min       | `Vertex3D` | Vértice mínimo de la caja |
+| max       | `Vertex3D` | Vértice máximo de la caja |
 
-| Método                        | Descripción                                |
-|-------------------------------|--------------------------------------------|
-| `isColliding(AABB3D) => bool` | Comprueba si colisiona con otra caja      |
-| `setScale(Vertex3D)`          | Escala la caja                            |
-| `updateVertices()`            | Actualiza los 8 vértices de la caja       |
-| `getPlanes()`                 | Obtiene los 6 planos de la caja           |
-| `getCenter() => Vertex3D`     | Obtiene el centro de la caja              |
-| `isPointInside(Vertex3D) => bool` | Comprueba si un punto está dentro    |
-
-**Ejemplo:**
-```lua
--- Crear AABB
-aabb = AABB3D.new()
-aabb.min = Vertex3D.new(-1, -1, -1)
-aabb.max = Vertex3D.new(1, 1, 1)
-aabb:updateVertices()
-
--- Comprobar si un punto está dentro
-punto = Vertex3D.new(0.5, 0.5, 0.5)
-if aabb:isPointInside(punto) then
-    print("El punto está dentro de la caja")
-end
-```
+| Método                            | Descripción                                       |
+|-----------------------------------|---------------------------------------------------|
+| `isColliding(AABB3D) => bool`     | Determina si se superpone con otro `AABB3D`       |
+| `size() => Vertex3D`              | Devuelve el tamaño de la caja                     |
+| `getCenter() => Vertex3D`         | Devuelve el centro de la caja                     |
+| `isPointInside(Vertex3D) => bool` | Determina si un `Vertex3D` está dentro de la caja |
 
 ---
 
 ### Point2D
-
-Punto en espacio 2D.
+Punto de coordenadas en 2D.
 
 | Propiedad | Tipo  | Descripción  |
 |-----------|-------|--------------|
-| x         | int   | Coordenada X |
-| y         | int   | Coordenada Y |
+| x         | float | Coordenada X |
+| y         | float | Coordenada Y |
 
 ---
 
 ### Color
 
-Representa un color RGBA.
+Color formato `RGBA`
 
-| Método                               | Descripción                     |
-|--------------------------------------|---------------------------------|
-| `new() => Color`                     | Constructor por defecto (negro) |
-| `new(r, g, b, a) => Color`           | Constructor con valores RGBA    |
-| `setRed(float)`                      | Establece componente roja       |
-| `setGreen(float)`                    | Establece componente verde      |
-| `setBlue(float)`                     | Establece componente azul       |
-
-**Ejemplo:**
-```lua
--- Color rojo con alpha 1.0
-rojo = Color.new(1.0, 0.0, 0.0, 1.0)
-
--- Color verde semitransparente
-verde = Color.new(0.0, 1.0, 0.0, 0.5)
-```
-
----
-
-### Vectores GLM
-
-Tipos vectoriales de GLM para uso con shaders personalizados.
-
-**vec2:**
-```lua
-v = vec2.new(1.0, 2.0)
-print(v.x, v.y)
-```
-
-**vec3:**
-```lua
-v = vec3.new(1.0, 2.0, 3.0)
-print(v.x, v.y, v.z)
-```
-
-**vec4:**
-```lua
-v = vec4.new(1.0, 2.0, 3.0, 4.0)
-print(v.x, v.y, v.z, v.w)
-```
-
-Estos tipos son útiles principalmente para configurar uniforms de shaders personalizados.
+| Propiedad | Tipo  | Descripción            |
+|-----------|-------|------------------------|
+| r         | float | Componente roja (0-1)  |
+| g         | float | Componente verde (0-1) |
+| b         | float | Componente azul (0-1)  |
+| a         | float | Componente alfa (0-1)  |
 
 ---
 
@@ -398,34 +295,49 @@ Estos tipos son útiles principalmente para configurar uniforms de shaders perso
 
 # 3) Camera3D object
 
-La cámara es un objeto especial que determina desde qué punto de vista se renderiza la escena.
+Brakeza3D incluye un objeto específico para referirse a la cámara: `Camera3D`. Al fin y al cabo es
+un `Object3D`, por lo que podrás moverlo y rotarlo como tal. Incorpora algunas opciones de configuración como lo son 
+él `FOV` y tamaños del `Frustum`, que afectarán a como y qué veámos en pantalla.
 
-### Métodos principales
+- [Matrices de vista y proyección](#matrices-de-vista-y-proyección)
+- [Movimiento y rotación de la cámara](#movimiento-y-rotación-de-la-cámara)
+- [ComponentCamera](#componentcamera)
+- [FOV](#fov)
 
-| Método                                    | Descripción                                |
-|-------------------------------------------|--------------------------------------------|
-| `setFOV(float)`                           | Establece el campo de visión (Field of View) |
-| `getM3ViewMatrix() => M3`                 | Obtiene la matriz de vista                 |
-| `getM3ProjectionMatrix() => M3`           | Obtiene la matriz de proyección            |
-| `setRotationFromEulerAngles(x, y, z)`     | Establece rotación desde ángulos de Euler  |
+---
 
-La cámara hereda de `Object3D`, por lo que también dispone de todos los métodos de posición, rotación, etc.
+### Matrices de vista y proyección
 
-### Acceso a la cámara
+A través del objeto `Camera3D` obtendremos las matrices de `vista` y `proyección`:
+
+- `getM3ViewMatrix`: `M3` con los datos de la matriz de vista.
+- `getM3ProjectionMatrix`: `M3` con los datos de la matriz de proyección.
+
+### Movimiento y rotación de la cámara
+
+La cámara es un `Objeto3D`, por lo que podremos moverlo a través del
+método `setPosition(Vertex3D)` que ya hemos visto.
+
+De igual forma podrás rotar la cámara con `setRotation(M3)`.
+
+### ComponentCamera
+
+Brakeza3D gestiona las operaciones de cámara a través del componente `ComponentCamera`.
+
+Podrás obtener acceso a este componente desde tus scripts LUA y este te dará acceso a la cámara:
 
 ```lua
--- Obtener la cámara desde el ComponentsManager
-componentsManager = ComponentsManager.get()
 camera = componentsManager:getComponentCamera():getCamera()
+camera:setPosition(Vertex3D.new(10, 10, 10))
+```
 
--- Mover la cámara
-camera:setPosition(Vertex3D.new(0, 5, 10))
+### FOV
 
--- Rotar la cámara
-camera:setRotationFromEulerAngles(math.pi / 4, 0, 0)
+Puedes ajustar el FOV horizontal desde tus scripts de la siguiente manera:
 
--- Cambiar FOV
-camera:setFOV(60.0)
+```lua
+camera = componentsManager:getComponentCamera():getCamera()
+camera:setFOV(140)
 ```
 
 ---
@@ -434,56 +346,153 @@ camera:setFOV(60.0)
 
 # 4) Basic 2D object types
 
-Brakeza3D ofrece objetos 2D para renderizar imágenes en pantalla.
+Brakeza3D permite incorporar a la pantalla elementos `2D` o `2.5D`
+
+- [Image2D](#image2d)
+- [Image2DAnimation](#image2danimation)
+- [BillboardAnimation](#billboardanimation)
+- [BillboardAnimation8Directions](#billboardanimation8directions)
+- [Textos en pantalla](#textos-en-pantalla)
+
+---
 
 ### Image2D
 
-Renderiza una imagen estática en pantalla en coordenadas 2D.
+Es un objeto `2D`. Dibuja una imagen en pantalla.
 
-**Constructor:**
 ```lua
-image = Image2D.create(x, y, "ruta/imagen.png")
+    img = Image2D.create(10, 10, "../assets/images/logo_small.png")
+    img:setEnabled(true)
+    img:updatePosition(300, 300)
+    brakeza:addObject3D(img, 'imagen')
 ```
 
-**Métodos:**
-- `updatePosition(x, y)`: Actualiza la posición 2D de la imagen.
+### Image2DAnimation
 
-**Ejemplo:**
+Dibuja una animación en pantalla, es en esencia, una colección de `Image2D`.
+
+Está diseñado para cargar la animación desde formato **spritesheet**, es decir, una imagen con un grid, donde cada celda
+es una imagen de la animación. Es por este motivo que deberemos de indicar el **ancho** y **alto** de cada frame y el **núm. de frames**
+en la imagen, para que la función ajuste adecuadamente el sprite.
+
+Podrás configurar la velocidad (**fps**) a la que se muestra una animación.
 ```lua
--- Crear una imagen en la posición (100, 100)
-logo = Image2D.create(100, 100, "../assets/images/logo.png")
-brakeza:addObject3D(logo, "logo")
-
--- Mover la imagen
-logo:updatePosition(200, 150)
+    -- Image2DAnimation.create(x, y, spriteFile, width, height, numFrames, fps)
+    img = Image2DAnimation.create(0, 0, "../assets/sprites/explosion_a.png", 128, 128, 15, 24)
+    img:setEnabled(true)
+    brakeza:addObject3D(img, 'imagen')
 ```
 
 ---
 
-### Image2DAnimation
+### BillboardAnimation
 
-Sprite animado en 2D usando un sprite sheet.
+Es un objeto `2.5D`. El billboard es un plano 3D que siempre mira a cámara.
 
-**Constructor:**
+Podrás moverlo, escalarlo, rotarlo, etc.
+
+También está diseñado para cargar la animación desde formato **spritesheet**.
+
+Fionalmente se dibujará la animación en el plano, según la configuración indicada.
+
 ```lua
-anim = Image2DAnimation.create(x, y, "ruta/spritesheet.png", anchoFrame, altoFrame, numFrames, fps)
+    -- BillboardAnimation.create(position, width, height, spriteFile, spriteWidth, spriteHeight, numFrames, fps)
+    animation = BillboardAnimation.create(Vertex3D.new(10, 10, 10), 100, 100, "../assets/sprites/explosion_a.png", 128, 128, 15, 24)
+    animation:setEnabled(true)
+    brakeza:addObject3D(animation, 'my_animation')
 ```
 
-**Parámetros:**
-- `x, y`: Posición en pantalla
-- `anchoFrame`: Ancho de cada frame en el sprite sheet
-- `altoFrame`: Alto de cada frame
-- `numFrames`: Número total de frames
-- `fps`: Frames por segundo de la animación
+El objeto `BillboardAnimation` admite la incorporación de múltiples animaciones. Podrás
+seleccionar la animación deseada con el método `setAnimation`.
 
-**Métodos:**
-- `updatePosition(x, y)`: Actualiza la posición 2D.
-
-**Ejemplo:**
 ```lua
--- Crear animación de 8 frames, cada uno de 32x32 píxeles, a 10 fps
-personaje = Image2DAnimation.create(100, 100, "../assets/sprites/walk.png", 32, 32, 8, 10)
-brakeza:addObject3D(personaje, "personaje2D")
+    BillboardAnimation.create(position, width, height, spriteFile, spriteWidth, spriteHeight, numFrames, fps)
+    animation = BillboardAnimation.create(
+        Vertex3D.new(10, 10, 10),
+        100,
+        100,
+        "../assets/sprites/explosion_a.png",
+        128,
+        128,
+        15,
+        24
+    )
+    animation:addAnimation(
+        "../assets/sprites/explosion_b.png",
+        128,
+        128,
+        15,
+        24
+    )
+    animation:setAnimation(1) -- Seleccionamos la segunda animacion por su índice
+    brakeza:addObject3D(animation, 'my_animation')
+```
+
+---
+
+### BillboardAnimation8Directions
+
+Es un tipo de `Billboard animation` en el que se almacenan *ocho direcciones*.
+
+**Según el ángulo a cámara, el billbaord cambiará su animación automáticamente.**
+Su comportamiento es similar a lo que vemos en los enemigos de mítico 'Doom'.
+
+Está diseñado para cargar las imágenes de las animaciones desde una carpeta, en la
+que cada fichero debe respetar un patrón: `[direccion]_[frame].png`.
+
+Supongamos que deseamos cargar una animación con dos frames. Estos serían los ficheros esperados:
+
+| Direccion | Frame 0 | Frame 1 | Frame 2 |
+|-----------|---------|---------|---------|
+| 01        | 1_0.png | 1_1.png | 1_2.png |
+| 02        | 2_0.png | 2_1.png | 2_2.png |
+| 03        | 3_0.png | 3_1.png | 3_2.png |
+| 04        | 4_0.png | 4_1.png | 4_2.png |
+| 05        | 5_0.png | 5_1.png | 5_2.png |
+| 06        | 6_0.png | 6_1.png | 6_2.png |
+| 07        | 7_0.png | 7_1.png | 7_2.png |
+| 08        | 8_0.png | 8_1.png | 8_2.png |
+
+Así sucesivamente, si nuestra animación tiene más frames.
+
+```lua
+    img = BillboardAnimation8Directions.create("../assets/sprites/explosion", 15, 24)
+    img:setEnabled(true)
+    brakeza:addObject3D(img, 'imagen')
+```
+
+---
+
+### Textos en pantalla
+
+Brakeza3D permite escribir textos en pantalla a través de tus scripts LUA mediante el
+objeto `TextWriter`.
+
+Necesitarás disponer de una fuente, en formato `TTF`, crear el objeto y ya podrás utilizarlo.
+
+Sus métodos son:
+
+- `writeTextTTF(x, y, width, height, text, Color)`: Dibuja texto en la posición `x,y` de tamaño `widh*height`.
+- `writeTextTTFAutoSize(x, y, text, Color, sizeRatio)`: Dibuja texto en la posición `x,y`, calculando dimensiones automáticamente.
+- `writeTextTTFMiddleScreen(text, Color, sizeRatio)`: Dibuja texto centrado en pantalla.
+- `writeTTFCenterHorizontal(y, text, Color, sizeRatio)`: Dibuja texto centrado horizontalmente.
+
+```lua
+function onStart()
+    textWriter = TextWriter.create("../assets/fonts/Courier.ttf")
+end
+
+function onUpdate()
+     textWriter:writeTTFCenterHorizontal(
+        15,
+        "Centrado horizontal!",
+        Color.new(0, 1, 0, 1),
+        1.5
+    )
+
+    textWriter:writeTextTTF(100, 100, 100, 100, "Hola!", Color.new(1, 0, 0, 1))
+end
+
 ```
 
 ---
@@ -492,192 +501,86 @@ brakeza:addObject3D(personaje, "personaje2D")
 
 # 5) Basic 3D object types
 
+
+- [Image3D](#image3d)
 - [Mesh3D](#mesh3d)
 - [Mesh3DAnimation](#mesh3danimation)
-- [Image3D](#image3d)
-- [BillboardAnimation (Image3DAnimation)](#billboardanimation-image3danimation)
-- [BillboardAnimation8Directions](#billboardanimation8directions-image3danimation8directions)
+- [Dibujar líneas](#dibujar-lineas)
 
 ---
 
-## Mesh3D
+### Image3D
 
-Modelo 3D estático cargado desde archivo FBX.
+Un plano con la textura de una imagen.
 
-**Constructor:**
 ```lua
-mesh = Mesh3D.create(posicion, "ruta/modelo.fbx")
+-- Image3D.create(position, width, height, imageFile)
+image3d = Image3D.create(Vertex3D.new(10, 10, 10), 10, 10, "../assets/sprites/explosion_a.png")
+image3d:setEnabled(true)
+brakeza:addObject3D(image3d, 'my_image3d')
+```
+---
+
+### Mesh3D
+
+Modelo 3D, incorpora geometría y texturas.
+
+```lua
+-- Mesh3D.create(position, modelFile)
+eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+eye:setEnabled(true)
+eye:setScale(10)
+brakeza:addObject3D(eye, 'modelo')
 ```
 
-**Métodos principales:**
-
-**Carga de geometría:**
-- `AssimpLoadGeometryFromFile(string)`: Carga un modelo 3D desde archivo.
-
-**Estructuras espaciales:**
-- `buildOctree(profundidad)`: Construye un octree para optimización espacial.
-- `buildGrid3D(sizeX, sizeY, sizeZ)`: Construye una rejilla 3D.
-- `fillGrid3DFromGeometry()`: Rellena el grid marcando celdas con geometría.
-- `getOctree() => Octree`: Obtiene el octree del modelo.
-- `getGrid3D() => Grid3D`: Obtiene el grid 3D del modelo.
-
-**Ejemplo básico:**
-```lua
--- Cargar modelo
-castillo = Mesh3D.create(Vertex3D.new(0, 0, 0), "../assets/models/castle.fbx")
-brakeza:addObject3D(castillo, "castillo")
-
--- Escalar
-castillo:setScale(2.0)
-
--- Rotar
-rot = M3.new()
-rot:getMatrixRotationForEulerAngles(0, math.pi / 2, 0)
-castillo:setRotation(rot)
-```
-
-**Ejemplo con Octree:**
-```lua
-modelo = Mesh3D.create(Vertex3D.new(0, 0, 0), "../assets/models/terrain.fbx")
-modelo:buildOctree(5)  -- Profundidad 5
-brakeza:addObject3D(modelo, "terreno")
-
--- Acceder al octree
-octree = modelo:getOctree()
-```
+Los objetos ``Mesh3D`` disponen de algunas características especiales, como los `Grid3D` o
+los `Octrees`, que veremos en el capítulo dedicado a scripting.
 
 ---
 
-## Mesh3DAnimation
+### Mesh3DAnimation
 
-Modelo 3D animado con skeletal animation (huesos).
+Modelo 3D animado.
 
-**Constructor:**
 ```lua
-animMesh = Mesh3DAnimation.create(posicion, "ruta/modelo_animado.fbx")
+-- Mesh3DAnimation.create(position, animatedModelFile)
+man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
+man:setBelongToScene(false)
+man:setScale(0.01)
+brakeza:addObject3D(man, 'myMeshAnimated')
 ```
 
-**Métodos de animación:**
-- `setIndexCurrentAnimation(index)`: Establece la animación por índice.
-- `setAnimationByName(nombre)`: Establece la animación por nombre.
-- `setAnimationSpeed(velocidad)`: Establece la velocidad de reproducción.
-- `isAnimationEnds() => bool`: Comprueba si la animación ha terminado.
-- `setLoop(bool)`: Establece si la animación se repite.
-- `isLoop() => bool`: Comprueba si está en loop.
+Si el modelo tuviese más de una animación, la primera de ellas será la seleccionada por
+defecto. Desde la GUI podrás seleccionar cualquier otra animación como activa.
+Si deseas hacerlo desde tus scripts LUA puedes utilizar `setIndexCurrentAnimation` o `setAnimationByName`:
 
-**Ejemplo:**
 ```lua
--- Cargar personaje animado
-personaje = Mesh3DAnimation.create(Vertex3D.new(0, 0, 0), "../assets/animations/character.fbx")
-brakeza:addObject3D(personaje, "personaje")
+man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
+man:setIndexCurrentAnimation(2) -- animacion nº3 seleccionada
+brakeza:addObject3D(man, 'myMeshAnimated')
+```
 
--- Configurar animación
-personaje:setAnimationByName("Walk")
-personaje:setLoop(true)
-personaje:setAnimationSpeed(1.0)
+Si deseas cambiar la velocidad de la animación, podrás hacerlo también desde la UI o desde tus
+scripts LUA:
 
--- Cambiar a otra animación cuando termine
-if personaje:isAnimationEnds() then
-    personaje:setAnimationByName("Idle")
-end
+```lua
+man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
+man:setAnimationSpeed(0.5) -- rango 0.0 - 1.0
+brakeza:addObject3D(man, 'myMeshAnimated')
 ```
 
 ---
 
-## Image3D
+### Dibujar lineas
 
-Plano 3D (billboard) con una textura de imagen.
+Puedes dibujar líneas 3D a través del `componentRender`
 
-**Constructor:**
 ```lua
-billboard = Image3D.create(posicion, ancho, alto, "ruta/imagen.png")
+local render = componentsManager:getComponentRender();
+from = this:getPosition()
+to = this:getPosition() + this:AxisUp():getScaled(2)
+render:drawLine(from, to)
 ```
-
-**Ejemplo:**
-```lua
--- Crear árbol billboard
-arbol = Image3D.create(Vertex3D.new(5, 0, 0), 2.0, 3.0, "../assets/images/tree.png")
-brakeza:addObject3D(arbol, "arbol")
-```
-
----
-
-## BillboardAnimation (Image3DAnimation)
-
-Billboard animado usando un sprite sheet. Siempre mira hacia la cámara.
-
-**Constructor:**
-```lua
-anim = BillboardAnimation.create(
-    posicion,           -- Vertex3D
-    ancho,              -- float
-    alto,               -- float
-    "spritesheet.png",  -- string
-    anchoSprite,        -- int (ancho de cada frame en el sprite)
-    altoSprite,         -- int (alto de cada frame)
-    numFrames,          -- int
-    fps                 -- int
-)
-```
-
-**Métodos:**
-- `addAnimation(nombre, frameInicio, frameFin)`: Añade una animación nombrada.
-- `setAnimation(nombre)`: Activa una animación por nombre.
-- `updateBillboardSize(ancho, alto)`: Actualiza el tamaño del billboard.
-
-**Ejemplo:**
-```lua
--- Crear explosión animada
-explosion = BillboardAnimation.create(
-    Vertex3D.new(0, 2, 0),
-    1.0, 1.0,
-    "../assets/sprites/explosion.png",
-    64, 64,  -- Cada frame es 64x64
-    16,      -- 16 frames totales
-    30       -- 30 fps
-)
-brakeza:addObject3D(explosion, "explosion")
-
--- Definir animaciones
-explosion:addAnimation("explode", 0, 15)
-explosion:setAnimation("explode")
-```
-
----
-
-## BillboardAnimation8Directions (Image3DAnimation8Directions)
-
-Billboard animado con 8 direcciones. Detecta automáticamente hacia dónde mira la cámara y muestra el sprite correspondiente.
-
-**Constructor:**
-```lua
-anim8dir = BillboardAnimation8Directions.create(
-    posicion,           -- Vertex3D
-    ancho,              -- float
-    alto,               -- float
-    "carpeta/sprites/", -- string (carpeta con los sprites direccionales)
-    numFrames,          -- int
-    fps                 -- int
-)
-```
-
-**Estructura de carpeta esperada:**
-La carpeta debe contener sprites nombrados con las direcciones: N, NE, E, SE, S, SW, W, NW
-
-**Ejemplo:**
-```lua
--- Crear enemigo con 8 direcciones
-enemigo = BillboardAnimation8Directions.create(
-    Vertex3D.new(0, 0, 0),
-    1.0, 1.5,
-    "../assets/sprites/enemy/",  -- Debe contener: N.png, NE.png, E.png, etc.
-    8,   -- 8 frames por dirección
-    10   -- 10 fps
-)
-brakeza:addObject3D(enemigo, "enemigo")
-```
-
-El sistema automáticamente seleccionará el sprite correcto basándose en la posición relativa entre el objeto y la cámara.
 
 ---
 
@@ -685,509 +588,227 @@ El sistema automáticamente seleccionará el sprite correcto basándose en la po
 
 # 6) Collision between objects
 
-Brakeza3D integra Bullet Physics para detección de colisiones y simulación física.
+Los objetos colisionables permitirán al programador implementar lógica en función de las colisiones
+producidas. En Brakeza3D todos los `Object3D` puede trabajar con físicas y colisiones.
 
-### ComponentCollisions
-
-Acceso al componente de colisiones:
+Cualquier objeto colisionables lanzará una llamada al método `onCollision` de tus scripts LUA por cada colisión producida.
 
 ```lua
-componentsManager = ComponentsManager.get()
-collisions = componentsManager:getComponentCollisions()
-```
-
-**Métodos:**
-- `isRayCollisionWith(origen, direccion, objeto) => bool`: Lanza un rayo y comprueba colisión.
-- `setEnableDebugMode(bool)`: Activa/desactiva visualización de debug de física.
-
-**Ejemplo raycast:**
-```lua
-collisions = componentsManager:getComponentCollisions()
-
-origen = Vertex3D.new(0, 10, 0)
-direccion = Vertex3D.new(0, -1, 0)  -- Hacia abajo
-
-if collisions:isRayCollisionWith(origen, direccion, objetoSuelo) then
-    print("El rayo colisiona con el suelo")
+function onCollision(with)
+    print("Collision with " .. with:getLabel())
 end
 ```
 
-### Configuración básica de colisión en objetos
-
-Todos los `Object3D` tienen métodos básicos de colisión:
-
-**Control de colisiones:**
-- `setCollisionsEnabled(bool)`: Activa/desactiva colisiones.
-- `isCollisionsEnabled() => bool`: Comprueba si están activas.
-- `removeCollisionObject()`: Elimina el cuerpo de colisión.
-- `sleepCollider()`: Pone el collider en modo sleep.
-
-**Formas de colisión (CollisionShape):**
-- `SIMPLE_SHAPE`: Formas simples (cápsula, caja, esfera).
-- `TRIANGLE_MESH_SHAPE`: Malla de triángulos (para geometría compleja).
-
-**Métodos de setup:**
-- `setupGhostCollider(CollisionShape)`: Configura como trigger (sin física, solo detección).
-- `setupRigidBodyCollider(CollisionShape)`: Configura como rigid body (con física).
-
-**Ejemplo básico:**
-```lua
--- Crear objeto con colisión de caja simple
-caja = Mesh3D.create(Vertex3D.new(0, 5, 0), "../assets/models/box.fbx")
-caja:setupRigidBodyCollider(SIMPLE_SHAPE)
-caja:setCollisionsEnabled(true)
-brakeza:addObject3D(caja, "caja")
-```
-
-Para física avanzada, ver la sección [6.5) Advanced Physics System](#65-advanced-physics-system).
+- [Modos de colisión](#modos-de-colisión)
+- [Forma del colisionador](#forma-del-colisionador)
+- [Desactivar colisiones](#desactivar-colisiones)
+- [Modo de colisión KINEMATIC](#modo-de-colisión-kinematic)
+- [Mapeado de colisionadores y huesos](#mapeado-de-colisionadores-y-huesos)
 
 ---
 
-### CollisionInfo
+### Modos de colisión
 
-Información sobre una colisión detectada.
+Existen dos modos de funcionamiento para el sistema de colisiones:
 
-**Propiedades/Métodos:**
-- `with`: Objeto con el que colisionó.
-- `getSource()`: Obtiene el objeto fuente de la colisión.
-- `getObject()`: Obtiene el objeto que colisionó.
-- `getBoneIndexMapping() => int`: Para animaciones con huesos, devuelve el índice del hueso.
+- `GHOST`: Objeto colisionable no reactivo a físicas.
+- `RIGIDBODY`: Objeto colisionable reactivo a físicas.
 
----
+Puedes configurar el modo de las colisiones de un objeto desde la GUI o desde tus scripts LUA.
 
->[Back to index](#index)
+Para hacerlo mediante tus scripts puedes utilizar el método ``setupGhostCollider`` o
+``setupRigidBodyCollider``.
 
-# 6.5) Advanced Physics System
-
-Brakeza3D integra **Bullet Physics** proporcionando un sistema completo de física para tus objetos.
-
-- [Configuración de colliders](#configuración-de-colliders)
-- [Rigid Bodies (Cuerpos rígidos)](#rigid-bodies-cuerpos-rígidos)
-- [Ghost Bodies (Triggers)](#ghost-bodies-triggers)
-- [Fuerzas e impulsos](#fuerzas-e-impulsos)
-- [Velocidad y movimiento](#velocidad-y-movimiento)
-- [Propiedades físicas](#propiedades-físicas)
-- [Factores de restricción](#factores-de-restricción)
-- [Character controller](#character-controller)
-
----
-
-## Configuración de colliders
-
-Todos los `Object3D` pueden tener un collider de física.
-
-### Tipos de colliders
-
-**1. Simple Shape (Formas primitivas):**
 ```lua
-objeto:setupRigidBodyCollider(SIMPLE_SHAPE)
--- o
-objeto:setupGhostCollider(SIMPLE_SHAPE)
+eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+eye:setCollisionsEnabled(true)
+eye:setupGhostCollider(CollisionShape.SIMPLE_SHAPE); -- Ghost
+brakeza:addObject3D(eye, 'myOneEye')
+
+eye2 = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+eye2:setCollisionsEnabled(true)
+eye2:setupRigidBodyCollider(CollisionShape.SIMPLE_SHAPE); -- RigidBody
+brakeza:addObject3D(eye2, 'myTwoEye')
 ```
 
-Para objetos con forma simple, el motor usará automáticamente cápsulas, cajas o esferas según la geometría.
+En modo de colisión ``RIGIDBODY`` podemos indicarle si la geometría será **estática**. Los elementos estáticos no
+se moverán (su masa es automáticamente 0). Es el único modo de colisión permitido para geometrías no convexas.
 
-**2. Triangle Mesh (Malla de triángulos):**
 ```lua
-objeto:setupRigidBodyCollider(TRIANGLE_MESH_SHAPE)
+eye2 = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+eye2:setColliderStatic(true) -- estático!
+eye2:setupRigidBodyCollider(CollisionShape.SIMPLE_SHAPE); -- RigidBody
+brakeza:addObject3D(eye2, 'myTwoEye')
 ```
 
-Para geometría compleja. Más preciso pero más costoso computacionalmente.
+### Forma del colisionador
 
-### Métodos de configuración
+Existen las siguientes opciones:
 
-- `setupRigidBodyCollider(shape)`: Cuerpo rígido con física completa.
-- `setupGhostCollider(shape)`: Trigger sin física (solo detecta colisiones).
-- `setColliderStatic(bool)`: Establece el collider como estático (inmóvil).
-- `UpdateShapeCollider()`: Actualiza la forma del collider.
-- `setScalingCollider(Vertex3D)`: Escala el collider.
-- `setCapsuleColliderSize(radio, altura)`: Configura tamaño de cápsula.
-- `moveCollider(Vertex3D)`: Mueve el collider a una posición.
+- `CollisionShape.SIMPLE_SHAPE`
+- `CollisionShape.CAPSULE`
+- `CollisionShape.TRIANGLE3D_MESH_SHAPE`
 
-**Ejemplo:**
+Cualquier ``Object3D`` puede trabajar con la forma de colisionador denominada `SIMPLE_SHAPE` o `CAPSULE`.
+Su performance es muy buena.
+
+No obstante, todos aquellos objetos que dependen de `Mesh3D` podrán crearse con una forma de colisionador
+denominada `CollisionShape.TRIANGLE3D_MESH_SHAPE` creando una malla de colisión exacta a la geometría del modelo. Es más precisa, pero conlleva un mayor costo
+computacional.
+
+Puedes manipular los modos de colisión tanto desde la GUI como desde tus scripts LUA.
+
 ```lua
--- Suelo estático con triangle mesh
-suelo = Mesh3D.create(Vertex3D.new(0, 0, 0), "../assets/models/terrain.fbx")
-suelo:setupRigidBodyCollider(TRIANGLE_MESH_SHAPE)
-suelo:setColliderStatic(true)
-brakeza:addObject3D(suelo, "suelo")
-
--- Objeto dinámico con forma simple
-caja = Mesh3D.create(Vertex3D.new(0, 10, 0), "../assets/models/box.fbx")
-caja:setupRigidBodyCollider(SIMPLE_SHAPE)
-brakeza:addObject3D(caja, "caja")
+eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+eye:setCollisionsEnabled(true)
+eye:setupGhostCollider(CollisionShape.TRIANGLE3D_MESH_SHAPE); -- Ghost
+brakeza:addObject3D(image3d, 'myOneEye')
 ```
 
 ---
 
-## Rigid Bodies (Cuerpos rígidos)
+### Desactivar colisiones
 
-Los rigid bodies simulan física completa: gravedad, colisiones, inercia, etc.
-
-### Control de simulación
-
-- `disableSimulationCollider()`: Desactiva la simulación física.
-- `enableSimulationCollider()`: Reactiva la simulación.
-- `disableDeactivationCollider()`: Evita que el objeto se duerma (sleep).
-- `sleepCollider()`: Pone el objeto en estado sleep.
-
-**Ejemplo:**
-```lua
--- Crear objeto físico que nunca se duerme
-pelota = Mesh3D.create(Vertex3D.new(0, 20, 0), "../assets/models/ball.fbx")
-pelota:setupRigidBodyCollider(SIMPLE_SHAPE)
-pelota:disableDeactivationCollider()  -- Siempre activo
-brakeza:addObject3D(pelota, "pelota")
-```
+Puedes desactivar las colisiones para un objeto con el método ``setCollisionsEnabled``. Esto eliminará cualquier forma
+de colisión configurada previamente.
 
 ---
 
-## Ghost Bodies (Triggers)
+### Movimiento en objetos colisionadores
 
-Los ghost bodies detectan colisiones pero no tienen física. Útiles para triggers, zonas de detección, etc.
+Tanto los ``GHOST`` como los ``RIGIDBODY`` pueden ser movidos por la escena.
 
-**Ejemplo de zona de activación:**
-```lua
--- Crear trigger invisible
-trigger = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/box.fbx")
-trigger:setupGhostCollider(SIMPLE_SHAPE)
-trigger:setScale(3.0)  -- Zona grande
-brakeza:addObject3D(trigger, "trigger_puerta")
+- `setLinearVelocity(Vertex3D)`
 
--- En el script, detectar cuando el jugador entra
--- (esto se haría en el callback de colisiones)
-```
+### Aplicar fuerzas a objetos rigidos
 
+Podemos aplicar fuerzas a los objetos ``RIGIDBODY`` gracias a los siguientes métodos:
+
+- `applyCentralImpulse(Vertex3D f)`
+- `applyCentralForce(Vertex3D f)`
+- `applyImpulse(Vertex3D f, Vertex3D r)`
+
+### Propiedades del colisionador
+
+Puedes utilizar los siguientes métodos para configurar el comportamiento físico del objeto:
+
+- `setMass(float)`:
+- `setFriction(float)`:
+- `setRestitution(float)`:
+- `setAngularDamping(float)`:
+- `setLinearDamping(float)`:
+- `setAngularDamping(float)`:
+- `setAngularFactor(Vertex3D)`:
+- `setLinearFactor(Vertex3D)`
+- `setGravityCollider(Vertex3D)`
+
+### Modo de colisión KINEMATIC
+
+- `setWalkingDirection(Vertex3D)`
+- `jump()`
+- `onGround(): boolean`
 ---
 
-## Fuerzas e impulsos
+### Mapeado de colisionadores y huesos
 
-Aplica fuerzas para mover objetos de forma física.
+Los objetos de tipo `Mesh3DAnimation` tienen la posibilidad de definir colisionadores para los huesos
+creados para animar la geometría del modelo.
 
-### Métodos de fuerza
+En tus scripts LUA puedes consultar si la colisión procede del colisionador propio del objeto, o si procede
+de un colisionador de hueso y el índice del mapa de huesos al que pertenece. Un ejemplo útil, sería la definición de
+colisionadores para huesos de tipo "arma" en las animaciones, para poder diferencias colisiones con ese hueso 
+específico.
 
-- `applyCentralForce(Vertex3D)`: Aplica una fuerza continua en el centro de masa.
-- `applyCentralImpulse(Vertex3D)`: Aplica un impulso instantáneo en el centro.
-- `applyImpulse(impulso, puntoRelativo)`: Aplica impulso en un punto específico.
-
-**Diferencia Force vs Impulse:**
-- **Force**: Se aplica continuamente (útil para motores, viento).
-- **Impulse**: Se aplica una sola vez (útil para saltos, golpes).
-
-**Ejemplo - Empujar objeto:**
-```lua
--- Aplicar fuerza hacia adelante
-fuerzaAdelante = Vertex3D.new(0, 0, 100)
-objeto:applyCentralForce(fuerzaAdelante)
-
--- Aplicar impulso para saltar
-impulsoSalto = Vertex3D.new(0, 500, 0)
-objeto:applyCentralImpulse(impulsoSalto)
-```
-
----
-
-## Velocidad y movimiento
-
-Control directo de velocidades lineales y angulares.
-
-### Métodos de velocidad
-
-- `setLinearVelocity(Vertex3D)`: Establece velocidad lineal.
-- `getLinearVelocity() => Vertex3D`: Obtiene velocidad lineal actual.
-- `setAngularVelocity(Vertex3D)`: Establece velocidad angular (rotación).
-
-**Ejemplo - Movimiento de vehículo:**
-```lua
--- Mover coche hacia adelante a 20 unidades/s
-coche:setLinearVelocity(Vertex3D.new(0, 0, 20))
-
--- Rotar el coche
-coche:setAngularVelocity(Vertex3D.new(0, 1, 0))
-
--- Frenar
-velocidadActual = coche:getLinearVelocity()
-if velocidadActual:getModule() > 0 then
-    coche:setLinearVelocity(Vertex3D.new(0, 0, 0))
-end
-```
-
----
-
-## Propiedades físicas
-
-Control de las propiedades físicas del material.
-
-### Métodos de propiedades
-
-- `setMass(float)`: Establece la masa del objeto.
-- `setFriction(float)`: Fricción (0.0 = sin fricción, 1.0 = alta fricción).
-- `setRestitution(float)`: Rebote (0.0 = no rebota, 1.0 = rebote perfecto).
-- `setGravityCollider(Vertex3D)`: Establece gravedad personalizada para este objeto.
-
-### Damping (Amortiguación)
-
-- `setLinearDamping(float)`: Amortiguación lineal (resistencia al movimiento).
-- `setAngularDamping(float)`: Amortiguación angular (resistencia a la rotación).
-
-**Ejemplo - Pelota que rebota:**
-```lua
-pelota = Mesh3D.create(Vertex3D.new(0, 10, 0), "../assets/models/ball.fbx")
-pelota:setupRigidBodyCollider(SIMPLE_SHAPE)
-pelota:setMass(1.0)
-pelota:setRestitution(0.8)  -- Rebota bastante
-pelota:setFriction(0.3)     -- Poca fricción
-pelota:setLinearDamping(0.1)  -- Poca resistencia al aire
-brakeza:addObject3D(pelota, "pelota")
-```
-
-**Ejemplo - Objeto pesado:**
-```lua
-roca = Mesh3D.create(Vertex3D.new(0, 5, 0), "../assets/models/rock.fbx")
-roca:setupRigidBodyCollider(SIMPLE_SHAPE)
-roca:setMass(100.0)  -- Muy pesada
-roca:setFriction(0.9)  -- Mucha fricción
-roca:setRestitution(0.0)  -- No rebota
-brakeza:addObject3D(roca, "roca")
-```
-
----
-
-## Factores de restricción
-
-Restringe movimiento en ciertos ejes.
-
-### Métodos de factores
-
-- `setLinearFactor(Vertex3D)`: Factor lineal (1.0 = libre, 0.0 = bloqueado) por eje.
-- `setAngularFactor(Vertex3D)`: Factor angular (1.0 = libre, 0.0 = bloqueado) por eje.
-
-**Ejemplo - Movimiento solo en plano XZ (sin Y):**
-```lua
-personaje = Mesh3D.create(Vertex3D.new(0, 0, 0), "../assets/models/character.fbx")
-personaje:setupRigidBodyCollider(SIMPLE_SHAPE)
-personaje:setLinearFactor(Vertex3D.new(1, 0, 1))  -- X y Z libres, Y bloqueado
-personaje:setAngularFactor(Vertex3D.new(0, 1, 0))  -- Solo rota en Y
-brakeza:addObject3D(personaje, "personaje")
-```
-
-**Ejemplo - Objeto 2D (solo XY):**
-```lua
-objeto2D = Mesh3D.create(Vertex3D.new(0, 0, 0), "../assets/models/sprite.fbx")
-objeto2D:setupRigidBodyCollider(SIMPLE_SHAPE)
-objeto2D:setLinearFactor(Vertex3D.new(1, 1, 0))  -- Solo X e Y
-objeto2D:setAngularFactor(Vertex3D.new(0, 0, 1))  -- Solo rotación en Z
-brakeza:addObject3D(objeto2D, "sprite")
-```
-
----
-
-## Character Controller
-
-Sistema especial para control de personajes con cinemática.
-
-### Métodos de character controller
-
-- `setWalkingDirection(Vertex3D)`: Establece dirección de movimiento.
-- `jump(Vertex3D)`: Hace saltar al personaje.
-- `onGround() => bool`: Comprueba si el personaje está en el suelo.
-
-**Ejemplo completo - Personaje jugable:**
-```lua
--- Crear personaje
-player = Mesh3D.create(Vertex3D.new(0, 2, 0), "../assets/models/player.fbx")
-player:setupRigidBodyCollider(SIMPLE_SHAPE)
-player:setMass(80.0)  -- 80 kg
-player:setAngularFactor(Vertex3D.new(0, 1, 0))  -- Solo rota en Y
-player:disableDeactivationCollider()  -- Siempre activo
-brakeza:addObject3D(player, "player")
-
--- En el update del script:
-function onUpdate(deltaTime)
-    local input = componentsManager:getComponentInput()
-    local moveSpeed = 5.0
-    
-    -- Dirección de movimiento
-    local direction = Vertex3D.new(0, 0, 0)
-    
-    if input:isCharPressed('w') then
-        direction = direction + player:AxisForward():getScaled(moveSpeed)
-    end
-    if input:isCharPressed('s') then
-        direction = direction + player:AxisForward():getScaled(-moveSpeed)
-    end
-    if input:isCharPressed('a') then
-        direction = direction + player:AxisRight():getScaled(-moveSpeed)
-    end
-    if input:isCharPressed('d') then
-        direction = direction + player:AxisRight():getScaled(moveSpeed)
-    end
-    
-    -- Aplicar movimiento
-    player:setWalkingDirection(direction)
-    
-    -- Saltar
-    if input:isCharPressed(' ') and player:onGround() then
-        local jumpImpulse = Vertex3D.new(0, 300, 0)
-        player:jump(jumpImpulse)
+```lua 
+function onCollision(with)
+    if with ~= nil then
+        print("Script: Collision With: " .. with:getObject():getLabel())
+        print("Script: Collision Source: " .. with:getSource())
+        print("Script: Collision BoneIndexMapping: " .. with:getBoneIndexMapping())
+    else
+        print("Script: Collision with unknow object")
     end
 end
 ```
-
----
-
-**Consejo:** Para personajes complejos, combina el character controller con restricciones de factores para evitar comportamientos no deseados.
-
----
 
 >[Back to index](#index)
 
 # 7) Light objects types
 
-Brakeza3D soporta dos tipos de luces dinámicas: **Point Lights** y **Spot Lights**.
+Todos los tipos de luz son ``Object3D``, por lo que su movimiento y rotación es similar a cualquier otro objeto.
 
-- [LightPoint3D (Luz puntual)](#lightpoint3d-luz-puntual)
-- [SpotLight3D (Luz focal/cónica)](#spotlight3d-luz-focalcónica)
-
----
-
-## LightPoint3D (Luz puntual)
-
-Luz omnidireccional que emite en todas direcciones desde un punto.
-
-**Constructor:**
-```lua
-luz = LightPoint3D.create(posicion)
-```
-
-**Métodos de configuración:**
-
-**Atenuación (cómo disminuye la luz con la distancia):**
-- `setConstant(float)`: Factor constante de atenuación.
-- `setLinear(float)`: Factor lineal de atenuación.
-- `setCuadratic(float)`: Factor cuadrático de atenuación.
-
-**Colores:**
-- `setColor(Color)`: Color difuso de la luz.
-- `setColorSpecular(Color)`: Color especular (brillos).
-- `setAmbient(Color)`: Color ambiental.
-
-**Fórmula de atenuación:**
-```
-attenuation = 1.0 / (constant + linear * distance + quadratic * distance²)
-```
-
-**Ejemplo - Antorcha:**
-```lua
--- Crear luz naranja cálida
-antorcha = LightPoint3D.create(Vertex3D.new(5, 2, 0))
-
--- Color naranja
-antorcha:setColor(Color.new(1.0, 0.6, 0.2, 1.0))
-antorcha:setColorSpecular(Color.new(1.0, 0.8, 0.4, 1.0))
-antorcha:setAmbient(Color.new(0.1, 0.1, 0.05, 1.0))
-
--- Atenuación (alcance medio)
-antorcha:setConstant(1.0)
-antorcha:setLinear(0.09)
-antorcha:setCuadratic(0.032)
-
-brakeza:addObject3D(antorcha, "antorcha")
-```
-
-**Rangos de atenuación típicos:**
-
-| Distancia | Constant | Linear | Quadratic |
-|-----------|----------|--------|-----------|
-| 7         | 1.0      | 0.7    | 1.8       |
-| 13        | 1.0      | 0.35   | 0.44      |
-| 20        | 1.0      | 0.22   | 0.20      |
-| 32        | 1.0      | 0.14   | 0.07      |
-| 50        | 1.0      | 0.09   | 0.032     |
-| 100       | 1.0      | 0.045  | 0.0075    |
-| 200       | 1.0      | 0.022  | 0.0019    |
+- [LightPoint3D](#lightpoint3d)
+- [SpotLight3D](#spotlight3d)
 
 ---
 
-## SpotLight3D (Luz focal/cónica)
+### LightPoint3D
 
-Luz direccional en forma de cono. Hereda de `LightPoint3D`, por lo que tiene todos sus métodos más específicos.
+Punto de luz que emite en todas las direcciones.
 
-**Constructor:**
+Un punto de luz dispone de algunos atributos que afectarán como la luz funciona:
+
+#### Componentes ADS
+
+- `Componente ambiente (vec3)`: Intensidad de color de la luz ambiente sobre el objeto.
+- `Componente difuso (vec)`: Intensidad de color de la luz sobre la textura.
+- `Componente especular (dev)`: Intensidad de color de reflejos especulares.
+
+Podrás manipular estos atributos desde la GUI o desde tus scripts LUA. Para hacerlo desde tus scripts,
+podrás usar los métodos:
+
+- `setAmbient(Color)`
+- `setColor(Color)`
+- `setColorSpecular(Color)`
+
+#### Constantes
+
+- `Constant (float)`
+- `Constante Linear (float)`
+- `Constante Quadratic (float)`
+
+También podrás manipular estos atributos desde la GUI o desde tus scripts LUA. Para hacerlo desde tus scripts,
+podrás usar los métodos:
+
+- `setConstant(float)`
+- `setLinear(float)`
+- `setCuadratic(float)`
+
+Ejemplo de instanciación desde script LUA:
+
 ```lua
-spotlight = SpotLight3D.create(posicion, direccion)
-```
-
-**Métodos adicionales:**
-- `setDirection(Vertex3D)`: Establece la dirección del foco.
-- `setCutOff(float)`: Ángulo interno del cono (en radianes).
-- `setOuterCutOff(float)`: Ángulo externo del cono (suavizado).
-
-**Ángulos de cono:**
-- `cutOff`: Límite del cono donde la luz es máxima
-- `outerCutOff`: Límite donde la luz llega a 0 (transición suave)
-
-**Ejemplo - Linterna:**
-```lua
--- Crear linterna apuntando hacia adelante
-linterna = SpotLight3D.create(
-    Vertex3D.new(0, 1.5, 0),      -- Posición (altura de la mano)
-    Vertex3D.new(0, 0, 1)          -- Dirección (hacia adelante)
-)
-
--- Configurar como luz blanca brillante
-linterna:setColor(Color.new(1.0, 1.0, 1.0, 1.0))
-linterna:setColorSpecular(Color.new(1.0, 1.0, 1.0, 1.0))
-
--- Configurar cono (estrecho)
-linterna:setCutOff(math.cos(math.rad(12.5)))       -- 12.5 grados
-linterna:setOuterCutOff(math.cos(math.rad(17.5)))  -- 17.5 grados
-
--- Atenuación media
-linterna:setConstant(1.0)
-linterna:setLinear(0.09)
-linterna:setCuadratic(0.032)
-
-brakeza:addObject3D(linterna, "linterna")
-```
-
-**Ejemplo - Foco de escenario:**
-```lua
--- Foco desde arriba
-foco = SpotLight3D.create(
-    Vertex3D.new(0, 10, 0),    -- Arriba
-    Vertex3D.new(0, -1, 0)     -- Hacia abajo
-)
-
--- Luz blanca intensa
-foco:setColor(Color.new(1.0, 1.0, 0.9, 1.0))
-foco:setColorSpecular(Color.new(1.0, 1.0, 1.0, 1.0))
-
--- Cono amplio
-foco:setCutOff(math.cos(math.rad(25.0)))
-foco:setOuterCutOff(math.cos(math.rad(30.0)))
-
--- Largo alcance
-foco:setConstant(1.0)
-foco:setLinear(0.045)
-foco:setCuadratic(0.0075)
-
-brakeza:addObject3D(foco, "foco_escenario")
-```
-
-**Mover la dirección del spotlight:**
-```lua
--- Hacer que el spotlight apunte hacia un objeto
-spotlight:lookAt(objetivo)
-
--- O establecer dirección manualmente
-nuevaDireccion = Vertex3D.new(0, -0.5, 1)
-spotlight:setDirection(nuevaDireccion:getNormalize())
+-- LightPoint3D.create(position)
+lightp = LightPoint3D.create(Vertex3D.new(5, 5, 5))
+brakeza:addObject3D(lightp, 'myLightPoint')
 ```
 
 ---
 
-**Nota sobre shadow mapping:** Las spotlights pueden proyectar sombras si el shadow mapping está habilitado en la configuración del motor.
+### SpotLight3D
+
+Punto de luz que emite en una dirección dada. Es básicamente un *foco* de luz.
+
+El objeto `SpotLight3D` hereda directamente de `LightPoint3D`, por lo que posee todas
+sus propiedades, sin embargo, añade algunas importantes:
+
+- `direction`: `Vertex3D` con la dirección en la que apunta el foco
+- `cut`: `float` Constante de tamaño (tamaño del foco)
+- `cutOff`: `float` Constante de corte de luz (difusión del borde del foco)
+
+Podrás manipular dichos valores mediante los métodos:
+
+- `setDirection(Vertex3D)`
+- `setCut(float)`
+- `setCutOff(float)`
+
+Ejemplo de instanciación desde script LUA:
+
+```lua
+-- SpotLight3D.create(position, direction)
+lights = SpotLight3D.create(Vertex3D.new(5, -10, 5), Vertex3D.new(0, 0, 1))
+lights:setColor(Color.new(255, 255, 0, 255))
+brakeza:addObject3D(lights, 'mySpotLight')
+```
 
 ---
 
@@ -1195,138 +816,63 @@ spotlight:setDirection(nuevaDireccion:getNormalize())
 
 # 8) Particle emitter
 
-El sistema de partículas permite crear efectos visuales como humo, fuego, chispas, etc.
+Brakeza3D incorpora un objeto dedicado a emitir partículas, nos referimos a `ParticleEmitter`.
 
-**Constructor:**
+Es un emisor de partículas emite imagenes 2D según la configuración dada.
+
+Para configurar un `ParticleEmitter` debes configurar una serie de parámetros:
+
+- `Posición`: Posición 3D del emisor de partículas.
+- `Tiempo de vida`: TTL del emisor de partículas en segundos.
+- `Color inicio`: (Opcional). Color inicial de la partícula al nacer.
+- `Color final`: (Opcional). Color final de la partícula al morir.
+- `Contexto`: Contexto del emisor de partículas.
+- `Imagen`: Fichero de imagen.
+
+El argumento más destacable es él `contexto`. Él `contexto` incluye multitud de parámetros
+que podremos manipular para alterar el comportamiento de nuestras partículas. Los contextos
+de emisores de partículas se implementan a través de un objeto: ``ParticlesContext``:
+
+Las propiedades de un ``ParticlesContext`` son:
+
+- `gravity (float)`: Factor gravitatorio de las partículas.
+- `particlesByFrame (float)`: Número de partículas creadas por segundo
+- `particleLifespan (float)`: Tiempo de vida de cada partícula.
+- `angleRange (int)`: Ángulo del cono de emisión de partículas.
+- `minVelocity (int)`: Velocidad mínima de la partícula al nacer.
+- `maxVelocity (int)`: Velocidad máxima de la particula al ser nacer.
+- `alphaMin (int)`: Canal alpha mínimo de la partícula al nacer.
+- `alphaMax (int)`: Canal alpha máximo de la partícula al nacer.
+- `positionNoise (int)`: Ruido en la posición de nacimiento de la partícula.
+- `velocityNoise (int)`: Ruido en el movimiento de la partícula.
+- `decelerationFactor (float)`: Factor de deceleración de la partícula.
+
+Podrás manipular las propiedades de los ``ParticlesContext`` desde la UI.
+
+Ejempl de creación de un emisor de partículas desde código:
+
 ```lua
-emitter = ParticleEmitter.create(
-    posicion,           -- Vertex3D
-    ttl,                -- float (tiempo de vida del emisor, -1 = infinito)
-    colorInicio,        -- Color
-    colorFin,           -- Color
-    contextoParticulas, -- ParticlesContext
-    "textura.png"       -- string
+print("Load ParticleEmitter")
+particles = ParticleEmitter.create(
+    Vertex3D.new(10, 10, 10),       -- position
+    100,                            -- ttl
+    Color.new(255, 255, 0, 255),    -- color from
+    Color.new(255, 255, 255, 255),  -- color to
+    ParticlesContext.new(
+        0.0,            -- gravity
+        2,              -- particlesByFrame              
+        1.0,            -- particleLifespan
+        25.0,           -- angleRange
+        1,              -- minVelocity
+        10,             -- maxVelocity
+        125.0,          -- alphaMin
+        255.0,          -- alphaMax
+        5,              -- positionNoise
+        10,             -- velocityNoise
+        0.99            -- decelerationFactor
+    ),
+    "../assets/images/logo_small.png"       --image
 )
-```
-
-### ParticlesContext
-
-Configuración del comportamiento de las partículas.
-
-**Constructor completo:**
-```lua
-context = ParticlesContext.new(
-    gravedad,           -- float
-    particulasPorSeg,   -- int
-    vidaParticula,      -- int (milisegundos)
-    rangoAngulo,        -- int (grados)
-    velocidadMin,       -- int
-    velocidadMax,       -- int
-    alphaMin,           -- int (0-255)
-    alphaMax,           -- int (0-255)
-    ruidoPosicion,      -- int
-    ruidoVelocidad,     -- int
-    factorDeceleracion  -- float
-)
-```
-
-**Propiedades configurables:**
-- `GRAVITY`: Gravedad aplicada a las partículas.
-- `PARTICLES_BY_SECOND`: Partículas generadas por segundo.
-- `PARTICLE_LIFESPAN`: Tiempo de vida de cada partícula (ms).
-- `SMOKE_ANGLE_RANGE`: Rango de ángulo de emisión (grados).
-- `MIN_VELOCITY` / `MAX_VELOCITY`: Rango de velocidad inicial.
-- `MIN_ALPHA` / `MAX_ALPHA`: Rango de transparencia (0-255).
-- `POSITION_NOISE`: Ruido en posición inicial.
-- `VELOCITY_NOISE`: Ruido en velocidad.
-- `DECELERATION_FACTOR`: Factor de desaceleración.
-
-**Contexto por defecto:**
-```lua
-context = ParticlesContext.defaultParticlesContext()
-```
-
-### Ejemplos
-
-**Ejemplo 1 - Humo:**
-```lua
--- Configuración de humo
-humoContext = ParticlesContext.new(
-    -0.5,    -- Gravedad negativa (sube)
-    50,      -- 50 partículas/segundo
-    3000,    -- Viven 3 segundos
-    30,      -- Ángulo de 30 grados
-    10, 30,  -- Velocidad 10-30
-    50, 150, -- Alpha 50-150 (semitransparente)
-    20,      -- Ruido de posición
-    10,      -- Ruido de velocidad
-    0.98     -- Poca desaceleración
-)
-
--- Crear emisor de humo
-humo = ParticleEmitter.create(
-    Vertex3D.new(0, 1, 0),
-    -1,  -- Infinito
-    Color.new(0.5, 0.5, 0.5, 0.8),  -- Gris inicio
-    Color.new(0.3, 0.3, 0.3, 0.0),  -- Gris oscuro fin (fade out)
-    humoContext,
-    "../assets/images/smoke_particle.png"
-)
-brakeza:addObject3D(humo, "humo")
-```
-
-**Ejemplo 2 - Fuego:**
-```lua
--- Configuración de fuego
-fuegoContext = ParticlesContext.new(
-    -1.0,    -- Sube rápido
-    100,     -- Muchas partículas
-    1500,    -- Vida corta
-    25,      -- Ángulo estrecho
-    30, 50,  -- Velocidad rápida
-    200, 255, -- Muy visible
-    15,      -- Poco ruido
-    5,
-    0.95     -- Desaceleración moderada
-)
-
--- Crear fuego
-fuego = ParticleEmitter.create(
-    Vertex3D.new(0, 0.5, 0),
-    -1,
-    Color.new(1.0, 0.8, 0.0, 1.0),  -- Amarillo/naranja
-    Color.new(1.0, 0.0, 0.0, 0.0),  -- Rojo que desaparece
-    fuegoContext,
-    "../assets/images/fire_particle.png"
-)
-brakeza:addObject3D(fuego, "fuego")
-```
-
-**Ejemplo 3 - Explosión temporal:**
-```lua
--- Contexto de explosión
-explosionContext = ParticlesContext.new(
-    2.0,     -- Gravedad fuerte
-    500,     -- Muchas partículas
-    800,     -- Vida muy corta
-    360,     -- Todas direcciones
-    50, 100, -- Muy rápido
-    255, 255, -- Completamente visible
-    30,      -- Mucho ruido
-    20,
-    0.85     -- Desaceleración rápida
-)
-
--- Explosión que dura 1 segundo
-explosion = ParticleEmitter.create(
-    Vertex3D.new(enemigo:getPosition()),
-    1.0,  -- 1 segundo de vida total
-    Color.new(1.0, 0.5, 0.0, 1.0),  -- Naranja brillante
-    Color.new(0.3, 0.3, 0.3, 0.0),  -- Gris que desaparece
-    explosionContext,
-    "../assets/images/spark.png"
-)
-brakeza:addObject3D(explosion, "explosion")
 ```
 
 ---
@@ -1335,329 +881,41 @@ brakeza:addObject3D(explosion, "explosion")
 
 # 9) Input system
 
-El `ComponentInput` gestiona entrada de teclado, mouse y gamepad.
-
-```lua
-componentsManager = ComponentsManager.get()
-input = componentsManager:getComponentInput()
-```
-
-- [Teclado](#teclado)
-- [Mouse](#mouse)
-- [Gamepad / Controller](#gamepad--controller)
-
----
-
-## Teclado
-
-**Métodos:**
-- `isKeyEventDown(SDL_Keycode) => bool`: Tecla presionada (evento único).
-- `isKeyEventUp(SDL_Keycode) => bool`: Tecla soltada (evento único).
-- `isCharPressed(char) => bool`: Carácter presionado (continuo).
-- `isCharFirstEventDown(char) => bool`: Primera vez que se presiona.
-
-**Ejemplo:**
-```lua
-input = componentsManager:getComponentInput()
-
--- Movimiento continuo con WASD
-if input:isCharPressed('w') then
-    -- Moverse adelante
-end
-if input:isCharPressed('s') then
-    -- Moverse atrás
-end
-if input:isCharPressed('a') then
-    -- Moverse izquierda
-end
-if input:isCharPressed('d') then
-    -- Moverse derecha
-end
-
--- Acción única (por ejemplo, saltar)
-if input:isCharFirstEventDown(' ') then  -- Espacio
-    player:jump(Vertex3D.new(0, 500, 0))
-end
-```
-
----
-
-## Mouse
-
-**Métodos de estado:**
-- `isMouseMotion() => bool`: Comprueba si el mouse se está moviendo.
-- `isClickLeft() => bool`: Click izquierdo (evento).
-- `isClickRight() => bool`: Click derecho (evento).
-- `isLeftMouseButtonPressed() => bool`: Botón izquierdo presionado (continuo).
-- `isRightMouseButtonPressed() => bool`: Botón derecho presionado (continuo).
-
-**Métodos de posición:**
-- `getRelativeRendererMouseX() => int`: Posición X del mouse relativa al renderer.
-- `getRelativeRendererMouseY() => int`: Posición Y del mouse relativa al renderer.
-- `getMouseMotionXRel() => int`: Movimiento relativo X desde el último frame.
-- `getMouseMotionYRel() => int`: Movimiento relativo Y desde el último frame.
-
-**Ejemplo - Control de cámara con mouse:**
-```lua
-input = componentsManager:getComponentInput()
-camera = componentsManager:getComponentCamera():getCamera()
-
--- Sensibilidad del mouse
-local sensitivity = 0.002
-
-if input:isMouseMotion() then
-    -- Obtener movimiento del mouse
-    local deltaX = input:getMouseMotionXRel()
-    local deltaY = input:getMouseMotionYRel()
-    
-    -- Rotar cámara
-    local currentRot = camera:getRotation()
-    local eulerX = deltaY * sensitivity
-    local eulerY = deltaX * sensitivity
-    
-    camera:setRotationFromEulerAngles(eulerX, eulerY, 0)
-end
-
--- Disparo con click izquierdo
-if input:isClickLeft() then
-    -- Crear proyectil
-    print("¡Disparo!")
-end
-```
-
----
-
-## Gamepad / Controller
-
-Brakeza3D soporta control completo con gamepad (Xbox, PlayStation, etc.).
-
-### Estado del controller
-
-- `isGameControllerEnabled() => bool`: Comprueba si hay un gamepad conectado.
-- `isAnyControllerButtonPressed() => bool`: Comprueba si se presionó algún botón.
-
-### Botones
-
-**Botones de acción (A, B, X, Y):**
-- `getControllerButtonA() => bool`
-- `getControllerButtonB() => bool`
-- `getControllerButtonX() => bool`
-- `getControllerButtonY() => bool`
-
-**Bumpers (L1/R1):**
-- `getControllerShoulderLeft() => bool`
-- `getControllerShoulderRight() => bool`
-
-**Botones de sistema:**
-- `getControllerButtonBack() => bool`: Botón back/select
-- `getControllerButtonGuide() => bool`: Botón guía/home
-- `getControllerButtonStart() => bool`: Botón start
-
-**D-Pad:**
-- `getControllerPadUp() => bool`
-- `getControllerPadDown() => bool`
-- `getControllerPadLeft() => bool`
-- `getControllerPadRight() => bool`
-
-### Ejes analógicos
-
-**Stick izquierdo:**
-- `getControllerAxisLeftX() => float`: Eje X (-1.0 a 1.0)
-- `getControllerAxisLeftY() => float`: Eje Y (-1.0 a 1.0)
-
-**Stick derecho:**
-- `getControllerAxisRightX() => float`: Eje X (-1.0 a 1.0)
-- `getControllerAxisRightY() => float`: Eje Y (-1.0 a 1.0)
-
-**Triggers (L2/R2):**
-- `getControllerAxisTriggerLeft() => float`: Gatillo izquierdo (0.0 a 1.0)
-- `getControllerAxisTriggerRight() => float`: Gatillo derecho (0.0 a 1.0)
-
-### Ejemplo completo - Control con gamepad
-
-```lua
-input = componentsManager:getComponentInput()
-
-function onUpdate(deltaTime)
-    if not input:isGameControllerEnabled() then
-        return  -- No hay gamepad conectado
-    end
-    
-    -- Movimiento con stick izquierdo
-    local axisX = input:getControllerAxisLeftX()
-    local axisY = input:getControllerAxisLeftY()
-    
-    local moveSpeed = 10.0
-    local deadzone = 0.15  -- Zona muerta para evitar drift
-    
-    if math.abs(axisX) > deadzone or math.abs(axisY) > deadzone then
-        local direction = Vertex3D.new(axisX, 0, -axisY)  -- Y invertido
-        direction = direction:getScaled(moveSpeed)
-        
-        player:setWalkingDirection(direction)
-    end
-    
-    -- Rotación de cámara con stick derecho
-    local lookX = input:getControllerAxisRightX()
-    local lookY = input:getControllerAxisRightY()
-    local lookSensitivity = 0.05
-    
-    if math.abs(lookX) > deadzone or math.abs(lookY) > deadzone then
-        -- Rotar cámara...
-        camera:addToRotation(lookX * lookSensitivity, lookY * lookSensitivity, 0)
-    end
-    
-    -- Saltar con botón A
-    if input:getControllerButtonA() and player:onGround() then
-        player:jump(Vertex3D.new(0, 500, 0))
-    end
-    
-    -- Disparar con trigger derecho
-    local shootTrigger = input:getControllerAxisTriggerRight()
-    if shootTrigger > 0.5 then
-        -- Disparar arma
-        print("¡Bang! Intensidad: " .. shootTrigger)
-    end
-    
-    -- Cambiar arma con bumpers
-    if input:getControllerShoulderLeft() then
-        -- Arma anterior
-        cambiarArma(-1)
-    end
-    if input:getControllerShoulderRight() then
-        -- Arma siguiente
-        cambiarArma(1)
-    end
-    
-    -- Pausa con Start
-    if input:getControllerButtonStart() then
-        togglePause()
-    end
-end
-```
-
-### Ejemplo - Soporte dual (teclado + gamepad)
-
-```lua
-function getMovementInput()
-    local direction = Vertex3D.new(0, 0, 0)
-    local input = componentsManager:getComponentInput()
-    
-    -- Gamepad tiene prioridad si está conectado
-    if input:isGameControllerEnabled() then
-        local axisX = input:getControllerAxisLeftX()
-        local axisY = input:getControllerAxisLeftY()
-        
-        if math.abs(axisX) > 0.15 or math.abs(axisY) > 0.15 then
-            direction = Vertex3D.new(axisX, 0, -axisY)
-            return direction
-        end
-    end
-    
-    -- Fallback a teclado
-    if input:isCharPressed('w') then
-        direction = direction + Vertex3D.new(0, 0, 1)
-    end
-    if input:isCharPressed('s') then
-        direction = direction + Vertex3D.new(0, 0, -1)
-    end
-    if input:isCharPressed('a') then
-        direction = direction + Vertex3D.new(-1, 0, 0)
-    end
-    if input:isCharPressed('d') then
-        direction = direction + Vertex3D.new(1, 0, 0)
-    end
-    
-    return direction:getNormalize()
-end
-```
-
 ---
 
 >[Back to index](#index)
 
 # 10) Global illumination
 
-Brakeza3D permite configurar una luz direccional global (tipo sol) que afecta a toda la escena.
+Brakeza3D incluye una `luz por defecto` en la escena. Puedes verlo como *el sol*,
 
-La iluminación sigue el modelo **Ambient-Diffuse-Specular (ADS)**.
+Al fin y al cabo, es una luz direccional, por lo que podrás ajustar algunos de sus
+parámetros para conseguir la luz base deseada.
 
-### Configurar iluminación global
+Al ser una luz global, **carece de posición**.
+
+Puedes manipular las componentes de la iluminación global mediante la UI o a través
+de tus scripts LUA.
+
+Se configura mediante el `componente render`:
 
 ```lua
-componentsManager = ComponentsManager.get()
+    render = componentsManager:getComponentRender()
+```
+
+- `setGlobalIlluminationDirection(Vertex3D)`: `Dirección` de iluminación global.
+- `setGlobalIlluminationAmbient(Vertex3D)`: Componente `ambiente` de iluminación global.
+- `setGlobalIlluminationDiffuse(Vertex3D)`: Componente `difuso` de iluminación global.
+- `setGlobalIlluminationSpecular(Vertex3D)`: Componente `especuilar` de de iluminación global.
+
+`Nota`: Las componentes ambiente, difusa y especular, las manipulamos a través del tipo `Vertex3D` y no a través de colores,
+simplemente por conveniencia, ya que se esperan valores de rango `0-1` y no `0-255` como hace un `Color`.
+
+Ejemplo para configurar la componente `ambiente`:
+
+```lua
 render = componentsManager:getComponentRender()
-```
-
-**Métodos:**
-- `setGlobalIlluminationDirection(Vertex3D)`: Dirección de la luz (normalizado).
-- `setGlobalIlluminationAmbient(Vertex3D)`: Color ambiental (RGB como Vertex3D).
-- `setGlobalIlluminationDiffuse(Vertex3D)`: Color difuso (luz directa).
-- `setGlobalIlluminationSpecular(Vertex3D)`: Color especular (brillos).
-
-### Ejemplo - Luz de día
-
-```lua
-render = componentsManager:getComponentRender()
-
--- Dirección desde arriba y ligeramente lateral
-render:setGlobalIlluminationDirection(Vertex3D.new(0.3, -1.0, 0.5):getNormalize())
-
--- Luz ambiental suave
-render:setGlobalIlluminationAmbient(Vertex3D.new(0.3, 0.3, 0.3))
-
--- Luz difusa clara (amarillo suave)
-render:setGlobalIlluminationDiffuse(Vertex3D.new(0.9, 0.9, 0.7))
-
--- Especular blanco
-render:setGlobalIlluminationSpecular(Vertex3D.new(1.0, 1.0, 1.0))
-```
-
-### Ejemplo - Atardecer
-
-```lua
--- Sol bajo en el horizonte
-render:setGlobalIlluminationDirection(Vertex3D.new(1.0, -0.2, 0.0):getNormalize())
-
--- Ambiental naranja oscuro
-render:setGlobalIlluminationAmbient(Vertex3D.new(0.4, 0.2, 0.1))
-
--- Difusa naranja/roja
-render:setGlobalIlluminationDiffuse(Vertex3D.new(1.0, 0.4, 0.2))
-
--- Especular naranja
-render:setGlobalIlluminationSpecular(Vertex3D.new(1.0, 0.6, 0.3))
-```
-
-### Ejemplo - Noche
-
-```lua
--- Luna desde arriba
-render:setGlobalIlluminationDirection(Vertex3D.new(0.0, -1.0, -0.3):getNormalize())
-
--- Ambiental muy oscuro azulado
-render:setGlobalIlluminationAmbient(Vertex3D.new(0.05, 0.05, 0.15))
-
--- Difusa azul muy tenue
-render:setGlobalIlluminationDiffuse(Vertex3D.new(0.1, 0.1, 0.3))
-
--- Especular azul pálido
-render:setGlobalIlluminationSpecular(Vertex3D.new(0.2, 0.2, 0.5))
-```
-
----
-
-### Dibuja líneas de debug
-
-El ComponentRender también permite dibujar líneas 3D útiles para debug:
-
-```lua
--- Dibujar línea desde A hasta B en color rojo
-puntoA = Vertex3D.new(0, 0, 0)
-puntoB = Vertex3D.new(5, 5, 5)
-colorRojo = Color.new(1.0, 0.0, 0.0, 1.0)
-
-render:drawLine(puntoA, puntoB, colorRojo)
+render:setGlobalIlluminationAmbient(Vertex3D.new(1, 0, 0)) -- rojo
 ```
 
 ---
@@ -1666,93 +924,136 @@ render:drawLine(puntoA, puntoB, colorRojo)
 
 # 11) Sound system
 
-El `ComponentSound` gestiona la reproducción de sonidos y música.
+Brakeza3D ofrece una interfaz básica para el manejo del sonido en tus juegos. Podemos acceder a
+las funcionalidades de este sistema a través de ``ComponentSound``.
 
 ```lua
-componentsManager = ComponentsManager.get()
-sound = componentsManager:getComponentSound()
+...
+systemSound = componentsManager:getComponentSound()
+...
 ```
+ 
+- [Formatos de sonido](#formatos-de-sonido)
+- [Canales](#canales)
+- [Carga de ficheros en memoria](#carga-de-ficheros-en-memoria)
+- [Reproducior música](#reproducir-música)
+- [Reproducir sonidos](#reproducir-sonidos)
+- [Carga automática](#carga-automática)
 
-**Nota:** ComponentSound hereda de Component, por lo que también tiene `setEnabled(bool)` e `isEnabled()`.
+---
 
-## Métodos principales
+### Formatos de sonido
 
-### Cargar recursos
+Podrás reproducir ficheros ``WAV`` y/o `MP3`.
 
-- `addSound(nombre, "ruta/sonido.wav")`: Carga un efecto de sonido.
-- `addMusic(nombre, "ruta/musica.mp3")`: Carga una pista de música.
+---
 
-### Control de música
+### Canales
 
-- `playSound(nombre)`: Reproduce una pista de música (solo una puede sonar a la vez).
-- `stopMusic()`: Detiene la música actual.
-- `setMusicVolume(int)`: Volumen de la música (0-128).
+Brakeza3D maneja el sonido a través de la librería `SDL_mixer`, el cual soporta 16 canales de audio.
 
-### Control de efectos de sonido
+Si bien la gestión de estos canales es automática cuando trabajemos desde nuestros scripts, Brakeza3D asigna uno
+exclusivamente para la ``música``. El resto queda disponible para la emisión de `sonidos`.
 
-- `setSoundsVolume(int)`: Volumen de los efectos de sonido (0-128).
+Esta separación nos permitirá manejar los volumenes de la música y los sonidos por separado.
 
-**Nota:** Los sonidos se reproducen automáticamente al ser añadidos. Para música, usa `playSound()`.
+---
+### Carga de ficheros en memoria
 
-## Ejemplo completo
+No es recomendable `cargar de disco`` un sonido en tiempo real justo en el momento que necesite ser reproducido, es por
+este motivo por el que se recomienda pre-cargar los sonidos que posteriormente vayamos a utilizar.
+
+Él ``ComponenteSonido`` nos ofrece la posibilidad de cargar un sonido a memoria, el cual podrá ser reproducido tantas veces
+como sea necesario.
+
+---
+### Reproducir música
+
+Precarga de un fichero destinado a reproducirse como `música`. La música se reproduce en búcle de forma
+automática.
 
 ```lua
-sound = componentsManager:getComponentSound()
-
--- Cargar música de fondo
-sound:addMusic("menu_music", "../assets/sounds/menu_theme.mp3")
-sound:addMusic("game_music", "../assets/sounds/game_theme.mp3")
-
--- Cargar efectos de sonido
-sound:addSound("jump", "../assets/sounds/jump.wav")
-sound:addSound("shoot", "../assets/sounds/shoot.wav")
-sound:addSound("explosion", "../assets/sounds/explosion.wav")
-
--- Configurar volúmenes
-sound:setMusicVolume(64)   -- Mitad del volumen máximo
-sound:setSoundsVolume(100) -- Efectos más altos
-
--- Reproducir música del menú
-sound:playSound("menu_music")
-
--- Cuando empiece el juego
-function startGame()
-    sound:stopMusic()
-    sound:playSound("game_music")
-end
-
--- Cuando el jugador salte
-function playerJump()
-    sound:addSound("jump", "../assets/sounds/jump.wav")  -- Se reproduce automáticamente
-end
-
--- Cuando dispare
-function playerShoot()
-    sound:addSound("shoot", "../assets/sounds/shoot.wav")
-end
+...
+systemSound = componentsManager:getComponentSound()
+systemSound:addMusic("../assets/sounds/music_demo.mp3", "music_demo")
+...
 ```
+---
 
-## Control dinámico de volumen
+Reproducir una música precargada:
 
 ```lua
--- Fade out de música
-function fadeOutMusic()
-    for i = 64, 0, -2 do
-        sound:setMusicVolume(i)
-        -- Esperar un frame (esto requeriría un sistema de corrutinas)
-    end
-    sound:stopMusic()
-end
-
--- Ajustar volumen desde opciones
-function setMasterVolume(percentage)  -- 0.0 a 1.0
-    local musicVol = math.floor(128 * percentage)
-    local soundVol = math.floor(128 * percentage)
-    
-    sound:setMusicVolume(musicVol)
-    sound:setSoundsVolume(soundVol)
-end
+...
+systemSound = componentsManager:getComponentSound()
+systemSound:playMusic("music_demo")
+...
 ```
+---
+### Reproducir sonidos
+
+Precarga de un fichero destinado a reproducirse como `sonido`:
+
+```lua
+...
+systemSound = componentsManager:getComponentSound()
+systemSound:addSound("../assets/sounds/music_demo.mp3", "sound_demo")
+...
+```
+
+---
+
+Reproducir un sonido precargado:
+
+```lua
+...
+systemSound = componentsManager:getComponentSound()
+systemSound:playSound("sound_demo")
+...
+```
+
+---
+
+### Volumen
+
+Puedes manipular el volumen de la música y el resto de sonidos de forma separada.
+
+Manipular el volumen de la música:
+
+```lua
+...
+systemSound = componentsManager:getComponentSound()
+systemSound:setMusicVolume(75) -- Rango [0 - 128]
+...
+```
+
+Manipular el volumen de los sonidos:
+
+```lua
+...
+systemSound = componentsManager:getComponentSound()
+systemSound:setSoundsVolume(100) -- Rango [0 - 128]
+...
+```
+
+---
+
+### Carga automática
+
+Brakeza3D ofrece un sistema de precarga inicial de sonidos y música a través de
+un fichero de configuración JSON.
+
+Podrás encontrar este fichero en ``config/sounds.json`` .
+
+````json
+{
+  "sounds": [
+    { "file": "radio_beep", "label": "musicTest", "type": "music" },
+    { "file": "radio_beep.wav", "label": "soundTest", "type": "sound" }
+  ]
+}
+````
+
+Automáticamente, podrás acceder a los sonidos y músicas definidos en este fichero.
 
 ---
 
@@ -1760,271 +1061,354 @@ end
 
 # 12) Scripting system
 
-Los scripts LUA son el corazón de la lógica de tu aplicación en Brakeza3D.
+Brakeza3D incorpora un sistema de scripting utilizando LUA como lenguaje.
 
-## Tipos de scripts
+Ya sea desde la UI o desde código, podrás asociar ``scripts`` al ``proyecto``,
+``escena`` y/o ``objetos``.
 
-Los scripts pueden vincularse a tres niveles:
+---
 
-1. **Scripts de proyecto**: Se ejecutan durante toda la vida del proyecto.
-2. **Scripts de escena**: Se ejecutan mientras la escena está activa.
-3. **Scripts de objeto**: Se ejecutan en el contexto de un `Object3D` específico.
+- [Estados del sistema de scripting](#estados-del-sistema-de-scripting)
+- [Ciclo de vida de un objeto](#ciclo-de-vida-de-un-objeto)
+- [Scripts LUA](#scripts-lua)
+- [Vinculación de scripts](#vinculación-de-scripts)
+- [Variables](#variables)
+- [Variables globales](#variables-globales)
+- [Variables locales](#variables-locales)
+- [Gestión de escenas](#gestión-de-escenas)
+- [DeltaTime](#deltatime)
+- [Terminar la ejecución](#terminar-la-ejecución)
+- [Autocargar proyectos o escenas](#autocargar-proyectos-o-escenas)
+- [Ejemplos en código](#ejemplos-en-codigo)
 
-## Callbacks del ciclo de vida
+---
 
-Cada script puede implementar los siguientes callbacks:
+### Estados del sistema de scripting
+
+En el búcle principal de Brakeza3D, se ejecutan una serie de acciones constantemente. Una de ellas
+es el sistema de scripting. Este sistema puede estar en ON/OFF/PAUSE.
+
+Si está en ON, los objetos ejecutarán su ciclo de vida implementado en los scripts.
+
+El sistema de scripting puede ser ejecutado (PLAY), para iniciar la ejecución de los scripts.
+
+Finalmente, podrá ser detenido (STOP) para evitar que el sistema de scripting continue.
+
+También podrás resetear (RELOAD) el estado para volver al inicio los scripts y para refrescarlos desde disco.
+
+---
+
+### Ciclo de vida de un objeto
+
+Los objetos disponen de su propio ciclo de vida el cual debemos de entender para trabajar con nuestros objetos cargados, es el siguiente:
+
+- **onStart**: Instante en que se inicia la ejecución. Cuando activamos el sistema de scripting (PLAY)
+
+- **onUpdate**: Instante actual, es decir, cada frame.
+
+- **onEnd**: Instante en el que se detiene la ejecución (STOP)
+
+Una template básica de script LUA para Brakeza3D sería:
 
 ```lua
--- Se ejecuta una vez al inicializar
 function onStart()
-    -- Inicialización
+    -- código a ejecutar al inicio del sprint, una única vez.
 end
 
--- Se ejecuta cada frame
-function onUpdate(deltaTime)
-    -- Lógica principal
-    -- deltaTime: tiempo transcurrido desde el último frame
+function onUpdate()
+    -- código a ejecutar en cada frame.
 end
+```
+---
 
--- Se ejecuta al finalizar
-function onEnd()
-    -- Limpieza
-end
+### Scripts LUA
 
--- Se ejecuta cuando ocurre una colisión
-function onCollision(collision)
-    -- collision es un objeto CollisionInfo
-    local otroObjeto = collision:getObject()
-    print("Colisión con: " .. otroObjeto:getLabel())
+Los scripts de LUA son elementos que podremos vincular a elementos del sistema. En ellos implementaremos la lógica y comportamiento de objetos en Brakeza3D.
+
+Podemos diferenciar dos grandes tipos de scripts:
+
+- **Scripts de Objeto**: Se asocian a **objetos**. Un mismo script puede vincularse a multitud de objetos.
+- **Scripts globales**: Se asocian a la **escena** o al **proyecto**, no a ningún objeto específico, son de caracter general.
+
+Se diferencian principalmente por el **scope de sus variables**.
+
+Los scripts globales comparten variables libremente entre ellos, mientras que los scripts de objeto instancian sus variables por cada objeto al
+que han sido vinculados.
+
+---
+
+### Vinculación de scripts
+
+Podrás realizar estas operaciones desde la UI con el ratón y drag/drop, sin embargo,
+en ocasiones necesitarás poder hacerlo dinámicamente desde código.
+
+Disponemos de un objeto ``ScriptLUA`` que encapsula la lógica de carga de un script.
+
+
+Los `Object3D` disponen de un método `attachScript` que nos permitirá vincularlos:
+
+```lua
+print("Load LightPoint3D")
+lightp = LightPoint3D.create(Vertex3D.new(5, -10, 5))
+brakeza:addObject3D(lightp, 'myLightPoint')
+
+script = ScriptLUA.create("../../scripts/MoveForwardObject.lua")
+if script ~= nil then
+    lightp:attachScript(script)
 end
 ```
 
-## Variables globales automáticas
-
-En cada script tienes acceso a:
-
-- `brakeza`: Instancia principal del motor (Brakeza3D).
-- `componentsManager`: Gestor de componentes (ComponentsManager).
-- `object`: El objeto al que está vinculado el script (solo en scripts de objeto).
-
-## Gestión de variables
-
-### Variables locales del script
-
-Cada objeto puede tener variables locales en sus scripts:
+De igual forma el ``ComponentScripting`` dispone de ``addSceneLUAScript`` que te permitirá vincular
+un script a la escena:
 
 ```lua
--- En el script del objeto
+script = ScriptLUA.create("../../scripts/global_script.lua")
+if script ~= nil then
+    componentsManager:getComponentScripting():addSceneLUAScript(script)
+end
+```
+
+Es importante destacar, que *la única* forma de vincular scripts al ``proyecto`` es mediante la UI, no desde código.
+
+---
+
+### Variables
+
+Cualquier script LUA puede definir variables que te ayudarán a implementar tu lógica. Puedes utilizar la GUI
+para gestionar con facilidad las variables de un script.
+
+Físicamente, se almacenan en un fichero ``JSON`` del mismo nombre que el script.
+
+```json
+{
+	"name":	"global_script_example.lua",
+	"types": [
+        {
+          "name": "var1",
+          "type": "string",
+          "value": "hello my friend!"
+        },
+        {
+          "name": "var2",
+          "type": "int",
+          "value": 10
+        },
+        {
+          "name": "var3",
+          "type": "float",
+          "value": 0.3
+        },
+        {
+          "name": "var4",
+          "type": "Vertex3D",
+          "value": {
+            "x": 0,
+            "y": 2,
+            "z": 0
+          }
+        }
+    ]
+}
+```
+Puedes utilizar los tipos `int`, `float`, `string` y `Vertex3D`.
+
+---
+
+### Variables globales
+
+Las variables definidas en scripts vinculadas a ``proyectos`` y/o `escenas` serán globales.
+
+Podrás acceder directamente a las variables globales desde cualquier otro
+script.
+
+```lua
+function onUpdate()
+    var1 = var1 .. "!" -- ejemplo de variable global
+    print("Value of var1: " .. var1)
+end
+
+```
+
+---
+
+### Variables locales
+
+Las variables definidas en scripts vinculadas a ``Object3D`` serán locales,
+es decir, se instancian individualmente por cada objeto.
+
+Puedes acceder a las variables locales de otro objeto mediante tus scripts LUA
+de la siguiente forma:
+
+```lua
+o = brakeza:getSceneObjectByLabel("MyObject")
+position = o:getLocalScriptVar("offset") -- obtenemos un vertex3D
+print("Read variable 'offset' from object: ".. o:getLabel())
+print("Value for 'offset': " .. position.x .. ", " .. position.y .. ", " .. position.z)
+
+print("Read variable 'count' from object: ".. o:getLabel())
+print("Value for 'count': " .. o:getLocalScriptVar("count")) -- obtenemos int
+```
+
+---
+
+### Gestión de escenas
+
+Puedes cargar y salvar escenas tanto desde GUI como desde tus scripts LUA
+
+```lua
 function onStart()
-    -- Guardar variable local
-    object:setLocalScriptVar("vida", 100)
-    object:setLocalScriptVar("nombre", "Enemigo1")
-end
-
-function onUpdate(deltaTime)
-    -- Leer variable local
-    local vida = object:getLocalScriptVar("vida")
-    
-    if vida <= 0 then
-        object:setRemoved(true)
-    end
+    ...
+    componentsManager:getComponentRender():getSceneLoader():loadScene("../scenes/scene_example.json")
+    ...
+    componentsManager:getComponentRender():getSceneLoader():saveScene("../scenes/scene_example.json")
+    ...
 end
 ```
 
-### Variables globales de la escena
+---
+
+### Deltatime
+
+Él `DeltaTime` es el tiempo que tarda en renderizarse un frame. Es una medida crucial en el desarrollo de juegos,
+ya que permite que los movimientos y animaciones sean consistentes independientemente de la velocidad de renderización.
+
+Puedes obtenerlo desde tus scripts LUAde la siguiente manera:
 
 ```lua
-scripting = componentsManager:getComponentScripting()
-
--- Guardar variable global
-scripting:setGlobalScriptVar("puntuacion", 0)
-
--- Leer variable global
-local puntos = scripting:getGlobalScriptVar("puntuacion")
+...
+print("DeltaTime: " .. brakeza:getDeltaTime()) -- delta en segundos
+print("DeltaTimeInMicro: " .. brakeza:getDeltaTimeMicro()) -- delta en microsegundos
+print("Execution Time: " .. brakeza:getExecutionTime()) -- tiempo total de ejecución
+...  
+function onUpdate()
+    local speed = 5.0  -- unidades por segundo
+    local movement = speed * brakeza:getDeltaTime()
+    myObject:addToPosition(Vertex3D.new(movement, 0, 0))
+end
 ```
 
-## Gestión de scripts
+---
 
-### Crear y cargar scripts
+### Terminar la ejecución
+
+Si deseas terminar la aplicación desde código, puedes hacerlo de la siguiente forma:
 
 ```lua
--- Crear un script desde archivo
-script = ScriptLUA.create("../assets/scripts/enemy_ai.lua")
-
--- Vincular script a un objeto
-enemigo:attachScript("../assets/scripts/enemy_ai.lua")
-
--- Recargar scripts de un objeto
-enemigo:reloadScriptsEnvironment()
+ brakeza:finish()
 ```
 
-### Añadir scripts a la escena
+---
+
+### Autocargar proyectos o escenas
+
+Cuando desees empaquetar tu juego o aplicación, desearás que Brakeza3D carge y ejecute automáticamente los scripts
+de algún `proyecto` en particular. Podrás indicar esto a Brakeza3D desde la línea de comandos.
+
+```bash
+brakeza3d.exe -p MyProject.json
+```
+o
+```bash
+brakeza3d.exe --project MyProject.json
+```
+Con esto el proyecto será ejecutado automáticamente sin UI.
+
+`Nota`: La ruta en la que será buscado el fichero de proyecto es relativa al directorio base de
+proyectos: `/assets/projects/`.
+
+---
+
+### Grid3D y Octree
+
+Brakeza3D incorpora las estructuras de datos `Grid3D` y `Octree` integradas en los objetos de tipo
+``Mesh3D``.
+
+- `Grid3D`: Crea una rejilla de `X`, `Y`, `Z` dimensiones sobre el AABB del objeto dado.
+- `Octree`: Crea un árbol octal, con la profundidad (`maxDepth`) indicada.
+
+Para cargar una rejilla en un objeto `Mesh3D` puedes utilizar el método `buildGrid3D(sizeX, sizeY, sizeZ)`
 
 ```lua
-scripting = componentsManager:getComponentScripting()
-scripting:addSceneLUAScript("../assets/scripts/game_manager.lua")
+eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+eye:setScale(10)
+eye:buildGrid3D(5, 5, 5) -- crea una rejilla de 5x5x5
+brakeza:addObject3D(eye, 'modelo')
 ```
 
-## Ejemplo completo - Script de enemigo
+Para cargar una *octree* en un objeto `Mesh3D` puedes utilizar el método `buildOctree(maxDepth)`.
+```lua
+eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+eye:setScale(10)
+eye:buildOctree(1) -- crea una árbol de octanos de un solo nivel de profundidad, solo 8 hijos
+brakeza:addObject3D(eye, 'modelo')
+```
+Para volver a ajustar las dimensiones tanto en las rejillas como en los árboles de octanos, simplemente
+vuelve a ejecutar ``buildGrid3D`` o ``buildOctree``.
+
+#### Llenado de geometría en Grid3D
+
+Los ``Grid3D`` almacenan un *flag boolean* por cada *celda* que podremos usar a nuestro antojo.
+No obstante, Brakeza3D incorpora un mecanismo de relleno de este *flag* llamado `fillGrid3DFromGeometry`,
+el cual activará este flag en cada celda, si ningún triángulo atraviesa o está contenido por dicha celda.
 
 ```lua
--- enemy.lua
-
--- Variables del enemigo
-local velocidad = 5.0
-local vidaMaxima = 100
-local rangoDeteccion = 10.0
-local player = nil
-
-function onStart()
-    -- Inicializar variables locales
-    object:setLocalScriptVar("vida", vidaMaxima)
-    object:setLocalScriptVar("estado", "patrulla")
-    
-    -- Buscar al jugador
-    player = brakeza:getSceneObjectByLabel("player")
-    
-    -- Configurar física
-    object:setupRigidBodyCollider(SIMPLE_SHAPE)
-    object:setMass(50.0)
-    object:setAngularFactor(Vertex3D.new(0, 1, 0))
-end
-
-function onUpdate(deltaTime)
-    if player == nil then return end
-    
-    local estado = object:getLocalScriptVar("estado")
-    local vida = object:getLocalScriptVar("vida")
-    
-    -- Comprobar si está muerto
-    if vida <= 0 then
-        morir()
-        return
-    end
-    
-    -- Calcular distancia al jugador
-    local posEnemigo = object:getPosition()
-    local posPlayer = player:getPosition()
-    local distancia = posEnemigo:distance(posPlayer)
-    
-    -- Máquina de estados
-    if estado == "patrulla" then
-        if distancia < rangoDeteccion then
-            object:setLocalScriptVar("estado", "perseguir")
-        else
-            patrullar(deltaTime)
-        end
-    elseif estado == "perseguir" then
-        if distancia > rangoDeteccion * 2 then
-            object:setLocalScriptVar("estado", "patrulla")
-        else
-            perseguirJugador(deltaTime)
-        end
-    end
-end
-
-function patrullar(deltaTime)
-    -- Moverse en un patrón
-    local direccion = object:AxisForward():getScaled(velocidad * 0.5)
-    object:setWalkingDirection(direccion)
-end
-
-function perseguirJugador(deltaTime)
-    -- Mirar al jugador
-    object:lookAt(player)
-    
-    -- Moverse hacia el jugador
-    local direccion = object:AxisForward():getScaled(velocidad)
-    object:setWalkingDirection(direccion)
-end
-
-function recibirDanio(cantidad)
-    local vida = object:getLocalScriptVar("vida")
-    vida = vida - cantidad
-    object:setLocalScriptVar("vida", vida)
-    
-    print("Enemigo recibió " .. cantidad .. " de daño. Vida: " .. vida)
-end
-
-function morir()
-    print("Enemigo eliminado")
-    
-    -- Crear explosión de partículas
-    local pos = object:getPosition()
-    local explosion = ParticleEmitter.create(
-        pos, 1.0,
-        Color.new(1.0, 0.0, 0.0, 1.0),
-        Color.new(0.5, 0.5, 0.5, 0.0),
-        ParticlesContext.defaultParticlesContext(),
-        "../assets/images/particle.png"
-    )
-    brakeza:addObject3D(explosion, "explosion_" .. object:getLabel())
-    
-    -- Eliminar enemigo
-    object:setRemoved(true)
-end
-
-function onCollision(collision)
-    local otro = collision:getObject()
-    
-    -- Si colisiona con una bala
-    if string.find(otro:getLabel(), "bullet") then
-        recibirDanio(25)
-        otro:setRemoved(true)
-    end
-end
-
-function onEnd()
-    print("Script de enemigo finalizado")
-end
+eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+eye:setScale(10)
+eye:buildGrid3D(5, 5, 5)
+eye:fillGrid3DFromGeometry() -- activa los flags para celdas sin geometría
+brakeza:addObject3D(eye, 'modelo')
 ```
 
-## Ejemplo - Game Manager
+Será especialmente útil para aplicar técnicas de ``pathfinding`` disponer de esta información precargada
+en un `Grid3D`.
+
+#### Pathfinding en Grid3D
+
+Las rejillas incorporan un algoritmo ``A*`` que permite iterar sobre sus celdas. En combinación con `fillGrid3DFromGeometry`,
+podrás conseguir que los caminos esquiven nodos con geometría.
 
 ```lua
--- game_manager.lua (script de escena)
+eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+eye:buildGrid3D(5, 5, 5)                    -- construimos un grid de 5x5x5
+eye:fillGrid3DFromGeometry()                -- Flags basados en si hay o no geometría en cada celda
+brakeza:addObject3D(eye, 'modelo')
 
-local puntuacion = 0
-local enemigosEliminados = 0
-local tiempoJuego = 0
-
-function onStart()
-    -- Inicializar variables globales
-    scripting = componentsManager:getComponentScripting()
-    scripting:setGlobalScriptVar("puntuacion", 0)
-    scripting:setGlobalScriptVar("oleadaActual", 1)
-    
-    -- Configurar iluminación
-    local render = componentsManager:getComponentRender()
-    render:setGlobalIlluminationDirection(Vertex3D.new(0.5, -1.0, 0.5):getNormalize())
-    render:setGlobalIlluminationAmbient(Vertex3D.new(0.3, 0.3, 0.3))
-    render:setGlobalIlluminationDiffuse(Vertex3D.new(0.8, 0.8, 0.8))
-    
-    -- Cargar música
-    local sound = componentsManager:getComponentSound()
-    sound:addMusic("game", "../assets/sounds/game_music.mp3")
-    sound:playSound("game")
-end
-
-function onUpdate(deltaTime)
-    tiempoJuego = tiempoJuego + deltaTime
-    
-    -- Actualizar UI (esto requeriría TextWriter)
-    -- ...
-end
-
-function sumarPuntos(cantidad)
-    local scripting = componentsManager:getComponentScripting()
-    local puntos = scripting:getGlobalScriptVar("puntuacion")
-    puntos = puntos + cantidad
-    scripting:setGlobalScriptVar("puntuacion", puntos)
-end
-
-function enemigoEliminado()
-    enemigosEliminados = enemigosEliminados + 1
-    sumarPuntos(100)
-end
+eye:getGrid3D():setTravel(0, 0, 0, 5, 5, 5) -- Configuramos un viaje desde (0, 0, 0) hasta (5, 5, 5)
+path = eye:getGrid3D():makeTravelCubesGrid() -- Obtenemos un array de CubeGrid3D
 ```
+
+Mediante el método `setTravel(x1, y1, z1, x2, y2, z2)`, podremos ajustar el viaje para el próximo camino
+solicitado mediante `makeTravelCubesGrid`.
+
+El método `makeTravelCubesGrid` devuelve ell camino solicitado si este fue posible mediante un array de `CubeGrid3D`,
+cuya estructura es la siguiente:
+
+```C
+struct CubeGrid3D {
+    AABB3D box;             // Caja contenedora 
+    int posX;               // Índice de la posición X en el grid
+    int posY;               // Índice de la posición Y en el grid
+    int posZ;               // Índice de la posición Z en el grid
+    bool passed = true;     // Flag 
+};
+```
+Podemos iterar sobre dicho array para obtener el camino deseado.
+
+```lua
+...
+path = eye:getGrid3D():makeTravelCubesGrid() -- Obtenemos un array de CubeGrid3D
+-- Iteramos sobre el array path y pintamos los índices de cada CubeGrid3D
+for i, cube in ipairs(path) do
+    -- Imprimimos las coordenadas de cada CubeGrid3D
+    print("Cube " .. i .. ": X = " .. cube.posX .. ", Y = " .. cube.posY .. ", Z = " .. cube.posZ)
+end
+...
+```
+---
+
+### Ejemplos en codigo
+
+https://github.com/rzeronte/brakeza3d/blob/master/doc/examples-lua-code.md
 
 ---
 
@@ -2034,13 +1418,12 @@ end
 
 Brakeza3D ofrece la posibilidad de que incorpores tus propios shaders GLSL.
 
-De igual forma que sucede con los ``Scripts``, podrás vincular `Shaders` a tus ``escenas``
+De igual forma que sucede con los ``Scripts``, podrás vincular `Shaders` a tus ``escenas`` 
 y/o ``Object3D``.
 
 
 - [Tipos de Shaders](#tipos-de-shaders)
 - [Variables de Shaders](#variables-de-shaders-uniforms)
-- [Configurar uniforms desde Lua](#configurar-uniforms-desde-lua)
 - [Template Shader de postprocesado](#template-shader-de-postprocesado)
 - [Shaders internos](#shaders-internos)
 
@@ -2050,8 +1433,8 @@ y/o ``Object3D``.
 
 Existen dos tipos de shaders:
 
-- `Postprocesado`: Un shader de postprocesado se aplica después de que la escena ha sido renderizada, modificando
-  la imagen final antes de enviarla a la pantalla. Solo pueden ser aplicados a una `scene`.
+- `Postprocesado`: Un shader de postprocesado se aplica después de que la escena ha sido renderizada, modificando 
+la imagen final antes de enviarla a la pantalla. Solo pueden ser aplicados a una `scene`.
 - `Geometría`: Un shader de geometría procesa vértices y puede modificar la forma de los objetos antes de rasterizarlos. Solo puede ser aplicados a un `Mesh3D`
 
 Podrás crear los shaders desde la UI, Brakeza3D creará automáticamente un fichero `.vs` y `.fs`, vertexshader y fragmenteshader respectivamente, los que podrás
@@ -2063,81 +1446,12 @@ modificar a tu antojo. También se generará un fichero ``json`` con metadatos.
 
 También podrás configurar las variables (*uniforms*) que recibirá cada shader desde la UI.
 
-Podrás configurar tus propias variables: ``int``, ``float``, ``vec2``, ``vec3``, ``vec4``, ``texture``
-o bien podrás seleccionar variables pertenecientes al sistema: ``delta_time (float)``, ``execution_time (float)``
+Podrás configurar tus propias variables: ``int``, ``float``, ``vec2``, ``vec3``, ``vec4``, ``texture`` 
+o bien podrás seleccionar variables pertenecientes al sistema: ``delta_time (float)``, ``execution_time (float)`` 
 o `scene (texture)`.
 
-Además, los shaders de geometría (que solo aplican a `Mesh3D`) te permiten usar tipos del sistema como: ``diffuse`` o ``specular``, con
+Además, los shaders de geometría (que solo aplican a `Mesh3D`) te permiten usar tipos del sistema como: ``diffuse`` o ``specular``, con 
 texturas pertenecientes al modelo en particular.
-
----
-
-### Configurar uniforms desde Lua
-
-Puedes acceder y modificar los uniforms de los shaders desde tus scripts Lua.
-
-**Obtener shader de la escena:**
-```lua
-render = componentsManager:getComponentRender()
-shader = render:getSceneShaderByLabel("mi_shader_postprocess")
-```
-
-**Establecer valores de uniforms:**
-
-El método `setDataTypeValue` acepta diferentes tipos de valores:
-
-```lua
--- Valores numéricos
-shader:setDataTypeValue("miFloat", 1.5)
-shader:setDataTypeValue("miInt", 42)
-
--- Vectores GLM
-shader:setDataTypeValue("miVec2", vec2.new(0.5, 0.5))
-shader:setDataTypeValue("miVec3", vec3.new(1.0, 0.0, 0.0))
-shader:setDataTypeValue("miVec4", vec4.new(1.0, 0.5, 0.0, 1.0))
-```
-
-**Ejemplo - Shader animado:**
-```lua
--- Script de escena que anima un shader de postprocesado
-
-local tiempo = 0
-
-function onStart()
-    render = componentsManager:getComponentRender()
-    shader = render:getSceneShaderByLabel("efecto_onda")
-end
-
-function onUpdate(deltaTime)
-    tiempo = tiempo + deltaTime
-    
-    -- Animar un uniform "time"
-    shader:setDataTypeValue("time", tiempo)
-    
-    -- Cambiar intensidad del efecto
-    local intensidad = math.sin(tiempo) * 0.5 + 0.5
-    shader:setDataTypeValue("intensity", intensidad)
-    
-    -- Vector de dirección que rota
-    local x = math.cos(tiempo)
-    local y = math.sin(tiempo)
-    shader:setDataTypeValue("direction", vec2.new(x, y))
-end
-```
-
-**Ejemplo - Control de color:**
-```lua
-function cambiarColorShader(r, g, b, a)
-    local shader = render:getSceneShaderByLabel("tint")
-    shader:setDataTypeValue("tintColor", vec4.new(r, g, b, a))
-end
-
--- Hacer pantalla roja gradualmente
-function efectoDanio()
-    cambiarColorShader(1.0, 0.0, 0.0, 0.5)
-    -- (Luego ir reduciendo el alpha con el tiempo)
-end
-```
 
 ---
 
@@ -2170,59 +1484,13 @@ FragmentShader:
 
 in vec2 TexCoords;
 
-out vec4 FragColor;
-
-uniform sampler2D sceneTexture;
+//out vec4 FragColor;
 
 void main()
 {
-   FragColor = texture(sceneTexture, TexCoords);
+   //FragColor = texture(sceneTexture, TexCoords);
 }
 ````
-
-**Ejemplo - Shader de inversión de color:**
-````glsl
-#version 330 core
-
-in vec2 TexCoords;
-out vec4 FragColor;
-
-uniform sampler2D sceneTexture;
-
-void main()
-{
-    vec4 color = texture(sceneTexture, TexCoords);
-    FragColor = vec4(1.0 - color.rgb, color.a);  // Invertir RGB
-}
-````
-
-**Ejemplo - Shader de blur simple:**
-````glsl
-#version 330 core
-
-in vec2 TexCoords;
-out vec4 FragColor;
-
-uniform sampler2D sceneTexture;
-uniform float blurAmount;  // Configurable desde Lua
-
-void main()
-{
-    vec2 texelSize = 1.0 / textureSize(sceneTexture, 0);
-    vec4 result = vec4(0.0);
-    
-    // Blur 3x3
-    for(int x = -1; x <= 1; x++) {
-        for(int y = -1; y <= 1; y++) {
-            vec2 offset = vec2(x, y) * texelSize * blurAmount;
-            result += texture(sceneTexture, TexCoords + offset);
-        }
-    }
-    
-    FragColor = result / 9.0;
-}
-````
-
 ### Template Shader de geometría
 
 A continuación las templates vacías para el shader de geometría.
@@ -2258,7 +1526,7 @@ FragmentShader:
 ````glsl
 #version 330 core
 
-uniform sampler2D diffuse;
+//uniform sampler2D diffuse;
 
 out vec4 FragColor;
 
@@ -2269,8 +1537,9 @@ in vec2 TexCoords;
 void main()
 {
     vec3 norm = normalize(Normal);
-    
-    FragColor = texture(diffuse, TexCoords);
+    vec3 viewDir = normalize(viewPos - FragPos);
+
+    //FragColor = texture(diffuse, TexCoords);
 }
 
 ````
@@ -2326,393 +1595,3 @@ Brakeza3D esperará encontrar cada tipo de recurso en su carpeta raíz correspon
 
 Brakeza3D permite trabajar con rutas relativas, pero siempre a la ruta principal de cada elemento, es decir,
 podrás almacenar tus scripts en subcarpetas, pero siempre estarán dentro de la carpeta raíz de scripts, etc.
-
----
-
->[Back to index](#index)
-
-# 15) TextWriter system
-
-El sistema `TextWriter` permite renderizar texto en pantalla usando fuentes TTF.
-
-**Constructor:**
-```lua
-writer = TextWriter.create("../assets/fonts/arial.ttf")
-```
-
-## Métodos
-
-**Renderizado de texto:**
-- `writeTextTTF(texto, x, y, color, escala)`: Escribe texto en posición absoluta.
-- `writeTextTTFAutoSize(texto, x, y, color)`: Escribe texto con tamaño automático.
-- `writeTextTTFMiddleScreen(texto, color, escala)`: Escribe texto centrado en pantalla.
-- `writeTTFCenterHorizontal(texto, y, color, escala)`: Escribe texto centrado horizontalmente.
-
-**Propiedades:**
-- `setAlpha(float)`: Establece la transparencia del texto (0.0 - 1.0).
-- `getAlpha() => float`: Obtiene la transparencia actual.
-- `setFont(string)`: Cambia la fuente.
-
-## Ejemplos
-
-### Ejemplo 1 - HUD básico
-
-```lua
--- En el script de escena
-local writer = nil
-local puntuacion = 0
-local vida = 100
-
-function onStart()
-    writer = TextWriter.create("../assets/fonts/game_font.ttf")
-    writer:setAlpha(1.0)
-end
-
-function onUpdate(deltaTime)
-    -- Puntuación en la esquina superior izquierda
-    writer:writeTextTTF(
-        "Puntos: " .. puntuacion,
-        20, 20,
-        Color.new(1.0, 1.0, 1.0, 1.0),
-        1.0
-    )
-    
-    -- Vida en la esquina superior derecha
-    local colorVida = vida > 30 
-        and Color.new(0.0, 1.0, 0.0, 1.0)  -- Verde
-        or Color.new(1.0, 0.0, 0.0, 1.0)   -- Rojo
-    
-    writer:writeTextTTF(
-        "Vida: " .. vida,
-        1800, 20,
-        colorVida,
-        1.0
-    )
-end
-```
-
-### Ejemplo 2 - Mensaje centrado
-
-```lua
-function mostrarMensaje(mensaje)
-    writer = TextWriter.create("../assets/fonts/title.ttf")
-    writer:writeTextTTFMiddleScreen(
-        mensaje,
-        Color.new(1.0, 1.0, 0.0, 1.0),  -- Amarillo
-        2.0  -- Escala grande
-    )
-end
-
--- Usar
-mostrarMensaje("¡GAME OVER!")
-```
-
-### Ejemplo 3 - Texto con fade
-
-```lua
-local mensajeAlpha = 1.0
-local mensajeTiempo = 0
-
-function onStart()
-    writer = TextWriter.create("../assets/fonts/ui.ttf")
-end
-
-function onUpdate(deltaTime)
-    if mensajeTiempo > 0 then
-        mensajeTiempo = mensajeTiempo - deltaTime
-        mensajeAlpha = mensajeTiempo / 3.0  -- 3 segundos de fade
-        
-        writer:setAlpha(mensajeAlpha)
-        writer:writeTTFCenterHorizontal(
-            "¡Nuevo objetivo!",
-            500,
-            Color.new(1.0, 1.0, 1.0, 1.0),
-            1.5
-        )
-    end
-end
-
-function mostrarObjetivo()
-    mensajeTiempo = 3.0
-    mensajeAlpha = 1.0
-end
-```
-
-### Ejemplo 4 - FPS counter
-
-```lua
-local writer = nil
-local fpsTexto = "FPS: 0"
-
-function onStart()
-    writer = TextWriter.create("../assets/fonts/mono.ttf")
-    writer:setAlpha(0.7)  -- Semitransparente
-end
-
-function onUpdate(deltaTime)
-    -- Calcular FPS aproximado
-    local fps = math.floor(1.0 / deltaTime)
-    fpsTexto = "FPS: " .. fps
-    
-    -- Mostrar en esquina
-    writer:writeTextTTF(
-        fpsTexto,
-        10, 10,
-        Color.new(0.0, 1.0, 0.0, 1.0),
-        0.8
-    )
-end
-```
-
-### Ejemplo 5 - Diálogo con nombre de personaje
-
-```lua
-local dialogoActivo = false
-local dialogoTexto = ""
-local dialogoNombre = ""
-
-function mostrarDialogo(nombre, texto)
-    dialogoActivo = true
-    dialogoNombre = nombre
-    dialogoTexto = texto
-end
-
-function onUpdate(deltaTime)
-    if dialogoActivo then
-        -- Fondo semitransparente (necesitarías un Image2D)
-        
-        -- Nombre del personaje
-        writer:writeTextTTF(
-            dialogoNombre,
-            100, 900,
-            Color.new(1.0, 1.0, 0.0, 1.0),  -- Amarillo
-            1.2
-        )
-        
-        -- Texto del diálogo
-        writer:writeTextTTF(
-            dialogoTexto,
-            100, 950,
-            Color.new(1.0, 1.0, 1.0, 1.0),  -- Blanco
-            1.0
-        )
-        
-        -- Cerrar diálogo con Enter
-        local input = componentsManager:getComponentInput()
-        if input:isCharFirstEventDown('\r') then
-            dialogoActivo = false
-        end
-    end
-end
-```
-
----
-
->[Back to index](#index)
-
-# 16) Scene management
-
-El sistema `SceneLoader` permite guardar, cargar y limpiar escenas.
-
-**Acceso:**
-```lua
-render = componentsManager:getComponentRender()
-sceneLoader = render:getSceneLoader()
-```
-
-## Métodos
-
-- `saveScene(nombre)`: Guarda la escena actual con el nombre especificado.
-- `loadScene(nombre)`: Carga una escena previamente guardada.
-- `clearScene()`: Limpia todos los objetos de la escena actual.
-
-## Ejemplo - Sistema de niveles
-
-```lua
--- game_manager.lua
-
-local nivelActual = 1
-
-function onStart()
-    render = componentsManager:getComponentRender()
-    sceneLoader = render:getSceneLoader()
-    
-    cargarNivel(nivelActual)
-end
-
-function cargarNivel(numero)
-    -- Limpiar escena actual
-    sceneLoader:clearScene()
-    
-    -- Cargar nuevo nivel
-    local nombreNivel = "nivel_" .. numero
-    sceneLoader:loadScene(nombreNivel)
-    
-    print("Nivel " .. numero .. " cargado")
-end
-
-function completarNivel()
-    nivelActual = nivelActual + 1
-    
-    if nivelActual <= 10 then
-        cargarNivel(nivelActual)
-    else
-        print("¡Juego completado!")
-        -- Cargar escena de créditos
-        sceneLoader:loadScene("creditos")
-    end
-end
-
-function reiniciarNivel()
-    cargarNivel(nivelActual)
-end
-
-function volverAlMenu()
-    sceneLoader:clearScene()
-    sceneLoader:loadScene("menu_principal")
-end
-```
-
-## Ejemplo - Guardar progreso
-
-```lua
-function guardarProgreso()
-    -- Guardar estado actual como checkpoint
-    render = componentsManager:getComponentRender()
-    sceneLoader = render:getSceneLoader()
-    
-    sceneLoader:saveScene("checkpoint_nivel" .. nivelActual)
-    
-    print("Progreso guardado")
-end
-
-function cargarUltimoCheckpoint()
-    sceneLoader:loadScene("checkpoint_nivel" .. nivelActual)
-    print("Checkpoint cargado")
-end
-```
-
-## Ejemplo - Transición entre escenas
-
-```lua
-local transicionando = false
-local tiempoTransicion = 0
-local proximaEscena = ""
-
-function iniciarTransicion(nombreEscena)
-    proximaEscena = nombreEscena
-    transicionando = true
-    tiempoTransicion = 0
-end
-
-function onUpdate(deltaTime)
-    if transicionando then
-        tiempoTransicion = tiempoTransicion + deltaTime
-        
-        -- Fade out durante 1 segundo
-        if tiempoTransicion < 1.0 then
-            local alpha = tiempoTransicion
-            -- Aplicar tint negro creciente
-            -- (esto requeriría un shader de tint)
-        else
-            -- Cambiar escena
-            sceneLoader:loadScene(proximaEscena)
-            transicionando = false
-            
-            -- Fade in en la nueva escena
-        end
-    end
-end
-```
-
----
-
-### Pathfinding en Grid3D
-
-Las rejillas incorporan un algoritmo ``A*`` que permite iterar sobre sus celdas. En combinación con `fillGrid3DFromGeometry`,
-podrás conseguir que los caminos esquiven nodos con geometría.
-
-```lua
-eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
-eye:buildGrid3D(5, 5, 5)                    -- construimos un grid de 5x5x5
-eye:fillGrid3DFromGeometry()                -- Flags basados en si hay o no geometría en cada celda
-brakeza:addObject3D(eye, 'modelo')
-
-eye:getGrid3D():setTravel(0, 0, 0, 5, 5, 5) -- Configuramos un viaje desde (0, 0, 0) hasta (5, 5, 5)
-path = eye:getGrid3D():makeTravelCubesGrid() -- Obtenemos un array de CubeGrid3D
-```
-
-Mediante el método `setTravel(x1, y1, z1, x2, y2, z2)`, podremos ajustar el viaje para el próximo camino
-solicitado mediante `makeTravelCubesGrid`.
-
-El método `makeTravelCubesGrid` devuelve ell camino solicitado si este fue posible mediante un array de `CubeGrid3D`,
-cuya estructura es la siguiente:
-
-```C
-struct CubeGrid3D {
-    AABB3D box;             // Caja contenedora 
-    int posX;               // Índice de la posición X en el grid
-    int posY;               // Índice de la posición Y en el grid
-    int posZ;               // Índice de la posición Z en el grid
-    bool passed = true;     // Flag 
-};
-```
-Podemos iterar sobre dicho array para obtener el camino deseado.
-
-```lua
-...
-path = eye:getGrid3D():makeTravelCubesGrid() -- Obtenemos un array de CubeGrid3D
--- Iteramos sobre el array path y pintamos los índices de cada CubeGrid3D
-for i, cube in ipairs(path) do
-    -- Imprimimos las coordenadas de cada CubeGrid3D
-    print("Cube " .. i .. ": X = " .. cube.posX .. ", Y = " .. cube.posY .. ", Z = " .. cube.posZ)
-end
-...
-```
----
-
-### Octree
-
-El Octree permite particionamiento espacial eficiente para búsquedas y optimizaciones.
-
-```lua
--- Construir octree en un modelo
-modelo = Mesh3D.create(Vertex3D.new(0, 0, 0), "../assets/models/terrain.fbx")
-modelo:buildOctree(5)  -- Profundidad 5
-brakeza:addObject3D(modelo, "terreno")
-
--- Acceder al octree
-octree = modelo:getOctree()
-
--- Acceder a la raíz
-nodoRaiz = octree.root
-
--- Comprobar si es hoja
-if nodoRaiz:isLeaf() then
-    print("El nodo raíz es una hoja")
-end
-
--- Acceder al AABB del nodo
-aabb = nodoRaiz.bounds
-print("Centro: ", aabb:getCenter())
-
--- Recorrer hijos si no es hoja
-if not nodoRaiz:isLeaf() then
-    for i, hijo in ipairs(nodoRaiz.children) do
-        print("Hijo " .. i)
-        -- Procesar hijo
-    end
-end
-```
-
----
-
-### Ejemplos en codigo
-
-https://github.com/rzeronte/brakeza3d/blob/master/doc/examples-lua-code.md
-
----
-
-**¡Documentación actualizada! 🎉**
-
-Esta documentación refleja todas las capacidades actuales del motor Brakeza3D expuestas a través del scripting Lua.

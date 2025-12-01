@@ -22,8 +22,8 @@ void Logging::Message(const char *message, ...)
 
     va_end(args);
 
-    if (Brakeza::get()->getManagerGui() != nullptr) {
-        Brakeza::get()->getManagerGui()->getConsole()->AddLog("%s", buffer);
+    if (Brakeza::get()->GUI() != nullptr) {
+        Brakeza::get()->GUI()->getConsole()->AddLog("%s", buffer);
     }
 
     if (BrakezaSetup::get()->ENABLE_LOGGING_STD) {

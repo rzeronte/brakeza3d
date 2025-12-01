@@ -34,7 +34,7 @@ public:
 
             if (o->boneColliderEnabled) {
                 if (ImGui::Button(std::string("Manage Bone Mappings##" + o->getLabel()).c_str())) {
-                   Brakeza::get()->getManagerGui()->openBoneInfoDialog();
+                   Brakeza::get()->GUI()->openBoneInfoDialog();
                 }
             }
         }

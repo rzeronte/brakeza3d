@@ -4,6 +4,8 @@
 
 #include <string>
 #include <vector>
+
+#include "GUITypes.h"
 #include "AddOns/GUIConsole.h"
 #include "../Misc/TexturePackage.h"
 #include "AddOns/GUIAddonObjects3D.h"
@@ -11,15 +13,6 @@
 #include "AddOns/GUIAddonProjectSetup.h"
 #include "AddOns/GUIAddonMenu.h"
 #include "AddOns/GUIAddonToolbar.h"
-
-struct GUIConstants {
-    static constexpr ImVec2 ICON_SIZE_SMALL = ImVec2(14, 14);
-    static constexpr ImVec2 ICON_SIZE_MEDIUM = ImVec2(16, 16);
-    static constexpr ImVec2 ICON_SIZE_LARGE = ImVec2(96, 96);
-    static constexpr float WINDOW_ALPHA = 0.9f;
-    static constexpr int DEFAULT_WINDOW_WIDTH = 600;
-    static constexpr int DEFAULT_WINDOW_HEIGHT = 600;
-};
 
 class Object3DGUI;
 class ScriptLuaGUI;
@@ -29,6 +22,8 @@ class FileSystemGUI;
 
 class GUIManager
 {
+    std::vector<GUITypes::GUIWindowsStatus> windows;
+
     int selectedObjectIndex = -1;
     bool showAboutWindow = false;
     bool showEditShaderWindow = false;
@@ -73,7 +68,15 @@ class GUIManager
 
     Color lineSelectorObjectColor = Color::green();
 public:
+
     virtual ~GUIManager() = default;
+
+    void RegisterWindows();
+
+    void DrawSceneObjectsWindow();
+
+    void DrawLoggingWindow();
+
     explicit GUIManager(std::vector<Object3D *> &gameObjects);
 
     void setSelectedObjectIndex(int selectedObjectIndex);
@@ -83,7 +86,7 @@ public:
     virtual void DrawGUI(float timedelta, bool &finish);
     TexturePackage &getImGuiTextures();
     [[nodiscard]] GuiAddonConsole *getConsole() const;
-    [[nodiscard]] bool isShowLightsDepthMapsViewerWindow() const;
+    [[nodiscard]] bool isShowLightsDepthMapsViewerWindow();
     static void ShowDeletePopup(const char* title, const char *message, const std::function<void()>& onConfirm);
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
@@ -98,8 +101,13 @@ private:
     void DrawGUIPlugins(bool &finish);
     void DrawImages();
     void DrawLightsDepthMapsViewerWindow();
+
+    void DrawRegisteredWindows();
+
     static void DrawKeyboardMouseSettings();
     static void DrawSplash();
+
+    GUITypes::GUIWindowsStatus *GetWindowStatus(GUITypes::GUIWindows window);
 };
 
 #endif //SDL2_3D_ENGINE_GUI_ENGINE_H

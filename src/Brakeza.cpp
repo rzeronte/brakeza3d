@@ -289,7 +289,7 @@ std::string Brakeza::uniqueObjectLabel(const char *prefix)
     return prefix + std::string("_") + std::to_string(Tools::random(0, 100));
 }
 
-GUIManager *Brakeza::getManagerGui() const
+GUIManager *Brakeza::GUI() const
 {
     return managerGUI;
 }

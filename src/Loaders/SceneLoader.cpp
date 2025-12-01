@@ -181,7 +181,7 @@ void SceneLoader::ClearScene()
         render->removeSceneShader(s);
     }
 
-    Brakeza::get()->getManagerGui()->setSelectedObject(nullptr);
+    Brakeza::get()->GUI()->setSelectedObject(nullptr);
     ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
 }
 

@@ -12,10 +12,10 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 :
     gameObjects(gameObjects),
     widgetConsole(new GuiAddonConsole(ComponentsManager::get()->getComponentScripting()->getLua())),
-    widgetObjects3D(new GUIAddonObjects3D(this->gameObjects)),
-    widgetObject3DProperties(new GUIAddonObject3DProperties(this->gameObjects, scriptEditableManager)),
+    widgetObjects3D(new GUIAddonObjects3D(gameObjects)),
+    widgetObject3DProperties(new GUIAddonObject3DProperties(gameObjects, scriptEditableManager)),
     widgetProjectSettings(new GUIAddonProjectSetup(scriptEditableManager)),
-    widgetMenu(new GUIAddonMenu()),
+    widgetMenu(new GUIAddonMenu(windows)),
     widgetToolbar(new GUIAddonToolbar()),
     currentScriptsFolderWidget(BrakezaSetup::get()->SCRIPTS_FOLDER),
     currentScenesFolderWidget(BrakezaSetup::get()->SCENES_FOLDER),
@@ -37,17 +37,43 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 
     currentShadersFolders = Tools::getFolderFolders(currentShadersFolderWidget);
     currentShadersFolderFiles = Tools::getFolderFiles(currentShadersFolderWidget, "json");
+
+    RegisterWindows();
+}
+
+void GUIManager::RegisterWindows()
+{
+    windows.push_back({ GUITypes::GUIWindows::PROFILER, "Profiler", false, []() { Profiler::get()->DrawPropertiesGUI(); }} );
+    windows.push_back({ GUITypes::GUIWindows::DEPTH_LIGTHS_MAPS, "Lights Depth Maps Viewer", false, []() { Brakeza::get()->GUI()->DrawLightsDepthMapsViewerWindow(); }} );
+    windows.push_back({ GUITypes::GUIWindows::LOGGING, "Logging/Console", false, []() { Brakeza::get()->GUI()->DrawLoggingWindow(); }} );
+    windows.push_back({ GUITypes::GUIWindows::SCENE_OBJECTS, "Scene Objects", false, []() { Brakeza::get()->GUI()->DrawSceneObjectsWindow(); }} );
+}
+
+void GUIManager::DrawSceneObjectsWindow()
+{
+    auto windowStatus = GetWindowStatus(GUITypes::GUIWindows::SCENE_OBJECTS);
+    if (!windowStatus->isOpen) return;
+    widgetObjects3D->Draw(selectedObjectIndex);
+}
+
+void GUIManager::DrawLoggingWindow()
+{
+    auto windowStatus = GetWindowStatus(GUITypes::GUIWindows::LOGGING);
+    if (!windowStatus->isOpen) return;
+    widgetConsole->Draw(windowStatus->label.c_str(), &windowStatus->isOpen);
 }
 
 void GUIManager::DrawLightsDepthMapsViewerWindow()
 {
-    if (!showLightsDepthMapsViewerWindow) return;
+    auto windowStatus = GetWindowStatus(GUITypes::DEPTH_LIGTHS_MAPS);
+    if (!windowStatus->isOpen) return;
+    //if (!showLightsDepthMapsViewerWindow) return;
 
     SetNextWindowSize(350, 400);
-    ImGui::SetNextWindowBgAlpha(GUIConstants::WINDOW_ALPHA);
+    ImGui::SetNextWindowBgAlpha(GUITypes::GUIConstants::WINDOW_ALPHA);
 
     auto title = std::string("Lights Depth Maps Viewer: ");
-    if (ImGui::Begin(title.c_str(), &showLightsDepthMapsViewerWindow, ImGuiWindowFlags_NoDocking)) {
+    if (ImGui::Begin(title.c_str(), &windowStatus->isOpen, ImGuiWindowFlags_NoDocking)) {
 
         auto render = ComponentsManager::get()->getComponentRender();
         auto shaderShadowPassDebugLight = render->getShaderOGLShadowPassDebugLight();
@@ -97,6 +123,16 @@ void GUIManager::DrawLightsDepthMapsViewerWindow()
         ImGui::PopStyleVar();
     }
     ImGui::End();
+}
+
+void GUIManager::DrawRegisteredWindows() {
+    for (auto window : windows) {
+        if (!window.isOpen) continue;
+        if (ImGui::Begin(window.label.c_str())) {
+            window.functionCallBack();
+        }
+        ImGui::End();
+    }
 }
 
 void GUIManager::DrawWidgets()
@@ -152,11 +188,6 @@ void GUIManager::DrawWidgets()
         DrawImages();
     }
     ImGui::End();
-
-    if (ImGui::Begin("Profiler")) {
-        Profiler::get()->DrawPropertiesGUI();
-    }
-    ImGui::End();
 }
 
 
@@ -204,8 +235,6 @@ void GUIManager::UpdateImGuiDocking()
 
 void GUIManager::DrawGUIPlugins(bool &finish)
 {
-    bool pOpen = true;
-    widgetConsole->Draw("Logging/Console", &pOpen);
     widgetObjects3D->Draw(selectedObjectIndex);
     widgetObject3DProperties->Draw(selectedObjectIndex);
     widgetMenu->Draw(finish, showAboutWindow, showLightsDepthMapsViewerWindow);
@@ -222,7 +251,9 @@ void GUIManager::DrawGUI(float timedelta, bool &finish)
     ShadersGUI::DrawEditShaderWindow(this);
     ScriptLuaGUI::DrawEditScriptWindow(this);
     Mesh3DGUI::DrawEditBonesMappingWindow(this);
-    DrawLightsDepthMapsViewerWindow();
+
+    DrawRegisteredWindows();
+
     DrawSplash();
     ImGui::End();
 }
@@ -237,9 +268,11 @@ TexturePackage &GUIManager::getImGuiTextures()
     return icons;
 }
 
-bool GUIManager::isShowLightsDepthMapsViewerWindow() const
+bool GUIManager::isShowLightsDepthMapsViewerWindow()
 {
-    return showLightsDepthMapsViewerWindow;
+    auto windowStatus = GetWindowStatus(GUITypes::DEPTH_LIGTHS_MAPS);
+
+    return windowStatus->isOpen;
 }
 
 void GUIManager::setSelectedObjectIndex(int selectedObjectIndex)
@@ -424,4 +457,14 @@ void GUIManager::DrawSplash()
 
         ImGui::EndPopup();
     }
+}
+
+GUITypes::GUIWindowsStatus* GUIManager::GetWindowStatus(GUITypes::GUIWindows window)
+{
+    for (auto& status : windows) {
+        if (status.window == window) {
+            return &status;
+        }
+    }
+    return nullptr;
 }

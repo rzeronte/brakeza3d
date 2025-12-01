@@ -65,37 +65,78 @@ void Profiler::RemoveImage(const Image *image)
     }
 }
 
-void Profiler::DrawComponentsTable()
+void Profiler::DrawBreakDownComponent(Measure &pre, Measure &update,Measure &post, double total, float height)
 {
-    double totalTime = frameTime.diffTime;
+    float prePercent    = total > 0 ? (pre.diffTime    / total) : 0.0f;
+    float updatePercent = total > 0 ? (update.diffTime / total) : 0.0f;
+    float postPercent   = total > 0 ? (post.diffTime   / total) : 0.0f;
 
-    ImGui::Text("Total Frame Time: %.6f ms", totalTime * 1000.0f);
+    ImVec2 pos = ImGui::GetCursorScreenPos();
+    float fullWidth = ImGui::GetColumnWidth();
 
-    if (ImGui::BeginTable("ComponentTimings", 8,
+    ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+    float preW    = fullWidth * prePercent;
+    float updateW = fullWidth * updatePercent;
+    float postW   = fullWidth * postPercent;
+
+    // Pre (rojo)
+    drawList->AddRectFilled(
+        ImVec2(pos.x, pos.y),
+        ImVec2(pos.x + preW, pos.y + height),
+        IM_COL32(255, 50, 50, 255)
+    );
+
+    // Update (verde)
+    drawList->AddRectFilled(
+        ImVec2(pos.x + preW, pos.y),
+        ImVec2(pos.x + preW + updateW, pos.y + height),
+        IM_COL32(50, 255, 50, 255)
+    );
+
+    // Post (azul)
+    drawList->AddRectFilled(
+        ImVec2(pos.x + preW + updateW, pos.y),
+        ImVec2(pos.x + preW + updateW + postW, pos.y + height),
+        IM_COL32(50, 120, 255, 255)
+    );
+
+    // Reservar espacio para que ImGui avance
+    ImGui::Dummy(ImVec2(fullWidth, height));
+}
+
+void Profiler::DrawComponentsTable(float cellHeight)
+{
+    double totalTime = measureFrameTime.diffTime;
+
+    if (ImGui::BeginTable("ComponentTimings", 9,
         ImGuiTableFlags_Borders |
         ImGuiTableFlags_RowBg |
-        ImGuiTableFlags_Resizable |
-        ImGuiTableFlags_Sortable)) {
+        ImGuiTableFlags_Resizable
+    )) {
 
         // Configurar columnas
         ImGui::TableSetupColumn("Component", ImGuiTableColumnFlags_WidthFixed, 150.0f);
-        ImGui::TableSetupColumn("Pre (ms)", ImGuiTableColumnFlags_WidthFixed, 80.0f);
-        ImGui::TableSetupColumn("Update (ms)", ImGuiTableColumnFlags_WidthFixed, 80.0f);
-        ImGui::TableSetupColumn("Post (ms)", ImGuiTableColumnFlags_WidthFixed, 80.0f);
-        ImGui::TableSetupColumn("Total (ms)", ImGuiTableColumnFlags_WidthFixed, 80.0f);
-        ImGui::TableSetupColumn("%", ImGuiTableColumnFlags_WidthFixed, 60.0f);
-        ImGui::TableSetupColumn("Bar", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Pre", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+        ImGui::TableSetupColumn("Update", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+        ImGui::TableSetupColumn("Post", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+        ImGui::TableSetupColumn("Total", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+        ImGui::TableSetupColumn("% (ms)", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+        ImGui::TableSetupColumn("Frame % time", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Breakdown", ImGuiTableColumnFlags_WidthFixed, 150.0f);
+        ImGui::TableSetupColumn("Pre/Update/Post", ImGuiTableColumnFlags_WidthFixed, 150.0f);
         ImGui::TableHeadersRow();
 
+        const float ROW_HEIGHT = cellHeight;
+
         for (auto c : ComponentsManager::get()->Components()) {
-            auto measurePre = componentMeasures[c->getLabel() + "_pre"];
-            auto measureUpdate = componentMeasures[c->getLabel() + "_update"];
-            auto measurePost = componentMeasures[c->getLabel() + "_post"];
+            auto measurePre = componentMeasures[c->getLabel() + ProfilerConstants::SUFFIX_PRE];
+            auto measureUpdate = componentMeasures[c->getLabel() + + ProfilerConstants::SUFFIX_UPDATE];
+            auto measurePost = componentMeasures[c->getLabel() + + ProfilerConstants::SUFFIX_POST];
 
             // Calcular tiempo total del componente
-            double componentTotal = measurePre.diffTime + measureUpdate.diffTime + measurePost.diffTime;
-            double percentage = totalTime > 0 ? (componentTotal / totalTime) * 100.0 : 0.0;
+            double measureTotal = measurePre.diffTime + measureUpdate.diffTime + measurePost.diffTime;
+            double percentage = totalTime > 0 ? (measureTotal / totalTime) * 100.0 : 0.0;
 
             // Determinar color según porcentaje
             ImVec4 color;
@@ -107,82 +148,71 @@ void Profiler::DrawComponentsTable()
                 color = ImVec4(0.2f, 1.0f, 0.2f, 1.0f);  // Verde
             }
 
-            ImGui::TableNextRow();
+            ImGui::TableNextRow(ImGuiTableRowFlags_None, ROW_HEIGHT);
+
+            float textHeight = ImGui::GetTextLineHeight();
+            float cellHeight, offsetY;
 
             // Columna: Nombre del componente
             ImGui::TableSetColumnIndex(0);
+            cellHeight = ROW_HEIGHT; // Usar la altura fija en lugar de GetContentRegionAvail()
+            offsetY = (cellHeight - textHeight) * 0.5f;
+            if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
             ImGui::TextColored(color, "%s", c->getLabel().c_str());
 
             // --- PRE (Rojo) ---
             ImGui::TableSetColumnIndex(1);
-            ImGui::TextColored(ImVec4(1.0f, 0.2f, 0.2f, 1.0f), "%.6f", measurePre.diffTime * 1000.0f);
+            cellHeight = ROW_HEIGHT;
+            offsetY = (cellHeight - textHeight) * 0.5f;
+            if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
+            ImGui::TextColored(ImVec4(1.0f, 0.2f, 0.2f, 1.0f), "%.4f", measurePre.diffTime * 1000.0f);
 
             // --- UPDATE (Verde) ---
             ImGui::TableSetColumnIndex(2);
-            ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "%.6f", measureUpdate.diffTime * 1000.0f);
+            cellHeight = ROW_HEIGHT;
+            offsetY = (cellHeight - textHeight) * 0.5f;
+            if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
+            ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "%.4f", measureUpdate.diffTime * 1000.0f);
 
             // --- POST (Azul) ---
             ImGui::TableSetColumnIndex(3);
-            ImGui::TextColored(ImVec4(0.2f, 0.5f, 1.0f, 1.0f), "%.6f", measurePost.diffTime * 1000.0f);
+            cellHeight = ROW_HEIGHT;
+            offsetY = (cellHeight - textHeight) * 0.5f;
+            if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
+            ImGui::TextColored(ImVec4(0.2f, 0.5f, 1.0f, 1.0f), "%.4f", measurePost.diffTime * 1000.0f);
 
             // Columna: Total (ms)
             ImGui::TableSetColumnIndex(4);
-            ImGui::Text("%.6f", componentTotal * 1000.0f);
+            cellHeight = ROW_HEIGHT;
+            offsetY = (cellHeight - textHeight) * 0.5f;
+            if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
+            ImGui::Text("%.4f", measureTotal * 1000.0f);
 
             // Columna: Porcentaje
             ImGui::TableSetColumnIndex(5);
+            cellHeight = ROW_HEIGHT;
+            offsetY = (cellHeight - textHeight) * 0.5f;
+            if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
             ImGui::Text("%.2f%%", percentage);
 
             // Columna: Barra de progreso
             ImGui::TableSetColumnIndex(6);
+            cellHeight = ROW_HEIGHT;
+            float progressHeight = 30.0f; // La altura que pusiste en ProgressBar
+            offsetY = (cellHeight - progressHeight) * 0.5f;
+            if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
             ImGui::PushStyleColor(ImGuiCol_PlotHistogram, color);
-            ImGui::ProgressBar(percentage / 100.0f, ImVec2(-1, 0));
+            ImGui::ProgressBar(percentage / 100.0f, ImVec2(-1, progressHeight));
             ImGui::PopStyleColor();
 
-            // -------------------------------------------------------------
-            // COLUMNA BREAKDOWN — Barra apilada en un solo rectángulo
-            // -------------------------------------------------------------
+            // breakdown
             ImGui::TableSetColumnIndex(7);
+            DrawBreakDownComponent(measurePre, measureUpdate, measurePost, measureTotal, ROW_HEIGHT);
 
-            float prePercent    = componentTotal > 0 ? (measurePre.diffTime    / componentTotal) : 0.0f;
-            float updatePercent = componentTotal > 0 ? (measureUpdate.diffTime / componentTotal) : 0.0f;
-            float postPercent   = componentTotal > 0 ? (measurePost.diffTime   / componentTotal) : 0.0f;
-
-            ImVec2 pos = ImGui::GetCursorScreenPos();
-            float fullWidth = ImGui::GetColumnWidth();
-            float height = 12.0f;
-
-            ImDrawList* drawList = ImGui::GetWindowDrawList();
-
-            float preW    = fullWidth * prePercent;
-            float updateW = fullWidth * updatePercent;
-            float postW   = fullWidth * postPercent;
-
-            // Pre (rojo)
-            drawList->AddRectFilled(
-                ImVec2(pos.x, pos.y),
-                ImVec2(pos.x + preW, pos.y + height),
-                IM_COL32(255, 50, 50, 255)
-            );
-
-            // Update (verde)
-            drawList->AddRectFilled(
-                ImVec2(pos.x + preW, pos.y),
-                ImVec2(pos.x + preW + updateW, pos.y + height),
-                IM_COL32(50, 255, 50, 255)
-            );
-
-            // Post (azul)
-            drawList->AddRectFilled(
-                ImVec2(pos.x + preW + updateW, pos.y),
-                ImVec2(pos.x + preW + updateW + postW, pos.y + height),
-                IM_COL32(50, 120, 255, 255)
-            );
-
-            // Reservar espacio para que ImGui avance
-            ImGui::Dummy(ImVec2(fullWidth, height));
+            // plots
+            ImGui::TableSetColumnIndex(8);
+            DrawPlotComponent(c, ROW_HEIGHT);
         }
-
         ImGui::EndTable();
     }
 }
@@ -215,48 +245,95 @@ void Profiler::DrawImagesTable() const
     }
 }
 
-void Profiler::DrawPlot()
+void Profiler::DrawPlotComponent(Component *c, float height)
+{
+    // Acceso directo a las medidas del historial
+    auto& measurePre    = componentMeasures[c->getLabel() + ProfilerConstants::SUFFIX_PRE];
+    auto& measureUpdate = componentMeasures[c->getLabel() + ProfilerConstants::SUFFIX_UPDATE];
+    auto& measurePost   = componentMeasures[c->getLabel() + ProfilerConstants::SUFFIX_POST];
+
+    // Actualizar historiales
+    UpdateHistory(measurePre);
+    UpdateHistory(measureUpdate);
+    UpdateHistory(measurePost);
+
+    float sizeH = height;;
+    if (ImGui::BeginTable("ComponentPlots", 3, ImGuiTableFlags_SizingStretchSame )) {
+        ImGui::TableNextRow();
+        // --------------------------------------------
+        // Columna 0: Plot PRE (rojo)
+        // --------------------------------------------
+        ImGui::TableSetColumnIndex(0);
+        ImGui::PushStyleColor(ImGuiCol_PlotLines, ImVec4(1.0f, 0.2f, 0.2f, 1.0f));
+        ImGui::PlotLines("",
+                         measurePre.frameTimeHistory.data(),
+                         measurePre.frameTimeHistory.size(),
+                         0,
+                         nullptr,
+                         0.0f,
+                         5.0f,
+                         ImVec2(-1, sizeH));
+        ImGui::PopStyleColor();
+
+        // --------------------------------------------
+        // Columna 2: Plot UPDATE (verde)
+        // --------------------------------------------
+        ImGui::TableSetColumnIndex(1);
+        ImGui::PushStyleColor(ImGuiCol_PlotLines, ImVec4(0.2f, 1.0f, 0.2f, 1.0f));
+        ImGui::PlotLines("",
+                         measureUpdate.frameTimeHistory.data(),
+                         measureUpdate.frameTimeHistory.size(),
+                         0,
+                         nullptr,
+                         0.0f,
+                         5.0f,
+                         ImVec2(-1, sizeH));
+        ImGui::PopStyleColor();
+
+        // --------------------------------------------
+        // Columna 3: Plot POST (azul)
+        // --------------------------------------------
+        ImGui::TableSetColumnIndex(2);
+        ImGui::PushStyleColor(ImGuiCol_PlotLines, ImVec4(0.2f, 0.5f, 1.0f, 1.0f));
+        ImGui::PlotLines("",
+                         measurePost.frameTimeHistory.data(),
+                         measurePost.frameTimeHistory.size(),
+                         0,
+                         nullptr,
+                         0.0f,
+                         5.0f,
+                         ImVec2(-1, sizeH));
+        ImGui::PopStyleColor();
+    }
+    ImGui::EndTable();
+}
+
+void Profiler::DrawPlotFrameTime(Measure &measure)
 {
     // Gráfica de tiempos del frame
     ImGui::Text("Frame Time: %.3f ms (%.1f FPS)",
-                frameTime.diffTime * 1000.0f,
-                1.0f / frameTime.diffTime);
-    UpdateHistory();
+                measure.diffTime * 1000.0f,
+                1.0f / measure.diffTime
+    );
+
+    UpdateHistory(measure);
     ImGui::PlotLines("Frame Time",
-                     frameTimeHistory.data(),
-                     frameTimeHistory.size(),
+                     measure.frameTimeHistory.data(),
+                     measure.frameTimeHistory.size(),
                      0,
                      nullptr,
                      0.0f,
                      16.67f,  // 60fps = 16.67ms
-                     ImVec2(0, 80));
-
-    // Línea de referencia para 60fps
-    ImGui::SameLine();
-    ImGui::TextColored(ImVec4(1,1,0,1), "Target: 16.67ms");
+                     ImVec2(-1, 40));
 }
 
 void Profiler::DrawPropertiesGUI()
 {
-    ImGui::Text("Measures amount: %d", (int) componentMeasures.size());
-
+    DrawPlotFrameTime(measureFrameTime);
     ImGui::Separator();
-    ImGui::Text("Component Performance:");
-
-    if (ImGui::CollapsingHeader("Component Breakdown")) {
-        DrawComponentsTable();
-    }
+    DrawComponentsTable(30.0f);
     ImGui::Separator();
-    if (ImGui::CollapsingHeader("Component FlameGraph")) {
-        DrawFlameGraph();
-    }
-    ImGui::Separator();
-    if (ImGui::CollapsingHeader("Plot Components")) {
-        DrawPlot();
-    }
-    if (ImGui::CollapsingHeader("Hierarchy")) {
-        DrawComponentsHierarchy();
-    }
+    DrawFlameGraph();
     ImGui::Separator();
     if (ImGui::CollapsingHeader("Images in memory")) {
         DrawImagesTable();
@@ -265,22 +342,22 @@ void Profiler::DrawPropertiesGUI()
 
 void Profiler::ResetMeasure(MeasuresMap &map, const std::string &label)
 {
-    componentMeasures[label].startTime = 0;
-    componentMeasures[label].endTime = 0;
-    componentMeasures[label].diffTime = 0;
+    map[label].startTime = 0;
+    map[label].endTime = 0;
+    map[label].diffTime = 0;
 }
 
 void Profiler::ResetTotalFrameTime()
 {
-    frameTime.startTime = ticks();
-    frameTime.endTime = 0;
-    frameTime.diffTime = 0;
+    measureFrameTime.startTime = Ticks();
+    measureFrameTime.endTime = 0;
+    measureFrameTime.diffTime = 0;
 }
 
 void Profiler::EndTotalFrameTime()
 {
-    frameTime.endTime = ticks();
-    frameTime.diffTime = frameTime.endTime - frameTime.startTime;
+    measureFrameTime.endTime = Ticks();
+    measureFrameTime.diffTime = measureFrameTime.endTime - measureFrameTime.startTime;
 }
 
 MeasuresMap& Profiler::getComponentMeasures()
@@ -290,14 +367,13 @@ MeasuresMap& Profiler::getComponentMeasures()
 
 void Profiler::StartMeasure(MeasuresMap &map, const std::string &name)
 {
-    map[name].startTime = ticks();
+    map[name].startTime = Ticks();
 }
 
 void Profiler::EndMeasure(MeasuresMap &map, const std::string &name)
 {
-    map[name].endTime = ticks();
+    map[name].endTime = Ticks();
     map[name].diffTime = map[name].endTime - map[name].startTime;
-    map[name].UpdateAverage();
 }
 
 int Profiler::getMemoryImageUsage() const
@@ -325,16 +401,14 @@ bool Profiler::isEnabled() const
     return enable;
 }
 
-double Profiler::ticks()
+double Profiler::Ticks()
 {
     return (double)SDL_GetPerformanceCounter() / (double)SDL_GetPerformanceFrequency();
 }
 
 void Profiler::DrawFlameGraph()
 {
-    ImGui::Text("Component Breakdown:");
-
-    double totalTime = frameTime.diffTime;
+    double totalTime = measureFrameTime.diffTime;
     float barHeight = 30.0f;
     ImVec2 cursor = ImGui::GetCursorScreenPos();
     ImDrawList* drawList = ImGui::GetWindowDrawList();
@@ -380,11 +454,11 @@ void Profiler::DrawFlameGraph()
     ImGui::Dummy(ImVec2(barWidth, barHeight + 5));
 }
 
-void Profiler::UpdateHistory()
+void Profiler::UpdateHistory(Measure &measure)
 {
-    frameTimeHistory.push_back(frameTime.diffTime * 1000.0f);  // En ms
-    if (frameTimeHistory.size() > MAX_HISTORY) {
-        frameTimeHistory.erase(frameTimeHistory.begin());
+    measure.frameTimeHistory.push_back(measure.diffTime * 1000.0f);  // En ms
+    if (measure.frameTimeHistory.size() > measure.MAX_HISTORY) {
+        measure.frameTimeHistory.erase(measure.frameTimeHistory.begin());
     }
 }
 
@@ -392,12 +466,12 @@ void Profiler::DrawComponentsHierarchy()
 {
     ImGui::Text("Measures amount: %d", componentMeasures.size());
     ImGui::Separator();
-    ImGui::Text("Total: %.3f ms", frameTime.diffTime * 1000.0f);
+    ImGui::Text("Total: %.3f ms", measureFrameTime.diffTime * 1000.0f);
 
     for (const auto& [name, measure] : componentMeasures) {
         if (ImGui::TreeNode(name.c_str())) {
             double ms = measure.diffTime * 1000.0f;
-            double percentage = (measure.diffTime / frameTime.diffTime) * 100.0;
+            double percentage = (measure.diffTime / measureFrameTime.diffTime) * 100.0;
 
             ImGui::Text("Time: %.3f ms", ms);
             ImGui::Text("Percentage: %.2f%%", percentage);

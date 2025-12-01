@@ -54,7 +54,7 @@ public:
     [[nodiscard]] float getDeltaTime() const;
     [[nodiscard]] float getDeltaTimeMicro() const;
     [[nodiscard]] ComponentsManager *getComponentsManager() const;
-    [[nodiscard]] GUIManager *getManagerGui() const;
+    [[nodiscard]] GUIManager *GUI() const;
     [[nodiscard]] Object3D *getSceneObjectByLabel(const std::string &label) const;
 };
 
