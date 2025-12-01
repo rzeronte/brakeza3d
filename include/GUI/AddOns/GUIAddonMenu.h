@@ -28,10 +28,13 @@
 #include "../../Serializers/Image3DAnimationSerializer.h"
 #include "../../Serializers/Image3DAnimation8DirectionsSerializer.h"
 
+
 struct GUIAddonMenu
 {
-
-    explicit GUIAddonMenu()
+    std::vector<GUITypes::GUIWindowsStatus> &windowStatus;
+    explicit GUIAddonMenu(std::vector<GUITypes::GUIWindowsStatus> &windowStatus)
+    :
+        windowStatus(windowStatus)
     {
     }
 
@@ -405,13 +408,13 @@ struct GUIAddonMenu
                     ComponentsManager::get()->getComponentWindow()->toggleFullScreen();
                 }
                 ImGui::Separator();
-                ImGui::Checkbox("Light Depth Maps Window", &showLightDepthMapsWindow);
-
-                ImGui::Separator();
                 ImGui::Checkbox("Enable/disable UI (F4)", &setup->ENABLE_IMGUI);
+                ImGui::Separator();
+                for (auto &w : windowStatus) {
+                    ImGui::Checkbox(w.label.c_str(), &w.isOpen);
+                }
                 ImGui::EndMenu();
             }
-
             ImGui::EndMainMenuBar();
         }
     }

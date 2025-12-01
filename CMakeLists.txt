@@ -120,7 +120,7 @@ add_executable(Brakeza3D
 
         # GUI
         src/GUI/GUIManager.cpp                              include/GUI/GUIManager.h
-        include/GUI/GUI.h
+        include/GUI/GUITypes.h
         include/GUI/AddOns/GUIAddonMenu.h
         include/GUI/AddOns/GUIAddonObject3DProperties.h
         include/GUI/AddOns/GUIAddonObjects3D.h

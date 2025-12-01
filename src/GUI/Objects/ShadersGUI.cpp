@@ -14,8 +14,8 @@ void ShadersGUI::DrawEditShaderWindow(GUIManager *gui)
 {
     if (!gui->showEditShaderWindow) return;
 
-    GUIManager::SetNextWindowSize(GUIConstants::DEFAULT_WINDOW_WIDTH, GUIConstants::DEFAULT_WINDOW_HEIGHT);
-    ImGui::SetNextWindowBgAlpha(GUIConstants::WINDOW_ALPHA);
+    GUIManager::SetNextWindowSize(GUITypes::GUIConstants::DEFAULT_WINDOW_WIDTH, GUITypes::GUIConstants::DEFAULT_WINDOW_HEIGHT);
+    ImGui::SetNextWindowBgAlpha(GUITypes::GUIConstants::WINDOW_ALPHA);
 
     if (ImGui::Begin("Shader edition", &gui->showEditShaderWindow, ImGuiWindowFlags_NoDocking)) {
         DrawShaderVariables(gui);

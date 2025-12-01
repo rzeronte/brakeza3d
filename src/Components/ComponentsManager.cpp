@@ -14,15 +14,15 @@ ComponentsManager *ComponentsManager::get()
 
 void ComponentsManager::RegisterComponent(Component *component, const std::string& label)
 {
-    Logging::Message("[ComponentsManager] Register Profile measure for: %s", component->getLabel().c_str());
+    Logging::Message("[ComponentsManager] Register Profile measure for: %s", label.c_str());
 
     component->setId((int) components.size());
     component->setLabel(label);
 
     components.push_back(component);
-    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), component->getLabel() + "_pre");
-    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(),component->getLabel() + "_update");
-    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), component->getLabel() + "_post");
+    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), component->getLabel() + ProfilerConstants::SUFFIX_PRE);
+    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(),component->getLabel() + ProfilerConstants::SUFFIX_UPDATE);
+    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), component->getLabel() + ProfilerConstants::SUFFIX_POST);
 }
 
 ComponentsManager::~ComponentsManager()

@@ -94,7 +94,7 @@ void ComponentRender::onUpdate()
         DrawFPS();
     }
 
-    if (Brakeza::get()->getManagerGui()->isShowLightsDepthMapsViewerWindow() ) {
+    if (Brakeza::get()->GUI()->isShowLightsDepthMapsViewerWindow() ) {
         shaderShadowPassDebugLight->createFramebuffer();
         shaderShadowPassDebugLight->createArrayTextures(numSpotLights);
         shaderShadowPassDebugLight->updateDebugTextures(numSpotLights);
@@ -182,7 +182,7 @@ void ComponentRender::updateSelectedObject3D()
         selectedObject = Brakeza::get()->getSceneObjectById(id);
         if (selectedObject != nullptr) {
             Logging::Message("Selected object by click(%d, %d): %s", x, y, selectedObject->getLabel().c_str());
-            Brakeza::get()->getManagerGui()->setSelectedObject(selectedObject);
+            Brakeza::get()->GUI()->setSelectedObject(selectedObject);
         }
     }
 }

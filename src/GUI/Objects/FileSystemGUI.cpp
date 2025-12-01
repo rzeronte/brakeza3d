@@ -214,5 +214,5 @@ void FileSystemGUI::LoadIcons(TexturePackage &icon)
 
 ImTextureID FileSystemGUI::IconTag(const char* iconTag)
 {
-    return TexturePackage::getOGLTextureID(Brakeza::get()->getManagerGui()->getImGuiTextures(), iconTag);
+    return TexturePackage::getOGLTextureID(Brakeza::get()->GUI()->getImGuiTextures(), iconTag);
 }

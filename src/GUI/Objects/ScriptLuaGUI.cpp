@@ -190,7 +190,7 @@ void ScriptLuaGUI::DrawEditScriptWindow(GUIManager *gui)
     if (!gui->showEditScriptWindow) return;
 
     gui->SetNextWindowSize(600, 600);
-    ImGui::SetNextWindowBgAlpha(GUIConstants::WINDOW_ALPHA);
+    ImGui::SetNextWindowBgAlpha(GUITypes::GUIConstants::WINDOW_ALPHA);
 
     if (ImGui::Begin("Script edition", &gui->showEditScriptWindow, ImGuiWindowFlags_NoDocking)) {
         drawScriptVariables(gui);

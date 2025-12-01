@@ -11,33 +11,22 @@
 
 #include "../include/Components/Component.h"
 
-struct ProfilerMeasure {
+struct Measure {
     double startTime = 0.0f;
     double endTime = 0.0f;
     double diffTime = 0.0f;
 
-    std::vector<double> history;
-    double averageTime = 0.0;
-    static const int MAX_SAMPLES = 60;  // Promedio de 60 frames (1 segundo a 60fps)
-
-    void UpdateAverage() {
-        history.push_back(diffTime);
-
-        // Mantener solo los últimos MAX_SAMPLES
-        if (history.size() > MAX_SAMPLES) {
-            history.erase(history.begin());
-        }
-
-        // Calcular promedio
-        double sum = 0.0;
-        for (double time : history) {
-            sum += time;
-        }
-        averageTime = history.empty() ? 0.0 : sum / history.size();
-    }
+    std::vector<float> frameTimeHistory;  // Historial de tiempos
+    const int MAX_HISTORY = 120;  // 2 segundos a 60fps
 };
 
-using MeasuresMap = std::unordered_map<std::string, ProfilerMeasure>;
+namespace ProfilerConstants {
+    constexpr const char* SUFFIX_PRE = "_pre";
+    constexpr const char* SUFFIX_UPDATE = "_update";
+    constexpr const char* SUFFIX_POST = "_post";
+}
+
+using MeasuresMap = std::unordered_map<std::string, Measure>;
 
 class Profiler
 {
@@ -52,43 +41,36 @@ class Profiler
     int memoryOfGUIImages = 0;
     bool enable = false;
 
-    ProfilerMeasure frameTime;
+    Measure measureFrameTime;
 
-    std::vector<float> frameTimeHistory;  // Historial de tiempos
-    const int MAX_HISTORY = 120;  // 2 segundos a 60fps
 public:
     Profiler() = default;
 
-    static Profiler *get();
     float getMemoryImageUsageKB() const;
-
     void AddImage(Image *image);
     void RemoveImage(const Image *image);
-    void DrawComponentsTable();
+    void DrawComponentsTable(float cellHeight);
     void DrawImagesTable() const;
-
-    void DrawPlot();
-
+    void DrawPlotComponent(Component *c, float height);
+    void DrawPlotFrameTime(Measure &measure);
     void CaptureGUIMemoryUsage();
     void DrawPropertiesGUI();
-    void ResetMeasure(MeasuresMap &map, const std::string & label);
     void ResetTotalFrameTime();
     void EndTotalFrameTime();
     void setEnabled(bool v);
-    [[nodiscard]] bool isEnabled() const;
-    static void StartMeasure(MeasuresMap &map, const std::string& name);
-    static void EndMeasure(MeasuresMap &map, const std::string& name);
-    static double ticks();
-
     void DrawFlameGraph();
-
+    void UpdateHistory(Measure &measure);
+    void DrawComponentsHierarchy();
+    [[nodiscard]] bool isEnabled() const;
     [[nodiscard]] MeasuresMap& getComponentMeasures();
     [[nodiscard]] int getNumberOfImages() const;
     [[nodiscard]] int getMemoryImageUsage() const;
-
-    void UpdateHistory();
-
-    void DrawComponentsHierarchy();
+    static void ResetMeasure(MeasuresMap &map, const std::string & label);
+    static void StartMeasure(MeasuresMap &map, const std::string& name);
+    static void EndMeasure(MeasuresMap &map, const std::string& name);
+    static void DrawBreakDownComponent(Measure &pre, Measure &update, Measure &post, double total, float height);
+    static double Ticks();
+    static Profiler *get();
 };
 
 
