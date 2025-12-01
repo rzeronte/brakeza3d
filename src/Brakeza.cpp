@@ -59,13 +59,14 @@ void Brakeza::start(int argc, char *argv[])
 
 void Brakeza::WelcomeMessage()
 {
-    Logging::Message("-----------------------------------------------------------");
+    Logging::Message("############################################################");
     Logging::Message("Brakeza3D - Open source game toolkit for old school lovers");
     Logging::Message(BrakezaSetup::get()->ENGINE_WEBSITE.c_str());
     Logging::Message(BrakezaSetup::get()->ENGINE_SOURCE_WEBSITE.c_str());
     Logging::Message("Let's start!");
 
     Logging::Message("%s", BrakezaSetup::get()->ENGINE_TITLE.c_str());
+    Logging::Message("############################################################");
 }
 
 void Brakeza::CaptureInputEvents(SDL_Event &e) const {
@@ -86,16 +87,16 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
 
     auto window = componentsManager->getComponentWindow();
     auto render = componentsManager->getComponentRender();
-    auto scripting = componentsManager->getComponentScripting();
-    auto collisions = componentsManager->getComponentCollisions();
 
-    scripting->InitLUATypes();
-    collisions->InitBulletSystem();
-    onStartComponents();
+    componentsManager->getComponentScripting()->InitLUATypes();
+    componentsManager->getComponentCollisions()->InitBulletSystem();
+
+    OnStartComponents();
 
     WelcomeMessage();
     BrakezaSetup::get()->ENABLE_LOGGING_STD = false;
-    handleAutoStartProject(autostart, project);
+
+    HandleAutoStartProject(autostart, project);
 
     // Profiler tags
     Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobal");
@@ -104,26 +105,19 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
     Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobalFramebuffer");
 
     while (!BrakezaSetup::get()->EXIT) {
-        // Reset timers
-        Profiler::get()->ResetTotalFrameTime();
-        ControlFrameRate();
-        UpdateTimer();
-
-        PreUpdateComponents();
-
-        render->RunShadersOpenGLPreUpdate();
-
-        CaptureInputEvents(event);
-        window->ClearOGLFrameBuffers();
-
-        OnUpdateComponents();
-
-        render->RenderLayersToGlobalFramebuffer();
-        render->RunShadersOpenGLPostUpdate();
-        PostUpdateComponents();
-
-        Profiler::get()->EndTotalFrameTime();
-        window->RenderLayersToMain();
+        Profiler::get()->ResetTotalFrameTime();     // Reset profiler measures
+        ControlFrameRate();                         // Control framerate based on SDL_Delay
+        UpdateTimer();                              // Refresh main timer.
+        PreUpdateComponents();                      // PreUpdate for componentes
+        render->RunSceneShadersPreUpdate();         // Pre-pass running for shaders
+        CaptureInputEvents(event);               // Capture keyboard/mouse status
+        window->ClearOGLFrameBuffers();             // Clean video framebuffers
+        OnUpdateComponents();                       // OnUpdate for componentes
+        render->RenderLayersToGlobalFramebuffer();  // Buffers compositing
+        render->RunSceneShadersPostUpdate();        // Post-pass running for shaders
+        PostUpdateComponents();                     // PostUpdate for componentes
+        Profiler::get()->EndTotalFrameTime();       // End frame time measure
+        window->RenderLayersToMain();               // Flip to screen
     }
 
     onEndComponents();
@@ -144,7 +138,6 @@ void Brakeza::ControlFrameRate() const
     if (!BrakezaSetup::get()->LIMIT_FRAMERATE) return;
 
     const float frameDelay = 1000.0f / static_cast<float>(BrakezaSetup::get()->FRAMERATE);
-
     if (deltaTime < frameDelay) {
         SDL_Delay(floor(frameDelay - deltaTime));
     }
@@ -158,7 +151,6 @@ std::vector<Object3D *> &Brakeza::getSceneObjects()
 void Brakeza::addObject3D(Object3D *obj, const std::string &label)
 {
     Logging::Message("[Brakeza3D addObject3D] Adding Object3D to scene: %s", label.c_str());
-
     obj->setLabel(label);
     sceneObjects.push_back(obj);
 }
@@ -186,11 +178,10 @@ float Brakeza::getDeltaTimeMicro() const
     return this->deltaTime;
 }
 
-void Brakeza::onStartComponents() const
+void Brakeza::OnStartComponents() const
 {
-    for (auto c : componentsManager->Components()) {
+    for (auto c : componentsManager->Components())
         c->onStart();
-    }
 }
 
 void Brakeza::PreUpdateComponents() const
@@ -222,13 +213,11 @@ void Brakeza::PostUpdateComponents() const
 
 void Brakeza::onEndComponents() const
 {
-    for (const auto o : sceneObjects) {
+    for (const auto o : sceneObjects)
         delete o;
-    }
 
-    for (Component*& component : componentsManager->Components()) {
+    for (Component*& component : componentsManager->Components())
         component->onEnd();
-    }
 
     delete componentsManager;
 
@@ -237,7 +226,7 @@ void Brakeza::onEndComponents() const
     exit(0);
 }
 
-void Brakeza::handleAutoStartProject(bool autostart, const std::string &project) const
+void Brakeza::HandleAutoStartProject(bool autostart, const std::string &project) const
 {
     auto render = componentsManager->getComponentRender();
 
@@ -267,9 +256,8 @@ Brakeza::~Brakeza()
 {
     ImGui::DestroyContext();
 
-    for (const auto o : sceneObjects) {
+    for (const auto o : sceneObjects)
         delete o;
-    }
 }
 
 int Brakeza::getNextObjectID() const

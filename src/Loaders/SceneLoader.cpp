@@ -31,7 +31,7 @@ SceneLoader::SceneLoader()
 
 void SceneLoader::LoadScene(const std::string& filename)
 {
-    Logging::Message("Loading '%s' scene", filename.c_str());
+    Logging::Message("[SceneLoader] Loading scene: '%s'", filename.c_str());
 
     size_t file_size;
     auto contentFile = Tools::ReadFile(filename, file_size);
@@ -64,13 +64,9 @@ void SceneLoader::LoadScene(const std::string& filename)
     auto cameraPositionJSON = cJSON_GetObjectItemCaseSensitive(cameraJSON, "position");
     auto cameraRotationJSON = cJSON_GetObjectItemCaseSensitive(cameraJSON, "rotation");
 
-    camera->setPosition(ToolsJSON::getVertex3DByJSON(cameraPositionJSON));
-
-    Logging::Message("Camera position (%f, %f, %f)",
-        ToolsJSON::getVertex3DByJSON(cameraPositionJSON).x,
-        ToolsJSON::getVertex3DByJSON(cameraPositionJSON).y,
-        ToolsJSON::getVertex3DByJSON(cameraPositionJSON).z
-    );
+    auto cameraPosition = ToolsJSON::getVertex3DByJSON(cameraPositionJSON);
+    camera->setPosition(cameraPosition);
+    Logging::Message("[SceneLoader] Camera position set to (%f, %f, %f)", cameraPosition.x, cameraPosition.y, cameraPosition.z );
 
     auto pitch = static_cast<float>(cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "x")->valuedouble);
     auto yaw = static_cast<float>(cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "y")->valuedouble);
@@ -81,7 +77,7 @@ void SceneLoader::LoadScene(const std::string& filename)
     camera->getRoll() = roll;
     camera->setRotation(M3::getMatrixRotationForEulerAngles(pitch, yaw, roll));
 
-    Logging::Message("Camera rotation (%f, %f, %f)", camera->getPitch(), camera->getYaw(), camera->getRoll());
+    Logging::Message("[SceneLoader] Camera rotation set to (%f, %f, %f)", camera->getPitch(), camera->getYaw(), camera->getRoll());
 
     cJSON *currentObject;
     cJSON_ArrayForEach(currentObject, cJSON_GetObjectItemCaseSensitive(contentJSON, "objects")) {

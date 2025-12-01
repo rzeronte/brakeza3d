@@ -125,10 +125,10 @@ public:
     void loadShaderIntoScene(const std::string &folder, const std::string &name);
     void addShaderToScene(ShaderOGLCustom *shader);
     void setSceneShadersEnabled(bool value);
-    void RunShadersOpenGLPostUpdate() const;
+    void RunSceneShadersPostUpdate() const;
     void removeSceneShaderByIndex(int index);
     void removeSceneShader(const ShaderOGLCustom *);
-    void RunShadersOpenGLPreUpdate() const;
+    void RunSceneShadersPreUpdate() const;
     void setGlobalIlluminationDirection(const Vertex3D &d) const;
     void setGlobalIlluminationAmbient(const Vertex3D &a) const;
     void setGlobalIlluminationDiffuse(const Vertex3D &d) const;

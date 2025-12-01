@@ -103,87 +103,69 @@ void GUIAddonMenu::DrawMainMenuAddObject()
     if (ImGui::MenuItem("Object3D (Empty)")) {
         Object3DSerializer().LoadFileIntoScene("");
     }
-    ImGui::Separator();
+
+    ImGui::SeparatorText("2D Objects");
+    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_2D), ImVec2(16, 16));
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("Image2D")) {
+        DrawImage2DMenuItem(setup->IMAGES_FOLDER);
+        ImGui::EndMenu();
+    }
+    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_2D_ANIMATION), ImVec2(16, 16));
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("Image2D Animation")) {
+        DrawImage2DAnimationMenuItem(setup->SPRITES_FOLDER);
+        ImGui::EndMenu();
+    }
+
+    ImGui::SeparatorText("3D Objects");
+    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D), ImVec2(16, 16));
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("Image3D")) {
+        DrawImage3DMenuItem(setup->IMAGES_FOLDER);
+        ImGui::EndMenu();
+    }
+    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D_ANIMATION), ImVec2(16, 16));
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("Image3D Animation")) {
+        DrawBillboardAnimationMenuItem(setup->SPRITES_FOLDER);
+        ImGui::EndMenu();
+    }
+    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D_ANIMATION_8DIR), ImVec2(16, 16));
+    ImGui::SameLine();
+    if (ImGui::MenuItem("Image3D Animation 360")) {
+        Image3DAnimation8DirectionsSerializer().LoadFileIntoScene("");
+        ImGui::EndMenu();
+    }
+    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::MESH_3D), ImVec2(16, 16));
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("Mesh3D")) {
+        DrawMesh3DMenuItem(setup->MODELS_FOLDER);
+        ImGui::EndMenu();
+    }
+    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::MESH_3D_ANIMATION), ImVec2(16, 16));
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("Mesh3DAnimation")) {
+        DrawMesh3DAnimationMenuItem(setup->ANIMATIONS_FOLDER);
+        ImGui::EndMenu();
+    }
+
+    ImGui::SeparatorText("Lights");
+    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::LIGHT_POINT), ImVec2(16, 16));
+    ImGui::SameLine();
+    if (ImGui::MenuItem("PointLight")) {
+        LightPointSerializer().LoadFileIntoScene("");
+    }
+    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::LIGHT_SPOT), ImVec2(16, 16));
+    ImGui::SameLine();
+    if (ImGui::MenuItem("SpotLight")) {
+        LightSpotSerializer().LoadFileIntoScene("");
+    }
+    ImGui::SeparatorText("Emitters");
     ImGui::Image(FileSystemGUI::IconTag(IconsByObject::PARTICLE_EMITTER), ImVec2(16, 16));
     ImGui::SameLine();
     if (ImGui::MenuItem("ParticleEmitter")) {
         ParticleEmmitterSerializer().LoadFileIntoScene("");
-        ImGui::EndMenu();
-    }
-    ImGui::Separator();
-
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_2D), ImVec2(16, 16));
-    ImGui::SameLine();
-    if (ImGui::BeginMenu("2D Objects")) {
-        ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_2D), ImVec2(16, 16));
-        ImGui::SameLine();
-        if (ImGui::BeginMenu("Image2D")) {
-            DrawImage2DMenuItem(setup->IMAGES_FOLDER);
-            ImGui::EndMenu();
-        }
-        ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_2D_ANIMATION), ImVec2(16, 16));
-        ImGui::SameLine();
-        if (ImGui::BeginMenu("Image2D Animation")) {
-            DrawImage2DAnimationMenuItem(setup->SPRITES_FOLDER);
-            ImGui::EndMenu();
-        }
-        ImGui::EndMenu();
-    }
-    ImGui::Separator();
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::MESH_3D), ImVec2(16, 16));
-    ImGui::SameLine();
-    if (ImGui::BeginMenu("3D Objects")) {
-        ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D), ImVec2(16, 16));
-        ImGui::SameLine();
-        if (ImGui::BeginMenu("Image3D")) {
-            DrawImage3DMenuItem(setup->IMAGES_FOLDER);
-            ImGui::EndMenu();
-        }
-
-        ImGui::Separator();
-
-        ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D_ANIMATION), ImVec2(16, 16));
-        ImGui::SameLine();
-        if (ImGui::BeginMenu("Billboard Animation")) {
-            DrawBillboardAnimationMenuItem(setup->SPRITES_FOLDER);
-            ImGui::EndMenu();
-        }
-        ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D_ANIMATION_8DIR), ImVec2(16, 16));
-        ImGui::SameLine();
-        if (ImGui::MenuItem("Billboard 8-Directions")) {
-            Image3DAnimation8DirectionsSerializer().LoadFileIntoScene("");
-            ImGui::EndMenu();
-        }
-        ImGui::Separator();
-        ImGui::Image(FileSystemGUI::IconTag(IconsByObject::MESH_3D), ImVec2(16, 16));
-        ImGui::SameLine();
-        if (ImGui::BeginMenu("Mesh3D")) {
-            DrawMesh3DMenuItem(setup->MODELS_FOLDER);
-            ImGui::EndMenu();
-        }
-        ImGui::Separator();
-        ImGui::Image(FileSystemGUI::IconTag(IconsByObject::MESH_3D_ANIMATION), ImVec2(16, 16));
-        ImGui::SameLine();
-        if (ImGui::BeginMenu("Mesh3DAnimation")) {
-            DrawMesh3DAnimationMenuItem(setup->ANIMATIONS_FOLDER);
-            ImGui::EndMenu();
-        }
-        ImGui::EndMenu();
-    }
-    ImGui::Separator();
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::LIGHT_POINT), ImVec2(16, 16));
-    ImGui::SameLine();
-    if (ImGui::BeginMenu("Light Objects")) {
-        ImGui::Image(FileSystemGUI::IconTag(IconsByObject::LIGHT_POINT), ImVec2(16, 16));
-        ImGui::SameLine();
-        if (ImGui::MenuItem("PointLight")) {
-            LightPointSerializer().LoadFileIntoScene("");
-        }
-        ImGui::Image(FileSystemGUI::IconTag(IconsByObject::LIGHT_SPOT), ImVec2(16, 16));
-        ImGui::SameLine();
-        if (ImGui::MenuItem("SpotLight")) {
-            LightSpotSerializer().LoadFileIntoScene("");
-        }
         ImGui::EndMenu();
     }
 }
@@ -192,7 +174,7 @@ void GUIAddonMenu::DrawMainMenuVideo()
 {
     auto setup = BrakezaSetup::get();
 
-    const float range_far_plane_distance_sensibility = 1.0f;
+    ImGui::SeparatorText("Framerate");
     ImGui::MenuItem("V-Sync", nullptr, &setup->V_SYNC);
     if (ImGui::IsItemEdited()) {
         if (setup->V_SYNC) {
@@ -205,31 +187,25 @@ void GUIAddonMenu::DrawMainMenuVideo()
             SDL_RenderSetVSync(ComponentsManager::get()->getComponentWindow()->getRenderer(), 0);
         }
     }
-    ImGui::Separator();
     ImGui::MenuItem("Limit frame rate", nullptr,  &setup->LIMIT_FRAMERATE);
     if (setup->LIMIT_FRAMERATE) {
         const int range_framerate_sensibility = 1;
         ImGui::DragScalar("Limit frames to:", ImGuiDataType_S32, &setup->FRAMERATE, range_framerate_sensibility, &GUITypes::GUIConstants::DRAG_FRAMERATE_MIN, &GUITypes::GUIConstants::DRAG_FRAMERATE_MAX, "%d", 1.0f);
 
     }
-    ImGui::Separator();
-    ImGui::DragScalar("FOV", ImGuiDataType_Float, &setup->HORIZONTAL_FOV, 1, &GUITypes::GUIConstants::DRAG_FOV_MIN, &GUITypes::GUIConstants::DRAG_FOV_MAX, "%f", 1.0f);
-    ImGui::Separator();
-    ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &GUITypes::GUIConstants::DRAG_FAR_PLANE_MIN, &GUITypes::GUIConstants::DRAG_FAR_PLANE_MIN, "%f", 1.0f);
-    ImGui::Separator();
+    ImGui::SeparatorText("Render modes");
     ImGui::MenuItem("Vertex", nullptr, &setup->TRIANGLE_MODE_PIXELS);
     ImGui::MenuItem("WireFrame",nullptr,  &setup->TRIANGLE_MODE_WIREFRAME);
     ImGui::MenuItem("Solid", nullptr,  &setup->TRIANGLE_MODE_SHADING);
     ImGui::MenuItem("Picking Colors", nullptr, &setup->TRIANGLE_MODE_PICKING_COLORS);
     ImGui::MenuItem("Textures",nullptr, &setup->TRIANGLE_MODE_TEXTURIZED);
-    ImGui::Separator();
 
     const float focalMinValues = 0;
     const float focalMaxValues = 1;
     const float focalValueSens = 0.001;
 
+    ImGui::SeparatorText("Post-processing");
     ImGui::MenuItem("Enable DOF", nullptr, &BrakezaSetup::get()->ENABLE_DOF_BLUR);
-
     if (BrakezaSetup::get()->ENABLE_DOF_BLUR) {
         const float depthValueSens = 0.1;
         const float depthMinValues = 0;
@@ -244,10 +220,7 @@ void GUIAddonMenu::DrawMainMenuVideo()
         ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
     }
 
-    ImGui::Separator();
-
     ImGui::MenuItem("Enable FOG", nullptr, &BrakezaSetup::get()->ENABLE_FOG);
-
     if (BrakezaSetup::get()->ENABLE_FOG) {
         const float rangeFogSens = 0.1;
         const float rangeFogMin = 0.1;
@@ -264,7 +237,7 @@ void GUIAddonMenu::DrawMainMenuVideo()
             ComponentsManager::get()->getComponentRender()->getShaderOGLFOG()->fogColor = {fogVecColor.x, fogVecColor.y, fogVecColor.z};
         }
     }
-    ImGui::Separator();
+    ImGui::SeparatorText("Screen helpers");
     ImGui::MenuItem("Draw Object3D Axis", nullptr, &setup->RENDER_OBJECTS_AXIS);
     if (setup->RENDER_OBJECTS_AXIS) {
         const float sizeAxisMin = 0;
@@ -272,7 +245,6 @@ void GUIAddonMenu::DrawMainMenuVideo()
         const float sizeAxisSens = 0.01;
         ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &setup->OBJECT_AXIS_SIZE, sizeAxisSens, &sizeAxisMin, &sizeAxisMax, "%f", 1.0f);
     }
-    ImGui::Separator();
     ImGui::MenuItem("Draw Mesh3D AABB", nullptr, &setup->DRAW_MESH3D_AABB);
     ImGui::MenuItem("Draw Mesh3D Octree", nullptr, &setup->DRAW_MESH3D_OCTREE);
     ImGui::MenuItem("Draw Mesh3D Grid", nullptr, &setup->DRAW_MESH3D_GRID);
@@ -283,13 +255,8 @@ void GUIAddonMenu::DrawMainMenuVideo()
         ImGui::Separator();
         ImGui::MenuItem("Draw AStar Travel", nullptr, &setup->DRAW_MESH3D_GRID_ASTAR);
     }
-    ImGui::Separator();
     ImGui::MenuItem("Show FPS", nullptr, &setup->DRAW_FPS_RENDER);
-
-    ImGui::Separator();
     ImGui::MenuItem("Draw Bones", nullptr, &setup->DRAW_ANIMATION_BONES);
-    ImGui::Separator();
-    ImGui::MenuItem("Internal click selection", nullptr, &setup->MOUSE_CLICK_SELECT_OBJECT3D);
 }
 
 void GUIAddonMenu::DrawMainMenuColliders()
@@ -300,78 +267,84 @@ void GUIAddonMenu::DrawMainMenuColliders()
     int maxSubsteps = 10;
     int minFixedTime = 1;
     int maxFixedTime = 60;
-    ImGui::MenuItem("Enable physics", nullptr, &setup->ENABLE_BULLET_STEP_SIMULATION);
+
+    ImGui::MenuItem("Enable Collisions System", nullptr, &setup->ENABLE_BULLET_STEP_SIMULATION);
+    if (!setup->ENABLE_BULLET_STEP_SIMULATION) return;
     ImGui::Separator();
+
+    ImGui::MenuItem("Handle object collisions", nullptr, &setup->BULLET_CHECK_ALL_PAIRS);
+    ImGui::SeparatorText("Step simulation setup");
     ImGui::DragScalar("Max sub-steps", ImGuiDataType_S32, &setup->BULLET_MAX_SUBSTEPS, 1, &minSubsteps, &maxSubsteps, "%d", 1.0f);
     ImGui::DragScalar("Fixed time step (1/x)", ImGuiDataType_S32, &setup->BULLET_FIXED_TIME_STEPS, 1, &minFixedTime, &maxFixedTime, "%d", 1.0f);
-    ImGui::Separator();
+
+    float vec3f[3];
+    setup->gravity.toFloat(vec3f);
+    if (ImGui::DragFloat3("Gravity", vec3f, 0.01f, -1000.0f, 1000.0f)) {
+        setup->gravity.x = vec3f[0];
+        setup->gravity.y = vec3f[1];
+        setup->gravity.z = vec3f[2];
+        ComponentsManager::get()->getComponentCollisions()->setGravity(setup->gravity);
+    }
+
+    ImGui::SeparatorText("Screen helpers");
     if (ImGui::MenuItem("Draw debug mode", nullptr, &setup->BULLET_DEBUG_MODE)) {
         ComponentsManager::get()->getComponentCollisions()->setEnableDebugMode(setup->BULLET_DEBUG_MODE);
     }
-    if (setup->ENABLE_BULLET_STEP_SIMULATION) {
+    ImGui::MenuItem("Launch demo objects", nullptr, &setup->PROJECTILE_SIMPLE_MESH);
+
+    if (setup->PROJECTILE_SIMPLE_MESH) {
         const float range_sensibility = 0.75f;
         ImGui::Separator();
-        ImGui::MenuItem("Handle object collisions", nullptr, &setup->BULLET_CHECK_ALL_PAIRS);
-        ImGui::Separator();
-
-        float vec3f[3];
-        setup->gravity.toFloat(vec3f);
-        if (ImGui::DragFloat3("Gravity", vec3f, 0.01f, -1000.0f, 1000.0f)) {
-            setup->gravity.x = vec3f[0];
-            setup->gravity.y = vec3f[1];
-            setup->gravity.z = vec3f[2];
-            ComponentsManager::get()->getComponentCollisions()->setGravity(setup->gravity);
+        ImGui::DragScalar("Objects impulse", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_IMPULSE, range_sensibility, &GUITypes::GUIConstants::DRAG_UNIT_MIN, &GUITypes::GUIConstants::DRAG_UNIT_MAX, "%f", 1.0f);
+        ImGui::DragScalar("Objects accuracy", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_ACCURACY, range_sensibility, &GUITypes::GUIConstants::DRAG_UNIT_MIN, &GUITypes::GUIConstants::DRAG_UNIT_MAX, "%f", 1.0f);
+        ImGui::DragScalar("Objects mass", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_MASS, range_sensibility, &GUITypes::GUIConstants::DRAG_UNIT_MIN, &GUITypes::GUIConstants::DRAG_UNIT_MAX, "%f", 1.0f);
         }
-        ImGui::Separator();
-        ImGui::DragScalar("ProjectileDemo Impulse", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_IMPULSE, range_sensibility, &GUITypes::GUIConstants::DRAG_UNIT_MIN, &GUITypes::GUIConstants::DRAG_UNIT_MAX, "%f", 1.0f);
-        ImGui::DragScalar("ProjectileDemo Accuracy", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_ACCURACY, range_sensibility, &GUITypes::GUIConstants::DRAG_UNIT_MIN, &GUITypes::GUIConstants::DRAG_UNIT_MAX, "%f", 1.0f);
-        ImGui::DragScalar("ProjectileDemo Mass", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_MASS, range_sensibility, &GUITypes::GUIConstants::DRAG_UNIT_MIN, &GUITypes::GUIConstants::DRAG_UNIT_MAX, "%f", 1.0f);
-        ImGui::Separator();
-        ImGui::MenuItem("ProjectileDemo SimpleMesh", nullptr, &setup->PROJECTILE_SIMPLE_MESH);
-    }
 }
 
 void GUIAddonMenu::DrawMainMenuIllumination()
 {
     auto setup = BrakezaSetup::get();
 
-    ImGui::Separator();
     ImGui::MenuItem("Enable Lights System", nullptr, &setup->ENABLE_LIGHTS);
-    if (setup->ENABLE_LIGHTS) {
-        ImGui::MenuItem("Enable Shadow Mapping", nullptr, &setup->ENABLE_SHADOW_MAPPING);
-        if (setup->ENABLE_SHADOW_MAPPING) {
-            ImGui::Separator();
-            ImGui::MenuItem("Enable Sun shadows", nullptr, &setup->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
-            ImGui::DragFloat("Shadows Intensity", &setup->SHADOW_MAPPING_INTENSITY, 0.1f, -5.0f, 5.0f);
-            ImGui::DragFloat("DepthMaps Near plane", &setup->SHADOW_MAPPING_DEPTH_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
-            ImGui::DragFloat("DepthMaps Far plane", &setup->SHADOW_MAPPING_DEPTH_FAR_PLANE, 0.1f, 1.0f, 500.0f);
-            ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
-            ImGui::MenuItem("Shadow Mapping debug mode", nullptr, &setup->SHADOW_MAPPING_DEBUG);
-        }
-    }
+
+    if (!setup->ENABLE_LIGHTS) return;
+
     ImGui::Separator();
+    ImGui::MenuItem("Enable Shadow Mapping", nullptr, &setup->ENABLE_SHADOW_MAPPING);
+    if (setup->ENABLE_SHADOW_MAPPING) {
+        ImGui::SeparatorText("Shadow Mapping setup");
+        ImGui::DragFloat("Shadows Intensity", &setup->SHADOW_MAPPING_INTENSITY, 0.1f, -5.0f, 5.0f);
+        ImGui::DragFloat("DepthMaps Near plane", &setup->SHADOW_MAPPING_DEPTH_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
+        ImGui::DragFloat("DepthMaps Far plane", &setup->SHADOW_MAPPING_DEPTH_FAR_PLANE, 0.1f, 1.0f, 500.0f);
+        ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
+    }
+    ImGui::SeparatorText("Sun light setup");
     auto& dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->getDirectionalLight();
     ImGui::DragFloat3("Sun direction", &dirLight.direction[0], 0.01f, -1.0f, 1.0f);
-    ImGui::Separator();
     ImVec4 color = {dirLight.ambient.x, dirLight.ambient.y, dirLight.ambient.z, 1};
-    bool changed_color = ImGui::ColorEdit4("Sun Ambient##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
+    bool changed_color = ImGui::ColorEdit4("Ambient##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
     if (changed_color) {
         dirLight.ambient = {color.x, color.y, color.z};
     }
     color = {dirLight.specular.x, dirLight.specular.y, dirLight.specular.z, 1};
-    changed_color = ImGui::ColorEdit4("Sun Specular##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
+    changed_color = ImGui::ColorEdit4("Specular##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
     if (changed_color) {
         dirLight.specular = {color.x, color.y, color.z};
     }
     color = {dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z, 1};
-    changed_color = ImGui::ColorEdit4("Sun Diffuse##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
+    changed_color = ImGui::ColorEdit4("Diffuse##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
     if (changed_color) {
         dirLight.diffuse = {color.x, color.y, color.z};
     }
-    ImGui::Separator();
+    if (setup->ENABLE_SHADOW_MAPPING) {
+        ImGui::MenuItem("Enable Sun shadows", nullptr, &setup->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
+    }
+    ImGui::SeparatorText("Screen helpers");
+    ImGui::MenuItem("Shadow Mapping debug mode", nullptr, &setup->SHADOW_MAPPING_DEBUG);
     if (setup->ENABLE_LIGHTS && setup->TRIANGLE_MODE_TEXTURIZED) {
         ImGui::MenuItem("Show Depth Map", nullptr, &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
     }
+
     if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
         auto s = ComponentsManager::get()->getComponentRender()->getShaderOGLDepthMap();
         ImGui::DragFloat("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 10.0f);
@@ -383,7 +356,13 @@ void GUIAddonMenu::DrawMainMenuIllumination()
 
 void GUIAddonMenu::DrawMainMenuCamera()
 {
+    auto setup = BrakezaSetup::get();
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    ImGui::SeparatorText("Camera setup");
+    ImGui::DragScalar("FOV", ImGuiDataType_Float, &setup->HORIZONTAL_FOV, 1, &GUITypes::GUIConstants::DRAG_FOV_MIN, &GUITypes::GUIConstants::DRAG_FOV_MAX, "%f", 1.0f);
+    const float range_far_plane_distance_sensibility = 1.0f;
+    ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &GUITypes::GUIConstants::DRAG_FAR_PLANE_MIN, &GUITypes::GUIConstants::DRAG_FAR_PLANE_MIN, "%f", 1.0f);
 
     // position
     float vec3f[3];
@@ -393,7 +372,6 @@ void GUIAddonMenu::DrawMainMenuCamera()
         camera->positionPointer().y = vec3f[1];
         camera->positionPointer().z = vec3f[2];
     }
-    ImGui::Separator();
 
     float oldPitch = camera->getRotation().getPitchDegree();
     float oldYaw = camera->getRotation().getYawDegree();
@@ -428,11 +406,13 @@ void GUIAddonMenu::DrawMainMenuCamera()
             M3::normalize(camera->rotationPointer());
         }
     }
-    ImGui::Separator();
-    ImGui::DragFloat("Cursors Walking", &BrakezaSetup::get()->WALKING_SPEED, 0.01f, 0.0f, 500.0f);
-    ImGui::DragFloat("Cursors Strafe", &BrakezaSetup::get()->STRAFE_SPEED, 0.01f, 0.0f, 500.0f);
-    ImGui::Separator();
-    ImGui::MenuItem("Mouse Look", nullptr, &BrakezaSetup::get()->MOUSE_LOOK);
+    ImGui::SeparatorText("Keyboard controls setup");
+    ImGui::DragFloat("Cursors speed walking", &BrakezaSetup::get()->WALKING_SPEED, 0.01f, 0.0f, 500.0f);
+    ImGui::DragFloat("Cursors speed strafe", &BrakezaSetup::get()->STRAFE_SPEED, 0.01f, 0.0f, 500.0f);
+    ImGui::SeparatorText("Camera GUI features");
+    ImGui::MenuItem("Enable click objects", nullptr, &setup->MOUSE_CLICK_SELECT_OBJECT3D);
+
+    ImGui::MenuItem("Enable Mouse Look (Right Button)", nullptr, &BrakezaSetup::get()->MOUSE_LOOK);
     if (BrakezaSetup::get()->MOUSE_LOOK) {
         ImGui::DragFloat("Sensibility", &BrakezaSetup::get()->MOUSE_SENSITIVITY, 0.001f, 0.0f, 1.0f);
     }
@@ -443,7 +423,8 @@ void GUIAddonMenu::DrawMainMenuSound()
     auto setup = BrakezaSetup::get();
 
     const float range_sensibility_volume = 1;
-    ImGui::MenuItem("Global enable", nullptr, &setup->ENABLE_SOUND);
+    ImGui::MenuItem("Global Sound System", nullptr, &setup->ENABLE_SOUND);
+    ImGui::Separator();
     if (ImGui::IsItemDeactivatedAfterEdit()) {
         if (!setup->ENABLE_SOUND) {
             Mix_Volume(BrakezaSetup::SoundChannels::SND_GLOBAL, 0);
@@ -476,6 +457,13 @@ void GUIAddonMenu::DrawMainMenuLogging()
 
 void GUIAddonMenu::DrawMainMenuLayout()
 {
+    auto setup = BrakezaSetup::get();
+
+    ImGui::MenuItem("Enable/Disable GUI (F4)", nullptr, &setup->ENABLE_IMGUI);
+    ImGui::Separator();
+    ImGui::MenuItem("GUI Toolbar", nullptr, &setup->ENABLE_IMGUI_TOOLBAR);
+
+    ImGui::SeparatorText("Layout modes");
     if (ImGui::MenuItem("Default", "F5")) {
         ComponentsManager::get()->getComponentWindow()->setImGuiConfig(BrakezaSetup::ImGUIConfigs::DEFAULT);
     }
@@ -499,11 +487,7 @@ void GUIAddonMenu::DrawMainMenuWindow()
     if (ImGui::IsItemEdited()) {
         ComponentsManager::get()->getComponentWindow()->toggleFullScreen();
     }
-    ImGui::Separator();
-    ImGui::MenuItem("GUI Toolbar", nullptr, &setup->ENABLE_IMGUI_TOOLBAR);
-    ImGui::Separator();
-    ImGui::MenuItem("On/Off UI (F4)", nullptr, &setup->ENABLE_IMGUI);
-    ImGui::Separator();
+    ImGui::SeparatorText("Windows/Widgets");
     for (auto &w : windowStatus) {
         ImGui::MenuItem(w.label.c_str(), nullptr, &w.isOpen);
     }
