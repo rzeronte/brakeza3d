@@ -22,7 +22,6 @@ class Brakeza
 
     GUIManager *managerGUI;
 public:
-    bool finish = false;
     Brakeza();
     virtual ~Brakeza();
 
@@ -36,13 +35,14 @@ public:
     void PreUpdateComponents() const;
     void OnUpdateComponents() const;
     void PostUpdateComponents() const;
-    void onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish) const;
+    void onUpdateSDLPollEventComponents(SDL_Event *event) const;
     void onEndComponents() const;
     void handleAutoStartProject(bool autostart, const std::string &project) const;
     void mainLoop(bool autostart, const std::string& project);
     void ControlFrameRate() const;
-    void CaptureInputEvents(SDL_Event &e);
-    void shutdown();
+    void CaptureInputEvents(SDL_Event &e) const;
+
+    static void shutdown();
     static void WelcomeMessage();
     static void checkForResizeOpenGLWindow(const SDL_Event &e);
     static std::string uniqueObjectLabel(const char *prefix);

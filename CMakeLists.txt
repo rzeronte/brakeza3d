@@ -262,6 +262,7 @@ add_executable(Brakeza3D
         src/3D/Cone3D.cpp                   include/3D/Cone3D.h
         include/Render/Profiler.cpp
         include/Render/Profiler.h
+        include/GUI/AddOns/GUIAddonMenu.cpp
 )
 
 target_link_libraries(Brakeza3D

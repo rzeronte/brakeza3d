@@ -7,6 +7,7 @@
 
 #include "../../Brakeza.h"
 #include "../../3D/Swarm.h"
+#include "../../Misc/ToolsMaths.h"
 
 class SwarmGUI
 {

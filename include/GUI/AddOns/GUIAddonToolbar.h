@@ -22,6 +22,8 @@ struct GUIAddonToolbar
 
     void Draw() const
     {
+        if (!BrakezaSetup::get()->ENABLE_IMGUI_TOOLBAR) return;
+
         if (ImGui::Begin("MainToolBar")) {
             drawLUAStatusIcons();
             VerticalSeparator();

@@ -7,6 +7,7 @@
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/3D/ParticleEmitter.h"
 #include "../../include/Misc/ToolsJSON.h"
+#include "../../include/Serializers/Object3DSerializer.h"
 
 cJSON * ParticleEmmitterSerializer::JsonByObject(Object3D *o)
 {

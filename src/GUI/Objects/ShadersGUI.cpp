@@ -267,7 +267,7 @@ void ShadersGUI::DrawShadersBySelectedObject(GUIManager *gui)
 }
 
 
-void ShadersGUI::LoadShaderDialog(GUIManager *gui, const std::string &folder, std::string &file)
+void ShadersGUI::LoadShaderDialog(GUIManager *gui, const std::string &folder, const std::string &file)
 {
     auto shader = ComponentsManager::get()->getComponentRender()->getLoadedShader(folder, file);
     delete gui->shaderEditableManager.shader;

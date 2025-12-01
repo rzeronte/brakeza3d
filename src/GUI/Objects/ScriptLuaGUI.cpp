@@ -260,7 +260,7 @@ void ScriptLuaGUI::DrawObjectVariables(const GUIManager *gui)
     }
 }
 
-void ScriptLuaGUI::drawGlobalVariables()
+void ScriptLuaGUI::DrawGlobalVariables()
 {
     static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("GlobalVariablesTable", 3, flags)) {

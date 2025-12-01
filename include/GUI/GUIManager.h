@@ -25,11 +25,9 @@ class GUIManager
     std::vector<GUITypes::GUIWindowsStatus> windows;
 
     int selectedObjectIndex = -1;
-    bool showAboutWindow = false;
     bool showEditShaderWindow = false;
     bool showEditScriptWindow = false;
     bool showBoneMappingsEditorWindow = false;
-    bool showLightsDepthMapsViewerWindow = false;
 
     std::vector<Object3D *> &gameObjects;
 
@@ -38,10 +36,10 @@ class GUIManager
 
     GuiAddonConsole *widgetConsole;
     GUIAddonObjects3D *widgetObjects3D;
-    GUIAddonObject3DProperties *widgetObject3DProperties;
+    GUIAddonObject3DProperties *widgetObjectProperties;
     GUIAddonProjectSetup *widgetProjectSettings;
-    GUIAddonMenu *widgetMenu;
-    GUIAddonToolbar *widgetToolbar;
+    GUIAddonMenu *menu;
+    GUIAddonToolbar *toolbar;
 
     TexturePackage icons;
     TexturePackage imagesFolder;
@@ -67,26 +65,38 @@ class GUIManager
     std::vector<std::string> currentShadersFolders;
 
     Color lineSelectorObjectColor = Color::green();
+
+    void DrawImages();
+    void DrawLightsDepthMapsViewerWindow();
+    void DrawRegisteredWindows() const;
+    void DrawKeyboardMouseSettings();
+    static void DrawSplash();
+
+    GUITypes::GUIWindowsStatus *GetWindowStatus(GUITypes::GUIWindows window);
+
 public:
-
-    virtual ~GUIManager() = default;
-
-    void RegisterWindows();
-
-    void DrawSceneObjectsWindow();
-
-    void DrawLoggingWindow();
-
     explicit GUIManager(std::vector<Object3D *> &gameObjects);
-
+    virtual ~GUIManager() = default;
+    void RegisterWindows();
+    void DrawFilesShaders();
+    void DrawFilesScriptWindow();
+    void DrawFilesScenesWindow();
+    void DrawFilesProjectWindow();
+    void DrawSelectedObjectPropertiesWindow();
+    void DrawProjectSettingsWindow();
+    void DrawGlobalVariablesWindow();
+    void DrawSelectedObjectScriptsWindow();
+    void DrawSelectedObjectVariablesWindow();
+    void DrawSelectedObjectShadersWindow();
+    void DrawSceneObjectsWindow();
+    void DrawLoggingWindow();
     void setSelectedObjectIndex(int selectedObjectIndex);
     void setSelectedObject(const Object3D *s);
-    void openBoneInfoDialog();
-
-    virtual void DrawGUI(float timedelta, bool &finish);
+    void OpenBoneInfoDialog();
+    virtual void DrawGUI();
     TexturePackage &getImGuiTextures();
     [[nodiscard]] GuiAddonConsole *getConsole() const;
-    [[nodiscard]] bool isShowLightsDepthMapsViewerWindow();
+    [[nodiscard]] bool isLightDepthMapsViewerWindowOpen();
     static void ShowDeletePopup(const char* title, const char *message, const std::function<void()>& onConfirm);
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
@@ -96,18 +106,6 @@ public:
     friend class Mesh3DGUI;
     friend class ShadersGUI;
     friend class FileSystemGUI;
-private:
-    void DrawWidgets();
-    void DrawGUIPlugins(bool &finish);
-    void DrawImages();
-    void DrawLightsDepthMapsViewerWindow();
-
-    void DrawRegisteredWindows();
-
-    static void DrawKeyboardMouseSettings();
-    static void DrawSplash();
-
-    GUITypes::GUIWindowsStatus *GetWindowStatus(GUITypes::GUIWindows window);
 };
 
 #endif //SDL2_3D_ENGINE_GUI_ENGINE_H

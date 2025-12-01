@@ -19,6 +19,10 @@
 #include "../../include/Serializers/Mesh3DAnimationSerializer.h"
 #include "../../include/Serializers/LightSpotSerializer.h"
 #include "../../include/Serializers/ParticleEmmitterSerializer.h"
+#include "../../include/Serializers/Image3DAnimation8DirectionsSerializer.h"
+#include "../../include/Serializers/Image2DSerializer.h"
+#include "../../include/Serializers/Image3DSerializer.h"
+#include "../../include/Serializers/Image3DAnimationSerializer.h"
 
 SceneLoader::SceneLoader()
 {

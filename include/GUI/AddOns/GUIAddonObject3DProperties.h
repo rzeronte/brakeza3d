@@ -39,25 +39,22 @@ struct GUIAddonObject3DProperties
     {
         bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
 
-        if (ImGui::Begin("Object Properties")) {
-            if (hasSelectedIndex) {
-                auto o = gameObjects[selectedObjectIndex];
-                if (o->isRemoved()) {
-                    return;
-                }
-
-                o->DrawPropertiesGUI();
-                ImGui::Separator();
-                ImGui::Button("Remove");
-                if (ImGui::IsItemClicked()) {
-                    o->setRemoved(true);
-                }
-                ImGui::SameLine();
-            } else {
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
+        if (hasSelectedIndex) {
+            auto o = gameObjects[selectedObjectIndex];
+            if (o->isRemoved()) {
+                return;
             }
+
+            o->DrawPropertiesGUI();
+            ImGui::Separator();
+            ImGui::Button("Remove");
+            if (ImGui::IsItemClicked()) {
+                o->setRemoved(true);
+            }
+            ImGui::SameLine();
+        } else {
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
         }
-        ImGui::End();
     }
 };
 

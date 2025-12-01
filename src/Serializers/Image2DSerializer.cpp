@@ -6,6 +6,7 @@
 #include "../../include/2D/Image2D.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Serializers/Object3DSerializer.h"
 
 cJSON * Image2DSerializer::JsonByObject(Object3D *o)
 {

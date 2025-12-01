@@ -22,23 +22,21 @@ struct GUIAddonProjectSetup
 
     void DrawProjectSetupGUI()
     {
-        if (ImGui::Begin("Project setup")) {
-            static char name[256];
+        static char name[256];
 
-            strncpy(name, BrakezaSetup::get()->ENGINE_TITLE.c_str(), sizeof(name));
+        strncpy(name, BrakezaSetup::get()->ENGINE_TITLE.c_str(), sizeof(name));
 
-            ImGui::InputText("Project title##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll);
-            if (ImGui::IsItemEdited()) {
-                BrakezaSetup::get()->ENGINE_TITLE = name;
-            }
-            ImGui::Separator();
-            DrawProjectScripts();
-            ImGui::Separator();
-            DrawSceneScripts();
-            ImGui::Separator();
-            DrawSceneCustomShaders();
+        ImGui::InputText("Project title##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll);
+        if (ImGui::IsItemEdited()) {
+            BrakezaSetup::get()->ENGINE_TITLE = name;
         }
-        ImGui::End();
+        ImGui::Separator();
+        DrawProjectScripts();
+        ImGui::Separator();
+        DrawSceneScripts();
+        ImGui::Separator();
+        DrawSceneCustomShaders();
+
     }
 
     void DrawProjectScripts() const
