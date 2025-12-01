@@ -31,13 +31,13 @@ public:
     void start(int argc, char *argv[]);
     void addObject3D(Object3D *obj, const std::string &label);
     void UpdateTimer();
-    void onStartComponents() const;
+    void OnStartComponents() const;
     void PreUpdateComponents() const;
     void OnUpdateComponents() const;
     void PostUpdateComponents() const;
     void onUpdateSDLPollEventComponents(SDL_Event *event) const;
     void onEndComponents() const;
-    void handleAutoStartProject(bool autostart, const std::string &project) const;
+    void HandleAutoStartProject(bool autostart, const std::string &project) const;
     void mainLoop(bool autostart, const std::string& project);
     void ControlFrameRate() const;
     void CaptureInputEvents(SDL_Event &e) const;

@@ -287,7 +287,7 @@ void ComponentRender::setSceneShadersEnabled(bool value)
     sceneShadersEnabled = value;
 }
 
-void ComponentRender::RunShadersOpenGLPostUpdate() const
+void ComponentRender::RunSceneShadersPostUpdate() const
 {
     Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
     for (auto s: sceneShaders) {
@@ -317,16 +317,14 @@ void ComponentRender::removeSceneShader(const ShaderOGLCustom *shader)
     }
 }
 
-void ComponentRender::RunShadersOpenGLPreUpdate() const
+void ComponentRender::RunSceneShadersPreUpdate() const
 {
     Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
-
     for( auto s: sceneShaders) {
         if (!s->isEnabled()) continue;
         s->onUpdate();
     }
     Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
-
 }
 
 ShaderOGLCustom *ComponentRender::getSceneShaderByIndex(int i) const
@@ -518,7 +516,7 @@ const std::map<std::string, ShaderCustomTypes> &ComponentRender::getShaderTypesM
 
 void ComponentRender::resizeShadersFramebuffers() const
 {
-    Logging::Message("Resizing framebuffers...");
+    Logging::Message("[ComponentRender] Resizing framebuffers...");
 
     shaderOGLRender->destroy();
     shaderOGLImage->destroy();
