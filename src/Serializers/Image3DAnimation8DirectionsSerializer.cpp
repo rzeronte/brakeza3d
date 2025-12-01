@@ -7,6 +7,8 @@
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/3D/Image3DAnimation8Directions.h"
+#include "../../include/Serializers/Object3DSerializer.h"
+#include "../../include/Serializers/Image3DAnimationSerializer.h"
 
 cJSON * Image3DAnimation8DirectionsSerializer::JsonByObject(Object3D *o)
 {

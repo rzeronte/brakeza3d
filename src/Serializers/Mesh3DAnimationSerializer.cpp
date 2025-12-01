@@ -6,6 +6,7 @@
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
+#include "../../include/Serializers/Mesh3DSerializer.h"
 
 cJSON* Mesh3DAnimationSerializer::JsonByObject(Object3D *o)
 {

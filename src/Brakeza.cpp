@@ -68,11 +68,11 @@ void Brakeza::WelcomeMessage()
     Logging::Message("%s", BrakezaSetup::get()->ENGINE_TITLE.c_str());
 }
 
-void Brakeza::CaptureInputEvents(SDL_Event &e)
-{
+void Brakeza::CaptureInputEvents(SDL_Event &e) const {
+
     while (SDL_PollEvent(&e)) {
         checkForResizeOpenGLWindow(e);
-        onUpdateSDLPollEventComponents(&e, finish);
+        onUpdateSDLPollEventComponents(&e);
         ImGui_ImplSDL2_ProcessEvent(&e);
     }
 }
@@ -103,7 +103,7 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
     Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
     Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobalFramebuffer");
 
-    while (!finish) {
+    while (!BrakezaSetup::get()->EXIT) {
         // Reset timers
         Profiler::get()->ResetTotalFrameTime();
         ControlFrameRate();
@@ -251,10 +251,10 @@ void Brakeza::handleAutoStartProject(bool autostart, const std::string &project)
     render->getSceneLoader().LoadScene(BrakezaSetup::get()->CONFIG_FOLDER + BrakezaSetup::get()->DEFAULT_SCENE);
 }
 
-void Brakeza::onUpdateSDLPollEventComponents(SDL_Event *event, bool &finish) const
+void Brakeza::onUpdateSDLPollEventComponents(SDL_Event *event) const
 {
     for (Component* &component : componentsManager->Components()) {
-        component->onSDLPollEvent(event, finish);
+        component->onSDLPollEvent(event, BrakezaSetup::get()->EXIT);
     }
 }
 
@@ -323,5 +323,5 @@ Object3D *Brakeza::getSceneObjectById(const int id) const
 
 void Brakeza::shutdown()
 {
-    finish = true;
+    BrakezaSetup::get()->EXIT = true;
 }

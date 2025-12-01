@@ -18,7 +18,7 @@ public:
     static void DrawScriptsLuaFolderFiles(GUIManager *gui, const std::string& folder);
     static void DrawEditScriptWindow(GUIManager *gui);
     static void DrawObjectVariables(const GUIManager *gui);
-    static void drawGlobalVariables();
+    static void DrawGlobalVariables();
     static void drawScriptVariables(GUIManager *gui);
 
 };

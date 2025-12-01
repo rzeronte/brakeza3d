@@ -9,6 +9,8 @@
 #include "../../include/Render/Transforms.h"
 #include <random>  // Para generación de números aleatorios
 
+#include "../../include/Misc/ToolsMaths.h"
+
 TentacleIK::TentacleIK(Vertex3D position, Object3D *parent, Object3D * target, float maxLength)
 :
     target(target->getPosition()),

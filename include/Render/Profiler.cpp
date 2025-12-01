@@ -198,8 +198,8 @@ void Profiler::DrawComponentsTable(float cellHeight)
             // Columna: Barra de progreso
             ImGui::TableSetColumnIndex(6);
             cellHeight = ROW_HEIGHT;
-            float progressHeight = 30.0f; // La altura que pusiste en ProgressBar
-            offsetY = (cellHeight - progressHeight) * 0.5f;
+            float progressHeight = cellHeight-6; // La altura que pusiste en ProgressBar
+            offsetY = ((cellHeight - progressHeight) * 0.5f) + 2;
             if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
             ImGui::PushStyleColor(ImGuiCol_PlotHistogram, color);
             ImGui::ProgressBar(percentage / 100.0f, ImVec2(-1, progressHeight));
@@ -331,7 +331,7 @@ void Profiler::DrawPropertiesGUI()
 {
     DrawPlotFrameTime(measureFrameTime);
     ImGui::Separator();
-    DrawComponentsTable(30.0f);
+    DrawComponentsTable(25.0f);
     ImGui::Separator();
     DrawFlameGraph();
     ImGui::Separator();

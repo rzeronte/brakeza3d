@@ -13,10 +13,10 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
     gameObjects(gameObjects),
     widgetConsole(new GuiAddonConsole(ComponentsManager::get()->getComponentScripting()->getLua())),
     widgetObjects3D(new GUIAddonObjects3D(gameObjects)),
-    widgetObject3DProperties(new GUIAddonObject3DProperties(gameObjects, scriptEditableManager)),
+    widgetObjectProperties(new GUIAddonObject3DProperties(gameObjects, scriptEditableManager)),
     widgetProjectSettings(new GUIAddonProjectSetup(scriptEditableManager)),
-    widgetMenu(new GUIAddonMenu(windows)),
-    widgetToolbar(new GUIAddonToolbar()),
+    menu(new GUIAddonMenu(windows)),
+    toolbar(new GUIAddonToolbar()),
     currentScriptsFolderWidget(BrakezaSetup::get()->SCRIPTS_FOLDER),
     currentScenesFolderWidget(BrakezaSetup::get()->SCENES_FOLDER),
     currentProjectsFolderWidget(BrakezaSetup::get()->PROJECTS_FOLDER),
@@ -24,6 +24,7 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 {
     FileSystemGUI::LoadIcons(icons);
     FileSystemGUI::LoadImagesFolder(this);
+
     Profiler::get()->CaptureGUIMemoryUsage();
 
     currentScriptsFolders = Tools::getFolderFolders(currentScriptsFolderWidget);
@@ -43,15 +44,99 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 
 void GUIManager::RegisterWindows()
 {
-    windows.push_back({ GUITypes::GUIWindows::PROFILER, "Profiler", false, []() { Profiler::get()->DrawPropertiesGUI(); }} );
-    windows.push_back({ GUITypes::GUIWindows::DEPTH_LIGTHS_MAPS, "Lights Depth Maps Viewer", false, []() { Brakeza::get()->GUI()->DrawLightsDepthMapsViewerWindow(); }} );
-    windows.push_back({ GUITypes::GUIWindows::LOGGING, "Logging/Console", false, []() { Brakeza::get()->GUI()->DrawLoggingWindow(); }} );
-    windows.push_back({ GUITypes::GUIWindows::SCENE_OBJECTS, "Scene Objects", false, []() { Brakeza::get()->GUI()->DrawSceneObjectsWindow(); }} );
+    windows.push_back({ GUITypes::PROJECT_SETTINGS, "Project setup", true, [this]() { this->DrawProjectSettingsWindow(); }} );
+    windows.push_back({ GUITypes::SCENE_OBJECTS, "Scene Objects", true, [this]() { this->DrawSceneObjectsWindow(); }} );
+    windows.push_back({ GUITypes::OBJECT_PROPERTIES, "Object Properties", true, [this]() { this->DrawSelectedObjectPropertiesWindow(); }} );
+    windows.push_back({ GUITypes::OBJECT_SHADERS, "Object shaders", false, [this]() { this->DrawSelectedObjectShadersWindow(); }} );
+    windows.push_back({ GUITypes::OBJECT_SCRIPTS, "Object Scripts", false, [this]() { this->DrawSelectedObjectScriptsWindow(); }} );
+    windows.push_back({ GUITypes::OBJECT_VARIABLES, "Object variables", false, [this]() { this->DrawSelectedObjectVariablesWindow(); }} );
+    windows.push_back({ GUITypes::GLOBAL_VARIABLES, "Global variables", false, [this]() { this->DrawGlobalVariablesWindow(); }} );
+    windows.push_back({ GUITypes::KEYBOARD_MOUSE, "Keyboard/Mouse", false, [this]() { this->DrawKeyboardMouseSettings(); }} );
+    windows.push_back({ GUITypes::IMAGES, "Images", false, [this]() { this->DrawImages(); }} );
+
+    windows.push_back({ GUITypes::FILES_PROJECTS, "Projects", true, [this]() { this->DrawFilesProjectWindow(); }} );
+    windows.push_back({ GUITypes::FILES_SCENES, "Scenes", true, [this]() { this->DrawFilesScenesWindow(); }} );
+    windows.push_back({ GUITypes::FILES_SCRIPTS, "Scripts", true, [this]() { this->DrawFilesScriptWindow(); }} );
+    windows.push_back({ GUITypes::FILES_SHADERS, "Shaders", true, [this]() { this->DrawFilesShaders(); }} );
+
+    windows.push_back({ GUITypes::LOGGING, "Logging/Console", true, [this]() { this->DrawLoggingWindow(); }} );
+    windows.push_back({ GUITypes::DEPTH_LIGHTS_MAPS, "Lights DepthMaps Viewer", false, [this]() { this->DrawLightsDepthMapsViewerWindow(); }} );
+    windows.push_back({ GUITypes::PROFILER, "Profiler", false, [this]() { Profiler::get()->DrawPropertiesGUI(); }} );
+}
+
+void GUIManager::DrawFilesShaders()
+{
+    auto windowStatus = GetWindowStatus(GUITypes::FILES_SHADERS);
+    if (!windowStatus->isOpen) return;
+    ShadersGUI::DrawCustomShadersFolder(this, currentShadersFolderWidget);
+}
+
+void GUIManager::DrawFilesScriptWindow()
+{
+    auto windowStatus = GetWindowStatus(GUITypes::FILES_SCRIPTS);
+    if (!windowStatus->isOpen) return;
+    ScriptLuaGUI::DrawScriptsLuaFolderFiles(this, currentScriptsFolderWidget);
+}
+
+void GUIManager::DrawFilesScenesWindow()
+{
+    auto windowStatus = GetWindowStatus(GUITypes::FILES_SCENES);
+    if (!windowStatus->isOpen) return;
+    FileSystemGUI::DrawScenesFolder(this, currentScenesFolderWidget);
+}
+
+void GUIManager::DrawFilesProjectWindow()
+{
+    auto windowStatus = GetWindowStatus(GUITypes::FILES_PROJECTS);
+    if (!windowStatus->isOpen) return;
+    FileSystemGUI::DrawProjectFiles(this, currentProjectsFolderWidget);
+}
+
+void GUIManager::DrawSelectedObjectPropertiesWindow()
+{
+    auto windowStatus = GetWindowStatus(GUITypes::OBJECT_PROPERTIES);
+    if (!windowStatus->isOpen) return;
+    widgetObjectProperties->Draw(selectedObjectIndex);
+}
+
+void GUIManager::DrawProjectSettingsWindow()
+{
+    auto windowStatus = GetWindowStatus(GUITypes::PROJECT_SETTINGS);
+    if (!windowStatus->isOpen) return;
+    widgetProjectSettings->DrawProjectSetupGUI();
+}
+
+void GUIManager::DrawGlobalVariablesWindow()
+{
+    auto windowStatus = GetWindowStatus(GUITypes::GLOBAL_VARIABLES);
+    if (!windowStatus->isOpen) return;
+    ScriptLuaGUI::DrawGlobalVariables();
+}
+
+void GUIManager::DrawSelectedObjectScriptsWindow()
+{
+    auto windowStatus = GetWindowStatus(GUITypes::OBJECT_SCRIPTS);
+    if (!windowStatus->isOpen) return;
+    ScriptLuaGUI::DrawScriptsBySelectedObject(this);
+}
+
+void GUIManager::DrawSelectedObjectVariablesWindow()
+{
+    auto windowStatus = GetWindowStatus(GUITypes::OBJECT_VARIABLES);
+    if (!windowStatus->isOpen) return;
+    ScriptLuaGUI::DrawObjectVariables(this);
+}
+
+void GUIManager::DrawSelectedObjectShadersWindow()
+{
+    auto windowStatus = GetWindowStatus(GUITypes::OBJECT_SHADERS);
+    if (!windowStatus->isOpen) return;
+    ShadersGUI::DrawShadersBySelectedObject(this);
 }
 
 void GUIManager::DrawSceneObjectsWindow()
 {
-    auto windowStatus = GetWindowStatus(GUITypes::GUIWindows::SCENE_OBJECTS);
+    auto windowStatus = GetWindowStatus(GUITypes::SCENE_OBJECTS);
     if (!windowStatus->isOpen) return;
     widgetObjects3D->Draw(selectedObjectIndex);
 }
@@ -63,133 +148,36 @@ void GUIManager::DrawLoggingWindow()
     widgetConsole->Draw(windowStatus->label.c_str(), &windowStatus->isOpen);
 }
 
-void GUIManager::DrawLightsDepthMapsViewerWindow()
+void GUIManager::DrawRegisteredWindows() const
 {
-    auto windowStatus = GetWindowStatus(GUITypes::DEPTH_LIGTHS_MAPS);
-    if (!windowStatus->isOpen) return;
-    //if (!showLightsDepthMapsViewerWindow) return;
-
-    SetNextWindowSize(350, 400);
-    ImGui::SetNextWindowBgAlpha(GUITypes::GUIConstants::WINDOW_ALPHA);
-
-    auto title = std::string("Lights Depth Maps Viewer: ");
-    if (ImGui::Begin(title.c_str(), &windowStatus->isOpen, ImGuiWindowFlags_NoDocking)) {
-
-        auto render = ComponentsManager::get()->getComponentRender();
-        auto shaderShadowPassDebugLight = render->getShaderOGLShadowPassDebugLight();
-        auto lights = render->getShaderOGLRenderForward()->getShadowMappingSpotLights();
-
-        const int columns = 1;
-
-        // Añadir padding a las celdas
-        ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(10.0f, 10.0f));
-
-        if (ImGui::BeginTable("DepthMapsTable", columns, ImGuiTableFlags_Borders | ImGuiTableFlags_SizingStretchSame)) {
-            float imageSize = 200.0f;
-
-            // Añadir DirectionalLight primero
-            ImGui::TableNextColumn();
-
-            auto directionalLightText = std::string("DirectionalLight");
-            float directionalLightTextAvailWidth = ImGui::GetContentRegionAvail().x;
-            float directionalLightTextTextWidth = ImGui::CalcTextSize(directionalLightText.c_str()).x;
-            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (directionalLightTextAvailWidth - directionalLightTextTextWidth) * 0.5f);
-            ImGui::Text("%s", directionalLightText.c_str());
-
-            // Centrar imagen
-            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (directionalLightTextAvailWidth - imageSize) * 0.5f);
-            ImGui::Image(reinterpret_cast<ImTextureID>(shaderShadowPassDebugLight->getSceneTexture()), ImVec2(imageSize, imageSize));
-
-            // Luego añadir los SpotLights
-            int i = 0;
-            for (const auto l: lights) {
-                ImGui::TableNextColumn();
-
-                // Centrar texto combinado
-                auto combinedText = l->getLabel() + " / Layer: " + std::to_string(i);
-                float availWidth = ImGui::GetContentRegionAvail().x;
-                float textWidth = ImGui::CalcTextSize(combinedText.c_str()).x;
-                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - textWidth) * 0.5f);
-                ImGui::Text("%s", combinedText.c_str());
-
-                // Centrar imagen
-                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - imageSize) * 0.5f);
-                ImGui::Image(reinterpret_cast<ImTextureID>(shaderShadowPassDebugLight->getInternalTexture(i)), ImVec2(imageSize, imageSize));
-
-                i++;
-            }
-            ImGui::EndTable();
-        }
-        ImGui::PopStyleVar();
-    }
-    ImGui::End();
-}
-
-void GUIManager::DrawRegisteredWindows() {
     for (auto window : windows) {
         if (!window.isOpen) continue;
-        if (ImGui::Begin(window.label.c_str())) {
+        if (ImGui::Begin(window.label.c_str(), &window.isOpen, ImGuiWindowFlags_NoFocusOnAppearing)) {
             window.functionCallBack();
         }
         ImGui::End();
     }
 }
 
-void GUIManager::DrawWidgets()
+void GUIManager::DrawGUI()
 {
-    if (ImGui::Begin("Object shaders")) {
-        ShadersGUI::DrawShadersBySelectedObject(this);
-    }
-    ImGui::End();
+    UpdateImGuiDocking();
 
-    if (ImGui::Begin("Object Scripts")) {
-        ScriptLuaGUI::DrawScriptsBySelectedObject(this);
-    }
-    ImGui::End();
+    menu->Draw();
+    toolbar->Draw();
 
-    if (ImGui::Begin("Scripts")) {
-        ScriptLuaGUI::DrawScriptsLuaFolderFiles(this, currentScriptsFolderWidget);
-    }
-    ImGui::End();
+    Object3DGUI::DrawSelectedObjectGuizmo();
 
-    if (ImGui::Begin("Object variables")) {
-        ScriptLuaGUI::DrawObjectVariables(this);
-    }
-    ImGui::End();
+    // On demand
+    ShadersGUI::DrawEditShaderWindow(this);
+    ScriptLuaGUI::DrawEditScriptWindow(this);
+    Mesh3DGUI::DrawEditBonesMappingWindow(this);
 
-    if (ImGui::Begin("Global variables")) {
-        ScriptLuaGUI::drawGlobalVariables();
-    }
-    ImGui::End();
+    DrawRegisteredWindows();
+    DrawSplash();
 
-    widgetProjectSettings->DrawProjectSetupGUI();
-
-    if (ImGui::Begin("Keyboard/Mouse")) {
-        DrawKeyboardMouseSettings();
-    }
-    ImGui::End();
-
-    if (ImGui::Begin("Shaders")) {
-        ShadersGUI::DrawCustomShadersFolder(this, currentShadersFolderWidget);
-    }
-    ImGui::End();
-
-    if (ImGui::Begin("Projects")) {
-        FileSystemGUI::DrawProjectFiles(this, currentProjectsFolderWidget);
-    }
-    ImGui::End();
-
-    if (ImGui::Begin("Scenes")) {
-        FileSystemGUI::DrawScenesFolder(this, currentScenesFolderWidget);
-    }
-    ImGui::End();
-
-    if (ImGui::Begin("Images")) {
-        DrawImages();
-    }
     ImGui::End();
 }
-
 
 void GUIManager::UpdateImGuiDocking()
 {
@@ -199,8 +187,6 @@ void GUIManager::UpdateImGuiDocking()
     bool opt_fullscreen = opt_fullscreen_persistant;
     static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 
-    // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
-    // because it would be confusing to have two docking targets within each other.
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
     if (opt_fullscreen) {
         ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -216,11 +202,6 @@ void GUIManager::UpdateImGuiDocking()
     if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
         window_flags |= ImGuiWindowFlags_NoBackground;
 
-    // Important: note that we proceed even if Begin() returns false (aka window is collapsed).
-    // This is because we want to keep our DockSpace() active. If a DockSpace() is inactive,
-    // all active windows docked into it will lose their parent and become undocked.
-    // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
-    // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("DockSpace Demo", &opt_fullscreen, window_flags);
     ImGui::PopStyleVar();
@@ -233,31 +214,6 @@ void GUIManager::UpdateImGuiDocking()
     ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 }
 
-void GUIManager::DrawGUIPlugins(bool &finish)
-{
-    widgetObjects3D->Draw(selectedObjectIndex);
-    widgetObject3DProperties->Draw(selectedObjectIndex);
-    widgetMenu->Draw(finish, showAboutWindow, showLightsDepthMapsViewerWindow);
-    widgetToolbar->Draw();
-}
-
-void GUIManager::DrawGUI(float timedelta, bool &finish)
-{
-    UpdateImGuiDocking();
-
-    DrawWidgets();
-    DrawGUIPlugins(finish);
-    Object3DGUI::DrawObjectSelectedGuizmoOperation();
-    ShadersGUI::DrawEditShaderWindow(this);
-    ScriptLuaGUI::DrawEditScriptWindow(this);
-    Mesh3DGUI::DrawEditBonesMappingWindow(this);
-
-    DrawRegisteredWindows();
-
-    DrawSplash();
-    ImGui::End();
-}
-
 GuiAddonConsole *GUIManager::getConsole() const
 {
     return widgetConsole;
@@ -268,9 +224,9 @@ TexturePackage &GUIManager::getImGuiTextures()
     return icons;
 }
 
-bool GUIManager::isShowLightsDepthMapsViewerWindow()
+bool GUIManager::isLightDepthMapsViewerWindowOpen()
 {
-    auto windowStatus = GetWindowStatus(GUITypes::DEPTH_LIGTHS_MAPS);
+    auto windowStatus = GetWindowStatus(GUITypes::DEPTH_LIGHTS_MAPS);
 
     return windowStatus->isOpen;
 }
@@ -317,6 +273,9 @@ void GUIManager::ShowDeletePopup(const char* title, const char *message, const s
 
 void GUIManager::DrawKeyboardMouseSettings()
 {
+    auto windowStatus = GetWindowStatus(GUITypes::KEYBOARD_MOUSE);
+    if (!windowStatus->isOpen) return;
+
     auto input = ComponentsManager::get()->getComponentInput();
 
     ImGui::Text(("Mouse motion: " + std::to_string(input->isMouseMotion())).c_str());
@@ -362,6 +321,9 @@ void GUIManager::DrawKeyboardMouseSettings()
 
 void GUIManager::DrawImages()
 {
+    auto windowStatus = GetWindowStatus(GUITypes::IMAGES);
+    if (!windowStatus->isOpen) return;
+
     static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame;
 
     auto imageFiles = imagesFolder.getItems();
@@ -430,9 +392,69 @@ void GUIManager::SetNextWindowSize(int w, int h)
     ImGui::SetNextWindowPos(pos, ImGuiCond_Appearing);
 }
 
-void GUIManager::openBoneInfoDialog()
+void GUIManager::OpenBoneInfoDialog()
 {
     showBoneMappingsEditorWindow = true;
+}
+
+
+void GUIManager::DrawLightsDepthMapsViewerWindow()
+{
+    auto windowStatus = GetWindowStatus(GUITypes::DEPTH_LIGHTS_MAPS);
+    if (!windowStatus->isOpen) return;
+
+    SetNextWindowSize(350, 400);
+    ImGui::SetNextWindowBgAlpha(GUITypes::GUIConstants::WINDOW_ALPHA);
+
+    auto title = std::string("Lights Depth Maps Viewer: ");
+    if (ImGui::Begin(title.c_str(), &windowStatus->isOpen, ImGuiWindowFlags_NoDocking)) {
+
+        auto render = ComponentsManager::get()->getComponentRender();
+        auto shaderShadowPassDebugLight = render->getShaderOGLShadowPassDebugLight();
+        auto lights = render->getShaderOGLRenderForward()->getShadowMappingSpotLights();
+
+        // Añadir padding a las celdas
+        ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(10.0f, 10.0f));
+
+        if (ImGui::BeginTable("DepthMapsTable", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_SizingStretchSame)) {
+            float imageSize = 200.0f;
+
+            // Añadir DirectionalLight primero
+            ImGui::TableNextColumn();
+
+            auto directionalLightText = std::string("DirectionalLight");
+            float directionalLightTextAvailWidth = ImGui::GetContentRegionAvail().x;
+            float directionalLightTextTextWidth = ImGui::CalcTextSize(directionalLightText.c_str()).x;
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (directionalLightTextAvailWidth - directionalLightTextTextWidth) * 0.5f);
+            ImGui::Text("%s", directionalLightText.c_str());
+
+            // Centrar imagen
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (directionalLightTextAvailWidth - imageSize) * 0.5f);
+            ImGui::Image(reinterpret_cast<ImTextureID>(shaderShadowPassDebugLight->getSceneTexture()), ImVec2(imageSize, imageSize));
+
+            // Luego añadir los SpotLights
+            int i = 0;
+            for (const auto l: lights) {
+                ImGui::TableNextColumn();
+
+                // Centrar texto combinado
+                auto combinedText = l->getLabel() + " / Layer: " + std::to_string(i);
+                float availWidth = ImGui::GetContentRegionAvail().x;
+                float textWidth = ImGui::CalcTextSize(combinedText.c_str()).x;
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - textWidth) * 0.5f);
+                ImGui::Text("%s", combinedText.c_str());
+
+                // Centrar imagen
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - imageSize) * 0.5f);
+                ImGui::Image(reinterpret_cast<ImTextureID>(shaderShadowPassDebugLight->getInternalTexture(i)), ImVec2(imageSize, imageSize));
+
+                i++;
+            }
+            ImGui::EndTable();
+        }
+        ImGui::PopStyleVar();
+    }
+    ImGui::End();
 }
 
 void GUIManager::DrawSplash()

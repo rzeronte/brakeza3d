@@ -3,6 +3,8 @@
 //
 
 #include "../../../include/GUI/Objects/Object3DGUI.h"
+
+#include "../../../include/Misc/ToolsMaths.h"
 #include "../include/Render/Drawable.h"
 
 void Object3DGUI::DrawPropertiesGUI(Object3D *o)
@@ -248,7 +250,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 }
 
 
-void Object3DGUI::DrawObjectSelectedGuizmoOperation()
+void Object3DGUI::DrawSelectedObjectGuizmo()
 {
     auto render = ComponentsManager::get()->getComponentRender();
 

@@ -13,7 +13,7 @@ public:
     static void DrawShaderVariables(GUIManager *gui);
     static void DrawCustomShadersFolder(GUIManager *gui, std::string folder);
     static void DrawShadersBySelectedObject(GUIManager *gui);
-    static void LoadShaderDialog(GUIManager *gui, const std::string &folder, std::string &file);
+    static void LoadShaderDialog(GUIManager *gui, const std::string &folder, const std::string &file);
 };
 
 

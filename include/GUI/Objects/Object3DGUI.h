@@ -14,7 +14,7 @@ class Object3DGUI
 {
 public:
     static void DrawPropertiesGUI(Object3D *o);
-    static void DrawObjectSelectedGuizmoOperation();
+    static void DrawSelectedObjectGuizmo();
     static void SelectorOGLBlendMode(GLenum &mode_src, GLenum &mode_dst);
 };
 

@@ -9,6 +9,7 @@
 #include "../../include/Brakeza.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Misc/ToolsJSON.h"
+#include "../../include/Serializers/LightPointSerializer.h"
 
 cJSON * LightSpotSerializer::JsonByObject(Object3D *o)
 {

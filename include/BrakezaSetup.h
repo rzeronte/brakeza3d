@@ -13,6 +13,8 @@ public:
 
     static BrakezaSetup *instance;
 
+    bool EXIT = false;
+
     // TITLE/VERSION
     std::string ENGINE_TITLE = "Brakeza3D - By Eduardo Rodriguez Alvarez <eduardo@brakeza.com>";
     std::string ENGINE_VERSION = "v.1.0.0";
@@ -77,6 +79,7 @@ public:
     bool ENABLE_LOGGING = true;
     bool ENABLE_LOGGING_STD = true;
     bool ENABLE_IMGUI = true;
+    bool ENABLE_IMGUI_TOOLBAR = true;
 
     // Render options
     bool LIMIT_FRAMERATE = false;
@@ -159,6 +162,8 @@ public:
     float PROJECTILE_DEMO_MASS = 100;
     bool PROJECTILE_SIMPLE_MESH = true;
     float SPLASH_COUNTDOWN_TIME = 3.0f;
+
+    bool SHOW_ABOUT_ME_MODAL = false;
 
     // CUSTOM SHADER TEMPLATES
     std::string TEMPLATE_SHADER_POSTPROCESSING_VS = SHADERS_FOLDER + "templates/ShaderPostprocessing.vs";
@@ -271,7 +276,6 @@ public:
         GL_CONSTANT_ALPHA,
         GL_ONE_MINUS_CONSTANT_ALPHA
     };
-
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H
