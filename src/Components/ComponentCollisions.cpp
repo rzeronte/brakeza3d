@@ -202,7 +202,7 @@ void ComponentCollisions::demoProjectile(int type)
         BrakezaSetup::collisionGroups::AllFilter
     );
 
-    Brakeza::get()->addObject3D(projectile, Brakeza::uniqueObjectLabel("demoProjectile"));
+    Brakeza::get()->addObject3D(projectile, Brakeza::UniqueObjectLabel("demoProjectile"));
 }
 
 ComponentCollisions::~ComponentCollisions()

@@ -52,7 +52,7 @@ void Image3DAnimation8Directions::addAnimationDirectional2D(
     int maxTimes
 )
 {
-    Logging::Message("Adding TextureAnimatedDirectional to SpriteDirectional(%s)...", animation_folder.c_str(), getLabel().c_str());
+    Logging::Message("Adding TextureAnimatedDirectional to SpriteDirectional(%s)...", animation_folder.c_str(), getName().c_str());
     auto animation = new TextureAnimatedDirectional();
 
     animation->LoadAnimationFile(animation_folder, numFrames, fps, maxTimes);

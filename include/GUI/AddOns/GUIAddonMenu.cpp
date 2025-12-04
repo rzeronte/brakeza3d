@@ -575,7 +575,7 @@ void GUIAddonMenu::DrawAboutMeModal()
 }
 
 void GUIAddonMenu::DrawItemsToLoad(
-    const std::string& folder,
+    std::string& folder,
     const std::string& extension,
     GUISheet icon,
     const std::function<void(const std::string&)>& callBack)

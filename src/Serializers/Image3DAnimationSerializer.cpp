@@ -87,5 +87,5 @@ void Image3DAnimationSerializer::LoadFileIntoScene(const std::string &file)
     o->setAnimation(0);
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->forward().getScaled(2));
 
-    Brakeza::get()->addObject3D(o, Brakeza::uniqueObjectLabel("BillboardAnimation"));
+    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("BillboardAnimation"));
 }

@@ -19,7 +19,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
     ImGui::SetNextItemWidth(125.0f);
     ImGui::InputText("Name##nameObject", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
     if (ImGui::IsItemEdited()) {
-        o->setLabel(name);
+        o->setName(name);
     }
     ImGui::Separator();
 
@@ -141,7 +141,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
             }
 
             for (auto a: o->attachedObjects) {
-                if (ImGui::TreeNode(a->getLabel().c_str())) {
+                if (ImGui::TreeNode(a->getName().c_str())) {
                     a->DrawPropertiesGUI();
                     ImGui::TreePop();
                 }

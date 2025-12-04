@@ -9,13 +9,22 @@
 #include <string>
 #include "imgui.h"
 
+class Tools;
+
 struct GUISheet {
     int x = -1;
     int y = -1;
 };
 
+
 namespace GUITypes
 {
+    struct FolderBrowserCache {
+        std::string currentFolder;
+        std::vector<std::string> folderFiles;
+        std::vector<std::string> folderFolders;
+    };
+
     struct Sizes {
         static constexpr ImVec2 ICON_SIZE_MENUS = ImVec2(16, 16);
         static constexpr ImVec2 ICON_SIZE_SMALL = ImVec2(14, 14);
@@ -116,7 +125,7 @@ namespace IconGUI {
     inline constexpr GUISheet PAUSE = {0, 0};
     inline constexpr GUISheet LOCK = {0, 0};
     inline constexpr GUISheet UNLOCK = {0, 0};
-    inline constexpr GUISheet ADD = {0, 0};
+    inline constexpr GUISheet ADD = {4, 3};
     inline constexpr GUISheet SCENE = {0, 0};
     inline constexpr GUISheet SAVE = {0, 0};
     inline constexpr GUISheet GEAR = {0, 0};
@@ -154,7 +163,7 @@ namespace IconGUI {
     inline constexpr GUISheet PROFILER = {0, 0};
     inline constexpr GUISheet COLLISION_OBJECTS = {0, 0};
     inline constexpr GUISheet ABOUT_ME = {0, 0};
-    inline constexpr GUISheet EXIT = {0, 0};
+    inline constexpr GUISheet EXIT = {0, 3};
 
     // GUI Properties features for each object
     struct ObjectGUIFeatures {

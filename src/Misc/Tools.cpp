@@ -347,7 +347,7 @@ bool Tools::saveTextureToFile(GLuint textureID, int width, int height, const cha
     return true;
 }
 
-std::vector<std::string> Tools::getFolderFiles(const std::string& path, const std::string& extension)
+std::vector<std::string> Tools::getFolderFiles(std::string& path, std::string extension)
 {
     std::vector<std::string> result;
     DIR *dir;
@@ -368,7 +368,7 @@ std::vector<std::string> Tools::getFolderFiles(const std::string& path, const st
     return result;
 }
 
-std::vector<std::string> Tools::getFolderFolders(const std::string& path)
+std::vector<std::string> Tools::getFolderFolders(std::string path)
 {
     std::vector<std::string> result;
     DIR *dir;

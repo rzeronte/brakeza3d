@@ -6,7 +6,7 @@
 Camera3D::Camera3D()
 {
     frustum = new Frustum();
-    setLabel(BrakezaSetup::get()->CAMERA_OBJECT_NAME);
+    setName(BrakezaSetup::get()->CAMERA_OBJECT_NAME);
 }
 
 void Camera3D::Pitch(float value)

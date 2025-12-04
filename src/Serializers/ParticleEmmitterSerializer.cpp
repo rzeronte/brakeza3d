@@ -131,5 +131,5 @@ void ParticleEmmitterSerializer::LoadFileIntoScene(const std::string &file)
 
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
 
-    Brakeza::get()->addObject3D(o, Brakeza::uniqueObjectLabel("ParticleEmitter"));
+    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("ParticleEmitter"));
 }

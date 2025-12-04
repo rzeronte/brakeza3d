@@ -33,7 +33,7 @@ void BSPMap::init(Camera3D *cam) {
 
     this->entities = new entity_t[MAX_BSP_ENTITIES];
     this->n_entities = 0;
-    this->setLabel("BSPMap");
+    this->setName("BSPMap");
 }
 
 bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Camera3D *cam) {

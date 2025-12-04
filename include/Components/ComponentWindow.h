@@ -55,6 +55,7 @@ public:
     OpenGLPickingBuffer &getPickingColorFramebuffer();
     void resetFramebuffer();
     void ClearOGLFrameBuffers() const;
+    void CheckForResizeOpenGLWindow(const SDL_Event &e);
     [[nodiscard]] int getWidth() const;
     [[nodiscard]] int getHeight() const;
     [[nodiscard]] int getWidthRender() const;

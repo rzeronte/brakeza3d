@@ -58,7 +58,7 @@ void ShadersGUI::DrawShaderVariables(GUIManager *gui)
     }
 
     std::vector<std::string> items;
-    for (auto t: GLSLTypeMapping) {
+    for (auto t : GLSLTypeMapping) {
         items.push_back(t.first);
     }
 
@@ -146,20 +146,20 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, std::string folder)
     }
 
     ImGui::Separator();
-
+    auto browser = gui->getBrowserShaders();
     FileSystemGUI::DrawBrowserFolders(
         gui,
         folder,
         BrakezaSetup::get()->CUSTOM_SHADERS_FOLDER,
-        gui->currentShadersFolderWidget,
-        gui->currentShadersFolders,
-        gui->currentShadersFolderFiles,
+        browser.currentFolder,
+        browser.folderFolders,
+        browser.folderFiles,
         "json"
     );
 
     ImGui::Separator();
 
-    auto files = gui->currentShadersFolderFiles;
+    auto files = browser.folderFiles;
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
     auto sizeButtons = ImVec2(24, 24);
     if (ImGui::BeginTable("ScriptsFolderTable", 3, flags)) {

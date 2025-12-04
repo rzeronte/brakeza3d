@@ -4,7 +4,6 @@
 
 #include "../3D/Vertex3D.h"
 #include "../3D/Object3D.h"
-#include "../3D/Vector3D.h"
 #include "Plane.h"
 #include "AABB3D.h"
 

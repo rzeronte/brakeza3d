@@ -43,9 +43,7 @@ public:
     void CaptureInputEvents(SDL_Event &e) const;
 
     static void shutdown();
-    static void WelcomeMessage();
-    static void checkForResizeOpenGLWindow(const SDL_Event &e);
-    static std::string uniqueObjectLabel(const char *prefix);
+    static std::string UniqueObjectLabel(const char *prefix);
     static Brakeza *get();
     static Brakeza *instance;
     Object3D *getSceneObjectById(int id) const;

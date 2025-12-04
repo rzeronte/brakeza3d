@@ -36,7 +36,7 @@ class GUIManager
     ScriptEditableManager scriptEditableManager;
     ShaderEditableManager shaderEditableManager;
 
-    GuiAddonConsole *widgetConsole;
+    GuiAddonConsole *widgetConsole = new GuiAddonConsole(ComponentsManager::get()->getComponentScripting()->getLua());
     GUIAddonObjects3D *widgetObjects3D;
     GUIAddonObject3DProperties *widgetObjectProperties;
     GUIAddonProjectSetup *widgetProjectSettings;
@@ -49,31 +49,23 @@ class GUIManager
     std::string currentVariableToAddName;
     std::string currentVariableToCreateCustomShader;
 
-    std::string currentScriptsFolderWidget;
-    std::vector<std::string> currentScriptsFolderFiles;
-    std::vector<std::string> currentScriptsFolders;
+public:
+    [[nodiscard]] GUITypes::FolderBrowserCache getBrowserScripts() const;
+    [[nodiscard]] GUITypes::FolderBrowserCache getBrowserScenes() const;
+    [[nodiscard]] GUITypes::FolderBrowserCache getBrowserProjects() const;
+    [[nodiscard]] GUITypes::FolderBrowserCache getBrowserShaders() const;
 
-    std::string currentScenesFolderWidget;
-    std::vector<std::string> currentScenesFolderFiles;
-    std::vector<std::string> currentScenesFolders;
-
-    std::string currentProjectsFolderWidget;
-    std::vector<std::string> currentProjectsFolderFiles;
-    std::vector<std::string> currentProjectsFolders;
-
-    std::string currentShadersFolderWidget;
-    std::vector<std::string> currentShadersFolderFiles;
-    std::vector<std::string> currentShadersFolders;
+private:
+    GUITypes::FolderBrowserCache browserScenes = GUI::CreateBrowserCache(BrakezaSetup::get()->SCENES_FOLDER, BrakezaSetup::get()->SCENES_EXT);
+    GUITypes::FolderBrowserCache browserProjects = GUI::CreateBrowserCache(BrakezaSetup::get()->CUSTOM_SHADERS_FOLDER, BrakezaSetup::get()->PROJECTS_EXT);
+    GUITypes::FolderBrowserCache browserShaders = GUI::CreateBrowserCache(BrakezaSetup::get()->PROJECTS_FOLDER, BrakezaSetup::get()->SHADERS_EXT);
+    GUITypes::FolderBrowserCache browserScripts = GUI::CreateBrowserCache(BrakezaSetup::get()->SCRIPTS_FOLDER, BrakezaSetup::get()->SCRIPTS_EXT);
 
     Color lineSelectorObjectColor = Color::green();
 
     TextureAtlas *textureAtlas;
     Image *splashImage = new Image(BrakezaSetup::get()->IMAGES_FOLDER + BrakezaSetup::get()->SPLASH_FILENAME);
 
-public:
-    [[nodiscard]] TextureAtlas * getTextureAtlas() const;
-
-private:
     void WindowImages();
     void WindowLightsDepthMapsViewer();
     void DrawRegisteredWindows() const;
@@ -105,9 +97,11 @@ public:
     virtual void DrawGUI();
     [[nodiscard]] GuiAddonConsole *getConsole() const;
     [[nodiscard]] bool isLightDepthMapsViewerWindowOpen();
+    [[nodiscard]] TextureAtlas * getTextureAtlas() const;
     static void ShowDeletePopup(const char* title, const char *message, const std::function<void()>& onConfirm);
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
+    static void WelcomeMessage();
 
     friend class Object3DGUI;
     friend class ScriptLuaGUI;

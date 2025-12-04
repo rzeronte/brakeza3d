@@ -63,7 +63,7 @@ public:
 
     bool& enabledPointer();
     void setParent(Object3D *object);
-    void setLabel(const std::string& label);
+    void setName(const std::string& value);
     void setPosition(const Vertex3D &p);
     void AddToPosition(const Vertex3D &p);
     void setRotation(const M3 &r);
@@ -127,7 +127,7 @@ public:
     [[nodiscard]] Vertex3D right() const;
     [[nodiscard]] Vertex3D left() const;
     [[nodiscard]] Color getPickingColor() const;
-    [[nodiscard]] std::string getLabel() const;
+    [[nodiscard]] std::string getName();
     [[nodiscard]] Object3D *getParent() const;
     sol::object getLocalScriptVar(const char *varName);
 

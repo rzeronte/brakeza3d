@@ -52,6 +52,11 @@ public:
     std::string GUI_ICON_SHEET        = "sheet.png";
     std::string SPLASH_FILENAME       = "splash.png";
 
+    std::string SCRIPTS_EXT     = "lua";
+    std::string SCENES_EXT      = "json";
+    std::string SHADERS_EXT     = "json";
+    std::string PROJECTS_EXT    = "json";
+
     // GLOBAL AXIS DIRECTIONS
     Vertex3D right = Vertex3D(1, 0, 0);
     Vertex3D up = Vertex3D(0, 1, 0);

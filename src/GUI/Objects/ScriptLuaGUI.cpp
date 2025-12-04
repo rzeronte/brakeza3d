@@ -118,7 +118,7 @@ void ScriptLuaGUI::DrawScriptsBySelectedObject(GUIManager *gui)
     }
 }
 
-void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, const std::string& folder)
+void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, std::string& folder)
 {
     static char name[256];
     strncpy(name, gui->currentVariableToAddName.c_str(), sizeof(name));
@@ -127,26 +127,27 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, const std::string&
     }
     if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::OPEN), ImVec2(14, 14))) {
         if (!gui->currentVariableToAddName.empty()) {
-            ComponentScripting::createScriptLUAFile(gui->currentScriptsFolderWidget + gui->currentVariableToAddName);
-            gui->currentScriptsFolderFiles = Tools::getFolderFiles(gui->currentScriptsFolderWidget, "lua");
+            auto browser = gui->getBrowserScripts();
+            ComponentScripting::createScriptLUAFile(browser.currentFolder + gui->currentVariableToAddName);
+            browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, "lua");
         }
     }
 
     ImGui::Separator();
-
+    auto browser = gui->getBrowserScripts();
     FileSystemGUI::DrawBrowserFolders(
         gui,
         folder,
         BrakezaSetup::get()->SCRIPTS_FOLDER,
-        gui->currentScriptsFolderWidget,
-        gui->currentScriptsFolders,
-        gui->currentScriptsFolderFiles,
+        browser.currentFolder,
+        browser.folderFolders,
+        browser.folderFiles,
         "lua"
     );
 
     ImGui::Separator();
 
-    auto files = gui->currentScriptsFolderFiles;
+    auto files = browser.folderFiles;
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
     if (ImGui::BeginTable("ScriptsFolderTable", 2, flags)) {
         for (int i = 0; i < files.size(); i++) {

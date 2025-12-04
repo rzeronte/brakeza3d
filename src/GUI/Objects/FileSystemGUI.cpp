@@ -12,13 +12,18 @@
 
 void FileSystemGUI::UpdateFolderFiles(GUIManager *gui)
 {
-    gui->currentScriptsFolderFiles = Tools::getFolderFiles(gui->currentScriptsFolderWidget, "lua");
-    gui->currentScenesFolderFiles = Tools::getFolderFiles(gui->currentScenesFolderWidget, "json");
-    gui->currentProjectsFolderFiles = Tools::getFolderFiles(gui->currentProjectsFolderWidget, "json");
-    gui->currentShadersFolderFiles = Tools::getFolderFiles(gui->currentShadersFolderWidget, "json");
+    auto scripts = gui->getBrowserScripts();
+    auto scenes = gui->getBrowserScenes();
+    auto shaders = gui->getBrowserShaders();
+    auto projects = gui->getBrowserProjects();
+
+    scripts.folderFiles = Tools::getFolderFiles(scripts.currentFolder, "lua");
+    scenes.folderFiles = Tools::getFolderFiles(scripts.currentFolder, "json");
+    shaders.folderFiles = Tools::getFolderFiles(scripts.currentFolder, "json");
+    projects.folderFiles = Tools::getFolderFiles(scripts.currentFolder, "json");
 }
 
-void FileSystemGUI::DrawProjectFiles(GUIManager *gui, const std::string& folder)
+void FileSystemGUI::DrawProjectFiles(GUIManager *gui, std::string folder)
 {
     static char name[256];
     strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
@@ -27,14 +32,15 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, const std::string& folder)
     }
     if (ImGui::ImageButton(Icon(IconGUI::OPEN), ImVec2(14, 14))) {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
+            auto browser = gui->getBrowserProjects();
             ProjectLoader::CreateProject(folder + gui->currentVariableToCreateCustomShader);
-            gui->currentProjectsFolderFiles = Tools::getFolderFiles(gui->currentProjectsFolderWidget, "json");
+            browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, "json");
         }
     }
 
     ImGui::Separator();
-
-    std::vector<std::string> files = gui->currentProjectsFolderFiles;
+    auto browser = gui->getBrowserProjects();
+    std::vector<std::string> files = browser.folderFiles;
     std::sort(files.begin(), files.end() );
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
     if (ImGui::BeginTable("ProjectsFolderTable", 2, flags)) {
@@ -76,7 +82,7 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, const std::string& folder)
     }
 }
 
-void FileSystemGUI::DrawScenesFolder(GUIManager *gui, const std::string& folder)
+void FileSystemGUI::DrawScenesFolder(GUIManager *gui, std::string folder)
 {
     static char name[256];
     strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
@@ -86,26 +92,27 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, const std::string& folder)
 
     if (ImGui::ImageButton(Icon(IconGUI::OPEN), ImVec2(14, 14))) {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
+            auto browser = gui->getBrowserScenes();
             SceneLoader::CreateScene(folder + gui->currentVariableToCreateCustomShader);
-            gui->currentScenesFolderFiles = Tools::getFolderFiles(gui->currentScenesFolderWidget, "json");
+            browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, "json");
         }
     }
 
     ImGui::Separator();
-
+    auto browser = gui->getBrowserScenes();
     DrawBrowserFolders(
         gui,
         folder,
         BrakezaSetup::get()->SCENES_FOLDER,
-        gui->currentScenesFolderWidget,
-        gui->currentScenesFolders,
-        gui->currentScenesFolderFiles,
+        browser.currentFolder,
+        browser.folderFolders,
+        browser.folderFiles,
         "json"
     );
 
     ImGui::Separator();
 
-    auto files = gui->currentScenesFolderFiles;
+    auto files = browser.folderFiles;
     std::sort(files.begin(), files.end() );
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
     if (ImGui::BeginTable("ScenesFolderTable", 2, flags)) {
@@ -154,12 +161,12 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, const std::string& folder)
 
 void FileSystemGUI::DrawBrowserFolders(
     GUIManager *gui,
-    const std::string& folder,
-    const std::string& folderBase,
+    std::string& folder,
+    std::string& folderBase,
     std::string& destiny,
     std::vector<std::string> &folders,
     std::vector<std::string> &files,
-    const std::string& ext
+    std::string ext
 )
 {
     ImGui::Text("Current: %s", folder.c_str());

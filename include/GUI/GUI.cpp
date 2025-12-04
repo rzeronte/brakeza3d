@@ -4,6 +4,7 @@
 
 #include "GUI.h"
 
+#include "../Misc/Tools.h"
 #include "Objects/FileSystemGUI.h"
 
 void GUI::DrawButton(const std::string &tooltip, GUISheet icon, bool active, const std::function<void()>& onClick)
@@ -22,5 +23,16 @@ void GUI::DrawButton(const std::string &tooltip, GUISheet icon, bool active, con
 void GUI::Toggle(bool &value)
 {
     value = !value;
+}
+
+GUITypes::FolderBrowserCache GUI::CreateBrowserCache(std::string folder, std::string &extension)
+{
+    GUITypes::FolderBrowserCache cache = {
+        folder,
+        Tools::getFolderFolders(folder),
+        Tools::getFolderFiles(folder, extension)
+    };
+
+    return cache;
 }
 

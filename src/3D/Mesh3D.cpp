@@ -20,7 +20,7 @@ Mesh3D::Mesh3D()
 
 Mesh3D::~Mesh3D()
 {
-    Logging::Message("Delete Mesh3D: %s", getLabel().c_str());
+    Logging::Message("Delete Mesh3D: %s", getName().c_str());
 
     for (auto &m : meshes) {
         for (auto triangle : m.modelTriangles) delete triangle;
@@ -117,7 +117,7 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
             }
 
             std::string FullPath = BrakezaSetup::get()->TEXTURES_FOLDER + base_filename;
-            Logging::Message("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), getLabel().c_str());
+            Logging::Message("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), getName().c_str());
 
             this->modelTextures.push_back(new Image(FullPath));
             this->modelSpecularTextures.push_back(new Image(FullPath));
@@ -260,7 +260,7 @@ void Mesh3D::postUpdate()
 
 void Mesh3D::buildOctree(int depth)
 {
-    Logging::Message("Building Octree for %s", getLabel().c_str());
+    Logging::Message("Building Octree for %s", getName().c_str());
 
     UpdateBoundingBox();
 
@@ -282,7 +282,7 @@ void Mesh3D::DrawPropertiesGUI()
 
 void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
-    Logging::Message("[Mesh3D] makeRigidBodyFromTriangleMesh for %s", getLabel().c_str());
+    Logging::Message("[Mesh3D] makeRigidBodyFromTriangleMesh for %s", getName().c_str());
 
     setMass(mass);
 
@@ -315,7 +315,7 @@ void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *
 
 void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
-    Logging::Message("[Mesh3D] makeRigidBodyFromTriangleMeshFromConvexHull for %s", getLabel().c_str());
+    Logging::Message("[Mesh3D] makeRigidBodyFromTriangleMeshFromConvexHull for %s", getName().c_str());
 
     setMass(mass);
 
@@ -379,7 +379,7 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
 }
 
 void Mesh3D::SetupGhostCollider(CollisionShape modeShape) {
-    Logging::Message("[Mesh3D] setupGhostCollider for %s", getLabel().c_str());
+    Logging::Message("[Mesh3D] setupGhostCollider for %s", getName().c_str());
 
     removeCollisionObject();
 
@@ -408,7 +408,7 @@ void Mesh3D::SetupGhostCollider(CollisionShape modeShape) {
 
 void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
 {
-    Logging::Message("[Mesh3D] setupRigidBodyCollider for %s", getLabel().c_str());
+    Logging::Message("[Mesh3D] setupRigidBodyCollider for %s", getName().c_str());
     removeCollisionObject();
 
     setCollisionShape(modeShape);
@@ -448,7 +448,7 @@ void Mesh3D::drawImGuiCollisionShapeSelector()
     int item_current_idx = collisionShape;
     const char* combo_preview_value = items[item_current_idx];
 
-    auto comboTitle = "Shape##" + getLabel();
+    auto comboTitle = "Shape##" + getName();
     if (ImGui::BeginCombo(comboTitle.c_str(), combo_preview_value, flags)) {
         for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
             const bool is_selected = (item_current_idx == n);

@@ -750,3 +750,12 @@ void ComponentWindow::setImGuiConfig(BrakezaSetup::ImGUIConfigs c)
 {
     ImGuiConfigChanged = c;
 }
+
+void ComponentWindow::CheckForResizeOpenGLWindow(const SDL_Event &e)
+{
+    if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+        UpdateWindowSize();
+        glViewport(0,0, getWidth(), getHeight());
+        resetFramebuffer();
+    }
+}
