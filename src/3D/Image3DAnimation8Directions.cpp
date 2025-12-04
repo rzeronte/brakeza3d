@@ -135,14 +135,14 @@ void Image3DAnimation8Directions::DrawPropertiesGUI()
     Image3DAnimation8DirectionsGUI::DrawPropertiesGUI(this);
 }
 
-const char *Image3DAnimation8Directions::getTypeObject()
+ObjectTypes Image3DAnimation8Directions::getTypeObject() const
 {
-    return SceneObjectTypes::IMAGE_3D_ANIMATION_8DIR;
+    return ObjectTypes::Image3DAnimation360;
 }
 
-const char *Image3DAnimation8Directions::getTypeIcon()
+GUISheet Image3DAnimation8Directions::getIcon()
 {
-    return IconsByObject::IMAGE_3D_ANIMATION_8DIR;
+    return IconObject::IMAGE_3D_ANIMATION_8DIR;
 }
 
 void Image3DAnimation8Directions::updateBillboardSize() const

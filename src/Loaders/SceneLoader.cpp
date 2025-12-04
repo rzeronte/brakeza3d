@@ -127,7 +127,7 @@ void SceneLoader::SaveScene(const std::string &filename)
     for (auto object : Brakeza::get()->getSceneObjects()) {
         auto objectJson = JSONSerializerRegistry::instance().serialize(object);
 
-        cJSON_AddStringToObject(objectJson, "type", object->getTypeObject());
+        cJSON_AddNumberToObject(objectJson, "type", (int) object->getTypeObject());
         cJSON_AddItemToArray(objectsArray, objectJson);
     }
     cJSON_AddItemToObject(root, "objects", objectsArray);
@@ -165,7 +165,7 @@ void SceneLoader::ClearScene()
 
     auto scripting = ComponentsManager::get()->getComponentScripting();
 
-    scripting->stopLUAScripts();
+    scripting->StopLUAScripts();
 
     for (auto o: scripting->getSceneLUAScripts()) {
         scripting->removeSceneScript(o);
@@ -209,16 +209,16 @@ void SceneLoader::InitSerializers()
 {
     auto& registry = JSONSerializerRegistry::instance();
 
-    registry.registerSerializer(SceneObjectTypes::OBJECT_3D, std::make_shared<Object3DSerializer>());
-    registry.registerSerializer(SceneObjectTypes::IMAGE_2D, std::make_unique<Image2DSerializer>());
-    registry.registerSerializer(SceneObjectTypes::MESH_3D, std::make_unique<Mesh3DSerializer>());
-    registry.registerSerializer(SceneObjectTypes::MESH_3D_ANIMATION, std::make_unique<Mesh3DAnimationSerializer>());
-    registry.registerSerializer(SceneObjectTypes::IMAGE_3D, std::make_unique<Image3DSerializer>());
-    registry.registerSerializer(SceneObjectTypes::IMAGE_3D_ANIMATION, std::make_unique<Image3DAnimationSerializer>());
-    registry.registerSerializer(SceneObjectTypes::IMAGE_3D_ANIMATION_8DIR, std::make_unique<Image3DAnimation8DirectionsSerializer>());
-    registry.registerSerializer(SceneObjectTypes::LIGHT_SPOT, std::make_unique<LightSpotSerializer>());
-    registry.registerSerializer(SceneObjectTypes::LIGHT_POINT, std::make_unique<LightPointSerializer>());
-    registry.registerSerializer(SceneObjectTypes::PARTICLE_EMITTER, std::make_unique<ParticleEmmitterSerializer>());
+    registry.registerSerializer(ObjectTypes::Object3D, std::make_shared<Object3DSerializer>());
+    registry.registerSerializer(ObjectTypes::Image2D, std::make_unique<Image2DSerializer>());
+    registry.registerSerializer(ObjectTypes::Mesh3D, std::make_unique<Mesh3DSerializer>());
+    registry.registerSerializer(ObjectTypes::Mesh3DAnimation, std::make_unique<Mesh3DAnimationSerializer>());
+    registry.registerSerializer(ObjectTypes::Image3D, std::make_unique<Image3DSerializer>());
+    registry.registerSerializer(ObjectTypes::Image3DAnimation360, std::make_unique<Image3DAnimationSerializer>());
+    registry.registerSerializer(ObjectTypes::Image3DAnimation360, std::make_unique<Image3DAnimation8DirectionsSerializer>());
+    registry.registerSerializer(ObjectTypes::LightPoint, std::make_unique<LightSpotSerializer>());
+    registry.registerSerializer(ObjectTypes::LightSpot, std::make_unique<LightPointSerializer>());
+    registry.registerSerializer(ObjectTypes::ParticleEmitter, std::make_unique<ParticleEmmitterSerializer>());
 }
 
 void SceneLoader::SceneLoaderCreateObject(cJSON *object)

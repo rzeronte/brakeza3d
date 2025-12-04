@@ -21,8 +21,8 @@ public:
     void setConstant(float value);
     void setLinear(float value);
     void setCuadratic(float value);
-    const char *getTypeObject() override;
-    const char *getTypeIcon() override;
+    ObjectTypes getTypeObject() const override;
+    GUISheet getIcon() override;
     void DrawPropertiesGUI() override;
     static LightPoint* create(Vertex3D position);
     void setAmbient(const Color &c);

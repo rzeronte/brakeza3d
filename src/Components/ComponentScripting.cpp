@@ -49,7 +49,7 @@ BrakezaSetup::LuaStateScripts ComponentScripting::getStateLUAScripts()
     return stateScripts;
 }
 
-void ComponentScripting::playLUAScripts()
+void ComponentScripting::PlayLUAScripts()
 {
     Logging::Message("LUA Scripts state changed to PLAY");
 
@@ -62,7 +62,7 @@ void ComponentScripting::playLUAScripts()
     stateScripts = BrakezaSetup::LuaStateScripts::LUA_PLAY;
 }
 
-void ComponentScripting::stopLUAScripts()
+void ComponentScripting::StopLUAScripts()
 {
     Logging::Message("LUA Scripts state changed to STOP");
 
@@ -72,7 +72,7 @@ void ComponentScripting::stopLUAScripts()
     stateScripts = BrakezaSetup::LuaStateScripts::LUA_STOP;
 }
 
-void ComponentScripting::reloadLUAScripts()
+void ComponentScripting::ReloadLUAScripts()
 {
     Logging::Message("Reloading LUA Scripts...");
 

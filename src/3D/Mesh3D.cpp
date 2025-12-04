@@ -47,14 +47,14 @@ Mesh3D *Mesh3D::create(Vertex3D position, const std::string& imageFile)
     return nullptr;
 }
 
-const char *Mesh3D::getTypeObject()
+ObjectTypes Mesh3D::getTypeObject() const
 {
-    return SceneObjectTypes::MESH_3D;
+    return ObjectTypes::Mesh3D;
 }
 
-const char *Mesh3D::getTypeIcon()
+GUISheet Mesh3D::getIcon()
 {
-    return IconsByObject::MESH_3D;
+    return IconObject::MESH_3D;
 }
 
 void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
@@ -203,7 +203,7 @@ void Mesh3D::onUpdate()
     }
 
     if (BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (BrakezaSetup::get()->ENABLE_LIGHTS) {
+        if (BrakezaSetup::get()->ENABLE_LIGHTS && isEnableLights()) {
             render->getShaderOGLRenderDeferred()->renderMesh(this, false, window->getGBuffer().FBO);
             if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
                 ShadowMappingPass();

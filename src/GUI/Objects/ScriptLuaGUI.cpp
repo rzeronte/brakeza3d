@@ -91,32 +91,30 @@ void ScriptLuaGUI::DrawScriptsBySelectedObject(GUIManager *gui)
 
     for (unsigned int i = 0; i < objectScripts.size(); i++) {
         auto currentScript = objectScripts[i];
-        ImGui::PushID(i);
 
-        if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::SCRIPT), ImVec2(14, 14))) {
+        if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::SCRIPT), ImVec2(14, 14))) {
             LoadScriptDialog(gui, currentScript->scriptFilename);
         }
 
         ImGui::SameLine();
         std::string optionText = std::to_string(i + 1) + ") " + Tools::removeSubstring(currentScript->scriptFilename, BrakezaSetup::get()->SCRIPTS_FOLDER);
         if (currentScript->isPaused()) {
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::UNLOCK), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::UNLOCK), ImVec2(14, 14))) {
                 currentScript->setPaused(false);
             }
         } else {
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::LOCK), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::LOCK), ImVec2(14, 14))) {
                 currentScript->setPaused(true);
             }
         }
         ImGui::SameLine();
-        if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
+        if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
             o->RemoveScript(currentScript);
         }
         ImGui::SameLine();
         if (ImGui::CollapsingHeader(optionText.c_str())) {
             currentScript->drawImGuiProperties();
         }
-        ImGui::PopID();
     }
 }
 
@@ -127,7 +125,7 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, const std::string&
     if (ImGui::InputText("Script name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
         gui->currentVariableToAddName = name;
     }
-    if (ImGui::Button(std::string("Create script").c_str())) {
+    if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::OPEN), ImVec2(14, 14))) {
         if (!gui->currentVariableToAddName.empty()) {
             ComponentScripting::createScriptLUAFile(gui->currentScriptsFolderWidget + gui->currentVariableToAddName);
             gui->currentScriptsFolderFiles = Tools::getFolderFiles(gui->currentScriptsFolderWidget, "lua");
@@ -159,7 +157,7 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, const std::string&
 
             ImGui::TableSetColumnIndex(0);
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::SCRIPT), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT), ImVec2(16, 16));
             ImGui::SameLine();
             std::string optionText = std::to_string(i + 1) + ") " + file;
             if (ImGui::Selectable(optionText.c_str())) {
@@ -172,7 +170,7 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, const std::string&
                 ImGui::EndDragDropSource();
             }
             ImGui::TableSetColumnIndex(1);
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
                 ImGui::OpenPopup("Deleting script");
             }
             GUIManager::ShowDeletePopup("Deleting script", "Are you sure to delete?", [folder, file, gui] () {
@@ -189,8 +187,8 @@ void ScriptLuaGUI::DrawEditScriptWindow(GUIManager *gui)
 {
     if (!gui->showEditScriptWindow) return;
 
-    gui->SetNextWindowSize(600, 600);
-    ImGui::SetNextWindowBgAlpha(GUITypes::GUIConstants::WINDOW_ALPHA);
+    GUIManager::SetNextWindowSize(600, 600);
+    ImGui::SetNextWindowBgAlpha(GUITypes::Levels::WINDOW_ALPHA);
 
     if (ImGui::Begin("Script edition", &gui->showEditScriptWindow, ImGuiWindowFlags_NoDocking)) {
         drawScriptVariables(gui);
@@ -338,7 +336,7 @@ void ScriptLuaGUI::drawScriptVariables(GUIManager *gui)
             ImGui::Text("%s", type->type.c_str());
 
             ImGui::TableSetColumnIndex(2);
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
                 gui->scriptEditableManager.script->removeDataType(*type);
                 gui->scriptEditableManager.script->updateFileTypes();
             }

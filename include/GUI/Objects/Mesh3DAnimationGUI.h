@@ -16,7 +16,7 @@ public:
         const float range_min = 0.0f;
         const float range_max = 1.0f;
 
-        if (ImGui::CollapsingHeader(SceneObjectTypes::MESH_3D_ANIMATION)) {
+        if (ImGui::CollapsingHeader("Mesh 3D")) {
 
             const char* items[o->scene->mNumAnimations];
             for (unsigned int i = 0; i < o->scene->mNumAnimations; i++) {

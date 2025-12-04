@@ -1,49 +1,117 @@
 #include <SDL2/SDL_image.h>
 #include "../../include/Misc/TextureAtlas.h"
+
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Misc/Logging.h"
 
-TextureAtlas::TextureAtlas(int totalWidth, int totalHeight)
-:
-    total_width(totalWidth),
-    total_height(totalHeight)
+void TextureAtlas::AllocateEmptyMask(int totalWidth, int totalHeight)
 {
-    atlasSurface = SDL_CreateRGBSurface(0, totalWidth, totalHeight, 32, 0, 0, 0, 0);
+    mask = new bool[totalWidth * totalHeight];
 
-    mask = new bool[total_width * total_height];
-
-    for (int i = 0; i < total_width * total_height; i++) {
+    for (int i = 0; i < totalWidth * totalHeight; i++) {
         mask[i] = false;
     }
 }
 
-SDL_Surface *TextureAtlas::getAtlasSurface() const
+TextureAtlas::TextureAtlas(int totalWidth, int totalHeight)
+:
+    totalWidth(totalWidth),
+    totalHeight(totalHeight),
+    atlasSurface(SDL_CreateRGBSurface(0, totalWidth, totalHeight, 32, 0, 0, 0, 0))
 {
-    return atlasSurface;
+    AllocateEmptyMask(totalWidth, totalHeight);
 }
 
-bool TextureAtlas::addTexture(Image *texture, const std::string& name)
+Image *TextureAtlas::getTextureByIndex(int index) const
+{
+    return textures[index];
+}
+
+Image *TextureAtlas::getTextureByXY(int x, int y) const
+{
+    return textures[x + numColumns * y];
+}
+
+void TextureAtlas::CreateFromSheet(const std::string &file, int spriteWidth, int spriteHeight)
+{
+    Logging::Message("TextureAtlas createFromSheet: %s, w: %d, h: %d", file.c_str(), spriteWidth, spriteHeight);
+
+    if (!Tools::FileExists(file.c_str())) {
+        Logging::Message("[TextureAtlas] Failed to load sprite sheet: %s", SDL_GetError());
+        exit(-1);
+    }
+
+    SDL_Surface* spriteSheetSurface = IMG_Load(file.c_str());
+    if (!spriteSheetSurface) {
+        Logging::Message("[TextureAtlas] Failed to load sprite sheet: %s", SDL_GetError());
+        exit(-1);
+    }
+
+    totalWidth = spriteSheetSurface->w;
+    totalHeight = spriteSheetSurface->h;
+
+    AllocateEmptyMask(totalWidth, totalHeight);
+
+    numRows = spriteSheetSurface->h / spriteHeight;
+    numColumns = spriteSheetSurface->w / spriteWidth;
+
+    const auto renderer = ComponentsManager::get()->getComponentWindow()->getRenderer();
+
+    for (int row = 0; row < numRows; ++row) {
+        for (int column = 0; column < numColumns; ++column) {
+            AllocateMask(row, column, spriteWidth, spriteHeight);
+
+            SDL_Rect spriteRect = { column * spriteWidth, row * spriteHeight, spriteWidth, spriteHeight };
+            SDL_Surface* destinySurface = SDL_CreateRGBSurfaceWithFormat(
+                0,
+                spriteWidth,
+                spriteHeight,
+                32,
+                spriteSheetSurface->format->format
+            );
+
+            SDL_BlitSurface(spriteSheetSurface, &spriteRect, destinySurface, nullptr);
+
+            SDL_Texture* spriteTexture = SDL_CreateTextureFromSurface(renderer, destinySurface);
+            if (!spriteTexture) {
+                Logging::Message("[TextureAtlas] Failed to create texture: %s", SDL_GetError());
+                SDL_FreeSurface(spriteSheetSurface);
+                return;
+            }
+
+            Logging::Message(".");
+            textures.push_back(new Image(destinySurface, spriteTexture));
+        }
+
+        Logging::Message("[TextureAtlas] createFromSheet: Sheet successful loaded with %d images", (int) textures.size());
+    }
+
+    SDL_FreeSurface(spriteSheetSurface);
+}
+
+bool TextureAtlas::AddToAtlas(Image *texture, const std::string& name)
 {
     SDL_Surface *texture_surface = texture->getSurface();
 
     int texw = texture_surface->w;
     int texh = texture_surface->h;
 
-    for (int y = 0; y < total_height; y++) {
-        for (int x = 0; x < total_width; x++) {
+    for (int y = 0; y < totalHeight; y++) {
+        for (int x = 0; x < totalWidth; x++) {
 
-            if (this->checkForAllocate(x, y, texw, texh)) {
+            if (this->AllocationCheck(x, y, texw, texh)) {
 
                 TextureAtlasImageInfo textureAtlasInfo;
-                textureAtlasInfo.name = name;
-                textureAtlasInfo.x = static_cast<float>(x);
-                textureAtlasInfo.y = static_cast<float>(y);
-                textureAtlasInfo.width = static_cast<float>(texw);
-                textureAtlasInfo.height = static_cast<float>(texh);
+                textureAtlasInfo.name = name.c_str();
+                textureAtlasInfo.x = (float) x;
+                textureAtlasInfo.y = (float) y;
+                textureAtlasInfo.width = (float) texw;
+                textureAtlasInfo.height = (float) texh;
 
-                textures_info.push_back(textureAtlasInfo);
+                texturesData.push_back(textureAtlasInfo);
                 textures.push_back(texture);
 
-                allocateMask(x, y, texw, texh);
+                AllocateMask(x, y, texw, texh);
 
                 SDL_Rect r;
                 r.x = x;
@@ -63,10 +131,10 @@ bool TextureAtlas::addTexture(Image *texture, const std::string& name)
     return false;
 }
 
-bool TextureAtlas::checkForAllocate(int xpos, int ypos, int width, int height) const
+bool TextureAtlas::AllocationCheck(int xpos, int ypos, int width, int height) const
 {
-    int baseOffset = ypos * total_width + xpos;
-    int max_global_x = total_width * ypos + total_width;
+    int baseOffset = ypos * totalWidth + xpos;
+    int max_global_x = totalWidth * ypos + totalWidth;
 
     if (baseOffset + width > max_global_x) {
         return false;
@@ -82,15 +150,15 @@ bool TextureAtlas::checkForAllocate(int xpos, int ypos, int width, int height) c
             }
         }
 
-        baseOffset += total_width - width;
+        baseOffset += totalWidth - width;
     }
 
     return true;
 }
 
-void TextureAtlas::allocateMask(int xpos, int ypos, int width, int height) const
+void TextureAtlas::AllocateMask(int xpos, int ypos, int width, int height) const
 {
-    int baseOffset = ypos * total_width + xpos;
+    int baseOffset = ypos * totalWidth + xpos;
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
@@ -99,22 +167,28 @@ void TextureAtlas::allocateMask(int xpos, int ypos, int width, int height) const
 
             mask[globalIndex] = true;
         }
-        baseOffset += total_width - width;
+        baseOffset += totalWidth - width;
     }
 }
 
 TextureAtlasImageInfo TextureAtlas::getAtlasTextureInfoForName(const std::string& name)
 {
-    for (int i = 0; i < this->textures_info.size(); i++) {
-        if (textures_info[i].name == name) {
-            return textures_info[i];
+    for (int i = 0; i < this->texturesData.size(); i++) {
+        if (texturesData[i].name == name) {
+            return texturesData[i];
         }
     }
 
     return TextureAtlasImageInfo();
 }
 
-void TextureAtlas::saveJPG(const std::string& name) const
+void TextureAtlas::SavePNG(const std::string& name) const
 {
-    IMG_SavePNG(getAtlasSurface(), name.c_str());
+    IMG_SavePNG(atlasSurface, name.c_str());
+}
+
+TextureAtlas::~TextureAtlas()
+{
+    delete[] mask;
+    SDL_FreeSurface(atlasSurface);
 }

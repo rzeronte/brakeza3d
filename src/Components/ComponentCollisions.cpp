@@ -278,6 +278,6 @@ void ComponentCollisions::setEnableDebugMode(bool value) const
         return;
     }
 
-    Logging::Message("[ComponentCollisions]Physics Debug mode OFF");
+    Logging::Message("[ComponentCollisions] Physics Debug mode OFF");
     dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_NoDebug);
 }

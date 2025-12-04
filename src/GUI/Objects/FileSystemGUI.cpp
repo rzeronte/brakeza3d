@@ -25,7 +25,7 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, const std::string& folder)
     if (ImGui::InputText("Project name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
         gui->currentVariableToCreateCustomShader = name;
     }
-    if (ImGui::Button(std::string("Create Project").c_str())) {
+    if (ImGui::ImageButton(Icon(IconGUI::OPEN), ImVec2(14, 14))) {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
             ProjectLoader::CreateProject(folder + gui->currentVariableToCreateCustomShader);
             gui->currentProjectsFolderFiles = Tools::getFolderFiles(gui->currentProjectsFolderWidget, "json");
@@ -47,21 +47,21 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, const std::string& folder)
             if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                 ImGui::TableSetColumnIndex(0);
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 4, ImGui::GetCursorPosY() + 5.0f));
-                ImGui::Image(IconTag(IconsByGUI::PROJECT), ImVec2(16, 16));
+                ImGui::Image(Icon(IconGUI::PROJECT), ImVec2(24, 24));
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY()));
                 ImGui::Text("%s", title.c_str());
 
                 ImGui::TableSetColumnIndex(1);
-                if (ImGui::ImageButton(IconTag(IconsByGUI::OPEN), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(Icon(IconGUI::OPEN), ImVec2(24, 24))) {
                     ComponentsManager::get()->getComponentRender()->getProjectLoader().LoadProject(folder + file);
                 }
                 ImGui::SameLine();
-                if (ImGui::ImageButton(IconTag(IconsByGUI::SAVE), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(Icon(IconGUI::SAVE), ImVec2(24, 24))) {
                     ProjectLoader::SaveProject(folder + file);
                 }
                 ImGui::SameLine();
-                if (ImGui::ImageButton(IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(Icon(IconGUI::REMOVE), ImVec2(24, 24))) {
                     ImGui::OpenPopup("Deleting project");
                 }
                 gui->ShowDeletePopup("Deleting project", "Are you sure to delete?", [folder, file, gui] () {
@@ -83,7 +83,8 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, const std::string& folder)
     if (ImGui::InputText("Scene name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
         gui->currentVariableToCreateCustomShader = name;
     }
-    if (ImGui::Button(std::string("Create Scene").c_str())) {
+
+    if (ImGui::ImageButton(Icon(IconGUI::OPEN), ImVec2(14, 14))) {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
             SceneLoader::CreateScene(folder + gui->currentVariableToCreateCustomShader);
             gui->currentScenesFolderFiles = Tools::getFolderFiles(gui->currentScenesFolderWidget, "json");
@@ -118,18 +119,18 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, const std::string& folder)
             if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                 ImGui::TableSetColumnIndex(0);
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 4, ImGui::GetCursorPosY() + 5.0f));
-                ImGui::Image(IconTag(IconsByGUI::SCENE), ImVec2(16, 16));
+                ImGui::Image(Icon(IconGUI::SCENE), ImVec2(24, 24));
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY()));
                 ImGui::Text("%s", title.c_str());
 
                 ImGui::TableSetColumnIndex(1);
-                if (ImGui::ImageButton(IconTag(IconsByGUI::OPEN), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(Icon(IconGUI::OPEN), ImVec2(14, 14))) {
                     SceneLoader::ClearScene();
                     ComponentsManager::get()->getComponentRender()->getSceneLoader().LoadScene(folder + file);
                 }
                 ImGui::SameLine();
-                if (ImGui::ImageButton(IconTag(IconsByGUI::SAVE), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(Icon(IconGUI::SAVE), ImVec2(14, 14))) {
                     ImGui::OpenPopup("Overriding scene");
                 }
                 GUIManager::ShowDeletePopup("Overriding scene", "Are you sure to override?", [folder, file, gui] () {
@@ -137,7 +138,7 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, const std::string& folder)
                 });
 
                 ImGui::SameLine();
-                if (ImGui::ImageButton(IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
                     ImGui::OpenPopup("Deleting scene");
                 }
                 gui->ShowDeletePopup("Deleting scene", "Are you sure to delete?", [folder, file, gui] () {
@@ -166,7 +167,7 @@ void FileSystemGUI::DrawBrowserFolders(
     ImGui::Separator();
 
     if (folder != folderBase) {
-        ImGui::Image(IconTag(IconsByGUI::FOLDER), ImVec2(16, 16));
+        ImGui::Image(Icon(IconGUI::FOLDER), ImVec2(24, 24));
         ImGui::SameLine();
         if (ImGui::Button("..")) {
             destiny = Tools::GoBackFromFolder(destiny);
@@ -175,13 +176,13 @@ void FileSystemGUI::DrawBrowserFolders(
         }
     }
 
-    ImGui::Image(IconTag(IconsByGUI::FOLDER), ImVec2(16, 16));
+    ImGui::Image(Icon(IconGUI::FOLDER), ImVec2(24, 24));
     ImGui::SameLine();
     ImGui::Text(".");
 
     for (const auto & i : folders) {
         auto fullPathFolder = folder + i;
-        ImGui::Image(IconTag(IconsByGUI::FOLDER), ImVec2(16, 16));
+        ImGui::Image(Icon(IconGUI::FOLDER), ImVec2(24, 24));
         ImGui::SameLine();
         if (ImGui::Button(i.c_str())) {
             destiny = fullPathFolder + "/";
@@ -190,7 +191,6 @@ void FileSystemGUI::DrawBrowserFolders(
         }
     }
 }
-
 
 void FileSystemGUI::LoadImagesFolder(GUIManager *gui)
 {
@@ -201,18 +201,7 @@ void FileSystemGUI::LoadImagesFolder(GUIManager *gui)
     }
 }
 
-void FileSystemGUI::LoadIcons(TexturePackage &icon)
+ImTextureID FileSystemGUI::Icon(GUISheet coords)
 {
-    const auto interfaceFolder = BrakezaSetup::get()->ICONS_FOLDER + "interface/";
-
-    for (const auto& iconMapping : IconsByObject::ICON_FILES)
-        icon.addItem(interfaceFolder + iconMapping.filename, iconMapping.id);
-
-    for (const auto& iconMapping : IconsByGUI::ICON_FILES)
-        icon.addItem(interfaceFolder + iconMapping.filename, iconMapping.id);
-}
-
-ImTextureID FileSystemGUI::IconTag(const char* iconTag)
-{
-    return TexturePackage::getOGLTextureID(Brakeza::get()->GUI()->getImGuiTextures(), iconTag);
+    return Brakeza::get()->GUI()->getTextureAtlas()->getTextureByXY(coords.x, coords.y)->getOGLImTexture();
 }

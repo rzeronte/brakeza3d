@@ -16,35 +16,35 @@ struct TextureAtlasImageInfo {
     float height;
 };
 
+class TextureAtlas
+{
+    int totalWidth = 0;
+    int totalHeight = 0;
+    int numRows = 0;
+    int numColumns = 0;
 
-class TextureAtlas {
-
-    bool *mask;
-
-public:
-    TextureAtlas(int totalWidth, int totalHeight);
-
-    bool addTexture(Image *texture, const std::string& name);
-
+    bool *mask = nullptr;
+    SDL_Surface *atlasSurface = nullptr;
     std::vector<Image *> textures;
-    std::vector<TextureAtlasImageInfo> textures_info;
+    std::vector<TextureAtlasImageInfo> texturesData;
+
+    void AllocateMask(int xpos, int ypos, int width, int height) const;
+    [[nodiscard]] bool AllocationCheck(int xpos, int ypos, int width, int height) const;
+public:
+
+    TextureAtlas() = default;
+    TextureAtlas(int totalWidth, int totalHeight);
+    ~TextureAtlas();
+    bool AddToAtlas(Image *texture, const std::string& name);
+    void AllocateEmptyMask(int totalWidth, int totalHeight);
+    void SavePNG(const std::string& name) const;
+    void CreateFromSheet(const std::string &file, int spriteWidth, int spriteHeight);
 
     TextureAtlasImageInfo getAtlasTextureInfoForName(const std::string& name);
-
-    void saveJPG(const std::string& name) const;
-
-    int total_width;
-    int total_height;
-    SDL_Surface *atlasSurface;
+    [[nodiscard]] Image *getTextureByIndex(int index) const;
+    [[nodiscard]] Image *getTextureByXY(int x, int y) const;
 
 private:
-
-    bool checkForAllocate(int xpos, int ypos, int width, int height) const;
-
-    void allocateMask(int xpos, int ypos, int width, int height) const;
-
-public:
-    [[nodiscard]] SDL_Surface *getAtlasSurface() const;
 };
 
 

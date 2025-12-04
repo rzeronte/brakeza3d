@@ -173,14 +173,14 @@ Image3D::~Image3D()
 {
 }
 
-const char *Image3D::getTypeObject()
+ObjectTypes Image3D::getTypeObject() const
 {
-    return SceneObjectTypes::IMAGE_3D;
+    return ObjectTypes::Image3D;
 }
 
-const char *Image3D::getTypeIcon()
+GUISheet Image3D::getIcon()
 {
-    return IconsByObject::IMAGE_3D;
+    return IconObject::IMAGE_3D;
 }
 
 void Image3D::setWidth(float value)

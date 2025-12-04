@@ -20,28 +20,27 @@
 #include "../../Serializers/Image3DAnimationSerializer.h"
 #include "../Objects/FileSystemGUI.h"
 
-GUIAddonMenu::GUIAddonMenu(std::vector<GUITypes::GUIWindowsStatus> &windowStatus)
+GUIAddonMenu::GUIAddonMenu(std::vector<GUITypes::GUIWindowData> &windowStatus)
 :
     windowStatus(windowStatus)
 {
+    menus = {
+        {"Brakeza3D", [this] { this->DrawMainMenuBrakeza3D(); }},
+        {"Script Controls", [this] { this->DrawMainMenuScriptControls(); }},
+        {"Add Object", [this] { this->DrawMainMenuAddObject(); }},
+        {"Video", [this] { this->DrawMainMenuVideo(); }},
+        {"Colliders", [this] { this->DrawMainMenuColliders(); }},
+        {"Illumination", [this] { this->DrawMainMenuIllumination(); }},
+        {"Camera",[this] { this->DrawMainMenuCamera(); }},
+        {"Sound", [this] { this->DrawMainMenuSound(); }},
+        {"Logging", [this] { this->DrawMainMenuLogging(); }},
+        {"Layout", [this] { this->DrawMainMenuLayout(); }},
+        {"Window", [this] { this->DrawMainMenuWindow(); }},
+    };
 }
 
 void GUIAddonMenu::Draw()
 {
-    std::vector<GUITypes::GUIMenuItem> menus = {
-        {"Brakeza3D", [this]() { this->DrawMainMenuBrakeza3D(); }},
-        {"Script Controls",[this]() { this->DrawMainMenuScriptControls(); }},
-        {"Add Object",[this]() { this->DrawMainMenuAddObject(); }},
-        {"Video", [this]() { this->DrawMainMenuVideo(); }},
-        {"Colliders", [this]() { this->DrawMainMenuColliders(); }},
-        {"Illumination", [this]() { this->DrawMainMenuIllumination(); }},
-        {"Camera",[this]() { this->DrawMainMenuCamera(); }},
-        {"Sound", [this]() { this->DrawMainMenuSound(); }},
-        {"Logging", [this]() { this->DrawMainMenuLogging(); }},
-        {"Layout", [this]() { this->DrawMainMenuLayout(); }},
-        {"Window", [this]() { this->DrawMainMenuWindow(); }},
-    };
-
     if (ImGui::BeginMainMenuBar()) {
         for (const auto & menu : menus) {
             if (ImGui::BeginMenu(menu.label.c_str())) {
@@ -51,17 +50,18 @@ void GUIAddonMenu::Draw()
         }
         ImGui::EndMainMenuBar();
     }
-
     DrawAboutMeModal();
 }
 
 void GUIAddonMenu::DrawMainMenuBrakeza3D()
 {
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::ABOUT_ME), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("About Brakeza3D")) {
         BrakezaSetup::get()->SHOW_ABOUT_ME_MODAL = true;
     }
 
     ImGui::Separator();
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::EXIT), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Exit")) BrakezaSetup::get()->EXIT = true;
 }
 
@@ -69,25 +69,25 @@ void GUIAddonMenu::DrawMainMenuScriptControls()
 {
     auto scripting = ComponentsManager::get()->getComponentScripting();
     auto state = scripting->getStateLUAScripts();
-    ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::PLAY), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::PLAY), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Play scripts", "F1", false,  state != BrakezaSetup::LuaStateScripts::LUA_PLAY)) {
-        scripting->playLUAScripts();
+        scripting->PlayLUAScripts();
     }
     ImGui::Separator();
-    ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::STOP), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::STOP), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Stop scripts", "F1", false, state != BrakezaSetup::LuaStateScripts::LUA_STOP)) {
-        scripting->stopLUAScripts();
+        scripting->StopLUAScripts();
     }
     ImGui::Separator();
-    ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::RELOAD), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::RELOAD), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Reload scripts", "F2")) {
-        scripting->reloadLUAScripts();
+        scripting->ReloadLUAScripts();
     }
     ImGui::Separator();
-    ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::REMOVE), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Clear scene objects", "F3")) {
         SceneLoader::ClearScene();
@@ -98,71 +98,68 @@ void GUIAddonMenu::DrawMainMenuAddObject()
 {
     auto setup = BrakezaSetup::get();
 
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::OBJECT_3D), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconObject::OBJECT_3D), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Object3D (Empty)")) {
         Object3DSerializer().LoadFileIntoScene("");
     }
-
     ImGui::SeparatorText("2D Objects");
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_2D), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_2D), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Image2D")) {
-        DrawImage2DMenuItem(setup->IMAGES_FOLDER);
+        DrawItemsToLoad(setup->IMAGES_FOLDER, "png", IconObject::IMAGE_2D, [](const std::string& path) { Image2DSerializer().LoadFileIntoScene(path); });
         ImGui::EndMenu();
     }
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_2D_ANIMATION), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_2D_ANIMATION), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Image2D Animation")) {
-        DrawImage2DAnimationMenuItem(setup->SPRITES_FOLDER);
+        DrawItemsToLoad(setup->SPRITES_FOLDER, "png", IconObject::IMAGE_2D_ANIMATION, [](const std::string& path) { Image2DAnimationSerializer().LoadFileIntoScene(path); });
         ImGui::EndMenu();
     }
-
     ImGui::SeparatorText("3D Objects");
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Image3D")) {
-        DrawImage3DMenuItem(setup->IMAGES_FOLDER);
+        DrawItemsToLoad(setup->IMAGES_FOLDER, "png", IconObject::IMAGE_3D ,[](const std::string& path) { Image3DSerializer().LoadFileIntoScene(path); });
         ImGui::EndMenu();
     }
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D_ANIMATION), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Image3D Animation")) {
-        DrawBillboardAnimationMenuItem(setup->SPRITES_FOLDER);
+        DrawItemsToLoad(setup->SPRITES_FOLDER, "png", IconObject::IMAGE_3D_ANIMATION, [](const std::string& path) { Image3DAnimationSerializer().LoadFileIntoScene(path); });
         ImGui::EndMenu();
     }
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::IMAGE_3D_ANIMATION_8DIR), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION_8DIR), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Image3D Animation 360")) {
         Image3DAnimation8DirectionsSerializer().LoadFileIntoScene("");
         ImGui::EndMenu();
     }
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::MESH_3D), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconObject::MESH_3D), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Mesh3D")) {
-        DrawMesh3DMenuItem(setup->MODELS_FOLDER);
+        DrawItemsToLoad(setup->MODELS_FOLDER, "fbx", IconObject::MESH_3D, [](const std::string& path) { Mesh3DSerializer().LoadFileIntoScene(path); });
         ImGui::EndMenu();
     }
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::MESH_3D_ANIMATION), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconObject::MESH_3D_ANIMATION), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Mesh3DAnimation")) {
-        DrawMesh3DAnimationMenuItem(setup->ANIMATIONS_FOLDER);
+        DrawItemsToLoad(setup->ANIMATIONS_FOLDER, "fbx", IconObject::MESH_3D_ANIMATION, [](const std::string& path) { Mesh3DAnimationSerializer().LoadFileIntoScene(path); });
         ImGui::EndMenu();
     }
-
     ImGui::SeparatorText("Lights");
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::LIGHT_POINT), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_POINT), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("PointLight")) {
         LightPointSerializer().LoadFileIntoScene("");
     }
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::LIGHT_SPOT), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_SPOT), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("SpotLight")) {
         LightSpotSerializer().LoadFileIntoScene("");
     }
     ImGui::SeparatorText("Emitters");
-    ImGui::Image(FileSystemGUI::IconTag(IconsByObject::PARTICLE_EMITTER), ImVec2(16, 16));
+    ImGui::Image(FileSystemGUI::Icon(IconObject::PARTICLE_EMITTER), GUITypes::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("ParticleEmitter")) {
         ParticleEmmitterSerializer().LoadFileIntoScene("");
@@ -175,6 +172,7 @@ void GUIAddonMenu::DrawMainMenuVideo()
     auto setup = BrakezaSetup::get();
 
     ImGui::SeparatorText("Framerate");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("V-Sync", nullptr, &setup->V_SYNC);
     if (ImGui::IsItemEdited()) {
         if (setup->V_SYNC) {
@@ -187,17 +185,21 @@ void GUIAddonMenu::DrawMainMenuVideo()
             SDL_RenderSetVSync(ComponentsManager::get()->getComponentWindow()->getRenderer(), 0);
         }
     }
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Limit frame rate", nullptr,  &setup->LIMIT_FRAMERATE);
     if (setup->LIMIT_FRAMERATE) {
         const int range_framerate_sensibility = 1;
-        ImGui::DragScalar("Limit frames to:", ImGuiDataType_S32, &setup->FRAMERATE, range_framerate_sensibility, &GUITypes::GUIConstants::DRAG_FRAMERATE_MIN, &GUITypes::GUIConstants::DRAG_FRAMERATE_MAX, "%d", 1.0f);
+        ImGui::DragScalar("Limit frames to:", ImGuiDataType_S32, &setup->FRAMERATE, range_framerate_sensibility, &GUITypes::Levels::DRAG_FRAMERATE_MIN, &GUITypes::Levels::DRAG_FRAMERATE_MAX, "%d", 1.0f);
 
     }
     ImGui::SeparatorText("Render modes");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::RENDER_PIXELS), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Vertex", nullptr, &setup->TRIANGLE_MODE_PIXELS);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::RENDER_WIRE), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("WireFrame",nullptr,  &setup->TRIANGLE_MODE_WIREFRAME);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::RENDER_SHADING), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Solid", nullptr,  &setup->TRIANGLE_MODE_SHADING);
-    ImGui::MenuItem("Picking Colors", nullptr, &setup->TRIANGLE_MODE_PICKING_COLORS);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::RENDER_TEXTURE), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Textures",nullptr, &setup->TRIANGLE_MODE_TEXTURIZED);
 
     const float focalMinValues = 0;
@@ -205,6 +207,7 @@ void GUIAddonMenu::DrawMainMenuVideo()
     const float focalValueSens = 0.001;
 
     ImGui::SeparatorText("Post-processing");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Enable DOF", nullptr, &BrakezaSetup::get()->ENABLE_DOF_BLUR);
     if (BrakezaSetup::get()->ENABLE_DOF_BLUR) {
         const float depthValueSens = 0.1;
@@ -220,6 +223,7 @@ void GUIAddonMenu::DrawMainMenuVideo()
         ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
     }
 
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Enable FOG", nullptr, &BrakezaSetup::get()->ENABLE_FOG);
     if (BrakezaSetup::get()->ENABLE_FOG) {
         const float rangeFogSens = 0.1;
@@ -238,6 +242,7 @@ void GUIAddonMenu::DrawMainMenuVideo()
         }
     }
     ImGui::SeparatorText("Screen helpers");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Draw Object3D Axis", nullptr, &setup->RENDER_OBJECTS_AXIS);
     if (setup->RENDER_OBJECTS_AXIS) {
         const float sizeAxisMin = 0;
@@ -245,17 +250,28 @@ void GUIAddonMenu::DrawMainMenuVideo()
         const float sizeAxisSens = 0.01;
         ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &setup->OBJECT_AXIS_SIZE, sizeAxisSens, &sizeAxisMin, &sizeAxisMax, "%f", 1.0f);
     }
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Draw Mesh3D AABB", nullptr, &setup->DRAW_MESH3D_AABB);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Draw Mesh3D Octree", nullptr, &setup->DRAW_MESH3D_OCTREE);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Draw Mesh3D Grid", nullptr, &setup->DRAW_MESH3D_GRID);
     if (setup->DRAW_MESH3D_GRID) {
         ImGui::Separator();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::MenuItem("Draw Test Passed Cells", nullptr, &setup->DRAW_MESH3D_TEST_PASSED);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::MenuItem("Draw Not Test Passed Cells", nullptr, &setup->DRAW_MESH3D_TEST_NOT_PASSED);
         ImGui::Separator();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::MenuItem("Draw AStar Travel", nullptr, &setup->DRAW_MESH3D_GRID_ASTAR);
     }
+    ImGui::Separator();
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::PICKING_COLORS), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Picking Colors", nullptr, &setup->TRIANGLE_MODE_PICKING_COLORS);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::FPS), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Show FPS", nullptr, &setup->DRAW_FPS_RENDER);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::SHOW_BONES), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Draw Bones", nullptr, &setup->DRAW_ANIMATION_BONES);
 }
 
@@ -268,15 +284,20 @@ void GUIAddonMenu::DrawMainMenuColliders()
     int minFixedTime = 1;
     int maxFixedTime = 60;
 
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::GRAVITY), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Enable Collisions System", nullptr, &setup->ENABLE_BULLET_STEP_SIMULATION);
     if (!setup->ENABLE_BULLET_STEP_SIMULATION) return;
     ImGui::Separator();
 
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLISION_OBJECTS), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Handle object collisions", nullptr, &setup->BULLET_CHECK_ALL_PAIRS);
     ImGui::SeparatorText("Step simulation setup");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::DragScalar("Max sub-steps", ImGuiDataType_S32, &setup->BULLET_MAX_SUBSTEPS, 1, &minSubsteps, &maxSubsteps, "%d", 1.0f);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::DragScalar("Fixed time step (1/x)", ImGuiDataType_S32, &setup->BULLET_FIXED_TIME_STEPS, 1, &minFixedTime, &maxFixedTime, "%d", 1.0f);
 
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     float vec3f[3];
     setup->gravity.toFloat(vec3f);
     if (ImGui::DragFloat3("Gravity", vec3f, 0.01f, -1000.0f, 1000.0f)) {
@@ -287,24 +308,30 @@ void GUIAddonMenu::DrawMainMenuColliders()
     }
 
     ImGui::SeparatorText("Screen helpers");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Draw debug mode", nullptr, &setup->BULLET_DEBUG_MODE)) {
         ComponentsManager::get()->getComponentCollisions()->setEnableDebugMode(setup->BULLET_DEBUG_MODE);
     }
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Launch demo objects", nullptr, &setup->PROJECTILE_SIMPLE_MESH);
 
     if (setup->PROJECTILE_SIMPLE_MESH) {
         const float range_sensibility = 0.75f;
         ImGui::Separator();
-        ImGui::DragScalar("Objects impulse", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_IMPULSE, range_sensibility, &GUITypes::GUIConstants::DRAG_UNIT_MIN, &GUITypes::GUIConstants::DRAG_UNIT_MAX, "%f", 1.0f);
-        ImGui::DragScalar("Objects accuracy", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_ACCURACY, range_sensibility, &GUITypes::GUIConstants::DRAG_UNIT_MIN, &GUITypes::GUIConstants::DRAG_UNIT_MAX, "%f", 1.0f);
-        ImGui::DragScalar("Objects mass", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_MASS, range_sensibility, &GUITypes::GUIConstants::DRAG_UNIT_MIN, &GUITypes::GUIConstants::DRAG_UNIT_MAX, "%f", 1.0f);
-        }
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::DragScalar("Objects impulse", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_IMPULSE, range_sensibility, &GUITypes::Levels::DRAG_UNIT_MIN, &GUITypes::Levels::DRAG_UNIT_MAX, "%f", 1.0f);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::DragScalar("Objects accuracy", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_ACCURACY, range_sensibility, &GUITypes::Levels::DRAG_UNIT_MIN, &GUITypes::Levels::DRAG_UNIT_MAX, "%f", 1.0f);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::DragScalar("Objects mass", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_MASS, range_sensibility, &GUITypes::Levels::DRAG_UNIT_MIN, &GUITypes::Levels::DRAG_UNIT_MAX, "%f", 1.0f);
+    }
 }
 
 void GUIAddonMenu::DrawMainMenuIllumination()
 {
     auto setup = BrakezaSetup::get();
 
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::LIGHT_SYSTEM), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Enable Lights System", nullptr, &setup->ENABLE_LIGHTS);
 
     if (!setup->ENABLE_LIGHTS) return;
@@ -313,42 +340,57 @@ void GUIAddonMenu::DrawMainMenuIllumination()
     ImGui::MenuItem("Enable Shadow Mapping", nullptr, &setup->ENABLE_SHADOW_MAPPING);
     if (setup->ENABLE_SHADOW_MAPPING) {
         ImGui::SeparatorText("Shadow Mapping setup");
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("Shadows Intensity", &setup->SHADOW_MAPPING_INTENSITY, 0.1f, -5.0f, 5.0f);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("DepthMaps Near plane", &setup->SHADOW_MAPPING_DEPTH_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("DepthMaps Far plane", &setup->SHADOW_MAPPING_DEPTH_FAR_PLANE, 0.1f, 1.0f, 500.0f);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
     }
     ImGui::SeparatorText("Sun light setup");
     auto& dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->getDirectionalLight();
+
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::DragFloat3("Sun direction", &dirLight.direction[0], 0.01f, -1.0f, 1.0f);
-    ImVec4 color = {dirLight.ambient.x, dirLight.ambient.y, dirLight.ambient.z, 1};
-    bool changed_color = ImGui::ColorEdit4("Ambient##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
-    if (changed_color) {
-        dirLight.ambient = {color.x, color.y, color.z};
+
+    ImGui::Separator();
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImVec4 colorAmbient = {dirLight.ambient.x, dirLight.ambient.y, dirLight.ambient.z, 1};
+    if (ImGui::ColorEdit4("Ambient##", reinterpret_cast<float *>(&colorAmbient), ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs)) {
+        dirLight.ambient = {colorAmbient.x, colorAmbient.y, colorAmbient.z};
     }
-    color = {dirLight.specular.x, dirLight.specular.y, dirLight.specular.z, 1};
-    changed_color = ImGui::ColorEdit4("Specular##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
-    if (changed_color) {
-        dirLight.specular = {color.x, color.y, color.z};
+    ImGui::SameLine();
+    ImVec4 colorSpecular = {dirLight.specular.x, dirLight.specular.y, dirLight.specular.z, 1};
+    if (ImGui::ColorEdit4("Specular##", reinterpret_cast<float *>(&colorSpecular), ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs)) {
+        dirLight.specular = {colorSpecular.x, colorSpecular.y, colorSpecular.z};
     }
-    color = {dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z, 1};
-    changed_color = ImGui::ColorEdit4("Diffuse##", reinterpret_cast<float *>(&color), ImGuiColorEditFlags_NoOptions);
-    if (changed_color) {
-        dirLight.diffuse = {color.x, color.y, color.z};
+    ImVec4 colorDiffuse = {dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z, 1};
+    ImGui::SameLine();
+    if (ImGui::ColorEdit4("Diffuse##", reinterpret_cast<float *>(&colorDiffuse), ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs)) {
+        dirLight.diffuse = {colorDiffuse.x, colorDiffuse.y, colorDiffuse.z};
     }
     if (setup->ENABLE_SHADOW_MAPPING) {
+        ImGui::Separator();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::MenuItem("Enable Sun shadows", nullptr, &setup->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
     }
     ImGui::SeparatorText("Screen helpers");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Shadow Mapping debug mode", nullptr, &setup->SHADOW_MAPPING_DEBUG);
     if (setup->ENABLE_LIGHTS && setup->TRIANGLE_MODE_TEXTURIZED) {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::MenuItem("Show Depth Map", nullptr, &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
     }
 
     if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
         auto s = ComponentsManager::get()->getComponentRender()->getShaderOGLDepthMap();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 10.0f);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("Far Plane", &s->farPlane, 0.01f, 0.0f, 100.0f);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("Near Plane", &s->nearPlane, 0.01f, 0.0f, 100.0f);
         ImGui::Separator();
     }
@@ -360,11 +402,12 @@ void GUIAddonMenu::DrawMainMenuCamera()
     auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
     ImGui::SeparatorText("Camera setup");
-    ImGui::DragScalar("FOV", ImGuiDataType_Float, &setup->HORIZONTAL_FOV, 1, &GUITypes::GUIConstants::DRAG_FOV_MIN, &GUITypes::GUIConstants::DRAG_FOV_MAX, "%f", 1.0f);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::DragScalar("FOV", ImGuiDataType_Float, &setup->HORIZONTAL_FOV, 1, &GUITypes::Levels::DRAG_FOV_MIN, &GUITypes::Levels::DRAG_FOV_MAX, "%f", 1.0f);
     const float range_far_plane_distance_sensibility = 1.0f;
-    ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &GUITypes::GUIConstants::DRAG_FAR_PLANE_MIN, &GUITypes::GUIConstants::DRAG_FAR_PLANE_MIN, "%f", 1.0f);
-
+    ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &GUITypes::Levels::DRAG_FAR_PLANE_MIN, &GUITypes::Levels::DRAG_FAR_PLANE_MIN, "%f", 1.0f);
     // position
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     float vec3f[3];
     camera->getPosition().toFloat(vec3f);
     if (ImGui::DragFloat3("Position", vec3f, 0.1f, -10000.0f, 10000.0f)) {
@@ -383,6 +426,7 @@ void GUIAddonMenu::DrawMainMenuCamera()
     vec3f[0] = pitch;
     vec3f[1] = yaw;
     vec3f[2] = roll;
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::DragFloat3("Rotation", vec3f, 0.01f, -999999.0f, 999999.0f)) {
         const float factor = 0.0025f;
         pitch = vec3f[0];
@@ -407,13 +451,18 @@ void GUIAddonMenu::DrawMainMenuCamera()
         }
     }
     ImGui::SeparatorText("Keyboard controls setup");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::DragFloat("Cursors speed walking", &BrakezaSetup::get()->WALKING_SPEED, 0.01f, 0.0f, 500.0f);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::DragFloat("Cursors speed strafe", &BrakezaSetup::get()->STRAFE_SPEED, 0.01f, 0.0f, 500.0f);
     ImGui::SeparatorText("Camera GUI features");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Enable click objects", nullptr, &setup->MOUSE_CLICK_SELECT_OBJECT3D);
 
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::MOUSE_LOOK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Enable Mouse Look (Right Button)", nullptr, &BrakezaSetup::get()->MOUSE_LOOK);
     if (BrakezaSetup::get()->MOUSE_LOOK) {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::MOUSE_LOOK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("Sensibility", &BrakezaSetup::get()->MOUSE_SENSITIVITY, 0.001f, 0.0f, 1.0f);
     }
 }
@@ -423,6 +472,7 @@ void GUIAddonMenu::DrawMainMenuSound()
     auto setup = BrakezaSetup::get();
 
     const float range_sensibility_volume = 1;
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Global Sound System", nullptr, &setup->ENABLE_SOUND);
     ImGui::Separator();
     if (ImGui::IsItemDeactivatedAfterEdit()) {
@@ -436,10 +486,12 @@ void GUIAddonMenu::DrawMainMenuSound()
         }
     }
 
-    ImGui::DragScalar("Music volume", ImGuiDataType_Float, &setup->SOUND_VOLUME_MUSIC, range_sensibility_volume, &GUITypes::GUIConstants::DRAG_VOLUME_MIN, &GUITypes::GUIConstants::DRAG_VOLUME_MAX, "%f", 1.0f);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::DragScalar("Music volume", ImGuiDataType_Float, &setup->SOUND_VOLUME_MUSIC, range_sensibility_volume, &GUITypes::Levels::DRAG_VOLUME_MIN, &GUITypes::Levels::DRAG_VOLUME_MAX, "%f", 1.0f);
     if (ImGui::IsItemEdited()) { Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC)); }
 
-    ImGui::DragScalar("Global Channel volume", ImGuiDataType_Float, &setup->SOUND_CHANNEL_GLOBAL, range_sensibility_volume, &GUITypes::GUIConstants::DRAG_VOLUME_MIN, &GUITypes::GUIConstants::DRAG_VOLUME_MAX, "%f", 1.0f);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::DragScalar("Global Channel volume", ImGuiDataType_Float, &setup->SOUND_CHANNEL_GLOBAL, range_sensibility_volume, &GUITypes::Levels::DRAG_VOLUME_MIN, &GUITypes::Levels::DRAG_VOLUME_MAX, "%f", 1.0f);
     if (ImGui::IsItemEdited()) {
         Mix_Volume(BrakezaSetup::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_CHANNEL_GLOBAL));
     }
@@ -449,9 +501,12 @@ void GUIAddonMenu::DrawMainMenuLogging()
 {
     auto setup = BrakezaSetup::get();
 
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Output to Console", nullptr, &setup->ENABLE_LOGGING);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Output to STD", nullptr, &setup->ENABLE_LOGGING_STD);
     ImGui::Separator();
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Log collider collisions", nullptr, &setup->LOG_COLLISION_OBJECTS);
 }
 
@@ -459,21 +514,27 @@ void GUIAddonMenu::DrawMainMenuLayout()
 {
     auto setup = BrakezaSetup::get();
 
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Enable/Disable GUI (F4)", nullptr, &setup->ENABLE_IMGUI);
     ImGui::Separator();
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("GUI Toolbar", nullptr, &setup->ENABLE_IMGUI_TOOLBAR);
 
     ImGui::SeparatorText("Layout modes");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Default", "F5")) {
         ComponentsManager::get()->getComponentWindow()->setImGuiConfig(BrakezaSetup::ImGUIConfigs::DEFAULT);
     }
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Coding", "F6")) {
         ComponentsManager::get()->getComponentWindow()->setImGuiConfig(BrakezaSetup::ImGUIConfigs::CODING);
     }
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Design", "F7")) {
         ComponentsManager::get()->getComponentWindow()->setImGuiConfig(BrakezaSetup::ImGUIConfigs::DESIGN);
     }
     ImGui::Separator();
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Save current layout")) {
         ComponentsManager::get()->getComponentWindow()->saveImGuiCurrentLayout();
     }
@@ -483,63 +544,16 @@ void GUIAddonMenu::DrawMainMenuWindow()
 {
     auto setup = BrakezaSetup::get();
 
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("FullScreen (F11)", nullptr, &setup->FULLSCREEN);
     if (ImGui::IsItemEdited()) {
         ComponentsManager::get()->getComponentWindow()->toggleFullScreen();
     }
     ImGui::SeparatorText("Windows/Widgets");
     for (auto &w : windowStatus) {
+        ImGui::Image(FileSystemGUI::Icon(w.icon), GUITypes::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::MenuItem(w.label.c_str(), nullptr, &w.isOpen);
     }
-}
-
-// Ahora tus funciones se simplifican a:
-void GUIAddonMenu::DrawImage2DMenuItem(const std::string& folder)
-{
-    drawItemsToLoad(folder, "png", IconsByObject::IMAGE_2D,
-        [](const std::string& path) {
-            Image2DSerializer().LoadFileIntoScene(path);
-        });
-}
-
-void GUIAddonMenu::DrawImage2DAnimationMenuItem(const std::string& folder)
-{
-    drawItemsToLoad(folder, "png", IconsByObject::IMAGE_2D_ANIMATION,
-        [](const std::string& path) {
-            Image2DAnimationSerializer().LoadFileIntoScene(path);
-        });
-}
-
-void GUIAddonMenu::DrawImage3DMenuItem(const std::string& folder)
-{
-    drawItemsToLoad(folder, "png", IconsByObject::IMAGE_3D,
-        [](const std::string& path) {
-            Image3DSerializer().LoadFileIntoScene(path);
-        });
-}
-
-void GUIAddonMenu::DrawBillboardAnimationMenuItem(const std::string& folder)
-{
-    drawItemsToLoad(folder, "png", IconsByObject::IMAGE_3D_ANIMATION,
-        [](const std::string& path) {
-            Image3DAnimationSerializer().LoadFileIntoScene(path);
-        });
-}
-
-void GUIAddonMenu::DrawMesh3DMenuItem(const std::string& folder)
-{
-    drawItemsToLoad(folder, "fbx", IconsByObject::MESH_3D,
-        [](const std::string& path) {
-            Mesh3DSerializer().LoadFileIntoScene(path);
-        });
-}
-
-void GUIAddonMenu::DrawMesh3DAnimationMenuItem(const std::string& folder)
-{
-    drawItemsToLoad(folder, "fbx", IconsByObject::MESH_3D_ANIMATION,
-        [](const std::string& path) {
-            Mesh3DAnimationSerializer().LoadFileIntoScene(path);
-        });
 }
 
 void GUIAddonMenu::DrawAboutMeModal()
@@ -560,11 +574,11 @@ void GUIAddonMenu::DrawAboutMeModal()
     }
 }
 
-void GUIAddonMenu::drawItemsToLoad(
+void GUIAddonMenu::DrawItemsToLoad(
     const std::string& folder,
     const std::string& extension,
-    const std::string& tagIcon,
-    const std::function<void(const std::string&)>& loadFunction)
+    GUISheet icon,
+    const std::function<void(const std::string&)>& callBack)
 {
     auto files = Tools::getFolderFiles(folder, extension);
     auto folders = Tools::getFolderFolders(folder);
@@ -572,10 +586,10 @@ void GUIAddonMenu::drawItemsToLoad(
     // Procesar subcarpetas
     for (const auto& folderName : folders) {
         auto fullPath = folder + "/" + folderName;
-        ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::FOLDER), ImVec2(16, 16));
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::FOLDER), GUITypes::Sizes::ICON_SIZE_MENUS);
         ImGui::SameLine();
         if (ImGui::BeginMenu(folderName.c_str())) {
-            drawItemsToLoad(fullPath, extension, tagIcon, loadFunction);
+            DrawItemsToLoad(fullPath, extension, icon, callBack);
             ImGui::EndMenu();
         }
     }
@@ -583,10 +597,10 @@ void GUIAddonMenu::drawItemsToLoad(
     // Procesar archivos
     for (const auto& file : files) {
         auto fullPath = folder + "/" + file;
-        ImGui::Image(FileSystemGUI::IconTag(tagIcon.c_str()), ImVec2(16, 16));
+        ImGui::Image(FileSystemGUI::Icon(icon), GUITypes::Sizes::ICON_SIZE_MENUS);
         ImGui::SameLine();
         if (ImGui::MenuItem(file.c_str())) {
-            loadFunction(fullPath);
+            callBack(fullPath);
         }
     }
 }

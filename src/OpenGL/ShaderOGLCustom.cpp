@@ -468,7 +468,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
                     } else {
                         ImGui::TableSetColumnIndex(0);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
-                        ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::TEXTURE), ImVec2(36, 36));
+                        ImGui::Image(FileSystemGUI::Icon(IconGUI::TEXTURE), ImVec2(36, 36));
                         captureDragDropUpdateImage(type, texture);
 
                         ImGui::TableSetColumnIndex(1);

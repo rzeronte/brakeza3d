@@ -263,6 +263,9 @@ add_executable(Brakeza3D
         include/Render/Profiler.cpp
         include/Render/Profiler.h
         include/GUI/AddOns/GUIAddonMenu.cpp
+        include/GUI/AddOns/GUIAddonToolbar.cpp
+        include/GUI/GUI.h
+        include/GUI/GUI.cpp
 )
 
 target_link_libraries(Brakeza3D

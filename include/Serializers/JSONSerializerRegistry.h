@@ -14,7 +14,7 @@
 
 class JSONSerializerRegistry
 {
-    std::unordered_map<std::string, std::shared_ptr<JSONSerializer>> serializers;
+    std::unordered_map<ObjectTypes, std::shared_ptr<JSONSerializer>> serializers;
     JSONSerializerRegistry() = default;
 public:
     JSONSerializerRegistry(const JSONSerializerRegistry&) = delete;
@@ -26,12 +26,12 @@ public:
         return registry;
     }
 
-    void registerSerializer(const std::string& type, std::shared_ptr<JSONSerializer> serializer)
+    void registerSerializer(ObjectTypes type, std::shared_ptr<JSONSerializer> serializer)
     {
         serializers[type] = serializer;
     }
 
-    JSONSerializer* getSerializer(const std::string& type)
+    JSONSerializer* getSerializer(ObjectTypes type)
     {
         auto it = serializers.find(type);
         return (it != serializers.end()) ? it->second.get() : nullptr;
@@ -44,8 +44,8 @@ public:
             return nullptr;
         }
 
-        const char* type = object->getTypeObject();
-        Logging::Message("[JSONSerializerRegistry GetJsonByObject] %s", type);
+        auto type = object->getTypeObject();
+        Logging::Message("[JSONSerializerRegistry GetJsonByObject] %d", type);
 
         auto serializer = instance().getSerializer(type);
 

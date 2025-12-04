@@ -116,14 +116,14 @@ Image3DAnimation::~Image3DAnimation()
     }
 }
 
-const char *Image3DAnimation::getTypeObject()
+ObjectTypes Image3DAnimation::getTypeObject() const
 {
-    return SceneObjectTypes::IMAGE_3D_ANIMATION;
+    return ObjectTypes::Image3DAnimation;
 }
 
-const char *Image3DAnimation::getTypeIcon()
+GUISheet Image3DAnimation::getIcon()
 {
-    return IconsByObject::IMAGE_3D_ANIMATION;
+    return IconObject::IMAGE_3D_ANIMATION;
 }
 
 void Image3DAnimation::updateBillboardSize() const

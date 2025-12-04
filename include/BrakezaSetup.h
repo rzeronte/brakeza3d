@@ -49,6 +49,8 @@ public:
     std::string DEFAULT_SOUNDS_FILE   = "sounds.json";
     std::string DEFAULT_SCENE         = "brakeza.json";
     std::string CAMERA_OBJECT_NAME    = "Camera";
+    std::string GUI_ICON_SHEET        = "sheet.png";
+    std::string SPLASH_FILENAME       = "splash.png";
 
     // GLOBAL AXIS DIRECTIONS
     Vertex3D right = Vertex3D(1, 0, 0);
@@ -161,7 +163,7 @@ public:
     float PROJECTILE_DEMO_ACCURACY = 100;
     float PROJECTILE_DEMO_MASS = 100;
     bool PROJECTILE_SIMPLE_MESH = true;
-    float SPLASH_COUNTDOWN_TIME = 3.0f;
+    float SPLASH_COUNTDOWN_TIME = 4.0f;
 
     bool SHOW_ABOUT_ME_MODAL = false;
 
@@ -275,6 +277,21 @@ public:
         GL_ONE_MINUS_CONSTANT_COLOR,
         GL_CONSTANT_ALPHA,
         GL_ONE_MINUS_CONSTANT_ALPHA
+    };
+
+    enum class ObjectTypes {
+        Object3D,
+        Mesh3D,
+        Mesh3DAnimation,
+        LightPoint3D,
+        SpotLight3D,
+        ParticleEmitter,
+        BillboardAnimation,
+        BillboardAnimation8Directions,
+        Image2DAnimation,
+        Image3D,
+        Image2D,
+        Swarm
     };
 };
 

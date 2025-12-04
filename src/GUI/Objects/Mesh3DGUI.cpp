@@ -7,6 +7,11 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
     std::string title = "Mesh3D (File: " + o->sourceFile + ")";
 
     if (ImGui::CollapsingHeader("Mesh3D")) {
+        if (ImGui::TreeNode("Lights in object")) {
+            ImGui::Checkbox(std::string("Enable lights for this object").c_str(), &o->enableLights);
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
         if (ImGui::TreeNode("Mesh information")) {
             auto fileModel = std::string("- File model: ") + o->sourceFile;
             ImGui::Text(fileModel.c_str());
@@ -75,8 +80,7 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
 
             ImGui::TreePop();
         }
-        ImGui::Separator();
-        ImGui::Checkbox(std::string("Enable lights").c_str(), &o->enableLights);
+
     }
 }
 
@@ -90,10 +94,10 @@ void Mesh3DGUI::DrawEditBonesMappingWindow(GUIManager *gui)
     if (a == nullptr) return;
 
     auto bc = a->getBoneMappingColliders();
-    int numMappings = bc->size();
+    int numMappings = (int) bc->size();
 
-    gui->SetNextWindowSize(700, 700);
-    ImGui::SetNextWindowBgAlpha(GUITypes::GUIConstants::WINDOW_ALPHA);
+    GUIManager::SetNextWindowSize(700, 700);
+    ImGui::SetNextWindowBgAlpha(GUITypes::Levels::WINDOW_ALPHA);
     auto dialogTitle = std::string("Bones Mapping Editor: " + a->getLabel());
     if (ImGui::Begin(dialogTitle.c_str(), &gui->showBoneMappingsEditorWindow, ImGuiWindowFlags_NoDocking)) {
         ImGui::SeparatorText("Create new bones mapping:");
@@ -110,24 +114,23 @@ void Mesh3DGUI::DrawEditBonesMappingWindow(GUIManager *gui)
                 gui->currentVariableToAddName.clear();
             }
         }
+
         if (numMappings <= 0) return;
 
         ImGui::SeparatorText("Bone mappings created");
 
-        if (numMappings > 0) {
-            const char* items[numMappings];
-            for (unsigned int i = 0; i < bc->size(); i++) {
-                items[i] = bc->at(i).nameMapping.c_str();
-            }
+        const char* items[numMappings];
+        for (unsigned int i = 0; i < bc->size(); i++) {
+            items[i] = bc->at(i).nameMapping.c_str();
+        }
 
-            auto comboTitle = "BoneMappings##" + a->getLabel();
-            ImGui::Combo("Bone Mappings", &a->BoneColliderIndexPointer(), items, IM_ARRAYSIZE(items));
+        auto comboTitle = "BoneMappings##" + a->getLabel();
+        ImGui::Combo("Bone Mappings", &a->BoneColliderIndexPointer(), items, IM_ARRAYSIZE(items));
 
-            if (a->BoneColliderIndexPointer() >= 0) {
-                if (ImGui::Button(std::string("Delete mapping").c_str())) {
-                    a->removeBonesColliderMapping(bc->at(a->BoneColliderIndexPointer()).nameMapping);
-                    return;
-                }
+        if (a->BoneColliderIndexPointer() >= 0) {
+            if (ImGui::Button(std::string("Delete mapping").c_str())) {
+                a->removeBonesColliderMapping(bc->at(a->BoneColliderIndexPointer()).nameMapping);
+                return;
             }
         }
 
@@ -156,8 +159,9 @@ void Mesh3DGUI::DrawEditBonesMappingWindow(GUIManager *gui)
                     ImGui::Text("%d", b.boneId);
 
                     ImGui::TableSetColumnIndex(3);
+                    ;
                     if (ImGui::ImageButton((std::string((b.enabled ? "lock##" : "unlock##")) + std::to_string(i)).c_str(),
-                                           TexturePackage::getOGLTextureID(gui->icons, b.enabled ? "lockIcon" : "unlockIcon"),
+                                           FileSystemGUI::Icon((b.enabled ? IconGUI::LOCK : IconGUI::UNLOCK)),
                                            ImVec2(14, 14))) {
                         a->SetMappingBoneColliderInfo(nameMapping, b.boneId, !b.enabled, b.shape);
                     }

@@ -33,8 +33,8 @@ public:
     void DrawPropertiesGUI() override;
     void updateBillboardSize() const;
     TextureAnimatedDirectional *getCurrentTextureAnimationDirectional() const;
-    const char *getTypeObject() override;
-    const char *getTypeIcon() override;
+    ObjectTypes getTypeObject() const override;
+    GUISheet getIcon() override;
     static int getDirectionForAngle(float enemyAngle);
     static Image3DAnimation8Directions* create(
         const Vertex3D &position,

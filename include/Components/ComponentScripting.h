@@ -23,9 +23,9 @@ public:
     void postUpdate() override;
     void onEnd() override;
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
-    void playLUAScripts();
-    void stopLUAScripts();
-    void reloadLUAScripts();
+    void PlayLUAScripts();
+    void StopLUAScripts();
+    void ReloadLUAScripts();
     void addSceneLUAScript(ScriptLUA *script);
     void addProjectLUAScript(ScriptLUA *script);
     void reloadScriptGlobals();
