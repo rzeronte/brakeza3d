@@ -14,7 +14,7 @@ class Object3D;
 
 class SceneLoader
 {
-    static const std::map<std::string, SceneObjectLoaderMapping> SceneObjectTypesMapping;
+    static const std::map<std::string, ObjectTypes> SceneObjectTypesMapping;
 
 public:
     explicit SceneLoader();

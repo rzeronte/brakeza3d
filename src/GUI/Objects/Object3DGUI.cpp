@@ -9,10 +9,12 @@
 
 void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 {
-
+    static int cont = 0;
     static char name[256];
     strncpy(name, o->label.c_str(), sizeof(name));
-    ImGui::Image(FileSystemGUI::IconTag(o->getTypeIcon()), ImVec2(22, 24));
+    ImGui::PushID(++cont);
+    ImGui::Image(FileSystemGUI::Icon(o->getIcon()), ImVec2(22, 24));
+    ImGui::PopID();
     ImGui::SameLine();
     ImGui::SetNextItemWidth(125.0f);
     ImGui::InputText("Name##nameObject", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
@@ -27,7 +29,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
             if (o->featuresGUI.position) {
 
                 ImGui::PushID("reset_position");  // ✅ ID único
-                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::RELOAD), ImVec2(12, 12))) {
+                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::RELOAD), ImVec2(12, 12))) {
                     o->setPosition(Vertex3D(0, 0, 0));
                 }
                 ImGui::PopID();
@@ -54,7 +56,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                 float roll = oldRoll;
 
                 ImGui::PushID("reset_rotation");  // ✅ ID único
-                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::RELOAD), ImVec2(12, 12))) {
+                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::RELOAD), ImVec2(12, 12))) {
                     Logging::Message("Reset Rotation");
                     o->setRotation(M3::getMatrixIdentity());
                 }
@@ -91,7 +93,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                 ImGui::Separator();
 
                 ImGui::PushID("reset_drawoffset");  // ✅ ID único
-                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::RELOAD), ImVec2(12, 12))) {
+                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::RELOAD), ImVec2(12, 12))) {
                     o->setDrawOffset(Vertex3D(0, 0, 0));
                 }
                 ImGui::PopID();
@@ -109,7 +111,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
             // scale
             if (o->featuresGUI.scale) {
                 ImGui::PushID("reset_scale");  // ✅ ID único
-                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::RELOAD), ImVec2(12, 12))) {
+                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::RELOAD), ImVec2(12, 12))) {
                     Logging::Message("Reset scale");
                     o->setScale(1.f);
                 }

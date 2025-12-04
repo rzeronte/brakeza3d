@@ -66,12 +66,12 @@ void ScriptLUA::runEnvironment(sol::environment &environment, const std::string&
             Logging::Message("[error] Error in LUA Script %s", scriptFilename.c_str());
             Logging::Message("[error] Function: %s", func.c_str());
             Logging::Message("[error] %s", err.what());
-            ComponentsManager::get()->getComponentScripting()->stopLUAScripts();
+            ComponentsManager::get()->getComponentScripting()->StopLUAScripts();
         }
     } catch (const sol::error& e) {
         Logging::Message("[error] Exception in LUA Script %s", scriptFilename.c_str());
         Logging::Message("[error] %s", e.what());
-        ComponentsManager::get()->getComponentScripting()->stopLUAScripts();
+        ComponentsManager::get()->getComponentScripting()->StopLUAScripts();
     }
 }
 
@@ -90,12 +90,12 @@ void ScriptLUA::runGlobal(const std::string& func) const
             sol::error err = result;
             Logging::Message("[error] Error in LUA Script %s", scriptFilename.c_str());
             Logging::Message("[error] %s", scriptFilename.c_str(), err.what());
-            ComponentsManager::get()->getComponentScripting()->stopLUAScripts();
+            ComponentsManager::get()->getComponentScripting()->StopLUAScripts();
         }
     } catch (const sol::error& e) {
         Logging::Message("[error] Error in LUA Script %s", scriptFilename.c_str());
         Logging::Message("[error] %s", e.what());
-        ComponentsManager::get()->getComponentScripting()->stopLUAScripts();
+        ComponentsManager::get()->getComponentScripting()->StopLUAScripts();
     }
 }
 

@@ -9,9 +9,10 @@
 
 struct GUIAddonMenu
 {
-    std::vector<GUITypes::GUIWindowsStatus> &windowStatus;
+    std::vector<GUITypes::GUIMenuItem> menus;
+    std::vector<GUITypes::GUIWindowData> &windowStatus;
 
-    explicit GUIAddonMenu(std::vector<GUITypes::GUIWindowsStatus> &windowStatus);
+    explicit GUIAddonMenu(std::vector<GUITypes::GUIWindowData> &windowStatus);
 
     void Draw();
     void DrawMainMenuWindow();
@@ -26,17 +27,11 @@ struct GUIAddonMenu
     void DrawMainMenuLogging();
     void DrawMainMenuLayout();
     void DrawAboutMeModal();
-    void DrawImage2DMenuItem(const std::string& folder);
-    void DrawImage2DAnimationMenuItem(const std::string& folder);
-    void DrawImage3DMenuItem(const std::string& folder);
-    void DrawBillboardAnimationMenuItem(const std::string& folder);
-    void DrawMesh3DMenuItem(const std::string& folder);
-    void DrawMesh3DAnimationMenuItem(const std::string& folder);
-    static void drawItemsToLoad(
+    static void DrawItemsToLoad(
         const std::string &folder,
         const std::string &extension,
-        const std::string &tagIcon,
-        const std::function<void(const std::string &)> &loadFunction
+        GUISheet icon,
+        const std::function<void(const std::string &)> &callBack
     );
 };
 

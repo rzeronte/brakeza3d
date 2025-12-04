@@ -202,14 +202,14 @@ void ParticleEmitter::setStopAdd(bool stopAdd)
     ParticleEmitter::stopAdd = stopAdd;
 }
 
-const char *ParticleEmitter::getTypeObject()
+ObjectTypes ParticleEmitter::getTypeObject() const
 {
-    return SceneObjectTypes::PARTICLE_EMITTER;
+    return ObjectTypes::ParticleEmitter;
 }
 
-const char *ParticleEmitter::getTypeIcon()
+GUISheet ParticleEmitter::getIcon()
 {
-    return IconsByObject::PARTICLE_EMITTER;
+    return IconObject::PARTICLE_EMITTER;
 }
 
 void ParticleEmitter::DrawPropertiesGUI()

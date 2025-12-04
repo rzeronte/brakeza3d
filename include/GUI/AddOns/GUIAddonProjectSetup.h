@@ -44,7 +44,7 @@ struct GUIAddonProjectSetup
         auto scripting = ComponentsManager::get()->getComponentScripting();
 
         auto scripts = scripting->getProjectLUAScripts();
-        ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::ADD), ImVec2(16, 16));
+        ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::ADD), ImVec2(16, 16));
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
                 Logging::Message("Dropping script (%s) in global space", payload->Data);
@@ -67,21 +67,21 @@ struct GUIAddonProjectSetup
             auto currentScript = scripts[i];
             ImGui::PushID(i);
             std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
                 scripting->removeProjectScript(currentScript);
             }
             ImGui::SameLine();
             if (currentScript->isPaused()) {
-                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::UNLOCK), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::UNLOCK), ImVec2(14, 14))) {
                     currentScript->setPaused(false);
                 }
             } else {
-                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::LOCK), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::LOCK), ImVec2(14, 14))) {
                     currentScript->setPaused(true);
                 }
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::SCRIPT), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::SCRIPT), ImVec2(14, 14))) {
                 scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
                 delete scriptEditableManager.script;
                 scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(
@@ -100,7 +100,7 @@ struct GUIAddonProjectSetup
     {
         auto scripting = ComponentsManager::get()->getComponentScripting();
 
-        ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::ADD), ImVec2(16, 16));
+        ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::ADD), ImVec2(16, 16));
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
                 Logging::Message("Dropping script (%s) in global space", payload->Data);
@@ -124,21 +124,21 @@ struct GUIAddonProjectSetup
             auto currentScript = scripts[i];
             ImGui::PushID(i);
             std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
                 scripting->removeSceneScript(currentScript);
             }
             ImGui::SameLine();
             if (currentScript->isPaused()) {
-                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::UNLOCK), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::UNLOCK), ImVec2(14, 14))) {
                     currentScript->setPaused(false);
                 }
             } else {
-                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::LOCK), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::LOCK), ImVec2(14, 14))) {
                     currentScript->setPaused(true);
                 }
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::SCRIPT), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::SCRIPT), ImVec2(14, 14))) {
                 scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
                 delete scriptEditableManager.script;
                 scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(
@@ -155,7 +155,7 @@ struct GUIAddonProjectSetup
 
     static void DrawSceneCustomShaders()
     {
-        ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::ADD), ImVec2(16, 16));
+        ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::ADD), ImVec2(16, 16));
         auto render = ComponentsManager::get()->getComponentRender();
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CUSTOMSHADER_ITEM")) {
@@ -176,23 +176,23 @@ struct GUIAddonProjectSetup
         for (int i = 0; i < shaders.size(); i++) {
             auto s = shaders[i];
             ImGui::PushID(i);
-            ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::SHADER), ImVec2(26, 26));
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER), ImVec2(26, 26));
             ImGui::SameLine(46);
             if (!s->isEnabled()) {
-                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::UNLOCK), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::UNLOCK), ImVec2(14, 14))) {
                     s->setEnabled(true);
                 }
             } else {
-                if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::LOCK), ImVec2(14, 14))) {
+                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::LOCK), ImVec2(14, 14))) {
                     s->setEnabled(false);
                 }
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REBUILD), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::RELOAD), ImVec2(14, 14))) {
                 s->reload();
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
                 render->removeSceneShaderByIndex(i);
             }
             ImGui::SameLine();

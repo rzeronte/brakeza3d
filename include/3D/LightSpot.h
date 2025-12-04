@@ -36,8 +36,8 @@ public:
         float cutOff,
         float outerCutOff
     );
-    const char *getTypeIcon() override;
-    const char *getTypeObject() override;
+    GUISheet getIcon() override;
+    ObjectTypes getTypeObject() const override;
     void DrawPropertiesGUI() override;
     void RenderDebugCone(float radians, const Color &c);
     void setCutOff(float value);

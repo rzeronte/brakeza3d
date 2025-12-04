@@ -362,13 +362,13 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
 
         if (keyboard[SDL_SCANCODE_F1]) {
             if (scripting->getStateLUAScripts() == BrakezaSetup::LuaStateScripts::LUA_STOP) {
-                scripting->playLUAScripts();
+                scripting->PlayLUAScripts();
             } else {
-                scripting->stopLUAScripts();
+                scripting->StopLUAScripts();
             }
         }
         if (keyboard[SDL_SCANCODE_F2]) {
-            scripting->reloadLUAScripts();
+            scripting->ReloadLUAScripts();
         }
         if (keyboard[SDL_SCANCODE_F3]) {
             SceneLoader::ClearScene();

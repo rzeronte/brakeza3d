@@ -14,8 +14,8 @@ void ShadersGUI::DrawEditShaderWindow(GUIManager *gui)
 {
     if (!gui->showEditShaderWindow) return;
 
-    GUIManager::SetNextWindowSize(GUITypes::GUIConstants::DEFAULT_WINDOW_WIDTH, GUITypes::GUIConstants::DEFAULT_WINDOW_HEIGHT);
-    ImGui::SetNextWindowBgAlpha(GUITypes::GUIConstants::WINDOW_ALPHA);
+    GUIManager::SetNextWindowSize(GUITypes::Levels::DEFAULT_WINDOW_WIDTH, GUITypes::Levels::DEFAULT_WINDOW_HEIGHT);
+    ImGui::SetNextWindowBgAlpha(GUITypes::Levels::WINDOW_ALPHA);
 
     if (ImGui::Begin("Shader edition", &gui->showEditShaderWindow, ImGuiWindowFlags_NoDocking)) {
         DrawShaderVariables(gui);
@@ -100,7 +100,7 @@ void ShadersGUI::DrawShaderVariables(GUIManager *gui)
             ImGui::Text("%s", dataType->type.c_str());
 
             ImGui::TableSetColumnIndex(2);
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
                 gui->shaderEditableManager.shader->removeDataType(*dataType);
             }
             ImGui::PopID();
@@ -137,7 +137,7 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, std::string folder)
         std::cout << "Seleccionado: " << items[item_current_idx] << std::endl;
     }
 
-    if (ImGui::Button(std::string("Create custom shader").c_str())) {
+    if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::OPEN), ImVec2(14, 14))) {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
             auto type = ShaderOGLCustom::getShaderTypeFromString(items[item_current_idx]);
             ShaderOGLCustom::createEmptyCustomShader(gui->currentVariableToCreateCustomShader, folder, type);
@@ -161,6 +161,7 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, std::string folder)
 
     auto files = gui->currentShadersFolderFiles;
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
+    auto sizeButtons = ImVec2(24, 24);
     if (ImGui::BeginTable("ScriptsFolderTable", 3, flags)) {
         for (int i = 0; i < files.size(); i++) {
             ImGui::PushID(i);
@@ -170,7 +171,7 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, std::string folder)
 
             ImGui::TableSetColumnIndex(0);
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            ImGui::Image(FileSystemGUI::IconTag(IconsByGUI::SHADER), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER), sizeButtons);
             ImGui::SameLine();
             std::string optionText = std::to_string(i + 1) + ") " + file;
             if (ImGui::Selectable(optionText.c_str())) {
@@ -187,11 +188,11 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, std::string folder)
                 ImGui::EndDragDropSource();
             }
             ImGui::TableSetColumnIndex(1);
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::SCENE), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::SCENE), sizeButtons)) {
                 ComponentsManager::get()->getComponentRender()->loadShaderIntoScene(folder, file);
             }
             ImGui::TableSetColumnIndex(2);
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), sizeButtons)) {
                 ImGui::OpenPopup("Deleting shader");
             }
             GUIManager::ShowDeletePopup("Deleting shader", "Are you sure to delete?", [folder, file, gui] () {
@@ -231,7 +232,7 @@ void ShadersGUI::DrawShadersBySelectedObject(GUIManager *gui)
 
         auto s = customShaders[i];
 
-        if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::SHADER), ImVec2(14, 14))) {
+        if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::SHADER), ImVec2(14, 14))) {
             auto folder = s->getFolder();
             auto jsonFilename = s->getLabel() + ".json";
             LoadShaderDialog(gui, folder, jsonFilename);
@@ -240,20 +241,20 @@ void ShadersGUI::DrawShadersBySelectedObject(GUIManager *gui)
         ImGui::SameLine();
 
         if (!s->isEnabled()) {
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::UNLOCK), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::UNLOCK), ImVec2(14, 14))) {
                 s->setEnabled(true);
             }
         } else {
-            if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::LOCK), ImVec2(14, 14))) {
+            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::LOCK), ImVec2(14, 14))) {
                 s->setEnabled(false);
             }
         }
         ImGui::SameLine();
-        if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REBUILD), ImVec2(14, 14))) {
+        if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::RELOAD), ImVec2(14, 14))) {
             s->reload();
         }
         ImGui::SameLine();
-        if (ImGui::ImageButton(FileSystemGUI::IconTag(IconsByGUI::REMOVE), ImVec2(14, 14))) {
+        if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
             mesh->removeShader(i);
         }
 

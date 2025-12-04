@@ -12,23 +12,15 @@
 #include <vector>
 #include <glm/detail/type_mat4x4.hpp>
 #include "Vertex3D.h"
+#include "../SceneObjectTypes.h"
 #include "../Render/M3.h"
 #include "../Misc/ScriptLUA.h"
 #include "../../sol/sol.hpp"
+#include "../GUI/GUITypes.h"
 #include "../Render/Collider.h"
 #include "../Render/Color.h"
 #include "../Misc/Timer.h"
 
-struct ObjectGUIFeatures {
-    bool position = true;
-    bool rotation = true;
-    bool scale = true;
-    bool alpha = true;
-    bool shaders = true;
-    bool attached = true;
-    bool collider = true;
-    bool misc = true;
-};
 
 class Object3DGUI;
 
@@ -48,11 +40,11 @@ protected:
     bool enableLights = false;
 
     Vertex3D position = Vertex3D(1, 1, 1);
-    Vertex3D drawOffset;
+    Vertex3D drawOffset = Vertex3D::zero();
 
     Object3D *parent = nullptr;
 
-    ObjectGUIFeatures featuresGUI;
+    IconGUI::ObjectGUIFeatures featuresGUI;
 
     std::string label;
 
@@ -63,6 +55,7 @@ protected:
     Timer timer;
     Color pickingColor;
     M3 rotation = M3::getMatrixIdentity();
+    ObjectTypes type;
 public:
     Object3D();
     virtual ~Object3D();
@@ -97,8 +90,8 @@ public:
     void UpdateFromBullet();
     void ResolveCollision(CollisionInfo with) override;
     void RunResolveCollisionScripts(CollisionInfo with);
-    virtual const char *getTypeObject();
-    virtual const char *getTypeIcon();
+    virtual ObjectTypes getTypeObject() const;
+    virtual GUISheet getIcon();
     virtual void setEnabled(bool value);
     virtual void onUpdate();
     virtual void postUpdate();
@@ -137,6 +130,8 @@ public:
     [[nodiscard]] std::string getLabel() const;
     [[nodiscard]] Object3D *getParent() const;
     sol::object getLocalScriptVar(const char *varName);
+
+
     friend class Object3DSerializer;
     friend class Object3DGUI;
 };

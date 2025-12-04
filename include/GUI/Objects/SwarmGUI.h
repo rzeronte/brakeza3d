@@ -17,7 +17,6 @@ public:
 
         static char name[256];
         strncpy(name, o->label.c_str(), sizeof(name));
-        ImGui::Image(FileSystemGUI::IconTag( o->getTypeIcon()), ImVec2(22, 24));
         ImGui::SameLine();
         ImGui::SetNextItemWidth(125.0f);
         ImGui::InputText("Name##nameObject", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);

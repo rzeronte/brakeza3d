@@ -12,6 +12,7 @@
 
 Object3D::Object3D()
 :
+
     id(Brakeza::get()->getNextObjectID()),
     luaEnvironment(sol::environment(
         ComponentsManager::get()->getComponentScripting()->getLua(),
@@ -277,14 +278,14 @@ void Object3D::RemoveScript(const ScriptLUA *script)
     }
 }
 
-const char *Object3D::getTypeObject()
+ObjectTypes Object3D::getTypeObject() const
 {
-    return SceneObjectTypes::OBJECT_3D;
+    return ObjectTypes::Object3D;
 }
 
-const char *Object3D::getTypeIcon()
+GUISheet Object3D::getIcon()
 {
-    return IconsByObject::OBJECT_3D;
+    return IconObject::OBJECT_3D;
 }
 
 const std::vector<ScriptLUA *> &Object3D::getScripts() const

@@ -26,8 +26,8 @@ public:
     Image3DAnimation(const Vertex3D &position, float w, float h);
     ~Image3DAnimation() override;
 
-    const char *getTypeObject() override;
-    const char *getTypeIcon() override;
+    ObjectTypes getTypeObject() const override;
+    GUISheet getIcon() override;
     void onUpdate() override;
     void setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation);
     void LinkTextureIntoAnotherImage3DAnimation(const Image3DAnimation *);

@@ -156,9 +156,9 @@ void LightSpot::setOuterCutOff(float value)
     outerCutOff = value;
 }
 
-const char *LightSpot::getTypeObject()
+ObjectTypes LightSpot::getTypeObject() const
 {
-    return SceneObjectTypes::LIGHT_SPOT;
+    return ObjectTypes::LightSpot;
 }
 
 float LightSpot::getCutOff() const
@@ -176,9 +176,9 @@ glm::vec4 LightSpot::getDirection() const
     return ( getRotation().getTranspose() * Vertex3D(0, 0, 1)).toGLM4();
 }
 
-const char *LightSpot::getTypeIcon()
+GUISheet LightSpot::getIcon()
 {
-    return IconsByObject::LIGHT_SPOT;
+    return IconObject::LIGHT_SPOT;
 }
 
 void LightSpot::DrawPropertiesGUI()

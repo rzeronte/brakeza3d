@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "GUITypes.h"
+#include "../Misc/TextureAtlas.h"
 #include "AddOns/GUIConsole.h"
 #include "../Misc/TexturePackage.h"
 #include "AddOns/GUIAddonObjects3D.h"
@@ -22,12 +23,13 @@ class FileSystemGUI;
 
 class GUIManager
 {
-    std::vector<GUITypes::GUIWindowsStatus> windows;
+    std::vector<GUITypes::GUIWindowData> windows;
 
     int selectedObjectIndex = -1;
     bool showEditShaderWindow = false;
     bool showEditScriptWindow = false;
     bool showBoneMappingsEditorWindow = false;
+    float splashAlpha = 1.0f;
 
     std::vector<Object3D *> &gameObjects;
 
@@ -41,7 +43,6 @@ class GUIManager
     GUIAddonMenu *menu;
     GUIAddonToolbar *toolbar;
 
-    TexturePackage icons;
     TexturePackage imagesFolder;
 
     std::string selected_file;
@@ -66,35 +67,42 @@ class GUIManager
 
     Color lineSelectorObjectColor = Color::green();
 
-    void DrawImages();
-    void DrawLightsDepthMapsViewerWindow();
-    void DrawRegisteredWindows() const;
-    void DrawKeyboardMouseSettings();
-    static void DrawSplash();
+    TextureAtlas *textureAtlas;
+    Image *splashImage = new Image(BrakezaSetup::get()->IMAGES_FOLDER + BrakezaSetup::get()->SPLASH_FILENAME);
 
-    GUITypes::GUIWindowsStatus *GetWindowStatus(GUITypes::GUIWindows window);
+public:
+    [[nodiscard]] TextureAtlas * getTextureAtlas() const;
+
+private:
+    void WindowImages();
+    void WindowLightsDepthMapsViewer();
+    void DrawRegisteredWindows() const;
+    void WindowKeyboardMouseSetup();
+    void DrawSplash();
+
+    GUITypes::GUIWindowData *GetWindowStatus(GUITypes::GUIWindow window);
 
 public:
     explicit GUIManager(std::vector<Object3D *> &gameObjects);
     virtual ~GUIManager() = default;
     void RegisterWindows();
-    void DrawFilesShaders();
-    void DrawFilesScriptWindow();
-    void DrawFilesScenesWindow();
-    void DrawFilesProjectWindow();
-    void DrawSelectedObjectPropertiesWindow();
-    void DrawProjectSettingsWindow();
-    void DrawGlobalVariablesWindow();
-    void DrawSelectedObjectScriptsWindow();
-    void DrawSelectedObjectVariablesWindow();
-    void DrawSelectedObjectShadersWindow();
-    void DrawSceneObjectsWindow();
-    void DrawLoggingWindow();
+
+    void WindowShaderFiles();
+    void WindowScriptFiles();
+    void WindowSceneFiles();
+    void WindowProjectFiles();
+    void WindowSelectedObjectProperties();
+    void WindowProjectSettings();
+    void WindowGlobalVars();
+    void WindowSelectedObjectScripts();
+    void WindowSelectedObjectVariables();
+    void WindowSelectedObjectShaders();
+    void WindowSceneObjects();
+    void LoggingWindow();
     void setSelectedObjectIndex(int selectedObjectIndex);
     void setSelectedObject(const Object3D *s);
     void OpenBoneInfoDialog();
     virtual void DrawGUI();
-    TexturePackage &getImGuiTextures();
     [[nodiscard]] GuiAddonConsole *getConsole() const;
     [[nodiscard]] bool isLightDepthMapsViewerWindowOpen();
     static void ShowDeletePopup(const char* title, const char *message, const std::function<void()>& onConfirm);

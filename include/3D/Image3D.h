@@ -35,8 +35,8 @@ public:
     Image3D(const Vertex3D &position, float width, float height, Image* image);
     ~Image3D() override;
 
-    const char *getTypeObject() override;
-    const char *getTypeIcon() override;
+    ObjectTypes getTypeObject() const override;
+    GUISheet getIcon() override;
     void onUpdate() override;
     void DrawPropertiesGUI() override;
     void setSize(float width, float height);

@@ -66,8 +66,8 @@ public:
 private:
     Vertex3D randomVertexInsideAABB();
 public:
-    const char *getTypeObject() override;
-    const char *getTypeIcon() override;
+    ObjectTypes getTypeObject() const override;
+    GUISheet getIcon() override;
     void attractTo(SwarmObject *swarmObject, Vertex3D center, bool ignoreThresold, float weight) const;
     void avoidPredators(SwarmObject *swarmObject);
     void checkBoundsAndAdjustVelocity(SwarmObject* swarmObject);

@@ -60,13 +60,21 @@ void Brakeza::start(int argc, char *argv[])
 void Brakeza::WelcomeMessage()
 {
     Logging::Message("############################################################");
-    Logging::Message("Brakeza3D - Open source game toolkit for old school lovers");
+    Logging::Message("");
+    Logging::Message("************************");
+    Logging::Message("*  B R A K E Z A 3 D   *");
+    Logging::Message("************************");
+    Logging::Message("");
+    Logging::Message("Open source game engine for developers");
+    Logging::Message("############################################################");
+    Logging::Message("");
     Logging::Message(BrakezaSetup::get()->ENGINE_WEBSITE.c_str());
     Logging::Message(BrakezaSetup::get()->ENGINE_SOURCE_WEBSITE.c_str());
-    Logging::Message("Let's start!");
-
+    Logging::Message("");
     Logging::Message("%s", BrakezaSetup::get()->ENGINE_TITLE.c_str());
+    Logging::Message("");
     Logging::Message("############################################################");
+    Logging::Message("");
 }
 
 void Brakeza::CaptureInputEvents(SDL_Event &e) const {
@@ -96,13 +104,13 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
     WelcomeMessage();
     BrakezaSetup::get()->ENABLE_LOGGING_STD = false;
 
-    HandleAutoStartProject(autostart, project);
+    //HandleAutoStartProject(autostart, project);
 
     // Profiler tags
-    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobal");
-    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
-    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
-    Profiler::get()->ResetMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobalFramebuffer");
+    Profiler::ResetMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobal");
+    Profiler::ResetMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
+    Profiler::ResetMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
+    Profiler::ResetMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobalFramebuffer");
 
     while (!BrakezaSetup::get()->EXIT) {
         Profiler::get()->ResetTotalFrameTime();     // Reset profiler measures
@@ -182,23 +190,26 @@ void Brakeza::OnStartComponents() const
 {
     for (auto c : componentsManager->Components())
         c->onStart();
+
+    Logging::Message("[Brakeza] Time to wake up...");
+    Logging::Message("");
 }
 
 void Brakeza::PreUpdateComponents() const
 {
     for (auto c : componentsManager->Components()) {
-        Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_pre");
+        Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_pre");
         c->preUpdate();
-        Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_pre");
+        Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_pre");
     }
 }
 
 void Brakeza::OnUpdateComponents() const
 {
     for (auto c : componentsManager->Components()) {
-        Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_update");
+        Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_update");
         c->onUpdate();
-        Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_update");
+        Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + "_update");
     }
 }
 
@@ -233,7 +244,7 @@ void Brakeza::HandleAutoStartProject(bool autostart, const std::string &project)
     if (autostart) {
         render->getProjectLoader().LoadProject(BrakezaSetup::get()->PROJECTS_FOLDER + project);
         BrakezaSetup::get()->ENABLE_IMGUI = false;
-        componentsManager->getComponentScripting()->playLUAScripts();
+        componentsManager->getComponentScripting()->PlayLUAScripts();
         return;
     }
 

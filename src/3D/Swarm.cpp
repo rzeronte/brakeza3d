@@ -219,14 +219,14 @@ void Swarm::removeBoid(SwarmObject *o)
     objects.erase(std::remove(objects.begin(), objects.end(), o), objects.end());
 }
 
-const char *Swarm::getTypeObject()
+ObjectTypes Swarm::getTypeObject() const
 {
-    return SceneObjectTypes::SWARM;
+    return ObjectTypes::Swarm;
 }
 
-const char *Swarm::getTypeIcon()
+GUISheet Swarm::getIcon()
 {
-    return IconsByObject::SWARM;
+    return IconObject::SWARM;
 }
 
 void Swarm::DrawPropertiesGUI()

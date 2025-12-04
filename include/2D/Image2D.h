@@ -19,8 +19,8 @@ public:
     void onUpdate() override;
     void updatePosition(int x, int y);
     void DrawPropertiesGUI() override;
-    const char *getTypeObject() override;
-    const char *getTypeIcon() override;
+    ObjectTypes getTypeObject() const override;
+    GUISheet getIcon() override;
     static Image2D* create(int x, int y, const std::string& imageFile);
 
     friend class Image2DSerializer;

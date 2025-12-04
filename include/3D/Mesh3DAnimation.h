@@ -99,8 +99,8 @@ public:
     void LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData);
     void DrawBones(aiNode *node, Vertex3D *lastBonePosition = nullptr);
     void setRemoveAtEndAnimation(bool removeAtEnds);
-    const char *getTypeObject() override;
-    const char *getTypeIcon() override;
+    ObjectTypes getTypeObject() const override;
+    GUISheet getIcon() override;
     void DrawPropertiesGUI() override;
     void setAnimationSpeed(float value);
     void setIndexCurrentAnimation(int indexCurrentAnimation);
