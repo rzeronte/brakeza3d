@@ -11,35 +11,17 @@
 GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 :
     gameObjects(gameObjects),
-    widgetConsole(new GuiAddonConsole(ComponentsManager::get()->getComponentScripting()->getLua())),
     widgetObjects3D(new GUIAddonObjects3D(gameObjects)),
     widgetObjectProperties(new GUIAddonObject3DProperties(gameObjects, scriptEditableManager)),
     widgetProjectSettings(new GUIAddonProjectSetup(scriptEditableManager)),
     menu(new GUIAddonMenu(windows)),
     toolbar(new GUIAddonToolbar()),
-    currentScriptsFolderWidget(BrakezaSetup::get()->SCRIPTS_FOLDER),
-    currentScenesFolderWidget(BrakezaSetup::get()->SCENES_FOLDER),
-    currentProjectsFolderWidget(BrakezaSetup::get()->PROJECTS_FOLDER),
-    currentShadersFolderWidget(BrakezaSetup::get()->CUSTOM_SHADERS_FOLDER),
     textureAtlas(new TextureAtlas())
 {
     FileSystemGUI::LoadImagesFolder(this);
     textureAtlas->CreateFromSheet(BrakezaSetup::get()->ICONS_FOLDER + BrakezaSetup::get()->GUI_ICON_SHEET, 32, 32);
 
     Profiler::get()->CaptureGUIMemoryUsage();
-
-    currentScriptsFolders = Tools::getFolderFolders(currentScriptsFolderWidget);
-    currentScriptsFolderFiles = Tools::getFolderFiles(currentScriptsFolderWidget, "lua");
-
-    currentScenesFolders = Tools::getFolderFolders(currentScenesFolderWidget);
-    currentScenesFolderFiles = Tools::getFolderFiles(currentScenesFolderWidget, "json");
-
-    currentProjectsFolders = Tools::getFolderFolders(currentProjectsFolderWidget);
-    currentProjectsFolderFiles = Tools::getFolderFiles(currentProjectsFolderWidget, "json");
-
-    currentShadersFolders = Tools::getFolderFolders(currentShadersFolderWidget);
-    currentShadersFolderFiles = Tools::getFolderFiles(currentShadersFolderWidget, "json");
-
 
     RegisterWindows();
 }
@@ -92,28 +74,28 @@ void GUIManager::WindowShaderFiles()
 {
     auto windowStatus = GetWindowStatus(GUITypes::FILES_SHADERS);
     if (!windowStatus->isOpen) return;
-    ShadersGUI::DrawCustomShadersFolder(this, currentShadersFolderWidget);
+    ShadersGUI::DrawCustomShadersFolder(this, browserShaders.currentFolder);
 }
 
 void GUIManager::WindowScriptFiles()
 {
     auto windowStatus = GetWindowStatus(GUITypes::FILES_SCRIPTS);
     if (!windowStatus->isOpen) return;
-    ScriptLuaGUI::DrawScriptsLuaFolderFiles(this, currentScriptsFolderWidget);
+    ScriptLuaGUI::DrawScriptsLuaFolderFiles(this, browserScripts.currentFolder);
 }
 
 void GUIManager::WindowSceneFiles()
 {
     auto windowStatus = GetWindowStatus(GUITypes::FILES_SCENES);
     if (!windowStatus->isOpen) return;
-    FileSystemGUI::DrawScenesFolder(this, currentScenesFolderWidget);
+    FileSystemGUI::DrawScenesFolder(this, browserScenes.currentFolder);
 }
 
 void GUIManager::WindowProjectFiles()
 {
     auto windowStatus = GetWindowStatus(GUITypes::FILES_PROJECTS);
     if (!windowStatus->isOpen) return;
-    FileSystemGUI::DrawProjectFiles(this, currentProjectsFolderWidget);
+    FileSystemGUI::DrawProjectFiles(this, browserProjects.currentFolder);
 }
 
 void GUIManager::WindowSelectedObjectProperties()
@@ -323,6 +305,26 @@ TextureAtlas * GUIManager::getTextureAtlas() const
     return textureAtlas;
 }
 
+GUITypes::FolderBrowserCache GUIManager::getBrowserScripts() const
+{
+    return browserScripts;
+}
+
+GUITypes::FolderBrowserCache GUIManager::getBrowserScenes() const
+{
+    return browserScenes;
+}
+
+GUITypes::FolderBrowserCache GUIManager::getBrowserProjects() const
+{
+    return browserProjects;
+}
+
+GUITypes::FolderBrowserCache GUIManager::getBrowserShaders() const
+{
+    return browserShaders;
+}
+
 void GUIManager::WindowImages()
 {
     auto windowStatus = GetWindowStatus(GUITypes::IMAGES);
@@ -442,7 +444,7 @@ void GUIManager::WindowLightsDepthMapsViewer()
                 ImGui::TableNextColumn();
 
                 // Centrar texto combinado
-                auto combinedText = l->getLabel() + " / Layer: " + std::to_string(i);
+                auto combinedText = std::string(l->getName()) + " / Layer: " + std::to_string(i);
                 float availWidth = ImGui::GetContentRegionAvail().x;
                 float textWidth = ImGui::CalcTextSize(combinedText.c_str()).x;
                 ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - textWidth) * 0.5f);
@@ -484,14 +486,6 @@ void GUIManager::DrawSplash()
 
     ImGui::SetNextWindowPos(positionCentered);
     ImGui::SetNextWindowSize(size);
-
-    ImGui::Begin("ImagenCentrada", nullptr,
-        ImGuiWindowFlags_NoTitleBar |
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoMove |
-        ImGuiWindowFlags_NoScrollbar |
-        ImGuiWindowFlags_NoSavedSettings);
-
     ImGui::Image(
         splashImage->getOGLImTexture(),
         size,
@@ -499,9 +493,6 @@ void GUIManager::DrawSplash()
         ImVec2(1, 1),
         ImVec4(1.0f, 1.0f, 1.0f, splashAlpha)
     );
-
-    ImGui::End();
-
 }
 
 GUITypes::GUIWindowData* GUIManager::GetWindowStatus(GUITypes::GUIWindow window)
@@ -513,3 +504,25 @@ GUITypes::GUIWindowData* GUIManager::GetWindowStatus(GUITypes::GUIWindow window)
     }
     return nullptr;
 }
+
+void GUIManager::WelcomeMessage()
+{
+    Logging::Error("ese %d", 1);
+    Logging::Message("############################################################");
+    Logging::Message("");
+    Logging::Message("***********************");
+    Logging::Message("*  B R A K E Z A 3 D  *");
+    Logging::Message("***********************");
+    Logging::Message("");
+    Logging::Message("Open source game engine for developers");
+    Logging::Message("############################################################");
+    Logging::Message("");
+    Logging::Message(BrakezaSetup::get()->ENGINE_WEBSITE.c_str());
+    Logging::Message(BrakezaSetup::get()->ENGINE_SOURCE_WEBSITE.c_str());
+    Logging::Message("");
+    Logging::Message("%s", BrakezaSetup::get()->ENGINE_TITLE.c_str());
+    Logging::Message("");
+    Logging::Message("############################################################");
+    Logging::Message("");
+}
+

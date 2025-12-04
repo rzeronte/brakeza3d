@@ -44,14 +44,14 @@ void Object3D::setRotation(const M3 &r)
     this->rotation = r;
 }
 
-std::string Object3D::getLabel() const
+std::string Object3D::getName()
 {
     return label;
 }
 
-void Object3D::setLabel(const std::string& label)
+void Object3D::setName(const std::string& value)
 {
-    Object3D::label = label;
+    label = value;
 }
 
 bool &Object3D::isEnabled() {
@@ -378,7 +378,7 @@ sol::object Object3D::getLocalScriptVar(const char *varName)
 
 void Object3D::MakeKineticBody(float x, float y, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
-    Logging::Message("[Object3D] makeKineticBody for %s", getLabel().c_str());
+    Logging::Message("[Object3D] makeKineticBody for %s", getName().c_str());
 
     btTransform t;
     t.setIdentity();
@@ -420,7 +420,7 @@ void Object3D::MakeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
 
 void Object3D::MakeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
-    Logging::Message("[Object3D] makeSimpleRigidBody for %s", getLabel().c_str());
+    Logging::Message("[Object3D] makeSimpleRigidBody for %s", getName().c_str());
 
     setMass(mass);
 
@@ -518,7 +518,7 @@ void Object3D::ResolveCollision(CollisionInfo with)
 {
     if (BrakezaSetup::get()->LOG_COLLISION_OBJECTS) {
         auto *object = static_cast<Object3D *>(with.with);
-        Logging::Message("Object3D: Collision %s with %s",  getLabel().c_str(), object->getLabel().c_str());
+        Logging::Message("Object3D: Collision %s with %s",  getName().c_str(), object->getName().c_str());
     }
 
     if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == BrakezaSetup::LUA_PLAY) {

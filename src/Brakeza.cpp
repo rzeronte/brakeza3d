@@ -57,35 +57,6 @@ void Brakeza::start(int argc, char *argv[])
     mainLoop(projectAutoload, project);
 }
 
-void Brakeza::WelcomeMessage()
-{
-    Logging::Message("############################################################");
-    Logging::Message("");
-    Logging::Message("************************");
-    Logging::Message("*  B R A K E Z A 3 D   *");
-    Logging::Message("************************");
-    Logging::Message("");
-    Logging::Message("Open source game engine for developers");
-    Logging::Message("############################################################");
-    Logging::Message("");
-    Logging::Message(BrakezaSetup::get()->ENGINE_WEBSITE.c_str());
-    Logging::Message(BrakezaSetup::get()->ENGINE_SOURCE_WEBSITE.c_str());
-    Logging::Message("");
-    Logging::Message("%s", BrakezaSetup::get()->ENGINE_TITLE.c_str());
-    Logging::Message("");
-    Logging::Message("############################################################");
-    Logging::Message("");
-}
-
-void Brakeza::CaptureInputEvents(SDL_Event &e) const {
-
-    while (SDL_PollEvent(&e)) {
-        checkForResizeOpenGLWindow(e);
-        onUpdateSDLPollEventComponents(&e);
-        ImGui_ImplSDL2_ProcessEvent(&e);
-    }
-}
-
 void Brakeza::mainLoop(bool autostart, const std::string& project)
 {
     SDL_Event event;
@@ -101,10 +72,10 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
 
     OnStartComponents();
 
-    WelcomeMessage();
+    GUI()->WelcomeMessage();
     BrakezaSetup::get()->ENABLE_LOGGING_STD = false;
 
-    //HandleAutoStartProject(autostart, project);
+    HandleAutoStartProject(autostart, project);
 
     // Profiler tags
     Profiler::ResetMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobal");
@@ -131,13 +102,12 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
     onEndComponents();
 }
 
-void Brakeza::checkForResizeOpenGLWindow(const SDL_Event &e)
-{
-    if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-        auto window = ComponentsManager::get()->getComponentWindow();
-        window->UpdateWindowSize();
-        glViewport(0,0, window->getWidth(), window->getHeight());
-        window->resetFramebuffer();
+void Brakeza::CaptureInputEvents(SDL_Event &e) const {
+
+    while (SDL_PollEvent(&e)) {
+        ComponentsManager::get()->getComponentWindow()->CheckForResizeOpenGLWindow(e);
+        onUpdateSDLPollEventComponents(&e);
+        ImGui_ImplSDL2_ProcessEvent(&e);
     }
 }
 
@@ -159,7 +129,7 @@ std::vector<Object3D *> &Brakeza::getSceneObjects()
 void Brakeza::addObject3D(Object3D *obj, const std::string &label)
 {
     Logging::Message("[Brakeza3D addObject3D] Adding Object3D to scene: %s", label.c_str());
-    obj->setLabel(label);
+    obj->setName(label);
     sceneObjects.push_back(obj);
 }
 
@@ -283,7 +253,7 @@ float &Brakeza::getExecutionTime()
     return executionTime;
 }
 
-std::string Brakeza::uniqueObjectLabel(const char *prefix)
+std::string Brakeza::UniqueObjectLabel(const char *prefix)
 {
     return prefix + std::string("_") + std::to_string(Tools::random(0, 100));
 }
@@ -296,7 +266,7 @@ GUIManager *Brakeza::GUI() const
 Object3D *Brakeza::getSceneObjectByLabel(const std::string &label) const
 {
     for (const auto sceneObject : sceneObjects) {
-        if (sceneObject->getLabel() == label) {
+        if (sceneObject->getName() == label) {
             return sceneObject;
         }
     }

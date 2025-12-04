@@ -14,17 +14,17 @@ class FileSystemGUI
 {
 public:
     static void UpdateFolderFiles(GUIManager *gui);
-    static void DrawProjectFiles(GUIManager *gui, const std::string &folder);
-    static void DrawScenesFolder(GUIManager *gui, const std::string &folder);
+    static void DrawProjectFiles(GUIManager *gui, std::string folder);
+    static void DrawScenesFolder(GUIManager *gui, std::string folder);
     static void LoadImagesFolder(GUIManager *gui);
     static void DrawBrowserFolders(
         GUIManager *gui,
-        const std::string &folder,
-        const std::string &folderBase,
+        std::string &folder,
+        std::string &folderBase,
         std::string &destiny,
         std::vector<std::string> &folders,
         std::vector<std::string> &files,
-        const std::string &ext
+        std::string ext
     );
     static ImTextureID Icon(GUISheet coords);
 };

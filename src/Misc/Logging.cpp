@@ -5,6 +5,18 @@
 
 void Logging::Message(const char *message, ...)
 {
+    Brakeza::get()->GUI()->getConsole()->setLogIcon(IconGUI::ADD);
+
+    va_list args;
+    va_start(args, message);
+
+    Output(message, args);
+
+    va_end(args);
+}
+
+void Logging::Output(const char *message, ...)
+{
     if (!BrakezaSetup::get()->ENABLE_LOGGING) return;
 
     va_list args;
@@ -31,4 +43,16 @@ void Logging::Message(const char *message, ...)
     }
 
     delete[] buffer;
+}
+
+void Logging::Error(const char *error, ...)
+{
+    Brakeza::get()->GUI()->getConsole()->setLogIcon(IconGUI::EXIT);
+
+    va_list args;
+    va_start(args, error);
+
+    Message(error, args);
+
+    va_end(args);
 }

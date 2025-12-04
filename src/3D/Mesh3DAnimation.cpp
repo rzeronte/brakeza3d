@@ -922,11 +922,11 @@ void Mesh3DAnimation::ResolveCollision(CollisionInfo with)
         auto *object = static_cast<Object3D *>(with.with);
 
         if (with.source == BrakezaSetup::CollisionSource::OBJECT_COLLIDER) {
-            Logging::Message("Mesh3DAnimation: Collision %s with object: %s",  getLabel().c_str(), object->getLabel().c_str());
+            Logging::Message("Mesh3DAnimation: Collision %s with object: %s",  getName().c_str(), object->getName().c_str());
         }
 
         if (with.source == BrakezaSetup::CollisionSource::BONE_COLLIDER) {
-            Logging::Message("Mesh3DAnimation: Collision %s Bone Collider: %s, with object: %s",  getLabel().c_str(), boneMappingColliders[with.boneIndexMapping].nameMapping.c_str(), object->getLabel().c_str());
+            Logging::Message("Mesh3DAnimation: Collision %s Bone Collider: %s, with object: %s",  getName().c_str(), boneMappingColliders[with.boneIndexMapping].nameMapping.c_str(), object->getName().c_str());
         }
     }
 

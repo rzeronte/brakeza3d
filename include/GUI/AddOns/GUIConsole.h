@@ -9,8 +9,10 @@
 #include <cctype>
 #include <cstdio>
 #include "imgui.h"
+#include "../GUI.h"
 #include "../../Misc/Logging.h"
 #include "../../../sol/sol.hpp"
+#include "../Objects/FileSystemGUI.h"
 
 struct GuiAddonConsole
 {
@@ -22,9 +24,14 @@ struct GuiAddonConsole
     ImGuiTextFilter       Filter;
     bool                  AutoScroll;
     bool                  ScrollToBottom;
+    GUISheet              LogIcon;
+
     sol::state &lua;
     GuiAddonConsole(sol::state &lua): lua(lua)
     {
+        LogIcon.x = 0;
+        LogIcon.y = 0;
+
         ClearLog();
         memset(InputBuf, 0, sizeof(InputBuf));
         HistoryPos = -1;
@@ -43,6 +50,10 @@ struct GuiAddonConsole
         ClearLog();
         for (int i = 0; i < History.Size; i++)
             free(History[i]);
+    }
+    void setLogIcon(GUISheet icon)
+    {
+        LogIcon = icon;
     }
 
     // Portable helpers
@@ -70,7 +81,7 @@ struct GuiAddonConsole
         Items.push_back(Strdup(buf));
     }
 
-    void    Draw(const char* title, bool* p_open)
+    void Draw(const char* title, bool* p_open)
     {
         ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
         if (!ImGui::Begin(title, p_open))
@@ -96,10 +107,9 @@ struct GuiAddonConsole
         }
 
         // Options, Filter
-        if (ImGui::Button("Clear"))           { ClearLog(); }
+        GUI::DrawButton("Clear", IconGUI::COLLISION_OBJECTS, true, [&]{ ClearLog(); });
         ImGui::SameLine();
-        if (ImGui::Button("Options"))
-            ImGui::OpenPopup("Options");
+        GUI::DrawButton("Options", IconGUI::COLLISION_OBJECTS, true, [&]{ ImGui::OpenPopup("Options"); });
         ImGui::SameLine();
         Filter.Draw("Filter", 180);
         ImGui::Separator();
@@ -129,6 +139,8 @@ struct GuiAddonConsole
                 else if (strncmp(item, "# ", 2) == 0) { color = ImVec4(1.0f, 0.8f, 0.6f, 1.0f); has_color = true; }
                 if (has_color)
                     ImGui::PushStyleColor(ImGuiCol_Text, color);
+                ImGui::Image(FileSystemGUI::Icon(LogIcon), GUITypes::Sizes::ICON_SIZE_MENUS);
+                ImGui::SameLine();
                 ImGui::TextUnformatted(item);
                 if (has_color)
                     ImGui::PopStyleColor();

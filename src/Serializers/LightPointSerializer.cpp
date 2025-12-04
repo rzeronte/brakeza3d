@@ -75,5 +75,5 @@ void LightPointSerializer::LoadFileIntoScene(const std::string &model)
 
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
 
-    Brakeza::get()->addObject3D(o, Brakeza::uniqueObjectLabel("LightPoint3D"));
+    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("LightPoint3D"));
 }

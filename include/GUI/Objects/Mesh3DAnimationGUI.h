@@ -22,7 +22,7 @@ public:
             for (unsigned int i = 0; i < o->scene->mNumAnimations; i++) {
                 items[i] = o->scene->mAnimations[i]->mName.C_Str();
             }
-            auto comboTitle = "Animations##" + o->getLabel();
+            auto comboTitle = "Animations##" + o->getName();
             ImGui::Combo("Animation", &o->indexCurrentAnimation, items, IM_ARRAYSIZE(items));
 
             ImGui::Separator();
@@ -33,7 +33,7 @@ public:
             ImGui::Checkbox("Bones Colliders", &o->boneColliderEnabled);
 
             if (o->boneColliderEnabled) {
-                if (ImGui::Button(std::string("Manage Bone Mappings##" + o->getLabel()).c_str())) {
+                if (ImGui::Button(std::string("Manage Bone Mappings##" + o->getName()).c_str())) {
                    Brakeza::get()->GUI()->OpenBoneInfoDialog();
                 }
             }

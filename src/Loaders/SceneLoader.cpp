@@ -225,7 +225,7 @@ void SceneLoader::SceneLoaderCreateObject(cJSON *object)
 {
     auto o = JSONSerializerRegistry::instance().deserialize(object);
     o->setBelongToScene(true);
-    std::cout << "[SceneLoader SceneLoaderCreateObject] " << o->getLabel() << std::endl;
+    std::cout << "[SceneLoader SceneLoaderCreateObject] " << o->getName() << std::endl;
 
-    Brakeza::get()->addObject3D(o, o->getLabel());
+    Brakeza::get()->addObject3D(o, o->getName());
 }

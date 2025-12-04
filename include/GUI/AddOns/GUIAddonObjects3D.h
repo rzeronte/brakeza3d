@@ -101,12 +101,12 @@ struct GUIAddonObjects3D
             }
             ImGui::SameLine();
             ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 15.0f);
-            ImGui::Text((std::to_string(i + 1) + ") " + o->getLabel()).c_str());
+            ImGui::Text((std::to_string(i + 1) + ") " + o->getName()).c_str());
             if (ImGui::BeginDragDropTarget()) {
                 auto mesh = dynamic_cast<Mesh3D*> (o);
 
                 if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
-                    Logging::Message("Dropping script (%s) in %s", payload->Data, o->getLabel().c_str());
+                    Logging::Message("Dropping script (%s) in %s", payload->Data, o->getName().c_str());
                     o->AttachScript(new ScriptLUA(
                         std::string((const char*) payload->Data),
                         ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))

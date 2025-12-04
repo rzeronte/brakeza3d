@@ -55,5 +55,5 @@ void Image2DSerializer::LoadFileIntoScene(const std::string &file)
 
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
 
-    Brakeza::get()->addObject3D(o, Brakeza::uniqueObjectLabel("Image2D"));
+    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Image2D"));
 }

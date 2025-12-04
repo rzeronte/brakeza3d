@@ -16,7 +16,7 @@ cJSON * Object3DSerializer::JsonByObject(Object3D* o)
 
     cJSON *root = cJSON_CreateObject();
 
-    cJSON_AddStringToObject(root, "name", o->getLabel().c_str());
+    cJSON_AddStringToObject(root, "name", o->getName().c_str());
     cJSON_AddNumberToObject(root, "scale", o->getScale());
     cJSON_AddBoolToObject(root, "enabled", o->isEnabled());
     cJSON_AddItemToObject(root, "position", ToolsJSON::Vertex3DToJSON(o->getPosition()));
@@ -64,7 +64,7 @@ void Object3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
     Logging::Message("[Object3DSerializer] ApplyJsonToObject", o->getTypeObject());
 
-    o->setLabel(cJSON_GetObjectItem(json, "name")->valuestring);
+    o->setName(cJSON_GetObjectItem(json, "name")->valuestring);
 
     //Enabled
     o->setEnabled(false);
@@ -192,7 +192,7 @@ Object3D * Object3DSerializer::ObjectByJson(cJSON *json)
 void Object3DSerializer::LoadFileIntoScene(const std::string &file)
 {
     auto o = new Object3D();
-    Brakeza::get()->addObject3D(o, Brakeza::uniqueObjectLabel("Object3D"));
+    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Object3D"));
 
 }
 

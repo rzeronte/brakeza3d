@@ -101,5 +101,5 @@ void Mesh3DAnimationSerializer::LoadFileIntoScene(const std::string& file)
     o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
     o->AssimpLoadAnimation(file);
 
-    Brakeza::get()->addObject3D(o, Brakeza::uniqueObjectLabel("Mesh3D"));
+    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Mesh3D"));
 }

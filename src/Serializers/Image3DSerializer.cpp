@@ -56,5 +56,5 @@ void Image3DSerializer::LoadFileIntoScene(const std::string &filename)
         new Image(filename)
     );
 
-    Brakeza::get()->addObject3D(o, Brakeza::uniqueObjectLabel("Image3D"));
+    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Image3D"));
 }

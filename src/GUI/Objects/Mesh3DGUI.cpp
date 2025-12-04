@@ -98,7 +98,7 @@ void Mesh3DGUI::DrawEditBonesMappingWindow(GUIManager *gui)
 
     GUIManager::SetNextWindowSize(700, 700);
     ImGui::SetNextWindowBgAlpha(GUITypes::Levels::WINDOW_ALPHA);
-    auto dialogTitle = std::string("Bones Mapping Editor: " + a->getLabel());
+    auto dialogTitle = std::string("Bones Mapping Editor: " + a->getName());
     if (ImGui::Begin(dialogTitle.c_str(), &gui->showBoneMappingsEditorWindow, ImGuiWindowFlags_NoDocking)) {
         ImGui::SeparatorText("Create new bones mapping:");
 
@@ -124,7 +124,7 @@ void Mesh3DGUI::DrawEditBonesMappingWindow(GUIManager *gui)
             items[i] = bc->at(i).nameMapping.c_str();
         }
 
-        auto comboTitle = "BoneMappings##" + a->getLabel();
+        auto comboTitle = "BoneMappings##" + a->getName();
         ImGui::Combo("Bone Mappings", &a->BoneColliderIndexPointer(), items, IM_ARRAYSIZE(items));
 
         if (a->BoneColliderIndexPointer() >= 0) {

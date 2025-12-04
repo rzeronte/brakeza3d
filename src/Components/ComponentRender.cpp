@@ -181,7 +181,7 @@ void ComponentRender::updateSelectedObject3D()
         const auto id = ComponentsManager::get()->getComponentWindow()->getObjectIDByPickingColorFramebuffer(x, y);
         selectedObject = Brakeza::get()->getSceneObjectById(id);
         if (selectedObject != nullptr) {
-            Logging::Message("Selected object by click(%d, %d): %s", x, y, selectedObject->getLabel().c_str());
+            Logging::Message("Selected object by click(%d, %d): %s", x, y, selectedObject->getName().c_str());
             Brakeza::get()->GUI()->setSelectedObject(selectedObject);
         }
     }

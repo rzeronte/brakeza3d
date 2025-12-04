@@ -11,6 +11,7 @@
 #include "../Render/ParticlesContext.h"
 #include <vector>
 #include <glm/vec2.hpp>
+#include "../GUI/GUITypes.h"
 
 class Tools {
 
@@ -39,8 +40,8 @@ public:
     static glm::mat4 aiMat4toGLMMat4(const aiMatrix4x4t<ai_real> &from);
     static std::string getExtensionFromFilename(const std::string &filename);
     static std::string getFilenameWithoutExtension(const std::string &filename);
-    static std::vector<std::string> getFolderFolders(const std::string &path);
-    static std::vector<std::string> getFolderFiles(const std::string &path, const std::string &extension);
+    static std::vector<std::string> getFolderFolders(std::string path);
+    static std::vector<std::string> getFolderFiles(std::string &path, std::string extension);
     static std::string GoBackFromFolder(const std::string& folder);
     static std::string removeSubstring(const std::string &str, const std::string &toRemove);
 };
