@@ -3,7 +3,7 @@
 //
 
 #include "../../include/Loaders/SceneLoader.h"
-#include "../../include/BrakezaSetup.h"
+#include "../../include/Config.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/3D/Mesh3D.h"
@@ -42,7 +42,7 @@ void SceneLoader::LoadScene(const std::string& filename)
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity") != nullptr) {
         auto gravity = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity"));
-        BrakezaSetup::get()->gravity = gravity;
+        Config::get()->gravity = gravity;
         ComponentsManager::get()->getComponentCollisions()->setGravity(gravity);
     }
 
@@ -112,7 +112,7 @@ void SceneLoader::SaveScene(const std::string &filename)
 
     auto render = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward();
 
-    cJSON_AddItemToObject(root, "gravity", ToolsJSON::Vertex3DToJSON(BrakezaSetup::get()->gravity));
+    cJSON_AddItemToObject(root, "gravity", ToolsJSON::Vertex3DToJSON(Config::get()->gravity));
 
     // illumination ADS
     cJSON *adsJSON = cJSON_CreateObject();

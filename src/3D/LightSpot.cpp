@@ -46,14 +46,14 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
 
     if (showDebugCone && isGUISelected()) {
         cone.UpdateVertices(
-            BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE/10,
+            Config::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE/10,
             angulo_cono,
             32
         );
 
         crearBuffersCono();
 
-        if (BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED) {
+        if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
             glDisable(GL_CULL_FACE);
             glEnable(GL_BLEND);
             glBlendFunc(mode_src, mode_dst);
@@ -70,7 +70,7 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
             glEnable(GL_CULL_FACE);
         }
 
-        if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME) {
+        if (Config::get()->TRIANGLE_MODE_WIREFRAME) {
             render->getShaderOGLWireframe()->render(
                 getModelMatrix(),
                 vertexBuffer,
@@ -97,8 +97,8 @@ glm::mat4 LightSpot::getLightSpaceMatrix() const
     glm::mat4 lightProjection = glm::perspective(
         fov,
         aspect,
-        BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_NEAR_PLANE,
-        BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE
+        Config::get()->SHADOW_MAPPING_DEPTH_NEAR_PLANE,
+        Config::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE
     );
 
     Vertex3D forward = Vertex3D::fromGLM(getDirection());

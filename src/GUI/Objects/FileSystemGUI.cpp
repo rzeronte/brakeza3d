@@ -103,7 +103,7 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, std::string folder)
     DrawBrowserFolders(
         gui,
         folder,
-        BrakezaSetup::get()->SCENES_FOLDER,
+        Config::get()->SCENES_FOLDER,
         browser.currentFolder,
         browser.folderFolders,
         browser.folderFiles,
@@ -201,10 +201,10 @@ void FileSystemGUI::DrawBrowserFolders(
 
 void FileSystemGUI::LoadImagesFolder(GUIManager *gui)
 {
-    auto images = Tools::getFolderFiles(BrakezaSetup::get()->IMAGES_FOLDER, "png");
+    auto images = Tools::getFolderFiles(Config::get()->IMAGES_FOLDER, "png");
 
     for (const auto& f: images) {
-        gui->imagesFolder.addItem(BrakezaSetup::get()->IMAGES_FOLDER + f, f);
+        gui->imagesFolder.addItem(Config::get()->IMAGES_FOLDER + f, f);
     }
 }
 

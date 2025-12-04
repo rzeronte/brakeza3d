@@ -1,6 +1,6 @@
 
 #include "../../include/Misc/Logging.h"
-#include "../../include/BrakezaSetup.h"
+#include "../../include/Config.h"
 #include "../../include/Brakeza.h"
 
 void Logging::Message(const char *message, ...)
@@ -17,7 +17,7 @@ void Logging::Message(const char *message, ...)
 
 void Logging::Output(const char *message, ...)
 {
-    if (!BrakezaSetup::get()->ENABLE_LOGGING) return;
+    if (!Config::get()->ENABLE_LOGGING) return;
 
     va_list args;
     va_start(args, message);
@@ -38,7 +38,7 @@ void Logging::Output(const char *message, ...)
         Brakeza::get()->GUI()->getConsole()->AddLog("%s", buffer);
     }
 
-    if (BrakezaSetup::get()->ENABLE_LOGGING_STD) {
+    if (Config::get()->ENABLE_LOGGING_STD) {
         std::cout << buffer << std::endl;
     }
 

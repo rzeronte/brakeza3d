@@ -73,7 +73,7 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
     OnStartComponents();
 
     GUI()->WelcomeMessage();
-    BrakezaSetup::get()->ENABLE_LOGGING_STD = false;
+    Config::get()->ENABLE_LOGGING_STD = false;
 
     HandleAutoStartProject(autostart, project);
 
@@ -83,7 +83,7 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
     Profiler::ResetMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
     Profiler::ResetMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobalFramebuffer");
 
-    while (!BrakezaSetup::get()->EXIT) {
+    while (!Config::get()->EXIT) {
         Profiler::get()->ResetTotalFrameTime();     // Reset profiler measures
         ControlFrameRate();                         // Control framerate based on SDL_Delay
         UpdateTimer();                              // Refresh main timer.
@@ -113,9 +113,9 @@ void Brakeza::CaptureInputEvents(SDL_Event &e) const {
 
 void Brakeza::ControlFrameRate() const
 {
-    if (!BrakezaSetup::get()->LIMIT_FRAMERATE) return;
+    if (!Config::get()->LIMIT_FRAMERATE) return;
 
-    const float frameDelay = 1000.0f / static_cast<float>(BrakezaSetup::get()->FRAMERATE);
+    const float frameDelay = 1000.0f / static_cast<float>(Config::get()->FRAMERATE);
     if (deltaTime < frameDelay) {
         SDL_Delay(floor(frameDelay - deltaTime));
     }
@@ -212,19 +212,19 @@ void Brakeza::HandleAutoStartProject(bool autostart, const std::string &project)
     auto render = componentsManager->getComponentRender();
 
     if (autostart) {
-        render->getProjectLoader().LoadProject(BrakezaSetup::get()->PROJECTS_FOLDER + project);
-        BrakezaSetup::get()->ENABLE_IMGUI = false;
+        render->getProjectLoader().LoadProject(Config::get()->PROJECTS_FOLDER + project);
+        Config::get()->ENABLE_IMGUI = false;
         componentsManager->getComponentScripting()->PlayLUAScripts();
         return;
     }
 
-    render->getSceneLoader().LoadScene(BrakezaSetup::get()->CONFIG_FOLDER + BrakezaSetup::get()->DEFAULT_SCENE);
+    render->getSceneLoader().LoadScene(Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE);
 }
 
 void Brakeza::onUpdateSDLPollEventComponents(SDL_Event *event) const
 {
     for (Component* &component : componentsManager->Components()) {
-        component->onSDLPollEvent(event, BrakezaSetup::get()->EXIT);
+        component->onSDLPollEvent(event, Config::get()->EXIT);
     }
 }
 
@@ -292,5 +292,5 @@ Object3D *Brakeza::getSceneObjectById(const int id) const
 
 void Brakeza::shutdown()
 {
-    BrakezaSetup::get()->EXIT = true;
+    Config::get()->EXIT = true;
 }

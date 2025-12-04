@@ -5,7 +5,7 @@
 
 Component::Component()
 :
-    SETUP(BrakezaSetup::get()
+    SETUP(Config::get()
 )
 {
 }

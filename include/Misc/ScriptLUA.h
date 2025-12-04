@@ -7,7 +7,7 @@
 #include <string>
 #include <utility>
 #include "cJSON.h"
-#include "../BrakezaSetup.h"
+#include "../Config.h"
 #include "../../sol/sol.hpp"
 
 typedef std::variant<int, float, Vertex3D, const char*> LUADataValue;

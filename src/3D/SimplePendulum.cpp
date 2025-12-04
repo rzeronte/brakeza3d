@@ -3,7 +3,7 @@
 //
 
 #include "../../include/3D/SimplePendulum.h"
-#include "../../include/BrakezaSetup.h"
+#include "../../include/Config.h"
 #include "../../include/Brakeza.h"
 
 SimplePendulum::SimplePendulum(float angleX, float angleZ, float length, float friction)
@@ -20,7 +20,7 @@ SimplePendulum::SimplePendulum(float angleX, float angleZ, float length, float f
 void SimplePendulum::onUpdate() {
     Object3D::onUpdate();
     t += Brakeza::get()->getDeltaTime();
-    float w = sqrtf(abs(BrakezaSetup::get()->gravity.y)/this->length);
+    float w = sqrtf(abs(Config::get()->gravity.y)/this->length);
 
     float alpha = this->angleX * cosf(w*this->t);
     float gamma = 0;

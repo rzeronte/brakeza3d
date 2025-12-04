@@ -2,7 +2,7 @@
 #include "../../include/Render/TextureAnimatedDirectional.h"
 
 #include <utility>
-#include "../../include/BrakezaSetup.h"
+#include "../../include/Config.h"
 
 void TextureAnimatedDirectional::LoadAnimationFile(std::string file, int newNumFrames, int newFps, int newMaxTimes)
 {

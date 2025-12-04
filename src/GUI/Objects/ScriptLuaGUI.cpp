@@ -18,15 +18,15 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
     int i = 0;
     for (auto&  type: o->dataTypes) {
         ImGui::PushID(i);
-        switch (BrakezaSetup::get()->LUADataTypesMapping[type.type]) {
-            case BrakezaSetup::LUADataType::INT: {
+        switch (Config::get()->LUADataTypesMapping[type.type]) {
+            case Config::LUADataType::INT: {
                 int valueInt = std::get<int>(type.value);
                 if (ImGui::InputInt(type.name.c_str(), &valueInt)) {
                     type.value = valueInt;
                 }
                 break;
             }
-            case BrakezaSetup::LUADataType::STRING: {
+            case Config::LUADataType::STRING: {
                 std::string valueString = std::get<const char*>(type.value);
                 static char name[256];
                 strncpy(name, valueString.c_str(), sizeof(name));
@@ -37,14 +37,14 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
 
                 break;
             }
-            case BrakezaSetup::LUADataType::FLOAT: {
+            case Config::LUADataType::FLOAT: {
                 float valueFloat = std::get<float>(type.value);
                 if (ImGui::InputFloat(type.name.c_str(), &valueFloat, 0.01f, 1.0f, "%.3f")) {
                     type.value = valueFloat;
                 }
                 break;
             }
-            case BrakezaSetup::LUADataType::VERTEX3D: {
+            case Config::LUADataType::VERTEX3D: {
                 Vertex3D valueVertex = std::get<Vertex3D>(type.value);
                 float vec4f[4];
                 valueVertex.toFloat(vec4f);
@@ -97,7 +97,7 @@ void ScriptLuaGUI::DrawScriptsBySelectedObject(GUIManager *gui)
         }
 
         ImGui::SameLine();
-        std::string optionText = std::to_string(i + 1) + ") " + Tools::removeSubstring(currentScript->scriptFilename, BrakezaSetup::get()->SCRIPTS_FOLDER);
+        std::string optionText = std::to_string(i + 1) + ") " + Tools::removeSubstring(currentScript->scriptFilename, Config::get()->SCRIPTS_FOLDER);
         if (currentScript->isPaused()) {
             if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::UNLOCK), ImVec2(14, 14))) {
                 currentScript->setPaused(false);
@@ -138,7 +138,7 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, std::string& folde
     FileSystemGUI::DrawBrowserFolders(
         gui,
         folder,
-        BrakezaSetup::get()->SCRIPTS_FOLDER,
+        Config::get()->SCRIPTS_FOLDER,
         browser.currentFolder,
         browser.folderFolders,
         browser.folderFiles,

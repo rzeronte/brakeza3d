@@ -6,7 +6,7 @@
 #define BRAKEZA3D_COLLISIONINFO_H
 
 
-#include "../BrakezaSetup.h"
+#include "../Config.h"
 class Object3D;
 
 class CollisionInfo {

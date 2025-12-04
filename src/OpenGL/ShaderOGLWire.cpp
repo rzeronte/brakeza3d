@@ -8,8 +8,8 @@
 ShaderOGLWire::ShaderOGLWire()
 :
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "Wireframe.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "Wireframe.fs",
+        Config::get()->SHADERS_FOLDER + "Wireframe.vs",
+        Config::get()->SHADERS_FOLDER + "Wireframe.fs",
         false
     )
 {

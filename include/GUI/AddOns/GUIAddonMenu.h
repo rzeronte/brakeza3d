@@ -15,24 +15,19 @@ struct GUIAddonMenu
     explicit GUIAddonMenu(std::vector<GUITypes::GUIWindowData> &windowStatus);
 
     void Draw();
-    void DrawMainMenuWindow();
-    void DrawMainMenuBrakeza3D();
-    void DrawMainMenuScriptControls();
-    void DrawMainMenuAddObject();
-    void DrawMainMenuVideo();
-    void DrawMainMenuColliders();
-    void DrawMainMenuIllumination();
-    void DrawMainMenuCamera();
-    void DrawMainMenuSound();
-    void DrawMainMenuLogging();
-    void DrawMainMenuLayout();
-    void DrawAboutMeModal();
-    static void DrawItemsToLoad(
-        std::string &folder,
-        const std::string &extension,
-        GUISheet icon,
-        const std::function<void(const std::string &)> &callBack
-    );
+    void MenuWindow();
+    void MenuBrakeza3D();
+    void MenuScriptControls();
+    void MenuAddObject();
+    void MenuVideo();
+    void MenuColliders();
+    void MenuIllumination();
+    void MenuCamera();
+    void MenuSound();
+    void MenuLogging();
+    void MenuLayout();
+    void AboutMeModal();
+    static void DrawItemsToLoad(std::string &folder, std::string &ext, GUISheet icon, const std::function<void(const std::string &)> &cb );
 };
 
 #endif //BRAKEZA3D_GUIWIDGETMENU_H

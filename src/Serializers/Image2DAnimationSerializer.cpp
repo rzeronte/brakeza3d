@@ -65,8 +65,8 @@ void Image2DAnimationSerializer::ApplyJsonToObject(const cJSON *json, Object3D *
 void Image2DAnimationSerializer::LoadFileIntoScene(const std::string &file)
 {
     auto *o = new Image2DAnimation(
-        BrakezaSetup::get()->screenWidth/2,
-        BrakezaSetup::get()->screenHeight/2,
+        Config::get()->screenWidth/2,
+        Config::get()->screenHeight/2,
         false,
         new TextureAnimated(file,1,1,1,1)
     );

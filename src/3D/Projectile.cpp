@@ -29,7 +29,7 @@ void Projectile::makeProjectileRigidBody(
     int collisionMask
 )
 {
-    if (BrakezaSetup::get()->PROJECTILE_SIMPLE_MESH) {
+    if (Config::get()->PROJECTILE_SIMPLE_MESH) {
         Mesh3D::MakeSimpleRigidBody(mass, world, collisionGroup, collisionMask);
     } else {
         Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(mass, world, collisionGroup, collisionMask);

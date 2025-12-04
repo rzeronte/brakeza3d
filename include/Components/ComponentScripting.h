@@ -10,7 +10,7 @@
 
 class ComponentScripting : public Component
 {
-    BrakezaSetup::LuaStateScripts stateScripts = BrakezaSetup::LuaStateScripts::LUA_STOP;
+    Config::LuaStateScripts stateScripts = Config::LuaStateScripts::LUA_STOP;
     std::vector<ScriptLUA*> scripts;
     std::vector<ScriptLUA*> projectScripts;
     sol::state lua;
@@ -37,7 +37,7 @@ public:
     sol::state &getLua();
     std::vector<ScriptLUA*> &getSceneLUAScripts();
     std::vector<ScriptLUA*> &getProjectLUAScripts();
-    BrakezaSetup::LuaStateScripts getStateLUAScripts();
+    Config::LuaStateScripts getStateLUAScripts();
     sol::object getGlobalScriptVar(const std::string& scriptName, const char *varName);
     static void createScriptLUAFile(const std::string& path);
     static void removeScriptLUAFile(const std::string& path);

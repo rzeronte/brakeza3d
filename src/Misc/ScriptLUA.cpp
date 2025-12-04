@@ -103,20 +103,20 @@ void ScriptLUA::addDataTypeEmpty(const char *name, const char *type)
 {
     LUADataValue LUAValue;
 
-    switch (BrakezaSetup::get()->LUADataTypesMapping[type]) {
-        case BrakezaSetup::LUADataType::INT: {
+    switch (Config::get()->LUADataTypesMapping[type]) {
+        case Config::LUADataType::INT: {
             LUAValue = 0;
             break;
         }
-        case BrakezaSetup::LUADataType::FLOAT: {
+        case Config::LUADataType::FLOAT: {
             LUAValue = 0.0f;
             break;
         }
-        case BrakezaSetup::LUADataType::STRING: {
+        case Config::LUADataType::STRING: {
             LUAValue = "";
             break;
         }
-        case BrakezaSetup::LUADataType::VERTEX3D: {
+        case Config::LUADataType::VERTEX3D: {
             LUAValue = Vertex3D();
             break;
         }
@@ -132,20 +132,20 @@ void ScriptLUA::addDataType(const char *name, const char *type, cJSON *value)
 {
     LUADataValue LUAValue;
 
-    switch (BrakezaSetup::get()->LUADataTypesMapping[type]) {
-        case BrakezaSetup::LUADataType::INT: {
+    switch (Config::get()->LUADataTypesMapping[type]) {
+        case Config::LUADataType::INT: {
             LUAValue = value->valueint;
             break;
         }
-        case BrakezaSetup::LUADataType::FLOAT: {
+        case Config::LUADataType::FLOAT: {
             LUAValue = static_cast<float>(value->valuedouble);
             break;
         }
-        case BrakezaSetup::LUADataType::STRING: {
+        case Config::LUADataType::STRING: {
             LUAValue = value->valuestring;
             break;
         }
-        case BrakezaSetup::LUADataType::VERTEX3D: {
+        case Config::LUADataType::VERTEX3D: {
             LUAValue = ToolsJSON::getVertex3DByJSON(value);
             break;
         }
@@ -314,23 +314,23 @@ cJSON *ScriptLUA::getTypesJSON() const
         cJSON_AddStringToObject(typeJSON, "type", dataType.type.c_str());
 
         std::string name = dataType.name + "("+ dataType.type +")";
-        switch (BrakezaSetup::get()->LUADataTypesMapping[dataType.type]) {
-            case BrakezaSetup::LUADataType::INT: {
+        switch (Config::get()->LUADataTypesMapping[dataType.type]) {
+            case Config::LUADataType::INT: {
                 int valueInt = std::get<int>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueInt);
                 break;
             }
-            case BrakezaSetup::LUADataType::STRING: {
+            case Config::LUADataType::STRING: {
                 std::string valueString = std::get<const char *>(dataType.value);
                 cJSON_AddStringToObject(typeJSON, "value", valueString.c_str());
                 break;
             }
-            case BrakezaSetup::LUADataType::FLOAT: {
+            case Config::LUADataType::FLOAT: {
                 float valueFloat = std::get<float>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueFloat);
                 break;
             }
-            case BrakezaSetup::LUADataType::VERTEX3D: {
+            case Config::LUADataType::VERTEX3D: {
                 auto valueVertex = std::get<Vertex3D>(dataType.value);
                 cJSON_AddItemToObject(typeJSON, "value", ToolsJSON::Vertex3DToJSON(valueVertex));
 

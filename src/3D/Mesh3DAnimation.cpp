@@ -40,10 +40,10 @@ void Mesh3DAnimation::onUpdate()
         render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
     }
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (BrakezaSetup::get()->ENABLE_LIGHTS) {
+    if (Config::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
+        if (Config::get()->ENABLE_LIGHTS) {
             render->getShaderOGLRenderDeferred()->renderMesh(this, true, window->getGBuffer().FBO);
-            if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
+            if (Config::get()->ENABLE_SHADOW_MAPPING) {
                 ShadowMappingPass();
             }
         } else {
@@ -51,28 +51,28 @@ void Mesh3DAnimation::onUpdate()
         }
     }
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
+    if (Config::get()->TRIANGLE_MODE_PIXELS && isRender()) {
         render->getShaderOGLPoints()->renderMeshAnimation(this, window->getSceneFramebuffer());
     }
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_SHADING && isRender()) {
+    if (Config::get()->TRIANGLE_MODE_SHADING && isRender()) {
         render->getShaderOGLShading()->renderMesh(this, true, window->getSceneFramebuffer());
     }
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
+    if (Config::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
         render->getShaderOGLWireframe()->renderMesh(this, true, Color::gray(), window->getSceneFramebuffer());
     }
 
-    if (BrakezaSetup::get()->DRAW_MESH3D_AABB && isRender()) {
+    if (Config::get()->DRAW_MESH3D_AABB && isRender()) {
         UpdateBoundingBox();
         Drawable::drawAABB(&aabb, Color::white());
     }
 
-    if (BrakezaSetup::get()->DRAW_MESH3D_OCTREE && octree != nullptr) {
+    if (Config::get()->DRAW_MESH3D_OCTREE && octree != nullptr) {
         Drawable::drawOctree(octree);
     }
 
-    if (BrakezaSetup::get()->DRAW_MESH3D_GRID && grid != nullptr) {
+    if (Config::get()->DRAW_MESH3D_GRID && grid != nullptr) {
         Drawable::drawGrid3D(grid);
     }
 
@@ -80,11 +80,11 @@ void Mesh3DAnimation::onUpdate()
         s->render(window->getSceneFramebuffer());
     }
 
-    if (BrakezaSetup::get()->DRAW_ANIMATION_BONES) {
+    if (Config::get()->DRAW_ANIMATION_BONES) {
         DrawBones(scene->mRootNode, nullptr);
     }
 
-    if (BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
+    if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
         render->getShaderOGLColor()->renderMesh(
             this,
             true,
@@ -822,7 +822,7 @@ void Mesh3DAnimation::createBoneGhostBody(int bmIndex, unsigned int boneId, cons
     ci.ghostObject->setWorldTransform(transformation);
     ci.ghostObject->setUserPointer(this);
     ci.ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
-    ci.ghostObject->setUserIndex(BrakezaSetup::CollisionSource::BONE_COLLIDER);
+    ci.ghostObject->setUserIndex(Config::CollisionSource::BONE_COLLIDER);
     ci.ghostObject->setUserIndex2(bmIndex);
 
     ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->addCollisionObject(
@@ -918,19 +918,19 @@ void Mesh3DAnimation::removeBonesColliderMapping(const std::string& name)
 
 void Mesh3DAnimation::ResolveCollision(CollisionInfo with)
 {
-    if (BrakezaSetup::get()->LOG_COLLISION_OBJECTS) {
+    if (Config::get()->LOG_COLLISION_OBJECTS) {
         auto *object = static_cast<Object3D *>(with.with);
 
-        if (with.source == BrakezaSetup::CollisionSource::OBJECT_COLLIDER) {
+        if (with.source == Config::CollisionSource::OBJECT_COLLIDER) {
             Logging::Message("Mesh3DAnimation: Collision %s with object: %s",  getName().c_str(), object->getName().c_str());
         }
 
-        if (with.source == BrakezaSetup::CollisionSource::BONE_COLLIDER) {
+        if (with.source == Config::CollisionSource::BONE_COLLIDER) {
             Logging::Message("Mesh3DAnimation: Collision %s Bone Collider: %s, with object: %s",  getName().c_str(), boneMappingColliders[with.boneIndexMapping].nameMapping.c_str(), object->getName().c_str());
         }
     }
 
-    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == BrakezaSetup::LUA_PLAY) {
+    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == Config::LUA_PLAY) {
         RunResolveCollisionScripts(with);
     }
 }

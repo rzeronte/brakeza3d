@@ -95,7 +95,7 @@ void TentacleIK::transformJoints()
 {
     for (int i = (int) joints.size() -1 ; i >= 0 ; i--) {
         transformJoint(i);
-        applySinusoidalMovement(BrakezaSetup::get()->TESTING_INT3, BrakezaSetup::get()->TESTING_INT2, Brakeza::get()->getExecutionTime());
+        applySinusoidalMovement(Config::get()->TESTING_INT3, Config::get()->TESTING_INT2, Brakeza::get()->getExecutionTime());
     }
 }
 
@@ -152,7 +152,7 @@ void TentacleIK::draw()
         Point2D startScreenPoint = Transforms::WorldToPoint(joint->startWorld);
         Point2D endScreenPoint = Transforms::WorldToPoint(joint->endWorld);
 
-        const float intensity = joint->intensity * BrakezaSetup::get()->TESTING_INT1;
+        const float intensity = joint->intensity * Config::get()->TESTING_INT1;
 
         /*shaderLasers->addLaser(
             startScreenPoint.x, startScreenPoint.y,

@@ -33,7 +33,7 @@ void Image3DAnimation::onUpdate()
         ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME) {
+    if (Config::get()->TRIANGLE_MODE_WIREFRAME) {
         ComponentsManager::get()->getComponentRender()->getShaderOGLWireframe()->render(
             getModelMatrix(),
             billboard->getVertexBuffer(),

@@ -65,15 +65,15 @@ void ComponentInput::handleMouse(SDL_Event *event)
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
 
-    if (!BrakezaSetup::get()->MOUSE_LOOK) return;
+    if (!Config::get()->MOUSE_LOOK) return;
 
     if (mouseMotion && isRightMouseButtonPressed()) {
         if (event->type == SDL_MOUSEMOTION) {
             auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
 
 
-            camera->Yaw(-event->motion.xrel * BrakezaSetup::get()->MOUSE_SENSITIVITY);
-            camera->Pitch(event->motion.yrel * BrakezaSetup::get()->MOUSE_SENSITIVITY);
+            camera->Yaw(-event->motion.xrel * Config::get()->MOUSE_SENSITIVITY);
+            camera->Pitch(event->motion.yrel * Config::get()->MOUSE_SENSITIVITY);
 
             camera->setRotation(M3::getMatrixRotationForEulerAngles(
                 camera->getPitch(),
@@ -85,9 +85,9 @@ void ComponentInput::handleMouse(SDL_Event *event)
 
     if (event->type == SDL_MOUSEWHEEL) {
         if (event->wheel.y > 0) {
-            ComponentsManager::get()->getComponentCamera()->getCamera()->MoveForward(-BrakezaSetup::get()->WALKING_SPEED * 5);
+            ComponentsManager::get()->getComponentCamera()->getCamera()->MoveForward(-Config::get()->WALKING_SPEED * 5);
         } else if (event->wheel.y < 0) {
-            ComponentsManager::get()->getComponentCamera()->getCamera()->MoveBackward(-BrakezaSetup::get()->WALKING_SPEED * 5);
+            ComponentsManager::get()->getComponentCamera()->getCamera()->MoveBackward(-Config::get()->WALKING_SPEED * 5);
         }
     }
 
@@ -112,17 +112,17 @@ void ComponentInput::handleKeyboardMovingCamera()
 
     if (keyboard[SDL_SCANCODE_UP]) {
         if (isShiftPressed) {
-            camera->MoveVertical(BrakezaSetup::get()->WALKING_SPEED);
+            camera->MoveVertical(Config::get()->WALKING_SPEED);
         } else {
-            camera->MoveForward(-BrakezaSetup::get()->WALKING_SPEED);
+            camera->MoveForward(-Config::get()->WALKING_SPEED);
         }
     }
 
     if (keyboard[SDL_SCANCODE_DOWN]) {
         if (isShiftPressed) {
-            camera->MoveVertical(-BrakezaSetup::get()->WALKING_SPEED);
+            camera->MoveVertical(-Config::get()->WALKING_SPEED);
         } else {
-            camera->MoveBackward(-BrakezaSetup::get()->WALKING_SPEED);
+            camera->MoveBackward(-Config::get()->WALKING_SPEED);
         }
     }
 
@@ -202,8 +202,8 @@ void ComponentInput::resetMouseMapping()
         mouseRightButton = true;
     }
 
-    relativeRendererMouseX = (BrakezaSetup::get()->screenWidth * mouseX ) / window->getWidthRender();
-    relativeRendererMouseY = (BrakezaSetup::get()->screenHeight * mouseY) / window->getHeightRender();
+    relativeRendererMouseX = (Config::get()->screenWidth * mouseX ) / window->getWidthRender();
+    relativeRendererMouseY = (Config::get()->screenHeight * mouseY) / window->getHeightRender();
 
     mouseMotion = false;
     mouseMotionXRel = 0;
@@ -361,7 +361,7 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
         auto scripting = ComponentsManager::get()->getComponentScripting();
 
         if (keyboard[SDL_SCANCODE_F1]) {
-            if (scripting->getStateLUAScripts() == BrakezaSetup::LuaStateScripts::LUA_STOP) {
+            if (scripting->getStateLUAScripts() == Config::LuaStateScripts::LUA_STOP) {
                 scripting->PlayLUAScripts();
             } else {
                 scripting->StopLUAScripts();
@@ -374,23 +374,23 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
             SceneLoader::ClearScene();
         }
         if (keyboard[SDL_SCANCODE_F4]) {
-            BrakezaSetup::get()->ENABLE_IMGUI = !BrakezaSetup::get()->ENABLE_IMGUI;
+            Config::get()->ENABLE_IMGUI = !Config::get()->ENABLE_IMGUI;
         }
 
         auto *window = ComponentsManager::get()->getComponentWindow();
 
         if (keyboard[SDL_SCANCODE_F5]) {
-            window->setImGuiConfig(BrakezaSetup::ImGUIConfigs::DEFAULT);
+            window->setImGuiConfig(Config::ImGUIConfigs::DEFAULT);
         }
         if (keyboard[SDL_SCANCODE_F6]) {
-            window->setImGuiConfig(BrakezaSetup::ImGUIConfigs::CODING);
+            window->setImGuiConfig(Config::ImGUIConfigs::CODING);
         }
         if (keyboard[SDL_SCANCODE_F7]) {
-            window->setImGuiConfig(BrakezaSetup::ImGUIConfigs::DESIGN);
+            window->setImGuiConfig(Config::ImGUIConfigs::DESIGN);
         }
 
         if (keyboard[SDL_SCANCODE_F11]) {
-            BrakezaSetup::get()->FULLSCREEN = !BrakezaSetup::get()->FULLSCREEN;
+            Config::get()->FULLSCREEN = !Config::get()->FULLSCREEN;
             ComponentsManager::get()->getComponentWindow()->toggleFullScreen();
         }
     }

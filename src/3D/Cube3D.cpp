@@ -103,7 +103,7 @@ bool Cube3D::isPointInside(const Vertex3D &v) const
     int plane_end = 6;
 
     for (int i = plane_init; i < plane_end; i++) {
-        if (planes[i].distance(v) >= BrakezaSetup::get()->FRUSTUM_CLIPPING_DISTANCE) {
+        if (planes[i].distance(v) >= Config::get()->FRUSTUM_CLIPPING_DISTANCE) {
             return false;
         }
     }

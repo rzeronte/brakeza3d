@@ -49,13 +49,13 @@ void ComponentSound::InitSoundSystem() const
 
     Mix_AllocateChannels(16);
     Mix_VolumeMusic((int) SETUP->SOUND_VOLUME_MUSIC);
-    Mix_Volume(BrakezaSetup::SoundChannels::SND_GLOBAL, (int) SETUP->SOUND_CHANNEL_GLOBAL);
+    Mix_Volume(Config::SoundChannels::SND_GLOBAL, (int) SETUP->SOUND_CHANNEL_GLOBAL);
 }
 
 
 void ComponentSound::LoadSoundsConfigFile()
 {
-    auto filePath = BrakezaSetup::get()->CONFIG_FOLDER + BrakezaSetup::get()->DEFAULT_SOUNDS_FILE;
+    auto filePath = Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SOUNDS_FILE;
     Logging::Message("[ComponentSound] Loading Sounds file: (%s)", filePath.c_str());
 
     size_t file_size;
@@ -81,7 +81,7 @@ void ComponentSound::LoadSoundsConfigFile()
 
         Logging::Message("[ComponentSound] Loading sound file: %s", file->valuestring);
 
-        soundPackage.addItem(BrakezaSetup::get()->SOUNDS_FOLDER + file->valuestring, label->valuestring, selectedType);
+        soundPackage.addItem(Config::get()->SOUNDS_FOLDER + file->valuestring, label->valuestring, selectedType);
     }
 
     cJSON_Delete(myDataJSON);
@@ -194,10 +194,10 @@ void ComponentSound::playSound(const std::string& sound, int channel, int times)
 
 void ComponentSound::setMusicVolume(int v)
 {
-    Mix_VolumeMusic(static_cast<int>(BrakezaSetup::get()->SOUND_VOLUME_MUSIC));
+    Mix_VolumeMusic(static_cast<int>(Config::get()->SOUND_VOLUME_MUSIC));
 }
 
 void ComponentSound::setSoundsVolume(int v)
 {
-    Mix_Volume(BrakezaSetup::SoundChannels::SND_GLOBAL, static_cast<int>(BrakezaSetup::get()->SOUND_CHANNEL_GLOBAL));
+    Mix_Volume(Config::SoundChannels::SND_GLOBAL, static_cast<int>(Config::get()->SOUND_CHANNEL_GLOBAL));
 }

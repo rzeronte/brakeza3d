@@ -116,7 +116,7 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
                 p = p.substr(2, p.size() - 2);
             }
 
-            std::string FullPath = BrakezaSetup::get()->TEXTURES_FOLDER + base_filename;
+            std::string FullPath = Config::get()->TEXTURES_FOLDER + base_filename;
             Logging::Message("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), getName().c_str());
 
             this->modelTextures.push_back(new Image(FullPath));
@@ -202,10 +202,10 @@ void Mesh3D::onUpdate()
         render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
     }
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (BrakezaSetup::get()->ENABLE_LIGHTS && isEnableLights()) {
+    if (Config::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
+        if (Config::get()->ENABLE_LIGHTS && isEnableLights()) {
             render->getShaderOGLRenderDeferred()->renderMesh(this, false, window->getGBuffer().FBO);
-            if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
+            if (Config::get()->ENABLE_SHADOW_MAPPING) {
                 ShadowMappingPass();
             }
         } else {
@@ -213,32 +213,32 @@ void Mesh3D::onUpdate()
         }
     }
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
+    if (Config::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
         render->getShaderOGLWireframe()->renderMesh(this, false, Color::gray(), sceneFramebuffer);
     }
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_PIXELS && isRender()) {
+    if (Config::get()->TRIANGLE_MODE_PIXELS && isRender()) {
         render->getShaderOGLPoints()->renderMesh(this, false, sceneFramebuffer);
     }
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_SHADING && isRender()) {
+    if (Config::get()->TRIANGLE_MODE_SHADING && isRender()) {
         render->getShaderOGLShading()->renderMesh(this, false, sceneFramebuffer);
     }
 
-    if (BrakezaSetup::get()->DRAW_MESH3D_AABB && isRender()) {
+    if (Config::get()->DRAW_MESH3D_AABB && isRender()) {
         UpdateBoundingBox();
         Drawable::drawAABB(&aabb, Color::white());
     }
 
-    if (BrakezaSetup::get()->DRAW_MESH3D_OCTREE && this->octree != nullptr) {
+    if (Config::get()->DRAW_MESH3D_OCTREE && this->octree != nullptr) {
         Drawable::drawOctree(octree);
     }
 
-    if (BrakezaSetup::get()->DRAW_MESH3D_GRID && this->grid != nullptr) {
+    if (Config::get()->DRAW_MESH3D_GRID && this->grid != nullptr) {
         Drawable::drawGrid3D(grid);
     }
 
-    if (BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
+    if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
         render->getShaderOGLColor()->renderMesh(
             this,
             false,
@@ -303,7 +303,7 @@ void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *
     body->activate(true);
     body->setContactProcessingThreshold(BT_LARGE_FLOAT);
     body->setUserPointer(this);
-    body->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
+    body->setUserIndex(Config::CollisionSource::OBJECT_COLLIDER);
     body->setAngularFactor(angularFactor.toBullet());
 
     if (mass <= 0) {
@@ -340,7 +340,7 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
     body->activate(true);
     body->setContactProcessingThreshold(BT_LARGE_FLOAT);
     body->setUserPointer(this);
-    body->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
+    body->setUserIndex(Config::CollisionSource::OBJECT_COLLIDER);
     body->setRestitution(restitution);
     body->setActivationState(ACTIVE_TAG);
     body->setLinearFactor(linearFactor.toBullet());
@@ -373,7 +373,7 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
     ghostObject->setWorldTransform(Tools::GLMMatrixToBulletTransform(getModelMatrix()));
     ghostObject->setCollisionShape(convexHullShape);
     ghostObject->setUserPointer(this);
-    ghostObject->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
+    ghostObject->setUserIndex(Config::CollisionSource::OBJECT_COLLIDER);
 
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 }
@@ -427,15 +427,15 @@ void Mesh3D::setupRigidBodyCollider(CollisionShape modeShape)
             makeRigidBodyFromTriangleMesh(
                 mass,
                 Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                BrakezaSetup::collisionGroups::AllFilter,
-                BrakezaSetup::collisionGroups::AllFilter
+                Config::collisionGroups::AllFilter,
+                Config::collisionGroups::AllFilter
             );
         } else {
             makeRigidBodyFromTriangleMeshFromConvexHull(
                 mass,
                 Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-                BrakezaSetup::collisionGroups::AllFilter,
-                BrakezaSetup::collisionGroups::AllFilter
+                Config::collisionGroups::AllFilter,
+                Config::collisionGroups::AllFilter
             );
         }
     }

@@ -74,7 +74,7 @@ void RayCollisionable::onUpdate()
 
     if (!isEnabled()) return;
 
-    if (BrakezaSetup::get()->BULLET_DEBUG_MODE) {
+    if (Config::get()->BULLET_DEBUG_MODE) {
         auto end = getPosition() + ray;
         auto vector = Vector3D(getPosition(), end);
         Drawable::drawVector3D(vector, Color::yellow());

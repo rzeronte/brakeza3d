@@ -8,8 +8,8 @@
 ShaderOGLShading::ShaderOGLShading()
 :
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "Shading.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "Shading.fs",
+        Config::get()->SHADERS_FOLDER + "Shading.vs",
+        Config::get()->SHADERS_FOLDER + "Shading.fs",
         false
     )
 {

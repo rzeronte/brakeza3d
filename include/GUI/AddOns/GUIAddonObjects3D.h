@@ -115,7 +115,7 @@ struct GUIAddonObjects3D
 
                 if (mesh != nullptr) {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CUSTOMSHADER_ITEM")) {
-                        auto* receivedData = (BrakezaSetup::DragDropCustomShaderData*)payload->Data;
+                        auto* receivedData = (Config::DragDropCustomShaderData*)payload->Data;
                         Logging::Message("Dropping shader into Mesh3D (Folder: %s, File: %s)", receivedData->folder, receivedData->file);
                         mesh->loadShader(receivedData->folder, receivedData->file);
                     }

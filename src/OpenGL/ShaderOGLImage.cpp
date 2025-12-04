@@ -2,14 +2,14 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include "../../include/OpenGL/ShaderOGLImage.h"
-#include "../../include/BrakezaSetup.h"
+#include "../../include/Config.h"
 #include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLImage::ShaderOGLImage()
 :
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "Image.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "Image.fs",
+        Config::get()->SHADERS_FOLDER + "Image.vs",
+        Config::get()->SHADERS_FOLDER + "Image.fs",
         false
     )
 {

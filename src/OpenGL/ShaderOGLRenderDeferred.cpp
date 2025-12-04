@@ -6,8 +6,8 @@
 ShaderOGLRenderDeferred::ShaderOGLRenderDeferred()
 :
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "GBuffer.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "GBuffer.fs",
+        Config::get()->SHADERS_FOLDER + "GBuffer.vs",
+        Config::get()->SHADERS_FOLDER + "GBuffer.fs",
         false
     )
 {
