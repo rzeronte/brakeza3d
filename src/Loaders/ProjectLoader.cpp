@@ -21,7 +21,7 @@ void ProjectLoader::LoadProject(const std::string &filename)
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "name") != nullptr) {
         auto sceneName = cJSON_GetObjectItemCaseSensitive(contentJSON, "name")->valuestring;
         ComponentsManager::get()->getComponentWindow()->setWindowTitle(sceneName);
-        BrakezaSetup::get()->ENGINE_TITLE = sceneName;
+        Config::get()->ENGINE_TITLE = sceneName;
     }
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
@@ -39,7 +39,7 @@ void ProjectLoader::SaveProject(const std::string &filename)
 {
     cJSON *root = cJSON_CreateObject();
 
-    cJSON_AddStringToObject(root, "name", BrakezaSetup::get()->ENGINE_TITLE.c_str());
+    cJSON_AddStringToObject(root, "name", Config::get()->ENGINE_TITLE.c_str());
 
     cJSON *sceneScriptsArray = cJSON_CreateArray();
     for (auto script : ComponentsManager::get()->getComponentScripting()->getProjectLUAScripts()) {

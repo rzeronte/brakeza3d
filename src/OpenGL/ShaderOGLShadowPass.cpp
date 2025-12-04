@@ -3,14 +3,14 @@
 //
 
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
-#include "../../include/BrakezaSetup.h"
+#include "../../include/Config.h"
 #include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLShadowPass::ShaderOGLShadowPass()
 :
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "ShadowPass.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "ShadowPass.fs",
+        Config::get()->SHADERS_FOLDER + "ShadowPass.vs",
+        Config::get()->SHADERS_FOLDER + "ShadowPass.fs",
         false
     )
 {

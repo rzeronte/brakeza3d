@@ -4,14 +4,14 @@
 
 #include <glm/ext/matrix_clip_space.hpp>
 #include "../../include/OpenGL/ShaderOGLFog.h"
-#include "../../include/BrakezaSetup.h"
+#include "../../include/Config.h"
 #include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLFog::ShaderOGLFog()
 :
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "FOG.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "FOG.fs",
+        Config::get()->SHADERS_FOLDER + "FOG.vs",
+        Config::get()->SHADERS_FOLDER + "FOG.fs",
         false
     ),
     resultFramebuffer(0),

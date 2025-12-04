@@ -5,8 +5,8 @@ ShaderOGLPoints::ShaderOGLPoints()
 :
     VertexArrayID(0),
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "Points.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "Points.fs",
+        Config::get()->SHADERS_FOLDER + "Points.vs",
+        Config::get()->SHADERS_FOLDER + "Points.fs",
         false
     )
 {

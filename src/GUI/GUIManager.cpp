@@ -19,7 +19,7 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
     textureAtlas(new TextureAtlas())
 {
     FileSystemGUI::LoadImagesFolder(this);
-    textureAtlas->CreateFromSheet(BrakezaSetup::get()->ICONS_FOLDER + BrakezaSetup::get()->GUI_ICON_SHEET, 32, 32);
+    textureAtlas->CreateFromSheet(Config::get()->ICONS_FOLDER + Config::get()->GUI_ICON_SHEET, 32, 32);
 
     Profiler::get()->CaptureGUIMemoryUsage();
 
@@ -42,7 +42,7 @@ void GUIManager::DrawGUI()
 
     DrawRegisteredWindows();
 
-    if (BrakezaSetup::get()->ENABLE_SPLASH)
+    if (Config::get()->ENABLE_SPLASH)
         DrawSplash();
 
     ImGui::End();
@@ -65,7 +65,7 @@ void GUIManager::RegisterWindows()
     windows.push_back({ "Scripts", IconGUI::COLLISION_OBJECTS, GUITypes::FILES_SCRIPTS, true, [this] { this->WindowScriptFiles(); }} );
     windows.push_back({ "Shaders", IconGUI::COLLISION_OBJECTS, GUITypes::FILES_SHADERS, true, [this] { this->WindowShaderFiles(); }} );
 
-    windows.push_back({ "Logging/Console", IconGUI::COLLISION_OBJECTS, GUITypes::LOGGING, true, [this] { this->LoggingWindow(); }} );
+    windows.push_back({ "Logging/Console", IconGUI::COLLISION_OBJECTS, GUITypes::LOGGING, true, [this] { this->WindowLogging(); }} );
     windows.push_back({ "Lights DepthMaps Viewer", IconGUI::COLLISION_OBJECTS, GUITypes::DEPTH_LIGHTS_MAPS, false, [this] { this->WindowLightsDepthMapsViewer(); }} );
     windows.push_back({ "Profiler", IconGUI::COLLISION_OBJECTS, GUITypes::PROFILER, false, [this] { Profiler::get()->DrawPropertiesGUI(); }} );
 }
@@ -147,7 +147,7 @@ void GUIManager::WindowSceneObjects()
     widgetObjects3D->Draw(selectedObjectIndex);
 }
 
-void GUIManager::LoggingWindow()
+void GUIManager::WindowLogging()
 {
     auto windowStatus = GetWindowStatus(GUITypes::GUIWindow::LOGGING);
     if (!windowStatus->isOpen) return;
@@ -466,13 +466,13 @@ void GUIManager::WindowLightsDepthMapsViewer()
 void GUIManager::DrawSplash()
 {
     float currentTime = Brakeza::get()->getEngineTotalTime();
-    float countdownTime = BrakezaSetup::get()->SPLASH_COUNTDOWN_TIME;
+    float countdownTime = Config::get()->SPLASH_COUNTDOWN_TIME;
     float fadeDuration = 1.5f;
 
     if (currentTime >= countdownTime - fadeDuration) {
         splashAlpha = (countdownTime - currentTime) / fadeDuration;
         splashAlpha = glm::clamp(splashAlpha, 0.0f, 1.0f);
-        BrakezaSetup::get()->ENABLE_SPLASH = false;
+        Config::get()->ENABLE_SPLASH = false;
     }
 
     ImVec2 size((float) splashImage->width(), (float) splashImage->height());
@@ -517,12 +517,11 @@ void GUIManager::WelcomeMessage()
     Logging::Message("Open source game engine for developers");
     Logging::Message("############################################################");
     Logging::Message("");
-    Logging::Message(BrakezaSetup::get()->ENGINE_WEBSITE.c_str());
-    Logging::Message(BrakezaSetup::get()->ENGINE_SOURCE_WEBSITE.c_str());
+    Logging::Message(Config::get()->ENGINE_WEBSITE.c_str());
+    Logging::Message(Config::get()->ENGINE_SOURCE_WEBSITE.c_str());
     Logging::Message("");
-    Logging::Message("%s", BrakezaSetup::get()->ENGINE_TITLE.c_str());
+    Logging::Message("%s", Config::get()->ENGINE_TITLE.c_str());
     Logging::Message("");
     Logging::Message("############################################################");
     Logging::Message("");
 }
-

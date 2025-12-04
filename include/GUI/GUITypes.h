@@ -9,8 +9,6 @@
 #include <string>
 #include "imgui.h"
 
-class Tools;
-
 struct GUISheet {
     int x = -1;
     int y = -1;

@@ -83,8 +83,8 @@ void Image3D::onUpdate()
         glDisable(GL_CULL_FACE);
 
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_TEXTURIZED) {
-        if (BrakezaSetup::get()->ENABLE_LIGHTS) {
+    if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
+        if (Config::get()->ENABLE_LIGHTS) {
             render->getShaderOGLRenderDeferred()->render(
                 this,
                 image->getOGLTextureID(),
@@ -96,7 +96,7 @@ void Image3D::onUpdate()
                 alpha,
                 window->getGBuffer().FBO
             );
-            if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
+            if (Config::get()->ENABLE_SHADOW_MAPPING) {
                 shadowMappingPass();
             }
         } else {
@@ -114,7 +114,7 @@ void Image3D::onUpdate()
         }
     }
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_WIREFRAME) {
+    if (Config::get()->TRIANGLE_MODE_WIREFRAME) {
         render->getShaderOGLWireframe()->render(
             getModelMatrix(),
             vertexBuffer,
@@ -126,7 +126,7 @@ void Image3D::onUpdate()
         );
     }
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_PIXELS) {
+    if (Config::get()->TRIANGLE_MODE_PIXELS) {
         render->getShaderOGLPoints()->render(
             getModelMatrix(),
             vertexBuffer,
@@ -136,7 +136,7 @@ void Image3D::onUpdate()
         );
     }
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_SHADING) {
+    if (Config::get()->TRIANGLE_MODE_SHADING) {
         render->getShaderOGLShading()->render(
             getModelMatrix(),
             vertexBuffer,
@@ -147,7 +147,7 @@ void Image3D::onUpdate()
         );
     }
 
-    if (BrakezaSetup::get()->MOUSE_CLICK_SELECT_OBJECT3D)  {
+    if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D)  {
         render->getShaderOGLColor()->renderColor(
             getModelMatrix(),
             vertexBuffer,

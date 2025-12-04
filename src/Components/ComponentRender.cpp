@@ -77,8 +77,8 @@ void ComponentRender::onUpdate()
 
     auto numSpotLights = shaderOGLRender->getNumSpotLights();
 
-    if (BrakezaSetup::get()->ENABLE_LIGHTS) {
-        if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
+    if (Config::get()->ENABLE_LIGHTS) {
+        if (Config::get()->ENABLE_SHADOW_MAPPING) {
             if (shaderOGLRender->hasSpotLightsChanged()) {
                 Logging::Message("Updating shadow maps for %d lights", numSpotLights);
                 shaderShadowPass->createSpotLightsDepthTextures(numSpotLights);
@@ -139,7 +139,7 @@ void ComponentRender::onUpdateSceneObjects()
 
 void ComponentRender::updateFPS()
 {
-    if (!BrakezaSetup::get()->DRAW_FPS_RENDER) return;
+    if (!Config::get()->DRAW_FPS_RENDER) return;
 
     frameTime += Brakeza::get()->getDeltaTimeMicro();
     ++fpsFrameCounter;
@@ -533,7 +533,7 @@ void ComponentRender::resizeShadersFramebuffers() const
     shaderOGLGBuffer->destroy();
     shaderOGLLightPass->destroy();
 
-    if (BrakezaSetup::get()->ENABLE_SHADOW_MAPPING) {
+    if (Config::get()->ENABLE_SHADOW_MAPPING) {
         shaderShadowPass->createSpotLightsDepthTextures(static_cast<int>(shaderOGLRender->getShadowMappingSpotLights().size()));
         shaderShadowPass->resetFramebuffers();
     }
@@ -599,7 +599,7 @@ void ComponentRender::RenderLayersToGlobalFramebuffer() const
 
     shaderOGLLightPass->fillSpotLightsMatricesUBO();
 
-    if (BrakezaSetup::get()->ENABLE_LIGHTS) {
+    if (Config::get()->ENABLE_LIGHTS) {
         shaderOGLLightPass->render(
             gBuffer.positions,
             gBuffer.normals,
@@ -618,21 +618,21 @@ void ComponentRender::RenderLayersToGlobalFramebuffer() const
     shaderOGLImage->renderTexture(globalBuffer.sceneTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);
     shaderOGLImage->renderTexture(globalBuffer.postProcessingTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);
 
-    if (BrakezaSetup::get()->ENABLE_FOG) {
+    if (Config::get()->ENABLE_FOG) {
         shaderOGLFOG->render(globalBuffer.sceneTexture, gBuffer.depth);
         shaderOGLImage->renderTexture(shaderOGLFOG->getTextureResult(), 0, 0, widthWindow, heightWindow, 1, false, globalBuffer.globalFBO);
     }
 
-    if (BrakezaSetup::get()->ENABLE_DOF_BLUR) {
+    if (Config::get()->ENABLE_DOF_BLUR) {
         shaderOGLDOFBlur->render(globalBuffer.sceneTexture, gBuffer.depth);
         shaderOGLImage->renderTexture(shaderOGLDOFBlur->getTextureResult(), 0, 0, widthWindow, heightWindow, 1, false, globalBuffer.globalFBO);
     }
 
-    if (BrakezaSetup::get()->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
+    if (Config::get()->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
         shaderOGLDepthMap->render(gBuffer.depth, globalBuffer.globalFBO);
     }
 
-    if (BrakezaSetup::get()->TRIANGLE_MODE_PICKING_COLORS) {
+    if (Config::get()->TRIANGLE_MODE_PICKING_COLORS) {
         shaderOGLImage->renderTexture(
             window->getPickingColorFramebuffer().rbgTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO
         );

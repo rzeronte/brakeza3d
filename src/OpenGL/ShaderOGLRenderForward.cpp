@@ -8,8 +8,8 @@
 ShaderOGLRenderForward::ShaderOGLRenderForward()
 :
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "Render.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "Render.fs",
+        Config::get()->SHADERS_FOLDER + "Render.vs",
+        Config::get()->SHADERS_FOLDER + "Render.fs",
         false
     )
 {
@@ -80,22 +80,22 @@ void ShaderOGLRenderForward::render(
 
 glm::mat4 ShaderOGLRenderForward::getDirectionalLightMatrix(const DirLightOpenGL& light)
 {
-    const float size = BrakezaSetup::get()->SHADOW_MAPPING_FRUSTUM_SIZE;
+    const float size = Config::get()->SHADOW_MAPPING_FRUSTUM_SIZE;
 
     glm::mat4 lightProjection = glm::ortho(
         -size,
         size,
         -size,
         size,
-        BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_NEAR_PLANE,
-        BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE
+        Config::get()->SHADOW_MAPPING_DEPTH_NEAR_PLANE,
+        Config::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE
     );
 
     // Normalizar la dirección de la luz
     glm::vec3 forward = glm::normalize(light.direction);
 
     // Para una luz direccional, usamos una posición arbitraria en la dirección opuesta a donde apunta la luz
-    glm::vec3 p = -forward * BrakezaSetup::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE * 0.5f;
+    glm::vec3 p = -forward * Config::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE * 0.5f;
 
     glm::mat4 lightView = glm::lookAt(
         p,
@@ -112,7 +112,7 @@ void ShaderOGLRenderForward::createUBOFromLights()
     spotLights.resize(0);
     shadowMappingLights.resize(0);
 
-    if (BrakezaSetup::get()->ENABLE_LIGHTS) {
+    if (Config::get()->ENABLE_LIGHTS) {
         for (auto o : Brakeza::get()->getSceneObjects()) {
             if (!o->isEnabled()) continue;
             extractLights(o);

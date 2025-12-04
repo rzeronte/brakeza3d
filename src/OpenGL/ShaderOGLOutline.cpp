@@ -7,8 +7,8 @@
 ShaderOGLOutline::ShaderOGLOutline()
 :
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "Outliner.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "Outliner.fs",
+        Config::get()->SHADERS_FOLDER + "Outliner.vs",
+        Config::get()->SHADERS_FOLDER + "Outliner.fs",
         false
     )
 {

@@ -43,8 +43,8 @@ void Tools::SurfacePutPixel(const SDL_Surface *surface, int x, int y, Uint32 pix
 
 bool Tools::isPixelInWindow(int &x, int &y)
 {
-    if (x <= 0 || x >= BrakezaSetup::get()->screenWidth) return false;
-    if (y <= 0 || y >= BrakezaSetup::get()->screenHeight) return false;
+    if (x <= 0 || x >= Config::get()->screenWidth) return false;
+    if (y <= 0 || y >= Config::get()->screenHeight) return false;
 
     return true;
 }

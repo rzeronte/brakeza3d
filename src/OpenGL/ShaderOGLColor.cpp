@@ -9,8 +9,8 @@
 ShaderOGLColor::ShaderOGLColor()
 :
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "Color.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "Color.fs",
+        Config::get()->SHADERS_FOLDER + "Color.vs",
+        Config::get()->SHADERS_FOLDER + "Color.fs",
         false
     )
 {

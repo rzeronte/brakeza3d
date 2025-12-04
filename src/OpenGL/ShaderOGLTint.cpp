@@ -3,14 +3,14 @@
 //
 
 #include "../include/OpenGL/ShaderOGLTint.h"
-#include "../../include/BrakezaSetup.h"
+#include "../../include/Config.h"
 #include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLTint::ShaderOGLTint()
 :
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "Tint.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "Tint.fs",
+        Config::get()->SHADERS_FOLDER + "Tint.vs",
+        Config::get()->SHADERS_FOLDER + "Tint.fs",
         false
     )
 {

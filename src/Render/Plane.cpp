@@ -127,7 +127,7 @@ bool Plane::isVertex3DClosedByPlanes(Vertex3D &v, std::vector<Plane> &planes)
 {
     for (auto plane : planes) {
         float d = plane.distance(v);
-        if (d >= BrakezaSetup::get()->FRUSTUM_CLIPPING_DISTANCE) {
+        if (d >= Config::get()->FRUSTUM_CLIPPING_DISTANCE) {
             return false;
         }
     }

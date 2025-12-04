@@ -65,39 +65,39 @@ void Object3D::setEnabled(bool value)
 
 Vertex3D Object3D::up() const
 {
-    Vertex3D v = getRotation() * BrakezaSetup::get()->up;
+    Vertex3D v = getRotation() * Config::get()->up;
     return v.getNormalize();
 }
 
 Vertex3D Object3D::down() const
 {
-    Vertex3D v = getRotation() * BrakezaSetup::get()->down;
+    Vertex3D v = getRotation() * Config::get()->down;
     return v.getNormalize();
 }
 
 Vertex3D Object3D::forward() const
 {
-    Vertex3D v = getRotation() * BrakezaSetup::get()->forward;
+    Vertex3D v = getRotation() * Config::get()->forward;
     return v.getNormalize();
 }
 
 Vertex3D Object3D::backwards() const
 {
-    Vertex3D v = getRotation() * BrakezaSetup::get()->backward;
+    Vertex3D v = getRotation() * Config::get()->backward;
 
     return v.getNormalize();
 }
 
 Vertex3D Object3D::right() const
 {
-    Vertex3D v = getRotation() * BrakezaSetup::get()->right;
+    Vertex3D v = getRotation() * Config::get()->right;
 
     return v.getNormalize();
 }
 
 Vertex3D Object3D::left() const
 {
-    Vertex3D v = getRotation() * BrakezaSetup::get()->left;
+    Vertex3D v = getRotation() * Config::get()->left;
 
     return v.getNormalize();
 }
@@ -162,7 +162,7 @@ void Object3D::onUpdate()
 
     distanceToCamera = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition().distance(getPosition());
 
-    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == BrakezaSetup::LUA_PLAY) {
+    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == Config::LUA_PLAY) {
         RunScripts();
     }
 }
@@ -182,7 +182,7 @@ void Object3D::postUpdate()
         if (a->isEnabled())  a->postUpdate();
     }
 
-    if (BrakezaSetup::get()->RENDER_OBJECTS_AXIS) {
+    if (Config::get()->RENDER_OBJECTS_AXIS) {
         Drawable::drawObject3DAxis(this,true,true,true);
     }
 }
@@ -396,7 +396,7 @@ void Object3D::MakeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
     }
     kinematicBody->setCollisionShape(capsule);
     kinematicBody->setUserPointer(this);
-    kinematicBody->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
+    kinematicBody->setUserIndex(Config::CollisionSource::OBJECT_COLLIDER);
     kinematicBody->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 
     characterController = new btKinematicCharacterController(
@@ -405,14 +405,14 @@ void Object3D::MakeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
         0.1f
     );
 
-    characterController->setGravity(BrakezaSetup::get()->gravity.toBullet());
+    characterController->setGravity(Config::get()->gravity.toBullet());
     characterController->setUseGhostSweepTest(false);
     characterController->setMaxSlope(btRadians(45)); // Max slope
 
     world->addCollisionObject(
             kinematicBody,
-        BrakezaSetup::collisionGroups::AllFilter,
-        BrakezaSetup::collisionGroups::AllFilter
+        Config::collisionGroups::AllFilter,
+        Config::collisionGroups::AllFilter
     );
 
     world->addAction(characterController);
@@ -465,7 +465,7 @@ void Object3D::MakeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     body = new btRigidBody(cInfo);
     body->activate(true);
     body->setUserPointer(this);
-    body->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
+    body->setUserIndex(Config::CollisionSource::OBJECT_COLLIDER);
     body->setRestitution(restitution);
     body->setAngularFactor(angularFactor.toBullet());
     body->setLinearFactor(linearFactor.toBullet());
@@ -516,12 +516,12 @@ void Object3D::UpdateFromBullet()
 
 void Object3D::ResolveCollision(CollisionInfo with)
 {
-    if (BrakezaSetup::get()->LOG_COLLISION_OBJECTS) {
+    if (Config::get()->LOG_COLLISION_OBJECTS) {
         auto *object = static_cast<Object3D *>(with.with);
         Logging::Message("Object3D: Collision %s with %s",  getName().c_str(), object->getName().c_str());
     }
 
-    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == BrakezaSetup::LUA_PLAY) {
+    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == Config::LUA_PLAY) {
         RunResolveCollisionScripts(with);
     }
 }
@@ -556,8 +556,8 @@ void Object3D::SetupGhostCollider(CollisionShape mode)
             getModelMatrix(),
             simpleShapeSize,
             Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-            BrakezaSetup::collisionGroups::AllFilter,
-            BrakezaSetup::collisionGroups::AllFilter
+            Config::collisionGroups::AllFilter,
+            Config::collisionGroups::AllFilter
         );
     }
 }

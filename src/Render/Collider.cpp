@@ -24,8 +24,8 @@ Collider::Collider()
     ccdMotionThreshold(0.0),
     ccdSweptSphereRadius(0.0),
     kinematicCapsuleSize(
-        BrakezaSetup::get()->PLAYER_CAPSULE_RADIUS,
-        BrakezaSetup::get()->PLAYER_CAPSULE_HEIGHT
+        Config::get()->PLAYER_CAPSULE_RADIUS,
+        Config::get()->PLAYER_CAPSULE_HEIGHT
     ),
     collisionShape(CollisionShape::SIMPLE_SHAPE)
 {
@@ -132,7 +132,7 @@ void Collider::makeSimpleGhostBody(
     ghostObject->setCollisionShape(convexHullShape);
     ghostObject->setWorldTransform(transformation);
     ghostObject->setUserPointer(this);
-    ghostObject->setUserIndex(BrakezaSetup::CollisionSource::OBJECT_COLLIDER);
+    ghostObject->setUserIndex(Config::CollisionSource::OBJECT_COLLIDER);
     ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 
@@ -242,8 +242,8 @@ void Collider::setupKinematicCollider()
         kinematicCapsuleSize.x,
         kinematicCapsuleSize.y,
         Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-        BrakezaSetup::collisionGroups::AllFilter,
-        BrakezaSetup::collisionGroups::AllFilter
+        Config::collisionGroups::AllFilter,
+        Config::collisionGroups::AllFilter
     );
 }
 
@@ -259,8 +259,8 @@ void Collider::setupRigidBodyCollider(CollisionShape shapeMode)
     MakeSimpleRigidBody(
         mass,
         Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
-        BrakezaSetup::collisionGroups::AllFilter,
-        BrakezaSetup::collisionGroups::AllFilter
+        Config::collisionGroups::AllFilter,
+        Config::collisionGroups::AllFilter
     );
 }
 

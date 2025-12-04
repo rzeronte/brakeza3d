@@ -39,8 +39,8 @@ void BSPMap::init(Camera3D *cam) {
 bool BSPMap::Initialize(const char *bspFilename, const char *paletteFilename, Camera3D *cam) {
     this->init(cam);
 
-    std::string bspFilename_str = std::string(BrakezaSetup::get()->MAPS_FOLDER + bspFilename);
-    std::string paletteFilename_str = std::string(BrakezaSetup::get()->MAPS_FOLDER + paletteFilename);
+    std::string bspFilename_str = std::string(Config::get()->MAPS_FOLDER + bspFilename);
+    std::string paletteFilename_str = std::string(Config::get()->MAPS_FOLDER + paletteFilename);
 
     if (!LoadBSP(bspFilename_str.c_str())) {
         printf("[ERROR] Map::Initialize() Error loading bsp file\n");
@@ -1064,7 +1064,7 @@ void BSPMap::makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, mode
 
 
 void BSPMap::createObjects3DFromBSPEntities() {
-    BrakezaSetup *engineSetup = BrakezaSetup::get();
+    Config *engineSetup = Config::get();
 
     Logging::Message("BSP Num Entities: %s", this->n_entities);
 

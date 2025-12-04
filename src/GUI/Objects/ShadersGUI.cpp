@@ -150,7 +150,7 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, std::string folder)
     FileSystemGUI::DrawBrowserFolders(
         gui,
         folder,
-        BrakezaSetup::get()->CUSTOM_SHADERS_FOLDER,
+        Config::get()->CUSTOM_SHADERS_FOLDER,
         browser.currentFolder,
         browser.folderFolders,
         browser.folderFiles,
@@ -182,7 +182,7 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, std::string folder)
                 static std::string folderCopy, fileCopy;
                 folderCopy = folder;
                 fileCopy = file;
-                BrakezaSetup::DragDropCustomShaderData data = {folderCopy.c_str(), fileCopy.c_str()};
+                Config::DragDropCustomShaderData data = {folderCopy.c_str(), fileCopy.c_str()};
                 ImGui::SetDragDropPayload("CUSTOMSHADER_ITEM", &data,sizeof(data));
                 ImGui::Text("%s", fullPath.c_str());
                 ImGui::EndDragDropSource();

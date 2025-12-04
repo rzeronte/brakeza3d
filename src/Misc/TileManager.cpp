@@ -3,7 +3,7 @@
 //
 
 #include "../../include/Misc/TileManager.h"
-#include "../../include/BrakezaSetup.h"
+#include "../../include/Config.h"
 #include "../../include/Components/ComponentsManager.h"
 
 TileManager::TileManager(int sizeTileWidth, int sizeTileHeight)
@@ -11,7 +11,7 @@ TileManager::TileManager(int sizeTileWidth, int sizeTileHeight)
     sizeTileWidth(sizeTileWidth),
     sizeTileHeight(sizeTileHeight)
 {
-    auto SETUP = BrakezaSetup::get();
+    auto SETUP = Config::get();
 
     if (SETUP->screenWidth % sizeTileWidth != 0) {
         printf("Bad sizeTileWidth\r\n");

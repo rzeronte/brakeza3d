@@ -8,8 +8,8 @@
 ShaderOGLShadowPassDebugLight::ShaderOGLShadowPassDebugLight()
 :
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "ShadowPassDebugLight.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "ShadowPassDebugLight.fs",
+        Config::get()->SHADERS_FOLDER + "ShadowPassDebugLight.vs",
+        Config::get()->SHADERS_FOLDER + "ShadowPassDebugLight.fs",
         false
     ),
     internalFramebuffer(0),

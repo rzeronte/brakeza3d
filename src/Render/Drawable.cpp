@@ -56,7 +56,7 @@ void Drawable::drawObject3DAxis(Object3D *object, bool drawUp, bool drawRight, b
         return;
     }
 
-    const float size = BrakezaSetup::get()->OBJECT_AXIS_SIZE;
+    const float size = Config::get()->OBJECT_AXIS_SIZE;
     Vertex3D endRight = object->getPosition() + object->right().getScaled(size);
     Vertex3D endUp = object->getPosition() + object->up().getScaled(size);
     Vertex3D endForward = object->getPosition() + object->forward().getScaled(size);
@@ -72,14 +72,14 @@ void Drawable::drawObject3DAxis(Object3D *object, bool drawUp, bool drawRight, b
 
 void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
 
-    float generations = BrakezaSetup::get()->LIGHTNING_GENERATIONS;
+    float generations = Config::get()->LIGHTNING_GENERATIONS;
     std::vector<Vector3D> segmentList;
     std::vector<Vector3D> tmpList;
     std::vector<Vector3D> newSegments;
 
-    float offsetAmount = BrakezaSetup::get()->LIGHTNING_OFFSET_REDUCTION;
-    float multiplier = BrakezaSetup::get()->LIGHTNING_SEGMENT_SHIFT;
-    float probabilityBranch = BrakezaSetup::get()->LIGHTNING_PROBABILITY_BRANCH;
+    float offsetAmount = Config::get()->LIGHTNING_OFFSET_REDUCTION;
+    float multiplier = Config::get()->LIGHTNING_SEGMENT_SHIFT;
+    float probabilityBranch = Config::get()->LIGHTNING_PROBABILITY_BRANCH;
 
     segmentList.emplace_back(A, B);
 
@@ -164,16 +164,16 @@ void Drawable::drawGrid3D(Grid3D *grid)
 
     for (auto & box: grid->getBoxes()) {
         auto aabb = box.box;
-        if (BrakezaSetup::get()->DRAW_MESH3D_TEST_PASSED && box.passed) {
+        if (Config::get()->DRAW_MESH3D_TEST_PASSED && box.passed) {
             drawAABB(&aabb, Color::blue());
         }
 
-        if (BrakezaSetup::get()->DRAW_MESH3D_TEST_NOT_PASSED && !box.passed) {
+        if (Config::get()->DRAW_MESH3D_TEST_NOT_PASSED && !box.passed) {
             drawAABB(&aabb, Color::gray());
         }
     }
 
-    if (BrakezaSetup::get()->DRAW_MESH3D_GRID_ASTAR) {
+    if (Config::get()->DRAW_MESH3D_GRID_ASTAR) {
         drawGrid3DMakeTravel(grid);
     }
 }

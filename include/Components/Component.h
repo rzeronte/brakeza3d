@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include "../3D/Object3D.h"
-#include "../BrakezaSetup.h"
+#include "../Config.h"
 
 class ComponentsManager;
 
@@ -13,7 +13,7 @@ class Component {
     bool enabled = false;
     float deltaTime = 0;
 protected:
-    BrakezaSetup *SETUP;
+    Config *SETUP;
 public:
     Component();
     virtual ~Component();

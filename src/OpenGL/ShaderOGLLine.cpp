@@ -5,14 +5,14 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "../../include/OpenGL/ShaderOGLLine.h"
 #include "../../include/Misc/Logging.h"
-#include "../../include/BrakezaSetup.h"
+#include "../../include/Config.h"
 #include "../../include/Components/ComponentsManager.h"
 
 ShaderOGLLine::ShaderOGLLine()
 :
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "Line.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "Line.fs",
+        Config::get()->SHADERS_FOLDER + "Line.vs",
+        Config::get()->SHADERS_FOLDER + "Line.fs",
         false
     )
 {
@@ -32,11 +32,11 @@ void ShaderOGLLine::render(Point2D a, Point2D b, Color c, float weight, GLuint f
 
     loadQuadMatrixUniforms();
 
-    const auto normAx = (float) ((float)a.y / (float) BrakezaSetup::get()->screenHeight);
-    const auto normAy = (float) ((float)a.x / (float) BrakezaSetup::get()->screenWidth);
+    const auto normAx = (float) ((float)a.y / (float) Config::get()->screenHeight);
+    const auto normAy = (float) ((float)a.x / (float) Config::get()->screenWidth);
 
-    const auto normBx = (float) ((float)b.y / (float) BrakezaSetup::get()->screenHeight);
-    const auto normBy = (float) ((float)b.x / (float) BrakezaSetup::get()->screenWidth);
+    const auto normBx = (float) ((float)b.y / (float) Config::get()->screenHeight);
+    const auto normBy = (float) ((float)b.x / (float) Config::get()->screenWidth);
 
     setVec2Uniform(lineStartUniform, glm::vec2(normAx, normAy));
     setVec2Uniform(lineEndUniform, glm::vec2(normBx, normBy));

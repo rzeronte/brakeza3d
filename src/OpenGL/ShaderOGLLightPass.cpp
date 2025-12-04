@@ -9,8 +9,8 @@
 ShaderOGLLightPass::ShaderOGLLightPass()
 :
     ShaderBaseOpenGL(
-        BrakezaSetup::get()->SHADERS_FOLDER + "LightingPass.vs",
-        BrakezaSetup::get()->SHADERS_FOLDER + "LightingPass.fs",
+        Config::get()->SHADERS_FOLDER + "LightingPass.vs",
+        Config::get()->SHADERS_FOLDER + "LightingPass.fs",
         false
     )
 {
@@ -74,8 +74,8 @@ void ShaderOGLLightPass::render(
     setTextureUniform(dirLightShadowMapTextureUniform, dirLightShadowMapTexture, 5);
 
     setIntUniform(numSpotLightShadowMapsUniform, numSpotLightsShadowMaps);
-    setBoolUniform(debugShadowMappingUniform, (BrakezaSetup::get()->SHADOW_MAPPING_DEBUG && BrakezaSetup::get()->ENABLE_SHADOW_MAPPING));
-    setFloatUniform(shadowMappingIntensityUniform, BrakezaSetup::get()->SHADOW_MAPPING_INTENSITY);
+    setBoolUniform(debugShadowMappingUniform, (Config::get()->SHADOW_MAPPING_DEBUG && Config::get()->ENABLE_SHADOW_MAPPING));
+    setFloatUniform(shadowMappingIntensityUniform, Config::get()->SHADOW_MAPPING_INTENSITY);
 
     setFloatUniform(materialShininessUniform, 32.0f);
 
@@ -89,7 +89,7 @@ void ShaderOGLLightPass::render(
     setIntUniform(numPointLightsUniform, numPointLights);
     setIntUniform(numSpotLightsUniform, numSpotLights);
 
-    setBoolUniform(enableDirectionalLightShadowMapUniform, BrakezaSetup::get()->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
+    setBoolUniform(enableDirectionalLightShadowMapUniform, Config::get()->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
 
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);

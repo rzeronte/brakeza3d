@@ -27,7 +27,7 @@ public:
                         Logging::Message("Dropping image (%s) in emitter %s", payload->Data, o->getName().c_str());
                         IM_ASSERT(payload->DataSize == sizeof(int));
                         auto selection = (char*) payload->Data;
-                        auto fullPath = BrakezaSetup::get()->IMAGES_FOLDER + selection;
+                        auto fullPath = Config::get()->IMAGES_FOLDER + selection;
                         if (o->texture == nullptr) {
                             o->texture = new Image(fullPath);
                         } else {

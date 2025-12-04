@@ -6,7 +6,7 @@
 Camera3D::Camera3D()
 {
     frustum = new Frustum();
-    setName(BrakezaSetup::get()->CAMERA_OBJECT_NAME);
+    setName(Config::get()->CAMERA_OBJECT_NAME);
 }
 
 void Camera3D::Pitch(float value)
@@ -37,12 +37,12 @@ void Camera3D::MoveBackward(float v)
 
 void Camera3D::StrafeRight()
 {
-    strafe += BrakezaSetup::get()->STRAFE_SPEED;
+    strafe += Config::get()->STRAFE_SPEED;
 }
 
 void Camera3D::StrafeLeft()
 {
-    strafe -= BrakezaSetup::get()->STRAFE_SPEED;
+    strafe -= Config::get()->STRAFE_SPEED;
 }
 
 void Camera3D::UpdatePositionForVelocity()
@@ -129,11 +129,11 @@ glm::mat4 Camera3D::getGLMMat4ViewMatrix()
 
 glm::mat4 Camera3D::getGLMMat4ProjectionMatrix()
 {
-    float horizontalFOV = BrakezaSetup::get()->HORIZONTAL_FOV;
+    float horizontalFOV = Config::get()->HORIZONTAL_FOV;
     float aspectRatio = 4.0f / 3.0f;
     float verticalFOV = glm::degrees(2.0f * atan(tan(glm::radians(horizontalFOV) / 2.0f) / aspectRatio));
 
-    return glm::perspective(glm::radians(verticalFOV), aspectRatio, 0.1f, BrakezaSetup::get()->FRUSTUM_FARPLANE_DISTANCE);
+    return glm::perspective(glm::radians(verticalFOV), aspectRatio, 0.1f, Config::get()->FRUSTUM_FARPLANE_DISTANCE);
 }
 
 M3 Camera3D::getM3ViewMatrix()
@@ -152,5 +152,5 @@ M3 Camera3D::getM3ProjectionMatrix()
 
 void Camera3D::setFOV(float v)
 {
-    BrakezaSetup::get()->HORIZONTAL_FOV = v;
+    Config::get()->HORIZONTAL_FOV = v;
 }

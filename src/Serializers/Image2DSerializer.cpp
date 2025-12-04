@@ -48,8 +48,8 @@ void Image2DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 void Image2DSerializer::LoadFileIntoScene(const std::string &file)
 {
     auto *o = new Image2D(
-        BrakezaSetup::get()->screenWidth/2,
-        BrakezaSetup::get()->screenHeight/2,
+        Config::get()->screenWidth/2,
+        Config::get()->screenHeight/2,
         new Image(file)
     );
 

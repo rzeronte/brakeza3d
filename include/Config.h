@@ -6,12 +6,12 @@
 #include <map>
 #include <GL/glew.h>
 
-class BrakezaSetup {
+class Config {
 
 public:
-    static BrakezaSetup *get();
+    static Config *get();
 
-    static BrakezaSetup *instance;
+    static Config *instance;
 
     bool EXIT = false;
 
@@ -56,6 +56,8 @@ public:
     std::string SCENES_EXT      = "json";
     std::string SHADERS_EXT     = "json";
     std::string PROJECTS_EXT    = "json";
+    std::string IMAGES_EXT     = "png";
+    std::string MESH3D_EXT      = "fbx";
 
     // GLOBAL AXIS DIRECTIONS
     Vertex3D right = Vertex3D(1, 0, 0);

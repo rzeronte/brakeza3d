@@ -56,15 +56,15 @@ public:
     [[nodiscard]] GUITypes::FolderBrowserCache getBrowserShaders() const;
 
 private:
-    GUITypes::FolderBrowserCache browserScenes = GUI::CreateBrowserCache(BrakezaSetup::get()->SCENES_FOLDER, BrakezaSetup::get()->SCENES_EXT);
-    GUITypes::FolderBrowserCache browserProjects = GUI::CreateBrowserCache(BrakezaSetup::get()->CUSTOM_SHADERS_FOLDER, BrakezaSetup::get()->PROJECTS_EXT);
-    GUITypes::FolderBrowserCache browserShaders = GUI::CreateBrowserCache(BrakezaSetup::get()->PROJECTS_FOLDER, BrakezaSetup::get()->SHADERS_EXT);
-    GUITypes::FolderBrowserCache browserScripts = GUI::CreateBrowserCache(BrakezaSetup::get()->SCRIPTS_FOLDER, BrakezaSetup::get()->SCRIPTS_EXT);
+    GUITypes::FolderBrowserCache browserScenes = GUI::CreateBrowserCache(Config::get()->SCENES_FOLDER, Config::get()->SCENES_EXT);
+    GUITypes::FolderBrowserCache browserProjects = GUI::CreateBrowserCache(Config::get()->CUSTOM_SHADERS_FOLDER, Config::get()->PROJECTS_EXT);
+    GUITypes::FolderBrowserCache browserShaders = GUI::CreateBrowserCache(Config::get()->PROJECTS_FOLDER, Config::get()->SHADERS_EXT);
+    GUITypes::FolderBrowserCache browserScripts = GUI::CreateBrowserCache(Config::get()->SCRIPTS_FOLDER, Config::get()->SCRIPTS_EXT);
 
     Color lineSelectorObjectColor = Color::green();
 
     TextureAtlas *textureAtlas;
-    Image *splashImage = new Image(BrakezaSetup::get()->IMAGES_FOLDER + BrakezaSetup::get()->SPLASH_FILENAME);
+    Image *splashImage = new Image(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
 
     void WindowImages();
     void WindowLightsDepthMapsViewer();
@@ -77,8 +77,8 @@ private:
 public:
     explicit GUIManager(std::vector<Object3D *> &gameObjects);
     virtual ~GUIManager() = default;
-    void RegisterWindows();
 
+    void RegisterWindows();
     void WindowShaderFiles();
     void WindowScriptFiles();
     void WindowSceneFiles();
@@ -90,7 +90,7 @@ public:
     void WindowSelectedObjectVariables();
     void WindowSelectedObjectShaders();
     void WindowSceneObjects();
-    void LoggingWindow();
+    void WindowLogging();
     void setSelectedObjectIndex(int selectedObjectIndex);
     void setSelectedObject(const Object3D *s);
     void OpenBoneInfoDialog();

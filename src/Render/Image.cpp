@@ -72,10 +72,10 @@ void Image::DrawFlat(int pos_x, int pos_y, GLuint fbo) const
     srcRect.h = surface->h;
 
     SDL_Rect dstRect;
-    dstRect.x = (pos_x * windowWidth) / BrakezaSetup::get()->screenWidth;
-    dstRect.y = (pos_y * windowHeight) / BrakezaSetup::get()->screenHeight;
-    dstRect.w = (surface->w * windowWidth) / BrakezaSetup::get()->screenWidth;
-    dstRect.h = (surface->h * windowHeight) / BrakezaSetup::get()->screenHeight;
+    dstRect.x = (pos_x * windowWidth) / Config::get()->screenWidth;
+    dstRect.y = (pos_y * windowHeight) / Config::get()->screenHeight;
+    dstRect.w = (surface->w * windowWidth) / Config::get()->screenWidth;
+    dstRect.h = (surface->h * windowHeight) / Config::get()->screenHeight;
 
     ComponentsManager::get()->getComponentRender()->getShaderOGLImage()->renderTexture(
         textureId,

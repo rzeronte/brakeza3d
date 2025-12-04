@@ -35,8 +35,8 @@ class ComponentWindow : public Component
 
     ImGuizmo::OPERATION ImGuiOperationGuizmo = ImGuizmo::TRANSLATE;
 
-    BrakezaSetup::ImGUIConfigs ImGuiConfig = BrakezaSetup::ImGUIConfigs::DEFAULT;
-    BrakezaSetup::ImGUIConfigs ImGuiConfigChanged = BrakezaSetup::ImGUIConfigs::DEFAULT;
+    Config::ImGUIConfigs ImGuiConfig = Config::ImGUIConfigs::DEFAULT;
+    Config::ImGUIConfigs ImGuiConfigChanged = Config::ImGUIConfigs::DEFAULT;
 
     SDL_GLContext context = nullptr;
     SDL_Surface *applicationIcon;
@@ -83,12 +83,12 @@ public:
     void setGuiZmoOperation(ImGuizmo::OPERATION operation);
     [[nodiscard]] ImGuizmo::OPERATION getGuiZmoOperation() const;
     [[nodiscard]] int getObjectIDByPickingColorFramebuffer(int x, int y) const;
-    [[nodiscard]] BrakezaSetup::ImGUIConfigs getImGuiConfig() const;
+    [[nodiscard]] Config::ImGUIConfigs getImGuiConfig() const;
     void createPickingColorBuffer();
     void createGBuffer();
     void resizeGBuffer();
     void UpdateWindowSize();
-    void setImGuiConfig(BrakezaSetup::ImGUIConfigs c);
+    void setImGuiConfig(Config::ImGUIConfigs c);
     static void initOpenGL();
 };
 

@@ -5,7 +5,7 @@
 #include "../../include/Components/ComponentsManager.h"
 
 Decal::Decal() :
-    sprite(new Image3DAnimation(getPosition(), BrakezaSetup::get()->BILLBOARD_WIDTH_DEFAULT, BrakezaSetup::get()->BILLBOARD_HEIGHT_DEFAULT))
+    sprite(new Image3DAnimation(getPosition(), Config::get()->BILLBOARD_WIDTH_DEFAULT, Config::get()->BILLBOARD_HEIGHT_DEFAULT))
 {
     setDecal(true);
 }

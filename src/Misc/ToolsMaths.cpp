@@ -20,7 +20,7 @@ float ToolsMaths::RadiansToDegrees(float angleRadians) {
  */
 int ToolsMaths::isVector3DClippingPlane(const Plane &P, const Vector3D &V)
 {
-    BrakezaSetup *SETUP = BrakezaSetup::get();
+    Config *SETUP = Config::get();
 
     float distanceV1 = P.distance(V.vertex1);
     float distanceV2 = P.distance(V.vertex2);
@@ -47,7 +47,7 @@ float ToolsMaths::distanceBetweenVertices(const Vertex3D &v1, const Vertex3D &v2
 
 float ToolsMaths::getHorizontalAngleBetweenObject3DAndCamera(Object3D *object, Camera3D *cam) {
     Vertex3D a = cam->getPosition() - object->getPosition();
-    Vertex3D b = object->getRotation() * BrakezaSetup::get()->forward;
+    Vertex3D b = object->getRotation() * Config::get()->forward;
 
     a = a.getNormalize();
 

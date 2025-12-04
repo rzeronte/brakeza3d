@@ -24,11 +24,11 @@ struct GUIAddonProjectSetup
     {
         static char name[256];
 
-        strncpy(name, BrakezaSetup::get()->ENGINE_TITLE.c_str(), sizeof(name));
+        strncpy(name, Config::get()->ENGINE_TITLE.c_str(), sizeof(name));
 
         ImGui::InputText("Project title##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll);
         if (ImGui::IsItemEdited()) {
-            BrakezaSetup::get()->ENGINE_TITLE = name;
+            Config::get()->ENGINE_TITLE = name;
         }
         ImGui::Separator();
         DrawProjectScripts();
@@ -159,7 +159,7 @@ struct GUIAddonProjectSetup
         auto render = ComponentsManager::get()->getComponentRender();
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CUSTOMSHADER_ITEM")) {
-                BrakezaSetup::DragDropCustomShaderData* receivedData = (BrakezaSetup::DragDropCustomShaderData*)payload->Data;
+                Config::DragDropCustomShaderData* receivedData = (Config::DragDropCustomShaderData*)payload->Data;
                 Logging::Message("Dropping shader (Folder: %s, File: %s) in global space", receivedData->folder, receivedData->file);
                 render->loadShaderIntoScene(receivedData->folder, receivedData->file);
             }

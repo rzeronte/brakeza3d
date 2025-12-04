@@ -26,7 +26,7 @@ void ComponentScripting::onUpdate()
 {
     Component::onUpdate();
 
-    if (stateScripts == BrakezaSetup::LUA_PLAY) {
+    if (stateScripts == Config::LUA_PLAY) {
         runScripts();
     }
 }
@@ -44,7 +44,7 @@ void ComponentScripting::onSDLPollEvent(SDL_Event *event, bool &finish)
 {
 }
 
-BrakezaSetup::LuaStateScripts ComponentScripting::getStateLUAScripts()
+Config::LuaStateScripts ComponentScripting::getStateLUAScripts()
 {
     return stateScripts;
 }
@@ -59,7 +59,7 @@ void ComponentScripting::PlayLUAScripts()
     ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
     ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
 
-    stateScripts = BrakezaSetup::LuaStateScripts::LUA_PLAY;
+    stateScripts = Config::LuaStateScripts::LUA_PLAY;
 }
 
 void ComponentScripting::StopLUAScripts()
@@ -69,7 +69,7 @@ void ComponentScripting::StopLUAScripts()
     ComponentsManager::get()->getComponentInput()->setEnabled(true);
     ComponentsManager::get()->getComponentCollisions()->setEnabled(false);
 
-    stateScripts = BrakezaSetup::LuaStateScripts::LUA_STOP;
+    stateScripts = Config::LuaStateScripts::LUA_STOP;
 }
 
 void ComponentScripting::ReloadLUAScripts()

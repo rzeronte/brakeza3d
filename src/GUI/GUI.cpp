@@ -2,10 +2,10 @@
 // Created by Eduardo on 04/12/2025.
 //
 
-#include "GUI.h"
+#include "../../include/GUI/GUI.h"
 
-#include "../Misc/Tools.h"
-#include "Objects/FileSystemGUI.h"
+#include "../../include/Misc/Tools.h"
+#include "../../include/GUI/Objects/FileSystemGUI.h"
 
 void GUI::DrawButton(const std::string &tooltip, GUISheet icon, bool active, const std::function<void()>& onClick)
 {
