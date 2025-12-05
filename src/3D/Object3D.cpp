@@ -12,13 +12,13 @@
 
 Object3D::Object3D()
 :
-
     id(Brakeza::get()->getNextObjectID()),
     luaEnvironment(sol::environment(
-        ComponentsManager::get()->getComponentScripting()->getLua(),
-        sol::create, ComponentsManager::get()->getComponentScripting()->getLua().globals())
+            ComponentsManager::get()->getComponentScripting()->getLua(),
+            sol::create, ComponentsManager::get()->getComponentScripting()->getLua().globals())
     ),
-    pickingColor(Color::idToColor(id))
+    pickingColor(Color::idToColor(id)),
+    type(TypeObject::Object3D)
 {
     luaEnvironment["this"] = this;
     timer.start();
@@ -46,12 +46,12 @@ void Object3D::setRotation(const M3 &r)
 
 std::string Object3D::getName()
 {
-    return label;
+    return name;
 }
 
 void Object3D::setName(const std::string& value)
 {
-    label = value;
+    name = value;
 }
 
 bool &Object3D::isEnabled() {
@@ -278,12 +278,12 @@ void Object3D::RemoveScript(const ScriptLUA *script)
     }
 }
 
-ObjectTypes Object3D::getTypeObject() const
+TypeObject Object3D::getTypeObject() const
 {
-    return ObjectTypes::Object3D;
+    return TypeObject::Object3D;
 }
 
-GUISheet Object3D::getIcon()
+GUIType::Sheet Object3D::getIcon()
 {
     return IconObject::OBJECT_3D;
 }

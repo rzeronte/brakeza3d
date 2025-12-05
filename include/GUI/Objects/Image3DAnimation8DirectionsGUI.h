@@ -5,12 +5,12 @@
 #ifndef BRAKEZA3D_IMAGE3DANIMATION8DIRGUI_H
 #define BRAKEZA3D_IMAGE3DANIMATION8DIRGUI_H
 
-#include "../../3D/Image3DAnimation8Directions.h"
+#include "../../3D/Image3DAnimation360.h"
 
 class Image3DAnimation8DirectionsGUI
 {
 public:
-    static void DrawPropertiesGUI(Image3DAnimation8Directions *o)
+    static void DrawPropertiesGUI(Image3DAnimation360 *o)
     {
         if (ImGui::CollapsingHeader("BillboardAnimation8Directions")) {
             if (ImGui::TreeNode("Size")) {

@@ -8,13 +8,12 @@
 #include "JSONSerializer.h"
 #include <unordered_map>
 #include <memory>
-#include <string>
 #include "../3D/Object3D.h"
 #include "../Misc/Logging.h"
 
 class JSONSerializerRegistry
 {
-    std::unordered_map<ObjectTypes, std::shared_ptr<JSONSerializer>> serializers;
+    std::unordered_map<TypeObject, std::shared_ptr<JSONSerializer>> serializers;
     JSONSerializerRegistry() = default;
 public:
     JSONSerializerRegistry(const JSONSerializerRegistry&) = delete;
@@ -26,12 +25,12 @@ public:
         return registry;
     }
 
-    void registerSerializer(ObjectTypes type, std::shared_ptr<JSONSerializer> serializer)
+    void registerSerializer(TypeObject type, std::shared_ptr<JSONSerializer> serializer)
     {
         serializers[type] = serializer;
     }
 
-    JSONSerializer* getSerializer(ObjectTypes type)
+    JSONSerializer* getSerializer(TypeObject type)
     {
         auto it = serializers.find(type);
         return (it != serializers.end()) ? it->second.get() : nullptr;

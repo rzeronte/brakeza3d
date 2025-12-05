@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_CXX_FLAGS "-O3 -w")
+    #set(CMAKE_CXX_FLAGS "-O3 -w")
+    set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
 endif()
 
 # SDL
@@ -120,7 +121,6 @@ add_executable(Brakeza3D
 
         # GUI
         src/GUI/GUIManager.cpp                              include/GUI/GUIManager.h
-        include/GUI/GUITypes.h
         include/GUI/AddOns/GUIAddonMenu.h
         include/GUI/AddOns/GUIAddonObject3DProperties.h
         include/GUI/AddOns/GUIAddonObjects3D.h
@@ -178,7 +178,7 @@ add_executable(Brakeza3D
         src/3D/Decal.cpp include/3D/Decal.h
         src/3D/Image3D.cpp include/3D/Image3D.h
         src/3D/Image3DAnimation.cpp include/3D/Image3DAnimation.h
-        src/3D/Image3DAnimation8Directions.cpp include/3D/Image3DAnimation8Directions.h
+        src/3D/Image3DAnimation360.cpp include/3D/Image3DAnimation360.h
         src/3D/LightPoint.cpp include/3D/LightPoint.h
         src/3D/LightSpot.cpp include/3D/LightSpot.h
         src/3D/Mesh3D.cpp include/3D/Mesh3D.h
@@ -224,7 +224,7 @@ add_executable(Brakeza3D
         # Persistence
         src/Serializers/Image2DAnimationSerializer.cpp include/Serializers/Image2DAnimationSerializer.h
         src/Serializers/Image2DSerializer.cpp include/Serializers/Image2DSerializer.h
-        src/Serializers/Image3DAnimation8DirectionsSerializer.cpp include/Serializers/Image3DAnimation8DirectionsSerializer.h
+        src/Serializers/Image3DAnimation360Serializer.cpp include/Serializers/Image3DAnimation360Serializer.h
         src/Serializers/Image3DAnimationSerializer.cpp include/Serializers/Image3DAnimationSerializer.h
         src/Serializers/Image3DSerializer.cpp include/Serializers/Image3DSerializer.h
         src/Serializers/JSONSerializerRegistry.cpp include/Serializers/JSONSerializerRegistry.h

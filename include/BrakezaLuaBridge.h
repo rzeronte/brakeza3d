@@ -17,7 +17,7 @@
 #include "3D/Image3D.h"
 #include "3D/LightPoint.h"
 #include "3D/Image3DAnimation.h"
-#include "3D/Image3DAnimation8Directions.h"
+#include "3D/Image3DAnimation360.h"
 #include "3D/ParticleEmitter.h"
 
 inline void LUAIntegration(sol::state &lua)
@@ -318,10 +318,10 @@ inline void LUAIntegration(sol::state &lua)
         "updateBillboardSize", &Image3DAnimation::updateBillboardSize
     );
 
-    lua.new_usertype<Image3DAnimation8Directions>("BillboardAnimation8Directions",
+    lua.new_usertype<Image3DAnimation360>("BillboardAnimation8Directions",
     sol::base_classes, sol::bases<Object3D>(),
         "create", sol::factories([](Vertex3D position, float w, float h, const std::string& spriteFolder, int numFrames, int fps) {
-          return Image3DAnimation8Directions::create(position, w, h, spriteFolder, numFrames, fps);
+          return Image3DAnimation360::create(position, w, h, spriteFolder, numFrames, fps);
         })
     );
 

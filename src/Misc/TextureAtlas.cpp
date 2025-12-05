@@ -79,13 +79,11 @@ void TextureAtlas::CreateFromSheet(const std::string &file, int spriteWidth, int
                 return;
             }
 
-            Logging::Message(".");
             textures.push_back(new Image(destinySurface, spriteTexture));
         }
-
-        Logging::Message("[TextureAtlas] createFromSheet: Sheet successful loaded with %d images", (int) textures.size());
     }
 
+    Logging::Message("[TextureAtlas] createFromSheet: Sheet successful loaded with %d images", (int) textures.size());
     SDL_FreeSurface(spriteSheetSurface);
 }
 

@@ -1,8 +1,6 @@
 #ifndef SDL2_3D_ENGINE_COLOR_H
 #define SDL2_3D_ENGINE_COLOR_H
 
-#include <vector>
-#include <cstdint>
 #include <glm/vec3.hpp>
 #include <SDL2/SDL.h>
 #include "imgui.h"

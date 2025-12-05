@@ -8,7 +8,7 @@
 #include "JSONSerializer.h"
 #include "../3D/Object3D.h"
 
-class Image3DAnimation8DirectionsSerializer : public JSONSerializer
+class Image3DAnimation360Serializer : public JSONSerializer
 {
 public:
     Object3D* ObjectByJson(cJSON* json) override;

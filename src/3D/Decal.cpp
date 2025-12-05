@@ -1,7 +1,7 @@
 
 #include "../../include/3D/Decal.h"
 #include "../../include/Render/Transforms.h"
-#include "../../include/3D/Image3DAnimation8Directions.h"
+#include "../../include/3D/Image3DAnimation360.h"
 #include "../../include/Components/ComponentsManager.h"
 
 Decal::Decal() :

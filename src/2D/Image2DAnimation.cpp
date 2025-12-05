@@ -82,12 +82,12 @@ void Image2DAnimation::updatePosition(int x, int y)
     this->y = y;
 }
 
-ObjectTypes Image2DAnimation::getTypeObject() const
+TypeObject Image2DAnimation::getTypeObject() const
 {
-    return ObjectTypes::Image2DAnimation;
+    return TypeObject::Image2DAnimation;
 }
 
-GUISheet Image2DAnimation::getIcon()
+GUIType::Sheet Image2DAnimation::getIcon()
 {
     return IconObject::IMAGE_2D_ANIMATION;
 }

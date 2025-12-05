@@ -4,13 +4,12 @@
 
 #include "../../include/Serializers/Image3DSerializer.h"
 #include "../../include/3D/Image3D.h"
-#include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 #include "../../include/Brakeza.h"
 
 cJSON * Image3DSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[Image3DSerializer] JsonByObject: %s", o->getTypeObject());
+    Logging::Message("[Image3DSerializer] JsonByObject: %d", (int) o->getTypeObject());
 
     auto image = dynamic_cast<Image3D*>(o);
 
@@ -40,7 +39,7 @@ Object3D * Image3DSerializer::ObjectByJson(cJSON *json)
 
 void Image3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
-    Logging::Message("[Image3DSerializer] ApplyJsonToObject: %s", o->getTypeObject());
+    Logging::Message("[Image3DSerializer] ApplyJsonToObject: %d", (int) o->getTypeObject());
 
     auto image = dynamic_cast<Image3D*>(o);
 

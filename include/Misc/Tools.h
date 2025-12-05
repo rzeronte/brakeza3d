@@ -11,7 +11,6 @@
 #include "../Render/ParticlesContext.h"
 #include <vector>
 #include <glm/vec2.hpp>
-#include "../GUI/GUITypes.h"
 
 class Tools {
 

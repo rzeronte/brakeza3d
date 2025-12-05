@@ -569,12 +569,12 @@ Mesh3DAnimation* Mesh3DAnimation::create(const Vertex3D &position, const std::st
     return o;
 }
 
-ObjectTypes Mesh3DAnimation::getTypeObject() const
+TypeObject Mesh3DAnimation::getTypeObject() const
 {
-    return ObjectTypes::Mesh3DAnimation;
+    return TypeObject::Mesh3DAnimation;
 }
 
-GUISheet Mesh3DAnimation::getIcon()
+GUIType::Sheet Mesh3DAnimation::getIcon()
 {
     return IconObject::MESH_3D_ANIMATION;
 }

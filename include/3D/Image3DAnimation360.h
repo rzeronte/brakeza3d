@@ -9,7 +9,7 @@
 #include "Image3D.h"
 #include "../Misc/Counter.h"
 
-class Image3DAnimation8Directions : public Object3D
+class Image3DAnimation360 : public Object3D
 {
     Image3D *billboard;
     std::string currentSpriteFileVariableToCreateAnimation;
@@ -23,7 +23,7 @@ public:
     int currentAnimation = 0;
     std::vector<TextureAnimatedDirectional *> animations;
 
-    Image3DAnimation8Directions(const Vertex3D &position, float width, float height);
+    Image3DAnimation360(const Vertex3D &position, float width, float height);
     void addAnimationDirectional2D(const std::string&, int frames, int fps, bool zeroDirection, int maxTimes);
     void updateTextureFromCameraAngle(Object3D *, Camera3D *) const;
     void setAnimation(int);
@@ -33,10 +33,10 @@ public:
     void DrawPropertiesGUI() override;
     void updateBillboardSize() const;
     TextureAnimatedDirectional *getCurrentTextureAnimationDirectional() const;
-    ObjectTypes getTypeObject() const override;
-    GUISheet getIcon() override;
+    TypeObject getTypeObject() const override;
+    GUIType::Sheet getIcon() override;
     static int getDirectionForAngle(float enemyAngle);
-    static Image3DAnimation8Directions* create(
+    static Image3DAnimation360* create(
         const Vertex3D &position,
         float width,
         float height,
@@ -45,7 +45,7 @@ public:
         int fps
     );
 
-    friend class Image3DAnimation8DirectionsSerializer;
+    friend class Image3DAnimation360Serializer;
     friend class Image3DAnimation8DirectionsGUI;
 };
 

@@ -2,19 +2,19 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#include "../../include/Serializers/Image3DAnimation8DirectionsSerializer.h"
+#include "../../include/Serializers/Image3DAnimation360Serializer.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/ToolsJSON.h"
-#include "../../include/3D/Image3DAnimation8Directions.h"
+#include "../../include/3D/Image3DAnimation360.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 #include "../../include/Serializers/Image3DAnimationSerializer.h"
 
-cJSON * Image3DAnimation8DirectionsSerializer::JsonByObject(Object3D *o)
+cJSON * Image3DAnimation360Serializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[Image3DAnimation8DirectionsSerializer] JsonByObject: %s", o->getTypeObject());
+    Logging::Message("[Image3DAnimation8DirectionsSerializer] JsonByObject: %d", (int) o->getTypeObject());
 
-    auto image = dynamic_cast<Image3DAnimation8Directions*>(o);
+    auto image = dynamic_cast<Image3DAnimation360*>(o);
 
     auto root = Image3DAnimationSerializer().JsonByObject(o);
 
@@ -36,9 +36,9 @@ cJSON * Image3DAnimation8DirectionsSerializer::JsonByObject(Object3D *o)
     return root;
 }
 
-Object3D * Image3DAnimation8DirectionsSerializer::ObjectByJson(cJSON *json)
+Object3D * Image3DAnimation360Serializer::ObjectByJson(cJSON *json)
 {
-    auto *o = new Image3DAnimation8Directions(
+    auto *o = new Image3DAnimation360(
         ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
         1,
         1
@@ -49,11 +49,11 @@ Object3D * Image3DAnimation8DirectionsSerializer::ObjectByJson(cJSON *json)
     return o;
 }
 
-void Image3DAnimation8DirectionsSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
+void Image3DAnimation360Serializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
-    Logging::Message("[Image3DAnimation8DirectionsSerializer] ApplyJsonToObject: %s", o->getTypeObject());
+    Logging::Message("[Image3DAnimation8DirectionsSerializer] ApplyJsonToObject: %d", (int) o->getTypeObject());
 
-    auto image = dynamic_cast<Image3DAnimation8Directions*>(o);
+    auto image = dynamic_cast<Image3DAnimation360*>(o);
 
     image->width = static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "width")->valueint);
     image->height = static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "height")->valueint);
@@ -78,9 +78,9 @@ void Image3DAnimation8DirectionsSerializer::ApplyJsonToObject(const cJSON *json,
     Object3DSerializer().ApplyJsonToObject(json, o);
 }
 
-void Image3DAnimation8DirectionsSerializer::LoadFileIntoScene(const std::string &file)
+void Image3DAnimation360Serializer::LoadFileIntoScene(const std::string &file)
 {
-    auto o = new Image3DAnimation8Directions(
+    auto o = new Image3DAnimation360(
         ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
         1,
         1

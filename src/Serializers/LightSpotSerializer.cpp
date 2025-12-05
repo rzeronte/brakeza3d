@@ -13,7 +13,7 @@
 
 cJSON * LightSpotSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[LightSpotSerializer] JsonByObject: %s", o->getTypeObject());
+    Logging::Message("[LightSpotSerializer] JsonByObject: %d", (int) o->getTypeObject());
 
     auto *spot = dynamic_cast<LightSpot*>(o);
 
