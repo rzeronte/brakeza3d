@@ -46,7 +46,7 @@ public:
     );
 
     friend class Image3DAnimation360Serializer;
-    friend class Image3DAnimation8DirectionsGUI;
+    friend class Image3DAnimation360GUI;
 };
 
 #endif //BRAKEDA3D_SPRITE_H

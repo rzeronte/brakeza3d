@@ -5,7 +5,7 @@
 #include "../../include/Misc/ToolsMaths.h"
 #include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza.h"
-#include "../../include/GUI/Objects/Image3DAnimation8DirectionsGUI.h"
+#include "../../include/GUI/Objects/Image3DAnimation360GUI.h"
 
 Image3DAnimation360::Image3DAnimation360(const Vertex3D &position, float width, float height)
 :
@@ -132,7 +132,7 @@ void Image3DAnimation360::updateStep()
 void Image3DAnimation360::DrawPropertiesGUI()
 {
     Object3D::DrawPropertiesGUI();
-    Image3DAnimation8DirectionsGUI::DrawPropertiesGUI(this);
+    Image3DAnimation360GUI::DrawPropertiesGUI(this);
 }
 
 TypeObject Image3DAnimation360::getTypeObject() const

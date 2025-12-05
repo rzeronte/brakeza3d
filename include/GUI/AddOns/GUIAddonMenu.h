@@ -27,6 +27,7 @@ struct GUIAddonMenu
     void MenuLogging();
     void MenuLayout();
     void AboutMeModal();
+
     static void DrawItemsToLoad(std::string &folder, std::string &ext, GUIType::Sheet icon, const std::function<void(const std::string &)> &cb );
 };
 
