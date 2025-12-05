@@ -80,7 +80,6 @@ void ComponentRender::onUpdate()
     if (Config::get()->ENABLE_LIGHTS) {
         if (Config::get()->ENABLE_SHADOW_MAPPING) {
             if (shaderOGLRender->hasSpotLightsChanged()) {
-                Logging::Message("Updating shadow maps for %d lights", numSpotLights);
                 shaderShadowPass->createSpotLightsDepthTextures(numSpotLights);
                 shaderShadowPass->setupFBOSpotLights();
                 shaderOGLRender->setLastSpotLightsSize(numSpotLights);

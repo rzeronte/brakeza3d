@@ -230,6 +230,7 @@ GLuint ShaderOGLShadowPass::getSpotLightsShadowMapArrayTextures() const
 
 void ShaderOGLShadowPass::createSpotLightsDepthTextures(int numLights)
 {
+    Logging::Message("[ShaderOGLShadowPass] Updating shadow maps for %d lights", numLights);
     auto window = ComponentsManager::get()->getComponentWindow();
 
     glGenTextures(1, &spotLightsDepthMapArray);

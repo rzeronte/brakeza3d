@@ -28,7 +28,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
             // position
             if (o->featuresGUI.position) {
                 ImGui::PushID("reset_position");
-                GUI::DrawButton("Reset position", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                GUI::DrawButton("Reset position", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
                     Logging::Message("Reset Position");
                     o->setPosition(Vertex3D(0, 0, 0));
                 });
@@ -55,7 +55,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                 float roll = oldRoll;
 
                 ImGui::PushID("reset_rotation");
-                GUI::DrawButton("Reset rotation", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                GUI::DrawButton("Reset rotation", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
                     Logging::Message("Reset Rotation");
                     o->setRotation(M3::getMatrixIdentity());
                 });
@@ -92,7 +92,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                 ImGui::Separator();
 
                 ImGui::PushID("reset_drawoffset");
-                GUI::DrawButton("Reset rotation", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                GUI::DrawButton("Reset rotation", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
                     Logging::Message("Reset DrawOffset");
                     o->setDrawOffset(Vertex3D(0, 0, 0));
                 });
@@ -111,7 +111,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
             // scale
             if (o->featuresGUI.scale) {
                 ImGui::PushID("reset_scale");
-                GUI::DrawButton("Reset Scale", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                GUI::DrawButton("Reset Scale", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
                     Logging::Message("Reset Scale");
                     o->setScale(1.f);
                 });

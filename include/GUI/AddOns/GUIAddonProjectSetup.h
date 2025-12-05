@@ -67,23 +67,23 @@ struct GUIAddonProjectSetup
             auto currentScript = scripts[i];
             ImGui::PushID(i);
             std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
-            GUI::DrawButton("Remove script", IconGUI::REMOVE, GUIType::Sizes::ICON_SIZE_MEDIUM, false, [&] {
+            GUI::DrawButton("Remove script", IconGUI::REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
                 scripting->removeProjectScript(currentScript);
             });
             ImGui::SameLine();
             if (currentScript->isPaused()) {
-                GUI::DrawButton("Unlock script", IconGUI::UNLOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                GUI::DrawButton("Unlock script", IconGUI::UNLOCK, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                     currentScript->setPaused(false);
                 });
 
             } else {
-                GUI::DrawButton("lock script", IconGUI::UNLOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, false, [&] {
+                GUI::DrawButton("lock script", IconGUI::UNLOCK, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
                     currentScript->setPaused(true);
                 });
 
             }
             ImGui::SameLine();
-            GUI::DrawButton("Edit script", IconGUI::SCRIPT, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+            GUI::DrawButton("Edit script", IconGUI::SCRIPT, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
                 delete scriptEditableManager.script;
                 scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(
@@ -127,22 +127,22 @@ struct GUIAddonProjectSetup
             ImGui::PushID(i);
             std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
 
-            GUI::DrawButton("Remove script", IconGUI::REMOVE, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+            GUI::DrawButton("Remove script", IconGUI::REMOVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 scripting->removeSceneScript(currentScript);
             });
 
             ImGui::SameLine();
             if (currentScript->isPaused()) {
-                GUI::DrawButton("UnLock Script", IconGUI::REMOVE, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                GUI::DrawButton("UnLock Script", IconGUI::REMOVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                     currentScript->setPaused(false);
                 });
             } else {
-                GUI::DrawButton("Lock Script", IconGUI::LOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                GUI::DrawButton("Lock Script", IconGUI::LOCK, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                     currentScript->setPaused(true);
                 });
             }
             ImGui::SameLine();
-            GUI::DrawButton("Edit scene script", IconGUI::LOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+            GUI::DrawButton("Edit scene script", IconGUI::LOCK, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
                 delete scriptEditableManager.script;
                 scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(
@@ -183,20 +183,20 @@ struct GUIAddonProjectSetup
             ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER), ImVec2(26, 26));
             ImGui::SameLine(46);
             if (!s->isEnabled()) {
-                GUI::DrawButton("UnLock Script", IconGUI::UNLOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                GUI::DrawButton("UnLock Script", IconGUI::UNLOCK, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                     s->setEnabled(true);
                 });
             } else {
-                GUI::DrawButton("Lock Script", IconGUI::LOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                GUI::DrawButton("Lock Script", IconGUI::LOCK, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                     s->setEnabled(false);
                 });
             }
             ImGui::SameLine();
-            GUI::DrawButton("Reload script", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+            GUI::DrawButton("Reload script", IconGUI::RELOAD, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 s->reload();
             });
             ImGui::SameLine();
-            GUI::DrawButton("Remove script", IconGUI::REMOVE, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+            GUI::DrawButton("Remove script", IconGUI::REMOVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 render->removeSceneShaderByIndex(i);
             });
             ImGui::SameLine();

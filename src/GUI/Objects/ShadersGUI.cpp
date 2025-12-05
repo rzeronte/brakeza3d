@@ -100,7 +100,7 @@ void ShadersGUI::DrawShaderVariables(GUIManager *gui)
             ImGui::Text("%s", dataType->type.c_str());
 
             ImGui::TableSetColumnIndex(2);
-            GUI::DrawButton("Remove shader variable", IconGUI::REMOVE, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+            GUI::DrawButton("Remove shader variable", IconGUI::REMOVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 gui->shaderEditableManager.shader->removeDataType(*dataType);
             });
             ImGui::PopID();
@@ -137,7 +137,7 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, GUIType::FolderBrowser
         std::cout << "Seleccionado: " << items[item_current_idx] << std::endl;
     }
 
-    GUI::DrawButton("Create shader", IconGUI::OPEN, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+    GUI::DrawButton("Create shader", IconGUI::OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
             auto type = ShaderOGLCustom::getShaderTypeFromString(items[item_current_idx]);
             ShaderOGLCustom::createEmptyCustomShader(gui->currentVariableToCreateCustomShader, browser.currentFolder, type);
@@ -161,7 +161,7 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, GUIType::FolderBrowser
 
             ImGui::TableSetColumnIndex(0);
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER), GUIType::Sizes::ICON_SIZE_MEDIUM);
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER), GUIType::Sizes::ICONS_BROWSERS);
             ImGui::SameLine();
             std::string optionText = std::to_string(i + 1) + ") " + file;
             if (ImGui::Selectable(optionText.c_str())) {
@@ -178,7 +178,7 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, GUIType::FolderBrowser
                 ImGui::EndDragDropSource();
             }
             ImGui::TableSetColumnIndex(1);
-            GUI::DrawButton("Load shader into scene", IconGUI::SCENE, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+            GUI::DrawButton("Load shader into scene", IconGUI::SCENE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 ComponentsManager::get()->getComponentRender()->loadShaderIntoScene(browser.currentFolder, file);
             });
             ImGui::TableSetColumnIndex(2);
@@ -222,27 +222,27 @@ void ShadersGUI::DrawShadersBySelectedObject(GUIManager *gui)
 
         auto s = customShaders[i];
 
-        GUI::DrawButton("Load shader in object", IconGUI::SHADER, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+        GUI::DrawButton("Load shader in object", IconGUI::SHADER, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
             auto folder = s->getFolder();
             auto jsonFilename = s->getLabel() + ".json";
             LoadShaderDialog(gui, folder, jsonFilename);
         });
         ImGui::SameLine();
         if (!s->isEnabled()) {
-            GUI::DrawButton("Unlock shader in object", IconGUI::UNLOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+            GUI::DrawButton("Unlock shader in object", IconGUI::UNLOCK, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 s->setEnabled(true);
             });
         } else {
-            GUI::DrawButton("Lock shader in object", IconGUI::LOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, false, [&] {
+            GUI::DrawButton("Lock shader in object", IconGUI::LOCK, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
                 s->setEnabled(false);
             });
         }
         ImGui::SameLine();
-        GUI::DrawButton("Reload shader in object", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_MEDIUM, false, [&] {
+        GUI::DrawButton("Reload shader in object", IconGUI::RELOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
             s->reload();
         });
         ImGui::SameLine();
-        GUI::DrawButton("Remove shader in object", IconGUI::REMOVE, GUIType::Sizes::ICON_SIZE_MEDIUM, false, [&] {
+        GUI::DrawButton("Remove shader in object", IconGUI::REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
             mesh->removeShader(i);
         });
         ImGui::SameLine();
