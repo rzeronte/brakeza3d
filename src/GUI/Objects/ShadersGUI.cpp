@@ -147,7 +147,6 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, GUIType::FolderBrowser
 
     ImGui::Separator();
     FileSystemGUI::DrawBrowserFolders(gui, Config::get()->CUSTOM_SHADERS_FOLDER, browser,Config::get()->SHADERS_EXT);
-
     ImGui::Separator();
 
     auto files = browser.folderFiles;

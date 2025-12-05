@@ -25,8 +25,7 @@ struct GUIAddonProjectSetup
         static char name[256];
 
         strncpy(name, Config::get()->ENGINE_TITLE.c_str(), sizeof(name));
-
-        ImGui::InputText("Project title##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll);
+        ImGui::InputText("##Project title", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll);
         if (ImGui::IsItemEdited()) {
             Config::get()->ENGINE_TITLE = name;
         }
@@ -36,7 +35,6 @@ struct GUIAddonProjectSetup
         DrawSceneScripts();
         ImGui::Separator();
         DrawSceneCustomShaders();
-
     }
 
     void DrawProjectScripts() const

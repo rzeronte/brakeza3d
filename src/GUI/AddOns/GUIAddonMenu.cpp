@@ -44,7 +44,7 @@ void GUIAddonMenu::Draw()
     if (ImGui::BeginMainMenuBar()) {
         for (const auto & menu : menus) {
             if (ImGui::BeginMenu(menu.label.c_str())) {
-                menu.functionCallBack();
+                menu.cb();
                 ImGui::EndMenu();
             }
         }

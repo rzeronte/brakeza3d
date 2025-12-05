@@ -7,7 +7,7 @@
 
 #include "../../3D/Image3DAnimation360.h"
 
-class Image3DAnimation8DirectionsGUI
+class Image3DAnimation360GUI
 {
 public:
     static void DrawPropertiesGUI(Image3DAnimation360 *o)

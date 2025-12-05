@@ -24,7 +24,7 @@ namespace GUIType
     };
 
     struct Sizes {
-        static constexpr ImVec2 ICONS_TOOLBAR = ImVec2(32, 32);
+        static constexpr ImVec2 ICONS_TOOLBAR = ImVec2(24, 24);
         static constexpr ImVec2 ICONS_OBJECTS_ALLOWED = ImVec2(16, 16);
         static constexpr ImVec2 ICONS_BROWSERS = ImVec2(16, 16);
         static constexpr ImVec2 ICONS_CONSOLE = ImVec2(16, 16);
@@ -83,7 +83,8 @@ namespace GUIType
         FILES_SCENES,
         FILES_PROJECTS,
         FILES_SHADERS,
-        FILES_SCRIPTS
+        FILES_SCRIPTS,
+        DEBUG_ICONS
     };
 
     struct WindowData {
@@ -96,76 +97,117 @@ namespace GUIType
 
     struct MenuItem {
         std::string label;
-        std::function<void()> functionCallBack;
+        std::function<void()> cb;
+    };
+
+    struct IconEntry {
+        const char* name;
+        Sheet* icon;
+        Sheet original;
     };
 }
 
+// ===== DEFINICIÓN ÚNICA DE ICONOS OBJECT =====
+#define ICON_OBJECT_LIST(X) \
+    X(OBJECT_3D, 10, 14) \
+    X(MESH_3D, 14, 14) \
+    X(MESH_3D_ANIMATION, 0, 0) \
+    X(LIGHT_POINT, 1, 13) \
+    X(LIGHT_SPOT, 0, 0) \
+    X(PARTICLE_EMITTER, 0, 0) \
+    X(IMAGE_3D_ANIMATION, 5, 27) \
+    X(IMAGE_3D_ANIMATION_8DIR, 0, 0) \
+    X(IMAGE_2D_ANIMATION, 0, 0) \
+    X(IMAGE_3D, 0, 0) \
+    X(IMAGE_2D, 0, 0) \
+    X(SWARM, 0, 0)
+
+// ===== DEFINICIÓN ÚNICA DE ICONOS GUI =====
+#define ICON_GUI_LIST(X) \
+    X(FOLDER, 3, 31) \
+    X(PLAY, 2, 29) \
+    X(STOP, 5, 3) \
+    X(RELOAD, 15, 9) \
+    X(REMOVE, 3, 3) \
+    X(PAUSE, 4, 12) \
+    X(LOCK, 5, 25) \
+    X(UNLOCK, 4, 25) \
+    X(ADD, 15, 37) \
+    X(SCENE, 2, 37) \
+    X(SAVE, 4, 33) \
+    X(GEAR, 9, 8) \
+    X(GHOST, 9, 29) \
+    X(SHADER, 15, 31) \
+    X(SPOTLIGHT, 3, 24) \
+    X(PARTICLES, 11, 13) \
+    X(GRAVITY, 15, 30) \
+    X(CLICK, 9, 18) \
+    X(DRAW_COLLIDERS, 3, 35) \
+    X(TARGET, 13, 16) \
+    X(MOUSE_LOOK, 10, 18) \
+    X(LAYOUT_DEFAULT, 7, 1) \
+    X(LAYOUT_CODING, 0, 0) \
+    X(LAYOUT_DESIGN, 2, 27) \
+    X(PROJECT, 15, 38) \
+    X(OPEN, 15, 9) \
+    X(GUI, 12, 17) \
+    X(TEXTURE, 2, 4) \
+    X(TRANSLATE, 3, 15) \
+    X(ROTATE, 2, 15) \
+    X(SCALE, 1, 15) \
+    X(SCRIPT, 0, 0) \
+    X(PLAYER, 14, 2) \
+    X(SPLASH, 0, 0) \
+    X(LIGHT_SYSTEM, 0, 0) \
+    X(SHADOW_MAPPING, 0, 0) \
+    X(RENDER_TEXTURE, 0, 0) \
+    X(RENDER_PIXELS, 0, 0) \
+    X(RENDER_SHADING, 0, 0) \
+    X(RENDER_WIRE, 0, 0) \
+    X(SHOW_BONES, 14, 38) \
+    X(PICKING_COLORS, 11, 10) \
+    X(FPS, 5, 4) \
+    X(PROFILER, 10, 26) \
+    X(COLLISION_OBJECTS, 8, 13) \
+    X(ABOUT_ME, 15, 27) \
+    X(EXIT, 0, 10)
+
 // Icons Objects
 namespace IconObject {
-    inline constexpr GUIType::Sheet OBJECT_3D = {0, 0};
-    inline constexpr GUIType::Sheet MESH_3D = {0, 0};
-    inline constexpr GUIType::Sheet MESH_3D_ANIMATION = {0, 0};
-    inline constexpr GUIType::Sheet LIGHT_POINT = {0, 0};
-    inline constexpr GUIType::Sheet LIGHT_SPOT = {0, 0};
-    inline constexpr GUIType::Sheet PARTICLE_EMITTER = {0, 0};
-    inline constexpr GUIType::Sheet IMAGE_3D_ANIMATION = {0, 0};
-    inline constexpr GUIType::Sheet IMAGE_3D_ANIMATION_8DIR = {0, 0};
-    inline constexpr GUIType::Sheet IMAGE_2D_ANIMATION = {0, 0};
-    inline constexpr GUIType::Sheet IMAGE_3D = {0, 0};
-    inline constexpr GUIType::Sheet IMAGE_2D = {0, 0};
-    inline constexpr GUIType::Sheet SWARM = {0, 0};
+    // Declaraciones (editables en runtime)
+    #define DECLARE_ICON(name, x, y) extern GUIType::Sheet name;
+    ICON_OBJECT_LIST(DECLARE_ICON)
+    #undef DECLARE_ICON
+
+    // Contar iconos
+    #define COUNT_ICONS(...) +1
+    inline constexpr size_t ICON_COUNT = 0 ICON_OBJECT_LIST(COUNT_ICONS);
+    #undef COUNT_ICONS
+
+    // Array de metadatos para el editor
+    extern GUIType::IconEntry ALL_ICONS_EDITOR[ICON_COUNT];
+
+    // Función para resetear
+    void ResetToDefault();
 }
 
 // Icons GUI
 namespace IconGUI {
-    // Sheet coordinates mapping
-    inline constexpr GUIType::Sheet FOLDER = {0, 0};
-    inline constexpr GUIType::Sheet PLAY = {1, 0};
-    inline constexpr GUIType::Sheet STOP = {2, 0};
-    inline constexpr GUIType::Sheet RELOAD = {3, 0};
-    inline constexpr GUIType::Sheet REMOVE = {4, 0};
-    inline constexpr GUIType::Sheet PAUSE = {0, 0};
-    inline constexpr GUIType::Sheet LOCK = {0, 0};
-    inline constexpr GUIType::Sheet UNLOCK = {0, 0};
-    inline constexpr GUIType::Sheet ADD = {4, 3};
-    inline constexpr GUIType::Sheet SCENE = {0, 0};
-    inline constexpr GUIType::Sheet SAVE = {0, 0};
-    inline constexpr GUIType::Sheet GEAR = {0, 0};
-    inline constexpr GUIType::Sheet GHOST = {0, 0};
-    inline constexpr GUIType::Sheet SHADER = {0, 0};
-    inline constexpr GUIType::Sheet SPOTLIGHT = {0, 0};
-    inline constexpr GUIType::Sheet PARTICLES = {0, 0};
-    inline constexpr GUIType::Sheet GRAVITY = {0, 0};
-    inline constexpr GUIType::Sheet CLICK = {0, 0};
-    inline constexpr GUIType::Sheet DRAW_COLLIDERS = {0, 0};
-    inline constexpr GUIType::Sheet TARGET = {0, 0};
-    inline constexpr GUIType::Sheet MOUSE_LOOK = {0, 0};
-    inline constexpr GUIType::Sheet LAYOUT_DEFAULT = {0, 0};
-    inline constexpr GUIType::Sheet LAYOUT_CODING = {0, 0};
-    inline constexpr GUIType::Sheet LAYOUT_DESIGN = {0, 0};
-    inline constexpr GUIType::Sheet PROJECT = {0, 0};
-    inline constexpr GUIType::Sheet OPEN = {0, 0};
-    inline constexpr GUIType::Sheet GUI = {0, 0};
-    inline constexpr GUIType::Sheet TEXTURE = {0, 0};
-    inline constexpr GUIType::Sheet TRANSLATE = {0, 0};
-    inline constexpr GUIType::Sheet ROTATE = {0, 0};
-    inline constexpr GUIType::Sheet SCALE = {0, 0};
-    inline constexpr GUIType::Sheet SCRIPT = {0, 0};
-    inline constexpr GUIType::Sheet PLAYER = {0, 0};
-    inline constexpr GUIType::Sheet SPLASH = {0, 0};
-    inline constexpr GUIType::Sheet LIGHT_SYSTEM = {0, 0};
-    inline constexpr GUIType::Sheet SHADOW_MAPPING = {0, 0};
-    inline constexpr GUIType::Sheet RENDER_TEXTURE = {0, 0};
-    inline constexpr GUIType::Sheet RENDER_PIXELS = {0, 0};
-    inline constexpr GUIType::Sheet RENDER_SHADING = {0, 0};
-    inline constexpr GUIType::Sheet RENDER_WIRE = {0, 0};
-    inline constexpr GUIType::Sheet SHOW_BONES = {0, 0};
-    inline constexpr GUIType::Sheet PICKING_COLORS = {0, 0};
-    inline constexpr GUIType::Sheet FPS = {0, 0};
-    inline constexpr GUIType::Sheet PROFILER = {0, 0};
-    inline constexpr GUIType::Sheet COLLISION_OBJECTS = {0, 0};
-    inline constexpr GUIType::Sheet ABOUT_ME = {0, 0};
-    inline constexpr GUIType::Sheet EXIT = {0, 3};
+    // Declaraciones (editables en runtime)
+    #define DECLARE_ICON(name, x, y) extern GUIType::Sheet name;
+    ICON_GUI_LIST(DECLARE_ICON)
+    #undef DECLARE_ICON
+
+    // Contar iconos
+    #define COUNT_ICONS(...) +1
+    inline constexpr size_t ICON_COUNT = 0 ICON_GUI_LIST(COUNT_ICONS);
+    #undef COUNT_ICONS
+
+    // Array de metadatos para el editor
+    extern GUIType::IconEntry ALL_ICONS_EDITOR[ICON_COUNT];
+
+    // Función para resetear
+    void ResetToDefault();
 
     // GUI Properties features for each object
     struct ObjectGUIFeatures {
@@ -187,4 +229,5 @@ public:
     static void Toggle(bool &value);
     static GUIType::FolderBrowserCache CreateBrowserCache(std::string folder, const std::string &extension);
 };
+
 #endif //BRAKEZA3D_GUI_H

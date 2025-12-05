@@ -51,6 +51,7 @@ public:
     std::string CAMERA_OBJECT_NAME    = "Camera";
     std::string GUI_ICON_SHEET        = "sheet.png";
     std::string SPLASH_FILENAME       = "splash.png";
+    std::string ICONS_CONFIG          = "icons.json";
 
     std::string SCRIPTS_EXT     = "lua";
     std::string SCENES_EXT      = "json";

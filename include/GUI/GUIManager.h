@@ -19,6 +19,7 @@ class ScriptLuaGUI;
 class Mesh3DGUI;
 class ShadersGUI;
 class FileSystemGUI;
+class IconsGUI;
 
 class GUIManager
 {
@@ -28,6 +29,8 @@ class GUIManager
     bool showEditShaderWindow = false;
     bool showEditScriptWindow = false;
     bool showBoneMappingsEditorWindow = false;
+    bool showDebugIconsWindow = false;
+
     float splashAlpha = 1.0f;
 
     std::vector<Object3D *> &gameObjects;
@@ -48,13 +51,6 @@ class GUIManager
     std::string currentVariableToAddName;
     std::string currentVariableToCreateCustomShader;
 
-public:
-    [[nodiscard]] GUIType::FolderBrowserCache getBrowserScripts() const;
-    [[nodiscard]] GUIType::FolderBrowserCache getBrowserScenes() const;
-    [[nodiscard]] GUIType::FolderBrowserCache getBrowserProjects() const;
-    [[nodiscard]] GUIType::FolderBrowserCache getBrowserShaders() const;
-
-private:
     GUIType::FolderBrowserCache browserScenes;
     GUIType::FolderBrowserCache browserProjects;
     GUIType::FolderBrowserCache browserShaders;
@@ -67,7 +63,7 @@ private:
 
     void WindowImages();
     void WindowLightsDepthMapsViewer();
-    void DrawRegisteredWindows() const;
+    void DrawRegisteredWindows();
     void WindowKeyboardMouseSetup();
     void DrawSplash();
 
@@ -78,6 +74,9 @@ public:
     virtual ~GUIManager() = default;
 
     void RegisterWindows();
+
+    void WindowDebugIcons();
+
     void WindowShaderFiles();
     void WindowScriptFiles();
     void WindowSceneFiles();
@@ -97,6 +96,10 @@ public:
     [[nodiscard]] GuiAddonConsole *getConsole() const;
     [[nodiscard]] bool isLightDepthMapsViewerWindowOpen();
     [[nodiscard]] TextureAtlas * getTextureAtlas() const;
+    [[nodiscard]] GUIType::FolderBrowserCache getBrowserScripts() const;
+    [[nodiscard]] GUIType::FolderBrowserCache getBrowserScenes() const;
+    [[nodiscard]] GUIType::FolderBrowserCache getBrowserProjects() const;
+    [[nodiscard]] GUIType::FolderBrowserCache getBrowserShaders() const;
     static void ShowDeletePopup(const char* title, const char *message, const std::function<void()>& onConfirm);
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
@@ -107,6 +110,7 @@ public:
     friend class Mesh3DGUI;
     friend class ShadersGUI;
     friend class FileSystemGUI;
+    friend class IconsGUI;
 };
 
 #endif //SDL2_3D_ENGINE_GUI_ENGINE_H

@@ -139,7 +139,7 @@ void AssimpAnimationService::ProcessMeshAnimation(int i, aiMesh *mesh, std::vect
         return;
     }
 
-    std::cout << "Loading mesh animation with materialIndex: " << mesh->mMaterialIndex << std::endl;
+    Logging::Message("[AssimpAnimationService] Loading mesh animation with materialIndex: %d", mesh->mMaterialIndex);
 
     std::vector<VertexBoneData> localMeshBones(mesh->mNumVertices);
     std::vector<Vertex3D> localMeshVertices(mesh->mNumVertices);

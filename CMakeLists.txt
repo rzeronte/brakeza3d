@@ -6,8 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    #set(CMAKE_CXX_FLAGS "-O3 -w")
-    set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
+    set(CMAKE_CXX_FLAGS "-O3 -w")
 endif()
 
 # SDL
@@ -130,7 +129,7 @@ add_executable(Brakeza3D
 
         # GUI/Objects
         include/GUI/Objects/Image2DAnimationGUI.h
-        include/GUI/Objects/Image3DAnimation8DirectionsGUI.h
+        include/GUI/Objects/Image3DAnimation360GUI.h
         include/GUI/Objects/Image3DAnimationGUI.h
         include/GUI/Objects/Image3DGUI.h
         include/GUI/Objects/LightSpotGUI.h
@@ -266,6 +265,8 @@ add_executable(Brakeza3D
         src/GUI/AddOns/GUIAddonToolbar.cpp
         include/GUI/GUI.h
         src/GUI/GUI.cpp
+        include/GUI/Objects/IconsGUI.h
+        include/GUI/Objects/IconsGUI.h
 )
 
 target_link_libraries(Brakeza3D

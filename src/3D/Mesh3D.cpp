@@ -20,7 +20,7 @@ Mesh3D::Mesh3D()
 
 Mesh3D::~Mesh3D()
 {
-    Logging::Message("Delete Mesh3D: %s", getName().c_str());
+    Logging::Message("[Mesh3D] Destroying '%s'...", getName().c_str());
 
     for (auto &m : meshes) {
         for (auto triangle : m.modelTriangles) delete triangle;

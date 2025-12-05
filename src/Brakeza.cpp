@@ -125,7 +125,7 @@ std::vector<Object3D *> &Brakeza::getSceneObjects()
 
 void Brakeza::addObject3D(Object3D *obj, const std::string &label)
 {
-    Logging::Message("[Brakeza3D addObject3D] Adding Object3D to scene: %s", label.c_str());
+    Logging::Message("[AddObject] Adding object '%s' to scene...", label.c_str());
     obj->setName(label);
     sceneObjects.push_back(obj);
 }
