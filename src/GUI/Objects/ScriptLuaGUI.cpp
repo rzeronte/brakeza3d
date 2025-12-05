@@ -92,23 +92,23 @@ void ScriptLuaGUI::DrawScriptsBySelectedObject(GUIManager *gui)
     for (unsigned int i = 0; i < objectScripts.size(); i++) {
         auto currentScript = objectScripts[i];
 
-        GUI::DrawButton(o->getName().c_str(), IconGUI::SCRIPT, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+        GUI::DrawButton(o->getName().c_str(), IconGUI::SCRIPT, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
             LoadScriptDialog(gui, currentScript->scriptFilename);
         });
 
         ImGui::SameLine();
         std::string optionText = std::to_string(i + 1) + ") " + Tools::removeSubstring(currentScript->scriptFilename, Config::get()->SCRIPTS_FOLDER);
         if (currentScript->isPaused()) {
-            GUI::DrawButton("Unlock script object", IconGUI::UNLOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+            GUI::DrawButton("Unlock script object", IconGUI::UNLOCK, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 currentScript->setPaused(false);
             });
         } else {
-            GUI::DrawButton("Lock script object", IconGUI::LOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, false, [&] {
+            GUI::DrawButton("Lock script object", IconGUI::LOCK, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
                 currentScript->setPaused(true);
             });
         }
         ImGui::SameLine();
-        GUI::DrawButton("Remove script obeject", IconGUI::REMOVE, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+        GUI::DrawButton("Remove script obeject", IconGUI::REMOVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
             o->RemoveScript(currentScript);
         });
         ImGui::SameLine();
@@ -126,7 +126,7 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::FolderBro
         gui->currentVariableToAddName = name;
     }
 
-    GUI::DrawButton("Create script", IconGUI::OPEN, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+    GUI::DrawButton("Create script", IconGUI::OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         if (!gui->currentVariableToAddName.empty()) {
             ComponentScripting::createScriptLUAFile(browser.currentFolder + gui->currentVariableToAddName);
             browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, "lua");
@@ -330,7 +330,7 @@ void ScriptLuaGUI::drawScriptVariables(GUIManager *gui)
             ImGui::Text("%s", type->type.c_str());
 
             ImGui::TableSetColumnIndex(2);
-            GUI::DrawButton("Delete script variable", IconGUI::REMOVE, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+            GUI::DrawButton("Delete script variable", IconGUI::REMOVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 gui->scriptEditableManager.script->removeDataType(*type);
                 gui->scriptEditableManager.script->updateFileTypes();
             });

@@ -4,10 +4,10 @@
 
 #ifndef BRAKEZA3D_GUI_H
 #define BRAKEZA3D_GUI_H
+
 #include <functional>
 #include <string>
 #include <vector>
-
 #include "imgui.h"
 
 namespace GUIType
@@ -24,10 +24,14 @@ namespace GUIType
     };
 
     struct Sizes {
+        static constexpr ImVec2 ICONS_TOOLBAR = ImVec2(32, 32);
+        static constexpr ImVec2 ICONS_OBJECTS_ALLOWED = ImVec2(16, 16);
+        static constexpr ImVec2 ICONS_BROWSERS = ImVec2(16, 16);
+        static constexpr ImVec2 ICONS_CONSOLE = ImVec2(16, 16);
+        static constexpr ImVec2 ICONS_LOG = ImVec2(16, 16);
         static constexpr ImVec2 ICON_SIZE_MENUS = ImVec2(16, 16);
         static constexpr ImVec2 ICON_SIZE_SMALL = ImVec2(14, 14);
-        static constexpr ImVec2 ICON_SIZE_MEDIUM = ImVec2(16, 16);
-        static constexpr ImVec2 ICON_SIZE_LARGE = ImVec2(96, 96);
+        static constexpr ImVec2 ICON_LOCKS = ImVec2(14, 14);
     };
 
     struct Levels {
@@ -50,10 +54,10 @@ namespace GUIType
     };
 
     struct Colors {
-        static constexpr ImVec4 BTN_OFF = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);      // Gris oscuro
-        static constexpr ImVec4 BTN_ON = ImVec4(0.8f, 0.42f, 0.13f, 0.40f);   // Gris claro
-        static constexpr ImVec4 LUA_COLOR = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);      // Gris intermedio
-        static constexpr ImVec4 PLAY_COLOR = ImVec4(0.3f, 0.9f, 0.3f, 1.0f);     // Gris intermedio
+        static constexpr ImVec4 BTN_OFF = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+        static constexpr ImVec4 BTN_ON = ImVec4(0.8f, 0.0f, 0.0f, 1.0f);
+        static constexpr ImVec4 LUA_COLOR = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
+        static constexpr ImVec4 PLAY_COLOR = ImVec4(0.3f, 0.9f, 0.3f, 1.0f);
     };
 
     enum GUIWindowsGroups {

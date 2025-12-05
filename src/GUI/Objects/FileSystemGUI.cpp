@@ -31,7 +31,7 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCach
         gui->currentVariableToCreateCustomShader = name;
     }
 
-    GUI::DrawButton("Create Project", IconGUI::OPEN, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+    GUI::DrawButton("Create Project", IconGUI::OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
             ProjectLoader::CreateProject(browser.currentFolder + gui->currentVariableToCreateCustomShader);
             browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->PROJECTS_EXT);
@@ -58,7 +58,7 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCach
                 ImGui::Text("%s", title.c_str());
 
                 ImGui::TableSetColumnIndex(1);
-                GUI::DrawButton("Open project", IconGUI::OPEN, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                GUI::DrawButton("Open project", IconGUI::OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                     ProjectLoader::LoadProject(browser.currentFolder + file);
                 });
                 ImGui::SameLine();
@@ -93,7 +93,7 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, GUIType::FolderBrowserCach
         gui->currentVariableToCreateCustomShader = name;
     }
 
-    GUI::DrawButton("Create scene", IconGUI::OPEN, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+    GUI::DrawButton("Create scene", IconGUI::OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
             SceneLoader::CreateScene(browser.currentFolder + gui->currentVariableToCreateCustomShader);
             browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCENES_EXT);
@@ -125,7 +125,7 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, GUIType::FolderBrowserCach
                 ImGui::Text("%s", title.c_str());
 
                 ImGui::TableSetColumnIndex(1);
-                GUI::DrawButton("Load scene", IconGUI::OPEN, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                GUI::DrawButton("Load scene", IconGUI::OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                     SceneLoader::ClearScene();
                     SceneLoader::LoadScene(browser.currentFolder + file);
                 });

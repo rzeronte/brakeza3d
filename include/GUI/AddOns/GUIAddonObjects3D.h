@@ -50,7 +50,7 @@ struct GUIAddonObjects3D
                 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.0f)); //  rojo
             }
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 7.0f, ImGui::GetCursorPosY()));
-            GUI::DrawButton(o.id(), o.iconCoords, GUIType::Sizes::ICON_SIZE_MEDIUM, o.visible, [&](){ o.Toggle(); });
+            GUI::DrawButton(o.id(), o.iconCoords, GUIType::Sizes::ICONS_OBJECTS_ALLOWED, o.visible, [&](){ o.Toggle(); });
             if (!wasVisible) {
                 ImGui::PopStyleColor();
             }

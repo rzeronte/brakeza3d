@@ -163,7 +163,7 @@ void Mesh3DGUI::DrawEditBonesMappingWindow(GUIManager *gui)
                     GUI::DrawButton(
                         (std::string((b.enabled ? "lock##" : "unlock##")) + std::to_string(i)).c_str(),
                         (b.enabled ? IconGUI::LOCK : IconGUI::UNLOCK),
-                        GUIType::Sizes::ICON_SIZE_MEDIUM,
+                        GUIType::Sizes::ICON_LOCKS,
                         true,
                         [&] {
                         a->SetMappingBoneColliderInfo(nameMapping, b.boneId, !b.enabled, b.shape);

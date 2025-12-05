@@ -73,7 +73,7 @@ float AssimpAnimationService::getCurrentAnimationMaxTime() const
 
 bool AssimpAnimationService::AssimpLoadAnimation(const std::string &filename, std::vector<Mesh3DData> &meshes)
 {
-    Logging::Message("AssimpLoadAnimation for %s", filename.c_str());
+    Logging::Message("[AssimpAnimationService] Load animation from %s", filename.c_str());
 
     if (!Tools::FileExists(filename.c_str())) {
         Logging::Message("[AssimpLoadAnimation] ERROR: File not found %s", filename.c_str());

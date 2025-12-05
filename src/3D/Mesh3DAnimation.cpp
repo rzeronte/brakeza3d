@@ -157,7 +157,7 @@ float Mesh3DAnimation::getCurrentAnimationMaxTime() const
 
 bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
 {
-    Logging::Message("AssimpLoadAnimation for %s", filename.c_str());
+    Logging::Message("[AssimpLoadAnimation] Load animation from %s", filename.c_str());
 
     if (!Tools::FileExists(filename.c_str())) {
         Logging::Message("[AssimpLoadAnimation] ERROR: File not found %s", filename.c_str());
@@ -292,7 +292,7 @@ void Mesh3DAnimation::LoadMeshBones(int meshId, aiMesh *mesh, std::vector<Vertex
 
             boneInfo[BoneIndex].BoneOffset = mesh->mBones[i]->mOffsetMatrix;
             boneInfo[BoneIndex].name = mesh->mBones[i]->mName.C_Str();
-            Logging::Message("Loading BoneInfo %s", boneInfo[BoneIndex].name.c_str());
+            Logging::Message("[Mesh3DAnimation] Loading BoneInfo %s", boneInfo[BoneIndex].name.c_str());
         } else {
             BoneIndex = static_cast<int>(boneMapping[BoneName]);
         }
@@ -747,7 +747,7 @@ void Mesh3DAnimation::SetMappingBoneColliderInfo(
     bool enabled,
     BoneCollisionShape shape = BONE_SPHERE
 ) {
-    Logging::Message("Setting Bone %d for %s to %d", boneId, mappingName.c_str(), enabled);
+    Logging::Message("[Mesh3DAnimation] Setting Bone %d for %s to %d", boneId, mappingName.c_str(), enabled);
 
     int im;
     auto mapping = getBonesMappingByName(mappingName, im);
