@@ -116,12 +116,12 @@ Image3DAnimation::~Image3DAnimation()
     }
 }
 
-ObjectTypes Image3DAnimation::getTypeObject() const
+TypeObject Image3DAnimation::getTypeObject() const
 {
-    return ObjectTypes::Image3DAnimation;
+    return TypeObject::Image3DAnimation;
 }
 
-GUISheet Image3DAnimation::getIcon()
+GUIType::Sheet Image3DAnimation::getIcon()
 {
     return IconObject::IMAGE_3D_ANIMATION;
 }

@@ -11,12 +11,12 @@
 
 struct AddonAllowedObjects
 {
-    ObjectTypes type;
+    TypeObject type;
     bool visible;
-    GUISheet iconCoords;
+    GUIType::Sheet iconCoords;
 
     void Toggle() { visible = !visible; }
-    [[nodiscard]] const char* id() const { return std::string("AddonAllowedObjects3D" + std::to_string((int)type)).c_str(); }
+    [[nodiscard]] std::string id() const { return std::string("AddonAllowedObjects3D" + std::to_string((int)type)).c_str(); }
 };
 
 struct GUIAddonObjects3D
@@ -28,17 +28,17 @@ struct GUIAddonObjects3D
     :
         gameObjects(gameObjects)
     {
-        allowedObjectsToShow.push_back({ObjectTypes::Object3D, true, IconObject::OBJECT_3D});
-        allowedObjectsToShow.push_back({ObjectTypes::Image2D, true, IconObject::IMAGE_2D});
-        allowedObjectsToShow.push_back({ObjectTypes::Image2DAnimation, true, IconObject::IMAGE_2D_ANIMATION});
-        allowedObjectsToShow.push_back({ObjectTypes::Mesh3D, true, IconObject::MESH_3D});
-        allowedObjectsToShow.push_back({ObjectTypes::Mesh3DAnimation, true, IconObject::MESH_3D_ANIMATION});
-        allowedObjectsToShow.push_back({ObjectTypes::Image3D, true, IconObject::IMAGE_3D});
-        allowedObjectsToShow.push_back({ObjectTypes::Image3DAnimation, true, IconObject::IMAGE_3D_ANIMATION});
-        allowedObjectsToShow.push_back({ObjectTypes::Image3DAnimation360, true, IconObject::IMAGE_3D_ANIMATION_8DIR});
-        allowedObjectsToShow.push_back({ObjectTypes::LightPoint, true, IconObject::LIGHT_POINT});
-        allowedObjectsToShow.push_back({ObjectTypes::LightSpot, true, IconObject::LIGHT_SPOT});
-        allowedObjectsToShow.push_back({ObjectTypes::ParticleEmitter, true, IconObject::PARTICLE_EMITTER});
+        allowedObjectsToShow.push_back({TypeObject::Object3D, true, IconObject::OBJECT_3D});
+        allowedObjectsToShow.push_back({TypeObject::Image2D, true, IconObject::IMAGE_2D});
+        allowedObjectsToShow.push_back({TypeObject::Image2DAnimation, true, IconObject::IMAGE_2D_ANIMATION});
+        allowedObjectsToShow.push_back({TypeObject::Mesh3D, true, IconObject::MESH_3D});
+        allowedObjectsToShow.push_back({TypeObject::Mesh3DAnimation, true, IconObject::MESH_3D_ANIMATION});
+        allowedObjectsToShow.push_back({TypeObject::Image3D, true, IconObject::IMAGE_3D});
+        allowedObjectsToShow.push_back({TypeObject::Image3DAnimation, true, IconObject::IMAGE_3D_ANIMATION});
+        allowedObjectsToShow.push_back({TypeObject::Image3DAnimation360, true, IconObject::IMAGE_3D_ANIMATION_8DIR});
+        allowedObjectsToShow.push_back({TypeObject::LightPoint, true, IconObject::LIGHT_POINT});
+        allowedObjectsToShow.push_back({TypeObject::LightSpot, true, IconObject::LIGHT_SPOT});
+        allowedObjectsToShow.push_back({TypeObject::ParticleEmitter, true, IconObject::PARTICLE_EMITTER});
     }
 
     void drawAllowedObjectsToShow()
@@ -50,7 +50,7 @@ struct GUIAddonObjects3D
                 ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.0f)); //  rojo
             }
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 7.0f, ImGui::GetCursorPosY()));
-            GUI::DrawButton(o.id(), o.iconCoords, o.visible, [&](){ o.Toggle(); });
+            GUI::DrawButton(o.id(), o.iconCoords, GUIType::Sizes::ICON_SIZE_MEDIUM, o.visible, [&](){ o.Toggle(); });
             if (!wasVisible) {
                 ImGui::PopStyleColor();
             }
@@ -59,7 +59,7 @@ struct GUIAddonObjects3D
         ImGui::NewLine();
     }
 
-    [[nodiscard]] bool isAllowedObjectInConfig(ObjectTypes typeObject) const
+    [[nodiscard]] bool isAllowedObjectInConfig(TypeObject typeObject) const
     {
         for (const auto& o : allowedObjectsToShow) {
             if (o.visible && o.type == typeObject ) {
@@ -79,7 +79,7 @@ struct GUIAddonObjects3D
         ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", title.c_str());
         ImGui::Separator();
 
-        for (int i = 0; i < gameObjects.size(); i++) {
+        for (unsigned int i = 0; i < (unsigned int) gameObjects.size(); i++) {
             auto o = gameObjects[i];
 
             if (o->isRemoved()) continue;

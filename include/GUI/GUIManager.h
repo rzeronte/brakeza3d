@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-#include "GUITypes.h"
 #include "../Misc/TextureAtlas.h"
 #include "AddOns/GUIConsole.h"
 #include "../Misc/TexturePackage.h"
@@ -23,7 +22,7 @@ class FileSystemGUI;
 
 class GUIManager
 {
-    std::vector<GUITypes::GUIWindowData> windows;
+    std::vector<GUIType::WindowData> windows;
 
     int selectedObjectIndex = -1;
     bool showEditShaderWindow = false;
@@ -36,7 +35,7 @@ class GUIManager
     ScriptEditableManager scriptEditableManager;
     ShaderEditableManager shaderEditableManager;
 
-    GuiAddonConsole *widgetConsole = new GuiAddonConsole(ComponentsManager::get()->getComponentScripting()->getLua());
+    GuiAddonConsole *widgetConsole;
     GUIAddonObjects3D *widgetObjects3D;
     GUIAddonObject3DProperties *widgetObjectProperties;
     GUIAddonProjectSetup *widgetProjectSettings;
@@ -50,16 +49,16 @@ class GUIManager
     std::string currentVariableToCreateCustomShader;
 
 public:
-    [[nodiscard]] GUITypes::FolderBrowserCache getBrowserScripts() const;
-    [[nodiscard]] GUITypes::FolderBrowserCache getBrowserScenes() const;
-    [[nodiscard]] GUITypes::FolderBrowserCache getBrowserProjects() const;
-    [[nodiscard]] GUITypes::FolderBrowserCache getBrowserShaders() const;
+    [[nodiscard]] GUIType::FolderBrowserCache getBrowserScripts() const;
+    [[nodiscard]] GUIType::FolderBrowserCache getBrowserScenes() const;
+    [[nodiscard]] GUIType::FolderBrowserCache getBrowserProjects() const;
+    [[nodiscard]] GUIType::FolderBrowserCache getBrowserShaders() const;
 
 private:
-    GUITypes::FolderBrowserCache browserScenes = GUI::CreateBrowserCache(Config::get()->SCENES_FOLDER, Config::get()->SCENES_EXT);
-    GUITypes::FolderBrowserCache browserProjects = GUI::CreateBrowserCache(Config::get()->CUSTOM_SHADERS_FOLDER, Config::get()->PROJECTS_EXT);
-    GUITypes::FolderBrowserCache browserShaders = GUI::CreateBrowserCache(Config::get()->PROJECTS_FOLDER, Config::get()->SHADERS_EXT);
-    GUITypes::FolderBrowserCache browserScripts = GUI::CreateBrowserCache(Config::get()->SCRIPTS_FOLDER, Config::get()->SCRIPTS_EXT);
+    GUIType::FolderBrowserCache browserScenes;
+    GUIType::FolderBrowserCache browserProjects;
+    GUIType::FolderBrowserCache browserShaders;
+    GUIType::FolderBrowserCache browserScripts;
 
     Color lineSelectorObjectColor = Color::green();
 
@@ -72,7 +71,7 @@ private:
     void WindowKeyboardMouseSetup();
     void DrawSplash();
 
-    GUITypes::GUIWindowData *GetWindowStatus(GUITypes::GUIWindow window);
+    GUIType::WindowData *GetWindowStatus(GUIType::Window window);
 
 public:
     explicit GUIManager(std::vector<Object3D *> &gameObjects);

@@ -7,12 +7,12 @@
 #include "../../include/Misc/Tools.h"
 #include "../../include/GUI/Objects/FileSystemGUI.h"
 
-void GUI::DrawButton(const std::string &tooltip, GUISheet icon, bool active, const std::function<void()>& onClick)
+void GUI::DrawButton(const std::string &tooltip, GUIType::Sheet icon, ImVec2 size, bool active, const std::function<void()>& onClick)
 {
-    const auto id = tooltip + std::string(icon.x + "_" + icon.y);
+    const auto id = tooltip + std::to_string(icon.x) + "_" + std::to_string(icon.y);
     ImGui::PushID(id.c_str());
-    ImGui::PushStyleColor(ImGuiCol_Button, active ? GUITypes::Colors::BTN_ON : GUITypes::Colors::BTN_OFF);
-    if (ImGui::ImageButton(FileSystemGUI::Icon(icon), GUITypes::Sizes::ICON_SIZE_MENUS)) {
+    ImGui::PushStyleColor(ImGuiCol_Button, active ? GUIType::Colors::BTN_ON : GUIType::Colors::BTN_OFF);
+    if (ImGui::ImageButton(FileSystemGUI::Icon(icon), size)) {
         onClick();
     }
     ImGui::PopStyleColor();
@@ -25,12 +25,12 @@ void GUI::Toggle(bool &value)
     value = !value;
 }
 
-GUITypes::FolderBrowserCache GUI::CreateBrowserCache(std::string folder, std::string &extension)
+GUIType::FolderBrowserCache GUI::CreateBrowserCache(std::string folder, const std::string &extension)
 {
-    GUITypes::FolderBrowserCache cache = {
+    GUIType::FolderBrowserCache cache = {
         folder,
-        Tools::getFolderFolders(folder),
-        Tools::getFolderFiles(folder, extension)
+        Tools::getFolderFiles(folder, extension),
+        Tools::getFolderFolders(folder)
     };
 
     return cache;

@@ -16,7 +16,7 @@ public:
     {
 
         static char name[256];
-        strncpy(name, o->label.c_str(), sizeof(name));
+        strncpy(name, o->name.c_str(), sizeof(name));
         ImGui::SameLine();
         ImGui::SetNextItemWidth(125.0f);
         ImGui::InputText("Name##nameObject", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);

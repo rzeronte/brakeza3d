@@ -5,19 +5,19 @@
 #ifndef BRAKEZA3D_SCENEOBJECTTYPES_H
 #define BRAKEZA3D_SCENEOBJECTTYPES_H
 
-enum class ObjectTypes {
-    Object3D,
-    Mesh3D,
-    Mesh3DAnimation,
-    LightPoint,
-    LightSpot,
-    ParticleEmitter,
-    Image3DAnimation,
-    Image3DAnimation360,
-    Image2DAnimation,
-    Image3D,
-    Image2D,
-    Swarm
+enum class TypeObject {
+    Object3D = 1,
+    Mesh3D = 2,
+    Mesh3DAnimation = 3,
+    LightPoint = 4,
+    LightSpot = 5,
+    ParticleEmitter = 6,
+    Image3DAnimation = 7,
+    Image3DAnimation360 = 8,
+    Image2DAnimation = 9,
+    Image3D = 10,
+    Image2D = 11,
+    Swarm = 12
 };
 
 

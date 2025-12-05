@@ -202,12 +202,12 @@ void ParticleEmitter::setStopAdd(bool stopAdd)
     ParticleEmitter::stopAdd = stopAdd;
 }
 
-ObjectTypes ParticleEmitter::getTypeObject() const
+TypeObject ParticleEmitter::getTypeObject() const
 {
-    return ObjectTypes::ParticleEmitter;
+    return TypeObject::ParticleEmitter;
 }
 
-GUISheet ParticleEmitter::getIcon()
+GUIType::Sheet ParticleEmitter::getIcon()
 {
     return IconObject::PARTICLE_EMITTER;
 }

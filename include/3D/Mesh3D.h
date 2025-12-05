@@ -56,8 +56,8 @@ public:
     ~Mesh3D() override;
 
     static Mesh3D* create(Vertex3D position, const std::string& imageFile);
-    ObjectTypes getTypeObject() const override;
-    GUISheet getIcon() override;
+    TypeObject getTypeObject() const override;
+    GUIType::Sheet getIcon() override;
     void AssimpLoadGeometryFromFile(const std::string &fileName);
     void AssimpInitMaterials(const aiScene *pScene);
     void ProcessNodes(const aiScene *scene, const aiNode *node);

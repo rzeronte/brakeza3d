@@ -16,7 +16,7 @@
 #include "../Render/M3.h"
 #include "../Misc/ScriptLUA.h"
 #include "../../sol/sol.hpp"
-#include "../GUI/GUITypes.h"
+#include "../GUI/GUI.h"
 #include "../Render/Collider.h"
 #include "../Render/Color.h"
 #include "../Misc/Timer.h"
@@ -46,7 +46,7 @@ protected:
 
     IconGUI::ObjectGUIFeatures featuresGUI;
 
-    std::string label;
+    std::string name;
 
     std::vector<ScriptLUA*> scripts;
     std::vector<Object3D*> attachedObjects;
@@ -55,11 +55,10 @@ protected:
     Timer timer;
     Color pickingColor;
     M3 rotation = M3::getMatrixIdentity();
-    ObjectTypes type;
+    TypeObject type;
 public:
     Object3D();
     virtual ~Object3D();
-
 
     bool& enabledPointer();
     void setParent(Object3D *object);
@@ -90,8 +89,8 @@ public:
     void UpdateFromBullet();
     void ResolveCollision(CollisionInfo with) override;
     void RunResolveCollisionScripts(CollisionInfo with);
-    virtual ObjectTypes getTypeObject() const;
-    virtual GUISheet getIcon();
+    virtual TypeObject getTypeObject() const;
+    virtual GUIType::Sheet getIcon();
     virtual void setEnabled(bool value);
     virtual void onUpdate();
     virtual void postUpdate();
@@ -130,7 +129,6 @@ public:
     [[nodiscard]] std::string getName();
     [[nodiscard]] Object3D *getParent() const;
     sol::object getLocalScriptVar(const char *varName);
-
 
     friend class Object3DSerializer;
     friend class Object3DGUI;

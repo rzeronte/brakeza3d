@@ -97,7 +97,7 @@ void Mesh3DGUI::DrawEditBonesMappingWindow(GUIManager *gui)
     int numMappings = (int) bc->size();
 
     GUIManager::SetNextWindowSize(700, 700);
-    ImGui::SetNextWindowBgAlpha(GUITypes::Levels::WINDOW_ALPHA);
+    ImGui::SetNextWindowBgAlpha(GUIType::Levels::WINDOW_ALPHA);
     auto dialogTitle = std::string("Bones Mapping Editor: " + a->getName());
     if (ImGui::Begin(dialogTitle.c_str(), &gui->showBoneMappingsEditorWindow, ImGuiWindowFlags_NoDocking)) {
         ImGui::SeparatorText("Create new bones mapping:");
@@ -159,12 +159,15 @@ void Mesh3DGUI::DrawEditBonesMappingWindow(GUIManager *gui)
                     ImGui::Text("%d", b.boneId);
 
                     ImGui::TableSetColumnIndex(3);
-                    ;
-                    if (ImGui::ImageButton((std::string((b.enabled ? "lock##" : "unlock##")) + std::to_string(i)).c_str(),
-                                           FileSystemGUI::Icon((b.enabled ? IconGUI::LOCK : IconGUI::UNLOCK)),
-                                           ImVec2(14, 14))) {
+
+                    GUI::DrawButton(
+                        (std::string((b.enabled ? "lock##" : "unlock##")) + std::to_string(i)).c_str(),
+                        (b.enabled ? IconGUI::LOCK : IconGUI::UNLOCK),
+                        GUIType::Sizes::ICON_SIZE_MEDIUM,
+                        true,
+                        [&] {
                         a->SetMappingBoneColliderInfo(nameMapping, b.boneId, !b.enabled, b.shape);
-                    }
+                    });
                 }
                 ImGui::EndTable();
             }

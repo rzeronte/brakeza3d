@@ -173,12 +173,12 @@ Image3D::~Image3D()
 {
 }
 
-ObjectTypes Image3D::getTypeObject() const
+TypeObject Image3D::getTypeObject() const
 {
-    return ObjectTypes::Image3D;
+    return TypeObject::Image3D;
 }
 
-GUISheet Image3D::getIcon()
+GUIType::Sheet Image3D::getIcon()
 {
     return IconObject::IMAGE_3D;
 }

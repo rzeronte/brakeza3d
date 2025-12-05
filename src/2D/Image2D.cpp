@@ -42,12 +42,12 @@ void Image2D::updatePosition(int x, int y)
     this->y = y;
 }
 
-ObjectTypes Image2D::getTypeObject() const
+TypeObject Image2D::getTypeObject() const
 {
-    return ObjectTypes::Image2D;
+    return TypeObject::Image2D;
 }
 
-GUISheet Image2D::getIcon()
+GUIType::Sheet Image2D::getIcon()
 {
     return IconObject::IMAGE_2D;;
 }

@@ -24,7 +24,7 @@ struct GuiAddonConsole
     ImGuiTextFilter       Filter;
     bool                  AutoScroll;
     bool                  ScrollToBottom;
-    GUISheet              LogIcon;
+    GUIType::Sheet              LogIcon;
 
     sol::state &lua;
     GuiAddonConsole(sol::state &lua): lua(lua)
@@ -51,7 +51,7 @@ struct GuiAddonConsole
         for (int i = 0; i < History.Size; i++)
             free(History[i]);
     }
-    void setLogIcon(GUISheet icon)
+    void setLogIcon(GUIType::Sheet icon)
     {
         LogIcon = icon;
     }
@@ -107,9 +107,9 @@ struct GuiAddonConsole
         }
 
         // Options, Filter
-        GUI::DrawButton("Clear", IconGUI::COLLISION_OBJECTS, true, [&]{ ClearLog(); });
+        GUI::DrawButton("Clear", IconGUI::COLLISION_OBJECTS, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&]{ ClearLog(); });
         ImGui::SameLine();
-        GUI::DrawButton("Options", IconGUI::COLLISION_OBJECTS, true, [&]{ ImGui::OpenPopup("Options"); });
+        GUI::DrawButton("Options", IconGUI::COLLISION_OBJECTS, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&]{ ImGui::OpenPopup("Options"); });
         ImGui::SameLine();
         Filter.Draw("Filter", 180);
         ImGui::Separator();
@@ -139,7 +139,7 @@ struct GuiAddonConsole
                 else if (strncmp(item, "# ", 2) == 0) { color = ImVec4(1.0f, 0.8f, 0.6f, 1.0f); has_color = true; }
                 if (has_color)
                     ImGui::PushStyleColor(ImGuiCol_Text, color);
-                ImGui::Image(FileSystemGUI::Icon(LogIcon), GUITypes::Sizes::ICON_SIZE_MENUS);
+                ImGui::Image(FileSystemGUI::Icon(LogIcon), GUIType::Sizes::ICON_SIZE_MENUS);
                 ImGui::SameLine();
                 ImGui::TextUnformatted(item);
                 if (has_color)

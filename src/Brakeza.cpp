@@ -72,9 +72,6 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
 
     OnStartComponents();
 
-    GUI()->WelcomeMessage();
-    Config::get()->ENABLE_LOGGING_STD = false;
-
     HandleAutoStartProject(autostart, project);
 
     // Profiler tags
@@ -86,7 +83,7 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
     while (!Config::get()->EXIT) {
         Profiler::get()->ResetTotalFrameTime();     // Reset profiler measures
         ControlFrameRate();                         // Control framerate based on SDL_Delay
-        UpdateTimer();                              // Refresh main timer.
+        UpdateTimer();                              // Refresh main timer
         PreUpdateComponents();                      // PreUpdate for componentes
         render->RunSceneShadersPreUpdate();         // Pre-pass running for shaders
         CaptureInputEvents(event);               // Capture keyboard/mouse status
@@ -158,6 +155,9 @@ float Brakeza::getDeltaTimeMicro() const
 
 void Brakeza::OnStartComponents() const
 {
+    GUI()->WelcomeMessage();
+    Config::get()->ENABLE_LOGGING_STD = false;
+
     for (auto c : componentsManager->Components())
         c->onStart();
 

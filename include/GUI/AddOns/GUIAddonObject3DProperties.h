@@ -37,24 +37,25 @@ struct GUIAddonObject3DProperties
 
     void Draw(const int &selectedObjectIndex) const
     {
-        bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < gameObjects.size();
+        bool hasSelectedIndex = selectedObjectIndex >= 0 && selectedObjectIndex < (int) gameObjects.size();
 
-        if (hasSelectedIndex) {
-            auto o = gameObjects[selectedObjectIndex];
-            if (o->isRemoved()) {
-                return;
-            }
-
-            o->DrawPropertiesGUI();
-            ImGui::Separator();
-            ImGui::Button("Remove");
-            if (ImGui::IsItemClicked()) {
-                o->setRemoved(true);
-            }
-            ImGui::SameLine();
-        } else {
+        if (!hasSelectedIndex) {
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
+            return;
         }
+
+        auto o = gameObjects[selectedObjectIndex];
+        if (o->isRemoved()) {
+            return;
+        }
+
+        o->DrawPropertiesGUI();
+        ImGui::Separator();
+        ImGui::Button("Remove");
+        if (ImGui::IsItemClicked()) {
+            o->setRemoved(true);
+        }
+        ImGui::SameLine();
     }
 };
 

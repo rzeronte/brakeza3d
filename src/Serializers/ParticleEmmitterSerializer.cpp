@@ -11,7 +11,7 @@
 
 cJSON * ParticleEmmitterSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[ParticleEmitterSerializer] JsonByObject: %s", o->getTypeObject());
+    Logging::Message("[ParticleEmitterSerializer] JsonByObject: %d", (int) o->getTypeObject());
 
     auto light = dynamic_cast<ParticleEmitter*>(o);
 
@@ -73,7 +73,7 @@ Object3D * ParticleEmmitterSerializer::ObjectByJson(cJSON *json)
 
 void ParticleEmmitterSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
-    Logging::Message("[ParticleEmmitterSerializer] ApplyJsonToObject: %s", o->getTypeObject());
+    Logging::Message("[ParticleEmmitterSerializer] ApplyJsonToObject: %d", (int) o->getTypeObject());
 
     auto emitter = dynamic_cast<ParticleEmitter*>(o);
 

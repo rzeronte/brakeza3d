@@ -1,6 +1,4 @@
 {
-	"name":	"ese",
-	"scripts":	[{
-			"name":	"../assets/scripts/Examples/HelloWorld.lua"
-		}]
+	"name":	"Brakeza3D - By Eduardo Rodriguez Alvarez <eduardo@brakeza.com>",
+	"scripts":	[]
 }

@@ -12,7 +12,7 @@
 
 cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[Mesh3DSerializer] JsonByObject: %s", o->getTypeObject());
+    Logging::Message("[Mesh3DSerializer] JsonByObject: %d", (int) o->getTypeObject());
 
     auto *mesh = dynamic_cast<Mesh3D*>(o);
 
@@ -43,7 +43,7 @@ cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
 
 void Mesh3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 {
-    Logging::Message("[Mesh3DSerializer] ApplyJsonToObject", o->getTypeObject());
+    Logging::Message("[Mesh3DSerializer] ApplyJsonToObject %d", (int) o->getTypeObject());
 
     auto mesh = dynamic_cast<Mesh3D*>(o);
 

@@ -67,27 +67,29 @@ struct GUIAddonProjectSetup
             auto currentScript = scripts[i];
             ImGui::PushID(i);
             std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
-            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
+            GUI::DrawButton("Remove script", IconGUI::REMOVE, GUIType::Sizes::ICON_SIZE_MEDIUM, false, [&] {
                 scripting->removeProjectScript(currentScript);
-            }
+            });
             ImGui::SameLine();
             if (currentScript->isPaused()) {
-                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::UNLOCK), ImVec2(14, 14))) {
+                GUI::DrawButton("Unlock script", IconGUI::UNLOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
                     currentScript->setPaused(false);
-                }
+                });
+
             } else {
-                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::LOCK), ImVec2(14, 14))) {
+                GUI::DrawButton("lock script", IconGUI::UNLOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, false, [&] {
                     currentScript->setPaused(true);
-                }
+                });
+
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::SCRIPT), ImVec2(14, 14))) {
+            GUI::DrawButton("Edit script", IconGUI::SCRIPT, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
                 scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
                 delete scriptEditableManager.script;
                 scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(
                         scriptEditableManager.selectedScriptFilename));
                 strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
-            }
+            });
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
             ImGui::Text((std::to_string(i + 1) + ") " + currentScript->scriptFilename).c_str());
@@ -120,31 +122,33 @@ struct GUIAddonProjectSetup
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Scene scripts not found");
         }
 
-        for (int i = 0; i < scripts.size(); i++) {
+        for (unsigned int i = 0; i < scripts.size(); i++) {
             auto currentScript = scripts[i];
             ImGui::PushID(i);
             std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
-            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
+
+            GUI::DrawButton("Remove script", IconGUI::REMOVE, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
                 scripting->removeSceneScript(currentScript);
-            }
+            });
+
             ImGui::SameLine();
             if (currentScript->isPaused()) {
-                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::UNLOCK), ImVec2(14, 14))) {
+                GUI::DrawButton("UnLock Script", IconGUI::REMOVE, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
                     currentScript->setPaused(false);
-                }
+                });
             } else {
-                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::LOCK), ImVec2(14, 14))) {
+                GUI::DrawButton("Lock Script", IconGUI::LOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
                     currentScript->setPaused(true);
-                }
+                });
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::SCRIPT), ImVec2(14, 14))) {
+            GUI::DrawButton("Edit scene script", IconGUI::LOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
                 scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
                 delete scriptEditableManager.script;
                 scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(
                         scriptEditableManager.selectedScriptFilename));
                 strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
-            }
+            });
             ImGui::SameLine();
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
             ImGui::Text((std::to_string(i + 1) + ") " + currentScript->scriptFilename).c_str());
@@ -173,28 +177,28 @@ struct GUIAddonProjectSetup
         if (shaders.empty()) {
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Scene shaders not found");
         }
-        for (int i = 0; i < shaders.size(); i++) {
+        for (unsigned int i = 0; i < (unsigned int) shaders.size(); i++) {
             auto s = shaders[i];
             ImGui::PushID(i);
             ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER), ImVec2(26, 26));
             ImGui::SameLine(46);
             if (!s->isEnabled()) {
-                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::UNLOCK), ImVec2(14, 14))) {
+                GUI::DrawButton("UnLock Script", IconGUI::UNLOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
                     s->setEnabled(true);
-                }
+                });
             } else {
-                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::LOCK), ImVec2(14, 14))) {
+                GUI::DrawButton("Lock Script", IconGUI::LOCK, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
                     s->setEnabled(false);
-                }
+                });
             }
             ImGui::SameLine();
-            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::RELOAD), ImVec2(14, 14))) {
+            GUI::DrawButton("Reload script", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
                 s->reload();
-            }
+            });
             ImGui::SameLine();
-            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
+            GUI::DrawButton("Remove script", IconGUI::REMOVE, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
                 render->removeSceneShaderByIndex(i);
-            }
+            });
             ImGui::SameLine();
             if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {
                 ImGui::PushID(i);

@@ -47,12 +47,12 @@ Mesh3D *Mesh3D::create(Vertex3D position, const std::string& imageFile)
     return nullptr;
 }
 
-ObjectTypes Mesh3D::getTypeObject() const
+TypeObject Mesh3D::getTypeObject() const
 {
-    return ObjectTypes::Mesh3D;
+    return TypeObject::Mesh3D;
 }
 
-GUISheet Mesh3D::getIcon()
+GUIType::Sheet Mesh3D::getIcon()
 {
     return IconObject::MESH_3D;
 }

@@ -15,7 +15,7 @@ struct VertexBoneData {
     float Weights[NUM_BONES_PER_VERTEX] = {0};
 
     void AddBoneData(int boneId, float weight) {
-        const int end = static_cast<int>(std::size(IDs));
+        unsigned int end = std::size(IDs);
         for (unsigned int i = 0; i < end; i++) {
             if (Weights[i] == 0.0) {
                 IDs[i] = boneId;
@@ -99,8 +99,8 @@ public:
     void LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData);
     void DrawBones(aiNode *node, Vertex3D *lastBonePosition = nullptr);
     void setRemoveAtEndAnimation(bool removeAtEnds);
-    ObjectTypes getTypeObject() const override;
-    GUISheet getIcon() override;
+    TypeObject getTypeObject() const override;
+    GUIType::Sheet getIcon() override;
     void DrawPropertiesGUI() override;
     void setAnimationSpeed(float value);
     void setIndexCurrentAnimation(int indexCurrentAnimation);

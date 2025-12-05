@@ -5,14 +5,14 @@
 #ifndef BRAKEZA3D_GUIWIDGETMENU_H
 #define BRAKEZA3D_GUIWIDGETMENU_H
 
-#include "../GUITypes.h"
+#include "../GUI.h"
 
 struct GUIAddonMenu
 {
-    std::vector<GUITypes::GUIMenuItem> menus;
-    std::vector<GUITypes::GUIWindowData> &windowStatus;
+    std::vector<GUIType::MenuItem> menus;
+    std::vector<GUIType::WindowData> &windowStatus;
 
-    explicit GUIAddonMenu(std::vector<GUITypes::GUIWindowData> &windowStatus);
+    explicit GUIAddonMenu(std::vector<GUIType::WindowData> &windowStatus);
 
     void Draw();
     void MenuWindow();
@@ -27,7 +27,7 @@ struct GUIAddonMenu
     void MenuLogging();
     void MenuLayout();
     void AboutMeModal();
-    static void DrawItemsToLoad(std::string &folder, std::string &ext, GUISheet icon, const std::function<void(const std::string &)> &cb );
+    static void DrawItemsToLoad(std::string &folder, std::string &ext, GUIType::Sheet icon, const std::function<void(const std::string &)> &cb );
 };
 
 #endif //BRAKEZA3D_GUIWIDGETMENU_H

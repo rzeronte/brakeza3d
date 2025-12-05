@@ -6,8 +6,8 @@
   },
   "ads":	{
     "direction":	{
-      "x":	0.43999999761581421,
-      "y":	-1,
+      "x":	-0.17000000178813934,
+      "y":	-0.059999998658895493,
       "z":	-1
     },
     "diffuse":	{
@@ -26,18 +26,326 @@
       "z":	0
     }
   },
-  "objects":	[],
+  "objects":	[{
+    "name":	"axis",
+    "scale":	1,
+    "enabled":	true,
+    "position":	{
+      "x":	-0.69031262397766113,
+      "y":	0.2399134635925293,
+      "z":	0
+    },
+    "rotation":	{
+      "x":	0,
+      "y":	-0,
+      "z":	0
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "model":	"../assets/models//StudioCorner.fbx",
+    "enableLights": true,
+    "shaders":	[],
+    "type":	2
+  }, {
+    "name":	"cube",
+    "scale":	0.92356580495834351,
+    "enabled":	true,
+    "position":	{
+      "x":	-5.6505308151245117,
+      "y":	-3.1196355819702148,
+      "z":	-1.8633010387420654
+    },
+    "rotation":	{
+      "x":	0,
+      "y":	-0,
+      "z":	0
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "model":	"../assets/models//RoundedRedCube.fbx",
+    "enableLights": true,
+    "shaders":	[],
+    "type":	2
+  }, {
+    "name":	"SpaceShuttle",
+    "scale":	1.3596829175949097,
+    "enabled":	true,
+    "position":	{
+      "x":	-12.337051391601563,
+      "y":	1.2616510391235352,
+      "z":	-23.395771026611328
+    },
+    "rotation":	{
+      "x":	41.436470031738281,
+      "y":	10.452261924743652,
+      "z":	-141.23846435546875
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "model":	"../assets/models//SpaceShuttle.fbx",
+    "enableLights": true,
+    "shaders":	[],
+    "type":	2
+  }, {
+    "name":	"Eye",
+    "scale":	0.87999999523162842,
+    "enabled":	true,
+    "position":	{
+      "x":	4.78808069229126,
+      "y":	-1.0186058282852173,
+      "z":	-4.9228363037109375
+    },
+    "rotation":	{
+      "x":	-166.75724792480469,
+      "y":	-26.889076232910156,
+      "z":	165.74551391601563
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "model":	"../assets/models//Eye.fbx",
+    "enableLights": true,
+    "shaders":	[],
+    "type":	2
+  }, {
+    "name":	"Stairs",
+    "scale":	1,
+    "enabled":	true,
+    "position":	{
+      "x":	7.9173827171325684,
+      "y":	-3.068122386932373,
+      "z":	3.9494373798370361
+    },
+    "rotation":	{
+      "x":	90,
+      "y":	-5.0089556680177338e-06,
+      "z":	4.9752620725485031e-06
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "model":	"../assets/models//Stairs.fbx",
+    "enableLights": true,
+    "shaders":	[],
+    "type":	2
+  }, {
+    "name":	"Pawn",
+    "scale":	1,
+    "enabled":	true,
+    "position":	{
+      "x":	-9.3948392868042,
+      "y":	-2.5544748306274414,
+      "z":	3.9950590133666992
+    },
+    "rotation":	{
+      "x":	0,
+      "y":	-0,
+      "z":	0
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "model":	"../assets/models//ChessPawn.fbx",
+    "enableLights": true,
+    "shaders":	[],
+    "type":	2
+  }, {
+    "name":	"LightPoint_1",
+    "scale":	1,
+    "enabled":	true,
+    "position":	{
+      "x":	8.7393627166748047,
+      "y":	4.3703708648681641,
+      "z":	-6.3410248756408691
+    },
+    "rotation":	{
+      "x":	-179.99998474121094,
+      "y":	89.731239318847656,
+      "z":	-179.99998474121094
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "ambient":	{
+      "x":	0.16319525241851807,
+      "y":	0.036885261535644531,
+      "z":	1
+    },
+    "diffuse":	{
+      "x":	1,
+      "y":	0.9303278923034668,
+      "z":	0.93889415264129639
+    },
+    "specular":	{
+      "x":	0.45790085196495056,
+      "y":	0.25184762477874756,
+      "z":	0.62704920768737793
+    },
+    "constant":	0.40999901294708252,
+    "linear":	0.20000000298023224,
+    "quadratic":	0.039999999105930328,
+    "type":	4
+  }, {
+    "name":	"LightPoint_2",
+    "scale":	1,
+    "enabled":	true,
+    "position":	{
+      "x":	-12.492101669311523,
+      "y":	3.27705717086792,
+      "z":	-8.212738037109375
+    },
+    "rotation":	{
+      "x":	-179.99998474121094,
+      "y":	-5.0089556680177338e-06,
+      "z":	-179.99998474121094
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "ambient":	{
+      "x":	1,
+      "y":	1,
+      "z":	1
+    },
+    "diffuse":	{
+      "x":	1,
+      "y":	1,
+      "z":	1
+    },
+    "specular":	{
+      "x":	0.025161270052194595,
+      "y":	0.87704920768737793,
+      "z":	0.41619172692298889
+    },
+    "constant":	0.40999999642372131,
+    "linear":	0.23999999463558197,
+    "quadratic":	0.02199999988079071,
+    "type":	4
+  }, {
+    "name":	"LightSpot_1",
+    "scale":	1,
+    "enabled":	true,
+    "position":	{
+      "x":	-9.57544231414795,
+      "y":	9.4797048568725586,
+      "z":	-2.7404742240905762
+    },
+    "rotation":	{
+      "x":	-72.918426513671875,
+      "y":	-12.292998313903809,
+      "z":	-145.29725646972656
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "ambient":	{
+      "x":	0.43272459506988525,
+      "y":	0.96721309423446655,
+      "z":	0.035675909370183945
+    },
+    "diffuse":	{
+      "x":	1,
+      "y":	0,
+      "z":	0
+    },
+    "specular":	{
+      "x":	1,
+      "y":	1,
+      "z":	1
+    },
+    "constant":	0.56000000238418579,
+    "linear":	-0.10000000149011612,
+    "quadratic":	0.012000000104308128,
+    "cutOff":	0.95899999141693115,
+    "outerCutOff":	0.94700002670288086,
+    "type":	5
+  }, {
+    "name":	"Image3D_86",
+    "scale":	2.7799990177154541,
+    "enabled":	true,
+    "position":	{
+      "x":	-0.9570000171661377,
+      "y":	0.75900000333786011,
+      "z":	-6.4026775360107422
+    },
+    "rotation":	{
+      "x":	0,
+      "y":	-0,
+      "z":	146.55841064453125
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "width":	1,
+    "height":	1,
+    "image":	"../assets/images/beach.png",
+    "type":	10
+  }, {
+    "name":	"SpotLight3D_77",
+    "scale":	1,
+    "enabled":	true,
+    "position":	{
+      "x":	6.4972567558288574,
+      "y":	-2.1940057277679443,
+      "z":	17.851154327392578
+    },
+    "rotation":	{
+      "x":	-179.99998474121094,
+      "y":	5.1642465591430664,
+      "z":	-179.99998474121094
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "ambient":	{
+      "x":	0.7704918384552002,
+      "y":	1,
+      "z":	0
+    },
+    "diffuse":	{
+      "x":	1,
+      "y":	0,
+      "z":	0
+    },
+    "specular":	{
+      "x":	0.7950819730758667,
+      "y":	0,
+      "z":	0.78204804658889771
+    },
+    "constant":	0.31999999284744263,
+    "linear":	-0.2199999988079071,
+    "quadratic":	0.02199999988079071,
+    "cutOff":	0.97630000114440918,
+    "outerCutOff":	0.9659000039100647,
+    "type":	5
+  }, {
+    "name":	"Mesh3D_99",
+    "scale":	4,
+    "enabled":	true,
+    "position":	{
+      "x":	-0.19566255807876587,
+      "y":	-0.20900000631809235,
+      "z":	4.94876766204834
+    },
+    "rotation":	{
+      "x":	180,
+      "y":	89.997390747070313,
+      "z":	180
+    },
+    "isCollisionsEnabled":	false,
+    "scripts":	[],
+    "model":	"../assets/animations//character.fbx",
+    "enableLights": true,
+    "shaders":	[],
+    "animationSpeed":	0.47999998927116394,
+    "boneColliderEnabled":	true,
+    "indexCurrentAnimation":	9,
+    "bonesColliders":	[],
+    "type":	3
+  }],
   "shaders":	[],
   "scripts":	[],
   "camera":	{
     "position":	{
-      "x":	-15.690757751464844,
-      "y":	18.722587585449219,
-      "z":	23.520915985107422
+      "x":	-7.7216224670410156,
+      "y":	12.658566474914551,
+      "z":	43.254703521728516
     },
     "rotation":	{
-      "x":	48.000041961669922,
-      "y":	27.399904251098633,
+      "x":	9.6751918792724609,
+      "y":	15.099894523620605,
       "z":	0
     }
   }

@@ -11,7 +11,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 {
     static int cont = 0;
     static char name[256];
-    strncpy(name, o->label.c_str(), sizeof(name));
+    strncpy(name, o->name.c_str(), sizeof(name));
     ImGui::PushID(++cont);
     ImGui::Image(FileSystemGUI::Icon(o->getIcon()), ImVec2(22, 24));
     ImGui::PopID();
@@ -27,13 +27,13 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
         if (ImGui::CollapsingHeader("Transformations")) {
             // position
             if (o->featuresGUI.position) {
-
-                ImGui::PushID("reset_position");  // ✅ ID único
-                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::RELOAD), ImVec2(12, 12))) {
+                ImGui::PushID("reset_position");
+                GUI::DrawButton("Reset position", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                    Logging::Message("Reset Position");
                     o->setPosition(Vertex3D(0, 0, 0));
-                }
+                });
                 ImGui::PopID();
-                ImGui::SameLine();  // ✅ Ahora el DragFloat va a la derecha
+                ImGui::SameLine();
 
                 float vec3f[3];
                 o->getPosition().toFloat(vec3f);
@@ -47,7 +47,6 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
             // rotation
             if (o->featuresGUI.rotation) {
-
                 float oldPitch = o->getRotation().getPitchDegree();
                 float oldYaw = o->getRotation().getYawDegree();
                 float oldRoll = o->getRotation().getRollDegree();
@@ -55,11 +54,11 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                 float yaw = oldYaw;
                 float roll = oldRoll;
 
-                ImGui::PushID("reset_rotation");  // ✅ ID único
-                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::RELOAD), ImVec2(12, 12))) {
+                ImGui::PushID("reset_rotation");
+                GUI::DrawButton("Reset rotation", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
                     Logging::Message("Reset Rotation");
                     o->setRotation(M3::getMatrixIdentity());
-                }
+                });
                 ImGui::PopID();
                 ImGui::SameLine();  // ✅ Ahora el DragFloat va a la derecha
 
@@ -92,12 +91,13 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                 }
                 ImGui::Separator();
 
-                ImGui::PushID("reset_drawoffset");  // ✅ ID único
-                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::RELOAD), ImVec2(12, 12))) {
+                ImGui::PushID("reset_drawoffset");
+                GUI::DrawButton("Reset rotation", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                    Logging::Message("Reset DrawOffset");
                     o->setDrawOffset(Vertex3D(0, 0, 0));
-                }
+                });
                 ImGui::PopID();
-                ImGui::SameLine();  // ✅ Ahora el DragFloat va a la derecha
+                ImGui::SameLine();
 
                 o->drawOffset.toFloat(vec3f);
                 if (ImGui::DragFloat3("DrawOffset", vec3f, 0.01f, -999999.0f, 999999.0f)) {
@@ -110,13 +110,13 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
             // scale
             if (o->featuresGUI.scale) {
-                ImGui::PushID("reset_scale");  // ✅ ID único
-                if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::RELOAD), ImVec2(12, 12))) {
-                    Logging::Message("Reset scale");
+                ImGui::PushID("reset_scale");
+                GUI::DrawButton("Reset Scale", IconGUI::RELOAD, GUIType::Sizes::ICON_SIZE_MEDIUM, true, [&] {
+                    Logging::Message("Reset Scale");
                     o->setScale(1.f);
-                }
+                });
                 ImGui::PopID();
-                ImGui::SameLine();  // ✅ Ahora el DragScalar va a la derecha
+                ImGui::SameLine();
 
                 const float range_scale_min = -360;
                 const float range_scale_max = 360;

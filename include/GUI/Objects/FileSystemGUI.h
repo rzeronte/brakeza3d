@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_FILESYSTEMGUI_H
 #define BRAKEZA3D_FILESYSTEMGUI_H
 
-#include "../GUITypes.h"
+#include "../GUI.h"
 #include "../include/Misc/TexturePackage.h"
 
 class GUIManager;
@@ -14,19 +14,16 @@ class FileSystemGUI
 {
 public:
     static void UpdateFolderFiles(GUIManager *gui);
-    static void DrawProjectFiles(GUIManager *gui, std::string folder);
-    static void DrawScenesFolder(GUIManager *gui, std::string folder);
+    static void DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCache &browser);
+    static void DrawScenesFolder(GUIManager *gui, GUIType::FolderBrowserCache &browser);
     static void LoadImagesFolder(GUIManager *gui);
     static void DrawBrowserFolders(
         GUIManager *gui,
-        std::string &folder,
         std::string &folderBase,
-        std::string &destiny,
-        std::vector<std::string> &folders,
-        std::vector<std::string> &files,
+        GUIType::FolderBrowserCache &browser,
         std::string ext
     );
-    static ImTextureID Icon(GUISheet coords);
+    static ImTextureID Icon(GUIType::Sheet coords);
 };
 
 

@@ -1,9 +1,6 @@
 #ifndef BRAKEZA3D_GUIWIDGETTOOLBAR_H
 #define BRAKEZA3D_GUIWIDGETTOOLBAR_H
 
-#include "imgui.h"
-#include "../GUITypes.h"
-
 struct GUIAddonToolbar
 {
     explicit GUIAddonToolbar() = default;
