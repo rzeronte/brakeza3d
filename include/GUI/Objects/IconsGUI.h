@@ -47,7 +47,7 @@ public:
         cJSON_Delete(root);
     }
 
-    static void WindowDebugIconsGUI(GUIManager *gui)
+    static void DrawDebugIconsWindow(GUIManager *gui)
     {
         auto windowStatus = gui->getWindowStatus(GUIType::DEBUG_ICONS);
         if (!windowStatus->isOpen) return;
@@ -98,38 +98,43 @@ public:
 
                         // Fila X: centrar todo el grupo (texto + botones)
                         char xLabel[32];
-                        snprintf(xLabel, sizeof(xLabel), "X: %d", icon.x);
+                        snprintf(xLabel, sizeof(xLabel), "X %d", icon.x);
                         float xLabelWidth = ImGui::CalcTextSize(xLabel).x;
                         float buttonWidth = ImGui::CalcTextSize("-").x + ImGui::GetStyle().FramePadding.x * 2;
                         float totalWidth = xLabelWidth + buttonWidth * 2 + ImGui::GetStyle().ItemSpacing.x * 2;
                         float availWidth = ImGui::GetContentRegionAvail().x;
 
                         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
+                        int idx = gui->getTextureAtlas()->getIndexByXY(icon.x, icon.y);
+                        if (ImGui::InputInt("Index", &idx, 1,  100)) {
+                            if (idx > 0 && idx < gui->getTextureAtlas()->getTotalImages())
+                                gui->getTextureAtlas()->setXYByIndex(idx, icon.x, icon.y);
+                        }
+                        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
                         ImGui::Text("%s", xLabel);
                         ImGui::SameLine();
-                        if (ImGui::SmallButton("-##X")) {
+                        if (ImGui::SmallButton("<##X")) {
                             if (icon.x > 0) icon.x--;
                         }
                         ImGui::SameLine();
-                        if (ImGui::SmallButton("+##X")) {
-                            if (icon.x < 20) icon.x++;
+                        if (ImGui::SmallButton(">##X")) {
+                            if (icon.x < gui->getTextureAtlas()->getNumColumns()) icon.x++;
                         }
 
-                        // Fila Y: centrar todo el grupo (texto + botones)
                         char yLabel[32];
-                        snprintf(yLabel, sizeof(yLabel), "Y: %d", icon.y);
+                        snprintf(yLabel, sizeof(yLabel), "Y %d", icon.y);
                         float yLabelWidth = ImGui::CalcTextSize(yLabel).x;
                         totalWidth = yLabelWidth + buttonWidth * 2 + ImGui::GetStyle().ItemSpacing.x * 2;
 
                         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
                         ImGui::Text("%s", yLabel);
                         ImGui::SameLine();
-                        if (ImGui::SmallButton("-##Y")) {
+                        if (ImGui::SmallButton("<##Y")) {
                             if (icon.y > 0) icon.y--;
                         }
                         ImGui::SameLine();
-                        if (ImGui::SmallButton("+##Y")) {
-                            if (icon.y < 40) icon.y++;
+                        if (ImGui::SmallButton(">##Y")) {
+                            if (icon.y < gui->getTextureAtlas()->getNumRows()) icon.y++;
                         }
                         ImGui::Dummy(ImVec2(0.0f, 6.0f));
                         ImGui::PopID();
@@ -168,26 +173,32 @@ public:
 
                         // Fila X
                         char xLabel[32];
-                        snprintf(xLabel, sizeof(xLabel), "X: %d", icon.x);
+                        snprintf(xLabel, sizeof(xLabel), "X %d", icon.x);
                         float xLabelWidth = ImGui::CalcTextSize(xLabel).x;
                         float buttonWidth = ImGui::CalcTextSize("-").x + ImGui::GetStyle().FramePadding.x * 2;
                         float totalWidth = xLabelWidth + buttonWidth * 2 + ImGui::GetStyle().ItemSpacing.x * 2;
                         float availWidth = ImGui::GetContentRegionAvail().x;
 
                         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
+                        int idx = gui->getTextureAtlas()->getIndexByXY(icon.x, icon.y);
+                        if (ImGui::InputInt("Index", &idx, 1,  100)) {
+                            if (idx > 0 && idx < gui->getTextureAtlas()->getTotalImages())
+                            gui->getTextureAtlas()->setXYByIndex(idx, icon.x, icon.y);
+                        }
+                        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
                         ImGui::Text("%s", xLabel);
                         ImGui::SameLine();
-                        if (ImGui::SmallButton("-##X")) {
+                        if (ImGui::SmallButton("<##X")) {
                             if (icon.x > 0) icon.x--;
                         }
                         ImGui::SameLine();
-                        if (ImGui::SmallButton("+##X")) {
-                            if (icon.x < 20) icon.x++;
+                        if (ImGui::SmallButton(">##X")) {
+                            if (icon.x < gui->getTextureAtlas()->getNumColumns()) icon.x++;
                         }
 
                         // Fila Y
                         char yLabel[32];
-                        snprintf(yLabel, sizeof(yLabel), "Y: %d", icon.y);
+                        snprintf(yLabel, sizeof(yLabel), "Y %d", icon.y);
                         float yLabelWidth = ImGui::CalcTextSize(yLabel).x;
                         totalWidth = yLabelWidth + buttonWidth * 2 + ImGui::GetStyle().ItemSpacing.x * 2;
 
@@ -199,7 +210,7 @@ public:
                         }
                         ImGui::SameLine();
                         if (ImGui::SmallButton("+##Y")) {
-                            if (icon.y < 40) icon.y++;
+                            if (icon.y < gui->getTextureAtlas()->getNumRows()) icon.y++;
                         }
                         ImGui::Dummy(ImVec2(0.0f, 6.0f));
                         ImGui::PopID();
@@ -228,7 +239,7 @@ public:
         }
         ImGui::SameLine();
         if (ImGui::Button("Close")) {
-            gui->showDebugIconsWindow = false;
+            windowStatus->isOpen = false;
         }
     }
 

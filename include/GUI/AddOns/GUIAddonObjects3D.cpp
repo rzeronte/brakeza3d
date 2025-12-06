@@ -8,44 +8,22 @@
 #include "../Objects/FileSystemGUI.h"
 #include "../include/Components/ComponentsManager.h"
 
-GUIAddonObjects3D::GUIAddonObjects3D(std::vector<Object3D *> &gameObjects)
-:
-    gameObjects(gameObjects)
+GUIAddonObjects3D::GUIAddonObjects3D()
 {
-    allowedObjectsToShow.push_back({TypeObject::Object3D, true, IconObject::OBJECT_3D});
-    allowedObjectsToShow.push_back({TypeObject::Image2D, true, IconObject::IMAGE_2D});
-    allowedObjectsToShow.push_back({TypeObject::Image2DAnimation, true, IconObject::IMAGE_2D_ANIMATION});
-    allowedObjectsToShow.push_back({TypeObject::Mesh3D, true, IconObject::MESH_3D});
-    allowedObjectsToShow.push_back({TypeObject::Mesh3DAnimation, true, IconObject::MESH_3D_ANIMATION});
-    allowedObjectsToShow.push_back({TypeObject::Image3D, true, IconObject::IMAGE_3D});
-    allowedObjectsToShow.push_back({TypeObject::Image3DAnimation, true, IconObject::IMAGE_3D_ANIMATION});
-    allowedObjectsToShow.push_back({TypeObject::Image3DAnimation360, true, IconObject::IMAGE_3D_ANIMATION_8DIR});
-    allowedObjectsToShow.push_back({TypeObject::LightPoint, true, IconObject::LIGHT_POINT});
-    allowedObjectsToShow.push_back({TypeObject::LightSpot, true, IconObject::LIGHT_SPOT});
-    allowedObjectsToShow.push_back({TypeObject::ParticleEmitter, true, IconObject::PARTICLE_EMITTER});
 }
 
-void GUIAddonObjects3D::drawAllowedObjectsToShow()
+void GUIAddonObjects3D::DrawAllowedObjectsToShow(GUIManager *gui)
 {
-    for (auto& o : allowedObjectsToShow) {
-        bool wasVisible = o.visible;
-
-        if (!wasVisible) {
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.2f, 0.2f, 1.0f)); //  rojo
-        }
-        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 7.0f, ImGui::GetCursorPosY()));
-        GUI::DrawButton(o.id(), o.iconCoords, GUIType::Sizes::ICONS_OBJECTS_ALLOWED, o.visible, [&](){ o.Toggle(); });
-        if (!wasVisible) {
-            ImGui::PopStyleColor();
-        }
+    for (auto& o : gui->visibleTypeObjects) {
+        GUI::DrawButton(o.label, o.icon, GUIType::Sizes::ICONS_OBJECTS_ALLOWED, o.visible, [&](){ o.Toggle(); });
         ImGui::SameLine();
     }
     ImGui::NewLine();
 }
 
-bool GUIAddonObjects3D::isAllowedObjectInConfig(TypeObject typeObject) const
+bool GUIAddonObjects3D::isAllowedObjectInConfig(GUIManager *gui, TypeObject typeObject)
 {
-    for (const auto& o : allowedObjectsToShow) {
+    for (auto& o : gui->visibleTypeObjects) {
         if (o.visible && o.type == typeObject ) {
             return true;
         }
@@ -54,12 +32,13 @@ bool GUIAddonObjects3D::isAllowedObjectInConfig(TypeObject typeObject) const
     return false;
 }
 
-void GUIAddonObjects3D::Draw(GUIManager *gui)
+void GUIAddonObjects3D::DrawSceneObjects(GUIManager *gui)
 {
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::SCENE_OBJECTS);
     if (!windowStatus->isOpen) return;
 
-    drawAllowedObjectsToShow();
+    DrawAllowedObjectsToShow(gui);
+    auto &gameObjects = Brakeza::get()->getSceneObjects();
 
     ImGui::Separator();
     auto title = std::string("Number objects: ") + std::to_string(gameObjects.size());
@@ -72,7 +51,7 @@ void GUIAddonObjects3D::Draw(GUIManager *gui)
         auto o = gameObjects[i];
 
         if (o->isRemoved()) continue;
-        if (!isAllowedObjectInConfig(o->getTypeObject())) continue;
+        if (!isAllowedObjectInConfig(gui, o->getTypeObject())) continue;
 
         //auto projectile = dynamic_cast<Projectile3DBody*> (o);
         //if (projectile != nullptr) continue;

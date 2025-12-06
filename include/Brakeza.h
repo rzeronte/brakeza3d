@@ -25,9 +25,7 @@ public:
     Brakeza();
     virtual ~Brakeza();
 
-    int getNextObjectID() const;
     float &getExecutionTime();
-    float getEngineTotalTime() const;
     void start(int argc, char *argv[]);
     void addObject3D(Object3D *obj, const std::string &label);
     void UpdateTimer();
@@ -41,13 +39,14 @@ public:
     void mainLoop(bool autostart, const std::string& project);
     void ControlFrameRate() const;
     void CaptureInputEvents(SDL_Event &e) const;
-
     static void shutdown();
     static std::string UniqueObjectLabel(const char *prefix);
     static Brakeza *get();
     static Brakeza *instance;
-    Object3D *getSceneObjectById(int id) const;
     Timer *getTimer();
+    [[nodiscard]] Object3D *getSceneObjectById(int id) const;
+    [[nodiscard]] int getNextObjectID() const;
+    [[nodiscard]] float getEngineTotalTime() const;
     [[nodiscard]] std::vector<Object3D *> &getSceneObjects();
     [[nodiscard]] float getDeltaTime() const;
     [[nodiscard]] float getDeltaTimeMicro() const;

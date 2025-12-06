@@ -90,9 +90,9 @@ void GuiAddonConsole::Draw()
     }
 
     // Options, Filter
-    GUI::DrawButton("Clear", IconGUI::COLLISION_OBJECTS, GUIType::Sizes::ICONS_CONSOLE, true, [&]{ ClearLog(); });
+    GUI::DrawButton("Clear", IconGUI::LOGGING_CLEAR, GUIType::Sizes::ICONS_CONSOLE, true, [&]{ ClearLog(); });
     ImGui::SameLine();
-    GUI::DrawButton("Options", IconGUI::COLLISION_OBJECTS, GUIType::Sizes::ICONS_CONSOLE, true, [&]{ ImGui::OpenPopup("Options"); });
+    GUI::DrawButton("Options", IconGUI::LOGGING_OPTIONS, GUIType::Sizes::ICONS_CONSOLE, true, [&]{ ImGui::OpenPopup("Options"); });
     ImGui::SameLine();
     Filter.Draw("Filter", 180);
     ImGui::Separator();

@@ -7,10 +7,7 @@
 #include "../../Brakeza.h"
 #include "../../Components/ComponentsManager.h"
 
-GUIAddonObject3DProperties::GUIAddonObject3DProperties(std::vector<Object3D *> &gameObjects, GUIType::ScriptEditableManager &scriptEditableManager)
-:
-    gameObjects(gameObjects),
-    scriptEditableManager(scriptEditableManager)
+GUIAddonObject3DProperties::GUIAddonObject3DProperties()
 {
 }
 
@@ -18,8 +15,8 @@ void GUIAddonObject3DProperties::DrawPropertiesBySelectedObject(GUIManager *gui)
 {
     auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_PROPS);
     if (!windowStatus->isOpen) return;
-    auto o = ComponentsManager::get()->getComponentRender()->getSelectedObject();
 
+    auto o = ComponentsManager::get()->getComponentRender()->getSelectedObject();
 
     if (o == nullptr) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");

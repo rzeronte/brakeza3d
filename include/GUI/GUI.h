@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include "imgui.h"
+#include "../SceneObjectTypes.h"
 #include "../Misc/ScriptLUA.h"
 #include "../OpenGL/ShaderOGLCustom.h"
 
@@ -18,6 +19,18 @@ namespace GUIType
         int x = -1;
         int y = -1;
     };
+
+    struct AddonAllowedObjects
+    {
+        std::string label;
+        TypeObject type;
+        Sheet icon;
+        bool visible;
+
+        void Toggle() { visible = !visible; }
+        [[nodiscard]] std::string id() const { return std::string("AddonAllowedObjects3D" + std::to_string((int)type)).c_str(); }
+    };
+
 
     struct FolderBrowserCache {
         std::string currentFolder;
@@ -56,10 +69,14 @@ namespace GUIType
     };
 
     struct Colors {
-        static constexpr ImVec4 BTN_OFF = ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
-        static constexpr ImVec4 BTN_ON = ImVec4(0.8f, 0.0f, 0.0f, 1.0f);
-        static constexpr ImVec4 LUA_COLOR = ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
-        static constexpr ImVec4 PLAY_COLOR = ImVec4(0.3f, 0.9f, 0.3f, 1.0f);
+        // Botón apagado - gris oscuro de Blender
+        static constexpr ImVec4 BTN_OFF = ImVec4(0.30f, 0.30f, 0.30f, 1.0f);
+        // Botón encendido - naranja característico de Blender (en lugar de rojo)
+        static constexpr ImVec4 BTN_ON = ImVec4(0.95f, 0.55f, 0.20f, 1.0f);
+        // Lua - gris medio acorde al tema
+        static constexpr ImVec4 LUA_COLOR = ImVec4(0.40f, 0.40f, 0.40f, 1.0f);
+        // Play - verde más apagado estilo Blender
+        static constexpr ImVec4 PLAY_COLOR = ImVec4(0.40f, 0.75f, 0.30f, 1.0f);
     };
 
     enum GUIWindowsGroups {
@@ -91,8 +108,8 @@ namespace GUIType
 
     struct WindowData {
         std::string label;
-        Sheet icon;
         Window window;
+        Sheet icon;
         bool isOpen = false;
         std::function<void()> functionCallBack;
     };
@@ -128,14 +145,14 @@ namespace GUIType
 
 // ===== DEFINICIÓN ÚNICA DE ICONOS OBJECT =====
 #define ICON_OBJECT_LIST(X) \
-    X(OBJECT_3D, 10, 14) \
-    X(MESH_3D, 14, 14) \
+    X(OBJECT_3D, 0, 0) \
+    X(MESH_3D, 0, 0) \
     X(MESH_3D_ANIMATION, 0, 0) \
-    X(LIGHT_POINT, 1, 13) \
+    X(LIGHT_POINT, 0, 0) \
     X(LIGHT_SPOT, 0, 0) \
     X(PARTICLE_EMITTER, 0, 0) \
-    X(IMAGE_3D_ANIMATION, 5, 27) \
-    X(IMAGE_3D_ANIMATION_8DIR, 0, 0) \
+    X(IMAGE_3D_ANIMATION, 0, 0) \
+    X(IMAGE_3D_ANIMATION_360, 0, 0) \
     X(IMAGE_2D_ANIMATION, 0, 0) \
     X(IMAGE_3D, 0, 0) \
     X(IMAGE_2D, 0, 0) \
@@ -143,39 +160,39 @@ namespace GUIType
 
 // ===== DEFINICIÓN ÚNICA DE ICONOS GUI =====
 #define ICON_GUI_LIST(X) \
-    X(FOLDER, 3, 31) \
-    X(PLAY, 2, 29) \
-    X(STOP, 5, 3) \
-    X(RELOAD, 15, 9) \
-    X(REMOVE, 3, 3) \
-    X(PAUSE, 4, 12) \
-    X(LOCK, 5, 25) \
-    X(UNLOCK, 4, 25) \
-    X(ADD, 15, 37) \
-    X(SCENE, 2, 37) \
-    X(SAVE, 4, 33) \
-    X(GEAR, 9, 8) \
-    X(GHOST, 9, 29) \
-    X(SHADER, 15, 31) \
-    X(SPOTLIGHT, 3, 24) \
-    X(PARTICLES, 11, 13) \
-    X(GRAVITY, 15, 30) \
-    X(CLICK, 9, 18) \
-    X(DRAW_COLLIDERS, 3, 35) \
-    X(TARGET, 13, 16) \
-    X(MOUSE_LOOK, 10, 18) \
-    X(LAYOUT_DEFAULT, 7, 1) \
+    X(FOLDER, 0, 0) \
+    X(PLAY, 0, 0) \
+    X(STOP, 0, 0) \
+    X(RELOAD, 0, 0) \
+    X(REMOVE, 0, 0) \
+    X(PAUSE, 0, 0) \
+    X(LOCK, 0, 0) \
+    X(UNLOCK, 0, 0) \
+    X(ADD, 0, 0) \
+    X(SCENE, 0, 0) \
+    X(SAVE, 0, 0) \
+    X(GEAR, 0, 0) \
+    X(GHOST, 0, 0) \
+    X(SHADER, 0, 0) \
+    X(SPOTLIGHT, 0, 0) \
+    X(PARTICLES, 0, 0) \
+    X(GRAVITY, 0, 0) \
+    X(CLICK, 0, 0) \
+    X(DRAW_COLLIDERS, 0, 0) \
+    X(TARGET, 0, 0) \
+    X(MOUSE_LOOK, 0, 0) \
+    X(LAYOUT_DEFAULT, 0, 0) \
     X(LAYOUT_CODING, 0, 0) \
-    X(LAYOUT_DESIGN, 2, 27) \
-    X(PROJECT, 15, 38) \
-    X(OPEN, 15, 9) \
-    X(GUI, 12, 17) \
-    X(TEXTURE, 2, 4) \
-    X(TRANSLATE, 3, 15) \
-    X(ROTATE, 2, 15) \
-    X(SCALE, 1, 15) \
+    X(LAYOUT_DESIGN, 0, 0) \
+    X(PROJECT, 0, 0) \
+    X(OPEN, 0, 0) \
+    X(GUI, 0, 0) \
+    X(TEXTURE, 0, 0) \
+    X(TRANSLATE, 0, 0) \
+    X(ROTATE, 0, 0) \
+    X(SCALE, 0, 0) \
     X(SCRIPT, 0, 0) \
-    X(PLAYER, 14, 2) \
+    X(PLAYER, 0, 0) \
     X(SPLASH, 0, 0) \
     X(LIGHT_SYSTEM, 0, 0) \
     X(SHADOW_MAPPING, 0, 0) \
@@ -183,14 +200,43 @@ namespace GUIType
     X(RENDER_PIXELS, 0, 0) \
     X(RENDER_SHADING, 0, 0) \
     X(RENDER_WIRE, 0, 0) \
-    X(SHOW_BONES, 14, 38) \
-    X(PICKING_COLORS, 11, 10) \
-    X(FPS, 5, 4) \
-    X(PROFILER, 10, 26) \
-    X(COLLISION_OBJECTS, 8, 13) \
-    X(ABOUT_ME, 15, 27) \
-    X(EXIT, 0, 10) \
-    X(MENU_TEST, 0, 0)
+    X(SHOW_BONES, 0, 0) \
+    X(PICKING_COLORS, 0, 0) \
+    X(FPS, 0, 0) \
+    X(PROFILER, 0, 0) \
+    X(COLLISION_OBJECTS, 0, 0) \
+    X(ABOUT_ME, 0, 0) \
+    X(EXIT, 0, 0) \
+    X(MNU_BRAKEZA, 0, 0) \
+    X(MNU_SCRIPT_CONTROLS, 0, 0) \
+    X(MNU_ADD_OBJECT, 0, 0) \
+    X(MNU_VIDEO, 0, 0) \
+    X(MNU_COLLIDERS, 0, 0) \
+    X(MNU_ILLUMINATION, 0, 0) \
+    X(MNU_CAMERA, 0, 0) \
+    X(MNU_SOUND, 0, 0) \
+    X(MNU_LOGGING, 0, 0) \
+    X(MNU_LAYOUTS, 0, 0) \
+    X(MNU_WINDOWS, 0, 0) \
+    X(WIN_PROJECT_SETTINGS, 0, 0) \
+    X(WIN_SCENE_OBJECTS, 0, 0) \
+    X(WIN_OBJECT_PROPS, 0, 0) \
+    X(WIN_OBJECT_SHADERS, 0, 0) \
+    X(WIN_OBJECT_SCRIPTS, 0, 0) \
+    X(WIN_OBJECT_VARS, 0, 0) \
+    X(WIN_GLOBAL_VARS, 0, 0) \
+    X(WIN_KEYBOARD_MOUSE, 0, 0) \
+    X(WIN_IMAGES, 0, 0) \
+    X(WIN_FILES_PROJECTS, 0, 0) \
+    X(WIN_FILES_SCENES, 0, 0) \
+    X(WIN_FILES_SCRIPTS, 0, 0) \
+    X(WIN_FILES_SHADERS, 0, 0) \
+    X(WIN_LOGGING, 0, 0) \
+    X(WIN_DEPTH_LIGHTS_MAPS, 0, 0) \
+    X(WIN_PROFILER, 0, 0) \
+    X(WIN_DEBUG_ICONS, 0, 0) \
+    X(LOGGING_CLEAR, 0, 0) \
+    X(LOGGING_OPTIONS, 0, 0)
 
 // Icons Objects
 namespace IconObject {
@@ -244,6 +290,7 @@ class GUI
 public:
     static void DrawButton(const std::string &tooltip, GUIType::Sheet icon, ImVec2 size, bool active, const std::function<void()> &onClick);
     static void Toggle(bool &value);
+    static void ImGuiSetColors();
     static GUIType::FolderBrowserCache CreateBrowserCache(std::string folder, const std::string &extension);
 };
 

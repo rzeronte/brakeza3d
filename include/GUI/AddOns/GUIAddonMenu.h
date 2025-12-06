@@ -6,27 +6,28 @@
 #define BRAKEZA3D_GUIWIDGETMENU_H
 
 #include "../GUI.h"
+#include "../GUIManager.h"
 
-struct GUIAddonMenu
+class GUIManager;
+
+class GUIAddonMenu
 {
-    std::vector<GUIType::MenuItem> menus;
-    std::vector<GUIType::WindowData> &windowStatus;
+public:
+    explicit GUIAddonMenu();
 
-    explicit GUIAddonMenu(std::vector<GUIType::WindowData> &windowStatus);
-
-    void Draw();
-    void MenuWindow();
-    void MenuBrakeza3D();
-    void MenuScriptControls();
-    void MenuAddObject();
-    void MenuVideo();
-    void MenuColliders();
-    void MenuIllumination();
-    void MenuCamera();
-    void MenuSound();
-    void MenuLogging();
-    void MenuLayout();
-    void AboutMeModal();
+    static void Draw(GUIManager *gui);
+    static void MenuBrakeza3D();
+    static void MenuScriptControls();
+    static void MenuAddObject();
+    static void MenuVideo();
+    static void MenuColliders();
+    static void MenuIllumination();
+    static void MenuCamera();
+    static void MenuSound();
+    static void MenuLogging();
+    static void MenuLayout();
+    static void MenuWindow(GUIManager *gui);
+    static void AboutMeModal();
 
     static void DrawItemsToLoad(std::string &folder, std::string &ext, GUIType::Sheet icon, const std::function<void(const std::string &)> &cb );
 };

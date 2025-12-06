@@ -8,13 +8,11 @@
 #include "../include/Brakeza.h"
 #include "../Objects/FileSystemGUI.h"
 
-GUIAddonProjectSetup::GUIAddonProjectSetup(GUIType::ScriptEditableManager &scriptEditableManager)
-:
-    scriptEditableManager(scriptEditableManager)
+GUIAddonProjectSetup::GUIAddonProjectSetup()
 {
 }
 
-void GUIAddonProjectSetup::DrawProjectSetupGUI()
+void GUIAddonProjectSetup::DrawProjectSetupGUI(GUIManager *gui)
 {
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::PROJECT_SETTINGS);
     if (!windowStatus->isOpen) return;
@@ -27,14 +25,14 @@ void GUIAddonProjectSetup::DrawProjectSetupGUI()
         Config::get()->ENGINE_TITLE = name;
     }
     ImGui::Separator();
-    DrawProjectScripts();
+    DrawProjectScripts(gui);
     ImGui::Separator();
-    DrawSceneScripts();
+    DrawSceneScripts(gui);
     ImGui::Separator();
-    DrawSceneCustomShaders();
+    DrawSceneCustomShaders(gui);
 }
 
-void GUIAddonProjectSetup::DrawProjectScripts() const
+void GUIAddonProjectSetup::DrawProjectScripts(GUIManager *gui)
 {
     auto scripting = ComponentsManager::get()->getComponentScripting();
 
@@ -79,11 +77,11 @@ void GUIAddonProjectSetup::DrawProjectScripts() const
         }
         ImGui::SameLine();
         GUI::DrawButton("Edit script", IconGUI::SCRIPT, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-            scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
-            delete scriptEditableManager.script;
-            scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(
-                    scriptEditableManager.selectedScriptFilename));
-            strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
+            gui->scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
+            delete gui->scriptEditableManager.script;
+            gui->scriptEditableManager.script = new ScriptLUA(gui->scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(
+                    gui->scriptEditableManager.selectedScriptFilename));
+            strcpy(gui->scriptEditableManager.editableSource, gui->scriptEditableManager.script->content.c_str());
         });
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
@@ -93,7 +91,7 @@ void GUIAddonProjectSetup::DrawProjectScripts() const
     }
 }
 
-void GUIAddonProjectSetup::DrawSceneScripts() const
+void GUIAddonProjectSetup::DrawSceneScripts(GUIManager *gui)
 {
     auto scripting = ComponentsManager::get()->getComponentScripting();
 
@@ -138,11 +136,11 @@ void GUIAddonProjectSetup::DrawSceneScripts() const
         }
         ImGui::SameLine();
         GUI::DrawButton("Edit scene script", IconGUI::LOCK, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-            scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
-            delete scriptEditableManager.script;
-            scriptEditableManager.script = new ScriptLUA(scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(
-                    scriptEditableManager.selectedScriptFilename));
-            strcpy(scriptEditableManager.editableSource, scriptEditableManager.script->content.c_str());
+            gui->scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
+            delete gui->scriptEditableManager.script;
+            gui->scriptEditableManager.script = new ScriptLUA(gui->scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(
+                    gui->scriptEditableManager.selectedScriptFilename));
+            strcpy(gui->scriptEditableManager.editableSource, gui->scriptEditableManager.script->content.c_str());
         });
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
@@ -152,7 +150,7 @@ void GUIAddonProjectSetup::DrawSceneScripts() const
     }
 }
 
-void GUIAddonProjectSetup::DrawSceneCustomShaders()
+void GUIAddonProjectSetup::DrawSceneCustomShaders(GUIManager *gui)
 {
     ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::ADD), ImVec2(16, 16));
     auto render = ComponentsManager::get()->getComponentRender();
