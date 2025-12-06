@@ -142,7 +142,7 @@ TypeObject Image3DAnimation360::getTypeObject() const
 
 GUIType::Sheet Image3DAnimation360::getIcon()
 {
-    return IconObject::IMAGE_3D_ANIMATION_8DIR;
+    return IconObject::IMAGE_3D_ANIMATION_360;
 }
 
 void Image3DAnimation360::updateBillboardSize() const

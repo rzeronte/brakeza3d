@@ -4,15 +4,9 @@
 
 #include <string>
 #include <vector>
-
 #include "../Misc/TextureAtlas.h"
-#include "AddOns/GUIConsole.h"
 #include "../Misc/TexturePackage.h"
-#include "AddOns/GUIAddonObjects3D.h"
-#include "AddOns/GUIAddonObject3DProperties.h"
-#include "AddOns/GUIAddonProjectSetup.h"
-#include "AddOns/GUIAddonMenu.h"
-#include "AddOns/GUIAddonToolbar.h"
+#include "AddOns/GUIConsole.h"
 
 class Object3DGUI;
 class ScriptLuaGUI;
@@ -22,6 +16,7 @@ class FileSystemGUI;
 class IconsGUI;
 class GUIAddonObjects3D;
 class GUIAddonObject3DProperties;
+class Object3D;
 
 class GUIManager
 {
@@ -31,7 +26,6 @@ class GUIManager
     bool showEditShaderWindow = false;
     bool showEditScriptWindow = false;
     bool showBoneMappingsEditorWindow = false;
-    bool showDebugIconsWindow = false;
 
     float splashAlpha = 1.0f;
 
@@ -40,12 +34,10 @@ class GUIManager
     GUIType::ScriptEditableManager scriptEditableManager;
     GUIType::ShaderEditableManager shaderEditableManager;
 
+    std::vector<GUIType::AddonAllowedObjects> visibleTypeObjects;
+    std::vector<GUIType::MenuItem> menus;
+
     GuiAddonConsole *widgetConsole;
-    GUIAddonObjects3D *widgetObjects3D;
-    GUIAddonObject3DProperties *widgetObjectProperties;
-    GUIAddonProjectSetup *widgetProjectSettings;
-    GUIAddonMenu *menu;
-    GUIAddonToolbar *toolbar;
 
     TexturePackage imagesFolder;
 
@@ -67,15 +59,18 @@ class GUIManager
     void WindowLightsDepthMapsViewer();
     void DrawRegisteredWindows();
     void WindowKeyboardMouseSetup();
-    void DrawSplash();
+    void DrawSplashWindow();
 
 public:
+
     explicit GUIManager(std::vector<Object3D *> &gameObjects);
     virtual ~GUIManager() = default;
 
     void setSelectedObjectIndex(int selectedObjectIndex);
     void setSelectedObject(const Object3D *s);
     void RegisterWindows();
+    void RegisterAllowedItemsForViewer();
+    void RegisterMenu();
     void OpenBoneInfoDialog();
     virtual void DrawGUI();
     GUIType::WindowData *getWindowStatus(GUIType::Window window);
@@ -86,9 +81,7 @@ public:
     [[nodiscard]] GUIType::FolderBrowserCache getBrowserScenes() const;
     [[nodiscard]] GUIType::FolderBrowserCache getBrowserProjects() const;
     [[nodiscard]] GUIType::FolderBrowserCache getBrowserShaders() const;
-
     [[nodiscard]] int& selectedObjectIndexPointer();
-
     static void ShowDeletePopup(const char* title, const char *message, const std::function<void()>& onConfirm);
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
@@ -101,6 +94,10 @@ public:
     friend class FileSystemGUI;
     friend class IconsGUI;
     friend class Mesh3DAnimationDrawerGUI;
+    friend class GUIAddonObjects3D;
+    friend class GUIAddonObject3DProperties;
+    friend class GUIAddonProjectSetup;
+    friend class GUIAddonMenu;
 };
 
 #endif //SDL2_3D_ENGINE_GUI_ENGINE_H

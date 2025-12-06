@@ -20,29 +20,14 @@
 #include "../../../include/Serializers/Image3DAnimationSerializer.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 
-GUIAddonMenu::GUIAddonMenu(std::vector<GUIType::WindowData> &windowStatus)
-:
-    windowStatus(windowStatus)
+GUIAddonMenu::GUIAddonMenu()
 {
-    menus = {
-        {"Brakeza3D", IconGUI::ABOUT_ME, [&] { MenuBrakeza3D(); }},
-        {"Script Controls", IconGUI::ABOUT_ME, [&] { MenuScriptControls(); }},
-        {"Add Object", IconGUI::ABOUT_ME, [&] { MenuAddObject(); }},
-        {"Video", IconGUI::ABOUT_ME, [&] { MenuVideo(); }},
-        {"Colliders", IconGUI::ABOUT_ME, [&] { MenuColliders(); }},
-        {"Illumination", IconGUI::ABOUT_ME, [&] { MenuIllumination(); }},
-        {"Camera", IconGUI::ABOUT_ME, [&] { MenuCamera(); }},
-        {"Sound", IconGUI::ABOUT_ME, [&] { MenuSound(); }},
-        {"Logging", IconGUI::ABOUT_ME,  [&] { MenuLogging(); }},
-        {"Layout", IconGUI::ABOUT_ME, [&] { MenuLayout(); }},
-        {"Window", IconGUI::ABOUT_ME, [&] { MenuWindow(); }},
-    };
 }
 
-void GUIAddonMenu::Draw()
+void GUIAddonMenu::Draw(GUIManager *gui)
 {
     if (ImGui::BeginMainMenuBar()) {
-        for (const auto & menu : menus) {
+        for (const auto & menu : gui->menus) {
             if (ImGui::BeginMenu(menu.label.c_str())) {
                 menu.cb();
                 ImGui::EndMenu();
@@ -129,7 +114,7 @@ void GUIAddonMenu::MenuAddObject()
         DrawItemsToLoad(setup->SPRITES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_3D_ANIMATION, [](const std::string& path) { Image3DAnimationSerializer().LoadFileIntoScene(path); });
         ImGui::EndMenu();
     }
-    ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION_8DIR), GUIType::Sizes::ICON_SIZE_MENUS);
+    ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION_360), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Image3D Animation 360")) {
         Image3DAnimation360Serializer().LoadFileIntoScene("");
@@ -337,22 +322,23 @@ void GUIAddonMenu::MenuIllumination()
     if (!setup->ENABLE_LIGHTS) return;
 
     ImGui::Separator();
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Enable Shadow Mapping", nullptr, &setup->ENABLE_SHADOW_MAPPING);
     if (setup->ENABLE_SHADOW_MAPPING) {
         ImGui::SeparatorText("Shadow Mapping setup");
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("Shadows Intensity", &setup->SHADOW_MAPPING_INTENSITY, 0.1f, -5.0f, 5.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("DepthMaps Near plane", &setup->SHADOW_MAPPING_DEPTH_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("DepthMaps Far plane", &setup->SHADOW_MAPPING_DEPTH_FAR_PLANE, 0.1f, 1.0f, 500.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
     }
     ImGui::SeparatorText("Sun light setup");
     auto& dirLight = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->getDirectionalLight();
 
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::LIGHT_SYSTEM), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::DragFloat3("Sun direction", &dirLight.direction[0], 0.01f, -1.0f, 1.0f);
 
     ImGui::Separator();
@@ -380,17 +366,17 @@ void GUIAddonMenu::MenuIllumination()
     ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Shadow Mapping debug mode", nullptr, &setup->SHADOW_MAPPING_DEBUG);
     if (setup->ENABLE_LIGHTS && setup->TRIANGLE_MODE_TEXTURIZED) {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::MenuItem("Show Depth Map", nullptr, &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
     }
 
     if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
         auto s = ComponentsManager::get()->getComponentRender()->getShaderOGLDepthMap();
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 10.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("Far Plane", &s->farPlane, 0.01f, 0.0f, 100.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::CLICK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("Near Plane", &s->nearPlane, 0.01f, 0.0f, 100.0f);
         ImGui::Separator();
     }
@@ -540,7 +526,7 @@ void GUIAddonMenu::MenuLayout()
     }
 }
 
-void GUIAddonMenu::MenuWindow()
+void GUIAddonMenu::MenuWindow(GUIManager *gui)
 {
     auto setup = Config::get();
 
@@ -550,7 +536,7 @@ void GUIAddonMenu::MenuWindow()
         ComponentsManager::get()->getComponentWindow()->toggleFullScreen();
     }
     ImGui::SeparatorText("Windows/Widgets");
-    for (auto &w : windowStatus) {
+    for (auto &w : gui->windows) {
         ImGui::Image(FileSystemGUI::Icon(w.icon), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::MenuItem(w.label.c_str(), nullptr, &w.isOpen);
     }

@@ -22,14 +22,30 @@ TextureAtlas::TextureAtlas(int totalWidth, int totalHeight)
     AllocateEmptyMask(totalWidth, totalHeight);
 }
 
+int TextureAtlas::getIndexByXY(int x, int y) const
+{
+    return x + numColumns * y;
+}
+
 Image *TextureAtlas::getTextureByIndex(int index) const
 {
     return textures[index];
 }
 
+void TextureAtlas::setXYByIndex(int index, int& x, int& y) const
+{
+    x = index % numColumns;
+    y = index / numColumns;
+}
+
 Image *TextureAtlas::getTextureByXY(int x, int y) const
 {
     return textures[x + numColumns * y];
+}
+
+int TextureAtlas::getTotalImages() const
+{
+    return numColumns * numRows;
 }
 
 void TextureAtlas::CreateFromSheet(const std::string &file, int spriteWidth, int spriteHeight)
@@ -85,6 +101,16 @@ void TextureAtlas::CreateFromSheet(const std::string &file, int spriteWidth, int
 
     Logging::Message("[TextureAtlas] createFromSheet: Sheet successful loaded with %d images", (int) textures.size());
     SDL_FreeSurface(spriteSheetSurface);
+}
+
+int TextureAtlas::getNumRows() const
+{
+    return numRows;
+}
+
+int TextureAtlas::getNumColumns() const
+{
+    return numColumns;
 }
 
 bool TextureAtlas::AddToAtlas(Image *texture, const std::string& name)

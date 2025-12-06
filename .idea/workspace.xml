@@ -12,6 +12,7 @@
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/LiveTemplatesHousekeeping/HotspotSessionHintIsShown/@EntryValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/RefactoringsMru/RenameRefactoring/DoSearchForTextInStrings/@EntryValue" value="true" type="bool" />
     <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
   </component>
   <component name="CMakePresetLoader">{
@@ -35,14 +36,27 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(debug): Added debug cone for spotlight">
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): Icons debug window">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/3D/LightSpot.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/LightSpot.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Brakeza.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Brakeza.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonMenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonMenu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObject3DProperties.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObject3DProperties.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObject3DProperties.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObject3DProperties.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLRenderForward.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLRenderForward.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/Cone3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Cone3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/LightSpot.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/LightSpot.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLRenderForward.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLRenderForward.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObjects3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObjects3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObjects3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObjects3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIConsole.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIConsole.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/IconsGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/IconsGUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/TextureAtlas.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/TextureAtlas.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/3D/Image3DAnimation360.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Image3DAnimation360.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonMenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonMenu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/GUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/TextureAtlas.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/TextureAtlas.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,123 +92,72 @@
 }</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/include/3D/LightSpot.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/include/3D/LightSpot.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/include/3D/LightSpot.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/include/3D/LightSpot.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/include/3D/LightSpot.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/include/GUI/GUI.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/include/OpenGL/ShaderOGLRenderForward.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/include/OpenGL/ShaderOGLRenderForward.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/Cone3D.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/3D/LightSpot.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Components/ComponentWindow.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/Objects/Mesh3DGUI.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/Objects/Mesh3DGUI.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -220,6 +183,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
@@ -233,14 +197,14 @@
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Eduardo/CLionProjects/BrakezaGitHub/assets/scenes&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Eduardo/CLionProjects/BrakezaGitHub/assets/scripts/Examples/GlobalScripts&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.uml&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
     &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -248,18 +212,18 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Examples\GlobalScripts" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scenes" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Controllers" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\examples" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\doc" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\config" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\3D" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\GUI\Objects" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\icons\interface" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\GUI" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\GUI\AddOns" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\images" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\icons" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Controllers" />
     </key>
   </component>
   <component name="RunManager">
@@ -517,7 +481,20 @@
       <workItem from="1737762031171" duration="60082000" />
       <workItem from="1764131272441" duration="79392000" />
       <workItem from="1764323337548" duration="6250000" />
-      <workItem from="1764333202408" duration="9816000" />
+      <workItem from="1764333202408" duration="28882000" />
+      <workItem from="1764379811481" duration="8565000" />
+      <workItem from="1764422292840" duration="8376000" />
+      <workItem from="1764444368832" duration="30700000" />
+      <workItem from="1764518610374" duration="38109000" />
+      <workItem from="1764592756013" duration="69326000" />
+      <workItem from="1764721094540" duration="13300000" />
+      <workItem from="1764757393150" duration="9537000" />
+      <workItem from="1764817157933" duration="38052000" />
+      <workItem from="1764895554668" duration="11399000" />
+      <workItem from="1764937877148" duration="19177000" />
+      <workItem from="1764978537429" duration="19000" />
+      <workItem from="1764981027468" duration="17321000" />
+      <workItem from="1765034169328" duration="12618000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -567,142 +544,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00045" summary="feat(doc): Update doc">
-      <option name="closed" value="true" />
-      <created>1737171706369</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1737171706369</updated>
-    </task>
-    <task id="LOCAL-00046" summary="feat(doc): Update doc">
-      <option name="closed" value="true" />
-      <created>1737214034878</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1737214034878</updated>
-    </task>
-    <task id="LOCAL-00047" summary="feat(doc): Update doc">
-      <option name="closed" value="true" />
-      <created>1737214132452</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1737214132452</updated>
-    </task>
-    <task id="LOCAL-00048" summary="feat(doc): Update doc">
-      <option name="closed" value="true" />
-      <created>1737214268236</created>
-      <option name="number" value="00048" />
-      <option name="presentableId" value="LOCAL-00048" />
-      <option name="project" value="LOCAL" />
-      <updated>1737214268236</updated>
-    </task>
-    <task id="LOCAL-00049" summary="feat(doc): Update doc">
-      <option name="closed" value="true" />
-      <created>1737218795393</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1737218795393</updated>
-    </task>
-    <task id="LOCAL-00050" summary="feat(refact): Cleaning">
-      <option name="closed" value="true" />
-      <created>1737236089691</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1737236089692</updated>
-    </task>
-    <task id="LOCAL-00051" summary="feat(refact): Cleaning repeated code">
-      <option name="closed" value="true" />
-      <created>1737241514171</created>
-      <option name="number" value="00051" />
-      <option name="presentableId" value="LOCAL-00051" />
-      <option name="project" value="LOCAL" />
-      <updated>1737241514172</updated>
-    </task>
-    <task id="LOCAL-00052" summary="feat(image3d): Gui resize image3d">
-      <option name="closed" value="true" />
-      <created>1737243429634</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1737243429634</updated>
-    </task>
-    <task id="LOCAL-00053" summary="feat(input): Changes keys to launch demo projectile">
-      <option name="closed" value="true" />
-      <created>1737243904027</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1737243904027</updated>
-    </task>
-    <task id="LOCAL-00054" summary="feat(gui): Local variables widget">
-      <option name="closed" value="true" />
-      <created>1737260281384</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1737260281384</updated>
-    </task>
-    <task id="LOCAL-00055" summary="feat(doc): Update doc">
-      <option name="closed" value="true" />
-      <created>1737260321148</created>
-      <option name="number" value="00055" />
-      <option name="presentableId" value="LOCAL-00055" />
-      <option name="project" value="LOCAL" />
-      <updated>1737260321148</updated>
-    </task>
-    <task id="LOCAL-00056" summary="feat(GUI): Change in reset script variables from GUI">
-      <option name="closed" value="true" />
-      <created>1737263224439</created>
-      <option name="number" value="00056" />
-      <option name="presentableId" value="LOCAL-00056" />
-      <option name="project" value="LOCAL" />
-      <updated>1737263224441</updated>
-    </task>
-    <task id="LOCAL-00057" summary="feat(GUI): Change in reset script variables from GUI">
-      <option name="closed" value="true" />
-      <created>1737264844136</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
-      <option name="project" value="LOCAL" />
-      <updated>1737264844136</updated>
-    </task>
-    <task id="LOCAL-00058" summary="feat(GUI): Update scripts viewer">
-      <option name="closed" value="true" />
-      <created>1737309366351</created>
-      <option name="number" value="00058" />
-      <option name="presentableId" value="LOCAL-00058" />
-      <option name="project" value="LOCAL" />
-      <updated>1737309366351</updated>
-    </task>
-    <task id="LOCAL-00059" summary="fix(guizmo): Fix gizmo rotation">
-      <option name="closed" value="true" />
-      <created>1737328002767</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1737328002768</updated>
-    </task>
-    <task id="LOCAL-00060" summary="fix(guizmo): Fix gizmo rotation">
-      <option name="closed" value="true" />
-      <created>1737328013565</created>
-      <option name="number" value="00060" />
-      <option name="presentableId" value="LOCAL-00060" />
-      <option name="project" value="LOCAL" />
-      <updated>1737328013565</updated>
-    </task>
-    <task id="LOCAL-00061" summary="fix(guizmo): Fix bad position when window is maximized">
-      <option name="closed" value="true" />
-      <created>1737339248538</created>
-      <option name="number" value="00061" />
-      <option name="presentableId" value="LOCAL-00061" />
-      <option name="project" value="LOCAL" />
-      <updated>1737339248539</updated>
     </task>
     <task id="LOCAL-00062" summary="fix(guizmo): Fix bad position when window is maximized">
       <option name="closed" value="true" />
@@ -904,7 +745,143 @@
       <option name="project" value="LOCAL" />
       <updated>1764340116941</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="feat(debug): Added debug cone for spotlight">
+      <option name="closed" value="true" />
+      <created>1764356838668</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1764356838668</updated>
+    </task>
+    <task id="LOCAL-00088" summary="feat(gui): Added icons / cone debug improvements">
+      <option name="closed" value="true" />
+      <created>1764373391300</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1764373391304</updated>
+    </task>
+    <task id="LOCAL-00089" summary="feat(gui): order menu items in his right category">
+      <option name="closed" value="true" />
+      <created>1764377306133</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1764377306135</updated>
+    </task>
+    <task id="LOCAL-00090" summary="feat(gui): order menu items in his right category">
+      <option name="closed" value="true" />
+      <created>1764378340496</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1764378340498</updated>
+    </task>
+    <task id="LOCAL-00091" summary="feat(gui): added configurable loggint to std">
+      <option name="closed" value="true" />
+      <created>1764380984050</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1764380984050</updated>
+    </task>
+    <task id="LOCAL-00092" summary="feat(serializers): reusing code">
+      <option name="closed" value="true" />
+      <created>1764387430456</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1764387430456</updated>
+    </task>
+    <task id="LOCAL-00093" summary="feat(profiler): Added profiler">
+      <option name="closed" value="true" />
+      <created>1764532044614</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1764532044615</updated>
+    </task>
+    <task id="LOCAL-00094" summary="feat(gui): Improve widgets visibility">
+      <option name="closed" value="true" />
+      <created>1764553917872</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1764553917874</updated>
+    </task>
+    <task id="LOCAL-00095" summary="feat(gui): Menu improved">
+      <option name="closed" value="true" />
+      <created>1764608651329</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1764608651330</updated>
+    </task>
+    <task id="LOCAL-00096" summary="feat(gui): Menu improved">
+      <option name="closed" value="true" />
+      <created>1764618659358</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1764618659358</updated>
+    </task>
+    <task id="LOCAL-00097" summary="feat(gui): Icons using sheet">
+      <option name="closed" value="true" />
+      <created>1764824314565</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1764824314565</updated>
+    </task>
+    <task id="LOCAL-00098" summary="feat(gui): Icons using sheet">
+      <option name="closed" value="true" />
+      <created>1764876700067</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1764876700068</updated>
+    </task>
+    <task id="LOCAL-00099" summary="feat(gui): Icons using sheet">
+      <option name="closed" value="true" />
+      <created>1764877960067</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1764877960067</updated>
+    </task>
+    <task id="LOCAL-00100" summary="feat(gui): Icons using sheet">
+      <option name="closed" value="true" />
+      <created>1764900058108</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1764900058108</updated>
+    </task>
+    <task id="LOCAL-00101" summary="feat(gui): Icons using sheet">
+      <option name="closed" value="true" />
+      <created>1764901848506</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1764901848510</updated>
+    </task>
+    <task id="LOCAL-00102" summary="feat(gui): Icons debug window">
+      <option name="closed" value="true" />
+      <created>1764978137914</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1764978137914</updated>
+    </task>
+    <task id="LOCAL-00103" summary="feat(gui): Icons debug window">
+      <option name="closed" value="true" />
+      <created>1764991022092</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1764991022093</updated>
+    </task>
+    <option name="localTasksCounter" value="104" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -927,207 +904,17 @@
     </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
-    <option name="OPEN_GENERIC_TABS">
-      <map>
-        <entry key="4f644507-b2b0-4902-9bf3-55bbb9bc3513" value="TOOL_WINDOW" />
-        <entry key="508f6d96-fe70-46ce-8af9-a77a9199e69d" value="TOOL_WINDOW" />
-        <entry key="c5a68908-fc21-473f-847e-9b888e93e42a" value="TOOL_WINDOW" />
-        <entry key="cab30992-3e14-44fb-b270-88496f51e6ed" value="TOOL_WINDOW" />
-        <entry key="f3669d5c-6516-4e5f-bf5f-0ff3091bc986" value="TOOL_WINDOW" />
-        <entry key="f2630000-fac2-415f-87dd-e6547571661f" value="TOOL_WINDOW" />
-      </map>
-    </option>
     <option name="TAB_STATES">
       <map>
-        <entry key="4f644507-b2b0-4902-9bf3-55bbb9bc3513">
-          <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="HEAD" />
-                      </list>
-                    </value>
-                  </entry>
-                  <entry key="roots">
-                    <value>
-                      <list>
-                        <option value="$PROJECT_DIR$" />
-                      </list>
-                    </value>
-                  </entry>
-                  <entry key="text">
-                    <value>
-                      <list>
-                        <option value="OCL" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
-            </State>
-          </value>
-        </entry>
-        <entry key="508f6d96-fe70-46ce-8af9-a77a9199e69d">
-          <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="HEAD" />
-                      </list>
-                    </value>
-                  </entry>
-                  <entry key="structure">
-                    <value>
-                      <list>
-                        <option value="dir:/home/eduardo/CLionProjects/brakeza3d/darkheaz/src/shaders" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
-            </State>
-          </value>
-        </entry>
         <entry key="MAIN">
           <value>
             <State />
-          </value>
-        </entry>
-        <entry key="c5a68908-fc21-473f-847e-9b888e93e42a">
-          <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="HEAD" />
-                      </list>
-                    </value>
-                  </entry>
-                  <entry key="roots">
-                    <value>
-                      <list>
-                        <option value="$PROJECT_DIR$" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
-            </State>
-          </value>
-        </entry>
-        <entry key="cab30992-3e14-44fb-b270-88496f51e6ed">
-          <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="HEAD" />
-                      </list>
-                    </value>
-                  </entry>
-                  <entry key="roots">
-                    <value>
-                      <list>
-                        <option value="$PROJECT_DIR$" />
-                      </list>
-                    </value>
-                  </entry>
-                  <entry key="text">
-                    <value>
-                      <list>
-                        <option value="opencl" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
-            </State>
-          </value>
-        </entry>
-        <entry key="f2630000-fac2-415f-87dd-e6547571661f">
-          <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="HEAD" />
-                      </list>
-                    </value>
-                  </entry>
-                  <entry key="roots">
-                    <value>
-                      <list>
-                        <option value="$PROJECT_DIR$" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
-            </State>
-          </value>
-        </entry>
-        <entry key="f3669d5c-6516-4e5f-bf5f-0ff3091bc986">
-          <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="HEAD" />
-                      </list>
-                    </value>
-                  </entry>
-                  <entry key="roots">
-                    <value>
-                      <list>
-                        <option value="$PROJECT_DIR$" />
-                      </list>
-                    </value>
-                  </entry>
-                  <entry key="text">
-                    <value>
-                      <list>
-                        <option value="OpenCL" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
-            </State>
           </value>
         </entry>
       </map>
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(gui): Objects set features gui" />
-    <MESSAGE value="feat(refact): Cleaning" />
-    <MESSAGE value="feat(refact): Cleaning repeated code" />
-    <MESSAGE value="feat(image3d): Gui resize image3d" />
-    <MESSAGE value="feat(input): Changes keys to launch demo projectile" />
-    <MESSAGE value="feat(gui): Local variables widget" />
-    <MESSAGE value="feat(doc): Update doc" />
-    <MESSAGE value="feat(GUI): Change in reset script variables from GUI" />
-    <MESSAGE value="feat(GUI): Update scripts viewer" />
     <MESSAGE value="fix(guizmo): Fix gizmo rotation" />
     <MESSAGE value="fix(guizmo): Fix bad position when window is maximized" />
     <MESSAGE value="feat(lua): apply impulses from lua mapping" />
@@ -1144,7 +931,16 @@
     <MESSAGE value="fix(serializers): fix saving to disk" />
     <MESSAGE value="fix(image3d): depth pass broken afte refact" />
     <MESSAGE value="feat(debug): Added debug cone for spotlight" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(debug): Added debug cone for spotlight" />
+    <MESSAGE value="feat(gui): Added icons / cone debug improvements" />
+    <MESSAGE value="feat(gui): order menu items in his right category" />
+    <MESSAGE value="feat(gui): added configurable loggint to std" />
+    <MESSAGE value="feat(serializers): reusing code" />
+    <MESSAGE value="feat(profiler): Added profiler" />
+    <MESSAGE value="feat(gui): Improve widgets visibility" />
+    <MESSAGE value="feat(gui): Menu improved" />
+    <MESSAGE value="feat(gui): Icons using sheet" />
+    <MESSAGE value="feat(gui): Icons debug window" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(gui): Icons debug window" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1186,68 +982,53 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
-          <line>41</line>
+          <line>40</line>
           <option name="timeStamp" value="95" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
-          <line>42</line>
+          <line>41</line>
           <option name="timeStamp" value="96" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
-          <line>47</line>
+          <line>46</line>
           <option name="timeStamp" value="97" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
-          <line>49</line>
+          <line>48</line>
           <option name="timeStamp" value="98" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
-          <line>52</line>
+          <line>51</line>
           <option name="timeStamp" value="99" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
-          <line>58</line>
+          <line>57</line>
           <option name="timeStamp" value="100" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
-          <line>59</line>
+          <line>58</line>
           <option name="timeStamp" value="101" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
-          <line>62</line>
-          <option name="timeStamp" value="102" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
-          <line>56</line>
+          <line>55</line>
           <option name="timeStamp" value="109" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Serializers/Mesh3DSerializer.cpp</url>
-          <line>14</line>
-          <option name="timeStamp" value="110" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Serializers/Mesh3DSerializer.cpp</url>
-          <line>15</line>
-          <option name="timeStamp" value="111" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Serializers/Mesh3DSerializer.cpp</url>
-          <line>16</line>
-          <option name="timeStamp" value="112" />
+          <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
+          <line>52</line>
+          <option name="timeStamp" value="113" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
-          <line>53</line>
-          <option name="timeStamp" value="113" />
+          <line>61</line>
+          <option name="timeStamp" value="114" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
