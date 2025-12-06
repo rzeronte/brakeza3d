@@ -13,7 +13,6 @@ class Mesh3DGUI
 {
 public:
     static void DrawPropertiesGUI(Mesh3D *o);
-    static void DrawEditBonesMappingWindow(GUIManager *gui);
 };
 
 #endif //BRAKEZA3D_MESH3DGUI_H

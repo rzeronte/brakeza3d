@@ -1,6 +1,7 @@
 #include <assimp/postprocess.h>
 #include "../../include/3D/Mesh3DAnimation.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Render/Drawable.h"

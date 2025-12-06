@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.inl>
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/LightSpotGUI.h"
+#include "../../include/Components/ComponentsManager.h"
 
 LightSpot::LightSpot(
     const glm::vec4 &ambient,

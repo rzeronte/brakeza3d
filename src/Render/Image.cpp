@@ -5,6 +5,7 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/Misc/ToolsMaths.h"
 #include "../../include/Components/ComponentsManager.h"
+#include "../../include/Render/Profiler.h"
 
 
 Image::Image(const std::string& filename)

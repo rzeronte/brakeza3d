@@ -17,8 +17,8 @@ public:
     static void DrawScriptsBySelectedObject(GUIManager *gui);
     static void DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::FolderBrowserCache &browser);
     static void DrawEditScriptWindow(GUIManager *gui);
-    static void DrawObjectVariables(const GUIManager *gui);
-    static void DrawGlobalVariables();
+    static void DrawObjectVariables(GUIManager *gui);
+    static void DrawGlobalVariables(GUIManager *gui);
     static void drawScriptVariables(GUIManager *gui);
 
 };

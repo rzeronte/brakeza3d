@@ -3,8 +3,12 @@
 //
 
 #include "../include/GUI/Objects/ScriptLuaGUI.h"
+
+#include "../../../include/Brakeza.h"
+#include "../../../include/Components/ComponentsManager.h"
 #include "../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/GUIManager.h"
+#include "../../../include/Misc/Tools.h"
 
 void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
 {
@@ -75,6 +79,9 @@ void ScriptLuaGUI::LoadScriptDialog(GUIManager *gui, const std::string& filename
 
 void ScriptLuaGUI::DrawScriptsBySelectedObject(GUIManager *gui)
 {
+    auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_SCRIPTS);
+    if (!windowStatus->isOpen) return;
+
     bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < gui->gameObjects.size();
 
     if (!hasSelectedIndex) {
@@ -120,6 +127,9 @@ void ScriptLuaGUI::DrawScriptsBySelectedObject(GUIManager *gui)
 
 void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::FolderBrowserCache &browser)
 {
+    auto windowStatus = gui->getWindowStatus(GUIType::FILES_SCRIPTS);
+    if (!windowStatus->isOpen) return;
+
     static char name[256];
     strncpy(name, gui->currentVariableToAddName.c_str(), sizeof(name));
     if (ImGui::InputText("Script name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
@@ -201,8 +211,11 @@ void ScriptLuaGUI::DrawEditScriptWindow(GUIManager *gui)
     ImGui::End();
 }
 
-void ScriptLuaGUI::DrawObjectVariables(const GUIManager *gui)
+void ScriptLuaGUI::DrawObjectVariables(GUIManager *gui)
 {
+    auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_VARS);
+    if (!windowStatus->isOpen) return;
+
     bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < gui->gameObjects.size();
 
     if (!hasSelectedIndex) {
@@ -252,8 +265,11 @@ void ScriptLuaGUI::DrawObjectVariables(const GUIManager *gui)
     }
 }
 
-void ScriptLuaGUI::DrawGlobalVariables()
+void ScriptLuaGUI::DrawGlobalVariables(GUIManager *gui)
 {
+    auto windowStatus = gui->getWindowStatus(GUIType::GLOBAL_VARS);
+    if (!windowStatus->isOpen) return;
+
     static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("GlobalVariablesTable", 3, flags)) {
         auto &lua = ComponentsManager::get()->getComponentScripting()->getLua();

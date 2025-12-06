@@ -6,6 +6,8 @@
 #include "../../include/3D/Image3D.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Misc/Logging.h"
 
 cJSON * Image3DSerializer::JsonByObject(Object3D *o)
 {

@@ -6,6 +6,7 @@
 #include <algorithm>
 
 #include "../Brakeza.h"
+#include "../Components/ComponentsManager.h"
 #include "../Misc/Logging.h"
 
 Profiler *Profiler::instance = nullptr;

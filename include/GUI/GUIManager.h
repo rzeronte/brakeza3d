@@ -20,6 +20,8 @@ class Mesh3DGUI;
 class ShadersGUI;
 class FileSystemGUI;
 class IconsGUI;
+class GUIAddonObjects3D;
+class GUIAddonObject3DProperties;
 
 class GUIManager
 {
@@ -35,8 +37,8 @@ class GUIManager
 
     std::vector<Object3D *> &gameObjects;
 
-    ScriptEditableManager scriptEditableManager;
-    ShaderEditableManager shaderEditableManager;
+    GUIType::ScriptEditableManager scriptEditableManager;
+    GUIType::ShaderEditableManager shaderEditableManager;
 
     GuiAddonConsole *widgetConsole;
     GUIAddonObjects3D *widgetObjects3D;
@@ -67,32 +69,16 @@ class GUIManager
     void WindowKeyboardMouseSetup();
     void DrawSplash();
 
-    GUIType::WindowData *GetWindowStatus(GUIType::Window window);
-
 public:
     explicit GUIManager(std::vector<Object3D *> &gameObjects);
     virtual ~GUIManager() = default;
 
-    void RegisterWindows();
-
-    void WindowDebugIcons();
-
-    void WindowShaderFiles();
-    void WindowScriptFiles();
-    void WindowSceneFiles();
-    void WindowProjectFiles();
-    void WindowSelectedObjectProperties();
-    void WindowProjectSettings();
-    void WindowGlobalVars();
-    void WindowSelectedObjectScripts();
-    void WindowSelectedObjectVariables();
-    void WindowSelectedObjectShaders();
-    void WindowSceneObjects();
-    void WindowLogging();
     void setSelectedObjectIndex(int selectedObjectIndex);
     void setSelectedObject(const Object3D *s);
+    void RegisterWindows();
     void OpenBoneInfoDialog();
     virtual void DrawGUI();
+    GUIType::WindowData *getWindowStatus(GUIType::Window window);
     [[nodiscard]] GuiAddonConsole *getConsole() const;
     [[nodiscard]] bool isLightDepthMapsViewerWindowOpen();
     [[nodiscard]] TextureAtlas * getTextureAtlas() const;
@@ -100,6 +86,9 @@ public:
     [[nodiscard]] GUIType::FolderBrowserCache getBrowserScenes() const;
     [[nodiscard]] GUIType::FolderBrowserCache getBrowserProjects() const;
     [[nodiscard]] GUIType::FolderBrowserCache getBrowserShaders() const;
+
+    [[nodiscard]] int& selectedObjectIndexPointer();
+
     static void ShowDeletePopup(const char* title, const char *message, const std::function<void()>& onConfirm);
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
@@ -111,6 +100,7 @@ public:
     friend class ShadersGUI;
     friend class FileSystemGUI;
     friend class IconsGUI;
+    friend class Mesh3DAnimationDrawerGUI;
 };
 
 #endif //SDL2_3D_ENGINE_GUI_ENGINE_H

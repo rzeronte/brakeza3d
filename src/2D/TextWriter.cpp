@@ -3,6 +3,8 @@
 #include "../../include/Render/TextWriter.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Misc/Logging.h"
 
 TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font)
 :

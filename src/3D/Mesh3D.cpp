@@ -10,6 +10,8 @@
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include <assimp/postprocess.h>
+
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/GUI/Objects/Mesh3DGUI.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 
@@ -60,7 +62,6 @@ GUIType::Sheet Mesh3D::getIcon()
 void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 {
     Logging::Message("[Mesh3D] Loading geometry for %s...", fileName.c_str());
-    std::cout << "AssimpLoadGeometryFromFile: " << fileName.c_str() << std::endl;
 
     if (!Tools::FileExists(fileName.c_str())) {
         Logging::Message("[error] Error import 3D file not exist");
@@ -78,11 +79,11 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     );
 
     if (!scene) {
-        Logging::Message("Error import 3D file for ASSIMP");
+        Logging::Message("[Mesh3D] Error import 3D file for ASSIMP");
         exit(-1);
     }
 
-    Logging::Message("Meshes number: %d", scene->mNumMeshes);
+    Logging::Message("[Mesh3D] Processing %d meshes in file...", scene->mNumMeshes);
     meshes.resize(scene->mNumMeshes);
 
     AssimpInitMaterials(scene);
@@ -534,7 +535,7 @@ void Mesh3D::addCustomShader(ShaderOGLCustom *s)
     customShaders.emplace_back(s);
 }
 
-void Mesh3D::loadShader(const std::string &folder, const std::string &jsonFilename)
+void Mesh3D::LoadShader(const std::string &folder, const std::string &jsonFilename)
 {
     auto name = Tools::getFilenameWithoutExtension(jsonFilename);
 

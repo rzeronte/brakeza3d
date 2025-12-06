@@ -6,6 +6,7 @@
 #include "ImGuizmo.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "imgui_internal.h"
+#include "../../include/Components/ComponentsManager.h"
 
 void Drawable::drawVertex(const Vertex3D &V, Color color)
 {

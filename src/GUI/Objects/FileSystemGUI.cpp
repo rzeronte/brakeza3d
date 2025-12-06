@@ -10,6 +10,11 @@
 #include <string>
 #include <vector>
 
+#include "../../../include/Loaders/ProjectLoader.h"
+#include "../../../include/Loaders/SceneLoader.h"
+#include "../../../include/Misc/Logging.h"
+#include "../../../include/Misc/Tools.h"
+
 void FileSystemGUI::UpdateFolderFiles(GUIManager *gui)
 {
     auto scripts = gui->getBrowserScripts();
@@ -25,6 +30,9 @@ void FileSystemGUI::UpdateFolderFiles(GUIManager *gui)
 
 void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCache &browser)
 {
+    auto windowStatus = gui->getWindowStatus(GUIType::FILES_PROJECTS);
+    if (!windowStatus->isOpen) return;
+
     static char name[256];
     strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
     if (ImGui::InputText("Project name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
@@ -87,6 +95,9 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCach
 
 void FileSystemGUI::DrawScenesFolder(GUIManager *gui, GUIType::FolderBrowserCache &browser)
 {
+    auto windowStatus = gui->getWindowStatus(GUIType::FILES_SCENES);
+    if (!windowStatus->isOpen) return;
+
     static char name[256];
     strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
     if (ImGui::InputText("Scene name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {

@@ -6,7 +6,9 @@
 #include "../../include/Misc/ScriptLUA.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/GUI/Objects/ScriptLuaGUI.h"
+#include "../../include/Misc/Tools.h"
 #include "../../include/Misc/ToolsJSON.h"
 
 ScriptLUA::ScriptLUA(const std::string &script, std::string properties)

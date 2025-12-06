@@ -7,6 +7,7 @@
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/3D/Image3DAnimation360.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 #include "../../include/Serializers/Image3DAnimationSerializer.h"
 

@@ -49,6 +49,9 @@ public:
 
     static void WindowDebugIconsGUI(GUIManager *gui)
     {
+        auto windowStatus = gui->getWindowStatus(GUIType::DEBUG_ICONS);
+        if (!windowStatus->isOpen) return;
+
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "WARNING: Changes affect the entire application in REAL-TIME");
         ImGui::Separator();
 

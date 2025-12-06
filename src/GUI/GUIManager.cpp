@@ -3,11 +3,15 @@
 #include "../../include/GUI/Objects/Object3DGUI.h"
 #include "../../include/GUI/Objects/ShadersGUI.h"
 #include "../../include/GUI/Objects/ScriptLuaGUI.h"
-#include "../../include/GUI/Objects/Mesh3DGUI.h"
+#include "../../include/GUI/Objects/Mesh3DAnimationGUI.h"
 #include "../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../include/GUI/AddOns/GUIConsole.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/GUI/Objects/IconsGUI.h"
+#include "../../include/GUI/AddOns/GUIAddonObject3DProperties.h"
+#include "../../include/GUI/AddOns/GUIAddonObjects3D.h"
+#include "../../include/Render/Profiler.h"
 
 GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 :
@@ -44,7 +48,7 @@ void GUIManager::DrawGUI()
     // On demand
     ShadersGUI::DrawEditShaderWindow(this);
     ScriptLuaGUI::DrawEditScriptWindow(this);
-    Mesh3DGUI::DrawEditBonesMappingWindow(this);
+    Mesh3DAnimationDrawerGUI::DrawEditBonesMappingWindow(this);
     IconsGUI::WindowDebugIconsGUI(this);
 
     DrawRegisteredWindows();
@@ -57,116 +61,25 @@ void GUIManager::DrawGUI()
 
 void GUIManager::RegisterWindows()
 {
-    windows.push_back({ "Project setup", IconGUI::COLLISION_OBJECTS, GUIType::PROJECT_SETTINGS, true, [&] { WindowProjectSettings(); }} );
-    windows.push_back({ "Scene Objects", IconGUI::COLLISION_OBJECTS, GUIType::SCENE_OBJECTS, true, [&] { WindowSceneObjects(); }} );
-    windows.push_back({ "Object Properties", IconGUI::COLLISION_OBJECTS, GUIType::OBJECT_PROPS, true, [&] { WindowSelectedObjectProperties(); }} );
-    windows.push_back({ "Object shaders", IconGUI::COLLISION_OBJECTS, GUIType::OBJECT_SHADERS, false, [&] { WindowSelectedObjectShaders(); }} );
-    windows.push_back({ "Object Scripts", IconGUI::COLLISION_OBJECTS, GUIType::OBJECT_SCRIPTS, false, [&] { WindowSelectedObjectScripts(); }} );
-    windows.push_back({ "Object variables", IconGUI::COLLISION_OBJECTS, GUIType::OBJECT_VARS, false, [&] { WindowSelectedObjectVariables(); }} );
-    windows.push_back({ "Global variables", IconGUI::COLLISION_OBJECTS, GUIType::GLOBAL_VARS, false, [&] { WindowGlobalVars(); }} );
+    windows.push_back({ "Project setup", IconGUI::COLLISION_OBJECTS, GUIType::PROJECT_SETTINGS, true, [&] { widgetProjectSettings->DrawProjectSetupGUI(); }} );
+    windows.push_back({ "Scene Objects", IconGUI::COLLISION_OBJECTS, GUIType::SCENE_OBJECTS, true, [&] { widgetObjects3D->Draw(this); }} );
+    windows.push_back({ "Object Properties", IconGUI::COLLISION_OBJECTS, GUIType::OBJECT_PROPS, true, [&] { widgetObjectProperties->DrawPropertiesBySelectedObject(this); }} );
+    windows.push_back({ "Object shaders", IconGUI::COLLISION_OBJECTS, GUIType::OBJECT_SHADERS, false, [&] { ShadersGUI::DrawShadersBySelectedObject(this); }} );
+    windows.push_back({ "Object Scripts", IconGUI::COLLISION_OBJECTS, GUIType::OBJECT_SCRIPTS, false, [&] { ScriptLuaGUI::DrawScriptsBySelectedObject(this); }} );
+    windows.push_back({ "Object variables", IconGUI::COLLISION_OBJECTS, GUIType::OBJECT_VARS, false, [&] { ScriptLuaGUI::DrawObjectVariables(this); }} );
+    windows.push_back({ "Global variables", IconGUI::COLLISION_OBJECTS, GUIType::GLOBAL_VARS, false, [&] { ScriptLuaGUI::DrawGlobalVariables(this); }} );
     windows.push_back({ "Keyboard/Mouse", IconGUI::COLLISION_OBJECTS, GUIType::KEYBOARD_MOUSE, false, [&] { WindowKeyboardMouseSetup(); }} );
     windows.push_back({ "Images", IconGUI::COLLISION_OBJECTS, GUIType::IMAGES, false, [&] { WindowImages(); }} );
 
-    windows.push_back({ "Projects", IconGUI::COLLISION_OBJECTS, GUIType::FILES_PROJECTS, true, [&] { WindowProjectFiles(); }} );
-    windows.push_back({ "Scenes", IconGUI::COLLISION_OBJECTS, GUIType::FILES_SCENES, true, [&] { WindowSceneFiles(); }} );
-    windows.push_back({ "Scripts", IconGUI::COLLISION_OBJECTS, GUIType::FILES_SCRIPTS, true, [&] { WindowScriptFiles(); }} );
-    windows.push_back({ "Shaders", IconGUI::COLLISION_OBJECTS, GUIType::FILES_SHADERS, true, [&] { WindowShaderFiles(); }} );
+    windows.push_back({ "Projects", IconGUI::COLLISION_OBJECTS, GUIType::FILES_PROJECTS, true, [&] { FileSystemGUI::DrawProjectFiles(this, browserProjects); }} );
+    windows.push_back({ "Scenes", IconGUI::COLLISION_OBJECTS, GUIType::FILES_SCENES, true, [&] { FileSystemGUI::DrawScenesFolder(this, browserScenes); }} );
+    windows.push_back({ "Scripts", IconGUI::COLLISION_OBJECTS, GUIType::FILES_SCRIPTS, true, [&] { ScriptLuaGUI::DrawScriptsLuaFolderFiles(this, browserScripts); }} );
+    windows.push_back({ "Shaders", IconGUI::COLLISION_OBJECTS, GUIType::FILES_SHADERS, true, [&] { ShadersGUI::DrawCustomShadersFolder(this, browserShaders); }} );
 
-    windows.push_back({ "Logging/Console", IconGUI::COLLISION_OBJECTS, GUIType::LOGGING, true, [&] { WindowLogging(); }} );
+    windows.push_back({ "Logging/Console", IconGUI::COLLISION_OBJECTS, GUIType::LOGGING, true, [&] { widgetConsole->Draw(); }} );
     windows.push_back({ "Lights DepthMaps Viewer", IconGUI::COLLISION_OBJECTS, GUIType::DEPTH_LIGHTS_MAPS, false, [&] { WindowLightsDepthMapsViewer(); }} );
     windows.push_back({ "Profiler", IconGUI::COLLISION_OBJECTS, GUIType::PROFILER, false, [] { Profiler::get()->DrawPropertiesGUI(); }} );
-    windows.push_back({ "Debug GUI Icons", IconGUI::COLLISION_OBJECTS, GUIType::DEBUG_ICONS, false, [&] { WindowDebugIcons(); }} );
-}
-
-void GUIManager::WindowDebugIcons()
-{
-    auto windowStatus = GetWindowStatus(GUIType::DEBUG_ICONS);
-    if (!windowStatus->isOpen) return;
-    IconsGUI::WindowDebugIconsGUI(this);
-}
-
-void GUIManager::WindowShaderFiles()
-{
-    auto windowStatus = GetWindowStatus(GUIType::FILES_SHADERS);
-    if (!windowStatus->isOpen) return;
-    ShadersGUI::DrawCustomShadersFolder(this, browserShaders);
-}
-
-void GUIManager::WindowScriptFiles()
-{
-    auto windowStatus = GetWindowStatus(GUIType::FILES_SCRIPTS);
-    if (!windowStatus->isOpen) return;
-    ScriptLuaGUI::DrawScriptsLuaFolderFiles(this, browserScripts);
-}
-
-void GUIManager::WindowSceneFiles()
-{
-    auto windowStatus = GetWindowStatus(GUIType::FILES_SCENES);
-    if (!windowStatus->isOpen) return;
-    FileSystemGUI::DrawScenesFolder(this, browserScenes);
-}
-
-void GUIManager::WindowProjectFiles()
-{
-    auto windowStatus = GetWindowStatus(GUIType::FILES_PROJECTS);
-    if (!windowStatus->isOpen) return;
-    FileSystemGUI::DrawProjectFiles(this, browserProjects);
-}
-
-void GUIManager::WindowSelectedObjectProperties()
-{
-    auto windowStatus = GetWindowStatus(GUIType::OBJECT_PROPS);
-    if (!windowStatus->isOpen) return;
-    widgetObjectProperties->Draw(selectedObjectIndex);
-}
-
-void GUIManager::WindowProjectSettings()
-{
-    auto windowStatus = GetWindowStatus(GUIType::PROJECT_SETTINGS);
-    if (!windowStatus->isOpen) return;
-    widgetProjectSettings->DrawProjectSetupGUI();
-}
-
-void GUIManager::WindowGlobalVars()
-{
-    auto windowStatus = GetWindowStatus(GUIType::GLOBAL_VARS);
-    if (!windowStatus->isOpen) return;
-    ScriptLuaGUI::DrawGlobalVariables();
-}
-
-void GUIManager::WindowSelectedObjectScripts()
-{
-    auto windowStatus = GetWindowStatus(GUIType::OBJECT_SCRIPTS);
-    if (!windowStatus->isOpen) return;
-    ScriptLuaGUI::DrawScriptsBySelectedObject(this);
-}
-
-void GUIManager::WindowSelectedObjectVariables()
-{
-    auto windowStatus = GetWindowStatus(GUIType::OBJECT_VARS);
-    if (!windowStatus->isOpen) return;
-    ScriptLuaGUI::DrawObjectVariables(this);
-}
-
-void GUIManager::WindowSelectedObjectShaders()
-{
-    auto windowStatus = GetWindowStatus(GUIType::OBJECT_SHADERS);
-    if (!windowStatus->isOpen) return;
-    ShadersGUI::DrawShadersBySelectedObject(this);
-}
-
-void GUIManager::WindowSceneObjects()
-{
-    auto windowStatus = GetWindowStatus(GUIType::SCENE_OBJECTS);
-    if (!windowStatus->isOpen) return;
-    widgetObjects3D->Draw(selectedObjectIndex);
-}
-
-void GUIManager::WindowLogging()
-{
-    auto windowStatus = GetWindowStatus(GUIType::Window::LOGGING);
-    if (!windowStatus->isOpen) return;
-    widgetConsole->Draw(windowStatus->label.c_str(), &windowStatus->isOpen);
+    windows.push_back({ "Debug GUI Icons", IconGUI::COLLISION_OBJECTS, GUIType::DEBUG_ICONS, false, [&] { IconsGUI::WindowDebugIconsGUI(this); }} );
 }
 
 void GUIManager::DrawRegisteredWindows()
@@ -222,7 +135,7 @@ GuiAddonConsole *GUIManager::getConsole() const
 
 bool GUIManager::isLightDepthMapsViewerWindowOpen()
 {
-    auto windowStatus = GetWindowStatus(GUIType::DEPTH_LIGHTS_MAPS);
+    auto windowStatus = getWindowStatus(GUIType::DEPTH_LIGHTS_MAPS);
 
     return windowStatus->isOpen;
 }
@@ -269,7 +182,7 @@ void GUIManager::ShowDeletePopup(const char* title, const char *message, const s
 
 void GUIManager::WindowKeyboardMouseSetup()
 {
-    auto windowStatus = GetWindowStatus(GUIType::KEYBOARD_MOUSE);
+    auto windowStatus = getWindowStatus(GUIType::KEYBOARD_MOUSE);
     if (!windowStatus->isOpen) return;
 
     auto input = ComponentsManager::get()->getComponentInput();
@@ -340,9 +253,14 @@ GUIType::FolderBrowserCache GUIManager::getBrowserShaders() const
     return browserShaders;
 }
 
+int& GUIManager::selectedObjectIndexPointer()
+{
+    return selectedObjectIndex;
+}
+
 void GUIManager::WindowImages()
 {
-    auto windowStatus = GetWindowStatus(GUIType::IMAGES);
+    auto windowStatus = getWindowStatus(GUIType::IMAGES);
     if (!windowStatus->isOpen) return;
 
     static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame;
@@ -421,7 +339,7 @@ void GUIManager::OpenBoneInfoDialog()
 
 void GUIManager::WindowLightsDepthMapsViewer()
 {
-    auto windowStatus = GetWindowStatus(GUIType::DEPTH_LIGHTS_MAPS);
+    auto windowStatus = getWindowStatus(GUIType::DEPTH_LIGHTS_MAPS);
     if (!windowStatus->isOpen) return;
 
     SetNextWindowSize(350, 400);
@@ -510,7 +428,7 @@ void GUIManager::DrawSplash()
     );
 }
 
-GUIType::WindowData* GUIManager::GetWindowStatus(GUIType::Window window)
+GUIType::WindowData* GUIManager::getWindowStatus(GUIType::Window window)
 {
     for (auto& status : windows) {
         if (status.window == window) {
