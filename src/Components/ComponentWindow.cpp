@@ -10,6 +10,7 @@
 #include "../imgui/backends/imgui_impl_opengl3.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Components/ComponentsManager.h"
 
 ComponentWindow::ComponentWindow()
 :

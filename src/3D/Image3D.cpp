@@ -64,7 +64,7 @@ void Image3D::onUpdate()
     if (!image->isLoaded() || !isEnabled()) return;
 
     if (towardsCamera) {
-        lookAtBillboard(ComponentsManager::get()->getComponentCamera()->getCamera());
+        LookAtBillboard();
     }
 
     auto render = ComponentsManager::get()->getComponentRender();
@@ -283,8 +283,9 @@ void Image3D::shadowMappingPass()
     }
 }
 
-void Image3D::lookAtBillboard(Object3D *o)
+void Image3D::LookAtBillboard()
 {
+    auto o = ComponentsManager::get()->getComponentCamera()->getCamera();
     Vertex3D direction = (o->getPosition() - position).getNormalize();
 
     Vertex3D horizontalDirection = Vertex3D(direction.x, direction.y, 0).getNormalize();

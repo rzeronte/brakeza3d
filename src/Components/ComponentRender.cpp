@@ -4,6 +4,7 @@
 #include "../../include/OpenGL/ShaderOGLCustomPostprocessing.h"
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
+#include "../../include/Render/Profiler.h"
 #include "../../include/Render/Transforms.h"
 
 ComponentRender::ComponentRender()

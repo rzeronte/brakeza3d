@@ -267,6 +267,11 @@ add_executable(Brakeza3D
         src/GUI/GUI.cpp
         include/GUI/Objects/IconsGUI.h
         include/GUI/Objects/IconsGUI.h
+        include/GUI/AddOns/GUIAddonObject3DProperties.cpp
+        include/GUI/AddOns/GUIAddonProjectSetup.cpp
+        include/GUI/AddOns/GUIAddonObjects3D.cpp
+        include/GUI/AddOns/GUIConsole.cpp
+        src/GUI/Objects/Mesh3DGUIAnimation.cpp
 )
 
 target_link_libraries(Brakeza3D

@@ -4,6 +4,8 @@
 #include "../imgui/backends/imgui_impl_opengl3.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
 #include "../cxxxopts/cxxxopts.h"
+#include "../include/Components/ComponentsManager.h"
+#include "../include/Render/Profiler.h"
 
 Brakeza *Brakeza::instance = nullptr;
 

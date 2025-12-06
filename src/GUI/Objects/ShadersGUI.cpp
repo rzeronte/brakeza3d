@@ -10,6 +10,9 @@
 #include <string>
 #include <vector>
 
+#include "../../../include/Components/ComponentsManager.h"
+#include "../../../include/Misc/Tools.h"
+
 void ShadersGUI::DrawEditShaderWindow(GUIManager *gui)
 {
     if (!gui->showEditShaderWindow) return;
@@ -120,6 +123,9 @@ void ShadersGUI::DrawShaderVariables(GUIManager *gui)
 
 void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, GUIType::FolderBrowserCache &browser)
 {
+    auto windowStatus = gui->getWindowStatus(GUIType::FILES_SHADERS);
+    if (!windowStatus->isOpen) return;
+
     static char name[256];
     strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
     if (ImGui::InputText("Shader name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
@@ -197,6 +203,9 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, GUIType::FolderBrowser
 
 void ShadersGUI::DrawShadersBySelectedObject(GUIManager *gui)
 {
+    auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_SHADERS);
+    if (!windowStatus->isOpen) return;
+
     bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < gui->gameObjects.size();
 
     if (!hasSelectedIndex) {

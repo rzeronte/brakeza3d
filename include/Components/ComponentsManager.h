@@ -9,7 +9,6 @@
 #include "ComponentSound.h"
 #include "ComponentWindow.h"
 #include "ComponentScripting.h"
-#include "../Render/Profiler.h"
 
 enum ComponentID {
     COMPONENT_WINDOW = 0,

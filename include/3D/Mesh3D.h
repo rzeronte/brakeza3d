@@ -77,7 +77,7 @@ public:
     void buildGrid3D(int sizeX, int sizeY, int sizeZ);
     void fillGrid3DFromGeometry();
     void addCustomShader(ShaderOGLCustom *);
-    void loadShader(const std::string &folder, const std::string &jsonFilename);
+    void LoadShader(const std::string &folder, const std::string &jsonFilename);
     void removeShader(int i);
     virtual void ShadowMappingPass();
     virtual void UpdateBoundingBox();

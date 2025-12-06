@@ -7,6 +7,7 @@
 #include <glm/detail/func_trigonometric.inl>
 #include "../../include/3D/LightSpot.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Serializers/LightPointSerializer.h"

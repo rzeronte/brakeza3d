@@ -47,7 +47,7 @@ public:
 
     void shadowMappingPass();
 
-    void lookAtBillboard(Object3D *o);
+    void LookAtBillboard();
 
     [[nodiscard]] GLuint getVertexBuffer() const;
     [[nodiscard]] GLuint getNormalBuffer() const;

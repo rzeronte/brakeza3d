@@ -9,6 +9,7 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/ComponentsManager.h"
 #include "../../include/Brakeza.h"
+#include "../../include/GUI/Objects/FileSystemGUI.h"
 
 ShaderOGLCustom::ShaderOGLCustom(
     std::string label,

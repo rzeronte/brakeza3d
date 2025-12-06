@@ -25,17 +25,17 @@ GUIAddonMenu::GUIAddonMenu(std::vector<GUIType::WindowData> &windowStatus)
     windowStatus(windowStatus)
 {
     menus = {
-        {"Brakeza3D", [this] { this->MenuBrakeza3D(); }},
-        {"Script Controls", [this] { this->MenuScriptControls(); }},
-        {"Add Object", [this] { this->MenuAddObject(); }},
-        {"Video", [this] { this->MenuVideo(); }},
-        {"Colliders", [this] { this->MenuColliders(); }},
-        {"Illumination", [this] { this->MenuIllumination(); }},
-        {"Camera",[this] { this->MenuCamera(); }},
-        {"Sound", [this] { this->MenuSound(); }},
-        {"Logging", [this] { this->MenuLogging(); }},
-        {"Layout", [this] { this->MenuLayout(); }},
-        {"Window", [this] { this->MenuWindow(); }},
+        {"Brakeza3D", IconGUI::ABOUT_ME, [&] { MenuBrakeza3D(); }},
+        {"Script Controls", IconGUI::ABOUT_ME, [&] { MenuScriptControls(); }},
+        {"Add Object", IconGUI::ABOUT_ME, [&] { MenuAddObject(); }},
+        {"Video", IconGUI::ABOUT_ME, [&] { MenuVideo(); }},
+        {"Colliders", IconGUI::ABOUT_ME, [&] { MenuColliders(); }},
+        {"Illumination", IconGUI::ABOUT_ME, [&] { MenuIllumination(); }},
+        {"Camera", IconGUI::ABOUT_ME, [&] { MenuCamera(); }},
+        {"Sound", IconGUI::ABOUT_ME, [&] { MenuSound(); }},
+        {"Logging", IconGUI::ABOUT_ME,  [&] { MenuLogging(); }},
+        {"Layout", IconGUI::ABOUT_ME, [&] { MenuLayout(); }},
+        {"Window", IconGUI::ABOUT_ME, [&] { MenuWindow(); }},
     };
 }
 

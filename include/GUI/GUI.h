@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 #include "imgui.h"
+#include "../Misc/ScriptLUA.h"
+#include "../OpenGL/ShaderOGLCustom.h"
 
 namespace GUIType
 {
@@ -97,6 +99,7 @@ namespace GUIType
 
     struct MenuItem {
         std::string label;
+        Sheet icon;
         std::function<void()> cb;
     };
 
@@ -105,6 +108,22 @@ namespace GUIType
         Sheet* icon;
         Sheet original;
     };
+
+    struct ScriptEditableManager {
+        std::string selectedScriptFilename;
+        ScriptLUA *script = nullptr;
+        char editableSource[1024 * 16];
+    };
+
+    struct ShaderEditableManager {
+        bool loaded = false;
+        std::string folder;
+        std::string name;
+        ShaderOGLCustom *shader = nullptr;
+        char editableSourceVS[1024 * 16];
+        char editableSourceFS[1024 * 16];
+    };
+
 }
 
 // ===== DEFINICIÓN ÚNICA DE ICONOS OBJECT =====
@@ -170,7 +189,8 @@ namespace GUIType
     X(PROFILER, 10, 26) \
     X(COLLISION_OBJECTS, 8, 13) \
     X(ABOUT_ME, 15, 27) \
-    X(EXIT, 0, 10)
+    X(EXIT, 0, 10) \
+    X(MENU_TEST, 0, 0)
 
 // Icons Objects
 namespace IconObject {
@@ -180,7 +200,7 @@ namespace IconObject {
     #undef DECLARE_ICON
 
     // Contar iconos
-    #define COUNT_ICONS(...) +1
+    #define COUNT_ICONS(...) + 1
     inline constexpr size_t ICON_COUNT = 0 ICON_OBJECT_LIST(COUNT_ICONS);
     #undef COUNT_ICONS
 
@@ -199,17 +219,14 @@ namespace IconGUI {
     #undef DECLARE_ICON
 
     // Contar iconos
-    #define COUNT_ICONS(...) +1
+    #define COUNT_ICONS(...) + 1
     inline constexpr size_t ICON_COUNT = 0 ICON_GUI_LIST(COUNT_ICONS);
     #undef COUNT_ICONS
 
-    // Array de metadatos para el editor
     extern GUIType::IconEntry ALL_ICONS_EDITOR[ICON_COUNT];
 
-    // Función para resetear
     void ResetToDefault();
 
-    // GUI Properties features for each object
     struct ObjectGUIFeatures {
         bool position = true;
         bool rotation = true;

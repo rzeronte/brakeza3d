@@ -11,6 +11,7 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Components/ComponentsManager.h"
 
 BSPMap::BSPMap() : frameTriangles(nullptr) {
     setDecal(false);

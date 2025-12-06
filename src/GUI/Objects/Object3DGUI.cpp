@@ -4,6 +4,9 @@
 
 #include "../../../include/GUI/Objects/Object3DGUI.h"
 
+#include "../../../include/Components/ComponentsManager.h"
+#include "../../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../../include/Misc/Logging.h"
 #include "../../../include/Misc/ToolsMaths.h"
 #include "../include/Render/Drawable.h"
 

@@ -1,0 +1,40 @@
+//
+// Created by Eduardo on 06/12/2025.
+//
+
+#include "GUIAddonObject3DProperties.h"
+
+#include "../../Brakeza.h"
+#include "../../Components/ComponentsManager.h"
+
+GUIAddonObject3DProperties::GUIAddonObject3DProperties(std::vector<Object3D *> &gameObjects, GUIType::ScriptEditableManager &scriptEditableManager)
+:
+    gameObjects(gameObjects),
+    scriptEditableManager(scriptEditableManager)
+{
+}
+
+void GUIAddonObject3DProperties::DrawPropertiesBySelectedObject(GUIManager *gui)
+{
+    auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_PROPS);
+    if (!windowStatus->isOpen) return;
+    auto o = ComponentsManager::get()->getComponentRender()->getSelectedObject();
+
+
+    if (o == nullptr) {
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
+        return;
+    }
+
+    if (o->isRemoved()) {
+        return;
+    }
+
+    o->DrawPropertiesGUI();
+    ImGui::Separator();
+    ImGui::Button("Remove");
+    if (ImGui::IsItemClicked()) {
+        o->setRemoved(true);
+    }
+    ImGui::SameLine();
+}

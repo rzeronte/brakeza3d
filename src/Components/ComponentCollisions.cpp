@@ -1,7 +1,9 @@
 #include "../../include/Components/ComponentCollisions.h"
 #include "../../include/Brakeza.h"
 #include "../../include/3D/Projectile.h"
+#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Render/CollisionInfo.h"
+#include "../../include/Misc/Logging.h"
 
 ComponentCollisions::ComponentCollisions()
     :

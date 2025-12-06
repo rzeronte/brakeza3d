@@ -3,7 +3,6 @@
 #define BRAKEDA3D_ANIMATEDSPRITE_H
 
 #include "Object3D.h"
-#include "../Components/Camera3D.h"
 #include "../Render/TextureAnimated.h"
 #include "Image3D.h"
 #include <vector>
