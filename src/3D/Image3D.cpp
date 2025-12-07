@@ -286,13 +286,19 @@ void Image3D::shadowMappingPass()
 void Image3D::LookAtBillboard()
 {
     auto o = ComponentsManager::get()->getComponentCamera()->getCamera();
+
+    // Dirección de la imagen hacia la cámara
     Vertex3D direction = (o->getPosition() - position).getNormalize();
 
-    Vertex3D horizontalDirection = Vertex3D(direction.x, direction.y, 0).getNormalize();
-    Vertex3D upVector = Vertex3D(0, 0, 1);
-    Vertex3D rightVector = upVector % horizontalDirection;
+    // Proyectar la dirección en el plano horizontal (XY)
+    Vertex3D forward = Vertex3D(direction.x, direction.y, 0).getNormalize();
 
-    Vertex3D correctedForward = rightVector % upVector;
+    // Vector arriba fijo (siempre apuntando en Z positivo)
+    Vertex3D upVector = Vertex3D(0, 1, 0);
 
-    setRotation(M3::getFromVectors(correctedForward, upVector));
+    // Vector derecha (perpendicular a forward y up)
+    Vertex3D rightVector = forward % upVector;
+
+    // Establecer la rotación con los vectores corregidos
+    setRotation(M3::getFromVectors(forward, upVector));
 }

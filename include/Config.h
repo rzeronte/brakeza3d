@@ -57,7 +57,7 @@ public:
     std::string SCENES_EXT      = "json";
     std::string SHADERS_EXT     = "json";
     std::string PROJECTS_EXT    = "json";
-    std::string IMAGES_EXT     = "png";
+    std::string IMAGES_EXT      = "png";
     std::string MESH3D_EXT      = "fbx";
 
     // GLOBAL AXIS DIRECTIONS
@@ -220,7 +220,7 @@ public:
         const char* file;
     };
 
-    enum ShaderSystemVariables{
+    enum ShaderSystemVariables {
         deltaTime = 0,
         executionTime = 1,
         diffuse = 2,
@@ -285,21 +285,6 @@ public:
         GL_ONE_MINUS_CONSTANT_COLOR,
         GL_CONSTANT_ALPHA,
         GL_ONE_MINUS_CONSTANT_ALPHA
-    };
-
-    enum class ObjectTypes {
-        Object3D,
-        Mesh3D,
-        Mesh3DAnimation,
-        LightPoint3D,
-        SpotLight3D,
-        ParticleEmitter,
-        BillboardAnimation,
-        BillboardAnimation8Directions,
-        Image2DAnimation,
-        Image3D,
-        Image2D,
-        Swarm
     };
 };
 

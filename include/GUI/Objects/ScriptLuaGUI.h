@@ -19,7 +19,7 @@ public:
     static void DrawEditScriptWindow(GUIManager *gui);
     static void DrawObjectVariables(GUIManager *gui);
     static void DrawGlobalVariables(GUIManager *gui);
-    static void drawScriptVariables(GUIManager *gui);
+    static void DrawScriptVariables(GUIManager *gui);
 
 };
 

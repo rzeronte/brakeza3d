@@ -5,7 +5,7 @@
 void Logging::Message(const char *message, ...)
 {
     if (Brakeza::get()->GUI() != nullptr) {
-        Brakeza::get()->GUI()->getConsole()->setLogIcon(IconGUI::ADD);
+        Brakeza::get()->GUI()->getConsole()->setLogIcon(IconGUI::LOGGING_MSG_OK);
     }
 
     va_list args;
@@ -49,7 +49,7 @@ void Logging::Output(const char *message, ...)
 void Logging::Error(const char *error, ...)
 {
     if (Brakeza::get()->GUI() != nullptr) {
-        Brakeza::get()->GUI()->getConsole()->setLogIcon(IconGUI::EXIT);
+        Brakeza::get()->GUI()->getConsole()->setLogIcon(IconGUI::LOGGING_MSG_ERROR);
     }
     
     va_list args;

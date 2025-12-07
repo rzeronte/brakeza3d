@@ -17,15 +17,16 @@
 
 void FileSystemGUI::UpdateFolderFiles(GUIManager *gui)
 {
+    Logging::Message("Updating folder files");
     auto scripts = gui->getBrowserScripts();
     auto scenes = gui->getBrowserScenes();
     auto shaders = gui->getBrowserShaders();
     auto projects = gui->getBrowserProjects();
 
     scripts.folderFiles = Tools::getFolderFiles(scripts.currentFolder, Config::get()->SCRIPTS_EXT);
-    scenes.folderFiles = Tools::getFolderFiles(scripts.currentFolder, Config::get()->SCENES_EXT);
-    shaders.folderFiles = Tools::getFolderFiles(scripts.currentFolder, Config::get()->SHADERS_EXT);
-    projects.folderFiles = Tools::getFolderFiles(scripts.currentFolder, Config::get()->PROJECTS_EXT);
+    scenes.folderFiles = Tools::getFolderFiles(scenes.currentFolder, Config::get()->SCENES_EXT);
+    shaders.folderFiles = Tools::getFolderFiles(shaders.currentFolder, Config::get()->SHADERS_EXT);
+    projects.folderFiles = Tools::getFolderFiles(projects.currentFolder, Config::get()->PROJECTS_EXT);
 }
 
 void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCache &browser)
@@ -39,7 +40,7 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCach
         gui->currentVariableToCreateCustomShader = name;
     }
 
-    GUI::DrawButton("Create Project", IconGUI::OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+    GUI::DrawButton("Create Project", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
             ProjectLoader::CreateProject(browser.currentFolder + gui->currentVariableToCreateCustomShader);
             browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->PROJECTS_EXT);
@@ -60,31 +61,24 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCach
             if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                 ImGui::TableSetColumnIndex(0);
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 4, ImGui::GetCursorPosY() + 5.0f));
-                ImGui::Image(Icon(IconGUI::PROJECT), ImVec2(24, 24));
+                ImGui::Image(Icon(IconGUI::PROJECT_FILE), GUIType::Sizes::ICONS_BROWSERS);
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY()));
                 ImGui::Text("%s", title.c_str());
 
                 ImGui::TableSetColumnIndex(1);
-                GUI::DrawButton("Open project", IconGUI::OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+                GUI::DrawButtonTransparent("Open project", IconGUI::PROJECT_OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                     ProjectLoader::LoadProject(browser.currentFolder + file);
                 });
                 ImGui::SameLine();
-                if (ImGui::ImageButton(Icon(IconGUI::SAVE), ImVec2(14, 14))) {
-                    ImGui::OpenPopup("##Override project");
-                }
-                ImGui::SetItemTooltip("Override project");
-                GUIManager::ShowDeletePopup("##Override project", "Are you sure to override project?", [&] () {
+                GUI::DrawButtonConfirm("Override project", "Are you sure to override project?", GUIType::Sizes::ICONS_BROWSERS, [&] {
                     ProjectLoader::SaveProject(browser.currentFolder + file);
                 });
+
                 ImGui::SameLine();
-                if (ImGui::ImageButton(Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
-                    ImGui::OpenPopup("##Deleting project");
-                }
-                ImGui::SetItemTooltip("Delete project");
-                GUIManager::ShowDeletePopup("##Deleting project", "Are you sure to delete?", [&] () {
+                GUI::DrawButtonConfirm("Deleting project", "Are you sure to delete project?", GUIType::Sizes::ICONS_BROWSERS, [&] {
                     ProjectLoader::RemoveProject(browser.currentFolder + file);
-                    UpdateFolderFiles(gui);
+                    browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
                 });
             }
             ImGui::PopID();
@@ -104,7 +98,7 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, GUIType::FolderBrowserCach
         gui->currentVariableToCreateCustomShader = name;
     }
 
-    GUI::DrawButton("Create scene", IconGUI::OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+    GUI::DrawButton("Create scene", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
             SceneLoader::CreateScene(browser.currentFolder + gui->currentVariableToCreateCustomShader);
             browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCENES_EXT);
@@ -124,39 +118,30 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, GUIType::FolderBrowserCach
             ImGui::TableNextRow();
             const auto& file = files[i];
             auto fullPath = browser.currentFolder + file;
-            ImGui::PushID(std::string(file + std::to_string(i)).c_str());
+            ImGui::PushID(i);
 
             auto title = std::to_string(i + 1) + ") " + file;
             if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
                 ImGui::TableSetColumnIndex(0);
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 4, ImGui::GetCursorPosY() + 5.0f));
-                ImGui::Image(Icon(IconGUI::SCENE), ImVec2(24, 24));
+                ImGui::Image(Icon(IconGUI::SCENE_FILE), GUIType::Sizes::ICONS_BROWSERS);
                 ImGui::SameLine();
                 ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY()));
                 ImGui::Text("%s", title.c_str());
 
                 ImGui::TableSetColumnIndex(1);
-                GUI::DrawButton("Load scene", IconGUI::OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+                GUI::DrawButtonTransparent("Load scene", IconGUI::SCENE_LOAD, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                     SceneLoader::ClearScene();
                     SceneLoader::LoadScene(browser.currentFolder + file);
                 });
                 ImGui::SameLine();
-                if (ImGui::ImageButton(Icon(IconGUI::SAVE), ImVec2(14, 14))) {
-                    ImGui::OpenPopup("##Overriding scene");
-                }
-                ImGui::SetItemTooltip("Override scene");
-                GUIManager::ShowDeletePopup("##Overriding scene", "Are you sure to override scene?", [&] () {
+                GUI::DrawButtonConfirm("Overriding scene", "Are you sure to override scene?", GUIType::Sizes::ICONS_BROWSERS, [&] {
                     SceneLoader::SaveScene(browser.currentFolder + file);
                 });
                 ImGui::SameLine();
-                if (ImGui::ImageButton(Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
-                    ImGui::OpenPopup("##Deleting scene");
-                }
-                ImGui::SetItemTooltip("Delete scene");
-                GUIManager::ShowDeletePopup("##Deleting scene", "Are you sure to delete?", [browser, file, gui] () {
-                    Logging::Message("popup on");
+                GUI::DrawButtonConfirm("Deleting scene", "Are you sure to delete scene?", GUIType::Sizes::ICONS_BROWSERS, [&] {
                     SceneLoader::RemoveScene(browser.currentFolder + file);
-                    UpdateFolderFiles(gui);
+                    browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
                 });
             }
             ImGui::PopID();
@@ -167,7 +152,7 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, GUIType::FolderBrowserCach
 
 void FileSystemGUI::DrawBrowserFolders(
     GUIManager *gui,
-    std::string& folderBase,
+    std::string& baseFolder,
     GUIType::FolderBrowserCache &browser,
     std::string ext
 )
@@ -176,7 +161,7 @@ void FileSystemGUI::DrawBrowserFolders(
 
     ImGui::Separator();
 
-    if (browser.currentFolder != folderBase) {
+    if (browser.currentFolder != baseFolder) {
         ImGui::Image(Icon(IconGUI::FOLDER), ImVec2(24, 24));
         ImGui::SameLine();
         if (ImGui::Button("..")) {
@@ -186,13 +171,13 @@ void FileSystemGUI::DrawBrowserFolders(
         }
     }
 
-    ImGui::Image(Icon(IconGUI::FOLDER), ImVec2(24, 24));
+    ImGui::Image(Icon(IconGUI::FOLDER), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
     ImGui::Text(".");
 
     for (const auto & i : browser.folderFolders) {
         auto fullPathFolder = browser.currentFolder + i;
-        ImGui::Image(Icon(IconGUI::FOLDER), ImVec2(24, 24));
+        ImGui::Image(Icon(IconGUI::FOLDER), GUIType::Sizes::ICONS_BROWSERS);
         ImGui::SameLine();
         if (ImGui::Button(i.c_str())) {
             browser.currentFolder = fullPathFolder + "/";
@@ -204,7 +189,7 @@ void FileSystemGUI::DrawBrowserFolders(
 
 void FileSystemGUI::LoadImagesFolder(GUIManager *gui)
 {
-    auto images = Tools::getFolderFiles(Config::get()->IMAGES_FOLDER, "png");
+    auto images = Tools::getFolderFiles(Config::get()->IMAGES_FOLDER, Config::get()->IMAGES_EXT);
 
     for (const auto& f: images) {
         gui->imagesFolder.addItem(Config::get()->IMAGES_FOLDER + f, f);

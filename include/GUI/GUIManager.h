@@ -82,7 +82,6 @@ public:
     [[nodiscard]] GUIType::FolderBrowserCache getBrowserProjects() const;
     [[nodiscard]] GUIType::FolderBrowserCache getBrowserShaders() const;
     [[nodiscard]] int& selectedObjectIndexPointer();
-    static void ShowDeletePopup(const char* title, const char *message, const std::function<void()>& onConfirm);
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
     static void WelcomeMessage();

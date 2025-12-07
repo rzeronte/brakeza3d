@@ -48,6 +48,11 @@ int TextureAtlas::getTotalImages() const
     return numColumns * numRows;
 }
 
+bool TextureAtlas::isSafeIconCoords(int x, int y) const
+{
+    return (x < 0 || x >= numColumns || y < 0 || y >= numRows) ;
+}
+
 void TextureAtlas::CreateFromSheet(const std::string &file, int spriteWidth, int spriteHeight)
 {
     Logging::Message("TextureAtlas createFromSheet: %s, w: %d, h: %d", file.c_str(), spriteWidth, spriteHeight);
