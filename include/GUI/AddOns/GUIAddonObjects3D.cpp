@@ -55,7 +55,7 @@ void GUIAddonObjects3D::DrawSceneObjects(GUIManager *gui)
 
         //auto projectile = dynamic_cast<Projectile3DBody*> (o);
         //if (projectile != nullptr) continue;
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));
         ImGui::Checkbox(std::string("##"+ std::to_string(o->getId())).c_str(), &o->isEnabled());
         ImGui::PopStyleVar(2); // Pop 2 variables

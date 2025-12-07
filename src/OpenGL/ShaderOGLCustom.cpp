@@ -105,9 +105,9 @@ void ShaderOGLCustom::setDataTypesFromJSON(cJSON *typesJSON)
 
         if (!existDataType(name, type)){
             addDataType(name, type, value);
-            Logging::Message("Loading shader variable (%s, %s)", name, type);
+            Logging::Message("[ShaderOGLCustom] Loading shader variable (%s, %s)", name, type);
         } else {
-            Logging::Message("Keeping shader variable (%s, %s)", name, type);
+            Logging::Message("[ShaderOGLCustom] Keeping shader variable (%s, %s)", name, type);
         }
     }
 }

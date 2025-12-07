@@ -183,11 +183,11 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, GUIType::FolderBrowser
                 ImGui::EndDragDropSource();
             }
             ImGui::TableSetColumnIndex(1);
-            GUI::DrawButtonTransparent("Load shader into scene", IconGUI::SHADER_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+            GUI::DrawButtonTransparent("Load shader into scene", IconGUI::SHADER_LOAD, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 ComponentsManager::get()->getComponentRender()->loadShaderIntoScene(browser.currentFolder, file);
             });
             ImGui::TableSetColumnIndex(2);
-            GUI::DrawButtonConfirm("Deleting shader", "Are you sure to delete shader?", GUIType::Sizes::ICONS_BROWSERS, [&] {
+            GUI::DrawButtonConfirm("Deleting shader", "Are you sure to delete shader?", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
                 ShaderOGLCustom::RemoveCustomShaderFiles(browser.currentFolder,  Tools::getFilenameWithoutExtension(file));
                 browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
             });

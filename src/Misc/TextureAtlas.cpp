@@ -50,12 +50,12 @@ int TextureAtlas::getTotalImages() const
 
 bool TextureAtlas::isSafeIconCoords(int x, int y) const
 {
-    return (x < 0 || x >= numColumns || y < 0 || y >= numRows) ;
+    return (x >= 0 && x < numColumns && y >= 0 && y < numRows);
 }
 
 void TextureAtlas::CreateFromSheet(const std::string &file, int spriteWidth, int spriteHeight)
 {
-    Logging::Message("TextureAtlas createFromSheet: %s, w: %d, h: %d", file.c_str(), spriteWidth, spriteHeight);
+    Logging::Message("[TextureAtlas] createFromSheet: %s, w: %d, h: %d", file.c_str(), spriteWidth, spriteHeight);
 
     if (!Tools::FileExists(file.c_str())) {
         Logging::Message("[TextureAtlas] Failed to load sprite sheet: %s", SDL_GetError());

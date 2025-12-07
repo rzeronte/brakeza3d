@@ -23,12 +23,12 @@ void Image3DAnimation::onUpdate()
 
     ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->render(
         this,
-        static_cast<int>(getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID()),
-        static_cast<int>(getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID()),
+        getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
+        getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
         billboard->getVertexBuffer(),
         billboard->getUVBuffer(),
         billboard->getNormalBuffer(),
-        static_cast<int>(billboard->getVertices().size()),
+        billboard->getVertices().size(),
         1.0f,
         ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
     );
@@ -39,7 +39,7 @@ void Image3DAnimation::onUpdate()
             billboard->getVertexBuffer(),
             billboard->getUVBuffer(),
             billboard->getNormalBuffer(),
-            static_cast<int>(billboard->getVertices().size()),
+            billboard->getVertices().size(),
             Color::gray(),
             ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
         );
@@ -58,7 +58,7 @@ void Image3DAnimation::setAnimation(int value)
 
 void Image3DAnimation::updateTexture()
 {
-    if (static_cast<int>(animations.size()) == 0) return;
+    if (animations.empty()) return;
 
     getCurrentTextureAnimation()->counter.update();
 

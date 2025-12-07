@@ -280,7 +280,13 @@ namespace GUIType
     X(SHADER_LOAD, 0, 0) \
     X(SHADER_LOCK, 0, 0) \
     X(SHADER_UNLOCK, 0, 0) \
-    X(SHADER_RELOAD, 0, 0)
+    X(SHADER_RELOAD, 0, 0) \
+    X(SCRIPT_RELOAD, 0, 0) \
+    X(PROJECT_REMOVE, 0, 0) \
+    X(SCENE_REMOVE, 0, 0) \
+    X(SCRIPT_REMOVE, 0, 0) \
+    X(SHADER_REMOVE, 0, 0) \
+    X(OBJECT_REMOVE_SCENE, 0, 0)
 
 // Icons Objects
 namespace IconObject {
@@ -338,7 +344,7 @@ public:
     static void DrawButtonTransparent(const std::string &tooltip, GUIType::Sheet icon, ImVec2 size, bool active, const std::function<void()> &cb);
     static void ShowPopUp(const char* title, const char *message, const std::function<void()>& onConfirm);
 
-    static void DrawButtonConfirm(const std::string &title, const std::string &question, ImVec2 size, const std::function<void()>& cb);
+    static void DrawButtonConfirm(const std::string &title, const std::string &question, GUIType::Sheet icon, ImVec2 size, const std::function<void()>& cb);
 
     static void Toggle(bool &value);
     static void ImGuiSetColors();
