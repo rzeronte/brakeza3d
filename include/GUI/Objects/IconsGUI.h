@@ -72,73 +72,107 @@ public:
             ImGui::Text("%s", text);
         };
 
-        // ===== ICONOS GUI =====
-        if (ImGui::CollapsingHeader("GUI Icons")) {
+if (ImGui::CollapsingHeader("GUI Icons")) {
             ImGui::Text("Total: %zu icons", IconGUI::ICON_COUNT);
+
+            // Filtro por nombre
+            static char filterGUI[128] = "";
+            ImGui::SetNextItemWidth(300);
+            ImGui::InputText("Filter by name##GUI", filterGUI, IM_ARRAYSIZE(filterGUI));
+            ImGui::SameLine();
+            if (ImGui::Button("Clear##GUI")) {
+                filterGUI[0] = '\0';
+            }
 
             if (ImGui::BeginTable("IconGUITable", COLUMNS_PER_ROW, ImGuiTableFlags_Borders | ImGuiTableFlags_SizingStretchSame)) {
                 size_t iconIndex = 0;
+                int displayedIcons = 0;
+
                 while (iconIndex < IconGUI::ICON_COUNT) {
-                    ImGui::TableNextRow();
+                    // Aplicar filtro
+                    if (filterGUI[0] != '\0') {
+                        const char* iconName = IconGUI::ALL_ICONS_EDITOR[iconIndex].name;
+                        bool matches = false;
 
-                    for (int col = 0; col < COLUMNS_PER_ROW && iconIndex < IconGUI::ICON_COUNT; col++, iconIndex++) {
-                        ImGui::TableNextColumn();
-                        ImGui::PushID(static_cast<int>(iconIndex + 1000));
-                        ImGui::Dummy(ImVec2(0.0f, 6.0f));
+                        // Búsqueda case-insensitive
+                        std::string nameUpper = iconName;
+                        std::string filterUpper = filterGUI;
+                        std::transform(nameUpper.begin(), nameUpper.end(), nameUpper.begin(), ::toupper);
+                        std::transform(filterUpper.begin(), filterUpper.end(), filterUpper.begin(), ::toupper);
 
-                        auto& icon = *IconGUI::ALL_ICONS_EDITOR[iconIndex].icon;
-
-                        // Centrar imagen
-                        CenterImage(FileSystemGUI::Icon(icon), ImVec2(32, 32));
-
-                        // Centrar nombre
-                        CenterText(IconGUI::ALL_ICONS_EDITOR[iconIndex].name);
-
-                        ImGui::Separator();
-
-                        // Fila X: centrar todo el grupo (texto + botones)
-                        char xLabel[32];
-                        snprintf(xLabel, sizeof(xLabel), "X %d", icon.x);
-                        float xLabelWidth = ImGui::CalcTextSize(xLabel).x;
-                        float buttonWidth = ImGui::CalcTextSize("-").x + ImGui::GetStyle().FramePadding.x * 2;
-                        float totalWidth = xLabelWidth + buttonWidth * 2 + ImGui::GetStyle().ItemSpacing.x * 2;
-                        float availWidth = ImGui::GetContentRegionAvail().x;
-
-                        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
-                        int idx = gui->getTextureAtlas()->getIndexByXY(icon.x, icon.y);
-                        if (ImGui::InputInt("Index", &idx, 1,  100)) {
-                            if (idx > 0 && idx < gui->getTextureAtlas()->getTotalImages())
-                                gui->getTextureAtlas()->setXYByIndex(idx, icon.x, icon.y);
-                        }
-                        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
-                        ImGui::Text("%s", xLabel);
-                        ImGui::SameLine();
-                        if (ImGui::SmallButton("<##X")) {
-                            if (icon.x > 0) icon.x--;
-                        }
-                        ImGui::SameLine();
-                        if (ImGui::SmallButton(">##X")) {
-                            if (icon.x < gui->getTextureAtlas()->getNumColumns()) icon.x++;
+                        if (nameUpper.find(filterUpper) != std::string::npos) {
+                            matches = true;
                         }
 
-                        char yLabel[32];
-                        snprintf(yLabel, sizeof(yLabel), "Y %d", icon.y);
-                        float yLabelWidth = ImGui::CalcTextSize(yLabel).x;
-                        totalWidth = yLabelWidth + buttonWidth * 2 + ImGui::GetStyle().ItemSpacing.x * 2;
-
-                        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
-                        ImGui::Text("%s", yLabel);
-                        ImGui::SameLine();
-                        if (ImGui::SmallButton("<##Y")) {
-                            if (icon.y > 0) icon.y--;
+                        if (!matches) {
+                            iconIndex++;
+                            continue;
                         }
-                        ImGui::SameLine();
-                        if (ImGui::SmallButton(">##Y")) {
-                            if (icon.y < gui->getTextureAtlas()->getNumRows()) icon.y++;
-                        }
-                        ImGui::Dummy(ImVec2(0.0f, 6.0f));
-                        ImGui::PopID();
                     }
+
+                    if (displayedIcons % COLUMNS_PER_ROW == 0) {
+                        ImGui::TableNextRow();
+                    }
+
+                    ImGui::TableNextColumn();
+                    ImGui::PushID(static_cast<int>(iconIndex + 1000));
+                    ImGui::Dummy(ImVec2(0.0f, 6.0f));
+
+                    auto& icon = *IconGUI::ALL_ICONS_EDITOR[iconIndex].icon;
+
+                    // Centrar imagen
+                    CenterImage(FileSystemGUI::Icon(icon), ImVec2(32, 32));
+
+                    // Centrar nombre
+                    CenterText(IconGUI::ALL_ICONS_EDITOR[iconIndex].name);
+
+                    ImGui::Separator();
+
+                    // Fila X: centrar todo el grupo (texto + botones)
+                    char xLabel[32];
+                    snprintf(xLabel, sizeof(xLabel), "X %d", icon.x);
+                    float xLabelWidth = ImGui::CalcTextSize(xLabel).x;
+                    float buttonWidth = ImGui::CalcTextSize("-").x + ImGui::GetStyle().FramePadding.x * 2;
+                    float totalWidth = xLabelWidth + buttonWidth * 2 + ImGui::GetStyle().ItemSpacing.x * 2;
+                    float availWidth = ImGui::GetContentRegionAvail().x;
+
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
+                    int idx = gui->getTextureAtlas()->getIndexByXY(icon.x, icon.y);
+                    if (ImGui::InputInt("Index", &idx, 1,  100)) {
+                        if (idx > 0 && idx < gui->getTextureAtlas()->getTotalImages())
+                            gui->getTextureAtlas()->setXYByIndex(idx, icon.x, icon.y);
+                    }
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
+                    ImGui::Text("%s", xLabel);
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("<##X")) {
+                        if (gui->getTextureAtlas()->isSafeIconCoords(icon.x - 1, icon.y)) icon.x--;
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton(">##X")) {
+                        if (gui->getTextureAtlas()->isSafeIconCoords(icon.x + 1, icon.y)) icon.x++;
+                    }
+
+                    char yLabel[32];
+                    snprintf(yLabel, sizeof(yLabel), "Y %d", icon.y);
+                    float yLabelWidth = ImGui::CalcTextSize(yLabel).x;
+                    totalWidth = yLabelWidth + buttonWidth * 2 + ImGui::GetStyle().ItemSpacing.x * 2;
+
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
+                    ImGui::Text("%s", yLabel);
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("<##Y")) {
+                        if (gui->getTextureAtlas()->isSafeIconCoords(icon.x, icon.y - 1)) icon.y--;
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton(">##Y")) {
+                        if (gui->getTextureAtlas()->isSafeIconCoords(icon.x, icon.y + 1)) icon.y++;
+                    }
+                    ImGui::Dummy(ImVec2(0.0f, 6.0f));
+                    ImGui::PopID();
+
+                    displayedIcons++;
+                    iconIndex++;
                 }
                 ImGui::EndTable();
             }
@@ -147,78 +181,105 @@ public:
             }
         }
         ImGui::Separator();
+
         // ===== ICONOS OBJECT =====
         if (ImGui::CollapsingHeader("Object Icons")) {
             ImGui::Text("Total: %zu icons", IconObject::ICON_COUNT);
 
+            // Filtro por nombre
+            static char filterObject[128] = "";
+            ImGui::SetNextItemWidth(300);
+            ImGui::InputText("Filter by name##Object", filterObject, IM_ARRAYSIZE(filterObject));
+            ImGui::SameLine();
+            if (ImGui::Button("Clear##Object")) {
+                filterObject[0] = '\0';
+            }
+
             if (ImGui::BeginTable("IconObjectTable", COLUMNS_PER_ROW, ImGuiTableFlags_Borders | ImGuiTableFlags_SizingStretchSame)) {
                 size_t iconIndex = 0;
+                int displayedIcons = 0;
+
                 while (iconIndex < IconObject::ICON_COUNT) {
-                    ImGui::TableNextRow();
+                    // Aplicar filtro
+                    if (filterObject[0] != '\0') {
+                        const char* iconName = IconObject::ALL_ICONS_EDITOR[iconIndex].name;
+                        bool matches = false;
 
-                    for (int col = 0; col < COLUMNS_PER_ROW && iconIndex < IconObject::ICON_COUNT; col++, iconIndex++) {
-                        ImGui::Dummy(ImVec2(0.0f, 6.0f));
-                        ImGui::TableNextColumn();
-                        ImGui::PushID(static_cast<int>(iconIndex + 2000));
+                        // Búsqueda case-insensitive
+                        std::string nameUpper = iconName;
+                        std::string filterUpper = filterObject;
+                        std::transform(nameUpper.begin(), nameUpper.end(), nameUpper.begin(), ::toupper);
+                        std::transform(filterUpper.begin(), filterUpper.end(), filterUpper.begin(), ::toupper);
 
-                        auto& icon = *IconObject::ALL_ICONS_EDITOR[iconIndex].icon;
-
-                        // Centrar imagen
-                        CenterImage(FileSystemGUI::Icon(icon), ImVec2(32, 32));
-
-                        // Centrar nombre
-                        CenterText(IconObject::ALL_ICONS_EDITOR[iconIndex].name);
-
-                        ImGui::Separator();
-
-                        // Fila X
-                        char xLabel[32];
-                        snprintf(xLabel, sizeof(xLabel), "X %d", icon.x);
-                        float xLabelWidth = ImGui::CalcTextSize(xLabel).x;
-                        float buttonWidth = ImGui::CalcTextSize("-").x + ImGui::GetStyle().FramePadding.x * 2;
-                        float totalWidth = xLabelWidth + buttonWidth * 2 + ImGui::GetStyle().ItemSpacing.x * 2;
-                        float availWidth = ImGui::GetContentRegionAvail().x;
-
-                        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
-                        int idx = gui->getTextureAtlas()->getIndexByXY(icon.x, icon.y);
-                        if (ImGui::InputInt("Index", &idx, 1,  100)) {
-                            if (idx > 0 && idx < gui->getTextureAtlas()->getTotalImages())
-                            gui->getTextureAtlas()->setXYByIndex(idx, icon.x, icon.y);
-                        }
-                        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
-                        ImGui::Text("%s", xLabel);
-                        ImGui::SameLine();
-                        if (ImGui::SmallButton("<##X")) {
-                            if (icon.x > 0) icon.x--;
-                        }
-                        ImGui::SameLine();
-                        if (ImGui::SmallButton(">##X")) {
-                            if (icon.x < gui->getTextureAtlas()->getNumColumns()) icon.x++;
+                        if (nameUpper.find(filterUpper) != std::string::npos) {
+                            matches = true;
                         }
 
-                        // Fila Y
-                        char yLabel[32];
-                        snprintf(yLabel, sizeof(yLabel), "Y %d", icon.y);
-                        float yLabelWidth = ImGui::CalcTextSize(yLabel).x;
-                        totalWidth = yLabelWidth + buttonWidth * 2 + ImGui::GetStyle().ItemSpacing.x * 2;
-
-                        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
-                        ImGui::Text("%s", yLabel);
-                        ImGui::SameLine();
-                        if (ImGui::SmallButton("-##Y")) {
-                            if (icon.y > 0) icon.y--;
+                        if (!matches) {
+                            iconIndex++;
+                            continue;
                         }
-                        ImGui::SameLine();
-                        if (ImGui::SmallButton("+##Y")) {
-                            if (icon.y < gui->getTextureAtlas()->getNumRows()) icon.y++;
-                        }
-                        ImGui::Dummy(ImVec2(0.0f, 6.0f));
-                        ImGui::PopID();
                     }
+                    if (displayedIcons % COLUMNS_PER_ROW == 0) {
+                        ImGui::TableNextRow();
+                    }
+                    ImGui::Dummy(ImVec2(0.0f, 6.0f));
+                    ImGui::TableNextColumn();
+                    ImGui::PushID(static_cast<int>(iconIndex + 2000));
+
+                    auto& icon = *IconObject::ALL_ICONS_EDITOR[iconIndex].icon;
+                    CenterImage(FileSystemGUI::Icon(icon), ImVec2(32, 32));
+                    CenterText(IconObject::ALL_ICONS_EDITOR[iconIndex].name);
+                    ImGui::Separator();
+                    // Fila X
+                    char xLabel[32];
+                    snprintf(xLabel, sizeof(xLabel), "X %d", icon.x);
+                    float xLabelWidth = ImGui::CalcTextSize(xLabel).x;
+                    float buttonWidth = ImGui::CalcTextSize("-").x + ImGui::GetStyle().FramePadding.x * 2;
+                    float totalWidth = xLabelWidth + buttonWidth * 2 + ImGui::GetStyle().ItemSpacing.x * 2;
+                    float availWidth = ImGui::GetContentRegionAvail().x;
+
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
+                    int idx = gui->getTextureAtlas()->getIndexByXY(icon.x, icon.y);
+                    if (ImGui::InputInt("Index", &idx, 1,  100)) {
+                        if (idx > 0 && idx < gui->getTextureAtlas()->getTotalImages())
+                        gui->getTextureAtlas()->setXYByIndex(idx, icon.x, icon.y);
+                    }
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
+                    ImGui::Text("%s", xLabel);
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("<##X")) {
+                        if (gui->getTextureAtlas()->isSafeIconCoords(icon.x - 1, icon.y)) icon.x--;
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton(">##X")) {
+                        if (gui->getTextureAtlas()->isSafeIconCoords(icon.x + 1, icon.y)) icon.x++;
+                    }
+
+                    // Fila Y
+                    char yLabel[32];
+                    snprintf(yLabel, sizeof(yLabel), "Y %d", icon.y);
+                    float yLabelWidth = ImGui::CalcTextSize(yLabel).x;
+                    totalWidth = yLabelWidth + buttonWidth * 2 + ImGui::GetStyle().ItemSpacing.x * 2;
+
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availWidth - totalWidth) * 0.5f);
+                    ImGui::Text("%s", yLabel);
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("-##Y")) {
+                        if (gui->getTextureAtlas()->isSafeIconCoords(icon.x, icon.y - 1)) icon.y--;
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("+##Y")) {
+                        if (gui->getTextureAtlas()->isSafeIconCoords(icon.x, icon.y + 1)) icon.y++;
+                    }
+                    ImGui::Dummy(ImVec2(0.0f, 6.0f));
+                    ImGui::PopID();
+
+                    displayedIcons++;
+                    iconIndex++;
                 }
                 ImGui::EndTable();
             }
-
             if (ImGui::Button("Reset Object Icons")) {
                 IconObject::ResetToDefault();
             }

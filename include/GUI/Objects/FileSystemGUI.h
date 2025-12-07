@@ -19,7 +19,7 @@ public:
     static void LoadImagesFolder(GUIManager *gui);
     static void DrawBrowserFolders(
         GUIManager *gui,
-        std::string &folderBase,
+        std::string &baseFolder,
         GUIType::FolderBrowserCache &browser,
         std::string ext
     );

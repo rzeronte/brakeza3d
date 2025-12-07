@@ -110,7 +110,7 @@ void Mesh3DAnimationDrawerGUI::DrawEditBonesMappingWindow(GUIManager *gui)
 
                     GUI::DrawButton(
                         (std::string((b.enabled ? "lock##" : "unlock##")) + std::to_string(i)).c_str(),
-                        (b.enabled ? IconGUI::LOCK : IconGUI::UNLOCK),
+                        (b.enabled ? IconGUI::BONE_LOCK : IconGUI::BONE_UNLOCK),
                         GUIType::Sizes::ICON_LOCKS,
                         true,
                         [&] {

@@ -96,7 +96,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 
 void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
 {
-    Logging::Message("[Mesh3D]: mNumMaterials: %d", pScene->mNumMaterials);
+    Logging::Message("[Mesh3D] Prepare to load %d materials", pScene->mNumMaterials);
 
     for (unsigned int i = 0; i < pScene->mNumMaterials; i++) {
 

@@ -821,9 +821,9 @@ std::string ShaderOGLCustom::getShaderTypeString(ShaderCustomTypes type)
     return "";
 }
 
-void ShaderOGLCustom::removeCustomShaderFiles(const std::string& folder, const std::string &name)
+void ShaderOGLCustom::RemoveCustomShaderFiles(const std::string& folder, const std::string &name)
 {
-    Logging::Message("Deleting custom shader: %s", name.c_str());
+    Logging::Message("[ShaderOGLCustom] Deleting custom shader: %s", name.c_str());
 
     Tools::RemoveFile(folder + name + ".json");
     Tools::RemoveFile(folder + name + ".vs");

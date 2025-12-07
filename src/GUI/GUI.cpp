@@ -64,6 +64,38 @@ void GUI::DrawButton(const std::string &tooltip, GUIType::Sheet icon, ImVec2 siz
     ImGui::SetItemTooltip(tooltip.c_str());
 }
 
+void GUI::DrawButtonTransparent(const std::string &tooltip, GUIType::Sheet icon, ImVec2 size, bool active, const std::function<void()>& cb)
+{
+    const auto id = tooltip + std::to_string(icon.x) + "_" + std::to_string(icon.y);
+    ImGui::PushID(id.c_str());
+
+    // Colores transparentes
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));           // Fondo transparente
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1, 1, 1, 0.1f)); // Ligeramente visible al pasar el ratón
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(1, 1, 1, 0.2f));  // Ligeramente visible al hacer clic
+
+    if (ImGui::ImageButton(FileSystemGUI::Icon(icon), size)) {
+        cb();
+    }
+
+    ImGui::PopStyleColor(3);
+    ImGui::PopID();
+    ImGui::SetItemTooltip(tooltip.c_str());
+}
+
+void GUI::DrawButtonConfirm(const std::string &title, const std::string &question, const ImVec2 size, const std::function<void()>& cb)
+{
+    ImGui::PushID((title + question).c_str());
+    if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), size)) {
+        ImGui::OpenPopup(title.c_str());
+    }
+    ImGui::SetItemTooltip(title.c_str());
+    ShowPopUp(title.c_str(), question.c_str(), [&] () {
+        cb();
+    });
+    ImGui::PopID();
+}
+
 void GUI::Toggle(bool &value)
 {
     value = !value;
@@ -153,4 +185,29 @@ void GUI::ImGuiSetColors()
     colors[ImGuiCol_NavWindowingHighlight]  = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
     colors[ImGuiCol_NavWindowingDimBg]      = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
     colors[ImGuiCol_ModalWindowDimBg]       = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+}
+
+
+void GUI::ShowPopUp(const char* title, const char *message, const std::function<void()>& onConfirm)
+{
+    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+    if (ImGui::BeginPopupModal(title, nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text(message);
+        ImGui::Separator();
+
+        if (ImGui::Button("OK", ImVec2(120, 0))) {
+            onConfirm();
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SetItemDefaultFocus();
+        ImGui::SameLine();
+
+        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
 }

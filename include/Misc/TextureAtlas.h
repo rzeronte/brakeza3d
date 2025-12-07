@@ -55,8 +55,8 @@ public:
     [[nodiscard]] Image *getTextureByXY(int x, int y) const;
 
     int getTotalImages() const;
+    bool isSafeIconCoords(int x, int y) const;
 
-private:
 };
 
 

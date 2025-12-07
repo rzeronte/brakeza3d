@@ -171,7 +171,7 @@ public:
         ShaderCustomTypes type
     );
 
-    static void removeCustomShaderFiles(const std::string& folder, const std::string &name);
+    static void RemoveCustomShaderFiles(const std::string& folder, const std::string &name);
 
     static ShaderCustomTypes extractTypeFromShaderName(const std::string& folder, const std::string &name);
 

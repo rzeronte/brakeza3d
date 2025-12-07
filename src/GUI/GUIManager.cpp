@@ -41,8 +41,8 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 
 void GUIManager::RegisterWindows()
 {
-    ADD_WIN("Project setup",           GUIType::PROJECT_SETTINGS, IconGUI::WIN_DEPTH_LIGHTS_MAPS,    true,  GUIAddonProjectSetup::DrawProjectSetupGUI(this));
-    ADD_WIN("Scene Objects",           GUIType::SCENE_OBJECTS,    IconGUI::WIN_DEPTH_LIGHTS_MAPS,    true,  GUIAddonObjects3D::DrawSceneObjects(this));
+    ADD_WIN("Project setup",           GUIType::PROJECT_SETTINGS, IconGUI::WIN_PROJECT_SETTINGS,     true,  GUIAddonProjectSetup::DrawProjectSetupGUI(this));
+    ADD_WIN("Scene Objects",           GUIType::SCENE_OBJECTS,    IconGUI::WIN_SCENE_OBJECTS,        true,  GUIAddonObjects3D::DrawSceneObjects(this));
     ADD_WIN("Object Properties",       GUIType::OBJECT_PROPS,     IconGUI::WIN_OBJECT_PROPS,         true,  GUIAddonObject3DProperties::DrawPropertiesBySelectedObject(this));
     ADD_WIN("Object shaders",          GUIType::OBJECT_SHADERS,   IconGUI::WIN_OBJECT_SHADERS,       false, ShadersGUI::DrawShadersBySelectedObject(this));
     ADD_WIN("Object Scripts",          GUIType::OBJECT_SCRIPTS,   IconGUI::WIN_OBJECT_SCRIPTS,       false, ScriptLuaGUI::DrawScriptsBySelectedObject(this));
@@ -57,7 +57,7 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Shaders",                 GUIType::FILES_SHADERS,    IconGUI::WIN_FILES_SHADERS,        true,  ShadersGUI::DrawCustomShadersFolder(this, browserShaders));
 
     ADD_WIN("Logging/Console",         GUIType::LOGGING,          IconGUI::WIN_LOGGING,              true,  widgetConsole->Draw());
-    ADD_WIN("Lights DepthMaps Viewer", GUIType::DEPTH_LIGHTS_MAPS,IconGUI::WIN_DEPTH_LIGHTS_MAPS,    false, WindowLightsDepthMapsViewer());
+    ADD_WIN("Lights DepthMaps",        GUIType::DEPTH_LIGHTS_MAPS,IconGUI::WIN_DEPTH_LIGHTS_MAPS,    false, WindowLightsDepthMapsViewer());
     ADD_WIN("Profiler",                GUIType::PROFILER,         IconGUI::WIN_PROFILER,             false, Profiler::get()->DrawPropertiesGUI());
     ADD_WIN("Debug GUI Icons",         GUIType::DEBUG_ICONS,      IconGUI::WIN_DEBUG_ICONS,          false, IconsGUI::DrawDebugIconsWindow(this));
 }
@@ -188,29 +188,6 @@ void GUIManager::setSelectedObject(const Object3D *s)
     }
 }
 
-void GUIManager::ShowDeletePopup(const char* title, const char *message, const std::function<void()>& onConfirm)
-{
-    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-    if (ImGui::BeginPopupModal(title, nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text(message);
-        ImGui::Separator();
-
-        if (ImGui::Button("OK", ImVec2(120, 0))) {
-            onConfirm();
-            ImGui::CloseCurrentPopup();
-        }
-        ImGui::SetItemDefaultFocus();
-        ImGui::SameLine();
-
-        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
-            ImGui::CloseCurrentPopup();
-        }
-
-        ImGui::EndPopup();
-    }
-}
 
 void GUIManager::WindowKeyboardMouseSetup()
 {

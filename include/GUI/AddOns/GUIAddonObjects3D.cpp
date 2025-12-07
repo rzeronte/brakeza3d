@@ -55,12 +55,13 @@ void GUIAddonObjects3D::DrawSceneObjects(GUIManager *gui)
 
         //auto projectile = dynamic_cast<Projectile3DBody*> (o);
         //if (projectile != nullptr) continue;
-
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));
         ImGui::Checkbox(std::string("##"+ std::to_string(o->getId())).c_str(), &o->isEnabled());
+        ImGui::PopStyleVar(2); // Pop 2 variables
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 5.0f, ImGui::GetCursorPosY() + 3.0f));
         ImGui::Image(FileSystemGUI::Icon(o->getIcon()), ImVec2(16, 16));
-
         ImGui::SameLine();
         ImGui::SetNextItemWidth(150.0f);
         if (ImGui::Selectable(std::string("##select"+ std::to_string(i)).c_str(), selectedObjectIndex == i)) {
@@ -92,7 +93,7 @@ void GUIAddonObjects3D::DrawSceneObjects(GUIManager *gui)
         }
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT), ImVec2(14, 14));
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), ImVec2(14, 14));
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 10.0f, ImGui::GetCursorPosY()));
         ImGui::Text(std::to_string((int)o->getScripts().size()).c_str());
@@ -101,13 +102,13 @@ void GUIAddonObjects3D::DrawSceneObjects(GUIManager *gui)
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
 
             if (o->getCollisionMode() == GHOST) {
-                ImGui::Image(FileSystemGUI::Icon(IconGUI::GHOST), ImVec2(14, 14));
+                ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDER_GHOST), ImVec2(14, 14));
             }
             if (o->getCollisionMode() == BODY) {
-                ImGui::Image(FileSystemGUI::Icon(IconGUI::GEAR), ImVec2(14, 14));
+                ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDER_BODY), ImVec2(14, 14));
             }
             if (o->getCollisionMode() == KINEMATIC) {
-                ImGui::Image(FileSystemGUI::Icon(IconGUI::PLAY), ImVec2(14, 14));
+                ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDER_KINEMATIC), ImVec2(14, 14));
             }
         }
     }

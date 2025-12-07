@@ -99,23 +99,23 @@ void ScriptLuaGUI::DrawScriptsBySelectedObject(GUIManager *gui)
     for (unsigned int i = 0; i < objectScripts.size(); i++) {
         auto currentScript = objectScripts[i];
 
-        GUI::DrawButton(o->getName().c_str(), IconGUI::SCRIPT, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        GUI::DrawButton(o->getName().c_str(), IconGUI::SCRIPT_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
             LoadScriptDialog(gui, currentScript->scriptFilename);
         });
 
         ImGui::SameLine();
         std::string optionText = std::to_string(i + 1) + ") " + Tools::removeSubstring(currentScript->scriptFilename, Config::get()->SCRIPTS_FOLDER);
         if (currentScript->isPaused()) {
-            GUI::DrawButton("Unlock script object", IconGUI::UNLOCK, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+            GUI::DrawButton("Unlock script object", IconGUI::LUA_LOCK, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 currentScript->setPaused(false);
             });
         } else {
-            GUI::DrawButton("Lock script object", IconGUI::LOCK, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+            GUI::DrawButton("Lock script object", IconGUI::LUA_LOCK, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
                 currentScript->setPaused(true);
             });
         }
         ImGui::SameLine();
-        GUI::DrawButton("Remove script obeject", IconGUI::REMOVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        GUI::DrawButton("Remove script object", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
             o->RemoveScript(currentScript);
         });
         ImGui::SameLine();
@@ -136,10 +136,10 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::FolderBro
         gui->currentVariableToAddName = name;
     }
 
-    GUI::DrawButton("Create script", IconGUI::OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+    GUI::DrawButton("Create script", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         if (!gui->currentVariableToAddName.empty()) {
             ComponentScripting::createScriptLUAFile(browser.currentFolder + gui->currentVariableToAddName);
-            browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, "lua");
+            browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
         }
     });
 
@@ -160,11 +160,11 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::FolderBro
 
             ImGui::TableSetColumnIndex(0);
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT), ImVec2(16, 16));
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_BROWSERS);
             ImGui::SameLine();
             std::string optionText = std::to_string(i + 1) + ") " + file;
             if (ImGui::Selectable(optionText.c_str())) {
-                ScriptLuaGUI::LoadScriptDialog(gui, fullPath);
+                LoadScriptDialog(gui, fullPath);
             }
 
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
@@ -173,13 +173,9 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::FolderBro
                 ImGui::EndDragDropSource();
             }
             ImGui::TableSetColumnIndex(1);
-            if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), ImVec2(14, 14))) {
-                ImGui::OpenPopup("##Deleting script");
-            }
-            ImGui::SetItemTooltip("Delete script");
-            GUIManager::ShowDeletePopup("##Deleting script", "Are you sure to delete script?", [&] () {
+            GUI::DrawButtonConfirm("Deleting script", "Are you sure to delete script?", GUIType::Sizes::ICONS_BROWSERS, [&] {
                 ComponentScripting::removeScriptLUAFile(browser.currentFolder + file);
-                FileSystemGUI::UpdateFolderFiles(gui);
+                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
             });
             ImGui::PopID();
         }
@@ -195,7 +191,7 @@ void ScriptLuaGUI::DrawEditScriptWindow(GUIManager *gui)
     ImGui::SetNextWindowBgAlpha(GUIType::Levels::WINDOW_ALPHA);
 
     if (ImGui::Begin("Script edition", &gui->showEditScriptWindow, ImGuiWindowFlags_NoDocking)) {
-        drawScriptVariables(gui);
+        DrawScriptVariables(gui);
 
         ImGui::Separator();
 
@@ -307,7 +303,7 @@ void ScriptLuaGUI::DrawGlobalVariables(GUIManager *gui)
     }
 }
 
-void ScriptLuaGUI::drawScriptVariables(GUIManager *gui)
+void ScriptLuaGUI::DrawScriptVariables(GUIManager *gui)
 {
     ImGui::SeparatorText(std::string("File: " + gui->scriptEditableManager.script->scriptFilename).c_str());
 

@@ -6,6 +6,7 @@
 
 #include "../../Brakeza.h"
 #include "../../Components/ComponentsManager.h"
+#include "../Objects/FileSystemGUI.h"
 
 GUIAddonObject3DProperties::GUIAddonObject3DProperties()
 {
@@ -23,15 +24,13 @@ void GUIAddonObject3DProperties::DrawPropertiesBySelectedObject(GUIManager *gui)
         return;
     }
 
-    if (o->isRemoved()) {
-        return;
-    }
+    if (o->isRemoved()) return;
 
     o->DrawPropertiesGUI();
+
     ImGui::Separator();
-    ImGui::Button("Remove");
-    if (ImGui::IsItemClicked()) {
+
+    GUI::DrawButtonConfirm("##Remove object from scene", "Are you sure to remove object from scene?", GUIType::Sizes::ICONS_BROWSERS, [&] () {
         o->setRemoved(true);
-    }
-    ImGui::SameLine();
+    });
 }
