@@ -22,6 +22,10 @@ class GUIManager
 {
     std::vector<GUIType::WindowData> windows;
 
+    std::vector<GUIType::LayoutWindowConfig> defaultLayoutWindowsConfig;
+    std::vector<GUIType::LayoutWindowConfig> devsLayoutWindowsConfig;
+    std::vector<GUIType::LayoutWindowConfig> designLayoutWindowsConfig;
+
     int selectedObjectIndex = -1;
     bool showEditShaderWindow = false;
     bool showEditScriptWindow = false;
@@ -35,13 +39,15 @@ class GUIManager
     GUIType::ShaderEditableManager shaderEditableManager;
 
     std::vector<GUIType::AddonAllowedObjects> visibleTypeObjects;
+    GUIType::AddonObjectsViewerMode viewerMode = GUIType::AddonObjectsViewerMode::TREE;
+
     std::vector<GUIType::MenuItem> menus;
 
     GuiAddonConsole *widgetConsole;
 
     TexturePackage imagesFolder;
 
-    std::string selected_file;
+    std::string selectedFile;
     std::string currentVariableToAddName;
     std::string currentVariableToCreateCustomShader;
 
@@ -69,9 +75,12 @@ public:
     void setSelectedObjectIndex(int selectedObjectIndex);
     void setSelectedObject(const Object3D *s);
     void RegisterWindows();
+    void RegisterDefaultLayoutWindows();
     void RegisterAllowedItemsForViewer();
     void RegisterMenu();
     void OpenBoneInfoDialog();
+    void setObjectsViewerMode(GUIType::AddonObjectsViewerMode value);
+    void setLayoutToDefault(Config::ImGUIConfigs config);
     virtual void DrawGUI();
     GUIType::WindowData *getWindowStatus(GUIType::Window window);
     [[nodiscard]] GuiAddonConsole *getConsole() const;
@@ -81,10 +90,10 @@ public:
     [[nodiscard]] GUIType::FolderBrowserCache getBrowserScenes() const;
     [[nodiscard]] GUIType::FolderBrowserCache getBrowserProjects() const;
     [[nodiscard]] GUIType::FolderBrowserCache getBrowserShaders() const;
+    [[nodiscard]] GUIType::AddonObjectsViewerMode getObjectsViewerMode() const;
     [[nodiscard]] int& selectedObjectIndexPointer();
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
-    static void WelcomeMessage();
 
     friend class Object3DGUI;
     friend class ScriptLuaGUI;

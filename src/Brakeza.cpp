@@ -157,7 +157,7 @@ float Brakeza::getDeltaTimeMicro() const
 
 void Brakeza::OnStartComponents() const
 {
-    GUI()->WelcomeMessage();
+    GUI::WelcomeMessage();
     Config::get()->ENABLE_LOGGING_STD = false;
 
     for (auto c : componentsManager->Components())

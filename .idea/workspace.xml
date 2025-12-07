@@ -38,25 +38,23 @@
   <component name="ChangeListManager">
     <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): Icons debug window">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Brakeza.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Brakeza.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonMenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonMenu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/ImGuiCoding.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiCoding.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/ImGuiDesign.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDesign.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObject3DProperties.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObject3DProperties.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObject3DProperties.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObject3DProperties.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObjects3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObjects3D.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObjects3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObjects3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIConsole.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIConsole.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/IconsGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/IconsGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/TextureAtlas.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/TextureAtlas.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/Image3DAnimation360.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Image3DAnimation360.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Brakeza.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brakeza.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonMenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonMenu.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/GUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUI.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/TextureAtlas.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/TextureAtlas.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -494,7 +492,10 @@
       <workItem from="1764937877148" duration="19177000" />
       <workItem from="1764978537429" duration="19000" />
       <workItem from="1764981027468" duration="17321000" />
-      <workItem from="1765034169328" duration="12618000" />
+      <workItem from="1765034169328" duration="31289000" />
+      <workItem from="1765069762204" duration="10382000" />
+      <workItem from="1765085927115" duration="13928000" />
+      <workItem from="1765130832108" duration="9776000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -544,30 +545,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00062" summary="fix(guizmo): Fix bad position when window is maximized">
-      <option name="closed" value="true" />
-      <created>1737340852996</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1737340852997</updated>
-    </task>
-    <task id="LOCAL-00063" summary="feat(lua): apply impulses from lua mapping">
-      <option name="closed" value="true" />
-      <created>1737409058126</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1737409058127</updated>
-    </task>
-    <task id="LOCAL-00064" summary="feat(lua): apply impulses from lua mapping">
-      <option name="closed" value="true" />
-      <created>1737409851161</created>
-      <option name="number" value="00064" />
-      <option name="presentableId" value="LOCAL-00064" />
-      <option name="project" value="LOCAL" />
-      <updated>1737409851161</updated>
     </task>
     <task id="LOCAL-00065" summary="feat(lua): apply impulses from lua mapping">
       <option name="closed" value="true" />
@@ -881,7 +858,31 @@
       <option name="project" value="LOCAL" />
       <updated>1764991022093</updated>
     </task>
-    <option name="localTasksCounter" value="104" />
+    <task id="LOCAL-00104" summary="feat(gui): Icons debug window">
+      <option name="closed" value="true" />
+      <created>1765048653684</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1765048653684</updated>
+    </task>
+    <task id="LOCAL-00105" summary="feat(gui): Icons debug window">
+      <option name="closed" value="true" />
+      <created>1765068648001</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1765068648001</updated>
+    </task>
+    <task id="LOCAL-00106" summary="feat(gui): Icons debug window">
+      <option name="closed" value="true" />
+      <created>1765083987857</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1765083987858</updated>
+    </task>
+    <option name="localTasksCounter" value="107" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

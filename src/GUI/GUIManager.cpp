@@ -50,32 +50,95 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Global variables",        GUIType::GLOBAL_VARS,      IconGUI::WIN_GLOBAL_VARS,          false, ScriptLuaGUI::DrawGlobalVariables(this));
     ADD_WIN("Keyboard/Mouse",          GUIType::KEYBOARD_MOUSE,   IconGUI::WIN_KEYBOARD_MOUSE,       false, WindowKeyboardMouseSetup());
     ADD_WIN("Images",                  GUIType::IMAGES,           IconGUI::WIN_IMAGES,               false, WindowImages());
-
     ADD_WIN("Projects",                GUIType::FILES_PROJECTS,   IconGUI::WIN_FILES_PROJECTS,       true,  FileSystemGUI::DrawProjectFiles(this, browserProjects));
     ADD_WIN("Scenes",                  GUIType::FILES_SCENES,     IconGUI::WIN_FILES_SCENES,         true,  FileSystemGUI::DrawScenesFolder(this, browserScenes));
     ADD_WIN("Scripts",                 GUIType::FILES_SCRIPTS,    IconGUI::WIN_FILES_SCRIPTS,        true,  ScriptLuaGUI::DrawScriptsLuaFolderFiles(this, browserScripts));
     ADD_WIN("Shaders",                 GUIType::FILES_SHADERS,    IconGUI::WIN_FILES_SHADERS,        true,  ShadersGUI::DrawCustomShadersFolder(this, browserShaders));
-
     ADD_WIN("Logging/Console",         GUIType::LOGGING,          IconGUI::WIN_LOGGING,              true,  widgetConsole->Draw());
     ADD_WIN("Lights DepthMaps",        GUIType::DEPTH_LIGHTS_MAPS,IconGUI::WIN_DEPTH_LIGHTS_MAPS,    false, WindowLightsDepthMapsViewer());
     ADD_WIN("Profiler",                GUIType::PROFILER,         IconGUI::WIN_PROFILER,             false, Profiler::get()->DrawPropertiesGUI());
     ADD_WIN("Debug GUI Icons",         GUIType::DEBUG_ICONS,      IconGUI::WIN_DEBUG_ICONS,          false, IconsGUI::DrawDebugIconsWindow(this));
+
+    RegisterDefaultLayoutWindows();
+}
+
+void GUIManager::RegisterDefaultLayoutWindows()
+{
+    defaultLayoutWindowsConfig =  {
+        { GUIType::PROJECT_SETTINGS, true },
+        { GUIType::SCENE_OBJECTS, true },
+        { GUIType::OBJECT_PROPS, true },
+        { GUIType::OBJECT_SHADERS, false },
+        { GUIType::OBJECT_SCRIPTS, false },
+        { GUIType::OBJECT_VARS, false },
+        { GUIType::GLOBAL_VARS, false },
+        { GUIType::KEYBOARD_MOUSE,  false },
+        { GUIType::IMAGES, false },
+        { GUIType::FILES_PROJECTS, true },
+        { GUIType::FILES_SCENES, true },
+        { GUIType::FILES_SCRIPTS, true },
+        { GUIType::FILES_SHADERS, true },
+        { GUIType::LOGGING, true },
+        { GUIType::DEPTH_LIGHTS_MAPS, false },
+        { GUIType::PROFILER, false },
+        { GUIType::DEBUG_ICONS, false }
+    };
+
+    devsLayoutWindowsConfig =  {
+        { GUIType::PROJECT_SETTINGS, true },
+        { GUIType::SCENE_OBJECTS, true },
+        { GUIType::OBJECT_PROPS, true },
+        { GUIType::OBJECT_SHADERS, true },
+        { GUIType::OBJECT_SCRIPTS, true },
+        { GUIType::OBJECT_VARS, true },
+        { GUIType::GLOBAL_VARS, true },
+        { GUIType::KEYBOARD_MOUSE,  false },
+        { GUIType::IMAGES, false },
+        { GUIType::FILES_PROJECTS, false },
+        { GUIType::FILES_SCENES, false },
+        { GUIType::FILES_SCRIPTS, true },
+        { GUIType::FILES_SHADERS, true },
+        { GUIType::LOGGING, true },
+        { GUIType::DEPTH_LIGHTS_MAPS, false },
+        { GUIType::PROFILER, false },
+        { GUIType::DEBUG_ICONS, false }
+    };
+
+    designLayoutWindowsConfig =  {
+        { GUIType::PROJECT_SETTINGS, false },
+        { GUIType::SCENE_OBJECTS, true },
+        { GUIType::OBJECT_PROPS, true },
+        { GUIType::OBJECT_SHADERS, false },
+        { GUIType::OBJECT_SCRIPTS, false },
+        { GUIType::OBJECT_VARS, false },
+        { GUIType::GLOBAL_VARS, false },
+        { GUIType::KEYBOARD_MOUSE,  false },
+        { GUIType::IMAGES, false },
+        { GUIType::FILES_PROJECTS, false },
+        { GUIType::FILES_SCENES, false },
+        { GUIType::FILES_SCRIPTS, false },
+        { GUIType::FILES_SHADERS, false },
+        { GUIType::LOGGING, false },
+        { GUIType::DEPTH_LIGHTS_MAPS, false },
+        { GUIType::PROFILER, false },
+        { GUIType::DEBUG_ICONS, false }
+    };
 }
 
 void GUIManager::RegisterAllowedItemsForViewer()
 {
     visibleTypeObjects = {
-        { "Object3D",               TypeObject::Object3D,             IconObject::OBJECT_3D, true },
-        { "Image2D",                TypeObject::Image2D,              IconObject::IMAGE_2D, true },
-        { "Image2DAnimation",       TypeObject::Image2DAnimation,     IconObject::IMAGE_2D_ANIMATION, true },
-        { "Mesh3D",                 TypeObject::Mesh3D,               IconObject::MESH_3D, true  },
-        { "Mesh3DAnimation",        TypeObject::Mesh3DAnimation,      IconObject::MESH_3D_ANIMATION, true  },
-        { "Image3D",                TypeObject::Image3D,              IconObject::IMAGE_3D, true },
-        { "Image3DAnimation",       TypeObject::Image3DAnimation,     IconObject::IMAGE_3D_ANIMATION, true },
-        { "Image3DAnimation360",    TypeObject::Image3DAnimation360,  IconObject::IMAGE_3D_ANIMATION_360, true },
-        { "LightPoint",             TypeObject::LightPoint,           IconObject::LIGHT_POINT, true },
-        { "LightSpot",              TypeObject::LightSpot,            IconObject::LIGHT_SPOT, true },
-        { "ParticleEmitter",        TypeObject::ParticleEmitter,      IconObject::PARTICLE_EMITTER, true }
+        { "Object",                  TypeObject::Object3D,             IconObject::OBJECT_3D, true },
+        { "Image 2D",                TypeObject::Image2D,              IconObject::IMAGE_2D, true },
+        { "Image 2D animation",      TypeObject::Image2DAnimation,     IconObject::IMAGE_2D_ANIMATION, true },
+        { "Mesh 3D",                 TypeObject::Mesh3D,               IconObject::MESH_3D, true  },
+        { "Mesh 3D animation",       TypeObject::Mesh3DAnimation,      IconObject::MESH_3D_ANIMATION, true  },
+        { "Image 3D",                TypeObject::Image3D,              IconObject::IMAGE_3D, true },
+        { "Image 3D animation",      TypeObject::Image3DAnimation,     IconObject::IMAGE_3D_ANIMATION, true },
+        { "Image 3D animation 360",  TypeObject::Image3DAnimation360,  IconObject::IMAGE_3D_ANIMATION_360, true },
+        { "Light Point",             TypeObject::LightPoint,           IconObject::LIGHT_POINT, true },
+        { "Light Spot",              TypeObject::LightSpot,            IconObject::LIGHT_SPOT, true },
+        { "Particle Emitter",        TypeObject::ParticleEmitter,      IconObject::PARTICLE_EMITTER, true }
     };
 }
 
@@ -155,9 +218,8 @@ void GUIManager::UpdateImGuiDocking()
     if (opt_fullscreen)
         ImGui::PopStyleVar(2);
 
-    // DockSpace
-    ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-    ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+    ImGuiID dockSpaceId = ImGui::GetID("MyDockSpace");
+    ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f), dockspace_flags);
 }
 
 GuiAddonConsole *GUIManager::getConsole() const
@@ -187,7 +249,6 @@ void GUIManager::setSelectedObject(const Object3D *s)
         i++;
     }
 }
-
 
 void GUIManager::WindowKeyboardMouseSetup()
 {
@@ -260,6 +321,48 @@ GUIType::FolderBrowserCache GUIManager::getBrowserProjects() const
 GUIType::FolderBrowserCache GUIManager::getBrowserShaders() const
 {
     return browserShaders;
+}
+
+GUIType::AddonObjectsViewerMode GUIManager::getObjectsViewerMode() const
+{
+    return viewerMode;
+}
+
+void GUIManager::setObjectsViewerMode(GUIType::AddonObjectsViewerMode value)
+{
+    Logging::Message("[GUIManager] Change viewer mode to %d", (int) value);
+    viewerMode = value;
+}
+
+void GUIManager::setLayoutToDefault(Config::ImGUIConfigs currentConfig)
+{
+    std::vector<GUIType::LayoutWindowConfig> selectedConfig;
+
+    switch (currentConfig) {
+        case Config::ImGUIConfigs::DEFAULT:
+            Logging::Message("[GUIManager] Reset current layout default to defaults windows...");
+            selectedConfig = defaultLayoutWindowsConfig;
+            break;
+        case Config::ImGUIConfigs::CODING:
+            Logging::Message("[GUIManager] Reset current layout devs to default windows...");
+            selectedConfig = devsLayoutWindowsConfig;
+            break;
+        case Config::ImGUIConfigs::DESIGN:
+            Logging::Message("[GUIManager] Reset current layout design to defaults windows...");
+            selectedConfig = designLayoutWindowsConfig;
+            break;
+        default:
+            Logging::Error("[GUIManager] Invalid config type!");
+            return;
+    }
+
+    for (auto &w: windows) {
+        for (const auto &c : selectedConfig) {
+            if (w.window == c.window && c.visible) {
+                w.isOpen = true;
+            }
+        }
+    }
 }
 
 int& GUIManager::selectedObjectIndexPointer()
@@ -447,25 +550,4 @@ GUIType::WindowData* GUIManager::getWindowStatus(GUIType::Window window)
         }
     }
     return nullptr;
-}
-
-void GUIManager::WelcomeMessage()
-{
-    Logging::Error("ese %d", 1);
-    Logging::Message("############################################################");
-    Logging::Message("");
-    Logging::Message("***********************");
-    Logging::Message("*  B R A K E Z A 3 D  *");
-    Logging::Message("***********************");
-    Logging::Message("");
-    Logging::Message("Open source game engine for developers");
-    Logging::Message("############################################################");
-    Logging::Message("");
-    Logging::Message(Config::get()->ENGINE_WEBSITE.c_str());
-    Logging::Message(Config::get()->ENGINE_SOURCE_WEBSITE.c_str());
-    Logging::Message("");
-    Logging::Message("%s", Config::get()->ENGINE_TITLE.c_str());
-    Logging::Message("");
-    Logging::Message("############################################################");
-    Logging::Message("");
 }

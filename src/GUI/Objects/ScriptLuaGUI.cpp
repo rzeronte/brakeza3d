@@ -130,25 +130,22 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::FolderBro
     auto windowStatus = gui->getWindowStatus(GUIType::FILES_SCRIPTS);
     if (!windowStatus->isOpen) return;
 
-    static char name[256];
-    strncpy(name, gui->currentVariableToAddName.c_str(), sizeof(name));
-    if (ImGui::InputText("Script name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-        gui->currentVariableToAddName = name;
-    }
-
     GUI::DrawButton("Create script", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         if (!gui->currentVariableToAddName.empty()) {
             ComponentScripting::createScriptLUAFile(browser.currentFolder + gui->currentVariableToAddName);
             browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
         }
     });
-
+    ImGui::SameLine();
+    static char name[256];
+    strncpy(name, gui->currentVariableToAddName.c_str(), sizeof(name));
+    ImGui::SetNextItemWidth(150);
+    if (ImGui::InputText("Script name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+        gui->currentVariableToAddName = name;
+    }
     ImGui::Separator();
-
     FileSystemGUI::DrawBrowserFolders(gui, Config::get()->SCRIPTS_FOLDER, browser, Config::get()->SCRIPTS_EXT);
-
     ImGui::Separator();
-
     auto files = browser.folderFiles;
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
     if (ImGui::BeginTable("ScriptsFolderTable", 2, flags)) {

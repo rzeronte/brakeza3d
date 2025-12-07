@@ -34,19 +34,19 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCach
     auto windowStatus = gui->getWindowStatus(GUIType::FILES_PROJECTS);
     if (!windowStatus->isOpen) return;
 
-    static char name[256];
-    strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
-    if (ImGui::InputText("Project name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-        gui->currentVariableToCreateCustomShader = name;
-    }
-
     GUI::DrawButton("Create Project", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
             ProjectLoader::CreateProject(browser.currentFolder + gui->currentVariableToCreateCustomShader);
             browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->PROJECTS_EXT);
         }
     });
-
+    ImGui::SameLine();
+    static char name[256];
+    strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
+    ImGui::SetNextItemWidth(150);
+    if (ImGui::InputText("Project name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+        gui->currentVariableToCreateCustomShader = name;
+    }
     ImGui::Separator();
     std::vector<std::string> files = browser.folderFiles;
     std::sort(files.begin(), files.end() );
@@ -92,19 +92,19 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, GUIType::FolderBrowserCach
     auto windowStatus = gui->getWindowStatus(GUIType::FILES_SCENES);
     if (!windowStatus->isOpen) return;
 
-    static char name[256];
-    strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
-    if (ImGui::InputText("Scene name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-        gui->currentVariableToCreateCustomShader = name;
-    }
-
     GUI::DrawButton("Create scene", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
             SceneLoader::CreateScene(browser.currentFolder + gui->currentVariableToCreateCustomShader);
             browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCENES_EXT);
         }
     });
-
+    ImGui::SameLine();
+    static char name[256];
+    strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
+    ImGui::SetNextItemWidth(150);
+    if (ImGui::InputText("Scene name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+        gui->currentVariableToCreateCustomShader = name;
+    }
     ImGui::Separator();
     DrawBrowserFolders(gui, Config::get()->SCENES_FOLDER, browser, Config::get()->SCENES_EXT);
 

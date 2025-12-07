@@ -474,6 +474,7 @@ void ComponentWindow::ImGuiOnUpdate()
             }
         }
         ImGuiConfig = ImGuiConfigChanged;
+        Brakeza::get()->GUI()->setLayoutToDefault(getImGuiConfig());
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, getUIFramebuffer());

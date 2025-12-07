@@ -20,6 +20,11 @@ namespace GUIType
         int y = -1;
     };
 
+    enum AddonObjectsViewerMode {
+        LIST,
+        TREE
+    };
+
     struct AddonAllowedObjects
     {
         std::string label;
@@ -39,7 +44,7 @@ namespace GUIType
 
     struct Sizes {
         static constexpr ImVec2 ICONS_TOOLBAR = ImVec2(24, 24);
-        static constexpr ImVec2 ICONS_OBJECTS_ALLOWED = ImVec2(16, 16);
+        static constexpr ImVec2 ICONS_OBJECTS_ALLOWED = ImVec2(20, 20);
         static constexpr ImVec2 ICONS_BROWSERS = ImVec2(16, 16);
         static constexpr ImVec2 ICONS_CONSOLE = ImVec2(16, 16);
         static constexpr ImVec2 ICONS_LOG = ImVec2(16, 16);
@@ -108,6 +113,11 @@ namespace GUIType
         Sheet icon;
         bool isOpen = false;
         std::function<void()> functionCallBack;
+    };
+
+    struct LayoutWindowConfig {
+        Window window;
+        bool visible;
     };
 
     struct MenuItem {
@@ -286,8 +296,11 @@ namespace GUIType
     X(SCENE_REMOVE, 0, 0) \
     X(SCRIPT_REMOVE, 0, 0) \
     X(SHADER_REMOVE, 0, 0) \
-    X(OBJECT_REMOVE_SCENE, 0, 0)
-
+    X(OBJECT_REMOVE_SCENE, 0, 0) \
+    X(OBJECTS_VIEWER_LIST, 0, 0) \
+    X(OBJECTS_VIEWER_TREE, 0, 0) \
+    X(OBJECTS_VIEWER_CLEAR_FILTER, 0, 0) \
+    X(LAYOUTS_RESET_CURRENT, 0, 0)
 // Icons Objects
 namespace IconObject {
     // Declaraciones (editables en runtime)
@@ -343,11 +356,10 @@ public:
     static void DrawButton(const std::string &tooltip, GUIType::Sheet icon, ImVec2 size, bool active, const std::function<void()> &onClick);
     static void DrawButtonTransparent(const std::string &tooltip, GUIType::Sheet icon, ImVec2 size, bool active, const std::function<void()> &cb);
     static void ShowPopUp(const char* title, const char *message, const std::function<void()>& onConfirm);
-
     static void DrawButtonConfirm(const std::string &title, const std::string &question, GUIType::Sheet icon, ImVec2 size, const std::function<void()>& cb);
-
     static void Toggle(bool &value);
     static void ImGuiSetColors();
+    static void WelcomeMessage();
     static GUIType::FolderBrowserCache CreateBrowserCache(std::string folder, const std::string &extension);
 };
 
