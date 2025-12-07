@@ -1,480 +1,528 @@
 {
 	"gui_icons":	[{
+			"name":	"CLEAR_SCENE",
+			"x":	4,
+			"y":	37
+		}, {
+			"name":	"CREATE_FILE",
+			"x":	8,
+			"y":	31
+		}, {
 			"name":	"FOLDER",
 			"x":	3,
 			"y":	31
 		}, {
-			"name":	"PLAY",
-			"x":	2,
-			"y":	29
-		}, {
-			"name":	"STOP",
-			"x":	5,
-			"y":	3
-		}, {
-			"name":	"RELOAD",
-			"x":	10,
-			"y":	31
-		}, {
 			"name":	"REMOVE",
-			"x":	4,
-			"y":	37
-		}, {
-			"name":	"PAUSE",
-			"x":	4,
-			"y":	12
-		}, {
-			"name":	"LOCK",
-			"x":	5,
-			"y":	25
-		}, {
-			"name":	"UNLOCK",
-			"x":	4,
-			"y":	25
-		}, {
-			"name":	"ADD",
-			"x":	15,
-			"y":	9
-		}, {
-			"name":	"SCENE",
-			"x":	2,
-			"y":	37
+			"x":	3,
+			"y":	3
 		}, {
 			"name":	"SAVE",
 			"x":	4,
 			"y":	33
 		}, {
-			"name":	"GEAR",
-			"x":	15,
-			"y":	8
+			"name":	"RESET",
+			"x":	10,
+			"y":	31
 		}, {
-			"name":	"GHOST",
-			"x":	9,
-			"y":	29
+			"name":	"TEXTURE",
+			"x":	8,
+			"y":	27
 		}, {
-			"name":	"SHADER",
+			"name":	"DROP_ACCEPT",
+			"x":	10,
+			"y":	28
+		}, {
+			"name":	"SHADER_FILE",
 			"x":	15,
 			"y":	31
 		}, {
-			"name":	"SPOTLIGHT",
-			"x":	3,
-			"y":	24
+			"name":	"SCRIPT_FILE",
+			"x":	2,
+			"y":	31
 		}, {
-			"name":	"PARTICLES",
-			"x":	11,
-			"y":	13
-		}, {
-			"name":	"GRAVITY",
-			"x":	15,
-			"y":	30
-		}, {
-			"name":	"CLICK",
-			"x":	9,
-			"y":	18
-		}, {
-			"name":	"DRAW_COLLIDERS",
-			"x":	3,
-			"y":	35
-		}, {
-			"name":	"TARGET",
-			"x":	13,
-			"y":	16
-		}, {
-			"name":	"MOUSE_LOOK",
-			"x":	10,
-			"y":	18
-		}, {
-			"name":	"LAYOUT_DEFAULT",
-			"x":	7,
-			"y":	1
-		}, {
-			"name":	"LAYOUT_CODING",
+			"name":	"SCRIPT_EDIT",
 			"x":	1,
-			"y":	4
+			"y":	28
 		}, {
-			"name":	"LAYOUT_DESIGN",
-			"x":	6,
-			"y":	1
+			"name":	"SCENE_FILE",
+			"x":	7,
+			"y":	10
 		}, {
-			"name":	"PROJECT",
+			"name":	"PROJECT_FILE",
 			"x":	15,
 			"y":	38
 		}, {
-			"name":	"OPEN",
+			"name":	"SCENE_LOAD",
 			"x":	15,
 			"y":	9
 		}, {
-			"name":	"GUI",
-			"x":	12,
-			"y":	17
-		}, {
-			"name":	"TEXTURE",
-			"x":	2,
-			"y":	4
-		}, {
-			"name":	"TRANSLATE",
-			"x":	3,
-			"y":	15
-		}, {
-			"name":	"ROTATE",
-			"x":	2,
-			"y":	15
-		}, {
-			"name":	"SCALE",
-			"x":	1,
-			"y":	15
-		}, {
-			"name":	"SCRIPT",
-			"x":	2,
-			"y":	31
-		}, {
-			"name":	"PLAYER",
-			"x":	14,
-			"y":	2
-		}, {
-			"name":	"SPLASH",
-			"x":	0,
-			"y":	0
-		}, {
-			"name":	"LIGHT_SYSTEM",
-			"x":	4,
-			"y":	24
-		}, {
-			"name":	"SHADOW_MAPPING",
-			"x":	7,
-			"y":	32
+			"name":	"PROJECT_OPEN",
+			"x":	15,
+			"y":	9
 		}, {
 			"name":	"RENDER_TEXTURE",
 			"x":	4,
 			"y":	7
 		}, {
 			"name":	"RENDER_PIXELS",
-			"x":	2,
-			"y":	5
+			"x":	8,
+			"y":	28
 		}, {
 			"name":	"RENDER_SHADING",
-			"x":	2,
+			"x":	3,
 			"y":	7
 		}, {
 			"name":	"RENDER_WIRE",
 			"x":	5,
 			"y":	7
 		}, {
-			"name":	"PROFILER",
-			"x":	14,
-			"y":	38
-		}, {
-			"name":	"COLLISION_OBJECTS",
-			"x":	11,
-			"y":	10
-		}, {
-			"name":	"ABOUT_ME",
-			"x":	5,
-			"y":	4
-		}, {
-			"name":	"EXIT",
-			"x":	11,
-			"y":	23
-		}, {
 			"name":	"MNU_BRAKEZA",
-			"x":	8,
-			"y":	13
-		}, {
-			"name":	"MNU_SCRIPT_CONTROLS",
-			"x":	15,
-			"y":	27
-		}, {
-			"name":	"MNU_ADD_OBJECT",
-			"x":	0,
-			"y":	10
-		}, {
-			"name":	"MNU_VIDEO",
-			"x":	15,
-			"y":	23
-		}, {
-			"name":	"MNU_COLLIDERS",
-			"x":	15,
-			"y":	8
-		}, {
-			"name":	"MNU_ILLUMINATION",
-			"x":	0,
-			"y":	11
-		}, {
-			"name":	"MNU_CAMERA",
-			"x":	0,
-			"y":	10
-		}, {
-			"name":	"MNU_SOUND",
-			"x":	1,
-			"y":	7
-		}, {
-			"name":	"MNU_LOGGING",
-			"x":	4,
-			"y":	24
-		}, {
-			"name":	"MNU_LAYOUTS",
-			"x":	2,
-			"y":	37
-		}, {
-			"name":	"MNU_WINDOWS",
-			"x":	5,
-			"y":	13
-		}, {
-			"name":	"WIN_PROJECT_SETTINGS",
-			"x":	12,
-			"y":	35
-		}, {
-			"name":	"WIN_SCENE_OBJECTS",
-			"x":	12,
-			"y":	17
-		}, {
-			"name":	"WIN_OBJECT_PROPS",
-			"x":	7,
-			"y":	1
-		}, {
-			"name":	"WIN_OBJECT_SHADERS",
-			"x":	6,
-			"y":	11
-		}, {
-			"name":	"WIN_OBJECT_SCRIPTS",
-			"x":	11,
-			"y":	1
-		}, {
-			"name":	"WIN_OBJECT_VARS",
-			"x":	6,
-			"y":	11
-		}, {
-			"name":	"WIN_GLOBAL_VARS",
-			"x":	15,
-			"y":	31
-		}, {
-			"name":	"WIN_KEYBOARD_MOUSE",
-			"x":	2,
-			"y":	31
-		}, {
-			"name":	"WIN_IMAGES",
 			"x":	0,
 			"y":	0
 		}, {
-			"name":	"WIN_FILES_PROJECTS",
+			"name":	"MNU_SCRIPT_CONTROLS",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"MNU_ADD_OBJECT",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"MNU_VIDEO",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"MNU_COLLIDERS",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"MNU_ILLUMINATION",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"MNU_CAMERA",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"MNU_SOUND",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"MNU_LOGGING",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"MNU_LAYOUTS",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"MNU_WINDOWS",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"WIN_PROJECT_SETTINGS",
+			"x":	15,
+			"y":	38
+		}, {
+			"name":	"WIN_SCENE_OBJECTS",
+			"x":	11,
+			"y":	1
+		}, {
+			"name":	"WIN_OBJECT_PROPS",
+			"x":	14,
+			"y":	11
+		}, {
+			"name":	"WIN_OBJECT_SHADERS",
+			"x":	15,
+			"y":	31
+		}, {
+			"name":	"WIN_OBJECT_SCRIPTS",
+			"x":	2,
+			"y":	31
+		}, {
+			"name":	"WIN_OBJECT_VARS",
+			"x":	5,
+			"y":	30
+		}, {
+			"name":	"WIN_GLOBAL_VARS",
 			"x":	12,
 			"y":	14
 		}, {
-			"name":	"WIN_FILES_SCENES",
+			"name":	"WIN_KEYBOARD_MOUSE",
 			"x":	9,
 			"y":	18
 		}, {
+			"name":	"WIN_IMAGES",
+			"x":	5,
+			"y":	27
+		}, {
+			"name":	"WIN_FILES_PROJECTS",
+			"x":	15,
+			"y":	38
+		}, {
+			"name":	"WIN_FILES_SCENES",
+			"x":	7,
+			"y":	10
+		}, {
 			"name":	"WIN_FILES_SCRIPTS",
-			"x":	6,
+			"x":	2,
 			"y":	31
 		}, {
 			"name":	"WIN_FILES_SHADERS",
 			"x":	15,
-			"y":	38
+			"y":	31
 		}, {
 			"name":	"WIN_LOGGING",
-			"x":	7,
-			"y":	10
-		}, {
-			"name":	"WIN_DEPTH_LIGHTS_MAPS",
-			"x":	2,
-			"y":	31
-		}, {
-			"name":	"WIN_PROFILER",
-			"x":	15,
-			"y":	31
-		}, {
-			"name":	"WIN_DEBUG_ICONS",
 			"x":	12,
 			"y":	35
 		}, {
-			"name":	"LOGGING_CLEAR",
+			"name":	"WIN_DEPTH_LIGHTS_MAPS",
 			"x":	14,
-			"y":	23
+			"y":	22
+		}, {
+			"name":	"WIN_PROFILER",
+			"x":	3,
+			"y":	26
+		}, {
+			"name":	"WIN_DEBUG_ICONS",
+			"x":	7,
+			"y":	4
+		}, {
+			"name":	"LOGGING_CLEAR",
+			"x":	4,
+			"y":	37
 		}, {
 			"name":	"LOGGING_MSG_OK",
 			"x":	14,
 			"y":	37
 		}, {
 			"name":	"LOGGING_MSG_ERROR",
-			"x":	7,
-			"y":	4
-		}, {
-			"name":	"LOGGING_OPTIONS",
-			"x":	4,
-			"y":	37
-		}, {
-			"name":	"DROP_ACCEPT",
-			"x":	4,
-			"y":	38
-		}, {
-			"name":	"VIDEO_VSYNC",
 			"x":	15,
 			"y":	37
 		}, {
+			"name":	"LOGGING_OPTIONS",
+			"x":	6,
+			"y":	11
+		}, {
+			"name":	"VIDEO_VSYNC",
+			"x":	7,
+			"y":	16
+		}, {
 			"name":	"VIDEO_LIMIT_FRAMERATE",
-			"x":	1,
-			"y":	1
+			"x":	14,
+			"y":	7
 		}, {
 			"name":	"VIDEO_DOF",
-			"x":	1,
-			"y":	27
+			"x":	15,
+			"y":	2
 		}, {
 			"name":	"VIDEO_FOG",
-			"x":	0,
-			"y":	0
+			"x":	2,
+			"y":	14
 		}, {
 			"name":	"VIDEO_OBJECT_AXIS",
-			"x":	0,
-			"y":	0
+			"x":	10,
+			"y":	14
 		}, {
 			"name":	"VIDEO_AABB",
-			"x":	0,
-			"y":	0
+			"x":	1,
+			"y":	34
 		}, {
 			"name":	"VIDEO_OCTREE",
-			"x":	0,
-			"y":	0
+			"x":	6,
+			"y":	24
 		}, {
 			"name":	"VIDEO_GRID",
-			"x":	0,
-			"y":	0
+			"x":	6,
+			"y":	22
 		}, {
 			"name":	"VIDEO_PICKING_COLORS",
-			"x":	0,
-			"y":	0
+			"x":	11,
+			"y":	10
 		}, {
 			"name":	"VIDEO_FPS",
-			"x":	0,
-			"y":	0
+			"x":	5,
+			"y":	4
 		}, {
 			"name":	"VIDEO_SHOW_BONES",
+			"x":	14,
+			"y":	38
+		}, {
+			"name":	"BRAKEZA_ABOUT_ME",
+			"x":	15,
+			"y":	27
+		}, {
+			"name":	"BRAKEZA_EXIT",
 			"x":	0,
-			"y":	0
+			"y":	10
 		}, {
 			"name":	"COLLIDERS_COLLISION_SYSTEM",
-			"x":	0,
-			"y":	0
+			"x":	15,
+			"y":	30
 		}, {
 			"name":	"COLLIDERS_HANDLE_OBJECTS_COLLISIONS",
-			"x":	0,
-			"y":	0
+			"x":	8,
+			"y":	13
 		}, {
 			"name":	"COLLIDERS_MAX_SUBSTEPS",
-			"x":	0,
-			"y":	0
+			"x":	12,
+			"y":	8
 		}, {
 			"name":	"COLLIDERS_FIXED_TIMESTEP",
-			"x":	0,
-			"y":	0
+			"x":	4,
+			"y":	10
 		}, {
 			"name":	"COLLIDERS_GRAVITY",
-			"x":	0,
-			"y":	0
+			"x":	6,
+			"y":	36
 		}, {
 			"name":	"COLLIDERS_DEBUG_MODE",
-			"x":	0,
-			"y":	0
+			"x":	9,
+			"y":	16
 		}, {
 			"name":	"COLLIDERS_DEMO_APP",
-			"x":	0,
-			"y":	0
+			"x":	3,
+			"y":	37
 		}, {
 			"name":	"ILLUMINATION_ENABLE_SYSTEM",
-			"x":	0,
-			"y":	0
+			"x":	4,
+			"y":	24
 		}, {
 			"name":	"ILLUMINATION_ENABLE_SHADOW_MAPPING",
-			"x":	0,
-			"y":	0
+			"x":	8,
+			"y":	23
 		}, {
 			"name":	"ILLUMINATION_SUN_DIRECTION",
-			"x":	0,
-			"y":	0
+			"x":	13,
+			"y":	20
 		}, {
 			"name":	"ILLUMINATION_COLORS",
-			"x":	0,
-			"y":	0
+			"x":	12,
+			"y":	37
 		}, {
 			"name":	"ILLUMINATION_ENABLE_SUN_SHADOWS",
-			"x":	0,
-			"y":	0
+			"x":	14,
+			"y":	9
 		}, {
 			"name":	"ILLUMINATION_SHADOW_MAPPING_DEBUG",
-			"x":	0,
-			"y":	0
+			"x":	6,
+			"y":	7
 		}, {
 			"name":	"CAMERA_FOV",
-			"x":	0,
-			"y":	0
+			"x":	11,
+			"y":	35
 		}, {
 			"name":	"CAMERA_POSITION",
-			"x":	0,
-			"y":	0
+			"x":	8,
+			"y":	14
 		}, {
 			"name":	"CAMERA_ROTATION",
-			"x":	0,
-			"y":	0
+			"x":	8,
+			"y":	14
 		}, {
 			"name":	"CAMERA_CURSOR_SPEED_WALKING",
-			"x":	0,
-			"y":	0
+			"x":	9,
+			"y":	28
 		}, {
 			"name":	"CAMERA_CURSOR_SPEED_STRAFE",
-			"x":	0,
-			"y":	0
+			"x":	9,
+			"y":	28
 		}, {
 			"name":	"CAMERA_CLICK_OBJECTS",
-			"x":	0,
-			"y":	0
+			"x":	9,
+			"y":	18
 		}, {
 			"name":	"CAMERA_MOUSE_LOOK",
-			"x":	0,
-			"y":	0
+			"x":	10,
+			"y":	18
 		}, {
 			"name":	"SOUND_ENABLE_SYSTEM",
-			"x":	0,
-			"y":	0
+			"x":	5,
+			"y":	13
 		}, {
 			"name":	"SOUND_MUSIC_VOLUME",
-			"x":	0,
-			"y":	0
+			"x":	5,
+			"y":	14
 		}, {
 			"name":	"SOUND_GLOBAL_CHANNEL_VOLUME",
-			"x":	0,
-			"y":	0
+			"x":	5,
+			"y":	14
 		}, {
 			"name":	"LOGGING_OUTPUT_CONSOLE",
-			"x":	0,
-			"y":	0
+			"x":	12,
+			"y":	35
 		}, {
 			"name":	"LOGGING_OUTPUT_STD",
-			"x":	0,
-			"y":	0
+			"x":	10,
+			"y":	24
 		}, {
 			"name":	"LOGGING_COLLIDER",
-			"x":	0,
-			"y":	0
+			"x":	12,
+			"y":	20
 		}, {
 			"name":	"LAYOUTS_ENABLE_GUI",
-			"x":	0,
-			"y":	0
+			"x":	7,
+			"y":	1
 		}, {
 			"name":	"LAYOUTS_ENABLE_TOOLBAR",
-			"x":	0,
-			"y":	0
+			"x":	10,
+			"y":	17
 		}, {
 			"name":	"LAYOUTS_LAYOUT_DEFAULT",
-			"x":	0,
-			"y":	0
+			"x":	6,
+			"y":	1
 		}, {
 			"name":	"LAYOUTS_LAYOUT_DEVS",
+			"x":	13,
+			"y":	1
+		}, {
+			"name":	"LAYOUTS_LAYOUT_DESIGNERS",
+			"x":	7,
+			"y":	4
+		}, {
+			"name":	"LAYOUTS_SAVE_LAYOUT",
+			"x":	4,
+			"y":	33
+		}, {
+			"name":	"TOOLBAR_ENABLE_GUI",
+			"x":	7,
+			"y":	1
+		}, {
+			"name":	"TOOLBAR_LAYOUT_DEFAULT",
 			"x":	0,
 			"y":	0
 		}, {
-			"name":	"LAYOUTS_LAYOUT_DESIGNERS",
-			"x":	0,
-			"y":	0
+			"name":	"TOOLBAR_LAYOUT_CODING",
+			"x":	13,
+			"y":	1
+		}, {
+			"name":	"TOOLBAR_LAYOUT_DESIGN",
+			"x":	7,
+			"y":	4
+		}, {
+			"name":	"TOOLBAR_TRANSLATE",
+			"x":	1,
+			"y":	15
+		}, {
+			"name":	"TOOLBAR_ROTATE",
+			"x":	2,
+			"y":	15
+		}, {
+			"name":	"TOOLBAR_SCALE",
+			"x":	3,
+			"y":	15
+		}, {
+			"name":	"TOOLBAR_ENABLE_STEP_SIMULATION",
+			"x":	15,
+			"y":	30
+		}, {
+			"name":	"TOOLBAR_DRAW_COLLIDERS",
+			"x":	9,
+			"y":	16
+		}, {
+			"name":	"TOOLBAR_CLICK_OBJECTS",
+			"x":	9,
+			"y":	18
+		}, {
+			"name":	"TOOLBAR_MOUSE_LOOK",
+			"x":	10,
+			"y":	18
+		}, {
+			"name":	"TOOLBAR_ENABLE_LIGHT_SYSTEM",
+			"x":	4,
+			"y":	24
+		}, {
+			"name":	"TOOLBAR_ENABLE_SHADOW_MAPPING",
+			"x":	8,
+			"y":	23
+		}, {
+			"name":	"COLLIDER_BODY",
+			"x":	5,
+			"y":	24
+		}, {
+			"name":	"COLLIDER_KINEMATIC",
+			"x":	5,
+			"y":	24
+		}, {
+			"name":	"COLLIDER_GHOST",
+			"x":	5,
+			"y":	24
+		}, {
+			"name":	"BONE_LOCK",
+			"x":	11,
+			"y":	11
+		}, {
+			"name":	"BONE_UNLOCK",
+			"x":	12,
+			"y":	11
+		}, {
+			"name":	"LUA_PLAY",
+			"x":	12,
+			"y":	12
+		}, {
+			"name":	"LUA_STOP",
+			"x":	5,
+			"y":	3
+		}, {
+			"name":	"LUA_LOCK",
+			"x":	11,
+			"y":	11
+		}, {
+			"name":	"LUA_UNLOCK",
+			"x":	12,
+			"y":	11
+		}, {
+			"name":	"LUA_RELOAD",
+			"x":	10,
+			"y":	31
+		}, {
+			"name":	"LUA_REMOVE",
+			"x":	4,
+			"y":	37
+		}, {
+			"name":	"WINDOW_FULLSCREEN",
+			"x":	5,
+			"y":	29
+		}, {
+			"name":	"SHADER_LOAD",
+			"x":	15,
+			"y":	9
+		}, {
+			"name":	"SHADER_LOCK",
+			"x":	11,
+			"y":	11
+		}, {
+			"name":	"SHADER_UNLOCK",
+			"x":	12,
+			"y":	11
+		}, {
+			"name":	"SHADER_RELOAD",
+			"x":	10,
+			"y":	31
+		}, {
+			"name":	"SCRIPT_RELOAD",
+			"x":	10,
+			"y":	31
+		}, {
+			"name":	"PROJECT_REMOVE",
+			"x":	4,
+			"y":	37
+		}, {
+			"name":	"SCENE_REMOVE",
+			"x":	4,
+			"y":	37
+		}, {
+			"name":	"SCRIPT_REMOVE",
+			"x":	4,
+			"y":	37
+		}, {
+			"name":	"SHADER_REMOVE",
+			"x":	4,
+			"y":	37
+		}, {
+			"name":	"OBJECT_REMOVE_SCENE",
+			"x":	4,
+			"y":	37
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

@@ -173,7 +173,7 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::FolderBro
                 ImGui::EndDragDropSource();
             }
             ImGui::TableSetColumnIndex(1);
-            GUI::DrawButtonConfirm("Deleting script", "Are you sure to delete script?", GUIType::Sizes::ICONS_BROWSERS, [&] {
+            GUI::DrawButtonConfirm("Deleting script", "Are you sure to delete script?", IconGUI::SCRIPT_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
                 ComponentScripting::removeScriptLUAFile(browser.currentFolder + file);
                 browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
             });

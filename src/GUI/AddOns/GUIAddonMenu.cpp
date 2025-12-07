@@ -544,7 +544,12 @@ void GUIAddonMenu::MenuWindow(GUIManager *gui)
 
 void GUIAddonMenu::AboutMeModal()
 {
-    if (ImGui::BeginPopupModal("About Brakeza3D", &Config::get()->SHOW_ABOUT_ME_MODAL)) {
+    if (Config::get()->SHOW_ABOUT_ME_MODAL) {
+        ImGui::OpenPopup("About Brakeza3D");
+        Config::get()->SHOW_ABOUT_ME_MODAL = false;
+    }
+
+    if (ImGui::BeginPopupModal("About Brakeza3D", nullptr)) {
         auto setup = Config::get();
 
         ImGui::Text("Welcome to Brakeza3D!");

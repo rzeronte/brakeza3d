@@ -83,10 +83,10 @@ void GUI::DrawButtonTransparent(const std::string &tooltip, GUIType::Sheet icon,
     ImGui::SetItemTooltip(tooltip.c_str());
 }
 
-void GUI::DrawButtonConfirm(const std::string &title, const std::string &question, const ImVec2 size, const std::function<void()>& cb)
+void GUI::DrawButtonConfirm(const std::string &title, const std::string &question, GUIType::Sheet icon, const ImVec2 size, const std::function<void()>& cb)
 {
     ImGui::PushID((title + question).c_str());
-    if (ImGui::ImageButton(FileSystemGUI::Icon(IconGUI::REMOVE), size)) {
+    if (ImGui::ImageButton(FileSystemGUI::Icon(icon), size)) {
         ImGui::OpenPopup(title.c_str());
     }
     ImGui::SetItemTooltip(title.c_str());

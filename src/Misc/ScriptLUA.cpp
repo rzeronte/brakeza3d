@@ -198,7 +198,7 @@ void ScriptLUA::parseTypesFromFileAttributes()
 {
     size_t file_size;
     auto contentFile = Tools::ReadFile(fileTypes, file_size);
-    Logging::Message("Parsing attributes from: '%s'", fileTypes.c_str());
+    Logging::Message("[ScriptLUA] Parsing attributes from: '%s'", fileTypes.c_str());
 
     setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
 }

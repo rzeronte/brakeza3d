@@ -71,12 +71,12 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCach
                     ProjectLoader::LoadProject(browser.currentFolder + file);
                 });
                 ImGui::SameLine();
-                GUI::DrawButtonConfirm("Override project", "Are you sure to override project?", GUIType::Sizes::ICONS_BROWSERS, [&] {
+                GUI::DrawButtonConfirm("Override project", "Are you sure to override project?", IconGUI::SAVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
                     ProjectLoader::SaveProject(browser.currentFolder + file);
                 });
 
                 ImGui::SameLine();
-                GUI::DrawButtonConfirm("Deleting project", "Are you sure to delete project?", GUIType::Sizes::ICONS_BROWSERS, [&] {
+                GUI::DrawButtonConfirm("Deleting project", "Are you sure to delete project?", IconGUI::PROJECT_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
                     ProjectLoader::RemoveProject(browser.currentFolder + file);
                     browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
                 });
@@ -135,11 +135,11 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, GUIType::FolderBrowserCach
                     SceneLoader::LoadScene(browser.currentFolder + file);
                 });
                 ImGui::SameLine();
-                GUI::DrawButtonConfirm("Overriding scene", "Are you sure to override scene?", GUIType::Sizes::ICONS_BROWSERS, [&] {
+                GUI::DrawButtonConfirm("Overriding scene", "Are you sure to override scene?", IconGUI::SAVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
                     SceneLoader::SaveScene(browser.currentFolder + file);
                 });
                 ImGui::SameLine();
-                GUI::DrawButtonConfirm("Deleting scene", "Are you sure to delete scene?", GUIType::Sizes::ICONS_BROWSERS, [&] {
+                GUI::DrawButtonConfirm("Deleting scene", "Are you sure to delete scene?", IconGUI::SCENE_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
                     SceneLoader::RemoveScene(browser.currentFolder + file);
                     browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
                 });
