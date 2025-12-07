@@ -5,6 +5,7 @@
 #include "../../include/GUI/GUI.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../include/Misc/Logging.h"
 
 
 // ========== ICON OBJECT DEFINITIONS ==========
@@ -210,4 +211,25 @@ void GUI::ShowPopUp(const char* title, const char *message, const std::function<
 
         ImGui::EndPopup();
     }
+}
+
+void GUI::WelcomeMessage()
+{
+    Logging::Error("ese %d", 1);
+    Logging::Message("############################################################");
+    Logging::Message("");
+    Logging::Message("***********************");
+    Logging::Message("*  B R A K E Z A 3 D  *");
+    Logging::Message("***********************");
+    Logging::Message("");
+    Logging::Message("Open source game engine for developers");
+    Logging::Message("############################################################");
+    Logging::Message("");
+    Logging::Message(Config::get()->ENGINE_WEBSITE.c_str());
+    Logging::Message(Config::get()->ENGINE_SOURCE_WEBSITE.c_str());
+    Logging::Message("");
+    Logging::Message("%s", Config::get()->ENGINE_TITLE.c_str());
+    Logging::Message("");
+    Logging::Message("############################################################");
+    Logging::Message("");
 }

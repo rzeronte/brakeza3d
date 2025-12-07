@@ -3,8 +3,8 @@
 //
 
 #include "../../../include/GUI/AddOns/GUIAddonMenu.h"
-
 #include "../../../include/Components/ComponentsManager.h"
+#include "../../../include/Brakeza.h"
 #include "../../../include/Misc/Logging.h"
 #include "../../../include/Misc/ToolsMaths.h"
 #include "../../../include/Serializers/Object3DSerializer.h"
@@ -509,7 +509,7 @@ void GUIAddonMenu::MenuLayout()
     ImGui::SeparatorText("Layout modes");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_LAYOUT_DEFAULT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Default", "F5")) {
-        ComponentsManager::get()->getComponentWindow()->setImGuiConfig(Config::ImGUIConfigs::DEFAULT);
+        Brakeza::get()->GUI()->setLayoutToDefault(Config::ImGUIConfigs::DEFAULT);
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_LAYOUT_DEVS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Coding", "F6")) {
@@ -518,6 +518,11 @@ void GUIAddonMenu::MenuLayout()
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_LAYOUT_DESIGNERS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Design", "F7")) {
         ComponentsManager::get()->getComponentWindow()->setImGuiConfig(Config::ImGUIConfigs::DESIGN);
+    }
+    ImGui::Separator();
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_RESET_CURRENT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    if (ImGui::MenuItem("Reset to default")) {
+        Brakeza::get()->GUI()->setLayoutToDefault(ComponentsManager::get()->getComponentWindow()->getImGuiConfig());
     }
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_SAVE_LAYOUT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();

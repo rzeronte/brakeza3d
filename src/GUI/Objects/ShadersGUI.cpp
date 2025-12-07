@@ -126,22 +126,11 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, GUIType::FolderBrowser
     auto windowStatus = gui->getWindowStatus(GUIType::FILES_SHADERS);
     if (!windowStatus->isOpen) return;
 
-    static char name[256];
-    strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
-    if (ImGui::InputText("Shader name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-        gui->currentVariableToCreateCustomShader = name;
-    }
-
     std::vector<const char*> items;
     for (const auto& pair : ComponentsManager::get()->getComponentRender()->getShaderTypesMapping()) {
         items.push_back(pair.first.c_str());
     }
-
     static int item_current_idx = 0;
-
-    if (ImGui::Combo("Type", &item_current_idx, items.data(), items.size())) {
-        std::cout << "Seleccionado: " << items[item_current_idx] << std::endl;
-    }
 
     GUI::DrawButton("Create shader", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         if (!gui->currentVariableToCreateCustomShader.empty()) {
@@ -150,6 +139,18 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, GUIType::FolderBrowser
             browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
         }
     });
+    ImGui::SameLine();
+    static char name[256];
+    strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
+    ImGui::SetNextItemWidth(150);
+    if (ImGui::InputText("Shader name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+        gui->currentVariableToCreateCustomShader = name;
+    }
+
+    ImGui::SetNextItemWidth(150);
+    if (ImGui::Combo("Type", &item_current_idx, items.data(), items.size())) {
+        std::cout << "Seleccionado: " << items[item_current_idx] << std::endl;
+    }
 
     ImGui::Separator();
     FileSystemGUI::DrawBrowserFolders(gui, Config::get()->CUSTOM_SHADERS_FOLDER, browser,Config::get()->SHADERS_EXT);

@@ -389,8 +389,8 @@
 			"y":	1
 		}, {
 			"name":	"TOOLBAR_LAYOUT_DEFAULT",
-			"x":	0,
-			"y":	0
+			"x":	6,
+			"y":	1
 		}, {
 			"name":	"TOOLBAR_LAYOUT_CODING",
 			"x":	13,
@@ -523,6 +523,22 @@
 			"name":	"OBJECT_REMOVE_SCENE",
 			"x":	4,
 			"y":	37
+		}, {
+			"name":	"OBJECTS_VIEWER_LIST",
+			"x":	10,
+			"y":	37
+		}, {
+			"name":	"OBJECTS_VIEWER_TREE",
+			"x":	8,
+			"y":	15
+		}, {
+			"name":	"OBJECTS_VIEWER_CLEAR_FILTER",
+			"x":	3,
+			"y":	10
+		}, {
+			"name":	"LAYOUTS_RESET_CURRENT",
+			"x":	0,
+			"y":	7
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",
