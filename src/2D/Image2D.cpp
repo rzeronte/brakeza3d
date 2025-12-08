@@ -31,7 +31,7 @@ void Image2D::onUpdate()
         x - w/2,
         y - h/2,
         alpha,
-        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+        ComponentsManager::get()->Window()->getForegroundFramebuffer()
     );
 }
 
@@ -41,9 +41,9 @@ void Image2D::updatePosition(int x, int y)
     this->y = y;
 }
 
-TypeObject Image2D::getTypeObject() const
+ObjectType Image2D::getTypeObject() const
 {
-    return TypeObject::Image2D;
+    return ObjectType::Image2D;
 }
 
 GUIType::Sheet Image2D::getIcon()

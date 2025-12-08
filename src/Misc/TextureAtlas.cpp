@@ -76,7 +76,7 @@ void TextureAtlas::CreateFromSheet(const std::string &file, int spriteWidth, int
     numRows = spriteSheetSurface->h / spriteHeight;
     numColumns = spriteSheetSurface->w / spriteWidth;
 
-    const auto renderer = ComponentsManager::get()->getComponentWindow()->getRenderer();
+    const auto renderer = ComponentsManager::get()->Window()->getRenderer();
 
     for (int row = 0; row < numRows; ++row) {
         for (int column = 0; column < numColumns; ++column) {

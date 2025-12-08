@@ -67,7 +67,7 @@ void LightSpotSerializer::LoadFileIntoScene(const std::string &file)
         0.9659
     );
 
-    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
+    o->setPosition(ComponentsManager::get()->Camera()->getCamera()->getPosition());
 
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("SpotLight3D"));
 }

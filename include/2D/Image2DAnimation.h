@@ -20,7 +20,7 @@ public:
     explicit Image2DAnimation(int x, int y, bool removeWhenEnds, TextureAnimated *animation);
     explicit Image2DAnimation(int x, int y, float ttl, TextureAnimated *animation);
 
-    TypeObject getTypeObject() const override;
+    ObjectType getTypeObject() const override;
     GUIType::Sheet getIcon() override;
     void onUpdate() override;
     void updatePosition(int x, int y);

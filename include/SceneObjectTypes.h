@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_SCENEOBJECTTYPES_H
 #define BRAKEZA3D_SCENEOBJECTTYPES_H
 
-enum class TypeObject {
+enum class ObjectType {
     Object3D = 1,
     Mesh3D = 2,
     Mesh3DAnimation = 3,
@@ -19,6 +19,5 @@ enum class TypeObject {
     Image2D = 11,
     Swarm = 12
 };
-
 
 #endif //BRAKEZA3D_SCENEOBJECTTYPES_H

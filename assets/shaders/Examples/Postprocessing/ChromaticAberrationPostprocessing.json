@@ -1,5 +1,5 @@
 {
-	"name":	"ChromaticAberrationPostprocessing",
+	"name":	"Chromatic Aberration Postprocessing",
 	"vertexshader":	"../assets/shaders/Examples/Postprocessing/ChromaticAberrationPostprocessing.vs",
 	"fragmentshader":	"../assets/shaders/Examples/Postprocessing/ChromaticAberrationPostprocessing.fs",
 	"type":	"Postprocessing",

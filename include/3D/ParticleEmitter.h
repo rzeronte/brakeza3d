@@ -50,7 +50,7 @@ public:
     );
 
     int FindUnusedParticle();
-    TypeObject getTypeObject() const override;
+    ObjectType getTypeObject() const override;
     GUIType::Sheet getIcon() override;
     void onUpdate() override;
     void setStopAdd(bool stopAdd);

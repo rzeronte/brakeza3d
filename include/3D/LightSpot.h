@@ -37,7 +37,7 @@ public:
         float outerCutOff
     );
     GUIType::Sheet getIcon() override;
-    TypeObject getTypeObject() const override;
+    ObjectType getTypeObject() const override;
     void DrawPropertiesGUI() override;
     void RenderDebugCone(float radians, const Color &c);
     void setCutOff(float value);

@@ -22,10 +22,10 @@ void AssimpAnimationService::UpdateOpenGLBones(std::vector<Mesh3DData> &meshes)
 
     for (auto &m: meshes) {
         if (m.vertices.empty()) continue;
-        ComponentsManager::get()->getComponentRender()->getShaderOGLBonesTransforms()->render(
+        ComponentsManager::get()->Render()->getShaders()->shaderOGLBonesTransforms->render(
             m,
             transformations,
-            ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+            ComponentsManager::get()->Window()->getSceneFramebuffer()
         );
     }
 }
@@ -96,7 +96,7 @@ bool AssimpAnimationService::AssimpLoadAnimation(const std::string &filename, st
 
     ReadNodesFromRoot(meshes);
 
-    ComponentsManager::get()->getComponentRender()->FillOGLBuffers(meshes);
+    ComponentsManager::get()->Render()->FillOGLBuffers(meshes);
 
     FillAnimationBoneDataOGLBuffers(meshes);
 
@@ -440,9 +440,9 @@ void AssimpAnimationService::drawBones(Object3D *o, aiNode *node, Vertex3D *last
         Transforms::objectSpace(bonePosition, bonePosition, o);
 
         if (lastBonePosition) {
-            auto render = ComponentsManager::get()->getComponentRender();
-            auto window = ComponentsManager::get()->getComponentWindow();
-            render->getShaderOGLLine3D()->render(
+            auto render = ComponentsManager::get()->Render();
+            auto window = ComponentsManager::get()->Window();
+            render->getShaders()->shaderOGLLine3D->render(
                 *lastBonePosition,
                 bonePosition,
                 window->getForegroundFramebuffer(),

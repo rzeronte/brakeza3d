@@ -101,7 +101,7 @@ Object3D* Mesh3DAnimationSerializer::ObjectByJson(cJSON *json)
 void Mesh3DAnimationSerializer::LoadFileIntoScene(const std::string& file)
 {
     auto *o = new Mesh3DAnimation();
-    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
+    o->setPosition(ComponentsManager::get()->Camera()->getCamera()->getPosition());
     o->AssimpLoadAnimation(file);
 
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Mesh3D"));

@@ -272,6 +272,8 @@ add_executable(Brakeza3D
         include/GUI/AddOns/GUIAddonObjects3D.cpp
         include/GUI/AddOns/GUIConsole.cpp
         src/GUI/Objects/Mesh3DGUIAnimation.cpp
+        src/OpenGL/ShaderOGLGrid.cpp
+        src/OpenGL/ShaderOGLGrid.h
 )
 
 target_link_libraries(Brakeza3D

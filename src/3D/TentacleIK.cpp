@@ -143,7 +143,7 @@ void TentacleIK::setTarget(Object3D *o)
 
 void TentacleIK::draw()
 {
-    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    auto camera = ComponentsManager::get()->Camera()->getCamera();
 
     int cont = 0;
     for (auto & joint : joints) {

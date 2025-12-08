@@ -170,7 +170,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
                 o->drawImGuiCollisionModeSelector();
                 if (o->getCollisionMode() != KINEMATIC) {
-                    o->drawImGuiCollisionShapeSelector();
+                    o->DrawImGuiCollisionShapeSelector();
                 }
 
                 if (ImGui::TreeNode("Collider settings")) {
@@ -257,12 +257,12 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
 void Object3DGUI::DrawSelectedObjectGuizmo()
 {
-    auto render = ComponentsManager::get()->getComponentRender();
+    auto render = ComponentsManager::get()->Render();
 
     if (render->getSelectedObject() != nullptr) {
         auto o = render->getSelectedObject();
 
-        auto camera = ComponentsManager::get()->getComponentCamera();
+        auto camera = ComponentsManager::get()->Camera();
         Drawable::drawObject3DGizmo(
             o,
             o->getModelMatrix(),

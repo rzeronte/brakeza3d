@@ -47,7 +47,7 @@ void ShaderOGLColor::renderColor(
     GLuint fbo
 ) const
 {
-    auto render = ComponentsManager::get()->getComponentRender();
+    auto render = ComponentsManager::get()->Render();
 
     render->changeOpenGLFramebuffer(fbo);
     render->changeOpenGLProgram(programID);
@@ -63,7 +63,7 @@ void ShaderOGLColor::renderColor(
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
 
-    auto camera = ComponentsManager::get()->getComponentCamera();
+    auto camera = ComponentsManager::get()->Camera();
 
     setMat4("projection", camera->getGLMMat4ProjectionMatrix());
     setMat4("view", camera->getGLMMat4ViewMatrix());
@@ -104,8 +104,8 @@ void ShaderOGLColor::createBuffer()
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-    const int w = ComponentsManager::get()->getComponentWindow()->getWidth();
-    const int h = ComponentsManager::get()->getComponentWindow()->getHeight();
+    const int w = ComponentsManager::get()->Window()->getWidth();
+    const int h = ComponentsManager::get()->Window()->getHeight();
 
     if (textureColorBuffer != 0) {
         glDeleteTextures(1, &textureColorBuffer);

@@ -35,7 +35,7 @@ public:
     Image3D(const Vertex3D &position, float width, float height, Image* image);
     ~Image3D() override;
 
-    TypeObject getTypeObject() const override;
+    ObjectType getTypeObject() const override;
     GUIType::Sheet getIcon() override;
     void onUpdate() override;
     void DrawPropertiesGUI() override;

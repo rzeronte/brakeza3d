@@ -63,9 +63,9 @@ void LightPoint::setCuadratic(float value)
     quadratic = value;
 }
 
-TypeObject LightPoint::getTypeObject() const
+ObjectType LightPoint::getTypeObject() const
 {
-    return TypeObject::LightPoint;
+    return ObjectType::LightPoint;
 }
 
 GUIType::Sheet LightPoint::getIcon()

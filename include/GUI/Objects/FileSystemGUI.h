@@ -14,13 +14,13 @@ class FileSystemGUI
 {
 public:
     static void UpdateFolderFiles(GUIManager *gui);
-    static void DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCache &browser);
-    static void DrawScenesFolder(GUIManager *gui, GUIType::FolderBrowserCache &browser);
+    static void DrawProjectFiles(GUIManager *gui, GUIType::BrowserCache &browser);
+    static void DrawScenesFolder(GUIManager *gui, GUIType::BrowserCache &browser);
     static void LoadImagesFolder(GUIManager *gui);
     static void DrawBrowserFolders(
         GUIManager *gui,
         std::string &baseFolder,
-        GUIType::FolderBrowserCache &browser,
+        GUIType::BrowserCache &browser,
         std::string ext
     );
     static ImTextureID Icon(GUIType::Sheet coords);

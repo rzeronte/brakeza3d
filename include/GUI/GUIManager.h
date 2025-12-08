@@ -38,8 +38,8 @@ class GUIManager
     GUIType::ScriptEditableManager scriptEditableManager;
     GUIType::ShaderEditableManager shaderEditableManager;
 
-    std::vector<GUIType::AddonAllowedObjects> visibleTypeObjects;
-    GUIType::AddonObjectsViewerMode viewerMode = GUIType::AddonObjectsViewerMode::TREE;
+    std::vector<GUIType::ViewerObjectType> visibleTypeObjects;
+    GUIType::ViewerObjectsMode viewerMode = GUIType::ViewerObjectsMode::TREE;
 
     std::vector<GUIType::MenuItem> menus;
 
@@ -51,10 +51,10 @@ class GUIManager
     std::string currentVariableToAddName;
     std::string currentVariableToCreateCustomShader;
 
-    GUIType::FolderBrowserCache browserScenes;
-    GUIType::FolderBrowserCache browserProjects;
-    GUIType::FolderBrowserCache browserShaders;
-    GUIType::FolderBrowserCache browserScripts;
+    GUIType::BrowserCache browserScenes;
+    GUIType::BrowserCache browserProjects;
+    GUIType::BrowserCache browserShaders;
+    GUIType::BrowserCache browserScripts;
 
     Color lineSelectorObjectColor = Color::green();
 
@@ -72,25 +72,27 @@ public:
     explicit GUIManager(std::vector<Object3D *> &gameObjects);
     virtual ~GUIManager() = default;
 
-    void setSelectedObjectIndex(int selectedObjectIndex);
+    void setSelectedObjectIndex(int value);
     void setSelectedObject(const Object3D *s);
     void RegisterWindows();
     void RegisterDefaultLayoutWindows();
     void RegisterAllowedItemsForViewer();
     void RegisterMenu();
     void OpenBoneInfoDialog();
-    void setObjectsViewerMode(GUIType::AddonObjectsViewerMode value);
+    void setObjectsViewerMode(GUIType::ViewerObjectsMode value);
     void setLayoutToDefault(Config::ImGUIConfigs config);
     virtual void DrawGUI();
     GUIType::WindowData *getWindowStatus(GUIType::Window window);
     [[nodiscard]] GuiAddonConsole *getConsole() const;
-    [[nodiscard]] bool isLightDepthMapsViewerWindowOpen();
+
+    bool isWindowOpen(GUIType::Window w) const;
+
     [[nodiscard]] TextureAtlas * getTextureAtlas() const;
-    [[nodiscard]] GUIType::FolderBrowserCache getBrowserScripts() const;
-    [[nodiscard]] GUIType::FolderBrowserCache getBrowserScenes() const;
-    [[nodiscard]] GUIType::FolderBrowserCache getBrowserProjects() const;
-    [[nodiscard]] GUIType::FolderBrowserCache getBrowserShaders() const;
-    [[nodiscard]] GUIType::AddonObjectsViewerMode getObjectsViewerMode() const;
+    [[nodiscard]] GUIType::BrowserCache getBrowserScripts() const;
+    [[nodiscard]] GUIType::BrowserCache getBrowserScenes() const;
+    [[nodiscard]] GUIType::BrowserCache getBrowserProjects() const;
+    [[nodiscard]] GUIType::BrowserCache getBrowserShaders() const;
+    [[nodiscard]] GUIType::ViewerObjectsMode getObjectsViewerMode() const;
     [[nodiscard]] int& selectedObjectIndexPointer();
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();

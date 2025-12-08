@@ -4,6 +4,7 @@
 #ifndef BRAKEZA3D_SCRIPTLUA_H
 #define BRAKEZA3D_SCRIPTLUA_H
 
+#include <map>
 #include <string>
 #include <utility>
 #include "cJSON.h"
@@ -11,6 +12,25 @@
 #include "../../sol/sol.hpp"
 
 typedef std::variant<int, float, Vertex3D, const char*> LUADataValue;
+
+enum class LUADataType {
+    INT,
+    FLOAT,
+    VERTEX3D,
+    STRING
+};
+
+struct LUATypeInfo {
+    LUADataType type;
+    std::string label;
+};
+
+static std::map<std::string, LUATypeInfo> LUADataTypesMapping = {
+    {"int", {LUADataType::INT, "Integer" }},
+    {"float", {LUADataType::FLOAT, "Float" }},
+    {"string", {LUADataType::STRING, "String" }},
+    {"Vertex3D", {LUADataType::VERTEX3D, "Vertex3D" }},
+};
 
 struct ScriptLUATypeData {
     ScriptLUATypeData(const char *name, const char *type, LUADataValue value)
@@ -52,6 +72,7 @@ public:
 
     std::string scriptFilename;
     std::string fileTypes;
+    std::string name;
 
     explicit ScriptLUA(const std::string& script, std::string properties);
     ScriptLUA(const std::string &scriptFilename, const cJSON *types);
@@ -79,6 +100,10 @@ public:
     static ScriptLUA* create(const std::string& scriptFile);
     static std::string dataTypesFileFor(std::string basicString);
     static std::string removeFilenameExtension(std::string& filename);
+
+    [[nodiscard]] std::string getName() const;
+
+    void setName(const std::string &name);
 
     friend class ScriptLuaGUI;
 };

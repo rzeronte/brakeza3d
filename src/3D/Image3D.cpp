@@ -67,11 +67,11 @@ void Image3D::onUpdate()
         LookAtBillboard();
     }
 
-    auto render = ComponentsManager::get()->getComponentRender();
-    auto window = ComponentsManager::get()->getComponentWindow();
+    auto render = ComponentsManager::get()->Render();
+    auto window = ComponentsManager::get()->Window();
 
     if (isGUISelected()) {
-        render->getShaderOGLOutline()->drawOutlineImage3D(
+        render->getShaders()->shaderOGLOutline->drawOutlineImage3D(
             this,
             Color::green(),
             0.1f,
@@ -100,7 +100,7 @@ void Image3D::onUpdate()
                 shadowMappingPass();
             }
         } else {
-            render->getShaderOGLRenderForward()->render(
+            render->getShaders()->shaderOGLRender->render(
                 this,
                 image->getOGLTextureID(),
                 image->getOGLTextureID(),
@@ -115,7 +115,7 @@ void Image3D::onUpdate()
     }
 
     if (Config::get()->TRIANGLE_MODE_WIREFRAME) {
-        render->getShaderOGLWireframe()->render(
+        render->getShaders()->shaderOGLWireframe->render(
             getModelMatrix(),
             vertexBuffer,
             uvBuffer,
@@ -127,7 +127,7 @@ void Image3D::onUpdate()
     }
 
     if (Config::get()->TRIANGLE_MODE_PIXELS) {
-        render->getShaderOGLPoints()->render(
+        render->getShaders()->shaderOGLPoints->render(
             getModelMatrix(),
             vertexBuffer,
             vertices.size(),
@@ -137,7 +137,7 @@ void Image3D::onUpdate()
     }
 
     if (Config::get()->TRIANGLE_MODE_SHADING) {
-        render->getShaderOGLShading()->render(
+        render->getShaders()->shaderOGLShading->render(
             getModelMatrix(),
             vertexBuffer,
             uvBuffer,
@@ -148,7 +148,7 @@ void Image3D::onUpdate()
     }
 
     if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D)  {
-        render->getShaderOGLColor()->renderColor(
+        render->getShaders()->shaderOGLColor->renderColor(
             getModelMatrix(),
             vertexBuffer,
             uvBuffer,
@@ -173,9 +173,9 @@ Image3D::~Image3D()
 {
 }
 
-TypeObject Image3D::getTypeObject() const
+ObjectType Image3D::getTypeObject() const
 {
-    return TypeObject::Image3D;
+    return ObjectType::Image3D;
 }
 
 GUIType::Sheet Image3D::getIcon()
@@ -248,9 +248,9 @@ void Image3D::setImage(Image* value)
 
 void Image3D::shadowMappingPass()
 {
-    auto render = ComponentsManager::get()->getComponentRender();
-    auto shaderShadowPass = render->getShaderOGLShadowPass();
-    auto shaderRender = render->getShaderOGLRenderForward();
+    auto render = ComponentsManager::get()->Render();
+    auto shaderShadowPass = render->getShaders()->shaderShadowPass;
+    auto shaderRender = render->getShaders()->shaderOGLRender;
 
     // Directional Light
     shaderShadowPass->renderIntoDirectionalLightTexture(
@@ -285,7 +285,7 @@ void Image3D::shadowMappingPass()
 
 void Image3D::LookAtBillboard()
 {
-    auto o = ComponentsManager::get()->getComponentCamera()->getCamera();
+    auto o = ComponentsManager::get()->Camera()->getCamera();
 
     // Dirección de la imagen hacia la cámara
     Vertex3D direction = (o->getPosition() - position).getNormalize();

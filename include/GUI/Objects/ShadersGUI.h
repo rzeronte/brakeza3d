@@ -13,7 +13,7 @@ class ShadersGUI
 public:
     static void DrawEditShaderWindow(GUIManager *gui);
     static void DrawShaderVariables(GUIManager *gui);
-    static void DrawCustomShadersFolder(GUIManager *gui, GUIType::FolderBrowserCache &browser);
+    static void DrawCustomShadersFolder(GUIManager *gui, GUIType::BrowserCache &browser);
     static void DrawShadersBySelectedObject(GUIManager *gui);
     static void LoadShaderDialog(GUIManager *gui, const std::string &folder, const std::string &file);
 };

@@ -51,7 +51,7 @@ void Image3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 void Image3DSerializer::LoadFileIntoScene(const std::string &filename)
 {
     auto *o = new Image3D(
-        ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
+        ComponentsManager::get()->Camera()->getCamera()->getPosition(),
         1.0f,
         1.0f,
         new Image(filename)

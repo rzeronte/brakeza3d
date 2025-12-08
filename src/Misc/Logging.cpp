@@ -4,10 +4,6 @@
 
 void Logging::Message(const char *message, ...)
 {
-    if (Brakeza::get()->GUI() != nullptr) {
-        Brakeza::get()->GUI()->getConsole()->setLogIcon(IconGUI::LOGGING_MSG_OK);
-    }
-
     va_list args;
     va_start(args, message);
     OutputVa(message, args);
@@ -48,12 +44,9 @@ void Logging::Output(const char *message, ...)
 
 void Logging::Error(const char *error, ...)
 {
-    if (Brakeza::get()->GUI() != nullptr) {
-        Brakeza::get()->GUI()->getConsole()->setLogIcon(IconGUI::LOGGING_MSG_ERROR);
-    }
-    
+    std::string prefixed = std::string("[Error] " + std::string(error));
     va_list args;
     va_start(args, error);
-    OutputVa(error, args);
+    OutputVa(prefixed.c_str(), args);
     va_end(args);
 }

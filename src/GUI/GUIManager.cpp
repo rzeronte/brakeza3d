@@ -22,7 +22,7 @@ windows.push_back({ title, type, icon, visible, [&] { func; }})
 GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 :
     gameObjects(gameObjects),
-    widgetConsole(new GuiAddonConsole(ComponentsManager::get()->getComponentScripting()->getLua())),
+    widgetConsole(new GuiAddonConsole(ComponentsManager::get()->Scripting()->getLua())),
     browserScenes(GUI::CreateBrowserCache(Config::get()->SCENES_FOLDER, Config::get()->SCENES_EXT)),
     browserProjects(GUI::CreateBrowserCache(Config::get()->PROJECTS_FOLDER, Config::get()->PROJECTS_EXT)),
     browserShaders(GUI::CreateBrowserCache(Config::get()->CUSTOM_SHADERS_FOLDER, Config::get()->SHADERS_EXT)),
@@ -128,17 +128,17 @@ void GUIManager::RegisterDefaultLayoutWindows()
 void GUIManager::RegisterAllowedItemsForViewer()
 {
     visibleTypeObjects = {
-        { "Object",                  TypeObject::Object3D,             IconObject::OBJECT_3D, true },
-        { "Image 2D",                TypeObject::Image2D,              IconObject::IMAGE_2D, true },
-        { "Image 2D animation",      TypeObject::Image2DAnimation,     IconObject::IMAGE_2D_ANIMATION, true },
-        { "Mesh 3D",                 TypeObject::Mesh3D,               IconObject::MESH_3D, true  },
-        { "Mesh 3D animation",       TypeObject::Mesh3DAnimation,      IconObject::MESH_3D_ANIMATION, true  },
-        { "Image 3D",                TypeObject::Image3D,              IconObject::IMAGE_3D, true },
-        { "Image 3D animation",      TypeObject::Image3DAnimation,     IconObject::IMAGE_3D_ANIMATION, true },
-        { "Image 3D animation 360",  TypeObject::Image3DAnimation360,  IconObject::IMAGE_3D_ANIMATION_360, true },
-        { "Light Point",             TypeObject::LightPoint,           IconObject::LIGHT_POINT, true },
-        { "Light Spot",              TypeObject::LightSpot,            IconObject::LIGHT_SPOT, true },
-        { "Particle Emitter",        TypeObject::ParticleEmitter,      IconObject::PARTICLE_EMITTER, true }
+        { "Object",                  ObjectType::Object3D,             IconObject::OBJECT_3D, true },
+        { "Image 2D",                ObjectType::Image2D,              IconObject::IMAGE_2D, true },
+        { "Image 2D animation",      ObjectType::Image2DAnimation,     IconObject::IMAGE_2D_ANIMATION, true },
+        { "Mesh 3D",                 ObjectType::Mesh3D,               IconObject::MESH_3D, true  },
+        { "Mesh 3D animation",       ObjectType::Mesh3DAnimation,      IconObject::MESH_3D_ANIMATION, true  },
+        { "Image 3D",                ObjectType::Image3D,              IconObject::IMAGE_3D, true },
+        { "Image 3D animation",      ObjectType::Image3DAnimation,     IconObject::IMAGE_3D_ANIMATION, true },
+        { "Image 3D animation 360",  ObjectType::Image3DAnimation360,  IconObject::IMAGE_3D_ANIMATION_360, true },
+        { "Light Point",             ObjectType::LightPoint,           IconObject::LIGHT_POINT, true },
+        { "Light Spot",              ObjectType::LightSpot,            IconObject::LIGHT_SPOT, true },
+        { "Particle Emitter",        ObjectType::ParticleEmitter,      IconObject::PARTICLE_EMITTER, true }
     };
 }
 
@@ -227,16 +227,20 @@ GuiAddonConsole *GUIManager::getConsole() const
     return widgetConsole;
 }
 
-bool GUIManager::isLightDepthMapsViewerWindowOpen()
+bool GUIManager::isWindowOpen(GUIType::Window window) const
 {
-    auto windowStatus = getWindowStatus(GUIType::DEPTH_LIGHTS_MAPS);
+    for (auto& w : windows) {
+        if (w.window == window) {
+            return w.isOpen;
+        }
+    }
 
-    return windowStatus->isOpen;
+    return false;
 }
 
-void GUIManager::setSelectedObjectIndex(int selectedObjectIndex)
+void GUIManager::setSelectedObjectIndex(int value)
 {
-    GUIManager::selectedObjectIndex = selectedObjectIndex;
+    selectedObjectIndex = value;
 }
 
 void GUIManager::setSelectedObject(const Object3D *s)
@@ -255,7 +259,7 @@ void GUIManager::WindowKeyboardMouseSetup()
     auto windowStatus = getWindowStatus(GUIType::KEYBOARD_MOUSE);
     if (!windowStatus->isOpen) return;
 
-    auto input = ComponentsManager::get()->getComponentInput();
+    auto input = ComponentsManager::get()->Input();
 
     ImGui::Text(("Mouse motion: " + std::to_string(input->isMouseMotion())).c_str());
     ImGui::Text(("Mouse motion RelX: " + std::to_string(input->getMouseMotionXRel())).c_str());
@@ -303,32 +307,32 @@ TextureAtlas * GUIManager::getTextureAtlas() const
     return textureAtlas;
 }
 
-GUIType::FolderBrowserCache GUIManager::getBrowserScripts() const
+GUIType::BrowserCache GUIManager::getBrowserScripts() const
 {
     return browserScripts;
 }
 
-GUIType::FolderBrowserCache GUIManager::getBrowserScenes() const
+GUIType::BrowserCache GUIManager::getBrowserScenes() const
 {
     return browserScenes;
 }
 
-GUIType::FolderBrowserCache GUIManager::getBrowserProjects() const
+GUIType::BrowserCache GUIManager::getBrowserProjects() const
 {
     return browserProjects;
 }
 
-GUIType::FolderBrowserCache GUIManager::getBrowserShaders() const
+GUIType::BrowserCache GUIManager::getBrowserShaders() const
 {
     return browserShaders;
 }
 
-GUIType::AddonObjectsViewerMode GUIManager::getObjectsViewerMode() const
+GUIType::ViewerObjectsMode GUIManager::getObjectsViewerMode() const
 {
     return viewerMode;
 }
 
-void GUIManager::setObjectsViewerMode(GUIType::AddonObjectsViewerMode value)
+void GUIManager::setObjectsViewerMode(GUIType::ViewerObjectsMode value)
 {
     Logging::Message("[GUIManager] Change viewer mode to %d", (int) value);
     viewerMode = value;
@@ -426,7 +430,6 @@ void GUIManager::WindowImages()
                 ImGui::TableNextColumn();
             }
         }
-
         ImGui::EndTable();
     }
 }
@@ -460,9 +463,9 @@ void GUIManager::WindowLightsDepthMapsViewer()
     auto title = std::string("Lights Depth Maps Viewer: ");
     if (ImGui::Begin(title.c_str(), &windowStatus->isOpen, ImGuiWindowFlags_NoDocking)) {
 
-        auto render = ComponentsManager::get()->getComponentRender();
-        auto shaderShadowPassDebugLight = render->getShaderOGLShadowPassDebugLight();
-        auto lights = render->getShaderOGLRenderForward()->getShadowMappingSpotLights();
+        auto render = ComponentsManager::get()->Render();
+        auto shaderShadowPassDebugLight = render->getShaders()->shaderShadowPassDebugLight;
+        auto lights = render->getShaders()->shaderOGLRender->getShadowMappingSpotLights();
 
         // Añadir padding a las celdas
         ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(10.0f, 10.0f));
@@ -519,11 +522,14 @@ void GUIManager::DrawSplashWindow()
     if (currentTime >= countdownTime - fadeDuration) {
         splashAlpha = (countdownTime - currentTime) / fadeDuration;
         splashAlpha = glm::clamp(splashAlpha, 0.0f, 1.0f);
-        Config::get()->ENABLE_SPLASH = false;
+
+        if (splashAlpha <= 0.0f) {
+            Config::get()->ENABLE_SPLASH = false;
+            return;
+        }
     }
 
     ImVec2 size((float) splashImage->width(), (float) splashImage->height());
-
     ImGuiIO& io = ImGui::GetIO();
     ImVec2 tamañoPantalla = io.DisplaySize;
 
@@ -533,6 +539,18 @@ void GUIManager::DrawSplashWindow()
 
     ImGui::SetNextWindowPos(positionCentered);
     ImGui::SetNextWindowSize(size);
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);  // ← Borde = 0
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0)); // Fondo transparente
+
+    ImGui::Begin("##Splash", nullptr,
+        ImGuiWindowFlags_NoDecoration |
+        ImGuiWindowFlags_NoInputs |
+        ImGuiWindowFlags_NoMove |
+        ImGuiWindowFlags_NoScrollWithMouse
+    );
+
     ImGui::Image(
         splashImage->getOGLImTexture(),
         size,
@@ -540,6 +558,10 @@ void GUIManager::DrawSplashWindow()
         ImVec2(1, 1),
         ImVec4(1.0f, 1.0f, 1.0f, splashAlpha)
     );
+
+    ImGui::End();
+    ImGui::PopStyleColor();
+    ImGui::PopStyleVar(2);
 }
 
 GUIType::WindowData* GUIManager::getWindowStatus(GUIType::Window window)

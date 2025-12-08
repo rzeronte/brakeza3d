@@ -72,7 +72,7 @@ public:
             ImGui::Text("%s", text);
         };
 
-if (ImGui::CollapsingHeader("GUI Icons")) {
+        if (ImGui::CollapsingHeader("GUI Icons")) {
             ImGui::Text("Total: %zu icons", IconGUI::ICON_COUNT);
 
             // Filtro por nombre

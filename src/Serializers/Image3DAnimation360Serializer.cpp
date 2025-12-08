@@ -40,7 +40,7 @@ cJSON * Image3DAnimation360Serializer::JsonByObject(Object3D *o)
 Object3D * Image3DAnimation360Serializer::ObjectByJson(cJSON *json)
 {
     auto *o = new Image3DAnimation360(
-        ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
+        ComponentsManager::get()->Camera()->getCamera()->getPosition(),
         1,
         1
     );
@@ -82,7 +82,7 @@ void Image3DAnimation360Serializer::ApplyJsonToObject(const cJSON *json, Object3
 void Image3DAnimation360Serializer::LoadFileIntoScene(const std::string &file)
 {
     auto o = new Image3DAnimation360(
-        ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition(),
+        ComponentsManager::get()->Camera()->getCamera()->getPosition(),
         1,
         1
     );

@@ -36,7 +36,7 @@ void Image::setImage(const std::string &filename)
     }
 
     surface = IMG_Load(filename.c_str());
-    texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->getComponentWindow()->getRenderer(), surface);
+    texture = SDL_CreateTextureFromSurface(ComponentsManager::get()->Window()->getRenderer(), surface);
 
     if (textureId == 0 ) {
         glDeleteTextures(1, &textureId);
@@ -61,7 +61,7 @@ void Image::DrawFlat(int pos_x, int pos_y, GLuint fbo) const
 {
     if (!loaded) return;
 
-    auto window = ComponentsManager::get()->getComponentWindow();
+    auto window = ComponentsManager::get()->Window();
 
     int windowWidth = window->getWidth();
     int windowHeight = window->getHeight();
@@ -78,7 +78,7 @@ void Image::DrawFlat(int pos_x, int pos_y, GLuint fbo) const
     dstRect.w = (surface->w * windowWidth) / Config::get()->screenWidth;
     dstRect.h = (surface->h * windowHeight) / Config::get()->screenHeight;
 
-    ComponentsManager::get()->getComponentRender()->getShaderOGLImage()->renderTexture(
+    ComponentsManager::get()->Render()->getShaders()->shaderOGLImage->renderTexture(
         textureId,
         dstRect.x,
         dstRect.y,

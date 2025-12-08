@@ -19,7 +19,7 @@ public:
     void onUpdate() override;
     void updatePosition(int x, int y);
     void DrawPropertiesGUI() override;
-    TypeObject getTypeObject() const override;
+    ObjectType getTypeObject() const override;
     GUIType::Sheet getIcon() override;
     static Image2D* create(int x, int y, const std::string& imageFile);
 

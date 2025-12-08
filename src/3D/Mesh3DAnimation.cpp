@@ -34,11 +34,11 @@ void Mesh3DAnimation::onUpdate()
         UpdateBoneColliders();
     }
 
-    auto render = ComponentsManager::get()->getComponentRender();
-    auto window = ComponentsManager::get()->getComponentWindow();
+    auto render = ComponentsManager::get()->Render();
+    auto window = ComponentsManager::get()->Window();
 
     if (isGUISelected()) {
-        render->getShaderOGLOutline()->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
+        render->getShaders()->shaderOGLOutline->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
     }
 
     if (Config::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
@@ -48,20 +48,20 @@ void Mesh3DAnimation::onUpdate()
                 ShadowMappingPass();
             }
         } else {
-            render->getShaderOGLRenderForward()->renderMesh(this, true, window->getSceneFramebuffer());
+            render->getShaders()->shaderOGLRender->renderMesh(this, true, window->getSceneFramebuffer());
         }
     }
 
     if (Config::get()->TRIANGLE_MODE_PIXELS && isRender()) {
-        render->getShaderOGLPoints()->renderMeshAnimation(this, window->getSceneFramebuffer());
+        render->getShaders()->shaderOGLPoints->renderMeshAnimation(this, window->getSceneFramebuffer());
     }
 
     if (Config::get()->TRIANGLE_MODE_SHADING && isRender()) {
-        render->getShaderOGLShading()->renderMesh(this, true, window->getSceneFramebuffer());
+        render->getShaders()->shaderOGLShading->renderMesh(this, true, window->getSceneFramebuffer());
     }
 
     if (Config::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        render->getShaderOGLWireframe()->renderMesh(this, true, Color::gray(), window->getSceneFramebuffer());
+        render->getShaders()->shaderOGLWireframe->renderMesh(this, true, Color::gray(), window->getSceneFramebuffer());
     }
 
     if (Config::get()->DRAW_MESH3D_AABB && isRender()) {
@@ -86,7 +86,7 @@ void Mesh3DAnimation::onUpdate()
     }
 
     if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
-        render->getShaderOGLColor()->renderMesh(
+        render->getShaders()->shaderOGLColor->renderMesh(
             this,
             true,
             getPickingColor(),
@@ -104,13 +104,13 @@ void Mesh3DAnimation::UpdateOpenGLBones()
         transformations[i] = Tools::aiMat4toGLMMat4(boneInfo[i].FinalTransformation);
     }
 
-    auto shaderBones = ComponentsManager::get()->getComponentRender()->getShaderOGLBonesTransforms();
+    auto shaderBones = ComponentsManager::get()->Render()->getShaders()->shaderOGLBonesTransforms;
     for (auto &m: meshes) {
         if (m.vertices.empty()) continue;
         shaderBones->render(
             m,
             transformations,
-            ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+            ComponentsManager::get()->Window()->getSceneFramebuffer()
         );
     }
 }
@@ -182,7 +182,7 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     AssimpInitMaterials(scene);
     ReadNodesFromRoot();
 
-    ComponentsManager::get()->getComponentRender()->FillOGLBuffers(meshes);
+    ComponentsManager::get()->Render()->FillOGLBuffers(meshes);
 
     FillAnimationBoneDataOGLBuffers();
 
@@ -533,9 +533,9 @@ void Mesh3DAnimation::DrawBones(aiNode *node, Vertex3D *lastBonePosition)
         Transforms::objectSpace(bonePosition, bonePosition, this);
 
         if (lastBonePosition) {
-            auto render = ComponentsManager::get()->getComponentRender();
-            auto window = ComponentsManager::get()->getComponentWindow();
-            render->getShaderOGLLine3D()->render(
+            auto render = ComponentsManager::get()->Render();
+            auto window = ComponentsManager::get()->Window();
+            render->getShaders()->shaderOGLLine3D->render(
                 *lastBonePosition,
                 bonePosition,
                 window->getForegroundFramebuffer(),
@@ -570,9 +570,9 @@ Mesh3DAnimation* Mesh3DAnimation::create(const Vertex3D &position, const std::st
     return o;
 }
 
-TypeObject Mesh3DAnimation::getTypeObject() const
+ObjectType Mesh3DAnimation::getTypeObject() const
 {
-    return TypeObject::Mesh3DAnimation;
+    return ObjectType::Mesh3DAnimation;
 }
 
 GUIType::Sheet Mesh3DAnimation::getIcon()
@@ -601,7 +601,7 @@ Mesh3DAnimation::~Mesh3DAnimation()
     for (auto &c : boneMappingColliders) {
         for (auto &bone : c.boneColliderInfo) {
             if (bone.ghostObject != nullptr) {
-                ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->removeCollisionObject(bone.ghostObject);
+                ComponentsManager::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(bone.ghostObject);
                 delete bone.ghostObject;
             }
             if (bone.convexHullShape != nullptr) {
@@ -759,7 +759,7 @@ void Mesh3DAnimation::SetMappingBoneColliderInfo(
     ci.enabled = enabled;
     ci.name = boneInfo[boneId].name;
 
-    auto world = ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld();
+    auto world = ComponentsManager::get()->Collisions()->getDynamicsWorld();
 
     if (enabled) {
         if (ci.ghostObject == nullptr ) {
@@ -826,7 +826,7 @@ void Mesh3DAnimation::createBoneGhostBody(int bmIndex, unsigned int boneId, cons
     ci.ghostObject->setUserIndex(Config::CollisionSource::BONE_COLLIDER);
     ci.ghostObject->setUserIndex2(bmIndex);
 
-    ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->addCollisionObject(
+    ComponentsManager::get()->Collisions()->getDynamicsWorld()->addCollisionObject(
         ci.ghostObject,
         btBroadphaseProxy::DefaultFilter,
         btBroadphaseProxy::DefaultFilter
@@ -893,7 +893,7 @@ void Mesh3DAnimation::removeBonesColliderMapping(const std::string& name)
 
     if (bm == nullptr) return;
 
-    auto world = ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld();
+    auto world = ComponentsManager::get()->Collisions()->getDynamicsWorld();
 
     for (auto &b : bm->boneColliderInfo) {
         if (b.ghostObject == nullptr) continue;
@@ -931,16 +931,16 @@ void Mesh3DAnimation::ResolveCollision(CollisionInfo with)
         }
     }
 
-    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == Config::LUA_PLAY) {
+    if (ComponentsManager::get()->Scripting()->getStateLUAScripts() == Config::LUA_PLAY) {
         RunResolveCollisionScripts(with);
     }
 }
 
 void Mesh3DAnimation::ShadowMappingPass()
 {
-    auto render = ComponentsManager::get()->getComponentRender();
-    auto shaderShadowPass = render->getShaderOGLShadowPass();
-    auto shaderRender = render->getShaderOGLRenderForward();
+    auto render = ComponentsManager::get()->Render();
+    auto shaderShadowPass = render->getShaders()->shaderShadowPass;
+    auto shaderRender = render->getShaders()->shaderOGLRender;
 
     // Directional Light
     shaderShadowPass->renderMeshIntoDirectionalLightTexture(this, true, shaderRender->getDirectionalLight());

@@ -72,7 +72,7 @@ void Image2DAnimationSerializer::LoadFileIntoScene(const std::string &file)
         new TextureAnimated(file,1,1,1,1)
     );
 
-    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->forward().getScaled(2));
+    o->setPosition(ComponentsManager::get()->Camera()->getCamera()->forward().getScaled(2));
 
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Image2DAnimation"));
 }

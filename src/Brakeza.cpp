@@ -66,11 +66,11 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
     engineTimer.start();
     managerGUI = new GUIManager(sceneObjects);
 
-    auto window = componentsManager->getComponentWindow();
-    auto render = componentsManager->getComponentRender();
+    auto window = componentsManager->Window();
+    auto render = componentsManager->Render();
 
-    componentsManager->getComponentScripting()->InitLUATypes();
-    componentsManager->getComponentCollisions()->InitBulletSystem();
+    componentsManager->Scripting()->InitLUATypes();
+    componentsManager->Collisions()->InitBulletSystem();
 
     OnStartComponents();
 
@@ -104,7 +104,7 @@ void Brakeza::mainLoop(bool autostart, const std::string& project)
 void Brakeza::CaptureInputEvents(SDL_Event &e) const {
 
     while (SDL_PollEvent(&e)) {
-        ComponentsManager::get()->getComponentWindow()->CheckForResizeOpenGLWindow(e);
+        ComponentsManager::get()->Window()->CheckForResizeOpenGLWindow(e);
         onUpdateSDLPollEventComponents(&e);
         ImGui_ImplSDL2_ProcessEvent(&e);
     }
@@ -211,12 +211,12 @@ void Brakeza::onEndComponents() const
 
 void Brakeza::HandleAutoStartProject(bool autostart, const std::string &project) const
 {
-    auto render = componentsManager->getComponentRender();
+    auto render = componentsManager->Render();
 
     if (autostart) {
         render->getProjectLoader().LoadProject(Config::get()->PROJECTS_FOLDER + project);
         Config::get()->ENABLE_IMGUI = false;
-        componentsManager->getComponentScripting()->PlayLUAScripts();
+        componentsManager->Scripting()->PlayLUAScripts();
         return;
     }
 

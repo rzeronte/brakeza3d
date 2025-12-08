@@ -94,7 +94,7 @@ void ParticleEmitter::draw()
     Vertex3D direction = getRotation() * Vertex3D(0, 1, 0);
 
     float delta = Brakeza::get()->getDeltaTime();
-    glm::vec3 CameraPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition().toGLM());
+    glm::vec3 CameraPosition(ComponentsManager::get()->Camera()->getCamera()->getPosition().toGLM());
 
     // Define la frecuencia deseada en partículas por segundo
     int newparticles = static_cast<int>(delta * 100 * context.PARTICLES_BY_SECOND);
@@ -188,7 +188,7 @@ void ParticleEmitter::draw()
     glBufferData(GL_ARRAY_BUFFER, MaxParticles * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
     glBufferSubData(GL_ARRAY_BUFFER, 0, ParticlesCount * sizeof(GLubyte) * 4, g_particule_color_data);
 
-    ComponentsManager::get()->getComponentRender()->getShaderOGLParticles()->render(
+    ComponentsManager::get()->Render()->getShaders()->shaderOGLParticles->render(
             billboard_vertex_buffer,
             particles_position_buffer,
             particles_color_buffer,
@@ -202,9 +202,9 @@ void ParticleEmitter::setStopAdd(bool stopAdd)
     ParticleEmitter::stopAdd = stopAdd;
 }
 
-TypeObject ParticleEmitter::getTypeObject() const
+ObjectType ParticleEmitter::getTypeObject() const
 {
-    return TypeObject::ParticleEmitter;
+    return ObjectType::ParticleEmitter;
 }
 
 GUIType::Sheet ParticleEmitter::getIcon()

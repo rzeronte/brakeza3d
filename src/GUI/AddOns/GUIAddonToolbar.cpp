@@ -26,13 +26,15 @@ void GUIAddonToolbar::Draw()
         RenderTriangleModes();
         VerticalSeparator();
         LightsOptions();
+        VerticalSeparator();
+        Helpers();
     }
     ImGui::End();
 }
 
 void GUIAddonToolbar::LayoutIcons()
 {
-    auto *window = ComponentsManager::get()->getComponentWindow();
+    auto *window = ComponentsManager::get()->Window();
 
     GUI::DrawButton("Enable/Disable UI", IconGUI::TOOLBAR_ENABLE_GUI, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->ENABLE_IMGUI,[]() {
         GUI::Toggle(Config::get()->ENABLE_IMGUI);
@@ -53,7 +55,7 @@ void GUIAddonToolbar::LayoutIcons()
 
 void GUIAddonToolbar::TransformationsToolsIcons()
 {
-    auto window = ComponentsManager::get()->getComponentWindow();
+    auto window = ComponentsManager::get()->Window();
     auto operation = window->getGuiZmoOperation();
 
     GUI::DrawButton("Translate", IconGUI::TOOLBAR_TRANSLATE, GUIType::Sizes::ICONS_TOOLBAR, operation == ImGuizmo::OPERATION::TRANSLATE, [&]() {
@@ -77,7 +79,7 @@ void GUIAddonToolbar::StepSimulationOptionsIcons()
     ImGui::SameLine();
     GUI::DrawButton( "Draw collider AABB", IconGUI::TOOLBAR_DRAW_COLLIDERS, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->BULLET_DEBUG_MODE, [&]() {
         GUI::Toggle(Config::get()->BULLET_DEBUG_MODE);
-        ComponentsManager::get()->getComponentCollisions()->setEnableDebugMode(Config::get()->BULLET_DEBUG_MODE);
+        ComponentsManager::get()->Collisions()->setEnableDebugMode(Config::get()->BULLET_DEBUG_MODE);
     });
 }
 
@@ -108,7 +110,7 @@ void GUIAddonToolbar::LightsOptions()
 
 void GUIAddonToolbar::LUAStatusIcons()
 {
-    auto scripting = ComponentsManager::get()->getComponentScripting();
+    auto scripting = ComponentsManager::get()->Scripting();
     bool isStop = scripting->getStateLUAScripts() == Config::LuaStateScripts::LUA_STOP;
     auto icon = isStop ? IconGUI::LUA_STOP : IconGUI::LUA_PLAY;
     auto label = isStop ? "Stop" : "Play";
@@ -120,6 +122,13 @@ void GUIAddonToolbar::LUAStatusIcons()
     GUI::DrawButton("Reload scripts", IconGUI::LUA_RELOAD, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() { scripting->ReloadLUAScripts(); });
     ImGui::SameLine();
     GUI::DrawButton("Clear scene", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() { SceneLoader::ClearScene(); });
+}
+
+void GUIAddonToolbar::Helpers()
+{
+    GUI::DrawButton("Grid background", IconGUI::TOOLBAR_GRID_BACKGROUND, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->ENABLE_GRID_BACKGROUND,[&]() {
+        GUI::Toggle(Config::get()->ENABLE_GRID_BACKGROUND);
+    });
 }
 
 void GUIAddonToolbar::RenderTriangleModes()

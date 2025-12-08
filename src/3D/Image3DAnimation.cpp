@@ -21,7 +21,7 @@ void Image3DAnimation::onUpdate()
 
     this->updateTrianglesCoordinatesAndTexture();
 
-    ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->render(
+    ComponentsManager::get()->Render()->getShaders()->shaderOGLRender->render(
         this,
         getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
         getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
@@ -30,18 +30,18 @@ void Image3DAnimation::onUpdate()
         billboard->getNormalBuffer(),
         billboard->getVertices().size(),
         1.0f,
-        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+        ComponentsManager::get()->Window()->getForegroundFramebuffer()
     );
 
     if (Config::get()->TRIANGLE_MODE_WIREFRAME) {
-        ComponentsManager::get()->getComponentRender()->getShaderOGLWireframe()->render(
+        ComponentsManager::get()->Render()->getShaders()->shaderOGLWireframe->render(
             getModelMatrix(),
             billboard->getVertexBuffer(),
             billboard->getUVBuffer(),
             billboard->getNormalBuffer(),
             billboard->getVertices().size(),
             Color::gray(),
-            ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+            ComponentsManager::get()->Window()->getSceneFramebuffer()
         );
     }
 }
@@ -116,9 +116,9 @@ Image3DAnimation::~Image3DAnimation()
     }
 }
 
-TypeObject Image3DAnimation::getTypeObject() const
+ObjectType Image3DAnimation::getTypeObject() const
 {
-    return TypeObject::Image3DAnimation;
+    return ObjectType::Image3DAnimation;
 }
 
 GUIType::Sheet Image3DAnimation::getIcon()

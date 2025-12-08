@@ -54,7 +54,7 @@ void Button::onUpdate() {
 }
 
 bool Button::isClicked() {
-    auto *input = ComponentsManager::get()->getComponentInput();
+    auto *input = ComponentsManager::get()->Input();
 
     if (!input->isClickLeft()) {
         return false;

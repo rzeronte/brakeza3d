@@ -155,7 +155,7 @@ void Object3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
                     break;
                 case BODY:
                     if (shape == SIMPLE_SHAPE) {
-                        o->setupRigidBodyCollider(SIMPLE_SHAPE);
+                        o->SetupRigidBodyCollider(SIMPLE_SHAPE);
                     }
                     break;
                 case KINEMATIC:

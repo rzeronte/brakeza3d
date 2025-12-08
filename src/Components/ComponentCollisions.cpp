@@ -178,7 +178,7 @@ void ComponentCollisions::demoProjectile(int type)
             fileName = "basic/cube.fbx";
 
     }
-    Camera3D *camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    Camera3D *camera = ComponentsManager::get()->Camera()->getCamera();
 
     Vertex3D direction = camera->getRotation().getTranspose() * Config::get()->forward;
 
@@ -199,7 +199,7 @@ void ComponentCollisions::demoProjectile(int type)
         direction,
         Config::get()->PROJECTILE_DEMO_IMPULSE,
         Config::get()->PROJECTILE_DEMO_ACCURACY,
-        ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld(),
+        ComponentsManager::get()->Collisions()->getDynamicsWorld(),
         Config::collisionGroups::AllFilter,
         Config::collisionGroups::AllFilter
     );
@@ -259,9 +259,9 @@ void ComponentCollisions::AddVector3DIntoCache(const Vector3D &v)
 
 void ComponentCollisions::DrawDebugCache() const
 {
-    ComponentsManager::get()->getComponentRender()->getShaderOGLLine3D()->renderLines(
+    ComponentsManager::get()->Render()->getShaders()->shaderOGLLine3D->renderLines(
         debugDrawLinesCache,
-        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer(),
+        ComponentsManager::get()->Window()->getForegroundFramebuffer(),
         Color::fuchsia()
     );
 }

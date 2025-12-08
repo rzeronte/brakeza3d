@@ -24,9 +24,9 @@ void Image3DAnimation360::onUpdate()
 {
     if (static_cast<int>(animations.size()) <= 0) return;
 
-    UpdateTrianglesCoordinates(ComponentsManager::get()->getComponentCamera()->getCamera());
+    UpdateTrianglesCoordinates(ComponentsManager::get()->Camera()->getCamera());
 
-    ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->render(
+    ComponentsManager::get()->Render()->getShaders()->shaderOGLRender->render(
         this,
         billboard->getImage()->getOGLTextureID(),
         billboard->getImage()->getOGLTextureID(),
@@ -35,7 +35,7 @@ void Image3DAnimation360::onUpdate()
         billboard->getNormalBuffer(),
         static_cast<int>(billboard->getVertices().size()),
         1.0f,
-        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+        ComponentsManager::get()->Window()->getForegroundFramebuffer()
     );
 }
 
@@ -135,9 +135,9 @@ void Image3DAnimation360::DrawPropertiesGUI()
     Image3DAnimation360GUI::DrawPropertiesGUI(this);
 }
 
-TypeObject Image3DAnimation360::getTypeObject() const
+ObjectType Image3DAnimation360::getTypeObject() const
 {
-    return TypeObject::Image3DAnimation360;
+    return ObjectType::Image3DAnimation360;
 }
 
 GUIType::Sheet Image3DAnimation360::getIcon()
