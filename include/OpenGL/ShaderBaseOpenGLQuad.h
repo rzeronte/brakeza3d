@@ -9,23 +9,20 @@
 
 class ShaderBaseOpenGLQuad {
     GLuint VBO;
-    GLuint modelMatrixUniform;
-    GLuint projectionMatrixUniform;
 
     glm::mat4 modelMatrix;
     glm::mat4 projectionMatrix;
 
 protected:
+    GLuint modelMatrixUniform;
+    GLuint projectionMatrixUniform;
     GLuint quadVAO;
 public:
     ShaderBaseOpenGLQuad();
 
     void setupQuadUniforms(GLuint programId);
-
     void resetQuadMatrix();
-
     void loadQuadMatrixUniforms();
-
     void drawQuad() const;
 };
 

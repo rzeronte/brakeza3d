@@ -56,12 +56,12 @@ void ShaderOGLLightPass::render(
     int numSpotLightsShadowMaps,
     GLuint fbo
 ) {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
+    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 
-    auto camera = ComponentsManager::get()->getComponentCamera();
+    auto camera = ComponentsManager::get()->Camera();
     auto cameraPosition = camera->getCamera()->getPosition().toGLM();
 
     setVec3Uniform(viewPosUniform, cameraPosition);
@@ -111,7 +111,7 @@ void ShaderOGLLightPass::fillSpotLightsMatricesUBO()
 
     std::vector<glm::mat4> spotLightsShadowMapLightMatrices;
 
-    auto spotLights = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward()->getShadowMappingSpotLights();
+    auto spotLights = ComponentsManager::get()->Render()->getShaders()->shaderOGLRender->getShadowMappingSpotLights();
 
     for (auto & spotLight : spotLights) {
         spotLightsShadowMapLightMatrices.push_back(spotLight->getLightSpaceMatrix());

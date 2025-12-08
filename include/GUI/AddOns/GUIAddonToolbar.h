@@ -13,6 +13,7 @@ struct GUIAddonToolbar
     static void LightsOptions() ;
     static void LUAStatusIcons() ;
     static void RenderTriangleModes() ;
+    static void Helpers() ;
     static void VerticalSeparator();
 };
 

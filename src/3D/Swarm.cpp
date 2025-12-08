@@ -219,9 +219,9 @@ void Swarm::removeBoid(SwarmObject *o)
     objects.erase(std::remove(objects.begin(), objects.end(), o), objects.end());
 }
 
-TypeObject Swarm::getTypeObject() const
+ObjectType Swarm::getTypeObject() const
 {
-    return TypeObject::Swarm;
+    return ObjectType::Swarm;
 }
 
 GUIType::Sheet Swarm::getIcon()

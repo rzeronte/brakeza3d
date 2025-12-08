@@ -52,8 +52,8 @@ void ShaderOGLRenderDeferred::render(
     GLuint fbo
 ) const
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
+    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -61,7 +61,7 @@ void ShaderOGLRenderDeferred::render(
 
     glBindVertexArray(VertexArrayID);
 
-    auto camera = ComponentsManager::get()->getComponentCamera();
+    auto camera = ComponentsManager::get()->Camera();
 
     setMat4Uniform(matrixProjectionUniform, camera->getGLMMat4ProjectionMatrix());
     setMat4Uniform(matrixViewUniform, camera->getGLMMat4ViewMatrix());

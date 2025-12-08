@@ -590,7 +590,7 @@ void BSPMap::createBulletPhysicsShape() {
     this->bspRigidBody->setCcdMotionThreshold(.5);
     this->bspRigidBody->setCcdSweptSphereRadius(.5);
     this->bspRigidBody->setUserPointer(this);
-    Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld()->addRigidBody(
+    Brakeza::get()->getComponentsManager()->Collisions()->getDynamicsWorld()->addRigidBody(
             this->bspRigidBody);
 }
 
@@ -1024,7 +1024,7 @@ void BSPMap::makeDoorGhost(int indexModel, int entityIndex, bool enabled, model_
 
     getTrianglesHull(ghost, hull);
 
-    ghost->makeGhostBody(Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), ghost, 0, 0);
+    ghost->makeGhostBody(Brakeza3D::get()->getComponentsManager()->Collisions()->getDynamicsWorld(), ghost, 0, 0);
     ghost->getGhostObject()->setUserPointer(ghost);
     Brakeza3D::get()->addObject3D(ghost, "hull_" + std::to_string(indexModel) + " (DoorGhost)");
     */
@@ -1040,7 +1040,7 @@ void BSPMap::makeMesh3DGhost(int indexModel, int entityIndex, bool enabled, mode
 
     getTrianglesHull(ghost, hull);
 
-    ghost->makeGhostBody(Brakeza3D::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(), ghost, 0, 0);
+    ghost->makeGhostBody(Brakeza3D::get()->getComponentsManager()->Collisions()->getDynamicsWorld(), ghost, 0, 0);
     ghost->getGhostObject()->setUserPointer(ghost);
     Brakeza3D::get()->addObject3D(ghost, "hull_" + std::to_string(indexModel) + " (Mesh3DGhost)");
     */
@@ -1102,7 +1102,7 @@ void BSPMap::createObjects3DFromBSPEntities() {
                     o->setPosition( pos );
                     o->loadTexture(EngineSetup::getInstance()->TEXTURES_FOLDER + "/" + EngineSetup::get()->ITEM_FIRSTAID_ICON );
                     o->setDimensions( 3, 3 );
-                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getComponentsManager()->getComponentCollisions()->getDynamicsWorld() );
+                    o->makeRigidBody(0, Vertex3D(1, 1, 1), brakeza3D->getComponentsManager()->Collisions()->getDynamicsWorld() );
                     brakeza3D->addObject3D( o, o->getLabel() );
                 }*/
 

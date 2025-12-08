@@ -33,7 +33,7 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
         if (ImGui::TreeNode("Grid3D")) {
             if (o->grid != nullptr) {
                 if (ImGui::Button("Fill from mesh geometry")) {
-                    o->fillGrid3DFromGeometry();
+                    o->FillGrid3DFromGeometry();
                 }
                 o->grid->DrawImGuiProperties();
                 ImGui::SameLine();
@@ -50,7 +50,7 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
                 ImGui::SliderInt("Size Z", &sizeZ, 1, 10);
 
                 if (ImGui::Button("Create Grid3D")) {
-                    o->buildGrid3D(sizeX, sizeY, sizeZ);
+                    o->BuildGrid3D(sizeX, sizeY, sizeZ);
                 }
             }
             ImGui::TreePop();
@@ -61,7 +61,7 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
                 static int maxDepth = 1;
                 ImGui::SliderInt("Depth", &maxDepth, 1, 4);
                 if (ImGui::Button("Create octree")) {
-                    o->buildOctree(maxDepth);
+                    o->BuildOctree(maxDepth);
                 }
             }
 
@@ -69,7 +69,7 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
                 static int maxDepth = 1;
                 ImGui::SliderInt("Depth", &maxDepth, 1, 4);
                 if (ImGui::Button("Update octree")) {
-                    o->buildOctree(maxDepth);
+                    o->BuildOctree(maxDepth);
                 }
                 ImGui::SameLine();
                 if (ImGui::Button("Delete Octree")) {

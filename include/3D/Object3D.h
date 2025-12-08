@@ -55,7 +55,7 @@ protected:
     Timer timer;
     Color pickingColor;
     M3 rotation = M3::getMatrixIdentity();
-    TypeObject type;
+    ObjectType type;
 public:
     Object3D();
     virtual ~Object3D();
@@ -89,7 +89,7 @@ public:
     void UpdateFromBullet();
     void ResolveCollision(CollisionInfo with) override;
     void RunResolveCollisionScripts(CollisionInfo with);
-    virtual TypeObject getTypeObject() const;
+    virtual ObjectType getTypeObject() const;
     virtual GUIType::Sheet getIcon();
     virtual void setEnabled(bool value);
     virtual void onUpdate();

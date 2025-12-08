@@ -20,7 +20,7 @@ void ProjectLoader::LoadProject(const std::string &filename)
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "name") != nullptr) {
         auto sceneName = cJSON_GetObjectItemCaseSensitive(contentJSON, "name")->valuestring;
-        ComponentsManager::get()->getComponentWindow()->setWindowTitle(sceneName);
+        ComponentsManager::get()->Window()->setWindowTitle(sceneName);
         Config::get()->ENGINE_TITLE = sceneName;
     }
 
@@ -28,7 +28,7 @@ void ProjectLoader::LoadProject(const std::string &filename)
         cJSON *currentScript;
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
             std::string fileName = (const char*) cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
-            ComponentsManager::get()->getComponentScripting()->addProjectLUAScript(
+            ComponentsManager::get()->Scripting()->addProjectLUAScript(
                 new ScriptLUA(fileName, ScriptLUA::dataTypesFileFor(fileName))
             );
         }
@@ -42,7 +42,7 @@ void ProjectLoader::SaveProject(const std::string &filename)
     cJSON_AddStringToObject(root, "name", Config::get()->ENGINE_TITLE.c_str());
 
     cJSON *sceneScriptsArray = cJSON_CreateArray();
-    for (auto script : ComponentsManager::get()->getComponentScripting()->getProjectLUAScripts()) {
+    for (auto script : ComponentsManager::get()->Scripting()->getProjectLUAScripts()) {
         cJSON *scriptSceneSON = cJSON_CreateObject();
         cJSON_AddStringToObject(scriptSceneSON, "name", script->getScriptFilename().c_str());
         cJSON_AddItemToArray(sceneScriptsArray, scriptSceneSON);
@@ -54,7 +54,7 @@ void ProjectLoader::SaveProject(const std::string &filename)
 
 void ProjectLoader::RemoveProjectScripts()
 {
-    auto scripting = ComponentsManager::get()->getComponentScripting();
+    auto scripting = ComponentsManager::get()->Scripting();
     for (auto o: scripting->getProjectLUAScripts()) {
         scripting->removeProjectScript(o);
     }

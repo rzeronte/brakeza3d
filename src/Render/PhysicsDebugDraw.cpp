@@ -8,7 +8,7 @@ void PhysicsDebugDraw::drawLine(const btVector3 &from, const btVector3 &to, cons
 {
     auto vf = Vertex3D::fromBullet(from);
     auto vt = Vertex3D::fromBullet(to);
-    ComponentsManager::get()->getComponentCollisions()->AddVector3DIntoCache(Vector3D(vf, vt));
+    ComponentsManager::get()->Collisions()->AddVector3DIntoCache(Vector3D(vf, vt));
 }
 
 void PhysicsDebugDraw::drawContactPoint(

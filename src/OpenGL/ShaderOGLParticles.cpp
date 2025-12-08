@@ -30,19 +30,19 @@ void ShaderOGLParticles::render(
     int particlesCount
 )
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer());
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(ComponentsManager::get()->Window()->getForegroundFramebuffer());
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
-    glm::mat4 ProjectionMatrix = ComponentsManager::get()->getComponentCamera()->getGLMMat4ProjectionMatrix();
-    glm::mat4 ViewMatrix = ComponentsManager::get()->getComponentCamera()->getGLMMat4ViewMatrix();
+    glm::mat4 ProjectionMatrix = ComponentsManager::get()->Camera()->getGLMMat4ProjectionMatrix();
+    glm::mat4 ViewMatrix = ComponentsManager::get()->Camera()->getGLMMat4ViewMatrix();
     glm::mat4 ViewProjectionMatrix = ProjectionMatrix * ViewMatrix;
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
 
     setTextureUniform(textureIDuniform, textureID, 0);
 
@@ -96,7 +96,7 @@ void ShaderOGLParticles::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLParticles::destroy() {

@@ -31,13 +31,13 @@ public:
 
     void RegisterComponent(Component *component, const std::string& label);
 
-    ComponentCamera *getComponentCamera()           { return dynamic_cast<ComponentCamera *>(components[COMPONENT_CAMERA]); }
-    ComponentCollisions *getComponentCollisions()   { return dynamic_cast<ComponentCollisions *>(components[COMPONENT_COLLISIONS]); }
-    ComponentWindow *getComponentWindow()           { return dynamic_cast<ComponentWindow *>(components[COMPONENT_WINDOW]); }
-    ComponentRender *getComponentRender()           { return dynamic_cast<ComponentRender *>(components[COMPONENT_RENDER]); }
-    ComponentInput *getComponentInput()             { return dynamic_cast<ComponentInput *>(components[COMPONENT_INPUT]); }
-    ComponentSound *getComponentSound()             { return dynamic_cast<ComponentSound *>(components[COMPONENT_SOUND]); }
-    ComponentScripting *getComponentScripting()     { return dynamic_cast<ComponentScripting *>(components[COMPONENT_SCRIPTING]); }
+    ComponentCamera *Camera()           { return dynamic_cast<ComponentCamera *>(components[COMPONENT_CAMERA]); }
+    ComponentCollisions *Collisions()   { return dynamic_cast<ComponentCollisions *>(components[COMPONENT_COLLISIONS]); }
+    ComponentWindow *Window()           { return dynamic_cast<ComponentWindow *>(components[COMPONENT_WINDOW]); }
+    ComponentRender *Render()           { return dynamic_cast<ComponentRender *>(components[COMPONENT_RENDER]); }
+    ComponentInput *Input()             { return dynamic_cast<ComponentInput *>(components[COMPONENT_INPUT]); }
+    ComponentSound *Sound()             { return dynamic_cast<ComponentSound *>(components[COMPONENT_SOUND]); }
+    ComponentScripting *Scripting()     { return dynamic_cast<ComponentScripting *>(components[COMPONENT_SCRIPTING]); }
 
     [[nodiscard]] std::vector<Component *> Components() const {return components;}
 };

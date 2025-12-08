@@ -26,7 +26,7 @@ void RayCollisionable::Integrate()
     rayCallback->m_rayFromWorld = btVector3(start.x, start.y, start.z);
     rayCallback->m_rayToWorld = btVector3(end.x, end.y, end.z);
 
-    ComponentsManager::get()->getComponentCollisions()->getDynamicsWorld()->rayTest(
+    ComponentsManager::get()->Collisions()->getDynamicsWorld()->rayTest(
         btVector3(start.x, start.y, start.z),
         btVector3(end.x, end.y, end.z),
         *rayCallback

@@ -136,7 +136,7 @@ public:
 
                     o->drawImGuiCollisionModeSelector();
                     if (o->getCollisionMode() != KINEMATIC) {
-                        o->drawImGuiCollisionShapeSelector();
+                        o->DrawImGuiCollisionShapeSelector();
                     }
 
                     if (ImGui::TreeNode("Collider settings")) {

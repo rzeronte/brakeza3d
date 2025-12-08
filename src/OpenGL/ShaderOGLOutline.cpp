@@ -21,8 +21,8 @@ ShaderOGLOutline::ShaderOGLOutline()
 
 void ShaderOGLOutline::renderOutline(GLuint textureId, const Color &c, float borderThickness, GLuint fbo)
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
+    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 
@@ -41,7 +41,7 @@ void ShaderOGLOutline::destroy()
 
 void ShaderOGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThickness, GLuint fbo)
 {
-    auto shaderColor = ComponentsManager::get()->getComponentRender()->getShaderOGLColor();
+    auto shaderColor = ComponentsManager::get()->Render()->getShaders()->shaderOGLColor;
 
     for (const auto& mm : m->getMeshData()) {
         shaderColor->renderColor(
@@ -61,8 +61,8 @@ void ShaderOGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThickn
 
 void ShaderOGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderThickness, GLuint fbo)
 {
-    auto componentRender = ComponentsManager::get()->getComponentRender();
-    auto shaderColor = componentRender->getShaderOGLColor();
+    auto componentRender = ComponentsManager::get()->Render();
+    auto shaderColor = componentRender->getShaders()->shaderOGLColor;
 
     for (const auto& mm : m->getMeshData()) {
         shaderColor->renderColor(
@@ -82,7 +82,7 @@ void ShaderOGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderThic
 
 void ShaderOGLOutline::drawOutlineImage3D(Image3D *i, const Color &c, float borderThickness, GLuint framebuffer)
 {
-    auto shaderColor = ComponentsManager::get()->getComponentRender()->getShaderOGLColor();
+    auto shaderColor = ComponentsManager::get()->Render()->getShaders()->shaderOGLColor;
 
     shaderColor->renderColor(
         i->getModelMatrix(),

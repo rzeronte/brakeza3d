@@ -17,7 +17,7 @@ void GUIAddonObject3DProperties::DrawPropertiesBySelectedObject(GUIManager *gui)
     auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_PROPS);
     if (!windowStatus->isOpen) return;
 
-    auto o = ComponentsManager::get()->getComponentRender()->getSelectedObject();
+    auto o = ComponentsManager::get()->Render()->getSelectedObject();
 
     if (o == nullptr) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");

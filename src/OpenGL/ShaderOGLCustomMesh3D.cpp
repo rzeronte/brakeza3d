@@ -13,7 +13,7 @@ ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(
     const std::string &fragmentFilename
 )
 :
-    ShaderOGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomTypes::SHADER_OBJECT),
+    ShaderOGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomType::SHADER_OBJECT),
     mesh(mesh)
 {
     glGenVertexArrays(1, &VertexArrayID);
@@ -34,7 +34,7 @@ ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(
     cJSON* types
 )
 :
-    ShaderOGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomTypes::SHADER_OBJECT, types),
+    ShaderOGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomType::SHADER_OBJECT, types),
     VertexArrayID(0),
     mesh(mesh)
 {
@@ -81,19 +81,19 @@ void ShaderOGLCustomMesh3D::renderMesh(
     GLuint fbo
 )
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
+    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
 
-    auto camera = ComponentsManager::get()->getComponentCamera();
+    auto camera = ComponentsManager::get()->Camera();
 
     setMat4Uniform(matrixProjectionUniform, camera->getGLMMat4ProjectionMatrix());
     setMat4Uniform(matrixViewUniform, camera->getGLMMat4ViewMatrix());
     setMat4Uniform(matrixModelUniform, o->getModelMatrix());
     setFloatUniform(alphaUniform, alpha);
 
-    resetNumberTextures();
+    ResetNumberTextures();
 
     setDataTypesUniforms();
     setShaderSystemUniforms(textureID, textureSpecularID);
@@ -116,21 +116,21 @@ void ShaderOGLCustomMesh3D::renderMesh(
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);      // Vincula el buffer de vértices como buffer de escritura
     glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, sizeof(glm::vec4) * size);
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLCustomMesh3D::setShaderSystemUniforms(GLuint diffuse, GLuint specular)
 {
     for (auto type: dataTypes) {
-        switch (GLSLTypeMapping[type.type]) {
+        switch (GLSLTypeMapping[type.type].type) {
             case ShaderOpenGLCustomDataType::DIFFUSE: {
                 setTexture(type.name, diffuse, numTextures);
-                increaseNumberTextures();
+                IncreaseNumberTextures();
                 break;
             }
             case ShaderOpenGLCustomDataType::SPECULAR: {
                 setTexture(type.name, specular, numTextures);
-                increaseNumberTextures();
+                IncreaseNumberTextures();
                 break;
             }
             default:

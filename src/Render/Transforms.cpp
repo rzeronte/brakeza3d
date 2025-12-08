@@ -40,7 +40,7 @@ Vertex3D Transforms::Point2DToWorld(Point2D &p)
     float mappedY = 1.0f - 2.0f * p.y / Config::get()->screenHeight;
 
     // Obtener la matriz de proyección y la matriz de vista
-    auto camera = ComponentsManager::get()->getComponentCamera();
+    auto camera = ComponentsManager::get()->Camera();
     glm::mat4 projectionMatrix = camera->getGLMMat4ProjectionMatrix();
     glm::mat4 viewMatrix = camera->getGLMMat4ViewMatrix();
 
@@ -68,7 +68,7 @@ Vertex3D Transforms::Point2DToWorld(Point2D &p)
 
 Point2D Transforms::WorldToPoint(Vertex3D v)
 {
-    auto camera = ComponentsManager::get()->getComponentCamera();
+    auto camera = ComponentsManager::get()->Camera();
     glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
     glm::mat4 ProjectionMatrix = camera->getGLMMat4ProjectionMatrix();
 

@@ -55,9 +55,9 @@ void ComponentScripting::PlayLUAScripts()
 
     onStartScripts();
 
-    ComponentsManager::get()->getComponentInput()->setEnabled(false);
-    ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
-    ComponentsManager::get()->getComponentCollisions()->setEnabled(true);
+    ComponentsManager::get()->Input()->setEnabled(false);
+    ComponentsManager::get()->Render()->setSelectedObject(nullptr);
+    ComponentsManager::get()->Collisions()->setEnabled(true);
 
     stateScripts = Config::LuaStateScripts::LUA_PLAY;
 }
@@ -66,8 +66,8 @@ void ComponentScripting::StopLUAScripts()
 {
     Logging::Message("LUA Scripts state changed to STOP");
 
-    ComponentsManager::get()->getComponentInput()->setEnabled(true);
-    ComponentsManager::get()->getComponentCollisions()->setEnabled(false);
+    ComponentsManager::get()->Input()->setEnabled(true);
+    ComponentsManager::get()->Collisions()->setEnabled(false);
 
     stateScripts = Config::LuaStateScripts::LUA_STOP;
 }
@@ -76,7 +76,7 @@ void ComponentScripting::ReloadLUAScripts()
 {
     Logging::Message("Reloading LUA Scripts...");
 
-    auto &lua = ComponentsManager::get()->getComponentScripting()->getLua();
+    auto &lua = ComponentsManager::get()->Scripting()->getLua();
     lua.collect_garbage();
 
     for (auto s : projectScripts) {
@@ -110,7 +110,7 @@ sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName
 {
     for (auto s : projectScripts) {
         if (s->getScriptFilename() == scriptName) continue;
-        sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
+        sol::state &lua = ComponentsManager::get()->Scripting()->getLua();
         return lua[varName];
     }
 

@@ -53,11 +53,11 @@ void ShaderOGLLine3D::destroy()
 
 void ShaderOGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo, Color c)
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
 
-    auto camera = ComponentsManager::get()->getComponentCamera();
+    auto camera = ComponentsManager::get()->Camera();
     glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
     glm::mat4 ProjectionMatrix = camera->getGLMMat4ProjectionMatrix();
 
@@ -90,5 +90,5 @@ void ShaderOGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo
 
     glDeleteBuffers(1, &VBO);
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(0);
 }

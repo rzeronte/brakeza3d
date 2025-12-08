@@ -36,7 +36,7 @@ void ComponentCamera::postUpdate()
 {
     Component::postUpdate();
 
-    if (ComponentsManager::get()->getComponentInput()->isEnabled()) {
+    if (ComponentsManager::get()->Input()->isEnabled()) {
         camera->UpdatePositionForVelocity();
     }
 }

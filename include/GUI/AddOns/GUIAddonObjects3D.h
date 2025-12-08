@@ -19,7 +19,7 @@ public:
     static void DrawSceneObjects(GUIManager *gui);
     static void DrawItem(int i, Object3D* o, const std::vector<Object3D *> &objects, int selectedIndex, bool icon);
     static void DrawObjectTypes(GUIManager *gui);
-    static bool isObjectTypeVisible(GUIManager *gui, TypeObject typeObject);
+    static bool isObjectTypeVisible(GUIManager *gui, ObjectType typeObject);
 
 };
 

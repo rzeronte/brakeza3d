@@ -102,9 +102,9 @@ void GUI::Toggle(bool &value)
     value = !value;
 }
 
-GUIType::FolderBrowserCache GUI::CreateBrowserCache(std::string folder, const std::string &extension)
+GUIType::BrowserCache GUI::CreateBrowserCache(std::string folder, const std::string &extension)
 {
-    GUIType::FolderBrowserCache cache = {
+    GUIType::BrowserCache cache = {
         folder,
         Tools::getFolderFiles(folder, extension),
         Tools::getFolderFolders(folder)
@@ -215,7 +215,6 @@ void GUI::ShowPopUp(const char* title, const char *message, const std::function<
 
 void GUI::WelcomeMessage()
 {
-    Logging::Error("ese %d", 1);
     Logging::Message("############################################################");
     Logging::Message("");
     Logging::Message("***********************");

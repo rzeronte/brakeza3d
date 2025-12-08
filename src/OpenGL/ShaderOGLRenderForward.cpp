@@ -41,12 +41,12 @@ void ShaderOGLRenderForward::render(
     GLuint fbo
 ) const
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
-    auto camera = ComponentsManager::get()->getComponentCamera();
+    auto camera = ComponentsManager::get()->Camera();
 
     setFloatUniform(alphaUniform, alpha);
 
@@ -75,7 +75,7 @@ void ShaderOGLRenderForward::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(0);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(0);
 }
 
 glm::mat4 ShaderOGLRenderForward::getDirectionalLightMatrix(const DirLightOpenGL& light)

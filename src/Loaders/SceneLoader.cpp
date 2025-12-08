@@ -37,13 +37,13 @@ void SceneLoader::LoadScene(const std::string& filename)
     auto contentFile = Tools::ReadFile(filename, file_size);
     auto contentJSON = cJSON_Parse(contentFile);
 
-    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
-    auto shaderRender = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward();
+    auto camera = ComponentsManager::get()->Camera()->getCamera();
+    auto shaderRender = ComponentsManager::get()->Render()->getShaders()->shaderOGLRender;
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity") != nullptr) {
         auto gravity = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity"));
         Config::get()->gravity = gravity;
-        ComponentsManager::get()->getComponentCollisions()->setGravity(gravity);
+        ComponentsManager::get()->Collisions()->setGravity(gravity);
     }
 
     cJSON *adsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "ads");
@@ -92,14 +92,14 @@ void SceneLoader::LoadScene(const std::string& filename)
         auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
 
         auto shader = new ShaderOGLCustomPostprocessing(name, vertex, fragment, types);
-        ComponentsManager::get()->getComponentRender()->addShaderToScene(shader);
+        ComponentsManager::get()->Render()->addShaderToScene(shader);
     }
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
         cJSON *currentScript;
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
             std::string fileName = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
-            ComponentsManager::get()->getComponentScripting()->addSceneLUAScript(
+            ComponentsManager::get()->Scripting()->addSceneLUAScript(
                 new ScriptLUA(fileName, ScriptLUA::dataTypesFileFor(fileName))
             );
         }
@@ -110,7 +110,7 @@ void SceneLoader::SaveScene(const std::string &filename)
 {
     cJSON *root = cJSON_CreateObject();
 
-    auto render = ComponentsManager::get()->getComponentRender()->getShaderOGLRenderForward();
+    auto render = ComponentsManager::get()->Render()->getShaders()->shaderOGLRender;
 
     cJSON_AddItemToObject(root, "gravity", ToolsJSON::Vertex3DToJSON(Config::get()->gravity));
 
@@ -134,7 +134,7 @@ void SceneLoader::SaveScene(const std::string &filename)
 
     //shaders
     cJSON *shadersArrayJSON = cJSON_CreateArray();
-    for (auto shader : ComponentsManager::get()->getComponentRender()->getSceneShaders()) {
+    for (auto shader : ComponentsManager::get()->Render()->getSceneShaders()) {
         auto objectJson = shader->getTypesJSON();
         cJSON_AddItemToArray(shadersArrayJSON, objectJson);
     }
@@ -142,14 +142,14 @@ void SceneLoader::SaveScene(const std::string &filename)
 
     //scripts
     cJSON *sceneScriptsArray = cJSON_CreateArray();
-    for (auto script : ComponentsManager::get()->getComponentScripting()->getSceneLUAScripts()) {
+    for (auto script : ComponentsManager::get()->Scripting()->getSceneLUAScripts()) {
         cJSON *scriptSceneSON = cJSON_CreateObject();
         cJSON_AddStringToObject(scriptSceneSON, "name", script->getScriptFilename().c_str());
         cJSON_AddItemToArray(sceneScriptsArray, scriptSceneSON);
     }
     cJSON_AddItemToObject(root, "scripts", sceneScriptsArray);
 
-    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    auto camera = ComponentsManager::get()->Camera()->getCamera();
 
     cJSON *cameraJSON = cJSON_CreateObject();
     cJSON_AddItemToObject(cameraJSON, "position", ToolsJSON::Vertex3DToJSON(camera->getPosition()));
@@ -163,7 +163,7 @@ void SceneLoader::ClearScene()
 {
     Logging::Message("[SceneLoader] ClearScene");
 
-    auto scripting = ComponentsManager::get()->getComponentScripting();
+    auto scripting = ComponentsManager::get()->Scripting();
 
     scripting->StopLUAScripts();
 
@@ -176,13 +176,13 @@ void SceneLoader::ClearScene()
             object->setRemoved(true);
         }
     }
-    auto render = ComponentsManager::get()->getComponentRender();
+    auto render = ComponentsManager::get()->Render();
     for (auto &s: render->getSceneShaders()) {
         render->removeSceneShader(s);
     }
 
     Brakeza::get()->GUI()->setSelectedObject(nullptr);
-    ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
+    ComponentsManager::get()->Render()->setSelectedObject(nullptr);
 }
 
 void SceneLoader::CreateScene(const std::string &filename)
@@ -209,16 +209,16 @@ void SceneLoader::InitSerializers()
 {
     auto& registry = JSONSerializerRegistry::instance();
 
-    registry.registerSerializer(TypeObject::Object3D, std::make_shared<Object3DSerializer>());
-    registry.registerSerializer(TypeObject::Image2D, std::make_unique<Image2DSerializer>());
-    registry.registerSerializer(TypeObject::Mesh3D, std::make_unique<Mesh3DSerializer>());
-    registry.registerSerializer(TypeObject::Mesh3DAnimation, std::make_unique<Mesh3DAnimationSerializer>());
-    registry.registerSerializer(TypeObject::Image3D, std::make_unique<Image3DSerializer>());
-    registry.registerSerializer(TypeObject::Image3DAnimation, std::make_unique<Image3DAnimationSerializer>());
-    registry.registerSerializer(TypeObject::Image3DAnimation360, std::make_unique<Image3DAnimation360Serializer>());
-    registry.registerSerializer(TypeObject::LightPoint, std::make_unique<LightPointSerializer>());
-    registry.registerSerializer(TypeObject::LightSpot, std::make_unique<LightSpotSerializer>());
-    registry.registerSerializer(TypeObject::ParticleEmitter, std::make_unique<ParticleEmmitterSerializer>());
+    registry.registerSerializer(ObjectType::Object3D, std::make_shared<Object3DSerializer>());
+    registry.registerSerializer(ObjectType::Image2D, std::make_unique<Image2DSerializer>());
+    registry.registerSerializer(ObjectType::Mesh3D, std::make_unique<Mesh3DSerializer>());
+    registry.registerSerializer(ObjectType::Mesh3DAnimation, std::make_unique<Mesh3DAnimationSerializer>());
+    registry.registerSerializer(ObjectType::Image3D, std::make_unique<Image3DSerializer>());
+    registry.registerSerializer(ObjectType::Image3DAnimation, std::make_unique<Image3DAnimationSerializer>());
+    registry.registerSerializer(ObjectType::Image3DAnimation360, std::make_unique<Image3DAnimation360Serializer>());
+    registry.registerSerializer(ObjectType::LightPoint, std::make_unique<LightPointSerializer>());
+    registry.registerSerializer(ObjectType::LightSpot, std::make_unique<LightSpotSerializer>());
+    registry.registerSerializer(ObjectType::ParticleEmitter, std::make_unique<ParticleEmmitterSerializer>());
 }
 
 void SceneLoader::SceneLoaderCreateObject(cJSON *object)

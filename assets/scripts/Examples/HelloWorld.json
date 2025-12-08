@@ -1,4 +1,8 @@
 {
-	"name":	"../assets/scripts/Examples/HelloWorld.lua",
-	"types":	[]
+	"name":	"Hello World2!",
+	"types":	[{
+			"name":	"esa",
+			"type":	"int",
+			"value":	0
+		}]
 }

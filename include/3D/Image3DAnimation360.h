@@ -33,7 +33,7 @@ public:
     void DrawPropertiesGUI() override;
     void updateBillboardSize() const;
     TextureAnimatedDirectional *getCurrentTextureAnimationDirectional() const;
-    TypeObject getTypeObject() const override;
+    ObjectType getTypeObject() const override;
     GUIType::Sheet getIcon() override;
     static int getDirectionForAngle(float enemyAngle);
     static Image3DAnimation360* create(

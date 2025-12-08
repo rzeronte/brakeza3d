@@ -22,15 +22,15 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
     int i = 0;
     for (auto&  type: o->dataTypes) {
         ImGui::PushID(i);
-        switch (Config::get()->LUADataTypesMapping[type.type]) {
-            case Config::LUADataType::INT: {
+        switch (LUADataTypesMapping[type.type].type) {
+            case LUADataType::INT: {
                 int valueInt = std::get<int>(type.value);
                 if (ImGui::InputInt(type.name.c_str(), &valueInt)) {
                     type.value = valueInt;
                 }
                 break;
             }
-            case Config::LUADataType::STRING: {
+            case LUADataType::STRING: {
                 std::string valueString = std::get<const char*>(type.value);
                 static char name[256];
                 strncpy(name, valueString.c_str(), sizeof(name));
@@ -41,14 +41,14 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
 
                 break;
             }
-            case Config::LUADataType::FLOAT: {
+            case LUADataType::FLOAT: {
                 float valueFloat = std::get<float>(type.value);
                 if (ImGui::InputFloat(type.name.c_str(), &valueFloat, 0.01f, 1.0f, "%.3f")) {
                     type.value = valueFloat;
                 }
                 break;
             }
-            case Config::LUADataType::VERTEX3D: {
+            case LUADataType::VERTEX3D: {
                 Vertex3D valueVertex = std::get<Vertex3D>(type.value);
                 float vec4f[4];
                 valueVertex.toFloat(vec4f);
@@ -99,33 +99,31 @@ void ScriptLuaGUI::DrawScriptsBySelectedObject(GUIManager *gui)
     for (unsigned int i = 0; i < objectScripts.size(); i++) {
         auto currentScript = objectScripts[i];
 
-        GUI::DrawButton(o->getName().c_str(), IconGUI::SCRIPT_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        GUI::DrawButtonTransparent(
+            currentScript->isPaused() ? "Unlock script object" : "Lock script object",
+            currentScript->isPaused() ? IconGUI::LUA_LOCK : IconGUI::LUA_UNLOCK,
+            GUIType::Sizes::ICONS_BROWSERS,
+            false,
+            [&] { currentScript->setPaused(!currentScript->isPaused()); }
+        );
+        ImGui::SameLine();
+        GUI::DrawButton("Edit script", IconGUI::SCRIPT_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
             LoadScriptDialog(gui, currentScript->scriptFilename);
         });
 
         ImGui::SameLine();
-        std::string optionText = std::to_string(i + 1) + ") " + Tools::removeSubstring(currentScript->scriptFilename, Config::get()->SCRIPTS_FOLDER);
-        if (currentScript->isPaused()) {
-            GUI::DrawButton("Unlock script object", IconGUI::LUA_LOCK, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-                currentScript->setPaused(false);
-            });
-        } else {
-            GUI::DrawButton("Lock script object", IconGUI::LUA_LOCK, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                currentScript->setPaused(true);
-            });
-        }
-        ImGui::SameLine();
-        GUI::DrawButton("Remove script object", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        GUI::DrawButton("Remove script object", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
             o->RemoveScript(currentScript);
         });
         ImGui::SameLine();
-        if (ImGui::CollapsingHeader(optionText.c_str())) {
+        std::string name = std::to_string(i + 1) + ") " + currentScript->getName();
+        if (ImGui::CollapsingHeader(name.c_str())) {
             currentScript->drawImGuiProperties();
         }
     }
 }
 
-void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::FolderBrowserCache &browser)
+void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::BrowserCache &browser)
 {
     auto windowStatus = gui->getWindowStatus(GUIType::FILES_SCRIPTS);
     if (!windowStatus->isOpen) return;
@@ -147,8 +145,12 @@ void ScriptLuaGUI::DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::FolderBro
     FileSystemGUI::DrawBrowserFolders(gui, Config::get()->SCRIPTS_FOLDER, browser, Config::get()->SCRIPTS_EXT);
     ImGui::Separator();
     auto files = browser.folderFiles;
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
+    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("ScriptsFolderTable", 2, flags)) {
+        // Configurar columnas
+        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+
         for (int i = 0; i < files.size(); i++) {
             ImGui::PushID(i);
             const auto& file = files[i];
@@ -221,7 +223,7 @@ void ScriptLuaGUI::DrawObjectVariables(GUIManager *gui)
             auto o = gui->gameObjects[gui->selectedObjectIndex];
             auto scripts = o->getScripts();
             auto &luaEnvironment = o->getLuaEnvironment();
-            auto &lua = ComponentsManager::get()->getComponentScripting()->getLua();
+            auto &lua = ComponentsManager::get()->Scripting()->getLua();
 
             int numVarFound = 0;
             for (auto &pair : luaEnvironment) {
@@ -265,7 +267,7 @@ void ScriptLuaGUI::DrawGlobalVariables(GUIManager *gui)
 
     static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("GlobalVariablesTable", 3, flags)) {
-        auto &lua = ComponentsManager::get()->getComponentScripting()->getLua();
+        auto &lua = ComponentsManager::get()->Scripting()->getLua();
 
         sol::table globalTable = lua["_G"];  // Acceder a la tabla global
 
@@ -302,30 +304,56 @@ void ScriptLuaGUI::DrawGlobalVariables(GUIManager *gui)
 
 void ScriptLuaGUI::DrawScriptVariables(GUIManager *gui)
 {
-    ImGui::SeparatorText(std::string("File: " + gui->scriptEditableManager.script->scriptFilename).c_str());
-
-    static char name[256];
-
-    strncpy(name, gui->currentVariableToAddName.c_str(), sizeof(name));
-
-    if (ImGui::InputText("Variable name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-        gui->currentVariableToAddName = name;
-    }
-
-    const char* items[] = { "int", "float", "string", "Vertex3D" };
-    static int selectedItem = 0;
-    ImGui::Combo("Type", &selectedItem, items, IM_ARRAYSIZE(items));
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
-    if (ImGui::Button(std::string("Create variable").c_str())) {
-        if (!gui->currentVariableToAddName.empty()) {
-            gui->scriptEditableManager.script->addDataTypeEmpty(gui->currentVariableToAddName.c_str(), items[selectedItem]);
-        }
+    ImGui::Text(std::string("File: " + gui->scriptEditableManager.script->scriptFilename).c_str());
+
+    auto label = gui->scriptEditableManager.script->getName();
+    ImGui::SeparatorText("Script configuration");
+    static char name[256];
+    strncpy(name, label.c_str(), sizeof(name));
+    if (ImGui::InputText("Name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+        gui->scriptEditableManager.script->setName(name);
     }
 
     ImGui::SeparatorText("Variables");
 
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
+    static char varName[256];
+    strncpy(varName, gui->currentVariableToAddName.c_str(), sizeof(varName));
+    if (ImGui::InputText("Variable name##", varName, IM_ARRAYSIZE(varName), ImGuiInputTextFlags_AutoSelectAll)) {
+        gui->currentVariableToAddName = varName;
+    }
+
+    std::vector<std::string> items;
+    for (auto t : LUADataTypesMapping) {
+        items.push_back(t.second.label);
+    }
+
+    std::vector<const char*> itemsCStr;
+    for (auto& item : items) itemsCStr.push_back(item.c_str());
+
+    static int selectedItem = 0;
+    ImGui::Combo("Type", &selectedItem, itemsCStr.data(), itemsCStr.size());
+    ImGui::SameLine();
+    GUI::DrawButton(
+        "Create variable",
+        IconGUI::SCRIPT_CREATE_VARIABLE,
+        GUIType::Sizes::ICONS_BROWSERS,
+        false,
+        [&] {
+            if (!gui->currentVariableToAddName.empty()) {
+                gui->scriptEditableManager.script->addDataTypeEmpty(gui->currentVariableToAddName.c_str(), itemsCStr[selectedItem]);
+            }
+        }
+    );
+    ImGui::SeparatorText("Variables");
+    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("ScriptProperties", 3, flags)) {
+        // Configurar columnas - igual que en proyectos
+        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+
         for (int i = 0; i < gui->scriptEditableManager.script->dataTypes.size(); i++) {
             ImGui::TableNextRow();
             auto type = &gui->scriptEditableManager.script->dataTypes[i];
@@ -339,7 +367,7 @@ void ScriptLuaGUI::DrawScriptVariables(GUIManager *gui)
             ImGui::Text("%s", type->type.c_str());
 
             ImGui::TableSetColumnIndex(2);
-            GUI::DrawButton("Delete script variable", IconGUI::REMOVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+            GUI::DrawButton("Delete script variable", IconGUI::SCRIPT_REMOVE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 gui->scriptEditableManager.script->removeDataType(*type);
                 gui->scriptEditableManager.script->updateFileTypes();
             });
@@ -348,11 +376,13 @@ void ScriptLuaGUI::DrawScriptVariables(GUIManager *gui)
     }
 
     if (gui->scriptEditableManager.script->dataTypes.empty()) {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
+        ImGui::SameLine();
         ImGui::Text("No types defined");
         ImGui::Spacing();
-    } else {
-        if (ImGui::Button(std::string("Save script types").c_str())) {
-            gui->scriptEditableManager.script->updateFileTypes();
-        }
     }
+
+    GUI::DrawButton("Save SCRIPT", IconGUI::SCRIPT_SAVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        gui->scriptEditableManager.script->updateFileTypes();
+    });
 }

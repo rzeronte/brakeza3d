@@ -96,7 +96,7 @@ inline void LUAIntegration(sol::state &lua)
         "isCollisionsEnabled", &Object3D::isCollisionsEnabled,
         "setDrawOffset", &Object3D::setDrawOffset,
         "setupGhostCollider", &Object3D::SetupGhostCollider,
-        "setupRigidBodyCollider", &Object3D::setupRigidBodyCollider,
+        "SetupRigidBodyCollider", &Object3D::SetupRigidBodyCollider,
         "setColliderStatic", &Object3D::setColliderStatic,
         "applyCentralForce", &Object3D::applyCentralForce,
         "applyCentralImpulse", &Object3D::applyCentralImpulse,
@@ -207,11 +207,11 @@ inline void LUAIntegration(sol::state &lua)
     );
 
     lua.new_usertype<ComponentsManager>("ComponentsManager",
-    "getComponentWindow", &ComponentsManager::getComponentWindow,
-        "getComponentRender", &ComponentsManager::getComponentRender,
-        "getComponentCamera", &ComponentsManager::getComponentCamera,
-        "getComponentCollisions", &ComponentsManager::getComponentCollisions,
-        "getComponentInput", &ComponentsManager::getComponentInput
+    "Window", &ComponentsManager::Window,
+        "Render", &ComponentsManager::Render,
+        "Camera", &ComponentsManager::Camera,
+        "Collisions", &ComponentsManager::Collisions,
+        "Input", &ComponentsManager::Input
     );
 
     lua.new_usertype<Brakeza>("Brakeza3D",
@@ -285,9 +285,9 @@ inline void LUAIntegration(sol::state &lua)
     lua.new_usertype<Mesh3D>("Mesh3D",
     sol::base_classes, sol::bases<Object3D>(),
         "AssimpLoadGeometryFromFile", &Mesh3D::AssimpLoadGeometryFromFile,
-        "buildGrid3D", &Mesh3D::buildGrid3D,
-        "buildOctree", &Mesh3D::buildOctree,
-        "fillGrid3DFromGeometry", &Mesh3D::fillGrid3DFromGeometry,
+        "BuildGrid3D", &Mesh3D::BuildGrid3D,
+        "BuildOctree", &Mesh3D::BuildOctree,
+        "FillGrid3DFromGeometry", &Mesh3D::FillGrid3DFromGeometry,
         "getOctree", &Mesh3D::getOctree,
         "getGrid3D", &Mesh3D::getGrid3D,
         "create", sol::factories([](Vertex3D position, const std::string& imageFile) {
@@ -394,7 +394,7 @@ inline void LUAIntegration(sol::state &lua)
                 [](const ScriptLUA& script) { return script.fileTypes; },
                 [](ScriptLUA& script, const std::string& newFileTypes) { script.fileTypes = newFileTypes; }
         ),
-        "updateFileTypes", &ScriptLUA::updateFileTypes,
+        "UpdateFileTypes", &ScriptLUA::updateFileTypes,
         "getCode", &ScriptLUA::getCode,
         "dataTypesFileFor", &ScriptLUA::dataTypesFileFor,
         "create", sol::factories([](const std::string& scriptFile) {

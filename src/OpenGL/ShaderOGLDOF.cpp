@@ -37,17 +37,17 @@ ShaderOGLDOF::ShaderOGLDOF()
 
 void ShaderOGLDOF::render(GLuint sceneTexture, GLuint depthTexture)
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(resultFramebuffer);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
 
     setTextureUniform(sceneTextureUniform, sceneTexture, 0);
     setTextureUniform(depthTextureUniform, depthTexture, 1);
 
     loadQuadMatrixUniforms();
 
-    auto window = ComponentsManager::get()->getComponentWindow();
+    auto window = ComponentsManager::get()->Window();
 
     glUniform1f(focalDistanceUniform, focalDistance);
     glUniform1f(focalRangeUniform, focalRange);
@@ -68,8 +68,8 @@ GLuint ShaderOGLDOF::getTextureResult() const
 void ShaderOGLDOF::createFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(resultFramebuffer);
-    auto window = ComponentsManager::get()->getComponentWindow();
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
+    auto window = ComponentsManager::get()->Window();
 
     glGenTextures(1, &textureResult);
     glBindTexture(GL_TEXTURE_2D, textureResult);

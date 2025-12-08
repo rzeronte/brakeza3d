@@ -43,7 +43,7 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
     float angulo_outer_grados = radians * 180.0f / static_cast<float>(M_PI);
     float angulo_cono = angulo_outer_grados * 2.0f; // Ángulo total del cono
 
-    auto render = ComponentsManager::get()->getComponentRender();
+    auto render = ComponentsManager::get()->Render();
 
     if (showDebugCone && isGUISelected()) {
         cone.UpdateVertices(
@@ -58,7 +58,7 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
             glDisable(GL_CULL_FACE);
             glEnable(GL_BLEND);
             glBlendFunc(mode_src, mode_dst);
-            render->getShaderOGLColor()->renderColor(
+            render->getShaders()->shaderOGLColor->renderColor(
                 getModelMatrix(),
                 vertexBuffer,
                 uvBuffer,
@@ -66,20 +66,20 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
                 cone.vertices.size(),
                 c,
                 false,
-                ComponentsManager::get()->getComponentWindow()->getGBuffer().FBO
+                ComponentsManager::get()->Window()->getGBuffer().FBO
             );
             glEnable(GL_CULL_FACE);
         }
 
         if (Config::get()->TRIANGLE_MODE_WIREFRAME) {
-            render->getShaderOGLWireframe()->render(
+            render->getShaders()->shaderOGLWireframe->render(
                 getModelMatrix(),
                 vertexBuffer,
                 uvBuffer,
                 normalBuffer,
                 static_cast<int>(cone.vertices.size()),
                 c,
-                ComponentsManager::get()->getComponentWindow()->getSceneFramebuffer()
+                ComponentsManager::get()->Window()->getSceneFramebuffer()
             );
         }
     }
@@ -157,9 +157,9 @@ void LightSpot::setOuterCutOff(float value)
     outerCutOff = value;
 }
 
-TypeObject LightSpot::getTypeObject() const
+ObjectType LightSpot::getTypeObject() const
 {
-    return TypeObject::LightSpot;
+    return ObjectType::LightSpot;
 }
 
 float LightSpot::getCutOff() const

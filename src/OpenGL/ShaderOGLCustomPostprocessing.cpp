@@ -11,7 +11,7 @@ ShaderOGLCustomPostprocessing::ShaderOGLCustomPostprocessing(
     const std::string &fragmentFilename
     )
 :
-    ShaderOGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomTypes::SHADER_POSTPROCESSING)
+    ShaderOGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomType::SHADER_POSTPROCESSING)
 {
     setupQuadUniforms(programID);
 }
@@ -23,7 +23,7 @@ ShaderOGLCustomPostprocessing::ShaderOGLCustomPostprocessing(
     cJSON *types
 )
 :
-    ShaderOGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomTypes::SHADER_POSTPROCESSING, types)
+    ShaderOGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomType::SHADER_POSTPROCESSING, types)
 {
     setupQuadUniforms(programID);
 }
@@ -41,13 +41,13 @@ void ShaderOGLCustomPostprocessing::render(GLuint fbo)
 {
     if (!isEnabled()) return;
 
-    auto render = ComponentsManager::get()->getComponentRender();
+    auto render = ComponentsManager::get()->Render();
     render->changeOpenGLFramebuffer(fbo);
     render->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 
-    resetNumberTextures();
+    ResetNumberTextures();
     setDataTypesUniforms();
 
     drawQuad();

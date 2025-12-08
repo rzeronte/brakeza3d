@@ -98,10 +98,10 @@ public:
     virtual void ResolveCollision(CollisionInfo o);
     virtual void Integrate();
     virtual void SetupGhostCollider(CollisionShape mode) = 0;
-    virtual void setupRigidBodyCollider(CollisionShape shapeMode);
+    virtual void SetupRigidBodyCollider(CollisionShape shapeMode);
     virtual void setupKinematicCollider();
     virtual void makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
-    virtual void drawImGuiCollisionShapeSelector();
+    virtual void DrawImGuiCollisionShapeSelector();
     virtual void MakeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     virtual void MakeKineticBody(float x, float y, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     [[nodiscard]] Vertex3D getLinearVelocity() const;

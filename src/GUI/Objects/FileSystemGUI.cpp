@@ -29,7 +29,7 @@ void FileSystemGUI::UpdateFolderFiles(GUIManager *gui)
     projects.folderFiles = Tools::getFolderFiles(projects.currentFolder, Config::get()->PROJECTS_EXT);
 }
 
-void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCache &browser)
+void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::BrowserCache &browser)
 {
     auto windowStatus = gui->getWindowStatus(GUIType::FILES_PROJECTS);
     if (!windowStatus->isOpen) return;
@@ -49,9 +49,14 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCach
     }
     ImGui::Separator();
     std::vector<std::string> files = browser.folderFiles;
-    std::sort(files.begin(), files.end() );
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
+    std::sort(files.begin(), files.end());
+
+    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("ProjectsFolderTable", 2, flags)) {
+        // Configurar columnas (igual que en el ejemplo)
+        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+
         for (int i = 0; i < files.size(); i++) {
             ImGui::TableNextRow();
             const auto& file = files[i];
@@ -74,7 +79,6 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCach
                 GUI::DrawButtonConfirm("Override project", "Are you sure to override project?", IconGUI::SAVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
                     ProjectLoader::SaveProject(browser.currentFolder + file);
                 });
-
                 ImGui::SameLine();
                 GUI::DrawButtonConfirm("Deleting project", "Are you sure to delete project?", IconGUI::PROJECT_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
                     ProjectLoader::RemoveProject(browser.currentFolder + file);
@@ -87,7 +91,7 @@ void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::FolderBrowserCach
     }
 }
 
-void FileSystemGUI::DrawScenesFolder(GUIManager *gui, GUIType::FolderBrowserCache &browser)
+void FileSystemGUI::DrawScenesFolder(GUIManager *gui, GUIType::BrowserCache &browser)
 {
     auto windowStatus = gui->getWindowStatus(GUIType::FILES_SCENES);
     if (!windowStatus->isOpen) return;
@@ -107,13 +111,16 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, GUIType::FolderBrowserCach
     }
     ImGui::Separator();
     DrawBrowserFolders(gui, Config::get()->SCENES_FOLDER, browser, Config::get()->SCENES_EXT);
-
     ImGui::Separator();
 
     auto files = browser.folderFiles;
     std::sort(files.begin(), files.end() );
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
+    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("ScenesFolderTable", 2, flags)) {
+        // Configurar columnas
+        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+
         for (int i = 0; i < files.size(); i++) {
             ImGui::TableNextRow();
             const auto& file = files[i];
@@ -150,18 +157,12 @@ void FileSystemGUI::DrawScenesFolder(GUIManager *gui, GUIType::FolderBrowserCach
     }
 }
 
-void FileSystemGUI::DrawBrowserFolders(
-    GUIManager *gui,
-    std::string& baseFolder,
-    GUIType::FolderBrowserCache &browser,
-    std::string ext
-)
+void FileSystemGUI::DrawBrowserFolders(GUIManager *gui, std::string& baseFolder, GUIType::BrowserCache &browser, std::string ext)
 {
     ImGui::Text("Current: %s", browser.currentFolder.c_str());
-
     ImGui::Separator();
-
     if (browser.currentFolder != baseFolder) {
+        ImGui::AlignTextToFramePadding();
         ImGui::Image(Icon(IconGUI::FOLDER), ImVec2(24, 24));
         ImGui::SameLine();
         if (ImGui::Button("..")) {
@@ -171,14 +172,23 @@ void FileSystemGUI::DrawBrowserFolders(
         }
     }
 
-    ImGui::Image(Icon(IconGUI::FOLDER), GUIType::Sizes::ICONS_BROWSERS);
+    // Para el icono de la carpeta actual
+    ImVec2 iconSize = GUIType::Sizes::ICONS_BROWSERS;
+    float frameHeight = ImGui::GetFrameHeight();
+    float offsetY = (frameHeight - iconSize.y) * 0.5f;
+
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
+    ImGui::Image(Icon(IconGUI::FOLDER), iconSize);
     ImGui::SameLine();
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - offsetY);
     ImGui::Text(".");
 
     for (const auto & i : browser.folderFolders) {
         auto fullPathFolder = browser.currentFolder + i;
-        ImGui::Image(Icon(IconGUI::FOLDER), GUIType::Sizes::ICONS_BROWSERS);
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
+        ImGui::Image(Icon(IconGUI::FOLDER), iconSize);
         ImGui::SameLine();
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() - offsetY);
         if (ImGui::Button(i.c_str())) {
             browser.currentFolder = fullPathFolder + "/";
             browser.folderFolders = Tools::getFolderFolders(browser.currentFolder);

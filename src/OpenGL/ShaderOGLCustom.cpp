@@ -15,42 +15,42 @@ ShaderOGLCustom::ShaderOGLCustom(
     std::string label,
     const std::string &vertexFilename,
     const std::string &fragmentFilename,
-    ShaderCustomTypes type
+    ShaderCustomType type
 )
 :
-    ShaderBaseOpenGL(vertexFilename, fragmentFilename, type == ShaderCustomTypes::SHADER_OBJECT),
+    ShaderBaseOpenGL(vertexFilename, fragmentFilename, type == ShaderCustomType::SHADER_OBJECT),
     label(std::move(label)),
     type(type),
     fileTypes(dataTypesFileFor(fragmentFilename))
 {
-    readShaderFiles(vertexFilename, fragmentFilename);
+    ReadShaderFiles(vertexFilename, fragmentFilename);
     parseTypesFromFileAttributes();
-    createFramebuffer();
+    CreateFramebuffer();
 }
 
 ShaderOGLCustom::ShaderOGLCustom(
     std::string label,
     const std::string &vertexFilename,
     const std::string &fragmentFilename,
-    ShaderCustomTypes type,
+    ShaderCustomType type,
     cJSON *types
 )
 :
     label(std::move(label)),
     enabled(true),
-    ShaderBaseOpenGL(vertexFilename, fragmentFilename, type == ShaderCustomTypes::SHADER_OBJECT),
+    ShaderBaseOpenGL(vertexFilename, fragmentFilename, type == ShaderCustomType::SHADER_OBJECT),
     fileTypes(ShaderOGLCustom::dataTypesFileFor(fragmentFilename)),
     type(type)
 {
-    readShaderFiles(vertexFilename, fragmentFilename);
+    ReadShaderFiles(vertexFilename, fragmentFilename);
     setDataTypesFromJSON(types);
-    createFramebuffer();
+    CreateFramebuffer();
 }
 
-void ShaderOGLCustom::readShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename)
+void ShaderOGLCustom::ReadShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename)
 {
     if (!Tools::FileExists(vertexFilename.c_str()) || !Tools::FileExists(fragmentFilename.c_str())) {
-        Logging::Message("[error] Cannot open custom shader files (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
+        Logging::Error("[ShaderOGLCustom] Cannot open custom shader files (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
     }
     size_t file_size_fs;
     sourceFS = Tools::ReadFile(fragmentFilename, file_size_fs);
@@ -116,7 +116,7 @@ void ShaderOGLCustom::addDataType(const char *name, const char *type, cJSON *val
 {
     ShaderOpenGLCustomDataValue LUAValue;
 
-    switch (GLSLTypeMapping[type]) {
+    switch (GLSLTypeMapping[type].type) {
         case ShaderOpenGLCustomDataType::INT: {
             LUAValue = value->valueint;
             break;
@@ -188,11 +188,11 @@ void ShaderOGLCustom::addDataType(const char *name, const char *type, cJSON *val
     dataTypesDefaultValues.emplace_back(name, type, LUAValue);
 }
 
-void ShaderOGLCustom::addDataTypeEmpty(const char *name, const char *type)
+void ShaderOGLCustom::AddDataTypeEmpty(const char *name, const char *type)
 {
     ShaderOpenGLCustomDataValue typeValue;
 
-    switch (GLSLTypeMapping[type]) {
+    switch (GLSLTypeMapping[type].type) {
         case ShaderOpenGLCustomDataType::INT: {
             typeValue = 0;
             break;
@@ -251,7 +251,7 @@ GLuint ShaderOGLCustom::compile()
 {
     Logging::Message("Compiling custom shader (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
 
-    programID = LoadShaders(vertexFilename.c_str(), fragmentFilename.c_str(), type == ShaderCustomTypes::SHADER_OBJECT);
+    programID = LoadShaders(vertexFilename.c_str(), fragmentFilename.c_str(), type == ShaderCustomType::SHADER_OBJECT);
 
     return programID;
 }
@@ -260,7 +260,7 @@ void ShaderOGLCustom::destroy()
 {
     glDeleteFramebuffers(1, &resultFramebuffer);
     glDeleteTextures(1, &textureResult);
-    createFramebuffer();
+    CreateFramebuffer();
 }
 
 void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
@@ -269,7 +269,8 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
     int i = 0;
     for (auto &type: dataTypes) {
-        switch (GLSLTypeMapping[type.type]) {
+        auto& info = GLSLTypeMapping[type.type];
+        switch (info.type) {
             case ShaderOpenGLCustomDataType::INT: {
                 ImGui::PushID(i);
                 int valueInt = std::get<int>(type.value);
@@ -333,7 +334,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
 
     i = 0;
     for (auto &type: dataTypes) {
-        switch (GLSLTypeMapping[type.type]) {
+        switch (GLSLTypeMapping[type.type].type) {
             case ShaderOpenGLCustomDataType::DELTA_TIME: {
                 ImGui::PushID(i);
                 ImGui::Text(type.name.c_str());
@@ -362,7 +363,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
     if (ImGui::BeginTable("ShaderOpenGLCustomTexture", 4, flags)) {
         int j = 0;
         for (auto &type: dataTypes) {
-            switch (GLSLTypeMapping[type.type]) {
+            switch (GLSLTypeMapping[type.type].type) {
                 case ShaderOpenGLCustomDataType::DEPTH: {
                     ImGui::TableNextRow();
                     ImGui::PushID(j);
@@ -370,7 +371,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
                     ImGui::TableSetColumnIndex(0);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
-                    auto globalTexture = ComponentsManager::get()->getComponentWindow()->getDepthTexture();
+                    auto globalTexture = ComponentsManager::get()->Window()->getDepthTexture();
                     ImGui::Image(reinterpret_cast<ImTextureID>(globalTexture), ImVec2(36, 36));
                     ImGui::SetItemTooltip("Depth Texture");
 
@@ -396,7 +397,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
                     ImGui::TableSetColumnIndex(0);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
-                    auto globalTexture = ComponentsManager::get()->getComponentWindow()->getGlobalTexture();
+                    auto globalTexture = ComponentsManager::get()->Window()->getGlobalTexture();
                     ImGui::Image(reinterpret_cast<ImTextureID>(globalTexture), ImVec2(36, 36));
                     ImGui::SetItemTooltip("Render scene");
 
@@ -453,7 +454,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
 
                         ImGui::Image(texture->getOGLImTexture(), ImVec2(36, 36));
                         ImGui::SetItemTooltip(texture->getFileName().c_str());
-                        captureDragDropUpdateImage(type, texture);
+                        CaptureDragDropUpdateImage(type, texture);
 
                         ImGui::TableSetColumnIndex(1);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
@@ -470,7 +471,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
                         ImGui::TableSetColumnIndex(0);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
                         ImGui::Image(FileSystemGUI::Icon(IconGUI::TEXTURE), ImVec2(36, 36));
-                        captureDragDropUpdateImage(type, texture);
+                        CaptureDragDropUpdateImage(type, texture);
 
                         ImGui::TableSetColumnIndex(1);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
@@ -500,7 +501,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
     }
 }
 
-void ShaderOGLCustom::captureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const
+void ShaderOGLCustom::CaptureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const
 {
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
@@ -527,6 +528,7 @@ bool ShaderOGLCustom::isEnabled() const
 
 void ShaderOGLCustom::setEnabled(bool value)
 {
+    Logging::Message("[ShaderOGLCustom] Setting shader '%s' enabled to %d", label.c_str(), value);
     enabled = value;
 }
 
@@ -541,14 +543,19 @@ void ShaderOGLCustom::postUpdate()
 
     render(resultFramebuffer);
 
-    auto window = ComponentsManager::get()->getComponentWindow();
-    auto shaderOGLImage = ComponentsManager::get()->getComponentRender()->getShaderOGLImage();
+    auto window = ComponentsManager::get()->Window();
+    auto shaderOGLImage = ComponentsManager::get()->Render()->getShaders()->shaderOGLImage;
     shaderOGLImage->renderTexture(textureResult, 0, 0, window->getWidth(), window->getHeight(), 1, true, window->getGlobalFramebuffer());
 }
 
 const std::string &ShaderOGLCustom::getLabel() const
 {
     return label;
+}
+
+void ShaderOGLCustom::setLabel(std::string value)
+{
+    label = value;
 }
 
 cJSON *ShaderOGLCustom::getTypesJSON()
@@ -566,7 +573,7 @@ cJSON *ShaderOGLCustom::getTypesJSON()
         cJSON_AddStringToObject(typeJSON, "type", dataType.type.c_str());
 
         std::string name = dataType.name + "("+ dataType.type +")";
-        switch (GLSLTypeMapping[dataType.type]) {
+        switch (GLSLTypeMapping[dataType.type].type) {
             case ShaderOpenGLCustomDataType::INT: {
                 auto valueInt = std::get<int>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueInt);
@@ -627,7 +634,7 @@ cJSON *ShaderOGLCustom::getTypesJSON()
 void ShaderOGLCustom::setDataTypesUniforms()
 {
     for (auto type: dataTypes) {
-        switch (GLSLTypeMapping[type.type]) {
+        switch (GLSLTypeMapping[type.type].type) {
             case ShaderOpenGLCustomDataType::INT: {
                 const int value = std::get<int>(type.value);
                 setInt(type.name, value);
@@ -657,7 +664,7 @@ void ShaderOGLCustom::setDataTypesUniforms()
                 auto image = std::get<Image *>(type.value);
                 if (image != nullptr) {
                     setTexture(type.name, image->getOGLTextureID(), numTextures);
-                    increaseNumberTextures();
+                    IncreaseNumberTextures();
                 }
                 break;
             }
@@ -670,15 +677,15 @@ void ShaderOGLCustom::setDataTypesUniforms()
                 break;
             }
             case ShaderOpenGLCustomDataType::SCENE: {
-                auto globalTexture = ComponentsManager::get()->getComponentWindow()->getSceneTexture();
+                auto globalTexture = ComponentsManager::get()->Window()->getSceneTexture();
                 setTexture(type.name, globalTexture, numTextures);
-                increaseNumberTextures();
+                IncreaseNumberTextures();
                 break;
             }
             case ShaderOpenGLCustomDataType::DEPTH: {
-                auto globalTexture = ComponentsManager::get()->getComponentWindow()->getDepthTexture();
+                auto globalTexture = ComponentsManager::get()->Window()->getDepthTexture();
                 setTexture(type.name, globalTexture, numTextures);
-                increaseNumberTextures();
+                IncreaseNumberTextures();
                 break;
             }
             default:
@@ -687,7 +694,7 @@ void ShaderOGLCustom::setDataTypesUniforms()
     }
 }
 
-void ShaderOGLCustom::updateFileTypes()
+void ShaderOGLCustom::UpdateFileTypes()
 {
     Logging::Message("Updating types file (%s)", this->fileTypes.c_str());
     char *output_string = cJSON_Print(getTypesJSON());
@@ -710,7 +717,7 @@ void ShaderOGLCustom::removeDataType(const ShaderOpenGLCustomType& data)
 void ShaderOGLCustom::createEmptyCustomShader(
     const std::string& name,
     const std::string& folder,
-    ShaderCustomTypes type
+    ShaderCustomType type
 )
 {
     Logging::Message("Creating new custom shader: %s de tipo %d", name.c_str(), type);
@@ -732,13 +739,13 @@ void ShaderOGLCustom::createEmptyCustomShader(
     Tools::WriteToFile(folder + dataTypesFileFor(name), typesCode);
 
     switch(type) {
-        case ShaderCustomTypes::SHADER_POSTPROCESSING : {
+        case ShaderCustomType::SHADER_POSTPROCESSING : {
             // vs y fs
             Tools::CopyFile(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_VS, shaderVertexFile);
             Tools::CopyFile(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_FS, shaderFragmentFile);
             break;
         }
-        case ShaderCustomTypes::SHADER_OBJECT : {
+        case ShaderCustomType::SHADER_OBJECT : {
             // vs y fs
             Tools::CopyFile(Config::get()->TEMPLATE_SHADER_OBJECT_VS, shaderVertexFile);
             Tools::CopyFile(Config::get()->TEMPLATE_SHADER_OBJECT_FS, shaderFragmentFile);
@@ -779,24 +786,24 @@ void ShaderOGLCustom::setDataTypeValue(const std::string& name, glm::vec4 newVal
     setDataTypeValue(name, ShaderOpenGLCustomDataValue(newValue));
 }
 
-void ShaderOGLCustom::resetNumberTextures()
+void ShaderOGLCustom::ResetNumberTextures()
 {
     numTextures = 0;
 }
 
-void ShaderOGLCustom::increaseNumberTextures()
+void ShaderOGLCustom::IncreaseNumberTextures()
 {
     numTextures++;
 }
 
-ShaderCustomTypes ShaderOGLCustom::getType() const
+ShaderCustomType ShaderOGLCustom::getType() const
 {
     return type;
 }
 
-ShaderCustomTypes ShaderOGLCustom::getShaderTypeFromString(const std::string& shaderName)
+ShaderCustomType ShaderOGLCustom::getShaderTypeFromString(const std::string& shaderName)
 {
-    auto render = ComponentsManager::get()->getComponentRender();
+    auto render = ComponentsManager::get()->Render();
     auto types = render->getShaderTypesMapping();
 
     auto it = types.find(shaderName);
@@ -807,9 +814,9 @@ ShaderCustomTypes ShaderOGLCustom::getShaderTypeFromString(const std::string& sh
     return SHADER_NONE;
 }
 
-std::string ShaderOGLCustom::getShaderTypeString(ShaderCustomTypes type)
+std::string ShaderOGLCustom::getShaderTypeString(ShaderCustomType type)
 {
-    auto render = ComponentsManager::get()->getComponentRender();
+    auto render = ComponentsManager::get()->Render();
     auto types = render->getShaderTypesMapping();
 
     for (const auto& a: types) {
@@ -830,7 +837,7 @@ void ShaderOGLCustom::RemoveCustomShaderFiles(const std::string& folder, const s
     Tools::RemoveFile(folder + name + ".fs");
 }
 
-ShaderCustomTypes ShaderOGLCustom::extractTypeFromShaderName(const std::string& folder, const std::string &name)
+ShaderCustomType ShaderOGLCustom::extractTypeFromShaderName(const std::string& folder, const std::string &name)
 {
     std::string jsonFile = name + ".json";
 
@@ -841,7 +848,7 @@ ShaderCustomTypes ShaderOGLCustom::extractTypeFromShaderName(const std::string& 
     auto oJSON = cJSON_Parse(contentFile);
     std::string nameType = cJSON_GetObjectItemCaseSensitive(oJSON, "type")->valuestring;
 
-    return ShaderOGLCustom::getShaderTypeFromString(nameType);
+    return getShaderTypeFromString(nameType);
 }
 
 std::string ShaderOGLCustom::getFolder()
@@ -854,7 +861,7 @@ const std::vector<ShaderOpenGLCustomType> &ShaderOGLCustom::getDataTypes() const
     return dataTypes;
 }
 
-void ShaderOGLCustom::reload()
+void ShaderOGLCustom::Reload()
 {
     size_t file_size_fs;
     sourceFS = Tools::ReadFile(fragmentFilename, file_size_fs);
@@ -870,12 +877,12 @@ void ShaderOGLCustom::reload()
     compile();
 }
 
-void ShaderOGLCustom::createFramebuffer()
+void ShaderOGLCustom::CreateFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(resultFramebuffer);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
 
-    auto window = ComponentsManager::get()->getComponentWindow();
+    auto window = ComponentsManager::get()->Window();
     int w = window->getWidth();
     int h = window->getHeight();
 

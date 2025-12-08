@@ -1,5 +1,5 @@
 {
-	"name":	"../assets/scripts/Examples/ObjectScripts/PathFindingExamplel.lua",
+	"name":	"../assets/scripts/Examples/ObjectScripts/PathFindingExample.lua",
 	"types":	[{
 			"name":	"fromX",
 			"type":	"int",

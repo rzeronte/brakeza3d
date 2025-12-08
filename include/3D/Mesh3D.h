@@ -3,6 +3,9 @@
 #define SDL2_3D_ENGINE_MESH_H
 
 #include <string>
+#include <assimp/scene.h>
+#include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 #include "Vertex3D.h"
 #include "../Render/Triangle3D.h"
 #include "../Misc/Tools.h"
@@ -10,9 +13,6 @@
 #include "../Render/Grid3D.h"
 #include "../Render/Collider.h"
 #include "../OpenGL/ShaderOGLCustom.h"
-#include <assimp/scene.h>
-#include <glm/vec3.hpp>
-#include <glm/vec2.hpp>
 #include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
 #include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
@@ -56,29 +56,29 @@ public:
     ~Mesh3D() override;
 
     static Mesh3D* create(Vertex3D position, const std::string& imageFile);
-    TypeObject getTypeObject() const override;
+    ObjectType getTypeObject() const override;
     GUIType::Sheet getIcon() override;
     void AssimpLoadGeometryFromFile(const std::string &fileName);
     void AssimpInitMaterials(const aiScene *pScene);
     void ProcessNodes(const aiScene *scene, const aiNode *node);
     void LoadMesh(int meshId, const aiMesh *mesh);
     void onUpdate() override;
-    void postUpdate() override;
-    void buildOctree(int depth);
     void setRender(bool render);
+    void postUpdate() override;
+    void BuildOctree(int depth);
     void DrawPropertiesGUI() override;
     void makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     void makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     void makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) override;
     void SetupGhostCollider(CollisionShape modeShape) override;
-    void setupRigidBodyCollider(CollisionShape modeShape) override;
-    void drawImGuiCollisionShapeSelector() override;
+    void SetupRigidBodyCollider(CollisionShape modeShape) override;
+    void DrawImGuiCollisionShapeSelector() override;
     void setSourceFile(const std::string &sourceFile);
-    void buildGrid3D(int sizeX, int sizeY, int sizeZ);
-    void fillGrid3DFromGeometry();
-    void addCustomShader(ShaderOGLCustom *);
+    void BuildGrid3D(int sizeX, int sizeY, int sizeZ);
+    void FillGrid3DFromGeometry();
+    void AddCustomShader(ShaderOGLCustom *);
     void LoadShader(const std::string &folder, const std::string &jsonFilename);
-    void removeShader(int i);
+    void RemoveShader(int i);
     virtual void ShadowMappingPass();
     virtual void UpdateBoundingBox();
     std::vector<Mesh3DData> &getMeshData();

@@ -14,11 +14,11 @@ Object3D::Object3D()
 :
     id(Brakeza::get()->getNextObjectID()),
     luaEnvironment(sol::environment(
-            ComponentsManager::get()->getComponentScripting()->getLua(),
-            sol::create, ComponentsManager::get()->getComponentScripting()->getLua().globals())
+            ComponentsManager::get()->Scripting()->getLua(),
+            sol::create, ComponentsManager::get()->Scripting()->getLua().globals())
     ),
     pickingColor(Color::idToColor(id)),
-    type(TypeObject::Object3D)
+    type(ObjectType::Object3D)
 {
     luaEnvironment["this"] = this;
     timer.start();
@@ -160,9 +160,9 @@ void Object3D::onUpdate()
         if (a->isEnabled()) a->onUpdate();
     }
 
-    distanceToCamera = ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition().distance(getPosition());
+    distanceToCamera = ComponentsManager::get()->Camera()->getCamera()->getPosition().distance(getPosition());
 
-    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == Config::LUA_PLAY) {
+    if (ComponentsManager::get()->Scripting()->getStateLUAScripts() == Config::LUA_PLAY) {
         RunScripts();
     }
 }
@@ -278,9 +278,9 @@ void Object3D::RemoveScript(const ScriptLUA *script)
     }
 }
 
-TypeObject Object3D::getTypeObject() const
+ObjectType Object3D::getTypeObject() const
 {
-    return TypeObject::Object3D;
+    return ObjectType::Object3D;
 }
 
 GUIType::Sheet Object3D::getIcon()
@@ -521,7 +521,7 @@ void Object3D::ResolveCollision(CollisionInfo with)
         Logging::Message("Object3D: Collision %s with %s",  getName().c_str(), object->getName().c_str());
     }
 
-    if (ComponentsManager::get()->getComponentScripting()->getStateLUAScripts() == Config::LUA_PLAY) {
+    if (ComponentsManager::get()->Scripting()->getStateLUAScripts() == Config::LUA_PLAY) {
         RunResolveCollisionScripts(with);
     }
 }
@@ -529,7 +529,7 @@ void Object3D::ResolveCollision(CollisionInfo with)
 void Object3D::RunResolveCollisionScripts(CollisionInfo with)
 {
     //auto *object = static_cast<Object3D *>(with.with);
-    const sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
+    const sol::state &lua = ComponentsManager::get()->Scripting()->getLua();
 
     sol::object luaValue = sol::make_object(lua, with);
 
@@ -555,7 +555,7 @@ void Object3D::SetupGhostCollider(CollisionShape mode)
             getPosition(),
             getModelMatrix(),
             simpleShapeSize,
-            Brakeza::get()->getComponentsManager()->getComponentCollisions()->getDynamicsWorld(),
+            Brakeza::get()->getComponentsManager()->Collisions()->getDynamicsWorld(),
             Config::collisionGroups::AllFilter,
             Config::collisionGroups::AllFilter
         );
@@ -574,5 +574,5 @@ int Object3D::getId() const
 
 bool Object3D::isGUISelected() const
 {
-    return ComponentsManager::get()->getComponentRender()->getSelectedObject() == this;
+    return ComponentsManager::get()->Render()->getSelectedObject() == this;
 }

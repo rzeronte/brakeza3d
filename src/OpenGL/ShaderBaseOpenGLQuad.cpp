@@ -46,7 +46,7 @@ void ShaderBaseOpenGLQuad::setupQuadUniforms(GLuint programID)
 
 void ShaderBaseOpenGLQuad::resetQuadMatrix()
 {
-    auto window = ComponentsManager::get()->getComponentWindow();
+    auto window = ComponentsManager::get()->Window();
     int w = window->getWidth();
     int h = window->getHeight();
 

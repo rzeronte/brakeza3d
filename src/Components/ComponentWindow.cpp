@@ -63,7 +63,7 @@ void ComponentWindow::onEnd()
 
 void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish)
 {
-    ComponentsManager::get()->getComponentRender()->updateSelectedObject3D();
+    ComponentsManager::get()->Render()->updateSelectedObject3D();
 }
 
 void ComponentWindow::initWindow()
@@ -89,7 +89,7 @@ void ComponentWindow::initWindow()
         SDL_WINDOWPOS_UNDEFINED,
         SETUP->screenWidth,
         SETUP->screenHeight,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE
+        SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
     );
 
     context = SDL_GL_CreateContext(window);
@@ -328,7 +328,7 @@ void ComponentWindow::resetFramebuffer()
 
     createFramebuffer();
 
-    ComponentsManager::get()->getComponentRender()->resizeShadersFramebuffers();
+    ComponentsManager::get()->Render()->resizeShadersFramebuffers();
 
     resizeGBuffer();
 }
@@ -339,7 +339,7 @@ void ComponentWindow::RenderLayersToMain()
        ImGuiOnUpdate();
    }
 
-    auto shaderOGLImage = ComponentsManager::get()->getComponentRender()->getShaderOGLImage();
+    auto shaderOGLImage = ComponentsManager::get()->Render()->getShaders()->shaderOGLImage;
     shaderOGLImage->renderTexture(openGLBuffers.foregroundTexture, 0, 0, widthWindow, heightWindow, 1, true, openGLBuffers.globalFBO);
     shaderOGLImage->renderTexture(openGLBuffers.globalTexture, 0, 0, widthWindow, heightWindow, 1, true, 0);
     shaderOGLImage->renderTexture(openGLBuffers.uiTexture, 0, 0, widthWindow, heightWindow, 1, true, 0);
@@ -366,7 +366,7 @@ void ComponentWindow::ClearOGLFrameBuffers() const
     }
 
     if (Config::get()->ENABLE_SHADOW_MAPPING) {
-        ComponentsManager::get()->getComponentRender()->getShaderOGLShadowPass()->clearDirectionalLightDepthTexture();
+        ComponentsManager::get()->Render()->getShaders()->shaderShadowPass->clearDirectionalLightDepthTexture();
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

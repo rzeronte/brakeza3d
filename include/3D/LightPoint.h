@@ -21,7 +21,7 @@ public:
     void setConstant(float value);
     void setLinear(float value);
     void setCuadratic(float value);
-    TypeObject getTypeObject() const override;
+    ObjectType getTypeObject() const override;
     GUIType::Sheet getIcon() override;
     void DrawPropertiesGUI() override;
     static LightPoint* create(Vertex3D position);

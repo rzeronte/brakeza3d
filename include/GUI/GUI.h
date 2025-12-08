@@ -20,23 +20,22 @@ namespace GUIType
         int y = -1;
     };
 
-    enum AddonObjectsViewerMode {
+    enum ViewerObjectsMode {
         LIST,
         TREE
     };
 
-    struct AddonAllowedObjects
+    struct ViewerObjectType
     {
         std::string label;
-        TypeObject type;
+        ObjectType type;
         Sheet icon;
         bool visible;
 
         void Toggle() { visible = !visible; }
-        [[nodiscard]] std::string id() const { return std::string("AddonAllowedObjects3D" + std::to_string((int)type)).c_str(); }
     };
 
-    struct FolderBrowserCache {
+    struct BrowserCache {
         std::string currentFolder;
         std::vector<std::string> folderFiles;
         std::vector<std::string> folderFolders;
@@ -300,7 +299,24 @@ namespace GUIType
     X(OBJECTS_VIEWER_LIST, 0, 0) \
     X(OBJECTS_VIEWER_TREE, 0, 0) \
     X(OBJECTS_VIEWER_CLEAR_FILTER, 0, 0) \
-    X(LAYOUTS_RESET_CURRENT, 0, 0)
+    X(LAYOUTS_RESET_CURRENT, 0, 0) \
+    X(PROJECT_SETUP_GLOBAL_SCRIPTS, 0, 0) \
+    X(PROJECT_SETUP_SCENE_SCRIPTS, 0, 0) \
+    X(PROJECT_SETUP_SCENE_SHADERS, 0, 0) \
+    X(SHADER_EDIT, 0, 0) \
+    X(SCRIPT_CREATE_VARIABLE, 0, 0) \
+    X(SHADER_CREATE_VARIABLE, 0, 0) \
+    X(SHADER_SAVE, 0, 0) \
+    X(SCRIPT_SAVE, 0, 0) \
+    X(WARNING, 0, 0) \
+    X(VIDEO_SHADER_GRID, 0, 0) \
+    X(TOOLBAR_GRID_BACKGROUND, 0, 0) \
+    X(SCRIPT_REMOVE_VARIABLE, 0, 0) \
+    X(SHADER_REMOVE_VARIABLE, 0, 0) \
+    X(SHADER_TYPE_MESH3D, 0, 0) \
+    X(SHADER_TYPE_POSTPROCESSING, 0, 0)
+
+
 // Icons Objects
 namespace IconObject {
     // Declaraciones (editables en runtime)
@@ -360,7 +376,7 @@ public:
     static void Toggle(bool &value);
     static void ImGuiSetColors();
     static void WelcomeMessage();
-    static GUIType::FolderBrowserCache CreateBrowserCache(std::string folder, const std::string &extension);
+    static GUIType::BrowserCache CreateBrowserCache(std::string folder, const std::string &extension);
 };
 
 #endif //BRAKEZA3D_GUI_H

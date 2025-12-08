@@ -15,7 +15,7 @@ public:
     static void DrawPropertiesGUI(ScriptLUA *o);
     static void LoadScriptDialog(GUIManager *gui, const std::string& filename);
     static void DrawScriptsBySelectedObject(GUIManager *gui);
-    static void DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::FolderBrowserCache &browser);
+    static void DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::BrowserCache &browser);
     static void DrawEditScriptWindow(GUIManager *gui);
     static void DrawObjectVariables(GUIManager *gui);
     static void DrawGlobalVariables(GUIManager *gui);

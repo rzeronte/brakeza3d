@@ -63,7 +63,7 @@ void Image2DAnimation::onUpdate()
         x - w/2,
         y - h/2,
         alpha/255,
-        ComponentsManager::get()->getComponentWindow()->getForegroundFramebuffer()
+        ComponentsManager::get()->Window()->getForegroundFramebuffer()
     );
 
     if (removeWhenEnds && animation->isEndAnimation()) {
@@ -82,9 +82,9 @@ void Image2DAnimation::updatePosition(int x, int y)
     this->y = y;
 }
 
-TypeObject Image2DAnimation::getTypeObject() const
+ObjectType Image2DAnimation::getTypeObject() const
 {
-    return TypeObject::Image2DAnimation;
+    return ObjectType::Image2DAnimation;
 }
 
 GUIType::Sheet Image2DAnimation::getIcon()

@@ -22,9 +22,9 @@ ShaderOGLTint::ShaderOGLTint()
 
 void ShaderOGLTint::render(Color c, float alpha, GLuint fbo)
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 

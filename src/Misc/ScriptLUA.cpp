@@ -43,7 +43,7 @@ void ScriptLUA::getCode(const std::string &script)
 void ScriptLUA::runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg) const
 {
     if (paused) return;
-    sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
+    sol::state &lua = ComponentsManager::get()->Scripting()->getLua();
 
     try {
         lua.script(content, environment);
@@ -65,22 +65,22 @@ void ScriptLUA::runEnvironment(sol::environment &environment, const std::string&
 
         if (!result.valid()) {
             sol::error err = result;
-            Logging::Message("[error] Error in LUA Script %s", scriptFilename.c_str());
-            Logging::Message("[error] Function: %s", func.c_str());
-            Logging::Message("[error] %s", err.what());
-            ComponentsManager::get()->getComponentScripting()->StopLUAScripts();
+            Logging::Error("[ScriptLUA] Error in LUA Script %s", scriptFilename.c_str());
+            Logging::Error("[ScriptLUA] Function: %s", func.c_str());
+            Logging::Error("[ScriptLUA] %s", err.what());
+            ComponentsManager::get()->Scripting()->StopLUAScripts();
         }
     } catch (const sol::error& e) {
-        Logging::Message("[error] Exception in LUA Script %s", scriptFilename.c_str());
-        Logging::Message("[error] %s", e.what());
-        ComponentsManager::get()->getComponentScripting()->StopLUAScripts();
+        Logging::Error("[ScriptLUA] Exception in LUA Script %s", scriptFilename.c_str());
+        Logging::Error("[ScriptLUA] %s", e.what());
+        ComponentsManager::get()->Scripting()->StopLUAScripts();
     }
 }
 
 void ScriptLUA::runGlobal(const std::string& func) const
 {
     if (paused) return;
-    sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
+    sol::state &lua = ComponentsManager::get()->Scripting()->getLua();
 
     try {
         lua.script(content);
@@ -90,14 +90,14 @@ void ScriptLUA::runGlobal(const std::string& func) const
 
         if (!result.valid()) {
             sol::error err = result;
-            Logging::Message("[error] Error in LUA Script %s", scriptFilename.c_str());
-            Logging::Message("[error] %s", scriptFilename.c_str(), err.what());
-            ComponentsManager::get()->getComponentScripting()->StopLUAScripts();
+            Logging::Error("[ScriptLUA] Error in LUA Script %s", scriptFilename.c_str());
+            Logging::Error("[ScriptLUA] %s", scriptFilename.c_str(), err.what());
+            ComponentsManager::get()->Scripting()->StopLUAScripts();
         }
     } catch (const sol::error& e) {
-        Logging::Message("[error] Error in LUA Script %s", scriptFilename.c_str());
-        Logging::Message("[error] %s", e.what());
-        ComponentsManager::get()->getComponentScripting()->StopLUAScripts();
+        Logging::Error("[ScriptLUA] Error in LUA Script %s", scriptFilename.c_str());
+        Logging::Error("[ScriptLUA] %s", e.what());
+        ComponentsManager::get()->Scripting()->StopLUAScripts();
     }
 }
 
@@ -105,20 +105,20 @@ void ScriptLUA::addDataTypeEmpty(const char *name, const char *type)
 {
     LUADataValue LUAValue;
 
-    switch (Config::get()->LUADataTypesMapping[type]) {
-        case Config::LUADataType::INT: {
+    switch (LUADataTypesMapping[type].type) {
+        case LUADataType::INT: {
             LUAValue = 0;
             break;
         }
-        case Config::LUADataType::FLOAT: {
+        case LUADataType::FLOAT: {
             LUAValue = 0.0f;
             break;
         }
-        case Config::LUADataType::STRING: {
+        case LUADataType::STRING: {
             LUAValue = "";
             break;
         }
-        case Config::LUADataType::VERTEX3D: {
+        case LUADataType::VERTEX3D: {
             LUAValue = Vertex3D();
             break;
         }
@@ -134,20 +134,20 @@ void ScriptLUA::addDataType(const char *name, const char *type, cJSON *value)
 {
     LUADataValue LUAValue;
 
-    switch (Config::get()->LUADataTypesMapping[type]) {
-        case Config::LUADataType::INT: {
+    switch (LUADataTypesMapping[type].type) {
+        case LUADataType::INT: {
             LUAValue = value->valueint;
             break;
         }
-        case Config::LUADataType::FLOAT: {
+        case LUADataType::FLOAT: {
             LUAValue = static_cast<float>(value->valuedouble);
             break;
         }
-        case Config::LUADataType::STRING: {
+        case LUADataType::STRING: {
             LUAValue = value->valuestring;
             break;
         }
-        case Config::LUADataType::VERTEX3D: {
+        case LUADataType::VERTEX3D: {
             LUAValue = ToolsJSON::getVertex3DByJSON(value);
             break;
         }
@@ -174,7 +174,7 @@ void ScriptLUA::reloadGlobals() const
 {
     Logging::Message("Reloading LUA Global Environment (%s)", this->fileTypes.c_str());
 
-    sol::state &lua = ComponentsManager::get()->getComponentScripting()->getLua();
+    sol::state &lua = ComponentsManager::get()->Scripting()->getLua();
     for (const auto& type : dataTypes) {
         std::cout << "Setting GLOBAL variable for script '(" << scriptFilename.c_str() << ", " << type.name.c_str() << ", " << type.type.c_str() << ")"<< std::endl;
         Logging::Message("Setting GLOBAL variable for script '%s' (Name: '%s', Type: '%s', Value: '%s')", scriptFilename.c_str(), type.name.c_str(), type.type.c_str(), ScriptLUATypeData::toString(type.value).c_str());
@@ -200,6 +200,7 @@ void ScriptLUA::parseTypesFromFileAttributes()
     auto contentFile = Tools::ReadFile(fileTypes, file_size);
     Logging::Message("[ScriptLUA] Parsing attributes from: '%s'", fileTypes.c_str());
 
+    setName(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "name")->valuestring);
     setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
 }
 
@@ -234,6 +235,16 @@ std::string ScriptLUA::removeFilenameExtension(std::string& filename)
     }
 
     return filename;
+}
+
+std::string ScriptLUA::getName() const
+{
+    return name;
+}
+
+void ScriptLUA::setName(const std::string &value)
+{
+    name = value;
 }
 
 void ScriptLUA::removeDataType(const ScriptLUATypeData& data)
@@ -307,7 +318,7 @@ const std::vector<ScriptLUATypeData> &ScriptLUA::getDataTypes() const
 cJSON *ScriptLUA::getTypesJSON() const
 {
     cJSON *scriptJSON = cJSON_CreateObject();
-    cJSON_AddStringToObject(scriptJSON, "name", getScriptFilename().c_str());
+    cJSON_AddStringToObject(scriptJSON, "name", getName().c_str());
 
     cJSON *typesArray = cJSON_CreateArray();
     for (auto dataType : getDataTypes()) {
@@ -316,23 +327,23 @@ cJSON *ScriptLUA::getTypesJSON() const
         cJSON_AddStringToObject(typeJSON, "type", dataType.type.c_str());
 
         std::string name = dataType.name + "("+ dataType.type +")";
-        switch (Config::get()->LUADataTypesMapping[dataType.type]) {
-            case Config::LUADataType::INT: {
+        switch (LUADataTypesMapping[dataType.type].type) {
+            case LUADataType::INT: {
                 int valueInt = std::get<int>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueInt);
                 break;
             }
-            case Config::LUADataType::STRING: {
+            case LUADataType::STRING: {
                 std::string valueString = std::get<const char *>(dataType.value);
                 cJSON_AddStringToObject(typeJSON, "value", valueString.c_str());
                 break;
             }
-            case Config::LUADataType::FLOAT: {
+            case LUADataType::FLOAT: {
                 float valueFloat = std::get<float>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueFloat);
                 break;
             }
-            case Config::LUADataType::VERTEX3D: {
+            case LUADataType::VERTEX3D: {
                 auto valueVertex = std::get<Vertex3D>(dataType.value);
                 cJSON_AddItemToObject(typeJSON, "value", ToolsJSON::Vertex3DToJSON(valueVertex));
 

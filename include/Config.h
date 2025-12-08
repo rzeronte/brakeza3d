@@ -90,6 +90,7 @@ public:
     bool ENABLE_LOGGING_STD = true;
     bool ENABLE_IMGUI = true;
     bool ENABLE_IMGUI_TOOLBAR = true;
+    bool ENABLE_GRID_BACKGROUND = true;
 
     // Render options
     bool LIMIT_FRAMERATE = false;
@@ -190,20 +191,6 @@ public:
         LUA_STOP = 0,
         LUA_PLAY = 1,
     } LuaStateScripts;
-
-    enum class LUADataType {
-        INT,
-        FLOAT,
-        VERTEX3D,
-        STRING
-    };
-
-    std::map<std::string, LUADataType> LUADataTypesMapping = {
-        {"int", LUADataType::INT},
-        {"float", LUADataType::FLOAT},
-        {"string", LUADataType::STRING},
-        {"Vertex3D", LUADataType::VERTEX3D},
-    };
 
     enum collisionGroups {
         Player = 1,

@@ -26,30 +26,13 @@
 #include "../OpenGL/ShaderOGLTint.h"
 #include "../OpenGL/ShaderOGLLine3D.h"
 #include "../OpenGL/ShaderOGLBonesTransforms.h"
+#include "../OpenGL/ShaderOGLGrid.h"
 #include "../OpenGL/ShaderOGLRenderDeferred.h"
 #include "../OpenGL/ShaderOGLLightPass.h"
 #include "../OpenGL/ShaderOGLShadowPass.h"
 #include "../OpenGL/ShaderOGLShadowPassDebugLight.h"
 
-class ComponentRender : public Component
-{
-
-    int fps = 0;
-    int fpsFrameCounter = 0;
-    float frameTime = 0.f;
-
-    bool sceneShadersEnabled = false;
-    GLuint lastFrameBufferUsed = 0;
-    GLuint lastProgramUsed = 0;
-
-    Object3D *selectedObject = nullptr;
-
-    TextWriter *textWriter = nullptr;
-    SceneLoader sceneLoader;
-    ProjectLoader projectLoader;
-
-    std::vector<ShaderOGLCustom*> sceneShaders;
-
+struct Shaders {
     ShaderOGLRenderForward *shaderOGLRender = nullptr;
     ShaderOGLImage *shaderOGLImage = nullptr;
     ShaderOGLLine *shaderOGLLine = nullptr;
@@ -69,56 +52,47 @@ class ComponentRender : public Component
     ShaderOGLLightPass *shaderOGLLightPass = nullptr;
     ShaderOGLShadowPass *shaderShadowPass = nullptr;
     ShaderOGLShadowPassDebugLight *shaderShadowPassDebugLight = nullptr;
+    ShaderOGLGrid *shaderOGLGrid = nullptr;
+};
 
-    std::map<std::string, ShaderCustomTypes> ShaderTypesMapping = {
+class ComponentRender : public Component
+{
+    int fps = 0;
+    int fpsFrameCounter = 0;
+    float frameTime = 0.f;
+
+    bool sceneShadersEnabled = false;
+    GLuint lastFrameBufferUsed = 0;
+    GLuint lastProgramUsed = 0;
+
+    Object3D *selectedObject = nullptr;
+
+    TextWriter *textWriter = nullptr;
+    SceneLoader sceneLoader;
+    ProjectLoader projectLoader;
+
+
+    std::map<std::string, ShaderCustomType> ShaderTypesMapping = {
         {"Postprocessing", SHADER_POSTPROCESSING},
         {"Mesh3D", SHADER_OBJECT},
     };
 
+    std::vector<ShaderOGLCustom*> sceneShaders;
+
+    Shaders shaders;
+
 public:
-    ComponentRender();
+    ComponentRender() = default;
     ~ComponentRender() override;
 
     void onStart() override;
     void preUpdate() override;
-
     void DrawFPS() const;
-
     void onUpdate() override;
     void postUpdate() override;
     void onEnd() override;
+    void RegisterShaders();
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
-
-    [[nodiscard]] ShaderOGLLine3D *getShaderOGLLine3D() const;
-    [[nodiscard]] ShaderOGLImage *getShaderOGLImage() const;
-    [[nodiscard]] ShaderOGLRenderForward *getShaderOGLRenderForward() const;
-    [[nodiscard]] ShaderOGLLine *getShaderOGLLine() const;
-    [[nodiscard]] ShaderOGLWire *getShaderOGLWireframe() const;
-    [[nodiscard]] ShaderOGLShading *getShaderOGLShading() const;
-    [[nodiscard]] ShaderOGLPoints *getShaderOGLPoints() const;
-    [[nodiscard]] ShaderOGLOutline *getShaderOGLOutline() const;
-    [[nodiscard]] ShaderOGLColor *getShaderOGLColor() const;
-    [[nodiscard]] ShaderOGLParticles *getShaderOGLParticles() const;
-    [[nodiscard]] ShaderOGLDOF *getShaderOGLDOF() const;
-    [[nodiscard]] ShaderOGLFog *getShaderOGLFOG() const;
-    [[nodiscard]] ShaderOGLTint *getShaderOGLTint() const;
-    [[nodiscard]] ShaderOGLBonesTransforms *getShaderOGLBonesTransforms() const;
-    [[nodiscard]] ShaderOGLShadowPass *getShaderOGLShadowPass() const;
-    [[nodiscard]] ShaderOGLShadowPassDebugLight *getShaderOGLShadowPassDebugLight() const;
-    [[nodiscard]] ShaderOGLDepthMap *getShaderOGLDepthMap() const;
-    [[nodiscard]] ShaderOGLRenderDeferred *getShaderOGLRenderDeferred() const;
-    [[nodiscard]] ShaderOGLLightPass *getShaderOGLLightPass() const;
-    [[nodiscard]] GLuint getLastFrameBufferUsed() const;
-    [[nodiscard]] Object3D* getSelectedObject() const;
-    [[nodiscard]] bool isSceneShadersEnabled() const;
-    [[nodiscard]] int getFps() const;
-    [[nodiscard]] GLuint getLastProgramUsed() const;
-    [[nodiscard]] const std::map<std::string, ShaderCustomTypes> &getShaderTypesMapping() const;
-    SceneLoader &getSceneLoader();
-    ProjectLoader &getProjectLoader();
-    std::vector<ShaderOGLCustom *> &getSceneShaders();
-    ShaderOGLCustom *getSceneShaderByIndex(int i) const;
-    ShaderOGLCustom *getSceneShaderByLabel(const std::string& name) const;
     void setSelectedObject(Object3D *o);
     void updateFPS();
     void updateSelectedObject3D();
@@ -141,6 +115,21 @@ public:
     void resizeShadersFramebuffers() const;
     void ClearShadowMaps() const;
     void RenderLayersToGlobalFramebuffer() const;
+    SceneLoader &getSceneLoader();
+    ProjectLoader &getProjectLoader();
+    std::vector<ShaderOGLCustom *> &getSceneShaders();
+    [[nodiscard]] Shaders *getShaders() { return &shaders;}
+    [[nodiscard]] ShaderOGLCustom *getSceneShaderByIndex(int i) const;
+    [[nodiscard]] ShaderOGLCustom *getSceneShaderByLabel(const std::string& name) const;
+    [[nodiscard]] bool isSceneShadersEnabled() const;
+    [[nodiscard]] int getFps() const;
+    [[nodiscard]] ShaderOGLDepthMap *getShaderOGLDepthMap() const;
+    [[nodiscard]] ShaderOGLRenderDeferred *getShaderOGLRenderDeferred() const;
+    [[nodiscard]] ShaderOGLLightPass *getShaderOGLLightPass() const;
+    [[nodiscard]] GLuint getLastFrameBufferUsed() const;
+    [[nodiscard]] Object3D* getSelectedObject() const;
+    [[nodiscard]] GLuint getLastProgramUsed() const;
+    [[nodiscard]] const std::map<std::string, ShaderCustomType> &getShaderTypesMapping() const;
     static bool compareDistances(const Object3D *obj1, const Object3D *obj2);
     static void FillOGLBuffers(std::vector<Mesh3DData> &meshes);
     static ShaderOGLCustom* getLoadedShader(const std::string &folder, const std::string &jsonFilename);

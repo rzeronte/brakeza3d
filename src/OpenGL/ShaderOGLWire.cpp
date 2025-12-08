@@ -41,14 +41,14 @@ void ShaderOGLWire::render(
     GLuint fbo
 ) const
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(fbo);
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
+    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
 
     glDisable(GL_BLEND);
     glLineWidth(1.0f);
-    auto camera = ComponentsManager::get()->getComponentCamera();
+    auto camera = ComponentsManager::get()->Camera();
     glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
     glm::mat4 ProjectionMatrix = camera->getGLMMat4ProjectionMatrix();
 

@@ -23,7 +23,7 @@ void Drawable::drawVertex(const Vertex3D &V, Color color)
 
 void Drawable::drawVector3D(const Vector3D &V, const Color &color)
 {
-    ComponentsManager::get()->getComponentRender()->drawLine(V.vertex1,V.vertex2, color);
+    ComponentsManager::get()->Render()->drawLine(V.vertex1,V.vertex2, color);
 }
 
 void Drawable::drawMainAxisOffset(const Vertex3D &offset)
@@ -139,8 +139,8 @@ void Drawable::drawAABB(AABB3D *aabb, const Color &color)
     vectors.emplace_back(aabb->vertices[7], aabb->vertices[4]);
     vectors.emplace_back(aabb->vertices[7], aabb->vertices[1]);
 
-    auto window = ComponentsManager::get()->getComponentWindow();
-    ComponentsManager::get()->getComponentRender()->getShaderOGLLine3D()->renderLines(vectors, window->getForegroundFramebuffer(),color);
+    auto window = ComponentsManager::get()->Window();
+    ComponentsManager::get()->Render()->getShaders()->shaderOGLLine3D->renderLines(vectors, window->getForegroundFramebuffer(),color);
 }
 
 void Drawable::drawOctreeNode(OctreeNode &node)
@@ -206,9 +206,9 @@ void Drawable::drawObject3DGizmo(
     glm::mat4 projectionMatrix
 ) {
     ImGuiIO& io = ImGui::GetIO();
-    auto currentOperation  = ComponentsManager::get()->getComponentWindow()->getGuiZmoOperation();
+    auto currentOperation  = ComponentsManager::get()->Window()->getGuiZmoOperation();
 
-    if (!ComponentsManager::get()->getComponentWindow()->isWindowMaximized()) {
+    if (!ComponentsManager::get()->Window()->isWindowMaximized()) {
         ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
     } else {
         ImGuizmo::SetRect(

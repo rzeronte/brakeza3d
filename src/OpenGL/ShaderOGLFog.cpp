@@ -21,7 +21,6 @@ ShaderOGLFog::ShaderOGLFog()
     intensity(1.0f)
 {
     createFramebuffer();
-
     setupQuadUniforms(programID);
 
     fogMaxDistUniform = glGetUniformLocation(programID, "fogMaxDist");
@@ -37,17 +36,17 @@ ShaderOGLFog::ShaderOGLFog()
 
 void ShaderOGLFog::render(GLuint sceneTexture, GLuint depthTexture)
 {
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(resultFramebuffer);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    ComponentsManager::get()->getComponentRender()->changeOpenGLProgram(programID);
+    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 
     glUniform1f(fogMaxDistUniform, fogMaxDist);
     glUniform1f(fogMinDistUniform, fogMinDist);
     glUniform1f(intensityUniform, intensity);
-    glUniform1f(farPlaneUniform, ComponentsManager::get()->getComponentRender()->getShaderOGLDOF()->farPlane);
+    glUniform1f(farPlaneUniform, ComponentsManager::get()->Render()->getShaders()->shaderOGLDOFBlur->farPlane);
     glUniform3fv(fogColourUniform, 1, &fogColor.toGLM()[0]);
 
     setTextureUniform(sceneTextureUniform, sceneTexture, 0);
@@ -73,9 +72,9 @@ void ShaderOGLFog::destroy()
 void ShaderOGLFog::createFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
-    ComponentsManager::get()->getComponentRender()->changeOpenGLFramebuffer(resultFramebuffer);
+    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
 
-    auto window = ComponentsManager::get()->getComponentWindow();
+    auto window = ComponentsManager::get()->Window();
     int w = window->getWidth();
     int h = window->getHeight();
 

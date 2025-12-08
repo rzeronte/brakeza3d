@@ -118,11 +118,17 @@ void GuiAddonConsole::Draw()
             // (e.g. make Items[] an array of structure, store color/type etc.)
             ImVec4 color;
             bool has_color = false;
-            if (strstr(item, "[error]")) { color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); has_color = true; }
-            else if (strncmp(item, "# ", 2) == 0) { color = ImVec4(1.0f, 0.8f, 0.6f, 1.0f); has_color = true; }
-            if (has_color)
+            if (strstr(item, "[Error]")) {
+                color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); has_color = true;
+            } else if (strncmp(item, "# ", 2) == 0) {
+                color = ImVec4(1.0f, 0.8f, 0.6f, 1.0f); has_color = true;
+            }
+            if (has_color) {
                 ImGui::PushStyleColor(ImGuiCol_Text, color);
-            ImGui::Image(FileSystemGUI::Icon(LogIcon), GUIType::Sizes::ICONS_LOG);
+                ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_MSG_ERROR), GUIType::Sizes::ICONS_LOG);
+            } else {
+                ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_MSG_OK), GUIType::Sizes::ICONS_LOG);
+            }
             ImGui::SameLine();
             ImGui::TextUnformatted(item);
             if (has_color)

@@ -49,25 +49,39 @@ void ShadersGUI::DrawEditShaderWindow(GUIManager *gui)
 void ShadersGUI::DrawShaderVariables(GUIManager *gui)
 {
     auto type = gui->shaderEditableManager.shader->getType();
-    auto typeName = gui->shaderEditableManager.shader->getShaderTypeString(type);
+    auto label = gui->shaderEditableManager.shader->getLabel();
+    auto typeName = ShaderOGLCustom::getShaderTypeString(type);
 
-    ImGui::SeparatorText((gui->shaderEditableManager.shader->getLabel() + ": " + typeName).c_str());
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICONS_BROWSERS);
+    ImGui::SameLine();
+    ImGui::Text(std::string("File: " + gui->shaderEditableManager.shader->getLabel()).c_str());
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_TYPE_MESH3D), GUIType::Sizes::ICONS_BROWSERS);
+    ImGui::SameLine();
+    ImGui::Text(std::string("Type: " + typeName).c_str());
 
+    ImGui::SeparatorText("Shader information");
     static char name[256];
-    strncpy(name, gui->currentVariableToAddName.c_str(), sizeof(name));
+    strncpy(name, label.c_str(), sizeof(name));
+    if (ImGui::InputText("Name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+        gui->shaderEditableManager.shader->setLabel(name);
+    }
 
-    if (ImGui::InputText("Variable name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-        gui->currentVariableToAddName = name;
+    ImGui::SeparatorText("Variables");
+    static char varName[256];
+    strncpy(varName, gui->currentVariableToAddName.c_str(), sizeof(varName));
+    if (ImGui::InputText("Variable name##", varName, IM_ARRAYSIZE(varName), ImGuiInputTextFlags_AutoSelectAll)) {
+        gui->currentVariableToAddName = varName;
     }
 
     std::vector<std::string> items;
     for (auto t : GLSLTypeMapping) {
-        items.push_back(t.first);
+        items.push_back(t.second.label);
     }
 
+    // remove mesh3d variable options if postprocessing
     if (gui->shaderEditableManager.shader->getType() == SHADER_POSTPROCESSING) {
         items.erase(std::remove_if(items.begin(), items.end(), [](const std::string& item) {
-            auto typeEnum = GLSLTypeMapping[item];
+            auto typeEnum = GLSLTypeMapping[item].type;
             return typeEnum == ShaderOpenGLCustomDataType::DIFFUSE || typeEnum == ShaderOpenGLCustomDataType::SPECULAR;
         }), items.end());
     }
@@ -78,17 +92,26 @@ void ShadersGUI::DrawShaderVariables(GUIManager *gui)
     static int selectedItem = 0;
     ImGui::Combo("Type##1", &selectedItem, itemsCStr.data(), itemsCStr.size());
     ImGui::SameLine();
-    if (ImGui::Button(std::string("Create variable").c_str())) {
-        if (!gui->currentVariableToAddName.empty()) {
-            gui->shaderEditableManager.shader->addDataTypeEmpty(gui->currentVariableToAddName.c_str(), itemsCStr[selectedItem]);
+    GUI::DrawButton(
+        "Create variable",
+        IconGUI::SHADER_CREATE_VARIABLE,
+        GUIType::Sizes::ICONS_BROWSERS,
+        false,
+        [&] {
+            if (!gui->currentVariableToAddName.empty()) {
+                gui->shaderEditableManager.shader->AddDataTypeEmpty(gui->currentVariableToAddName.c_str(), itemsCStr[selectedItem]);
+            }
         }
-    }
-
-    ImGui::SeparatorText("Variables");
-
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
+    );
+    ImGui::Separator();
+    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
     auto types = gui->shaderEditableManager.shader->getDataTypes();
     if (ImGui::BeginTable("ScriptProperties", 3, flags)) {
+        // Configurar columnas
+        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+
         for (int i = 0; i < types.size(); i++) {
             ImGui::PushID(i);
             ImGui::TableNextRow();
@@ -103,7 +126,7 @@ void ShadersGUI::DrawShaderVariables(GUIManager *gui)
             ImGui::Text("%s", dataType->type.c_str());
 
             ImGui::TableSetColumnIndex(2);
-            GUI::DrawButton("Remove shader variable", IconGUI::REMOVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+            GUI::DrawButton("Remove shader variable", IconGUI::SHADER_REMOVE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 gui->shaderEditableManager.shader->removeDataType(*dataType);
             });
             ImGui::PopID();
@@ -112,22 +135,24 @@ void ShadersGUI::DrawShaderVariables(GUIManager *gui)
     }
 
     if (types.empty()) {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
+        ImGui::SameLine();
         ImGui::Text("No types defined");
         ImGui::Spacing();
     }
 
-    if (ImGui::Button(std::string("Save shader types").c_str())) {
-        gui->shaderEditableManager.shader->updateFileTypes();
-    }
+    GUI::DrawButton("Save shader", IconGUI::SHADER_SAVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        gui->shaderEditableManager.shader->UpdateFileTypes();
+    });
 }
 
-void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, GUIType::FolderBrowserCache &browser)
+void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, GUIType::BrowserCache &browser)
 {
     auto windowStatus = gui->getWindowStatus(GUIType::FILES_SHADERS);
     if (!windowStatus->isOpen) return;
 
     std::vector<const char*> items;
-    for (const auto& pair : ComponentsManager::get()->getComponentRender()->getShaderTypesMapping()) {
+    for (const auto& pair : ComponentsManager::get()->Render()->getShaderTypesMapping()) {
         items.push_back(pair.first.c_str());
     }
     static int item_current_idx = 0;
@@ -157,8 +182,13 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, GUIType::FolderBrowser
     ImGui::Separator();
 
     auto files = browser.folderFiles;
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
+    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("ScriptsFolderTable", 3, flags)) {
+        // Configurar columnas
+        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Load", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Delete", ImGuiTableColumnFlags_WidthFixed);
+
         for (int i = 0; i < files.size(); i++) {
             ImGui::PushID(i);
             auto file = files[i];
@@ -185,7 +215,7 @@ void ShadersGUI::DrawCustomShadersFolder(GUIManager *gui, GUIType::FolderBrowser
             }
             ImGui::TableSetColumnIndex(1);
             GUI::DrawButtonTransparent("Load shader into scene", IconGUI::SHADER_LOAD, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-                ComponentsManager::get()->getComponentRender()->loadShaderIntoScene(browser.currentFolder, file);
+                ComponentsManager::get()->Render()->loadShaderIntoScene(browser.currentFolder, file);
             });
             ImGui::TableSetColumnIndex(2);
             GUI::DrawButtonConfirm("Deleting shader", "Are you sure to delete shader?", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
@@ -227,28 +257,26 @@ void ShadersGUI::DrawShadersBySelectedObject(GUIManager *gui)
 
         auto s = customShaders[i];
 
-        GUI::DrawButton("Load shader in object", IconGUI::SHADER_LOAD, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        GUI::DrawButtonTransparent(
+            !s->isEnabled() ? "Unlock shader object" : "Lock shader object",
+            !s->isEnabled() ? IconGUI::SHADER_LOCK : IconGUI::SHADER_UNLOCK,
+            GUIType::Sizes::ICONS_BROWSERS,
+            false,
+            [&] { s->setEnabled(!s->isEnabled()); }
+        );
+        ImGui::SameLine();
+        GUI::DrawButton("Reload shader in object", IconGUI::SHADER_RELOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+            s->Reload();
+        });
+        ImGui::SameLine();
+        GUI::DrawButton("Edit shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
             auto folder = s->getFolder();
             auto jsonFilename = s->getLabel() + ".json";
             LoadShaderDialog(gui, folder, jsonFilename);
         });
         ImGui::SameLine();
-        if (!s->isEnabled()) {
-            GUI::DrawButton("Unlock shader in object", IconGUI::SHADER_UNLOCK, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-                s->setEnabled(true);
-            });
-        } else {
-            GUI::DrawButton("Lock shader in object", IconGUI::SHADER_LOCK, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                s->setEnabled(false);
-            });
-        }
-        ImGui::SameLine();
-        GUI::DrawButton("Reload shader in object", IconGUI::SHADER_RELOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            s->reload();
-        });
-        ImGui::SameLine();
-        GUI::DrawButton("Remove shader in object", IconGUI::REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            mesh->removeShader(i);
+        GUI::DrawButton("Remove shader in object", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+            mesh->RemoveShader(i);
         });
         ImGui::SameLine();
         if (ImGui::CollapsingHeader(s->getLabel().c_str())) {
@@ -261,7 +289,7 @@ void ShadersGUI::DrawShadersBySelectedObject(GUIManager *gui)
 
 void ShadersGUI::LoadShaderDialog(GUIManager *gui, const std::string &folder, const std::string &file)
 {
-    auto shader = ComponentsManager::get()->getComponentRender()->getLoadedShader(folder, file);
+    auto shader = ComponentsManager::get()->Render()->getLoadedShader(folder, file);
     delete gui->shaderEditableManager.shader;
     gui->shaderEditableManager.shader = shader;
     gui->shaderEditableManager.loaded = true;

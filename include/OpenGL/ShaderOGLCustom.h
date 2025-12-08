@@ -17,7 +17,7 @@
 #include <sstream>
 #include <vector>
 
-enum ShaderCustomTypes {
+enum ShaderCustomType {
     SHADER_NONE = -1,
     SHADER_POSTPROCESSING = 0,
     SHADER_OBJECT = 1,
@@ -38,6 +38,11 @@ enum class ShaderOpenGLCustomDataType {
     DEPTH
 };
 
+struct ShaderTypeInfo {
+    ShaderOpenGLCustomDataType type;
+    std::string label;
+};
+
 typedef std::variant<int, float, glm::vec2, glm::vec3, glm::vec4, Image*> ShaderOpenGLCustomDataValue;
 
 struct ShaderOpenGLCustomType {
@@ -49,19 +54,19 @@ struct ShaderOpenGLCustomType {
     ShaderOpenGLCustomDataValue value;
 };
 
-static std::map<std::string, ShaderOpenGLCustomDataType> GLSLTypeMapping = {
-    {"int", ShaderOpenGLCustomDataType::INT},
-    {"float", ShaderOpenGLCustomDataType::FLOAT},
-    {"vec2", ShaderOpenGLCustomDataType::VEC2},
-    {"vec3", ShaderOpenGLCustomDataType::VEC3},
-    {"vec4", ShaderOpenGLCustomDataType::VEC4},
-    {"texture", ShaderOpenGLCustomDataType::TEXTURE2D},
-    {"diffuse", ShaderOpenGLCustomDataType::DIFFUSE},
-    {"specular", ShaderOpenGLCustomDataType::SPECULAR},
-    {"delta_time", ShaderOpenGLCustomDataType::DELTA_TIME},
-    {"execution_time", ShaderOpenGLCustomDataType::EXECUTION_TIME},
-    {"scene", ShaderOpenGLCustomDataType::SCENE},
-    {"depth", ShaderOpenGLCustomDataType::DEPTH}
+static std::map<std::string, ShaderTypeInfo> GLSLTypeMapping = {
+    {"int", {ShaderOpenGLCustomDataType::INT, "Integer" }},
+    {"float", {ShaderOpenGLCustomDataType::FLOAT, "Float" }},
+    {"vec2", {ShaderOpenGLCustomDataType::VEC2, "Vec2" }},
+    {"vec3", {ShaderOpenGLCustomDataType::VEC3, "Vec3" }},
+    {"vec4", {ShaderOpenGLCustomDataType::VEC4, "Vec4" }},
+    {"texture", {ShaderOpenGLCustomDataType::TEXTURE2D, "Texture"}},
+    {"diffuse", {ShaderOpenGLCustomDataType::DIFFUSE, "Diffuse Mesh3D texture (internal)" }},
+    {"specular", {ShaderOpenGLCustomDataType::SPECULAR, "Specular Mesh3D texture (internal)" }},
+    {"delta_time", {ShaderOpenGLCustomDataType::DELTA_TIME, "Delta time (internal)" }},
+    {"execution_time", {ShaderOpenGLCustomDataType::EXECUTION_TIME, "Execution time (internal)" }},
+    {"scene", {ShaderOpenGLCustomDataType::SCENE, "Scene texture (internal)" }},
+    {"depth", {ShaderOpenGLCustomDataType::DEPTH, "Depth texture (internal)" }}
 };
 
 class ShaderOGLCustom: public ShaderBaseOpenGL
@@ -73,7 +78,7 @@ class ShaderOGLCustom: public ShaderBaseOpenGL
 
     bool enabled = true;
 
-    ShaderCustomTypes type;
+    ShaderCustomType type;
     std::string fileTypes;
 
     std::vector<ShaderOpenGLCustomType> dataTypesDefaultValues;
@@ -87,7 +92,7 @@ protected:
         std::string label,
         const std::string &vertexFilename,
         const std::string &fragmentFilename,
-        ShaderCustomTypes type,
+        ShaderCustomType type,
         cJSON *types
     );
 
@@ -96,7 +101,7 @@ public:
         std::string label,
         const std::string &vertexFilename,
         const std::string &fragmentFilename,
-        ShaderCustomTypes type
+        ShaderCustomType type
     );
 
     virtual void render(GLuint fbo) = 0;
@@ -125,67 +130,37 @@ protected:
     void addDataType(const char *name, const char *type, cJSON *value);
 
 public:
-    [[nodiscard]] bool isEnabled() const;
-
     void setEnabled(bool value);
-
     void onUpdate() const;
     void postUpdate();
-
-    [[nodiscard]] const std::string &getLabel() const;
-    cJSON* getTypesJSON();
-
+    void setLabel(std::string value);
     void setDataTypesUniforms();
-
-    void updateFileTypes();
-
-    void addDataTypeEmpty(const char *name, const char *type);
-
+    void UpdateFileTypes();
+    void AddDataTypeEmpty(const char *name, const char *type);
     void removeDataType(const ShaderOpenGLCustomType &data);
-
     void setDataTypeValue(const std::string &name, const ShaderOpenGLCustomDataValue &newValue);
-
     void setDataTypeValue(const std::string &name, int newValue);
-
     void setDataTypeValue(const std::string &name, float newValue);
-
     void setDataTypeValue(const std::string &name, glm::vec2 newValue);
-
     void setDataTypeValue(const std::string &name, glm::vec3 newValue);
-
     void setDataTypeValue(const std::string &name, glm::vec4 newValue);
-
-    void resetNumberTextures();
-
-    void increaseNumberTextures();
-
-    [[nodiscard]] ShaderCustomTypes getType() const;
-
-    static ShaderCustomTypes getShaderTypeFromString(const std::string &shaderName);
-
-    static std::string getShaderTypeString(ShaderCustomTypes type);
-
-    static void createEmptyCustomShader(
-        const std::string& name,
-        const std::string& folder,
-        ShaderCustomTypes type
-    );
-
-    static void RemoveCustomShaderFiles(const std::string& folder, const std::string &name);
-
-    static ShaderCustomTypes extractTypeFromShaderName(const std::string& folder, const std::string &name);
-
+    void ResetNumberTextures();
+    void IncreaseNumberTextures();
     std::string getFolder();
-
+    cJSON* getTypesJSON();
+    [[nodiscard]] bool isEnabled() const;
     [[nodiscard]] const std::vector<ShaderOpenGLCustomType> &getDataTypes() const;
-
-    void reload();
-
-    void captureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const;
-
-    void readShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename);
-
-    void createFramebuffer();
+    [[nodiscard]] const std::string &getLabel() const;
+    [[nodiscard]] ShaderCustomType getType() const;
+    static ShaderCustomType getShaderTypeFromString(const std::string &shaderName);
+    static std::string getShaderTypeString(ShaderCustomType type);
+    static void createEmptyCustomShader(const std::string& name, const std::string& folder, ShaderCustomType type);
+    static void RemoveCustomShaderFiles(const std::string& folder, const std::string &name);
+    static ShaderCustomType extractTypeFromShaderName(const std::string& folder, const std::string &name);
+    void Reload();
+    void CaptureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const;
+    void ReadShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename);
+    void CreateFramebuffer();
 };
 
 

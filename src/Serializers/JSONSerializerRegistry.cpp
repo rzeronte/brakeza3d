@@ -35,7 +35,7 @@ Object3D* JSONSerializerRegistry::deserialize(cJSON* json)
 
     Logging::Message("[JSONSerializerRegistry deserialize] Deserializing object of type: %d", typeItem->valueint);
 
-    auto serializer = getSerializer((TypeObject) typeItem->valueint);
+    auto serializer = getSerializer((ObjectType) typeItem->valueint);
 
     if (!serializer) {
         Logging::Message("[JSONSerializerRegistry deserialize] No serializer for object: %d", typeItem->valueint);

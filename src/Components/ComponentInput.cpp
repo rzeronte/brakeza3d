@@ -69,7 +69,7 @@ void ComponentInput::handleMouse(SDL_Event *event)
 
     if (mouseMotion && isRightMouseButtonPressed()) {
         if (event->type == SDL_MOUSEMOTION) {
-            auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+            auto camera = ComponentsManager::get()->Camera()->getCamera();
 
 
             camera->Yaw(-event->motion.xrel * Config::get()->MOUSE_SENSITIVITY);
@@ -85,9 +85,9 @@ void ComponentInput::handleMouse(SDL_Event *event)
 
     if (event->type == SDL_MOUSEWHEEL) {
         if (event->wheel.y > 0) {
-            ComponentsManager::get()->getComponentCamera()->getCamera()->MoveForward(-Config::get()->WALKING_SPEED * 5);
+            ComponentsManager::get()->Camera()->getCamera()->MoveForward(-Config::get()->WALKING_SPEED * 5);
         } else if (event->wheel.y < 0) {
-            ComponentsManager::get()->getComponentCamera()->getCamera()->MoveBackward(-Config::get()->WALKING_SPEED * 5);
+            ComponentsManager::get()->Camera()->getCamera()->MoveBackward(-Config::get()->WALKING_SPEED * 5);
         }
     }
 
@@ -107,7 +107,7 @@ void ComponentInput::handleKeyboardMovingCamera()
         return;
     }
 
-    auto camera = ComponentsManager::get()->getComponentCamera()->getCamera();
+    auto camera = ComponentsManager::get()->Camera()->getCamera();
     bool isShiftPressed = keyboard[SDL_SCANCODE_LSHIFT] || keyboard[SDL_SCANCODE_RSHIFT];
 
     if (keyboard[SDL_SCANCODE_UP]) {
@@ -181,7 +181,7 @@ bool ComponentInput::isRightMouseButtonPressed() const
 
 void ComponentInput::resetMouseMapping()
 {
-    auto window = ComponentsManager::get()->getComponentWindow();
+    auto window = ComponentsManager::get()->Window();
 
     mouseLeftButton = false;
     mouseRightButton = false;
@@ -358,7 +358,7 @@ float ComponentInput::getControllerAxisRightY() const
 void ComponentInput::handleToggleKeys(SDL_Event *event)
 {
     if (event->type == SDL_KEYDOWN) {
-        auto scripting = ComponentsManager::get()->getComponentScripting();
+        auto scripting = ComponentsManager::get()->Scripting();
 
         if (keyboard[SDL_SCANCODE_F1]) {
             if (scripting->getStateLUAScripts() == Config::LuaStateScripts::LUA_STOP) {
@@ -377,7 +377,7 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
             Config::get()->ENABLE_IMGUI = !Config::get()->ENABLE_IMGUI;
         }
 
-        auto *window = ComponentsManager::get()->getComponentWindow();
+        auto *window = ComponentsManager::get()->Window();
 
         if (keyboard[SDL_SCANCODE_F5]) {
             window->setImGuiConfig(Config::ImGUIConfigs::DEFAULT);
@@ -391,7 +391,7 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
 
         if (keyboard[SDL_SCANCODE_F11]) {
             Config::get()->FULLSCREEN = !Config::get()->FULLSCREEN;
-            ComponentsManager::get()->getComponentWindow()->toggleFullScreen();
+            ComponentsManager::get()->Window()->toggleFullScreen();
         }
     }
 }
@@ -493,9 +493,9 @@ void ComponentInput::handleDeleteSelectedObject(SDL_Event *e)
 {
     if (e->type == SDL_KEYDOWN) {
         if (keyboard[SDL_SCANCODE_DELETE]) {
-            auto o = ComponentsManager::get()->getComponentRender()->getSelectedObject();
+            auto o = ComponentsManager::get()->Render()->getSelectedObject();
             o->setRemoved(true);
-            ComponentsManager::get()->getComponentRender()->setSelectedObject(nullptr);
+            ComponentsManager::get()->Render()->setSelectedObject(nullptr);
         }
     }
 }

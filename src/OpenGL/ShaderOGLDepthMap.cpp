@@ -24,7 +24,7 @@ ShaderOGLDepthMap::ShaderOGLDepthMap()
 
 void ShaderOGLDepthMap::render(GLuint textureID, GLuint fbo)
 {
-    auto render = ComponentsManager::get()->getComponentRender();
+    auto render = ComponentsManager::get()->Render();
     render->changeOpenGLFramebuffer(fbo);
     render->changeOpenGLProgram(programID);
 

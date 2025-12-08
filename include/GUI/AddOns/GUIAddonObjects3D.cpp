@@ -76,7 +76,7 @@ void GUIAddonObjects3D::DrawObjectTypes(GUIManager *gui)
     ImGui::NewLine();
 }
 
-bool GUIAddonObjects3D::isObjectTypeVisible(GUIManager *gui, TypeObject typeObject)
+bool GUIAddonObjects3D::isObjectTypeVisible(GUIManager *gui, ObjectType typeObject)
 {
     for (auto& o : gui->visibleTypeObjects) {
         if (o.visible && o.type == typeObject ) {
@@ -107,12 +107,12 @@ void GUIAddonObjects3D::DrawSceneObjects(GUIManager *gui)
     auto &gameObjects = Brakeza::get()->getSceneObjects();
 
     auto type = gui->getObjectsViewerMode();
-    GUI::DrawButton("List mode", IconGUI::OBJECTS_VIEWER_LIST, GUIType::Sizes::ICON_SIZE_MENUS, type == GUIType::AddonObjectsViewerMode::LIST, [&] {
-        gui->setObjectsViewerMode(GUIType::AddonObjectsViewerMode::LIST);
+    GUI::DrawButton("List mode", IconGUI::OBJECTS_VIEWER_LIST, GUIType::Sizes::ICON_SIZE_MENUS, type == GUIType::ViewerObjectsMode::LIST, [&] {
+        gui->setObjectsViewerMode(GUIType::ViewerObjectsMode::LIST);
     });
     ImGui::SameLine();
-    GUI::DrawButton("Tree mode", IconGUI::OBJECTS_VIEWER_TREE, GUIType::Sizes::ICON_SIZE_MENUS, type == GUIType::AddonObjectsViewerMode::TREE, [&] {
-        gui->setObjectsViewerMode(GUIType::AddonObjectsViewerMode::TREE);
+    GUI::DrawButton("Tree mode", IconGUI::OBJECTS_VIEWER_TREE, GUIType::Sizes::ICON_SIZE_MENUS, type == GUIType::ViewerObjectsMode::TREE, [&] {
+        gui->setObjectsViewerMode(GUIType::ViewerObjectsMode::TREE);
     });
     ImGui::SameLine();
 
@@ -120,7 +120,7 @@ void GUIAddonObjects3D::DrawSceneObjects(GUIManager *gui)
     ImGui::SetNextItemWidth(150);
     ImGui::InputText("Filter", filterGUI, IM_ARRAYSIZE(filterGUI));
     ImGui::SameLine();
-    GUI::DrawButton("Clear filter", IconGUI::OBJECTS_VIEWER_CLEAR_FILTER, GUIType::Sizes::ICON_SIZE_MENUS, type == GUIType::AddonObjectsViewerMode::TREE, [&] {
+    GUI::DrawButton("Clear filter", IconGUI::OBJECTS_VIEWER_CLEAR_FILTER, GUIType::Sizes::ICON_SIZE_MENUS, type == GUIType::ViewerObjectsMode::TREE, [&] {
         filterGUI[0] = '\0';
     });
 
@@ -135,10 +135,10 @@ void GUIAddonObjects3D::DrawSceneObjects(GUIManager *gui)
     auto selectedObjectIndex = gui->selectedObjectIndexPointer();
 
     switch (type) {
-        case GUIType::AddonObjectsViewerMode::TREE:
+        case GUIType::ViewerObjectsMode::TREE:
             DrawObjectsTree(gui, gameObjects, selectedObjectIndex, filterGUI);
             break;
-        case GUIType::AddonObjectsViewerMode::LIST: {
+        case GUIType::ViewerObjectsMode::LIST: {
             DrawObjectList(gui, gameObjects, selectedObjectIndex, filterGUI);
             break;
         }
@@ -161,9 +161,14 @@ void GUIAddonObjects3D::DrawItem(int i, Object3D* o, const std::vector<Object3D 
         }
 
         ImGui::SetNextItemWidth(150.0f);
-        if (ImGui::Selectable(std::string("##select"+ std::to_string(i)).c_str(), selectedIndex == i)) {
+        if (ImGui::Selectable(std::string("##select"+ std::to_string(i)).c_str(), selectedIndex == i, ImGuiSelectableFlags_AllowDoubleClick)) {
             Brakeza::get()->GUI()->setSelectedObjectIndex(i);
-            ComponentsManager::get()->getComponentRender()->setSelectedObject(objects[i]);
+            ComponentsManager::get()->Render()->setSelectedObject(objects[i]);
+            if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+                if (!Brakeza::get()->GUI()->isWindowOpen(GUIType::OBJECT_PROPS)) {
+                    Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_PROPS)->isOpen = true;
+                }
+            }
         }
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 15.0f);

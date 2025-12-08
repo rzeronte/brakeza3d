@@ -53,7 +53,7 @@ void Mesh3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
     mesh->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(json, "model")->valuestring);
 
     if (cJSON_GetObjectItemCaseSensitive(json, "shaders") != nullptr) {
-        auto shaderTypesMapping = ComponentsManager::get()->getComponentRender()->getShaderTypesMapping();
+        auto shaderTypesMapping = ComponentsManager::get()->Render()->getShaderTypesMapping();
         cJSON *currentShaderJSON;
         cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {
             auto typeString = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
@@ -63,7 +63,7 @@ void Mesh3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
                     auto vertex = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vertexshader")->valuestring;
                     auto fragment = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;
                     auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
-                    mesh->addCustomShader(new ShaderOGLCustomMesh3D(mesh, name, vertex, fragment, types));
+                    mesh->AddCustomShader(new ShaderOGLCustomMesh3D(mesh, name, vertex, fragment, types));
                     break;
                 }
                 default: {
@@ -101,13 +101,13 @@ void Mesh3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
                     break;
                 case BODY:
                     if (shape == SIMPLE_SHAPE) {
-                        mesh->setupRigidBodyCollider(SIMPLE_SHAPE);
+                        mesh->SetupRigidBodyCollider(SIMPLE_SHAPE);
                     }
                     if (shape == CAPSULE) {
-                        mesh->setupRigidBodyCollider(CAPSULE);
+                        mesh->SetupRigidBodyCollider(CAPSULE);
                     }
                     if (shape == TRIANGLE_MESH_SHAPE) {
-                        mesh->setupRigidBodyCollider(TRIANGLE_MESH_SHAPE);
+                        mesh->SetupRigidBodyCollider(TRIANGLE_MESH_SHAPE);
                     }
                     break;
                 default: {
@@ -131,7 +131,7 @@ void Mesh3DSerializer::LoadFileIntoScene(const std::string& model)
 {
     auto *o = new Mesh3D();
 
-    o->setPosition(ComponentsManager::get()->getComponentCamera()->getCamera()->getPosition());
+    o->setPosition(ComponentsManager::get()->Camera()->getCamera()->getPosition());
     o->AssimpLoadGeometryFromFile(model);
 
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Mesh3D"));
