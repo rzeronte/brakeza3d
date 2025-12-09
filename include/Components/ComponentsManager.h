@@ -39,7 +39,7 @@ public:
     ComponentSound *Sound()             { return dynamic_cast<ComponentSound *>(components[COMPONENT_SOUND]); }
     ComponentScripting *Scripting()     { return dynamic_cast<ComponentScripting *>(components[COMPONENT_SCRIPTING]); }
 
-    [[nodiscard]] std::vector<Component *> Components() const {return components;}
+    [[nodiscard]] std::vector<Component *> Components() const { return components; }
 };
 
 #endif //BRAKEDA3D_COMPONENTSMANAGER_H

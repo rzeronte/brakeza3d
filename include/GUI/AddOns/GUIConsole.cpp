@@ -59,7 +59,7 @@ void GuiAddonConsole::AddLog(const char* fmt, ...)
     Items.push_back(Strdup(buf));
 }
 
-void GuiAddonConsole::Draw()
+void GuiAddonConsole::DrawWinLogging()
 {
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::LOGGING);
     if (!windowStatus->isOpen) return;

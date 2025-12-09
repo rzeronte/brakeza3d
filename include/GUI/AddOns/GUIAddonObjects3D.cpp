@@ -99,7 +99,7 @@ void GUIAddonObjects3D::DrawObjectList(GUIManager *gui, std::vector<Object3D *> 
     }
 }
 
-void GUIAddonObjects3D::DrawSceneObjects(GUIManager *gui)
+void GUIAddonObjects3D::DrawWinSceneObjects(GUIManager *gui)
 {
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::SCENE_OBJECTS);
     if (!windowStatus->isOpen) return;

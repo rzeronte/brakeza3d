@@ -16,7 +16,7 @@ public:
 
     static void DrawObjectsTree(GUIManager * gui, const std::vector<Object3D *> & objects, int selectedIndex, std::string filter = "");
     static void DrawObjectList(GUIManager *gui, std::vector<Object3D *> &objects, int selectedObjectIndex, std::string filter);
-    static void DrawSceneObjects(GUIManager *gui);
+    static void DrawWinSceneObjects(GUIManager *gui);
     static void DrawItem(int i, Object3D* o, const std::vector<Object3D *> &objects, int selectedIndex, bool icon);
     static void DrawObjectTypes(GUIManager *gui);
     static bool isObjectTypeVisible(GUIManager *gui, ObjectType typeObject);

@@ -3,7 +3,6 @@
 #define BRAKEZA3D_SHADERSGUI_H
 
 #include <string>
-
 #include "../GUI.h"
 
 class GUIManager;
@@ -12,10 +11,20 @@ class ShadersGUI
 {
 public:
     static void DrawEditShaderWindow(GUIManager *gui);
-    static void DrawShaderVariables(GUIManager *gui);
-    static void DrawCustomShadersFolder(GUIManager *gui, GUIType::BrowserCache &browser);
-    static void DrawShadersBySelectedObject(GUIManager *gui);
+    static void DrawWinShaderEdition(GUIManager *gui);
+
+    static void DrawSourceCodeEdit(GUIManager *gui);
+
+    static void DrawShaderHeader(GUIManager * gui);
+    static void DrawShaderConfiguration(GUIManager * gui);
+    static void DrawVariableCreator(GUIManager * gui);
+    static void DrawVariablesTable(GUIManager * gui);
+    static void DrawEmptyStateWarning(GUIManager * gui);
+    static void DrawSaveButton(GUIManager * gui);
+    static void DrawWinObjectShaders(GUIManager *gui);
     static void LoadShaderDialog(GUIManager *gui, const std::string &folder, const std::string &file);
+    static void DrawVariableRow(GUIManager *gui, const std::vector<ShaderOpenGLCustomType> &types, int index);
+    static std::vector<const char *> GetDataTypeItems(GUIManager *gui);
 };
 
 

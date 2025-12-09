@@ -12,7 +12,7 @@ GUIAddonObject3DProperties::GUIAddonObject3DProperties()
 {
 }
 
-void GUIAddonObject3DProperties::DrawPropertiesBySelectedObject(GUIManager *gui)
+void GUIAddonObject3DProperties::DrawWinObjectProps(GUIManager *gui)
 {
     auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_PROPS);
     if (!windowStatus->isOpen) return;

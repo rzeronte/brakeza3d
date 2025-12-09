@@ -41,23 +41,23 @@ GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
 
 void GUIManager::RegisterWindows()
 {
-    ADD_WIN("Project setup",           GUIType::PROJECT_SETTINGS, IconGUI::WIN_PROJECT_SETTINGS,     true,  GUIAddonProjectSetup::DrawProjectSetupGUI(this));
-    ADD_WIN("Scene Objects",           GUIType::SCENE_OBJECTS,    IconGUI::WIN_SCENE_OBJECTS,        true,  GUIAddonObjects3D::DrawSceneObjects(this));
-    ADD_WIN("Object Properties",       GUIType::OBJECT_PROPS,     IconGUI::WIN_OBJECT_PROPS,         true,  GUIAddonObject3DProperties::DrawPropertiesBySelectedObject(this));
-    ADD_WIN("Object shaders",          GUIType::OBJECT_SHADERS,   IconGUI::WIN_OBJECT_SHADERS,       false, ShadersGUI::DrawShadersBySelectedObject(this));
-    ADD_WIN("Object Scripts",          GUIType::OBJECT_SCRIPTS,   IconGUI::WIN_OBJECT_SCRIPTS,       false, ScriptLuaGUI::DrawScriptsBySelectedObject(this));
-    ADD_WIN("Object variables",        GUIType::OBJECT_VARS,      IconGUI::WIN_OBJECT_VARS,          false, ScriptLuaGUI::DrawObjectVariables(this));
-    ADD_WIN("Global variables",        GUIType::GLOBAL_VARS,      IconGUI::WIN_GLOBAL_VARS,          false, ScriptLuaGUI::DrawGlobalVariables(this));
-    ADD_WIN("Keyboard/Mouse",          GUIType::KEYBOARD_MOUSE,   IconGUI::WIN_KEYBOARD_MOUSE,       false, WindowKeyboardMouseSetup());
-    ADD_WIN("Images",                  GUIType::IMAGES,           IconGUI::WIN_IMAGES,               false, WindowImages());
+    ADD_WIN("Project setup",           GUIType::PROJECT_SETTINGS, IconGUI::WIN_PROJECT_SETTINGS,     true,  GUIAddonProjectSetup::DrawWinProjectSettings(this));
+    ADD_WIN("Scene Objects",           GUIType::SCENE_OBJECTS,    IconGUI::WIN_SCENE_OBJECTS,        true,  GUIAddonObjects3D::DrawWinSceneObjects(this));
+    ADD_WIN("Object Properties",       GUIType::OBJECT_PROPS,     IconGUI::WIN_OBJECT_PROPS,         true,  GUIAddonObject3DProperties::DrawWinObjectProps(this));
+    ADD_WIN("Object shaders",          GUIType::OBJECT_SHADERS,   IconGUI::WIN_OBJECT_SHADERS,       false, ShadersGUI::DrawWinObjectShaders(this));
+    ADD_WIN("Object Scripts",          GUIType::OBJECT_SCRIPTS,   IconGUI::WIN_OBJECT_SCRIPTS,       false, ScriptLuaGUI::DrawWinObjectScripts(this));
+    ADD_WIN("Object variables",        GUIType::OBJECT_VARS,      IconGUI::WIN_OBJECT_VARS,          false, ScriptLuaGUI::DrawWinObjectVars(this));
+    ADD_WIN("Global variables",        GUIType::GLOBAL_VARS,      IconGUI::WIN_GLOBAL_VARS,          false, ScriptLuaGUI::DrawWinGlobalVars(this));
+    ADD_WIN("Keyboard/Mouse",          GUIType::KEYBOARD_MOUSE,   IconGUI::WIN_KEYBOARD_MOUSE,       false, DrawWinKeyboardMouse());
+    ADD_WIN("Images",                  GUIType::IMAGES,           IconGUI::WIN_IMAGES,               false, DrawWinImages());
     ADD_WIN("Projects",                GUIType::FILES_PROJECTS,   IconGUI::WIN_FILES_PROJECTS,       true,  FileSystemGUI::DrawProjectFiles(this, browserProjects));
-    ADD_WIN("Scenes",                  GUIType::FILES_SCENES,     IconGUI::WIN_FILES_SCENES,         true,  FileSystemGUI::DrawScenesFolder(this, browserScenes));
-    ADD_WIN("Scripts",                 GUIType::FILES_SCRIPTS,    IconGUI::WIN_FILES_SCRIPTS,        true,  ScriptLuaGUI::DrawScriptsLuaFolderFiles(this, browserScripts));
-    ADD_WIN("Shaders",                 GUIType::FILES_SHADERS,    IconGUI::WIN_FILES_SHADERS,        true,  ShadersGUI::DrawCustomShadersFolder(this, browserShaders));
-    ADD_WIN("Logging/Console",         GUIType::LOGGING,          IconGUI::WIN_LOGGING,              true,  widgetConsole->Draw());
-    ADD_WIN("Lights DepthMaps",        GUIType::DEPTH_LIGHTS_MAPS,IconGUI::WIN_DEPTH_LIGHTS_MAPS,    false, WindowLightsDepthMapsViewer());
-    ADD_WIN("Profiler",                GUIType::PROFILER,         IconGUI::WIN_PROFILER,             false, Profiler::get()->DrawPropertiesGUI());
-    ADD_WIN("Debug GUI Icons",         GUIType::DEBUG_ICONS,      IconGUI::WIN_DEBUG_ICONS,          false, IconsGUI::DrawDebugIconsWindow(this));
+    ADD_WIN("Scenes",                  GUIType::FILES_SCENES,     IconGUI::WIN_FILES_SCENES,         true,  FileSystemGUI::DrawSceneFiles(this, browserScenes));
+    ADD_WIN("Scripts",                 GUIType::FILES_SCRIPTS,    IconGUI::WIN_FILES_SCRIPTS,        true,  FileSystemGUI::DrawScriptFiles(this, browserScripts));
+    ADD_WIN("Shaders",                 GUIType::FILES_SHADERS,    IconGUI::WIN_FILES_SHADERS,        true,  FileSystemGUI::DrawShaderFiles(this, browserShaders));
+    ADD_WIN("Logging/Console",         GUIType::LOGGING,          IconGUI::WIN_LOGGING,              true,  widgetConsole->DrawWinLogging());
+    ADD_WIN("Lights DepthMaps",        GUIType::DEPTH_LIGHTS_MAPS,IconGUI::WIN_DEPTH_LIGHTS_MAPS,    false, DrawWinDepthLightsMap());
+    ADD_WIN("Profiler",                GUIType::PROFILER,         IconGUI::WIN_PROFILER,             false, Profiler::get()->DrawWinProfiler());
+    ADD_WIN("Debug GUI Icons",         GUIType::DEBUG_ICONS,      IconGUI::WIN_DEBUG_ICONS,          false, IconsGUI::DrawWinDebugIcons(this));
 
     RegisterDefaultLayoutWindows();
 }
@@ -170,7 +170,7 @@ void GUIManager::DrawGUI()
     ShadersGUI::DrawEditShaderWindow(this);
     ScriptLuaGUI::DrawEditScriptWindow(this);
     Mesh3DAnimationDrawerGUI::DrawEditBonesMappingWindow(this);
-    IconsGUI::DrawDebugIconsWindow(this);
+    IconsGUI::DrawWinDebugIcons(this);
     DrawRegisteredWindows();
     DrawSplashWindow();
 
@@ -254,7 +254,7 @@ void GUIManager::setSelectedObject(const Object3D *s)
     }
 }
 
-void GUIManager::WindowKeyboardMouseSetup()
+void GUIManager::DrawWinKeyboardMouse()
 {
     auto windowStatus = getWindowStatus(GUIType::KEYBOARD_MOUSE);
     if (!windowStatus->isOpen) return;
@@ -374,7 +374,7 @@ int& GUIManager::selectedObjectIndexPointer()
     return selectedObjectIndex;
 }
 
-void GUIManager::WindowImages()
+void GUIManager::DrawWinImages()
 {
     auto windowStatus = getWindowStatus(GUIType::IMAGES);
     if (!windowStatus->isOpen) return;
@@ -452,7 +452,7 @@ void GUIManager::OpenBoneInfoDialog()
 }
 
 
-void GUIManager::WindowLightsDepthMapsViewer()
+void GUIManager::DrawWinDepthLightsMap()
 {
     auto windowStatus = getWindowStatus(GUIType::DEPTH_LIGHTS_MAPS);
     if (!windowStatus->isOpen) return;

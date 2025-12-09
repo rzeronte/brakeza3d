@@ -12,7 +12,7 @@ GUIAddonProjectSetup::GUIAddonProjectSetup()
 {
 }
 
-void GUIAddonProjectSetup::DrawProjectSetupGUI(GUIManager *gui)
+void GUIAddonProjectSetup::DrawWinProjectSettings(GUIManager *gui)
 {
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::PROJECT_SETTINGS);
     if (!windowStatus->isOpen) return;

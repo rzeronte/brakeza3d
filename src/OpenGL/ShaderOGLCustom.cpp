@@ -74,7 +74,7 @@ void ShaderOGLCustom::parseTypesFromFileAttributes()
 {
     size_t file_size;
     auto contentFile = Tools::ReadFile(Config::get()->SHADERS_FOLDER + fileTypes, file_size);
-    Logging::Message("Parsing attributes from: '%s'", fileTypes.c_str());
+    Logging::Message("[ShaderOGLCustom] Parsing attributes from: '%s'", fileTypes.c_str());
 
     setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
 }

@@ -33,7 +33,7 @@ struct GuiAddonConsole
 
     void ClearLog();
     void AddLog(const char* fmt, ...);
-    void Draw();
+    void DrawWinLogging();
     void ExecCommand(const char* command_line, sol::state &lua);
     int TextEditCallback(ImGuiInputTextCallbackData* data);
     static int TextEditCallbackStub(ImGuiInputTextCallbackData* data);

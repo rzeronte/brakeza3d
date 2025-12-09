@@ -84,7 +84,7 @@ public:
     void parseTypesFromFileAttributes();
     void removeDataType(const ScriptLUATypeData& data);
     void updateFileTypes() const;
-    void reloadEnvironment(sol::environment &environment);
+    void ReloadEnvironment(sol::environment &environment);
     void reloadScriptCode();
     void getCode(const std::string &script);
     void updateScriptCodeWith(const std::string &content) const;

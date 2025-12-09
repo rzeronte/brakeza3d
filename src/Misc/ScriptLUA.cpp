@@ -17,7 +17,11 @@ ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
     fileTypes(std::move(properties))
 {
     Logging::Message("Loading LUA Script (%s, %s)", script.c_str(), fileTypes.c_str());
-
+    if (!Tools::FileExists(scriptFilename.c_str()) || !Tools::FileExists(fileTypes.c_str())) {
+        Logging::Error("[ScriptLUA] The script cannot be loaded. Files are missing.");
+        Logging::Error("[ScriptLUA] Trying to load '%s' and '%s'", scriptFilename.c_str(), fileTypes.c_str());
+        return;
+    }
     getCode(script);
     parseTypesFromFileAttributes();
 }
@@ -28,7 +32,11 @@ ScriptLUA::ScriptLUA(const std::string &scriptFilename, const cJSON *types)
     fileTypes(dataTypesFileFor(scriptFilename))
 {
     Logging::Message("Loading LUA Script (%s, %s)", scriptFilename.c_str(), fileTypes.c_str());
-
+    if (!Tools::FileExists(scriptFilename.c_str()) || !Tools::FileExists(fileTypes.c_str())) {
+        Logging::Error("[ScriptLUA] The script cannot be loaded. Files are missing.");
+        Logging::Error("[ScriptLUA] Trying to load '%s' and '%s'", scriptFilename.c_str(), fileTypes.c_str());
+        return;
+    }
     getCode(scriptFilename);
     setDataTypesFromJSON(types);
 }
@@ -182,20 +190,26 @@ void ScriptLUA::reloadGlobals() const
     }
 }
 
-void ScriptLUA::reloadEnvironment(sol::environment &environment)
+void ScriptLUA::ReloadEnvironment(sol::environment &environment)
 {
-    Logging::Message("Reloading LUA Environment (%s)", this->fileTypes.c_str());
+    Logging::Message("[ReloadEnvironment] Reloading LUA Environment (%s)", this->fileTypes.c_str());
 
     parseTypesFromFileAttributes();
 
     for (const auto& type : dataTypes) {
-        Logging::Message("reloadEnvironment ('%s' => '%s' => '%s')", type.name.c_str(), type.type.c_str(), ScriptLUATypeData::toString(type.value).c_str());
+        Logging::Message("ReloadEnvironment ('%s' => '%s' => '%s')", type.name.c_str(), type.type.c_str(), ScriptLUATypeData::toString(type.value).c_str());
         environment[type.name] = type.value;
     }
 }
 
 void ScriptLUA::parseTypesFromFileAttributes()
 {
+    if (!Tools::FileExists(fileTypes.c_str())) {
+        Logging::Error("[ScriptLUA] The script cannot be loaded. Files are missing.");
+        Logging::Error("[ScriptLUA] Trying to load '%s'", fileTypes.c_str());
+        return;
+    }
+
     size_t file_size;
     auto contentFile = Tools::ReadFile(fileTypes, file_size);
     Logging::Message("[ScriptLUA] Parsing attributes from: '%s'", fileTypes.c_str());

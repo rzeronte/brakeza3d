@@ -328,7 +328,7 @@ void Profiler::DrawPlotFrameTime(Measure &measure)
                      ImVec2(-1, 40));
 }
 
-void Profiler::DrawPropertiesGUI()
+void Profiler::DrawWinProfiler()
 {
     DrawPlotFrameTime(measureFrameTime);
     ImGui::Separator();
