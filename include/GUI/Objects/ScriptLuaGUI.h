@@ -14,12 +14,21 @@ class ScriptLuaGUI
 public:
     static void DrawPropertiesGUI(ScriptLUA *o);
     static void LoadScriptDialog(GUIManager *gui, const std::string& filename);
-    static void DrawScriptsBySelectedObject(GUIManager *gui);
-    static void DrawScriptsLuaFolderFiles(GUIManager *gui, GUIType::BrowserCache &browser);
+    static void DrawWinScriptEdition(GUIManager *gui);
+    static void DrawWinObjectScripts(GUIManager *gui);
+
+
+
+
     static void DrawEditScriptWindow(GUIManager *gui);
-    static void DrawObjectVariables(GUIManager *gui);
-    static void DrawGlobalVariables(GUIManager *gui);
-    static void DrawScriptVariables(GUIManager *gui);
+    static void DrawWinObjectVars(GUIManager *gui);
+    static void DrawWinGlobalVars(GUIManager *gui);
+    static void DrawScriptHeader(GUIManager * gui);
+    static void DrawScriptConfiguration(GUIManager * gui);
+    static void DrawVariableCreator(GUIManager * gui);
+    static void DrawVariablesTable(GUIManager * gui);
+    static void DrawEmptyStateWarning(GUIManager * gui);
+    static void DrawSaveButton(GUIManager * gui);
 
 };
 

@@ -10,7 +10,7 @@ class GUIAddonProjectSetup
 {
 public:
     GUIAddonProjectSetup();
-    static void DrawProjectSetupGUI(GUIManager *gui);
+    static void DrawWinProjectSettings(GUIManager *gui);
     static void DrawProjectScripts(GUIManager *gui);
     static void DrawSceneScripts(GUIManager *gui);
     static void DrawSceneCustomShaders(GUIManager *gui);

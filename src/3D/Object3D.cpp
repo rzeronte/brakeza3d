@@ -254,7 +254,7 @@ void Object3D::AttachScript(ScriptLUA *script)
 void Object3D::ReloadScriptsEnvironment()
 {
     for (auto script : scripts) {
-        script->reloadEnvironment(luaEnvironment);
+        script->ReloadEnvironment(luaEnvironment);
     }
 }
 

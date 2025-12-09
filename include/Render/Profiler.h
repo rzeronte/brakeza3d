@@ -54,7 +54,7 @@ public:
     void DrawPlotComponent(Component *c, float height);
     void DrawPlotFrameTime(Measure &measure);
     void CaptureGUIMemoryUsage();
-    void DrawPropertiesGUI();
+    void DrawWinProfiler();
     void ResetTotalFrameTime();
     void EndTotalFrameTime();
     void setEnabled(bool v);

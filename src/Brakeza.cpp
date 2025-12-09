@@ -48,13 +48,13 @@ void Brakeza::start(int argc, char *argv[])
         std::cout << "Autoload Project: " << result["p"].as<std::string>() << std::endl;
     }
 
-    componentsManager->RegisterComponent(new ComponentWindow(), "ComponentWindow");
-    componentsManager->RegisterComponent(new ComponentScripting(), "ComponentScripting");
-    componentsManager->RegisterComponent(new ComponentCamera(), "ComponentCamera");
-    componentsManager->RegisterComponent(new ComponentCollisions(), "ComponentCollisions");
-    componentsManager->RegisterComponent(new ComponentInput(), "ComponentInput");
-    componentsManager->RegisterComponent(new ComponentSound(), "ComponentSound");
-    componentsManager->RegisterComponent(new ComponentRender(), "ComponentRender");
+    componentsManager->RegisterComponent(new ComponentWindow(), "Window");
+    componentsManager->RegisterComponent(new ComponentScripting(), "Scripting");
+    componentsManager->RegisterComponent(new ComponentCamera(), "Camera");
+    componentsManager->RegisterComponent(new ComponentCollisions(), "Collisions");
+    componentsManager->RegisterComponent(new ComponentInput(), "Input");
+    componentsManager->RegisterComponent(new ComponentSound(), "Sound");
+    componentsManager->RegisterComponent(new ComponentRender(), "Render");
 
     mainLoop(projectAutoload, project);
 }

@@ -13,7 +13,7 @@ class GUIAddonObject3DProperties
 {
 public:
     GUIAddonObject3DProperties();
-    static void DrawPropertiesBySelectedObject(GUIManager *gui);
+    static void DrawWinObjectProps(GUIManager *gui);
 };
 
 #endif //BRAKEZA3D_GUIWIDGETOBJECT3DPROPERTIES_H

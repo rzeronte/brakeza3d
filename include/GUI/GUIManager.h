@@ -61,10 +61,10 @@ class GUIManager
     TextureAtlas *textureAtlas;
     Image *splashImage = new Image(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
 
-    void WindowImages();
-    void WindowLightsDepthMapsViewer();
+    void DrawWinImages();
+    void DrawWinDepthLightsMap();
     void DrawRegisteredWindows();
-    void WindowKeyboardMouseSetup();
+    void DrawWinKeyboardMouse();
     void DrawSplashWindow();
 
 public:
@@ -72,6 +72,7 @@ public:
     explicit GUIManager(std::vector<Object3D *> &gameObjects);
     virtual ~GUIManager() = default;
 
+    bool isWindowOpen(GUIType::Window w) const;
     void setSelectedObjectIndex(int value);
     void setSelectedObject(const Object3D *s);
     void RegisterWindows();
@@ -83,17 +84,14 @@ public:
     void setLayoutToDefault(Config::ImGUIConfigs config);
     virtual void DrawGUI();
     GUIType::WindowData *getWindowStatus(GUIType::Window window);
+    [[nodiscard]] int& selectedObjectIndexPointer();
     [[nodiscard]] GuiAddonConsole *getConsole() const;
-
-    bool isWindowOpen(GUIType::Window w) const;
-
     [[nodiscard]] TextureAtlas * getTextureAtlas() const;
     [[nodiscard]] GUIType::BrowserCache getBrowserScripts() const;
     [[nodiscard]] GUIType::BrowserCache getBrowserScenes() const;
     [[nodiscard]] GUIType::BrowserCache getBrowserProjects() const;
     [[nodiscard]] GUIType::BrowserCache getBrowserShaders() const;
     [[nodiscard]] GUIType::ViewerObjectsMode getObjectsViewerMode() const;
-    [[nodiscard]] int& selectedObjectIndexPointer();
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
 

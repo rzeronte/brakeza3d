@@ -47,7 +47,7 @@ public:
         cJSON_Delete(root);
     }
 
-    static void DrawDebugIconsWindow(GUIManager *gui)
+    static void DrawWinDebugIcons(GUIManager *gui)
     {
         auto windowStatus = gui->getWindowStatus(GUIType::DEBUG_ICONS);
         if (!windowStatus->isOpen) return;
