@@ -4,7 +4,7 @@
 
 #include "../../include/3D/TentacleIK.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Render/Transforms.h"
 #include <random>  // Para generación de números aleatorios
@@ -143,7 +143,7 @@ void TentacleIK::setTarget(Object3D *o)
 
 void TentacleIK::draw()
 {
-    auto camera = ComponentsManager::get()->Camera()->getCamera();
+    auto camera = Components::get()->Camera()->getCamera();
 
     int cont = 0;
     for (auto & joint : joints) {

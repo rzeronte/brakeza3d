@@ -6,7 +6,7 @@
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Brakeza.h"
 #include "../../include/2D/Image2DAnimation.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 
 cJSON * Image2DAnimationSerializer::JsonByObject(Object3D *o)
@@ -72,7 +72,7 @@ void Image2DAnimationSerializer::LoadFileIntoScene(const std::string &file)
         new TextureAnimated(file,1,1,1,1)
     );
 
-    o->setPosition(ComponentsManager::get()->Camera()->getCamera()->forward().getScaled(2));
+    o->setPosition(Components::get()->Camera()->getCamera()->forward().getScaled(2));
 
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Image2DAnimation"));
 }

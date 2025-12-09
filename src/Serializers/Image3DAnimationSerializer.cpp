@@ -7,7 +7,7 @@
 #include "../../include/Brakeza.h"
 #include "../../include/3D/Image3DAnimation.h"
 #include "../../include/Serializers/Object3DSerializer.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 cJSON * Image3DAnimationSerializer::JsonByObject(Object3D *o)
 {
@@ -40,7 +40,7 @@ cJSON * Image3DAnimationSerializer::JsonByObject(Object3D *o)
 Object3D * Image3DAnimationSerializer::ObjectByJson(cJSON *json)
 {
     auto *o = new Image3DAnimation(
-        ComponentsManager::get()->Camera()->getCamera()->getPosition(), 1, 1
+        Components::get()->Camera()->getCamera()->getPosition(), 1, 1
     );
 
     ApplyJsonToObject(json, o);
@@ -81,12 +81,12 @@ void Image3DAnimationSerializer::ApplyJsonToObject(const cJSON *json, Object3D *
 void Image3DAnimationSerializer::LoadFileIntoScene(const std::string &file)
 {
     auto *o = new Image3DAnimation(
-        ComponentsManager::get()->Camera()->getCamera()->getPosition(), 1, 1
+        Components::get()->Camera()->getCamera()->getPosition(), 1, 1
     );
 
     o->addAnimation(file,1,1,1,1);
     o->setAnimation(0);
-    o->setPosition(ComponentsManager::get()->Camera()->getCamera()->forward().getScaled(2));
+    o->setPosition(Components::get()->Camera()->getCamera()->forward().getScaled(2));
 
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("BillboardAnimation"));
 }

@@ -9,7 +9,7 @@
 
 int main(int argc, char *argv[])
 {
-    Brakeza::get()->start(argc, argv);
+    Brakeza::get()->Start(argc, argv);
 
     return 0;
 }

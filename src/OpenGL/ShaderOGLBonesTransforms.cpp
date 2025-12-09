@@ -3,7 +3,7 @@
 //
 
 #include "../../include/OpenGL/ShaderOGLBonesTransforms.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLBonesTransforms::ShaderOGLBonesTransforms()
 :
@@ -21,8 +21,8 @@ void ShaderOGLBonesTransforms::render(
     std::vector<glm::mat4> transformations,
     GLuint fbo
 ) {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
     setMat4ArrayUniform(gBonesUniform, transformations);
@@ -41,7 +41,7 @@ void ShaderOGLBonesTransforms::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(0);
+    Components::get()->Render()->changeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLBonesTransforms::setVAOAttributes(GLuint vertexbuffer, GLuint vertexBoneDataBuffer)

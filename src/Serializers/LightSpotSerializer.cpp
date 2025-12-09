@@ -7,7 +7,7 @@
 #include <glm/detail/func_trigonometric.inl>
 #include "../../include/3D/LightSpot.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Serializers/LightPointSerializer.h"
@@ -67,7 +67,7 @@ void LightSpotSerializer::LoadFileIntoScene(const std::string &file)
         0.9659
     );
 
-    o->setPosition(ComponentsManager::get()->Camera()->getCamera()->getPosition());
+    o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
 
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("SpotLight3D"));
 }

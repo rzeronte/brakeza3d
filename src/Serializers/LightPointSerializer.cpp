@@ -5,7 +5,7 @@
 #include "../../include/Serializers/LightPointSerializer.h"
 #include "../../include/Brakeza.h"
 #include "../../include/3D/LightPoint.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Serializers/Object3DSerializer.h"
@@ -75,7 +75,7 @@ void LightPointSerializer::LoadFileIntoScene(const std::string &model)
         0.032f
     );
 
-    o->setPosition(ComponentsManager::get()->Camera()->getCamera()->getPosition());
+    o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
 
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("LightPoint3D"));
 }

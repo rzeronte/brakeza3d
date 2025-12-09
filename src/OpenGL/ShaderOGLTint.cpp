@@ -4,7 +4,7 @@
 
 #include "../include/OpenGL/ShaderOGLTint.h"
 #include "../../include/Config.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLTint::ShaderOGLTint()
 :
@@ -22,9 +22,9 @@ ShaderOGLTint::ShaderOGLTint()
 
 void ShaderOGLTint::render(Color c, float alpha, GLuint fbo)
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
 
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 

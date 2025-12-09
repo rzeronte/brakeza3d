@@ -1,5 +1,5 @@
 #include "../../include/Components/ComponentInput.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
 
 ComponentInput::ComponentInput()
@@ -69,7 +69,7 @@ void ComponentInput::handleMouse(SDL_Event *event)
 
     if (mouseMotion && isRightMouseButtonPressed()) {
         if (event->type == SDL_MOUSEMOTION) {
-            auto camera = ComponentsManager::get()->Camera()->getCamera();
+            auto camera = Components::get()->Camera()->getCamera();
 
 
             camera->Yaw(-event->motion.xrel * Config::get()->MOUSE_SENSITIVITY);
@@ -85,9 +85,9 @@ void ComponentInput::handleMouse(SDL_Event *event)
 
     if (event->type == SDL_MOUSEWHEEL) {
         if (event->wheel.y > 0) {
-            ComponentsManager::get()->Camera()->getCamera()->MoveForward(-Config::get()->WALKING_SPEED * 5);
+            Components::get()->Camera()->getCamera()->MoveForward(-Config::get()->WALKING_SPEED * 5);
         } else if (event->wheel.y < 0) {
-            ComponentsManager::get()->Camera()->getCamera()->MoveBackward(-Config::get()->WALKING_SPEED * 5);
+            Components::get()->Camera()->getCamera()->MoveBackward(-Config::get()->WALKING_SPEED * 5);
         }
     }
 
@@ -107,7 +107,7 @@ void ComponentInput::handleKeyboardMovingCamera()
         return;
     }
 
-    auto camera = ComponentsManager::get()->Camera()->getCamera();
+    auto camera = Components::get()->Camera()->getCamera();
     bool isShiftPressed = keyboard[SDL_SCANCODE_LSHIFT] || keyboard[SDL_SCANCODE_RSHIFT];
 
     if (keyboard[SDL_SCANCODE_UP]) {
@@ -181,7 +181,7 @@ bool ComponentInput::isRightMouseButtonPressed() const
 
 void ComponentInput::resetMouseMapping()
 {
-    auto window = ComponentsManager::get()->Window();
+    auto window = Components::get()->Window();
 
     mouseLeftButton = false;
     mouseRightButton = false;
@@ -288,16 +288,15 @@ bool ComponentInput::isAnyControllerButtonPressed() const
 void ComponentInput::initJoystick()
 {
     if ( SDL_NumJoysticks() < 1 ) {
-        Logging::Message("[ComponentInput] WARNING: No gamepad controller connected." );
+        Logging::Message("[Input] WARNING: No gamepad controller connected." );
     } else {
         gameController = SDL_GameControllerOpen( 0 );
 
         if (gameController == nullptr) {
-            Logging::Message("[ComponentInput] WARNING: Unable to open game pad controller: %s", SDL_GetError());
-            //printf( "Warning: Unable to open game pad controller! SDL Error: %s\n", SDL_GetError() );
+            Logging::Error("[Input] Unable to open game pad controller: %s", SDL_GetError());
             return;
         }
-        Logging::Message("Game Pad Controller Name: %s\n", SDL_JoystickNameForIndex(0));
+        Logging::Message("[Input] Game Pad Controller Name: %s\n", SDL_JoystickNameForIndex(0));
     }
 }
 
@@ -358,7 +357,7 @@ float ComponentInput::getControllerAxisRightY() const
 void ComponentInput::handleToggleKeys(SDL_Event *event)
 {
     if (event->type == SDL_KEYDOWN) {
-        auto scripting = ComponentsManager::get()->Scripting();
+        auto scripting = Components::get()->Scripting();
 
         if (keyboard[SDL_SCANCODE_F1]) {
             if (scripting->getStateLUAScripts() == Config::LuaStateScripts::LUA_STOP) {
@@ -377,7 +376,7 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
             Config::get()->ENABLE_IMGUI = !Config::get()->ENABLE_IMGUI;
         }
 
-        auto *window = ComponentsManager::get()->Window();
+        auto *window = Components::get()->Window();
 
         if (keyboard[SDL_SCANCODE_F5]) {
             window->setImGuiConfig(Config::ImGUIConfigs::DEFAULT);
@@ -391,7 +390,7 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
 
         if (keyboard[SDL_SCANCODE_F11]) {
             Config::get()->FULLSCREEN = !Config::get()->FULLSCREEN;
-            ComponentsManager::get()->Window()->toggleFullScreen();
+            Components::get()->Window()->toggleFullScreen();
         }
     }
 }
@@ -493,9 +492,9 @@ void ComponentInput::handleDeleteSelectedObject(SDL_Event *e)
 {
     if (e->type == SDL_KEYDOWN) {
         if (keyboard[SDL_SCANCODE_DELETE]) {
-            auto o = ComponentsManager::get()->Render()->getSelectedObject();
+            auto o = Components::get()->Render()->getSelectedObject();
             o->setRemoved(true);
-            ComponentsManager::get()->Render()->setSelectedObject(nullptr);
+            Components::get()->Render()->setSelectedObject(nullptr);
         }
     }
 }

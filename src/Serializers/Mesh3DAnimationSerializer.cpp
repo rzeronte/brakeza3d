@@ -6,7 +6,7 @@
 #include "../../include/Brakeza.h"
 #include "../../include/3D/Mesh3D.h"
 #include "../../include/3D/Mesh3DAnimation.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Serializers/Mesh3DSerializer.h"
@@ -101,7 +101,7 @@ Object3D* Mesh3DAnimationSerializer::ObjectByJson(cJSON *json)
 void Mesh3DAnimationSerializer::LoadFileIntoScene(const std::string& file)
 {
     auto *o = new Mesh3DAnimation();
-    o->setPosition(ComponentsManager::get()->Camera()->getCamera()->getPosition());
+    o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
     o->AssimpLoadAnimation(file);
 
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Mesh3D"));

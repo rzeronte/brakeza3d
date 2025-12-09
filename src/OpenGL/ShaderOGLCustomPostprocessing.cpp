@@ -3,7 +3,7 @@
 //
 
 #include "../include/OpenGL/ShaderOGLCustomPostprocessing.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLCustomPostprocessing::ShaderOGLCustomPostprocessing(
     const std::string &label,
@@ -41,7 +41,7 @@ void ShaderOGLCustomPostprocessing::render(GLuint fbo)
 {
     if (!isEnabled()) return;
 
-    auto render = ComponentsManager::get()->Render();
+    auto render = Components::get()->Render();
     render->changeOpenGLFramebuffer(fbo);
     render->changeOpenGLProgram(programID);
 

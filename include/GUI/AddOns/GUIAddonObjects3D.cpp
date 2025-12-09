@@ -6,7 +6,7 @@
 
 #include "../../Brakeza.h"
 #include "../Objects/FileSystemGUI.h"
-#include "../include/Components/ComponentsManager.h"
+#include "../include/Components/Components.h"
 
 GUIAddonObjects3D::GUIAddonObjects3D()
 {
@@ -163,7 +163,7 @@ void GUIAddonObjects3D::DrawItem(int i, Object3D* o, const std::vector<Object3D 
         ImGui::SetNextItemWidth(150.0f);
         if (ImGui::Selectable(std::string("##select"+ std::to_string(i)).c_str(), selectedIndex == i, ImGuiSelectableFlags_AllowDoubleClick)) {
             Brakeza::get()->GUI()->setSelectedObjectIndex(i);
-            ComponentsManager::get()->Render()->setSelectedObject(objects[i]);
+            Components::get()->Render()->setSelectedObject(objects[i]);
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
                 if (!Brakeza::get()->GUI()->isWindowOpen(GUIType::OBJECT_PROPS)) {
                     Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_PROPS)->isOpen = true;

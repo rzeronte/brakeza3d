@@ -4,7 +4,7 @@
 
 #include "GUIAddonProjectSetup.h"
 
-#include "../../Components/ComponentsManager.h"
+#include "../../Components/Components.h"
 #include "../include/Brakeza.h"
 #include "../Objects/FileSystemGUI.h"
 
@@ -28,8 +28,8 @@ void GUIAddonProjectSetup::DrawWinProjectSettings(GUIManager *gui)
 
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(ImGui::GetStyle().FramePadding.x, 4.0f));
     if (ImGui::TreeNodeEx("Project content", ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_DefaultOpen)) {
-        auto scripting = ComponentsManager::get()->Scripting();
-        auto render = ComponentsManager::get()->Render();
+        auto scripting = Components::get()->Scripting();
+        auto render = Components::get()->Render();
 
         std::string labelGlobalScripts = "Global scripts (" + std::to_string(scripting->getProjectLUAScripts().size()) + ")";
         ImGui::Image(FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_GLOBAL_SCRIPTS), GUIType::Sizes::ICONS_TOOLBAR); ImGui::SameLine();
@@ -56,7 +56,7 @@ void GUIAddonProjectSetup::DrawWinProjectSettings(GUIManager *gui)
 
 void GUIAddonProjectSetup::DrawProjectScripts(GUIManager *gui)
 {
-    auto scripting = ComponentsManager::get()->Scripting();
+    auto scripting = Components::get()->Scripting();
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
             Logging::Message("Dropping script (%s) in global space", payload->Data);
@@ -101,7 +101,7 @@ void GUIAddonProjectSetup::DrawProjectScripts(GUIManager *gui)
 
 void GUIAddonProjectSetup::DrawSceneScripts(GUIManager *gui)
 {
-    auto scripting = ComponentsManager::get()->Scripting();
+    auto scripting = Components::get()->Scripting();
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
             Logging::Message("Dropping script (%s) in global space", payload->Data);
@@ -149,7 +149,7 @@ void GUIAddonProjectSetup::DrawSceneScripts(GUIManager *gui)
 
 void GUIAddonProjectSetup::DrawSceneCustomShaders(GUIManager *gui)
 {
-    auto render = ComponentsManager::get()->Render();
+    auto render = Components::get()->Render();
 
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CUSTOMSHADER_ITEM")) {

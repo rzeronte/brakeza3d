@@ -65,7 +65,7 @@ public:
     [[nodiscard]] MeasuresMap& getComponentMeasures();
     [[nodiscard]] int getNumberOfImages() const;
     [[nodiscard]] int getMemoryImageUsage() const;
-    static void ResetMeasure(MeasuresMap &map, const std::string & label);
+    static void InitMeasure(MeasuresMap &map, const std::string & label);
     static void StartMeasure(MeasuresMap &map, const std::string& name);
     static void EndMeasure(MeasuresMap &map, const std::string& name);
     static void DrawBreakDownComponent(Measure &pre, Measure &update, Measure &post, double total, float height);

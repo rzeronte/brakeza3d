@@ -7,7 +7,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include "../../include/OpenGL/ShaderBaseOpenGLQuad.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderBaseOpenGLQuad::ShaderBaseOpenGLQuad()
 :
@@ -46,7 +46,7 @@ void ShaderBaseOpenGLQuad::setupQuadUniforms(GLuint programID)
 
 void ShaderBaseOpenGLQuad::resetQuadMatrix()
 {
-    auto window = ComponentsManager::get()->Window();
+    auto window = Components::get()->Window();
     int w = window->getWidth();
     int h = window->getHeight();
 

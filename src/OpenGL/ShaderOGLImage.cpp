@@ -3,7 +3,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include "../../include/OpenGL/ShaderOGLImage.h"
 #include "../../include/Config.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLImage::ShaderOGLImage()
 :
@@ -45,13 +45,13 @@ ShaderOGLImage::ShaderOGLImage()
 
 void ShaderOGLImage::renderTexture(GLuint textureId, int x, int y, int w, int h, float alpha, bool inverse, GLuint fbo) const
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
 
     glDisable(GL_DEPTH_TEST);
 
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLProgram(programID);
 
-    auto window = ComponentsManager::get()->Window();
+    auto window = Components::get()->Window();
     glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(window->getWidth()), static_cast<float>(window->getHeight()), 0.0f, -1.0f, 1.0f);
 
     glm::vec2 position = glm::vec2(x, y);
@@ -77,7 +77,7 @@ void ShaderOGLImage::renderTexture(GLuint textureId, int x, int y, int w, int h,
 
     glEnable(GL_DEPTH_TEST);
 
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(0);
+    Components::get()->Render()->changeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLImage::destroy() {

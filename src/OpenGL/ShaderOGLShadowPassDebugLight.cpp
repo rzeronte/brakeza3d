@@ -3,7 +3,7 @@
 //
 
 #include "../../include/OpenGL/ShaderOGLShadowPassDebugLight.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLShadowPassDebugLight::ShaderOGLShadowPassDebugLight()
 :
@@ -21,14 +21,14 @@ ShaderOGLShadowPassDebugLight::ShaderOGLShadowPassDebugLight()
 
 void ShaderOGLShadowPassDebugLight::renderInternalToTexture()
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(internalFramebuffer);
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLFramebuffer(internalFramebuffer);
+    Components::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 
     glBindFramebuffer(GL_FRAMEBUFFER, internalFramebuffer);
 
-    auto shaderShadowPass = ComponentsManager::get()->Render()->getShaders()->shaderShadowPass;
+    auto shaderShadowPass = Components::get()->Render()->getShaders()->shaderShadowPass;
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, shaderShadowPass->getDirectionalLightDepthTexture());
 
@@ -39,8 +39,8 @@ void ShaderOGLShadowPassDebugLight::renderInternalToTexture()
 
 void ShaderOGLShadowPassDebugLight::renderInternalFromArrayTextures(GLuint depthTexture, int layer)
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(internalFramebuffer);
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLFramebuffer(internalFramebuffer);
+    Components::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 
@@ -70,7 +70,7 @@ void ShaderOGLShadowPassDebugLight::createFramebuffer()
     glGenFramebuffers(1, &internalFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, internalFramebuffer);
 
-    auto window = ComponentsManager::get()->Window();
+    auto window = Components::get()->Window();
 
     glGenTextures(1, &sceneTexture);
     glBindTexture(GL_TEXTURE_2D, sceneTexture);
@@ -103,7 +103,7 @@ void ShaderOGLShadowPassDebugLight::createArrayTextures(int nLayers)
         internalTextures.clear();
     }
 
-    auto window = ComponentsManager::get()->Window();
+    auto window = Components::get()->Window();
 
     internalTextures.resize(nLayers);
     glGenTextures(nLayers, internalTextures.data());
@@ -130,7 +130,7 @@ GLuint ShaderOGLShadowPassDebugLight::getInternalTexture(int layer) const
 
 void ShaderOGLShadowPassDebugLight::updateDebugTextures(int numLights)
 {
-    auto arrayTextures = ComponentsManager::get()->Render()->getShaders()->shaderShadowPass->getSpotLightsShadowMapArrayTextures();
+    auto arrayTextures = Components::get()->Render()->getShaders()->shaderShadowPass->getSpotLightsShadowMapArrayTextures();
 
     renderInternalToTexture();
 
@@ -154,7 +154,7 @@ void ShaderOGLShadowPassDebugLight::clearInternalTextures()
 
 GLuint ShaderOGLShadowPassDebugLight::extractLayerFromArray(GLuint arrayTexture, int layer)
 {
-    auto window = ComponentsManager::get()->Window();
+    auto window = Components::get()->Window();
 
     int width = window->getWidthRender();
     int height = window->getHeightRender();

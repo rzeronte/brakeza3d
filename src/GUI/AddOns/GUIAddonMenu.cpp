@@ -3,7 +3,7 @@
 //
 
 #include "../../../include/GUI/AddOns/GUIAddonMenu.h"
-#include "../../../include/Components/ComponentsManager.h"
+#include "../../../include/Components/Components.h"
 #include "../../../include/Brakeza.h"
 #include "../../../include/Misc/Logging.h"
 #include "../../../include/Misc/ToolsMaths.h"
@@ -52,7 +52,7 @@ void GUIAddonMenu::MenuBrakeza3D()
 
 void GUIAddonMenu::MenuScriptControls()
 {
-    auto scripting = ComponentsManager::get()->Scripting();
+    auto scripting = Components::get()->Scripting();
     auto state = scripting->getStateLUAScripts();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LUA_PLAY), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
@@ -163,11 +163,11 @@ void GUIAddonMenu::MenuVideo()
         if (setup->V_SYNC) {
             Logging::Message("Set V-Sync enabled");
             SDL_GL_SetSwapInterval(1);
-            SDL_RenderSetVSync(ComponentsManager::get()->Window()->getRenderer(), 1);
+            SDL_RenderSetVSync(Components::get()->Window()->getRenderer(), 1);
         } else {
             Logging::Message("Set V-Sync disabled");
             SDL_GL_SetSwapInterval(0);
-            SDL_RenderSetVSync(ComponentsManager::get()->Window()->getRenderer(), 0);
+            SDL_RenderSetVSync(Components::get()->Window()->getRenderer(), 0);
         }
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_LIMIT_FRAMERATE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
@@ -198,14 +198,14 @@ void GUIAddonMenu::MenuVideo()
         const float depthValueSens = 0.1;
         const float depthMinValues = 0;
         const float depthMaxValues = 100;
-        ImGui::DragScalar("Focal range", ImGuiDataType_Float, &ComponentsManager::get()->Render()->getShaders()->shaderOGLDOFBlur->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-        ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &ComponentsManager::get()->Render()->getShaders()->shaderOGLDOFBlur->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+        ImGui::DragScalar("Focal range", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+        ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
 
         const int minBlurRadius = 0;
         const int maxBlurRadius = 10;
-        ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &ComponentsManager::get()->Render()->getShaders()->shaderOGLDOFBlur->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
-        ImGui::DragScalar("Intensity", ImGuiDataType_Float, &ComponentsManager::get()->Render()->getShaders()->shaderOGLDOFBlur->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-        ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &ComponentsManager::get()->Render()->getShaders()->shaderOGLDOFBlur->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
+        ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
+        ImGui::DragScalar("Intensity", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+        ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
     }
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_FOG), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
@@ -216,21 +216,21 @@ void GUIAddonMenu::MenuVideo()
         const float rangeFogMax = 1000;
         const float rangeFogIntensityMax= 1.0;
 
-        ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &ComponentsManager::get()->Render()->getShaders()->shaderOGLFOG->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-        ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &ComponentsManager::get()->Render()->getShaders()->shaderOGLFOG->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-        ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &ComponentsManager::get()->Render()->getShaders()->shaderOGLFOG->intensity, rangeFogSens, &rangeFogMin, &rangeFogIntensityMax, "%f", 1.0f);
+        ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLFOG->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+        ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLFOG->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
+        ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLFOG->intensity, rangeFogSens, &rangeFogMin, &rangeFogIntensityMax, "%f", 1.0f);
 
-        auto p = ComponentsManager::get()->Render()->getShaders()->shaderOGLFOG->fogColor;
+        auto p = Components::get()->Render()->getShaders()->shaderOGLFOG->fogColor;
         ImVec4 fogVecColor = {p.r, p.g, p.b, 1};
         if (ImGui::ColorEdit4("FOG Color##", reinterpret_cast<float *>(&fogVecColor), ImGuiColorEditFlags_NoOptions)) {
-            ComponentsManager::get()->Render()->getShaders()->shaderOGLFOG->fogColor = {fogVecColor.x, fogVecColor.y, fogVecColor.z};
+            Components::get()->Render()->getShaders()->shaderOGLFOG->fogColor = {fogVecColor.x, fogVecColor.y, fogVecColor.z};
         }
     }
     ImGui::SeparatorText("Screen helpers");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_SHADER_GRID), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Draw Grid", nullptr, &setup->ENABLE_GRID_BACKGROUND);
     if (setup->ENABLE_GRID_BACKGROUND) {
-        auto shaderGrid = ComponentsManager::get()->Render()->getShaders()->shaderOGLGrid;
+        auto shaderGrid = Components::get()->Render()->getShaders()->shaderOGLGrid;
         const float sizeMin = 0; const float sizeMax = 100; const float sizeSens = 0.1;
         const float alphaMin = 0; const float alphaMax = 1; const float alphaSens = 0.01;
         ImGui::DragScalar("Size grid", ImGuiDataType_Float, &shaderGrid->gridSize, sizeSens, &sizeMin, &sizeMax, "%f", 1.0f);
@@ -305,13 +305,13 @@ void GUIAddonMenu::MenuColliders()
         setup->gravity.x = vec3f[0];
         setup->gravity.y = vec3f[1];
         setup->gravity.z = vec3f[2];
-        ComponentsManager::get()->Collisions()->setGravity(setup->gravity);
+        Components::get()->Collisions()->setGravity(setup->gravity);
     }
 
     ImGui::SeparatorText("Screen helpers");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_DEBUG_MODE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Draw debug mode", nullptr, &setup->BULLET_DEBUG_MODE)) {
-        ComponentsManager::get()->Collisions()->setEnableDebugMode(setup->BULLET_DEBUG_MODE);
+        Components::get()->Collisions()->setEnableDebugMode(setup->BULLET_DEBUG_MODE);
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_DEMO_APP), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Launch demo objects", nullptr, &setup->PROJECTILE_SIMPLE_MESH);
@@ -352,7 +352,7 @@ void GUIAddonMenu::MenuIllumination()
         ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
     }
     ImGui::SeparatorText("Sun light setup");
-    auto& dirLight = ComponentsManager::get()->Render()->getShaders()->shaderOGLRender->getDirectionalLight();
+    auto& dirLight = Components::get()->Render()->getShaders()->shaderOGLRender->getDirectionalLight();
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_SUN_DIRECTION), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::DragFloat3("Sun direction", &dirLight.direction[0], 0.01f, -1.0f, 1.0f);
@@ -387,7 +387,7 @@ void GUIAddonMenu::MenuIllumination()
     }
 
     if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
-        auto s = ComponentsManager::get()->Render()->getShaderOGLDepthMap();
+        auto s = Components::get()->Render()->getShaderOGLDepthMap();
         ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 10.0f);
         ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
@@ -401,7 +401,7 @@ void GUIAddonMenu::MenuIllumination()
 void GUIAddonMenu::MenuCamera()
 {
     auto setup = Config::get();
-    auto camera = ComponentsManager::get()->Camera()->getCamera();
+    auto camera = Components::get()->Camera()->getCamera();
 
     ImGui::SeparatorText("Camera setup");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_FOV), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
@@ -529,21 +529,21 @@ void GUIAddonMenu::MenuLayout()
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_LAYOUT_DEVS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Coding", "F6")) {
-        ComponentsManager::get()->Window()->setImGuiConfig(Config::ImGUIConfigs::CODING);
+        Components::get()->Window()->setImGuiConfig(Config::ImGUIConfigs::CODING);
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_LAYOUT_DESIGNERS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Design", "F7")) {
-        ComponentsManager::get()->Window()->setImGuiConfig(Config::ImGUIConfigs::DESIGN);
+        Components::get()->Window()->setImGuiConfig(Config::ImGUIConfigs::DESIGN);
     }
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_RESET_CURRENT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Reset to default")) {
-        Brakeza::get()->GUI()->setLayoutToDefault(ComponentsManager::get()->Window()->getImGuiConfig());
+        Brakeza::get()->GUI()->setLayoutToDefault(Components::get()->Window()->getImGuiConfig());
     }
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_SAVE_LAYOUT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Save current layout")) {
-        ComponentsManager::get()->Window()->saveImGuiCurrentLayout();
+        Components::get()->Window()->SaveImGuiCurrentLayout();
     }
 }
 
@@ -554,7 +554,7 @@ void GUIAddonMenu::MenuWindow(GUIManager *gui)
     ImGui::Image(FileSystemGUI::Icon(IconGUI::WINDOW_FULLSCREEN), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("FullScreen (F11)", nullptr, &setup->FULLSCREEN);
     if (ImGui::IsItemEdited()) {
-        ComponentsManager::get()->Window()->toggleFullScreen();
+        Components::get()->Window()->toggleFullScreen();
     }
     ImGui::SeparatorText("Windows/Widgets");
     for (auto &w : gui->windows) {

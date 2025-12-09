@@ -4,7 +4,7 @@
 
 #include "../../include/Misc/TileManager.h"
 #include "../../include/Config.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 TileManager::TileManager(int sizeTileWidth, int sizeTileHeight)
 :

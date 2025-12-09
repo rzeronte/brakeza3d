@@ -4,7 +4,7 @@
 
 #include "../../include/OpenGL/ShaderOGLGrid.h"
 #include "../../include/Config.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLGrid::ShaderOGLGrid()
 :
@@ -24,10 +24,10 @@ ShaderOGLGrid::ShaderOGLGrid()
 
 void ShaderOGLGrid::render(GLuint fbo)
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->changeOpenGLProgram(programID);
 
-    auto camera = ComponentsManager::get()->Camera()->getCamera();
+    auto camera = Components::get()->Camera()->getCamera();
     setMat4Uniform(modelMatrixUniform, camera->getGLMMat4ViewMatrix());
     setMat4Uniform(projectionMatrixUniform, camera->getGLMMat4ProjectionMatrix());
 

@@ -9,7 +9,7 @@
 #include "3D/Vertex3D.h"
 #include "Misc/ScriptLUA.h"
 #include "Components/ComponentCamera.h"
-#include "Components/ComponentsManager.h"
+#include "Components/Components.h"
 #include "Brakeza.h"
 #include "2D/Image2D.h"
 #include "2D/Image2DAnimation.h"
@@ -206,12 +206,12 @@ inline void LUAIntegration(sol::state &lua)
          "getControllerButtonStart", &ComponentInput::getControllerButtonStart
     );
 
-    lua.new_usertype<ComponentsManager>("ComponentsManager",
-    "Window", &ComponentsManager::Window,
-        "Render", &ComponentsManager::Render,
-        "Camera", &ComponentsManager::Camera,
-        "Collisions", &ComponentsManager::Collisions,
-        "Input", &ComponentsManager::Input
+    lua.new_usertype<Components>("Components",
+    "Window", &Components::Window,
+        "Render", &Components::Render,
+        "Camera", &Components::Camera,
+        "Collisions", &Components::Collisions,
+        "Input", &Components::Input
     );
 
     lua.new_usertype<Brakeza>("Brakeza3D",
@@ -219,9 +219,9 @@ inline void LUAIntegration(sol::state &lua)
         "getDeltaTimeMicro",  &Brakeza::getDeltaTimeMicro,
         "getExecutionTime", &Brakeza::getExecutionTime,
         "uniqueObjectLabel", &Brakeza::UniqueObjectLabel,
-        "shutdown", &Brakeza::shutdown,
+        "Shutdown", &Brakeza::Shutdown,
         "addObject3D",  &Brakeza::addObject3D,
-        "getSceneObjectByLabel",&Brakeza::getSceneObjectByLabel
+        "getObjectByName",&Brakeza::getObjectByName
     );
 
     lua.new_usertype<Camera3D>("Camera3D",

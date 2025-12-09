@@ -8,11 +8,8 @@
 #include "../../Misc/Logging.h"
 #include "../Objects/FileSystemGUI.h"
 
-GuiAddonConsole::GuiAddonConsole(sol::state &lua): lua(lua)
+GuiAddonConsole::GuiAddonConsole()
 {
-    LogIcon.x = 0;
-    LogIcon.y = 0;
-
     ClearLog();
     memset(InputBuf, 0, sizeof(InputBuf));
     HistoryPos = -1;
@@ -24,7 +21,11 @@ GuiAddonConsole::GuiAddonConsole(sol::state &lua): lua(lua)
     Commands.push_back("CLASSIFY");
     AutoScroll = true;
     ScrollToBottom = false;
-    AddLog("Welcome to Dear ImGui!");
+}
+
+void GuiAddonConsole::setLua(sol::state *value)
+{
+    lua = value;
 }
 
 GuiAddonConsole::~GuiAddonConsole()
@@ -33,12 +34,6 @@ GuiAddonConsole::~GuiAddonConsole()
     for (int i = 0; i < History.Size; i++)
         free(History[i]);
 }
-
-void GuiAddonConsole::setLogIcon(GUIType::Sheet icon)
-{
-    LogIcon = icon;
-}
-
 
 void GuiAddonConsole::ClearLog()
 {
@@ -155,7 +150,7 @@ void GuiAddonConsole::DrawWinLogging()
         char* s = InputBuf;
         Strtrim(s);
         if (s[0])
-            ExecCommand(s, lua);
+            ExecCommand(s, *lua);
         strcpy(s, "");
         reclaim_focus = true;
     }
@@ -192,13 +187,6 @@ void GuiAddonConsole::ExecCommand(const char* command_line, sol::state &lua)
 
     // On command input, we scroll to bottom even if AutoScroll==false
     ScrollToBottom = true;
-}
-
-// In C++11 you'd be better off using lambdas for this sort of forwarding callbacks
-int GuiAddonConsole::TextEditCallbackStub(ImGuiInputTextCallbackData* data)
-{
-    GuiAddonConsole* console = (GuiAddonConsole*)data->UserData;
-    return console->TextEditCallback(data);
 }
 
 int GuiAddonConsole::TextEditCallback(ImGuiInputTextCallbackData* data)
@@ -300,4 +288,11 @@ int GuiAddonConsole::TextEditCallback(ImGuiInputTextCallbackData* data)
         }
     }
     return 0;
+}
+
+// In C++11 you'd be better off using lambdas for this sort of forwarding callbacks
+int GuiAddonConsole::TextEditCallbackStub(ImGuiInputTextCallbackData* data)
+{
+    GuiAddonConsole* console = (GuiAddonConsole*)data->UserData;
+    return console->TextEditCallback(data);
 }

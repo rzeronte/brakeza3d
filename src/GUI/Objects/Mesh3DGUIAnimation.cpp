@@ -1,6 +1,7 @@
 //
 // Created by Eduardo on 06/12/2025.
 //
+
 #include "../../../include/GUI/Objects/Mesh3DAnimationGUI.h"
 
 
@@ -37,7 +38,7 @@ void Mesh3DAnimationDrawerGUI::DrawEditBonesMappingWindow(GUIManager *gui)
     if (gui->selectedObjectIndex < 0) return;
     if (!gui->showBoneMappingsEditorWindow) return;
 
-    auto a = dynamic_cast<Mesh3DAnimation*>(gui->gameObjects[gui->selectedObjectIndex]);
+    auto a = dynamic_cast<Mesh3DAnimation*>(Brakeza::get()->getObjectByIndex(gui->selectedObjectIndex));
 
     if (a == nullptr) return;
 

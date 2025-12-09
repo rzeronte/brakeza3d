@@ -273,6 +273,11 @@ public:
         GL_CONSTANT_ALPHA,
         GL_ONE_MINUS_CONSTANT_ALPHA
     };
+
+    struct LineCommandOptions {
+        bool autoload = false;
+        std::string project;
+    };
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

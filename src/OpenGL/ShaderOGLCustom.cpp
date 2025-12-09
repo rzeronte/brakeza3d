@@ -7,7 +7,7 @@
 #include "../../include/OpenGL/ShaderOGLCustom.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/Logging.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/FileSystemGUI.h"
 
@@ -371,7 +371,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
                     ImGui::TableSetColumnIndex(0);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
-                    auto globalTexture = ComponentsManager::get()->Window()->getDepthTexture();
+                    auto globalTexture = Components::get()->Window()->getDepthTexture();
                     ImGui::Image(reinterpret_cast<ImTextureID>(globalTexture), ImVec2(36, 36));
                     ImGui::SetItemTooltip("Depth Texture");
 
@@ -397,7 +397,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
                     ImGui::TableSetColumnIndex(0);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
-                    auto globalTexture = ComponentsManager::get()->Window()->getGlobalTexture();
+                    auto globalTexture = Components::get()->Window()->getGlobalTexture();
                     ImGui::Image(reinterpret_cast<ImTextureID>(globalTexture), ImVec2(36, 36));
                     ImGui::SetItemTooltip("Render scene");
 
@@ -543,8 +543,8 @@ void ShaderOGLCustom::postUpdate()
 
     render(resultFramebuffer);
 
-    auto window = ComponentsManager::get()->Window();
-    auto shaderOGLImage = ComponentsManager::get()->Render()->getShaders()->shaderOGLImage;
+    auto window = Components::get()->Window();
+    auto shaderOGLImage = Components::get()->Render()->getShaders()->shaderOGLImage;
     shaderOGLImage->renderTexture(textureResult, 0, 0, window->getWidth(), window->getHeight(), 1, true, window->getGlobalFramebuffer());
 }
 
@@ -677,13 +677,13 @@ void ShaderOGLCustom::setDataTypesUniforms()
                 break;
             }
             case ShaderOpenGLCustomDataType::SCENE: {
-                auto globalTexture = ComponentsManager::get()->Window()->getSceneTexture();
+                auto globalTexture = Components::get()->Window()->getSceneTexture();
                 setTexture(type.name, globalTexture, numTextures);
                 IncreaseNumberTextures();
                 break;
             }
             case ShaderOpenGLCustomDataType::DEPTH: {
-                auto globalTexture = ComponentsManager::get()->Window()->getDepthTexture();
+                auto globalTexture = Components::get()->Window()->getDepthTexture();
                 setTexture(type.name, globalTexture, numTextures);
                 IncreaseNumberTextures();
                 break;
@@ -803,7 +803,7 @@ ShaderCustomType ShaderOGLCustom::getType() const
 
 ShaderCustomType ShaderOGLCustom::getShaderTypeFromString(const std::string& shaderName)
 {
-    auto render = ComponentsManager::get()->Render();
+    auto render = Components::get()->Render();
     auto types = render->getShaderTypesMapping();
 
     auto it = types.find(shaderName);
@@ -816,7 +816,7 @@ ShaderCustomType ShaderOGLCustom::getShaderTypeFromString(const std::string& sha
 
 std::string ShaderOGLCustom::getShaderTypeString(ShaderCustomType type)
 {
-    auto render = ComponentsManager::get()->Render();
+    auto render = Components::get()->Render();
     auto types = render->getShaderTypesMapping();
 
     for (const auto& a: types) {
@@ -880,9 +880,9 @@ void ShaderOGLCustom::Reload()
 void ShaderOGLCustom::CreateFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
+    Components::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
 
-    auto window = ComponentsManager::get()->Window();
+    auto window = Components::get()->Window();
     int w = window->getWidth();
     int h = window->getHeight();
 

@@ -4,7 +4,7 @@
 #include <SDL_image.h>
 #include "../../include/Config.h"
 #include "../../include/Misc/Logging.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/TextureAnimatedAnimationGUI.h"
 
 TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps)
@@ -64,7 +64,7 @@ void TextureAnimated::setup(const std::string& spriteSheetFile, int spriteWidth,
     const int numRows = spriteSheetSurface->h / spriteHeight;
     const int numColumns = spriteSheetSurface->w / spriteWidth;
 
-    const auto renderer = ComponentsManager::get()->Window()->getRenderer();
+    const auto renderer = Components::get()->Window()->getRenderer();
 
     for (int row = 0; row < numRows; ++row) {
         for (int column = 0; column < numColumns; ++column) {

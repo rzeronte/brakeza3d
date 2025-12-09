@@ -7,7 +7,7 @@
 #include <glm/gtc/type_ptr.inl>
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/LightSpotGUI.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 LightSpot::LightSpot(
     const glm::vec4 &ambient,
@@ -43,7 +43,7 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
     float angulo_outer_grados = radians * 180.0f / static_cast<float>(M_PI);
     float angulo_cono = angulo_outer_grados * 2.0f; // Ángulo total del cono
 
-    auto render = ComponentsManager::get()->Render();
+    auto render = Components::get()->Render();
 
     if (showDebugCone && isGUISelected()) {
         cone.UpdateVertices(
@@ -66,7 +66,7 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
                 cone.vertices.size(),
                 c,
                 false,
-                ComponentsManager::get()->Window()->getGBuffer().FBO
+                Components::get()->Window()->getGBuffer().FBO
             );
             glEnable(GL_CULL_FACE);
         }
@@ -79,7 +79,7 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
                 normalBuffer,
                 static_cast<int>(cone.vertices.size()),
                 c,
-                ComponentsManager::get()->Window()->getSceneFramebuffer()
+                Components::get()->Window()->getSceneFramebuffer()
             );
         }
     }

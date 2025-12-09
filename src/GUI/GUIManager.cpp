@@ -1,6 +1,6 @@
 
 #include "../../include/Brakeza.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Render/Profiler.h"
 #include "../../include/GUI/GUIManager.h"
 #include "../../include/GUI/Objects/Object3DGUI.h"
@@ -19,24 +19,33 @@
 #define ADD_WIN(title, type, icon, visible, func) \
 windows.push_back({ title, type, icon, visible, [&] { func; }})
 
-GUIManager::GUIManager(std::vector<Object3D *> &gameObjects)
+GUIManager::GUIManager()
 :
-    gameObjects(gameObjects),
-    widgetConsole(new GuiAddonConsole(ComponentsManager::get()->Scripting()->getLua())),
-    browserScenes(GUI::CreateBrowserCache(Config::get()->SCENES_FOLDER, Config::get()->SCENES_EXT)),
-    browserProjects(GUI::CreateBrowserCache(Config::get()->PROJECTS_FOLDER, Config::get()->PROJECTS_EXT)),
-    browserShaders(GUI::CreateBrowserCache(Config::get()->CUSTOM_SHADERS_FOLDER, Config::get()->SHADERS_EXT)),
-    browserScripts(GUI::CreateBrowserCache(Config::get()->SCRIPTS_FOLDER, Config::get()->SCRIPTS_EXT)),
+    widgetConsole(new GuiAddonConsole()),
     textureAtlas(new TextureAtlas())
 {
-    FileSystemGUI::LoadImagesFolder(this);
+    Profiler::get()->CaptureGUIMemoryUsage();
+}
+
+void GUIManager::OnStart()
+{
     textureAtlas->CreateFromSheet(Config::get()->ICONS_FOLDER + Config::get()->GUI_ICON_SHEET, 32, 32);
     IconsGUI::ImportIconsFromJSON(Config::get()->CONFIG_FOLDER + Config::get()->ICONS_CONFIG);
 
-    Profiler::get()->CaptureGUIMemoryUsage();
+    widgetConsole->setLua(&Components::get()->Scripting()->getLua());
+
+    splashImage = new Image(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
+
+    browserScenes   = GUI::CreateBrowserCache(Config::get()->SCENES_FOLDER, Config::get()->SCENES_EXT);
+    browserProjects = GUI::CreateBrowserCache(Config::get()->PROJECTS_FOLDER, Config::get()->PROJECTS_EXT);
+    browserShaders  = GUI::CreateBrowserCache(Config::get()->CUSTOM_SHADERS_FOLDER, Config::get()->SHADERS_EXT);
+    browserScripts  = GUI::CreateBrowserCache(Config::get()->SCRIPTS_FOLDER, Config::get()->SCRIPTS_EXT);
+
     RegisterAllowedItemsForViewer();
     RegisterMenu();
     RegisterWindows();
+
+    GUI::ShowLoadTime("Time until GUIManager get ready", *Brakeza::get()->getTimer());
 }
 
 void GUIManager::RegisterWindows()
@@ -222,11 +231,6 @@ void GUIManager::UpdateImGuiDocking()
     ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f), dockspace_flags);
 }
 
-GuiAddonConsole *GUIManager::getConsole() const
-{
-    return widgetConsole;
-}
-
 bool GUIManager::isWindowOpen(GUIType::Window window) const
 {
     for (auto& w : windows) {
@@ -246,7 +250,7 @@ void GUIManager::setSelectedObjectIndex(int value)
 void GUIManager::setSelectedObject(const Object3D *s)
 {
     int i = 0;
-    for (auto o: gameObjects) {
+    for (const auto o: Brakeza::get()->getSceneObjects()) {
         if (s == o) {
             setSelectedObjectIndex(i);
         }
@@ -259,7 +263,7 @@ void GUIManager::DrawWinKeyboardMouse()
     auto windowStatus = getWindowStatus(GUIType::KEYBOARD_MOUSE);
     if (!windowStatus->isOpen) return;
 
-    auto input = ComponentsManager::get()->Input();
+    auto input = Components::get()->Input();
 
     ImGui::Text(("Mouse motion: " + std::to_string(input->isMouseMotion())).c_str());
     ImGui::Text(("Mouse motion RelX: " + std::to_string(input->getMouseMotionXRel())).c_str());
@@ -302,36 +306,6 @@ void GUIManager::DrawWinKeyboardMouse()
     ImGui::Text(("Controller Button Start: " + std::to_string(input->getControllerButtonStart())).c_str());
 }
 
-TextureAtlas * GUIManager::getTextureAtlas() const
-{
-    return textureAtlas;
-}
-
-GUIType::BrowserCache GUIManager::getBrowserScripts() const
-{
-    return browserScripts;
-}
-
-GUIType::BrowserCache GUIManager::getBrowserScenes() const
-{
-    return browserScenes;
-}
-
-GUIType::BrowserCache GUIManager::getBrowserProjects() const
-{
-    return browserProjects;
-}
-
-GUIType::BrowserCache GUIManager::getBrowserShaders() const
-{
-    return browserShaders;
-}
-
-GUIType::ViewerObjectsMode GUIManager::getObjectsViewerMode() const
-{
-    return viewerMode;
-}
-
 void GUIManager::setObjectsViewerMode(GUIType::ViewerObjectsMode value)
 {
     Logging::Message("[GUIManager] Change viewer mode to %d", (int) value);
@@ -367,11 +341,6 @@ void GUIManager::setLayoutToDefault(Config::ImGUIConfigs currentConfig)
             }
         }
     }
-}
-
-int& GUIManager::selectedObjectIndexPointer()
-{
-    return selectedObjectIndex;
 }
 
 void GUIManager::DrawWinImages()
@@ -451,7 +420,6 @@ void GUIManager::OpenBoneInfoDialog()
     showBoneMappingsEditorWindow = true;
 }
 
-
 void GUIManager::DrawWinDepthLightsMap()
 {
     auto windowStatus = getWindowStatus(GUIType::DEPTH_LIGHTS_MAPS);
@@ -463,7 +431,7 @@ void GUIManager::DrawWinDepthLightsMap()
     auto title = std::string("Lights Depth Maps Viewer: ");
     if (ImGui::Begin(title.c_str(), &windowStatus->isOpen, ImGuiWindowFlags_NoDocking)) {
 
-        auto render = ComponentsManager::get()->Render();
+        auto render = Components::get()->Render();
         auto shaderShadowPassDebugLight = render->getShaders()->shaderShadowPassDebugLight;
         auto lights = render->getShaders()->shaderOGLRender->getShadowMappingSpotLights();
 
@@ -522,7 +490,6 @@ void GUIManager::DrawSplashWindow()
     if (currentTime >= countdownTime - fadeDuration) {
         splashAlpha = (countdownTime - currentTime) / fadeDuration;
         splashAlpha = glm::clamp(splashAlpha, 0.0f, 1.0f);
-
         if (splashAlpha <= 0.0f) {
             Config::get()->ENABLE_SPLASH = false;
             return;
@@ -540,25 +507,16 @@ void GUIManager::DrawSplashWindow()
     ImGui::SetNextWindowPos(positionCentered);
     ImGui::SetNextWindowSize(size);
 
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);  // ← Borde = 0
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);              // ← Borde = 0
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0)); // Fondo transparente
-
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));  // Fondo transparente
     ImGui::Begin("##Splash", nullptr,
         ImGuiWindowFlags_NoDecoration |
         ImGuiWindowFlags_NoInputs |
         ImGuiWindowFlags_NoMove |
         ImGuiWindowFlags_NoScrollWithMouse
     );
-
-    ImGui::Image(
-        splashImage->getOGLImTexture(),
-        size,
-        ImVec2(0, 0),
-        ImVec2(1, 1),
-        ImVec4(1.0f, 1.0f, 1.0f, splashAlpha)
-    );
-
+    ImGui::Image(splashImage->getOGLImTexture(), size, ImVec2(0, 0), ImVec2(1, 1), ImVec4(1.0f, 1.0f, 1.0f, splashAlpha));
     ImGui::End();
     ImGui::PopStyleColor();
     ImGui::PopStyleVar(2);

@@ -11,7 +11,7 @@
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include <assimp/postprocess.h>
 
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/Mesh3DGUI.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 
@@ -193,8 +193,8 @@ void Mesh3D::onUpdate()
 
     if (isRemoved()) return;
 
-    auto render = ComponentsManager::get()->Render();
-    auto window = ComponentsManager::get()->Window();
+    auto render = Components::get()->Render();
+    auto window = Components::get()->Window();
 
     auto sceneFramebuffer = window->getSceneFramebuffer();
 
@@ -569,7 +569,7 @@ void Mesh3D::RemoveShader(int index)
 
 void Mesh3D::ShadowMappingPass()
 {
-    auto render = ComponentsManager::get()->Render();
+    auto render = Components::get()->Render();
     auto shaderShadowPass = render->getShaders()->shaderShadowPass;
     auto shaderRender = render->getShaders()->shaderOGLRender;
 

@@ -1,6 +1,6 @@
 
 #include "../../include/3D/Image3DAnimation.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/Image3DAnimationGUI.h"
 
@@ -21,7 +21,7 @@ void Image3DAnimation::onUpdate()
 
     this->updateTrianglesCoordinatesAndTexture();
 
-    ComponentsManager::get()->Render()->getShaders()->shaderOGLRender->render(
+    Components::get()->Render()->getShaders()->shaderOGLRender->render(
         this,
         getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
         getCurrentTextureAnimation()->getCurrentFrame()->getOGLTextureID(),
@@ -30,18 +30,18 @@ void Image3DAnimation::onUpdate()
         billboard->getNormalBuffer(),
         billboard->getVertices().size(),
         1.0f,
-        ComponentsManager::get()->Window()->getForegroundFramebuffer()
+        Components::get()->Window()->getForegroundFramebuffer()
     );
 
     if (Config::get()->TRIANGLE_MODE_WIREFRAME) {
-        ComponentsManager::get()->Render()->getShaders()->shaderOGLWireframe->render(
+        Components::get()->Render()->getShaders()->shaderOGLWireframe->render(
             getModelMatrix(),
             billboard->getVertexBuffer(),
             billboard->getUVBuffer(),
             billboard->getNormalBuffer(),
             billboard->getVertices().size(),
             Color::gray(),
-            ComponentsManager::get()->Window()->getSceneFramebuffer()
+            Components::get()->Window()->getSceneFramebuffer()
         );
     }
 }

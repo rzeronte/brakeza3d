@@ -2,7 +2,7 @@
 #include "../../include/3D/Decal.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/3D/Image3DAnimation360.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 Decal::Decal() :
     sprite(new Image3DAnimation(getPosition(), Config::get()->BILLBOARD_WIDTH_DEFAULT, Config::get()->BILLBOARD_HEIGHT_DEFAULT))

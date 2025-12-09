@@ -1,7 +1,7 @@
 
 #include "../../include/OpenGL/ShaderOGLParticles.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLParticles::ShaderOGLParticles()
 :
@@ -30,19 +30,19 @@ void ShaderOGLParticles::render(
     int particlesCount
 )
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(ComponentsManager::get()->Window()->getForegroundFramebuffer());
+    Components::get()->Render()->changeOpenGLFramebuffer(Components::get()->Window()->getForegroundFramebuffer());
 
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
-    glm::mat4 ProjectionMatrix = ComponentsManager::get()->Camera()->getGLMMat4ProjectionMatrix();
-    glm::mat4 ViewMatrix = ComponentsManager::get()->Camera()->getGLMMat4ViewMatrix();
+    glm::mat4 ProjectionMatrix = Components::get()->Camera()->getGLMMat4ProjectionMatrix();
+    glm::mat4 ViewMatrix = Components::get()->Camera()->getGLMMat4ViewMatrix();
     glm::mat4 ViewProjectionMatrix = ProjectionMatrix * ViewMatrix;
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLProgram(programID);
 
     setTextureUniform(textureIDuniform, textureID, 0);
 
@@ -96,7 +96,7 @@ void ShaderOGLParticles::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(0);
+    Components::get()->Render()->changeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLParticles::destroy() {

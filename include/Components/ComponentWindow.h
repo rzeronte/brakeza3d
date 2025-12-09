@@ -48,48 +48,50 @@ public:
     void postUpdate() override;
     void onEnd() override;
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
-    void initWindow();
-    void initFontsTTF();
-    OpenGLGBuffer& getGBuffer();
-    OpenGLGlobalFramebuffers &getGlobalBuffers();
-    OpenGLPickingBuffer &getPickingColorFramebuffer();
-    void resetFramebuffer();
+    void InitWindow();
+    void InitFontsTTF();
+    void ResetFramebuffer();
     void ClearOGLFrameBuffers() const;
     void CheckForResizeOpenGLWindow(const SDL_Event &e);
-    [[nodiscard]] int getWidth() const;
-    [[nodiscard]] int getHeight() const;
-    [[nodiscard]] int getWidthRender() const;
-    [[nodiscard]] int getHeightRender() const;
-    [[nodiscard]] bool isWindowMaximized() const;
-    [[nodiscard]] GLuint getSceneFramebuffer() const;
-    [[nodiscard]] GLuint getBackgroundFramebuffer() const;
-    [[nodiscard]] GLuint getUIFramebuffer() const;
-    [[nodiscard]] GLuint getForegroundFramebuffer() const;
-    [[nodiscard]] GLuint getGlobalFramebuffer() const;
-    [[nodiscard]] GLuint getPostProcessingFramebuffer() const;
-    [[nodiscard]] GLuint getDepthTexture() const;
-    [[nodiscard]] GLuint getSceneTexture() const;
-    [[nodiscard]] GLuint getGlobalTexture() const;
-    [[nodiscard]] SDL_Window *getWindow() const;
-    [[nodiscard]] SDL_Renderer *getRenderer() const;
-    [[nodiscard]] TTF_Font *getFontDefault() const;
-    void createFramebuffer();
-    void RenderLayersToMain();
+    OpenGLGBuffer& getGBuffer()                         { return gBuffer; }
+    OpenGLGlobalFramebuffers &getGlobalBuffers()        { return openGLBuffers; }
+    OpenGLPickingBuffer &getPickingColorFramebuffer()   { return pickingColorBuffer;}
+
+    int getWidth() const                                { return widthWindow;}
+    int getHeight() const                               { return heightWindow;}
+    int getWidthRender() const                          { return widthRender;}
+    int getHeightRender() const                         { return heightRender;}
+    bool isWindowMaximized() const;
+    GLuint getSceneFramebuffer() const                  { return openGLBuffers.sceneFBO;}
+    GLuint getBackgroundFramebuffer() const             { return openGLBuffers.backgroundFBO;}
+    GLuint getUIFramebuffer() const                     { return openGLBuffers.uiFBO;}
+    GLuint getForegroundFramebuffer() const             { return openGLBuffers.foregroundFBO;}
+    GLuint getGlobalFramebuffer() const                 { return openGLBuffers.globalFBO;}
+    GLuint getPostProcessingFramebuffer() const         { return openGLBuffers.postProcessingFBO;}
+    GLuint getDepthTexture() const                      { return openGLBuffers.sceneDepthTexture;}
+    GLuint getSceneTexture() const                      { return openGLBuffers.sceneTexture;}
+    GLuint getGlobalTexture() const                     { return openGLBuffers.globalTexture;}
+    SDL_Window *getWindow() const                       { return window;}
+    SDL_Renderer *getRenderer() const                   { return renderer;}
+    TTF_Font *getFontDefault() const                    { return fontDefault;}
+    ImGuizmo::OPERATION getGuiZmoOperation() const      { return ImGuiOperationGuizmo;}
+    Config::ImGUIConfigs getImGuiConfig() const         { return ImGuiConfig;}
+
+    void CreateFramebuffer();
+    void FlipGlobalToWindow();
     void ImGuiInitialize(const std::string &configFile);
-    void saveImGuiCurrentLayout() const;
+    void SaveImGuiCurrentLayout() const;
     void ImGuiOnUpdate();
     void setWindowTitle(const char *title) const;
     void toggleFullScreen() const;
     void setGuiZmoOperation(ImGuizmo::OPERATION operation);
-    [[nodiscard]] ImGuizmo::OPERATION getGuiZmoOperation() const;
-    [[nodiscard]] int getObjectIDByPickingColorFramebuffer(int x, int y) const;
-    [[nodiscard]] Config::ImGUIConfigs getImGuiConfig() const;
-    void createPickingColorBuffer();
-    void createGBuffer();
-    void resizeGBuffer();
+    int getObjectIDByPickingColorFramebuffer(int x, int y) const;
+    void CreatePickingColorBuffer();
+    void CreateGBuffer();
+    void ResizeGBuffer();
     void UpdateWindowSize();
     void setImGuiConfig(Config::ImGUIConfigs c);
-    static void initOpenGL();
+    static void InitOpenGL();
 };
 
 

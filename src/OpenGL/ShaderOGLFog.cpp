@@ -5,7 +5,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include "../../include/OpenGL/ShaderOGLFog.h"
 #include "../../include/Config.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLFog::ShaderOGLFog()
 :
@@ -36,17 +36,17 @@ ShaderOGLFog::ShaderOGLFog()
 
 void ShaderOGLFog::render(GLuint sceneTexture, GLuint depthTexture)
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
+    Components::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 
     glUniform1f(fogMaxDistUniform, fogMaxDist);
     glUniform1f(fogMinDistUniform, fogMinDist);
     glUniform1f(intensityUniform, intensity);
-    glUniform1f(farPlaneUniform, ComponentsManager::get()->Render()->getShaders()->shaderOGLDOFBlur->farPlane);
+    glUniform1f(farPlaneUniform, Components::get()->Render()->getShaders()->shaderOGLDOFBlur->farPlane);
     glUniform3fv(fogColourUniform, 1, &fogColor.toGLM()[0]);
 
     setTextureUniform(sceneTextureUniform, sceneTexture, 0);
@@ -72,9 +72,9 @@ void ShaderOGLFog::destroy()
 void ShaderOGLFog::createFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
+    Components::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
 
-    auto window = ComponentsManager::get()->Window();
+    auto window = Components::get()->Window();
     int w = window->getWidth();
     int h = window->getHeight();
 

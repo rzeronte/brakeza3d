@@ -3,7 +3,7 @@
 //
 
 #include "../../include/OpenGL/ShaderOGLWire.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLWire::ShaderOGLWire()
 :
@@ -41,14 +41,14 @@ void ShaderOGLWire::render(
     GLuint fbo
 ) const
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->changeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
 
     glDisable(GL_BLEND);
     glLineWidth(1.0f);
-    auto camera = ComponentsManager::get()->Camera();
+    auto camera = Components::get()->Camera();
     glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
     glm::mat4 ProjectionMatrix = camera->getGLMMat4ProjectionMatrix();
 

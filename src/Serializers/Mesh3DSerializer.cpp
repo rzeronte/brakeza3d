@@ -3,7 +3,7 @@
 //
 
 #include "../../include/Serializers/Mesh3DSerializer.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/Object3DGUI.h"
@@ -53,7 +53,7 @@ void Mesh3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
     mesh->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(json, "model")->valuestring);
 
     if (cJSON_GetObjectItemCaseSensitive(json, "shaders") != nullptr) {
-        auto shaderTypesMapping = ComponentsManager::get()->Render()->getShaderTypesMapping();
+        auto shaderTypesMapping = Components::get()->Render()->getShaderTypesMapping();
         cJSON *currentShaderJSON;
         cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {
             auto typeString = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
@@ -131,7 +131,7 @@ void Mesh3DSerializer::LoadFileIntoScene(const std::string& model)
 {
     auto *o = new Mesh3D();
 
-    o->setPosition(ComponentsManager::get()->Camera()->getCamera()->getPosition());
+    o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
     o->AssimpLoadGeometryFromFile(model);
 
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Mesh3D"));

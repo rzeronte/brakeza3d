@@ -5,10 +5,9 @@
 #include "../include/GUI/Objects/ScriptLuaGUI.h"
 
 #include "../../../include/Brakeza.h"
-#include "../../../include/Components/ComponentsManager.h"
+#include "../../../include/Components/Components.h"
 #include "../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/GUIManager.h"
-#include "../../../include/Misc/Tools.h"
 
 void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
 {
@@ -82,14 +81,15 @@ void ScriptLuaGUI::DrawWinObjectScripts(GUIManager *gui)
     auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_SCRIPTS);
     if (!windowStatus->isOpen) return;
 
-    bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < gui->gameObjects.size();
+    auto sceneObjects = Brakeza::get()->getSceneObjects();
+    bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < sceneObjects.size();
 
     if (!hasSelectedIndex) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
         return;
     }
 
-    auto o = gui->gameObjects[gui->selectedObjectIndex];
+    auto o = sceneObjects[gui->selectedObjectIndex];
     auto objectScripts = o->getScripts();
 
     if (objectScripts.empty()) {
@@ -152,7 +152,9 @@ void ScriptLuaGUI::DrawWinObjectVars(GUIManager *gui)
     auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_VARS);
     if (!windowStatus->isOpen) return;
 
-    bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < gui->gameObjects.size();
+    auto sceneObjects = Brakeza::get()->getSceneObjects();
+
+    bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < sceneObjects.size();
 
     if (!hasSelectedIndex) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
@@ -161,10 +163,10 @@ void ScriptLuaGUI::DrawWinObjectVars(GUIManager *gui)
     if (hasSelectedIndex) {
         static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
         if (ImGui::BeginTable("ObjectVariablesTable", 3, flags)) {
-            auto o = gui->gameObjects[gui->selectedObjectIndex];
+            auto o = sceneObjects[gui->selectedObjectIndex];
             auto scripts = o->getScripts();
             auto &luaEnvironment = o->getLuaEnvironment();
-            auto &lua = ComponentsManager::get()->Scripting()->getLua();
+            auto &lua = Components::get()->Scripting()->getLua();
 
             int numVarFound = 0;
             for (auto &pair : luaEnvironment) {
@@ -208,7 +210,7 @@ void ScriptLuaGUI::DrawWinGlobalVars(GUIManager *gui)
 
     static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("GlobalVariablesTable", 3, flags)) {
-        auto &lua = ComponentsManager::get()->Scripting()->getLua();
+        auto &lua = Components::get()->Scripting()->getLua();
         sol::table globalTable = lua["_G"];  // Acceder a la tabla global
 
         int numVarFound = 0;

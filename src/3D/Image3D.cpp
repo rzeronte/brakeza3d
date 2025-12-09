@@ -1,5 +1,5 @@
 #include "../../include/3D/Image3D.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/Image3DGUI.h"
@@ -67,8 +67,8 @@ void Image3D::onUpdate()
         LookAtBillboard();
     }
 
-    auto render = ComponentsManager::get()->Render();
-    auto window = ComponentsManager::get()->Window();
+    auto render = Components::get()->Render();
+    auto window = Components::get()->Window();
 
     if (isGUISelected()) {
         render->getShaders()->shaderOGLOutline->drawOutlineImage3D(
@@ -248,7 +248,7 @@ void Image3D::setImage(Image* value)
 
 void Image3D::shadowMappingPass()
 {
-    auto render = ComponentsManager::get()->Render();
+    auto render = Components::get()->Render();
     auto shaderShadowPass = render->getShaders()->shaderShadowPass;
     auto shaderRender = render->getShaders()->shaderOGLRender;
 
@@ -285,7 +285,7 @@ void Image3D::shadowMappingPass()
 
 void Image3D::LookAtBillboard()
 {
-    auto o = ComponentsManager::get()->Camera()->getCamera();
+    auto o = Components::get()->Camera()->getCamera();
 
     // Dirección de la imagen hacia la cámara
     Vertex3D direction = (o->getPosition() - position).getNormalize();

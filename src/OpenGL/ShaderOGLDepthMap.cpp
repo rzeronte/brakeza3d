@@ -1,7 +1,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include "../../include/OpenGL/ShaderOGLDepthMap.h"
 #include "../../include/Config.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLDepthMap::ShaderOGLDepthMap()
 :
@@ -24,7 +24,7 @@ ShaderOGLDepthMap::ShaderOGLDepthMap()
 
 void ShaderOGLDepthMap::render(GLuint textureID, GLuint fbo)
 {
-    auto render = ComponentsManager::get()->Render();
+    auto render = Components::get()->Render();
     render->changeOpenGLFramebuffer(fbo);
     render->changeOpenGLProgram(programID);
 

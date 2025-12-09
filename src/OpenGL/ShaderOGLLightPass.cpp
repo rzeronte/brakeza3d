@@ -1,6 +1,6 @@
 
 #include "../../include/OpenGL/ShaderOGLLightPass.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include <glm/gtc/type_ptr.hpp>
 
@@ -56,12 +56,12 @@ void ShaderOGLLightPass::render(
     int numSpotLightsShadowMaps,
     GLuint fbo
 ) {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 
-    auto camera = ComponentsManager::get()->Camera();
+    auto camera = Components::get()->Camera();
     auto cameraPosition = camera->getCamera()->getPosition().toGLM();
 
     setVec3Uniform(viewPosUniform, cameraPosition);
@@ -111,7 +111,7 @@ void ShaderOGLLightPass::fillSpotLightsMatricesUBO()
 
     std::vector<glm::mat4> spotLightsShadowMapLightMatrices;
 
-    auto spotLights = ComponentsManager::get()->Render()->getShaders()->shaderOGLRender->getShadowMappingSpotLights();
+    auto spotLights = Components::get()->Render()->getShaders()->shaderOGLRender->getShadowMappingSpotLights();
 
     for (auto & spotLight : spotLights) {
         spotLightsShadowMapLightMatrices.push_back(spotLight->getLightSpaceMatrix());

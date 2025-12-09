@@ -5,7 +5,7 @@
 #include "GUIAddonObject3DProperties.h"
 
 #include "../../Brakeza.h"
-#include "../../Components/ComponentsManager.h"
+#include "../../Components/Components.h"
 #include "../Objects/FileSystemGUI.h"
 
 GUIAddonObject3DProperties::GUIAddonObject3DProperties()
@@ -17,7 +17,7 @@ void GUIAddonObject3DProperties::DrawWinObjectProps(GUIManager *gui)
     auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_PROPS);
     if (!windowStatus->isOpen) return;
 
-    auto o = ComponentsManager::get()->Render()->getSelectedObject();
+    auto o = Components::get()->Render()->getSelectedObject();
 
     if (o == nullptr) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");

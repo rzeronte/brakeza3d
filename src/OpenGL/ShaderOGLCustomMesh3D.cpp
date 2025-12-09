@@ -3,7 +3,7 @@
 //
 
 #include "../include/OpenGL/ShaderOGLCustomMesh3D.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 
 ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(
@@ -81,12 +81,12 @@ void ShaderOGLCustomMesh3D::renderMesh(
     GLuint fbo
 )
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->changeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
 
-    auto camera = ComponentsManager::get()->Camera();
+    auto camera = Components::get()->Camera();
 
     setMat4Uniform(matrixProjectionUniform, camera->getGLMMat4ProjectionMatrix());
     setMat4Uniform(matrixViewUniform, camera->getGLMMat4ViewMatrix());
@@ -116,7 +116,7 @@ void ShaderOGLCustomMesh3D::renderMesh(
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);      // Vincula el buffer de vértices como buffer de escritura
     glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, sizeof(glm::vec4) * size);
 
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(0);
+    Components::get()->Render()->changeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLCustomMesh3D::setShaderSystemUniforms(GLuint diffuse, GLuint specular)

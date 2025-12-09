@@ -4,7 +4,7 @@
 
 #include "../../../include/GUI/Objects/Object3DGUI.h"
 
-#include "../../../include/Components/ComponentsManager.h"
+#include "../../../include/Components/Components.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/Misc/Logging.h"
 #include "../../../include/Misc/ToolsMaths.h"
@@ -257,12 +257,12 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
 void Object3DGUI::DrawSelectedObjectGuizmo()
 {
-    auto render = ComponentsManager::get()->Render();
+    auto render = Components::get()->Render();
 
     if (render->getSelectedObject() != nullptr) {
         auto o = render->getSelectedObject();
 
-        auto camera = ComponentsManager::get()->Camera();
+        auto camera = Components::get()->Camera();
         Drawable::drawObject3DGizmo(
             o,
             o->getModelMatrix(),

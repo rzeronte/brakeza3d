@@ -1,7 +1,7 @@
 
 #include "../../include/3D/Swarm.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/SwarmGUI.h"
 

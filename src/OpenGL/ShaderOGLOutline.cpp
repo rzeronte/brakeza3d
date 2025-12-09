@@ -1,7 +1,7 @@
 
 #include <glm/ext/matrix_clip_space.hpp>
 #include "../../include/OpenGL/ShaderOGLOutline.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/3D/Image3D.h"
 
 ShaderOGLOutline::ShaderOGLOutline()
@@ -21,8 +21,8 @@ ShaderOGLOutline::ShaderOGLOutline()
 
 void ShaderOGLOutline::renderOutline(GLuint textureId, const Color &c, float borderThickness, GLuint fbo)
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 
@@ -41,7 +41,7 @@ void ShaderOGLOutline::destroy()
 
 void ShaderOGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThickness, GLuint fbo)
 {
-    auto shaderColor = ComponentsManager::get()->Render()->getShaders()->shaderOGLColor;
+    auto shaderColor = Components::get()->Render()->getShaders()->shaderOGLColor;
 
     for (const auto& mm : m->getMeshData()) {
         shaderColor->renderColor(
@@ -61,7 +61,7 @@ void ShaderOGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThickn
 
 void ShaderOGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderThickness, GLuint fbo)
 {
-    auto componentRender = ComponentsManager::get()->Render();
+    auto componentRender = Components::get()->Render();
     auto shaderColor = componentRender->getShaders()->shaderOGLColor;
 
     for (const auto& mm : m->getMeshData()) {
@@ -82,7 +82,7 @@ void ShaderOGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderThic
 
 void ShaderOGLOutline::drawOutlineImage3D(Image3D *i, const Color &c, float borderThickness, GLuint framebuffer)
 {
-    auto shaderColor = ComponentsManager::get()->Render()->getShaders()->shaderOGLColor;
+    auto shaderColor = Components::get()->Render()->getShaders()->shaderOGLColor;
 
     shaderColor->renderColor(
         i->getModelMatrix(),

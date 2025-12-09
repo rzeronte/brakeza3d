@@ -6,7 +6,7 @@
 #include "../../include/OpenGL/ShaderOGLLine.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Config.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLLine::ShaderOGLLine()
 :
@@ -26,9 +26,9 @@ ShaderOGLLine::ShaderOGLLine()
 
 void ShaderOGLLine::render(Point2D a, Point2D b, Color c, float weight, GLuint fbo)
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
 
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
 

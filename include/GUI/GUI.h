@@ -11,6 +11,7 @@
 #include "imgui.h"
 #include "../SceneObjectTypes.h"
 #include "../Misc/ScriptLUA.h"
+#include "../Misc/Timer.h"
 #include "../OpenGL/ShaderOGLCustom.h"
 
 namespace GUIType
@@ -51,6 +52,7 @@ namespace GUIType
         static constexpr ImVec2 ICON_SIZE_SMALL = ImVec2(14, 14);
         static constexpr ImVec2 ICON_LOCKS = ImVec2(14, 14);
         static constexpr ImVec2 DRAG_ACCEPT = ImVec2(32, 32);
+        static constexpr ImVec2 ICON_BROWSER_TYPE = ImVec2(32, 32);
     };
 
     struct Levels {
@@ -134,7 +136,7 @@ namespace GUIType
     struct ScriptEditableManager {
         std::string selectedScriptFilename;
         ScriptLUA *script = nullptr;
-        char editableSource[1024 * 16];
+        char editableSource[1024 * 16] = {};
     };
 
     struct ShaderEditableManager {
@@ -142,8 +144,8 @@ namespace GUIType
         std::string folder;
         std::string name;
         ShaderOGLCustom *shader = nullptr;
-        char editableSourceVS[1024 * 16];
-        char editableSourceFS[1024 * 16];
+        char editableSourceVS[1024 * 16] = {};
+        char editableSourceFS[1024 * 16] = {};
     };
 
 }
@@ -314,7 +316,8 @@ namespace GUIType
     X(SCRIPT_REMOVE_VARIABLE, 0, 0) \
     X(SHADER_REMOVE_VARIABLE, 0, 0) \
     X(SHADER_TYPE_MESH3D, 0, 0) \
-    X(SHADER_TYPE_POSTPROCESSING, 0, 0)
+    X(SHADER_TYPE_POSTPROCESSING, 0, 0) \
+    X(CANCEL, 0, 0)
 
 
 // Icons Objects
@@ -376,6 +379,7 @@ public:
     static void Toggle(bool &value);
     static void ImGuiSetColors();
     static void WelcomeMessage();
+    static void ShowLoadTime(const std::string &text, const Timer &t);
     static GUIType::BrowserCache CreateBrowserCache(std::string folder, const std::string &extension);
 };
 

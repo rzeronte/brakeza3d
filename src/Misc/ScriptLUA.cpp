@@ -6,7 +6,7 @@
 #include "../../include/Misc/ScriptLUA.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/ScriptLuaGUI.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/ToolsJSON.h"
@@ -51,7 +51,7 @@ void ScriptLUA::getCode(const std::string &script)
 void ScriptLUA::runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg) const
 {
     if (paused) return;
-    sol::state &lua = ComponentsManager::get()->Scripting()->getLua();
+    sol::state &lua = Components::get()->Scripting()->getLua();
 
     try {
         lua.script(content, environment);
@@ -76,19 +76,19 @@ void ScriptLUA::runEnvironment(sol::environment &environment, const std::string&
             Logging::Error("[ScriptLUA] Error in LUA Script %s", scriptFilename.c_str());
             Logging::Error("[ScriptLUA] Function: %s", func.c_str());
             Logging::Error("[ScriptLUA] %s", err.what());
-            ComponentsManager::get()->Scripting()->StopLUAScripts();
+            Components::get()->Scripting()->StopLUAScripts();
         }
     } catch (const sol::error& e) {
         Logging::Error("[ScriptLUA] Exception in LUA Script %s", scriptFilename.c_str());
         Logging::Error("[ScriptLUA] %s", e.what());
-        ComponentsManager::get()->Scripting()->StopLUAScripts();
+        Components::get()->Scripting()->StopLUAScripts();
     }
 }
 
 void ScriptLUA::runGlobal(const std::string& func) const
 {
     if (paused) return;
-    sol::state &lua = ComponentsManager::get()->Scripting()->getLua();
+    sol::state &lua = Components::get()->Scripting()->getLua();
 
     try {
         lua.script(content);
@@ -100,12 +100,12 @@ void ScriptLUA::runGlobal(const std::string& func) const
             sol::error err = result;
             Logging::Error("[ScriptLUA] Error in LUA Script %s", scriptFilename.c_str());
             Logging::Error("[ScriptLUA] %s", scriptFilename.c_str(), err.what());
-            ComponentsManager::get()->Scripting()->StopLUAScripts();
+            Components::get()->Scripting()->StopLUAScripts();
         }
     } catch (const sol::error& e) {
         Logging::Error("[ScriptLUA] Error in LUA Script %s", scriptFilename.c_str());
         Logging::Error("[ScriptLUA] %s", e.what());
-        ComponentsManager::get()->Scripting()->StopLUAScripts();
+        Components::get()->Scripting()->StopLUAScripts();
     }
 }
 
@@ -182,7 +182,7 @@ void ScriptLUA::reloadGlobals() const
 {
     Logging::Message("Reloading LUA Global Environment (%s)", this->fileTypes.c_str());
 
-    sol::state &lua = ComponentsManager::get()->Scripting()->getLua();
+    sol::state &lua = Components::get()->Scripting()->getLua();
     for (const auto& type : dataTypes) {
         std::cout << "Setting GLOBAL variable for script '(" << scriptFilename.c_str() << ", " << type.name.c_str() << ", " << type.type.c_str() << ")"<< std::endl;
         Logging::Message("Setting GLOBAL variable for script '%s' (Name: '%s', Type: '%s', Value: '%s')", scriptFilename.c_str(), type.name.c_str(), type.type.c_str(), ScriptLUATypeData::toString(type.value).c_str());

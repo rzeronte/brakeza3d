@@ -1,6 +1,6 @@
 
 #include "../../include/Misc/Button.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 Button::Button(int x, int y, const std::string& imageFileName, void (*functionCallBack)())
 :
@@ -54,7 +54,7 @@ void Button::onUpdate() {
 }
 
 bool Button::isClicked() {
-    auto *input = ComponentsManager::get()->Input();
+    auto *input = Components::get()->Input();
 
     if (!input->isClickLeft()) {
         return false;

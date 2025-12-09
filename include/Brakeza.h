@@ -3,7 +3,6 @@
 
 #include <vector>
 #include "Components/Component.h"
-#include "Components/ComponentSound.h"
 #include "GUI/GUIManager.h"
 #include <thread>
 
@@ -14,45 +13,54 @@ class Brakeza
     float current_ticks = 0;
     float executionTime = 0;
 
-    ComponentsManager *componentsManager;
+    Components *componentsManager;
+    Config::LineCommandOptions cliOptions;
+    Timer timer;
 
-    Timer engineTimer;
-
-    std::vector<Object3D *> sceneObjects;
+    std::vector<Object3D *> objects;
 
     GUIManager *managerGUI;
 public:
     Brakeza();
     virtual ~Brakeza();
 
-    float &getExecutionTime();
-    void start(int argc, char *argv[]);
+    bool ReadArgs(int argc, char **argv);
+    void Start(int argc, char *argv[]);
+    void MainLoop();
     void addObject3D(Object3D *obj, const std::string &label);
     void UpdateTimer();
-    void OnStartComponents() const;
+    void OnStartComponents();
     void PreUpdateComponents() const;
     void OnUpdateComponents() const;
     void PostUpdateComponents() const;
     void onUpdateSDLPollEventComponents(SDL_Event *event) const;
     void onEndComponents() const;
-    void HandleAutoStartProject(bool autostart, const std::string &project) const;
-    void mainLoop(bool autostart, const std::string& project);
+    void AutoLoadProjectOrContinue() const;
     void ControlFrameRate() const;
     void CaptureInputEvents(SDL_Event &e) const;
-    static void shutdown();
+    void RegisterComponents() const;
+
+    void PreMainLoop();
+
+    Timer *getTimer() { return &this->timer; }
+    Object3D *getObjectById(int id) const;
+    Object3D *getObjectByName(const std::string &label) const;
+    int getNextUniqueObjectId() const;
+
+    float getExecutionTime() const                              { return executionTime; }
+    std::vector<Object3D *> &getSceneObjects()                  { return objects; }
+    float getEngineTotalTime() const                            { return last_ticks / 1000.f; }
+    float getDeltaTime() const                                  { return deltaTime / 1000; }
+    float getDeltaTimeMicro() const                             { return deltaTime; }
+    Components *getComponentsManager() const                    { return componentsManager; }
+    GUIManager *GUI() const                                     { return managerGUI; }
+    Object3D *getObjectByIndex(int index) const                 { return objects[index]; }
+
+    static void Shutdown()                                      { Config::get()->EXIT = true; };
     static std::string UniqueObjectLabel(const char *prefix);
+
     static Brakeza *get();
     static Brakeza *instance;
-    Timer *getTimer();
-    [[nodiscard]] Object3D *getSceneObjectById(int id) const;
-    [[nodiscard]] int getNextObjectID() const;
-    [[nodiscard]] float getEngineTotalTime() const;
-    [[nodiscard]] std::vector<Object3D *> &getSceneObjects();
-    [[nodiscard]] float getDeltaTime() const;
-    [[nodiscard]] float getDeltaTimeMicro() const;
-    [[nodiscard]] ComponentsManager *getComponentsManager() const;
-    [[nodiscard]] GUIManager *GUI() const;
-    [[nodiscard]] Object3D *getSceneObjectByLabel(const std::string &label) const;
 };
 
 

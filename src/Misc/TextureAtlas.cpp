@@ -1,7 +1,7 @@
 #include <SDL2/SDL_image.h>
 #include "../../include/Misc/TextureAtlas.h"
 
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
 
 void TextureAtlas::AllocateEmptyMask(int totalWidth, int totalHeight)
@@ -76,7 +76,7 @@ void TextureAtlas::CreateFromSheet(const std::string &file, int spriteWidth, int
     numRows = spriteSheetSurface->h / spriteHeight;
     numColumns = spriteSheetSurface->w / spriteWidth;
 
-    const auto renderer = ComponentsManager::get()->Window()->getRenderer();
+    const auto renderer = Components::get()->Window()->getRenderer();
 
     for (int row = 0; row < numRows; ++row) {
         for (int column = 0; column < numColumns; ++column) {

@@ -15,7 +15,7 @@ class ComponentScripting : public Component
     std::vector<ScriptLUA*> projectScripts;
     sol::state lua;
 public:
-    ComponentScripting();
+    ComponentScripting() = default;
 
     void onStart() override;
     void preUpdate() override;

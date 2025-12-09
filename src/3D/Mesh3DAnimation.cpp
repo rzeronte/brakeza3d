@@ -1,7 +1,7 @@
 #include <assimp/postprocess.h>
 #include "../../include/3D/Mesh3DAnimation.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Render/Drawable.h"
@@ -34,8 +34,8 @@ void Mesh3DAnimation::onUpdate()
         UpdateBoneColliders();
     }
 
-    auto render = ComponentsManager::get()->Render();
-    auto window = ComponentsManager::get()->Window();
+    auto render = Components::get()->Render();
+    auto window = Components::get()->Window();
 
     if (isGUISelected()) {
         render->getShaders()->shaderOGLOutline->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
@@ -104,13 +104,13 @@ void Mesh3DAnimation::UpdateOpenGLBones()
         transformations[i] = Tools::aiMat4toGLMMat4(boneInfo[i].FinalTransformation);
     }
 
-    auto shaderBones = ComponentsManager::get()->Render()->getShaders()->shaderOGLBonesTransforms;
+    auto shaderBones = Components::get()->Render()->getShaders()->shaderOGLBonesTransforms;
     for (auto &m: meshes) {
         if (m.vertices.empty()) continue;
         shaderBones->render(
             m,
             transformations,
-            ComponentsManager::get()->Window()->getSceneFramebuffer()
+            Components::get()->Window()->getSceneFramebuffer()
         );
     }
 }
@@ -182,7 +182,7 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     AssimpInitMaterials(scene);
     ReadNodesFromRoot();
 
-    ComponentsManager::get()->Render()->FillOGLBuffers(meshes);
+    Components::get()->Render()->FillOGLBuffers(meshes);
 
     FillAnimationBoneDataOGLBuffers();
 
@@ -533,8 +533,8 @@ void Mesh3DAnimation::DrawBones(aiNode *node, Vertex3D *lastBonePosition)
         Transforms::objectSpace(bonePosition, bonePosition, this);
 
         if (lastBonePosition) {
-            auto render = ComponentsManager::get()->Render();
-            auto window = ComponentsManager::get()->Window();
+            auto render = Components::get()->Render();
+            auto window = Components::get()->Window();
             render->getShaders()->shaderOGLLine3D->render(
                 *lastBonePosition,
                 bonePosition,
@@ -601,7 +601,7 @@ Mesh3DAnimation::~Mesh3DAnimation()
     for (auto &c : boneMappingColliders) {
         for (auto &bone : c.boneColliderInfo) {
             if (bone.ghostObject != nullptr) {
-                ComponentsManager::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(bone.ghostObject);
+                Components::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(bone.ghostObject);
                 delete bone.ghostObject;
             }
             if (bone.convexHullShape != nullptr) {
@@ -759,7 +759,7 @@ void Mesh3DAnimation::SetMappingBoneColliderInfo(
     ci.enabled = enabled;
     ci.name = boneInfo[boneId].name;
 
-    auto world = ComponentsManager::get()->Collisions()->getDynamicsWorld();
+    auto world = Components::get()->Collisions()->getDynamicsWorld();
 
     if (enabled) {
         if (ci.ghostObject == nullptr ) {
@@ -826,7 +826,7 @@ void Mesh3DAnimation::createBoneGhostBody(int bmIndex, unsigned int boneId, cons
     ci.ghostObject->setUserIndex(Config::CollisionSource::BONE_COLLIDER);
     ci.ghostObject->setUserIndex2(bmIndex);
 
-    ComponentsManager::get()->Collisions()->getDynamicsWorld()->addCollisionObject(
+    Components::get()->Collisions()->getDynamicsWorld()->addCollisionObject(
         ci.ghostObject,
         btBroadphaseProxy::DefaultFilter,
         btBroadphaseProxy::DefaultFilter
@@ -893,7 +893,7 @@ void Mesh3DAnimation::removeBonesColliderMapping(const std::string& name)
 
     if (bm == nullptr) return;
 
-    auto world = ComponentsManager::get()->Collisions()->getDynamicsWorld();
+    auto world = Components::get()->Collisions()->getDynamicsWorld();
 
     for (auto &b : bm->boneColliderInfo) {
         if (b.ghostObject == nullptr) continue;
@@ -931,14 +931,14 @@ void Mesh3DAnimation::ResolveCollision(CollisionInfo with)
         }
     }
 
-    if (ComponentsManager::get()->Scripting()->getStateLUAScripts() == Config::LUA_PLAY) {
+    if (Components::get()->Scripting()->getStateLUAScripts() == Config::LUA_PLAY) {
         RunResolveCollisionScripts(with);
     }
 }
 
 void Mesh3DAnimation::ShadowMappingPass()
 {
-    auto render = ComponentsManager::get()->Render();
+    auto render = Components::get()->Render();
     auto shaderShadowPass = render->getShaders()->shaderShadowPass;
     auto shaderRender = render->getShaders()->shaderOGLRender;
 

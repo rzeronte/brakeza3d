@@ -3,7 +3,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include "../../include/3D/ParticleEmitter.h"
 #include "../../include/Render/Transforms.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/ParticleEmitterGUI.h"
 
@@ -94,7 +94,7 @@ void ParticleEmitter::draw()
     Vertex3D direction = getRotation() * Vertex3D(0, 1, 0);
 
     float delta = Brakeza::get()->getDeltaTime();
-    glm::vec3 CameraPosition(ComponentsManager::get()->Camera()->getCamera()->getPosition().toGLM());
+    glm::vec3 CameraPosition(Components::get()->Camera()->getCamera()->getPosition().toGLM());
 
     // Define la frecuencia deseada en partículas por segundo
     int newparticles = static_cast<int>(delta * 100 * context.PARTICLES_BY_SECOND);
@@ -188,7 +188,7 @@ void ParticleEmitter::draw()
     glBufferData(GL_ARRAY_BUFFER, MaxParticles * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW); // Buffer orphaning, a common way to improve streaming perf. See above link for details.
     glBufferSubData(GL_ARRAY_BUFFER, 0, ParticlesCount * sizeof(GLubyte) * 4, g_particule_color_data);
 
-    ComponentsManager::get()->Render()->getShaders()->shaderOGLParticles->render(
+    Components::get()->Render()->getShaders()->shaderOGLParticles->render(
             billboard_vertex_buffer,
             particles_position_buffer,
             particles_color_buffer,
