@@ -1,12 +1,12 @@
 #include "../../include/Render/Frustum.h"
 #include "../../include/Misc/ToolsMaths.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 Frustum::Frustum() = default;
 
 bool Frustum::isVertexInside(Vertex3D &v)
 {
-    auto camera = ComponentsManager::get()->Camera();
+    auto camera = Components::get()->Camera();
     glm::vec4 clipSpacePos = camera->getGLMMat4ProjectionMatrix() * camera->getGLMMat4ViewMatrix() * glm::vec4(v.toGLM(), 1);
 
     if (clipSpacePos.x < -clipSpacePos.w || clipSpacePos.x > clipSpacePos.w ||

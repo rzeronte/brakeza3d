@@ -7,7 +7,7 @@
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/3D/Image3DAnimation360.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 #include "../../include/Serializers/Image3DAnimationSerializer.h"
 
@@ -40,7 +40,7 @@ cJSON * Image3DAnimation360Serializer::JsonByObject(Object3D *o)
 Object3D * Image3DAnimation360Serializer::ObjectByJson(cJSON *json)
 {
     auto *o = new Image3DAnimation360(
-        ComponentsManager::get()->Camera()->getCamera()->getPosition(),
+        Components::get()->Camera()->getCamera()->getPosition(),
         1,
         1
     );
@@ -82,7 +82,7 @@ void Image3DAnimation360Serializer::ApplyJsonToObject(const cJSON *json, Object3
 void Image3DAnimation360Serializer::LoadFileIntoScene(const std::string &file)
 {
     auto o = new Image3DAnimation360(
-        ComponentsManager::get()->Camera()->getCamera()->getPosition(),
+        Components::get()->Camera()->getCamera()->getPosition(),
         1,
         1
     );

@@ -110,7 +110,7 @@ add_executable(Brakeza3D
         src/Components/ComponentInput.cpp                   include/Components/ComponentInput.h
         src/Components/ComponentRender.cpp                  include/Components/ComponentRender.h
         src/Components/ComponentScripting.cpp               include/Components/ComponentScripting.h
-        src/Components/ComponentsManager.cpp                include/Components/ComponentsManager.h
+        src/Components/Components.cpp include/Components/Components.h
         src/Components/ComponentSound.cpp                   include/Components/ComponentSound.h
         src/Components/ComponentWindow.cpp                  include/Components/ComponentWindow.h
         include/Components/Camera3D.h
@@ -171,7 +171,6 @@ add_executable(Brakeza3D
         include/Misc/PathFinding.h
 
         # Objects
-        src/3D/BSPMap.cpp include/3D/BSPMap.h
         src/3D/Camera3D.cpp include/Components/Camera3D.h
         src/3D/Cube3D.cpp include/3D/Cube3D.h
         src/3D/Decal.cpp include/3D/Decal.h
@@ -272,8 +271,7 @@ add_executable(Brakeza3D
         include/GUI/AddOns/GUIAddonObjects3D.cpp
         include/GUI/AddOns/GUIConsole.cpp
         src/GUI/Objects/Mesh3DGUIAnimation.cpp
-        src/OpenGL/ShaderOGLGrid.cpp
-        src/OpenGL/ShaderOGLGrid.h
+        src/OpenGL/ShaderOGLGrid.cpp        include/OpenGL/ShaderOGLGrid.h
 )
 
 target_link_libraries(Brakeza3D

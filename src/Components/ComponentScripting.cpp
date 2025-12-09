@@ -8,13 +8,10 @@
 #include "../../include/BrakezaLuaBridge.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 
-ComponentScripting::ComponentScripting()
-{
-}
-
 void ComponentScripting::onStart()
 {
     Component::onStart();
+    InitLUATypes();
 }
 
 void ComponentScripting::preUpdate()
@@ -55,9 +52,9 @@ void ComponentScripting::PlayLUAScripts()
 
     onStartScripts();
 
-    ComponentsManager::get()->Input()->setEnabled(false);
-    ComponentsManager::get()->Render()->setSelectedObject(nullptr);
-    ComponentsManager::get()->Collisions()->setEnabled(true);
+    Components::get()->Input()->setEnabled(false);
+    Components::get()->Render()->setSelectedObject(nullptr);
+    Components::get()->Collisions()->setEnabled(true);
 
     stateScripts = Config::LuaStateScripts::LUA_PLAY;
 }
@@ -66,8 +63,8 @@ void ComponentScripting::StopLUAScripts()
 {
     Logging::Message("LUA Scripts state changed to STOP");
 
-    ComponentsManager::get()->Input()->setEnabled(true);
-    ComponentsManager::get()->Collisions()->setEnabled(false);
+    Components::get()->Input()->setEnabled(true);
+    Components::get()->Collisions()->setEnabled(false);
 
     stateScripts = Config::LuaStateScripts::LUA_STOP;
 }
@@ -76,7 +73,7 @@ void ComponentScripting::ReloadLUAScripts()
 {
     Logging::Message("Reloading LUA Scripts...");
 
-    auto &lua = ComponentsManager::get()->Scripting()->getLua();
+    auto &lua = Components::get()->Scripting()->getLua();
     lua.collect_garbage();
 
     for (auto s : projectScripts) {
@@ -110,7 +107,7 @@ sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName
 {
     for (auto s : projectScripts) {
         if (s->getScriptFilename() == scriptName) continue;
-        sol::state &lua = ComponentsManager::get()->Scripting()->getLua();
+        sol::state &lua = Components::get()->Scripting()->getLua();
         return lua[varName];
     }
 
@@ -216,22 +213,23 @@ void ComponentScripting::createScriptLUAFile(const std::string& path)
 
 void ComponentScripting::removeScriptLUAFile(const std::string& path)
 {
-    Logging::Message("Deleting script file: %s", path.c_str());
+    Logging::Message("[Scripting] Deleting script file: %s", path.c_str());
     Tools::RemoveFile(path);
 }
 
 void ComponentScripting::InitLUATypes()
 {
-    Logging::Message("[ComponentScripting] Init LUA Global types");
+    Logging::Message("[Scripting] Init LUA Global types");
 
     lua.open_libraries(sol::lib::base, sol::lib::math);
 
     LUAIntegration(lua);
 
     lua["brakeza"] = Brakeza::get();
-    lua["componentsManager"] = ComponentsManager::get();
-    lua.set_function("print", &Logging::Message);
-}
+    lua["componentsManager"] = Components::get();
+    lua.set_function("print",
+        static_cast<void(*)(const char*, ...)>(&Logging::Message)
+    );}
 
 sol::state &ComponentScripting::getLua()
 {

@@ -6,7 +6,7 @@
 #include <algorithm>
 
 #include "../Brakeza.h"
-#include "../Components/ComponentsManager.h"
+#include "../Components/Components.h"
 #include "../Misc/Logging.h"
 
 Profiler *Profiler::instance = nullptr;
@@ -130,7 +130,7 @@ void Profiler::DrawComponentsTable(float cellHeight)
 
         const float ROW_HEIGHT = cellHeight;
 
-        for (auto c : ComponentsManager::get()->Components()) {
+        for (auto c : Components::get()->getComponents()) {
             auto measurePre = componentMeasures[c->getLabel() + ProfilerConstants::SUFFIX_PRE];
             auto measureUpdate = componentMeasures[c->getLabel() + + ProfilerConstants::SUFFIX_UPDATE];
             auto measurePost = componentMeasures[c->getLabel() + + ProfilerConstants::SUFFIX_POST];
@@ -341,7 +341,7 @@ void Profiler::DrawWinProfiler()
     }
 }
 
-void Profiler::ResetMeasure(MeasuresMap &map, const std::string &label)
+void Profiler::InitMeasure(MeasuresMap &map, const std::string &label)
 {
     map[label].startTime = 0;
     map[label].endTime = 0;

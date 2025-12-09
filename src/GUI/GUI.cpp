@@ -3,6 +3,8 @@
 //
 
 #include "../../include/GUI/GUI.h"
+
+#include "../../include/Brakeza.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../include/Misc/Logging.h"
@@ -215,20 +217,23 @@ void GUI::ShowPopUp(const char* title, const char *message, const std::function<
 
 void GUI::WelcomeMessage()
 {
-    Logging::Message("############################################################");
+    Logging::Message("***************************************************************");
+    Logging::Message("*                   B R A K E Z A 3 D                         *");
+    Logging::Message("***************************************************************");
+    Logging::Message("*                                                             *");
+    Logging::Message("*         Open source game engine for developers              *");
+    Logging::Message("***************************************************************");
+    Logging::Message(Config::get()->ENGINE_WEBSITE);
+    Logging::Message(Config::get()->ENGINE_SOURCE_WEBSITE);
+    Logging::Message(Config::get()->ENGINE_TITLE);
+    Logging::Message("***************************************************************");
     Logging::Message("");
-    Logging::Message("***********************");
-    Logging::Message("*  B R A K E Z A 3 D  *");
-    Logging::Message("***********************");
-    Logging::Message("");
-    Logging::Message("Open source game engine for developers");
-    Logging::Message("############################################################");
-    Logging::Message("");
-    Logging::Message(Config::get()->ENGINE_WEBSITE.c_str());
-    Logging::Message(Config::get()->ENGINE_SOURCE_WEBSITE.c_str());
-    Logging::Message("");
-    Logging::Message("%s", Config::get()->ENGINE_TITLE.c_str());
-    Logging::Message("");
-    Logging::Message("############################################################");
-    Logging::Message("");
+}
+
+void GUI::ShowLoadTime(const std::string &text, const Timer &t)
+{
+    Brakeza::get()->UpdateTimer();
+    Logging::Message("***************************************************************");
+    Logging::Message("[Brakeza] %s: %f secs", text.c_str(), t.getTotalTime());
+    Logging::Message("***************************************************************");
 }

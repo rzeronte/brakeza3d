@@ -4,18 +4,17 @@
 #include <glm/gtx/euler_angles.hpp>
 #include "../../include/3D/Object3D.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/Misc/ToolsJSON.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/GUI/Objects/Object3DGUI.h"
 
 Object3D::Object3D()
 :
-    id(Brakeza::get()->getNextObjectID()),
+    id(Brakeza::get()->getNextUniqueObjectId()),
     luaEnvironment(sol::environment(
-            ComponentsManager::get()->Scripting()->getLua(),
-            sol::create, ComponentsManager::get()->Scripting()->getLua().globals())
+        Components::get()->Scripting()->getLua(),
+        sol::create, Components::get()->Scripting()->getLua().globals())
     ),
     pickingColor(Color::idToColor(id)),
     type(ObjectType::Object3D)
@@ -160,9 +159,9 @@ void Object3D::onUpdate()
         if (a->isEnabled()) a->onUpdate();
     }
 
-    distanceToCamera = ComponentsManager::get()->Camera()->getCamera()->getPosition().distance(getPosition());
+    distanceToCamera = Components::get()->Camera()->getCamera()->getPosition().distance(getPosition());
 
-    if (ComponentsManager::get()->Scripting()->getStateLUAScripts() == Config::LUA_PLAY) {
+    if (Components::get()->Scripting()->getStateLUAScripts() == Config::LUA_PLAY) {
         RunScripts();
     }
 }
@@ -521,7 +520,7 @@ void Object3D::ResolveCollision(CollisionInfo with)
         Logging::Message("Object3D: Collision %s with %s",  getName().c_str(), object->getName().c_str());
     }
 
-    if (ComponentsManager::get()->Scripting()->getStateLUAScripts() == Config::LUA_PLAY) {
+    if (Components::get()->Scripting()->getStateLUAScripts() == Config::LUA_PLAY) {
         RunResolveCollisionScripts(with);
     }
 }
@@ -529,7 +528,7 @@ void Object3D::ResolveCollision(CollisionInfo with)
 void Object3D::RunResolveCollisionScripts(CollisionInfo with)
 {
     //auto *object = static_cast<Object3D *>(with.with);
-    const sol::state &lua = ComponentsManager::get()->Scripting()->getLua();
+    const sol::state &lua = Components::get()->Scripting()->getLua();
 
     sol::object luaValue = sol::make_object(lua, with);
 
@@ -574,5 +573,5 @@ int Object3D::getId() const
 
 bool Object3D::isGUISelected() const
 {
-    return ComponentsManager::get()->Render()->getSelectedObject() == this;
+    return Components::get()->Render()->getSelectedObject() == this;
 }

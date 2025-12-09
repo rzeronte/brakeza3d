@@ -1,5 +1,5 @@
 #include "../../include/OpenGL/ShaderOGLPoints.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLPoints::ShaderOGLPoints()
 :
@@ -42,15 +42,15 @@ void ShaderOGLPoints::renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint fb
 
 void ShaderOGLPoints::render(glm::mat4 modelMatrix, GLuint vertexBuffer, int numberPoints, Color c, GLuint fbo) const
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
 
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
     glEnable(GL_POINT_SPRITE);
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
-    auto camera = ComponentsManager::get()->Camera();
+    auto camera = Components::get()->Camera();
     glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
     glm::mat4 ProjectionMatrix = camera->getGLMMat4ProjectionMatrix();
 

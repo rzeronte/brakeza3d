@@ -1,6 +1,6 @@
 #include "../../include/3D/RayCollisionable.h"
 #include "../../include/Render/Transforms.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Render/Drawable.h"
 
@@ -26,7 +26,7 @@ void RayCollisionable::Integrate()
     rayCallback->m_rayFromWorld = btVector3(start.x, start.y, start.z);
     rayCallback->m_rayToWorld = btVector3(end.x, end.y, end.z);
 
-    ComponentsManager::get()->Collisions()->getDynamicsWorld()->rayTest(
+    Components::get()->Collisions()->getDynamicsWorld()->rayTest(
         btVector3(start.x, start.y, start.z),
         btVector3(end.x, end.y, end.z),
         *rayCallback

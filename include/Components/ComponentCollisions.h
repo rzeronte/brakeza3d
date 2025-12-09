@@ -2,30 +2,22 @@
 #ifndef BRAKEDA3D_COMPONENTCOLLISIONS_H
 #define BRAKEDA3D_COMPONENTCOLLISIONS_H
 
-#include "../3D/BSPMap.h"
 #include "../Render/PhysicsDebugDraw.h"
 #include "Component.h"
+#include <btBulletDynamicsCommon.h>
 
-class ComponentCollisions : public Component {
-    BSPMap *bspMap;
-
-    ///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
-    btDefaultCollisionConfiguration *collisionConfiguration;
-    ///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-    btCollisionDispatcher *dispatcher;
-    ///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
-    btBroadphaseInterface *overlappingPairCache;
-
-    btGhostPairCallback *ghostPairCallback;
-
-    ///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-    btSequentialImpulseConstraintSolver *solver;
-    btDiscreteDynamicsWorld *dynamicsWorld;
-    PhysicsDebugDraw *debugDraw;
-
+class ComponentCollisions : public Component
+{
+    btDefaultCollisionConfiguration *collisionConfiguration = nullptr;
+    btCollisionDispatcher *dispatcher = nullptr;
+    btBroadphaseInterface *overlappingPairCache = nullptr;
+    btGhostPairCallback *ghostPairCallback = nullptr;
+    btSequentialImpulseConstraintSolver *solver = nullptr;
+    btDiscreteDynamicsWorld *dynamicsWorld = nullptr;
+    PhysicsDebugDraw *debugDraw = nullptr;
     std::vector<Vector3D> debugDrawLinesCache;
 public:
-    ComponentCollisions();
+    ComponentCollisions() = default;
     ~ComponentCollisions() override;
 
     bool isRayCollisionWith(const Vertex3D &from, const Vertex3D &to, const Object3D *o) const;

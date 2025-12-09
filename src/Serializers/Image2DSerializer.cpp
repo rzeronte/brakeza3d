@@ -6,7 +6,7 @@
 #include "../../include/2D/Image2D.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 
 cJSON * Image2DSerializer::JsonByObject(Object3D *o)
@@ -54,7 +54,7 @@ void Image2DSerializer::LoadFileIntoScene(const std::string &file)
         new Image(file)
     );
 
-    o->setPosition(ComponentsManager::get()->Camera()->getCamera()->getPosition());
+    o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
 
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Image2D"));
 }

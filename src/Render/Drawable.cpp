@@ -6,7 +6,7 @@
 #include "ImGuizmo.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "imgui_internal.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 void Drawable::drawVertex(const Vertex3D &V, Color color)
 {
@@ -23,7 +23,7 @@ void Drawable::drawVertex(const Vertex3D &V, Color color)
 
 void Drawable::drawVector3D(const Vector3D &V, const Color &color)
 {
-    ComponentsManager::get()->Render()->drawLine(V.vertex1,V.vertex2, color);
+    Components::get()->Render()->drawLine(V.vertex1,V.vertex2, color);
 }
 
 void Drawable::drawMainAxisOffset(const Vertex3D &offset)
@@ -139,8 +139,8 @@ void Drawable::drawAABB(AABB3D *aabb, const Color &color)
     vectors.emplace_back(aabb->vertices[7], aabb->vertices[4]);
     vectors.emplace_back(aabb->vertices[7], aabb->vertices[1]);
 
-    auto window = ComponentsManager::get()->Window();
-    ComponentsManager::get()->Render()->getShaders()->shaderOGLLine3D->renderLines(vectors, window->getForegroundFramebuffer(),color);
+    auto window = Components::get()->Window();
+    Components::get()->Render()->getShaders()->shaderOGLLine3D->renderLines(vectors, window->getForegroundFramebuffer(),color);
 }
 
 void Drawable::drawOctreeNode(OctreeNode &node)
@@ -206,9 +206,9 @@ void Drawable::drawObject3DGizmo(
     glm::mat4 projectionMatrix
 ) {
     ImGuiIO& io = ImGui::GetIO();
-    auto currentOperation  = ComponentsManager::get()->Window()->getGuiZmoOperation();
+    auto currentOperation  = Components::get()->Window()->getGuiZmoOperation();
 
-    if (!ComponentsManager::get()->Window()->isWindowMaximized()) {
+    if (!Components::get()->Window()->isWindowMaximized()) {
         ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
     } else {
         ImGuizmo::SetRect(

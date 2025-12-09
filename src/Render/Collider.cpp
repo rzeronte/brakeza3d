@@ -1,6 +1,6 @@
 
 #include "../../include/Render/Collider.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
 
@@ -70,7 +70,7 @@ void Collider::removeCollisionObject()
     if (collisionMode == CollisionMode::GHOST && ghostObject != nullptr) {
         Logging::Message("[Collider] Removing collider GHOST");
         setCollisionMode(CollisionMode::NONE);
-        ComponentsManager::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(ghostObject);
+        Components::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(ghostObject);
         ghostObject = nullptr;
         return;
     }
@@ -78,7 +78,7 @@ void Collider::removeCollisionObject()
     if (collisionMode == CollisionMode::BODY && body != nullptr) {
         Logging::Message("[Collider] Removing collider RIGIDBODY");
         setCollisionMode(CollisionMode::NONE);
-        ComponentsManager::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(body);
+        Components::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(body);
         body = nullptr;
         return;
     }
@@ -86,8 +86,8 @@ void Collider::removeCollisionObject()
     if (collisionMode == CollisionMode::KINEMATIC && kinematicBody != nullptr) {
         Logging::Message("[Collider] Removing collider KINEMATICBODY");
         setCollisionMode(CollisionMode::NONE);
-        ComponentsManager::get()->Collisions()->getDynamicsWorld()->removeAction(characterController);
-        ComponentsManager::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(kinematicBody);
+        Components::get()->Collisions()->getDynamicsWorld()->removeAction(characterController);
+        Components::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(kinematicBody);
         kinematicBody = nullptr;
         delete characterController;
         return;

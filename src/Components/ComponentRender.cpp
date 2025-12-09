@@ -1,5 +1,5 @@
 #include "../../include/Components/ComponentRender.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/OpenGL/ShaderOGLCustomPostprocessing.h"
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
@@ -22,7 +22,7 @@ void ComponentRender::onStart()
 
     setEnabled(true);
 
-    auto window = ComponentsManager::get()->Window();
+    auto window = Components::get()->Window();
     textWriter = new TextWriter(window->getRenderer(), window->getFontDefault());
 
     RegisterShaders();
@@ -104,7 +104,7 @@ void ComponentRender::onUpdate()
 
     if (SETUP->ENABLE_GRID_BACKGROUND) {
         shaders.shaderOGLGrid->render(
-            ComponentsManager::get()->Window()->getBackgroundFramebuffer()
+            Components::get()->Window()->getBackgroundFramebuffer()
         );
     }
 }
@@ -171,23 +171,23 @@ void ComponentRender::setSelectedObject(Object3D *o)
 
 Object3D* ComponentRender::getObject3DFromClickPoint(const int x, const int y)
 {
-    const auto id = ComponentsManager::get()->Window()->getObjectIDByPickingColorFramebuffer(x, y);
+    const auto id = Components::get()->Window()->getObjectIDByPickingColorFramebuffer(x, y);
 
     Logging::Message("Click point: %d, %d | ObjectId: %d", x, y, id);
-    return Brakeza::get()->getSceneObjectById(id);
+    return Brakeza::get()->getObjectById(id);
 }
 
 void ComponentRender::updateSelectedObject3D()
 {
-    auto input = ComponentsManager::get()->Input();
+    auto input = Components::get()->Input();
 
     if (!input->isEnabled()) return;
 
     if (input->isClickLeft() && !input->isMouseMotion()) {
         auto x = input->getMouseX();
         auto y = input->getMouseY();
-        const auto id = ComponentsManager::get()->Window()->getObjectIDByPickingColorFramebuffer(x, y);
-        selectedObject = Brakeza::get()->getSceneObjectById(id);
+        const auto id = Components::get()->Window()->getObjectIDByPickingColorFramebuffer(x, y);
+        selectedObject = Brakeza::get()->getObjectById(id);
         if (selectedObject != nullptr) {
             Logging::Message("Selected object by click(%d, %d): %s", x, y, selectedObject->getName().c_str());
             Brakeza::get()->GUI()->setSelectedObject(selectedObject);
@@ -382,7 +382,7 @@ void ComponentRender::drawLine(const Vertex3D &from, const Vertex3D &to, const C
     shaders.shaderOGLLine3D->render(
         from,
         to,
-        ComponentsManager::get()->Window()->getForegroundFramebuffer(),
+        Components::get()->Window()->getForegroundFramebuffer(),
         c
     );
 }
@@ -445,7 +445,7 @@ const std::map<std::string, ShaderCustomType> &ComponentRender::getShaderTypesMa
 
 void ComponentRender::resizeShadersFramebuffers() const
 {
-    Logging::Message("[ComponentRender] Resizing framebuffers...");
+    Logging::Message("[Render] Resizing framebuffers...");
 
     shaders.shaderOGLRender->destroy();
     shaders.shaderOGLImage->destroy();
@@ -512,11 +512,11 @@ void ComponentRender::ClearShadowMaps() const
     }
 }
 
-void ComponentRender::RenderLayersToGlobalFramebuffer() const
+void ComponentRender::FlipBuffersToGlobal() const
 {
-    Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobalFramebuffer");
+    Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
 
-    auto window = ComponentsManager::get()->Window();
+    auto window = Components::get()->Window();
     auto gBuffer = window->getGBuffer();
     auto globalBuffer = window->getGlobalBuffers();
 
@@ -567,5 +567,5 @@ void ComponentRender::RenderLayersToGlobalFramebuffer() const
         );
     }
 
-    Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobalFramebuffer");
+    Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
 }

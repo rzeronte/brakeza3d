@@ -3,7 +3,7 @@
 //
 
 #include "../../include/2D/Image2DAnimation.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/Image2DAnimationGUI.h"
 
@@ -63,7 +63,7 @@ void Image2DAnimation::onUpdate()
         x - w/2,
         y - h/2,
         alpha/255,
-        ComponentsManager::get()->Window()->getForegroundFramebuffer()
+        Components::get()->Window()->getForegroundFramebuffer()
     );
 
     if (removeWhenEnds && animation->isEndAnimation()) {

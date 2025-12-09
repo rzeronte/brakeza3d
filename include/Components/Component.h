@@ -5,7 +5,7 @@
 #include "../3D/Object3D.h"
 #include "../Config.h"
 
-class ComponentsManager;
+class Components;
 
 class Component {
     int id = -1;

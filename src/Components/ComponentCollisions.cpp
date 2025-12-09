@@ -1,27 +1,15 @@
 #include "../../include/Components/ComponentCollisions.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/3D/Projectile.h"
-#include "../../include/Components/ComponentsManager.h"
 #include "../../include/Render/CollisionInfo.h"
 #include "../../include/Misc/Logging.h"
 
-ComponentCollisions::ComponentCollisions()
-    :
-    bspMap(nullptr),
-    collisionConfiguration(nullptr),
-    dispatcher(nullptr),
-    overlappingPairCache(nullptr),
-    ghostPairCallback(nullptr),
-    solver(nullptr),
-    dynamicsWorld(nullptr),
-    debugDraw(nullptr)
-{
-}
 
 void ComponentCollisions::onStart()
 {
     Component::onStart();
-
+    InitBulletSystem();
     setEnabled(true);
 }
 
@@ -178,7 +166,7 @@ void ComponentCollisions::demoProjectile(int type)
             fileName = "basic/cube.fbx";
 
     }
-    Camera3D *camera = ComponentsManager::get()->Camera()->getCamera();
+    Camera3D *camera = Components::get()->Camera()->getCamera();
 
     Vertex3D direction = camera->getRotation().getTranspose() * Config::get()->forward;
 
@@ -199,7 +187,7 @@ void ComponentCollisions::demoProjectile(int type)
         direction,
         Config::get()->PROJECTILE_DEMO_IMPULSE,
         Config::get()->PROJECTILE_DEMO_ACCURACY,
-        ComponentsManager::get()->Collisions()->getDynamicsWorld(),
+        Components::get()->Collisions()->getDynamicsWorld(),
         Config::collisionGroups::AllFilter,
         Config::collisionGroups::AllFilter
     );
@@ -209,7 +197,6 @@ void ComponentCollisions::demoProjectile(int type)
 
 ComponentCollisions::~ComponentCollisions()
 {
-    delete bspMap;
     delete collisionConfiguration;
     delete dispatcher;
     delete overlappingPairCache;
@@ -259,9 +246,9 @@ void ComponentCollisions::AddVector3DIntoCache(const Vector3D &v)
 
 void ComponentCollisions::DrawDebugCache() const
 {
-    ComponentsManager::get()->Render()->getShaders()->shaderOGLLine3D->renderLines(
+    Components::get()->Render()->getShaders()->shaderOGLLine3D->renderLines(
         debugDrawLinesCache,
-        ComponentsManager::get()->Window()->getForegroundFramebuffer(),
+        Components::get()->Window()->getForegroundFramebuffer(),
         Color::fuchsia()
     );
 }
@@ -276,10 +263,10 @@ void ComponentCollisions::setEnableDebugMode(bool value) const
 {
     if (value) {
         dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
-        Logging::Message("[ComponentCollisions] Physics Debug mode ON");
+        Logging::Message("[Collisions] Physics Debug mode ON");
         return;
     }
 
-    Logging::Message("[ComponentCollisions] Physics Debug mode OFF");
+    Logging::Message("[Collisions] Physics Debug mode OFF");
     dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_NoDebug);
 }

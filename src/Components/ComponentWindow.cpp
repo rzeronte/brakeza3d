@@ -10,7 +10,7 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/OpenGL/ShaderOGLImage.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/IconsGUI.h"
 #include "../../include/GUI/GUI.h"
 
@@ -18,19 +18,19 @@ ComponentWindow::ComponentWindow()
 :
     applicationIcon(IMG_Load(std::string(Config::get()->ICONS_FOLDER + Config::get()->iconApplication).c_str()))
 {
-    initWindow();
-    initFontsTTF();
+    InitWindow();
 }
 
 void ComponentWindow::onStart()
 {
     Component::onStart();
+    InitFontsTTF();
 
     ImGuiInitialize(Config::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
 
-    createFramebuffer();
-    createGBuffer();
-    createPickingColorBuffer();
+    CreateFramebuffer();
+    CreateGBuffer();
+    CreatePickingColorBuffer();
 }
 
 void ComponentWindow::preUpdate()
@@ -63,23 +63,24 @@ void ComponentWindow::onEnd()
 
 void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish)
 {
-    ComponentsManager::get()->Render()->updateSelectedObject3D();
+    Components::get()->Render()->updateSelectedObject3D();
 }
 
-void ComponentWindow::initWindow()
+void ComponentWindow::InitWindow()
 {
-    Logging::Message("[ComponentWindow] Init window...");
+    Logging::Message("[Window] Init window...");
 
-    Logging::Message("[ComponentWindow] Render drivers:");
-
-    for( int i = 0; i < SDL_GetNumRenderDrivers(); ++i ){
+    std::string drivers;
+    for (int i = 0; i < SDL_GetNumRenderDrivers(); ++i) {
         SDL_RendererInfo rendererInfo = {};
-        SDL_GetRenderDriverInfo( i, &rendererInfo );
-        Logging::Message(" > Driver rendering: %s", rendererInfo.name);
+        SDL_GetRenderDriverInfo(i, &rendererInfo);
+        if (i > 0) drivers += ", ";
+        drivers += rendererInfo.name;
     }
+    Logging::Message("[Window] Drivers for rendering: %s", drivers.c_str());
 
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-        printf("[ComponentWindow] ERROR: SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
+        Logging::Error("[Window] SDL could not initialize! SDL_Error: %s", SDL_GetError());
         exit(-1);
     }
 
@@ -95,7 +96,7 @@ void ComponentWindow::initWindow()
     context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, context);
 
-    Logging::Message("[ComponentWindow] Current video driver: %s", SDL_GetCurrentVideoDriver());
+    Logging::Message("[Window] Current video driver: %s", SDL_GetCurrentVideoDriver());
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1 );
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8 );
@@ -110,7 +111,7 @@ void ComponentWindow::initWindow()
     SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 
     if (window == nullptr) {
-        printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        Logging::Error("Window could not be created! SDL_Error: %s", SDL_GetError());
         exit(-1);
     }
 
@@ -121,15 +122,15 @@ void ComponentWindow::initWindow()
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
     SDL_GetRendererOutputSize(renderer, &widthRender, &heightRender);
 
-    initOpenGL();
+    InitOpenGL();
     glewInit();
     SDL_GL_SetSwapInterval(1);
     SDL_SetWindowIcon(window, applicationIcon);
 }
 
-void ComponentWindow::initFontsTTF()
+void ComponentWindow::InitFontsTTF()
 {
-    Logging::Message("[ComponentWindow] Init TrueTypeFonts...");
+    Logging::Message("[Window] Init TrueTypeFonts...");
 
     if (TTF_Init() < 0) {
         Logging::Message(TTF_GetError());
@@ -137,7 +138,7 @@ void ComponentWindow::initFontsTTF()
     }
 
     std::string pathFont = SETUP->FONTS_FOLDER + "TroubleFont.ttf";
-    Logging::Message("[ComponentWindow] Loading default TTF: %s", pathFont.c_str());
+    Logging::Message("[Window] Loading default TTF: %s", pathFont.c_str());
 
     fontDefault = TTF_OpenFont(pathFont.c_str(), 35);
 
@@ -147,44 +148,7 @@ void ComponentWindow::initFontsTTF()
     }
 }
 
-SDL_Window *ComponentWindow::getWindow() const
-{
-    return window;
-}
-
-SDL_Renderer *ComponentWindow::getRenderer() const
-{
-    return renderer;
-}
-
-TTF_Font *ComponentWindow::getFontDefault() const
-{
-    return fontDefault;
-}
-
-GLuint ComponentWindow::getSceneFramebuffer() const
-{
-    return openGLBuffers.sceneFBO;
-}
-
-OpenGLPickingBuffer &ComponentWindow::getPickingColorFramebuffer()
-{
-    return pickingColorBuffer;
-}
-
-GLuint ComponentWindow::getBackgroundFramebuffer() const {
-    return openGLBuffers.backgroundFBO;
-}
-
-GLuint ComponentWindow::getUIFramebuffer() const {
-    return openGLBuffers.uiFBO;
-}
-
-GLuint ComponentWindow::getForegroundFramebuffer() const {
-    return openGLBuffers.foregroundFBO;
-}
-
-void ComponentWindow::initOpenGL()
+void ComponentWindow::InitOpenGL()
 {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -197,7 +161,7 @@ void ComponentWindow::initOpenGL()
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
-void ComponentWindow::createFramebuffer()
+void ComponentWindow::CreateFramebuffer()
 {
     UpdateWindowSize();
 
@@ -308,7 +272,7 @@ void ComponentWindow::createFramebuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ComponentWindow::resetFramebuffer()
+void ComponentWindow::ResetFramebuffer()
 {
     glDeleteFramebuffers(1, &openGLBuffers.globalFBO);
     glDeleteTextures(1, &openGLBuffers.globalTexture);
@@ -326,20 +290,20 @@ void ComponentWindow::resetFramebuffer()
     glDeleteFramebuffers(1, &openGLBuffers.uiFBO);
     glDeleteTextures(1, &openGLBuffers.uiTexture);
 
-    createFramebuffer();
+    CreateFramebuffer();
 
-    ComponentsManager::get()->Render()->resizeShadersFramebuffers();
+    Components::get()->Render()->resizeShadersFramebuffers();
 
-    resizeGBuffer();
+    ResizeGBuffer();
 }
 
-void ComponentWindow::RenderLayersToMain()
+void ComponentWindow::FlipGlobalToWindow()
 {
    if (Config::get()->ENABLE_IMGUI) {
        ImGuiOnUpdate();
    }
 
-    auto shaderOGLImage = ComponentsManager::get()->Render()->getShaders()->shaderOGLImage;
+    auto shaderOGLImage = Components::get()->Render()->getShaders()->shaderOGLImage;
     shaderOGLImage->renderTexture(openGLBuffers.foregroundTexture, 0, 0, widthWindow, heightWindow, 1, true, openGLBuffers.globalFBO);
     shaderOGLImage->renderTexture(openGLBuffers.globalTexture, 0, 0, widthWindow, heightWindow, 1, true, 0);
     shaderOGLImage->renderTexture(openGLBuffers.uiTexture, 0, 0, widthWindow, heightWindow, 1, true, 0);
@@ -366,42 +330,14 @@ void ComponentWindow::ClearOGLFrameBuffers() const
     }
 
     if (Config::get()->ENABLE_SHADOW_MAPPING) {
-        ComponentsManager::get()->Render()->getShaders()->shaderShadowPass->clearDirectionalLightDepthTexture();
+        Components::get()->Render()->getShaders()->shaderShadowPass->clearDirectionalLightDepthTexture();
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-int ComponentWindow::getWidth() const
-{
-    return widthWindow;
-}
-
-int ComponentWindow::getHeight() const
-{
-    return heightWindow;
-}
-
-int ComponentWindow::getWidthRender() const
-{
-    return widthRender;
-}
-
-int ComponentWindow::getHeightRender() const
-{
-    return heightRender;
-}
-
-GLuint ComponentWindow::getGlobalFramebuffer() const {
-    return openGLBuffers.globalFBO;
-}
-
-GLuint ComponentWindow::getPostProcessingFramebuffer() const {
-    return openGLBuffers.postProcessingFBO;
-}
-
-void ComponentWindow::saveImGuiCurrentLayout() const
+void ComponentWindow::SaveImGuiCurrentLayout() const
 {
     switch(ImGuiConfigChanged) {
         case Config::ImGUIConfigs::DEFAULT: {
@@ -424,7 +360,7 @@ void ComponentWindow::saveImGuiCurrentLayout() const
 
 void ComponentWindow::ImGuiInitialize(const std::string& configFile)
 {
-    Logging::Message("[ComponentWindow] Initializing ImGui...");
+    Logging::Message("[Window] Initializing ImGui...");
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -456,19 +392,19 @@ void ComponentWindow::ImGuiOnUpdate()
         switch(ImGuiConfigChanged) {
             case Config::ImGUIConfigs::DEFAULT: {
                 ImGui::ClearIniSettings();
-                Logging::Message("Loading layout ImGUIDefault.ini");
+                Logging::Message("[Window] Loading layout ImGUIDefault.ini");
                 ImGui::LoadIniSettingsFromDisk(std::string(Config::get()->CONFIG_FOLDER + "ImGuiDefault.ini").c_str());
                 break;
             }
             case Config::ImGUIConfigs::CODING: {
                 ImGui::ClearIniSettings();
-                Logging::Message("Loading layout ImGuiCoding.ini");
+                Logging::Message("[Window] Loading layout ImGuiCoding.ini");
                 ImGui::LoadIniSettingsFromDisk(std::string(Config::get()->CONFIG_FOLDER + "ImGuiCoding.ini").c_str());
                 break;
             }
             case Config::ImGUIConfigs::DESIGN: {
                 ImGui::ClearIniSettings();
-                Logging::Message("Loading layout ImGuiDesign.ini");
+                Logging::Message("[Window] Loading layout ImGuiDesign.ini");
                 ImGui::LoadIniSettingsFromDisk(std::string(Config::get()->CONFIG_FOLDER + "ImGuiDesign.ini").c_str());
                 break;
             }
@@ -494,7 +430,6 @@ void ComponentWindow::ImGuiOnUpdate()
 bool ComponentWindow::isWindowMaximized() const
 {
     Uint32 flags = SDL_GetWindowFlags(window);
-
     return (flags & SDL_WINDOW_MAXIMIZED) != 0;
 }
 
@@ -512,42 +447,13 @@ void ComponentWindow::toggleFullScreen() const
     }
 }
 
-ImGuizmo::OPERATION ComponentWindow::getGuiZmoOperation() const
-{
-    return ImGuiOperationGuizmo;
-}
 
 void ComponentWindow::setGuiZmoOperation(ImGuizmo::OPERATION operation)
 {
     ImGuiOperationGuizmo = operation;
 }
 
-GLuint ComponentWindow::getDepthTexture() const
-{
-    return openGLBuffers.sceneDepthTexture;
-}
-
-GLuint ComponentWindow::getSceneTexture() const
-{
-    return openGLBuffers.sceneTexture;
-}
-
-GLuint ComponentWindow::getGlobalTexture() const
-{
-    return openGLBuffers.globalTexture;
-}
-
-OpenGLGBuffer& ComponentWindow::getGBuffer()
-{
-    return gBuffer;
-}
-
-OpenGLGlobalFramebuffers& ComponentWindow::getGlobalBuffers()
-{
-    return openGLBuffers;
-}
-
-void ComponentWindow::createPickingColorBuffer()
+void ComponentWindow::CreatePickingColorBuffer()
 {
     if (pickingColorBuffer.FBO != 0) {
         glDeleteFramebuffers(1, &pickingColorBuffer.FBO);
@@ -575,16 +481,16 @@ void ComponentWindow::createPickingColorBuffer()
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pickingColorBuffer.depthTexture);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        std::cerr << "[ERROR] PickingColor: Framebuffer no está completo!" << std::endl;
+        Logging::Error("[Window] PickingColor: Framebuffer no está completo!");
         exit(-1);
     }
 
-    Logging::Message("[ComponentWindow] PickingColor-Buffer created successful (%d, %d)", widthRender,  heightRender);
+    Logging::Message("[Window] PickingColor-Buffer created successful (%d, %d)", widthRender,  heightRender);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ComponentWindow::createGBuffer()
+void ComponentWindow::CreateGBuffer()
 {
     if (gBuffer.FBO != 0) {
         glDeleteFramebuffers(1, &gBuffer.FBO);
@@ -635,7 +541,7 @@ void ComponentWindow::createGBuffer()
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, gBuffer.depth, 0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        std::cerr << "[ERROR] G-Buffer: Framebuffer no está completo!" << std::endl;
+        Logging::Error("[Window] G-Buffer: Framebuffer no está completo!");
         exit(-1);
     }
 
@@ -644,10 +550,10 @@ void ComponentWindow::createGBuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ComponentWindow::resizeGBuffer()
+void ComponentWindow::ResizeGBuffer()
 {
-    createGBuffer();
-    createPickingColorBuffer();
+    CreateGBuffer();
+    CreatePickingColorBuffer();
 }
 
 void ComponentWindow::UpdateWindowSize()
@@ -675,11 +581,6 @@ int ComponentWindow::getObjectIDByPickingColorFramebuffer(const int x, const int
     return Color::colorToId(c);
 }
 
-Config::ImGUIConfigs ComponentWindow::getImGuiConfig() const
-{
-    return ImGuiConfig;
-}
-
 void ComponentWindow::setImGuiConfig(Config::ImGUIConfigs c)
 {
     ImGuiConfigChanged = c;
@@ -690,6 +591,6 @@ void ComponentWindow::CheckForResizeOpenGLWindow(const SDL_Event &e)
     if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
         UpdateWindowSize();
         glViewport(0,0, getWidth(), getHeight());
-        resetFramebuffer();
+        ResetFramebuffer();
     }
 }

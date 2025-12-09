@@ -3,7 +3,7 @@
 #include "../../include/Render/Drawable.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Misc/ToolsMaths.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/Image3DAnimation360GUI.h"
 
@@ -24,9 +24,9 @@ void Image3DAnimation360::onUpdate()
 {
     if (static_cast<int>(animations.size()) <= 0) return;
 
-    UpdateTrianglesCoordinates(ComponentsManager::get()->Camera()->getCamera());
+    UpdateTrianglesCoordinates(Components::get()->Camera()->getCamera());
 
-    ComponentsManager::get()->Render()->getShaders()->shaderOGLRender->render(
+    Components::get()->Render()->getShaders()->shaderOGLRender->render(
         this,
         billboard->getImage()->getOGLTextureID(),
         billboard->getImage()->getOGLTextureID(),
@@ -35,7 +35,7 @@ void Image3DAnimation360::onUpdate()
         billboard->getNormalBuffer(),
         static_cast<int>(billboard->getVertices().size()),
         1.0f,
-        ComponentsManager::get()->Window()->getForegroundFramebuffer()
+        Components::get()->Window()->getForegroundFramebuffer()
     );
 }
 

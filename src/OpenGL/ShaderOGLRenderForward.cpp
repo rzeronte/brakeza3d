@@ -2,7 +2,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 #include "../../include/OpenGL/ShaderOGLRenderForward.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 
 ShaderOGLRenderForward::ShaderOGLRenderForward()
@@ -41,12 +41,12 @@ void ShaderOGLRenderForward::render(
     GLuint fbo
 ) const
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
 
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
-    auto camera = ComponentsManager::get()->Camera();
+    auto camera = Components::get()->Camera();
 
     setFloatUniform(alphaUniform, alpha);
 
@@ -75,7 +75,7 @@ void ShaderOGLRenderForward::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(0);
+    Components::get()->Render()->changeOpenGLFramebuffer(0);
 }
 
 glm::mat4 ShaderOGLRenderForward::getDirectionalLightMatrix(const DirLightOpenGL& light)

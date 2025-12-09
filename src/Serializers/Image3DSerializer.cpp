@@ -6,7 +6,7 @@
 #include "../../include/3D/Image3D.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
 
 cJSON * Image3DSerializer::JsonByObject(Object3D *o)
@@ -51,7 +51,7 @@ void Image3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
 void Image3DSerializer::LoadFileIntoScene(const std::string &filename)
 {
     auto *o = new Image3D(
-        ComponentsManager::get()->Camera()->getCamera()->getPosition(),
+        Components::get()->Camera()->getCamera()->getPosition(),
         1.0f,
         1.0f,
         new Image(filename)

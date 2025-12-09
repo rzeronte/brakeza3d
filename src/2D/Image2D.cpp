@@ -3,7 +3,7 @@
 //
 
 #include "../../include/2D/Image2D.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/Image2DGUI.h"
 
 Image2D::Image2D(int x, int y, Image *image)
@@ -31,7 +31,7 @@ void Image2D::onUpdate()
         x - w/2,
         y - h/2,
         alpha,
-        ComponentsManager::get()->Window()->getForegroundFramebuffer()
+        Components::get()->Window()->getForegroundFramebuffer()
     );
 }
 

@@ -3,7 +3,7 @@
 //
 
 #include "../../include/Render/AssimpAnimationService.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Render/Transforms.h"
 #include <assimp/postprocess.h>
@@ -22,10 +22,10 @@ void AssimpAnimationService::UpdateOpenGLBones(std::vector<Mesh3DData> &meshes)
 
     for (auto &m: meshes) {
         if (m.vertices.empty()) continue;
-        ComponentsManager::get()->Render()->getShaders()->shaderOGLBonesTransforms->render(
+        Components::get()->Render()->getShaders()->shaderOGLBonesTransforms->render(
             m,
             transformations,
-            ComponentsManager::get()->Window()->getSceneFramebuffer()
+            Components::get()->Window()->getSceneFramebuffer()
         );
     }
 }
@@ -96,7 +96,7 @@ bool AssimpAnimationService::AssimpLoadAnimation(const std::string &filename, st
 
     ReadNodesFromRoot(meshes);
 
-    ComponentsManager::get()->Render()->FillOGLBuffers(meshes);
+    Components::get()->Render()->FillOGLBuffers(meshes);
 
     FillAnimationBoneDataOGLBuffers(meshes);
 
@@ -440,8 +440,8 @@ void AssimpAnimationService::drawBones(Object3D *o, aiNode *node, Vertex3D *last
         Transforms::objectSpace(bonePosition, bonePosition, o);
 
         if (lastBonePosition) {
-            auto render = ComponentsManager::get()->Render();
-            auto window = ComponentsManager::get()->Window();
+            auto render = Components::get()->Render();
+            auto window = Components::get()->Window();
             render->getShaders()->shaderOGLLine3D->render(
                 *lastBonePosition,
                 bonePosition,

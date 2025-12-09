@@ -3,7 +3,7 @@
 #include "../../include/Render/TextWriter.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
 
 TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font)
@@ -23,7 +23,7 @@ TextWriter* TextWriter::create(const std::string& fontFile)
     }
 
     return new TextWriter(
-        ComponentsManager::get()->Window()->getRenderer(),
+        Components::get()->Window()->getRenderer(),
         TTF_OpenFont(fontFile.c_str(), 35)
     );
 }
@@ -39,7 +39,7 @@ void TextWriter::WriteTextTTF(int x, int y, int w, int h, const char *text, cons
     GLuint texID = Image::MakeOGLImage(surfaceTTF);
 #endif
 
-    auto renderer = ComponentsManager::get()->Window();
+    auto renderer = Components::get()->Window();
 
     int windowWidth = renderer->getWidth();
     int windowHeight = renderer->getHeight();
@@ -50,13 +50,13 @@ void TextWriter::WriteTextTTF(int x, int y, int w, int h, const char *text, cons
     dstRect.w = (w * windowWidth) / Config::get()->screenWidth;
     dstRect.h = (h * windowHeight) / Config::get()->screenHeight;
 
-    ComponentsManager::get()->Render()->getShaders()->shaderOGLImage->renderTexture(
+    Components::get()->Render()->getShaders()->shaderOGLImage->renderTexture(
         texID,
         dstRect.x, dstRect.y,
         dstRect.w, dstRect.h,
         alpha,
         false,
-        ComponentsManager::get()->Window()->getForegroundFramebuffer()
+        Components::get()->Window()->getForegroundFramebuffer()
     );
 
     glDeleteTextures(1, &texID);

@@ -7,7 +7,7 @@
 #include "../../../include/GUI/Objects/ShadersGUI.h"
 #include "../../../include/GUI/Objects/ScriptLuaGUI.h"
 #include "../../../include/Brakeza.h"
-#include "../../../include/Components/ComponentsManager.h"
+#include "../../../include/Components/Components.h"
 
 #include <functional>
 #include <string>
@@ -18,40 +18,7 @@
 #include "../../../include/Misc/Logging.h"
 #include "../../../include/Misc/Tools.h"
 
-void FileSystemGUI::UpdateFolderFiles(GUIManager *gui)
-{
-    Logging::Message("Updating folder files");
-    auto scripts = gui->getBrowserScripts();
-    auto scenes = gui->getBrowserScenes();
-    auto shaders = gui->getBrowserShaders();
-    auto projects = gui->getBrowserProjects();
-
-    scripts.folderFiles = Tools::getFolderFiles(scripts.currentFolder, Config::get()->SCRIPTS_EXT);
-    scenes.folderFiles = Tools::getFolderFiles(scenes.currentFolder, Config::get()->SCENES_EXT);
-    shaders.folderFiles = Tools::getFolderFiles(shaders.currentFolder, Config::get()->SHADERS_EXT);
-    projects.folderFiles = Tools::getFolderFiles(projects.currentFolder, Config::get()->PROJECTS_EXT);
-}
-
 void FileSystemGUI::DrawProjectCreator(GUIManager *gui, GUIType::BrowserCache &browser)
-{
-    GUI::DrawButton(
-        "Create Project",
-        IconGUI::CREATE_FILE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        true,
-        [&] {
-            if (!gui->currentVariableToCreateCustomShader.empty()) {
-                ProjectLoader::CreateProject(browser.currentFolder + gui->currentVariableToCreateCustomShader);
-                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->PROJECTS_EXT);
-            }
-        }
-    );
-
-    ImGui::SameLine();
-    DrawProjectNameInput(gui);
-}
-
-void FileSystemGUI::DrawProjectNameInput(GUIManager *gui)
 {
     static char name[256];
     strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
@@ -87,7 +54,6 @@ void FileSystemGUI::DrawProjectRowActions(GUIManager *gui, GUIType::BrowserCache
 
     auto fullPath = browser.currentFolder + file;
 
-    // Open button
     GUI::DrawButtonTransparent(
         "Open project",
         IconGUI::PROJECT_OPEN,
@@ -97,10 +63,7 @@ void FileSystemGUI::DrawProjectRowActions(GUIManager *gui, GUIType::BrowserCache
             ProjectLoader::LoadProject(fullPath);
         }
     );
-
     ImGui::SameLine();
-
-    // Save button
     GUI::DrawButtonConfirm(
         "Override project",
         "Are you sure to override project?",
@@ -110,10 +73,7 @@ void FileSystemGUI::DrawProjectRowActions(GUIManager *gui, GUIType::BrowserCache
             ProjectLoader::SaveProject(fullPath);
         }
     );
-
     ImGui::SameLine();
-
-    // Delete button
     GUI::DrawButtonConfirm(
         "Deleting project",
         "Are you sure to delete project?",
@@ -144,38 +104,73 @@ void FileSystemGUI::DrawProjectRow(GUIManager *gui, GUIType::BrowserCache &brows
 
     ImGui::PopID();
 }
+
 void FileSystemGUI::DrawProjectFiles(GUIManager *gui, GUIType::BrowserCache &browser)
 {
     auto windowStatus = gui->getWindowStatus(GUIType::FILES_PROJECTS);
     if (!windowStatus->isOpen) return;
 
+    static bool openPopup = false;
+    if (ImGui::BeginTable("ProjectHeader", 2, ImGuiTableFlags_SizingStretchProp)) {
+        ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableNextRow();
 
-    DrawProjectCreator(gui, browser);
+        // Izquierda
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Image(Icon(IconGUI::PROJECT_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
+        ImGui::SameLine();
+        ImGui::Text("Current: %s", browser.currentFolder.c_str());
+        // Derecha
+        ImGui::TableSetColumnIndex(1);
+        GUI::DrawButton("Create Project", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+            openPopup = true;
+        });
+        ImGui::EndTable();
+    }
+    static std::string title = "Create project dialog";
+    if (openPopup) {
+        ImGui::OpenPopup(title.c_str());
+        openPopup = false;
+    }
+
+    DrawProjectCreatorDialog(gui, browser, title);
     ImGui::Separator();
     DrawProjectsTable(gui, browser);
 }
 
-void FileSystemGUI::DrawSceneCreator(GUIManager *gui, GUIType::BrowserCache &browser)
+void FileSystemGUI::DrawProjectCreatorDialog(GUIManager *gui, GUIType::BrowserCache &browser, std::string &title)
 {
-    GUI::DrawButton(
-        "Create scene",
-        IconGUI::CREATE_FILE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        true,
-        [&] {
-            if (!gui->currentVariableToCreateCustomShader.empty()) {
-                SceneLoader::CreateScene(browser.currentFolder + gui->currentVariableToCreateCustomShader);
-                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCENES_EXT);
+    if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("Create a new project");
+        ImGui::Separator();
+        DrawProjectCreator(gui, browser);
+        ImGui::Separator();
+        GUI::DrawButton("Cancel create project", IconGUI::CANCEL, GUIType::Sizes::ICONS_BROWSERS, true,[&] {
+            gui->currentVariableToCreateCustomShader = "";
+            ImGui::CloseCurrentPopup();
+        });
+        ImGui::SameLine();
+        GUI::DrawButton(
+            "Create Project",
+            IconGUI::CREATE_FILE,
+            GUIType::Sizes::ICONS_BROWSERS,
+            true,
+    [&] {
+                if (!gui->currentVariableToCreateCustomShader.empty()) {
+                    ProjectLoader::CreateProject(browser.currentFolder + gui->currentVariableToCreateCustomShader);
+                    browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->PROJECTS_EXT);
+                    ImGui::CloseCurrentPopup();
+                }
             }
-        }
-    );
-
-    ImGui::SameLine();
-    DrawSceneNameInput(gui);
+        );
+        ImGui::EndPopup();
+    }
 }
 
-void FileSystemGUI::DrawSceneNameInput(GUIManager *gui)
+void FileSystemGUI::DrawSceneCreator(GUIManager *gui, GUIType::BrowserCache &browser)
 {
+    ImGui::SameLine();
     static char name[256];
     strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
 
@@ -272,17 +267,67 @@ void FileSystemGUI::DrawSceneFiles(GUIManager *gui, GUIType::BrowserCache &brows
     auto windowStatus = gui->getWindowStatus(GUIType::FILES_SCENES);
     if (!windowStatus->isOpen) return;
 
-    DrawSceneCreator(gui, browser);
+    static bool openPopup = false;
+    if (ImGui::BeginTable("SceneHeader", 2, ImGuiTableFlags_SizingStretchProp)) {
+        ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableNextRow();
+        // Izquierda
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Image(Icon(IconGUI::SCENE_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
+        ImGui::SameLine();
+        ImGui::Text("Current: %s", browser.currentFolder.c_str());
+
+        // Derecha
+        ImGui::TableSetColumnIndex(1);
+        GUI::DrawButton("Create Scene", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+            openPopup = true;
+        });
+
+        ImGui::EndTable();
+    }
+    static std::string title = "Create scene dialog";
+    if (openPopup) {
+        ImGui::OpenPopup(title.c_str());
+        openPopup = false;
+    }
+    DrawSceneCreatorDialog(gui, browser, title);
+
     ImGui::Separator();
     DrawBrowserFolders(gui, Config::get()->SCENES_FOLDER, browser, Config::get()->SCENES_EXT);
     ImGui::Separator();
     DrawScenesTable(gui, browser);
 }
 
+void FileSystemGUI::DrawSceneCreatorDialog(GUIManager *gui, GUIType::BrowserCache &browser, std::string &title)
+{
+    if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        DrawSceneCreator(gui, browser);
+        ImGui::Separator();
+        GUI::DrawButton("Cancel create scene", IconGUI::CANCEL, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+            gui->currentVariableToCreateCustomShader = "";
+            ImGui::CloseCurrentPopup();
+        });
+        ImGui::SameLine();
+        GUI::DrawButton(
+            "Create scene",
+            IconGUI::CREATE_FILE,
+            GUIType::Sizes::ICONS_BROWSERS,
+            true,
+            [&] {
+                if (!gui->currentVariableToCreateCustomShader.empty()) {
+                    SceneLoader::CreateScene(browser.currentFolder + gui->currentVariableToCreateCustomShader);
+                    browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCENES_EXT);
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+        );
+        ImGui::EndPopup();
+    }
+}
+
 void FileSystemGUI::DrawBrowserFolders(GUIManager *gui, std::string& baseFolder, GUIType::BrowserCache &browser, std::string ext)
 {
-    ImGui::Text("Current: %s", browser.currentFolder.c_str());
-    ImGui::Separator();
     if (browser.currentFolder != baseFolder) {
         ImGui::AlignTextToFramePadding();
         ImGui::Image(Icon(IconGUI::FOLDER), ImVec2(24, 24));
@@ -336,21 +381,10 @@ ImTextureID FileSystemGUI::Icon(GUIType::Sheet coords)
 std::vector<const char*> FileSystemGUI::GetShaderTypeItems()
 {
     std::vector<const char*> items;
-    for (const auto& pair : ComponentsManager::get()->Render()->getShaderTypesMapping()) {
+    for (const auto& pair : Components::get()->Render()->getShaderTypesMapping()) {
         items.push_back(pair.first.c_str());
     }
     return items;
-}
-
-void FileSystemGUI::DrawShaderNameInput(GUIManager *gui)
-{
-    static char name[256];
-    strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
-
-    ImGui::SetNextItemWidth(150);
-    if (ImGui::InputText("Shader name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-        gui->currentVariableToCreateCustomShader = name;
-    }
 }
 
 void FileSystemGUI::DrawShaderTypeCombo(int &selectedIndex, const std::vector<const char*> &items)
@@ -420,7 +454,7 @@ void FileSystemGUI::DrawShaderRowActions(GUIManager *gui, GUIType::BrowserCache 
         GUIType::Sizes::ICONS_BROWSERS,
         true,
         [&] {
-            ComponentsManager::get()->Render()->loadShaderIntoScene(browser.currentFolder, file);
+            Components::get()->Render()->loadShaderIntoScene(browser.currentFolder, file);
         }
     );
 
@@ -453,31 +487,15 @@ void FileSystemGUI::DrawShaderRowActions(GUIManager *gui, GUIType::BrowserCache 
     );
 }
 
-void FileSystemGUI::DrawShaderCreator(GUIManager *gui, GUIType::BrowserCache &browser)
+void FileSystemGUI::DrawShaderCreator(GUIManager *gui, int &item_current_idx, const std::vector<const char*> &items)
 {
-    static int item_current_idx = 0;
-    auto items = GetShaderTypeItems();
+    static char name[256];
+    strncpy(name, gui->currentVariableToCreateCustomShader.c_str(), sizeof(name));
 
-    GUI::DrawButton(
-        "Create shader",
-        IconGUI::CREATE_FILE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        true,
-        [&] {
-            if (!gui->currentVariableToCreateCustomShader.empty()) {
-                auto type = ShaderOGLCustom::getShaderTypeFromString(items[item_current_idx]);
-                ShaderOGLCustom::createEmptyCustomShader(
-                    gui->currentVariableToCreateCustomShader,
-                    browser.currentFolder,
-                    type
-                );
-                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
-            }
-        }
-    );
-
-    ImGui::SameLine();
-    DrawShaderNameInput(gui);
+    ImGui::SetNextItemWidth(150);
+    if (ImGui::InputText("Shader name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+        gui->currentVariableToCreateCustomShader = name;
+    }
     DrawShaderTypeCombo(item_current_idx, items);
 }
 
@@ -486,30 +504,73 @@ void FileSystemGUI::DrawShaderFiles(GUIManager *gui, GUIType::BrowserCache &brow
     auto windowStatus = gui->getWindowStatus(GUIType::FILES_SHADERS);
     if (!windowStatus->isOpen) return;
 
-    DrawShaderCreator(gui, browser);
+        static bool openPopup = false;
+    if (ImGui::BeginTable("ShaderHeader", 2, ImGuiTableFlags_SizingStretchProp)) {
+        ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableNextRow();
+        // Izquierda
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Image(Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
+        ImGui::SameLine();
+        ImGui::Text("Current: %s", browser.currentFolder.c_str());
+        // Derecha
+        ImGui::TableSetColumnIndex(1);
+        GUI::DrawButton("Create Shader", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+            openPopup = true;
+        });
+        ImGui::EndTable();
+    }
+    static std::string title = "Create shader dialog";
+    if (openPopup) {
+        ImGui::OpenPopup(title.c_str());
+        openPopup = false;
+    }
+
+    DrawShaderCreatorDialog(gui, browser, title);
     ImGui::Separator();
     DrawBrowserFolders(gui, Config::get()->CUSTOM_SHADERS_FOLDER, browser, Config::get()->SHADERS_EXT);
     ImGui::Separator();
     DrawShadersTable(gui, browser);
 }
 
+void FileSystemGUI::DrawShaderCreatorDialog(GUIManager *gui, GUIType::BrowserCache &browser, std::string &title)
+{
+    if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        static int item_current_idx = 0;
+        auto items = GetShaderTypeItems();
+        DrawShaderCreator(gui, item_current_idx, items);
+        ImGui::Separator();
+        GUI::DrawButton("Cancel create shader", IconGUI::CANCEL, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+            gui->currentVariableToCreateCustomShader = "";
+            ImGui::CloseCurrentPopup();
+        });
+        ImGui::SameLine();
+        GUI::DrawButton("Create shader", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+            if (!gui->currentVariableToCreateCustomShader.empty()) {
+                auto type = ShaderOGLCustom::getShaderTypeFromString(items[item_current_idx]);
+                ShaderOGLCustom::createEmptyCustomShader(
+                    gui->currentVariableToCreateCustomShader,
+                    browser.currentFolder,
+                    type
+                );
+                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
+                ImGui::CloseCurrentPopup();
+            }
+        });
+        ImGui::EndPopup();
+    }
+}
+
 void FileSystemGUI::DrawScriptCreator(GUIManager *gui, GUIType::BrowserCache &browser)
 {
-    GUI::DrawButton(
-        "Create script",
-        IconGUI::CREATE_FILE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        true,
-        [&] {
-            if (!gui->currentVariableToAddName.empty()) {
-                ComponentScripting::createScriptLUAFile(browser.currentFolder + gui->currentVariableToAddName);
-                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
-            }
-        }
-    );
+    static char name[256];
+    strncpy(name, gui->currentVariableToAddName.c_str(), sizeof(name));
 
-    ImGui::SameLine();
-    DrawScriptNameInput(gui);
+    ImGui::SetNextItemWidth(150);
+    if (ImGui::InputText("Script name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
+        gui->currentVariableToAddName = name;
+    }
 }
 
 void FileSystemGUI::DrawScriptsTable(GUIManager *gui, GUIType::BrowserCache &browser)
@@ -555,7 +616,6 @@ void FileSystemGUI::DrawScriptRowActions(GUIManager *gui, GUIType::BrowserCache 
 {
     auto fullPath = browser.currentFolder + file;
 
-    // Edit button
     ImGui::TableSetColumnIndex(1);
     GUI::DrawButton(
         "Edit script",
@@ -566,8 +626,6 @@ void FileSystemGUI::DrawScriptRowActions(GUIManager *gui, GUIType::BrowserCache 
             ScriptLuaGUI::LoadScriptDialog(gui, fullPath);
         }
     );
-
-    // Remove button
     ImGui::TableSetColumnIndex(2);
     GUI::DrawButtonConfirm(
         "Deleting script",
@@ -581,14 +639,24 @@ void FileSystemGUI::DrawScriptRowActions(GUIManager *gui, GUIType::BrowserCache 
     );
 }
 
-void FileSystemGUI::DrawScriptNameInput(GUIManager *gui)
+void FileSystemGUI::DrawScriptCreatorDialog(GUIManager *gui, GUIType::BrowserCache &browser, std::string &title)
 {
-    static char name[256];
-    strncpy(name, gui->currentVariableToAddName.c_str(), sizeof(name));
-
-    ImGui::SetNextItemWidth(150);
-    if (ImGui::InputText("Script name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-        gui->currentVariableToAddName = name;
+    if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        DrawScriptCreator(gui, browser);
+        ImGui::Separator();
+        GUI::DrawButton("Cancel create script", IconGUI::CANCEL, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+            gui->currentVariableToAddName = "";
+            ImGui::CloseCurrentPopup();
+        });
+        ImGui::SameLine();
+        GUI::DrawButton("Create script", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+            if (!gui->currentVariableToAddName.empty()) {
+                ComponentScripting::createScriptLUAFile(browser.currentFolder + gui->currentVariableToAddName);
+                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
+                ImGui::CloseCurrentPopup();
+            }
+        });
+        ImGui::EndPopup();
     }
 }
 
@@ -597,7 +665,29 @@ void FileSystemGUI::DrawScriptFiles(GUIManager *gui, GUIType::BrowserCache &brow
     auto windowStatus = gui->getWindowStatus(GUIType::FILES_SCRIPTS);
     if (!windowStatus->isOpen) return;
 
-    DrawScriptCreator(gui, browser);
+    static bool openPopup = false;
+    if (ImGui::BeginTable("ScriptHeader", 2, ImGuiTableFlags_SizingStretchProp)) {
+        ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableNextRow();
+        // Izquierda
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Image(Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
+        ImGui::SameLine();
+        ImGui::Text("Current: %s", browser.currentFolder.c_str());
+        // Derecha
+        ImGui::TableSetColumnIndex(1);
+        GUI::DrawButton("Create Script", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+            openPopup = true;
+        });
+        ImGui::EndTable();
+    }
+    static std::string title = "Create script dialog";
+    if (openPopup) {
+        ImGui::OpenPopup(title.c_str());
+        openPopup = false;
+    }
+    DrawScriptCreatorDialog(gui, browser, title);
     ImGui::Separator();
     DrawBrowserFolders(gui, Config::get()->SCRIPTS_FOLDER, browser, Config::get()->SCRIPTS_EXT);
     ImGui::Separator();

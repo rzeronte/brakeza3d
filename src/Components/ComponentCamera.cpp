@@ -1,17 +1,11 @@
 
 #include "../../include/Components/ComponentCamera.h"
-#include "../../include/Misc/Logging.h"
-#include "../../include/Components/ComponentsManager.h"
-
-ComponentCamera::ComponentCamera()
-:
-    camera(new Camera3D())
-{
-}
+#include "../../include/Components/Components.h"
 
 void ComponentCamera::onStart()
 {
     Component::onStart();
+    camera = new Camera3D();
 }
 
 void ComponentCamera::preUpdate()
@@ -28,7 +22,6 @@ void ComponentCamera::preUpdate()
 void ComponentCamera::onUpdate()
 {
     Component::onUpdate();
-
     camera->UpdateVelocity();
 }
 
@@ -36,7 +29,7 @@ void ComponentCamera::postUpdate()
 {
     Component::postUpdate();
 
-    if (ComponentsManager::get()->Input()->isEnabled()) {
+    if (Components::get()->Input()->isEnabled()) {
         camera->UpdatePositionForVelocity();
     }
 }
@@ -49,24 +42,9 @@ void ComponentCamera::onSDLPollEvent(SDL_Event *e, bool &finish)
 {
 }
 
-Camera3D *ComponentCamera::getCamera() const
-{
-    return camera;
-}
-
-const glm::mat4 &ComponentCamera::getGLMMat4ViewMatrix() const
-{
-    return ViewMatrix;
-}
-
 void ComponentCamera::setViewMatrix(const glm::mat4 &viewMatrix)
 {
     ViewMatrix = viewMatrix;
-}
-
-const glm::mat4 &ComponentCamera::getGLMMat4ProjectionMatrix() const
-{
-    return ProjectionMatrix;
 }
 
 void ComponentCamera::setProjectionMatrix(const glm::mat4 &projectionMatrix)

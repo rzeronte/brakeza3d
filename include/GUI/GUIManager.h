@@ -33,8 +33,6 @@ class GUIManager
 
     float splashAlpha = 1.0f;
 
-    std::vector<Object3D *> &gameObjects;
-
     GUIType::ScriptEditableManager scriptEditableManager;
     GUIType::ShaderEditableManager shaderEditableManager;
 
@@ -59,7 +57,7 @@ class GUIManager
     Color lineSelectorObjectColor = Color::green();
 
     TextureAtlas *textureAtlas;
-    Image *splashImage = new Image(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
+    Image *splashImage = nullptr;
 
     void DrawWinImages();
     void DrawWinDepthLightsMap();
@@ -69,10 +67,11 @@ class GUIManager
 
 public:
 
-    explicit GUIManager(std::vector<Object3D *> &gameObjects);
+    explicit GUIManager();
     virtual ~GUIManager() = default;
 
     bool isWindowOpen(GUIType::Window w) const;
+    void OnStart();
     void setSelectedObjectIndex(int value);
     void setSelectedObject(const Object3D *s);
     void RegisterWindows();
@@ -84,16 +83,16 @@ public:
     void setLayoutToDefault(Config::ImGUIConfigs config);
     virtual void DrawGUI();
     GUIType::WindowData *getWindowStatus(GUIType::Window window);
-    [[nodiscard]] int& selectedObjectIndexPointer();
-    [[nodiscard]] GuiAddonConsole *getConsole() const;
-    [[nodiscard]] TextureAtlas * getTextureAtlas() const;
-    [[nodiscard]] GUIType::BrowserCache getBrowserScripts() const;
-    [[nodiscard]] GUIType::BrowserCache getBrowserScenes() const;
-    [[nodiscard]] GUIType::BrowserCache getBrowserProjects() const;
-    [[nodiscard]] GUIType::BrowserCache getBrowserShaders() const;
-    [[nodiscard]] GUIType::ViewerObjectsMode getObjectsViewerMode() const;
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
+    int& selectedObjectIndexPointer()                       { return selectedObjectIndex; }
+    TextureAtlas * getTextureAtlas() const                  { return textureAtlas; }
+    GUIType::BrowserCache getBrowserScripts() const         { return browserScripts; }
+    GuiAddonConsole *getConsole() const                     { return widgetConsole; }
+    GUIType::BrowserCache getBrowserScenes() const          { return browserScenes; }
+    GUIType::BrowserCache getBrowserProjects() const        { return browserProjects; }
+    GUIType::BrowserCache getBrowserShaders() const         { return browserShaders; }
+    GUIType::ViewerObjectsMode getObjectsViewerMode() const { return viewerMode; }
 
     friend class Object3DGUI;
     friend class ScriptLuaGUI;

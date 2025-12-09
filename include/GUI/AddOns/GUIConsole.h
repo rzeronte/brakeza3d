@@ -23,20 +23,22 @@ struct GuiAddonConsole
     ImGuiTextFilter       Filter;
     bool                  AutoScroll;
     bool                  ScrollToBottom;
-    GUIType::Sheet              LogIcon;
 
-    sol::state &lua;
+    sol::state *lua;
 
-    GuiAddonConsole(sol::state &lua);
+    GuiAddonConsole();
+
+    void setLua(sol::state *lua);
+
     ~GuiAddonConsole();
-    void setLogIcon(GUIType::Sheet icon);
 
+    int TextEditCallback(ImGuiInputTextCallbackData* data);
     void ClearLog();
     void AddLog(const char* fmt, ...);
     void DrawWinLogging();
     void ExecCommand(const char* command_line, sol::state &lua);
-    int TextEditCallback(ImGuiInputTextCallbackData* data);
     static int TextEditCallbackStub(ImGuiInputTextCallbackData* data);
+
     // Portable helpers
     static int   Stricmp(const char* s1, const char* s2)         { int d; while ((d = toupper(*s2) - toupper(*s1)) == 0 && *s1) { s1++; s2++; } return d; }
     static int   Strnicmp(const char* s1, const char* s2, int n) { int d = 0; while (n > 0 && (d = toupper(*s2) - toupper(*s1)) == 0 && *s1) { s1++; s2++; n--; } return d; }

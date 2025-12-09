@@ -6,7 +6,7 @@
 #include "../../../include/GUI/GUI.h"
 #include "../../../include/Brakeza.h"
 #include "../../../include/Config.h"
-#include "../../../include/Components/ComponentsManager.h"
+#include "../../../include/Components/Components.h"
 
 void GUIAddonToolbar::Draw()
 {
@@ -34,7 +34,7 @@ void GUIAddonToolbar::Draw()
 
 void GUIAddonToolbar::LayoutIcons()
 {
-    auto *window = ComponentsManager::get()->Window();
+    auto *window = Components::get()->Window();
 
     GUI::DrawButton("Enable/Disable UI", IconGUI::TOOLBAR_ENABLE_GUI, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->ENABLE_IMGUI,[]() {
         GUI::Toggle(Config::get()->ENABLE_IMGUI);
@@ -55,7 +55,7 @@ void GUIAddonToolbar::LayoutIcons()
 
 void GUIAddonToolbar::TransformationsToolsIcons()
 {
-    auto window = ComponentsManager::get()->Window();
+    auto window = Components::get()->Window();
     auto operation = window->getGuiZmoOperation();
 
     GUI::DrawButton("Translate", IconGUI::TOOLBAR_TRANSLATE, GUIType::Sizes::ICONS_TOOLBAR, operation == ImGuizmo::OPERATION::TRANSLATE, [&]() {
@@ -79,7 +79,7 @@ void GUIAddonToolbar::StepSimulationOptionsIcons()
     ImGui::SameLine();
     GUI::DrawButton( "Draw collider AABB", IconGUI::TOOLBAR_DRAW_COLLIDERS, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->BULLET_DEBUG_MODE, [&]() {
         GUI::Toggle(Config::get()->BULLET_DEBUG_MODE);
-        ComponentsManager::get()->Collisions()->setEnableDebugMode(Config::get()->BULLET_DEBUG_MODE);
+        Components::get()->Collisions()->setEnableDebugMode(Config::get()->BULLET_DEBUG_MODE);
     });
 }
 
@@ -110,7 +110,7 @@ void GUIAddonToolbar::LightsOptions()
 
 void GUIAddonToolbar::LUAStatusIcons()
 {
-    auto scripting = ComponentsManager::get()->Scripting();
+    auto scripting = Components::get()->Scripting();
     bool isStop = scripting->getStateLUAScripts() == Config::LuaStateScripts::LUA_STOP;
     auto icon = isStop ? IconGUI::LUA_STOP : IconGUI::LUA_PLAY;
     auto label = isStop ? "Stop" : "Play";

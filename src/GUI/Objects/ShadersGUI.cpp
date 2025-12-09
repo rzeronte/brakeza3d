@@ -8,8 +8,9 @@
 #include "../../../include/GUI/Objects/ShadersGUI.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/GUIManager.h"
-#include "../../../include/Components/ComponentsManager.h"
+#include "../../../include/Components/Components.h"
 #include "../../../include/Misc/Tools.h"
+#include "../../../include/Brakeza.h"
 
 void ShadersGUI::DrawWinShaderEdition(GUIManager *gui)
 {
@@ -219,14 +220,15 @@ void ShadersGUI::DrawWinObjectShaders(GUIManager *gui)
     auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_SHADERS);
     if (!windowStatus->isOpen) return;
 
-    bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < gui->gameObjects.size();
+    auto objects = Brakeza::get()->getSceneObjects();
+    bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < objects.size();
 
     if (!hasSelectedIndex) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
         return;
     }
 
-    auto mesh = dynamic_cast<Mesh3D*>(gui->gameObjects[gui->selectedObjectIndex]);
+    auto mesh = dynamic_cast<Mesh3D*>(objects[gui->selectedObjectIndex]);
 
     if (mesh == nullptr) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No Mesh3D object");
@@ -275,7 +277,7 @@ void ShadersGUI::DrawWinObjectShaders(GUIManager *gui)
 
 void ShadersGUI::LoadShaderDialog(GUIManager *gui, const std::string &folder, const std::string &file)
 {
-    auto shader = ComponentsManager::get()->Render()->getLoadedShader(folder, file);
+    auto shader = Components::get()->Render()->getLoadedShader(folder, file);
     delete gui->shaderEditableManager.shader;
     gui->shaderEditableManager.shader = shader;
     gui->shaderEditableManager.loaded = true;

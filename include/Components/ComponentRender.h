@@ -114,7 +114,7 @@ public:
     void changeOpenGLProgram(GLuint);
     void resizeShadersFramebuffers() const;
     void ClearShadowMaps() const;
-    void RenderLayersToGlobalFramebuffer() const;
+    void FlipBuffersToGlobal() const;
     SceneLoader &getSceneLoader();
     ProjectLoader &getProjectLoader();
     std::vector<ShaderOGLCustom *> &getSceneShaders();

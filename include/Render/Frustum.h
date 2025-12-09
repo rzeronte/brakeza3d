@@ -18,11 +18,8 @@ public:
 
     AABB3D bounds;
 
-public:
     Frustum();
-
     static bool isVertexInside(Vertex3D &v);
-
     static bool isAABBInFrustum(AABB3D *aabb);
 };
 

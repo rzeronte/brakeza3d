@@ -6,7 +6,7 @@
 #include "../../include/Brakeza.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/3D/ParticleEmitter.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 
@@ -47,7 +47,7 @@ Object3D * ParticleEmmitterSerializer::ObjectByJson(cJSON *json)
     auto *o = new ParticleEmitter(
             DEFAULT,
             nullptr,
-            ComponentsManager::get()->Camera()->getCamera()->getPosition(),
+            Components::get()->Camera()->getCamera()->getPosition(),
             9999,
             Color::red(),
             Color::green(),
@@ -110,7 +110,7 @@ void ParticleEmmitterSerializer::LoadFileIntoScene(const std::string &file)
     auto *o = new ParticleEmitter(
             DEFAULT,
             nullptr,
-            ComponentsManager::get()->Camera()->getCamera()->getPosition(),
+            Components::get()->Camera()->getCamera()->getPosition(),
             9999,
             Color::red(),
             Color::green(),
@@ -130,7 +130,7 @@ void ParticleEmmitterSerializer::LoadFileIntoScene(const std::string &file)
         nullptr
     );
 
-    o->setPosition(ComponentsManager::get()->Camera()->getCamera()->getPosition());
+    o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
 
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("ParticleEmitter"));
 }

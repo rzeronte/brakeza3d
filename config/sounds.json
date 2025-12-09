@@ -1,6 +1,4 @@
 {
   "sounds": [
-    { "file": "radio_beep", "label": "musicTest", "type": "music" },
-    { "file": "radio_beep.wav", "label": "soundTest", "type": "sound" }
   ]
 }

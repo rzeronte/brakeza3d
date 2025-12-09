@@ -1,7 +1,7 @@
 #define GL_GLEXT_PROTOTYPES
 
 #include "../../include/OpenGL/ShaderOGLRenderDeferred.h"
-#include "../../include/Components/ComponentsManager.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLRenderDeferred::ShaderOGLRenderDeferred()
 :
@@ -52,8 +52,8 @@ void ShaderOGLRenderDeferred::render(
     GLuint fbo
 ) const
 {
-    ComponentsManager::get()->Render()->changeOpenGLFramebuffer(fbo);
-    ComponentsManager::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->changeOpenGLProgram(programID);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
@@ -61,7 +61,7 @@ void ShaderOGLRenderDeferred::render(
 
     glBindVertexArray(VertexArrayID);
 
-    auto camera = ComponentsManager::get()->Camera();
+    auto camera = Components::get()->Camera();
 
     setMat4Uniform(matrixProjectionUniform, camera->getGLMMat4ProjectionMatrix());
     setMat4Uniform(matrixViewUniform, camera->getGLMMat4ViewMatrix());
