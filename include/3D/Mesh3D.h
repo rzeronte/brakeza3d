@@ -93,6 +93,8 @@ public:
     [[nodiscard]] std::vector<Triangle *> &getModelTriangles(int i);
     [[nodiscard]] std::vector<Image *> &getModelTextures();
     [[nodiscard]] std::vector<Vertex3D *> &getModelVertices(int i);
+    void FillBuffers();
+    void UpdateOGLTextures();
 
     friend class Mesh3DSerializer;
     friend class Mesh3DGUI;

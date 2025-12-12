@@ -60,8 +60,10 @@ cJSON * Object3DSerializer::JsonByObject(Object3D* o)
     return root;
 }
 
-void Object3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
+void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
+    std::lock_guard<std::mutex> lock(mtx);  // Bloquea
+
     Logging::Message("[Object3DSerializer] ApplyJsonToObject %d", (int) o->getTypeObject());
 
     o->setName(cJSON_GetObjectItem(json, "name")->valuestring);
@@ -193,7 +195,6 @@ void Object3DSerializer::LoadFileIntoScene(const std::string &file)
 {
     auto o = new Object3D();
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Object3D"));
-
 }
 
 #endif //BRAKEZA3D_OBJECT3DSERIALIZER_CPP_H

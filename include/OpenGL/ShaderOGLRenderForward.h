@@ -65,7 +65,7 @@ public:
 
     int getNumPointLights() const;
     void destroy() override;
-    void createUBOFromLights();
+    void CreateUBOFromLights();
     void renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo) const;
     void FillUBOLights();
     void extractLights(Object3D *o);

@@ -11,7 +11,6 @@ Brakeza *Brakeza::instance = nullptr;
 Brakeza::Brakeza()
 {
     componentsManager = Components::get();
-    managerGUI = new GUIManager();
 }
 
 Brakeza *Brakeza::get()
@@ -45,13 +44,15 @@ void Brakeza::RegisterComponents() const
 void Brakeza::PreMainLoop()
 {
     timer.start();
-    GUI()->OnStart();
 
     GUI::WelcomeMessage();
     GUI::ShowLoadTime("Time until components initialization", timer);
 
     OnStartComponents();             // Starting componentes
+    GUI()->OnStart();
     AutoLoadProjectOrContinue();     // Parse CLI options
+
+    getPoolManager().getIOPool().processMainThreadCallbacks();
 
     // Profiler tags
     Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobal");
@@ -70,6 +71,9 @@ void Brakeza::MainLoop()
         Profiler::get()->ResetTotalFrameTime();                             // Reset profiler measures
         ControlFrameRate();                                                 // Control framerate based on SDL_Delay
         UpdateTimer();                                                      // Refresh main timer
+
+        getPoolManager().getIOPool().processMainThreadCallbacks();
+
         PreUpdateComponents();                                              // PreUpdate for componentes
         Components::get()->Render()->RunSceneShadersPreUpdate();            // Pre-pass running for shaders
         CaptureInputEvents(event);                                       // Capture keyboard/mouse status
@@ -119,7 +123,7 @@ void Brakeza::UpdateTimer()
     executionTime += deltaTime / 1000.f;
 }
 
-void Brakeza::OnStartComponents()
+void Brakeza::OnStartComponents() const
 {
     for (auto &c : componentsManager->getComponents())
         c->onStart();
@@ -181,7 +185,7 @@ void Brakeza::AutoLoadProjectOrContinue() const
         return;
     }
 
-    render->getSceneLoader().LoadScene(Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE);
+    //render->getSceneLoader().LoadScene(Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE);
 }
 
 void Brakeza::onUpdateSDLPollEventComponents(SDL_Event *event) const

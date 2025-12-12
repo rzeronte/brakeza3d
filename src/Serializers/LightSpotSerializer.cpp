@@ -44,7 +44,7 @@ Object3D * LightSpotSerializer::ObjectByJson(cJSON *json)
     return o;
 }
 
-void LightSpotSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
+void LightSpotSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
     auto spot = dynamic_cast<LightSpot*>(o);
 

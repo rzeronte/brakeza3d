@@ -30,7 +30,7 @@ void ShaderOGLParticles::render(
     int particlesCount
 )
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(Components::get()->Window()->getForegroundFramebuffer());
+    Components::get()->Render()->ChangeOpenGLFramebuffer(Components::get()->Window()->getForegroundFramebuffer());
 
     Components::get()->Render()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
@@ -96,7 +96,7 @@ void ShaderOGLParticles::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    Components::get()->Render()->changeOpenGLFramebuffer(0);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLParticles::destroy() {

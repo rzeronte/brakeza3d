@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_CXX_FLAGS "-O3 -w")
+    set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
+    #set(CMAKE_CXX_FLAGS "-O3 -w")
 endif()
 
 # SDL
@@ -272,6 +273,20 @@ add_executable(Brakeza3D
         include/GUI/AddOns/GUIConsole.cpp
         src/GUI/Objects/Mesh3DGUIAnimation.cpp
         src/OpenGL/ShaderOGLGrid.cpp        include/OpenGL/ShaderOGLGrid.h
+        src/Pools/ThreadPool.cpp
+        include/Pools/ThreadPool.h
+        src/Pools/PoolManager.cpp
+        include/Pools/PoolManager.h
+        include/Pools/PendingJob.h
+        include/Pools/JobParseScene.h
+        include/Pools/JobReadFileScene.h
+        include/Pools/JobReadSceneScript.h
+        include/Pools/JobReadSceneShaders.h
+        include/Pools/JobMesh3DLoadGeometry.h
+        include/Pools/JobMeshFillBuffers.h
+        include/Pools/JobLoadObject.h
+        include/Pools/JobLoadImage.h
+        include/Pools/JobMakeOGLImage.h
 )
 
 target_link_libraries(Brakeza3D

@@ -47,7 +47,7 @@ Object3D * LightPointSerializer::ObjectByJson(cJSON *json)
     return o;
 }
 
-void LightPointSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
+void LightPointSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
     Logging::Message("[LightPointSerializer] ApplyJsonToObject %d", (int) o->getTypeObject());
 

@@ -50,7 +50,7 @@ Object3D * Image3DAnimation360Serializer::ObjectByJson(cJSON *json)
     return o;
 }
 
-void Image3DAnimation360Serializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
+void Image3DAnimation360Serializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
     Logging::Message("[Image3DAnimation8DirectionsSerializer] ApplyJsonToObject: %d", (int) o->getTypeObject());
 

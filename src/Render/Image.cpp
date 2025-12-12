@@ -1,16 +1,30 @@
 #include <SDL2/SDL_image.h>
 
 #include "../../include/Render/Image.h"
+
+#include "../../include/Brakeza.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Misc/ToolsMaths.h"
 #include "../../include/Components/Components.h"
+#include "../../include/Pools/JobLoadImage.h"
 #include "../../include/Render/Profiler.h"
 
 
-Image::Image(const std::string& filename)
+Image::Image(std::string filename)
 {
-    setImage(filename);
+    auto job = std::make_shared<JobLoadImage>(this, filename);
+    Brakeza::get()->getPoolManager().getIOPool().enqueueWithMainThreadCallback(job);
+
+    //setImage(filename);
+}
+
+Image *Image::Create(std::string filename)
+{
+    auto i =  new Image();
+    auto job = std::make_shared<JobLoadImage>(i, filename);
+    Brakeza::get()->getPoolManager().getIOPool().enqueueWithMainThreadCallback(job);
+    return i;
 }
 
 Image::Image(SDL_Surface *surface, SDL_Texture *texture)
@@ -20,35 +34,49 @@ Image::Image(SDL_Surface *surface, SDL_Texture *texture)
     surface(surface),
     texture(texture)
 {
+    Profiler::get()->AddImage(this);
 }
 
-void Image::setImage(const std::string &filename)
+void Image::CreateSDLTexture()
 {
-    if (!Tools::FileExists(filename.c_str())) {
+    texture = SDL_CreateTextureFromSurface(Components::get()->Window()->getRenderer(), surface);
+    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+}
+
+void Image::LoadSDLSurface()
+{
+    surface = IMG_Load(fileName.c_str());
+}
+
+void Image::setImage(std::string filename)
+{
+    /*if (!Tools::FileExists(filename.c_str())) {
         Logging::Message("[Image] Error loading file '%s'", filename.c_str());
         exit(-1);
-    }
-
-    if (texture != nullptr) {
-        Profiler::get()->RemoveImage(this);
-        SDL_DestroyTexture(texture);
-        SDL_FreeSurface(surface);
-    }
-
-    surface = IMG_Load(filename.c_str());
-    texture = SDL_CreateTextureFromSurface(Components::get()->Window()->getRenderer(), surface);
-
-    if (textureId == 0 ) {
-        glDeleteTextures(1, &textureId);
-        SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-        textureId = MakeOGLImage(surface);
-    }
+    }*/
 
     fileName = filename;
-    loaded = true;
 
-    Logging::Message("[Image] Loading '%s'", filename.c_str());
-    Profiler::get()->AddImage(this);
+    if (texture != nullptr) {
+        //Profiler::get()->RemoveImage(this);
+        //SDL_DestroyTexture(texture);
+        //SDL_FreeSurface(surface);
+    }
+
+    LoadSDLSurface();
+
+    /*if (textureId == 0 ) {
+        glDeleteTextures(1, &textureId);
+        textureId = MakeOGLImage(surface);
+    }*/
+
+    //Logging::Message("[Image] Loading '%s'", filename.c_str());
+    //Profiler::get()->AddImage(this);
+}
+
+void Image::setAlreadyLoaded()
+{
+    loaded = true;
 }
 
 void Image::DrawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint fbo)
@@ -182,6 +210,14 @@ ImTextureID Image::getOGLImTexture() const
     return reinterpret_cast<ImTextureID>(textureId);
 }
 
+void Image::MakeAutoOGLImage()
+{
+    if (textureId == 0 ) {
+        glDeleteTextures(1, &textureId);
+    }
+    textureId = MakeOGLImage(surface);
+}
+
 GLuint Image::MakeOGLImage(const SDL_Surface *surfaceTTF)
 {
     GLuint texID;
@@ -209,4 +245,9 @@ float Image::getAlpha() const {
 
 void Image::setAlpha(float alpha) {
     Image::alpha = alpha;
+}
+
+void Image::setOGLTextureID(GLuint value)
+{
+    textureId = value;
 }

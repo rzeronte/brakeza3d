@@ -37,7 +37,7 @@ Object3D * Image2DSerializer::ObjectByJson(cJSON *json)
     return o;
 }
 
-void Image2DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
+void Image2DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
     Logging::Message("[Image2DSerializer] ApplyJsonToObject: %d", (int) o->getTypeObject());
 

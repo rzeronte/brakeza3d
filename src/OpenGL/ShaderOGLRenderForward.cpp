@@ -41,7 +41,7 @@ void ShaderOGLRenderForward::render(
     GLuint fbo
 ) const
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
 
     Components::get()->Render()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
@@ -75,7 +75,7 @@ void ShaderOGLRenderForward::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    Components::get()->Render()->changeOpenGLFramebuffer(0);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
 
 glm::mat4 ShaderOGLRenderForward::getDirectionalLightMatrix(const DirLightOpenGL& light)
@@ -106,7 +106,7 @@ glm::mat4 ShaderOGLRenderForward::getDirectionalLightMatrix(const DirLightOpenGL
     return lightProjection * lightView;
 }
 
-void ShaderOGLRenderForward::createUBOFromLights()
+void ShaderOGLRenderForward::CreateUBOFromLights()
 {
     pointsLights.resize(0);
     spotLights.resize(0);

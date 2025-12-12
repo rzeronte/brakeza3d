@@ -7,6 +7,7 @@
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/Object3DGUI.h"
+#include "../../include/Pools/JobMesh3DLoadGeometry.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 
@@ -41,8 +42,9 @@ cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
     return root;
 }
 
-void Mesh3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
+void Mesh3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
+    std::lock_guard<std::mutex> lock(mtx);  // Bloquea
     Logging::Message("[Mesh3DSerializer] ApplyJsonToObject %d", (int) o->getTypeObject());
 
     auto mesh = dynamic_cast<Mesh3D*>(o);
@@ -50,30 +52,11 @@ void Mesh3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
     Object3DSerializer().ApplyJsonToObject(json, o);
 
     mesh->setEnableLights(cJSON_GetObjectItemCaseSensitive(json, "enableLights")->valueint);
-    mesh->AssimpLoadGeometryFromFile(cJSON_GetObjectItemCaseSensitive(json, "model")->valuestring);
 
-    if (cJSON_GetObjectItemCaseSensitive(json, "shaders") != nullptr) {
-        auto shaderTypesMapping = Components::get()->Render()->getShaderTypesMapping();
-        cJSON *currentShaderJSON;
-        cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {
-            auto typeString = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
-            switch (auto type = ShaderOGLCustom::getShaderTypeFromString(typeString)) {
-                case SHADER_OBJECT: {
-                    auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
-                    auto vertex = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vertexshader")->valuestring;
-                    auto fragment = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;
-                    auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
-                    mesh->AddCustomShader(new ShaderOGLCustomMesh3D(mesh, name, vertex, fragment, types));
-                    break;
-                }
-                default: {
-                    Logging::Message("[LoadAttributes] Unknown shader type: %d", type);
-                };
-            }
-        }
-    }
+    auto job = std::make_shared<JobMesh3DLoadGeometry>(mesh, json);
+    Brakeza::get()->getPoolManager().getIOPool().enqueue(job);
 
-    if (cJSON_GetObjectItemCaseSensitive(json, "isCollisionsEnabled") != nullptr) {
+    /*if (cJSON_GetObjectItemCaseSensitive(json, "isCollisionsEnabled") != nullptr) {
         bool collisionsEnabled = cJSON_GetObjectItemCaseSensitive(json, "isCollisionsEnabled")->valueint;
         cJSON *colliderJSON = cJSON_GetObjectItemCaseSensitive(json, "collider");
 
@@ -116,6 +99,27 @@ void Mesh3DSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
             }
         }
     }
+
+    if (cJSON_GetObjectItemCaseSensitive(json, "shaders") != nullptr) {
+        auto shaderTypesMapping = Components::get()->Render()->getShaderTypesMapping();
+        cJSON *currentShaderJSON;
+        cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {
+            auto typeString = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
+            switch (auto type = ShaderOGLCustom::getShaderTypeFromString(typeString)) {
+                case SHADER_OBJECT: {
+                    auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
+                    auto vertex = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vertexshader")->valuestring;
+                    auto fragment = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;
+                    auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
+                    mesh->AddCustomShader(new ShaderOGLCustomMesh3D(mesh, name, vertex, fragment, types));
+                    break;
+                }
+                default: {
+                    Logging::Message("[LoadAttributes] Unknown shader type: %d", type);
+                };
+            }
+        }
+    }*/
 }
 
 Object3D* Mesh3DSerializer::ObjectByJson(cJSON *json)
@@ -129,6 +133,7 @@ Object3D* Mesh3DSerializer::ObjectByJson(cJSON *json)
 
 void Mesh3DSerializer::LoadFileIntoScene(const std::string& model)
 {
+
     auto *o = new Mesh3D();
 
     o->setPosition(Components::get()->Camera()->getCamera()->getPosition());

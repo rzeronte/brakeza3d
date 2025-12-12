@@ -146,6 +146,14 @@ void FileSystemGUI::DrawProjectCreatorDialog(GUIManager *gui, GUIType::BrowserCa
         ImGui::Separator();
         DrawProjectCreator(gui, browser);
         ImGui::Separator();
+
+        float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
+        float spacing = ImGui::GetStyle().ItemSpacing.x;
+        float totalWidth = buttonWidth * 2 + spacing;
+
+        float availWidth = ImGui::GetContentRegionAvail().x;
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth - totalWidth);
+
         GUI::DrawButton("Cancel create project", IconGUI::CANCEL, GUIType::Sizes::ICONS_BROWSERS, true,[&] {
             gui->currentVariableToCreateCustomShader = "";
             ImGui::CloseCurrentPopup();
@@ -156,7 +164,7 @@ void FileSystemGUI::DrawProjectCreatorDialog(GUIManager *gui, GUIType::BrowserCa
             IconGUI::CREATE_FILE,
             GUIType::Sizes::ICONS_BROWSERS,
             true,
-    [&] {
+            [&] {
                 if (!gui->currentVariableToCreateCustomShader.empty()) {
                     ProjectLoader::CreateProject(browser.currentFolder + gui->currentVariableToCreateCustomShader);
                     browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->PROJECTS_EXT);
@@ -304,6 +312,16 @@ void FileSystemGUI::DrawSceneCreatorDialog(GUIManager *gui, GUIType::BrowserCach
     if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         DrawSceneCreator(gui, browser);
         ImGui::Separator();
+
+        // Calcular ancho de los botones
+        float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
+        float spacing = ImGui::GetStyle().ItemSpacing.x;
+        float totalWidth = buttonWidth * 2 + spacing;
+
+        // Alinear a la derecha
+        float availWidth = ImGui::GetContentRegionAvail().x;
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth - totalWidth);
+
         GUI::DrawButton("Cancel create scene", IconGUI::CANCEL, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
             gui->currentVariableToCreateCustomShader = "";
             ImGui::CloseCurrentPopup();
@@ -454,7 +472,7 @@ void FileSystemGUI::DrawShaderRowActions(GUIManager *gui, GUIType::BrowserCache 
         GUIType::Sizes::ICONS_BROWSERS,
         true,
         [&] {
-            Components::get()->Render()->loadShaderIntoScene(browser.currentFolder, file);
+            Components::get()->Render()->LoadShaderIntoScene(browser.currentFolder, file);
         }
     );
 
@@ -541,6 +559,14 @@ void FileSystemGUI::DrawShaderCreatorDialog(GUIManager *gui, GUIType::BrowserCac
         auto items = GetShaderTypeItems();
         DrawShaderCreator(gui, item_current_idx, items);
         ImGui::Separator();
+
+        float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
+        float spacing = ImGui::GetStyle().ItemSpacing.x;
+        float totalWidth = buttonWidth * 2 + spacing;
+
+        float availWidth = ImGui::GetContentRegionAvail().x;
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth - totalWidth);
+
         GUI::DrawButton("Cancel create shader", IconGUI::CANCEL, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
             gui->currentVariableToCreateCustomShader = "";
             ImGui::CloseCurrentPopup();
@@ -633,7 +659,7 @@ void FileSystemGUI::DrawScriptRowActions(GUIManager *gui, GUIType::BrowserCache 
         IconGUI::SCRIPT_REMOVE,
         GUIType::Sizes::ICONS_BROWSERS,
         [&] {
-            ComponentScripting::removeScriptLUAFile(fullPath);
+            ComponentScripting::RemoveScriptLUAFile(fullPath);
             browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
         }
     );
@@ -644,6 +670,16 @@ void FileSystemGUI::DrawScriptCreatorDialog(GUIManager *gui, GUIType::BrowserCac
     if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         DrawScriptCreator(gui, browser);
         ImGui::Separator();
+
+        // Calcular ancho de los botones
+        float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
+        float spacing = ImGui::GetStyle().ItemSpacing.x;
+        float totalWidth = buttonWidth * 2 + spacing;
+
+        // Alinear a la derecha
+        float availWidth = ImGui::GetContentRegionAvail().x;
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth - totalWidth);
+
         GUI::DrawButton("Cancel create script", IconGUI::CANCEL, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
             gui->currentVariableToAddName = "";
             ImGui::CloseCurrentPopup();

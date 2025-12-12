@@ -31,7 +31,7 @@ void ShaderOGLShading::renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint f
 
 void ShaderOGLShading::render(glm::mat4 modelMatrix, GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer, int size,GLuint fbo) const
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);

@@ -25,22 +25,22 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
     void PlayLUAScripts();
     void StopLUAScripts();
-    void ReloadLUAScripts();
+    void ReloadLUAScripts() const;
     void addSceneLUAScript(ScriptLUA *script);
     void addProjectLUAScript(ScriptLUA *script);
-    void reloadScriptGlobals();
-    void removeSceneScript(ScriptLUA *script);
-    void removeProjectScript(ScriptLUA *script);
-    void onStartScripts();
-    void runScripts();
+    void ReloadScriptGlobals() const;
+    void RemoveSceneScript(ScriptLUA *script);
+    void RemoveProjectScript(ScriptLUA *script);
+    void onStartScripts() const;
+    void RunScripts() const;
     void InitLUATypes();
-    sol::state &getLua();
-    std::vector<ScriptLUA*> &getSceneLUAScripts();
-    std::vector<ScriptLUA*> &getProjectLUAScripts();
-    Config::LuaStateScripts getStateLUAScripts();
     sol::object getGlobalScriptVar(const std::string& scriptName, const char *varName);
+    sol::state &getLua()                                    { return lua; }
+    std::vector<ScriptLUA*> &getSceneLUAScripts()           { return scripts; }
+    std::vector<ScriptLUA*> &getProjectLUAScripts()         { return projectScripts; }
+    Config::LuaStateScripts getStateLUAScripts() const      { return stateScripts; }
     static void createScriptLUAFile(const std::string& path);
-    static void removeScriptLUAFile(const std::string& path);
+    static void RemoveScriptLUAFile(const std::string& path);
 };
 
 

@@ -13,7 +13,7 @@ class Image3DAnimationSerializer : public JSONSerializer
 public:
     Object3D* ObjectByJson(cJSON* json) override;
     cJSON* JsonByObject(Object3D *o) override;
-    void ApplyJsonToObject(const cJSON* json, Object3D* o) override;
+    void ApplyJsonToObject(cJSON* json, Object3D* o) override;
     void LoadFileIntoScene(const std::string& file) override;
 };
 

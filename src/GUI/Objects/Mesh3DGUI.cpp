@@ -23,9 +23,18 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
                     ImGui::Text("Num Vertices: %d", m.vertices.size());
                     ImGui::Text("Num UVs: %d", m.uvs.size());
                     ImGui::Text("Num Normals: %d", m.normals.size());
+                    ImGui::Text("Num Textures: %d", o->modelTextures.size());
                     ImGui::TreePop();
                 }
                 cont++;
+            }
+            if (ImGui::TreeNode("Textures")) {
+                for (auto &m : o->modelTextures) {
+                    //auto img = Image::MakeOGLImage(m->getSurface());
+                    //ImGui::Image((ImTextureID) img, ImVec2(200, 200));
+                    ImGui::NewLine();
+                }
+                ImGui::TreePop();
             }
             ImGui::TreePop();
         }

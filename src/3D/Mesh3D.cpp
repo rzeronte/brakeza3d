@@ -89,8 +89,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     ProcessNodes(scene, scene->mRootNode);
 
     sourceFile = fileName;
-
-    ComponentRender::FillOGLBuffers(meshes);
+    //ComponentRender::FillOGLBuffers(meshes);
 }
 
 void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
@@ -119,8 +118,8 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
             std::string FullPath = Config::get()->TEXTURES_FOLDER + base_filename;
             Logging::Message("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), getName().c_str());
 
-            this->modelTextures.push_back(new Image(FullPath));
-            this->modelSpecularTextures.push_back(new Image(FullPath));
+            modelTextures.emplace_back(new Image(FullPath));
+            modelSpecularTextures.push_back(new Image(FullPath));
         } else {
             Logging::Message("[Mesh3D] ERROR: mMaterial[%s]: Not valid color", i);
         }
@@ -703,4 +702,16 @@ std::vector<Image *> &Mesh3D::getModelTextures()
 std::vector<Vertex3D *> &Mesh3D::getModelVertices(int i)
 {
     return meshes[i].modelVertices;
+}
+
+void Mesh3D::FillBuffers()
+{
+    ComponentRender::FillOGLBuffers(meshes);
+}
+
+void Mesh3D::UpdateOGLTextures()
+{
+    for (auto t : modelTextures) {
+        t->MakeAutoOGLImage();
+    }
 }

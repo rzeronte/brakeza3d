@@ -12,6 +12,7 @@
 #include "Color.h"
 
 class Image {
+
     bool loaded = false;
     float alpha = 1;
     GLuint textureId = 0;
@@ -20,14 +21,28 @@ class Image {
     SDL_Texture *texture = nullptr;
 public:
     virtual ~Image();
+    Image() = default;
     Image(SDL_Surface *surface, SDL_Texture *texture);
-    explicit Image(const std::string& filename);
+
+    void CreateSDLTexture();
+
+    void LoadSDLSurface();
+
+    explicit Image(std::string filename);
+
+    static Image *Create(std::string file);
 
     void LoadFromRaw(const unsigned int *texture, int w, int h);
     void DrawFlat(int, int, GLuint framebuffer) const;
     void DrawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint framebuffer);
     void setAlpha(float alpha);
-    void setImage(const std::string &basicString);
+
+    void setOGLTextureID(GLuint value);
+
+    void setImage(std::string basicString);
+
+    void setAlreadyLoaded();
+
     [[nodiscard]] bool isLoaded() const;
     [[nodiscard]] float getAlpha() const;
     [[nodiscard]] int height() const;
@@ -37,6 +52,9 @@ public:
     [[nodiscard]] Color getColor(int x, int y) const;
     [[nodiscard]] SDL_Texture *getTexture() const;
     [[nodiscard]] ImTextureID getOGLImTexture() const;
+
+    void MakeAutoOGLImage();
+
     [[nodiscard]] GLuint getOGLTextureID() const;
     [[nodiscard]] const std::string &getFileName() const;
     [[nodiscard]] SDL_Surface *getSurface() const;

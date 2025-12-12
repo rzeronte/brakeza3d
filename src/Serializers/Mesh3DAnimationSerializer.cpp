@@ -54,7 +54,7 @@ cJSON* Mesh3DAnimationSerializer::JsonByObject(Object3D *o)
     return root;
 }
 
-void Mesh3DAnimationSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
+void Mesh3DAnimationSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
     Logging::Message("[Mesh3DAnimationSerializer] ApplyJsonToObject %d", (int) o->getTypeObject());
 

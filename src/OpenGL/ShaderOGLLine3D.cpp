@@ -53,7 +53,7 @@ void ShaderOGLLine3D::destroy()
 
 void ShaderOGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo, Color c)
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
 
     Components::get()->Render()->changeOpenGLProgram(programID);
 
@@ -90,5 +90,5 @@ void ShaderOGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo
 
     glDeleteBuffers(1, &VBO);
 
-    Components::get()->Render()->changeOpenGLFramebuffer(0);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
