@@ -81,7 +81,7 @@ void ShaderOGLCustomMesh3D::renderMesh(
     GLuint fbo
 )
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
@@ -116,7 +116,7 @@ void ShaderOGLCustomMesh3D::renderMesh(
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);      // Vincula el buffer de vértices como buffer de escritura
     glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, sizeof(glm::vec4) * size);
 
-    Components::get()->Render()->changeOpenGLFramebuffer(0);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLCustomMesh3D::setShaderSystemUniforms(GLuint diffuse, GLuint specular)

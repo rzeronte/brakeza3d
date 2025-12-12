@@ -37,7 +37,7 @@ ShaderOGLDOF::ShaderOGLDOF()
 
 void ShaderOGLDOF::render(GLuint sceneTexture, GLuint depthTexture)
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(resultFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Components::get()->Render()->changeOpenGLProgram(programID);
@@ -68,7 +68,7 @@ GLuint ShaderOGLDOF::getTextureResult() const
 void ShaderOGLDOF::createFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
-    Components::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(resultFramebuffer);
     auto window = Components::get()->Window();
 
     glGenTextures(1, &textureResult);

@@ -24,7 +24,7 @@ void ComponentScripting::onUpdate()
     Component::onUpdate();
 
     if (stateScripts == Config::LUA_PLAY) {
-        runScripts();
+        RunScripts();
     }
 }
 
@@ -39,11 +39,6 @@ void ComponentScripting::onEnd()
 
 void ComponentScripting::onSDLPollEvent(SDL_Event *event, bool &finish)
 {
-}
-
-Config::LuaStateScripts ComponentScripting::getStateLUAScripts()
-{
-    return stateScripts;
 }
 
 void ComponentScripting::PlayLUAScripts()
@@ -69,7 +64,7 @@ void ComponentScripting::StopLUAScripts()
     stateScripts = Config::LuaStateScripts::LUA_STOP;
 }
 
-void ComponentScripting::ReloadLUAScripts()
+void ComponentScripting::ReloadLUAScripts() const
 {
     Logging::Message("Reloading LUA Scripts...");
 
@@ -90,17 +85,7 @@ void ComponentScripting::ReloadLUAScripts()
         object->ReloadScriptsEnvironment();
     }
 
-    reloadScriptGlobals();
-}
-
-std::vector<ScriptLUA*> &ComponentScripting::getSceneLUAScripts()
-{
-    return scripts;
-}
-
-std::vector<ScriptLUA*> &ComponentScripting::getProjectLUAScripts()
-{
-    return projectScripts;
+    ReloadScriptGlobals();
 }
 
 sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName, const char *varName)
@@ -116,39 +101,48 @@ sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName
 
 void ComponentScripting::addProjectLUAScript(ScriptLUA *script)
 {
+    if (script->getScriptFilename().empty()) {
+        delete script;
+        Logging::Error("[Scripting] Script refused...Deleting!");
+        return;
+    }
+
     projectScripts.push_back(script);
-    reloadScriptGlobals();
+    ReloadScriptGlobals();
 }
 
 void ComponentScripting::addSceneLUAScript(ScriptLUA *script)
 {
+    if (script == nullptr) {
+        delete script;
+    }
     scripts.push_back(script);
-    reloadScriptGlobals();
+    ReloadScriptGlobals();
 }
 
-void ComponentScripting::runScripts()
+void ComponentScripting::RunScripts() const
 {
-    for (auto script : projectScripts) {
+    for (auto &script : projectScripts) {
         script->runGlobal("onUpdate");
     }
 
-    for (auto script : scripts) {
+    for (auto &script : scripts) {
         script->runGlobal("onUpdate");
     }
 }
 
-void ComponentScripting::reloadScriptGlobals()
+void ComponentScripting::ReloadScriptGlobals() const
 {
-    for (auto script : projectScripts) {
+    for (auto &script : projectScripts) {
         script->reloadGlobals();
     }
 
-    for (auto script : scripts) {
+    for (auto &script : scripts) {
         script->reloadGlobals();
     }
 }
 
-void ComponentScripting::removeSceneScript(ScriptLUA *script)
+void ComponentScripting::RemoveSceneScript(ScriptLUA *script)
 {
     Logging::Message("Removing SCENE script %s", script->scriptFilename.c_str());
 
@@ -161,7 +155,7 @@ void ComponentScripting::removeSceneScript(ScriptLUA *script)
     }
 }
 
-void ComponentScripting::removeProjectScript(ScriptLUA *script)
+void ComponentScripting::RemoveProjectScript(ScriptLUA *script)
 {
     Logging::Message("Removing PROJECT script %s", script->scriptFilename.c_str());
 
@@ -174,7 +168,7 @@ void ComponentScripting::removeProjectScript(ScriptLUA *script)
     }
 }
 
-void ComponentScripting::onStartScripts()
+void ComponentScripting::onStartScripts() const
 {
     Logging::Message("Executing OnStart for PROJECT scripts...");
     for (auto script : projectScripts) {
@@ -211,7 +205,7 @@ void ComponentScripting::createScriptLUAFile(const std::string& path)
     Tools::WriteToFile(projectJsonFile, content.c_str());
 }
 
-void ComponentScripting::removeScriptLUAFile(const std::string& path)
+void ComponentScripting::RemoveScriptLUAFile(const std::string& path)
 {
     Logging::Message("[Scripting] Deleting script file: %s", path.c_str());
     Tools::RemoveFile(path);
@@ -229,9 +223,5 @@ void ComponentScripting::InitLUATypes()
     lua["componentsManager"] = Components::get();
     lua.set_function("print",
         static_cast<void(*)(const char*, ...)>(&Logging::Message)
-    );}
-
-sol::state &ComponentScripting::getLua()
-{
-    return lua;
+    );
 }

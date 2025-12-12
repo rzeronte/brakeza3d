@@ -599,6 +599,10 @@
 			"name":	"SHADER_TYPE_POSTPROCESSING",
 			"x":	0,
 			"y":	0
+		}, {
+			"name":	"CANCEL",
+			"x":	4,
+			"y":	37
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

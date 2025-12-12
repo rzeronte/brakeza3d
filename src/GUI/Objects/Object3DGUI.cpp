@@ -3,7 +3,6 @@
 //
 
 #include "../../../include/GUI/Objects/Object3DGUI.h"
-
 #include "../../../include/Components/Components.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/Misc/Logging.h"

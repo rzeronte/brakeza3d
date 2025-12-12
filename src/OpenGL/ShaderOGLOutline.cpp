@@ -21,7 +21,7 @@ ShaderOGLOutline::ShaderOGLOutline()
 
 void ShaderOGLOutline::renderOutline(GLuint textureId, const Color &c, float borderThickness, GLuint fbo)
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();

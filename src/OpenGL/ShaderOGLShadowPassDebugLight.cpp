@@ -21,7 +21,7 @@ ShaderOGLShadowPassDebugLight::ShaderOGLShadowPassDebugLight()
 
 void ShaderOGLShadowPassDebugLight::renderInternalToTexture()
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(internalFramebuffer);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(internalFramebuffer);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();
@@ -39,7 +39,7 @@ void ShaderOGLShadowPassDebugLight::renderInternalToTexture()
 
 void ShaderOGLShadowPassDebugLight::renderInternalFromArrayTextures(GLuint depthTexture, int layer)
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(internalFramebuffer);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(internalFramebuffer);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
     loadQuadMatrixUniforms();

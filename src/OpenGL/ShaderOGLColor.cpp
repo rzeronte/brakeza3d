@@ -49,7 +49,7 @@ void ShaderOGLColor::renderColor(
 {
     auto render = Components::get()->Render();
 
-    render->changeOpenGLFramebuffer(fbo);
+    render->ChangeOpenGLFramebuffer(fbo);
     render->changeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
@@ -78,7 +78,7 @@ void ShaderOGLColor::renderColor(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    render->changeOpenGLFramebuffer(0);
+    render->ChangeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLColor::destroy()

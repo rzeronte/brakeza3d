@@ -7,6 +7,9 @@
 
 #include <string>
 #include <map>
+#include <mutex>
+#include <vector>
+
 #include "../SceneObjectTypes.h"
 #include "../Misc/cJSON.h"
 
@@ -19,8 +22,13 @@ class SceneLoader
 public:
     explicit SceneLoader();
 
+    static void LoadSceneSettings(cJSON *contentJSON);
+
+
     static void InitSerializers();
     static void LoadScene(const std::string& filename);
+    static void ComputeScene(cJSON *contentJSON);
+
     static void SaveScene(const std::string& filename);
     static void CreateScene(const std::string &filename);
     static void RemoveScene(const std::string &filename);

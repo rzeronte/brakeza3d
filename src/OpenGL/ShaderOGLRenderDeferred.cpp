@@ -52,7 +52,7 @@ void ShaderOGLRenderDeferred::render(
     GLuint fbo
 ) const
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
     glEnable(GL_DEPTH_TEST);

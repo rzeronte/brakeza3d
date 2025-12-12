@@ -25,7 +25,7 @@ ShaderOGLDepthMap::ShaderOGLDepthMap()
 void ShaderOGLDepthMap::render(GLuint textureID, GLuint fbo)
 {
     auto render = Components::get()->Render();
-    render->changeOpenGLFramebuffer(fbo);
+    render->ChangeOpenGLFramebuffer(fbo);
     render->changeOpenGLProgram(programID);
 
     glDisable(GL_DEPTH_TEST);
@@ -43,7 +43,7 @@ void ShaderOGLDepthMap::render(GLuint textureID, GLuint fbo)
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    render->changeOpenGLFramebuffer(0);
+    render->ChangeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLDepthMap::destroy()

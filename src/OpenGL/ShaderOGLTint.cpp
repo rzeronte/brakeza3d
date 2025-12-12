@@ -22,7 +22,7 @@ ShaderOGLTint::ShaderOGLTint()
 
 void ShaderOGLTint::render(Color c, float alpha, GLuint fbo)
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
 
     Components::get()->Render()->changeOpenGLProgram(programID);
 

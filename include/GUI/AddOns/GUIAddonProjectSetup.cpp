@@ -89,7 +89,7 @@ void GUIAddonProjectSetup::DrawProjectScripts(GUIManager *gui)
         });
         ImGui::SameLine();
         GUI::DrawButton("Remove script", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            scripting->removeProjectScript(currentScript);
+            scripting->RemoveProjectScript(currentScript);
         });
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
@@ -118,7 +118,7 @@ void GUIAddonProjectSetup::DrawSceneScripts(GUIManager *gui)
     for (unsigned int i = 0; i < scripts.size(); i++) {
         auto currentScript = scripts[i];
         ImGui::PushID(i);
-        std::string optionText = std::to_string(i + 1) + ") " + currentScript->scriptFilename;
+        std::string optionText = std::to_string(i + 1) + ") " + currentScript->getName();
 
         GUI::DrawButtonTransparent(
             currentScript->isPaused() ? "Unlock scene script" : "lock scene script",
@@ -137,7 +137,7 @@ void GUIAddonProjectSetup::DrawSceneScripts(GUIManager *gui)
         });
         ImGui::SameLine();
         GUI::DrawButton("Remove scene script", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            scripting->removeSceneScript(currentScript);
+            scripting->RemoveSceneScript(currentScript);
         });
         ImGui::SameLine();
         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
@@ -155,7 +155,7 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders(GUIManager *gui)
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CUSTOMSHADER_ITEM")) {
             Config::DragDropCustomShaderData* receivedData = (Config::DragDropCustomShaderData*)payload->Data;
             Logging::Message("Dropping shader (Folder: %s, File: %s) in global space", receivedData->folder, receivedData->file);
-            render->loadShaderIntoScene(receivedData->folder, receivedData->file);
+            render->LoadShaderIntoScene(receivedData->folder, receivedData->file);
         }
         ImGui::EndDragDropTarget();
     }
@@ -177,7 +177,7 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders(GUIManager *gui)
         });
         ImGui::SameLine();
         GUI::DrawButton("Remove script", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            render->removeSceneShaderByIndex(i);
+            render->RemoveSceneShaderByIndex(i);
         });
         ImGui::SameLine();
         if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {

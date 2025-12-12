@@ -20,6 +20,7 @@ ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
     if (!Tools::FileExists(scriptFilename.c_str()) || !Tools::FileExists(fileTypes.c_str())) {
         Logging::Error("[ScriptLUA] The script cannot be loaded. Files are missing.");
         Logging::Error("[ScriptLUA] Trying to load '%s' and '%s'", scriptFilename.c_str(), fileTypes.c_str());
+        scriptFilename.clear(); fileTypes.clear();
         return;
     }
     getCode(script);
@@ -35,6 +36,7 @@ ScriptLUA::ScriptLUA(const std::string &scriptFilename, const cJSON *types)
     if (!Tools::FileExists(scriptFilename.c_str()) || !Tools::FileExists(fileTypes.c_str())) {
         Logging::Error("[ScriptLUA] The script cannot be loaded. Files are missing.");
         Logging::Error("[ScriptLUA] Trying to load '%s' and '%s'", scriptFilename.c_str(), fileTypes.c_str());
+        this->scriptFilename.clear(); fileTypes.clear();
         return;
     }
     getCode(scriptFilename);

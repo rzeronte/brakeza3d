@@ -72,7 +72,7 @@ Object3D * ParticleEmmitterSerializer::ObjectByJson(cJSON *json)
     return o;
 }
 
-void ParticleEmmitterSerializer::ApplyJsonToObject(const cJSON *json, Object3D *o)
+void ParticleEmmitterSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
     Logging::Message("[ParticleEmmitterSerializer] ApplyJsonToObject: %d", (int) o->getTypeObject());
 

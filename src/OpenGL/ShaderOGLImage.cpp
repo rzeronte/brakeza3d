@@ -45,7 +45,7 @@ ShaderOGLImage::ShaderOGLImage()
 
 void ShaderOGLImage::renderTexture(GLuint textureId, int x, int y, int w, int h, float alpha, bool inverse, GLuint fbo) const
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
 
     glDisable(GL_DEPTH_TEST);
 
@@ -77,7 +77,7 @@ void ShaderOGLImage::renderTexture(GLuint textureId, int x, int y, int w, int h,
 
     glEnable(GL_DEPTH_TEST);
 
-    Components::get()->Render()->changeOpenGLFramebuffer(0);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLImage::destroy() {

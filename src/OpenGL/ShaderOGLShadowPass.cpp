@@ -65,7 +65,7 @@ void ShaderOGLShadowPass::renderIntoDirectionalLightTexture(
     GLuint fbo
 ) const
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
@@ -82,7 +82,7 @@ void ShaderOGLShadowPass::renderIntoDirectionalLightTexture(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    Components::get()->Render()->changeOpenGLFramebuffer(0);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLShadowPass::renderIntoArrayDepthTextures(
@@ -102,7 +102,7 @@ void ShaderOGLShadowPass::renderIntoArrayDepthTextures(
         return;
     }
 
-    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
@@ -120,7 +120,7 @@ void ShaderOGLShadowPass::renderIntoArrayDepthTextures(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    Components::get()->Render()->changeOpenGLFramebuffer(0);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
 
 GLuint ShaderOGLShadowPass::getSpotLightsDepthMapsFBO() const
@@ -209,7 +209,7 @@ void ShaderOGLShadowPass::createDirectionalLightDepthTexture()
 
 void ShaderOGLShadowPass::clearDirectionalLightDepthTexture() const
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(directionalLightDepthMapFBO);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(directionalLightDepthMapFBO);
 
     glBindFramebuffer(GL_FRAMEBUFFER, directionalLightDepthMapFBO);
     glClear(GL_DEPTH_BUFFER_BIT);

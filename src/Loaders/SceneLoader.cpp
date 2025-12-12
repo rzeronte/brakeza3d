@@ -12,6 +12,7 @@
 #include "../../include/3D/ParticleEmitter.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/OpenGL/ShaderOGLCustomPostprocessing.h"
+#include "../../include/Pools/JobLoadObject.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Serializers/LightPointSerializer.h"
 #include "../../include/Serializers/Object3DSerializer.h"
@@ -23,29 +24,27 @@
 #include "../../include/Serializers/Image2DSerializer.h"
 #include "../../include/Serializers/Image3DSerializer.h"
 #include "../../include/Serializers/Image3DAnimationSerializer.h"
+#include "../../include/Pools/JobReadFileScene.h"
+#include "../../include/Pools/PoolManager.h"
 
 SceneLoader::SceneLoader()
 {
     InitSerializers();
 }
 
-void SceneLoader::LoadScene(const std::string& filename)
+void SceneLoader::LoadSceneSettings(cJSON *contentJSON)
 {
-    Logging::Message("[SceneLoader] Loading scene: '%s'", filename.c_str());
-
-    size_t file_size;
-    auto contentFile = Tools::ReadFile(filename, file_size);
-    auto contentJSON = cJSON_Parse(contentFile);
-
     auto camera = Components::get()->Camera()->getCamera();
     auto shaderRender = Components::get()->Render()->getShaders()->shaderOGLRender;
 
+    // GRAVITY
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity") != nullptr) {
         auto gravity = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity"));
         Config::get()->gravity = gravity;
         Components::get()->Collisions()->setGravity(gravity);
     }
 
+    // ADS ILLUMINATION
     cJSON *adsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "ads");
     if (adsJSON != nullptr) {
         auto direction = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "direction"));
@@ -59,8 +58,8 @@ void SceneLoader::LoadScene(const std::string& filename)
         shaderRender->getDirectionalLight().specular = specular.toGLM();
     }
 
+    // CAMERA POSITION/ROTATION
     cJSON *cameraJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "camera");
-
     auto cameraPositionJSON = cJSON_GetObjectItemCaseSensitive(cameraJSON, "position");
     auto cameraRotationJSON = cJSON_GetObjectItemCaseSensitive(cameraJSON, "rotation");
 
@@ -78,32 +77,19 @@ void SceneLoader::LoadScene(const std::string& filename)
     camera->setRotation(M3::getMatrixRotationForEulerAngles(pitch, yaw, roll));
 
     Logging::Message("[SceneLoader] Camera rotation set to (%f, %f, %f)", camera->getPitch(), camera->getYaw(), camera->getRoll());
+}
 
-    cJSON *currentObject;
-    cJSON_ArrayForEach(currentObject, cJSON_GetObjectItemCaseSensitive(contentJSON, "objects")) {
-        SceneLoaderCreateObject(currentObject);
-    }
+void SceneLoader::ComputeScene(cJSON *contentJSON)
+{
 
-    cJSON *currentShaderJSON;
-    cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(contentJSON, "shaders")) {
-        auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
-        auto vertex = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vertexshader")->valuestring;
-        auto fragment = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;
-        auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
+}
 
-        auto shader = new ShaderOGLCustomPostprocessing(name, vertex, fragment, types);
-        Components::get()->Render()->addShaderToScene(shader);
-    }
+void SceneLoader::LoadScene(const std::string& filename)
+{
+    Logging::Message("[SceneLoader] Loading scene: '%s'", filename.c_str());
 
-    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
-        cJSON *currentScript;
-        cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
-            std::string fileName = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
-            Components::get()->Scripting()->addSceneLUAScript(
-                new ScriptLUA(fileName, ScriptLUA::dataTypesFileFor(fileName))
-            );
-        }
-    }
+    auto job = std::make_shared<JobReadFileScene>(filename);
+    Brakeza::get()->getPoolManager().getIOPool().enqueue(job);
 }
 
 void SceneLoader::SaveScene(const std::string &filename)
@@ -168,7 +154,7 @@ void SceneLoader::ClearScene()
     scripting->StopLUAScripts();
 
     for (auto o: scripting->getSceneLUAScripts()) {
-        scripting->removeSceneScript(o);
+        scripting->RemoveSceneScript(o);
     }
 
     for (auto object: Brakeza::get()->getSceneObjects()) {
@@ -178,7 +164,7 @@ void SceneLoader::ClearScene()
     }
     auto render = Components::get()->Render();
     for (auto &s: render->getSceneShaders()) {
-        render->removeSceneShader(s);
+        render->RemoveSceneShader(s);
     }
 
     Brakeza::get()->GUI()->setSelectedObject(nullptr);
@@ -223,9 +209,6 @@ void SceneLoader::InitSerializers()
 
 void SceneLoader::SceneLoaderCreateObject(cJSON *object)
 {
-    auto o = JSONSerializerRegistry::instance().deserialize(object);
-    o->setBelongToScene(true);
-    std::cout << "[SceneLoaderCreateObject] " << o->getName() << std::endl;
-
-    Brakeza::get()->addObject3D(o, o->getName());
+    auto job = std::make_shared<JobLoadObject>(object);
+    Brakeza::get()->getPoolManager().getIOPool().enqueue(job);
 }

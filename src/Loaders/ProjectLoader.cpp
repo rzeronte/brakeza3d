@@ -56,7 +56,7 @@ void ProjectLoader::RemoveProjectScripts()
 {
     auto scripting = Components::get()->Scripting();
     for (auto o: scripting->getProjectLUAScripts()) {
-        scripting->removeProjectScript(o);
+        scripting->RemoveProjectScript(o);
     }
 }
 

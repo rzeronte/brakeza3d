@@ -80,7 +80,6 @@ class ComponentRender : public Component
     std::vector<ShaderOGLCustom*> sceneShaders;
 
     Shaders shaders;
-
 public:
     ComponentRender() = default;
     ~ComponentRender() override;
@@ -96,12 +95,12 @@ public:
     void setSelectedObject(Object3D *o);
     void updateFPS();
     void updateSelectedObject3D();
-    void loadShaderIntoScene(const std::string &folder, const std::string &name);
+    void LoadShaderIntoScene(const std::string &folder, const std::string &name);
     void addShaderToScene(ShaderOGLCustom *shader);
     void setSceneShadersEnabled(bool value);
     void RunSceneShadersPostUpdate() const;
-    void removeSceneShaderByIndex(int index);
-    void removeSceneShader(const ShaderOGLCustom *);
+    void RemoveSceneShaderByIndex(int index);
+    void RemoveSceneShader(const ShaderOGLCustom *);
     void RunSceneShadersPreUpdate() const;
     void setGlobalIlluminationDirection(const Vertex3D &d) const;
     void setGlobalIlluminationAmbient(const Vertex3D &a) const;
@@ -110,32 +109,34 @@ public:
     void drawLine(const Vertex3D &from, const Vertex3D &to, const Color &c) const;
     void setLastFrameBufferUsed(GLuint value);
     void setLastProgramUsed(GLuint value);
-    void changeOpenGLFramebuffer(GLuint);
+    void ChangeOpenGLFramebuffer(GLuint);
     void changeOpenGLProgram(GLuint);
     void resizeShadersFramebuffers() const;
     void ClearShadowMaps() const;
     void FlipBuffersToGlobal() const;
-    SceneLoader &getSceneLoader();
-    ProjectLoader &getProjectLoader();
-    std::vector<ShaderOGLCustom *> &getSceneShaders();
-    [[nodiscard]] Shaders *getShaders() { return &shaders;}
-    [[nodiscard]] ShaderOGLCustom *getSceneShaderByIndex(int i) const;
-    [[nodiscard]] ShaderOGLCustom *getSceneShaderByLabel(const std::string& name) const;
-    [[nodiscard]] bool isSceneShadersEnabled() const;
-    [[nodiscard]] int getFps() const;
-    [[nodiscard]] ShaderOGLDepthMap *getShaderOGLDepthMap() const;
-    [[nodiscard]] ShaderOGLRenderDeferred *getShaderOGLRenderDeferred() const;
-    [[nodiscard]] ShaderOGLLightPass *getShaderOGLLightPass() const;
-    [[nodiscard]] GLuint getLastFrameBufferUsed() const;
-    [[nodiscard]] Object3D* getSelectedObject() const;
-    [[nodiscard]] GLuint getLastProgramUsed() const;
-    [[nodiscard]] const std::map<std::string, ShaderCustomType> &getShaderTypesMapping() const;
+
+    SceneLoader &getSceneLoader()                                                   { return sceneLoader; }
+    ProjectLoader &getProjectLoader()                                               { return projectLoader; }
+    std::vector<ShaderOGLCustom *> &getSceneShaders()                               { return sceneShaders; }
+    Shaders *getShaders()                                                           { return &shaders;}
+    ShaderOGLCustom *getSceneShaderByIndex(int i) const                             { return sceneShaders[i]; }
+    bool isSceneShadersEnabled() const                                              { return sceneShadersEnabled; }
+    int getFps() const                                                              { return fps; }
+    ShaderOGLDepthMap *getShaderOGLDepthMap() const                                 { return shaders.shaderOGLDepthMap; }
+    ShaderOGLRenderDeferred *getShaderOGLRenderDeferred() const                     { return shaders.shaderOGLGBuffer; }
+    ShaderOGLLightPass *getShaderOGLLightPass() const                               { return shaders.shaderOGLLightPass; }
+    GLuint getLastFrameBufferUsed() const                                           { return lastFrameBufferUsed; }
+    Object3D* getSelectedObject() const                                             { return selectedObject; }
+    GLuint getLastProgramUsed() const                                               { return lastProgramUsed; }
+    const std::map<std::string, ShaderCustomType> &getShaderTypesMapping() const    { return ShaderTypesMapping; }
+
+    ShaderOGLCustom *getSceneShaderByLabel(const std::string& name) const;
     static bool compareDistances(const Object3D *obj1, const Object3D *obj2);
     static void FillOGLBuffers(std::vector<Mesh3DData> &meshes);
-    static ShaderOGLCustom* getLoadedShader(const std::string &folder, const std::string &jsonFilename);
-    static void deleteRemovedObjects();
+    static void DeleteRemovedObjects();
     static void onUpdateSceneObjects();
     static Object3D *getObject3DFromClickPoint(int x, int y);
+    static ShaderOGLCustom* getLoadedShader(const std::string &folder, const std::string &jsonFilename);
 };
 
 #endif //BRAKEDA3D_COMPONENTRENDER_H

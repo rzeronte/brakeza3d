@@ -8,6 +8,8 @@
 
 cJSON* JSONSerializerRegistry::serialize(Object3D* obj)
 {
+    std::lock_guard<std::mutex> lock(mtx);  // Bloquea
+
     if (obj == nullptr) return nullptr;
 
     Logging::Message("[JSONSerializerRegistry serialize] Serializing object of type: %d", (int) obj->getTypeObject());
@@ -24,6 +26,8 @@ cJSON* JSONSerializerRegistry::serialize(Object3D* obj)
 
 Object3D* JSONSerializerRegistry::deserialize(cJSON* json)
 {
+    std::lock_guard<std::mutex> lock(mtx);  // Bloquea
+
     if (!json) return nullptr;
 
     cJSON* typeItem = cJSON_GetObjectItem(json, "type");

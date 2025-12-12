@@ -5,6 +5,8 @@
 #ifndef BRAKEZA3D_OBJECT3DJSERIALIZER_H
 #define BRAKEZA3D_OBJECT3DJSERIALIZER_H
 
+#include <mutex>
+
 #include "JSONSerializer.h"
 #include "../3D/Object3D.h"
 
@@ -12,10 +14,12 @@ class Object3D;
 
 class Object3DSerializer : public JSONSerializer
 {
+    std::mutex mtx;
+
 public:
     Object3D* ObjectByJson(cJSON* json) override;
     cJSON* JsonByObject(Object3D *o) override;
-    void ApplyJsonToObject(const cJSON* json, Object3D* o) override;
+    void ApplyJsonToObject(cJSON* json, Object3D* o) override;
     void LoadFileIntoScene(const std::string& file) override;
 };
 

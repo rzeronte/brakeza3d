@@ -39,7 +39,7 @@ class Profiler
 
     int numberOfGUIImages = 0;
     int memoryOfGUIImages = 0;
-    bool enable = false;
+    bool enable = true;
 
     Measure measureFrameTime;
 
@@ -54,6 +54,7 @@ public:
     void DrawPlotComponent(Component *c, float height);
     void DrawPlotFrameTime(Measure &measure);
     void CaptureGUIMemoryUsage();
+    void DrawPools();
     void DrawWinProfiler();
     void ResetTotalFrameTime();
     void EndTotalFrameTime();

@@ -36,7 +36,7 @@ ShaderOGLFog::ShaderOGLFog()
 
 void ShaderOGLFog::render(GLuint sceneTexture, GLuint depthTexture)
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(resultFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Components::get()->Render()->changeOpenGLProgram(programID);
@@ -72,7 +72,7 @@ void ShaderOGLFog::destroy()
 void ShaderOGLFog::createFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
-    Components::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(resultFramebuffer);
 
     auto window = Components::get()->Window();
     int w = window->getWidth();

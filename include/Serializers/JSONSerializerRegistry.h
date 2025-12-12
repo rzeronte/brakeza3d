@@ -8,6 +8,8 @@
 #include "JSONSerializer.h"
 #include <unordered_map>
 #include <memory>
+#include <mutex>
+
 #include "../3D/Object3D.h"
 #include "../Misc/Logging.h"
 
@@ -15,6 +17,9 @@ class JSONSerializerRegistry
 {
     std::unordered_map<ObjectType, std::shared_ptr<JSONSerializer>> serializers;
     JSONSerializerRegistry() = default;
+
+    std::mutex mtx;
+
 public:
     JSONSerializerRegistry(const JSONSerializerRegistry&) = delete;
     JSONSerializerRegistry& operator=(const JSONSerializerRegistry&) = delete;

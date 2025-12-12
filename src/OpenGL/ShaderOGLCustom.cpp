@@ -880,7 +880,7 @@ void ShaderOGLCustom::Reload()
 void ShaderOGLCustom::CreateFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
-    Components::get()->Render()->changeOpenGLFramebuffer(resultFramebuffer);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(resultFramebuffer);
 
     auto window = Components::get()->Window();
     int w = window->getWidth();

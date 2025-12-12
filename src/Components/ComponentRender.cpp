@@ -62,7 +62,7 @@ void ComponentRender::preUpdate()
 
     if (!isEnabled()) return;
 
-    deleteRemovedObjects();
+    DeleteRemovedObjects();
 }
 
 void ComponentRender::DrawFPS() const
@@ -76,7 +76,7 @@ void ComponentRender::onUpdate()
 
     if (!isEnabled()) return;
 
-    shaders.shaderOGLRender->createUBOFromLights();
+    shaders.shaderOGLRender->CreateUBOFromLights();
 
     auto numSpotLights = shaders.shaderOGLRender->getNumSpotLights();
 
@@ -159,11 +159,6 @@ void ComponentRender::updateFPS()
     }
 }
 
-Object3D *ComponentRender::getSelectedObject() const
-{
-    return selectedObject;
-}
-
 void ComponentRender::setSelectedObject(Object3D *o)
 {
     this->selectedObject = o;
@@ -195,12 +190,7 @@ void ComponentRender::updateSelectedObject3D()
     }
 }
 
-int ComponentRender::getFps() const
-{
-    return fps;
-}
-
-void ComponentRender::deleteRemovedObjects()
+void ComponentRender::DeleteRemovedObjects()
 {
     auto &sceneObjects = Brakeza::get()->getSceneObjects();
     sceneObjects.erase(
@@ -218,22 +208,7 @@ void ComponentRender::deleteRemovedObjects()
     );
 }
 
-SceneLoader &ComponentRender::getSceneLoader()
-{
-    return sceneLoader;
-}
-
-ProjectLoader &ComponentRender::getProjectLoader()
-{
-    return projectLoader;
-}
-
-std::vector<ShaderOGLCustom *> &ComponentRender::getSceneShaders()
-{
-    return sceneShaders;
-}
-
-void ComponentRender::loadShaderIntoScene(const std::string &folder, const std::string &jsonFilename)
+void ComponentRender::LoadShaderIntoScene(const std::string &folder, const std::string &jsonFilename)
 {
     auto name = Tools::getFilenameWithoutExtension(jsonFilename);
 
@@ -286,11 +261,6 @@ void ComponentRender::addShaderToScene(ShaderOGLCustom *shader)
     sceneShaders.push_back(shader);
 }
 
-bool ComponentRender::isSceneShadersEnabled() const
-{
-    return sceneShadersEnabled;
-}
-
 void ComponentRender::setSceneShadersEnabled(bool value)
 {
     sceneShadersEnabled = value;
@@ -306,14 +276,14 @@ void ComponentRender::RunSceneShadersPostUpdate() const
     Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
 }
 
-void ComponentRender::removeSceneShaderByIndex(int index) {
+void ComponentRender::RemoveSceneShaderByIndex(int index) {
 
     if (index >= 0 && index < sceneShaders.size()) {
         sceneShaders.erase(sceneShaders.begin() + index);
     }
 }
 
-void ComponentRender::removeSceneShader(const ShaderOGLCustom *shader)
+void ComponentRender::RemoveSceneShader(const ShaderOGLCustom *shader)
 {
     Logging::Message("Removing SCENE script %s", shader->getLabel().c_str());
 
@@ -334,11 +304,6 @@ void ComponentRender::RunSceneShadersPreUpdate() const
         s->onUpdate();
     }
     Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
-}
-
-ShaderOGLCustom *ComponentRender::getSceneShaderByIndex(int i) const
-{
-    return sceneShaders[i];
 }
 
 ShaderOGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name) const
@@ -387,34 +352,9 @@ void ComponentRender::drawLine(const Vertex3D &from, const Vertex3D &to, const C
     );
 }
 
-ShaderOGLDepthMap *ComponentRender::getShaderOGLDepthMap() const
-{
-    return shaders.shaderOGLDepthMap;
-}
-
-ShaderOGLRenderDeferred *ComponentRender::getShaderOGLRenderDeferred() const
-{
-    return shaders.shaderOGLGBuffer;
-}
-
-ShaderOGLLightPass *ComponentRender::getShaderOGLLightPass() const
-{
-    return shaders.shaderOGLLightPass;
-}
-
-GLuint ComponentRender::getLastFrameBufferUsed() const
-{
-    return lastFrameBufferUsed;
-}
-
 void ComponentRender::setLastFrameBufferUsed(GLuint value)
 {
     lastFrameBufferUsed = value;
-}
-
-GLuint ComponentRender::getLastProgramUsed() const
-{
-    return lastProgramUsed;
 }
 
 void ComponentRender::setLastProgramUsed(GLuint value)
@@ -422,7 +362,7 @@ void ComponentRender::setLastProgramUsed(GLuint value)
     lastProgramUsed = value;
 }
 
-void ComponentRender::changeOpenGLFramebuffer(GLuint framebuffer)
+void ComponentRender::ChangeOpenGLFramebuffer(GLuint framebuffer)
 {
     if (getLastFrameBufferUsed() != framebuffer || framebuffer == 0) {
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -436,11 +376,6 @@ void ComponentRender::changeOpenGLProgram(GLuint programID)
         glUseProgram(programID);
         setLastProgramUsed(programID);
     }
-}
-
-const std::map<std::string, ShaderCustomType> &ComponentRender::getShaderTypesMapping() const
-{
-    return ShaderTypesMapping;
 }
 
 void ComponentRender::resizeShadersFramebuffers() const
@@ -538,7 +473,7 @@ void ComponentRender::FlipBuffersToGlobal() const
             shaders.shaderOGLRender->getNumPointLights(),
             shaders.shaderOGLRender->getNumSpotLights(),
             shaders.shaderShadowPass->getSpotLightsShadowMapArrayTextures(),
-            static_cast<int>(shaders.shaderOGLRender->getShadowMappingSpotLights().size()),
+            shaders.shaderOGLRender->getShadowMappingSpotLights().size(),
             globalBuffer.sceneFBO
         );
     }

@@ -40,9 +40,115 @@ void Profiler::AddImage(Image *image)
 
 void Profiler::CaptureGUIMemoryUsage()
 {
-    numberOfGUIImages = (int) images.size();
-    memoryOfGUIImages = memoryImageUsage;
+    //numberOfGUIImages = (int) images.size();
+    //memoryOfGUIImages = memoryImageUsage;
     setEnabled(true);
+}
+
+void Profiler::DrawPools()
+{
+    auto pool = &Brakeza::get()->getPoolManager().getIOPool();
+    size_t pending = pool->getPendingTasks();
+    int active = pool->getActiveTasks();
+
+    // === Header con color según estado ===
+    ImVec4 headerColor = (pending + active > 0) ?
+        ImVec4(0.2f, 0.4f, 0.8f, 1.0f) : ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+    ImGui::PushStyleColor(ImGuiCol_Header, headerColor);
+
+    if (ImGui::CollapsingHeader("I/O Thread Pool", ImGuiTreeNodeFlags_DefaultOpen)) {
+        ImGui::Indent();
+
+        // Tabla de estadísticas
+        if (ImGui::BeginTable("PoolStats", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+            ImGui::TableSetupColumn("Metric", ImGuiTableColumnFlags_WidthFixed, 150.0f);
+            ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableHeadersRow();
+
+            // Pending
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text("Pending Tasks");
+            ImGui::TableNextColumn();
+            ImGui::Text("%zu", pending);
+
+            // Active
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text("Active Tasks");
+            ImGui::TableNextColumn();
+            ImGui::Text("%d", active);
+
+            // Total
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text("Total Tasks");
+            ImGui::TableNextColumn();
+            ImGui::Text("%zu", pending + active);
+
+            // Thread usage
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text("Thread Usage");
+            ImGui::TableNextColumn();
+            ImGui::Text("%d / 4 threads (%.0f%%)", active, (active / 4.0f) * 100.0f);
+
+            ImGui::EndTable();
+        }
+
+        ImGui::Spacing();
+
+        // Barras visuales
+        ImGui::Text("Thread Activity:");
+        for (int i = 0; i < 4; i++) {
+            char label[32];
+            sprintf(label, "Thread %d", i + 1);
+            float value = (i < active) ? 1.0f : 0.0f;
+            ImVec4 color = (i < active) ?
+                ImVec4(0.0f, 1.0f, 0.0f, 1.0f) : ImVec4(0.3f, 0.3f, 0.3f, 1.0f);
+            ImGui::PushStyleColor(ImGuiCol_PlotHistogram, color);
+            ImGui::ProgressBar(value, ImVec2(-1, 20), label);
+            ImGui::PopStyleColor();
+        }
+
+        ImGui::Spacing();
+
+        // Queue progress
+        if (pending > 0) {
+            ImGui::Text("Queue Progress:");
+            float progress = (float)active / (float)(pending + active);
+            ImGui::ProgressBar(progress, ImVec2(-1, 0), "");
+            ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+            ImGui::Text("%d/%zu", active, pending + active);
+        }
+
+        ImGui::Spacing();
+
+        // Status badge
+        ImGui::Text("Status: ");
+        ImGui::SameLine();
+        if (pending + active > 0) {
+            ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), "● WORKING");
+        } else {
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "● IDLE");
+        }
+
+        ImGui::Spacing();
+        ImGui::Separator();
+
+        // Botones de control
+        if (pending + active > 0) {
+            if (ImGui::Button("Wait for All", ImVec2(120, 0))) {
+                pool->waitAll();
+            }
+            ImGui::SameLine();
+            ImGui::TextDisabled("(Blocks until complete)");
+        }
+
+        ImGui::Unindent();
+    }
+
+    ImGui::PopStyleColor();
 }
 
 void Profiler::RemoveImage(const Image *image)
@@ -152,55 +258,55 @@ void Profiler::DrawComponentsTable(float cellHeight)
             ImGui::TableNextRow(ImGuiTableRowFlags_None, ROW_HEIGHT);
 
             float textHeight = ImGui::GetTextLineHeight();
-            float cellHeight, offsetY;
+            float spaceHeight, offsetY;
 
             // Columna: Nombre del componente
             ImGui::TableSetColumnIndex(0);
-            cellHeight = ROW_HEIGHT; // Usar la altura fija en lugar de GetContentRegionAvail()
-            offsetY = (cellHeight - textHeight) * 0.5f;
+            spaceHeight = ROW_HEIGHT; // Usar la altura fija en lugar de GetContentRegionAvail()
+            offsetY = (spaceHeight - textHeight) * 0.5f;
             if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
             ImGui::TextColored(color, "%s", c->getLabel().c_str());
 
             // --- PRE (Rojo) ---
             ImGui::TableSetColumnIndex(1);
-            cellHeight = ROW_HEIGHT;
-            offsetY = (cellHeight - textHeight) * 0.5f;
+            spaceHeight = ROW_HEIGHT;
+            offsetY = (spaceHeight - textHeight) * 0.5f;
             if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
             ImGui::TextColored(ImVec4(1.0f, 0.2f, 0.2f, 1.0f), "%.4f", measurePre.diffTime * 1000.0f);
 
             // --- UPDATE (Verde) ---
             ImGui::TableSetColumnIndex(2);
-            cellHeight = ROW_HEIGHT;
-            offsetY = (cellHeight - textHeight) * 0.5f;
+            spaceHeight = ROW_HEIGHT;
+            offsetY = (spaceHeight - textHeight) * 0.5f;
             if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
             ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "%.4f", measureUpdate.diffTime * 1000.0f);
 
             // --- POST (Azul) ---
             ImGui::TableSetColumnIndex(3);
-            cellHeight = ROW_HEIGHT;
-            offsetY = (cellHeight - textHeight) * 0.5f;
+            spaceHeight = ROW_HEIGHT;
+            offsetY = (spaceHeight - textHeight) * 0.5f;
             if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
             ImGui::TextColored(ImVec4(0.2f, 0.5f, 1.0f, 1.0f), "%.4f", measurePost.diffTime * 1000.0f);
 
             // Columna: Total (ms)
             ImGui::TableSetColumnIndex(4);
-            cellHeight = ROW_HEIGHT;
-            offsetY = (cellHeight - textHeight) * 0.5f;
+            spaceHeight = ROW_HEIGHT;
+            offsetY = (spaceHeight - textHeight) * 0.5f;
             if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
             ImGui::Text("%.4f", measureTotal * 1000.0f);
 
             // Columna: Porcentaje
             ImGui::TableSetColumnIndex(5);
-            cellHeight = ROW_HEIGHT;
-            offsetY = (cellHeight - textHeight) * 0.5f;
+            spaceHeight = ROW_HEIGHT;
+            offsetY = (spaceHeight - textHeight) * 0.5f;
             if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
             ImGui::Text("%.2f%%", percentage);
 
             // Columna: Barra de progreso
             ImGui::TableSetColumnIndex(6);
-            cellHeight = ROW_HEIGHT;
-            float progressHeight = cellHeight-6; // La altura que pusiste en ProgressBar
-            offsetY = ((cellHeight - progressHeight) * 0.5f) + 2;
+            spaceHeight = ROW_HEIGHT;
+            float progressHeight = spaceHeight-6; // La altura que pusiste en ProgressBar
+            offsetY = ((spaceHeight - progressHeight) * 0.5f) + 2;
             if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
             ImGui::PushStyleColor(ImGuiCol_PlotHistogram, color);
             ImGui::ProgressBar(percentage / 100.0f, ImVec2(-1, progressHeight));
@@ -332,9 +438,15 @@ void Profiler::DrawWinProfiler()
 {
     DrawPlotFrameTime(measureFrameTime);
     ImGui::Separator();
-    DrawComponentsTable(25.0f);
+    if (ImGui::CollapsingHeader("Components")) {
+        DrawComponentsTable(25.0f);
+        ImGui::Separator();
+        DrawFlameGraph();
+    }
     ImGui::Separator();
-    DrawFlameGraph();
+    if (ImGui::CollapsingHeader("Pools")) {
+        DrawPools();
+    }
     ImGui::Separator();
     if (ImGui::CollapsingHeader("Images in memory")) {
         DrawImagesTable();

@@ -24,7 +24,7 @@ ShaderOGLGrid::ShaderOGLGrid()
 
 void ShaderOGLGrid::render(GLuint fbo)
 {
-    Components::get()->Render()->changeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
     auto camera = Components::get()->Camera()->getCamera();
