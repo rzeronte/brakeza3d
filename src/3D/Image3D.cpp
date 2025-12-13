@@ -148,7 +148,7 @@ void Image3D::onUpdate()
     }
 
     if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D)  {
-        render->getShaders()->shaderOGLColor->renderColor(
+        render->getShaders()->shaderOGLColor->RenderColor(
             getModelMatrix(),
             vertexBuffer,
             uvBuffer,

@@ -3,15 +3,24 @@
 
 ShaderOGLPoints::ShaderOGLPoints()
 :
-    VertexArrayID(0),
     ShaderBaseOpenGL(
         Config::get()->SHADERS_FOLDER + "Points.vs",
         Config::get()->SHADERS_FOLDER + "Points.fs",
         false
     )
 {
+}
+
+void ShaderOGLPoints::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
+    LoadUniforms();
+}
+
+void ShaderOGLPoints::LoadUniforms()
+{
 }
 
 void ShaderOGLPoints::renderMeshAnimation(Mesh3DAnimation *mesh, GLuint fbo) const
@@ -74,6 +83,6 @@ void ShaderOGLPoints::setVAOAttributes(GLuint vertexBuffer)
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
-void ShaderOGLPoints::destroy() {
+void ShaderOGLPoints::Destroy() {
 
 }

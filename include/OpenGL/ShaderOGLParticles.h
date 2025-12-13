@@ -22,17 +22,18 @@ struct Particle {
 
 #define MaxParticles 512
 
-class ShaderOGLParticles : ShaderBaseOpenGL {
-    GLuint VertexArrayID;
+class ShaderOGLParticles : public ShaderBaseOpenGL
+{
+    GLuint VertexArrayID = 0;
 
-    GLuint CameraRight_worldspace_ID;
-    GLuint CameraUp_worldspace_ID;
-    GLuint ViewProjMatrixID;
-    GLuint textureIDuniform;
-
-
+    GLuint CameraRight_worldspace_ID = 0;
+    GLuint CameraUp_worldspace_ID = 0;
+    GLuint ViewProjMatrixID = 0;
+    GLuint textureIDuniform = 0;
 public:
     ShaderOGLParticles();
+    void PrepareMainThread() override;
+    void LoadUniforms() override;
     void render(
         GLuint billboard_vertex_buffer,
         GLuint particles_position_buffer,
@@ -40,7 +41,7 @@ public:
         GLuint textureID,
         int particlesCount
     );
-    void destroy() override;
+    void Destroy() override;
 
 private:
 };

@@ -13,9 +13,10 @@ ShaderOGLRenderForward::ShaderOGLRenderForward()
         false
     )
 {
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
+}
 
+void ShaderOGLRenderForward::LoadUniforms()
+{
     matrixProjectionUniform = glGetUniformLocation(programID, "projection");
     matrixViewUniform = glGetUniformLocation(programID, "view");
     matrixModelUniform = glGetUniformLocation(programID, "model");
@@ -25,8 +26,15 @@ ShaderOGLRenderForward::ShaderOGLRenderForward()
     materialShininessUniform = glGetUniformLocation(programID, "material.shininess");
 
     alphaUniform = glGetUniformLocation(programID, "alpha");
+}
 
-    initializeLightBuffers();
+void ShaderOGLRenderForward::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    glGenVertexArrays(1, &VertexArrayID);
+    glBindVertexArray(VertexArrayID);
+    LoadUniforms();
+    InitLightBuffers();
 }
 
 void ShaderOGLRenderForward::render(
@@ -131,7 +139,7 @@ DirLightOpenGL &ShaderOGLRenderForward::getDirectionalLight()
     return directionalLight;
 }
 
-void ShaderOGLRenderForward::destroy()
+void ShaderOGLRenderForward::Destroy()
 {
 }
 
@@ -155,7 +163,7 @@ void ShaderOGLRenderForward::renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuin
 void ShaderOGLRenderForward::FillUBOLights()
 {
     if (!buffersInitialized) {
-        initializeLightBuffers();
+        InitLightBuffers();
     }
 
     size_t numPointLights = std::min(pointsLights.size(), MAX_POINT_LIGHTS);
@@ -276,7 +284,7 @@ void ShaderOGLRenderForward::setLastPointLightsSize(int v)
 }
 
 
-void ShaderOGLRenderForward::initializeLightBuffers()
+void ShaderOGLRenderForward::InitLightBuffers()
 {
     if (buffersInitialized) {
         return;

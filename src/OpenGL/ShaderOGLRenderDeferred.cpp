@@ -11,9 +11,18 @@ ShaderOGLRenderDeferred::ShaderOGLRenderDeferred()
         false
     )
 {
+}
+
+void ShaderOGLRenderDeferred::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
+    LoadUniforms();
+}
 
+void ShaderOGLRenderDeferred::LoadUniforms()
+{
     matrixProjectionUniform = glGetUniformLocation(programID, "projection");
     matrixViewUniform = glGetUniformLocation(programID, "view");
     matrixModelUniform = glGetUniformLocation(programID, "model");
@@ -97,7 +106,7 @@ void ShaderOGLRenderDeferred::render(
     glEnable(GL_BLEND);
 }
 
-void ShaderOGLRenderDeferred::destroy()
+void ShaderOGLRenderDeferred::Destroy()
 {
     if (VertexArrayID != 0) {
         glDeleteVertexArrays(1, &VertexArrayID);

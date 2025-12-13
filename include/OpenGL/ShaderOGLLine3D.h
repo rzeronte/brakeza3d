@@ -14,31 +14,24 @@
 
 class ShaderOGLLine3D : public ShaderBaseOpenGL
 {
-    GLuint VertexArrayID;
-    GLuint vertexbuffer;
+    GLuint VertexArrayID = 0;
+    GLuint vertexbuffer = 0;
     glm::vec3 vertices[2];
 
-    GLuint matrixProjectionUniform;
-    GLuint matrixViewUniform;
-    GLuint colorUniform;
+    GLuint matrixProjectionUniform = 0;
+    GLuint matrixViewUniform = 0;
+    GLuint colorUniform = 0;
 
-    void destroy() override;
+    void Destroy() override;
 
 public:
+    void CreateLineVBO();
+
     ShaderOGLLine3D();
-
-    void render(
-        Vertex3D from,
-        Vertex3D to,
-        GLuint fbo,
-        Color c
-    );
-
-    void renderLines(
-        const std::vector<Vector3D>&,
-        GLuint fbo,
-        Color c
-    );
+    void PrepareMainThread() override;
+    void LoadUniforms() override;
+    void render(Vertex3D from, Vertex3D to, GLuint fbo, Color c);
+    void renderLines(const std::vector<Vector3D>&, GLuint fbo, Color c);
 };
 
 

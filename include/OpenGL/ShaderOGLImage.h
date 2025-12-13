@@ -18,6 +18,11 @@ class ShaderOGLImage : public ShaderBaseOpenGL
 public:
     ShaderOGLImage();
 
+    void CreateQuadVBO();
+
+    void PrepareMainThread() override;
+    void LoadUniforms() override;
+
     void renderTexture(
         GLuint textureId,
         int x,
@@ -29,7 +34,7 @@ public:
         GLuint fbo
     ) const;
 
-    void destroy() override;
+    void Destroy() override;
 };
 
 

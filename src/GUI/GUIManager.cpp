@@ -40,7 +40,7 @@ void GUIManager::OnStart()
 
     //splashImage = new Image();
     //auto job = std::make_shared<JobLoadImage>(splashImage, Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
-    //Brakeza::get()->getPoolManager().getIOPool().enqueueWithMainThreadCallback(job);
+    //Brakeza::get()->getPoolManager().Pool().enqueueWithMainThreadCallback(job);
 
     /*splashImage->setImage(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
     splashImage->CreateSDLTexture();

@@ -9,12 +9,20 @@ ShaderOGLParticles::ShaderOGLParticles()
         Config::get()->SHADERS_FOLDER + "Particle.vs",
         Config::get()->SHADERS_FOLDER + "Particle.fs",
         false
-    ),
-    VertexArrayID(0)
+    )
 {
+}
+
+void ShaderOGLParticles::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
+    LoadUniforms();
+}
 
+void ShaderOGLParticles::LoadUniforms()
+{
     CameraRight_worldspace_ID  = glGetUniformLocation(programID, "CameraRight_worldspace");
     CameraUp_worldspace_ID  = glGetUniformLocation(programID, "CameraUp_worldspace");
     ViewProjMatrixID = glGetUniformLocation(programID, "VP");
@@ -99,6 +107,6 @@ void ShaderOGLParticles::render(
     Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
 
-void ShaderOGLParticles::destroy() {
+void ShaderOGLParticles::Destroy() {
 
 }

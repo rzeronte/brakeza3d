@@ -8,12 +8,14 @@
 
 class ShaderOGLPoints : public ShaderBaseOpenGL
 {
-    GLuint VertexArrayID;
+    GLuint VertexArrayID = 0;
 public:
     ShaderOGLPoints();
+    void PrepareMainThread() override;
+    void LoadUniforms() override;
 
     void render(glm::mat4 modelMatrix, GLuint particlesBuffer, int numberPoints, Color c, GLuint fbo) const;
-    void destroy() override;
+    void Destroy() override;
     void renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint fbo);
     void renderMeshAnimation(Mesh3DAnimation *mesh, GLuint fbo) const;
     static void setVAOAttributes(GLuint particlesBuffer) ;

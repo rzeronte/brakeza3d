@@ -7,12 +7,24 @@
 
 ShaderOGLBonesTransforms::ShaderOGLBonesTransforms()
 :
-    VertexArrayID(0),
-    ShaderBaseOpenGL(Config::get()->SHADERS_FOLDER + "BonesTransforms.vs",true)
+    ShaderBaseOpenGL(Config::get()->SHADERS_FOLDER + "BonesTransforms.vs",true),
+    VertexArrayID(0)
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
+}
 
+void ShaderOGLBonesTransforms::PrepareBackground()
+{
+}
+
+void ShaderOGLBonesTransforms::PrepareMainThread()
+{
+    LoadUniforms();
+}
+
+void ShaderOGLBonesTransforms::LoadUniforms()
+{
     gBonesUniform = glGetUniformLocation(programID, "gBones");
 }
 
@@ -59,6 +71,6 @@ void ShaderOGLBonesTransforms::setVAOAttributes(GLuint vertexbuffer, GLuint vert
     glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (const GLvoid*)offsetof(VertexBoneData, Weights));
 }
 
-void ShaderOGLBonesTransforms::destroy() {
+void ShaderOGLBonesTransforms::Destroy() {
 
 }

@@ -26,6 +26,9 @@ class ShaderOGLShadowPass : public ShaderBaseOpenGL
 
 public:
     ShaderOGLShadowPass();
+    void LoadUniforms() override;
+
+    void PrepareMainThread() override;
 
     void renderMeshIntoArrayTextures(Mesh3D *o, bool feedbackFBO, LightSpot* light, int indexLight) const;
     void renderMeshIntoDirectionalLightTexture(Mesh3D *o, bool feedbackFBO, const DirLightOpenGL& light) const;
@@ -50,12 +53,12 @@ public:
         int size,
         GLuint fbo
     ) const;
-    void destroy() override;
+    void Destroy() override;
     void setupFBOSpotLights();
     void setupFBODirectionalLight();
     void createDirectionalLightDepthTexture();
     void clearDirectionalLightDepthTexture() const;
-    void resetFramebuffers();
+    void ResetFramebuffers();
     void createSpotLightsDepthTextures(int numLights);
     GLuint getSpotLightsShadowMapArrayTextures() const;
     [[nodiscard]] GLuint getDirectionalLightDepthTexture() const;
