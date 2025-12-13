@@ -50,6 +50,33 @@ void ComponentRender::RegisterShaders()
     shaders.shaderShadowPass = new ShaderOGLShadowPass();
     shaders.shaderShadowPassDebugLight = new ShaderOGLShadowPassDebugLight();
     shaders.shaderOGLGrid = new ShaderOGLGrid();
+
+    std::vector<ShaderBaseOpenGL*> allShaders;
+        allShaders.push_back(shaders.shaderOGLRender);
+        allShaders.push_back(shaders.shaderOGLImage);
+        allShaders.push_back(shaders.shaderOGLLine);
+        allShaders.push_back(shaders.shaderOGLWireframe);
+        allShaders.push_back(shaders.shaderOGLLine3D);
+        allShaders.push_back(shaders.shaderOGLShading);
+        allShaders.push_back(shaders.shaderOGLPoints);
+        allShaders.push_back(shaders.shaderOGLOutline);
+        allShaders.push_back(shaders.shaderOGLColor);
+        allShaders.push_back(shaders.shaderOGLParticles);
+        allShaders.push_back(shaders.shaderOGLDOFBlur);
+        allShaders.push_back(shaders.shaderOGLDepthMap);
+        allShaders.push_back(shaders.shaderOGLFOG);
+        allShaders.push_back(shaders.shaderOGLTint);
+        allShaders.push_back(shaders.shaderOGLBonesTransforms);
+        allShaders.push_back(shaders.shaderOGLGBuffer);
+        allShaders.push_back(shaders.shaderOGLLightPass);
+        allShaders.push_back(shaders.shaderShadowPass);
+        allShaders.push_back(shaders.shaderShadowPassDebugLight);
+        allShaders.push_back(shaders.shaderOGLGrid);
+
+    for (auto &s : allShaders) {
+        s->PrepareBackground();
+        s->PrepareMainThread();
+    }
 }
 
 void ComponentRender::preUpdate()
@@ -97,7 +124,7 @@ void ComponentRender::onUpdate()
     }
 
     if (Brakeza::get()->GUI()->isWindowOpen(GUIType::DEPTH_LIGHTS_MAPS) ) {
-        shaders.shaderShadowPassDebugLight->createFramebuffer();
+        shaders.shaderShadowPassDebugLight->CreateFramebuffer();
         shaders.shaderShadowPassDebugLight->createArrayTextures(numSpotLights);
         shaders.shaderShadowPassDebugLight->updateDebugTextures(numSpotLights);
     }
@@ -268,12 +295,12 @@ void ComponentRender::setSceneShadersEnabled(bool value)
 
 void ComponentRender::RunSceneShadersPostUpdate() const
 {
-    Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
+    Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
     for (auto s: sceneShaders) {
         if (!s->isEnabled()) continue;
         s->postUpdate();
     }
-    Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
+    Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
 }
 
 void ComponentRender::RemoveSceneShaderByIndex(int index) {
@@ -298,12 +325,12 @@ void ComponentRender::RemoveSceneShader(const ShaderOGLCustom *shader)
 
 void ComponentRender::RunSceneShadersPreUpdate() const
 {
-    Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
+    Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
     for( auto s: sceneShaders) {
         if (!s->isEnabled()) continue;
         s->onUpdate();
     }
-    Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
+    Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
 }
 
 ShaderOGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name) const
@@ -382,28 +409,28 @@ void ComponentRender::resizeShadersFramebuffers() const
 {
     Logging::Message("[Render] Resizing framebuffers...");
 
-    shaders.shaderOGLRender->destroy();
-    shaders.shaderOGLImage->destroy();
-    shaders.shaderOGLLine->destroy();
-    shaders.shaderOGLWireframe->destroy();
-    shaders.shaderOGLShading->destroy();
-    shaders.shaderOGLPoints->destroy();
-    shaders.shaderOGLOutline->destroy();
-    shaders.shaderOGLColor->destroy();
-    shaders.shaderOGLParticles->destroy();
-    shaders.shaderOGLDOFBlur->destroy();
-    shaders.shaderOGLDepthMap->destroy();
-    shaders.shaderOGLFOG->destroy();
-    shaders.shaderOGLGBuffer->destroy();
-    shaders.shaderOGLLightPass->destroy();
+    shaders.shaderOGLRender->Destroy();
+    shaders.shaderOGLImage->Destroy();
+    shaders.shaderOGLLine->Destroy();
+    shaders.shaderOGLWireframe->Destroy();
+    shaders.shaderOGLShading->Destroy();
+    shaders.shaderOGLPoints->Destroy();
+    shaders.shaderOGLOutline->Destroy();
+    shaders.shaderOGLColor->Destroy();
+    shaders.shaderOGLParticles->Destroy();
+    shaders.shaderOGLDOFBlur->Destroy();
+    shaders.shaderOGLDepthMap->Destroy();
+    shaders.shaderOGLFOG->Destroy();
+    shaders.shaderOGLGBuffer->Destroy();
+    shaders.shaderOGLLightPass->Destroy();
 
     if (Config::get()->ENABLE_SHADOW_MAPPING) {
         shaders.shaderShadowPass->createSpotLightsDepthTextures(static_cast<int>(shaders.shaderOGLRender->getShadowMappingSpotLights().size()));
-        shaders.shaderShadowPass->resetFramebuffers();
+        shaders.shaderShadowPass->ResetFramebuffers();
     }
 
     for (const auto s: sceneShaders) {
-        s->destroy();
+        s->Destroy();
     }
 }
 
@@ -449,7 +476,7 @@ void ComponentRender::ClearShadowMaps() const
 
 void ComponentRender::FlipBuffersToGlobal() const
 {
-    Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
+    Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
 
     auto window = Components::get()->Window();
     auto gBuffer = window->getGBuffer();
@@ -502,5 +529,5 @@ void ComponentRender::FlipBuffersToGlobal() const
         );
     }
 
-    Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
+    Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
 }

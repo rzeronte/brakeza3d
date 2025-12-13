@@ -1,36 +1,38 @@
-//
-// Created by Eduardo on 11/12/2025.
-//
-
 #ifndef BRAKEZA3D_JOBLOADMESH3D_H
 #define BRAKEZA3D_JOBLOADMESH3D_H
 
 #include "PendingJob.h"
 #include "../Serializers/JSONSerializerRegistry.h"
+#include "JobLoadMesh3D.h"
 
 class JobLoadObject : public PendingJob
 {
     cJSON *json = nullptr;
     Object3D *object = nullptr;
 public:
-    JobLoadObject(cJSON *json)
+    explicit JobLoadObject(cJSON *objectJson)
     :
-        PendingJob([this](){ process(); }, [this]() { callback(); }),
-        json(json)
+        json(cJSON_Duplicate(objectJson, 1))
     {
+        function = [this](){ fnProcess(); };
+        callback = [this](){ fnCallback(); };
     }
 
-    void process()
+    void fnProcess()
     {
-        Logging::Message("[Pools] JobLoadObject process");
         object = JSONSerializerRegistry::instance().deserialize(json);
     }
 
-    void callback()
+    void fnCallback()
     {
-        //object->setBelongToScene(true);
-        //Brakeza::get()->addObject3D(object, object->getName());
-        //Logging::Message("[SceneLoaderCreateObject] %s", object->getName().c_str());
+    }
+
+    ~JobLoadObject()
+    {
+        if (json) {
+            cJSON_Delete(json);
+            json = nullptr;
+        }
     }
 };
 

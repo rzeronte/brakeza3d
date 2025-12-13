@@ -30,8 +30,7 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
             }
             if (ImGui::TreeNode("Textures")) {
                 for (auto &m : o->modelTextures) {
-                    //auto img = Image::MakeOGLImage(m->getSurface());
-                    //ImGui::Image((ImTextureID) img, ImVec2(200, 200));
+                    ImGui::Image(m->getOGLImTexture(), ImVec2(200, 200));
                     ImGui::NewLine();
                 }
                 ImGui::TreePop();

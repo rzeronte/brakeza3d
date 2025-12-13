@@ -47,9 +47,10 @@ void Profiler::CaptureGUIMemoryUsage()
 
 void Profiler::DrawPools()
 {
-    auto pool = &Brakeza::get()->getPoolManager().getIOPool();
+    auto pool = &Brakeza::get()->getPoolManager().Pool();
     size_t pending = pool->getPendingTasks();
     int active = pool->getActiveTasks();
+    int cont = pool->getCont();
 
     // === Header con color según estado ===
     ImVec4 headerColor = (pending + active > 0) ?
@@ -99,6 +100,7 @@ void Profiler::DrawPools()
         ImGui::Spacing();
 
         // Barras visuales
+        ImGui::Text("Jobs total %d: ", cont);
         ImGui::Text("Thread Activity:");
         for (int i = 0; i < 4; i++) {
             char label[32];

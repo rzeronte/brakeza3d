@@ -14,15 +14,17 @@ ShaderOGLLightPass::ShaderOGLLightPass()
         false
     )
 {
-    setupQuadUniforms(programID);
+}
 
+void ShaderOGLLightPass::LoadUniforms()
+{
     gPositionUniform = glGetUniformLocation(programID, "gPosition");
     gNormalUniform = glGetUniformLocation(programID, "gNormal");
     viewPosUniform = glGetUniformLocation(programID, "viewPos");
 
     numPointLightsUniform = glGetUniformLocation(programID, "numPointLights");
     numSpotLightsUniform = glGetUniformLocation(programID, "numSpotLights");
-    
+
     directionalLightDirectionUniform = glGetUniformLocation(programID, "dirLight.direction");
     directionalLightAmbientUniform = glGetUniformLocation(programID, "dirLight.ambient");
     directionalLightDiffuseUniform = glGetUniformLocation(programID, "dirLight.diffuse");
@@ -44,6 +46,14 @@ ShaderOGLLightPass::ShaderOGLLightPass()
     enableDirectionalLightShadowMapUniform = glGetUniformLocation(programID, "enableDirectionalLightShadowMapping");
 }
 
+void ShaderOGLLightPass::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    LoadUniforms();
+    CreateQuadVBO();
+    SetupQuadUniforms(programID);
+}
+
 void ShaderOGLLightPass::render(
     GLuint gPosition,
     GLuint gNormal,
@@ -59,7 +69,7 @@ void ShaderOGLLightPass::render(
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
-    loadQuadMatrixUniforms();
+    LoadQuadMatrixUniforms();
 
     auto camera = Components::get()->Camera();
     auto cameraPosition = camera->getCamera()->getPosition().toGLM();
@@ -95,14 +105,14 @@ void ShaderOGLLightPass::render(
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsShadowMapDepthTexturesBlock"), 2);
 
-    drawQuad();
+    DrawQuad();
 
     glBindVertexArray(0);
 }
 
-void ShaderOGLLightPass::destroy()
+void ShaderOGLLightPass::Destroy()
 {
-    resetQuadMatrix();
+    ResetQuadMatrix();
 }
 
 void ShaderOGLLightPass::fillSpotLightsMatricesUBO()

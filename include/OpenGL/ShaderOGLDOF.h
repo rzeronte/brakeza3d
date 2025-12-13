@@ -8,37 +8,41 @@
 #include "ShaderBaseOpenGL.h"
 #include "ShaderBaseOpenGLQuad.h"
 
-class ShaderOGLDOF : ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {
+class ShaderOGLDOF : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad
+{
 
-    GLuint focalDistanceUniform;
-    GLuint focalRangeUniform;
-    GLuint blurRadiusUniform;
-    GLuint intensityUniform;
-    GLuint farPlaneUniform;
+    GLuint focalDistanceUniform = 0;
+    GLuint focalRangeUniform = 0;
+    GLuint blurRadiusUniform = 0;
+    GLuint intensityUniform = 0;
+    GLuint farPlaneUniform = 0;
 
-    GLuint depthTextureUniform;
-    GLuint sceneTextureUniform;
+    GLuint depthTextureUniform = 0;
+    GLuint sceneTextureUniform = 0;
 
-    GLuint widthUniform;
-    GLuint heightUniform;
+    GLuint widthUniform = 0;
+    GLuint heightUniform = 0;
 
 public:
     ShaderOGLDOF();
+    void LoadUniforms() override;
+
+    void PrepareMainThread() override;
 
     void render(GLuint sceneTexture, GLuint depthTexture);
-    void createFramebuffer();
+    void CreateFramebuffer();
 
-    GLuint resultFramebuffer;
-    GLuint textureResult;
+    GLuint resultFramebuffer = 0;
+    GLuint textureResult = 0;
 
-    float focalRange;
-    float focalDistance;
-    int blurRadius;
-    float intensity;
-    float farPlane;
+    float focalRange = 0;
+    float focalDistance = 0;
+    int blurRadius = 0;
+    float intensity = 0;
+    float farPlane = 0;
 
     [[nodiscard]] GLuint getTextureResult() const;
-    void destroy() override;
+    void Destroy() override;
 };
 
 

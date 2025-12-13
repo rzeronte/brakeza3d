@@ -14,15 +14,14 @@ ShaderOGLFog::ShaderOGLFog()
         Config::get()->SHADERS_FOLDER + "FOG.fs",
         false
     ),
-    resultFramebuffer(0),
-    textureResult(0),
     fogMaxDist(50.0f),
     fogMinDist(0.1f),
     intensity(1.0f)
 {
-    createFramebuffer();
-    setupQuadUniforms(programID);
+}
 
+void ShaderOGLFog::LoadUniforms()
+{
     fogMaxDistUniform = glGetUniformLocation(programID, "fogMaxDist");
     fogMinDistUniform = glGetUniformLocation(programID, "fogMinDist");
     fogColourUniform = glGetUniformLocation(programID, "fogColor");
@@ -34,6 +33,15 @@ ShaderOGLFog::ShaderOGLFog()
     farPlaneUniform = glGetUniformLocation(programID, "farPlane");
 }
 
+void ShaderOGLFog::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    LoadUniforms();
+    CreateQuadVBO();
+    SetupQuadUniforms(programID);
+    CreateFramebuffer();
+}
+
 void ShaderOGLFog::render(GLuint sceneTexture, GLuint depthTexture)
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(resultFramebuffer);
@@ -41,7 +49,7 @@ void ShaderOGLFog::render(GLuint sceneTexture, GLuint depthTexture)
 
     Components::get()->Render()->changeOpenGLProgram(programID);
 
-    loadQuadMatrixUniforms();
+    LoadQuadMatrixUniforms();
 
     glUniform1f(fogMaxDistUniform, fogMaxDist);
     glUniform1f(fogMinDistUniform, fogMinDist);
@@ -52,7 +60,7 @@ void ShaderOGLFog::render(GLuint sceneTexture, GLuint depthTexture)
     setTextureUniform(sceneTextureUniform, sceneTexture, 0);
     setTextureUniform(depthTextureUniform, depthTexture, 1);
 
-    drawQuad();
+    DrawQuad();
 }
 
 GLuint ShaderOGLFog::getTextureResult() const
@@ -60,16 +68,16 @@ GLuint ShaderOGLFog::getTextureResult() const
     return textureResult;
 }
 
-void ShaderOGLFog::destroy()
+void ShaderOGLFog::Destroy()
 {
-    resetQuadMatrix();
+    ResetQuadMatrix();
 
     glDeleteFramebuffers(1, &resultFramebuffer);
     glDeleteTextures(1, &textureResult);
-    createFramebuffer();
+    CreateFramebuffer();
 }
 
-void ShaderOGLFog::createFramebuffer()
+void ShaderOGLFog::CreateFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
     Components::get()->Render()->ChangeOpenGLFramebuffer(resultFramebuffer);

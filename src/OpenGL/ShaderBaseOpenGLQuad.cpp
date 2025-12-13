@@ -9,10 +9,20 @@
 #include "../../include/OpenGL/ShaderBaseOpenGLQuad.h"
 #include "../../include/Components/Components.h"
 
+
 ShaderBaseOpenGLQuad::ShaderBaseOpenGLQuad()
-:
-    quadVAO(0),
-    VBO(0)
+{
+    CreateQuadVBO();
+}
+
+void ShaderBaseOpenGLQuad::SetupQuadUniforms(GLuint programID)
+{
+    modelMatrixUniform = glGetUniformLocation(programID, "model");
+    projectionMatrixUniform = glGetUniformLocation(programID, "projection");
+    ResetQuadMatrix();
+}
+
+void ShaderBaseOpenGLQuad::CreateQuadVBO()
 {
     float vertices[] = {
         // pos      // tex
@@ -37,14 +47,7 @@ ShaderBaseOpenGLQuad::ShaderBaseOpenGLQuad()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void ShaderBaseOpenGLQuad::setupQuadUniforms(GLuint programID)
-{
-    modelMatrixUniform = glGetUniformLocation(programID, "model");
-    projectionMatrixUniform = glGetUniformLocation(programID, "projection");
-    resetQuadMatrix();
-}
-
-void ShaderBaseOpenGLQuad::resetQuadMatrix()
+void ShaderBaseOpenGLQuad::ResetQuadMatrix()
 {
     auto window = Components::get()->Window();
     int w = window->getWidth();
@@ -66,13 +69,13 @@ void ShaderBaseOpenGLQuad::resetQuadMatrix()
     projectionMatrix = projection;
 }
 
-void ShaderBaseOpenGLQuad::loadQuadMatrixUniforms()
+void ShaderBaseOpenGLQuad::LoadQuadMatrixUniforms()
 {
     glUniformMatrix4fv(modelMatrixUniform, 1, GL_FALSE, &modelMatrix[0][0]);
     glUniformMatrix4fv(projectionMatrixUniform, 1, GL_FALSE, &projectionMatrix[0][0]);
 }
 
-void ShaderBaseOpenGLQuad::drawQuad() const
+void ShaderBaseOpenGLQuad::DrawQuad() const
 {
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);

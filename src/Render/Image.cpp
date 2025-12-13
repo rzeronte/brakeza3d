@@ -14,7 +14,7 @@
 Image::Image(std::string filename)
 {
     auto job = std::make_shared<JobLoadImage>(this, filename);
-    Brakeza::get()->getPoolManager().getIOPool().enqueueWithMainThreadCallback(job);
+    Brakeza::get()->getPoolManager().Pool().enqueueWithMainThreadCallback(job);
 
     //setImage(filename);
 }
@@ -23,7 +23,7 @@ Image *Image::Create(std::string filename)
 {
     auto i =  new Image();
     auto job = std::make_shared<JobLoadImage>(i, filename);
-    Brakeza::get()->getPoolManager().getIOPool().enqueueWithMainThreadCallback(job);
+    Brakeza::get()->getPoolManager().Pool().enqueueWithMainThreadCallback(job);
     return i;
 }
 

@@ -7,34 +7,35 @@
 
 ShaderOGLCustomPostprocessing::ShaderOGLCustomPostprocessing(
     const std::string &label,
-    const std::string &vertexFilename,
-    const std::string &fragmentFilename
+    const std::string &vsFile,
+    const std::string &fsFile
     )
 :
-    ShaderOGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomType::SHADER_POSTPROCESSING)
+    ShaderOGLCustom(label, vsFile, fsFile, SHADER_POSTPROCESSING)
 {
-    setupQuadUniforms(programID);
 }
 
 ShaderOGLCustomPostprocessing::ShaderOGLCustomPostprocessing(
     const std::string &label,
-    const std::string &vertexFilename,
-    const std::string &fragmentFilename,
+    const std::string &vsFile,
+    const std::string &fsFile,
     cJSON *types
 )
 :
-    ShaderOGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomType::SHADER_POSTPROCESSING, types)
+    ShaderOGLCustom(label, vsFile, fsFile, SHADER_POSTPROCESSING, types)
 {
-    setupQuadUniforms(programID);
 }
 
-GLuint ShaderOGLCustomPostprocessing::compile()
+void ShaderOGLCustomPostprocessing::LoadUniforms()
 {
-    setupQuadUniforms(programID);
+}
 
-    ShaderOGLCustom::compile();
-
-    return programID;
+void ShaderOGLCustomPostprocessing::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    LoadUniforms();
+    CreateQuadVBO();
+    SetupQuadUniforms(programID);
 }
 
 void ShaderOGLCustomPostprocessing::render(GLuint fbo)
@@ -45,16 +46,16 @@ void ShaderOGLCustomPostprocessing::render(GLuint fbo)
     render->ChangeOpenGLFramebuffer(fbo);
     render->changeOpenGLProgram(programID);
 
-    loadQuadMatrixUniforms();
+    LoadQuadMatrixUniforms();
 
     ResetNumberTextures();
     setDataTypesUniforms();
 
-    drawQuad();
+    DrawQuad();
 }
 
-void ShaderOGLCustomPostprocessing::destroy()
+void ShaderOGLCustomPostprocessing::Destroy()
 {
-    ShaderOGLCustom::destroy();
-    resetQuadMatrix();
+    ShaderOGLCustom::Destroy();
+    ResetQuadMatrix();
 }

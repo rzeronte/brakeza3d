@@ -179,19 +179,17 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
         exit(-1);
     }
 
+    boneColliderIndex = 0;
+    boneColliderEnabled = true;
+    setSourceFile(filename);
+
     AssimpInitMaterials(scene);
     ReadNodesFromRoot();
 
-    Components::get()->Render()->FillOGLBuffers(meshes);
+    //ComponentRender::FillOGLBuffers(meshes);
+    //FillAnimationBoneDataOGLBuffers();
+    //UpdateBonesFinalTransformations(0);
 
-    FillAnimationBoneDataOGLBuffers();
-
-    boneColliderIndex = 0;
-    boneColliderEnabled = true;
-
-    UpdateBonesFinalTransformations(0);
-
-    setSourceFile(filename);
 
     return true;
 }

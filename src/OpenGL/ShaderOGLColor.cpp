@@ -14,16 +14,25 @@ ShaderOGLColor::ShaderOGLColor()
         false
     )
 {
+}
+
+void ShaderOGLColor::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
+    LoadUniforms();
+    CreateBuffer();
+}
 
-    createBuffer();
+void ShaderOGLColor::LoadUniforms()
+{
 }
 
 void ShaderOGLColor::renderMesh(Mesh3D* m, bool useFeedbackBuffer, const Color &color, bool clearFramebuffer, GLuint fbo) const
 {
     for (const auto& mm : m->getMeshData()) {
-        renderColor(
+        RenderColor(
             m->getModelMatrix(),
             useFeedbackBuffer ? mm.feedbackBuffer : mm.vertexBuffer,
             mm.uvBuffer,
@@ -36,14 +45,14 @@ void ShaderOGLColor::renderMesh(Mesh3D* m, bool useFeedbackBuffer, const Color &
     }
 }
 
-void ShaderOGLColor::renderColor(
+void ShaderOGLColor::RenderColor(
     const glm::mat4 &modelView,
     GLuint vertexBuffer,
     GLuint uvBuffer,
     GLuint normalBuffer,
     int size,
-    const Color &color,
-    bool clearFramebuffer,
+    const Color &c,
+    bool clearFBO,
     GLuint fbo
 ) const
 {
@@ -54,7 +63,7 @@ void ShaderOGLColor::renderColor(
 
     glBindVertexArray(VertexArrayID);
 
-    if (clearFramebuffer) {
+    if (clearFBO) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
@@ -68,7 +77,7 @@ void ShaderOGLColor::renderColor(
     setMat4("projection", camera->getGLMMat4ProjectionMatrix());
     setMat4("view", camera->getGLMMat4ViewMatrix());
     setMat4("model", modelView);
-    setVec3("color", color.toGLM());
+    setVec3("color", c.toGLM());
 
     setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
@@ -81,12 +90,12 @@ void ShaderOGLColor::renderColor(
     render->ChangeOpenGLFramebuffer(0);
 }
 
-void ShaderOGLColor::destroy()
+void ShaderOGLColor::Destroy()
 {
-    createBuffer();
+    CreateBuffer();
 }
 
-void ShaderOGLColor::deleteTexture() const
+void ShaderOGLColor::DeleteTexture() const
 {
     glDeleteTextures(1, &textureColorBuffer);
 }
@@ -96,7 +105,7 @@ GLuint ShaderOGLColor::getTextureColorBuffer() const
     return textureColorBuffer;
 }
 
-void ShaderOGLColor::createBuffer()
+void ShaderOGLColor::CreateBuffer()
 {
     if (framebuffer != 0) {
         glDeleteFramebuffers(1, &framebuffer);

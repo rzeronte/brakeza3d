@@ -37,7 +37,7 @@ public:
 
         //image->MakeAutoOGLImage();
         //auto job = std::make_shared<JobMakeOGLImage>(image);
-        //Brakeza::get()->getPoolManager().getIOPool().enqueueWithMainThreadCallback(job);
+        //Brakeza::get()->getPoolManager().Pool().enqueueWithMainThreadCallback(job);
     }
 };
 

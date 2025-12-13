@@ -8,17 +8,10 @@
 
 class PoolManager {
 
-    ThreadPool jobsPool;
-
     ThreadPool ioPool;
-    ThreadPool computePool;
-    std::vector<PendingJob*> pendingObjects;
 
 public:
-    [[nodiscard]] ThreadPool & getIOPool() { return ioPool; }
-    [[nodiscard]] ThreadPool & getJobsPool() { return jobsPool; };
-    [[nodiscard]] ThreadPool & getComputePool() { return computePool; };
-    [[nodiscard]] std::vector<PendingJob*> & getPendingJobs() { return pendingObjects; };
+    [[nodiscard]] ThreadPool & Pool() { return ioPool; }
 
     void ResolvePending();
 };

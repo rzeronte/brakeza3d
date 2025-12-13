@@ -9,19 +9,23 @@
 #include "ShaderBaseOpenGL.h"
 #include "ShaderBaseOpenGLQuad.h"
 
-class ShaderOGLDepthMap : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {
+class ShaderOGLDepthMap : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad
+{
+    GLuint textureUniform = 0;
 
-    GLuint textureUniform;
-
-    GLuint intensityUniform;
-    GLuint nearUniform;
-    GLuint farUniform;
+    GLuint intensityUniform = 0;
+    GLuint nearUniform = 0;
+    GLuint farUniform = 0;
 
 public:
     ShaderOGLDepthMap();
+    void LoadUniforms() override;
+
+    void PrepareMainThread() override;
+
     void render(GLuint textureID, GLuint fbo);
 
-    void destroy() override;
+    void Destroy() override;
 
     float intensity;
     float farPlane;

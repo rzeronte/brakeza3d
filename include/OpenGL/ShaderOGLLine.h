@@ -11,17 +11,19 @@
 #include "../Render/Color.h"
 #include "ShaderBaseOpenGLQuad.h"
 
-class ShaderOGLLine : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {
-    GLuint lineStartUniform;
-    GLuint lineEndUniform;
-    GLuint lineColorUniform;
-    GLuint weightUniform;
+class ShaderOGLLine : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad
+{
+    GLuint lineStartUniform = 0;
+    GLuint lineEndUniform = 0;
+    GLuint lineColorUniform = 0;
+    GLuint weightUniform = 0;
 public:
     ShaderOGLLine();
+    void PrepareMainThread() override;
+    void LoadUniforms() override;
 
     void render(Point2D a, Point2D b, Color c, float weight, GLuint fbo);
-
-    void destroy() override;
+    void Destroy() override;
 };
 
 

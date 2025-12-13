@@ -13,6 +13,26 @@ ShaderOGLImage::ShaderOGLImage()
         false
     )
 {
+}
+
+void ShaderOGLImage::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    CreateQuadVBO();
+    LoadUniforms();
+}
+
+void ShaderOGLImage::LoadUniforms()
+{
+    modelMatrixUniform = glGetUniformLocation(programID, "model");
+    projectionMatrixUniform = glGetUniformLocation(programID, "projection");
+    textureUniform = glGetUniformLocation(programID, "image");
+    alphaUniform = glGetUniformLocation(programID, "alpha");
+    inverseUniform = glGetUniformLocation(programID, "inverse");
+}
+
+void ShaderOGLImage::CreateQuadVBO()
+{
     float vertices[] = {
         // pos      // tex
         0.0f, 1.0f, 0.0f, 1.0f,
@@ -35,12 +55,6 @@ ShaderOGLImage::ShaderOGLImage()
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-
-    modelMatrixUniform = glGetUniformLocation(programID, "model");
-    projectionMatrixUniform = glGetUniformLocation(programID, "projection");
-    textureUniform = glGetUniformLocation(programID, "image");
-    alphaUniform = glGetUniformLocation(programID, "alpha");
-    inverseUniform = glGetUniformLocation(programID, "inverse");
 }
 
 void ShaderOGLImage::renderTexture(GLuint textureId, int x, int y, int w, int h, float alpha, bool inverse, GLuint fbo) const
@@ -80,6 +94,6 @@ void ShaderOGLImage::renderTexture(GLuint textureId, int x, int y, int w, int h,
     Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
 
-void ShaderOGLImage::destroy() {
+void ShaderOGLImage::Destroy() {
 
 }

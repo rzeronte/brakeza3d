@@ -10,24 +10,27 @@
 #include "../Render/Color.h"
 #include "ShaderBaseOpenGLQuad.h"
 
-class ShaderOGLFog : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {
-    GLuint resultFramebuffer;
-    GLuint textureResult;
+class ShaderOGLFog : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad
+{
+    GLuint resultFramebuffer = 0;
+    GLuint textureResult = 0;
 
-    GLuint intensityUniform;
-    GLuint fogMaxDistUniform;
-    GLuint fogMinDistUniform;
-    GLuint fogColourUniform;
-    GLuint farPlaneUniform;
+    GLuint intensityUniform = 0;
+    GLuint fogMaxDistUniform = 0;
+    GLuint fogMinDistUniform = 0;
+    GLuint fogColourUniform = 0;
+    GLuint farPlaneUniform = 0;
 
-    GLuint depthTextureUniform;
-    GLuint sceneTextureUniform;
-
+    GLuint depthTextureUniform = 0;
+    GLuint sceneTextureUniform = 0;
 public:
     ShaderOGLFog();
+    void LoadUniforms() override;
+
+    void PrepareMainThread() override;
 
     void render(GLuint sceneTexture, GLuint depthTexture);
-    void createFramebuffer();
+    void CreateFramebuffer();
 
     float fogMaxDist;
     float fogMinDist;
@@ -35,7 +38,7 @@ public:
     Color fogColor;
 
     [[nodiscard]] GLuint getTextureResult() const;
-    void destroy() override;
+    void Destroy() override;
 };
 
 

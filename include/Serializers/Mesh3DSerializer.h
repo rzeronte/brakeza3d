@@ -8,6 +8,7 @@
 #include <mutex>
 
 #include "JSONSerializer.h"
+#include "../3D/Mesh3D.h"
 #include "../3D/Object3D.h"
 
 class Object3DSerializer;
@@ -20,6 +21,13 @@ public:
     Object3D* ObjectByJson(cJSON* json) override;
     void ApplyJsonToObject(cJSON* json, Object3D* o) override;
     void LoadFileIntoScene(const std::string& config) override;
+
+    static void ApplyGeometryFromFile(Mesh3D *m, cJSON* json);
+    static void ApplyCollider(Mesh3D* m, cJSON* json);
+    static void ApplyShadersCreation(Mesh3D* m, cJSON* json);
+    static void ApplyShadersBackground(Mesh3D* m);
+    static void ApplyCustomShadersMainThread(Mesh3D* m);
+    static const char* ExtractFileModelPath(cJSON* json);
 };
 
 #endif

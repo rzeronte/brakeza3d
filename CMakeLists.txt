@@ -275,18 +275,15 @@ add_executable(Brakeza3D
         src/OpenGL/ShaderOGLGrid.cpp        include/OpenGL/ShaderOGLGrid.h
         src/Pools/ThreadPool.cpp
         include/Pools/ThreadPool.h
-        src/Pools/PoolManager.cpp
         include/Pools/PoolManager.h
         include/Pools/PendingJob.h
-        include/Pools/JobParseScene.h
         include/Pools/JobReadFileScene.h
         include/Pools/JobReadSceneScript.h
         include/Pools/JobReadSceneShaders.h
-        include/Pools/JobMesh3DLoadGeometry.h
-        include/Pools/JobMeshFillBuffers.h
+        include/Pools/JobLoadMesh3D.h
         include/Pools/JobLoadObject.h
         include/Pools/JobLoadImage.h
-        include/Pools/JobMakeOGLImage.h
+        include/Pools/JobLoadMesh3DAnimation.h
 )
 
 target_link_libraries(Brakeza3D

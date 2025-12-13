@@ -13,257 +13,49 @@
 
 ShaderOGLCustom::ShaderOGLCustom(
     std::string label,
-    const std::string &vertexFilename,
-    const std::string &fragmentFilename,
-    ShaderCustomType type
-)
-:
-    ShaderBaseOpenGL(vertexFilename, fragmentFilename, type == ShaderCustomType::SHADER_OBJECT),
-    label(std::move(label)),
-    type(type),
-    fileTypes(dataTypesFileFor(fragmentFilename))
-{
-    ReadShaderFiles(vertexFilename, fragmentFilename);
-    parseTypesFromFileAttributes();
-    CreateFramebuffer();
-}
-
-ShaderOGLCustom::ShaderOGLCustom(
-    std::string label,
-    const std::string &vertexFilename,
-    const std::string &fragmentFilename,
+    const std::string &vsFile,
+    const std::string &fsFile,
     ShaderCustomType type,
     cJSON *types
 )
 :
+    ShaderBaseOpenGL(vsFile, fsFile, type == SHADER_OBJECT),
     label(std::move(label)),
-    enabled(true),
-    ShaderBaseOpenGL(vertexFilename, fragmentFilename, type == ShaderCustomType::SHADER_OBJECT),
-    fileTypes(ShaderOGLCustom::dataTypesFileFor(fragmentFilename)),
-    type(type)
+    type(type),
+    fileTypes(dataTypesFileFor(fsFile))
 {
-    ReadShaderFiles(vertexFilename, fragmentFilename);
-    setDataTypesFromJSON(types);
+    setDataTypesFromJSON(types); //-> background
+}
+
+ShaderOGLCustom::ShaderOGLCustom(
+    std::string label,
+    const std::string &vsFile,
+    const std::string &fsFile,
+    ShaderCustomType type
+)
+:
+    ShaderBaseOpenGL(vsFile, fsFile, type == SHADER_OBJECT),
+    label(std::move(label)),
+    type(type),
+    fileTypes(dataTypesFileFor(fsFile))
+{
+}
+
+void ShaderOGLCustom::PrepareBackground()
+{
+    ShaderBaseOpenGL::PrepareBackground();
+    ParseTypesFromFileAttributes();
+}
+
+void ShaderOGLCustom::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    LoadUniforms();
     CreateFramebuffer();
 }
 
-void ShaderOGLCustom::ReadShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename)
+void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
 {
-    if (!Tools::FileExists(vertexFilename.c_str()) || !Tools::FileExists(fragmentFilename.c_str())) {
-        Logging::Error("[ShaderOGLCustom] Cannot open custom shader files (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
-    }
-    size_t file_size_fs;
-    sourceFS = Tools::ReadFile(fragmentFilename, file_size_fs);
-
-    size_t file_size_vs;
-    sourceVS = Tools::ReadFile(vertexFilename, file_size_vs);
-}
-
-bool ShaderOGLCustom::existDataType(const char *name, const char *type) const
-{
-    for (const auto& t: dataTypes) {
-        if (t.name == name && t.type == type) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-void ShaderOGLCustom::parseTypesFromFileAttributes()
-{
-    size_t file_size;
-    auto contentFile = Tools::ReadFile(Config::get()->SHADERS_FOLDER + fileTypes, file_size);
-    Logging::Message("[ShaderOGLCustom] Parsing attributes from: '%s'", fileTypes.c_str());
-
-    setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
-}
-
-std::string ShaderOGLCustom::dataTypesFileFor(std::string basicString)
-{
-    return ShaderOGLCustom::removeFilenameExtension(basicString) + ".json";
-}
-
-std::string ShaderOGLCustom::removeFilenameExtension(std::string& filename)
-{
-    size_t dotPosition = filename.find_last_of('.');
-
-    if (dotPosition != std::string::npos) {
-        return filename.substr(0, dotPosition);
-    }
-
-    return filename;
-}
-
-void ShaderOGLCustom::setDataTypesFromJSON(cJSON *typesJSON)
-{
-    cJSON *currentType;
-    cJSON_ArrayForEach(currentType, typesJSON) {
-        auto name = cJSON_GetObjectItemCaseSensitive(currentType, "name")->valuestring;
-        auto type = cJSON_GetObjectItemCaseSensitive(currentType, "type")->valuestring;
-        auto value = cJSON_GetObjectItemCaseSensitive(currentType, "value");
-
-        if (!existDataType(name, type)){
-            addDataType(name, type, value);
-            Logging::Message("[ShaderOGLCustom] Loading shader variable (%s, %s)", name, type);
-        } else {
-            Logging::Message("[ShaderOGLCustom] Keeping shader variable (%s, %s)", name, type);
-        }
-    }
-}
-
-void ShaderOGLCustom::addDataType(const char *name, const char *type, cJSON *value)
-{
-    ShaderOpenGLCustomDataValue LUAValue;
-
-    switch (GLSLTypeMapping[type].type) {
-        case ShaderOpenGLCustomDataType::INT: {
-            LUAValue = value->valueint;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::FLOAT: {
-            LUAValue = static_cast<float>(value->valuedouble);
-            break;
-        }
-        case ShaderOpenGLCustomDataType::VEC2: {
-           LUAValue = glm::vec2(
-                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "x")->valuedouble),
-                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "y")->valuedouble)
-           );
-           break;
-        }
-        case ShaderOpenGLCustomDataType::VEC3: {
-            LUAValue = glm::vec3(
-                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "x")->valuedouble),
-                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "y")->valuedouble),
-                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "z")->valuedouble)
-            );
-            break;
-        }
-        case ShaderOpenGLCustomDataType::VEC4: {
-            LUAValue = glm::vec4(
-                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "x")->valuedouble),
-                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "y")->valuedouble),
-                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "z")->valuedouble),
-                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "w")->valuedouble)
-            );
-            break;
-        }
-        case ShaderOpenGLCustomDataType::TEXTURE2D: {
-            LUAValue = nullptr;
-            if (value != nullptr) {
-                LUAValue = new Image(cJSON_GetObjectItemCaseSensitive(value, "path")->valuestring);
-            }
-            break;
-        }
-        case ShaderOpenGLCustomDataType::DIFFUSE: {
-            LUAValue = nullptr;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::SPECULAR: {
-            LUAValue = nullptr;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::DELTA_TIME: {
-            LUAValue = 0.0f;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
-            LUAValue = 0.0f;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::SCENE: {
-            LUAValue = nullptr;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::DEPTH: {
-            LUAValue = nullptr;
-            break;
-        }
-        default:
-            break;
-    }
-
-    dataTypes.emplace_back(name, type, LUAValue);
-    dataTypesDefaultValues.emplace_back(name, type, LUAValue);
-}
-
-void ShaderOGLCustom::AddDataTypeEmpty(const char *name, const char *type)
-{
-    ShaderOpenGLCustomDataValue typeValue;
-
-    switch (GLSLTypeMapping[type].type) {
-        case ShaderOpenGLCustomDataType::INT: {
-            typeValue = 0;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::FLOAT: {
-            typeValue = 0.0f;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::VEC2: {
-            typeValue = glm::vec2(0);
-            break;
-        }
-        case ShaderOpenGLCustomDataType::VEC3: {
-            typeValue = glm::vec3(0);
-            break;
-        }
-        case ShaderOpenGLCustomDataType::VEC4: {
-            typeValue = glm::vec4(0);
-            break;
-        }
-        case ShaderOpenGLCustomDataType::TEXTURE2D: {
-            typeValue = nullptr;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::DIFFUSE: {
-            typeValue = nullptr;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::SPECULAR: {
-            typeValue = nullptr;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::DELTA_TIME: {
-            typeValue = 0.f;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
-            typeValue = 0.f;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::SCENE: {
-            typeValue = nullptr;
-            break;
-        }
-        case ShaderOpenGLCustomDataType::DEPTH: {
-            typeValue = nullptr;
-            break;
-        }
-    }
-
-    dataTypes.emplace_back(name, type, typeValue);
-    dataTypesDefaultValues.emplace_back(name, type, typeValue);
-}
-
-GLuint ShaderOGLCustom::compile()
-{
-    Logging::Message("Compiling custom shader (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
-
-    programID = LoadShaders(vertexFilename.c_str(), fragmentFilename.c_str(), type == ShaderCustomType::SHADER_OBJECT);
-
-    return programID;
-}
-
-void ShaderOGLCustom::destroy()
-{
-    glDeleteFramebuffers(1, &resultFramebuffer);
-    glDeleteTextures(1, &textureResult);
-    CreateFramebuffer();
-}
-
-void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
     ImGui::SeparatorText("OpenGL custom uniforms");
 
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
@@ -501,29 +293,140 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular) {
     }
 }
 
-void ShaderOGLCustom::CaptureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const
+void ShaderOGLCustom::Destroy()
 {
-    if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
-            Logging::Message("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
-            IM_ASSERT(payload->DataSize == sizeof(int));
-            auto selection = (char*) payload->Data;
-            auto fullPath = Config::get()->IMAGES_FOLDER + selection;
-            if (texture == nullptr) {
-                type.value = new Image(fullPath);
-            } else {
-                delete texture;
-                type.value = new Image(fullPath);
-            }
-            Logging::Message("File %s", selection);
+    glDeleteFramebuffers(1, &resultFramebuffer);
+    glDeleteTextures(1, &textureResult);
+    CreateFramebuffer();
+}
+
+bool ShaderOGLCustom::existDataType(const char *name, const char *type) const
+{
+    for (const auto& t: dataTypes) {
+        if (t.name == name && t.type == type) {
+            return true;
         }
-        ImGui::EndDragDropTarget();
+    }
+
+    return false;
+}
+
+void ShaderOGLCustom::ParseTypesFromFileAttributes()
+{
+    size_t file_size;
+    auto contentFile = Tools::ReadFile(Config::get()->SHADERS_FOLDER + fileTypes, file_size);
+    Logging::Message("[ShaderOGLCustom] Parsing attributes from: '%s'", fileTypes.c_str());
+
+    setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
+}
+
+std::string ShaderOGLCustom::dataTypesFileFor(std::string basicString)
+{
+    return ShaderOGLCustom::removeFilenameExtension(basicString) + ".json";
+}
+
+std::string ShaderOGLCustom::removeFilenameExtension(std::string& filename)
+{
+    size_t dotPosition = filename.find_last_of('.');
+
+    if (dotPosition != std::string::npos) {
+        return filename.substr(0, dotPosition);
+    }
+
+    return filename;
+}
+
+void ShaderOGLCustom::setDataTypesFromJSON(cJSON *typesJSON)
+{
+    cJSON *currentType;
+    cJSON_ArrayForEach(currentType, typesJSON) {
+        auto name = cJSON_GetObjectItemCaseSensitive(currentType, "name")->valuestring;
+        auto type = cJSON_GetObjectItemCaseSensitive(currentType, "type")->valuestring;
+        auto value = cJSON_GetObjectItemCaseSensitive(currentType, "value");
+
+        if (!existDataType(name, type)){
+            addDataType(name, type, value);
+            Logging::Message("[ShaderOGLCustom] Loading shader variable (%s, %s)", name, type);
+        } else {
+            Logging::Message("[ShaderOGLCustom] Keeping shader variable (%s, %s)", name, type);
+        }
     }
 }
 
-bool ShaderOGLCustom::isEnabled() const
+void ShaderOGLCustom::addDataType(const char *name, const char *type, cJSON *value)
 {
-    return enabled;
+    ShaderOpenGLCustomDataValue LUAValue;
+
+    switch (GLSLTypeMapping[type].type) {
+        case ShaderOpenGLCustomDataType::INT: {
+            LUAValue = value->valueint;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::FLOAT: {
+            LUAValue = static_cast<float>(value->valuedouble);
+            break;
+        }
+        case ShaderOpenGLCustomDataType::VEC2: {
+            LUAValue = glm::vec2(
+                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "x")->valuedouble),
+                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "y")->valuedouble)
+            );
+            break;
+        }
+        case ShaderOpenGLCustomDataType::VEC3: {
+            LUAValue = glm::vec3(
+                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "x")->valuedouble),
+                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "y")->valuedouble),
+                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "z")->valuedouble)
+            );
+            break;
+        }
+        case ShaderOpenGLCustomDataType::VEC4: {
+            LUAValue = glm::vec4(
+                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "x")->valuedouble),
+                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "y")->valuedouble),
+                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "z")->valuedouble),
+                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "w")->valuedouble)
+            );
+            break;
+        }
+        case ShaderOpenGLCustomDataType::TEXTURE2D: {
+            LUAValue = nullptr;
+            if (value != nullptr) {
+                LUAValue = new Image(cJSON_GetObjectItemCaseSensitive(value, "path")->valuestring);
+            }
+            break;
+        }
+        case ShaderOpenGLCustomDataType::DIFFUSE: {
+            LUAValue = nullptr;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::SPECULAR: {
+            LUAValue = nullptr;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::DELTA_TIME: {
+            LUAValue = 0.0f;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
+            LUAValue = 0.0f;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::SCENE: {
+            LUAValue = nullptr;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::DEPTH: {
+            LUAValue = nullptr;
+            break;
+        }
+        default:
+            break;
+    }
+
+    dataTypes.emplace_back(name, type, LUAValue);
+    dataTypesDefaultValues.emplace_back(name, type, LUAValue);
 }
 
 void ShaderOGLCustom::setEnabled(bool value)
@@ -548,87 +451,9 @@ void ShaderOGLCustom::postUpdate()
     shaderOGLImage->renderTexture(textureResult, 0, 0, window->getWidth(), window->getHeight(), 1, true, window->getGlobalFramebuffer());
 }
 
-const std::string &ShaderOGLCustom::getLabel() const
-{
-    return label;
-}
-
 void ShaderOGLCustom::setLabel(std::string value)
 {
     label = value;
-}
-
-cJSON *ShaderOGLCustom::getTypesJSON()
-{
-    cJSON *scriptJSON = cJSON_CreateObject();
-    cJSON_AddStringToObject(scriptJSON, "name", getLabel().c_str());
-    cJSON_AddStringToObject(scriptJSON, "vertexshader", vertexFilename.c_str());
-    cJSON_AddStringToObject(scriptJSON, "fragmentshader", fragmentFilename.c_str());
-    cJSON_AddStringToObject(scriptJSON, "type", getShaderTypeString(type).c_str());
-
-    cJSON *typesArray = cJSON_CreateArray();
-    for (auto dataType : dataTypes) {
-        cJSON *typeJSON = cJSON_CreateObject();
-        cJSON_AddStringToObject(typeJSON, "name", dataType.name.c_str());
-        cJSON_AddStringToObject(typeJSON, "type", dataType.type.c_str());
-
-        std::string name = dataType.name + "("+ dataType.type +")";
-        switch (GLSLTypeMapping[dataType.type].type) {
-            case ShaderOpenGLCustomDataType::INT: {
-                auto valueInt = std::get<int>(dataType.value);
-                cJSON_AddNumberToObject(typeJSON, "value", valueInt);
-                break;
-            }
-            case ShaderOpenGLCustomDataType::FLOAT: {
-                auto valueFloat = std::get<float>(dataType.value);
-                cJSON_AddNumberToObject(typeJSON, "value", valueFloat);
-                break;
-            }
-            case ShaderOpenGLCustomDataType::VEC2: {
-                auto value = std::get<glm::vec2>(dataType.value);
-                cJSON *vertexJSON = cJSON_CreateObject();
-                cJSON_AddNumberToObject(vertexJSON, "x", value.x);
-                cJSON_AddNumberToObject(vertexJSON, "y", value.y);
-                cJSON_AddItemToObject(typeJSON, "value", vertexJSON);
-                break;
-            }
-            case ShaderOpenGLCustomDataType::VEC3: {
-                auto value = std::get<glm::vec3>(dataType.value);
-                cJSON *vertexJSON = cJSON_CreateObject();
-                cJSON_AddNumberToObject(vertexJSON, "x", value.x);
-                cJSON_AddNumberToObject(vertexJSON, "y", value.y);
-                cJSON_AddNumberToObject(vertexJSON, "z", value.z);
-                cJSON_AddItemToObject(typeJSON, "value", vertexJSON);
-                break;
-            }
-            case ShaderOpenGLCustomDataType::VEC4: {
-                auto value = std::get<glm::vec4>(dataType.value);
-                cJSON *vertexJSON = cJSON_CreateObject();
-                cJSON_AddNumberToObject(vertexJSON, "x", value.x);
-                cJSON_AddNumberToObject(vertexJSON, "y", value.y);
-                cJSON_AddNumberToObject(vertexJSON, "z", value.z);
-                cJSON_AddNumberToObject(vertexJSON, "w", value.w);
-                cJSON_AddItemToObject(typeJSON, "value", vertexJSON);
-                break;
-            }
-            case ShaderOpenGLCustomDataType::TEXTURE2D: {
-                auto value = std::get<Image *>(dataType.value);
-                if (value != nullptr) {
-                    cJSON *textureJSON = cJSON_CreateObject();
-                    cJSON_AddStringToObject(textureJSON, "path", value->getFileName().c_str());
-                    cJSON_AddItemToObject(typeJSON, "value", textureJSON);
-                }
-                break;
-            }
-            default:
-                std::cerr << "Unknown data typeJSON." << std::endl;
-        }
-        cJSON_AddItemToArray(typesArray, typeJSON);
-    }
-
-    cJSON_AddItemToObject(scriptJSON, "types", typesArray);
-
-    return scriptJSON;
 }
 
 void ShaderOGLCustom::setDataTypesUniforms()
@@ -704,52 +529,71 @@ void ShaderOGLCustom::UpdateFileTypes()
     delete output_string;
 }
 
+void ShaderOGLCustom::AddDataTypeEmpty(const char *name, const char *type)
+{
+    ShaderOpenGLCustomDataValue typeValue;
+
+    switch (GLSLTypeMapping[type].type) {
+        case ShaderOpenGLCustomDataType::INT: {
+            typeValue = 0;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::FLOAT: {
+            typeValue = 0.0f;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::VEC2: {
+            typeValue = glm::vec2(0);
+            break;
+        }
+        case ShaderOpenGLCustomDataType::VEC3: {
+            typeValue = glm::vec3(0);
+            break;
+        }
+        case ShaderOpenGLCustomDataType::VEC4: {
+            typeValue = glm::vec4(0);
+            break;
+        }
+        case ShaderOpenGLCustomDataType::TEXTURE2D: {
+            typeValue = nullptr;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::DIFFUSE: {
+            typeValue = nullptr;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::SPECULAR: {
+            typeValue = nullptr;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::DELTA_TIME: {
+            typeValue = 0.f;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
+            typeValue = 0.f;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::SCENE: {
+            typeValue = nullptr;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::DEPTH: {
+            typeValue = nullptr;
+            break;
+        }
+    }
+
+    dataTypes.emplace_back(name, type, typeValue);
+    dataTypesDefaultValues.emplace_back(name, type, typeValue);
+}
+
 void ShaderOGLCustom::removeDataType(const ShaderOpenGLCustomType& data)
 {
     for (auto it = dataTypes.begin(); it != dataTypes.end(); ++it) {
         if (it->name == data.name) {
             dataTypes.erase(it);
             return;
-        }
-    }
-}
-
-void ShaderOGLCustom::createEmptyCustomShader(
-    const std::string& name,
-    const std::string& folder,
-    ShaderCustomType type
-)
-{
-    Logging::Message("Creating new custom shader: %s de tipo %d", name.c_str(), type);
-
-    std::string shaderFragmentFile = folder + std::string(name + ".fs");
-    std::string shaderVertexFile = folder + std::string(name + ".vs");
-
-    cJSON *root = cJSON_CreateObject();
-    cJSON_AddStringToObject(root, "name", name.c_str());
-    cJSON_AddStringToObject(root, "file", shaderFragmentFile.c_str());
-    cJSON_AddStringToObject(root, "type", ShaderOGLCustom::getShaderTypeString(type).c_str());
-
-    cJSON *typesArray = cJSON_CreateArray();
-    cJSON_AddItemToObject(root, "types", typesArray);
-    char *typesCode = cJSON_Print(root);
-
-
-    // json
-    Tools::WriteToFile(folder + dataTypesFileFor(name), typesCode);
-
-    switch(type) {
-        case ShaderCustomType::SHADER_POSTPROCESSING : {
-            // vs y fs
-            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_VS, shaderVertexFile);
-            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_FS, shaderFragmentFile);
-            break;
-        }
-        case ShaderCustomType::SHADER_OBJECT : {
-            // vs y fs
-            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_OBJECT_VS, shaderVertexFile);
-            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_OBJECT_FS, shaderFragmentFile);
-            break;
         }
     }
 }
@@ -796,6 +640,99 @@ void ShaderOGLCustom::IncreaseNumberTextures()
     numTextures++;
 }
 
+std::string ShaderOGLCustom::getFolder()
+{
+    return Tools::removeSubstring(vertexFilename, label + ".vs");
+}
+
+cJSON *ShaderOGLCustom::getTypesJSON()
+{
+    cJSON *scriptJSON = cJSON_CreateObject();
+    cJSON_AddStringToObject(scriptJSON, "name", getLabel().c_str());
+    cJSON_AddStringToObject(scriptJSON, "vertexshader", vertexFilename.c_str());
+    cJSON_AddStringToObject(scriptJSON, "fragmentshader", fragmentFilename.c_str());
+    cJSON_AddStringToObject(scriptJSON, "type", getShaderTypeString(type).c_str());
+
+    cJSON *typesArray = cJSON_CreateArray();
+    for (auto dataType : dataTypes) {
+        cJSON *typeJSON = cJSON_CreateObject();
+        cJSON_AddStringToObject(typeJSON, "name", dataType.name.c_str());
+        cJSON_AddStringToObject(typeJSON, "type", dataType.type.c_str());
+
+        std::string name = dataType.name + "("+ dataType.type +")";
+        switch (GLSLTypeMapping[dataType.type].type) {
+            case ShaderOpenGLCustomDataType::INT: {
+                auto valueInt = std::get<int>(dataType.value);
+                cJSON_AddNumberToObject(typeJSON, "value", valueInt);
+                break;
+            }
+            case ShaderOpenGLCustomDataType::FLOAT: {
+                auto valueFloat = std::get<float>(dataType.value);
+                cJSON_AddNumberToObject(typeJSON, "value", valueFloat);
+                break;
+            }
+            case ShaderOpenGLCustomDataType::VEC2: {
+                auto value = std::get<glm::vec2>(dataType.value);
+                cJSON *vertexJSON = cJSON_CreateObject();
+                cJSON_AddNumberToObject(vertexJSON, "x", value.x);
+                cJSON_AddNumberToObject(vertexJSON, "y", value.y);
+                cJSON_AddItemToObject(typeJSON, "value", vertexJSON);
+                break;
+            }
+            case ShaderOpenGLCustomDataType::VEC3: {
+                auto value = std::get<glm::vec3>(dataType.value);
+                cJSON *vertexJSON = cJSON_CreateObject();
+                cJSON_AddNumberToObject(vertexJSON, "x", value.x);
+                cJSON_AddNumberToObject(vertexJSON, "y", value.y);
+                cJSON_AddNumberToObject(vertexJSON, "z", value.z);
+                cJSON_AddItemToObject(typeJSON, "value", vertexJSON);
+                break;
+            }
+            case ShaderOpenGLCustomDataType::VEC4: {
+                auto value = std::get<glm::vec4>(dataType.value);
+                cJSON *vertexJSON = cJSON_CreateObject();
+                cJSON_AddNumberToObject(vertexJSON, "x", value.x);
+                cJSON_AddNumberToObject(vertexJSON, "y", value.y);
+                cJSON_AddNumberToObject(vertexJSON, "z", value.z);
+                cJSON_AddNumberToObject(vertexJSON, "w", value.w);
+                cJSON_AddItemToObject(typeJSON, "value", vertexJSON);
+                break;
+            }
+            case ShaderOpenGLCustomDataType::TEXTURE2D: {
+                auto value = std::get<Image *>(dataType.value);
+                if (value != nullptr) {
+                    cJSON *textureJSON = cJSON_CreateObject();
+                    cJSON_AddStringToObject(textureJSON, "path", value->getFileName().c_str());
+                    cJSON_AddItemToObject(typeJSON, "value", textureJSON);
+                }
+                break;
+            }
+            default:
+                std::cerr << "Unknown data typeJSON." << std::endl;
+        }
+        cJSON_AddItemToArray(typesArray, typeJSON);
+    }
+
+    cJSON_AddItemToObject(scriptJSON, "types", typesArray);
+
+    return scriptJSON;
+}
+
+bool ShaderOGLCustom::isEnabled() const
+{
+    return enabled;
+}
+
+const std::vector<ShaderOpenGLCustomType> &ShaderOGLCustom::getDataTypes() const
+{
+    return dataTypes;
+}
+
+const std::string &ShaderOGLCustom::getLabel() const
+{
+    return label;
+}
+
 ShaderCustomType ShaderOGLCustom::getType() const
 {
     return type;
@@ -828,6 +765,47 @@ std::string ShaderOGLCustom::getShaderTypeString(ShaderCustomType type)
     return "";
 }
 
+void ShaderOGLCustom::createEmptyCustomShader(
+    const std::string& name,
+    const std::string& folder,
+    ShaderCustomType type
+)
+{
+    Logging::Message("Creating new custom shader: %s de tipo %d", name.c_str(), type);
+
+    std::string shaderFragmentFile = folder + std::string(name + ".fs");
+    std::string shaderVertexFile = folder + std::string(name + ".vs");
+
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "name", name.c_str());
+    cJSON_AddStringToObject(root, "file", shaderFragmentFile.c_str());
+    cJSON_AddStringToObject(root, "type", ShaderOGLCustom::getShaderTypeString(type).c_str());
+
+    cJSON *typesArray = cJSON_CreateArray();
+    cJSON_AddItemToObject(root, "types", typesArray);
+    char *typesCode = cJSON_Print(root);
+
+
+    // json
+    Tools::WriteToFile(folder + dataTypesFileFor(name), typesCode);
+
+    switch(type) {
+        case SHADER_POSTPROCESSING : {
+            // vs y fs
+            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_VS, shaderVertexFile);
+            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_FS, shaderFragmentFile);
+            break;
+        }
+        default:
+        case SHADER_OBJECT : {
+            // vs y fs
+            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_OBJECT_VS, shaderVertexFile);
+            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_OBJECT_FS, shaderFragmentFile);
+            break;
+        }
+    }
+}
+
 void ShaderOGLCustom::RemoveCustomShaderFiles(const std::string& folder, const std::string &name)
 {
     Logging::Message("[ShaderOGLCustom] Deleting custom shader: %s", name.c_str());
@@ -851,30 +829,32 @@ ShaderCustomType ShaderOGLCustom::extractTypeFromShaderName(const std::string& f
     return getShaderTypeFromString(nameType);
 }
 
-std::string ShaderOGLCustom::getFolder()
-{
-    return Tools::removeSubstring(vertexFilename, label + ".vs");
-}
-
-const std::vector<ShaderOpenGLCustomType> &ShaderOGLCustom::getDataTypes() const
-{
-    return dataTypes;
-}
-
 void ShaderOGLCustom::Reload()
 {
-    size_t file_size_fs;
-    sourceFS = Tools::ReadFile(fragmentFilename, file_size_fs);
+    ReadShaderFiles(vertexFilename, fragmentFilename);
+    dataTypes.clear(); dataTypesDefaultValues.clear();
+    ParseTypesFromFileAttributes();
+    CompileShaderToProgramID(type == SHADER_OBJECT);
+}
 
-    size_t file_size_vs;
-    sourceVS = Tools::ReadFile(vertexFilename, file_size_vs);
-
-    dataTypes.clear();
-    dataTypesDefaultValues.clear();
-
-    parseTypesFromFileAttributes();
-
-    compile();
+void ShaderOGLCustom::CaptureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const
+{
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
+            Logging::Message("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
+            IM_ASSERT(payload->DataSize == sizeof(int));
+            auto selection = (char*) payload->Data;
+            auto fullPath = Config::get()->IMAGES_FOLDER + selection;
+            if (texture == nullptr) {
+                type.value = new Image(fullPath);
+            } else {
+                delete texture;
+                type.value = new Image(fullPath);
+            }
+            Logging::Message("File %s", selection);
+        }
+        ImGui::EndDragDropTarget();
+    }
 }
 
 void ShaderOGLCustom::CreateFramebuffer()

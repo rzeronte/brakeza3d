@@ -8,32 +8,23 @@
 
 ShaderOGLLine3D::ShaderOGLLine3D()
 :
-    VertexArrayID(0),
     ShaderBaseOpenGL(
         Config::get()->SHADERS_FOLDER + "Line3D.vs",
         Config::get()->SHADERS_FOLDER + "Line3D.fs",
         false
     )
 {
-    glGenVertexArrays(1, &VertexArrayID);
-    glGenBuffers(1, &vertexbuffer);
+}
 
-    glBindVertexArray(VertexArrayID);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+void ShaderOGLLine3D::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    LoadUniforms();
+    CreateLineVBO();
+}
 
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    glVertexAttribPointer(
-        0,                  // attribute
-        4,                  // size
-        GL_FLOAT,           // type
-        GL_FALSE,           // normalized?
-        0,                  // stride
-        nullptr
-    );
-    glBindVertexArray(0);
-
+void ShaderOGLLine3D::LoadUniforms()
+{
     matrixProjectionUniform = glGetUniformLocation(programID, "projection");
     matrixViewUniform = glGetUniformLocation(programID, "view");
     colorUniform = glGetUniformLocation(programID, "color");
@@ -47,7 +38,7 @@ void ShaderOGLLine3D::render(Vertex3D from, Vertex3D to, GLuint fbo, Color c)
 }
 
 
-void ShaderOGLLine3D::destroy()
+void ShaderOGLLine3D::Destroy()
 {
 }
 
@@ -91,4 +82,26 @@ void ShaderOGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo
     glDeleteBuffers(1, &VBO);
 
     Components::get()->Render()->ChangeOpenGLFramebuffer(0);
+}
+
+void ShaderOGLLine3D::CreateLineVBO()
+{
+    glGenVertexArrays(1, &VertexArrayID);
+    glGenBuffers(1, &vertexbuffer);
+
+    glBindVertexArray(VertexArrayID);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glVertexAttribPointer(
+        0,                  // attribute
+        4,                  // size
+        GL_FLOAT,           // type
+        GL_FALSE,           // normalized?
+        0,                  // stride
+        nullptr
+    );
+    glBindVertexArray(0);
 }

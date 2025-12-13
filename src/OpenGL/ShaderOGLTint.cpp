@@ -14,10 +14,20 @@ ShaderOGLTint::ShaderOGLTint()
         false
     )
 {
-    setupQuadUniforms(programID);
+}
 
+void ShaderOGLTint::LoadUniforms()
+{
     colorUniform = glGetUniformLocation(programID, "color");
     alphaUniform = glGetUniformLocation(programID, "alpha");
+}
+
+void ShaderOGLTint::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    LoadUniforms();
+    CreateQuadVBO();
+    SetupQuadUniforms(programID);
 }
 
 void ShaderOGLTint::render(Color c, float alpha, GLuint fbo)
@@ -26,15 +36,15 @@ void ShaderOGLTint::render(Color c, float alpha, GLuint fbo)
 
     Components::get()->Render()->changeOpenGLProgram(programID);
 
-    loadQuadMatrixUniforms();
+    LoadQuadMatrixUniforms();
 
     glUniform1f(alphaUniform, alpha);
     glUniform3fv(colorUniform, 1, &c.toGLM()[0]);
 
-    drawQuad();
+    DrawQuad();
 }
 
-void ShaderOGLTint::destroy()
+void ShaderOGLTint::Destroy()
 {
-    resetQuadMatrix();
+    ResetQuadMatrix();
 }

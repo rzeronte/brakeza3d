@@ -15,6 +15,10 @@ ShaderOGLShading::ShaderOGLShading()
 {
 }
 
+void ShaderOGLShading::LoadUniforms()
+{
+}
+
 void ShaderOGLShading::renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint fbo)
 {
     for (auto &m: mesh->getMeshData()) {
@@ -57,6 +61,6 @@ void ShaderOGLShading::render(glm::mat4 modelMatrix, GLuint vertexBuffer, GLuint
     glEnable(GL_BLEND);
 }
 
-void ShaderOGLShading::destroy() {
+void ShaderOGLShading::Destroy() {
 
 }

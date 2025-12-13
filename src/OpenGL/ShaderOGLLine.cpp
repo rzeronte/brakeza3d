@@ -16,8 +16,18 @@ ShaderOGLLine::ShaderOGLLine()
         false
     )
 {
-    setupQuadUniforms(programID);
+}
 
+void ShaderOGLLine::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    LoadUniforms();
+    CreateQuadVBO();
+    SetupQuadUniforms(programID);
+}
+
+void ShaderOGLLine::LoadUniforms()
+{
     lineStartUniform = glGetUniformLocation(programID, "lineStart");
     lineEndUniform = glGetUniformLocation(programID, "lineEnd");
     lineColorUniform = glGetUniformLocation(programID, "lineColor");
@@ -30,7 +40,7 @@ void ShaderOGLLine::render(Point2D a, Point2D b, Color c, float weight, GLuint f
 
     Components::get()->Render()->changeOpenGLProgram(programID);
 
-    loadQuadMatrixUniforms();
+    LoadQuadMatrixUniforms();
 
     const auto normAx = (float) ((float)a.y / (float) Config::get()->screenHeight);
     const auto normAy = (float) ((float)a.x / (float) Config::get()->screenWidth);
@@ -45,11 +55,11 @@ void ShaderOGLLine::render(Point2D a, Point2D b, Color c, float weight, GLuint f
 
     glDisable(GL_DEPTH_TEST);
 
-    drawQuad();
+    DrawQuad();
 
     glEnable(GL_DEPTH_TEST);
 }
 
-void ShaderOGLLine::destroy() {
+void ShaderOGLLine::Destroy() {
 
 }

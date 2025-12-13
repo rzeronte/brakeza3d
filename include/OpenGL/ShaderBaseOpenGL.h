@@ -11,16 +11,27 @@
 
 class ShaderBaseOpenGL {
 protected:
-    GLuint programID;
+    GLuint programID = 0;
     std::string vertexFilename;
     std::string fragmentFilename;
+    bool enableFeedback = false;
+
+    std::string sourceVS;
+    std::string sourceFS;
 public:
     ShaderBaseOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback);
+
+    virtual void LoadUniforms() = 0;
+    virtual void PrepareBackground();
+
+    virtual void PrepareMainThread();
+
     ShaderBaseOpenGL(const std::string &vertexFilename, bool enableFeedback);
+
     virtual ~ShaderBaseOpenGL() = default;
 
-    static GLuint LoadShaders(const char * vertex_file_path, const char * fragment_file_path, bool enableFeedback);
-    virtual void destroy() = 0;
+    void CompileShaderToProgramID(bool enableFeedback);
+    virtual void Destroy() = 0;
     void setBool(const std::string &name, bool value) const;
     static void setBoolUniform(GLuint uniform, bool value);
     void setInt(const std::string &name, int value) const;
@@ -57,6 +68,7 @@ public:
     [[nodiscard]] std::string getFragmentFilename() const;
 
     static void setVAOAttributes(GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer);
+    void ReadShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename);
 };
 
 

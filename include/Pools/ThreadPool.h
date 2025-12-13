@@ -17,7 +17,7 @@
 class ThreadPool {
 private:
     std::vector<std::thread> workers;
-    std::queue<std::shared_ptr<PendingJob>> tasks;  // ← Cambia esto
+    std::queue<std::shared_ptr<PendingJob>> tasks;
     std::queue<std::function<void()>> mainThreadCallbacks;
 
     mutable std::mutex queueMutex;
@@ -25,6 +25,7 @@ private:
     std::condition_variable condition;
     std::atomic<bool> stop;
     std::atomic<int> activeTasks;
+    std::atomic<int> cont;
 
 public:
     explicit ThreadPool(size_t numThreads = std::thread::hardware_concurrency());
@@ -34,7 +35,7 @@ public:
     void enqueue(std::shared_ptr<PendingJob> job);
 
     // Encolar job con callback diferido al main thread
-    void enqueueWithMainThreadCallback(std::shared_ptr<PendingJob>);
+    void enqueueWithMainThreadCallback(std::shared_ptr<PendingJob> job);
 
     // Procesar callbacks en main thread
     void processMainThreadCallbacks();
@@ -43,6 +44,8 @@ public:
     size_t getPendingCallbacks() const;
     int getActiveTasks() const;
     void waitAll();
+
+    int getCont();
 };
 
 #endif //BRAKEZA3D_THREADPOOL_H

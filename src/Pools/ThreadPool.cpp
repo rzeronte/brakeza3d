@@ -1,15 +1,17 @@
 #include "../../include/Pools/ThreadPool.h"
 #include <chrono>
+#include <iostream>
 
 ThreadPool::ThreadPool(size_t numThreads)
 :
     stop(false),
-    activeTasks(0)
+    activeTasks(0),
+    cont(0)
 {
     for (size_t i = 0; i < numThreads; ++i) {
         workers.emplace_back([this] {
             while (true) {
-                std::shared_ptr<PendingJob> job;  // ← Cambio aquí
+                std::shared_ptr<PendingJob> job;
 
                 {
                     std::unique_lock<std::mutex> lock(queueMutex);
@@ -24,11 +26,19 @@ ThreadPool::ThreadPool(size_t numThreads)
                     tasks.pop();
                 }
 
+                cont++;
                 activeTasks++;
-                job->function();  // ← Cambio: -> en lugar de .
-                job->callback();  // ← Cambio: -> en lugar de .
+
+                try {
+                    job->function();
+                    job->callback();
+                } catch (const std::exception& e) {
+                    std::cerr << "[ThreadPool] Job exception: " << e.what() << std::endl;
+                } catch (...) {
+                    std::cerr << "[ThreadPool] Job unknown exception" << std::endl;
+                }
+
                 activeTasks--;
-                // job se borra automáticamente aquí cuando sale de scope
             }
         });
     }
@@ -53,13 +63,16 @@ void ThreadPool::enqueueWithMainThreadCallback(std::shared_ptr<PendingJob> job) 
     {
         std::unique_lock<std::mutex> lock(queueMutex);
 
-        // Crea un nuevo job que solo ejecuta la función
-        // y guarda el callback para main thread
+        // Crear wrapper job que ejecuta function en worker thread
+        // y encola callback para main thread
         auto workerJob = std::make_shared<PendingJob>(
             job->function,
-            [this, callback = job->callback]() {
+            [this, job]() {  // ← Capturar job para mantenerlo vivo
                 std::unique_lock<std::mutex> callbackLock(callbackMutex);
-                mainThreadCallbacks.push(callback);
+                // ← Pushear lambda que captura job para mantenerlo vivo hasta callback
+                mainThreadCallbacks.push([job]() {
+                    job->callback();
+                });
             }
         );
 
@@ -95,6 +108,11 @@ int ThreadPool::getActiveTasks() const {
 
 void ThreadPool::waitAll() {
     while (getPendingTasks() > 0 || getActiveTasks() > 0) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+}
+
+int ThreadPool::getCont()
+{
+    return (int)cont;
 }

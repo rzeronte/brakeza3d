@@ -58,7 +58,7 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
             glDisable(GL_CULL_FACE);
             glEnable(GL_BLEND);
             glBlendFunc(mode_src, mode_dst);
-            render->getShaders()->shaderOGLColor->renderColor(
+            render->getShaders()->shaderOGLColor->RenderColor(
                 getModelMatrix(),
                 vertexBuffer,
                 uvBuffer,

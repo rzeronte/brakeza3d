@@ -704,14 +704,16 @@ std::vector<Vertex3D *> &Mesh3D::getModelVertices(int i)
     return meshes[i].modelVertices;
 }
 
-void Mesh3D::FillBuffers()
+void Mesh3D::FillOGLBuffers()
 {
+    Logging::Message("[Mesh3D] Filling buffers...");
     ComponentRender::FillOGLBuffers(meshes);
 }
 
 void Mesh3D::UpdateOGLTextures()
 {
-    for (auto t : modelTextures) {
+    Logging::Message("[Mesh3D] Updating OGL Textures...");
+    for (auto &t : modelTextures) {
         t->MakeAutoOGLImage();
     }
 }

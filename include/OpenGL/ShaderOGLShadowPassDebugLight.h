@@ -15,25 +15,20 @@ class ShaderOGLShadowPassDebugLight : public ShaderBaseOpenGL, public ShaderBase
 
     public:
     ShaderOGLShadowPassDebugLight();
+    void LoadUniforms() override;
+
+    void PrepareMainThread() override;
 
     void renderInternalToTexture();
-
     void renderInternalFromArrayTextures(GLuint depthTexture, int layer);
-
-    void destroy() override;
-
-    void createFramebuffer();
-
-    [[nodiscard]] GLuint getSceneFramebuffer() const;
-    [[nodiscard]] GLuint getSceneTexture() const;
-
+    void Destroy() override;
+    void CreateFramebuffer();
     void createArrayTextures(int nLayers);
-
-    [[nodiscard]] GLuint getInternalTexture(int layer) const;
-
     void updateDebugTextures(int numLights);
     void clearInternalTextures();
-
+    [[nodiscard]] GLuint getSceneFramebuffer() const;
+    [[nodiscard]] GLuint getSceneTexture() const;
+    [[nodiscard]] GLuint getInternalTexture(int layer) const;
     static GLuint extractLayerFromArray(GLuint arrayTexture, int layer);
 };
 

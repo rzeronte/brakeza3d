@@ -89,7 +89,7 @@ void SceneLoader::LoadScene(const std::string& filename)
     Logging::Message("[SceneLoader] Loading scene: '%s'", filename.c_str());
 
     auto job = std::make_shared<JobReadFileScene>(filename);
-    Brakeza::get()->getPoolManager().getIOPool().enqueue(job);
+    Brakeza::get()->getPoolManager().Pool().enqueueWithMainThreadCallback(job);
 }
 
 void SceneLoader::SaveScene(const std::string &filename)
@@ -210,5 +210,5 @@ void SceneLoader::InitSerializers()
 void SceneLoader::SceneLoaderCreateObject(cJSON *object)
 {
     auto job = std::make_shared<JobLoadObject>(object);
-    Brakeza::get()->getPoolManager().getIOPool().enqueue(job);
+    Brakeza::get()->getPoolManager().Pool().enqueue(job);
 }

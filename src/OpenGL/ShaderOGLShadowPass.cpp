@@ -16,11 +16,19 @@ ShaderOGLShadowPass::ShaderOGLShadowPass()
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
+}
 
+void ShaderOGLShadowPass::LoadUniforms()
+{
     matrixViewUniform = glGetUniformLocation(programID, "lightSpaceMatrix");
     matrixModelUniform = glGetUniformLocation(programID, "model");
+}
 
-    resetFramebuffers();
+void ShaderOGLShadowPass::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    LoadUniforms();
+    ResetFramebuffers();
 }
 
 void ShaderOGLShadowPass::renderMeshIntoArrayTextures(Mesh3D *o, bool feedbackFBO, LightSpot* light, int indexLight ) const
@@ -133,9 +141,9 @@ GLuint ShaderOGLShadowPass::getDirectionalLightDepthMapFBO() const
     return directionalLightDepthMapFBO;
 }
 
-void ShaderOGLShadowPass::destroy()
+void ShaderOGLShadowPass::Destroy()
 {
-    resetFramebuffers();
+    ResetFramebuffers();
 }
 
 void ShaderOGLShadowPass::setupFBOSpotLights()
@@ -215,13 +223,12 @@ void ShaderOGLShadowPass::clearDirectionalLightDepthTexture() const
     glClear(GL_DEPTH_BUFFER_BIT);
 }
 
-void ShaderOGLShadowPass::resetFramebuffers()
+void ShaderOGLShadowPass::ResetFramebuffers()
 {
     setupFBOSpotLights();
     createDirectionalLightDepthTexture();
     setupFBODirectionalLight();
 }
-
 
 GLuint ShaderOGLShadowPass::getSpotLightsShadowMapArrayTextures() const
 {

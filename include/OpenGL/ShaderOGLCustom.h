@@ -45,10 +45,16 @@ struct ShaderTypeInfo {
 
 typedef std::variant<int, float, glm::vec2, glm::vec3, glm::vec4, Image*> ShaderOpenGLCustomDataValue;
 
-struct ShaderOpenGLCustomType {
+struct ShaderOpenGLCustomType
+{
     ShaderOpenGLCustomType(const char *name, const char *type, ShaderOpenGLCustomDataValue value)
-    :name(name), type(type), value(value)
-    {}
+    :
+        name(name),
+        type(type),
+        value(value)
+    {
+
+    }
     std::string name;
     std::string type;
     ShaderOpenGLCustomDataValue value;
@@ -90,8 +96,8 @@ protected:
 
     ShaderOGLCustom(
         std::string label,
-        const std::string &vertexFilename,
-        const std::string &fragmentFilename,
+        const std::string &vsFile,
+        const std::string &fsFile,
         ShaderCustomType type,
         cJSON *types
     );
@@ -99,34 +105,30 @@ protected:
 public:
     explicit ShaderOGLCustom(
         std::string label,
-        const std::string &vertexFilename,
-        const std::string &fragmentFilename,
+        const std::string &vsFile,
+        const std::string &fsFile,
         ShaderCustomType type
     );
+
+    void PrepareBackground() override;
+    void PrepareMainThread() override;
 
     virtual void render(GLuint fbo) = 0;
 
     void drawImGuiProperties(Image *diffuse, Image *specular);
 
-    virtual GLuint compile();
-
     std::string sourceVS;
     std::string sourceFS;
 
-    void destroy() override;
+    void Destroy() override;
 
 protected:
 
     bool existDataType(const char *name, const char *type) const;
-
-    void parseTypesFromFileAttributes();
-
+    void ParseTypesFromFileAttributes();
     static std::string dataTypesFileFor(std::string basicString);
-
     static std::string removeFilenameExtension(std::string &filename);
-
     void setDataTypesFromJSON(cJSON *typesJSON);
-
     void addDataType(const char *name, const char *type, cJSON *value);
 
 public:
@@ -159,7 +161,6 @@ public:
     static ShaderCustomType extractTypeFromShaderName(const std::string& folder, const std::string &name);
     void Reload();
     void CaptureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const;
-    void ReadShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename);
     void CreateFramebuffer();
 };
 

@@ -12,8 +12,18 @@ ShaderOGLOutline::ShaderOGLOutline()
         false
     )
 {
-    setupQuadUniforms(programID);
+}
 
+void ShaderOGLOutline::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    LoadUniforms();
+    CreateQuadVBO();
+    SetupQuadUniforms(programID);
+}
+
+void ShaderOGLOutline::LoadUniforms()
+{
     textureUniform = glGetUniformLocation(programID, "image");
     lineColorUniform = glGetUniformLocation(programID, "lineColor");
     borderThicknessUniform = glGetUniformLocation(programID, "borderThickness");
@@ -24,19 +34,19 @@ void ShaderOGLOutline::renderOutline(GLuint textureId, const Color &c, float bor
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
-    loadQuadMatrixUniforms();
+    LoadQuadMatrixUniforms();
 
     glUniform3fv(lineColorUniform, 1, &c.toGLM()[0]);
     glUniform1f(borderThicknessUniform, borderThickness);
 
     setTextureUniform(textureUniform, textureId, 0);
 
-    drawQuad();
+    DrawQuad();
 }
 
-void ShaderOGLOutline::destroy()
+void ShaderOGLOutline::Destroy()
 {
-    resetQuadMatrix();
+    ResetQuadMatrix();
 }
 
 void ShaderOGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThickness, GLuint fbo)
@@ -44,7 +54,7 @@ void ShaderOGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThickn
     auto shaderColor = Components::get()->Render()->getShaders()->shaderOGLColor;
 
     for (const auto& mm : m->getMeshData()) {
-        shaderColor->renderColor(
+        shaderColor->RenderColor(
             m->getModelMatrix(),
             mm.vertexBuffer,
             mm.uvBuffer,
@@ -65,7 +75,7 @@ void ShaderOGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderThic
     auto shaderColor = componentRender->getShaders()->shaderOGLColor;
 
     for (const auto& mm : m->getMeshData()) {
-        shaderColor->renderColor(
+        shaderColor->RenderColor(
             m->getModelMatrix(),
             mm.feedbackBuffer,
             mm.uvBuffer,
@@ -84,7 +94,7 @@ void ShaderOGLOutline::drawOutlineImage3D(Image3D *i, const Color &c, float bord
 {
     auto shaderColor = Components::get()->Render()->getShaders()->shaderOGLColor;
 
-    shaderColor->renderColor(
+    shaderColor->RenderColor(
         i->getModelMatrix(),
         i->getVertexBuffer(),
         i->getUVBuffer(),

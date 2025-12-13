@@ -10,7 +10,7 @@ void Mesh3DAnimationDrawerGUI::DrawPropertiesGUI(Mesh3DAnimation *o)
     constexpr float range_min = 0.0f;
     constexpr float range_max = 1.0f;
 
-    if (ImGui::CollapsingHeader("Mesh 3D")) {
+    if (ImGui::CollapsingHeader("Mesh3D Animation")) {
 
         const char* items[o->scene->mNumAnimations];
         for (unsigned int i = 0; i < o->scene->mNumAnimations; i++) {

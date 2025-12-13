@@ -15,8 +15,19 @@ ShaderOGLShadowPassDebugLight::ShaderOGLShadowPassDebugLight()
     internalFramebuffer(0),
     sceneTexture(0)
 {
-    setupQuadUniforms(programID);
-    createFramebuffer();
+}
+
+void ShaderOGLShadowPassDebugLight::LoadUniforms()
+{
+}
+
+void ShaderOGLShadowPassDebugLight::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    CreateQuadVBO();
+    SetupQuadUniforms(programID);
+    LoadUniforms();
+    CreateFramebuffer();
 }
 
 void ShaderOGLShadowPassDebugLight::renderInternalToTexture()
@@ -24,7 +35,7 @@ void ShaderOGLShadowPassDebugLight::renderInternalToTexture()
     Components::get()->Render()->ChangeOpenGLFramebuffer(internalFramebuffer);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
-    loadQuadMatrixUniforms();
+    LoadQuadMatrixUniforms();
 
     glBindFramebuffer(GL_FRAMEBUFFER, internalFramebuffer);
 
@@ -32,7 +43,7 @@ void ShaderOGLShadowPassDebugLight::renderInternalToTexture()
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, shaderShadowPass->getDirectionalLightDepthTexture());
 
-    drawQuad();
+    DrawQuad();
 
     glBindVertexArray(0);
 }
@@ -42,7 +53,7 @@ void ShaderOGLShadowPassDebugLight::renderInternalFromArrayTextures(GLuint depth
     Components::get()->Render()->ChangeOpenGLFramebuffer(internalFramebuffer);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
-    loadQuadMatrixUniforms();
+    LoadQuadMatrixUniforms();
 
     glBindFramebuffer(GL_FRAMEBUFFER, internalFramebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, internalTextures[layer], 0);
@@ -50,17 +61,17 @@ void ShaderOGLShadowPassDebugLight::renderInternalFromArrayTextures(GLuint depth
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, depthTexture);
 
-    drawQuad();
+    DrawQuad();
 
     glBindVertexArray(0);
 }
 
-void ShaderOGLShadowPassDebugLight::destroy()
+void ShaderOGLShadowPassDebugLight::Destroy()
 {
     clearInternalTextures();
 }
 
-void ShaderOGLShadowPassDebugLight::createFramebuffer()
+void ShaderOGLShadowPassDebugLight::CreateFramebuffer()
 {
     if (internalFramebuffer != 0) {
         glDeleteFramebuffers(1, &internalFramebuffer);

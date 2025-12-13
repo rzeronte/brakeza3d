@@ -12,23 +12,27 @@ class ShaderOGLColor: public ShaderBaseOpenGL
 {
     GLuint VertexArrayID = 0;
     GLuint framebuffer = 0;
-    GLuint textureColorBuffer= 0;
+    GLuint textureColorBuffer = 0;
     GLuint depthBuffer= 0;
 public:
-    void createBuffer();
+    void CreateBuffer();
     ShaderOGLColor();
-    void renderColor(
+
+    void PrepareMainThread() override;
+
+    void LoadUniforms() override;
+    void RenderColor(
         const glm::mat4 &modelView,
         GLuint vertexBuffer,
         GLuint uvBuffer,
         GLuint normalBuffer,
         int size,
-        const Color &color,
-        bool clearFramebuffer,
+        const Color &c,
+        bool clearFBO,
         GLuint fbo
     ) const;
-    void destroy() override;
-    void deleteTexture() const;
+    void Destroy() override;
+    void DeleteTexture() const;
     void renderMesh(Mesh3D* m, bool useFeedbackBuffer, const Color &color, bool clearFramebuffer, GLuint fbo) const;
     [[nodiscard]] GLuint getTextureColorBuffer() const;
     [[nodiscard]] GLuint getFramebuffer() const;

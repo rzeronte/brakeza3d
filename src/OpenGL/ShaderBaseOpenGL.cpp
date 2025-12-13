@@ -6,22 +6,30 @@
 #include "../../include/OpenGL/ShaderBaseOpenGL.h"
 
 #include "../../include/Misc/Logging.h"
+#include "../../include/Misc/Tools.h"
 
 ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback)
 :
     vertexFilename(vertexFilename),
-    fragmentFilename(fragmentFilename)
+    fragmentFilename(fragmentFilename),
+    enableFeedback(enableFeedback)
 {
-    programID = LoadShaders(
-        vertexFilename.c_str(),
-        fragmentFilename.c_str(),
-        enableFeedback
-    );
+}
+
+void ShaderBaseOpenGL::PrepareBackground()
+{
+    ReadShaderFiles(vertexFilename, fragmentFilename);
+}
+
+void ShaderBaseOpenGL::PrepareMainThread()
+{
+    CompileShaderToProgramID(enableFeedback);
 }
 
 ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, bool enableFeedback)
 :
-    vertexFilename(vertexFilename)
+    vertexFilename(vertexFilename),
+    enableFeedback(enableFeedback)
 {
     // Create the shaders
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
@@ -85,38 +93,18 @@ ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, bool enabl
     programID = ProgramID;
 }
 
-GLuint ShaderBaseOpenGL::LoadShaders(const char * vertex_file_path, const char * fragment_file_path, bool enableFeedback)
+void ShaderBaseOpenGL::CompileShaderToProgramID(bool enableFeedback)
 {
     // Create the shaders
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
     GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-    // Read the Vertex Shader code from the file
-    std::string VertexShaderCode;
-    std::ifstream VertexShaderStream(vertex_file_path, std::ios::in);
-    if (VertexShaderStream.is_open()){
-        std::stringstream sstr;
-        sstr << VertexShaderStream.rdbuf();
-        VertexShaderCode = sstr.str();
-        VertexShaderStream.close();
-    }
-
-    // Read the Fragment Shader code from the file
-    std::string FragmentShaderCode;
-    std::ifstream FragmentShaderStream(fragment_file_path, std::ios::in);
-    if (FragmentShaderStream.is_open()) {
-        std::stringstream sstr;
-        sstr << FragmentShaderStream.rdbuf();
-        FragmentShaderCode = sstr.str();
-        FragmentShaderStream.close();
-    }
-
     GLint Result = GL_FALSE;
     int InfoLogLength;
 
     // Compile Vertex Shader
-    Logging::Message("[OpenGL] Compiling vertex shader: %s", vertex_file_path);
-    char const * VertexSourcePointer = VertexShaderCode.c_str();
+    Logging::Message("[OpenGL] Compiling vertex shader: %s", vertexFilename.c_str());
+    char const * VertexSourcePointer = sourceVS.c_str();
     glShaderSource(VertexShaderID, 1, &VertexSourcePointer , nullptr);
     glCompileShader(VertexShaderID);
 
@@ -130,8 +118,8 @@ GLuint ShaderBaseOpenGL::LoadShaders(const char * vertex_file_path, const char *
     }
 
     // Compile Fragment Shader
-    Logging::Message("[OpenGL] Compiling fragment shader: %s", fragment_file_path);
-    char const * FragmentSourcePointer = FragmentShaderCode.c_str();
+    Logging::Message("[OpenGL] Compiling fragment shader: %s", fragmentFilename.c_str());
+    char const * FragmentSourcePointer = sourceFS.c_str();
     glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , nullptr);
     glCompileShader(FragmentShaderID);
 
@@ -172,7 +160,7 @@ GLuint ShaderBaseOpenGL::LoadShaders(const char * vertex_file_path, const char *
     glDeleteShader(VertexShaderID);
     glDeleteShader(FragmentShaderID);
 
-    return ProgramID;
+    this->programID = ProgramID;
 }
 
 GLuint ShaderBaseOpenGL::getProgramID() const
@@ -383,3 +371,30 @@ void ShaderBaseOpenGL::setTexture(const std::string &name, GLuint textureID, int
     glUniform1i(glGetUniformLocation(programID, name.c_str()), index);
 }
 
+void ShaderBaseOpenGL::ReadShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename)
+{
+    if (!Tools::FileExists(vertexFilename.c_str()) || !Tools::FileExists(fragmentFilename.c_str())) {
+        Logging::Error("[ShaderBaseOpenGL] Cannot open shader files (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
+        return;
+    }
+
+    size_t file_size_vs, file_size_fs;
+
+    char* vsCode = Tools::ReadFile(vertexFilename, file_size_vs);
+    char* fsCode = Tools::ReadFile(fragmentFilename, file_size_fs);
+
+    if (!vsCode || !fsCode) {
+        Logging::Error("[ShaderBaseOpenGL] Failed to read shader files");
+        if (vsCode) free(vsCode);
+        if (fsCode) free(fsCode);
+        return;
+    }
+
+    sourceVS = std::string(vsCode);
+    sourceFS = std::string(fsCode);
+
+    Logging::Message("[ShaderBaseOpenGL] Shaders read: VS=%zu bytes, FS=%zu bytes", file_size_vs, file_size_fs);
+
+    free(vsCode);
+    free(fsCode);
+}

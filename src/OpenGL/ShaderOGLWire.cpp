@@ -13,6 +13,16 @@ ShaderOGLWire::ShaderOGLWire()
         false
     )
 {
+}
+
+void ShaderOGLWire::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    LoadUniforms();
+}
+
+void ShaderOGLWire::LoadUniforms()
+{
     colorUniform = glGetUniformLocation(programID, "color");
 }
 
@@ -66,5 +76,5 @@ void ShaderOGLWire::render(
     glDisableVertexAttribArray(2);
 }
 
-void ShaderOGLWire::destroy() {
+void ShaderOGLWire::Destroy() {
 }

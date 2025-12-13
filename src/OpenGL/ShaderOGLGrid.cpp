@@ -15,7 +15,18 @@ ShaderOGLGrid::ShaderOGLGrid()
     ),
     color(Color::gray())
 {
-    setupQuadUniforms(programID);
+}
+
+void ShaderOGLGrid::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    LoadUniforms();
+    CreateQuadVBO();
+    SetupQuadUniforms(programID);
+}
+
+void ShaderOGLGrid::LoadUniforms()
+{
 
     gridSizeUniform = glGetUniformLocation(programID, "gridSize");
     gridOpacityUniform = glGetUniformLocation(programID, "gridOpacity");
@@ -43,11 +54,11 @@ void ShaderOGLGrid::render(GLuint fbo)
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 
-    drawQuad();
+    DrawQuad();
 
     glDisable(GL_BLEND);
 }
 
-void ShaderOGLGrid::destroy()
+void ShaderOGLGrid::Destroy()
 {
 }

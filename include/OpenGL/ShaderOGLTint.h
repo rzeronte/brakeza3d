@@ -10,15 +10,20 @@
 #include "../../include/OpenGL/ShaderBaseOpenGLQuad.h"
 #include "../Render/Color.h"
 
-class ShaderOGLTint : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad {
-    GLuint colorUniform;
-    GLuint alphaUniform;
+class ShaderOGLTint : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad
+{
+    GLuint colorUniform = 0;
+    GLuint alphaUniform = 0;
 
 public:
     ShaderOGLTint();
+    void LoadUniforms() override;
+
+    void PrepareMainThread() override;
+
     void render(Color c, float alpha, GLuint fbo);
 
-    void destroy() override;
+    void Destroy() override;
 };
 
 

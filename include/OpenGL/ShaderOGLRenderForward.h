@@ -50,6 +50,9 @@ class ShaderOGLRenderForward: public ShaderBaseOpenGL
 
 public:
     ShaderOGLRenderForward();
+    void LoadUniforms() override;
+
+    void PrepareMainThread() override;
 
     void render(
         Object3D *o,
@@ -64,7 +67,7 @@ public:
     ) const;
 
     int getNumPointLights() const;
-    void destroy() override;
+    void Destroy() override;
     void CreateUBOFromLights();
     void renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo) const;
     void FillUBOLights();
@@ -77,7 +80,7 @@ public:
     bool HasPointLightsChanged() const;
     void setLastSpotLightsSize(int v);
     void setLastPointLightsSize(int v);
-    void initializeLightBuffers();
+    void InitLightBuffers();
     DirLightOpenGL &getDirectionalLight();
     [[nodiscard]] int getNumSpotLights() const;
     [[nodiscard]] std::vector<LightSpot *> &getShadowMappingSpotLights();

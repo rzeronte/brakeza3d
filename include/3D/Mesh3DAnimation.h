@@ -123,6 +123,7 @@ public:
     [[nodiscard]] bool isAnimationEnds() const;
     [[nodiscard]] float getCurrentAnimationMaxTime() const;
     [[nodiscard]] const std::vector<BonesMappingColliders> *getBoneMappingColliders() const;
+
     static Mesh3DAnimation* create(const Vertex3D &position, const std::string& animationFile);
     static void CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
     static void CalcInterpolatedScaling(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);

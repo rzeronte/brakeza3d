@@ -7,8 +7,9 @@
 
 #include <GL/glew.h>
 
-class ShaderBaseOpenGLQuad {
-    GLuint VBO;
+class ShaderBaseOpenGLQuad
+{
+    GLuint VBO  = 0;
 
     glm::mat4 modelMatrix;
     glm::mat4 projectionMatrix;
@@ -16,14 +17,16 @@ class ShaderBaseOpenGLQuad {
 protected:
     GLuint modelMatrixUniform;
     GLuint projectionMatrixUniform;
-    GLuint quadVAO;
+    GLuint quadVAO = 0;
 public:
-    ShaderBaseOpenGLQuad();
 
-    void setupQuadUniforms(GLuint programId);
-    void resetQuadMatrix();
-    void loadQuadMatrixUniforms();
-    void drawQuad() const;
+    ShaderBaseOpenGLQuad();
+    void CreateQuadVBO();
+
+    void SetupQuadUniforms(GLuint programId);
+    void ResetQuadMatrix();
+    void LoadQuadMatrixUniforms();
+    void DrawQuad() const;
 };
 
 

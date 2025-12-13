@@ -8,6 +8,7 @@
 #include "../../include/3D/Mesh3DAnimation.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/ToolsJSON.h"
+#include "../../include/Pools/JobLoadMesh3DAnimation.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Serializers/Mesh3DSerializer.h"
 
@@ -56,17 +57,43 @@ cJSON* Mesh3DAnimationSerializer::JsonByObject(Object3D *o)
 
 void Mesh3DAnimationSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
-    Logging::Message("[Mesh3DAnimationSerializer] ApplyJsonToObject %d", (int) o->getTypeObject());
+    Logging::Message("[Mesh3DAnimationSerializer] ApplyJsonToObject %d", o->getTypeObject());
 
     auto mesh = dynamic_cast<Mesh3DAnimation*>(o);
 
     Mesh3DSerializer().ApplyJsonToObject(json, o);
 
     // speed
-    auto speed = cJSON_GetObjectItemCaseSensitive(json, "animationSpeed")->valuedouble;
-    mesh->setAnimationSpeed(static_cast<float>(speed));
+    mesh->setAnimationSpeed((float) cJSON_GetObjectItemCaseSensitive(json, "animationSpeed")->valuedouble);
     mesh->setIndexCurrentAnimation(cJSON_GetObjectItemCaseSensitive(json, "indexCurrentAnimation")->valueint);
 
+    ApplyBonesColliders(mesh, json);
+}
+
+Object3D* Mesh3DAnimationSerializer::ObjectByJson(cJSON *json)
+{
+    Logging::Message("[Mesh3DAnimationSerializer] ObjectByJson");
+
+    auto o = new Mesh3DAnimation();
+    ApplyJsonToObject(json, o);
+
+    auto job = std::make_shared<JobLoadMesh3DAnimation>(o, json);
+    Brakeza::get()->getPoolManager().Pool().enqueueWithMainThreadCallback(job);
+
+    return o;
+}
+
+void Mesh3DAnimationSerializer::LoadFileIntoScene(const std::string& file)
+{
+    auto *o = new Mesh3DAnimation();
+    o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
+    o->AssimpLoadAnimation(file);
+
+    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Mesh3D"));
+}
+
+void Mesh3DAnimationSerializer::ApplyBonesColliders(Mesh3DAnimation* mesh, cJSON *json)
+{
     cJSON *currentMapCollider;
     cJSON_ArrayForEach(currentMapCollider, cJSON_GetObjectItemCaseSensitive(json, "bonesColliders")) {
         std::string nameMapping = cJSON_GetObjectItemCaseSensitive(currentMapCollider, "nameMapping")->valuestring;
@@ -85,24 +112,14 @@ void Mesh3DAnimationSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
             mesh->SetMappingBoneColliderInfo(nameMapping, boneId, enabled, BoneCollisionShape::BONE_CAPSULE);
         }
     }
+    }
+
+void Mesh3DAnimationSerializer::ApplyGeometryAnimationFromFile(Mesh3DAnimation *m, cJSON *json)
+{
+    m->AssimpLoadAnimation(ExtractFileModelPath(json));
 }
 
-Object3D* Mesh3DAnimationSerializer::ObjectByJson(cJSON *json)
+const char* Mesh3DAnimationSerializer::ExtractFileModelPath(cJSON *json)
 {
-    Logging::Message("[Mesh3DAnimationSerializer] ObjectByJson");
-
-    auto o = new Mesh3DAnimation();
-    ApplyJsonToObject(json, o);
-    o->AssimpLoadAnimation(cJSON_GetObjectItemCaseSensitive(json, "model")->valuestring);
-
-    return o;
-}
-
-void Mesh3DAnimationSerializer::LoadFileIntoScene(const std::string& file)
-{
-    auto *o = new Mesh3DAnimation();
-    o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
-    o->AssimpLoadAnimation(file);
-
-    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Mesh3D"));
+    return cJSON_GetObjectItemCaseSensitive(json, "model")->valuestring;
 }

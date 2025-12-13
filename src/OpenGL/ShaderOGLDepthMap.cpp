@@ -14,12 +14,22 @@ ShaderOGLDepthMap::ShaderOGLDepthMap()
     farPlane(Config::get()->FRUSTUM_FARPLANE_DISTANCE),
     nearPlane(0.1f)
 {
-    setupQuadUniforms(programID);
+}
 
+void ShaderOGLDepthMap::LoadUniforms()
+{
     textureUniform = glGetUniformLocation(programID, "depthTexture");
     intensityUniform = glGetUniformLocation(programID, "intensity");
     nearUniform = glGetUniformLocation(programID, "near");
     farUniform = glGetUniformLocation(programID, "far");
+}
+
+void ShaderOGLDepthMap::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    LoadUniforms();
+    CreateQuadVBO();
+    SetupQuadUniforms(programID);
 }
 
 void ShaderOGLDepthMap::render(GLuint textureID, GLuint fbo)
@@ -31,7 +41,7 @@ void ShaderOGLDepthMap::render(GLuint textureID, GLuint fbo)
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
 
-    loadQuadMatrixUniforms();
+    LoadQuadMatrixUniforms();
 
     glUniform1f(nearUniform, nearPlane);
     glUniform1f(farUniform, farPlane);
@@ -39,14 +49,14 @@ void ShaderOGLDepthMap::render(GLuint textureID, GLuint fbo)
 
     setTextureUniform(textureUniform, textureID, 0);
 
-    drawQuad();
+    DrawQuad();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     render->ChangeOpenGLFramebuffer(0);
 }
 
-void ShaderOGLDepthMap::destroy()
+void ShaderOGLDepthMap::Destroy()
 {
-    resetQuadMatrix();
+    ResetQuadMatrix();
 }

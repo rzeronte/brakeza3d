@@ -35,6 +35,9 @@ class ShaderOGLLightPass : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad 
 public:
     ShaderOGLLightPass();
 
+    void LoadUniforms() override;
+    void PrepareMainThread() override;
+
     void render(
         GLuint gPosition,
         GLuint gNormal,
@@ -48,7 +51,7 @@ public:
         GLuint fbo
     );
 
-    void destroy() override;
+    void Destroy() override;
 
     void fillSpotLightsMatricesUBO();
 };

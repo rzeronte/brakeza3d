@@ -11,14 +11,16 @@
 
 class ShaderOGLGrid : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad
 {
-    GLuint gridSizeUniform;
-    GLuint gridOpacityUniform;
-    GLuint gridColorUniform;
+    GLuint gridSizeUniform = 0;
+    GLuint gridOpacityUniform = 0;
+    GLuint gridColorUniform = 0;
 
 public:
     ShaderOGLGrid();
+    void PrepareMainThread() override;
+    void LoadUniforms() override;
     void render(GLuint fbo);
-    void destroy() override;
+    void Destroy() override;
     Color color;
     float gridSize = 0.5f;
     float opacity = 0.75f;

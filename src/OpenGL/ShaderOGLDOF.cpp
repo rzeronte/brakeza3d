@@ -11,17 +11,14 @@ ShaderOGLDOF::ShaderOGLDOF()
         Config::get()->SHADERS_FOLDER + "DeepOfField.fs",
         false
     ),
-    resultFramebuffer(0),
-    textureResult(0),
-    focalRange(0),
-    focalDistance(0),
     blurRadius(4),
     intensity(1.0f),
     farPlane(100.0)
 {
-    setupQuadUniforms(programID);
-    createFramebuffer();
+}
 
+void ShaderOGLDOF::LoadUniforms()
+{
     focalDistanceUniform = glGetUniformLocation(programID, "focalDistance");
     focalRangeUniform = glGetUniformLocation(programID, "focalRange");
     blurRadiusUniform = glGetUniformLocation(programID, "blurRadius");
@@ -35,6 +32,15 @@ ShaderOGLDOF::ShaderOGLDOF()
     heightUniform = glGetUniformLocation(programID, "screenHeight");
 }
 
+void ShaderOGLDOF::PrepareMainThread()
+{
+    ShaderBaseOpenGL::PrepareMainThread();
+    LoadUniforms();
+    CreateQuadVBO();
+    SetupQuadUniforms(programID);
+    CreateFramebuffer();
+}
+
 void ShaderOGLDOF::render(GLuint sceneTexture, GLuint depthTexture)
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(resultFramebuffer);
@@ -45,7 +51,7 @@ void ShaderOGLDOF::render(GLuint sceneTexture, GLuint depthTexture)
     setTextureUniform(sceneTextureUniform, sceneTexture, 0);
     setTextureUniform(depthTextureUniform, depthTexture, 1);
 
-    loadQuadMatrixUniforms();
+    LoadQuadMatrixUniforms();
 
     auto window = Components::get()->Window();
 
@@ -57,7 +63,7 @@ void ShaderOGLDOF::render(GLuint sceneTexture, GLuint depthTexture)
     glUniform1i(widthUniform, window->getWidth());
     glUniform1i(heightUniform, window->getHeight());
 
-    drawQuad();
+    DrawQuad();
 }
 
 GLuint ShaderOGLDOF::getTextureResult() const
@@ -65,7 +71,7 @@ GLuint ShaderOGLDOF::getTextureResult() const
     return textureResult;
 }
 
-void ShaderOGLDOF::createFramebuffer()
+void ShaderOGLDOF::CreateFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
     Components::get()->Render()->ChangeOpenGLFramebuffer(resultFramebuffer);
@@ -79,12 +85,12 @@ void ShaderOGLDOF::createFramebuffer()
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureResult, 0);
 }
 
-void ShaderOGLDOF::destroy()
+void ShaderOGLDOF::Destroy()
 {
     glDeleteFramebuffers(1, &resultFramebuffer);
     glDeleteTextures(1, &textureResult);
 
-    createFramebuffer();
+    CreateFramebuffer();
 
-    resetQuadMatrix();
+    ResetQuadMatrix();
 }

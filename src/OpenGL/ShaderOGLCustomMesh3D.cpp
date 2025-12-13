@@ -6,46 +6,43 @@
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 
-ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(
-    Mesh3D* mesh,
-    const std::string &label,
-    const std::string &vertexFilename,
-    const std::string &fragmentFilename
-)
+ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &vsFile, const std::string &fsFile)
 :
-    ShaderOGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomType::SHADER_OBJECT),
+    ShaderOGLCustom(label, vsFile, fsFile, SHADER_OBJECT),
     mesh(mesh)
 {
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
-
-    matrixProjectionUniform = glGetUniformLocation(programID, "projection");
-    matrixViewUniform = glGetUniformLocation(programID, "view");
-    matrixModelUniform = glGetUniformLocation(programID, "model");
-
-    alphaUniform = glGetUniformLocation(programID, "alpha");
 }
 
-ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(
-    Mesh3D* mesh,
-    const std::string &label,
-    const std::string &vertexFilename,
-    const std::string &fragmentFilename,
-    cJSON* types
-)
+ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &vsFile, const std::string &fsFile, cJSON* types)
 :
-    ShaderOGLCustom(label, vertexFilename, fragmentFilename, ShaderCustomType::SHADER_OBJECT, types),
-    VertexArrayID(0),
+    ShaderOGLCustom(label, vsFile, fsFile, SHADER_OBJECT, types),
     mesh(mesh)
 {
-    glGenVertexArrays(1, &VertexArrayID);
-    glBindVertexArray(VertexArrayID);
+}
+
+void ShaderOGLCustomMesh3D::LoadUniforms()
+{
+    Logging::Message("[ShaderOGLCustomMesh3D] LoadUniforms START, programID=%d", programID);
 
     matrixProjectionUniform = glGetUniformLocation(programID, "projection");
     matrixViewUniform = glGetUniformLocation(programID, "view");
     matrixModelUniform = glGetUniformLocation(programID, "model");
-
     alphaUniform = glGetUniformLocation(programID, "alpha");
+
+    Logging::Message("[ShaderOGLCustomMesh3D] Uniforms: proj=%d, view=%d, model=%d, alpha=%d",
+                    matrixProjectionUniform, matrixViewUniform, matrixModelUniform, alphaUniform);
+
+    if (programID == 0) {
+        Logging::Error("[ShaderOGLCustomMesh3D] ERROR: programID is 0!");
+    }
+}
+
+void ShaderOGLCustomMesh3D::PrepareMainThread()
+{
+    ShaderOGLCustom::PrepareMainThread();
+    glGenVertexArrays(1, &VertexArrayID);
+    glBindVertexArray(VertexArrayID);
+    LoadUniforms();
 }
 
 void ShaderOGLCustomMesh3D::render(GLuint fbo)

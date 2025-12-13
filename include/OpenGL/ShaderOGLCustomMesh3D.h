@@ -9,31 +9,22 @@
 #include "ShaderOGLCustom.h"
 #include "../3D/Mesh3D.h"
 
-class ShaderOGLCustomMesh3D : public ShaderOGLCustom {
-    GLuint VertexArrayID;
+class ShaderOGLCustomMesh3D : public ShaderOGLCustom
+{
+    GLuint VertexArrayID = 0;
 
-    GLuint matrixProjectionUniform;
-    GLuint matrixViewUniform;
-    GLuint matrixModelUniform;
-    GLuint alphaUniform;
+    GLuint matrixProjectionUniform = 0;
+    GLuint matrixViewUniform = 0;
+    GLuint matrixModelUniform = 0;
+    GLuint alphaUniform = 0;
 
-    Mesh3D* mesh;
+    Mesh3D* mesh = nullptr;
 public:
-    ShaderOGLCustomMesh3D(
-        Mesh3D* mesh,
-        const std::string &label,
-        const std::string &vertexFilename,
-        const std::string &fragmentFilename
-    );
+    ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &vsFile, const std::string &fsFile);
+    ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &vsFile, const std::string &fsFile, cJSON* types );
 
-    ShaderOGLCustomMesh3D(
-        Mesh3D* mesh,
-        const std::string &label,
-        const std::string &vertexFilename,
-        const std::string &fragmentFilename,
-        cJSON* types
-    );
-
+    void LoadUniforms() override;
+    void PrepareMainThread() override;
     void render(GLuint fbo) override;
 
     void renderMesh(

@@ -7,26 +7,23 @@
 
 
 #include "ShaderBaseOpenGL.h"
-#include "../3D/Mesh3DAnimation.h"
+#include "../3D/Mesh3D.h"
 
 class ShaderOGLBonesTransforms : public ShaderBaseOpenGL
 {
-    GLuint VertexArrayID;
-
-    GLuint gBonesUniform;
-
+    GLuint VertexArrayID = 0;
+    GLuint gBonesUniform = 0;
 public:
     ShaderOGLBonesTransforms();
 
-    void render(
-        Mesh3DData &meshData,
-        std::vector<glm::mat4> transformations,
-        GLuint fbo
-    );
+    void PrepareBackground() override;
+    void PrepareMainThread() override;
 
+    void LoadUniforms() override;
+    void render(Mesh3DData &meshData, std::vector<glm::mat4> transformations,GLuint fbo);
     void setVAOAttributes(GLuint vertexbuffer, GLuint vertexBoneDataBuffer);
 
-    void destroy() override;
+    void Destroy() override;
 };
 
 
