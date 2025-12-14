@@ -18,6 +18,8 @@ class Image3D : public Object3D
     bool towardsCamera = false;
     bool backFaceCulling = true;
 
+    std::string source;
+
     Vertex3D Q1;
     Vertex3D Q2;
     Vertex3D Q3;
@@ -30,31 +32,30 @@ class Image3D : public Object3D
     GLuint vertexBuffer = 0;
     GLuint normalBuffer = 0;
     GLuint uvBuffer = 0;
-    Image *image;
+    Image *image = nullptr;
 public:
+    Image3D(const Vertex3D &position, float width, float height, std::string filePath);
+
     Image3D(const Vertex3D &position, float width, float height, Image* image);
     ~Image3D() override;
 
-    ObjectType getTypeObject() const override;
-    GUIType::Sheet getIcon() override;
     void onUpdate() override;
     void DrawPropertiesGUI() override;
-    void setSize(float width, float height);
+    void ResetBuffersToSize(float width, float height);
     void setWidth(float value);
     void setHeight(float value);
-    void fillBuffers();
+    void FillBuffers();
     void setImage(Image *value);
-
-    void shadowMappingPass();
-
+    void ShadowMappingPass();
     void LookAtBillboard();
 
-    [[nodiscard]] GLuint getVertexBuffer() const;
-    [[nodiscard]] GLuint getNormalBuffer() const;
-    [[nodiscard]] GLuint getUVBuffer() const;
-    [[nodiscard]] std::vector<glm::vec4> getVertices() const;
-    [[nodiscard]] Image* getImage() const;
-    static Image3D* create(const Vertex3D &p, float w, float h, const std::string &file);
+    ObjectType getTypeObject() const override                   { return ObjectType::Image3D;}
+    GUIType::Sheet getIcon() override                           { return IconObject::IMAGE_3D;}
+    [[nodiscard]] GLuint getVertexBuffer() const                { return vertexBuffer; }
+    [[nodiscard]] GLuint getNormalBuffer() const                { return normalBuffer; }
+    [[nodiscard]] GLuint getUVBuffer() const                    { return uvBuffer; }
+    [[nodiscard]] std::vector<glm::vec4> getVertices() const    { return vertices; }
+    [[nodiscard]] Image* getImage() const                       { return image; }
 
     friend class Image3DSerializer;
     friend class Image3DGUI;

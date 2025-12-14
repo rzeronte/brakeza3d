@@ -37,12 +37,14 @@ public:
                 }
 
                 if (ImGui::Button(std::string("Load directional animation").c_str())) {
-                    o->addAnimationDirectional2D(
+                    o->CreateAnimationDirectional2D(
+                        new TextureAnimatedDirectional(
                         o->currentSpriteFileVariableToCreateAnimation,
                         o->currentFramesVariableToCreateAnimation,
                         24,
-                        false,
                         -1
+                        ),
+                        false
                     );
                     o->setAnimation(o->animations.size()-1);
                     o->currentSpriteFileVariableToCreateAnimation = "";
@@ -60,7 +62,7 @@ public:
             }
 
             if (!o->animations.empty()) {
-                ImGui::Combo("Animation", &o->currentAnimation, items, IM_ARRAYSIZE(items));
+                ImGui::Combo("Animation", &o->currentIndexAnimation, items, IM_ARRAYSIZE(items));
             } else {
                 ImGui::Text("No animations found!");
             }

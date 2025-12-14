@@ -25,29 +25,22 @@ public:
     Image3DAnimation(const Vertex3D &position, float w, float h);
     ~Image3DAnimation() override;
 
-    ObjectType getTypeObject() const override;
-    GUIType::Sheet getIcon() override;
     void onUpdate() override;
     void setAutoRemoveAfterAnimation(bool autoRemoveAfterAnimation);
     void LinkTextureIntoAnotherImage3DAnimation(const Image3DAnimation *);
-    void addAnimation(const std::string& sprite, int w, int h, int numFrames, int fps);
+    void CreateAnimation(const std::string& sprite, int w, int h, int numFrames, int fps);
     void setAnimation(int);
-    void updateTexture();
-    void updateTrianglesCoordinatesAndTexture();
+    void UpdateTexture();
+    void UpdateTrianglesCoordinatesAndTexture();
     void DrawPropertiesGUI() override;
-    void updateBillboardSize() const;
-    [[nodiscard]] TextureAnimated *getCurrentTextureAnimation() const;
-    [[nodiscard]] bool isAutoRemoveAfterAnimation() const;
-    static Image3DAnimation* create(
-        const Vertex3D &position,
-        float width,
-        float height,
-        const std::string &imageFile,
-        int spriteWidth,
-        int spriteHeight,
-        int frames,
-        int fps
-    );
+    void UpdateBillboardSize() const;
+    void LoadAnimationFiles() const;
+
+    ObjectType getTypeObject() const override                               { return ObjectType::Image3DAnimation; }
+    GUIType::Sheet getIcon() override                                       { return IconObject::IMAGE_3D_ANIMATION; }
+    [[nodiscard]] TextureAnimated *getCurrentTextureAnimation() const       { return this->animations[currentAnimationIndex]; }
+    [[nodiscard]] bool isAutoRemoveAfterAnimation() const                   { return autoRemoveAfterAnimation; }
+    [[nodiscard]] std::vector<TextureAnimated *> getAnimations() const      { return animations; }
 
     friend class Image3DAnimationSerializer;
     friend class Image3DAnimationGUI;

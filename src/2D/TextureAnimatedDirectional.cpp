@@ -1,12 +1,14 @@
 
-#include "../../include/Render/TextureAnimatedDirectional.h"
-
 #include <utility>
 #include "../../include/Config.h"
+#include "../../include/Render/TextureAnimatedDirectional.h"
 
-void TextureAnimatedDirectional::LoadAnimationFile(std::string file, int newNumFrames, int newFps, int newMaxTimes)
+#include "../../include/Misc/Logging.h"
+#include "../../include/Misc/Tools.h"
+
+TextureAnimatedDirectional::TextureAnimatedDirectional(std::string file, int newNumFrames, int newFps, int newMaxTimes)
 {
-    this->base_file = std::move(file);
+    this->baseFolder = std::move(file);
     this->numFrames = newNumFrames;
     this->fps = newFps;
     this->maxTimes = newMaxTimes;
@@ -14,9 +16,29 @@ void TextureAnimatedDirectional::LoadAnimationFile(std::string file, int newNumF
 
 void TextureAnimatedDirectional::LoadImages()
 {
+    if (baseFolder.empty()) {
+        Logging::Error("[TextureAnimatedDirectional] Texture directional animated is empty!");
+        return;
+    }
+
+    bool ready = true;
     for (int d = 1; d <= 8; d++) {
-        for (int i = 0; i < this->getNumFrames(); i++) {
-            std::string file = this->base_file + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
+        for (int i = 0; i < getNumFrames(); i++) {
+            std::string file = baseFolder + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
+            if (Tools::FileExists(file.c_str())) {
+                ready = false;
+            }
+        }
+    }
+
+    if (!ready) {
+        Logging::Error("[TextureAnimatedDirectional] Texture directional animated is empty!");
+        return;
+    }
+
+    for (int d = 1; d <= 8; d++) {
+        for (int i = 0; i < getNumFrames(); i++) {
+            std::string file = baseFolder + "/" + std::to_string(d) + "_" + std::to_string(i) + ".png";
             this->frames[d][i] = new Image(file);
         }
     }
@@ -27,7 +49,7 @@ void TextureAnimatedDirectional::LoadImages()
 void TextureAnimatedDirectional::LoadImagesForZeroDirection()
 {
     for (int i = 0; i < this->getNumFrames(); i++) {
-        std::string file = this->base_file + "/" + std::to_string(0) + "_" + std::to_string(i) + ".png";
+        std::string file = this->baseFolder + "/" + std::to_string(0) + "_" + std::to_string(i) + ".png";
         this->frames[0][i] = new Image(file);
     }
 
@@ -85,7 +107,7 @@ int TextureAnimatedDirectional::getFps() const
 
 std::string TextureAnimatedDirectional::getBaseFile() const
 {
-    return base_file;
+    return baseFolder;
 }
 
 bool TextureAnimatedDirectional::hasZeroDirection() const

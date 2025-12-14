@@ -34,7 +34,6 @@ Image2DAnimation::Image2DAnimation(int x, int y, float ttl, TextureAnimated *ani
 
 void Image2DAnimation::onUpdate()
 {
-    return;
     animation->update();
 
     Object3D::onUpdate();
@@ -96,20 +95,6 @@ void Image2DAnimation::DrawPropertiesGUI()
 {
     Object3D::DrawPropertiesGUI();
     Image2DAnimationGUI::DrawPropertiesGUI(this);
-}
-
-Image2DAnimation *Image2DAnimation::create(int x, int y, const std::string &sheet, int w, int h, int frames, int fps)
-{
-    auto *o = new Image2DAnimation(
-        x,
-        y,
-        false,
-        new TextureAnimated(sheet,w,h, frames,fps)
-    );
-
-    o->setBelongToScene(true);
-
-    return o;
 }
 
 int Image2DAnimation::getX() const

@@ -23,11 +23,6 @@ LightPoint::LightPoint(
 {
 }
 
-LightPoint *LightPoint::create(Vertex3D position)
-{
-    return nullptr;
-}
-
 void LightPoint::setColor(const Color &c)
 {
     diffuse = glm::vec4(c.r, c.g, c.b, 1);

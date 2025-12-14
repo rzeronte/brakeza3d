@@ -8,7 +8,7 @@
 #include "../../include/3D/Mesh3DAnimation.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/ToolsJSON.h"
-#include "../../include/Pools/JobLoadMesh3DAnimation.h"
+#include "../../include/Threads/ThreadJobLoadMesh3DAnimation.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Serializers/Mesh3DSerializer.h"
 
@@ -77,19 +77,20 @@ Object3D* Mesh3DAnimationSerializer::ObjectByJson(cJSON *json)
     auto o = new Mesh3DAnimation();
     ApplyJsonToObject(json, o);
 
-    auto job = std::make_shared<JobLoadMesh3DAnimation>(o, json);
-    Brakeza::get()->getPoolManager().Pool().enqueueWithMainThreadCallback(job);
+    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadMesh3DAnimation>(o, json));
 
     return o;
 }
 
-void Mesh3DAnimationSerializer::LoadFileIntoScene(const std::string& file)
+void Mesh3DAnimationSerializer::MenuLoad(const std::string& file)
 {
     auto *o = new Mesh3DAnimation();
+    o->setSourceFile(file);
+    o->setName(Brakeza::UniqueObjectLabel("Mesh3DAnimation"));
     o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
-    o->AssimpLoadAnimation(file);
 
-    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Mesh3D"));
+    auto json = Mesh3DAnimationSerializer::JsonByObject(o);
+    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadMesh3DAnimation>(o, json));
 }
 
 void Mesh3DAnimationSerializer::ApplyBonesColliders(Mesh3DAnimation* mesh, cJSON *json)

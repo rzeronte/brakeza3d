@@ -9,6 +9,7 @@
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Serializers/Object3DSerializer.h"
+#include "../../include/Threads/ThreadJobLoadParticleEmitter.h"
 
 cJSON * ParticleEmmitterSerializer::JsonByObject(Object3D *o)
 {
@@ -105,7 +106,7 @@ void ParticleEmmitterSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     }
 }
 
-void ParticleEmmitterSerializer::LoadFileIntoScene(const std::string &file)
+void ParticleEmmitterSerializer::MenuLoad(const std::string &file)
 {
     auto *o = new ParticleEmitter(
             DEFAULT,
@@ -130,7 +131,9 @@ void ParticleEmmitterSerializer::LoadFileIntoScene(const std::string &file)
         nullptr
     );
 
+    o->setName(Brakeza::UniqueObjectLabel("ParticleEmitter"));
     o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
 
-    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("ParticleEmitter"));
+    auto json = ParticleEmmitterSerializer::JsonByObject(o);
+    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadParticleEmitter>(o, json));
 }

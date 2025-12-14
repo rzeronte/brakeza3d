@@ -15,7 +15,7 @@
 #include "../../include/GUI/AddOns/GUIAddonMenu.h"
 #include "../../include/GUI/AddOns/GUIAddonProjectSetup.h"
 #include "../../include/GUI/AddOns/GUIAddonToolbar.h"
-#include "../../include/Pools/JobLoadImage.h"
+#include "../../include/Threads/ThreadJobLoadImage.h"
 
 #define ADD_WIN(title, type, icon, visible, func) \
 windows.push_back({ title, type, icon, visible, [&] { func; }})
@@ -35,17 +35,7 @@ void GUIManager::OnStart()
 
     widgetConsole->setLua(&Components::get()->Scripting()->getLua());
 
-    //splashImage = new Image(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
-    //splashImage = Image::Create(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
-
-    //splashImage = new Image();
-    //auto job = std::make_shared<JobLoadImage>(splashImage, Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
-    //Brakeza::get()->getPoolManager().Pool().enqueueWithMainThreadCallback(job);
-
-    /*splashImage->setImage(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
-    splashImage->CreateSDLTexture();
-    splashImage->MakeAutoOGLImage();
-    splashImage->setAlreadyLoaded();*/
+    splashImage = new Image(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
 
     browserScenes   = GUI::CreateBrowserCache(Config::get()->SCENES_FOLDER, Config::get()->SCENES_EXT);
     browserProjects = GUI::CreateBrowserCache(Config::get()->PROJECTS_FOLDER, Config::get()->PROJECTS_EXT);
@@ -492,7 +482,6 @@ void GUIManager::DrawWinDepthLightsMap()
 
 void GUIManager::DrawSplashWindow()
 {
-    return;
     if (!Config::get()->ENABLE_SPLASH) return;
 
     float currentTime = Brakeza::get()->getEngineTotalTime();

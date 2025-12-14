@@ -20,7 +20,7 @@ public:
     cJSON* JsonByObject(Object3D* o) override;
     Object3D* ObjectByJson(cJSON* json) override;
     void ApplyJsonToObject(cJSON* json, Object3D* o) override;
-    void LoadFileIntoScene(const std::string& config) override;
+    void MenuLoad(const std::string& config) override;
 
     static void ApplyGeometryFromFile(Mesh3D *m, cJSON* json);
     static void ApplyCollider(Mesh3D* m, cJSON* json);

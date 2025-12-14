@@ -85,11 +85,6 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
     }
 }
 
-LightSpot *LightSpot::create(const Vertex3D &position, const Vertex3D &direction)
-{
-    return nullptr;
-}
-
 glm::mat4 LightSpot::getLightSpaceMatrix() const
 {
     float aspect = 1.0f; // Aspect ratio cuadrado para el shadow map

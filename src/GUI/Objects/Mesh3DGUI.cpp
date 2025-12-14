@@ -30,7 +30,9 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
             }
             if (ImGui::TreeNode("Textures")) {
                 for (auto &m : o->modelTextures) {
-                    ImGui::Image(m->getOGLImTexture(), ImVec2(200, 200));
+                    float fixedWidth = std::min((int) ImGui::GetContentRegionAvail().x, m->width());
+                    float height = fixedWidth * ((float) m->height() / (float) m->width());
+                    ImGui::Image(m->getOGLImTexture(), ImVec2(fixedWidth, height));
                     ImGui::NewLine();
                 }
                 ImGui::TreePop();

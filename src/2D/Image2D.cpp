@@ -6,11 +6,11 @@
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/Image2DGUI.h"
 
-Image2D::Image2D(int x, int y, Image *image)
+Image2D::Image2D(const std::string &file, int width, int height)
 :
-    x(x),
-    y(y),
-    image(image)
+    width(width),
+    height(height),
+    filepath(file)
 {
     featuresGUI.position = false;
     featuresGUI.rotation = false;
@@ -24,31 +24,24 @@ void Image2D::onUpdate()
 
     if (!image->isLoaded()) return;
 
-    const auto w = image->width();
-    const auto h = image->height();
-
-    image->DrawFlatAlpha(
-        x - w/2,
-        y - h/2,
-        alpha,
-        Components::get()->Window()->getForegroundFramebuffer()
-    );
+    image->DrawFlatAlpha(x, y, width, height, alpha, Components::get()->Window()->getForegroundFramebuffer());
 }
 
-void Image2D::updatePosition(int x, int y)
+void Image2D::setSize(int w, int h)
+{
+    this->width = w;
+    this->height = h;
+}
+
+void Image2D::setScreenPosition(int x, int y)
 {
     this->x = x;
     this->y = y;
 }
 
-ObjectType Image2D::getTypeObject() const
+void Image2D::setFilePath(const std::string &filepath)
 {
-    return ObjectType::Image2D;
-}
-
-GUIType::Sheet Image2D::getIcon()
-{
-    return IconObject::IMAGE_2D;;
+    this->filepath = filepath;
 }
 
 void Image2D::DrawPropertiesGUI()
@@ -57,7 +50,7 @@ void Image2D::DrawPropertiesGUI()
     Image2DGUI::DrawPropertiesGUI(this);
 }
 
-Image2D *Image2D::create(int x, int y, const std::string& imageFile)
+void Image2D::setImage(Image *value)
 {
-    return new Image2D(x, y, new Image(imageFile));
+    image = value;
 }

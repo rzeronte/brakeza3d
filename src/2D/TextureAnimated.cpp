@@ -19,7 +19,7 @@ TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps)
         std::string file = this->baseFilename + "_" + std::to_string(i) + ".png";
         this->frames.push_back(new Image(file));
     }
-    updateStep();
+    UpdateStep();
 }
 
 TextureAnimated::TextureAnimated(const TextureAnimated *textureAnimated)
@@ -31,7 +31,7 @@ TextureAnimated::TextureAnimated(const TextureAnimated *textureAnimated)
     paused(textureAnimated->paused)
 {
     frames = textureAnimated->frames;
-    updateStep();
+    UpdateStep();
 }
 
 TextureAnimated::TextureAnimated(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps)
@@ -43,20 +43,19 @@ TextureAnimated::TextureAnimated(const std::string& spriteSheetFile, int spriteW
     currentspriteHeight(spriteHeight)
 {
     Logging::Message("Loading sheet: %s", spriteSheetFile.c_str());
-    setup(spriteSheetFile, spriteWidth, spriteHeight, numFrames, fps);
+    spriteSheetSurface = IMG_Load(spriteSheetFile.c_str());
 }
 
-void TextureAnimated::setup(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps)
+void TextureAnimated::LoadCurrentSetup()
 {
-    deleteFrames();
+    Apply(baseFilename, currentSpriteWidth, currentspriteHeight, numberFramesToLoad, fps);
+}
+
+void TextureAnimated::Apply(const std::string& spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps)
+{
+    DeleteFrames();
 
     Logging::Message("TextureAnimated Setup: (Sprite: %s, w: %d, h: %d, nf: %d, fps: %d)", spriteSheetFile.c_str(), spriteWidth, spriteHeight, numFrames, fps);
-
-    SDL_Surface* spriteSheetSurface = IMG_Load(spriteSheetFile.c_str());
-    if (!spriteSheetSurface) {
-        Logging::Message("Failed to load sprite sheet: %s", SDL_GetError());
-        return;
-    }
 
     currentSpriteWidth = spriteWidth;
     currentspriteHeight = spriteHeight;
@@ -68,7 +67,7 @@ void TextureAnimated::setup(const std::string& spriteSheetFile, int spriteWidth,
 
     for (int row = 0; row < numRows; ++row) {
         for (int column = 0; column < numColumns; ++column) {
-            if (static_cast<int>(frames.size()) >= numFrames) continue;
+            if ((int) frames.size() >= numFrames) continue;
 
             SDL_Rect spriteRect = { column * spriteWidth, row * spriteHeight, spriteWidth, spriteHeight };
 
@@ -87,12 +86,10 @@ void TextureAnimated::setup(const std::string& spriteSheetFile, int spriteWidth,
         }
     }
 
-    SDL_FreeSurface(spriteSheetSurface);
-
     numberFramesToLoad = (int) frames.size();
     setFps(fps);
 
-    updateStep();
+    UpdateStep();
 }
 
 int TextureAnimated::getNumFrames() const
@@ -151,7 +148,7 @@ void TextureAnimated::setFps(int value)
     fps = value;
 }
 
-void TextureAnimated::updateStep()
+void TextureAnimated::UpdateStep()
 {
     this->counter.setStep(1.0f / (float) getFps());
     this->counter.setEnabled(true);
@@ -167,7 +164,7 @@ void TextureAnimated::update()
     }
 }
 
-void TextureAnimated::deleteFrames()
+void TextureAnimated::DeleteFrames()
 {
     for (auto f: frames){
         delete f;

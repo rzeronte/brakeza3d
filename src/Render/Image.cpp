@@ -1,30 +1,18 @@
 #include <SDL2/SDL_image.h>
 
 #include "../../include/Render/Image.h"
-
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Misc/ToolsMaths.h"
 #include "../../include/Components/Components.h"
-#include "../../include/Pools/JobLoadImage.h"
+#include "../../include/Threads/ThreadJobLoadImage.h"
 #include "../../include/Render/Profiler.h"
-
 
 Image::Image(std::string filename)
 {
-    auto job = std::make_shared<JobLoadImage>(this, filename);
-    Brakeza::get()->getPoolManager().Pool().enqueueWithMainThreadCallback(job);
-
-    //setImage(filename);
-}
-
-Image *Image::Create(std::string filename)
-{
-    auto i =  new Image();
-    auto job = std::make_shared<JobLoadImage>(i, filename);
-    Brakeza::get()->getPoolManager().Pool().enqueueWithMainThreadCallback(job);
-    return i;
+    auto job = std::make_shared<ThreadJobLoadImage>(this, filename);
+    Brakeza::get()->PoolImages().enqueueWithMainThreadCallback(job);
 }
 
 Image::Image(SDL_Surface *surface, SDL_Texture *texture)
@@ -48,41 +36,61 @@ void Image::LoadSDLSurface()
     surface = IMG_Load(fileName.c_str());
 }
 
-void Image::setImage(std::string filename)
+void Image::setImage(const std::string &filename)
 {
-    /*if (!Tools::FileExists(filename.c_str())) {
-        Logging::Message("[Image] Error loading file '%s'", filename.c_str());
-        exit(-1);
-    }*/
+    if (!Tools::FileExists(filename.c_str())) {
+        Logging::Error("[Image] Error loading file '%s'", filename.c_str());
+        return;
+    }
 
     fileName = filename;
 
-    if (texture != nullptr) {
-        //Profiler::get()->RemoveImage(this);
-        //SDL_DestroyTexture(texture);
-        //SDL_FreeSurface(surface);
-    }
-
     LoadSDLSurface();
 
-    /*if (textureId == 0 ) {
-        glDeleteTextures(1, &textureId);
-        textureId = MakeOGLImage(surface);
-    }*/
-
-    //Logging::Message("[Image] Loading '%s'", filename.c_str());
-    //Profiler::get()->AddImage(this);
-}
-
-void Image::setAlreadyLoaded()
-{
-    loaded = true;
+    Profiler::get()->AddImage(this);
 }
 
 void Image::DrawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint fbo)
 {
     setAlpha(alpha);
     DrawFlat(pos_x, pos_y, fbo);
+}
+
+void Image::DrawFlatAlpha(int x, int y, int w, int h, float alpha, GLuint fbo)
+{
+    setAlpha(alpha);
+    DrawFlat(x, y, w, h, fbo);
+}
+
+void Image::DrawFlat(int x, int y, int w, int h, GLuint fbo) const
+{
+    if (!loaded) return;
+
+    auto window = Components::get()->Window();
+
+    int windowWidth = window->getWidth();
+    int windowHeight = window->getHeight();
+
+    SDL_Rect srcRect;
+    srcRect.x = 0;
+    srcRect.y = 0;
+    srcRect.w = surface->w;
+    srcRect.h = surface->h;
+
+    SDL_Rect dstRect;
+    dstRect.x = (x * windowWidth) / Config::get()->screenWidth;
+    dstRect.y = (y * windowHeight) / Config::get()->screenHeight;
+    dstRect.w = (w * windowWidth) / Config::get()->screenWidth;
+    dstRect.h = (h * windowHeight) / Config::get()->screenHeight;
+
+    Components::get()->Render()->getShaders()->shaderOGLImage->renderTexture(
+        textureId,
+        dstRect.x, dstRect.y,
+        dstRect.w,dstRect.h,
+        alpha,
+        false,
+        fbo
+    );
 }
 
 void Image::DrawFlat(int pos_x, int pos_y, GLuint fbo) const
@@ -108,10 +116,8 @@ void Image::DrawFlat(int pos_x, int pos_y, GLuint fbo) const
 
     Components::get()->Render()->getShaders()->shaderOGLImage->renderTexture(
         textureId,
-        dstRect.x,
-        dstRect.y,
-        dstRect.w,
-        dstRect.h,
+        dstRect.x, dstRect.y,
+        dstRect.w, dstRect.h,
         alpha,
         false,
         fbo
@@ -127,26 +133,6 @@ void Image::LoadFromRaw(const unsigned int *texture, int w, int h)
             Tools::SurfacePutPixel(surface, x, y, texture[y + x * w]);
         }
     }
-}
-
-int Image::width() const
-{
-    return surface->w;
-}
-
-int Image::height() const
-{
-    return surface->h;
-}
-
-void *Image::pixels() const
-{
-    return surface->pixels;
-}
-
-bool Image::isLoaded() const
-{
-    return loaded;
 }
 
 float Image::getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C) const
@@ -165,21 +151,6 @@ float Image::getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vert
     return area;
 }
 
-SDL_Surface *Image::getSurface() const
-{
-    return surface;
-}
-
-SDL_Texture *Image::getTexture() const
-{
-    return texture;
-}
-
-const std::string &Image::getFileName() const
-{
-    return fileName;
-}
-
 Image::~Image()
 {
     Profiler::get()->RemoveImage(this);
@@ -191,23 +162,13 @@ Image::~Image()
     }
 }
 
-Color Image::getColor(const int x, const int y) const
+Color Image::getPixelColor(const int x, const int y) const
 {
     auto pixels = static_cast<uint32_t *>(this->pixels());
 
     const int index = y * this->surface->w + x;
 
     return Color(pixels[index]);
-}
-
-GLuint Image::getOGLTextureID() const
-{
-    return textureId;
-}
-
-ImTextureID Image::getOGLImTexture() const
-{
-    return reinterpret_cast<ImTextureID>(textureId);
 }
 
 void Image::MakeAutoOGLImage()
@@ -239,15 +200,17 @@ GLuint Image::MakeOGLImage(const SDL_Surface *surfaceTTF)
     return texID;
 }
 
-float Image::getAlpha() const {
-    return alpha;
-}
-
-void Image::setAlpha(float alpha) {
+void Image::setAlpha(float alpha)
+{
     Image::alpha = alpha;
 }
 
 void Image::setOGLTextureID(GLuint value)
 {
     textureId = value;
+}
+
+void Image::setAlreadyLoaded()
+{
+    loaded = true;
 }

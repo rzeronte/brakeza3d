@@ -27,8 +27,8 @@ public:
             ImGui::DragScalar("FPS", ImGuiDataType_S32, &fps,1.f, &range_min_int, &range_max_int, "%d", 1.0f);
 
             if (ImGui::Button("Apply")) {
-                o->setup(o->getBaseFilename(), width, height, numFrames, fps);
-                o->updateStep();
+                o->Apply(o->getBaseFilename(), width, height, numFrames, fps);
+                o->UpdateStep();
             }
             ImGui::TreePop();
         }

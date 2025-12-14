@@ -47,7 +47,7 @@ void Profiler::CaptureGUIMemoryUsage()
 
 void Profiler::DrawPools()
 {
-    auto pool = &Brakeza::get()->getPoolManager().Pool();
+    auto pool = &Brakeza::get()->Pool();
     size_t pending = pool->getPendingTasks();
     int active = pool->getActiveTasks();
     int cont = pool->getCont();

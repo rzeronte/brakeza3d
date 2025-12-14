@@ -19,10 +19,10 @@ public:
                 const float range_sensibility = 0.1;
 
                 if (ImGui::DragScalar("Width", ImGuiDataType_Float, &o->width, range_sensibility ,&range_min, &range_max, "%f", 1.0f)){
-                    o->updateBillboardSize();
+                    o->UpdateBillboardSize();
                 }
                 if (ImGui::DragScalar("Height", ImGuiDataType_Float, &o->height, range_sensibility ,&range_min, &range_max, "%f", 1.0f)) {
-                    o->updateBillboardSize();
+                    o->UpdateBillboardSize();
                 }
                 ImGui::TreePop();
             }
@@ -41,7 +41,7 @@ public:
 
                 if (ImGui::Button(std::string("Load animation").c_str())) {
                     if (!o->currentSpriteFileVariableToCreateAnimation.empty()) {
-                        o->addAnimation(
+                        o->CreateAnimation(
                             o->currentSpriteFileVariableToCreateAnimation,
                             o->currentWidthVariableToCreateAnimation,
                             o->currentHeightVariableToCreateAnimation,

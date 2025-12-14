@@ -186,11 +186,6 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     AssimpInitMaterials(scene);
     ReadNodesFromRoot();
 
-    //ComponentRender::FillOGLBuffers(meshes);
-    //FillAnimationBoneDataOGLBuffers();
-    //UpdateBonesFinalTransformations(0);
-
-
     return true;
 }
 
@@ -549,33 +544,9 @@ void Mesh3DAnimation::DrawBones(aiNode *node, Vertex3D *lastBonePosition)
     }
 }
 
-bool Mesh3DAnimation::isRemoveAtEndAnimation() const
-{
-    return removeOnAnimationEnd;
-}
-
 void Mesh3DAnimation::setRemoveAtEndAnimation(bool removeAtEnds)
 {
     removeOnAnimationEnd = removeAtEnds;
-}
-
-Mesh3DAnimation* Mesh3DAnimation::create(const Vertex3D &position, const std::string& animationFile)
-{
-    auto o = new Mesh3DAnimation();
-    o->setPosition(position);
-    o->AssimpLoadAnimation(animationFile);
-
-    return o;
-}
-
-ObjectType Mesh3DAnimation::getTypeObject() const
-{
-    return ObjectType::Mesh3DAnimation;
-}
-
-GUIType::Sheet Mesh3DAnimation::getIcon()
-{
-    return IconObject::MESH_3D_ANIMATION;
 }
 
 void Mesh3DAnimation::DrawPropertiesGUI()
@@ -607,21 +578,6 @@ Mesh3DAnimation::~Mesh3DAnimation()
             }
         }
     }
-}
-
-int& Mesh3DAnimation::BoneColliderIndexPointer()
-{
-    return boneColliderIndex;
-}
-
-void Mesh3DAnimation::setIndexCurrentAnimation(int indexCurrentAnimation)
-{
-    Mesh3DAnimation::indexCurrentAnimation = indexCurrentAnimation;
-}
-
-bool Mesh3DAnimation::isAnimationEnds() const
-{
-    return finished;
 }
 
 void Mesh3DAnimation::FillAnimationBoneDataOGLBuffers()
@@ -706,16 +662,6 @@ void Mesh3DAnimation::setAnimationByName(const std::string& name)
             setIndexCurrentAnimation(i);
         }
     }
-}
-
-bool Mesh3DAnimation::isLoop() const
-{
-    return loop;
-}
-
-void Mesh3DAnimation::setLoop(bool value)
-{
-    loop = value;
 }
 
 void Mesh3DAnimation::createBonesMappingColliders(const std::string &name)
@@ -950,4 +896,14 @@ void Mesh3DAnimation::ShadowMappingPass()
     for (int i = 0; i < numSpotLights; i++) {
         shaderShadowPass->renderMeshIntoArrayTextures(this, true, shadowSpotLights[i], i);
     }
+}
+
+void Mesh3DAnimation::setLoop(bool value)
+{
+    loop = value;
+}
+
+void Mesh3DAnimation::setIndexCurrentAnimation(int indexCurrentAnimation)
+{
+    Mesh3DAnimation::indexCurrentAnimation = indexCurrentAnimation;
 }

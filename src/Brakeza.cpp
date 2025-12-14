@@ -52,7 +52,7 @@ void Brakeza::PreMainLoop()
     GUI()->OnStart();
     AutoLoadProjectOrContinue();     // Parse CLI options
 
-    getPoolManager().Pool().processMainThreadCallbacks();
+    Pool().processMainThreadCallbacks();
 
     // Profiler tags
     Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobal");
@@ -72,7 +72,8 @@ void Brakeza::MainLoop()
         ControlFrameRate();                                                 // Control framerate based on SDL_Delay
         UpdateTimer();                                                      // Refresh main timer
 
-        getPoolManager().Pool().processMainThreadCallbacks();
+        PoolImages().processMainThreadCallbacks();
+        Pool().processMainThreadCallbacks();
 
         PreUpdateComponents();                                              // PreUpdate for componentes
         Components::get()->Render()->RunSceneShadersPreUpdate();            // Pre-pass running for shaders
@@ -185,7 +186,7 @@ void Brakeza::AutoLoadProjectOrContinue() const
         return;
     }
 
-    //render->getSceneLoader().LoadScene(Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE);
+    render->getSceneLoader().LoadScene(Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE);
 }
 
 void Brakeza::onUpdateSDLPollEventComponents(SDL_Event *event) const

@@ -51,19 +51,15 @@ protected:
     Octree *octree = nullptr;
     Grid3D *grid = nullptr;
 public:
-
     Mesh3D();
+    Mesh3D(std::string modelFile);
     ~Mesh3D() override;
 
-    static Mesh3D* create(Vertex3D position, const std::string& imageFile);
-    ObjectType getTypeObject() const override;
-    GUIType::Sheet getIcon() override;
     void AssimpLoadGeometryFromFile(const std::string &fileName);
     void AssimpInitMaterials(const aiScene *pScene);
     void ProcessNodes(const aiScene *scene, const aiNode *node);
     void LoadMesh(int meshId, const aiMesh *mesh);
     void onUpdate() override;
-    void setRender(bool render);
     void postUpdate() override;
     void BuildOctree(int depth);
     void DrawPropertiesGUI() override;
@@ -73,28 +69,33 @@ public:
     void SetupGhostCollider(CollisionShape modeShape) override;
     void SetupRigidBodyCollider(CollisionShape modeShape) override;
     void DrawImGuiCollisionShapeSelector() override;
-    void setSourceFile(const std::string &sourceFile);
     void BuildGrid3D(int sizeX, int sizeY, int sizeZ);
     void FillGrid3DFromGeometry();
     void AddCustomShader(ShaderOGLCustom *);
     void LoadShader(const std::string &folder, const std::string &jsonFilename);
     void RemoveShader(int i);
-    virtual void ShadowMappingPass();
-    virtual void UpdateBoundingBox();
-    std::vector<Mesh3DData> &getMeshData();
-    btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia) const;
-    btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia) const;
-    AABB3D &getAABB();
-    [[nodiscard]] const std::vector<ShaderOGLCustom *> &getCustomShaders() const;
-    [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const;
-    [[nodiscard]] bool isRender() const;
-    [[nodiscard]] Grid3D *getGrid3D() const;
-    [[nodiscard]] Octree *getOctree() const;
-    [[nodiscard]] std::vector<Triangle *> &getModelTriangles(int i);
-    [[nodiscard]] std::vector<Image *> &getModelTextures();
-    [[nodiscard]] std::vector<Vertex3D *> &getModelVertices(int i);
     void FillOGLBuffers();
     void UpdateOGLTextures();
+    virtual void ShadowMappingPass();
+    virtual void UpdateBoundingBox();
+    btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia) const;
+    btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia) const;
+
+    void setRender(bool render);
+    void setSourceFile(const std::string &sourceFile);
+
+    ObjectType getTypeObject() const override                                    { return ObjectType::Mesh3D; }
+    GUIType::Sheet getIcon() override                                            { return IconObject::MESH_3D; }
+    std::vector<Mesh3DData> &getMeshData()                                       { return meshes; }
+    AABB3D &getAABB()                                                            { return aabb; }
+    [[nodiscard]] const std::vector<ShaderOGLCustom *> &getCustomShaders() const { return customShaders; }
+    [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const   { return modelSpecularTextures; }
+    [[nodiscard]] bool isRender() const                                          { return render; }
+    [[nodiscard]] Grid3D *getGrid3D() const                                      { return grid; }
+    [[nodiscard]] Octree *getOctree() const                                      { return octree; }
+    [[nodiscard]] std::vector<Triangle *> &getModelTriangles(int i)              { return meshes[i].modelTriangles; }
+    [[nodiscard]] std::vector<Image *> &getModelTextures()                       { return modelTextures; }
+    [[nodiscard]] std::vector<Vertex3D *> &getModelVertices(int i)               { return meshes[i].modelVertices; }
 
     friend class Mesh3DSerializer;
     friend class Mesh3DGUI;

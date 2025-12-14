@@ -28,7 +28,6 @@ public:
     [[nodiscard]] TextureAnimated *getAnimation() const;
     [[nodiscard]] int getX() const;
     [[nodiscard]] int getY() const;
-    static Image2DAnimation* create(int x, int y, const std::string& sheet, int w, int h, int frames, int fps);
 
     friend class Image2DAnimationSerializer;
     friend class Image2DAnimationGUI;

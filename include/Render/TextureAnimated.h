@@ -24,11 +24,15 @@ public:
     int currentSpriteWidth = 0;
     int currentspriteHeight = 0;
 
+    SDL_Surface* spriteSheetSurface = nullptr;
+
     TextureAnimated(std::string baseFile, int numFrames, int fps);
 
     explicit TextureAnimated(const TextureAnimated *textureAnimated);
 
     TextureAnimated(const std::string &spriteSheetFile, int spriteWidth, int spriteHeight, int frames, int fps);
+
+    void LoadCurrentSetup();
 
     [[nodiscard]] int getNumFrames() const;
 
@@ -48,15 +52,15 @@ public:
 
     void setFps(int fps);
 
-    void updateStep();
+    void UpdateStep();
 
     void update();
 
     [[nodiscard]] const std::string &getBaseFilename() const;
 
-    void setup(const std::string &spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps);
+    void Apply(const std::string &spriteSheetFile, int spriteWidth, int spriteHeight, int numFrames, int fps);
 
-    void deleteFrames();
+    void DeleteFrames();
 
     void drawImGuiProperties();
 };
