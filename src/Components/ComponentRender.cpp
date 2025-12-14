@@ -333,12 +333,16 @@ ShaderOGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name)
 
 void ComponentRender::MakeScreenShot()
 {
+    const auto file = Config::get()->SCREENSHOTS_FOLDER + Brakeza::UniqueObjectLabel("screenshot_") + std::string(".png");
+
     Tools::saveTextureToFile(
         Components::get()->Window()->getSceneTexture(),
-        Config::get()->screenWidth,
-        Config::get()->screenHeight,
-        (Config::get()->SCREENSHOTS_FOLDER + Brakeza::UniqueObjectLabel("screenshot_") + std::string(".png")).c_str()
+        Components::get()->Window()->getWidthRender(),
+        Components::get()->Window()->getHeightRender(),
+        file.c_str()
     );
+
+    Logging::Message("[Render] Saving screenshot to file '%s'...", file.c_str());
 }
 
 bool ComponentRender::compareDistances(const Object3D* obj1, const Object3D* obj2)
@@ -497,7 +501,7 @@ void ComponentRender::FlipBuffersToGlobal() const
             shaders.shaderOGLRender->getNumPointLights(),
             shaders.shaderOGLRender->getNumSpotLights(),
             shaders.shaderShadowPass->getSpotLightsShadowMapArrayTextures(),
-            shaders.shaderOGLRender->getShadowMappingSpotLights().size(),
+            (int) shaders.shaderOGLRender->getShadowMappingSpotLights().size(),
             globalBuffer.sceneFBO
         );
     }
