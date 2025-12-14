@@ -82,13 +82,9 @@ void ComponentRender::RegisterShaders()
 void ComponentRender::preUpdate()
 {
     Component::preUpdate();
-
     ClearShadowMaps();
-
-    this->updateFPS();
-
+    UpdateFPS();
     if (!isEnabled()) return;
-
     DeleteRemovedObjects();
 }
 
@@ -123,16 +119,14 @@ void ComponentRender::onUpdate()
         DrawFPS();
     }
 
-    if (Brakeza::get()->GUI()->isWindowOpen(GUIType::DEPTH_LIGHTS_MAPS) ) {
+    if (Brakeza::get()->GUI()->isWindowOpen(GUIType::DEPTH_LIGHTS_MAPS)) {
         shaders.shaderShadowPassDebugLight->CreateFramebuffer();
         shaders.shaderShadowPassDebugLight->createArrayTextures(numSpotLights);
         shaders.shaderShadowPassDebugLight->updateDebugTextures(numSpotLights);
     }
 
     if (SETUP->ENABLE_GRID_BACKGROUND) {
-        shaders.shaderOGLGrid->render(
-            Components::get()->Window()->getBackgroundFramebuffer()
-        );
+        shaders.shaderOGLGrid->render(Components::get()->Window()->getBackgroundFramebuffer());
     }
 }
 
@@ -144,7 +138,7 @@ void ComponentRender::postUpdate()
 
     std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
 
-    for (auto o: sceneObjects) {
+    for (auto &o: sceneObjects) {
         if (o->isEnabled()) {
             o->postUpdate();
         }
@@ -165,14 +159,14 @@ void ComponentRender::onUpdateSceneObjects()
 
     std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
 
-    for (const auto o: sceneObjects) {
+    for (const auto &o: sceneObjects) {
         if (o->isEnabled()) {
             o->onUpdate();
         }
     }
 }
 
-void ComponentRender::updateFPS()
+void ComponentRender::UpdateFPS()
 {
     if (!Config::get()->DRAW_FPS_RENDER) return;
 
@@ -191,15 +185,7 @@ void ComponentRender::setSelectedObject(Object3D *o)
     this->selectedObject = o;
 }
 
-Object3D* ComponentRender::getObject3DFromClickPoint(const int x, const int y)
-{
-    const auto id = Components::get()->Window()->getObjectIDByPickingColorFramebuffer(x, y);
-
-    Logging::Message("Click point: %d, %d | ObjectId: %d", x, y, id);
-    return Brakeza::get()->getObjectById(id);
-}
-
-void ComponentRender::updateSelectedObject3D()
+void ComponentRender::UpdateSelectedObject3D()
 {
     auto input = Components::get()->Input();
 
@@ -208,10 +194,11 @@ void ComponentRender::updateSelectedObject3D()
     if (input->isClickLeft() && !input->isMouseMotion()) {
         auto x = input->getMouseX();
         auto y = input->getMouseY();
+
         const auto id = Components::get()->Window()->getObjectIDByPickingColorFramebuffer(x, y);
         selectedObject = Brakeza::get()->getObjectById(id);
         if (selectedObject != nullptr) {
-            Logging::Message("[Render] Selected object by click(%d, %d): %s", x, y, selectedObject->getName().c_str());
+            Logging::Message("[Render] Selected object: %s", selectedObject->getName().c_str());
             Brakeza::get()->GUI()->setSelectedObject(selectedObject);
         }
     }
@@ -342,6 +329,16 @@ ShaderOGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name)
     }
 
     return nullptr;
+}
+
+void ComponentRender::MakeScreenShot()
+{
+    Tools::saveTextureToFile(
+        Components::get()->Window()->getSceneTexture(),
+        Config::get()->screenWidth,
+        Config::get()->screenHeight,
+        (Config::get()->SCREENSHOTS_FOLDER + Brakeza::UniqueObjectLabel("screenshot_") + std::string(".png")).c_str()
+    );
 }
 
 bool ComponentRender::compareDistances(const Object3D* obj1, const Object3D* obj2)

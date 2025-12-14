@@ -3,9 +3,9 @@
 #define SDL2_3D_ENGINE_FRUSTUM_H
 
 #include "../3D/Vertex3D.h"
-#include "../3D/Object3D.h"
 #include "Plane.h"
 #include "AABB3D.h"
+#include "../3D/Object3D.h"
 
 // http://www.lighthouse3d.com/tutorials/view-frustum-culling/geometric-approach-extracting-the-planes/
 class Frustum : public Object3D {

@@ -317,8 +317,10 @@ namespace GUIType
     X(SHADER_REMOVE_VARIABLE, 0, 0) \
     X(SHADER_TYPE_MESH3D, 0, 0) \
     X(SHADER_TYPE_POSTPROCESSING, 0, 0) \
-    X(CANCEL, 0, 0)
-
+    X(CANCEL, 0, 0) \
+    X(TOOLBAR_PICKING_COLORS, 0, 0) \
+    X(VIDEO_TAKE_SCREENSHOT, 0, 0) \
+    X(TOOLBAR_TAKE_SCREENSHOT, 0, 0)
 
 // Icons Objects
 namespace IconObject {

@@ -603,6 +603,10 @@
 			"name":	"CANCEL",
 			"x":	4,
 			"y":	37
+		}, {
+			"name":	"TOOLBAR_PICKING_COLORS",
+			"x":	11,
+			"y":	10
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

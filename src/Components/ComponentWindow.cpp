@@ -63,7 +63,7 @@ void ComponentWindow::onEnd()
 
 void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish)
 {
-    Components::get()->Render()->updateSelectedObject3D();
+    Components::get()->Render()->UpdateSelectedObject3D();
 }
 
 void ComponentWindow::InitWindow()
@@ -90,7 +90,7 @@ void ComponentWindow::InitWindow()
         SDL_WINDOWPOS_UNDEFINED,
         SETUP->screenWidth,
         SETUP->screenHeight,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
+        SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE
     );
 
     context = SDL_GL_CreateContext(window);
@@ -559,10 +559,15 @@ void ComponentWindow::ResizeGBuffer()
 void ComponentWindow::UpdateWindowSize()
 {
     SDL_GetWindowSize(window, &widthWindow, &heightWindow);
-    SDL_GetRendererOutputSize(renderer, &widthRender, &heightRender);
+    //SDL_GetRendererOutputSize(renderer, &widthRender, &heightRender);
+    SDL_GL_GetDrawableSize(window, &widthRender, &heightRender);
+
+    // AÑADE ESTO:
+    int glWidth, glHeight;
+    SDL_GL_GetDrawableSize(window, &glWidth, &glHeight);
 }
 
-int ComponentWindow::getObjectIDByPickingColorFramebuffer(const int x, const int y) const
+unsigned int ComponentWindow::getObjectIDByPickingColorFramebuffer(const int x, const int y) const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, pickingColorBuffer.FBO);
 
@@ -573,9 +578,9 @@ int ComponentWindow::getObjectIDByPickingColorFramebuffer(const int x, const int
     glReadPixels(x, flippedY, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, pixel);
 
     const auto c = Color(
-        static_cast<float>(pixel[0])/255.0f,
-        static_cast<float>(pixel[1])/255.0f,
-        static_cast<float>(pixel[2])/255.0f
+        (float) pixel[0] / 255.0f,
+        (float) pixel[1] / 255.0f,
+        (float) pixel[2] / 255.0f
     );
 
     return Color::colorToId(c);

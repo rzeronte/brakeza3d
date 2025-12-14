@@ -33,7 +33,7 @@ public:
         image->MakeAutoOGLImage();
         image->setAlreadyLoaded();
 
-        Logging::Message("[ThreadJobLoadMesh3D] Callback END");
+        Logging::Message("[ThreadJobLoadImage] Callback END");
     }
 };
 

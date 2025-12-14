@@ -27,7 +27,7 @@ class Object3DGUI;
 class Object3D: public Collider
 {
 protected:
-    int id = 0;
+    unsigned int id = 0;
     float scale = 1.f;
     float alpha = 1.f;
     float distanceToCamera = 0.f;
@@ -60,11 +60,17 @@ public:
     Object3D();
     virtual ~Object3D();
 
-    bool& enabledPointer();
+    void AddToPosition(const Vertex3D &p);
+    void LookAt(Object3D *o);
+    void AttachScript(ScriptLUA *script);
+    void RunScripts();
+    void ReloadScriptsEnvironment();
+    void ReloadScriptsCode() const;
+    void RemoveScript(const ScriptLUA *script);
+    void RunStartScripts();
     void setParent(Object3D *object);
     void setName(const std::string& value);
     void setPosition(const Vertex3D &p);
-    void AddToPosition(const Vertex3D &p);
     void setRotation(const M3 &r);
     void setScale(float value);
     void setRemoved(bool value);
@@ -73,13 +79,6 @@ public:
     void setAlpha(float alpha);
     void setAlphaEnabled(bool value);
     void setEnableLights(bool value);
-    void LookAt(Object3D *o);
-    void AttachScript(ScriptLUA *script);
-    void RunScripts();
-    void ReloadScriptsEnvironment();
-    void ReloadScriptsCode() const;
-    void RemoveScript(const ScriptLUA *script);
-    void RunStartScripts();
     void setBelongToScene(bool belongToScene);
     void setMultiScene(bool multiScene);
     void AttachObject(Object3D *o);
@@ -89,46 +88,50 @@ public:
     void UpdateFromBullet();
     void ResolveCollision(CollisionInfo with) override;
     void RunResolveCollisionScripts(CollisionInfo with);
-    virtual ObjectType getTypeObject() const;
-    virtual GUIType::Sheet getIcon();
-    virtual void setEnabled(bool value);
-    virtual void onUpdate();
-    virtual void postUpdate();
-    virtual void DrawPropertiesGUI();
     void SetupGhostCollider(CollisionShape mode) override;
-    M3& rotationPointer();
-    Vertex3D& positionPointer();
-    Vertex3D &getPosition();
-    [[nodiscard]] int getId() const;
-    [[nodiscard]] float &getAlpha();
-    [[nodiscard]] float getScale() const;
-    [[nodiscard]] float getDistanceToCamera() const;
-    [[nodiscard]] bool isGUISelected() const;
-    [[nodiscard]] bool &isAlphaEnabled();
-    [[nodiscard]] bool isDecal() const;
-    [[nodiscard]] bool isRemoved() const;
-    [[nodiscard]] bool &isEnabled();
-    [[nodiscard]] bool isEnableLights() const;
-    [[nodiscard]] bool isBelongToScene() const;
-    [[nodiscard]] bool isMultiScene() const;
-    [[nodiscard]] const std::vector<Object3D *> &getAttached() const;
-    [[nodiscard]] const sol::environment &getLuaEnvironment() const;
-    [[nodiscard]] const Timer &getTimer() const;
-    [[nodiscard]] const std::vector<ScriptLUA *> &getScripts() const;
+
+    virtual ObjectType getTypeObject() const                            { return ObjectType::Object3D; }
+    virtual GUIType::Sheet getIcon()                                    { return IconObject::OBJECT_3D; }
+    bool& enabledPointer()                                              { return enabled; }
+    M3& rotationPointer()                                               { return rotation; }
+    Vertex3D& positionPointer()                                         { return position; }
+    Vertex3D &getPosition()                                             { return position; }
+    sol::object getLocalScriptVar(const char *varName)                  { return luaEnvironment[varName]; }
+    [[nodiscard]] unsigned int getId() const                            { return id; }
+    [[nodiscard]] float &getAlpha()                                     { return alpha; }
+    [[nodiscard]] float getScale() const                                { return scale; }
+    [[nodiscard]] float getDistanceToCamera() const                     { return distanceToCamera; }
+    [[nodiscard]] bool &isAlphaEnabled()                                { return alphaEnabled; }
+    [[nodiscard]] bool isDecal() const                                  { return decal; }
+    [[nodiscard]] bool isRemoved() const                                { return removed;}
+    [[nodiscard]] bool &isEnabled()                                     { return enabled; }
+    [[nodiscard]] bool isEnableLights() const                           { return enableLights; }
+    [[nodiscard]] bool isBelongToScene() const                          { return belongToScene; }
+    [[nodiscard]] bool isMultiScene() const                             { return multiScene; }
+    [[nodiscard]] const std::vector<Object3D *> &getAttached() const    { return attachedObjects; }
+    [[nodiscard]] const sol::environment &getLuaEnvironment() const     { return luaEnvironment; }
+    [[nodiscard]] const Timer &getTimer() const                         { return timer; }
+    [[nodiscard]] const std::vector<ScriptLUA *> &getScripts() const    { return scripts; }
+    [[nodiscard]] M3 getM3ModelMatrix() const                           { return M3::fromMat3GLM(getModelMatrix()); }
+    [[nodiscard]] M3 getRotation() const                                { return rotation; }
+    [[nodiscard]] Color getPickingColor() const                         { return pickingColor; }
+    [[nodiscard]] std::string getName()                                 { return name; }
+    [[nodiscard]] Object3D *getParent() const                           { return parent; }
+    [[nodiscard]] Vertex3D &getDrawOffset()                             { return this->drawOffset; }
     [[nodiscard]] glm::mat4 getModelMatrix() const;
-    [[nodiscard]] M3 getM3ModelMatrix() const;
-    [[nodiscard]] M3 getRotation() const;
-    [[nodiscard]] Vertex3D &getDrawOffset();
+    [[nodiscard]] bool isGUISelected() const;
+
     [[nodiscard]] Vertex3D up() const;
     [[nodiscard]] Vertex3D down() const;
     [[nodiscard]] Vertex3D forward() const;
     [[nodiscard]] Vertex3D backwards() const;
     [[nodiscard]] Vertex3D right() const;
     [[nodiscard]] Vertex3D left() const;
-    [[nodiscard]] Color getPickingColor() const;
-    [[nodiscard]] std::string getName();
-    [[nodiscard]] Object3D *getParent() const;
-    sol::object getLocalScriptVar(const char *varName);
+
+    virtual void setEnabled(bool value);
+    virtual void onUpdate();
+    virtual void postUpdate();
+    virtual void DrawPropertiesGUI();
 
     friend class Object3DSerializer;
     friend class Object3DGUI;

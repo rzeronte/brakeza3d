@@ -260,6 +260,11 @@ void Image3D::setWidth(float value)
     width = value;
 }
 
+void Image3D::setSource(const std::string &source)
+{
+    this->source = source;
+}
+
 void Image3D::setHeight(float value)
 {
     height = value;

@@ -129,6 +129,14 @@ void GUIAddonToolbar::Helpers()
     GUI::DrawButton("Grid background", IconGUI::TOOLBAR_GRID_BACKGROUND, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->ENABLE_GRID_BACKGROUND,[&]() {
         GUI::Toggle(Config::get()->ENABLE_GRID_BACKGROUND);
     });
+    ImGui::SameLine();
+    GUI::DrawButton("Show picking colors", IconGUI::TOOLBAR_PICKING_COLORS, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->TRIANGLE_MODE_PICKING_COLORS,[&]() {
+        GUI::Toggle(Config::get()->TRIANGLE_MODE_PICKING_COLORS);
+    });
+    ImGui::SameLine();
+    GUI::DrawButton("Screenshot", IconGUI::TOOLBAR_TAKE_SCREENSHOT, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->TRIANGLE_MODE_PICKING_COLORS,[&]() {
+        ComponentRender::MakeScreenShot();
+    });
 }
 
 void GUIAddonToolbar::RenderTriangleModes()

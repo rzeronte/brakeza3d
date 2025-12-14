@@ -46,6 +46,7 @@ void Image3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     Logging::Message("[Image3DSerializer] ApplyJsonToObject: %d", o->getTypeObject());
 
     auto image = dynamic_cast<Image3D*>(o);
+    image->setSource(cJSON_GetObjectItemCaseSensitive(json, "image")->valuestring);
 
     Object3DSerializer().ApplyJsonToObject(json, o);
 }

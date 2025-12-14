@@ -3,6 +3,7 @@
 
 #include <glm/ext/matrix_float4x4.hpp>
 #include "../Render/Frustum.h"
+#include "../3D/Object3D.h"
 #include "../3D/Vector3D.h"
 
 class Camera3D : public Object3D {

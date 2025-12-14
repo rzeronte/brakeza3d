@@ -132,7 +132,7 @@ Color Color::idToColor(const unsigned int id)
     );
 }
 
-int Color::colorToId(const Color &c)
+unsigned int Color::colorToId(const Color &c)
 {
     unsigned char R = (unsigned char)(c.r * 255.0f);
     unsigned char G = (unsigned char)(c.g * 255.0f);
