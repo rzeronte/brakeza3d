@@ -9,6 +9,7 @@
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Threads/ThreadJobLoadObject.h"
 
 cJSON * Object3DSerializer::JsonByObject(Object3D* o)
 {
@@ -188,10 +189,11 @@ Object3D * Object3DSerializer::ObjectByJson(cJSON *json)
 
     auto obj = new Object3D();
     ApplyJsonToObject(json, obj);
+
     return obj;
 }
 
-void Object3DSerializer::LoadFileIntoScene(const std::string &file)
+void Object3DSerializer::MenuLoad(const std::string &file)
 {
     auto o = new Object3D();
     Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Object3D"));

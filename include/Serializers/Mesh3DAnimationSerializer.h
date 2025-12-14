@@ -15,7 +15,7 @@ public:
     Object3D* ObjectByJson(cJSON* json) override;
     cJSON* JsonByObject(Object3D *o) override;
     void ApplyJsonToObject(cJSON* json, Object3D* o) override;
-    void LoadFileIntoScene(const std::string& file) override;
+    void MenuLoad(const std::string& file) override;
 
     static void ApplyBonesColliders(Mesh3DAnimation *mesh, cJSON *json);
     static void ApplyGeometryAnimationFromFile(Mesh3DAnimation *m, cJSON *json);

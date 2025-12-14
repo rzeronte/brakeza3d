@@ -16,12 +16,11 @@ class TextureAnimatedDirectional
     bool isZeroDirection = false;
     bool loaded = false;
 
-    std::string base_file;
+    std::string baseFolder;
     Image *frames[9][ANIMATION2D_MAX_FRAMES] = {};
 
 public:
-    TextureAnimatedDirectional() = default;;
-    void LoadAnimationFile(std::string file, int newNumFrames, int newFps, int newMaxTimes);
+    TextureAnimatedDirectional(std::string file, int newNumFrames, int newFps, int newMaxTimes);
     void LoadImages();
     void LoadImagesForZeroDirection();
     void NextFrame();

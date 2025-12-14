@@ -12,7 +12,8 @@
 #include "../../include/3D/ParticleEmitter.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/OpenGL/ShaderOGLCustomPostprocessing.h"
-#include "../../include/Pools/JobLoadObject.h"
+#include "../../include/Serializers/Image2DAnimationSerializer.h"
+#include "../../include/Threads/ThreadJobLoadObject.h"
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Serializers/LightPointSerializer.h"
 #include "../../include/Serializers/Object3DSerializer.h"
@@ -24,8 +25,7 @@
 #include "../../include/Serializers/Image2DSerializer.h"
 #include "../../include/Serializers/Image3DSerializer.h"
 #include "../../include/Serializers/Image3DAnimationSerializer.h"
-#include "../../include/Pools/JobReadFileScene.h"
-#include "../../include/Pools/PoolManager.h"
+#include "../../include/Threads/ThreadJobReadFileScene.h"
 
 SceneLoader::SceneLoader()
 {
@@ -88,8 +88,8 @@ void SceneLoader::LoadScene(const std::string& filename)
 {
     Logging::Message("[SceneLoader] Loading scene: '%s'", filename.c_str());
 
-    auto job = std::make_shared<JobReadFileScene>(filename);
-    Brakeza::get()->getPoolManager().Pool().enqueueWithMainThreadCallback(job);
+    auto job = std::make_shared<ThreadJobReadFileScene>(filename);
+    Brakeza::get()->Pool().enqueueWithMainThreadCallback(job);
 }
 
 void SceneLoader::SaveScene(const std::string &filename)
@@ -205,10 +205,11 @@ void SceneLoader::InitSerializers()
     registry.registerSerializer(ObjectType::LightPoint, std::make_unique<LightPointSerializer>());
     registry.registerSerializer(ObjectType::LightSpot, std::make_unique<LightSpotSerializer>());
     registry.registerSerializer(ObjectType::ParticleEmitter, std::make_unique<ParticleEmmitterSerializer>());
+    registry.registerSerializer(ObjectType::Image2DAnimation, std::make_unique<Image2DAnimationSerializer>());
 }
 
 void SceneLoader::SceneLoaderCreateObject(cJSON *object)
 {
-    auto job = std::make_shared<JobLoadObject>(object);
-    Brakeza::get()->getPoolManager().Pool().enqueue(job);
+    auto job = std::make_shared<ThreadJobLoadObject>(object);
+    Brakeza::get()->Pool().enqueue(job);
 }

@@ -1,4 +1,4 @@
-#include "../../include/Pools/ThreadPool.h"
+#include "../../include/Render/ThreadPool.h"
 #include <chrono>
 #include <iostream>
 
@@ -11,7 +11,7 @@ ThreadPool::ThreadPool(size_t numThreads)
     for (size_t i = 0; i < numThreads; ++i) {
         workers.emplace_back([this] {
             while (true) {
-                std::shared_ptr<PendingJob> job;
+                std::shared_ptr<ThreadJobBase> job;
 
                 {
                     std::unique_lock<std::mutex> lock(queueMutex);
@@ -51,7 +51,7 @@ ThreadPool::~ThreadPool() {
         worker.join();
 }
 
-void ThreadPool::enqueue(std::shared_ptr<PendingJob> job) {
+void ThreadPool::enqueue(std::shared_ptr<ThreadJobBase> job) {
     {
         std::unique_lock<std::mutex> lock(queueMutex);
         tasks.push(job);
@@ -59,13 +59,13 @@ void ThreadPool::enqueue(std::shared_ptr<PendingJob> job) {
     condition.notify_one();
 }
 
-void ThreadPool::enqueueWithMainThreadCallback(std::shared_ptr<PendingJob> job) {
+void ThreadPool::enqueueWithMainThreadCallback(std::shared_ptr<ThreadJobBase> job) {
     {
         std::unique_lock<std::mutex> lock(queueMutex);
 
         // Crear wrapper job que ejecuta function en worker thread
         // y encola callback para main thread
-        auto workerJob = std::make_shared<PendingJob>(
+        auto workerJob = std::make_shared<ThreadJobBase>(
             job->function,
             [this, job]() {  // ← Capturar job para mantenerlo vivo
                 std::unique_lock<std::mutex> callbackLock(callbackMutex);

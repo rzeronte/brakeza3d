@@ -17,7 +17,7 @@ public:
     virtual cJSON* JsonByObject(Object3D* obj) = 0;
 
     virtual void ApplyJsonToObject(cJSON* json, Object3D* o) = 0;
-    virtual void LoadFileIntoScene(const std::string& model) = 0;
+    virtual void MenuLoad(const std::string& model) = 0;
 };
 
 #endif //BRAKEZA3D_JSONSERIALIZER_H

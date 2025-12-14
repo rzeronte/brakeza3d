@@ -2,9 +2,9 @@
 #define BRAKEDA3D_BRAKEZA3D_H
 
 #include <vector>
-#include "Pools/PoolManager.h"
 #include "Components/Component.h"
 #include "GUI/GUIManager.h"
+#include "Render/ThreadPool.h"
 
 class Brakeza
 {
@@ -20,7 +20,9 @@ class Brakeza
     std::vector<Object3D *> objects;
 
     GUIManager managerGUI;
-    PoolManager poolManager;
+    ThreadPool pool;
+    ThreadPool poolImages;
+
 public:
     Brakeza();
     virtual ~Brakeza();
@@ -56,7 +58,8 @@ public:
     Components *getComponentsManager() const                    { return componentsManager; }
     GUIManager *GUI()                                           { return &managerGUI; }
     Object3D *getObjectByIndex(int index) const                 { return objects[index]; }
-    PoolManager & getPoolManager()                              { return poolManager; }
+    ThreadPool & Pool()                                         { return pool; }
+    ThreadPool & PoolImages()                                   { return pool; }
 
     static void Shutdown()                                      { Config::get()->EXIT = true; };
     static std::string UniqueObjectLabel(const char *prefix);

@@ -20,6 +20,12 @@ Mesh3D::Mesh3D()
     luaEnvironment["this"] = this;
 }
 
+Mesh3D::Mesh3D(std::string modelFile)
+:
+    sourceFile(modelFile)
+{
+}
+
 Mesh3D::~Mesh3D()
 {
     Logging::Message("[Mesh3D] Destroying '%s'...", getName().c_str());
@@ -42,21 +48,6 @@ Mesh3D::~Mesh3D()
         for (auto texture : modelTextures) delete texture;
         for (auto texture : modelSpecularTextures) delete texture;
     }
-}
-
-Mesh3D *Mesh3D::create(Vertex3D position, const std::string& imageFile)
-{
-    return nullptr;
-}
-
-ObjectType Mesh3D::getTypeObject() const
-{
-    return ObjectType::Mesh3D;
-}
-
-GUIType::Sheet Mesh3D::getIcon()
-{
-    return IconObject::MESH_3D;
 }
 
 void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
@@ -377,7 +368,8 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 }
 
-void Mesh3D::SetupGhostCollider(CollisionShape modeShape) {
+void Mesh3D::SetupGhostCollider(CollisionShape modeShape)
+{
     Logging::Message("[Mesh3D] setupGhostCollider for %s", getName().c_str());
 
     removeCollisionObject();
@@ -506,11 +498,6 @@ void Mesh3D::DrawImGuiCollisionShapeSelector()
     }
 }
 
-void Mesh3D::setSourceFile(const std::string &sourceFile)
-{
-    Mesh3D::sourceFile = sourceFile;
-}
-
 void Mesh3D::BuildGrid3D(int sizeX, int sizeY, int sizeZ)
 {
     UpdateBoundingBox();
@@ -615,11 +602,6 @@ void Mesh3D::UpdateBoundingBox()
     this->aabb.updateVertices();
 }
 
-std::vector<Mesh3DData> &Mesh3D::getMeshData()
-{
-    return meshes;
-}
-
 btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia) const
 {
     auto *triangleMesh = new btTriangleMesh();
@@ -662,48 +644,6 @@ btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia) const
     return convexHull;
 }
 
-AABB3D &Mesh3D::getAABB()
-{
-    return aabb;
-}
-
-const std::vector<ShaderOGLCustom *> &Mesh3D::getCustomShaders() const {
-    return customShaders;
-}
-
-const std::vector<Image *> &Mesh3D::getModelSpecularTextures() const
-{
-    return modelSpecularTextures;
-}
-
-bool Mesh3D::isRender() const
-{
-    return render;
-}
-
-Grid3D *Mesh3D::getGrid3D() const {
-    return grid;
-}
-
-Octree *Mesh3D::getOctree() const {
-    return octree;
-}
-
-std::vector<Triangle *> &Mesh3D::getModelTriangles(int i)
-{
-    return meshes[i].modelTriangles;
-}
-
-std::vector<Image *> &Mesh3D::getModelTextures()
-{
-    return modelTextures;
-}
-
-std::vector<Vertex3D *> &Mesh3D::getModelVertices(int i)
-{
-    return meshes[i].modelVertices;
-}
-
 void Mesh3D::FillOGLBuffers()
 {
     Logging::Message("[Mesh3D] Filling buffers...");
@@ -716,4 +656,9 @@ void Mesh3D::UpdateOGLTextures()
     for (auto &t : modelTextures) {
         t->MakeAutoOGLImage();
     }
+}
+
+void Mesh3D::setSourceFile(const std::string &sourceFile)
+{
+    Mesh3D::sourceFile = sourceFile;
 }

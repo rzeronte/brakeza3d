@@ -20,44 +20,43 @@ class Image {
     SDL_Surface *surface = nullptr;
     SDL_Texture *texture = nullptr;
 public:
-    virtual ~Image();
     Image() = default;
+    explicit Image(std::string filename);
     Image(SDL_Surface *surface, SDL_Texture *texture);
+    virtual ~Image();
 
     void CreateSDLTexture();
-
     void LoadSDLSurface();
-
-    explicit Image(std::string filename);
-
-    static Image *Create(std::string file);
 
     void LoadFromRaw(const unsigned int *texture, int w, int h);
     void DrawFlat(int, int, GLuint framebuffer) const;
     void DrawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint framebuffer);
+
+    void DrawFlatAlpha(int x, int y, int w, int h, float alpha, GLuint fbo);
+
+    void DrawFlat(int x, int y, int width, int height, GLuint fbo) const;
+
     void setAlpha(float alpha);
-
     void setOGLTextureID(GLuint value);
-
-    void setImage(std::string basicString);
-
+    void setImage(const std::string &basicString);
     void setAlreadyLoaded();
 
-    [[nodiscard]] bool isLoaded() const;
-    [[nodiscard]] float getAlpha() const;
-    [[nodiscard]] int height() const;
-    [[nodiscard]] int width() const;
-    [[nodiscard]] void* pixels() const;
     [[nodiscard]] float getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C) const;
-    [[nodiscard]] Color getColor(int x, int y) const;
-    [[nodiscard]] SDL_Texture *getTexture() const;
-    [[nodiscard]] ImTextureID getOGLImTexture() const;
+
+    [[nodiscard]] float getAlpha() const                        { return alpha; }
+    [[nodiscard]] bool isLoaded() const                         { return loaded; }
+    [[nodiscard]] int height() const                            { return surface->h; }
+    [[nodiscard]] int width() const                             { return surface->w; }
+    [[nodiscard]] void* pixels() const                          { return surface->pixels; }
+    [[nodiscard]] SDL_Texture *getTexture() const               { return texture; }
+    [[nodiscard]] SDL_Surface *getSurface() const               { return surface; }
+    [[nodiscard]] ImTextureID getOGLImTexture() const           { return (ImTextureID) textureId; }
+    [[nodiscard]] GLuint getOGLTextureID() const                { return alpha; }
+    [[nodiscard]] const std::string &getFileName() const        { return fileName; }
+    [[nodiscard]] Color getPixelColor(int x, int y) const;
 
     void MakeAutoOGLImage();
 
-    [[nodiscard]] GLuint getOGLTextureID() const;
-    [[nodiscard]] const std::string &getFileName() const;
-    [[nodiscard]] SDL_Surface *getSurface() const;
     static GLuint MakeOGLImage(const SDL_Surface *surfaceTTF);
 };
 

@@ -8,6 +8,7 @@
 #include "../../include/2D/Image2DAnimation.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Serializers/Object3DSerializer.h"
+#include "../../include/Threads/ThreadJobLoadImage2DAnimation.h"
 
 cJSON * Image2DAnimationSerializer::JsonByObject(Object3D *o)
 {
@@ -15,7 +16,7 @@ cJSON * Image2DAnimationSerializer::JsonByObject(Object3D *o)
 
     auto image = dynamic_cast<Image2DAnimation*>(o);
 
-    auto root = JSONSerializerRegistry::GetJsonByObject(o);
+    auto root = Object3DSerializer().JsonByObject(o);
 
     cJSON_AddNumberToObject(root, "x", image->getX());
     cJSON_AddNumberToObject(root, "y", image->getY());
@@ -51,6 +52,8 @@ Object3D * Image2DAnimationSerializer::ObjectByJson(cJSON *json)
 
     ApplyJsonToObject(json, o);
 
+    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2DAnimation>(o, json));
+
     return o;
 }
 
@@ -63,7 +66,7 @@ void Image2DAnimationSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     Object3DSerializer().ApplyJsonToObject(json, o);
 }
 
-void Image2DAnimationSerializer::LoadFileIntoScene(const std::string &file)
+void Image2DAnimationSerializer::MenuLoad(const std::string &file)
 {
     auto *o = new Image2DAnimation(
         Config::get()->screenWidth/2,
@@ -72,7 +75,14 @@ void Image2DAnimationSerializer::LoadFileIntoScene(const std::string &file)
         new TextureAnimated(file,1,1,1,1)
     );
 
+    o->setName(Brakeza::UniqueObjectLabel("Image2DAnimation"));
     o->setPosition(Components::get()->Camera()->getCamera()->forward().getScaled(2));
 
-    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Image2DAnimation"));
+    auto json = Image2DAnimationSerializer::JsonByObject(o);
+    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2DAnimation>(o, json));
+}
+
+void Image2DAnimationSerializer::ApplyAnimationLoad(Image2DAnimation *image)
+{
+    image->getAnimation()->LoadCurrentSetup();
 }

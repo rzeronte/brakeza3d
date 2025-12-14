@@ -51,8 +51,6 @@ public:
 
     glm::vec4 getDirection() const;
 
-    static LightSpot* create(const Vertex3D &position, const Vertex3D &direction);
-
     friend class LightSpotSerializer;
     friend class LightSpotGUI;
 };

@@ -267,23 +267,30 @@ add_executable(Brakeza3D
         src/GUI/GUI.cpp
         include/GUI/Objects/IconsGUI.h
         include/GUI/Objects/IconsGUI.h
-        include/GUI/AddOns/GUIAddonObject3DProperties.cpp
-        include/GUI/AddOns/GUIAddonProjectSetup.cpp
-        include/GUI/AddOns/GUIAddonObjects3D.cpp
-        include/GUI/AddOns/GUIConsole.cpp
+        src/GUI/AddOns/GUIAddonObject3DProperties.cpp
+        src/GUI/AddOns/GUIAddonProjectSetup.cpp
+        src/GUI/AddOns/GUIAddonObjects3D.cpp
+        src/GUI/AddOns/GUIConsole.cpp
         src/GUI/Objects/Mesh3DGUIAnimation.cpp
         src/OpenGL/ShaderOGLGrid.cpp        include/OpenGL/ShaderOGLGrid.h
-        src/Pools/ThreadPool.cpp
-        include/Pools/ThreadPool.h
-        include/Pools/PoolManager.h
-        include/Pools/PendingJob.h
-        include/Pools/JobReadFileScene.h
-        include/Pools/JobReadSceneScript.h
-        include/Pools/JobReadSceneShaders.h
-        include/Pools/JobLoadMesh3D.h
-        include/Pools/JobLoadObject.h
-        include/Pools/JobLoadImage.h
-        include/Pools/JobLoadMesh3DAnimation.h
+        src/Render/ThreadPool.cpp
+        include/Render/ThreadPool.h
+        include/Threads/ThreadJobBase.h
+        include/Threads/ThreadJobReadFileScene.h
+        include/Threads/ThreadJobReadSceneScript.h
+        include/Threads/ThreadJobReadSceneShaders.h
+        include/Threads/ThreadJobLoadMesh3D.h
+        include/Threads/ThreadJobLoadObject.h
+        include/Threads/ThreadJobLoadImage.h
+        include/Threads/ThreadJobLoadMesh3DAnimation.h
+        include/Threads/ThreadJobLoadImage3D.h
+        include/Threads/ThreadJobLoadLightPoint.h
+        include/Threads/ThreadJobLoadLightSpot.h
+        include/Threads/ThreadJobLoadParticleEmitter.h
+        include/Threads/ThreadJobLoadImage2D.h
+        include/Threads/ThreadJobLoadImage3DAnimation360.h
+        include/Threads/ThreadJobLoadImage2DAnimation.h
+        include/Threads/ThreadJobLoadImage3DAnimation.h
 )
 
 target_link_libraries(Brakeza3D

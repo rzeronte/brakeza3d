@@ -2,11 +2,11 @@
 // Created by Eduardo on 06/12/2025.
 //
 
-#include "GUIConsole.h"
+#include "../../../include/GUI/AddOns/GUIConsole.h"
 
-#include "../../Brakeza.h"
-#include "../../Misc/Logging.h"
-#include "../Objects/FileSystemGUI.h"
+#include "../../../include/Brakeza.h"
+#include "../../../include/Misc/Logging.h"
+#include "../../../include/GUI/Objects/FileSystemGUI.h"
 
 GuiAddonConsole::GuiAddonConsole()
 {

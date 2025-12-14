@@ -1,16 +1,16 @@
 #ifndef BRAKEZA3D_JOBLOADMESH3D_H
 #define BRAKEZA3D_JOBLOADMESH3D_H
 
-#include "PendingJob.h"
+#include "ThreadJobBase.h"
 #include "../Serializers/JSONSerializerRegistry.h"
-#include "JobLoadMesh3D.h"
+#include "ThreadJobLoadMesh3D.h"
 
-class JobLoadObject : public PendingJob
+class ThreadJobLoadObject : public ThreadJobBase
 {
     cJSON *json = nullptr;
     Object3D *object = nullptr;
 public:
-    explicit JobLoadObject(cJSON *objectJson)
+    explicit ThreadJobLoadObject(cJSON *objectJson)
     :
         json(cJSON_Duplicate(objectJson, 1))
     {
@@ -21,13 +21,15 @@ public:
     void fnProcess()
     {
         object = JSONSerializerRegistry::instance().deserialize(json);
+        Logging::Message("[ThreadJobLoadObject] Process END");
     }
 
     void fnCallback()
     {
+        Logging::Message("[ThreadJobLoadObject] Callback END");
     }
 
-    ~JobLoadObject()
+    ~ThreadJobLoadObject()
     {
         if (json) {
             cJSON_Delete(json);

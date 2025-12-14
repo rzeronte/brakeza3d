@@ -1,19 +1,19 @@
 #ifndef BRAKEZA3D_JOBREADMESHSHADERS_H
 #define BRAKEZA3D_JOBREADMESHSHADERS_H
 
-#include "PendingJob.h"
+#include "ThreadJobBase.h"
 #include "../Brakeza.h"
 #include "../3D/Mesh3DAnimation.h"
 #include <string>
 
 #include "../include/Serializers/Mesh3DSerializer.h"
 
-class JobLoadMesh3DAnimation: public PendingJob
+class ThreadJobLoadMesh3DAnimation: public ThreadJobBase
 {
     Mesh3DAnimation *mesh = nullptr;
     cJSON *json = nullptr;
 public:
-    JobLoadMesh3DAnimation(Mesh3DAnimation *m, cJSON *sceneJSON)
+    ThreadJobLoadMesh3DAnimation(Mesh3DAnimation *m, cJSON *sceneJSON)
     :
         mesh(m),
         json(cJSON_Duplicate(sceneJSON, 1))
@@ -25,7 +25,7 @@ public:
     void fnProcess()
     {
         if (!mesh) {
-            Logging::Error("[Pools] Mesh pointer is null");
+            Logging::Error("[ThreadJobLoadMesh3DAnimation] Mesh pointer is null");
             return;
         }
 
@@ -34,13 +34,13 @@ public:
         Mesh3DSerializer::ApplyShadersCreation(mesh, json);
         Mesh3DSerializer::ApplyShadersBackground(mesh);
 
-        Logging::Message("[Pools] JobLoadMesh3D::fnProcess END");
+        Logging::Message("[ThreadJobLoadMesh3DAnimation] Process END");
     }
 
     void fnCallback()
     {
         if (!mesh) {
-            Logging::Error("[Pools] Mesh was destroyed before callback");
+            Logging::Error("[ThreadJobLoadMesh3DAnimation] Pointer was destroyed before callback");
             return;
         }
 
@@ -54,10 +54,10 @@ public:
 
         Brakeza::get()->addObject3D(mesh, mesh->getName());
 
-        Logging::Message("[Pools] JobLoadMesh3D::fnCallback END");
+        Logging::Message("[ThreadJobLoadMesh3DAnimation] Callback END");
     }
 
-    ~JobLoadMesh3DAnimation() {
+    ~ThreadJobLoadMesh3DAnimation() {
         if (json) {
             cJSON_Delete(json);
             json = nullptr;

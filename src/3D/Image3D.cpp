@@ -4,17 +4,28 @@
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/Image3DGUI.h"
 
+Image3D::Image3D(const Vertex3D &position, float width, float height, std::string filePath)
+:
+    width(width),
+    height(height),
+    source(filePath)
+{
+    setPosition(position);
+}
+
 Image3D::Image3D(const Vertex3D &position, float width, float height, Image* image)
 :
     width(width),
     height(height),
     image(image)
 {
+    if (image != nullptr) {
+        source = image->getFileName().c_str();
+    }
     setPosition(position);
-    setSize(width, height);
 }
 
-void Image3D::setSize(float width, float height)
+void Image3D::ResetBuffersToSize(float width, float height)
 {
     setWidth(width);
     setHeight(height);
@@ -55,7 +66,7 @@ void Image3D::setSize(float width, float height)
     for (int i = 0; i < 6; ++i)
         normals.emplace_back(0.0f, 0.0f, 1.0f);
 
-    fillBuffers();
+    FillBuffers();
 }
 
 void Image3D::onUpdate()
@@ -97,7 +108,7 @@ void Image3D::onUpdate()
                 window->getGBuffer().FBO
             );
             if (Config::get()->ENABLE_SHADOW_MAPPING) {
-                shadowMappingPass();
+                ShadowMappingPass();
             }
         } else {
             render->getShaders()->shaderOGLRender->render(
@@ -169,31 +180,7 @@ void Image3D::DrawPropertiesGUI()
     Image3DGUI::DrawPropertiesGUI(this);
 }
 
-Image3D::~Image3D()
-{
-}
-
-ObjectType Image3D::getTypeObject() const
-{
-    return ObjectType::Image3D;
-}
-
-GUIType::Sheet Image3D::getIcon()
-{
-    return IconObject::IMAGE_3D;
-}
-
-void Image3D::setWidth(float value)
-{
-    width = value;
-}
-
-void Image3D::setHeight(float value)
-{
-    height = value;
-}
-
-void Image3D::fillBuffers()
+void Image3D::FillBuffers()
 {
     GLuint buffersToDelete[3] = {vertexBuffer, uvBuffer, normalBuffer};
     glDeleteBuffers(3, buffersToDelete);
@@ -211,42 +198,7 @@ void Image3D::fillBuffers()
     glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(normals.size() * sizeof(glm::vec3)), &normals[0], GL_STATIC_DRAW);
 }
 
-Image3D *Image3D::create(const Vertex3D &p, float w, float h, const std::string &file)
-{
-    return new Image3D(p, w, h, new Image(file));
-}
-
-GLuint Image3D::getVertexBuffer() const
-{
-    return vertexBuffer;
-}
-
-GLuint Image3D::getNormalBuffer() const
-{
-    return normalBuffer;
-}
-
-GLuint Image3D::getUVBuffer() const
-{
-    return uvBuffer;
-}
-
-std::vector<glm::vec4> Image3D::getVertices() const
-{
-    return vertices;
-}
-
-Image* Image3D::getImage() const
-{
-    return image;
-}
-
-void Image3D::setImage(Image* value)
-{
-    image = value;
-}
-
-void Image3D::shadowMappingPass()
+void Image3D::ShadowMappingPass()
 {
     auto render = Components::get()->Render();
     auto shaderShadowPass = render->getShaders()->shaderShadowPass;
@@ -301,4 +253,23 @@ void Image3D::LookAtBillboard()
 
     // Establecer la rotación con los vectores corregidos
     setRotation(M3::getFromVectors(forward, upVector));
+}
+
+void Image3D::setWidth(float value)
+{
+    width = value;
+}
+
+void Image3D::setHeight(float value)
+{
+    height = value;
+}
+
+void Image3D::setImage(Image* value)
+{
+    image = value;
+}
+
+Image3D::~Image3D()
+{
 }

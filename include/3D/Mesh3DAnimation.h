@@ -86,7 +86,6 @@ public:
     Mesh3DAnimation();
     ~Mesh3DAnimation() override;
 
-    int &BoneColliderIndexPointer();
     bool AssimpLoadAnimation(const std::string &filename);
     void onUpdate() override;
     void UpdateFrameTransformations();
@@ -99,8 +98,6 @@ public:
     void LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData);
     void DrawBones(aiNode *node, Vertex3D *lastBonePosition = nullptr);
     void setRemoveAtEndAnimation(bool removeAtEnds);
-    ObjectType getTypeObject() const override;
-    GUIType::Sheet getIcon() override;
     void DrawPropertiesGUI() override;
     void setAnimationSpeed(float value);
     void setIndexCurrentAnimation(int indexCurrentAnimation);
@@ -117,14 +114,18 @@ public:
     void ShadowMappingPass() override;
     void SetMappingBoneColliderInfo(const std::string& mappingName, unsigned int boneId, bool enabled, BoneCollisionShape shape);
     void UpdateBoneColliders();
+
     BonesMappingColliders *getBonesMappingByName(const std::string& name, int &index);
-    [[nodiscard]] bool isRemoveAtEndAnimation() const;
-    [[nodiscard]] bool isLoop() const;
-    [[nodiscard]] bool isAnimationEnds() const;
+    int &BoneColliderIndexPointer()                         { return boneColliderIndex; };
+    ObjectType getTypeObject() const override               { return ObjectType::Mesh3DAnimation; }
+    GUIType::Sheet getIcon() override                       { return IconObject::MESH_3D_ANIMATION; }
+    [[nodiscard]] bool isRemoveAtEndAnimation() const       { return removeOnAnimationEnd; }
+
+    [[nodiscard]] bool isLoop() const                       { return loop; }
+    [[nodiscard]] bool isAnimationEnds() const              { return finished; }
     [[nodiscard]] float getCurrentAnimationMaxTime() const;
     [[nodiscard]] const std::vector<BonesMappingColliders> *getBoneMappingColliders() const;
 
-    static Mesh3DAnimation* create(const Vertex3D &position, const std::string& animationFile);
     static void CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
     static void CalcInterpolatedScaling(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
     static void CalcInterpolatedPosition(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);

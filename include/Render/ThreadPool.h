@@ -12,12 +12,12 @@
 #include <condition_variable>
 #include <vector>
 #include <atomic>
-#include "PendingJob.h"
+#include "../Threads/ThreadJobBase.h"
 
 class ThreadPool {
 private:
     std::vector<std::thread> workers;
-    std::queue<std::shared_ptr<PendingJob>> tasks;
+    std::queue<std::shared_ptr<ThreadJobBase>> tasks;
     std::queue<std::function<void()>> mainThreadCallbacks;
 
     mutable std::mutex queueMutex;
@@ -32,10 +32,10 @@ public:
     ~ThreadPool();
 
     // Encolar job con callback en worker thread
-    void enqueue(std::shared_ptr<PendingJob> job);
+    void enqueue(std::shared_ptr<ThreadJobBase> job);
 
     // Encolar job con callback diferido al main thread
-    void enqueueWithMainThreadCallback(std::shared_ptr<PendingJob> job);
+    void enqueueWithMainThreadCallback(std::shared_ptr<ThreadJobBase> job);
 
     // Procesar callbacks en main thread
     void processMainThreadCallbacks();

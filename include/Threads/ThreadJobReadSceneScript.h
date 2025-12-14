@@ -5,24 +5,24 @@
 #ifndef BRAKEZA3D_JOBREADSCENESCRIPT_H
 #define BRAKEZA3D_JOBREADSCENESCRIPT_H
 
-#include "PendingJob.h"
+#include "ThreadJobBase.h"
 #include "../Components/Components.h"
 #include "../Misc/cJSON.h"
 
-class JobReadSceneScript : public PendingJob
+class ThreadJobReadSceneScript : public ThreadJobBase
 {
     cJSON *json;
 public:
-    JobReadSceneScript(cJSON *json)
+    ThreadJobReadSceneScript(cJSON *json)
     :
-        PendingJob([this](){ process(); }, [this]() { callback(); }),
+        ThreadJobBase([this](){ process(); }, [this]() { callback(); }),
         json(cJSON_Duplicate(json, 1))
     {
     }
 
     void process()
     {
-        Logging::Message("[Pools] JobReadSceneScript process");
+        Logging::Message("[Pools] ThreadJobReadSceneScript process");
 
         /*if (cJSON_GetObjectItemCaseSensitive(json, "scripts") != nullptr) {
             cJSON *currentScript;

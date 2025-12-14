@@ -86,68 +86,68 @@ void GUIAddonMenu::MenuAddObject()
     ImGui::Image(FileSystemGUI::Icon(IconObject::OBJECT_3D), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Object3D (Empty)")) {
-        Object3DSerializer().LoadFileIntoScene("");
+        Object3DSerializer().MenuLoad("");
     }
     ImGui::SeparatorText("2D Objects");
     ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_2D), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Image2D")) {
-        DrawItemsToLoad(setup->IMAGES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_2D, [](const std::string& path) { Image2DSerializer().LoadFileIntoScene(path); });
+        DrawItemsToLoad(setup->IMAGES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_2D, [](const std::string& path) { Image2DSerializer().MenuLoad(path); });
         ImGui::EndMenu();
     }
     ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_2D_ANIMATION), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Image2D Animation")) {
-        DrawItemsToLoad(setup->SPRITES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_2D_ANIMATION, [](const std::string& path) { Image2DAnimationSerializer().LoadFileIntoScene(path); });
+        DrawItemsToLoad(setup->SPRITES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_2D_ANIMATION, [](const std::string& path) { Image2DAnimationSerializer().MenuLoad(path); });
         ImGui::EndMenu();
     }
     ImGui::SeparatorText("3D Objects");
     ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Image3D")) {
-        DrawItemsToLoad(setup->IMAGES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_3D ,[](const std::string& path) { Image3DSerializer().LoadFileIntoScene(path); });
+        DrawItemsToLoad(setup->IMAGES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_3D ,[](const std::string& path) { Image3DSerializer().MenuLoad(path); });
         ImGui::EndMenu();
     }
     ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Image3D Animation")) {
-        DrawItemsToLoad(setup->SPRITES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_3D_ANIMATION, [](const std::string& path) { Image3DAnimationSerializer().LoadFileIntoScene(path); });
+        DrawItemsToLoad(setup->SPRITES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_3D_ANIMATION, [](const std::string& path) { Image3DAnimationSerializer().MenuLoad(path); });
         ImGui::EndMenu();
     }
     ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION_360), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Image3D Animation 360")) {
-        Image3DAnimation360Serializer().LoadFileIntoScene("");
+        Image3DAnimation360Serializer().MenuLoad("");
         ImGui::EndMenu();
     }
     ImGui::Image(FileSystemGUI::Icon(IconObject::MESH_3D), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Mesh3D")) {
-        DrawItemsToLoad(setup->MODELS_FOLDER, Config::get()->MESH3D_EXT, IconObject::MESH_3D, [](const std::string& path) { Mesh3DSerializer().LoadFileIntoScene(path); });
+        DrawItemsToLoad(setup->MODELS_FOLDER, Config::get()->MESH3D_EXT, IconObject::MESH_3D, [](const std::string& path) { Mesh3DSerializer().MenuLoad(path); });
         ImGui::EndMenu();
     }
     ImGui::Image(FileSystemGUI::Icon(IconObject::MESH_3D_ANIMATION), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Mesh3DAnimation")) {
-        DrawItemsToLoad(setup->ANIMATIONS_FOLDER, Config::get()->MESH3D_EXT, IconObject::MESH_3D_ANIMATION, [](const std::string& path) { Mesh3DAnimationSerializer().LoadFileIntoScene(path); });
+        DrawItemsToLoad(setup->ANIMATIONS_FOLDER, Config::get()->MESH3D_EXT, IconObject::MESH_3D_ANIMATION, [](const std::string& path) { Mesh3DAnimationSerializer().MenuLoad(path); });
         ImGui::EndMenu();
     }
     ImGui::SeparatorText("Lights");
     ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_POINT), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("PointLight")) {
-        LightPointSerializer().LoadFileIntoScene("");
+        LightPointSerializer().MenuLoad("");
     }
     ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_SPOT), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("SpotLight")) {
-        LightSpotSerializer().LoadFileIntoScene("");
+        LightSpotSerializer().MenuLoad("");
     }
     ImGui::SeparatorText("Emitters");
     ImGui::Image(FileSystemGUI::Icon(IconObject::PARTICLE_EMITTER), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("ParticleEmitter")) {
-        ParticleEmmitterSerializer().LoadFileIntoScene("");
+        ParticleEmmitterSerializer().MenuLoad("");
         ImGui::EndMenu();
     }
 }

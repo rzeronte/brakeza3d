@@ -2,11 +2,10 @@
 // Created by Eduardo on 06/12/2025.
 //
 
-#include "GUIAddonProjectSetup.h"
-
-#include "../../Components/Components.h"
+#include "../../../include/GUI/AddOns/GUIAddonProjectSetup.h"
+#include "../../../include/Components/Components.h"
 #include "../include/Brakeza.h"
-#include "../Objects/FileSystemGUI.h"
+#include "../../../include/GUI/Objects/FileSystemGUI.h"
 
 GUIAddonProjectSetup::GUIAddonProjectSetup()
 {

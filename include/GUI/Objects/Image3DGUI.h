@@ -23,7 +23,7 @@ public:
                 ImGui::DragScalar("Height", ImGuiDataType_Float, &o->height,1.f, &range_min_int, &range_max_int, "%f", 1.0f);
 
                 if (ImGui::Button(std::string("Update size").c_str())) {
-                    o->setSize(o->width, o->height);
+                    o->ResetBuffersToSize(o->width, o->height);
                 }
                 ImGui::TreePop();
             }

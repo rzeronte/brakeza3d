@@ -16,21 +16,32 @@ public:
         if (ImGui::CollapsingHeader("Image2D")) {
 
             const int range_min_int = 1;
-            const int range_max_int = 1280;
-
-            if (ImGui::TreeNode("Screen Position")) {
-                if (ImGui::DragScalar("Offset X", ImGuiDataType_S32, &o->x,1.f, &range_min_int, &range_max_int, "%d", 1.0f)) {
-                    o->updatePosition(o->x, o->y);
+            const int range_max_int = Config::get()->screenWidth;
+            if (ImGui::TreeNode("Screen Size")) {
+                if (ImGui::DragScalar("Offset X", ImGuiDataType_S32, &o->width,1.f, &range_min_int, &range_max_int, "%d", 1.0f)) {
+                    o->setScreenPosition(o->x, o->y);
                 }
-                if (ImGui::DragScalar("Offset Y", ImGuiDataType_S32, &o->y,1.f, &range_min_int, &range_max_int, "%d", 1.0f)) {
-                    o->updatePosition(o->x, o->y);
+                if (ImGui::DragScalar("Offset Y", ImGuiDataType_S32, &o->height,1.f, &range_min_int, &range_max_int, "%d", 1.0f)) {
+                    o->setScreenPosition(o->x, o->y);
                 }
                 ImGui::TreePop();
             }
-
+            ImGui::Separator();
+            if (ImGui::TreeNode("Screen Position")) {
+                if (ImGui::DragScalar("Offset X", ImGuiDataType_S32, &o->x,1.f, &range_min_int, &range_max_int, "%d", 1.0f)) {
+                    o->setScreenPosition(o->x, o->y);
+                }
+                if (ImGui::DragScalar("Offset Y", ImGuiDataType_S32, &o->y,1.f, &range_min_int, &range_max_int, "%d", 1.0f)) {
+                    o->setScreenPosition(o->x, o->y);
+                }
+                ImGui::TreePop();
+            }
+            ImGui::Separator();
             if (ImGui::TreeNode("Image")) {
                 if (o->image->isLoaded()) {
-                    ImGui::Image(o->image->getOGLImTexture(),ImVec2(32, 32));
+                    float fixedWidth = std::min((int) ImGui::GetContentRegionAvail().x, o->image->width());
+                    float height = fixedWidth * ((float) o->image->height() / (float) o->image->width());
+                    ImGui::Image(o->image->getOGLImTexture(), ImVec2(fixedWidth, height));
                 } else {
                     ImGui::Text("No image selected. Drag a texture here!");
                 }

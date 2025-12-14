@@ -289,17 +289,11 @@ inline void LUAIntegration(sol::state &lua)
         "BuildOctree", &Mesh3D::BuildOctree,
         "FillGrid3DFromGeometry", &Mesh3D::FillGrid3DFromGeometry,
         "getOctree", &Mesh3D::getOctree,
-        "getGrid3D", &Mesh3D::getGrid3D,
-        "create", sol::factories([](Vertex3D position, const std::string& imageFile) {
-            return Mesh3D::create(position, imageFile);
-        })
+        "getGrid3D", &Mesh3D::getGrid3D
     );
 
     lua.new_usertype<Mesh3DAnimation>("Mesh3DAnimation",
     sol::base_classes, sol::bases<Mesh3D, Object3D>(),
-        "create", sol::factories([](Vertex3D position, const std::string& imageFile) {
-            return Mesh3DAnimation::create(position,imageFile);
-        }),
         "setIndexCurrentAnimation", &Mesh3DAnimation::setIndexCurrentAnimation,
         "setAnimationByName", &Mesh3DAnimation::setAnimationByName,
         "setAnimationSpeed", &Mesh3DAnimation::setAnimationSpeed,
@@ -310,19 +304,13 @@ inline void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<Image3DAnimation>("BillboardAnimation",
     sol::base_classes, sol::bases<Object3D>(),
-        "create", sol::factories([](Vertex3D position, float w, float h, const std::string& imageFile, int spriteW, int spriteH, int numFrames, int fps) {
-            return Image3DAnimation::create(position, w, h, imageFile, spriteW, spriteH, numFrames, fps);
-        }),
-        "addAnimation", &Image3DAnimation::addAnimation,
+        "CreateAnimation", &Image3DAnimation::CreateAnimation,
         "setAnimation", &Image3DAnimation::setAnimation,
-        "updateBillboardSize", &Image3DAnimation::updateBillboardSize
+        "UpdateBillboardSize", &Image3DAnimation::UpdateBillboardSize
     );
 
     lua.new_usertype<Image3DAnimation360>("BillboardAnimation8Directions",
-    sol::base_classes, sol::bases<Object3D>(),
-        "create", sol::factories([](Vertex3D position, float w, float h, const std::string& spriteFolder, int numFrames, int fps) {
-          return Image3DAnimation360::create(position, w, h, spriteFolder, numFrames, fps);
-        })
+        sol::base_classes, sol::bases<Object3D>()
     );
 
     lua.new_usertype<ScriptLUATypeData>("ScriptLUATypeData",
@@ -338,25 +326,16 @@ inline void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<Image2D>("Image2D",
     sol::base_classes, sol::bases<Object3D>(),
-        "create", sol::factories([](int x, int y, const std::string& imageFile) {
-            return Image2D::create(x, y, imageFile);
-        }),
-        "updatePosition", &Image2D::updatePosition
+        "setScreenPosition", &Image2D::setScreenPosition
     );
 
     lua.new_usertype<Image2DAnimation>("Image2DAnimation",
     sol::base_classes, sol::bases<Object3D>(),
-        "create", sol::factories([](int x, int y, const std::string& imageFile, int w, int h, int frames, int fps) {
-            return Image2DAnimation::create(x, y, imageFile, w, h, frames, fps);
-        }),
         "updatePosition", &Image2DAnimation::updatePosition
     );
 
     lua.new_usertype<Image3D>("Image3D",
-       sol::base_classes, sol::bases<Object3D>(),
-       "create", sol::factories([](Vertex3D p, float w, float h, const std::string& imageFile) {
-            return Image3D::create(p, w, h, imageFile);
-        })
+       sol::base_classes, sol::bases<Object3D>()
     );
 
     lua.new_usertype<LightPoint>("LightPoint3D",
@@ -366,19 +345,13 @@ inline void LUAIntegration(sol::state &lua)
         "setCuadratic", &LightPoint::setCuadratic,
         "setColor", &LightPoint::setColor,
         "setColorSpecular", &LightPoint::setColorSpecular,
-        "setAmbient", &LightPoint::setAmbient,
-        "create", sol::factories([](Vertex3D p) {
-            return LightPoint::create(p);
-        })
+        "setAmbient", &LightPoint::setAmbient
     );
 
     lua.new_usertype<LightSpot>("SpotLight3D",
     sol::base_classes, sol::bases<LightPoint, Object3D>(),
         "setCutOff", &LightSpot::setCutOff,
-        "setOuterCutOff", &LightSpot::setOuterCutOff,
-        "create", sol::factories([](Vertex3D position, Vertex3D direction) {
-            return LightSpot::create(position, direction);
-        })
+        "setOuterCutOff", &LightSpot::setOuterCutOff
     );
 
     lua.new_usertype<ScriptLUA>(
@@ -396,10 +369,7 @@ inline void LUAIntegration(sol::state &lua)
         ),
         "UpdateFileTypes", &ScriptLUA::updateFileTypes,
         "getCode", &ScriptLUA::getCode,
-        "dataTypesFileFor", &ScriptLUA::dataTypesFileFor,
-        "create", sol::factories([](const std::string& scriptFile) {
-            return ScriptLUA::create(scriptFile);
-        })
+        "dataTypesFileFor", &ScriptLUA::dataTypesFileFor
     );
 
     lua.new_usertype<ParticlesContext>("ParticlesContext",
@@ -424,17 +394,7 @@ inline void LUAIntegration(sol::state &lua)
     );
 
     lua.new_usertype<ParticleEmitter>("ParticleEmitter",
-    sol::base_classes, sol::bases<Object3D>(),
-        "create", sol::factories([](
-              Vertex3D position,
-              float ttl,
-              Color cf,
-              Color ct,
-              ParticlesContext context,
-              const std::string& imageFile
-        ) {
-            return ParticleEmitter::create(position, ttl, cf, ct, context, imageFile);
-        })
+        sol::base_classes, sol::bases<Object3D>()
     );
 
     lua.new_enum("CollisionShape",

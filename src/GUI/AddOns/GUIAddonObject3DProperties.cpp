@@ -2,11 +2,11 @@
 // Created by Eduardo on 06/12/2025.
 //
 
-#include "GUIAddonObject3DProperties.h"
+#include "../../../include/GUI/AddOns/GUIAddonObject3DProperties.h"
 
-#include "../../Brakeza.h"
-#include "../../Components/Components.h"
-#include "../Objects/FileSystemGUI.h"
+#include "../../../include/Brakeza.h"
+#include "../../../include/Components/Components.h"
+#include "../../../include/GUI/Objects/FileSystemGUI.h"
 
 GUIAddonObject3DProperties::GUIAddonObject3DProperties()
 {

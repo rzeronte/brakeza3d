@@ -5,25 +5,25 @@
 #ifndef BRAKEZA3D_JOBREADSCENESHADERS_H
 #define BRAKEZA3D_JOBREADSCENESHADERS_H
 
-#include "PendingJob.h"
+#include "ThreadJobBase.h"
 #include "../Components/Components.h"
 #include "../Misc/cJSON.h"
 #include "../OpenGL/ShaderOGLCustomPostprocessing.h"
 
-class JobReadSceneShaders : public PendingJob
+class ThreadJobReadSceneShaders : public ThreadJobBase
 {
     cJSON *json;
 public:
-    JobReadSceneShaders(cJSON *json)
+    ThreadJobReadSceneShaders(cJSON *json)
     :
-        PendingJob([this](){ process(); }, [this]() { callback(); }),
+        ThreadJobBase([this](){ process(); }, [this]() { callback(); }),
         json(cJSON_Duplicate(json, 1))
     {
     }
 
     void process()
     {
-        Logging::Message("[Pools] JobReadSceneShaders callback");
+        Logging::Message("[Pools] ThreadJobReadSceneShaders callback");
 
         /*cJSON *currentShaderJSON;
         cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {

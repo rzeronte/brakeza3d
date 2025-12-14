@@ -24,7 +24,6 @@ public:
     ObjectType getTypeObject() const override;
     GUIType::Sheet getIcon() override;
     void DrawPropertiesGUI() override;
-    static LightPoint* create(Vertex3D position);
     void setAmbient(const Color &c);
 
     friend class LightPointSerializer;

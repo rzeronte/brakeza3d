@@ -56,20 +56,16 @@ ParticleEmitter::ParticleEmitter(
     // Initialize with empty (NULL) buffer : it will be updated later, each frame.
     glBufferData(GL_ARRAY_BUFFER, MaxParticles * 4 * sizeof(GLubyte), NULL, GL_STREAM_DRAW);
 
-    for (int i=0; i<MaxParticles; i++){
+    for (int i=0; i<MaxParticles; i++) {
         ParticlesContainer[i].life = -1.0f;
         ParticlesContainer[i].cameradistance = -1.0f;
     }
 }
 
-bool ParticleEmitter::isActive() const {
-    return active;
-}
-
 void ParticleEmitter::postUpdate()
 {
     Object3D::postUpdate();
-    draw();
+    Draw();
 }
 
 void ParticleEmitter::onUpdate()
@@ -78,7 +74,7 @@ void ParticleEmitter::onUpdate()
 
 }
 
-void ParticleEmitter::draw()
+void ParticleEmitter::Draw()
 {
     if (isRemoved() || !isActive() || !isEnabled() || texture == nullptr) return;
 
@@ -170,7 +166,7 @@ void ParticleEmitter::draw()
                 g_particule_color_data[4*ParticlesCount+2] = p.b;
                 g_particule_color_data[4*ParticlesCount+3] = p.a;
 
-            }else{
+            } else {
                 // Particles that just died will be put at the end of the buffer in SortParticles();
                 p.cameradistance = -1.0f;
             }
@@ -189,27 +185,12 @@ void ParticleEmitter::draw()
     glBufferSubData(GL_ARRAY_BUFFER, 0, ParticlesCount * sizeof(GLubyte) * 4, g_particule_color_data);
 
     Components::get()->Render()->getShaders()->shaderOGLParticles->render(
-            billboard_vertex_buffer,
-            particles_position_buffer,
-            particles_color_buffer,
-            texture->getOGLTextureID(),
-            ParticlesCount
+        billboard_vertex_buffer,
+        particles_position_buffer,
+        particles_color_buffer,
+        texture->getOGLTextureID(),
+        ParticlesCount
     );
-}
-
-void ParticleEmitter::setStopAdd(bool stopAdd)
-{
-    ParticleEmitter::stopAdd = stopAdd;
-}
-
-ObjectType ParticleEmitter::getTypeObject() const
-{
-    return ObjectType::ParticleEmitter;
-}
-
-GUIType::Sheet ParticleEmitter::getIcon()
-{
-    return IconObject::PARTICLE_EMITTER;
 }
 
 void ParticleEmitter::DrawPropertiesGUI()
@@ -218,19 +199,8 @@ void ParticleEmitter::DrawPropertiesGUI()
     ParticleEmitterGUI::DrawPropertiesGUI(this);
 }
 
-void ParticleEmitter::setContext(const ParticlesContext &context) {
-    ParticleEmitter::context = context;
-}
-
-void ParticleEmitter::setColorTo(const Color &colorTo) {
-    ParticleEmitter::colorTo = colorTo;
-}
-
-void ParticleEmitter::setColorFrom(const Color &colorFrom) {
-    ParticleEmitter::colorFrom = colorFrom;
-}
-
-[[maybe_unused]] void ParticleEmitter::SortParticles(){
+[[maybe_unused]] void ParticleEmitter::SortParticles()
+{
     std::sort(&ParticlesContainer[0], &ParticlesContainer[MaxParticles]);
 }
 
@@ -243,8 +213,8 @@ int ParticleEmitter::FindUnusedParticle()
         }
     }
 
-    for(int i=0; i<LastUsedParticle; i++){
-        if (ParticlesContainer[i].life < 0){
+    for(int i=0; i<LastUsedParticle; i++) {
+        if (ParticlesContainer[i].life < 0) {
             LastUsedParticle = i;
             return i;
         }
@@ -253,7 +223,6 @@ int ParticleEmitter::FindUnusedParticle()
     return 0; // All particles are taken, override the first one
 }
 
-// Función para agregar ruido a un glm::vec3 que representa una dirección
 glm::vec3 ParticleEmitter::AddNoiseToDirection(const glm::vec3& direction, int noiseRange) {
     // Generar ángulos de ruido en los tres ejes
     float noiseX = glm::radians(static_cast<float>(Tools::random(-noiseRange, noiseRange)));
@@ -271,50 +240,27 @@ glm::vec3 ParticleEmitter::AddNoiseToDirection(const glm::vec3& direction, int n
     return glm::normalize(noisyDirection);  // Normalizar el vector resultante
 }
 
-ParticleEmitter *ParticleEmitter::create(
-    const Vertex3D &p,
-    float ttl,
-    const Color &cf,
-    const Color &ct,
-    ParticlesContext c,
-    const std::string& file
-)
-{
-    auto *o = new ParticleEmitter(
-        DEFAULT,
-        nullptr,
-        p,
-        ttl,
-        cf,
-        ct,
-        c,
-        new Image(file)
-    );
-
-    return o;
-}
-
-ParticlesContext& ParticleEmitter::getContextPointer()
-{
-    return context;
-}
-
-Color ParticleEmitter::getColorTo() const
-{
-    return colorTo;
-}
-
-Color ParticleEmitter::getColorFrom() const
-{
-    return colorFrom;
-}
-
-Image * ParticleEmitter::getTexture() const
-{
-    return texture;
-}
-
 void ParticleEmitter::setTexture(Image *texture)
 {
     ParticleEmitter::texture = texture;
+}
+
+void ParticleEmitter::setContext(const ParticlesContext &context)
+{
+    ParticleEmitter::context = context;
+}
+
+void ParticleEmitter::setColorTo(const Color &colorTo)
+{
+    ParticleEmitter::colorTo = colorTo;
+}
+
+void ParticleEmitter::setColorFrom(const Color &colorFrom)
+{
+    ParticleEmitter::colorFrom = colorFrom;
+}
+
+void ParticleEmitter::setStopAdd(bool stopAdd)
+{
+    ParticleEmitter::stopAdd = stopAdd;
 }

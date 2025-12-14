@@ -19,7 +19,7 @@ void Image3DAnimation::onUpdate()
 {
     Object3D::onUpdate();
 
-    this->updateTrianglesCoordinatesAndTexture();
+    this->UpdateTrianglesCoordinatesAndTexture();
 
     Components::get()->Render()->getShaders()->shaderOGLRender->render(
         this,
@@ -46,17 +46,12 @@ void Image3DAnimation::onUpdate()
     }
 }
 
-void Image3DAnimation::addAnimation(const std::string& sprite, int w, int h, int numFrames, int fps)
+void Image3DAnimation::CreateAnimation(const std::string& sprite, int w, int h, int numFrames, int fps)
 {
     this->animations.emplace_back(new TextureAnimated(sprite, w, h, numFrames, fps));
 }
 
-void Image3DAnimation::setAnimation(int value)
-{
-    this->currentAnimationIndex = value;
-}
-
-void Image3DAnimation::updateTexture()
+void Image3DAnimation::UpdateTexture()
 {
     if (animations.empty()) return;
 
@@ -73,20 +68,17 @@ void Image3DAnimation::updateTexture()
     billboard->setImage(this->animations[currentAnimationIndex]->getCurrentFrame());
 }
 
-void Image3DAnimation::updateTrianglesCoordinatesAndTexture()
+void Image3DAnimation::UpdateTrianglesCoordinatesAndTexture()
 {
-    billboard->setSize(width, height);
-    updateTexture();
+    billboard->ResetBuffersToSize(width, height);
+    UpdateTexture();
 }
 
-bool Image3DAnimation::isAutoRemoveAfterAnimation() const
+void Image3DAnimation::LoadAnimationFiles() const
 {
-    return autoRemoveAfterAnimation;
-}
-
-void Image3DAnimation::setAutoRemoveAfterAnimation(bool value)
-{
-    autoRemoveAfterAnimation = value;
+    for (auto &a : animations) {
+        a->LoadCurrentSetup();
+    }
 }
 
 void Image3DAnimation::LinkTextureIntoAnotherImage3DAnimation(const Image3DAnimation *to)
@@ -100,33 +92,7 @@ void Image3DAnimation::LinkTextureIntoAnotherImage3DAnimation(const Image3DAnima
     sharedTextures = true;
 }
 
-TextureAnimated *Image3DAnimation::getCurrentTextureAnimation() const
-{
-    return this->animations[currentAnimationIndex];
-}
-
-Image3DAnimation::~Image3DAnimation()
-{
-    delete billboard;
-
-    if (!sharedTextures) {
-        for (auto animation : animations) {
-            delete animation;
-        }
-    }
-}
-
-ObjectType Image3DAnimation::getTypeObject() const
-{
-    return ObjectType::Image3DAnimation;
-}
-
-GUIType::Sheet Image3DAnimation::getIcon()
-{
-    return IconObject::IMAGE_3D_ANIMATION;
-}
-
-void Image3DAnimation::updateBillboardSize() const
+void Image3DAnimation::UpdateBillboardSize() const
 {
     billboard->setWidth(width);
     billboard->setHeight(height);
@@ -138,20 +104,23 @@ void Image3DAnimation::DrawPropertiesGUI()
     Image3DAnimationGUI::DrawPropertiesGUI(this);
 }
 
-Image3DAnimation* Image3DAnimation::create(
-    const Vertex3D &position,
-    float width,
-    float height,
-    const std::string &imageFile,
-    int spriteWidth,
-    int spriteHeight,
-    int frames,
-    int fps
-) {
-    auto o = new Image3DAnimation(position, width, height);
-    o->addAnimation(imageFile, spriteWidth, spriteHeight, frames, fps);
-    o->setAnimation(0);
-    o->setPosition(position);
+void Image3DAnimation::setAnimation(int value)
+{
+    this->currentAnimationIndex = value;
+}
 
-    return o;
+void Image3DAnimation::setAutoRemoveAfterAnimation(bool value)
+{
+    autoRemoveAfterAnimation = value;
+}
+
+Image3DAnimation::~Image3DAnimation()
+{
+    delete billboard;
+
+    if (!sharedTextures) {
+        for (auto animation : animations) {
+            delete animation;
+        }
+    }
 }

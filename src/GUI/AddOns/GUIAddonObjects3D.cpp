@@ -2,10 +2,10 @@
 // Created by Eduardo on 06/12/2025.
 //
 
-#include "GUIAddonObjects3D.h"
+#include "../../../include/GUI/AddOns/GUIAddonObjects3D.h"
 
-#include "../../Brakeza.h"
-#include "../Objects/FileSystemGUI.h"
+#include "../../../include/Brakeza.h"
+#include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../include/Components/Components.h"
 
 GUIAddonObjects3D::GUIAddonObjects3D()

@@ -11,6 +11,7 @@
 #include "../../include/Serializers/JSONSerializerRegistry.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Serializers/LightPointSerializer.h"
+#include "../../include/Threads/ThreadJobLoadLightSpot.h"
 
 cJSON * LightSpotSerializer::JsonByObject(Object3D *o)
 {
@@ -41,6 +42,8 @@ Object3D * LightSpotSerializer::ObjectByJson(cJSON *json)
 
     ApplyJsonToObject(json, o);
 
+    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadLightSpot>(o, json));
+
     return o;
 }
 
@@ -54,7 +57,7 @@ void LightSpotSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     spot->setOuterCutOff(static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "outerCutOff")->valuedouble));
 }
 
-void LightSpotSerializer::LoadFileIntoScene(const std::string &file)
+void LightSpotSerializer::MenuLoad(const std::string &file)
 {
     auto o = new LightSpot(
         glm::vec4(0.05f, 0.05f, 0.05f, 0),
@@ -67,7 +70,9 @@ void LightSpotSerializer::LoadFileIntoScene(const std::string &file)
         0.9659
     );
 
+    o->setName(Brakeza::UniqueObjectLabel("LightSpot"));
     o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
 
-    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("SpotLight3D"));
+    auto json = LightSpotSerializer::JsonByObject(o);
+    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadLightSpot>(o, json));
 }

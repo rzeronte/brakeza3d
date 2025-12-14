@@ -14,15 +14,11 @@ Image3DAnimation360::Image3DAnimation360(const Vertex3D &position, float width, 
     height(height)
 {
     counterAnimations = new Counter();
-
-    /*for (auto & animation : this->animations) {
-        animation = new TextureAnimatedDirectional();
-    }*/
 }
 
 void Image3DAnimation360::onUpdate()
 {
-    if (static_cast<int>(animations.size()) <= 0) return;
+    if ((int) animations.size() <= 0) return;
 
     UpdateTrianglesCoordinates(Components::get()->Camera()->getCamera());
 
@@ -41,33 +37,40 @@ void Image3DAnimation360::onUpdate()
 
 void Image3DAnimation360::UpdateTrianglesCoordinates(Camera3D *cam)
 {
-    updateTextureFromCameraAngle(this, cam);
+    UpdateTextureFromCameraAngle(this, cam);
 }
 
-void Image3DAnimation360::addAnimationDirectional2D(
-    const std::string& animation_folder,
-    int numFrames,
-    int fps,
-    bool zeroDirection,
-    int maxTimes
-)
+void Image3DAnimation360::CreateAnimationDirectional2D(TextureAnimatedDirectional* animation, bool zeroDirection)
 {
-    Logging::Message("Adding TextureAnimatedDirectional to SpriteDirectional(%s)...", animation_folder.c_str(), getName().c_str());
-    auto animation = new TextureAnimatedDirectional();
-
-    animation->LoadAnimationFile(animation_folder, numFrames, fps, maxTimes);
-
     if (!zeroDirection) {
         animation->LoadImages();
     } else {
         animation->LoadImagesForZeroDirection();
         animation->setIsZeroDirection(true);
     }
-
     animations.push_back(animation);
 }
 
-void Image3DAnimation360::updateTextureFromCameraAngle(Object3D *o, Camera3D *cam) const
+void Image3DAnimation360::CreateAnimationDirectional2D(const std::string& folder, int numFrames,int fps, bool zeroDirection, int maxTimes)
+{
+    Logging::Message("[Image3DAnimation360] Adding directional texture to SpriteDirectional(%s)...", folder.c_str(), getName().c_str());
+
+    animations.push_back(new TextureAnimatedDirectional(folder, numFrames, fps, maxTimes));
+}
+
+void Image3DAnimation360::LoadAnimations() const
+{
+    for (auto &a: animations) {
+        if (a->hasZeroDirection()) {
+            a->LoadImagesForZeroDirection();
+            a->setIsZeroDirection(true);
+        } else {
+            a->LoadImages();
+        }
+    }
+}
+
+void Image3DAnimation360::UpdateTextureFromCameraAngle(Object3D *o, Camera3D *cam) const
 {
     if (animations.empty()) return;
 
@@ -91,14 +94,11 @@ void Image3DAnimation360::updateTextureFromCameraAngle(Object3D *o, Camera3D *ca
 
 void Image3DAnimation360::setAnimation(int indexAnimation)
 {
-    this->currentAnimation = indexAnimation;
-    this->updateStep();
-    this->counterAnimations->setStep(step);
-}
+    if (indexAnimation < 0 ) return;
 
-TextureAnimatedDirectional *Image3DAnimation360::getCurrentTextureAnimationDirectional() const
-{
-    return this->animations[currentAnimation];
+    this->currentIndexAnimation = indexAnimation;
+    this->UpdateStep();
+    this->counterAnimations->setStep(step);
 }
 
 int Image3DAnimation360::getDirectionForAngle(float enemyAngle)
@@ -123,7 +123,7 @@ int Image3DAnimation360::getDirectionForAngle(float enemyAngle)
     return 1;
 }
 
-void Image3DAnimation360::updateStep()
+void Image3DAnimation360::UpdateStep()
 {
     step = 1.0f / (float) this->getCurrentTextureAnimationDirectional()->getFps();
     counterAnimations->setStep(step);
@@ -135,34 +135,8 @@ void Image3DAnimation360::DrawPropertiesGUI()
     Image3DAnimation360GUI::DrawPropertiesGUI(this);
 }
 
-ObjectType Image3DAnimation360::getTypeObject() const
-{
-    return ObjectType::Image3DAnimation360;
-}
-
-GUIType::Sheet Image3DAnimation360::getIcon()
-{
-    return IconObject::IMAGE_3D_ANIMATION_360;
-}
-
-void Image3DAnimation360::updateBillboardSize() const
+void Image3DAnimation360::UpdateBillboardSize() const
 {
     billboard->setWidth(width);
     billboard->setHeight(height);
-}
-
-Image3DAnimation360* Image3DAnimation360::create(
-        const Vertex3D &position,
-        float width,
-        float height,
-        const std::string &folderSprite,
-        int frames,
-        int fps
-) {
-    auto o = new Image3DAnimation360(position, width, height);
-    o->addAnimationDirectional2D(folderSprite, frames, fps, false, -1);
-    o->setAnimation(0);
-    o->setPosition(position);
-
-    return o;
 }

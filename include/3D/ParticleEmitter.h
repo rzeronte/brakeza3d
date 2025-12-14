@@ -49,26 +49,28 @@ public:
         Image *image
     );
 
-    int FindUnusedParticle();
-    ObjectType getTypeObject() const override;
-    GUIType::Sheet getIcon() override;
     void onUpdate() override;
-    void setStopAdd(bool stopAdd);
     void DrawPropertiesGUI() override;
+    int FindUnusedParticle();
+    void SortParticles();
+    void Draw();
+    void postUpdate() override;
+    glm::vec3 AddNoiseToDirection(const glm::vec3 &direction, int noiseRange);
+
     void setContext(const ParticlesContext &context);
     void setColorTo(const Color &colorTo);
     void setColorFrom(const Color &colorFrom);
-    void SortParticles();
-    void draw();
     void setTexture(Image *texture);
-    void postUpdate() override;
-    glm::vec3 AddNoiseToDirection(const glm::vec3 &direction, int noiseRange);
-    [[nodiscard]] bool isActive() const;
-    [[nodiscard]] ParticlesContext& getContextPointer();
-    [[nodiscard]] Color getColorTo() const;
-    [[nodiscard]] Color getColorFrom() const;
-    [[nodiscard]] Image * getTexture() const;
-    static ParticleEmitter* create(const Vertex3D &p, float ttl, const Color &cf, const Color &ct, ParticlesContext c, const std::string& file);
+    void setStopAdd(bool stopAdd);
+
+    [[nodiscard]] bool isActive() const                     { return active; }
+    [[nodiscard]] ParticlesContext& getContextPointer()     { return context; }
+    ObjectType getTypeObject() const override               { return ObjectType::ParticleEmitter; }
+    GUIType::Sheet getIcon() override                       { return IconObject::PARTICLE_EMITTER; }
+    [[nodiscard]] Color getColorTo() const                  { return colorTo; }
+    [[nodiscard]] Color getColorFrom() const                { return colorFrom; }
+    [[nodiscard]] Image * getTexture() const                { return texture; }
+
     friend class ParticleEmitterSerializer;
     friend class ParticleEmitterGUI;
 };
