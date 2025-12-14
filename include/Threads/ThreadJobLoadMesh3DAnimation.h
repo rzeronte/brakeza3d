@@ -52,7 +52,7 @@ public:
         Mesh3DSerializer::ApplyCustomShadersMainThread(mesh);
         Mesh3DSerializer::ApplyCollider(mesh, json);
 
-        Brakeza::get()->addObject3D(mesh, mesh->getName());
+        Brakeza::get()->AddObject3D(mesh, mesh->getName());
 
         Logging::Message("[ThreadJobLoadMesh3DAnimation] Callback END");
     }

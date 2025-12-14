@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_PARTICLEEMMITTERSERIALIZER_H
 #define BRAKEZA3D_PARTICLEEMMITTERSERIALIZER_H
 
-#include "JSONSerializer.h"
+#include "../Render/JSONSerializer.h"
 #include "../3D/Object3D.h"
 
 class ParticleEmmitterSerializer  : public JSONSerializer

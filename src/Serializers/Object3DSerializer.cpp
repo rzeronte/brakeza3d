@@ -6,7 +6,7 @@
 #define BRAKEZA3D_OBJECT3DSERIALIZER_CPP_H
 
 #include "../../include/Serializers/Object3DSerializer.h"
-#include "../../include/Serializers/JSONSerializerRegistry.h"
+#include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Threads/ThreadJobLoadObject.h"
@@ -196,7 +196,7 @@ Object3D * Object3DSerializer::ObjectByJson(cJSON *json)
 void Object3DSerializer::MenuLoad(const std::string &file)
 {
     auto o = new Object3D();
-    Brakeza::get()->addObject3D(o, Brakeza::UniqueObjectLabel("Object3D"));
+    Brakeza::get()->AddObject3D(o, Brakeza::UniqueObjectLabel("Object3D"));
 }
 
 #endif //BRAKEZA3D_OBJECT3DSERIALIZER_CPP_H

@@ -44,15 +44,13 @@ void Brakeza::RegisterComponents() const
 void Brakeza::PreMainLoop()
 {
     timer.start();
+    GUI()->OnStart();
 
     GUI::WelcomeMessage();
     GUI::ShowLoadTime("Time until components initialization", timer);
 
     OnStartComponents();             // Starting componentes
-    GUI()->OnStart();
     AutoLoadProjectOrContinue();     // Parse CLI options
-
-    Pool().processMainThreadCallbacks();
 
     // Profiler tags
     Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobal");
@@ -71,10 +69,8 @@ void Brakeza::MainLoop()
         Profiler::get()->ResetTotalFrameTime();                             // Reset profiler measures
         ControlFrameRate();                                                 // Control framerate based on SDL_Delay
         UpdateTimer();                                                      // Refresh main timer
-
-        PoolImages().processMainThreadCallbacks();
-        Pool().processMainThreadCallbacks();
-
+        PoolImages().processMainThreadCallbacks();                          // Main Thread pool images
+        PoolCompute().processMainThreadCallbacks();                         // Main Thread pool compute
         PreUpdateComponents();                                              // PreUpdate for componentes
         Components::get()->Render()->RunSceneShadersPreUpdate();            // Pre-pass running for shaders
         CaptureInputEvents(event);                                       // Capture keyboard/mouse status
@@ -109,7 +105,7 @@ void Brakeza::ControlFrameRate() const
     }
 }
 
-void Brakeza::addObject3D(Object3D *obj, const std::string &label)
+void Brakeza::AddObject3D(Object3D *obj, const std::string &label)
 {
     Logging::Message("[AddObject] Adding object '%s' to scene...", label.c_str());
     obj->setName(label);
@@ -205,8 +201,7 @@ Brakeza::~Brakeza()
 
 int Brakeza::getNextUniqueObjectId() const
 {
-    const int id = objects.size() + 10000;
-    Logging::Message("[Brakeza] Next Object Id: %d", id);
+    const int id = timer.getTicks();
     return id;
 }
 

@@ -214,3 +214,8 @@ void Image::setAlreadyLoaded()
 {
     loaded = true;
 }
+
+void Image::setFilePath(std::string &path)
+{
+    fileName = path;
+}

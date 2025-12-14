@@ -3,7 +3,7 @@
 //
 
 #include "../../include/Serializers/Image2DAnimationSerializer.h"
-#include "../../include/Serializers/JSONSerializerRegistry.h"
+#include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Brakeza.h"
 #include "../../include/2D/Image2DAnimation.h"
 #include "../../include/Components/Components.h"
@@ -52,7 +52,7 @@ Object3D * Image2DAnimationSerializer::ObjectByJson(cJSON *json)
 
     ApplyJsonToObject(json, o);
 
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2DAnimation>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2DAnimation>(o, json));
 
     return o;
 }
@@ -79,7 +79,7 @@ void Image2DAnimationSerializer::MenuLoad(const std::string &file)
     o->setPosition(Components::get()->Camera()->getCamera()->forward().getScaled(2));
 
     auto json = Image2DAnimationSerializer::JsonByObject(o);
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2DAnimation>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2DAnimation>(o, json));
 }
 
 void Image2DAnimationSerializer::ApplyAnimationLoad(Image2DAnimation *image)

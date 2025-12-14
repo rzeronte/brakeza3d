@@ -220,7 +220,7 @@ inline void LUAIntegration(sol::state &lua)
         "getExecutionTime", &Brakeza::getExecutionTime,
         "uniqueObjectLabel", &Brakeza::UniqueObjectLabel,
         "Shutdown", &Brakeza::Shutdown,
-        "addObject3D",  &Brakeza::addObject3D,
+        "AddObject3D",  &Brakeza::AddObject3D,
         "getObjectByName",&Brakeza::getObjectByName
     );
 

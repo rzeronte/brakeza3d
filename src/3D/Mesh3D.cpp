@@ -13,7 +13,7 @@
 
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/Mesh3DGUI.h"
-#include "../../include/Serializers/JSONSerializerRegistry.h"
+#include "../../include/Render/JSONSerializerRegistry.h"
 
 Mesh3D::Mesh3D()
 {

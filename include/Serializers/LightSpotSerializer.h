@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_SPOTLIGHTSERIALIZER_H
 #define BRAKEZA3D_SPOTLIGHTSERIALIZER_H
 
-#include "JSONSerializer.h"
+#include "../Render/JSONSerializer.h"
 #include "../3D/Object3D.h"
 
 class LightSpotSerializer : public JSONSerializer

@@ -2,7 +2,7 @@
 // Created by Eduardo on 23/11/2025.
 //
 
-#include "../../include/Serializers/JSONSerializerRegistry.h"
+#include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/3D/Object3D.h"
 #include "../../include/Misc/Logging.h"
 

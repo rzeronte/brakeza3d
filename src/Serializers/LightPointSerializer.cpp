@@ -7,7 +7,7 @@
 #include "../../include/3D/LightPoint.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/ToolsJSON.h"
-#include "../../include/Serializers/JSONSerializerRegistry.h"
+#include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 #include "../../include/Threads/ThreadJobLoadLightPoint.h"
 
@@ -45,7 +45,7 @@ Object3D * LightPointSerializer::ObjectByJson(cJSON *json)
 
     ApplyJsonToObject(json, o);
 
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadLightPoint>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadLightPoint>(o, json));
 
     return o;
 }
@@ -81,5 +81,5 @@ void LightPointSerializer::MenuLoad(const std::string &model)
     o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
 
     auto json = LightPointSerializer::JsonByObject(o);
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadLightPoint>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadLightPoint>(o, json));
 }

@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_IMAGE3DANIMATION8DIRECTIONSSERIALIZER_H
 #define BRAKEZA3D_IMAGE3DANIMATION8DIRECTIONSSERIALIZER_H
 
-#include "JSONSerializer.h"
+#include "../Render/JSONSerializer.h"
 #include "../3D/Image3DAnimation360.h"
 #include "../3D/Object3D.h"
 

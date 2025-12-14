@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_IMAGE2DSERIALIZER_H
 #define BRAKEZA3D_IMAGE2DSERIALIZER_H
 
-#include "JSONSerializer.h"
+#include "../Render/JSONSerializer.h"
 #include "../2D/Image2D.h"
 #include "../3D/Object3D.h"
 

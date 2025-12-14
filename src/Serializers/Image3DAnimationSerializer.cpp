@@ -3,7 +3,7 @@
 //
 
 #include "../../include/Serializers/Image3DAnimationSerializer.h"
-#include "../../include/Serializers/JSONSerializerRegistry.h"
+#include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Brakeza.h"
 #include "../../include/3D/Image3DAnimation.h"
 #include "../../include/Serializers/Object3DSerializer.h"
@@ -42,7 +42,7 @@ Object3D * Image3DAnimationSerializer::ObjectByJson(cJSON *json)
 {
     auto *o = new Image3DAnimation(Components::get()->Camera()->getCamera()->getPosition(), 1, 1);
     ApplyJsonToObject(json, o);
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3DAnimation>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3DAnimation>(o, json));
     return o;
 }
 
@@ -71,7 +71,7 @@ void Image3DAnimationSerializer::MenuLoad(const std::string &file)
     o->setPosition(Components::get()->Camera()->getCamera()->forward().getScaled(2));
 
     auto json = Image3DAnimationSerializer::JsonByObject(o);
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3DAnimation>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3DAnimation>(o, json));
 }
 
 void Image3DAnimationSerializer::ApplyAnimationsBackground(Image3DAnimation *image, cJSON* json)

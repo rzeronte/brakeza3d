@@ -43,7 +43,7 @@ public:
 
         Image2DAnimationSerializer::ApplyAnimationLoad(image);
 
-        Brakeza::get()->addObject3D(image, image->getName());
+        Brakeza::get()->AddObject3D(image, image->getName());
 
         Logging::Message("[ThreadJobLoadImage2DAnimation] Callback END");
     }

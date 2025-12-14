@@ -226,14 +226,14 @@ add_executable(Brakeza3D
         src/Serializers/Image3DAnimation360Serializer.cpp include/Serializers/Image3DAnimation360Serializer.h
         src/Serializers/Image3DAnimationSerializer.cpp include/Serializers/Image3DAnimationSerializer.h
         src/Serializers/Image3DSerializer.cpp include/Serializers/Image3DSerializer.h
-        src/Serializers/JSONSerializerRegistry.cpp include/Serializers/JSONSerializerRegistry.h
+        src/Render/JSONSerializerRegistry.cpp include/Render/JSONSerializerRegistry.h
         src/Serializers/LightPointSerializer.cpp include/Serializers/LightPointSerializer.h
         src/Serializers/LightSpotSerializer.cpp include/Serializers/LightSpotSerializer.h
         src/Serializers/Mesh3DAnimationSerializer.cpp include/Serializers/Mesh3DAnimationSerializer.h
         src/Serializers/Mesh3DSerializer.cpp include/Serializers/Mesh3DSerializer.h
         src/Serializers/Object3DSerializer.cpp include/Serializers/Object3DSerializer.h
         src/Serializers/ParticleEmmitterSerializer.cpp include/Serializers/ParticleEmmitterSerializer.h
-        include/Serializers/JSONSerializer.h
+        include/Render/JSONSerializer.h
 
         # Physics
         src/3D/RayCollisionable.cpp include/3D/RayCollisionable.h

@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "Image.h"
+#include "ThreadPool.h"
 
 #include "../include/Components/Component.h"
 
@@ -39,7 +40,7 @@ class Profiler
 
     int numberOfGUIImages = 0;
     int memoryOfGUIImages = 0;
-    bool enable = true;
+    bool enable = false;
 
     Measure measureFrameTime;
 
@@ -66,6 +67,7 @@ public:
     [[nodiscard]] MeasuresMap& getComponentMeasures();
     [[nodiscard]] int getNumberOfImages() const;
     [[nodiscard]] int getMemoryImageUsage() const;
+    static void DrawPool(const std::string &label, ThreadPool &pool);
     static void InitMeasure(MeasuresMap &map, const std::string & label);
     static void StartMeasure(MeasuresMap &map, const std::string& name);
     static void EndMeasure(MeasuresMap &map, const std::string& name);

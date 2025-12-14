@@ -64,7 +64,7 @@ ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, bool enabl
     }
 
     // Link the program
-    Logging::Message("[OpenGL] Linking program");
+    Logging::Message("[OpenGL] Linking program...");
     GLuint ProgramID = glCreateProgram();
     glAttachShader(ProgramID, VertexShaderID);
     glAttachShader(ProgramID, FragmentShaderID);
@@ -133,7 +133,7 @@ void ShaderBaseOpenGL::CompileShaderToProgramID(bool enableFeedback)
     }
 
     // Link the program
-    Logging::Message("[OpenGL] Linking program");
+    Logging::Message("[OpenGL] Linking program...");
     GLuint ProgramID = glCreateProgram();
     glAttachShader(ProgramID, VertexShaderID);
     glAttachShader(ProgramID, FragmentShaderID);

@@ -36,7 +36,7 @@ Object3D * Image3DSerializer::ObjectByJson(cJSON *json)
 
     ApplyJsonToObject(json, o);
 
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3D>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3D>(o, json));
 
     return o;
 }
@@ -56,7 +56,7 @@ void Image3DSerializer::MenuLoad(const std::string &filename)
     o->setName(Brakeza::UniqueObjectLabel("Image3D"));
 
     auto json = Image3DSerializer::JsonByObject(o);
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3D>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3D>(o, json));
 }
 
 std::string Image3DSerializer::ExtractFilePath(cJSON *json)

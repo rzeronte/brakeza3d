@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_MESH3DANIMATIONSERIALIZER_H
 #define BRAKEZA3D_MESH3DANIMATIONSERIALIZER_H
 
-#include "JSONSerializer.h"
+#include "../Render/JSONSerializer.h"
 #include "../3D/Mesh3DAnimation.h"
 #include "../3D/Object3D.h"
 

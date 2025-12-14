@@ -25,13 +25,13 @@ GUIManager::GUIManager()
     widgetConsole(new GuiAddonConsole()),
     textureAtlas(new TextureAtlas())
 {
-    Profiler::get()->CaptureGUIMemoryUsage();
 }
 
 void GUIManager::OnStart()
 {
     textureAtlas->CreateFromSheet(Config::get()->ICONS_FOLDER + Config::get()->GUI_ICON_SHEET, 32, 32);
     IconsGUI::ImportIconsFromJSON(Config::get()->CONFIG_FOLDER + Config::get()->ICONS_CONFIG);
+    Profiler::get()->CaptureGUIMemoryUsage();
 
     widgetConsole->setLua(&Components::get()->Scripting()->getLua());
 
@@ -45,6 +45,8 @@ void GUIManager::OnStart()
     RegisterAllowedItemsForViewer();
     RegisterMenu();
     RegisterWindows();
+
+    FileSystemGUI::LoadImagesFolder(this);
 
     GUI::ShowLoadTime("Time until GUIManager get ready", *Brakeza::get()->getTimer());
 }
