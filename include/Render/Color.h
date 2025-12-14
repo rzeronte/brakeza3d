@@ -66,7 +66,7 @@ public:
 
     static Color idToColor(unsigned int id);
 
-    static int colorToId(const Color &c);
+    static unsigned int colorToId(const Color &c);
 };
 
 

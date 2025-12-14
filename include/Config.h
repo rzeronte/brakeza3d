@@ -46,6 +46,7 @@ public:
     std::string PROJECTS_FOLDER       = ASSETS_FOLDER + "projects/";
     std::string SCENES_FOLDER         = ASSETS_FOLDER + "scenes/";
     std::string CUSTOM_SHADERS_FOLDER = ASSETS_FOLDER + "shaders/";
+    std::string SCREENSHOTS_FOLDER    = ASSETS_FOLDER + "screenshots/";
     std::string DEFAULT_SOUNDS_FILE   = "sounds.json";
     std::string DEFAULT_SCENE         = "brakeza.json";
     std::string CAMERA_OBJECT_NAME    = "Camera";

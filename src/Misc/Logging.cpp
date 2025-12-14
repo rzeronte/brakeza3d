@@ -35,9 +35,9 @@ void Logging::OutputVa(const char *message, bool forceSTD, va_list args)
         Brakeza::get()->GUI()->getConsole()->AddLog("%s", buffer);
     }
 
-    //if (Config::get()->ENABLE_LOGGING_STD || forceSTD) {
+    if (Config::get()->ENABLE_LOGGING_STD || forceSTD) {
         std::cout << buffer << std::endl;
-    //}
+    }
 
     delete[] buffer;
 }

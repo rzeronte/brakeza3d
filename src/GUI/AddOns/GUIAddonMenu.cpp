@@ -274,6 +274,11 @@ void GUIAddonMenu::MenuVideo()
     ImGui::MenuItem("Show FPS", nullptr, &setup->DRAW_FPS_RENDER);
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_SHOW_BONES), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Draw bones", nullptr, &setup->DRAW_ANIMATION_BONES);
+    ImGui::SeparatorText("Tools");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_TAKE_SCREENSHOT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    if (ImGui::MenuItem("Screenshot", nullptr, false)) {
+        Components::get()->Render()->MakeScreenShot();
+    }
 }
 
 void GUIAddonMenu::MenuColliders()

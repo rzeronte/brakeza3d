@@ -150,9 +150,9 @@ void Brakeza::OnUpdateComponents() const
 void Brakeza::PostUpdateComponents() const
 {
     for (auto &c: componentsManager->getComponents()) {
-        Profiler::get()->StartMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + ProfilerConstants::SUFFIX_POST);
+        Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + ProfilerConstants::SUFFIX_POST);
         c->postUpdate();
-        Profiler::get()->EndMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + ProfilerConstants::SUFFIX_POST);
+        Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + ProfilerConstants::SUFFIX_POST);
     }
 }
 
@@ -173,16 +173,14 @@ void Brakeza::onEndComponents() const
 
 void Brakeza::AutoLoadProjectOrContinue() const
 {
-    auto render = componentsManager->Render();
-
     if (cliOptions.autoload) {
-        render->getProjectLoader().LoadProject(Config::get()->PROJECTS_FOLDER + cliOptions.project);
+        ProjectLoader::LoadProject(Config::get()->PROJECTS_FOLDER + cliOptions.project);
         Config::get()->ENABLE_IMGUI = false;
         componentsManager->Scripting()->PlayLUAScripts();
         return;
     }
 
-    render->getSceneLoader().LoadScene(Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE);
+    //SceneLoader::LoadScene(Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE);
 }
 
 void Brakeza::onUpdateSDLPollEventComponents(SDL_Event *event) const
@@ -201,8 +199,8 @@ Brakeza::~Brakeza()
 
 int Brakeza::getNextUniqueObjectId() const
 {
-    const int id = timer.getTicks();
-    return id;
+    static unsigned int counter = 0;
+    return ++counter;
 }
 
 std::string Brakeza::UniqueObjectLabel(const char *prefix)
@@ -210,23 +208,22 @@ std::string Brakeza::UniqueObjectLabel(const char *prefix)
     return prefix + std::string("_") + std::to_string(Tools::random(0, 100));
 }
 
-
 Object3D *Brakeza::getObjectByName(const std::string &label) const
 {
-    for (const auto &sceneObject : objects) {
-        if (sceneObject->getName() == label) {
-            return sceneObject;
+    for (const auto &o : objects) {
+        if (o->getName() == label) {
+            return o;
         }
     }
 
     return nullptr;
 }
 
-Object3D *Brakeza::getObjectById(const int id) const
+Object3D *Brakeza::getObjectById(const unsigned int id) const
 {
-    for (const auto sceneObject : objects) {
-        if (sceneObject->getId() == id) {
-            return sceneObject;
+    for (const auto &o : objects) {
+        if (o->getId() == id) {
+            return o;
         }
     }
 

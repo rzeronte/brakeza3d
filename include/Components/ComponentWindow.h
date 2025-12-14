@@ -85,12 +85,13 @@ public:
     void setWindowTitle(const char *title) const;
     void toggleFullScreen() const;
     void setGuiZmoOperation(ImGuizmo::OPERATION operation);
-    int getObjectIDByPickingColorFramebuffer(int x, int y) const;
+    unsigned int getObjectIDByPickingColorFramebuffer(int x, int y) const;
     void CreatePickingColorBuffer();
     void CreateGBuffer();
     void ResizeGBuffer();
     void UpdateWindowSize();
     void setImGuiConfig(Config::ImGUIConfigs c);
+
     static void InitOpenGL();
 };
 

@@ -23,45 +23,6 @@ Object3D::Object3D()
     timer.start();
 }
 
-Vertex3D &Object3D::getPosition()
-{
-    return position;
-}
-
-M3 Object3D::getRotation() const
-{
-    return rotation;
-}
-
-void Object3D::setPosition(const Vertex3D &p)
-{
-    position = p;
-}
-
-void Object3D::setRotation(const M3 &r)
-{
-    this->rotation = r;
-}
-
-std::string Object3D::getName()
-{
-    return name;
-}
-
-void Object3D::setName(const std::string& value)
-{
-    name = value;
-}
-
-bool &Object3D::isEnabled() {
-    return enabled;
-}
-
-void Object3D::setEnabled(bool value)
-{
-    Object3D::enabled = value;
-}
-
 Vertex3D Object3D::up() const
 {
     Vertex3D v = getRotation() * Config::get()->up;
@@ -99,56 +60,6 @@ Vertex3D Object3D::left() const
     Vertex3D v = getRotation() * Config::get()->left;
 
     return v.getNormalize();
-}
-
-float Object3D::getScale() const
-{
-    return scale;
-}
-
-void Object3D::setScale(float value)
-{
-    scale = value;
-}
-
-bool Object3D::isRemoved() const
-{
-    return removed;
-}
-
-void Object3D::setRemoved(bool value)
-{
-    removed = value;
-}
-
-bool Object3D::isDecal() const
-{
-    return decal;
-}
-
-void Object3D::setDecal(bool value)
-{
-    decal = value;
-}
-
-void Object3D::setDrawOffset(const Vertex3D &offset)
-{
-    this->drawOffset = offset;
-}
-
-Vertex3D &Object3D::getDrawOffset()
-{
-    return this->drawOffset;
-}
-
-Object3D *Object3D::getParent() const
-{
-    return parent;
-}
-
-void Object3D::setParent(Object3D *object)
-{
-    parent = object;
 }
 
 void Object3D::onUpdate()
@@ -196,39 +107,6 @@ void Object3D::AddToPosition(const Vertex3D &v)
     this->position = this->position + v;
 }
 
-float &Object3D::getAlpha() {
-    return alpha;
-}
-
-void Object3D::setAlpha(float alpha)
-{
-    Object3D::alpha = alpha;
-}
-
-bool &Object3D::isAlphaEnabled() {
-    return alphaEnabled;
-}
-
-void Object3D::setAlphaEnabled(bool value)
-{
-    alphaEnabled = value;
-}
-
-Object3D::~Object3D()
-{
-    for (auto a: attachedObjects) {
-        delete a;
-    }
-
-    if (isCollisionsEnabled()) {
-        removeCollisionObject();
-    }
-}
-
-bool Object3D::isEnableLights() const {
-    return enableLights;
-}
-
 void Object3D::setEnableLights(bool value)
 {
     enableLights = value;
@@ -252,14 +130,14 @@ void Object3D::AttachScript(ScriptLUA *script)
 
 void Object3D::ReloadScriptsEnvironment()
 {
-    for (auto script : scripts) {
+    for (auto &script : scripts) {
         script->ReloadEnvironment(luaEnvironment);
     }
 }
 
 void Object3D::ReloadScriptsCode() const
 {
-    for (auto script : scripts) {
+    for (auto &script : scripts) {
         script->reloadScriptCode();
     }
 }
@@ -277,51 +155,16 @@ void Object3D::RemoveScript(const ScriptLUA *script)
     }
 }
 
-ObjectType Object3D::getTypeObject() const
-{
-    return ObjectType::Object3D;
-}
-
-GUIType::Sheet Object3D::getIcon()
-{
-    return IconObject::OBJECT_3D;
-}
-
-const std::vector<ScriptLUA *> &Object3D::getScripts() const
-{
-    return scripts;
-}
-
 void Object3D::RunStartScripts()
 {
-    for (auto script : scripts) {
+    for (auto &script : scripts) {
         script->runEnvironment(luaEnvironment, "onStart");
     }
-}
-
-bool Object3D::isBelongToScene() const
-{
-    return belongToScene;
 }
 
 void Object3D::setBelongToScene(bool belongToScene)
 {
     Object3D::belongToScene = belongToScene;
-}
-
-bool& Object3D::enabledPointer()
-{
-    return enabled;
-}
-
-Vertex3D & Object3D::positionPointer()
-{
-    return position;
-}
-
-M3 Object3D::getM3ModelMatrix() const
-{
-    return M3::fromMat3GLM(getModelMatrix());
 }
 
 glm::mat4 Object3D::getModelMatrix() const
@@ -333,46 +176,6 @@ glm::mat4 Object3D::getModelMatrix() const
     glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scaled);
 
     return translationMatrix * rotationMatrix * scaleMatrix;
-}
-
-M3 & Object3D::rotationPointer()
-{
-    return rotation;
-}
-
-const Timer &Object3D::getTimer() const
-{
-    return timer;
-}
-
-float Object3D::getDistanceToCamera() const
-{
-    return distanceToCamera;
-}
-
-bool Object3D::isMultiScene() const
-{
-    return multiScene;
-}
-
-void Object3D::setMultiScene(bool multiScene)
-{
-    Object3D::multiScene = multiScene;
-}
-
-const std::vector<Object3D *> &Object3D::getAttached() const
-{
-    return attachedObjects;
-}
-
-void Object3D::AttachObject(Object3D* o)
-{
-    attachedObjects.push_back(o);
-}
-
-sol::object Object3D::getLocalScriptVar(const char *varName)
-{
-    return luaEnvironment[varName];
 }
 
 void Object3D::MakeKineticBody(float x, float y, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
@@ -537,10 +340,6 @@ void Object3D::RunResolveCollisionScripts(CollisionInfo with)
     }
 }
 
-const sol::environment &Object3D::getLuaEnvironment() const {
-    return luaEnvironment;
-}
-
 void Object3D::SetupGhostCollider(CollisionShape mode)
 {
     Logging::Message("[Collider] setupGhostCollider");
@@ -561,17 +360,83 @@ void Object3D::SetupGhostCollider(CollisionShape mode)
     }
 }
 
-Color Object3D::getPickingColor() const
-{
-    return pickingColor;
-}
-
-int Object3D::getId() const
-{
-    return id;
-}
-
 bool Object3D::isGUISelected() const
 {
     return Components::get()->Render()->getSelectedObject() == this;
+}
+
+void Object3D::setMultiScene(bool value)
+{
+    multiScene = value;
+}
+
+void Object3D::AttachObject(Object3D* o)
+{
+    attachedObjects.push_back(o);
+}
+
+void Object3D::setAlpha(float alpha)
+{
+    Object3D::alpha = alpha;
+}
+
+void Object3D::setAlphaEnabled(bool value)
+{
+    alphaEnabled = value;
+}
+
+void Object3D::setScale(float value)
+{
+    scale = value;
+}
+
+void Object3D::setRemoved(bool value)
+{
+    removed = value;
+}
+
+void Object3D::setDecal(bool value)
+{
+    decal = value;
+}
+
+void Object3D::setDrawOffset(const Vertex3D &value)
+{
+    drawOffset = value;
+}
+
+void Object3D::setParent(Object3D *object)
+{
+    parent = object;
+}
+
+void Object3D::setName(const std::string& value)
+{
+    name = value;
+}
+
+void Object3D::setEnabled(bool value)
+{
+    enabled = value;
+}
+
+void Object3D::setPosition(const Vertex3D &p)
+{
+    position = p;
+}
+
+void Object3D::setRotation(const M3 &r)
+{
+    this->rotation = r;
+}
+
+Object3D::~Object3D()
+{
+    for (auto a: attachedObjects) {
+        delete a;
+    }
+
+    if (isCollisionsEnabled()) {
+        removeCollisionObject();
+    }
 }

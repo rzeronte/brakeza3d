@@ -43,6 +43,9 @@ public:
     void DrawPropertiesGUI() override;
     void ResetBuffersToSize(float width, float height);
     void setWidth(float value);
+
+    void setSource(const std::string &source);
+
     void setHeight(float value);
     void FillBuffers();
     void setImage(Image *value);

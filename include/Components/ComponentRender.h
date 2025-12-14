@@ -93,8 +93,8 @@ public:
     void RegisterShaders();
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
     void setSelectedObject(Object3D *o);
-    void updateFPS();
-    void updateSelectedObject3D();
+    void UpdateFPS();
+    void UpdateSelectedObject3D();
     void LoadShaderIntoScene(const std::string &folder, const std::string &name);
     void addShaderToScene(ShaderOGLCustom *shader);
     void setSceneShadersEnabled(bool value);
@@ -129,13 +129,13 @@ public:
     Object3D* getSelectedObject() const                                             { return selectedObject; }
     GLuint getLastProgramUsed() const                                               { return lastProgramUsed; }
     const std::map<std::string, ShaderCustomType> &getShaderTypesMapping() const    { return ShaderTypesMapping; }
-
     ShaderOGLCustom *getSceneShaderByLabel(const std::string& name) const;
+
     static bool compareDistances(const Object3D *obj1, const Object3D *obj2);
     static void FillOGLBuffers(std::vector<Mesh3DData> &meshes);
     static void DeleteRemovedObjects();
     static void onUpdateSceneObjects();
-    static Object3D *getObject3DFromClickPoint(int x, int y);
+    static void MakeScreenShot();
     static ShaderOGLCustom* getLoadedShader(const std::string &folder, const std::string &jsonFilename);
 };
 

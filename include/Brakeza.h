@@ -46,7 +46,7 @@ public:
     void PreMainLoop();
 
     Timer *getTimer() { return &this->timer; }
-    Object3D *getObjectById(int id) const;
+    Object3D *getObjectById(unsigned int id) const;
     Object3D *getObjectByName(const std::string &label) const;
     int getNextUniqueObjectId() const;
 
