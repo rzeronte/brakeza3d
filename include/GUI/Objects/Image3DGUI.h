@@ -30,7 +30,9 @@ public:
 
             if (ImGui::TreeNode("Image")) {
                 if (o->image->isLoaded()) {
-                    ImGui::Image(o->image->getOGLImTexture(),ImVec2(64, 64));
+                    float fixedWidth = std::min((int) ImGui::GetContentRegionAvail().x, o->image->width());
+                    float height = fixedWidth * ((float) o->image->height() / (float) o->image->width());
+                    ImGui::Image(o->image->getOGLImTexture(),ImVec2(fixedWidth, height));
                 } else {
                     ImGui::Text("No image selected. Drag a texture here!");
                 }

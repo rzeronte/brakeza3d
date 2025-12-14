@@ -27,7 +27,7 @@ public:
 
     void fnCallback()
     {
-        Brakeza::get()->addObject3D(light, light->getName());
+        Brakeza::get()->AddObject3D(light, light->getName());
 
         Logging::Message("[ThreadJobLoadLightPoint] Callback END");
     }

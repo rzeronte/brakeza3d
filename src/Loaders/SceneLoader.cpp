@@ -14,7 +14,7 @@
 #include "../../include/OpenGL/ShaderOGLCustomPostprocessing.h"
 #include "../../include/Serializers/Image2DAnimationSerializer.h"
 #include "../../include/Threads/ThreadJobLoadObject.h"
-#include "../../include/Serializers/JSONSerializerRegistry.h"
+#include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Serializers/LightPointSerializer.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 #include "../../include/Serializers/Mesh3DSerializer.h"
@@ -89,7 +89,7 @@ void SceneLoader::LoadScene(const std::string& filename)
     Logging::Message("[SceneLoader] Loading scene: '%s'", filename.c_str());
 
     auto job = std::make_shared<ThreadJobReadFileScene>(filename);
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(job);
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(job);
 }
 
 void SceneLoader::SaveScene(const std::string &filename)
@@ -211,5 +211,5 @@ void SceneLoader::InitSerializers()
 void SceneLoader::SceneLoaderCreateObject(cJSON *object)
 {
     auto job = std::make_shared<ThreadJobLoadObject>(object);
-    Brakeza::get()->Pool().enqueue(job);
+    Brakeza::get()->PoolCompute().enqueue(job);
 }

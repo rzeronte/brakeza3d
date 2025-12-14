@@ -192,7 +192,7 @@ void ComponentCollisions::demoProjectile(int type)
         Config::collisionGroups::AllFilter
     );
 
-    Brakeza::get()->addObject3D(projectile, Brakeza::UniqueObjectLabel("demoProjectile"));
+    Brakeza::get()->AddObject3D(projectile, Brakeza::UniqueObjectLabel("demoProjectile"));
 }
 
 ComponentCollisions::~ComponentCollisions()

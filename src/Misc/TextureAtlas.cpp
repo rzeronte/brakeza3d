@@ -100,7 +100,10 @@ void TextureAtlas::CreateFromSheet(const std::string &file, int spriteWidth, int
                 return;
             }
 
-            textures.push_back(new Image(destinySurface, spriteTexture));
+            auto i = new Image(destinySurface, spriteTexture);
+            auto name = std::string("file" + std::to_string(row) + "_" + std::to_string(column));
+            i->setFilePath(name);
+            textures.push_back(i);
         }
     }
 

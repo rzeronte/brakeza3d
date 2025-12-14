@@ -41,7 +41,7 @@ public:
 
         Image3DAnimation360Serializer::LoadAnimationTexturesMainThread(image, json);
 
-        Brakeza::get()->addObject3D(image, image->getName());
+        Brakeza::get()->AddObject3D(image, image->getName());
 
         Logging::Message("[ThreadJobLoadImage3DAnimation360] Callback END");
     }

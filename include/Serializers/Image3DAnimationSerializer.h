@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_IMAGE3DANIMATIONSERIALIZER_H
 #define BRAKEZA3D_IMAGE3DANIMATIONSERIALIZER_H
 
-#include "JSONSerializer.h"
+#include "../Render/JSONSerializer.h"
 #include "../3D/Image3DAnimation.h"
 
 class Image3DAnimationSerializer : public JSONSerializer

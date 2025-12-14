@@ -27,19 +27,18 @@ public:
 
     void CreateSDLTexture();
     void LoadSDLSurface();
-
+    void MakeAutoOGLImage();
     void LoadFromRaw(const unsigned int *texture, int w, int h);
     void DrawFlat(int, int, GLuint framebuffer) const;
     void DrawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint framebuffer);
-
     void DrawFlatAlpha(int x, int y, int w, int h, float alpha, GLuint fbo);
-
     void DrawFlat(int x, int y, int width, int height, GLuint fbo) const;
 
     void setAlpha(float alpha);
     void setOGLTextureID(GLuint value);
     void setImage(const std::string &basicString);
     void setAlreadyLoaded();
+    void setFilePath(std::string &path);
 
     [[nodiscard]] float getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C) const;
 
@@ -51,11 +50,9 @@ public:
     [[nodiscard]] SDL_Texture *getTexture() const               { return texture; }
     [[nodiscard]] SDL_Surface *getSurface() const               { return surface; }
     [[nodiscard]] ImTextureID getOGLImTexture() const           { return (ImTextureID) textureId; }
-    [[nodiscard]] GLuint getOGLTextureID() const                { return alpha; }
+    [[nodiscard]] GLuint getOGLTextureID() const                { return textureId; }
     [[nodiscard]] const std::string &getFileName() const        { return fileName; }
     [[nodiscard]] Color getPixelColor(int x, int y) const;
-
-    void MakeAutoOGLImage();
 
     static GLuint MakeOGLImage(const SDL_Surface *surfaceTTF);
 };

@@ -55,7 +55,7 @@ public:
         cJSON_ArrayForEach(currentObject, objects) {
             Logging::Message("[Pools] Creating ThreadJobLoadObject #%d", objectCount);
             auto job = std::make_shared<ThreadJobLoadObject>(currentObject);
-            Brakeza::get()->Pool().enqueueWithMainThreadCallback(job);
+            Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(job);
             objectCount++;
         }
 

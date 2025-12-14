@@ -4,7 +4,7 @@
 
 #include "../../include/Serializers/ParticleEmmitterSerializer.h"
 #include "../../include/Brakeza.h"
-#include "../../include/Serializers/JSONSerializerRegistry.h"
+#include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/3D/ParticleEmitter.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/ToolsJSON.h"
@@ -135,5 +135,5 @@ void ParticleEmmitterSerializer::MenuLoad(const std::string &file)
     o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
 
     auto json = ParticleEmmitterSerializer::JsonByObject(o);
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadParticleEmitter>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadParticleEmitter>(o, json));
 }

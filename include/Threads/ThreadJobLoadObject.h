@@ -2,7 +2,7 @@
 #define BRAKEZA3D_JOBLOADMESH3D_H
 
 #include "ThreadJobBase.h"
-#include "../Serializers/JSONSerializerRegistry.h"
+#include "../Render/JSONSerializerRegistry.h"
 #include "ThreadJobLoadMesh3D.h"
 
 class ThreadJobLoadObject : public ThreadJobBase

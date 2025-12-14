@@ -33,7 +33,7 @@ Object3D * Image2DSerializer::ObjectByJson(cJSON *json)
 
     ApplyJsonToObject(json, o);
 
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2D>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2D>(o, json));
 
     return o;
 }
@@ -69,7 +69,7 @@ void Image2DSerializer::MenuLoad(const std::string &file)
     o->setName(Brakeza::UniqueObjectLabel("Image2D"));
 
     auto json = Image2DSerializer::JsonByObject(o);
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2D>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2D>(o, json));
 }
 
 const char* Image2DSerializer::ExtractFilePath(cJSON *json)

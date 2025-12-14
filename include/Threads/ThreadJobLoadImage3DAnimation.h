@@ -43,7 +43,7 @@ public:
 
         Image3DAnimationSerializer::ApplyAnimationsMainThread(image);
 
-        Brakeza::get()->addObject3D(image, image->getName());
+        Brakeza::get()->AddObject3D(image, image->getName());
 
         Logging::Message("[ThreadJobLoadImage3DAnimation] Callback END");
     }

@@ -7,7 +7,7 @@
 
 #include <mutex>
 
-#include "JSONSerializer.h"
+#include "../Render/JSONSerializer.h"
 #include "../3D/Object3D.h"
 
 class Object3D;

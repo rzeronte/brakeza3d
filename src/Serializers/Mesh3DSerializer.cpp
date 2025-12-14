@@ -7,7 +7,7 @@
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Threads/ThreadJobLoadMesh3D.h"
-#include "../../include/Serializers/JSONSerializerRegistry.h"
+#include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 
 cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
@@ -59,7 +59,7 @@ Object3D* Mesh3DSerializer::ObjectByJson(cJSON *json)
     auto o = new Mesh3D();
     ApplyJsonToObject(json, o);
 
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadMesh3D>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadMesh3D>(o, json));
 
     return o;
 }
@@ -71,7 +71,7 @@ void Mesh3DSerializer::MenuLoad(const std::string& model)
     o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
 
     auto json = Mesh3DSerializer::JsonByObject(o);
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadMesh3D>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadMesh3D>(o, json));
 }
 
 void Mesh3DSerializer::ApplyGeometryFromFile(Mesh3D *m, cJSON* json)

@@ -4,7 +4,6 @@
 
 #include "Profiler.h"
 #include <algorithm>
-
 #include "../Brakeza.h"
 #include "../Components/Components.h"
 #include "../Misc/Logging.h"
@@ -40,24 +39,23 @@ void Profiler::AddImage(Image *image)
 
 void Profiler::CaptureGUIMemoryUsage()
 {
-    //numberOfGUIImages = (int) images.size();
-    //memoryOfGUIImages = memoryImageUsage;
+    numberOfGUIImages = (int) images.size();
+    memoryOfGUIImages = memoryImageUsage;
     setEnabled(true);
 }
 
-void Profiler::DrawPools()
+void Profiler::DrawPool(const std::string &title, ThreadPool &pool)
 {
-    auto pool = &Brakeza::get()->Pool();
-    size_t pending = pool->getPendingTasks();
-    int active = pool->getActiveTasks();
-    int cont = pool->getCont();
+    size_t pending = pool.getPendingTasks();
+    int active = pool.getActiveTasks();
 
     // === Header con color según estado ===
     ImVec4 headerColor = (pending + active > 0) ?
         ImVec4(0.2f, 0.4f, 0.8f, 1.0f) : ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
     ImGui::PushStyleColor(ImGuiCol_Header, headerColor);
 
-    if (ImGui::CollapsingHeader("I/O Thread Pool", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+        if (ImGui::CollapsingHeader(title.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
         ImGui::Indent();
 
         // Tabla de estadísticas
@@ -100,7 +98,6 @@ void Profiler::DrawPools()
         ImGui::Spacing();
 
         // Barras visuales
-        ImGui::Text("Jobs total %d: ", cont);
         ImGui::Text("Thread Activity:");
         for (int i = 0; i < 4; i++) {
             char label[32];
@@ -141,7 +138,7 @@ void Profiler::DrawPools()
         // Botones de control
         if (pending + active > 0) {
             if (ImGui::Button("Wait for All", ImVec2(120, 0))) {
-                pool->waitAll();
+                pool.waitAll();
             }
             ImGui::SameLine();
             ImGui::TextDisabled("(Blocks until complete)");
@@ -150,6 +147,12 @@ void Profiler::DrawPools()
         ImGui::Unindent();
     }
 
+}
+
+void Profiler::DrawPools()
+{
+    DrawPool("I/O Thread Pool Compute", Brakeza::get()->PoolCompute());
+    DrawPool("I/O Thread Pool images", Brakeza::get()->PoolImages());
     ImGui::PopStyleColor();
 }
 

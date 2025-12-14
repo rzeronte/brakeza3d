@@ -30,7 +30,7 @@ public:
     bool ReadArgs(int argc, char **argv);
     void Start(int argc, char *argv[]);
     void MainLoop();
-    void addObject3D(Object3D *obj, const std::string &label);
+    void AddObject3D(Object3D *obj, const std::string &label);
     void UpdateTimer();
     void OnStartComponents() const;
     void PreUpdateComponents() const;
@@ -58,7 +58,7 @@ public:
     Components *getComponentsManager() const                    { return componentsManager; }
     GUIManager *GUI()                                           { return &managerGUI; }
     Object3D *getObjectByIndex(int index) const                 { return objects[index]; }
-    ThreadPool & Pool()                                         { return pool; }
+    ThreadPool & PoolCompute()                                         { return pool; }
     ThreadPool & PoolImages()                                   { return pool; }
 
     static void Shutdown()                                      { Config::get()->EXIT = true; };

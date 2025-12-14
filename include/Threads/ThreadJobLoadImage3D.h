@@ -41,7 +41,7 @@ public:
         Image3DSerializer::ApplyImageFromFile(image, json);
         Image3DSerializer::ApplySize(image, json);
 
-        Brakeza::get()->addObject3D(image, image->getName());
+        Brakeza::get()->AddObject3D(image, image->getName());
 
         Logging::Message("[ThreadJobLoadImage3D] Callback END");
     }

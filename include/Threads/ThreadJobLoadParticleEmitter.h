@@ -26,7 +26,7 @@ public:
 
     void fnProcess()
     {
-        Brakeza::get()->addObject3D(emitter, emitter->getName());
+        Brakeza::get()->AddObject3D(emitter, emitter->getName());
         Logging::Message("[ThreadJobLoadParticleEmitter] Process END");
     }
 

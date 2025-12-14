@@ -3,7 +3,7 @@
 //
 
 #include "../../include/Serializers/Image3DAnimation360Serializer.h"
-#include "../../include/Serializers/JSONSerializerRegistry.h"
+#include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/3D/Image3DAnimation360.h"
@@ -44,7 +44,7 @@ Object3D * Image3DAnimation360Serializer::ObjectByJson(cJSON *json)
 
     ApplyJsonToObject(json, o);
 
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3DAnimation360>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3DAnimation360>(o, json));
 
     return o;
 }
@@ -67,7 +67,7 @@ void Image3DAnimation360Serializer::MenuLoad(const std::string &file)
     o->setName(Brakeza::UniqueObjectLabel("Image3DAnimation360"));
 
     auto json = Image3DAnimation360Serializer::JsonByObject(o);
-    Brakeza::get()->Pool().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3DAnimation360>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3DAnimation360>(o, json));
 }
 
 void Image3DAnimation360Serializer::LoadAnimationTexturesMainThread(Image3DAnimation360 *image, cJSON *json)
