@@ -23,29 +23,47 @@ private:
     mutable std::mutex queueMutex;
     mutable std::mutex callbackMutex;
     std::condition_variable condition;
+
     std::atomic<bool> stop;
     std::atomic<int> activeTasks;
-    std::atomic<int> cont;
+    std::atomic<size_t> cont;
+
+    size_t maxCallbacksPerFrame;
+    size_t maxConcurrentTasks;
+    size_t maxEnqueuedTasks;
 
 public:
-    explicit ThreadPool(size_t numThreads = std::thread::hardware_concurrency());
+    explicit ThreadPool(size_t numThreads);
     ~ThreadPool();
 
-    // Encolar job con callback en worker thread
-    void enqueue(std::shared_ptr<ThreadJobBase> job);
+    // No permitir copias
+    ThreadPool(const ThreadPool&) = delete;
+    ThreadPool& operator=(const ThreadPool&) = delete;
 
-    // Encolar job con callback diferido al main thread
+    // Encolar trabajos
+    void enqueue(std::shared_ptr<ThreadJobBase> job);
     void enqueueWithMainThreadCallback(std::shared_ptr<ThreadJobBase> job);
 
-    // Procesar callbacks en main thread
+    // Procesar callbacks (llamar desde main thread cada frame)
     void processMainThreadCallbacks();
 
+    // Configuración
+    void setMaxCallbacksPerFrame(size_t max)    { maxCallbacksPerFrame = max; }
+    void setMaxConcurrentTasks(size_t max)      { maxConcurrentTasks = max; }
+    void setMaxEnqueuedTasks(size_t max)        { maxEnqueuedTasks = max; }
+
+    size_t getMaxCallbacksPerFrame() const  { return maxCallbacksPerFrame; }
+    size_t getMaxConcurrentTasks() const    { return maxConcurrentTasks; }
+    size_t getMaxEnqueuedTasks() const      { return maxEnqueuedTasks; }
+
+    // Información
     size_t getPendingTasks() const;
     size_t getPendingCallbacks() const;
     int getActiveTasks() const;
-    void waitAll();
-
     int getCont();
+
+    // Esperar a que termine todo
+    void waitAll();
 };
 
 #endif //BRAKEZA3D_THREADPOOL_H

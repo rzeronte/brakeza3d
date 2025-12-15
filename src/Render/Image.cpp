@@ -9,7 +9,7 @@
 #include "../../include/Threads/ThreadJobLoadImage.h"
 #include "../../include/Render/Profiler.h"
 
-Image::Image(std::string filename)
+Image::Image(const std::string& filename)
 {
     auto job = std::make_shared<ThreadJobLoadImage>(this, filename);
     Brakeza::get()->PoolImages().enqueueWithMainThreadCallback(job);
@@ -22,6 +22,8 @@ Image::Image(SDL_Surface *surface, SDL_Texture *texture)
     surface(surface),
     texture(texture)
 {
+    std::string n = "BySDLTexture";
+    setFilePath(n);
     Profiler::get()->AddImage(this);
 }
 
@@ -36,8 +38,7 @@ void Image::LoadSDLSurface()
     surface = IMG_Load(fileName.c_str());
 }
 
-void Image::setImage(const std::string &filename)
-{
+void Image::setImage(const std::string &filename) {
     if (!Tools::FileExists(filename.c_str())) {
         Logging::Error("[Image] Error loading file '%s'", filename.c_str());
         return;
@@ -46,8 +47,6 @@ void Image::setImage(const std::string &filename)
     fileName = filename;
 
     LoadSDLSurface();
-
-    Profiler::get()->AddImage(this);
 }
 
 void Image::DrawFlatAlpha(int pos_x, int pos_y, float alpha, GLuint fbo)

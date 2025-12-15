@@ -167,6 +167,7 @@ void GUIManager::RegisterMenu()
         {"Sound",           IconGUI::MNU_SOUND,             [&] { GUIAddonMenu::MenuSound(); }},
         {"Logging",         IconGUI::MNU_LOGGING,           [&] { GUIAddonMenu::MenuLogging(); }},
         {"Layouts",         IconGUI::MNU_LAYOUTS,           [&] { GUIAddonMenu::MenuLayout(); }},
+        {"Workers",         IconGUI::MNU_WORKERS,           [&] { GUIAddonMenu::MenuWorkers(); }},
         {"Windows",         IconGUI::MNU_WINDOWS,           [&] { GUIAddonMenu::MenuWindow(this); }},
     };
 }

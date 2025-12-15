@@ -7,7 +7,6 @@
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/Components.h"
-#include "../../include/3D/Mesh3D.h"
 #include "../../include/Brakeza.h"
 #include "../../include/3D/ParticleEmitter.h"
 #include "../../include/Misc/ToolsJSON.h"
@@ -25,14 +24,18 @@
 #include "../../include/Serializers/Image2DSerializer.h"
 #include "../../include/Serializers/Image3DSerializer.h"
 #include "../../include/Serializers/Image3DAnimationSerializer.h"
+#include "../../include/Threads/ThreadJobClearScene.h"
 #include "../../include/Threads/ThreadJobReadFileScene.h"
+
+bool SceneLoader::isLoading = false;
+bool SceneLoader::isClearing = false;
 
 SceneLoader::SceneLoader()
 {
     InitSerializers();
 }
 
-void SceneLoader::LoadSceneSettings(cJSON *contentJSON)
+void SceneLoader::LoadSceneSettings(const cJSON *contentJSON)
 {
     auto camera = Components::get()->Camera()->getCamera();
     auto shaderRender = Components::get()->Render()->getShaders()->shaderOGLRender;
@@ -79,15 +82,16 @@ void SceneLoader::LoadSceneSettings(cJSON *contentJSON)
     Logging::Message("[SceneLoader] Camera rotation set to (%f, %f, %f)", camera->getPitch(), camera->getYaw(), camera->getRoll());
 }
 
-void SceneLoader::ComputeScene(cJSON *contentJSON)
-{
-
-}
-
 void SceneLoader::LoadScene(const std::string& filename)
 {
+    if (isLoading) {
+        Logging::Error("[SceneLoader] Cannot do loading or cleaning while another same operation is working... Ignoring : '%s'", filename.c_str());
+        return;
+    }
+
     Logging::Message("[SceneLoader] Loading scene: '%s'", filename.c_str());
 
+    isLoading = true;
     auto job = std::make_shared<ThreadJobReadFileScene>(filename);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(job);
 }
@@ -147,28 +151,14 @@ void SceneLoader::SaveScene(const std::string &filename)
 
 void SceneLoader::ClearScene()
 {
+    if (isClearing) {
+        Logging::Error("[SceneLoader] Cannot do a load or cleaning while another same operation is working... Ignoring");
+    }
+
+    isClearing = true;
     Logging::Message("[SceneLoader] ClearScene");
 
-    auto scripting = Components::get()->Scripting();
-
-    scripting->StopLUAScripts();
-
-    for (auto o: scripting->getSceneLUAScripts()) {
-        scripting->RemoveSceneScript(o);
-    }
-
-    for (auto object: Brakeza::get()->getSceneObjects()) {
-        if (!object->isMultiScene()) {
-            object->setRemoved(true);
-        }
-    }
-    auto render = Components::get()->Render();
-    for (auto &s: render->getSceneShaders()) {
-        render->RemoveSceneShader(s);
-    }
-
-    Brakeza::get()->GUI()->setSelectedObject(nullptr);
-    Components::get()->Render()->setSelectedObject(nullptr);
+    Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobClearScene>());
 }
 
 void SceneLoader::CreateScene(const std::string &filename)

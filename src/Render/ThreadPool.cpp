@@ -6,7 +6,10 @@ ThreadPool::ThreadPool(size_t numThreads)
 :
     stop(false),
     activeTasks(0),
-    cont(0)
+    cont(0),
+    maxCallbacksPerFrame(5),      // Por defecto: 5 callbacks por frame
+    maxConcurrentTasks(4),        // Por defecto: 4 tareas concurrentes
+    maxEnqueuedTasks(1000)         // Por defecto: máximo 100 en cola
 {
     for (size_t i = 0; i < numThreads; ++i) {
         workers.emplace_back([this] {
@@ -15,12 +18,21 @@ ThreadPool::ThreadPool(size_t numThreads)
 
                 {
                     std::unique_lock<std::mutex> lock(queueMutex);
+
+                    // Esperar hasta que:
+                    // 1. Se ordene parar, O
+                    // 2. Haya tareas Y no excedamos el límite de tareas concurrentes
                     condition.wait(lock, [this] {
-                        return stop || !tasks.empty();
+                        return stop ||
+                               (!tasks.empty() && activeTasks < maxConcurrentTasks);
                     });
 
                     if (stop && tasks.empty())
                         return;
+
+                    // Si ya hay demasiadas tareas activas, seguir esperando
+                    if (activeTasks >= maxConcurrentTasks)
+                        continue;
 
                     job = std::move(tasks.front());
                     tasks.pop();
@@ -39,6 +51,9 @@ ThreadPool::ThreadPool(size_t numThreads)
                 }
 
                 activeTasks--;
+
+                // Notificar que hay un slot disponible
+                condition.notify_one();
             }
         });
     }
@@ -54,6 +69,15 @@ ThreadPool::~ThreadPool() {
 void ThreadPool::enqueue(std::shared_ptr<ThreadJobBase> job) {
     {
         std::unique_lock<std::mutex> lock(queueMutex);
+
+        // Prevenir saturación de cola
+        if (tasks.size() >= maxEnqueuedTasks) {
+            std::cerr << "[ThreadPool] Queue full (" << maxEnqueuedTasks
+                      << "), dropping task" << std::endl;
+            // O usar Logging::Warning si lo tienes
+            return;
+        }
+
         tasks.push(job);
     }
     condition.notify_one();
@@ -62,6 +86,14 @@ void ThreadPool::enqueue(std::shared_ptr<ThreadJobBase> job) {
 void ThreadPool::enqueueWithMainThreadCallback(std::shared_ptr<ThreadJobBase> job) {
     {
         std::unique_lock<std::mutex> lock(queueMutex);
+
+        // Prevenir saturación de cola
+        if (tasks.size() >= maxEnqueuedTasks) {
+            std::cerr << "[ThreadPool] Queue full (" << maxEnqueuedTasks
+                      << "), dropping task" << std::endl;
+            // O usar Logging::Warning si lo tienes
+            return;
+        }
 
         // Crear wrapper job que ejecuta function en worker thread
         // y encola callback para main thread
@@ -83,12 +115,33 @@ void ThreadPool::enqueueWithMainThreadCallback(std::shared_ptr<ThreadJobBase> jo
 
 void ThreadPool::processMainThreadCallbacks() {
     std::unique_lock<std::mutex> lock(callbackMutex);
-    while (!mainThreadCallbacks.empty()) {
+
+    size_t processed = 0;
+
+    // Procesar solo maxCallbacksPerFrame callbacks por frame
+    while (!mainThreadCallbacks.empty() && processed < maxCallbacksPerFrame) {
         auto callback = mainThreadCallbacks.front();
         mainThreadCallbacks.pop();
+
+        // Liberar lock antes de ejecutar callback (puede ser lento)
         lock.unlock();
-        callback();
+
+        try {
+            callback();
+        } catch (const std::exception& e) {
+            std::cerr << "[ThreadPool] Callback exception: " << e.what() << std::endl;
+        } catch (...) {
+            std::cerr << "[ThreadPool] Callback unknown exception" << std::endl;
+        }
+
         lock.lock();
+        processed++;
+    }
+
+    // Debug opcional: avisar si quedan callbacks pendientes
+    if (!mainThreadCallbacks.empty()) {
+        // std::cout << "[ThreadPool] " << mainThreadCallbacks.size()
+        //           << " callbacks pending for next frame" << std::endl;
     }
 }
 

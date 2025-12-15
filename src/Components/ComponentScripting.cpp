@@ -5,7 +5,7 @@
 #include "../../include/Components/ComponentScripting.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
-#include "../../include/BrakezaLuaBridge.h"
+#include "../../include/LUA/BrakezaLuaBridge.h"
 #include "../../include/Render/JSONSerializerRegistry.h"
 
 void ComponentScripting::onStart()
@@ -71,16 +71,16 @@ void ComponentScripting::ReloadLUAScripts() const
     auto &lua = Components::get()->Scripting()->getLua();
     lua.collect_garbage();
 
-    for (auto s : projectScripts) {
+    for (auto &s : projectScripts) {
         s->reloadScriptCode();
     }
 
-    for (auto s : scripts) {
+    for (auto &s : scripts) {
         s->reloadScriptCode();
     }
 
     auto &sceneObjects = Brakeza::get()->getSceneObjects();
-    for (auto object : sceneObjects) {
+    for (auto &object : sceneObjects) {
         object->ReloadScriptsCode();
         object->ReloadScriptsEnvironment();
     }
@@ -90,7 +90,7 @@ void ComponentScripting::ReloadLUAScripts() const
 
 sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName, const char *varName)
 {
-    for (auto s : projectScripts) {
+    for (auto &s : projectScripts) {
         if (s->getScriptFilename() == scriptName) continue;
         sol::state &lua = Components::get()->Scripting()->getLua();
         return lua[varName];

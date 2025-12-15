@@ -8,7 +8,7 @@
 
 cJSON* JSONSerializerRegistry::serialize(Object3D* obj)
 {
-    std::lock_guard<std::mutex> lock(mtx);  // Bloquea
+    // std::lock_guard<std::mutex> lock(mtx);  // Bloquea
 
     if (obj == nullptr) return nullptr;
 

@@ -4,6 +4,7 @@
 #include "../../include/3D/Projectile.h"
 #include "../../include/Render/CollisionInfo.h"
 #include "../../include/Misc/Logging.h"
+#include "../../include/Threads/ThreadJobStepSimulation.h"
 
 
 void ComponentCollisions::onStart()
@@ -32,7 +33,8 @@ void ComponentCollisions::postUpdate()
         return;
     }
 
-    StepSimulation(Brakeza::get()->getDeltaTime());
+    //StepSimulation(Brakeza::get()->getDeltaTime());
+    Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobStepSimulation>(Brakeza::get()->getDeltaTime()));
 }
 
 void ComponentCollisions::onEnd()
@@ -172,9 +174,13 @@ void ComponentCollisions::demoProjectile(int type)
 
     auto *projectile = new Projectile(direction);
     projectile->setCollisionMode(BODY);
-    projectile->setCollisionShape(TRIANGLE_MESH_SHAPE);
+    projectile->setCollisionShape(SIMPLE_SHAPE);
+    projectile->setLinearDamping(0);
+    projectile->setAngularDamping(0);
     projectile->setParent(camera);
     projectile->AssimpLoadGeometryFromFile(std::string(Config::get()->MODELS_FOLDER + fileName));
+    projectile->FillOGLBuffers();
+
     projectile->setRotation(M3::getMatrixRotationForEulerAngles(
         static_cast<float>(Tools::random(0, 180)),
         static_cast<float>(Tools::random(0, 180)),

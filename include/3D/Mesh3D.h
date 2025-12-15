@@ -75,7 +75,6 @@ public:
     void LoadShader(const std::string &folder, const std::string &jsonFilename);
     void RemoveShader(int i);
     void FillOGLBuffers();
-    void UpdateOGLTextures();
     virtual void ShadowMappingPass();
     virtual void UpdateBoundingBox();
     btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia) const;

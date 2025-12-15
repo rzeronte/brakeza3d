@@ -7,6 +7,8 @@
 
 #include <cctype>
 #include <cstdio>
+#include <mutex>
+
 #include "imgui.h"
 #include "../GUI.h"
 #include "../../../sol/sol.hpp"
@@ -23,8 +25,9 @@ struct GuiAddonConsole
     ImGuiTextFilter       Filter;
     bool                  AutoScroll;
     bool                  ScrollToBottom;
+    std::mutex            mtx;
 
-    sol::state *lua;
+    sol::state           *lua;
 
     GuiAddonConsole();
 

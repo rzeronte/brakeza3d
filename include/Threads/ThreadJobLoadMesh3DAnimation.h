@@ -45,7 +45,6 @@ public:
         }
 
         mesh->FillOGLBuffers();
-        mesh->UpdateOGLTextures();
         mesh->FillAnimationBoneDataOGLBuffers();
         mesh->UpdateBonesFinalTransformations(0);
 

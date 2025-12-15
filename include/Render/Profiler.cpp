@@ -46,16 +46,22 @@ void Profiler::CaptureGUIMemoryUsage()
 
 void Profiler::DrawPool(const std::string &title, ThreadPool &pool)
 {
+    ImGui::PushID(title.c_str()); // ← ID único para esta pool
+
     size_t pending = pool.getPendingTasks();
+    size_t callbacks = pool.getPendingCallbacks();
     int active = pool.getActiveTasks();
+    int totalProcessed = pool.getCont();
 
     // === Header con color según estado ===
     ImVec4 headerColor = (pending + active > 0) ?
         ImVec4(0.2f, 0.4f, 0.8f, 1.0f) : ImVec4(0.2f, 0.2f, 0.2f, 1.0f);
+
     ImGui::PushStyleColor(ImGuiCol_Header, headerColor);
+    bool isOpen = ImGui::CollapsingHeader(title.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
+    ImGui::PopStyleColor();
 
-
-        if (ImGui::CollapsingHeader(title.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+    if (isOpen) {
         ImGui::Indent();
 
         // Tabla de estadísticas
@@ -64,6 +70,14 @@ void Profiler::DrawPool(const std::string &title, ThreadPool &pool)
             ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
             ImGui::TableHeadersRow();
 
+            // Active
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Text("Active Tasks");
+            ImGui::TableNextColumn();
+            ImVec4 activeColor = active > 0 ? ImVec4(0.0f, 1.0f, 0.0f, 1.0f) : ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
+            ImGui::TextColored(activeColor, "%d", active);
+
             // Pending
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
@@ -71,71 +85,82 @@ void Profiler::DrawPool(const std::string &title, ThreadPool &pool)
             ImGui::TableNextColumn();
             ImGui::Text("%zu", pending);
 
-            // Active
+            // Callbacks
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
-            ImGui::Text("Active Tasks");
+            ImGui::Text("Pending Callbacks");
             ImGui::TableNextColumn();
-            ImGui::Text("%d", active);
+            ImVec4 callbackColor = callbacks > 0 ? ImVec4(1.0f, 0.8f, 0.0f, 1.0f) : ImVec4(0.5f, 0.5f, 0.5f, 1.0f);
+            ImGui::TextColored(callbackColor, "%zu", callbacks);
 
-            // Total
+            // Total procesado
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
-            ImGui::Text("Total Tasks");
+            ImGui::Text("Total Processed");
             ImGui::TableNextColumn();
-            ImGui::Text("%zu", pending + active);
-
-            // Thread usage
-            ImGui::TableNextRow();
-            ImGui::TableNextColumn();
-            ImGui::Text("Thread Usage");
-            ImGui::TableNextColumn();
-            ImGui::Text("%d / 4 threads (%.0f%%)", active, (active / 4.0f) * 100.0f);
+            ImGui::Text("%d", totalProcessed);
 
             ImGui::EndTable();
         }
 
         ImGui::Spacing();
 
-        // Barras visuales
-        ImGui::Text("Thread Activity:");
-        for (int i = 0; i < 4; i++) {
-            char label[32];
-            sprintf(label, "Thread %d", i + 1);
-            float value = (i < active) ? 1.0f : 0.0f;
-            ImVec4 color = (i < active) ?
-                ImVec4(0.0f, 1.0f, 0.0f, 1.0f) : ImVec4(0.3f, 0.3f, 0.3f, 1.0f);
-            ImGui::PushStyleColor(ImGuiCol_PlotHistogram, color);
-            ImGui::ProgressBar(value, ImVec2(-1, 20), label);
+        // === Workload bar (más precisa) ===
+        ImGui::Text("Workload:");
+        size_t totalWork = pending + active;
+        if (totalWork > 0) {
+            float activeRatio = (float)active / (float)totalWork;
+
+            ImGui::PushStyleColor(ImGuiCol_PlotHistogram, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
+            ImGui::ProgressBar(activeRatio, ImVec2(-1, 25));
             ImGui::PopStyleColor();
-        }
 
-        ImGui::Spacing();
-
-        // Queue progress
-        if (pending > 0) {
-            ImGui::Text("Queue Progress:");
-            float progress = (float)active / (float)(pending + active);
-            ImGui::ProgressBar(progress, ImVec2(-1, 0), "");
             ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-            ImGui::Text("%d/%zu", active, pending + active);
+            ImGui::Text("%d active / %zu total", active, totalWork);
+        } else {
+            ImGui::ProgressBar(0.0f, ImVec2(-1, 25), "IDLE");
         }
 
         ImGui::Spacing();
 
-        // Status badge
-        ImGui::Text("Status: ");
-        ImGui::SameLine();
-        if (pending + active > 0) {
-            ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), "● WORKING");
-        } else {
-            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "● IDLE");
-        }
+        // === Thread utilization (simple y honesta) ===
+        ImGui::Text("Thread Utilization:");
+        const int numThreads = 4;
+        float utilization = (float)active / (float)numThreads;
+        utilization = std::min(utilization, 1.0f);
+
+        ImVec4 utilColor;
+        if (utilization >= 0.9f) utilColor = ImVec4(1.0f, 0.0f, 0.0f, 1.0f);
+        else if (utilization >= 0.5f) utilColor = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
+        else utilColor = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+        ImGui::PushStyleColor(ImGuiCol_PlotHistogram, utilColor);
+        ImGui::ProgressBar(utilization, ImVec2(-1, 25));
+        ImGui::PopStyleColor();
+
+        ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+        ImGui::Text("%d/%d threads (%.0f%%)", active, numThreads, utilization * 100.0f);
 
         ImGui::Spacing();
         ImGui::Separator();
+        ImGui::Spacing();
 
-        // Botones de control
+        // === Status badge ===
+        ImGui::Text("Status: ");
+        ImGui::SameLine();
+        if (active > 0) {
+            ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "● PROCESSING");
+        } else if (pending > 0) {
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "● QUEUED");
+        } else if (callbacks > 0) {
+            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "● CALLBACKS PENDING");
+        } else {
+            ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "● IDLE");
+        }
+
+        ImGui::Spacing();
+
+        // === Botones de control ===
         if (pending + active > 0) {
             if (ImGui::Button("Wait for All", ImVec2(120, 0))) {
                 pool.waitAll();
@@ -147,12 +172,13 @@ void Profiler::DrawPool(const std::string &title, ThreadPool &pool)
         ImGui::Unindent();
     }
 
+    ImGui::PopID(); // ← Cierra el ID único
 }
 
 void Profiler::DrawPools()
 {
-    DrawPool("I/O Thread Pool Compute", Brakeza::get()->PoolCompute());
-    DrawPool("I/O Thread Pool images", Brakeza::get()->PoolImages());
+    DrawPool("Pool Compute", Brakeza::get()->PoolCompute());
+    DrawPool("Pool images", Brakeza::get()->PoolImages());
     ImGui::PopStyleColor();
 }
 

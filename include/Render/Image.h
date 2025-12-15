@@ -20,8 +20,7 @@ class Image {
     SDL_Surface *surface = nullptr;
     SDL_Texture *texture = nullptr;
 public:
-    Image() = default;
-    explicit Image(std::string filename);
+    explicit Image(const std::string& filename);
     Image(SDL_Surface *surface, SDL_Texture *texture);
     virtual ~Image();
 
