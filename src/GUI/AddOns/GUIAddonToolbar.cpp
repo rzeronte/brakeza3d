@@ -112,8 +112,8 @@ void GUIAddonToolbar::LUAStatusIcons()
 {
     auto scripting = Components::get()->Scripting();
     bool isStop = scripting->getStateLUAScripts() == Config::LuaStateScripts::LUA_STOP;
-    auto icon = isStop ? IconGUI::LUA_STOP : IconGUI::LUA_PLAY;
-    auto label = isStop ? "Stop" : "Play";
+    auto icon = isStop ? IconGUI::LUA_PLAY : IconGUI::LUA_STOP;
+    auto label = isStop ? "Play" : "Stop";
     auto callbackStop = [&]() { scripting->StopLUAScripts(); };
     auto callbackPlay = [&]() { scripting->PlayLUAScripts(); };
 

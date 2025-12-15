@@ -607,6 +607,14 @@
 			"name":	"TOOLBAR_PICKING_COLORS",
 			"x":	11,
 			"y":	10
+		}, {
+			"name":	"VIDEO_TAKE_SCREENSHOT",
+			"x":	3,
+			"y":	37
+		}, {
+			"name":	"TOOLBAR_TAKE_SCREENSHOT",
+			"x":	3,
+			"y":	37
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

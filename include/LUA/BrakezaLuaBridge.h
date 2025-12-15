@@ -5,20 +5,21 @@
 #ifndef BRAKEZA3D_LUAINTEGRATION_H
 #define BRAKEZA3D_LUAINTEGRATION_H
 
-#include "../sol/sol.hpp"
-#include "3D/Vertex3D.h"
-#include "Misc/ScriptLUA.h"
-#include "Components/ComponentCamera.h"
-#include "Components/Components.h"
-#include "Brakeza.h"
-#include "2D/Image2D.h"
-#include "2D/Image2DAnimation.h"
-#include "3D/Mesh3DAnimation.h"
-#include "3D/Image3D.h"
-#include "3D/LightPoint.h"
-#include "3D/Image3DAnimation.h"
-#include "3D/Image3DAnimation360.h"
-#include "3D/ParticleEmitter.h"
+#include "ObjectFactory.h"
+#include "../../sol/sol.hpp"
+#include "../3D/Vertex3D.h"
+#include "../Misc/ScriptLUA.h"
+#include "../Components/ComponentCamera.h"
+#include "../Components/Components.h"
+#include "../Brakeza.h"
+#include "../2D/Image2D.h"
+#include "../2D/Image2DAnimation.h"
+#include "../3D/Mesh3DAnimation.h"
+#include "../3D/Image3D.h"
+#include "../3D/LightPoint.h"
+#include "../3D/Image3DAnimation.h"
+#include "../3D/Image3DAnimation360.h"
+#include "../3D/ParticleEmitter.h"
 
 inline void LUAIntegration(sol::state &lua)
 {
@@ -470,6 +471,10 @@ inline void LUAIntegration(sol::state &lua)
         "getSource", &CollisionInfo::getSource,
         "getBoneIndexMapping", &CollisionInfo::getBoneIndexMapping,
         "getObject", &CollisionInfo::getObject
+    );
+
+    lua.new_usertype<ObjectFactory>("ObjectFactory",
+        "CreateMesh3D", &ObjectFactory::CreateMesh3D
     );
 }
 

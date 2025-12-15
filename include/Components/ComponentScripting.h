@@ -35,10 +35,10 @@ public:
     void RunScripts() const;
     void InitLUATypes();
     sol::object getGlobalScriptVar(const std::string& scriptName, const char *varName);
-    sol::state &getLua()                                    { return lua; }
-    std::vector<ScriptLUA*> &getSceneLUAScripts()           { return scripts; }
-    std::vector<ScriptLUA*> &getProjectLUAScripts()         { return projectScripts; }
-    Config::LuaStateScripts getStateLUAScripts() const      { return stateScripts; }
+    sol::state &getLua()                                                    { return lua; }
+    std::vector<ScriptLUA*> &getSceneLUAScripts()                           { return scripts; }
+    std::vector<ScriptLUA*> &getProjectLUAScripts()                         { return projectScripts; }
+    [[nodiscard]] Config::LuaStateScripts getStateLUAScripts() const        { return stateScripts; }
     static void createScriptLUAFile(const std::string& path);
     static void RemoveScriptLUAFile(const std::string& path);
 };

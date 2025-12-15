@@ -58,8 +58,8 @@ public:
     Components *getComponentsManager() const                    { return componentsManager; }
     GUIManager *GUI()                                           { return &managerGUI; }
     Object3D *getObjectByIndex(int index) const                 { return objects[index]; }
-    ThreadPool & PoolCompute()                                         { return pool; }
-    ThreadPool & PoolImages()                                   { return pool; }
+    ThreadPool & PoolCompute()                                  { return pool; }
+    ThreadPool & PoolImages()                                   { return poolImages; }
 
     static void Shutdown()                                      { Config::get()->EXIT = true; };
     static std::string UniqueObjectLabel(const char *prefix);

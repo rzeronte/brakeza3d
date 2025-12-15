@@ -19,8 +19,6 @@
 #include "../GUI/GUI.h"
 #include "../Render/Collider.h"
 #include "../Render/Color.h"
-#include "../Misc/Timer.h"
-
 
 class Object3DGUI;
 
@@ -52,7 +50,6 @@ protected:
     std::vector<Object3D*> attachedObjects;
     sol::environment luaEnvironment;
 
-    Timer timer;
     Color pickingColor;
     M3 rotation = M3::getMatrixIdentity();
     ObjectType type;
@@ -110,7 +107,6 @@ public:
     [[nodiscard]] bool isMultiScene() const                             { return multiScene; }
     [[nodiscard]] const std::vector<Object3D *> &getAttached() const    { return attachedObjects; }
     [[nodiscard]] const sol::environment &getLuaEnvironment() const     { return luaEnvironment; }
-    [[nodiscard]] const Timer &getTimer() const                         { return timer; }
     [[nodiscard]] const std::vector<ScriptLUA *> &getScripts() const    { return scripts; }
     [[nodiscard]] M3 getM3ModelMatrix() const                           { return M3::fromMat3GLM(getModelMatrix()); }
     [[nodiscard]] M3 getRotation() const                                { return rotation; }

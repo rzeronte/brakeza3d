@@ -320,7 +320,8 @@ namespace GUIType
     X(CANCEL, 0, 0) \
     X(TOOLBAR_PICKING_COLORS, 0, 0) \
     X(VIDEO_TAKE_SCREENSHOT, 0, 0) \
-    X(TOOLBAR_TAKE_SCREENSHOT, 0, 0)
+    X(TOOLBAR_TAKE_SCREENSHOT, 0, 0) \
+    X(MNU_WORKERS, 0, 0)
 
 // Icons Objects
 namespace IconObject {

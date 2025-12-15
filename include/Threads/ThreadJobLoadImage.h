@@ -2,10 +2,10 @@
 #define BRAKEZA3D_JOBLOADIMAGE_H
 
 #include <string>
-#include <utility>
 
 #include "ThreadJobBase.h"
 #include "../Render/Image.h"
+#include "../Render/Profiler.h"
 
 class ThreadJobLoadImage : public ThreadJobBase
 {
@@ -14,7 +14,7 @@ class ThreadJobLoadImage : public ThreadJobBase
 public:
     ThreadJobLoadImage(Image* image, std::string filename)
     :
-        filename(std::move(filename)),
+        filename(filename),
         image(image)
     {
         function = [this](){ fnProcess(); };
@@ -28,10 +28,11 @@ public:
 
     void fnCallback()
     {
-        image->LoadSDLSurface();
         image->CreateSDLTexture();
         image->MakeAutoOGLImage();
         image->setAlreadyLoaded();
+
+        Profiler::get()->AddImage(image);
 
         Logging::Message("[ThreadJobLoadImage] Callback END");
     }

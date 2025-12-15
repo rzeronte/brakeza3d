@@ -20,7 +20,6 @@ Object3D::Object3D()
     type(ObjectType::Object3D)
 {
     luaEnvironment["this"] = this;
-    timer.start();
 }
 
 Vertex3D Object3D::up() const
@@ -203,7 +202,7 @@ void Object3D::MakeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
 
     characterController = new btKinematicCharacterController(
         kinematicBody,
-        static_cast<btConvexShape *>(kinematicBody->getCollisionShape()),
+        dynamic_cast<btConvexShape *>(kinematicBody->getCollisionShape()),
         0.1f
     );
 

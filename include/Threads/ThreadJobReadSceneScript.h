@@ -15,16 +15,15 @@ class ThreadJobReadSceneScript : public ThreadJobBase
 public:
     ThreadJobReadSceneScript(cJSON *json)
     :
-        ThreadJobBase([this](){ process(); }, [this]() { callback(); }),
         json(cJSON_Duplicate(json, 1))
     {
+        function = [this](){ fnProcess(); };
+        callback = [this](){ fnCallback(); };
     }
 
-    void process()
+    void fnProcess()
     {
-        Logging::Message("[Pools] ThreadJobReadSceneScript process");
-
-        /*if (cJSON_GetObjectItemCaseSensitive(json, "scripts") != nullptr) {
+        if (cJSON_GetObjectItemCaseSensitive(json, "scripts") != nullptr) {
             cJSON *currentScript;
             cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(json, "scripts")) {
                 std::string fileName = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
@@ -32,11 +31,21 @@ public:
                     new ScriptLUA(fileName, ScriptLUA::dataTypesFileFor(fileName))
                 );
             }
-        }*/
+        }
+        Logging::Message("[ThreadJobReadSceneScript] Process END");
     }
 
-    void callback()
+    void fnCallback()
     {
+        Logging::Message("[ThreadJobReadSceneScript] Callback END");
+    }
+
+    ~ThreadJobReadSceneScript()
+    {
+        if (json) {
+            cJSON_Delete(json);
+            json = nullptr;
+        }
     }
 };
 

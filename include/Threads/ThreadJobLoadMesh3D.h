@@ -45,7 +45,6 @@ public:
         }
 
         mesh->FillOGLBuffers();
-        mesh->UpdateOGLTextures();
 
         Mesh3DSerializer::ApplyCustomShadersMainThread(mesh);
         Mesh3DSerializer::ApplyCollider(mesh, json);

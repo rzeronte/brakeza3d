@@ -2,20 +2,24 @@
 #define BRAKEZA3D_JOBREADFILESCENE_H
 
 #include <string>
+#include <utility>
 #include "ThreadJobBase.h"
+#include "ThreadJobReadSceneScript.h"
 #include "../Brakeza.h"
 #include "../Misc/cJSON.h"
 #include "../Misc/Logging.h"
 #include "../Misc/Tools.h"
+#include "../Loaders/SceneLoader.h"
 
-class ThreadJobReadFileScene : public ThreadJobBase {
+class ThreadJobReadFileScene : public ThreadJobBase
+{
     std::string filename;
     cJSON* json = nullptr;
 
 public:
-    explicit ThreadJobReadFileScene(const std::string& file)
+    explicit ThreadJobReadFileScene(std::string file)
     :
-        filename(file)
+        filename(std::move(file))
     {
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };
@@ -25,13 +29,13 @@ public:
 
     void fnProcess()
     {
-        Logging::Message("[Pools] ThreadJobReadFileScene::fnProcess START - File: %s", filename.c_str());
+        Logging::Message("[ThreadJobReadFileScene] START - File: %s", filename.c_str());
 
         size_t file_size = 0;
         auto contentFile = Tools::ReadFile(filename, file_size);
 
         if (!contentFile) {
-            Logging::Error("[Pools] Failed to read file: %s", filename.c_str());
+            Logging::Error("[ThreadJobReadFileScene] Failed to read file: %s", filename.c_str());
             return;
         }
 
@@ -44,11 +48,7 @@ public:
     {
         SceneLoader::LoadSceneSettings(json);
 
-        cJSON *objects = cJSON_GetObjectItemCaseSensitive(json, "objects");
-        if (!objects) {
-            Logging::Error("[Pools] No objects array found in scene JSON");
-            return;
-        }
+        auto objects = cJSON_GetObjectItemCaseSensitive(json, "objects");
 
         int objectCount = 0;
         cJSON *currentObject;
@@ -59,7 +59,11 @@ public:
             objectCount++;
         }
 
-        Logging::Message("[ThreadJobReadFileScene] Callback END");
+        auto job = std::make_shared<ThreadJobReadSceneScript>(json);
+        Brakeza::get()->PoolCompute().enqueue(job);
+
+        SceneLoader::setLoading(false);
+        Logging::Message("[ThreadJobReadFileScene] Callback END | Loaded %d objects.", objectCount);
     }
 
     ~ThreadJobReadFileScene()

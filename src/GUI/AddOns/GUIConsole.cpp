@@ -44,6 +44,8 @@ void GuiAddonConsole::ClearLog()
 
 void GuiAddonConsole::AddLog(const char* fmt, ...)
 {
+    std::lock_guard<std::mutex> lock(mtx);  // Bloquea
+
     // FIXME-OPT
     char buf[1024];
     va_list args;

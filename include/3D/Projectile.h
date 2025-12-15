@@ -8,7 +8,6 @@
 
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
 #include "Vertex3D.h"
-#include "../Render/M3.h"
 #include "../Render/Collider.h"
 #include "Mesh3D.h"
 

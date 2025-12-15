@@ -650,14 +650,6 @@ void Mesh3D::FillOGLBuffers()
     ComponentRender::FillOGLBuffers(meshes);
 }
 
-void Mesh3D::UpdateOGLTextures()
-{
-    Logging::Message("[Mesh3D] Updating OGL Textures...");
-    for (auto &t : modelTextures) {
-        t->MakeAutoOGLImage();
-    }
-}
-
 void Mesh3D::setSourceFile(const std::string &sourceFile)
 {
     Mesh3D::sourceFile = sourceFile;

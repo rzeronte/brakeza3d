@@ -10,9 +10,9 @@ class ThreadJobLoadObject : public ThreadJobBase
     cJSON *json = nullptr;
     Object3D *object = nullptr;
 public:
-    explicit ThreadJobLoadObject(cJSON *objectJson)
+    explicit ThreadJobLoadObject(cJSON *json)
     :
-        json(cJSON_Duplicate(objectJson, 1))
+        json(cJSON_Duplicate(json, 1))
     {
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };

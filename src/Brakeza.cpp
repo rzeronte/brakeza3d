@@ -9,8 +9,17 @@
 Brakeza *Brakeza::instance = nullptr;
 
 Brakeza::Brakeza()
+:
+    pool(4),
+    poolImages(4)
 {
     componentsManager = Components::get();
+
+    pool.setMaxCallbacksPerFrame(5);
+    pool.setMaxConcurrentTasks(2);
+
+    poolImages.setMaxCallbacksPerFrame(5);
+    poolImages.setMaxConcurrentTasks(2);
 }
 
 Brakeza *Brakeza::get()

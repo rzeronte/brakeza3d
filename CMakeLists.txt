@@ -6,8 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
-    #set(CMAKE_CXX_FLAGS "-O3 -w")
+    set(CMAKE_CXX_FLAGS "-O3 -w")
 endif()
 
 # SDL
@@ -84,7 +83,7 @@ add_executable(Brakeza3D
         src/Config.cpp include/Config.h
         src/Loaders/ProjectLoader.cpp include/Loaders/ProjectLoader.h
         src/Loaders/SceneLoader.cpp include/Loaders/SceneLoader.h
-        include/BrakezaLuaBridge.h
+        include/LUA/BrakezaLuaBridge.h
         include/SceneObjectTypes.h
 
         # 2D
@@ -291,6 +290,10 @@ add_executable(Brakeza3D
         include/Threads/ThreadJobLoadImage3DAnimation360.h
         include/Threads/ThreadJobLoadImage2DAnimation.h
         include/Threads/ThreadJobLoadImage3DAnimation.h
+        include/LUA/ObjectFactory.h
+        include/LUA/ObjectFactory.h
+        include/Threads/ThreadJobStepSimulation.h
+        include/Threads/ThreadJobClearScene.h
 )
 
 target_link_libraries(Brakeza3D

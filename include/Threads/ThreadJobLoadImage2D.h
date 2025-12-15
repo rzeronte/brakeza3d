@@ -26,7 +26,7 @@ public:
             return;
         }
 
-        Logging::Message("[ThreadJobLoadImage2D] ThreadJobLoadImage3D::fnProcess END");
+        Logging::Message("[ThreadJobLoadImage2D] Process END");
     }
 
     void fnCallback()
