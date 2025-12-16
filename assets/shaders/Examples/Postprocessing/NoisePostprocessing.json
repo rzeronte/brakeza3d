@@ -1,7 +1,8 @@
 {
 	"name":	"NoisePostprocessing",
-	"vertexshader":	"../assets/shaders/Examples/Postprocessing/NoisePostprocessing.vs",
-	"fragmentshader":	"../assets/shaders/Examples/Postprocessing/NoisePostprocessing.fs",
+	"typesFile":	"../assets/shaders/Examples/Postprocessing/NoisePostprocessing.json",
+	"vsFile":	"../assets/shaders/Examples/Postprocessing/NoisePostprocessing.vs",
+	"fsFile":	"../assets/shaders/Examples/Postprocessing/NoisePostprocessing.fs",
 	"type":	"Postprocessing",
 	"types":	[{
 			"name":	"sceneTexture",

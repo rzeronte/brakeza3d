@@ -81,11 +81,11 @@ void ComponentRender::RegisterShaders()
 
 void ComponentRender::preUpdate()
 {
+    DeleteRemovedObjects();
+
     Component::preUpdate();
     ClearShadowMaps();
     UpdateFPS();
-    if (!isEnabled()) return;
-    DeleteRemovedObjects();
 }
 
 void ComponentRender::DrawFPS() const
@@ -228,16 +228,18 @@ void ComponentRender::LoadShaderIntoScene(const std::string &folder, const std::
 
     std::string shaderFragmentFile = folder + std::string(name + ".fs");
     std::string shaderVertexFile = folder + std::string(name + ".vs");
+    std::string typesFile = folder + std::string(name + ".json");
 
-    auto type = ShaderOGLCustom::extractTypeFromShaderName(folder, name);
+    auto type = ShaderOGLCustom::ExtractTypeFromShaderName(folder, name);
 
-    Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
+    Logging::Message("[Render] Loading shader into scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
 
     switch(type) {
         case SHADER_POSTPROCESSING : {
-            this->addShaderToScene(
-                new ShaderOGLCustomPostprocessing(name, shaderVertexFile, shaderFragmentFile)
-            );
+            auto s = new ShaderOGLCustomPostprocessing(name, typesFile, shaderVertexFile, shaderFragmentFile);
+            s->PrepareBackground();
+            s->PrepareMainThread();
+            AddShaderToScene(s);
             break;
         }
         default:
@@ -248,29 +250,30 @@ void ComponentRender::LoadShaderIntoScene(const std::string &folder, const std::
     }
 }
 
-ShaderOGLCustom* ComponentRender::getLoadedShader(const std::string &folder, const std::string &jsonFilename)
+ShaderOGLCustom* ComponentRender::CreateCustomShaderFromDisk(const std::string &folder, const std::string &jsonFilename)
 {
     auto name = Tools::getFilenameWithoutExtension(jsonFilename);
 
-    std::string shaderFragmentFile = folder + std::string(name + ".fs");
-    std::string shaderVertexFile = folder + std::string(name + ".vs");
+    std::string fsFile = folder + std::string(name + ".fs");
+    std::string vsFile = folder + std::string(name + ".vs");
+    std::string typesFile = folder + std::string(name + ".json");
 
-    auto type = ShaderOGLCustom::extractTypeFromShaderName(folder, name);
+    auto type = ShaderOGLCustom::ExtractTypeFromShaderName(folder, name);
 
-    Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
+    Logging::Message("[Render] Loading shader into scene: Name: %s, Folder: %s, Type: %d", name.c_str(), folder.c_str(), type);
 
     switch(type) {
         case SHADER_POSTPROCESSING : {
-            return new ShaderOGLCustomPostprocessing(name, shaderVertexFile, shaderFragmentFile);
+            return new ShaderOGLCustomPostprocessing(name, typesFile, vsFile, fsFile);
         }
         default:
         case SHADER_OBJECT : {
-            return new ShaderOGLCustomMesh3D(nullptr, name, shaderVertexFile, shaderFragmentFile);
+            return new ShaderOGLCustomMesh3D(nullptr, name, typesFile, vsFile, fsFile);
         }
     }
 }
 
-void ComponentRender::addShaderToScene(ShaderOGLCustom *shader)
+void ComponentRender::AddShaderToScene(ShaderOGLCustom *shader)
 {
     sceneShaders.push_back(shader);
 }
@@ -280,14 +283,18 @@ void ComponentRender::setSceneShadersEnabled(bool value)
     sceneShadersEnabled = value;
 }
 
-void ComponentRender::RunSceneShadersPostUpdate() const
+void ComponentRender::RunSceneShadersPostUpdate()
 {
+
     Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
-    for (auto s: sceneShaders) {
-        if (!s->isEnabled()) continue;
-        s->postUpdate();
-    }
+
+    Components::get()->Window()->getPostProcessingManager()->processChain(
+        Components::get()->Window()->getSceneTexture(),
+        Components::get()->Window()->getGlobalFramebuffer()
+    );
+
     Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
+
 }
 
 void ComponentRender::RemoveSceneShaderByIndex(int index) {
@@ -308,16 +315,6 @@ void ComponentRender::RemoveSceneShader(const ShaderOGLCustom *shader)
             return;
         }
     }
-}
-
-void ComponentRender::RunSceneShadersPreUpdate() const
-{
-    Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
-    for( auto s: sceneShaders) {
-        if (!s->isEnabled()) continue;
-        s->onUpdate();
-    }
-    Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
 }
 
 ShaderOGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name) const
@@ -489,7 +486,7 @@ void ComponentRender::FlipBuffersToGlobal() const
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    shaders.shaderOGLLightPass->fillSpotLightsMatricesUBO();
+    shaders.shaderOGLLightPass->FillSpotLightsMatricesUBO();
 
     if (Config::get()->ENABLE_LIGHTS) {
         shaders.shaderOGLLightPass->render(

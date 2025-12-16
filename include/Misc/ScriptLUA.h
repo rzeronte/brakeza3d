@@ -74,8 +74,8 @@ public:
     std::string fileTypes;
     std::string name;
 
-    explicit ScriptLUA(const std::string& script, std::string properties);
-    ScriptLUA(const std::string &scriptFilename, const cJSON *types);
+    explicit ScriptLUA(const std::string& name, const std::string& codeFile, const std::string &typesFile);
+    ScriptLUA(const std::string& name, const std::string &codeFile, const std::string &typesFile, const cJSON *types);
 
     bool existDataType(const char *name, const char *type) const;
     void runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg = std::nullopt) const;
@@ -88,20 +88,19 @@ public:
     void reloadScriptCode();
     void getCode(const std::string &script);
     void updateScriptCodeWith(const std::string &content) const;
-    void reloadGlobals() const;
+    void ReloadGlobals() const;
     void setPaused(bool value);
     void drawImGuiProperties();
     void setDataTypesFromJSON(const cJSON *typesJSON);
     void addDataTypeEmpty(const char *name, const char *type);
-    [[nodiscard]] bool isPaused() const;
-    [[nodiscard]] const std::vector<ScriptLUATypeData> &getDataTypes() const;
+    [[nodiscard]] bool isPaused() const { return paused; }
+    [[nodiscard]] const std::vector<ScriptLUATypeData> &getDataTypes() const { return dataTypes; }
     [[nodiscard]] cJSON *getTypesJSON() const;
-    [[nodiscard]] const std::string &getScriptFilename() const;
-    static ScriptLUA* create(const std::string& scriptFile);
+    [[nodiscard]] const std::string &getScriptFilename() const { return scriptFilename; }
     static std::string dataTypesFileFor(std::string basicString);
     static std::string removeFilenameExtension(std::string& filename);
 
-    [[nodiscard]] std::string getName() const;
+    [[nodiscard]] std::string getName() const { return name; }
 
     void setName(const std::string &name);
 

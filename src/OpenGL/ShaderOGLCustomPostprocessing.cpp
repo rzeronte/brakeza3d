@@ -7,22 +7,24 @@
 
 ShaderOGLCustomPostprocessing::ShaderOGLCustomPostprocessing(
     const std::string &label,
+    const std::string &typesFile,
     const std::string &vsFile,
     const std::string &fsFile
     )
 :
-    ShaderOGLCustom(label, vsFile, fsFile, SHADER_POSTPROCESSING)
+    ShaderOGLCustom(label, typesFile, vsFile, fsFile, SHADER_POSTPROCESSING)
 {
 }
 
 ShaderOGLCustomPostprocessing::ShaderOGLCustomPostprocessing(
     const std::string &label,
+    const std::string &typesFile,
     const std::string &vsFile,
     const std::string &fsFile,
     cJSON *types
 )
 :
-    ShaderOGLCustom(label, vsFile, fsFile, SHADER_POSTPROCESSING, types)
+    ShaderOGLCustom(label, typesFile, vsFile, fsFile, SHADER_POSTPROCESSING, types)
 {
 }
 
@@ -33,12 +35,13 @@ void ShaderOGLCustomPostprocessing::LoadUniforms()
 void ShaderOGLCustomPostprocessing::PrepareMainThread()
 {
     ShaderBaseOpenGL::PrepareMainThread();
+
     LoadUniforms();
     CreateQuadVBO();
     SetupQuadUniforms(programID);
 }
 
-void ShaderOGLCustomPostprocessing::render(GLuint fbo)
+void ShaderOGLCustomPostprocessing::render(GLuint fbo, GLuint texture)
 {
     if (!isEnabled()) return;
 
@@ -49,9 +52,13 @@ void ShaderOGLCustomPostprocessing::render(GLuint fbo)
     LoadQuadMatrixUniforms();
 
     ResetNumberTextures();
+    setTextureResult(texture);
     setDataTypesUniforms();
 
     DrawQuad();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 }
 
 void ShaderOGLCustomPostprocessing::Destroy()

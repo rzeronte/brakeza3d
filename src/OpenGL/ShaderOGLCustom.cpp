@@ -13,6 +13,7 @@
 
 ShaderOGLCustom::ShaderOGLCustom(
     std::string label,
+    const std::string &typesFile,
     const std::string &vsFile,
     const std::string &fsFile,
     ShaderCustomType type,
@@ -22,13 +23,14 @@ ShaderOGLCustom::ShaderOGLCustom(
     ShaderBaseOpenGL(vsFile, fsFile, type == SHADER_OBJECT),
     label(std::move(label)),
     type(type),
-    fileTypes(dataTypesFileFor(fsFile))
+    fileTypes(typesFile)
 {
-    setDataTypesFromJSON(types); //-> background
+    setDataTypesFromJSON(types);
 }
 
 ShaderOGLCustom::ShaderOGLCustom(
     std::string label,
+    const std::string &typesFile,
     const std::string &vsFile,
     const std::string &fsFile,
     ShaderCustomType type
@@ -37,8 +39,9 @@ ShaderOGLCustom::ShaderOGLCustom(
     ShaderBaseOpenGL(vsFile, fsFile, type == SHADER_OBJECT),
     label(std::move(label)),
     type(type),
-    fileTypes(dataTypesFileFor(fsFile))
+    fileTypes(typesFile)
 {
+    ParseTypesFromFileAttributes();
 }
 
 void ShaderOGLCustom::PrepareBackground()
@@ -54,99 +57,131 @@ void ShaderOGLCustom::PrepareMainThread()
     CreateFramebuffer();
 }
 
+void ShaderOGLCustom::DrawTypeImGuiControl(ShaderOGLCustomType &type)
+{
+    ImGui::PushID(std::string(type.name + type.type).c_str());
+
+    auto& info = GLSLTypeMapping[type.type];
+    auto label = Tools::ImGuiUnique(type.name);
+    switch (info.type) {
+        case ShaderOpenGLCustomDataType::INT: {
+            int valueInt = std::get<int>(type.value);
+            if (ImGui::InputInt(label.c_str(), &valueInt)) {
+                type.value = valueInt;
+            }
+            break;
+        }
+        case ShaderOpenGLCustomDataType::FLOAT: {
+            float valueFloat = std::get<float>(type.value);
+            if (ImGui::InputFloat(label.c_str(), &valueFloat, 0.01f, 1.0f, "%.3f")) {
+                type.value = valueFloat;
+            }
+            break;
+        }
+        case ShaderOpenGLCustomDataType::VEC2: {
+            auto valueFloat = std::get<glm::vec2>(type.value);
+            if (ImGui::DragFloat2(label.c_str(), &valueFloat[0], 0.01f, 0.0f, 1.0f)) {
+                type.value = valueFloat;
+            }
+            break;
+        }
+        case ShaderOpenGLCustomDataType::VEC3: {
+            auto valueFloat = std::get<glm::vec3>(type.value);
+            if (ImGui::DragFloat3(label.c_str(), &valueFloat[0], 0.01f, 0.0f, 1.0f)) {
+                type.value = valueFloat;
+            }
+            break;
+        }
+        case ShaderOpenGLCustomDataType::VEC4: {
+            auto valueFloat = std::get<glm::vec4>(type.value);
+            if (ImGui::DragFloat4(label.c_str(), &valueFloat[0], 0.01f, 0.0f, 1.0f)) {
+                type.value = valueFloat;
+            }
+            break;
+        }
+        default:
+            break;
+    }
+
+    ImGui::PopID();
+}
+
+int ShaderOGLCustom::CountTypesByFilter(const std::vector<ShaderOGLCustomType>& types, const std::vector<ShaderOpenGLCustomDataType>& filterTypes)
+{
+    int count = 0;
+
+    for (const auto& type : types) {
+        ShaderOpenGLCustomDataType dataType = GLSLTypeMapping[type.type].type;
+
+        // Verificar si el tipo está en el array de filtros
+        for (const auto& filterType : filterTypes) {
+            if (dataType == filterType) {
+                count++;
+                break; // No necesitamos seguir buscando para este elemento
+            }
+        }
+    }
+
+    return count;
+}
+
+void ShaderOGLCustom::DrawTypeInternalImGuiControl(ShaderOGLCustomType &type)
+{
+    switch (GLSLTypeMapping[type.type].type) {
+        case ShaderOpenGLCustomDataType::DELTA_TIME: {
+            ImGui::Text(type.name.c_str());
+            break;
+        }
+        case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
+            ImGui::Text(type.name.c_str());
+            break;
+        }
+        default:
+            break;
+    }
+}
+
 void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
 {
     ImGui::SeparatorText("OpenGL custom uniforms");
 
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
-    int i = 0;
+
+    int contUniforms = CountTypesByFilter(dataTypes, {
+        ShaderOpenGLCustomDataType::INT,
+        ShaderOpenGLCustomDataType::FLOAT,
+        ShaderOpenGLCustomDataType::VEC2,
+        ShaderOpenGLCustomDataType::VEC3,
+        ShaderOpenGLCustomDataType::VEC4,
+    });
+
+    int countInternalUniforms = CountTypesByFilter(dataTypes, {
+        ShaderOpenGLCustomDataType::DELTA_TIME,
+        ShaderOpenGLCustomDataType::EXECUTION_TIME,
+    });
+
+    int countUniformTextures  = CountTypesByFilter(dataTypes, {
+        ShaderOpenGLCustomDataType::DEPTH,
+        ShaderOpenGLCustomDataType::SCENE,
+        ShaderOpenGLCustomDataType::TEXTURE2D,
+        ShaderOpenGLCustomDataType::DIFFUSE,
+    });
+
     for (auto &type: dataTypes) {
-        auto& info = GLSLTypeMapping[type.type];
-        switch (info.type) {
-            case ShaderOpenGLCustomDataType::INT: {
-                ImGui::PushID(i);
-                int valueInt = std::get<int>(type.value);
-                if (ImGui::InputInt(type.name.c_str(), &valueInt)) {
-                    type.value = valueInt;
-                }
-                i++;
-                ImGui::PopID();
-                break;
-            }
-            case ShaderOpenGLCustomDataType::FLOAT: {
-                ImGui::PushID(i);
-                float valueFloat = std::get<float>(type.value);
-                if (ImGui::InputFloat(type.name.c_str(), &valueFloat, 0.01f, 1.0f, "%.3f")) {
-                    type.value = valueFloat;
-                }
-                i++;
-                ImGui::PopID();
-                break;
-            }
-            case ShaderOpenGLCustomDataType::VEC2: {
-                ImGui::PushID(i);
-                auto valueFloat = std::get<glm::vec2>(type.value);
-                if (ImGui::DragFloat2(type.name.c_str(), &valueFloat[0], 0.01f, 0.0f, 1.0f)) {
-                    type.value = valueFloat;
-                }
-                i++;
-                ImGui::PopID();
-                break;
-            }
-            case ShaderOpenGLCustomDataType::VEC3: {
-                ImGui::PushID(i);
-                auto valueFloat = std::get<glm::vec3>(type.value);
-                if (ImGui::DragFloat3(type.name.c_str(), &valueFloat[0], 0.01f, 0.0f, 1.0f)) {
-                    type.value = valueFloat;
-                }
-                i++;
-                ImGui::PopID();
-                break;
-            }
-            case ShaderOpenGLCustomDataType::VEC4: {
-                ImGui::PushID(i);
-                auto valueFloat = std::get<glm::vec4>(type.value);
-                if (ImGui::DragFloat4(type.name.c_str(), &valueFloat[0], 0.01f, 0.0f, 1.0f)) {
-                    type.value = valueFloat;
-                }
-                i++;
-                ImGui::PopID();
-                break;
-            }
-            default:
-                break;
-        }
+        DrawTypeImGuiControl(type);
     }
 
-    if (i <= 0) {
+    if (contUniforms == 0) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Custom uniforms not found");
     }
 
     ImGui::SeparatorText("OpenGL system uniforms");
 
-    i = 0;
     for (auto &type: dataTypes) {
-        switch (GLSLTypeMapping[type.type].type) {
-            case ShaderOpenGLCustomDataType::DELTA_TIME: {
-                ImGui::PushID(i);
-                ImGui::Text(type.name.c_str());
-                i++;
-                ImGui::PopID();
-                break;
-            }
-            case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
-                ImGui::PushID(i);
-                ImGui::Text(type.name.c_str());
-                i++;
-                ImGui::PopID();
-                break;
-            }
-            default:
-                break;
-        }
+        DrawTypeInternalImGuiControl(type);
     }
 
-    if (i <= 0) {
+    if (countInternalUniforms == 0) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "System uniforms not found");
     }
 
@@ -158,7 +193,6 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
             switch (GLSLTypeMapping[type.type].type) {
                 case ShaderOpenGLCustomDataType::DEPTH: {
                     ImGui::TableNextRow();
-                    ImGui::PushID(j);
 
                     ImGui::TableSetColumnIndex(0);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
@@ -173,18 +207,16 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
 
                     ImGui::TableSetColumnIndex(2);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                    ImGui::Text("GL_TEXTURE%d", i);
+                    ImGui::Text("GL_TEXTURE%d", j);
 
                     ImGui::TableSetColumnIndex(3);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
                     ImGui::Text("%dx%d", Config::get()->screenWidth, Config::get()->screenHeight);
                     j++;
-                    ImGui::PopID();
                     break;
                 }
                 case ShaderOpenGLCustomDataType::SCENE: {
                     ImGui::TableNextRow();
-                    ImGui::PushID(j);
 
                     ImGui::TableSetColumnIndex(0);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
@@ -199,18 +231,16 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
 
                     ImGui::TableSetColumnIndex(2);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                    ImGui::Text("GL_TEXTURE%d", i);
+                    ImGui::Text("GL_TEXTURE%d", j);
 
                     ImGui::TableSetColumnIndex(3);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
                     ImGui::Text("%dx%d", Config::get()->screenWidth, Config::get()->screenHeight);
                     j++;
-                    ImGui::PopID();
                     break;
                 }
                 case ShaderOpenGLCustomDataType::DIFFUSE: {
                     ImGui::TableNextRow();
-                    ImGui::PushID(j);
 
                     if (diffuse != nullptr) {
                         ImGui::TableSetColumnIndex(0);
@@ -225,19 +255,17 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
 
                         ImGui::TableSetColumnIndex(2);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                        ImGui::Text("GL_TEXTURE%d", i);
+                        ImGui::Text("GL_TEXTURE%d", j);
 
                         ImGui::TableSetColumnIndex(3);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
                         ImGui::Text("%dx%d", diffuse->width(), diffuse->height());
                     }
                     j++;
-                    ImGui::PopID();
                     break;
                 }
                 case ShaderOpenGLCustomDataType::TEXTURE2D: {
                     ImGui::TableNextRow();
-                    ImGui::PushID(i);
 
                     auto texture = std::get<Image *>(type.value);
                     if (texture != nullptr) {
@@ -254,7 +282,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
 
                         ImGui::TableSetColumnIndex(2);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                        ImGui::Text("GL_TEXTURE%d", i);
+                        ImGui::Text("GL_TEXTURE%d", j);
 
                         ImGui::TableSetColumnIndex(3);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
@@ -271,14 +299,13 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
 
                         ImGui::TableSetColumnIndex(2);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                        ImGui::Text("GL_TEXTURE%d", i);
+                        ImGui::Text("GL_TEXTURE%d", j);
 
                         ImGui::TableSetColumnIndex(3);
                         ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
                         ImGui::Text("-");
                     }
                     j++;
-                    ImGui::PopID();
                     break;
                 }
                 default:
@@ -287,7 +314,7 @@ void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
         }
         ImGui::EndTable();
 
-        if (j <= 0) {
+        if (countUniformTextures == 0) {
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Textures not found");
         }
     }
@@ -322,10 +349,10 @@ void ShaderOGLCustom::ParseTypesFromFileAttributes()
 
 std::string ShaderOGLCustom::dataTypesFileFor(std::string basicString)
 {
-    return ShaderOGLCustom::removeFilenameExtension(basicString) + ".json";
+    return ExtractOnlyName(basicString) + ".json";
 }
 
-std::string ShaderOGLCustom::removeFilenameExtension(std::string& filename)
+std::string ShaderOGLCustom::ExtractOnlyName(std::string& filename)
 {
     size_t dotPosition = filename.find_last_of('.');
 
@@ -338,6 +365,8 @@ std::string ShaderOGLCustom::removeFilenameExtension(std::string& filename)
 
 void ShaderOGLCustom::setDataTypesFromJSON(cJSON *typesJSON)
 {
+    Logging::Message("[ShaderOGLCustom] Settings variables into shader...");
+
     cJSON *currentType;
     cJSON_ArrayForEach(currentType, typesJSON) {
         auto name = cJSON_GetObjectItemCaseSensitive(currentType, "name")->valuestring;
@@ -346,9 +375,9 @@ void ShaderOGLCustom::setDataTypesFromJSON(cJSON *typesJSON)
 
         if (!existDataType(name, type)){
             addDataType(name, type, value);
-            Logging::Message("[ShaderOGLCustom] Loading shader variable (%s, %s)", name, type);
+            Logging::Message("[ShaderOGLCustom] Loading shader variable: %s => %s", name, type);
         } else {
-            Logging::Message("[ShaderOGLCustom] Keeping shader variable (%s, %s)", name, type);
+            Logging::Message("[ShaderOGLCustom] Keeping shader variable: %s => %s", name, type);
         }
     }
 }
@@ -440,15 +469,12 @@ void ShaderOGLCustom::onUpdate() const
     if (!isEnabled()) return;
 }
 
-void ShaderOGLCustom::postUpdate()
+void ShaderOGLCustom::postUpdate(GLuint outputFBO, GLuint inputTexture)
 {
     if (!isEnabled()) return;
 
-    render(resultFramebuffer);
+    render(outputFBO, inputTexture);
 
-    auto window = Components::get()->Window();
-    auto shaderOGLImage = Components::get()->Render()->getShaders()->shaderOGLImage;
-    shaderOGLImage->renderTexture(textureResult, 0, 0, window->getWidth(), window->getHeight(), 1, true, window->getGlobalFramebuffer());
 }
 
 void ShaderOGLCustom::setLabel(std::string value)
@@ -502,8 +528,7 @@ void ShaderOGLCustom::setDataTypesUniforms()
                 break;
             }
             case ShaderOpenGLCustomDataType::SCENE: {
-                auto globalTexture = Components::get()->Window()->getSceneTexture();
-                setTexture(type.name, globalTexture, numTextures);
+                setTexture(type.name, textureResult, numTextures);
                 IncreaseNumberTextures();
                 break;
             }
@@ -521,7 +546,8 @@ void ShaderOGLCustom::setDataTypesUniforms()
 
 void ShaderOGLCustom::UpdateFileTypes()
 {
-    Logging::Message("Updating types file (%s)", this->fileTypes.c_str());
+    Logging::Message("[ShaderOGLCustom] Writing typesFile: %s", this->fileTypes.c_str());
+
     char *output_string = cJSON_Print(getTypesJSON());
 
     Tools::WriteToFile(this->fileTypes, output_string);
@@ -588,7 +614,7 @@ void ShaderOGLCustom::AddDataTypeEmpty(const char *name, const char *type)
     dataTypesDefaultValues.emplace_back(name, type, typeValue);
 }
 
-void ShaderOGLCustom::removeDataType(const ShaderOpenGLCustomType& data)
+void ShaderOGLCustom::removeDataType(const ShaderOGLCustomType& data)
 {
     for (auto it = dataTypes.begin(); it != dataTypes.end(); ++it) {
         if (it->name == data.name) {
@@ -649,9 +675,11 @@ cJSON *ShaderOGLCustom::getTypesJSON()
 {
     cJSON *scriptJSON = cJSON_CreateObject();
     cJSON_AddStringToObject(scriptJSON, "name", getLabel().c_str());
-    cJSON_AddStringToObject(scriptJSON, "vertexshader", vertexFilename.c_str());
-    cJSON_AddStringToObject(scriptJSON, "fragmentshader", fragmentFilename.c_str());
     cJSON_AddStringToObject(scriptJSON, "type", getShaderTypeString(type).c_str());
+
+    cJSON_AddStringToObject(scriptJSON, "vsFile", vertexFilename.c_str());
+    cJSON_AddStringToObject(scriptJSON, "fsFile", fragmentFilename.c_str());
+    cJSON_AddStringToObject(scriptJSON, "typesFile", fileTypes.c_str());
 
     cJSON *typesArray = cJSON_CreateArray();
     for (auto dataType : dataTypes) {
@@ -716,26 +744,6 @@ cJSON *ShaderOGLCustom::getTypesJSON()
     cJSON_AddItemToObject(scriptJSON, "types", typesArray);
 
     return scriptJSON;
-}
-
-bool ShaderOGLCustom::isEnabled() const
-{
-    return enabled;
-}
-
-const std::vector<ShaderOpenGLCustomType> &ShaderOGLCustom::getDataTypes() const
-{
-    return dataTypes;
-}
-
-const std::string &ShaderOGLCustom::getLabel() const
-{
-    return label;
-}
-
-ShaderCustomType ShaderOGLCustom::getType() const
-{
-    return type;
 }
 
 ShaderCustomType ShaderOGLCustom::getShaderTypeFromString(const std::string& shaderName)
@@ -815,7 +823,7 @@ void ShaderOGLCustom::RemoveCustomShaderFiles(const std::string& folder, const s
     Tools::RemoveFile(folder + name + ".fs");
 }
 
-ShaderCustomType ShaderOGLCustom::extractTypeFromShaderName(const std::string& folder, const std::string &name)
+ShaderCustomType ShaderOGLCustom::ExtractTypeFromShaderName(const std::string& folder, const std::string &name)
 {
     std::string jsonFile = name + ".json";
 
@@ -837,7 +845,7 @@ void ShaderOGLCustom::Reload()
     CompileShaderToProgramID(type == SHADER_OBJECT);
 }
 
-void ShaderOGLCustom::CaptureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const
+void ShaderOGLCustom::CaptureDragDropUpdateImage(ShaderOGLCustomType &type, const Image *texture) const
 {
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
@@ -860,7 +868,7 @@ void ShaderOGLCustom::CaptureDragDropUpdateImage(ShaderOpenGLCustomType &type, c
 void ShaderOGLCustom::CreateFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
-    Components::get()->Render()->ChangeOpenGLFramebuffer(resultFramebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, resultFramebuffer);
 
     auto window = Components::get()->Window();
     int w = window->getWidth();
@@ -872,4 +880,9 @@ void ShaderOGLCustom::CreateFramebuffer()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureResult, 0);
+}
+
+void ShaderOGLCustom::setTextureResult(GLuint value)
+{
+    textureResult = value;
 }

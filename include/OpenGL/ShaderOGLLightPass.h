@@ -53,7 +53,7 @@ public:
 
     void Destroy() override;
 
-    void fillSpotLightsMatricesUBO();
+    void FillSpotLightsMatricesUBO();
 };
 
 #endif //BRAKEZA3D_SHADEROPENGLDEFERREDLIGHTING_H

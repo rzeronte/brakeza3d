@@ -11,35 +11,37 @@
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/ToolsJSON.h"
 
-ScriptLUA::ScriptLUA(const std::string &script, std::string properties)
+ScriptLUA::ScriptLUA(const std::string& name, const std::string &codeScript, const std::string &typesFile)
 :
-    scriptFilename(script),
-    fileTypes(std::move(properties))
+    scriptFilename(codeScript),
+    fileTypes(typesFile),
+    name(name)
 {
-    Logging::Message("Loading LUA Script (%s, %s)", script.c_str(), fileTypes.c_str());
+    Logging::Message("Loading LUA Script (%s, %s)", codeScript.c_str(), fileTypes.c_str());
     if (!Tools::FileExists(scriptFilename.c_str()) || !Tools::FileExists(fileTypes.c_str())) {
         Logging::Error("[ScriptLUA] The script cannot be loaded. Files are missing.");
         Logging::Error("[ScriptLUA] Trying to load '%s' and '%s'", scriptFilename.c_str(), fileTypes.c_str());
         scriptFilename.clear(); fileTypes.clear();
         return;
     }
-    getCode(script);
+    getCode(codeScript);
     parseTypesFromFileAttributes();
 }
 
-ScriptLUA::ScriptLUA(const std::string &scriptFilename, const cJSON *types)
+ScriptLUA::ScriptLUA(const std::string& name, const std::string &codeFile, const std::string &typesFile, const cJSON *types)
 :
-    scriptFilename(scriptFilename),
-    fileTypes(dataTypesFileFor(scriptFilename))
+    scriptFilename(codeFile),
+    fileTypes(typesFile),
+    name(name)
 {
-    Logging::Message("Loading LUA Script (%s, %s)", scriptFilename.c_str(), fileTypes.c_str());
-    if (!Tools::FileExists(scriptFilename.c_str()) || !Tools::FileExists(fileTypes.c_str())) {
+    Logging::Message("Loading LUA Script (%s, %s)", codeFile.c_str(), fileTypes.c_str());
+    if (!Tools::FileExists(codeFile.c_str()) || !Tools::FileExists(fileTypes.c_str())) {
         Logging::Error("[ScriptLUA] The script cannot be loaded. Files are missing.");
-        Logging::Error("[ScriptLUA] Trying to load '%s' and '%s'", scriptFilename.c_str(), fileTypes.c_str());
+        Logging::Error("[ScriptLUA] Trying to load '%s' and '%s'", codeFile.c_str(), fileTypes.c_str());
         this->scriptFilename.clear(); fileTypes.clear();
         return;
     }
-    getCode(scriptFilename);
+    getCode(codeFile);
     setDataTypesFromJSON(types);
 }
 
@@ -180,26 +182,25 @@ bool ScriptLUA::existDataType(const char *name, const char *type) const
     return false;
 }
 
-void ScriptLUA::reloadGlobals() const
+void ScriptLUA::ReloadGlobals() const
 {
-    Logging::Message("Reloading LUA Global Environment (%s)", this->fileTypes.c_str());
+    Logging::Message("[ScriptLUA] Reloading LUA Global Environment (%s)", this->fileTypes.c_str());
 
     sol::state &lua = Components::get()->Scripting()->getLua();
     for (const auto& type : dataTypes) {
-        std::cout << "Setting GLOBAL variable for script '(" << scriptFilename.c_str() << ", " << type.name.c_str() << ", " << type.type.c_str() << ")"<< std::endl;
-        Logging::Message("Setting GLOBAL variable for script '%s' (Name: '%s', Type: '%s', Value: '%s')", scriptFilename.c_str(), type.name.c_str(), type.type.c_str(), ScriptLUATypeData::toString(type.value).c_str());
+        Logging::Message("[ScriptLUA] Setting GLOBAL variable => Script: '%s', Name: '%s', Type: '%s', Value: '%s'", this->getName().c_str(), type.name.c_str(), type.type.c_str(), ScriptLUATypeData::toString(type.value).c_str());
         lua[type.name] = type.value;
     }
 }
 
 void ScriptLUA::ReloadEnvironment(sol::environment &environment)
 {
-    Logging::Message("[ReloadEnvironment] Reloading LUA Environment (%s)", this->fileTypes.c_str());
+    Logging::Message("[ScriptLUA] Reloading LUA Environment (%s)", this->fileTypes.c_str());
 
     parseTypesFromFileAttributes();
 
     for (const auto& type : dataTypes) {
-        Logging::Message("ReloadEnvironment ('%s' => '%s' => '%s')", type.name.c_str(), type.type.c_str(), ScriptLUATypeData::toString(type.value).c_str());
+        Logging::Message("[ScriptLUA]] Reload Environment ('%s', '%s' => '%s' => '%s')", this->getName().c_str(), type.name.c_str(), type.type.c_str(), ScriptLUATypeData::toString(type.value).c_str());
         environment[type.name] = type.value;
     }
 }
@@ -230,9 +231,9 @@ void ScriptLUA::setDataTypesFromJSON(const cJSON *typesJSON)
 
         if (!existDataType(name, type)){
             addDataType(name, type, value);
-            Logging::Message("Loading script variable (%s, %s)", name, type);
+            Logging::Message("[ScriptLUA] Loading script variable: '%s': %s => %s", getName().c_str(), name, type);
         } else {
-            Logging::Message("Keeping script variable (%s, %s)", name, type);
+            Logging::Message("[ScriptLUA] Keeping script variable: '%s': %s => %s", getName().c_str(), name, type);
         }
     }
 }
@@ -251,11 +252,6 @@ std::string ScriptLUA::removeFilenameExtension(std::string& filename)
     }
 
     return filename;
-}
-
-std::string ScriptLUA::getName() const
-{
-    return name;
 }
 
 void ScriptLUA::setName(const std::string &value)
@@ -310,11 +306,6 @@ void ScriptLUA::reloadScriptCode()
     getCode(scriptFilename);
 }
 
-bool ScriptLUA::isPaused() const
-{
-    return paused;
-}
-
 void ScriptLUA::setPaused(bool value)
 {
     Logging::Message("Script %s has been paused to %d", scriptFilename.c_str(), value);
@@ -326,14 +317,12 @@ void ScriptLUA::drawImGuiProperties()
     ScriptLuaGUI::DrawPropertiesGUI(this);
 }
 
-const std::vector<ScriptLUATypeData> &ScriptLUA::getDataTypes() const
-{
-    return dataTypes;
-}
-
 cJSON *ScriptLUA::getTypesJSON() const
 {
     cJSON *scriptJSON = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(scriptJSON, "codeFile", scriptFilename.c_str());
+    cJSON_AddStringToObject(scriptJSON, "typesFile", fileTypes.c_str());
     cJSON_AddStringToObject(scriptJSON, "name", getName().c_str());
 
     cJSON *typesArray = cJSON_CreateArray();
@@ -374,24 +363,4 @@ cJSON *ScriptLUA::getTypesJSON() const
     cJSON_AddItemToObject(scriptJSON, "types", typesArray);
 
     return scriptJSON;
-}
-
-const std::string &ScriptLUA::getScriptFilename() const
-{
-    return scriptFilename;
-}
-
-ScriptLUA *ScriptLUA::create(const std::string& scriptFile)
-{
-    auto typesFile = dataTypesFileFor(scriptFile);
-
-    std::cout << typesFile.c_str() << std::endl;
-
-    if (!Tools::FileExists(typesFile.c_str())) {
-        Logging::Message("Failed loading TypesFile: %s", typesFile.c_str());
-
-        return nullptr;
-    }
-
-    return new ScriptLUA(scriptFile,typesFile);
 }

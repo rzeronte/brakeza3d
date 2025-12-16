@@ -88,15 +88,16 @@ void ComponentScripting::ReloadLUAScripts() const
     ReloadScriptGlobals();
 }
 
-sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName, const char *varName)
+void ComponentScripting::addSceneLUAScript(ScriptLUA *script)
 {
-    for (auto &s : projectScripts) {
-        if (s->getScriptFilename() == scriptName) continue;
-        sol::state &lua = Components::get()->Scripting()->getLua();
-        return lua[varName];
+    if (script->getScriptFilename().empty()) {
+        delete script;
+        Logging::Error("[Scripting] Script refused...Deleting!");
+        return;
     }
 
-    return sol::nil;
+    scripts.push_back(script);
+    ReloadScriptGlobals();
 }
 
 void ComponentScripting::addProjectLUAScript(ScriptLUA *script)
@@ -111,34 +112,14 @@ void ComponentScripting::addProjectLUAScript(ScriptLUA *script)
     ReloadScriptGlobals();
 }
 
-void ComponentScripting::addSceneLUAScript(ScriptLUA *script)
-{
-    if (script == nullptr) {
-        delete script;
-    }
-    scripts.push_back(script);
-    ReloadScriptGlobals();
-}
-
-void ComponentScripting::RunScripts() const
-{
-    for (auto &script : projectScripts) {
-        script->runGlobal("onUpdate");
-    }
-
-    for (auto &script : scripts) {
-        script->runGlobal("onUpdate");
-    }
-}
-
 void ComponentScripting::ReloadScriptGlobals() const
 {
     for (auto &script : projectScripts) {
-        script->reloadGlobals();
+        script->ReloadGlobals();
     }
 
     for (auto &script : scripts) {
-        script->reloadGlobals();
+        script->ReloadGlobals();
     }
 }
 
@@ -187,6 +168,43 @@ void ComponentScripting::onStartScripts() const
     }
 }
 
+void ComponentScripting::RunScripts() const
+{
+    for (auto &script : projectScripts) {
+        script->runGlobal("onUpdate");
+    }
+
+    for (auto &script : scripts) {
+        script->runGlobal("onUpdate");
+    }
+}
+
+void ComponentScripting::InitLUATypes()
+{
+    Logging::Message("[Scripting] Init LUA Global types");
+
+    lua.open_libraries(sol::lib::base, sol::lib::math);
+
+    LUAIntegration(lua);
+
+    lua["brakeza"] = Brakeza::get();
+    lua["componentsManager"] = Components::get();
+    lua.set_function("print",
+                     static_cast<void(*)(const char*, ...)>(&Logging::Message)
+    );
+}
+
+sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName, const char *varName)
+{
+    for (auto &s : projectScripts) {
+        if (s->getScriptFilename() == scriptName) continue;
+        sol::state &lua = Components::get()->Scripting()->getLua();
+        return lua[varName];
+    }
+
+    return sol::nil;
+}
+
 void ComponentScripting::createScriptLUAFile(const std::string& path)
 {
     Logging::Message("Creating new Script LUA file: %s", path.c_str());
@@ -209,19 +227,4 @@ void ComponentScripting::RemoveScriptLUAFile(const std::string& path)
 {
     Logging::Message("[Scripting] Deleting script file: %s", path.c_str());
     Tools::RemoveFile(path);
-}
-
-void ComponentScripting::InitLUATypes()
-{
-    Logging::Message("[Scripting] Init LUA Global types");
-
-    lua.open_libraries(sol::lib::base, sol::lib::math);
-
-    LUAIntegration(lua);
-
-    lua["brakeza"] = Brakeza::get();
-    lua["componentsManager"] = Components::get();
-    lua.set_function("print",
-        static_cast<void(*)(const char*, ...)>(&Logging::Message)
-    );
 }

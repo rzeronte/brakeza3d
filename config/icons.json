@@ -465,12 +465,12 @@
 			"y":	3
 		}, {
 			"name":	"LUA_LOCK",
-			"x":	11,
-			"y":	11
+			"x":	2,
+			"y":	25
 		}, {
 			"name":	"LUA_UNLOCK",
-			"x":	12,
-			"y":	11
+			"x":	3,
+			"y":	25
 		}, {
 			"name":	"LUA_RELOAD",
 			"x":	10,
@@ -489,12 +489,12 @@
 			"y":	9
 		}, {
 			"name":	"SHADER_LOCK",
-			"x":	11,
-			"y":	11
+			"x":	15,
+			"y":	28
 		}, {
 			"name":	"SHADER_UNLOCK",
-			"x":	12,
-			"y":	11
+			"x":	14,
+			"y":	39
 		}, {
 			"name":	"SHADER_RELOAD",
 			"x":	10,
@@ -615,6 +615,10 @@
 			"name":	"TOOLBAR_TAKE_SCREENSHOT",
 			"x":	3,
 			"y":	37
+		}, {
+			"name":	"MNU_WORKERS",
+			"x":	0,
+			"y":	0
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

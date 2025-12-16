@@ -6,16 +6,16 @@
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 
-ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &vsFile, const std::string &fsFile)
+ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile)
 :
-    ShaderOGLCustom(label, vsFile, fsFile, SHADER_OBJECT),
+    ShaderOGLCustom(label, typesFile, vsFile, fsFile, SHADER_OBJECT),
     mesh(mesh)
 {
 }
 
-ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &vsFile, const std::string &fsFile, cJSON* types)
+ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile, cJSON* types)
 :
-    ShaderOGLCustom(label, vsFile, fsFile, SHADER_OBJECT, types),
+    ShaderOGLCustom(label, typesFile, vsFile, fsFile, SHADER_OBJECT, types),
     mesh(mesh)
 {
 }
@@ -45,10 +45,10 @@ void ShaderOGLCustomMesh3D::PrepareMainThread()
     LoadUniforms();
 }
 
-void ShaderOGLCustomMesh3D::render(GLuint fbo)
+void ShaderOGLCustomMesh3D::render(GLuint fbo, GLuint texture)
 {
     if (!isEnabled()) return;
-
+    setTextureResult(texture);
     for (const auto& m: mesh->getMeshData()) {
         renderMesh(
             mesh,

@@ -20,12 +20,12 @@ class ShaderOGLCustomMesh3D : public ShaderOGLCustom
 
     Mesh3D* mesh = nullptr;
 public:
-    ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &vsFile, const std::string &fsFile);
-    ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &vsFile, const std::string &fsFile, cJSON* types );
+    ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile);
+    ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile, cJSON* types );
 
     void LoadUniforms() override;
     void PrepareMainThread() override;
-    void render(GLuint fbo) override;
+    void render(GLuint fbo, GLuint texture) override;
 
     void renderMesh(
         Object3D *o,

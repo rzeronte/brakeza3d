@@ -16,29 +16,36 @@ class ThreadJobReadSceneShaders : public ThreadJobBase
 public:
     ThreadJobReadSceneShaders(cJSON *json)
     :
-        ThreadJobBase([this](){ process(); }, [this]() { callback(); }),
         json(cJSON_Duplicate(json, 1))
     {
+        function = [this](){ fnProcess(); };
+        callback = [this](){ fnCallback(); };
     }
 
-    void process()
+    void fnProcess()
     {
-        Logging::Message("[Pools] ThreadJobReadSceneShaders callback");
-
-        /*cJSON *currentShaderJSON;
+        cJSON *currentShaderJSON;
         cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {
+            auto vsFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vsFile")->valuestring;
+            auto fsFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fsFile")->valuestring;
+            auto typesFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "typesFile")->valuestring;
+            auto dataTypes = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
             auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
-            auto vertex = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vertexshader")->valuestring;
-            auto fragment = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;
-            auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
 
-            auto shader = new ShaderOGLCustomPostprocessing(name, vertex, fragment, types);
-            Components::get()->Render()->addShaderToScene(shader);
-        }*/
+            auto shader = new ShaderOGLCustomPostprocessing(name, typesFile, vsFile, fsFile, dataTypes);
+            shader->PrepareBackground();
+            Components::get()->Render()->AddShaderToScene(shader);
+        }
+        Logging::Message("[ThreadJobReadFileScene] Process END");
     }
 
-    void callback()
+    void fnCallback()
     {
+        auto &shaders = Components::get()->Render()->getSceneShaders();
+        for (auto &s : shaders) {
+            s->PrepareMainThread();
+        }
+        Logging::Message("[ThreadJobReadFileScene] Callback END");
     }
 
 

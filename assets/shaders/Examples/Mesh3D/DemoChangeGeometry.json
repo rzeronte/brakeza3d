@@ -1,7 +1,8 @@
 {
 	"name":	"DemoChangeGeometry",
-	"vertexshader":	"../assets/shaders/Examples/Mesh3D/DemoChangeGeometry.vs",
-	"fragmentshader":	"../assets/shaders/Examples/Mesh3D/DemoChangeGeometry.fs",
+	"typesFile": "../assets/shaders/Examples/Mesh3D/DemoChangeGeometry.json",
+	"vsFile": "../assets/shaders/Examples/Mesh3D/DemoChangeGeometry.vs",
+	"fsFile": "../assets/shaders/Examples/Mesh3D/DemoChangeGeometry.fs",
 	"type":	"Mesh3D",
 	"types":	[{
 			"name":	"executionTime",

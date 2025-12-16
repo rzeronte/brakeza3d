@@ -20,7 +20,7 @@ protected:
     GLuint quadVAO = 0;
 public:
 
-    ShaderBaseOpenGLQuad();
+    ShaderBaseOpenGLQuad() = default;
     void CreateQuadVBO();
 
     void SetupQuadUniforms(GLuint programId);

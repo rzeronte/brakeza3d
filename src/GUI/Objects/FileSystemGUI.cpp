@@ -466,43 +466,26 @@ void FileSystemGUI::DrawShaderRowActions(GUIManager *gui, GUIType::BrowserCache 
 
     // Load button
     ImGui::TableSetColumnIndex(1);
-    GUI::DrawButtonTransparent(
-        "Load shader into scene",
-        IconGUI::SHADER_LOAD,
-        GUIType::Sizes::ICONS_BROWSERS,
-        true,
-        [&] {
-            Components::get()->Render()->LoadShaderIntoScene(browser.currentFolder, file);
-        }
-    );
+    GUI::DrawButtonTransparent("Load shader into scene", IconGUI::SHADER_LOAD, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        Components::get()->Render()->LoadShaderIntoScene(browser.currentFolder, file);
+    });
 
     // Edit button
     ImGui::TableSetColumnIndex(2);
-    GUI::DrawButton(
-        "Edit shader",
-        IconGUI::SHADER_EDIT,
-        GUIType::Sizes::ICONS_BROWSERS,
-        false,
-        [&] {
-            ShadersGUI::LoadShaderDialog(gui, browser.currentFolder, file);
-        }
-    );
+    GUI::DrawButton("Edit shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICONS_BROWSERS, false,[&] {
+        ShadersGUI::LoadDialogShader(gui, browser.currentFolder, file);
+    });
 
     // Delete button
     ImGui::TableSetColumnIndex(3);
-    GUI::DrawButtonConfirm(
-        "Deleting shader",
-        "Are you sure to delete shader?",
-        IconGUI::SHADER_REMOVE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        [&] {
-            ShaderOGLCustom::RemoveCustomShaderFiles(
-                browser.currentFolder,
-                Tools::getFilenameWithoutExtension(file)
-            );
-            browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
-        }
-    );
+
+    GUI::DrawButtonConfirm("Deleting shader", "Are you sure to delete shader?", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
+        ShaderOGLCustom::RemoveCustomShaderFiles(
+            browser.currentFolder,
+            Tools::getFilenameWithoutExtension(file)
+        );
+        browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
+    });
 }
 
 void FileSystemGUI::DrawShaderCreator(GUIManager *gui, int &item_current_idx, const std::vector<const char*> &items)

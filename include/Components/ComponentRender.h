@@ -96,12 +96,11 @@ public:
     void UpdateFPS();
     void UpdateSelectedObject3D();
     void LoadShaderIntoScene(const std::string &folder, const std::string &name);
-    void addShaderToScene(ShaderOGLCustom *shader);
+    void AddShaderToScene(ShaderOGLCustom *shader);
     void setSceneShadersEnabled(bool value);
-    void RunSceneShadersPostUpdate() const;
+
     void RemoveSceneShaderByIndex(int index);
     void RemoveSceneShader(const ShaderOGLCustom *);
-    void RunSceneShadersPreUpdate() const;
     void setGlobalIlluminationDirection(const Vertex3D &d) const;
     void setGlobalIlluminationAmbient(const Vertex3D &a) const;
     void setGlobalIlluminationDiffuse(const Vertex3D &d) const;
@@ -132,11 +131,12 @@ public:
     ShaderOGLCustom *getSceneShaderByLabel(const std::string& name) const;
 
     static bool compareDistances(const Object3D *obj1, const Object3D *obj2);
+    static void RunSceneShadersPostUpdate();
     static void FillOGLBuffers(std::vector<Mesh3DData> &meshes);
     static void DeleteRemovedObjects();
     static void onUpdateSceneObjects();
     static void MakeScreenShot();
-    static ShaderOGLCustom* getLoadedShader(const std::string &folder, const std::string &jsonFilename);
+    static ShaderOGLCustom* CreateCustomShaderFromDisk(const std::string &folder, const std::string &jsonFilename);
 };
 
 #endif //BRAKEDA3D_COMPONENTRENDER_H

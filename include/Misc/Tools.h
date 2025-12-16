@@ -43,6 +43,7 @@ public:
     static std::vector<std::string> getFolderFiles(std::string &path, std::string extension);
     static std::string GoBackFromFolder(const std::string& folder);
     static std::string removeSubstring(const std::string &str, const std::string &toRemove);
+    static std::string ImGuiUnique(const std::string &text);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

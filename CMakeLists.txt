@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_CXX_FLAGS "-O3 -w")
+    #set(CMAKE_CXX_FLAGS "-O3 -w")
+    set(CMAKE_CXX_FLAGS "-O0 -g")
 endif()
 
 # SDL
@@ -294,6 +295,12 @@ add_executable(Brakeza3D
         include/LUA/ObjectFactory.h
         include/Threads/ThreadJobStepSimulation.h
         include/Threads/ThreadJobClearScene.h
+        include/Render/PostProcessingManager.cpp
+        include/Render/PostProcessingManager.h
+        imgui/ImGuiColorTextEdit/TextEditor.h
+        imgui/ImGuiColorTextEdit/TextEditor.cpp
+        include/GUI/TextEditor/EditableOpenFile.cpp
+        include/GUI/TextEditor/EditableOpenFile.h
 )
 
 target_link_libraries(Brakeza3D

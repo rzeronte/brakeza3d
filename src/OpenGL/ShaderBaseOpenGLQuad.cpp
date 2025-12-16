@@ -10,11 +10,6 @@
 #include "../../include/Components/Components.h"
 
 
-ShaderBaseOpenGLQuad::ShaderBaseOpenGLQuad()
-{
-    CreateQuadVBO();
-}
-
 void ShaderBaseOpenGLQuad::SetupQuadUniforms(GLuint programID)
 {
     modelMatrixUniform = glGetUniformLocation(programID, "model");

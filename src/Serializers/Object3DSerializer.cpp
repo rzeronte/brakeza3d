@@ -176,9 +176,11 @@ void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     if (cJSON_GetObjectItemCaseSensitive(json, "scripts") != nullptr) {
         cJSON *currentScript;
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(json, "scripts")) {
-            auto filename = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
+            auto name = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
+            auto codeFile = cJSON_GetObjectItemCaseSensitive(currentScript, "codeFile")->valuestring;
+            auto typesFile = cJSON_GetObjectItemCaseSensitive(currentScript, "typesFile")->valuestring;
             auto typesJSON = cJSON_GetObjectItemCaseSensitive(currentScript, "types");
-            o->AttachScript(new ScriptLUA(filename, typesJSON));
+            o->AttachScript(new ScriptLUA(name, codeFile, typesFile, typesJSON));
         }
     }
 }

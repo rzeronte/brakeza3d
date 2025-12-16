@@ -115,7 +115,7 @@ void ShaderOGLLightPass::Destroy()
     ResetQuadMatrix();
 }
 
-void ShaderOGLLightPass::fillSpotLightsMatricesUBO()
+void ShaderOGLLightPass::FillSpotLightsMatricesUBO()
 {
     glDeleteBuffers(1, &bufferSpotLightsMatricesUBO);
 

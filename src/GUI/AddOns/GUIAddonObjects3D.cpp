@@ -179,8 +179,9 @@ void GUIAddonObjects3D::DrawItem(int i, Object3D* o, const std::vector<Object3D 
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
                 Logging::Message("Dropping script (%s) in %s", payload->Data, o->getName().c_str());
                 o->AttachScript(new ScriptLUA(
-                        std::string((const char*) payload->Data),
-                        ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
+                    std::string((const char*) payload->Data),
+                    std::string((const char*) payload->Data),
+                    ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
                 );
             }
 

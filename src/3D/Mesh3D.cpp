@@ -239,7 +239,7 @@ void Mesh3D::onUpdate()
     }
 
     for (const auto s: customShaders) {
-        s->render(sceneFramebuffer);
+        s->render(window->getSceneTexture(), sceneFramebuffer);
     }
 }
 
@@ -526,8 +526,9 @@ void Mesh3D::LoadShader(const std::string &folder, const std::string &jsonFilena
 
     std::string shaderFragmentFile = folder + std::string(name + ".fs");
     std::string shaderVertexFile = folder + std::string(name + ".vs");
+    std::string typesFile = folder + std::string(name + ".json");
 
-    auto type = ShaderOGLCustom::extractTypeFromShaderName(folder, name);
+    auto type = ShaderOGLCustom::ExtractTypeFromShaderName(folder, name);
 
     Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
 
@@ -537,7 +538,10 @@ void Mesh3D::LoadShader(const std::string &folder, const std::string &jsonFilena
             break;
         }
         case SHADER_OBJECT : {
-            AddCustomShader(new ShaderOGLCustomMesh3D(this, name, shaderVertexFile, shaderFragmentFile));
+            auto s = new ShaderOGLCustomMesh3D(this, name, typesFile, shaderVertexFile, shaderFragmentFile);
+            s->PrepareBackground();
+            s->PrepareMainThread();
+            AddCustomShader(s);
             break;
         }
         default: {

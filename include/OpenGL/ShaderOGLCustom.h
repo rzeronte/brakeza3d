@@ -45,9 +45,9 @@ struct ShaderTypeInfo {
 
 typedef std::variant<int, float, glm::vec2, glm::vec3, glm::vec4, Image*> ShaderOpenGLCustomDataValue;
 
-struct ShaderOpenGLCustomType
+struct ShaderOGLCustomType
 {
-    ShaderOpenGLCustomType(const char *name, const char *type, ShaderOpenGLCustomDataValue value)
+    ShaderOGLCustomType(const char *name, const char *type, ShaderOpenGLCustomDataValue value)
     :
         name(name),
         type(type),
@@ -87,15 +87,15 @@ class ShaderOGLCustom: public ShaderBaseOpenGL
     ShaderCustomType type;
     std::string fileTypes;
 
-    std::vector<ShaderOpenGLCustomType> dataTypesDefaultValues;
+    std::vector<ShaderOGLCustomType> dataTypesDefaultValues;
 
 protected:
-    std::vector<ShaderOpenGLCustomType> dataTypes;
 
     int numTextures = 0;
 
     ShaderOGLCustom(
         std::string label,
+        const std::string &typesFile,
         const std::string &vsFile,
         const std::string &fsFile,
         ShaderCustomType type,
@@ -105,15 +105,21 @@ protected:
 public:
     explicit ShaderOGLCustom(
         std::string label,
+        const std::string &typesFile,
         const std::string &vsFile,
         const std::string &fsFile,
         ShaderCustomType type
     );
+    std::vector<ShaderOGLCustomType> dataTypes;
 
     void PrepareBackground() override;
     void PrepareMainThread() override;
 
-    virtual void render(GLuint fbo) = 0;
+    static void DrawTypeImGuiControl(ShaderOGLCustomType &type);
+    static int CountTypesByFilter(const std::vector<ShaderOGLCustomType> &types,const std::vector<ShaderOpenGLCustomDataType> &filterTypes);
+    static void DrawTypeInternalImGuiControl(ShaderOGLCustomType &type);
+
+    virtual void render(GLuint fbo, GLuint texture) = 0;
 
     void drawImGuiProperties(Image *diffuse, Image *specular);
 
@@ -127,19 +133,19 @@ protected:
     bool existDataType(const char *name, const char *type) const;
     void ParseTypesFromFileAttributes();
     static std::string dataTypesFileFor(std::string basicString);
-    static std::string removeFilenameExtension(std::string &filename);
+    static std::string ExtractOnlyName(std::string &filename);
     void setDataTypesFromJSON(cJSON *typesJSON);
     void addDataType(const char *name, const char *type, cJSON *value);
 
 public:
     void setEnabled(bool value);
     void onUpdate() const;
-    void postUpdate();
+    void postUpdate(GLuint outputFBO, GLuint inputTexture);
     void setLabel(std::string value);
     void setDataTypesUniforms();
     void UpdateFileTypes();
     void AddDataTypeEmpty(const char *name, const char *type);
-    void removeDataType(const ShaderOpenGLCustomType &data);
+    void removeDataType(const ShaderOGLCustomType &data);
     void setDataTypeValue(const std::string &name, const ShaderOpenGLCustomDataValue &newValue);
     void setDataTypeValue(const std::string &name, int newValue);
     void setDataTypeValue(const std::string &name, float newValue);
@@ -150,18 +156,19 @@ public:
     void IncreaseNumberTextures();
     std::string getFolder();
     cJSON* getTypesJSON();
-    [[nodiscard]] bool isEnabled() const;
-    [[nodiscard]] const std::vector<ShaderOpenGLCustomType> &getDataTypes() const;
-    [[nodiscard]] const std::string &getLabel() const;
-    [[nodiscard]] ShaderCustomType getType() const;
+    [[nodiscard]] bool isEnabled() const { return enabled; }
+    [[nodiscard]] std::vector<ShaderOGLCustomType> &getDataTypes() { return dataTypes; }
+    [[nodiscard]] const std::string &getLabel() const { return label; }
+    [[nodiscard]] ShaderCustomType getType() const { return type; }
     static ShaderCustomType getShaderTypeFromString(const std::string &shaderName);
     static std::string getShaderTypeString(ShaderCustomType type);
     static void createEmptyCustomShader(const std::string& name, const std::string& folder, ShaderCustomType type);
     static void RemoveCustomShaderFiles(const std::string& folder, const std::string &name);
-    static ShaderCustomType extractTypeFromShaderName(const std::string& folder, const std::string &name);
+    static ShaderCustomType ExtractTypeFromShaderName(const std::string& folder, const std::string &name);
     void Reload();
-    void CaptureDragDropUpdateImage(ShaderOpenGLCustomType &type, const Image *texture) const;
+    void CaptureDragDropUpdateImage(ShaderOGLCustomType &type, const Image *texture) const;
     void CreateFramebuffer();
+    void setTextureResult(GLuint value);
 };
 
 

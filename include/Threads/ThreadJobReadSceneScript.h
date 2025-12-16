@@ -26,10 +26,17 @@ public:
         if (cJSON_GetObjectItemCaseSensitive(json, "scripts") != nullptr) {
             cJSON *currentScript;
             cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(json, "scripts")) {
-                std::string fileName = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
-                Components::get()->Scripting()->addSceneLUAScript(
-                    new ScriptLUA(fileName, ScriptLUA::dataTypesFileFor(fileName))
-                );
+                std::string codeFile = cJSON_GetObjectItemCaseSensitive(currentScript, "codeFile")->valuestring;
+                std::string typesFile = cJSON_GetObjectItemCaseSensitive(currentScript, "typesFile")->valuestring;
+                std::string name = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
+                auto dataTypes = cJSON_GetObjectItemCaseSensitive(currentScript, "types");
+
+                if (!Tools::FileExists(codeFile.c_str()) || !Tools::FileExists(typesFile.c_str())) {
+                    Logging::Error("[ThreadJobReadSceneScript] Error loading script files '%s' and '%s'", codeFile.c_str(), typesFile.c_str());
+                    return;
+                }
+
+                Components::get()->Scripting()->addSceneLUAScript(new ScriptLUA(name, codeFile, typesFile, dataTypes));
             }
         }
         Logging::Message("[ThreadJobReadSceneScript] Process END");
