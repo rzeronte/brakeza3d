@@ -21,47 +21,7 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
     int i = 0;
     for (auto&  type: o->dataTypes) {
         ImGui::PushID(i);
-        switch (LUADataTypesMapping[type.type].type) {
-            case LUADataType::INT: {
-                int valueInt = std::get<int>(type.value);
-                if (ImGui::InputInt(type.name.c_str(), &valueInt)) {
-                    type.value = valueInt;
-                }
-                break;
-            }
-            case LUADataType::STRING: {
-                std::string valueString = std::get<const char*>(type.value);
-                static char name[256];
-                strncpy(name, valueString.c_str(), sizeof(name));
-                ImGui::InputText(type.name.c_str(), name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
-                if (ImGui::IsItemEdited()) {
-                    type.value = name;
-                }
-
-                break;
-            }
-            case LUADataType::FLOAT: {
-                float valueFloat = std::get<float>(type.value);
-                if (ImGui::InputFloat(type.name.c_str(), &valueFloat, 0.01f, 1.0f, "%.3f")) {
-                    type.value = valueFloat;
-                }
-                break;
-            }
-            case LUADataType::VERTEX3D: {
-                Vertex3D valueVertex = std::get<Vertex3D>(type.value);
-                float vec4f[4];
-                valueVertex.toFloat(vec4f);
-                if (ImGui::DragFloat3(type.name.c_str(), vec4f, 0.01f, 0.0f, 1.0f)) {
-                    valueVertex.x = vec4f[0];
-                    valueVertex.y = vec4f[1];
-                    valueVertex.z = vec4f[2];
-                    type.value = valueVertex;
-                }
-                break;
-            }
-            default:
-                std::cerr << "Unknown data type." << std::endl;
-        }
+        DrawTypeImGuiControl(type, true, true);
         i++;
         ImGui::PopID();
     }
@@ -69,9 +29,15 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
 
 void ScriptLuaGUI::LoadScriptDialog(GUIManager *gui, const std::string& filename)
 {
+    std::string codeFile = filename;
+
     delete gui->scriptEditableManager.script;
     gui->scriptEditableManager.selectedScriptFilename = filename;
-    gui->scriptEditableManager.script = new ScriptLUA(filename,ScriptLUA::dataTypesFileFor(filename));
+    gui->scriptEditableManager.script = new ScriptLUA(
+        ScriptLUA::removeFilenameExtension(codeFile),
+        codeFile,
+        ScriptLUA::dataTypesFileFor(codeFile)
+    );
     strcpy(gui->scriptEditableManager.editableSource, gui->scriptEditableManager.script->content.c_str());
     gui->showEditScriptWindow = true;
 }
@@ -110,7 +76,6 @@ void ScriptLuaGUI::DrawWinObjectScripts(GUIManager *gui)
         GUI::DrawButton("Edit script", IconGUI::SCRIPT_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
             LoadScriptDialog(gui, currentScript->scriptFilename);
         });
-
         ImGui::SameLine();
         GUI::DrawButton("Remove script object", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
             o->RemoveScript(currentScript);
@@ -120,6 +85,51 @@ void ScriptLuaGUI::DrawWinObjectScripts(GUIManager *gui)
         if (ImGui::CollapsingHeader(name.c_str())) {
             currentScript->drawImGuiProperties();
         }
+    }
+}
+
+void ScriptLuaGUI::DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, bool showIcon)
+{
+    switch (LUADataTypesMapping[type.type].type) {
+        case LUADataType::INT: {
+            int valueInt = std::get<int>(type.value);
+            if (ImGui::InputInt(type.name.c_str(), &valueInt)) {
+                type.value = valueInt;
+            }
+            break;
+        }
+        case LUADataType::STRING: {
+            std::string valueString = std::get<const char*>(type.value);
+            static char name[256];
+            strncpy(name, valueString.c_str(), sizeof(name));
+            ImGui::InputText(type.name.c_str(), name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
+            if (ImGui::IsItemEdited()) {
+                type.value = name;
+            }
+
+            break;
+        }
+        case LUADataType::FLOAT: {
+            float valueFloat = std::get<float>(type.value);
+            if (ImGui::InputFloat(type.name.c_str(), &valueFloat, 0.01f, 1.0f, "%.3f")) {
+                type.value = valueFloat;
+            }
+            break;
+        }
+        case LUADataType::VERTEX3D: {
+            Vertex3D valueVertex = std::get<Vertex3D>(type.value);
+            float vec4f[4];
+            valueVertex.toFloat(vec4f);
+            if (ImGui::DragFloat3(type.name.c_str(), vec4f, 0.01f, 0.0f, 1.0f)) {
+                valueVertex.x = vec4f[0];
+                valueVertex.y = vec4f[1];
+                valueVertex.z = vec4f[2];
+                type.value = valueVertex;
+            }
+            break;
+        }
+        default:
+            std::cerr << "Unknown data type." << std::endl;
     }
 }
 
@@ -246,6 +256,7 @@ void ScriptLuaGUI::DrawWinScriptEdition(GUIManager *gui)
     DrawVariableCreator(gui);
     DrawVariablesTable(gui);
     DrawEmptyStateWarning(gui);
+    ImGui::Separator();
     DrawSaveButton(gui);
 }
 
@@ -269,7 +280,7 @@ void ScriptLuaGUI::DrawScriptConfiguration(GUIManager *gui)
 
 void ScriptLuaGUI::DrawVariableCreator(GUIManager *gui)
 {
-    ImGui::SeparatorText("Variables");
+    ImGui::SeparatorText("Create new variable");
 
     static char varName[256];
     strncpy(varName, gui->currentVariableToAddName.c_str(), sizeof(varName));
@@ -304,13 +315,14 @@ void ScriptLuaGUI::DrawVariablesTable(GUIManager *gui)
 {
     ImGui::SeparatorText("Variables");
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
-    if (ImGui::BeginTable("ScriptProperties", 3, flags)) {
-        // Configurar columnas - igual que en proyectos
+    if (ImGui::BeginTable("ScriptProperties", 4, flags)) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
 
         for (int i = 0; i < gui->scriptEditableManager.script->dataTypes.size(); i++) {
+            ImGui::PushID(std::string("script_table_var_" + std::to_string(i)).c_str());
             ImGui::TableNextRow();
             auto type = &gui->scriptEditableManager.script->dataTypes[i];
 
@@ -323,10 +335,15 @@ void ScriptLuaGUI::DrawVariablesTable(GUIManager *gui)
             ImGui::Text("%s", LUADataTypesMapping[type->type].label.c_str());
 
             ImGui::TableSetColumnIndex(2);
+            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
+            DrawTypeImGuiControl(*type, true, true);
+
+            ImGui::TableSetColumnIndex(3);
             GUI::DrawButton("Delete script variable", IconGUI::SCRIPT_REMOVE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 gui->scriptEditableManager.script->removeDataType(*type);
                 gui->scriptEditableManager.script->updateFileTypes();
             });
+            ImGui::PopID();
         }
         ImGui::EndTable();
     }
@@ -337,7 +354,7 @@ void ScriptLuaGUI::DrawEmptyStateWarning(GUIManager *gui)
     if (gui->scriptEditableManager.script->dataTypes.empty()) {
         ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
         ImGui::SameLine();
-        ImGui::Text("No types defined");
+        ImGui::Text("No variables defined");
         ImGui::Spacing();
     }
 }

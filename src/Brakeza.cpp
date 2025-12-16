@@ -81,7 +81,6 @@ void Brakeza::MainLoop()
         PoolImages().processMainThreadCallbacks();                          // Main Thread pool images
         PoolCompute().processMainThreadCallbacks();                         // Main Thread pool compute
         PreUpdateComponents();                                              // PreUpdate for componentes
-        Components::get()->Render()->RunSceneShadersPreUpdate();            // Pre-pass running for shaders
         CaptureInputEvents(event);                                       // Capture keyboard/mouse status
         Components::get()->Window()->ClearOGLFrameBuffers();                // Clean video framebuffers
         OnUpdateComponents();                                               // OnUpdate for componentes

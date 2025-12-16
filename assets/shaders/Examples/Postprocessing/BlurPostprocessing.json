@@ -1,7 +1,8 @@
 {
 	"name":	"BlurPostprocessing",
-	"vertexshader":	"../assets/shaders/Examples/Postprocessing/BlurPostprocessing.vs",
-	"fragmentshader":	"../assets/shaders/Examples/Postprocessing/BlurPostprocessing.fs",
+	"typesFile":	"../assets/shaders/Examples/Postprocessing/BlurPostprocessing.json",
+	"vsFile":	"../assets/shaders/Examples/Postprocessing/BlurPostprocessing.vs",
+	"fsFile":	"../assets/shaders/Examples/Postprocessing/BlurPostprocessing.fs",
 	"type":	"Postprocessing",
 	"types":	[{
 			"name":	"sceneTexture",

@@ -17,7 +17,7 @@ void main()
     
     // Interpolación entre el color original y la escala de grises según la intensidad
     vec3 finalColor = mix(color.rgb, vec3(gray), intensity);
-    
+
     FragColor = vec4(finalColor, color.a);
 }
 

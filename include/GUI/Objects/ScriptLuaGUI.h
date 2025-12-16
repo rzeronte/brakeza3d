@@ -12,13 +12,12 @@ class GUIManager;
 class ScriptLuaGUI
 {
 public:
+    static void DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, bool showIcon);
+
     static void DrawPropertiesGUI(ScriptLUA *o);
     static void LoadScriptDialog(GUIManager *gui, const std::string& filename);
     static void DrawWinScriptEdition(GUIManager *gui);
     static void DrawWinObjectScripts(GUIManager *gui);
-
-
-
 
     static void DrawEditScriptWindow(GUIManager *gui);
     static void DrawWinObjectVars(GUIManager *gui);

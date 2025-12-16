@@ -136,10 +136,11 @@ void Mesh3DSerializer::ApplyShadersCreation(Mesh3D *mesh, cJSON* json)
             switch (auto type = ShaderOGLCustom::getShaderTypeFromString(typeString)) {
                 case SHADER_OBJECT: {
                     auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
-                    auto vs = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vertexshader")->valuestring;
-                    auto fs = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fragmentshader")->valuestring;
+                    auto vsFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vsFile")->valuestring;
+                    auto fsFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fsFile")->valuestring;
+                    auto typesFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "typesFile")->valuestring;
                     auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
-                    auto shader = new ShaderOGLCustomMesh3D(mesh, name, vs, fs, types);
+                    auto shader = new ShaderOGLCustomMesh3D(mesh, name, typesFile, vsFile, fsFile, types);
                     mesh->AddCustomShader(shader);
                     break;
                 }

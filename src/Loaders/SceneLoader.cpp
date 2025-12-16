@@ -125,17 +125,16 @@ void SceneLoader::SaveScene(const std::string &filename)
     //shaders
     cJSON *shadersArrayJSON = cJSON_CreateArray();
     for (auto shader : Components::get()->Render()->getSceneShaders()) {
-        auto objectJson = shader->getTypesJSON();
-        cJSON_AddItemToArray(shadersArrayJSON, objectJson);
+        auto shaderJson = shader->getTypesJSON();
+        cJSON_AddItemToArray(shadersArrayJSON, shaderJson);
     }
     cJSON_AddItemToObject(root, "shaders", shadersArrayJSON);
 
     //scripts
     cJSON *sceneScriptsArray = cJSON_CreateArray();
     for (auto script : Components::get()->Scripting()->getSceneLUAScripts()) {
-        cJSON *scriptSceneSON = cJSON_CreateObject();
-        cJSON_AddStringToObject(scriptSceneSON, "name", script->getScriptFilename().c_str());
-        cJSON_AddItemToArray(sceneScriptsArray, scriptSceneSON);
+        auto scriptJson = script->getTypesJSON();
+        cJSON_AddItemToArray(sceneScriptsArray, scriptJson);
     }
     cJSON_AddItemToObject(root, "scripts", sceneScriptsArray);
 

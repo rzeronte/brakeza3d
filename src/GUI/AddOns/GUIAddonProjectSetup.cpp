@@ -61,6 +61,7 @@ void GUIAddonProjectSetup::DrawProjectScripts(GUIManager *gui)
             Logging::Message("Dropping script (%s) in global space", payload->Data);
             scripting->addProjectLUAScript(new ScriptLUA(
                 std::string((char *) payload->Data),
+                std::string((char *) payload->Data),
                 ScriptLUA::dataTypesFileFor(std::string((char *) payload->Data)))
             );
         }
@@ -82,8 +83,11 @@ void GUIAddonProjectSetup::DrawProjectScripts(GUIManager *gui)
         GUI::DrawButton("Reload scene script", IconGUI::SCRIPT_RELOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
             gui->scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
             delete gui->scriptEditableManager.script;
-            gui->scriptEditableManager.script = new ScriptLUA(gui->scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(
-                    gui->scriptEditableManager.selectedScriptFilename));
+            gui->scriptEditableManager.script = new ScriptLUA(
+                gui->scriptEditableManager.selectedScriptFilename,
+                gui->scriptEditableManager.selectedScriptFilename,
+                ScriptLUA::dataTypesFileFor(gui->scriptEditableManager.selectedScriptFilename)
+            );
             strcpy(gui->scriptEditableManager.editableSource, gui->scriptEditableManager.script->content.c_str());
         });
         ImGui::SameLine();
@@ -104,9 +108,12 @@ void GUIAddonProjectSetup::DrawSceneScripts(GUIManager *gui)
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
             Logging::Message("Dropping script (%s) in global space", payload->Data);
-            scripting->addSceneLUAScript(new ScriptLUA(
-                std::string((char *) payload->Data),
-                ScriptLUA::dataTypesFileFor(std::string((char *) payload->Data)))
+            scripting->addSceneLUAScript(
+                new ScriptLUA(
+                    std::string((char *) payload->Data),
+                    std::string((char *) payload->Data),
+                        ScriptLUA::dataTypesFileFor(std::string((char *) payload->Data))
+                )
             );
         }
         ImGui::EndDragDropTarget();
@@ -120,7 +127,7 @@ void GUIAddonProjectSetup::DrawSceneScripts(GUIManager *gui)
         std::string optionText = std::to_string(i + 1) + ") " + currentScript->getName();
 
         GUI::DrawButtonTransparent(
-            currentScript->isPaused() ? "Unlock scene script" : "lock scene script",
+            currentScript->isPaused() ? "Unlock scene script" : "Lock scene script",
             currentScript->isPaused() ? IconGUI::LUA_UNLOCK : IconGUI::LUA_UNLOCK,
             GUIType::Sizes::ICONS_BROWSERS,
             false,
@@ -130,8 +137,11 @@ void GUIAddonProjectSetup::DrawSceneScripts(GUIManager *gui)
         GUI::DrawButton("Reload scene script", IconGUI::SCRIPT_RELOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
             gui->scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
             delete gui->scriptEditableManager.script;
-            gui->scriptEditableManager.script = new ScriptLUA(gui->scriptEditableManager.selectedScriptFilename, ScriptLUA::dataTypesFileFor(
-                    gui->scriptEditableManager.selectedScriptFilename));
+            gui->scriptEditableManager.script = new ScriptLUA(
+                gui->scriptEditableManager.selectedScriptFilename,
+                gui->scriptEditableManager.selectedScriptFilename,
+                ScriptLUA::dataTypesFileFor(gui->scriptEditableManager.selectedScriptFilename)
+            );
             strcpy(gui->scriptEditableManager.editableSource, gui->scriptEditableManager.script->content.c_str());
         });
         ImGui::SameLine();
@@ -139,9 +149,9 @@ void GUIAddonProjectSetup::DrawSceneScripts(GUIManager *gui)
             scripting->RemoveSceneScript(currentScript);
         });
         ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
-        ImGui::Text((std::to_string(i + 1) + ") " + currentScript->scriptFilename).c_str());
-
+        if (ImGui::CollapsingHeader(currentScript->getName().c_str(), ImGuiTreeNodeFlags_None)) {
+            currentScript->drawImGuiProperties();
+        }
         ImGui::PopID();
     }
 }
@@ -165,7 +175,7 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders(GUIManager *gui)
         ImGui::PushID(i);
         GUI::DrawButtonTransparent(
             !s->isEnabled() ? "UnLock scene shader" : "Lock scene shader",
-            !s->isEnabled() ? IconGUI::LUA_LOCK : IconGUI::LUA_UNLOCK,
+            !s->isEnabled() ? IconGUI::SHADER_LOCK : IconGUI::SHADER_UNLOCK,
             GUIType::Sizes::ICONS_BROWSERS,
             false,
             [&] { s->setEnabled(!s->isEnabled());}
@@ -180,9 +190,7 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders(GUIManager *gui)
         });
         ImGui::SameLine();
         if (ImGui::CollapsingHeader(s->getLabel().c_str(), ImGuiTreeNodeFlags_None)) {
-            ImGui::PushID(i);
             s->drawImGuiProperties(nullptr, nullptr);
-            ImGui::PopID();
         }
         ImGui::PopID();
     }

@@ -1,7 +1,8 @@
 {
 	"name":	"ScanLinePostProcessing",
-	"vertexshader":	"../assets/shaders/Examples/Postprocessing/ScanLinePostProcessing.vs",
-	"fragmentshader":	"../assets/shaders/Examples/Postprocessing/ScanLinePostProcessing.fs",
+	"typesFile":	"../assets/shaders/Examples/Postprocessing/ScanLinePostProcessing.json",
+	"vsFile":	"../assets/shaders/Examples/Postprocessing/ScanLinePostProcessing.vs",
+	"fsFile":	"../assets/shaders/Examples/Postprocessing/ScanLinePostProcessing.fs",
 	"type":	"Postprocessing",
 	"types":	[{
 			"name":	"intensity",

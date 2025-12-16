@@ -25,6 +25,8 @@ void ComponentWindow::onStart()
 {
     Component::onStart();
     InitFontsTTF();
+    postProcessingManager = new PostProcessingManager();
+    postProcessingManager->initialize(widthRender, heightRender);
 
     ImGuiInitialize(Config::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
 
@@ -559,12 +561,7 @@ void ComponentWindow::ResizeGBuffer()
 void ComponentWindow::UpdateWindowSize()
 {
     SDL_GetWindowSize(window, &widthWindow, &heightWindow);
-    //SDL_GetRendererOutputSize(renderer, &widthRender, &heightRender);
     SDL_GL_GetDrawableSize(window, &widthRender, &heightRender);
-
-    // AÑADE ESTO:
-    int glWidth, glHeight;
-    SDL_GL_GetDrawableSize(window, &glWidth, &glHeight);
 }
 
 unsigned int ComponentWindow::getObjectIDByPickingColorFramebuffer(const int x, const int y) const

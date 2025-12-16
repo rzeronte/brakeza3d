@@ -431,6 +431,11 @@ std::string Tools::removeSubstring(const std::string& str, const std::string& to
     return result;
 }
 
+std::string Tools::ImGuiUnique(const std::string &text)
+{
+    return std::string(text);
+}
+
 bool Tools::CopyFile(const std::string& origen, const std::string& destino)
 {
     std::ifstream archivoOrigen(origen, std::ios::binary);

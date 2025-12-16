@@ -5,6 +5,7 @@
 #include <utility>
 #include "ThreadJobBase.h"
 #include "ThreadJobReadSceneScript.h"
+#include "ThreadJobReadSceneShaders.h"
 #include "../Brakeza.h"
 #include "../Misc/cJSON.h"
 #include "../Misc/Logging.h"
@@ -53,14 +54,13 @@ public:
         int objectCount = 0;
         cJSON *currentObject;
         cJSON_ArrayForEach(currentObject, objects) {
-            Logging::Message("[Pools] Creating ThreadJobLoadObject #%d", objectCount);
-            auto job = std::make_shared<ThreadJobLoadObject>(currentObject);
-            Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(job);
+            Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadObject>(currentObject));
             objectCount++;
         }
 
-        auto job = std::make_shared<ThreadJobReadSceneScript>(json);
-        Brakeza::get()->PoolCompute().enqueue(job);
+        Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobReadSceneScript>(json));
+
+        Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadSceneShaders>(json));
 
         SceneLoader::setLoading(false);
         Logging::Message("[ThreadJobReadFileScene] Callback END | Loaded %d objects.", objectCount);

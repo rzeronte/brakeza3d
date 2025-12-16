@@ -11,7 +11,7 @@ class ShadersGUI
 {
 public:
     static void DrawEditShaderWindow(GUIManager *gui);
-    static void DrawWinShaderEdition(GUIManager *gui);
+    static void LoadDialogShader(GUIManager *gui);
 
     static void DrawSourceCodeEdit(GUIManager *gui);
 
@@ -20,10 +20,9 @@ public:
     static void DrawVariableCreator(GUIManager * gui);
     static void DrawVariablesTable(GUIManager * gui);
     static void DrawEmptyStateWarning(GUIManager * gui);
-    static void DrawSaveButton(GUIManager * gui);
+    static void DrawActionButtons(GUIManager * gui);
     static void DrawWinObjectShaders(GUIManager *gui);
-    static void LoadShaderDialog(GUIManager *gui, const std::string &folder, const std::string &file);
-    static void DrawVariableRow(GUIManager *gui, const std::vector<ShaderOpenGLCustomType> &types, int index);
+    static void LoadDialogShader(GUIManager *gui, const std::string &folder, const std::string &file);
     static std::vector<const char *> GetDataTypeItems(GUIManager *gui);
 };
 

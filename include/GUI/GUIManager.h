@@ -7,6 +7,7 @@
 #include "../Misc/TextureAtlas.h"
 #include "../Misc/TexturePackage.h"
 #include "AddOns/GUIConsole.h"
+#include "../imgui/ImGuiColorTextEdit/TextEditor.h"
 
 class Object3DGUI;
 class ScriptLuaGUI;
@@ -42,6 +43,7 @@ class GUIManager
     std::vector<GUIType::MenuItem> menus;
 
     GuiAddonConsole *widgetConsole;
+    TextEditor codeEditor;
 
     TexturePackage imagesFolder;
 
@@ -82,6 +84,9 @@ public:
     void setObjectsViewerMode(GUIType::ViewerObjectsMode value);
     void setLayoutToDefault(Config::ImGUIConfigs config);
     virtual void DrawGUI();
+
+    void DrawCodeEditor();
+
     GUIType::WindowData *getWindowStatus(GUIType::Window window);
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();

@@ -13,6 +13,7 @@
 #include "../Misc/ScriptLUA.h"
 #include "../Misc/Timer.h"
 #include "../OpenGL/ShaderOGLCustom.h"
+#include "ImGuiColorTextEdit/TextEditor.h"
 
 namespace GUIType
 {
@@ -133,6 +134,10 @@ namespace GUIType
         Sheet original;
     };
 
+    struct EditableFileOpen {
+        std::string path;
+
+    };
     struct ScriptEditableManager {
         std::string selectedScriptFilename;
         ScriptLUA *script = nullptr;

@@ -27,10 +27,10 @@ void ProjectLoader::LoadProject(const std::string &filename)
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
         cJSON *currentScript;
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
-            std::string fileName = (const char*) cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
-            Components::get()->Scripting()->addProjectLUAScript(
-                new ScriptLUA(fileName, ScriptLUA::dataTypesFileFor(fileName))
-            );
+            std::string name = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
+            std::string codeScript = cJSON_GetObjectItemCaseSensitive(currentScript, "codeFile")->valuestring;
+            std::string typesFile = cJSON_GetObjectItemCaseSensitive(currentScript, "typesFile")->valuestring;
+            Components::get()->Scripting()->addProjectLUAScript(new ScriptLUA(name, codeScript, typesFile));
         }
     }
 }

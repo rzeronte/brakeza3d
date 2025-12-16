@@ -1,7 +1,8 @@
 {
 	"name":	"FadeToColorPostprocessing",
-	"vertexshader":	"../assets/shaders/Examples/Postprocessing/FadeToColorPostprocessing.vs",
-	"fragmentshader":	"../assets/shaders/Examples/Postprocessing/FadeToColorPostprocessing.fs",
+	"typesFile":	"../assets/shaders/Examples/Postprocessing/FadeToColorPostprocessing.json",
+	"vsFile":	"../assets/shaders/Examples/Postprocessing/FadeToColorPostprocessing.vs",
+	"fsFile":	"../assets/shaders/Examples/Postprocessing/FadeToColorPostprocessing.fs",
 	"type":	"Postprocessing",
 	"types":	[{
 			"name":	"progress",

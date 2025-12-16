@@ -11,6 +11,7 @@
 #include "Component.h"
 #include "ImGuizmo.h"
 #include "../OpenGL/CommonOGLShaderTypes.h"
+#include "../Render/PostProcessingManager.h"
 
 
 class ComponentWindow : public Component
@@ -32,6 +33,8 @@ class ComponentWindow : public Component
     OpenGLGBuffer gBuffer;
     OpenGLPickingBuffer pickingColorBuffer;
     OpenGLGlobalFramebuffers openGLBuffers;
+
+    PostProcessingManager *postProcessingManager;
 
     ImGuizmo::OPERATION ImGuiOperationGuizmo = ImGuizmo::TRANSLATE;
 
@@ -76,6 +79,7 @@ public:
     TTF_Font *getFontDefault() const                    { return fontDefault;}
     ImGuizmo::OPERATION getGuiZmoOperation() const      { return ImGuiOperationGuizmo;}
     Config::ImGUIConfigs getImGuiConfig() const         { return ImGuiConfig;}
+    PostProcessingManager *getPostProcessingManager()   { return postProcessingManager;}
 
     void CreateFramebuffer();
     void FlipGlobalToWindow();

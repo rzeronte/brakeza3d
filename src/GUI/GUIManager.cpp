@@ -35,6 +35,10 @@ void GUIManager::OnStart()
 
     widgetConsole->setLua(&Components::get()->Scripting()->getLua());
 
+    auto lang = TextEditor::LanguageDefinition::CPlusPlus();
+    codeEditor.SetLanguageDefinition(lang);
+    codeEditor.SetText("// Tu código aquí\n");
+
     splashImage = new Image(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
 
     browserScenes   = GUI::CreateBrowserCache(Config::get()->SCENES_FOLDER, Config::get()->SCENES_EXT);
@@ -186,7 +190,16 @@ void GUIManager::DrawGUI()
     IconsGUI::DrawWinDebugIcons(this);
     DrawRegisteredWindows();
     DrawSplashWindow();
+    DrawCodeEditor();
 
+    ImGui::End();
+}
+
+void GUIManager::DrawCodeEditor()
+{
+    if (ImGui::Begin("Code Editor")) {
+        codeEditor.Render("Editor de Código", ImVec2(0, 0), false);
+    }
     ImGui::End();
 }
 

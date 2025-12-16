@@ -12,14 +12,15 @@
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/Brakeza.h"
 
-void ShadersGUI::DrawWinShaderEdition(GUIManager *gui)
+void ShadersGUI::LoadDialogShader(GUIManager *gui)
 {
     DrawShaderHeader(gui);
     DrawShaderConfiguration(gui);
     DrawVariableCreator(gui);
     DrawVariablesTable(gui);
     DrawEmptyStateWarning(gui);
-    DrawSaveButton(gui);
+    ImGui::Separator();
+    DrawActionButtons(gui);
 }
 
 void ShadersGUI::DrawSourceCodeEdit(GUIManager *gui) {
@@ -51,7 +52,7 @@ void ShadersGUI::DrawEditShaderWindow(GUIManager *gui)
     GUIManager::SetNextWindowSize(GUIType::Levels::DEFAULT_WINDOW_WIDTH, GUIType::Levels::DEFAULT_WINDOW_HEIGHT);
 
     if (ImGui::Begin("Shader edition", &gui->showEditShaderWindow, ImGuiWindowFlags_NoDocking)) {
-        DrawWinShaderEdition(gui);
+        LoadDialogShader(gui);
         DrawSourceCodeEdit(gui);
     }
     ImGui::End();
@@ -59,13 +60,18 @@ void ShadersGUI::DrawEditShaderWindow(GUIManager *gui)
 
 void ShadersGUI::DrawShaderHeader(GUIManager *gui)
 {
+    auto vsFile = gui->shaderEditableManager.shader->getVertexFilename();
+    auto fsFile = gui->shaderEditableManager.shader->getFragmentFilename();
     auto type = gui->shaderEditableManager.shader->getType();
-    auto label = gui->shaderEditableManager.shader->getLabel();
     auto typeName = ShaderOGLCustom::getShaderTypeString(type);
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
-    ImGui::Text(std::string("File: " + label).c_str());
+    ImGui::Text(std::string("VS file: " + vsFile).c_str());
+
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICONS_BROWSERS);
+    ImGui::SameLine();
+    ImGui::Text(std::string("FS file: " + vsFile).c_str());
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_TYPE_MESH3D), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
@@ -87,7 +93,7 @@ void ShadersGUI::DrawShaderConfiguration(GUIManager *gui)
 
 void ShadersGUI::DrawVariableCreator(GUIManager *gui)
 {
-    ImGui::SeparatorText("Variables");
+    ImGui::SeparatorText("Create new variable");
 
     static char varName[256];
     strncpy(varName, gui->currentVariableToAddName.c_str(), sizeof(varName));
@@ -102,20 +108,14 @@ void ShadersGUI::DrawVariableCreator(GUIManager *gui)
     ImGui::Combo("Type##1", &selectedItem, typeItems.data(), typeItems.size());
     ImGui::SameLine();
 
-    GUI::DrawButton(
-        "Create variable",
-        IconGUI::SHADER_CREATE_VARIABLE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        false,
-        [&] {
-            if (!gui->currentVariableToAddName.empty()) {
-                gui->shaderEditableManager.shader->AddDataTypeEmpty(
-                    gui->currentVariableToAddName.c_str(),
-                    typeItems[selectedItem]
-                );
-            }
+    GUI::DrawButton("Create variable", IconGUI::SHADER_CREATE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, false,[&] {
+        if (!gui->currentVariableToAddName.empty()) {
+            gui->shaderEditableManager.shader->AddDataTypeEmpty(
+                gui->currentVariableToAddName.c_str(),
+                typeItems[selectedItem]
+            );
         }
-    );
+    });
 
     ImGui::Separator();
 }
@@ -146,48 +146,43 @@ std::vector<const char*> ShadersGUI::GetDataTypeItems(GUIManager *gui)
 
 void ShadersGUI::DrawVariablesTable(GUIManager *gui)
 {
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
-    auto types = gui->shaderEditableManager.shader->getDataTypes();
+    auto shader = gui->shaderEditableManager.shader;
 
-    if (ImGui::BeginTable("ScriptProperties", 3, flags)) {
+    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
+    if (ImGui::BeginTable("ShaderProperties", 4, flags)) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
-        for (int i = 0; i < types.size(); i++) {
-            DrawVariableRow(gui, types, i);
+        for (int i = 0; i < gui->shaderEditableManager.shader->dataTypes.size(); i++) {
+            ImGui::PushID(std::string("shader_table_var_" + std::to_string(i)).c_str());
+            ImGui::TableNextRow();
+            auto type = &gui->shaderEditableManager.shader->dataTypes[i];
+
+            ImGui::TableNextRow();
+            // Name column
+            ImGui::TableSetColumnIndex(0);
+            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
+            ImGui::Text("%d) %s", i + 1, type->name.c_str());
+
+            // Type column
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
+            ImGui::Text("%s", GLSLTypeMapping[type->type].label.c_str());
+
+            // Value ImGuiControl
+            ImGui::TableSetColumnIndex(2);
+            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
+            shader->DrawTypeImGuiControl(*type);
+
+            // Actions column
+            ImGui::TableSetColumnIndex(3);
+            GUI::DrawButton("Remove shader variable", IconGUI::SHADER_REMOVE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+                gui->shaderEditableManager.shader->removeDataType(*type);
+            });
         }
         ImGui::EndTable();
     }
-}
-
-void ShadersGUI::DrawVariableRow(GUIManager *gui, const std::vector<ShaderOpenGLCustomType>& types, int index)
-{
-    ImGui::PushID(index);
-    ImGui::TableNextRow();
-    auto dataType = &types[index];
-
-    // Name column
-    ImGui::TableSetColumnIndex(0);
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-    ImGui::Text("%d) %s", index + 1, dataType->name.c_str());
-
-    // Type column
-    ImGui::TableSetColumnIndex(1);
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-    ImGui::Text("%s", GLSLTypeMapping[dataType->type].label.c_str());
-
-    // Actions column
-    ImGui::TableSetColumnIndex(2);
-    GUI::DrawButton(
-        "Remove shader variable",
-        IconGUI::SHADER_REMOVE_VARIABLE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        true,
-        [&] {
-            gui->shaderEditableManager.shader->removeDataType(*dataType);
-        }
-    );
-    ImGui::PopID();
 }
 
 void ShadersGUI::DrawEmptyStateWarning(GUIManager *gui)
@@ -197,22 +192,16 @@ void ShadersGUI::DrawEmptyStateWarning(GUIManager *gui)
     if (types.empty()) {
         ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
         ImGui::SameLine();
-        ImGui::Text("No types defined");
+        ImGui::Text("No variables defined");
         ImGui::Spacing();
     }
 }
 
-void ShadersGUI::DrawSaveButton(GUIManager *gui)
+void ShadersGUI::DrawActionButtons(GUIManager *gui)
 {
-    GUI::DrawButton(
-        "Save shader",
-        IconGUI::SHADER_SAVE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        true,
-        [&] {
-            gui->shaderEditableManager.shader->UpdateFileTypes();
-        }
-    );
+    GUI::DrawButton("Save shader", IconGUI::SHADER_SAVE, GUIType::Sizes::ICONS_BROWSERS, true,[&] {
+        gui->shaderEditableManager.shader->UpdateFileTypes();
+    });
 }
 
 void ShadersGUI::DrawWinObjectShaders(GUIManager *gui)
@@ -242,7 +231,6 @@ void ShadersGUI::DrawWinObjectShaders(GUIManager *gui)
 
     for (unsigned int i = 0; i < customShaders.size(); i++) {
         ImGui::PushID(i);
-
         auto s = customShaders[i];
 
         GUI::DrawButtonTransparent(
@@ -260,7 +248,7 @@ void ShadersGUI::DrawWinObjectShaders(GUIManager *gui)
         GUI::DrawButton("Edit shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
             auto folder = s->getFolder();
             auto jsonFilename = s->getLabel() + ".json";
-            LoadShaderDialog(gui, folder, jsonFilename);
+            LoadDialogShader(gui, folder, jsonFilename);
         });
         ImGui::SameLine();
         GUI::DrawButton("Remove shader in object", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
@@ -274,10 +262,12 @@ void ShadersGUI::DrawWinObjectShaders(GUIManager *gui)
     }
 }
 
-
-void ShadersGUI::LoadShaderDialog(GUIManager *gui, const std::string &folder, const std::string &file)
+void ShadersGUI::LoadDialogShader(GUIManager *gui, const std::string &folder, const std::string &file)
 {
-    auto shader = Components::get()->Render()->getLoadedShader(folder, file);
+    auto shader = ComponentRender::CreateCustomShaderFromDisk(folder, file);
+    shader->PrepareBackground();
+    shader->PrepareMainThread();
+
     delete gui->shaderEditableManager.shader;
     gui->shaderEditableManager.shader = shader;
     gui->shaderEditableManager.loaded = true;
