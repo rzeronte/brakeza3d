@@ -81,14 +81,7 @@ void GUIAddonProjectSetup::DrawProjectScripts(GUIManager *gui)
         });
         ImGui::SameLine();
         GUI::DrawButton("Reload scene script", IconGUI::SCRIPT_RELOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            gui->scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
-            delete gui->scriptEditableManager.script;
-            gui->scriptEditableManager.script = new ScriptLUA(
-                gui->scriptEditableManager.selectedScriptFilename,
-                gui->scriptEditableManager.selectedScriptFilename,
-                ScriptLUA::dataTypesFileFor(gui->scriptEditableManager.selectedScriptFilename)
-            );
-            strcpy(gui->scriptEditableManager.editableSource, gui->scriptEditableManager.script->content.c_str());
+            currentScript->Reload();
         });
         ImGui::SameLine();
         GUI::DrawButton("Remove script", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
@@ -135,14 +128,7 @@ void GUIAddonProjectSetup::DrawSceneScripts(GUIManager *gui)
         });
         ImGui::SameLine();
         GUI::DrawButton("Reload scene script", IconGUI::SCRIPT_RELOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            gui->scriptEditableManager.selectedScriptFilename = currentScript->scriptFilename;
-            delete gui->scriptEditableManager.script;
-            gui->scriptEditableManager.script = new ScriptLUA(
-                gui->scriptEditableManager.selectedScriptFilename,
-                gui->scriptEditableManager.selectedScriptFilename,
-                ScriptLUA::dataTypesFileFor(gui->scriptEditableManager.selectedScriptFilename)
-            );
-            strcpy(gui->scriptEditableManager.editableSource, gui->scriptEditableManager.script->content.c_str());
+            currentScript->Reload();
         });
         ImGui::SameLine();
         GUI::DrawButton("Remove scene script", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {

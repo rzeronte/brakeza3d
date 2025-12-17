@@ -97,6 +97,9 @@ public:
     [[nodiscard]] const std::vector<ScriptLUATypeData> &getDataTypes() const { return dataTypes; }
     [[nodiscard]] cJSON *getTypesJSON() const;
     [[nodiscard]] const std::string &getScriptFilename() const { return scriptFilename; }
+
+    void Reload();
+
     static std::string dataTypesFileFor(std::string basicString);
     static std::string removeFilenameExtension(std::string& filename);
 

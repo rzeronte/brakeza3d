@@ -299,8 +299,11 @@ add_executable(Brakeza3D
         include/Render/PostProcessingManager.h
         imgui/ImGuiColorTextEdit/TextEditor.h
         imgui/ImGuiColorTextEdit/TextEditor.cpp
-        include/GUI/TextEditor/EditableOpenFile.cpp
         include/GUI/TextEditor/EditableOpenFile.h
+        include/GUI/TextEditor/EditableOpenScriptFile.h
+        include/GUI/TextEditor/EditableOpenShaderFile.h
+        src/GUI/TextEditor/EditableOpenScriptFile.cpp
+        src/GUI/TextEditor/EditableOpenShaderFile.cpp
 )
 
 target_link_libraries(Brakeza3D

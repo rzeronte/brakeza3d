@@ -24,7 +24,7 @@ ScriptLUA::ScriptLUA(const std::string& name, const std::string &codeScript, con
         scriptFilename.clear(); fileTypes.clear();
         return;
     }
-    getCode(codeScript);
+    getCode(scriptFilename);
     parseTypesFromFileAttributes();
 }
 
@@ -236,6 +236,12 @@ void ScriptLUA::setDataTypesFromJSON(const cJSON *typesJSON)
             Logging::Message("[ScriptLUA] Keeping script variable: '%s': %s => %s", getName().c_str(), name, type);
         }
     }
+}
+
+void ScriptLUA::Reload()
+{
+    getCode(scriptFilename);
+    parseTypesFromFileAttributes();
 }
 
 std::string ScriptLUA::dataTypesFileFor(std::string basicString)

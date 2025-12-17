@@ -7,6 +7,7 @@
 
 #include "../GUI.h"
 #include "../include/Misc/TexturePackage.h"
+#include "../TextEditor/EditableOpenFile.h"
 
 class GUIManager;
 
@@ -50,10 +51,12 @@ public:
     static void LoadImagesFolder(GUIManager *gui);
     static void DrawBrowserFolders(
         GUIManager *gui,
-        std::string &baseFolder,
+        std::string &folder,
         GUIType::BrowserCache &browser,
-        std::string ext
+        const std::string &ext
     );
+    static void DrawEditableOpenCodeEditor(EditableOpenFile &file);
+
     static ImTextureID Icon(GUIType::Sheet coords);
 };
 

@@ -619,6 +619,18 @@
 			"name":	"MNU_WORKERS",
 			"x":	0,
 			"y":	0
+		}, {
+			"name":	"WIN_CODE_EDITOR",
+			"x":	15,
+			"y":	5
+		}, {
+			"name":	"WIN_SCRIPT_SETUP",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"WIN_SHADER_SETUP",
+			"x":	0,
+			"y":	0
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",
