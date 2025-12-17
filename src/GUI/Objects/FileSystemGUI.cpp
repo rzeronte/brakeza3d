@@ -2,20 +2,16 @@
 // Created by Eduardo on 26/11/2025.
 //
 
+#include <string>
+#include <vector>
+#include "../../../include/Brakeza.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/GUIManager.h"
 #include "../../../include/GUI/Objects/ShadersGUI.h"
 #include "../../../include/GUI/Objects/ScriptLuaGUI.h"
-#include "../../../include/Brakeza.h"
 #include "../../../include/Components/Components.h"
-
-#include <functional>
-#include <string>
-#include <vector>
-
 #include "../../../include/Loaders/ProjectLoader.h"
 #include "../../../include/Loaders/SceneLoader.h"
-#include "../../../include/Misc/Logging.h"
 #include "../../../include/Misc/Tools.h"
 
 void FileSystemGUI::DrawProjectCreator(GUIManager *gui, GUIType::BrowserCache &browser)
@@ -344,9 +340,9 @@ void FileSystemGUI::DrawSceneCreatorDialog(GUIManager *gui, GUIType::BrowserCach
     }
 }
 
-void FileSystemGUI::DrawBrowserFolders(GUIManager *gui, std::string& baseFolder, GUIType::BrowserCache &browser, std::string ext)
+void FileSystemGUI::DrawBrowserFolders(GUIManager *gui, std::string& folder, GUIType::BrowserCache &browser, const std::string &ext)
 {
-    if (browser.currentFolder != baseFolder) {
+    if (browser.currentFolder != folder) {
         ImGui::AlignTextToFramePadding();
         ImGui::Image(Icon(IconGUI::FOLDER), ImVec2(24, 24));
         ImGui::SameLine();
@@ -379,6 +375,22 @@ void FileSystemGUI::DrawBrowserFolders(GUIManager *gui, std::string& baseFolder,
             browser.folderFolders = Tools::getFolderFolders(browser.currentFolder);
             browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, ext);
         }
+    }
+}
+
+void FileSystemGUI::DrawEditableOpenCodeEditor(EditableOpenFile &file)
+{
+    if (ImGui::BeginTabItem(file.getPath().c_str())) {
+        GUI::DrawButton("Save file", IconGUI::SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
+           Tools::WriteToFile(file.getPath(), file.getEditor().GetText().c_str());
+        });
+        ImGui::SameLine();
+        GUI::DrawButton("Close file", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
+            Brakeza::get()->GUI()->CloseEditableFile(&file);
+        });
+        ImGui::NewLine();
+        file.getEditor().Render("##editor", ImVec2(0, 0), false);
+        ImGui::EndTabItem();
     }
 }
 
@@ -473,7 +485,7 @@ void FileSystemGUI::DrawShaderRowActions(GUIManager *gui, GUIType::BrowserCache 
     // Edit button
     ImGui::TableSetColumnIndex(2);
     GUI::DrawButton("Edit shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICONS_BROWSERS, false,[&] {
-        ShadersGUI::LoadDialogShader(gui, browser.currentFolder, file);
+        ShadersGUI::LoadDialogShader(browser.currentFolder, file);
     });
 
     // Delete button
@@ -626,26 +638,14 @@ void FileSystemGUI::DrawScriptRowActions(GUIManager *gui, GUIType::BrowserCache 
     auto fullPath = browser.currentFolder + file;
 
     ImGui::TableSetColumnIndex(1);
-    GUI::DrawButton(
-        "Edit script",
-        IconGUI::SCRIPT_EDIT,
-        GUIType::Sizes::ICONS_BROWSERS,
-        false,
-        [&] {
-            ScriptLuaGUI::LoadScriptDialog(gui, fullPath);
-        }
-    );
+    GUI::DrawButton("Edit script", IconGUI::SCRIPT_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+        ScriptLuaGUI::LoadScriptDialog(fullPath);
+    });
     ImGui::TableSetColumnIndex(2);
-    GUI::DrawButtonConfirm(
-        "Deleting script",
-        "Are you sure to delete script?",
-        IconGUI::SCRIPT_REMOVE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        [&] {
-            ComponentScripting::RemoveScriptLUAFile(fullPath);
-            browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
-        }
-    );
+    GUI::DrawButtonConfirm("Deleting script", "Are you sure to delete script?", IconGUI::SCRIPT_REMOVE, GUIType::Sizes::ICONS_BROWSERS,[&] {
+        ComponentScripting::RemoveScriptLUAFile(fullPath);
+        browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
+    });
 }
 
 void FileSystemGUI::DrawScriptCreatorDialog(GUIManager *gui, GUIType::BrowserCache &browser, std::string &title)

@@ -15,10 +15,9 @@
 #include "../../include/GUI/AddOns/GUIAddonMenu.h"
 #include "../../include/GUI/AddOns/GUIAddonProjectSetup.h"
 #include "../../include/GUI/AddOns/GUIAddonToolbar.h"
-#include "../../include/Threads/ThreadJobLoadImage.h"
 
-#define ADD_WIN(title, type, icon, visible, func) \
-windows.push_back({ title, type, icon, visible, [&] { func; }})
+#define ADD_WIN(title, type, icon, visible, internal, func) \
+windows.push_back({ title, type, icon, visible, internal, [&] { func; }})
 
 GUIManager::GUIManager()
 :
@@ -34,10 +33,6 @@ void GUIManager::OnStart()
     Profiler::get()->CaptureGUIMemoryUsage();
 
     widgetConsole->setLua(&Components::get()->Scripting()->getLua());
-
-    auto lang = TextEditor::LanguageDefinition::CPlusPlus();
-    codeEditor.SetLanguageDefinition(lang);
-    codeEditor.SetText("// Tu código aquí\n");
 
     splashImage = new Image(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
 
@@ -57,23 +52,24 @@ void GUIManager::OnStart()
 
 void GUIManager::RegisterWindows()
 {
-    ADD_WIN("Project setup",           GUIType::PROJECT_SETTINGS, IconGUI::WIN_PROJECT_SETTINGS,     true,  GUIAddonProjectSetup::DrawWinProjectSettings(this));
-    ADD_WIN("Scene Objects",           GUIType::SCENE_OBJECTS,    IconGUI::WIN_SCENE_OBJECTS,        true,  GUIAddonObjects3D::DrawWinSceneObjects(this));
-    ADD_WIN("Object Properties",       GUIType::OBJECT_PROPS,     IconGUI::WIN_OBJECT_PROPS,         true,  GUIAddonObject3DProperties::DrawWinObjectProps(this));
-    ADD_WIN("Object shaders",          GUIType::OBJECT_SHADERS,   IconGUI::WIN_OBJECT_SHADERS,       false, ShadersGUI::DrawWinObjectShaders(this));
-    ADD_WIN("Object Scripts",          GUIType::OBJECT_SCRIPTS,   IconGUI::WIN_OBJECT_SCRIPTS,       false, ScriptLuaGUI::DrawWinObjectScripts(this));
-    ADD_WIN("Object variables",        GUIType::OBJECT_VARS,      IconGUI::WIN_OBJECT_VARS,          false, ScriptLuaGUI::DrawWinObjectVars(this));
-    ADD_WIN("Global variables",        GUIType::GLOBAL_VARS,      IconGUI::WIN_GLOBAL_VARS,          false, ScriptLuaGUI::DrawWinGlobalVars(this));
-    ADD_WIN("Keyboard/Mouse",          GUIType::KEYBOARD_MOUSE,   IconGUI::WIN_KEYBOARD_MOUSE,       false, DrawWinKeyboardMouse());
-    ADD_WIN("Images",                  GUIType::IMAGES,           IconGUI::WIN_IMAGES,               false, DrawWinImages());
-    ADD_WIN("Projects",                GUIType::FILES_PROJECTS,   IconGUI::WIN_FILES_PROJECTS,       true,  FileSystemGUI::DrawProjectFiles(this, browserProjects));
-    ADD_WIN("Scenes",                  GUIType::FILES_SCENES,     IconGUI::WIN_FILES_SCENES,         true,  FileSystemGUI::DrawSceneFiles(this, browserScenes));
-    ADD_WIN("Scripts",                 GUIType::FILES_SCRIPTS,    IconGUI::WIN_FILES_SCRIPTS,        true,  FileSystemGUI::DrawScriptFiles(this, browserScripts));
-    ADD_WIN("Shaders",                 GUIType::FILES_SHADERS,    IconGUI::WIN_FILES_SHADERS,        true,  FileSystemGUI::DrawShaderFiles(this, browserShaders));
-    ADD_WIN("Logging/Console",         GUIType::LOGGING,          IconGUI::WIN_LOGGING,              true,  widgetConsole->DrawWinLogging());
-    ADD_WIN("Lights DepthMaps",        GUIType::DEPTH_LIGHTS_MAPS,IconGUI::WIN_DEPTH_LIGHTS_MAPS,    false, DrawWinDepthLightsMap());
-    ADD_WIN("Profiler",                GUIType::PROFILER,         IconGUI::WIN_PROFILER,             false, Profiler::get()->DrawWinProfiler());
-    ADD_WIN("Debug GUI Icons",         GUIType::DEBUG_ICONS,      IconGUI::WIN_DEBUG_ICONS,          false, IconsGUI::DrawWinDebugIcons(this));
+    ADD_WIN("Project setup",           GUIType::PROJECT_SETTINGS, IconGUI::WIN_PROJECT_SETTINGS,  true,  false, GUIAddonProjectSetup::DrawWinProjectSettings(this));
+    ADD_WIN("Scene Objects",           GUIType::SCENE_OBJECTS,    IconGUI::WIN_SCENE_OBJECTS,     true,  false, GUIAddonObjects3D::DrawWinSceneObjects(this));
+    ADD_WIN("Object Properties",       GUIType::OBJECT_PROPS,     IconGUI::WIN_OBJECT_PROPS,      true,  false, GUIAddonObject3DProperties::DrawWinObjectProps(this));
+    ADD_WIN("Object shaders",          GUIType::OBJECT_SHADERS,   IconGUI::WIN_OBJECT_SHADERS,    false, false, ShadersGUI::DrawWinObjectShaders(this));
+    ADD_WIN("Object Scripts",          GUIType::OBJECT_SCRIPTS,   IconGUI::WIN_OBJECT_SCRIPTS,    false, false, ScriptLuaGUI::DrawWinObjectScripts(this));
+    ADD_WIN("Object variables",        GUIType::OBJECT_VARS,      IconGUI::WIN_OBJECT_VARS,       false, false, ScriptLuaGUI::DrawWinObjectVars(this));
+    ADD_WIN("Global variables",        GUIType::GLOBAL_VARS,      IconGUI::WIN_GLOBAL_VARS,       false, false, ScriptLuaGUI::DrawWinGlobalVars(this));
+    ADD_WIN("Keyboard/Mouse",          GUIType::KEYBOARD_MOUSE,   IconGUI::WIN_KEYBOARD_MOUSE,    false, false, DrawWinKeyboardMouse());
+    ADD_WIN("Images",                  GUIType::IMAGES,           IconGUI::WIN_IMAGES,            false, false, DrawWinImages());
+    ADD_WIN("Projects",                GUIType::FILES_PROJECTS,   IconGUI::WIN_FILES_PROJECTS,    true,  false, FileSystemGUI::DrawProjectFiles(this, browserProjects));
+    ADD_WIN("Scenes",                  GUIType::FILES_SCENES,     IconGUI::WIN_FILES_SCENES,      true,  false, FileSystemGUI::DrawSceneFiles(this, browserScenes));
+    ADD_WIN("Scripts",                 GUIType::FILES_SCRIPTS,    IconGUI::WIN_FILES_SCRIPTS,     true,  false, FileSystemGUI::DrawScriptFiles(this, browserScripts));
+    ADD_WIN("Shaders",                 GUIType::FILES_SHADERS,    IconGUI::WIN_FILES_SHADERS,     true,  false, FileSystemGUI::DrawShaderFiles(this, browserShaders));
+    ADD_WIN("Logging/Console",         GUIType::LOGGING,          IconGUI::WIN_LOGGING,           true,  false, widgetConsole->DrawWinLogging());
+    ADD_WIN("Lights DepthMaps",        GUIType::DEPTH_LIGHTS_MAPS,IconGUI::WIN_DEPTH_LIGHTS_MAPS, false, false, DrawWinDepthLightsMap());
+    ADD_WIN("Profiler",                GUIType::PROFILER,         IconGUI::WIN_PROFILER,          false, false, Profiler::get()->DrawWinProfiler());
+    ADD_WIN("Code editor",             GUIType::CODE_EDITOR,      IconGUI::WIN_CODE_EDITOR,       false, false, DrawWinCodeEditor());
+    ADD_WIN("Debug GUI Icons",         GUIType::DEBUG_ICONS,      IconGUI::WIN_DEBUG_ICONS,       false, false, IconsGUI::DrawWinDebugIcons(this));
 
     RegisterDefaultLayoutWindows();
 }
@@ -97,7 +93,8 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::LOGGING, true },
         { GUIType::DEPTH_LIGHTS_MAPS, false },
         { GUIType::PROFILER, false },
-        { GUIType::DEBUG_ICONS, false }
+        { GUIType::DEBUG_ICONS, false },
+        { GUIType::CODE_EDITOR, false}
     };
 
     devsLayoutWindowsConfig =  {
@@ -117,7 +114,8 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::LOGGING, true },
         { GUIType::DEPTH_LIGHTS_MAPS, false },
         { GUIType::PROFILER, false },
-        { GUIType::DEBUG_ICONS, false }
+        { GUIType::DEBUG_ICONS, false },
+        { GUIType::CODE_EDITOR, true}
     };
 
     designLayoutWindowsConfig =  {
@@ -137,7 +135,8 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::LOGGING, false },
         { GUIType::DEPTH_LIGHTS_MAPS, false },
         { GUIType::PROFILER, false },
-        { GUIType::DEBUG_ICONS, false }
+        { GUIType::DEBUG_ICONS, false },
+        { GUIType::CODE_EDITOR, false }
     };
 }
 
@@ -184,23 +183,36 @@ void GUIManager::DrawGUI()
     GUIAddonToolbar::Draw();
 
     Object3DGUI::DrawSelectedObjectGuizmo();
-    ShadersGUI::DrawEditShaderWindow(this);
-    ScriptLuaGUI::DrawEditScriptWindow(this);
     Mesh3DAnimationDrawerGUI::DrawEditBonesMappingWindow(this);
-    IconsGUI::DrawWinDebugIcons(this);
+
     DrawRegisteredWindows();
     DrawSplashWindow();
-    DrawCodeEditor();
+
+    CloseRemovedEditableOpenFiles();
 
     ImGui::End();
 }
 
-void GUIManager::DrawCodeEditor()
+void GUIManager::CloseRemovedEditableOpenFiles()
 {
-    if (ImGui::Begin("Code Editor")) {
-        codeEditor.Render("Editor de Código", ImVec2(0, 0), false);
+    for (auto it = openFiles.begin(); it != openFiles.end(); ) {
+        if ((*it)->isRemoved()) {
+            delete *it;
+            it = openFiles.erase(it);
+        } else {
+            ++it;
+        }
     }
-    ImGui::End();
+}
+
+void GUIManager::DrawWinCodeEditor()
+{
+    if (ImGui::BeginTabBar("FileTabs")) {
+        for (auto &f : openFiles) {
+            FileSystemGUI::DrawEditableOpenCodeEditor(*f);
+        }
+        ImGui::EndTabBar();
+    }
 }
 
 void GUIManager::DrawRegisteredWindows()
@@ -547,4 +559,29 @@ GUIType::WindowData* GUIManager::getWindowStatus(GUIType::Window window)
         }
     }
     return nullptr;
+}
+
+bool GUIManager::isEditableFileAlreadyOpen(std::string path) const
+{
+    for (const auto &f : openFiles) {
+        if (path == f->getPath()) {
+            return true;
+        }
+    }
+    return false;
+
+}
+
+void GUIManager::OpenEditableFile(EditableOpenFile *openFile)
+{
+    openFiles.push_back(openFile);
+}
+
+void GUIManager::CloseEditableFile(EditableOpenFile *openFile) const
+{
+    for (auto &f : openFiles) {
+        if (f->getPath() == openFile->getPath()) {
+            f->setRemoved(true);
+        }
+    }
 }

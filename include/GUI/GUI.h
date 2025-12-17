@@ -54,6 +54,7 @@ namespace GUIType
         static constexpr ImVec2 ICON_LOCKS = ImVec2(14, 14);
         static constexpr ImVec2 DRAG_ACCEPT = ImVec2(32, 32);
         static constexpr ImVec2 ICON_BROWSER_TYPE = ImVec2(32, 32);
+        static constexpr ImVec2 ICONS_CODE_EDITOR = ImVec2(24, 24);
     };
 
     struct Levels {
@@ -82,13 +83,6 @@ namespace GUIType
         static constexpr ImVec4 PLAY_COLOR = ImVec4(0.40f, 0.75f, 0.30f, 1.0f);
     };
 
-    enum GUIWindowsGroups {
-        OBJECT_WINDOWS,
-        FILE_SYSTEM,
-        PROFILING,
-        SCRIPTING
-    };
-
     enum Window {
         PROFILER,
         DEPTH_LIGHTS_MAPS,
@@ -106,7 +100,8 @@ namespace GUIType
         FILES_PROJECTS,
         FILES_SHADERS,
         FILES_SCRIPTS,
-        DEBUG_ICONS
+        DEBUG_ICONS,
+        CODE_EDITOR,
     };
 
     struct WindowData {
@@ -114,6 +109,7 @@ namespace GUIType
         Window window;
         Sheet icon;
         bool isOpen = false;
+        bool isInternal = false;
         std::function<void()> functionCallBack;
     };
 
@@ -133,26 +129,6 @@ namespace GUIType
         Sheet* icon;
         Sheet original;
     };
-
-    struct EditableFileOpen {
-        std::string path;
-
-    };
-    struct ScriptEditableManager {
-        std::string selectedScriptFilename;
-        ScriptLUA *script = nullptr;
-        char editableSource[1024 * 16] = {};
-    };
-
-    struct ShaderEditableManager {
-        bool loaded = false;
-        std::string folder;
-        std::string name;
-        ShaderOGLCustom *shader = nullptr;
-        char editableSourceVS[1024 * 16] = {};
-        char editableSourceFS[1024 * 16] = {};
-    };
-
 }
 
 // ===== DEFINICIÓN ÚNICA DE ICONOS OBJECT =====
@@ -326,7 +302,10 @@ namespace GUIType
     X(TOOLBAR_PICKING_COLORS, 0, 0) \
     X(VIDEO_TAKE_SCREENSHOT, 0, 0) \
     X(TOOLBAR_TAKE_SCREENSHOT, 0, 0) \
-    X(MNU_WORKERS, 0, 0)
+    X(MNU_WORKERS, 0, 0) \
+    X(WIN_CODE_EDITOR, 0, 0) \
+    X(WIN_SCRIPT_SETUP, 0, 0) \
+    X(WIN_SHADER_SETUP, 0, 0)
 
 // Icons Objects
 namespace IconObject {

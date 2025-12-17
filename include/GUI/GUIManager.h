@@ -7,7 +7,7 @@
 #include "../Misc/TextureAtlas.h"
 #include "../Misc/TexturePackage.h"
 #include "AddOns/GUIConsole.h"
-#include "../imgui/ImGuiColorTextEdit/TextEditor.h"
+#include "TextEditor/EditableOpenFile.h"
 
 class Object3DGUI;
 class ScriptLuaGUI;
@@ -28,14 +28,9 @@ class GUIManager
     std::vector<GUIType::LayoutWindowConfig> designLayoutWindowsConfig;
 
     int selectedObjectIndex = -1;
-    bool showEditShaderWindow = false;
-    bool showEditScriptWindow = false;
     bool showBoneMappingsEditorWindow = false;
 
     float splashAlpha = 1.0f;
-
-    GUIType::ScriptEditableManager scriptEditableManager;
-    GUIType::ShaderEditableManager shaderEditableManager;
 
     std::vector<GUIType::ViewerObjectType> visibleTypeObjects;
     GUIType::ViewerObjectsMode viewerMode = GUIType::ViewerObjectsMode::TREE;
@@ -43,11 +38,11 @@ class GUIManager
     std::vector<GUIType::MenuItem> menus;
 
     GuiAddonConsole *widgetConsole;
-    TextEditor codeEditor;
+
+    std::vector<EditableOpenFile *> openFiles;
 
     TexturePackage imagesFolder;
 
-    std::string selectedFile;
     std::string currentVariableToAddName;
     std::string currentVariableToCreateCustomShader;
 
@@ -73,6 +68,7 @@ public:
     virtual ~GUIManager() = default;
 
     bool isWindowOpen(GUIType::Window w) const;
+    bool isEditableFileAlreadyOpen(std::string path) const;
     void OnStart();
     void setSelectedObjectIndex(int value);
     void setSelectedObject(const Object3D *s);
@@ -83,21 +79,26 @@ public:
     void OpenBoneInfoDialog();
     void setObjectsViewerMode(GUIType::ViewerObjectsMode value);
     void setLayoutToDefault(Config::ImGUIConfigs config);
+    void CloseRemovedEditableOpenFiles();
+    void DrawWinCodeEditor();
+    void OpenEditableFile(EditableOpenFile *openFile);
+    void CloseEditableFile(EditableOpenFile *openFile) const;
+
+    int& selectedObjectIndexPointer()                                           { return selectedObjectIndex; }
+    [[nodiscard]] TextureAtlas * getTextureAtlas() const                        { return textureAtlas; }
+    [[nodiscard]] GUIType::BrowserCache getBrowserScripts() const               { return browserScripts; }
+    [[nodiscard]] GuiAddonConsole *getConsole() const                           { return widgetConsole; }
+    [[nodiscard]] GUIType::BrowserCache getBrowserScenes() const                { return browserScenes; }
+    [[nodiscard]] GUIType::BrowserCache getBrowserProjects() const              { return browserProjects; }
+    [[nodiscard]] GUIType::BrowserCache getBrowserShaders() const               { return browserShaders; }
+    [[nodiscard]] GUIType::ViewerObjectsMode getObjectsViewerMode() const       { return viewerMode; }
+    [[nodiscard]] std::vector<EditableOpenFile *> getEditableOpenFiles() const  { return openFiles;}
+    GUIType::WindowData *getWindowStatus(GUIType::Window window);
+
     virtual void DrawGUI();
 
-    void DrawCodeEditor();
-
-    GUIType::WindowData *getWindowStatus(GUIType::Window window);
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
-    int& selectedObjectIndexPointer()                       { return selectedObjectIndex; }
-    TextureAtlas * getTextureAtlas() const                  { return textureAtlas; }
-    GUIType::BrowserCache getBrowserScripts() const         { return browserScripts; }
-    GuiAddonConsole *getConsole() const                     { return widgetConsole; }
-    GUIType::BrowserCache getBrowserScenes() const          { return browserScenes; }
-    GUIType::BrowserCache getBrowserProjects() const        { return browserProjects; }
-    GUIType::BrowserCache getBrowserShaders() const         { return browserShaders; }
-    GUIType::ViewerObjectsMode getObjectsViewerMode() const { return viewerMode; }
 
     friend class Object3DGUI;
     friend class ScriptLuaGUI;

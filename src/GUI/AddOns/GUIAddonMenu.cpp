@@ -563,6 +563,7 @@ void GUIAddonMenu::MenuWindow(GUIManager *gui)
     }
     ImGui::SeparatorText("Windows/Widgets");
     for (auto &w : gui->windows) {
+        if (w.isInternal) continue;
         ImGui::Image(FileSystemGUI::Icon(w.icon), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::MenuItem(w.label.c_str(), nullptr, &w.isOpen);
     }

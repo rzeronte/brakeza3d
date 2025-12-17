@@ -4,26 +4,26 @@
 
 #include <string>
 #include "../GUI.h"
+#include "../TextEditor/EditableOpenShaderFile.h"
 
 class GUIManager;
+class EditableOpenShaderFile;
 
 class ShadersGUI
 {
 public:
-    static void DrawEditShaderWindow(GUIManager *gui);
-    static void LoadDialogShader(GUIManager *gui);
+    static void LoadDialogShader(const std::string &folder, const std::string &file);
 
-    static void DrawSourceCodeEdit(GUIManager *gui);
+    static void DrawEditShaderWindow(EditableOpenShaderFile &file);
+    static void DrawShaderHeader(EditableOpenShaderFile &file);
+    static void DrawShaderConfiguration(EditableOpenShaderFile &file);
+    static void DrawShaderVarsCreator(EditableOpenShaderFile &file);
+    static void DrawShaderVarsTable(EditableOpenShaderFile &file);
+    static void DrawEmptyStateWarning(EditableOpenShaderFile &file);
+    static void DrawShaderActionButtons(EditableOpenShaderFile &file);
+    static std::vector<const char *> GetDataTypeItems(EditableOpenShaderFile &file);
 
-    static void DrawShaderHeader(GUIManager * gui);
-    static void DrawShaderConfiguration(GUIManager * gui);
-    static void DrawVariableCreator(GUIManager * gui);
-    static void DrawVariablesTable(GUIManager * gui);
-    static void DrawEmptyStateWarning(GUIManager * gui);
-    static void DrawActionButtons(GUIManager * gui);
     static void DrawWinObjectShaders(GUIManager *gui);
-    static void LoadDialogShader(GUIManager *gui, const std::string &folder, const std::string &file);
-    static std::vector<const char *> GetDataTypeItems(GUIManager *gui);
 };
 
 

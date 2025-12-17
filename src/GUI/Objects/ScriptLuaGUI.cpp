@@ -2,12 +2,12 @@
 // Created by Eduardo on 26/11/2025.
 //
 
-#include "../include/GUI/Objects/ScriptLuaGUI.h"
-
 #include "../../../include/Brakeza.h"
-#include "../../../include/Components/Components.h"
-#include "../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/GUIManager.h"
+#include "../../../include/GUI/Objects/ScriptLuaGUI.h"
+#include "../../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../../include/GUI/TextEditor/EditableOpenScriptFile.h"
+#include "../../../include/Components/Components.h"
 
 void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
 {
@@ -19,7 +19,7 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
     }
 
     int i = 0;
-    for (auto&  type: o->dataTypes) {
+    for (auto& type: o->dataTypes) {
         ImGui::PushID(i);
         DrawTypeImGuiControl(type, true, true);
         i++;
@@ -27,19 +27,22 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
     }
 }
 
-void ScriptLuaGUI::LoadScriptDialog(GUIManager *gui, const std::string& filename)
+void ScriptLuaGUI::LoadScriptDialog(const std::string& pathFile)
 {
-    std::string codeFile = filename;
+    std::string codeFile = pathFile;
 
-    delete gui->scriptEditableManager.script;
-    gui->scriptEditableManager.selectedScriptFilename = filename;
-    gui->scriptEditableManager.script = new ScriptLUA(
-        ScriptLUA::removeFilenameExtension(codeFile),
-        codeFile,
-        ScriptLUA::dataTypesFileFor(codeFile)
-    );
-    strcpy(gui->scriptEditableManager.editableSource, gui->scriptEditableManager.script->content.c_str());
-    gui->showEditScriptWindow = true;
+    if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(pathFile)) {
+        Brakeza::get()->GUI()->OpenEditableFile(
+            new EditableOpenScriptFile(
+                pathFile,
+                new ScriptLUA(
+                ScriptLUA::removeFilenameExtension(codeFile),
+                   codeFile,
+                    ScriptLUA::dataTypesFileFor(codeFile)
+                )
+            )
+        );
+    }
 }
 
 void ScriptLuaGUI::DrawWinObjectScripts(GUIManager *gui)
@@ -74,7 +77,7 @@ void ScriptLuaGUI::DrawWinObjectScripts(GUIManager *gui)
         );
         ImGui::SameLine();
         GUI::DrawButton("Edit script", IconGUI::SCRIPT_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            LoadScriptDialog(gui, currentScript->scriptFilename);
+            LoadScriptDialog(currentScript->scriptFilename);
         });
         ImGui::SameLine();
         GUI::DrawButton("Remove script object", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
@@ -133,28 +136,15 @@ void ScriptLuaGUI::DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, 
     }
 }
 
-void ScriptLuaGUI::DrawEditScriptWindow(GUIManager *gui)
+void ScriptLuaGUI::DrawEditScriptWindow(EditableOpenScriptFile &file)
 {
-    if (!gui->showEditScriptWindow) return;
-
-    GUIManager::SetNextWindowSize(600, 600);
-    ImGui::SetNextWindowBgAlpha(GUIType::Levels::WINDOW_ALPHA);
-
-    if (ImGui::Begin("Script edition", &gui->showEditScriptWindow, ImGuiWindowFlags_NoDocking)) {
-        DrawWinScriptEdition(gui);
-
-        ImGui::Separator();
-
-        if (ImGui::CollapsingHeader("Script code")) {
-            static ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-            ImGui::InputTextMultiline("##source", gui->scriptEditableManager.editableSource, IM_ARRAYSIZE(gui->scriptEditableManager.editableSource), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 25), flags);
-            if (ImGui::Button(std::string("Save").c_str())) {
-                gui->scriptEditableManager.script->updateScriptCodeWith(gui->scriptEditableManager.editableSource);
-                gui->scriptEditableManager.script->reloadScriptCode();
-            }
-        }
-    }
-    ImGui::End();
+    DrawScriptHeader(file);
+    DrawScriptConfiguration(file);
+    DrawScriptVarCreator(file);
+    DrawScriptVarsTable(file);
+    DrawEmptyStateWarning(file);
+    ImGui::Separator();
+    DrawActionButtons(file);
 }
 
 void ScriptLuaGUI::DrawWinObjectVars(GUIManager *gui)
@@ -249,37 +239,30 @@ void ScriptLuaGUI::DrawWinGlobalVars(GUIManager *gui)
     }
 }
 
-void ScriptLuaGUI::DrawWinScriptEdition(GUIManager *gui)
-{
-    DrawScriptHeader(gui);
-    DrawScriptConfiguration(gui);
-    DrawVariableCreator(gui);
-    DrawVariablesTable(gui);
-    DrawEmptyStateWarning(gui);
-    ImGui::Separator();
-    DrawSaveButton(gui);
-}
-
-void ScriptLuaGUI::DrawScriptHeader(GUIManager *gui)
+void ScriptLuaGUI::DrawScriptHeader(EditableOpenScriptFile &file)
 {
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
-    ImGui::Text(std::string("File: " + gui->scriptEditableManager.script->scriptFilename).c_str());
+    ImGui::Text(std::string("File: " + file.getShader()->getName()).c_str());
 }
 
-void ScriptLuaGUI::DrawScriptConfiguration(GUIManager *gui)
+void ScriptLuaGUI::DrawScriptConfiguration(EditableOpenScriptFile &file)
 {
-    auto label = gui->scriptEditableManager.script->getName();
-    ImGui::SeparatorText("Script configuration");
+    ImGui::Separator();
+    auto shader= file.getShader();
+
+    auto label = shader->getName();
     static char name[256];
     strncpy(name, label.c_str(), sizeof(name));
     if (ImGui::InputText("Name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-        gui->scriptEditableManager.script->setName(name);
+        shader->setName(name);
     }
 }
 
-void ScriptLuaGUI::DrawVariableCreator(GUIManager *gui)
+void ScriptLuaGUI::DrawScriptVarCreator(EditableOpenScriptFile &file)
 {
+    auto gui = Brakeza::get()->GUI();
+
     ImGui::SeparatorText("Create new variable");
 
     static char varName[256];
@@ -305,14 +288,16 @@ void ScriptLuaGUI::DrawVariableCreator(GUIManager *gui)
         false,
         [&] {
             if (!gui->currentVariableToAddName.empty()) {
-                gui->scriptEditableManager.script->addDataTypeEmpty(gui->currentVariableToAddName.c_str(), itemsCStr[selectedItem]);
+                file.getShader()->addDataTypeEmpty(gui->currentVariableToAddName.c_str(), itemsCStr[selectedItem]);
             }
         }
     );
 }
 
-void ScriptLuaGUI::DrawVariablesTable(GUIManager *gui)
+void ScriptLuaGUI::DrawScriptVarsTable(EditableOpenScriptFile &file)
 {
+    auto shader = file.getShader();
+
     ImGui::SeparatorText("Variables");
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("ScriptProperties", 4, flags)) {
@@ -321,10 +306,10 @@ void ScriptLuaGUI::DrawVariablesTable(GUIManager *gui)
         ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
 
-        for (int i = 0; i < gui->scriptEditableManager.script->dataTypes.size(); i++) {
+        for (int i = 0; i < shader->dataTypes.size(); i++) {
             ImGui::PushID(std::string("script_table_var_" + std::to_string(i)).c_str());
             ImGui::TableNextRow();
-            auto type = &gui->scriptEditableManager.script->dataTypes[i];
+            auto type = &shader->dataTypes[i];
 
             ImGui::TableSetColumnIndex(0);
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
@@ -340,8 +325,8 @@ void ScriptLuaGUI::DrawVariablesTable(GUIManager *gui)
 
             ImGui::TableSetColumnIndex(3);
             GUI::DrawButton("Delete script variable", IconGUI::SCRIPT_REMOVE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-                gui->scriptEditableManager.script->removeDataType(*type);
-                gui->scriptEditableManager.script->updateFileTypes();
+                file.getShader()->removeDataType(*type);
+                file.getShader()->updateFileTypes();
             });
             ImGui::PopID();
         }
@@ -349,9 +334,9 @@ void ScriptLuaGUI::DrawVariablesTable(GUIManager *gui)
     }
 }
 
-void ScriptLuaGUI::DrawEmptyStateWarning(GUIManager *gui)
+void ScriptLuaGUI::DrawEmptyStateWarning(EditableOpenScriptFile &file)
 {
-    if (gui->scriptEditableManager.script->dataTypes.empty()) {
+    if (file.getShader()->dataTypes.empty()) {
         ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
         ImGui::SameLine();
         ImGui::Text("No variables defined");
@@ -359,10 +344,14 @@ void ScriptLuaGUI::DrawEmptyStateWarning(GUIManager *gui)
     }
 }
 
-void ScriptLuaGUI::DrawSaveButton(GUIManager *gui)
+void ScriptLuaGUI::DrawActionButtons(EditableOpenScriptFile &file)
 {
-    GUI::DrawButton("Save SCRIPT", IconGUI::SCRIPT_SAVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-        gui->scriptEditableManager.script->updateFileTypes();
+    GUI::DrawButton("Save script to disk", IconGUI::SCRIPT_SAVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        file.getShader()->updateFileTypes();
+    });
+    ImGui::SameLine();
+    GUI::DrawButton("Edit source code", IconGUI::SCRIPT_SAVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        file.getShader()->updateFileTypes();
     });
 }
 
