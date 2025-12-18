@@ -17,7 +17,7 @@ class Tools {
 public:
     static std::vector<std::string> split(const std::string &, char);
     static int random(int min, int max);
-    static char *ReadFile(const std::string &name, size_t &source_size);
+    static char *ReadFile(const std::string &name);
     static float getXTextureFromUV(SDL_Surface *surface, float u);
     static float getYTextureFromUV(SDL_Surface *surface, float v);
     static bool FileExists(const char *name);

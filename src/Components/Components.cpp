@@ -21,9 +21,9 @@ void Components::RegisterComponent(Component *component, const std::string& labe
     component->setLabel(label);
 
     components.push_back(component);
-    Profiler::get()->InitMeasure(Profiler::get()->getComponentMeasures(), component->getLabel() + ProfilerConstants::SUFFIX_PRE);
-    Profiler::get()->InitMeasure(Profiler::get()->getComponentMeasures(), component->getLabel() + ProfilerConstants::SUFFIX_UPDATE);
-    Profiler::get()->InitMeasure(Profiler::get()->getComponentMeasures(), component->getLabel() + ProfilerConstants::SUFFIX_POST);
+    Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), component->getLabel() + ProfilerConstants::SUFFIX_PRE);
+    Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), component->getLabel() + ProfilerConstants::SUFFIX_UPDATE);
+    Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), component->getLabel() + ProfilerConstants::SUFFIX_POST);
 }
 
 Components::~Components()

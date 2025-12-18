@@ -32,7 +32,7 @@ void ShaderOGLDepthMap::PrepareMainThread()
     SetupQuadUniforms(programID);
 }
 
-void ShaderOGLDepthMap::render(GLuint textureID, GLuint fbo)
+void ShaderOGLDepthMap::Render(GLuint textureID, GLuint fbo)
 {
     auto render = Components::get()->Render();
     render->ChangeOpenGLFramebuffer(fbo);

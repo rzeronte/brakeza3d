@@ -22,7 +22,18 @@ void EditableOpenScriptFile::setShader(ScriptLUA *shader)
     this->script = shader;
 }
 
-void EditableOpenScriptFile::DrawEditableOpenFileSetup()
+void EditableOpenScriptFile::DrawEditableOpenFileConfig()
 {
-    ScriptLuaGUI::DrawEditScriptWindow(*this);
+    ScriptLuaGUI::DrawScriptConfig(*this);
+}
+
+void EditableOpenScriptFile::DrawCodeEditActionButtons()
+{
+    GUI::DrawButton("Save file", IconGUI::SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
+        Tools::WriteToFile(getPath(), getEditor().GetText().c_str());
+    });
+    ImGui::SameLine();
+    GUI::DrawButton("Close file", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
+        Brakeza::get()->GUI()->CloseEditableFile(this);
+    });
 }

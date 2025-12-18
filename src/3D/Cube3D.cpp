@@ -35,9 +35,9 @@ void Cube3D::makeVertices()
 {
     for (int i = 0; i < 36; i++) {
         this->vertices[i] = Vertex3D(
-            (cubeVertexBuffer[i * 3 + 0] * scaleX) / 2,
-            (cubeVertexBuffer[i * 3 + 1] * scaleY) / 2,
-            (cubeVertexBuffer[i * 3 + 2] * scaleZ) / 2
+            cubeVertexBuffer[i * 3 + 0] * scaleX / 2,
+            cubeVertexBuffer[i * 3 + 1] * scaleY / 2,
+            cubeVertexBuffer[i * 3 + 2] * scaleZ / 2
         );
     }
 }

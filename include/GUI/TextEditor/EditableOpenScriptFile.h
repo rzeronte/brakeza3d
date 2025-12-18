@@ -16,7 +16,8 @@ public:
     EditableOpenScriptFile(const std::string &path, ScriptLUA *script);
     [[nodiscard]] ScriptLUA * getShader() const;
     void setShader(ScriptLUA *shader);
-    void DrawEditableOpenFileSetup() override;
+    void DrawEditableOpenFileConfig() override;
+    void DrawCodeEditActionButtons() override;
 };
 
 

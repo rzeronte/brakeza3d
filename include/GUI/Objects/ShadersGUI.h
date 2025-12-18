@@ -14,13 +14,13 @@ class ShadersGUI
 public:
     static void LoadDialogShader(const std::string &folder, const std::string &file);
 
-    static void DrawEditShaderWindow(EditableOpenShaderFile &file);
-    static void DrawShaderHeader(EditableOpenShaderFile &file);
-    static void DrawShaderConfiguration(EditableOpenShaderFile &file);
-    static void DrawShaderVarsCreator(EditableOpenShaderFile &file);
-    static void DrawShaderVarsTable(EditableOpenShaderFile &file);
-    static void DrawEmptyStateWarning(EditableOpenShaderFile &file);
-    static void DrawShaderActionButtons(EditableOpenShaderFile &file);
+    static void DrawShaderConfig(EditableOpenShaderFile &file);
+    static void DrawShaderConfigHeader(EditableOpenShaderFile &file);
+    static void DrawShaderConfigEditName(EditableOpenShaderFile &file);
+    static void DrawShaderConfigVarsCreator(EditableOpenShaderFile &file);
+    static void DrawShaderConfigVarsTable(EditableOpenShaderFile &file);
+    static void DrawShaderConfigEmptyStateWarning(EditableOpenShaderFile &file);
+    static void DrawShaderConfigActionButtons(EditableOpenShaderFile &file);
     static std::vector<const char *> GetDataTypeItems(EditableOpenShaderFile &file);
 
     static void DrawWinObjectShaders(GUIManager *gui);

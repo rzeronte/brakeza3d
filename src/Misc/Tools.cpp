@@ -4,8 +4,6 @@
 #include <ctime>
 #include <vector>
 #include <filesystem>
-#include <sys/types.h>
-#include <SDL2/SDL_system.h>
 #include <algorithm>
 #include <fstream>
 #include "../../include/Misc/Tools.h"
@@ -71,7 +69,7 @@ bool Tools::FileExists(const char *name)
     return false;
 }
 
-char *Tools::ReadFile(const std::string &name, size_t &source_size)
+char *Tools::ReadFile(const std::string &name)
 {
     Logging::Message("[Tools] Reading file: %s", name.c_str());
 
@@ -85,7 +83,7 @@ char *Tools::ReadFile(const std::string &name, size_t &source_size)
     }
 
     fseek(fp, 0, SEEK_END);
-    source_size = ftell(fp);
+    size_t source_size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
     if (source_size <= 0) {
@@ -261,7 +259,6 @@ void Tools::WriteToFile(const std::string& fileName, const char *content)
 
     if (file.fail()) {
         Logging::Message("Error writing to file %s", fileName.c_str());
-        return;
     }
 }
 
@@ -416,9 +413,8 @@ bool Tools::RemoveFile(const std::string& filePath)
 {
     if (std::remove(filePath.c_str()) == 0) {
         return true;
-    } else {
-        return false;
     }
+    return false;
 }
 
 std::string Tools::removeSubstring(const std::string& str, const std::string& toRemove)

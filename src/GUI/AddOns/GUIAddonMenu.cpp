@@ -20,9 +20,6 @@
 #include "../../../include/Serializers/Image3DAnimationSerializer.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 
-GUIAddonMenu::GUIAddonMenu()
-{
-}
 
 void GUIAddonMenu::Draw(GUIManager *gui)
 {

@@ -6,6 +6,7 @@
 #define BRAKEZA3D_EDITABLEOPENFILE_H
 #include <string>
 
+#include "../../Misc/Logging.h"
 #include "../../Misc/Tools.h"
 
 class EditableOpenFile
@@ -16,14 +17,13 @@ class EditableOpenFile
     bool removed = false;
 public:
 
-    explicit EditableOpenFile(const std::string &path, const TextEditor::LanguageDefinition lang)
+    explicit EditableOpenFile(const std::string &path, const TextEditor::LanguageDefinition &lang)
     :
         path(path)
     {
         editor.SetLanguageDefinition(lang);
 
-        size_t file_size;
-        content = Tools::ReadFile(path.c_str(), file_size);
+        content = Tools::ReadFile(path.c_str());
         editor.SetText(content);
         editor.SetReadOnly(false);
     }
@@ -40,23 +40,33 @@ public:
         return content;
     }
 
-    void setContent(const std::string &content) {
-        this->content = content;
+    void setContent(const std::string &value) {
+        content = value;
+    }
+
+    void setContentFromFile(const std::string &path)
+    {
+        Logging::Message("[EditableOpenFile] Updating code editor for file '%s'", path.c_str());
+        content = Tools::ReadFile(path.c_str());
+        editor.SetText(content);
     }
 
     [[nodiscard]] TextEditor &getEditor() {
         return editor;
     }
 
-    [[nodiscard]] bool isRemoved() const {
+    [[nodiscard]] bool isRemoved() const
+    {
         return removed;
     }
 
-    void setRemoved(bool removed) {
-        this->removed = removed;
+    void setRemoved(bool value)
+    {
+        removed = value;
     }
 
-    virtual void DrawEditableOpenFileSetup() = 0;
+    virtual void DrawEditableOpenFileConfig() = 0;
+    virtual void DrawCodeEditActionButtons() = 0;
     virtual ~EditableOpenFile() = default;
 };
 

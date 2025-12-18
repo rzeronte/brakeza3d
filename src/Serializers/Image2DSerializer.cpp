@@ -11,7 +11,7 @@
 
 cJSON * Image2DSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[Image2DSerializer] JsonByObject: %d", (int) o->getTypeObject());
+    Logging::Message("[Image2DSerializer] JsonByObject: %d", o->getTypeObject());
 
     auto image = dynamic_cast<Image2D*>(o);
 
@@ -79,5 +79,5 @@ const char* Image2DSerializer::ExtractFilePath(cJSON *json)
 
 void Image2DSerializer::ApplyImageFromFile(Image2D *image)
 {
-    image->setImage(new Image(image->filepath.c_str()));
+    image->setImage(new Image(image->filepath));
 }

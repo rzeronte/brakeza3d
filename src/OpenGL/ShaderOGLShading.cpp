@@ -52,7 +52,7 @@ void ShaderOGLShading::render(glm::mat4 modelMatrix, GLuint vertexBuffer, GLuint
 
     setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
-    glDrawArrays(GL_TRIANGLES, 0, (GLint) size );
+    glDrawArrays(GL_TRIANGLES, 0, size );
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

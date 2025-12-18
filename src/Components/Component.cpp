@@ -1,7 +1,6 @@
 #include "../../include/Components/Component.h"
 
 #include "../../include/Misc/Logging.h"
-#include "../../include/Render/Profiler.h"
 
 Component::Component()
 :

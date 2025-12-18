@@ -378,10 +378,8 @@ void ShaderBaseOpenGL::ReadShaderFiles(const std::string &vertexFilename, const 
         return;
     }
 
-    size_t file_size_vs, file_size_fs;
-
-    char* vsCode = Tools::ReadFile(vertexFilename, file_size_vs);
-    char* fsCode = Tools::ReadFile(fragmentFilename, file_size_fs);
+    char* vsCode = Tools::ReadFile(vertexFilename);
+    char* fsCode = Tools::ReadFile(fragmentFilename);
 
     if (!vsCode || !fsCode) {
         Logging::Error("[ShaderBaseOpenGL] Failed to read shader files");
@@ -392,8 +390,6 @@ void ShaderBaseOpenGL::ReadShaderFiles(const std::string &vertexFilename, const 
 
     sourceVS = std::string(vsCode);
     sourceFS = std::string(fsCode);
-
-    Logging::Message("[ShaderBaseOpenGL] Shaders read: VS=%zu bytes, FS=%zu bytes", file_size_vs, file_size_fs);
 
     free(vsCode);
     free(fsCode);

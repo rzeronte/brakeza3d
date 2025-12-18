@@ -16,8 +16,8 @@ public:
     EditableOpenShaderFile(const std::string &path, ShaderOGLCustom *shader);
     [[nodiscard]] ShaderOGLCustom * getShader() const ;
     void setShader(ShaderOGLCustom *shader) ;
-    void DrawEditableOpenFileSetup() override;
+    void DrawEditableOpenFileConfig() override;
+    void DrawCodeEditActionButtons() override;
 };
-
 
 #endif //BRAKEZA3D_EDITABLEOPENSHADERFILE_H

@@ -77,10 +77,10 @@ void Image::DrawFlat(int x, int y, int w, int h, GLuint fbo) const
     srcRect.h = surface->h;
 
     SDL_Rect dstRect;
-    dstRect.x = (x * windowWidth) / Config::get()->screenWidth;
-    dstRect.y = (y * windowHeight) / Config::get()->screenHeight;
-    dstRect.w = (w * windowWidth) / Config::get()->screenWidth;
-    dstRect.h = (h * windowHeight) / Config::get()->screenHeight;
+    dstRect.x = x * windowWidth / Config::get()->screenWidth;
+    dstRect.y = y * windowHeight / Config::get()->screenHeight;
+    dstRect.w = w * windowWidth / Config::get()->screenWidth;
+    dstRect.h = h * windowHeight / Config::get()->screenHeight;
 
     Components::get()->Render()->getShaders()->shaderOGLImage->renderTexture(
         textureId,
@@ -108,10 +108,10 @@ void Image::DrawFlat(int pos_x, int pos_y, GLuint fbo) const
     srcRect.h = surface->h;
 
     SDL_Rect dstRect;
-    dstRect.x = (pos_x * windowWidth) / Config::get()->screenWidth;
-    dstRect.y = (pos_y * windowHeight) / Config::get()->screenHeight;
-    dstRect.w = (surface->w * windowWidth) / Config::get()->screenWidth;
-    dstRect.h = (surface->h * windowHeight) / Config::get()->screenHeight;
+    dstRect.x = pos_x * windowWidth / Config::get()->screenWidth;
+    dstRect.y = pos_y * windowHeight / Config::get()->screenHeight;
+    dstRect.w = surface->w * windowWidth / Config::get()->screenWidth;
+    dstRect.h = surface->h * windowHeight / Config::get()->screenHeight;
 
     Components::get()->Render()->getShaders()->shaderOGLImage->renderTexture(
         textureId,

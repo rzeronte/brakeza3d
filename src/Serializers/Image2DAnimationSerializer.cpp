@@ -3,7 +3,6 @@
 //
 
 #include "../../include/Serializers/Image2DAnimationSerializer.h"
-#include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Brakeza.h"
 #include "../../include/2D/Image2DAnimation.h"
 #include "../../include/Components/Components.h"
@@ -12,7 +11,7 @@
 
 cJSON * Image2DAnimationSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[Image2DAnimationSerializer] JsonByObject: %d", (int) o->getTypeObject());
+    Logging::Message("[Image2DAnimationSerializer] JsonByObject: %d", o->getTypeObject());
 
     auto image = dynamic_cast<Image2DAnimation*>(o);
 
@@ -23,10 +22,10 @@ cJSON * Image2DAnimationSerializer::JsonByObject(Object3D *o)
 
     cJSON *animationJSON = cJSON_CreateObject();
     cJSON_AddStringToObject(animationJSON, "sprite", image->getAnimation()->getBaseFilename().c_str());
-    cJSON_AddNumberToObject(animationJSON, "width", (int) image->getAnimation()->currentSpriteWidth);
-    cJSON_AddNumberToObject(animationJSON, "height", (int) image->getAnimation()->currentspriteHeight);
-    cJSON_AddNumberToObject(animationJSON, "numberFrames", (int) image->getAnimation()->numberFramesToLoad);
-    cJSON_AddNumberToObject(animationJSON, "fps", (int) image->getAnimation()->fps);
+    cJSON_AddNumberToObject(animationJSON, "width", image->getAnimation()->currentSpriteWidth);
+    cJSON_AddNumberToObject(animationJSON, "height", image->getAnimation()->currentspriteHeight);
+    cJSON_AddNumberToObject(animationJSON, "numberFrames", image->getAnimation()->numberFramesToLoad);
+    cJSON_AddNumberToObject(animationJSON, "fps", image->getAnimation()->fps);
 
     cJSON_AddItemToObject(root, "animation", animationJSON);
 

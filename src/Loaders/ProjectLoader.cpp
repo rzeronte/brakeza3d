@@ -12,8 +12,7 @@ void ProjectLoader::LoadProject(const std::string &filename)
 {
     RemoveProjectScripts();
 
-    size_t file_size;
-    auto contentFile = Tools::ReadFile(filename, file_size);
+    auto contentFile = Tools::ReadFile(filename);
     auto contentJSON = cJSON_Parse(contentFile);
 
     Logging::Message("Loading PROJECT: %s", filename.c_str());
@@ -67,7 +66,7 @@ void ProjectLoader::CreateProject(const std::string &filename)
     cJSON *root = cJSON_CreateObject();
     cJSON_AddStringToObject(root, "name", filename.c_str());
 
-    std::string projectJsonFile = std::string(filename + ".json");
+    auto projectJsonFile = std::string(filename + ".json");
 
     Tools::WriteToFile(projectJsonFile, cJSON_Print(root));
 }

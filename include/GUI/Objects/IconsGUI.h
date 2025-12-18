@@ -306,8 +306,7 @@ public:
 
     static void ImportIconsFromJSON(const std::string& filename)
     {
-        size_t file_size;
-        std::string jsonContent = Tools::ReadFile(filename.c_str(), file_size);
+        std::string jsonContent = Tools::ReadFile(filename.c_str());
 
         cJSON* root = cJSON_Parse(jsonContent.c_str());
         if (!root) {

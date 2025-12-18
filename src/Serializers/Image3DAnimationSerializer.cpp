@@ -12,7 +12,7 @@
 
 cJSON * Image3DAnimationSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[Image3DAnimationSerializer] JsonByObject: %d", (int) o->getTypeObject());
+    Logging::Message("[Image3DAnimationSerializer] JsonByObject: %d", o->getTypeObject());
 
     auto image = dynamic_cast<Image3DAnimation*>(o);
 
@@ -25,10 +25,10 @@ cJSON * Image3DAnimationSerializer::JsonByObject(Object3D *o)
     for (auto a : image->animations) {
         cJSON *animationJSON = cJSON_CreateObject();
         cJSON_AddStringToObject(animationJSON, "sprite", a->getBaseFilename().c_str());
-        cJSON_AddNumberToObject(animationJSON, "width", (int) a->currentSpriteWidth);
-        cJSON_AddNumberToObject(animationJSON, "height", (int) a->currentspriteHeight);
-        cJSON_AddNumberToObject(animationJSON, "numberFrames", (int) a->numberFramesToLoad);
-        cJSON_AddNumberToObject(animationJSON, "fps", (int) a->fps);
+        cJSON_AddNumberToObject(animationJSON, "width", a->currentSpriteWidth);
+        cJSON_AddNumberToObject(animationJSON, "height", a->currentspriteHeight);
+        cJSON_AddNumberToObject(animationJSON, "numberFrames", a->numberFramesToLoad);
+        cJSON_AddNumberToObject(animationJSON, "fps", a->fps);
         cJSON_AddItemToArray(animationsArrayJSON, animationJSON);
     }
 

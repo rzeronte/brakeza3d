@@ -1,8 +1,6 @@
 
 #include <utility>
-#include "../../include/Config.h"
 #include "../../include/Render/TextureAnimatedDirectional.h"
-
 #include "../../include/Misc/Logging.h"
 #include "../../include/Misc/Tools.h"
 

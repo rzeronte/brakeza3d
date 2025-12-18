@@ -8,7 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="BackendCodeEditorMiscSettings">
-    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="6" type="long" />
+    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="7" type="long" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/LiveTemplatesHousekeeping/HotspotSessionHintIsShown/@EntryValue" value="true" type="bool" />
@@ -36,119 +36,80 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): ui fine tuning">
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(code): code editor improvements">
+      <change afterPath="$PROJECT_DIR$/assets/scripts/test.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/brakeza3d.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/brakeza3d.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scenes/xyz.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/config/ImGuiCoding.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiCoding.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/brakeza.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/brakeza.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/sounds.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/sounds.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/3D/BSPMap.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Brakeza.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Brakeza.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/BrakezaLuaBridge.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/BrakezaLuaBridge.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/Component.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/Component.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentCamera.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentCamera.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentRender.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentRender.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentScripting.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentScripting.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/3D/Image3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/Image3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/3D/ParticleEmitter.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/ParticleEmitter.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentWindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentWindow.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentsManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/Components.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Config.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Config.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObject3DProperties.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObject3DProperties.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObjects3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObjects3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIConsole.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIConsole.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIConsole.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIConsole.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonMenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonMenu.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObjects3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonObjects3D.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/ButtonsCallbacks.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/ButtonsCallbacks.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/Logging.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Logging.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Frustum.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Frustum.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Profiler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Profiler.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Profiler.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Profiler.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/Image2D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/Image2D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/Image2DAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/Image2DAnimation.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/TextWriter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextWriter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/IconsGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/IconsGUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/ScriptLuaGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/ScriptLuaGUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/ShadersGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/ShadersGUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/TextEditor/EditableOpenFile.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/TextEditor/EditableOpenFile.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/TextEditor/EditableOpenScriptFile.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/TextEditor/EditableOpenScriptFile.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/TextEditor/EditableOpenShaderFile.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/TextEditor/EditableOpenShaderFile.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/Tools.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Tools.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLDepthMap.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLDepthMap.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Triangle3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Triangle3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Threads/ThreadJobReadFileScene.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Threads/ThreadJobReadFileScene.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/2D/Point2D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/Point2D.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/2D/TextureAnimated.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextureAnimated.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/BSPMap.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/Decal.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Decal.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/2D/TextureAnimatedDirectional.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextureAnimatedDirectional.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/3D/Cube3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Cube3D.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/3D/Image3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Image3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/Image3DAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Image3DAnimation.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/Image3DAnimation360.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Image3DAnimation360.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/3D/LightSpot.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/LightSpot.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/3D/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Mesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/Mesh3DAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Mesh3DAnimation.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/Object3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Object3D.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/3D/ParticleEmitter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/ParticleEmitter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/RayCollisionable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/RayCollisionable.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/3D/Swarm.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Swarm.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/TentacleIK.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/TentacleIK.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Brakeza.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brakeza.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentCamera.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCamera.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Component.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Component.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentScripting.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentScripting.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentsManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Components.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/Components.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/Components.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonMenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonMenu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonToolbar.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonToolbar.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/GUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonObjects3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonObjects3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIConsole.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIConsole.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Objects/Mesh3DGUIAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/Mesh3DGUIAnimation.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/Object3DGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/Object3DGUI.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/TextEditor/EditableOpenScriptFile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/TextEditor/EditableOpenScriptFile.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/TextEditor/EditableOpenShaderFile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/TextEditor/EditableOpenShaderFile.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Loaders/ProjectLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/ProjectLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Loaders/SceneLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/SceneLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Button.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Button.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Logging.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Logging.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Misc/ScriptLUA.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/ScriptLUA.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/TextureAtlas.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/TextureAtlas.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/TileManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/TileManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Timer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Timer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderBaseOpenGLQuad.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderBaseOpenGLQuad.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderBaseOpenGL.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderBaseOpenGL.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLBonesTransforms.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLBonesTransforms.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLColor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLColor.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustom.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustom.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomMesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomMesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomPostprocessing.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomPostprocessing.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLDOF.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLDOF.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLDepthMap.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLDepthMap.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLFog.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLFog.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLGrid.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLGrid.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLImage.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLImage.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLightPass.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLightPass.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLine.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLine3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLine3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLOutline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLOutline.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLParticles.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLParticles.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLPoints.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLPoints.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLRenderDeferred.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLRenderDeferred.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLRenderForward.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLRenderForward.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLShading.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLShading.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLShadowPass.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLShadowPass.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLShadowPassDebugLight.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLShadowPassDebugLight.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLTint.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLTint.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLWire.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLWire.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Render/Collider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Collider.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Render/ColliderMesh3DAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/ColliderMesh3DAnimation.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Color.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Color.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Frustum.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Frustum.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Render/Image.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Image.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/PhysicsDebugDraw.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/PhysicsDebugDraw.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Transforms.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Transforms.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Octree.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Octree.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Triangle3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Triangle3D.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Serializers/Image2DAnimationSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/Image2DAnimationSerializer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Serializers/Image2DSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/Image2DSerializer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Serializers/Image3DAnimation360Serializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/Image3DAnimation360Serializer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Serializers/Image3DAnimationSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/Image3DAnimationSerializer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Serializers/Image3DSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/Image3DSerializer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Serializers/LightPointSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/LightPointSerializer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Serializers/LightSpotSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/LightSpotSerializer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Serializers/Mesh3DAnimationSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/Mesh3DAnimationSerializer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Serializers/Mesh3DSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/Mesh3DSerializer.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Serializers/ParticleEmmitterSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/ParticleEmmitterSerializer.cpp" afterDir="false" />
     </list>
@@ -187,39 +148,11 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/Brakeza.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Components/ComponentWindow.cpp" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="EqPVdzzu" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -249,6 +182,7 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "RunOnceActivity.west.config.association.type.startup.service": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
@@ -259,7 +193,7 @@
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/Eduardo/CLionProjects/BrakezaGitHub/assets/scripts/Examples/GlobalScripts",
+    "last_opened_file_path": "C:/Users/Eduardo/CLionProjects/BrakezaGitHub/assets/scripts",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -274,24 +208,24 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Examples\GlobalScripts" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scenes" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Controllers" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\examples" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\doc" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\OpenGL" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\GUI" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\GUI\AddOns" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\images" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\GUI\TextEditor" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\LUA" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\Render" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\Render" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
@@ -299,7 +233,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -570,6 +504,13 @@
       <workItem from="1765228496142" duration="21225000" />
       <workItem from="1765253345933" duration="4878000" />
       <workItem from="1765279176685" duration="29796000" />
+      <workItem from="1765723941216" duration="38157000" />
+      <workItem from="1765770424798" duration="56000" />
+      <workItem from="1765796267405" duration="80000" />
+      <workItem from="1765796833539" duration="42000" />
+      <workItem from="1765797071871" duration="41939000" />
+      <workItem from="1765888906982" duration="35629000" />
+      <workItem from="1765929665596" duration="31491000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -619,54 +560,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00068" summary="feat(gui): Visible widget objects icons to setup">
-      <option name="closed" value="true" />
-      <created>1737506217131</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1737506217131</updated>
-    </task>
-    <task id="LOCAL-00069" summary="feat(gui): Update objects selector">
-      <option name="closed" value="true" />
-      <created>1737516269729</created>
-      <option name="number" value="00069" />
-      <option name="presentableId" value="LOCAL-00069" />
-      <option name="project" value="LOCAL" />
-      <updated>1737516269730</updated>
-    </task>
-    <task id="LOCAL-00070" summary="feat(gui): Update objects selector">
-      <option name="closed" value="true" />
-      <created>1737569391262</created>
-      <option name="number" value="00070" />
-      <option name="presentableId" value="LOCAL-00070" />
-      <option name="project" value="LOCAL" />
-      <updated>1737569391263</updated>
-    </task>
-    <task id="LOCAL-00071" summary="feat(assets): Update assets base">
-      <option name="closed" value="true" />
-      <created>1737585544418</created>
-      <option name="number" value="00071" />
-      <option name="presentableId" value="LOCAL-00071" />
-      <option name="project" value="LOCAL" />
-      <updated>1737585544418</updated>
-    </task>
-    <task id="LOCAL-00072" summary="feat(assets): Update assets base">
-      <option name="closed" value="true" />
-      <created>1737585552542</created>
-      <option name="number" value="00072" />
-      <option name="presentableId" value="LOCAL-00072" />
-      <option name="project" value="LOCAL" />
-      <updated>1737585552542</updated>
-    </task>
-    <task id="LOCAL-00073" summary="feat(kinematic): Added kinematic body to UI">
-      <option name="closed" value="true" />
-      <created>1737598792699</created>
-      <option name="number" value="00073" />
-      <option name="presentableId" value="LOCAL-00073" />
-      <option name="project" value="LOCAL" />
-      <updated>1737598792699</updated>
     </task>
     <task id="LOCAL-00074" summary="feat(bullet): Improved performance PhysicsDebugDraw">
       <option name="closed" value="true" />
@@ -956,7 +849,55 @@
       <option name="project" value="LOCAL" />
       <updated>1765246498289</updated>
     </task>
-    <option name="localTasksCounter" value="110" />
+    <task id="LOCAL-00110" summary="feat(threads): wip threads queue">
+      <option name="closed" value="true" />
+      <created>1765686857800</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1765686857800</updated>
+    </task>
+    <task id="LOCAL-00111" summary="fix(picking): Fix colorpicking / feat take screenshots">
+      <option name="closed" value="true" />
+      <created>1765735059349</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1765735059349</updated>
+    </task>
+    <task id="LOCAL-00112" summary="fix(picking): Fix colorpicking / feat take screenshots">
+      <option name="closed" value="true" />
+      <created>1765735892757</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1765735892757</updated>
+    </task>
+    <task id="LOCAL-00113" summary="fix(picking): Fix colorpicking / feat take screenshots">
+      <option name="closed" value="true" />
+      <created>1765768618824</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1765768618828</updated>
+    </task>
+    <task id="LOCAL-00114" summary="feat(code): code editor improvements">
+      <option name="closed" value="true" />
+      <created>1765921908147</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1765921908148</updated>
+    </task>
+    <task id="LOCAL-00115" summary="feat(code): code editor improvements">
+      <option name="closed" value="true" />
+      <created>1766010441534</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1766010441537</updated>
+    </task>
+    <option name="localTasksCounter" value="116" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -990,9 +931,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix(guizmo): Fix bad position when window is maximized" />
-    <MESSAGE value="feat(lua): apply impulses from lua mapping" />
-    <MESSAGE value="feat(doc): updated doc" />
     <MESSAGE value="feat(gui): Visible widget objects icons to setup" />
     <MESSAGE value="feat(gui): Update objects selector" />
     <MESSAGE value="feat(assets): Update assets base" />
@@ -1015,7 +953,10 @@
     <MESSAGE value="feat(gui): Icons using sheet" />
     <MESSAGE value="feat(gui): Icons debug window" />
     <MESSAGE value="feat(gui): ui fine tuning" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(gui): ui fine tuning" />
+    <MESSAGE value="feat(threads): wip threads queue" />
+    <MESSAGE value="fix(picking): Fix colorpicking / feat take screenshots" />
+    <MESSAGE value="feat(code): code editor improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(code): code editor improvements" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1059,77 +1000,54 @@
           <option name="timeStamp" value="94" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
+          <url>file://$PROJECT_DIR$/include/Render/JSONSerializerRegistry.h</url>
           <line>40</line>
           <option name="timeStamp" value="95" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
+          <url>file://$PROJECT_DIR$/include/Render/JSONSerializerRegistry.h</url>
           <line>41</line>
           <option name="timeStamp" value="96" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
+          <url>file://$PROJECT_DIR$/include/Render/JSONSerializerRegistry.h</url>
           <line>46</line>
           <option name="timeStamp" value="97" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
+          <url>file://$PROJECT_DIR$/include/Render/JSONSerializerRegistry.h</url>
           <line>48</line>
           <option name="timeStamp" value="98" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
+          <url>file://$PROJECT_DIR$/include/Render/JSONSerializerRegistry.h</url>
           <line>51</line>
           <option name="timeStamp" value="99" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
+          <url>file://$PROJECT_DIR$/include/Render/JSONSerializerRegistry.h</url>
           <line>57</line>
           <option name="timeStamp" value="100" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
+          <url>file://$PROJECT_DIR$/include/Render/JSONSerializerRegistry.h</url>
           <line>58</line>
           <option name="timeStamp" value="101" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
+          <url>file://$PROJECT_DIR$/include/Render/JSONSerializerRegistry.h</url>
           <line>55</line>
           <option name="timeStamp" value="109" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
+          <url>file://$PROJECT_DIR$/include/Render/JSONSerializerRegistry.h</url>
           <line>52</line>
           <option name="timeStamp" value="113" />
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/Serializers/JSONSerializerRegistry.h</url>
+          <url>file://$PROJECT_DIR$/include/Render/JSONSerializerRegistry.h</url>
           <line>61</line>
           <option name="timeStamp" value="114" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/3D/Object3D.cpp</url>
-          <line>13</line>
-          <option name="timeStamp" value="119" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/3D/Object3D.cpp</url>
-          <line>14</line>
-          <option name="timeStamp" value="120" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/3D/Object3D.cpp</url>
-          <line>15</line>
-          <option name="timeStamp" value="121" />
-        </line-breakpoint>
-        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Brakeza.cpp</url>
-          <line>202</line>
-          <properties>
-            <option name="hitCountValue" value="1" />
-          </properties>
-          <option name="timeStamp" value="116" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

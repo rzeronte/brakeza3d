@@ -10,7 +10,7 @@ class Object3D;
 class GUIAddonObjects3D
 {
 public:
-    explicit GUIAddonObjects3D();
+    explicit GUIAddonObjects3D() = default;
 
     static bool exist(std::string pattern1, std::string pattern2);
 

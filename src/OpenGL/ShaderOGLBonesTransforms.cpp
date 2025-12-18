@@ -7,8 +7,7 @@
 
 ShaderOGLBonesTransforms::ShaderOGLBonesTransforms()
 :
-    ShaderBaseOpenGL(Config::get()->SHADERS_FOLDER + "BonesTransforms.vs",true),
-    VertexArrayID(0)
+    ShaderBaseOpenGL(Config::get()->SHADERS_FOLDER + "BonesTransforms.vs",true)
 {
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);

@@ -136,15 +136,15 @@ void ScriptLuaGUI::DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, 
     }
 }
 
-void ScriptLuaGUI::DrawEditScriptWindow(EditableOpenScriptFile &file)
+void ScriptLuaGUI::DrawScriptConfig(EditableOpenScriptFile &file)
 {
-    DrawScriptHeader(file);
-    DrawScriptConfiguration(file);
-    DrawScriptVarCreator(file);
-    DrawScriptVarsTable(file);
-    DrawEmptyStateWarning(file);
+    DrawScriptConfigHeader(file);
+    DrawScriptConfigEditName(file);
+    DrawScriptConfigVarCreator(file);
+    DrawScriptConfigVarsTable(file);
+    DrawScriptConfigEmptyStateWarning(file);
     ImGui::Separator();
-    DrawActionButtons(file);
+    DrawScriptConfigActionButtons(file);
 }
 
 void ScriptLuaGUI::DrawWinObjectVars(GUIManager *gui)
@@ -239,14 +239,14 @@ void ScriptLuaGUI::DrawWinGlobalVars(GUIManager *gui)
     }
 }
 
-void ScriptLuaGUI::DrawScriptHeader(EditableOpenScriptFile &file)
+void ScriptLuaGUI::DrawScriptConfigHeader(EditableOpenScriptFile &file)
 {
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
     ImGui::Text(std::string("File: " + file.getShader()->getName()).c_str());
 }
 
-void ScriptLuaGUI::DrawScriptConfiguration(EditableOpenScriptFile &file)
+void ScriptLuaGUI::DrawScriptConfigEditName(EditableOpenScriptFile &file)
 {
     ImGui::Separator();
     auto shader= file.getShader();
@@ -259,7 +259,7 @@ void ScriptLuaGUI::DrawScriptConfiguration(EditableOpenScriptFile &file)
     }
 }
 
-void ScriptLuaGUI::DrawScriptVarCreator(EditableOpenScriptFile &file)
+void ScriptLuaGUI::DrawScriptConfigVarCreator(EditableOpenScriptFile &file)
 {
     auto gui = Brakeza::get()->GUI();
 
@@ -294,7 +294,7 @@ void ScriptLuaGUI::DrawScriptVarCreator(EditableOpenScriptFile &file)
     );
 }
 
-void ScriptLuaGUI::DrawScriptVarsTable(EditableOpenScriptFile &file)
+void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
 {
     auto shader = file.getShader();
 
@@ -334,7 +334,7 @@ void ScriptLuaGUI::DrawScriptVarsTable(EditableOpenScriptFile &file)
     }
 }
 
-void ScriptLuaGUI::DrawEmptyStateWarning(EditableOpenScriptFile &file)
+void ScriptLuaGUI::DrawScriptConfigEmptyStateWarning(EditableOpenScriptFile &file)
 {
     if (file.getShader()->dataTypes.empty()) {
         ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
@@ -344,13 +344,9 @@ void ScriptLuaGUI::DrawEmptyStateWarning(EditableOpenScriptFile &file)
     }
 }
 
-void ScriptLuaGUI::DrawActionButtons(EditableOpenScriptFile &file)
+void ScriptLuaGUI::DrawScriptConfigActionButtons(EditableOpenScriptFile &file)
 {
     GUI::DrawButton("Save script to disk", IconGUI::SCRIPT_SAVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-        file.getShader()->updateFileTypes();
-    });
-    ImGui::SameLine();
-    GUI::DrawButton("Edit source code", IconGUI::SCRIPT_SAVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         file.getShader()->updateFileTypes();
     });
 }

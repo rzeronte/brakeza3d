@@ -305,7 +305,9 @@ namespace GUIType
     X(MNU_WORKERS, 0, 0) \
     X(WIN_CODE_EDITOR, 0, 0) \
     X(WIN_SCRIPT_SETUP, 0, 0) \
-    X(WIN_SHADER_SETUP, 0, 0)
+    X(WIN_SHADER_SETUP, 0, 0) \
+    X(SHADER_CODE_VS, 0, 0) \
+    X(SHADER_CODE_FS, 0, 0)
 
 // Icons Objects
 namespace IconObject {

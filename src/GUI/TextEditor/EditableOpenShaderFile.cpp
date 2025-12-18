@@ -22,7 +22,26 @@ void EditableOpenShaderFile::setShader(ShaderOGLCustom *shader)
     this->shader = shader;
 }
 
-void EditableOpenShaderFile::DrawEditableOpenFileSetup()
+void EditableOpenShaderFile::DrawEditableOpenFileConfig()
 {
-    ShadersGUI::DrawEditShaderWindow(*this);
+    ShadersGUI::DrawShaderConfig(*this);
+}
+
+void EditableOpenShaderFile::DrawCodeEditActionButtons()
+{
+    GUI::DrawButton("Save file", IconGUI::SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
+        Tools::WriteToFile(getPath(), getEditor().GetText().c_str());
+    });
+    ImGui::SameLine();
+    GUI::DrawButton("Edit VS source", IconGUI::SHADER_CODE_VS, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
+        setContentFromFile(shader->getVertexFilename());
+    });
+    ImGui::SameLine();
+    GUI::DrawButton("Edit FS source", IconGUI::SHADER_CODE_FS, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
+        setContentFromFile(shader->getFragmentFilename());
+    });
+    ImGui::SameLine();
+    GUI::DrawButton("Close file", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
+        Brakeza::get()->GUI()->CloseEditableFile(this);
+    });
 }

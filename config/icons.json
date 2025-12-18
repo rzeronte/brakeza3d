@@ -631,6 +631,14 @@
 			"name":	"WIN_SHADER_SETUP",
 			"x":	0,
 			"y":	0
+		}, {
+			"name":	"SHADER_CODE_VS",
+			"x":	3,
+			"y":	18
+		}, {
+			"name":	"SHADER_CODE_FS",
+			"x":	11,
+			"y":	21
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

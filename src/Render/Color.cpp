@@ -118,10 +118,10 @@ ImVec4 Color::toImVec4() const
 
 Color Color::idToColor(const unsigned int id)
 {
-    unsigned int u = static_cast<unsigned int>(id);
+    unsigned int u = id;
 
-    unsigned char R = (u >> 16) & 0xFF;
-    unsigned char G = (u >> 8) & 0xFF;
+    unsigned char R = u >> 16 & 0xFF;
+    unsigned char G = u >> 8 & 0xFF;
     unsigned char B = u & 0xFF;
 
     return Color(
@@ -139,5 +139,5 @@ unsigned int Color::colorToId(const Color &c)
     unsigned char B = (unsigned char)(c.b * 255.0f);
 
     unsigned int id = (R << 16) | (G << 8) | B;
-    return static_cast<int>(id);
+    return id;
 }

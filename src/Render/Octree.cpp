@@ -115,7 +115,7 @@ cJSON *Octree::getJSON()
 {
     cJSON *octreeJSON = cJSON_CreateObject();
 
-    cJSON_AddNumberToObject(octreeJSON, "maxDepth", (int) maxDepth);
+    cJSON_AddNumberToObject(octreeJSON, "maxDepth", maxDepth);
 
     return octreeJSON;
 }

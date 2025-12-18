@@ -340,8 +340,7 @@ bool ShaderOGLCustom::existDataType(const char *name, const char *type) const
 
 void ShaderOGLCustom::ParseTypesFromFileAttributes()
 {
-    size_t file_size;
-    auto contentFile = Tools::ReadFile(Config::get()->SHADERS_FOLDER + fileTypes, file_size);
+    auto contentFile = Tools::ReadFile(Config::get()->SHADERS_FOLDER + fileTypes);
     Logging::Message("[ShaderOGLCustom] Parsing attributes from: '%s'", fileTypes.c_str());
 
     setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
@@ -466,7 +465,6 @@ void ShaderOGLCustom::setEnabled(bool value)
 
 void ShaderOGLCustom::onUpdate() const
 {
-    if (!isEnabled()) return;
 }
 
 void ShaderOGLCustom::postUpdate(GLuint outputFBO, GLuint inputTexture)
@@ -474,7 +472,6 @@ void ShaderOGLCustom::postUpdate(GLuint outputFBO, GLuint inputTexture)
     if (!isEnabled()) return;
 
     render(outputFBO, inputTexture);
-
 }
 
 void ShaderOGLCustom::setLabel(std::string value)
@@ -827,8 +824,7 @@ ShaderCustomType ShaderOGLCustom::ExtractTypeFromShaderName(const std::string& f
 {
     std::string jsonFile = name + ".json";
 
-    size_t file_size;
-    auto contentFile = Tools::ReadFile(folder + jsonFile, file_size);
+    auto contentFile = Tools::ReadFile(folder + jsonFile);
     Logging::Message("Extracting type from: '%s'", name.c_str());
 
     auto oJSON = cJSON_Parse(contentFile);

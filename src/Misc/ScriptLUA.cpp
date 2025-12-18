@@ -47,9 +47,8 @@ ScriptLUA::ScriptLUA(const std::string& name, const std::string &codeFile, const
 
 void ScriptLUA::getCode(const std::string &script)
 {
-    size_t file_size;
     content.clear();
-    content = Tools::ReadFile(script, file_size);
+    content = Tools::ReadFile(script);
 }
 
 void ScriptLUA::runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg) const
@@ -213,8 +212,7 @@ void ScriptLUA::parseTypesFromFileAttributes()
         return;
     }
 
-    size_t file_size;
-    auto contentFile = Tools::ReadFile(fileTypes, file_size);
+    auto contentFile = Tools::ReadFile(fileTypes);
     Logging::Message("[ScriptLUA] Parsing attributes from: '%s'", fileTypes.c_str());
 
     setName(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "name")->valuestring);

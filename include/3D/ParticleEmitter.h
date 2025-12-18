@@ -19,20 +19,20 @@ typedef enum {
 
 class ParticleEmitter : public Object3D
 {
-    bool active;
-    bool stopAdd;
+    bool active = true;
+    bool stopAdd = false;
     int LastUsedParticle = 0;
 
     ParticleEmitterState state;
     ParticlesContext context;
 
-    Image *texture;
+    Image *texture = nullptr;
 
     Particle ParticlesContainer[MaxParticles];
 
-    GLuint billboard_vertex_buffer;
-    GLuint particles_position_buffer;
-    GLuint particles_color_buffer;
+    GLuint billboard_vertex_buffer = 0;
+    GLuint particles_position_buffer = 0;
+    GLuint particles_color_buffer = 0;
 protected:
     Counter lifeCounter;
     Color colorTo;

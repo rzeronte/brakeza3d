@@ -378,18 +378,28 @@ void FileSystemGUI::DrawBrowserFolders(GUIManager *gui, std::string& folder, GUI
     }
 }
 
-void FileSystemGUI::DrawEditableOpenCodeEditor(EditableOpenFile &file)
+void FileSystemGUI::DrawCodeEditorTab(EditableOpenFile &file)
 {
     if (ImGui::BeginTabItem(file.getPath().c_str())) {
-        GUI::DrawButton("Save file", IconGUI::SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
-           Tools::WriteToFile(file.getPath(), file.getEditor().GetText().c_str());
-        });
-        ImGui::SameLine();
-        GUI::DrawButton("Close file", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
-            Brakeza::get()->GUI()->CloseEditableFile(&file);
-        });
-        ImGui::NewLine();
-        file.getEditor().Render("##editor", ImVec2(0, 0), false);
+        static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
+
+        if (ImGui::BeginTable("codeEditorTab", 2, flags)) {
+            ImGui::TableSetupColumn("Setup", ImGuiTableColumnFlags_WidthFixed, 350.0f);
+            ImGui::TableSetupColumn("Code", ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableNextRow();
+
+            // Config File
+            ImGui::TableSetColumnIndex(0);
+            file.DrawEditableOpenFileConfig();
+
+            // Code Editor
+            ImGui::TableSetColumnIndex(1);
+            file.DrawCodeEditActionButtons();
+            ImGui::NewLine();
+            file.getEditor().Render("##editor", ImVec2(0, 0), false);
+
+            ImGui::EndTable();
+        }
         ImGui::EndTabItem();
     }
 }

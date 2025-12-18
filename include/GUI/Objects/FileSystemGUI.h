@@ -55,7 +55,7 @@ public:
         GUIType::BrowserCache &browser,
         const std::string &ext
     );
-    static void DrawEditableOpenCodeEditor(EditableOpenFile &file);
+    static void DrawCodeEditorTab(EditableOpenFile &file);
 
     static ImTextureID Icon(GUIType::Sheet coords);
 };

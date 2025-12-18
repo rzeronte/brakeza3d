@@ -100,5 +100,5 @@ float Timer::getTotalTime() const
         }
     }
 
-    return (float) totalTime / 1000;
+    return totalTime / 1000;
 }
