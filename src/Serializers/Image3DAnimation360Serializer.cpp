@@ -3,13 +3,11 @@
 //
 
 #include "../../include/Serializers/Image3DAnimation360Serializer.h"
-#include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/3D/Image3DAnimation360.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Serializers/Object3DSerializer.h"
-#include "../../include/Serializers/Image3DAnimationSerializer.h"
 #include "../../include/Threads/ThreadJobLoadImage3DAnimation360.h"
 
 cJSON * Image3DAnimation360Serializer::JsonByObject(Object3D *o)

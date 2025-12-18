@@ -4,7 +4,7 @@
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/Image3DGUI.h"
 
-Image3D::Image3D(const Vertex3D &position, float width, float height, std::string filePath)
+Image3D::Image3D(const Vertex3D &position, float width, float height, const std::string &filePath)
 :
     width(width),
     height(height),
@@ -20,7 +20,7 @@ Image3D::Image3D(const Vertex3D &position, float width, float height, Image* ima
     image(image)
 {
     if (image != nullptr) {
-        source = image->getFileName().c_str();
+        source = image->getFileName();
     }
     setPosition(position);
 }
@@ -141,7 +141,7 @@ void Image3D::onUpdate()
         render->getShaders()->shaderOGLPoints->render(
             getModelMatrix(),
             vertexBuffer,
-            vertices.size(),
+            (int) vertices.size(),
             Color::green(),
             window->getSceneFramebuffer()
         );
@@ -240,13 +240,13 @@ void Image3D::LookAtBillboard()
     auto o = Components::get()->Camera()->getCamera();
 
     // Dirección de la imagen hacia la cámara
-    Vertex3D direction = (o->getPosition() - position).getNormalize();
+    auto direction = (o->getPosition() - position).getNormalize();
 
     // Proyectar la dirección en el plano horizontal (XY)
-    Vertex3D forward = Vertex3D(direction.x, direction.y, 0).getNormalize();
+    auto forward = Vertex3D(direction.x, direction.y, 0).getNormalize();
 
     // Vector arriba fijo (siempre apuntando en Z positivo)
-    Vertex3D upVector = Vertex3D(0, 1, 0);
+    auto upVector = Vertex3D(0, 1, 0);
 
     // Vector derecha (perpendicular a forward y up)
     Vertex3D rightVector = forward % upVector;

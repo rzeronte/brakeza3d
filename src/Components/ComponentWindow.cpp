@@ -369,7 +369,7 @@ void ComponentWindow::ImGuiInitialize(const std::string& configFile)
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForOpenGL(window, context);
-    const char* glsl_version = "#version 130";
+    auto glsl_version = "#version 130";
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     ImGuiIO &io = ImGui::GetIO();

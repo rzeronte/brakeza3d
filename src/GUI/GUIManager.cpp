@@ -209,7 +209,7 @@ void GUIManager::DrawWinCodeEditor()
 {
     if (ImGui::BeginTabBar("FileTabs")) {
         for (auto &f : openFiles) {
-            FileSystemGUI::DrawEditableOpenCodeEditor(*f);
+            FileSystemGUI::DrawCodeEditorTab(*f);
         }
         ImGui::EndTabBar();
     }

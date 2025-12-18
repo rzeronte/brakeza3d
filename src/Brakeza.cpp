@@ -85,7 +85,7 @@ void Brakeza::MainLoop()
         Components::get()->Window()->ClearOGLFrameBuffers();                // Clean video framebuffers
         OnUpdateComponents();                                               // OnUpdate for componentes
         Components::get()->Render()->FlipBuffersToGlobal();                 // Buffers compositing
-        Components::get()->Render()->RunSceneShadersPostUpdate();           // Post-pass running for shaders
+        ComponentRender::RunSceneShadersPostUpdate();                       // Post-pass running for shaders
         PostUpdateComponents();                                             // PostUpdate for componentes
         Profiler::get()->EndTotalFrameTime();                               // End frame time measure
         Components::get()->Window()->FlipGlobalToWindow();                  // Flip to screen
@@ -188,7 +188,7 @@ void Brakeza::AutoLoadProjectOrContinue() const
         return;
     }
 
-    //SceneLoader::LoadScene(Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE);
+    SceneLoader::LoadScene(Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE);
 }
 
 void Brakeza::onUpdateSDLPollEventComponents(SDL_Event *event) const

@@ -34,7 +34,7 @@ class ComponentWindow : public Component
     OpenGLPickingBuffer pickingColorBuffer;
     OpenGLGlobalFramebuffers openGLBuffers;
 
-    PostProcessingManager *postProcessingManager;
+    PostProcessingManager *postProcessingManager = nullptr;
 
     ImGuizmo::OPERATION ImGuiOperationGuizmo = ImGuizmo::TRANSLATE;
 

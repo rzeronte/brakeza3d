@@ -8,10 +8,6 @@
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../include/Components/Components.h"
 
-GUIAddonObjects3D::GUIAddonObjects3D()
-{
-}
-
 bool GUIAddonObjects3D::exist(std::string pattern1, std::string pattern2)
 {
 
@@ -69,7 +65,7 @@ void GUIAddonObjects3D::DrawObjectTypes(GUIManager *gui)
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 2));
 
     for (auto& o : gui->visibleTypeObjects) {
-        GUI::DrawButton(o.label, o.icon, ImVec2(28, 28), o.visible, [&](){ o.Toggle(); });
+        GUI::DrawButton(o.label, o.icon, ImVec2(28, 28), o.visible, [&]{ o.Toggle(); });
         ImGui::SameLine();
     }
     ImGui::PopStyleVar(2);
@@ -90,7 +86,7 @@ bool GUIAddonObjects3D::isObjectTypeVisible(GUIManager *gui, ObjectType typeObje
 void GUIAddonObjects3D::DrawObjectList(GUIManager *gui, std::vector<Object3D *> &objects, int selectedObjectIndex, std::string filter)
 {
     for (unsigned int i = 0; i < (unsigned int) objects.size(); i++) {
-        auto o = objects[i];
+        auto &o = objects[i];
 
         if (o->isRemoved()) continue;
         if (!isObjectTypeVisible(gui, o->getTypeObject())) continue;

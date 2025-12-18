@@ -202,8 +202,8 @@ void ComponentInput::resetMouseMapping()
         mouseRightButton = true;
     }
 
-    relativeRendererMouseX = (Config::get()->screenWidth * mouseX ) / window->getWidthRender();
-    relativeRendererMouseY = (Config::get()->screenHeight * mouseY) / window->getHeightRender();
+    relativeRendererMouseX = Config::get()->screenWidth * mouseX / window->getWidthRender();
+    relativeRendererMouseY = Config::get()->screenHeight * mouseY / window->getHeightRender();
 
     mouseMotion = false;
     mouseMotionXRel = 0;
@@ -415,7 +415,7 @@ bool ComponentInput::isCharFirstEventDown(const char *character)
 
     auto it = keyboardEvents.find(keyCode);
 
-    return (it != keyboardEvents.end()) && it->second;
+    return it != keyboardEvents.end() && it->second;
 }
 
 bool ComponentInput::isKeyEventDown() const

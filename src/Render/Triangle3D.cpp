@@ -3,18 +3,7 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/Misc/ToolsMaths.h"
 
-Triangle::Triangle()
-:
-    enableLights(false),
-    parent(nullptr),
-    clipped(false)
-{
-}
-
 Triangle::Triangle(Vertex3D A, Vertex3D B, Vertex3D C, Object3D *parent)
-:
-    parent(nullptr),
-    clipped(false)
 {
     this->A = A;
     this->B = B;

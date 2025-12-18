@@ -11,40 +11,41 @@
 #include "../../../include/GUI/TextEditor/EditableOpenShaderFile.h"
 #include "../../../include/Components/Components.h"
 
-void ShadersGUI::DrawEditShaderWindow(EditableOpenShaderFile &file)
+void ShadersGUI::DrawShaderConfig(EditableOpenShaderFile &file)
 {
-    DrawShaderHeader(file);
-    DrawShaderConfiguration(file);
-    DrawShaderVarsCreator(file);
-    DrawShaderVarsTable(file);
-    DrawEmptyStateWarning(file);
+    DrawShaderConfigHeader(file);
+    DrawShaderConfigEditName(file);
+    DrawShaderConfigVarsCreator(file);
+    DrawShaderConfigVarsTable(file);
+    DrawShaderConfigEmptyStateWarning(file);
     ImGui::Separator();
-    DrawShaderActionButtons(file);
+    DrawShaderConfigActionButtons(file);
 }
 
-void ShadersGUI::DrawShaderHeader(EditableOpenShaderFile &file)
+void ShadersGUI::DrawShaderConfigHeader(EditableOpenShaderFile &file)
 {
     auto vsFile = file.getShader()->getVertexFilename();
     auto fsFile = file.getShader()->getFragmentFilename();
     auto type = file.getShader()->getType();
     auto typeName = ShaderOGLCustom::getShaderTypeString(type);
 
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICONS_BROWSERS);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_CODE_VS), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
     ImGui::Text(std::string("VS file: " + vsFile).c_str());
 
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICONS_BROWSERS);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_CODE_FS), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
-    ImGui::Text(std::string("FS file: " + vsFile).c_str());
+    ImGui::Text(std::string("FS file: " + fsFile).c_str());
 
+    ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_TYPE_MESH3D), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
-    ImGui::Text(std::string("Type: " + typeName).c_str());
+    ImGui::Text(std::string("Shader type: " + typeName).c_str());
 }
 
-void ShadersGUI::DrawShaderConfiguration(EditableOpenShaderFile &file)
+void ShadersGUI::DrawShaderConfigEditName(EditableOpenShaderFile &file)
 {
-    ImGui::SeparatorText("Shader information");
+    ImGui::Separator();
 
     auto label = file.getShader()->getLabel();
     static char name[256];
@@ -55,7 +56,7 @@ void ShadersGUI::DrawShaderConfiguration(EditableOpenShaderFile &file)
     }
 }
 
-void ShadersGUI::DrawShaderVarsCreator(EditableOpenShaderFile &file)
+void ShadersGUI::DrawShaderConfigVarsCreator(EditableOpenShaderFile &file)
 {
     auto gui = Brakeza::get()->GUI();
     ImGui::SeparatorText("Create new variable");
@@ -109,7 +110,7 @@ std::vector<const char*> ShadersGUI::GetDataTypeItems(EditableOpenShaderFile &fi
     return itemsCStr;
 }
 
-void ShadersGUI::DrawShaderVarsTable(EditableOpenShaderFile &file)
+void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
 {
     auto shader = file.getShader();
 
@@ -150,7 +151,7 @@ void ShadersGUI::DrawShaderVarsTable(EditableOpenShaderFile &file)
     }
 }
 
-void ShadersGUI::DrawEmptyStateWarning(EditableOpenShaderFile &file)
+void ShadersGUI::DrawShaderConfigEmptyStateWarning(EditableOpenShaderFile &file)
 {
     auto types = file.getShader()->getDataTypes();
 
@@ -162,7 +163,7 @@ void ShadersGUI::DrawEmptyStateWarning(EditableOpenShaderFile &file)
     }
 }
 
-void ShadersGUI::DrawShaderActionButtons(EditableOpenShaderFile &file)
+void ShadersGUI::DrawShaderConfigActionButtons(EditableOpenShaderFile &file)
 {
     GUI::DrawButton("Save shader", IconGUI::SHADER_SAVE, GUIType::Sizes::ICONS_BROWSERS, true,[&] {
         file.getShader()->UpdateFileTypes();
@@ -234,6 +235,6 @@ void ShadersGUI::LoadDialogShader(const std::string &folder, const std::string &
     shader->PrepareMainThread();
 
     if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(file)) {
-        Brakeza::get()->GUI()->OpenEditableFile(new EditableOpenShaderFile(folder + file, shader));
+        Brakeza::get()->GUI()->OpenEditableFile(new EditableOpenShaderFile(shader->getVertexFilename(), shader));
     }
 }

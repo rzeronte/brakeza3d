@@ -152,7 +152,7 @@ void Mesh3D::LoadMesh(int meshId, const aiMesh *mesh)
 
         Vertex3D v(vf.x, vf.y, vf.z);
 
-        const aiVector3D *pTexCoord = mesh->HasTextureCoords(0) ? &(mesh->mTextureCoords[0][j]) : &Zero3D;
+        const aiVector3D *pTexCoord = mesh->HasTextureCoords(0) ? &mesh->mTextureCoords[0][j] : &Zero3D;
         v.u = pTexCoord->x;
         v.v = pTexCoord->y;
 
@@ -442,7 +442,7 @@ void Mesh3D::DrawImGuiCollisionShapeSelector()
     auto comboTitle = "Shape##" + getName();
     if (ImGui::BeginCombo(comboTitle.c_str(), combo_preview_value, flags)) {
         for (int n = 0; n < IM_ARRAYSIZE(items); n++) {
-            const bool is_selected = (item_current_idx == n);
+            const bool is_selected = item_current_idx == n;
             if (ImGui::Selectable(items[n], is_selected)) {
                 if (!is_selected) {
                     item_current_idx = n;

@@ -518,7 +518,7 @@ void ComponentRender::FlipBuffersToGlobal() const
     }
 
     if (Config::get()->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
-        shaders.shaderOGLDepthMap->render(gBuffer.depth, globalBuffer.globalFBO);
+        shaders.shaderOGLDepthMap->Render(gBuffer.depth, globalBuffer.globalFBO);
     }
 
     if (Config::get()->TRIANGLE_MODE_PICKING_COLORS) {

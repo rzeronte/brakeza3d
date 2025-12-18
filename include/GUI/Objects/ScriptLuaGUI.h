@@ -16,13 +16,13 @@ class ScriptLuaGUI
 public:
     static void LoadScriptDialog(const std::string& pathFile);
 
-    static void DrawEditScriptWindow(EditableOpenScriptFile &file);
-    static void DrawScriptHeader(EditableOpenScriptFile &file);
-    static void DrawScriptConfiguration(EditableOpenScriptFile &file);
-    static void DrawScriptVarCreator(EditableOpenScriptFile &file);
-    static void DrawScriptVarsTable(EditableOpenScriptFile &file);
-    static void DrawEmptyStateWarning(EditableOpenScriptFile &file);
-    static void DrawActionButtons(EditableOpenScriptFile &file);
+    static void DrawScriptConfig(EditableOpenScriptFile &file);
+    static void DrawScriptConfigHeader(EditableOpenScriptFile &file);
+    static void DrawScriptConfigEditName(EditableOpenScriptFile &file);
+    static void DrawScriptConfigVarCreator(EditableOpenScriptFile &file);
+    static void DrawScriptConfigVarsTable(EditableOpenScriptFile &file);
+    static void DrawScriptConfigEmptyStateWarning(EditableOpenScriptFile &file);
+    static void DrawScriptConfigActionButtons(EditableOpenScriptFile &file);
 
     static void DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, bool showIcon);
 

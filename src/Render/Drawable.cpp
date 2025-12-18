@@ -42,9 +42,9 @@ void Drawable::drawMainAxisOffset(const Vertex3D &offset)
     Vertex3D VYend(origin.x, origin.y + axis_length, origin.z);
     Vertex3D VZend(origin.x, origin.y, origin.z + axis_length);
 
-    Vector3D axis_x = Vector3D(VXstart, VXend);
-    Vector3D axis_y = Vector3D(VYstart, VYend);
-    Vector3D axis_z = Vector3D(VZstart, VZend);
+    auto axis_x = Vector3D(VXstart, VXend);
+    auto axis_y = Vector3D(VYstart, VYend);
+    auto axis_z = Vector3D(VZstart, VZend);
 
     drawVector3D(axis_x, Color::red());
     drawVector3D(axis_y, Color::green());
@@ -62,10 +62,10 @@ void Drawable::drawObject3DAxis(Object3D *object, bool drawUp, bool drawRight, b
     Vertex3D endUp = object->getPosition() + object->up().getScaled(size);
     Vertex3D endForward = object->getPosition() + object->forward().getScaled(size);
 
-    Vector3D vRight = Vector3D(object->getPosition(), endRight);
-    Vector3D vUp = Vector3D(object->getPosition(), endUp);
-    Vector3D vForward = Vector3D(object->getPosition(), endForward);
+    auto vRight = Vector3D(object->getPosition(), endRight);
+    auto vUp = Vector3D(object->getPosition(), endUp);
 
+    auto vForward = Vector3D(object->getPosition(), endForward);
     if (drawRight) drawVector3D(vRight, Color::green());
     if (drawUp) drawVector3D(vUp, Color::red());
     if (drawForward) drawVector3D(vForward, Color::blue());
@@ -102,12 +102,12 @@ void Drawable::drawLightning(Vertex3D A, Vertex3D B, Color color) {
                 splitEnd.y = midPoint.y + direction.y;
                 splitEnd.z = midPoint.z + direction.z;
 
-                Vector3D segmentBranch = Vector3D(midPoint, splitEnd);
+                auto segmentBranch = Vector3D(midPoint, splitEnd);
                 newSegments.push_back(segmentBranch);
             }
 
-            Vector3D segment1 = Vector3D(ir.base()->vertex1, midPoint);
-            Vector3D segment2 = Vector3D(midPoint, ir.base()->vertex2);
+            auto segment1 = Vector3D(ir.base()->vertex1, midPoint);
+            auto segment2 = Vector3D(midPoint, ir.base()->vertex2);
             newSegments.push_back(segment1);
             newSegments.push_back(segment2);
 

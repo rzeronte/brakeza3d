@@ -193,7 +193,7 @@ void AssimpAnimationService::LoadMeshBones(int meshId, aiMesh *mesh, std::vector
         if (boneMapping.find(BoneName) == boneMapping.end()) {
             BoneIndex = numBones;
             numBones++;
-            BoneInfo bi = BoneInfo();
+            auto bi = BoneInfo();
             boneInfo.push_back(bi);
 
             boneMapping[BoneName] = BoneIndex;
@@ -221,7 +221,7 @@ void AssimpAnimationService::LoadMeshVertex(int meshId, aiMesh *mesh, std::vecto
         aiVector3t vf = mesh->mVertices[j];
         Vertex3D v(vf.x, vf.y, vf.z);
 
-        const aiVector3D *pTexCoord = mesh->HasTextureCoords(0) ? &(mesh->mTextureCoords[0][j]) : &Zero3D;
+        const aiVector3D *pTexCoord = mesh->HasTextureCoords(0) ? &mesh->mTextureCoords[0][j] : &Zero3D;
         v.u = pTexCoord->x;
         v.v = pTexCoord->y;
 
@@ -233,7 +233,7 @@ void AssimpAnimationService::LoadMeshVertex(int meshId, aiMesh *mesh, std::vecto
 
 void AssimpAnimationService::UpdateBonesFinalTransformations(float TimeInSeconds)
 {
-    aiMatrix4x4 Identity = aiMatrix4x4();
+    auto Identity = aiMatrix4x4();
 
     float TicksPerSecond = scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond != 0
                            ? scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond : 0.25f;
@@ -257,13 +257,13 @@ void AssimpAnimationService::ReadNodeHierarchy(float AnimationTime, const aiNode
         // Interpolate scaling and generate scaling transformation matrix
         aiVector3D Scaling;
         CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);
-        aiMatrix4x4 ScalingM = aiMatrix4x4();
+        auto ScalingM = aiMatrix4x4();
         aiMatrix4x4::Scaling(Scaling, ScalingM);
 
         // Interpolate rotation and generate rotation transformation matrix
         aiQuaternion RotationQ;
         CalcInterpolatedRotation(RotationQ, AnimationTime, pNodeAnim);
-        aiMatrix4x4 RotationM = aiMatrix4x4(RotationQ.GetMatrix());
+        auto RotationM = aiMatrix4x4(RotationQ.GetMatrix());
 
         // Interpolate translation and generate translation transformation matrix
         aiVector3D Translation;
@@ -362,7 +362,7 @@ void AssimpAnimationService::CalcInterpolatedRotation(aiQuaternion &Out, float A
     }
 
     unsigned int RotationIndex = FindRotation(AnimationTime, pNodeAnim);
-    unsigned int NextRotationIndex = (RotationIndex + 1);
+    unsigned int NextRotationIndex = RotationIndex + 1;
     //assert(NextRotationIndex < pNodeAnim->mNumRotationKeys);
     float DeltaTime = pNodeAnim->mRotationKeys[NextRotationIndex].mTime - pNodeAnim->mRotationKeys[RotationIndex].mTime;
     float Factor = (AnimationTime - (float) pNodeAnim->mRotationKeys[RotationIndex].mTime) / DeltaTime;
@@ -383,7 +383,7 @@ void AssimpAnimationService::CalcInterpolatedPosition(aiVector3D &Out, float Ani
     }
 
     unsigned int PositionIndex = FindPosition(AnimationTime, pNodeAnim);
-    unsigned int NextPositionIndex = (PositionIndex + 1);
+    unsigned int NextPositionIndex = PositionIndex + 1;
 
     auto DeltaTime = (float) (pNodeAnim->mPositionKeys[NextPositionIndex].mTime -
                               pNodeAnim->mPositionKeys[PositionIndex].mTime);
@@ -404,7 +404,7 @@ void AssimpAnimationService::CalcInterpolatedScaling(aiVector3D &Out, float Anim
     }
 
     unsigned int ScalingIndex = FindScaling(AnimationTime, pNodeAnim);
-    unsigned int NextScalingIndex = (ScalingIndex + 1);
+    unsigned int NextScalingIndex = ScalingIndex + 1;
     //assert(NextScalingIndex < pNodeAnim->mNumScalingKeys);
     auto DeltaTime = (float) (pNodeAnim->mScalingKeys[NextScalingIndex].mTime -
                               pNodeAnim->mScalingKeys[ScalingIndex].mTime);

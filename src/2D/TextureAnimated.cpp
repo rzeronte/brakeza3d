@@ -2,7 +2,6 @@
 #include <utility>
 #include "../../include/Render/TextureAnimated.h"
 #include <SDL_image.h>
-#include "../../include/Config.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/TextureAnimatedAnimationGUI.h"

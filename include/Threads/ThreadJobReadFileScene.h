@@ -32,8 +32,7 @@ public:
     {
         Logging::Message("[ThreadJobReadFileScene] START - File: %s", filename.c_str());
 
-        size_t file_size = 0;
-        auto contentFile = Tools::ReadFile(filename, file_size);
+        auto contentFile = Tools::ReadFile(filename);
 
         if (!contentFile) {
             Logging::Error("[ThreadJobReadFileScene] Failed to read file: %s", filename.c_str());

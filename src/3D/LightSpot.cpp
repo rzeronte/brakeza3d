@@ -63,7 +63,7 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
                 vertexBuffer,
                 uvBuffer,
                 normalBuffer,
-                cone.vertices.size(),
+                (int) cone.vertices.size(),
                 c,
                 false,
                 Components::get()->Window()->getGBuffer().FBO

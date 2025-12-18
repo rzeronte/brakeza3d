@@ -34,7 +34,7 @@ class Image3D : public Object3D
     GLuint uvBuffer = 0;
     Image *image = nullptr;
 public:
-    Image3D(const Vertex3D &position, float width, float height, std::string filePath);
+    Image3D(const Vertex3D &position, float width, float height, const std::string &filePath);
 
     Image3D(const Vertex3D &position, float width, float height, Image* image);
     ~Image3D() override;

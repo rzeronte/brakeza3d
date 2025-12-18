@@ -14,7 +14,7 @@ class GUIManager;
 class GUIAddonMenu
 {
 public:
-    explicit GUIAddonMenu();
+    explicit GUIAddonMenu() = default;
 
     static void Draw(GUIManager *gui);
     static void MenuBrakeza3D();

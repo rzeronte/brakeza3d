@@ -6,7 +6,6 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
 #include "../../include/LUA/BrakezaLuaBridge.h"
-#include "../../include/Render/JSONSerializerRegistry.h"
 
 void ComponentScripting::onStart()
 {
@@ -209,7 +208,7 @@ void ComponentScripting::createScriptLUAFile(const std::string& path)
 {
     Logging::Message("Creating new Script LUA file: %s", path.c_str());
 
-    std::string projectJsonFile = std::string(path + ".lua");
+    auto projectJsonFile = std::string(path + ".lua");
 
     std::string content = R"(
         function onStart()

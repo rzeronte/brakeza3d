@@ -12,7 +12,7 @@
 
 cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[Mesh3DSerializer] JsonByObject: %d", (int) o->getTypeObject());
+    Logging::Message("[Mesh3DSerializer] JsonByObject: %d",  o->getTypeObject());
 
     auto *mesh = dynamic_cast<Mesh3D*>(o);
 
@@ -146,7 +146,7 @@ void Mesh3DSerializer::ApplyShadersCreation(Mesh3D *mesh, cJSON* json)
                 }
                 default: {
                     Logging::Message("[LoadAttributes] Unknown shader type: %d", type);
-                };
+                }
             }
         }
     }
