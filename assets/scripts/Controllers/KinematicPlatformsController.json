@@ -1,4 +1,6 @@
 {
+  "codeFile":	"../assets/scripts/Controllers/KinematicPlatformsController.lua",
+  "typesFile":	"../assets/scripts/Controllers/KinematicPlatformsController.json",
   "name":	"KinematicPlatformsController.lua",
   "types":	[
     {

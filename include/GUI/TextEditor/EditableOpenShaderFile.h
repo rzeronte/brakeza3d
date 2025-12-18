@@ -13,7 +13,7 @@ class EditableOpenShaderFile : public EditableOpenFile
 {
     ShaderOGLCustom *shader;
 public:
-    EditableOpenShaderFile(const std::string &path, ShaderOGLCustom *shader);
+    EditableOpenShaderFile(const std::string &tabLabel, const std::string &path, ShaderOGLCustom *shader);
     [[nodiscard]] ShaderOGLCustom * getShader() const ;
     void setShader(ShaderOGLCustom *shader) ;
     void DrawEditableOpenFileConfig() override;

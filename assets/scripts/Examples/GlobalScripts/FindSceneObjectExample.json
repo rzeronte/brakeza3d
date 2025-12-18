@@ -1,5 +1,7 @@
 {
-	"name":	"FindSceneObjectExample.json",
+	"name":	"Find Scene Object",
+	"codeFile":	"../assets/scripts/Examples/GlobalScripts/FindSceneObjectExample.lua",
+	"typesFile": "../assets/scripts/Examples/GlobalScripts/FindSceneObjectExample.json",
 	"types":	[{
 		"name":	"object",
 		"type":	"string",

@@ -95,7 +95,7 @@ public:
     void setSelectedObject(Object3D *o);
     void UpdateFPS();
     void UpdateSelectedObject3D();
-    void LoadShaderIntoScene(const std::string &folder, const std::string &name);
+    void LoadShaderIntoScene(const std::string &name);
     void AddShaderToScene(ShaderOGLCustom *shader);
     void setSceneShadersEnabled(bool value);
 
@@ -136,7 +136,7 @@ public:
     static void DeleteRemovedObjects();
     static void onUpdateSceneObjects();
     static void MakeScreenShot();
-    static ShaderOGLCustom* CreateCustomShaderFromDisk(const std::string &folder, const std::string &jsonFilename);
+    static ShaderOGLCustom* CreateCustomShaderFromDisk(ShaderOGLMetaInfo info);
 };
 
 #endif //BRAKEDA3D_COMPONENTRENDER_H

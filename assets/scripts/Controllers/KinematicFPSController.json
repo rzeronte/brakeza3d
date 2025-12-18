@@ -1,5 +1,7 @@
 {
-  "name":	"KinematicFPSController.lua",
+  "codeFile":	"../assets/scripts/Controllers/KinematicFPSController.lua",
+  "typesFile":	"../assets/scripts/Controllers/KinematicFPSController.json",
+  "name":	"KinematicFPSController",
   "types":	[
     {
       "name":	"mouseSensibility",

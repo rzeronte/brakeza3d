@@ -1,8 +1,10 @@
 {
-	"name":	"Hello World2!",
+	"codeFile":	"../assets/scripts/Examples/HelloWorld.lua",
+	"typesFile": "../assets/scripts/Examples/HelloWorld.json",
+	"name":	"Hello world",
 	"types":	[{
-			"name":	"esa",
+			"name":	"var_demo",
 			"type":	"int",
-			"value":	0
+			"value": 0
 		}]
 }

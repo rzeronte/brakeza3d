@@ -573,8 +573,8 @@
 			"y":	33
 		}, {
 			"name":	"WARNING",
-			"x":	0,
-			"y":	0
+			"x":	2,
+			"y":	32
 		}, {
 			"name":	"VIDEO_SHADER_GRID",
 			"x":	2,

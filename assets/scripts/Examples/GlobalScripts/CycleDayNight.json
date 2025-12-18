@@ -1,4 +1,6 @@
 {
-  "name":	"Cycle Day/Night",
+  "codeFile":	"../assets/scripts/Examples/GlobalScripts/CycleDayNight.lua",
+  "typesFile": "../assets/scripts/Examples/GlobalScripts/CycleDayNight.json",
+  "name":	"Performance Test",
   "types":	[]
 }

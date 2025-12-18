@@ -1,5 +1,7 @@
 {
-	"name":	"../assets/scripts/Examples/ObjectScripts/PathFindingExample.lua",
+	"codeFile":	"../assets/scripts/Examples/ObjectScripts/PathFindingExample.lua",
+	"typesFile": "../assets/scripts/Examples/ObjectScripts/PathFindingExample.json",
+	"name":	"Pathfinding demo",
 	"types":	[{
 			"name":	"fromX",
 			"type":	"int",

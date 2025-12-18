@@ -1,5 +1,7 @@
 {
-    "name":	"ObjectAccessLocalVariableExample.lua",
+  "codeFile":	"../assets/scripts/Examples/ObjectScripts/ObjectAccessLocalVariableExample.lua",
+  "typesFile": "../assets/scripts/Examples/ObjectScripts/ObjectAccessLocalVariableExample.json",
+  "name":	"Object access local var demo",
     "types":	[
         {
             "name":	"count",

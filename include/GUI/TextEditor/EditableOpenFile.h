@@ -14,26 +14,36 @@ class EditableOpenFile
     std::string path;
     std::string content;
     TextEditor editor;
+    std::string tabLabel;
     bool removed = false;
 public:
 
-    explicit EditableOpenFile(const std::string &path, const TextEditor::LanguageDefinition &lang)
+    explicit EditableOpenFile(const std::string &tabLabel, const std::string &path, const TextEditor::LanguageDefinition &lang)
     :
-        path(path)
+        path(path),
+        tabLabel(tabLabel)
     {
-        editor.SetLanguageDefinition(lang);
+        Logging::Message("[EditableOpenFile] Creating EditableOpenFile: Tab: '%s', File: '%s'", tabLabel.c_str(), path.c_str());
 
         content = Tools::ReadFile(path.c_str());
+        editor.SetLanguageDefinition(lang);
         editor.SetText(content);
         editor.SetReadOnly(false);
     }
 
-    [[nodiscard]] std::string getPath() const {
-        return path;
+    [[nodiscard]] std::string getTabLabel() const
+    {
+        return tabLabel;
     }
 
-    void setPath(const std::string &path) {
-        this->path = path;
+    void setTabLabel(const std::string &tab_label)
+    {
+        tabLabel = tab_label;
+    }
+
+    [[nodiscard]] std::string getPath() const
+    {
+        return path;
     }
 
     [[nodiscard]] std::string &getContent() {
@@ -51,7 +61,8 @@ public:
         editor.SetText(content);
     }
 
-    [[nodiscard]] TextEditor &getEditor() {
+    [[nodiscard]] TextEditor &getEditor()
+    {
         return editor;
     }
 

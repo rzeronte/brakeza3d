@@ -29,8 +29,9 @@ public:
     static void DrawWinObjectVars(GUIManager *gui);
     static void DrawWinGlobalVars(GUIManager *gui);
     static void DrawWinObjectScripts(GUIManager *gui);
-
     static void DrawPropertiesGUI(ScriptLUA *o);
+    static ScriptMetaInfo ExtractScriptMetainfo(const std::string &pathFile);
+
 };
 
 #endif //BRAKEZA3D_IMAGE3DDRAWERGUI_H

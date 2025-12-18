@@ -17,7 +17,7 @@ ShaderOGLCustom::ShaderOGLCustom(
     const std::string &vsFile,
     const std::string &fsFile,
     ShaderCustomType type,
-    cJSON *types
+    const cJSON *types
 )
 :
     ShaderBaseOpenGL(vsFile, fsFile, type == SHADER_OBJECT),
@@ -125,7 +125,7 @@ int ShaderOGLCustom::CountTypesByFilter(const std::vector<ShaderOGLCustomType>& 
     return count;
 }
 
-void ShaderOGLCustom::DrawTypeInternalImGuiControl(ShaderOGLCustomType &type)
+void ShaderOGLCustom::DrawTypeInternalImGuiControl(const ShaderOGLCustomType &type)
 {
     switch (GLSLTypeMapping[type.type].type) {
         case ShaderOpenGLCustomDataType::DELTA_TIME: {
@@ -141,7 +141,7 @@ void ShaderOGLCustom::DrawTypeInternalImGuiControl(ShaderOGLCustomType &type)
     }
 }
 
-void ShaderOGLCustom::drawImGuiProperties(Image *diffuse, Image *specular)
+void ShaderOGLCustom::drawImGuiProperties(const Image *diffuse, Image *specular)
 {
     ImGui::SeparatorText("OpenGL custom uniforms");
 
@@ -362,7 +362,7 @@ std::string ShaderOGLCustom::ExtractOnlyName(std::string& filename)
     return filename;
 }
 
-void ShaderOGLCustom::setDataTypesFromJSON(cJSON *typesJSON)
+void ShaderOGLCustom::setDataTypesFromJSON(const cJSON *typesJSON)
 {
     Logging::Message("[ShaderOGLCustom] Settings variables into shader...");
 
@@ -474,7 +474,7 @@ void ShaderOGLCustom::postUpdate(GLuint outputFBO, GLuint inputTexture)
     render(outputFBO, inputTexture);
 }
 
-void ShaderOGLCustom::setLabel(std::string value)
+void ShaderOGLCustom::setLabel(const std::string &value)
 {
     label = value;
 }
@@ -541,7 +541,7 @@ void ShaderOGLCustom::setDataTypesUniforms()
     }
 }
 
-void ShaderOGLCustom::UpdateFileTypes()
+void ShaderOGLCustom::UpdateFileTypes() const
 {
     Logging::Message("[ShaderOGLCustom] Writing typesFile: %s", this->fileTypes.c_str());
 
@@ -663,12 +663,12 @@ void ShaderOGLCustom::IncreaseNumberTextures()
     numTextures++;
 }
 
-std::string ShaderOGLCustom::getFolder()
+std::string ShaderOGLCustom::getFolder() const
 {
     return Tools::removeSubstring(vertexFilename, label + ".vs");
 }
 
-cJSON *ShaderOGLCustom::getTypesJSON()
+cJSON *ShaderOGLCustom::getTypesJSON() const
 {
     cJSON *scriptJSON = cJSON_CreateObject();
     cJSON_AddStringToObject(scriptJSON, "name", getLabel().c_str());
@@ -825,7 +825,7 @@ ShaderCustomType ShaderOGLCustom::ExtractTypeFromShaderName(const std::string& f
     std::string jsonFile = name + ".json";
 
     auto contentFile = Tools::ReadFile(folder + jsonFile);
-    Logging::Message("Extracting type from: '%s'", name.c_str());
+    Logging::Message("[ShaderOGLCustom] Extracting type from: '%s'", name.c_str());
 
     auto oJSON = cJSON_Parse(contentFile);
     std::string nameType = cJSON_GetObjectItemCaseSensitive(oJSON, "type")->valuestring;

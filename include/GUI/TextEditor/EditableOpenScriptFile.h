@@ -13,7 +13,7 @@ class EditableOpenScriptFile : public EditableOpenFile
 {
     ScriptLUA *script;
 public:
-    EditableOpenScriptFile(const std::string &path, ScriptLUA *script);
+    EditableOpenScriptFile(const std::string &tabLabel, const std::string &path, ScriptLUA *script);
     [[nodiscard]] ScriptLUA * getShader() const;
     void setShader(ScriptLUA *shader);
     void DrawEditableOpenFileConfig() override;

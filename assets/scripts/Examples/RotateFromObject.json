@@ -1,5 +1,7 @@
 {
-	"name":	"../assets/scripts/Examples/RotateFromObject.lua",
+	"codeFile":	"../assets/scripts/Examples/RotateFromObject.lua",
+	"typesFile": "../assets/scripts/Examples/RotateFromObject.json",
+	"name":	"Rotate from object",
 	"types":	[{
 			"name":	"objectName",
 			"type":	"string",

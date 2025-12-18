@@ -1,7 +1,7 @@
 {
-	"codeFile":	"../assets/scripts/Examples/ObjectScripts/BehaviorCircle.lua",
-	"typesFile": "../assets/scripts/Examples/ObjectScripts/BehaviorCircle.json",
-	"name":	"Behavior circle",
+	"codeFile":	"../assets/scripts/Examples/ObjectScripts/MoveUpDownObject.lua",
+	"typesFile": "../assets/scripts/Examples/ObjectScripts/MoveUpDownObject.json",
+	"name":	"Move up-down object",
 	"types":	[{
 			"name":	"radius",
 			"type":	"int",

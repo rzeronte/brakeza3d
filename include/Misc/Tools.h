@@ -18,10 +18,10 @@ public:
     static std::vector<std::string> split(const std::string &, char);
     static int random(int min, int max);
     static char *ReadFile(const std::string &name);
-    static float getXTextureFromUV(SDL_Surface *surface, float u);
-    static float getYTextureFromUV(SDL_Surface *surface, float v);
+    static float getXTextureFromUV(const SDL_Surface *surface, float u);
+    static float getYTextureFromUV(const SDL_Surface *surface, float v);
     static bool FileExists(const char *name);
-    static bool isPixelInWindow(int &x, int &y);
+    static bool isPixelInWindow(int x, int y);
     static bool getBit(unsigned char byte, int position);
     static bool isZeroVector(Vertex3D &v);
     static bool saveTextureToFile(GLuint textureID, int width, int height, const char* fileName);
@@ -44,6 +44,7 @@ public:
     static std::string GoBackFromFolder(const std::string& folder);
     static std::string removeSubstring(const std::string &str, const std::string &toRemove);
     static std::string ImGuiUnique(const std::string &text);
+    static std::string ExtractJsonStringFieldFromDisk(const std::string &path, const std::string &field);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

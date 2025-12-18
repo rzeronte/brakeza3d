@@ -59,27 +59,29 @@ void ShadersGUI::DrawShaderConfigEditName(EditableOpenShaderFile &file)
 void ShadersGUI::DrawShaderConfigVarsCreator(EditableOpenShaderFile &file)
 {
     auto gui = Brakeza::get()->GUI();
+
+    auto fieldId = std::string("Variable name##") +  "_" + file.getShader()->getLabel();
+
     ImGui::SeparatorText("Create new variable");
 
     static char varName[256];
     strncpy(varName, gui->currentVariableToAddName.c_str(), sizeof(varName));
 
-    if (ImGui::InputText("Variable name##", varName, IM_ARRAYSIZE(varName), ImGuiInputTextFlags_AutoSelectAll)) {
+    if (ImGui::InputText(fieldId.c_str(), varName, IM_ARRAYSIZE(varName), ImGuiInputTextFlags_AutoSelectAll)) {
         gui->currentVariableToAddName = varName;
     }
 
     static int selectedItem = 0;
     std::vector<const char*> typeItems = GetDataTypeItems(file);
 
-    ImGui::Combo("Type##1", &selectedItem, typeItems.data(), typeItems.size());
+    auto comboId = std::string("Type##") +  "_" + file.getShader()->getLabel();
+    ImGui::Combo(comboId.c_str(), &selectedItem, typeItems.data(), typeItems.size());
     ImGui::SameLine();
 
-    GUI::DrawButton("Create variable", IconGUI::SHADER_CREATE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, false,[&] {
+    auto buttonId = std::string("Create variable##") +  "_" + file.getShader()->getLabel();
+    GUI::DrawButton(buttonId.c_str(), IconGUI::SHADER_CREATE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, false,[&] {
         if (!gui->currentVariableToAddName.empty()) {
-            file.getShader()->AddDataTypeEmpty(
-                gui->currentVariableToAddName.c_str(),
-                typeItems[selectedItem]
-            );
+            file.getShader()->AddDataTypeEmpty(gui->currentVariableToAddName.c_str(),typeItems[selectedItem]);
         }
     });
 
@@ -112,18 +114,22 @@ std::vector<const char*> ShadersGUI::GetDataTypeItems(EditableOpenShaderFile &fi
 
 void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
 {
+    ImGui::SeparatorText("Shader uniforms");
+
     auto shader = file.getShader();
 
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
-    if (ImGui::BeginTable("ShaderProperties", 4, flags)) {
+    auto tableId = std::string("ShaderProperties_" + file.getShader()->getLabel());
+    if (ImGui::BeginTable(tableId.c_str(), 4, flags)) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
         for (int i = 0; i < file.getShader()->dataTypes.size(); i++) {
-            ImGui::PushID(std::string("shader_table_var_" + std::to_string(i)).c_str());
-            ImGui::TableNextRow();
             auto type = &file.getShader()->dataTypes[i];
+            auto fileId = std::string("shader_table_var_" + type->name + "_" + type->type);
+            ImGui::PushID(fileId.c_str());
+            ImGui::TableNextRow();
 
             ImGui::TableNextRow();
             // Name column
@@ -146,6 +152,7 @@ void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
             GUI::DrawButton("Remove shader variable", IconGUI::SHADER_REMOVE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
                 file.getShader()->removeDataType(*type);
             });
+            ImGui::PopID();
         }
         ImGui::EndTable();
     }
@@ -165,7 +172,7 @@ void ShadersGUI::DrawShaderConfigEmptyStateWarning(EditableOpenShaderFile &file)
 
 void ShadersGUI::DrawShaderConfigActionButtons(EditableOpenShaderFile &file)
 {
-    GUI::DrawButton("Save shader", IconGUI::SHADER_SAVE, GUIType::Sizes::ICONS_BROWSERS, true,[&] {
+    GUI::DrawButton("Save shader", IconGUI::SHADER_SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, true,[&] {
         file.getShader()->UpdateFileTypes();
     });
 }
@@ -179,6 +186,8 @@ void ShadersGUI::DrawWinObjectShaders(GUIManager *gui)
     bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < objects.size();
 
     if (!hasSelectedIndex) {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
+        ImGui::SameLine();
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
         return;
     }
@@ -212,9 +221,8 @@ void ShadersGUI::DrawWinObjectShaders(GUIManager *gui)
         });
         ImGui::SameLine();
         GUI::DrawButton("Edit shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            auto folder = s->getFolder();
             auto jsonFilename = s->getLabel() + ".json";
-            LoadDialogShader(folder, jsonFilename);
+            LoadDialogShader(s->getTypesFile());
         });
         ImGui::SameLine();
         GUI::DrawButton("Remove shader in object", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
@@ -228,13 +236,33 @@ void ShadersGUI::DrawWinObjectShaders(GUIManager *gui)
     }
 }
 
-void ShadersGUI::LoadDialogShader(const std::string &folder, const std::string &file)
+void ShadersGUI::LoadDialogShader(const std::string &file)
 {
-    auto shader = ComponentRender::CreateCustomShaderFromDisk(folder, file);
+    auto shader = ComponentRender::CreateCustomShaderFromDisk(ExtractShaderMetainfo(file));
+
     shader->PrepareBackground();
     shader->PrepareMainThread();
 
-    if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(file)) {
-        Brakeza::get()->GUI()->OpenEditableFile(new EditableOpenShaderFile(shader->getVertexFilename(), shader));
+    if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(shader->getLabel())) {
+        Brakeza::get()->GUI()->OpenEditableFile(
+            new EditableOpenShaderFile(
+                shader->getLabel(),
+                shader->getVertexFilename(),
+                shader
+            )
+        );
     }
+}
+
+ShaderOGLMetaInfo ShadersGUI::ExtractShaderMetainfo(const std::string &pathFile)
+{
+    auto json = cJSON_Parse(Tools::ReadFile(pathFile));
+
+    return {
+        cJSON_GetObjectItemCaseSensitive(json, "name")->valuestring,
+        cJSON_GetObjectItemCaseSensitive(json, "type")->valuestring,
+        cJSON_GetObjectItemCaseSensitive(json, "vsFile")->valuestring,
+        cJSON_GetObjectItemCaseSensitive(json, "fsFile")->valuestring,
+        cJSON_GetObjectItemCaseSensitive(json, "typesFile")->valuestring
+    };
 }

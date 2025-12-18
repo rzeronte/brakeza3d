@@ -5,9 +5,9 @@
 #include "../../../include/GUI/TextEditor/EditableOpenScriptFile.h"
 #include "../include/GUI/Objects/ScriptLuaGUI.h"
 
-EditableOpenScriptFile::EditableOpenScriptFile(const std::string &path, ScriptLUA *script)
+EditableOpenScriptFile::EditableOpenScriptFile(const std::string &tabLabel, const std::string &path, ScriptLUA *script)
 :
-    EditableOpenFile(path, TextEditor::LanguageDefinition::Lua()),
+    EditableOpenFile(tabLabel, path, TextEditor::LanguageDefinition::Lua()),
     script(script)
 {
 }
@@ -29,11 +29,24 @@ void EditableOpenScriptFile::DrawEditableOpenFileConfig()
 
 void EditableOpenScriptFile::DrawCodeEditActionButtons()
 {
-    GUI::DrawButton("Save file", IconGUI::SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
-        Tools::WriteToFile(getPath(), getEditor().GetText().c_str());
-    });
-    ImGui::SameLine();
-    GUI::DrawButton("Close file", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
-        Brakeza::get()->GUI()->CloseEditableFile(this);
-    });
+    if (ImGui::BeginTable("ScriptFileButtons", 2, ImGuiTableFlags_None)) {
+        ImGui::TableSetupColumn("Left", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Right", ImGuiTableColumnFlags_WidthFixed);
+
+        ImGui::TableNextRow();
+
+        // Columna izquierda - botón Save
+        ImGui::TableSetColumnIndex(0);
+        GUI::DrawButton("Save file", IconGUI::SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
+            Tools::WriteToFile(getPath(), getEditor().GetText().c_str());
+        });
+
+        // Columna derecha - botón Close (alineado a la derecha)
+        ImGui::TableSetColumnIndex(1);
+        GUI::DrawButton("Close file", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
+            Brakeza::get()->GUI()->CloseEditableFile(this);
+        });
+
+        ImGui::EndTable();
+    }
 }

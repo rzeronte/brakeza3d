@@ -1,0 +1,6 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Commons/WriteTextToScreen.lua",
+	"typesFile": "../assets/scripts/Examples/Commons/WriteTextToScreen.json",
+	"name":	"Write text demo",
+	"types":	[]
+}

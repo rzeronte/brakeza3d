@@ -75,6 +75,14 @@ static std::map<std::string, ShaderTypeInfo> GLSLTypeMapping = {
     {"depth", {ShaderOpenGLCustomDataType::DEPTH, "Depth texture (internal)" }}
 };
 
+struct ShaderOGLMetaInfo {
+    std::string name;
+    std::string type;
+    std::string vsFile;
+    std::string fsFile;
+    std::string typesFile;
+};
+
 class ShaderOGLCustom: public ShaderBaseOpenGL
 {
     GLuint resultFramebuffer = 0;
@@ -99,7 +107,7 @@ protected:
         const std::string &vsFile,
         const std::string &fsFile,
         ShaderCustomType type,
-        cJSON *types
+        const cJSON *types
     );
 
 public:
@@ -117,11 +125,11 @@ public:
 
     static void DrawTypeImGuiControl(ShaderOGLCustomType &type);
     static int CountTypesByFilter(const std::vector<ShaderOGLCustomType> &types,const std::vector<ShaderOpenGLCustomDataType> &filterTypes);
-    static void DrawTypeInternalImGuiControl(ShaderOGLCustomType &type);
+    static void DrawTypeInternalImGuiControl(const ShaderOGLCustomType &type);
 
     virtual void render(GLuint fbo, GLuint texture) = 0;
 
-    void drawImGuiProperties(Image *diffuse, Image *specular);
+    void drawImGuiProperties(const Image *diffuse, Image *specular);
 
     std::string sourceVS;
     std::string sourceFS;
@@ -134,16 +142,16 @@ protected:
     void ParseTypesFromFileAttributes();
     static std::string dataTypesFileFor(std::string basicString);
     static std::string ExtractOnlyName(std::string &filename);
-    void setDataTypesFromJSON(cJSON *typesJSON);
+    void setDataTypesFromJSON(const cJSON *typesJSON);
     void addDataType(const char *name, const char *type, cJSON *value);
 
 public:
     void setEnabled(bool value);
     void onUpdate() const;
     void postUpdate(GLuint outputFBO, GLuint inputTexture);
-    void setLabel(std::string value);
+    void setLabel(const std::string &value);
     void setDataTypesUniforms();
-    void UpdateFileTypes();
+    void UpdateFileTypes() const;
     void AddDataTypeEmpty(const char *name, const char *type);
     void removeDataType(const ShaderOGLCustomType &data);
     void setDataTypeValue(const std::string &name, const ShaderOpenGLCustomDataValue &newValue);
@@ -154,12 +162,15 @@ public:
     void setDataTypeValue(const std::string &name, glm::vec4 newValue);
     void ResetNumberTextures();
     void IncreaseNumberTextures();
-    std::string getFolder();
-    cJSON* getTypesJSON();
-    [[nodiscard]] bool isEnabled() const { return enabled; }
-    [[nodiscard]] std::vector<ShaderOGLCustomType> &getDataTypes() { return dataTypes; }
-    [[nodiscard]] const std::string &getLabel() const { return label; }
-    [[nodiscard]] ShaderCustomType getType() const { return type; }
+    std::string getFolder() const;
+    cJSON* getTypesJSON() const;
+
+    [[nodiscard]] std::string getTypesFile() const                      { return fileTypes;}
+    [[nodiscard]] bool isEnabled() const                                { return enabled; }
+    [[nodiscard]] std::vector<ShaderOGLCustomType> &getDataTypes()      { return dataTypes; }
+    [[nodiscard]] const std::string &getLabel() const                   { return label; }
+    [[nodiscard]] ShaderCustomType getType() const                      { return type; }
+
     static ShaderCustomType getShaderTypeFromString(const std::string &shaderName);
     static std::string getShaderTypeString(ShaderCustomType type);
     static void createEmptyCustomShader(const std::string& name, const std::string& folder, ShaderCustomType type);

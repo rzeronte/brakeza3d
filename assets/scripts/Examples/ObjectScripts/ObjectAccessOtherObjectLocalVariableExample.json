@@ -1,0 +1,7 @@
+{
+  "codeFile":	"../assets/scripts/Examples/ObjectScripts/ObjectAccessOtherObjectLocalVariableExample.lua",
+  "typesFile": "../assets/scripts/Examples/ObjectScripts/ObjectAccessOtherObjectLocalVariableExample.json",
+  "name":	"Object access other object local var",
+    "types":	[
+    ]
+}

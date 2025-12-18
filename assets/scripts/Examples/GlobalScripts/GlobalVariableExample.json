@@ -1,5 +1,7 @@
 {
-    "name":	"GlobalVariableExample.lua",
+    "name":	"Global variable Example",
+    "codeFile":	"../assets/scripts/Examples/GlobalScripts/GlobalVariableExample.lua",
+    "typesFile": "../assets/scripts/Examples/GlobalScripts/GlobalVariableExample.json",
     "types":	[
         {
             "name": "var1",

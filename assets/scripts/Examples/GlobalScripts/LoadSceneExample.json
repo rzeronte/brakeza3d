@@ -1,7 +1,7 @@
 {
-	"name":	"Menu horizontal example",
-	"codeFile":	"../assets/scripts/Examples/GlobalScripts/MenuHorizontal.lua",
-	"typesFile": "../assets/scripts/Examples/GlobalScripts/MenuHorizontal.json",
+	"name":	"Load scene example",
+	"codeFile":	"../assets/scripts/Examples/GlobalScripts/LoadSceneExample.lua",
+	"typesFile": "../assets/scripts/Examples/GlobalScripts/LoadSceneExample.json",
 	"types":	[
         {
           "name":	"enabled",

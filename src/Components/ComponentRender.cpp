@@ -1,6 +1,7 @@
 #include "../../include/Components/ComponentRender.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
+#include "../../include/GUI/Objects/ShadersGUI.h"
 #include "../../include/OpenGL/ShaderOGLCustomPostprocessing.h"
 #include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
@@ -222,53 +223,26 @@ void ComponentRender::DeleteRemovedObjects()
     );
 }
 
-void ComponentRender::LoadShaderIntoScene(const std::string &folder, const std::string &jsonFilename)
+void ComponentRender::LoadShaderIntoScene(const std::string &filePath)
 {
-    auto name = Tools::getFilenameWithoutExtension(jsonFilename);
-
-    std::string shaderFragmentFile = folder + std::string(name + ".fs");
-    std::string shaderVertexFile = folder + std::string(name + ".vs");
-    std::string typesFile = folder + std::string(name + ".json");
-
-    auto type = ShaderOGLCustom::ExtractTypeFromShaderName(folder, name);
-
-    Logging::Message("[Render] Loading shader into scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
-
-    switch(type) {
-        case SHADER_POSTPROCESSING : {
-            auto s = new ShaderOGLCustomPostprocessing(name, typesFile, shaderVertexFile, shaderFragmentFile);
-            s->PrepareBackground();
-            s->PrepareMainThread();
-            AddShaderToScene(s);
-            break;
-        }
-        default:
-        case SHADER_OBJECT : {
-            Logging::Error("You can't add a ShaderObject type into scene");
-            break;
-        }
-    }
+    AddShaderToScene(
+        CreateCustomShaderFromDisk(
+            ShadersGUI::ExtractShaderMetainfo(filePath)
+        )
+    );
 }
 
-ShaderOGLCustom* ComponentRender::CreateCustomShaderFromDisk(const std::string &folder, const std::string &jsonFilename)
+ShaderOGLCustom* ComponentRender::CreateCustomShaderFromDisk(ShaderOGLMetaInfo info)
 {
-    auto name = Tools::getFilenameWithoutExtension(jsonFilename);
+    auto typeInteger = ShaderOGLCustom::getShaderTypeFromString(info.type);
 
-    std::string fsFile = folder + std::string(name + ".fs");
-    std::string vsFile = folder + std::string(name + ".vs");
-    std::string typesFile = folder + std::string(name + ".json");
-
-    auto type = ShaderOGLCustom::ExtractTypeFromShaderName(folder, name);
-
-    Logging::Message("[Render] Loading shader into scene: Name: %s, Folder: %s, Type: %d", name.c_str(), folder.c_str(), type);
-
-    switch(type) {
+    switch(typeInteger) {
         case SHADER_POSTPROCESSING : {
-            return new ShaderOGLCustomPostprocessing(name, typesFile, vsFile, fsFile);
+            return new ShaderOGLCustomPostprocessing(info.name, info.typesFile, info.vsFile, info.fsFile);
         }
         default:
         case SHADER_OBJECT : {
-            return new ShaderOGLCustomMesh3D(nullptr, name, typesFile, vsFile, fsFile);
+            return new ShaderOGLCustomMesh3D(nullptr, info.name, info.typesFile, info.vsFile, info.fsFile);
         }
     }
 }

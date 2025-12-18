@@ -27,18 +27,32 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
     }
 }
 
+ScriptMetaInfo ScriptLuaGUI::ExtractScriptMetainfo(const std::string& pathFile)
+{
+    auto json = cJSON_Parse(Tools::ReadFile(pathFile));
+
+    return {
+        cJSON_GetObjectItemCaseSensitive(json, "name")->valuestring,
+        cJSON_GetObjectItemCaseSensitive(json, "codeFile")->valuestring,
+        cJSON_GetObjectItemCaseSensitive(json, "typesFile")->valuestring
+    };
+}
+
 void ScriptLuaGUI::LoadScriptDialog(const std::string& pathFile)
 {
     std::string codeFile = pathFile;
 
-    if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(pathFile)) {
+    auto meta = ExtractScriptMetainfo(pathFile);
+
+    if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(meta.name)) {
         Brakeza::get()->GUI()->OpenEditableFile(
             new EditableOpenScriptFile(
-                pathFile,
+                meta.name,
+                meta.codeFile,
                 new ScriptLUA(
-                ScriptLUA::removeFilenameExtension(codeFile),
-                   codeFile,
-                    ScriptLUA::dataTypesFileFor(codeFile)
+                    meta.name,
+                    meta.codeFile,
+                    meta.typesFile
                 )
             )
         );
@@ -54,6 +68,8 @@ void ScriptLuaGUI::DrawWinObjectScripts(GUIManager *gui)
     bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < sceneObjects.size();
 
     if (!hasSelectedIndex) {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
+        ImGui::SameLine();
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
         return;
     }
@@ -157,6 +173,8 @@ void ScriptLuaGUI::DrawWinObjectVars(GUIManager *gui)
     bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < sceneObjects.size();
 
     if (!hasSelectedIndex) {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
+        ImGui::SameLine();
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
     }
 
@@ -243,7 +261,7 @@ void ScriptLuaGUI::DrawScriptConfigHeader(EditableOpenScriptFile &file)
 {
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
-    ImGui::Text(std::string("File: " + file.getShader()->getName()).c_str());
+    ImGui::Text(std::string("File: " + file.getShader()->getScriptFilename()).c_str());
 }
 
 void ScriptLuaGUI::DrawScriptConfigEditName(EditableOpenScriptFile &file)
@@ -296,6 +314,8 @@ void ScriptLuaGUI::DrawScriptConfigVarCreator(EditableOpenScriptFile &file)
 
 void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
 {
+    ImGui::SeparatorText("Script variables");
+
     auto shader = file.getShader();
 
     ImGui::SeparatorText("Variables");
@@ -346,7 +366,7 @@ void ScriptLuaGUI::DrawScriptConfigEmptyStateWarning(EditableOpenScriptFile &fil
 
 void ScriptLuaGUI::DrawScriptConfigActionButtons(EditableOpenScriptFile &file)
 {
-    GUI::DrawButton("Save script to disk", IconGUI::SCRIPT_SAVE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+    GUI::DrawButton("Save script to disk", IconGUI::SCRIPT_SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, true, [&] {
         file.getShader()->updateFileTypes();
     });
 }
