@@ -13,6 +13,7 @@
 
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/Mesh3DGUI.h"
+#include "../../include/GUI/Objects/ShadersGUI.h"
 #include "../../include/Render/JSONSerializerRegistry.h"
 
 Mesh3D::Mesh3D()
@@ -520,34 +521,13 @@ void Mesh3D::AddCustomShader(ShaderOGLCustom *s)
     customShaders.emplace_back(s);
 }
 
-void Mesh3D::LoadShader(const std::string &folder, const std::string &jsonFilename)
+void Mesh3D::LoadShader(const std::string &jsonFilename)
 {
-    auto name = Tools::getFilenameWithoutExtension(jsonFilename);
-
-    std::string shaderFragmentFile = folder + std::string(name + ".fs");
-    std::string shaderVertexFile = folder + std::string(name + ".vs");
-    std::string typesFile = folder + std::string(name + ".json");
-
-    auto type = ShaderOGLCustom::ExtractTypeFromShaderName(folder, name);
-
-    Logging::Message("LoadShaderInto Scene: Folder: %s, Name: %s, Type: %d", folder.c_str(), name.c_str(), type);
-
-    switch(type) {
-        case SHADER_POSTPROCESSING : {
-            Logging::Error("[Mesh3D] You can't add a 'Postprocessing shader' type into Mesh3D");
-            break;
-        }
-        case SHADER_OBJECT : {
-            auto s = new ShaderOGLCustomMesh3D(this, name, typesFile, shaderVertexFile, shaderFragmentFile);
-            s->PrepareBackground();
-            s->PrepareMainThread();
-            AddCustomShader(s);
-            break;
-        }
-        default: {
-            Logging::Error("[Mesh3D] Cannot process this shader type!");
-        }
-    }
+    AddCustomShader(
+        Components::get()->Render()->CreateCustomShaderFromDisk(
+            ShadersGUI::ExtractShaderMetainfo(jsonFilename)
+        )
+    );
 }
 
 void Mesh3D::RemoveShader(int index)

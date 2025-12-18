@@ -61,6 +61,12 @@ struct ScriptLUATypeData {
     }
 };
 
+struct ScriptMetaInfo {
+    std::string name;
+    std::string codeFile;
+    std::string typesFile;
+};
+
 class ScriptLUA
 {
     bool paused = false;

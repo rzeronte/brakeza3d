@@ -149,8 +149,8 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders(GUIManager *gui)
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CUSTOMSHADER_ITEM")) {
             Config::DragDropCustomShaderData* receivedData = (Config::DragDropCustomShaderData*)payload->Data;
-            Logging::Message("Dropping shader (Folder: %s, File: %s) in global space", receivedData->folder, receivedData->file);
-            render->LoadShaderIntoScene(receivedData->folder, receivedData->file);
+            Logging::Message("Dropping shader file '%s' in global space...", receivedData->file);
+            render->LoadShaderIntoScene(receivedData->file);
         }
         ImGui::EndDragDropTarget();
     }

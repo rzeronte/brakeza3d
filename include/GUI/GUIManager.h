@@ -68,7 +68,7 @@ public:
     virtual ~GUIManager() = default;
 
     bool isWindowOpen(GUIType::Window w) const;
-    bool isEditableFileAlreadyOpen(std::string path) const;
+    bool isEditableFileAlreadyOpen(std::string label) const;
     void OnStart();
     void setSelectedObjectIndex(int value);
     void setSelectedObject(const Object3D *s);

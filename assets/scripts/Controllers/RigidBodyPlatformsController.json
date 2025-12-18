@@ -1,5 +1,7 @@
 {
-	"name":	"../assets/scripts/Controllers/RigidBodyPlatformsController.lua",
+	"codeFile":	"../assets/scripts/Controllers/RigidBodyPlatformsController.lua",
+	"typesFile":	"../assets/scripts/Controllers/RigidBodyPlatformsController.json",
+	"name":	"RigidBodyPlatformsController",
 	"types":	[{
 			"name":	"maxSpeed",
 			"type":	"float",

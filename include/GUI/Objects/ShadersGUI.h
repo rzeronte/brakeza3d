@@ -12,7 +12,7 @@ class EditableOpenShaderFile;
 class ShadersGUI
 {
 public:
-    static void LoadDialogShader(const std::string &folder, const std::string &file);
+    static void LoadDialogShader(const std::string &file);
 
     static void DrawShaderConfig(EditableOpenShaderFile &file);
     static void DrawShaderConfigHeader(EditableOpenShaderFile &file);
@@ -21,6 +21,7 @@ public:
     static void DrawShaderConfigVarsTable(EditableOpenShaderFile &file);
     static void DrawShaderConfigEmptyStateWarning(EditableOpenShaderFile &file);
     static void DrawShaderConfigActionButtons(EditableOpenShaderFile &file);
+    static ShaderOGLMetaInfo ExtractShaderMetainfo(const std::string &pathFile);
     static std::vector<const char *> GetDataTypeItems(EditableOpenShaderFile &file);
 
     static void DrawWinObjectShaders(GUIManager *gui);

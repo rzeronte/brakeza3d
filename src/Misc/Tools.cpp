@@ -39,7 +39,7 @@ void Tools::SurfacePutPixel(const SDL_Surface *surface, int x, int y, Uint32 pix
     pixels[(y * surface->w) + x] = pixel;
 }
 
-bool Tools::isPixelInWindow(int &x, int &y)
+bool Tools::isPixelInWindow(int x, int y)
 {
     if (x <= 0 || x >= Config::get()->screenWidth) return false;
     if (y <= 0 || y >= Config::get()->screenHeight) return false;
@@ -47,12 +47,12 @@ bool Tools::isPixelInWindow(int &x, int &y)
     return true;
 }
 
-float Tools::getXTextureFromUV(SDL_Surface *surface, float u)
+float Tools::getXTextureFromUV(const SDL_Surface *surface, float u)
 {
     return surface->w * u;
 }
 
-float Tools::getYTextureFromUV(SDL_Surface *surface, float v)
+float Tools::getYTextureFromUV(const SDL_Surface *surface, float v)
 {
     return surface->h * v;
 }
@@ -430,6 +430,14 @@ std::string Tools::removeSubstring(const std::string& str, const std::string& to
 std::string Tools::ImGuiUnique(const std::string &text)
 {
     return std::string(text);
+}
+
+std::string Tools::ExtractJsonStringFieldFromDisk(const std::string &path, const std::string &field)
+{
+    auto content = ReadFile(path);
+
+    auto json = cJSON_Parse(content);
+    return cJSON_GetObjectItemCaseSensitive(json, field.c_str())->valuestring;
 }
 
 bool Tools::CopyFile(const std::string& origen, const std::string& destino)

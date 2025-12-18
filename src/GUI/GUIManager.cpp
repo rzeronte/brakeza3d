@@ -61,10 +61,10 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Global variables",        GUIType::GLOBAL_VARS,      IconGUI::WIN_GLOBAL_VARS,       false, false, ScriptLuaGUI::DrawWinGlobalVars(this));
     ADD_WIN("Keyboard/Mouse",          GUIType::KEYBOARD_MOUSE,   IconGUI::WIN_KEYBOARD_MOUSE,    false, false, DrawWinKeyboardMouse());
     ADD_WIN("Images",                  GUIType::IMAGES,           IconGUI::WIN_IMAGES,            false, false, DrawWinImages());
-    ADD_WIN("Projects",                GUIType::FILES_PROJECTS,   IconGUI::WIN_FILES_PROJECTS,    true,  false, FileSystemGUI::DrawProjectFiles(this, browserProjects));
-    ADD_WIN("Scenes",                  GUIType::FILES_SCENES,     IconGUI::WIN_FILES_SCENES,      true,  false, FileSystemGUI::DrawSceneFiles(this, browserScenes));
-    ADD_WIN("Scripts",                 GUIType::FILES_SCRIPTS,    IconGUI::WIN_FILES_SCRIPTS,     true,  false, FileSystemGUI::DrawScriptFiles(this, browserScripts));
-    ADD_WIN("Shaders",                 GUIType::FILES_SHADERS,    IconGUI::WIN_FILES_SHADERS,     true,  false, FileSystemGUI::DrawShaderFiles(this, browserShaders));
+    ADD_WIN("Projects",                GUIType::FILES_PROJECTS,   IconGUI::WIN_FILES_PROJECTS,    true,  false, FileSystemGUI::DrawProjectFiles(browserProjects));
+    ADD_WIN("Scenes",                  GUIType::FILES_SCENES,     IconGUI::WIN_FILES_SCENES,      true,  false, FileSystemGUI::DrawSceneFiles(browserScenes));
+    ADD_WIN("Scripts",                 GUIType::FILES_SCRIPTS,    IconGUI::WIN_FILES_SCRIPTS,     true,  false, FileSystemGUI::DrawScriptFiles(browserScripts));
+    ADD_WIN("Shaders",                 GUIType::FILES_SHADERS,    IconGUI::WIN_FILES_SHADERS,     true,  false, FileSystemGUI::DrawShaderFiles(browserShaders));
     ADD_WIN("Logging/Console",         GUIType::LOGGING,          IconGUI::WIN_LOGGING,           true,  false, widgetConsole->DrawWinLogging());
     ADD_WIN("Lights DepthMaps",        GUIType::DEPTH_LIGHTS_MAPS,IconGUI::WIN_DEPTH_LIGHTS_MAPS, false, false, DrawWinDepthLightsMap());
     ADD_WIN("Profiler",                GUIType::PROFILER,         IconGUI::WIN_PROFILER,          false, false, Profiler::get()->DrawWinProfiler());
@@ -561,10 +561,10 @@ GUIType::WindowData* GUIManager::getWindowStatus(GUIType::Window window)
     return nullptr;
 }
 
-bool GUIManager::isEditableFileAlreadyOpen(std::string path) const
+bool GUIManager::isEditableFileAlreadyOpen(std::string label) const
 {
     for (const auto &f : openFiles) {
-        if (path == f->getPath()) {
+        if (label == f->getTabLabel()) {
             return true;
         }
     }
