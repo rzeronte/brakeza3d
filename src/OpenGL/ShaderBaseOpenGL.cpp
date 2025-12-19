@@ -26,6 +26,12 @@ void ShaderBaseOpenGL::PrepareMainThread()
     CompileShaderToProgramID(enableFeedback);
 }
 
+void ShaderBaseOpenGL::PrepareSync()
+{
+    PrepareBackground();
+    PrepareMainThread();
+}
+
 ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, bool enableFeedback)
 :
     vertexFilename(vertexFilename),
@@ -75,7 +81,6 @@ ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, bool enabl
     }
 
     glLinkProgram(ProgramID);
-
 
     // Check the program
     glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);

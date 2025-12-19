@@ -182,8 +182,9 @@ void GUIAddonObjects3D::DrawItem(int i, Object3D* o, const std::vector<Object3D 
             if (mesh != nullptr) {
                 if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SHADER_ITEM)) {
                     auto* receivedData = (Config::DragDropCustomShaderData*)payload->Data;
-                    Logging::Message("Dropping shader into Mesh3D (Folder: %s, File: %s)", receivedData->folder, receivedData->file);
-                    mesh->LoadShader(receivedData->file);
+                    auto fullPath = std::string(receivedData->folder) + receivedData->file;
+                    Logging::Message("Dropping shader file '%s' into Mesh3D...", fullPath.c_str());
+                    mesh->LoadShader(fullPath);
                 }
             }
             ImGui::EndDragDropTarget();

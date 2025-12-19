@@ -20,13 +20,12 @@ protected:
     std::string sourceFS;
 public:
     ShaderBaseOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback);
+    ShaderBaseOpenGL(const std::string &vertexFilename, bool enableFeedback);
 
     virtual void LoadUniforms() = 0;
     virtual void PrepareBackground();
-
     virtual void PrepareMainThread();
-
-    ShaderBaseOpenGL(const std::string &vertexFilename, bool enableFeedback);
+    void PrepareSync();
 
     virtual ~ShaderBaseOpenGL() = default;
 

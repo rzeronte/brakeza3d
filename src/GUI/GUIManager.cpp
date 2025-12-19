@@ -52,7 +52,7 @@ void GUIManager::OnStart()
 
 void GUIManager::RegisterWindows()
 {
-    ADD_WIN("Project setup",           GUIType::PROJECT_SETTINGS, IconGUI::WIN_PROJECT_SETTINGS,  true,  false, GUIAddonProjectSetup::DrawWinProjectSettings(this));
+    ADD_WIN("Project setup",           GUIType::PROJECT_SETTINGS, IconGUI::WIN_PROJECT_SETTINGS,  true,  false, GUIAddonProjectSetup::DrawWinProjectSettings());
     ADD_WIN("Scene Objects",           GUIType::SCENE_OBJECTS,    IconGUI::WIN_SCENE_OBJECTS,     true,  false, GUIAddonObjects3D::DrawWinSceneObjects(this));
     ADD_WIN("Object Properties",       GUIType::OBJECT_PROPS,     IconGUI::WIN_OBJECT_PROPS,      true,  false, GUIAddonObject3DProperties::DrawWinObjectProps(this));
     ADD_WIN("Object shaders",          GUIType::OBJECT_SHADERS,   IconGUI::WIN_OBJECT_SHADERS,    false, false, ShadersGUI::DrawWinObjectShaders(this));
@@ -208,9 +208,16 @@ void GUIManager::CloseRemovedEditableOpenFiles()
 void GUIManager::DrawWinCodeEditor()
 {
     if (ImGui::BeginTabBar("FileTabs")) {
+        int i = 0;
         for (auto &f : openFiles) {
-            FileSystemGUI::DrawCodeEditorTab(*f);
+            FileSystemGUI::DrawCodeEditorTab(*f, i);
+            i++;
         }
+
+        if (Brakeza::get()->GUI()->getIndexCodeEditorTab() != -1) {
+            Brakeza::get()->GUI()->ResetIndexCodeEditor();
+        }
+
         ImGui::EndTabBar();
     }
 
@@ -567,7 +574,7 @@ GUIType::WindowData* GUIManager::getWindowStatus(GUIType::Window window)
     return nullptr;
 }
 
-bool GUIManager::isEditableFileAlreadyOpen(std::string label) const
+bool GUIManager::isEditableFileAlreadyOpen(const std::string &label) const
 {
     for (const auto &f : openFiles) {
         if (label == f->getTabLabel()) {
@@ -590,4 +597,23 @@ void GUIManager::CloseEditableFile(EditableOpenFile *openFile) const
             f->setRemoved(true);
         }
     }
+}
+
+void GUIManager::ResetIndexCodeEditor()
+{
+    indexCodeEditorTab = -1;
+}
+
+void GUIManager::setIndexCodeEditorTab(const std::string &label)
+{
+    int i = 0;
+    for (auto &o : openFiles) {
+        if (label == o->getTabLabel()) {
+            indexCodeEditorTab = i;
+            return;
+        }
+        i++;
+    }
+
+    indexCodeEditorTab = 0;
 }
