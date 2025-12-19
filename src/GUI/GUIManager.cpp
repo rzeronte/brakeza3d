@@ -213,6 +213,12 @@ void GUIManager::DrawWinCodeEditor()
         }
         ImGui::EndTabBar();
     }
+
+    if (openFiles.empty()) {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Open a file to start...");
+    }
 }
 
 void GUIManager::DrawRegisteredWindows()
@@ -400,7 +406,7 @@ void GUIManager::DrawWinImages()
             ImGui::ImageButton(reinterpret_cast<ImTextureID>(image->texture->getOGLTextureID()), ImVec2(96, 96));
 
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-                ImGui::SetDragDropPayload("IMAGE_ITEM", image->label.c_str(), image->label.size() + 1);
+                ImGui::SetDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM, image->label.c_str(), image->label.size() + 1);
                 ImGui::Text("%s", image->label.c_str());
                 ImGui::EndDragDropSource();
             }

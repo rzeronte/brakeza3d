@@ -11,7 +11,7 @@
 
 Object3D::Object3D()
 :
-    id(Brakeza::get()->getNextUniqueObjectId()),
+    id(Brakeza::getNextUniqueObjectId()),
     luaEnvironment(sol::environment(
         Components::get()->Scripting()->getLua(),
         sol::create, Components::get()->Scripting()->getLua().globals())

@@ -60,9 +60,9 @@ void ShadersGUI::DrawShaderConfigVarsCreator(EditableOpenShaderFile &file)
 {
     auto gui = Brakeza::get()->GUI();
 
-    auto fieldId = std::string("Variable name##") +  "_" + file.getShader()->getLabel();
+    auto fieldId = std::string("Uniform name##") +  "_" + file.getShader()->getLabel();
 
-    ImGui::SeparatorText("Create new variable");
+    ImGui::SeparatorText("Create new uniform");
 
     static char varName[256];
     strncpy(varName, gui->currentVariableToAddName.c_str(), sizeof(varName));

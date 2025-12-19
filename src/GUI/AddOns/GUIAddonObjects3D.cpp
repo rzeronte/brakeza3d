@@ -6,6 +6,7 @@
 
 #include "../../../include/Brakeza.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../../include/GUI/Objects/ScriptLuaGUI.h"
 #include "../include/Components/Components.h"
 
 bool GUIAddonObjects3D::exist(std::string pattern1, std::string pattern2)
@@ -172,17 +173,14 @@ void GUIAddonObjects3D::DrawItem(int i, Object3D* o, const std::vector<Object3D 
         if (ImGui::BeginDragDropTarget()) {
             auto mesh = dynamic_cast<Mesh3D*> (o);
 
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SCRIPT_ITEM)) {
                 Logging::Message("Dropping script (%s) in %s", payload->Data, o->getName().c_str());
-                o->AttachScript(new ScriptLUA(
-                    std::string((const char*) payload->Data),
-                    std::string((const char*) payload->Data),
-                    ScriptLUA::dataTypesFileFor(std::string((char *)payload->Data)))
-                );
+                auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char *) payload->Data));
+                o->AttachScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
             }
 
             if (mesh != nullptr) {
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CUSTOMSHADER_ITEM")) {
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SHADER_ITEM)) {
                     auto* receivedData = (Config::DragDropCustomShaderData*)payload->Data;
                     Logging::Message("Dropping shader into Mesh3D (Folder: %s, File: %s)", receivedData->folder, receivedData->file);
                     mesh->LoadShader(receivedData->file);

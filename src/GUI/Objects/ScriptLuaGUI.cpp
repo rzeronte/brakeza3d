@@ -318,7 +318,6 @@ void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
 
     auto shader = file.getShader();
 
-    ImGui::SeparatorText("Variables");
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("ScriptProperties", 4, flags)) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);

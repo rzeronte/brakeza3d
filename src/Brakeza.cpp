@@ -85,7 +85,7 @@ void Brakeza::MainLoop()
         Components::get()->Window()->ClearOGLFrameBuffers();                // Clean video framebuffers
         OnUpdateComponents();                                               // OnUpdate for componentes
         Components::get()->Render()->FlipBuffersToGlobal();                 // Buffers compositing
-        ComponentRender::RunSceneShadersPostUpdate();                       // Post-pass running for shaders
+        Components::get()->Render()->RunSceneShadersPostUpdate();           // Post-pass running for shaders
         PostUpdateComponents();                                             // PostUpdate for componentes
         Profiler::get()->EndTotalFrameTime();                               // End frame time measure
         Components::get()->Window()->FlipGlobalToWindow();                  // Flip to screen
@@ -205,7 +205,7 @@ Brakeza::~Brakeza()
         delete o;
 }
 
-int Brakeza::getNextUniqueObjectId() const
+int Brakeza::getNextUniqueObjectId()
 {
     static unsigned int counter = 0;
     return ++counter;

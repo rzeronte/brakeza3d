@@ -41,7 +41,7 @@ ScriptLUA::ScriptLUA(const std::string& name, const std::string &codeFile, const
         this->scriptFilename.clear(); fileTypes.clear();
         return;
     }
-    getCode(codeFile);
+    getCode(scriptFilename);
     setDataTypesFromJSON(types);
 }
 
