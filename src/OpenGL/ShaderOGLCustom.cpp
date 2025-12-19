@@ -558,50 +558,62 @@ void ShaderOGLCustom::AddDataTypeEmpty(const char *name, const char *type)
 
     switch (GLSLTypeMapping[type].type) {
         case ShaderOpenGLCustomDataType::INT: {
+            Logging::Message("[ShaderOGLCustom] Added INT type: %s => %s", name, type);
             typeValue = 0;
             break;
         }
         case ShaderOpenGLCustomDataType::FLOAT: {
+            Logging::Message("[ShaderOGLCustom] Added FLOAT type: %s => %s", name, type);
             typeValue = 0.0f;
             break;
         }
         case ShaderOpenGLCustomDataType::VEC2: {
+            Logging::Message("[ShaderOGLCustom] Added VEC2 type: %s => %s", name, type);
             typeValue = glm::vec2(0);
             break;
         }
         case ShaderOpenGLCustomDataType::VEC3: {
+            Logging::Message("[ShaderOGLCustom] Added VEC3 type: %s => %s", name, type);
             typeValue = glm::vec3(0);
             break;
         }
         case ShaderOpenGLCustomDataType::VEC4: {
+            Logging::Message("[ShaderOGLCustom] Added VEC4 type: %s => %s", name, type);
             typeValue = glm::vec4(0);
             break;
         }
         case ShaderOpenGLCustomDataType::TEXTURE2D: {
+            Logging::Message("[ShaderOGLCustom] Added TEXTURE2D type: %s => %s", name, type);
             typeValue = nullptr;
             break;
         }
         case ShaderOpenGLCustomDataType::DIFFUSE: {
+            Logging::Message("[ShaderOGLCustom] Added DIFFUSE type: %s => %s", name, type);
             typeValue = nullptr;
             break;
         }
         case ShaderOpenGLCustomDataType::SPECULAR: {
+            Logging::Message("[ShaderOGLCustom] Added SPECULAR type: %s => %s", name, type);
             typeValue = nullptr;
             break;
         }
         case ShaderOpenGLCustomDataType::DELTA_TIME: {
+            Logging::Message("[ShaderOGLCustom] Added DELTA_TIME type: %s => %s", name, type);
             typeValue = 0.f;
             break;
         }
         case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
+            Logging::Message("[ShaderOGLCustom] Added EXECUTION_TIME type: %s => %s", name, type);
             typeValue = 0.f;
             break;
         }
         case ShaderOpenGLCustomDataType::SCENE: {
+            Logging::Message("[ShaderOGLCustom] Added SCENE type: %s => %s", name, type);
             typeValue = nullptr;
             break;
         }
         case ShaderOpenGLCustomDataType::DEPTH: {
+            Logging::Message("[ShaderOGLCustom] Added DEPTH type: %s => %s", name, type);
             typeValue = nullptr;
             break;
         }

@@ -274,17 +274,12 @@ void ScriptLuaGUI::DrawScriptConfigEditName(EditableOpenScriptFile &file)
 
 void ScriptLuaGUI::DrawScriptConfigVarCreator(EditableOpenScriptFile &file)
 {
-    auto gui = Brakeza::get()->GUI();
-
     ImGui::SeparatorText("Create new variable");
+    static char localVarName[256] = "";
+    ImGui::InputText("Variable name##", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
 
-    static char varName[256];
-    strncpy(varName, gui->currentVariableToAddName.c_str(), sizeof(varName));
-    if (ImGui::InputText("Variable name##", varName, IM_ARRAYSIZE(varName), ImGuiInputTextFlags_AutoSelectAll)) {
-        gui->currentVariableToAddName = varName;
-    }
     std::vector<std::string> items;
-    for (auto t : LUADataTypesMapping) {
+    for (auto &t : LUADataTypesMapping) {
         items.push_back(t.second.label);
     }
 
@@ -300,8 +295,8 @@ void ScriptLuaGUI::DrawScriptConfigVarCreator(EditableOpenScriptFile &file)
         GUIType::Sizes::ICONS_BROWSERS,
         false,
         [&] {
-            if (!gui->currentVariableToAddName.empty()) {
-                file.getShader()->addDataTypeEmpty(gui->currentVariableToAddName.c_str(), itemsCStr[selectedItem]);
+            if (localVarName[0] != '\0') {
+                file.getShader()->addDataTypeEmpty(localVarName, itemsCStr[selectedItem]);
             }
         }
     );
