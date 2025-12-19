@@ -51,16 +51,14 @@ void Mesh3DAnimationDrawerGUI::DrawEditBonesMappingWindow(GUIManager *gui)
     if (ImGui::Begin(dialogTitle.c_str(), &gui->showBoneMappingsEditorWindow, ImGuiWindowFlags_NoDocking)) {
         ImGui::SeparatorText("Create new bones mapping:");
 
-        static char name[256];
-        strncpy(name, gui->currentVariableToAddName.c_str(), sizeof(name));
-        if (ImGui::InputText("Mapping name", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-            gui->currentVariableToAddName = name;
-        }
+        static char localVarName[256] = "";
+        ImGui::InputText("Mapping name", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
+
         ImGui::SameLine();
         if (ImGui::Button(std::string("Add mapping").c_str())) {
-            if (!gui->currentVariableToAddName.empty()) {
-                a->createBonesMappingColliders(gui->currentVariableToAddName);
-                gui->currentVariableToAddName.clear();
+            if (localVarName[0] != '\0') {
+                a->createBonesMappingColliders(localVarName);
+                localVarName[0] = '\0';
             }
         }
 

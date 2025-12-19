@@ -22,7 +22,7 @@ public:
     static void DrawShaderConfigEmptyStateWarning(EditableOpenShaderFile &file);
     static void DrawShaderConfigActionButtons(EditableOpenShaderFile &file);
     static ShaderOGLMetaInfo ExtractShaderMetainfo(const std::string &pathFile);
-    static std::vector<const char *> GetDataTypeItems(EditableOpenShaderFile &file);
+    static std::vector<std::string> GetDataTypeItems(EditableOpenShaderFile &file);
 
     static void DrawWinObjectShaders(GUIManager *gui);
 };

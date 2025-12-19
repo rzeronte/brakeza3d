@@ -61,7 +61,7 @@ public:
     ThreadPool & PoolImages()                                   { return poolImages; }
 
     static void Shutdown()                                      { Config::get()->EXIT = true; };
-    static int getNextUniqueObjectId();
+    static unsigned int getNextUniqueObjectId();
     static std::string UniqueObjectLabel(const char *prefix);
 
     static Brakeza *get();

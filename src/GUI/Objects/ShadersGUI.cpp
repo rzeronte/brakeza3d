@@ -60,63 +60,87 @@ void ShadersGUI::DrawShaderConfigVarsCreator(EditableOpenShaderFile &file)
 {
     auto gui = Brakeza::get()->GUI();
 
-    auto fieldId = std::string("Uniform name##") +  "_" + file.getShader()->getLabel();
+    // Listas precalculadas (solo se hacen una vez)
+    static std::vector<std::string> allGlslTypes;
+    static std::vector<std::string> allLabels;
+    static std::vector<const char*> allLabelsCStr;
+
+    static std::vector<std::string> postprocessingGlslTypes;
+    static std::vector<std::string> postprocessingLabels;
+    static std::vector<const char*> postprocessingLabelsCStr;
+
+    static bool initialized = false;
+    if (!initialized) {
+        // PRIMERO: Llenar todos los strings
+        for (const auto& [glslType, info] : GLSLTypeMapping) {
+            allGlslTypes.push_back(glslType);
+            allLabels.push_back(info.label);
+
+            if (info.type != ShaderOpenGLCustomDataType::DIFFUSE &&
+                info.type != ShaderOpenGLCustomDataType::SPECULAR) {
+                postprocessingGlslTypes.push_back(glslType);
+                postprocessingLabels.push_back(info.label);
+            }
+        }
+
+        // DESPUÉS: Llenar los punteros (ahora los vectores ya no se realojarán)
+        for (const auto& label : allLabels) {
+            allLabelsCStr.push_back(label.c_str());
+        }
+        for (const auto& label : postprocessingLabels) {
+            postprocessingLabelsCStr.push_back(label.c_str());
+        }
+
+        initialized = true;
+    }
+
+    // Elegir la lista según el tipo de shader
+    bool isPostprocessing = (file.getShader()->getType() == SHADER_POSTPROCESSING);
+    const auto& glslTypes = isPostprocessing ? postprocessingGlslTypes : allGlslTypes;
+    const auto& labelsCStr = isPostprocessing ? postprocessingLabelsCStr : allLabelsCStr;
 
     ImGui::SeparatorText("Create new uniform");
 
-    static char varName[256];
-    strncpy(varName, gui->currentVariableToAddName.c_str(), sizeof(varName));
-
-    if (ImGui::InputText(fieldId.c_str(), varName, IM_ARRAYSIZE(varName), ImGuiInputTextFlags_AutoSelectAll)) {
-        gui->currentVariableToAddName = varName;
-    }
+    static char localVarName[256] = "";
+    auto fieldId = std::string("Uniform name##") + "_" + file.getShader()->getLabel();
+    ImGui::InputText(fieldId.c_str(), localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
 
     static int selectedItem = 0;
-    std::vector<const char*> typeItems = GetDataTypeItems(file);
 
-    auto comboId = std::string("Type##") +  "_" + file.getShader()->getLabel();
-    ImGui::Combo(comboId.c_str(), &selectedItem, typeItems.data(), typeItems.size());
+    auto comboId = std::string("Type##") + "_" + file.getShader()->getLabel();
+    ImGui::Combo(comboId.c_str(), &selectedItem, labelsCStr.data(), (int) labelsCStr.size());
     ImGui::SameLine();
 
-    auto buttonId = std::string("Create variable##") +  "_" + file.getShader()->getLabel();
-    GUI::DrawButton(buttonId.c_str(), IconGUI::SHADER_CREATE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, false,[&] {
-        if (!gui->currentVariableToAddName.empty()) {
-            file.getShader()->AddDataTypeEmpty(gui->currentVariableToAddName.c_str(),typeItems[selectedItem]);
+    GUI::DrawButton("Create uniform", IconGUI::SHADER_CREATE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+        if (localVarName[0] != '\0' && selectedItem < glslTypes.size()) {
+            file.getShader()->AddDataTypeEmpty(localVarName, glslTypes[selectedItem].c_str());
+            localVarName[0] = '\0';
         }
     });
-
-    ImGui::Separator();
 }
 
-std::vector<const char*> ShadersGUI::GetDataTypeItems(EditableOpenShaderFile &file)
+std::vector<std::string> ShadersGUI::GetDataTypeItems(EditableOpenShaderFile &file)
 {
     std::vector<std::string> items;
-    for (auto t : GLSLTypeMapping) {
+
+    for (const auto& t : GLSLTypeMapping) {
+        if (file.getShader()->getType() == SHADER_POSTPROCESSING) {
+            auto typeEnum = t.second.type;
+            if (typeEnum == ShaderOpenGLCustomDataType::DIFFUSE ||
+                typeEnum == ShaderOpenGLCustomDataType::SPECULAR) {
+                continue;
+                }
+        }
+
         items.push_back(t.second.label);
     }
 
-    // Remove mesh3d variable options if postprocessing
-    if (file.getShader()->getType() == SHADER_POSTPROCESSING) {
-        items.erase(std::remove_if(items.begin(), items.end(), [](const std::string& item) {
-            auto typeEnum = GLSLTypeMapping[item].type;
-            return typeEnum == ShaderOpenGLCustomDataType::DIFFUSE ||
-                   typeEnum == ShaderOpenGLCustomDataType::SPECULAR;
-        }), items.end());
-    }
-
-    std::vector<const char*> itemsCStr;
-    for (auto& item : items) {
-        itemsCStr.push_back(item.c_str());
-    }
-
-    return itemsCStr;
+    return items;
 }
 
 void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
 {
     ImGui::SeparatorText("Shader uniforms");
-
-    auto shader = file.getShader();
 
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
     auto tableId = std::string("ShaderProperties_" + file.getShader()->getLabel());
@@ -145,7 +169,7 @@ void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
             // Value ImGuiControl
             ImGui::TableSetColumnIndex(2);
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            shader->DrawTypeImGuiControl(*type);
+            ShaderOGLCustom::DrawTypeImGuiControl(*type);
 
             // Actions column
             ImGui::TableSetColumnIndex(3);

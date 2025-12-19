@@ -43,9 +43,6 @@ class GUIManager
 
     TexturePackage imagesFolder;
 
-    std::string currentVariableToAddName;
-    std::string currentVariableToCreateCustomShader;
-
     GUIType::BrowserCache browserScenes;
     GUIType::BrowserCache browserProjects;
     GUIType::BrowserCache browserShaders;

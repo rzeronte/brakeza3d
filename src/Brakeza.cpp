@@ -85,16 +85,17 @@ void Brakeza::MainLoop()
         Components::get()->Window()->ClearOGLFrameBuffers();                // Clean video framebuffers
         OnUpdateComponents();                                               // OnUpdate for componentes
         Components::get()->Render()->FlipBuffersToGlobal();                 // Buffers compositing
-        Components::get()->Render()->RunSceneShadersPostUpdate();           // Post-pass running for shaders
+        ComponentRender::RunSceneShadersPostUpdate();                       // Post-pass running for shaders
         PostUpdateComponents();                                             // PostUpdate for componentes
-        Profiler::get()->EndTotalFrameTime();                               // End frame time measure
+        Profiler::get()->EndTotalFrameTime();                               // End frame time measures
         Components::get()->Window()->FlipGlobalToWindow();                  // Flip to screen
     }
 
     onEndComponents();
 }
 
-void Brakeza::CaptureInputEvents(SDL_Event &e) const {
+void Brakeza::CaptureInputEvents(SDL_Event &e) const
+{
 
     while (SDL_PollEvent(&e)) {
         Components::get()->Window()->CheckForResizeOpenGLWindow(e);
@@ -197,15 +198,7 @@ void Brakeza::onUpdateSDLPollEventComponents(SDL_Event *event) const
         component->onSDLPollEvent(event, Config::get()->EXIT);
 }
 
-Brakeza::~Brakeza()
-{
-    ImGui::DestroyContext();
-
-    for (const auto o : objects)
-        delete o;
-}
-
-int Brakeza::getNextUniqueObjectId()
+unsigned int Brakeza::getNextUniqueObjectId()
 {
     static unsigned int counter = 0;
     return ++counter;
@@ -266,4 +259,12 @@ bool Brakeza::ReadArgs(int argc, char **argv)
     }
 
     return false;
+}
+
+Brakeza::~Brakeza()
+{
+    ImGui::DestroyContext();
+
+    for (const auto o : objects)
+        delete o;
 }
