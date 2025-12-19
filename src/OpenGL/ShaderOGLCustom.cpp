@@ -770,11 +770,7 @@ std::string ShaderOGLCustom::getShaderTypeString(ShaderCustomType type)
     return "";
 }
 
-void ShaderOGLCustom::createEmptyCustomShader(
-    const std::string& name,
-    const std::string& folder,
-    ShaderCustomType type
-)
+void ShaderOGLCustom::WriteEmptyCustomShaderToDisk(const std::string& name, const std::string& folder, ShaderCustomType type)
 {
     Logging::Message("Creating new custom shader: %s de tipo %d", name.c_str(), type);
 
@@ -784,12 +780,11 @@ void ShaderOGLCustom::createEmptyCustomShader(
     cJSON *root = cJSON_CreateObject();
     cJSON_AddStringToObject(root, "name", name.c_str());
     cJSON_AddStringToObject(root, "file", shaderFragmentFile.c_str());
-    cJSON_AddStringToObject(root, "type", ShaderOGLCustom::getShaderTypeString(type).c_str());
+    cJSON_AddStringToObject(root, "type", getShaderTypeString(type).c_str());
 
     cJSON *typesArray = cJSON_CreateArray();
     cJSON_AddItemToObject(root, "types", typesArray);
     char *typesCode = cJSON_Print(root);
-
 
     // json
     Tools::WriteToFile(folder + dataTypesFileFor(name), typesCode);
@@ -844,7 +839,7 @@ void ShaderOGLCustom::Reload()
 void ShaderOGLCustom::CaptureDragDropUpdateImage(ShaderOGLCustomType &type, const Image *texture) const
 {
     if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("IMAGE_ITEM")) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM)) {
             Logging::Message("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
             IM_ASSERT(payload->DataSize == sizeof(int));
             auto selection = (char*) payload->Data;

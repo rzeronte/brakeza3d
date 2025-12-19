@@ -12,11 +12,16 @@
 #include "../SceneObjectTypes.h"
 #include "../Misc/ScriptLUA.h"
 #include "../Misc/Timer.h"
-#include "../OpenGL/ShaderOGLCustom.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 
 namespace GUIType
 {
+    struct DragDropTarget {
+        inline static const char* SCRIPT_ITEM = "SCRIPT_ITEM";
+        inline static const char* SHADER_ITEM = "SHADER_ITEM";
+        inline static const char* IMAGE_ITEM = "IMAGE_ITEM";
+    };
+
     struct Sheet {
         int x = -1;
         int y = -1;

@@ -468,7 +468,7 @@ void FileSystemGUI::DrawShaderRow(GUIType::BrowserCache &browser, const std::str
         fileCopy = file;
 
         Config::DragDropCustomShaderData data = {folderCopy.c_str(), fileCopy.c_str()};
-        ImGui::SetDragDropPayload("CUSTOMSHADER_ITEM", &data, sizeof(data));
+        ImGui::SetDragDropPayload(GUIType::DragDropTarget::SHADER_ITEM, &data, sizeof(data));
 
         auto fullPath = browser.currentFolder + file;
         ImGui::Text("%s", fullPath.c_str());
@@ -579,7 +579,7 @@ void FileSystemGUI::DrawShaderCreatorDialog(GUIType::BrowserCache &browser, std:
         GUI::DrawButton("Create shader", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
             if (!Brakeza::get()->GUI()->currentVariableToCreateCustomShader.empty()) {
                 auto type = ShaderOGLCustom::getShaderTypeFromString(items[item_current_idx]);
-                ShaderOGLCustom::createEmptyCustomShader(
+                ShaderOGLCustom::WriteEmptyCustomShaderToDisk(
                     Brakeza::get()->GUI()->currentVariableToCreateCustomShader,
                     browser.currentFolder,
                     type
@@ -633,7 +633,7 @@ void FileSystemGUI::DrawScriptRow(GUIType::BrowserCache &browser, const std::str
     ImGui::Selectable(optionText.c_str());
     if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
         auto fullPath = browser.currentFolder + file;
-        ImGui::SetDragDropPayload("SCRIPT_ITEM", fullPath.c_str(), fullPath.size() + 1);
+        ImGui::SetDragDropPayload(GUIType::DragDropTarget::SCRIPT_ITEM, fullPath.c_str(), fullPath.size() + 1);
         ImGui::Text("%s", fullPath.c_str());
         ImGui::EndDragDropSource();
     }

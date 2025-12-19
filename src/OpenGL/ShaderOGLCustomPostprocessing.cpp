@@ -58,7 +58,6 @@ void ShaderOGLCustomPostprocessing::render(GLuint fbo, GLuint texture)
     DrawQuad();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 }
 
 void ShaderOGLCustomPostprocessing::Destroy()

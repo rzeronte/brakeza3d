@@ -6,6 +6,7 @@
 #include "../../../include/Components/Components.h"
 #include "../include/Brakeza.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../../include/GUI/Objects/ScriptLuaGUI.h"
 
 GUIAddonProjectSetup::GUIAddonProjectSetup()
 {
@@ -57,13 +58,10 @@ void GUIAddonProjectSetup::DrawProjectScripts(GUIManager *gui)
 {
     auto scripting = Components::get()->Scripting();
     if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
-            Logging::Message("Dropping script (%s) in global space", payload->Data);
-            scripting->addProjectLUAScript(new ScriptLUA(
-                std::string((char *) payload->Data),
-                std::string((char *) payload->Data),
-                ScriptLUA::dataTypesFileFor(std::string((char *) payload->Data)))
-            );
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SCRIPT_ITEM)) {
+            Logging::Message("Dropping script '%s' in global space", payload->Data);
+            auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char *) payload->Data));
+            scripting->addProjectLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
         }
         ImGui::EndDragDropTarget();
     }
@@ -99,15 +97,10 @@ void GUIAddonProjectSetup::DrawSceneScripts(GUIManager *gui)
 {
     auto scripting = Components::get()->Scripting();
     if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SCRIPT_ITEM")) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SCRIPT_ITEM)) {
             Logging::Message("Dropping script (%s) in global space", payload->Data);
-            scripting->addSceneLUAScript(
-                new ScriptLUA(
-                    std::string((char *) payload->Data),
-                    std::string((char *) payload->Data),
-                        ScriptLUA::dataTypesFileFor(std::string((char *) payload->Data))
-                )
-            );
+            auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char *) payload->Data));
+            scripting->addSceneLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
         }
         ImGui::EndDragDropTarget();
     }
@@ -147,10 +140,11 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders(GUIManager *gui)
     auto render = Components::get()->Render();
 
     if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CUSTOMSHADER_ITEM")) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SHADER_ITEM)) {
             Config::DragDropCustomShaderData* receivedData = (Config::DragDropCustomShaderData*)payload->Data;
             Logging::Message("Dropping shader file '%s' in global space...", receivedData->file);
-            render->LoadShaderIntoScene(receivedData->file);
+            auto fullPath = std::string(receivedData->folder) + receivedData->file;
+            render->LoadShaderIntoScene(fullPath);
         }
         ImGui::EndDragDropTarget();
     }

@@ -101,23 +101,9 @@ protected:
 
     int numTextures = 0;
 
-    ShaderOGLCustom(
-        std::string label,
-        const std::string &typesFile,
-        const std::string &vsFile,
-        const std::string &fsFile,
-        ShaderCustomType type,
-        const cJSON *types
-    );
-
+    ShaderOGLCustom(std::string label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile, ShaderCustomType type, const cJSON *types);
 public:
-    explicit ShaderOGLCustom(
-        std::string label,
-        const std::string &typesFile,
-        const std::string &vsFile,
-        const std::string &fsFile,
-        ShaderCustomType type
-    );
+    explicit ShaderOGLCustom(std::string label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile, ShaderCustomType type);
     std::vector<ShaderOGLCustomType> dataTypes;
 
     void PrepareBackground() override;
@@ -173,7 +159,7 @@ public:
 
     static ShaderCustomType getShaderTypeFromString(const std::string &shaderName);
     static std::string getShaderTypeString(ShaderCustomType type);
-    static void createEmptyCustomShader(const std::string& name, const std::string& folder, ShaderCustomType type);
+    static void WriteEmptyCustomShaderToDisk(const std::string& name, const std::string& folder, ShaderCustomType type);
     static void RemoveCustomShaderFiles(const std::string& folder, const std::string &name);
     static ShaderCustomType ExtractTypeFromShaderName(const std::string& folder, const std::string &name);
     void Reload();

@@ -238,11 +238,17 @@ ShaderOGLCustom* ComponentRender::CreateCustomShaderFromDisk(ShaderOGLMetaInfo i
 
     switch(typeInteger) {
         case SHADER_POSTPROCESSING : {
-            return new ShaderOGLCustomPostprocessing(info.name, info.typesFile, info.vsFile, info.fsFile);
+            auto s = new ShaderOGLCustomPostprocessing(info.name, info.typesFile, info.vsFile, info.fsFile);
+            s->PrepareBackground();
+            s->PrepareMainThread();
+            return s;
         }
         default:
         case SHADER_OBJECT : {
-            return new ShaderOGLCustomMesh3D(nullptr, info.name, info.typesFile, info.vsFile, info.fsFile);
+            auto s = new ShaderOGLCustomMesh3D(nullptr, info.name, info.typesFile, info.vsFile, info.fsFile);
+            s->PrepareBackground();
+            s->PrepareMainThread();
+            return s;
         }
     }
 }

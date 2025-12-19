@@ -48,7 +48,6 @@ public:
     Timer *getTimer() { return &this->timer; }
     Object3D *getObjectById(unsigned int id) const;
     Object3D *getObjectByName(const std::string &label) const;
-    int getNextUniqueObjectId() const;
 
     float getExecutionTime() const                              { return executionTime; }
     std::vector<Object3D *> &getSceneObjects()                  { return objects; }
@@ -62,6 +61,7 @@ public:
     ThreadPool & PoolImages()                                   { return poolImages; }
 
     static void Shutdown()                                      { Config::get()->EXIT = true; };
+    static int getNextUniqueObjectId();
     static std::string UniqueObjectLabel(const char *prefix);
 
     static Brakeza *get();
