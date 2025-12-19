@@ -75,8 +75,7 @@ void ComponentRender::RegisterShaders()
         allShaders.push_back(shaders.shaderOGLGrid);
 
     for (auto &s : allShaders) {
-        s->PrepareBackground();
-        s->PrepareMainThread();
+        s->PrepareSync();
     }
 }
 
@@ -225,29 +224,28 @@ void ComponentRender::DeleteRemovedObjects()
 
 void ComponentRender::LoadShaderIntoScene(const std::string &filePath)
 {
-    AddShaderToScene(
-        CreateCustomShaderFromDisk(
-            ShadersGUI::ExtractShaderMetainfo(filePath)
-        )
-    );
+    auto metaInfo = ShadersGUI::ExtractShaderMetainfo(filePath);
+
+    if (ShaderOGLCustom::getShaderTypeFromString(metaInfo.type) == SHADER_POSTPROCESSING) {
+        AddShaderToScene(CreateCustomShaderFromDisk(metaInfo));
+        return;
+    }
+
+    Logging::Error("[Render] Scenes only accepts PostProcessing shaders!");
 }
 
 ShaderOGLCustom* ComponentRender::CreateCustomShaderFromDisk(ShaderOGLMetaInfo info)
 {
-    auto typeInteger = ShaderOGLCustom::getShaderTypeFromString(info.type);
-
-    switch(typeInteger) {
+    switch(ShaderOGLCustom::getShaderTypeFromString(info.type)) {
         case SHADER_POSTPROCESSING : {
             auto s = new ShaderOGLCustomPostprocessing(info.name, info.typesFile, info.vsFile, info.fsFile);
-            s->PrepareBackground();
-            s->PrepareMainThread();
+            s->PrepareSync();
             return s;
         }
         default:
         case SHADER_OBJECT : {
             auto s = new ShaderOGLCustomMesh3D(nullptr, info.name, info.typesFile, info.vsFile, info.fsFile);
-            s->PrepareBackground();
-            s->PrepareMainThread();
+            s->PrepareSync();
             return s;
         }
     }

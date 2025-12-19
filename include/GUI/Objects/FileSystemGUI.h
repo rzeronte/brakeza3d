@@ -49,7 +49,7 @@ public:
 
     static void LoadImagesFolder(GUIManager *gui);
     static void DrawBrowserFolders(std::string &folder, GUIType::BrowserCache &browser, const std::string &ext);
-    static void DrawCodeEditorTab(EditableOpenFile &file);
+    static void DrawCodeEditorTab(EditableOpenFile &file, int tabIndex);
 
     static ImTextureID Icon(GUIType::Sheet coords);
 };

@@ -523,11 +523,14 @@ void Mesh3D::AddCustomShader(ShaderOGLCustom *s)
 
 void Mesh3D::LoadShader(const std::string &jsonFilename)
 {
-    AddCustomShader(
-        Components::get()->Render()->CreateCustomShaderFromDisk(
-            ShadersGUI::ExtractShaderMetainfo(jsonFilename)
-        )
-    );
+    auto metaInfo = ShadersGUI::ExtractShaderMetainfo(jsonFilename);
+
+    if (ShaderOGLCustom::getShaderTypeFromString(metaInfo.type) == SHADER_OBJECT) {
+        AddCustomShader(Components::get()->Render()->CreateCustomShaderFromDisk(metaInfo));
+        return;
+    }
+
+    Logging::Error("[Mesh3D] Error: Cannot attach postprocessing shader to object!");
 }
 
 void Mesh3D::RemoveShader(int index)

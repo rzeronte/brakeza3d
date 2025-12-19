@@ -2,17 +2,13 @@
 // Created by Eduardo on 06/12/2025.
 //
 
-#include "../../../include/GUI/AddOns/GUIAddonProjectSetup.h"
-#include "../../../include/Components/Components.h"
 #include "../include/Brakeza.h"
+#include "../../../include/Components/Components.h"
+#include "../../../include/GUI/AddOns/GUIAddonProjectSetup.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/Objects/ScriptLuaGUI.h"
 
-GUIAddonProjectSetup::GUIAddonProjectSetup()
-{
-}
-
-void GUIAddonProjectSetup::DrawWinProjectSettings(GUIManager *gui)
+void GUIAddonProjectSetup::DrawWinProjectSettings()
 {
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::PROJECT_SETTINGS);
     if (!windowStatus->isOpen) return;
@@ -34,19 +30,19 @@ void GUIAddonProjectSetup::DrawWinProjectSettings(GUIManager *gui)
         std::string labelGlobalScripts = "Global scripts (" + std::to_string(scripting->getProjectLUAScripts().size()) + ")";
         ImGui::Image(FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_GLOBAL_SCRIPTS), GUIType::Sizes::ICONS_TOOLBAR); ImGui::SameLine();
         if (ImGui::TreeNodeEx(labelGlobalScripts.c_str(), ImGuiTreeNodeFlags_FramePadding| ImGuiTreeNodeFlags_DefaultOpen)) {
-            DrawProjectScripts(gui);
+            DrawProjectScripts();
             ImGui::TreePop();
         }
         std::string labelSceneScripts = "Scene scripts (" + std::to_string(scripting->getSceneLUAScripts().size()) + ")";
         ImGui::Image(FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SCRIPTS), GUIType::Sizes::ICONS_TOOLBAR); ImGui::SameLine();
         if (ImGui::TreeNodeEx(labelSceneScripts.c_str(), ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_DefaultOpen)) {
-            DrawSceneScripts(gui);
+            DrawSceneScripts();
             ImGui::TreePop();
         }
         std::string labelSceneShaders = "Scene shaders (" + std::to_string(render->getSceneShaders().size()) + ")";
         ImGui::Image(FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SHADERS), GUIType::Sizes::ICONS_TOOLBAR); ImGui::SameLine();
         if (ImGui::TreeNodeEx(labelSceneShaders.c_str(), ImGuiTreeNodeFlags_FramePadding | ImGuiTreeNodeFlags_DefaultOpen)) {
-            DrawSceneCustomShaders(gui);
+            DrawSceneCustomShaders();
             ImGui::TreePop();
         }
         ImGui::TreePop();
@@ -54,7 +50,7 @@ void GUIAddonProjectSetup::DrawWinProjectSettings(GUIManager *gui)
     ImGui::PopStyleVar();
 }
 
-void GUIAddonProjectSetup::DrawProjectScripts(GUIManager *gui)
+void GUIAddonProjectSetup::DrawProjectScripts()
 {
     auto scripting = Components::get()->Scripting();
     if (ImGui::BeginDragDropTarget()) {
@@ -93,7 +89,7 @@ void GUIAddonProjectSetup::DrawProjectScripts(GUIManager *gui)
     }
 }
 
-void GUIAddonProjectSetup::DrawSceneScripts(GUIManager *gui)
+void GUIAddonProjectSetup::DrawSceneScripts()
 {
     auto scripting = Components::get()->Scripting();
     if (ImGui::BeginDragDropTarget()) {
@@ -135,7 +131,7 @@ void GUIAddonProjectSetup::DrawSceneScripts(GUIManager *gui)
     }
 }
 
-void GUIAddonProjectSetup::DrawSceneCustomShaders(GUIManager *gui)
+void GUIAddonProjectSetup::DrawSceneCustomShaders()
 {
     auto render = Components::get()->Render();
 

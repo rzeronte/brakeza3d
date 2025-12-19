@@ -53,6 +53,8 @@ class GUIManager
 
     Color lineSelectorObjectColor = Color::green();
 
+    int indexCodeEditorTab = 0;
+
     TextureAtlas *textureAtlas;
     Image *splashImage = nullptr;
 
@@ -68,7 +70,7 @@ public:
     virtual ~GUIManager() = default;
 
     bool isWindowOpen(GUIType::Window w) const;
-    bool isEditableFileAlreadyOpen(std::string label) const;
+    bool isEditableFileAlreadyOpen(const std::string &label) const;
     void OnStart();
     void setSelectedObjectIndex(int value);
     void setSelectedObject(const Object3D *s);
@@ -79,10 +81,13 @@ public:
     void OpenBoneInfoDialog();
     void setObjectsViewerMode(GUIType::ViewerObjectsMode value);
     void setLayoutToDefault(Config::ImGUIConfigs config);
+    void setIndexCodeEditorTab(const std::string &label);
     void CloseRemovedEditableOpenFiles();
     void DrawWinCodeEditor();
     void OpenEditableFile(EditableOpenFile *openFile);
     void CloseEditableFile(EditableOpenFile *openFile) const;
+
+    void ResetIndexCodeEditor();
 
     int& selectedObjectIndexPointer()                                           { return selectedObjectIndex; }
     [[nodiscard]] TextureAtlas * getTextureAtlas() const                        { return textureAtlas; }
@@ -93,10 +98,10 @@ public:
     [[nodiscard]] GUIType::BrowserCache getBrowserShaders() const               { return browserShaders; }
     [[nodiscard]] GUIType::ViewerObjectsMode getObjectsViewerMode() const       { return viewerMode; }
     [[nodiscard]] std::vector<EditableOpenFile *> getEditableOpenFiles() const  { return openFiles;}
+    [[nodiscard]] int getIndexCodeEditorTab() const                             { return indexCodeEditorTab; }
     GUIType::WindowData *getWindowStatus(GUIType::Window window);
 
     virtual void DrawGUI();
-
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
 

@@ -238,20 +238,17 @@ void ShadersGUI::DrawWinObjectShaders(GUIManager *gui)
 
 void ShadersGUI::LoadDialogShader(const std::string &file)
 {
-    auto shader = ComponentRender::CreateCustomShaderFromDisk(ExtractShaderMetainfo(file));
+    auto metaInfo = ExtractShaderMetainfo(file);
 
-    shader->PrepareBackground();
-    shader->PrepareMainThread();
+    if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(metaInfo.name)) {
+        auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo);
+        shader->PrepareSync();
 
-    if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(shader->getLabel())) {
         Brakeza::get()->GUI()->OpenEditableFile(
-            new EditableOpenShaderFile(
-                shader->getLabel(),
-                shader->getVertexFilename(),
-                shader
-            )
+            new EditableOpenShaderFile(shader->getLabel(), shader->getVertexFilename(), shader)
         );
     }
+    Brakeza::get()->GUI()->setIndexCodeEditorTab(metaInfo.name);
 }
 
 ShaderOGLMetaInfo ShadersGUI::ExtractShaderMetainfo(const std::string &pathFile)

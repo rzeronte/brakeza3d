@@ -4,16 +4,15 @@
 
 #ifndef BRAKEZA3D_GUIWIDGETPROJECTSETTINGS_H
 #define BRAKEZA3D_GUIWIDGETPROJECTSETTINGS_H
-#include "../GUIManager.h"
 
 class GUIAddonProjectSetup
 {
 public:
-    GUIAddonProjectSetup();
-    static void DrawWinProjectSettings(GUIManager *gui);
-    static void DrawProjectScripts(GUIManager *gui);
-    static void DrawSceneScripts(GUIManager *gui);
-    static void DrawSceneCustomShaders(GUIManager *gui);
+    GUIAddonProjectSetup() = default;
+    static void DrawWinProjectSettings();
+    static void DrawProjectScripts();
+    static void DrawSceneScripts();
+    static void DrawSceneCustomShaders();
 };
 
 #endif //BRAKEZA3D_GUIWIDGETPROJECTSETTINGS_H
