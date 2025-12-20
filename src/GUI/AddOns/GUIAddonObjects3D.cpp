@@ -7,9 +7,10 @@
 #include "../../../include/Brakeza.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/Objects/ScriptLuaGUI.h"
+#include "../../../include/Render/Drawable.h"
 #include "../include/Components/Components.h"
 
-bool GUIAddonObjects3D::exist(std::string pattern1, std::string pattern2)
+bool GUIAddonObjects3D::exist(const std::string &pattern1, const std::string &pattern2)
 {
     // Búsqueda case-insensitive
     std::string nameUpper = pattern1;
@@ -42,14 +43,35 @@ void GUIAddonObjects3D::DrawObjectsTree(GUIManager *gui, const std::vector<Objec
 
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 6));
+        if (count == 0) {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.4f, 0.4f, 0.4f, 1.0f)); // Gris oscuro
+        }
         bool isOpen = ImGui::TreeNodeEx(label.c_str(), ImGuiTreeNodeFlags_FramePadding);
         ImGui::PopStyleVar(2);
+        if (count == 0) {
+            ImGui::PopStyleColor();
+        }
         if (isOpen) {
-            for (auto &o : objects) {
-                if (o->getTypeObject() != type.type) continue;
-                if (!filter.empty() && !exist(o->getName(), filter)) continue;
-                DrawItem(globalCont, o, false);
-                globalCont++;
+            int localCont = 0;
+            ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(4.0f, 4.0f)); // x, y padding
+            if (ImGui::BeginTable("objectsTreeTable", 5, ImGuiTableFlags_None | ImGuiTableFlags_RowBg)) {
+                ImGui::TableSetupColumn("Checkbox", ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+                ImGui::TableSetupColumn("Scripts", ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableSetupColumn("Shaders", ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableSetupColumn("Colliders", ImGuiTableColumnFlags_WidthFixed);
+                for (auto &o : objects) {
+                    if (o->getTypeObject() != type.type) continue;
+                    if (!filter.empty() && !exist(o->getName(), filter)) continue;
+                    DrawItem(globalCont, o, false);
+                    globalCont++;
+                    localCont++;
+                }
+                ImGui::EndTable();
+                ImGui::PopStyleVar();
+            }
+            if (localCont == 0) {
+                Drawable::WarningMessage("There are not objects of this type");
             }
             ImGui::TreePop();
         }
@@ -58,15 +80,14 @@ void GUIAddonObjects3D::DrawObjectsTree(GUIManager *gui, const std::vector<Objec
 
 void GUIAddonObjects3D::DrawObjectTypes(GUIManager *gui)
 {
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 2));
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 2));
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 2));
 
     for (auto& o : gui->visibleTypeObjects) {
-        GUI::DrawButton(o.label, o.icon, ImVec2(28, 28), o.visible, [&]{ o.Toggle(); });
+        GUI::DrawButton(o.label, o.icon, GUIType::Sizes::ICONS_OBJECTS_ALLOWED, o.visible, [&]{ o.Toggle(); });
         ImGui::SameLine();
     }
     ImGui::PopStyleVar(2);
-    ImGui::NewLine();
 }
 
 bool GUIAddonObjects3D::isObjectTypeVisible(GUIManager *gui, ObjectType typeObject)
@@ -82,13 +103,23 @@ bool GUIAddonObjects3D::isObjectTypeVisible(GUIManager *gui, ObjectType typeObje
 
 void GUIAddonObjects3D::DrawObjectList(GUIManager *gui, std::vector<Object3D *> &objects, std::string filter)
 {
-    for (unsigned int i = 0; i < (unsigned int) objects.size(); i++) {
-        auto &o = objects[i];
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(4.0f, 4.0f)); // x, y padding
+    if (ImGui::BeginTable("ScriptFileButtons", 5, ImGuiTableFlags_None | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Checkbox", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Scripts", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Shaders", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Colliders", ImGuiTableColumnFlags_WidthFixed);
+        for (unsigned int i = 0; i < (unsigned int) objects.size(); i++) {
+            auto &o = objects[i];
 
-        if (o->isRemoved()) continue;
-        if (!isObjectTypeVisible(gui, o->getTypeObject())) continue;
-        if (!filter.empty() && !exist(o->getName(), filter)) continue;
-        DrawItem(i, o, true);
+            if (o->isRemoved()) continue;
+            if (!isObjectTypeVisible(gui, o->getTypeObject())) continue;
+            if (!filter.empty() && !exist(o->getName(), filter)) continue;
+            DrawItem(i, o, true);
+        }
+        ImGui::PopStyleVar();
+        ImGui::EndTable();
     }
 }
 
@@ -108,6 +139,10 @@ void GUIAddonObjects3D::DrawWinSceneObjects(GUIManager *gui)
         gui->setObjectsViewerMode(GUIType::ViewerObjectsMode::TREE);
     });
     ImGui::SameLine();
+    DrawObjectTypes(gui);
+
+    ImGui::NewLine();
+    ImGui::Separator();
 
     static char filterGUI[128] = "";
     ImGui::SetNextItemWidth(150);
@@ -117,8 +152,6 @@ void GUIAddonObjects3D::DrawWinSceneObjects(GUIManager *gui)
         filterGUI[0] = '\0';
     });
 
-    ImGui::Separator();
-    DrawObjectTypes(gui);
     ImGui::Separator();
 
     auto title = std::string("Number objects: ") + std::to_string(gameObjects.size());
@@ -141,6 +174,11 @@ void GUIAddonObjects3D::DrawWinSceneObjects(GUIManager *gui)
 
 void GUIAddonObjects3D::DrawItem(int i, Object3D* o, bool icon)
 {
+    ImGui::TableNextRow();
+
+    ImGui::Spacing();
+    // ----------------- Checkbox + icon
+    ImGui::TableNextColumn();
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 2));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 2));
     ImGui::Checkbox(std::string("##"+ std::to_string(o->getId())).c_str(), &o->isEnabled());
@@ -151,11 +189,13 @@ void GUIAddonObjects3D::DrawItem(int i, Object3D* o, bool icon)
         ImGui::Image(FileSystemGUI::Icon(o->getIcon()), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     }
 
+    // ----------------- Name
+    ImGui::TableNextColumn();
     auto selectecObject = Components::get()->Render()->getSelectedObject();
     bool isSelected = selectecObject != nullptr ? selectecObject->getId() == o->getId() : false;
 
-    ImGui::SetNextItemWidth(150.0f);
-    if (ImGui::Selectable(std::string("##select"+ std::to_string(i)).c_str(), isSelected, ImGuiSelectableFlags_AllowDoubleClick)) {
+    auto labelSelectable = std::to_string(i + 1) + ") " + o->getName();
+    if (ImGui::Selectable(labelSelectable.c_str(), isSelected, ImGuiSelectableFlags_AllowDoubleClick)) {
         Components::get()->Render()->setSelectedObject(o);
         if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
             if (!Brakeza::get()->GUI()->isWindowOpen(GUIType::OBJECT_PROPS)) {
@@ -163,10 +203,6 @@ void GUIAddonObjects3D::DrawItem(int i, Object3D* o, bool icon)
             }
         }
     }
-    ImGui::SameLine();
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() - 15.0f);
-    ImGui::Text((std::to_string(i + 1) + ") " + o->getName()).c_str());
-
     if (ImGui::BeginDragDropTarget()) {
         auto mesh = dynamic_cast<Mesh3D*> (o);
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SCRIPT_ITEM)) {
@@ -185,25 +221,30 @@ void GUIAddonObjects3D::DrawItem(int i, Object3D* o, bool icon)
         ImGui::EndDragDropTarget();
     }
 
-    ImGui::SameLine();
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
+    // ----------------- Scripts attached
+    ImGui::TableNextColumn();
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine(0, 5.0f);
+    ImGui::Text(std::to_string((int) o->getScripts().size()).c_str());
 
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), ImVec2(14, 14)); ImGui::SameLine();
+    // ----------------- Shaders attached
+    ImGui::TableNextColumn();
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine(0, 5.0f);
 
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() - 10.0f, ImGui::GetCursorPosY()));
-    ImGui::Text(std::to_string((int)o->getScripts().size()).c_str());
+    auto mesh = dynamic_cast<Mesh3D*>(o);
+    auto numShaders = mesh != nullptr ? (unsigned int) mesh->getCustomShaders().size() : 0;
+    ImGui::Text(std::to_string(numShaders).c_str());
+
+    // ----------------- Collisions in object
+    ImGui::TableNextColumn();
     if (o->isCollisionsEnabled()) {
-        ImGui::SameLine();
-        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
-
         if (o->getCollisionMode() == GHOST) {
-            ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDER_GHOST), ImVec2(14, 14));
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDER_GHOST), GUIType::Sizes::ICON_SIZE_MENUS);
+        } else if (o->getCollisionMode() == BODY) {
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDER_BODY), GUIType::Sizes::ICON_SIZE_MENUS);
+        } else if (o->getCollisionMode() == KINEMATIC) {
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDER_KINEMATIC), GUIType::Sizes::ICON_SIZE_MENUS);
         }
-        if (o->getCollisionMode() == BODY) {
-            ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDER_BODY), ImVec2(14, 14));
-        }
-        if (o->getCollisionMode() == KINEMATIC) {
-            ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDER_KINEMATIC), ImVec2(14, 14));
-        }
+    } else {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::EMPTY), GUIType::Sizes::ICON_SIZE_MENUS);
     }
 }

@@ -40,6 +40,9 @@ class GUIManager
 
     std::vector<EditableOpenFile *> openFiles;
 
+    cJSON *documentationTree = nullptr;
+    TextEditor documentationEditor;
+
     TexturePackage imagesFolder;
 
     GUIType::BrowserCache browserScenes;
@@ -47,7 +50,7 @@ class GUIManager
     GUIType::BrowserCache browserShaders;
     GUIType::BrowserCache browserScripts;
 
-    Color lineSelectorObjectColor = Color::green();
+    Color selectionColor = Color::green();
 
     int indexCodeEditorTab = 0;
 
@@ -67,6 +70,9 @@ public:
 
     bool isWindowOpen(GUIType::Window w) const;
     bool isEditableFileAlreadyOpen(const std::string &label) const;
+
+    void LoadDocumentation();
+
     void OnStart();
     void RegisterWindows();
     void RegisterDefaultLayoutWindows();

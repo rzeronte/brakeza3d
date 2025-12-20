@@ -126,7 +126,7 @@ void GUI::ImGuiSetColors()
     style->ItemSpacing              = ImVec2(12, 8);
     style->ItemInnerSpacing         = ImVec2(8, 6);
     style->IndentSpacing            = 25.0f;
-    style->ScrollbarSize            = 15.0f;
+    style->ScrollbarSize            = 10.0f;
     style->ScrollbarRounding        = 9.0f;
     style->GrabMinSize              = 5.0f;
     style->GrabRounding             = 3.0f;

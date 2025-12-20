@@ -1,0 +1,23 @@
+==================
+14 - ASSETS FOLDER
+==================
+
+Brakeza3D esperará encontrar cada tipo de recurso en su carpeta raíz correspondiente. Dentro de la carpeta
+assets podrás encontrar:
+
+- animations: Ficheros FBX animados.
+- fonts: Ficheros de fuente TTF.
+- icons: Ficheros de iconos de la UI.
+- images: Ficheros de imagen de carácter general.
+- maps: Ficheros de mapas BSP.
+- models: Ficheros de modelos FBX.
+- projects: Ficheros de proyectos JSON.
+- scenes: Ficheros de escenas JSON.
+- scripts: Ficheros de scripts LUA.
+- shaders: Ficheros de CustomShaders (.vs y/o .fs)
+- sounds: Ficheros de sonido WAV o MP3.
+- sprites: Ficheros de imágenes en formato rejilla.
+- textures: Ficheros de texturas usados por modelos FBX.
+
+Brakeza3D permite trabajar con rutas relativas, pero siempre a la ruta principal de cada elemento, es decir,
+podrás almacenar tus scripts en subcarpetas, pero siempre estarán dentro de la carpeta raíz de scripts, etc.

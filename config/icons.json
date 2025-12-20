@@ -441,12 +441,12 @@
 			"y":	24
 		}, {
 			"name":	"COLLIDER_KINEMATIC",
-			"x":	5,
-			"y":	24
+			"x":	4,
+			"y":	20
 		}, {
 			"name":	"COLLIDER_GHOST",
-			"x":	5,
-			"y":	24
+			"x":	9,
+			"y":	29
 		}, {
 			"name":	"BONE_LOCK",
 			"x":	11,
@@ -639,6 +639,14 @@
 			"name":	"SHADER_CODE_FS",
 			"x":	11,
 			"y":	21
+		}, {
+			"name":	"EMPTY",
+			"x":	6,
+			"y":	0
+		}, {
+			"name":	"WIN_DOCUMENTATION",
+			"x":	12,
+			"y":	28
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

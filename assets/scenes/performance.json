@@ -29,7 +29,38 @@
 	"objects":	[],
 	"shaders":	[],
 	"scripts":	[{
-			"name":	"../assets/scripts/Examples/GlobalScripts/AddObjectExample.lua"
+			"codeFile":	"../assets/scripts/Examples/GlobalScripts/AddObjectExample.lua",
+			"typesFile":	"../assets/scripts/Examples/GlobalScripts/AddObjectExample.json",
+			"name":	"Performance Test",
+			"types":	[{
+					"name":	"finished",
+					"type":	"int",
+					"value":	0
+				}, {
+					"name":	"frequency",
+					"type":	"int",
+					"value":	0
+				}, {
+					"name":	"spacing",
+					"type":	"int",
+					"value":	1
+				}, {
+					"name":	"gridRows",
+					"type":	"int",
+					"value":	100
+				}, {
+					"name":	"gridCols",
+					"type":	"int",
+					"value":	100
+				}, {
+					"name":	"position",
+					"type":	"Vertex3D",
+					"value":	{
+						"x":	1,
+						"y":	1,
+						"z":	1
+					}
+				}]
 		}],
 	"camera":	{
 		"position":	{
@@ -38,8 +69,8 @@
 			"z":	-0.42445632815361023
 		},
 		"rotation":	{
-			"x":	28.350000381469727,
-			"y":	-631.8748779296875,
+			"x":	28.949985504150391,
+			"y":	-630.9747314453125,
 			"z":	0
 		}
 	}

@@ -49,7 +49,7 @@ namespace GUIType
 
     struct Sizes {
         static constexpr ImVec2 ICONS_TOOLBAR = ImVec2(24, 24);
-        static constexpr ImVec2 ICONS_OBJECTS_ALLOWED = ImVec2(16, 16);
+        static constexpr ImVec2 ICONS_OBJECTS_ALLOWED = ImVec2(18, 18);
         static constexpr ImVec2 ICONS_BROWSERS = ImVec2(16, 16);
         static constexpr ImVec2 ICONS_CONSOLE = ImVec2(16, 16);
         static constexpr ImVec2 ICONS_LOG = ImVec2(16, 16);
@@ -106,6 +106,7 @@ namespace GUIType
         FILES_SCRIPTS,
         DEBUG_ICONS,
         CODE_EDITOR,
+        DOCUMENTATION,
     };
 
     struct WindowData {
@@ -311,7 +312,9 @@ namespace GUIType
     X(WIN_SCRIPT_SETUP, 0, 0) \
     X(WIN_SHADER_SETUP, 0, 0) \
     X(SHADER_CODE_VS, 0, 0) \
-    X(SHADER_CODE_FS, 0, 0)
+    X(SHADER_CODE_FS, 0, 0) \
+    X(EMPTY, 0, 0) \
+    X(WIN_DOCUMENTATION, 0, 0)
 
 // Icons Objects
 namespace IconObject {

@@ -30,7 +30,7 @@ function onUpdate()
 
             -- Crear mesh en la posición calculada
             local pos = Vertex3D.new(x, y, z)
-            ObjectFactory.CreateMesh3D("../assets/models/Capsule.fbx", pos)
+            ObjectFactory.Mesh3D("../assets/models/Capsule.fbx", pos)
 
             -- Avanzar a la siguiente posición
             currentCol = currentCol + 1

@@ -182,7 +182,6 @@ void ComponentRender::UpdateFPS()
 
 void ComponentRender::setSelectedObject(Object3D *o)
 {
-    Logging::Message("[Render] Set selected object to '%s', id: %d", o->getName().c_str(), o->getId());
     selectedObject = o;
 }
 

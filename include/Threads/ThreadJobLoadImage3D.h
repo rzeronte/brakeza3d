@@ -5,6 +5,7 @@
 #include "../Brakeza.h"
 #include "../3D/Image3D.h"
 #include "../Misc/Logging.h"
+#include "../Serializers/Image3DSerializer.h"
 
 class ThreadJobLoadImage3D: public ThreadJobBase
 {

@@ -493,8 +493,10 @@ void ComponentInput::handleDeleteSelectedObject(SDL_Event *e)
     if (e->type == SDL_KEYDOWN) {
         if (keyboard[SDL_SCANCODE_DELETE]) {
             auto o = Components::get()->Render()->getSelectedObject();
-            o->setRemoved(true);
-            Components::get()->Render()->setSelectedObject(nullptr);
+            if (o != nullptr) {
+                o->setRemoved(true);
+                Components::get()->Render()->setSelectedObject(nullptr);
+            }
         }
     }
 }

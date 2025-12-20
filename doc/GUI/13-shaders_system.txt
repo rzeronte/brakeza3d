@@ -1,0 +1,148 @@
+===================
+13 - SHADERS SYSTEM
+===================
+
+Brakeza3D ofrece la posibilidad de que incorpores tus propios shaders GLSL.
+
+De igual forma que sucede con los Scripts, podrás vincular Shaders a tus escenas
+y/o Object3D.
+
+==========================
+### 13.1) Tipos de Shaders
+==========================
+
+Existen dos tipos de shaders:
+
+- POSTPROCESADO: Un shader de postprocesado se aplica después de que la escena ha sido renderizada, modificando
+la imagen final antes de enviarla a la pantalla. Solo pueden ser aplicados a una scene.
+
+- GEOMETRIA: Un shader de geometría procesa vértices y puede modificar la forma de los objetos antes de rasterizarlos. Solo puede ser aplicados a un Mesh3D
+
+Podrás crear los shaders desde la UI, Brakeza3D creará automáticamente un fichero .vs y .fs, vertexshader y fragmenteshader respectivamente, los que podrás
+modificar a tu antojo. También se generará un fichero json con metadatos.
+
+=========================================
+### 13.2) Variables de Shaders (uniforms)
+=========================================
+
+También podrás configurar las variables (*uniforms*) que recibirá cada shader desde la UI.
+
+Podrás configurar tus propias variables: int, float, vec2, vec3, vec4, texture
+o bien podrás seleccionar variables pertenecientes al sistema: delta_time (float), execution_time (float)
+o scene (texture).
+
+Además, los shaders de geometría (que solo aplican a Mesh3D) te permiten usar tipos del sistema como: diffuse o specular, con
+texturas pertenecientes al modelo en particular.
+
+==========================================
+### 13.3) Template Shader de postprocesado
+==========================================
+
+A continuación las templates vacías para el shader de postprocesado.
+
+VertexShader:
+
+    #version 330 core
+
+    layout (location = 0) in vec4 vertex; // <vec2 position, vec2 texCoords>
+
+    out vec2 TexCoords;
+
+    uniform mat4 model;
+    uniform mat4 projection;
+
+    void main()
+    {
+        TexCoords = vec2(vertex.z, -vertex.w);
+        gl_Position = projection * model * vec4(vertex.xy, 0.0, 1.0);
+    }
+
+FragmentShader:
+
+    #version 330 core
+
+    in vec2 TexCoords;
+
+    //out vec4 FragColor;
+
+    void main()
+    {
+       //FragColor = texture(sceneTexture, TexCoords);
+    }
+
+=====================================
+### 13.4)Template Shader de geometría
+=====================================
+
+A continuación las templates vacías para el shader de geometría.
+
+VertexShader:
+
+    #version 330 core
+
+    layout (location = 0) in vec3 aPos;
+    layout (location = 1) in vec3 aNormal;
+    layout (location = 2) in vec2 aTexCoords;
+
+    out vec3 FragPos;
+    out vec3 Normal;
+    out vec2 TexCoords;
+
+    uniform mat4 model;
+    uniform mat4 view;
+    uniform mat4 projection;
+
+    void main()
+    {
+        FragPos = vec3(model * vec4(aPos, 1.0));
+        Normal = mat3(transpose(inverse(model))) * aNormal;
+        TexCoords = aTexCoords;
+
+        gl_Position = projection * view * vec4(FragPos, 1.0);
+    }
+
+FragmentShader:
+
+    #version 330 core
+
+    //uniform sampler2D diffuse;
+
+    out vec4 FragColor;
+
+    in vec3 FragPos;
+    in vec3 Normal;
+    in vec2 TexCoords;
+
+    void main()
+    {
+        vec3 norm = normalize(Normal);
+        vec3 viewDir = normalize(viewPos - FragPos);
+
+        //FragColor = texture(diffuse, TexCoords);
+    }
+
+==========================
+### 13.5) Shaders internos
+==========================
+
+Puedes encontrar los shaders que son utilizados internamente por Brakeza3D en la carpeta /GLSL.
+
+- Render (*/GLSL/Render*): Render de Mesh3D.
+- Outliner (*/GLSL/Outliner*): Outliner para un objeto seleccionado.
+- Color (*/GLSL/Color*): Render de Mesh3D de un color dado.
+- Wireframe (*/GLSL/Wireframe*): Render de vertices de un Mesh3D.
+- Points (*/GLSL/Points*): Render de vertices de Mesh3D.
+- Line3D (*/GLSL/Line3D*): Render de líneas 3D.
+- Image (*/GLSL/Image*): Render una imagen en pantalla.
+- Line (*/GLSL/Line*): Dibuja una línea 2D en pantalla.
+
+Shaders de postprocesamiento:
+
+- DeepOfField (*/GLSL/DeepOfField*): Efecto de profundidad de campo.
+- FOG (*/GLSL/FOG*): Efecto de niebla.
+- DepthMap (*/GLSL/DepthMap*): Dibuja el mapa de profundidad de la escena.
+- Tint (*/GLSL/Tint*): Colorea la pantalla de un color y un alpha dado.
+- Shading (*/GLSL/Shading*): Renderiza un objeto a un buffer, para ser usado como máscara.
+- Particle (*/GLSL/Particle*): Dibuja una partícula en pantalla. Usado por el objeto **ParticleEmitter**.
+
+¡Si sabes lo que haces, puedes manipular los shaders libremente si lo consideras!
