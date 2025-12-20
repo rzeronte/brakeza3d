@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "imgui_internal.h"
 #include "../../include/Components/Components.h"
+#include "../../include/GUI/Objects/FileSystemGUI.h"
 
 void Drawable::drawVertex(const Vertex3D &V, Color color)
 {
@@ -197,6 +198,14 @@ void Drawable::drawGrid3DMakeTravel(Grid3D *grid) {
     if (cubeDest != nullptr) {
         drawAABB(&cubeDest->box, Color::red());
     }
+}
+
+void Drawable::WarningMessage(const char *msg)
+{
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", msg);
+    ImGui::Spacing();
 }
 
 void Drawable::drawObject3DGizmo(

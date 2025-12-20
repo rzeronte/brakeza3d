@@ -9,6 +9,11 @@ class GUIAddonProjectSetup
 {
 public:
     GUIAddonProjectSetup() = default;
+
+    static void TreeSceneScripts();
+    static void TreeProjectScripts();
+    static void TreeSceneShaders();
+
     static void DrawWinProjectSettings();
     static void DrawProjectScripts();
     static void DrawSceneScripts();

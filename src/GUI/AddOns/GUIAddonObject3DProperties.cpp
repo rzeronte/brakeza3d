@@ -7,6 +7,7 @@
 #include "../../../include/Brakeza.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../../include/Render/Drawable.h"
 
 GUIAddonObject3DProperties::GUIAddonObject3DProperties()
 {
@@ -20,9 +21,7 @@ void GUIAddonObject3DProperties::DrawWinObjectProps(GUIManager *gui)
     auto o = Components::get()->Render()->getSelectedObject();
 
     if (o == nullptr) {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
-        ImGui::SameLine();
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
+        Drawable::WarningMessage("No object selected");
         return;
     }
 

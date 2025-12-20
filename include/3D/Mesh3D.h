@@ -77,8 +77,8 @@ public:
     void FillOGLBuffers();
     virtual void ShadowMappingPass();
     virtual void UpdateBoundingBox();
-    btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia) const;
-    btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia) const;
+    [[nodiscard]] btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia) const;
+    [[nodiscard]] btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia) const;
 
     void setRender(bool render);
     void setSourceFile(const std::string &sourceFile);

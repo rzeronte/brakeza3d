@@ -24,7 +24,7 @@ public:
     static ShaderOGLMetaInfo ExtractShaderMetainfo(const std::string &pathFile);
     static std::vector<std::string> GetDataTypeItems(EditableOpenShaderFile &file);
 
-    static void DrawWinObjectShaders(GUIManager *gui);
+    static void DrawWinObjectShaders();
 };
 
 

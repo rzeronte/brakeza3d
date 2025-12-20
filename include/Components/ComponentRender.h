@@ -136,7 +136,7 @@ public:
     static void DeleteRemovedObjects();
     static void onUpdateSceneObjects();
     static void MakeScreenShot();
-    static ShaderOGLCustom* CreateCustomShaderFromDisk(ShaderOGLMetaInfo info);
+    static ShaderOGLCustom* CreateCustomShaderFromDisk(const ShaderOGLMetaInfo &info, Mesh3D* o);
 };
 
 #endif //BRAKEDA3D_COMPONENTRENDER_H

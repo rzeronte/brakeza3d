@@ -8,16 +8,18 @@
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/TextEditor/EditableOpenScriptFile.h"
 #include "../../../include/Components/Components.h"
+#include "../../../include/Render/Drawable.h"
 
 void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
 {
-    ImGui::SeparatorText("LUA variables");
+    ImGui::Spacing();
+
+    ImGui::SeparatorText("Script variables");
 
     if (o->dataTypes.empty()) {
-        ImGui::Text("No variables found");
+        Drawable::WarningMessage("Script with no variables");
         return;
     }
-
     int i = 0;
     for (auto& type: o->dataTypes) {
         ImGui::PushID(i);
@@ -25,6 +27,7 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
         i++;
         ImGui::PopID();
     }
+    ImGui::Spacing();
 }
 
 ScriptMetaInfo ScriptLuaGUI::ExtractScriptMetainfo(const std::string& pathFile)
@@ -54,52 +57,73 @@ void ScriptLuaGUI::LoadScriptDialog(const std::string& pathFile)
     Brakeza::get()->GUI()->setIndexCodeEditorTab(meta.name);
 }
 
-void ScriptLuaGUI::DrawWinObjectScripts(GUIManager *gui)
+void ScriptLuaGUI::DrawWinObjectScripts()
 {
-    auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_SCRIPTS);
+    auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_SCRIPTS);
     if (!windowStatus->isOpen) return;
 
     auto sceneObjects = Brakeza::get()->getSceneObjects();
-    bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < sceneObjects.size();
+    bool hasSelectedIndex = Brakeza::get()->GUI()->selectedObjectIndex >= 0 && Brakeza::get()->GUI()->selectedObjectIndex < sceneObjects.size();
 
     if (!hasSelectedIndex) {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
-        ImGui::SameLine();
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
+        Drawable::WarningMessage("No object selected");
         return;
     }
 
-    auto o = sceneObjects[gui->selectedObjectIndex];
+    auto o = sceneObjects[Brakeza::get()->GUI()->selectedObjectIndex];
     auto objectScripts = o->getScripts();
 
     if (objectScripts.empty()) {
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No scripts in selected object.");
+        Drawable::WarningMessage("No scripts in selected object");
     }
 
-    for (unsigned int i = 0; i < objectScripts.size(); i++) {
-        auto currentScript = objectScripts[i];
+    if (ImGui::BeginTable("SceneShadersTable", 2, ImGuiTableFlags_None | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Shader");
+        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
 
-        GUI::DrawButtonTransparent(
-            currentScript->isPaused() ? "Unlock script object" : "Lock script object",
-            currentScript->isPaused() ? IconGUI::LUA_LOCK : IconGUI::LUA_UNLOCK,
-            GUIType::Sizes::ICONS_BROWSERS,
-            false,
-            [&] { currentScript->setPaused(!currentScript->isPaused()); }
-        );
-        ImGui::SameLine();
-        GUI::DrawButton("Edit script", IconGUI::SCRIPT_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            LoadScriptDialog(currentScript->scriptFilename);
-        });
-        ImGui::SameLine();
-        GUI::DrawButton("Remove script object", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            o->RemoveScript(currentScript);
-        });
-        ImGui::SameLine();
-        std::string name = std::to_string(i + 1) + ") " + currentScript->getName();
-        if (ImGui::CollapsingHeader(name.c_str())) {
-            currentScript->drawImGuiProperties();
+        for (unsigned int i = 0; i < objectScripts.size(); i++) {
+            auto currentScript = objectScripts[i];
+
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::SameLine(0, 5.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 2));
+            std::string name = std::to_string(i + 1) + ") " + currentScript->getName();
+            bool isOpenCurrentScript = ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
+            ImGui::PopStyleVar(2);
+            if (isOpenCurrentScript) {
+                currentScript->drawImGuiProperties();
+                ImGui::TreePop();
+            }
+
+            // Buttons
+            ImGui::TableNextColumn();
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));    // padding inner button
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));     // spacing between buttonms
+
+            GUI::DrawButtonTransparent(
+                currentScript->isPaused() ? "Unlock script object" : "Lock script object",
+                currentScript->isPaused() ? IconGUI::LUA_LOCK : IconGUI::LUA_UNLOCK,
+                GUIType::Sizes::ICONS_BROWSERS,
+                false,
+                [&] { currentScript->setPaused(!currentScript->isPaused()); }
+            );
+            ImGui::SameLine();
+            GUI::DrawButtonTransparent("Edit script", IconGUI::SCRIPT_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+                LoadScriptDialog(currentScript->scriptFilename);
+            });
+            ImGui::SameLine();
+            GUI::DrawButtonTransparent("Remove script object", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+                o->RemoveScript(currentScript);
+            });
+
+            ImGui::PopStyleVar(2);
+
         }
     }
+    ImGui::EndTable();
 }
 
 void ScriptLuaGUI::DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, bool showIcon)
@@ -158,6 +182,29 @@ void ScriptLuaGUI::DrawScriptConfig(EditableOpenScriptFile &file)
     DrawScriptConfigActionButtons(file);
 }
 
+int ScriptLuaGUI::getNumAllowedVars(Object3D* o)
+{
+    auto sceneObjects = Brakeza::get()->getSceneObjects();
+
+    auto scripts = o->getScripts();
+    auto &luaEnvironment = o->getLuaEnvironment();
+    auto &lua = Components::get()->Scripting()->getLua();
+
+    int numVarFound = 0;
+    for (auto &pair : luaEnvironment) {
+        std::string key = pair.first.as<std::string>(); // Nombre de la variable
+        sol::type valueType = pair.second.get_type();   // Tipo de la variable
+
+        auto type = std::string(sol::type_name(lua, valueType));
+
+        if (type == "number" || type == "string" || type == "boolean") {
+            numVarFound++;
+        }
+    }
+
+    return numVarFound;
+}
+
 void ScriptLuaGUI::DrawWinObjectVars(GUIManager *gui)
 {
     auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_VARS);
@@ -168,12 +215,10 @@ void ScriptLuaGUI::DrawWinObjectVars(GUIManager *gui)
     bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < sceneObjects.size();
 
     if (!hasSelectedIndex) {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
-        ImGui::SameLine();
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
+        Drawable::WarningMessage("No object selected");
     }
 
-    if (hasSelectedIndex) {
+    if (hasSelectedIndex && getNumAllowedVars(sceneObjects[gui->selectedObjectIndex]) > 0) {
         static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
         if (ImGui::BeginTable("ObjectVariablesTable", 3, flags)) {
             auto o = sceneObjects[gui->selectedObjectIndex];
@@ -346,10 +391,7 @@ void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
 void ScriptLuaGUI::DrawScriptConfigEmptyStateWarning(EditableOpenScriptFile &file)
 {
     if (file.getShader()->dataTypes.empty()) {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
-        ImGui::SameLine();
-        ImGui::Text("No variables defined");
-        ImGui::Spacing();
+        Drawable::WarningMessage("No variables defined");
     }
 }
 

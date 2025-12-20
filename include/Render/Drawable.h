@@ -20,6 +20,7 @@ public:
     static void drawGrid3D(Grid3D *);
     static void drawObject3DGizmo(Object3D *o, const glm::mat4 &objectMatrix, glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
     static void drawGrid3DMakeTravel(Grid3D *grid);
+    static void WarningMessage(const char *msg);
 };
 
 
