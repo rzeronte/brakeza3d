@@ -15,6 +15,7 @@
 #include "../../include/GUI/AddOns/GUIAddonMenu.h"
 #include "../../include/GUI/AddOns/GUIAddonProjectSetup.h"
 #include "../../include/GUI/AddOns/GUIAddonToolbar.h"
+#include "../../include/Render/Drawable.h"
 
 #define ADD_WIN(title, type, icon, visible, internal, func) \
 windows.push_back({ title, type, icon, visible, internal, [&] { func; }})
@@ -55,8 +56,8 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Project setup",           GUIType::PROJECT_SETTINGS, IconGUI::WIN_PROJECT_SETTINGS,  true,  false, GUIAddonProjectSetup::DrawWinProjectSettings());
     ADD_WIN("Scene Objects",           GUIType::SCENE_OBJECTS,    IconGUI::WIN_SCENE_OBJECTS,     true,  false, GUIAddonObjects3D::DrawWinSceneObjects(this));
     ADD_WIN("Object Properties",       GUIType::OBJECT_PROPS,     IconGUI::WIN_OBJECT_PROPS,      true,  false, GUIAddonObject3DProperties::DrawWinObjectProps(this));
-    ADD_WIN("Object shaders",          GUIType::OBJECT_SHADERS,   IconGUI::WIN_OBJECT_SHADERS,    false, false, ShadersGUI::DrawWinObjectShaders(this));
-    ADD_WIN("Object Scripts",          GUIType::OBJECT_SCRIPTS,   IconGUI::WIN_OBJECT_SCRIPTS,    false, false, ScriptLuaGUI::DrawWinObjectScripts(this));
+    ADD_WIN("Object shaders",          GUIType::OBJECT_SHADERS,   IconGUI::WIN_OBJECT_SHADERS,    false, false, ShadersGUI::DrawWinObjectShaders());
+    ADD_WIN("Object Scripts",          GUIType::OBJECT_SCRIPTS,   IconGUI::WIN_OBJECT_SCRIPTS,    false, false, ScriptLuaGUI::DrawWinObjectScripts());
     ADD_WIN("Object variables",        GUIType::OBJECT_VARS,      IconGUI::WIN_OBJECT_VARS,       false, false, ScriptLuaGUI::DrawWinObjectVars(this));
     ADD_WIN("Global variables",        GUIType::GLOBAL_VARS,      IconGUI::WIN_GLOBAL_VARS,       false, false, ScriptLuaGUI::DrawWinGlobalVars(this));
     ADD_WIN("Keyboard/Mouse",          GUIType::KEYBOARD_MOUSE,   IconGUI::WIN_KEYBOARD_MOUSE,    false, false, DrawWinKeyboardMouse());
@@ -222,9 +223,7 @@ void GUIManager::DrawWinCodeEditor()
     }
 
     if (openFiles.empty()) {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
-        ImGui::SameLine();
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Open a file to start...");
+        Drawable::WarningMessage("Open a file to start...");
     }
 }
 

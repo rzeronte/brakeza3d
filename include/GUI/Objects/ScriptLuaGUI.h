@@ -17,6 +17,9 @@ public:
     static void LoadScriptDialog(const std::string& pathFile);
 
     static void DrawScriptConfig(EditableOpenScriptFile &file);
+
+    static int getNumAllowedVars(Object3D *o);
+
     static void DrawScriptConfigHeader(EditableOpenScriptFile &file);
     static void DrawScriptConfigEditName(EditableOpenScriptFile &file);
     static void DrawScriptConfigVarCreator(EditableOpenScriptFile &file);
@@ -28,7 +31,7 @@ public:
 
     static void DrawWinObjectVars(GUIManager *gui);
     static void DrawWinGlobalVars(GUIManager *gui);
-    static void DrawWinObjectScripts(GUIManager *gui);
+    static void DrawWinObjectScripts();
     static void DrawPropertiesGUI(ScriptLUA *o);
     static ScriptMetaInfo ExtractScriptMetainfo(const std::string &pathFile);
 

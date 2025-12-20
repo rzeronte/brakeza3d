@@ -10,7 +10,6 @@
 #include <vector>
 #include "imgui.h"
 #include "../SceneObjectTypes.h"
-#include "../Misc/ScriptLUA.h"
 #include "../Misc/Timer.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 
@@ -50,7 +49,7 @@ namespace GUIType
 
     struct Sizes {
         static constexpr ImVec2 ICONS_TOOLBAR = ImVec2(24, 24);
-        static constexpr ImVec2 ICONS_OBJECTS_ALLOWED = ImVec2(20, 20);
+        static constexpr ImVec2 ICONS_OBJECTS_ALLOWED = ImVec2(16, 16);
         static constexpr ImVec2 ICONS_BROWSERS = ImVec2(16, 16);
         static constexpr ImVec2 ICONS_CONSOLE = ImVec2(16, 16);
         static constexpr ImVec2 ICONS_LOG = ImVec2(16, 16);
@@ -130,8 +129,8 @@ namespace GUIType
     };
 
     struct IconEntry {
-        const char* name;
-        Sheet* icon;
+        const char* name = nullptr;
+        Sheet* icon = nullptr;
         Sheet original;
     };
 }

@@ -3,7 +3,6 @@
 	"vsFile": "../assets/shaders/Examples/Mesh3D/DemoMask.vs",
 	"fsFile": "../assets/shaders/Examples/Mesh3D/DemoMask.fs",
 	"name":	"DemoMask",
-	"file":	"../assets/shaders/Examples/Mesh3D/DemoMask.fs",
 	"type":	"Mesh3D",
 	"types":	[{
 			"name":	"diffuseTexture",

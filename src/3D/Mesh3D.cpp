@@ -25,6 +25,7 @@ Mesh3D::Mesh3D(std::string modelFile)
 :
     sourceFile(modelFile)
 {
+    luaEnvironment["this"] = this;
 }
 
 Mesh3D::~Mesh3D()
@@ -526,11 +527,15 @@ void Mesh3D::LoadShader(const std::string &jsonFilename)
     auto metaInfo = ShadersGUI::ExtractShaderMetainfo(jsonFilename);
 
     if (ShaderOGLCustom::getShaderTypeFromString(metaInfo.type) == SHADER_OBJECT) {
-        AddCustomShader(Components::get()->Render()->CreateCustomShaderFromDisk(metaInfo));
-        return;
+        auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, this);
+
+        if (shader != nullptr) {
+            AddCustomShader(shader);
+            return;
+        }
     }
 
-    Logging::Error("[Mesh3D] Error: Cannot attach postprocessing shader to object!");
+    Logging::Error("[Mesh3D] Error: Cannot apply shader to Mesh3D...");
 }
 
 void Mesh3D::RemoveShader(int index)

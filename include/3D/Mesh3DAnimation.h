@@ -3,7 +3,6 @@
 
 #include "Mesh3D.h"
 #include "../Misc/Logging.h"
-#include <cstring>
 #include <cassert>
 #include <assimp/Importer.hpp>
 
@@ -120,7 +119,6 @@ public:
     ObjectType getTypeObject() const override               { return ObjectType::Mesh3DAnimation; }
     GUIType::Sheet getIcon() override                       { return IconObject::MESH_3D_ANIMATION; }
     [[nodiscard]] bool isRemoveAtEndAnimation() const       { return removeOnAnimationEnd; }
-
     [[nodiscard]] bool isLoop() const                       { return loop; }
     [[nodiscard]] bool isAnimationEnds() const              { return finished; }
     [[nodiscard]] float getCurrentAnimationMaxTime() const;

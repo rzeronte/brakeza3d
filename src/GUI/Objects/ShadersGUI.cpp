@@ -10,6 +10,7 @@
 #include "../../../include/GUI/GUIManager.h"
 #include "../../../include/GUI/TextEditor/EditableOpenShaderFile.h"
 #include "../../../include/Components/Components.h"
+#include "../../../include/Render/Drawable.h"
 
 void ShadersGUI::DrawShaderConfig(EditableOpenShaderFile &file)
 {
@@ -187,10 +188,7 @@ void ShadersGUI::DrawShaderConfigEmptyStateWarning(EditableOpenShaderFile &file)
     auto types = file.getShader()->getDataTypes();
 
     if (types.empty()) {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
-        ImGui::SameLine();
-        ImGui::Text("No variables defined");
-        ImGui::Spacing();
+        Drawable::WarningMessage("No variables defined");
     }
 }
 
@@ -201,22 +199,20 @@ void ShadersGUI::DrawShaderConfigActionButtons(EditableOpenShaderFile &file)
     });
 }
 
-void ShadersGUI::DrawWinObjectShaders(GUIManager *gui)
+void ShadersGUI::DrawWinObjectShaders()
 {
-    auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_SHADERS);
+    auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_SHADERS);
     if (!windowStatus->isOpen) return;
 
     auto objects = Brakeza::get()->getSceneObjects();
-    bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < objects.size();
+    bool hasSelectedIndex = Brakeza::get()->GUI()->selectedObjectIndex >= 0 && Brakeza::get()->GUI()->selectedObjectIndex < objects.size();
 
     if (!hasSelectedIndex) {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
-        ImGui::SameLine();
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No object selected");
+        Drawable::WarningMessage("No object selected");
         return;
     }
 
-    auto mesh = dynamic_cast<Mesh3D*>(objects[gui->selectedObjectIndex]);
+    auto mesh = dynamic_cast<Mesh3D*>(objects[Brakeza::get()->GUI()->selectedObjectIndex]);
 
     if (mesh == nullptr) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No Mesh3D object");
@@ -225,38 +221,58 @@ void ShadersGUI::DrawWinObjectShaders(GUIManager *gui)
 
     auto customShaders = mesh->getCustomShaders();
     if (customShaders.empty()) {
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No shaders in selected object.");
+        Drawable::WarningMessage("No shaders in selected object");
     }
 
-    for (unsigned int i = 0; i < customShaders.size(); i++) {
-        ImGui::PushID(i);
-        auto s = customShaders[i];
+    if (ImGui::BeginTable("SceneShadersTable", 2, ImGuiTableFlags_None | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Shader");
+        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
 
-        GUI::DrawButtonTransparent(
-            !s->isEnabled() ? "Unlock shader object" : "Lock shader object",
-            !s->isEnabled() ? IconGUI::SHADER_LOCK : IconGUI::SHADER_UNLOCK,
-            GUIType::Sizes::ICONS_BROWSERS,
-            false,
-            [&] { s->setEnabled(!s->isEnabled()); }
-        );
-        ImGui::SameLine();
-        GUI::DrawButton("Reload shader in object", IconGUI::SHADER_RELOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            s->Reload();
-        });
-        ImGui::SameLine();
-        GUI::DrawButton("Edit shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            auto jsonFilename = s->getLabel() + ".json";
-            LoadDialogShader(s->getTypesFile());
-        });
-        ImGui::SameLine();
-        GUI::DrawButton("Remove shader in object", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-            mesh->RemoveShader(i);
-        });
-        ImGui::SameLine();
-        if (ImGui::CollapsingHeader(s->getLabel().c_str())) {
-            s->drawImGuiProperties(mesh->getModelTextures()[0], mesh->getModelTextures()[0]);
+        for (unsigned int i = 0; i < customShaders.size(); i++) {
+            ImGui::PushID(i);
+            auto s = customShaders[i];
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::SameLine(0, 5.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 2));
+            bool isOpenCurrentShader = ImGui::TreeNodeEx(s->getLabel().c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
+            ImGui::PopStyleVar(2);
+            if (isOpenCurrentShader) {
+                s->drawImGuiProperties(mesh->getModelTextures()[0], mesh->getModelTextures()[0]);
+            }
+            // Buttons
+            ImGui::TableNextColumn();
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));    // padding inner button
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));     // spacing between buttonms
+
+            GUI::DrawButtonTransparent(
+                !s->isEnabled() ? "Unlock shader object" : "Lock shader object",
+                !s->isEnabled() ? IconGUI::SHADER_LOCK : IconGUI::SHADER_UNLOCK,
+                GUIType::Sizes::ICONS_BROWSERS,
+                false,
+                [&] { s->setEnabled(!s->isEnabled()); }
+            );
+            ImGui::SameLine();
+            GUI::DrawButtonTransparent("Reload shader in object", IconGUI::SHADER_RELOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+                s->Reload();
+            });
+            ImGui::SameLine();
+            GUI::DrawButtonTransparent("Edit shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+                auto jsonFilename = s->getLabel() + ".json";
+                LoadDialogShader(s->getTypesFile());
+            });
+            ImGui::SameLine();
+            GUI::DrawButtonTransparent("Remove shader in object", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+                mesh->RemoveShader(i);
+            });
+
+            ImGui::PopStyleVar(2);
+
+            ImGui::PopID();
         }
-        ImGui::PopID();
+        ImGui::EndTable();
     }
 }
 
@@ -265,7 +281,7 @@ void ShadersGUI::LoadDialogShader(const std::string &file)
     auto metaInfo = ExtractShaderMetainfo(file);
 
     if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(metaInfo.name)) {
-        auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo);
+        auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, nullptr);
         shader->PrepareSync();
 
         Brakeza::get()->GUI()->OpenEditableFile(

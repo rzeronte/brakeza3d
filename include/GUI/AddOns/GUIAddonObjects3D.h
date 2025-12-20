@@ -14,10 +14,10 @@ public:
 
     static bool exist(std::string pattern1, std::string pattern2);
 
-    static void DrawObjectsTree(GUIManager * gui, const std::vector<Object3D *> & objects, int selectedIndex, std::string filter = "");
-    static void DrawObjectList(GUIManager *gui, std::vector<Object3D *> &objects, int selectedObjectIndex, std::string filter);
+    static void DrawObjectsTree(GUIManager * gui, const std::vector<Object3D *> & objects, std::string filter = "");
+    static void DrawObjectList(GUIManager *gui, std::vector<Object3D *> &objects, std::string filter);
     static void DrawWinSceneObjects(GUIManager *gui);
-    static void DrawItem(int i, Object3D* o, const std::vector<Object3D *> &objects, int selectedIndex, bool icon);
+    static void DrawItem(int i, Object3D* o, bool icon);
     static void DrawObjectTypes(GUIManager *gui);
     static bool isObjectTypeVisible(GUIManager *gui, ObjectType typeObject);
 

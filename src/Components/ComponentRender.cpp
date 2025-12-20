@@ -182,7 +182,8 @@ void ComponentRender::UpdateFPS()
 
 void ComponentRender::setSelectedObject(Object3D *o)
 {
-    this->selectedObject = o;
+    Logging::Message("[Render] Set selected object to '%s', id: %d", o->getName().c_str(), o->getId());
+    selectedObject = o;
 }
 
 void ComponentRender::UpdateSelectedObject3D()
@@ -227,28 +228,32 @@ void ComponentRender::LoadShaderIntoScene(const std::string &filePath)
     auto metaInfo = ShadersGUI::ExtractShaderMetainfo(filePath);
 
     if (ShaderOGLCustom::getShaderTypeFromString(metaInfo.type) == SHADER_POSTPROCESSING) {
-        AddShaderToScene(CreateCustomShaderFromDisk(metaInfo));
-        return;
+        auto shader = CreateCustomShaderFromDisk(metaInfo, nullptr);
+
+        if (shader != nullptr) {
+            AddShaderToScene(shader);
+            return;
+        }
     }
 
-    Logging::Error("[Render] Scenes only accepts PostProcessing shaders!");
+    Logging::Error("[Render] Error: Cannot apply shader to scene...");
 }
 
-ShaderOGLCustom* ComponentRender::CreateCustomShaderFromDisk(ShaderOGLMetaInfo info)
+ShaderOGLCustom* ComponentRender::CreateCustomShaderFromDisk(const ShaderOGLMetaInfo &info, Mesh3D* mesh)
 {
-    switch(ShaderOGLCustom::getShaderTypeFromString(info.type)) {
-        case SHADER_POSTPROCESSING : {
-            auto s = new ShaderOGLCustomPostprocessing(info.name, info.typesFile, info.vsFile, info.fsFile);
-            s->PrepareSync();
-            return s;
-        }
-        default:
-        case SHADER_OBJECT : {
-            auto s = new ShaderOGLCustomMesh3D(nullptr, info.name, info.typesFile, info.vsFile, info.fsFile);
-            s->PrepareSync();
-            return s;
-        }
+    if (ShaderOGLCustom::getShaderTypeFromString(info.type) == SHADER_POSTPROCESSING) {
+        auto s = new ShaderOGLCustomPostprocessing(info.name, info.typesFile, info.vsFile, info.fsFile);
+        s->PrepareSync();
+        return s;
     }
+
+    if (ShaderOGLCustom::getShaderTypeFromString(info.type) == SHADER_OBJECT) {
+        auto s = new ShaderOGLCustomMesh3D(mesh, info.name, info.typesFile, info.vsFile, info.fsFile);
+        s->PrepareSync();
+        return s;
+    }
+
+    return nullptr;
 }
 
 void ComponentRender::AddShaderToScene(ShaderOGLCustom *shader)
