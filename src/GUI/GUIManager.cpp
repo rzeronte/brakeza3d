@@ -283,22 +283,6 @@ bool GUIManager::isWindowOpen(GUIType::Window window) const
     return false;
 }
 
-void GUIManager::setSelectedObjectIndex(int value)
-{
-    selectedObjectIndex = value;
-}
-
-void GUIManager::setSelectedObject(const Object3D *s)
-{
-    int i = 0;
-    for (const auto o: Brakeza::get()->getSceneObjects()) {
-        if (s == o) {
-            setSelectedObjectIndex(i);
-        }
-        i++;
-    }
-}
-
 void GUIManager::DrawWinKeyboardMouse()
 {
     auto windowStatus = getWindowStatus(GUIType::KEYBOARD_MOUSE);

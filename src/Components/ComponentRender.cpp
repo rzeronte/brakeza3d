@@ -200,7 +200,6 @@ void ComponentRender::UpdateSelectedObject3D()
         selectedObject = Brakeza::get()->getObjectById(id);
         if (selectedObject != nullptr) {
             Logging::Message("[Render] Selected object: %s", selectedObject->getName().c_str());
-            Brakeza::get()->GUI()->setSelectedObject(selectedObject);
         }
     }
 }

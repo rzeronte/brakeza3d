@@ -27,7 +27,6 @@ class GUIManager
     std::vector<GUIType::LayoutWindowConfig> devsLayoutWindowsConfig;
     std::vector<GUIType::LayoutWindowConfig> designLayoutWindowsConfig;
 
-    int selectedObjectIndex = -1;
     bool showBoneMappingsEditorWindow = false;
 
     float splashAlpha = 1.0f;
@@ -69,8 +68,6 @@ public:
     bool isWindowOpen(GUIType::Window w) const;
     bool isEditableFileAlreadyOpen(const std::string &label) const;
     void OnStart();
-    void setSelectedObjectIndex(int value);
-    void setSelectedObject(const Object3D *s);
     void RegisterWindows();
     void RegisterDefaultLayoutWindows();
     void RegisterAllowedItemsForViewer();
@@ -86,7 +83,6 @@ public:
 
     void ResetIndexCodeEditor();
 
-    int& selectedObjectIndexPointer()                                           { return selectedObjectIndex; }
     [[nodiscard]] TextureAtlas * getTextureAtlas() const                        { return textureAtlas; }
     [[nodiscard]] GUIType::BrowserCache getBrowserScripts() const               { return browserScripts; }
     [[nodiscard]] GuiAddonConsole *getConsole() const                           { return widgetConsole; }

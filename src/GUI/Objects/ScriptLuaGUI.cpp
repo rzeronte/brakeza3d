@@ -62,15 +62,12 @@ void ScriptLuaGUI::DrawWinObjectScripts()
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_SCRIPTS);
     if (!windowStatus->isOpen) return;
 
-    auto sceneObjects = Brakeza::get()->getSceneObjects();
-    bool hasSelectedIndex = Brakeza::get()->GUI()->selectedObjectIndex >= 0 && Brakeza::get()->GUI()->selectedObjectIndex < sceneObjects.size();
-
-    if (!hasSelectedIndex) {
+    auto o = Components::get()->Render()->getSelectedObject();
+    if (o == nullptr) {
         Drawable::WarningMessage("No object selected");
         return;
     }
 
-    auto o = sceneObjects[Brakeza::get()->GUI()->selectedObjectIndex];
     auto objectScripts = o->getScripts();
 
     if (objectScripts.empty()) {
@@ -212,16 +209,16 @@ void ScriptLuaGUI::DrawWinObjectVars(GUIManager *gui)
 
     auto sceneObjects = Brakeza::get()->getSceneObjects();
 
-    bool hasSelectedIndex = gui->selectedObjectIndex >= 0 && gui->selectedObjectIndex < sceneObjects.size();
+    auto o = Components::get()->Render()->getSelectedObject();
 
-    if (!hasSelectedIndex) {
+    if (o == nullptr) {
         Drawable::WarningMessage("No object selected");
+        return;
     }
 
-    if (hasSelectedIndex && getNumAllowedVars(sceneObjects[gui->selectedObjectIndex]) > 0) {
+    if (getNumAllowedVars(o) > 0) {
         static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
         if (ImGui::BeginTable("ObjectVariablesTable", 3, flags)) {
-            auto o = sceneObjects[gui->selectedObjectIndex];
             auto scripts = o->getScripts();
             auto &luaEnvironment = o->getLuaEnvironment();
             auto &lua = Components::get()->Scripting()->getLua();

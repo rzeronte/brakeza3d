@@ -37,7 +37,6 @@ public:
             }
         }
 
-        Brakeza::get()->GUI()->setSelectedObject(nullptr);
         Components::get()->Render()->setSelectedObject(nullptr);
 
         SceneLoader::isClearing = false;
