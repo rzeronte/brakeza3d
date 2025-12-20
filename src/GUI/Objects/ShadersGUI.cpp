@@ -205,15 +205,14 @@ void ShadersGUI::DrawWinObjectShaders()
     if (!windowStatus->isOpen) return;
 
     auto objects = Brakeza::get()->getSceneObjects();
-    bool hasSelectedIndex = Brakeza::get()->GUI()->selectedObjectIndex >= 0 && Brakeza::get()->GUI()->selectedObjectIndex < objects.size();
 
-    if (!hasSelectedIndex) {
+    auto o = Components::get()->Render()->getSelectedObject();
+    if (o == nullptr) {
         Drawable::WarningMessage("No object selected");
         return;
     }
 
-    auto mesh = dynamic_cast<Mesh3D*>(objects[Brakeza::get()->GUI()->selectedObjectIndex]);
-
+    auto mesh = dynamic_cast<Mesh3D*>(o);
     if (mesh == nullptr) {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No Mesh3D object");
         return;

@@ -2,6 +2,7 @@
 // Created by Eduardo on 06/12/2025.
 //
 
+#include "../../../include/Components/Components.h"
 #include "../../../include/GUI/Objects/Mesh3DAnimationGUI.h"
 
 
@@ -35,11 +36,12 @@ void Mesh3DAnimationDrawerGUI::DrawPropertiesGUI(Mesh3DAnimation *o)
 }
 void Mesh3DAnimationDrawerGUI::DrawEditBonesMappingWindow(GUIManager *gui)
 {
-    if (gui->selectedObjectIndex < 0) return;
     if (!gui->showBoneMappingsEditorWindow) return;
 
-    auto a = dynamic_cast<Mesh3DAnimation*>(Brakeza::get()->getObjectByIndex(gui->selectedObjectIndex));
+    auto o = Components::get()->Render()->getSelectedObject();
+    if ( o == nullptr) return;
 
+    auto a = dynamic_cast<Mesh3DAnimation*>(o);
     if (a == nullptr) return;
 
     auto bc = a->getBoneMappingColliders();
