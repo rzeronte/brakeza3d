@@ -9,6 +9,7 @@
 #include "../Brakeza.h"
 #include "../2D/Image2DAnimation.h"
 #include "../Misc/Logging.h"
+#include "../Serializers/Image2DAnimationSerializer.h"
 
 class ThreadJobLoadImage2DAnimation: public ThreadJobBase
 {

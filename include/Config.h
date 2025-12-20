@@ -47,8 +47,10 @@ public:
     std::string SCENES_FOLDER         = ASSETS_FOLDER + "scenes/";
     std::string CUSTOM_SHADERS_FOLDER = ASSETS_FOLDER + "shaders/";
     std::string SCREENSHOTS_FOLDER    = ASSETS_FOLDER + "screenshots/";
+    std::string DOCUMENTATION_INDEX   = "index.md";
     std::string DEFAULT_SOUNDS_FILE   = "sounds.json";
     std::string DEFAULT_SCENE         = "brakeza.json";
+    std::string DOCUMENTATION_CONFIG  = "documentation.json";
     std::string CAMERA_OBJECT_NAME    = "Camera";
     std::string GUI_ICON_SHEET        = "sheet.png";
     std::string SPLASH_FILENAME       = "splash.png";

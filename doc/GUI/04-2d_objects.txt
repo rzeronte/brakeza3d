@@ -1,0 +1,64 @@
+===============
+04 - 2D OBJECTS
+===============
+
+Brakeza3D permite incorporar a la pantalla elementos 2D tradicionales.
+
+===============
+### 4.1) Image2D
+===============
+
+Es un objeto 2D. Dibuja una imagen en pantalla.
+
+    img = Image2D.create(10, 10, "../assets/images/logo_small.png")
+    img:setEnabled(true)
+    img:updatePosition(300, 300)
+    brakeza:addObject3D(img, 'imagen')
+
+=========================
+### 4.2) Image2DAnimation
+=========================
+
+Dibuja una animación en pantalla, es en esencia, una colección de Image2D.
+
+Está diseñado para cargar la animación desde formato **spritesheet**, es decir, una imagen con un grid, donde cada celda
+es una imagen de la animación. Es por este motivo que deberemos de indicar el **ancho** y **alto** de cada frame y el **núm. de frames**
+en la imagen, para que la función ajuste adecuadamente el sprite.
+
+Podrás configurar la velocidad (**fps**) a la que se muestra una animación.
+
+    -- Image2DAnimation.create(x, y, spriteFile, width, height, numFrames, fps)
+    img = Image2DAnimation.create(0, 0, "../assets/sprites/explosion_a.png", 128, 128, 15, 24)
+    img:setEnabled(true)
+    brakeza:addObject3D(img, 'imagen')
+
+======================
+### Textos en pantalla
+======================
+
+Brakeza3D permite escribir textos en pantalla a través de tus scripts LUA mediante el
+objeto TextWriter.
+
+Necesitarás disponer de una fuente, en formato TTF, crear el objeto y ya podrás utilizarlo.
+
+Sus métodos son:
+
+- writeTextTTF(x, y, width, height, text, Color): Dibuja texto en la posición (x,y) de tamaño  width * height
+- writeTextTTFAutoSize(x, y, text, Color, sizeRatio): Dibuja texto en la posición (x,y), calculando dimensiones automáticamente
+- writeTextTTFMiddleScreen(text, Color, sizeRatio): Dibuja texto centrado en pantalla
+- writeTTFCenterHorizontal(y, text, Color, sizeRatio): Dibuja texto centrado horizontalmente
+
+    function onStart()
+        textWriter = TextWriter.create("../assets/fonts/Courier.ttf")
+    end
+
+    function onUpdate()
+         textWriter:writeTTFCenterHorizontal(
+            15,
+            "Centrado horizontal!",
+            Color.new(0, 1, 0, 1),
+            1.5
+        )
+
+        textWriter:writeTextTTF(100, 100, 100, 100, "Hola!", Color.new(1, 0, 0, 1))
+    end

@@ -170,7 +170,6 @@ void FileSystemGUI::DrawProjectCreatorDialog(GUIType::BrowserCache &browser, std
 
 void FileSystemGUI::DrawSceneCreator()
 {
-
 }
 
 void FileSystemGUI::DrawScenesTable(GUIType::BrowserCache &browser)

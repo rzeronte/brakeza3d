@@ -1,10 +1,11 @@
 #ifndef BRAKEZA3D_THREADJOBLOADIMAGE3DANIMATION360_H
-#define BRAKEZA3D_THREADJOBLOADIMAGE3DANIMATION630_H
+#define BRAKEZA3D_THREADJOBLOADIMAGE3DANIMATION360_H
 
 #include "ThreadJobBase.h"
 #include "../Brakeza.h"
 #include "../3D/Image3DAnimation360.h"
 #include "../Misc/Logging.h"
+#include "../Serializers/Image3DAnimation360Serializer.h"
 
 class ThreadJobLoadImage3DAnimation360: public ThreadJobBase
 {
@@ -55,4 +56,4 @@ public:
     }
 };
 
-#endif //BRAKEZA3D_THREADJOBLOADIMAGE3DANIMATION360_H
+#endif //BRAKEZA3D_THREADJOBLOADIMAGE3DANIMATION630_H

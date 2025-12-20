@@ -4,6 +4,7 @@
 #include "ThreadJobBase.h"
 #include "../2D/Image2D.h"
 #include "../Misc/Logging.h"
+#include "../Serializers/Image2DSerializer.h"
 
 class ThreadJobLoadImage2D: public ThreadJobBase
 {

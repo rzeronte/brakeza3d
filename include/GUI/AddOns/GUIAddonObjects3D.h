@@ -12,7 +12,7 @@ class GUIAddonObjects3D
 public:
     explicit GUIAddonObjects3D() = default;
 
-    static bool exist(std::string pattern1, std::string pattern2);
+    static bool exist(const std::string &pattern1, const std::string &pattern2);
 
     static void DrawObjectsTree(GUIManager * gui, const std::vector<Object3D *> & objects, std::string filter = "");
     static void DrawObjectList(GUIManager *gui, std::vector<Object3D *> &objects, std::string filter);

@@ -1,12 +1,12 @@
-#ifndef BRAKEZA3D_JOBREADMESHSHADERS_H
-#define BRAKEZA3D_JOBREADMESHSHADERS_H
+#ifndef BRAKEZA3D_THREADJOBLOADMESH3DANIMATION_H
+#define BRAKEZA3D_THREADJOBLOADMESH3DANIMATION_H
 
 #include "ThreadJobBase.h"
 #include "../Brakeza.h"
 #include "../3D/Mesh3DAnimation.h"
 #include <string>
-
 #include "../include/Serializers/Mesh3DSerializer.h"
+#include "../include/Serializers/Mesh3DAnimationSerializer.h"
 
 class ThreadJobLoadMesh3DAnimation: public ThreadJobBase
 {
@@ -64,4 +64,4 @@ public:
     }
 };
 
-#endif //BRAKEZA3D_JOBREADMESHSHADERS_H
+#endif

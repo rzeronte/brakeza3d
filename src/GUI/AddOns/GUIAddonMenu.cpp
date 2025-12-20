@@ -41,7 +41,11 @@ void GUIAddonMenu::MenuBrakeza3D()
     if (ImGui::MenuItem("About Brakeza3D")) {
         Config::get()->SHOW_ABOUT_ME_MODAL = true;
     }
-
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DOCUMENTATION), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    if (ImGui::MenuItem("Documentation")) {
+        auto window = Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION);
+        window->isOpen = true;
+    }
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::BRAKEZA_EXIT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Exit")) Config::get()->EXIT = true;

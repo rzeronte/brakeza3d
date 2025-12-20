@@ -474,7 +474,17 @@ inline void LUAIntegration(sol::state &lua)
     );
 
     lua.new_usertype<ObjectFactory>("ObjectFactory",
-        "CreateMesh3D", &ObjectFactory::CreateMesh3D
+        "Object3D", &ObjectFactory::CreateObject3D,
+        "Image2D", &ObjectFactory::CreateImage2D,
+        "Image2DAnimation", &ObjectFactory::CreateImage2DAnimation,
+        "Image3D", &ObjectFactory::CreateImage3D,
+        "Image3DAnimation", &ObjectFactory::CreateImage3DAnimation,
+        "Image3DAnimation360", &ObjectFactory::CreateImage3DAnimation360,
+        "Mesh3D", &ObjectFactory::CreateMesh3D,
+        "Mesh3DAnimation", &ObjectFactory::CreateMesh3DAnimation,
+        "LightPoint", &ObjectFactory::CreateLightPoint,
+        "LightSpot", &ObjectFactory::CreateLightSpot,
+        "ParticleEmitter", &ObjectFactory::CreateParticleEmitter
     );
 }
 

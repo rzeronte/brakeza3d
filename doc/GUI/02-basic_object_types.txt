@@ -1,0 +1,164 @@
+=======================
+02 - BASIC OBJECT TYPES
+=======================
+
+===========================
+### 2.1) EL OBJETO OBJECT3D
+===========================
+
+El objeto más básico en Brakeza3D es él Object3D. Cualquier elemento en la escena, será Object3D.
+
+Las propiedades principales de un Object3D son:
+
+- Posición (Vertex3D): Posición en el mundo del objeto.
+- Rotación (M3): Rotacion del objeto.
+- Escala (float): Factor de escala del modelo.
+- Activado (bool): Determina si el objeto está activado o desactivado.
+
+======================================
+### 2.2) INTERACTUANDO CON UN OBJECT3D
+======================================
+
+Podemos interactuar un Object3D.
+
+- getLabel(): Obtenemos el nombre del objeto
+- setLabel(): Establecemos un nuevo nombre de objeto
+- getPosition(): Obtenemos la posición del objeto en formato Vertex3D
+- setPosition(Vertex3D): Establecemos una nueva posición para el objeto
+- addToPosition(Vertex3D): Suma un Vertex3D a la posición actual
+- getRotation(): Obtenemos la rotación del objeto en formato M3
+- setRotation(M3): Establecemos una nueva rotación para el objeto
+- getScale(): Obtenemos el factor de escala del modelo
+- setScale(float): Establecemos un nuevo factor de escala
+- setEnable(bool): Activa o desactiva el objeto en la escena
+- setRemoved(bool): Elimina en el siguiente frame el objeto de la escena
+- AxisForward(): Devuelve el actual eje de rotación hacia el frente
+- AxisUp(): Devuelve el actual eje de rotación hacia arriba
+- AxisRight(): Devuelve el actual eje de rotación hacia la derecha
+- getTypeObject(): Devuelve un string con el tipo de objeto
+- lookAt(Object3D): Rota el objeto hacia otro objeto dado
+- getM3ModelMatrix(): Obtiene la matrix de objeto
+
+==================================
+### 2.3) SCRIPTING SOBRE OBJECTS3D
+==================================
+
+Cualquier Object3D puede ser vinculado a uno o varios scripts LUA. Veremos esto en profundidad en el apartado dedicado
+al scripting.
+
+======================================
+### 2.4) OBJETOS DERIVADOS DE OBJETC3D
+======================================
+
+Brakeza3D incluye multitud de objetos 3D listos para utilizarse. Todos extienden de Object3D.
+
+Por ejemplo tenemos objetos que pueden cargar modelos 3D, otros nos permitirán cargar una imagen en pantalla,
+otros cargarán sprites animados, etc. A continuación enumero una lista de algunos de los más destacados:
+
+- Mesh3D: Modelo 3D con triángulos y texturas
+- Mesh3DAnimation: Similar a Mesh3D, pero para modelos animados.
+- Image2D: Dibuja una imagen en pantalla.
+- Image3D: Plano 3D sobre el que se visualiza una textura de imagen.
+- Image2DAnimation: Conjunto de Image2D que conforma una animación.
+- ParticleEmitter: Emisor de partículas.
+- LightPoint: Punto de luz.
+- ...
+
+A lo largo de la documentación nos detendremos en algunos de estos objetos para su mayor
+comprensión y detalle.
+
+=================================
+### 2.5) TIPOS BÁSICOS AUXILIARES
+=================================
+
+Existen además varios tipos de dato que facilitan la implementación de tareas en 3D y estarán
+disponibles a través de tus scripts LUA.
+
+=====================
+##### 2.5.1) Vertex3D
+=====================
+
+Un punto en espacio o un vector de origen centro de coordenadas.
+
+| Propiedad | Tipo  | Descripción  |
+|-----------|-------|--------------|
+| x         | float | Coordenada X |
+| y         | float | Coordenada Y |
+| z         | float | Coordenada Z |
+
+| Método                         | Descripción                          |
+|--------------------------------|--------------------------------------|
+| + Vertex3D => Vertex3D       | Suma de vectores (add)                 |
+| - Vertex3D => Vertex3D       | Resta de vectores (sub)                |
+| * Vertex3D => float          | Producto cruz (cross product)          |
+| % Vertex3D => Vertex3D       | Producto punto (dot product)           |
+| getNormalize() => Vertex3D   | Normaliza el vector                    |
+| getModule() => float         | Devuelve la longitud del vector        |
+| getInverse() => Vertex3D     | Devuelve el vector invertido           |
+| getScaled(float) => Vertex3D | Devuelve el vertice escalado           |
+| distance(Vertex3D) => float  | Devuelve la distancia a otro vértice   |
+
+============================
+##### 2.5.2) M3 (Matriz 3x3)
+============================
+
+Matrix 3x3 (floats) que representa una rotación.
+
+| Propiedad | Tipo        | Descripción                           |
+|-----------|-------------|---------------------------------------|
+| float[9]  | float array | Almacena los valores de la matriz 3x3 |
+
+| Método                                  | Descripción                                       |
+|-----------------------------------------|---------------------------------------------------|
+| + M3 => M3                              | Suma de matrices (add)                            |
+| - M3 => M3                              | Resta de matrices (sub)                           |
+| * M3 => M3                              | Multiplicación de matrices (mul)                  |
+| * Vertex3D => M3                        | Multiplicación de matriz por vector (Vertex3D)    |
+| getMatrixIdentity() => M3               | Devuelve la matriz identidad                      |
+| getTranspose() => M3                    | Devuelve la matriz traspuesta                     |
+| X() => Vertex3D                         | Devuelve el eje X                                 |
+| Y() => Vertex3D                         | Devuelve el eje Y                                 |
+| Z() => Vertex3D                         | Devuelve el eje Z                                 |
+| getMatrixRotationForEulerAngle(p, y, r) | Crea la matriz de rotación para los angulos dados |
+
+===============================================
+##### 2.5.3) AABB3D (Axis-Aligned Bounding Box)
+===============================================
+
+Caja contendora de geometría, alineada a los ejes de coordenadas.
+
+| Propiedad | Tipo       | Descripción               |
+|-----------|------------|---------------------------|
+| min       | Vertex3D | Vértice mínimo de la caja |
+| max       | Vertex3D | Vértice máximo de la caja |
+
+| Método                           | Descripción                                       |
+|----------------------------------|---------------------------------------------------|
+| isColliding(AABB3D) => bool      | Determina si se superpone con otro AABB3D         |
+| size() => Vertex3D               | Devuelve el tamaño de la caja                     |
+| getCenter() => Vertex3D          | Devuelve el centro de la caja                     |
+| isPointInside(Vertex3D) => bool  | Determina si un Vertex3D está dentro de la caja   |
+
+====================
+##### 2.5.4) Point2D
+====================
+
+Punto de coordenadas en 2D.
+
+| Propiedad | Tipo  | Descripción  |
+|-----------|-------|--------------|
+| x         | float | Coordenada X |
+| y         | float | Coordenada Y |
+
+==================
+##### 2.5.5) Color
+==================
+
+Color formato RGBA
+
+| Propiedad | Tipo  | Descripción            |
+|-----------|-------|------------------------|
+| r         | float | Componente roja (0-1)  |
+| g         | float | Componente verde (0-1) |
+| b         | float | Componente azul (0-1)  |
+| a         | float | Componente alfa (0-1)  |

@@ -7,6 +7,7 @@
 #include "../../../include/GUI/AddOns/GUIAddonProjectSetup.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/Objects/ScriptLuaGUI.h"
+#include "../../../include/Render/Drawable.h"
 
 void GUIAddonProjectSetup::TreeSceneScripts()
 {
@@ -36,6 +37,9 @@ void GUIAddonProjectSetup::TreeSceneScripts()
     ImGui::PopStyleVar(2);
     if (isOpenSceneScripts) {
         DrawSceneScripts();
+        if (scripting->getSceneLUAScripts().empty()) {
+            Drawable::WarningMessage("There are not shaders attached");
+        }
         ImGui::TreePop();
     }
 }
@@ -68,6 +72,9 @@ void GUIAddonProjectSetup::TreeProjectScripts()
     ImGui::PopStyleVar(2);
     if (isOpenGlobalScripts) {
         DrawProjectScripts();
+        if (scripting->getProjectLUAScripts().empty()) {
+            Drawable::WarningMessage("There are not scripts attached");
+        }
         ImGui::TreePop();
     }
 }
@@ -102,6 +109,9 @@ void GUIAddonProjectSetup::TreeSceneShaders()
     ImGui::PopStyleVar(2);
     if (isOpenSceneShaders) {
         DrawSceneCustomShaders();
+        if (render->getSceneShaders().empty()) {
+            Drawable::WarningMessage("There are not shaders attached");
+        }
         ImGui::TreePop();
     }
 }

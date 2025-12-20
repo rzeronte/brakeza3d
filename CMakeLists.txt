@@ -304,6 +304,8 @@ add_executable(Brakeza3D
         include/GUI/TextEditor/EditableOpenShaderFile.h
         src/GUI/TextEditor/EditableOpenScriptFile.cpp
         src/GUI/TextEditor/EditableOpenShaderFile.cpp
+        include/GUI/AddOns/GUIAddonDocumentation.h
+        include/LUA/ObjectFactory.cpp
 )
 
 target_link_libraries(Brakeza3D
