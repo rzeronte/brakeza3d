@@ -1,6 +1,6 @@
 function onStart()
     print("Moving object: "..objectToMove)
-    object = brakeza:getSceneObjectByLabel(objectToMove)
+    object = Brakeza:getObjectByName(objectToMove)
     isCollisionsEnabled = object:isCollisionsEnabled()
     if (isCollisionsEnabled) then
         print("[StartPositionObject] Collisionable Object moved!");

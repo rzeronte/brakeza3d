@@ -2,7 +2,7 @@ function onStart()
 end
 
 function onUpdate()
-	o = brakeza:getSceneObjectByLabel("MyObject")
+	o = Brakeza:getObjectByName("MyObject")
 	if o ~= nil then
 	    o:addToPosition(Vertex3D.new(-2, 0, 0))
 	    position = o:getPosition()

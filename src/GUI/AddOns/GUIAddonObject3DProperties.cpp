@@ -9,10 +9,6 @@
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/Render/Drawable.h"
 
-GUIAddonObject3DProperties::GUIAddonObject3DProperties()
-{
-}
-
 void GUIAddonObject3DProperties::DrawWinObjectProps(GUIManager *gui)
 {
     auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_PROPS);

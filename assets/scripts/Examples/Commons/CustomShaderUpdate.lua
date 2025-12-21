@@ -2,13 +2,12 @@ function onStart()
 end
 
 function onUpdate()
-    render = Components:Render()
-    customShader = render:getSceneShaderByLabel("Custom")
+    customShader = Components:Render():getSceneShaderByLabel("Custom")
 
     if customShader ~= nil then
-        customShader:setDataTypeValue("r_factor", math.sin(brakeza:getExecutionTime()))
-        customShader:setDataTypeValue("a_factor", math.cos(brakeza:getExecutionTime()))
-        customShader:setDataTypeValue("g_factor", math.cos(brakeza:getExecutionTime()))
+        customShader:setDataTypeValue("r_factor", math.sin(Brakeza:getExecutionTime()))
+        customShader:setDataTypeValue("a_factor", math.cos(Brakeza:getExecutionTime()))
+        customShader:setDataTypeValue("g_factor", math.cos(Brakeza:getExecutionTime()))
     else
         print("Error: Not custom shader called: 'Custom'")
     end

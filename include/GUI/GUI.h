@@ -81,10 +81,10 @@ namespace GUIType
     };
 
     struct Colors {
-        static constexpr ImVec4 BTN_OFF = ImVec4(0.30f, 0.30f, 0.30f, 1.0f);
-        static constexpr ImVec4 BTN_ON = ImVec4(0.15f, 0.45f, 0.20f, 1.0f);
-        static constexpr ImVec4 LUA_COLOR = ImVec4(0.40f, 0.40f, 0.40f, 1.0f);
-        static constexpr ImVec4 PLAY_COLOR = ImVec4(0.40f, 0.75f, 0.30f, 1.0f);
+        static constexpr ImVec4 BTN_OFF = ImVec4(0.35f, 0.15f, 0.45f, 1.0f);  // Púrpura oscuro
+        static constexpr ImVec4 BTN_ON = ImVec4(0.82f, 0.28f, 0.80f, 1.0f);   // Magenta vibrante
+        static constexpr ImVec4 LUA_COLOR = ImVec4(0.60f, 0.25f, 0.70f, 1.0f); // Púrpura medio
+        static constexpr ImVec4 PLAY_COLOR = ImVec4(0.98f, 0.57f, 0.24f, 1.0f); // Naranja/dorado
     };
 
     enum Window {

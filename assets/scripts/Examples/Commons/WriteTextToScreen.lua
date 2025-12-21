@@ -1,15 +1,15 @@
 function onStart()
-    textWriter = TextWriter.create("../assets/fonts/Courier.ttf")
+    textWriter = ObjectFactory.TextWriter("../assets/fonts/Courier.ttf")
 end
 
 function onUpdate()
      textWriter:writeTTFCenterHorizontal(
         15,
-        "si bueno no",
+        "hello world!",
         Color.new(0, 1, 0, 1),
         1.5
     )
-    textWriter:writeTextTTF(100, 100, 100, 100, "Hola", Color.new(1, 0, 0, 1))-- código a ejecutar en cada frame.
+    textWriter:writeTextTTF(100, 100, 100, 100, "hello!", Color.new(1, 0, 0, 1))
 end
 
 function onCollision(with)

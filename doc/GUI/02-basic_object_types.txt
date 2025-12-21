@@ -42,8 +42,11 @@ Podemos interactuar un Object3D.
 * AxisUp()                : Devuelve el actual eje de rotación hacia arriba
 * AxisRight()             : Devuelve el actual eje de rotación hacia la derecha
 * getTypeObject()         : Devuelve un string con el tipo de objeto
-* lookAt(Object3D)        : Rota el objeto hacia otro objeto dado
+* LookAt(Object3D)        : Rota el objeto hacia otro objeto dado
 * getM3ModelMatrix()      : Obtiene la matrix de objeto
+
+También podrás añadir nuevos Objects3D a escena tu mismo mediante código. Podrás crearlos todos ellos desde
+ObjectFactory, como veremos en los próximos apartados.
 
 ========================================================================================================
 
@@ -51,8 +54,10 @@ Podemos interactuar un Object3D.
 
 ========================================================================================================
 
-Cualquier Object3D puede ser vinculado a uno o varios scripts LUA. Veremos esto en profundidad en el apartado dedicado
-al scripting.
+Cualquier Object3D puede ser vinculado a uno o varios scripts. Estos scripts modificarán el comportamiento
+del objeto a nuestro antojo.
+
+Veremos esto en profundidad en el apartado dedicado al scripting.
 
 ========================================================================================================
 

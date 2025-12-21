@@ -27,6 +27,7 @@
 		}
 	},
 	"objects":	[{
+			"enabled":	true,
 			"name":	"axis",
 			"scale":	1,
 			"position":	{
@@ -69,10 +70,11 @@
 			"scripts":	[],
 			"shaders":	[],
 			"model":	"../assets/models//StudioCorner.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
+			"enableLights":	true,
+			"type":	2
 		}, {
 			"name":	"p1",
+		    "enabled":	true,
 			"scale":	1,
 			"position":	{
 				"x":	-2.8479585647583008,
@@ -86,7 +88,9 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"name":	"../assets/scripts/Examples/RotateFromObject.lua",
+					"codeFile":	"../assets/scripts/Examples/RotateFromObject.lua",
+					"typesFile":	"../assets/scripts/Examples/RotateFromObject.json",
+					"name":	"Rotate From Object",
 					"types":	[{
 							"name":	"objectName",
 							"type":	"string",
@@ -127,9 +131,10 @@
 			"constant":	0.19999900460243225,
 			"linear":	0.090000003576278687,
 			"quadratic":	0.0099999997764825821,
-			"type":	"LightPoint3D"
+			"type":	4
 		}, {
 			"name":	"pawn",
+			"enabled":	true,
 			"scale":	1,
 			"position":	{
 				"x":	-4.0576009750366211,
@@ -145,10 +150,11 @@
 			"scripts":	[],
 			"shaders":	[],
 			"model":	"../assets/models//ChessPawn.fbx",
-			"enableLights":	false,
-			"type":	"Mesh3D"
+			"enableLights":	true,
+			"type":	2
 		}, {
 			"name":	"p2",
+			"enabled":	true,
 			"scale":	1,
 			"position":	{
 				"x":	0.0098438262939453125,
@@ -162,7 +168,9 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"name":	"../assets/scripts/Examples/RotateFromObject.lua",
+					"codeFile":	"../assets/scripts/Examples/RotateFromObject.lua",
+					"typesFile": "../assets/scripts/Examples/RotateFromObject.json",
+					"name":	"Rotate From Object",
 					"types":	[{
 							"name":	"objectName",
 							"type":	"string",
@@ -203,9 +211,10 @@
 			"constant":	0.23999999463558197,
 			"linear":	0.090000003576278687,
 			"quadratic":	0.032000001519918442,
-			"type":	"LightPoint3D"
+			"type":	4
 		}, {
 			"name":	"p3",
+			"enabled":	true,
 			"scale":	1,
 			"position":	{
 				"x":	-17.302089691162109,
@@ -219,7 +228,9 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"name":	"../assets/scripts/Examples/RotateFromObject.lua",
+					"codeFile":	"../assets/scripts/Examples/RotateFromObject.lua",
+					"typesFile":	"../assets/scripts/Examples/RotateFromObject.json",
+					"name":	"Rotate From Object",
 					"types":	[{
 							"name":	"objectName",
 							"type":	"string",
@@ -260,7 +271,7 @@
 			"constant":	0.25999999046325684,
 			"linear":	0.090000003576278687,
 			"quadratic":	0.032000001519918442,
-			"type":	"LightPoint3D"
+			"type":	4
 		}],
 	"shaders":	[],
 	"scripts":	[],

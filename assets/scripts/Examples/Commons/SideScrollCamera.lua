@@ -1,6 +1,6 @@
 function onStart()
     nameObjectToFollow = "character"
-    object = brakeza:getSceneObjectByLabel(nameObjectToFollow)
+    object = Brakeza:getObjectByName(nameObjectToFollow)
     cameraOffset = Vertex3D.new(0.01, 0.01, 15)
     direction = Vertex3D.new(0, 0, 1)
     cameraSpeed = 0.0075

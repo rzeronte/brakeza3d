@@ -2,7 +2,7 @@ function onStart()
 end
 
 function onUpdate()
-	o = brakeza:getSceneObjectByLabel("MyObject")
+	o = Brakeza:getObjectByName("MyObject")
 	if o ~= nil then
 	    position = o:getLocalScriptVar("offset")
 		print("Read variable 'offset' from object: ".. o:getLabel())
