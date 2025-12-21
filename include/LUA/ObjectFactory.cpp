@@ -12,7 +12,9 @@
 #include "../3D/LightSpot.h"
 #include "../3D/Mesh3DAnimation.h"
 #include "../3D/ParticleEmitter.h"
+#include "../Components/Components.h"
 #include "../Render/JSONSerializerRegistry.h"
+#include "../Render/TextWriter.h"
 #include "../Threads/ThreadJobLoadImage2D.h"
 #include "../Threads/ThreadJobLoadImage2DAnimation.h"
 #include "../Threads/ThreadJobLoadImage3D.h"
@@ -44,7 +46,7 @@ void ObjectFactory::CreateImage2D(const std::string &file, int x, int y, int w, 
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2D>(o, json));
 }
 
-void ObjectFactory::CreateImage2DAnimation(const std::string &file, const Vertex3D &position, int x, int y, int sw, int sh, int frames, int fps)
+void ObjectFactory::CreateImage2DAnimation(const std::string &file, int x, int y, int sw, int sh, int frames, int fps)
 {
     auto *o = new Image2DAnimation(
         x,
@@ -54,7 +56,6 @@ void ObjectFactory::CreateImage2DAnimation(const std::string &file, const Vertex
     );
 
     o->setName(Brakeza::UniqueObjectLabel("Image2DAnimation"));
-    o->setPosition(position);
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2DAnimation>(o, json));
@@ -177,4 +178,18 @@ void ObjectFactory::CreateParticleEmitter(const Vertex3D &position, const Color 
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadParticleEmitter>(o, json));
+}
+
+TextWriter* ObjectFactory::CreateTextWriter(const std::string& fontFile)
+{
+    if (!Tools::FileExists(fontFile.c_str())) {
+        Logging::Message("[TextWriter] Cannot open font file: %s", fontFile.c_str());
+
+        return nullptr;
+    }
+
+    return new TextWriter(
+        Components::get()->Window()->getRenderer(),
+        TTF_OpenFont(fontFile.c_str(), 35)
+    );
 }

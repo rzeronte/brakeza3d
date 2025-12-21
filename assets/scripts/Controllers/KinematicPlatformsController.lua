@@ -3,7 +3,7 @@ function onStart()
 end
 
 function onUpdate()
-    componentInput = componentsManager:getComponentInput();
+    componentInput = Components:Input();
 
     if (componentInput:isCharPressed("A")) then speed = speed + force end
     if (componentInput:isCharPressed("D")) then speed = speed - force end
@@ -20,9 +20,9 @@ function onUpdate()
 
     forward = this:AxisForward()
 
-    camera = componentsManager:getComponentCamera():getCamera()
+    camera = Components:Camera():getCamera()
     camera:setPosition(this:getPosition() + forward:getScaled(cameraOffset.z) + Vertex3D.new(cameraOffset.x, cameraOffset.y, 0))
-    camera:lookAt(this)
+    camera:LookAt(this)
 
     speed = speed * deceleration;
 end

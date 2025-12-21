@@ -1,16 +1,16 @@
 function onStart()
-    print("Simple Day/Night Cycle - Iniciado")
+    print("Simple Day/Night Cycle - Start")
 
-    CYCLE_DURATION = 30.0  -- 1 minuto = 1 día completo
+    CYCLE_DURATION = 30.0   -- 1 minuto = 1 día completo
     current_time = 0.25     -- Comienza en la mañana
     reduction = 1.25
 end
 
 function onUpdate()
 
-   local deltaTime = brakeza:getDeltaTime()
+   local deltaTime = Brakeza:getDeltaTime()
 
-    render = componentsManager:getComponentRender()
+    render = Components:Render()
 
     -- Avanzar el tiempo
     current_time = current_time + (deltaTime / CYCLE_DURATION)
@@ -30,8 +30,9 @@ function onUpdate()
             (0.3 + intensity * 0.7) * reduction
         )
     )
+
     render:setGlobalIlluminationDiffuse(
-    Vertex3D.new(
+        Vertex3D.new(
             (0.1 + intensity * 0.4) * reduction,  -- Rojo
             (0.1 + intensity * 0.4) * reduction,  -- Verde
             (0.15 + intensity * 0.45) * reduction -- Azul (ligeramente más azul)
@@ -39,13 +40,13 @@ function onUpdate()
     )
 
     -- Dirección del sol
-    local sun_direction = Vertex3D.new(
+    local sunDirection = Vertex3D.new(
         math.cos(sun_angle),
         sun_height,
         0.0
     ):getNormalize()
 
-    render:setGlobalIlluminationDirection(sun_direction)
+    render:setGlobalIlluminationDirection(sunDirection)
 end
 
 function onEnd()

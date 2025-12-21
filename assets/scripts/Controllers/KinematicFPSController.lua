@@ -6,8 +6,9 @@ function onStart()
 end
 
 function onUpdate()
-    componentCamera = componentsManager:getComponentCamera();
-    componentInput = componentsManager:getComponentInput();
+    componentCamera = Components:Camera();
+    componentInput = Components:Input();
+    
     camera = componentCamera:getCamera()
     camera:setPosition(this:getPosition())
 
@@ -34,23 +35,23 @@ function onUpdate()
     forward = this:AxisForward()
     right = this:AxisRight()
 
-    if (componentsManager:getComponentInput():isCharPressed("W")) then
+    if (Components:Input():isCharPressed("W")) then
         speed = speed - force
     end
 
-    if (componentsManager:getComponentInput():isCharPressed("S")) then
+    if (Components:Input():isCharPressed("S")) then
         speed = speed + force
     end
 
-    if (componentsManager:getComponentInput():isCharPressed("A")) then
+    if (Components:Input():isCharPressed("A")) then
         strafe = strafe - force
     end
 
-    if (componentsManager:getComponentInput():isCharPressed("D")) then
+    if (Components:Input():isCharPressed("D")) then
         strafe = strafe + force
     end
 
-    if (componentsManager:getComponentInput():isCharPressed("SPACE") and this:onGround()) then
+    if (Components:Input():isCharPressed("SPACE") and this:onGround()) then
         this:jump(Vertex3D.new(0, jumpForce, 0)) -- saltamos
     end
 

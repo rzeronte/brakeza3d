@@ -1,6 +1,8 @@
-==================
+========================================================================================================
+
 14 - ASSETS FOLDER
-==================
+
+========================================================================================================
 
 Brakeza3D esperará encontrar cada tipo de recurso en su carpeta raíz correspondiente. Dentro de la carpeta
 assets podrás encontrar:

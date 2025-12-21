@@ -1,10 +1,14 @@
-==============================
-08 - COLLISION BETWEEN OBJECTS
-==============================
+========================================================================================================
 
-================================
+08 - COLLISION BETWEEN OBJECTS
+
+========================================================================================================
+
+========================================================================================================
+
 # 8.1) Collision between objects
-================================
+
+========================================================================================================
 
 Los objetos colisionables permitirán al programador implementar lógica en función de las colisiones
 producidas. En Brakeza3D todos los Object3D puede trabajar con físicas y colisiones.
@@ -15,9 +19,11 @@ Cualquier objeto colisionables lanzará una llamada al método onCollision de tu
         print("Collision with " .. with:getLabel())
     end
 
-===========================
+========================================================================================================
+
 ### 8.2) Modos de colisión
-===========================
+
+========================================================================================================
 
 Existen dos modos de funcionamiento para el sistema de colisiones:
 
@@ -48,9 +54,11 @@ se moverán (su masa es automáticamente 0). Es el único modo de colisión perm
     eye2:setupRigidBodyCollider(CollisionShape.SIMPLE_SHAPE); -- RigidBody
     brakeza:addObject3D(eye2, 'myTwoEye')
 
-===============================
+========================================================================================================
+
 ### 8.3) Forma del colisionador
-===============================
+
+========================================================================================================
 
 Existen las siguientes opciones:
 
@@ -73,16 +81,20 @@ Puedes manipular los modos de colisión tanto desde la GUI como desde tus script
     brakeza:addObject3D(image3d, 'myOneEye')
 
 
-==============================
+========================================================================================================
+
 ### 8.4) Desactivar colisiones
-==============================
+
+========================================================================================================
 
 Puedes desactivar las colisiones para un objeto con el método setCollisionsEnabled. Esto eliminará cualquier forma
 de colisión configurada previamente.
 
-=============================================
+========================================================================================================
+
 ### 8.5) Movimiento en objetos colisionadores
-=============================================
+
+========================================================================================================
 
 Tanto los GHOST como los RIGIDBODY pueden ser movidos por la escena.
 
@@ -96,9 +108,11 @@ Podemos aplicar fuerzas a los objetos RIGIDBODY gracias a los siguientes método
 - applyCentralForce(Vertex3D f)
 - applyImpulse(Vertex3D f, Vertex3D r)
 
-=====================================
+========================================================================================================
+
 ### 8.6) Propiedades del colisionador
-=====================================
+
+========================================================================================================
 
 Puedes utilizar los siguientes métodos para configurar el comportamiento físico del objeto:
 
@@ -112,17 +126,21 @@ Puedes utilizar los siguientes métodos para configurar el comportamiento físic
 - setLinearFactor(Vertex3D)
 - setGravityCollider(Vertex3D)
 
-===================================
+========================================================================================================
+
 ### 8.7) Modo de colisión KINEMATIC
-===================================
+
+========================================================================================================
 
 - setWalkingDirection(Vertex3D)
 - jump()
 - onGround(): boolean
 
-===========================================
+========================================================================================================
+
 ### 8.8) Mapeado de colisionadores y huesos
-===========================================
+
+========================================================================================================
 
 Los objetos de tipo Mesh3DAnimation tienen la posibilidad de definir colisionadores para los huesos
 creados para animar la geometría del modelo.
@@ -141,4 +159,3 @@ específico.
             print("Script: Collision with unknow object")
         end
     end
-

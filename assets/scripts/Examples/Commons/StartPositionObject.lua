@@ -13,7 +13,7 @@ function onStart()
         object:setPosition(this:getPosition())
     end
 
-    local camera = componentsManager:getComponentCamera():getCamera()
+    local camera = Components:Camera():getCamera()
     camera:setPosition(this:getPosition() + positionOffset)
 end
 

@@ -1,6 +1,8 @@
-===========
+========================================================================================================
+
 01 - BASICS
-===========
+
+========================================================================================================
 
 Brakeza3D es un sencillo motor 2D/3D multiplataforma para desarrollo de videojuegos.
 Incluye el motor de render, un scene graph, físicas de colisiones, scripting y una
@@ -9,20 +11,24 @@ sencilla GUI.
 Aunque el motor está escrito en C++, en esta documentación aprenderemos a crear
 nuestros propios proyectos usando LUA como lenguaje de scripting.
 
-===========================
+========================================================================================================
+
  1.1) CONCEPTOS PRINCIPALES
-===========================
+
+========================================================================================================
 
 En Brakeza3D existen cuatro conceptos principales:
 
-- Proyectos
-- Scripts
-- Escenas
-- Objetos
+* Proyectos
+* Scripts
+* Escenas
+* Objetos
 
-====================
+========================================================================================================
+
 ### 1.1.1) PROYECTOS
-====================
+
+========================================================================================================
 
 Un proyecto es un contenedor de `escenas` y `scripts`. Se pueden almacenar en disco como
 fichero `JSON` y cargarlo en cualquier momento.
@@ -30,9 +36,11 @@ fichero `JSON` y cargarlo en cualquier momento.
 El proyecto es la figura de mayor nivel en Brakeza3D. Por lo general tendrás un `Proyecto`,
 por cada aplicación en la que estés trabajando.
 
-==================
+========================================================================================================
+
 ### 1.1.2) SCRIPTS
-==================
+
+========================================================================================================
 
 Ficheros de código fuente LUA para interactuar con Brakeza3D. Los scripts ejecutarán código
 que dará vida a tu aplicación.
@@ -43,25 +51,29 @@ tantos scripts como necesites.
 
 En la sección de scripting profundizaremos en este tipo de ficheros.
 
-==================
+========================================================================================================
+
 ### 1.1.3) ESCENAS
-==================
+
+========================================================================================================
 
 Una escena es un contenedor de `OBJECTS` y `SCRIPTS`.
 
 El contenido de una escena está compuesto por:
 
-- Objetos
-- Scripts
-- Posición de cámara
-- Configuración de iluminación ADS
-- Shaders
+* Objetos
+* Scripts
+* Shaders
+* Posición/Rotación de cámara
+* Configuración de iluminación ADS
 
 Se pueden almacenar en disco y recuperar en cualquier momento.
 
-==================
+========================================================================================================
+
 ### 1.1.4) OBJETOS
-==================
+
+========================================================================================================
 
 Entidades existentes en nuestro mundo 3D. En líneas generales, cualquier cosa susceptible
 de ser representada en pantalla será un objeto: *un modelo 3D*, *una luz*, *emisor de partículas*...
@@ -70,9 +82,11 @@ Todos los objetos comparten las propiedades básicas de un elemento 3D ya sea no
 
 Desde código podremos activar, mover, rotar, eliminar, escalar y muchas otras acciones sobre los objetos.
 
-========
+========================================================================================================
+
 1.2) GUI
-========
+
+========================================================================================================
 
 Brakeza3D incorpora una sencilla GUI que nos facilitará algunas de las operaciones más tediosas.
 
@@ -81,20 +95,22 @@ Dispondrás de un sencillo editor de escena totalmente integrado con el sistema 
 Si bien puedes utilizar tu editor de código favorito para manipular los scripts, la GUI será de gran utilidad
 para integrar tus scripts, manipular tus objetos, configurar la iluminación, guardar y cargar escenas, etc.
 
-================
+========================================================================================================
+
 1.3) COMPONENTES
-================
+
+========================================================================================================
 
 Brakeza3D agrupa sus funcionalidades en `Componentes`. Cada componente representa un aspecto
 fundamental del núcleo de Brakeaz3D.
 
-- ComponentWindow: Gestiona la ventana del sistema operativo.
-- ComponentScripting: Gestiona el sistema de scripting.
-- ComponentCamera: Gestiona la cámara.
-- ComponentCollisions: Gestiona el motor de físicas y colisiones.
-- ComponentInput: Gestiona la entrada por teclado o gamepad.
-- ComponentSound: Gestiona la reproducción de sonidos.
-- ComponentRender: Gestiona el render con OpenGL
+* Window     : Gestiona la ventana del sistema operativo.
+* Scripting  : Gestiona el sistema de scripting.
+* Camera     : Gestiona la cámara.
+* Collisions : Gestiona el motor de físicas y colisiones.
+* Input      : Gestiona la entrada por teclado o gamepad.
+* Sound      : Gestiona la reproducción de sonidos.
+* Render     : Gestiona el render con OpenGL
 
 Podrás acceder a todos ellos mediante él ``manager de componentes`` desde tus scripts LUA. Trataremos cada uno en detalle
 en el futuro.

@@ -9,7 +9,7 @@ end
 
 function onUpdate()
 
-    input = componentsManager:getComponentInput()
+    input = Components:Input()
 
     if input:isCharPressed("ESCAPE") and input:isKeyEventDown() then
         enabled = not enabled

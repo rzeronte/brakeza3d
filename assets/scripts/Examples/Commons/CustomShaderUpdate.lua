@@ -2,7 +2,7 @@ function onStart()
 end
 
 function onUpdate()
-    render = componentsManager:getComponentRender()
+    render = Components:Render()
     customShader = render:getSceneShaderByLabel("Custom")
 
     if customShader ~= nil then

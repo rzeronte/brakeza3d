@@ -1,15 +1,19 @@
-=====================
+========================================================================================================
+
 12 - SCRIPTING SYSTEM
-=====================
+
+========================================================================================================
 
 Brakeza3D incorpora un sistema de scripting utilizando LUA como lenguaje.
 
 Ya sea desde la UI o desde código, podrás asociar scripts al proyecto,
 escena y/o objetos.
 
-==========================================
+========================================================================================================
+
 ### 12.1) Estados del sistema de scripting
-==========================================
+
+========================================================================================================
 
 En el búcle principal de Brakeza3D, se ejecutan una serie de acciones constantemente. Una de ellas
 es el sistema de scripting. Este sistema puede estar en ON/OFF/PAUSE.
@@ -22,10 +26,11 @@ Finalmente, podrá ser detenido (STOP) para evitar que el sistema de scripting c
 
 También podrás resetear (RELOAD) el estado para volver al inicio los scripts y para refrescarlos desde disco.
 
+========================================================================================================
 
-====================================
 ### 12.2) Ciclo de vida de un objeto
-====================================
+
+========================================================================================================
 
 Los objetos disponen de su propio ciclo de vida el cual debemos de entender para trabajar con nuestros objetos cargados, es el siguiente:
 
@@ -45,9 +50,11 @@ Una template básica de script LUA para Brakeza3D sería:
         -- código a ejecutar en cada frame.
     end
 
-=====================
+========================================================================================================
+
 ### 12.3) Scripts LUA
-=====================
+
+========================================================================================================
 
 Los scripts de LUA son elementos que podremos vincular a elementos del sistema. En ellos implementaremos la lógica y comportamiento de objetos en Brakeza3D.
 
@@ -61,9 +68,11 @@ Se diferencian principalmente por el **scope de sus variables**.
 Los scripts globales comparten variables libremente entre ellos, mientras que los scripts de objeto instancian sus variables por cada objeto al
 que han sido vinculados.
 
-================================
+========================================================================================================
+
 ### 12.4) Vinculación de scripts
-================================
+
+========================================================================================================
 
 Podrás realizar estas operaciones desde la UI con el ratón y drag/drop, sin embargo,
 en ocasiones necesitarás poder hacerlo dinámicamente desde código.
@@ -91,9 +100,11 @@ un script a la escena:
 
 Es importante destacar, que *la única* forma de vincular scripts al proyecto es mediante la UI, no desde código.
 
-===================
+========================================================================================================
+
 ### 12.5) Variables
-===================
+
+========================================================================================================
 
 Cualquier script LUA puede definir variables que te ayudarán a implementar tu lógica. Puedes utilizar la GUI
 para gestionar con facilidad las variables de un script.
@@ -131,12 +142,13 @@ json
     ]
 }
 
-
 Puedes utilizar los tipos int, float, string y Vertex3D.
 
-============================
+========================================================================================================
+
 ### 12.6) Variables globales
-============================
+
+========================================================================================================
 
 Las variables definidas en scripts vinculadas a proyectos y/o escenas serán globales.
 
@@ -148,9 +160,11 @@ script.
         print("Value of var1: " .. var1)
     end
 
-===========================
+========================================================================================================
+
 ### 12.7) Variables locales
-===========================
+
+========================================================================================================
 
 Las variables definidas en scripts vinculadas a Object3D serán locales,
 es decir, se instancian individualmente por cada objeto.
@@ -167,9 +181,11 @@ de la siguiente forma:
     print("Value for 'count': " .. o:getLocalScriptVar("count")) -- obtenemos int
 
 
-============================
+========================================================================================================
+
 ### 12.8) Gestión de escenas
-============================
+
+========================================================================================================
 
 Puedes cargar y salvar escenas tanto desde GUI como desde tus scripts LUA
 
@@ -181,10 +197,11 @@ Puedes cargar y salvar escenas tanto desde GUI como desde tus scripts LUA
         ...
     end
 
+========================================================================================================
 
-===================
 ### 12.9) Deltatime
-===================
+
+========================================================================================================
 
 Él DeltaTime es el tiempo que tarda en renderizarse un frame. Es una medida crucial en el desarrollo de juegos,
 ya que permite que los movimientos y animaciones sean consistentes independientemente de la velocidad de renderización.
@@ -192,7 +209,7 @@ ya que permite que los movimientos y animaciones sean consistentes independiente
 Puedes obtenerlo desde tus scripts LUAde la siguiente manera:
 
     ...
-        print("DeltaTime: " .. brakeza:getDeltaTime()) -- delta en segundos
+    print("DeltaTime: " .. brakeza:getDeltaTime()) -- delta en segundos
     print("DeltaTimeInMicro: " .. brakeza:getDeltaTimeMicro()) -- delta en microsegundos
     print("Execution Time: " .. brakeza:getExecutionTime()) -- tiempo total de ejecución
     ...
@@ -202,9 +219,11 @@ Puedes obtenerlo desde tus scripts LUAde la siguiente manera:
         myObject:addToPosition(Vertex3D.new(movement, 0, 0))
     end
 
-================================
+========================================================================================================
+
 ### 12.10) Terminar la ejecución
-================================
+
+========================================================================================================
 
 Si deseas terminar la aplicación desde código, puedes hacerlo de la siguiente forma:
 
@@ -224,9 +243,11 @@ Con esto el proyecto será ejecutado automáticamente sin UI.
 Nota: La ruta en la que será buscado el fichero de proyecto es relativa al directorio base de
 proyectos: /assets/projects/.
 
-==========================
+========================================================================================================
+
 ### 12.12) Grid3D y Octree
-==========================
+
+========================================================================================================
 
 Brakeza3D incorpora las estructuras de datos Grid3D y Octree integradas en los objetos de tipo
 Mesh3D.
@@ -308,8 +329,10 @@ Podemos iterar sobre dicho array para obtener el camino deseado.
     end
     ...
 
-======================
-### Ejemplos en codigo
-======================
+========================================================================================================
+
+### Ejemplos completos con código LUA
+
+========================================================================================================
 
 https://github.com/rzeronte/brakeza3d/blob/master/doc/examples-lua-code.md

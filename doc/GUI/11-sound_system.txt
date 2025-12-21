@@ -1,6 +1,8 @@
-=================
+========================================================================================================
+
 11 - SOUND SYSTEM
-=================
+
+========================================================================================================
 
 Brakeza3D ofrece una interfaz básica para el manejo del sonido en tus juegos. Podemos acceder a
 las funcionalidades de este sistema a través de ComponentSound.
@@ -9,15 +11,19 @@ las funcionalidades de este sistema a través de ComponentSound.
     systemSound = componentsManager:getComponentSound()
     ...
 
-============================
+========================================================================================================
+
 ### 11.1) Formatos de sonido
-============================
+
+========================================================================================================
 
 Podrás reproducir ficheros WAV y/o MP3.
 
-=================
+========================================================================================================
+
 ### 11.2) Canales
-=================
+
+========================================================================================================
 
 Brakeza3D maneja el sonido a través de la librería SDL_mixer, el cual soporta 16 canales de audio.
 
@@ -26,9 +32,11 @@ exclusivamente para la música. El resto queda disponible para la emisión de so
 
 Esta separación nos permitirá manejar los volumenes de la música y los sonidos por separado.
 
-======================================
+========================================================================================================
+
 ### 11.3) Carga de ficheros en memoria
-======================================
+
+========================================================================================================
 
 No es recomendable cargar de disco un sonido en tiempo real justo en el momento que necesite ser reproducido, es por
 este motivo por el que se recomienda pre-cargar los sonidos que posteriormente vayamos a utilizar.
@@ -36,9 +44,11 @@ este motivo por el que se recomienda pre-cargar los sonidos que posteriormente v
 Él ComponenteSonido nos ofrece la posibilidad de cargar un sonido a memoria, el cual podrá ser reproducido tantas veces
 como sea necesario.
 
-===========================
+========================================================================================================
+
 ### 11.4) Reproducir música
-===========================
+
+========================================================================================================
 
 Precarga de un fichero destinado a reproducirse como música. La música se reproduce en búcle de forma
 automática.
@@ -55,9 +65,11 @@ Reproducir una música precargada:
     systemSound:playMusic("music_demo")
     ...
 
-============================
+========================================================================================================
+
 ### 11.5) Reproducir sonidos
-============================
+
+========================================================================================================
 
 Precarga de un fichero destinado a reproducirse como sonido:
 
@@ -73,9 +85,11 @@ Reproducir un sonido precargado:
     systemSound:playSound("sound_demo")
     ...
 
-=================
+========================================================================================================
+
 ### 11.6) Volumen
-=================
+
+========================================================================================================
 
 Puedes manipular el volumen de la música y el resto de sonidos de forma separada.
 
@@ -93,9 +107,11 @@ Manipular el volumen de los sonidos:
     systemSound:setSoundsVolume(100) -- Rango [0 - 128]
     ...
 
-==========================
+========================================================================================================
+
 ### 11.7) Carga automática
-==========================
+
+========================================================================================================
 
 Brakeza3D ofrece un sistema de precarga inicial de sonidos y música a través de
 un fichero de configuración JSON.

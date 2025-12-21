@@ -186,10 +186,9 @@ void ComponentScripting::InitLUATypes()
 
     LUAIntegration(lua);
 
-    lua["brakeza"] = Brakeza::get();
-    lua["componentsManager"] = Components::get();
-    lua.set_function("print",
-                     static_cast<void(*)(const char*, ...)>(&Logging::Message)
+    lua["Brakeza"] = Brakeza::get();
+    lua["Components"] = Components::get();
+    lua.set_function("print", static_cast<void(*)(const char*, ...)>(&Logging::Message)
     );
 }
 

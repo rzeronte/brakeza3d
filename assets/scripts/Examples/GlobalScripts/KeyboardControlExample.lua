@@ -2,21 +2,21 @@ function onStart()
 end
 
 function onUpdate()
-    left = componentsManager:getComponentInput():isClickLeft()
+    left = Components:Input():isClickLeft()
 
     if (left) then
         print("Click Left!")
     end
 
-    if (componentsManager:getComponentInput():isCharPressed("A")) then
+    if (Components:Input():isCharPressed("A")) then
         print("Key A pressed!")
     end
 
-    if (componentsManager:getComponentInput():isKeyEventDown()) then
+    if (Components:Input():isKeyEventDown()) then
         print("Key event down!")
     end
 
-    if (componentsManager:getComponentInput():isKeyEventUp()) then
+    if (Components:Input():isKeyEventUp()) then
         print("Key event up!")
     end
 end

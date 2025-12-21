@@ -23,7 +23,6 @@ public:
     void setAlpha(float alpha);
     void setFont(TTF_Font *font);
     [[nodiscard]] float getAlpha() const;
-    static TextWriter* create(const std::string& fontFile);
 };
 
 

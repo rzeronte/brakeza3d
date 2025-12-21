@@ -10,7 +10,7 @@ function onUpdate()
         return
     end
 
-    timer = timer + brakeza:getDeltaTime()
+    timer = timer + Brakeza:getDeltaTime()
 
     if timer >= frequency then
         timer = 0  -- Reiniciar temporizador

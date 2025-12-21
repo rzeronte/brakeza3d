@@ -31,6 +31,7 @@ public:
     std::string CONFIG_FOLDER         = "../config/";
     std::string SHADERS_FOLDER        = "../GLSL/";
     std::string ASSETS_FOLDER         = "../assets/";
+    std::string DOCUMENTATION_FOLDER  = "../doc/GUI/";
     std::string SPRITES_FOLDER        = ASSETS_FOLDER + "sprites/";
     std::string MAPS_FOLDER           = ASSETS_FOLDER + "maps/";
     std::string IMAGES_FOLDER         = ASSETS_FOLDER + "images/";
@@ -47,7 +48,7 @@ public:
     std::string SCENES_FOLDER         = ASSETS_FOLDER + "scenes/";
     std::string CUSTOM_SHADERS_FOLDER = ASSETS_FOLDER + "shaders/";
     std::string SCREENSHOTS_FOLDER    = ASSETS_FOLDER + "screenshots/";
-    std::string DOCUMENTATION_INDEX   = "index.md";
+    std::string DOCUMENTATION_DEFAULT = "01-basics.txt";
     std::string DEFAULT_SOUNDS_FILE   = "sounds.json";
     std::string DEFAULT_SCENE         = "brakeza.json";
     std::string DOCUMENTATION_CONFIG  = "documentation.json";
