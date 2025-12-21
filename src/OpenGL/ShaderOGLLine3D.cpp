@@ -44,8 +44,9 @@ void ShaderOGLLine3D::Destroy()
 
 void ShaderOGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo, Color c)
 {
-    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
+    if (lines.empty()) return;
 
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
     auto camera = Components::get()->Camera();

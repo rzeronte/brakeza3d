@@ -23,10 +23,14 @@ public:
     void fnProcess()
     {
         Components::get()->Collisions()->StepSimulation(dt);
+        if (Config::get()->BULLET_DEBUG_MODE) {
+            Components::get()->Collisions()->getDynamicsWorld()->debugDrawWorld();
+        }
     }
 
     void fnCallback()
     {
     }
 };
+
 #endif //BRAKEZA3D_THREADJOBSTEPSIMULATION_H

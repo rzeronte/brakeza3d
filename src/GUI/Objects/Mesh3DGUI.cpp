@@ -7,28 +7,36 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
     std::string title = "Mesh3D (File: " + o->sourceFile + ")";
 
     if (ImGui::CollapsingHeader("Mesh3D")) {
-        if (ImGui::TreeNode("Lights in object")) {
-            ImGui::Checkbox(std::string("Enable lights for this object").c_str(), &o->enableLights);
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));
+        bool isLint = ImGui::TreeNodeEx("Lights in object", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
+
+        if (isLint) {
+            ImGui::Spacing();
+            ImGui::Checkbox(std::string("Lit/Unlit").c_str(), &o->enableLights);
             ImGui::TreePop();
         }
         ImGui::Separator();
-        if (ImGui::TreeNode("Mesh information")) {
+        if (ImGui::TreeNodeEx("Mesh information", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
+            ImGui::Spacing();
             auto fileModel = std::string("- File model: ") + o->sourceFile;
             ImGui::Text(fileModel.c_str());
             ImGui::Text("- Num Meshes: %d", o->meshes.size());
             int cont = 1;
             for (auto &m: o->meshes) {
                 auto meshTitle = "Mesh " + std::to_string(cont);
-                if (ImGui::TreeNode(meshTitle.c_str())) {
-                    ImGui::Text("Num Vertices: %d", m.vertices.size());
-                    ImGui::Text("Num UVs: %d", m.uvs.size());
-                    ImGui::Text("Num Normals: %d", m.normals.size());
-                    ImGui::Text("Num Textures: %d", o->modelTextures.size());
+                if (ImGui::TreeNodeEx(meshTitle.c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
+                    ImGui::Spacing();
+                    ImGui::Text("Num Vertices: %d", (int) m.vertices.size());
+                    ImGui::Text("Num UVs: %d", (int) m.uvs.size());
+                    ImGui::Text("Num Normals: %d", (int) m.normals.size());
+                    ImGui::Text("Num Textures: %d", (int) o->modelTextures.size());
                     ImGui::TreePop();
                 }
                 cont++;
             }
-            if (ImGui::TreeNode("Textures")) {
+            if (ImGui::TreeNodeEx("Textures", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
+                ImGui::Spacing();
                 for (auto &m : o->modelTextures) {
                     float fixedWidth = std::min((int) ImGui::GetContentRegionAvail().x, m->width());
                     float height = fixedWidth * ((float) m->height() / (float) m->width());
@@ -40,7 +48,8 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
             ImGui::TreePop();
         }
         ImGui::Separator();
-        if (ImGui::TreeNode("Grid3D")) {
+        if (ImGui::TreeNodeEx("Grid3D", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
+            ImGui::Spacing();
             if (o->grid != nullptr) {
                 if (ImGui::Button("Fill from mesh geometry")) {
                     o->FillGrid3DFromGeometry();
@@ -66,7 +75,8 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
             ImGui::TreePop();
         }
         ImGui::Separator();
-        if (ImGui::TreeNode("Octree")) {
+        if (ImGui::TreeNodeEx("Octree", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
+            ImGui::Spacing();
             if (o->octree == nullptr) {
                 static int maxDepth = 1;
                 ImGui::SliderInt("Depth", &maxDepth, 1, 4);
@@ -90,6 +100,6 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
 
             ImGui::TreePop();
         }
-
+        ImGui::PopStyleVar(2);
     }
 }

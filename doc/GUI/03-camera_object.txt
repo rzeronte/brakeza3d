@@ -40,7 +40,7 @@ Brakeza3D gestiona las operaciones de cámara a través del componente Camera.
 
 Podrás obtener acceso a este componente desde tus scripts LUA y este te dará acceso a la cámara:
 
-    camera = componentsManager:Camera():getCamera()
+    camera = Components:Camera():getCamera()
     camera:setPosition(Vertex3D.new(10, 10, 10))
 
 ========================================================================================================
@@ -51,5 +51,5 @@ Podrás obtener acceso a este componente desde tus scripts LUA y este te dará a
 
 Puedes ajustar el FOV horizontal desde tus scripts de la siguiente manera:
 
-    local camera = componentsManager:Camera():getCamera()
+    local camera = Components:Camera():getCamera()
     camera:setFOV(140)

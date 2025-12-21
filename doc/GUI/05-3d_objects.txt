@@ -12,10 +12,12 @@
 
 Un plano con la textura de una imagen.
 
-    -- Image3D.create(position, width, height, imageFile)
-    image3d = Image3D.create(Vertex3D.new(10, 10, 10), 10, 10, "../assets/sprites/explosion_a.png")
-    image3d:setEnabled(true)
-    brakeza:addObject3D(image3d, 'my_image3d')
+    image3d = ObjectFactory.Image3D(
+        "../assets/sprites/explosion_a.png",                    -- file path
+        Vertex3D.new(10, 10, 10),                               -- position
+        150,                                                    -- width
+        200                                                     -- height
+    )
 
 ========================================================================================================
 
@@ -25,14 +27,13 @@ Un plano con la textura de una imagen.
 
 Modelo 3D, incorpora geometría y texturas.
 
-    -- Mesh3D.create(position, modelFile)
-    eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
-    eye:setEnabled(true)
-    eye:setScale(10)
-    brakeza:addObject3D(eye, 'modelo')
+    ObjectFactory.Mesh3D(
+        "../assets/models/Capsule.fbx",                         -- file path
+        Vertex3D.new(x, y, z)                                   -- position
+    )
 
-Los objetos Mesh3D disponen de algunas características especiales, como los Grid3D o
-los Octrees, que veremos en el capítulo dedicado a scripting.
+Los objetos Mesh3D disponen de algunas características especiales, como los Grid3D o los Octrees, queM
+veremos en el capítulo dedicado a scripting.
 
 ========================================================================================================
 
@@ -42,26 +43,26 @@ los Octrees, que veremos en el capítulo dedicado a scripting.
 
 Modelo 3D animado.
 
-    -- Mesh3DAnimation.create(position, animatedModelFile)
-    man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
-    man:setBelongToScene(false)
-    man:setScale(0.01)
-    brakeza:addObject3D(man, 'myMeshAnimated')
+    man = ObjectFactory.Image3DAnimation(
+        "../assets/animations/walking.fbx",
+        Vertex3D.new(0, -10, 40),                           -- path file
+        100,                                                -- width
+        100,                                                -- height
+        128,                                                -- sprite width
+        128,                                                -- sprite height
+        64,                                                 -- num frames
+        25                                                  -- frames per second
+    );
 
-Si el modelo tuviese más de una animación, la primera de ellas será la seleccionada por
-defecto. Desde la GUI podrás seleccionar cualquier otra animación como activa.
-Si deseas hacerlo desde tus scripts LUA puedes utilizar setIndexCurrentAnimation o setAnimationByName:
+Si el modelo tuviese más de una animación, la primera de ellas será la seleccionada por defecto. Desde
+la GUI podrás seleccionar cualquier otra animación como activa. Si deseas hacerlo desde tus scripts LUA
+puedes utilizar setIndexCurrentAnimation() o setAnimationByName():
 
-    man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
-    man:setIndexCurrentAnimation(2) -- animacion nº3 seleccionada
-    brakeza:addObject3D(man, 'myMeshAnimated')
+    man:setIndexCurrentAnimation(2)                         -- change animation index
 
-Si deseas cambiar la velocidad de la animación, podrás hacerlo también desde la UI o desde tus
-scripts LUA:
+Si deseas cambiar la velocidad de la animación, podrás hacerlo también desde la UI o desde tus scripts:
 
-    man = Mesh3DAnimation.create(Vertex3D.new(0, -10, 40), "../assets/animations/walking.fbx")
-    man:setAnimationSpeed(0.5) -- rango 0.0 - 1.0
-    brakeza:addObject3D(man, 'myMeshAnimated')
+    man:setAnimationSpeed(0.5)                              -- speed animation [0-1]
 
 ========================================================================================================
 
@@ -69,9 +70,9 @@ scripts LUA:
 
 ========================================================================================================
 
-Puedes dibujar líneas 3D a través del componentRender
+Puedes dibujar líneas 3D a través del componente Render
 
-    local render = componentsManager:getComponentRender();
-    from = this:getPosition()
-    to = this:getPosition() + this:AxisUp():getScaled(2)
-    render:drawLine(from, to)
+    Components:Render():drawLine(
+        this:getPosition(),                                 -- from position
+        this:getPosition() + this:AxisUp():getScaled(2)     -- to position
+    )

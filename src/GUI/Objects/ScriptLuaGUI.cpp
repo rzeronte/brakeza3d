@@ -80,7 +80,7 @@ void ScriptLuaGUI::DrawWinObjectScripts()
 
         for (unsigned int i = 0; i < objectScripts.size(); i++) {
             auto currentScript = objectScripts[i];
-
+            ImGui::PushID(std::string("##object_scripts_" + std::to_string(i)).c_str());
             ImGui::TableNextRow();
             ImGui::TableNextColumn();
             ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
@@ -117,7 +117,7 @@ void ScriptLuaGUI::DrawWinObjectScripts()
             });
 
             ImGui::PopStyleVar(2);
-
+            ImGui::PopID();
         }
     }
     ImGui::EndTable();

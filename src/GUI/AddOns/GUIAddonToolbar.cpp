@@ -13,7 +13,7 @@ void GUIAddonToolbar::Draw()
     if (!Config::get()->ENABLE_IMGUI_TOOLBAR) return;
 
     if (ImGui::Begin("MainToolBar")) {
-        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 6));
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 6));
         LUAStatusIcons();
         VerticalSeparator();
         LayoutIcons();
