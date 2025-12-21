@@ -19,18 +19,20 @@ public:
             const float range_max = 90000;
 
             ImVec4 color = {o->diffuse.x, o->diffuse.y, o->diffuse.z, 1};
-            bool changed_color = ImGui::ColorEdit4("Diffuse##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+            bool changed_color = ImGui::ColorEdit4("Diffuse##", (float *) &color, ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs);
             if (changed_color) {
                 o->setColor(Color(color.x,color.y,color.z));
             }
+            ImGui::SameLine();
             color = {o->specular.x, o->specular.y, o->specular.z, 1};
-            changed_color = ImGui::ColorEdit4("Specular##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+            changed_color = ImGui::ColorEdit4("Specular##", (float *) &color, ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs);
             if (changed_color) {
                 o->setColorSpecular(Color(color.x, color.y, color.z));
             }
 
+            ImGui::SameLine();
             color = {o->ambient.x, o->ambient.y, o->ambient.z, 1};
-            changed_color = ImGui::ColorEdit4("Ambient##", (float *) &color, ImGuiColorEditFlags_NoOptions);
+            changed_color = ImGui::ColorEdit4("Ambient##", (float *) &color, ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs);
             if (changed_color) {
                 o->setAmbient(Color(color.x, color.y,color.z));
             }

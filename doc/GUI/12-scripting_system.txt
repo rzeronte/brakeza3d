@@ -83,7 +83,7 @@ Los Object3D disponen de un método attachScript que nos permitirá vincularlos:
 
     print("Load LightPoint3D")
     lightp = LightPoint3D.create(Vertex3D.new(5, -10, 5))
-    brakeza:addObject3D(lightp, 'myLightPoint')
+    Brakeza:addObject3D(lightp, 'myLightPoint')
 
     script = ScriptLUA.create("../../scripts/MoveForwardObject.lua")
     if script ~= nil then
@@ -95,7 +95,7 @@ un script a la escena:
 
     script = ScriptLUA.create("../../scripts/global_script.lua")
     if script ~= nil then
-        componentsManager:getComponentScripting():addSceneLUAScript(script)
+        Components:Scripting():addSceneLUAScript(script)
     end
 
 Es importante destacar, que *la única* forma de vincular scripts al proyecto es mediante la UI, no desde código.
@@ -172,7 +172,7 @@ es decir, se instancian individualmente por cada objeto.
 Puedes acceder a las variables locales de otro objeto mediante tus scripts LUA
 de la siguiente forma:
 
-    o = brakeza:getSceneObjectByLabel("MyObject")
+    o = Brakeza:getSceneObjectByLabel("MyObject")
     position = o:getLocalScriptVar("offset") -- obtenemos un vertex3D
     print("Read variable 'offset' from object: ".. o:getLabel())
     print("Value for 'offset': " .. position.x .. ", " .. position.y .. ", " .. position.z)
@@ -191,9 +191,9 @@ Puedes cargar y salvar escenas tanto desde GUI como desde tus scripts LUA
 
     function onStart()
         ...
-        componentsManager:getComponentRender():getSceneLoader():loadScene("../scenes/scene_example.json")
+        Components:Render():getSceneLoader():loadScene("../scenes/scene_example.json")
         ...
-        componentsManager:getComponentRender():getSceneLoader():saveScene("../scenes/scene_example.json")
+        Components:Render():getSceneLoader():saveScene("../scenes/scene_example.json")
         ...
     end
 
@@ -209,13 +209,13 @@ ya que permite que los movimientos y animaciones sean consistentes independiente
 Puedes obtenerlo desde tus scripts LUAde la siguiente manera:
 
     ...
-    print("DeltaTime: " .. brakeza:getDeltaTime()) -- delta en segundos
-    print("DeltaTimeInMicro: " .. brakeza:getDeltaTimeMicro()) -- delta en microsegundos
-    print("Execution Time: " .. brakeza:getExecutionTime()) -- tiempo total de ejecución
+    print("DeltaTime: " .. Brakeza:getDeltaTime()) -- delta en segundos
+    print("DeltaTimeInMicro: " .. Brakeza:getDeltaTimeMicro()) -- delta en microsegundos
+    print("Execution Time: " .. Brakeza:getExecutionTime()) -- tiempo total de ejecución
     ...
     function onUpdate()
         local speed = 5.0  -- unidades por segundo
-        local movement = speed * brakeza:getDeltaTime()
+        local movement = speed * Brakeza:getDeltaTime()
         myObject:addToPosition(Vertex3D.new(movement, 0, 0))
     end
 
@@ -227,7 +227,7 @@ Puedes obtenerlo desde tus scripts LUAde la siguiente manera:
 
 Si deseas terminar la aplicación desde código, puedes hacerlo de la siguiente forma:
 
-    brakeza:finish()
+    Brakeza:finish()
 
 =========================================
 ### 12.11) Autocargar proyectos o escenas
@@ -260,7 +260,7 @@ Para cargar una rejilla en un objeto Mesh3D puedes utilizar el método buildGrid
     eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
     eye:setScale(10)
     eye:buildGrid3D(5, 5, 5) -- crea una rejilla de 5x5x5
-    brakeza:addObject3D(eye, 'modelo')
+    Brakeza:addObject3D(eye, 'modelo')
 
 
 Para cargar una *octree* en un objeto Mesh3D puedes utilizar el método buildOctree(maxDepth).
@@ -268,7 +268,7 @@ Para cargar una *octree* en un objeto Mesh3D puedes utilizar el método buildOct
     eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
     eye:setScale(10)
     eye:buildOctree(1) -- crea una árbol de octanos de un solo nivel de profundidad, solo 8 hijos
-    brakeza:addObject3D(eye, 'modelo')
+    Brakeza:addObject3D(eye, 'modelo')
 
 Para volver a ajustar las dimensiones tanto en las rejillas como en los árboles de octanos, simplemente
 vuelve a ejecutar buildGrid3D o buildOctree.
@@ -284,7 +284,7 @@ el cual activará este flag en cada celda, si ningún triángulo atraviesa o est
     eye:setScale(10)
     eye:buildGrid3D(5, 5, 5)
     eye:fillGrid3DFromGeometry() -- activa los flags para celdas sin geometría
-    brakeza:addObject3D(eye, 'modelo')
+    Brakeza:addObject3D(eye, 'modelo')
 
 Será especialmente útil para aplicar técnicas de pathfinding disponer de esta información precargada
 en un Grid3D.
@@ -298,7 +298,7 @@ podrás conseguir que los caminos esquiven nodos con geometría.
     eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
     eye:buildGrid3D(5, 5, 5)                    -- construimos un grid de 5x5x5
     eye:fillGrid3DFromGeometry()                -- Flags basados en si hay o no geometría en cada celda
-    brakeza:addObject3D(eye, 'modelo')
+    Brakeza:addObject3D(eye, 'modelo')
 
     eye:getGrid3D():setTravel(0, 0, 0, 5, 5, 5) -- Configuramos un viaje desde (0, 0, 0) hasta (5, 5, 5)
     path = eye:getGrid3D():makeTravelCubesGrid() -- Obtenemos un array de CubeGrid3D

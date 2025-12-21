@@ -22,11 +22,6 @@ void ComponentCollisions::preUpdate()
 void ComponentCollisions::onUpdate()
 {
     Component::onUpdate();
-}
-
-void ComponentCollisions::postUpdate()
-{
-    Component::postUpdate();
 
     if (!isEnabled()) {
         this->StepSimulation(0);
@@ -34,7 +29,17 @@ void ComponentCollisions::postUpdate()
     }
 
     //StepSimulation(Brakeza::get()->getDeltaTime());
-    Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobStepSimulation>(Brakeza::get()->getDeltaTime()));
+    Brakeza::get()->PoolCompute().enqueue(
+        std::make_shared<ThreadJobStepSimulation>(Brakeza::get()->getDeltaTime())
+    );
+}
+
+void ComponentCollisions::postUpdate()
+{
+    Component::postUpdate();
+    if (Config::get()->BULLET_DEBUG_MODE) {
+        Components::get()->Collisions()->DrawDebugCache();
+    }
 }
 
 void ComponentCollisions::onEnd()
@@ -130,11 +135,6 @@ void ComponentCollisions::StepSimulation(float deltaTime)
             btScalar(1.) / btScalar(SETUP->BULLET_FIXED_TIME_STEPS)
         );
         UpdatePhysicObjects();
-    }
-
-    if (Config::get()->BULLET_DEBUG_MODE) {
-        dynamicsWorld->debugDrawWorld();
-        DrawDebugCache();
     }
 
     CheckCollisionsForAll();
@@ -254,7 +254,7 @@ void ComponentCollisions::DrawDebugCache() const
 {
     Components::get()->Render()->getShaders()->shaderOGLLine3D->renderLines(
         debugDrawLinesCache,
-        Components::get()->Window()->getForegroundFramebuffer(),
+        Components::get()->Window()->getUIFramebuffer(),
         Color::fuchsia()
     );
 }

@@ -16,7 +16,7 @@ de tus scripts LUA.
 
 Se configura mediante el componente render:
 
-    render = componentsManager:getComponentRender()
+    render = Components:Render()
 
 - setGlobalIlluminationDirection(Vertex3D): Dirección de iluminación global.
 - setGlobalIlluminationAmbient(Vertex3D): Componente ambiente de iluminación global.
@@ -28,6 +28,6 @@ simplemente por conveniencia, ya que se esperan valores de rango 0-1 y no 0-255 
 
 Ejemplo para configurar la componente ambiente:
 
-    render = componentsManager:getComponentRender()
+    render = Components:Render()
     render:setGlobalIlluminationAmbient(Vertex3D.new(1, 0, 0)) -- rojo
 

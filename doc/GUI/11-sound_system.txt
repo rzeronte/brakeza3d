@@ -8,7 +8,7 @@ Brakeza3D ofrece una interfaz básica para el manejo del sonido en tus juegos. P
 las funcionalidades de este sistema a través de ComponentSound.
 
     ...
-    systemSound = componentsManager:getComponentSound()
+    systemSound = Components:Sound()
     ...
 
 ========================================================================================================
@@ -54,14 +54,14 @@ Precarga de un fichero destinado a reproducirse como música. La música se repr
 automática.
 
     ...
-    systemSound = componentsManager:getComponentSound()
+    systemSound = Components:Sound()
     systemSound:addMusic("../assets/sounds/music_demo.mp3", "music_demo")
     ...
 
 Reproducir una música precargada:
 
     ...
-    systemSound = componentsManager:getComponentSound()
+    systemSound = Components:Sound()
     systemSound:playMusic("music_demo")
     ...
 
@@ -74,14 +74,14 @@ Reproducir una música precargada:
 Precarga de un fichero destinado a reproducirse como sonido:
 
     ...
-    systemSound = componentsManager:getComponentSound()
+    systemSound = Components:Sound()
     systemSound:addSound("../assets/sounds/music_demo.mp3", "sound_demo")
     ...
 
 Reproducir un sonido precargado:
 
     ...
-    systemSound = componentsManager:getComponentSound()
+    systemSound = Components:Sound()
     systemSound:playSound("sound_demo")
     ...
 
@@ -96,14 +96,14 @@ Puedes manipular el volumen de la música y el resto de sonidos de forma separad
 Manipular el volumen de la música:
 
     ...
-    systemSound = componentsManager:getComponentSound()
+    systemSound = Components:Sound()
     systemSound:setMusicVolume(75) -- Rango [0 - 128]
     ...
 
 Manipular el volumen de los sonidos:
 
     ...
-    systemSound = componentsManager:getComponentSound()
+    systemSound = Components:Sound()
     systemSound:setSoundsVolume(100) -- Rango [0 - 128]
     ...
 
