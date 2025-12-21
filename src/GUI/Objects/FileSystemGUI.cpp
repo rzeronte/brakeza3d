@@ -351,12 +351,6 @@ void FileSystemGUI::DrawBrowserFolders(std::string& folder, GUIType::BrowserCach
     float frameHeight = ImGui::GetFrameHeight();
     float offsetY = (frameHeight - iconSize.y) * 0.5f;
 
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
-    ImGui::Image(Icon(IconGUI::FOLDER), iconSize);
-    ImGui::SameLine();
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() - offsetY);
-    ImGui::Text(".");
-
     for (const auto & i : browser.folderFolders) {
         auto fullPathFolder = browser.currentFolder + i;
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);

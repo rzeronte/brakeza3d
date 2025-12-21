@@ -221,7 +221,7 @@ end
 function onStart()
     currentState = State.IDLE
 
-    floor = brakeza:getSceneObjectByLabel("floor")
+    floor = Brakeza:getObjectByName("floor")
 
     countUnblockableFrames = 0
 
@@ -292,7 +292,7 @@ function onUpdate()
     decreaseCounterBlock()
 
     this:setRotation(sideRotation)
-    local dt = brakeza:getDeltaTime()
+    local dt = Brakeza:getDeltaTime()
 
     handleFloorMovement(input, dt)
     handleHanglingToToUp()

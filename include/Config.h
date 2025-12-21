@@ -176,7 +176,7 @@ public:
     float PROJECTILE_DEMO_ACCURACY = 100;
     float PROJECTILE_DEMO_MASS = 100;
     bool PROJECTILE_SIMPLE_MESH = true;
-    float SPLASH_COUNTDOWN_TIME = 4.0f;
+    float SPLASH_COUNTDOWN_TIME = 5.0f;
 
     bool SHOW_ABOUT_ME_MODAL = false;
 

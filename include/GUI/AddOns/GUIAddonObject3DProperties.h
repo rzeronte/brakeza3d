@@ -12,7 +12,7 @@ class GUIManager;
 class GUIAddonObject3DProperties
 {
 public:
-    GUIAddonObject3DProperties();
+    GUIAddonObject3DProperties() = default;
     static void DrawWinObjectProps(GUIManager *gui);
 };
 
