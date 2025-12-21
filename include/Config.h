@@ -39,6 +39,7 @@ public:
     std::string SOUNDS_FOLDER         = ASSETS_FOLDER + "sounds/";
     std::string MODELS_FOLDER         = ASSETS_FOLDER + "models/";
     std::string ANIMATIONS_FOLDER     = ASSETS_FOLDER + "animations/";
+    std::string TEMPLATES_FOLDER      = ASSETS_FOLDER + "templates/";
     std::string FONTS_FOLDER          = ASSETS_FOLDER + "fonts/";
     std::string TEXTURES_FOLDER       = ASSETS_FOLDER + "textures/";
     std::string GRIDS_FOLDER          = ASSETS_FOLDER + "grids/";
@@ -181,10 +182,13 @@ public:
     bool SHOW_ABOUT_ME_MODAL = false;
 
     // CUSTOM SHADER TEMPLATES
-    std::string TEMPLATE_SHADER_POSTPROCESSING_VS = SHADERS_FOLDER + "templates/ShaderPostprocessing.vs";
-    std::string TEMPLATE_SHADER_POSTPROCESSING_FS = SHADERS_FOLDER + "templates/ShaderPostprocessing.fs";
-    std::string TEMPLATE_SHADER_OBJECT_VS = SHADERS_FOLDER + "templates/ShaderObject.vs";
-    std::string TEMPLATE_SHADER_OBJECT_FS = SHADERS_FOLDER + "templates/ShaderObject.fs";
+    std::string TEMPLATE_SHADER_POSTPROCESSING_VS = TEMPLATES_FOLDER + "shader-postprocessing-template.vs";
+    std::string TEMPLATE_SHADER_POSTPROCESSING_FS = TEMPLATES_FOLDER + "shader-postprocessing-template.fs";
+    std::string TEMPLATE_SHADER_OBJECT_VS = TEMPLATES_FOLDER + "shader-object-template.vs";
+    std::string TEMPLATE_SHADER_OBJECT_FS = TEMPLATES_FOLDER + "shader-object-template.fs";
+
+    // SCRIPT TEMPLATE
+    std::string TEMPLATE_SCRIPT = TEMPLATES_FOLDER + "script-template.lua";
 
     // GLOBAL ENUMS
     enum SoundChannels {

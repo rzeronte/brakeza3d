@@ -23,15 +23,30 @@ void ComponentCollisions::onUpdate()
 {
     Component::onUpdate();
 
+    auto dt = Brakeza::get()->getDeltaTime();
     if (!isEnabled()) {
-        this->StepSimulation(0);
-        return;
+        dt = 0;
     }
 
-    //StepSimulation(Brakeza::get()->getDeltaTime());
     Brakeza::get()->PoolCompute().enqueue(
-        std::make_shared<ThreadJobStepSimulation>(Brakeza::get()->getDeltaTime())
+        std::make_shared<ThreadJobStepSimulation>(dt)
     );
+}
+
+void ComponentCollisions::StepSimulation(float deltaTime)
+{
+    ClearDebugCache();
+
+    if (SETUP->ENABLE_BULLET_STEP_SIMULATION) {
+        getDynamicsWorld()->stepSimulation(
+            deltaTime,
+            SETUP->BULLET_MAX_SUBSTEPS,
+            btScalar(1.) / btScalar(SETUP->BULLET_FIXED_TIME_STEPS)
+        );
+        UpdatePhysicObjects();
+    }
+
+    CheckCollisionsForAll();
 }
 
 void ComponentCollisions::postUpdate()
@@ -122,22 +137,6 @@ void ComponentCollisions::UpdatePhysicObjects() const
             collisionable->Integrate();
         }
     }
-}
-
-void ComponentCollisions::StepSimulation(float deltaTime)
-{
-    ClearDebugCache();
-
-    if (!isEnabled() || SETUP->ENABLE_BULLET_STEP_SIMULATION) {
-        getDynamicsWorld()->stepSimulation(
-            deltaTime,
-            SETUP->BULLET_MAX_SUBSTEPS,
-            btScalar(1.) / btScalar(SETUP->BULLET_FIXED_TIME_STEPS)
-        );
-        UpdatePhysicObjects();
-    }
-
-    CheckCollisionsForAll();
 }
 
 void ComponentCollisions::demoProjectile(int type)

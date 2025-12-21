@@ -520,7 +520,7 @@ void FileSystemGUI::DrawShaderFiles(GUIType::BrowserCache &browser)
         ImGui::Text("Current: %s", browser.currentFolder.c_str());
         // Derecha
         ImGui::TableSetColumnIndex(1);
-        GUI::DrawButton("Create Shader", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+        GUI::DrawButton("Create shader", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
             openPopup = true;
         });
         ImGui::EndTable();
@@ -665,7 +665,7 @@ void FileSystemGUI::DrawScriptCreatorDialog(GUIType::BrowserCache &browser, std:
         ImGui::SameLine();
         GUI::DrawButton("Create script", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
             if (localVarName[0] != '\0') {
-                ComponentScripting::createScriptLUAFile(browser.currentFolder + localVarName);
+                ComponentScripting::CreateScriptLUAFile(browser.currentFolder + localVarName);
                 browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
                 ImGui::CloseCurrentPopup();
             }
