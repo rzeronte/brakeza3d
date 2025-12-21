@@ -39,7 +39,10 @@ public:
     std::vector<ScriptLUA*> &getSceneLUAScripts()                           { return scripts; }
     std::vector<ScriptLUA*> &getProjectLUAScripts()                         { return projectScripts; }
     [[nodiscard]] Config::LuaStateScripts getStateLUAScripts() const        { return stateScripts; }
-    static void createScriptLUAFile(const std::string& path);
+
+    static void CreateScriptLUAFile(const std::string& path);
+    static cJSON *CreateEmptyTypesFileJSON(const std::string &name, const std::string &codeFile, const std::string &typesFile);
+
     static void RemoveScriptLUAFile(const std::string& path);
 };
 

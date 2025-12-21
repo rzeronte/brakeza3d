@@ -412,6 +412,7 @@ std::string Tools::GoBackFromFolder(const std::string& folder)
 bool Tools::RemoveFile(const std::string& filePath)
 {
     if (std::remove(filePath.c_str()) == 0) {
+        Logging::Message("[Tools] Removing file '%s'...", filePath.c_str());
         return true;
     }
     return false;

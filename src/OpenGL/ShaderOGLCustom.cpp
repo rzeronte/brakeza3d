@@ -784,14 +784,17 @@ std::string ShaderOGLCustom::getShaderTypeString(ShaderCustomType type)
 
 void ShaderOGLCustom::WriteEmptyCustomShaderToDisk(const std::string& name, const std::string& folder, ShaderCustomType type)
 {
-    Logging::Message("Creating new custom shader: %s de tipo %d", name.c_str(), type);
+    Logging::Message("[ShaderOGLCustom] Creating new custom shader '%s' of type '%d' in '%s'", name.c_str(), type, name.c_str());
 
-    std::string shaderFragmentFile = folder + std::string(name + ".fs");
-    std::string shaderVertexFile = folder + std::string(name + ".vs");
+    std::string typesFile = folder + std::string(name + ".json");
+    std::string fsFile = folder + std::string(name + ".fs");
+    std::string vsfile = folder + std::string(name + ".vs");
 
     cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "fsFile", fsFile.c_str());
+    cJSON_AddStringToObject(root, "vsFile", vsfile.c_str());
+    cJSON_AddStringToObject(root, "typesFile", typesFile.c_str());
     cJSON_AddStringToObject(root, "name", name.c_str());
-    cJSON_AddStringToObject(root, "file", shaderFragmentFile.c_str());
     cJSON_AddStringToObject(root, "type", getShaderTypeString(type).c_str());
 
     cJSON *typesArray = cJSON_CreateArray();
@@ -799,20 +802,20 @@ void ShaderOGLCustom::WriteEmptyCustomShaderToDisk(const std::string& name, cons
     char *typesCode = cJSON_Print(root);
 
     // json
-    Tools::WriteToFile(folder + dataTypesFileFor(name), typesCode);
+    Tools::WriteToFile(typesFile, typesCode);
 
     switch(type) {
         case SHADER_POSTPROCESSING : {
             // vs y fs
-            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_VS, shaderVertexFile);
-            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_FS, shaderFragmentFile);
+            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_VS, vsfile);
+            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_FS, fsFile);
             break;
         }
         default:
         case SHADER_OBJECT : {
             // vs y fs
-            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_OBJECT_VS, shaderVertexFile);
-            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_OBJECT_FS, shaderFragmentFile);
+            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_OBJECT_VS, vsfile);
+            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_OBJECT_FS, fsFile);
             break;
         }
     }

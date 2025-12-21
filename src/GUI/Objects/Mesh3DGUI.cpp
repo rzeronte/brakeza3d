@@ -19,9 +19,9 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
         ImGui::Separator();
         if (ImGui::TreeNodeEx("Mesh information", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
             ImGui::Spacing();
-            auto fileModel = std::string("- File model: ") + o->sourceFile;
+            auto fileModel = std::string("Model: ") + o->sourceFile;
             ImGui::Text(fileModel.c_str());
-            ImGui::Text("- Num Meshes: %d", o->meshes.size());
+            ImGui::Text("Nº Meshes: %d", o->meshes.size());
             int cont = 1;
             for (auto &m: o->meshes) {
                 auto meshTitle = "Mesh " + std::to_string(cont);

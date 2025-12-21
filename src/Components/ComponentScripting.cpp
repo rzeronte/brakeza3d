@@ -5,6 +5,7 @@
 #include "../../include/Components/ComponentScripting.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
+#include "../../include/GUI/Objects/ScriptLuaGUI.h"
 #include "../../include/LUA/BrakezaLuaBridge.h"
 
 void ComponentScripting::onStart()
@@ -203,26 +204,40 @@ sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName
     return sol::nil;
 }
 
-void ComponentScripting::createScriptLUAFile(const std::string& path)
+void ComponentScripting::CreateScriptLUAFile(const std::string& path)
 {
-    Logging::Message("Creating new Script LUA file: %s", path.c_str());
+    Logging::Message("[Scripting] Creating new Script in '%s'...", path.c_str());
 
-    auto projectJsonFile = std::string(path + ".lua");
+    auto codeFile = std::string(path + ".lua");
+    auto typesFile = std::string(path + ".json");
+    auto name = Tools::getFilenameWithoutExtension(codeFile);
 
-    std::string content = R"(
-        function onStart()
-        end
-        function onUpdate()
-        end
-        function onCollision(with)
-        end
-    )";
+    auto content = Tools::ReadFile(Config::get()->TEMPLATE_SCRIPT);
+    Tools::WriteToFile(codeFile, content);
 
-    Tools::WriteToFile(projectJsonFile, content.c_str());
+    auto typesFileJson = CreateEmptyTypesFileJSON(name, codeFile, typesFile);
+    Tools::WriteToFile(typesFile, cJSON_Print(typesFileJson));
+
+    delete[] content;
+}
+
+cJSON* ComponentScripting::CreateEmptyTypesFileJSON(const std::string &name, const std::string &codeFile, const std::string &typesFile)
+{
+    cJSON* root = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(root, "codeFile", codeFile.c_str());
+    cJSON_AddStringToObject(root, "typesFile", typesFile.c_str());
+    cJSON_AddStringToObject(root, "name", name.c_str());
+
+    cJSON_AddArrayToObject(root, "types");
+
+    return root;
 }
 
 void ComponentScripting::RemoveScriptLUAFile(const std::string& path)
 {
-    Logging::Message("[Scripting] Deleting script file: %s", path.c_str());
-    Tools::RemoveFile(path);
+    auto meta = ScriptLuaGUI::ExtractScriptMetainfo(path);
+
+    Tools::RemoveFile(meta.codeFile);
+    Tools::RemoveFile(meta.typesFile);
 }
