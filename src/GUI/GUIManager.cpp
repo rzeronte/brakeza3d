@@ -35,6 +35,7 @@ void GUIManager::OnStart()
     Profiler::get()->CaptureGUIMemoryUsage();
 
     documentationEditor.SetReadOnly(true);
+    documentationEditor.SetText(Tools::ReadFile(Config::get()->DOCUMENTATION_FOLDER + Config::get()->DOCUMENTATION_DEFAULT));
     documentationEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
     documentationEditor.SetShowWhitespaces(false);
 

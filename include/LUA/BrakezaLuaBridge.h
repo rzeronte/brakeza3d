@@ -116,9 +116,9 @@ inline void LUAIntegration(sol::state &lua)
         "jump", &Object3D::jump,
         "onGround", &Object3D::onGround,
         "getLocalScriptVar", &Object3D::getLocalScriptVar,
-        "attachScript", &Object3D::AttachScript,
-        "lookAt", &Object3D::LookAt,
-        "reloadScriptsEnvironment", &Object3D::ReloadScriptsEnvironment,
+        "AttachScript", &Object3D::AttachScript,
+        "LookAt", &Object3D::LookAt,
+        "ReloadScriptsEnvironment", &Object3D::ReloadScriptsEnvironment,
         "getLinearVelocity", &Object3D::getLinearVelocity
     );
 
@@ -411,10 +411,7 @@ inline void LUAIntegration(sol::state &lua)
         "writeTTFCenterHorizontal", &TextWriter::WriteTTFCenterHorizontal,
         "getAlpha", &TextWriter::getAlpha,
         "setAlpha", &TextWriter::setAlpha,
-        "setFont", &TextWriter::setFont,
-        "create", sol::factories([](const std::string& fontFile) {
-            return TextWriter::create(fontFile);
-        })
+        "setFont", &TextWriter::setFont
     );
 
     lua.new_usertype<ShaderOGLCustom>("ShaderOpenGLCustom",
@@ -484,7 +481,8 @@ inline void LUAIntegration(sol::state &lua)
         "Mesh3DAnimation", &ObjectFactory::CreateMesh3DAnimation,
         "LightPoint", &ObjectFactory::CreateLightPoint,
         "LightSpot", &ObjectFactory::CreateLightSpot,
-        "ParticleEmitter", &ObjectFactory::CreateParticleEmitter
+        "ParticleEmitter", &ObjectFactory::CreateParticleEmitter,
+        "TextWriter", &ObjectFactory::CreateTextWriter
     );
 }
 

@@ -1,15 +1,19 @@
-===================
+========================================================================================================
+
 13 - SHADERS SYSTEM
-===================
+
+========================================================================================================
 
 Brakeza3D ofrece la posibilidad de que incorpores tus propios shaders GLSL.
 
 De igual forma que sucede con los Scripts, podrás vincular Shaders a tus escenas
 y/o Object3D.
 
-==========================
+========================================================================================================
+
 ### 13.1) Tipos de Shaders
-==========================
+
+========================================================================================================
 
 Existen dos tipos de shaders:
 
@@ -21,9 +25,11 @@ la imagen final antes de enviarla a la pantalla. Solo pueden ser aplicados a una
 Podrás crear los shaders desde la UI, Brakeza3D creará automáticamente un fichero .vs y .fs, vertexshader y fragmenteshader respectivamente, los que podrás
 modificar a tu antojo. También se generará un fichero json con metadatos.
 
-=========================================
+========================================================================================================
+
 ### 13.2) Variables de Shaders (uniforms)
-=========================================
+
+========================================================================================================
 
 También podrás configurar las variables (*uniforms*) que recibirá cada shader desde la UI.
 
@@ -34,9 +40,11 @@ o scene (texture).
 Además, los shaders de geometría (que solo aplican a Mesh3D) te permiten usar tipos del sistema como: diffuse o specular, con
 texturas pertenecientes al modelo en particular.
 
-==========================================
+========================================================================================================
+
 ### 13.3) Template Shader de postprocesado
-==========================================
+
+========================================================================================================
 
 A continuación las templates vacías para el shader de postprocesado.
 
@@ -70,9 +78,11 @@ FragmentShader:
        //FragColor = texture(sceneTexture, TexCoords);
     }
 
-=====================================
+========================================================================================================
+
 ### 13.4)Template Shader de geometría
-=====================================
+
+========================================================================================================
 
 A continuación las templates vacías para el shader de geometría.
 
@@ -121,9 +131,11 @@ FragmentShader:
         //FragColor = texture(diffuse, TexCoords);
     }
 
-==========================
+========================================================================================================
+
 ### 13.5) Shaders internos
-==========================
+
+========================================================================================================
 
 Puedes encontrar los shaders que son utilizados internamente por Brakeza3D en la carpeta /GLSL.
 

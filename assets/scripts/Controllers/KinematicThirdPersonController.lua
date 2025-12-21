@@ -4,10 +4,10 @@ function onStart()
 end
 
 function onUpdate()
-    camera = componentsManager:getComponentCamera():getCamera()
+    camera = Components:Camera():getCamera()
     pos = this:getPosition()
 
-    componentInput = componentsManager:getComponentInput();
+    componentInput = Components:Input();
     local mouseMotionXRel = 0
     local clickLeft = componentInput:isLeftMouseButtonPressed()
     local isMouseMotion = componentInput:isMouseMotion()
@@ -20,13 +20,13 @@ function onUpdate()
     this:setRotation(this:getRotation() * M3:getMatrixRotationForEulerAngles(yaw, 0, 0))
     forward = this:getRotation():Z()
     camera:setPosition(pos + (forward:getScaled(cameraOffset.z) + Vertex3D.new(cameraOffset.x, cameraOffset.y, 0)))
-    camera:lookAt(this)
-    if (componentsManager:getComponentInput():isCharPressed("W")) then speed = speed - force end
-    if (componentsManager:getComponentInput():isCharPressed("S")) then speed = speed + force end
-    if (componentsManager:getComponentInput():isCharPressed("A")) then strafe = strafe - force end
-    if (componentsManager:getComponentInput():isCharPressed("D")) then strafe = strafe + force end
+    camera:LookAt(this)
+    if (Components:Input():isCharPressed("W")) then speed = speed - force end
+    if (Components:Input():isCharPressed("S")) then speed = speed + force end
+    if (Components:Input():isCharPressed("A")) then strafe = strafe - force end
+    if (Components:Input():isCharPressed("D")) then strafe = strafe + force end
 
-    if (componentsManager:getComponentInput():isCharPressed("SPACE") and this:onGround()) then
+    if (Components:Input():isCharPressed("SPACE") and this:onGround()) then
         this:jump(Vertex3D.new(0, jumpForce, 0)) -- saltamos
     end
 

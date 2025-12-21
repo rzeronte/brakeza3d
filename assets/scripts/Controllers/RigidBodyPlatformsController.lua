@@ -104,7 +104,7 @@ local function createBorderCross(cornerUpLeftCenter, cornerUpRightCenter, corner
 end
 
 function UpdateCollisionFlags(input, from, rays, cross)
-    local collisions = componentsManager:getComponentCollisions();
+    local collisions = Components:Collisions();
     local velocity = this:getLinearVelocity()
 
     -- Collision flags
@@ -286,7 +286,7 @@ function onUpdate()
     local rays = createRayPositions(position, this, lengthRay)
     local cross = createBorderCross(rays.cornerUpLeftCenter, rays.cornerUpRightCenter, rays.cornerBottomLeftCenter, rays.cornerBottomRightCenter)
 
-    local input = componentsManager:getComponentInput();
+    local input = Components:Input();
     UpdateCollisionFlags(input, position, rays, cross)
 
     decreaseCounterBlock()
@@ -561,7 +561,7 @@ function handleHook(input, dt)
 end
 
 function debug(from, rays, cross)
-    local render = componentsManager:getComponentRender()
+    local render = Components:Render()
 
     local colors = {
         floorLeft = Color.new(1, 0, 0, 1),

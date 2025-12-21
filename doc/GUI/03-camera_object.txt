@@ -1,45 +1,55 @@
-==================
+========================================================================================================
+
 03 - CAMERA OBJECT
-==================
+
+========================================================================================================
 
 Brakeza3D incluye un objeto específico para referirse a la cámara: Camera3D. Al fin y al cabo es
 un Object3D, por lo que podrás moverlo y rotarlo como tal. Incorpora algunas opciones de configuración como lo son
 él FOV y tamaños del Frustum, que afectarán a como y qué veámos en pantalla.
 
-=======================================
+========================================================================================================
+
 ### 3.1) MATRICES DE VISTA Y PROYECCIÓN
-=======================================
+
+========================================================================================================
 
 A través del objeto Camera3D obtendremos las matrices de vista y proyección:
 
-- getM3ViewMatrix: M3 con los datos de la matriz de vista.
-- getM3ProjectionMatrix: M3 con los datos de la matriz de proyección.
+- getM3ViewMatrix       : M3 con los datos de la matriz de vista.
+- getM3ProjectionMatrix : M3 con los datos de la matriz de proyección.
 
-===========================================
+========================================================================================================
+
 ### 3.2) MOVIMIENTO Y ROTACIÓN DE LA CÁMARA
-===========================================
+
+========================================================================================================
 
 La cámara es un Objeto3D, por lo que podremos moverlo a través del
 método setPosition(Vertex3D) que ya hemos visto.
 
 De igual forma podrás rotar la cámara con setRotation(M3).
 
-=============================
+========================================================================================================
+
 ### 3.3) COMPONENTE DE CAMARA
-=============================
+
+========================================================================================================
 
 Brakeza3D gestiona las operaciones de cámara a través del componente Camera.
 
 Podrás obtener acceso a este componente desde tus scripts LUA y este te dará acceso a la cámara:
 
-camera = componentsManager:Camera():getCamera()
-camera:setPosition(Vertex3D.new(10, 10, 10))
+    camera = componentsManager:Camera():getCamera()
+    camera:setPosition(Vertex3D.new(10, 10, 10))
 
-============
+========================================================================================================
+
 ### 3.4) FOV
-============
+
+========================================================================================================
 
 Puedes ajustar el FOV horizontal desde tus scripts de la siguiente manera:
 
-local camera = componentsManager:Camera():getCamera()
-camera:setFOV(140)
+    local camera = componentsManager:Camera():getCamera()
+    camera:setFOV(140)
