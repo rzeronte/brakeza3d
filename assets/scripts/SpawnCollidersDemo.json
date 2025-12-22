@@ -1,0 +1,10 @@
+{
+	"codeFile":	"../assets/scripts/SpawnCollidersDemo.lua",
+	"typesFile":	"../assets/scripts/SpawnCollidersDemo.json",
+	"name":	"../assets/scripts/SpawnCollidersDemo",
+	"types":	[{
+			"name":	"frequency",
+			"type":	"float",
+			"value":	0.5
+		}]
+}

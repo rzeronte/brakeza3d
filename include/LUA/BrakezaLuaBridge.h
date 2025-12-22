@@ -26,13 +26,13 @@ inline void LUAIntegration(sol::state &lua)
     lua.new_usertype<Vertex3D>(
         "Vertex3D",
         sol::constructors<Vertex3D(), Vertex3D(float, float, float)>(),
-        "x", sol::property(&Vertex3D::x, &Vertex3D::x),
-        "y", sol::property(&Vertex3D::y, &Vertex3D::y),
-        "z", sol::property(&Vertex3D::z, &Vertex3D::z),
+        "x", &Vertex3D::x,
+        "y", &Vertex3D::y,
+        "z", &Vertex3D::z,
         "__add", sol::overload(&Vertex3D::operator+),
         "__sub", sol::overload(&Vertex3D::operator-),
         "getScaled", sol::overload(
-        static_cast<Vertex3D (Vertex3D::*)(float) const>(&Vertex3D::getScaled),
+            static_cast<Vertex3D (Vertex3D::*)(float) const>(&Vertex3D::getScaled),
             static_cast<Vertex3D (Vertex3D::*)(float, float, float) const>(&Vertex3D::getScaled)
         ),
         "getNormalize", &Vertex3D::getNormalize,
@@ -84,7 +84,7 @@ inline void LUAIntegration(sol::state &lua)
         "AxisForward", &Object3D::forward,
         "AxisUp", &Object3D::up,
         "AxisRight", &Object3D::right,
-        "removeCollisionObject", &Object3D::removeCollisionObject,
+        "RemoveCollisionObject", &Object3D::RemoveCollisionObject,
         "sleepCollider", &Object3D::sleepCollider,
         "setCollisionsEnabled", &Object3D::setCollisionsEnabled,
         "disableSimulationCollider", &Object3D::disableSimulationCollider,

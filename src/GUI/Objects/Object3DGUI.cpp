@@ -155,7 +155,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
         if (ImGui::CollapsingHeader("Collider")) {
             if (ImGui::Checkbox("Enable collider", &o->collisionsEnabled)) {
                 if (!o->collisionsEnabled) {
-                    o->removeCollisionObject();
+                    o->RemoveCollisionObject();
                 } else {
                     o->SetupGhostCollider(SIMPLE_SHAPE);
                 }

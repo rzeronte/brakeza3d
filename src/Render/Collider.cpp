@@ -64,7 +64,7 @@ void Collider::setCollisionShape(CollisionShape collisionShape) {
     Collider::collisionShape = collisionShape;
 }
 
-void Collider::removeCollisionObject()
+void Collider::RemoveCollisionObject()
 {
     if (collisionMode == GHOST && ghostObject != nullptr) {
         Logging::Message("[Collider] Removing collider GHOST");
@@ -231,7 +231,7 @@ void Collider::setupKinematicCollider()
 {
     Logging::Message("[Collider] setupKinematicCollider");
 
-    removeCollisionObject();
+    RemoveCollisionObject();
 
     setCollisionMode(CollisionMode::KINEMATIC);
     setCollisionShape(CollisionShape::SIMPLE_SHAPE);
@@ -249,9 +249,9 @@ void Collider::SetupRigidBodyCollider(CollisionShape shapeMode)
 {
     Logging::Message("[Collider] SetupRigidBodyCollider");
 
-    removeCollisionObject();
+    RemoveCollisionObject();
 
-    setCollisionMode(CollisionMode::BODY);
+    setCollisionMode(BODY);
     setCollisionShape(shapeMode);
 
     MakeSimpleRigidBody(

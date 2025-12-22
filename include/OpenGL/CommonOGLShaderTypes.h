@@ -69,14 +69,11 @@ struct OpenGLGlobalFramebuffers
     GLuint foregroundFBO = 0;
     GLuint uiFBO = 0;
 
-    GLuint postProcessingFBO = 0;
-
     GLuint globalTexture = 0;
     GLuint sceneTexture = 0;
     GLuint backgroundTexture = 0;
     GLuint foregroundTexture = 0;
     GLuint uiTexture = 0;
-    GLuint postProcessingTexture = 0;
 
     GLuint sceneDepthTexture = 0;
 };

@@ -29,39 +29,39 @@
 	"objects":	[],
 	"shaders":	[],
 	"scripts":	[{
-			"codeFile":	"../assets/scripts/Examples/GlobalScripts/AddObjectExample.lua",
-			"typesFile":	"../assets/scripts/Examples/GlobalScripts/AddObjectExample.json",
-			"name":	"Performance Test",
-			"types":	[{
-					"name":	"finished",
-					"type":	"int",
-					"value":	0
-				}, {
-					"name":	"frequency",
-					"type":	"int",
-					"value":	0
-				}, {
-					"name":	"spacing",
-					"type":	"int",
-					"value":	1
-				}, {
-					"name":	"gridRows",
-					"type":	"int",
-					"value":	100
-				}, {
-					"name":	"gridCols",
-					"type":	"int",
-					"value":	100
-				}, {
-					"name":	"position",
-					"type":	"Vertex3D",
-					"value":	{
-						"x":	1,
-						"y":	1,
-						"z":	1
-					}
-				}]
-		}],
+		"codeFile":	"../assets/scripts/Examples/GlobalScripts/AddObjectExample.lua",
+		"typesFile":	"../assets/scripts/Examples/GlobalScripts/AddObjectExample.json",
+		"name":	"Performance Test",
+		"types":	[{
+			"name":	"finished",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"frequency",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"spacing",
+			"type":	"int",
+			"value":	1
+		}, {
+			"name":	"gridRows",
+			"type":	"int",
+			"value":	100
+		}, {
+			"name":	"gridCols",
+			"type":	"int",
+			"value":	100
+		}, {
+			"name":	"position",
+			"type":	"Vertex3D",
+			"value":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			}
+		}]
+	}],
 	"camera":	{
 		"position":	{
 			"x":	-8.7190771102905273,

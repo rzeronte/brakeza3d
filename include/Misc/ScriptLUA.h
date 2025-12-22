@@ -93,6 +93,8 @@ public:
     void ReloadEnvironment(sol::environment &environment);
     void reloadScriptCode();
     void getCode(const std::string &script);
+    void initEnvironment(sol::environment &environment);
+
     void updateScriptCodeWith(const std::string &content) const;
     void ReloadGlobals() const;
     void setPaused(bool value);

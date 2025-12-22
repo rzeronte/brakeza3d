@@ -119,7 +119,7 @@ void Mesh3DSerializer::ApplyCollider(Mesh3D *m, cJSON* json)
                     }
                     break;
                 default: {
-                    Logging::Message("[LoadAttributes] Unknown collision mode: %d", mode);
+                    Logging::Error("[Mesh3D] Unknown collision mode: %d", mode);
                 }
             }
         }

@@ -70,7 +70,6 @@ public:
     GLuint getUIFramebuffer() const                     { return openGLBuffers.uiFBO;}
     GLuint getForegroundFramebuffer() const             { return openGLBuffers.foregroundFBO;}
     GLuint getGlobalFramebuffer() const                 { return openGLBuffers.globalFBO;}
-    GLuint getPostProcessingFramebuffer() const         { return openGLBuffers.postProcessingFBO;}
     GLuint getDepthTexture() const                      { return openGLBuffers.sceneDepthTexture;}
     GLuint getSceneTexture() const                      { return openGLBuffers.sceneTexture;}
     GLuint getGlobalTexture() const                     { return openGLBuffers.globalTexture;}

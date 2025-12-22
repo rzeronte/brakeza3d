@@ -5,9 +5,12 @@
 #include "../Render/PhysicsDebugDraw.h"
 #include "Component.h"
 #include <btBulletDynamicsCommon.h>
+#include <mutex>
 
 class ComponentCollisions : public Component
 {
+    std::mutex mtx;
+
     btDefaultCollisionConfiguration *collisionConfiguration = nullptr;
     btCollisionDispatcher *dispatcher = nullptr;
     btBroadphaseInterface *overlappingPairCache = nullptr;
@@ -36,7 +39,7 @@ public:
     void AddVector3DIntoCache(const Vector3D &v);
     void DrawDebugCache() const;
     void setEnabled(bool enabled) override;
-    void setEnableDebugMode(bool value) const;
+    void setEnableDebugMode(bool value);
     [[nodiscard]] btDiscreteDynamicsWorld *getDynamicsWorld() const;
     static void demoProjectile(int type);
 };

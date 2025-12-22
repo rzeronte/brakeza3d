@@ -486,7 +486,6 @@ void ComponentRender::FlipBuffersToGlobal() const
 
     shaders.shaderOGLImage->renderTexture(globalBuffer.backgroundTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);
     shaders.shaderOGLImage->renderTexture(globalBuffer.sceneTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);
-    shaders.shaderOGLImage->renderTexture(globalBuffer.postProcessingTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);
 
     if (Config::get()->ENABLE_FOG) {
         shaders.shaderOGLFOG->render(globalBuffer.sceneTexture, gBuffer.depth);
@@ -507,6 +506,8 @@ void ComponentRender::FlipBuffersToGlobal() const
             window->getPickingColorFramebuffer().rbgTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO
         );
     }
+
+    Components::get()->Collisions()->DrawDebugCache();
 
     Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
 }
