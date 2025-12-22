@@ -15,6 +15,7 @@
 #include "../../include/GUI/Objects/Mesh3DGUI.h"
 #include "../../include/GUI/Objects/ShadersGUI.h"
 #include "../../include/Render/JSONSerializerRegistry.h"
+#include "../../include/Threads/ThreadJobMakeRigidBody.h"
 
 Mesh3D::Mesh3D()
 {
@@ -82,6 +83,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     ProcessNodes(scene, scene->mRootNode);
 
     sourceFile = fileName;
+    loaded = true;
     //ComponentRender::FillOGLBuffers(meshes);
 }
 
@@ -374,7 +376,7 @@ void Mesh3D::SetupGhostCollider(CollisionShape modeShape)
 {
     Logging::Message("[Mesh3D] setupGhostCollider for %s", getName().c_str());
 
-    removeCollisionObject();
+    RemoveCollisionObject();
 
     setCollisionMode(GHOST);
     setCollisionShape(modeShape);
@@ -401,37 +403,9 @@ void Mesh3D::SetupGhostCollider(CollisionShape modeShape)
 
 void Mesh3D::SetupRigidBodyCollider(CollisionShape modeShape)
 {
-    Logging::Message("[Mesh3D] SetupRigidBodyCollider for %s", getName().c_str());
-    removeCollisionObject();
+    std::lock_guard<std::mutex> lock(mtx);
 
-    setCollisionShape(modeShape);
-    setCollisionMode(BODY);
-    if (getCollisionShape() == SIMPLE_SHAPE || getCollisionShape() == CAPSULE) {
-        MakeSimpleRigidBody(
-            mass,
-            Brakeza::get()->getComponentsManager()->Collisions()->getDynamicsWorld(),
-            btBroadphaseProxy::DefaultFilter,
-            btBroadphaseProxy::DefaultFilter
-        );
-    }
-
-    if (getCollisionShape() == TRIANGLE_MESH_SHAPE) {
-        if (isColliderStatic()) {
-            makeRigidBodyFromTriangleMesh(
-                mass,
-                Brakeza::get()->getComponentsManager()->Collisions()->getDynamicsWorld(),
-                Config::collisionGroups::AllFilter,
-                Config::collisionGroups::AllFilter
-            );
-        } else {
-            makeRigidBodyFromTriangleMeshFromConvexHull(
-                mass,
-                Brakeza::get()->getComponentsManager()->Collisions()->getDynamicsWorld(),
-                Config::collisionGroups::AllFilter,
-                Config::collisionGroups::AllFilter
-            );
-        }
-    }
+    Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobMakeRigidBody>(this, modeShape));
 }
 
 void Mesh3D::DrawImGuiCollisionShapeSelector()
@@ -615,8 +589,9 @@ btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia) con
     return s;
 }
 
-btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia) const
+btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia)
 {
+    Logging::Message("[Mesh3D] Creating btConvexHullShape for object '%s' | Nº meshes: %d", getName().c_str(), (int) meshes.size());
     auto *convexHull = new btConvexHullShape();
     for (auto &m: meshes) {
         for (auto &modelTriangle: m.modelTriangles) {

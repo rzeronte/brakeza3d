@@ -5,11 +5,14 @@
 #ifndef BRAKEDA3D_PHYSICSDEBUGDRAW_H
 #define BRAKEDA3D_PHYSICSDEBUGDRAW_H
 
-
+#include <mutex>
 #include <LinearMath/btIDebugDraw.h>
 #include "../Components/Camera3D.h"
 
-class PhysicsDebugDraw : public btIDebugDraw {
+class PhysicsDebugDraw : public btIDebugDraw
+{
+    int m_debugMode = DBG_NoDebug;
+    std::mutex mtx;
 public:
 
     PhysicsDebugDraw();

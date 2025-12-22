@@ -2,6 +2,7 @@
 #ifndef SDL2_3D_ENGINE_MESH_H
 #define SDL2_3D_ENGINE_MESH_H
 
+#include <mutex>
 #include <string>
 #include <assimp/scene.h>
 #include <glm/vec3.hpp>
@@ -38,6 +39,8 @@ class Mesh3D : public Object3D
 {
     bool sharedTextures = false;
     bool render = true;
+    std::mutex mtx;
+
 protected:
     std::string sourceFile;
     Vertex3D drawOffset = Vertex3D::zero();
@@ -50,6 +53,7 @@ protected:
     AABB3D aabb;
     Octree *octree = nullptr;
     Grid3D *grid = nullptr;
+    bool loaded = false;
 public:
     Mesh3D();
     Mesh3D(std::string modelFile);
@@ -78,11 +82,12 @@ public:
     virtual void ShadowMappingPass();
     virtual void UpdateBoundingBox();
     [[nodiscard]] btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia) const;
-    [[nodiscard]] btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia) const;
+    [[nodiscard]] btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia);
 
     void setRender(bool render);
     void setSourceFile(const std::string &sourceFile);
 
+    [[nodiscard]] bool isLoaded() const                                          { return loaded; }
     ObjectType getTypeObject() const override                                    { return ObjectType::Mesh3D; }
     GUIType::Sheet getIcon() override                                            { return IconObject::MESH_3D; }
     std::vector<Mesh3DData> &getMeshData()                                       { return meshes; }

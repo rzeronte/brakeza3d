@@ -183,17 +183,6 @@ void ComponentWindow::CreateFramebuffer()
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    // --
-    glGenFramebuffers(1, &openGLBuffers.postProcessingFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.postProcessingFBO);
-
-    glGenTextures(1, &openGLBuffers.postProcessingTexture);
-    glBindTexture(GL_TEXTURE_2D, openGLBuffers.postProcessingTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthRender, heightRender, 0, GL_RGBA, GL_FLOAT, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openGLBuffers.postProcessingTexture, 0);
-
     // ----
 
     glGenFramebuffers(1, &openGLBuffers.sceneFBO);
@@ -316,7 +305,6 @@ void ComponentWindow::FlipGlobalToWindow()
 void ComponentWindow::ClearOGLFrameBuffers() const
 {
     const GLuint framebuffers[] = {
-        openGLBuffers.postProcessingFBO,
         openGLBuffers.foregroundFBO,
         openGLBuffers.uiFBO,
         openGLBuffers.backgroundFBO,

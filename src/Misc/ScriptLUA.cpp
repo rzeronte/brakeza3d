@@ -51,23 +51,82 @@ void ScriptLUA::getCode(const std::string &script)
     content = Tools::ReadFile(script);
 }
 
-void ScriptLUA::runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg) const
+void ScriptLUA::initEnvironment(sol::environment &environment)
 {
-    if (paused) return;
     sol::state &lua = Components::get()->Scripting()->getLua();
 
     try {
-        lua.script(content, environment);
 
-        sol::object obj = environment[func];
+        // 2. Cargar variables con conversión explícita
+        for (const auto& type : dataTypes) {
+            switch (LUADataTypesMapping[type.type].type) {
+                case LUADataType::INT: {
+                    int value = std::get<int>(type.value);
+                    environment[type.name] = value;
+                    break;
+                }
+                case LUADataType::FLOAT: {
+                    float value = std::get<float>(type.value);
+                    environment[type.name] = value;
+                    break;
+                }
+                case LUADataType::STRING: {
+                    const char* value = std::get<const char*>(type.value);
+                    environment[type.name] = std::string(value);  // ← Convertir a std::string
+                    break;
+                }
+                case LUADataType::VERTEX3D: {
+                    Vertex3D value = std::get<Vertex3D>(type.value);
+                    environment[type.name] = value;
+                    break;
+                }
+                default:
+                    Logging::Error("[ScriptLUA] Unknown data type for '%s'", type.name.c_str());
+                    break;
+            }
+
+            lua.script(content, environment);
+
+            Logging::Message("[ScriptLUA] Set variable '%s' = '%s'", type.name.c_str(), ScriptLUATypeData::toString(type.value).c_str());
+        }
+
+        Logging::Message("[ScriptLUA] Environment initialized for '%s'", name.c_str());
+    } catch (const sol::error& e) {
+        Logging::Error("[ScriptLUA] Error initializing environment: %s", e.what());
+        throw;
+    }
+}
+
+void ScriptLUA::runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg) const
+{
+    if (paused) return;
+
+    if (!environment.valid()) {
+        Logging::Error("[ScriptLUA] Environment is INVALID for script '%s'", scriptFilename.c_str());
+        return;
+    }
+
+    sol::object obj = environment[func];
+    if (!obj.is<sol::function>()) {
+        Logging::Message("[ScriptLUA Error] Function %s not exists in script '%s'", func.c_str(), scriptFilename.c_str());
+        return;
+    }
+
+    try {
+
+        if (!obj.valid()) {
+            Logging::Error("[ScriptLUA] Object '%s' is invalid in environment", func.c_str());
+            return;
+        }
+
         if (!obj.is<sol::function>()) {
             Logging::Message("[ScriptLUA Error] Function %s not exists in script '%s'", func.c_str(), scriptFilename.c_str());
             return;
         }
 
         sol::protected_function f = obj.as<sol::protected_function>();
-
         sol::protected_function_result result;
+
         if (arg) {
             result = f(*arg);
         } else {
@@ -76,15 +135,11 @@ void ScriptLUA::runEnvironment(sol::environment &environment, const std::string&
 
         if (!result.valid()) {
             sol::error err = result;
-            Logging::Error("[ScriptLUA] Error in LUA Script %s", scriptFilename.c_str());
-            Logging::Error("[ScriptLUA] Function: %s", func.c_str());
-            Logging::Error("[ScriptLUA] %s", err.what());
+            Logging::Error("[ScriptLUA] Error in function %s: %s", func.c_str(), err.what());
             Components::get()->Scripting()->StopLUAScripts();
         }
-    } catch (const sol::error& e) {
-        Logging::Error("[ScriptLUA] Exception in LUA Script %s", scriptFilename.c_str());
-        Logging::Error("[ScriptLUA] %s", e.what());
-        Components::get()->Scripting()->StopLUAScripts();
+    } catch (const std::exception& e) {
+        Logging::Error("[ScriptLUA] Exception accessing environment: %s", e.what());
     }
 }
 
@@ -197,10 +252,30 @@ void ScriptLUA::ReloadEnvironment(sol::environment &environment)
     Logging::Message("[ScriptLUA] Reloading LUA Environment (%s)", this->fileTypes.c_str());
 
     parseTypesFromFileAttributes();
+    sol::state &lua = Components::get()->Scripting()->getLua();
+
+    try {
+        lua.script(content, environment);
+    } catch (const sol::error& e) {
+        Logging::Error("[ScriptLUA] Error loading script: %s", e.what());
+        return;
+    }
 
     for (const auto& type : dataTypes) {
-        Logging::Message("[ScriptLUA]] Reload Environment ('%s', '%s' => '%s' => '%s')", this->getName().c_str(), type.name.c_str(), type.type.c_str(), ScriptLUATypeData::toString(type.value).c_str());
-        environment[type.name] = type.value;
+        switch (LUADataTypesMapping[type.type].type) {
+            case LUADataType::INT:
+                environment[type.name] = std::get<int>(type.value);
+                break;
+            case LUADataType::FLOAT:
+                environment[type.name] = std::get<float>(type.value);
+                break;
+            case LUADataType::STRING:
+                environment[type.name] = std::string(std::get<const char*>(type.value));
+                break;
+            case LUADataType::VERTEX3D:
+                environment[type.name] = std::get<Vertex3D>(type.value);
+                break;
+        }
     }
 }
 

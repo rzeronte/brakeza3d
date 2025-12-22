@@ -35,7 +35,7 @@ protected:
     bool belongToScene = false;
     bool multiScene = false;
     bool alphaEnabled = false;
-    bool enableLights = false;
+    bool enableLights = true;
 
     Vertex3D position = Vertex3D(1, 1, 1);
     Vertex3D drawOffset = Vertex3D::zero();

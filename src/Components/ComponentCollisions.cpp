@@ -28,14 +28,19 @@ void ComponentCollisions::onUpdate()
         dt = 0;
     }
 
-    Brakeza::get()->PoolCompute().enqueue(
+    StepSimulation(dt);
+
+    if (Config::get()->BULLET_DEBUG_MODE) {
+        Components::get()->Collisions()->getDynamicsWorld()->debugDrawWorld();
+    }
+    /*Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
         std::make_shared<ThreadJobStepSimulation>(dt)
-    );
+    );*/
 }
 
 void ComponentCollisions::StepSimulation(float deltaTime)
 {
-    ClearDebugCache();
+    std::lock_guard<std::mutex> lock(mtx);
 
     if (SETUP->ENABLE_BULLET_STEP_SIMULATION) {
         getDynamicsWorld()->stepSimulation(
@@ -52,9 +57,6 @@ void ComponentCollisions::StepSimulation(float deltaTime)
 void ComponentCollisions::postUpdate()
 {
     Component::postUpdate();
-    if (Config::get()->BULLET_DEBUG_MODE) {
-        Components::get()->Collisions()->DrawDebugCache();
-    }
 }
 
 void ComponentCollisions::onEnd()
@@ -120,7 +122,8 @@ void ComponentCollisions::CheckCollisionsForAll() const
     }
 }
 
-btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const {
+btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const
+{
     return dynamicsWorld;
 }
 
@@ -200,17 +203,6 @@ void ComponentCollisions::demoProjectile(int type)
     Brakeza::get()->AddObject3D(projectile, Brakeza::UniqueObjectLabel("demoProjectile"));
 }
 
-ComponentCollisions::~ComponentCollisions()
-{
-    delete collisionConfiguration;
-    delete dispatcher;
-    delete overlappingPairCache;
-    delete solver;
-    delete debugDraw;
-    delete dynamicsWorld;
-    delete ghostPairCallback;
-}
-
 void ComponentCollisions::setGravity(const Vertex3D &v) const
 {
     dynamicsWorld->setGravity(v.toBullet());
@@ -246,16 +238,20 @@ void ComponentCollisions::ClearDebugCache()
 
 void ComponentCollisions::AddVector3DIntoCache(const Vector3D &v)
 {
+    std::lock_guard<std::mutex> lock(mtx);
     debugDrawLinesCache.push_back(v);
 }
 
 void ComponentCollisions::DrawDebugCache() const
 {
+    if (!Config::get()->BULLET_DEBUG_MODE) return;
+
     Components::get()->Render()->getShaders()->shaderOGLLine3D->renderLines(
         debugDrawLinesCache,
         Components::get()->Window()->getUIFramebuffer(),
         Color::fuchsia()
     );
+    Components::get()->Collisions()->ClearDebugCache();
 }
 
 void ComponentCollisions::setEnabled(bool enabled)
@@ -264,7 +260,7 @@ void ComponentCollisions::setEnabled(bool enabled)
     Config::get()->ENABLE_BULLET_STEP_SIMULATION = enabled;
 }
 
-void ComponentCollisions::setEnableDebugMode(bool value) const
+void ComponentCollisions::setEnableDebugMode(bool value)
 {
     if (value) {
         dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
@@ -274,4 +270,15 @@ void ComponentCollisions::setEnableDebugMode(bool value) const
 
     Logging::Message("[Collisions] Physics Debug mode OFF");
     dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_NoDebug);
+}
+
+ComponentCollisions::~ComponentCollisions()
+{
+    delete collisionConfiguration;
+    delete dispatcher;
+    delete overlappingPairCache;
+    delete solver;
+    delete debugDraw;
+    delete dynamicsWorld;
+    delete ghostPairCallback;
 }

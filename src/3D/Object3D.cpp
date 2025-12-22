@@ -342,7 +342,7 @@ void Object3D::RunResolveCollisionScripts(CollisionInfo with)
 void Object3D::SetupGhostCollider(CollisionShape mode)
 {
     Logging::Message("[Collider] setupGhostCollider");
-    removeCollisionObject();
+    RemoveCollisionObject();
 
     setCollisionMode(GHOST);
     setCollisionShape(mode);
@@ -436,6 +436,6 @@ Object3D::~Object3D()
     }
 
     if (isCollisionsEnabled()) {
-        removeCollisionObject();
+        RemoveCollisionObject();
     }
 }

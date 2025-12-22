@@ -6,6 +6,8 @@ PhysicsDebugDraw::PhysicsDebugDraw() = default;
 
 void PhysicsDebugDraw::drawLine(const btVector3 &from, const btVector3 &to, const btVector3 &color)
 {
+    std::lock_guard<std::mutex> lock(mtx);
+
     auto vf = Vertex3D::fromBullet(from);
     auto vt = Vertex3D::fromBullet(to);
     Components::get()->Collisions()->AddVector3DIntoCache(Vector3D(vf, vt));
@@ -30,9 +32,11 @@ void PhysicsDebugDraw::draw3dText(const btVector3 &location, const char *textStr
 
 void PhysicsDebugDraw::setDebugMode(int debugMode)
 {
+    m_debugMode = debugMode;
+
 }
 
 int PhysicsDebugDraw::getDebugMode() const
 {
-    return DBG_DrawWireframe;
+    return m_debugMode;
 }

@@ -4,8 +4,8 @@
 
 #ifndef BRAKEZA3D_THREADJOBCLEARSCENE_H
 #define BRAKEZA3D_THREADJOBCLEARSCENE_H
-#include "ThreadJobBase.h"
 
+#include "ThreadJobBase.h"
 
 class ThreadJobClearScene : public ThreadJobBase
 {

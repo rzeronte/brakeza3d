@@ -58,6 +58,8 @@ void GuiAddonConsole::AddLog(const char* fmt, ...)
 
 void GuiAddonConsole::DrawWinLogging()
 {
+    std::lock_guard<std::mutex> lock(mtx);  // Bloquea
+
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::LOGGING);
     if (!windowStatus->isOpen) return;
     const char* title = windowStatus->label.c_str();

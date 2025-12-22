@@ -62,7 +62,7 @@ public:
     void setCollisionsEnabled(bool value);
     void setCollisionMode(CollisionMode collisionMode);
     void setCollisionShape(CollisionShape collisionShape);
-    void removeCollisionObject();
+    void RemoveCollisionObject();
     void makeSimpleGhostBody(Vertex3D position, glm::mat4 modelMatrix, Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     void drawImGuiCollisionModeSelector();
     void drawImGuiVariables();

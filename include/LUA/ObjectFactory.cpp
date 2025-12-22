@@ -27,16 +27,18 @@
 #include "../Threads/ThreadJobLoadObject.h"
 #include "../Threads/ThreadJobLoadParticleEmitter.h"
 
-void ObjectFactory::CreateObject3D(const Vertex3D &position)
+Object3D* ObjectFactory::CreateObject3D(const Vertex3D &position)
 {
     auto o = new Object3D();
     o->setPosition(position);
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadObject>(json));
+
+    return o;
 }
 
-void ObjectFactory::CreateImage2D(const std::string &file, int x, int y, int w, int h)
+Image2D* ObjectFactory::CreateImage2D(const std::string &file, int x, int y, int w, int h)
 {
     auto *o = new Image2D(file, w, h);
     o->setScreenPosition(x, y);
@@ -44,9 +46,11 @@ void ObjectFactory::CreateImage2D(const std::string &file, int x, int y, int w, 
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2D>(o, json));
+
+    return o;
 }
 
-void ObjectFactory::CreateImage2DAnimation(const std::string &file, int x, int y, int sw, int sh, int frames, int fps)
+Image2DAnimation* ObjectFactory::CreateImage2DAnimation(const std::string &file, int x, int y, int sw, int sh, int frames, int fps)
 {
     auto *o = new Image2DAnimation(
         x,
@@ -59,18 +63,22 @@ void ObjectFactory::CreateImage2DAnimation(const std::string &file, int x, int y
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage2DAnimation>(o, json));
+
+    return o;
 }
 
-void ObjectFactory::CreateImage3D(const std::string &file, const Vertex3D &position, float width, float height)
+Image3D* ObjectFactory::CreateImage3D(const std::string &file, const Vertex3D &position, float width, float height)
 {
     auto *o = new Image3D(position, width, height, file);
     o->setName(Brakeza::UniqueObjectLabel("Image3D"));
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3D>(o, json));
+
+    return o;
 }
 
-void ObjectFactory::CreateImage3DAnimation(const std::string &file, const Vertex3D &position, float width, float height, float sw, float sh, int frames, int fps)
+Image3DAnimation* ObjectFactory::CreateImage3DAnimation(const std::string &file, const Vertex3D &position, float width, float height, float sw, float sh, int frames, int fps)
 {
     auto *o = new Image3DAnimation(position, width, height);
     o->setName(Brakeza::UniqueObjectLabel("Image3DAnimation"));
@@ -80,18 +88,22 @@ void ObjectFactory::CreateImage3DAnimation(const std::string &file, const Vertex
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3DAnimation>(o, json));
+
+    return o;
 }
 
-void ObjectFactory::CreateImage3DAnimation360(const std::string &file, const Vertex3D &position, float w, float h)
+Image3DAnimation360* ObjectFactory::CreateImage3DAnimation360(const std::string &file, const Vertex3D &position, float w, float h)
 {
     auto o = new Image3DAnimation360(position, w, h);
     o->setName(Brakeza::UniqueObjectLabel("Image3DAnimation360"));
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3DAnimation360>(o, json));
+
+    return o;
 }
 
-void ObjectFactory::CreateMesh3D(const std::string &file, const Vertex3D &position)
+Mesh3D* ObjectFactory::CreateMesh3D(const std::string &file, const Vertex3D &position)
 {
     auto *o = new Mesh3D(file);
     o->setName(Brakeza::UniqueObjectLabel("Mesh3D"));
@@ -99,9 +111,11 @@ void ObjectFactory::CreateMesh3D(const std::string &file, const Vertex3D &positi
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadMesh3D>(o, json));
+
+    return o;
 }
 
-void ObjectFactory::CreateMesh3DAnimation(const std::string &file, const Vertex3D &position)
+Mesh3DAnimation* ObjectFactory::CreateMesh3DAnimation(const std::string &file, const Vertex3D &position)
 {
     auto *o = new Mesh3DAnimation();
     o->setSourceFile(file);
@@ -110,9 +124,11 @@ void ObjectFactory::CreateMesh3DAnimation(const std::string &file, const Vertex3
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadMesh3DAnimation>(o, json));
+
+    return o;
 }
 
-void ObjectFactory::CreateLightPoint(const Vertex3D &position, const Color &ambient, const Color &diffuse, const Color &specular)
+LightPoint* ObjectFactory::CreateLightPoint(const Vertex3D &position, const Color &ambient, const Color &diffuse, const Color &specular)
 {
     auto o = new LightPoint(
         glm::vec4(ambient.toGLM(), 0),
@@ -127,9 +143,11 @@ void ObjectFactory::CreateLightPoint(const Vertex3D &position, const Color &ambi
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadLightPoint>(o, json));
+
+    return o;
 }
 
-void ObjectFactory::CreateLightSpot(const Vertex3D &position, const Color &ambient, const Color &diffuse, const Color &specular)
+LightSpot* ObjectFactory::CreateLightSpot(const Vertex3D &position, const Color &ambient, const Color &diffuse, const Color &specular)
 {
     auto o = new LightSpot(
     glm::vec4(ambient.toGLM(), 0),
@@ -147,9 +165,11 @@ void ObjectFactory::CreateLightSpot(const Vertex3D &position, const Color &ambie
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadLightSpot>(o, json));
+
+    return o;
 }
 
-void ObjectFactory::CreateParticleEmitter(const Vertex3D &position, const Color &from, const Color &to)
+ParticleEmitter* ObjectFactory::CreateParticleEmitter(const Vertex3D &position, const Color &from, const Color &to)
 {
     auto *o = new ParticleEmitter(
             DEFAULT,
@@ -178,6 +198,8 @@ void ObjectFactory::CreateParticleEmitter(const Vertex3D &position, const Color 
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadParticleEmitter>(o, json));
+
+    return o;
 }
 
 TextWriter* ObjectFactory::CreateTextWriter(const std::string& fontFile)
