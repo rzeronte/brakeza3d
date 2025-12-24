@@ -15,7 +15,7 @@ void ProjectLoader::LoadProject(const std::string &filename)
     auto contentFile = Tools::ReadFile(filename);
     auto contentJSON = cJSON_Parse(contentFile);
 
-    Logging::Message("Loading PROJECT: %s", filename.c_str());
+    LOG_MESSAGE("Loading PROJECT: %s", filename.c_str());
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "name") != nullptr) {
         auto sceneName = cJSON_GetObjectItemCaseSensitive(contentJSON, "name")->valuestring;
@@ -61,7 +61,7 @@ void ProjectLoader::RemoveProjectScripts()
 
 void ProjectLoader::CreateProject(const std::string &filename)
 {
-    Logging::Message("Creating new project file: %s", filename.c_str());
+    LOG_MESSAGE("Creating new project file: %s", filename.c_str());
 
     cJSON *root = cJSON_CreateObject();
     cJSON_AddStringToObject(root, "name", filename.c_str());
@@ -73,7 +73,7 @@ void ProjectLoader::CreateProject(const std::string &filename)
 
 void ProjectLoader::RemoveProject(const std::string &filename)
 {
-    Logging::Message("Deleting project: %s", filename.c_str());
+    LOG_MESSAGE("Deleting project: %s", filename.c_str());
 
     Tools::RemoveFile(filename);
 }

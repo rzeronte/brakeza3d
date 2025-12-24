@@ -20,7 +20,7 @@ void Logging::Message(const std::string &message, ...)
 
 void Logging::OutputVa(const char *message, bool forceSTD, va_list args)
 {
-    if (!Config::get()->ENABLE_LOGGING) return;
+    if (!Config::get()->ENABLE_LOGGING_CONSOLE) return;
 
     va_list args_copy;
     va_copy(args_copy, args);

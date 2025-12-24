@@ -22,7 +22,7 @@ struct VertexBoneData {
                 return;
             }
         }
-        Logging::Message("NUM_BONES_PER_VERTEX reached");
+        LOG_MESSAGE("NUM_BONES_PER_VERTEX reached");
         assert(0);
     }
 };

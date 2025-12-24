@@ -12,7 +12,7 @@
 
 cJSON * Image3DSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[Image3DSerializer] JsonByObject: %d", o->getTypeObject());
+    LOG_MESSAGE("[Image3DSerializer] JsonByObject: %d", o->getTypeObject());
 
     auto image = dynamic_cast<Image3D*>(o);
 
@@ -43,7 +43,7 @@ Object3D * Image3DSerializer::ObjectByJson(cJSON *json)
 
 void Image3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
-    Logging::Message("[Image3DSerializer] ApplyJsonToObject: %d", o->getTypeObject());
+    LOG_MESSAGE("[Image3DSerializer] ApplyJsonToObject: %d", o->getTypeObject());
 
     auto image = dynamic_cast<Image3D*>(o);
     image->setSource(cJSON_GetObjectItemCaseSensitive(json, "image")->valuestring);

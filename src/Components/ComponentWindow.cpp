@@ -7,6 +7,9 @@
 #include "../imgui/backends/imgui_impl_opengl3.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
 #include "../../include/Components/ComponentWindow.h"
+
+#include <complex>
+
 #include "../../include/Misc/Logging.h"
 #include "../../include/OpenGL/ShaderOGLImage.h"
 #include "../../include/Brakeza.h"
@@ -26,7 +29,7 @@ void ComponentWindow::onStart()
     Component::onStart();
     InitFontsTTF();
     postProcessingManager = new PostProcessingManager();
-    postProcessingManager->initialize(widthRender, heightRender);
+    postProcessingManager->Initialize(widthRender, heightRender);
 
     ImGuiInitialize(Config::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
 
@@ -70,7 +73,7 @@ void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish)
 
 void ComponentWindow::InitWindow()
 {
-    Logging::Message("[Window] Init window...");
+    LOG_MESSAGE("[Window] Init window...");
 
     std::string drivers;
     for (int i = 0; i < SDL_GetNumRenderDrivers(); ++i) {
@@ -79,10 +82,10 @@ void ComponentWindow::InitWindow()
         if (i > 0) drivers += ", ";
         drivers += rendererInfo.name;
     }
-    Logging::Message("[Window] Drivers for rendering: %s", drivers.c_str());
+    LOG_MESSAGE("[Window] Drivers for rendering: %s", drivers.c_str());
 
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-        Logging::Error("[Window] SDL could not initialize! SDL_Error: %s", SDL_GetError());
+        LOG_ERROR("[Window] SDL could not initialize! SDL_Error: %s", SDL_GetError());
         exit(-1);
     }
 
@@ -98,7 +101,7 @@ void ComponentWindow::InitWindow()
     context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, context);
 
-    Logging::Message("[Window] Current video driver: %s", SDL_GetCurrentVideoDriver());
+    LOG_MESSAGE("[Window] Current video driver: %s", SDL_GetCurrentVideoDriver());
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1 );
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8 );
@@ -113,7 +116,7 @@ void ComponentWindow::InitWindow()
     SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 
     if (window == nullptr) {
-        Logging::Error("Window could not be created! SDL_Error: %s", SDL_GetError());
+        LOG_ERROR("Window could not be created! SDL_Error: %s", SDL_GetError());
         exit(-1);
     }
 
@@ -132,20 +135,20 @@ void ComponentWindow::InitWindow()
 
 void ComponentWindow::InitFontsTTF()
 {
-    Logging::Message("[Window] Init TrueTypeFonts...");
+    LOG_MESSAGE("[Window] Init TrueTypeFonts...");
 
     if (TTF_Init() < 0) {
-        Logging::Message(TTF_GetError());
+        LOG_MESSAGE(TTF_GetError());
         exit(-1);
     }
 
     std::string pathFont = SETUP->FONTS_FOLDER + "TroubleFont.ttf";
-    Logging::Message("[Window] Loading default TTF: %s", pathFont.c_str());
+    LOG_MESSAGE("[Window] Loading default TTF: %s", pathFont.c_str());
 
     fontDefault = TTF_OpenFont(pathFont.c_str(), 35);
 
     if (!fontDefault) {
-        Logging::Message(TTF_GetError());
+        LOG_MESSAGE(TTF_GetError());
         exit(-1);
     }
 }
@@ -332,17 +335,17 @@ void ComponentWindow::SaveImGuiCurrentLayout() const
     switch(ImGuiConfigChanged) {
         case Config::ImGUIConfigs::DEFAULT: {
             ImGui::SaveIniSettingsToDisk(std::string(Config::get()->CONFIG_FOLDER + "ImGuiDefault.ini").c_str());
-            Logging::Message("Saving to ImGUIDefault.ini");
+            LOG_MESSAGE("Saving to ImGUIDefault.ini");
             break;
         }
         case Config::ImGUIConfigs::CODING: {
             ImGui::SaveIniSettingsToDisk(std::string(Config::get()->CONFIG_FOLDER + "ImGuiCoding.ini").c_str());
-            Logging::Message("Saving to ImGuiCoding.ini");
+            LOG_MESSAGE("Saving to ImGuiCoding.ini");
             break;
         }
         case Config::ImGUIConfigs::DESIGN: {
             ImGui::SaveIniSettingsToDisk(std::string(Config::get()->CONFIG_FOLDER + "ImGuiDesign.ini").c_str());
-            Logging::Message("Saving to ImGuiDesign.ini");
+            LOG_MESSAGE("Saving to ImGuiDesign.ini");
             break;
         }
     }
@@ -350,7 +353,7 @@ void ComponentWindow::SaveImGuiCurrentLayout() const
 
 void ComponentWindow::ImGuiInitialize(const std::string& configFile)
 {
-    Logging::Message("[Window] Initializing ImGui...");
+    LOG_MESSAGE("[Window] Initializing ImGui...");
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -382,19 +385,19 @@ void ComponentWindow::ImGuiOnUpdate()
         switch(ImGuiConfigChanged) {
             case Config::ImGUIConfigs::DEFAULT: {
                 ImGui::ClearIniSettings();
-                Logging::Message("[Window] Loading layout ImGUIDefault.ini");
+                LOG_MESSAGE("[Window] Loading layout ImGUIDefault.ini");
                 ImGui::LoadIniSettingsFromDisk(std::string(Config::get()->CONFIG_FOLDER + "ImGuiDefault.ini").c_str());
                 break;
             }
             case Config::ImGUIConfigs::CODING: {
                 ImGui::ClearIniSettings();
-                Logging::Message("[Window] Loading layout ImGuiCoding.ini");
+                LOG_MESSAGE("[Window] Loading layout ImGuiCoding.ini");
                 ImGui::LoadIniSettingsFromDisk(std::string(Config::get()->CONFIG_FOLDER + "ImGuiCoding.ini").c_str());
                 break;
             }
             case Config::ImGUIConfigs::DESIGN: {
                 ImGui::ClearIniSettings();
-                Logging::Message("[Window] Loading layout ImGuiDesign.ini");
+                LOG_MESSAGE("[Window] Loading layout ImGuiDesign.ini");
                 ImGui::LoadIniSettingsFromDisk(std::string(Config::get()->CONFIG_FOLDER + "ImGuiDesign.ini").c_str());
                 break;
             }
@@ -402,6 +405,8 @@ void ComponentWindow::ImGuiOnUpdate()
         ImGuiConfig = ImGuiConfigChanged;
         Brakeza::get()->GUI()->setLayoutToDefault(getImGuiConfig());
     }
+
+    //UpdateMouseCursor();
 
     glBindFramebuffer(GL_FRAMEBUFFER, getUIFramebuffer());
 
@@ -428,7 +433,7 @@ void ComponentWindow::setWindowTitle(const char *title) const
     SDL_SetWindowTitle(window, title);
 }
 
-void ComponentWindow::toggleFullScreen() const
+void ComponentWindow::ToggleFullScreen() const
 {
     if (Config::get()->FULLSCREEN) {
         SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -471,11 +476,11 @@ void ComponentWindow::CreatePickingColorBuffer()
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, pickingColorBuffer.depthTexture);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        Logging::Error("[Window] PickingColor: Framebuffer no está completo!");
+        LOG_ERROR("[Window] PickingColor: Framebuffer no está completo!");
         exit(-1);
     }
 
-    Logging::Message("[Window] PickingColor-Buffer created successful (%d, %d)", widthRender,  heightRender);
+    LOG_MESSAGE("[Window] PickingColor-Buffer created successful (%d, %d)", widthRender,  heightRender);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -531,11 +536,11 @@ void ComponentWindow::CreateGBuffer()
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, gBuffer.depth, 0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        Logging::Error("[Window] G-Buffer: Framebuffer no está completo!");
+        LOG_ERROR("[Window] G-Buffer: Framebuffer no está completo!");
         exit(-1);
     }
 
-    Logging::Message("[ComponentWindow] G-Buffer created successful (%d, %d)", widthRender, heightRender);
+    LOG_MESSAGE("[ComponentWindow] G-Buffer created successful (%d, %d)", widthRender, heightRender);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -583,4 +588,53 @@ void ComponentWindow::CheckForResizeOpenGLWindow(const SDL_Event &e)
         glViewport(0,0, getWidth(), getHeight());
         ResetFramebuffer();
     }
+}
+
+void ComponentWindow::LoadCursorImage(const std::string &path)
+{
+    if (!Tools::FileExists(path.c_str())) {
+        LOG_ERROR("[Window] Icon mouse file has failed: '%s'", path.c_str());
+        return;
+    }
+
+    auto surface = IMG_Load(path.c_str());
+
+    cursor = SDL_CreateColorCursor(surface, 0, 0);
+    SDL_SetCursor(cursor);
+
+    SDL_FreeSurface(surface);
+
+    if (!cursor) {
+        LOG_ERROR("[Window] SDL_CreateColorCursor failed: %s", SDL_GetError());
+        return;
+    }
+
+    SDL_SetCursor(cursor);
+
+    ImGuiIO &io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+    SDL_ShowCursor(SDL_ENABLE);
+
+    LOG_MESSAGE("[Window] Icon from file '%s' loaded successfully...", path.c_str());
+    customCursor = true;
+}
+
+void ComponentWindow::UpdateMouseCursor() const
+{
+    if (customCursor) {
+        ImGuiIO &io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+        SDL_SetCursor(cursor);
+        SDL_ShowCursor(SDL_ENABLE);
+    } else {
+        SDL_SetCursor(SDL_GetDefaultCursor());
+        SDL_ShowCursor(SDL_ENABLE);
+    }
+}
+
+void ComponentWindow::setImGuiMouse()
+{
+    customCursor = false;
+    SDL_SetCursor(SDL_GetDefaultCursor());
+    SDL_ShowCursor(SDL_ENABLE);
 }

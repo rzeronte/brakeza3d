@@ -41,7 +41,6 @@ public:
 
     // Scripts
     static void DrawScriptFiles(GUIType::BrowserCache &browser);
-    static void DrawScriptCreator();
     static void DrawScriptsTable(GUIType::BrowserCache &browser);
     static void DrawScriptRow(GUIType::BrowserCache &browser, const std::string &file, int index);
     static void DrawScriptRowActions(GUIType::BrowserCache &browser, const std::string &file);

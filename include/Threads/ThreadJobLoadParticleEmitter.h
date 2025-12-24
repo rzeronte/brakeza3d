@@ -27,12 +27,12 @@ public:
     void fnProcess()
     {
         Brakeza::get()->AddObject3D(emitter, emitter->getName());
-        Logging::Message("[ThreadJobLoadParticleEmitter] Process END");
+        LOG_MESSAGE("[ThreadJobLoadParticleEmitter] Process END");
     }
 
     void fnCallback()
     {
-        Logging::Message("[ThreadJobLoadParticleEmitter] Callback END");
+        LOG_MESSAGE("[ThreadJobLoadParticleEmitter] Callback END");
     }
 };
 

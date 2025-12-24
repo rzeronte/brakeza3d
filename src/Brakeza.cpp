@@ -116,7 +116,7 @@ void Brakeza::ControlFrameRate() const
 
 void Brakeza::AddObject3D(Object3D *obj, const std::string &label)
 {
-    Logging::Message("[AddObject] Adding object '%s' to scene...", label.c_str());
+    LOG_MESSAGE("[AddObject] Adding object '%s' to scene...", label.c_str());
     obj->setName(label);
     objects.push_back(obj);
 }
@@ -206,7 +206,7 @@ unsigned int Brakeza::getNextUniqueObjectId()
 
 std::string Brakeza::UniqueObjectLabel(const char *prefix)
 {
-    return prefix + std::string("_") + std::to_string(Tools::random(0, 100));
+    return prefix + std::string("_") + std::to_string(get()->getTimer()->getTicks());
 }
 
 Object3D *Brakeza::getObjectByName(const std::string &label) const
@@ -255,7 +255,7 @@ bool Brakeza::ReadArgs(int argc, char **argv)
     if (result.count("p")) {
         cliOptions.autoload = true;
         cliOptions.project = result["p"].as<std::string>();
-        Logging::Message("[Brakeza] Autoload project: %s", cliOptions.project.c_str());
+        LOG_MESSAGE("[Brakeza] Autoload project: %s", cliOptions.project.c_str());
     }
 
     return false;

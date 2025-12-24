@@ -3,7 +3,6 @@
 
 #include "3D/Vertex3D.h"
 #include "Misc/ScriptLUA.h"
-#include <map>
 #include <GL/glew.h>
 
 class Config {
@@ -24,6 +23,7 @@ public:
 
     // DEFAULT APP ICONS
     std::string iconApplication = "application.png";
+    std::string mouseIcon = "mouse.png";
     std::string LOGO_BRAKEZA = "logo.png";
 
     // FOLDERS
@@ -91,7 +91,7 @@ public:
     bool ENABLE_FOG = false;
     bool ENABLE_BULLET_STEP_SIMULATION = false;
     bool ENABLE_SOUND = true;
-    bool ENABLE_LOGGING = true;
+    bool ENABLE_LOGGING_CONSOLE = true;
     bool ENABLE_LOGGING_STD = true;
     bool ENABLE_IMGUI = true;
     bool ENABLE_IMGUI_TOOLBAR = true;

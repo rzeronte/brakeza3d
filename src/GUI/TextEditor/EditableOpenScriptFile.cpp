@@ -3,6 +3,8 @@
 //
 
 #include "../../../include/GUI/TextEditor/EditableOpenScriptFile.h"
+
+#include "../../../include/Brakeza.h"
 #include "../include/GUI/Objects/ScriptLuaGUI.h"
 
 EditableOpenScriptFile::EditableOpenScriptFile(const std::string &tabLabel, const std::string &path, ScriptLUA *script)
@@ -12,12 +14,12 @@ EditableOpenScriptFile::EditableOpenScriptFile(const std::string &tabLabel, cons
 {
 }
 
-[[nodiscard]] ScriptLUA * EditableOpenScriptFile::getShader() const
+[[nodiscard]] ScriptLUA * EditableOpenScriptFile::getScript() const
 {
     return script;
 }
 
-void EditableOpenScriptFile::setShader(ScriptLUA *shader)
+void EditableOpenScriptFile::setScript(ScriptLUA *shader)
 {
     this->script = shader;
 }

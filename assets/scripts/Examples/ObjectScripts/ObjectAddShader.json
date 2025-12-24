@@ -1,7 +1,0 @@
-{
-  "codeFile":	"../assets/scripts/Examples/ObjectScripts/ObjectAddShader.lua",
-  "typesFile": "../assets/scripts/Examples/ObjectScripts/ObjectAddShader.json",
-  "name":	"Object add shader demo",
-    "types":	[
-    ]
-}

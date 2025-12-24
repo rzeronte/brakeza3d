@@ -1,0 +1,10 @@
+{
+	"name":	"Find Scene Object",
+	"codeFile":	"../assets/scripts/Examples/GlobalScripts/FindObjectDemo/FindObjectDemo.lua",
+	"typesFile": "../assets/scripts/Examples/GlobalScripts/FindObjectDemo/FindObjectDemo.json",
+	"types":	[{
+		"name":	"object",
+		"type":	"string",
+		"value":	"MyObject"
+	}]
+}

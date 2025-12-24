@@ -126,7 +126,7 @@ void GUI::ImGuiSetColors()
     style->ItemSpacing              = ImVec2(12, 8);
     style->ItemInnerSpacing         = ImVec2(8, 6);
     style->IndentSpacing            = 25.0f;
-    style->ScrollbarSize            = 10.0f;
+    style->ScrollbarSize            = 15.0f;
     style->ScrollbarRounding        = 9.0f;
     style->GrabMinSize              = 5.0f;
     style->GrabRounding             = 3.0f;
@@ -216,23 +216,23 @@ void GUI::ShowPopUp(const char* title, const char *message, const std::function<
 
 void GUI::WelcomeMessage()
 {
-    Logging::Message("***************************************************************");
-    Logging::Message("*                   B R A K E Z A 3 D                         *");
-    Logging::Message("***************************************************************");
-    Logging::Message("*                                                             *");
-    Logging::Message("*         Open source game engine for developers              *");
-    Logging::Message("***************************************************************");
-    Logging::Message(Config::get()->ENGINE_WEBSITE);
-    Logging::Message(Config::get()->ENGINE_SOURCE_WEBSITE);
-    Logging::Message(Config::get()->ENGINE_TITLE);
-    Logging::Message("***************************************************************");
-    Logging::Message("");
+    LOG_MESSAGE("***************************************************************");
+    LOG_MESSAGE("*                   B R A K E Z A 3 D                         *");
+    LOG_MESSAGE("***************************************************************");
+    LOG_MESSAGE("*                                                             *");
+    LOG_MESSAGE("*         Open source game engine for developers              *");
+    LOG_MESSAGE("***************************************************************");
+    LOG_MESSAGE(Config::get()->ENGINE_WEBSITE);
+    LOG_MESSAGE(Config::get()->ENGINE_SOURCE_WEBSITE);
+    LOG_MESSAGE(Config::get()->ENGINE_TITLE);
+    LOG_MESSAGE("***************************************************************");
+    LOG_MESSAGE("");
 }
 
 void GUI::ShowLoadTime(const std::string &text, const Timer &t)
 {
     Brakeza::get()->UpdateTimer();
-    Logging::Message("***************************************************************");
-    Logging::Message("[Brakeza] %s: %f secs", text.c_str(), t.getTotalTime());
-    Logging::Message("***************************************************************");
+    LOG_MESSAGE("***************************************************************");
+    LOG_MESSAGE("[Brakeza] %s: %f secs", text.c_str(), t.getTotalTime());
+    LOG_MESSAGE("***************************************************************");
 }

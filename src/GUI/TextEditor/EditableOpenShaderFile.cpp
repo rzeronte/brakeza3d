@@ -4,6 +4,7 @@
 
 #include "../../../include/GUI/TextEditor/EditableOpenShaderFile.h"
 #include "../../../include/Brakeza.h"
+#include "../../../include/GUI/Objects/ShadersGUI.h"
 
 EditableOpenShaderFile::EditableOpenShaderFile(const std::string &tabLabel, const std::string &path, ShaderOGLCustom *shader)
 :
@@ -17,9 +18,9 @@ EditableOpenShaderFile::EditableOpenShaderFile(const std::string &tabLabel, cons
     return shader;
 }
 
-void EditableOpenShaderFile::setShader(ShaderOGLCustom *shader)
+void EditableOpenShaderFile::setShader(ShaderOGLCustom *value)
 {
-    this->shader = shader;
+    shader = value;
 }
 
 void EditableOpenShaderFile::DrawEditableOpenFileConfig()

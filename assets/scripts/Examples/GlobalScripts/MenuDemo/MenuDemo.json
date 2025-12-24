@@ -1,0 +1,24 @@
+{
+	"name":	"Menu horizontal example",
+	"codeFile":	"../assets/scripts/Examples/GlobalScripts/MovingObject/MovingObject.lua",
+	"typesFile": "../assets/scripts/Examples/GlobalScripts/MovingObject/MovingObject.json",
+	"types":	[
+        {
+          "name":	"enabled",
+          "type":	"int",
+          "value":	0
+        },
+        {
+			"name":	"current",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"baseOffsetX",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"baseOffsetY",
+			"type":	"int",
+			"value":	0
+		}]
+}

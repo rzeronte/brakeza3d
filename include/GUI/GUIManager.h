@@ -4,10 +4,13 @@
 
 #include <string>
 #include <vector>
+
+#include "../Loaders/SceneChecker.h"
 #include "../Misc/TextureAtlas.h"
 #include "../Misc/TexturePackage.h"
 #include "AddOns/GUIConsole.h"
 #include "TextEditor/EditableOpenFile.h"
+#include "TextEditor/EditableOpenScriptFile.h"
 
 class Object3DGUI;
 class ScriptLuaGUI;
@@ -50,6 +53,8 @@ class GUIManager
     GUIType::BrowserCache browserShaders;
     GUIType::BrowserCache browserScripts;
 
+    SceneChecker checker;
+
     Color selectionColor = Color::green();
 
     int indexCodeEditorTab = 0;
@@ -70,9 +75,7 @@ public:
 
     bool isWindowOpen(GUIType::Window w) const;
     bool isEditableFileAlreadyOpen(const std::string &label) const;
-
     void LoadDocumentation();
-
     void OnStart();
     void RegisterWindows();
     void RegisterDefaultLayoutWindows();
@@ -83,21 +86,22 @@ public:
     void setLayoutToDefault(Config::ImGUIConfigs config);
     void setIndexCodeEditorTab(const std::string &label);
     void CloseRemovedEditableOpenFiles();
-    void DrawWinCodeEditor();
+    void DrawWinCodeEditor() const;
     void OpenEditableFile(EditableOpenFile *openFile);
     void CloseEditableFile(EditableOpenFile *openFile) const;
-
     void ResetIndexCodeEditor();
 
-    [[nodiscard]] TextureAtlas * getTextureAtlas() const                        { return textureAtlas; }
-    [[nodiscard]] GUIType::BrowserCache getBrowserScripts() const               { return browserScripts; }
-    [[nodiscard]] GuiAddonConsole *getConsole() const                           { return widgetConsole; }
-    [[nodiscard]] GUIType::BrowserCache getBrowserScenes() const                { return browserScenes; }
-    [[nodiscard]] GUIType::BrowserCache getBrowserProjects() const              { return browserProjects; }
-    [[nodiscard]] GUIType::BrowserCache getBrowserShaders() const               { return browserShaders; }
-    [[nodiscard]] GUIType::ViewerObjectsMode getObjectsViewerMode() const       { return viewerMode; }
-    [[nodiscard]] std::vector<EditableOpenFile *> getEditableOpenFiles() const  { return openFiles;}
-    [[nodiscard]] int getIndexCodeEditorTab() const                             { return indexCodeEditorTab; }
+    [[nodiscard]] TextureAtlas * getTextureAtlas() const                                { return textureAtlas; }
+    [[nodiscard]] GUIType::BrowserCache getBrowserScripts() const                       { return browserScripts; }
+    [[nodiscard]] GuiAddonConsole *getConsole() const                                   { return widgetConsole; }
+    [[nodiscard]] GUIType::BrowserCache getBrowserScenes() const                        { return browserScenes; }
+    [[nodiscard]] GUIType::BrowserCache getBrowserProjects() const                      { return browserProjects; }
+    [[nodiscard]] GUIType::BrowserCache getBrowserShaders() const                       { return browserShaders; }
+    [[nodiscard]] GUIType::ViewerObjectsMode getObjectsViewerMode() const               { return viewerMode; }
+    [[nodiscard]] std::vector<EditableOpenFile *> getEditableOpenFiles() const          { return openFiles;}
+    [[nodiscard]] int getIndexCodeEditorTab() const                                     { return indexCodeEditorTab; }
+    [[nodiscard]] SceneChecker &getSceneChecker()                                       { return checker; }
+    [[nodiscard]] std::vector<GUIType::ViewerObjectType> &getVisibleObjectTypes()       { return visibleTypeObjects; }
     GUIType::WindowData *getWindowStatus(GUIType::Window window);
 
     virtual void DrawGUI();

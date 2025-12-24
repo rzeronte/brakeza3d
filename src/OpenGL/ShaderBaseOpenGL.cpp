@@ -55,7 +55,7 @@ ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, bool enabl
     int InfoLogLength;
 
     // Compile Vertex Shader
-    Logging::Message("[OpenGL] Compiling vertex shader : %s", vertexFilename.c_str());
+    LOG_MESSAGE("[OpenGL] Compiling vertex shader : %s", vertexFilename.c_str());
     char const * VertexSourcePointer = VertexShaderCode.c_str();
     glShaderSource(VertexShaderID, 1, &VertexSourcePointer , nullptr);
     glCompileShader(VertexShaderID);
@@ -66,11 +66,11 @@ ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, bool enabl
     if (InfoLogLength > 0) {
         std::vector<char> VertexShaderErrorMessage(InfoLogLength+1);
         glGetShaderInfoLog(VertexShaderID, InfoLogLength, nullptr, &VertexShaderErrorMessage[0]);
-        Logging::Message("[OpenGL] %s", &VertexShaderErrorMessage[0]);
+        LOG_MESSAGE("[OpenGL] %s", &VertexShaderErrorMessage[0]);
     }
 
     // Link the program
-    Logging::Message("[OpenGL] Linking program...");
+    LOG_MESSAGE("[OpenGL] Linking program...");
     GLuint ProgramID = glCreateProgram();
     glAttachShader(ProgramID, VertexShaderID);
     glAttachShader(ProgramID, FragmentShaderID);
@@ -88,7 +88,7 @@ ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, bool enabl
     if (InfoLogLength > 0) {
         std::vector<char> ProgramErrorMessage(InfoLogLength+1);
         glGetProgramInfoLog(ProgramID, InfoLogLength, nullptr, &ProgramErrorMessage[0]);
-        Logging::Message("[OpenGL] Check the program: %s", &ProgramErrorMessage[0]);
+        LOG_MESSAGE("[OpenGL] Check the program: %s", &ProgramErrorMessage[0]);
     }
 
     glDetachShader(ProgramID, VertexShaderID);
@@ -108,7 +108,7 @@ void ShaderBaseOpenGL::CompileShaderToProgramID(bool enableFeedback)
     int InfoLogLength;
 
     // Compile Vertex Shader
-    Logging::Message("[OpenGL] Compiling vertex shader: %s", vertexFilename.c_str());
+    LOG_MESSAGE("[OpenGL] Compiling vertex shader: %s", vertexFilename.c_str());
     char const * VertexSourcePointer = sourceVS.c_str();
     glShaderSource(VertexShaderID, 1, &VertexSourcePointer , nullptr);
     glCompileShader(VertexShaderID);
@@ -119,11 +119,11 @@ void ShaderBaseOpenGL::CompileShaderToProgramID(bool enableFeedback)
     if (InfoLogLength > 0) {
         std::vector<char> VertexShaderErrorMessage(InfoLogLength+1);
         glGetShaderInfoLog(VertexShaderID, InfoLogLength, nullptr, &VertexShaderErrorMessage[0]);
-        Logging::Message("[OpenGL] ERROR: %s", &VertexShaderErrorMessage[0]);
+        LOG_MESSAGE("[OpenGL] ERROR: %s", &VertexShaderErrorMessage[0]);
     }
 
     // Compile Fragment Shader
-    Logging::Message("[OpenGL] Compiling fragment shader: %s", fragmentFilename.c_str());
+    LOG_MESSAGE("[OpenGL] Compiling fragment shader: %s", fragmentFilename.c_str());
     char const * FragmentSourcePointer = sourceFS.c_str();
     glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , nullptr);
     glCompileShader(FragmentShaderID);
@@ -134,11 +134,11 @@ void ShaderBaseOpenGL::CompileShaderToProgramID(bool enableFeedback)
     if (InfoLogLength > 0){
         std::vector<char> FragmentShaderErrorMessage(InfoLogLength+1);
         glGetShaderInfoLog(FragmentShaderID, InfoLogLength, nullptr, &FragmentShaderErrorMessage[0]);
-        Logging::Message("[OpenGL] %s", &FragmentShaderErrorMessage[0]);
+        LOG_MESSAGE("[OpenGL] %s", &FragmentShaderErrorMessage[0]);
     }
 
     // Link the program
-    Logging::Message("[OpenGL] Linking program...");
+    LOG_MESSAGE("[OpenGL] Linking program...");
     GLuint ProgramID = glCreateProgram();
     glAttachShader(ProgramID, VertexShaderID);
     glAttachShader(ProgramID, FragmentShaderID);
@@ -156,7 +156,7 @@ void ShaderBaseOpenGL::CompileShaderToProgramID(bool enableFeedback)
     if (InfoLogLength > 0) {
         std::vector<char> ProgramErrorMessage(InfoLogLength+1);
         glGetProgramInfoLog(ProgramID, InfoLogLength, nullptr, &ProgramErrorMessage[0]);
-        Logging::Message("[OpenGL] Check the program: %s", &ProgramErrorMessage[0]);
+        LOG_MESSAGE("[OpenGL] Check the program: %s", &ProgramErrorMessage[0]);
     }
 
     glDetachShader(ProgramID, VertexShaderID);
@@ -379,7 +379,7 @@ void ShaderBaseOpenGL::setTexture(const std::string &name, GLuint textureID, int
 void ShaderBaseOpenGL::ReadShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename)
 {
     if (!Tools::FileExists(vertexFilename.c_str()) || !Tools::FileExists(fragmentFilename.c_str())) {
-        Logging::Error("[ShaderBaseOpenGL] Cannot open shader files (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
+        LOG_ERROR("[ShaderBaseOpenGL] Cannot open shader files (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());
         return;
     }
 
@@ -387,7 +387,7 @@ void ShaderBaseOpenGL::ReadShaderFiles(const std::string &vertexFilename, const 
     char* fsCode = Tools::ReadFile(fragmentFilename);
 
     if (!vsCode || !fsCode) {
-        Logging::Error("[ShaderBaseOpenGL] Failed to read shader files");
+        LOG_ERROR("[ShaderBaseOpenGL] Failed to read shader files");
         if (vsCode) free(vsCode);
         if (fsCode) free(fsCode);
         return;

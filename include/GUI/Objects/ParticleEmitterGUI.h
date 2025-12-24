@@ -24,7 +24,7 @@ public:
 
                 if (ImGui::BeginDragDropTarget()) {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM)) {
-                        Logging::Message("Dropping image (%s) in emitter %s", payload->Data, o->getName().c_str());
+                        LOG_MESSAGE("Dropping image (%s) in emitter %s", payload->Data, o->getName().c_str());
                         IM_ASSERT(payload->DataSize == sizeof(int));
                         auto selection = (char*) payload->Data;
                         auto fullPath = Config::get()->IMAGES_FOLDER + selection;
@@ -34,7 +34,7 @@ public:
                             delete o->texture;
                             o->texture = new Image(fullPath);
                         }
-                        Logging::Message("File %s", selection);
+                        LOG_MESSAGE("File %s", selection);
                     }
                     ImGui::EndDragDropTarget();
                 }

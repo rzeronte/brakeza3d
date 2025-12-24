@@ -15,7 +15,7 @@ Components *Components::get()
 
 void Components::RegisterComponent(Component *component, const std::string& label)
 {
-    Logging::Message("[Components] Register Profiler measure for: %s", label.c_str());
+    LOG_MESSAGE("[Components] Register Profiler measure for: %s", label.c_str());
 
     component->setId((int) components.size());
     component->setLabel(label);

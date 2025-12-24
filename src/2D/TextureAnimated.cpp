@@ -12,7 +12,7 @@ TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps)
     numberFramesToLoad(numFrames),
     fps(fps)
 {
-    Logging::Message("Loading 2D animation: %s", baseFilename.c_str());
+    LOG_MESSAGE("Loading 2D animation: %s", baseFilename.c_str());
 
     for (int i = 0; i < numberFramesToLoad; i++) {
         std::string file = this->baseFilename + "_" + std::to_string(i) + ".png";
@@ -41,7 +41,7 @@ TextureAnimated::TextureAnimated(const std::string& spriteSheetFile, int spriteW
     currentSpriteWidth(spriteWidth),
     currentspriteHeight(spriteHeight)
 {
-    Logging::Message("Loading sheet: %s", spriteSheetFile.c_str());
+    LOG_MESSAGE("Loading sheet: %s", spriteSheetFile.c_str());
     spriteSheetSurface = IMG_Load(spriteSheetFile.c_str());
 }
 
@@ -54,7 +54,7 @@ void TextureAnimated::Apply(const std::string& spriteSheetFile, int spriteWidth,
 {
     DeleteFrames();
 
-    Logging::Message("TextureAnimated Setup: (Sprite: %s, w: %d, h: %d, nf: %d, fps: %d)", spriteSheetFile.c_str(), spriteWidth, spriteHeight, numFrames, fps);
+    LOG_MESSAGE("TextureAnimated Setup: (Sprite: %s, w: %d, h: %d, nf: %d, fps: %d)", spriteSheetFile.c_str(), spriteWidth, spriteHeight, numFrames, fps);
 
     currentSpriteWidth = spriteWidth;
     currentspriteHeight = spriteHeight;
@@ -76,7 +76,7 @@ void TextureAnimated::Apply(const std::string& spriteSheetFile, int spriteWidth,
 
             SDL_Texture* spriteTexture = SDL_CreateTextureFromSurface(renderer, destinySurface);
             if (!spriteTexture) {
-                Logging::Message("Failed to create texture: %s", SDL_GetError());
+                LOG_MESSAGE("Failed to create texture: %s", SDL_GetError());
                 SDL_FreeSurface(spriteSheetSurface);
                 return;
             }

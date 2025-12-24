@@ -13,7 +13,7 @@
 
 cJSON * LightPointSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[LightPointSerializer] JsonByObject: %d", o->getTypeObject());
+    LOG_MESSAGE("[LightPointSerializer] JsonByObject: %d", o->getTypeObject());
 
     auto light = dynamic_cast<LightPoint*>(o);
 
@@ -32,7 +32,7 @@ cJSON * LightPointSerializer::JsonByObject(Object3D *o)
 
 Object3D * LightPointSerializer::ObjectByJson(cJSON *json)
 {
-    Logging::Message("[LightPointSerializer] ObjectByJson");
+    LOG_MESSAGE("[LightPointSerializer] ObjectByJson");
 
     auto o = new LightPoint(
         glm::vec4(0.05f, 0.05f, 0.05f, 0),
@@ -52,7 +52,7 @@ Object3D * LightPointSerializer::ObjectByJson(cJSON *json)
 
 void LightPointSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
-    Logging::Message("[LightPointSerializer] ApplyJsonToObject %d", o->getTypeObject());
+    LOG_MESSAGE("[LightPointSerializer] ApplyJsonToObject %d", o->getTypeObject());
 
     auto light = dynamic_cast<LightPoint*>(o);
 

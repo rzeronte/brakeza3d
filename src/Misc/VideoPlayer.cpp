@@ -70,7 +70,7 @@ int decode_thread(void *raw)
 {
     auto *data = (ThreadData *) raw;
 
-    Logging::Message("decode_thread START");
+    LOG_MESSAGE("decode_thread START");
 
     SDL_Event e;
     bool &finished = Brakeza3D::get()->finish;
@@ -143,7 +143,7 @@ void VideoPlayer::findFirstStream()
     Logging::Log("VideoPlayer File Number Streams: (%d)", pFormatCtx->nb_streams);
 
     for (unsigned int i = 0; i < pFormatCtx->nb_streams; i++) {
-        Logging::Message("VideoPlayer AVI stream TypeCoded (%d)", pFormatCtx->streams[i]->codec->codec_type);
+        LOG_MESSAGE("VideoPlayer AVI stream TypeCoded (%d)", pFormatCtx->streams[i]->codec->codec_type);
         if (pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
             videoStream = (int) i;
 
@@ -159,12 +159,12 @@ void VideoPlayer::findFirstStream()
     }
 
     if (videoStream == -1) {
-        Logging::Message("VideoPlayer didn't find a video stream");
+        LOG_MESSAGE("VideoPlayer didn't find a video stream");
         exit(-1);
     }
 
     if (audioStream == -1) {
-        Logging::Message("VideoPlayer didn't find a audio stream");
+        LOG_MESSAGE("VideoPlayer didn't find a audio stream");
         exit(-1);
     }
 
@@ -243,7 +243,7 @@ void VideoPlayer::findFirstStream()
     audioDeviceId = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
     SDL_PauseAudioDevice(audioDeviceId, 0);
     if (!audioDeviceId) {
-        Logging::Message("Error audio device videoPlayer: %s", SDL_GetError());
+        LOG_MESSAGE("Error audio device videoPlayer: %s", SDL_GetError());
         exit(-1);
     }
 }
@@ -266,7 +266,7 @@ void VideoPlayer::play()
 
     threadFunction = SDL_CreateThread(decode_thread, "MainVideoThread", data);
     SDL_WaitThread( threadFunction, NULL );
-    Logging::Message("exit decoding...");
+    LOG_MESSAGE("exit decoding...");
 }
 
 void VideoPlayer::onUpdate()

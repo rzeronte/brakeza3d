@@ -70,7 +70,9 @@
 				}
 			},
 			"scripts":	[{
-					"name":	"../assets/scripts/Controllers/KinematicPlatformsController.lua",
+					"codeFile":	"../assets/scripts/Controllers/KinematicPlatformsController.lua",
+					"typesFile":	"../assets/scripts/Controllers/KinematicPlatformsController.json",
+					"name":	"KinematicPlatformsController",
 					"types":	[{
 							"name":	"mouseSensibility",
 							"type":	"float",
@@ -116,7 +118,7 @@
 			"shaders":	[],
 			"model":	"../assets/models//Capsule.fbx",
 			"enableLights":	false,
-			"type":	"Mesh3D"
+			"type":	2
 		}, {
 			"name":	"Mesh3D_46",
 			"scale":	1,
@@ -164,7 +166,7 @@
 			"shaders":	[],
 			"model":	"../assets/models//DevLevelPlatforms.fbx",
 			"enableLights":	false,
-			"type":	"Mesh3D"
+			"type":	2
 		}],
 	"shaders":	[],
 	"scripts":	[],

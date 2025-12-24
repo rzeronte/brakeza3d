@@ -22,18 +22,18 @@ ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &la
 
 void ShaderOGLCustomMesh3D::LoadUniforms()
 {
-    Logging::Message("[ShaderOGLCustomMesh3D] LoadUniforms START, programID=%d", programID);
+    LOG_MESSAGE("[ShaderOGLCustomMesh3D] LoadUniforms START, programID=%d", programID);
 
     matrixProjectionUniform = glGetUniformLocation(programID, "projection");
     matrixViewUniform = glGetUniformLocation(programID, "view");
     matrixModelUniform = glGetUniformLocation(programID, "model");
     alphaUniform = glGetUniformLocation(programID, "alpha");
 
-    Logging::Message("[ShaderOGLCustomMesh3D] Uniforms: proj=%d, view=%d, model=%d, alpha=%d",
+    LOG_MESSAGE("[ShaderOGLCustomMesh3D] Uniforms: proj=%d, view=%d, model=%d, alpha=%d",
                     matrixProjectionUniform, matrixViewUniform, matrixModelUniform, alphaUniform);
 
     if (programID == 0) {
-        Logging::Error("[ShaderOGLCustomMesh3D] ERROR: programID is 0!");
+        LOG_ERROR("[ShaderOGLCustomMesh3D] ERROR: programID is 0!");
     }
 }
 

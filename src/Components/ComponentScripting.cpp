@@ -43,7 +43,7 @@ void ComponentScripting::onSDLPollEvent(SDL_Event *event, bool &finish)
 
 void ComponentScripting::PlayLUAScripts()
 {
-    Logging::Message("LUA Scripts state changed to PLAY");
+    LOG_MESSAGE("LUA Scripts state changed to PLAY");
 
     onStartScripts();
 
@@ -56,7 +56,7 @@ void ComponentScripting::PlayLUAScripts()
 
 void ComponentScripting::StopLUAScripts()
 {
-    Logging::Message("LUA Scripts state changed to STOP");
+    LOG_MESSAGE("LUA Scripts state changed to STOP");
 
     Components::get()->Input()->setEnabled(true);
     Components::get()->Collisions()->setEnabled(false);
@@ -66,17 +66,17 @@ void ComponentScripting::StopLUAScripts()
 
 void ComponentScripting::ReloadLUAScripts() const
 {
-    Logging::Message("Reloading LUA Scripts...");
+    LOG_MESSAGE("Reloading LUA Scripts...");
 
     auto &lua = Components::get()->Scripting()->getLua();
     lua.collect_garbage();
 
     for (auto &s : projectScripts) {
-        s->reloadScriptCode();
+        s->ReloadScriptCode();
     }
 
     for (auto &s : scripts) {
-        s->reloadScriptCode();
+        s->ReloadScriptCode();
     }
 
     auto &sceneObjects = Brakeza::get()->getSceneObjects();
@@ -92,7 +92,7 @@ void ComponentScripting::addSceneLUAScript(ScriptLUA *script)
 {
     if (script->getScriptFilename().empty()) {
         delete script;
-        Logging::Error("[Scripting] Script refused...Deleting!");
+        LOG_ERROR("[Scripting] Script refused...Deleting!");
         return;
     }
 
@@ -104,7 +104,7 @@ void ComponentScripting::addProjectLUAScript(ScriptLUA *script)
 {
     if (script->getScriptFilename().empty()) {
         delete script;
-        Logging::Error("[Scripting] Script refused...Deleting!");
+        LOG_ERROR("[Scripting] Script refused...Deleting!");
         return;
     }
 
@@ -125,7 +125,7 @@ void ComponentScripting::ReloadScriptGlobals() const
 
 void ComponentScripting::RemoveSceneScript(ScriptLUA *script)
 {
-    Logging::Message("Removing SCENE script %s", script->scriptFilename.c_str());
+    LOG_MESSAGE("Removing SCENE script %s", script->scriptFilename.c_str());
 
     for (auto it = scripts.begin(); it != scripts.end(); ++it) {
         if ((*it)->scriptFilename == script->scriptFilename) {
@@ -138,7 +138,7 @@ void ComponentScripting::RemoveSceneScript(ScriptLUA *script)
 
 void ComponentScripting::RemoveProjectScript(ScriptLUA *script)
 {
-    Logging::Message("Removing PROJECT script %s", script->scriptFilename.c_str());
+    LOG_MESSAGE("Removing PROJECT script %s", script->scriptFilename.c_str());
 
     for (auto it = projectScripts.begin(); it != projectScripts.end(); ++it) {
         if ((*it)->scriptFilename == script->scriptFilename) {
@@ -151,17 +151,17 @@ void ComponentScripting::RemoveProjectScript(ScriptLUA *script)
 
 void ComponentScripting::onStartScripts() const
 {
-    Logging::Message("Executing OnStart for PROJECT scripts...");
+    LOG_MESSAGE("Executing OnStart for PROJECT scripts...");
     for (auto script : projectScripts) {
-        script->runGlobal("onStart");
+        script->RunGlobal("onStart");
     }
 
-    Logging::Message("Executing OnStart for SCENE scripts...");
+    LOG_MESSAGE("Executing OnStart for SCENE scripts...");
     for (auto script : scripts) {
-        script->runGlobal("onStart");
+        script->RunGlobal("onStart");
     }
 
-    Logging::Message("Executing OnStart for OBJECT scripts...");
+    LOG_MESSAGE("Executing OnStart for OBJECT scripts...");
     auto &sceneObjects = Brakeza::get()->getSceneObjects();
     for (auto object : sceneObjects) {
         object->RunStartScripts();
@@ -171,17 +171,17 @@ void ComponentScripting::onStartScripts() const
 void ComponentScripting::RunScripts() const
 {
     for (auto &script : projectScripts) {
-        script->runGlobal("onUpdate");
+        script->RunGlobal("onUpdate");
     }
 
     for (auto &script : scripts) {
-        script->runGlobal("onUpdate");
+        script->RunGlobal("onUpdate");
     }
 }
 
 void ComponentScripting::InitLUATypes()
 {
-    Logging::Message("[Scripting] Init LUA Global types");
+    LOG_MESSAGE("[Scripting] Init LUA Global types");
 
     lua.open_libraries(sol::lib::base, sol::lib::math);
 
@@ -206,7 +206,7 @@ sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName
 
 void ComponentScripting::CreateScriptLUAFile(const std::string& path)
 {
-    Logging::Message("[Scripting] Creating new Script in '%s'...", path.c_str());
+    LOG_MESSAGE("[Scripting] Creating new Script in '%s'...", path.c_str());
 
     auto codeFile = std::string(path + ".lua");
     auto typesFile = std::string(path + ".json");

@@ -13,7 +13,7 @@
 
 cJSON * Object3DSerializer::JsonByObject(Object3D* o)
 {
-    Logging::Message("[Object3DSerializer] JsonByObject: %d", (int) o->getTypeObject());
+    LOG_MESSAGE("[Object3DSerializer] JsonByObject: %d", (int) o->getTypeObject());
 
     cJSON *root = cJSON_CreateObject();
 
@@ -65,7 +65,7 @@ void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
     std::lock_guard<std::mutex> lock(mtx);  // Bloquea
 
-    Logging::Message("[Object3DSerializer] ApplyJsonToObject %d", (int) o->getTypeObject());
+    LOG_MESSAGE("[Object3DSerializer] ApplyJsonToObject %d", (int) o->getTypeObject());
 
     o->setName(cJSON_GetObjectItem(json, "name")->valuestring);
 
@@ -165,7 +165,7 @@ void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
                     o->setupKinematicCollider();
                     break;
                 default: {
-                    Logging::Message("[Object3DSerializer ApplyJsonToObject %s] Fatal error: Unknown collision mode: %d", (int) o->getTypeObject(), mode);
+                    LOG_MESSAGE("[Object3DSerializer ApplyJsonToObject %s] Fatal error: Unknown collision mode: %d", (int) o->getTypeObject(), mode);
                     exit(-1);
                 }
             }
@@ -187,7 +187,7 @@ void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 
 Object3D * Object3DSerializer::ObjectByJson(cJSON *json)
 {
-    Logging::Message("[Object3DSerializer] ObjectByJson");
+    LOG_MESSAGE("[Object3DSerializer] ObjectByJson");
 
     auto obj = new Object3D();
     ApplyJsonToObject(json, obj);

@@ -67,7 +67,7 @@ void Collider::setCollisionShape(CollisionShape collisionShape) {
 void Collider::RemoveCollisionObject()
 {
     if (collisionMode == GHOST && ghostObject != nullptr) {
-        Logging::Message("[Collider] Removing collider GHOST");
+        LOG_MESSAGE("[Collider] Removing collider GHOST");
         setCollisionMode(NONE);
         Components::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(ghostObject);
         ghostObject = nullptr;
@@ -75,7 +75,7 @@ void Collider::RemoveCollisionObject()
     }
 
     if (collisionMode == BODY && body != nullptr) {
-        Logging::Message("[Collider] Removing collider RIGIDBODY");
+        LOG_MESSAGE("[Collider] Removing collider RIGIDBODY");
         setCollisionMode(NONE);
         Components::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(body);
         body = nullptr;
@@ -83,7 +83,7 @@ void Collider::RemoveCollisionObject()
     }
 
     if (collisionMode == KINEMATIC && kinematicBody != nullptr) {
-        Logging::Message("[Collider] Removing collider KINEMATICBODY");
+        LOG_MESSAGE("[Collider] Removing collider KINEMATICBODY");
         setCollisionMode(NONE);
         Components::get()->Collisions()->getDynamicsWorld()->removeAction(characterController);
         Components::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(kinematicBody);
@@ -105,7 +105,7 @@ void Collider::makeSimpleGhostBody(
     int collisionGroup,
     int collisionMask
 ) {
-    Logging::Message("[Collider] makeSimpleGhostBody");
+    LOG_MESSAGE("[Collider] makeSimpleGhostBody");
 
     btTransform transformation;
     transformation.setIdentity();
@@ -122,7 +122,7 @@ void Collider::makeSimpleGhostBody(
     }
 
     if (convexHullShape == nullptr) {
-        Logging::Error("[Collider] Collider Shape not valid!! Exiting...");
+        LOG_ERROR("[Collider] Collider Shape not valid!! Exiting...");
         exit(-1);
     }
 
@@ -164,11 +164,11 @@ void Collider::drawImGuiCollisionModeSelector()
                     switch (n) {
                         default:
                         case 0: {
-                            SetupGhostCollider(CollisionShape::SIMPLE_SHAPE);
+                            SetupGhostCollider(SIMPLE_SHAPE);
                             break;
                         }
                         case 1: {
-                            SetupRigidBodyCollider(CollisionShape::SIMPLE_SHAPE);
+                            SetupRigidBodyCollider(SIMPLE_SHAPE);
                             break;
                         }
                         case 2: {
@@ -217,7 +217,7 @@ void Collider::DrawImGuiCollisionShapeSelector()
                             break;
                         }
                         default:
-                            Logging::Error("[Collider ] Error selection shape collision");
+                            LOG_ERROR("[Collider ] Error selection shape collision");
                             break;
                     }
                 }
@@ -229,12 +229,12 @@ void Collider::DrawImGuiCollisionShapeSelector()
 
 void Collider::setupKinematicCollider()
 {
-    Logging::Message("[Collider] setupKinematicCollider");
+    LOG_MESSAGE("[Collider] setupKinematicCollider");
 
     RemoveCollisionObject();
 
-    setCollisionMode(CollisionMode::KINEMATIC);
-    setCollisionShape(CollisionShape::SIMPLE_SHAPE);
+    setCollisionMode(KINEMATIC);
+    setCollisionShape(CAPSULE);
 
     MakeKineticBody(
         kinematicCapsuleSize.x,
@@ -247,7 +247,7 @@ void Collider::setupKinematicCollider()
 
 void Collider::SetupRigidBodyCollider(CollisionShape shapeMode)
 {
-    Logging::Message("[Collider] SetupRigidBodyCollider");
+    LOG_MESSAGE("[Collider] SetupRigidBodyCollider");
 
     RemoveCollisionObject();
 

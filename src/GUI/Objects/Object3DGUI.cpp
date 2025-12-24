@@ -31,7 +31,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
             if (o->featuresGUI.position) {
                 ImGui::PushID("reset_position");
                 GUI::DrawButton("Reset position", IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
-                    Logging::Message("Reset Position");
+                    LOG_MESSAGE("Reset Position");
                     o->setPosition(Vertex3D(0, 0, 0));
                 });
                 ImGui::PopID();
@@ -58,7 +58,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
                 ImGui::PushID("reset_rotation");
                 GUI::DrawButton("Reset rotation", IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
-                    Logging::Message("Reset Rotation");
+                    LOG_MESSAGE("Reset Rotation");
                     o->setRotation(M3::getMatrixIdentity());
                 });
                 ImGui::PopID();
@@ -95,7 +95,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
                 ImGui::PushID("reset_drawoffset");
                 GUI::DrawButton("Reset rotation", IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
-                    Logging::Message("Reset DrawOffset");
+                    LOG_MESSAGE("Reset DrawOffset");
                     o->setDrawOffset(Vertex3D(0, 0, 0));
                 });
                 ImGui::PopID();
@@ -114,7 +114,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
             if (o->featuresGUI.scale) {
                 ImGui::PushID("reset_scale");
                 GUI::DrawButton("Reset Scale", IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
-                    Logging::Message("Reset Scale");
+                    LOG_MESSAGE("Reset Scale");
                     o->setScale(1.f);
                 });
                 ImGui::PopID();

@@ -55,16 +55,16 @@ bool TextureAtlas::isSafeIconCoords(int x, int y) const
 
 void TextureAtlas::CreateFromSheet(const std::string &file, int spriteWidth, int spriteHeight)
 {
-    Logging::Message("[TextureAtlas] createFromSheet: %s, w: %d, h: %d", file.c_str(), spriteWidth, spriteHeight);
+    LOG_MESSAGE("[TextureAtlas] createFromSheet: %s, w: %d, h: %d", file.c_str(), spriteWidth, spriteHeight);
 
     if (!Tools::FileExists(file.c_str())) {
-        Logging::Message("[TextureAtlas] Failed to load sprite sheet: %s", SDL_GetError());
+        LOG_MESSAGE("[TextureAtlas] Failed to load sprite sheet: %s", SDL_GetError());
         exit(-1);
     }
 
     SDL_Surface* spriteSheetSurface = IMG_Load(file.c_str());
     if (!spriteSheetSurface) {
-        Logging::Message("[TextureAtlas] Failed to load sprite sheet: %s", SDL_GetError());
+        LOG_MESSAGE("[TextureAtlas] Failed to load sprite sheet: %s", SDL_GetError());
         exit(-1);
     }
 
@@ -95,7 +95,7 @@ void TextureAtlas::CreateFromSheet(const std::string &file, int spriteWidth, int
 
             SDL_Texture* spriteTexture = SDL_CreateTextureFromSurface(renderer, destinySurface);
             if (!spriteTexture) {
-                Logging::Message("[TextureAtlas] Failed to create texture: %s", SDL_GetError());
+                LOG_MESSAGE("[TextureAtlas] Failed to create texture: %s", SDL_GetError());
                 SDL_FreeSurface(spriteSheetSurface);
                 return;
             }
@@ -107,7 +107,7 @@ void TextureAtlas::CreateFromSheet(const std::string &file, int spriteWidth, int
         }
     }
 
-    Logging::Message("[TextureAtlas] createFromSheet: Sheet successful loaded with %d images", (int) textures.size());
+    LOG_MESSAGE("[TextureAtlas] createFromSheet: Sheet successful loaded with %d images", (int) textures.size());
     SDL_FreeSurface(spriteSheetSurface);
 }
 
@@ -158,7 +158,7 @@ bool TextureAtlas::AddToAtlas(Image *texture, const std::string& name)
         }
     }
 
-    Logging::Message("addTexture failed!");
+    LOG_MESSAGE("addTexture failed!");
 
     return false;
 }

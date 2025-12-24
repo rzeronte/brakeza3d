@@ -1,7 +1,0 @@
-{
-  "codeFile":	"../assets/scripts/Examples/ObjectScripts/ObjectRigidApplyImpulseExample.lua",
-  "typesFile": "../assets/scripts/Examples/ObjectScripts/ObjectRigidApplyImpulseExample.json",
-  "name":	"Apply impulse to rigidbody",
-    "types":	[
-    ]
-}

@@ -41,7 +41,7 @@ void ComponentSound::onSDLPollEvent(SDL_Event *e, bool &finish)
 
 void ComponentSound::InitSoundSystem() const
 {
-    Logging::Message("[Sound] Init Sound System...");
+    LOG_MESSAGE("[Sound] Init Sound System...");
 
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
@@ -56,14 +56,14 @@ void ComponentSound::InitSoundSystem() const
 void ComponentSound::LoadSoundsConfigFile()
 {
     auto filePath = Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SOUNDS_FILE;
-    Logging::Message("[Sound] Loading Sounds file: (%s)", filePath.c_str());
+    LOG_MESSAGE("[Sound] Loading Sounds file: (%s)", filePath.c_str());
 
     auto contentFile = Tools::ReadFile(filePath);
 
     cJSON *myDataJSON = cJSON_Parse(contentFile);
 
     if (myDataJSON == nullptr) {
-        Logging::Message("Sound] ERROR: Cannot load sounds JSON file!");
+        LOG_MESSAGE("Sound] ERROR: Cannot load sounds JSON file!");
         return;
     }
 
@@ -78,7 +78,7 @@ void ComponentSound::LoadSoundsConfigFile()
         if (strcmp(type->valuestring, "music") == 0) selectedType = MUSIC;
         if (strcmp(type->valuestring, "playSound") == 0) selectedType = SOUND;
 
-        Logging::Message("[Sound] Loading sound file: %s", file->valuestring);
+        LOG_MESSAGE("[Sound] Loading sound file: %s", file->valuestring);
 
         soundPackage.addItem(Config::get()->SOUNDS_FOLDER + file->valuestring, label->valuestring, selectedType);
     }
@@ -90,14 +90,14 @@ void ComponentSound::LoadSoundsConfigFile()
 int ComponentSound::playChunk(Mix_Chunk *chunk, int channel, int times)
 {
     if (chunk == nullptr) {
-        Logging::Error("[Sound] loading chunk playSound");
+        LOG_ERROR("[Sound] loading chunk playSound");
         return -1;
     }
 
     const int resultPlaying = Mix_PlayChannel(channel, chunk, times);
 
     if (resultPlaying < 0) {
-        Logging::Message("No channel available for playSound...");
+        LOG_MESSAGE("No channel available for playSound...");
     }
 
     return resultPlaying;

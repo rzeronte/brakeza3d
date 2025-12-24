@@ -4,8 +4,6 @@
 #include "../../include/3D/Projectile.h"
 #include "../../include/Render/CollisionInfo.h"
 #include "../../include/Misc/Logging.h"
-#include "../../include/Threads/ThreadJobStepSimulation.h"
-
 
 void ComponentCollisions::onStart()
 {
@@ -33,15 +31,10 @@ void ComponentCollisions::onUpdate()
     if (Config::get()->BULLET_DEBUG_MODE) {
         Components::get()->Collisions()->getDynamicsWorld()->debugDrawWorld();
     }
-    /*Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
-        std::make_shared<ThreadJobStepSimulation>(dt)
-    );*/
 }
 
 void ComponentCollisions::StepSimulation(float deltaTime)
 {
-    std::lock_guard<std::mutex> lock(mtx);
-
     if (SETUP->ENABLE_BULLET_STEP_SIMULATION) {
         getDynamicsWorld()->stepSimulation(
             deltaTime,
@@ -100,11 +93,11 @@ void ComponentCollisions::CheckCollisionsForAll() const
 {
     if (!SETUP->BULLET_CHECK_ALL_PAIRS) return;
 
-    int numManifolds = this->dynamicsWorld->getDispatcher()->getNumManifolds();
+    int numManifolds = dynamicsWorld->getDispatcher()->getNumManifolds();
 
     for (int i = 0; i < numManifolds; i++) {
 
-        btPersistentManifold *contactManifold = this->dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+        btPersistentManifold *contactManifold = dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
 
         if (contactManifold->getNumContacts() > 0) {
             const btCollisionObject *obA = contactManifold->getBody0();
@@ -131,21 +124,17 @@ void ComponentCollisions::UpdatePhysicObjects() const
 {
     if (!isEnabled()) return;
 
-    for (auto object : Brakeza::get()->getSceneObjects()) {
-        if (object->isRemoved()) continue;
+    for (auto &object : Brakeza::get()->getSceneObjects()) {
+        if (object->isRemoved() || !object->isCollisionsEnabled()) continue;
 
-        auto *collisionable = dynamic_cast<Collider *> (object);
-        if (collisionable != nullptr) {
-            if (!collisionable->isCollisionsEnabled()) continue;
-            collisionable->Integrate();
-        }
+        object->Integrate();
     }
 }
 
 void ComponentCollisions::demoProjectile(int type)
 {
     std::string fileName;
-    Logging::Message("Launching %s", fileName.c_str());
+    LOG_MESSAGE("Launching %s", fileName.c_str());
 
     switch (type) {
         case 0:
@@ -238,7 +227,6 @@ void ComponentCollisions::ClearDebugCache()
 
 void ComponentCollisions::AddVector3DIntoCache(const Vector3D &v)
 {
-    std::lock_guard<std::mutex> lock(mtx);
     debugDrawLinesCache.push_back(v);
 }
 
@@ -260,15 +248,15 @@ void ComponentCollisions::setEnabled(bool enabled)
     Config::get()->ENABLE_BULLET_STEP_SIMULATION = enabled;
 }
 
-void ComponentCollisions::setEnableDebugMode(bool value)
+void ComponentCollisions::setEnableDebugMode(bool value) const
 {
     if (value) {
         dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
-        Logging::Message("[Collisions] Physics Debug mode ON");
+        LOG_MESSAGE("[Collisions] Physics Debug mode ON");
         return;
     }
 
-    Logging::Message("[Collisions] Physics Debug mode OFF");
+    LOG_MESSAGE("[Collisions] Physics Debug mode OFF");
     dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_NoDebug);
 }
 

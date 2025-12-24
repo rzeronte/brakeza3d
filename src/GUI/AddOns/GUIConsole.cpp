@@ -186,7 +186,7 @@ void GuiAddonConsole::ExecCommand(const char* command_line, sol::state &lua)
     try {
         lua.script(command_line);
     } catch (const sol::error& e) {
-        Logging::Message("LUA command error: %s", e.what());
+        LOG_MESSAGE("LUA command error: %s", e.what());
     }
 
     // On command input, we scroll to bottom even if AutoScroll==false

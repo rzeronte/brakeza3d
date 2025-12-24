@@ -6,7 +6,6 @@
 #define BRAKEZA3D_EDITABLEOPENSCRIPTFILE_H
 
 #include "EditableOpenFile.h"
-#include "../../Brakeza.h"
 #include "../../Misc/ScriptLUA.h"
 
 class EditableOpenScriptFile : public EditableOpenFile
@@ -14,8 +13,8 @@ class EditableOpenScriptFile : public EditableOpenFile
     ScriptLUA *script;
 public:
     EditableOpenScriptFile(const std::string &tabLabel, const std::string &path, ScriptLUA *script);
-    [[nodiscard]] ScriptLUA * getShader() const;
-    void setShader(ScriptLUA *shader);
+    [[nodiscard]] ScriptLUA * getScript() const;
+    void setScript(ScriptLUA *shader);
     void DrawEditableOpenFileConfig() override;
     void DrawCodeEditActionButtons() override;
 };

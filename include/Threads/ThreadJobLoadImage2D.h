@@ -2,6 +2,7 @@
 #define BRAKEZA3D_THREADJOBLOADIMAGE2D_H
 
 #include "ThreadJobBase.h"
+#include "../Brakeza.h"
 #include "../2D/Image2D.h"
 #include "../Misc/Logging.h"
 #include "../Serializers/Image2DSerializer.h"
@@ -23,17 +24,17 @@ public:
     void fnProcess()
     {
         if (!image) {
-            Logging::Error("[ThreadJobLoadImage2D] Image3D pointer is null");
+            LOG_ERROR("[ThreadJobLoadImage2D] Image3D pointer is null");
             return;
         }
 
-        Logging::Message("[ThreadJobLoadImage2D] Process END");
+        LOG_MESSAGE("[ThreadJobLoadImage2D] Process END");
     }
 
     void fnCallback()
     {
         if (!image) {
-            Logging::Error("[ThreadJobLoadImage2D] Mesh was destroyed before callback");
+            LOG_ERROR("[ThreadJobLoadImage2D] Mesh was destroyed before callback");
             return;
         }
 
@@ -41,7 +42,7 @@ public:
 
         Brakeza::get()->AddObject3D(image, image->getName());
 
-        Logging::Message("[ThreadJobLoadImage2D] Callback END");
+        LOG_MESSAGE("[ThreadJobLoadImage2D] Callback END");
     }
 
     ~ThreadJobLoadImage2D()

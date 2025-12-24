@@ -6,91 +6,45 @@
 	},
 	"ads":	{
 		"direction":	{
-			"x":	0.43999999761581421,
-			"y":	0.5,
-			"z":	-1
+			"x":	-1,
+			"y":	-0.0099999997764825821,
+			"z":	1
 		},
 		"diffuse":	{
-			"x":	0.7295081615447998,
-			"y":	0.59697723388671875,
-			"z":	0.22423405945301056
+			"x":	0.24590164422988892,
+			"y":	0.24590164422988892,
+			"z":	0.24590164422988892
 		},
 		"specular":	{
-			"x":	1,
-			"y":	0.99462509155273438,
-			"z":	0.91803276538848877
+			"x":	0.049180328845977783,
+			"y":	0.027438418939709663,
+			"z":	0.0018140292959287763
 		},
 		"ambient":	{
-			"x":	0,
-			"y":	0,
-			"z":	0
+			"x":	0.35245901346206665,
+			"y":	0.14878392219543457,
+			"z":	0.15880076587200165
 		}
 	},
 	"objects":	[{
-			"enabled":	true,
-			"name":	"axis",
-			"scale":	1,
-			"position":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	-0,
-				"z":	0
-			},
-			"isCollisionsEnabled":	true,
-			"collider":	{
-				"mode":	1,
-				"shape":	1,
-				"friction":	1,
-				"mass":	0,
-				"colliderStatic":	true,
-				"simpleShapeSize":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				},
-				"kinematicCapsuleSize":	{
-					"x":	1,
-					"y":	3
-				},
-				"angularFactor":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				},
-				"linearFactor":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				}
-			},
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//StudioCorner.fbx",
-			"enableLights":	true,
-			"type":	2
-		}, {
 			"name":	"p1",
-		    "enabled":	true,
 			"scale":	1,
+			"enabled":	true,
 			"position":	{
-				"x":	-2.8479585647583008,
-				"y":	6.5259323120117188,
+				"x":	-8.7564201354980469,
+				"y":	-0.035857319831848145,
 				"z":	1.83713698387146
 			},
 			"rotation":	{
-				"x":	0,
-				"y":	90,
-				"z":	0
+				"x":	-179.99998474121094,
+				"y":	89.999992370605469,
+				"z":	-179.99998474121094
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
 					"codeFile":	"../assets/scripts/Examples/RotateFromObject.lua",
 					"typesFile":	"../assets/scripts/Examples/RotateFromObject.json",
-					"name":	"Rotate From Object",
+					"name":	"Rotate from object",
 					"types":	[{
 							"name":	"objectName",
 							"type":	"string",
@@ -133,104 +87,24 @@
 			"quadratic":	0.0099999997764825821,
 			"type":	4
 		}, {
-			"name":	"pawn",
-			"enabled":	true,
-			"scale":	1,
-			"position":	{
-				"x":	-4.0576009750366211,
-				"y":	1.6743474006652832,
-				"z":	1.83713698387146
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	-0,
-				"z":	0
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"shaders":	[],
-			"model":	"../assets/models//ChessPawn.fbx",
-			"enableLights":	true,
-			"type":	2
-		}, {
-			"name":	"p2",
-			"enabled":	true,
-			"scale":	1,
-			"position":	{
-				"x":	0.0098438262939453125,
-				"y":	-7.4612183570861816,
-				"z":	1.83713698387146
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	90,
-				"z":	0
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[{
-					"codeFile":	"../assets/scripts/Examples/RotateFromObject.lua",
-					"typesFile": "../assets/scripts/Examples/RotateFromObject.json",
-					"name":	"Rotate From Object",
-					"types":	[{
-							"name":	"objectName",
-							"type":	"string",
-							"value":	"pawn"
-						}, {
-							"name":	"radius",
-							"type":	"float",
-							"value":	10
-						}, {
-							"name":	"speed",
-							"type":	"float",
-							"value":	1.5
-						}, {
-							"name":	"offset",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	6,
-								"z":	2
-							}
-						}]
-				}],
-			"ambient":	{
-				"x":	0.05000000074505806,
-				"y":	0.05000000074505806,
-				"z":	0.05000000074505806
-			},
-			"diffuse":	{
-				"x":	0,
-				"y":	0.43442630767822266,
-				"z":	1
-			},
-			"specular":	{
-				"x":	1,
-				"y":	1,
-				"z":	1
-			},
-			"constant":	0.23999999463558197,
-			"linear":	0.090000003576278687,
-			"quadratic":	0.032000001519918442,
-			"type":	4
-		}, {
 			"name":	"p3",
-			"enabled":	true,
 			"scale":	1,
+			"enabled":	true,
 			"position":	{
-				"x":	-17.302089691162109,
-				"y":	8.7166252136230469,
+				"x":	7.4340124130249023,
+				"y":	11.316764831542969,
 				"z":	1.83713698387146
 			},
 			"rotation":	{
-				"x":	0,
-				"y":	90,
-				"z":	0
+				"x":	-179.99998474121094,
+				"y":	89.999992370605469,
+				"z":	-179.99998474121094
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
 					"codeFile":	"../assets/scripts/Examples/RotateFromObject.lua",
 					"typesFile":	"../assets/scripts/Examples/RotateFromObject.json",
-					"name":	"Rotate From Object",
+					"name":	"Rotate from object",
 					"types":	[{
 							"name":	"objectName",
 							"type":	"string",
@@ -272,6 +146,138 @@
 			"linear":	0.090000003576278687,
 			"quadratic":	0.032000001519918442,
 			"type":	4
+		}, {
+			"name":	"axis",
+			"scale":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	1,
+				"friction":	1,
+				"mass":	0,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	1,
+				"angularDamping":	1,
+				"restitution":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	1,
+					"y":	3
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			},
+			"scripts":	[],
+			"model":	"../assets/models//StudioCorner.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"p2",
+			"scale":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-9.05780029296875,
+				"y":	10.334745407104492,
+				"z":	1.83713698387146
+			},
+			"rotation":	{
+				"x":	-179.99998474121094,
+				"y":	89.999992370605469,
+				"z":	-179.99998474121094
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[{
+					"codeFile":	"../assets/scripts/Examples/RotateFromObject.lua",
+					"typesFile":	"../assets/scripts/Examples/RotateFromObject.json",
+					"name":	"Rotate from object",
+					"types":	[{
+							"name":	"objectName",
+							"type":	"string",
+							"value":	"enabled"
+						}, {
+							"name":	"radius",
+							"type":	"float",
+							"value":	10
+						}, {
+							"name":	"speed",
+							"type":	"float",
+							"value":	1.5
+						}, {
+							"name":	"offset",
+							"type":	"Vertex3D",
+							"value":	{
+								"x":	0,
+								"y":	6,
+								"z":	2
+							}
+						}]
+				}],
+			"ambient":	{
+				"x":	0.05000000074505806,
+				"y":	0.05000000074505806,
+				"z":	0.05000000074505806
+			},
+			"diffuse":	{
+				"x":	0,
+				"y":	0.43442630767822266,
+				"z":	1
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.23999999463558197,
+			"linear":	0.090000003576278687,
+			"quadratic":	0.032000001519918442,
+			"type":	4
+		}, {
+			"name":	"pawn",
+			"scale":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-4.0576009750366211,
+				"y":	1.6743474006652832,
+				"z":	1.83713698387146
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//ChessPawn.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
 		}],
 	"shaders":	[],
 	"scripts":	[],

@@ -341,7 +341,7 @@ bool ShaderOGLCustom::existDataType(const char *name, const char *type) const
 void ShaderOGLCustom::ParseTypesFromFileAttributes()
 {
     auto contentFile = Tools::ReadFile(Config::get()->SHADERS_FOLDER + fileTypes);
-    Logging::Message("[ShaderOGLCustom] Parsing attributes from: '%s'", fileTypes.c_str());
+    LOG_MESSAGE("[ShaderOGLCustom] Parsing attributes from: '%s'", fileTypes.c_str());
 
     setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
 }
@@ -364,7 +364,7 @@ std::string ShaderOGLCustom::ExtractOnlyName(std::string& filename)
 
 void ShaderOGLCustom::setDataTypesFromJSON(const cJSON *typesJSON)
 {
-    Logging::Message("[ShaderOGLCustom] Settings variables into shader...");
+    LOG_MESSAGE("[ShaderOGLCustom] Settings variables into shader...");
 
     cJSON *currentType;
     cJSON_ArrayForEach(currentType, typesJSON) {
@@ -374,9 +374,9 @@ void ShaderOGLCustom::setDataTypesFromJSON(const cJSON *typesJSON)
 
         if (!existDataType(name, type)){
             addDataType(name, type, value);
-            Logging::Message("[ShaderOGLCustom] Loading shader variable: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Loading shader variable: %s => %s", name, type);
         } else {
-            Logging::Message("[ShaderOGLCustom] Keeping shader variable: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Keeping shader variable: %s => %s", name, type);
         }
     }
 }
@@ -459,7 +459,7 @@ void ShaderOGLCustom::addDataType(const char *name, const char *type, cJSON *val
 
 void ShaderOGLCustom::setEnabled(bool value)
 {
-    Logging::Message("[ShaderOGLCustom] Setting shader '%s' enabled to %d", label.c_str(), value);
+    LOG_MESSAGE("[ShaderOGLCustom] Setting shader '%s' enabled to %d", label.c_str(), value);
     enabled = value;
 }
 
@@ -543,7 +543,7 @@ void ShaderOGLCustom::setDataTypesUniforms()
 
 void ShaderOGLCustom::UpdateFileTypes() const
 {
-    Logging::Message("[ShaderOGLCustom] Writing typesFile: %s", this->fileTypes.c_str());
+    LOG_MESSAGE("[ShaderOGLCustom] Writing typesFile: %s", this->fileTypes.c_str());
 
     char *output_string = cJSON_Print(getTypesJSON());
 
@@ -558,62 +558,62 @@ void ShaderOGLCustom::AddDataTypeEmpty(const char *name, const char *type)
 
     switch (GLSLTypeMapping[type].type) {
         case ShaderOpenGLCustomDataType::INT: {
-            Logging::Message("[ShaderOGLCustom] Added INT type: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Added INT type: %s => %s", name, type);
             typeValue = 0;
             break;
         }
         case ShaderOpenGLCustomDataType::FLOAT: {
-            Logging::Message("[ShaderOGLCustom] Added FLOAT type: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Added FLOAT type: %s => %s", name, type);
             typeValue = 0.0f;
             break;
         }
         case ShaderOpenGLCustomDataType::VEC2: {
-            Logging::Message("[ShaderOGLCustom] Added VEC2 type: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Added VEC2 type: %s => %s", name, type);
             typeValue = glm::vec2(0);
             break;
         }
         case ShaderOpenGLCustomDataType::VEC3: {
-            Logging::Message("[ShaderOGLCustom] Added VEC3 type: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Added VEC3 type: %s => %s", name, type);
             typeValue = glm::vec3(0);
             break;
         }
         case ShaderOpenGLCustomDataType::VEC4: {
-            Logging::Message("[ShaderOGLCustom] Added VEC4 type: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Added VEC4 type: %s => %s", name, type);
             typeValue = glm::vec4(0);
             break;
         }
         case ShaderOpenGLCustomDataType::TEXTURE2D: {
-            Logging::Message("[ShaderOGLCustom] Added TEXTURE2D type: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Added TEXTURE2D type: %s => %s", name, type);
             typeValue = nullptr;
             break;
         }
         case ShaderOpenGLCustomDataType::DIFFUSE: {
-            Logging::Message("[ShaderOGLCustom] Added DIFFUSE type: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Added DIFFUSE type: %s => %s", name, type);
             typeValue = nullptr;
             break;
         }
         case ShaderOpenGLCustomDataType::SPECULAR: {
-            Logging::Message("[ShaderOGLCustom] Added SPECULAR type: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Added SPECULAR type: %s => %s", name, type);
             typeValue = nullptr;
             break;
         }
         case ShaderOpenGLCustomDataType::DELTA_TIME: {
-            Logging::Message("[ShaderOGLCustom] Added DELTA_TIME type: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Added DELTA_TIME type: %s => %s", name, type);
             typeValue = 0.f;
             break;
         }
         case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
-            Logging::Message("[ShaderOGLCustom] Added EXECUTION_TIME type: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Added EXECUTION_TIME type: %s => %s", name, type);
             typeValue = 0.f;
             break;
         }
         case ShaderOpenGLCustomDataType::SCENE: {
-            Logging::Message("[ShaderOGLCustom] Added SCENE type: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Added SCENE type: %s => %s", name, type);
             typeValue = nullptr;
             break;
         }
         case ShaderOpenGLCustomDataType::DEPTH: {
-            Logging::Message("[ShaderOGLCustom] Added DEPTH type: %s => %s", name, type);
+            LOG_MESSAGE("[ShaderOGLCustom] Added DEPTH type: %s => %s", name, type);
             typeValue = nullptr;
             break;
         }
@@ -784,7 +784,7 @@ std::string ShaderOGLCustom::getShaderTypeString(ShaderCustomType type)
 
 void ShaderOGLCustom::WriteEmptyCustomShaderToDisk(const std::string& name, const std::string& folder, ShaderCustomType type)
 {
-    Logging::Message("[ShaderOGLCustom] Creating new custom shader '%s' of type '%d' in '%s'", name.c_str(), type, name.c_str());
+    LOG_MESSAGE("[ShaderOGLCustom] Creating new custom shader '%s' of type '%d' in '%s'", name.c_str(), type, name.c_str());
 
     std::string typesFile = folder + std::string(name + ".json");
     std::string fsFile = folder + std::string(name + ".fs");
@@ -823,7 +823,7 @@ void ShaderOGLCustom::WriteEmptyCustomShaderToDisk(const std::string& name, cons
 
 void ShaderOGLCustom::RemoveCustomShaderFiles(const std::string& folder, const std::string &name)
 {
-    Logging::Message("[ShaderOGLCustom] Deleting custom shader: %s", name.c_str());
+    LOG_MESSAGE("[ShaderOGLCustom] Deleting custom shader: %s", name.c_str());
 
     Tools::RemoveFile(folder + name + ".json");
     Tools::RemoveFile(folder + name + ".vs");
@@ -835,7 +835,7 @@ ShaderCustomType ShaderOGLCustom::ExtractTypeFromShaderName(const std::string& f
     std::string jsonFile = name + ".json";
 
     auto contentFile = Tools::ReadFile(folder + jsonFile);
-    Logging::Message("[ShaderOGLCustom] Extracting type from: '%s'", name.c_str());
+    LOG_MESSAGE("[ShaderOGLCustom] Extracting type from: '%s'", name.c_str());
 
     auto oJSON = cJSON_Parse(contentFile);
     std::string nameType = cJSON_GetObjectItemCaseSensitive(oJSON, "type")->valuestring;
@@ -855,7 +855,7 @@ void ShaderOGLCustom::CaptureDragDropUpdateImage(ShaderOGLCustomType &type, cons
 {
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM)) {
-            Logging::Message("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
+            LOG_MESSAGE("Dropping image (%s) in emitter %s", payload->Data, getLabel().c_str());
             IM_ASSERT(payload->DataSize == sizeof(int));
             auto selection = (char*) payload->Data;
             auto fullPath = Config::get()->IMAGES_FOLDER + selection;
@@ -865,7 +865,7 @@ void ShaderOGLCustom::CaptureDragDropUpdateImage(ShaderOGLCustomType &type, cons
                 delete texture;
                 type.value = new Image(fullPath);
             }
-            Logging::Message("File %s", selection);
+            LOG_MESSAGE("File %s", selection);
         }
         ImGui::EndDragDropTarget();
     }

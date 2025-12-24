@@ -12,7 +12,7 @@
 
 cJSON * Image3DAnimation360Serializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[Image3DAnimation8DirectionsSerializer] JsonByObject: %d", o->getTypeObject());
+    LOG_MESSAGE("[Image3DAnimation8DirectionsSerializer] JsonByObject: %d", o->getTypeObject());
 
     auto image = dynamic_cast<Image3DAnimation360*>(o);
 
@@ -49,7 +49,7 @@ Object3D * Image3DAnimation360Serializer::ObjectByJson(cJSON *json)
 
 void Image3DAnimation360Serializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
-    Logging::Message("[Image3DAnimation8DirectionsSerializer] ApplyJsonToObject: %d", o->getTypeObject());
+    LOG_MESSAGE("[Image3DAnimation8DirectionsSerializer] ApplyJsonToObject: %d", o->getTypeObject());
 
     auto image = dynamic_cast<Image3DAnimation360*>(o);
 

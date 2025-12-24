@@ -162,11 +162,11 @@ void GUIAddonMenu::MenuVideo()
     ImGui::MenuItem("V-Sync", nullptr, &setup->V_SYNC);
     if (ImGui::IsItemEdited()) {
         if (setup->V_SYNC) {
-            Logging::Message("Set V-Sync enabled");
+            LOG_MESSAGE("Set V-Sync enabled");
             SDL_GL_SetSwapInterval(1);
             SDL_RenderSetVSync(Components::get()->Window()->getRenderer(), 1);
         } else {
-            Logging::Message("Set V-Sync disabled");
+            LOG_MESSAGE("Set V-Sync disabled");
             SDL_GL_SetSwapInterval(0);
             SDL_RenderSetVSync(Components::get()->Window()->getRenderer(), 0);
         }
@@ -510,7 +510,7 @@ void GUIAddonMenu::MenuLogging()
     auto setup = Config::get();
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_OUTPUT_CONSOLE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Output to Console", nullptr, &setup->ENABLE_LOGGING);
+    ImGui::MenuItem("Output to Console", nullptr, &setup->ENABLE_LOGGING_CONSOLE);
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_OUTPUT_STD), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Output to STD", nullptr, &setup->ENABLE_LOGGING_STD);
     ImGui::Separator();
@@ -560,7 +560,7 @@ void GUIAddonMenu::MenuWindow(GUIManager *gui)
     ImGui::Image(FileSystemGUI::Icon(IconGUI::WINDOW_FULLSCREEN), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("FullScreen (F11)", nullptr, &setup->FULLSCREEN);
     if (ImGui::IsItemEdited()) {
-        Components::get()->Window()->toggleFullScreen();
+        Components::get()->Window()->ToggleFullScreen();
     }
     ImGui::SeparatorText("Windows/Widgets");
     for (auto &w : gui->windows) {

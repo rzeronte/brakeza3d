@@ -7,7 +7,6 @@
 
 #include "EditableOpenFile.h"
 #include "../../OpenGL/ShaderOGLCustom.h"
-#include "../Objects/ShadersGUI.h"
 
 class EditableOpenShaderFile : public EditableOpenFile
 {

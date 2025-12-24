@@ -21,7 +21,7 @@ OctreeNode Octree::BuildOctree(AABB3D bounds, int recursiveDepth)
 
     Vertex3D childSize = (bounds.max - bounds.min).getScaled(0.5);
 
-    Logging::Message("OctreeNode: (%d)", recursiveDepth);
+    LOG_MESSAGE("OctreeNode: (%d)", recursiveDepth);
     node.children.resize(8);
 
     for (int i = 0; i < 8; i++) {
@@ -63,7 +63,7 @@ OctreeNode Octree::BuildOctree(AABB3D bounds, int recursiveDepth)
 
         node.children[i] = BuildOctree(childBounds,recursiveDepth + 1);
 
-        Logging::Message("ChildrenNode: (%d) - depth: %d", i, recursiveDepth + 1);
+        LOG_MESSAGE("ChildrenNode: (%d) - depth: %d", i, recursiveDepth + 1);
     }
 
     return node;

@@ -20,12 +20,9 @@ public:
     explicit SceneLoader();
     static bool isLoading;
     static bool isClearing;
-
     static void LoadSceneSettings(const cJSON *contentJSON);
-
     static void InitSerializers();
     static void LoadScene(const std::string& filename);
-
     static void SaveScene(const std::string& filename);
     static void CreateScene(const std::string &filename);
     static void RemoveScene(const std::string &filename);

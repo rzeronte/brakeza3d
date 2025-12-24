@@ -23,7 +23,7 @@ public:
         path(path),
         tabLabel(tabLabel)
     {
-        Logging::Message("[EditableOpenFile] Creating EditableOpenFile: Tab: '%s', File: '%s'", tabLabel.c_str(), path.c_str());
+        LOG_MESSAGE("[EditableOpenFile] Creating EditableOpenFile: Tab: '%s', File: '%s'", tabLabel.c_str(), path.c_str());
 
         content = Tools::ReadFile(path.c_str());
         editor.SetLanguageDefinition(lang);
@@ -56,7 +56,7 @@ public:
 
     void setContentFromFile(const std::string &path)
     {
-        Logging::Message("[EditableOpenFile] Updating code editor for file '%s'", path.c_str());
+        LOG_MESSAGE("[EditableOpenFile] Updating code editor for file '%s'", path.c_str());
         content = Tools::ReadFile(path.c_str());
         editor.SetText(content);
     }

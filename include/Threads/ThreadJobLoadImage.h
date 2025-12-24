@@ -34,7 +34,7 @@ public:
 
         Profiler::get()->AddImage(image);
 
-        Logging::Message("[ThreadJobLoadImage] Callback END");
+        LOG_MESSAGE("[ThreadJobLoadImage] Callback END");
     }
 };
 

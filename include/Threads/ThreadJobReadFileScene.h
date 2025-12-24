@@ -25,23 +25,23 @@ public:
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };
 
-        Logging::Message("[ThreadJobReadFileScene] Constructor - File: %s", filename.c_str());
+        LOG_MESSAGE("[ThreadJobReadFileScene] Constructor - File: %s", filename.c_str());
     }
 
     void fnProcess()
     {
-        Logging::Message("[ThreadJobReadFileScene] START - File: %s", filename.c_str());
+        LOG_MESSAGE("[ThreadJobReadFileScene] START - File: %s", filename.c_str());
 
         auto contentFile = Tools::ReadFile(filename);
 
         if (!contentFile) {
-            Logging::Error("[ThreadJobReadFileScene] Failed to read file: %s", filename.c_str());
+            LOG_ERROR("[ThreadJobReadFileScene] Failed to read file: %s", filename.c_str());
             return;
         }
 
         json = cJSON_Parse(contentFile);
 
-        Logging::Message("[ThreadJobReadFileScene] Process END");
+        LOG_MESSAGE("[ThreadJobReadFileScene] Process END");
     }
 
     void fnCallback()
@@ -62,7 +62,7 @@ public:
         Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadSceneShaders>(json));
 
         SceneLoader::setLoading(false);
-        Logging::Message("[ThreadJobReadFileScene] Callback END | Loaded %d objects.", objectCount);
+        LOG_MESSAGE("[ThreadJobReadFileScene] Callback END | Loaded %d objects.", objectCount);
     }
 
     ~ThreadJobReadFileScene()

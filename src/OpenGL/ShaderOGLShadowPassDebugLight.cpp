@@ -93,7 +93,7 @@ void ShaderOGLShadowPassDebugLight::CreateFramebuffer()
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cerr << "ERROR: Framebuffer no está completo!" << std::endl;
     } else {
-        Logging::Message("[ShaderOGLShadowPassDebugLight] Framebuffer created successful!");
+        LOG_MESSAGE("[ShaderOGLShadowPassDebugLight] Framebuffer created successful!");
     }
 }
 

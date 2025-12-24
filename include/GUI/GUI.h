@@ -107,6 +107,7 @@ namespace GUIType
         DEBUG_ICONS,
         CODE_EDITOR,
         DOCUMENTATION,
+        SCENE_INFO
     };
 
     struct WindowData {
@@ -115,6 +116,7 @@ namespace GUIType
         Sheet icon;
         bool isOpen = false;
         bool isInternal = false;
+        bool isDockable = true;
         std::function<void()> functionCallBack;
     };
 
@@ -314,7 +316,10 @@ namespace GUIType
     X(SHADER_CODE_VS, 0, 0) \
     X(SHADER_CODE_FS, 0, 0) \
     X(EMPTY, 0, 0) \
-    X(WIN_DOCUMENTATION, 0, 0)
+    X(WIN_DOCUMENTATION, 0, 0) \
+    X(SCENE_INFO, 0, 0) \
+    X(CHECKED, 0, 0) \
+    X(UNCHECKED, 0, 0)
 
 // Icons Objects
 namespace IconObject {
@@ -363,7 +368,6 @@ namespace IconGUI {
     };
 }
 
-class GUIManager;
 
 class GUI
 {

@@ -26,7 +26,7 @@ public:
     void fnProcess()
     {
         if (!mesh) {
-            Logging::Error("[ThreadJobLoadMesh3D] Pointer object is empty!");
+            LOG_ERROR("[ThreadJobLoadMesh3D] Pointer object is empty!");
             return;
         }
 
@@ -34,13 +34,13 @@ public:
         Mesh3DSerializer::ApplyShadersCreation(mesh, json);
         Mesh3DSerializer::ApplyShadersBackground(mesh);
 
-        Logging::Message("[ThreadJobLoadMesh3D] Process END");
+        LOG_MESSAGE("[ThreadJobLoadMesh3D] Process END");
     }
 
     void fnCallback()
     {
         if (!mesh) {
-            Logging::Error("[ThreadJobLoadMesh3D] Pointer was destroyed before callback");
+            LOG_ERROR("[ThreadJobLoadMesh3D] Pointer was destroyed before callback");
             return;
         }
 
@@ -51,7 +51,7 @@ public:
 
         Brakeza::get()->AddObject3D(mesh, mesh->getName());
 
-        Logging::Message("[ThreadJobLoadMesh3D] Callback END");
+        LOG_MESSAGE("[ThreadJobLoadMesh3D] Callback END");
     }
 
     ~ThreadJobLoadMesh3D()

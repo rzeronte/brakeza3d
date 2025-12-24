@@ -347,7 +347,7 @@ public:
         }
 
         cJSON_Delete(root);
-        Logging::Message("[GUI] Icons imported from: %s", filename.c_str());
+        LOG_MESSAGE("[GUI] Icons imported from: %s", filename.c_str());
     }
 };
 

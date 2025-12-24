@@ -647,6 +647,18 @@
 			"name":	"WIN_DOCUMENTATION",
 			"x":	12,
 			"y":	28
+		}, {
+			"name":	"SCENE_INFO",
+			"x":	15,
+			"y":	27
+		}, {
+			"name":	"CHECKED",
+			"x":	14,
+			"y":	31
+		}, {
+			"name":	"UNCHECKED",
+			"x":	15,
+			"y":	37
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",
