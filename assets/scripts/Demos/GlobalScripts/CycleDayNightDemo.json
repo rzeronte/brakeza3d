@@ -1,0 +1,6 @@
+{
+  "codeFile":	"../assets/scripts/Examples/GlobalScripts/CycleDayNightDemo/CycleDayNightDemo.lua",
+  "typesFile": "../assets/scripts/Examples/GlobalScripts/CycleDayNightDemo/CycleDayNightDemo.json",
+  "name":	"Performance Test",
+  "types":	[]
+}

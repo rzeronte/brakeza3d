@@ -45,8 +45,8 @@
 			"y":	28
 		}, {
 			"name":	"SCENE_FILE",
-			"x":	7,
-			"y":	10
+			"x":	2,
+			"y":	37
 		}, {
 			"name":	"PROJECT_FILE",
 			"x":	15,
@@ -161,8 +161,8 @@
 			"y":	38
 		}, {
 			"name":	"WIN_FILES_SCENES",
-			"x":	7,
-			"y":	10
+			"x":	2,
+			"y":	37
 		}, {
 			"name":	"WIN_FILES_SCRIPTS",
 			"x":	2,
@@ -649,16 +649,20 @@
 			"y":	28
 		}, {
 			"name":	"SCENE_INFO",
-			"x":	15,
-			"y":	27
+			"x":	13,
+			"y":	28
 		}, {
 			"name":	"CHECKED",
 			"x":	14,
 			"y":	31
 		}, {
 			"name":	"UNCHECKED",
-			"x":	15,
-			"y":	37
+			"x":	2,
+			"y":	10
+		}, {
+			"name":	"FILE_BROKEN",
+			"x":	10,
+			"y":	25
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

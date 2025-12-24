@@ -8,17 +8,18 @@
 #include "../Misc/ToolsJSON.h"
 #include "../Components/Component.h"
 #include "../GUI/Objects/FileSystemGUI.h"
+#include "../Render/Drawable.h"
 
 
-void SceneChecker::DrawInformationTable() const {
-    ImGui::SeparatorText("Camera information");
+void SceneChecker::DrawInformationTable() const
+{
     if (ImGui::BeginTable("CameraTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Screenshot", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Information", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableHeadersRow();
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
-        if (screenshot->isLoaded()) {
+        if (screenshot != nullptr && screenshot->isLoaded() && screenshot->getOGLTextureID() != 0) {
             float fixedWidth = std::min((int) ImGui::GetContentRegionAvail().x, screenshot->width());
             float height = fixedWidth * ((float) screenshot->height() / (float) screenshot->width());
             ImGui::Image(screenshot->getOGLImTexture(), ImVec2(fixedWidth, height));
@@ -47,43 +48,62 @@ void SceneChecker::DrawInformationTable() const {
     }
 }
 
-void SceneChecker::DrawScriptsTable() const {
+void SceneChecker::DrawScriptsTable() const
+{
     std::string labelScripts = "Scripts (" + std::to_string(status.scripts.size()) + ")";
     ImGui::SeparatorText(labelScripts.c_str());
+
+    if (status.scripts.empty()) {
+        Drawable::WarningMessage("No scripts in scene");
+        return;
+    }
+
     if (ImGui::BeginTable("ScriptsTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableSetupColumn("File", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableHeadersRow();
 
         for (auto &o : status.scripts) {
+            bool fileExists = Tools::FileExists(o.path.c_str());
+
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
             ImGui::SameLine();
             ImGui::Text("%s", o.name.c_str());
             ImGui::TableSetColumnIndex(1);
-            ImGui::Text("%s", o.path.c_str());
+            if (!fileExists) {
+                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "%s", o.path.c_str());
+            } else {
+                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", o.path.c_str());
+            }
             ImGui::TableSetColumnIndex(2);
-            ImGui::Image(FileSystemGUI::Icon(Tools::FileExists(o.path.c_str()) ? IconGUI::CHECKED : IconGUI::UNCHECKED), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::Image(FileSystemGUI::Icon(Tools::FileExists(o.path.c_str()) ? IconGUI::CHECKED : IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
         }
         ImGui::EndTable();
     }
 }
 
-void SceneChecker::DrawObjectsTable() const {
-    // Tabla de Objects
+void SceneChecker::DrawObjectsTable() const
+{
     std::string labelObjects = "Objects (" + std::to_string(status.objects.size()) + ")";
     ImGui::SeparatorText(labelObjects.c_str());
+
+    if (status.objects.empty()) {
+        Drawable::WarningMessage("No objects in scene");
+        return;
+    }
+
+    // Tabla de Objects
     if (ImGui::BeginTable("ObjectsTable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Scripts", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Enabled", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableSetupColumn("Collider", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableHeadersRow();
 
         for (auto &o : status.objects) {
+
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("%s", o.name.c_str());
@@ -92,8 +112,16 @@ void SceneChecker::DrawObjectsTable() const {
             ImGui::SameLine();
             ImGui::Text("%s", getStringObjectType(o.type).c_str());
             ImGui::TableSetColumnIndex(2);
-            for (auto i: o.scripts) {
-                ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            for (auto &script: o.scripts) {
+                bool fileExists = Tools::FileExists(script.path.c_str());
+                if (fileExists) {
+                    ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+                } else {
+                    ImGui::Image(FileSystemGUI::Icon(IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip(script.path.c_str());
+                }
                 ImGui::SameLine();
             }
             ImGui::TableSetColumnIndex(3);
@@ -105,25 +133,38 @@ void SceneChecker::DrawObjectsTable() const {
     }
 }
 
-void SceneChecker::DrawShadersTable() const {
+void SceneChecker::DrawShadersTable() const
+{
     std::string labelShaderes = "Shaders (" + std::to_string(status.shaders.size()) + ")";
     ImGui::SeparatorText(labelShaderes.c_str());
+
+    if (status.shaders.empty()) {
+        Drawable::WarningMessage("No shaders in scene");
+        return;
+    }
+
     if (ImGui::BeginTable("ShadersTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableSetupColumn("File", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableHeadersRow();
 
         for (auto &o : status.shaders) {
+            bool fileExists = Tools::FileExists(o.path.c_str());
+
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
             ImGui::SameLine();
             ImGui::Text("%s", o.name.c_str());
             ImGui::TableSetColumnIndex(1);
+            if (!fileExists) {
+                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "%s", o.path.c_str());
+            } else {
+                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", o.path.c_str());
+            }
             ImGui::Text("%s", o.path.c_str());
             ImGui::TableSetColumnIndex(2);
-            ImGui::Image(FileSystemGUI::Icon(Tools::FileExists(o.path.c_str()) ? IconGUI::CHECKED : IconGUI::UNCHECKED), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::Image(FileSystemGUI::Icon(fileExists ? IconGUI::CHECKED : IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
         }
         ImGui::EndTable();
     }
@@ -137,9 +178,7 @@ void SceneChecker::DrawWinSceneInfo() const
 
     DrawInformationTable();
     DrawScriptsTable();
-    ImGui::Spacing();
     DrawShadersTable();
-    ImGui::Spacing();
     DrawObjectsTable();
 
     ImGui::PopStyleVar();
@@ -149,6 +188,7 @@ void SceneChecker::ExtractSceneInfo(cJSON *json)
 {
     if (screenshot != nullptr) {
         delete screenshot;
+        screenshot = nullptr;
     }
 
     // SCREENSHOT

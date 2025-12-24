@@ -23,7 +23,6 @@ public:
 
     // Scenes
     static void DrawSceneFiles(GUIType::BrowserCache &browser);
-    static void DrawSceneCreator();
     static void DrawScenesTable(GUIType::BrowserCache & browser);
     static void DrawSceneRow(GUIType::BrowserCache &browser, const std::string &file, int index);
     static void DrawSceneRowActions(GUIType::BrowserCache &browser, const std::string &file);

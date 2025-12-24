@@ -378,6 +378,7 @@ void GUIManager::setLayoutToDefault(Config::ImGUIConfigs currentConfig)
     }
 
     for (auto &w: windows) {
+        w.isOpen = false;
         for (const auto &c : selectedConfig) {
             if (w.window == c.window && c.visible) {
                 w.isOpen = true;

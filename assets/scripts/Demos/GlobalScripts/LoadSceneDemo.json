@@ -1,0 +1,24 @@
+{
+	"name":	"Load scene example",
+	"codeFile":	"../assets/scripts/Examples/GlobalScripts/LoadSceneDemo/LoadSceneDemo.lua",
+	"typesFile": "../assets/scripts/Examples/GlobalScripts/LoadSceneDemo/LoadSceneDemo.json",
+	"types":	[
+        {
+          "name":	"enabled",
+          "type":	"int",
+          "value":	0
+        },
+        {
+			"name":	"current",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"baseOffsetX",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"baseOffsetY",
+			"type":	"int",
+			"value":	0
+		}]
+}

@@ -1,0 +1,30 @@
+{
+	"codeFile":	"../assets/scripts/Examples/ObjectScripts/MoveUpDownObject.lua",
+	"typesFile": "../assets/scripts/Examples/ObjectScripts/MoveUpDownObject.json",
+	"name":	"Move up-down object",
+	"types":	[{
+			"name":	"radius",
+			"type":	"int",
+			"value":	3
+		}, {
+			"name":	"speed",
+			"type":	"float",
+			"value":	2
+		}, {
+			"name":	"offset",
+			"type":	"Vertex3D",
+			"value":	{
+				"x":	0,
+				"y":	2,
+				"z":	0
+			}
+		}, {
+			"name":	"center",
+			"type":	"Vertex3D",
+			"value":	{
+				"x":	0,
+				"y":	0,
+				"z":	20
+			}
+		}]
+}

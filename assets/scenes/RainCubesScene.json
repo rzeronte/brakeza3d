@@ -1,4 +1,10 @@
 {
+	"screenshot":	"../assets/screenshots/scene_152228.png",
+	"description":	{
+		"x":	0,
+		"y":	-9.8000001907348633,
+		"z":	0
+	},
 	"gravity":	{
 		"x":	0,
 		"y":	-9.8000001907348633,
@@ -27,7 +33,7 @@
 		}
 	},
 	"objects":	[{
-			"name":	"c3",
+			"name":	"CUBE_ONE",
 			"scale":	1,
 			"enabled":	true,
 			"position":	{
@@ -42,22 +48,10 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/SpawnCollidersDemo.lua",
-					"typesFile":	"../assets/scripts/SpawnCollidersDemo.json",
-					"name":	"../assets/scripts/SpawnCollidersDemo",
+					"codeFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.lua",
+					"typesFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.json",
+					"name":	"RainCubesDemo",
 					"types":	[{
-							"name":	"spawnPosition",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	0,
-								"z":	0
-							}
-						}, {
-							"name":	"frequency",
-							"type":	"Float",
-							"value":	1
-						}, {
 							"name":	"frequency",
 							"type":	"float",
 							"value":	0.5
@@ -68,7 +62,7 @@
 			"shaders":	[],
 			"type":	2
 		}, {
-			"name":	"c1",
+			"name":	"CUBE_THREE",
 			"scale":	1,
 			"enabled":	true,
 			"position":	{
@@ -83,22 +77,10 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/SpawnCollidersDemo.lua",
-					"typesFile":	"../assets/scripts/SpawnCollidersDemo.json",
-					"name":	"../assets/scripts/SpawnCollidersDemo",
+					"codeFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.lua",
+					"typesFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.json",
+					"name":	"RainCubesDemo",
 					"types":	[{
-							"name":	"spawnPosition",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	0,
-								"z":	0
-							}
-						}, {
-							"name":	"frequency",
-							"type":	"Float",
-							"value":	1
-						}, {
 							"name":	"frequency",
 							"type":	"float",
 							"value":	0.5
@@ -109,7 +91,7 @@
 			"shaders":	[],
 			"type":	2
 		}, {
-			"name":	"c2",
+			"name":	"CUBE_TWO",
 			"scale":	1,
 			"enabled":	true,
 			"position":	{
@@ -124,9 +106,9 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/SpawnCollidersDemo.lua",
-					"typesFile":	"../assets/scripts/SpawnCollidersDemo.json",
-					"name":	"../assets/scripts/SpawnCollidersDemo",
+					"codeFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.lua",
+					"typesFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.json",
+					"name":	"RainCubesDemo",
 					"types":	[{
 							"name":	"frequency",
 							"type":	"float",

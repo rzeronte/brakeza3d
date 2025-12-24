@@ -328,6 +328,24 @@ bool Tools::saveTextureToFile(GLuint textureID, int width, int height, const cha
         void* bottom = static_cast<uint8_t*>(pixels) + (height - 1 - i) * pitch;
         std::swap_ranges(static_cast<uint8_t*>(top), static_cast<uint8_t*>(top) + pitch, static_cast<uint8_t*>(bottom));
     }
+    // Convertir transparencia a negro
+        uint32_t* pixelData = static_cast<uint32_t*>(surface->pixels);
+        for (int i = 0; i < width * height; ++i) {
+            uint8_t* pixel = reinterpret_cast<uint8_t*>(&pixelData[i]);
+            uint8_t r = pixel[0];
+            uint8_t g = pixel[1];
+            uint8_t b = pixel[2];
+            uint8_t a = pixel[3];
+
+            // Si hay transparencia, mezclar con negro
+            if (a < 255) {
+                float alpha = a / 255.0f;
+                pixel[0] = static_cast<uint8_t>(r * alpha); // R
+                pixel[1] = static_cast<uint8_t>(g * alpha); // G
+                pixel[2] = static_cast<uint8_t>(b * alpha); // B
+                pixel[3] = 255; // Alpha opaco
+            }
+        }
 
     // Guardar el surface como una imagen
     if (IMG_SavePNG(surface, fileName) != 0) {

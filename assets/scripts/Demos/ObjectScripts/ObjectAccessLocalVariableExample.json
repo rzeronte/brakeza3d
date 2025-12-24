@@ -1,0 +1,26 @@
+{
+  "codeFile":	"../assets/scripts/Examples/ObjectScripts/ObjectAccessLocalVariableExample.lua",
+  "typesFile": "../assets/scripts/Examples/ObjectScripts/ObjectAccessLocalVariableExample.json",
+  "name":	"Object access local var demo",
+    "types":	[
+        {
+            "name":	"count",
+            "type":	"int",
+            "value": 0
+        },
+        {
+            "name":	"state",
+            "type":	"int",
+            "value": 0
+        },
+      {
+        "name":	"offset",
+        "type":	"Vertex3D",
+        "value": {
+          "x":	1,
+          "y":	2,
+          "z":	3
+        }
+      }
+    ]
+}

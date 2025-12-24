@@ -1,0 +1,30 @@
+{
+	"codeFile":	"../assets/scripts/Examples/ObjectScripts/PathFindingExample.lua",
+	"typesFile": "../assets/scripts/Examples/ObjectScripts/PathFindingExample.json",
+	"name":	"Pathfinding demo",
+	"types":	[{
+			"name":	"fromX",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"fromY",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"fromZ",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"toX",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"toY",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"toZ",
+			"type":	"int",
+			"value":	0
+		}]
+}
