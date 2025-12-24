@@ -12,7 +12,7 @@
 
 cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[Mesh3DSerializer] JsonByObject: %d",  o->getTypeObject());
+    LOG_MESSAGE("[Mesh3DSerializer] JsonByObject: %d",  o->getTypeObject());
 
     auto *mesh = dynamic_cast<Mesh3D*>(o);
 
@@ -44,7 +44,7 @@ cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
 void Mesh3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
     std::lock_guard<std::mutex> lock(mtx);
-    Logging::Message("[Mesh3DSerializer] ApplyJsonToObject %d", o->getTypeObject());
+    LOG_MESSAGE("[Mesh3DSerializer] ApplyJsonToObject %d", o->getTypeObject());
 
     auto mesh = dynamic_cast<Mesh3D*>(o);
 
@@ -54,7 +54,7 @@ void Mesh3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 
 Object3D* Mesh3DSerializer::ObjectByJson(cJSON *json)
 {
-    Logging::Message("[Mesh3DSerializer] ObjectByJson");
+    LOG_MESSAGE("[Mesh3DSerializer] ObjectByJson");
 
     auto o = new Mesh3D();
     ApplyJsonToObject(json, o);
@@ -118,8 +118,11 @@ void Mesh3DSerializer::ApplyCollider(Mesh3D *m, cJSON* json)
                         m->SetupRigidBodyCollider(TRIANGLE_MESH_SHAPE);
                     }
                     break;
+                case KINEMATIC:
+                    m->setupKinematicCollider();
+                    break;
                 default: {
-                    Logging::Error("[Mesh3D] Unknown collision mode: %d", mode);
+                    LOG_ERROR("[Mesh3D] Unknown collision mode: %d", mode);
                 }
             }
         }
@@ -145,7 +148,7 @@ void Mesh3DSerializer::ApplyShadersCreation(Mesh3D *mesh, cJSON* json)
                     break;
                 }
                 default: {
-                    Logging::Message("[LoadAttributes] Unknown shader type: %d", type);
+                    LOG_MESSAGE("[LoadAttributes] Unknown shader type: %d", type);
                 }
             }
         }

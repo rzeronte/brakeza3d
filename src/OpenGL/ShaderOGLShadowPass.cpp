@@ -106,7 +106,7 @@ void ShaderOGLShadowPass::renderIntoArrayDepthTextures(
 ) const
 {
     if (light == nullptr) {
-        Logging::Message("ShaderShadowPass Error: Empty LightPoint3D!!");
+        LOG_MESSAGE("ShaderShadowPass Error: Empty LightPoint3D!!");
         return;
     }
 
@@ -237,7 +237,7 @@ GLuint ShaderOGLShadowPass::getSpotLightsShadowMapArrayTextures() const
 
 void ShaderOGLShadowPass::createSpotLightsDepthTextures(int numLights)
 {
-    Logging::Message("[ShaderOGLShadowPass] Updating shadow maps for %d lights", numLights);
+    LOG_MESSAGE("[ShaderOGLShadowPass] Updating shadow maps for %d lights", numLights);
     auto window = Components::get()->Window();
 
     glGenTextures(1, &spotLightsDepthMapArray);

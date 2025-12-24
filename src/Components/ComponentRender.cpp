@@ -198,7 +198,7 @@ void ComponentRender::UpdateSelectedObject3D()
         const auto id = Components::get()->Window()->getObjectIDByPickingColorFramebuffer(x, y);
         selectedObject = Brakeza::get()->getObjectById(id);
         if (selectedObject != nullptr) {
-            Logging::Message("[Render] Selected object: %s", selectedObject->getName().c_str());
+            LOG_MESSAGE("[Render] Selected object: %s", selectedObject->getName().c_str());
         }
     }
 }
@@ -234,7 +234,7 @@ void ComponentRender::LoadShaderIntoScene(const std::string &filePath)
         }
     }
 
-    Logging::Error("[Render] Error: Cannot apply shader to scene...");
+    LOG_ERROR("[Render] Error: Cannot apply shader to scene...");
 }
 
 ShaderOGLCustom* ComponentRender::CreateCustomShaderFromDisk(const ShaderOGLMetaInfo &info, Mesh3D* mesh)
@@ -287,7 +287,7 @@ void ComponentRender::RemoveSceneShaderByIndex(int index) {
 
 void ComponentRender::RemoveSceneShader(const ShaderOGLCustom *shader)
 {
-    Logging::Message("Removing SCENE script %s", shader->getLabel().c_str());
+    LOG_MESSAGE("Removing SCENE script %s", shader->getLabel().c_str());
 
     for (auto it = sceneShaders.begin(); it != sceneShaders.end(); ++it) {
         if (*it == shader) {
@@ -309,18 +309,20 @@ ShaderOGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name)
     return nullptr;
 }
 
-void ComponentRender::MakeScreenShot()
+void ComponentRender::MakeScreenShot(std::string filename)
 {
-    const auto file = Config::get()->SCREENSHOTS_FOLDER + Brakeza::UniqueObjectLabel("screenshot_") + std::string(".png");
+    if (filename.empty()) {
+        filename = Config::get()->SCREENSHOTS_FOLDER + Brakeza::UniqueObjectLabel("screenshot_") + std::string(".png");
+    }
 
     Tools::saveTextureToFile(
-        Components::get()->Window()->getSceneTexture(),
+        Components::get()->Window()->getGlobalTexture(),
         Components::get()->Window()->getWidthRender(),
         Components::get()->Window()->getHeightRender(),
-        file.c_str()
+        filename.c_str()
     );
 
-    Logging::Message("[Render] Saving screenshot to file '%s'...", file.c_str());
+    LOG_MESSAGE("[Render] Saving screenshot to file '%s'...", filename.c_str());
 }
 
 bool ComponentRender::compareDistances(const Object3D* obj1, const Object3D* obj2)
@@ -386,7 +388,7 @@ void ComponentRender::changeOpenGLProgram(GLuint programID)
 
 void ComponentRender::resizeShadersFramebuffers() const
 {
-    Logging::Message("[Render] Resizing framebuffers...");
+    LOG_MESSAGE("[Render] Resizing framebuffers...");
 
     shaders.shaderOGLRender->Destroy();
     shaders.shaderOGLImage->Destroy();

@@ -23,14 +23,14 @@ public:
 
     void fnProcess()
     {
-        Logging::Message("[ThreadJobLoadLightPoint] Process END");
+        LOG_MESSAGE("[ThreadJobLoadLightPoint] Process END");
     }
 
     void fnCallback()
     {
         Brakeza::get()->AddObject3D(light, light->getName());
 
-        Logging::Message("[ThreadJobLoadLightPoint] Callback END");
+        LOG_MESSAGE("[ThreadJobLoadLightPoint] Callback END");
     }
 
     ~ThreadJobLoadLightSpot()

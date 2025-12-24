@@ -30,7 +30,7 @@ public:
     PostProcessingManager();
     ~PostProcessingManager();
 
-    void initialize(int width, int height);
+    void Initialize(int width, int height);
     void resize(int width, int height);
     void cleanup();
 

@@ -11,6 +11,7 @@
 #include "../../../include/GUI/Objects/ScriptLuaGUI.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/Loaders/ProjectLoader.h"
+#include "../../../include/Loaders/SceneChecker.h"
 #include "../../../include/Loaders/SceneLoader.h"
 #include "../../../include/Misc/Tools.h"
 
@@ -178,9 +179,11 @@ void FileSystemGUI::DrawScenesTable(GUIType::BrowserCache &browser)
     std::sort(files.begin(), files.end());
 
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
-    if (ImGui::BeginTable("ScenesFolderTable", 2, flags)) {
+    if (ImGui::BeginTable("ScenesFolderTable", 4, flags)) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Information", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Edit", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Remove", ImGuiTableColumnFlags_WidthFixed);
         for (int i = 0; i < files.size(); i++) {
             const auto& file = files[i];
             if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
@@ -214,44 +217,26 @@ void FileSystemGUI::DrawSceneRowActions(GUIType::BrowserCache &browser, const st
 {
     auto fullPath = browser.currentFolder + file;
 
+    GUI::DrawButtonTransparent("Scene information", IconGUI::SCENE_INFO, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+        Brakeza::get()->GUI()->getSceneChecker().LoadSceneInfoDialog(fullPath);
+    });
+    ImGui::TableSetColumnIndex(2);
     // Load button
-    GUI::DrawButtonTransparent(
-        "Load scene",
-        IconGUI::SCENE_LOAD,
-        GUIType::Sizes::ICONS_BROWSERS,
-        true,
-        [&] {
-            SceneLoader::ClearScene();
-            SceneLoader::LoadScene(fullPath);
-        }
-    );
-
-    ImGui::SameLine();
-
+    GUI::DrawButtonTransparent("Load scene", IconGUI::SCENE_LOAD, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        SceneLoader::ClearScene();
+        SceneLoader::LoadScene(fullPath);
+    });
+    ImGui::TableSetColumnIndex(3);
     // Save button
-    GUI::DrawButtonConfirm(
-        "Overriding scene",
-        "Are you sure to override scene?",
-        IconGUI::SAVE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        [&] {
-            SceneLoader::SaveScene(fullPath);
-        }
-    );
-
-    ImGui::SameLine();
-
+    GUI::DrawButtonConfirm("Overriding scene", "Are you sure to override scene?", IconGUI::SAVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
+        SceneLoader::SaveScene(fullPath);
+    });
+    ImGui::TableSetColumnIndex(4);
     // Delete button
-    GUI::DrawButtonConfirm(
-        "Deleting scene",
-        "Are you sure to delete scene?",
-        IconGUI::SCENE_REMOVE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        [&] {
-            SceneLoader::RemoveScene(fullPath);
-            browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
-        }
-    );
+    GUI::DrawButtonConfirm("Deleting scene", "Are you sure to delete scene?", IconGUI::SCENE_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
+        SceneLoader::RemoveScene(fullPath);
+        browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
+    });
 }
 
 void FileSystemGUI::DrawSceneFiles(GUIType::BrowserCache &browser)
@@ -578,11 +563,6 @@ void FileSystemGUI::DrawShaderCreatorDialog(GUIType::BrowserCache &browser, std:
         });
         ImGui::EndPopup();
     }
-}
-
-void FileSystemGUI::DrawScriptCreator()
-{
-
 }
 
 void FileSystemGUI::DrawScriptsTable(GUIType::BrowserCache &browser)

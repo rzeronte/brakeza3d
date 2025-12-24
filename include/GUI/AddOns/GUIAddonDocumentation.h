@@ -35,7 +35,7 @@ public:
             
             // Click en nodo hoja
             if (ImGui::IsItemClicked()) {
-                Logging::Message("[Documentation] Change to file '%s'...", file.c_str());
+                LOG_MESSAGE("[Documentation] Change to file '%s'...", file.c_str());
                 editor.SetText(Tools::ReadFile(file));
                 editor.SetCursorPosition({line, 0});
             }
@@ -44,7 +44,7 @@ public:
             
             // Click en nodo con hijos (opcional, cargar su propio archivo)
             if (ImGui::IsItemClicked() && !file.empty()) {
-                Logging::Message("[Documentation] Change to file '%s'...", file.c_str());
+                LOG_MESSAGE("[Documentation] Change to file '%s'...", file.c_str());
                 editor.SetText(Tools::ReadFile(file));
                 editor.SetCursorPosition({line, 0});
             }

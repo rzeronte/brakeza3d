@@ -17,9 +17,10 @@
 #include "../../include/GUI/AddOns/GUIAddonToolbar.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/GUI/AddOns/GUIAddonDocumentation.h"
+#include "../../include/Loaders/SceneChecker.h"
 
-#define ADD_WIN(title, type, icon, visible, internal, func) \
-windows.push_back({ title, type, icon, visible, internal, [&] { func; }})
+#define ADD_WIN(title, type, icon, visible, internal, dockable, func) \
+windows.push_back({ title, type, icon, visible, internal, dockable, [&] { func; }})
 
 GUIManager::GUIManager()
 :
@@ -61,25 +62,26 @@ void GUIManager::OnStart()
 
 void GUIManager::RegisterWindows()
 {
-    ADD_WIN("Project setup",           GUIType::PROJECT_SETTINGS, IconGUI::WIN_PROJECT_SETTINGS,  true,  false, GUIAddonProjectSetup::DrawWinProjectSettings());
-    ADD_WIN("Scene Objects",           GUIType::SCENE_OBJECTS,    IconGUI::WIN_SCENE_OBJECTS,     true,  false, GUIAddonObjects3D::DrawWinSceneObjects(this));
-    ADD_WIN("Object Properties",       GUIType::OBJECT_PROPS,     IconGUI::WIN_OBJECT_PROPS,      true,  false, GUIAddonObject3DProperties::DrawWinObjectProps(this));
-    ADD_WIN("Object shaders",          GUIType::OBJECT_SHADERS,   IconGUI::WIN_OBJECT_SHADERS,    false, false, ShadersGUI::DrawWinObjectShaders());
-    ADD_WIN("Object Scripts",          GUIType::OBJECT_SCRIPTS,   IconGUI::WIN_OBJECT_SCRIPTS,    false, false, ScriptLuaGUI::DrawWinObjectScripts());
-    ADD_WIN("Object variables",        GUIType::OBJECT_VARS,      IconGUI::WIN_OBJECT_VARS,       false, false, ScriptLuaGUI::DrawWinObjectVars(this));
-    ADD_WIN("Global variables",        GUIType::GLOBAL_VARS,      IconGUI::WIN_GLOBAL_VARS,       false, false, ScriptLuaGUI::DrawWinGlobalVars(this));
-    ADD_WIN("Keyboard/Mouse",          GUIType::KEYBOARD_MOUSE,   IconGUI::WIN_KEYBOARD_MOUSE,    false, false, DrawWinKeyboardMouse());
-    ADD_WIN("Images",                  GUIType::IMAGES,           IconGUI::WIN_IMAGES,            false, false, DrawWinImages());
-    ADD_WIN("Projects",                GUIType::FILES_PROJECTS,   IconGUI::WIN_FILES_PROJECTS,    true,  false, FileSystemGUI::DrawProjectFiles(browserProjects));
-    ADD_WIN("Scenes",                  GUIType::FILES_SCENES,     IconGUI::WIN_FILES_SCENES,      true,  false, FileSystemGUI::DrawSceneFiles(browserScenes));
-    ADD_WIN("Scripts",                 GUIType::FILES_SCRIPTS,    IconGUI::WIN_FILES_SCRIPTS,     true,  false, FileSystemGUI::DrawScriptFiles(browserScripts));
-    ADD_WIN("Shaders",                 GUIType::FILES_SHADERS,    IconGUI::WIN_FILES_SHADERS,     true,  false, FileSystemGUI::DrawShaderFiles(browserShaders));
-    ADD_WIN("Logging/Console",         GUIType::LOGGING,          IconGUI::WIN_LOGGING,           true,  false, widgetConsole->DrawWinLogging());
-    ADD_WIN("Lights DepthMaps",        GUIType::DEPTH_LIGHTS_MAPS,IconGUI::WIN_DEPTH_LIGHTS_MAPS, false, false, DrawWinDepthLightsMap());
-    ADD_WIN("Profiler",                GUIType::PROFILER,         IconGUI::WIN_PROFILER,          false, false, Profiler::get()->DrawWinProfiler());
-    ADD_WIN("Code editor",             GUIType::CODE_EDITOR,      IconGUI::WIN_CODE_EDITOR,       false, false, DrawWinCodeEditor());
-    ADD_WIN("Debug GUI Icons",         GUIType::DEBUG_ICONS,      IconGUI::WIN_DEBUG_ICONS,       false, false, IconsGUI::DrawWinDebugIcons(this));
-    ADD_WIN("Documentation",           GUIType::DOCUMENTATION,    IconGUI::WIN_DOCUMENTATION,     false, true,  GUIAddonDocumentation::DrawWinDocumentation(documentationTree, documentationEditor));
+    ADD_WIN("Project setup",     GUIType::PROJECT_SETTINGS, IconGUI::WIN_PROJECT_SETTINGS,  true,  false, true, GUIAddonProjectSetup::DrawWinProjectSettings());
+    ADD_WIN("Scene Objects",     GUIType::SCENE_OBJECTS,    IconGUI::WIN_SCENE_OBJECTS,     true,  false, true, GUIAddonObjects3D::DrawWinSceneObjects(this));
+    ADD_WIN("Object Properties", GUIType::OBJECT_PROPS,     IconGUI::WIN_OBJECT_PROPS,      true,  false, true, GUIAddonObject3DProperties::DrawWinObjectProps(this));
+    ADD_WIN("Object shaders",    GUIType::OBJECT_SHADERS,   IconGUI::WIN_OBJECT_SHADERS,    false, false, true, ShadersGUI::DrawWinObjectShaders());
+    ADD_WIN("Object Scripts",    GUIType::OBJECT_SCRIPTS,   IconGUI::WIN_OBJECT_SCRIPTS,    false, false, true, ScriptLuaGUI::DrawWinObjectScripts());
+    ADD_WIN("Object variables",  GUIType::OBJECT_VARS,      IconGUI::WIN_OBJECT_VARS,       false, false, true, ScriptLuaGUI::DrawWinObjectVars(this));
+    ADD_WIN("Global variables",  GUIType::GLOBAL_VARS,      IconGUI::WIN_GLOBAL_VARS,       false, false, true, ScriptLuaGUI::DrawWinGlobalVars(this));
+    ADD_WIN("Keyboard/Mouse",    GUIType::KEYBOARD_MOUSE,   IconGUI::WIN_KEYBOARD_MOUSE,    false, false, true, DrawWinKeyboardMouse());
+    ADD_WIN("Images",            GUIType::IMAGES,           IconGUI::WIN_IMAGES,            false, false, true, DrawWinImages());
+    ADD_WIN("Projects",          GUIType::FILES_PROJECTS,   IconGUI::WIN_FILES_PROJECTS,    true,  false, true, FileSystemGUI::DrawProjectFiles(browserProjects));
+    ADD_WIN("Scenes",            GUIType::FILES_SCENES,     IconGUI::WIN_FILES_SCENES,      true,  false, true, FileSystemGUI::DrawSceneFiles(browserScenes));
+    ADD_WIN("Scripts",           GUIType::FILES_SCRIPTS,    IconGUI::WIN_FILES_SCRIPTS,     true,  false, true, FileSystemGUI::DrawScriptFiles(browserScripts));
+    ADD_WIN("Shaders",           GUIType::FILES_SHADERS,    IconGUI::WIN_FILES_SHADERS,     true,  false, true, FileSystemGUI::DrawShaderFiles(browserShaders));
+    ADD_WIN("Logging/Console",   GUIType::LOGGING,          IconGUI::WIN_LOGGING,           true,  false, true, widgetConsole->DrawWinLogging());
+    ADD_WIN("Lights DepthMaps",  GUIType::DEPTH_LIGHTS_MAPS,IconGUI::WIN_DEPTH_LIGHTS_MAPS, false, false, true, DrawWinDepthLightsMap());
+    ADD_WIN("Profiler",          GUIType::PROFILER,         IconGUI::WIN_PROFILER,          false, false, true, Profiler::get()->DrawWinProfiler());
+    ADD_WIN("Code editor",       GUIType::CODE_EDITOR,      IconGUI::WIN_CODE_EDITOR,       false, false, true, DrawWinCodeEditor());
+    ADD_WIN("Debug GUI Icons",   GUIType::DEBUG_ICONS,      IconGUI::WIN_DEBUG_ICONS,       false, false, true, IconsGUI::DrawWinDebugIcons(this));
+    ADD_WIN("Documentation",     GUIType::DOCUMENTATION,    IconGUI::WIN_DOCUMENTATION,     false, true,  true, GUIAddonDocumentation::DrawWinDocumentation(documentationTree, documentationEditor));
+    ADD_WIN("Scene Detail",      GUIType::SCENE_INFO,       IconGUI::SCENE_INFO,            false, true,  false, checker.DrawWinSceneInfo());
 
     RegisterDefaultLayoutWindows();
 }
@@ -104,7 +106,8 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::DEPTH_LIGHTS_MAPS, false },
         { GUIType::PROFILER, false },
         { GUIType::DEBUG_ICONS, false },
-        { GUIType::CODE_EDITOR, false}
+        { GUIType::CODE_EDITOR, false},
+        { GUIType::SCENE_INFO, false},
     };
 
     devsLayoutWindowsConfig =  {
@@ -125,7 +128,8 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::DEPTH_LIGHTS_MAPS, false },
         { GUIType::PROFILER, false },
         { GUIType::DEBUG_ICONS, false },
-        { GUIType::CODE_EDITOR, true}
+        { GUIType::CODE_EDITOR, true},
+        { GUIType::SCENE_INFO, false},
     };
 
     designLayoutWindowsConfig =  {
@@ -146,7 +150,8 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::DEPTH_LIGHTS_MAPS, false },
         { GUIType::PROFILER, false },
         { GUIType::DEBUG_ICONS, false },
-        { GUIType::CODE_EDITOR, false }
+        { GUIType::CODE_EDITOR, false },
+        { GUIType::SCENE_INFO, false},
     };
 }
 
@@ -215,7 +220,7 @@ void GUIManager::CloseRemovedEditableOpenFiles()
     }
 }
 
-void GUIManager::DrawWinCodeEditor()
+void GUIManager::DrawWinCodeEditor() const
 {
     if (ImGui::BeginTabBar("FileTabs")) {
         int i = 0;
@@ -240,7 +245,11 @@ void GUIManager::DrawRegisteredWindows()
 {
     for (auto& window : windows) {
         if (!window.isOpen) continue;
-        if (ImGui::Begin(window.label.c_str(), &window.isOpen, ImGuiWindowFlags_NoFocusOnAppearing)) {
+
+        ImGuiWindowFlags flags = ImGuiWindowFlags_NoFocusOnAppearing;
+        if (!window.isDockable) flags |= ImGuiWindowFlags_NoDocking;
+
+        if (ImGui::Begin(window.label.c_str(), &window.isOpen, flags)) {
             window.functionCallBack();
         }
         ImGui::End();
@@ -342,7 +351,7 @@ void GUIManager::DrawWinKeyboardMouse()
 
 void GUIManager::setObjectsViewerMode(GUIType::ViewerObjectsMode value)
 {
-    Logging::Message("[GUIManager] Change viewer mode to %d", (int) value);
+    LOG_MESSAGE("[GUIManager] Change viewer mode to %d", (int) value);
     viewerMode = value;
 }
 
@@ -352,19 +361,19 @@ void GUIManager::setLayoutToDefault(Config::ImGUIConfigs currentConfig)
 
     switch (currentConfig) {
         case Config::ImGUIConfigs::DEFAULT:
-            Logging::Message("[GUIManager] Reset current layout default to defaults windows...");
+            LOG_MESSAGE("[GUIManager] Reset current layout default to defaults windows...");
             selectedConfig = defaultLayoutWindowsConfig;
             break;
         case Config::ImGUIConfigs::CODING:
-            Logging::Message("[GUIManager] Reset current layout devs to default windows...");
+            LOG_MESSAGE("[GUIManager] Reset current layout devs to default windows...");
             selectedConfig = devsLayoutWindowsConfig;
             break;
         case Config::ImGUIConfigs::DESIGN:
-            Logging::Message("[GUIManager] Reset current layout design to defaults windows...");
+            LOG_MESSAGE("[GUIManager] Reset current layout design to defaults windows...");
             selectedConfig = designLayoutWindowsConfig;
             break;
         default:
-            Logging::Error("[GUIManager] Invalid config type!");
+            LOG_ERROR("[GUIManager] Invalid config type!");
             return;
     }
 
@@ -579,7 +588,7 @@ bool GUIManager::isEditableFileAlreadyOpen(const std::string &label) const
 
 void GUIManager::LoadDocumentation()
 {
-    Logging::Message("[GUI] Reading documentation structure...");
+    LOG_MESSAGE("[GUI] Reading documentation structure...");
     auto contentFile = Tools::ReadFile(Config::get()->CONFIG_FOLDER + Config::get()->DOCUMENTATION_CONFIG);
 
     documentationTree = cJSON_Parse(contentFile);

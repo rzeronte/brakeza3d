@@ -40,12 +40,12 @@ public:
         Components::get()->Render()->setSelectedObject(nullptr);
 
         SceneLoader::isClearing = false;
-        Logging::Message("[ThreadJobClearScene] Process END");
+        LOG_MESSAGE("[ThreadJobClearScene] Process END");
     }
 
     void fnCallback()
     {
-        Logging::Message("[ThreadJobClearScene] Callback END");
+        LOG_MESSAGE("[ThreadJobClearScene] Callback END");
     }
 };
 

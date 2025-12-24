@@ -11,7 +11,7 @@
 
 cJSON * Image2DSerializer::JsonByObject(Object3D *o)
 {
-    Logging::Message("[Image2DSerializer] JsonByObject: %d", o->getTypeObject());
+    LOG_MESSAGE("[Image2DSerializer] JsonByObject: %d", o->getTypeObject());
 
     auto image = dynamic_cast<Image2D*>(o);
 
@@ -40,7 +40,7 @@ Object3D * Image2DSerializer::ObjectByJson(cJSON *json)
 
 void Image2DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
-    Logging::Message("[Image2DSerializer] ApplyJsonToObject: %d", o->getTypeObject());
+    LOG_MESSAGE("[Image2DSerializer] ApplyJsonToObject: %d", o->getTypeObject());
 
     auto image = dynamic_cast<Image2D*>(o);
 

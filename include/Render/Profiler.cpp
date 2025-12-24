@@ -34,7 +34,7 @@ void Profiler::AddImage(Image *image)
         int surfaceMemory = surface->format->BytesPerPixel * surface->w * surface->h;
         memoryImageUsage += surfaceMemory;
     }
-    Logging::Message("[Profiler] Adding image '%s'", image->getFileName().c_str());
+    LOG_MESSAGE("[Profiler] Adding image '%s'", image->getFileName().c_str());
 }
 
 void Profiler::CaptureGUIMemoryUsage()
@@ -197,7 +197,7 @@ void Profiler::RemoveImage(const Image *image)
             int surfaceMemory = surface->format->BytesPerPixel * surface->w * surface->h;
             memoryImageUsage -= surfaceMemory;
         }
-        Logging::Message("[Profiler] Removing image '%s'", image->getFileName().c_str());
+        LOG_MESSAGE("[Profiler] Removing image '%s'", image->getFileName().c_str());
 
         images.erase(it);
     }

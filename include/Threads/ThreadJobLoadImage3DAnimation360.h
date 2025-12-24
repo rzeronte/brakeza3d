@@ -25,18 +25,18 @@ public:
     void fnProcess()
     {
         if (!image) {
-            Logging::Error("[ThreadJobLoadImage3DAnimation360] Pointer is null");
+            LOG_ERROR("[ThreadJobLoadImage3DAnimation360] Pointer is null");
             return;
         }
 
         Image3DAnimation360Serializer::ApplyCreateDirectionalAnimations(image, json);
-        Logging::Message("[ThreadJobLoadImage3DAnimation360] Process END");
+        LOG_MESSAGE("[ThreadJobLoadImage3DAnimation360] Process END");
     }
 
     void fnCallback()
     {
         if (!image) {
-            Logging::Error("[Pools] Mesh was destroyed before callback");
+            LOG_ERROR("[Pools] Mesh was destroyed before callback");
             return;
         }
 
@@ -44,7 +44,7 @@ public:
 
         Brakeza::get()->AddObject3D(image, image->getName());
 
-        Logging::Message("[ThreadJobLoadImage3DAnimation360] Callback END");
+        LOG_MESSAGE("[ThreadJobLoadImage3DAnimation360] Callback END");
     }
 
     ~ThreadJobLoadImage3DAnimation360()

@@ -1,5 +1,4 @@
 {
-	"name":	"Brakeza3D - Demo First Person <eduardo@brakeza.com>",
 	"gravity":	{
 		"x":	0,
 		"y":	-18.799999237060547,
@@ -30,6 +29,7 @@
 	"objects":	[{
 			"name":	"capsule",
 			"scale":	1,
+			"enabled":	true,
 			"position":	{
 				"x":	-47.59503173828125,
 				"y":	-13.776888847351074,
@@ -37,14 +37,21 @@
 			},
 			"rotation":	{
 				"x":	-69.800003051757813,
-				"y":	-6.5999999046325684,
+				"y":	-6.6000008583068848,
 				"z":	0
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
 				"mode":	2,
-				"shape":	0,
+				"shape":	1,
+				"friction":	1,
 				"mass":	100,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	1,
+				"angularDamping":	1,
+				"restitution":	0,
 				"colliderStatic":	false,
 				"simpleShapeSize":	{
 					"x":	1,
@@ -54,10 +61,22 @@
 				"kinematicCapsuleSize":	{
 					"x":	0.5,
 					"y":	1
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
 				}
 			},
 			"scripts":	[{
-					"name":	"../assets/scripts/Controllers/KinematicFPSController.lua",
+					"codeFile":	"../assets/scripts/Controllers/KinematicFPSController.lua",
+					"typesFile":	"../assets/scripts/Controllers/KinematicFPSController.json",
+					"name":	"KinematicFPSController",
 					"types":	[{
 							"name":	"force",
 							"type":	"float",
@@ -100,28 +119,36 @@
 							"value":	0.10000000149011612
 						}]
 				}],
-			"shaders":	[],
 			"model":	"../assets/models//Capsule.fbx",
 			"enableLights":	false,
-			"type":	"Mesh3D"
+			"shaders":	[],
+			"type":	2
 		}, {
 			"name":	"level",
 			"scale":	1,
+			"enabled":	true,
 			"position":	{
 				"x":	-49.247165679931641,
 				"y":	-17.058322906494141,
 				"z":	-32.142459869384766
 			},
 			"rotation":	{
-				"x":	-0,
-				"y":	0,
+				"x":	0,
+				"y":	-0,
 				"z":	0
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
 				"mode":	1,
-				"shape":	1,
+				"shape":	2,
+				"friction":	1,
 				"mass":	0,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	1,
+				"angularDamping":	1,
+				"restitution":	0,
 				"colliderStatic":	true,
 				"simpleShapeSize":	{
 					"x":	1,
@@ -131,25 +158,35 @@
 				"kinematicCapsuleSize":	{
 					"x":	0.5,
 					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
 				}
 			},
 			"scripts":	[],
-			"shaders":	[],
 			"model":	"../assets/models//DevLevel.fbx",
 			"enableLights":	false,
-			"type":	"Mesh3D"
+			"shaders":	[],
+			"type":	2
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-47.59503173828125,
-			"y":	-13.776888847351074,
-			"z":	-34.641162872314453
+			"x":	-87.581260681152344,
+			"y":	-6.7680540084838867,
+			"z":	-33.276447296142578
 		},
 		"rotation":	{
-			"x":	6.5999999046325684,
-			"y":	69.800003051757813,
+			"x":	17.024997711181641,
+			"y":	-274.82504272460938,
 			"z":	0
 		}
 	}

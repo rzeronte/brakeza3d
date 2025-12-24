@@ -31,7 +31,7 @@ Mesh3D::Mesh3D(std::string modelFile)
 
 Mesh3D::~Mesh3D()
 {
-    Logging::Message("[Mesh3D] Destroying '%s'...", getName().c_str());
+    LOG_MESSAGE("[Mesh3D] Destroying '%s'...", getName().c_str());
 
     for (auto &m : meshes) {
         for (auto triangle : m.modelTriangles) delete triangle;
@@ -55,10 +55,10 @@ Mesh3D::~Mesh3D()
 
 void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 {
-    Logging::Message("[Mesh3D] Loading geometry for %s...", fileName.c_str());
+    LOG_MESSAGE("[Mesh3D] Loading geometry for %s...", fileName.c_str());
 
     if (!Tools::FileExists(fileName.c_str())) {
-        Logging::Error("[Mesh3D] Error import 3D file not exist");
+        LOG_ERROR("[Mesh3D] Error import 3D file not exist");
         return;
     }
 
@@ -72,11 +72,11 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
     );
 
     if (!scene) {
-        Logging::Message("[Mesh3D] Error import 3D file for ASSIMP");
+        LOG_MESSAGE("[Mesh3D] Error import 3D file for ASSIMP");
         exit(-1);
     }
 
-    Logging::Message("[Mesh3D] Processing %d meshes in file...", scene->mNumMeshes);
+    LOG_MESSAGE("[Mesh3D] Processing %d meshes in file...", scene->mNumMeshes);
     meshes.resize(scene->mNumMeshes);
 
     AssimpInitMaterials(scene);
@@ -89,12 +89,12 @@ void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
 
 void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
 {
-    Logging::Message("[Mesh3D] Prepare to load %d materials", pScene->mNumMaterials);
+    LOG_MESSAGE("[Mesh3D] Prepare to load %d materials", pScene->mNumMaterials);
 
     for (unsigned int i = 0; i < pScene->mNumMaterials; i++) {
 
         aiMaterial *pMaterial = pScene->mMaterials[i];
-        Logging::Message("[Mesh3D] Loading material: %s", pMaterial->GetName().C_Str());
+        LOG_MESSAGE("[Mesh3D] Loading material: %s", pMaterial->GetName().C_Str());
 
         if (std::string(pMaterial->GetName().C_Str()) == AI_DEFAULT_MATERIAL_NAME) {
             continue;
@@ -111,12 +111,12 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
             }
 
             std::string FullPath = Config::get()->TEXTURES_FOLDER + base_filename;
-            Logging::Message("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), getName().c_str());
+            LOG_MESSAGE("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), getName().c_str());
 
             modelTextures.emplace_back(new Image(FullPath));
             modelSpecularTextures.push_back(new Image(FullPath));
         } else {
-            Logging::Message("[Mesh3D] ERROR: mMaterial[%s]: Not valid color", i);
+            LOG_MESSAGE("[Mesh3D] ERROR: mMaterial[%s]: Not valid color", i);
         }
         //}
     }
@@ -138,10 +138,10 @@ void Mesh3D::ProcessNodes(const aiScene *scene, const aiNode *node)
 
 void Mesh3D::LoadMesh(int meshId, const aiMesh *mesh)
 {
-    Logging::Message("[Mesh3D] Loading mesh: %d |  Vertices: %d", meshId, mesh->mNumVertices);
+    LOG_MESSAGE("[Mesh3D] Loading mesh: %d |  Vertices: %d", meshId, mesh->mNumVertices);
 
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
-        Logging::Message("Skip mesh non triangle: %s", mesh->mPrimitiveTypes);
+        LOG_MESSAGE("Skip mesh non triangle: %s", mesh->mPrimitiveTypes);
         return;
     }
 
@@ -254,7 +254,7 @@ void Mesh3D::postUpdate()
 
 void Mesh3D::BuildOctree(int depth)
 {
-    Logging::Message("Building Octree for %s", getName().c_str());
+    LOG_MESSAGE("Building Octree for %s", getName().c_str());
 
     UpdateBoundingBox();
 
@@ -276,7 +276,7 @@ void Mesh3D::DrawPropertiesGUI()
 
 void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
-    Logging::Message("[Mesh3D] makeRigidBodyFromTriangleMesh for %s", getName().c_str());
+    LOG_MESSAGE("[Mesh3D] makeRigidBodyFromTriangleMesh for %s", getName().c_str());
 
     setMass(mass);
 
@@ -309,7 +309,7 @@ void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *
 
 void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
-    Logging::Message("[Mesh3D] makeRigidBodyFromTriangleMeshFromConvexHull for %s", getName().c_str());
+    LOG_MESSAGE("[Mesh3D] makeRigidBodyFromTriangleMeshFromConvexHull for %s", getName().c_str());
 
     setMass(mass);
 
@@ -374,7 +374,7 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
 
 void Mesh3D::SetupGhostCollider(CollisionShape modeShape)
 {
-    Logging::Message("[Mesh3D] setupGhostCollider for %s", getName().c_str());
+    LOG_MESSAGE("[Mesh3D] setupGhostCollider for %s", getName().c_str());
 
     RemoveCollisionObject();
 
@@ -456,7 +456,7 @@ void Mesh3D::DrawImGuiCollisionShapeSelector()
                             break;
                         }
                         default: {
-                            Logging::Message("[Mesh3D] Error: Cannot process this shader type!");
+                            LOG_MESSAGE("[Mesh3D] Error: Cannot process this shader type!");
                         }
                     }
                 }
@@ -509,7 +509,7 @@ void Mesh3D::LoadShader(const std::string &jsonFilename)
         }
     }
 
-    Logging::Error("[Mesh3D] Error: Cannot apply shader to Mesh3D...");
+    LOG_ERROR("[Mesh3D] Error: Cannot apply shader to Mesh3D...");
 }
 
 void Mesh3D::RemoveShader(int index)
@@ -591,7 +591,7 @@ btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia) con
 
 btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia)
 {
-    Logging::Message("[Mesh3D] Creating btConvexHullShape for object '%s' | Nº meshes: %d", getName().c_str(), (int) meshes.size());
+    LOG_MESSAGE("[Mesh3D] Creating btConvexHullShape for object '%s' | Nº meshes: %d", getName().c_str(), (int) meshes.size());
     auto *convexHull = new btConvexHullShape();
     for (auto &m: meshes) {
         for (auto &modelTriangle: m.modelTriangles) {
@@ -613,7 +613,7 @@ btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia)
 
 void Mesh3D::FillOGLBuffers()
 {
-    Logging::Message("[Mesh3D] Filling buffers...");
+    LOG_MESSAGE("[Mesh3D] Filling buffers...");
     ComponentRender::FillOGLBuffers(meshes);
 }
 

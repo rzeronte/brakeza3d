@@ -83,37 +83,35 @@ public:
     explicit ScriptLUA(const std::string& name, const std::string& codeFile, const std::string &typesFile);
     ScriptLUA(const std::string& name, const std::string &codeFile, const std::string &typesFile, const cJSON *types);
 
-    bool existDataType(const char *name, const char *type) const;
-    void runEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg = std::nullopt) const;
-    void runGlobal(const std::string& func) const;
-    void addDataType(const char *name, const char *type, cJSON *value);
-    void parseTypesFromFileAttributes();
-    void removeDataType(const ScriptLUATypeData& data);
-    void updateFileTypes() const;
+    bool hasDataType(const char *name, const char *type) const;
+    void RunEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg = std::nullopt) const;
+    void RunGlobal(const std::string& func) const;
+    void AddDataType(const char *name, const char *type, cJSON *value);
+    void ProcessFileTypes();
+    void RemoveDataType(const ScriptLUATypeData& data);
+    void UpdateFileTypes() const;
     void ReloadEnvironment(sol::environment &environment);
-    void reloadScriptCode();
+    void ReloadScriptCode();
     void getCode(const std::string &script);
-    void initEnvironment(sol::environment &environment);
-
-    void updateScriptCodeWith(const std::string &content) const;
-    void ReloadGlobals() const;
-    void setPaused(bool value);
-    void drawImGuiProperties();
-    void setDataTypesFromJSON(const cJSON *typesJSON);
-    void addDataTypeEmpty(const char *name, const char *type);
-    [[nodiscard]] bool isPaused() const { return paused; }
-    [[nodiscard]] const std::vector<ScriptLUATypeData> &getDataTypes() const { return dataTypes; }
-    [[nodiscard]] cJSON *getTypesJSON() const;
-    [[nodiscard]] const std::string &getScriptFilename() const { return scriptFilename; }
-
+    void InitEnvironment(sol::environment &environment);
     void Reload();
+    void UpdateScriptCodeWith(const std::string &content) const;
+    void ReloadGlobals() const;
+    void DrawImGuiProperties();
+    void AddDataTypeEmpty(const char *name, const char *type);
+    [[nodiscard]] bool isPaused() const                                             { return paused; }
+    [[nodiscard]] const std::vector<ScriptLUATypeData> &getDataTypes() const        { return dataTypes; }
+    [[nodiscard]] const std::string &getScriptFilename() const                      { return scriptFilename; }
+    [[nodiscard]] const std::string &getTypesFile() const                           { return fileTypes; }
+    [[nodiscard]] std::string getName() const                                       { return name; }
+    [[nodiscard]] cJSON *getTypesJSON() const;
 
     static std::string dataTypesFileFor(std::string basicString);
-    static std::string removeFilenameExtension(std::string& filename);
-
-    [[nodiscard]] std::string getName() const { return name; }
+    static std::string RemoveFilenameExtension(std::string& filename);
 
     void setName(const std::string &name);
+    void setPaused(bool value);
+    void setDataTypesFromJSON(const cJSON *typesJSON);
 
     friend class ScriptLuaGUI;
 };

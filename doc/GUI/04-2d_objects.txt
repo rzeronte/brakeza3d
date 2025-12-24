@@ -1,18 +1,14 @@
 ========================================================================================================
-
 04 - 2D OBJECTS
-
 ========================================================================================================
 
-Brakeza3D permite incorporar a la pantalla elementos 2D tradicionales.
+Brakeza3D allows you to display traditional 2D elements on screen.
 
 ========================================================================================================
-
 ### 4.1) Image2D
-
 ========================================================================================================
 
-Es un objeto 2D. Dibuja una imagen en pantalla.
+Image2D is a 2D object that draws an image on screen:
 
     img = ObjectFactory.Image2D(
         "../assets/images/logo_small.png",              -- file
@@ -22,25 +18,23 @@ Es un objeto 2D. Dibuja una imagen en pantalla.
         350                                             -- height
     );
 
-Puedes redimensionar y/o cambiar posición un objeto Image2D cuando lo desees
+You can resize and/or reposition an Image2D object at any time:
 
     img:setScreenPosition(300, 300)                     -- change screen position
     img:setSize(100, 100)                               -- change size
 
-========================================================================================================
 
+========================================================================================================
 ### 4.2) Image2DAnimation
-
 ========================================================================================================
 
-Dibuja una animación en pantalla, es en esencia, una colección de Image2D.
+Draws an animation on screen. Essentially, it is a collection of Image2D objects.
 
-Está diseñado para cargar la animación desde formato **spritesheet**, es decir, una imagen con un grid,
-donde cada celda es una imagen de la animación. Es por este motivo que deberemos de indicar el **ancho**
-y **alto** de cada frame y el **núm. de frames** en la imagen, para que la función ajuste adecuadamente
-el sprite.
+It is designed to load animations from a spritesheet, i.e., an image grid where each cell is a frame of
+the animation. You must specify the frame width, frame height, and number of frames so the function can
+properly extract the sprite.
 
-Podrás configurar la velocidad (**fps**) a la que se muestra una animación.
+You can configure the display speed (fps) of the animation:
 
     animation = ObjectFactory.Image2DAnimation(
         "../assets/sprites/explosion_a.png",
@@ -52,23 +46,22 @@ Podrás configurar la velocidad (**fps**) a la que se muestra una animación.
         int fps                                         -- frames per second
     )
 
-========================================================================================================
-
-### 4.3) Textos en pantalla
 
 ========================================================================================================
+### 4.3) Text on Screen
+========================================================================================================
 
-Brakeza3D permite escribir textos en pantalla a través de tus scripts LUA mediante el
-objeto TextWriter.
+Brakeza3D allows writing text on screen from Lua scripts using the TextWriter object. You need a TTF font
+file, then create the object and start using it.
 
-Necesitarás disponer de una fuente, en formato TTF, crear el objeto y ya podrás utilizarlo.
+Methods include:
 
-Sus métodos son:
+    - writeTextTTF(x, y, width, height, text, Color) : Draw text at position (x,y) with size width * height
+    - writeTextTTFAutoSize(x, y, text, Color, sizeRatio) : Draw text at position (x,y), auto-calculating dimensions
+    - writeTextTTFMiddleScreen(text, Color, sizeRatio) : Draw text centered on the screen
+    - writeTTFCenterHorizontal(y, text, Color, sizeRatio) : Draw text centered horizontally
 
-- writeTextTTF(x, y, width, height, text, Color)      : Dibuja texto en la posición (x,y) de tamaño  width * height
-- writeTextTTFAutoSize(x, y, text, Color, sizeRatio)  : Dibuja texto en la posición (x,y), calculando dimensiones automáticamente
-- writeTextTTFMiddleScreen(text, Color, sizeRatio)    : Dibuja texto centrado en pantalla
-- writeTTFCenterHorizontal(y, text, Color, sizeRatio) : Dibuja texto centrado horizontalmente
+Example of use:
 
     function onStart()
         textWriter = ObjectFactory.TextWriter("../assets/fonts/Courier.ttf")
@@ -77,7 +70,7 @@ Sus métodos son:
     function onUpdate()
          textWriter:writeTTFCenterHorizontal(
             15,                                         -- screen ypos
-            "Centrado horizontal!",                     -- text
+            "Centered H!",                              -- text
             Color.new(0, 1, 0, 1),                      -- color
             1.5                                         -- ratio size
         )
@@ -87,7 +80,7 @@ Sus métodos son:
             100,                                        -- screen ypos
             100,                                        -- width
             100,                                        -- height
-            "Hola!",                                    -- text
+            "Hello",                                    -- text
             Color.new(1, 0, 0, 1)                       -- color
         )
     end

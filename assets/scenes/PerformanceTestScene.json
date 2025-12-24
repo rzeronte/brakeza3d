@@ -1,0 +1,77 @@
+{
+	"gravity":	{
+		"x":	0,
+		"y":	-9.8000001907348633,
+		"z":	0
+	},
+	"ads":	{
+		"direction":	{
+			"x":	0,
+			"y":	0,
+			"z":	1
+		},
+		"diffuse":	{
+			"x":	0.40000000596046448,
+			"y":	0.40000000596046448,
+			"z":	0.40000000596046448
+		},
+		"specular":	{
+			"x":	0.5,
+			"y":	0.5,
+			"z":	0.5
+		},
+		"ambient":	{
+			"x":	0.30000001192092896,
+			"y":	0.30000001192092896,
+			"z":	0.30000001192092896
+		}
+	},
+	"objects":	[],
+	"shaders":	[],
+	"scripts":	[{
+		"codeFile":	"../assets/scripts/Examples/GlobalScripts/AddObjectExample.lua",
+		"typesFile":	"../assets/scripts/Examples/GlobalScripts/AddObjectExample.json",
+		"name":	"Performance Test",
+		"types":	[{
+			"name":	"finished",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"frequency",
+			"type":	"int",
+			"value":	0
+		}, {
+			"name":	"spacing",
+			"type":	"int",
+			"value":	1
+		}, {
+			"name":	"gridRows",
+			"type":	"int",
+			"value":	100
+		}, {
+			"name":	"gridCols",
+			"type":	"int",
+			"value":	100
+		}, {
+			"name":	"position",
+			"type":	"Vertex3D",
+			"value":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			}
+		}]
+	}],
+	"camera":	{
+		"position":	{
+			"x":	-8.7190771102905273,
+			"y":	9.9605503082275391,
+			"z":	-0.42445632815361023
+		},
+		"rotation":	{
+			"x":	28.949985504150391,
+			"y":	-630.9747314453125,
+			"z":	0
+		}
+	}
+}

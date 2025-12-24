@@ -28,6 +28,7 @@
 	},
 	"objects":	[{
 			"name":	"capsule",
+			"enable": true,
 			"scale":	1,
 			"position":	{
 				"x":	-45.03961181640625,
@@ -76,9 +77,10 @@
 			"shaders":	[],
 			"model":	"../assets/models//Capsule.fbx",
 			"enableLights":	false,
-			"type":	"Mesh3D"
+			"type":	2
 		}, {
 			"name":	"character",
+			"enable": true,
 			"scale":	1,
 			"position":	{
 				"x":	-20.573619842529297,
@@ -124,7 +126,9 @@
 				}
 			},
 			"scripts":	[{
-					"name":	"../assets/scripts/Controllers/RigidBodyPlatformsController.lua",
+					"codeFile":	"../assets/scripts/Controllers/RigidBodyPlatformsController.lua",
+					"typesFile":	"../assets/scripts/Controllers/RigidBodyPlatformsController.json",
+					"name":	"RigidBodyPlatformsController.lua",
 					"types":	[{
 							"name":	"maxSpeed",
 							"type":	"float",
@@ -167,9 +171,11 @@
 			"model":	"../assets/animations//character.fbx",
 			"enableLights":	false,
 			"animationSpeed":	1,
-			"type":	"Mesh3DAnimation"
+			"indexCurrentAnimation":	9,
+		"type":	3
 		}, {
 			"name":	"floor",
+			"enable": true,
 			"scale":	1,
 			"position":	{
 				"x":	-41.310626983642578,
@@ -218,9 +224,10 @@
 			"shaders":	[],
 			"model":	"../assets/models//PlatformLevels/level01.fbx",
 			"enableLights":	false,
-			"type":	"Mesh3D"
+			"type":	2
 		}, {
 			"name":	"StartPosition",
+			"enable": true,
 			"scale":	1,
 			"position":	{
 				"x":	-46.686080932617188,
@@ -234,7 +241,9 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"name":	"../assets/scripts/Examples/Commons/StartPositionObject.lua",
+					"codeFile":	"../assets/scripts/Examples/Commons/StartPositionObject.lua",
+					"typesFile":	"../assets/scripts/Examples/Commons/StartPositionObject.json",
+					"name":	"StartPositionObject",
 					"types":	[{
 							"name":	"objectToMove",
 							"type":	"string",
@@ -249,11 +258,13 @@
 							}
 						}]
 				}],
-			"type":	"Object3D"
+			"type":	1
 		}],
 	"shaders":	[],
 	"scripts":	[{
-			"name":	"../assets/scripts/Examples/Commons/SideScrollCamera.lua"
+			"codeFile":	"../assets/scripts/Examples/Commons/SideScrollCamera.lua",
+			"typesFile": "../assets/scripts/Examples/Commons/SideScrollCamera.json",
+			"name":	"SideScrollCamera.lua"
 		}],
 	"camera":	{
 		"position":	{

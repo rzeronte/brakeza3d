@@ -206,7 +206,7 @@ void GUIAddonObjects3D::DrawItem(int i, Object3D* o, bool icon)
     if (ImGui::BeginDragDropTarget()) {
         auto mesh = dynamic_cast<Mesh3D*> (o);
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SCRIPT_ITEM)) {
-            Logging::Message("[GUI] Dropping script (%s) in %s", payload->Data, o->getName().c_str());
+            LOG_MESSAGE("[GUI] Dropping script (%s) in %s", payload->Data, o->getName().c_str());
             auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char *) payload->Data));
             o->AttachScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
         }
@@ -214,7 +214,7 @@ void GUIAddonObjects3D::DrawItem(int i, Object3D* o, bool icon)
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SHADER_ITEM)) {
                 auto* receivedData = (Config::DragDropCustomShaderData*)payload->Data;
                 auto fullPath = std::string(receivedData->folder) + receivedData->file;
-                Logging::Message("[GUI] Dropping shader file '%s' into Mesh3D...", fullPath.c_str());
+                LOG_MESSAGE("[GUI] Dropping shader file '%s' into Mesh3D...", fullPath.c_str());
                 mesh->LoadShader(fullPath);
             }
         }

@@ -30,7 +30,7 @@ void Component::setLabel(const std::string &newLabel)
 
 void Component::onStart()
 {
-    Logging::Message("[%s] Starting...", label.c_str());
+    LOG_MESSAGE("[%s] Starting...", label.c_str());
 }
 
 void Component::preUpdate()

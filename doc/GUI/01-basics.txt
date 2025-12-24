@@ -1,116 +1,101 @@
 ========================================================================================================
-
 01 - BASICS
+=======================================================================================================
+
+Brakeza3D is a simple and powerful cross-platform 2D/3D game engine designed for indie developers and small teams.
+It features a clean, component-based architecture, a built-in scene editor, and full Lua scripting support, allowing
+developers to prototype and build games quickly and efficiently.
+
+Brakeza3D includes modern rendering with extensible GLSL shaders, integrated physics, and support for both 2D and 3D
+workflows, making it a flexible foundation for a wide range of game projects.
+
 
 ========================================================================================================
-
-Brakeza3D es un sencillo motor 2D/3D multiplataforma para desarrollo de videojuegos.
-Incluye el motor de render, un scene graph, físicas de colisiones, scripting y una
-sencilla GUI.
-
-Aunque el motor está escrito en C++, en esta documentación aprenderemos a crear
-nuestros propios proyectos usando LUA como lenguaje de scripting.
-
+# 1.1) MAIN CONCEPTS
 ========================================================================================================
 
- 1.1) CONCEPTOS PRINCIPALES
+In Brakeza3D, four main concepts are defined:
+
+    - Projects
+    - Scripts
+    - Scenes
+    - Objects
+
 
 ========================================================================================================
-
-En Brakeza3D existen cuatro conceptos principales:
-
-* Proyectos
-* Scripts
-* Escenas
-* Objetos
-
+### 1.1.1) PROJECTS
 ========================================================================================================
 
-### 1.1.1) PROYECTOS
+A project is a container for scenes and scripts. It can be stored on disk as a JSON file and loaded at any time.
+
+The project is the highest-level entity in Brakeza3D. In general, you will have one project per application or
+game you are working on.
+
 
 ========================================================================================================
-
-Un proyecto es un contenedor de `escenas` y `scripts`. Se pueden almacenar en disco como
-fichero `JSON` y cargarlo en cualquier momento.
-
-El proyecto es la figura de mayor nivel en Brakeza3D. Por lo general tendrás un `Proyecto`,
-por cada aplicación en la que estés trabajando.
-
-========================================================================================================
-
 ### 1.1.2) SCRIPTS
-
 ========================================================================================================
 
-Ficheros de código fuente LUA para interactuar con Brakeza3D. Los scripts ejecutarán código
-que dará vida a tu aplicación.
+Scripts are Lua source code files used to interact with Brakeza3D. They execute the logic that brings your
+application to life.
 
-Pueden vincularse a `proyectos`, `escenas` u `objetos` para implementar la lógica deseada. Se
-pueden almacenar en disco como fichero `LUA` para cargarlo posteriormente. Puedes crear
-tantos scripts como necesites.
+Scripts can be attached to projects, scenes, or objects to implement the desired behavior. They are stored
+on disk as Lua files and can be loaded at any time. You can create as many scripts as needed.
 
-En la sección de scripting profundizaremos en este tipo de ficheros.
+In the scripting section, we will take a deeper look at this type of file.
 
-========================================================================================================
-
-### 1.1.3) ESCENAS
 
 ========================================================================================================
-
-Una escena es un contenedor de `OBJECTS` y `SCRIPTS`.
-
-El contenido de una escena está compuesto por:
-
-* Objetos
-* Scripts
-* Shaders
-* Posición/Rotación de cámara
-* Configuración de iluminación ADS
-
-Se pueden almacenar en disco y recuperar en cualquier momento.
-
+### 1.1.3) SCENES
 ========================================================================================================
 
-### 1.1.4) OBJETOS
+A scene is a container for objects and scripts. Scenes can be stored on disk and loaded at any time. The
+content of a scene includes:
+
+    - Objects
+    - Scripts
+    - Shaders
+    - Camera position and rotation
+    - ADS lighting configuration
+
 
 ========================================================================================================
-
-Entidades existentes en nuestro mundo 3D. En líneas generales, cualquier cosa susceptible
-de ser representada en pantalla será un objeto: *un modelo 3D*, *una luz*, *emisor de partículas*...
-
-Todos los objetos comparten las propiedades básicas de un elemento 3D ya sea nombre, posición, rotación, tamaño, pero cada tipo de objeto específico ampliará estas según su caso.
-
-Desde código podremos activar, mover, rotar, eliminar, escalar y muchas otras acciones sobre los objetos.
-
+### 1.1.4) OBJECTS
 ========================================================================================================
 
+Entities in the 3D world. In general, any element that can be displayed on screen is an object, for
+example: 3D models, lights, particle emitter...
+
+All objects share the basic properties of a 3D element, such as name, position, rotation, and scale. Each
+specific object type can extend these properties as needed.
+
+From code, we can activate, move, rotate, delete, scale, and perform many other actions on objects.
+
+
+========================================================================================================
 1.2) GUI
-
 ========================================================================================================
 
-Brakeza3D incorpora una sencilla GUI que nos facilitará algunas de las operaciones más tediosas.
+Brakeza3D includes a simple graphical user interface (GUI) that simplifies many of the more tedious tasks.
 
-Dispondrás de un sencillo editor de escena totalmente integrado con el sistema de scripting.
+It features a fully integrated scene editor connected to the scripting system.
 
-Si bien puedes utilizar tu editor de código favorito para manipular los scripts, la GUI será de gran utilidad
-para integrar tus scripts, manipular tus objetos, configurar la iluminación, guardar y cargar escenas, etc.
+While you can use your preferred code editor to work with scripts, the GUI is very useful for integrating
+scripts, manipulating objects, configuring lighting, and saving or loading scenes.
 
-========================================================================================================
-
-1.3) COMPONENTES
 
 ========================================================================================================
+1.3) COMPONENTS
+========================================================================================================
 
-Brakeza3D agrupa sus funcionalidades en `Componentes`. Cada componente representa un aspecto
-fundamental del núcleo de Brakeaz3D.
+Brakeza3D organizes its functionality into components. Each component represents a fundamental aspect of the engine core.
 
-* Window     : Gestiona la ventana del sistema operativo.
-* Scripting  : Gestiona el sistema de scripting.
-* Camera     : Gestiona la cámara.
-* Collisions : Gestiona el motor de físicas y colisiones.
-* Input      : Gestiona la entrada por teclado o gamepad.
-* Sound      : Gestiona la reproducción de sonidos.
-* Render     : Gestiona el render con OpenGL
+    - Window     : Manages the operating system window
+    - Scripting  : Manages the scripting system
+    - Camera     : Manages the camera
+    - Collisions : Manages the physics and collision engine
+    - Input      : Manages keyboard or gamepad input
+    - Sound      : Manages sound playback
+    - Render     : Manages rendering with OpenGL
 
-Podrás acceder a todos ellos mediante él ``manager de componentes`` desde tus scripts LUA. Trataremos cada uno en detalle
-en el futuro.
+You can access all of them through the component manager from your Lua scripts. Each component will be explained in detail later.

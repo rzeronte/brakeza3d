@@ -5,9 +5,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
+    add_compile_definitions(ENABLE_LOGGING_BUILD)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
     #set(CMAKE_CXX_FLAGS "-O3 -w")
-    set(CMAKE_CXX_FLAGS "-O0 -g")
+    add_compile_definitions(ENABLE_LOGGING_BUILD)
 endif()
 
 # SDL
@@ -306,6 +308,9 @@ add_executable(Brakeza3D
         src/GUI/TextEditor/EditableOpenShaderFile.cpp
         include/GUI/AddOns/GUIAddonDocumentation.h
         include/LUA/ObjectFactory.cpp
+        include/Threads/ThreadJobMakeRigidBody.h
+        include/Loaders/SceneChecker.cpp
+        include/Loaders/SceneChecker.h
 )
 
 target_link_libraries(Brakeza3D

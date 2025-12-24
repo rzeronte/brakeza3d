@@ -53,7 +53,7 @@ void Image3DAnimation360::CreateAnimationDirectional2D(TextureAnimatedDirectiona
 
 void Image3DAnimation360::CreateAnimationDirectional2D(const std::string& folder, int numFrames,int fps, bool zeroDirection, int maxTimes)
 {
-    Logging::Message("[Image3DAnimation360] Adding directional texture to SpriteDirectional(%s)...", folder.c_str(), getName().c_str());
+    LOG_MESSAGE("[Image3DAnimation360] Adding directional texture to SpriteDirectional(%s)...", folder.c_str(), getName().c_str());
 
     animations.push_back(new TextureAnimatedDirectional(folder, numFrames, fps, maxTimes));
 }

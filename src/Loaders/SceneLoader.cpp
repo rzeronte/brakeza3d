@@ -68,7 +68,7 @@ void SceneLoader::LoadSceneSettings(const cJSON *contentJSON)
 
     auto cameraPosition = ToolsJSON::getVertex3DByJSON(cameraPositionJSON);
     camera->setPosition(cameraPosition);
-    Logging::Message("[SceneLoader] Camera position set to (%f, %f, %f)", cameraPosition.x, cameraPosition.y, cameraPosition.z );
+    LOG_MESSAGE("[SceneLoader] Camera position set to (%f, %f, %f)", cameraPosition.x, cameraPosition.y, cameraPosition.z );
 
     auto pitch = static_cast<float>(cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "x")->valuedouble);
     auto yaw = static_cast<float>(cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "y")->valuedouble);
@@ -79,17 +79,17 @@ void SceneLoader::LoadSceneSettings(const cJSON *contentJSON)
     camera->getRoll() = roll;
     camera->setRotation(M3::getMatrixRotationForEulerAngles(pitch, yaw, roll));
 
-    Logging::Message("[SceneLoader] Camera rotation set to (%f, %f, %f)", camera->getPitch(), camera->getYaw(), camera->getRoll());
+    LOG_MESSAGE("[SceneLoader] Camera rotation set to (%f, %f, %f)", camera->getPitch(), camera->getYaw(), camera->getRoll());
 }
 
 void SceneLoader::LoadScene(const std::string& filename)
 {
     if (isLoading) {
-        Logging::Error("[SceneLoader] Cannot do loading or cleaning while another same operation is working... Ignoring : '%s'", filename.c_str());
+        LOG_ERROR("[SceneLoader] Cannot do loading or cleaning while another same operation is working... Ignoring : '%s'", filename.c_str());
         return;
     }
 
-    Logging::Message("[SceneLoader] Loading scene: '%s'", filename.c_str());
+    LOG_MESSAGE("[SceneLoader] Loading scene: '%s'", filename.c_str());
 
     isLoading = true;
     auto job = std::make_shared<ThreadJobReadFileScene>(filename);
@@ -102,6 +102,10 @@ void SceneLoader::SaveScene(const std::string &filename)
 
     auto render = Components::get()->Render()->getShaders()->shaderOGLRender;
 
+    auto screenshotPath = std::string(Config::get()->SCREENSHOTS_FOLDER + Brakeza::UniqueObjectLabel("scene") + ".png");
+    Components::get()->Render()->MakeScreenShot(screenshotPath);
+    cJSON_AddStringToObject(root, "screenshot", screenshotPath.c_str());
+    cJSON_AddItemToObject(root, "description", ToolsJSON::Vertex3DToJSON(Config::get()->gravity));
     cJSON_AddItemToObject(root, "gravity", ToolsJSON::Vertex3DToJSON(Config::get()->gravity));
 
     // illumination ADS
@@ -151,11 +155,11 @@ void SceneLoader::SaveScene(const std::string &filename)
 void SceneLoader::ClearScene()
 {
     if (isClearing) {
-        Logging::Error("[SceneLoader] Cannot do a load or cleaning while another same operation is working... Ignoring");
+        LOG_ERROR("[SceneLoader] Cannot do a load or cleaning while another same operation is working... Ignoring");
     }
 
     isClearing = true;
-    Logging::Message("[SceneLoader] ClearScene");
+    LOG_MESSAGE("[SceneLoader] ClearScene");
 
     Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobClearScene>());
 }
@@ -164,18 +168,18 @@ void SceneLoader::CreateScene(const std::string &filename)
 {
     auto sceneJsonFile = std::string(filename + ".json");
 
-    Logging::Message("Creating new scene file: %s", sceneJsonFile.c_str());
+    LOG_MESSAGE("Creating new scene file: %s", sceneJsonFile.c_str());
     SaveScene(sceneJsonFile);
 }
 
 void SceneLoader::RemoveScene(const std::string &filename)
 {
     if (!Tools::FileExists(filename.c_str())) {
-        Logging::Message("File %s not found", filename.c_str());
+        LOG_MESSAGE("File %s not found", filename.c_str());
         return;
     }
 
-    Logging::Message("Deleting scene: %s", filename.c_str());
+    LOG_MESSAGE("Deleting scene: %s", filename.c_str());
 
     Tools::RemoveFile(filename);
 }

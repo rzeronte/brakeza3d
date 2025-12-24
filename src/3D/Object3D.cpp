@@ -79,7 +79,7 @@ void Object3D::onUpdate()
 void Object3D::RunScripts()
 {
     for (auto script: scripts) {
-        script->runEnvironment(luaEnvironment, "onUpdate");
+        script->RunEnvironment(luaEnvironment, "onUpdate");
     }
 }
 
@@ -137,13 +137,13 @@ void Object3D::ReloadScriptsEnvironment()
 void Object3D::ReloadScriptsCode() const
 {
     for (auto &script : scripts) {
-        script->reloadScriptCode();
+        script->ReloadScriptCode();
     }
 }
 
 void Object3D::RemoveScript(const ScriptLUA *script)
 {
-    Logging::Message("Removing object script %s", script->scriptFilename.c_str());
+    LOG_MESSAGE("Removing object script %s", script->scriptFilename.c_str());
 
     for (auto it = scripts.begin(); it != scripts.end(); ++it) {
         if ((*it)->scriptFilename == script->scriptFilename) {
@@ -157,7 +157,7 @@ void Object3D::RemoveScript(const ScriptLUA *script)
 void Object3D::RunStartScripts()
 {
     for (auto &script : scripts) {
-        script->runEnvironment(luaEnvironment, "onStart");
+        script->RunEnvironment(luaEnvironment, "onStart");
     }
 }
 
@@ -179,7 +179,7 @@ glm::mat4 Object3D::getModelMatrix() const
 
 void Object3D::MakeKineticBody(float x, float y, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
-    Logging::Message("[Object3D] makeKineticBody for %s", getName().c_str());
+    LOG_MESSAGE("[Object3D] makeKineticBody for %s", getName().c_str());
 
     btTransform t;
     t.setIdentity();
@@ -221,7 +221,7 @@ void Object3D::MakeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
 
 void Object3D::MakeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
-    Logging::Message("[Object3D] makeSimpleRigidBody for %s", getName().c_str());
+    LOG_MESSAGE("[Object3D] makeSimpleRigidBody for %s", getName().c_str());
 
     setMass(mass);
 
@@ -300,7 +300,7 @@ void Object3D::Integrate()
 
 void Object3D::UpdateFromBullet()
 {
-    if (this->body == nullptr || this->mass <= 0) {
+    if (body == nullptr || mass <= 0) {
         return;
     }
 
@@ -319,7 +319,7 @@ void Object3D::ResolveCollision(CollisionInfo with)
 {
     if (Config::get()->LOG_COLLISION_OBJECTS) {
         auto *object = static_cast<Object3D *>(with.with);
-        Logging::Message("Object3D: Collision %s with %s",  getName().c_str(), object->getName().c_str());
+        LOG_MESSAGE("Object3D: Collision %s with %s",  getName().c_str(), object->getName().c_str());
     }
 
     if (Components::get()->Scripting()->getStateLUAScripts() == Config::LUA_PLAY) {
@@ -335,13 +335,13 @@ void Object3D::RunResolveCollisionScripts(CollisionInfo with)
     sol::object luaValue = sol::make_object(lua, with);
 
     for (auto script : scripts) {
-        script->runEnvironment(luaEnvironment, "onCollision", luaValue);
+        script->RunEnvironment(luaEnvironment, "onCollision", luaValue);
     }
 }
 
 void Object3D::SetupGhostCollider(CollisionShape mode)
 {
-    Logging::Message("[Collider] setupGhostCollider");
+    LOG_MESSAGE("[Collider] setupGhostCollider");
     RemoveCollisionObject();
 
     setCollisionMode(GHOST);

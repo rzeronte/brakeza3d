@@ -17,12 +17,12 @@ void Mesh3DAnimation::onUpdate()
     Object3D::onUpdate();
 
     if (!isEnabled() || isRemoved()) {
-        Logging::Message("Scene is disable or removed!");
+        LOG_MESSAGE("Scene is disable or removed!");
         return;
     }
 
     if (scene == nullptr) {
-        Logging::Message("Scene is null!");
+        LOG_MESSAGE("Scene is null!");
         return;
     }
 
@@ -158,10 +158,10 @@ float Mesh3DAnimation::getCurrentAnimationMaxTime() const
 
 bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
 {
-    Logging::Message("[AssimpLoadAnimation] Load animation from %s", filename.c_str());
+    LOG_MESSAGE("[AssimpLoadAnimation] Load animation from %s", filename.c_str());
 
     if (!Tools::FileExists(filename.c_str())) {
-        Logging::Message("[AssimpLoadAnimation] ERROR: File not found %s", filename.c_str());
+        LOG_MESSAGE("[AssimpLoadAnimation] ERROR: File not found %s", filename.c_str());
         return false;
     }
 
@@ -175,7 +175,7 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     );
 
     if (!scene) {
-        Logging::Message("Error import 3D file for ASSIMP");
+        LOG_MESSAGE("Error import 3D file for ASSIMP");
         exit(-1);
     }
 
@@ -185,6 +185,8 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
 
     AssimpInitMaterials(scene);
     ReadNodesFromRoot();
+
+    loaded = true;
 
     return true;
 }
@@ -221,11 +223,11 @@ void Mesh3DAnimation::ProcessNodeAnimation(aiNode *node)
 void Mesh3DAnimation::ProcessMeshAnimation(int i, aiMesh *mesh)
 {
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
-        Logging::Message("Skip mesh non triangle");
+        LOG_MESSAGE("Skip mesh non triangle");
         return;
     }
 
-    Logging::Message("[ProcessMeshAnimation] Loading mesh animation with materialIndex: %d", mesh->mMaterialIndex);
+    LOG_MESSAGE("[ProcessMeshAnimation] Loading mesh animation with materialIndex: %d", mesh->mMaterialIndex);
 
     std::vector<VertexBoneData> localMeshBones(mesh->mNumVertices);
     std::vector<Vertex3D> localMeshVertices(mesh->mNumVertices);
@@ -286,7 +288,7 @@ void Mesh3DAnimation::LoadMeshBones(int meshId, aiMesh *mesh, std::vector<Vertex
 
             boneInfo[BoneIndex].BoneOffset = mesh->mBones[i]->mOffsetMatrix;
             boneInfo[BoneIndex].name = mesh->mBones[i]->mName.C_Str();
-            Logging::Message("[Mesh3DAnimation] Loading BoneInfo %s", boneInfo[BoneIndex].name.c_str());
+            LOG_MESSAGE("[Mesh3DAnimation] Loading BoneInfo %s", boneInfo[BoneIndex].name.c_str());
         } else {
             BoneIndex = static_cast<int>(boneMapping[BoneName]);
         }
@@ -421,7 +423,7 @@ void Mesh3DAnimation::UpdateForBone(Vertex3D &V, int meshID, int vertexID)
         auto boneData = meshVerticesBoneData[meshID][vertexID];
         unsigned int boneId = boneData.IDs[n];
         float weight = boneData.Weights[n];
-        //Logging::Message("ID: %d, Weight: %f, vertexID: %d", boneId, weight, vertexID);
+        //LOG_MESSAGE("ID: %d, Weight: %f, vertexID: %d", boneId, weight, vertexID);
         BoneTransform += Tools::aiMat4toGLMMat4(boneInfo[boneId].FinalTransformation) * weight;
     }
 
@@ -692,7 +694,7 @@ void Mesh3DAnimation::SetMappingBoneColliderInfo(
     bool enabled,
     BoneCollisionShape shape = BONE_SPHERE
 ) {
-    Logging::Message("[Mesh3DAnimation] Setting Bone %d for %s to %d", boneId, mappingName.c_str(), enabled);
+    LOG_MESSAGE("[Mesh3DAnimation] Setting Bone %d for %s to %d", boneId, mappingName.c_str(), enabled);
 
     int im;
     auto mapping = getBonesMappingByName(mappingName, im);
@@ -833,7 +835,7 @@ void Mesh3DAnimation::removeBonesColliderMapping(const std::string& name)
 {
     int im;
     auto bm= getBonesMappingByName(name, im);
-    Logging::Message("Deleting bone collider mapping: %s, new boneColliderIndex: %d", name.c_str(), boneColliderIndex);
+    LOG_MESSAGE("Deleting bone collider mapping: %s, new boneColliderIndex: %d", name.c_str(), boneColliderIndex);
 
     if (bm == nullptr) return;
 
@@ -867,11 +869,11 @@ void Mesh3DAnimation::ResolveCollision(CollisionInfo with)
         auto *object = static_cast<Object3D *>(with.with);
 
         if (with.source == Config::CollisionSource::OBJECT_COLLIDER) {
-            Logging::Message("Mesh3DAnimation: Collision %s with object: %s",  getName().c_str(), object->getName().c_str());
+            LOG_MESSAGE("Mesh3DAnimation: Collision %s with object: %s",  getName().c_str(), object->getName().c_str());
         }
 
         if (with.source == Config::CollisionSource::BONE_COLLIDER) {
-            Logging::Message("Mesh3DAnimation: Collision %s Bone Collider: %s, with object: %s",  getName().c_str(), boneMappingColliders[with.boneIndexMapping].nameMapping.c_str(), object->getName().c_str());
+            LOG_MESSAGE("Mesh3DAnimation: Collision %s Bone Collider: %s, with object: %s",  getName().c_str(), boneMappingColliders[with.boneIndexMapping].nameMapping.c_str(), object->getName().c_str());
         }
     }
 

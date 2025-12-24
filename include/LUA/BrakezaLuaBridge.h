@@ -71,12 +71,12 @@ inline void LUAIntegration(sol::state &lua)
         "setPosition", &Object3D::setPosition,
         "setRotation", &Object3D::setRotation,
         "getTypeObject", &Object3D::getTypeObject,
-        "getLabel", &Object3D::getName,
+        "getName", &Object3D::getName,
         "getRotation", &Object3D::getRotation,
         "setBelongToScene", &Object3D::setBelongToScene,
         "setEnabled", &Object3D::setEnabled,
         "setRemoved", &Object3D::setRemoved,
-        "setLabel", &Object3D::setName,
+        "setName", &Object3D::setName,
         "getScale", &Object3D::getScale,
         "setScale", &Object3D::setScale,
         "getModelMatrix", &Object3D::getModelMatrix,
@@ -146,6 +146,18 @@ inline void LUAIntegration(sol::state &lua)
     sol::base_classes, sol::bases<Component>(),
         "isRayCollisionWith", &ComponentCollisions::isRayCollisionWith,
         "setEnableDebugMode", &ComponentCollisions::setEnableDebugMode
+    );
+
+    lua.new_usertype<ComponentWindow>("ComponentWindow",
+    sol::base_classes, sol::bases<Component>(),
+        "ToggleFullScreen", &ComponentWindow::ToggleFullScreen,
+        "getWidth", &ComponentWindow::getWidth,
+        "getHeight", &ComponentWindow::getHeight,
+        "getHeightRender", &ComponentWindow::getHeightRender,
+        "getWidthRender", &ComponentWindow::getWidthRender,
+        "isWindowMaximized", &ComponentWindow::isWindowMaximized,
+        "LoadCursorImage", &ComponentWindow::LoadCursorImage,
+        "setImGuiMouse", &ComponentWindow::setImGuiMouse
     );
 
     lua.new_usertype<ComponentRender>("ComponentRender",
@@ -368,7 +380,7 @@ inline void LUAIntegration(sol::state &lua)
                 [](const ScriptLUA& script) { return script.fileTypes; },
                 [](ScriptLUA& script, const std::string& newFileTypes) { script.fileTypes = newFileTypes; }
         ),
-        "UpdateFileTypes", &ScriptLUA::updateFileTypes,
+        "UpdateFileTypes", &ScriptLUA::UpdateFileTypes,
         "getCode", &ScriptLUA::getCode,
         "dataTypesFileFor", &ScriptLUA::dataTypesFileFor
     );

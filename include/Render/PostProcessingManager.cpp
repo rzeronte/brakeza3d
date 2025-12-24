@@ -25,7 +25,7 @@ PostProcessingManager::~PostProcessingManager()
     cleanup();
 }
 
-void PostProcessingManager::initialize(int width, int height)
+void PostProcessingManager::Initialize(int width, int height)
 {
     currentWidth = width;
     currentHeight = height;

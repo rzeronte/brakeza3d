@@ -7,6 +7,7 @@
 #include "../../../include/GUI/AddOns/GUIAddonProjectSetup.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/Objects/ScriptLuaGUI.h"
+#include "../../../include/GUI/Objects/ShadersGUI.h"
 #include "../../../include/Render/Drawable.h"
 
 void GUIAddonProjectSetup::TreeSceneScripts()
@@ -27,7 +28,7 @@ void GUIAddonProjectSetup::TreeSceneScripts()
     bool isOpenSceneScripts = ImGui::TreeNodeEx(labelSceneScripts.c_str(), ImGuiTreeNodeFlags_FramePadding);
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SCRIPT_ITEM)) {
-            Logging::Message("Dropping script (%s) in global space", payload->Data);
+            LOG_MESSAGE("Dropping script (%s) in global space", payload->Data);
             auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char *) payload->Data));
             scripting->addSceneLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
             shouldOpen = true;
@@ -62,7 +63,7 @@ void GUIAddonProjectSetup::TreeProjectScripts()
     bool isOpenGlobalScripts = ImGui::TreeNodeEx(labelGlobalScripts.c_str(), ImGuiTreeNodeFlags_FramePadding);
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SCRIPT_ITEM)) {
-            Logging::Message("Dropping script '%s' in global space", payload->Data);
+            LOG_MESSAGE("Dropping script '%s' in global space", payload->Data);
             auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char *) payload->Data));
             scripting->addProjectLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
             shouldOpen = true;
@@ -100,7 +101,7 @@ void GUIAddonProjectSetup::TreeSceneShaders()
             ImGui::SetNextItemOpen(true, ImGuiCond_Always);
             Config::DragDropCustomShaderData* receivedData = (Config::DragDropCustomShaderData*)payload->Data;
             auto fullPath = std::string(receivedData->folder) + receivedData->file;
-            Logging::Message("Dropping shader file '%s' in global space...", fullPath.c_str());
+            LOG_MESSAGE("Dropping shader file '%s' in global space...", fullPath.c_str());
             render->LoadShaderIntoScene(fullPath);
             shouldOpen = true;
         }
@@ -158,7 +159,7 @@ void GUIAddonProjectSetup::DrawProjectScripts()
             bool isOpenCurrentScript = ImGui::TreeNodeEx(currentScript->getName().c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
             ImGui::PopStyleVar(2);
             if (isOpenCurrentScript) {
-                currentScript->drawImGuiProperties();
+                currentScript->DrawImGuiProperties();
                 ImGui::TreePop();
             }
 
@@ -214,7 +215,7 @@ void GUIAddonProjectSetup::DrawSceneScripts()
             bool isOpenCurrentScript = ImGui::TreeNodeEx(currentScript->getName().c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
             ImGui::PopStyleVar(2);
             if (isOpenCurrentScript) {
-                currentScript->drawImGuiProperties();
+                currentScript->DrawImGuiProperties();
                 ImGui::TreePop();
             }
 
@@ -230,6 +231,10 @@ void GUIAddonProjectSetup::DrawSceneScripts()
                 false,
                 [&] { currentScript->setPaused(!currentScript->isPaused()); }
             );
+            ImGui::SameLine();
+            GUI::DrawButtonTransparent("Edit script", IconGUI::SCRIPT_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+                ScriptLuaGUI::LoadScriptDialog(currentScript->getTypesFile());
+            });
             ImGui::SameLine();
             GUI::DrawButtonTransparent("Reload scene script", IconGUI::SCRIPT_RELOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
                 currentScript->Reload();
@@ -286,6 +291,11 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
                 false,
                 [&] { s->setEnabled(!s->isEnabled());}
             );
+            ImGui::SameLine();
+            GUI::DrawButtonTransparent("Edit shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICON_LOCKS, false, [&] {
+                auto jsonFilename = s->getLabel() + ".json";
+                ShadersGUI::LoadDialogShader(s->getTypesFile());
+            });
             ImGui::SameLine();
             GUI::DrawButtonTransparent("Reload script", IconGUI::LUA_RELOAD, GUIType::Sizes::ICON_LOCKS, false, [&] {
                 s->Reload();

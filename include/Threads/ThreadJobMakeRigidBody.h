@@ -27,10 +27,10 @@ public:
     void fnProcess()
     {
         while (!mesh->isLoaded()) {
-            Logging::Message("[Mesh3D] SetupRigidBodyCollider waiting...");
+            LOG_MESSAGE("[Mesh3D] SetupRigidBodyCollider waiting...");
         }
 
-        Logging::Message("[Mesh3D] SetupRigidBodyCollider in object '%s' - CollisionShape: %d", mesh->getName().c_str(), shape);
+        LOG_MESSAGE("[Mesh3D] SetupRigidBodyCollider in object '%s' - CollisionShape: %d", mesh->getName().c_str(), shape);
         mesh->RemoveCollisionObject();
 
         mesh->setCollisionShape(shape);
@@ -62,12 +62,12 @@ public:
             }
         }
 
-        Logging::Message("[ThreadJobMakeRigidBody] Process END");
+        LOG_MESSAGE("[ThreadJobMakeRigidBody] Process END");
     }
 
     void fnCallback()
     {
-        Logging::Message("[ThreadJobMakeRigidBody] Callback END");
+        LOG_MESSAGE("[ThreadJobMakeRigidBody] Callback END");
     }
 };
 #endif //BRAKEZA3D_THREADJOBMAKERIGIDBODY_H

@@ -91,7 +91,7 @@ void ScriptLuaGUI::DrawWinObjectScripts()
             bool isOpenCurrentScript = ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
             ImGui::PopStyleVar(2);
             if (isOpenCurrentScript) {
-                currentScript->drawImGuiProperties();
+                currentScript->DrawImGuiProperties();
                 ImGui::TreePop();
             }
 
@@ -298,13 +298,13 @@ void ScriptLuaGUI::DrawScriptConfigHeader(EditableOpenScriptFile &file)
 {
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
-    ImGui::Text(std::string("File: " + file.getShader()->getScriptFilename()).c_str());
+    ImGui::Text(std::string("File: " + file.getScript()->getScriptFilename()).c_str());
 }
 
 void ScriptLuaGUI::DrawScriptConfigEditName(EditableOpenScriptFile &file)
 {
     ImGui::Separator();
-    auto shader= file.getShader();
+    auto shader= file.getScript();
 
     auto label = shader->getName();
     static char name[256];
@@ -338,7 +338,7 @@ void ScriptLuaGUI::DrawScriptConfigVarCreator(EditableOpenScriptFile &file)
         false,
         [&] {
             if (localVarName[0] != '\0') {
-                file.getShader()->addDataTypeEmpty(localVarName, itemsCStr[selectedItem]);
+                file.getScript()->AddDataTypeEmpty(localVarName, itemsCStr[selectedItem]);
             }
         }
     );
@@ -348,7 +348,7 @@ void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
 {
     ImGui::SeparatorText("Script variables");
 
-    auto shader = file.getShader();
+    auto shader = file.getScript();
 
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("ScriptProperties", 4, flags)) {
@@ -376,8 +376,8 @@ void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
 
             ImGui::TableSetColumnIndex(3);
             GUI::DrawButton("Delete script variable", IconGUI::SCRIPT_REMOVE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-                file.getShader()->removeDataType(*type);
-                file.getShader()->updateFileTypes();
+                file.getScript()->RemoveDataType(*type);
+                file.getScript()->UpdateFileTypes();
             });
             ImGui::PopID();
         }
@@ -387,7 +387,7 @@ void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
 
 void ScriptLuaGUI::DrawScriptConfigEmptyStateWarning(EditableOpenScriptFile &file)
 {
-    if (file.getShader()->dataTypes.empty()) {
+    if (file.getScript()->dataTypes.empty()) {
         Drawable::WarningMessage("No variables defined");
     }
 }
@@ -395,7 +395,7 @@ void ScriptLuaGUI::DrawScriptConfigEmptyStateWarning(EditableOpenScriptFile &fil
 void ScriptLuaGUI::DrawScriptConfigActionButtons(EditableOpenScriptFile &file)
 {
     GUI::DrawButton("Save script to disk", IconGUI::SCRIPT_SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, true, [&] {
-        file.getShader()->updateFileTypes();
+        file.getScript()->UpdateFileTypes();
     });
 }
 

@@ -135,7 +135,7 @@ public:
     static void FillOGLBuffers(std::vector<Mesh3DData> &meshes);
     static void DeleteRemovedObjects();
     static void onUpdateSceneObjects();
-    static void MakeScreenShot();
+    static void MakeScreenShot(std::string filename = "");
     static ShaderOGLCustom* CreateCustomShaderFromDisk(const ShaderOGLMetaInfo &info, Mesh3D* o);
 };
 

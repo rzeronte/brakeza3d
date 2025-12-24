@@ -473,6 +473,49 @@
 			"file": "../doc/GUI/14-assets_folder.txt",
 			"line": 0,
 			"children": []
+		},
+		{
+			"name": "15) Components",
+			"file": "../doc/GUI/15-components.txt",
+			"line": 0,
+			"children": [
+				{
+					"name": "15.1) Window",
+					"file": "../doc/GUI/15-components.txt",
+					"line": 0,
+					"children": []
+				},{
+					"name": "15.1) Window",
+					"file": "../doc/GUI/15-components.txt",
+					"line": 0,
+					"children": []
+				},{
+					"name": "15.2) Render",
+					"file": "../doc/GUI/15-components.txt",
+					"line": 0,
+					"children": []
+				},{
+					"name": "15.3) Input",
+					"file": "../doc/GUI/15-components.txt",
+					"line": 0,
+					"children": []
+				},{
+					"name": "15.4) Camera",
+					"file": "../doc/GUI/15-components.txt",
+					"line": 0,
+					"children": []
+				},{
+					"name": "15.5) Collisions",
+					"file": "../doc/GUI/15-components.txt",
+					"line": 0,
+					"children": []
+				},{
+					"name": "15.6) Scripting",
+					"file": "../doc/GUI/15-components.txt",
+					"line": 0,
+					"children": []
+				}
+			]
 		}
 	]
 }

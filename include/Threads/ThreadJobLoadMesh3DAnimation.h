@@ -25,7 +25,7 @@ public:
     void fnProcess()
     {
         if (!mesh) {
-            Logging::Error("[ThreadJobLoadMesh3DAnimation] Mesh pointer is null");
+            LOG_ERROR("[ThreadJobLoadMesh3DAnimation] Mesh pointer is null");
             return;
         }
 
@@ -34,13 +34,13 @@ public:
         Mesh3DSerializer::ApplyShadersCreation(mesh, json);
         Mesh3DSerializer::ApplyShadersBackground(mesh);
 
-        Logging::Message("[ThreadJobLoadMesh3DAnimation] Process END");
+        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] Process END");
     }
 
     void fnCallback()
     {
         if (!mesh) {
-            Logging::Error("[ThreadJobLoadMesh3DAnimation] Pointer was destroyed before callback");
+            LOG_ERROR("[ThreadJobLoadMesh3DAnimation] Pointer was destroyed before callback");
             return;
         }
 
@@ -53,7 +53,7 @@ public:
 
         Brakeza::get()->AddObject3D(mesh, mesh->getName());
 
-        Logging::Message("[ThreadJobLoadMesh3DAnimation] Callback END");
+        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] Callback END");
     }
 
     ~ThreadJobLoadMesh3DAnimation() {

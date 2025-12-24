@@ -288,15 +288,15 @@ bool ComponentInput::isAnyControllerButtonPressed() const
 void ComponentInput::initJoystick()
 {
     if ( SDL_NumJoysticks() < 1 ) {
-        Logging::Message("[Input] WARNING: No gamepad controller connected." );
+        LOG_MESSAGE("[Input] WARNING: No gamepad controller connected." );
     } else {
         gameController = SDL_GameControllerOpen( 0 );
 
         if (gameController == nullptr) {
-            Logging::Error("[Input] Unable to open game pad controller: %s", SDL_GetError());
+            LOG_ERROR("[Input] Unable to open game pad controller: %s", SDL_GetError());
             return;
         }
-        Logging::Message("[Input] Game Pad Controller Name: %s\n", SDL_JoystickNameForIndex(0));
+        LOG_MESSAGE("[Input] Game Pad Controller Name: %s\n", SDL_JoystickNameForIndex(0));
     }
 }
 
@@ -390,7 +390,7 @@ void ComponentInput::handleToggleKeys(SDL_Event *event)
 
         if (keyboard[SDL_SCANCODE_F11]) {
             Config::get()->FULLSCREEN = !Config::get()->FULLSCREEN;
-            Components::get()->Window()->toggleFullScreen();
+            Components::get()->Window()->ToggleFullScreen();
         }
     }
 }
@@ -456,7 +456,7 @@ void ComponentInput::handleCheckPadConnection(SDL_Event *pEvent)
 
     if (pEvent->type == SDL_CONTROLLERDEVICEREMOVED ) {
         if (gameController != nullptr) {
-            Logging::Message("Removing Controller Device...");
+            LOG_MESSAGE("Removing Controller Device...");
             SDL_GameControllerClose(gameController);
             gameController = nullptr;
         }

@@ -44,24 +44,24 @@ public:
     static cJSON * GetJsonByObject(Object3D *object)
     {
         if (!object) {
-            Logging::Message("[JSONSerializerRegistry GetJsonByObject] Error: objeto es null");
+            LOG_MESSAGE("[JSONSerializerRegistry GetJsonByObject] Error: objeto es null");
             return nullptr;
         }
 
         auto type = object->getTypeObject();
-        Logging::Message("[JSONSerializerRegistry GetJsonByObject] %d", type);
+        LOG_MESSAGE("[JSONSerializerRegistry GetJsonByObject] %d", type);
 
         auto serializer = instance().getSerializer(type);
 
         if (!serializer) {
-            Logging::Message("[JSONSerializerRegistry GetJsonByObject] No serializer para tipo %s", type);
+            LOG_MESSAGE("[JSONSerializerRegistry GetJsonByObject] No serializer para tipo %s", type);
             return nullptr;
         }
 
         cJSON* json = serializer->JsonByObject(object);
 
         if (!json) {
-            Logging::Message("[JSONSerializerRegistry GetJsonByObject] JsonByObject devolvió null para %s", type);
+            LOG_MESSAGE("[JSONSerializerRegistry GetJsonByObject] JsonByObject devolvió null para %s", type);
         }
 
         return json;

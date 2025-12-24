@@ -205,7 +205,7 @@ ParticleEmitter* ObjectFactory::CreateParticleEmitter(const Vertex3D &position, 
 TextWriter* ObjectFactory::CreateTextWriter(const std::string& fontFile)
 {
     if (!Tools::FileExists(fontFile.c_str())) {
-        Logging::Message("[TextWriter] Cannot open font file: %s", fontFile.c_str());
+        LOG_MESSAGE("[TextWriter] Cannot open font file: %s", fontFile.c_str());
 
         return nullptr;
     }

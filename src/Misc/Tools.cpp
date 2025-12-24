@@ -64,14 +64,12 @@ bool Tools::FileExists(const char *name)
         return true;
     }
 
-    Logging::Message("File %s not found", name);
-
     return false;
 }
 
 char *Tools::ReadFile(const std::string &name)
 {
-    Logging::Message("[Tools] Reading file: %s", name.c_str());
+    LOG_MESSAGE("[Tools] Reading file: %s", name.c_str());
 
     FILE *fp;
 
@@ -87,7 +85,7 @@ char *Tools::ReadFile(const std::string &name)
     fseek(fp, 0, SEEK_SET);
 
     if (source_size <= 0) {
-        Logging::Message("File %s is empty or has an error!", name.c_str());
+        LOG_MESSAGE("File %s is empty or has an error!", name.c_str());
         fclose(fp);
         return nullptr;
     }
@@ -95,13 +93,13 @@ char *Tools::ReadFile(const std::string &name)
     char *file_str = (char *)malloc(source_size + 1);
 
     if (!file_str) {
-        Logging::Message("Memory allocation failed!");
+        LOG_MESSAGE("Memory allocation failed!");
         fclose(fp);
         return nullptr;
     }
 
     if (fread(file_str, 1, source_size, fp) != source_size) {
-        Logging::Message("[Tools] Error reading file %s!", name.c_str());
+        LOG_MESSAGE("[Tools] Error reading file %s!", name.c_str());
         fclose(fp);
         free(file_str);
         return nullptr;
@@ -238,12 +236,12 @@ std::string Tools::getFilenameWithoutExtension(const std::string& filename)
 
 void Tools::WriteToFile(const std::string& fileName, const char *content)
 {
-    Logging::Message("Writing to file %s!", fileName.c_str());
+    LOG_MESSAGE("Writing to file %s!", fileName.c_str());
 
     std::ofstream file(fileName, std::ios::trunc | std::ios::binary); // Abrir en modo binario
 
     if (!file.is_open()) {
-        Logging::Message("File %s can't be loaded!", fileName.c_str());
+        LOG_MESSAGE("File %s can't be loaded!", fileName.c_str());
         return;
     }
 
@@ -258,7 +256,7 @@ void Tools::WriteToFile(const std::string& fileName, const char *content)
     file.close();
 
     if (file.fail()) {
-        Logging::Message("Error writing to file %s", fileName.c_str());
+        LOG_MESSAGE("Error writing to file %s", fileName.c_str());
     }
 }
 
@@ -412,7 +410,7 @@ std::string Tools::GoBackFromFolder(const std::string& folder)
 bool Tools::RemoveFile(const std::string& filePath)
 {
     if (std::remove(filePath.c_str()) == 0) {
-        Logging::Message("[Tools] Removing file '%s'...", filePath.c_str());
+        LOG_MESSAGE("[Tools] Removing file '%s'...", filePath.c_str());
         return true;
     }
     return false;

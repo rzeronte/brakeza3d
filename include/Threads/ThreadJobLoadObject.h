@@ -21,12 +21,12 @@ public:
     void fnProcess()
     {
         object = JSONSerializerRegistry::instance().deserialize(json);
-        Logging::Message("[ThreadJobLoadObject] Process END");
+        LOG_MESSAGE("[ThreadJobLoadObject] Process END");
     }
 
     void fnCallback()
     {
-        Logging::Message("[ThreadJobLoadObject] Callback END");
+        LOG_MESSAGE("[ThreadJobLoadObject] Callback END");
     }
 
     ~ThreadJobLoadObject()

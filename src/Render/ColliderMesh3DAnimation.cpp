@@ -73,10 +73,10 @@ float AssimpAnimationService::getCurrentAnimationMaxTime() const
 
 bool AssimpAnimationService::AssimpLoadAnimation(const std::string &filename, std::vector<Mesh3DData> &meshes)
 {
-    Logging::Message("[AssimpAnimationService] Load animation from %s", filename.c_str());
+    LOG_MESSAGE("[AssimpAnimationService] Load animation from %s", filename.c_str());
 
     if (!Tools::FileExists(filename.c_str())) {
-        Logging::Message("[AssimpLoadAnimation] ERROR: File not found %s", filename.c_str());
+        LOG_MESSAGE("[AssimpLoadAnimation] ERROR: File not found %s", filename.c_str());
         return false;
     }
 
@@ -90,7 +90,7 @@ bool AssimpAnimationService::AssimpLoadAnimation(const std::string &filename, st
     );
 
     if (!scene) {
-        Logging::Message("Error import 3D file for ASSIMP");
+        LOG_MESSAGE("Error import 3D file for ASSIMP");
         exit(-1);
     }
 
@@ -135,11 +135,11 @@ void AssimpAnimationService::ProcessNodeAnimation(aiNode *node, std::vector<Mesh
 void AssimpAnimationService::ProcessMeshAnimation(int i, aiMesh *mesh, std::vector<Mesh3DData> &meshes)
 {
     if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
-        Logging::Message("Skip mesh non triangle");
+        LOG_MESSAGE("Skip mesh non triangle");
         return;
     }
 
-    Logging::Message("[AssimpAnimationService] Loading mesh animation with materialIndex: %d", mesh->mMaterialIndex);
+    LOG_MESSAGE("[AssimpAnimationService] Loading mesh animation with materialIndex: %d", mesh->mMaterialIndex);
 
     std::vector<VertexBoneData> localMeshBones(mesh->mNumVertices);
     std::vector<Vertex3D> localMeshVertices(mesh->mNumVertices);
@@ -333,7 +333,7 @@ void AssimpAnimationService::updateForBone(Vertex3D &V, int meshID, int vertexID
         auto boneData = meshVerticesBoneData[meshID][vertexID];
         int boneId = boneData.IDs[n];
         float weight = boneData.Weights[n];
-        //Logging::Message("ID: %d, Weight: %f, vertexID: %d", boneId, weight, vertexID);
+        //LOG_MESSAGE("ID: %d, Weight: %f, vertexID: %d", boneId, weight, vertexID);
         BoneTransform += Tools::aiMat4toGLMMat4(boneInfo[boneId].FinalTransformation) * weight;
     }
 

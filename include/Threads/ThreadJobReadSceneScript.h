@@ -32,19 +32,19 @@ public:
                 auto dataTypes = cJSON_GetObjectItemCaseSensitive(currentScript, "types");
 
                 if (!Tools::FileExists(codeFile.c_str()) || !Tools::FileExists(typesFile.c_str())) {
-                    Logging::Error("[ThreadJobReadSceneScript] Error loading script files '%s' and '%s'", codeFile.c_str(), typesFile.c_str());
+                    LOG_ERROR("[ThreadJobReadSceneScript] Error loading script files '%s' and '%s'", codeFile.c_str(), typesFile.c_str());
                     return;
                 }
 
                 Components::get()->Scripting()->addSceneLUAScript(new ScriptLUA(name, codeFile, typesFile, dataTypes));
             }
         }
-        Logging::Message("[ThreadJobReadSceneScript] Process END");
+        LOG_MESSAGE("[ThreadJobReadSceneScript] Process END");
     }
 
     void fnCallback()
     {
-        Logging::Message("[ThreadJobReadSceneScript] Callback END");
+        LOG_MESSAGE("[ThreadJobReadSceneScript] Callback END");
     }
 
     ~ThreadJobReadSceneScript()

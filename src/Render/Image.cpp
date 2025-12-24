@@ -38,9 +38,10 @@ void Image::LoadSDLSurface()
     surface = IMG_Load(fileName.c_str());
 }
 
-void Image::setImage(const std::string &filename) {
+void Image::setImage(const std::string &filename)
+{
     if (!Tools::FileExists(filename.c_str())) {
-        Logging::Error("[Image] Error loading file '%s'", filename.c_str());
+        LOG_ERROR("[Image] Error loading file '%s'", filename.c_str());
         return;
     }
 

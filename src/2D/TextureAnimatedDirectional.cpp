@@ -15,7 +15,7 @@ TextureAnimatedDirectional::TextureAnimatedDirectional(std::string file, int new
 void TextureAnimatedDirectional::LoadImages()
 {
     if (baseFolder.empty()) {
-        Logging::Error("[TextureAnimatedDirectional] Texture directional animated is empty!");
+        LOG_ERROR("[TextureAnimatedDirectional] Texture directional animated is empty!");
         return;
     }
 
@@ -30,7 +30,7 @@ void TextureAnimatedDirectional::LoadImages()
     }
 
     if (!ready) {
-        Logging::Error("[TextureAnimatedDirectional] Texture directional animated is empty!");
+        LOG_ERROR("[TextureAnimatedDirectional] Texture directional animated is empty!");
         return;
     }
 

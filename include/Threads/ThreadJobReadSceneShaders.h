@@ -36,7 +36,7 @@ public:
             shader->PrepareBackground();
             Components::get()->Render()->AddShaderToScene(shader);
         }
-        Logging::Message("[ThreadJobReadFileScene] Process END");
+        LOG_MESSAGE("[ThreadJobReadFileScene] Process END");
     }
 
     void fnCallback()
@@ -45,7 +45,7 @@ public:
         for (auto &s : shaders) {
             s->PrepareMainThread();
         }
-        Logging::Message("[ThreadJobReadFileScene] Callback END");
+        LOG_MESSAGE("[ThreadJobReadFileScene] Callback END");
     }
 
 

@@ -9,8 +9,6 @@
 
 class ComponentCollisions : public Component
 {
-    std::mutex mtx;
-
     btDefaultCollisionConfiguration *collisionConfiguration = nullptr;
     btCollisionDispatcher *dispatcher = nullptr;
     btBroadphaseInterface *overlappingPairCache = nullptr;
@@ -39,7 +37,7 @@ public:
     void AddVector3DIntoCache(const Vector3D &v);
     void DrawDebugCache() const;
     void setEnabled(bool enabled) override;
-    void setEnableDebugMode(bool value);
+    void setEnableDebugMode(bool value) const;
     [[nodiscard]] btDiscreteDynamicsWorld *getDynamicsWorld() const;
     static void demoProjectile(int type);
 };
