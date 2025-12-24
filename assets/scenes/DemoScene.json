@@ -1,5 +1,5 @@
 {
-	"screenshot":	"../assets/screenshots/scene_62527.png",
+	"screenshot":	"../assets/screenshots/scene_14596.png",
 	"description":	{
 		"x":	0,
 		"y":	-9.8000001907348633,
@@ -114,7 +114,7 @@
 			"rotation":	{
 				"x":	-72.918426513671875,
 				"y":	-12.292998313903809,
-				"z":	-145.31367492675781
+				"z":	-145.31777954101563
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -151,7 +151,7 @@
 			"rotation":	{
 				"x":	0,
 				"y":	-0,
-				"z":	146.5745849609375
+				"z":	146.57862854003906
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -248,7 +248,7 @@
 			"rotation":	{
 				"x":	90,
 				"y":	-5.0089556680177338e-06,
-				"z":	4.9722111725714058e-06
+				"z":	4.9714481065166183e-06
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -268,7 +268,7 @@
 			"rotation":	{
 				"x":	41.436470031738281,
 				"y":	10.452261924743652,
-				"z":	-141.25567626953125
+				"z":	-141.25997924804688
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -288,7 +288,7 @@
 			"rotation":	{
 				"x":	-166.75724792480469,
 				"y":	-26.889076232910156,
-				"z":	165.75384521484375
+				"z":	165.75595092773438
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],

@@ -36,27 +36,64 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(code): code editor improvements">
-      <change afterPath="$PROJECT_DIR$/assets/scripts/test.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/scripts/test.lua" afterDir="false" />
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="fix(filesystem): fix creating and removing scripts/shaders">
+      <change afterPath="$PROJECT_DIR$/assets/scripts/Demos/Colliders/RainCubesDemo.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Brakeza.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Brakeza.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scenes/DemoScene.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scenes/DemoScene.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scenes/RainCubesScene.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scenes/RainCubesScene.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/Collideres/RainCubesDemo/RainCubesDemo.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/Collideres/RainCubesDemo/RainCubesDemo.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/Colliders/RainCubesDemo.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/Commons/CustomShaderUpdate/CustomShaderUpdate.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/Commons/CustomShaderUpdate.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/Commons/CustomShaderUpdate/CustomShaderUpdate.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/Commons/CustomShaderUpdate.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/Commons/MouseIconChangeDemo/MouseIconChangeDemo.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/Commons/MouseIconChangeDemo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/Commons/MouseIconChangeDemo/MouseIconChangeDemo.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/Commons/MouseIconChangeDemo.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/Commons/SideScrollCamera/SideScrollCamera.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/Commons/SideScrollCamera.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/Commons/SideScrollCamera/SideScrollCamera.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/Commons/SideScrollCamera.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/Commons/StartPositionObject/StartPositionObject.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/Commons/StartPositionObject.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/Commons/StartPositionObject/StartPositionObject.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/Commons/StartPositionObject.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/Commons/WriteTextToScreen/WriteTextToScreen.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/Commons/WriteTextToScreen.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/Commons/WriteTextToScreen/WriteTextToScreen.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/Commons/WriteTextToScreen.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/AddObjectDemo/AddObjectDemo.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/AddObjectDemo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/AddObjectDemo/AddObjectDemo.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/AddObjectDemo.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/CycleDayNightDemo/CycleDayNightDemo.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/CycleDayNightDemo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/CycleDayNightDemo/CycleDayNightDemo.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/CycleDayNightDemo.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/FindObjectDemo/FindObjectDemo.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/FindObjectDemo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/FindObjectDemo/FindObjectDemo.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/FindObjectDemo.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/GlobalVariableDemo/GlobalVariableDemo.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/GlobalVariableDemo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/GlobalVariableDemo/GlobalVariableDemo.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/GlobalVariableDemo.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/KeyboardControllerDemo/KeyboardControlDemo.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/KeyboardControlDemo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/KeyboardControllerDemo/KeyboardControlDemo.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/KeyboardControlDemo.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/LoadSceneDemo/LoadSceneDemo.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/LoadSceneDemo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/LoadSceneDemo/LoadSceneDemo.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/LoadSceneDemo.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/MenuDemo/MenuDemo.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/MenuDemo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/GlobalScripts/MenuDemo/MenuDemol.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/GlobalScripts/MenuDemol.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/HelloWorld.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/HelloWorld.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/HelloWorld.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/HelloWorld.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/AddShaderToObject/AddShaderToObject.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/AddShaderToObject.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/AddShaderToObject/AddShaderToObject.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/AddShaderToObject.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/BehaviorCircle/BehaviorCircle.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/BehaviorCircle.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/BehaviorCircle/BehaviorCircle.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/BehaviorCircle.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/MovingObject/MovingObject.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/MovingObject.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/MovingObject/MovingObject.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/MovingObject.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/ObjectAccessLocalVariable/ObjectAccessLocalVariableExample.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/ObjectAccessLocalVariableExample.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/ObjectAccessLocalVariable/ObjectAccessLocalVariableExample.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/ObjectAccessLocalVariableExample.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/ObjectAccessOtherObjectLocalVariable/ObjectAccessOtherObjectLocalVariableExample.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/ObjectAccessOtherObjectLocalVariableExample.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/ObjectAccessOtherObjectLocalVariable/ObjectAccessOtherObjectLocalVariableExample.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/ObjectAccessOtherObjectLocalVariableExample.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/ObjectCollisionDemo/ObjectCollisionExample.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/ObjectCollisionExample.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/ObjectCollisionDemo/ObjectCollisionExample.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/ObjectCollisionExample.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/PathFindingDemo/PathFindingExample.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/PathFindingExample.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/PathFindingDemo/PathFindingExample.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/PathFindingExample.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/RigidBodyApplyImpulseDemo/RigidBodyApplyImpulseDemo.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/RigidBodyApplyImpulseDemo.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Examples/ObjectScripts/RigidBodyApplyImpulseDemo/RigidBodyApplyImpulseDemo.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/ObjectScripts/RigidBodyApplyImpulseDemo.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/ImGuiCoding.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiCoding.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/Image2DGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/Image2DGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/Image3DGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/Image3DGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/ParticleEmitterGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/ParticleEmitterGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustom.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustom.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/Object3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Object3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Brakeza.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brakeza.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonObjects3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonObjects3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Loaders/SceneChecker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/SceneChecker.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/ScriptLUA.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/ScriptLUA.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustom.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustom.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomPostprocessing.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomPostprocessing.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,6 +105,13 @@
     <option name="clangWarnings" value="-Wno-unused-variable,-Wno-infinite-recursion,-Wno-array-bounds,-Werror=implicit-function-declaration,-Wno-shadow-field-in-constructor-modified,-Wno-shadow-ivar,-Wuninitialized,-Wunused-label,-Wunused-lambda-capture,-Wno-shadow" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CMakeLists.txt" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -91,11 +135,6 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
@@ -123,54 +162,54 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;CMake Application.Brakeza3D.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.west.config.association.type.startup.service&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;cf.advertisement.text.has.clang-format&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Eduardo/CLionProjects/BrakezaGitHub/assets/scripts/Examples/ObjectScripts&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "CMake Application.Brakeza3D.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "RunOnceActivity.west.config.association.type.startup.service": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.advertisement.text.has.clang-format": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/Eduardo/CLionProjects/BrakezaGitHub/assets/scripts/Examples/Commons/ChangeMouseIcon",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "structure.view.defaults.are.configured": "true",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Examples\ObjectScripts" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Examples\Commons\ChangeMouseIcon" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Examples\Commons" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Examples\GlobalScripts" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scenes" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\doc\GUI" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\doc" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\config" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\GUI\TextEditor" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\LUA" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\Render" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\Render" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Demos\Colliders" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Demos\ObjectScripts" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Demos\Commons" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Demos\GlobalScripts" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Controllers\RigidBodyPlatform" />
     </key>
   </component>
   <component name="RunManager">
@@ -180,11 +219,6 @@
       </method>
     </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -461,7 +495,19 @@
       <workItem from="1765796833539" duration="42000" />
       <workItem from="1765797071871" duration="41939000" />
       <workItem from="1765888906982" duration="35629000" />
-      <workItem from="1765929665596" duration="65522000" />
+      <workItem from="1765929665596" duration="73243000" />
+      <workItem from="1766140850003" duration="18560000" />
+      <workItem from="1766181003623" duration="50668000" />
+      <workItem from="1766268497003" duration="26062000" />
+      <workItem from="1766329634872" duration="1575000" />
+      <workItem from="1766331249012" duration="26207000" />
+      <workItem from="1766362456627" duration="12234000" />
+      <workItem from="1766406089833" duration="15432000" />
+      <workItem from="1766439665155" duration="24886000" />
+      <workItem from="1766503882113" duration="9974000" />
+      <workItem from="1766518529508" duration="13107000" />
+      <workItem from="1766533299969" duration="17774000" />
+      <workItem from="1766581796201" duration="9252000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -511,110 +557,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00076" summary="feat(bullet): Kinematic character improved">
-      <option name="closed" value="true" />
-      <created>1737728432957</created>
-      <option name="number" value="00076" />
-      <option name="presentableId" value="LOCAL-00076" />
-      <option name="project" value="LOCAL" />
-      <updated>1737728432959</updated>
-    </task>
-    <task id="LOCAL-00077" summary="feat(bullet): Kinematic character improved">
-      <option name="closed" value="true" />
-      <created>1737728448299</created>
-      <option name="number" value="00077" />
-      <option name="presentableId" value="LOCAL-00077" />
-      <option name="project" value="LOCAL" />
-      <updated>1737728448299</updated>
-    </task>
-    <task id="LOCAL-00078" summary="feat(bullet): Kinematic character improved">
-      <option name="closed" value="true" />
-      <created>1737781642476</created>
-      <option name="number" value="00078" />
-      <option name="presentableId" value="LOCAL-00078" />
-      <option name="project" value="LOCAL" />
-      <updated>1737781642476</updated>
-    </task>
-    <task id="LOCAL-00079" summary="feat(doc): added screenshots">
-      <option name="closed" value="true" />
-      <created>1737818426481</created>
-      <option name="number" value="00079" />
-      <option name="presentableId" value="LOCAL-00079" />
-      <option name="project" value="LOCAL" />
-      <updated>1737818426482</updated>
-    </task>
-    <task id="LOCAL-00080" summary="feat(controllers): improved controllers">
-      <option name="closed" value="true" />
-      <created>1737863437499</created>
-      <option name="number" value="00080" />
-      <option name="presentableId" value="LOCAL-00080" />
-      <option name="project" value="LOCAL" />
-      <updated>1737863437499</updated>
-    </task>
-    <task id="LOCAL-00081" summary="refact(gui): Extract GUI Widgets from GUIManager">
-      <option name="closed" value="true" />
-      <created>1764168821656</created>
-      <option name="number" value="00081" />
-      <option name="presentableId" value="LOCAL-00081" />
-      <option name="project" value="LOCAL" />
-      <updated>1764168821657</updated>
-    </task>
-    <task id="LOCAL-00082" summary="fix(serializers): fix saving to disk">
-      <option name="closed" value="true" />
-      <created>1764193706982</created>
-      <option name="number" value="00082" />
-      <option name="presentableId" value="LOCAL-00082" />
-      <option name="project" value="LOCAL" />
-      <updated>1764193706983</updated>
-    </task>
-    <task id="LOCAL-00083" summary="fix(serializers): fix saving to disk">
-      <option name="closed" value="true" />
-      <created>1764193743281</created>
-      <option name="number" value="00083" />
-      <option name="presentableId" value="LOCAL-00083" />
-      <option name="project" value="LOCAL" />
-      <updated>1764193743281</updated>
-    </task>
-    <task id="LOCAL-00084" summary="fix(serializers): fix saving to disk">
-      <option name="closed" value="true" />
-      <created>1764201766659</created>
-      <option name="number" value="00084" />
-      <option name="presentableId" value="LOCAL-00084" />
-      <option name="project" value="LOCAL" />
-      <updated>1764201766660</updated>
-    </task>
-    <task id="LOCAL-00085" summary="fix(image3d): depth pass broken afte refact">
-      <option name="closed" value="true" />
-      <created>1764204816306</created>
-      <option name="number" value="00085" />
-      <option name="presentableId" value="LOCAL-00085" />
-      <option name="project" value="LOCAL" />
-      <updated>1764204816306</updated>
-    </task>
-    <task id="LOCAL-00086" summary="feat(debug): Added debug cone for spotlight">
-      <option name="closed" value="true" />
-      <created>1764340116940</created>
-      <option name="number" value="00086" />
-      <option name="presentableId" value="LOCAL-00086" />
-      <option name="project" value="LOCAL" />
-      <updated>1764340116941</updated>
-    </task>
-    <task id="LOCAL-00087" summary="feat(debug): Added debug cone for spotlight">
-      <option name="closed" value="true" />
-      <created>1764356838668</created>
-      <option name="number" value="00087" />
-      <option name="presentableId" value="LOCAL-00087" />
-      <option name="project" value="LOCAL" />
-      <updated>1764356838668</updated>
-    </task>
-    <task id="LOCAL-00088" summary="feat(gui): Added icons / cone debug improvements">
-      <option name="closed" value="true" />
-      <created>1764373391300</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1764373391304</updated>
     </task>
     <task id="LOCAL-00089" summary="feat(gui): order menu items in his right category">
       <option name="closed" value="true" />
@@ -848,7 +790,111 @@
       <option name="project" value="LOCAL" />
       <updated>1766099347092</updated>
     </task>
-    <option name="localTasksCounter" value="118" />
+    <task id="LOCAL-00118" summary="feat(code): code editor improvements">
+      <option name="closed" value="true" />
+      <created>1766108152026</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1766108152026</updated>
+    </task>
+    <task id="LOCAL-00119" summary="feat(code): code editor improvements">
+      <option name="closed" value="true" />
+      <created>1766115164923</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1766115164923</updated>
+    </task>
+    <task id="LOCAL-00120" summary="feat(code): code editor improvements">
+      <option name="closed" value="true" />
+      <created>1766147088413</created>
+      <option name="number" value="00120" />
+      <option name="presentableId" value="LOCAL-00120" />
+      <option name="project" value="LOCAL" />
+      <updated>1766147088413</updated>
+    </task>
+    <task id="LOCAL-00121" summary="feat(code): code editor improvements">
+      <option name="closed" value="true" />
+      <created>1766204092594</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1766204092597</updated>
+    </task>
+    <task id="LOCAL-00122" summary="feat(code): code editor improvements">
+      <option name="closed" value="true" />
+      <created>1766205206679</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1766205206679</updated>
+    </task>
+    <task id="LOCAL-00123" summary="feat(code): code editor improvements">
+      <option name="closed" value="true" />
+      <created>1766274086516</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1766274086516</updated>
+    </task>
+    <task id="LOCAL-00124" summary="feat(code): code editor improvements">
+      <option name="closed" value="true" />
+      <created>1766281926490</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1766281926490</updated>
+    </task>
+    <task id="LOCAL-00125" summary="feat(code): code editor improvements">
+      <option name="closed" value="true" />
+      <created>1766281975805</created>
+      <option name="number" value="00125" />
+      <option name="presentableId" value="LOCAL-00125" />
+      <option name="project" value="LOCAL" />
+      <updated>1766281975805</updated>
+    </task>
+    <task id="LOCAL-00126" summary="fix(examples): recover examples after big renaming functions">
+      <option name="closed" value="true" />
+      <created>1766287528931</created>
+      <option name="number" value="00126" />
+      <option name="presentableId" value="LOCAL-00126" />
+      <option name="project" value="LOCAL" />
+      <updated>1766287528936</updated>
+    </task>
+    <task id="LOCAL-00127" summary="fix(colliders): fix crashing when debug physics / ui improvements">
+      <option name="closed" value="true" />
+      <created>1766332660520</created>
+      <option name="number" value="00127" />
+      <option name="presentableId" value="LOCAL-00127" />
+      <option name="project" value="LOCAL" />
+      <updated>1766332660523</updated>
+    </task>
+    <task id="LOCAL-00128" summary="fix(filesystem): fix creating and removing scripts/shaders">
+      <option name="closed" value="true" />
+      <created>1766341969418</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1766341969418</updated>
+    </task>
+    <task id="LOCAL-00129" summary="fix(filesystem): fix creating and removing scripts/shaders">
+      <option name="closed" value="true" />
+      <created>1766372570969</created>
+      <option name="number" value="00129" />
+      <option name="presentableId" value="LOCAL-00129" />
+      <option name="project" value="LOCAL" />
+      <updated>1766372570969</updated>
+    </task>
+    <task id="LOCAL-00130" summary="fix(filesystem): fix creating and removing scripts/shaders">
+      <option name="closed" value="true" />
+      <created>1766550483908</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1766550483910</updated>
+    </task>
+    <option name="localTasksCounter" value="131" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -882,9 +928,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(gui): Visible widget objects icons to setup" />
-    <MESSAGE value="feat(gui): Update objects selector" />
-    <MESSAGE value="feat(assets): Update assets base" />
     <MESSAGE value="feat(kinematic): Added kinematic body to UI" />
     <MESSAGE value="feat(bullet): Improved performance PhysicsDebugDraw" />
     <MESSAGE value="feat(bullet): Kinematic character improved" />
@@ -907,7 +950,10 @@
     <MESSAGE value="feat(threads): wip threads queue" />
     <MESSAGE value="fix(picking): Fix colorpicking / feat take screenshots" />
     <MESSAGE value="feat(code): code editor improvements" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(code): code editor improvements" />
+    <MESSAGE value="fix(examples): recover examples after big renaming functions" />
+    <MESSAGE value="fix(colliders): fix crashing when debug physics / ui improvements" />
+    <MESSAGE value="fix(filesystem): fix creating and removing scripts/shaders" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(filesystem): fix creating and removing scripts/shaders" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -999,6 +1045,11 @@
           <url>file://$PROJECT_DIR$/include/Render/JSONSerializerRegistry.h</url>
           <line>61</line>
           <option name="timeStamp" value="114" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/GUI/GUI.h</url>
+          <line>113</line>
+          <option name="timeStamp" value="115" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

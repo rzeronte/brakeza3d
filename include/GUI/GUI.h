@@ -319,7 +319,8 @@ namespace GUIType
     X(WIN_DOCUMENTATION, 0, 0) \
     X(SCENE_INFO, 0, 0) \
     X(CHECKED, 0, 0) \
-    X(UNCHECKED, 0, 0)
+    X(UNCHECKED, 0, 0) \
+    X(FILE_BROKEN, 0, 0)
 
 // Icons Objects
 namespace IconObject {

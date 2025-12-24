@@ -169,19 +169,16 @@ void FileSystemGUI::DrawProjectCreatorDialog(GUIType::BrowserCache &browser, std
     }
 }
 
-void FileSystemGUI::DrawSceneCreator()
-{
-}
-
 void FileSystemGUI::DrawScenesTable(GUIType::BrowserCache &browser)
 {
     auto files = browser.folderFiles;
     std::sort(files.begin(), files.end());
 
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
-    if (ImGui::BeginTable("ScenesFolderTable", 4, flags)) {
+    if (ImGui::BeginTable("ScenesFolderTable", 5, flags)) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Information", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Load", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableSetupColumn("Edit", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableSetupColumn("Remove", ImGuiTableColumnFlags_WidthFixed);
         for (int i = 0; i < files.size(); i++) {
