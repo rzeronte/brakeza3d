@@ -162,7 +162,6 @@ void SceneChecker::DrawShadersTable() const
             } else {
                 ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", o.path.c_str());
             }
-            ImGui::Text("%s", o.path.c_str());
             ImGui::TableSetColumnIndex(2);
             ImGui::Image(FileSystemGUI::Icon(fileExists ? IconGUI::CHECKED : IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
         }

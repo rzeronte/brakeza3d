@@ -76,16 +76,71 @@ From code, we can activate, move, rotate, delete, scale, and perform many other 
 1.2) GUI
 ========================================================================================================
 
-Brakeza3D includes a simple graphical user interface (GUI) that simplifies many of the more tedious tasks.
+The engine provides an integrated 3D development environment focused on real-time editing and iteration.
+The GUI is designed to centralize scene creation, asset management, scripting, rendering, and debugging
+within a single workflow.
 
-It features a fully integrated scene editor connected to the scripting system.
-
-While you can use your preferred code editor to work with scripts, the GUI is very useful for integrating
-scripts, manipulating objects, configuring lighting, and saving or loading scenes.
+Its main goal is to allow developers and designers to build, modify, and test scenes interactively,
+reducing iteration time while maintaining full control over rendering, logic, and performance.
 
 
 ========================================================================================================
-1.3) COMPONENTS
+## 1.2.1) Scene Management
+========================================================================================================
+
+Scenes can be created, loaded, and executed directly from the GUI. The interface allows users to quickly
+switch between scenes and control their execution state, making it easy to test changes in real time.
+
+This system supports a smooth workflow where scene structure, behavior, and visual elements can be adjusted
+without leaving the editor.
+
+
+========================================================================================================
+## 1.2.2) Scene Objects
+========================================================================================================
+
+Objects can be added to the scene through the GUI and organized hierarchically. Each object exposes
+editable properties such as transformation, materials, and other engine-specific parameters.
+
+Changes applied to objects are immediately reflected in the scene, enabling precise placement and fast
+visual feedback during development.
+
+
+========================================================================================================
+## 1.2.3) Scripting System
+========================================================================================================
+
+The engine supports scripting using LUA, which can be attached to individual objects or entire scenes.
+Scripts can be assigned via drag-and-drop directly from the GUI.
+
+During execution, script variables can be monitored and modified in real time, allowing for efficient
+debugging and behavior tuning without recompilation.
+
+
+========================================================================================================
+## 1.2.4) Shaders System
+========================================================================================================
+
+Shaders can be assigned to objects and materials directly from the editor. The GUI includes tools for
+editing shaders written in GLSL, enabling developers to experiment with visual effects inside the engine.
+
+Shader parameters are exposed and adjustable at runtime, making it easy to fine-tune the visual appearance
+of objects and lighting.
+
+
+========================================================================================================
+## 1.2.5) Lighting
+========================================================================================================
+
+The lighting system allows users to create and configure different types of lights within the scene. All
+lighting properties can be edited through the GUI, with immediate visual feedback.
+
+This enables artists and designers to iterate quickly on scene mood and atmosphere while maintaining technical
+control over lighting behavior.
+
+
+========================================================================================================
+1.3) Components
 ========================================================================================================
 
 Brakeza3D organizes its functionality into components. Each component represents a fundamental aspect of the engine core.

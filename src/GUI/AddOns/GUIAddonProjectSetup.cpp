@@ -297,12 +297,12 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
                 ShadersGUI::LoadDialogShader(s->getTypesFile());
             });
             ImGui::SameLine();
-            GUI::DrawButtonTransparent("Reload script", IconGUI::LUA_RELOAD, GUIType::Sizes::ICON_LOCKS, false, [&] {
+            GUI::DrawButtonTransparent("Reload shader", IconGUI::LUA_RELOAD, GUIType::Sizes::ICON_LOCKS, false, [&] {
                 s->Reload();
             });
             ImGui::SameLine();
-            GUI::DrawButtonTransparent("Remove script", IconGUI::LUA_REMOVE, GUIType::Sizes::ICON_LOCKS, false, [&] {
-                render->RemoveSceneShaderByIndex(i);
+            GUI::DrawButtonTransparent("Remove shader from scene", IconGUI::LUA_REMOVE, GUIType::Sizes::ICON_LOCKS, false, [&] {
+                render->RemoveSceneShaderByIndex((int) i);
             });
 
             ImGui::PopStyleVar(2);

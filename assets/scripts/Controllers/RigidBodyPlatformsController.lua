@@ -203,7 +203,7 @@ function setState(state)
         this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
         this:setPosition(this:getPosition() + Vertex3D.new(0, -0.3, 0))
         this:UpdateShapeCollider();
-        this:enableSimulationCollider()
+        this:EnableSimulationCollider()
     elseif (currentState == State.CROUCHED or currentState == State.CROUCHING) and (state ~= State.CROUCHED and (state ~= State.CROUCHING)) then
         print("Standup!")
         this:disableSimulationCollider()
@@ -211,7 +211,7 @@ function setState(state)
         this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
         this:setPosition(this:getPosition() + Vertex3D.new(0, 0.2, 0))
         this:UpdateShapeCollider();
-        this:enableSimulationCollider()
+        this:EnableSimulationCollider()
     end
 
     currentState = state
@@ -313,7 +313,7 @@ function handleHanglingToToUp()
         this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
         this:setPosition(destinyHanglingToUp)
         this:UpdateShapeCollider();
-        this:enableSimulationCollider()
+        this:EnableSimulationCollider()
     end
 end
 
@@ -332,7 +332,7 @@ function handleFloorMovement(input, dt)
         if not is.isCrouched then
             if input:isCharFirstEventDown(Keys.JUMP) then
                 local jumpVector = Vertex3D.new(0, jumpForce, 0)
-                this:applyCentralImpulse(jumpVector)
+                this:ApplyCentralImpulse(jumpVector)
                 setState(State.JUMPING)
                 print("Jump!")
                 return
@@ -341,11 +341,11 @@ function handleFloorMovement(input, dt)
             if input:isCharPressed(Keys.LEFT) then
                 print("moving left")
                 setState(State.WALKING)
-                this:enableSimulationCollider()
-                this:applyCentralForce(Vertex3D.new(-speed * dt * 1000, 0, 0))
+                this:EnableSimulationCollider()
+                this:ApplyCentralImpulse(Vertex3D.new(-speed * dt * 1000, 0, 0))
                 sideRotation = rotationLeft
                 if input:isCharFirstEventDown(Keys.DASH) and not is.isDashCanceled then
-                    this:applyCentralImpulse(Vertex3D.new(-speed * 5 * dt * 1000, 0, 0))
+                    this:ApplyCentralImpulse(Vertex3D.new(-speed * 5 * dt * 1000, 0, 0))
                     print("moving left DASH")
                     dashUsed = true
                     avoidMaxLimit = true
@@ -355,11 +355,11 @@ function handleFloorMovement(input, dt)
             if input:isCharPressed(Keys.RIGHT) then
                 print("moving right")
                 setState(State.WALKING)
-                this:enableSimulationCollider()
-                this:applyCentralForce(Vertex3D.new(speed * dt * 1000, 0, 0))
+                this:EnableSimulationCollider()
+                this:ApplyCentralImpulse(Vertex3D.new(speed * dt * 1000, 0, 0))
                 sideRotation = rotationRight
                 if input:isCharFirstEventDown(Keys.DASH) and not is.isDashCanceled then
-                    this:applyCentralImpulse(Vertex3D.new(speed * 5 * dt * 1000, 0, 0))
+                    this:ApplyCentralImpulse(Vertex3D.new(speed * 5 * dt * 1000, 0, 0))
                     print("moving left DASH")
                     dashUsed = true
                     avoidMaxLimit = true
@@ -395,16 +395,16 @@ function handleFloorMovement(input, dt)
             if input:isCharPressed(Keys.LEFT) then
                 print("moving crouch left")
                 setState(State.CROUCHING)
-                this:enableSimulationCollider()
-                this:applyCentralForce(Vertex3D.new(-speed * 3 * dt * 1000, 0, 0))
+                this:EnableSimulationCollider()
+                this:ApplyCentralImpulse(Vertex3D.new(-speed * 3 * dt * 1000, 0, 0))
                 sideRotation = rotationLeft
             end
 
             if input:isCharPressed(Keys.RIGHT) then
                 print("moving crouch right")
                 setState(State.CROUCHING)
-                this:enableSimulationCollider()
-                this:applyCentralForce(Vertex3D.new(speed * 3 * dt * 1000, 0, 0))
+                this:EnableSimulationCollider()
+                this:ApplyCentralImpulse(Vertex3D.new(speed * 3 * dt * 1000, 0, 0))
                 sideRotation = rotationRight
             end
         end
@@ -413,9 +413,9 @@ function handleFloorMovement(input, dt)
 
         if input:isCharPressed(Keys.LEFT) then
             sideRotation = rotationLeft
-            this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt * 1000, 0, 0))
+            this:ApplyCentralImpulse(Vertex3D.new(-speed * airControlFactor * dt * 1000, 0, 0))
             if input:isCharFirstEventDown(Keys.DASH) and not dashUsed and not is.isDashCanceled then
-                this:applyCentralImpulse(Vertex3D.new(-speed * 5 * dt * 1000, 0, 0))
+                this:ApplyCentralImpulse(Vertex3D.new(-speed * 5 * dt * 1000, 0, 0))
                 print("left air DASH")
                 dashUsed = true
                 avoidMaxLimit = true
@@ -424,9 +424,9 @@ function handleFloorMovement(input, dt)
 
         if input:isCharPressed(Keys.RIGHT) then
             sideRotation = rotationRight
-            this:applyCentralForce(Vertex3D.new(speed * airControlFactor * dt * 1000, 0, 0))
+            this:ApplyCentralImpulse(Vertex3D.new(speed * airControlFactor * dt * 1000, 0, 0))
             if input:isCharFirstEventDown(Keys.DASH) and not dashUsed and not is.isDashCanceled then
-                this:applyCentralImpulse(Vertex3D.new(speed * 5 * dt * 1000, 0, 0))
+                this:ApplyCentralImpulse(Vertex3D.new(speed * 5 * dt * 1000, 0, 0))
                 print("right air DASH")
                 dashUsed = true
                 avoidMaxLimit = true
@@ -437,7 +437,7 @@ function handleFloorMovement(input, dt)
             this:setLinearVelocity(Vertex3D.new(velocity.x, 0, velocity.z))
             doubleJumpUsed = true;
             local jumpVector = Vertex3D.new(0, jumpForce, 0)
-            this:applyCentralImpulse(jumpVector)
+            this:ApplyCentralImpulse(jumpVector)
             setState(State.JUMPING)
             print("Jump!")
             return
@@ -467,7 +467,7 @@ function handleHook(input, dt)
         if input:isCharFirstEventDown(Keys.JUMP) then
             print("Freedom border!")
             this:setLinearVelocity(Vertex3D.new(0, -1, 0))
-            this:enableSimulationCollider()
+            this:EnableSimulationCollider()
             countUnblockableFrames = 50
             is.isBlockedByHook = false
             return
@@ -519,7 +519,7 @@ function handleHook(input, dt)
         end
         if is.isHookedLeft and not is.isFloorDown and input:isCharPressed(Keys.LEFT) then
             print("release stop r")
-            this:applyCentralForce(Vertex3D.new(-speed * airControlFactor * dt * 1000, 0, 0))
+            this:ApplyCentralImpulse(Vertex3D.new(-speed * airControlFactor * dt * 1000, 0, 0))
             setState(State.FALLING)
         end
 
@@ -542,9 +542,9 @@ function handleHook(input, dt)
         if is.isHookedLeft and not is.isFloorDown then
             if input:isCharFirstEventDown(Keys.JUMP) and not input:isCharPressed(Keys.RIGHT) and not is.isFloor then
                 setState(State.JUMPING)
-                this:enableSimulationCollider()
+                this:EnableSimulationCollider()
                 local jumpVector = Vertex3D.new(-100, jumpForce, 0)
-                this:applyCentralImpulse(jumpVector)
+                this:ApplyCentralImpulse(jumpVector)
                 print("Jump hook l!")
             end
         end
@@ -552,7 +552,7 @@ function handleHook(input, dt)
             if input:isCharFirstEventDown(Keys.JUMP) and not input:isCharPressed(Keys.LEFT) and not is.isFloor then
                 this:sleepCollider()
                 local jumpVector = Vertex3D.new(100, jumpForce, 0)
-                this:applyCentralImpulse(jumpVector)
+                this:ApplyCentralImpulse(jumpVector)
                 print("Jump hook r!")
             end
         end

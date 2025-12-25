@@ -85,10 +85,10 @@ public:
     void setShapeMargin(float shapeMargin);
     void setCcdMotionThreshold(float ccdMotionThreshold);
     void setCcdSweptSphereRadius(float ccdSweptSphereRadius);
-    void sleepCollider();
-    void disableSimulationCollider();
-    void enableSimulationCollider();
-    void disableDeactivationCollider();
+    void SleepCollider() const;
+    void DisableSimulationCollider() const;
+    void EnableSimulationCollider();
+    void DisableDeactivationCollider();
     void setAngularVelocity(Vertex3D f);
     void setGravityCollider(Vertex3D g);
     void setLinearFactor(Vertex3D linearFactor);

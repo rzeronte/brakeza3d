@@ -492,27 +492,27 @@ void Collider::drawImGuiVariables()
     }
 }
 
-void Collider::sleepCollider()
+void Collider::SleepCollider() const
 {
-    if (getCollisionMode() == CollisionMode::GHOST) {
+    if (getCollisionMode() == GHOST) {
         ghostObject->setActivationState(ISLAND_SLEEPING);
     }
 
-    if (getCollisionMode() == CollisionMode::BODY) {
+    if (getCollisionMode() == BODY) {
         body->clearForces(); // Elimina cualquier fuerza aplicada
         body->setLinearVelocity(btVector3(0, 0, 0)); // Detiene el movimiento
         body->setAngularVelocity(btVector3(0, 0, 0)); // Detiene la rotación
         body->setActivationState(ISLAND_SLEEPING);
     }
 
-    if (getCollisionMode() == CollisionMode::KINEMATIC) {
+    if (getCollisionMode() == KINEMATIC) {
         kinematicBody->setActivationState(ISLAND_SLEEPING);
     }
 }
 
-void Collider::disableSimulationCollider()
+void Collider::DisableSimulationCollider() const
 {
-    if (getCollisionMode() == CollisionMode::GHOST) {
+    if (getCollisionMode() == GHOST) {
         ghostObject->forceActivationState(DISABLE_SIMULATION);
     }
 
@@ -525,7 +525,7 @@ void Collider::disableSimulationCollider()
     }
 }
 
-void Collider::enableSimulationCollider()
+void Collider::EnableSimulationCollider()
 {
     if (getCollisionMode() == CollisionMode::GHOST) {
         ghostObject->forceActivationState(ACTIVE_TAG);
@@ -543,7 +543,7 @@ void Collider::enableSimulationCollider()
     }
 }
 
-void Collider::disableDeactivationCollider()
+void Collider::DisableDeactivationCollider()
 {
     if (getCollisionMode() == CollisionMode::GHOST) {
         ghostObject->setActivationState(DISABLE_DEACTIVATION);

@@ -140,7 +140,7 @@ You can use the types: int, float, string, and Vertex3D.
 
 
 ========================================================================================================
-### 12.6) Global Variables
+### 12.6) Global variables
 ========================================================================================================
 
 Variables defined in scripts linked to projects and/or scenes are global.
@@ -153,7 +153,7 @@ You can access global variables directly from any other script:
     end
 
 ========================================================================================================
-### 12.7) Local Variables
+### 12.7) Local variables
 ========================================================================================================
 
 Variables defined in scripts linked to Object3D are local, meaning they are instantiated individually
@@ -164,10 +164,10 @@ You can access local variables of another object from your LUA scripts as follow
     o = Brakeza:getSceneObjectByLabel("MyObject")
     position = o:getLocalScriptVar("offset")                            -- we get a vertex3D!
 
-    print("Read variable 'offset' from object: ".. o:getLabel())
+    print("Read variable 'offset' from object: ".. o:getName())
     print("Value for 'offset': " .. position.x .. ", " .. position.y .. ", " .. position.z)
 
-    print("Read variable 'count' from object: ".. o:getLabel())
+    print("Read variable 'count' from object: ".. o:getName())
     print("Value for 'count': " .. o:getLocalScriptVar("count"))        -- we get a int!
 
 

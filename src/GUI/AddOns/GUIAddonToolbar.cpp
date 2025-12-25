@@ -139,6 +139,12 @@ void GUIAddonToolbar::Helpers()
     GUI::DrawButton("Screenshot", IconGUI::TOOLBAR_TAKE_SCREENSHOT, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->TRIANGLE_MODE_PICKING_COLORS,[&]() {
         ComponentRender::MakeScreenShot();
     });
+    VerticalSeparator();
+    ImGui::SameLine();
+    GUI::DrawButton("Documentation", IconGUI::WIN_DOCUMENTATION, GUIType::Sizes::ICONS_TOOLBAR, Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen,[&]() {
+        Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen;
+    });
+
 }
 
 void GUIAddonToolbar::RenderTriangleModes()
