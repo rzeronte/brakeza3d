@@ -623,7 +623,7 @@ function debug(from, rays, cross)
 
     -- Dibujo de líneas
     local function drawLine(from, to, color)
-        render:drawLine(from, to, color)
+        render:DrawLine(from, to, color)
     end
 
     drawLine(from, rays.toDown, colors.floorDown)

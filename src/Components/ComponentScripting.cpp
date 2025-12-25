@@ -88,7 +88,7 @@ void ComponentScripting::ReloadLUAScripts() const
     ReloadScriptGlobals();
 }
 
-void ComponentScripting::addSceneLUAScript(ScriptLUA *script)
+void ComponentScripting::AddSceneLUAScript(ScriptLUA *script)
 {
     if (script->getScriptFilename().empty()) {
         delete script;

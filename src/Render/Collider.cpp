@@ -288,19 +288,19 @@ void Collider::setMass(float mass) {
     Collider::mass = mass;
 }
 
-void Collider::applyCentralForce(Vertex3D f)
+void Collider::ApplyCentralForce(Vertex3D f)
 {
     if (getCollisionMode() != CollisionMode::BODY) return;
     body->applyCentralForce(f.toBullet());
 }
 
-void Collider::applyCentralImpulse(Vertex3D f)
+void Collider::ApplyCentralImpulse(Vertex3D f)
 {
     if (getCollisionMode() != CollisionMode::BODY) return;
     body->applyCentralImpulse(f.toBullet());
 }
 
-void Collider::applyImpulse(Vertex3D f, Vertex3D rel)
+void Collider::ApplyImpulse(Vertex3D f, Vertex3D rel)
 {
     btVector3 impulse = f.toBullet();
     btVector3 rel_pos = rel.toBullet();
@@ -344,21 +344,21 @@ void Collider::setCapsuleColliderSize(float x, float y)
     kinematicCapsuleSize.y = y;
 }
 
-void Collider::setWalkingDirection(Vertex3D d)
+void Collider::setWalkingDirection(Vertex3D d) const
 {
     if (getCollisionMode() == KINEMATIC) {
         characterController->setWalkDirection(d.toBullet());
     }
 }
 
-void Collider::jump(Vertex3D d)
+void Collider::Jump(Vertex3D d) const
 {
     if (getCollisionMode() == KINEMATIC) {
         characterController->jump(d.toBullet());
     }
 }
 
-bool Collider::onGround()
+bool Collider::onGround() const
 {
     if (getCollisionMode() == KINEMATIC) {
         return characterController->onGround();

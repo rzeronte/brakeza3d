@@ -6,7 +6,7 @@
 ### 5.1) Image3D
 ========================================================================================================
 
-Un plano con la textura de una imagen.
+A plane with an image texture applied.
 
     image3d = ObjectFactory.Image3D(
         "../assets/sprites/explosion_a.png",                    -- file path
@@ -20,22 +20,22 @@ Un plano con la textura de una imagen.
 ### 5.2) Mesh3D
 ========================================================================================================
 
-Modelo 3D, incorpora geometría y texturas.
+A 3D model that includes geometry and textures.
 
     ObjectFactory.Mesh3D(
         "../assets/models/Capsule.fbx",                         -- file path
         Vertex3D.new(x, y, z)                                   -- position
     )
 
-Los objetos Mesh3D disponen de algunas características especiales, como los Grid3D o los Octrees, queM
-veremos en el capítulo dedicado a scripting.
+Mesh3D objects provide some advanced features, such as Grid3D and Octrees, which will be covered in the
+scripting chapter.
 
 
 ========================================================================================================
 ### 5.3) Mesh3DAnimation
 ========================================================================================================
 
-Modelo 3D animado.
+An animated 3D model.
 
     man = ObjectFactory.Image3DAnimation(
         "../assets/animations/walking.fbx",
@@ -48,24 +48,24 @@ Modelo 3D animado.
         25                                                  -- frames per second
     );
 
-Si el modelo tuviese más de una animación, la primera de ellas será la seleccionada por defecto. Desde
-la GUI podrás seleccionar cualquier otra animación como activa. Si deseas hacerlo desde tus scripts LUA
-puedes utilizar setIndexCurrentAnimation() o setAnimationByName():
+If the model contains more than one animation, the first one will be selected by default.
+You can choose a different active animation from the GUI. To do so from LUA scripts, you can use
+setIndexCurrentAnimation() or setAnimationByName():
 
     man:setIndexCurrentAnimation(2)                         -- change animation index
 
-Si deseas cambiar la velocidad de la animación, podrás hacerlo también desde la UI o desde tus scripts:
+To modify the animation playback speed, you can also do it from the UI or via scripts:
 
     man:setAnimationSpeed(0.5)                              -- speed animation [0-1]
 
 
 ========================================================================================================
-### 5.4) Dibujar lineas
+### 5.4) Drawing Lines
 ========================================================================================================
 
-Puedes dibujar líneas 3D a través del componente Render
+You can draw 3D lines using the Render component.
 
-    Components:Render():drawLine(
+    Components:Render():DrawLine(
         this:getPosition(),                                 -- from position
         this:getPosition() + this:AxisUp():getScaled(2)     -- to position
     )

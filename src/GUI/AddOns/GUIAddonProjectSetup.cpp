@@ -30,7 +30,7 @@ void GUIAddonProjectSetup::TreeSceneScripts()
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SCRIPT_ITEM)) {
             LOG_MESSAGE("Dropping script (%s) in global space", payload->Data);
             auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char *) payload->Data));
-            scripting->addSceneLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
+            scripting->AddSceneLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
             shouldOpen = true;
         }
         ImGui::EndDragDropTarget();

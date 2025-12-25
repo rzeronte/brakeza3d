@@ -65,7 +65,7 @@ public:
 
     [[nodiscard]] bool isActive() const                     { return active; }
     [[nodiscard]] ParticlesContext& getContextPointer()     { return context; }
-    ObjectType getTypeObject() const override               { return ObjectType::ParticleEmitter; }
+    [[nodiscard]] ObjectType getTypeObject() const override { return ObjectType::ParticleEmitter; }
     GUIType::Sheet getIcon() override                       { return IconObject::PARTICLE_EMITTER; }
     [[nodiscard]] Color getColorTo() const                  { return colorTo; }
     [[nodiscard]] Color getColorFrom() const                { return colorFrom; }

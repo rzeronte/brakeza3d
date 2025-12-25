@@ -13,6 +13,7 @@
 #include "../3D/Mesh3DAnimation.h"
 #include "../3D/ParticleEmitter.h"
 #include "../Components/Components.h"
+#include "../GUI/Objects/ScriptLuaGUI.h"
 #include "../Render/JSONSerializerRegistry.h"
 #include "../Render/TextWriter.h"
 #include "../Threads/ThreadJobLoadImage2D.h"
@@ -214,4 +215,11 @@ TextWriter* ObjectFactory::CreateTextWriter(const std::string& fontFile)
         Components::get()->Window()->getRenderer(),
         TTF_OpenFont(fontFile.c_str(), 35)
     );
+}
+
+ScriptLUA * ObjectFactory::CreateScriptLUA(const std::string &pathFile)
+{
+    auto meta = ScriptLuaGUI::ExtractScriptMetainfo(pathFile);
+
+    return new ScriptLUA(meta.name, meta.codeFile, meta.typesFile);
 }

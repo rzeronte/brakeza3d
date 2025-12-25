@@ -1,25 +1,25 @@
 ========================================================================================================
-
 14 - ASSETS FOLDER
-
 ========================================================================================================
 
-Brakeza3D esperará encontrar cada tipo de recurso en su carpeta raíz correspondiente. Dentro de la carpeta
-assets podrás encontrar:
+Brakeza3D expects to find each type of resource in its corresponding root folder. Inside the assets
+folder, you will find:
 
-- animations: Ficheros FBX animados.
-- fonts: Ficheros de fuente TTF.
-- icons: Ficheros de iconos de la UI.
-- images: Ficheros de imagen de carácter general.
-- maps: Ficheros de mapas BSP.
-- models: Ficheros de modelos FBX.
-- projects: Ficheros de proyectos JSON.
-- scenes: Ficheros de escenas JSON.
-- scripts: Ficheros de scripts LUA.
-- shaders: Ficheros de CustomShaders (.vs y/o .fs)
-- sounds: Ficheros de sonido WAV o MP3.
-- sprites: Ficheros de imágenes en formato rejilla.
-- textures: Ficheros de texturas usados por modelos FBX.
+    - animations: Animated FBX files.
+    - fonts: TTF font files.
+    - icons: UI icon files.
+    - images: General image files.
+    - maps: BSP map files.
+    - models: FBX model files.
+    - projects: JSON project files.
+    - scenes: JSON scene files.
+    - scripts: LUA script files.
+    - shaders: CustomShader files (.vs and/or .fs)
+    - sounds: WAV or MP3 sound files.
+    - sprites: Grid-formatted image files.
+    - textures: Texture files used by FBX models.
+    - screenshots: Auto-saved screenshots from render
 
-Brakeza3D permite trabajar con rutas relativas, pero siempre a la ruta principal de cada elemento, es decir,
-podrás almacenar tus scripts en subcarpetas, pero siempre estarán dentro de la carpeta raíz de scripts, etc.
+Brakeza3D allows working with relative paths, but always relative to the main folder of each element.
+That is, you can store your scripts in subfolders, but they must always remain within the root scripts
+folder, and the same applies to other asset types.

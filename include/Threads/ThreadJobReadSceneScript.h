@@ -36,7 +36,7 @@ public:
                     return;
                 }
 
-                Components::get()->Scripting()->addSceneLUAScript(new ScriptLUA(name, codeFile, typesFile, dataTypes));
+                Components::get()->Scripting()->AddSceneLUAScript(new ScriptLUA(name, codeFile, typesFile, dataTypes));
             }
         }
         LOG_MESSAGE("[ThreadJobReadSceneScript] Process END");

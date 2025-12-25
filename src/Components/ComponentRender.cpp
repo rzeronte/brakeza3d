@@ -350,7 +350,7 @@ void ComponentRender::setGlobalIlluminationSpecular(const Vertex3D &v) const
     shaders.shaderOGLRender->setGlobalIlluminationSpecular(v);
 }
 
-void ComponentRender::drawLine(const Vertex3D &from, const Vertex3D &to, const Color &c) const
+void ComponentRender::DrawLine(const Vertex3D &from, const Vertex3D &to, const Color &c) const
 {
     shaders.shaderOGLLine3D->render(
         from,

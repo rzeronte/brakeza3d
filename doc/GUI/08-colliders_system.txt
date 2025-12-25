@@ -1,0 +1,151 @@
+========================================================================================================
+08 - COLLIDERS SYSTEM
+========================================================================================================
+
+This section describes the collision system in Brakeza3D and how objects can interact physically within
+the scene. The engine provides flexible collision modes and shapes, allowing developers to detect
+collisions, respond to physical interactions, and apply custom gameplay logic through LUA scripts.
+
+All Object3D instances can participate in the collision system, supporting ghost, rigid body, and
+kinematic behaviors depending on the configured mode.
+
+
+========================================================================================================
+# 8.1) Collision between objects
+========================================================================================================
+
+Collidable objects allow developers to implement logic based on collision events.
+In Brakeza3D, all Object3D instances can work with physics and collisions.
+
+Any collidable object will trigger a call to the onCollision method in your LUA scripts for each collision that
+occurs.
+
+    function onCollision(with)
+        print("Collision with " .. with:getLabel())
+    end
+
+
+========================================================================================================
+### 8.2) Collision Modes
+========================================================================================================
+
+There are two operating modes for the collision system:
+
+    - GHOST: Collidable object that does not react to physics.
+    - RIGIDBODY: Collidable object that reacts to physics.
+
+You can configure the collision mode of an object from the GUI or from your LUA scripts.
+
+To do so from scripts, you can use the setupGhostCollider() or setupRigidBodyCollider() methods.
+
+    eye = ObjectFactory.Mesh3D("../assets/models/Eye.fbx", Vertex3D.new(0, 0, 10))
+    eye:setCollisionsEnabled(true)                              -- enable collider
+    eye:setupGhostCollider(CollisionShape.SIMPLE_SHAPE);        -- Ghost
+
+    eye2 = ObjectFactory.Mesh3D("../assets/models/Eye.fbx", Vertex3D.new(10, 10, 10))
+    eye2:setCollisionsEnabled(true)                             -- enable collider
+    eye2:setupRigidBodyCollider(CollisionShape.SIMPLE_SHAPE);   -- RigidBody
+
+In RIGIDBODY collision mode, you can specify whether the geometry is static. Static objects do not
+move (their mass is automatically set to 0). This is the only collision mode allowed for non-convex geometries.
+
+    eye3 = ObjectFactory.Mesh3D("../assets/models/Eye.fbx", Vertex3D.new(10, 10, 10))
+    eye3:setColliderStatic(true)                                -- static!
+    eye3:setupRigidBodyCollider(CollisionShape.SIMPLE_SHAPE);   -- RigidBody
+
+
+========================================================================================================
+### 8.3) Collider Shape
+========================================================================================================
+
+The following collider shapes are available:
+
+    - CollisionShape.SIMPLE_SHAPE
+    - CollisionShape.CAPSULE
+    - CollisionShape.TRIANGLE3D_MESH_SHAPE
+
+Any Object3D can use the SIMPLE_SHAPE or CAPSULE collider shapes. These offer very good performance.
+
+However, objects based on Mesh3D can also be created using the CollisionShape.TRIANGLE3D_MESH_SHAPE,
+which generates a collision mesh that exactly matches the model geometry. This option is more precise but
+comes with a higher computational cost.
+
+You can configure collider shapes either from the GUI or from LUA scripts.
+
+    eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
+    eye:setCollisionsEnabled(true)
+    eye:setupGhostCollider(CollisionShape.TRIANGLE3D_MESH_SHAPE);               -- Ghost
+
+
+========================================================================================================
+### 8.4) Disabling Collisions
+========================================================================================================
+
+You can disable collisions for an object using the setCollisionsEnabled(bool) method.
+This will remove any collision shape previously configured for the object.
+
+
+========================================================================================================
+### 8.5) Movement of Collidable Objects
+========================================================================================================
+
+Both GHOST and RIGIDBODY objects can be moved within the scene.
+
+    - setLinearVelocity(Vertex3D)
+
+### Applying Forces to Rigid Objects
+
+For RIGIDBODY objects, forces can be applied using the following methods:
+
+    - ApplyCentralImpulse(Vertex3D f)
+    - ApplyCentralForce(Vertex3D f)
+    - ApplyImpulse(Vertex3D f, Vertex3D r)
+
+
+========================================================================================================
+### 8.6) Collider Properties
+========================================================================================================
+
+You can use the following methods to configure the physical behavior of an object:
+
+    - setMass(float): Sets the mass of the object, affecting how it responds to forces.
+    - setFriction(float): Sets the surface friction of the object, controlling resistance to sliding.
+    - setRestitution(float): Sets the bounciness of the object during collisions (0 = no bounce, 1 = full bounce).
+    - setAngularDamping(float): Sets rotational damping, reducing angular velocity over time.
+    - setLinearDamping(float): Sets linear damping, reducing translational velocity over time.
+    - setAngularFactor(Vertex3D): Restricts or scales rotation along each axis.
+    - setLinearFactor(Vertex3D): Restricts or scales movement along each axis.
+    - setGravityCollider(Vertex3D): Defines the gravity vector applied to the object.
+
+========================================================================================================
+### 8.7) KINEMATIC Collision Mode
+========================================================================================================
+
+The kinematic collision mode provides character-like movement behavior and supports the following methods:
+
+    - setWalkingDirection(Vertex3D): Sets the desired movement direction for a kinematic object, typically used for character motion.
+    - onGround() -> boolean: Returns true if the kinematic object is currently in contact with the ground, otherwise false.
+    - Jump(): Makes the kinematic object perform a jump according to its current physics settings.
+
+
+========================================================================================================
+### 8.8) Collider and Bone Mapping
+========================================================================================================
+
+Objects of type Mesh3DAnimation can define colliders for the bones used to animate the model geometry.
+
+From LUA scripts, you can determine whether a collision comes from the object's main collider or from a
+bone collider, as well as the bone mapping index to which it belongs.
+
+A common use case is defining colliders for bones such as weapons in animations, allowing you to differentiate
+collisions coming from a specific bone.
+
+    function onCollision(with)
+        if with ~= nil then
+            print("Script: Collision With: " .. with:getObject():getLabel())
+            print("Script: Collision Source: " .. with:getSource())
+            print("Script: Collision BoneIndexMapping: " .. with:getBoneIndexMapping())
+        else
+            print("Script: Collision with unknow object")
+        end
+    end

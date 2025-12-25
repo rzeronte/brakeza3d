@@ -5,7 +5,6 @@
 #include "../Render/PhysicsDebugDraw.h"
 #include "Component.h"
 #include <btBulletDynamicsCommon.h>
-#include <mutex>
 
 class ComponentCollisions : public Component
 {

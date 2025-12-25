@@ -1,338 +1,309 @@
 ========================================================================================================
-
 12 - SCRIPTING SYSTEM
-
 ========================================================================================================
 
-Brakeza3D incorpora un sistema de scripting utilizando LUA como lenguaje.
+Brakeza3D includes a scripting system using LUA as its language.
 
-Ya sea desde la UI o desde código, podrás asociar scripts al proyecto,
-escena y/o objetos.
+Whether from the UI or from code, you can associate scripts with the project, scene, and/or objects.
 
-========================================================================================================
-
-### 12.1) Estados del sistema de scripting
 
 ========================================================================================================
-
-En el búcle principal de Brakeza3D, se ejecutan una serie de acciones constantemente. Una de ellas
-es el sistema de scripting. Este sistema puede estar en ON/OFF/PAUSE.
-
-Si está en ON, los objetos ejecutarán su ciclo de vida implementado en los scripts.
-
-El sistema de scripting puede ser ejecutado (PLAY), para iniciar la ejecución de los scripts.
-
-Finalmente, podrá ser detenido (STOP) para evitar que el sistema de scripting continue.
-
-También podrás resetear (RELOAD) el estado para volver al inicio los scripts y para refrescarlos desde disco.
-
+### 12.1) Scripting System States
 ========================================================================================================
 
-### 12.2) Ciclo de vida de un objeto
+In the main loop of Brakeza3D, a series of actions are executed continuously. One of them is the scripting
+ystem. This system can be in ON, OFF, or PAUSE.
+
+If it is ON, objects will execute their lifecycle as implemented in their scripts.
+
+The scripting system can be PLAYED to start script execution.
+
+Finally, it can be STOPPED to prevent the scripting system from continuing.
+
+You can also RELOAD the system to reset scripts and refresh them from disk.
+
 
 ========================================================================================================
+### 12.2) Object Lifecycle
+========================================================================================================
 
-Los objetos disponen de su propio ciclo de vida el cual debemos de entender para trabajar con nuestros objetos cargados, es el siguiente:
+Objects have their own lifecycle, which is important to understand when working with loaded objects:
 
-- **onStart**: Instante en que se inicia la ejecución. Cuando activamos el sistema de scripting (PLAY)
+    - onStart: The moment execution begins. Triggered when the scripting system is activated (PLAY).
+    - onUpdate: The current moment, i.e., every frame.
+    - onEnd: The moment execution stops (STOP).
 
-- **onUpdate**: Instante actual, es decir, cada frame.
-
-- **onEnd**: Instante en el que se detiene la ejecución (STOP)
-
-Una template básica de script LUA para Brakeza3D sería:
+A basic LUA script template for Brakeza3D would be:
 
     function onStart()
-        -- código a ejecutar al inicio del sprint, una única vez.
+        -- code to execute at the start of the script, only once
     end
 
     function onUpdate()
-        -- código a ejecutar en cada frame.
+        -- code to execute every frame
     end
 
-========================================================================================================
 
+========================================================================================================
 ### 12.3) Scripts LUA
-
 ========================================================================================================
 
-Los scripts de LUA son elementos que podremos vincular a elementos del sistema. En ellos implementaremos la lógica y comportamiento de objetos en Brakeza3D.
+LUA scripts are elements that can be linked to system elements. In them, we implement the logic and behavior
+of objects in Brakeza3D.
 
-Podemos diferenciar dos grandes tipos de scripts:
+There are two main types of scripts:
 
-- **Scripts de Objeto**: Se asocian a **objetos**. Un mismo script puede vincularse a multitud de objetos.
-- **Scripts globales**: Se asocian a la **escena** o al **proyecto**, no a ningún objeto específico, son de caracter general.
+    - Object Scripts: Associated with objects. The same script can be linked to multiple objects.
+    - Global Scripts: Associated with the scene or project, not with any specific object; they are general in nature.
 
-Se diferencian principalmente por el **scope de sus variables**.
+The main difference is the scope of their variables.
 
-Los scripts globales comparten variables libremente entre ellos, mientras que los scripts de objeto instancian sus variables por cada objeto al
-que han sido vinculados.
+Global scripts share variables freely among themselves, while object scripts instantiate their variables for
+each object to which they are linked.
 
-========================================================================================================
-
-### 12.4) Vinculación de scripts
 
 ========================================================================================================
+### 12.4) Linking Scripts
+========================================================================================================
 
-Podrás realizar estas operaciones desde la UI con el ratón y drag/drop, sin embargo,
-en ocasiones necesitarás poder hacerlo dinámicamente desde código.
+You can perform these operations from the UI using drag-and-drop. However, sometimes you may need to do it dynamically from code.
 
-Disponemos de un objeto ScriptLUA que encapsula la lógica de carga de un script.
+We provide a ScriptLUA object that encapsulates the script loading logic.
 
-Los Object3D disponen de un método attachScript que nos permitirá vincularlos:
+Object3D has a method AttachScript(ScriptLUA) that allows linking scripts:
 
     print("Load LightPoint3D")
-    lightp = LightPoint3D.create(Vertex3D.new(5, -10, 5))
-    Brakeza:addObject3D(lightp, 'myLightPoint')
 
-    script = ScriptLUA.create("../../scripts/MoveForwardObject.lua")
+    lightpoint = ObjectFactory.LightPoint(
+        Vertex3D.new(10, 20, 30),                               -- position
+        Color.new(0.1, 0.1, 0.1),                               -- ambient component
+        Color.new(0.2, 0.4, 0.6),                               -- diffuse component
+        Color.new(0.5, 0.3, 1.0),                               -- specular component
+    );
+
+    script = ObjectFactory.ScriptLUA("../../scripts/MoveForwardObject.lua")
     if script ~= nil then
-        lightp:attachScript(script)
+        lightp:AttachScript(script)
     end
 
-De igual forma el ComponentScripting dispone de addSceneLUAScript que te permitirá vincular
-un script a la escena:
+Similarly, the ComponentScripting object has AddSceneLUAScript() to link a script to the scene:
 
-    script = ScriptLUA.create("../../scripts/global_script.lua")
+    script = ObjectFactory.ScriptLUA("../../scripts/global_script.lua")
     if script ~= nil then
         Components:Scripting():addSceneLUAScript(script)
     end
 
-Es importante destacar, que *la única* forma de vincular scripts al proyecto es mediante la UI, no desde código.
+Important: The only way to link scripts to a project is through the UI, not from code.
+
 
 ========================================================================================================
-
 ### 12.5) Variables
-
 ========================================================================================================
 
-Cualquier script LUA puede definir variables que te ayudarán a implementar tu lógica. Puedes utilizar la GUI
-para gestionar con facilidad las variables de un script.
+Any LUA script can define variables to help implement logic. The GUI allows easy management of script
+variables.
 
-Físicamente, se almacenan en un fichero JSON del mismo nombre que el script.
+Physically, variables are stored in a JSON file with the same name as the script.
 
 json
-{
-	"name":	"global_script_example.lua",
-	"types": [
-        {
-          "name": "var1",
-          "type": "string",
-          "value": "hello my friend!"
-        },
-        {
-          "name": "var2",
-          "type": "int",
-          "value": 10
-        },
-        {
-          "name": "var3",
-          "type": "float",
-          "value": 0.3
-        },
-        {
-          "name": "var4",
-          "type": "Vertex3D",
-          "value": {
-            "x": 0,
-            "y": 2,
-            "z": 0
-          }
-        }
-    ]
-}
+    {
+        "name":	"global_script_example.lua",
+        "types": [
+            {
+              "name": "var1",
+              "type": "string",
+              "value": "hello my friend!"
+            },
+            {
+              "name": "var2",
+              "type": "int",
+              "value": 10
+            },
+            {
+              "name": "var3",
+              "type": "float",
+              "value": 0.3
+            },
+            {
+              "name": "var4",
+              "type": "Vertex3D",
+              "value": {
+                "x": 0,
+                "y": 2,
+                "z": 0
+              }
+            }
+        ]
+    }
 
-Puedes utilizar los tipos int, float, string y Vertex3D.
+You can use the types: int, float, string, and Vertex3D.
 
-========================================================================================================
-
-### 12.6) Variables globales
 
 ========================================================================================================
+### 12.6) Global Variables
+========================================================================================================
 
-Las variables definidas en scripts vinculadas a proyectos y/o escenas serán globales.
+Variables defined in scripts linked to projects and/or scenes are global.
 
-Podrás acceder directamente a las variables globales desde cualquier otro
-script.
+You can access global variables directly from any other script:
 
     function onUpdate()
-        var1 = var1 .. "!" -- ejemplo de variable global
+        var1 = var1 .. "!"                  -- demo global variable
         print("Value of var1: " .. var1)
     end
 
 ========================================================================================================
-
-### 12.7) Variables locales
-
+### 12.7) Local Variables
 ========================================================================================================
 
-Las variables definidas en scripts vinculadas a Object3D serán locales,
-es decir, se instancian individualmente por cada objeto.
+Variables defined in scripts linked to Object3D are local, meaning they are instantiated individually
+for each object.
 
-Puedes acceder a las variables locales de otro objeto mediante tus scripts LUA
-de la siguiente forma:
+You can access local variables of another object from your LUA scripts as follows:
 
     o = Brakeza:getSceneObjectByLabel("MyObject")
-    position = o:getLocalScriptVar("offset") -- obtenemos un vertex3D
+    position = o:getLocalScriptVar("offset")                            -- we get a vertex3D!
+
     print("Read variable 'offset' from object: ".. o:getLabel())
     print("Value for 'offset': " .. position.x .. ", " .. position.y .. ", " .. position.z)
 
     print("Read variable 'count' from object: ".. o:getLabel())
-    print("Value for 'count': " .. o:getLocalScriptVar("count")) -- obtenemos int
+    print("Value for 'count': " .. o:getLocalScriptVar("count"))        -- we get a int!
 
 
 ========================================================================================================
-
-### 12.8) Gestión de escenas
-
+### 12.8) Scene Management
 ========================================================================================================
 
-Puedes cargar y salvar escenas tanto desde GUI como desde tus scripts LUA
+You can load and save scenes from both the GUI and your LUA scripts:
 
     function onStart()
         ...
-        Components:Render():getSceneLoader():loadScene("../scenes/scene_example.json")
+        Components:Render():getSceneLoader():LoadScene("../scenes/scene_example.json")
         ...
-        Components:Render():getSceneLoader():saveScene("../scenes/scene_example.json")
+        Components:Render():getSceneLoader():SaveScene("../scenes/scene_example.json")
         ...
     end
 
-========================================================================================================
 
+========================================================================================================
 ### 12.9) Deltatime
-
 ========================================================================================================
 
-Él DeltaTime es el tiempo que tarda en renderizarse un frame. Es una medida crucial en el desarrollo de juegos,
-ya que permite que los movimientos y animaciones sean consistentes independientemente de la velocidad de renderización.
+DeltaTime is the time it takes to render a frame. It is crucial in game development, as it ensures movements
+and animations are consistent regardless of frame rate.
 
-Puedes obtenerlo desde tus scripts LUAde la siguiente manera:
+You can access it in your LUA scripts as follows:
 
     ...
-    print("DeltaTime: " .. Brakeza:getDeltaTime()) -- delta en segundos
-    print("DeltaTimeInMicro: " .. Brakeza:getDeltaTimeMicro()) -- delta en microsegundos
-    print("Execution Time: " .. Brakeza:getExecutionTime()) -- tiempo total de ejecución
+    print("DeltaTime: " .. Brakeza:getDeltaTime())                  -- seconds
+    print("DeltaTimeInMicro: " .. Brakeza:getDeltaTimeMicro())      -- microseconds
+    print("Execution Time: " .. Brakeza:getExecutionTime())         -- total execution time
     ...
     function onUpdate()
-        local speed = 5.0  -- unidades por segundo
+        local speed = 5.0                                           -- units per second
         local movement = speed * Brakeza:getDeltaTime()
         myObject:addToPosition(Vertex3D.new(movement, 0, 0))
     end
 
-========================================================================================================
-
-### 12.10) Terminar la ejecución
 
 ========================================================================================================
+### 12.10) Terminating Execution
+========================================================================================================
 
-Si deseas terminar la aplicación desde código, puedes hacerlo de la siguiente forma:
+If you want to terminate the application from code, you can do so as follows:
 
-    Brakeza:finish()
+    Brakeza:Shutdown()
 
-=========================================
-### 12.11) Autocargar proyectos o escenas
-=========================================
 
-Cuando desees empaquetar tu juego o aplicación, desearás que Brakeza3D carge y ejecute automáticamente los scripts
-de algún proyecto en particular. Podrás indicar esto a Brakeza3D desde la línea de comandos:
+========================================================================================================
+### 12.11) Auto-loading Projects or Scenes
+========================================================================================================
+
+When packaging your game or application, you may want Brakeza3D to automatically load and execute scripts
+from a specific project. You can instruct Brakeza3D to do this via the command line:
 
     brakeza3d.exe -p MyProject.json o brakeza3d.exe --project MyProject.json
 
-Con esto el proyecto será ejecutado automáticamente sin UI.
+This will run the project automatically without the UI.
 
-Nota: La ruta en la que será buscado el fichero de proyecto es relativa al directorio base de
-proyectos: /assets/projects/.
+Note: The project file path is relative to the base projects directory: /assets/projects/.
+
 
 ========================================================================================================
-
-### 12.12) Grid3D y Octree
-
+### 12.12) Grid3D and Octree
 ========================================================================================================
 
-Brakeza3D incorpora las estructuras de datos Grid3D y Octree integradas en los objetos de tipo
-Mesh3D.
+Brakeza3D includes Grid3D and Octree data structures integrated into Mesh3D objects.
 
-- Grid3D: Crea una rejilla de X, Y, Z dimensiones sobre el AABB del objeto dado.
-- Octree: Crea un árbol octal, con la profundidad (maxDepth) indicada.
+    - Grid3D: Creates a grid of X, Y, Z dimensions over the AABB of the given object.
+    - Octree: Creates an octree with the specified depth (maxDepth).
 
-Para cargar una rejilla en un objeto Mesh3D puedes utilizar el método buildGrid3D(sizeX, sizeY, sizeZ)
+To create a grid in a Mesh3D object, use BuildGrid3D(sizeX, sizeY, sizeZ):
 
-    eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
-    eye:setScale(10)
-    eye:buildGrid3D(5, 5, 5) -- crea una rejilla de 5x5x5
-    Brakeza:addObject3D(eye, 'modelo')
+    eye = ObjectFactory.Mesh3D("../assets/models/Capsule.fbx", Vertex3D.new(x, y, z))
+    eye:BuildGrid3D(5, 5, 5)                                                    -- creates a 5x5x5 grid
 
+To create an octree, use BuildOctree(maxDepth):
 
-Para cargar una *octree* en un objeto Mesh3D puedes utilizar el método buildOctree(maxDepth).
-
-    eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
-    eye:setScale(10)
-    eye:buildOctree(1) -- crea una árbol de octanos de un solo nivel de profundidad, solo 8 hijos
-    Brakeza:addObject3D(eye, 'modelo')
+    eye = ObjectFactory.Mesh3D("../assets/models/Capsule.fbx", Vertex3D.new(x, y, z))
+    eye:BuildOctree(1) -- crea una árbol de octanos de un solo nivel de profundidad, solo 8 hijos
 
 Para volver a ajustar las dimensiones tanto en las rejillas como en los árboles de octanos, simplemente
 vuelve a ejecutar buildGrid3D o buildOctree.
 
-Llenado de geometría en Grid3D
+### Filling Geometry in Grid3D
 ==============================
 
-Los Grid3D almacenan un *flag boolean* por cada *celda* que podremos usar a nuestro antojo.
-No obstante, Brakeza3D incorpora un mecanismo de relleno de este *flag* llamado fillGrid3DFromGeometry,
-el cual activará este flag en cada celda, si ningún triángulo atraviesa o está contenido por dicha celda.
+Grid3D stores a boolean flag for each cell. Brakeza3D provides a method fillGrid3DFromGeometry, which
+sets this flag for each cell if no triangle intersects or is contained in it:
 
-    eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
-    eye:setScale(10)
-    eye:buildGrid3D(5, 5, 5)
-    eye:fillGrid3DFromGeometry() -- activa los flags para celdas sin geometría
-    Brakeza:addObject3D(eye, 'modelo')
+    eye = ObjectFactory.Mesh3D("../assets/models/Capsule.fbx", Vertex3D.new(x, y, z))
+    eye:BuildGrid3D(5, 5, 5)
+    eye:FillGrid3DFromGeometry()                -- sets flags for empty cells
 
-Será especialmente útil para aplicar técnicas de pathfinding disponer de esta información precargada
-en un Grid3D.
+This is especially useful for pathfinding techniques.
 
-#### Pathfinding en Grid3D
+### Pathfinding en Grid3D
 ==========================
 
-Las rejillas incorporan un algoritmo A* que permite iterar sobre sus celdas. En combinación con fillGrid3DFromGeometry,
-podrás conseguir que los caminos esquiven nodos con geometría.
+Grids include an A* algorithm that allows iterating over their cells. Combined with fillGrid3DFromGeometry,
+paths can avoid cells with geometry:
 
-    eye = Mesh3D.create(Vertex3D.new(0, 0, 10), "../assets/models/eye.fbx")
-    eye:buildGrid3D(5, 5, 5)                    -- construimos un grid de 5x5x5
-    eye:fillGrid3DFromGeometry()                -- Flags basados en si hay o no geometría en cada celda
-    Brakeza:addObject3D(eye, 'modelo')
+    eye = ObjectFactory.Mesh3D("../assets/models/Capsule.fbx", Vertex3D.new(x, y, z))
+    eye:BuildGrid3D(5, 5, 5)
+    eye:FillGrid3DFromGeometry()                    -- fill with geometry
 
-    eye:getGrid3D():setTravel(0, 0, 0, 5, 5, 5) -- Configuramos un viaje desde (0, 0, 0) hasta (5, 5, 5)
-    path = eye:getGrid3D():makeTravelCubesGrid() -- Obtenemos un array de CubeGrid3D
+    eye:getGrid3D():setTravel(0, 0, 0, 5, 5, 5)     -- set travel from (0,0,0) to (5,5,5)
+    path = eye:getGrid3D():MakeTravelCubesGrid()    -- returns an array of CubeGrid3D
 
 Mediante el método setTravel(x1, y1, z1, x2, y2, z2), podremos ajustar el viaje para el próximo camino
 solicitado mediante makeTravelCubesGrid.
 
-El método makeTravelCubesGrid devuelve ell camino solicitado si este fue posible mediante un array de CubeGrid3D,
-cuya estructura es la siguiente:
+The method MakeTravelCubesGrid returns the requested path as an array of CubeGrid3D structures:
 
     struct CubeGrid3D {
-        AABB3D box;             // Caja contenedora
-        int posX;               // Índice de la posición X en el grid
-        int posY;               // Índice de la posición Y en el grid
-        int posZ;               // Índice de la posición Z en el grid
+        AABB3D box;             // bounding box
+        int posX;               // X index in the grid
+        int posY;               // Y index
+        int posZ;               // Z index
         bool passed = true;     // Flag
     };
 
 
-Podemos iterar sobre dicho array para obtener el camino deseado.
+You can iterate over this array to obtain the desired path:
 
     ...
-    path = eye:getGrid3D():makeTravelCubesGrid() -- Obtenemos un array de CubeGrid3D
-    -- Iteramos sobre el array path y pintamos los índices de cada CubeGrid3D
+    path = eye:getGrid3D():MakeTravelCubesGrid()            -- we get a travel path
+
     for i, cube in ipairs(path) do
-        -- Imprimimos las coordenadas de cada CubeGrid3D
         print("Cube " .. i .. ": X = " .. cube.posX .. ", Y = " .. cube.posY .. ", Z = " .. cube.posZ)
     end
     ...
 
+
 ========================================================================================================
-
-### Ejemplos completos con código LUA
-
+### Complete LUA Code Examples
 ========================================================================================================
 
 https://github.com/rzeronte/brakeza3d/blob/master/doc/examples-lua-code.md

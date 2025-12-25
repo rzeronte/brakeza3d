@@ -1,7 +1,5 @@
 ========================================================================================================
-
 15 - Component Window
-
 ========================================================================================================
 
 El component Window es el responsable de inicializar la ventana del sistema operativo y manejar los

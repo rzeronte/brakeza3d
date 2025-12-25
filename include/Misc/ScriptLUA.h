@@ -8,8 +8,8 @@
 #include <string>
 #include <utility>
 #include "cJSON.h"
-#include "../Config.h"
 #include "../../sol/sol.hpp"
+#include "../3D/Vertex3D.h"
 
 typedef std::variant<int, float, Vertex3D, const char*> LUADataValue;
 
