@@ -99,9 +99,9 @@ inline void LUAIntegration(sol::state &lua)
         "setupGhostCollider", &Object3D::SetupGhostCollider,
         "SetupRigidBodyCollider", &Object3D::SetupRigidBodyCollider,
         "setColliderStatic", &Object3D::setColliderStatic,
-        "applyCentralForce", &Object3D::applyCentralForce,
-        "applyCentralImpulse", &Object3D::applyCentralImpulse,
-        "applyImpulse", &Object3D::applyImpulse,
+        "ApplyCentralForce", &Object3D::ApplyCentralForce,
+        "ApplyCentralImpulse", &Object3D::ApplyCentralImpulse,
+        "ApplyImpulse", &Object3D::ApplyImpulse,
         "setLinearVelocity", &Object3D::setLinearVelocity,
         "setAngularVelocity", &Object3D::setAngularVelocity,
         "setFriction", &Object3D::setFriction,
@@ -113,7 +113,7 @@ inline void LUAIntegration(sol::state &lua)
         "setMass", &Object3D::setMass,
         "setGravityCollider", &Object3D::setGravityCollider,
         "setWalkingDirection", &Object3D::setWalkingDirection,
-        "jump", &Object3D::jump,
+        "Jump", &Object3D::Jump,
         "onGround", &Object3D::onGround,
         "getLocalScriptVar", &Object3D::getLocalScriptVar,
         "AttachScript", &Object3D::AttachScript,
@@ -134,11 +134,11 @@ inline void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<ComponentSound>("ComponentSound",
     sol::base_classes, sol::bases<Component>(),
-        "addSound", &ComponentSound::addSound,
-        "addMusic", &ComponentSound::addMusic,
+        "AddSound", &ComponentSound::AddSound,
+        "AddMusic", &ComponentSound::AddMusic,
         "setMusicVolume", &ComponentSound::setMusicVolume,
         "setSoundsVolume", &ComponentSound::setSoundsVolume,
-        "playSound", &ComponentSound::playMusic,
+        "playSound", &ComponentSound::PlayMusic,
         "stopMusic", &ComponentSound::stopMusic
     );
 
@@ -163,7 +163,7 @@ inline void LUAIntegration(sol::state &lua)
     lua.new_usertype<ComponentRender>("ComponentRender",
     sol::base_classes, sol::bases<Component>(),
         "getSceneLoader", &ComponentRender::getSceneLoader,
-        "drawLine",  &ComponentRender::drawLine,
+        "DrawLine",  &ComponentRender::DrawLine,
         "setGlobalIlluminationDirection", &ComponentRender::setGlobalIlluminationDirection,
         "setGlobalIlluminationAmbient", &ComponentRender::setGlobalIlluminationAmbient,
         "setGlobalIlluminationDiffuse", &ComponentRender::setGlobalIlluminationDiffuse,
@@ -173,7 +173,7 @@ inline void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<ComponentScripting>("ComponentRender",
     sol::base_classes, sol::bases<Component>(),
-        "addSceneLUAScript", &ComponentScripting::addSceneLUAScript,
+        "AddSceneLUAScript", &ComponentScripting::AddSceneLUAScript,
         "getGlobalScriptVar",  &ComponentScripting::getGlobalScriptVar
     );
 
@@ -292,7 +292,7 @@ inline void LUAIntegration(sol::state &lua)
         "getNumberCubesZ", &Grid3D::getNumberCubesZ,
         "getBoxes", &Grid3D::getBoxes,
         "setTravel", &Grid3D::setTravel,
-        "makeTravelCubesGrid", &Grid3D::MakeTravelCubesGrid
+        "MakeTravelCubesGrid", &Grid3D::MakeTravelCubesGrid
     );
 
     lua.new_usertype<Mesh3D>("Mesh3D",
@@ -333,8 +333,8 @@ inline void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<SceneLoader>("SceneLoader",
     "clearScene", &SceneLoader::ClearScene,
-        "saveScene", &SceneLoader::SaveScene,
-        "loadScene", &SceneLoader::LoadScene
+        "SaveScene", &SceneLoader::SaveScene,
+        "LoadScene", &SceneLoader::LoadScene
     );
 
     lua.new_usertype<Image2D>("Image2D",
@@ -407,7 +407,16 @@ inline void LUAIntegration(sol::state &lua)
     );
 
     lua.new_usertype<ParticleEmitter>("ParticleEmitter",
-        sol::base_classes, sol::bases<Object3D>()
+        sol::base_classes, sol::bases<Object3D>(),
+        "setContext", &ParticleEmitter::setContext,
+        "setColorTo", &ParticleEmitter::setColorTo,
+        "setColorFrom", &ParticleEmitter::setColorFrom,
+        "setTexture", &ParticleEmitter::setTexture,
+        "setStopAdd", &ParticleEmitter::setStopAdd,
+        "isActive", &ParticleEmitter::isActive,
+        "getColorTo", &ParticleEmitter::getColorTo,
+        "getColorFrom", &ParticleEmitter::getColorFrom,
+        "getTexture", &ParticleEmitter::getTexture
     );
 
     lua.new_enum("CollisionShape",
@@ -494,7 +503,8 @@ inline void LUAIntegration(sol::state &lua)
         "LightPoint", &ObjectFactory::CreateLightPoint,
         "LightSpot", &ObjectFactory::CreateLightSpot,
         "ParticleEmitter", &ObjectFactory::CreateParticleEmitter,
-        "TextWriter", &ObjectFactory::CreateTextWriter
+        "TextWriter", &ObjectFactory::CreateTextWriter,
+        "ScriptLUA", &ObjectFactory::CreateScriptLUA
     );
 }
 

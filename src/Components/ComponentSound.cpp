@@ -164,17 +164,17 @@ float ComponentSound::soundDuration(const std::string& sound)
     return totalSamples / frequency;
 }
 
-void ComponentSound::addSound(const std::string &soundFile, const std::string &label)
+void ComponentSound::AddSound(const std::string &soundFile, const std::string &label)
 {
     soundPackage.addItem(soundFile, label, SOUND);
 }
 
-void ComponentSound::addMusic(const std::string &soundFile, const std::string &label)
+void ComponentSound::AddMusic(const std::string &soundFile, const std::string &label)
 {
     soundPackage.addItem(soundFile, label, MUSIC);
 }
 
-void ComponentSound::playMusic(const std::string& sound)
+void ComponentSound::PlayMusic(const std::string& sound)
 {
     playMusicMix(
         soundPackage.getMusicByLabel(sound),
@@ -182,7 +182,7 @@ void ComponentSound::playMusic(const std::string& sound)
     );
 }
 
-void ComponentSound::playSound(const std::string& sound, int channel, int times)
+void ComponentSound::PlaySound(const std::string& sound, int channel, int times)
 {
      playChunk(
         soundPackage.getByLabel(sound),

@@ -24,7 +24,7 @@ void Drawable::drawVertex(const Vertex3D &V, Color color)
 
 void Drawable::drawVector3D(const Vector3D &V, const Color &color)
 {
-    Components::get()->Render()->drawLine(V.vertex1,V.vertex2, color);
+    Components::get()->Render()->DrawLine(V.vertex1,V.vertex2, color);
 }
 
 void Drawable::drawMainAxisOffset(const Vertex3D &offset)

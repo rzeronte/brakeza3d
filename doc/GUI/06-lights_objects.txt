@@ -1,77 +1,74 @@
 ========================================================================================================
-
 06 - LIGHT OBJECTS
-
 ========================================================================================================
 
-Todos los tipos de luz son Object3D, por lo que su movimiento y rotación es similar a cualquier otro objeto.
+All light types are Object3D, so their movement, position and rotation behave the same as any other object.
+
 
 ========================================================================================================
-
 ### 6.1) LightPoint
-
 ========================================================================================================
 
-Punto de luz que emite en todas las direcciones.
+#### ADS Components
 
-Un punto de luz dispone de algunos atributos que afectarán como la luz funciona:
+    - Ambient component (vec3): Color intensity of the ambient light affecting the object.
+    - Diffuse component (vec3): Color intensity of the light applied to the texture.
+    - Specular component (vec3): Color intensity of specular reflections.
 
-#### Componentes ADS
+These attributes can be modified from the GUI or via LUA scripts.
+From scripts, you can use the following methods:
 
-- Componente ambiente (vec3): Intensidad de color de la luz ambiente sobre el objeto.
-- Componente difuso (vec): Intensidad de color de la luz sobre la textura.
-- Componente especular (dev): Intensidad de color de reflejos especulares.
+    - setAmbient(Color)
+    - setColor(Color)
+    - setColorSpecular(Color)
 
-Podrás manipular estos atributos desde la GUI o desde tus scripts LUA. Para hacerlo desde tus scripts,
-podrás usar los métodos:
+####Attenuation Constants
 
-- setAmbient(Color)
-- setColor(Color)
-- setColorSpecular(Color)
+    - Constant (float)
+    - Linear (float)
+    - Quadratic (float)
 
-#### Constantes
+These parameters can also be adjusted from the GUI or from LUA scripts.
+From scripts, use the following methods:
 
-- Constant (float)
-- Constante Linear (float)
-- Constante Quadratic (float)
+    - setConstant(float)
+    - setLinear(float)
+    - setQuadratic(float)
 
-También podrás manipular estos atributos desde la GUI o desde tus scripts LUA. Para hacerlo desde tus scripts,
-podrás usar los métodos:
+Ejemplo de instanciación desde script:
 
-- setConstant(float)
-- setLinear(float)
-- setCuadratic(float)
+    lightpoint = ObjectFactory.LightPoint(
+        Vertex3D.new(10, 20, 30),                               -- position
+        Color.new(0.1, 0.1, 0.1),                               -- ambient component
+        Color.new(0.2, 0.4, 0.6),                               -- diffuse component
+        Color.new(0.5, 0.3, 1.0),                               -- specular component
+    );
 
-Ejemplo de instanciación desde script LUA:
-
-    -- LightPoint3D.create(position)
-    lightp = LightPoint3D.create(Vertex3D.new(5, 5, 5))
-    Brakeza:addObject3D(lightp, 'myLightPoint')
 
 ========================================================================================================
-
 ### 6.2) LightSpot
-
 ========================================================================================================
 
-Punto de luz que emite en una dirección dada. Es básicamente un *foco* de luz.
+A light source that emits light in a specific direction. It is essentially a spotlight.
 
-El objeto SpotLight3D hereda directamente de ../doc/GUI/LightPoint3D, por lo que posee todas
-sus propiedades, sin embargo, añade algunas importantes:
+The SpotLight3D object directly inherits from LightPoint3D, therefore it includes all of its
+properties. In addition, it introduces the following specific attributes:
 
-- direction: Vertex3D con la dirección en la que apunta el foco
-- cut: float Constante de tamaño (tamaño del foco)
-- cutOff: float Constante de corte de luz (difusión del borde del foco)
+    - direction: Vertex3D indicating the direction the spotlight is pointing to
+    - cut (float): Size constant of the spotlight cone
+    - cutOff (float): Light cutoff constant (edge softness of the cone)
 
-Podrás manipular dichos valores mediante los métodos:
+These values can be modified using the following methods:
 
-- setDirection(Vertex3D)
-- setCut(float)
-- setCutOff(float)
+    - setDirection(Vertex3D)
+    - setCut(float)
+    - setCutOff(float)
 
-Ejemplo de instanciación desde script LUA:
+Example of instantiation from a LUA script:
 
-    -- SpotLight3D.create(position, direction)
-    lights = SpotLight3D.create(Vertex3D.new(5, -10, 5), Vertex3D.new(0, 0, 1))
-    lights:setColor(Color.new(255, 255, 0, 255))
-    Brakeza:addObject3D(lights, 'mySpotLight')
+    lightpoint = ObjectFactory.SpotLight(
+        Vertex3D.new(10, 20, 30),                               -- position
+        Color.new(0.1, 0.1, 0.1),                               -- ambient component
+        Color.new(0.2, 0.4, 0.6),                               -- diffuse component
+        Color.new(0.5, 0.3, 1.0),                               -- specular component
+    );

@@ -105,7 +105,7 @@ public:
     void setGlobalIlluminationAmbient(const Vertex3D &a) const;
     void setGlobalIlluminationDiffuse(const Vertex3D &d) const;
     void setGlobalIlluminationSpecular(const Vertex3D &s) const;
-    void drawLine(const Vertex3D &from, const Vertex3D &to, const Color &c) const;
+    void DrawLine(const Vertex3D &from, const Vertex3D &to, const Color &c) const;
     void setLastFrameBufferUsed(GLuint value);
     void setLastProgramUsed(GLuint value);
     void ChangeOpenGLFramebuffer(GLuint);

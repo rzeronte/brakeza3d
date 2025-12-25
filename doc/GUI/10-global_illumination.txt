@@ -1,33 +1,38 @@
 ========================================================================================================
-
 10 - GLOBAL ILLUMINATION
-
 ========================================================================================================
 
-Brakeza3D incluye una luz por defecto en la escena. Puedes verlo como *el sol*,
+Brakeza3D includes a default light in the scene, which can be thought of as the sun.
 
-Al fin y al cabo, es una luz direccional, por lo que podrás ajustar algunos de sus
-parámetros para conseguir la luz base deseada.
+Essentially, it is a directional light, so you can adjust some of its parameters to achieve the desired
+base illumination. Being a global light, it has no position. You can manipulate the components of global
+illumination through the UI or using your LUA scripts.
 
-Al ser una luz global, **carece de posición**.
-
-Puedes manipular las componentes de la iluminación global mediante la UI o a través
-de tus scripts LUA.
-
-Se configura mediante el componente render:
+It is configured via the render component:
 
     render = Components:Render()
 
-- setGlobalIlluminationDirection(Vertex3D): Dirección de iluminación global.
-- setGlobalIlluminationAmbient(Vertex3D): Componente ambiente de iluminación global.
-- setGlobalIlluminationDiffuse(Vertex3D): Componente difuso de iluminación global.
-- setGlobalIlluminationSpecular(Vertex3D): Componente especuilar de de iluminación global.
 
-Nota: Las componentes ambiente, difusa y especular, las manipulamos a través del tipo Vertex3D y no a través de colores,
-simplemente por conveniencia, ya que se esperan valores de rango 0-1 y no 0-255 como hace un Color.
+========================================================================================================
+### 10.1 - Direction
+========================================================================================================
 
-Ejemplo para configurar la componente ambiente:
+    - setGlobalIlluminationDirection(Vertex3D): Sets the global illumination direction.
 
-    render = Components:Render()
-    render:setGlobalIlluminationAmbient(Vertex3D.new(1, 0, 0)) -- rojo
+========================================================================================================
+### 10.2 - Components
+========================================================================================================
+
+Methods form global illumination:
+
+    - setGlobalIlluminationAmbient(Vertex3D): Sets the ambient component of the global illumination.
+    - setGlobalIlluminationDiffuse(Vertex3D): Sets the diffuse component of the global illumination.
+    - setGlobalIlluminationSpecular(Vertex3D): Sets the specular component of the global illumination.
+
+Note: The ambient, diffuse, and specular components are controlled via Vertex3D rather than a Color type.
+This is for convenience, since the expected values range from 0 to 1, rather than 0 to 255 as with a Color.
+
+Example: Setting the Ambient Component
+
+    Components:Render():setGlobalIlluminationAmbient(Vertex3D.new(1, 0, 0)) -- rojo
 

@@ -31,6 +31,7 @@ class ObjectFactory {
     static LightSpot* CreateLightSpot(const Vertex3D &position, const Color &ambient, const Color &diffuse, const Color &specular);
     static ParticleEmitter* CreateParticleEmitter(const Vertex3D &position, const Color &from, const Color &to);
     static TextWriter* CreateTextWriter(const std::string& fontFile);
+    static ScriptLUA* CreateScriptLUA(const std::string& scriptFile);
 
 };
 

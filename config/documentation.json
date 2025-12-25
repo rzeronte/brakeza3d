@@ -6,12 +6,12 @@
 			"line": 0,
 			"children": [
 				{
-					"name": "1.1) Conceptos principales",
+					"name": "1.1) Main concepts",
 					"file": "../doc/GUI/01-basics.txt",
 					"line": 0,
 					"children": [
 						{
-							"name": "1.1.1) Proyectos",
+							"name": "1.1.1) Projects",
 							"file": "../doc/GUI/01-basics.txt",
 							"line": 33,
 							"children": []
@@ -23,13 +23,13 @@
 							"children": []
 						},
 						{
-							"name": "1.1.3) Escenas",
+							"name": "1.1.3) Scenes",
 							"file": "../doc/GUI/01-basics.txt",
 							"line": 0,
 							"children": []
 						},
 						{
-							"name": "1.1.4) Objetos",
+							"name": "1.1.4) Objects",
 							"file": "../doc/GUI/01-basics.txt",
 							"line": 0,
 							"children": []
@@ -43,7 +43,7 @@
 					"children": []
 				},
 				{
-					"name": "1.3) Componentes",
+					"name": "1.3) Components",
 					"file": "../doc/GUI/01-basics.txt",
 					"line": 0,
 					"children": []
@@ -56,31 +56,31 @@
 			"line": 0,
 			"children": [
 				{
-					"name": "2.1) El objeto Object3D",
+					"name": "2.1) The object Object3D",
 					"file": "../doc/GUI/02-basic_object_types.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "2.2) Interactuando con un Object3D",
+					"name": "2.2) Interacting with an Object3D",
 					"file": "../doc/GUI/02-basic_object_types.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "2.3) Scripting sobre objetos",
+					"name": "2.3) Scripting on Object3D",
 					"file": "../doc/GUI/02-basic_object_types.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "2.4) Objetos derivados de Object3D",
+					"name": "2.4) Derived Objects from Object3D",
 					"file": "../doc/GUI/02-basic_object_types.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "2.5) Tipos básicos auxiliares",
+					"name": "2.5) Auxiliary Basic Types",
 					"file": "../doc/GUI/02-basic_object_types.txt",
 					"line": 0,
 					"children": [
@@ -124,19 +124,19 @@
 			"line": 0,
 			"children": [
 				{
-					"name": "3.1) Matrices de vista y proyección",
+					"name": "3.1) View and Projection Matrices",
 					"file": "../doc/GUI/03-camera_object.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "3.2) Movimiento y rotación de la cámara",
+					"name": "3.2) Camera Movement and Rotation",
 					"file": "../doc/GUI/03-camera_object.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "3.3) ComponentCamera",
+					"name": "3.3) Camera Component",
 					"file": "../doc/GUI/03-camera_object.txt",
 					"line": 0,
 					"children": []
@@ -167,7 +167,7 @@
 					"children": []
 				},
 				{
-					"name": "4.3) Textos en pantalla",
+					"name": "4.3) Text on screen",
 					"file": "../doc/GUI/04-2d_objects.txt",
 					"line": 0,
 					"children": []
@@ -198,7 +198,7 @@
 					"children": []
 				},
 				{
-					"name": "5.4) Dibujar líneas",
+					"name": "5.4) Draw lines",
 					"file": "../doc/GUI/05-3d_objects.txt",
 					"line": 0,
 					"children": []
@@ -228,58 +228,65 @@
 			"name": "7) Particle emitter",
 			"file": "../doc/GUI/07-particle_emitter.txt",
 			"line": 0,
-			"children": []
+			"children": [
+				{
+					"name": "7.1) Particle Context",
+					"file": "../doc/GUI/07-particle_emitter.txt",
+					"line": 0,
+					"children": []
+				}
+			]
 		},
 		{
-			"name": "8) Collision between objects",
-			"file": "../doc/GUI/08-collision_between_objects.txt",
+			"name": "8) Colliders system",
+			"file": "../doc/GUI/08-colliders_system.txt",
 			"line": 0,
 			"children": [
 				{
-					"name": "8.1) Modos de colisión",
-					"file": "../doc/GUI/08-collision_between_objects.txt",
+					"name": "8.1) Collision Modes",
+					"file": "../doc/GUI/08-colliders_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "8.2) Forma del colisionador",
-					"file": "../doc/GUI/08-collision_between_objects.txt",
+					"name": "8.2) Collision Modes",
+					"file": "../doc/GUI/08-colliders_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "8.3) Desactivar colisiones",
-					"file": "../doc/GUI/08-collision_between_objects.txt",
+					"name": "8.3) Collider Shape",
+					"file": "../doc/GUI/08-colliders_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "8.4) Movimiento en objetos colisionadores",
-					"file": "../doc/GUI/08-collision_between_objects.txt",
+					"name": "8.4) Disabling Collisions",
+					"file": "../doc/GUI/08-colliders_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "8.5) Aplicar fuerzas a objetos rígidos",
-					"file": "../doc/GUI/08-collision_between_objects.txt",
+					"name": "8.5) Movement of Collidable Objects",
+					"file": "../doc/GUI/08-colliders_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "8.6) Propiedades del colisionador",
-					"file": "../doc/GUI/08-collision_between_objects.txt",
+					"name": "8.6) Collider Properties",
+					"file": "../doc/GUI/08-colliders_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "8.7) Modo de colisión KINEMATIC",
-					"file": "../doc/GUI/08-collision_between_objects.txt",
+					"name": "8.7) KINEMATIC Collision Mode",
+					"file": "../doc/GUI/08-colliders_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "8.8) Mapeado de colisionadores y huesos",
-					"file": "../doc/GUI/08-collision_between_objects.txt",
+					"name": "8.8) Collider and Bone Mapping",
+					"file": "../doc/GUI/08-colliders_system.txt",
 					"line": 0,
 					"children": []
 				}
@@ -295,7 +302,18 @@
 			"name": "10) Global illumination",
 			"file": "../doc/GUI/10-global_illumination.txt",
 			"line": 0,
-			"children": []
+			"children": [{
+					"name": "10.1) Direction",
+					"file": "../doc/GUI/10-global_illumination.txt",
+					"line": 0,
+					"children": []
+				},{
+					"name": "10.2) Illumination components",
+					"file": "../doc/GUI/10-global_illumination.txt",
+					"line": 0,
+					"children": []
+				}
+			]
 		},
 		{
 			"name": "11) Sound system",
@@ -303,43 +321,43 @@
 			"line": 0,
 			"children": [
 				{
-					"name": "11.1) Formatos de sonido",
+					"name": "11.1) Sound Formats",
 					"file": "../doc/GUI/11-sound_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "11.2) Canales",
+					"name": "11.2) Channels",
 					"file": "../doc/GUI/11-sound_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "11.3) Carga de ficheros en memoria",
+					"name": "11.3) Loading Files into Memory",
 					"file": "../doc/GUI/11-sound_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "11.4) Reproducir música",
+					"name": "11.4) Playing Music",
 					"file": "../doc/GUI/11-sound_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "11.5) Reproducir sonidos",
+					"name": "11.5) Playing Sounds",
 					"file": "../doc/GUI/11-sound_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "11.6) Volumen",
+					"name": "11.6) Volume",
 					"file": "../doc/GUI/11-sound_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "11.7) Carga automática",
+					"name": "11.7) Automatic Loading",
 					"file": "../doc/GUI/11-sound_system.txt",
 					"line": 0,
 					"children": []
@@ -485,11 +503,6 @@
 					"line": 0,
 					"children": []
 				},{
-					"name": "15.1) Window",
-					"file": "../doc/GUI/15-components.txt",
-					"line": 0,
-					"children": []
-				},{
 					"name": "15.2) Render",
 					"file": "../doc/GUI/15-components.txt",
 					"line": 0,
@@ -511,6 +524,11 @@
 					"children": []
 				},{
 					"name": "15.6) Scripting",
+					"file": "../doc/GUI/15-components.txt",
+					"line": 0,
+					"children": []
+				},{
+					"name": "15.7) Sound",
 					"file": "../doc/GUI/15-components.txt",
 					"line": 0,
 					"children": []

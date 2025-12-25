@@ -1,63 +1,75 @@
 ========================================================================================================
-
 07 - PARTICLE EMITTER OBJECT
-
 ========================================================================================================
 
-Brakeza3D incorpora un objeto dedicado a emitir partículas, nos referimos a ParticleEmitter.
+Brakeza3D includes a dedicated object for emitting particles, called ParticleEmitter.
 
-Es un emisor de partículas emite imagenes 2D según la configuración dada.
+A ParticleEmitter emits 2D image-based particles according to a given configuration.
 
-Para configurar un ParticleEmitter debes configurar una serie de parámetros:
+To configure a ParticleEmitter, the following parameters must be provided:
 
-- Posición: Posición 3D del emisor de partículas.
-- Tiempo de vida: TTL del emisor de partículas en segundos.
-- Color inicio: (Opcional). Color inicial de la partícula al nacer.
-- Color final: (Opcional). Color final de la partícula al morir.
-- Contexto: Contexto del emisor de partículas.
-- Imagen: Fichero de imagen.
+    - Position: 3D position of the particle emitter.
+    - Lifetime: TTL of the particle emitter, in seconds.
+    - Start Color (optional): Initial color of the particle at birth.
+    - End Color (optional): Final color of the particle when it dies.
+    - Context: Particle emitter context.
+    - Image: Image file used by the particles.
 
-El argumento más destacable es él contexto. Él contexto incluye multitud de parámetros
-que podremos manipular para alterar el comportamiento de nuestras partículas. Los contextos
-de emisores de partículas se implementan a través de un objeto: ParticlesContext:
+The most important argument is the context. The context contains multiple parameters that can be
+adjusted to modify the behavior of the particles. Particle emitter contexts are implemented through
+the ParticlesContext object.
 
-Las propiedades de un ParticlesContext son:
+ParticlesContext Properties:
 
-- gravity (float): Factor gravitatorio de las partículas.
-- particlesByFrame (float): Número de partículas creadas por segundo
-- particleLifespan (float): Tiempo de vida de cada partícula.
-- angleRange (int): Ángulo del cono de emisión de partículas.
-- minVelocity (int): Velocidad mínima de la partícula al nacer.
-- maxVelocity (int): Velocidad máxima de la particula al ser nacer.
-- alphaMin (int): Canal alpha mínimo de la partícula al nacer.
-- alphaMax (int): Canal alpha máximo de la partícula al nacer.
-- positionNoise (int): Ruido en la posición de nacimiento de la partícula.
-- velocityNoise (int): Ruido en el movimiento de la partícula.
-- decelerationFactor (float): Factor de deceleración de la partícula.
+    - gravity (float): Gravitational factor applied to the particles.
+    - particlesByFrame (float): Number of particles created per second.
+    - particleLifespan (float): Lifetime of each particle.
+    - angleRange (int): Emission cone angle for the particles.
+    - minVelocity (int): Minimum velocity of a particle at birth.
+    - maxVelocity (int): Maximum velocity of a particle at birth.
+    - alphaMin (int): Minimum alpha channel value at birth.
+    - alphaMax (int): Maximum alpha channel value at birth.
+    - positionNoise (int): Random offset applied to the particle spawn position.
+    - velocityNoise (int): Random variation applied to the particle velocity.
+    - decelerationFactor (float): Particle deceleration factor over time.
 
-Podrás manipular las propiedades de los ParticlesContext desde la UI.
+All ParticlesContext properties can be modified from the UI.
 
-Ejemplo de creación de un emisor de partículas desde código:
+Example: Creating a Particle Emitter from Code
 
-    print("Load ParticleEmitter")
-    particles = ParticleEmitter.create(
-        Vertex3D.new(10, 10, 10),       -- position
-        100,                            -- ttl
-        Color.new(255, 255, 0, 255),    -- color from
-        Color.new(255, 255, 255, 255),  -- color to
-        ParticlesContext.new(
-            0.0,            -- gravity
-            2,              -- particlesByFrame
-            1.0,            -- particleLifespan
-            25.0,           -- angleRange
-            1,              -- minVelocity
-            10,             -- maxVelocity
-            125.0,          -- alphaMin
-            255.0,          -- alphaMax
-            5,              -- positionNoise
-            10,             -- velocityNoise
-            0.99            -- decelerationFactor
-        ),
-        "../assets/images/logo_small.png"       --image
+    emitter = ObjectFactory.ParticleEmitter(
+        Vertex3D.new(10, 10, 10),                       -- position
+        Color.new(255, 255, 0, 255),                    -- color from
+        Color.new(255, 255, 255, 255),                  -- color to
     )
+
+    -- Create a custom particle context
+    particleContext = ParticlesContext.new(
+        0.0,    -- GRAVITY
+        10.0,   -- PARTICLES_BY_SECOND
+        1.5,    -- PARTICLE_LIFESPAN
+        30,     -- SMOKE_ANGLE_RANGE
+        2,      -- MIN_VELOCITY
+        12,     -- MAX_VELOCITY
+        100,    -- MIN_ALPHA
+        255,    -- MAX_ALPHA
+        4,      -- POSITION_NOISE
+        8,      -- VELOCITY_NOISE
+        0.98    -- DECELERATION_FACTOR
+    )
+    emitter:setContext(particleContext)
+
+The following methods allow you to configure and control the behavior of a ParticleEmitter. They provide
+access to its particle context, color interpolation, texture assignment, and emission state, enabling
+dynamic adjustment of particle effects at runtime through LUA scripts.
+
+    - setContext(ParticlesContext):	Assigns a new particle context to the emitter, defining how particles are generated and behave.
+    - setColorFrom(Color):	Sets the initial color of particles at the moment they are spawned.
+    - setColorTo(Color):	Sets the final color of particles when they reach the end of their lifespan.
+    - setTexture(string):	Sets the texture image used by the particle emitter.
+    - setStopAdd(bool):	Enables or disables the emission of new particles while allowing existing ones to continue updating.
+    - isActive():	Returns whether the particle emitter is currently active.
+    - getColorFrom():	Returns the current start color used for newly spawned particles.
+    - getColorTo():	Returns the current end color applied to particles at the end of their lifespan.
+    - getTexture():	Returns the file path of the texture currently used by the particle emitter.
 
