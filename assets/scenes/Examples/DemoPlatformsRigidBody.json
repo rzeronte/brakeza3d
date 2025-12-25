@@ -28,7 +28,7 @@
 	},
 	"objects":	[{
 			"name":	"capsule",
-			"enable": true,
+			"enabled": true,
 			"scale":	1,
 			"position":	{
 				"x":	-45.03961181640625,
@@ -80,7 +80,7 @@
 			"type":	2
 		}, {
 			"name":	"character",
-			"enable": true,
+			"enabled": true,
 			"scale":	1,
 			"position":	{
 				"x":	-20.573619842529297,
@@ -175,7 +175,7 @@
 		"type":	3
 		}, {
 			"name":	"floor",
-			"enable": true,
+			"enabled": true,
 			"scale":	1,
 			"position":	{
 				"x":	-41.310626983642578,
@@ -227,7 +227,7 @@
 			"type":	2
 		}, {
 			"name":	"StartPosition",
-			"enable": true,
+			"enabled": true,
 			"scale":	1,
 			"position":	{
 				"x":	-46.686080932617188,
@@ -241,8 +241,8 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/Examples/Commons/StartPositionObject.lua",
-					"typesFile":	"../assets/scripts/Examples/Commons/StartPositionObject.json",
+					"codeFile":	"../assets/scripts/Demos/Commons/StartPositionObject.lua",
+					"typesFile":	"../assets/scripts/Demos/Commons/StartPositionObject.json",
 					"name":	"StartPositionObject",
 					"types":	[{
 							"name":	"objectToMove",
@@ -262,9 +262,9 @@
 		}],
 	"shaders":	[],
 	"scripts":	[{
-			"codeFile":	"../assets/scripts/Examples/Commons/SideScrollCamera.lua",
-			"typesFile": "../assets/scripts/Examples/Commons/SideScrollCamera.json",
-			"name":	"SideScrollCamera.lua"
+			"codeFile":	"../assets/scripts/Demos/Commons/SideScrollCamera.lua",
+			"typesFile": "../assets/scripts/Demos/Commons/SideScrollCamera.json",
+			"name":	"SideScrollCamera"
 		}],
 	"camera":	{
 		"position":	{

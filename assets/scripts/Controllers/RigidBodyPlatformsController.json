@@ -1,0 +1,42 @@
+{
+	"codeFile":	"../assets/scripts/Controllers/RigidBodyPlatformsController.lua",
+	"typesFile": "../assets/scripts/Controllers/RigidBodyPlatformsController.json",
+	"name":	"RigidBodyPlatformsController",
+	"types":	[{
+			"name":	"maxSpeed",
+			"type":	"float",
+			"value":	2.5
+		}, {
+			"name":	"speed",
+			"type":	"float",
+			"value":	5
+		}, {
+			"name":	"jumpForce",
+			"type":	"float",
+			"value":	20
+		}, {
+			"name":	"lengthRay",
+			"type":	"float",
+			"value":	1.5
+		}, {
+			"name":	"airControlFactor",
+			"type":	"float",
+			"value":	0.20000000298023224
+		}, {
+			"name":	"cameraOffset",
+			"type":	"Vertex3D",
+			"value":	{
+				"x":	0,
+				"y":	0,
+				"z":	-20
+			}
+		}, {
+			"name":	"colliderOffset",
+			"type":	"Vertex3D",
+			"value":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			}
+		}]
+}

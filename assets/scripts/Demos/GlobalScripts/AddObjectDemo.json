@@ -1,6 +1,6 @@
 {
-    "codeFile":	"../assets/scripts/Examples/GlobalScripts/AddObjectDemo/AddObjectDemo.lua",
-    "typesFile": "../assets/scripts/Examples/GlobalScripts/AddObjectDemo/AddObjectDemo.json",
+    "codeFile":	"../assets/scripts/Demos/GlobalScripts/AddObjectDemo.lua",
+    "typesFile": "../assets/scripts/Demos/GlobalScripts/AddObjectDemo.json",
     "name":	"AddObjectDemo",
     "types":	[
         {

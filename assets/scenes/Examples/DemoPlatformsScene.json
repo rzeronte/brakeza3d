@@ -28,12 +28,12 @@
 	},
 	"objects":	[{
 			"name":	"capsule",
+			"enabled": true,
 			"scale":	1,
-			"enabled":	true,
 			"position":	{
-				"x":	-44.067607879638672,
-				"y":	-7.520592212677002,
-				"z":	-32.555183410644531
+				"x":	-43.188507080078125,
+				"y":	-2.7056727409362793,
+				"z":	-43.219985961914063
 			},
 			"rotation":	{
 				"x":	0,
@@ -43,12 +43,9 @@
 			"isCollisionsEnabled":	true,
 			"collider":	{
 				"mode":	2,
-				"shape":	1,
+				"shape":	0,
 				"friction":	1,
 				"mass":	100,
-				"margin":	0.0040000001899898052,
-				"ccdMotionThreshold":	0,
-				"ccdSweptSphereRadius":	0,
 				"linearDamping":	1,
 				"angularDamping":	1,
 				"restitution":	0,
@@ -60,7 +57,7 @@
 				},
 				"kinematicCapsuleSize":	{
 					"x":	0.5,
-					"y":	0.89999997615814209
+					"y":	1
 				},
 				"angularFactor":	{
 					"x":	1,
@@ -74,10 +71,26 @@
 				}
 			},
 			"scripts":	[{
-					"codeFile":	 "../assets/scripts/Controllers/KinematicThirdPersonController.lua",
-					"typesFile": "../assets/scripts/Controllers/KinematicThirdPersonController.json",
-					"name":	"KinematicThirdPersonController.lua",
+					"codeFile":	"../assets/scripts/Controllers/KinematicPlatformsController.lua",
+					"typesFile":	"../assets/scripts/Controllers/KinematicPlatformsController.json",
+					"name":	"KinematicPlatformsController",
 					"types":	[{
+							"name":	"mouseSensibility",
+							"type":	"float",
+							"value":	0.10000000149011612
+						}, {
+							"name":	"force",
+							"type":	"float",
+							"value":	0.10000000149011612
+						}, {
+							"name":	"deceleration",
+							"type":	"float",
+							"value":	0.0099999997764825821
+						}, {
+							"name":	"jumpForce",
+							"type":	"float",
+							"value":	12
+						}, {
 							"name":	"speed",
 							"type":	"float",
 							"value":	0
@@ -94,43 +107,27 @@
 								"z":	0
 							}
 						}, {
-							"name":	"force",
-							"type":	"float",
-							"value":	0.05000000074505806
-						}, {
-							"name":	"deceleration",
-							"type":	"float",
-							"value":	0.30000001192092896
-						}, {
-							"name":	"jumpForce",
-							"type":	"float",
-							"value":	10
-						}, {
 							"name":	"cameraOffset",
 							"type":	"Vertex3D",
 							"value":	{
 								"x":	0,
-								"y":	2.5,
-								"z":	5
+								"y":	-1,
+								"z":	-20
 							}
-						}, {
-							"name":	"mouseSensibility",
-							"type":	"float",
-							"value":	0.10000000149011612
 						}]
 				}],
+			"shaders":	[],
 			"model":	"../assets/models//Capsule.fbx",
 			"enableLights":	false,
-			"shaders":	[],
 			"type":	2
 		}, {
-			"name":	"Mesh3D_97",
+			"name":	"Mesh3D_46",
+			"enabled": true,
 			"scale":	1,
-			"enabled":	true,
 			"position":	{
-				"x":	-43.280624389648438,
-				"y":	-11.2020263671875,
-				"z":	-30.593469619750977
+				"x":	-38.931137084960938,
+				"y":	-12.569705963134766,
+				"z":	-43.248760223388672
 			},
 			"rotation":	{
 				"x":	0,
@@ -143,9 +140,6 @@
 				"shape":	2,
 				"friction":	1,
 				"mass":	0,
-				"margin":	0.0040000001899898052,
-				"ccdMotionThreshold":	0,
-				"ccdSweptSphereRadius":	0,
 				"linearDamping":	1,
 				"angularDamping":	1,
 				"restitution":	0,
@@ -157,7 +151,7 @@
 				},
 				"kinematicCapsuleSize":	{
 					"x":	0.5,
-					"y":	0.89999997615814209
+					"y":	1.5
 				},
 				"angularFactor":	{
 					"x":	1,
@@ -171,22 +165,22 @@
 				}
 			},
 			"scripts":	[],
-			"model":	"../assets/models//DevLevel.fbx",
-			"enableLights":	false,
 			"shaders":	[],
+			"model":	"../assets/models//DevLevelPlatforms.fbx",
+			"enableLights":	false,
 			"type":	2
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-44.067607879638672,
-			"y":	-10.020591735839844,
-			"z":	-37.555183410644531
+			"x":	-43.188507080078125,
+			"y":	-14.913570404052734,
+			"z":	-63.253883361816406
 		},
 		"rotation":	{
-			"x":	22.949979782104492,
-			"y":	-149.37501525878906,
+			"x":	-8.2000093460083,
+			"y":	176.80003356933594,
 			"z":	0
 		}
 	}

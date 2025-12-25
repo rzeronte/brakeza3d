@@ -1,4 +1,10 @@
 {
+	"screenshot":	"../assets/screenshots/scene_119095.png",
+	"description":	{
+		"x":	0,
+		"y":	-9.8000001907348633,
+		"z":	0
+	},
 	"gravity":	{
 		"x":	0,
 		"y":	-9.8000001907348633,
@@ -42,30 +48,10 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/Examples/RotateFromObject.lua",
-					"typesFile":	"../assets/scripts/Examples/RotateFromObject.json",
+					"codeFile":	"",
+					"typesFile":	"",
 					"name":	"Rotate from object",
-					"types":	[{
-							"name":	"objectName",
-							"type":	"string",
-							"value":	"pawn"
-						}, {
-							"name":	"radius",
-							"type":	"float",
-							"value":	5
-						}, {
-							"name":	"speed",
-							"type":	"float",
-							"value":	1
-						}, {
-							"name":	"offset",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	2,
-								"y":	4,
-								"z":	0
-							}
-						}]
+					"types":	[]
 				}],
 			"ambient":	{
 				"x":	0.16803276538848877,
@@ -87,12 +73,12 @@
 			"quadratic":	0.0099999997764825821,
 			"type":	4
 		}, {
-			"name":	"p3",
+			"name":	"p2",
 			"scale":	1,
 			"enabled":	true,
 			"position":	{
-				"x":	7.4340124130249023,
-				"y":	11.316764831542969,
+				"x":	-9.05780029296875,
+				"y":	10.334745407104492,
 				"z":	1.83713698387146
 			},
 			"rotation":	{
@@ -102,30 +88,10 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/Examples/RotateFromObject.lua",
-					"typesFile":	"../assets/scripts/Examples/RotateFromObject.json",
+					"codeFile":	"",
+					"typesFile":	"",
 					"name":	"Rotate from object",
-					"types":	[{
-							"name":	"objectName",
-							"type":	"string",
-							"value":	"pawn"
-						}, {
-							"name":	"radius",
-							"type":	"float",
-							"value":	15
-						}, {
-							"name":	"speed",
-							"type":	"float",
-							"value":	2
-						}, {
-							"name":	"offset",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	8,
-								"z":	0
-							}
-						}]
+					"types":	[]
 				}],
 			"ambient":	{
 				"x":	0.05000000074505806,
@@ -133,16 +99,16 @@
 				"z":	0.05000000074505806
 			},
 			"diffuse":	{
-				"x":	0.35245907306671143,
-				"y":	1,
-				"z":	0
+				"x":	0,
+				"y":	0.43442630767822266,
+				"z":	1
 			},
 			"specular":	{
 				"x":	1,
 				"y":	1,
 				"z":	1
 			},
-			"constant":	0.25999999046325684,
+			"constant":	0.23999999463558197,
 			"linear":	0.090000003576278687,
 			"quadratic":	0.032000001519918442,
 			"type":	4
@@ -199,12 +165,12 @@
 			"shaders":	[],
 			"type":	2
 		}, {
-			"name":	"p2",
+			"name":	"p3",
 			"scale":	1,
 			"enabled":	true,
 			"position":	{
-				"x":	-9.05780029296875,
-				"y":	10.334745407104492,
+				"x":	7.4340124130249023,
+				"y":	11.316764831542969,
 				"z":	1.83713698387146
 			},
 			"rotation":	{
@@ -214,30 +180,10 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/Examples/RotateFromObject.lua",
-					"typesFile":	"../assets/scripts/Examples/RotateFromObject.json",
+					"codeFile":	"",
+					"typesFile":	"",
 					"name":	"Rotate from object",
-					"types":	[{
-							"name":	"objectName",
-							"type":	"string",
-							"value":	"enabled"
-						}, {
-							"name":	"radius",
-							"type":	"float",
-							"value":	10
-						}, {
-							"name":	"speed",
-							"type":	"float",
-							"value":	1.5
-						}, {
-							"name":	"offset",
-							"type":	"Vertex3D",
-							"value":	{
-								"x":	0,
-								"y":	6,
-								"z":	2
-							}
-						}]
+					"types":	[]
 				}],
 			"ambient":	{
 				"x":	0.05000000074505806,
@@ -245,16 +191,16 @@
 				"z":	0.05000000074505806
 			},
 			"diffuse":	{
-				"x":	0,
-				"y":	0.43442630767822266,
-				"z":	1
+				"x":	0.35245907306671143,
+				"y":	1,
+				"z":	0
 			},
 			"specular":	{
 				"x":	1,
 				"y":	1,
 				"z":	1
 			},
-			"constant":	0.23999999463558197,
+			"constant":	0.25999999046325684,
 			"linear":	0.090000003576278687,
 			"quadratic":	0.032000001519918442,
 			"type":	4
