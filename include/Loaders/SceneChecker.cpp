@@ -294,9 +294,15 @@ void SceneChecker::LoadSceneInfoDialog(const std::string& pathFile)
     ResetStatus();
 
     auto json = cJSON_Parse(Tools::ReadFile(pathFile));
-    ExtractSceneInfo(json);
-    cJSON_Delete(json);
+    try {
+        ExtractSceneInfo(json);
+    } catch (const std::exception& e) {
+        LOG_ERROR("[SceneChecker] Cannot open scene file!: %s", e.what());
+        cJSON_Delete(json);
+        return;
+    }
 
+    cJSON_Delete(json);
     Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::SCENE_INFO)->isOpen = true;
 }
 

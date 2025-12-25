@@ -1,6 +1,6 @@
 {
-	"codeFile":	"../assets/scripts/Examples/Commons/SideScrollCamera/SideScrollCamera.lua",
-	"typesFile": "../assets/scripts/Examples/Commons/SideScrollCamera/SideScrollCamera.json",
+	"codeFile":	"../assets/scripts/Demos/Commons/SideScrollCamera/SideScrollCamera.lua",
+	"typesFile": "../assets/scripts/Demos/Commons/SideScrollCamera/SideScrollCamera.json",
 	"name":	"Side scroll demo",
 	"types":	[]
 }

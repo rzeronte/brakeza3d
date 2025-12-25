@@ -1,6 +1,6 @@
 {
-  "codeFile":	"../assets/scripts/Controllers/KinematicFPS/KinematicFPSController.lua",
-  "typesFile":	"../assets/scripts/Controllers/KinematicFPS/KinematicFPSController.json",
+  "codeFile":	"../assets/scripts/Controllers/KinematicFPSController.lua",
+  "typesFile":	"../assets/scripts/Controllers/KinematicFPSController.json",
   "name":	"KinematicFPSController",
   "types":	[
     {

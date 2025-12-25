@@ -29,8 +29,8 @@
 	"objects":	[],
 	"shaders":	[],
 	"scripts":	[{
-		"codeFile":	"../assets/scripts/Examples/GlobalScripts/AddObjectExample.lua",
-		"typesFile":	"../assets/scripts/Examples/GlobalScripts/AddObjectExample.json",
+		"codeFile":	"../assets/scripts/Demos/GlobalScripts/AddObjectDemo.lua",
+		"typesFile":	"../assets/scripts/Demos/GlobalScripts/AddObjectDemo.json",
 		"name":	"Performance Test",
 		"types":	[{
 			"name":	"finished",

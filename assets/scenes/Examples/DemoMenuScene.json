@@ -30,9 +30,9 @@
 	"objects":	[],
 	"shaders":	[],
 	"scripts":	[{
-			"codeFile":	"../assets/scripts/Examples/GlobalScripts/MenuHorizontal.lua",
-			"typesFile":	"../assets/scripts/Examples/GlobalScripts/MenuHorizontal.json",
-			"name":	"MenuHorizontal.lua",
+			"codeFile":	"../assets/scripts/Demos/GlobalScripts/MenuDemo.lua",
+			"typesFile":	"../assets/scripts/Demos/GlobalScripts/MenuDemo.json",
+			"name":	"MenuDemo",
 			"types": []
 		}],
 	"camera":	{

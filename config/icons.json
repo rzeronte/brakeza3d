@@ -541,8 +541,8 @@
 			"y":	7
 		}, {
 			"name":	"PROJECT_SETUP_GLOBAL_SCRIPTS",
-			"x":	5,
-			"y":	11
+			"x":	11,
+			"y":	1
 		}, {
 			"name":	"PROJECT_SETUP_SCENE_SCRIPTS",
 			"x":	15,

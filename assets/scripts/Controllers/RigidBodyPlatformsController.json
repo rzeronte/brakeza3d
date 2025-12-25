@@ -1,6 +1,6 @@
 {
-	"codeFile":	"../assets/scripts/Controllers/RigidBodyPlatform/RigidBodyPlatformsController.lua",
-	"typesFile": "../assets/scripts/Controllers/RigidBodyPlatform/RigidBodyPlatformsController.json",
+	"codeFile":	"../assets/scripts/Controllers/RigidBodyPlatformsController.lua",
+	"typesFile": "../assets/scripts/Controllers/RigidBodyPlatformsController.json",
 	"name":	"RigidBodyPlatformsController",
 	"types":	[{
 			"name":	"maxSpeed",

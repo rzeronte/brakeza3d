@@ -74,8 +74,8 @@
 				}
 			},
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/Controllers/KinematicThirdPersonController.lua",
-					"typesFile":	"../assets/scripts/Controllers/KinematicThirdPersonController.json",
+					"codeFile":	 "../assets/scripts/Controllers/KinematicThirdPersonController.lua",
+					"typesFile": "../assets/scripts/Controllers/KinematicThirdPersonController.json",
 					"name":	"KinematicThirdPersonController.lua",
 					"types":	[{
 							"name":	"speed",
