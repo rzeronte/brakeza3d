@@ -1,0 +1,16 @@
+========================================================================================================
+15 - Component Window
+========================================================================================================
+
+El component Window es el responsable de inicializar la ventana del sistema operativo y manejar los
+framebuffers que son llevados a pantalla.
+
+A través de tus scripts LUA puedes acceder a los siguientes métodos:
+
+* ToggleFullScreen()          : Cambia la ventana a pantalla completa o viceversa.
+* getWidth()                  : Ancho en pixeles de la pantalla
+* getHeight()                 : Alto en pixeles de la pantalla
+* getHeightRender()           : Ancho del render en pixels
+* getWidthRender()            : Alto del render en pixels
+* isWindowMaximized()         : Indica si la pantalla está o no maximizada
+* LoadCursorImage(string path): Carga la imagen indicada como cursor del ratón

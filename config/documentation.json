@@ -40,7 +40,32 @@
 					"name": "1.2) GUI",
 					"file": "../doc/GUI/01-basics.txt",
 					"line": 0,
-					"children": []
+					"children": [{
+						"name": "1.2.1) Scene Management",
+						"file": "../doc/GUI/01-basics.txt",
+						"line": 0,
+						"children": []
+					},{
+						"name": "1.2.2) Scene Objects",
+						"file": "../doc/GUI/01-basics.txt",
+						"line": 0,
+						"children": []
+					},{
+						"name": "1.2.3) Scripting System",
+						"file": "../doc/GUI/01-basics.txt",
+						"line": 0,
+						"children": []
+					},{
+						"name": "1.2.4) Shaders System",
+						"file": "../doc/GUI/01-basics.txt",
+						"line": 0,
+						"children": []
+					},{
+						"name": "1.2.5) Lighting",
+						"file": "../doc/GUI/01-basics.txt",
+						"line": 0,
+						"children": []
+					}]
 				},
 				{
 					"name": "1.3) Components",
@@ -296,7 +321,22 @@
 			"name": "9) Input system",
 			"file": "../doc/GUI/09-input_system.txt",
 			"line": 0,
-			"children": []
+			"children": [{
+				"name": "9.1) Keyboard",
+				"file": "../doc/GUI/09-input_system.txt",
+				"line": 0,
+				"children": []
+			},{
+				"name": "9.2) Mouse",
+				"file": "../doc/GUI/09-input_system.txt",
+				"line": 0,
+				"children": []
+			},{
+				"name": "9.3) Controller",
+				"file": "../doc/GUI/09-input_system.txt",
+				"line": 0,
+				"children": []
+			}]
 		},
 		{
 			"name": "10) Global illumination",
@@ -370,13 +410,13 @@
 			"line": 0,
 			"children": [
 				{
-					"name": "12.1) Estados del sistema de scripting",
+					"name": "12.1) Scripting System States",
 					"file": "../doc/GUI/12-scripting_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "12.2) Ciclo de vida de un objeto",
+					"name": "12.2) Object Lifecycle",
 					"file": "../doc/GUI/12-scripting_system.txt",
 					"line": 0,
 					"children": []
@@ -388,7 +428,7 @@
 					"children": []
 				},
 				{
-					"name": "12.4) Vinculación de scripts",
+					"name": "12.4) Linking Scripts",
 					"file": "../doc/GUI/12-scripting_system.txt",
 					"line": 0,
 					"children": []
@@ -400,19 +440,19 @@
 					"children": []
 				},
 				{
-					"name": "12.6) Variables globales",
+					"name": "12.6) Global variables",
 					"file": "../doc/GUI/12-scripting_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "12.7) Variables locales",
+					"name": "12.7) Local variables",
 					"file": "../doc/GUI/12-scripting_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "12.8) Gestión de escenas",
+					"name": "12.8) Scene Management",
 					"file": "../doc/GUI/12-scripting_system.txt",
 					"line": 0,
 					"children": []
@@ -424,25 +464,25 @@
 					"children": []
 				},
 				{
-					"name": "12.10) Terminar la ejecución",
+					"name": "12.10) Terminating Execution",
 					"file": "../doc/GUI/12-scripting_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "12.11) Autocargar proyectos o escenas",
+					"name": "12.11) Auto-loading Projects or Scenes",
 					"file": "../doc/GUI/12-scripting_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "12.12) Grid3D y Octree",
+					"name": "12.12) Grid3D and Octree",
 					"file": "../doc/GUI/12-scripting_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "12.13) Ejemplos en código",
+					"name": "12.13) Complete LUA Code Examples",
 					"file": "../doc/GUI/12-scripting_system.txt",
 					"line": 0,
 					"children": []
@@ -455,31 +495,31 @@
 			"line": 0,
 			"children": [
 				{
-					"name": "13.1) Tipos de Shaders",
+					"name": "13.1) Types of shaders",
 					"file": "../doc/GUI/13-shaders_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "13.2) Variables de Shaders (uniforms)",
+					"name": "13.2) Shader Variables (uniforms)",
 					"file": "../doc/GUI/13-shaders_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "13.3) Template Shader de postprocesado",
+					"name": "13.3) Postprocessing Shader Template",
 					"file": "../doc/GUI/13-shaders_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "13.4) Template Shader de geometría",
+					"name": "13.4) Geometry Shader Template",
 					"file": "../doc/GUI/13-shaders_system.txt",
 					"line": 0,
 					"children": []
 				},
 				{
-					"name": "13.5) Shaders internos",
+					"name": "13.5) Internal Shaders",
 					"file": "../doc/GUI/13-shaders_system.txt",
 					"line": 0,
 					"children": []
@@ -487,53 +527,53 @@
 			]
 		},
 		{
-			"name": "14) Assets folder",
-			"file": "../doc/GUI/14-assets_folder.txt",
-			"line": 0,
-			"children": []
-		},
-		{
-			"name": "15) Components",
-			"file": "../doc/GUI/15-components.txt",
+			"name": "14) Components",
+			"file": "../doc/GUI/14-components.txt",
 			"line": 0,
 			"children": [
 				{
-					"name": "15.1) Window",
-					"file": "../doc/GUI/15-components.txt",
+					"name": "14.1) Window",
+					"file": "../doc/GUI/14-components.txt",
 					"line": 0,
 					"children": []
 				},{
-					"name": "15.2) Render",
-					"file": "../doc/GUI/15-components.txt",
+					"name": "14.2) Render",
+					"file": "../doc/GUI/14-components.txt",
 					"line": 0,
 					"children": []
 				},{
-					"name": "15.3) Input",
-					"file": "../doc/GUI/15-components.txt",
+					"name": "14.3) Input",
+					"file": "../doc/GUI/14-components.txt",
 					"line": 0,
 					"children": []
 				},{
-					"name": "15.4) Camera",
-					"file": "../doc/GUI/15-components.txt",
+					"name": "14.4) Camera",
+					"file": "../doc/GUI/14-components.txt",
 					"line": 0,
 					"children": []
 				},{
-					"name": "15.5) Collisions",
-					"file": "../doc/GUI/15-components.txt",
+					"name": "14.5) Collisions",
+					"file": "../doc/GUI/14-components.txt",
 					"line": 0,
 					"children": []
 				},{
-					"name": "15.6) Scripting",
-					"file": "../doc/GUI/15-components.txt",
+					"name": "14.6) Scripting",
+					"file": "../doc/GUI/14-components.txt",
 					"line": 0,
 					"children": []
 				},{
-					"name": "15.7) Sound",
-					"file": "../doc/GUI/15-components.txt",
+					"name": "14.7) Sound",
+					"file": "../doc/GUI/14-components.txt",
 					"line": 0,
 					"children": []
 				}
 			]
+		},
+		{
+			"name": "15) Assets folder",
+			"file": "../doc/GUI/15-assets_folder.txt",
+			"line": 0,
+			"children": []
 		}
 	]
 }

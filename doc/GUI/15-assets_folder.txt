@@ -1,0 +1,25 @@
+========================================================================================================
+14 - ASSETS FOLDER
+========================================================================================================
+
+Brakeza3D expects to find each type of resource in its corresponding root folder. Inside the assets
+folder, you will find:
+
+    - animations: Animated FBX files.
+    - fonts: TTF font files.
+    - icons: UI icon files.
+    - images: General image files.
+    - maps: BSP map files.
+    - models: FBX model files.
+    - projects: JSON project files.
+    - scenes: JSON scene files.
+    - scripts: LUA script files.
+    - shaders: CustomShader files (.vs and/or .fs)
+    - sounds: WAV or MP3 sound files.
+    - sprites: Grid-formatted image files.
+    - textures: Texture files used by FBX models.
+    - screenshots: Auto-saved screenshots from render
+
+Brakeza3D allows working with relative paths, but always relative to the main folder of each element.
+That is, you can store your scripts in subfolders, but they must always remain within the root scripts
+folder, and the same applies to other asset types.

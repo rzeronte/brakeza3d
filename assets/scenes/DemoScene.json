@@ -1,5 +1,5 @@
 {
-	"screenshot":	"../assets/screenshots/scene_14596.png",
+	"screenshot":	"../assets/screenshots/scene_306668.png",
 	"description":	{
 		"x":	0,
 		"y":	-9.8000001907348633,
@@ -68,6 +68,43 @@
 			"quadratic":	0.039999999105930328,
 			"type":	4
 		}, {
+			"name":	"LightSpot_1",
+			"scale":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-9.57544231414795,
+				"y":	9.4797048568725586,
+				"z":	-2.7404742240905762
+			},
+			"rotation":	{
+				"x":	-72.918426513671875,
+				"y":	-12.292998313903809,
+				"z":	-145.32188415527344
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"ambient":	{
+				"x":	0.43272459506988525,
+				"y":	0.96721309423446655,
+				"z":	0.035675909370183945
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.56000000238418579,
+			"linear":	-0.10000000149011612,
+			"quadratic":	0.012000000104308128,
+			"cutOff":	0.95899999141693115,
+			"outerCutOff":	0.94700002670288086,
+			"type":	5
+		}, {
 			"name":	"LightPoint_2",
 			"scale":	1,
 			"enabled":	true,
@@ -102,63 +139,6 @@
 			"linear":	0.23999999463558197,
 			"quadratic":	0.02199999988079071,
 			"type":	4
-		}, {
-			"name":	"LightSpot_1",
-			"scale":	1,
-			"enabled":	true,
-			"position":	{
-				"x":	-9.57544231414795,
-				"y":	9.4797048568725586,
-				"z":	-2.7404742240905762
-			},
-			"rotation":	{
-				"x":	-72.918426513671875,
-				"y":	-12.292998313903809,
-				"z":	-145.31777954101563
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"ambient":	{
-				"x":	0.43272459506988525,
-				"y":	0.96721309423446655,
-				"z":	0.035675909370183945
-			},
-			"diffuse":	{
-				"x":	1,
-				"y":	0,
-				"z":	0
-			},
-			"specular":	{
-				"x":	1,
-				"y":	1,
-				"z":	1
-			},
-			"constant":	0.56000000238418579,
-			"linear":	-0.10000000149011612,
-			"quadratic":	0.012000000104308128,
-			"cutOff":	0.95899999141693115,
-			"outerCutOff":	0.94700002670288086,
-			"type":	5
-		}, {
-			"name":	"Image3D_86",
-			"scale":	2.7799990177154541,
-			"enabled":	true,
-			"position":	{
-				"x":	-0.9570000171661377,
-				"y":	0.75900000333786011,
-				"z":	-6.4026775360107422
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	-0,
-				"z":	146.57862854003906
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"width":	1,
-			"height":	1,
-			"image":	"../assets/images/beach.png",
-			"type":	10
 		}, {
 			"name":	"SpotLight3D_77",
 			"scale":	1,
@@ -197,6 +177,46 @@
 			"outerCutOff":	0.9659000039100647,
 			"type":	5
 		}, {
+			"name":	"Image3D_86",
+			"scale":	2.7799990177154541,
+			"enabled":	true,
+			"position":	{
+				"x":	-0.9570000171661377,
+				"y":	0.75900000333786011,
+				"z":	-6.4026775360107422
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	146.58267211914063
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"width":	1,
+			"height":	1,
+			"image":	"../assets/images/beach.png",
+			"type":	10
+		}, {
+			"name":	"Stairs",
+			"scale":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	7.9173827171325684,
+				"y":	-3.068122386932373,
+				"z":	3.9494373798370361
+			},
+			"rotation":	{
+				"x":	90,
+				"y":	-5.0089556680177338e-06,
+				"z":	4.9706854952091817e-06
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//Stairs.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
 			"name":	"cube",
 			"scale":	0.92356580495834351,
 			"enabled":	true,
@@ -217,46 +237,6 @@
 			"shaders":	[],
 			"type":	2
 		}, {
-			"name":	"axis",
-			"scale":	1,
-			"enabled":	true,
-			"position":	{
-				"x":	-0.69031262397766113,
-				"y":	0.2399134635925293,
-				"z":	0
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	-0,
-				"z":	0
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models//StudioCorner.fbx",
-			"enableLights":	true,
-			"shaders":	[],
-			"type":	2
-		}, {
-			"name":	"Stairs",
-			"scale":	1,
-			"enabled":	true,
-			"position":	{
-				"x":	7.9173827171325684,
-				"y":	-3.068122386932373,
-				"z":	3.9494373798370361
-			},
-			"rotation":	{
-				"x":	90,
-				"y":	-5.0089556680177338e-06,
-				"z":	4.9714481065166183e-06
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models//Stairs.fbx",
-			"enableLights":	true,
-			"shaders":	[],
-			"type":	2
-		}, {
 			"name":	"SpaceShuttle",
 			"scale":	1.3596829175949097,
 			"enabled":	true,
@@ -268,7 +248,7 @@
 			"rotation":	{
 				"x":	41.436470031738281,
 				"y":	10.452261924743652,
-				"z":	-141.25997924804688
+				"z":	-141.26426696777344
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -288,7 +268,7 @@
 			"rotation":	{
 				"x":	-166.75724792480469,
 				"y":	-26.889076232910156,
-				"z":	165.75595092773438
+				"z":	165.75802612304688
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -317,6 +297,26 @@
 			"shaders":	[],
 			"type":	2
 		}, {
+			"name":	"axis",
+			"scale":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-0.69031262397766113,
+				"y":	0.2399134635925293,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//StudioCorner.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
 			"name":	"Mesh3D_99",
 			"scale":	4,
 			"enabled":	true,
@@ -341,7 +341,21 @@
 			"bonesColliders":	[],
 			"type":	3
 		}],
-	"shaders":	[],
+	"shaders":	[{
+			"name":	"Chromatic Aberration Postprocessing",
+			"type":	"Postprocessing",
+			"vsFile":	"../assets/shaders/Examples/Postprocessing/ChromaticAberrationPostprocessing.vs",
+			"fsFile":	"../assets/shaders/Examples/Postprocessing/ChromaticAberrationPostprocessing.fs",
+			"typesFile":	"../assets/shaders/Examples/Postprocessing/ChromaticAberrationPostprocessing.json",
+			"types":	[{
+					"name":	"intensity",
+					"type":	"float",
+					"value":	0.039999999105930328
+				}, {
+					"name":	"sceneTexture",
+					"type":	"scene"
+				}]
+		}],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
@@ -350,8 +364,8 @@
 			"z":	27.498968124389648
 		},
 		"rotation":	{
-			"x":	19.875188827514648,
-			"y":	4.074894905090332,
+			"x":	15.825189590454102,
+			"y":	1.1498944759368896,
 			"z":	0
 		}
 	}

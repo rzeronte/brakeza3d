@@ -21,7 +21,7 @@ Any collidable object will trigger a call to the onCollision method in your LUA 
 occurs.
 
     function onCollision(with)
-        print("Collision with " .. with:getLabel())
+        print("Collision with " .. with:getName())
     end
 
 
@@ -142,7 +142,7 @@ collisions coming from a specific bone.
 
     function onCollision(with)
         if with ~= nil then
-            print("Script: Collision With: " .. with:getObject():getLabel())
+            print("Script: Collision With: " .. with:getObject():getName())
             print("Script: Collision Source: " .. with:getSource())
             print("Script: Collision BoneIndexMapping: " .. with:getBoneIndexMapping())
         else
