@@ -214,6 +214,8 @@ void FileSystemGUI::DrawSceneRowActions(GUIType::BrowserCache &browser, const st
 {
     auto fullPath = browser.currentFolder + file;
 
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 4));
+
     GUI::DrawButtonTransparent("Scene information", IconGUI::SCENE_INFO, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
         Brakeza::get()->GUI()->getSceneChecker().LoadSceneInfoDialog(fullPath);
     });
@@ -234,6 +236,8 @@ void FileSystemGUI::DrawSceneRowActions(GUIType::BrowserCache &browser, const st
         SceneLoader::RemoveScene(fullPath);
         browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
     });
+
+    ImGui::PopStyleVar();
 }
 
 void FileSystemGUI::DrawSceneFiles(GUIType::BrowserCache &browser)

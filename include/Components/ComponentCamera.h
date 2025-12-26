@@ -11,8 +11,8 @@ typedef float vec3_t[3];
 class ComponentCamera : public Component
 {
     Camera3D *camera = nullptr;
-    glm::mat4 ViewMatrix;
-    glm::mat4 ProjectionMatrix;
+    glm::mat4 ViewMatrix = glm::mat4(1.0f);
+    glm::mat4 ProjectionMatrix = glm::mat4(1.0f);
 public:
     ComponentCamera() = default;
 
@@ -24,9 +24,9 @@ public:
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
     void setViewMatrix(const glm::mat4 &viewMatrix);
     void setProjectionMatrix(const glm::mat4 &projectionMatrix);
-    const glm::mat4 &getGLMMat4ViewMatrix() const                   { return ViewMatrix; }
-    const glm::mat4 &getGLMMat4ProjectionMatrix() const             { return ProjectionMatrix; }
-    [[nodiscard]] Camera3D *getCamera() const                       { return camera; }
+    [[nodiscard]] const glm::mat4 &getGLMMat4ViewMatrix() const             { return ViewMatrix; }
+    [[nodiscard]] const glm::mat4 &getGLMMat4ProjectionMatrix() const       { return ProjectionMatrix; }
+    [[nodiscard]] Camera3D *getCamera() const                               { return camera; }
 };
 
 

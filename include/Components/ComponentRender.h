@@ -61,7 +61,6 @@ class ComponentRender : public Component
     int fpsFrameCounter = 0;
     float frameTime = 0.f;
 
-    bool sceneShadersEnabled = false;
     GLuint lastFrameBufferUsed = 0;
     GLuint lastProgramUsed = 0;
 
@@ -97,7 +96,6 @@ public:
     void UpdateSelectedObject3D();
     void LoadShaderIntoScene(const std::string &name);
     void AddShaderToScene(ShaderOGLCustom *shader);
-    void setSceneShadersEnabled(bool value);
 
     void RemoveSceneShaderByIndex(int index);
     void RemoveSceneShader(const ShaderOGLCustom *);
@@ -114,21 +112,20 @@ public:
     void ClearShadowMaps() const;
     void FlipBuffersToGlobal() const;
 
-    SceneLoader &getSceneLoader()                                                   { return sceneLoader; }
-    ProjectLoader &getProjectLoader()                                               { return projectLoader; }
-    std::vector<ShaderOGLCustom *> &getSceneShaders()                               { return sceneShaders; }
-    Shaders *getShaders()                                                           { return &shaders;}
-    ShaderOGLCustom *getSceneShaderByIndex(int i) const                             { return sceneShaders[i]; }
-    bool isSceneShadersEnabled() const                                              { return sceneShadersEnabled; }
-    int getFps() const                                                              { return fps; }
-    ShaderOGLDepthMap *getShaderOGLDepthMap() const                                 { return shaders.shaderOGLDepthMap; }
-    ShaderOGLRenderDeferred *getShaderOGLRenderDeferred() const                     { return shaders.shaderOGLGBuffer; }
-    ShaderOGLLightPass *getShaderOGLLightPass() const                               { return shaders.shaderOGLLightPass; }
-    GLuint getLastFrameBufferUsed() const                                           { return lastFrameBufferUsed; }
-    Object3D* getSelectedObject() const                                             { return selectedObject; }
-    GLuint getLastProgramUsed() const                                               { return lastProgramUsed; }
-    const std::map<std::string, ShaderCustomType> &getShaderTypesMapping() const    { return ShaderTypesMapping; }
-    ShaderOGLCustom *getSceneShaderByLabel(const std::string& name) const;
+    SceneLoader &getSceneLoader()                                                                 { return sceneLoader; }
+    ProjectLoader &getProjectLoader()                                                             { return projectLoader; }
+    std::vector<ShaderOGLCustom *> &getSceneShaders()                                             { return sceneShaders; }
+    Shaders *getShaders()                                                                         { return &shaders;}
+    [[nodiscard]] ShaderOGLCustom *getSceneShaderByIndex(int i) const                             { return sceneShaders[i]; }
+    [[nodiscard]] int getFps() const                                                              { return fps; }
+    [[nodiscard]] ShaderOGLDepthMap *getShaderOGLDepthMap() const                                 { return shaders.shaderOGLDepthMap; }
+    [[nodiscard]] ShaderOGLRenderDeferred *getShaderOGLRenderDeferred() const                     { return shaders.shaderOGLGBuffer; }
+    [[nodiscard]] ShaderOGLLightPass *getShaderOGLLightPass() const                               { return shaders.shaderOGLLightPass; }
+    [[nodiscard]] GLuint getLastFrameBufferUsed() const                                           { return lastFrameBufferUsed; }
+    [[nodiscard]] Object3D* getSelectedObject() const                                             { return selectedObject; }
+    [[nodiscard]] GLuint getLastProgramUsed() const                                               { return lastProgramUsed; }
+    [[nodiscard]] const std::map<std::string, ShaderCustomType> &getShaderTypesMapping() const    { return ShaderTypesMapping; }
+    [[nodiscard]] ShaderOGLCustom *getSceneShaderByLabel(const std::string& name) const;
 
     static bool compareDistances(const Object3D *obj1, const Object3D *obj2);
     static void RunSceneShadersPostUpdate();

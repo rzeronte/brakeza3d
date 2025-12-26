@@ -1,6 +1,6 @@
 {
-  "codeFile":	"../assets/scripts/Examples/ObjectScripts/ObjectAccessLocalVariableExample.lua",
-  "typesFile": "../assets/scripts/Examples/ObjectScripts/ObjectAccessLocalVariableExample.json",
+  "codeFile":	"../assets/scripts/Demos/ObjectScripts/ObjectAccessLocalVariableExample.lua",
+  "typesFile": "../assets/scripts/Demos/ObjectScripts/ObjectAccessLocalVariableExample.json",
   "name":	"Object access local var demo",
     "types":	[
         {

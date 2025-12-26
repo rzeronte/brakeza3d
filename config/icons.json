@@ -101,8 +101,8 @@
 			"y":	0
 		}, {
 			"name":	"MNU_CAMERA",
-			"x":	0,
-			"y":	0
+			"x":	2,
+			"y":	37
 		}, {
 			"name":	"MNU_SOUND",
 			"x":	0,

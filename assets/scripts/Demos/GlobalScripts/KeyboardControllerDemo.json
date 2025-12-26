@@ -1,0 +1,7 @@
+{
+    "name":	"Keyboard control example",
+    "codeFile":	"../assets/scripts/Demos/GlobalScripts/KeyboardControllerDemo.lua",
+    "typesFile": "../assets/scripts/Demos/GlobalScripts/KeyboardControllerDemo.json",
+    "types":	[
+    ]
+}
