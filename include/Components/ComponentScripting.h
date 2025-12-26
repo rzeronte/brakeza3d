@@ -27,7 +27,7 @@ public:
     void StopLUAScripts();
     void ReloadLUAScripts() const;
     void AddSceneLUAScript(ScriptLUA *script);
-    void addProjectLUAScript(ScriptLUA *script);
+    void AddProjectLUAScript(ScriptLUA *script);
     void ReloadScriptGlobals() const;
     void RemoveSceneScript(ScriptLUA *script);
     void RemoveProjectScript(ScriptLUA *script);

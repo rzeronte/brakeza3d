@@ -29,7 +29,7 @@ void ProjectLoader::LoadProject(const std::string &filename)
             std::string name = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
             std::string codeScript = cJSON_GetObjectItemCaseSensitive(currentScript, "codeFile")->valuestring;
             std::string typesFile = cJSON_GetObjectItemCaseSensitive(currentScript, "typesFile")->valuestring;
-            Components::get()->Scripting()->addProjectLUAScript(new ScriptLUA(name, codeScript, typesFile));
+            Components::get()->Scripting()->AddProjectLUAScript(new ScriptLUA(name, codeScript, typesFile));
         }
     }
 }

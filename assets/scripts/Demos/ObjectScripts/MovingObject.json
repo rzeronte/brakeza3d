@@ -1,6 +1,6 @@
 {
-	"codeFile":	"../assets/scripts/Examples/ObjectScripts/MoveUpDownObject.lua",
-	"typesFile": "../assets/scripts/Examples/ObjectScripts/MoveUpDownObject.json",
+	"codeFile":	"../assets/scripts/Demos/ObjectScripts/MovingObject.lua",
+	"typesFile": "../assets/scripts/Demos/ObjectScripts/MovingObject.json",
 	"name":	"Move up-down object",
 	"types":	[{
 			"name":	"radius",

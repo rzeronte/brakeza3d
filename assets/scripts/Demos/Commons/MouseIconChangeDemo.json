@@ -1,6 +1,6 @@
 {
-	"codeFile":	"../assets/scripts/Examples/Commons/MouseIconChangeDemo/MouseIconChangeDemo.lua",
-	"typesFile": "../assets/scripts/Examples/Commons/MouseIconChangeDemo/MouseIconChangeDemo.json",
+	"codeFile":	"../assets/scripts/Demos/Commons/MouseIconChangeDemo.lua",
+	"typesFile": "../assets/scripts/Demos/Commons/MouseIconChangeDemo.json",
 	"name":	"CustomShaderUpdate",
 	"types":	[]
 }

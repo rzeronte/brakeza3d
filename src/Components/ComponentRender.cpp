@@ -259,11 +259,6 @@ void ComponentRender::AddShaderToScene(ShaderOGLCustom *shader)
     sceneShaders.push_back(shader);
 }
 
-void ComponentRender::setSceneShadersEnabled(bool value)
-{
-    sceneShadersEnabled = value;
-}
-
 void ComponentRender::RunSceneShadersPostUpdate()
 {
 

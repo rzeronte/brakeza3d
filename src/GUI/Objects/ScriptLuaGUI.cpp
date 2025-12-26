@@ -44,9 +44,10 @@ ScriptMetaInfo ScriptLuaGUI::ExtractScriptMetainfo(const std::string& pathFile)
 void ScriptLuaGUI::LoadScriptDialog(const std::string& pathFile)
 {
     auto meta = ExtractScriptMetainfo(pathFile);
+    auto GUI = Brakeza::get()->GUI();
 
-    if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(meta.name)) {
-        Brakeza::get()->GUI()->OpenEditableFile(
+    if (!GUI->isEditableFileAlreadyOpen(meta.name)) {
+        GUI->OpenEditableFile(
             new EditableOpenScriptFile(
                 meta.name,
                 meta.codeFile,
@@ -54,7 +55,8 @@ void ScriptLuaGUI::LoadScriptDialog(const std::string& pathFile)
             )
         );
     }
-    Brakeza::get()->GUI()->setIndexCodeEditorTab(meta.name);
+    GUI->setIndexCodeEditorTab(meta.name);
+    Components::get()->Window()->setImGuiConfig(Config::ImGUIConfigs::CODING);
 }
 
 void ScriptLuaGUI::DrawWinObjectScripts()

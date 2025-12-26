@@ -129,7 +129,9 @@ inline void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<ComponentCamera>("ComponentCamera",
         sol::base_classes, sol::bases<Component>(),
-        "getCamera", &ComponentCamera::getCamera
+        "getCamera", &ComponentCamera::getCamera,
+        "getGLMMat4ViewMatrix", &ComponentCamera::getGLMMat4ViewMatrix,
+        "getGLMMat4ProjectionMatrix", &ComponentCamera::getGLMMat4ProjectionMatrix
     );
 
     lua.new_usertype<ComponentSound>("ComponentSound",
@@ -145,7 +147,8 @@ inline void LUAIntegration(sol::state &lua)
     lua.new_usertype<ComponentCollisions>("ComponentCollisions",
     sol::base_classes, sol::bases<Component>(),
         "isRayCollisionWith", &ComponentCollisions::isRayCollisionWith,
-        "setEnableDebugMode", &ComponentCollisions::setEnableDebugMode
+        "setEnableDebugMode", &ComponentCollisions::setEnableDebugMode,
+        "setEnabled", &ComponentCollisions::setEnabled
     );
 
     lua.new_usertype<ComponentWindow>("ComponentWindow",
@@ -168,12 +171,19 @@ inline void LUAIntegration(sol::state &lua)
         "setGlobalIlluminationAmbient", &ComponentRender::setGlobalIlluminationAmbient,
         "setGlobalIlluminationDiffuse", &ComponentRender::setGlobalIlluminationDiffuse,
         "setGlobalIlluminationSpecular", &ComponentRender::setGlobalIlluminationSpecular,
-        "getSceneShaderByLabel", &ComponentRender::getSceneShaderByLabel
+        "getSceneShaderByLabel", &ComponentRender::getSceneShaderByLabel,
+        "getFps", &ComponentRender::getFps,
+        "MakeScreenShot", &ComponentRender::MakeScreenShot,
+        "getSelectedObject", &ComponentRender::getSelectedObject
     );
 
     lua.new_usertype<ComponentScripting>("ComponentRender",
     sol::base_classes, sol::bases<Component>(),
+        "PlayLUAScripts", &ComponentScripting::PlayLUAScripts,
+        "StopLUAScripts", &ComponentScripting::StopLUAScripts,
+        "ReloadLUAScripts", &ComponentScripting::ReloadLUAScripts,
         "AddSceneLUAScript", &ComponentScripting::AddSceneLUAScript,
+        "AddProjectLUAScript", &ComponentScripting::AddProjectLUAScript,
         "getGlobalScriptVar",  &ComponentScripting::getGlobalScriptVar
     );
 

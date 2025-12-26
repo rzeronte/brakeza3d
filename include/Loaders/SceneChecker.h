@@ -12,19 +12,28 @@
 #include "../Misc/cJSON.h"
 #include "../Render/Image.h"
 
-struct SceneCheckerItem
+struct SceneCheckerShader
 {
     std::string name;
-    std::string path;
+    std::string vsFile;
+    std::string fsFile;
+    std::string typesFile;
+};
+
+struct SceneCheckerScript
+{
+    std::string name;
+    std::string typesFile;
+    std::string codeFile;
 };
 
 struct SceneCheckerObjectInfo {
     std::string name;
     ObjectType type;
-    std::vector<SceneCheckerItem> scripts;
-    std::vector<SceneCheckerItem> shaders;
+    std::vector<SceneCheckerScript> scripts;
+    std::vector<SceneCheckerShader> shaders;
     bool collider = false;
-    bool active = false;
+    bool enabled = false;
 };
 
 struct SceneCheckerStatus
@@ -40,8 +49,8 @@ struct SceneCheckerStatus
     Vertex3D cameraRotation;
 
     std::vector<SceneCheckerObjectInfo> objects;
-    std::vector<SceneCheckerItem> scripts;
-    std::vector<SceneCheckerItem> shaders;
+    std::vector<SceneCheckerScript> scripts;
+    std::vector<SceneCheckerShader> shaders;
 };
 
 class SceneChecker
@@ -56,6 +65,8 @@ public:
     void DrawInformationTable() const;
 
     void DrawScriptsTable() const;
+
+    void DrawObjectScriptsTable(const SceneCheckerObjectInfo &o) const;
 
     void DrawObjectsTable() const;
 

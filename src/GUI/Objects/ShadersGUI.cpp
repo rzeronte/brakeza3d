@@ -288,6 +288,7 @@ void ShadersGUI::LoadDialogShader(const std::string &file)
         );
     }
     Brakeza::get()->GUI()->setIndexCodeEditorTab(metaInfo.name);
+    Components::get()->Window()->setImGuiConfig(Config::ImGUIConfigs::CODING);
 }
 
 ShaderOGLMetaInfo ShadersGUI::ExtractShaderMetainfo(const std::string &pathFile)

@@ -1,6 +1,6 @@
 {
-	"codeFile":	"../assets/scripts/Examples/ObjectScripts/BehaviorCircle.lua",
-	"typesFile": "../assets/scripts/Examples/ObjectScripts/BehaviorCircle.json",
+	"codeFile":	"../assets/scripts/Demos/ObjectScripts/BehaviorCircle.lua",
+	"typesFile": "../assets/scripts/Demos/ObjectScripts/BehaviorCircle.json",
 	"name":	"Behavior circle",
 	"types":	[{
 			"name":	"radius",

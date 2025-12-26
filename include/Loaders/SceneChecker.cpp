@@ -23,25 +23,34 @@ void SceneChecker::DrawInformationTable() const
             float fixedWidth = std::min((int) ImGui::GetContentRegionAvail().x, screenshot->width());
             float height = fixedWidth * ((float) screenshot->height() / (float) screenshot->width());
             ImGui::Image(screenshot->getOGLImTexture(), ImVec2(fixedWidth, height));
+        } else {
+            Drawable::WarningMessage("No screenshot available");
         }
         ImGui::TableSetColumnIndex(1);
-        ImGui::Text("Location path:");
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::FOLDER), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+        ImGui::SameLine();
         ImGui::Text("%s", path.c_str());
 
         ImGui::Separator();
-
-        ImGui::Text("Cam position: %f, %f, %f", status.cameraPosition.x, status.cameraPosition.y, status.cameraPosition.z);
-        ImGui::Text("Cam rotation: %f, %f, %f", status.cameraRotation.x, status.cameraRotation.y, status.cameraRotation.z);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::MNU_CAMERA), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+        ImGui::SameLine();
+        ImGui::Text("Camera");
+        ImGui::Text("Position: %f, %f, %f", status.cameraPosition.x, status.cameraPosition.y, status.cameraPosition.z);
+        ImGui::Text("Rotation: %f, %f, %f", status.cameraRotation.x, status.cameraRotation.y, status.cameraRotation.z);
 
         ImGui::Separator();
         ImVec4 ambient = ImVec4(status.ambient.x, status.ambient.y, status.ambient.z, 1.0f);
         ImVec4 diffuse = ImVec4(status.diffuse.x, status.diffuse.y, status.diffuse.z, 1.0f);
         ImVec4 specular = ImVec4(status.specular.x, status.specular.y, status.specular.z, 1.0f);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::TOOLBAR_ENABLE_LIGHT_SYSTEM), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+        ImGui::SameLine();
         ImGui::ColorButton("##color_ambient", ambient, 0, ImVec2(25, 25));
         ImGui::SameLine();
         ImGui::ColorButton("##color_diffuse", diffuse, 0, ImVec2(25, 25));
         ImGui::SameLine();
         ImGui::ColorButton("##color_specular", specular, 0, ImVec2(25, 25));
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_SUN_DIRECTION), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+        ImGui::SameLine();
         ImGui::Text("Direction: %f, %f, %f", status.direction.x, status.direction.y, status.direction.z);
 
         ImGui::EndTable();
@@ -58,29 +67,42 @@ void SceneChecker::DrawScriptsTable() const
         return;
     }
 
-    if (ImGui::BeginTable("ScriptsTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (ImGui::BeginTable("ScriptsTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("File", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("Files", ImGuiTableColumnFlags_WidthStretch);
 
         for (auto &o : status.scripts) {
-            bool fileExists = Tools::FileExists(o.path.c_str());
+            bool typesFileExists = Tools::FileExists(o.typesFile.c_str());
+            bool codeFileExists = Tools::FileExists(o.codeFile.c_str());
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
             ImGui::SameLine();
             ImGui::Text("%s", o.name.c_str());
+
             ImGui::TableSetColumnIndex(1);
-            if (!fileExists) {
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "%s", o.path.c_str());
-            } else {
-                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", o.path.c_str());
-            }
-            ImGui::TableSetColumnIndex(2);
-            ImGui::Image(FileSystemGUI::Icon(Tools::FileExists(o.path.c_str()) ? IconGUI::CHECKED : IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::Image(FileSystemGUI::Icon(typesFileExists ? IconGUI::CHECKED : IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::SameLine();
+            ImGui::TextColored(!typesFileExists ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f) : ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", o.typesFile.c_str());
+
+            ImGui::Image(FileSystemGUI::Icon(codeFileExists ? IconGUI::CHECKED : IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::SameLine();
+            ImGui::TextColored(!codeFileExists ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f) : ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", o.codeFile.c_str());
         }
         ImGui::EndTable();
+    }
+}
+
+void SceneChecker::DrawObjectScriptsTable(const SceneCheckerObjectInfo &o) const
+{
+    for (auto &script: o.scripts) {
+        bool fileExists = Tools::FileExists(script.typesFile.c_str());
+        ImGui::Image(FileSystemGUI::Icon(fileExists ? IconGUI::SCRIPT_FILE : IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+        if (ImGui::IsItemHovered()) {
+            ImGui::SetTooltip(script.typesFile.c_str());
+        }
+        ImGui::SameLine();
     }
 }
 
@@ -107,25 +129,18 @@ void SceneChecker::DrawObjectsTable() const
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("%s", o.name.c_str());
+
             ImGui::TableSetColumnIndex(1);
             ImGui::Image(FileSystemGUI::Icon(getIconObject(o.type)), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
             ImGui::SameLine();
             ImGui::Text("%s", getStringObjectType(o.type).c_str());
+
             ImGui::TableSetColumnIndex(2);
-            for (auto &script: o.scripts) {
-                bool fileExists = Tools::FileExists(script.path.c_str());
-                if (fileExists) {
-                    ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
-                } else {
-                    ImGui::Image(FileSystemGUI::Icon(IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
-                }
-                if (ImGui::IsItemHovered()) {
-                    ImGui::SetTooltip(script.path.c_str());
-                }
-                ImGui::SameLine();
-            }
+            DrawObjectScriptsTable(o);
+
             ImGui::TableSetColumnIndex(3);
-            ImGui::Image(FileSystemGUI::Icon(o.active ? IconGUI::CHECKED : IconGUI::UNCHECKED), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::Image(FileSystemGUI::Icon(o.enabled ? IconGUI::CHECKED : IconGUI::UNCHECKED), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+
             ImGui::TableSetColumnIndex(4);
             ImGui::Image(FileSystemGUI::Icon(o.collider ? IconGUI::CHECKED : IconGUI::UNCHECKED), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
         }
@@ -143,27 +158,34 @@ void SceneChecker::DrawShadersTable() const
         return;
     }
 
-    if (ImGui::BeginTable("ShadersTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("File", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_WidthFixed);
+    if (ImGui::BeginTable("ShadersTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Files", ImGuiTableColumnFlags_WidthFixed);
 
         for (auto &o : status.shaders) {
-            bool fileExists = Tools::FileExists(o.path.c_str());
+            bool typesFileExists = Tools::FileExists(o.typesFile.c_str());
+            bool vsFileExists = Tools::FileExists(o.vsFile.c_str());
+            bool fsFileExists = Tools::FileExists(o.fsFile.c_str());
 
             ImGui::TableNextRow();
+
             ImGui::TableSetColumnIndex(0);
             ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
             ImGui::SameLine();
             ImGui::Text("%s", o.name.c_str());
+
             ImGui::TableSetColumnIndex(1);
-            if (!fileExists) {
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "%s", o.path.c_str());
-            } else {
-                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", o.path.c_str());
-            }
-            ImGui::TableSetColumnIndex(2);
-            ImGui::Image(FileSystemGUI::Icon(fileExists ? IconGUI::CHECKED : IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::Image(FileSystemGUI::Icon(typesFileExists ? IconGUI::CHECKED : IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::SameLine();
+            ImGui::TextColored(!typesFileExists ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f) : ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", o.typesFile.c_str());
+
+            ImGui::Image(FileSystemGUI::Icon(vsFileExists ? IconGUI::CHECKED : IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::SameLine();
+            ImGui::TextColored(!vsFileExists ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f) : ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", o.vsFile.c_str());
+
+            ImGui::Image(FileSystemGUI::Icon(fsFileExists ? IconGUI::CHECKED : IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::SameLine();
+            ImGui::TextColored(!fsFileExists ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f) : ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", o.fsFile.c_str());
         }
         ImGui::EndTable();
     }
@@ -223,7 +245,7 @@ void SceneChecker::ExtractSceneInfo(cJSON *json)
          oInfo.name = cJSON_GetObjectItemCaseSensitive(currentObject, "name")->valuestring,
          oInfo.collider = (bool) cJSON_GetObjectItemCaseSensitive(currentObject, "isCollisionsEnabled")->valueint;
          oInfo.type = (ObjectType) cJSON_GetObjectItemCaseSensitive(currentObject, "type")->valueint;
-         oInfo.active = (bool) cJSON_GetObjectItemCaseSensitive(currentObject, "enabled")->valueint;
+         oInfo.enabled = (bool) cJSON_GetObjectItemCaseSensitive(currentObject, "enabled")->valueint;
 
         // scripts
         if (cJSON_GetObjectItemCaseSensitive(currentObject, "scripts") != nullptr) {
@@ -232,7 +254,7 @@ void SceneChecker::ExtractSceneInfo(cJSON *json)
                 auto name = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
                 auto codeFile = cJSON_GetObjectItemCaseSensitive(currentScript, "codeFile")->valuestring;
                 auto typesFile = cJSON_GetObjectItemCaseSensitive(currentScript, "typesFile")->valuestring;
-                oInfo.scripts.push_back({name, codeFile});
+                oInfo.scripts.push_back({name, typesFile, codeFile});
             }
         }
         // shaders
@@ -241,9 +263,10 @@ void SceneChecker::ExtractSceneInfo(cJSON *json)
             cJSON_ArrayForEach(currentShader, cJSON_GetObjectItemCaseSensitive(currentObject, "shaders")) {
                 auto name = cJSON_GetObjectItemCaseSensitive(currentShader, "name")->valuestring;
                 auto typesFile = cJSON_GetObjectItemCaseSensitive(currentShader, "typesFile")->valuestring;
-                auto codeFile = cJSON_GetObjectItemCaseSensitive(currentShader, "codeFile")->valuestring;
+                auto vsFile = cJSON_GetObjectItemCaseSensitive(currentShader, "vsFile")->valuestring;
+                auto fsFile = cJSON_GetObjectItemCaseSensitive(currentShader, "fsFile")->valuestring;
 
-                oInfo.shaders.push_back({name, typesFile});
+                oInfo.shaders.push_back({name, vsFile, fsFile, typesFile});
             }
         }
         status.objects.push_back(oInfo);
@@ -255,7 +278,7 @@ void SceneChecker::ExtractSceneInfo(cJSON *json)
             std::string codeFile = cJSON_GetObjectItemCaseSensitive(currentScript, "codeFile")->valuestring;
             std::string name = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
             std::string typesFile = cJSON_GetObjectItemCaseSensitive(currentScript, "typesFile")->valuestring;
-            status.scripts.push_back({name, codeFile});
+            status.scripts.push_back({name, typesFile, codeFile});
         }
     }
 
@@ -266,7 +289,7 @@ void SceneChecker::ExtractSceneInfo(cJSON *json)
         auto typesFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "typesFile")->valuestring;
         auto dataTypes = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
         auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
-        status.shaders.push_back({name, typesFile});
+        status.shaders.push_back({name, vsFile, fsFile, typesFile});
     }
 
     loaded = true;

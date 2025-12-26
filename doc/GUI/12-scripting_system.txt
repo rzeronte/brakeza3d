@@ -90,11 +90,15 @@ Similarly, the ComponentScripting object has AddSceneLUAScript() to link a scrip
 
     script = ObjectFactory.ScriptLUA("../../scripts/global_script.lua")
     if script ~= nil then
-        Components:Scripting():addSceneLUAScript(script)
+        Components:Scripting():AddSceneLUAScript(script)
     end
 
-Important: The only way to link scripts to a project is through the UI, not from code.
+Or a project:
 
+    script = ObjectFactory.ScriptLUA("../../scripts/global_script.lua")
+    if script ~= nil then
+        Components:Scripting():AddProjectLUAScript(script)
+    end
 
 ========================================================================================================
 ### 12.5) Variables
