@@ -62,7 +62,7 @@ namespace GUIType
     };
 
     struct Levels {
-        static constexpr float WINDOW_ALPHA = 0.9f;
+        static constexpr float WINDOW_ALPHA = 1.0f;
         static constexpr int DEFAULT_WINDOW_WIDTH = 600;
         static constexpr int DEFAULT_WINDOW_HEIGHT = 600;
         static constexpr float DRAG_IMGUI_SENSIBILITY_LOW = 0.001f;

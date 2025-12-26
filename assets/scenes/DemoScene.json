@@ -1,5 +1,5 @@
 {
-	"screenshot":	"../assets/screenshots/scene_306668.png",
+	"screenshot":	"../assets/screenshots/scene_97771.png",
 	"description":	{
 		"x":	0,
 		"y":	-9.8000001907348633,
@@ -79,7 +79,7 @@
 			"rotation":	{
 				"x":	-72.918426513671875,
 				"y":	-12.292998313903809,
-				"z":	-145.32188415527344
+				"z":	-145.32600402832031
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -188,7 +188,7 @@
 			"rotation":	{
 				"x":	0,
 				"y":	-0,
-				"z":	146.58267211914063
+				"z":	146.58671569824219
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -208,7 +208,7 @@
 			"rotation":	{
 				"x":	90,
 				"y":	-5.0089556680177338e-06,
-				"z":	4.9706854952091817e-06
+				"z":	4.9699228839017451e-06
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -248,7 +248,7 @@
 			"rotation":	{
 				"x":	41.436470031738281,
 				"y":	10.452261924743652,
-				"z":	-141.26426696777344
+				"z":	-141.2685546875
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
@@ -268,31 +268,11 @@
 			"rotation":	{
 				"x":	-166.75724792480469,
 				"y":	-26.889076232910156,
-				"z":	165.75802612304688
+				"z":	165.76010131835938
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"model":	"../assets/models//Eye.fbx",
-			"enableLights":	true,
-			"shaders":	[],
-			"type":	2
-		}, {
-			"name":	"Pawn",
-			"scale":	1,
-			"enabled":	true,
-			"position":	{
-				"x":	-9.3948392868042,
-				"y":	-2.5544748306274414,
-				"z":	3.9950590133666992
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	-0,
-				"z":	0
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models//ChessPawn.fbx",
 			"enableLights":	true,
 			"shaders":	[],
 			"type":	2
@@ -313,6 +293,26 @@
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"model":	"../assets/models//StudioCorner.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"Pawn",
+			"scale":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-9.3948392868042,
+				"y":	-2.5544748306274414,
+				"z":	3.9950590133666992
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//ChessPawn.fbx",
 			"enableLights":	true,
 			"shaders":	[],
 			"type":	2
@@ -341,21 +341,7 @@
 			"bonesColliders":	[],
 			"type":	3
 		}],
-	"shaders":	[{
-			"name":	"Chromatic Aberration Postprocessing",
-			"type":	"Postprocessing",
-			"vsFile":	"../assets/shaders/Examples/Postprocessing/ChromaticAberrationPostprocessing.vs",
-			"fsFile":	"../assets/shaders/Examples/Postprocessing/ChromaticAberrationPostprocessing.fs",
-			"typesFile":	"../assets/shaders/Examples/Postprocessing/ChromaticAberrationPostprocessing.json",
-			"types":	[{
-					"name":	"intensity",
-					"type":	"float",
-					"value":	0.039999999105930328
-				}, {
-					"name":	"sceneTexture",
-					"type":	"scene"
-				}]
-		}],
+	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
@@ -364,8 +350,8 @@
 			"z":	27.498968124389648
 		},
 		"rotation":	{
-			"x":	15.825189590454102,
-			"y":	1.1498944759368896,
+			"x":	15.750188827514648,
+			"y":	9.3998956680297852,
 			"z":	0
 		}
 	}
