@@ -663,6 +663,10 @@
 			"name":	"FILE_BROKEN",
 			"x":	10,
 			"y":	25
+		}, {
+			"name":	"WIN_RESOLUTION",
+			"x":	6,
+			"y":	21
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

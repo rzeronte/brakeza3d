@@ -45,6 +45,9 @@ struct SceneCheckerStatus
     Vertex3D diffuse;
     Vertex3D specular;
 
+    int renderWidth = 0;
+    int renderHeight = 0;
+
     Vertex3D cameraPosition;
     Vertex3D cameraRotation;
 

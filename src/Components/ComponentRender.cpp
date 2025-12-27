@@ -95,6 +95,9 @@ void ComponentRender::onUpdate()
 {
     if (!isEnabled()) return;
 
+    //auto window = Components::get()->Window();
+    //glViewport(0,0, window->getWidthRender(), window->getHeightRender());
+
     shaders.shaderOGLRender->CreateUBOFromLights();
 
     auto numSpotLights = shaders.shaderOGLRender->getNumSpotLights();
@@ -185,10 +188,19 @@ void ComponentRender::UpdateSelectedObject3D()
     if (!input->isEnabled()) return;
 
     if (input->isClickLeft() && !input->isMouseMotion()) {
-        auto x = input->getMouseX();
-        auto y = input->getMouseY();
 
-        const auto id = Components::get()->Window()->getObjectIDByPickingColorFramebuffer(x, y);
+        auto window = Components::get()->Window();
+      // Coordenadas del mouse en la ventana
+        int mouseX = input->getMouseX();
+        int mouseY = input->getMouseY();
+
+        // Transformar a coordenadas del framebuffer de 800x600
+        int normalizedX = ((float)mouseX / window->getWidth()) * window->getWidthRender();
+        int normalizedY = (((float)mouseY / window->getHeight()) * window->getHeightRender());
+
+        LOG_MESSAGE("[Render] Click: %d, %d", (int) normalizedX, (int) normalizedY);
+
+        const auto id = Components::get()->Window()->getObjectIDByPickingColorFramebuffer((int) normalizedX, (int) normalizedY);
         selectedObject = Brakeza::get()->getObjectById(id);
         if (selectedObject != nullptr) {
             LOG_MESSAGE("[Render] Selected object: %s", selectedObject->getName().c_str());
@@ -394,7 +406,7 @@ void ComponentRender::resizeShadersFramebuffers() const
     shaders.shaderOGLLightPass->Destroy();
 
     if (Config::get()->ENABLE_SHADOW_MAPPING) {
-        shaders.shaderShadowPass->createSpotLightsDepthTextures(static_cast<int>(shaders.shaderOGLRender->getShadowMappingSpotLights().size()));
+        shaders.shaderShadowPass->createSpotLightsDepthTextures((int) shaders.shaderOGLRender->getShadowMappingSpotLights().size());
         shaders.shaderShadowPass->ResetFramebuffers();
     }
 
@@ -451,8 +463,9 @@ void ComponentRender::FlipBuffersToGlobal() const
     auto gBuffer = window->getGBuffer();
     auto globalBuffer = window->getGlobalBuffers();
 
-    int widthWindow = window->getWidth();
-    int heightWindow = window->getHeight();
+    int widthWindow = window->getWidthRender();
+    int heightWindow = window->getHeightRender();
+    glViewport(0,0, widthWindow, heightWindow);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -474,17 +487,17 @@ void ComponentRender::FlipBuffersToGlobal() const
         );
     }
 
-    shaders.shaderOGLImage->renderTexture(globalBuffer.backgroundTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);
-    shaders.shaderOGLImage->renderTexture(globalBuffer.sceneTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);
+    shaders.shaderOGLImage->renderTexture(globalBuffer.backgroundTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);
+    shaders.shaderOGLImage->renderTexture(globalBuffer.sceneTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow ,1, true, globalBuffer.globalFBO);
 
     if (Config::get()->ENABLE_FOG) {
         shaders.shaderOGLFOG->render(globalBuffer.sceneTexture, gBuffer.depth);
-        shaders.shaderOGLImage->renderTexture(shaders.shaderOGLFOG->getTextureResult(), 0, 0, widthWindow, heightWindow, 1, false, globalBuffer.globalFBO);
+        shaders.shaderOGLImage->renderTexture(shaders.shaderOGLFOG->getTextureResult(), 0, 0, widthWindow, heightWindow, widthWindow, heightWindow ,1, false, globalBuffer.globalFBO);
     }
 
     if (Config::get()->ENABLE_DOF_BLUR) {
         shaders.shaderOGLDOFBlur->render(globalBuffer.sceneTexture, gBuffer.depth);
-        shaders.shaderOGLImage->renderTexture(shaders.shaderOGLDOFBlur->getTextureResult(), 0, 0, widthWindow, heightWindow, 1, false, globalBuffer.globalFBO);
+        shaders.shaderOGLImage->renderTexture(shaders.shaderOGLDOFBlur->getTextureResult(), 0, 0, widthWindow, heightWindow, widthWindow, heightWindow ,1, false, globalBuffer.globalFBO);
     }
 
     if (Config::get()->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
@@ -493,7 +506,7 @@ void ComponentRender::FlipBuffersToGlobal() const
 
     if (Config::get()->TRIANGLE_MODE_PICKING_COLORS) {
         shaders.shaderOGLImage->renderTexture(
-            window->getPickingColorFramebuffer().rbgTexture, 0, 0, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO
+            window->getPickingColorFramebuffer().rbgTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO
         );
     }
 

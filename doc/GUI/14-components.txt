@@ -25,7 +25,10 @@ Through your LUA scripts, you can access the following methods:
     - getHeightRender(): Returns the render height in pixels
     - getWidthRender(): Returns the render width in pixels
     - isWindowMaximized(): Returns whether the window is currently maximized
+    - setWindowTitle(string): Set window title
     - ToggleFullScreen(): Switches the window between fullscreen and windowed mode
+    - setWindowSize(int, int): Change window size
+    - setRendererSize(int, int): Change renderer size
     - LoadCursorImage(string path): Loads the specified image as the mouse cursor
 
 

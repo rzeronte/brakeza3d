@@ -153,6 +153,7 @@ inline void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<ComponentWindow>("ComponentWindow",
     sol::base_classes, sol::bases<Component>(),
+        "setWindowTitle", &ComponentWindow::setWindowTitle,
         "ToggleFullScreen", &ComponentWindow::ToggleFullScreen,
         "getWidth", &ComponentWindow::getWidth,
         "getHeight", &ComponentWindow::getHeight,

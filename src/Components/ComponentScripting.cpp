@@ -60,6 +60,7 @@ void ComponentScripting::StopLUAScripts()
 
     Components::get()->Input()->setEnabled(true);
     Components::get()->Collisions()->setEnabled(false);
+    Components::get()->Window()->setImGuiMouse();
 
     stateScripts = Config::LuaStateScripts::LUA_STOP;
 }

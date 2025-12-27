@@ -29,21 +29,26 @@ void SceneChecker::DrawInformationTable() const
         ImGui::TableSetColumnIndex(1);
         ImGui::Image(FileSystemGUI::Icon(IconGUI::FOLDER), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
         ImGui::SameLine();
+        ImGui::Text("File Path:");
         ImGui::Text("%s", path.c_str());
-
+        ImGui::Separator();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_RESOLUTION), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+        ImGui::SameLine();
+        ImGui::Text("Resolution:");
+        ImGui::Text("%d x %d", status.renderWidth, status.renderHeight);
         ImGui::Separator();
         ImGui::Image(FileSystemGUI::Icon(IconGUI::MNU_CAMERA), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
         ImGui::SameLine();
-        ImGui::Text("Camera");
+        ImGui::Text("Camera:");
         ImGui::Text("Position: %f, %f, %f", status.cameraPosition.x, status.cameraPosition.y, status.cameraPosition.z);
         ImGui::Text("Rotation: %f, %f, %f", status.cameraRotation.x, status.cameraRotation.y, status.cameraRotation.z);
-
         ImGui::Separator();
         ImVec4 ambient = ImVec4(status.ambient.x, status.ambient.y, status.ambient.z, 1.0f);
         ImVec4 diffuse = ImVec4(status.diffuse.x, status.diffuse.y, status.diffuse.z, 1.0f);
         ImVec4 specular = ImVec4(status.specular.x, status.specular.y, status.specular.z, 1.0f);
         ImGui::Image(FileSystemGUI::Icon(IconGUI::TOOLBAR_ENABLE_LIGHT_SYSTEM), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
         ImGui::SameLine();
+        ImGui::Text("Directional light:");
         ImGui::ColorButton("##color_ambient", ambient, 0, ImVec2(25, 25));
         ImGui::SameLine();
         ImGui::ColorButton("##color_diffuse", diffuse, 0, ImVec2(25, 25));
@@ -52,7 +57,6 @@ void SceneChecker::DrawInformationTable() const
         ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_SUN_DIRECTION), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
         ImGui::SameLine();
         ImGui::Text("Direction: %f, %f, %f", status.direction.x, status.direction.y, status.direction.z);
-
         ImGui::EndTable();
     }
 }
@@ -212,6 +216,13 @@ void SceneChecker::ExtractSceneInfo(cJSON *json)
         screenshot = nullptr;
     }
 
+    // RESOLUTION
+    if (cJSON_GetObjectItemCaseSensitive(json, "resolution") != nullptr) {
+        auto resoJSON = cJSON_GetObjectItemCaseSensitive(json, "resolution");
+        status.renderWidth = (float) cJSON_GetObjectItemCaseSensitive(resoJSON, "width")->valueint;
+        status.renderHeight = (float) cJSON_GetObjectItemCaseSensitive(resoJSON, "height")->valueint;
+    }
+
     // SCREENSHOT
     if (cJSON_GetObjectItemCaseSensitive(json, "screenshot") != nullptr) {
         screenshot = new Image(cJSON_GetObjectItemCaseSensitive(json, "screenshot")->valuestring);
@@ -300,6 +311,8 @@ void SceneChecker::ResetStatus()
 {
     status.gravity = Vertex3D();
     status.direction = Vertex3D();
+    status.renderWidth = 0;
+    status.renderHeight = 0;
     status.ambient = Vertex3D();
     status.diffuse = Vertex3D();
     status.specular = Vertex3D();

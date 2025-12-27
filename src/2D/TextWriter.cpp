@@ -29,19 +29,15 @@ void TextWriter::WriteTextTTF(int x, int y, int w, int h, const char *text, cons
     int windowWidth = renderer->getWidth();
     int windowHeight = renderer->getHeight();
 
-    SDL_Rect dstRect;
-    dstRect.x = (x * windowWidth) / Config::get()->screenWidth;
-    dstRect.y = (y * windowHeight) / Config::get()->screenHeight;
-    dstRect.w = (w * windowWidth) / Config::get()->screenWidth;
-    dstRect.h = (h * windowHeight) / Config::get()->screenHeight;
-
+    glViewport(0, 0, windowWidth, windowHeight);
     Components::get()->Render()->getShaders()->shaderOGLImage->renderTexture(
         texID,
-        dstRect.x, dstRect.y,
-        dstRect.w, dstRect.h,
+        x, y,
+        w, h,
+        windowWidth, windowHeight,
         alpha,
         false,
-        Components::get()->Window()->getForegroundFramebuffer()
+        Components::get()->Window()->getUIFramebuffer()
     );
 
     glDeleteTextures(1, &texID);

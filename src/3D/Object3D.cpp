@@ -81,6 +81,9 @@ void Object3D::RunScripts()
 {
     for (auto &script: scripts) {
         script->RunEnvironment(luaEnvironment, "onUpdate");
+        if (isGUISelected()) {
+            script->RunEnvironment(luaEnvironment, "onClick");
+        }
     }
 }
 
@@ -335,7 +338,7 @@ void Object3D::RunResolveCollisionScripts(CollisionInfo with)
 
     sol::object luaValue = sol::make_object(lua, with);
 
-    for (auto script : scripts) {
+    for (auto &script : scripts) {
         script->RunEnvironment(luaEnvironment, "onCollision", luaValue);
     }
 }

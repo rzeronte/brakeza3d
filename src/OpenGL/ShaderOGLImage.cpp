@@ -57,7 +57,15 @@ void ShaderOGLImage::CreateQuadVBO()
     glBindVertexArray(0);
 }
 
-void ShaderOGLImage::renderTexture(GLuint textureId, int x, int y, int w, int h, float alpha, bool inverse, GLuint fbo) const
+void ShaderOGLImage::renderTexture(
+    GLuint textureId,
+    int x, int y,
+    int w, int h,
+    int worldW,int worldH,
+    float alpha,
+    bool inverse,
+    GLuint fbo
+) const
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
 
@@ -65,8 +73,7 @@ void ShaderOGLImage::renderTexture(GLuint textureId, int x, int y, int w, int h,
 
     Components::get()->Render()->changeOpenGLProgram(programID);
 
-    auto window = Components::get()->Window();
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(window->getWidth()), static_cast<float>(window->getHeight()), 0.0f, -1.0f, 1.0f);
+    glm::mat4 projection = glm::ortho(0.0f, (float)worldW, (float)worldH, 0.0f, -1.0f, 1.0f);
 
     glm::vec2 position = glm::vec2(x, y);
     glm::vec2 size = glm::vec2(w, h);

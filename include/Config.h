@@ -77,6 +77,9 @@ public:
     const int screenWidth = 1280;
     const int screenHeight = 720;
 
+    const int renderWidth = 800;
+    const int renderHeight = 600;
+
     // GRAVITY
     Vertex3D gravity = Vertex3D(0, -9.8f, 0);
 
@@ -171,14 +174,7 @@ public:
     float LIGHTNING_OFFSET_REDUCTION = 650.f;
     float LIGHTNING_PROBABILITY_BRANCH = 1.5f;
     float LIGHTNING_SEGMENT_SHIFT = 2.5f;
-
-    // DEMO LAUNCH OBJECTS
-    float PROJECTILE_DEMO_IMPULSE = 500;
-    float PROJECTILE_DEMO_ACCURACY = 100;
-    float PROJECTILE_DEMO_MASS = 100;
-    bool PROJECTILE_SIMPLE_MESH = true;
     float SPLASH_COUNTDOWN_TIME = 5.0f;
-
     bool SHOW_ABOUT_ME_MODAL = false;
 
     // CUSTOM SHADER TEMPLATES

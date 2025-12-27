@@ -131,67 +131,6 @@ void ComponentCollisions::UpdatePhysicObjects() const
     }
 }
 
-void ComponentCollisions::demoProjectile(int type)
-{
-    std::string fileName;
-    LOG_MESSAGE("Launching %s", fileName.c_str());
-
-    switch (type) {
-        case 0:
-            fileName = "basic/cube.fbx";
-            break;
-        case 1:
-            fileName = "basic/cone.fbx";
-            break;
-        case 2:
-            fileName = "basic/torus.fbx";
-            break;
-        case 3:
-            fileName = "basic/cilinder.fbx";
-            break;
-        case 4:
-            fileName = "basic/icosphere.fbx";
-            break;
-        case 5:
-            fileName = "basic/piramid.fbx";
-            break;
-        default:
-            fileName = "basic/cube.fbx";
-
-    }
-    Camera3D *camera = Components::get()->Camera()->getCamera();
-
-    Vertex3D direction = camera->getRotation().getTranspose() * Config::get()->forward;
-
-    auto *projectile = new Projectile(direction);
-    projectile->setCollisionMode(BODY);
-    projectile->setCollisionShape(SIMPLE_SHAPE);
-    projectile->setLinearDamping(0);
-    projectile->setAngularDamping(0);
-    projectile->setParent(camera);
-    projectile->AssimpLoadGeometryFromFile(std::string(Config::get()->MODELS_FOLDER + fileName));
-    projectile->FillOGLBuffers();
-
-    projectile->setRotation(M3::getMatrixRotationForEulerAngles(
-        static_cast<float>(Tools::random(0, 180)),
-        static_cast<float>(Tools::random(0, 180)),
-        static_cast<float>(Tools::random(0, 180))
-    ));
-    projectile->setPosition( camera->getPosition() + direction.getScaled(1));
-    projectile->setEnabled(true);
-    projectile->makeProjectileRigidBody(
-        Config::get()->PROJECTILE_DEMO_MASS,
-        direction,
-        Config::get()->PROJECTILE_DEMO_IMPULSE,
-        Config::get()->PROJECTILE_DEMO_ACCURACY,
-        Components::get()->Collisions()->getDynamicsWorld(),
-        Config::collisionGroups::AllFilter,
-        Config::collisionGroups::AllFilter
-    );
-
-    Brakeza::get()->AddObject3D(projectile, Brakeza::UniqueObjectLabel("demoProjectile"));
-}
-
 void ComponentCollisions::setGravity(const Vertex3D &v) const
 {
     dynamicsWorld->setGravity(v.toBullet());

@@ -11,15 +11,15 @@ void ComponentInput::onStart()
     Component::onStart();
 
     setEnabled(true);
-    initJoystick();
+    InitJoystick();
 }
 
 void ComponentInput::preUpdate()
 {
     Component::preUpdate();
 
-    resetKeyboardMapping();
-    resetMouseMapping();
+    ResetKeyboardMapping();
+    ResetMouseMapping();
 
     keyDownEvent = false;
     keyUpEvent = false;
@@ -30,7 +30,7 @@ void ComponentInput::onUpdate()
     Component::onUpdate();
 
     if (!isEnabled()) return;
-    handleKeyboardMovingCamera();
+    HandleKeyboardMovingCamera();
 }
 
 void ComponentInput::postUpdate()
@@ -47,20 +47,19 @@ void ComponentInput::onEnd()
 void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
 {
     updateMouseStates(e);
-    handleCheckPadConnection(e);
-    updateGamePadStates();
-    updateKeyboardStates(e);
-    handleWindowEvents(e, finish);
-    handleToggleKeys(e);
+    HandleCheckPadConnection(e);
+    UpdateGamePadStates();
+    UpdateKeyboardStates(e);
+    HandleWindowEvents(e, finish);
+    HandleToggleKeys(e);
 
     if (!isEnabled()) return;
 
-    handleDeleteSelectedObject(e);
-    handleMouse(e);
-    handleProjectileDemo(e);
+    HandleDeleteSelectedObject(e);
+    HandleMouse(e);
 }
 
-void ComponentInput::handleMouse(SDL_Event *event)
+void ComponentInput::HandleMouse(SDL_Event *event)
 {
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
@@ -101,7 +100,7 @@ void ComponentInput::handleMouse(SDL_Event *event)
     }
 }
 
-void ComponentInput::handleKeyboardMovingCamera()
+void ComponentInput::HandleKeyboardMovingCamera() const
 {
     if (ImGui::GetIO().WantCaptureKeyboard) {
         return;
@@ -135,14 +134,14 @@ void ComponentInput::handleKeyboardMovingCamera()
     }
 }
 
-void ComponentInput::handleWindowEvents(SDL_Event *e, bool &end)
+void ComponentInput::HandleWindowEvents(SDL_Event *e, bool &end)
 {
     if (e->type == SDL_WINDOWEVENT && e->window.event == SDL_WINDOWEVENT_CLOSE) {
         end = true;
     }
 }
 
-void ComponentInput::resetKeyboardMapping()
+void ComponentInput::ResetKeyboardMapping()
 {
     keyboard = (unsigned char *) SDL_GetKeyboardState(nullptr);
 }
@@ -159,16 +158,6 @@ void ComponentInput::updateMouseStates(SDL_Event *event)
     }
 }
 
-void ComponentInput::handleProjectileDemo(SDL_Event *event)
-{
-    if (event->type == SDL_KEYDOWN) {
-        if (keyboard[SDL_SCANCODE_F9]) {
-            int type = Tools::random(0, 5);
-            ComponentCollisions::demoProjectile(type);
-        }
-    }
-}
-
 bool ComponentInput::isLeftMouseButtonPressed() const
 {
     return mouseLeftButton;
@@ -179,7 +168,7 @@ bool ComponentInput::isRightMouseButtonPressed() const
     return mouseRightButton;
 }
 
-void ComponentInput::resetMouseMapping()
+void ComponentInput::ResetMouseMapping()
 {
     auto window = Components::get()->Window();
 
@@ -245,7 +234,7 @@ bool ComponentInput::isMouseMotion() const
     return mouseMotion;
 }
 
-void ComponentInput::updateGamePadStates()
+void ComponentInput::UpdateGamePadStates()
 {
     if (gameController == nullptr) return;
 
@@ -285,7 +274,7 @@ bool ComponentInput::isAnyControllerButtonPressed() const
     return false;
 }
 
-void ComponentInput::initJoystick()
+void ComponentInput::InitJoystick()
 {
     if ( SDL_NumJoysticks() < 1 ) {
         LOG_MESSAGE("[Input] WARNING: No gamepad controller connected." );
@@ -354,7 +343,7 @@ float ComponentInput::getControllerAxisRightY() const
     return controllerAxisRightY;
 }
 
-void ComponentInput::handleToggleKeys(SDL_Event *event)
+void ComponentInput::HandleToggleKeys(SDL_Event *event)
 {
     if (event->type == SDL_KEYDOWN) {
         auto scripting = Components::get()->Scripting();
@@ -428,7 +417,7 @@ bool ComponentInput::isKeyEventUp() const
     return keyUpEvent;
 }
 
-void ComponentInput::updateKeyboardStates(SDL_Event *event)
+void ComponentInput::UpdateKeyboardStates(SDL_Event *event)
 {
     if (event->type == SDL_KEYDOWN) {
         keyDownEvent = true;
@@ -448,10 +437,10 @@ _SDL_GameController *ComponentInput::getGameController() const
     return gameController;
 }
 
-void ComponentInput::handleCheckPadConnection(SDL_Event *pEvent)
+void ComponentInput::HandleCheckPadConnection(SDL_Event *pEvent)
 {
     if (pEvent->type == SDL_CONTROLLERDEVICEADDED ) {
-        initJoystick();
+        InitJoystick();
     }
 
     if (pEvent->type == SDL_CONTROLLERDEVICEREMOVED ) {
@@ -488,7 +477,7 @@ bool ComponentInput::isDrag() const
     return drag;
 }
 
-void ComponentInput::handleDeleteSelectedObject(SDL_Event *e)
+void ComponentInput::HandleDeleteSelectedObject(SDL_Event *e)
 {
     if (e->type == SDL_KEYDOWN) {
         if (keyboard[SDL_SCANCODE_DELETE]) {

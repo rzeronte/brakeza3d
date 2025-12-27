@@ -16,7 +16,7 @@ private:
     Vertex3D direction;
 public:
 
-    explicit Projectile(Vertex3D direction);
+    explicit Projectile(const Vertex3D &direction);
 
     [[nodiscard]] const Vertex3D &getDirection() const;
 
@@ -24,10 +24,11 @@ public:
 
     void makeProjectileRigidBody(
         float mass,
-        Vertex3D direction,
-        float forceImpulse,
+        Vertex3D dir,
+        float impulse,
         float accuracy,
         btDiscreteDynamicsWorld *world,
+        CollisionShape shape,
         int collisionGroup,
         int collisionMask
     );
