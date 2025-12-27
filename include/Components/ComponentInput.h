@@ -4,7 +4,8 @@
 #include <SDL2/SDL.h>
 #include "Component.h"
 
-class ComponentInput : public Component {
+class ComponentInput : public Component
+{
     bool mouseMotion = false;
     float mouseMotionXRel = 0.f;
     float mouseMotionYRel = 0.f;
@@ -66,23 +67,22 @@ public:
     bool isDrag() const;
     bool isGameControllerEnabled();
     void onStart() override;
-    void resetKeyboardMapping();
+    void ResetKeyboardMapping();
     void preUpdate() override;
     void onUpdate() override;
     void postUpdate() override;
     void onEnd() override;
-    void initJoystick();
+    void InitJoystick();
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
     void updateMouseStates(SDL_Event *e);
-    void handleKeyboardMovingCamera();
-    void handleMouse(SDL_Event *);
-    void handleProjectileDemo(SDL_Event *pEvent);
-    void resetMouseMapping();
-    void updateGamePadStates();
-    void handleCheckPadConnection(SDL_Event *pEvent);
-    void handleDeleteSelectedObject(SDL_Event *e);
-    void updateKeyboardStates(SDL_Event *event);
-    void handleToggleKeys(SDL_Event *event);
+    void HandleKeyboardMovingCamera() const;
+    void HandleMouse(SDL_Event *);
+    void ResetMouseMapping();
+    void UpdateGamePadStates();
+    void HandleCheckPadConnection(SDL_Event *pEvent);
+    void HandleDeleteSelectedObject(SDL_Event *e);
+    void UpdateKeyboardStates(SDL_Event *event);
+    void HandleToggleKeys(SDL_Event *event);
     Uint8 getControllerPadUp() const;
     Uint8 getControllerPadDown() const;
     Uint8 getControllerPadLeft() const;
@@ -116,7 +116,7 @@ public:
     [[nodiscard]] bool isClickLeft() const;
     [[nodiscard]] bool isClickRight() const;
     [[nodiscard]] int getRelativeRendererMouseX() const;
-    static void handleWindowEvents(SDL_Event *event, bool &);
+    static void HandleWindowEvents(SDL_Event *event, bool &);
 
 };
 

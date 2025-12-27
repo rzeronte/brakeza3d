@@ -60,6 +60,8 @@ void ShaderOGLColor::RenderColor(
 
     render->ChangeOpenGLFramebuffer(fbo);
     render->changeOpenGLProgram(programID);
+    auto window = Components::get()->Window();
+    glViewport(0,0, window->getWidthRender(), window->getHeightRender());
 
     glBindVertexArray(VertexArrayID);
 
@@ -113,8 +115,8 @@ void ShaderOGLColor::CreateBuffer()
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-    const int w = Components::get()->Window()->getWidth();
-    const int h = Components::get()->Window()->getHeight();
+    const int w = Components::get()->Window()->getWidthRender();
+    const int h = Components::get()->Window()->getHeightRender();
 
     if (textureColorBuffer != 0) {
         glDeleteTextures(1, &textureColorBuffer);

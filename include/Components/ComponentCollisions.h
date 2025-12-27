@@ -38,7 +38,6 @@ public:
     void setEnabled(bool enabled) override;
     void setEnableDebugMode(bool value) const;
     [[nodiscard]] btDiscreteDynamicsWorld *getDynamicsWorld() const;
-    static void demoProjectile(int type);
 };
 
 

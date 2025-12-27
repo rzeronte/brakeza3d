@@ -877,8 +877,8 @@ void ShaderOGLCustom::CreateFramebuffer()
     glBindFramebuffer(GL_FRAMEBUFFER, resultFramebuffer);
 
     auto window = Components::get()->Window();
-    int w = window->getWidth();
-    int h = window->getHeight();
+    int w = window->getWidthRender();
+    int h = window->getHeightRender();
 
     glGenTextures(1, &textureResult);
     glBindTexture(GL_TEXTURE_2D, textureResult);

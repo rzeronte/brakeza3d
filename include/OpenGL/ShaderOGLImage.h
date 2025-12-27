@@ -29,6 +29,8 @@ public:
         int y,
         int w,
         int h,
+        int worldW,
+        int worldH,
         float alpha,
         bool inverse,
         GLuint fbo

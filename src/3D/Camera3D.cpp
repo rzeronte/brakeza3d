@@ -1,6 +1,8 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include "../../include/Components/Camera3D.h"
+
+#include "../../include/Components/Components.h"
 #include "../../include/Misc/ToolsMaths.h"
 
 Camera3D::Camera3D()
@@ -130,7 +132,10 @@ glm::mat4 Camera3D::getGLMMat4ViewMatrix()
 glm::mat4 Camera3D::getGLMMat4ProjectionMatrix()
 {
     float horizontalFOV = Config::get()->HORIZONTAL_FOV;
-    float aspectRatio = 4.0f / 3.0f;
+
+    auto window = Components::get()->Window();
+    float aspectRatio = (float)window->getWidthRender() / (float)window->getHeightRender();
+
     float verticalFOV = glm::degrees(2.0f * atan(tan(glm::radians(horizontalFOV) / 2.0f) / aspectRatio));
 
     return glm::perspective(glm::radians(verticalFOV), aspectRatio, 0.1f, Config::get()->FRUSTUM_FARPLANE_DISTANCE);

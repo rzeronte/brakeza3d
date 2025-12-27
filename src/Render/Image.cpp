@@ -87,6 +87,7 @@ void Image::DrawFlat(int x, int y, int w, int h, GLuint fbo) const
         textureId,
         dstRect.x, dstRect.y,
         dstRect.w,dstRect.h,
+        dstRect.w,dstRect.h,
         alpha,
         false,
         fbo
@@ -117,6 +118,7 @@ void Image::DrawFlat(int pos_x, int pos_y, GLuint fbo) const
     Components::get()->Render()->getShaders()->shaderOGLImage->renderTexture(
         textureId,
         dstRect.x, dstRect.y,
+        dstRect.w, dstRect.h,
         dstRect.w, dstRect.h,
         alpha,
         false,

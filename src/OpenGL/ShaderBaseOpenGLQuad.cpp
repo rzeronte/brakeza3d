@@ -17,6 +17,29 @@ void ShaderBaseOpenGLQuad::SetupQuadUniforms(GLuint programID)
     ResetQuadMatrix();
 }
 
+int ShaderBaseOpenGLQuad::getWidthByQuadSize() const
+{
+    auto window = Components::get()->Window();
+    int x = window->getWidth();
+    if (getQuadSize() == RENDER_SIZE) {
+        x = window->getWidthRender();
+    }
+
+    return x;
+
+}
+
+int ShaderBaseOpenGLQuad::getHeightByQuadSize() const
+{
+    auto window = Components::get()->Window();
+    int y = window->getHeight();
+    if (getQuadSize() == RENDER_SIZE) {
+        y = window->getHeightRender();
+    }
+
+    return y;
+}
+
 void ShaderBaseOpenGLQuad::CreateQuadVBO()
 {
     float vertices[] = {
@@ -44,11 +67,10 @@ void ShaderBaseOpenGLQuad::CreateQuadVBO()
 
 void ShaderBaseOpenGLQuad::ResetQuadMatrix()
 {
-    auto window = Components::get()->Window();
-    int w = window->getWidth();
-    int h = window->getHeight();
+    int w = this->getWidthByQuadSize();
+    int h = this->getHeightByQuadSize();
 
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(w), static_cast<float>(h), 0.0f, -1.0f, 1.0f);
+    glm::mat4 projection = glm::ortho(0.0f, (float) w, (float) h, 0.0f, -1.0f, 1.0f);
 
     glm::vec2 position = glm::vec2(0, 0);
     glm::vec2 size = glm::vec2(w, h);
@@ -75,4 +97,9 @@ void ShaderBaseOpenGLQuad::DrawQuad() const
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
+}
+
+void ShaderBaseOpenGLQuad::setQuadSize(ShaderBaseQuadSize value)
+{
+    quadSize = value;
 }

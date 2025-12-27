@@ -319,19 +319,6 @@ void GUIAddonMenu::MenuColliders()
     if (ImGui::MenuItem("Draw debug mode", nullptr, &setup->BULLET_DEBUG_MODE)) {
         Components::get()->Collisions()->setEnableDebugMode(setup->BULLET_DEBUG_MODE);
     }
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_DEMO_APP), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Launch demo objects", nullptr, &setup->PROJECTILE_SIMPLE_MESH);
-
-    if (setup->PROJECTILE_SIMPLE_MESH) {
-        const float range_sensibility = 0.75f;
-        ImGui::Separator();
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_DEMO_APP), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragScalar("Objects impulse", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_IMPULSE, range_sensibility, &GUIType::Levels::DRAG_UNIT_MIN, &GUIType::Levels::DRAG_UNIT_MAX, "%f", 1.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_DEMO_APP), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragScalar("Objects accuracy", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_ACCURACY, range_sensibility, &GUIType::Levels::DRAG_UNIT_MIN, &GUIType::Levels::DRAG_UNIT_MAX, "%f", 1.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_DEMO_APP), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragScalar("Objects mass", ImGuiDataType_Float, &setup->PROJECTILE_DEMO_MASS, range_sensibility, &GUIType::Levels::DRAG_UNIT_MIN, &GUIType::Levels::DRAG_UNIT_MAX, "%f", 1.0f);
-    }
 }
 
 void GUIAddonMenu::MenuIllumination()
@@ -562,6 +549,19 @@ void GUIAddonMenu::MenuWindow(GUIManager *gui)
     if (ImGui::IsItemEdited()) {
         Components::get()->Window()->ToggleFullScreen();
     }
+
+    // render Size
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_RESOLUTION), GUIType::Sizes::ICON_SIZE_MENUS);
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("Render size")) {
+        for (const auto& res : RENDER_RESOLUTIONS) {
+            if (ImGui::MenuItem(res.label)) {
+                Components::get()->Window()->setRendererSize(res.width, res.height);
+            }
+        }
+        ImGui::EndMenu();
+    }
+
     ImGui::SeparatorText("Windows/Widgets");
     for (auto &w : gui->windows) {
         if (w.isInternal) continue;

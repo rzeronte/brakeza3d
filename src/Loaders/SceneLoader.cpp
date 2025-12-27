@@ -40,6 +40,16 @@ void SceneLoader::LoadSceneSettings(const cJSON *contentJSON)
     auto camera = Components::get()->Camera()->getCamera();
     auto shaderRender = Components::get()->Render()->getShaders()->shaderOGLRender;
 
+    // RESOLUTION
+    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "resolution") != nullptr) {
+        auto resolutionJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "resolution");
+
+        Components::get()->Window()->setRendererSize(
+            cJSON_GetObjectItemCaseSensitive(resolutionJSON, "width")->valueint,
+            cJSON_GetObjectItemCaseSensitive(resolutionJSON, "height")->valueint
+        );
+    }
+
     // GRAVITY
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity") != nullptr) {
         auto gravity = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity"));
@@ -92,8 +102,7 @@ void SceneLoader::LoadScene(const std::string& filename)
     LOG_MESSAGE("[SceneLoader] Loading scene: '%s'", filename.c_str());
 
     isLoading = true;
-    auto job = std::make_shared<ThreadJobReadFileScene>(filename);
-    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(job);
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadFileScene>(filename));
 }
 
 void SceneLoader::SaveScene(const std::string &filename)
@@ -103,10 +112,17 @@ void SceneLoader::SaveScene(const std::string &filename)
     auto render = Components::get()->Render()->getShaders()->shaderOGLRender;
 
     auto screenshotPath = std::string(Config::get()->SCREENSHOTS_FOLDER + Brakeza::UniqueObjectLabel("scene") + ".png");
-    Components::get()->Render()->MakeScreenShot(screenshotPath);
+    ComponentRender::MakeScreenShot(screenshotPath);
     cJSON_AddStringToObject(root, "screenshot", screenshotPath.c_str());
     cJSON_AddItemToObject(root, "description", ToolsJSON::Vertex3DToJSON(Config::get()->gravity));
     cJSON_AddItemToObject(root, "gravity", ToolsJSON::Vertex3DToJSON(Config::get()->gravity));
+
+    // render resolution
+    auto window = Components::get()->Window();
+    cJSON *resolutionJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(resolutionJSON, "width", window->getWidthRender());
+    cJSON_AddNumberToObject(resolutionJSON, "height", window->getHeightRender());
+    cJSON_AddItemToObject(root, "resolution", resolutionJSON);
 
     // illumination ADS
     cJSON *adsJSON = cJSON_CreateObject();

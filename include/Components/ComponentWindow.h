@@ -14,19 +14,33 @@
 #include "../Render/PostProcessingManager.h"
 
 
+struct Resolution {
+    int width;
+    int height;
+    const char* label;
+};
+
+static const Resolution RENDER_RESOLUTIONS[] = {
+    {320, 240, "320x240 (Very Low)"},
+    {640, 480, "640x480 (Low)"},
+    {800, 600, "800x600"},
+    {960, 540, "960x540"},
+    {1024, 768, "1024x768"},
+    {1280, 720, "1280x720 (HD)"},
+    {1366, 768, "1366x768"},
+    {1600, 900, "1600x900"},
+    {1920, 1080, "1920x1080 (Full HD)"},
+};
+
 class ComponentWindow : public Component
 {
-    int widthWindow = 0;
-    int heightWindow = 0;
-    int widthRender = 0;
-    int heightRender = 0;
-
-    bool screenShoot = false;
+    int widthWindow = Config::get()->screenWidth;
+    int heightWindow = Config::get()->screenHeight;
+    int widthRender = Config::get()->renderWidth;
+    int heightRender = Config::get()->renderHeight;
 
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
-    SDL_Surface *screenSurface = nullptr;
-    SDL_Texture *screenTexture = nullptr;
 
     TTF_Font *fontDefault = nullptr;
 
@@ -71,38 +85,38 @@ public:
     void CreatePickingColorBuffer();
     void ImGuiInitialize(const std::string &configFile);
     void UpdateMouseCursor() const;
-
-    void setImGuiMouse();
-
     void LoadCursorImage(const std::string &path);
 
     [[nodiscard]] bool isWindowMaximized() const;
     OpenGLGBuffer& getGBuffer()                                             { return gBuffer; }
     OpenGLGlobalFramebuffers &getGlobalBuffers()                            { return openGLBuffers; }
-    OpenGLPickingBuffer &getPickingColorFramebuffer()                       { return pickingColorBuffer;}
-    [[nodiscard]] int getWidth() const                                      { return widthWindow;}
-    [[nodiscard]] int getHeight() const                                     { return heightWindow;}
-    [[nodiscard]] int getWidthRender() const                                { return widthRender;}
-    [[nodiscard]] int getHeightRender() const                               { return heightRender;}
-    [[nodiscard]] GLuint getSceneFramebuffer() const                        { return openGLBuffers.sceneFBO;}
-    [[nodiscard]] GLuint getBackgroundFramebuffer() const                   { return openGLBuffers.backgroundFBO;}
-    [[nodiscard]] GLuint getUIFramebuffer() const                           { return openGLBuffers.uiFBO;}
-    [[nodiscard]] GLuint getForegroundFramebuffer() const                   { return openGLBuffers.foregroundFBO;}
-    [[nodiscard]] GLuint getGlobalFramebuffer() const                       { return openGLBuffers.globalFBO;}
-    [[nodiscard]] GLuint getDepthTexture() const                            { return openGLBuffers.sceneDepthTexture;}
-    [[nodiscard]] GLuint getSceneTexture() const                            { return openGLBuffers.sceneTexture;}
-    [[nodiscard]] GLuint getGlobalTexture() const                           { return openGLBuffers.globalTexture;}
-    [[nodiscard]] SDL_Window *getWindow() const                             { return window;}
-    [[nodiscard]] SDL_Renderer *getRenderer() const                         { return renderer;}
-    [[nodiscard]] TTF_Font *getFontDefault() const                          { return fontDefault;}
-    [[nodiscard]] ImGuizmo::OPERATION getGuiZmoOperation() const            { return ImGuiOperationGuizmo;}
-    [[nodiscard]] Config::ImGUIConfigs getImGuiConfig() const               { return ImGuiConfig;}
-    [[nodiscard]] PostProcessingManager *getPostProcessingManager() const   { return postProcessingManager;}
+    OpenGLPickingBuffer &getPickingColorFramebuffer()                       { return pickingColorBuffer; }
+    [[nodiscard]] int getWidth() const                                      { return widthWindow; }
+    [[nodiscard]] int getHeight() const                                     { return heightWindow; }
+    [[nodiscard]] int getWidthRender() const                                { return widthRender; }
+    [[nodiscard]] int getHeightRender() const                               { return heightRender; }
+    [[nodiscard]] GLuint getSceneFramebuffer() const                        { return openGLBuffers.sceneFBO; }
+    [[nodiscard]] GLuint getBackgroundFramebuffer() const                   { return openGLBuffers.backgroundFBO; }
+    [[nodiscard]] GLuint getUIFramebuffer() const                           { return openGLBuffers.uiFBO; }
+    [[nodiscard]] GLuint getForegroundFramebuffer() const                   { return openGLBuffers.foregroundFBO; }
+    [[nodiscard]] GLuint getGlobalFramebuffer() const                       { return openGLBuffers.globalFBO; }
+    [[nodiscard]] GLuint getDepthTexture() const                            { return openGLBuffers.sceneDepthTexture; }
+    [[nodiscard]] GLuint getSceneTexture() const                            { return openGLBuffers.sceneTexture; }
+    [[nodiscard]] GLuint getGlobalTexture() const                           { return openGLBuffers.globalTexture; }
+    [[nodiscard]] SDL_Window *getWindow() const                             { return window; }
+    [[nodiscard]] SDL_Renderer *getRenderer() const                         { return renderer; }
+    [[nodiscard]] TTF_Font *getFontDefault() const                          { return fontDefault; }
+    [[nodiscard]] ImGuizmo::OPERATION getGuiZmoOperation() const            { return ImGuiOperationGuizmo; }
+    [[nodiscard]] Config::ImGUIConfigs getImGuiConfig() const               { return ImGuiConfig; }
+    [[nodiscard]] PostProcessingManager *getPostProcessingManager() const   { return postProcessingManager; }
     [[nodiscard]] unsigned int getObjectIDByPickingColorFramebuffer(int x, int y) const;
 
     void setWindowTitle(const char *title) const;
     void setGuiZmoOperation(ImGuizmo::OPERATION operation);
     void setImGuiConfig(Config::ImGUIConfigs c);
+    void setImGuiMouse();
+    void setWindowSize(int w, int h);
+    void setRendererSize(int w, int h);
 
     static void InitOpenGL();
 };

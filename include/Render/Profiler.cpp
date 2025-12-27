@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "../Brakeza.h"
 #include "../Components/Components.h"
+#include "../GUI/Objects/FileSystemGUI.h"
 #include "../Misc/Logging.h"
 
 Profiler *Profiler::instance = nullptr;
@@ -296,6 +297,8 @@ void Profiler::DrawComponentsTable(float cellHeight)
             spaceHeight = ROW_HEIGHT; // Usar la altura fija en lugar de GetContentRegionAvail()
             offsetY = (spaceHeight - textHeight) * 0.5f;
             if (offsetY > 0.0f) ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
+            ImGui::Image(FileSystemGUI::Icon(c->isEnabled() ? IconGUI::CHECKED : IconGUI::UNCHECKED), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::SameLine();
             ImGui::TextColored(color, "%s", c->getLabel().c_str());
 
             // --- PRE (Rojo) ---

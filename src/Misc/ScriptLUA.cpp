@@ -108,7 +108,7 @@ void ScriptLUA::RunEnvironment(sol::environment &environment, const std::string&
 
     sol::object obj = environment[func];
     if (!obj.is<sol::function>()) {
-        LOG_MESSAGE("[ScriptLUA Error] Function %s not exists in script '%s'", func.c_str(), scriptFilename.c_str());
+        LOG_ERROR("[ScriptLUA Error] Function %s not exists in script '%s'", func.c_str(), scriptFilename.c_str());
         return;
     }
 

@@ -38,6 +38,9 @@ void ShaderOGLGrid::render(GLuint fbo)
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
+    auto window = Components::get()->Window();
+    glViewport(0,0, window->getWidthRender(), window->getHeightRender());
+
     auto camera = Components::get()->Camera()->getCamera();
     setMat4Uniform(modelMatrixUniform, camera->getGLMMat4ViewMatrix());
     setMat4Uniform(projectionMatrixUniform, camera->getGLMMat4ProjectionMatrix());

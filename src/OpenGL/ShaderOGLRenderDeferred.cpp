@@ -68,6 +68,9 @@ void ShaderOGLRenderDeferred::render(
     glDepthFunc(GL_LESS);
     glDisable(GL_BLEND);
 
+    auto window = Components::get()->Window();
+    glViewport(0,0, window->getWidthRender(), window->getHeightRender());
+
     glBindVertexArray(VertexArrayID);
 
     auto camera = Components::get()->Camera();

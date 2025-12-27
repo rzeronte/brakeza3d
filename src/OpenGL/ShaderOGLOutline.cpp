@@ -34,6 +34,9 @@ void ShaderOGLOutline::renderOutline(GLuint textureId, const Color &c, float bor
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->changeOpenGLProgram(programID);
 
+    auto window = Components::get()->Window();
+    glViewport(0,0, window->getWidth(), window->getHeight());
+
     LoadQuadMatrixUniforms();
 
     glUniform3fv(lineColorUniform, 1, &c.toGLM()[0]);
