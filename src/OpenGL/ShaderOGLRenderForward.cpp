@@ -121,12 +121,12 @@ void ShaderOGLRenderForward::CreateUBOFromLights()
     shadowMappingLights.resize(0);
 
     if (Config::get()->ENABLE_LIGHTS) {
-        for (auto o : Brakeza::get()->getSceneObjects()) {
+        for (auto &o : Brakeza::get()->getSceneObjects()) {
             if (!o->isEnabled()) continue;
-            extractLights(o);
-            for (auto a: o->getAttached()) {
+            ExtractLights(o);
+            for (auto &a: o->getAttached()) {
                 if (!a->isEnabled()) continue;
-                extractLights(a);
+                ExtractLights(a);
             }
         }
     }
@@ -186,7 +186,7 @@ void ShaderOGLRenderForward::FillUBOLights()
     }
 }
 
-void ShaderOGLRenderForward::extractLights(Object3D *o)
+void ShaderOGLRenderForward::ExtractLights(Object3D *o)
 {
     auto s = dynamic_cast<LightSpot*>(o);
     if (s != nullptr) {
@@ -251,7 +251,8 @@ int ShaderOGLRenderForward::getNumSpotLights() const
     return static_cast<int>(spotLights.size());
 }
 
-[[nodiscard]] std::vector<LightSpot *> &ShaderOGLRenderForward::getShadowMappingSpotLights() {
+[[nodiscard]] std::vector<LightSpot *> &ShaderOGLRenderForward::getShadowMappingSpotLights()
+{
     return shadowMappingLights;
 }
 
