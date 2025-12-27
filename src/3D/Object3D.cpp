@@ -65,8 +65,9 @@ void Object3D::onUpdate()
 {
     if (isRemoved() || !isEnabled()) return;
 
-    for (auto a: attachedObjects) {
-        if (a->isEnabled()) a->onUpdate();
+    for (auto &a: attachedObjects) {
+        if (!a->isEnabled()) continue;
+        a->onUpdate();
     }
 
     distanceToCamera = Components::get()->Camera()->getCamera()->getPosition().distance(getPosition());
@@ -78,7 +79,7 @@ void Object3D::onUpdate()
 
 void Object3D::RunScripts()
 {
-    for (auto script: scripts) {
+    for (auto &script: scripts) {
         script->RunEnvironment(luaEnvironment, "onUpdate");
     }
 }

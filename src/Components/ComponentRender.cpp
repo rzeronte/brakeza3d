@@ -82,8 +82,6 @@ void ComponentRender::RegisterShaders()
 void ComponentRender::preUpdate()
 {
     DeleteRemovedObjects();
-
-    Component::preUpdate();
     ClearShadowMaps();
     UpdateFPS();
 }
@@ -95,21 +93,17 @@ void ComponentRender::DrawFPS() const
 
 void ComponentRender::onUpdate()
 {
-    Component::onUpdate();
-
     if (!isEnabled()) return;
 
     shaders.shaderOGLRender->CreateUBOFromLights();
 
     auto numSpotLights = shaders.shaderOGLRender->getNumSpotLights();
 
-    if (Config::get()->ENABLE_LIGHTS) {
-        if (Config::get()->ENABLE_SHADOW_MAPPING) {
-            if (shaders.shaderOGLRender->hasSpotLightsChanged()) {
-                shaders.shaderShadowPass->createSpotLightsDepthTextures(numSpotLights);
-                shaders.shaderShadowPass->setupFBOSpotLights();
-                shaders.shaderOGLRender->setLastSpotLightsSize(numSpotLights);
-            }
+    if (Config::get()->ENABLE_LIGHTS && Config::get()->ENABLE_SHADOW_MAPPING) {
+        if (shaders.shaderOGLRender->hasSpotLightsChanged()) {
+            shaders.shaderShadowPass->createSpotLightsDepthTextures(numSpotLights);
+            shaders.shaderShadowPass->setupFBOSpotLights();
+            shaders.shaderOGLRender->setLastSpotLightsSize(numSpotLights);
         }
     }
 
@@ -155,14 +149,13 @@ void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish)
 
 void ComponentRender::onUpdateSceneObjects()
 {
-    std::vector<Object3D *> sceneObjects = Brakeza::get()->getSceneObjects();
+    std::vector<Object3D *> &sceneObjects = Brakeza::get()->getSceneObjects();
 
     std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
 
     for (const auto &o: sceneObjects) {
-        if (o->isEnabled()) {
-            o->onUpdate();
-        }
+        if (!o->isEnabled()) continue;
+        o->onUpdate();
     }
 }
 
@@ -434,7 +427,7 @@ void ComponentRender::FillOGLBuffers(std::vector<Mesh3DData> &meshes)
 
 void ComponentRender::ClearShadowMaps() const
 {
-    auto numLights = static_cast<int>(shaders.shaderOGLRender->getShadowMappingSpotLights().size());
+    auto numLights = (int) shaders.shaderOGLRender->getShadowMappingSpotLights().size();
 
     glBindFramebuffer(GL_FRAMEBUFFER, shaders.shaderShadowPass->getDirectionalLightDepthMapFBO());
     glClear(GL_DEPTH_BUFFER_BIT);

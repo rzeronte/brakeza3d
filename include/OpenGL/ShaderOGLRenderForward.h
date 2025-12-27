@@ -71,7 +71,7 @@ public:
     void CreateUBOFromLights();
     void renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo) const;
     void FillUBOLights();
-    void extractLights(Object3D *o);
+    void ExtractLights(Object3D *o);
     void setGlobalIlluminationDirection(const Vertex3D &d);
     void setGlobalIlluminationAmbient(const Vertex3D &a);
     void setGlobalIlluminationDiffuse(const Vertex3D &d);
