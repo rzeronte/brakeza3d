@@ -327,7 +327,7 @@ void GUIManager::DrawWinKeyboardMouse()
     ImGui::Separator();
     ImGui::Text(("Enabled: " + std::to_string(input->isEnabled())).c_str());
     ImGui::Separator();
-    ImGui::Text(("Game Controller Enabled: " + std::to_string(input->isGameControllerEnabled())).c_str());
+    ImGui::Text(("Game Controller Enabled: " + std::to_string(input->isGameControllerAvailable())).c_str());
     ImGui::Text(("Controller Button A: " + std::to_string(input->getControllerButtonA())).c_str());
     ImGui::Text(("Controller Button B: " + std::to_string(input->getControllerButtonB())).c_str());
     ImGui::Text(("Controller Button X: " + std::to_string(input->getControllerButtonX())).c_str());

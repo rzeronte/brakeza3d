@@ -226,7 +226,7 @@ void GUIAddonProjectSetup::DrawSceneScripts()
 
             GUI::DrawButtonTransparent(
                 currentScript->isPaused() ? "Unlock scene script" : "Lock scene script",
-                currentScript->isPaused() ? IconGUI::LUA_UNLOCK : IconGUI::LUA_UNLOCK,
+                currentScript->isPaused() ? IconGUI::LUA_LOCK : IconGUI::LUA_UNLOCK,
                 GUIType::Sizes::ICONS_BROWSERS,
                 false,
                 [&] { currentScript->setPaused(!currentScript->isPaused()); }

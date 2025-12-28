@@ -38,8 +38,8 @@ public:
     sol::state &getLua()                                                    { return lua; }
     std::vector<ScriptLUA*> &getSceneLUAScripts()                           { return scripts; }
     std::vector<ScriptLUA*> &getProjectLUAScripts()                         { return projectScripts; }
+    bool isExecuting() const                                                { return getStateLUAScripts() == Config::LUA_PLAY; }
     [[nodiscard]] Config::LuaStateScripts getStateLUAScripts() const        { return stateScripts; }
-
     static void CreateScriptLUAFile(const std::string& path);
     static cJSON *CreateEmptyTypesFileJSON(const std::string &name, const std::string &codeFile, const std::string &typesFile);
 

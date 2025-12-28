@@ -58,6 +58,13 @@ Through your LUA scripts, you can access the following methods:
 
 The Input component provides an interface to access keyboard, mouse, and game controller input methods.
 
+    - setKeyboardEnabled(bool): Set on/off keyboard moving camera
+    - setMouseEnabled(bool): Set on/off mouse lookup
+    - setPadEnabled(bool): set on/off pad lookup
+    - isKeyboardEnabled(): Returns if keyboard moving camera is enabled
+    - isMouseEnabled(): Returns if mouse lookup is enabled
+    - isPadEnabled(): Returns if pad lookup is enabled
+
 Through your LUA scripts, you can access the following methods:
 
     - isKeyEventDown(): Returns true when a key-down event is detected.

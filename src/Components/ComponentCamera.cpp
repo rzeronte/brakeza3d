@@ -6,32 +6,39 @@ void ComponentCamera::onStart()
 {
     Component::onStart();
     camera = new Camera3D();
+    setEnabled(true);
 }
 
 void ComponentCamera::preUpdate()
 {
-    Component::preUpdate();
-
-    camera->getVelocity().vertex1 = camera->getPosition();
-    camera->getVelocity().vertex2 = camera->getPosition();
-
     setProjectionMatrix(Camera3D::getGLMMat4ProjectionMatrix());
     setViewMatrix(camera->getGLMMat4ViewMatrix());
+
+    if (!isEnabled()) return;
+
+    ResetVelocityFrame();
 }
 
 void ComponentCamera::onUpdate()
 {
-    Component::onUpdate();
+    if (!isEnabled()) return;
+
     camera->UpdateVelocity();
 }
 
 void ComponentCamera::postUpdate()
 {
-    Component::postUpdate();
+    if (!isEnabled()) return;
 
     if (Components::get()->Input()->isEnabled()) {
         camera->UpdatePositionForVelocity();
     }
+}
+
+void ComponentCamera::ResetVelocityFrame() const
+{
+    camera->getVelocity().vertex1 = camera->getPosition();
+    camera->getVelocity().vertex2 = camera->getPosition();
 }
 
 void ComponentCamera::onEnd()

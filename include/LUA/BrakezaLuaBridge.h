@@ -123,13 +123,15 @@ inline void LUAIntegration(sol::state &lua)
     );
 
     lua.new_usertype<Component>("Component",
-    "setEnabled", &Component::setEnabled,
+        "setEnabled", &Component::setEnabled,
         "isEnabled", &Component::isEnabled
     );
 
     lua.new_usertype<ComponentCamera>("ComponentCamera",
         sol::base_classes, sol::bases<Component>(),
         "getCamera", &ComponentCamera::getCamera,
+        "isEnabled", &ComponentCamera::isEnabled,
+        "setEnabled", &ComponentCamera::setEnabled,
         "getGLMMat4ViewMatrix", &ComponentCamera::getGLMMat4ViewMatrix,
         "getGLMMat4ProjectionMatrix", &ComponentCamera::getGLMMat4ProjectionMatrix
     );
@@ -141,7 +143,7 @@ inline void LUAIntegration(sol::state &lua)
         "setMusicVolume", &ComponentSound::setMusicVolume,
         "setSoundsVolume", &ComponentSound::setSoundsVolume,
         "playSound", &ComponentSound::PlayMusic,
-        "stopMusic", &ComponentSound::stopMusic
+        "StopMusic", &ComponentSound::StopMusic
     );
 
     lua.new_usertype<ComponentCollisions>("ComponentCollisions",
@@ -190,6 +192,12 @@ inline void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<ComponentInput>("ComponentInput",
     sol::base_classes, sol::bases<Component>(),
+        "setKeyboardEnabled", &ComponentInput::setKeyboardEnabled,
+        "setMouseEnabled", &ComponentInput::setMouseEnabled,
+        "setPadEnabled", &ComponentInput::setPadEnabled,
+        "isKeyboardEnabled", &ComponentInput::isKeyboardEnabled,
+        "isMouseEnabled", &ComponentInput::isMouseEnabled,
+        "isPadEnabled", &ComponentInput::isPadEnabled,
         "isKeyEventDown", &ComponentInput::isKeyEventDown,
         "isKeyEventUp", &ComponentInput::isKeyEventUp,
         "isCharPressed", &ComponentInput::isCharPressed,
@@ -205,7 +213,7 @@ inline void LUAIntegration(sol::state &lua)
         "getMouseMotionYRel", &ComponentInput::getMouseMotionYRel,
         "isLeftMouseButtonPressed", &ComponentInput::isLeftMouseButtonPressed,
         "isRightMouseButtonPressed", &ComponentInput::isRightMouseButtonPressed,
-        "isGameControllerEnabled", &ComponentInput::isGameControllerEnabled,
+        "isGameControllerAvailable", &ComponentInput::isGameControllerAvailable,
         "getControllerButtonA",  &ComponentInput::getControllerButtonA,
         "getControllerButtonB",  &ComponentInput::getControllerButtonB,
         "getControllerButtonX",  &ComponentInput::getControllerButtonX,

@@ -21,7 +21,7 @@ void ComponentScripting::preUpdate()
 
 void ComponentScripting::onUpdate()
 {
-    Component::onUpdate();
+    if (!isEnabled()) return;
 
     if (stateScripts == Config::LUA_PLAY) {
         RunScripts();
@@ -43,13 +43,15 @@ void ComponentScripting::onSDLPollEvent(SDL_Event *event, bool &finish)
 
 void ComponentScripting::PlayLUAScripts()
 {
-    LOG_MESSAGE("LUA Scripts state changed to PLAY");
+    LOG_MESSAGE("[Scripting] Start scripts execution...");
 
-    onStartScripts();
-
+    Components::get()->Camera()->setEnabled(false);
+    Components::get()->Scripting()->setEnabled(true);
     Components::get()->Input()->setEnabled(false);
     Components::get()->Render()->setSelectedObject(nullptr);
     Components::get()->Collisions()->setEnabled(true);
+
+    onStartScripts();
 
     stateScripts = Config::LuaStateScripts::LUA_PLAY;
 }
@@ -58,6 +60,8 @@ void ComponentScripting::StopLUAScripts()
 {
     LOG_MESSAGE("LUA Scripts state changed to STOP");
 
+    Components::get()->Camera()->setEnabled(true);
+    Components::get()->Scripting()->setEnabled(false);
     Components::get()->Input()->setEnabled(true);
     Components::get()->Collisions()->setEnabled(false);
     Components::get()->Window()->setImGuiMouse();
@@ -190,8 +194,7 @@ void ComponentScripting::InitLUATypes()
 
     lua["Brakeza"] = Brakeza::get();
     lua["Components"] = Components::get();
-    lua.set_function("print", static_cast<void(*)(const char*, ...)>(&Logging::Message)
-    );
+    lua.set_function("print", static_cast<void(*)(const char*, ...)>(&Logging::Message));
 }
 
 sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName, const char *varName)

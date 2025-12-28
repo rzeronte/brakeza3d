@@ -22,6 +22,7 @@ public:
     void postUpdate() override;
     void onEnd() override;
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
+    void ResetVelocityFrame() const;
     void setViewMatrix(const glm::mat4 &viewMatrix);
     void setProjectionMatrix(const glm::mat4 &projectionMatrix);
     [[nodiscard]] const glm::mat4 &getGLMMat4ViewMatrix() const             { return ViewMatrix; }

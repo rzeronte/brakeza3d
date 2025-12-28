@@ -72,7 +72,7 @@ void Object3D::onUpdate()
 
     distanceToCamera = Components::get()->Camera()->getCamera()->getPosition().distance(getPosition());
 
-    if (Components::get()->Scripting()->getStateLUAScripts() == Config::LUA_PLAY) {
+    if (Components::get()->Scripting()->isExecuting()) {
         RunScripts();
     }
 }
@@ -326,7 +326,7 @@ void Object3D::ResolveCollision(CollisionInfo with)
         LOG_MESSAGE("Object3D: Collision %s with %s",  getName().c_str(), object->getName().c_str());
     }
 
-    if (Components::get()->Scripting()->getStateLUAScripts() == Config::LUA_PLAY) {
+    if (Components::get()->Scripting()->isExecuting()) {
         RunResolveCollisionScripts(with);
     }
 }
