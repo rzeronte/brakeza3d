@@ -10,14 +10,13 @@
 #include "Component.h"
 #include "../include/Misc/SoundPackage.h"
 
-class ComponentSound : public Component {
-private:
+class ComponentSound : public Component
+{
     SoundPackage soundPackage;
-    static int playChunk(Mix_Chunk *chunk, int channel, int times);
+    static int PlayChunk(Mix_Chunk *chunk, int channel, int times);
 public:
     ComponentSound();
 
-    float soundDuration(const std::string &sound);
     void onStart() override;
     void preUpdate() override;
     void onUpdate() override;
@@ -30,10 +29,11 @@ public:
     void AddMusic(const std::string& soundFile, const std::string& label);
     void PlaySound(const std::string& sound, int channel, int times);
     void PlayMusic(const std::string& sound);
+    float getSoundDuration(const std::string &sound);
     static void playMusicMix(Mix_Music *music, int loops);
     static void fadeInMusic(Mix_Music *music, int loops, int ms);
-    static void stopMusic();
-    static void stopChannel(int channel);
+    static void StopMusic();
+    static void StopChannel(int channel);
     static void setMusicVolume(int v);
     static void setSoundsVolume(int v);
 };

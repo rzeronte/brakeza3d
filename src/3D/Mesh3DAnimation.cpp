@@ -877,7 +877,7 @@ void Mesh3DAnimation::ResolveCollision(CollisionInfo with)
         }
     }
 
-    if (Components::get()->Scripting()->getStateLUAScripts() == Config::LUA_PLAY) {
+    if (Components::get()->Scripting()->isExecuting()) {
         RunResolveCollisionScripts(with);
     }
 }

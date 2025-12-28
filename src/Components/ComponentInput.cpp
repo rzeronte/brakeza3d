@@ -2,10 +2,6 @@
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
 
-ComponentInput::ComponentInput()
-{
-}
-
 void ComponentInput::onStart()
 {
     Component::onStart();
@@ -30,7 +26,10 @@ void ComponentInput::onUpdate()
     Component::onUpdate();
 
     if (!isEnabled()) return;
-    HandleKeyboardMovingCamera();
+
+    if (keyboardEnabled) {
+        HandleKeyboardMovingCamera();
+    }
 }
 
 void ComponentInput::postUpdate()
@@ -46,20 +45,28 @@ void ComponentInput::onEnd()
 
 void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
 {
-    updateMouseStates(e);
+    UpdateMouseStates(e);
     HandleCheckPadConnection(e);
     UpdateGamePadStates();
     UpdateKeyboardStates(e);
     HandleWindowEvents(e, finish);
-    HandleToggleKeys(e);
+
+    if (!Components::get()->Scripting()->isExecuting()) {
+        HandleGUIShortCuts(e);
+    }
 
     if (!isEnabled()) return;
 
-    HandleDeleteSelectedObject(e);
-    HandleMouse(e);
+    if (mouseEnabled) {
+        HandleMouseLook(e);
+    }
+
+    if (!Components::get()->Scripting()->isExecuting()) {
+        HandleDeleteSelectedObject(e);
+    }
 }
 
-void ComponentInput::HandleMouse(SDL_Event *event)
+void ComponentInput::HandleMouseLook(SDL_Event *event)
 {
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
@@ -146,7 +153,7 @@ void ComponentInput::ResetKeyboardMapping()
     keyboard = (unsigned char *) SDL_GetKeyboardState(nullptr);
 }
 
-void ComponentInput::updateMouseStates(SDL_Event *event)
+void ComponentInput::UpdateMouseStates(SDL_Event *event)
 {
     if (event->type == SDL_MOUSEMOTION) {
         mouseMotion = true;
@@ -156,16 +163,6 @@ void ComponentInput::updateMouseStates(SDL_Event *event)
             drag = true;
         }
     }
-}
-
-bool ComponentInput::isLeftMouseButtonPressed() const
-{
-    return mouseLeftButton;
-}
-
-bool ComponentInput::isRightMouseButtonPressed() const
-{
-    return mouseRightButton;
 }
 
 void ComponentInput::ResetMouseMapping()
@@ -197,41 +194,6 @@ void ComponentInput::ResetMouseMapping()
     mouseMotion = false;
     mouseMotionXRel = 0;
     mouseMotionYRel = 0;
-}
-
-bool ComponentInput::isClickLeft() const
-{
-    return mouseLeftButton;
-}
-
-bool ComponentInput::isClickRight() const
-{
-    return mouseRightButton;
-}
-
-int ComponentInput::getRelativeRendererMouseX() const
-{
-    return relativeRendererMouseX;
-}
-
-int ComponentInput::getMouseX() const
-{
-    return mouseX;
-}
-
-int ComponentInput::getMouseY() const
-{
-    return mouseY;
-}
-
-int ComponentInput::getRelativeRendererMouseY() const
-{
-    return relativeRendererMouseY;
-}
-
-bool ComponentInput::isMouseMotion() const
-{
-    return mouseMotion;
 }
 
 void ComponentInput::UpdateGamePadStates()
@@ -289,67 +251,13 @@ void ComponentInput::InitJoystick()
     }
 }
 
-float ComponentInput::getControllerAxisTriggerLeft() const
-{
-    return controllerAxisTriggerLeft;
-}
-
-float ComponentInput::getControllerAxisTriggerRight() const
-{
-    return controllerAxisTriggerRight;
-}
-
-Uint8 *ComponentInput::getKeyboard() const
-{
-    return keyboard;
-}
-
-Uint8 ComponentInput::getControllerButtonA() const
-{
-    return controllerButtonA;
-}
-
-Uint8 ComponentInput::getControllerButtonB() const
-{
-    return controllerButtonB;
-}
-
-Uint8 ComponentInput::getControllerButtonX() const
-{
-    return controllerButtonX;
-}
-
-Uint8 ComponentInput::getControllerButtonY() const
-{
-    return controllerButtonY;
-}
-
-float ComponentInput::getControllerAxisLeftX() const
-{
-    return controllerAxisLeftX;
-}
-
-float ComponentInput::getControllerAxisLeftY() const
-{
-    return controllerAxisLeftY;
-}
-
-float ComponentInput::getControllerAxisRightX() const {
-    return controllerAxisRightX;
-}
-
-float ComponentInput::getControllerAxisRightY() const
-{
-    return controllerAxisRightY;
-}
-
-void ComponentInput::HandleToggleKeys(SDL_Event *event)
+void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
 {
     if (event->type == SDL_KEYDOWN) {
         auto scripting = Components::get()->Scripting();
 
         if (keyboard[SDL_SCANCODE_F1]) {
-            if (scripting->getStateLUAScripts() == Config::LuaStateScripts::LUA_STOP) {
+            if (scripting->isExecuting()) {
                 scripting->PlayLUAScripts();
             } else {
                 scripting->StopLUAScripts();
@@ -384,7 +292,7 @@ void ComponentInput::HandleToggleKeys(SDL_Event *event)
     }
 }
 
-bool ComponentInput::isCharPressed(const char *character)
+bool ComponentInput::isCharPressed(const char *character) const
 {
     if (character == nullptr) return false;
 
@@ -407,16 +315,6 @@ bool ComponentInput::isCharFirstEventDown(const char *character)
     return it != keyboardEvents.end() && it->second;
 }
 
-bool ComponentInput::isKeyEventDown() const
-{
-    return keyDownEvent;
-}
-
-bool ComponentInput::isKeyEventUp() const
-{
-    return keyUpEvent;
-}
-
 void ComponentInput::UpdateKeyboardStates(SDL_Event *event)
 {
     if (event->type == SDL_KEYDOWN) {
@@ -430,11 +328,6 @@ void ComponentInput::UpdateKeyboardStates(SDL_Event *event)
     if (event->type == SDL_KEYDOWN && event->key.repeat == 0) {
         keyboardEvents[event->key.keysym.sym] = true;
     }
-}
-
-_SDL_GameController *ComponentInput::getGameController() const
-{
-    return gameController;
 }
 
 void ComponentInput::HandleCheckPadConnection(SDL_Event *pEvent)
@@ -452,32 +345,7 @@ void ComponentInput::HandleCheckPadConnection(SDL_Event *pEvent)
     }
 }
 
-float ComponentInput::getMouseMotionXRel() const
-{
-    return mouseMotionXRel;
-}
-
-float ComponentInput::getMouseMotionYRel() const
-{
-    return mouseMotionYRel;
-}
-
-bool ComponentInput::isMouseButtonUp() const
-{
-    return mouseButtonUp;
-}
-
-bool ComponentInput::isMouseButtonDown() const
-{
-    return mouseButtonDown;
-}
-
-bool ComponentInput::isDrag() const
-{
-    return drag;
-}
-
-void ComponentInput::HandleDeleteSelectedObject(SDL_Event *e)
+void ComponentInput::HandleDeleteSelectedObject(SDL_Event *e) const
 {
     if (e->type == SDL_KEYDOWN) {
         if (keyboard[SDL_SCANCODE_DELETE]) {
@@ -490,54 +358,18 @@ void ComponentInput::HandleDeleteSelectedObject(SDL_Event *e)
     }
 }
 
-bool ComponentInput::isGameControllerEnabled()
-{
-    if (gameController != nullptr) return true;
 
-    return false;
+void ComponentInput::setKeyboardEnabled(bool value)
+{
+    keyboardEnabled = value;
 }
 
-Uint8 ComponentInput::getControllerPadUp() const
+void ComponentInput::setMouseEnabled(bool value)
 {
-    return controllerPadUp;
+    mouseEnabled = value;
 }
 
-Uint8 ComponentInput::getControllerPadDown() const
+void ComponentInput::setPadEnabled(bool value)
 {
-    return controllerPadDown;
-}
-
-Uint8 ComponentInput::getControllerPadLeft() const
-{
-    return controllerPadLeft;
-}
-
-Uint8 ComponentInput::getControllerPadRight() const
-{
-    return controllerPadRight;
-}
-
-Uint8 ComponentInput::getControllerShoulderLeft() const
-{
-    return controllerShoulderLeft;
-}
-
-Uint8 ComponentInput::getControllerShoulderRight() const
-{
-    return controllerShoulderRight;
-}
-
-Uint8 ComponentInput::getControllerButtonBack() const
-{
-    return controllerButtonBack;
-}
-
-Uint8 ComponentInput::getControllerButtonGuide() const
-{
-    return controllerButtonGuide;
-}
-
-Uint8 ComponentInput::getControllerButtonStart() const
-{
-    return controllerButtonStart;
+    padEnabled = value;
 }

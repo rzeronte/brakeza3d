@@ -1,5 +1,7 @@
 #include <SDL2/SDL_mixer.h>
 #include "../../include/Components/ComponentSound.h"
+
+#include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Misc/Tools.h"
 
@@ -11,7 +13,7 @@ ComponentSound::ComponentSound()
 void ComponentSound::onStart()
 {
     Component::onStart();
-
+    setEnabled(true);
     LoadSoundsConfigFile();
 }
 
@@ -52,7 +54,6 @@ void ComponentSound::InitSoundSystem() const
     Mix_Volume(Config::SoundChannels::SND_GLOBAL, (int) SETUP->SOUND_CHANNEL_GLOBAL);
 }
 
-
 void ComponentSound::LoadSoundsConfigFile()
 {
     auto filePath = Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SOUNDS_FILE;
@@ -87,8 +88,10 @@ void ComponentSound::LoadSoundsConfigFile()
     free(contentFile);
 }
 
-int ComponentSound::playChunk(Mix_Chunk *chunk, int channel, int times)
+int ComponentSound::PlayChunk(Mix_Chunk *chunk, int channel, int times)
 {
+    if (!Components::get()->Sound()->isEnabled()) return -1;
+
     if (chunk == nullptr) {
         LOG_ERROR("[Sound] loading chunk playSound");
         return -1;
@@ -113,17 +116,17 @@ void ComponentSound::fadeInMusic(Mix_Music *music, int loops, int ms)
     Mix_FadeInMusic(music, loops, ms);
 }
 
-void ComponentSound::stopMusic()
+void ComponentSound::StopMusic()
 {
     Mix_HaltMusic();
 }
 
-void ComponentSound::stopChannel(int channel)
+void ComponentSound::StopChannel(int channel)
 {
     Mix_HaltChannel(channel);
 }
 
-float ComponentSound::soundDuration(const std::string& sound)
+float ComponentSound::getSoundDuration(const std::string& sound)
 {
     auto chunk = soundPackage.getByLabel(sound);
 
@@ -176,6 +179,8 @@ void ComponentSound::AddMusic(const std::string &soundFile, const std::string &l
 
 void ComponentSound::PlayMusic(const std::string& sound)
 {
+    if (!Components::get()->Sound()->isEnabled()) return;
+
     playMusicMix(
         soundPackage.getMusicByLabel(sound),
         -1
@@ -184,7 +189,9 @@ void ComponentSound::PlayMusic(const std::string& sound)
 
 void ComponentSound::PlaySound(const std::string& sound, int channel, int times)
 {
-     playChunk(
+    if (!Components::get()->Sound()->isEnabled()) return;
+
+    PlayChunk(
         soundPackage.getByLabel(sound),
         channel,
         times
@@ -193,10 +200,14 @@ void ComponentSound::PlaySound(const std::string& sound, int channel, int times)
 
 void ComponentSound::setMusicVolume(int v)
 {
+    if (!Components::get()->Sound()->isEnabled()) return;
+
     Mix_VolumeMusic(static_cast<int>(Config::get()->SOUND_VOLUME_MUSIC));
 }
 
 void ComponentSound::setSoundsVolume(int v)
 {
+    if (!Components::get()->Sound()->isEnabled()) return;
+
     Mix_Volume(Config::SoundChannels::SND_GLOBAL, static_cast<int>(Config::get()->SOUND_CHANNEL_GLOBAL));
 }

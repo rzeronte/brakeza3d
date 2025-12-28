@@ -6,6 +6,10 @@
 
 class ComponentInput : public Component
 {
+    bool keyboardEnabled = true;
+    bool mouseEnabled = true;
+    bool padEnabled = true;
+
     bool mouseMotion = false;
     float mouseMotionXRel = 0.f;
     float mouseMotionYRel = 0.f;
@@ -57,15 +61,7 @@ class ComponentInput : public Component
     bool keyDownEvent = false;
 
 public:
-    ComponentInput();
-    int getMouseX() const;
-    int getMouseY() const;
-    float getMouseMotionXRel() const;
-    float getMouseMotionYRel() const;
-    bool isMouseButtonUp() const;
-    bool isMouseButtonDown() const;
-    bool isDrag() const;
-    bool isGameControllerEnabled();
+    ComponentInput() = default;
     void onStart() override;
     void ResetKeyboardMapping();
     void preUpdate() override;
@@ -74,50 +70,69 @@ public:
     void onEnd() override;
     void InitJoystick();
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
-    void updateMouseStates(SDL_Event *e);
+    void UpdateMouseStates(SDL_Event *e);
     void HandleKeyboardMovingCamera() const;
-    void HandleMouse(SDL_Event *);
+    void HandleMouseLook(SDL_Event *);
     void ResetMouseMapping();
     void UpdateGamePadStates();
     void HandleCheckPadConnection(SDL_Event *pEvent);
-    void HandleDeleteSelectedObject(SDL_Event *e);
-    void UpdateKeyboardStates(SDL_Event *event);
-    void HandleToggleKeys(SDL_Event *event);
-    Uint8 getControllerPadUp() const;
-    Uint8 getControllerPadDown() const;
-    Uint8 getControllerPadLeft() const;
-    Uint8 getControllerPadRight() const;
-    Uint8 getControllerShoulderLeft() const;
-    Uint8 getControllerShoulderRight() const;
-    Uint8 getControllerButtonBack() const;
-    Uint8 getControllerButtonGuide() const;
-    Uint8 getControllerButtonStart() const;
-    [[nodiscard]] int getRelativeRendererMouseY() const;
-    [[nodiscard]] bool isMouseMotion() const;
-    [[nodiscard]] float getControllerAxisTriggerLeft() const;
-    [[nodiscard]] float getControllerAxisTriggerRight() const;
-    [[nodiscard]] Uint8 *getKeyboard() const;
-    [[nodiscard]] Uint8 getControllerButtonA() const;
-    [[nodiscard]] Uint8 getControllerButtonB() const;
-    [[nodiscard]] Uint8 getControllerButtonX() const;
-    [[nodiscard]] Uint8 getControllerButtonY() const;
-    [[nodiscard]] float getControllerAxisLeftX() const;
-    [[nodiscard]] float getControllerAxisLeftY() const;
-    [[nodiscard]] float getControllerAxisRightX() const;
-    [[nodiscard]] float getControllerAxisRightY() const;
-    [[maybe_unused]] bool isCharPressed(const char *character);
-    [[maybe_unused]] bool isCharFirstEventDown(const char *character);
-    [[nodiscard]] bool isKeyEventDown() const;
-    [[nodiscard]] bool isKeyEventUp() const;
-    [[nodiscard]] _SDL_GameController *getGameController() const;
-    [[nodiscard]] bool isAnyControllerButtonPressed() const;
-    [[nodiscard]] bool isLeftMouseButtonPressed() const;
-    [[nodiscard]] bool isRightMouseButtonPressed() const;
-    [[nodiscard]] bool isClickLeft() const;
-    [[nodiscard]] bool isClickRight() const;
-    [[nodiscard]] int getRelativeRendererMouseX() const;
-    static void HandleWindowEvents(SDL_Event *event, bool &);
+    void HandleDeleteSelectedObject(SDL_Event *e) const;
 
+    void setKeyboardEnabled(bool value);
+
+    void setMouseEnabled(bool value);
+
+    void setPadEnabled(bool value);
+
+    void UpdateKeyboardStates(SDL_Event *event);
+    void HandleGUIShortCuts(SDL_Event *event) const;
+    float getMouseMotionXRel() const { return mouseMotionXRel; }
+    float getMouseMotionYRel() const { return mouseMotionYRel; }
+    Uint8 getControllerPadUp() const                                { return controllerPadUp; }
+    Uint8 getControllerPadDown() const                              { return controllerPadDown; }
+    Uint8 getControllerPadLeft() const                              { return controllerPadLeft; }
+    Uint8 getControllerPadRight() const                             { return controllerPadRight; }
+    Uint8 getControllerShoulderLeft() const                         { return controllerShoulderLeft; }
+    Uint8 getControllerShoulderRight() const                        { return controllerShoulderRight; }
+    Uint8 getControllerButtonBack() const                           { return controllerButtonBack; }
+    Uint8 getControllerButtonGuide() const                          { return controllerButtonGuide; }
+    Uint8 getControllerButtonStart() const                          { return controllerButtonStart; }
+    int getMouseX() const                                           { return mouseX; }
+    int getMouseY() const                                           { return mouseY; }
+    [[nodiscard]] Uint8 *getKeyboard() const                        { return keyboard; };
+    [[nodiscard]] Uint8 getControllerButtonA() const                { return controllerButtonA; }
+    [[nodiscard]] Uint8 getControllerButtonB() const                { return controllerButtonB; }
+    [[nodiscard]] Uint8 getControllerButtonX() const                { return controllerButtonX; }
+    [[nodiscard]] Uint8 getControllerButtonY() const                { return controllerButtonY; }
+    [[nodiscard]] int getRelativeRendererMouseY() const             { return relativeRendererMouseY; }
+    [[nodiscard]] float getControllerAxisTriggerLeft() const        { return controllerAxisTriggerLeft; }
+    [[nodiscard]] float getControllerAxisTriggerRight() const       { return controllerAxisTriggerRight; }
+    [[nodiscard]] float getControllerAxisLeftX() const              { return controllerAxisLeftX; }
+    [[nodiscard]] float getControllerAxisLeftY() const              { return controllerAxisLeftY; }
+    [[nodiscard]] float getControllerAxisRightX() const             { return controllerAxisRightX; }
+    [[nodiscard]] float getControllerAxisRightY() const             { return controllerAxisRightY; }
+    [[nodiscard]] _SDL_GameController *getGameController() const    { return gameController; }
+    [[nodiscard]] int getRelativeRendererMouseX() const             { return relativeRendererMouseX; }
+    [[nodiscard]] bool isMouseMotion() const                        { return mouseMotion;}
+    [[nodiscard]] bool isKeyEventDown() const                       { return keyDownEvent; }
+    [[nodiscard]] bool isKeyEventUp() const                         { return keyUpEvent; }
+    [[nodiscard]] bool isLeftMouseButtonPressed() const             { return mouseLeftButton; }
+    [[nodiscard]] bool isRightMouseButtonPressed() const            { return mouseRightButton; }
+    [[nodiscard]] bool isClickLeft() const                          { return mouseLeftButton; }
+    [[nodiscard]] bool isClickRight() const                         { return mouseRightButton; }
+    [[nodiscard]] bool isKeyboardEnabled() const                    { return keyboardEnabled; }
+    [[nodiscard]] bool isMouseEnabled() const                       { return mouseEnabled; }
+    [[nodiscard]] bool isPadEnabled() const                         { return padEnabled; }
+    bool isMouseButtonUp() const                                    { return mouseButtonUp; }
+    bool isMouseButtonDown() const                                  { return mouseButtonDown; }
+    bool isDrag() const                                             { return drag; }
+    bool isGameControllerAvailable() const                          { return gameController != nullptr; }
+
+    [[nodiscard]] bool isAnyControllerButtonPressed() const;
+    [[maybe_unused]] bool isCharFirstEventDown(const char *character);
+    [[maybe_unused]] bool isCharPressed(const char *character) const;
+
+    static void HandleWindowEvents(SDL_Event *event, bool &);
 };
 
 
