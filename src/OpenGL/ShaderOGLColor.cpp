@@ -57,7 +57,6 @@ void ShaderOGLColor::RenderColor(
 ) const
 {
     auto render = Components::get()->Render();
-
     render->ChangeOpenGLFramebuffer(fbo);
     render->ChangeOpenGLProgram(programID);
     auto window = Components::get()->Window();

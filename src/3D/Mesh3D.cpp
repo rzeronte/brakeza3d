@@ -196,7 +196,7 @@ void Mesh3D::onUpdate()
         render->getShaders()->shaderOGLOutline->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
     }
 
-    GLuint fbo =  Config::get()->ENABLE_LIGHTS ? window->getGBuffer().FBO : sceneFramebuffer;
+    GLuint fbo = Config::get()->ENABLE_LIGHTS ? window->getGBuffer().FBO : sceneFramebuffer;
 
     if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
         if (!isTransparent() ) {

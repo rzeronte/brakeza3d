@@ -86,9 +86,6 @@ void ComponentRender::onUpdate()
 {
     if (!isEnabled()) return;
 
-    //auto window = Components::get()->Window();
-    //glViewport(0,0, window->getWidthRender(), window->getHeightRender());
-
     shaders.shaderOGLRender->CreateUBOFromLights();
 
     auto numSpotLights = shaders.shaderOGLRender->getNumSpotLights();
@@ -125,9 +122,8 @@ void ComponentRender::postUpdate()
     std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
 
     for (auto &o: sceneObjects) {
-        if (o->isEnabled()) {
-            o->postUpdate();
-        }
+        if (!o->isEnabled()) continue;
+        o->postUpdate();
     }
 }
 
