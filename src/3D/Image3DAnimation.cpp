@@ -29,7 +29,6 @@ void Image3DAnimation::onUpdate()
         billboard->getUVBuffer(),
         billboard->getNormalBuffer(),
         billboard->getVertices().size(),
-        1.0f,
         Components::get()->Window()->getForegroundFramebuffer()
     );
 

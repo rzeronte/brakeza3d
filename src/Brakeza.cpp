@@ -62,10 +62,9 @@ void Brakeza::PreMainLoop()
     AutoLoadProjectOrContinue();     // Parse CLI options
 
     // Profiler tags
-    Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "RenderLayersToGlobal");
-    Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPreUpdate");
-    Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
+    Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "LightPass");
     Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
+    Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "PostProcessingShadersChain");
 }
 
 void Brakeza::MainLoop()
@@ -84,9 +83,10 @@ void Brakeza::MainLoop()
         CaptureInputEvents(event);                                       // Capture keyboard/mouse status
         Components::get()->Window()->ClearOGLFrameBuffers();                // Clean video framebuffers
         OnUpdateComponents();                                               // OnUpdate for componentes
+        Components::get()->Render()->LightPass();                           // Deferred opaque objects light pass
+        PostUpdateComponents();                                             // PostUpdate for componentes (transparent mainly)
         Components::get()->Render()->FlipBuffersToGlobal();                 // Buffers compositing
-        ComponentRender::RunSceneShadersPostUpdate();                       // Post-pass running for shaders
-        PostUpdateComponents();                                             // PostUpdate for componentes
+        ComponentRender::PostProcessingShadersChain();                      // Post-pass running for shaders
         Profiler::get()->EndTotalFrameTime();                               // End frame time measures
         Components::get()->Window()->FlipGlobalToWindow();                  // Flip to screen
     }

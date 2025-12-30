@@ -40,7 +40,7 @@ void ShaderOGLParticles::render(
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(Components::get()->Window()->getForegroundFramebuffer());
 
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
     glm::mat4 ProjectionMatrix = Components::get()->Camera()->getGLMMat4ProjectionMatrix();
@@ -50,7 +50,7 @@ void ShaderOGLParticles::render(
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
 
     setTextureUniform(textureIDuniform, textureID, 0);
 

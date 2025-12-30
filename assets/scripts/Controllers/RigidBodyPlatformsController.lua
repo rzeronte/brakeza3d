@@ -206,7 +206,7 @@ function setState(state)
         this:EnableSimulationCollider()
     elseif (currentState == State.CROUCHED or currentState == State.CROUCHING) and (state ~= State.CROUCHED and (state ~= State.CROUCHING)) then
         print("Standup!")
-        this:disableSimulationCollider()
+        this:DisableSimulationCollider()
         this:setCapsuleColliderSize(0.2, 1)
         this:setRotation(M3:getMatrixRotationForEulerAngles(180, 0, 0))
         this:setPosition(this:getPosition() + Vertex3D.new(0, 0.2, 0))

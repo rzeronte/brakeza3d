@@ -26,6 +26,31 @@ void ShaderOGLRenderForward::LoadUniforms()
     materialShininessUniform = glGetUniformLocation(programID, "material.shininess");
 
     alphaUniform = glGetUniformLocation(programID, "alpha");
+
+    //---
+    viewPositionUniform = glGetUniformLocation(programID, "viewPos");
+    numLightPointsUniform = glGetUniformLocation(programID, "numLights");
+    numSpotLightsUniform = glGetUniformLocation(programID, "numSpotLights");
+    enableLightsUniform = glGetUniformLocation(programID, "enableLights");
+
+    directionalLightDirectionUniform = glGetUniformLocation(programID, "dirLight.direction");
+    directionalLightAmbientUniform = glGetUniformLocation(programID, "dirLight.ambient");
+    directionalLightDiffuseUniform = glGetUniformLocation(programID, "dirLight.diffuse");
+    directionalLightSpecularUniform = glGetUniformLocation(programID, "dirLight.specular");
+
+    //--
+
+    directionalLightMatrixUniform = glGetUniformLocation(programID, "dirLightMatrix");
+
+    dirLightShadowMapTextureUniform = glGetUniformLocation(programID, "dirLightShadowMap");
+
+    numSpotLightShadowMapsUniform = glGetUniformLocation(programID, "numShadowMaps");
+    debugShadowMappingUniform = glGetUniformLocation(programID, "debugShadowMapping");
+    shadowMappingIntensityUniform = glGetUniformLocation(programID, "shadowIntensity");
+
+    shadowMapArrayUniform = glGetUniformLocation(programID, "shadowMapArray");
+
+    enableDirectionalLightShadowMapUniform = glGetUniformLocation(programID, "enableDirectionalLightShadowMapping");
 }
 
 void ShaderOGLRenderForward::PrepareMainThread()
@@ -45,27 +70,45 @@ void ShaderOGLRenderForward::render(
     GLuint uvbuffer,
     GLuint normalbuffer,
     int size,
-    float alpha,
     GLuint fbo
 ) const
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
 
-    Components::get()->Render()->changeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
     auto camera = Components::get()->Camera();
 
-    setFloatUniform(alphaUniform, alpha);
+    setFloatUniform(alphaUniform, o->getAlpha());
 
     setMat4Uniform(matrixProjectionUniform, camera->getGLMMat4ProjectionMatrix());
     setMat4Uniform(matrixViewUniform, camera->getGLMMat4ViewMatrix());
     setMat4Uniform(matrixModelUniform, o->getModelMatrix());
 
-    // textures
+    setVec3Uniform(viewPositionUniform, camera->getCamera()->getPosition().toGLM());
+
+    auto shaders = Components::get()->Render()->getShaders();
+    //_-
+    setMat4Uniform(directionalLightMatrixUniform, getDirectionalLightMatrix(directionalLight));
+    setBoolUniform(enableDirectionalLightShadowMapUniform, Config::get()->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
+    setIntUniform(numSpotLightShadowMapsUniform, (int) shaders->shaderOGLRender->getShadowMappingSpotLights().size());
+    setBoolUniform(debugShadowMappingUniform, (Config::get()->SHADOW_MAPPING_DEBUG && Config::get()->ENABLE_SHADOW_MAPPING));
+    setFloatUniform(shadowMappingIntensityUniform, Config::get()->SHADOW_MAPPING_INTENSITY);
+    setBoolUniform(enableLightsUniform, o->isEnableLights()),
+
+        // textures
     setIntUniform(materialTextureDiffuseUniform, 0);
     setIntUniform(materialTextureSpecularUniform, 1);
     setFloatUniform(materialShininessUniform, 32.0f);
+
+    setVec3Uniform(directionalLightDirectionUniform, directionalLight.direction);
+    setVec3Uniform(directionalLightAmbientUniform, directionalLight.ambient);
+    setVec3Uniform(directionalLightDiffuseUniform, directionalLight.diffuse);
+    setVec3Uniform(directionalLightSpecularUniform, directionalLight.specular);
+
+    setIntUniform(numLightPointsUniform, (int) pointsLights.size());
+    setIntUniform(numSpotLightsUniform, (int) spotLights.size());
 
     setVec3("drawOffset", o->getDrawOffset().toGLM());
 
@@ -75,13 +118,28 @@ void ShaderOGLRenderForward::render(
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textureSpecularID);
 
+    setTextureArrayUniform(shadowMapArrayUniform, shaders->shaderShadowPass->getSpotLightsShadowMapArrayTextures(), 4);
+    setTextureUniform(dirLightShadowMapTextureUniform, shaders->shaderShadowPass->getDirectionalLightDepthTexture(), 5);
+
     setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
+    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
+    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
+    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsShadowMapDepthTexturesBlock"), 2);
+
+    auto settings = o->getRenderSettings();
+
+    settings.blend ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
+    glBlendFunc(o->getRenderSettings().mode_src, o->getRenderSettings().mode_dst);
+    settings.depthTest ?  glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+    settings.writeDepth ?  glDepthMask(GL_TRUE) : glDepthMask(GL_FALSE);
+    settings.culling ?  glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);;
 
     glDrawArrays(GL_TRIANGLES, 0, size);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+
 
     Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
@@ -154,7 +212,6 @@ void ShaderOGLRenderForward::renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuin
             m.uvBuffer,
             m.normalBuffer,
             static_cast<int>(m.vertices.size()),
-            o->getAlpha(),
             fbo
         );
     }

@@ -4,9 +4,9 @@
 #include <vector>
 #include <glm/gtc/type_ptr.hpp>
 #include "../../include/OpenGL/ShaderBaseOpenGL.h"
-
 #include "../../include/Misc/Logging.h"
 #include "../../include/Misc/Tools.h"
+#include "../../include/OpenGL/ShaderPreProcessor.h"
 
 ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback)
 :
@@ -383,19 +383,22 @@ void ShaderBaseOpenGL::ReadShaderFiles(const std::string &vertexFilename, const 
         return;
     }
 
-    char* vsCode = Tools::ReadFile(vertexFilename);
-    char* fsCode = Tools::ReadFile(fragmentFilename);
+    const char* vsCodeRaw = Tools::ReadFile(vertexFilename);
+    const char* fsCodeRaw = Tools::ReadFile(fragmentFilename);
 
-    if (!vsCode || !fsCode) {
+    if (!vsCodeRaw || !fsCodeRaw) {
         LOG_ERROR("[ShaderBaseOpenGL] Failed to read shader files");
-        if (vsCode) free(vsCode);
-        if (fsCode) free(fsCode);
+        if (vsCodeRaw) free((void*)vsCodeRaw);
+        if (fsCodeRaw) free((void*)fsCodeRaw);
         return;
     }
 
-    sourceVS = std::string(vsCode);
-    sourceFS = std::string(fsCode);
+    // Procesar includes
+    std::string includeDir = Config::get()->SHADERS_FOLDER;
+    sourceVS = ShaderPreprocessor::Process(std::string(vsCodeRaw), includeDir);
+    sourceFS = ShaderPreprocessor::Process(std::string(fsCodeRaw), includeDir);
 
-    free(vsCode);
-    free(fsCode);
+    // Liberar memoria
+    free((void*)vsCodeRaw);
+    free((void*)fsCodeRaw);
 }

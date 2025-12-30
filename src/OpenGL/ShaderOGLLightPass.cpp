@@ -67,7 +67,7 @@ void ShaderOGLLightPass::render(
     GLuint fbo
 ) {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
 
     LoadQuadMatrixUniforms();
 
@@ -105,6 +105,7 @@ void ShaderOGLLightPass::render(
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsShadowMapDepthTexturesBlock"), 2);
 
+    glDisable(GL_DEPTH_TEST);
     DrawQuad();
 
     glBindVertexArray(0);

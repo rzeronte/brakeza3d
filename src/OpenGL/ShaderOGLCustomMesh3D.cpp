@@ -79,7 +79,7 @@ void ShaderOGLCustomMesh3D::renderMesh(
 )
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
 

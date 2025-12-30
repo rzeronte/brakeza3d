@@ -74,8 +74,6 @@ struct OpenGLGlobalFramebuffers
     GLuint backgroundTexture = 0;
     GLuint foregroundTexture = 0;
     GLuint uiTexture = 0;
-
-    GLuint sceneDepthTexture = 0;
 };
 
 #endif //BRAKEZA3D_OPENGLSHADERTYPES_H

@@ -47,7 +47,7 @@ void ShaderOGLFog::render(GLuint sceneTexture, GLuint depthTexture)
     Components::get()->Render()->ChangeOpenGLFramebuffer(resultFramebuffer);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
 
     LoadQuadMatrixUniforms();
 

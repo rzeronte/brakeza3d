@@ -53,7 +53,7 @@ void ShaderOGLPoints::render(glm::mat4 modelMatrix, GLuint vertexBuffer, int num
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
 
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
     glEnable(GL_POINT_SPRITE);

@@ -38,7 +38,7 @@ void ShaderOGLLine::render(Point2D a, Point2D b, Color c, float weight, GLuint f
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
 
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
 
     LoadQuadMatrixUniforms();
 

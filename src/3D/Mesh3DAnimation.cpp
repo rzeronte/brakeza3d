@@ -41,30 +41,34 @@ void Mesh3DAnimation::onUpdate()
         render->getShaders()->shaderOGLOutline->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
     }
 
-    if (Config::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (Config::get()->ENABLE_LIGHTS) {
-            render->getShaderOGLRenderDeferred()->renderMesh(this, true, window->getGBuffer().FBO);
-            if (Config::get()->ENABLE_SHADOW_MAPPING) {
-                ShadowMappingPass();
+    GLuint fbo =  Config::get()->ENABLE_LIGHTS ? window->getGBuffer().FBO : window->getSceneFramebuffer();
+
+    if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
+        if (!isTransparent()) {
+            if (Config::get()->ENABLE_LIGHTS && isEnableLights()) {
+                render->getShaderOGLRenderDeferred()->renderMesh(this, true, fbo);
+                if (Config::get()->ENABLE_SHADOW_MAPPING) {
+                    ShadowMappingPass();
+                }
+            } else {
+                render->getShaders()->shaderOGLRender->renderMesh(this, true, fbo);
             }
-        } else {
-            render->getShaders()->shaderOGLRender->renderMesh(this, true, window->getSceneFramebuffer());
         }
     }
 
-    if (Config::get()->TRIANGLE_MODE_PIXELS && isRender()) {
-        render->getShaders()->shaderOGLPoints->renderMeshAnimation(this, window->getSceneFramebuffer());
+    if (Config::get()->TRIANGLE_MODE_PIXELS) {
+        render->getShaders()->shaderOGLPoints->renderMeshAnimation(this, fbo);
     }
 
-    if (Config::get()->TRIANGLE_MODE_SHADING && isRender()) {
-        render->getShaders()->shaderOGLShading->renderMesh(this, true, window->getSceneFramebuffer());
+    if (Config::get()->TRIANGLE_MODE_SHADING) {
+        render->getShaders()->shaderOGLShading->renderMesh(this, true, fbo);
     }
 
-    if (Config::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        render->getShaders()->shaderOGLWireframe->renderMesh(this, true, Color::gray(), window->getSceneFramebuffer());
+    if (Config::get()->TRIANGLE_MODE_WIREFRAME) {
+        render->getShaders()->shaderOGLWireframe->renderMesh(this, true, Color::gray(), fbo);
     }
 
-    if (Config::get()->DRAW_MESH3D_AABB && isRender()) {
+    if (Config::get()->DRAW_MESH3D_AABB) {
         UpdateBoundingBox();
         Drawable::drawAABB(&aabb, Color::white());
     }
@@ -85,7 +89,7 @@ void Mesh3DAnimation::onUpdate()
         DrawBones(scene->mRootNode, nullptr);
     }
 
-    if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
+    if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D) {
         render->getShaders()->shaderOGLColor->renderMesh(
             this,
             true,
@@ -93,6 +97,20 @@ void Mesh3DAnimation::onUpdate()
             false,
             window->getPickingColorFramebuffer().FBO
         );
+    }
+}
+
+void Mesh3DAnimation::postUpdate()
+{
+    Object3D::postUpdate();
+
+    auto render = Components::get()->Render();
+    auto window = Components::get()->Window();
+
+    if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
+        if (isTransparent()) {
+            render->getShaders()->shaderOGLRender->renderMesh(this, true, window->getSceneFramebuffer());
+        }
     }
 }
 

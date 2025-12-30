@@ -47,7 +47,7 @@ void ShaderOGLCustomPostprocessing::render(GLuint fbo, GLuint texture)
 
     auto render = Components::get()->Render();
     render->ChangeOpenGLFramebuffer(fbo);
-    render->changeOpenGLProgram(programID);
+    render->ChangeOpenGLProgram(programID);
 
     LoadQuadMatrixUniforms();
 

@@ -71,7 +71,7 @@ void ShaderOGLImage::renderTexture(
 
     glDisable(GL_DEPTH_TEST);
 
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
 
     glm::mat4 projection = glm::ortho(0.0f, (float)worldW, (float)worldH, 0.0f, -1.0f, 1.0f);
 

@@ -36,7 +36,7 @@ void ShaderOGLGrid::LoadUniforms()
 void ShaderOGLGrid::render(GLuint fbo)
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
 
     auto window = Components::get()->Window();
     glViewport(0,0, window->getWidthRender(), window->getHeightRender());

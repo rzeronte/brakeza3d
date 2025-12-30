@@ -197,7 +197,7 @@ void ShaderOGLCustom::drawImGuiProperties(const Image *diffuse, Image *specular)
                     ImGui::TableSetColumnIndex(0);
                     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
 
-                    auto globalTexture = Components::get()->Window()->getDepthTexture();
+                    auto globalTexture = Components::get()->Window()->getGBuffer().depth;
                     ImGui::Image(reinterpret_cast<ImTextureID>(globalTexture), ImVec2(36, 36));
                     ImGui::SetItemTooltip("Depth Texture");
 
@@ -530,7 +530,7 @@ void ShaderOGLCustom::setDataTypesUniforms()
                 break;
             }
             case ShaderOpenGLCustomDataType::DEPTH: {
-                auto globalTexture = Components::get()->Window()->getDepthTexture();
+                auto globalTexture = Components::get()->Window()->getGBuffer().depth;
                 setTexture(type.name, globalTexture, numTextures);
                 IncreaseNumberTextures();
                 break;

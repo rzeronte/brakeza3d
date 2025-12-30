@@ -22,6 +22,16 @@
 
 class Object3DGUI;
 
+struct RenderSettings {
+    GLenum mode_src = GL_SRC_ALPHA;
+    GLenum mode_dst = GL_ONE_MINUS_SRC_ALPHA;
+    bool blend = true;
+    bool culling = true;
+    bool depthTest = true;
+    bool writeDepth = true;
+    bool shadowMap = true;
+};
+
 class Object3D: public Collider
 {
 protected:
@@ -53,6 +63,7 @@ protected:
     Color pickingColor;
     M3 rotation = M3::getMatrixIdentity();
     ObjectType type;
+    RenderSettings renderSettings;
 public:
     Object3D();
     virtual ~Object3D();
@@ -114,9 +125,10 @@ public:
     [[nodiscard]] std::string getName()                                 { return name; }
     [[nodiscard]] Object3D *getParent() const                           { return parent; }
     [[nodiscard]] Vertex3D &getDrawOffset()                             { return this->drawOffset; }
+    [[nodiscard]] RenderSettings &getRenderSettings()                   { return renderSettings; }
+    [[nodiscard]] bool isTransparent() const                            { return alpha < 1.0f; }
     [[nodiscard]] glm::mat4 getModelMatrix() const;
     [[nodiscard]] bool isGUISelected() const;
-
     [[nodiscard]] Vertex3D up() const;
     [[nodiscard]] Vertex3D down() const;
     [[nodiscard]] Vertex3D forward() const;

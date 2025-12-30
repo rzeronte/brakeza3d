@@ -30,7 +30,6 @@ void Image3DAnimation360::onUpdate()
         billboard->getUVBuffer(),
         billboard->getNormalBuffer(),
         static_cast<int>(billboard->getVertices().size()),
-        1.0f,
         Components::get()->Window()->getForegroundFramebuffer()
     );
 }

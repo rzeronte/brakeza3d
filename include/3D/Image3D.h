@@ -16,7 +16,6 @@ class Image3D : public Object3D
     float height = 0;
 
     bool towardsCamera = false;
-    bool backFaceCulling = true;
 
     std::string source;
 
@@ -40,6 +39,7 @@ public:
     ~Image3D() override;
 
     void onUpdate() override;
+    void postUpdate() override;
     void DrawPropertiesGUI() override;
     void ResetBuffersToSize(float width, float height);
     void setWidth(float value);

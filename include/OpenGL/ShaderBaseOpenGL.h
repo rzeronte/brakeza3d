@@ -14,10 +14,12 @@ protected:
     GLuint programID = 0;
     std::string vertexFilename;
     std::string fragmentFilename;
+    std::string commonCodeFile;
     bool enableFeedback = false;
 
     std::string sourceVS;
     std::string sourceFS;
+    std::string commonCode;
 public:
     ShaderBaseOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback);
     ShaderBaseOpenGL(const std::string &vertexFilename, bool enableFeedback);

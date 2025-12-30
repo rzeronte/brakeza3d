@@ -87,6 +87,7 @@ public:
 
     bool AssimpLoadAnimation(const std::string &filename);
     void onUpdate() override;
+    void postUpdate() override;
     void UpdateFrameTransformations();
     void ProcessNodeAnimation(aiNode *node);
     void ProcessMeshAnimation(int i, aiMesh *mesh);

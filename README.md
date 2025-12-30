@@ -5,13 +5,13 @@ Brakeza3D is an open source 3D engine written from scratch in C++
 
 - Cross Platform (Windows/Linux/OSX checked)
 - Easy and simple architecture (Based in components easily maintainable)
-- SDL2 + OpenGL 4 render
-- Bullet Physics Integration
+- Render Forward/Deferred
+- ADS light system
+- Physics World Integration (Bullet)
 - ImGui Docking Integration
 - Assimp library for loading models
 - Scene management (JSON based files)
 - 2D / 3D features 
-- ADS light system
 - Profiler
 - Shadow mapping
 - LUA Scripting

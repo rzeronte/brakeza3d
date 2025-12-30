@@ -128,12 +128,30 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
     }
     // alpha
     if (o->featuresGUI.alpha) {
-        if (ImGui::CollapsingHeader("Alpha")) {
+        if (ImGui::CollapsingHeader("Render settings")) {
             const float range_alpha_min = 0;
             const float range_alpha_max = 1;
 
             ImGui::DragScalar("Alpha##001", ImGuiDataType_Float, &o->getAlpha(), 0.01, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
+            ImGui::Spacing();
+            ImGui::Checkbox(std::string("Lit/Unlit").c_str(), &o->enableLights);
+            if (!o->isTransparent() && o->isEnableLights()) {
+                ImGui::Separator();
+                ImGui::Checkbox(std::string("Shadow Mapping").c_str(), &o->getRenderSettings().shadowMap);
+            }
+            ImGui::Separator();
+            ImGui::Checkbox(std::string("Back Face Culling").c_str(), &o->getRenderSettings().culling);
+            ImGui::Separator();
+            ImGui::Checkbox(std::string("Depth Test").c_str(), &o->getRenderSettings().depthTest);
+            ImGui::SameLine();
+            ImGui::Checkbox(std::string("Write Depth").c_str(), &o->getRenderSettings().writeDepth);
+            ImGui::Separator();
+            ImGui::Checkbox(std::string("Blend").c_str(), &o->getRenderSettings().blend);
+            if (o->getRenderSettings().blend) {
+                SelectorOGLBlendMode(o->getRenderSettings().mode_src, o->getRenderSettings().mode_dst);
+            }
         }
+        ImGui::Spacing();
     }
 
     if (o->featuresGUI.attached) {
@@ -143,7 +161,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
             }
 
             for (auto a: o->attachedObjects) {
-                if (ImGui::TreeNode(a->getName().c_str())) {
+                if (ImGui::TreeNodeEx(a->getName().c_str())) {
                     a->DrawPropertiesGUI();
                     ImGui::TreePop();
                 }
@@ -172,8 +190,11 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                     o->DrawImGuiCollisionShapeSelector();
                 }
 
-                if (ImGui::TreeNode("Collider settings")) {
-                    if (o->getCollisionMode() == CollisionMode::BODY) {
+                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+                ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));
+
+                if (ImGui::TreeNodeEx("Collider settings", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
+                    if (o->getCollisionMode() == BODY) {
                         ImGui::Separator();
                         ImGui::Checkbox("Collider static", &o->colliderStatic);
                         ImGui::Separator();
@@ -238,8 +259,9 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                     ImGui::TreePop();
                 }
 
-                o->drawImGuiVariables();
+                o->drawWorldPhysicVariables();
             }
+            ImGui::PopStyleVar(2);
         }
         // alpha
         if (o->featuresGUI.misc) {
@@ -274,14 +296,14 @@ void Object3DGUI::DrawSelectedObjectGuizmo()
 void Object3DGUI::SelectorOGLBlendMode(GLenum &mode_src, GLenum &mode_dst)
 {
     // Selector para Source
-    static int current_src = Config::FindBlendModeIndex(mode_src);
-    if (ImGui::Combo("Source Blend Mode", &current_src, Config::blend_modes, IM_ARRAYSIZE(Config::blend_modes))) {
+    int current_src = Config::FindBlendModeIndex(mode_src);
+    if (ImGui::Combo("Source Blend Mode##", &current_src, Config::blend_modes, IM_ARRAYSIZE(Config::blend_modes))) {
         mode_src = Config::blend_values[current_src];
     }
 
     // Selector para Destination
-    static int current_dst = Config::FindBlendModeIndex(mode_dst);
-    if (ImGui::Combo("Destination Blend Mode", &current_dst, Config::blend_modes, IM_ARRAYSIZE(Config::blend_modes))) {
+    int current_dst = Config::FindBlendModeIndex(mode_dst);
+    if (ImGui::Combo("Destination Blend Mode##", &current_dst, Config::blend_modes, IM_ARRAYSIZE(Config::blend_modes))) {
         mode_dst = Config::blend_values[current_dst];
     }
 }

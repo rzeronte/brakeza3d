@@ -8,15 +8,6 @@
 #include "../../include/Render/Profiler.h"
 #include "../../include/Render/Transforms.h"
 
-ComponentRender::~ComponentRender()
-{
-    for (auto s: sceneShaders) {
-        delete s;
-    }
-
-    delete textWriter;
-}
-
 void ComponentRender::onStart()
 {
     Component::onStart();
@@ -129,9 +120,7 @@ void ComponentRender::onUpdate()
 
 void ComponentRender::postUpdate()
 {
-    Component::postUpdate();
-
-    std::vector<Object3D *> sceneObjects = Brakeza::get()->getSceneObjects();
+    std::vector<Object3D *> &sceneObjects = Brakeza::get()->getSceneObjects();
 
     std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
 
@@ -264,17 +253,16 @@ void ComponentRender::AddShaderToScene(ShaderOGLCustom *shader)
     sceneShaders.push_back(shader);
 }
 
-void ComponentRender::RunSceneShadersPostUpdate()
+void ComponentRender::PostProcessingShadersChain()
 {
-
-    Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
+    Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "PostProcessingShadersChain");
 
     Components::get()->Window()->getPostProcessingManager()->processChain(
         Components::get()->Window()->getSceneTexture(),
         Components::get()->Window()->getGlobalFramebuffer()
     );
 
-    Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "RunShadersOpenGLPostUpdate");
+    Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "PostProcessingShadersChain");
 
 }
 
@@ -378,7 +366,7 @@ void ComponentRender::ChangeOpenGLFramebuffer(GLuint framebuffer)
     }
 }
 
-void ComponentRender::changeOpenGLProgram(GLuint programID)
+void ComponentRender::ChangeOpenGLProgram(GLuint programID)
 {
     if (getLastProgramUsed() != programID) {
         glUseProgram(programID);
@@ -455,9 +443,9 @@ void ComponentRender::ClearShadowMaps() const
     }
 }
 
-void ComponentRender::FlipBuffersToGlobal() const
+void ComponentRender::LightPass() const
 {
-    Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
+    Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "LightPass");
 
     auto window = Components::get()->Window();
     auto gBuffer = window->getGBuffer();
@@ -466,9 +454,6 @@ void ComponentRender::FlipBuffersToGlobal() const
     int widthWindow = window->getWidthRender();
     int heightWindow = window->getHeightRender();
     glViewport(0,0, widthWindow, heightWindow);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     shaders.shaderOGLLightPass->FillSpotLightsMatricesUBO();
 
@@ -487,17 +472,33 @@ void ComponentRender::FlipBuffersToGlobal() const
         );
     }
 
-    shaders.shaderOGLImage->renderTexture(globalBuffer.backgroundTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO);
-    shaders.shaderOGLImage->renderTexture(globalBuffer.sceneTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow ,1, true, globalBuffer.globalFBO);
+    Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "LightPass");
+}
+
+void ComponentRender::FlipBuffersToGlobal() const
+{
+    Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
+
+    auto window = Components::get()->Window();
+    auto gBuffer = window->getGBuffer();
+    auto globalBuffer = window->getGlobalBuffers();
+
+    int w = window->getWidthRender();
+    int h = window->getHeightRender();
+
+    ComponentWindow::ResetOpenGLSettings();
+
+    shaders.shaderOGLImage->renderTexture(globalBuffer.backgroundTexture, 0, 0, w, h, w, h, 1, true, globalBuffer.globalFBO);
+    shaders.shaderOGLImage->renderTexture(globalBuffer.sceneTexture, 0, 0, w, h, w, h ,1, true, globalBuffer.globalFBO);
 
     if (Config::get()->ENABLE_FOG) {
         shaders.shaderOGLFOG->render(globalBuffer.sceneTexture, gBuffer.depth);
-        shaders.shaderOGLImage->renderTexture(shaders.shaderOGLFOG->getTextureResult(), 0, 0, widthWindow, heightWindow, widthWindow, heightWindow ,1, false, globalBuffer.globalFBO);
+        shaders.shaderOGLImage->renderTexture(shaders.shaderOGLFOG->getTextureResult(), 0, 0, w, h, w, h ,1, false, globalBuffer.globalFBO);
     }
 
     if (Config::get()->ENABLE_DOF_BLUR) {
         shaders.shaderOGLDOFBlur->render(globalBuffer.sceneTexture, gBuffer.depth);
-        shaders.shaderOGLImage->renderTexture(shaders.shaderOGLDOFBlur->getTextureResult(), 0, 0, widthWindow, heightWindow, widthWindow, heightWindow ,1, false, globalBuffer.globalFBO);
+        shaders.shaderOGLImage->renderTexture(shaders.shaderOGLDOFBlur->getTextureResult(), 0, 0, w, h, w, h ,1, false, globalBuffer.globalFBO);
     }
 
     if (Config::get()->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
@@ -506,11 +507,20 @@ void ComponentRender::FlipBuffersToGlobal() const
 
     if (Config::get()->TRIANGLE_MODE_PICKING_COLORS) {
         shaders.shaderOGLImage->renderTexture(
-            window->getPickingColorFramebuffer().rbgTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, globalBuffer.globalFBO
+            window->getPickingColorFramebuffer().rbgTexture, 0, 0, w, h, w, h, 1, true, globalBuffer.globalFBO
         );
     }
 
     Components::get()->Collisions()->DrawDebugCache();
 
     Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
+}
+
+ComponentRender::~ComponentRender()
+{
+    for (auto &s: sceneShaders) {
+        delete s;
+    }
+
+    delete textWriter;
 }

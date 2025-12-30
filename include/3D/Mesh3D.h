@@ -38,7 +38,6 @@ struct Mesh3DData {
 class Mesh3D : public Object3D
 {
     bool sharedTextures = false;
-    bool render = true;
     std::mutex mtx;
 
 protected:
@@ -55,6 +54,8 @@ protected:
     Grid3D *grid = nullptr;
     bool loaded = false;
 public:
+
+
     Mesh3D();
     Mesh3D(std::string modelFile);
     ~Mesh3D() override;
@@ -64,6 +65,9 @@ public:
     void ProcessNodes(const aiScene *scene, const aiNode *node);
     void LoadMesh(int meshId, const aiMesh *mesh);
     void onUpdate() override;
+
+    void RunObjectShaders() const;
+
     void postUpdate() override;
     void BuildOctree(int depth);
     void DrawPropertiesGUI() override;
@@ -84,17 +88,15 @@ public:
     [[nodiscard]] btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia) const;
     [[nodiscard]] btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia);
 
-    void setRender(bool render);
     void setSourceFile(const std::string &sourceFile);
 
     [[nodiscard]] bool isLoaded() const                                          { return loaded; }
-    ObjectType getTypeObject() const override                                    { return ObjectType::Mesh3D; }
+    [[nodiscard]] ObjectType getTypeObject() const override                      { return ObjectType::Mesh3D; }
     GUIType::Sheet getIcon() override                                            { return IconObject::MESH_3D; }
     std::vector<Mesh3DData> &getMeshData()                                       { return meshes; }
     AABB3D &getAABB()                                                            { return aabb; }
     [[nodiscard]] const std::vector<ShaderOGLCustom *> &getCustomShaders() const { return customShaders; }
     [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const   { return modelSpecularTextures; }
-    [[nodiscard]] bool isRender() const                                          { return render; }
     [[nodiscard]] Grid3D *getGrid3D() const                                      { return grid; }
     [[nodiscard]] Octree *getOctree() const                                      { return octree; }
     [[nodiscard]] std::vector<Triangle *> &getModelTriangles(int i)              { return meshes[i].modelTriangles; }
