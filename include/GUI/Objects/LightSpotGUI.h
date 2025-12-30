@@ -26,7 +26,7 @@ public:
             if (o->showDebugCone) {
                 ImGui::Text("Blend Debug Mode Settings");
 
-                Object3DGUI::SelectorOGLBlendMode(o->mode_src, o->mode_dst);
+                Object3DGUI::SelectorOGLBlendMode(o->getRenderSettings().mode_src, o->getRenderSettings().mode_dst);
             }
         }
     }

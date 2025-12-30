@@ -310,6 +310,8 @@ add_executable(Brakeza3D
         include/Threads/ThreadJobMakeRigidBody.h
         include/Loaders/SceneChecker.cpp
         include/Loaders/SceneChecker.h
+        include/OpenGL/ShaderPreProcessor.cpp
+        include/OpenGL/ShaderPreProcessor.h
 )
 
 target_link_libraries(Brakeza3D

@@ -196,30 +196,34 @@ void Mesh3D::onUpdate()
         render->getShaders()->shaderOGLOutline->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
     }
 
-    if (Config::get()->TRIANGLE_MODE_TEXTURIZED && isRender()) {
-        if (Config::get()->ENABLE_LIGHTS && isEnableLights()) {
-            render->getShaderOGLRenderDeferred()->renderMesh(this, false, window->getGBuffer().FBO);
-            if (Config::get()->ENABLE_SHADOW_MAPPING) {
-                ShadowMappingPass();
+    GLuint fbo =  Config::get()->ENABLE_LIGHTS ? window->getGBuffer().FBO : sceneFramebuffer;
+
+    if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
+        if (!isTransparent() ) {
+            if (Config::get()->ENABLE_LIGHTS && enableLights) {
+                render->getShaderOGLRenderDeferred()->renderMesh(this, false, fbo);
+                if (Config::get()->ENABLE_SHADOW_MAPPING && getRenderSettings().shadowMap) {
+                    ShadowMappingPass();
+                }
+            } else {
+                render->getShaders()->shaderOGLRender->renderMesh(this, false, fbo);
             }
-        } else {
-            render->getShaders()->shaderOGLRender->renderMesh(this, false, sceneFramebuffer);
         }
     }
 
-    if (Config::get()->TRIANGLE_MODE_WIREFRAME && isRender()) {
-        render->getShaders()->shaderOGLWireframe->renderMesh(this, false, Color::gray(), sceneFramebuffer);
+    if (Config::get()->TRIANGLE_MODE_WIREFRAME) {
+        render->getShaders()->shaderOGLWireframe->renderMesh(this, false, Color::gray(), fbo);
     }
 
-    if (Config::get()->TRIANGLE_MODE_PIXELS && isRender()) {
-        render->getShaders()->shaderOGLPoints->renderMesh(this, false, sceneFramebuffer);
+    if (Config::get()->TRIANGLE_MODE_PIXELS) {
+        render->getShaders()->shaderOGLPoints->renderMesh(this, false, fbo);
     }
 
-    if (Config::get()->TRIANGLE_MODE_SHADING && isRender()) {
-        render->getShaders()->shaderOGLShading->renderMesh(this, false, sceneFramebuffer);
+    if (Config::get()->TRIANGLE_MODE_SHADING) {
+        render->getShaders()->shaderOGLShading->renderMesh(this, false, fbo);
     }
 
-    if (Config::get()->DRAW_MESH3D_AABB && isRender()) {
+    if (Config::get()->DRAW_MESH3D_AABB) {
         UpdateBoundingBox();
         Drawable::drawAABB(&aabb, Color::white());
     }
@@ -232,7 +236,7 @@ void Mesh3D::onUpdate()
         Drawable::drawGrid3D(grid);
     }
 
-    if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D && isRender()) {
+    if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D) {
         render->getShaders()->shaderOGLColor->renderMesh(
             this,
             false,
@@ -242,14 +246,28 @@ void Mesh3D::onUpdate()
         );
     }
 
-    for (const auto s: customShaders) {
-        s->render(window->getSceneTexture(), sceneFramebuffer);
-    }
+    RunObjectShaders();
 }
 
 void Mesh3D::postUpdate()
 {
     Object3D::postUpdate();
+
+    auto render = Components::get()->Render();
+    auto window = Components::get()->Window();
+    if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
+        if (isTransparent()) {
+            render->getShaders()->shaderOGLRender->renderMesh(this, false, window->getSceneFramebuffer());
+        }
+    }
+}
+
+void Mesh3D::RunObjectShaders() const
+{
+    auto window = Components::get()->Window();
+    for (const auto &s: customShaders) {
+        s->render(window->getGBuffer().FBO, window->getGBuffer().albedo);
+    }
 }
 
 void Mesh3D::BuildOctree(int depth)
@@ -261,11 +279,6 @@ void Mesh3D::BuildOctree(int depth)
     delete octree;
 
     octree = new Octree(aabb, depth);
-}
-
-void Mesh3D::setRender(bool render)
-{
-    Mesh3D::render = render;
 }
 
 void Mesh3D::DrawPropertiesGUI()
@@ -530,9 +543,8 @@ void Mesh3D::ShadowMappingPass()
 
     // SpotLights
     const auto shadowSpotLights = shaderRender->getShadowMappingSpotLights();
-    const auto numSpotLights = static_cast<int>(shadowSpotLights.size());
 
-    for (int i = 0; i < numSpotLights; i++) {
+    for (unsigned int i = 0; i < shadowSpotLights.size() ; i++) {
         shaderShadowPass->renderMeshIntoArrayTextures(this, false, shadowSpotLights[i], i);
     }
 }

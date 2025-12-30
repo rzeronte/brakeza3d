@@ -21,9 +21,6 @@ class LightSpot : public LightPoint
     GLuint normalBuffer = 0;
     GLuint uvBuffer = 0;
 
-    GLenum mode_src = GL_SRC_COLOR;
-    GLenum mode_dst = GL_DST_COLOR;
-
     Cone3D cone;
 public:
     LightSpot(

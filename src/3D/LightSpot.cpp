@@ -57,7 +57,7 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
         if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
             glDisable(GL_CULL_FACE);
             glEnable(GL_BLEND);
-            glBlendFunc(mode_src, mode_dst);
+            glBlendFunc(getRenderSettings().mode_src, getRenderSettings().mode_dst);
             render->getShaders()->shaderOGLColor->RenderColor(
                 getModelMatrix(),
                 vertexBuffer,

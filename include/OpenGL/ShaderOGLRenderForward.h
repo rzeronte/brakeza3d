@@ -43,6 +43,26 @@ class ShaderOGLRenderForward: public ShaderBaseOpenGL
     size_t lastPointLightsSize = 0;
     size_t lastSpotLightsSize = 0;
 
+    // refact
+    GLint viewPositionUniform = 0;
+    GLint numLightPointsUniform = 0;
+    GLint numSpotLightsUniform = 0;
+
+    GLint directionalLightDirectionUniform = 0;
+    GLint directionalLightAmbientUniform = 0;
+    GLint directionalLightDiffuseUniform = 0;
+    GLint directionalLightSpecularUniform = 0;
+    GLint enableLightsUniform = 0;
+
+    //--
+    GLint directionalLightMatrixUniform = 0;
+    GLint dirLightShadowMapTextureUniform = 0;
+    GLint numSpotLightShadowMapsUniform = 0;
+    GLint debugShadowMappingUniform = 0;
+    GLint shadowMappingIntensityUniform = 0;
+    GLint shadowMapArrayUniform = 0;
+    GLint enableDirectionalLightShadowMapUniform = 0;
+
     static constexpr size_t MAX_POINT_LIGHTS = 64;
     static constexpr size_t MAX_SPOT_LIGHTS = 64;
 
@@ -62,7 +82,6 @@ public:
         GLuint uvbuffer,
         GLuint normalbuffer,
         int size,
-        float alpha,
         GLuint fbo
     ) const;
 

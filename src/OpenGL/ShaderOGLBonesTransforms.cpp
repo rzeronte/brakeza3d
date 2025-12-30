@@ -33,7 +33,7 @@ void ShaderOGLBonesTransforms::render(
     GLuint fbo
 ) {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
 
     setMat4ArrayUniform(gBonesUniform, transformations);

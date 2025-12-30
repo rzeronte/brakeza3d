@@ -111,7 +111,7 @@ void ScriptLuaGUI::DrawWinObjectScripts()
             );
             ImGui::SameLine();
             GUI::DrawButtonTransparent("Edit script", IconGUI::SCRIPT_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                LoadScriptDialog(currentScript->scriptFilename);
+                LoadScriptDialog(currentScript->getTypesFile());
             });
             ImGui::SameLine();
             GUI::DrawButtonTransparent("Remove script object", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {

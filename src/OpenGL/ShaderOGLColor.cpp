@@ -59,7 +59,7 @@ void ShaderOGLColor::RenderColor(
     auto render = Components::get()->Render();
 
     render->ChangeOpenGLFramebuffer(fbo);
-    render->changeOpenGLProgram(programID);
+    render->ChangeOpenGLProgram(programID);
     auto window = Components::get()->Window();
     glViewport(0,0, window->getWidthRender(), window->getHeightRender());
 

@@ -107,9 +107,12 @@ public:
     void setLastFrameBufferUsed(GLuint value);
     void setLastProgramUsed(GLuint value);
     void ChangeOpenGLFramebuffer(GLuint);
-    void changeOpenGLProgram(GLuint);
+    void ChangeOpenGLProgram(GLuint);
     void resizeShadersFramebuffers() const;
     void ClearShadowMaps() const;
+
+    void LightPass() const;
+
     void FlipBuffersToGlobal() const;
 
     SceneLoader &getSceneLoader()                                                                 { return sceneLoader; }
@@ -126,9 +129,8 @@ public:
     [[nodiscard]] GLuint getLastProgramUsed() const                                               { return lastProgramUsed; }
     [[nodiscard]] const std::map<std::string, ShaderCustomType> &getShaderTypesMapping() const    { return ShaderTypesMapping; }
     [[nodiscard]] ShaderOGLCustom *getSceneShaderByLabel(const std::string& name) const;
-
     static bool compareDistances(const Object3D *obj1, const Object3D *obj2);
-    static void RunSceneShadersPostUpdate();
+    static void PostProcessingShadersChain();
     static void FillOGLBuffers(std::vector<Mesh3DData> &meshes);
     static void DeleteRemovedObjects();
     static void onUpdateSceneObjects();

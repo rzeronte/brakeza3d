@@ -410,10 +410,10 @@ void Collider::setCcdSweptSphereRadius(float ccdSweptSphereRadius) {
     Collider::ccdSweptSphereRadius = ccdSweptSphereRadius;
 }
 
-void Collider::drawImGuiVariables()
+void Collider::drawWorldPhysicVariables()
 {
-    if (ImGui::TreeNode("World variables")) {
-        if (getCollisionMode() == CollisionMode::BODY) {
+    if (ImGui::TreeNodeEx("World variables", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
+        if (getCollisionMode() == BODY) {
             ImGui::Text("Activation State: %d", body->getActivationState());
             ImGui::Text("Mass: %f", body->getMass());
             ImGui::Text("Friction: %f", body->getFriction());
@@ -470,7 +470,8 @@ void Collider::drawImGuiVariables()
             ImGui::Separator();
             ImGui::Text("Deactivation time: %f", body->getDeactivationTime());
         }
-        if (getCollisionMode() == CollisionMode::GHOST) {
+
+        if (getCollisionMode() == GHOST) {
             ImGui::Text("Activation State: %d", ghostObject->getActivationState());
             ImGui::Text("Friction: %f", ghostObject->getFriction());
             ImGui::Text("Hit Fraction: %f", ghostObject->getHitFraction());

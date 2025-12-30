@@ -1,5 +1,4 @@
 # Pendientes
 
-1) Recuperar el DepthMap mode view, para render deferred también. Solo tira en forward.
-2) Se observa en bones collider cosas comentadas del shape.
-3) 
+3) Juntar el código común de Render.fs y LightPass.fs
+4) Mantener una lista de objetos de luz para notener q hacer el extract

@@ -90,38 +90,37 @@ void Image3D::onUpdate()
         );
     }
 
-    if (!backFaceCulling)
-        glDisable(GL_CULL_FACE);
-
+    GLuint fbo =  Config::get()->ENABLE_LIGHTS ? window->getGBuffer().FBO : window->getSceneFramebuffer();
 
     if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
-        if (Config::get()->ENABLE_LIGHTS) {
-            render->getShaderOGLRenderDeferred()->render(
-                this,
-                image->getOGLTextureID(),
-                image->getOGLTextureID(),
-                vertexBuffer,
-                uvBuffer,
-                normalBuffer,
-                static_cast<int>(vertices.size()),
-                alpha,
-                window->getGBuffer().FBO
-            );
-            if (Config::get()->ENABLE_SHADOW_MAPPING) {
-                ShadowMappingPass();
+        if (!isTransparent()) {
+            if (Config::get()->ENABLE_LIGHTS) {
+                render->getShaderOGLRenderDeferred()->render(
+                    this,
+                    image->getOGLTextureID(),
+                    image->getOGLTextureID(),
+                    vertexBuffer,
+                    uvBuffer,
+                    normalBuffer,
+                    (int) vertices.size(),
+                    alpha,
+                    fbo
+                );
+                if (Config::get()->ENABLE_SHADOW_MAPPING && getRenderSettings().shadowMap) {
+                    ShadowMappingPass();
+                }
+            } else {
+                render->getShaders()->shaderOGLRender->render(
+                  this,
+                  image->getOGLTextureID(),
+                  image->getOGLTextureID(),
+                  vertexBuffer,
+                  uvBuffer,
+                  normalBuffer,
+                  (int) vertices.size(),
+                  fbo
+                );
             }
-        } else {
-            render->getShaders()->shaderOGLRender->render(
-                this,
-                image->getOGLTextureID(),
-                image->getOGLTextureID(),
-                vertexBuffer,
-                uvBuffer,
-                normalBuffer,
-                static_cast<int>(vertices.size()),
-                alpha,
-                window->getGBuffer().FBO
-            );
         }
     }
 
@@ -133,7 +132,7 @@ void Image3D::onUpdate()
             normalBuffer,
             static_cast<int>(vertices.size()),
             Color::gray(),
-            window->getSceneFramebuffer()
+            fbo
         );
     }
 
@@ -143,7 +142,7 @@ void Image3D::onUpdate()
             vertexBuffer,
             (int) vertices.size(),
             Color::green(),
-            window->getSceneFramebuffer()
+            fbo
         );
     }
 
@@ -154,7 +153,7 @@ void Image3D::onUpdate()
             uvBuffer,
             normalBuffer,
             false,
-            window->getSceneFramebuffer()
+            fbo
         );
     }
 
@@ -164,7 +163,7 @@ void Image3D::onUpdate()
             vertexBuffer,
             uvBuffer,
             normalBuffer,
-            static_cast<int>(vertices.size()),
+            (int) vertices.size(),
             getPickingColor(),
             false,
             window->getPickingColorFramebuffer().FBO
@@ -172,6 +171,29 @@ void Image3D::onUpdate()
     }
 
     glEnable(GL_CULL_FACE);
+}
+
+void Image3D::postUpdate()
+{
+    Object3D::postUpdate();
+
+    auto render = Components::get()->Render();
+    auto window = Components::get()->Window();
+
+    if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
+        if (isTransparent()) {
+            render->getShaders()->shaderOGLRender->render(
+                this,
+                image->getOGLTextureID(),
+                image->getOGLTextureID(),
+                vertexBuffer,
+                uvBuffer,
+                normalBuffer,
+                (int) vertices.size(),
+                window->getSceneFramebuffer()
+            );
+        }
+    }
 }
 
 void Image3D::DrawPropertiesGUI()

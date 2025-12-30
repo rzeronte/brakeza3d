@@ -205,7 +205,7 @@ public:
                         ImGui::TreePop();
                     }
 
-                    o->drawImGuiVariables();
+                    o->drawWorldPhysicVariables();
                 }
             }
             // alpha

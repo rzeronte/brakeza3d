@@ -92,7 +92,7 @@ void Object3D::postUpdate()
     if (!isEnabled()) return;
 
     for (auto a: attachedObjects) {
-        if (a->isEnabled())  a->postUpdate();
+        if (a->isEnabled()) a->postUpdate();
     }
 
     if (Config::get()->RENDER_OBJECTS_AXIS) {

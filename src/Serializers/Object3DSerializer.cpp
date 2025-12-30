@@ -13,15 +13,26 @@
 
 cJSON * Object3DSerializer::JsonByObject(Object3D* o)
 {
-    LOG_MESSAGE("[Object3DSerializer] JsonByObject: %d", (int) o->getTypeObject());
+    LOG_MESSAGE("[Object3DSerializer] JsonByObject: %d", o->getTypeObject());
 
     cJSON *root = cJSON_CreateObject();
 
     cJSON_AddStringToObject(root, "name", o->getName().c_str());
     cJSON_AddNumberToObject(root, "scale", o->getScale());
+    cJSON_AddNumberToObject(root, "alpha", o->getAlpha());
     cJSON_AddBoolToObject(root, "enabled", o->isEnabled());
     cJSON_AddItemToObject(root, "position", ToolsJSON::Vertex3DToJSON(o->getPosition()));
     cJSON_AddItemToObject(root, "rotation", ToolsJSON::Vertex3DToJSON(o->getRotation().getVertex3DAngles()));
+
+    cJSON *renderSettings = cJSON_CreateObject();
+    cJSON_AddBoolToObject(renderSettings, "blend", o->getRenderSettings().blend);
+    cJSON_AddBoolToObject(renderSettings, "culling", o->getRenderSettings().culling);
+    cJSON_AddBoolToObject(renderSettings, "depthTest", o->getRenderSettings().depthTest);
+    cJSON_AddBoolToObject(renderSettings, "writeDepth", o->getRenderSettings().writeDepth);
+    cJSON_AddBoolToObject(renderSettings, "shadowMap", o->getRenderSettings().shadowMap);
+    cJSON_AddNumberToObject(renderSettings, "blend_function_src", o->getRenderSettings().mode_dst);
+    cJSON_AddNumberToObject(renderSettings, "blend_function_dst", o->getRenderSettings().mode_dst);
+    cJSON_AddItemToObject(root, "renderSettings", renderSettings);
 
     cJSON_AddBoolToObject(root, "isCollisionsEnabled", o->isCollisionsEnabled());
     if (o->isCollisionsEnabled()) {
@@ -73,6 +84,25 @@ void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     o->setEnabled(false);
     if (cJSON_GetObjectItem(json, "enabled") != nullptr) {
         o->setEnabled(static_cast<bool>(cJSON_GetObjectItem(json, "enabled")->valueint));
+    }
+
+    // alpha
+    o->setAlpha(1.0f);
+    if (cJSON_GetObjectItem(json, "alpha") != nullptr) {
+        o->setAlpha((float) cJSON_GetObjectItem(json, "alpha")->valuedouble);
+    }
+
+    // Render Settings
+    if (cJSON_GetObjectItemCaseSensitive(json, "renderSettings") != nullptr) {
+        auto renderSettingsJSON = cJSON_GetObjectItemCaseSensitive(json, "renderSettings");
+        RenderSettings renderSettings;
+        renderSettings.blend = (bool) cJSON_GetObjectItem(renderSettingsJSON, "blend")->valueint;
+        renderSettings.culling = (bool) cJSON_GetObjectItem(renderSettingsJSON, "culling")->valueint;
+        renderSettings.depthTest = (bool) cJSON_GetObjectItem(renderSettingsJSON, "depthTest")->valueint;
+        renderSettings.writeDepth = (bool) cJSON_GetObjectItem(renderSettingsJSON, "writeDepth")->valueint;
+        renderSettings.shadowMap = (bool) cJSON_GetObjectItem(renderSettingsJSON, "shadowMap")->valueint;
+        renderSettings.mode_src = (bool) cJSON_GetObjectItem(renderSettingsJSON, "blend_function_src")->valueint;
+        renderSettings.mode_dst = (bool) cJSON_GetObjectItem(renderSettingsJSON, "blend_function_dst")->valueint;
     }
 
     //Position

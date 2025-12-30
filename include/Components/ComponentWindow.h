@@ -100,7 +100,6 @@ public:
     [[nodiscard]] GLuint getUIFramebuffer() const                           { return openGLBuffers.uiFBO; }
     [[nodiscard]] GLuint getForegroundFramebuffer() const                   { return openGLBuffers.foregroundFBO; }
     [[nodiscard]] GLuint getGlobalFramebuffer() const                       { return openGLBuffers.globalFBO; }
-    [[nodiscard]] GLuint getDepthTexture() const                            { return openGLBuffers.sceneDepthTexture; }
     [[nodiscard]] GLuint getSceneTexture() const                            { return openGLBuffers.sceneTexture; }
     [[nodiscard]] GLuint getGlobalTexture() const                           { return openGLBuffers.globalTexture; }
     [[nodiscard]] SDL_Window *getWindow() const                             { return window; }
@@ -118,7 +117,7 @@ public:
     void setWindowSize(int w, int h);
     void setRendererSize(int w, int h);
 
-    static void InitOpenGL();
+    static void ResetOpenGLSettings();
 };
 
 

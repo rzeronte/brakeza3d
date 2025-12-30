@@ -1,6 +1,8 @@
 
 #include "../../../include/GUI/Objects/Mesh3DGUI.h"
+#include "../../../include/GUI/Objects/Object3DGUI.h"
 #include "../../../include/GUI/GUIManager.h"
+#include "../../../include/GUI/Objects/FileSystemGUI.h"
 
 void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
 {
@@ -9,41 +11,65 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
     if (ImGui::CollapsingHeader("Mesh3D")) {
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));
-        bool isLint = ImGui::TreeNodeEx("Lights in object", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
-
-        if (isLint) {
-            ImGui::Spacing();
-            ImGui::Checkbox(std::string("Lit/Unlit").c_str(), &o->enableLights);
-            ImGui::TreePop();
-        }
-        ImGui::Separator();
         if (ImGui::TreeNodeEx("Mesh information", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
             ImGui::Spacing();
-            auto fileModel = std::string("Model: ") + o->sourceFile;
-            ImGui::Text(fileModel.c_str());
-            ImGui::Text("Nº Meshes: %d", o->meshes.size());
-            int cont = 1;
-            for (auto &m: o->meshes) {
-                auto meshTitle = "Mesh " + std::to_string(cont);
-                if (ImGui::TreeNodeEx(meshTitle.c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
-                    ImGui::Spacing();
-                    ImGui::Text("Num Vertices: %d", (int) m.vertices.size());
-                    ImGui::Text("Num UVs: %d", (int) m.uvs.size());
-                    ImGui::Text("Num Normals: %d", (int) m.normals.size());
-                    ImGui::Text("Num Textures: %d", (int) o->modelTextures.size());
-                    ImGui::TreePop();
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::FOLDER), GUIType::Sizes::ICONS_BROWSERS);
+            ImGui::SameLine();
+            ImGui::Text(o->sourceFile.c_str());
+            ImGui::Spacing();
+            if (ImGui::BeginTable("MeshTable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchSame)) {
+                // Header
+                ImGui::TableSetupColumn("Mesh");
+                ImGui::TableSetupColumn("Vertices");
+                ImGui::TableSetupColumn("UVs");
+                ImGui::TableSetupColumn("Normals");
+                ImGui::TableSetupColumn("Textures");
+                ImGui::TableHeadersRow();
+
+                // Rows
+                int cont = 1;
+                for (auto &m: o->meshes) {
+                    ImGui::TableNextRow();
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text("Mesh %d", cont);
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text("%d", (int) m.vertices.size());
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text("%d", (int) m.uvs.size());
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text("%d", (int) m.normals.size());
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text("%d", (int) o->modelTextures.size());
+
+                    cont++;
                 }
-                cont++;
+
+                ImGui::EndTable();
             }
-            if (ImGui::TreeNodeEx("Textures", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
-                ImGui::Spacing();
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            if (ImGui::BeginTable("TexturesTable", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+                ImGui::TableSetupColumn("Textures");
+                ImGui::TableHeadersRow();
+
                 for (auto &m : o->modelTextures) {
+                    ImGui::TableNextRow();
+                    ImGui::TableNextColumn();
+
                     float fixedWidth = std::min((int) ImGui::GetContentRegionAvail().x, m->width());
                     float height = fixedWidth * ((float) m->height() / (float) m->width());
                     ImGui::Image(m->getOGLImTexture(), ImVec2(fixedWidth, height));
-                    ImGui::NewLine();
                 }
-                ImGui::TreePop();
+
+                ImGui::EndTable();
             }
             ImGui::TreePop();
         }

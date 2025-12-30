@@ -74,7 +74,7 @@ void ShaderOGLShadowPass::renderIntoDirectionalLightTexture(
 ) const
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
 
@@ -111,7 +111,7 @@ void ShaderOGLShadowPass::renderIntoArrayDepthTextures(
     }
 
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
 

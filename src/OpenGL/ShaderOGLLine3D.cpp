@@ -47,7 +47,7 @@ void ShaderOGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo
     if (lines.empty()) return;
 
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
 
     auto camera = Components::get()->Camera();
     glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();

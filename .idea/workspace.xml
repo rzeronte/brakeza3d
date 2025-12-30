@@ -36,47 +36,72 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="fix(demos): Fix demos / update doc">
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(lua): Added method/doc lua scripting">
+      <change afterPath="$PROJECT_DIR$/GLSL/Shared/RenderCommons.glsl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/OpenGL/ShaderPreProcessor.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/OpenGL/ShaderPreProcessor.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/scripts/Demos/Commons/MouseIconChangeDemo.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/Commons/MouseIconChangeDemo.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/scripts/Demos/HelloWorld.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Demos/HelloWorld.lua" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/GUI/12-scripting_system.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/GUI/12-scripting_system.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/GUI/14-components.txt" beforeDir="false" afterPath="$PROJECT_DIR$/doc/GUI/14-components.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/3D/Projectile.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/Projectile.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentCollisions.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentInput.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentInput.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GLSL/LightingPass.fs" beforeDir="false" afterPath="$PROJECT_DIR$/GLSL/LightingPass.fs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GLSL/Render.fs" beforeDir="false" afterPath="$PROJECT_DIR$/GLSL/Render.fs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scenes/ert.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scenes/ert.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/scripts/Controllers/RigidBodyPlatformsController.lua" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Controllers/RigidBodyPlatformsController.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/3D/Image3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/Image3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/3D/Image3DAnimation360.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/Image3DAnimation360.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/3D/LightSpot.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/LightSpot.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/3D/Mesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/Mesh3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/3D/Mesh3DAnimation.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/Mesh3DAnimation.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/3D/Object3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/Object3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentRender.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentRender.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentWindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentWindow.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Config.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Config.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/LUA/BrakezaLuaBridge.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/LUA/BrakezaLuaBridge.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Loaders/SceneChecker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/SceneChecker.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Loaders/SceneChecker.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/SceneChecker.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderBaseOpenGLQuad.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderBaseOpenGLQuad.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLImage.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLImage.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Profiler.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Profiler.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/2D/TextWriter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/2D/TextWriter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/Camera3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Camera3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/Image3DGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/Image3DGUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/LightSpotGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/LightSpotGUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/SwarmGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/SwarmGUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/CommonOGLShaderTypes.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/CommonOGLShaderTypes.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderBaseOpenGL.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderBaseOpenGL.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLRenderForward.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLRenderForward.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Collider.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Collider.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/3D/Image3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Image3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/3D/Image3DAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Image3DAnimation.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/3D/Image3DAnimation360.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Image3DAnimation360.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/3D/LightSpot.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/LightSpot.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/3D/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Mesh3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/3D/Mesh3DAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Mesh3DAnimation.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/3D/Object3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Object3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/Projectile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Projectile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentCollisions.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentInput.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Brakeza.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brakeza.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentScripting.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentScripting.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonMenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonMenu.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Loaders/SceneLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/SceneLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/ScriptLUA.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/ScriptLUA.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderBaseOpenGLQuad.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderBaseOpenGLQuad.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/Mesh3DGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/Mesh3DGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/Object3DGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/Object3DGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderBaseOpenGL.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderBaseOpenGL.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLBonesTransforms.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLBonesTransforms.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLColor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLColor.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustom.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustom.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomMesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomMesh3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomPostprocessing.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomPostprocessing.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLDOF.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLDOF.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLDepthMap.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLDepthMap.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLFog.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLFog.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLGrid.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLGrid.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLImage.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLImage.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLightPass.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLightPass.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLine.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLine3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLine3D.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLOutline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLOutline.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLParticles.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLParticles.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLPoints.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLPoints.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLRenderDeferred.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLRenderDeferred.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Image.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Image.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLRenderForward.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLRenderForward.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLShading.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLShading.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLShadowPass.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLShadowPass.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLShadowPassDebugLight.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLShadowPassDebugLight.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLTint.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLTint.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLWire.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLWire.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Collider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Collider.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Serializers/Object3DSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/Object3DSerializer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,8 +145,9 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Components/ComponentWindow.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/Components/ComponentWindow.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/Components/ComponentWindow.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/OpenGL/ShaderOGLRenderForward.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/OpenGL/ShaderOGLRenderForward.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/OpenGL/ShaderOGLRenderForward.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="EqPVdzzu" />
@@ -187,17 +213,17 @@
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\config" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\GLSL\Shared" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Controllers" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Demos\Colliders" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Demos\ObjectScripts" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Demos\Commons" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Demos\GlobalScripts" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
@@ -205,7 +231,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -497,7 +523,11 @@
       <workItem from="1766581796201" duration="24941000" />
       <workItem from="1766672446730" duration="7234000" />
       <workItem from="1766746918214" duration="35005000" />
-      <workItem from="1766842781751" duration="16986000" />
+      <workItem from="1766842781751" duration="36465000" />
+      <workItem from="1766931400986" duration="36656000" />
+      <workItem from="1766978652006" duration="10998000" />
+      <workItem from="1767052838523" duration="1933000" />
+      <workItem from="1767057113571" duration="3525000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -547,22 +577,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00096" summary="feat(gui): Menu improved">
-      <option name="closed" value="true" />
-      <created>1764618659358</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
-      <option name="project" value="LOCAL" />
-      <updated>1764618659358</updated>
-    </task>
-    <task id="LOCAL-00097" summary="feat(gui): Icons using sheet">
-      <option name="closed" value="true" />
-      <created>1764824314565</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1764824314565</updated>
     </task>
     <task id="LOCAL-00098" summary="feat(gui): Icons using sheet">
       <option name="closed" value="true" />
@@ -884,7 +898,23 @@
       <option name="project" value="LOCAL" />
       <updated>1766793783494</updated>
     </task>
-    <option name="localTasksCounter" value="138" />
+    <task id="LOCAL-00138" summary="feat(resolution): feature for render resolution via lua">
+      <option name="closed" value="true" />
+      <created>1766873582651</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1766873582652</updated>
+    </task>
+    <task id="LOCAL-00139" summary="feat(lua): Added method/doc lua scripting">
+      <option name="closed" value="true" />
+      <created>1766885309367</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1766885309368</updated>
+    </task>
+    <option name="localTasksCounter" value="140" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -918,8 +948,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(doc): added screenshots" />
-    <MESSAGE value="feat(controllers): improved controllers" />
     <MESSAGE value="refact(gui): Extract GUI Widgets from GUIManager" />
     <MESSAGE value="fix(serializers): fix saving to disk" />
     <MESSAGE value="fix(image3d): depth pass broken afte refact" />
@@ -943,7 +971,9 @@
     <MESSAGE value="feat(checker): added scene info/checker" />
     <MESSAGE value="feat(doc): update doc and screenshots" />
     <MESSAGE value="fix(demos): Fix demos / update doc" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix(demos): Fix demos / update doc" />
+    <MESSAGE value="feat(resolution): feature for render resolution via lua" />
+    <MESSAGE value="feat(lua): Added method/doc lua scripting" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(lua): Added method/doc lua scripting" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1040,6 +1070,11 @@
           <url>file://$PROJECT_DIR$/include/GUI/GUI.h</url>
           <line>113</line>
           <option name="timeStamp" value="115" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/include/OpenGL/ShaderOGLCustom.h</url>
+          <line>115</line>
+          <option name="timeStamp" value="117" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

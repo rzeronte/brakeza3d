@@ -14,7 +14,6 @@ class Image3DAnimation360 : public Object3D
     Image3D *billboard;
     std::string currentSpriteFileVariableToCreateAnimation;
     int currentFramesVariableToCreateAnimation = 0;
-
 public:
     float width;
     float height;

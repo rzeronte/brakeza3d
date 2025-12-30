@@ -52,7 +52,7 @@ void ShaderOGLWire::render(
 ) const
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
-    Components::get()->Render()->changeOpenGLProgram(programID);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
 
