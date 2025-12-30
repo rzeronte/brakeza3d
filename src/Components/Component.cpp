@@ -52,6 +52,5 @@ bool Component::isEnabled() const
 
 void Component::setEnabled(bool value)
 {
-    LOG_MESSAGE("Component set to %d", (int) value);
     enabled = value;
 }
