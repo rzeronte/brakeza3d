@@ -150,8 +150,8 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
             if (o->getRenderSettings().blend) {
                 SelectorOGLBlendMode(o->getRenderSettings().mode_src, o->getRenderSettings().mode_dst);
             }
+            ImGui::Spacing();
         }
-        ImGui::Spacing();
     }
 
     if (o->featuresGUI.attached) {

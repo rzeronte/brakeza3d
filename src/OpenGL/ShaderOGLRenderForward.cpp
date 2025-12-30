@@ -245,8 +245,8 @@ void ShaderOGLRenderForward::FillUBOLights()
 
 void ShaderOGLRenderForward::ExtractLights(Object3D *o)
 {
-    auto s = dynamic_cast<LightSpot*>(o);
-    if (s != nullptr) {
+    if (o->getTypeObject() == ObjectType::LightSpot) {
+        auto s = static_cast<LightSpot*>(o);
         shadowMappingLights.push_back(s);
         spotLights.push_back(SpotLightOpenGL{
             o->getPosition().toGLM4(),
@@ -263,8 +263,8 @@ void ShaderOGLRenderForward::ExtractLights(Object3D *o)
         return;
     }
 
-    auto l = dynamic_cast<LightPoint*>(o);
-    if (l != nullptr) {
+    if (o->getTypeObject() == ObjectType::LightPoint) {
+        auto l = static_cast<LightPoint*>(o);
         pointsLights.push_back({
             glm::vec4(o->getPosition().toGLM(), 1),
             l->ambient,

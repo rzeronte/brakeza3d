@@ -56,15 +56,18 @@ void ShaderOGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThickn
 {
     auto shaderColor = Components::get()->Render()->getShaders()->shaderOGLColor;
 
+    Components::get()->Render()->ChangeOpenGLFramebuffer(shaderColor->getFramebuffer());
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     for (const auto& mm : m->getMeshData()) {
         shaderColor->RenderColor(
             m->getModelMatrix(),
             mm.vertexBuffer,
             mm.uvBuffer,
             mm.normalBuffer,
-            static_cast<int>(mm.vertices.size()),
+            (int) mm.vertices.size(),
             Color::white(),
-            true,
+            false,
             shaderColor->getFramebuffer()
         );
     }
