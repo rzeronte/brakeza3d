@@ -5,12 +5,12 @@
 #include <string>
 #include <vector>
 
+#include "../../src/GUI/ShaderNodeEditor.h"
 #include "../Loaders/SceneChecker.h"
 #include "../Misc/TextureAtlas.h"
 #include "../Misc/TexturePackage.h"
 #include "AddOns/GUIConsole.h"
 #include "TextEditor/EditableOpenFile.h"
-#include "TextEditor/EditableOpenScriptFile.h"
 
 class Object3DGUI;
 class ScriptLuaGUI;
@@ -62,6 +62,8 @@ class GUIManager
     TextureAtlas *textureAtlas;
     Image *splashImage = nullptr;
 
+    ShaderNodeEditor* nodeEditor = nullptr;
+
     void DrawWinImages();
     void DrawWinDepthLightsMap();
     void DrawRegisteredWindows();
@@ -102,6 +104,9 @@ public:
     [[nodiscard]] int getIndexCodeEditorTab() const                                     { return indexCodeEditorTab; }
     [[nodiscard]] SceneChecker &getSceneChecker()                                       { return checker; }
     [[nodiscard]] std::vector<GUIType::ViewerObjectType> &getVisibleObjectTypes()       { return visibleTypeObjects; }
+
+    [[nodiscard]] ShaderNodeEditor * getNodeEditor() const                              { return nodeEditor; }
+
     GUIType::WindowData *getWindowStatus(GUIType::Window window);
 
     virtual void DrawGUI();

@@ -7,7 +7,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
     add_compile_definitions(ENABLE_LOGGING_BUILD)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_CXX_FLAGS "-O3 -w")
+    set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
+    #set(CMAKE_CXX_FLAGS "-O3 -w")
     add_compile_definitions(ENABLE_LOGGING_BUILD)
 endif()
 
@@ -64,6 +65,7 @@ if(UNIX AND NOT APPLE)
 endif()
 
 set(DEARIMGUI_INCLUDE_DIRS imgui)
+set(IMGUI_NODE_EDITOR_INCLUDE_DIRS include/GUI/imgui-node-editor-master)
 
 include_directories(
         ${SDL2_INCLUDE_DIRS}
@@ -73,6 +75,7 @@ include_directories(
         ${OPENGL_INCLUDE_DIR}
         ${GLEW_INCLUDE_DIRS}
         ${LUA_INCLUDE_DIR}
+        ${IMGUI_NODE_EDITOR_INCLUDE_DIRS}
 )
 
 add_executable(Brakeza3D
@@ -312,6 +315,14 @@ add_executable(Brakeza3D
         include/Loaders/SceneChecker.h
         include/OpenGL/ShaderPreProcessor.cpp
         include/OpenGL/ShaderPreProcessor.h
+        include/GUI/imgui-node-editor-master/imgui_node_editor.cpp
+        include/GUI/imgui-node-editor-master/imgui_canvas.cpp
+        include/GUI/imgui-node-editor-master/crude_json.cpp
+        include/GUI/imgui-node-editor-master/imgui_node_editor_api.cpp
+        src/GUI/NodeEditorManager.h
+        src/GUI/ShaderNodeEditor.h
+        src/GUI/NodeEditorManager.cpp
+        src/GUI/ShaderNodeEditor.cpp
 )
 
 target_link_libraries(Brakeza3D

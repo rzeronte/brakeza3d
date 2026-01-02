@@ -667,6 +667,10 @@
 			"name":	"WIN_RESOLUTION",
 			"x":	6,
 			"y":	21
+		}, {
+			"name":	"WIN_SHADER_NODES",
+			"x":	5,
+			"y":	16
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

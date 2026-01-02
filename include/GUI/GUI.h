@@ -107,7 +107,8 @@ namespace GUIType
         DEBUG_ICONS,
         CODE_EDITOR,
         DOCUMENTATION,
-        SCENE_INFO
+        SCENE_INFO,
+        SHADER_NODES_EDITOR,
     };
 
     struct WindowData {
@@ -321,7 +322,8 @@ namespace GUIType
     X(CHECKED, 0, 0) \
     X(UNCHECKED, 0, 0) \
     X(FILE_BROKEN, 0, 0) \
-    X(WIN_RESOLUTION, 0, 0)
+    X(WIN_RESOLUTION, 0, 0) \
+    X(WIN_SHADER_NODES, 0, 0)
 
 // Icons Objects
 namespace IconObject {
