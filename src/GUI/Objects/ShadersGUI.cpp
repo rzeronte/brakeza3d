@@ -10,7 +10,7 @@
 #include "../../../include/GUI/GUIManager.h"
 #include "../../../include/GUI/TextEditor/EditableOpenShaderFile.h"
 #include "../../../include/Components/Components.h"
-#include "../../../include/OpenGL/OpenGLShaderTypes.h"
+#include "../../../include/OpenGL/Code/ShaderCustomOGLCodeTypes.h"
 #include "../../../include/Render/Drawable.h"
 
 void ShadersGUI::DrawShaderConfig(EditableOpenShaderFile &file)

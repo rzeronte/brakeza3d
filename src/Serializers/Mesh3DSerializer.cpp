@@ -4,7 +4,7 @@
 
 #include "../../include/Serializers/Mesh3DSerializer.h"
 #include "../../include/Components/Components.h"
-#include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
+#include "../../include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Threads/ThreadJobLoadMesh3D.h"
 #include "../../include/Render/JSONSerializerRegistry.h"
@@ -143,7 +143,7 @@ void Mesh3DSerializer::ApplyShadersCreation(Mesh3D *mesh, cJSON* json)
                     auto fsFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fsFile")->valuestring;
                     auto typesFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "typesFile")->valuestring;
                     auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
-                    auto shader = new ShaderOGLCustomMesh3D(mesh, name, typesFile, vsFile, fsFile, types);
+                    auto shader = new ShaderOGLCustomCodeMesh3D(mesh, name, typesFile, vsFile, fsFile, types);
                     mesh->AddCustomShader(shader);
                     break;
                 }

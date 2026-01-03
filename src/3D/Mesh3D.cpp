@@ -7,7 +7,7 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
+#include "../../include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include <assimp/postprocess.h>
 

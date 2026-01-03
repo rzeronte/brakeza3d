@@ -3,7 +3,7 @@
 
 #define GL_GLEXT_PROTOTYPES
 
-#include "ShaderBaseOpenGL.h"
+#include "Base/ShaderBaseOpenGL.h"
 
 class ShaderOGLImage : public ShaderBaseOpenGL
 {

@@ -6,7 +6,7 @@
 #define BRAKEZA3D_SHADEROPENGLSHADING_H
 
 
-#include "ShaderBaseOpenGL.h"
+#include "Base/ShaderBaseOpenGL.h"
 #include "../3D/Mesh3D.h"
 
 class ShaderOGLShading : public ShaderBaseOpenGL {

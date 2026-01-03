@@ -6,8 +6,8 @@
 #define BRAKEZA3D_SHADEROPENGLRENDER_H
 
 
-#include "ShaderBaseOpenGL.h"
-#include "CommonOGLShaderTypes.h"
+#include "Base/ShaderBaseOpenGL.h"
+#include "Base/SharedOpenGLStructs.h"
 #include "../3D/LightSpot.h"
 #include "../3D/Mesh3D.h"
 #include <glm/ext/matrix_float4x4.hpp>

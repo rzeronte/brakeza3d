@@ -2,7 +2,7 @@
 #ifndef BRAKEZA3D_SHADEROPENGLPOINTS_H
 #define BRAKEZA3D_SHADEROPENGLPOINTS_H
 
-#include "ShaderBaseOpenGL.h"
+#include "Base/ShaderBaseOpenGL.h"
 #include "../3D/Mesh3D.h"
 #include "../3D/Mesh3DAnimation.h"
 

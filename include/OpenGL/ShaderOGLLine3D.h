@@ -6,7 +6,7 @@
 #define BRAKEZA3D_SHADEROPENGLLINE3D_H
 
 
-#include "../../include/OpenGL/ShaderBaseOpenGL.h"
+#include "Base/ShaderBaseOpenGL.h"
 #include "../3D/Vertex3D.h"
 #include "../Render/Color.h"
 #include "../3D/Vector3D.h"

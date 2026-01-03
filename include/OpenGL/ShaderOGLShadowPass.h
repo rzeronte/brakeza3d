@@ -5,10 +5,10 @@
 #ifndef BRAKEZA3D_SHADERSHADOWPASS_H
 #define BRAKEZA3D_SHADERSHADOWPASS_H
 
-#include "ShaderBaseOpenGL.h"
+#include "Base/ShaderBaseOpenGL.h"
 #include "../3D/Mesh3D.h"
 #include "../3D/LightSpot.h"
-#include "CommonOGLShaderTypes.h"
+#include "Base/SharedOpenGLStructs.h"
 
 class ShaderOGLShadowPass : public ShaderBaseOpenGL
 {

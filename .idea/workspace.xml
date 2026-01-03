@@ -9,6 +9,7 @@
   </component>
   <component name="BackendCodeEditorMiscSettings">
     <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="7" type="long" />
+    <option name="/Default/Environment/UserInterface/HierarchyView/ViewStyle/@EntryValue" value="SubTypes" type="string" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/LiveTemplatesHousekeeping/HotspotSessionHintIsShown/@EntryValue" value="true" type="bool" />
@@ -36,34 +37,70 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(nodeeditor): refact ShaderNodeEditor operations. Explode in independent files.">
-      <change afterPath="$PROJECT_DIR$/include/OpenGL/OpenGLShaderTypes.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/OpenGL/OpenGLShaderTypes.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/OpenGL/ShaderBaseCustom.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/OpenGL/ShaderBaseCustom.h" afterDir="false" />
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="refact(shaders): Create ShaderBaseCustom">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/3D/Mesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/Mesh3D.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Components/ComponentRender.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentRender.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentWindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentWindow.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/TextEditor/EditableOpenShaderFile.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/TextEditor/EditableOpenShaderFile.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/LUA/BrakezaLuaBridge.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/LUA/BrakezaLuaBridge.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/CommonOGLShaderTypes.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/CommonOGLShaderTypes.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderBaseOpenGL.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderBaseOpenGL.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustom.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderCustomOGLCode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustomMesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustomMesh3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustomPostprocessing.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustomPostprocessing.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLLightPass.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLLightPass.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/PostProcessingManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/PostProcessingManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/CommonOGLShaderTypes.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Base/SharedOpenGLStructs.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/OpenGLShaderTypes.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Code/ShaderCustomOGLCodeTypes.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/OpenGLShaderTypes.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Code/ShaderCustomOGLCodeTypes.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderBaseCustom.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Base/ShaderBaseCustom.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderBaseCustom.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Base/ShaderBaseCustom.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderBaseOpenGL.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Base/ShaderBaseOpenGL.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderBaseOpenGLQuad.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Base/ShaderBaseOpenGLQuad.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderCustomOGLCode.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Code/ShaderCustomOGLCode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLBonesTransforms.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLBonesTransforms.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLColor.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLColor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustomMesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustomPostprocessing.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLDOF.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Quad/ShaderOGLDOF.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLDepthMap.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Quad/ShaderOGLDepthMap.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLFog.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Quad/ShaderOGLFog.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLGrid.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Quad/ShaderOGLGrid.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLImage.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLImage.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLLightPass.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Quad/ShaderOGLLightPass.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLLine.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Quad/ShaderOGLLine.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLLine3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLLine3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLOutline.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Quad/ShaderOGLOutline.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLParticles.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLParticles.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLPoints.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLPoints.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLRenderDeferred.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLRenderDeferred.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLRenderForward.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLRenderForward.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLShading.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLShading.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLShadowPass.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLShadowPass.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLShadowPassDebugLight.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Quad/ShaderOGLShadowPassDebugLight.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLTint.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Quad/ShaderOGLTint.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLWire.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLWire.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderPreProcessor.cpp" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Render/PostProcessingManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/PostProcessingManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Threads/ThreadJobReadSceneShaders.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Threads/ThreadJobReadSceneShaders.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/3D/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Mesh3D.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeEditorManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeEditorManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/TextEditor/EditableOpenShaderFile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/TextEditor/EditableOpenShaderFile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustom.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderCustomOGLCode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomMesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomMesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomPostprocessing.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomPostprocessing.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Loaders/SceneLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/SceneLoader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderBaseOpenGL.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Base/ShaderBaseOpenGL.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderBaseOpenGLQuad.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Base/ShaderBaseOpenGLQuad.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderCustomOGLCode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Code/ShaderCustomOGLCode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomMesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Code/ShaderOGLCustomCodeMesh3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomPostprocessing.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Code/ShaderOGLCustomCodePostprocessing.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLDOF.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Quad/ShaderOGLDOF.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLDepthMap.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Quad/ShaderOGLDepthMap.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLFog.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Quad/ShaderOGLFog.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLGrid.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Quad/ShaderOGLGrid.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLightPass.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Quad/ShaderOGLLightPass.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLLine.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Quad/ShaderOGLLine.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLOutline.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Quad/ShaderOGLOutline.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLShadowPassDebugLight.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Quad/ShaderOGLShadowPassDebugLight.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLTint.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Quad/ShaderOGLTint.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Serializers/Mesh3DSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/Mesh3DSerializer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -232,11 +269,11 @@
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\config" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\GLSL\Shared" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Controllers" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Demos\Colliders" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Demos\ObjectScripts" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Demos\Commons" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\OpenGL\Quad" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\OpenGL\Quad" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\OpenGL\Code" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\OpenGL\Base" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\OpenGL\Code" />
     </key>
   </component>
   <component name="RunManager">
@@ -549,7 +586,7 @@
       <workItem from="1767057113571" duration="8167000" />
       <workItem from="1767119992981" duration="10563000" />
       <workItem from="1767206411855" duration="40536000" />
-      <workItem from="1767434040103" duration="13045000" />
+      <workItem from="1767434040103" duration="26024000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -599,30 +636,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00104" summary="feat(gui): Icons debug window">
-      <option name="closed" value="true" />
-      <created>1765048653684</created>
-      <option name="number" value="00104" />
-      <option name="presentableId" value="LOCAL-00104" />
-      <option name="project" value="LOCAL" />
-      <updated>1765048653684</updated>
-    </task>
-    <task id="LOCAL-00105" summary="feat(gui): Icons debug window">
-      <option name="closed" value="true" />
-      <created>1765068648001</created>
-      <option name="number" value="00105" />
-      <option name="presentableId" value="LOCAL-00105" />
-      <option name="project" value="LOCAL" />
-      <updated>1765068648001</updated>
-    </task>
-    <task id="LOCAL-00106" summary="feat(gui): Icons debug window">
-      <option name="closed" value="true" />
-      <created>1765083987857</created>
-      <option name="number" value="00106" />
-      <option name="presentableId" value="LOCAL-00106" />
-      <option name="project" value="LOCAL" />
-      <updated>1765083987858</updated>
     </task>
     <task id="LOCAL-00107" summary="feat(gui): Icons debug window">
       <option name="closed" value="true" />
@@ -936,7 +949,31 @@
       <option name="project" value="LOCAL" />
       <updated>1767429280282</updated>
     </task>
-    <option name="localTasksCounter" value="146" />
+    <task id="LOCAL-00146" summary="refact(shaders): Create ShaderBaseCustom">
+      <option name="closed" value="true" />
+      <created>1767451009735</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1767451009737</updated>
+    </task>
+    <task id="LOCAL-00147" summary="refact(shaders): Create ShaderBaseCustom">
+      <option name="closed" value="true" />
+      <created>1767451034120</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1767451034120</updated>
+    </task>
+    <task id="LOCAL-00148" summary="refact(shaders): Create ShaderBaseCustom">
+      <option name="closed" value="true" />
+      <created>1767451630154</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1767451630154</updated>
+    </task>
+    <option name="localTasksCounter" value="149" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -970,7 +1007,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(gui): Added icons / cone debug improvements" />
     <MESSAGE value="feat(gui): order menu items in his right category" />
     <MESSAGE value="feat(gui): added configurable loggint to std" />
     <MESSAGE value="feat(serializers): reusing code" />
@@ -995,7 +1031,8 @@
     <MESSAGE value="fix(picking): Fix outliner on multimesh objects" />
     <MESSAGE value="feat(shaders): added node editor for integration with shaders" />
     <MESSAGE value="feat(nodeeditor): refact ShaderNodeEditor operations. Explode in independent files." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(nodeeditor): refact ShaderNodeEditor operations. Explode in independent files." />
+    <MESSAGE value="refact(shaders): Create ShaderBaseCustom" />
+    <option name="LAST_COMMIT_MESSAGE" value="refact(shaders): Create ShaderBaseCustom" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
