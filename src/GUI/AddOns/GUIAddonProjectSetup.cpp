@@ -275,7 +275,7 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
             bool isOpenCurrentShader = ImGui::TreeNodeEx(s->getLabel().c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
             ImGui::PopStyleVar(2);
             if (isOpenCurrentShader) {
-                s->drawImGuiProperties(nullptr, nullptr);
+                s->DrawImGuiProperties(nullptr, nullptr);
                 ImGui::TreePop();
             }
 
