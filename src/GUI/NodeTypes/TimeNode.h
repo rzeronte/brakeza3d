@@ -1,0 +1,34 @@
+#ifndef TIMENODE_H
+#define TIMENODE_H
+
+#include "NodeType.h"
+#include "../ShaderNodeEditor.h"
+#include "../NodeEditorManager.h"
+
+class TimeNode : public NodeType {
+public:
+    std::string GetTypeName() const override {
+        return "Time";
+    }
+
+    ImVec4 GetColor() const override {
+        return ImVec4(0.3f, 0.5f, 0.6f, 1.0f);
+    }
+
+    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+        editor->AddOutputPin(node, "Time", PinType::Float);
+    }
+
+    std::string GenerateCode(
+        std::shared_ptr<Node>& node,
+        std::shared_ptr<Pin>& sourcePin,
+        std::stringstream& code,
+        ShaderNodeEditor* editor) override
+    {
+        std::string varName = "var" + std::to_string(node->id);
+        code << "    float " << varName << " = u_Time;\n";
+        return varName;
+    }
+};
+
+#endif // TIMENODE_H
