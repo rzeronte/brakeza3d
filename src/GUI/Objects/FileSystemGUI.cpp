@@ -476,7 +476,7 @@ void FileSystemGUI::DrawShaderRowActions(GUIType::BrowserCache &browser, const s
     ImGui::TableSetColumnIndex(3);
 
     GUI::DrawButtonConfirm("Deleting shader", "Are you sure to delete shader?", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
-        ShaderOGLCustom::RemoveCustomShaderFiles(
+        ShaderCustomOGLCode::RemoveCustomShaderFiles(
             browser.currentFolder,
             Tools::getFilenameWithoutExtension(file)
         );
@@ -552,8 +552,8 @@ void FileSystemGUI::DrawShaderCreatorDialog(GUIType::BrowserCache &browser, std:
         ImGui::SameLine();
         GUI::DrawButton("Create shader", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
             if (localVarName[0] != '\0') {
-                auto type = ShaderOGLCustom::getShaderTypeFromString(items[item_current_idx]);
-                ShaderOGLCustom::WriteEmptyCustomShaderToDisk(
+                auto type = ShaderCustomOGLCode::getShaderTypeFromString(items[item_current_idx]);
+                ShaderCustomOGLCode::WriteEmptyCustomShaderToDisk(
                     localVarName,
                     browser.currentFolder,
                     type

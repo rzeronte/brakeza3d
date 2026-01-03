@@ -100,7 +100,7 @@ void PostProcessingManager::cleanup()
     postProcessingShaders.clear();
 }
 
-ShaderOGLCustom* PostProcessingManager::getShader(int index) const
+ShaderBaseCustom* PostProcessingManager::getShader(int index) const
 {
     if (index >= 0 && index < postProcessingShaders.size()) {
         return postProcessingShaders[index];
@@ -119,7 +119,7 @@ void PostProcessingManager::processChain(GLuint inputTexture, GLuint outputFBO)
     bool writeToPing = true;
 
     for (size_t i = 0; i < postProcessingShaders.size(); i++) {
-        ShaderOGLCustom* currentShader = postProcessingShaders[i];
+        auto currentShader = postProcessingShaders[i];
 
         if (!currentShader->isEnabled()) {
             continue;
@@ -146,7 +146,6 @@ void PostProcessingManager::processChain(GLuint inputTexture, GLuint outputFBO)
 
         // Renderizar el shader
         currentShader->render(currentOutputFBO, currentInputTexture);
-
         // La salida de este shader es la entrada del siguiente
         if (i < postProcessingShaders.size() - 1) {
             currentInputTexture = currentOutputTexture;
