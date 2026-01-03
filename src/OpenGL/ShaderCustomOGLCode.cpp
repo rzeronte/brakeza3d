@@ -138,7 +138,7 @@ void ShaderCustomOGLCode::DrawTypeInternalImGuiControl(const ShaderOGLCustomType
     }
 }
 
-void ShaderCustomOGLCode::drawImGuiProperties(const Image *diffuse, Image *specular)
+void ShaderCustomOGLCode::DrawImGuiProperties(const Image *diffuse, Image *specular)
 {
     ImGui::SeparatorText("OpenGL custom uniforms");
 

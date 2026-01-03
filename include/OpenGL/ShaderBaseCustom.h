@@ -33,7 +33,7 @@ public:
     virtual void Reload() = 0;
     virtual cJSON* getTypesJSON() const = 0;
     virtual void render(GLuint fbo, GLuint texture) = 0;
-    virtual void drawImGuiProperties(const Image *diffuse, Image *specular) = 0;
+    virtual void DrawImGuiProperties(const Image *diffuse, Image *specular) = 0;
 };
 
 

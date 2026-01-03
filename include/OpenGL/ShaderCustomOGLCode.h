@@ -34,7 +34,7 @@ public:
     static int CountTypesByFilter(const std::vector<ShaderOGLCustomType> &types,const std::vector<ShaderOpenGLCustomDataType> &filterTypes);
     static void DrawTypeInternalImGuiControl(const ShaderOGLCustomType &type);
 
-    void drawImGuiProperties(const Image *diffuse, Image *specular) override;
+    void DrawImGuiProperties(const Image *diffuse, Image *specular) override;
 
     std::string sourceVS;
     std::string sourceFS;

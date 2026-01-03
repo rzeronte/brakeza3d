@@ -240,7 +240,7 @@ void ShadersGUI::DrawWinObjectShaders()
             bool isOpenCurrentShader = ImGui::TreeNodeEx(s->getLabel().c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
             ImGui::PopStyleVar(2);
             if (isOpenCurrentShader) {
-                s->drawImGuiProperties(mesh->getModelTextures()[0], mesh->getModelTextures()[0]);
+                s->DrawImGuiProperties(mesh->getModelTextures()[0], mesh->getModelTextures()[0]);
             }
             // Buttons
             ImGui::TableNextColumn();
