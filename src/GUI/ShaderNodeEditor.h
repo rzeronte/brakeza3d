@@ -7,7 +7,6 @@
 #include <sstream>
 #include <map>
 #include <functional>
-
 #include "../../include/Render/Image.h"
 
 class ShaderNodeEditor;
@@ -49,8 +48,8 @@ private:
     void SetupQuad();
     void CreateDefaultNodes();
     void SetInitialNodePositions();
-    void HandleLinkCreation();
-    void HandleDeletion();
+    void HandleLinkCreation() override;
+    void HandleDeletion() override;
 
     void CompileShader();
 
@@ -81,6 +80,13 @@ public:
     // Métodos para gestión de imágenes (usados por ImageNode)
     void LoadImageForNode(int nodeId, const std::string& filepath);
     void DeleteImageForNode(int nodeId);
+
+    // Sobrescribir métodos de serialización
+    cJSON* SerializeNodeUserData(std::shared_ptr<Node> node) override;
+    void DeserializeNodeUserData(std::shared_ptr<Node> node, cJSON* userDataJson) override;
+    void SerializeCustomData(cJSON* root) override;
+    void DeserializeCustomData(cJSON* root) override;
+    std::shared_ptr<Node> CreateNodeFromJSON(cJSON* nodeJson) override;
 };
 
 #endif //SHADERNODEEDITOR_H

@@ -6,7 +6,7 @@
 
 #include <vector>
 
-#include "../OpenGL/ShaderBaseCustom.h"
+#include "../OpenGL/Base/ShaderBaseCustom.h"
 
 class PostProcessingManager {
 private:

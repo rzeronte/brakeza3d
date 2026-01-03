@@ -2,8 +2,8 @@
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/ShadersGUI.h"
-#include "../../include/OpenGL/ShaderOGLCustomPostprocessing.h"
-#include "../../include/OpenGL/ShaderOGLCustomMesh3D.h"
+#include "../../include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h"
+#include "../../include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include "../../include/Render/Profiler.h"
 #include "../../include/Render/Transforms.h"
@@ -230,13 +230,13 @@ void ComponentRender::LoadShaderIntoScene(const std::string &filePath)
 ShaderCustomOGLCode* ComponentRender::CreateCustomShaderFromDisk(const ShaderOGLMetaInfo &info, Mesh3D* mesh)
 {
     if (ShaderCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_POSTPROCESSING) {
-        auto s = new ShaderOGLCustomPostprocessing(info.name, info.typesFile, info.vsFile, info.fsFile);
+        auto s = new ShaderOGLCustomCodePostprocessing(info.name, info.typesFile, info.vsFile, info.fsFile);
         s->PrepareSync();
         return s;
     }
 
     if (ShaderCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_OBJECT) {
-        auto s = new ShaderOGLCustomMesh3D(mesh, info.name, info.typesFile, info.vsFile, info.fsFile);
+        auto s = new ShaderOGLCustomCodeMesh3D(mesh, info.name, info.typesFile, info.vsFile, info.fsFile);
         s->PrepareSync();
         return s;
     }

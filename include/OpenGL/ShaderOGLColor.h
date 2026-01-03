@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_SHADEROPENGLCOLOR_H
 #define BRAKEZA3D_SHADEROPENGLCOLOR_H
 
-#include "ShaderBaseOpenGL.h"
+#include "Base/ShaderBaseOpenGL.h"
 #include "../3D/Mesh3D.h"
 
 class ShaderOGLColor: public ShaderBaseOpenGL

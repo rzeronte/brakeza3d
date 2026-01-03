@@ -10,7 +10,7 @@
 #include "../../include/Brakeza.h"
 #include "../../include/3D/ParticleEmitter.h"
 #include "../../include/Misc/ToolsJSON.h"
-#include "../../include/OpenGL/ShaderOGLCustomPostprocessing.h"
+#include "../../include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h"
 #include "../../include/Serializers/Image2DAnimationSerializer.h"
 #include "../../include/Threads/ThreadJobLoadObject.h"
 #include "../../include/Render/JSONSerializerRegistry.h"

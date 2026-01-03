@@ -6,7 +6,7 @@
 #define BRAKEZA3D_SHADEROPENGLWIREFRAME_H
 
 
-#include "ShaderBaseOpenGL.h"
+#include "Base/ShaderBaseOpenGL.h"
 #include "../3D/Mesh3D.h"
 
 class ShaderOGLWire : public ShaderBaseOpenGL

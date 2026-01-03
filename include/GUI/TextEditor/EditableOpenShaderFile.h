@@ -6,7 +6,7 @@
 #define BRAKEZA3D_EDITABLEOPENSHADERFILE_H
 
 #include "EditableOpenFile.h"
-#include "../../OpenGL/ShaderCustomOGLCode.h"
+#include "../../OpenGL/Code/ShaderCustomOGLCode.h"
 
 class EditableOpenShaderFile : public EditableOpenFile
 {

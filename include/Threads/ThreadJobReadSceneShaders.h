@@ -8,7 +8,7 @@
 #include "ThreadJobBase.h"
 #include "../Components/Components.h"
 #include "../Misc/cJSON.h"
-#include "../OpenGL/ShaderOGLCustomPostprocessing.h"
+#include "../OpenGL/Code/ShaderOGLCustomCodePostprocessing.h"
 
 class ThreadJobReadSceneShaders : public ThreadJobBase
 {
@@ -32,7 +32,7 @@ public:
             auto dataTypes = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
             auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
 
-            auto shader = new ShaderOGLCustomPostprocessing(name, typesFile, vsFile, fsFile, dataTypes);
+            auto shader = new ShaderOGLCustomCodePostprocessing(name, typesFile, vsFile, fsFile, dataTypes);
             shader->PrepareBackground();
             Components::get()->Render()->AddShaderToScene(shader);
         }

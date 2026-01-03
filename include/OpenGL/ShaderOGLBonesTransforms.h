@@ -6,7 +6,7 @@
 #define BRAKEZA3D_SHADEROPENGLBONESTRANSFORMS_H
 
 
-#include "ShaderBaseOpenGL.h"
+#include "Base/ShaderBaseOpenGL.h"
 #include "../3D/Mesh3D.h"
 
 class ShaderOGLBonesTransforms : public ShaderBaseOpenGL

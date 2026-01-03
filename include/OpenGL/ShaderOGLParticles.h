@@ -5,7 +5,7 @@
 #ifndef BRAKEZA3D_SHADEROPENGLPARTICLES_H
 #define BRAKEZA3D_SHADEROPENGLPARTICLES_H
 
-#include "ShaderBaseOpenGL.h"
+#include "Base/ShaderBaseOpenGL.h"
 
 struct Particle {
     glm::vec3 pos, speed;

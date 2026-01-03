@@ -198,31 +198,31 @@ add_executable(Brakeza3D
         include/Render/ParticlesContext.h
 
         # OpenGL
-        src/OpenGL/ShaderBaseOpenGL.cpp                     include/OpenGL/ShaderBaseOpenGL.h
-        src/OpenGL/ShaderCustomOGLCode.cpp                  include/OpenGL/ShaderCustomOGLCode.h
-        src/OpenGL/ShaderBaseOpenGLQuad.cpp                 include/OpenGL/ShaderBaseOpenGLQuad.h
+        src/OpenGL/Base/ShaderBaseOpenGL.cpp include/OpenGL/Base/ShaderBaseOpenGL.h
+        src/OpenGL/Code/ShaderCustomOGLCode.cpp include/OpenGL/Code/ShaderCustomOGLCode.h
+        src/OpenGL/Base/ShaderBaseOpenGLQuad.cpp include/OpenGL/Base/ShaderBaseOpenGLQuad.h
         src/OpenGL/ShaderOGLBonesTransforms.cpp             include/OpenGL/ShaderOGLBonesTransforms.h
         src/OpenGL/ShaderOGLColor.cpp                       include/OpenGL/ShaderOGLColor.h
-        src/OpenGL/ShaderOGLCustomMesh3D.cpp                include/OpenGL/ShaderOGLCustomMesh3D.h
-        src/OpenGL/ShaderOGLCustomPostprocessing.cpp        include/OpenGL/ShaderOGLCustomPostprocessing.h
-        src/OpenGL/ShaderOGLDepthMap.cpp                    include/OpenGL/ShaderOGLDepthMap.h
-        src/OpenGL/ShaderOGLDOF.cpp                         include/OpenGL/ShaderOGLDOF.h
-        src/OpenGL/ShaderOGLFog.cpp                         include/OpenGL/ShaderOGLFog.h
+        src/OpenGL/Code/ShaderOGLCustomCodeMesh3D.cpp       include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h
+        src/OpenGL/Code/ShaderOGLCustomCodePostprocessing.cpp   include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h
+        src/OpenGL/Quad/ShaderOGLDepthMap.cpp include/OpenGL/Quad/ShaderOGLDepthMap.h
+        src/OpenGL/Quad/ShaderOGLDOF.cpp include/OpenGL/Quad/ShaderOGLDOF.h
+        src/OpenGL/Quad/ShaderOGLFog.cpp include/OpenGL/Quad/ShaderOGLFog.h
         src/OpenGL/ShaderOGLImage.cpp                       include/OpenGL/ShaderOGLImage.h
-        src/OpenGL/ShaderOGLLightPass.cpp                   include/OpenGL/ShaderOGLLightPass.h
-        src/OpenGL/ShaderOGLLine.cpp                        include/OpenGL/ShaderOGLLine.h
+        src/OpenGL/Quad/ShaderOGLLightPass.cpp include/OpenGL/Quad/ShaderOGLLightPass.h
+        src/OpenGL/Quad/ShaderOGLLine.cpp include/OpenGL/Quad/ShaderOGLLine.h
         src/OpenGL/ShaderOGLLine3D.cpp                      include/OpenGL/ShaderOGLLine3D.h
-        src/OpenGL/ShaderOGLOutline.cpp                     include/OpenGL/ShaderOGLOutline.h
+        src/OpenGL/Quad/ShaderOGLOutline.cpp include/OpenGL/Quad/ShaderOGLOutline.h
         src/OpenGL/ShaderOGLParticles.cpp                   include/OpenGL/ShaderOGLParticles.h
         src/OpenGL/ShaderOGLPoints.cpp                      include/OpenGL/ShaderOGLPoints.h
         src/OpenGL/ShaderOGLRenderDeferred.cpp              include/OpenGL/ShaderOGLRenderDeferred.h
         src/OpenGL/ShaderOGLRenderForward.cpp               include/OpenGL/ShaderOGLRenderForward.h
         src/OpenGL/ShaderOGLShading.cpp                     include/OpenGL/ShaderOGLShading.h
         src/OpenGL/ShaderOGLShadowPass.cpp                  include/OpenGL/ShaderOGLShadowPass.h
-        src/OpenGL/ShaderOGLShadowPassDebugLight.cpp        include/OpenGL/ShaderOGLShadowPassDebugLight.h
-        src/OpenGL/ShaderOGLTint.cpp                        include/OpenGL/ShaderOGLTint.h
+        src/OpenGL/Quad/ShaderOGLShadowPassDebugLight.cpp include/OpenGL/Quad/ShaderOGLShadowPassDebugLight.h
+        src/OpenGL/Quad/ShaderOGLTint.cpp include/OpenGL/Quad/ShaderOGLTint.h
         src/OpenGL/ShaderOGLWire.cpp                        include/OpenGL/ShaderOGLWire.h
-        include/OpenGL/CommonOGLShaderTypes.h
+        include/OpenGL/Code/ShaderCustomOGLCodeTypes.h
 
         # Persistence
         src/Serializers/Image2DAnimationSerializer.cpp include/Serializers/Image2DAnimationSerializer.h
@@ -276,7 +276,7 @@ add_executable(Brakeza3D
         src/GUI/AddOns/GUIAddonObjects3D.cpp
         src/GUI/AddOns/GUIConsole.cpp
         src/GUI/Objects/Mesh3DGUIAnimation.cpp
-        src/OpenGL/ShaderOGLGrid.cpp        include/OpenGL/ShaderOGLGrid.h
+        src/OpenGL/Quad/ShaderOGLGrid.cpp include/OpenGL/Quad/ShaderOGLGrid.h
         src/Render/ThreadPool.cpp
         include/Render/ThreadPool.h
         include/Threads/ThreadJobBase.h
@@ -313,7 +313,6 @@ add_executable(Brakeza3D
         include/Threads/ThreadJobMakeRigidBody.h
         include/Loaders/SceneChecker.cpp
         include/Loaders/SceneChecker.h
-        include/OpenGL/ShaderPreProcessor.cpp
         include/OpenGL/ShaderPreProcessor.h
         include/GUI/imgui-node-editor-master/imgui_node_editor.cpp
         include/GUI/imgui-node-editor-master/imgui_canvas.cpp
@@ -340,10 +339,10 @@ add_executable(Brakeza3D
         src/GUI/NodeTypes/UVRotateNode.h
         src/GUI/NodeTypes/OutputNode.h
         src/GUI/NodeTypes/NodeType.h
-        include/OpenGL/ShaderBaseCustom.cpp
-        include/OpenGL/ShaderBaseCustom.h
-        include/OpenGL/OpenGLShaderTypes.h
-        include/OpenGL/OpenGLShaderTypes.cpp
+        src/OpenGL/Base/ShaderBaseCustom.cpp
+        include/OpenGL/Base/ShaderBaseCustom.h
+        include/OpenGL/Code/ShaderCustomOGLCodeTypes.h
+        src/OpenGL/Code/ShaderCustomOGLCodeTypes.cpp
 )
 
 target_link_libraries(Brakeza3D

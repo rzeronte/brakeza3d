@@ -582,3 +582,116 @@ void ShaderNodeEditor::CompileShader()
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 }
+
+cJSON* ShaderNodeEditor::SerializeNodeUserData(std::shared_ptr<Node> node) {
+    cJSON* userData = cJSON_CreateObject();
+
+    // Serializar texturas asociadas al nodo
+    auto it = m_NodeTextures.find(node->id);
+    if (it != m_NodeTextures.end() && !it->second.filepath.empty()) {
+        cJSON_AddStringToObject(userData, "imagePath", it->second.filepath.c_str());
+    }
+
+    // Si hay otros datos específicos del tipo de nodo, añadirlos aquí
+    // Por ejemplo, si tienes valores en userData específicos de cada NodeType
+
+    return userData;
+}
+
+void ShaderNodeEditor::DeserializeNodeUserData(std::shared_ptr<Node> node, cJSON* userDataJson) {
+    // Cargar imagen si existe
+    cJSON* imagePath = cJSON_GetObjectItem(userDataJson, "imagePath");
+    if (imagePath && imagePath->valuestring) {
+        LoadImageForNode(node->id, imagePath->valuestring);
+    }
+
+    // Deserializar otros datos específicos si es necesario
+}
+
+void ShaderNodeEditor::SerializeCustomData(cJSON* root) {
+    // Añadir tipo de editor
+    cJSON_AddStringToObject(root, "editorType", "shader");
+
+    // Guardar el último shader code generado (opcional)
+    if (!m_LastShaderCode.empty()) {
+        cJSON_AddStringToObject(root, "lastShaderCode", m_LastShaderCode.c_str());
+    }
+
+    // Podrías guardar otros datos globales aquí si los necesitas
+}
+
+void ShaderNodeEditor::DeserializeCustomData(cJSON* root) {
+    // Verificar que es un shader editor
+    cJSON* editorType = cJSON_GetObjectItem(root, "editorType");
+    if (!editorType || strcmp(editorType->valuestring, "shader") != 0) {
+        // Log warning o error
+        return;
+    }
+
+    // Cargar shader code si existe (opcional)
+    cJSON* shaderCode = cJSON_GetObjectItem(root, "lastShaderCode");
+    if (shaderCode) {
+        m_LastShaderCode = shaderCode->valuestring;
+    }
+
+    // Marcar para recompilar
+    m_NeedsRecompile = true;
+}
+
+std::shared_ptr<Node> ShaderNodeEditor::CreateNodeFromJSON(cJSON* nodeJson) {
+    std::string type = cJSON_GetObjectItem(nodeJson, "type")->valuestring;
+
+    // Usar el sistema existente de CreateNodeOfType
+    std::shared_ptr<Node> node = CreateNodeOfType(type);
+
+    if (!node) {
+        // Fallback a la implementación base si el tipo no existe
+        return NodeEditorManager::CreateNodeFromJSON(nodeJson);
+    }
+
+    // El nodo ya tiene sus pins creados por CreateNodeOfType,
+    // pero necesitamos actualizar los IDs para que coincidan con el JSON
+    int id = cJSON_GetObjectItem(nodeJson, "id")->valueint;
+    node->id = id;
+
+    // Actualizar IDs de los pins
+    cJSON* inputsArray = cJSON_GetObjectItem(nodeJson, "inputs");
+    if (inputsArray) {
+        int idx = 0;
+        cJSON* pinJson = nullptr;
+        cJSON_ArrayForEach(pinJson, inputsArray) {
+            if (idx < node->inputs.size()) {
+                int pinId = cJSON_GetObjectItem(pinJson, "id")->valueint;
+                node->inputs[idx]->id = pinId;
+
+                if (pinId >= m_NextId) {
+                    m_NextId = pinId + 1;
+                }
+            }
+            idx++;
+        }
+    }
+
+    cJSON* outputsArray = cJSON_GetObjectItem(nodeJson, "outputs");
+    if (outputsArray) {
+        int idx = 0;
+        cJSON* pinJson = nullptr;
+        cJSON_ArrayForEach(pinJson, outputsArray) {
+            if (idx < node->outputs.size()) {
+                int pinId = cJSON_GetObjectItem(pinJson, "id")->valueint;
+                node->outputs[idx]->id = pinId;
+
+                if (pinId >= m_NextId) {
+                    m_NextId = pinId + 1;
+                }
+            }
+            idx++;
+        }
+    }
+
+    if (id >= m_NextId) {
+        m_NextId = id + 1;
+    }
+
+    return node;
+}

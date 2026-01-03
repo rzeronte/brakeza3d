@@ -13,7 +13,7 @@
 #include "../Render/Octree.h"
 #include "../Render/Grid3D.h"
 #include "../Render/Collider.h"
-#include "../OpenGL/ShaderCustomOGLCode.h"
+#include "../OpenGL/Code/ShaderCustomOGLCode.h"
 #include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
 #include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
