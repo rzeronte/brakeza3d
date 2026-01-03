@@ -36,21 +36,29 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="fix(picking): Fix outliner on multimesh objects">
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeEditorManager.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.h" afterDir="false" />
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(shaders): added node editor for integration with shaders">
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/AddNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/ColorNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/CosNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/GradientNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/ImageNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/MixNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/MultiplyNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/NodeType.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/OutputNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SinNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SmoothstepNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SubtractNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/TimeNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVCoordsNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVOffsetNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVRotateNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVScaleNode.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/scenes/ert.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scenes/ert.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustom.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustom.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -535,7 +543,7 @@
       <workItem from="1767052838523" duration="1933000" />
       <workItem from="1767057113571" duration="8167000" />
       <workItem from="1767119992981" duration="10563000" />
-      <workItem from="1767206411855" duration="30261000" />
+      <workItem from="1767206411855" duration="39295000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -585,22 +593,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00101" summary="feat(gui): Icons using sheet">
-      <option name="closed" value="true" />
-      <created>1764901848506</created>
-      <option name="number" value="00101" />
-      <option name="presentableId" value="LOCAL-00101" />
-      <option name="project" value="LOCAL" />
-      <updated>1764901848510</updated>
-    </task>
-    <task id="LOCAL-00102" summary="feat(gui): Icons debug window">
-      <option name="closed" value="true" />
-      <created>1764978137914</created>
-      <option name="number" value="00102" />
-      <option name="presentableId" value="LOCAL-00102" />
-      <option name="project" value="LOCAL" />
-      <updated>1764978137914</updated>
     </task>
     <task id="LOCAL-00103" summary="feat(gui): Icons debug window">
       <option name="closed" value="true" />
@@ -922,7 +914,23 @@
       <option name="project" value="LOCAL" />
       <updated>1767064522651</updated>
     </task>
-    <option name="localTasksCounter" value="143" />
+    <task id="LOCAL-00143" summary="feat(shaders): added node editor for integration with shaders">
+      <option name="closed" value="true" />
+      <created>1767316339172</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1767316339173</updated>
+    </task>
+    <task id="LOCAL-00144" summary="feat(shaders): added node editor for integration with shaders">
+      <option name="closed" value="true" />
+      <created>1767316420971</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1767316420971</updated>
+    </task>
+    <option name="localTasksCounter" value="145" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -956,7 +964,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix(image3d): depth pass broken afte refact" />
     <MESSAGE value="feat(debug): Added debug cone for spotlight" />
     <MESSAGE value="feat(gui): Added icons / cone debug improvements" />
     <MESSAGE value="feat(gui): order menu items in his right category" />
@@ -981,7 +988,8 @@
     <MESSAGE value="feat(lua): Added method/doc lua scripting" />
     <MESSAGE value="feat(lua): Transparency  / GLSL Render commons" />
     <MESSAGE value="fix(picking): Fix outliner on multimesh objects" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix(picking): Fix outliner on multimesh objects" />
+    <MESSAGE value="feat(shaders): added node editor for integration with shaders" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(shaders): added node editor for integration with shaders" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1081,7 +1089,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/OpenGL/ShaderOGLCustom.h</url>
-          <line>115</line>
+          <line>117</line>
           <option name="timeStamp" value="117" />
         </line-breakpoint>
       </breakpoints>

@@ -323,6 +323,23 @@ add_executable(Brakeza3D
         src/GUI/ShaderNodeEditor.h
         src/GUI/NodeEditorManager.cpp
         src/GUI/ShaderNodeEditor.cpp
+        src/GUI/NodeTypes/ColorNode.h
+        src/GUI/NodeTypes/ImageNode.h
+        src/GUI/NodeTypes/TimeNode.h
+        src/GUI/NodeTypes/UVCoordsNode.h
+        src/GUI/NodeTypes/MixNode.h
+        src/GUI/NodeTypes/MultiplyNode.h
+        src/GUI/NodeTypes/AddNode.h
+        src/GUI/NodeTypes/SubtractNode.h
+        src/GUI/NodeTypes/SinNode.h
+        src/GUI/NodeTypes/CosNode.h
+        src/GUI/NodeTypes/GradientNode.h
+        src/GUI/NodeTypes/SmoothstepNode.h
+        src/GUI/NodeTypes/UVOffsetNode.h
+        src/GUI/NodeTypes/UVScaleNode.h
+        src/GUI/NodeTypes/UVRotateNode.h
+        src/GUI/NodeTypes/OutputNode.h
+        src/GUI/NodeTypes/NodeType.h
 )
 
 target_link_libraries(Brakeza3D

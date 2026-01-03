@@ -21,6 +21,8 @@ enum ShaderCustomType {
     SHADER_NONE = -1,
     SHADER_POSTPROCESSING = 0,
     SHADER_OBJECT = 1,
+    SHADER_NODE_OBJECT = 2,
+    SHADER_NODE_POSTPROCESSING = 3,
 };
 
 enum class ShaderOpenGLCustomDataType {

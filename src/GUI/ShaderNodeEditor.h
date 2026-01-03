@@ -11,13 +11,14 @@
 #include "../../include/Render/Image.h"
 
 class ShaderNodeEditor;
+class NodeType;
 
 struct ImageTexture {
     Image* image = nullptr;
     std::string filepath;
 };
 
-// Definición de un tipo de nodo
+// Definición de un tipo de nodo (mantenida por compatibilidad)
 struct NodeDefinition {
     std::string name;
     ImVec4 color;
@@ -41,8 +42,9 @@ private:
     std::map<int, std::string> m_NodeOutputs;
     std::map<int, ImageTexture> m_NodeTextures;
 
-    // NUEVO: Registro de tipos de nodos
+    // Sistema de registro de nodos
     std::map<std::string, NodeDefinition> m_NodeRegistry;
+    std::map<std::string, NodeType*> m_NodeTypes;
 
     void SetupQuad();
     void CreateDefaultNodes();
@@ -50,24 +52,21 @@ private:
     void HandleLinkCreation();
     void HandleDeletion();
 
-    std::string GenerateShaderCode();
-    std::string TraverseNode(int pinId, std::stringstream& code);
     void CompileShader();
 
-    void LoadImageForNode(int nodeId, const std::string& filepath);
-    void DeleteImageForNode(int nodeId);
-
-    // NUEVO: Métodos para registrar nodos
-    void RegisterNodeTypes();
-    void RegisterNode(const std::string& typeName, const NodeDefinition& definition);
+    // Métodos para registrar nodos
     std::shared_ptr<Node> CreateNodeOfType(const std::string& typeName);
 
 public:
     ShaderNodeEditor();
     ~ShaderNodeEditor() override;
 
+    std::string GenerateShaderCode();
+    std::string TraverseNode(int pinId, std::stringstream& code);
+    void RegisterNodeTypes();
+    void RegisterNodeType(NodeType* nodeType);
     void Render() override;
-    void RenderNode(std::shared_ptr<Node>& node);
+    void RenderNode(std::shared_ptr<Node>& node) override;
     void Update();
     void RenderEffect();
     void OnCreateNodeMenu() override;
@@ -75,9 +74,13 @@ public:
     [[nodiscard]] GLuint GetShaderProgram() const;
     [[nodiscard]] const std::string& GetLastShaderCode() const;
 
-    // Helpers públicos para callbacks
+    // Helpers públicos para callbacks y nodos
     void SetNeedsRecompile() { m_NeedsRecompile = true; }
     std::map<int, ImageTexture>& GetNodeTextures() { return m_NodeTextures; }
+
+    // Métodos para gestión de imágenes (usados por ImageNode)
+    void LoadImageForNode(int nodeId, const std::string& filepath);
+    void DeleteImageForNode(int nodeId);
 };
 
 #endif //SHADERNODEEDITOR_H
