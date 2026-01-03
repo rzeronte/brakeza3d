@@ -76,7 +76,7 @@ public:
     static void WriteEmptyCustomShaderToDisk(const std::string& name, const std::string& folder, ShaderCustomType type);
     static void RemoveCustomShaderFiles(const std::string& folder, const std::string &name);
     static ShaderCustomType ExtractTypeFromShaderName(const std::string& folder, const std::string &name);
-    void Reload();
+    void Reload() override;
     void CaptureDragDropUpdateImage(ShaderOGLCustomType &type, const Image *texture) const;
     void CreateFramebuffer();
     void setTextureResult(GLuint value);
