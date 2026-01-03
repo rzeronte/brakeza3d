@@ -6,9 +6,9 @@
 #define BRAKEZA3D_SHADEROPENGLCUSTOMPOSTPROCESSING_H
 
 
-#include "ShaderOGLCustom.h"
+#include "ShaderCustomOGLCode.h"
 
-class ShaderOGLCustomPostprocessing : public ShaderOGLCustom, ShaderBaseOpenGLQuad {
+class ShaderOGLCustomPostprocessing : public ShaderCustomOGLCode {
 public:
     ShaderOGLCustomPostprocessing(const std::string &label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile);
     ShaderOGLCustomPostprocessing(const std::string &label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile, cJSON *types);

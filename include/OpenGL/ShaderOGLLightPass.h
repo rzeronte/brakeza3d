@@ -2,6 +2,7 @@
 #define BRAKEZA3D_SHADEROPENGLDEFERREDLIGHTING_H
 
 #include "ShaderBaseOpenGL.h"
+#include "ShaderBaseOpenGLQuad.h"
 #include "ShaderOGLRenderForward.h"
 
 class ShaderOGLLightPass : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad  {

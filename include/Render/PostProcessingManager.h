@@ -5,11 +5,12 @@
 #pragma once
 
 #include <vector>
-#include "../OpenGL/ShaderOGLCustom.h"
+
+#include "../OpenGL/ShaderBaseCustom.h"
 
 class PostProcessingManager {
 private:
-    std::vector<ShaderOGLCustom*> &postProcessingShaders;
+    std::vector<ShaderBaseCustom*> &postProcessingShaders;
 
     // Ping framebuffer
     GLuint pingFBO;
@@ -42,7 +43,7 @@ public:
     void processChain(GLuint inputTexture, GLuint outputFBO);
 
     int getShaderCount() const { return postProcessingShaders.size(); }
-    ShaderOGLCustom* getShader(int index) const;
+    ShaderBaseCustom* getShader(int index) const;
 };
 
 #endif //BRAKEZA3D_POSTPROCESSINGMANAGER_H

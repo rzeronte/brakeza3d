@@ -13,7 +13,7 @@
 #include "../Render/Octree.h"
 #include "../Render/Grid3D.h"
 #include "../Render/Collider.h"
-#include "../OpenGL/ShaderOGLCustom.h"
+#include "../OpenGL/ShaderCustomOGLCode.h"
 #include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
 #include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
@@ -46,7 +46,7 @@ protected:
 
     std::vector<Image *> modelTextures;
     std::vector<Image *> modelSpecularTextures;
-    std::vector<ShaderOGLCustom*> customShaders;
+    std::vector<ShaderCustomOGLCode*> customShaders;
     std::vector<Mesh3DData> meshes;
 
     AABB3D aabb;
@@ -79,7 +79,7 @@ public:
     void DrawImGuiCollisionShapeSelector() override;
     void BuildGrid3D(int sizeX, int sizeY, int sizeZ);
     void FillGrid3DFromGeometry();
-    void AddCustomShader(ShaderOGLCustom *);
+    void AddCustomShader(ShaderCustomOGLCode *);
     void LoadShader(const std::string &jsonFilename);
     void RemoveShader(int i);
     void FillOGLBuffers();
@@ -95,7 +95,7 @@ public:
     GUIType::Sheet getIcon() override                                            { return IconObject::MESH_3D; }
     std::vector<Mesh3DData> &getMeshData()                                       { return meshes; }
     AABB3D &getAABB()                                                            { return aabb; }
-    [[nodiscard]] const std::vector<ShaderOGLCustom *> &getCustomShaders() const { return customShaders; }
+    [[nodiscard]] const std::vector<ShaderCustomOGLCode *> &getCustomShaders() const { return customShaders; }
     [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const   { return modelSpecularTextures; }
     [[nodiscard]] Grid3D *getGrid3D() const                                      { return grid; }
     [[nodiscard]] Octree *getOctree() const                                      { return octree; }

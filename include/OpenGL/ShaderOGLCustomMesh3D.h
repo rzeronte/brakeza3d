@@ -6,10 +6,10 @@
 #define BRAKEZA3D_SHADEROPENGLCUSTOMMESH3D_H
 
 
-#include "ShaderOGLCustom.h"
+#include "ShaderCustomOGLCode.h"
 #include "../3D/Mesh3D.h"
 
-class ShaderOGLCustomMesh3D : public ShaderOGLCustom
+class ShaderOGLCustomMesh3D : public ShaderCustomOGLCode
 {
     GLuint VertexArrayID = 0;
 

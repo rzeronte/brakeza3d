@@ -199,10 +199,10 @@ add_executable(Brakeza3D
 
         # OpenGL
         src/OpenGL/ShaderBaseOpenGL.cpp                     include/OpenGL/ShaderBaseOpenGL.h
+        src/OpenGL/ShaderCustomOGLCode.cpp                  include/OpenGL/ShaderCustomOGLCode.h
         src/OpenGL/ShaderBaseOpenGLQuad.cpp                 include/OpenGL/ShaderBaseOpenGLQuad.h
         src/OpenGL/ShaderOGLBonesTransforms.cpp             include/OpenGL/ShaderOGLBonesTransforms.h
         src/OpenGL/ShaderOGLColor.cpp                       include/OpenGL/ShaderOGLColor.h
-        src/OpenGL/ShaderOGLCustom.cpp                      include/OpenGL/ShaderOGLCustom.h
         src/OpenGL/ShaderOGLCustomMesh3D.cpp                include/OpenGL/ShaderOGLCustomMesh3D.h
         src/OpenGL/ShaderOGLCustomPostprocessing.cpp        include/OpenGL/ShaderOGLCustomPostprocessing.h
         src/OpenGL/ShaderOGLDepthMap.cpp                    include/OpenGL/ShaderOGLDepthMap.h
@@ -340,6 +340,10 @@ add_executable(Brakeza3D
         src/GUI/NodeTypes/UVRotateNode.h
         src/GUI/NodeTypes/OutputNode.h
         src/GUI/NodeTypes/NodeType.h
+        include/OpenGL/ShaderBaseCustom.cpp
+        include/OpenGL/ShaderBaseCustom.h
+        include/OpenGL/OpenGLShaderTypes.h
+        include/OpenGL/OpenGLShaderTypes.cpp
 )
 
 target_link_libraries(Brakeza3D

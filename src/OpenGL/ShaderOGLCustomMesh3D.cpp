@@ -5,17 +5,18 @@
 #include "../include/OpenGL/ShaderOGLCustomMesh3D.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
+#include "../../include/OpenGL/OpenGLShaderTypes.h"
 
 ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile)
 :
-    ShaderOGLCustom(label, typesFile, vsFile, fsFile, SHADER_OBJECT),
+    ShaderCustomOGLCode(label, typesFile, vsFile, fsFile, SHADER_OBJECT),
     mesh(mesh)
 {
 }
 
 ShaderOGLCustomMesh3D::ShaderOGLCustomMesh3D(Mesh3D* mesh, const std::string &label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile, cJSON* types)
 :
-    ShaderOGLCustom(label, typesFile, vsFile, fsFile, SHADER_OBJECT, types),
+    ShaderCustomOGLCode(label, typesFile, vsFile, fsFile, SHADER_OBJECT, types),
     mesh(mesh)
 {
 }
@@ -39,7 +40,7 @@ void ShaderOGLCustomMesh3D::LoadUniforms()
 
 void ShaderOGLCustomMesh3D::PrepareMainThread()
 {
-    ShaderOGLCustom::PrepareMainThread();
+    ShaderCustomOGLCode::PrepareMainThread();
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
     LoadUniforms();

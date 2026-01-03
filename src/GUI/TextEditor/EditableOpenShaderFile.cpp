@@ -6,19 +6,19 @@
 #include "../../../include/Brakeza.h"
 #include "../../../include/GUI/Objects/ShadersGUI.h"
 
-EditableOpenShaderFile::EditableOpenShaderFile(const std::string &tabLabel, const std::string &path, ShaderOGLCustom *shader)
+EditableOpenShaderFile::EditableOpenShaderFile(const std::string &tabLabel, const std::string &path, ShaderCustomOGLCode *shader)
 :
     EditableOpenFile(tabLabel, path, TextEditor::LanguageDefinition::GLSL()),
     shader(shader)
 {
 }
 
-[[nodiscard]] ShaderOGLCustom * EditableOpenShaderFile::getShader() const
+[[nodiscard]] ShaderCustomOGLCode * EditableOpenShaderFile::getShader() const
 {
     return shader;
 }
 
-void EditableOpenShaderFile::setShader(ShaderOGLCustom *value)
+void EditableOpenShaderFile::setShader(ShaderCustomOGLCode *value)
 {
     shader = value;
 }

@@ -76,7 +76,7 @@ class ComponentRender : public Component
         {"Mesh3D", SHADER_OBJECT},
     };
 
-    std::vector<ShaderOGLCustom*> sceneShaders;
+    std::vector<ShaderBaseCustom*> sceneShaders;
 
     Shaders shaders;
 public:
@@ -95,10 +95,10 @@ public:
     void UpdateFPS();
     void UpdateSelectedObject3D();
     void LoadShaderIntoScene(const std::string &name);
-    void AddShaderToScene(ShaderOGLCustom *shader);
+    void AddShaderToScene(ShaderBaseCustom *shader);
 
     void RemoveSceneShaderByIndex(int index);
-    void RemoveSceneShader(const ShaderOGLCustom *);
+    void RemoveSceneShader(const ShaderBaseCustom *);
     void setGlobalIlluminationDirection(const Vertex3D &d) const;
     void setGlobalIlluminationAmbient(const Vertex3D &a) const;
     void setGlobalIlluminationDiffuse(const Vertex3D &d) const;
@@ -117,9 +117,9 @@ public:
 
     SceneLoader &getSceneLoader()                                                                 { return sceneLoader; }
     ProjectLoader &getProjectLoader()                                                             { return projectLoader; }
-    std::vector<ShaderOGLCustom *> &getSceneShaders()                                             { return sceneShaders; }
+    std::vector<ShaderBaseCustom *> &getSceneShaders()                                            { return sceneShaders; }
     Shaders *getShaders()                                                                         { return &shaders;}
-    [[nodiscard]] ShaderOGLCustom *getSceneShaderByIndex(int i) const                             { return sceneShaders[i]; }
+    [[nodiscard]] ShaderBaseCustom *getSceneShaderByIndex(int i) const                            { return sceneShaders[i]; }
     [[nodiscard]] int getFps() const                                                              { return fps; }
     [[nodiscard]] ShaderOGLDepthMap *getShaderOGLDepthMap() const                                 { return shaders.shaderOGLDepthMap; }
     [[nodiscard]] ShaderOGLRenderDeferred *getShaderOGLRenderDeferred() const                     { return shaders.shaderOGLGBuffer; }
@@ -128,14 +128,14 @@ public:
     [[nodiscard]] Object3D* getSelectedObject() const                                             { return selectedObject; }
     [[nodiscard]] GLuint getLastProgramUsed() const                                               { return lastProgramUsed; }
     [[nodiscard]] const std::map<std::string, ShaderCustomType> &getShaderTypesMapping() const    { return ShaderTypesMapping; }
-    [[nodiscard]] ShaderOGLCustom *getSceneShaderByLabel(const std::string& name) const;
+    [[nodiscard]] ShaderBaseCustom *getSceneShaderByLabel(const std::string& name) const;
     static bool compareDistances(const Object3D *obj1, const Object3D *obj2);
     static void PostProcessingShadersChain();
     static void FillOGLBuffers(std::vector<Mesh3DData> &meshes);
     static void DeleteRemovedObjects();
     static void onUpdateSceneObjects();
     static void MakeScreenShot(std::string filename = "");
-    static ShaderOGLCustom* CreateCustomShaderFromDisk(const ShaderOGLMetaInfo &info, Mesh3D* o);
+    static ShaderCustomOGLCode* CreateCustomShaderFromDisk(const ShaderOGLMetaInfo &info, Mesh3D* o);
 };
 
 #endif //BRAKEDA3D_COMPONENTRENDER_H

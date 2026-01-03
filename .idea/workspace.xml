@@ -36,29 +36,34 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(shaders): added node editor for integration with shaders">
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/AddNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/ColorNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/CosNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/GradientNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/ImageNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/MixNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/MultiplyNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/NodeType.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/OutputNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SinNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SmoothstepNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SubtractNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/TimeNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVCoordsNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVOffsetNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVRotateNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVScaleNode.h" afterDir="false" />
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(nodeeditor): refact ShaderNodeEditor operations. Explode in independent files.">
+      <change afterPath="$PROJECT_DIR$/include/OpenGL/OpenGLShaderTypes.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/OpenGL/OpenGLShaderTypes.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/OpenGL/ShaderBaseCustom.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/OpenGL/ShaderBaseCustom.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustom.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustom.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/3D/Mesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/Mesh3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentRender.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentRender.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/TextEditor/EditableOpenShaderFile.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/TextEditor/EditableOpenShaderFile.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/LUA/BrakezaLuaBridge.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/LUA/BrakezaLuaBridge.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/CommonOGLShaderTypes.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/CommonOGLShaderTypes.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderBaseOpenGL.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderBaseOpenGL.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustom.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderCustomOGLCode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustomMesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustomMesh3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustomPostprocessing.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLCustomPostprocessing.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/ShaderOGLLightPass.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/ShaderOGLLightPass.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/PostProcessingManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/PostProcessingManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/PostProcessingManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/PostProcessingManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/3D/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Mesh3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/TextEditor/EditableOpenShaderFile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/TextEditor/EditableOpenShaderFile.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustom.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderCustomOGLCode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomMesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomMesh3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomPostprocessing.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/ShaderOGLCustomPostprocessing.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Serializers/Mesh3DSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/Mesh3DSerializer.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -184,40 +189,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "CMake Application.Brakeza3D.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.RadMigrateCodeStyle": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "RunOnceActivity.west.config.association.type.startup.service": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "cf.advertisement.text.has.clang-format": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/Eduardo/CLionProjects/BrakezaGitHub/assets/scripts/Examples/Commons/ChangeMouseIcon",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.keymap",
-    "structure.view.defaults.are.configured": "true",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;CMake Application.Brakeza3D.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.west.config.association.type.startup.service&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;cf.advertisement.text.has.clang-format&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Eduardo/CLionProjects/BrakezaGitHub/assets/scripts/Examples/Commons/ChangeMouseIcon&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Examples\Commons\ChangeMouseIcon" />
@@ -235,9 +240,9 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
@@ -245,7 +250,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -543,7 +548,8 @@
       <workItem from="1767052838523" duration="1933000" />
       <workItem from="1767057113571" duration="8167000" />
       <workItem from="1767119992981" duration="10563000" />
-      <workItem from="1767206411855" duration="39295000" />
+      <workItem from="1767206411855" duration="40536000" />
+      <workItem from="1767434040103" duration="13045000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -593,14 +599,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00103" summary="feat(gui): Icons debug window">
-      <option name="closed" value="true" />
-      <created>1764991022092</created>
-      <option name="number" value="00103" />
-      <option name="presentableId" value="LOCAL-00103" />
-      <option name="project" value="LOCAL" />
-      <updated>1764991022093</updated>
     </task>
     <task id="LOCAL-00104" summary="feat(gui): Icons debug window">
       <option name="closed" value="true" />
@@ -930,7 +928,15 @@
       <option name="project" value="LOCAL" />
       <updated>1767316420971</updated>
     </task>
-    <option name="localTasksCounter" value="145" />
+    <task id="LOCAL-00145" summary="feat(nodeeditor): refact ShaderNodeEditor operations. Explode in independent files.">
+      <option name="closed" value="true" />
+      <created>1767429280282</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1767429280282</updated>
+    </task>
+    <option name="localTasksCounter" value="146" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -964,7 +970,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(debug): Added debug cone for spotlight" />
     <MESSAGE value="feat(gui): Added icons / cone debug improvements" />
     <MESSAGE value="feat(gui): order menu items in his right category" />
     <MESSAGE value="feat(gui): added configurable loggint to std" />
@@ -989,7 +994,8 @@
     <MESSAGE value="feat(lua): Transparency  / GLSL Render commons" />
     <MESSAGE value="fix(picking): Fix outliner on multimesh objects" />
     <MESSAGE value="feat(shaders): added node editor for integration with shaders" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(shaders): added node editor for integration with shaders" />
+    <MESSAGE value="feat(nodeeditor): refact ShaderNodeEditor operations. Explode in independent files." />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(nodeeditor): refact ShaderNodeEditor operations. Explode in independent files." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1086,11 +1092,6 @@
           <url>file://$PROJECT_DIR$/include/GUI/GUI.h</url>
           <line>114</line>
           <option name="timeStamp" value="115" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/include/OpenGL/ShaderOGLCustom.h</url>
-          <line>117</line>
-          <option name="timeStamp" value="117" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

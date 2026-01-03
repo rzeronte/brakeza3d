@@ -215,7 +215,7 @@ void ComponentRender::LoadShaderIntoScene(const std::string &filePath)
 {
     auto metaInfo = ShadersGUI::ExtractShaderMetainfo(filePath);
 
-    if (ShaderOGLCustom::getShaderTypeFromString(metaInfo.type) == SHADER_POSTPROCESSING) {
+    if (ShaderCustomOGLCode::getShaderTypeFromString(metaInfo.type) == SHADER_POSTPROCESSING) {
         auto shader = CreateCustomShaderFromDisk(metaInfo, nullptr);
 
         if (shader != nullptr) {
@@ -227,15 +227,15 @@ void ComponentRender::LoadShaderIntoScene(const std::string &filePath)
     LOG_ERROR("[Render] Error: Cannot apply shader to scene...");
 }
 
-ShaderOGLCustom* ComponentRender::CreateCustomShaderFromDisk(const ShaderOGLMetaInfo &info, Mesh3D* mesh)
+ShaderCustomOGLCode* ComponentRender::CreateCustomShaderFromDisk(const ShaderOGLMetaInfo &info, Mesh3D* mesh)
 {
-    if (ShaderOGLCustom::getShaderTypeFromString(info.type) == SHADER_POSTPROCESSING) {
+    if (ShaderCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_POSTPROCESSING) {
         auto s = new ShaderOGLCustomPostprocessing(info.name, info.typesFile, info.vsFile, info.fsFile);
         s->PrepareSync();
         return s;
     }
 
-    if (ShaderOGLCustom::getShaderTypeFromString(info.type) == SHADER_OBJECT) {
+    if (ShaderCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_OBJECT) {
         auto s = new ShaderOGLCustomMesh3D(mesh, info.name, info.typesFile, info.vsFile, info.fsFile);
         s->PrepareSync();
         return s;
@@ -244,7 +244,7 @@ ShaderOGLCustom* ComponentRender::CreateCustomShaderFromDisk(const ShaderOGLMeta
     return nullptr;
 }
 
-void ComponentRender::AddShaderToScene(ShaderOGLCustom *shader)
+void ComponentRender::AddShaderToScene(ShaderBaseCustom *shader)
 {
     sceneShaders.push_back(shader);
 }
@@ -269,7 +269,7 @@ void ComponentRender::RemoveSceneShaderByIndex(int index) {
     }
 }
 
-void ComponentRender::RemoveSceneShader(const ShaderOGLCustom *shader)
+void ComponentRender::RemoveSceneShader(const ShaderBaseCustom *shader)
 {
     LOG_MESSAGE("Removing SCENE script %s", shader->getLabel().c_str());
 
@@ -282,7 +282,7 @@ void ComponentRender::RemoveSceneShader(const ShaderOGLCustom *shader)
     }
 }
 
-ShaderOGLCustom *ComponentRender::getSceneShaderByLabel(const std::string& name) const
+ShaderBaseCustom *ComponentRender::getSceneShaderByLabel(const std::string& name) const
 {
     for (auto &s: sceneShaders) {
         if (s->getLabel() == name) {

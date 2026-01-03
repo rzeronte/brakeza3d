@@ -10,6 +10,7 @@
 #include "../../../include/GUI/GUIManager.h"
 #include "../../../include/GUI/TextEditor/EditableOpenShaderFile.h"
 #include "../../../include/Components/Components.h"
+#include "../../../include/OpenGL/OpenGLShaderTypes.h"
 #include "../../../include/Render/Drawable.h"
 
 void ShadersGUI::DrawShaderConfig(EditableOpenShaderFile &file)
@@ -28,7 +29,7 @@ void ShadersGUI::DrawShaderConfigHeader(EditableOpenShaderFile &file)
     auto vsFile = file.getShader()->getVertexFilename();
     auto fsFile = file.getShader()->getFragmentFilename();
     auto type = file.getShader()->getType();
-    auto typeName = ShaderOGLCustom::getShaderTypeString(type);
+    auto typeName = ShaderCustomOGLCode::getShaderTypeString(type);
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_CODE_VS), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
@@ -170,7 +171,7 @@ void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
             // Value ImGuiControl
             ImGui::TableSetColumnIndex(2);
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            ShaderOGLCustom::DrawTypeImGuiControl(*type);
+            ShaderCustomOGLCode::DrawTypeImGuiControl(*type);
 
             // Actions column
             ImGui::TableSetColumnIndex(3);

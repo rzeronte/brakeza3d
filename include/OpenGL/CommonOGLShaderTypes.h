@@ -2,11 +2,15 @@
 // Created by edu on 8/12/23.
 //
 
-#ifndef BRAKEZA3D_OPENGLSHADERTYPES_H
-#define BRAKEZA3D_OPENGLSHADERTYPES_H
+#ifndef BRAKEZA3D_COMMONOPENGLSHADERTYPES_H
+#define BRAKEZA3D_COMMONOPENGLSHADERTYPES_H
 
 #include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
+#include <variant>
+#include "../Render/Image.h"
 
+// uniforms mapping structs
 struct MaterialOpenGL {
     GLuint diffuse;
     GLuint specular;
@@ -76,4 +80,59 @@ struct OpenGLGlobalFramebuffers
     GLuint uiTexture = 0;
 };
 
-#endif //BRAKEZA3D_OPENGLSHADERTYPES_H
+// SHADER OGL CUSTOM CODE
+enum ShaderCustomType {
+    SHADER_NONE = -1,
+    SHADER_POSTPROCESSING = 0,
+    SHADER_OBJECT = 1,
+    SHADER_NODE_OBJECT = 2,
+    SHADER_NODE_POSTPROCESSING = 3,
+};
+
+enum class ShaderOpenGLCustomDataType {
+    INT,
+    FLOAT,
+    VEC2,
+    VEC3,
+    VEC4,
+    TEXTURE2D,
+    DIFFUSE,
+    SPECULAR,
+    DELTA_TIME,
+    EXECUTION_TIME,
+    SCENE,
+    DEPTH
+};
+
+struct ShaderTypeInfo {
+    ShaderOpenGLCustomDataType type;
+    std::string label;
+};
+
+typedef std::variant<int, float, glm::vec2, glm::vec3, glm::vec4, Image*> ShaderOpenGLCustomDataValue;
+
+struct ShaderOGLCustomType
+{
+    ShaderOGLCustomType(const char *name, const char *type, ShaderOpenGLCustomDataValue value)
+    :
+        name(name),
+        type(type),
+        value(value)
+    {
+
+    }
+    std::string name;
+    std::string type;
+    ShaderOpenGLCustomDataValue value;
+};
+
+struct ShaderOGLMetaInfo {
+    std::string name;
+    std::string type;
+    std::string vsFile;
+    std::string fsFile;
+    std::string typesFile;
+};
+
+
+#endif //BRAKEZA3D_COMMONOPENGLSHADERTYPES_H

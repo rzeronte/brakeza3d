@@ -6,15 +6,15 @@
 #define BRAKEZA3D_EDITABLEOPENSHADERFILE_H
 
 #include "EditableOpenFile.h"
-#include "../../OpenGL/ShaderOGLCustom.h"
+#include "../../OpenGL/ShaderCustomOGLCode.h"
 
 class EditableOpenShaderFile : public EditableOpenFile
 {
-    ShaderOGLCustom *shader;
+    ShaderCustomOGLCode *shader;
 public:
-    EditableOpenShaderFile(const std::string &tabLabel, const std::string &path, ShaderOGLCustom *shader);
-    [[nodiscard]] ShaderOGLCustom * getShader() const ;
-    void setShader(ShaderOGLCustom *shader) ;
+    EditableOpenShaderFile(const std::string &tabLabel, const std::string &path, ShaderCustomOGLCode *shader);
+    [[nodiscard]] ShaderCustomOGLCode * getShader() const ;
+    void setShader(ShaderCustomOGLCode *shader) ;
     void DrawEditableOpenFileConfig() override;
     void DrawCodeEditActionButtons() override;
 };

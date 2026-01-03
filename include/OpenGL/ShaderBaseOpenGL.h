@@ -21,6 +21,7 @@ protected:
     std::string sourceFS;
     std::string commonCode;
 public:
+    ShaderBaseOpenGL() = default;
     ShaderBaseOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback);
     ShaderBaseOpenGL(const std::string &vertexFilename, bool enableFeedback);
 
