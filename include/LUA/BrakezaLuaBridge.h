@@ -454,9 +454,9 @@ inline void LUAIntegration(sol::state &lua)
         "setFont", &TextWriter::setFont
     );
 
-    lua.new_usertype<ShaderCustomOGLCode>("ShaderOpenGLCustom",
+    lua.new_usertype<ShaderBaseCustomOGLCode>("ShaderOpenGLCustom",
             "setDataTypeValue", sol::overload(
-                [](ShaderCustomOGLCode& shader, const std::string& name, const sol::object& value) {
+                [](ShaderBaseCustomOGLCode& shader, const std::string& name, const sol::object& value) {
                     if (value.is<int>()) {
                         shader.setDataTypeValue(name, static_cast<float>(value.as<int>()));  // Convierte int a float
                     } else if (value.is<double>()) {
@@ -473,11 +473,11 @@ inline void LUAIntegration(sol::state &lua)
                         std::cerr << "Error: Tipo no soportado en setDataTypeValue para '" << name << "'\n";
                     }
                 },
-                static_cast<void (ShaderCustomOGLCode::*)(const std::string&, int)>(&ShaderCustomOGLCode::setDataTypeValue),
-                static_cast<void (ShaderCustomOGLCode::*)(const std::string&, float)>(&ShaderCustomOGLCode::setDataTypeValue),
-                static_cast<void (ShaderCustomOGLCode::*)(const std::string&, glm::vec2)>(&ShaderCustomOGLCode::setDataTypeValue),
-                static_cast<void (ShaderCustomOGLCode::*)(const std::string&, glm::vec3)>(&ShaderCustomOGLCode::setDataTypeValue),
-                static_cast<void (ShaderCustomOGLCode::*)(const std::string&, glm::vec4)>(&ShaderCustomOGLCode::setDataTypeValue)
+                static_cast<void (ShaderBaseCustomOGLCode::*)(const std::string&, int)>(&ShaderBaseCustomOGLCode::setDataTypeValue),
+                static_cast<void (ShaderBaseCustomOGLCode::*)(const std::string&, float)>(&ShaderBaseCustomOGLCode::setDataTypeValue),
+                static_cast<void (ShaderBaseCustomOGLCode::*)(const std::string&, glm::vec2)>(&ShaderBaseCustomOGLCode::setDataTypeValue),
+                static_cast<void (ShaderBaseCustomOGLCode::*)(const std::string&, glm::vec3)>(&ShaderBaseCustomOGLCode::setDataTypeValue),
+                static_cast<void (ShaderBaseCustomOGLCode::*)(const std::string&, glm::vec4)>(&ShaderBaseCustomOGLCode::setDataTypeValue)
             )
     );
 

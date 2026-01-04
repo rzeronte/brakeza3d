@@ -82,7 +82,7 @@ void Mesh3DAnimation::onUpdate()
     }
 
     for (auto s: customShaders) {
-        s->render(window->getSceneFramebuffer(), window->getGlobalTexture());
+        s->Render(window->getSceneFramebuffer(), window->getGlobalTexture());
     }
 
     if (Config::get()->DRAW_ANIMATION_BONES) {

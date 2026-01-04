@@ -6,7 +6,7 @@
 #define BRAKEZA3D_IMAGE3DDRAWERGUI_H
 
 #include "../../3D/Object3D.h"
-#include "../TextEditor/EditableOpenScriptFile.h"
+#include "../Editable/EditableOpenScriptFile.h"
 
 class GUIManager;
 class EditableOpenScriptFile;

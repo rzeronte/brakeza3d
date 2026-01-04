@@ -126,7 +126,7 @@ struct ShaderOGLCustomType
     ShaderOpenGLCustomDataValue value;
 };
 
-struct ShaderOGLMetaInfo {
+struct ShaderBaseCustomMetaInfo {
     std::string name;
     std::string type;
     std::string vsFile;

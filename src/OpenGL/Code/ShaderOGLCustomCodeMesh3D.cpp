@@ -9,14 +9,14 @@
 
 ShaderOGLCustomCodeMesh3D::ShaderOGLCustomCodeMesh3D(Mesh3D* mesh, const std::string &label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile)
 :
-    ShaderCustomOGLCode(label, typesFile, vsFile, fsFile, SHADER_OBJECT),
+    ShaderBaseCustomOGLCode(label, typesFile, vsFile, fsFile, SHADER_OBJECT),
     mesh(mesh)
 {
 }
 
 ShaderOGLCustomCodeMesh3D::ShaderOGLCustomCodeMesh3D(Mesh3D* mesh, const std::string &label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile, cJSON* types)
 :
-    ShaderCustomOGLCode(label, typesFile, vsFile, fsFile, SHADER_OBJECT, types),
+    ShaderBaseCustomOGLCode(label, typesFile, vsFile, fsFile, SHADER_OBJECT, types),
     mesh(mesh)
 {
 }
@@ -30,8 +30,7 @@ void ShaderOGLCustomCodeMesh3D::LoadUniforms()
     matrixModelUniform = glGetUniformLocation(programID, "model");
     alphaUniform = glGetUniformLocation(programID, "alpha");
 
-    LOG_MESSAGE("[ShaderOGLCustomCodeMesh3D] Uniforms: proj=%d, view=%d, model=%d, alpha=%d",
-                    matrixProjectionUniform, matrixViewUniform, matrixModelUniform, alphaUniform);
+    LOG_MESSAGE("[ShaderOGLCustomCodeMesh3D] Uniforms: proj=%d, view=%d, model=%d, alpha=%d", matrixProjectionUniform, matrixViewUniform, matrixModelUniform, alphaUniform);
 
     if (programID == 0) {
         LOG_ERROR("[ShaderOGLCustomCodeMesh3D] ERROR: programID is 0!");
@@ -40,13 +39,13 @@ void ShaderOGLCustomCodeMesh3D::LoadUniforms()
 
 void ShaderOGLCustomCodeMesh3D::PrepareMainThread()
 {
-    ShaderCustomOGLCode::PrepareMainThread();
+    ShaderBaseCustomOGLCode::PrepareMainThread();
     glGenVertexArrays(1, &VertexArrayID);
     glBindVertexArray(VertexArrayID);
     LoadUniforms();
 }
 
-void ShaderOGLCustomCodeMesh3D::render(GLuint fbo, GLuint texture)
+void ShaderOGLCustomCodeMesh3D::Render(GLuint fbo, GLuint texture)
 {
     if (!isEnabled()) return;
     setTextureResult(texture);

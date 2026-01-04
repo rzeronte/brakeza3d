@@ -4,7 +4,8 @@
 
 #include <string>
 #include "../GUI.h"
-#include "../TextEditor/EditableOpenShaderFile.h"
+#include "../../3D/Mesh3D.h"
+#include "../Editable/EditableOpenShaderFile.h"
 
 class GUIManager;
 class EditableOpenShaderFile;
@@ -21,9 +22,9 @@ public:
     static void DrawShaderConfigVarsTable(EditableOpenShaderFile &file);
     static void DrawShaderConfigEmptyStateWarning(EditableOpenShaderFile &file);
     static void DrawShaderConfigActionButtons(EditableOpenShaderFile &file);
-    static ShaderOGLMetaInfo ExtractShaderMetainfo(const std::string &pathFile);
+    static ShaderBaseCustomMetaInfo ExtractShaderCustomCodeMetainfo(const std::string &pathFile);
+    static ShaderBaseCustom *CreateShaderBaseCustom(ShaderCustomType type, std::string folder, std::string file);
     static std::vector<std::string> GetDataTypeItems(EditableOpenShaderFile &file);
-
     static void DrawWinObjectShaders();
 };
 

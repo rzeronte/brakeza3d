@@ -351,33 +351,6 @@ void FileSystemGUI::DrawBrowserFolders(std::string& folder, GUIType::BrowserCach
     }
 }
 
-void FileSystemGUI::DrawCodeEditorTab(EditableOpenFile &file, int tabIndex)
-{
-    std::string uniqueTabId = file.getTabLabel() + "##" + file.getPath();
-
-    auto currentIndexTab = Brakeza::get()->GUI()->getIndexCodeEditorTab();
-
-    ImGuiTabItemFlags flags = (currentIndexTab == tabIndex) ? ImGuiTabItemFlags_SetSelected : 0;
-    if (ImGui::BeginTabItem(uniqueTabId.c_str(), nullptr, flags)) {
-        static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
-        std::string tableId = "codeEditorTab##" + file.getPath();
-        if (ImGui::BeginTable(tableId.c_str(), 2, flags)) {
-            ImGui::TableSetupColumn("Setup", ImGuiTableColumnFlags_WidthFixed, 350.0f);
-            ImGui::TableSetupColumn("Code", ImGuiTableColumnFlags_WidthStretch);
-            ImGui::TableNextRow();
-            // Config File
-            ImGui::TableSetColumnIndex(0);
-            file.DrawEditableOpenFileConfig();
-            // Code Editor
-            ImGui::TableSetColumnIndex(1);
-            file.DrawCodeEditActionButtons();
-            file.getEditor().Render("##editor", ImVec2(0, 0), false);
-            ImGui::EndTable();
-        }
-        ImGui::EndTabItem();
-    }
-}
-
 void FileSystemGUI::LoadImagesFolder(GUIManager *gui)
 {
     auto images = Tools::getFolderFiles(Config::get()->IMAGES_FOLDER, Config::get()->IMAGES_EXT);
@@ -476,7 +449,7 @@ void FileSystemGUI::DrawShaderRowActions(GUIType::BrowserCache &browser, const s
     ImGui::TableSetColumnIndex(3);
 
     GUI::DrawButtonConfirm("Deleting shader", "Are you sure to delete shader?", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
-        ShaderCustomOGLCode::RemoveCustomShaderFiles(
+        ShaderBaseCustomOGLCode::RemoveCustomShaderFiles(
             browser.currentFolder,
             Tools::getFilenameWithoutExtension(file)
         );
@@ -552,12 +525,8 @@ void FileSystemGUI::DrawShaderCreatorDialog(GUIType::BrowserCache &browser, std:
         ImGui::SameLine();
         GUI::DrawButton("Create shader", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
             if (localVarName[0] != '\0') {
-                auto type = ShaderCustomOGLCode::getShaderTypeFromString(items[item_current_idx]);
-                ShaderCustomOGLCode::WriteEmptyCustomShaderToDisk(
-                    localVarName,
-                    browser.currentFolder,
-                    type
-                );
+                auto type = ShaderBaseCustomOGLCode::getShaderTypeFromString(items[item_current_idx]);
+                ShadersGUI::CreateShaderBaseCustom(type, browser.currentFolder, localVarName);
                 browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
                 ImGui::CloseCurrentPopup();
             }

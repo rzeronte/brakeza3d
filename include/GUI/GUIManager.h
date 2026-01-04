@@ -10,7 +10,7 @@
 #include "../Misc/TextureAtlas.h"
 #include "../Misc/TexturePackage.h"
 #include "AddOns/GUIConsole.h"
-#include "TextEditor/EditableOpenFile.h"
+#include "Editable/EditableOpenBaseResource.h"
 
 class Object3DGUI;
 class ScriptLuaGUI;
@@ -41,7 +41,7 @@ class GUIManager
 
     GuiAddonConsole *widgetConsole;
 
-    std::vector<EditableOpenFile *> openFiles;
+    std::vector<EditableOpenBaseResource *> openFiles;
 
     cJSON *documentationTree = nullptr;
     TextEditor documentationEditor;
@@ -88,9 +88,9 @@ public:
     void setLayoutToDefault(Config::ImGUIConfigs config);
     void setIndexCodeEditorTab(const std::string &label);
     void CloseRemovedEditableOpenFiles();
-    void DrawWinCodeEditor() const;
-    void OpenEditableFile(EditableOpenFile *openFile);
-    void CloseEditableFile(EditableOpenFile *openFile) const;
+    void DrawWinEditableOpenResources();
+    void OpenEditableFile(EditableOpenBaseResource *openFile);
+    void CloseEditableFile(EditableOpenBaseResource *openFile) const;
     void ResetIndexCodeEditor();
 
     [[nodiscard]] TextureAtlas * getTextureAtlas() const                                { return textureAtlas; }
@@ -100,11 +100,10 @@ public:
     [[nodiscard]] GUIType::BrowserCache getBrowserProjects() const                      { return browserProjects; }
     [[nodiscard]] GUIType::BrowserCache getBrowserShaders() const                       { return browserShaders; }
     [[nodiscard]] GUIType::ViewerObjectsMode getObjectsViewerMode() const               { return viewerMode; }
-    [[nodiscard]] std::vector<EditableOpenFile *> getEditableOpenFiles() const          { return openFiles;}
+    [[nodiscard]] std::vector<EditableOpenBaseResource *> getEditableOpenFiles() const  { return openFiles;}
     [[nodiscard]] int getIndexCodeEditorTab() const                                     { return indexCodeEditorTab; }
     [[nodiscard]] SceneChecker &getSceneChecker()                                       { return checker; }
     [[nodiscard]] std::vector<GUIType::ViewerObjectType> &getVisibleObjectTypes()       { return visibleTypeObjects; }
-
     [[nodiscard]] ShaderNodeEditor * getNodeEditor() const                              { return nodeEditor; }
 
     GUIType::WindowData *getWindowStatus(GUIType::Window window);

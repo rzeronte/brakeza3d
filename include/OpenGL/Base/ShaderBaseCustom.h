@@ -35,7 +35,7 @@ public:
         bool enableFeedback
     );
 
-    ShaderBaseCustom(const std::string &label, ShaderCustomType type, NodeEditorManager *nodeManager);
+    ShaderBaseCustom(const std::string &label, ShaderCustomType type);
 
     [[nodiscard]] const std::string &getLabel() const       { return label; }
     [[nodiscard]] bool isEnabled() const                    { return enabled; }
@@ -46,8 +46,8 @@ public:
     void setEnabled(bool value);
 
     virtual void Reload() = 0;
-    virtual cJSON* getTypesJSON() const = 0;
-    virtual void render(GLuint fbo, GLuint texture) = 0;
+    [[nodiscard]] virtual cJSON* getTypesJSON() const;
+    virtual void Render(GLuint fbo, GLuint texture) = 0;
     virtual void DrawImGuiProperties(const Image *diffuse, Image *specular) = 0;
 };
 

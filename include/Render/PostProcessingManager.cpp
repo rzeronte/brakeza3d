@@ -145,7 +145,7 @@ void PostProcessingManager::processChain(GLuint inputTexture, GLuint outputFBO)
         }
 
         // Renderizar el shader
-        currentShader->render(currentOutputFBO, currentInputTexture);
+        currentShader->Render(currentOutputFBO, currentInputTexture);
         // La salida de este shader es la entrada del siguiente
         if (i < postProcessingShaders.size() - 1) {
             currentInputTexture = currentOutputTexture;

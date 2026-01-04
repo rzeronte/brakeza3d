@@ -9,4 +9,5 @@
 - SEPARAR LA EDICIÓN DE SHADERS DE CÓDIGO DE SHADERS NORMALES
   - poder editar los shader normales desde el editor de nodos
   - poder INTEGRAR shaders de código en UN SHADER DE NODO normal
+  * Separar bien el GUI de EditableOpenfile de shader editable
 - visualizar el postprocessing chain con nodos

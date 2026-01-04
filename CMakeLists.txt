@@ -199,7 +199,7 @@ add_executable(Brakeza3D
 
         # OpenGL
         src/OpenGL/Base/ShaderBaseOpenGL.cpp include/OpenGL/Base/ShaderBaseOpenGL.h
-        src/OpenGL/Code/ShaderCustomOGLCode.cpp include/OpenGL/Code/ShaderCustomOGLCode.h
+        src/OpenGL/Code/ShaderBaseCustomOGLCode.cpp include/OpenGL/Code/ShaderBaseCustomOGLCode.h
         src/OpenGL/Base/ShaderBaseOpenGLQuad.cpp include/OpenGL/Base/ShaderBaseOpenGLQuad.h
         src/OpenGL/ShaderOGLBonesTransforms.cpp             include/OpenGL/ShaderOGLBonesTransforms.h
         src/OpenGL/ShaderOGLColor.cpp                       include/OpenGL/ShaderOGLColor.h
@@ -303,11 +303,11 @@ add_executable(Brakeza3D
         include/Render/PostProcessingManager.h
         imgui/ImGuiColorTextEdit/TextEditor.h
         imgui/ImGuiColorTextEdit/TextEditor.cpp
-        include/GUI/TextEditor/EditableOpenFile.h
-        include/GUI/TextEditor/EditableOpenScriptFile.h
-        include/GUI/TextEditor/EditableOpenShaderFile.h
-        src/GUI/TextEditor/EditableOpenScriptFile.cpp
-        src/GUI/TextEditor/EditableOpenShaderFile.cpp
+        include/GUI/Editable/EditableOpenFile.h
+        include/GUI/Editable/EditableOpenScriptFile.h
+        include/GUI/Editable/EditableOpenShaderFile.h
+        src/GUI/Editable/EditableOpenScriptFile.cpp
+        src/GUI/Editable/EditableOpenShaderFile.cpp
         include/GUI/AddOns/GUIAddonDocumentation.h
         include/LUA/ObjectFactory.cpp
         include/Threads/ThreadJobMakeRigidBody.h
@@ -343,6 +343,17 @@ add_executable(Brakeza3D
         include/OpenGL/Base/ShaderBaseCustom.h
         include/OpenGL/Code/ShaderCustomOGLCodeTypes.h
         src/OpenGL/Code/ShaderCustomOGLCodeTypes.cpp
+        include/GUI/Editable/EditableOpenBaseResource.h
+        src/GUI/Editable/EditableOpenFileGUI.cpp
+        include/GUI/Editable/EditableOpenFileGUI.h
+        src/GUI/Editable/EditableOpenFile.cpp
+        src/GUI/Editable/EditableOpenBaseResource.cpp
+        include/OpenGL/Nodes/ShaderBaseNodes.cpp
+        include/OpenGL/Nodes/ShaderBaseNodes.h
+        include/OpenGL/Nodes/ShaderNodesMesh3D.cpp
+        include/OpenGL/Nodes/ShaderNodesMesh3D.h
+        include/OpenGL/Nodes/ShaderNodesPostProcessing.cpp
+        include/OpenGL/Nodes/ShaderNodesPostProcessing.h
 )
 
 target_link_libraries(Brakeza3D
