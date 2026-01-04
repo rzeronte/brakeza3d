@@ -8,9 +8,12 @@
 #include "../../../include/GUI/Objects/ShadersGUI.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/GUIManager.h"
-#include "../../../include/GUI/TextEditor/EditableOpenShaderFile.h"
+#include "../../../include/GUI/Editable/EditableOpenShaderFile.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/OpenGL/Code/ShaderCustomOGLCodeTypes.h"
+#include "../../../include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h"
+#include "../../../include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h"
+#include "../../../include/OpenGL/Nodes/ShaderBaseNodes.h"
 #include "../../../include/Render/Drawable.h"
 
 void ShadersGUI::DrawShaderConfig(EditableOpenShaderFile &file)
@@ -29,7 +32,7 @@ void ShadersGUI::DrawShaderConfigHeader(EditableOpenShaderFile &file)
     auto vsFile = file.getShader()->getVertexFilename();
     auto fsFile = file.getShader()->getFragmentFilename();
     auto type = file.getShader()->getType();
-    auto typeName = ShaderCustomOGLCode::getShaderTypeString(type);
+    auto typeName = ShaderBaseCustomOGLCode::getShaderTypeString(type);
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_CODE_VS), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
@@ -171,7 +174,7 @@ void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
             // Value ImGuiControl
             ImGui::TableSetColumnIndex(2);
             ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            ShaderCustomOGLCode::DrawTypeImGuiControl(*type);
+            ShaderBaseCustomOGLCode::DrawTypeImGuiControl(*type);
 
             // Actions column
             ImGui::TableSetColumnIndex(3);
@@ -278,7 +281,7 @@ void ShadersGUI::DrawWinObjectShaders()
 
 void ShadersGUI::LoadDialogShader(const std::string &file)
 {
-    auto metaInfo = ExtractShaderMetainfo(file);
+    auto metaInfo = ExtractShaderCustomCodeMetainfo(file);
 
     if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(metaInfo.name)) {
         auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, nullptr);
@@ -292,7 +295,7 @@ void ShadersGUI::LoadDialogShader(const std::string &file)
     Components::get()->Window()->setImGuiConfig(Config::ImGUIConfigs::CODING);
 }
 
-ShaderOGLMetaInfo ShadersGUI::ExtractShaderMetainfo(const std::string &pathFile)
+ShaderBaseCustomMetaInfo ShadersGUI::ExtractShaderCustomCodeMetainfo(const std::string &pathFile)
 {
     auto json = cJSON_Parse(Tools::ReadFile(pathFile));
 
@@ -303,4 +306,31 @@ ShaderOGLMetaInfo ShadersGUI::ExtractShaderMetainfo(const std::string &pathFile)
         cJSON_GetObjectItemCaseSensitive(json, "fsFile")->valuestring,
         cJSON_GetObjectItemCaseSensitive(json, "typesFile")->valuestring
     };
+}
+
+ShaderBaseCustom* ShadersGUI::CreateShaderBaseCustom(ShaderCustomType type, std::string folder, std::string file)
+{
+    auto name = Tools::getFilenameWithoutExtension(file);
+    std::string typesFile = folder + std::string(name + ".json");
+
+    switch(type) {
+        case SHADER_POSTPROCESSING:
+        case SHADER_OBJECT: {
+            ShaderBaseCustomOGLCode::WriteEmptyCustomShaderToDisk(name, folder, type);
+            auto metaInfo = ExtractShaderCustomCodeMetainfo(typesFile);
+            auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, nullptr);
+            return shader;
+        }
+        case SHADER_NODE_OBJECT:
+        case SHADER_NODE_POSTPROCESSING: {
+            ShaderBaseNodes::WriteEmptyCustomShaderToDisk(name, folder, type);
+            auto metaInfo = ExtractShaderCustomCodeMetainfo(typesFile);
+            auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, nullptr);
+            return shader;
+
+        }
+        case SHADER_NONE:
+        default:
+            return nullptr;
+    }
 }

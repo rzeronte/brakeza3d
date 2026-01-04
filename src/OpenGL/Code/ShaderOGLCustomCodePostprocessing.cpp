@@ -12,7 +12,7 @@ ShaderOGLCustomCodePostprocessing::ShaderOGLCustomCodePostprocessing(
     const std::string &fsFile
     )
 :
-    ShaderCustomOGLCode(label, typesFile, vsFile, fsFile, SHADER_POSTPROCESSING)
+    ShaderBaseCustomOGLCode(label, typesFile, vsFile, fsFile, SHADER_POSTPROCESSING)
 {
 }
 
@@ -24,7 +24,7 @@ ShaderOGLCustomCodePostprocessing::ShaderOGLCustomCodePostprocessing(
     cJSON *types
 )
 :
-    ShaderCustomOGLCode(label, typesFile, vsFile, fsFile, SHADER_POSTPROCESSING, types)
+    ShaderBaseCustomOGLCode(label, typesFile, vsFile, fsFile, SHADER_POSTPROCESSING, types)
 {
 }
 
@@ -41,7 +41,7 @@ void ShaderOGLCustomCodePostprocessing::PrepareMainThread()
     SetupQuadUniforms(programID);
 }
 
-void ShaderOGLCustomCodePostprocessing::render(GLuint fbo, GLuint texture)
+void ShaderOGLCustomCodePostprocessing::Render(GLuint fbo, GLuint texture)
 {
     if (!isEnabled()) return;
 
@@ -62,7 +62,7 @@ void ShaderOGLCustomCodePostprocessing::render(GLuint fbo, GLuint texture)
 
 void ShaderOGLCustomCodePostprocessing::Destroy()
 {
-    ShaderCustomOGLCode::Destroy();
+    ShaderBaseCustomOGLCode::Destroy();
     ResetQuadMatrix();
 }
 

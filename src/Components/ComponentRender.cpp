@@ -5,6 +5,8 @@
 #include "../../include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h"
 #include "../../include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
+#include "../../include/OpenGL/Nodes/ShaderNodesMesh3D.h"
+#include "../../include/OpenGL/Nodes/ShaderNodesPostProcessing.h"
 #include "../../include/Render/Profiler.h"
 #include "../../include/Render/Transforms.h"
 
@@ -213,9 +215,9 @@ void ComponentRender::DeleteRemovedObjects()
 
 void ComponentRender::LoadShaderIntoScene(const std::string &filePath)
 {
-    auto metaInfo = ShadersGUI::ExtractShaderMetainfo(filePath);
+    auto metaInfo = ShadersGUI::ExtractShaderCustomCodeMetainfo(filePath);
 
-    if (ShaderCustomOGLCode::getShaderTypeFromString(metaInfo.type) == SHADER_POSTPROCESSING) {
+    if (ShaderBaseCustomOGLCode::getShaderTypeFromString(metaInfo.type) == SHADER_POSTPROCESSING) {
         auto shader = CreateCustomShaderFromDisk(metaInfo, nullptr);
 
         if (shader != nullptr) {
@@ -227,16 +229,28 @@ void ComponentRender::LoadShaderIntoScene(const std::string &filePath)
     LOG_ERROR("[Render] Error: Cannot apply shader to scene...");
 }
 
-ShaderCustomOGLCode* ComponentRender::CreateCustomShaderFromDisk(const ShaderOGLMetaInfo &info, Mesh3D* mesh)
+ShaderBaseCustom* ComponentRender::CreateCustomShaderFromDisk(const ShaderBaseCustomMetaInfo &info, Mesh3D* mesh)
 {
-    if (ShaderCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_POSTPROCESSING) {
+    if (ShaderBaseCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_POSTPROCESSING) {
         auto s = new ShaderOGLCustomCodePostprocessing(info.name, info.typesFile, info.vsFile, info.fsFile);
         s->PrepareSync();
         return s;
     }
 
-    if (ShaderCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_OBJECT) {
+    if (ShaderBaseCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_OBJECT) {
         auto s = new ShaderOGLCustomCodeMesh3D(mesh, info.name, info.typesFile, info.vsFile, info.fsFile);
+        s->PrepareSync();
+        return s;
+    }
+
+    if (ShaderBaseCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_NODE_OBJECT) {
+        auto s = new ShaderNodesMesh3D(info.name, mesh);
+        s->PrepareSync();
+        return s;
+    }
+
+    if (ShaderBaseCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_NODE_POSTPROCESSING) {
+        auto s = new ShaderNodesPostProcessing(info.name);
         s->PrepareSync();
         return s;
     }

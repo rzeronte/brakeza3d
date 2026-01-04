@@ -25,8 +25,8 @@ ShaderBaseCustom::ShaderBaseCustom(const std::string &label, ShaderCustomType ty
 {
 }
 
-ShaderBaseCustom::ShaderBaseCustom(const std::string &label, ShaderCustomType type, NodeEditorManager *nodeManager)
-    :
+ShaderBaseCustom::ShaderBaseCustom(const std::string &label, ShaderCustomType type)
+:
     label(label),
     type(type)
 {
@@ -41,4 +41,7 @@ void ShaderBaseCustom::setEnabled(bool value)
 {
     LOG_MESSAGE("[ShaderOGLCustom] Setting shader '%s' enabled to %d", label.c_str(), value);
     enabled = value;
+}
+
+cJSON * ShaderBaseCustom::getTypesJSON() const {
 }

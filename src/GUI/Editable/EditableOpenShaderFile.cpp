@@ -2,23 +2,23 @@
 // Created by Eduardo on 17/12/2025.
 //
 
-#include "../../../include/GUI/TextEditor/EditableOpenShaderFile.h"
+#include "../../../include/GUI/Editable/EditableOpenShaderFile.h"
 #include "../../../include/Brakeza.h"
 #include "../../../include/GUI/Objects/ShadersGUI.h"
 
-EditableOpenShaderFile::EditableOpenShaderFile(const std::string &tabLabel, const std::string &path, ShaderCustomOGLCode *shader)
+EditableOpenShaderFile::EditableOpenShaderFile(const std::string &tabLabel, const std::string &path, ShaderBaseCustomOGLCode *shader)
 :
     EditableOpenFile(tabLabel, path, TextEditor::LanguageDefinition::GLSL()),
     shader(shader)
 {
 }
 
-[[nodiscard]] ShaderCustomOGLCode * EditableOpenShaderFile::getShader() const
+[[nodiscard]] ShaderBaseCustomOGLCode * EditableOpenShaderFile::getShader() const
 {
     return shader;
 }
 
-void EditableOpenShaderFile::setShader(ShaderCustomOGLCode *value)
+void EditableOpenShaderFile::setShader(ShaderBaseCustomOGLCode *value)
 {
     shader = value;
 }

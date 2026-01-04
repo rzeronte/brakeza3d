@@ -6,9 +6,10 @@
 #define BRAKEZA3D_FILESYSTEMGUI_H
 
 #include "../GUI.h"
-#include "../TextEditor/EditableOpenFile.h"
+#include "../Editable/EditableOpenFile.h"
 
 class GUIManager;
+class EditableOpenFile;
 
 class FileSystemGUI
 {
@@ -47,7 +48,6 @@ public:
 
     static void LoadImagesFolder(GUIManager *gui);
     static void DrawBrowserFolders(std::string &folder, GUIType::BrowserCache &browser, const std::string &ext);
-    static void DrawCodeEditorTab(EditableOpenFile &file, int tabIndex);
 
     static ImTextureID Icon(GUIType::Sheet coords);
 };

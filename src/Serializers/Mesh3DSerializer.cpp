@@ -136,7 +136,7 @@ void Mesh3DSerializer::ApplyShadersCreation(Mesh3D *mesh, cJSON* json)
         cJSON *currentShaderJSON;
         cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {
             auto typeString = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
-            switch (auto type = ShaderCustomOGLCode::getShaderTypeFromString(typeString)) {
+            switch (auto type = ShaderBaseCustomOGLCode::getShaderTypeFromString(typeString)) {
                 case SHADER_OBJECT: {
                     auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
                     auto vsFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vsFile")->valuestring;

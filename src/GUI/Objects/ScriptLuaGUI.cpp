@@ -6,7 +6,7 @@
 #include "../../../include/GUI/GUIManager.h"
 #include "../../../include/GUI/Objects/ScriptLuaGUI.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
-#include "../../../include/GUI/TextEditor/EditableOpenScriptFile.h"
+#include "../../../include/GUI/Editable/EditableOpenScriptFile.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/Render/Drawable.h"
 

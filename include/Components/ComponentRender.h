@@ -74,6 +74,8 @@ class ComponentRender : public Component
     std::map<std::string, ShaderCustomType> ShaderTypesMapping = {
         {"Postprocessing", SHADER_POSTPROCESSING},
         {"Mesh3D", SHADER_OBJECT},
+        {"NodeMesh3D", SHADER_NODE_OBJECT},
+        {"NodePostProcessing", SHADER_NODE_POSTPROCESSING},
     };
 
     std::vector<ShaderBaseCustom*> sceneShaders;
@@ -135,7 +137,7 @@ public:
     static void DeleteRemovedObjects();
     static void onUpdateSceneObjects();
     static void MakeScreenShot(std::string filename = "");
-    static ShaderCustomOGLCode* CreateCustomShaderFromDisk(const ShaderOGLMetaInfo &info, Mesh3D* o);
+    static ShaderBaseCustom* CreateCustomShaderFromDisk(const ShaderBaseCustomMetaInfo &info, Mesh3D* o);
 };
 
 #endif //BRAKEDA3D_COMPONENTRENDER_H

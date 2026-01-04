@@ -80,7 +80,7 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Logging/Console",     GUIType::LOGGING,             IconGUI::WIN_LOGGING,           true,  false, true, widgetConsole->DrawWinLogging());
     ADD_WIN("Lights DepthMaps",    GUIType::DEPTH_LIGHTS_MAPS,   IconGUI::WIN_DEPTH_LIGHTS_MAPS, false, false, true, DrawWinDepthLightsMap());
     ADD_WIN("Profiler",            GUIType::PROFILER,            IconGUI::WIN_PROFILER,          false, false, true, Profiler::get()->DrawWinProfiler());
-    ADD_WIN("Code nodeEditor",     GUIType::CODE_EDITOR,         IconGUI::WIN_CODE_EDITOR,       false, false, true, DrawWinCodeEditor());
+    ADD_WIN("Code nodeEditor",     GUIType::CODE_EDITOR,         IconGUI::WIN_CODE_EDITOR,       false, false, true, DrawWinEditableOpenResources());
     ADD_WIN("Debug GUI Icons",     GUIType::DEBUG_ICONS,         IconGUI::WIN_DEBUG_ICONS,       false, false, true, IconsGUI::DrawWinDebugIcons(this));
     ADD_WIN("Documentation",       GUIType::DOCUMENTATION,       IconGUI::WIN_DOCUMENTATION,     false, true,  true, GUIAddonDocumentation::DrawWinDocumentation(documentationTree, documentationEditor));
     ADD_WIN("Scene Detail",        GUIType::SCENE_INFO,          IconGUI::SCENE_INFO,            false, true,  false, checker.DrawWinSceneInfo());
@@ -226,12 +226,12 @@ void GUIManager::CloseRemovedEditableOpenFiles()
     }
 }
 
-void GUIManager::DrawWinCodeEditor() const
+void GUIManager::DrawWinEditableOpenResources()
 {
     if (ImGui::BeginTabBar("FileTabs")) {
         int i = 0;
         for (auto &f : openFiles) {
-            FileSystemGUI::DrawCodeEditorTab(*f, i);
+            f->DrawTabEdition(i);
             i++;
         }
 
@@ -601,12 +601,12 @@ void GUIManager::LoadDocumentation()
     documentationTree = cJSON_Parse(contentFile);
 }
 
-void GUIManager::OpenEditableFile(EditableOpenFile *openFile)
+void GUIManager::OpenEditableFile(EditableOpenBaseResource *openFile)
 {
     openFiles.push_back(openFile);
 }
 
-void GUIManager::CloseEditableFile(EditableOpenFile *openFile) const
+void GUIManager::CloseEditableFile(EditableOpenBaseResource *openFile) const
 {
     for (auto &f : openFiles) {
         if (f->getPath() == openFile->getPath()) {

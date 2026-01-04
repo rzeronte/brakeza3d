@@ -2,7 +2,7 @@
 // Created by Eduardo on 17/12/2025.
 //
 
-#include "../../../include/GUI/TextEditor/EditableOpenScriptFile.h"
+#include "../../../include/GUI/Editable/EditableOpenScriptFile.h"
 
 #include "../../../include/Brakeza.h"
 #include "../include/GUI/Objects/ScriptLuaGUI.h"

@@ -8,6 +8,7 @@
 #include "../Misc/ToolsJSON.h"
 #include "../Components/Component.h"
 #include "../GUI/Objects/FileSystemGUI.h"
+#include "../Misc/Logging.h"
 #include "../Render/Drawable.h"
 
 

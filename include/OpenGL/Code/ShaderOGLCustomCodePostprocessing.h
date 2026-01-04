@@ -6,15 +6,15 @@
 #define BRAKEZA3D_SHADEROPENGLCUSTOMPOSTPROCESSING_H
 
 
-#include "ShaderCustomOGLCode.h"
+#include "ShaderBaseCustomOGLCode.h"
 
-class ShaderOGLCustomCodePostprocessing : public ShaderCustomOGLCode {
+class ShaderOGLCustomCodePostprocessing : public ShaderBaseCustomOGLCode {
 public:
     ShaderOGLCustomCodePostprocessing(const std::string &label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile);
     ShaderOGLCustomCodePostprocessing(const std::string &label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile, cJSON *types);
     void LoadUniforms() override;
     void PrepareMainThread() override;
-    void render(GLuint fbo, GLuint texture) override;
+    void Render(GLuint fbo, GLuint texture) override;
     void Destroy() override;
 };
 
