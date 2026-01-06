@@ -17,25 +17,15 @@ public:
     Button(int x, int y, const std::string& imageFileName, void (*functionCallBack)());
 
     [[nodiscard]] int getX() const;
-
     [[nodiscard]] int getY() const;
-
     [[nodiscard]] bool isPressed() const;
-
     void setX(int x);
-
     void setY(int y);
-
     void setPressed(bool pressed);
-
     void draw(GLuint fbo);
-
     void onUpdate();
-
     bool isClicked();
-
     void setCallBack(void (*pFunction)());
-
     void drawSelectedEffect();
 };
 

@@ -2,7 +2,7 @@
 #define SUBTRACTNODE_H
 
 #include "NodeType.h"
-#include "../ShaderNodeEditor.h"
+#include "../ShaderNodeEditorManager.h"
 #include "../NodeEditorManager.h"
 
 class SubtractNode : public NodeType {
@@ -15,7 +15,7 @@ public:
         return ImVec4(0.6f, 0.4f, 0.5f, 1.0f);
     }
 
-    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddInputPin(node, "A", PinType::Vector);
         editor->AddInputPin(node, "B", PinType::Vector);
         editor->AddOutputPin(node, "Result", PinType::Vector);
@@ -25,7 +25,7 @@ public:
         std::shared_ptr<Node>& node,
         std::shared_ptr<Pin>& sourcePin,
         std::stringstream& code,
-        ShaderNodeEditor* editor) override
+        ShaderNodeEditorManager* editor) override
     {
         if (node->inputs.size() < 2) {
             return "";

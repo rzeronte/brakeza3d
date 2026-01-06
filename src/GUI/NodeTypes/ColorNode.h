@@ -2,7 +2,7 @@
 #define COLORNODE_H
 
 #include "NodeType.h"
-#include "../ShaderNodeEditor.h"
+#include "../ShaderNodeEditorManager.h"
 #include "../NodeEditorManager.h"
 
 class ColorNode : public NodeType {
@@ -19,18 +19,18 @@ public:
         node->userData = new ImVec4(1.0f, 0.5f, 0.2f, 1.0f);
     }
 
-    void OnDelete(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void OnDelete(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         if (node->userData) {
             delete (ImVec4*)node->userData;
             node->userData = nullptr;
         }
     }
 
-    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddOutputPin(node, "RGB", PinType::Vector);
     }
 
-    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         if (node->userData) {
             ImVec4* color = (ImVec4*)node->userData;
             std::string colorId = "##color" + std::to_string(node->id);
@@ -44,7 +44,7 @@ public:
         std::shared_ptr<Node>& node,
         std::shared_ptr<Pin>& sourcePin,
         std::stringstream& code,
-        ShaderNodeEditor* editor) override
+        ShaderNodeEditorManager* editor) override
     {
         std::string varName = "var" + std::to_string(node->id);
         ImVec4* color = (ImVec4*)node->userData;

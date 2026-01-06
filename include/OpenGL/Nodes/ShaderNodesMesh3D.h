@@ -1,29 +1,41 @@
-//
-// Created by Eduardo on 04/01/2026.
-//
-
-#ifndef BRAKEZA3D_SHADERNODESMESH3D_H
-#define BRAKEZA3D_SHADERNODESMESH3D_H
+#ifndef SHADERNODESMESH3D_H
+#define SHADERNODESMESH3D_H
 
 #include "ShaderBaseNodes.h"
+#include "../../../src/GUI/ShaderNodeEditorManager.h"
 #include "../../3D/Mesh3D.h"
 
-class ShaderNodesMesh3D : public ShaderBaseNodes
-{
-    Mesh3D* mesh;
+class ShaderNodesMesh3D : public ShaderBaseNodes {
+private:
+    ShaderNodeEditorManager* nodeManager;
+    Mesh3D* currentMesh;
+
 public:
-    ShaderNodesMesh3D(const std::string &label, const std::string &typesFile, ShaderCustomType type, NodeEditorManager *nodeManager, Mesh3D *mesh);
+    ShaderNodesMesh3D(
+        const std::string& label,
+        const std::string& typesFile,
+        ShaderCustomType type,
+        ShaderNodeEditorManager* nodeManager,
+        Mesh3D* mesh
+    );
 
     void LoadUniforms() override;
-
     void Destroy() override;
-
     void Reload() override;
 
-    void Render(GLuint fbo, GLuint texture) override;
+    // Renderizar mesh específico con sus texturas
+    void RenderMesh(
+        Mesh3D* mesh,
+        int materialIndex,
+        GLuint vertexbuffer,
+        GLuint uvbuffer,
+        GLuint normalbuffer,
+        int vertexCount,
+        GLuint fbo
+    );
+    ShaderNodeEditorManager* GetNodeManager()                   { return nodeManager; }
 
-    void DrawImGuiProperties(const Image *diffuse, Image *specular) override;
+    void DrawImGuiProperties(const Image* diffuse, Image* specular) override;
 };
 
-
-#endif //BRAKEZA3D_SHADERNODESMESH3D_H
+#endif // SHADERNODESMESH3D_H

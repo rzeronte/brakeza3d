@@ -217,7 +217,9 @@ void ComponentRender::LoadShaderIntoScene(const std::string &filePath)
 {
     auto metaInfo = ShadersGUI::ExtractShaderCustomCodeMetainfo(filePath);
 
-    if (ShaderBaseCustom::getShaderTypeFromString(metaInfo.type) == SHADER_POSTPROCESSING) {
+    if (ShaderBaseCustom::getShaderTypeFromString(metaInfo.type) == SHADER_POSTPROCESSING ||
+        ShaderBaseCustom::getShaderTypeFromString(metaInfo.type) == SHADER_NODE_POSTPROCESSING
+    ) {
         auto shader = CreateCustomShaderFromDisk(metaInfo, nullptr);
 
         if (shader != nullptr) {
@@ -244,7 +246,7 @@ ShaderBaseCustom* ComponentRender::CreateCustomShaderFromDisk(const ShaderBaseCu
     }
 
     if (ShaderBaseCustom::getShaderTypeFromString(info.type) == SHADER_NODE_OBJECT) {
-        auto manager = new ShaderNodeEditor(SHADER_NODE_OBJECT);
+        auto manager = new ShaderNodeEditorManager(SHADER_NODE_OBJECT);
         manager->LoadFromFile(info.typesFile.c_str());
 
         auto s = new ShaderNodesMesh3D(info.name, info.typesFile, SHADER_NODE_OBJECT, manager, mesh);
@@ -253,7 +255,7 @@ ShaderBaseCustom* ComponentRender::CreateCustomShaderFromDisk(const ShaderBaseCu
     }
 
     if (ShaderBaseCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_NODE_POSTPROCESSING) {
-        auto manager = new ShaderNodeEditor(SHADER_NODE_POSTPROCESSING);
+        auto manager = new ShaderNodeEditorManager(SHADER_NODE_POSTPROCESSING);
         manager->LoadFromFile(info.typesFile.c_str());
         auto s = new ShaderNodesPostProcessing(info.name, info.typesFile, SHADER_NODE_POSTPROCESSING, manager);
         s->PrepareSync();
@@ -272,13 +274,19 @@ void ComponentRender::PostProcessingShadersChain()
 {
     Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "PostProcessingShadersChain");
 
-    Components::get()->Window()->getPostProcessingManager()->processChain(
-        Components::get()->Window()->getSceneTexture(),
-        Components::get()->Window()->getGlobalFramebuffer()
+    auto window = Components::get()->Window();
+
+    window->getPostProcessingManager()->SetSceneTextures(
+        window->getSceneTexture(),
+        window->getGBuffer().depth
+    );
+
+    window->getPostProcessingManager()->processChain(
+        window->getSceneTexture(),
+        window->getGlobalFramebuffer()
     );
 
     Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "PostProcessingShadersChain");
-
 }
 
 void ComponentRender::RemoveSceneShaderByIndex(int index) {

@@ -2,7 +2,7 @@
 #define COSNODE_H
 
 #include "NodeType.h"
-#include "../ShaderNodeEditor.h"
+#include "../ShaderNodeEditorManager.h"
 #include "../NodeEditorManager.h"
 
 class CosNode : public NodeType {
@@ -15,7 +15,7 @@ public:
         return ImVec4(0.3f, 0.8f, 0.7f, 1.0f);
     }
 
-    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddInputPin(node, "Input", PinType::Float);
         editor->AddOutputPin(node, "Output", PinType::Float);
     }
@@ -24,7 +24,7 @@ public:
         std::shared_ptr<Node>& node,
         std::shared_ptr<Pin>& sourcePin,
         std::stringstream& code,
-        ShaderNodeEditor* editor) override
+        ShaderNodeEditorManager* editor) override
     {
         std::string varName = "var" + std::to_string(node->id);
 

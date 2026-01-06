@@ -14,6 +14,7 @@
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/Mesh3DGUI.h"
 #include "../../include/GUI/Objects/ShadersGUI.h"
+#include "../../include/OpenGL/Nodes/ShaderNodesMesh3D.h"
 #include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Threads/ThreadJobMakeRigidBody.h"
 
@@ -265,8 +266,41 @@ void Mesh3D::postUpdate()
 void Mesh3D::RunObjectShaders() const
 {
     auto window = Components::get()->Window();
-    for (const auto &s: customShaders) {
-        s->Render(window->getGBuffer().FBO, window->getGBuffer().albedo);
+    auto camera = Components::get()->Camera();
+
+    for (const auto& s: customShaders) {
+        // Si es un shader de nodos para mesh
+        if (auto* nodesShader = dynamic_cast<ShaderNodesMesh3D*>(s)) {
+            auto nodeManager = nodesShader->GetNodeManager(); // Necesitas añadir este getter
+
+            // Renderizar cada parte del mesh
+            for (size_t i = 0; i < meshes.size(); i++) {
+                const auto& m = meshes[i];
+
+                // Actualizar texturas del material
+                nodeManager->UpdateMeshTextures(
+                    modelTextures[m.materialIndex]->getOGLTextureID(),
+                    modelTextures[m.materialIndex]->getOGLTextureID()
+                );
+
+                nodeManager->Update();
+
+                // Renderizar este submesh
+                nodeManager->RenderMesh(
+                    window->getGBuffer().FBO,
+                    m.vertexBuffer,
+                    m.uvBuffer,
+                    m.normalBuffer,
+                    m.vertices.size(),
+                    getModelMatrix(),
+                    camera->getGLMMat4ViewMatrix(),
+                    camera->getGLMMat4ProjectionMatrix()
+                );
+            }
+        } else {
+            // Shaders normales (no de nodos)
+            s->Render(window->getGBuffer().FBO, window->getGBuffer().albedo);
+        }
     }
 }
 
@@ -513,7 +547,9 @@ void Mesh3D::LoadShader(const std::string &jsonFilename)
 {
     auto metaInfo = ShadersGUI::ExtractShaderCustomCodeMetainfo(jsonFilename);
 
-    if (ShaderBaseCustom::getShaderTypeFromString(metaInfo.type) == SHADER_OBJECT) {
+    if (ShaderBaseCustom::getShaderTypeFromString(metaInfo.type) == SHADER_OBJECT ||
+    ShaderBaseCustom::getShaderTypeFromString(metaInfo.type) == SHADER_NODE_OBJECT
+    ) {
         auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, this);
 
         if (shader != nullptr) {

@@ -2,7 +2,7 @@
 #define IMAGENODE_H
 
 #include "NodeType.h"
-#include "../ShaderNodeEditor.h"
+#include "../ShaderNodeEditorManager.h"
 #include "../NodeEditorManager.h"
 #include <cmath>
 
@@ -20,7 +20,7 @@ public:
         node->userData = new std::string("");
     }
 
-    void OnDelete(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void OnDelete(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         if (node->userData) {
             delete (std::string*)node->userData;
             node->userData = nullptr;
@@ -28,13 +28,13 @@ public:
         editor->DeleteImageForNode(node->id);
     }
 
-    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddInputPin(node, "UV", PinType::Vector);
         editor->AddOutputPin(node, "Color", PinType::Vector);
         editor->AddOutputPin(node, "Alpha", PinType::Float);
     }
 
-    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         std::string* filepath = (std::string*)node->userData;
         if (!filepath) return;
 
@@ -145,7 +145,7 @@ public:
         std::shared_ptr<Node>& node,
         std::shared_ptr<Pin>& sourcePin,
         std::stringstream& code,
-        ShaderNodeEditor* editor) override
+        ShaderNodeEditorManager* editor) override
     {
         std::string varName = "var" + std::to_string(node->id);
         auto& textures = editor->GetNodeTextures();

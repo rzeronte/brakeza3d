@@ -319,9 +319,9 @@ add_executable(Brakeza3D
         include/GUI/imgui-node-editor-master/crude_json.cpp
         include/GUI/imgui-node-editor-master/imgui_node_editor_api.cpp
         src/GUI/NodeEditorManager.h
-        src/GUI/ShaderNodeEditor.h
+        src/GUI/ShaderNodeEditorManager.cpp
         src/GUI/NodeEditorManager.cpp
-        src/GUI/ShaderNodeEditor.cpp
+        src/GUI/ShaderNodeEditorManager.h
         src/GUI/NodeTypes/ColorNode.h
         src/GUI/NodeTypes/ImageNode.h
         src/GUI/NodeTypes/TimeNode.h
@@ -348,14 +348,16 @@ add_executable(Brakeza3D
         include/GUI/Editable/EditableOpenFileGUI.h
         src/GUI/Editable/EditableOpenFile.cpp
         src/GUI/Editable/EditableOpenBaseResource.cpp
-        include/OpenGL/Nodes/ShaderBaseNodes.cpp
+        src/OpenGL/Nodes/ShaderBaseNodes.cpp
         include/OpenGL/Nodes/ShaderBaseNodes.h
-        include/OpenGL/Nodes/ShaderNodesMesh3D.cpp
+        src/OpenGL/Nodes/ShaderNodesMesh3D.cpp
         include/OpenGL/Nodes/ShaderNodesMesh3D.h
-        include/OpenGL/Nodes/ShaderNodesPostProcessing.cpp
+        src/OpenGL/Nodes/ShaderNodesPostProcessing.cpp
         include/OpenGL/Nodes/ShaderNodesPostProcessing.h
         src/GUI/Editable/EditableOpenNode.cpp
         include/GUI/Editable/EditableOpenNode.h
+        src/GUI/NodeTypes/InternalTextureNode.h
+        src/GUI/NodeTypes/MeshTextureNode.h
 )
 
 target_link_libraries(Brakeza3D

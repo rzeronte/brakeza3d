@@ -2,7 +2,7 @@
 #define MIXNODE_H
 
 #include "NodeType.h"
-#include "../ShaderNodeEditor.h"
+#include "../ShaderNodeEditorManager.h"
 #include "../NodeEditorManager.h"
 
 class MixNode : public NodeType {
@@ -19,21 +19,21 @@ public:
         node->userData = new float(0.5f);
     }
 
-    void OnDelete(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void OnDelete(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         if (node->userData) {
             delete (float*)node->userData;
             node->userData = nullptr;
         }
     }
 
-    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddInputPin(node, "A", PinType::Vector);
         editor->AddInputPin(node, "B", PinType::Vector);
         editor->AddInputPin(node, "Factor", PinType::Float);
         editor->AddOutputPin(node, "Result", PinType::Vector);
     }
 
-    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         if (node->userData) {
             float* factor = (float*)node->userData;
             if (ImGui::SliderFloat("Factor", factor, 0.0f, 1.0f)) {
@@ -46,7 +46,7 @@ public:
         std::shared_ptr<Node>& node,
         std::shared_ptr<Pin>& sourcePin,
         std::stringstream& code,
-        ShaderNodeEditor* editor) override
+        ShaderNodeEditorManager* editor) override
     {
         if (node->inputs.size() < 3) {
             return "";

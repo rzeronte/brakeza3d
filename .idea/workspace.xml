@@ -37,51 +37,45 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="refact(shaders): Create ShaderBaseCustom">
-      <change afterPath="$PROJECT_DIR$/include/GUI/Editable/EditableOpenBaseResource.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/GUI/Editable/EditableOpenFileGUI.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderBaseNodes.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderBaseNodes.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesMesh3D.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesMesh3D.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenBaseResource.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenFile.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenFileGUI.cpp" afterDir="false" />
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(shaders): Integration node shader edition">
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/InternalTextureNode.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/MeshTextureNode.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/ImGuiCoding.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiCoding.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/3D/Mesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/Mesh3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentRender.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentRender.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/ScriptLuaGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/ScriptLuaGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/ShadersGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/ShadersGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/TextEditor/EditableOpenFile.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Editable/EditableOpenFile.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/TextEditor/EditableOpenScriptFile.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Editable/EditableOpenScriptFile.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/TextEditor/EditableOpenShaderFile.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Editable/EditableOpenShaderFile.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/LUA/BrakezaLuaBridge.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/LUA/BrakezaLuaBridge.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Loaders/SceneChecker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/SceneChecker.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/Base/ShaderBaseCustom.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Base/ShaderBaseCustom.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/Base/SharedOpenGLStructs.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Base/SharedOpenGLStructs.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/Code/ShaderCustomOGLCode.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Code/ShaderBaseCustomOGLCode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/Button.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Button.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderBaseNodes.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Nodes/ShaderBaseNodes.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesMesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Nodes/ShaderNodesMesh3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesMesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesMesh3D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesPostProcessing.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Nodes/ShaderNodesPostProcessing.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesPostProcessing.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesPostProcessing.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Image.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Image.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/Render/PostProcessingManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/PostProcessingManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/PostProcessingManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/PostProcessingManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/3D/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Mesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/3D/Mesh3DAnimation.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Mesh3DAnimation.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/AddNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/AddNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/ColorNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/ColorNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/CosNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/CosNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/GradientNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/GradientNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/ImageNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/ImageNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/MixNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/MixNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/MultiplyNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/MultiplyNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/NodeType.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/NodeType.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/OutputNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/OutputNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/SinNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SinNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/SmoothstepNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SmoothstepNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/SubtractNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SubtractNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/TimeNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/TimeNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/UVCoordsNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVCoordsNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/UVOffsetNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVOffsetNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/UVRotateNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVRotateNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/UVScaleNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVScaleNode.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/TextEditor/EditableOpenScriptFile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenScriptFile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/TextEditor/EditableOpenShaderFile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenShaderFile.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/Base/ShaderBaseCustom.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Base/ShaderBaseCustom.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/Code/ShaderCustomOGLCode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Code/ShaderBaseCustomOGLCode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/Code/ShaderOGLCustomCodeMesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Code/ShaderOGLCustomCodeMesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/Code/ShaderOGLCustomCodePostprocessing.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Code/ShaderOGLCustomCodePostprocessing.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Serializers/Mesh3DSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/Mesh3DSerializer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditorManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditorManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Image.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Image.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,10 +175,69 @@
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Components/ComponentWindow.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/ShaderNodeEditor.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/ShaderNodeEditor.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="EqPVdzzu" />
@@ -250,11 +303,11 @@
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\config" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\OpenGL\Nodes" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\OpenGL\Nodes" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\GUI\Editable" />
+      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\OpenGL\Nodes" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\OpenGL\Quad" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\OpenGL\Quad" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\OpenGL\Code" />
     </key>
   </component>
   <component name="RunManager">
@@ -567,7 +620,9 @@
       <workItem from="1767057113571" duration="8167000" />
       <workItem from="1767119992981" duration="10563000" />
       <workItem from="1767206411855" duration="40536000" />
-      <workItem from="1767434040103" duration="47213000" />
+      <workItem from="1767434040103" duration="66575000" />
+      <workItem from="1767571211528" duration="19199000" />
+      <workItem from="1767701859878" duration="19353000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -617,22 +672,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00108" summary="feat(gui): ui fine tuning">
-      <option name="closed" value="true" />
-      <created>1765233981315</created>
-      <option name="number" value="00108" />
-      <option name="presentableId" value="LOCAL-00108" />
-      <option name="project" value="LOCAL" />
-      <updated>1765233981315</updated>
-    </task>
-    <task id="LOCAL-00109" summary="feat(gui): ui fine tuning">
-      <option name="closed" value="true" />
-      <created>1765246498289</created>
-      <option name="number" value="00109" />
-      <option name="presentableId" value="LOCAL-00109" />
-      <option name="project" value="LOCAL" />
-      <updated>1765246498289</updated>
     </task>
     <task id="LOCAL-00110" summary="feat(threads): wip threads queue">
       <option name="closed" value="true" />
@@ -914,7 +953,7 @@
       <option name="project" value="LOCAL" />
       <updated>1767316420971</updated>
     </task>
-    <task id="LOCAL-00145" summary="feat(nodeeditor): refact ShaderNodeEditor operations. Explode in independent files.">
+    <task id="LOCAL-00145" summary="feat(nodeeditor): refact ShaderNodeEditorManager operations. Explode in independent files.">
       <option name="closed" value="true" />
       <created>1767429280282</created>
       <option name="number" value="00145" />
@@ -954,7 +993,23 @@
       <option name="project" value="LOCAL" />
       <updated>1767480444513</updated>
     </task>
-    <option name="localTasksCounter" value="150" />
+    <task id="LOCAL-00150" summary="refact(shaders): Create ShaderBaseCustom">
+      <option name="closed" value="true" />
+      <created>1767504131167</created>
+      <option name="number" value="00150" />
+      <option name="presentableId" value="LOCAL-00150" />
+      <option name="project" value="LOCAL" />
+      <updated>1767504131168</updated>
+    </task>
+    <task id="LOCAL-00151" summary="feat(shaders): Integration node shader edition">
+      <option name="closed" value="true" />
+      <created>1767664851433</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1767664851434</updated>
+    </task>
+    <option name="localTasksCounter" value="152" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -988,7 +1043,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(gui): order menu items in his right category" />
     <MESSAGE value="feat(gui): added configurable loggint to std" />
     <MESSAGE value="feat(serializers): reusing code" />
     <MESSAGE value="feat(profiler): Added profiler" />
@@ -1011,9 +1065,10 @@
     <MESSAGE value="feat(lua): Transparency  / GLSL Render commons" />
     <MESSAGE value="fix(picking): Fix outliner on multimesh objects" />
     <MESSAGE value="feat(shaders): added node editor for integration with shaders" />
-    <MESSAGE value="feat(nodeeditor): refact ShaderNodeEditor operations. Explode in independent files." />
+    <MESSAGE value="feat(nodeeditor): refact ShaderNodeEditorManager operations. Explode in independent files." />
     <MESSAGE value="refact(shaders): Create ShaderBaseCustom" />
-    <option name="LAST_COMMIT_MESSAGE" value="refact(shaders): Create ShaderBaseCustom" />
+    <MESSAGE value="feat(shaders): Integration node shader edition" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(shaders): Integration node shader edition" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1110,6 +1165,136 @@
           <url>file://$PROJECT_DIR$/include/GUI/GUI.h</url>
           <line>114</line>
           <option name="timeStamp" value="115" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>430</line>
+          <option name="timeStamp" value="124" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>435</line>
+          <option name="timeStamp" value="125" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>427</line>
+          <option name="timeStamp" value="126" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>428</line>
+          <option name="timeStamp" value="127" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>420</line>
+          <option name="timeStamp" value="128" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>436</line>
+          <option name="timeStamp" value="130" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Components/ComponentRender.cpp</url>
+          <line>235</line>
+          <option name="timeStamp" value="135" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Components/ComponentRender.cpp</url>
+          <line>241</line>
+          <option name="timeStamp" value="136" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Components/ComponentRender.cpp</url>
+          <line>257</line>
+          <option name="timeStamp" value="139" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>685</line>
+          <option name="timeStamp" value="142" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>692</line>
+          <option name="timeStamp" value="143" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>694</line>
+          <option name="timeStamp" value="144" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>508</line>
+          <option name="timeStamp" value="145" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>687</line>
+          <option name="timeStamp" value="146" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>514</line>
+          <option name="timeStamp" value="156" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>509</line>
+          <option name="timeStamp" value="157" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>510</line>
+          <option name="timeStamp" value="158" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>519</line>
+          <option name="timeStamp" value="159" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>681</line>
+          <option name="timeStamp" value="160" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/OpenGL/Nodes/ShaderBaseNodes.cpp</url>
+          <line>38</line>
+          <option name="timeStamp" value="161" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>422</line>
+          <option name="timeStamp" value="162" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
+          <line>423</line>
+          <option name="timeStamp" value="163" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/OpenGL/Nodes/ShaderBaseNodes.cpp</url>
+          <line>37</line>
+          <option name="timeStamp" value="164" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Components/ComponentRender.cpp</url>
+          <line>248</line>
+          <option name="timeStamp" value="165" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Components/ComponentRender.cpp</url>
+          <line>258</line>
+          <option name="timeStamp" value="166" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/Components/ComponentRender.cpp</url>
+          <line>251</line>
+          <option name="timeStamp" value="167" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
