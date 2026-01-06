@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "../../src/GUI/ShaderNodeEditor.h"
+#include "../../src/GUI/ShaderNodeEditorManager.h"
 #include "../Loaders/SceneChecker.h"
 #include "../Misc/TextureAtlas.h"
 #include "../Misc/TexturePackage.h"

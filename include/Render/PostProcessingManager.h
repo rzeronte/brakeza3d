@@ -24,6 +24,9 @@ private:
     int currentWidth;
     int currentHeight;
 
+    GLuint sceneDepthTexture = 0;
+    GLuint sceneColorTexture = 0;
+
     void createFramebuffer(GLuint& fbo, GLuint& texture, int width, int height);
     void deleteFramebuffer(GLuint& fbo, GLuint& texture);
 
@@ -44,6 +47,9 @@ public:
 
     int getShaderCount() const { return postProcessingShaders.size(); }
     ShaderBaseCustom* getShader(int index) const;
+    void SetSceneTextures(GLuint colorTexture, GLuint depthTexture);
+    GLuint GetSceneDepthTexture() const { return sceneDepthTexture; }
+    GLuint GetSceneColorTexture() const { return sceneColorTexture; }
 };
 
 #endif //BRAKEZA3D_POSTPROCESSINGMANAGER_H

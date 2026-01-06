@@ -2,7 +2,7 @@
 #define UVROTATENODE_H
 
 #include "NodeType.h"
-#include "../ShaderNodeEditor.h"
+#include "../ShaderNodeEditorManager.h"
 #include "../NodeEditorManager.h"
 
 class UVRotateNode : public NodeType {
@@ -15,7 +15,7 @@ public:
         return ImVec4(0.6f, 0.7f, 0.5f, 1.0f);
     }
 
-    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddInputPin(node, "UV", PinType::Vector);
         editor->AddInputPin(node, "Angle", PinType::Float);
         editor->AddOutputPin(node, "UV", PinType::Vector);
@@ -25,7 +25,7 @@ public:
         std::shared_ptr<Node>& node,
         std::shared_ptr<Pin>& sourcePin,
         std::stringstream& code,
-        ShaderNodeEditor* editor) override
+        ShaderNodeEditorManager* editor) override
     {
         std::string varName = "var" + std::to_string(node->id);
 

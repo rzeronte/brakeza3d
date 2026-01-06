@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "../Components/Components.h"
+#include "../OpenGL/Nodes/ShaderNodesPostProcessing.h"
 
 PostProcessingManager::PostProcessingManager()
     :
@@ -125,6 +126,11 @@ void PostProcessingManager::processChain(GLuint inputTexture, GLuint outputFBO)
             continue;
         }
 
+        // Si es un shader de nodos, actualizar texturas internas
+        if (auto* nodesShader = dynamic_cast<ShaderNodesPostProcessing*>(currentShader)) {
+            nodesShader->UpdateInternalTextures(sceneColorTexture, sceneDepthTexture);
+        }
+
         // Determinar FBO y textura de salida
         GLuint currentOutputFBO;
         GLuint currentOutputTexture;
@@ -154,4 +160,10 @@ void PostProcessingManager::processChain(GLuint inputTexture, GLuint outputFBO)
         // Alternar ping-pong
         writeToPing = !writeToPing;
     }
+}
+
+void PostProcessingManager::SetSceneTextures(GLuint colorTexture, GLuint depthTexture)
+{
+    sceneColorTexture = colorTexture;
+    sceneDepthTexture = depthTexture;
 }

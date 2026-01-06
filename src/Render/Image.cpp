@@ -27,6 +27,21 @@ Image::Image(SDL_Surface *surface, SDL_Texture *texture)
     Profiler::get()->AddImage(this);
 }
 
+Image::Image(GLuint externalTextureId, int width, int height)
+    : loaded(true)
+    , alpha(1.0f)
+    , textureId(externalTextureId)
+    , fileName("[External Texture]")
+{
+    // Crear una superficie SDL vacía solo para almacenar dimensiones
+    // (necesaria porque otros métodos usan surface->w y surface->h)
+    surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+
+    if (!surface) {
+        LOG_MESSAGE("Warning: Could not create dummy SDL_Surface for external texture");
+    }
+}
+
 void Image::CreateSDLTexture()
 {
     texture = SDL_CreateTextureFromSurface(Components::get()->Window()->getRenderer(), surface);
@@ -153,17 +168,6 @@ float Image::getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vert
     return area;
 }
 
-Image::~Image()
-{
-    Profiler::get()->RemoveImage(this);
-
-    if (loaded) {
-        SDL_FreeSurface(surface);
-        SDL_DestroyTexture(texture);
-        glDeleteTextures(1, &textureId);
-    }
-}
-
 Color Image::getPixelColor(const int x, const int y) const
 {
     auto pixels = static_cast<uint32_t *>(this->pixels());
@@ -220,4 +224,15 @@ void Image::setAlreadyLoaded()
 void Image::setFilePath(std::string &path)
 {
     fileName = path;
+}
+
+Image::~Image()
+{
+    Profiler::get()->RemoveImage(this);
+
+    if (loaded) {
+        SDL_FreeSurface(surface);
+        SDL_DestroyTexture(texture);
+        glDeleteTextures(1, &textureId);
+    }
 }

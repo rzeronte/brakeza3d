@@ -2,7 +2,7 @@
 #define SMOOTHSTEPNODE_H
 
 #include "NodeType.h"
-#include "../ShaderNodeEditor.h"
+#include "../ShaderNodeEditorManager.h"
 #include "../NodeEditorManager.h"
 
 class SmoothstepNode : public NodeType {
@@ -20,19 +20,19 @@ public:
         node->userData = new ImVec2(0.0f, 1.0f);
     }
 
-    void OnDelete(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void OnDelete(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         if (node->userData) {
             delete (ImVec2*)node->userData;
             node->userData = nullptr;
         }
     }
 
-    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddInputPin(node, "Value", PinType::Float);
         editor->AddOutputPin(node, "Output", PinType::Float);
     }
 
-    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditor* editor) override {
+    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         if (node->userData) {
             ImVec2* edges = (ImVec2*)node->userData;
             if (ImGui::DragFloat("Edge 0", &edges->x, 0.01f, 0.0f, 1.0f)) {
@@ -48,7 +48,7 @@ public:
         std::shared_ptr<Node>& node,
         std::shared_ptr<Pin>& sourcePin,
         std::stringstream& code,
-        ShaderNodeEditor* editor) override
+        ShaderNodeEditorManager* editor) override
     {
         std::string varName = "var" + std::to_string(node->id);
 

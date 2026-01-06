@@ -1,4 +1,4 @@
-#include "ShaderNodeEditor.h"
+#include "ShaderNodeEditorManager.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Render/Image.h"
 
@@ -22,7 +22,10 @@
 
 #include <cmath>
 
-ShaderNodeEditor::ShaderNodeEditor(ShaderCustomType type)
+#include "NodeTypes/InternalTextureNode.h"
+#include "NodeTypes/MeshTextureNode.h"
+
+ShaderNodeEditorManager::ShaderNodeEditorManager(ShaderCustomType type)
     : NodeEditorManager(type, nullptr)
     , m_ShaderProgram(0)
     , m_VAO(0)
@@ -30,20 +33,20 @@ ShaderNodeEditor::ShaderNodeEditor(ShaderCustomType type)
     , m_NeedsRecompile(true)
     , m_FirstFrame(true)
 {
-    LOG_MESSAGE("[ShaderNodeEditor] Initializing...");
+    LOG_MESSAGE("[ShaderNodeEditorManager] Initializing...");
 
     RegisterNodeTypes();
 
     SetupQuad();
     CreateDefaultNodes();
 
-    LOG_MESSAGE("[ShaderNodeEditor] Compiling initial shader...");
+    LOG_MESSAGE("[ShaderNodeEditorManager] Compiling initial shader...");
     CompileShader();
     m_NeedsRecompile = false;
-    LOG_MESSAGE("[ShaderNodeEditor] Initialization complete.");
+    LOG_MESSAGE("[ShaderNodeEditorManager] Initialization complete.");
 }
 
-ShaderNodeEditor::~ShaderNodeEditor()
+ShaderNodeEditorManager::~ShaderNodeEditorManager()
 {
     for (auto& pair : m_NodeTextures) {
         if (pair.second.image) {
@@ -64,7 +67,7 @@ ShaderNodeEditor::~ShaderNodeEditor()
     if (m_VBO) glDeleteBuffers(1, &m_VBO);
 }
 
-void ShaderNodeEditor::RegisterNodeTypes()
+void ShaderNodeEditorManager::RegisterNodeTypes()
 {
     // Registrar todos los tipos de nodo
     RegisterNodeType(new UVCoordsNode());
@@ -82,10 +85,12 @@ void ShaderNodeEditor::RegisterNodeTypes()
     RegisterNodeType(new UVOffsetNode());
     RegisterNodeType(new UVScaleNode());
     RegisterNodeType(new UVRotateNode());
+    RegisterNodeType(new InternalTextureNode());
+    RegisterNodeType(new MeshTextureNode());
     RegisterNodeType(new OutputNode());
 }
 
-void ShaderNodeEditor::RegisterNodeType(NodeType* nodeType)
+void ShaderNodeEditorManager::RegisterNodeType(NodeType* nodeType)
 {
     m_NodeTypes[nodeType->GetTypeName()] = nodeType;
 
@@ -99,14 +104,14 @@ void ShaderNodeEditor::RegisterNodeType(NodeType* nodeType)
 
     m_NodeRegistry[nodeType->GetTypeName()] = def;
 
-    LOG_MESSAGE("[ShaderNodeEditor] Registered node type: %s", nodeType->GetTypeName().c_str());
+    LOG_MESSAGE("[ShaderNodeEditorManager] Registered node type: %s", nodeType->GetTypeName().c_str());
 }
 
-std::shared_ptr<Node> ShaderNodeEditor::CreateNodeOfType(const std::string& typeName)
+std::shared_ptr<Node> ShaderNodeEditorManager::CreateNodeOfType(const std::string& typeName)
 {
     auto it = m_NodeTypes.find(typeName);
     if (it == m_NodeTypes.end()) {
-        LOG_MESSAGE("[ShaderNodeEditor] Unknown node type: %s", typeName.c_str());
+        LOG_MESSAGE("[ShaderNodeEditorManager] Unknown node type: %s", typeName.c_str());
         return nullptr;
     }
 
@@ -123,7 +128,7 @@ std::shared_ptr<Node> ShaderNodeEditor::CreateNodeOfType(const std::string& type
     return node;
 }
 
-void ShaderNodeEditor::SetupQuad()
+void ShaderNodeEditorManager::SetupQuad()
 {
     float vertices[] = {
         -1.0f, -1.0f,  0.0f, 0.0f,
@@ -147,9 +152,9 @@ void ShaderNodeEditor::SetupQuad()
     glBindVertexArray(0);
 }
 
-void ShaderNodeEditor::CreateDefaultNodes()
+void ShaderNodeEditorManager::CreateDefaultNodes()
 {
-    LOG_MESSAGE("[ShaderNodeEditor] Creating default nodes...");
+    LOG_MESSAGE("[ShaderNodeEditorManager] Creating default nodes...");
 
     auto colorNode = CreateNodeOfType("Color");
     auto outputNode = CreateNodeOfType("Output");
@@ -161,10 +166,10 @@ void ShaderNodeEditor::CreateDefaultNodes()
         }
     }
 
-    LOG_MESSAGE("[ShaderNodeEditor] Default nodes created.");
+    LOG_MESSAGE("[ShaderNodeEditorManager] Default nodes created.");
 }
 
-void ShaderNodeEditor::SetInitialNodePositions()
+void ShaderNodeEditorManager::SetInitialNodePositions()
 {
     for (auto& node : GetNodes()) {
         if (node->name == "Color") {
@@ -176,7 +181,7 @@ void ShaderNodeEditor::SetInitialNodePositions()
     }
 }
 
-void ShaderNodeEditor::Render()
+void ShaderNodeEditorManager::Render()
 {
     ed::SetCurrentEditor(m_Context);
     ed::Begin("Node Editor", ImVec2(0, 0));
@@ -202,7 +207,7 @@ void ShaderNodeEditor::Render()
     ed::SetCurrentEditor(nullptr);
 }
 
-void ShaderNodeEditor::RenderNode(std::shared_ptr<Node>& node)
+void ShaderNodeEditorManager::RenderNode(std::shared_ptr<Node>& node)
 {
     ed::PushStyleColor(ed::StyleColor_NodeBg, node->color);
     ed::BeginNode(node->id);
@@ -248,7 +253,7 @@ void ShaderNodeEditor::RenderNode(std::shared_ptr<Node>& node)
     ed::PopStyleColor();
 }
 
-void ShaderNodeEditor::HandleLinkCreation()
+void ShaderNodeEditorManager::HandleLinkCreation()
 {
     if (ed::BeginCreate()) {
         ed::PinId startPinId, endPinId;
@@ -269,7 +274,7 @@ void ShaderNodeEditor::HandleLinkCreation()
     ed::EndCreate();
 }
 
-void ShaderNodeEditor::HandleDeletion()
+void ShaderNodeEditorManager::HandleDeletion()
 {
     if (ed::BeginDelete()) {
         ed::LinkId deletedLinkId;
@@ -300,7 +305,7 @@ void ShaderNodeEditor::HandleDeletion()
     ed::EndDelete();
 }
 
-void ShaderNodeEditor::OnCreateNodeMenu()
+void ShaderNodeEditorManager::OnCreateNodeMenu()
 {
     ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "GENERATORS");
     ImGui::Separator();
@@ -309,6 +314,11 @@ void ShaderNodeEditor::OnCreateNodeMenu()
     if (ImGui::MenuItem("Color")) CreateNodeOfType("Color");
     if (ImGui::MenuItem("Time")) CreateNodeOfType("Time");
     if (ImGui::MenuItem("Image Texture")) CreateNodeOfType("Image");
+    if (getType() == SHADER_NODE_OBJECT) {
+        if (ImGui::MenuItem("Mesh Texture")) CreateNodeOfType("Mesh Texture");
+    } else if (getType() == SHADER_NODE_POSTPROCESSING) {
+        if (ImGui::MenuItem("InternalTexture")) CreateNodeOfType("InternalTexture");
+    }
 
     ImGui::Spacing();
     ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "MATH");
@@ -337,7 +347,7 @@ void ShaderNodeEditor::OnCreateNodeMenu()
     if (ImGui::MenuItem("Gradient")) CreateNodeOfType("Gradient");
 }
 
-void ShaderNodeEditor::Update()
+void ShaderNodeEditorManager::Update()
 {
     if (m_NeedsRecompile) {
         CompileShader();
@@ -345,12 +355,12 @@ void ShaderNodeEditor::Update()
     }
 }
 
-void ShaderNodeEditor::RenderEffect()
+void ShaderNodeEditorManager::RenderEffect(GLuint fb)
 {
     if (!m_ShaderProgram) return;
 
-    Components::get()->Render()->ChangeOpenGLFramebuffer(Components::get()->Window()->getSceneFramebuffer());
-    glUseProgram(m_ShaderProgram);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fb);
+    Components::get()->Render()->ChangeOpenGLProgram(m_ShaderProgram);
 
     float time = (float)ImGui::GetTime();
     GLint timeLoc = glGetUniformLocation(m_ShaderProgram, "u_Time");
@@ -358,7 +368,10 @@ void ShaderNodeEditor::RenderEffect()
 
     int textureUnit = 0;
     for (auto& node : GetNodes()) {
-        if (node->name == "Image" && m_NodeTextures.find(node->id) != m_NodeTextures.end()) {
+        if ((node->name == "Image" ||
+             node->name == "InternalTexture" ||
+             node->name == "MeshTexture") &&
+            m_NodeTextures.find(node->id) != m_NodeTextures.end()) {
             auto& tex = m_NodeTextures[node->id];
             if (tex.image) {
                 glActiveTexture(GL_TEXTURE0 + textureUnit);
@@ -372,7 +385,7 @@ void ShaderNodeEditor::RenderEffect()
 
                 textureUnit++;
             }
-        }
+            }
     }
 
     glBindVertexArray(m_VAO);
@@ -387,17 +400,17 @@ void ShaderNodeEditor::RenderEffect()
     glUseProgram(0);
 }
 
-GLuint ShaderNodeEditor::GetShaderProgram() const
+GLuint ShaderNodeEditorManager::GetShaderProgram() const
 {
     return m_ShaderProgram;
 }
 
-const std::string& ShaderNodeEditor::GetLastShaderCode() const
+const std::string& ShaderNodeEditorManager::GetLastShaderCode() const
 {
     return m_LastShaderCode;
 }
 
-void ShaderNodeEditor::LoadImageForNode(int nodeId, const std::string& filepath)
+void ShaderNodeEditorManager::LoadImageForNode(int nodeId, const std::string& filepath)
 {
     DeleteImageForNode(nodeId);
 
@@ -414,7 +427,7 @@ void ShaderNodeEditor::LoadImageForNode(int nodeId, const std::string& filepath)
     }
 }
 
-void ShaderNodeEditor::DeleteImageForNode(int nodeId)
+void ShaderNodeEditorManager::DeleteImageForNode(int nodeId)
 {
     auto it = m_NodeTextures.find(nodeId);
     if (it != m_NodeTextures.end()) {
@@ -427,27 +440,40 @@ void ShaderNodeEditor::DeleteImageForNode(int nodeId)
     }
 }
 
-std::string ShaderNodeEditor::GenerateShaderCode()
+std::string ShaderNodeEditorManager::GenerateShaderCode()
 {
     m_NodeOutputs.clear();
 
     std::stringstream code;
     code << "#version 330 core\n";
-    code << "in vec2 v_TexCoord;\n";
+
+    if (getType() == SHADER_NODE_POSTPROCESSING) {
+        code << "in vec2 v_TexCoord;\n";
+    } else if (getType() == SHADER_NODE_OBJECT) {
+        code << "in vec3 v_FragPos;\n";
+        code << "in vec3 v_Normal;\n";
+        code << "in vec2 v_TexCoord;\n";
+    }
+
     code << "out vec4 FragColor;\n";
     code << "uniform float u_Time;\n";
 
+    // Declarar uniforms de texturas
     for (auto& node : GetNodes()) {
-        if (node->name == "Image" && m_NodeTextures.find(node->id) != m_NodeTextures.end()) {
+        if ((node->name == "Image" ||
+             node->name == "InternalTexture" ||
+             node->name == "Mesh Texture") &&
+            m_NodeTextures.find(node->id) != m_NodeTextures.end()) {
             auto& tex = m_NodeTextures[node->id];
             if (tex.image) {
                 code << "uniform sampler2D u_Texture" << node->id << ";\n";
             }
-        }
+            }
     }
 
     code << "\n";
 
+    // Buscar nodo Output
     std::shared_ptr<Node> outputNode = nullptr;
     for (auto& node : GetNodes()) {
         if (node->name == "Output") {
@@ -478,7 +504,7 @@ std::string ShaderNodeEditor::GenerateShaderCode()
     return code.str();
 }
 
-std::string ShaderNodeEditor::TraverseNode(int pinId, std::stringstream& code)
+std::string ShaderNodeEditorManager::TraverseNode(int pinId, std::stringstream& code)
 {
     std::shared_ptr<Link> connectedLink = nullptr;
     for (auto& link : GetLinks()) {
@@ -513,7 +539,7 @@ std::string ShaderNodeEditor::TraverseNode(int pinId, std::stringstream& code)
     return "";
 }
 
-void ShaderNodeEditor::CompileShader()
+void ShaderNodeEditorManager::CompileShader()
 {
     if (m_ShaderProgram) {
         glDeleteProgram(m_ShaderProgram);
@@ -527,17 +553,48 @@ void ShaderNodeEditor::CompileShader()
     LOG_MESSAGE(fragmentCode.c_str());
     LOG_MESSAGE("===========================================");
 
-    const char* vertexCode = R"(
-        #version 330 core
-        layout (location = 0) in vec2 a_Position;
-        layout (location = 1) in vec2 a_TexCoord;
-        out vec2 v_TexCoord;
-        void main() {
-            v_TexCoord = a_TexCoord;
-            gl_Position = vec4(a_Position, 0.0, 1.0);
-        }
-    )";
+    // ✅ Vertex shader según el tipo de shader
+    const char* vertexCode;
 
+    if (getType() == SHADER_NODE_OBJECT) {
+        // Vertex shader para meshes 3D
+        vertexCode = R"(
+            #version 330 core
+            layout (location = 0) in vec4 aPos;
+            layout (location = 1) in vec3 aNormal;
+            layout (location = 2) in vec2 aTexCoords;
+
+            out vec3 v_FragPos;
+            out vec3 v_Normal;
+            out vec2 v_TexCoord;
+
+            uniform mat4 u_Projection;
+            uniform mat4 u_View;
+            uniform mat4 u_Model;
+
+            void main() {
+                vec4 worldPos = u_Model * aPos;
+                v_FragPos = worldPos.xyz;
+                v_Normal = mat3(transpose(inverse(u_Model))) * aNormal;
+                v_TexCoord = aTexCoords;
+                gl_Position = u_Projection * u_View * worldPos;
+            }
+        )";
+    } else {
+        // Vertex shader para postprocesado (quad fullscreen)
+        vertexCode = R"(
+            #version 330 core
+            layout (location = 0) in vec2 a_Position;
+            layout (location = 1) in vec2 a_TexCoord;
+            out vec2 v_TexCoord;
+            void main() {
+                v_TexCoord = a_TexCoord;
+                gl_Position = vec4(a_Position, 0.0, 1.0);
+            }
+        )";
+    }
+
+    // Compilar vertex shader
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertexShader, 1, &vertexCode, nullptr);
     glCompileShader(vertexShader);
@@ -551,6 +608,7 @@ void ShaderNodeEditor::CompileShader()
         return;
     }
 
+    // Compilar fragment shader
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     const char* fragCode = fragmentCode.c_str();
     glShaderSource(fragmentShader, 1, &fragCode, nullptr);
@@ -565,6 +623,7 @@ void ShaderNodeEditor::CompileShader()
         return;
     }
 
+    // Linkear programa
     m_ShaderProgram = glCreateProgram();
     glAttachShader(m_ShaderProgram, vertexShader);
     glAttachShader(m_ShaderProgram, fragmentShader);
@@ -584,7 +643,7 @@ void ShaderNodeEditor::CompileShader()
     glDeleteShader(fragmentShader);
 }
 
-cJSON* ShaderNodeEditor::SerializeNodeUserData(std::shared_ptr<Node> node) {
+cJSON* ShaderNodeEditorManager::SerializeNodeUserData(std::shared_ptr<Node> node) {
     cJSON* userData = cJSON_CreateObject();
 
     // Serializar texturas asociadas al nodo
@@ -599,7 +658,7 @@ cJSON* ShaderNodeEditor::SerializeNodeUserData(std::shared_ptr<Node> node) {
     return userData;
 }
 
-void ShaderNodeEditor::DeserializeNodeUserData(std::shared_ptr<Node> node, cJSON* userDataJson) {
+void ShaderNodeEditorManager::DeserializeNodeUserData(std::shared_ptr<Node> node, cJSON* userDataJson) {
     // Cargar imagen si existe
     cJSON* imagePath = cJSON_GetObjectItem(userDataJson, "imagePath");
     if (imagePath && imagePath->valuestring) {
@@ -609,7 +668,7 @@ void ShaderNodeEditor::DeserializeNodeUserData(std::shared_ptr<Node> node, cJSON
     // Deserializar otros datos específicos si es necesario
 }
 
-void ShaderNodeEditor::SerializeCustomData(cJSON* root)
+void ShaderNodeEditorManager::SerializeCustomData(cJSON* root)
 {
     // Guardar el último shader code generado (opcional)
     if (!m_LastShaderCode.empty()) {
@@ -619,7 +678,7 @@ void ShaderNodeEditor::SerializeCustomData(cJSON* root)
     // Podrías guardar otros datos globales aquí si los necesitas
 }
 
-void ShaderNodeEditor::DeserializeCustomData(cJSON* root) {
+void ShaderNodeEditorManager::DeserializeCustomData(cJSON* root) {
     // Verificar que es un shader editor
     cJSON* editorType = cJSON_GetObjectItem(root, "editorType");
     if (!editorType || strcmp(editorType->valuestring, "shader") != 0) {
@@ -637,7 +696,7 @@ void ShaderNodeEditor::DeserializeCustomData(cJSON* root) {
     m_NeedsRecompile = true;
 }
 
-std::shared_ptr<Node> ShaderNodeEditor::CreateNodeFromJSON(cJSON* nodeJson) {
+std::shared_ptr<Node> ShaderNodeEditorManager::CreateNodeFromJSON(cJSON* nodeJson) {
     std::string type = cJSON_GetObjectItem(nodeJson, "type")->valuestring;
 
     // Usar el sistema existente de CreateNodeOfType
@@ -693,4 +752,178 @@ std::shared_ptr<Node> ShaderNodeEditor::CreateNodeFromJSON(cJSON* nodeJson) {
     }
 
     return node;
+}
+
+void ShaderNodeEditorManager::SetExternalTextureForNode(int nodeId, GLuint textureId)
+{
+    DeleteImageForNode(nodeId);
+
+    auto window = Components::get()->Window();
+    // Crear un objeto Image desde el GLuint existente
+    m_NodeTextures[nodeId].image = new Image(textureId, window->getWidthRender(), window->getHeightRender());
+    m_NodeTextures[nodeId].filepath = "[System Texture]";
+
+    LOG_MESSAGE("External texture set for node %d (GLuint: %u, %dx%d)", nodeId, textureId);
+}
+
+void ShaderNodeEditorManager::PlugSystemTexture(std::shared_ptr<Node>& node, GLuint systemTextureId)
+{
+    SetExternalTextureForNode(node->id, systemTextureId);
+}
+
+void ShaderNodeEditorManager::UpdateExternalTextureForNode(int nodeId, GLuint textureId)
+{
+    auto it = m_NodeTextures.find(nodeId);
+    if (it != m_NodeTextures.end() && it->second.image) {
+        it->second.image->setOGLTextureID(textureId);
+    }
+}
+
+void ShaderNodeEditorManager::UpdateChainOutputTexture(GLuint textureId)
+{
+    // Buscar todos los nodos ChainOutput y actualizar su textura
+    for (auto& node : GetNodes()) {
+        if (node->name == "InternalTexture") {
+            UpdateExternalTextureForNode(node->id, textureId);
+        }
+    }
+}
+
+void ShaderNodeEditorManager::UpdateInternalTextures(GLuint colorTexture, GLuint depthTexture)
+{
+    for (auto& node : GetNodes()) {
+        if (node->name == "InternalTexture") {
+            InternalTextureType* texType = (InternalTextureType*)node->userData;
+            if (texType) {
+                GLuint textureToUse = 0;
+
+                switch (*texType) {
+                    case InternalTextureType::Color:
+                        textureToUse = colorTexture;
+                        break;
+                    case InternalTextureType::Depth:
+                        textureToUse = depthTexture;
+                        break;
+                }
+
+                UpdateExternalTextureForNode(node->id, textureToUse);
+            }
+        }
+    }
+}
+
+void ShaderNodeEditorManager::UpdateMeshTextures(GLuint diffuseTexture, GLuint specularTexture)
+{
+    for (auto& node : GetNodes()) {
+        if (node->name == "Mesh Texture") {
+            MeshTextureType* texType = (MeshTextureType*)node->userData;
+            if (texType) {
+                GLuint textureToUse = 0;
+
+                switch (*texType) {
+                    case MeshTextureType::Diffuse:
+                        textureToUse = diffuseTexture;
+                        break;
+                    case MeshTextureType::Specular:
+                        textureToUse = specularTexture;
+                        break;
+                    case MeshTextureType::Normal:
+                    case MeshTextureType::Roughness:
+                    case MeshTextureType::AO:
+                        // Por ahora usar diffuse como fallback
+                        textureToUse = diffuseTexture;
+                        break;
+                }
+
+                UpdateExternalTextureForNode(node->id, textureToUse);
+            }
+        }
+    }
+}
+
+void ShaderNodeEditorManager::RenderMesh(
+    GLuint fb,
+    GLuint vertexBuffer,
+    GLuint uvBuffer,
+    GLuint normalBuffer,
+    int vertexCount,
+    const glm::mat4& model,
+    const glm::mat4& view,
+    const glm::mat4& projection
+)
+{
+    if (!m_ShaderProgram) return;
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fb);
+    Components::get()->Render()->ChangeOpenGLProgram(m_ShaderProgram);
+
+    GLint projLoc = glGetUniformLocation(m_ShaderProgram, "u_Projection");
+    GLint viewLoc = glGetUniformLocation(m_ShaderProgram, "u_View");
+    GLint modelLoc = glGetUniformLocation(m_ShaderProgram, "u_Model");
+
+    if (projLoc != -1) glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+    if (viewLoc != -1) glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
+    if (modelLoc != -1) glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+    float time = (float)ImGui::GetTime();
+    GLint timeLoc = glGetUniformLocation(m_ShaderProgram, "u_Time");
+    if (timeLoc != -1) glUniform1f(timeLoc, time);
+
+    int textureUnit = 0;
+    for (auto& node : GetNodes()) {
+        if ((node->name == "Image" ||
+             node->name == "Internal Texture" ||
+             node->name == "Mesh Texture") &&
+            m_NodeTextures.find(node->id) != m_NodeTextures.end()) {
+            auto& tex = m_NodeTextures[node->id];
+            if (tex.image && tex.image->getOGLTextureID() != 0) {
+                glActiveTexture(GL_TEXTURE0 + textureUnit);
+                glBindTexture(GL_TEXTURE_2D, tex.image->getOGLTextureID());
+
+                std::string uniformName = "u_Texture" + std::to_string(node->id);
+                GLint texLoc = glGetUniformLocation(m_ShaderProgram, uniformName.c_str());
+                if (texLoc != -1) {
+                    glUniform1i(texLoc, textureUnit);
+                }
+
+                textureUnit++;
+            }
+        }
+    }
+
+    // ✅ CORREGIDO: Orden y tamaños correctos
+    // Location 0: Position (vec4, 4 componentes)
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    // Location 1: Normal (vec3, 3 componentes)
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    // Location 2: UV (vec2, 2 componentes)
+    glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+
+    for (int i = 0; i < textureUnit; i++) {
+        glActiveTexture(GL_TEXTURE0 + i);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    glUseProgram(0);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }

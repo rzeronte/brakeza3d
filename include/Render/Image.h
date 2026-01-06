@@ -22,6 +22,9 @@ class Image {
 public:
     explicit Image(const std::string& filename);
     Image(SDL_Surface *surface, SDL_Texture *texture);
+
+    Image(GLuint externalTextureId, int width, int height);
+
     virtual ~Image();
 
     void CreateSDLTexture();

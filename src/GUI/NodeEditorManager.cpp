@@ -189,10 +189,8 @@ void NodeEditorManager::Render()
 
     // Manejar creación de enlaces
     HandleLinkCreation();
-
     // Manejar eliminación
     HandleDeletion();
-
     // Manejar menús contextuales
     HandleContextMenus();
 

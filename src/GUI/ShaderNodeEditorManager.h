@@ -7,9 +7,11 @@
 #include <sstream>
 #include <map>
 #include <functional>
+#include <glm/fwd.hpp>
+
 #include "../../include/Render/Image.h"
 
-class ShaderNodeEditor;
+class ShaderNodeEditorManager;
 class NodeType;
 
 struct ImageTexture {
@@ -25,11 +27,27 @@ struct NodeDefinition {
     // Callbacks
     std::function<void(std::shared_ptr<Node>&)> onCreate;
     std::function<void(std::shared_ptr<Node>&)> onDelete;
-    std::function<void(std::shared_ptr<Node>&, ShaderNodeEditor*)> renderUI;
-    std::function<std::string(std::shared_ptr<Node>&, std::shared_ptr<Pin>&, std::stringstream&, ShaderNodeEditor*)> generateCode;
+    std::function<void(std::shared_ptr<Node>&, ShaderNodeEditorManager*)> renderUI;
+    std::function<std::string(std::shared_ptr<Node>&, std::shared_ptr<Pin>&, std::stringstream&, ShaderNodeEditorManager*)> generateCode;
 };
 
-class ShaderNodeEditor : public NodeEditorManager {
+// Antes de la clase ShaderNodeEditorManager
+enum class InternalTextureType {
+    Color = 0,
+    Depth = 1,
+    // Normal = 2,    // Para futuro
+    // Velocity = 3   // Para futuro
+};
+
+enum class MeshTextureType {
+    Diffuse = 0,
+    Specular = 1,
+    Normal = 2,      // Para futuro
+    Roughness = 3,   // Para futuro
+    AO = 4           // Para futuro
+};
+
+class ShaderNodeEditorManager : public NodeEditorManager {
 private:
     GLuint m_ShaderProgram;
     GLuint m_VAO;
@@ -56,8 +74,8 @@ private:
     std::shared_ptr<Node> CreateNodeOfType(const std::string& typeName);
 
 public:
-    ShaderNodeEditor(ShaderCustomType type);
-    ~ShaderNodeEditor() override;
+    ShaderNodeEditorManager(ShaderCustomType type);
+    ~ShaderNodeEditorManager() override;
 
     void CreateDefaultNodes();
     std::string GenerateShaderCode();
@@ -67,7 +85,7 @@ public:
     void Render() override;
     void RenderNode(std::shared_ptr<Node>& node) override;
     void Update();
-    void RenderEffect();
+    void RenderEffect(GLuint fb);
     void OnCreateNodeMenu() override;
 
     [[nodiscard]] GLuint GetShaderProgram() const;
@@ -87,6 +105,27 @@ public:
     void SerializeCustomData(cJSON* root) override;
     void DeserializeCustomData(cJSON* root) override;
     std::shared_ptr<Node> CreateNodeFromJSON(cJSON* nodeJson) override;
+
+    void SetExternalTextureForNode(int nodeId, GLuint textureId);
+    void PlugSystemTexture(std::shared_ptr<Node> &node, GLuint systemTextureId);
+    // Actualizar textura de un nodo específico (cada frame)
+    void UpdateExternalTextureForNode(int nodeId, GLuint textureId);
+    // O mejor: actualizar automáticamente todos los ChainOutput
+    void UpdateChainOutputTexture(GLuint textureId);
+    void UpdateInternalTextures(GLuint colorTexture, GLuint depthTexture);
+
+    void UpdateMeshTextures(GLuint diffuseTexture, GLuint specularTexture);
+
+    void RenderMesh(
+        GLuint fb,
+        GLuint vertexBuffer,
+        GLuint uvBuffer,
+        GLuint normalBuffer,
+        int vertexCount,
+        const glm::mat4& model,
+        const glm::mat4& view,
+        const glm::mat4& projection
+    );
 };
 
 #endif //SHADERNODEEDITOR_H

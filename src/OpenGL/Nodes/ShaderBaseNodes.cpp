@@ -2,10 +2,10 @@
 // Created by Eduardo on 04/01/2026.
 //
 
-#include "../../OpenGL/Nodes/ShaderBaseNodes.h"
+#include "../../../include/OpenGL/Nodes/ShaderBaseNodes.h"
 
-#include "../../Misc/Logging.h"
-#include "../../Misc/Tools.h"
+#include "../../../include/Misc/Logging.h"
+#include "../../../include/Misc/Tools.h"
 
 void ShaderBaseNodes::LoadUniforms()
 {
@@ -25,6 +25,9 @@ void ShaderBaseNodes::Render(GLuint fbo, GLuint texture)
 
 void ShaderBaseNodes::DrawImGuiProperties(const Image *diffuse, Image *specular)
 {
+    ImGui::BeginChild(getLabel().c_str(), ImVec2(0, 350), true);
+    nodeManager->Render();
+    ImGui::EndChild();
 }
 
 void ShaderBaseNodes::SaveToFile() const
@@ -32,7 +35,7 @@ void ShaderBaseNodes::SaveToFile() const
     cJSON *root = cJSON_CreateObject();
     cJSON_AddStringToObject(root, "typesFile", getTypesFile().c_str());
     cJSON_AddStringToObject(root, "name", getLabel().c_str());
-    auto typeString =getShaderTypeString(type);
+    auto typeString = getShaderTypeString(type);
     cJSON_AddStringToObject(root, "type", typeString.c_str());
 
     auto dataNodes = nodeManager->getJSONTypes();
