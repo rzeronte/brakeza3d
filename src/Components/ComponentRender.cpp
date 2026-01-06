@@ -217,7 +217,7 @@ void ComponentRender::LoadShaderIntoScene(const std::string &filePath)
 {
     auto metaInfo = ShadersGUI::ExtractShaderCustomCodeMetainfo(filePath);
 
-    if (ShaderBaseCustomOGLCode::getShaderTypeFromString(metaInfo.type) == SHADER_POSTPROCESSING) {
+    if (ShaderBaseCustom::getShaderTypeFromString(metaInfo.type) == SHADER_POSTPROCESSING) {
         auto shader = CreateCustomShaderFromDisk(metaInfo, nullptr);
 
         if (shader != nullptr) {
@@ -231,26 +231,31 @@ void ComponentRender::LoadShaderIntoScene(const std::string &filePath)
 
 ShaderBaseCustom* ComponentRender::CreateCustomShaderFromDisk(const ShaderBaseCustomMetaInfo &info, Mesh3D* mesh)
 {
-    if (ShaderBaseCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_POSTPROCESSING) {
+    if (ShaderBaseCustom::getShaderTypeFromString(info.type) == SHADER_POSTPROCESSING) {
         auto s = new ShaderOGLCustomCodePostprocessing(info.name, info.typesFile, info.vsFile, info.fsFile);
         s->PrepareSync();
         return s;
     }
 
-    if (ShaderBaseCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_OBJECT) {
+    if (ShaderBaseCustom::getShaderTypeFromString(info.type) == SHADER_OBJECT) {
         auto s = new ShaderOGLCustomCodeMesh3D(mesh, info.name, info.typesFile, info.vsFile, info.fsFile);
         s->PrepareSync();
         return s;
     }
 
-    if (ShaderBaseCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_NODE_OBJECT) {
-        auto s = new ShaderNodesMesh3D(info.name, mesh);
+    if (ShaderBaseCustom::getShaderTypeFromString(info.type) == SHADER_NODE_OBJECT) {
+        auto manager = new ShaderNodeEditor(SHADER_NODE_OBJECT);
+        manager->LoadFromFile(info.typesFile.c_str());
+
+        auto s = new ShaderNodesMesh3D(info.name, info.typesFile, SHADER_NODE_OBJECT, manager, mesh);
         s->PrepareSync();
         return s;
     }
 
     if (ShaderBaseCustomOGLCode::getShaderTypeFromString(info.type) == SHADER_NODE_POSTPROCESSING) {
-        auto s = new ShaderNodesPostProcessing(info.name);
+        auto manager = new ShaderNodeEditor(SHADER_NODE_POSTPROCESSING);
+        manager->LoadFromFile(info.typesFile.c_str());
+        auto s = new ShaderNodesPostProcessing(info.name, info.typesFile, SHADER_NODE_POSTPROCESSING, manager);
         s->PrepareSync();
         return s;
     }
@@ -498,8 +503,8 @@ void ComponentRender::FlipBuffersToGlobal() const
 
     ComponentWindow::ResetOpenGLSettings();
 
-    Brakeza::get()->GUI()->getNodeEditor()->Update();
-    Brakeza::get()->GUI()->getNodeEditor()->RenderEffect();
+    //Brakeza::get()->GUI()->getNodeEditor()->Update();
+    //Brakeza::get()->GUI()->getNodeEditor()->RenderEffect();
 
     shaders.shaderOGLImage->renderTexture(globalBuffer.backgroundTexture, 0, 0, w, h, w, h, 1, true, globalBuffer.globalFBO);
     shaders.shaderOGLImage->renderTexture(globalBuffer.sceneTexture, 0, 0, w, h, w, h ,1, true, globalBuffer.globalFBO);

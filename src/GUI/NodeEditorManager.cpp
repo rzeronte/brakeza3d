@@ -7,9 +7,11 @@
 #include <imgui_node_editor.h>
 #include <fstream>
 
+#include "../../include/Misc/Logging.h"
 #include "../../include/Misc/Tools.h"
+#include "../../include/OpenGL/Base/ShaderBaseCustom.h"
 
-NodeEditorManager::NodeEditorManager(const char* settingsFile)
+NodeEditorManager::NodeEditorManager(ShaderCustomType type, const char* settingsFile)
     : m_Context(nullptr)
     , m_NextId(1)
     , m_ContextNodeId(0)
@@ -17,6 +19,7 @@ NodeEditorManager::NodeEditorManager(const char* settingsFile)
     , m_ContextPinId(0)
     , m_ShowCreateMenu(false)
     , m_CreateMenuPos(0, 0)
+    , type(type)
 {
     ed::Config config;
     config.SettingsFile = settingsFile;
@@ -410,12 +413,17 @@ NodeEditorManager::~NodeEditorManager()
     }
 }
 
-cJSON* NodeEditorManager::getJSONTypes() {
+cJSON* NodeEditorManager::getJSONTypes()
+{
+    ed::SetCurrentEditor(m_Context); // Necesito guardar el contexto
+
     cJSON* root = cJSON_CreateObject();
 
     // Versión del formato
     cJSON_AddStringToObject(root, "version", "1.0");
     cJSON_AddStringToObject(root, "editorType", "base");
+    auto typeString = ShaderBaseCustom::getShaderTypeString(getType());
+    cJSON_AddStringToObject(root, "type", typeString.c_str());
 
     // ========== NODOS ==========
     cJSON* nodesArray = cJSON_CreateArray();
@@ -490,7 +498,10 @@ cJSON* NodeEditorManager::getJSONTypes() {
     return root;
 }
 
-bool NodeEditorManager::loadFromJSON(cJSON* json) {
+bool NodeEditorManager::LoadFromJSON(cJSON* json)
+{
+    LOG_MESSAGE("[NodeEditorManager] LoadFromJSON");
+
     if (!json) return false;
 
     // Limpiar estado actual
@@ -509,7 +520,7 @@ bool NodeEditorManager::loadFromJSON(cJSON* json) {
         cJSON_ArrayForEach(nodeJson, nodesArray) {
             // Permitir que la clase hija cree el nodo (importante para ShaderNodeEditor)
             std::shared_ptr<Node> node = CreateNodeFromJSON(nodeJson);
-
+            LOG_MESSAGE("[NodeEditorManager] Creating NODE: %s - %s", node->name.c_str(), node->type.c_str());
             if (node) {
                 // Establecer posición
                 cJSON* posObj = cJSON_GetObjectItem(nodeJson, "position");
@@ -526,6 +537,8 @@ bool NodeEditorManager::loadFromJSON(cJSON* json) {
                 }
             }
         }
+    } else {
+        LOG_MESSAGE("[NodeEditorManager] There aren't nodes");
     }
 
     // ========== CARGAR LINKS ==========
@@ -620,24 +633,29 @@ std::shared_ptr<Node> NodeEditorManager::CreateNodeFromJSON(cJSON* nodeJson) {
 }
 
 // Métodos virtuales por defecto (vacíos)
-cJSON* NodeEditorManager::SerializeNodeUserData(std::shared_ptr<Node> node) {
+cJSON* NodeEditorManager::SerializeNodeUserData(std::shared_ptr<Node> node)
+{
     return nullptr;
 }
 
-void NodeEditorManager::DeserializeNodeUserData(std::shared_ptr<Node> node, cJSON* userDataJson) {
+void NodeEditorManager::DeserializeNodeUserData(std::shared_ptr<Node> node, cJSON* userDataJson)
+{
     // Por defecto no hace nada
 }
 
-void NodeEditorManager::SerializeCustomData(cJSON* root) {
+void NodeEditorManager::SerializeCustomData(cJSON* root)
+{
     // Por defecto no añade nada
 }
 
-void NodeEditorManager::DeserializeCustomData(cJSON* root) {
+void NodeEditorManager::DeserializeCustomData(cJSON* root)
+{
     // Por defecto no hace nada
 }
 
 // Utilidades para guardar/cargar archivos
-bool NodeEditorManager::SaveToFile(const char* filename) {
+bool NodeEditorManager::SaveToFile(const char* filename)
+{
     cJSON* json = getJSONTypes();
     if (!json) return false;
 
@@ -659,17 +677,32 @@ bool NodeEditorManager::SaveToFile(const char* filename) {
     return true;
 }
 
-bool NodeEditorManager::LoadFromFile(const char* filename) {
-    std::ifstream file(filename);
-    if (!file.is_open()) return false;
+bool NodeEditorManager::LoadFromFile(const char* filename)
+{
+    ed::SetCurrentEditor(m_Context);
+
+    LOG_MESSAGE("[NodeEditorManager] Loading file '%s'", filename);
 
     std::string content = Tools::ReadFile(filename);
 
     cJSON* json = cJSON_Parse(content.c_str());
-    if (!json) return false;
 
-    bool result = loadFromJSON(json);
+    if (!json) {
+        LOG_ERROR("[NodeEditorManager] No valid JSON into '%s'", filename);
+        return false;
+    }
+
+    cJSON* types = cJSON_GetObjectItem(json, "types");
+
+    bool result = LoadFromJSON(types);
+
     cJSON_Delete(json);
 
     return result;
+}
+
+void NodeEditorManager::Autofit() const
+{
+    ed::SetCurrentEditor(m_Context);
+    ed::NavigateToContent(0.0f);
 }

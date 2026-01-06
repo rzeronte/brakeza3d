@@ -354,6 +354,8 @@ add_executable(Brakeza3D
         include/OpenGL/Nodes/ShaderNodesMesh3D.h
         include/OpenGL/Nodes/ShaderNodesPostProcessing.cpp
         include/OpenGL/Nodes/ShaderNodesPostProcessing.h
+        src/GUI/Editable/EditableOpenNode.cpp
+        include/GUI/Editable/EditableOpenNode.h
 )
 
 target_link_libraries(Brakeza3D

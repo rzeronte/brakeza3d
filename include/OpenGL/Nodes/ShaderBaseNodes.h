@@ -11,9 +11,9 @@ class ShaderBaseNodes : public ShaderBaseCustom
 {
     NodeEditorManager *nodeManager;
 public:
-    ShaderBaseNodes(const std::string &label, ShaderCustomType type, NodeEditorManager *nodeManager)
+    ShaderBaseNodes(const std::string &label, const std::string &fileTypes, ShaderCustomType type, NodeEditorManager *nodeManager)
     :
-        ShaderBaseCustom(label, type),
+        ShaderBaseCustom(label, fileTypes, type),
         nodeManager(nodeManager)
     {
     }
@@ -23,7 +23,13 @@ public:
     void Reload() override;
     void Render(GLuint fbo, GLuint texture) override;
     void DrawImGuiProperties(const Image *diffuse, Image *specular) override;
-    static void WriteEmptyCustomShaderToDisk(const std::string& name, const std::string& folder, ShaderCustomType type);
+
+    [[nodiscard]] NodeEditorManager * getNodeManager() const                    { return nodeManager; }
+
+    void SaveToFile() const;
+
+    static void WriteEmptyCustomShaderToDisk(const std::string& name, const std::string& folder, ShaderCustomType type, NodeEditorManager *nodeManager);
+
 };
 
 

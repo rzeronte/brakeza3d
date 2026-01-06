@@ -671,6 +671,10 @@
 			"name":	"WIN_SHADER_NODES",
 			"x":	5,
 			"y":	16
+		}, {
+			"name":	"NODE_EDITOR_AUTOFIT",
+			"x":	3,
+			"y":	5
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

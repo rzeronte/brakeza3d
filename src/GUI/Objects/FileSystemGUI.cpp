@@ -525,7 +525,7 @@ void FileSystemGUI::DrawShaderCreatorDialog(GUIType::BrowserCache &browser, std:
         ImGui::SameLine();
         GUI::DrawButton("Create shader", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
             if (localVarName[0] != '\0') {
-                auto type = ShaderBaseCustomOGLCode::getShaderTypeFromString(items[item_current_idx]);
+                auto type = ShaderBaseCustom::getShaderTypeFromString(items[item_current_idx]);
                 ShadersGUI::CreateShaderBaseCustom(type, browser.currentFolder, localVarName);
                 browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
                 ImGui::CloseCurrentPopup();

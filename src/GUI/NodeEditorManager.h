@@ -12,6 +12,7 @@
 #include <memory>
 
 #include "../../include/Misc/cJSON.h"
+#include "../../include/OpenGL/Base/SharedOpenGLStructs.h"
 
 namespace ed = ax::NodeEditor;
 
@@ -89,8 +90,10 @@ protected:
     bool m_ShowCreateMenu;
     ImVec2 m_CreateMenuPos;
 
+    ShaderCustomType type;
+
 public:
-    NodeEditorManager(const char* settingsFile = "NodeEditor.json");
+    NodeEditorManager(ShaderCustomType type, const char* settingsFile = "NodeEditor.json");
     virtual ~NodeEditorManager();
 
     // ==================== Gestión de Nodos ====================
@@ -133,7 +136,7 @@ public:
 
     // Serialización
     virtual cJSON* getJSONTypes();
-    virtual bool loadFromJSON(cJSON* json);
+    virtual bool LoadFromJSON(cJSON* json);
     bool SaveToFile(const char* filename);
     bool LoadFromFile(const char* filename);
 
@@ -145,6 +148,10 @@ public:
 
     // Hook post-carga (para recrear nodos con CreateNodeOfType, etc)
     virtual std::shared_ptr<Node> CreateNodeFromJSON(cJSON* nodeJson);
+
+    [[nodiscard]] ShaderCustomType getType() const                                          { return type; }
+    void Autofit() const;
+
 };
 
 #endif //BRAKEZA3D_NODEEDITORMANAGER_H

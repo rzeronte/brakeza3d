@@ -293,7 +293,7 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
             );
             ImGui::SameLine();
             GUI::DrawButtonTransparent("Edit shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICON_LOCKS, false, [&] {
-                auto jsonFilename = s->getLabel() + ".json";
+                auto jsonFilename = s->getTypesFile();
                 ShadersGUI::LoadDialogShader(s->getTypesFile());
             });
             ImGui::SameLine();

@@ -68,12 +68,9 @@ public:
     [[nodiscard]] std::string getFolder() const;
     [[nodiscard]] cJSON* getTypesJSON() const override;
     [[nodiscard]] std::vector<ShaderOGLCustomType> &getDataTypes()      { return dataTypes; }
-    static ShaderCustomType getShaderTypeFromString(const std::string &shaderName);
-    static std::string getShaderTypeString(ShaderCustomType type);
 
     static void WriteEmptyCustomShaderToDisk(const std::string& name, const std::string& folder, ShaderCustomType type);
     static void RemoveCustomShaderFiles(const std::string& folder, const std::string &name);
-    static ShaderCustomType ExtractTypeFromShaderName(const std::string& folder, const std::string &name);
     void Reload() override;
     void CaptureDragDropUpdateImage(ShaderOGLCustomType &type, const Image *texture) const;
     void CreateFramebuffer();
