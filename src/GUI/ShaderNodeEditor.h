@@ -46,7 +46,6 @@ private:
     std::map<std::string, NodeType*> m_NodeTypes;
 
     void SetupQuad();
-    void CreateDefaultNodes();
     void SetInitialNodePositions();
     void HandleLinkCreation() override;
     void HandleDeletion() override;
@@ -57,9 +56,10 @@ private:
     std::shared_ptr<Node> CreateNodeOfType(const std::string& typeName);
 
 public:
-    ShaderNodeEditor();
+    ShaderNodeEditor(ShaderCustomType type);
     ~ShaderNodeEditor() override;
 
+    void CreateDefaultNodes();
     std::string GenerateShaderCode();
     std::string TraverseNode(int pinId, std::stringstream& code);
     void RegisterNodeTypes();

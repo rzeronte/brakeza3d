@@ -5,15 +5,14 @@
 #ifndef BRAKEZA3D_SHADERNODESMESH3D_H
 #define BRAKEZA3D_SHADERNODESMESH3D_H
 
+#include "ShaderBaseNodes.h"
 #include "../../3D/Mesh3D.h"
-#include "../Base/ShaderBaseCustom.h"
 
-
-class ShaderNodesMesh3D : public ShaderBaseCustom
+class ShaderNodesMesh3D : public ShaderBaseNodes
 {
     Mesh3D* mesh;
 public:
-    ShaderNodesMesh3D(const std::string &label, Mesh3D* mesh);
+    ShaderNodesMesh3D(const std::string &label, const std::string &typesFile, ShaderCustomType type, NodeEditorManager *nodeManager, Mesh3D *mesh);
 
     void LoadUniforms() override;
 

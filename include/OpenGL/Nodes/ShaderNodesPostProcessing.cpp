@@ -4,6 +4,12 @@
 
 #include "ShaderNodesPostProcessing.h"
 
+ShaderNodesPostProcessing::ShaderNodesPostProcessing(const std::string &label, const std::string &typesFile, ShaderCustomType type, NodeEditorManager *nodeManager)
+:
+    ShaderBaseNodes(label, typesFile, type, nodeManager)
+{
+}
+
 void ShaderNodesPostProcessing::LoadUniforms()
 {
 }

@@ -22,8 +22,8 @@
 
 #include <cmath>
 
-ShaderNodeEditor::ShaderNodeEditor()
-    : NodeEditorManager(nullptr)
+ShaderNodeEditor::ShaderNodeEditor(ShaderCustomType type)
+    : NodeEditorManager(type, nullptr)
     , m_ShaderProgram(0)
     , m_VAO(0)
     , m_VBO(0)
@@ -112,6 +112,7 @@ std::shared_ptr<Node> ShaderNodeEditor::CreateNodeOfType(const std::string& type
 
     NodeType* nodeType = it->second;
     auto node = CreateNode(nodeType->GetTypeName(), nodeType->GetColor());
+    node->type = nodeType->GetTypeName();
 
     // Inicializar el nodo
     nodeType->OnCreate(node);
@@ -608,10 +609,8 @@ void ShaderNodeEditor::DeserializeNodeUserData(std::shared_ptr<Node> node, cJSON
     // Deserializar otros datos específicos si es necesario
 }
 
-void ShaderNodeEditor::SerializeCustomData(cJSON* root) {
-    // Añadir tipo de editor
-    cJSON_AddStringToObject(root, "editorType", "shader");
-
+void ShaderNodeEditor::SerializeCustomData(cJSON* root)
+{
     // Guardar el último shader code generado (opcional)
     if (!m_LastShaderCode.empty()) {
         cJSON_AddStringToObject(root, "lastShaderCode", m_LastShaderCode.c_str());

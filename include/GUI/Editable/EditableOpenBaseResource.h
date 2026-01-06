@@ -23,7 +23,7 @@ public:
     void setTabLabel(const std::string &tab_label)  { tabLabel = tab_label; }
     void setRemoved(bool value)                     { removed = value; }
 
-    virtual void DrawTabEdition(int i) = 0;
+    virtual void DrawTabEdition(int i) {};
     virtual ~EditableOpenBaseResource();
 };
 

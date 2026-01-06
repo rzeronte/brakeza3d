@@ -323,7 +323,8 @@ namespace GUIType
     X(UNCHECKED, 0, 0) \
     X(FILE_BROKEN, 0, 0) \
     X(WIN_RESOLUTION, 0, 0) \
-    X(WIN_SHADER_NODES, 0, 0)
+    X(WIN_SHADER_NODES, 0, 0) \
+    X(NODE_EDITOR_AUTOFIT, 0, 0)
 
 // Icons Objects
 namespace IconObject {

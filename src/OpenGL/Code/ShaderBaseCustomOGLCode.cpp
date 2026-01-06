@@ -742,33 +742,6 @@ cJSON *ShaderBaseCustomOGLCode::getTypesJSON() const
     return scriptJSON;
 }
 
-ShaderCustomType ShaderBaseCustomOGLCode::getShaderTypeFromString(const std::string& shaderName)
-{
-    auto render = Components::get()->Render();
-    auto types = render->getShaderTypesMapping();
-
-    auto it = types.find(shaderName);
-    if (it != types.end()) {
-        return it->second;
-    }
-
-    return SHADER_NONE;
-}
-
-std::string ShaderBaseCustomOGLCode::getShaderTypeString(ShaderCustomType type)
-{
-    auto render = Components::get()->Render();
-    auto types = render->getShaderTypesMapping();
-
-    for (const auto& a: types) {
-        if (a.second == type) {
-            return a.first;
-        }
-    }
-
-    return "";
-}
-
 void ShaderBaseCustomOGLCode::WriteEmptyCustomShaderToDisk(const std::string& name, const std::string& folder, ShaderCustomType type)
 {
     LOG_MESSAGE("[ShaderBaseCustomOGLCode] Creating new custom shader '%s' of type '%d' in '%s'", name.c_str(), type, name.c_str());
@@ -815,19 +788,6 @@ void ShaderBaseCustomOGLCode::RemoveCustomShaderFiles(const std::string& folder,
     Tools::RemoveFile(folder + name + ".json");
     Tools::RemoveFile(folder + name + ".vs");
     Tools::RemoveFile(folder + name + ".fs");
-}
-
-ShaderCustomType ShaderBaseCustomOGLCode::ExtractTypeFromShaderName(const std::string& folder, const std::string &name)
-{
-    std::string jsonFile = name + ".json";
-
-    auto contentFile = Tools::ReadFile(folder + jsonFile);
-    LOG_MESSAGE("[ShaderBaseCustomOGLCode] Extracting type from: '%s'", name.c_str());
-
-    auto oJSON = cJSON_Parse(contentFile);
-    std::string nameType = cJSON_GetObjectItemCaseSensitive(oJSON, "type")->valuestring;
-
-    return getShaderTypeFromString(nameType);
 }
 
 void ShaderBaseCustomOGLCode::Reload()

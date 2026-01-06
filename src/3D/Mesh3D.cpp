@@ -504,7 +504,7 @@ void Mesh3D::FillGrid3DFromGeometry()
     }
 }
 
-void Mesh3D::AddCustomShader(ShaderBaseCustomOGLCode *s)
+void Mesh3D::AddCustomShader(ShaderBaseCustom *s)
 {
     customShaders.emplace_back(s);
 }
@@ -513,7 +513,7 @@ void Mesh3D::LoadShader(const std::string &jsonFilename)
 {
     auto metaInfo = ShadersGUI::ExtractShaderCustomCodeMetainfo(jsonFilename);
 
-    if (ShaderBaseCustomOGLCode::getShaderTypeFromString(metaInfo.type) == SHADER_OBJECT) {
+    if (ShaderBaseCustom::getShaderTypeFromString(metaInfo.type) == SHADER_OBJECT) {
         auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, this);
 
         if (shader != nullptr) {

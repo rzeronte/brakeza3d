@@ -62,8 +62,6 @@ class GUIManager
     TextureAtlas *textureAtlas;
     Image *splashImage = nullptr;
 
-    ShaderNodeEditor* nodeEditor = nullptr;
-
     void DrawWinImages();
     void DrawWinDepthLightsMap();
     void DrawRegisteredWindows();
@@ -104,7 +102,6 @@ public:
     [[nodiscard]] int getIndexCodeEditorTab() const                                     { return indexCodeEditorTab; }
     [[nodiscard]] SceneChecker &getSceneChecker()                                       { return checker; }
     [[nodiscard]] std::vector<GUIType::ViewerObjectType> &getVisibleObjectTypes()       { return visibleTypeObjects; }
-    [[nodiscard]] ShaderNodeEditor * getNodeEditor() const                              { return nodeEditor; }
 
     GUIType::WindowData *getWindowStatus(GUIType::Window window);
 

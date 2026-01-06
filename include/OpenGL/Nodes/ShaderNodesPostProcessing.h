@@ -4,17 +4,13 @@
 
 #ifndef BRAKEZA3D_SHADERNODESPOSTPROCESSING_H
 #define BRAKEZA3D_SHADERNODESPOSTPROCESSING_H
-#include "../Base/ShaderBaseCustom.h"
 
+#include "ShaderBaseNodes.h"
 
-class ShaderNodesPostProcessing  : public ShaderBaseCustom
+class ShaderNodesPostProcessing  : public ShaderBaseNodes
 {
 public:
-    ShaderNodesPostProcessing(const std::string &label)
-    :
-        ShaderBaseCustom(label, SHADER_NODE_POSTPROCESSING)
-    {
-    }
+    ShaderNodesPostProcessing(const std::string &label, const std::string &typesFile, ShaderCustomType type, NodeEditorManager *nodeManager);
 
     void LoadUniforms() override;
     void Destroy() override;

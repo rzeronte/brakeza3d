@@ -35,7 +35,7 @@ public:
         bool enableFeedback
     );
 
-    ShaderBaseCustom(const std::string &label, ShaderCustomType type);
+    ShaderBaseCustom(const std::string &label, const std::string &fileTypes, ShaderCustomType type);
 
     [[nodiscard]] const std::string &getLabel() const       { return label; }
     [[nodiscard]] bool isEnabled() const                    { return enabled; }
@@ -49,6 +49,11 @@ public:
     [[nodiscard]] virtual cJSON* getTypesJSON() const;
     virtual void Render(GLuint fbo, GLuint texture) = 0;
     virtual void DrawImGuiProperties(const Image *diffuse, Image *specular) = 0;
+
+    static ShaderCustomType ExtractTypeFromShaderName(const std::string& folder, const std::string &name);
+    static ShaderCustomType ExtractShaderTypeFromTypesFile(const std::string &fullPath);
+    static ShaderCustomType getShaderTypeFromString(const std::string &shaderName);
+    static std::string getShaderTypeString(ShaderCustomType type);
 };
 
 

@@ -46,7 +46,7 @@ protected:
 
     std::vector<Image *> modelTextures;
     std::vector<Image *> modelSpecularTextures;
-    std::vector<ShaderBaseCustomOGLCode*> customShaders;
+    std::vector<ShaderBaseCustom*> customShaders;
     std::vector<Mesh3DData> meshes;
 
     AABB3D aabb;
@@ -79,7 +79,7 @@ public:
     void DrawImGuiCollisionShapeSelector() override;
     void BuildGrid3D(int sizeX, int sizeY, int sizeZ);
     void FillGrid3DFromGeometry();
-    void AddCustomShader(ShaderBaseCustomOGLCode *);
+    void AddCustomShader(ShaderBaseCustom *);
     void LoadShader(const std::string &jsonFilename);
     void RemoveShader(int i);
     void FillOGLBuffers();
@@ -90,18 +90,18 @@ public:
 
     void setSourceFile(const std::string &sourceFile);
 
-    [[nodiscard]] bool isLoaded() const                                          { return loaded; }
-    [[nodiscard]] ObjectType getTypeObject() const override                      { return ObjectType::Mesh3D; }
-    GUIType::Sheet getIcon() override                                            { return IconObject::MESH_3D; }
-    std::vector<Mesh3DData> &getMeshData()                                       { return meshes; }
-    AABB3D &getAABB()                                                            { return aabb; }
-    [[nodiscard]] const std::vector<ShaderBaseCustomOGLCode *> &getCustomShaders() const { return customShaders; }
-    [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const   { return modelSpecularTextures; }
-    [[nodiscard]] Grid3D *getGrid3D() const                                      { return grid; }
-    [[nodiscard]] Octree *getOctree() const                                      { return octree; }
-    [[nodiscard]] std::vector<Triangle *> &getModelTriangles(int i)              { return meshes[i].modelTriangles; }
-    [[nodiscard]] std::vector<Image *> &getModelTextures()                       { return modelTextures; }
-    [[nodiscard]] std::vector<Vertex3D *> &getModelVertices(int i)               { return meshes[i].modelVertices; }
+    [[nodiscard]] bool isLoaded() const                                           { return loaded; }
+    [[nodiscard]] ObjectType getTypeObject() const override                       { return ObjectType::Mesh3D; }
+    GUIType::Sheet getIcon() override                                             { return IconObject::MESH_3D; }
+    std::vector<Mesh3DData> &getMeshData()                                        { return meshes; }
+    AABB3D &getAABB()                                                             { return aabb; }
+    [[nodiscard]] const std::vector<ShaderBaseCustom *> &getCustomShaders() const { return customShaders; }
+    [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const    { return modelSpecularTextures; }
+    [[nodiscard]] Grid3D *getGrid3D() const                                       { return grid; }
+    [[nodiscard]] Octree *getOctree() const                                       { return octree; }
+    [[nodiscard]] std::vector<Triangle *> &getModelTriangles(int i)               { return meshes[i].modelTriangles; }
+    [[nodiscard]] std::vector<Image *> &getModelTextures()                        { return modelTextures; }
+    [[nodiscard]] std::vector<Vertex3D *> &getModelVertices(int i)                { return meshes[i].modelVertices; }
 
     friend class Mesh3DSerializer;
     friend class Mesh3DGUI;

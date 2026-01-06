@@ -57,8 +57,6 @@ void GUIManager::OnStart()
 
     FileSystemGUI::LoadImagesFolder(this);
 
-    nodeEditor = new ShaderNodeEditor();
-
     GUI::ShowLoadTime("Time until GUIManager get ready", *Brakeza::get()->getTimer());
 }
 
@@ -84,7 +82,7 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Debug GUI Icons",     GUIType::DEBUG_ICONS,         IconGUI::WIN_DEBUG_ICONS,       false, false, true, IconsGUI::DrawWinDebugIcons(this));
     ADD_WIN("Documentation",       GUIType::DOCUMENTATION,       IconGUI::WIN_DOCUMENTATION,     false, true,  true, GUIAddonDocumentation::DrawWinDocumentation(documentationTree, documentationEditor));
     ADD_WIN("Scene Detail",        GUIType::SCENE_INFO,          IconGUI::SCENE_INFO,            false, true,  false, checker.DrawWinSceneInfo());
-    ADD_WIN("Shader Nodes Editor", GUIType::SHADER_NODES_EDITOR, IconGUI::WIN_SHADER_NODES,      false, false, false, nodeEditor->Render(););
+    //ADD_WIN("Shader Nodes Editor", GUIType::SHADER_NODES_EDITOR, IconGUI::WIN_SHADER_NODES,      false, false, false, nodeEditor->Render(););
 
     RegisterDefaultLayoutWindows();
 }
@@ -111,7 +109,6 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::DEBUG_ICONS, false },
         { GUIType::CODE_EDITOR, false},
         { GUIType::SCENE_INFO, false},
-        { GUIType::SHADER_NODES_EDITOR,  false},
     };
 
     devsLayoutWindowsConfig =  {
@@ -134,7 +131,6 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::DEBUG_ICONS, false },
         { GUIType::CODE_EDITOR, true},
         { GUIType::SCENE_INFO, false},
-        { GUIType::SHADER_NODES_EDITOR,  false},
     };
 
     designLayoutWindowsConfig =  {
@@ -157,7 +153,6 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::DEBUG_ICONS, false },
         { GUIType::CODE_EDITOR, false },
         { GUIType::SCENE_INFO, false},
-        { GUIType::SHADER_NODES_EDITOR,  false},
     };
 }
 

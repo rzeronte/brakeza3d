@@ -10,10 +10,13 @@
 #include "../../../include/GUI/GUIManager.h"
 #include "../../../include/GUI/Editable/EditableOpenShaderFile.h"
 #include "../../../include/Components/Components.h"
+#include "../../../include/GUI/Editable/EditableOpenNode.h"
 #include "../../../include/OpenGL/Code/ShaderCustomOGLCodeTypes.h"
 #include "../../../include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h"
 #include "../../../include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h"
 #include "../../../include/OpenGL/Nodes/ShaderBaseNodes.h"
+#include "../../../include/OpenGL/Nodes/ShaderNodesMesh3D.h"
+#include "../../../include/OpenGL/Nodes/ShaderNodesPostProcessing.h"
 #include "../../../include/Render/Drawable.h"
 
 void ShadersGUI::DrawShaderConfig(EditableOpenShaderFile &file)
@@ -32,7 +35,7 @@ void ShadersGUI::DrawShaderConfigHeader(EditableOpenShaderFile &file)
     auto vsFile = file.getShader()->getVertexFilename();
     auto fsFile = file.getShader()->getFragmentFilename();
     auto type = file.getShader()->getType();
-    auto typeName = ShaderBaseCustomOGLCode::getShaderTypeString(type);
+    auto typeName = ShaderBaseCustom::getShaderTypeString(type);
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_CODE_VS), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
@@ -263,7 +266,7 @@ void ShadersGUI::DrawWinObjectShaders()
             });
             ImGui::SameLine();
             GUI::DrawButtonTransparent("Edit shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                auto jsonFilename = s->getLabel() + ".json";
+                auto jsonFilename = s->getTypesFile() + ".json";
                 LoadDialogShader(s->getTypesFile());
             });
             ImGui::SameLine();
@@ -282,14 +285,40 @@ void ShadersGUI::DrawWinObjectShaders()
 void ShadersGUI::LoadDialogShader(const std::string &file)
 {
     auto metaInfo = ExtractShaderCustomCodeMetainfo(file);
+    auto type = ShaderBaseCustom::ExtractShaderTypeFromTypesFile(file);
 
     if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(metaInfo.name)) {
         auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, nullptr);
         shader->PrepareSync();
-
-        Brakeza::get()->GUI()->OpenEditableFile(
-            new EditableOpenShaderFile(shader->getLabel(), shader->getVertexFilename(), shader)
-        );
+        switch (type) {
+            case SHADER_POSTPROCESSING: {
+                Brakeza::get()->GUI()->OpenEditableFile(
+                    new EditableOpenShaderFile(shader->getLabel(), file, dynamic_cast<ShaderOGLCustomCodePostprocessing*>(shader))
+                );
+                break;
+            }
+            case SHADER_OBJECT: {
+                Brakeza::get()->GUI()->OpenEditableFile(
+                    new EditableOpenShaderFile(shader->getLabel(), file, dynamic_cast<ShaderOGLCustomCodeMesh3D*>(shader))
+                );
+                break;
+            }
+            case SHADER_NODE_OBJECT: {
+                Brakeza::get()->GUI()->OpenEditableFile(
+                    new EditableOpenNode(shader->getLabel(), file, dynamic_cast<ShaderNodesMesh3D*>(shader))
+                );
+                break;
+            }
+            case SHADER_NODE_POSTPROCESSING: {
+                auto s2 = dynamic_cast<ShaderNodesPostProcessing*>(shader);
+                auto openFile = new EditableOpenNode(shader->getLabel(),  file, s2);
+                s2->getNodeManager()->Autofit();
+                Brakeza::get()->GUI()->OpenEditableFile(openFile);
+                break;
+            }
+            default:
+                LOG_ERROR("[ShadersGUI] Unknow type shader...");
+        }
     }
     Brakeza::get()->GUI()->setIndexCodeEditorTab(metaInfo.name);
     Components::get()->Window()->setImGuiConfig(Config::ImGUIConfigs::CODING);
@@ -299,13 +328,21 @@ ShaderBaseCustomMetaInfo ShadersGUI::ExtractShaderCustomCodeMetainfo(const std::
 {
     auto json = cJSON_Parse(Tools::ReadFile(pathFile));
 
-    return {
-        cJSON_GetObjectItemCaseSensitive(json, "name")->valuestring,
-        cJSON_GetObjectItemCaseSensitive(json, "type")->valuestring,
-        cJSON_GetObjectItemCaseSensitive(json, "vsFile")->valuestring,
-        cJSON_GetObjectItemCaseSensitive(json, "fsFile")->valuestring,
-        cJSON_GetObjectItemCaseSensitive(json, "typesFile")->valuestring
+    auto getStr = [&](const char* key, const char* fallback = "") {
+        auto item = cJSON_GetObjectItemCaseSensitive(json, key);
+        return item && item->valuestring ? item->valuestring : fallback;
     };
+
+    auto result = ShaderBaseCustomMetaInfo{
+        getStr("name"),
+        getStr("type"),
+        getStr("vsFile"),
+        getStr("fsFile"),
+        getStr("typesFile")
+    };
+
+    cJSON_Delete(json); // importante: liberar memoria
+    return result;
 }
 
 ShaderBaseCustom* ShadersGUI::CreateShaderBaseCustom(ShaderCustomType type, std::string folder, std::string file)
@@ -321,13 +358,19 @@ ShaderBaseCustom* ShadersGUI::CreateShaderBaseCustom(ShaderCustomType type, std:
             auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, nullptr);
             return shader;
         }
-        case SHADER_NODE_OBJECT:
-        case SHADER_NODE_POSTPROCESSING: {
-            ShaderBaseNodes::WriteEmptyCustomShaderToDisk(name, folder, type);
+        case SHADER_NODE_OBJECT: {
+            auto nm = new ShaderNodeEditor(SHADER_NODE_OBJECT);
+            ShaderBaseNodes::WriteEmptyCustomShaderToDisk(name, folder, type, nm);
             auto metaInfo = ExtractShaderCustomCodeMetainfo(typesFile);
             auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, nullptr);
             return shader;
-
+        }
+        case SHADER_NODE_POSTPROCESSING: {
+            auto nm = new ShaderNodeEditor(SHADER_NODE_POSTPROCESSING);
+            ShaderBaseNodes::WriteEmptyCustomShaderToDisk(name, folder, type, nm);
+            auto metaInfo = ExtractShaderCustomCodeMetainfo(typesFile);
+            auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, nullptr);
+            return shader;
         }
         case SHADER_NONE:
         default:

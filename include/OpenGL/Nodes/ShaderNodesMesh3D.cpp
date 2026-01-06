@@ -4,10 +4,9 @@
 
 #include "ShaderNodesMesh3D.h"
 
-
-ShaderNodesMesh3D::ShaderNodesMesh3D(const std::string &label, Mesh3D* mesh)
+ShaderNodesMesh3D::ShaderNodesMesh3D(const std::string &label, const std::string &typesFile, ShaderCustomType type, NodeEditorManager *nodeManager, Mesh3D *mesh)
 :
-    ShaderBaseCustom(label, SHADER_NODE_OBJECT),
+    ShaderBaseNodes(label, typesFile, type, nodeManager),
     mesh(mesh)
 {
 }
