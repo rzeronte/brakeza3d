@@ -178,7 +178,6 @@ add_executable(Brakeza3D
         # Objects
         src/3D/Camera3D.cpp include/Components/Camera3D.h
         src/3D/Cube3D.cpp include/3D/Cube3D.h
-        src/3D/Decal.cpp include/3D/Decal.h
         src/3D/Image3D.cpp include/3D/Image3D.h
         src/3D/Image3DAnimation.cpp include/3D/Image3DAnimation.h
         src/3D/Image3DAnimation360.cpp include/3D/Image3DAnimation360.h

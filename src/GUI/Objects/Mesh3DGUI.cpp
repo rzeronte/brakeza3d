@@ -11,6 +11,11 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
     if (ImGui::CollapsingHeader("Mesh3D")) {
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));
+        if (ImGui::TreeNodeEx("Mesh render options", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
+            ImGui::Checkbox("Render default pipeline", &o->renderDefaultPipeline);
+            ImGui::TreePop();
+        }
+        ImGui::Separator();
         if (ImGui::TreeNodeEx("Mesh information", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
             ImGui::Spacing();
             ImGui::Image(FileSystemGUI::Icon(IconGUI::FOLDER), GUIType::Sizes::ICONS_BROWSERS);

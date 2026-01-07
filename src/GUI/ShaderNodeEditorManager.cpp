@@ -897,7 +897,6 @@ void ShaderNodeEditorManager::RenderMesh(
         }
     }
 
-    // ✅ CORREGIDO: Orden y tamaños correctos
     // Location 0: Position (vec4, 4 componentes)
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);

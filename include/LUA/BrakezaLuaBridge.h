@@ -321,7 +321,9 @@ inline void LUAIntegration(sol::state &lua)
         "BuildOctree", &Mesh3D::BuildOctree,
         "FillGrid3DFromGeometry", &Mesh3D::FillGrid3DFromGeometry,
         "getOctree", &Mesh3D::getOctree,
-        "getGrid3D", &Mesh3D::getGrid3D
+        "getGrid3D", &Mesh3D::getGrid3D,
+        "isRenderPipelineDefault", &Mesh3D::isRenderPipelineDefault,
+        "setRenderPipelineDefault",  &Mesh3D::setRenderPipelineDefault
     );
 
     lua.new_usertype<Mesh3DAnimation>("Mesh3DAnimation",
