@@ -41,7 +41,6 @@ protected:
     float distanceToCamera = 0.f;
     bool enabled = true;
     bool removed = false;
-    bool decal = false;
     bool belongToScene = false;
     bool multiScene = false;
     bool alphaEnabled = false;
@@ -82,7 +81,6 @@ public:
     void setRotation(const M3 &r);
     void setScale(float value);
     void setRemoved(bool value);
-    void setDecal(bool value);
     void setDrawOffset(const Vertex3D &v);
     void setAlpha(float alpha);
     void setAlphaEnabled(bool value);
@@ -110,7 +108,6 @@ public:
     [[nodiscard]] float getScale() const                                { return scale; }
     [[nodiscard]] float getDistanceToCamera() const                     { return distanceToCamera; }
     [[nodiscard]] bool &isAlphaEnabled()                                { return alphaEnabled; }
-    [[nodiscard]] bool isDecal() const                                  { return decal; }
     [[nodiscard]] bool isRemoved() const                                { return removed;}
     [[nodiscard]] bool &isEnabled()                                     { return enabled; }
     [[nodiscard]] bool isEnableLights() const                           { return enableLights; }

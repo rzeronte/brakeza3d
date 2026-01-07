@@ -398,11 +398,6 @@ void Object3D::setRemoved(bool value)
     removed = value;
 }
 
-void Object3D::setDecal(bool value)
-{
-    decal = value;
-}
-
 void Object3D::setDrawOffset(const Vertex3D &value)
 {
     drawOffset = value;

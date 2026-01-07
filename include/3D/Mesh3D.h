@@ -53,6 +53,8 @@ protected:
     Octree *octree = nullptr;
     Grid3D *grid = nullptr;
     bool loaded = false;
+
+    bool renderDefaultPipeline = true;
 public:
 
 
@@ -90,6 +92,8 @@ public:
 
     void setSourceFile(const std::string &sourceFile);
 
+    void setRenderPipelineDefault(bool value);
+
     [[nodiscard]] bool isLoaded() const                                           { return loaded; }
     [[nodiscard]] ObjectType getTypeObject() const override                       { return ObjectType::Mesh3D; }
     GUIType::Sheet getIcon() override                                             { return IconObject::MESH_3D; }
@@ -102,6 +106,7 @@ public:
     [[nodiscard]] std::vector<Triangle *> &getModelTriangles(int i)               { return meshes[i].modelTriangles; }
     [[nodiscard]] std::vector<Image *> &getModelTextures()                        { return modelTextures; }
     [[nodiscard]] std::vector<Vertex3D *> &getModelVertices(int i)                { return meshes[i].modelVertices; }
+    [[nodiscard]] bool isRenderPipelineDefault() const                            { return renderDefaultPipeline; }
 
     friend class Mesh3DSerializer;
     friend class Mesh3DGUI;

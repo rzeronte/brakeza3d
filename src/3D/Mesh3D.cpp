@@ -199,10 +199,11 @@ void Mesh3D::onUpdate()
 
     GLuint fbo = Config::get()->ENABLE_LIGHTS ? window->getGBuffer().FBO : sceneFramebuffer;
 
-    if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
+    if (Config::get()->TRIANGLE_MODE_TEXTURIZED ) {
         if (!isTransparent() ) {
             if (Config::get()->ENABLE_LIGHTS && enableLights) {
-                render->getShaderOGLRenderDeferred()->renderMesh(this, false, fbo);
+                if (isRenderPipelineDefault())
+                    render->getShaderOGLRenderDeferred()->renderMesh(this, false, fbo);
                 if (Config::get()->ENABLE_SHADOW_MAPPING && getRenderSettings().shadowMap) {
                     ShadowMappingPass();
                 }
@@ -668,4 +669,9 @@ void Mesh3D::FillOGLBuffers()
 void Mesh3D::setSourceFile(const std::string &sourceFile)
 {
     Mesh3D::sourceFile = sourceFile;
+}
+
+void Mesh3D::setRenderPipelineDefault(bool value)
+{
+    renderDefaultPipeline = value;
 }

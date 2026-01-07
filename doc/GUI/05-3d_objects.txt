@@ -30,6 +30,10 @@ A 3D model that includes geometry and textures.
 Mesh3D objects provide some advanced features, such as Grid3D and Octrees, which will be covered in the
 scripting chapter.
 
+Mesh3D objects can also be linked to custom shaders to achieve incredible visual effects on them.
+Sometimes you may want to take full control over an object’s rendering using shaders. You can disable its
+default rendering by using the setRenderPipelineDefault(bool) method.
+
 
 ========================================================================================================
 ### 5.3) Mesh3DAnimation
