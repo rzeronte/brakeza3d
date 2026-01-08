@@ -38,44 +38,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(shaders): Integration node shader edition">
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/InternalTextureNode.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/MeshTextureNode.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/Button.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Button.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderBaseNodes.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Nodes/ShaderBaseNodes.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesMesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Nodes/ShaderNodesMesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesMesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesMesh3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesPostProcessing.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Nodes/ShaderNodesPostProcessing.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesPostProcessing.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesPostProcessing.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/Image.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Image.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/PostProcessingManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/PostProcessingManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Render/PostProcessingManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/PostProcessingManager.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/2D/Image2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/2D/Image2D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/SwarmGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/SwarmGUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/LUA/BrakezaLuaBridge.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/LUA/BrakezaLuaBridge.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Collider.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Collider.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Line2D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Line2D.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Threads/ThreadJobMakeRigidBody.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Threads/ThreadJobMakeRigidBody.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/3D/Mesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Mesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentRender.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/AddNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/AddNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/ColorNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/ColorNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/CosNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/CosNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/GradientNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/GradientNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/ImageNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/ImageNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/MixNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/MixNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/MultiplyNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/MultiplyNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/NodeType.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/NodeType.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/OutputNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/OutputNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/SinNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SinNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/SmoothstepNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SmoothstepNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/SubtractNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SubtractNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/TimeNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/TimeNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/UVCoordsNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVCoordsNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/UVOffsetNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVOffsetNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/UVRotateNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVRotateNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/UVScaleNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVScaleNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditorManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditor.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditorManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Render/Image.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Image.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/3D/Object3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/3D/Object3D.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/Object3DGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/Object3DGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Collider.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Collider.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Serializers/Mesh3DSerializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Serializers/Mesh3DSerializer.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -317,11 +291,6 @@
       </method>
     </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -623,6 +592,10 @@
       <workItem from="1767434040103" duration="66575000" />
       <workItem from="1767571211528" duration="19199000" />
       <workItem from="1767701859878" duration="19353000" />
+      <workItem from="1767737067519" duration="10214000" />
+      <workItem from="1767757007503" duration="19000" />
+      <workItem from="1767757270491" duration="1782000" />
+      <workItem from="1767775583203" duration="14480000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -672,14 +645,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00110" summary="feat(threads): wip threads queue">
-      <option name="closed" value="true" />
-      <created>1765686857800</created>
-      <option name="number" value="00110" />
-      <option name="presentableId" value="LOCAL-00110" />
-      <option name="project" value="LOCAL" />
-      <updated>1765686857800</updated>
     </task>
     <task id="LOCAL-00111" summary="fix(picking): Fix colorpicking / feat take screenshots">
       <option name="closed" value="true" />
@@ -1009,7 +974,15 @@
       <option name="project" value="LOCAL" />
       <updated>1767664851434</updated>
     </task>
-    <option name="localTasksCounter" value="152" />
+    <task id="LOCAL-00152" summary="feat(shaders): Integration node shader edition">
+      <option name="closed" value="true" />
+      <created>1767750180684</created>
+      <option name="number" value="00152" />
+      <option name="presentableId" value="LOCAL-00152" />
+      <option name="project" value="LOCAL" />
+      <updated>1767750180685</updated>
+    </task>
+    <option name="localTasksCounter" value="153" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

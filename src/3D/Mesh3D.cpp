@@ -429,7 +429,7 @@ void Mesh3D::SetupGhostCollider(CollisionShape modeShape)
     setCollisionMode(GHOST);
     setCollisionShape(modeShape);
 
-    if (getCollisionShape() == SIMPLE_SHAPE || getCollisionShape() == CAPSULE) {
+    if (getCollisionShape() == SIMPLE_SHAPE || getCollisionShape() == CAPSULE_SHAPE) {
         makeSimpleGhostBody(
             getPosition(),
             getModelMatrix(),
@@ -459,7 +459,7 @@ void Mesh3D::SetupRigidBodyCollider(CollisionShape modeShape)
 void Mesh3D::DrawImGuiCollisionShapeSelector()
 {
     auto flags = ImGuiComboFlags_None;
-    const char* items[] = { "SIMPLE", "CAPSULE", "TRIANGLE",  };
+    const char* items[] = { "SIMPLE", "CAPSULE_SHAPE", "TRIANGLE",  };
     int item_current_idx = collisionShape;
     const char* combo_preview_value = items[item_current_idx];
 
@@ -484,11 +484,11 @@ void Mesh3D::DrawImGuiCollisionShapeSelector()
                         }
                         case 1: {
                             if (collisionMode == GHOST) {
-                                SetupGhostCollider(CAPSULE);
+                                SetupGhostCollider(CAPSULE_SHAPE);
                             }
 
                             if (collisionMode == BODY) {
-                                SetupRigidBodyCollider(CAPSULE);
+                                SetupRigidBodyCollider(CAPSULE_SHAPE);
                             }
                             break;
                         }

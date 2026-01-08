@@ -11,7 +11,7 @@
 
 enum CollisionShape {
     SIMPLE_SHAPE = 0,
-    CAPSULE = 1,
+    CAPSULE_SHAPE = 1,
     TRIANGLE_MESH_SHAPE = 2,
 };
 

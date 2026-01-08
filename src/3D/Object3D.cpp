@@ -244,7 +244,7 @@ void Object3D::MakeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
         collisionShape = new btBoxShape(simpleShapeSize.toBullet());
     }
 
-    if (getCollisionShape() == CAPSULE) {
+    if (getCollisionShape() == CAPSULE_SHAPE) {
         collisionShape = new btCapsuleShape(kinematicCapsuleSize.x, kinematicCapsuleSize.y);
     }
 
@@ -351,7 +351,7 @@ void Object3D::SetupGhostCollider(CollisionShape mode)
     setCollisionMode(GHOST);
     setCollisionShape(mode);
 
-    if (getCollisionShape() == SIMPLE_SHAPE || getCollisionShape() == CAPSULE) {
+    if (getCollisionShape() == SIMPLE_SHAPE || getCollisionShape() == CAPSULE_SHAPE) {
         makeSimpleGhostBody(
             getPosition(),
             getModelMatrix(),

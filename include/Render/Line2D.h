@@ -9,7 +9,7 @@ class Line2D {
     bool debug = false;
 public:
     Line2D(int, int, int, int);
-    Point2D middlePoint() const;
+    [[nodiscard]] Point2D middlePoint() const;
 };
 
 

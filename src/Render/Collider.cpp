@@ -117,7 +117,7 @@ void Collider::makeSimpleGhostBody(
         convexHullShape = reinterpret_cast<btConvexHullShape *>(new btBoxShape(dimensions.toBullet()));;
     }
 
-    if (getCollisionShape() == CAPSULE) {
+    if (getCollisionShape() == CAPSULE_SHAPE) {
         convexHullShape = reinterpret_cast<btConvexHullShape *>(new btCapsuleShape(kinematicCapsuleSize.x, kinematicCapsuleSize.y));;
     }
 
@@ -186,7 +186,7 @@ void Collider::drawImGuiCollisionModeSelector()
 void Collider::DrawImGuiCollisionShapeSelector()
 {
     auto flags = ImGuiComboFlags_None;
-    const char* items[] = { "SIMPLE", "CAPSULE" };
+    const char* items[] = { "SIMPLE", "CAPSULE_SHAPE" };
     int item_current_idx = collisionShape;
     const char* combo_preview_value = items[item_current_idx];
 
@@ -209,10 +209,10 @@ void Collider::DrawImGuiCollisionShapeSelector()
                         }
                         case 1: {
                             if (collisionMode == GHOST) {
-                                SetupGhostCollider(CAPSULE);
+                                SetupGhostCollider(CAPSULE_SHAPE);
                             }
                             if (collisionMode == BODY) {
-                                SetupRigidBodyCollider(CAPSULE);
+                                SetupRigidBodyCollider(CAPSULE_SHAPE);
                             }
                             break;
                         }
@@ -234,7 +234,7 @@ void Collider::setupKinematicCollider()
     RemoveCollisionObject();
 
     setCollisionMode(KINEMATIC);
-    setCollisionShape(CAPSULE);
+    setCollisionShape(CAPSULE_SHAPE);
 
     MakeKineticBody(
         kinematicCapsuleSize.x,

@@ -99,8 +99,8 @@ void Mesh3DSerializer::ApplyCollider(Mesh3D *m, cJSON* json)
                     if (shape == SIMPLE_SHAPE) {
                         m->SetupGhostCollider(SIMPLE_SHAPE);
                     }
-                    if (shape == CAPSULE) {
-                        m->SetupGhostCollider(CAPSULE);
+                    if (shape == CAPSULE_SHAPE) {
+                        m->SetupGhostCollider(CAPSULE_SHAPE);
                     }
 
                     if (shape == TRIANGLE_MESH_SHAPE) {
@@ -111,8 +111,8 @@ void Mesh3DSerializer::ApplyCollider(Mesh3D *m, cJSON* json)
                     if (shape == SIMPLE_SHAPE) {
                         m->SetupRigidBodyCollider(SIMPLE_SHAPE);
                     }
-                    if (shape == CAPSULE) {
-                        m->SetupRigidBodyCollider(CAPSULE);
+                    if (shape == CAPSULE_SHAPE) {
+                        m->SetupRigidBodyCollider(CAPSULE_SHAPE);
                     }
                     if (shape == TRIANGLE_MESH_SHAPE) {
                         m->SetupRigidBodyCollider(TRIANGLE_MESH_SHAPE);
