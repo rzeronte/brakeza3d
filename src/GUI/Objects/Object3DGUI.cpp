@@ -214,7 +214,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                         }
                     }
 
-                    if (o->getCollisionMode() == KINEMATIC || o->getCollisionShape() == CAPSULE) {
+                    if (o->getCollisionMode() == KINEMATIC || o->getCollisionShape() == CAPSULE_SHAPE) {
                         ImGui::Separator();
                         const float range_min = 0;
                         const float range_max = 1000;

@@ -35,7 +35,7 @@ public:
 
         mesh->setCollisionShape(shape);
         mesh->setCollisionMode(BODY);
-        if (mesh->getCollisionShape() == SIMPLE_SHAPE || mesh->getCollisionShape() == CAPSULE) {
+        if (mesh->getCollisionShape() == SIMPLE_SHAPE || mesh->getCollisionShape() == CAPSULE_SHAPE) {
             mesh->MakeSimpleRigidBody(
                 mesh->getMass(),
                 Components::get()->Collisions()->getDynamicsWorld(),

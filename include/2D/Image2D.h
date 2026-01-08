@@ -30,9 +30,9 @@ public:
     void setFilePath(const std::string &filepath);
     void setImage(Image *value);
 
-    ObjectType getTypeObject() const override           { return ObjectType::Image2D; }
-    GUIType::Sheet getIcon() override                   { return IconObject::IMAGE_2D; }
-    [[nodiscard]] Image* getImage() const               { return image; }
+    [[nodiscard]] ObjectType getTypeObject() const override     { return ObjectType::Image2D; }
+    GUIType::Sheet getIcon() override                           { return IconObject::IMAGE_2D; }
+    [[nodiscard]] Image* getImage() const                       { return image; }
 
     friend class Image2DSerializer;
     friend class Image2DGUI;

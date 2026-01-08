@@ -360,7 +360,9 @@ inline void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<Image2D>("Image2D",
     sol::base_classes, sol::bases<Object3D>(),
-        "setScreenPosition", &Image2D::setScreenPosition
+        "setScreenPosition", &Image2D::setScreenPosition,
+        "setSize", &Image2D::setSize,
+        "setFilePath", &Image2D::setFilePath
     );
 
     lua.new_usertype<Image2DAnimation>("Image2DAnimation",
