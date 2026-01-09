@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="rss.xsl"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>Brakeza3D Engine Blog</title>
+        <link>https://rzeronte.github.io/brakeza3d/blog</link>
+        <description>Brakeza3D Engine Blog</description>
+        <lastBuildDate>Tue, 07 Jan 2025 00:00:00 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <language>en</language>
+        <item>
+            <title><![CDATA[¡Bienvenidos al Blog de Brakeza3D!]]></title>
+            <link>https://rzeronte.github.io/brakeza3d/blog/bienvenida</link>
+            <guid>https://rzeronte.github.io/brakeza3d/blog/bienvenida</guid>
+            <pubDate>Tue, 07 Jan 2025 00:00:00 GMT</pubDate>
+            <description><![CDATA[Brakeza.com is reborn as a site specifically designed as a technical documentation repository and download hub for the Brakeza 3D Engine.]]></description>
+            <content:encoded><![CDATA[<p>Brakeza.com is reborn as a site specifically designed as a technical documentation repository and download hub for the Brakeza 3D Engine.</p>
+<p>To expand our community, the website and documentation have been completely rewritten in English. You will find new multimedia content and a wide variety of code examples!</p>]]></content:encoded>
+            <category>brakeza3d</category>
+            <category>anuncio</category>
+            <category>bienvenida</category>
+        </item>
+    </channel>
+</rss>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="atom.xsl"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://rzeronte.github.io/brakeza3d/blog</id>
+    <title>Brakeza3D Engine Blog</title>
+    <updated>2025-01-07T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://rzeronte.github.io/brakeza3d/blog"/>
+    <subtitle>Brakeza3D Engine Blog</subtitle>
+    <icon>https://rzeronte.github.io/brakeza3d/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[¡Bienvenidos al Blog de Brakeza3D!]]></title>
+        <id>https://rzeronte.github.io/brakeza3d/blog/bienvenida</id>
+        <link href="https://rzeronte.github.io/brakeza3d/blog/bienvenida"/>
+        <updated>2025-01-07T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Brakeza.com is reborn as a site specifically designed as a technical documentation repository and download hub for the Brakeza 3D Engine.]]></summary>
+        <content type="html"><![CDATA[<p>Brakeza.com is reborn as a site specifically designed as a technical documentation repository and download hub for the Brakeza 3D Engine.</p>
+<p>To expand our community, the website and documentation have been completely rewritten in English. You will find new multimedia content and a wide variety of code examples!</p>]]></content>
+        <author>
+            <name>Eduardo</name>
+            <uri>https://github.com/rzeronte</uri>
+        </author>
+        <category label="brakeza3d" term="brakeza3d"/>
+        <category label="anuncio" term="anuncio"/>
+        <category label="bienvenida" term="bienvenida"/>
+    </entry>
+</feed>
