@@ -1,0 +1,26 @@
+{
+  "id": "input-system",
+  "title": "09 - Input system",
+  "description": "---",
+  "source": "@site/docs/09-input-system.md",
+  "sourceDirName": ".",
+  "slug": "/input-system",
+  "permalink": "/brakeza3d/docs/input-system",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 10,
+  "frontMatter": {
+    "sidebar_position": 10
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "08 - Colliders system",
+    "permalink": "/brakeza3d/docs/colliders-system"
+  },
+  "next": {
+    "title": "10 - Sound system",
+    "permalink": "/brakeza3d/docs/sound-system"
+  }
+}

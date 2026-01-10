@@ -1,0 +1,26 @@
+{
+  "id": "particle-emitter",
+  "title": "06 - Particle emitter",
+  "description": "---",
+  "source": "@site/docs/06-particle-emitter.md",
+  "sourceDirName": ".",
+  "slug": "/particle-emitter",
+  "permalink": "/brakeza3d/docs/particle-emitter",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 7,
+  "frontMatter": {
+    "sidebar_position": 7
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "05 - 3D objects",
+    "permalink": "/brakeza3d/docs/3d-objects"
+  },
+  "next": {
+    "title": "07 - Lighting system",
+    "permalink": "/brakeza3d/docs/lighting-system"
+  }
+}

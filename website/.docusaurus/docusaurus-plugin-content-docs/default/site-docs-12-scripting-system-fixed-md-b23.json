@@ -1,0 +1,26 @@
+{
+  "id": "scripting_system-fixed",
+  "title": "12 - SCRIPTING SYSTEM",
+  "description": "Brakeza3D includes a scripting system using LUA as its language.",
+  "source": "@site/docs/12-scripting_system-fixed.md",
+  "sourceDirName": ".",
+  "slug": "/scripting_system-fixed",
+  "permalink": "/docs/scripting_system-fixed",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 12,
+  "frontMatter": {
+    "sidebar_position": 12
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "11 - SOUND SYSTEM",
+    "permalink": "/docs/sound_system"
+  },
+  "next": {
+    "title": "13 - SHADERS SYSTEM",
+    "permalink": "/docs/shaders_system"
+  }
+}

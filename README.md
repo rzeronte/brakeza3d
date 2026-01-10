@@ -16,7 +16,7 @@ Brakeza3D is an open source 3D engine written from scratch in C++
 - Shadow mapping
 - LUA Scripting
 - Extensible GLSL Shaders
-- Code editor with LUA/GLS syntaxis Integration
+- Code editor with LUA/GLSL syntaxis Integration
 - Sound system integration
 - Multi-Thread (Thread pool based)
 - Interface for XBOX/Playstation controller

@@ -1,0 +1,26 @@
+{
+  "id": "particle_emitter",
+  "title": "07 - Particle emitter",
+  "description": "---",
+  "source": "@site/docs/07-particle_emitter.md",
+  "sourceDirName": ".",
+  "slug": "/particle_emitter",
+  "permalink": "/docs/particle_emitter",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 7,
+  "frontMatter": {
+    "sidebar_position": 7
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "05 - 3D objects",
+    "permalink": "/docs/3d-objects"
+  },
+  "next": {
+    "title": "08 - Colliders system",
+    "permalink": "/docs/colliders_system"
+  }
+}

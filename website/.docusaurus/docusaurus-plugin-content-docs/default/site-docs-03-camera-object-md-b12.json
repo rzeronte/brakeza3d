@@ -1,0 +1,26 @@
+{
+  "id": "camera_object",
+  "title": "03 - Camera",
+  "description": "---",
+  "source": "@site/docs/03-camera_object.md",
+  "sourceDirName": ".",
+  "slug": "/camera_object",
+  "permalink": "/docs/camera_object",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "02 - Basic object types",
+    "permalink": "/docs/basic-object-types"
+  },
+  "next": {
+    "title": "04 - 2D objects",
+    "permalink": "/docs/2d-objects"
+  }
+}

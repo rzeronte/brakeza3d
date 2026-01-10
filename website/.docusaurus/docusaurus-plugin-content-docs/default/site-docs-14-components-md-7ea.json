@@ -1,0 +1,26 @@
+{
+  "id": "components",
+  "title": "14 - Components",
+  "description": "---",
+  "source": "@site/docs/14-components.md",
+  "sourceDirName": ".",
+  "slug": "/components",
+  "permalink": "/docs/components",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 14,
+  "frontMatter": {
+    "sidebar_position": 14
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "13 - Shaders system",
+    "permalink": "/docs/shaders-system"
+  },
+  "next": {
+    "title": "14 - Assets folder",
+    "permalink": "/docs/assets-folder"
+  }
+}

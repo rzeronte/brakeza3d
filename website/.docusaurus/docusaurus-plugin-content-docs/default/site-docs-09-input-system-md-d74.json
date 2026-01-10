@@ -1,0 +1,26 @@
+{
+  "id": "input_system",
+  "title": "09 - Input system",
+  "description": "---",
+  "source": "@site/docs/09-input_system.md",
+  "sourceDirName": ".",
+  "slug": "/input_system",
+  "permalink": "/docs/input_system",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 9,
+  "frontMatter": {
+    "sidebar_position": 9
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "08 - Colliders system",
+    "permalink": "/docs/colliders-system"
+  },
+  "next": {
+    "title": "10 - Lighting system",
+    "permalink": "/docs/lighting-system"
+  }
+}
