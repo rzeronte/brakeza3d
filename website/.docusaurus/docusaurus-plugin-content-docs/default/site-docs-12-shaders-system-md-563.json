@@ -1,0 +1,26 @@
+{
+  "id": "shaders-system",
+  "title": "12 - Shaders system",
+  "description": "---",
+  "source": "@site/docs/12-shaders-system.md",
+  "sourceDirName": ".",
+  "slug": "/shaders-system",
+  "permalink": "/brakeza3d/docs/shaders-system",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 13,
+  "frontMatter": {
+    "sidebar_position": 13
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "11 - Scripting system",
+    "permalink": "/brakeza3d/docs/scripting-system"
+  },
+  "next": {
+    "title": "13 - Components",
+    "permalink": "/brakeza3d/docs/components"
+  }
+}

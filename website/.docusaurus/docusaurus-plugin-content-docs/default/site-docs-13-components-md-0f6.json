@@ -1,0 +1,26 @@
+{
+  "id": "components",
+  "title": "13 - Components",
+  "description": "---",
+  "source": "@site/docs/13-components.md",
+  "sourceDirName": ".",
+  "slug": "/components",
+  "permalink": "/brakeza3d/docs/components",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 14,
+  "frontMatter": {
+    "sidebar_position": 14
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "12 - Shaders system",
+    "permalink": "/brakeza3d/docs/shaders-system"
+  },
+  "next": {
+    "title": "14 - Assets folder",
+    "permalink": "/brakeza3d/docs/assets-folder"
+  }
+}

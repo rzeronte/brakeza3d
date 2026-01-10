@@ -1,0 +1,26 @@
+{
+  "id": "scripting-system",
+  "title": "11 - Scripting system",
+  "description": "---",
+  "source": "@site/docs/11-scripting-system.md",
+  "sourceDirName": ".",
+  "slug": "/scripting-system",
+  "permalink": "/brakeza3d/docs/scripting-system",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 12,
+  "frontMatter": {
+    "sidebar_position": 12
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "10 - Sound system",
+    "permalink": "/brakeza3d/docs/sound-system"
+  },
+  "next": {
+    "title": "12 - Shaders system",
+    "permalink": "/brakeza3d/docs/shaders-system"
+  }
+}

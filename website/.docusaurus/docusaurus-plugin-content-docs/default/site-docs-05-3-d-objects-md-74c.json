@@ -1,0 +1,26 @@
+{
+  "id": "05-3d_objects",
+  "title": "05 - 3D objects",
+  "description": "---",
+  "source": "@site/docs/05-3d_objects.md",
+  "sourceDirName": ".",
+  "slug": "/05-3d_objects",
+  "permalink": "/docs/05-3d_objects",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 5,
+  "frontMatter": {
+    "sidebar_position": 5
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "04 - 2D objects",
+    "permalink": "/docs/04-2d-objects"
+  },
+  "next": {
+    "title": "06 - Light objects",
+    "permalink": "/docs/lights_objects"
+  }
+}

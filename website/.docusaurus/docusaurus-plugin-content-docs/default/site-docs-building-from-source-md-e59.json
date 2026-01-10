@@ -1,0 +1,21 @@
+{
+  "id": "building-from-source",
+  "title": "Building from source",
+  "description": "Poseso",
+  "source": "@site/docs/building-from-source.md",
+  "sourceDirName": ".",
+  "slug": "/building-from-source",
+  "permalink": "/brakeza3d/docs/building-from-source",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {
+    "title": "Building from source"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "14 - Assets folder",
+    "permalink": "/brakeza3d/docs/assets-folder"
+  }
+}

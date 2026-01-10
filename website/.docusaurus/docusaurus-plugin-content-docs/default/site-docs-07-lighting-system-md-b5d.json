@@ -1,0 +1,26 @@
+{
+  "id": "lighting-system",
+  "title": "07 - Lighting system",
+  "description": "It is configured via the render component:",
+  "source": "@site/docs/07-lighting-system.md",
+  "sourceDirName": ".",
+  "slug": "/lighting-system",
+  "permalink": "/brakeza3d/docs/lighting-system",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 8,
+  "frontMatter": {
+    "sidebar_position": 8
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "06 - Particle emitter",
+    "permalink": "/brakeza3d/docs/particle-emitter"
+  },
+  "next": {
+    "title": "08 - Colliders system",
+    "permalink": "/brakeza3d/docs/colliders-system"
+  }
+}

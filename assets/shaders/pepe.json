@@ -1,0 +1,61 @@
+{
+	"typesFile":	"../assets/shaders/pepe.json",
+	"name":	"pepe",
+	"type":	"NodeMesh3D",
+	"types":	{
+		"version":	"1.0",
+		"editorType":	"base",
+		"type":	"NodeMesh3D",
+		"nodes":	[{
+				"id":	1,
+				"name":	"Color",
+				"type":	"Color",
+				"position":	{
+					"x":	3.4028234663852886e+38,
+					"y":	3.4028234663852886e+38
+				},
+				"color":	{
+					"r":	0.800000011920929,
+					"g":	0.40000000596046448,
+					"b":	0.20000000298023224,
+					"a":	1
+				},
+				"inputs":	[],
+				"outputs":	[{
+						"id":	2,
+						"name":	"RGB",
+						"type":	5
+					}],
+				"userData":	{
+				}
+			}, {
+				"id":	3,
+				"name":	"Output",
+				"type":	"Output",
+				"position":	{
+					"x":	3.4028234663852886e+38,
+					"y":	3.4028234663852886e+38
+				},
+				"color":	{
+					"r":	0.800000011920929,
+					"g":	0.20000000298023224,
+					"b":	0.20000000298023224,
+					"a":	1
+				},
+				"inputs":	[{
+						"id":	4,
+						"name":	"Color",
+						"type":	5
+					}],
+				"outputs":	[],
+				"userData":	{
+				}
+			}],
+		"links":	[{
+				"id":	5,
+				"startPinId":	2,
+				"endPinId":	4
+			}],
+		"lastShaderCode":	"#version 330 core\nout vec4 FragColor;\nuniform float u_Time;\n\nvoid main() {\n    vec3 var1 = vec3(1, 0.5, 0.2);\n    FragColor = vec4(var1, 1.0);\n}\n"
+	}
+}

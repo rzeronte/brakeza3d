@@ -1,0 +1,27 @@
+{
+  "id": "05-3d-objects",
+  "title": "05 - 3D objects",
+  "description": "---",
+  "source": "@site/docs/05-3d-objects.md",
+  "sourceDirName": ".",
+  "slug": "/3d-objects",
+  "permalink": "/brakeza3d/docs/3d-objects",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 5,
+  "frontMatter": {
+    "sidebar_position": 5,
+    "slug": "3d-objects"
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "04 - 2D objects",
+    "permalink": "/brakeza3d/docs/2d-objects"
+  },
+  "next": {
+    "title": "06 - Particle emitter",
+    "permalink": "/brakeza3d/docs/particle-emitter"
+  }
+}

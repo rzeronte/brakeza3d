@@ -1,0 +1,11 @@
+{
+  "type": "mdx",
+  "permalink": "/foo",
+  "source": "@site/src/pages/foo.md",
+  "title": "Mi Página",
+  "description": "Contenido aquí...",
+  "frontMatter": {
+    "title": "Mi Página"
+  },
+  "unlisted": false
+}
