@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkmi_sitio=globalThis.webpackChunkmi_sitio||[]).push([[1108],{1650(a){a.exports=JSON.parse('{"tags":[{"label":"brakeza3d","permalink":"/brakeza3d/blog/tags/brakeza-3-d","count":1},{"label":"news","permalink":"/brakeza3d/blog/tags/news","count":1},{"label":"welcome","permalink":"/brakeza3d/blog/tags/welcome","count":1}]}')}}]);
