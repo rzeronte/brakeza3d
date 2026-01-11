@@ -32,7 +32,9 @@ public:
         editor->AddOutputPin(node, "Output", PinType::Float);
     }
 
-    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
+    float RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
+        ImGui::BeginGroup();
+
         if (node->userData) {
             ImVec2* edges = (ImVec2*)node->userData;
             if (ImGui::DragFloat("Edge 0", &edges->x, 0.01f, 0.0f, 1.0f)) {
@@ -42,6 +44,8 @@ public:
                 editor->SetNeedsRecompile();
             }
         }
+        ImGui::EndGroup();
+        return MeasureUIWidth();
     }
 
     std::string GenerateCode(

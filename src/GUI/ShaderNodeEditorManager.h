@@ -83,6 +83,9 @@ public:
     void RegisterNodeTypes();
     void RegisterNodeType(NodeType* nodeType);
     void Render() override;
+
+    void DrawNodeHeader(std::shared_ptr<Node> &node);
+
     void RenderNode(std::shared_ptr<Node>& node) override;
     void Update();
     void RenderEffect(GLuint fb);

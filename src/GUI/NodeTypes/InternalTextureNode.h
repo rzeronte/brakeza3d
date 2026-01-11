@@ -36,10 +36,12 @@ public:
         // Inicializar la textura (se actualizará cada frame)
         editor->SetExternalTextureForNode(node->id, 0);
     }
-    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
-        InternalTextureType* texType = (InternalTextureType*)node->userData;
-        if (!texType) return;
 
+    float RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
+        InternalTextureType* texType = (InternalTextureType*)node->userData;
+        if (!texType) return 0.f;
+
+        ImGui::BeginGroup();
         ImGui::PushID(node->id);
         ImGui::PushItemWidth(200);
 
@@ -98,6 +100,9 @@ public:
 
         ImGui::PopItemWidth();
         ImGui::PopID();
+
+        ImGui::EndGroup();
+        return MeasureUIWidth();
     }
 
     std::string GenerateCode(

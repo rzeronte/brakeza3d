@@ -26,7 +26,7 @@ public:
     virtual void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) = 0;
 
     // Renderizado de UI personalizada
-    virtual void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) {}
+    virtual float RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) { return 0.f; }
 
     // Generación de código shader
     virtual std::string GenerateCode(
@@ -35,6 +35,15 @@ public:
         std::stringstream& code,
         ShaderNodeEditorManager* editor
     ) = 0;
+
+    virtual GUIType::Sheet GetIcon() const { return IconGUI::BONE_LOCK; }
+
+    float MeasureUIWidth()
+    {
+        ImVec2 min = ImGui::GetItemRectMin();
+        ImVec2 max = ImGui::GetItemRectMax();
+        return max.x - min.x;
+    }
 };
 
 #endif // NODETYPE_H

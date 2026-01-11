@@ -34,9 +34,12 @@ public:
         editor->AddOutputPin(node, "Alpha", PinType::Float);
     }
 
-    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
+    float RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         std::string* filepath = (std::string*)node->userData;
-        if (!filepath) return;
+        if (!filepath) return 0.f;
+
+        ImGui::BeginGroup();
+
 
         ImGui::PushItemWidth(200);
 
@@ -139,6 +142,9 @@ public:
         }
 
         ImGui::PopItemWidth();
+
+        ImGui::EndGroup();
+        return MeasureUIWidth();
     }
 
     std::string GenerateCode(

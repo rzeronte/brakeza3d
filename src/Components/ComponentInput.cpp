@@ -27,7 +27,7 @@ void ComponentInput::onUpdate()
 
     if (!isEnabled()) return;
 
-    if (keyboardEnabled) {
+    if (keyboardEnabled  && !ImGui::GetIO().WantCaptureKeyboard) {
         HandleKeyboardMovingCamera();
     }
 }
@@ -347,6 +347,8 @@ void ComponentInput::HandleCheckPadConnection(SDL_Event *pEvent)
 
 void ComponentInput::HandleDeleteSelectedObject(SDL_Event *e) const
 {
+    if (ImGui::GetIO().WantCaptureKeyboard) return;
+
     if (e->type == SDL_KEYDOWN) {
         if (keyboard[SDL_SCANCODE_DELETE]) {
             auto o = Components::get()->Render()->getSelectedObject();

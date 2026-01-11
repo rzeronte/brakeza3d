@@ -30,7 +30,8 @@ public:
         editor->AddOutputPin(node, "RGB", PinType::Vector);
     }
 
-    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
+    float RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
+        ImGui::BeginGroup();
         if (node->userData) {
             ImVec4* color = (ImVec4*)node->userData;
             std::string colorId = "##color" + std::to_string(node->id);
@@ -38,6 +39,8 @@ public:
                 editor->SetNeedsRecompile();
             }
         }
+        ImGui::EndGroup();
+        return MeasureUIWidth();
     }
 
     std::string GenerateCode(

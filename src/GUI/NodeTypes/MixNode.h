@@ -29,17 +29,24 @@ public:
     void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddInputPin(node, "A", PinType::Vector);
         editor->AddInputPin(node, "B", PinType::Vector);
-        editor->AddInputPin(node, "Factor", PinType::Float);
+        editor->AddInputPin(node, "FactorTest", PinType::Float);
         editor->AddOutputPin(node, "Result", PinType::Vector);
     }
 
-    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
+    float RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
+        ImGui::BeginGroup();
+        ImGui::PushID(node->id);
+        ImGui::PushItemWidth(200);
         if (node->userData) {
             float* factor = (float*)node->userData;
-            if (ImGui::SliderFloat("Factor", factor, 0.0f, 1.0f)) {
+            if (ImGui::DragFloat("Factor", factor, 0.01f, 0.0f, 1.0f)) {
                 editor->SetNeedsRecompile();
             }
         }
+        ImGui::PopItemWidth();
+        ImGui::PopID();
+        ImGui::EndGroup();
+        return MeasureUIWidth();
     }
 
     std::string GenerateCode(

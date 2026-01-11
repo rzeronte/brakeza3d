@@ -35,9 +35,11 @@ public:
         editor->SetExternalTextureForNode(node->id, 0);
     }
 
-    void RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
+    float RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         MeshTextureType* texType = (MeshTextureType*)node->userData;
-        if (!texType) return;
+        if (!texType) return 0.f;
+
+        ImGui::BeginGroup();
 
         ImGui::PushID(node->id);
         ImGui::PushItemWidth(200);
@@ -112,6 +114,9 @@ public:
 
         ImGui::PopItemWidth();
         ImGui::PopID();
+        ImGui::EndGroup();
+
+        return MeasureUIWidth();
     }
 
     std::string GenerateCode(

@@ -357,6 +357,7 @@ add_executable(Brakeza3D
         include/GUI/Editable/EditableOpenNode.h
         src/GUI/NodeTypes/InternalTextureNode.h
         src/GUI/NodeTypes/MeshTextureNode.h
+        src/GUI/ImGuiLayoutHelpers.h
 )
 
 target_link_libraries(Brakeza3D

@@ -22,6 +22,7 @@
 
 #include <cmath>
 
+#include "ImGuiLayoutHelpers.h"
 #include "NodeTypes/InternalTextureNode.h"
 #include "NodeTypes/MeshTextureNode.h"
 
@@ -214,6 +215,8 @@ void ShaderNodeEditorManager::RenderNode(std::shared_ptr<Node>& node)
 
     ImGui::PushItemWidth(150);
 
+    float uiContentWidth = 0.0f;
+
     // Obtener el tipo de nodo
     auto it = m_NodeTypes.find(node->name);
     if (it != m_NodeTypes.end()) {
@@ -228,25 +231,68 @@ void ShaderNodeEditorManager::RenderNode(std::shared_ptr<Node>& node)
             ImGui::Text("[PRO] %s", node->name.c_str());
         }
 
-        // Renderizar UI personalizada del nodo
-        nodeType->RenderUI(node, this);
+        // Renderizar UI personalizada y obtener su ancho
+        uiContentWidth = nodeType->RenderUI(node, this);
     }
 
     ImGui::PopItemWidth();
     ImGui::Spacing();
 
+    // Calcular anchos máximos de cada columna de pins
+    float maxInputWidth = 0.0f;
+    float maxOutputWidth = 0.0f;
+
     for (auto& pin : node->inputs) {
-        ed::BeginPin(pin->id, ed::PinKind::Input);
-        ImGui::Text("-> %s", pin->name.c_str());
-        ed::EndPin();
+        std::string text = "-> " + pin->name;
+        float width = ImGui::CalcTextSize(text.c_str()).x;
+        maxInputWidth = std::max(maxInputWidth, width);
     }
 
-    ImGui::Spacing();
-
     for (auto& pin : node->outputs) {
-        ed::BeginPin(pin->id, ed::PinKind::Output);
-        ImGui::Text("%s ->", pin->name.c_str());
-        ed::EndPin();
+        std::string text = pin->name + " ->";
+        float width = ImGui::CalcTextSize(text.c_str()).x;
+        maxOutputWidth = std::max(maxOutputWidth, width);
+    }
+
+    // Ancho total del área de pins
+    float minSpacing = 40.0f;
+    float pinAreaWidth = maxInputWidth + minSpacing + maxOutputWidth;
+
+    // Usar el máximo entre el ancho de la UI y el ancho necesario para los pins
+    float totalNodeWidth = std::max(uiContentWidth, pinAreaWidth);
+
+    // Ancho mínimo del nodo
+    totalNodeWidth = std::max(totalNodeWidth, 150.0f);
+
+    size_t maxPins = std::max(node->inputs.size(), node->outputs.size());
+
+    for (size_t i = 0; i < maxPins; ++i) {
+        float rowStartX = ImGui::GetCursorPosX();
+
+        // Input pin (columna izquierda)
+        if (i < node->inputs.size()) {
+            auto& pin = node->inputs[i];
+            ed::BeginPin(pin->id, ed::PinKind::Input);
+            ImGui::Text("-> %s", pin->name.c_str());
+            ed::EndPin();
+        } else {
+            // Espacio vacío para inputs
+            ImGui::Dummy(ImVec2(1, ImGui::GetTextLineHeight()));
+        }
+
+        // IMPORTANTE: Solo posicionar cursor si hay un output que renderizar
+        if (i < node->outputs.size()) {
+            // Posicionar cursor para output (columna derecha)
+            float outputX = rowStartX + totalNodeWidth - maxOutputWidth;
+            ImGui::SameLine();
+            ImGui::SetCursorPosX(outputX);
+
+            // Output pin (columna derecha)
+            auto& pin = node->outputs[i];
+            ed::BeginPin(pin->id, ed::PinKind::Output);
+            ImGui::Text("%s ->", pin->name.c_str());
+            ed::EndPin();
+        }
     }
 
     ed::EndNode();
