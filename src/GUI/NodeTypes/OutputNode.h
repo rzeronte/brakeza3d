@@ -15,6 +15,8 @@ public:
         return ImVec4(0.8f, 0.2f, 0.2f, 1.0f);
     }
 
+    GUIType::Sheet GetIcon() const override { return IconGUI::NODE_TYPE_OUTPUT; }
+
     void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddInputPin(node, "Color", PinType::Vector);
     }

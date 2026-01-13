@@ -11,6 +11,7 @@
 #include <string>
 #include <memory>
 
+#include "../../include/GUI/GUI.h"
 #include "../../include/Misc/cJSON.h"
 #include "../../include/OpenGL/Base/SharedOpenGLStructs.h"
 
@@ -54,6 +55,7 @@ struct Node {
     ImVec2 size;
     std::vector<std::shared_ptr<Pin>> inputs;
     std::vector<std::shared_ptr<Pin>> outputs;
+    GUIType::Sheet icon;
     void* userData; // Para datos personalizados
 
     Node(
@@ -151,6 +153,8 @@ public:
 
     [[nodiscard]] ShaderCustomType getType() const                                          { return type; }
     void Autofit() const;
+    bool IsPinConnected(int pinId) const;
+
 
 };
 

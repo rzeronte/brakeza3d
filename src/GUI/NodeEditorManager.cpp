@@ -123,6 +123,18 @@ bool NodeEditorManager::CanCreateLink(int startPinId, int endPinId)
     if (startPin->kind == endPin->kind)
         return false;
 
+    // ===== NUEVA VALIDACIÓN: FORZAR DIRECCIÓN OUTPUT → INPUT =====
+    // Si el usuario arrastra desde Input hacia Output, intercambiar
+    if (startPin->kind == ed::PinKind::Input && endPin->kind == ed::PinKind::Output) {
+        std::swap(startPin, endPin);
+        std::swap(startPinId, endPinId);
+    }
+
+    // Ahora startPin DEBE ser Output y endPin DEBE ser Input
+    if (startPin->kind != ed::PinKind::Output || endPin->kind != ed::PinKind::Input) {
+        return false;
+    }
+
     // No conectar pines del mismo nodo
     if (startPin->nodeId == endPin->nodeId)
         return false;
@@ -703,4 +715,14 @@ void NodeEditorManager::Autofit() const
 {
     ed::SetCurrentEditor(m_Context);
     ed::NavigateToContent(0.0f);
+}
+
+bool NodeEditorManager::IsPinConnected(int pinId) const
+{
+    for (const auto& link : m_Links) {
+        if (link->startPinId == pinId || link->endPinId == pinId) {
+            return true;
+        }
+    }
+    return false;
 }

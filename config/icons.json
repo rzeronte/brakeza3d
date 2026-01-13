@@ -675,6 +675,22 @@
 			"name":	"NODE_EDITOR_AUTOFIT",
 			"x":	3,
 			"y":	5
+		}, {
+			"name":	"NODE_EDITOR_PIN_IN",
+			"x":	14,
+			"y":	23
+		}, {
+			"name":	"NODE_EDITOR_PIN_OUT",
+			"x":	1,
+			"y":	22
+		}, {
+			"name":	"NODE_TYPE_OUTPUT",
+			"x":	3,
+			"y":	4
+		}, {
+			"name":	"NODE_TYPE_DEFAULT",
+			"x":	1,
+			"y":	7
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

@@ -36,7 +36,7 @@ public:
         ShaderNodeEditorManager* editor
     ) = 0;
 
-    virtual GUIType::Sheet GetIcon() const { return IconGUI::BONE_LOCK; }
+    virtual GUIType::Sheet GetIcon() const { return IconGUI::NODE_TYPE_DEFAULT; }
 
     float MeasureUIWidth()
     {

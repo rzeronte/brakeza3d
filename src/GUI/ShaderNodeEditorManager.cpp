@@ -23,6 +23,7 @@
 #include <cmath>
 
 #include "ImGuiLayoutHelpers.h"
+#include "../../include/GUI/Objects/FileSystemGUI.h"
 #include "NodeTypes/InternalTextureNode.h"
 #include "NodeTypes/MeshTextureNode.h"
 
@@ -119,6 +120,7 @@ std::shared_ptr<Node> ShaderNodeEditorManager::CreateNodeOfType(const std::strin
     NodeType* nodeType = it->second;
     auto node = CreateNode(nodeType->GetTypeName(), nodeType->GetColor());
     node->type = nodeType->GetTypeName();
+    node->icon = nodeType->GetIcon();
 
     // Inicializar el nodo
     nodeType->OnCreate(node);
@@ -208,6 +210,15 @@ void ShaderNodeEditorManager::Render()
     ed::SetCurrentEditor(nullptr);
 }
 
+void ShaderNodeEditorManager::DrawNodeHeader(std::shared_ptr<Node> &node)
+{
+    ImGui::Image(FileSystemGUI::Icon(node->icon), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+    ImGui::SameLine();
+    std::string upperName = node->name;
+    std::transform(upperName.begin(), upperName.end(), upperName.begin(), ::toupper);
+    ImGui::TextColored(ImVec4(0.0f, 0.0f, 0.0f, 1.0f), "%s", upperName.c_str());
+}
+
 void ShaderNodeEditorManager::RenderNode(std::shared_ptr<Node>& node)
 {
     ed::PushStyleColor(ed::StyleColor_NodeBg, node->color);
@@ -221,50 +232,45 @@ void ShaderNodeEditorManager::RenderNode(std::shared_ptr<Node>& node)
     auto it = m_NodeTypes.find(node->name);
     if (it != m_NodeTypes.end()) {
         NodeType* nodeType = it->second;
-
-        // Mostrar prefijo según categoría
-        if (node->inputs.empty() && !node->outputs.empty()) {
-            ImGui::Text("[GEN] %s", node->name.c_str());
-        } else if (node->outputs.empty() && !node->inputs.empty()) {
-            ImGui::Text("[OUT] %s", node->name.c_str());
-        } else {
-            ImGui::Text("[PRO] %s", node->name.c_str());
-        }
-
-        // Renderizar UI personalizada y obtener su ancho
+        DrawNodeHeader(node);
         uiContentWidth = nodeType->RenderUI(node, this);
     }
 
     ImGui::PopItemWidth();
     ImGui::Spacing();
 
-    // Calcular anchos máximos de cada columna de pins
+    // ===== PASADA 1: CALCULAR ANCHOS =====
     float maxInputWidth = 0.0f;
     float maxOutputWidth = 0.0f;
 
+    float iconWidth = 16.0f;
+    float iconSpacing = ImGui::GetStyle().ItemSpacing.x;
+
     for (auto& pin : node->inputs) {
-        std::string text = "-> " + pin->name;
-        float width = ImGui::CalcTextSize(text.c_str()).x;
+        // Ancho = icono + spacing + texto
+        float textWidth = ImGui::CalcTextSize(pin->name.c_str()).x;
+        float width = iconWidth + iconSpacing + textWidth;
         maxInputWidth = std::max(maxInputWidth, width);
     }
 
     for (auto& pin : node->outputs) {
-        std::string text = pin->name + " ->";
-        float width = ImGui::CalcTextSize(text.c_str()).x;
+        // Ancho = texto + spacing + icono
+        float textWidth = ImGui::CalcTextSize(pin->name.c_str()).x;
+        float width = textWidth + iconSpacing + iconWidth;
         maxOutputWidth = std::max(maxOutputWidth, width);
     }
 
     // Ancho total del área de pins
     float minSpacing = 40.0f;
     float pinAreaWidth = maxInputWidth + minSpacing + maxOutputWidth;
-
-    // Usar el máximo entre el ancho de la UI y el ancho necesario para los pins
     float totalNodeWidth = std::max(uiContentWidth, pinAreaWidth);
-
-    // Ancho mínimo del nodo
     totalNodeWidth = std::max(totalNodeWidth, 150.0f);
 
     size_t maxPins = std::max(node->inputs.size(), node->outputs.size());
+
+    // ===== PASADA 2: RENDERIZAR =====
+    ImTextureID iconConnected = FileSystemGUI::Icon(IconGUI::NODE_EDITOR_PIN_IN);
+    ImTextureID iconDisconnected = FileSystemGUI::Icon(IconGUI::NODE_EDITOR_PIN_OUT);
 
     for (size_t i = 0; i < maxPins; ++i) {
         float rowStartX = ImGui::GetCursorPosX();
@@ -272,25 +278,32 @@ void ShaderNodeEditorManager::RenderNode(std::shared_ptr<Node>& node)
         // Input pin (columna izquierda)
         if (i < node->inputs.size()) {
             auto& pin = node->inputs[i];
+            bool isConnected = IsPinConnected(pin->id);
+            ImTextureID icon = isConnected ? iconConnected : iconDisconnected;
+
             ed::BeginPin(pin->id, ed::PinKind::Input);
-            ImGui::Text("-> %s", pin->name.c_str());
+            ImGui::Image(icon, GUIType::Sizes::ICONS_LOG);
+            ImGui::SameLine();
+            ImGui::Text("%s", pin->name.c_str());
             ed::EndPin();
         } else {
-            // Espacio vacío para inputs
             ImGui::Dummy(ImVec2(1, ImGui::GetTextLineHeight()));
         }
 
-        // IMPORTANTE: Solo posicionar cursor si hay un output que renderizar
+        // Output pin (columna derecha)
         if (i < node->outputs.size()) {
-            // Posicionar cursor para output (columna derecha)
             float outputX = rowStartX + totalNodeWidth - maxOutputWidth;
             ImGui::SameLine();
             ImGui::SetCursorPosX(outputX);
 
-            // Output pin (columna derecha)
             auto& pin = node->outputs[i];
+            bool isConnected = IsPinConnected(pin->id);
+            ImTextureID icon = isConnected ? iconConnected : iconDisconnected;
+
             ed::BeginPin(pin->id, ed::PinKind::Output);
-            ImGui::Text("%s ->", pin->name.c_str());
+            ImGui::Text("%s", pin->name.c_str());
+            ImGui::SameLine();
+            ImGui::Image(icon, GUIType::Sizes::ICONS_LOG);
             ed::EndPin();
         }
     }
