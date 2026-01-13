@@ -691,6 +691,14 @@
 			"name":	"NODE_TYPE_DEFAULT",
 			"x":	1,
 			"y":	7
+		}, {
+			"name":	"NODE_EDITOR_POPUP",
+			"x":	5,
+			"y":	29
+		}, {
+			"name":	"NODE_EDITOR_TAB",
+			"x":	6,
+			"y":	29
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

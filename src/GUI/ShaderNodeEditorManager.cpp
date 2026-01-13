@@ -191,6 +191,7 @@ void ShaderNodeEditorManager::Render()
 
     if (m_FirstFrame) {
         SetInitialNodePositions();
+        Autofit();
         m_FirstFrame = false;
     }
 

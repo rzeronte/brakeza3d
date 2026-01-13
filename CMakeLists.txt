@@ -346,7 +346,6 @@ add_executable(Brakeza3D
         src/GUI/Editable/EditableOpenFileGUI.cpp
         include/GUI/Editable/EditableOpenFileGUI.h
         src/GUI/Editable/EditableOpenFile.cpp
-        src/GUI/Editable/EditableOpenBaseResource.cpp
         src/OpenGL/Nodes/ShaderBaseNodes.cpp
         include/OpenGL/Nodes/ShaderBaseNodes.h
         src/OpenGL/Nodes/ShaderNodesMesh3D.cpp

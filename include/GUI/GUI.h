@@ -328,7 +328,9 @@ namespace GUIType
     X(NODE_EDITOR_PIN_IN, 0, 0) \
     X(NODE_EDITOR_PIN_OUT, 0, 0) \
     X(NODE_TYPE_OUTPUT, 0, 0) \
-    X(NODE_TYPE_DEFAULT, 0, 0)
+    X(NODE_TYPE_DEFAULT, 0, 0) \
+    X(NODE_EDITOR_POPUP, 0, 0) \
+    X(NODE_EDITOR_TAB, 0, 0)
 
 // Icons Objects
 namespace IconObject {

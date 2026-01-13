@@ -19,13 +19,42 @@ void EditableOpenNode::DrawTabEdition(int tabIndex)
 {
     std::string uniqueTabId = getTabLabel() + "##" + getPath();
 
-    auto currentIndexTab = Brakeza::get()->GUI()->getIndexCodeEditorTab();
+    if (getWinType() == TAB) {
+        auto currentIndexTab = Brakeza::get()->GUI()->getIndexCodeEditorTab();
 
-    ImGuiTabItemFlags flags = (currentIndexTab == tabIndex) ? ImGuiTabItemFlags_SetSelected : 0;
-    if (ImGui::BeginTabItem(uniqueTabId.c_str(), nullptr, flags)) {
-        DrawCodeEditActionButtons();
-        DrawNodeEditorTab();
-        ImGui::EndTabItem();
+        ImGuiTabItemFlags flags = (currentIndexTab == tabIndex) ? ImGuiTabItemFlags_SetSelected : 0;
+        if (ImGui::BeginTabItem(uniqueTabId.c_str(), nullptr, flags)) {
+            DrawCodeEditActionButtons();
+            DrawNodeEditorTab();
+            ImGui::EndTabItem();
+        }
+    }
+
+    if (getWinType() == POPUP) {
+        // Obtener el tamaño del viewport
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImVec2 center = viewport->GetCenter();
+        // Establecer tamaño grande (80% del viewport)
+        ImVec2 windowSize = ImVec2(viewport->Size.x * 0.8f, viewport->Size.y * 0.8f);
+        ImGui::SetNextWindowSize(windowSize, ImGuiCond_Appearing);
+        // Centrar la ventana
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+        // Crear popup modal
+        if (ImGui::BeginPopupModal(uniqueTabId.c_str(), nullptr, ImGuiWindowFlags_NoCollapse)) {
+            DrawCodeEditActionButtons();
+            DrawNodeEditorTab();
+            // Botón para cerrar
+            ImGui::Separator();
+            if (ImGui::Button("Cerrar", ImVec2(120, 0))) {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+        // Abrir el popup (solo la primera vez)
+        if (!ImGui::IsPopupOpen(uniqueTabId.c_str())) {
+            ImGui::OpenPopup(uniqueTabId.c_str());
+        }
     }
 }
 
@@ -53,6 +82,8 @@ void EditableOpenNode::DrawCodeEditActionButtons()
         GUI::DrawButton("Auto fit", IconGUI::NODE_EDITOR_AUTOFIT, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
             shaderNodes->getNodeManager()->Autofit();
         });
+        ImGui::SameLine();
+        DrawSwitchButton();
         // Columna derecha - botón Close (alineado a la derecha)
         ImGui::TableSetColumnIndex(1);
         GUI::DrawButton("Close file", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {

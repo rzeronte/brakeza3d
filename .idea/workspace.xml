@@ -37,15 +37,22 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(imgui): upgrade imgui docking version">
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(nodes): styles / layout nodes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/sheet.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/sheet.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/Editable/EditableOpenBaseResource.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Editable/EditableOpenBaseResource.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenBaseResource.cpp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenFile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenFile.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenFileGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenFileGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenNode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenNode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenScriptFile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenScriptFile.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenShaderFile.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Editable/EditableOpenShaderFile.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/NodeEditorManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeEditorManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/NodeType.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/NodeType.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/OutputNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/OutputNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditorManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditorManager.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
     </list>
@@ -487,7 +494,7 @@
       <workItem from="1768002613132" duration="8908000" />
       <workItem from="1768024220253" duration="1702000" />
       <workItem from="1768038376858" duration="29709000" />
-      <workItem from="1768173806413" duration="10627000" />
+      <workItem from="1768173806413" duration="15134000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -537,14 +544,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00116" summary="feat(code): code editor improvements">
-      <option name="closed" value="true" />
-      <created>1766019792728</created>
-      <option name="number" value="00116" />
-      <option name="presentableId" value="LOCAL-00116" />
-      <option name="project" value="LOCAL" />
-      <updated>1766019792728</updated>
     </task>
     <task id="LOCAL-00117" summary="feat(code): code editor improvements">
       <option name="closed" value="true" />
@@ -874,7 +873,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768174725730</updated>
     </task>
-    <option name="localTasksCounter" value="158" />
+    <task id="LOCAL-00158" summary="feat(nodes): styles / layout nodes">
+      <option name="closed" value="true" />
+      <created>1768262789665</created>
+      <option name="number" value="00158" />
+      <option name="presentableId" value="LOCAL-00158" />
+      <option name="project" value="LOCAL" />
+      <updated>1768262789665</updated>
+    </task>
+    <option name="localTasksCounter" value="159" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -908,7 +915,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(gui): Improve widgets visibility" />
     <MESSAGE value="feat(gui): Menu improved" />
     <MESSAGE value="feat(gui): Icons using sheet" />
     <MESSAGE value="feat(gui): Icons debug window" />
@@ -933,7 +939,8 @@
     <MESSAGE value="chore(git): Update .gitignore" />
     <MESSAGE value="feat(website): Docusaurus website" />
     <MESSAGE value="feat(imgui): upgrade imgui docking version" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(imgui): upgrade imgui docking version" />
+    <MESSAGE value="feat(nodes): styles / layout nodes" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(nodes): styles / layout nodes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

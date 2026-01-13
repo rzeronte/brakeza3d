@@ -48,6 +48,8 @@ void EditableOpenShaderFile::DrawCodeEditActionButtons()
         GUI::DrawButton("Edit FS source", IconGUI::SHADER_CODE_FS, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
             setContentFromFile(shader->getFragmentFilename());
         });
+        ImGui::SameLine();
+        DrawSwitchButton();
 
         ImGui::TableSetColumnIndex(1);
         GUI::DrawButton("Close file", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {

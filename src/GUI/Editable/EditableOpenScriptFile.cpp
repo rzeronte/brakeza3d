@@ -42,7 +42,8 @@ void EditableOpenScriptFile::DrawCodeEditActionButtons()
         GUI::DrawButton("Save file", IconGUI::SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
             Tools::WriteToFile(getPath(), getEditor().GetText().c_str());
         });
-
+        ImGui::SameLine();
+        DrawSwitchButton();
         // Columna derecha - botón Close (alineado a la derecha)
         ImGui::TableSetColumnIndex(1);
         GUI::DrawButton("Close file", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {

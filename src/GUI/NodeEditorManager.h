@@ -93,7 +93,6 @@ protected:
     ImVec2 m_CreateMenuPos;
 
     ShaderCustomType type;
-
 public:
     NodeEditorManager(ShaderCustomType type, const char* settingsFile = "NodeEditor.json");
     virtual ~NodeEditorManager();
@@ -154,8 +153,6 @@ public:
     [[nodiscard]] ShaderCustomType getType() const                                          { return type; }
     void Autofit() const;
     bool IsPinConnected(int pinId) const;
-
-
 };
 
 #endif //BRAKEZA3D_NODEEDITORMANAGER_H
