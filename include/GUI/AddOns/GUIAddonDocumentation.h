@@ -9,7 +9,7 @@ public:
     std::string currentContent;
     std::string currentFile;
     
-    static void RenderDocNode(cJSON* node, TextEditor &editor)
+    static void RenderDocNode(cJSON* node)
     {
         cJSON* nameItem = cJSON_GetObjectItem(node, "name");
         cJSON* fileItem = cJSON_GetObjectItem(node, "file");
@@ -32,28 +32,13 @@ public:
         if (isLeaf) {
             flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
             ImGui::TreeNodeEx(name.c_str(), flags);
-            
-            // Click en nodo hoja
-            if (ImGui::IsItemClicked()) {
-                LOG_MESSAGE("[Documentation] Change to file '%s'...", file.c_str());
-                editor.SetText(Tools::ReadFile(file));
-                editor.SetCursorPosition({line, 0});
-            }
         } else {
             bool isOpen = ImGui::TreeNodeEx(name.c_str(), flags);
-            
-            // Click en nodo con hijos (opcional, cargar su propio archivo)
-            if (ImGui::IsItemClicked() && !file.empty()) {
-                LOG_MESSAGE("[Documentation] Change to file '%s'...", file.c_str());
-                editor.SetText(Tools::ReadFile(file));
-                editor.SetCursorPosition({line, 0});
-            }
-            
+
             if (isOpen) {
-                // Renderizar hijos recursivamente
                 for (int i = 0; i < childrenCount; i++) {
                     cJSON* child = cJSON_GetArrayItem(childrenArray, i);
-                    RenderDocNode(child, editor);
+                    RenderDocNode(child);
                 }
                 ImGui::TreePop();
             }
@@ -61,7 +46,7 @@ public:
         ImGui::PopStyleVar(2);
     }
 
-    static void DrawWinDocumentation(cJSON* tree, TextEditor &editor)
+    static void DrawWinDocumentation(cJSON* tree)
     {
         if (!tree) return;
 
@@ -87,7 +72,7 @@ public:
                     int rootCount = cJSON_GetArraySize(rootArray);
                     for (int i = 0; i < rootCount; i++) {
                         cJSON* node = cJSON_GetArrayItem(rootArray, i);
-                        RenderDocNode(node, editor);
+                        RenderDocNode(node);
                     }
                 }
             }
@@ -96,12 +81,7 @@ public:
 
             // Columna derecha - Contenido del archivo
             ImGui::TableNextColumn();
-            ImGui::BeginChild("ContentChild", ImVec2(0, 0), false);
-            {
-                editor.Render("##doc_editor", ImVec2(0, 0), false);
 
-            }
-            ImGui::EndChild();
             
             ImGui::EndTable();
         }

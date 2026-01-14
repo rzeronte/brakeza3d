@@ -19,6 +19,7 @@
 #include "../../../include/Serializers/Image2DAnimationSerializer.h"
 #include "../../../include/Serializers/Image3DAnimationSerializer.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../../include/Render/Drawable.h"
 
 
 void GUIAddonMenu::Draw(GUIManager *gui)
@@ -476,7 +477,7 @@ void GUIAddonMenu::MenuSound()
             Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC));
             Mix_VolumeMusic(0);
         } else {
-            Mix_Volume(Config::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_CHANNEL_GLOBAL));
+            Mix_Volume(Config::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_VOLUME_FX));
             Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC));
         }
     }
@@ -486,9 +487,9 @@ void GUIAddonMenu::MenuSound()
     if (ImGui::IsItemEdited()) { Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC)); }
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SOUND_GLOBAL_CHANNEL_VOLUME), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::DragScalar("Global Channel volume", ImGuiDataType_Float, &setup->SOUND_CHANNEL_GLOBAL, range_sensibility_volume, &GUIType::Levels::DRAG_VOLUME_MIN, &GUIType::Levels::DRAG_VOLUME_MAX, "%f", 1.0f);
+    ImGui::DragScalar("Global Channel volume", ImGuiDataType_Float, &setup->SOUND_VOLUME_FX, range_sensibility_volume, &GUIType::Levels::DRAG_VOLUME_MIN, &GUIType::Levels::DRAG_VOLUME_MAX, "%f", 1.0f);
     if (ImGui::IsItemEdited()) {
-        Mix_Volume(Config::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_CHANNEL_GLOBAL));
+        Mix_Volume(Config::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_VOLUME_FX));
     }
 }
 
@@ -583,8 +584,8 @@ void GUIAddonMenu::AboutMeModal()
         ImGui::Text("Welcome to Brakeza3D!");
         ImGui::Text(setup->ENGINE_VERSION.c_str());
         ImGui::Text(setup->ENGINE_TITLE.c_str());
-        ImGui::Text("Website: %s", setup->ENGINE_WEBSITE.c_str());
-        ImGui::Text("GitHub: %s", setup->ENGINE_SOURCE_WEBSITE.c_str());
+        Drawable::ImGuiLink("Website", setup->ENGINE_WEBSITE.c_str());
+        Drawable::ImGuiLink("GitHub", setup->ENGINE_SOURCE_WEBSITE.c_str());
         if (ImGui::Button("Close")) {
             ImGui::CloseCurrentPopup();
             Config::get()->SHOW_ABOUT_ME_MODAL = false;

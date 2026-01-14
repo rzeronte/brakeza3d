@@ -148,7 +148,7 @@ public:
 
     // SOUND
     float SOUND_VOLUME_MUSIC = 40;
-    float SOUND_CHANNEL_GLOBAL = 50;
+    float SOUND_VOLUME_FX = 50;
 
     // KEYBOARD
     float WALKING_SPEED = 0.25f;

@@ -44,7 +44,6 @@ class GUIManager
     std::vector<EditableOpenBaseResource *> openFiles;
 
     cJSON *documentationTree = nullptr;
-    TextEditor documentationEditor;
 
     TexturePackage browserImagesTextures;
 

@@ -37,24 +37,30 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(nodes): switch popup/tab">
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): improved images window">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/3D/LightPoint.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/LightPoint.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/3D/LightSpot.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/3D/LightSpot.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/projects/TutorialsProject.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/projects/TutorialsProject.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/documentation.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/documentation.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Components/ComponentScripting.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentScripting.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Config.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Config.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonDocumentation.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonDocumentation.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/TexturePackage.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/TexturePackage.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Misc/Tools.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Tools.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/GUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Loaders/SceneChecker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/SceneChecker.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Loaders/SceneChecker.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/SceneChecker.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Render/Drawable.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Render/Drawable.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentScripting.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentScripting.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentSound.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonMenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonMenu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Loaders/ProjectLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/ProjectLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/TexturePackage.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/TexturePackage.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Loaders/SceneLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/SceneLoader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Render/Drawable.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Render/Drawable.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/2-editor/3-projects.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/2-editor/3-projects.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/src/pages/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/pages/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -520,7 +526,7 @@
       <workItem from="1768024220253" duration="1702000" />
       <workItem from="1768038376858" duration="29709000" />
       <workItem from="1768173806413" duration="19112000" />
-      <workItem from="1768271486452" duration="14626000" />
+      <workItem from="1768271486452" duration="22531000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -570,14 +576,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00118" summary="feat(code): code editor improvements">
-      <option name="closed" value="true" />
-      <created>1766108152026</created>
-      <option name="number" value="00118" />
-      <option name="presentableId" value="LOCAL-00118" />
-      <option name="project" value="LOCAL" />
-      <updated>1766108152026</updated>
     </task>
     <task id="LOCAL-00119" summary="feat(code): code editor improvements">
       <option name="closed" value="true" />
@@ -907,7 +905,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768267401089</updated>
     </task>
-    <option name="localTasksCounter" value="160" />
+    <task id="LOCAL-00160" summary="feat(gui): improved images window">
+      <option name="closed" value="true" />
+      <created>1768354064468</created>
+      <option name="number" value="00160" />
+      <option name="presentableId" value="LOCAL-00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1768354064469</updated>
+    </task>
+    <option name="localTasksCounter" value="161" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -941,7 +947,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(gui): Icons using sheet" />
     <MESSAGE value="feat(gui): Icons debug window" />
     <MESSAGE value="feat(gui): ui fine tuning" />
     <MESSAGE value="feat(threads): wip threads queue" />
@@ -966,7 +971,8 @@
     <MESSAGE value="feat(imgui): upgrade imgui docking version" />
     <MESSAGE value="feat(nodes): styles / layout nodes" />
     <MESSAGE value="feat(nodes): switch popup/tab" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(nodes): switch popup/tab" />
+    <MESSAGE value="feat(gui): improved images window" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(gui): improved images window" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1061,7 +1067,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/include/GUI/GUI.h</url>
-          <line>117</line>
+          <line>118</line>
           <option name="timeStamp" value="115" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">

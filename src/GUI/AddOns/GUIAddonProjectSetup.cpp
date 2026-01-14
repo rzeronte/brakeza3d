@@ -45,6 +45,39 @@ void GUIAddonProjectSetup::TreeSceneScripts()
     }
 }
 
+void GUIAddonProjectSetup::TreeProjectScenes()
+{
+    auto scripting = Components::get()->Scripting();
+    static bool shouldOpen = false;
+
+    auto projectScenes = scripting->getProjectScenes();
+    std::string labelGlobalScripts = "Project scenes (" + std::to_string(projectScenes.size()) + ")";
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENES), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    if (shouldOpen) {
+        ImGui::SetNextItemOpen(true, ImGuiCond_Always);
+        shouldOpen = false;
+    } else {
+        ImGui::SetNextItemOpen(false, ImGuiCond_FirstUseEver);
+    }
+    bool isOpenGlobalScripts = ImGui::TreeNodeEx(labelGlobalScripts.c_str(), ImGuiTreeNodeFlags_FramePadding);
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SCENE_ITEM)) {
+            const char* scenePath = (const char*)payload->Data;
+            LOG_MESSAGE("Dropping scene '%s' in global space", scenePath);
+            scripting->AddProjectScene(scenePath);
+            shouldOpen = true;
+        }
+        ImGui::EndDragDropTarget();
+    }
+    if (isOpenGlobalScripts) {
+        DrawProjectScenes();
+        if (projectScenes.empty()) {
+            Drawable::WarningMessage("There are not scenes attached");
+        }
+        ImGui::TreePop();
+    }
+}
+
 void GUIAddonProjectSetup::TreeProjectScripts()
 {
     auto scripting = Components::get()->Scripting();
@@ -132,9 +165,48 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
 
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(ImGui::GetStyle().FramePadding.x, 4.0f));
     TreeProjectScripts();
+    TreeProjectScenes();
+    ImGui::Separator();
     TreeSceneScripts();
     TreeSceneShaders();
     ImGui::PopStyleVar();
+}
+
+void GUIAddonProjectSetup::DrawProjectScenes()
+{
+    auto scripting = Components::get()->Scripting();
+
+    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
+    auto scenes = scripting->getProjectScenes();
+
+    if (ImGui::BeginTable("ProjectScenesTable", 2, ImGuiTableFlags_None | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Scene");
+        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+        for (unsigned int i = 0; i < (unsigned int) scenes.size(); i++) {
+            auto currentScene = scenes[i];
+            ImGui::PushID(i);
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::AlignTextToFramePadding();
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+            ImGui::SameLine(0, 5.0f);
+            ImGui::Text(currentScene.c_str());
+
+            // Script details
+            ImGui::TableNextColumn();
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));    // Padding interno del botón
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));     // Espacio entre botones
+
+            GUI::DrawButtonTransparent("Load scene", IconGUI::SCENE_LOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+            });
+            ImGui::SameLine();
+            GUI::DrawButtonTransparent("Remove scene from project", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+            });
+
+            ImGui::PopID();
+        }
+        ImGui::EndTable();
+    }
 }
 
 void GUIAddonProjectSetup::DrawProjectScripts()

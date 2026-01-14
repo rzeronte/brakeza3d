@@ -1,3 +1,13 @@
 {
-	"name":	"../assets/projects/TutorialsProject"
+	"name":	"Brakeza3D - By Eduardo Rodriguez Alvarez <eduardo@brakeza.com>",
+	"gravity":	{
+		"x":	0,
+		"y":	-9.8000001907348633,
+		"z":	0
+	},
+	"scripts":	[],
+	"resolution":	{
+		"width":	1920,
+		"height":	1009
+	}
 }

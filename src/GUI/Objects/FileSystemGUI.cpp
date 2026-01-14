@@ -201,9 +201,21 @@ void FileSystemGUI::DrawSceneRow(GUIType::BrowserCache &browser, const std::stri
     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 4, ImGui::GetCursorPosY() + 5.0f));
     ImGui::Image(Icon(IconGUI::SCENE_FILE), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY()));
-    auto title = std::to_string(index + 1) + ") " + file;
-    ImGui::Text("%s", title.c_str());
+
+    std::string optionText = std::to_string(index + 1) + ") " + file;
+    ImGui::Selectable(optionText.c_str());
+    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+        auto fullPath = browser.currentFolder + file;
+
+        ImGui::SetDragDropPayload(
+            GUIType::DragDropTarget::SCENE_ITEM,
+            fullPath.c_str(),
+            fullPath.size() + 1
+        );
+
+        ImGui::Text("%s", fullPath.c_str());
+        ImGui::EndDragDropSource();
+    }
 
     ImGui::TableSetColumnIndex(1);
     DrawSceneRowActions(browser, file);
@@ -382,7 +394,10 @@ ImTextureID FileSystemGUI::Icon(GUIType::Sheet coords)
 
 void FileSystemGUI::DrawWinImages(GUIType::BrowserCache &browser, TexturePackage &package)
 {
+    ImGui::Image(Icon(IconGUI::IMAGE_FILE), GUIType::Sizes::ICONS_BROWSERS);
+    ImGui::SameLine();
     ImGui::Text("Current Folder: %s", browser.currentFolder.c_str());
+    ImGui::Separator();
 
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::IMAGES);
     if (!windowStatus->isOpen) return;
@@ -393,7 +408,7 @@ void FileSystemGUI::DrawWinImages(GUIType::BrowserCache &browser, TexturePackage
     // Slider
     static float imageSize = 96.0f;
     ImGui::PushItemWidth(200);
-    ImGui::SliderFloat("Tamaño", &imageSize, 64.0f, 256.0f, "%.0f px");
+    ImGui::SliderFloat("Size", &imageSize, 64.0f, 256.0f, "%.0f px");
     ImGui::PopItemWidth();
     ImGui::SameLine();
     if (ImGui::Button("Reset")) imageSize = 96.0f;

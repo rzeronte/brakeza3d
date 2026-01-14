@@ -1,12 +1,16 @@
-# Pending
-
-UI:
-    - Switch between edit "code" and "nodes" shader icon.
-    - Include browser images and improve widget  
-    - add effects node shader demos
+# Road Map
+----------
+features:
     - Improve project concept
-        - resolution
-        - shared resources
-        - volume settings
-        - scenes list
+      - resolution -> ok, removed from scenes files and previewer scene
+      - scenes list -> OK (included UI dragdrop, save/load project)
+      - shared resources -> 0%
+      - volume settings  -> 0%
 
+fixes:
+    - improve node editor autofit when open popup/tab is not working
+
+improves UI:
+    - add effects node shader demos
+    - documentation: links based, remove old md in favor of githubpages
+    - add project overview popup

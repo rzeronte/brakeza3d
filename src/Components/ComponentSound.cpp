@@ -51,7 +51,7 @@ void ComponentSound::InitSoundSystem() const
 
     Mix_AllocateChannels(16);
     Mix_VolumeMusic((int) SETUP->SOUND_VOLUME_MUSIC);
-    Mix_Volume(Config::SoundChannels::SND_GLOBAL, (int) SETUP->SOUND_CHANNEL_GLOBAL);
+    Mix_Volume(Config::SoundChannels::SND_GLOBAL, (int) SETUP->SOUND_VOLUME_FX);
 }
 
 void ComponentSound::LoadSoundsConfigFile()
@@ -209,5 +209,5 @@ void ComponentSound::setSoundsVolume(int v)
 {
     if (!Components::get()->Sound()->isEnabled()) return;
 
-    Mix_Volume(Config::SoundChannels::SND_GLOBAL, static_cast<int>(Config::get()->SOUND_CHANNEL_GLOBAL));
+    Mix_Volume(Config::SoundChannels::SND_GLOBAL, static_cast<int>(Config::get()->SOUND_VOLUME_FX));
 }

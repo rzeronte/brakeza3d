@@ -6,6 +6,7 @@
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/Components.h"
+#include "../../include/Misc/ToolsJSON.h"
 
 
 void ProjectLoader::LoadProject(const std::string &filename)
@@ -23,6 +24,7 @@ void ProjectLoader::LoadProject(const std::string &filename)
         Config::get()->ENGINE_TITLE = sceneName;
     }
 
+    // scripts
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
         cJSON *currentScript;
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
@@ -32,6 +34,41 @@ void ProjectLoader::LoadProject(const std::string &filename)
             Components::get()->Scripting()->AddProjectLUAScript(new ScriptLUA(name, codeScript, typesFile));
         }
     }
+
+    // scenes
+    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scenes") != nullptr) {
+        cJSON *currentScene;
+        cJSON_ArrayForEach(currentScene, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
+            std::string path = cJSON_GetObjectItemCaseSensitive(currentScene, "path")->valuestring;
+            Components::get()->Scripting()->AddProjectScene(path);
+        }
+    }
+
+    // RESOLUTION
+    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "resolution") != nullptr) {
+        auto resolutionJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "resolution");
+
+        Components::get()->Window()->setRendererSize(
+            cJSON_GetObjectItemCaseSensitive(resolutionJSON, "width")->valueint,
+            cJSON_GetObjectItemCaseSensitive(resolutionJSON, "height")->valueint
+        );
+    }
+
+    // GRAVITY
+    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity") != nullptr) {
+        auto gravity = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity"));
+        Config::get()->gravity = gravity;
+        Components::get()->Collisions()->setGravity(gravity);
+    }
+
+    // volumes
+    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "sound") != nullptr) {
+        auto soundJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "sound");
+        Config::get()->SOUND_VOLUME_MUSIC = cJSON_GetObjectItemCaseSensitive(soundJSON, "volume_music")->valuedouble;;
+        Config::get()->SOUND_VOLUME_FX = cJSON_GetObjectItemCaseSensitive(soundJSON, "volume_fx")->valuedouble;;
+        Mix_Volume(Config::SoundChannels::SND_GLOBAL, Config::get()->SOUND_VOLUME_FX);
+        Mix_VolumeMusic(Config::get()->SOUND_VOLUME_MUSIC);
+    }
 }
 
 void ProjectLoader::SaveProject(const std::string &filename)
@@ -39,14 +76,38 @@ void ProjectLoader::SaveProject(const std::string &filename)
     cJSON *root = cJSON_CreateObject();
 
     cJSON_AddStringToObject(root, "name", Config::get()->ENGINE_TITLE.c_str());
+    cJSON_AddItemToObject(root, "gravity", ToolsJSON::Vertex3DToJSON(Config::get()->gravity));
 
+    // scripts
     cJSON *sceneScriptsArray = cJSON_CreateArray();
-    for (auto script : Components::get()->Scripting()->getProjectLUAScripts()) {
+    for (auto &script : Components::get()->Scripting()->getProjectLUAScripts()) {
         cJSON *scriptSceneSON = cJSON_CreateObject();
         cJSON_AddStringToObject(scriptSceneSON, "name", script->getScriptFilename().c_str());
         cJSON_AddItemToArray(sceneScriptsArray, scriptSceneSON);
     }
     cJSON_AddItemToObject(root, "scripts", sceneScriptsArray);
+
+    // scenes
+    cJSON *scenesArray = cJSON_CreateArray();
+    for (auto &scenePath : Components::get()->Scripting()->getProjectScenes()) {
+        cJSON *sceneJSON = cJSON_CreateObject();
+        cJSON_AddStringToObject(sceneJSON, "path", scenePath.c_str());
+        cJSON_AddItemToArray(scenesArray, sceneJSON);
+    }
+    cJSON_AddItemToObject(root, "scripts", sceneScriptsArray);
+
+    // sound
+    cJSON *soundJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(soundJSON, "volume_fx", Config::get()->SOUND_VOLUME_FX);
+    cJSON_AddNumberToObject(soundJSON, "volume_music", Config::get()->SOUND_VOLUME_MUSIC);
+    cJSON_AddItemToObject(root, "sound", soundJSON);
+
+    // render resolution
+    auto window = Components::get()->Window();
+    cJSON *resolutionJSON = cJSON_CreateObject();
+    cJSON_AddNumberToObject(resolutionJSON, "width", window->getWidthRender());
+    cJSON_AddNumberToObject(resolutionJSON, "height", window->getHeightRender());
+    cJSON_AddItemToObject(root, "resolution", resolutionJSON);
 
     Tools::WriteToFile(filename, cJSON_Print(root));
 }
@@ -77,3 +138,5 @@ void ProjectLoader::RemoveProject(const std::string &filename)
 
     Tools::RemoveFile(filename);
 }
+
+

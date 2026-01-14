@@ -20,6 +20,7 @@ namespace GUIType
         inline static const char* SCRIPT_ITEM = "SCRIPT_ITEM";
         inline static const char* SHADER_ITEM = "SHADER_ITEM";
         inline static const char* IMAGE_ITEM = "IMAGE_ITEM";
+        inline static const char* SCENE_ITEM = "SCENE_ITEM";
     };
 
     struct Sheet {
@@ -333,7 +334,9 @@ namespace GUIType
     X(NODE_TYPE_OUTPUT, 0, 0) \
     X(NODE_TYPE_DEFAULT, 0, 0) \
     X(NODE_EDITOR_POPUP, 0, 0) \
-    X(NODE_EDITOR_TAB, 0, 0)
+    X(NODE_EDITOR_TAB, 0, 0) \
+    X(PROJECT_SETUP_SCENES, 0, 0) \
+    X(IMAGE_FILE, 0, 0)
 
 // Icons Objects
 namespace IconObject {

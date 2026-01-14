@@ -216,8 +216,8 @@ export default function Home() {
             <HomepageHeader />
             <main>
                 <Stats />
-                <HomepageFeatures />
                 <ProjectShowcase />
+                <HomepageFeatures />
             </main>
             <FinalCTA />
         </Layout>

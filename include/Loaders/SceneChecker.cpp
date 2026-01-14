@@ -33,11 +33,6 @@ void SceneChecker::DrawInformationTable() const
         ImGui::Text("File Path:");
         ImGui::Text("%s", path.c_str());
         ImGui::Separator();
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_RESOLUTION), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
-        ImGui::SameLine();
-        ImGui::Text("Resolution:");
-        ImGui::Text("%d x %d", status.renderWidth, status.renderHeight);
-        ImGui::Separator();
         ImGui::Image(FileSystemGUI::Icon(IconGUI::MNU_CAMERA), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
         ImGui::SameLine();
         ImGui::Text("Camera:");
@@ -217,13 +212,6 @@ void SceneChecker::ExtractSceneInfo(cJSON *json)
         screenshot = nullptr;
     }
 
-    // RESOLUTION
-    if (cJSON_GetObjectItemCaseSensitive(json, "resolution") != nullptr) {
-        auto resoJSON = cJSON_GetObjectItemCaseSensitive(json, "resolution");
-        status.renderWidth = (float) cJSON_GetObjectItemCaseSensitive(resoJSON, "width")->valueint;
-        status.renderHeight = (float) cJSON_GetObjectItemCaseSensitive(resoJSON, "height")->valueint;
-    }
-
     // SCREENSHOT
     if (cJSON_GetObjectItemCaseSensitive(json, "screenshot") != nullptr) {
         screenshot = new Image(cJSON_GetObjectItemCaseSensitive(json, "screenshot")->valuestring);
@@ -312,8 +300,7 @@ void SceneChecker::ResetStatus()
 {
     status.gravity = Vertex3D();
     status.direction = Vertex3D();
-    status.renderWidth = 0;
-    status.renderHeight = 0;
+
     status.ambient = Vertex3D();
     status.diffuse = Vertex3D();
     status.specular = Vertex3D();

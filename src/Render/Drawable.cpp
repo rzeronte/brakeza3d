@@ -261,3 +261,26 @@ void Drawable::drawObject3DGizmo(
         }
     }
 }
+
+void Drawable::ImGuiLink(const char* label, const char* url)
+{
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.4f, 0.6f, 1.0f, 1.0f)); // Color azul
+    ImGui::Text("%s", label);
+    ImGui::PopStyleColor();
+
+    if (ImGui::IsItemHovered()) {
+        ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+        ImGui::SetTooltip("%s", url);
+    }
+
+    if (ImGui::IsItemClicked()) {
+        #ifdef _WIN32
+            std::string command = "start " + std::string(url);
+        #elif __linux__
+            std::string command = "xdg-open " + std::string(url);
+        #elif __APPLE__
+            std::string command = "open " + std::string(url);
+        #endif
+        system(command.c_str());
+    }
+}

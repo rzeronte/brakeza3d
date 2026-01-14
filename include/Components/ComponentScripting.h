@@ -13,6 +13,7 @@ class ComponentScripting : public Component
     Config::LuaStateScripts stateScripts = Config::LuaStateScripts::LUA_STOP;
     std::vector<ScriptLUA*> scripts;
     std::vector<ScriptLUA*> projectScripts;
+    std::vector<std::string> projectScenes;
     sol::state lua;
 public:
     ComponentScripting() = default;
@@ -27,6 +28,7 @@ public:
     void StopLUAScripts();
     void ReloadLUAScripts() const;
     void AddSceneLUAScript(ScriptLUA *script);
+    void AddProjectScene(const std::string &);
     void AddProjectLUAScript(ScriptLUA *script);
     void ReloadScriptGlobals() const;
     void RemoveSceneScript(ScriptLUA *script);
@@ -37,6 +39,7 @@ public:
     sol::object getGlobalScriptVar(const std::string& scriptName, const char *varName);
     sol::state &getLua()                                                    { return lua; }
     std::vector<ScriptLUA*> &getSceneLUAScripts()                           { return scripts; }
+    std::vector<std::string> &getProjectScenes()                            { return projectScenes; }
     std::vector<ScriptLUA*> &getProjectLUAScripts()                         { return projectScripts; }
     bool isExecuting() const                                                { return getStateLUAScripts() == Config::LUA_PLAY; }
     [[nodiscard]] Config::LuaStateScripts getStateLUAScripts() const        { return stateScripts; }

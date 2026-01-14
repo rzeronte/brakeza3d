@@ -35,11 +35,6 @@ void GUIManager::OnStart()
     IconsGUI::ImportIconsFromJSON(Config::get()->CONFIG_FOLDER + Config::get()->ICONS_CONFIG);
     Profiler::get()->CaptureGUIMemoryUsage();
 
-    documentationEditor.SetReadOnly(true);
-    documentationEditor.SetText(Tools::ReadFile(Config::get()->DOCUMENTATION_FOLDER + Config::get()->DOCUMENTATION_DEFAULT));
-    documentationEditor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
-    documentationEditor.SetShowWhitespaces(false);
-
     widgetConsole->setLua(&Components::get()->Scripting()->getLua());
 
     splashImage = new Image(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
@@ -78,7 +73,7 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Profiler",            GUIType::PROFILER,            IconGUI::WIN_PROFILER,          false, false, true, Profiler::get()->DrawWinProfiler());
     ADD_WIN("Code nodeEditor",     GUIType::CODE_EDITOR,         IconGUI::WIN_CODE_EDITOR,       false, false, true, DrawWinEditableOpenResources());
     ADD_WIN("Debug GUI Icons",     GUIType::DEBUG_ICONS,         IconGUI::WIN_DEBUG_ICONS,       false, false, true, IconsGUI::DrawWinDebugIcons(this));
-    ADD_WIN("Documentation",       GUIType::DOCUMENTATION,       IconGUI::WIN_DOCUMENTATION,     false, true,  true, GUIAddonDocumentation::DrawWinDocumentation(documentationTree, documentationEditor));
+    ADD_WIN("Documentation",       GUIType::DOCUMENTATION,       IconGUI::WIN_DOCUMENTATION,     false, true,  true, GUIAddonDocumentation::DrawWinDocumentation(documentationTree));
     ADD_WIN("Scene Detail",        GUIType::SCENE_INFO,          IconGUI::SCENE_INFO,            false, true,  false, checker.DrawWinSceneInfo());
     //ADD_WIN("Shader Nodes Editor", GUIType::SHADER_NODES_EDITOR, IconGUI::WIN_SHADER_NODES,      false, false, true, nodeEditor->Render(););
 

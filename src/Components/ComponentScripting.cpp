@@ -93,6 +93,13 @@ void ComponentScripting::ReloadLUAScripts() const
     ReloadScriptGlobals();
 }
 
+void ComponentScripting::AddProjectScene(const std::string &value)
+{
+    if (std::find(projectScenes.begin(), projectScenes.end(), value) == projectScenes.end()) {
+        projectScenes.push_back(value);
+    }
+}
+
 void ComponentScripting::AddSceneLUAScript(ScriptLUA *script)
 {
     if (script->getScriptFilename().empty()) {

@@ -40,23 +40,6 @@ void SceneLoader::LoadSceneSettings(const cJSON *contentJSON)
     auto camera = Components::get()->Camera()->getCamera();
     auto shaderRender = Components::get()->Render()->getShaders()->shaderOGLRender;
 
-    // RESOLUTION
-    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "resolution") != nullptr) {
-        auto resolutionJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "resolution");
-
-        Components::get()->Window()->setRendererSize(
-            cJSON_GetObjectItemCaseSensitive(resolutionJSON, "width")->valueint,
-            cJSON_GetObjectItemCaseSensitive(resolutionJSON, "height")->valueint
-        );
-    }
-
-    // GRAVITY
-    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity") != nullptr) {
-        auto gravity = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(contentJSON, "gravity"));
-        Config::get()->gravity = gravity;
-        Components::get()->Collisions()->setGravity(gravity);
-    }
-
     // ADS ILLUMINATION
     cJSON *adsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "ads");
     if (adsJSON != nullptr) {
@@ -114,15 +97,6 @@ void SceneLoader::SaveScene(const std::string &filename)
     auto screenshotPath = std::string(Config::get()->SCREENSHOTS_FOLDER + Brakeza::UniqueObjectLabel("scene") + ".png");
     ComponentRender::MakeScreenShot(screenshotPath);
     cJSON_AddStringToObject(root, "screenshot", screenshotPath.c_str());
-    cJSON_AddItemToObject(root, "description", ToolsJSON::Vertex3DToJSON(Config::get()->gravity));
-    cJSON_AddItemToObject(root, "gravity", ToolsJSON::Vertex3DToJSON(Config::get()->gravity));
-
-    // render resolution
-    auto window = Components::get()->Window();
-    cJSON *resolutionJSON = cJSON_CreateObject();
-    cJSON_AddNumberToObject(resolutionJSON, "width", window->getWidthRender());
-    cJSON_AddNumberToObject(resolutionJSON, "height", window->getHeightRender());
-    cJSON_AddItemToObject(root, "resolution", resolutionJSON);
 
     // illumination ADS
     cJSON *adsJSON = cJSON_CreateObject();
@@ -134,7 +108,7 @@ void SceneLoader::SaveScene(const std::string &filename)
 
     //Objects
     cJSON *objectsArray = cJSON_CreateArray();
-    for (auto object : Brakeza::get()->getSceneObjects()) {
+    for (auto &object : Brakeza::get()->getSceneObjects()) {
         auto objectJson = JSONSerializerRegistry::instance().serialize(object);
 
         cJSON_AddNumberToObject(objectJson, "type", (int) object->getTypeObject());
@@ -152,7 +126,7 @@ void SceneLoader::SaveScene(const std::string &filename)
 
     //scripts
     cJSON *sceneScriptsArray = cJSON_CreateArray();
-    for (auto script : Components::get()->Scripting()->getSceneLUAScripts()) {
+    for (auto &script : Components::get()->Scripting()->getSceneLUAScripts()) {
         auto scriptJson = script->getTypesJSON();
         cJSON_AddItemToArray(sceneScriptsArray, scriptJson);
     }
