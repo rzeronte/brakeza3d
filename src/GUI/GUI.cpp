@@ -104,12 +104,16 @@ void GUI::Toggle(bool &value)
     value = !value;
 }
 
-GUIType::BrowserCache GUI::CreateBrowserCache(std::string folder, const std::string &extension)
+GUIType::BrowserCache GUI::CreateBrowserCache(std::string folder, const std::string &extension, std::function<void()> functionCallBack)
 {
+    folder = Tools::NormalizePath(folder);
+
     GUIType::BrowserCache cache = {
         folder,
         Tools::getFolderFiles(folder, extension),
-        Tools::getFolderFolders(folder)
+        Tools::getFolderFolders(folder),
+        extension,
+        functionCallBack
     };
 
     return cache;

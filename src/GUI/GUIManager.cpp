@@ -44,10 +44,8 @@ void GUIManager::OnStart()
 
     splashImage = new Image(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
 
-    browserScenes         = GUI::CreateBrowserCache(Config::get()->SCENES_FOLDER, Config::get()->SCENES_EXT);
-    browserProjects       = GUI::CreateBrowserCache(Config::get()->PROJECTS_FOLDER, Config::get()->PROJECTS_EXT);
-    browserShaders        = GUI::CreateBrowserCache(Config::get()->CUSTOM_SHADERS_FOLDER, Config::get()->SHADERS_EXT);
-    browserScripts        = GUI::CreateBrowserCache(Config::get()->SCRIPTS_FOLDER, Config::get()->SCRIPTS_EXT);
+    LoadBrowserFolders();
+
 
     RegisterAllowedItemsForViewer();
     RegisterMenu();
@@ -55,7 +53,7 @@ void GUIManager::OnStart()
 
     LoadDocumentation();
 
-    FileSystemGUI::LoadImagesFolder(this);
+    FileSystemGUI::LoadImagesFolder(browserImages, browserImagesTextures);
 
     GUI::ShowLoadTime("Time until GUIManager get ready", *Brakeza::get()->getTimer());
 }
@@ -70,7 +68,7 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Object variables",    GUIType::OBJECT_VARS,         IconGUI::WIN_OBJECT_VARS,       false, false, true, ScriptLuaGUI::DrawWinObjectVars(this));
     ADD_WIN("Global variables",    GUIType::GLOBAL_VARS,         IconGUI::WIN_GLOBAL_VARS,       false, false, true, ScriptLuaGUI::DrawWinGlobalVars(this));
     ADD_WIN("Keyboard/Mouse",      GUIType::KEYBOARD_MOUSE,      IconGUI::WIN_KEYBOARD_MOUSE,    false, false, true, DrawWinKeyboardMouse());
-    ADD_WIN("Images",              GUIType::IMAGES,              IconGUI::WIN_IMAGES,            false, false, true, DrawWinImages());
+    ADD_WIN("Images",              GUIType::IMAGES,              IconGUI::WIN_IMAGES,            false, false, true, FileSystemGUI::DrawWinImages(browserImages, browserImagesTextures));
     ADD_WIN("Projects",            GUIType::FILES_PROJECTS,      IconGUI::WIN_FILES_PROJECTS,    true,  false, true, FileSystemGUI::DrawProjectFiles(browserProjects));
     ADD_WIN("Scenes",              GUIType::FILES_SCENES,        IconGUI::WIN_FILES_SCENES,      true,  false, true, FileSystemGUI::DrawSceneFiles(browserScenes));
     ADD_WIN("Scripts",             GUIType::FILES_SCRIPTS,       IconGUI::WIN_FILES_SCRIPTS,     true,  false, true, FileSystemGUI::DrawScriptFiles(browserScripts));
@@ -207,6 +205,55 @@ void GUIManager::DrawGUI()
     CloseRemovedEditableOpenFiles();
 
     ImGui::End();
+}
+
+void GUIManager::LoadBrowserFolders()
+{
+    browserScenes = GUI::CreateBrowserCache(
+        Config::get()->SCENES_FOLDER,
+        Config::get()->SCENES_EXT,
+        [this, &cache = browserScenes]() {
+            cache.folderFolders = Tools::getFolderFolders(cache.currentFolder);
+            cache.folderFiles = Tools::getFolderFiles(cache.currentFolder, cache.ext);
+        }
+    );
+
+    browserProjects = GUI::CreateBrowserCache(
+        Config::get()->PROJECTS_FOLDER,
+        Config::get()->PROJECTS_EXT,
+        [this, &cache = browserProjects]() {
+            cache.folderFolders = Tools::getFolderFolders(cache.currentFolder);
+            cache.folderFiles = Tools::getFolderFiles(cache.currentFolder, cache.ext);
+        }
+    );
+
+    browserShaders = GUI::CreateBrowserCache(
+        Config::get()->CUSTOM_SHADERS_FOLDER,
+        Config::get()->SHADERS_EXT,
+        [this, &cache = browserShaders]() {
+            cache.folderFolders = Tools::getFolderFolders(cache.currentFolder);
+            cache.folderFiles = Tools::getFolderFiles(cache.currentFolder, cache.ext);
+        }
+    );
+
+    browserScripts = GUI::CreateBrowserCache(
+        Config::get()->SCRIPTS_FOLDER,
+        Config::get()->SCRIPTS_EXT,
+        [this, &cache = browserScripts]() {
+            cache.folderFolders = Tools::getFolderFolders(cache.currentFolder);
+            cache.folderFiles = Tools::getFolderFiles(cache.currentFolder, cache.ext);
+        }
+    );
+
+    browserImages = GUI::CreateBrowserCache(
+        Config::get()->IMAGES_FOLDER,
+        Config::get()->IMAGES_EXT,
+        [this, &cache = browserImages]() {
+            cache.folderFolders = Tools::getFolderFolders(cache.currentFolder);
+            cache.folderFiles = Tools::getFolderFiles(cache.currentFolder, cache.ext);
+            FileSystemGUI::LoadImagesFolder(cache, browserImagesTextures);
+        }
+    );
 }
 
 void GUIManager::CloseRemovedEditableOpenFiles()
@@ -388,66 +435,6 @@ void GUIManager::setLayoutToDefault(Config::ImGUIConfigs currentConfig)
     }
 }
 
-void GUIManager::DrawWinImages()
-{
-    auto windowStatus = getWindowStatus(GUIType::IMAGES);
-    if (!windowStatus->isOpen) return;
-
-    static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame;
-
-    auto imageFiles = imagesFolder.getItems();
-    int columns = 8; // Máximo de 6 imágenes por fila
-
-    if (ImGui::BeginTable("ImagesTable", columns, flags)) {
-        int count = 0;
-        for (auto image : imageFiles) {
-            if (count % columns == 0) {
-                ImGui::TableNextRow();
-            }
-            ImGui::TableNextColumn();
-
-            float columnWidth = ImGui::GetColumnWidth();
-            float cursorX = ImGui::GetCursorPosX() + (columnWidth - 96) * 0.5f;
-            ImGui::SetCursorPosX(cursorX);
-
-            ImGui::BeginGroup();
-
-            ImGui::PushID(image->label.c_str());
-            ImGui::ImageButton(reinterpret_cast<ImTextureID>(image->texture->getOGLTextureID()), ImVec2(96, 96));
-
-            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-                ImGui::SetDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM, image->label.c_str(), image->label.size() + 1);
-                ImGui::Text("%s", image->label.c_str());
-                ImGui::EndDragDropSource();
-            }
-            ImGui::PopID();
-
-            ImVec2 textSize = ImGui::CalcTextSize(image->label.c_str());
-            ImGui::SetCursorPosX(cursorX + (96 - textSize.x) * 0.5f);
-            ImGui::Text("%s", image->label.c_str());
-
-            char sizeText[32];
-            snprintf(sizeText, sizeof(sizeText), "%d x %d", image->texture->width(), image->texture->height());
-            ImVec2 sizeTextSize = ImGui::CalcTextSize(sizeText);
-            ImGui::SetCursorPosX(cursorX + (96 - sizeTextSize.x) * 0.5f);
-            ImGui::Text("%s", sizeText);
-
-            ImGui::EndGroup();
-            ImGui::Dummy(ImVec2(0.0f, 10.0f));
-
-            count++;
-        }
-
-        int remaining = columns - (count % columns);
-        if (remaining != columns) {
-            for (int i = 0; i < remaining; i++) {
-                ImGui::TableNextColumn();
-            }
-        }
-        ImGui::EndTable();
-    }
-}
-
 void GUIManager::SetNextWindowSize(int w, int h)
 {
     ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -501,7 +488,7 @@ void GUIManager::DrawWinDepthLightsMap()
 
             // Luego añadir los SpotLights
             int i = 0;
-            for (const auto l: lights) {
+            for (const auto &l: lights) {
                 ImGui::TableNextColumn();
 
                 // Centrar texto combinado

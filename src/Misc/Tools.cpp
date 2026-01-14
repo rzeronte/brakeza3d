@@ -362,6 +362,8 @@ bool Tools::saveTextureToFile(GLuint textureID, int width, int height, const cha
 
 std::vector<std::string> Tools::getFolderFiles(std::string& path, std::string extension)
 {
+    LOG_MESSAGE("[Tools] Read folder files for '%s', ext: '%s'", path.c_str(), extension.c_str());
+
     std::vector<std::string> result;
     DIR *dir;
     struct dirent *ent;
@@ -482,4 +484,12 @@ bool Tools::CopyFile(const std::string& origen, const std::string& destino)
 glm::mat4 Tools::aiMat4toGLMMat4(const aiMatrix4x4& from)
 {
     return glm::transpose(glm::make_mat4(&from.a1));
+}
+
+std::string Tools::NormalizePath(std::string path)
+{
+    if (!path.empty() && path.back() != '/' && path.back() != '\\') {
+        path += '/';
+    }
+    return path;
 }

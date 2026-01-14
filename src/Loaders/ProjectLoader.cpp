@@ -15,7 +15,7 @@ void ProjectLoader::LoadProject(const std::string &filename)
     auto contentFile = Tools::ReadFile(filename);
     auto contentJSON = cJSON_Parse(contentFile);
 
-    LOG_MESSAGE("Loading PROJECT: %s", filename.c_str());
+    LOG_MESSAGE("[ProjectLoader] Loading project file '%s'...", filename.c_str());
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "name") != nullptr) {
         auto sceneName = cJSON_GetObjectItemCaseSensitive(contentJSON, "name")->valuestring;

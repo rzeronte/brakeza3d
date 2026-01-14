@@ -45,6 +45,7 @@ public:
     static std::string removeSubstring(const std::string &str, const std::string &toRemove);
     static std::string ImGuiUnique(const std::string &text);
     static std::string ExtractJsonStringFieldFromDisk(const std::string &path, const std::string &field);
+    static std::string NormalizePath(std::string path);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

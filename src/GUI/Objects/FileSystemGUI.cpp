@@ -14,6 +14,7 @@
 #include "../../../include/Loaders/SceneChecker.h"
 #include "../../../include/Loaders/SceneLoader.h"
 #include "../../../include/Misc/Tools.h"
+#include "../../../include/Render/Drawable.h"
 
 void FileSystemGUI::DrawProjectCreator()
 {
@@ -272,7 +273,7 @@ void FileSystemGUI::DrawSceneFiles(GUIType::BrowserCache &browser)
     DrawSceneCreatorDialog(browser, title);
 
     ImGui::Separator();
-    DrawBrowserFolders(Config::get()->SCENES_FOLDER, browser, Config::get()->SCENES_EXT);
+    DrawBrowserFolders(Config::get()->SCENES_FOLDER, browser);
     ImGui::Separator();
     DrawScenesTable(browser);
 }
@@ -319,50 +320,198 @@ void FileSystemGUI::DrawSceneCreatorDialog(GUIType::BrowserCache &browser, std::
     }
 }
 
-void FileSystemGUI::DrawBrowserFolders(std::string& folder, GUIType::BrowserCache &browser, const std::string &ext)
+void FileSystemGUI::DrawBrowserFolders(const std::string& rootFolder, GUIType::BrowserCache &browser)
 {
-    if (browser.currentFolder != folder) {
+    // only show ".." if we arent in browser's root folder
+    if (browser.currentFolder != rootFolder) {
         ImGui::AlignTextToFramePadding();
         ImGui::Image(Icon(IconGUI::FOLDER), ImVec2(24, 24));
         ImGui::SameLine();
         if (ImGui::Button("..")) {
-            browser.currentFolder = Tools::GoBackFromFolder(browser.currentFolder);
-            browser.folderFolders = Tools::getFolderFolders(browser.currentFolder);
-            browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, ext);
+            browser.currentFolder = Tools::NormalizePath(Tools::GoBackFromFolder(browser.currentFolder));
+            browser.onChangeFolderCallback();
+            return;
         }
     }
+
+    if (browser.folderFolders.empty()) return;
 
     // Para el icono de la carpeta actual
     ImVec2 iconSize = GUIType::Sizes::ICONS_BROWSERS;
     float frameHeight = ImGui::GetFrameHeight();
     float offsetY = (frameHeight - iconSize.y) * 0.5f;
 
-    for (const auto & i : browser.folderFolders) {
-        auto fullPathFolder = browser.currentFolder + i;
+    // IMPORTANTE: No modificar el vector durante la iteración
+    std::string selectedFolder;
+
+    for (const auto &i : browser.folderFolders) {
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);
         ImGui::Image(Icon(IconGUI::FOLDER), iconSize);
         ImGui::SameLine();
         ImGui::SetCursorPosY(ImGui::GetCursorPosY() - offsetY);
+
         if (ImGui::Button(i.c_str())) {
-            browser.currentFolder = fullPathFolder + "/";
-            browser.folderFolders = Tools::getFolderFolders(browser.currentFolder);
-            browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, ext);
+            selectedFolder = Tools::NormalizePath(browser.currentFolder + i);
+            break;
         }
+    }
+
+    // Cambiar de carpeta DESPUÉS de terminar la iteración
+    if (!selectedFolder.empty()) {
+        LOG_MESSAGE(selectedFolder.c_str());
+        browser.currentFolder = selectedFolder;
+        browser.onChangeFolderCallback();
     }
 }
 
-void FileSystemGUI::LoadImagesFolder(GUIManager *gui)
+void FileSystemGUI::LoadImagesFolder(GUIType::BrowserCache &browser, TexturePackage &package)
 {
-    auto images = Tools::getFolderFiles(Config::get()->IMAGES_FOLDER, Config::get()->IMAGES_EXT);
+    package.Clear();
+
+    auto images = Tools::getFolderFiles(browser.currentFolder, Config::get()->IMAGES_EXT);
 
     for (const auto& f: images) {
-        gui->imagesFolder.addItem(Config::get()->IMAGES_FOLDER + f, f);
+        package.addItem(browser.currentFolder + f, f);
     }
 }
 
 ImTextureID FileSystemGUI::Icon(GUIType::Sheet coords)
 {
     return Brakeza::get()->GUI()->getTextureAtlas()->getTextureByXY(coords.x, coords.y)->getOGLImTexture();
+}
+
+void FileSystemGUI::DrawWinImages(GUIType::BrowserCache &browser, TexturePackage &package)
+{
+    ImGui::Text("Current Folder: %s", browser.currentFolder.c_str());
+
+    auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::IMAGES);
+    if (!windowStatus->isOpen) return;
+
+    DrawBrowserFolders(Config::get()->IMAGES_FOLDER, browser);
+    ImGui::Separator();
+
+    // Slider
+    static float imageSize = 96.0f;
+    ImGui::PushItemWidth(200);
+    ImGui::SliderFloat("Tamaño", &imageSize, 64.0f, 256.0f, "%.0f px");
+    ImGui::PopItemWidth();
+    ImGui::SameLine();
+    if (ImGui::Button("Reset")) imageSize = 96.0f;
+
+    ImGui::Separator();
+
+    if (package.getItems().empty()) {
+        Drawable::WarningMessage("No images found");
+        return;
+    }
+
+    // Calcular columnas dinámicamente según el ancho disponible
+    float availableWidth = ImGui::GetContentRegionAvail().x;
+    float cellWidth = imageSize + 20.0f; // Tamaño de imagen + padding
+    int columns = std::max(1, (int)(availableWidth / cellWidth));
+
+    // Usar padding en las celdas
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(10.0f, 10.0f));
+
+    static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_NoPadOuterX;
+
+    if (ImGui::BeginTable("ImagesTable", columns, flags)) {
+        int count = 0;
+        for (auto &image : package.getItems()) {
+            if (!image->texture->isLoaded()) continue;
+
+            if (count % columns == 0) {
+                ImGui::TableNextRow();
+            }
+            ImGui::TableNextColumn();
+
+            // Centrar todo el grupo
+            float columnWidth = ImGui::GetContentRegionAvail().x;
+            float offsetX = (columnWidth - imageSize) * 0.5f;
+
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offsetX);
+            ImGui::BeginGroup();
+
+            // Imagen con botón
+            ImGui::PushID(image->label.c_str());
+
+            // Calcular aspect ratio para mantener proporciones
+            float imgWidth = (float)image->texture->width();
+            float imgHeight = (float)image->texture->height();
+            float aspectRatio = imgWidth / imgHeight;
+
+            ImVec2 displaySize;
+            if (aspectRatio > 1.0f) {
+                // Imagen horizontal
+                displaySize = ImVec2(imageSize, imageSize / aspectRatio);
+            } else {
+                // Imagen vertical o cuadrada
+                displaySize = ImVec2(imageSize * aspectRatio, imageSize);
+            }
+
+            ImGui::ImageButton(
+                reinterpret_cast<ImTextureID>(image->texture->getOGLTextureID()),
+                displaySize,
+                ImVec2(0, 0), ImVec2(1, 1),
+                2 // Frame padding
+            );
+
+            // Drag & Drop
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+                ImGui::SetDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM, image->label.c_str(), image->label.size() + 1);
+                ImGui::Image(reinterpret_cast<ImTextureID>(image->texture->getOGLTextureID()), ImVec2(48, 48));
+                ImGui::SameLine();
+                ImGui::Text("%s", image->label.c_str());
+                ImGui::EndDragDropSource();
+            }
+
+            // Tooltip al pasar el ratón
+            if (ImGui::IsItemHovered()) {
+                ImGui::BeginTooltip();
+                ImGui::Image(reinterpret_cast<ImTextureID>(image->texture->getOGLTextureID()), ImVec2(256, 256));
+                ImGui::Text("%s", image->label.c_str());
+                ImGui::Text("%d x %d px", image->texture->width(), image->texture->height());
+                ImGui::EndTooltip();
+            }
+
+            ImGui::PopID();
+
+            // Nombre centrado (truncar si es muy largo)
+            std::string displayName = image->label;
+            float maxTextWidth = imageSize;
+            ImVec2 textSize = ImGui::CalcTextSize(displayName.c_str());
+
+            if (textSize.x > maxTextWidth) {
+                // Truncar el texto
+                while (textSize.x > maxTextWidth - 20 && displayName.length() > 3) {
+                    displayName = displayName.substr(0, displayName.length() - 1);
+                    textSize = ImGui::CalcTextSize((displayName + "...").c_str());
+                }
+                displayName += "...";
+                textSize = ImGui::CalcTextSize(displayName.c_str());
+            }
+
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (imageSize - textSize.x) * 0.5f);
+            ImGui::TextWrapped("%s", displayName.c_str());
+
+            // Dimensiones centradas (más pequeñas)
+            char sizeText[32];
+            snprintf(sizeText, sizeof(sizeText), "%d×%d", image->texture->width(), image->texture->height());
+            ImVec2 sizeTextSize = ImGui::CalcTextSize(sizeText);
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (imageSize - sizeTextSize.x) * 0.5f);
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 0.6f, 0.6f, 1.0f));
+            ImGui::Text("%s", sizeText);
+            ImGui::PopStyleColor();
+
+            ImGui::EndGroup();
+
+            count++;
+        }
+
+        ImGui::EndTable();
+    }
+
+    ImGui::PopStyleVar(); // CellPadding
 }
 
 std::vector<const char*> FileSystemGUI::getShaderTypeItems()
@@ -492,7 +641,7 @@ void FileSystemGUI::DrawShaderFiles(GUIType::BrowserCache &browser)
 
     DrawShaderCreatorDialog(browser, title);
     ImGui::Separator();
-    DrawBrowserFolders(Config::get()->CUSTOM_SHADERS_FOLDER, browser, Config::get()->SHADERS_EXT);
+    DrawBrowserFolders(Config::get()->CUSTOM_SHADERS_FOLDER, browser);
     ImGui::Separator();
     DrawShadersTable(browser);
 }
@@ -653,7 +802,7 @@ void FileSystemGUI::DrawScriptFiles(GUIType::BrowserCache &browser)
     }
     DrawScriptCreatorDialog(browser, title);
     ImGui::Separator();
-    DrawBrowserFolders(Config::get()->SCRIPTS_FOLDER, browser, Config::get()->SCRIPTS_EXT);
+    DrawBrowserFolders(Config::get()->SCRIPTS_FOLDER, browser);
     ImGui::Separator();
     DrawScriptsTable(browser);
 }

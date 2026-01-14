@@ -46,12 +46,13 @@ class GUIManager
     cJSON *documentationTree = nullptr;
     TextEditor documentationEditor;
 
-    TexturePackage imagesFolder;
+    TexturePackage browserImagesTextures;
 
     GUIType::BrowserCache browserScenes;
     GUIType::BrowserCache browserProjects;
     GUIType::BrowserCache browserShaders;
     GUIType::BrowserCache browserScripts;
+    GUIType::BrowserCache browserImages;
 
     SceneChecker checker;
 
@@ -62,7 +63,6 @@ class GUIManager
     TextureAtlas *textureAtlas;
     Image *splashImage = nullptr;
 
-    void DrawWinImages();
     void DrawWinDepthLightsMap();
     void DrawRegisteredWindows();
     void DrawWinKeyboardMouse();
@@ -71,6 +71,9 @@ class GUIManager
 public:
 
     explicit GUIManager();
+
+    void LoadBrowserFolders();
+
     virtual ~GUIManager() = default;
 
     bool isWindowOpen(GUIType::Window w) const;

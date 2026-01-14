@@ -2,7 +2,6 @@
 #define SDL2_3D_ENGINE_LIGHTPOINT_H
 
 #include "Object3D.h"
-#include "../Render/Frustum.h"
 #include "../Render/Color.h"
 
 class LightPoint : public Object3D {

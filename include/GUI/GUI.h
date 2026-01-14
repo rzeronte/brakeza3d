@@ -11,6 +11,7 @@
 #include "imgui.h"
 #include "../SceneObjectTypes.h"
 #include "../Misc/Timer.h"
+#include "../Misc/TexturePackage.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 
 namespace GUIType
@@ -45,6 +46,8 @@ namespace GUIType
         std::string currentFolder;
         std::vector<std::string> folderFiles;
         std::vector<std::string> folderFolders;
+        std::string ext;
+        std::function<void()> onChangeFolderCallback;
     };
 
     struct Sizes {
@@ -391,7 +394,7 @@ public:
     static void ImGuiSetColors();
     static void WelcomeMessage();
     static void ShowLoadTime(const std::string &text, const Timer &t);
-    static GUIType::BrowserCache CreateBrowserCache(std::string folder, const std::string &extension);
+    static GUIType::BrowserCache CreateBrowserCache(std::string folder, const std::string &extension, std::function<void()> functionCallBack);
 };
 
 #endif //BRAKEZA3D_GUI_H

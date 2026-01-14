@@ -9,7 +9,6 @@
 
 #include "Cone3D.h"
 #include "LightPoint.h"
-#include "../Render/Image.h"
 
 class LightSpot : public LightPoint
 {

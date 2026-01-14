@@ -46,10 +46,12 @@ public:
     static void DrawScriptRowActions(GUIType::BrowserCache &browser, const std::string &file);
     static void DrawScriptCreatorDialog(GUIType::BrowserCache &browser, std::string &title);
 
-    static void LoadImagesFolder(GUIManager *gui);
-    static void DrawBrowserFolders(std::string &folder, GUIType::BrowserCache &browser, const std::string &ext);
+    static void LoadImagesFolder(GUIType::BrowserCache &browser, TexturePackage &package);
+    static void DrawBrowserFolders(const std::string &folder, GUIType::BrowserCache &browser);
 
     static ImTextureID Icon(GUIType::Sheet coords);
+
+    static void DrawWinImages(GUIType::BrowserCache &browser, TexturePackage &package);
 };
 
 
