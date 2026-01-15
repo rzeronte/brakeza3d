@@ -155,7 +155,7 @@ public:
             ImGui::PopStyleColor();
             ImGui::SameLine();
             GUI::DrawButton(
-                "Deleting project",
+                "Clean filter",
                 IconGUI::PROJECT_REMOVE,
                 GUIType::Sizes::ICON_LOCKS,
                 false,

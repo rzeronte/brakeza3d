@@ -39,7 +39,7 @@ void GUIAddonProjectSetup::TreeSceneScripts()
     if (isOpenSceneScripts) {
         DrawSceneScripts();
         if (scripting->getSceneLUAScripts().empty()) {
-            Drawable::WarningMessage("There are not shaders attached");
+            Drawable::WarningMessage("There are not scenes attached");
         }
         ImGui::TreePop();
     }

@@ -380,7 +380,7 @@ ImTextureID FileSystemGUI::Icon(GUIType::Sheet coords)
 
 void FileSystemGUI::DrawWinImages(GUIType::BrowserCache &browser, TexturePackage &package)
 {
-    ImGui::Image(Icon(IconGUI::IMAGE_FILE), GUIType::Sizes::ICONS_BROWSERS);
+    ImGui::Image(Icon(IconGUI::IMAGE_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
     ImGui::SameLine();
     ImGui::Text("Current Folder: %s", browser.currentFolder.c_str());
     ImGui::Separator();

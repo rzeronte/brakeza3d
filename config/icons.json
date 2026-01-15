@@ -705,8 +705,8 @@
 			"y":	37
 		}, {
 			"name":	"IMAGE_FILE",
-			"x":	0,
-			"y":	0
+			"x":	5,
+			"y":	27
 		}, {
 			"name":	"PROJECT_INFO",
 			"x":	13,
