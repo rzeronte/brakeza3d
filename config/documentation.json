@@ -1,483 +1,174 @@
 {
 	"root": [
 		{
-			"name": "1) Basics",
-			"url": "../doc/GUI/01-basics.txt",
+			"name": "1) Getting Started",
+			"url": "",
 			"children": [
 				{
-					"name": "1.1) Main concepts",
-					"url": "../doc/GUI/01-basics.txt",
-					"children": [
-						{
-							"name": "1.1.1) Projects",
-							"url": "../doc/GUI/01-basics.txt",
-							"children": []
-						},
-						{
-							"name": "1.1.2) Scripts",
-							"url": "../doc/GUI/01-basics.txt",
-							"children": []
-						},
-						{
-							"name": "1.1.3) Scenes",
-							"url": "../doc/GUI/01-basics.txt",
-							"children": []
-						},
-						{
-							"name": "1.1.4) Objects",
-							"url": "../doc/GUI/01-basics.txt",
-							"children": []
-						}
-					]
+					"name": "1.1) Welcome to Brakeza3D!",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/getting-started/intro/",
+					"children": []
 				},
 				{
-					"name": "1.2) GUI",
-					"url": "../doc/GUI/01-basics.txt",
-					"children": [{
-						"name": "1.2.1) Scene Management",
-						"url": "../doc/GUI/01-basics.txt",
-						"children": []
-					},{
-						"name": "1.2.2) Scene Objects",
-						"url": "../doc/GUI/01-basics.txt",
-						"children": []
-					},{
-						"name": "1.2.3) Scripting System",
-						"url": "../doc/GUI/01-basics.txt",
-						"children": []
-					},{
-						"name": "1.2.4) Shaders System",
-						"url": "../doc/GUI/01-basics.txt",
-						"children": []
-					},{
-						"name": "1.2.5) Lighting",
-						"url": "../doc/GUI/01-basics.txt",
-						"children": []
-					}]
-				},
-				{
-					"name": "1.3) Components",
-					"url": "../doc/GUI/01-basics.txt",
+					"name": "1.2) Download and install",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/getting-started/download-and-install/",
 					"children": []
 				}
 			]
 		},
 		{
-			"name": "2) Basic Objects types",
-			"url": "../doc/GUI/02-basic_object_types.txt",
+			"name": "2) Editor Manual",
+			"url": "",
 			"children": [
 				{
-					"name": "2.1) The object Object3D",
-					"url": "../doc/GUI/02-basic_object_types.txt",
+					"name": "2.1) Overview",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/editor/overview/",
 					"children": []
 				},
 				{
-					"name": "2.2) Interacting with an Object3D",
-					"url": "../doc/GUI/02-basic_object_types.txt",
+					"name": "2.2) Layout modes",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/editor/layout-modes/",
 					"children": []
 				},
 				{
-					"name": "2.3) Scripting on Object3D",
-					"url": "../doc/GUI/02-basic_object_types.txt",
+					"name": "2.3) Projects",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/editor/projects/",
 					"children": []
 				},
 				{
-					"name": "2.4) Derived Objects from Object3D",
-					"url": "../doc/GUI/02-basic_object_types.txt",
+					"name": "2.4) Scenes",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/editor/scenes/",
 					"children": []
 				},
 				{
-					"name": "2.5) Auxiliary Basic Types",
-					"url": "../doc/GUI/02-basic_object_types.txt",
-					"children": [
-						{
-							"name": "2.5.1) Vertex3D",
-							"url": "../doc/GUI/02-basic_object_types.txt",
-							"children": []
-						},
-						{
-							"name": "2.5.2) M3 (Matriz 3x3)",
-							"url": "../doc/GUI/02-basic_object_types.txt",
-							"children": []
-						},
-						{
-							"name": "2.5.3) AABB3D",
-							"url": "../doc/GUI/02-basic_object_types.txt",
-							"children": []
-						},
-						{
-							"name": "2.5.4) Point2D",
-							"url": "../doc/GUI/02-basic_object_types.txt",
-							"children": []
-						},
-						{
-							"name": "2.5.5) Color",
-							"url": "../doc/GUI/02-basic_object_types.txt",
-							"children": []
-						}
-					]
+					"name": "2.5) Scripts",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/editor/scripts/",
+					"children": []
+				},
+				{
+					"name": "2.6) Shaders",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/editor/shaders/",
+					"children": []
 				}
 			]
 		},
 		{
-			"name": "3) Camera3D object",
-			"url": "../doc/GUI/03-camera_object.txt",
+			"name": "3) Engine Concepts",
+			"url": "",
 			"children": [
 				{
-					"name": "3.1) View and Projection Matrices",
-					"url": "../doc/GUI/03-camera_object.txt",
+					"name": "3.1) Script controls",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/script-controls/",
 					"children": []
 				},
 				{
-					"name": "3.2) Camera Movement and Rotation",
-					"url": "../doc/GUI/03-camera_object.txt",
+					"name": "3.2) Global illumination",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/global-illumination/",
 					"children": []
 				},
 				{
-					"name": "3.3) Camera Component",
-					"url": "../doc/GUI/03-camera_object.txt",
+					"name": "3.3) Collisions",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/collisions/",
 					"children": []
 				},
 				{
-					"name": "3.4) FOV",
-					"url": "../doc/GUI/03-camera_object.txt",
+					"name": "3.4) Assets folder",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/assets-folder/",
+					"children": []
+				},
+				{
+					"name": "3.5) Components",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/components/",
 					"children": []
 				}
 			]
 		},
 		{
-			"name": "4) Basic 2D object types",
-			"url": "../doc/GUI/04-2d_objects.txt",
+			"name": "4) Scripting API",
+			"url": "",
 			"children": [
 				{
-					"name": "4.1) Image2D",
-					"url": "../doc/GUI/04-2d_objects.txt",
+					"name": "4.1) Scripting introduction",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/index/",
 					"children": []
 				},
 				{
-					"name": "4.2) Image2DAnimation",
-					"url": "../doc/GUI/04-2d_objects.txt",
+					"name": "4.2) Basic object types",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/basic-object-types/",
 					"children": []
 				},
 				{
-					"name": "4.3) Text on screen",
-					"url": "../doc/GUI/04-2d_objects.txt",
+					"name": "4.3) The Camera object",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/camera-object/",
+					"children": []
+				},
+				{
+					"name": "4.4) 2D Objects",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/2d-objects/",
+					"children": []
+				},
+				{
+					"name": "4.5) 3D Objects",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/3d-objects/",
+					"children": []
+				},
+				{
+					"name": "4.6) Particle emitter",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/particle-emitter/",
+					"children": []
+				},
+				{
+					"name": "4.7) Lighting system",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/lighting-system/",
+					"children": []
+				},
+				{
+					"name": "4.8) Collision system",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/collision-system/",
+					"children": []
+				},
+				{
+					"name": "4.9) Input system",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/input-system/",
+					"children": []
+				},
+				{
+					"name": "4.10) Sound system",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/sound-system/",
+					"children": []
+				},
+				{
+					"name": "4.11) Shaders system",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/shaders-system/",
+					"children": []
+				},
+				{
+					"name": "4.12) Grid and Octree",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/grid-and-octree/",
+					"children": []
+				},
+				{
+					"name": "4.13) Components",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/components/",
 					"children": []
 				}
 			]
 		},
 		{
-			"name": "5) Basic 3D object types",
-			"url": "../doc/GUI/05-3d_objects.txt",
+			"name": "5) Advanced",
+			"url": "",
 			"children": [
 				{
-					"name": "5.1) Image3D",
-					"url": "../doc/GUI/05-3d_objects.txt",
+					"name": "5.1) Core shaders",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/advanced/core-shaders/",
 					"children": []
 				},
 				{
-					"name": "5.2) Mesh3D",
-					"url": "../doc/GUI/05-3d_objects.txt",
-					"children": []
-				},
-				{
-					"name": "5.3) Mesh3DAnimation",
-					"url": "../doc/GUI/05-3d_objects.txt",
-					"children": []
-				},
-				{
-					"name": "5.4) Draw lines",
-					"url": "../doc/GUI/05-3d_objects.txt",
+					"name": "5.2) Building from sources",
+					"url": "https://rzeronte.github.io/brakeza3d/docs/advanced/building-from-sources/",
 					"children": []
 				}
 			]
-		},
-		{
-			"name": "6) Light objects types",
-			"url": "../doc/GUI/06-lights_objects.txt",
-			"children": [
-				{
-					"name": "6.1) LightPoint3D",
-					"url": "../doc/GUI/06-lights_objects.txt",
-					"children": []
-				},
-				{
-					"name": "6.2) SpotLight3D",
-					"url": "../doc/GUI/06-lights_objects.txt",
-					"children": []
-				}
-			]
-		},
-		{
-			"name": "7) Particle emitter",
-			"url": "../doc/GUI/07-particle_emitter.txt",
-			"children": [
-				{
-					"name": "7.1) Particle Context",
-					"url": "../doc/GUI/07-particle_emitter.txt",
-					"children": []
-				}
-			]
-		},
-		{
-			"name": "8) Colliders system",
-			"url": "../doc/GUI/08-colliders_system.txt",
-			"children": [
-				{
-					"name": "8.1) Collision Modes",
-					"url": "../doc/GUI/08-colliders_system.txt",
-					"children": []
-				},
-				{
-					"name": "8.2) Collision Modes",
-					"url": "../doc/GUI/08-colliders_system.txt",
-					"children": []
-				},
-				{
-					"name": "8.3) Collider Shape",
-					"url": "../doc/GUI/08-colliders_system.txt",
-					"children": []
-				},
-				{
-					"name": "8.4) Disabling Collisions",
-					"url": "../doc/GUI/08-colliders_system.txt",
-					"children": []
-				},
-				{
-					"name": "8.5) Movement of Collidable Objects",
-					"url": "../doc/GUI/08-colliders_system.txt",
-					"children": []
-				},
-				{
-					"name": "8.6) Collider Properties",
-					"url": "../doc/GUI/08-colliders_system.txt",
-					"children": []
-				},
-				{
-					"name": "8.7) KINEMATIC Collision Mode",
-					"url": "../doc/GUI/08-colliders_system.txt",
-					"children": []
-				},
-				{
-					"name": "8.8) Collider and Bone Mapping",
-					"url": "../doc/GUI/08-colliders_system.txt",
-					"children": []
-				}
-			]
-		},
-		{
-			"name": "9) Input system",
-			"url": "../doc/GUI/09-input_system.txt",
-			"children": [{
-				"name": "9.1) Keyboard",
-				"url": "../doc/GUI/09-input_system.txt",
-				"children": []
-			},{
-				"name": "9.2) Mouse",
-				"url": "../doc/GUI/09-input_system.txt",
-				"children": []
-			},{
-				"name": "9.3) Pad",
-				"url": "../doc/GUI/09-input_system.txt",
-				"children": []
-			}]
-		},
-		{
-			"name": "10) Global illumination",
-			"url": "../doc/GUI/10-global_illumination.txt",
-			"children": [{
-					"name": "10.1) Direction",
-					"url": "../doc/GUI/10-global_illumination.txt",
-					"children": []
-				},{
-					"name": "10.2) Illumination components",
-					"url": "../doc/GUI/10-global_illumination.txt",
-					"children": []
-				}
-			]
-		},
-		{
-			"name": "11) Sound system",
-			"url": "../doc/GUI/11-sound_system.txt",
-			"children": [
-				{
-					"name": "11.1) Sound Formats",
-					"url": "../doc/GUI/11-sound_system.txt",
-					"children": []
-				},
-				{
-					"name": "11.2) Channels",
-					"url": "../doc/GUI/11-sound_system.txt",
-					"children": []
-				},
-				{
-					"name": "11.3) Loading Files into Memory",
-					"url": "../doc/GUI/11-sound_system.txt",
-					"children": []
-				},
-				{
-					"name": "11.4) Playing Music",
-					"url": "../doc/GUI/11-sound_system.txt",
-					"children": []
-				},
-				{
-					"name": "11.5) Playing Sounds",
-					"url": "../doc/GUI/11-sound_system.txt",
-					"children": []
-				},
-				{
-					"name": "11.6) Volume",
-					"url": "../doc/GUI/11-sound_system.txt",
-					"children": []
-				},
-				{
-					"name": "11.7) Automatic Loading",
-					"url": "../doc/GUI/11-sound_system.txt",
-					"children": []
-				}
-			]
-		},
-		{
-			"name": "12) Scripting system",
-			"url": "../doc/GUI/12-scripting_system.txt",
-			"children": [
-				{
-					"name": "12.1) Scripting System States",
-					"url": "../doc/GUI/12-scripting_system.txt",
-					"children": []
-				},
-				{
-					"name": "12.2) Object Lifecycle",
-					"url": "../doc/GUI/12-scripting_system.txt",
-					"children": []
-				},
-				{
-					"name": "12.3) Scripts LUA",
-					"url": "../doc/GUI/12-scripting_system.txt",
-					"children": []
-				},
-				{
-					"name": "12.4) Linking Scripts",
-					"url": "../doc/GUI/12-scripting_system.txt",
-					"children": []
-				},
-				{
-					"name": "12.5) Variables",
-					"url": "../doc/GUI/12-scripting_system.txt",
-					"children": []
-				},
-				{
-					"name": "12.6) Global variables",
-					"url": "../doc/GUI/12-scripting_system.txt",
-					"children": []
-				},
-				{
-					"name": "12.7) Local variables",
-					"url": "../doc/GUI/12-scripting_system.txt",
-					"children": []
-				},
-				{
-					"name": "12.8) Scene Management",
-					"url": "../doc/GUI/12-scripting_system.txt",
-					"children": []
-				},
-				{
-					"name": "12.9) Deltatime",
-					"url": "../doc/GUI/12-scripting_system.txt",
-					"children": []
-				},
-				{
-					"name": "12.10) Terminating Execution",
-					"url": "../doc/GUI/12-scripting_system.txt",
-					"children": []
-				},
-				{
-					"name": "12.11) Auto-loading Projects or Scenes",
-					"url": "../doc/GUI/12-scripting_system.txt",
-					"children": []
-				},
-				{
-					"name": "12.12) Grid3D and Octree",
-					"url": "../doc/GUI/12-scripting_system.txt",
-					"children": []
-				},
-				{
-					"name": "12.13) Complete LUA Code Examples",
-					"url": "../doc/GUI/12-scripting_system.txt",
-					"children": []
-				}
-			]
-		},
-		{
-			"name": "13) Shaders system",
-			"url": "../doc/GUI/13-shaders_system.txt",
-			"children": [
-				{
-					"name": "13.1) Types of shaders",
-					"url": "../doc/GUI/13-shaders_system.txt",
-					"children": []
-				},
-				{
-					"name": "13.2) Shader Variables (uniforms)",
-					"url": "../doc/GUI/13-shaders_system.txt",
-					"children": []
-				},
-				{
-					"name": "13.3) Postprocessing Shader Template",
-					"url": "../doc/GUI/13-shaders_system.txt",
-					"children": []
-				},
-				{
-					"name": "13.4) Geometry Shader Template",
-					"url": "../doc/GUI/13-shaders_system.txt",
-					"children": []
-				},
-				{
-					"name": "13.5) Internal Shaders",
-					"url": "../doc/GUI/13-shaders_system.txt",
-					"children": []
-				}
-			]
-		},
-		{
-			"name": "14) Components",
-			"url": "../doc/GUI/14-components.txt",
-			"children": [
-				{
-					"name": "14.1) Window",
-					"url": "../doc/GUI/14-components.txt",
-					"children": []
-				},{
-					"name": "14.2) Render",
-					"url": "../doc/GUI/14-components.txt",
-					"children": []
-				},{
-					"name": "14.3) Input",
-					"url": "../doc/GUI/14-components.txt",
-					"children": []
-				},{
-					"name": "14.4) Camera",
-					"url": "../doc/GUI/14-components.txt",
-					"children": []
-				},{
-					"name": "14.5) Collisions",
-					"url": "../doc/GUI/14-components.txt",
-					"children": []
-				},{
-					"name": "14.6) Scripting",
-					"url": "../doc/GUI/14-components.txt",
-					"children": []
-				},{
-					"name": "14.7) Sound",
-					"url": "../doc/GUI/14-components.txt",
-					"children": []
-				}
-			]
-		},
-		{
-			"name": "15) Assets folder",
-			"url": "../doc/GUI/15-assets_folder.txt",
-			"children": []
 		}
 	]
 }

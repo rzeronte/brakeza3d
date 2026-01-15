@@ -699,6 +699,18 @@
 			"name":	"NODE_EDITOR_TAB",
 			"x":	6,
 			"y":	29
+		}, {
+			"name":	"PROJECT_SETUP_SCENES",
+			"x":	2,
+			"y":	37
+		}, {
+			"name":	"IMAGE_FILE",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"PROJECT_INFO",
+			"x":	13,
+			"y":	28
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

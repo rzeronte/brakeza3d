@@ -1,5 +1,6 @@
 ---
 sidebar_position: 14
+title: 4.13) Components
 ---
 
 # Components

@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "../../src/GUI/ShaderNodeEditorManager.h"
+#include "../Loaders/ProjectChecker.h"
 #include "../Loaders/SceneChecker.h"
 #include "../Misc/TextureAtlas.h"
 #include "../Misc/TexturePackage.h"
@@ -53,7 +54,8 @@ class GUIManager
     GUIType::BrowserCache browserScripts;
     GUIType::BrowserCache browserImages;
 
-    SceneChecker checker;
+    SceneChecker sceneChecker;
+    ProjectChecker projectChecker;
 
     Color selectionColor = Color::green();
 
@@ -102,7 +104,8 @@ public:
     [[nodiscard]] GUIType::ViewerObjectsMode getObjectsViewerMode() const               { return viewerMode; }
     [[nodiscard]] std::vector<EditableOpenBaseResource *> getEditableOpenFiles() const  { return openFiles;}
     [[nodiscard]] int getIndexCodeEditorTab() const                                     { return indexCodeEditorTab; }
-    [[nodiscard]] SceneChecker &getSceneChecker()                                       { return checker; }
+    [[nodiscard]] SceneChecker &getSceneChecker()                                       { return sceneChecker; }
+    [[nodiscard]] ProjectChecker &getProjectChecker()                                   { return projectChecker; }
     [[nodiscard]] std::vector<GUIType::ViewerObjectType> &getVisibleObjectTypes()       { return visibleTypeObjects; }
 
     GUIType::WindowData *getWindowStatus(GUIType::Window window);

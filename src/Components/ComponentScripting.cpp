@@ -137,7 +137,7 @@ void ComponentScripting::ReloadScriptGlobals() const
 
 void ComponentScripting::RemoveSceneScript(ScriptLUA *script)
 {
-    LOG_MESSAGE("Removing SCENE script %s", script->scriptFilename.c_str());
+    LOG_MESSAGE("[Scripting] Removing SceneScript '%s'...", script->scriptFilename.c_str());
 
     for (auto it = scripts.begin(); it != scripts.end(); ++it) {
         if ((*it)->scriptFilename == script->scriptFilename) {
@@ -147,6 +147,17 @@ void ComponentScripting::RemoveSceneScript(ScriptLUA *script)
         }
     }
 }
+
+void ComponentScripting::RemoveProjectScene(const std::string &scenePath)
+{
+    LOG_MESSAGE("[Scripting] Removing project scene %s", scenePath.c_str());
+
+    for (auto it = projectScenes.begin(); it != projectScenes.end(); ++it) {
+        if (*it == scenePath) {
+            projectScenes.erase(it);
+            return;
+        }
+    }}
 
 void ComponentScripting::RemoveProjectScript(ScriptLUA *script)
 {

@@ -86,12 +86,12 @@
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "scripting-api/04-2d-objects",
+              "id": "scripting-api/4-2d-objects",
               "path": "/brakeza3d/docs/scripting-api/2d-objects",
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "scripting-api/05-3d-objects",
+              "id": "scripting-api/5-3d-objects",
               "path": "/brakeza3d/docs/scripting-api/3d-objects",
               "sidebar": "tutorialSidebar"
             },
@@ -106,13 +106,18 @@
               "sidebar": "tutorialSidebar"
             },
             {
-              "id": "scripting-api/colliders-system",
-              "path": "/brakeza3d/docs/scripting-api/colliders-system",
+              "id": "scripting-api/collision-system",
+              "path": "/brakeza3d/docs/scripting-api/collision-system",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/components",
               "path": "/brakeza3d/docs/scripting-api/components",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "scripting-api/grid-and-octree",
+              "path": "/brakeza3d/docs/scripting-api/grid-and-octree",
               "sidebar": "tutorialSidebar"
             },
             {
@@ -133,11 +138,6 @@
             {
               "id": "scripting-api/particle-emitter",
               "path": "/brakeza3d/docs/scripting-api/particle-emitter",
-              "sidebar": "tutorialSidebar"
-            },
-            {
-              "id": "scripting-api/scripting-system",
-              "path": "/brakeza3d/docs/scripting-api/scripting-system",
               "sidebar": "tutorialSidebar"
             },
             {

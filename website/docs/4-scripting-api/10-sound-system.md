@@ -1,5 +1,6 @@
 ---
 sidebar_position: 11
+title: 4.10) Sound system
 ---
 
 # Sound system

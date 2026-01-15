@@ -1,6 +1,6 @@
 ---
 sidebar_position: 12
-title: Shaders system
+title: 4.11) Shaders system
 ---
 
 ## Shader Variables (uniforms)

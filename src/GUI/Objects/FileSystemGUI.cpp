@@ -46,36 +46,22 @@ void FileSystemGUI::DrawProjectRowActions(GUIType::BrowserCache &browser, const 
 
     auto fullPath = browser.currentFolder + file;
 
-    GUI::DrawButtonTransparent(
-        "Open project",
-        IconGUI::PROJECT_OPEN,
-        GUIType::Sizes::ICONS_BROWSERS,
-        true,
-        [&] {
-            ProjectLoader::LoadProject(fullPath);
-        }
-    );
+    GUI::DrawButtonTransparent("Project information", IconGUI::PROJECT_INFO, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+        Brakeza::get()->GUI()->getProjectChecker().LoadProjectInfoDialog(fullPath);
+    });
     ImGui::SameLine();
-    GUI::DrawButtonConfirm(
-        "Override project",
-        "Are you sure to override project?",
-        IconGUI::SAVE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        [&] {
-            ProjectLoader::SaveProject(fullPath);
-        }
-    );
+    GUI::DrawButtonTransparent("Open project", IconGUI::PROJECT_OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        ProjectLoader::LoadProject(fullPath);
+    });
     ImGui::SameLine();
-    GUI::DrawButtonConfirm(
-        "Deleting project",
-        "Are you sure to delete project?",
-        IconGUI::PROJECT_REMOVE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        [&] {
-            ProjectLoader::RemoveProject(fullPath);
-            browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
-        }
-    );
+    GUI::DrawButtonConfirm("Override project", "Are you sure to override project?", IconGUI::SAVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
+        ProjectLoader::SaveProject(fullPath);
+    });
+    ImGui::SameLine();
+    GUI::DrawButtonConfirm("Deleting project", "Are you sure to delete project?", IconGUI::PROJECT_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
+        ProjectLoader::RemoveProject(fullPath);
+        browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
+    });
 }
 
 void FileSystemGUI::DrawProjectRow(GUIType::BrowserCache &browser, const std::string &file, int index)

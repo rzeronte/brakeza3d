@@ -32,6 +32,9 @@ public:
     void AddProjectLUAScript(ScriptLUA *script);
     void ReloadScriptGlobals() const;
     void RemoveSceneScript(ScriptLUA *script);
+
+    void RemoveProjectScene(const std::string &scenePath);
+
     void RemoveProjectScript(ScriptLUA *script);
     void onStartScripts() const;
     void RunScripts() const;

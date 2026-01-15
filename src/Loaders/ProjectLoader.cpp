@@ -38,7 +38,7 @@ void ProjectLoader::LoadProject(const std::string &filename)
     // scenes
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scenes") != nullptr) {
         cJSON *currentScene;
-        cJSON_ArrayForEach(currentScene, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
+        cJSON_ArrayForEach(currentScene, cJSON_GetObjectItemCaseSensitive(contentJSON, "scenes")) {
             std::string path = cJSON_GetObjectItemCaseSensitive(currentScene, "path")->valuestring;
             Components::get()->Scripting()->AddProjectScene(path);
         }
@@ -94,7 +94,7 @@ void ProjectLoader::SaveProject(const std::string &filename)
         cJSON_AddStringToObject(sceneJSON, "path", scenePath.c_str());
         cJSON_AddItemToArray(scenesArray, sceneJSON);
     }
-    cJSON_AddItemToObject(root, "scripts", sceneScriptsArray);
+    cJSON_AddItemToObject(root, "scenes", scenesArray);
 
     // sound
     cJSON *soundJSON = cJSON_CreateObject();

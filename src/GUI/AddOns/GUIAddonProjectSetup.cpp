@@ -198,10 +198,15 @@ void GUIAddonProjectSetup::DrawProjectScenes()
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));     // Espacio entre botones
 
             GUI::DrawButtonTransparent("Load scene", IconGUI::SCENE_LOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+                SceneLoader::ClearScene();
+                SceneLoader::LoadScene(currentScene);
             });
             ImGui::SameLine();
             GUI::DrawButtonTransparent("Remove scene from project", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+                Components::get()->Scripting()->RemoveProjectScene(currentScene);
             });
+
+            ImGui::PopStyleVar(2);  // ¡ESTO FALTABA!
 
             ImGui::PopID();
         }

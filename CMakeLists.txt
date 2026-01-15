@@ -357,6 +357,8 @@ add_executable(Brakeza3D
         src/GUI/NodeTypes/InternalTextureNode.h
         src/GUI/NodeTypes/MeshTextureNode.h
         src/GUI/ImGuiLayoutHelpers.h
+        include/Loaders/ProjectChecker.cpp
+        include/Loaders/ProjectChecker.h
 )
 
 target_link_libraries(Brakeza3D

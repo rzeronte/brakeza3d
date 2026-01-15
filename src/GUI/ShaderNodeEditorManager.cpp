@@ -377,7 +377,7 @@ void ShaderNodeEditorManager::OnCreateNodeMenu()
     if (getType() == SHADER_NODE_OBJECT) {
         if (ImGui::MenuItem("Mesh Texture")) CreateNodeOfType("Mesh Texture");
     } else if (getType() == SHADER_NODE_POSTPROCESSING) {
-        if (ImGui::MenuItem("InternalTexture")) CreateNodeOfType("InternalTexture");
+        if (ImGui::MenuItem("Internal Texture")) CreateNodeOfType("Internal Texture");
     }
 
     ImGui::Spacing();
@@ -429,7 +429,7 @@ void ShaderNodeEditorManager::RenderEffect(GLuint fb)
     int textureUnit = 0;
     for (auto& node : GetNodes()) {
         if ((node->name == "Image" ||
-             node->name == "InternalTexture" ||
+             node->name == "Internal Texture" ||
              node->name == "MeshTexture") &&
             m_NodeTextures.find(node->id) != m_NodeTextures.end()) {
             auto& tex = m_NodeTextures[node->id];
@@ -521,7 +521,7 @@ std::string ShaderNodeEditorManager::GenerateShaderCode()
     // Declarar uniforms de texturas
     for (auto& node : GetNodes()) {
         if ((node->name == "Image" ||
-             node->name == "InternalTexture" ||
+             node->name == "Internal Texture" ||
              node->name == "Mesh Texture") &&
             m_NodeTextures.find(node->id) != m_NodeTextures.end()) {
             auto& tex = m_NodeTextures[node->id];
@@ -843,7 +843,7 @@ void ShaderNodeEditorManager::UpdateChainOutputTexture(GLuint textureId)
 {
     // Buscar todos los nodos ChainOutput y actualizar su textura
     for (auto& node : GetNodes()) {
-        if (node->name == "InternalTexture") {
+        if (node->name == "Internal Texture") {
             UpdateExternalTextureForNode(node->id, textureId);
         }
     }
@@ -852,7 +852,7 @@ void ShaderNodeEditorManager::UpdateChainOutputTexture(GLuint textureId)
 void ShaderNodeEditorManager::UpdateInternalTextures(GLuint colorTexture, GLuint depthTexture)
 {
     for (auto& node : GetNodes()) {
-        if (node->name == "InternalTexture") {
+        if (node->name == "Internal Texture") {
             InternalTextureType* texType = (InternalTextureType*)node->userData;
             if (texType) {
                 GLuint textureToUse = 0;

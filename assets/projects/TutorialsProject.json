@@ -6,6 +6,15 @@
 		"z":	0
 	},
 	"scripts":	[],
+	"scenes":	[{
+			"path":	"../assets/scenes/DemoScene.json"
+		}, {
+			"path":	"../assets/scenes/PerformanceTestScene.json"
+		}],
+	"sound":	{
+		"volume_fx":	50,
+		"volume_music":	40
+	},
 	"resolution":	{
 		"width":	1920,
 		"height":	1009

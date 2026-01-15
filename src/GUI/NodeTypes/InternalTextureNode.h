@@ -8,7 +8,7 @@ class InternalTextureNode : public NodeType {
 public:
     std::string GetTypeName() const override
     {
-        return "InternalTexture";
+        return "Internal Texture";
     }
 
     ImVec4 GetColor() const override {
