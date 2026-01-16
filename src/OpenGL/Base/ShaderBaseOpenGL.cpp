@@ -39,7 +39,7 @@ ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, bool enabl
 {
     // Create the shaders
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-    GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+    //GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
     // Read the Vertex Shader code from the file
     std::string VertexShaderCode;
@@ -73,7 +73,7 @@ ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, bool enabl
     LOG_MESSAGE("[OpenGL] Linking program...");
     GLuint ProgramID = glCreateProgram();
     glAttachShader(ProgramID, VertexShaderID);
-    glAttachShader(ProgramID, FragmentShaderID);
+    //glAttachShader(ProgramID, FragmentShaderID);
 
     if (enableFeedback) {
         const char* feedbackVaryings[] = {"tf_Position"};  // Usamos un arreglo de cadenas (const char*)
