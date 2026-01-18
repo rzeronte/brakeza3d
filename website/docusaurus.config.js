@@ -142,6 +142,7 @@ const config = {
         additionalLanguages: ['lua'],
       },
     }),
+
 };
 
 export default config;

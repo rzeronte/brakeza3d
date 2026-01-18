@@ -4,4 +4,7 @@
     <option name="pythonIntegrationState" value="YES" />
   </component>
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
+  <component name="WestSettings"><![CDATA[{
+  "westExecutable": "west"
+}]]></component>
 </project>

@@ -1,251 +1,294 @@
 {
-  "/brakeza3d/blog-1cd": {
-    "__comp": "a6aa9e1f",
+  "/brakeza3d/__docusaurus/debug-f6f": {
+    "__comp": "__comp---theme-debug-config-23-a-2ff",
     "__context": {
-      "plugin": "36994c47"
+      "plugin": "plugin---brakeza-3-d-docusaurus-debugb-38-d19"
+    }
+  },
+  "/brakeza3d/__docusaurus/debug/config-60c": {
+    "__comp": "__comp---theme-debug-config-23-a-2ff",
+    "__context": {
+      "plugin": "plugin---brakeza-3-d-docusaurus-debugb-38-d19"
+    }
+  },
+  "/brakeza3d/__docusaurus/debug/content-13d": {
+    "__comp": "__comp---theme-debug-contentba-8-ce7",
+    "__context": {
+      "plugin": "plugin---brakeza-3-d-docusaurus-debugb-38-d19"
     },
-    "sidebar": "814f3328",
+    "__props": "__props---brakeza-3-d-docusaurus-debug-content-506-2d7"
+  },
+  "/brakeza3d/__docusaurus/debug/globalData-01d": {
+    "__comp": "__comp---theme-debug-global-dataede-0fa",
+    "__context": {
+      "plugin": "plugin---brakeza-3-d-docusaurus-debugb-38-d19"
+    }
+  },
+  "/brakeza3d/__docusaurus/debug/metadata-cd9": {
+    "__comp": "__comp---theme-debug-site-metadata-68-e-3d4",
+    "__context": {
+      "plugin": "plugin---brakeza-3-d-docusaurus-debugb-38-d19"
+    }
+  },
+  "/brakeza3d/__docusaurus/debug/registry-8be": {
+    "__comp": "__comp---theme-debug-registry-679-501",
+    "__context": {
+      "plugin": "plugin---brakeza-3-d-docusaurus-debugb-38-d19"
+    }
+  },
+  "/brakeza3d/__docusaurus/debug/routes-926": {
+    "__comp": "__comp---theme-debug-routes-946-699",
+    "__context": {
+      "plugin": "plugin---brakeza-3-d-docusaurus-debugb-38-d19"
+    }
+  },
+  "/brakeza3d/blog-1cd": {
+    "__comp": "__comp---theme-blog-list-pagea-6-a-7ba",
+    "__context": {
+      "plugin": "plugin---brakeza-3-d-blog-369-37d"
+    },
+    "sidebar": "sidebar---brakeza-3-d-blog-814-df1",
     "items": [
       {
-        "content": "9f2b0632"
+        "content": "content---brakeza-3-d-blog-9-f-2-0bc"
       }
     ],
-    "__props": "ba749375"
+    "__props": "__props---brakeza-3-d-blogba-7-29a"
   },
   "/brakeza3d/blog/archive-abc": {
-    "__comp": "9e4087bc",
+    "__comp": "__comp---theme-blog-archive-page-9-e-4-1d8",
     "__context": {
-      "plugin": "36994c47"
+      "plugin": "plugin---brakeza-3-d-blog-369-37d"
     },
-    "__props": "c6c300ba"
+    "__props": "__props---brakeza-3-d-blog-archivec-6-c-8a5"
   },
   "/brakeza3d/blog/authors-4f8": {
-    "__comp": "621db11d",
+    "__comp": "__comp---theme-blog-pages-blog-authors-list-page-621-70c",
     "__context": {
       "data": {
-        "blogMetadata": "acecf23e"
+        "blogMetadata": "blogMetadata---brakeza-3-d-blog-authorsace-5c5"
       },
-      "plugin": "36994c47"
+      "plugin": "plugin---brakeza-3-d-blog-369-37d"
     },
-    "sidebar": "814f3328",
-    "__props": "e29cef36"
+    "sidebar": "sidebar---brakeza-3-d-blog-814-df1",
+    "__props": "__props---brakeza-3-d-blog-authorse-29-cba"
   },
   "/brakeza3d/blog/bienvenida-249": {
-    "__comp": "ccc49370",
+    "__comp": "__comp---theme-blog-post-pageccc-cab",
     "__context": {
       "data": {
-        "blogMetadata": "acecf23e"
+        "blogMetadata": "blogMetadata---brakeza-3-d-blog-authorsace-5c5"
       },
-      "plugin": "36994c47"
+      "plugin": "plugin---brakeza-3-d-blog-369-37d"
     },
-    "sidebar": "814f3328",
-    "content": "16e9bfe7"
+    "sidebar": "sidebar---brakeza-3-d-blog-814-df1",
+    "content": "content---brakeza-3-d-blog-bienvenida-16-e-80f"
   },
   "/brakeza3d/blog/tags-2d6": {
-    "__comp": "01a85c17",
+    "__comp": "__comp---theme-blog-tags-list-page-01-a-d0b",
     "__context": {
-      "plugin": "36994c47"
+      "plugin": "plugin---brakeza-3-d-blog-369-37d"
     },
-    "sidebar": "814f3328",
-    "__props": "c5891377"
+    "sidebar": "sidebar---brakeza-3-d-blog-814-df1",
+    "__props": "__props---brakeza-3-d-blog-tagsc-58-8ee"
   },
   "/brakeza3d/blog/tags/brakeza-3-d-2e4": {
-    "__comp": "6875c492",
+    "__comp": "__comp---theme-blog-tags-posts-page-687-b6c",
     "__context": {
-      "plugin": "36994c47"
+      "plugin": "plugin---brakeza-3-d-blog-369-37d"
     },
-    "sidebar": "814f3328",
+    "sidebar": "sidebar---brakeza-3-d-blog-814-df1",
     "items": [
       {
-        "content": "9f2b0632"
+        "content": "content---brakeza-3-d-blog-9-f-2-0bc"
       }
     ],
-    "__props": "6ba1339a"
+    "__props": "__props---brakeza-3-d-blog-tags-brakeza-3-d-6-ba-ef8"
   },
   "/brakeza3d/blog/tags/news-8d9": {
-    "__comp": "6875c492",
+    "__comp": "__comp---theme-blog-tags-posts-page-687-b6c",
     "__context": {
-      "plugin": "36994c47"
+      "plugin": "plugin---brakeza-3-d-blog-369-37d"
     },
-    "sidebar": "814f3328",
+    "sidebar": "sidebar---brakeza-3-d-blog-814-df1",
     "items": [
       {
-        "content": "9f2b0632"
+        "content": "content---brakeza-3-d-blog-9-f-2-0bc"
       }
     ],
-    "__props": "9d878f36"
+    "__props": "__props---brakeza-3-d-blog-tags-news-9-d-8-3cf"
   },
   "/brakeza3d/blog/tags/welcome-b2b": {
-    "__comp": "6875c492",
+    "__comp": "__comp---theme-blog-tags-posts-page-687-b6c",
     "__context": {
-      "plugin": "36994c47"
+      "plugin": "plugin---brakeza-3-d-blog-369-37d"
     },
-    "sidebar": "814f3328",
+    "sidebar": "sidebar---brakeza-3-d-blog-814-df1",
     "items": [
       {
-        "content": "9f2b0632"
+        "content": "content---brakeza-3-d-blog-9-f-2-0bc"
       }
     ],
-    "__props": "aaaec1ba"
+    "__props": "__props---brakeza-3-d-blog-tags-welcomeaaa-38a"
   },
   "/brakeza3d/contact-c1c": {
-    "__comp": "a1a65def",
+    "__comp": "__comp---site-src-pages-contact-jsxa-1-a-0d4",
     "__context": {
-      "plugin": "a7456010"
+      "plugin": "plugin---brakeza-3-d-contacta-74-732"
     },
-    "config": "5e9f5e1a"
+    "config": "config---brakeza-3-d-contact-5-e-9-842"
   },
   "/brakeza3d/downloads-033": {
-    "__comp": "1f391b9e",
+    "__comp": "__comp---theme-mdx-page-1-f-3-b90",
     "__context": {
-      "plugin": "a7456010"
+      "plugin": "plugin---brakeza-3-d-contacta-74-732"
     },
-    "content": "da5fc804"
+    "content": "content---brakeza-3-d-downloadsda-5-e7b"
   },
   "/brakeza3d/gallery-39c": {
-    "__comp": "a7da46a6",
+    "__comp": "__comp---site-src-pages-gallery-jsxa-7-d-13f",
     "__context": {
-      "plugin": "a7456010"
+      "plugin": "plugin---brakeza-3-d-contacta-74-732"
     },
-    "config": "5e9f5e1a"
+    "config": "config---brakeza-3-d-contact-5-e-9-842"
   },
   "/brakeza3d/markdown-page-a27": {
-    "__comp": "1f391b9e",
+    "__comp": "__comp---theme-mdx-page-1-f-3-b90",
     "__context": {
-      "plugin": "a7456010"
+      "plugin": "plugin---brakeza-3-d-contacta-74-732"
     },
-    "content": "393be207"
+    "content": "content---brakeza-3-d-markdown-page-393-322"
   },
   "/brakeza3d/docs-ee1": {
-    "__comp": "5e95c892",
+    "__comp": "__comp---theme-docs-root-5-e-9-0b6",
     "__context": {
-      "plugin": "aba21aa0"
+      "plugin": "plugin---brakeza-3-d-docsaba-c03"
     }
   },
   "/brakeza3d/docs-49e": {
-    "__comp": "a7bd4aaa",
-    "__props": "dcd64b35"
+    "__comp": "__comp---theme-doc-version-roota-7-b-5de",
+    "__props": "__props---brakeza-3-d-docsdcd-123"
   },
   "/brakeza3d/docs-e5e": {
-    "__comp": "a94703ab"
+    "__comp": "__comp---theme-doc-roota-94-67a"
   },
   "/brakeza3d/docs/advanced/building-from-sources-6c9": {
-    "__comp": "17896441",
-    "content": "cd149761"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-advanced-building-from-sourcescd-1-20e"
   },
   "/brakeza3d/docs/advanced/core-shaders-cfa": {
-    "__comp": "17896441",
-    "content": "669c000e"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-advanced-core-shaders-669-886"
   },
   "/brakeza3d/docs/editor/layout-modes-c30": {
-    "__comp": "17896441",
-    "content": "33ea2db4"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-editor-layout-modes-33-e-fd4"
   },
   "/brakeza3d/docs/editor/overview-a6e": {
-    "__comp": "17896441",
-    "content": "a0708922"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-editor-overviewa-07-fc4"
   },
   "/brakeza3d/docs/editor/projects-e07": {
-    "__comp": "17896441",
-    "content": "2b0078d8"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-editor-projects-2-b-0-1a1"
   },
   "/brakeza3d/docs/editor/scenes-f52": {
-    "__comp": "17896441",
-    "content": "17da6cb7"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-editor-scenes-17-d-126"
   },
   "/brakeza3d/docs/editor/scripts-8aa": {
-    "__comp": "17896441",
-    "content": "d6bb92cf"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-editor-scriptsd-6-b-0bf"
   },
   "/brakeza3d/docs/editor/shaders-575": {
-    "__comp": "17896441",
-    "content": "9e6cb0f0"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-editor-shaders-9-e-6-f1a"
   },
   "/brakeza3d/docs/engine-concepts/assets-folder-0de": {
-    "__comp": "17896441",
-    "content": "dfee648e"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-engine-concepts-assets-folderdfe-00a"
   },
   "/brakeza3d/docs/engine-concepts/collisions-df1": {
-    "__comp": "17896441",
-    "content": "adc21ecc"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-engine-concepts-collisionsadc-6af"
   },
   "/brakeza3d/docs/engine-concepts/components-43e": {
-    "__comp": "17896441",
-    "content": "5ab59bae"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-engine-concepts-components-5-ab-fa6"
   },
   "/brakeza3d/docs/engine-concepts/global-illumination-8b9": {
-    "__comp": "17896441",
-    "content": "b63f749b"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-engine-concepts-global-illuminationb-63-618"
   },
   "/brakeza3d/docs/engine-concepts/script-controls-75c": {
-    "__comp": "17896441",
-    "content": "d26697f2"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-engine-concepts-script-controlsd-26-684"
   },
   "/brakeza3d/docs/getting-started/download-and-install-c7c": {
-    "__comp": "17896441",
-    "content": "f0326e27"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-getting-started-download-and-installf-03-803"
   },
   "/brakeza3d/docs/getting-started/intro-37c": {
-    "__comp": "17896441",
-    "content": "39d1df33"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-getting-started-intro-39-d-312"
   },
   "/brakeza3d/docs/scripting-api/2d-objects-085": {
-    "__comp": "17896441",
-    "content": "36ec7162"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-scripting-api-2-d-objects-36-e-90b"
   },
   "/brakeza3d/docs/scripting-api/3d-objects-2ff": {
-    "__comp": "17896441",
-    "content": "d437b706"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-scripting-api-3-d-objectsd-43-c48"
   },
   "/brakeza3d/docs/scripting-api/basic-object-types-102": {
-    "__comp": "17896441",
-    "content": "995a250f"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-scripting-api-basic-object-types-995-ad0"
   },
   "/brakeza3d/docs/scripting-api/camera-object-681": {
-    "__comp": "17896441",
-    "content": "247e1b09"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-scripting-api-camera-object-247-690"
   },
   "/brakeza3d/docs/scripting-api/collision-system-e91": {
-    "__comp": "17896441",
-    "content": "4c3b16ac"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-scripting-api-collision-system-4-c-3-7c3"
   },
   "/brakeza3d/docs/scripting-api/components-a42": {
-    "__comp": "17896441",
-    "content": "60a2b713"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-scripting-api-components-60-a-d63"
   },
   "/brakeza3d/docs/scripting-api/grid-and-octree-46d": {
-    "__comp": "17896441",
-    "content": "af161579"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-scripting-api-grid-and-octreeaf-1-e57"
   },
   "/brakeza3d/docs/scripting-api/index-7a6": {
-    "__comp": "17896441",
-    "content": "6bb807c6"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-scripting-api-index-6-bb-94b"
   },
   "/brakeza3d/docs/scripting-api/input-system-1a5": {
-    "__comp": "17896441",
-    "content": "10b7bde0"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-scripting-api-input-system-10-b-e8f"
   },
   "/brakeza3d/docs/scripting-api/lighting-system-168": {
-    "__comp": "17896441",
-    "content": "52ce65c2"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-scripting-api-lighting-system-52-c-312"
   },
   "/brakeza3d/docs/scripting-api/particle-emitter-fff": {
-    "__comp": "17896441",
-    "content": "30d8cacc"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-scripting-api-particle-emitter-30-d-c3a"
   },
   "/brakeza3d/docs/scripting-api/shaders-system-e89": {
-    "__comp": "17896441",
-    "content": "b11467dc"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-scripting-api-shaders-systemb-11-5c6"
   },
   "/brakeza3d/docs/scripting-api/sound-system-a59": {
-    "__comp": "17896441",
-    "content": "1260a475"
+    "__comp": "__comp---theme-doc-item-178-a40",
+    "content": "content---brakeza-3-d-docs-scripting-api-sound-system-126-df8"
   },
   "/brakeza3d/-099": {
-    "__comp": "c4f5d8e4",
+    "__comp": "__comp---site-src-pages-index-jsc-4-f-f99",
     "__context": {
-      "plugin": "a7456010"
+      "plugin": "plugin---brakeza-3-d-contacta-74-732"
     },
-    "config": "5e9f5e1a"
+    "config": "config---brakeza-3-d-contact-5-e-9-842"
   }
 }

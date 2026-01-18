@@ -3,6 +3,41 @@ import ComponentCreator from '@docusaurus/ComponentCreator';
 
 export default [
   {
+    path: '/brakeza3d/__docusaurus/debug',
+    component: ComponentCreator('/brakeza3d/__docusaurus/debug', 'f6f'),
+    exact: true
+  },
+  {
+    path: '/brakeza3d/__docusaurus/debug/config',
+    component: ComponentCreator('/brakeza3d/__docusaurus/debug/config', '60c'),
+    exact: true
+  },
+  {
+    path: '/brakeza3d/__docusaurus/debug/content',
+    component: ComponentCreator('/brakeza3d/__docusaurus/debug/content', '13d'),
+    exact: true
+  },
+  {
+    path: '/brakeza3d/__docusaurus/debug/globalData',
+    component: ComponentCreator('/brakeza3d/__docusaurus/debug/globalData', '01d'),
+    exact: true
+  },
+  {
+    path: '/brakeza3d/__docusaurus/debug/metadata',
+    component: ComponentCreator('/brakeza3d/__docusaurus/debug/metadata', 'cd9'),
+    exact: true
+  },
+  {
+    path: '/brakeza3d/__docusaurus/debug/registry',
+    component: ComponentCreator('/brakeza3d/__docusaurus/debug/registry', '8be'),
+    exact: true
+  },
+  {
+    path: '/brakeza3d/__docusaurus/debug/routes',
+    component: ComponentCreator('/brakeza3d/__docusaurus/debug/routes', '926'),
+    exact: true
+  },
+  {
     path: '/brakeza3d/blog',
     component: ComponentCreator('/brakeza3d/blog', '1cd'),
     exact: true
